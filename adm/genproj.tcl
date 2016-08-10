@@ -1076,7 +1076,7 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
   set aLibsMap(CSF_TclTkLibs) "tk8.6"
   if { "$::HAVE_FREEIMAGE" == "true" } {
     if { "$theOS" == "wnt" } {
-      set aLibsMap(CSF_FreeImagePlus) "FreeImage FreeImagePlus"
+      set aLibsMap(CSF_FreeImagePlus) "FreeImage"
     } else {
       set aLibsMap(CSF_FreeImagePlus) "freeimage"
     }

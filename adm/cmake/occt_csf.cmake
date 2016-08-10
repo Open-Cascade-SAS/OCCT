@@ -51,7 +51,7 @@ if (WIN32)
   endif()
 
   if (USE_FREEIMAGE)
-    set (CSF_FreeImagePlus "freeimage.lib freeimageplus.lib")
+    set (CSF_FreeImagePlus "freeimage.lib")
   else()
     set (CSF_FreeImagePlus)
   endif()

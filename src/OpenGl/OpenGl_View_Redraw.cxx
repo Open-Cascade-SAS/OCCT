@@ -34,7 +34,6 @@
 #include <OpenGl_Trihedron.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
-#include <OpenGl_PrinterContext.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_Structure.hxx>
@@ -1116,17 +1115,6 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
 {
   const Handle(OpenGl_Context)& aContext = myWorkspace->GetGlContext();
 
-#ifdef _WIN32
-  // set printing scale/tiling transformation
-  Handle(OpenGl_PrinterContext) aPrintContext = myWorkspace->PrinterContext();
-  if (!aPrintContext.IsNull())
-  {
-    aContext->ProjectionState.Push();
-    aContext->ProjectionState.SetCurrent (aPrintContext->ProjTransformation() * aContext->ProjectionState.Current());
-    aContext->ApplyProjectionMatrix();
-  }
-#endif
-
   // Specify clipping planes in view transformation space
   aContext->ChangeClipping().RemoveAll (aContext);
   if (!myClipPlanes.IsEmpty())
@@ -1239,15 +1227,6 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
   {
     aContext->ShaderManager()->RevertClippingState();
   }
-
-#ifdef _WIN32
-  // set printing scale/tiling transformation
-  if (!aPrintContext.IsNull())
-  {
-    aContext->ProjectionState.Pop();
-    aContext->ApplyProjectionMatrix();
-  }
-#endif
 }
 
 // =======================================================================

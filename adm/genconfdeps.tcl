@@ -430,7 +430,6 @@ proc wokdep:SearchFreeImage {theErrInc theErrLib32 theErrLib64 theErrBin32 theEr
 
   # binary distribution has another layout
   set aFImageDist     "Dist"
-  set aFImagePlusDist "Wrapper/FreeImagePlus/dist"
 
   set isFound "true"
   set aFImageHPath [wokdep:SearchHeader "FreeImage.h"]
@@ -440,19 +439,10 @@ proc wokdep:SearchFreeImage {theErrInc theErrLib32 theErrLib64 theErrBin32 theEr
       lappend ::CSF_OPT_INC "$aPath/include"
     } elseif { "$aPath" != "" && [file exists "$aPath/$aFImageDist/FreeImage.h"] } {
       lappend ::CSF_OPT_INC "$aPath/$aFImageDist"
-      if { [file exists "$aPath/$aFImagePlusDist/FreeImagePlus.h"] } {
-        lappend ::CSF_OPT_INC "$aPath/$aFImagePlusDist"
-      }
     } else {
       lappend anErrInc "Error: 'FreeImage.h' not found (FreeImage)"
       set isFound "false"
     }
-  }
-
-  set aFImagePlusHPath [wokdep:SearchHeader "FreeImagePlus.h"]
-  if { "$::tcl_platform(platform)" == "windows" && "$aFImagePlusHPath"  == "" } {
-    lappend anErrInc "Error: 'FreeImagePlus.h' not found (FreeImage)"
-    set isFound "false"
   }
 
   foreach anArchIter {64 32} {
@@ -466,10 +456,6 @@ proc wokdep:SearchFreeImage {theErrInc theErrLib32 theErrLib64 theErrBin32 theEr
         set aFImageLibPath [wokdep:SearchLib "freeimage" "$anArchIter" "$aPath/$aFImageDist"]
         if { "$aFImageLibPath" != "" } {
           lappend ::CSF_OPT_LIB$anArchIter "$aPath/$aFImageDist"
-          set aFImagePlusLibPath [wokdep:SearchLib "freeimageplus" "$anArchIter" "$aPath/$aFImagePlusDist"]
-          if { "$aFImagePlusLibPath"  != "" } {
-            lappend ::CSF_OPT_LIB$anArchIter "$aPath/$aFImagePlusDist"
-          }
         } else {
           lappend anErrLib$anArchIter "Error: '${::SYS_LIB_PREFIX}freeimage.${::SYS_LIB_SUFFIX}' not found (FreeImage)"
           if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
@@ -477,28 +463,18 @@ proc wokdep:SearchFreeImage {theErrInc theErrLib32 theErrLib64 theErrBin32 theEr
       }
     }
     if { "$::tcl_platform(platform)" == "windows" } {
-      set aFImagePlusLibPath [wokdep:SearchLib "freeimageplus" "$anArchIter"]
-      if { "$aFImagePlusLibPath"  == "" } {
-        lappend anErrLib$anArchIter "Error: '${::SYS_LIB_PREFIX}freeimageplus.${::SYS_LIB_SUFFIX}' not found (FreeImage)"
-        if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
-      }
-
-      set aFImageDllPath     [wokdep:SearchBin "freeimage.dll"     "$anArchIter"]
-      set aFImagePlusDllPath [wokdep:SearchBin "freeimageplus.dll" "$anArchIter"]
-      if { "$aFImageDllPath" == "" || "$aFImagePlusDllPath" == "" } {
+      set aFImageDllPath [wokdep:SearchBin "freeimage.dll" "$anArchIter"]
+      if { "$aFImageDllPath" == "" } {
         set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{freeimage}*] "$::VCVER" "$anArchIter" ]
-        set aFImageDllPath     [wokdep:SearchBin "freeimage.dll"     "$anArchIter" "$aPath/bin"]
-        set aFImagePlusDllPath [wokdep:SearchBin "freeimageplus.dll" "$anArchIter" "$aPath/bin"]
-        if { "$aFImageDllPath" != "" && "$aFImagePlusDllPath" != "" } {
+        set aFImageDllPath [wokdep:SearchBin "freeimage.dll" "$anArchIter" "$aPath/bin"]
+        if { "$aFImageDllPath" != "" } {
           lappend ::CSF_OPT_BIN$anArchIter "$aPath/bin"
         } else {
-          set aFImageDllPath     [wokdep:SearchBin "freeimage.dll"     "$anArchIter" "$aPath/$aFImageDist"]
-          set aFImagePlusDllPath [wokdep:SearchBin "freeimageplus.dll" "$anArchIter" "$aPath/$aFImagePlusDist"]
-          if { "$aFImageDllPath" != "" && "$aFImagePlusDllPath" != "" } {
+          set aFImageDllPath [wokdep:SearchBin "freeimage.dll" "$anArchIter" "$aPath/$aFImageDist"]
+          if { "$aFImageDllPath" != "" } {
             lappend ::CSF_OPT_BIN$anArchIter "$aPath/$aFImageDist"
-            lappend ::CSF_OPT_BIN$anArchIter "$aPath/$aFImagePlusDist"
           } else {
-            lappend anErrBin$anArchIter "Error: 'freeimage.dll' or 'freeimageplus.dll' not found (FreeImage)"
+            lappend anErrBin$anArchIter "Error: 'freeimage.dll' is not found (FreeImage)"
             if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
           }
         }

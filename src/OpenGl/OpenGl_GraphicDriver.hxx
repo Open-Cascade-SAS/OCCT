@@ -25,7 +25,6 @@
 #include <Aspect_TypeOfTriedronPosition.hxx>
 #include <Aspect_TypeOfTriedronEcho.hxx>
 #include <Aspect_Handle.hxx>
-#include <Aspect_PrintAlgo.hxx>
 #include <Aspect_RenderingContext.hxx>
 #include <gp_Ax2.hxx>
 #include <Graphic3d_CView.hxx>

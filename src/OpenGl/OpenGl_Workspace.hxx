@@ -23,7 +23,6 @@
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_Matrix.hxx>
 #include <OpenGl_NamedStatus.hxx>
-#include <OpenGl_PrinterContext.hxx>
 #include <OpenGl_RenderFilter.hxx>
 #include <OpenGl_ShaderObject.hxx>
 #include <OpenGl_ShaderProgram.hxx>
@@ -149,8 +148,6 @@ public:
     myUseZBuffer = theToUse;
     return wasUsed;
   }
-
-  Handle(OpenGl_PrinterContext)& PrinterContext() { return myPrintContext; }
 
   //! @return true if usage of Z buffer is enabled.
   Standard_Boolean& UseZBuffer() { return myUseZBuffer; }
@@ -356,7 +353,6 @@ protected: //! @name protected fields
   OpenGl_View*                     myView;
   Handle(OpenGl_Window)            myWindow;
   Handle(OpenGl_Context)           myGlContext;
-  Handle(OpenGl_PrinterContext)    myPrintContext;
   Standard_Boolean                 myUseZBuffer;
   Standard_Boolean                 myUseDepthWrite;
   Standard_Boolean                 myUseGLLight;

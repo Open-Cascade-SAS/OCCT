@@ -30,7 +30,6 @@ Aspect_HatchStyle.hxx
 Aspect_IdentDefinitionError.hxx
 Aspect_InteriorStyle.hxx
 Aspect_PolygonOffsetMode.hxx
-Aspect_PrintAlgo.hxx
 Aspect_RectangularGrid.cxx
 Aspect_RectangularGrid.hxx
 Aspect_RenderingContext.hxx

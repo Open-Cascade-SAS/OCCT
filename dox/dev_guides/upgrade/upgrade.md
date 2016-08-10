@@ -1021,12 +1021,25 @@ The following type definitions in OCCT has been modified to use C++11 types:
 
 For most applications this change should be transparent, since the size of types have not been changed.
 
+@subsection upgrade_710_ffp Programmable Pipeline
+
+Fixed-function pipeline has been already deprecated since OCCT 7.0.0.
+Release 7.1.0 disables this functionality by default in favor of Programmable Pipeline (based on GLSL programs).
+
+This also means that method *V3d_View::Export()* based on gl2ps library and requiring disabled by default functionality has been deprecated as well.
+Applications should explicitly enable deprecated functionality by setting OpenGl_Caps::ffpEnable flag to TRUE within OpenGl_GraphicDriver::ChangeOptions() before creating the viewer to use V3d_View::Export(),
+but being aware that this functionality is likely to be removed in a next OCCT release.
+Thus the recommended way to generate vector image of a 3D model or scene is to use application-level solution independent from OpenGL.
+
 @subsection upgrade_710_removed Removed features
 
 The following obsolete features have been removed:
 
-* Obsolete Antialiasing API V3d_View::SetAntialiasingOn(). This method was intended to activate deprecated OpenGL functionality (GL_POLYGON_SMOOTH, GL_LINE_SMOOTH, GL_POINT_SMOOTH).
-  Instead of old API, application should request MSAA buffers for antialiasing by assigning Graphic3d_RenderingParams::NbMsaaSamples property of structure returned by V3d_View::ChangeRenderingParams().
-* Prs3d_Drawer::ShadingAspectGlobal() flag has been removed as not used. Corresponding calls can be removed safely from the application code.
-* ZClipping planes and ZCueing (methods V3d_View::SetZClippingType(), ::SetZCueingOn() and V3d_View::others).
+* Obsolete Antialiasing API *V3d_View::SetAntialiasingOn()*. This method was intended to activate deprecated OpenGL functionality (GL_POLYGON_SMOOTH, GL_LINE_SMOOTH, GL_POINT_SMOOTH).
+  Instead of old API, application should request MSAA buffers for antialiasing by assigning *Graphic3d_RenderingParams::NbMsaaSamples* property of structure returned by *V3d_View::ChangeRenderingParams()*.
+* *Prs3d_Drawer::ShadingAspectGlobal()* flag has been removed as not used. Corresponding calls can be removed safely from the application code.
+* ZClipping planes and ZCueing (methods *V3d_View::SetZClippingType()*, *::SetZCueingOn()* and V3d_View::others).
   ZClipping planes can be replaced by general-purpose clipping planes (application should update plane definion manually).
+* 3D viewer printing API *V3d_View::Print()* has been removed. This functionality was available on Windows platforms only.
+  Applications should use general image dump API *V3d_View::ToPixMap()* and manage printing using platform-specific API at application level.
+  Text resolution can be managed by rendering parameter *Graphic3d_RenderingParams::Resolution*, returned by *V3d_View::ChangeRenderingParams()*.

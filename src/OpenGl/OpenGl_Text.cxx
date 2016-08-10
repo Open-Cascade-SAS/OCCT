@@ -429,8 +429,7 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   myProjMatrix.Convert (aCtx->ProjectionState.Current());
 
   // use highlight color or colors from aspect
-  render (theWorkspace->PrinterContext(),
-          aCtx,
+  render (aCtx,
           *aTextAspect,
           theWorkspace->TextColor(),
           theWorkspace->TextSubtitleColor(),
@@ -459,12 +458,11 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 // function : Render
 // purpose  :
 // =======================================================================
-void OpenGl_Text::Render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
-                          const Handle(OpenGl_Context)&        theCtx,
-                          const OpenGl_AspectText&             theTextAspect,
-                          const unsigned int                   theResolution) const
+void OpenGl_Text::Render (const Handle(OpenGl_Context)& theCtx,
+                          const OpenGl_AspectText&      theTextAspect,
+                          const unsigned int            theResolution) const
 {
-  render (thePrintCtx, theCtx, theTextAspect,
+  render (theCtx, theTextAspect,
           theTextAspect.Aspect()->ColorRGBA(),
           theTextAspect.Aspect()->ColorSubTitleRGBA(),
           theResolution);
@@ -474,10 +472,9 @@ void OpenGl_Text::Render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 // function : setupMatrix
 // purpose  :
 // =======================================================================
-void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
-                               const Handle(OpenGl_Context)&        theCtx,
-                               const OpenGl_AspectText&             theTextAspect,
-                               const OpenGl_Vec3                    theDVec) const
+void OpenGl_Text::setupMatrix (const Handle(OpenGl_Context)& theCtx,
+                               const OpenGl_AspectText&      theTextAspect,
+                               const OpenGl_Vec3             theDVec) const
 {
   OpenGl_Mat4d aModViewMat;
   OpenGl_Mat4d aProjectMat;
@@ -541,22 +538,6 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 
     if (!theTextAspect.Aspect()->GetTextZoomable())
     {
-    #ifdef _WIN32
-      // if the context has assigned printer context, use it's parameters
-      if (!thePrintCtx.IsNull())
-      {
-        // get printing scaling in x and y dimensions
-        GLfloat aTextScalex = 1.0f, aTextScaley = 1.0f;
-        thePrintCtx->GetScale (aTextScalex, aTextScaley);
-
-        // text should be scaled in all directions with same
-        // factor to save its proportions, so use height (y) scaling
-        // as it is better for keeping text/3d graphics proportions
-        Graphic3d_TransformUtils::Scale<GLdouble> (aModViewMat, aTextScaley, aTextScaley, aTextScaley);
-      }
-    #else
-      (void )thePrintCtx;
-    #endif
       Graphic3d_TransformUtils::Scale<GLdouble> (aModViewMat, myScaleHeight, myScaleHeight, myScaleHeight);
     }
   }
@@ -590,14 +571,8 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 // function : drawText
 // purpose  :
 // =======================================================================
-
-void OpenGl_Text::drawText (const Handle(OpenGl_PrinterContext)& ,
-                            const Handle(OpenGl_Context)&        theCtx,
-                          #ifdef HAVE_GL2PS
-                            const OpenGl_AspectText&             theTextAspect) const
-                          #else
-                            const OpenGl_AspectText&                          ) const
-                          #endif
+void OpenGl_Text::drawText (const Handle(OpenGl_Context)& theCtx,
+                            const OpenGl_AspectText&      theTextAspect) const
 {
 #ifdef HAVE_GL2PS
   if (theCtx->IsFeedback())
@@ -606,6 +581,8 @@ void OpenGl_Text::drawText (const Handle(OpenGl_PrinterContext)& ,
     exportText (myString, myIs2d, theTextAspect, (Standard_Integer )myExportHeight);
     return;
   }
+#else
+  (void )theTextAspect;
 #endif
 
   if (myVertsVbo.Length() != myTextures.Length()
@@ -724,12 +701,11 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
 // function : render
 // purpose  :
 // =======================================================================
-void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
-                          const Handle(OpenGl_Context)&        theCtx,
-                          const OpenGl_AspectText&             theTextAspect,
-                          const OpenGl_Vec4&                   theColorText,
-                          const OpenGl_Vec4&                   theColorSubs,
-                          const unsigned int                   theResolution) const
+void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
+                          const OpenGl_AspectText&      theTextAspect,
+                          const OpenGl_Vec4&            theColorText,
+                          const OpenGl_Vec4&            theColorSubs,
+                          const unsigned int            theResolution) const
 {
   if (myString.IsEmpty())
   {
@@ -902,7 +878,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
       if (theCtx->core11 != NULL)
       {
         theCtx->SetColor4fv (theColorSubs);
-        setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.00001f));
+        setupMatrix (theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.00001f));
 
         glBindTexture (GL_TEXTURE_2D, 0);
         glBegin (GL_QUADS);
@@ -918,14 +894,14 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
     case Aspect_TODT_DEKALE:
     {
       theCtx->SetColor4fv (theColorSubs);
-      setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (+1.0f, +1.0f, 0.00001f));
-      drawText    (thePrintCtx, theCtx, theTextAspect);
-      setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (-1.0f, -1.0f, 0.00001f));
-      drawText    (thePrintCtx, theCtx, theTextAspect);
-      setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (-1.0f, +1.0f, 0.00001f));
-      drawText    (thePrintCtx, theCtx, theTextAspect);
-      setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (+1.0f, -1.0f, 0.00001f));
-      drawText    (thePrintCtx, theCtx, theTextAspect);
+      setupMatrix (theCtx, theTextAspect, OpenGl_Vec3 (+1.0f, +1.0f, 0.00001f));
+      drawText    (theCtx, theTextAspect);
+      setupMatrix (theCtx, theTextAspect, OpenGl_Vec3 (-1.0f, -1.0f, 0.00001f));
+      drawText    (theCtx, theTextAspect);
+      setupMatrix (theCtx, theTextAspect, OpenGl_Vec3 (-1.0f, +1.0f, 0.00001f));
+      drawText    (theCtx, theTextAspect);
+      setupMatrix (theCtx, theTextAspect, OpenGl_Vec3 (+1.0f, -1.0f, 0.00001f));
+      drawText    (theCtx, theTextAspect);
       break;
     }
     case Aspect_TODT_DIMENSION:
@@ -937,8 +913,8 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 
   // main draw call
   theCtx->SetColor4fv (theColorText);
-  setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.0f));
-  drawText    (thePrintCtx, theCtx, theTextAspect);
+  setupMatrix (theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.0f));
+  drawText    (theCtx, theTextAspect);
 
   if (!myIs2d)
   {
@@ -955,7 +931,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 
   if (theTextAspect.Aspect()->DisplayType() == Aspect_TODT_DIMENSION)
   {
-    setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.00001f));
+    setupMatrix (theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.00001f));
 
     glDisable (GL_BLEND);
     if (!myIs2d)

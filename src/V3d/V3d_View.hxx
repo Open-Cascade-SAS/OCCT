@@ -22,7 +22,6 @@
 #include <Aspect_GradientBackground.hxx>
 #include <Aspect_GradientFillMethod.hxx>
 #include <Aspect_Handle.hxx>
-#include <Aspect_PrintAlgo.hxx>
 #include <Aspect_RenderingContext.hxx>
 #include <Aspect_TypeOfTriedronPosition.hxx>
 #include <Aspect_TypeOfTriedronEcho.hxx>
@@ -806,40 +805,11 @@ public:
   //! Returns FALSE when the dump has failed
   Standard_EXPORT Standard_Boolean Dump (const Standard_CString theFile, const Graphic3d_BufferType& theBufferType = Graphic3d_BT_RGB);
 
-  //! print the contents of the view to printer with preview.
-  //! <thePrintDC> : If you have already an PrinterDeviceContext (HDC),
-  //! then you can pass it to the print routines.
-  //! If you don't have an PrinterDeviceContext, then this parameter should
-  //! be NULL.
-  //! <theShowDialog> : If thePrintDC == NULL, then you can force the print routines to
-  //! open a Print Dialog box.
-  //! If you want to do this, then set showDialog to TRUE
-  //! If you don't want to see a dialog (only possible, if you have a hPrnDC
-  //! or the dialog box was opened once before) then set <theShowDialog> to FALSE.
-  //! <theShowBackground> : When set to FALSE then print the view without background color
-  //! (background is white)
-  //! else set to TRUE for printing with current background color.
-  //! <theFilename>: If != NULL, then the view will be printed to a file.
-  //! <thePrintAlgorithm>: If you want to select the print algorithm, then you can
-  //! specify one of existing algorithms: Aspect_PA_STRETCH, Aspect_PA_TILE.
-  //! Returns Standard_True if the data is passed to the printer, otherwise
-  //! Standard_False if the print operation failed. This might be related to
-  //! insufficient memory or some internal errors. All this errors are
-  //! indicated by the message boxes (on level of OpenGl_GraphicDriver).
-  //! Warning: This function can reuse FBO assigned to the
-  //! view on level of OpenGl_GraphicDriver; Please take it into account if
-  //! you use it for your purposes;
-  //! Warning: Works only under Windows.
-  Standard_EXPORT Standard_Boolean Print (const Aspect_Handle    thePrintDC = 0,
-                                          const Standard_Boolean theShowDialog = Standard_True,
-                                          const Standard_Boolean theShowBackground = Standard_True,
-                                          const Standard_CString theFilename = NULL,
-                                          const Aspect_PrintAlgo thePrintAlgorithm = Aspect_PA_STRETCH) const;
-
   //! Export scene into the one of the Vector graphics formats (SVG, PS, PDF...).
   //! In contrast to Bitmaps, Vector graphics is scalable (so you may got quality benefits
   //! on printing to laser printer). Notice however that results may differ a lot and
   //! do not contain some elements.
+  Standard_DEPRECATED("Export to Vector graphic is incompatible with Programmable Pipeline and should not be used")
   Standard_EXPORT Standard_Boolean Export (const Standard_CString theFileName,
                                            const Graphic3d_ExportFormat theFormat,
                                            const Graphic3d_SortType theSortType = Graphic3d_ST_BSP_Tree);

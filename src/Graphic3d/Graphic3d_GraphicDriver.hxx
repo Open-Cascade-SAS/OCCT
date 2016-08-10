@@ -41,7 +41,6 @@
 #include <Graphic3d_BufferType.hxx>
 #include <Aspect_GenId.hxx>
 #include <Aspect_Handle.hxx>
-#include <Aspect_PrintAlgo.hxx>
 #include <Graphic3d_ExportFormat.hxx>
 #include <Graphic3d_SortType.hxx>
 #include <Graphic3d_ZLayerId.hxx>

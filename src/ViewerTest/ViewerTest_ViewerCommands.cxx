@@ -49,7 +49,6 @@
 #include <Draw_Interpretor.hxx>
 #include <Draw.hxx>
 #include <Draw_Appli.hxx>
-#include <Aspect_PrintAlgo.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OSD_Timer.hxx>
@@ -82,11 +81,6 @@
 #if defined(_WIN32)
   #include <WNT_WClass.hxx>
   #include <WNT_Window.hxx>
-
-  #if defined(_MSC_VER)
-    #define _CRT_SECURE_NO_DEPRECATE
-    #pragma warning (disable:4996)
-  #endif
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   #include <Cocoa_Window.hxx>
 #else
@@ -3384,7 +3378,9 @@ static int VExport(Draw_Interpretor& di, Standard_Integer argc, const char** arg
 
   try
   {
+  Standard_DISABLE_DEPRECATION_WARNINGS
     if (!V3dView->Export (argv[1], anExpFormat))
+  Standard_ENABLE_DEPRECATION_WARNINGS
     {
       di << "Error: export of image to " << aFormatStr << " failed!\n";
     }
@@ -4275,172 +4271,6 @@ static int VGraduatedTrihedron (Draw_Interpretor& /*theDi*/, Standard_Integer th
   ViewerTest::CurrentView()->Redraw();
 
   return 0;
-}
-
-//==============================================================================
-//function : VPrintView
-//purpose  : Test printing algorithm, print the view to image file with given
-//           width and height. Printing implemented only for WNT.
-//==============================================================================
-static int VPrintView (Draw_Interpretor& di, Standard_Integer argc,
-                       const char** argv)
-{
-#ifndef _WIN32
-  (void )argc;
-  (void )argv;
-  di << "Printing implemented only for WNT!\n";
-  return 0;
-#else
-
-  Handle(AIS_InteractiveContext) aContextAIS = NULL;
-  Handle(V3d_View) aView = NULL;
-  aContextAIS = ViewerTest::GetAISContext();
-  if (!aContextAIS.IsNull())
-  {
-    const Handle(V3d_Viewer)& Vwr = aContextAIS->CurrentViewer();
-    Vwr->InitActiveViews();
-    if(Vwr->MoreActiveViews())
-      aView = Vwr->ActiveView();
-  }
-
-  // check for errors
-  if (aView.IsNull())
-  {
-    di << "Call vinit before!\n";
-    return 1;
-  }
-  else if (argc < 4)
-  {
-    di << "Use: " << argv[0];
-    di << " width height filename [print algo=0] [tile_width tile_height]\n";
-    di << "width, height of the intermediate buffer for operation\n";
-    di << "algo : {0|1}\n";
-    di << "        0 - stretch algorithm\n";
-    di << "        1 - tile algorithm\n";
-    di << "test printing algorithms into an intermediate buffer\n";
-    di << "using specific tile size if provided\n";
-    di << "with saving output to an image file\n";
-    return 1;
-  }
-
-  // get the input params
-  Standard_Integer aWidth  = Draw::Atoi (argv[1]);
-  Standard_Integer aHeight = Draw::Atoi (argv[2]);
-  Standard_Integer aMode   = 0;
-  TCollection_AsciiString aFileName = TCollection_AsciiString (argv[3]);
-  if (argc >= 5)
-    aMode = Draw::Atoi (argv[4]);
-
-  Standard_Integer aTileWidth  = 0;
-  Standard_Integer aTileHeight = 0;
-  Standard_Boolean isTileSizeProvided = Standard_False;
-  if (argc == 7)
-  {
-    isTileSizeProvided = Standard_True;
-    aTileWidth  = Draw::Atoi (argv[5]);
-    aTileHeight = Draw::Atoi (argv[6]);
-  }
-
-  // check the input parameters
-  if (aWidth <= 0 || aHeight <= 0)
-  {
-    di << "Width and height must be positive values!\n";
-    return 1;
-  }
-  if (aMode != 0 && aMode != 1)
-    aMode = 0;
-
-  // define compatible bitmap
-  HDC anDC = CreateCompatibleDC(0);
-  BITMAPINFO aBitmapData;
-  memset (&aBitmapData, 0, sizeof (BITMAPINFOHEADER));
-  aBitmapData.bmiHeader.biSize          = sizeof (BITMAPINFOHEADER);
-  aBitmapData.bmiHeader.biWidth         = aWidth ;
-  aBitmapData.bmiHeader.biHeight        = aHeight;
-  aBitmapData.bmiHeader.biPlanes        = 1;
-  aBitmapData.bmiHeader.biBitCount      = 24;
-  aBitmapData.bmiHeader.biXPelsPerMeter = 0;
-  aBitmapData.bmiHeader.biYPelsPerMeter = 0;
-  aBitmapData.bmiHeader.biClrUsed       = 0;
-  aBitmapData.bmiHeader.biClrImportant  = 0;
-  aBitmapData.bmiHeader.biCompression   = BI_RGB;
-  aBitmapData.bmiHeader.biSizeImage     = 0;
-
-  // Create Device Independent Bitmap
-  void* aBitsOut = NULL;
-  HBITMAP aMemoryBitmap = CreateDIBSection (anDC, &aBitmapData, DIB_RGB_COLORS,
-                                            &aBitsOut, NULL, 0);
-  HGDIOBJ anOldBitmap   = SelectObject(anDC, aMemoryBitmap);
-
-  Standard_Boolean isSaved = Standard_False, isPrinted = Standard_False;
-  if (aBitsOut != NULL)
-  {
-    if (aMode == 0)
-      isPrinted = aView->Print(anDC,1,1,0,Aspect_PA_STRETCH);
-    else
-    {
-      if (isTileSizeProvided)
-      {
-        Handle(Graphic3d_CView)    aGraphicView = ViewerTest::CurrentView()->View();
-        Handle(Standard_Transient) anOldBuffer  = aGraphicView->FBO();
-        Handle(Standard_Transient) aNewBuffer   = aGraphicView->FBOCreate (aTileWidth, aTileHeight);
-        aGraphicView->SetFBO (aNewBuffer);
-
-        isPrinted = aView->Print (anDC, 1, 1, 0, Aspect_PA_TILE);
-
-        aGraphicView->FBORelease (aNewBuffer);
-        aGraphicView->SetFBO (anOldBuffer);
-      }
-      else
-      {
-        isPrinted = aView->Print (anDC, 1, 1, 0, Aspect_PA_TILE);
-      }
-    }
-
-    // successfully printed into an intermediate buffer
-    if (isPrinted)
-    {
-      Image_PixMap aWrapper;
-      aWrapper.InitWrapper (Image_PixMap::ImgBGR, (Standard_Byte* )aBitsOut, aWidth, aHeight, aWidth * 3 + aWidth % 4);
-      aWrapper.SetTopDown (false);
-
-      Image_AlienPixMap anImageBitmap;
-      anImageBitmap.InitCopy (aWrapper);
-      isSaved = anImageBitmap.Save (aFileName);
-    }
-    else
-    {
-      di << "Print operation failed due to printing errors or\n";
-      di << "insufficient memory available\n";
-      di << "Please, try to use smaller dimensions for this test\n";
-      di << "command, as it allocates intermediate buffer for storing\n";
-      di << "the result\n";
-    }
-  }
-  else
-  {
-    di << "Can't allocate memory for intermediate buffer\n";
-    di << "Please use smaller dimensions\n";
-  }
-
-  if (aMemoryBitmap)
-  {
-    SelectObject (anDC, anOldBitmap);
-    DeleteObject (aMemoryBitmap);
-    DeleteDC(anDC);
-  }
-
-  if (!isSaved)
-  {
-    di << "Save to file operation failed. This operation may fail\n";
-    di << "if you don't have enough available memory, then you can\n";
-    di << "use smaller dimensions for the output file\n";
-    return 1;
-  }
-
-  return 0;
-
-#endif
 }
 
 //==============================================================================
@@ -9229,9 +9059,6 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     " - xticks, yticks, xzicks - number of tickmark on axes. Default: 5\n"
     " - xticklength, yticklength, xzicklength - length of tickmark on axes. Default: 10\n",
     __FILE__,VGraduatedTrihedron,group);
-  theCommands.Add("vprintview" ,
-    "vprintview : width height filename [algo=0] [tile_width tile_height] : Test print algorithm: algo = 0 - stretch, algo = 1 - tile",
-    __FILE__,VPrintView,group);
   theCommands.Add("vzlayer",
     "vzlayer add/del/get/settings/enable/disable [id]\n"
     " add - add new z layer to viewer and print its id\n"

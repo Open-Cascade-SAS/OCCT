@@ -30,8 +30,6 @@
 
 #include <gp_Ax2.hxx>
 
-class OpenGl_PrinterContext;
-
 //! Text rendering
 class OpenGl_Text : public OpenGl_Element
 {
@@ -104,10 +102,9 @@ public: //! @name methods for compatibility with layers
                              const OpenGl_TextParam&           theParams);
 
   //! Perform rendering
-  Standard_EXPORT void Render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
-                               const Handle(OpenGl_Context)&        theCtx,
-                               const OpenGl_AspectText&             theTextAspect,
-                               const unsigned int                   theResolution = Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION) const;
+  Standard_EXPORT void Render (const Handle(OpenGl_Context)& theCtx,
+                               const OpenGl_AspectText&      theTextAspect,
+                               const unsigned int            theResolution = Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION) const;
 
 protected:
 
@@ -123,23 +120,20 @@ private:
   void releaseVbos (OpenGl_Context* theCtx);
 
   //! Setup matrix.
-  void setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
-                    const Handle(OpenGl_Context)&        theCtx,
-                    const OpenGl_AspectText&             theTextAspect,
-                    const OpenGl_Vec3                    theDVec) const;
+  void setupMatrix (const Handle(OpenGl_Context)& theCtx,
+                    const OpenGl_AspectText&      theTextAspect,
+                    const OpenGl_Vec3             theDVec) const;
 
   //! Draw arrays of vertices.
-  void drawText (const Handle(OpenGl_PrinterContext)& thePrintCtx,
-                 const Handle(OpenGl_Context)&        theCtx,
-                 const OpenGl_AspectText&             theTextAspect) const;
+  void drawText (const Handle(OpenGl_Context)& theCtx,
+                 const OpenGl_AspectText&      theTextAspect) const;
 
   //! Main rendering code
-  void render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
-               const Handle(OpenGl_Context)&        theCtx,
-               const OpenGl_AspectText&             theTextAspect,
-               const OpenGl_Vec4&                   theColorText,
-               const OpenGl_Vec4&                   theColorSubs,
-               const unsigned int                   theResolution) const;
+  void render (const Handle(OpenGl_Context)& theCtx,
+               const OpenGl_AspectText&      theTextAspect,
+               const OpenGl_Vec4&            theColorText,
+               const OpenGl_Vec4&            theColorSubs,
+               const unsigned int            theResolution) const;
 
 protected:
 

@@ -167,27 +167,6 @@ public:
   Standard_EXPORT virtual Standard_Boolean BufferDump (Image_PixMap& theImage,
                                                        const Graphic3d_BufferType& theBufferType) Standard_OVERRIDE;
 
-  //! Print the contents of the view to the printer.
-  //! @param thePrinterDC        pass the PrinterDeviceContext (HDC)
-  //! @param theToShowBackground when set to FALSE then print the view without background
-  //!                            color (background is white) else set to TRUE for printing
-  //!                            with current background color
-  //! @param theFileName         if != NULL, then the view will be printed to a file
-  //! @param thePrintAlgorithm   select print algorithm: stretch, tile
-  //! @param theScaleFactor      scaling coefficient, used internally to scale the printings
-  //!                            accordingly to the scale factor selected in the printer properties dialog
-  //! @return Standard_True if the data is passed to the printer, otherwise Standard_False if
-  //! the print operation failed due to the printer errors, or lack of system memory. This might be related
-  //! to insufficient memory or some internal errors.
-  //! All this errors are indicated by the message boxes (on level of OpenGl_GraphicDriver).
-  //! Warning: This function can reuse FBO assigned to the view, please take it into account
-  //! if you use it for your purposes.
-  Standard_EXPORT virtual Standard_Boolean Print (const Aspect_Handle    thePrinterDC,
-                                                  const Standard_Boolean theToShowBackground,
-                                                  const Standard_CString theFileName,
-                                                  const Aspect_PrintAlgo thePrintAlgorithm = Aspect_PA_STRETCH,
-                                                  const Standard_Real    theScaleFactor = 1.0) Standard_OVERRIDE;
-
   //! Export scene into the one of the Vector graphics formats (SVG, PS, PDF...).
   //! In contrast to Bitmaps, Vector graphics is scalable (so you may got quality benefits
   //! on printing to laser printer). Notice however that results may differ a lot and
