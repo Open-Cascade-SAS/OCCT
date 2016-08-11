@@ -2381,59 +2381,6 @@ Handle(Geom_Curve) MakeBSpline  (const Handle(IntPatch_WLine)& WL,
     }
   }
   //
-  {
-    Standard_Integer aNbP;
-    Standard_Real aXP, dXfact, aXmid, aX1, aX2, aTolPA;
-    //
-    aTolPA=Precision::Angular();
-    // U
-    if (isuperiodic) {
-      aXP=anAdaptorSurface.UPeriod();
-      dXfact=theumax-theumin;
-      if (dXfact-aTolPA>aXP) {
-        aXmid=0.5*(theumax+theumin);
-        aNbP=RealToInt(aXmid/aXP);
-        if (aXmid<0.) {
-          aNbP=aNbP-1;
-        }
-        aX1=aNbP*aXP;
-        if (theumin>aTolPA) {
-          aX1=theumin+aNbP*aXP;
-        }
-        aX2=aX1+aXP;
-        if (theumin<aX1) {
-          theumin=aX1;
-        }
-        if (theumax>aX2) {
-          theumax=aX2;
-        }
-      }
-    }
-    // V
-    if (isvperiodic) {
-      aXP=anAdaptorSurface.VPeriod();
-      dXfact=thevmax-thevmin;
-      if (dXfact-aTolPA>aXP) {
-        aXmid=0.5*(thevmax+thevmin);
-        aNbP=RealToInt(aXmid/aXP);
-        if (aXmid<0.) {
-          aNbP=aNbP-1;
-        }
-        aX1=aNbP*aXP;
-        if (thevmin>aTolPA) {
-          aX1=thevmin+aNbP*aXP;
-        }
-        aX2=aX1+aXP;
-        if (thevmin<aX1) {
-          thevmin=aX1;
-        }
-        if (thevmax>aX2) {
-          thevmax=aX2;
-        }
-      }
-    }
-  }
-  //
   if(isuperiodic || isvperiodic) {
     Standard_Boolean correct = Standard_False;
     Standard_Boolean correctU = Standard_False;
@@ -2488,16 +2435,13 @@ Handle(Geom_Curve) MakeBSpline  (const Handle(IntPatch_WLine)& WL,
       aBox.Get(umin, vmin, umax, vmax);
 
       if(isuperiodic && correctU) {
-        
         if(theumin < umin)
           theumin = umin;
-        
         if(theumax > umax) {
           theumax = umax;
         }
       }
       if(isvperiodic && correctV) {
-        
         if(thevmin < vmin)
           thevmin = vmin;
         if(thevmax > vmax)

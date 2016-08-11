@@ -1,0 +1,19 @@
+puts "TODO OCC27766 ALL: Error : The command is not valid. The length is 0."
+puts "TODO OCC27766 ALL: Error : The length of result shape is"
+
+puts "========"
+puts "OCC27761"
+puts "========"
+puts ""
+#################################################
+# Intersection loops infinitely
+#################################################
+
+restore [locate_data_file bug27761_c1.brep] c1
+restore [locate_data_file bug27761_c2.brep] c2
+
+bsection result c1 c2
+
+checkshape result
+# approximate theoretical length of the result
+checkprops result -l 0.00201518
