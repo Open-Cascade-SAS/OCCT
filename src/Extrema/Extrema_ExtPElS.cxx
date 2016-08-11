@@ -341,9 +341,10 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
   if(O1.SquareDistance(P) < Tol) { return; }
   if(O2.SquareDistance(P) < Tol) { return; }
 
-  Standard_Real V1 = OO1.AngleWithRef(gp_Vec(O1,P),OO1.Crossed(OZ));
+  Standard_Real V1 = OPp.AngleWithRef(gp_Vec(O1,P),OPp.Crossed(OZ));
   if (V1 > -ExtPElS_MyEps && V1 < ExtPElS_MyEps) { V1 = 0.; }
-  Standard_Real V2 = OO2.AngleWithRef(gp_Vec(P,O2),OO2.Crossed(OZ));
+  OPp.Reverse();
+  Standard_Real V2 = OPp.AngleWithRef(gp_Vec(P,O2),OPp.Crossed(OZ));
   if (V2 > -ExtPElS_MyEps && V2 < ExtPElS_MyEps) { V2 = 0.; }
 
   if (V1 < 0.) { V1 += 2. * M_PI; }
