@@ -177,8 +177,11 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
           aBox2.Add(gp_Pnt2d(aU2f, S2->FirstVParameter()));
           aBox2.Add(gp_Pnt2d(aU2l, S2->LastVParameter()));
 
-          const Standard_Real a2DTol = Min( S1->UResolution(TolTang),
-                                              S2->UResolution(TolTang));
+          // Resolution is too big if the cylinder radius is
+          // too small. Therefore, we shall bounde its value above. 
+          // Here, we use simple constant.
+          const Standard_Real a2DTol = Min(1.0e-4, Min( S1->UResolution(TolTang),
+                                              S2->UResolution(TolTang)));
 
           Standard_Boolean isReversed = ((aU2l - aU2f) < (aU1l - aU1f));
 

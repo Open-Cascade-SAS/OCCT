@@ -1,6 +1,3 @@
-puts "TODO OCC27766 ALL: Error : The command is not valid. The length is 0."
-puts "TODO OCC27766 ALL: Error : The length of result shape is"
-
 puts "========"
 puts "OCC27761"
 puts "========"
@@ -16,4 +13,16 @@ bsection result c1 c2
 
 checkshape result
 # approximate theoretical length of the result
-checkprops result -l 0.00201518
+checkprops result -l 0.00192624
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full nbv
+if { $nbv != 0 } { puts "Error : Section is incorrect" }
+
+smallview
+don result
+fit
+clear
+disp c1 c2
+disp result
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
