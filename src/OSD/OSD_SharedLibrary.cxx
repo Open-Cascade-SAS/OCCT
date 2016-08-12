@@ -184,13 +184,15 @@ void OSD_SharedLibrary::Destroy() {
 #endif
 #include <windows.h>
 
-
 #include <OSD_Path.hxx>
 #include <OSD_SharedLibrary.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 static DWORD              lastDLLError;
-static Standard_Character errMsg[ 1024 ];
+
+static wchar_t errMsg[1024];
+static char errMsgA[1024];
 
 OSD_SharedLibrary :: OSD_SharedLibrary () {
 
@@ -224,7 +226,13 @@ void OSD_SharedLibrary :: SetName ( const Standard_CString aName ) {
  name = path.Name ();
  name.AssignCat (  path.Extension ()  );
 
- myHandle = GetModuleHandle (  name.ToCString ()  );
+#ifndef OCCT_UWP
+ myHandle = GetModuleHandle(name.ToCString());
+#else
+ TCollection_ExtendedString nameW(name);
+ myHandle = LoadPackagedLibrary ((const wchar_t*)nameW.ToExtString(), NULL  );
+ FreeLibrary ((HMODULE) myHandle);
+#endif
 
 }  // end OSD_SharedLibrary :: SetName
 
@@ -238,15 +246,17 @@ Standard_Boolean OSD_SharedLibrary :: DlOpen ( const OSD_LoadMode /*Mode*/ ) {
 
  Standard_Boolean retVal = Standard_True;
 
- if (  (  myHandle ) == NULL &&
-       (  myHandle = ( HINSTANCE )LoadLibraryEx (
-                                   myName, NULL, LOAD_WITH_ALTERED_SEARCH_PATH
-                                  )  ) == NULL
- ) {
- 
-  lastDLLError = GetLastError ();
-  retVal       = Standard_False;
- 
+ if ( myHandle == NULL ) {
+#ifndef OCCT_UWP
+  myHandle = (HINSTANCE)LoadLibraryEx(myName, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
+#else
+  TCollection_ExtendedString myNameW(myName);
+  myHandle = (HINSTANCE)LoadPackagedLibrary((const wchar_t*)myNameW.ToExtString(), NULL);
+#endif
+  if ( myHandle == NULL ) {
+   lastDLLError = GetLastError ();
+   retVal       = Standard_False;
+  }
  }  // end if
 
  return retVal;
@@ -273,13 +283,14 @@ void OSD_SharedLibrary :: DlClose () const {
 
 Standard_CString OSD_SharedLibrary :: DlError () const {
 
- FormatMessage (
+ FormatMessageW (
   FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ARGUMENT_ARRAY,
-  0, lastDLLError, MAKELANGID( LANG_NEUTRAL, SUBLANG_NEUTRAL ), errMsg, 1024, ( va_list* )&myName
+  0, lastDLLError, MAKELANGID( LANG_NEUTRAL, SUBLANG_NEUTRAL ),
+   errMsg, 1024, ( va_list* )&myName
  );
 
- return errMsg;
-
+ WideCharToMultiByte(CP_UTF8, 0, errMsg, -1, errMsgA, sizeof(errMsgA), NULL, NULL);
+ return errMsgA;
 }  // end OSD_SharedLibrary :: DlError
 
 void OSD_SharedLibrary :: Destroy () {

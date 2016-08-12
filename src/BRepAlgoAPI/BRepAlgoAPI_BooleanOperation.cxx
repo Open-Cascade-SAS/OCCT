@@ -28,6 +28,7 @@
 #include <BRepAlgoAPI_Check.hxx>
 #include <BRepLib_FuseEdges.hxx>
 #include <BRepTools.hxx>
+#include <OSD_Environment.hxx>
 #include <OSD_File.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TopExp.hxx>
@@ -53,9 +54,10 @@ class BRepAlgoAPI_DumpOper {
     myIsDump(Standard_False),
     myIsDumpArgs(Standard_False),
     myIsDumpRes(Standard_False)  {
-      char *pathdump = getenv("CSF_DEBUG_BOP");
-      myIsDump=(pathdump!=NULL);
-      myPath=pathdump;
+      OSD_Environment env("CSF_DEBUG_BOP");
+      TCollection_AsciiString pathdump = env.Value();
+      myIsDump = (!pathdump.IsEmpty() ? Standard_True: Standard_False);
+      myPath=pathdump.ToCString();
   };
   //
   virtual ~BRepAlgoAPI_DumpOper() {

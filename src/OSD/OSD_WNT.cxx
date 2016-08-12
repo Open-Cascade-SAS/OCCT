@@ -23,9 +23,14 @@
 /***/
 #include <OSD_WNT_1.hxx>
 
+#include <Strsafe.h>
 #include <wchar.h>
 #include <stdlib.h>
+
+#include <Standard_Macro.hxx>
+
 /***/
+#ifndef OCCT_UWP
 static void Init ( void );
 /***/
 class Init_OSD_WNT {  // provides initialization
@@ -37,6 +42,7 @@ class Init_OSD_WNT {  // provides initialization
 }; // end Init_OSD_WNT
 
 static Init_OSD_WNT initOsdWnt;
+#endif
 /***/
 static BOOL   fInit = FALSE;
 static PSID*  predefinedSIDs;
@@ -59,6 +65,8 @@ static RESPONSE_DIR_PROC _response_dir_proc;
 #define SID_WORLD         7
 #define SID_NULL          8
 /***/
+#ifndef OCCT_UWP
+// None of the existing security APIs are supported in a UWP applications
 /******************************************************************************/
 /* Function : AllocSD                                                       */
 /* Purpose  : Allocates and initializes security identifier                 */
@@ -597,7 +605,7 @@ void FreeAce ( PVOID pACE ) {
  HeapFree ( hHeap, 0, pACE );
 
 }  /* end FreeAce */
-
+#endif
 #define WILD_CARD     L"/*.*"
 #define WILD_CARD_LEN (  sizeof ( WILD_CARD )  )
 
@@ -697,23 +705,24 @@ retry:
  retVal = CreateDirectoryW ( newDir, NULL );
 
  if (   retVal || (  !retVal && GetLastError () == ERROR_ALREADY_EXISTS  )   ) {
-
+  size_t anOldDirLength;
+  StringCchLengthW (oldDir, sizeof(oldDir) / sizeof(oldDir[0]), &anOldDirLength);
   if (   (  pFD = ( PWIN32_FIND_DATAW )HeapAlloc (
                                        hHeap, 0, sizeof ( WIN32_FIND_DATAW )
                                       )
          ) != NULL &&
-         (  pName = ( LPWSTR )HeapAlloc (
-                               hHeap, 0, lstrlenW ( oldDir ) + WILD_CARD_LEN +
-                               sizeof (  L'\x00'  )
-                              )
+         (
+           pName = (LPWSTR)HeapAlloc(
+             hHeap, 0, anOldDirLength + WILD_CARD_LEN +
+             sizeof(L'\x00')
+           )
          ) != NULL
   ) {
-
-   lstrcpyW ( pName, oldDir    );
-   lstrcatW ( pName, WILD_CARD );
+    StringCchCopyW (pName, sizeof(pName) / sizeof(pName[0]), oldDir);
+    StringCchCatW  (pName, sizeof(pName), WILD_CARD);
 
    retVal = TRUE;
-   fFind  = (  hFindFile = FindFirstFileW ( pName, pFD )  ) != INVALID_HANDLE_VALUE;
+   fFind  = (  hFindFile = FindFirstFileExW(pName, FindExInfoStandard, pFD, FindExSearchNameMatch, NULL, 0)  ) != INVALID_HANDLE_VALUE;
 
    while ( fFind ) {
   
@@ -721,28 +730,35 @@ retry:
           pFD -> cFileName[ 0 ] != L'.' &&
           pFD -> cFileName[ 1 ] != L'.'
     ) {
-  
-     if (   ( pFullNameSrc = ( LPWSTR )HeapAlloc (
-                                        hHeap, 0,
-                                        lstrlenW ( oldDir ) + lstrlenW ( pFD -> cFileName ) +
-                                        sizeof (  L'/'  ) + sizeof ( L'\x00'  )
-                                       )
-            ) == NULL ||
-            ( pFullNameDst = ( LPWSTR )HeapAlloc (
-                                        hHeap, 0,
-                                        lstrlenW ( newDir ) + lstrlenW ( pFD -> cFileName ) +
-                                        sizeof (  L'/'  ) + sizeof (  L'\x00'  )
-                                       )
-            ) == NULL
-     ) break;
-  
-     lstrcpyW ( pFullNameSrc, oldDir );
-     lstrcatW ( pFullNameSrc, L"/"  );
-     lstrcatW ( pFullNameSrc, pFD -> cFileName );
+     size_t anOldDirLength2;
+     size_t aNewDirLength;
+     size_t aFileNameLength;
 
-     lstrcpyW ( pFullNameDst, newDir );
-     lstrcatW ( pFullNameDst, L"/"  );
-     lstrcatW ( pFullNameDst, pFD -> cFileName );
+     StringCchLengthW (oldDir, sizeof(oldDir) / sizeof(oldDir[0]), &anOldDirLength2);
+     StringCchLengthW (newDir, sizeof(newDir) / sizeof(newDir[0]), &aNewDirLength);
+     StringCchLengthW (pFD->cFileName, sizeof(pFD->cFileName) / sizeof(pFD->cFileName[0]), &aFileNameLength);
+
+     if (    (pFullNameSrc = (LPWSTR)HeapAlloc(
+                                  hHeap, 0,
+                                  anOldDirLength2 + aFileNameLength +
+                                  sizeof(L'/') + sizeof(L'\x00')
+                                 )
+             ) == NULL ||
+             (pFullNameDst = (LPWSTR)HeapAlloc(
+                                      hHeap, 0,
+                                      aNewDirLength + aFileNameLength +
+                                      sizeof(L'/') + sizeof(L'\x00')
+                                 )
+             ) == NULL
+     ) break;
+
+     StringCchCopyW (pFullNameSrc, sizeof(pFullNameSrc) / sizeof(pFullNameSrc[0]), oldDir);
+     StringCchCatW  (pFullNameSrc, sizeof(pFullNameSrc) / sizeof(pFullNameSrc[0]), L"/");
+     StringCchCatW  (pFullNameSrc, sizeof(pFullNameSrc) / sizeof(pFullNameSrc[0]), pFD->cFileName);
+
+     StringCchCopyW (pFullNameDst, sizeof(pFullNameDst) / sizeof(pFullNameDst[0]), newDir);
+     StringCchCatW  (pFullNameDst, sizeof(pFullNameDst) / sizeof(pFullNameDst[0]), L"/");
+     StringCchCatW  (pFullNameDst, sizeof(pFullNameDst) / sizeof(pFullNameDst[0]), pFD->cFileName);
 
      if ( pFD -> dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) {
 
@@ -862,22 +878,24 @@ BOOL CopyDirectory ( LPCWSTR dirSrc, LPCWSTR dirDst ) {
 
  if (   retVal || (  !retVal && GetLastError () == ERROR_ALREADY_EXISTS  )   ) {
 
+   size_t aDirSrcLength;
+   StringCchLengthW (dirSrc, sizeof(dirSrc) / sizeof(dirSrc[0]), &aDirSrcLength);
+
   if (   (  pFD = ( PWIN32_FIND_DATAW )HeapAlloc (
                                        hHeap, 0, sizeof ( WIN32_FIND_DATAW )
                                       )
          ) != NULL &&
          (  pName = ( LPWSTR )HeapAlloc (
-                               hHeap, 0, lstrlenW ( dirSrc ) + WILD_CARD_LEN +
+                               hHeap, 0, aDirSrcLength + WILD_CARD_LEN +
                                sizeof (  L'\x00'  )
                               )
          ) != NULL
   ) {
-
-   lstrcpyW ( pName, dirSrc    );
-   lstrcatW ( pName, WILD_CARD );
+   StringCchCopyW (pName, sizeof(pName) / sizeof(pName[0]), dirSrc);
+   StringCchCatW (pName, sizeof(pName) / sizeof(pName[0]), WILD_CARD);
 
    retVal = TRUE;
-   fFind  = (  hFindFile = FindFirstFileW ( pName, pFD )  ) != INVALID_HANDLE_VALUE;
+   fFind = (hFindFile = FindFirstFileExW(pName, FindExInfoStandard, pFD, FindExSearchNameMatch, NULL, 0)) != INVALID_HANDLE_VALUE;
 
    while ( fFind ) {
   
@@ -885,28 +903,36 @@ BOOL CopyDirectory ( LPCWSTR dirSrc, LPCWSTR dirDst ) {
           pFD -> cFileName[ 0 ] != L'.' &&
           pFD -> cFileName[ 1 ] != L'.'
     ) {
-  
+      size_t aDirSrcLength2;
+      size_t aDirDstLength;
+      size_t aFileNameLength;
+
+      StringCchLengthW (dirSrc, sizeof(dirSrc) / sizeof(dirSrc[0]), &aDirSrcLength2);
+      StringCchLengthW (dirDst, sizeof(dirDst) / sizeof(dirDst[0]), &aDirDstLength);
+      StringCchLengthW (pFD -> cFileName, sizeof(pFD -> cFileName) / sizeof(pFD -> cFileName[0]), &aFileNameLength);
+
      if (   ( pFullNameSrc = ( LPWSTR )HeapAlloc (
                                         hHeap, 0,
-                                        lstrlenW ( dirSrc ) + lstrlenW ( pFD -> cFileName ) +
+                                        aDirSrcLength2 + aFileNameLength +
                                         sizeof (  L'/'  ) + sizeof (  L'\x00'  )
                                        )
             ) == NULL ||
             ( pFullNameDst = ( LPWSTR )HeapAlloc (
                                         hHeap, 0,
-                                        lstrlenW ( dirDst ) + lstrlenW ( pFD -> cFileName ) +
+                                        aDirDstLength + aFileNameLength +
                                         sizeof (  L'/'  ) + sizeof (  L'\x00'  )
                                        )
             ) == NULL
      ) break;
   
-     lstrcpyW ( pFullNameSrc, dirSrc );
-     lstrcatW ( pFullNameSrc, L"/"  );
-     lstrcatW ( pFullNameSrc, pFD -> cFileName );
 
-     lstrcpyW ( pFullNameDst, dirDst );
-     lstrcatW ( pFullNameDst, L"/"  );
-     lstrcatW ( pFullNameDst, pFD -> cFileName );
+     StringCchCopyW (pFullNameSrc, sizeof(pFullNameSrc) / sizeof(pFullNameSrc[0]), dirSrc);
+     StringCchCatW  (pFullNameSrc, sizeof(pFullNameSrc) / sizeof(pFullNameSrc[0]), L"/");
+     StringCchCatW  (pFullNameSrc, sizeof(pFullNameSrc) / sizeof(pFullNameSrc[0]), pFD->cFileName);
+
+     StringCchCopyW (pFullNameDst, sizeof(pFullNameDst) / sizeof(pFullNameDst[0]), dirDst);
+     StringCchCatW  (pFullNameDst, sizeof(pFullNameDst) / sizeof(pFullNameDst[0]), L"/");
+     StringCchCatW  (pFullNameDst, sizeof(pFullNameDst) / sizeof(pFullNameDst[0]), pFD->cFileName);
 
      if ( pFD -> dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) {
 
@@ -915,7 +941,11 @@ BOOL CopyDirectory ( LPCWSTR dirSrc, LPCWSTR dirDst ) {
    
      } else {
 retry:   
-      retVal = CopyFileW ( pFullNameSrc, pFullNameDst, FALSE );
+#ifndef OCCT_UWP
+      retVal = CopyFileW(pFullNameSrc, pFullNameDst, FALSE);
+#else
+      retVal = (CopyFile2(pFullNameSrc, pFullNameDst, FALSE) == S_OK) ? TRUE : FALSE;
+#endif
       if ( ! retVal ) {
       
        if ( _response_dir_proc != NULL ) {

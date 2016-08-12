@@ -317,7 +317,7 @@ Standard_Boolean OSD_FileIterator :: More () {
 
   // make wchar_t string from UTF-8
   TCollection_ExtendedString wcW(wc);
-  myHandle = FindFirstFileW ((const wchar_t*)wcW.ToExtString(), (PWIN32_FIND_DATAW)myData);
+  myHandle = FindFirstFileExW((const wchar_t*)wcW.ToExtString(), FindExInfoStandard, (PWIN32_FIND_DATAW)myData, FindExSearchNameMatch, NULL, 0);
 
   if (  myHandle == INVALID_HANDLE_VALUE  )
   

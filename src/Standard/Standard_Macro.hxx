@@ -169,4 +169,13 @@
 #   endif  // __Standard_DLL
 # endif  // __Standard_API
 
-#endif  
+// Support of Universal Windows Platform
+#if defined(WINAPI_FAMILY) && WINAPI_FAMILY == WINAPI_FAMILY_APP
+ #define OCCT_UWP
+#else
+ #ifdef OCCT_UWP
+   #undef OCCT_UWP
+ #endif
+#endif
+
+#endif

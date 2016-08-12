@@ -839,6 +839,8 @@ void OSD_File::Rewind() {
 # include <tchar.h>
 #endif  // _INC_TCHAR
 
+#include <Strsafe.h>
+
 #if defined(__CYGWIN32__) || defined(__MINGW32__)
 #define VAC
 #endif
@@ -858,15 +860,16 @@ void OSD_File::Rewind() {
 #define OPEN_APPEND 2
 
 void                            _osd_wnt_set_error        ( OSD_Error&, OSD_WhoAmI, ... );
+#ifndef OCCT_UWP
 PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd ( const OSD_Protection&, BOOL, wchar_t* = NULL );
 BOOL                 __fastcall _osd_wnt_sd_to_protection (
                                  PSECURITY_DESCRIPTOR, OSD_Protection&, BOOL
                                 );
 BOOL                 __fastcall _osd_print (const Standard_PCharacter, const wchar_t* );
-
+static int       __fastcall _get_buffer(HANDLE, Standard_PCharacter&, DWORD, BOOL, BOOL);
+#endif
 static void      __fastcall _test_raise ( HANDLE, Standard_CString );
 static Standard_Integer __fastcall _get_line (Standard_PCharacter& buffer, DWORD dwBuffSize, LONG& theSeekPos);
-static int       __fastcall _get_buffer ( HANDLE, Standard_PCharacter&, DWORD, BOOL, BOOL );
 static DWORD     __fastcall _get_access_mask ( OSD_SingleProtection );
 static DWORD     __fastcall _get_dir_access_mask ( OSD_SingleProtection prt );
 static HANDLE    __fastcall _open_file  ( Standard_CString, OSD_OpenMode, DWORD, LPBOOL = NULL );
@@ -942,7 +945,9 @@ int OSD_File::Capture(int theDescr) {
 }
 
 void OSD_File::Rewind() { 
-  SetFilePointer( myFileHandle, 0, NULL, FILE_BEGIN ); 
+  LARGE_INTEGER aDistanceToMove = { 0 };
+  aDistanceToMove.QuadPart = 0;
+  SetFilePointerEx(myFileHandle, aDistanceToMove, NULL, FILE_BEGIN);
 }
 
 // protect against occasional use of myFileHande in Windows code
@@ -952,9 +957,7 @@ void OSD_File::Rewind() {
 // Build a file if it doesn't exist or create again if it already exists
 // ---------------------------------------------------------------------
 
-void OSD_File :: Build (
-                  const OSD_OpenMode Mode, const OSD_Protection& Protect
-                 ) {
+void OSD_File :: Build ( const OSD_OpenMode Mode, const OSD_Protection& Protect) {
 
  TCollection_AsciiString fName;
 
@@ -980,8 +983,11 @@ void OSD_File :: Build (
   _osd_wnt_set_error ( myError, OSD_WFile );
 
  else {
-
+#ifndef OCCT_UWP
   SetProtection ( Protect );
+#else
+  (void)Protect;
+#endif
   myIO |= FLAG_FILE;
 
  }  // end else
@@ -1027,9 +1033,7 @@ void OSD_File :: Open (const OSD_OpenMode Mode, const OSD_Protection& /*Protect*
 // Append to an existing file
 // ---------------------------------------------------------------------
 
-void OSD_File :: Append (
-                  const OSD_OpenMode Mode, const OSD_Protection& Protect
-                 ) {
+void OSD_File :: Append ( const OSD_OpenMode Mode, const OSD_Protection& Protect) {
 
  BOOL                    fNew = FALSE;
  TCollection_AsciiString fName;
@@ -1059,8 +1063,11 @@ void OSD_File :: Append (
    Seek ( 0, OSD_FromEnd );
 
   } else {
-  
-   SetProtection ( Protect );
+#ifndef OCCT_UWP
+    SetProtection ( Protect );
+#else
+    (void)Protect;
+#endif
    myIO |= FLAG_FILE;
   
   }  // end else
@@ -1170,12 +1177,13 @@ void OSD_File :: ReadLine (
 
     } else if ( dwDummy != 0 ) {  // end-of-file reached ?
 
-     if ( peekChar != '\n' )  // if we did not get a <CR><LF> sequence
-    
-     // adjust file position
-
-      SetFilePointer (myFileHandle, -1, NULL, FILE_CURRENT);
-
+      if (peekChar != '\n')  // if we did not get a <CR><LF> sequence
+      {
+        // adjust file position
+        LARGE_INTEGER aDistanceToMove = { 0 };
+        aDistanceToMove.QuadPart = -1;
+        SetFilePointerEx(myFileHandle, aDistanceToMove, NULL, FILE_CURRENT);
+      }
     } else
      myIO |= FLAG_EOF;
 
@@ -1183,13 +1191,15 @@ void OSD_File :: ReadLine (
 
    } else if ( aSeekPos != 0 )
    {
-     SetFilePointer (myFileHandle, aSeekPos, NULL, FILE_CURRENT);
+     LARGE_INTEGER aDistanceToMove = { 0 };
+     aDistanceToMove.QuadPart = aSeekPos;
+     SetFilePointerEx(myFileHandle, aDistanceToMove, NULL, FILE_CURRENT);
    }
 
   }  // end else
    
  } else if ( myIO & FLAG_SOCKET || myIO & FLAG_PIPE || myIO & FLAG_NAMED_PIPE ) {
-
+#ifndef OCCT_UWP
   dwBytesRead = (DWORD)_get_buffer (myFileHandle, cBuffer, 
                                     (DWORD)NByte, TRUE, myIO & FLAG_SOCKET);
 
@@ -1241,7 +1251,7 @@ void OSD_File :: ReadLine (
    delete [] cDummyBuffer ;
 
   }  // end else
-   
+#endif
  } else
 
   RAISE(  "OSD_File :: ReadLine (): incorrect call - file is a directory"  );
@@ -1360,8 +1370,10 @@ void OSD_File :: Seek (
     RAISE(  "OSD_File :: Seek (): invalid parameter"  );
   
   }  // end switch
+  LARGE_INTEGER aDistanceToMove, aNewFilePointer = { 0 };
+  aDistanceToMove.QuadPart = Offset;
 
-  if (SetFilePointer (myFileHandle, (LONG)Offset, NULL, dwMoveMethod) == 0xFFFFFFFF)
+  if (!SetFilePointerEx(myFileHandle, aDistanceToMove, &aNewFilePointer, dwMoveMethod))
 
    _osd_wnt_set_error ( myError, OSD_WFile );
   
@@ -1464,9 +1476,13 @@ typedef struct _osd_wnt_key {
  void OSD_File::BuildTemporary () {
 
  OSD_Protection prt;
- HKEY           hKey;
- TCHAR          tmpPath[ MAX_PATH ];
+ wchar_t        tmpPath[ MAX_PATH ];
  BOOL           fOK = FALSE;
+
+// Windows Registry not supported by UWP
+#ifndef OCCT_UWP
+ HKEY           hKey;
+
  OSD_WNT_KEY    regKey[ 2 ] = {
  
                  { HKEY_LOCAL_MACHINE,
@@ -1488,25 +1504,25 @@ typedef struct _osd_wnt_key {
    DWORD dwType;
    DWORD dwSize = 0;
 
-   if (  RegQueryValueEx (
-          hKey, "TEMP", NULL, &dwType, NULL, &dwSize
+   if (  RegQueryValueExW (
+          hKey, L"TEMP", NULL, &dwType, NULL, &dwSize
          ) == ERROR_SUCCESS
    ) {
   
-    LPTSTR kVal = ( LPTSTR )HeapAlloc (
+     wchar_t* kVal = (wchar_t*)HeapAlloc (
                              GetProcessHeap (), HEAP_ZERO_MEMORY | HEAP_GENERATE_EXCEPTIONS,
-                             dwSize + sizeof ( TCHAR )
+                             dwSize + sizeof (wchar_t)
                             );
 
-     RegQueryValueEx (  hKey, "TEMP", NULL, &dwType, ( LPBYTE )kVal, &dwSize  );
+     RegQueryValueExW (  hKey, L"TEMP", NULL, &dwType, ( LPBYTE )kVal, &dwSize  );
 
      if ( dwType == REG_EXPAND_SZ )
     
-      ExpandEnvironmentStrings ( kVal, tmpPath, MAX_PATH );
+      ExpandEnvironmentStringsW ( kVal, tmpPath, MAX_PATH );
 
      else
 
-      lstrcpy ( tmpPath, kVal );
+       StringCchCopyW (tmpPath, _countof(tmpPath), kVal);
 
     HeapFree (  GetProcessHeap (), 0, ( LPVOID )kVal  );
     fOK = TRUE;
@@ -1520,15 +1536,21 @@ typedef struct _osd_wnt_key {
   if ( fOK ) break;
 
  }  // end for
+#else
+ if (GetTempPathW(_countof(tmpPath), tmpPath))
+   fOK = TRUE;
+#endif
+ if ( !fOK )       StringCchCopyW(tmpPath, _countof(tmpPath), L"./");
 
- if ( !fOK ) lstrcpy (  tmpPath, "./"  );
- 
- GetTempFileName ( tmpPath, "CSF", 0, tmpPath );
+ GetTempFileNameW ( tmpPath, L"CSF", 0, tmpPath );
 
  if ( IsOpen() )
   Close();
 
- SetPath (  OSD_Path ( tmpPath )  );
+ char tmpPathA[MAX_PATH];
+ WideCharToMultiByte(CP_UTF8, 0, tmpPath, -1, tmpPathA, sizeof(tmpPathA), NULL, NULL);
+ SetPath(OSD_Path(tmpPathA));
+
  Build   (  OSD_ReadWrite, prt    );
 }  // end OSD_File :: BuildTemporary
 
@@ -1598,8 +1620,12 @@ void OSD_File :: UnLock () {
  
   LARGE_INTEGER aSize;
   aSize.QuadPart = Size();
-  if (!UnlockFile (myFileHandle, 0, 0, aSize.LowPart, aSize.HighPart))
-   
+
+  OVERLAPPED anOverlappedArea;
+  anOverlappedArea.Offset = 0;
+  anOverlappedArea.OffsetHigh = 0;
+
+  if (!UnlockFileEx(myFileHandle, 0, aSize.LowPart, aSize.HighPart,&anOverlappedArea))
    _osd_wnt_set_error ( myError, OSD_WFile );
 
   ImperativeFlag = Standard_False;
@@ -1651,9 +1677,8 @@ Standard_Size OSD_File::Size()
 // -------------------------------------------------------------------------- 
 // Print contains of a file
 // -------------------------------------------------------------------------- 
-
-void OSD_File :: Print ( const OSD_Printer& WhichPrinter ) {
-
+void OSD_File :: Print ( const OSD_Printer& WhichPrinter) {
+#ifndef OCCT_UWP
  if (myFileHandle != INVALID_HANDLE_VALUE)
 
   RAISE(  "OSD_File :: Print (): incorrect call - file opened"  );
@@ -1668,9 +1693,10 @@ void OSD_File :: Print ( const OSD_Printer& WhichPrinter ) {
                       (const wchar_t*)fNameW.ToExtString ()  )   )
 
   _osd_wnt_set_error ( myError, OSD_WFile );
-
+#else
+  (void)WhichPrinter;
+#endif
 }  // end OSD_File :: Print
-
 // -------------------------------------------------------------------------- 
 // Test if a file is open
 // -------------------------------------------------------------------------- 
@@ -1687,6 +1713,7 @@ Standard_Boolean OSD_File :: IsOpen () const {
 #define __leave return retVal
 #endif
 
+#ifndef OCCT_UWP
 PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd (
                                  const OSD_Protection& prot, BOOL fDir, wchar_t* fName
                                 ) {
@@ -1945,6 +1972,7 @@ leave: ;     // added for VisualAge
  return retVal;
  
 }  // end _osd_wnt_protection_to_sd */
+#endif
 
 #if defined(__CYGWIN32__) || defined(__MINGW32__)
 #undef __try
@@ -1954,17 +1982,13 @@ leave: ;     // added for VisualAge
 
 static void __fastcall _test_raise ( HANDLE hFile, Standard_CString str ) {
 
- Standard_Character buff[ 64 ];
+  if (hFile == INVALID_HANDLE_VALUE) {
+    TCollection_AsciiString buff = "OSD_File :: ";
+    buff += str;
+    buff += " (): wrong access";
 
- if (hFile == INVALID_HANDLE_VALUE) {
- 
-  strcpy (  buff, "OSD_File :: "  );
-  strcat (  buff, str );
-  strcat (  buff, " (): wrong access"  );
-
-  Standard_ProgramError :: Raise ( buff );
- 
- }  // end if
+    Standard_ProgramError::Raise(buff.ToCString());
+  }  // end if
 
 }  // end _test_raise
 
@@ -2006,6 +2030,7 @@ static Standard_Integer __fastcall _get_line (Standard_PCharacter& buffer, DWORD
  return dwBuffSize;
 }  // end _get_line
 
+#ifndef OCCT_UWP
 static int __fastcall _get_buffer (
                         HANDLE hChannel,
                         Standard_PCharacter& buffer, 
@@ -2283,7 +2308,7 @@ static DWORD __fastcall _get_dir_access_mask ( OSD_SingleProtection prt ) {
  return retVal;
 
 }  // end _get_dir_access_mask
-
+#endif
 static HANDLE __fastcall _open_file (
                           Standard_CString fName,
                           OSD_OpenMode oMode,
@@ -2324,12 +2349,24 @@ static HANDLE __fastcall _open_file (
 
  // make wide character string from UTF-8
  TCollection_ExtendedString fNameW(fName, Standard_True);
+#ifndef OCCT_UWP
  retVal = CreateFileW (
            (const wchar_t*) fNameW.ToExtString(), dwDesiredAccess,
            FILE_SHARE_READ | FILE_SHARE_WRITE,
            NULL, dwCreationDistribution, FILE_ATTRIBUTE_NORMAL, NULL
           );
-
+#else
+ CREATEFILE2_EXTENDED_PARAMETERS pCreateExParams = {};
+ pCreateExParams.dwSize = sizeof(CREATEFILE2_EXTENDED_PARAMETERS);
+ pCreateExParams.dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
+ pCreateExParams.lpSecurityAttributes = NULL;
+ pCreateExParams.hTemplateFile = NULL;
+ retVal = CreateFile2 (
+           (const wchar_t*) fNameW.ToExtString(), dwDesiredAccess,
+           FILE_SHARE_READ | FILE_SHARE_WRITE,
+           dwCreationDistribution, &pCreateExParams
+          );
+#endif
  if ( retVal          == INVALID_HANDLE_VALUE &&
       dwOptions       == OPEN_APPEND          &&
       GetLastError () == ERROR_FILE_NOT_FOUND
@@ -2337,12 +2374,24 @@ static HANDLE __fastcall _open_file (
 
  
   dwCreationDistribution = CREATE_ALWAYS;
-  
+#ifndef OCCT_UWP
   retVal = CreateFileW (
             (const wchar_t*) fNameW.ToExtString(), dwDesiredAccess,
             FILE_SHARE_READ | FILE_SHARE_WRITE,
             NULL, dwCreationDistribution, FILE_ATTRIBUTE_NORMAL, NULL
            );
+#else
+  CREATEFILE2_EXTENDED_PARAMETERS pCreateExParams2 = {};
+  pCreateExParams2.dwSize = sizeof(CREATEFILE2_EXTENDED_PARAMETERS);
+  pCreateExParams2.dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
+  pCreateExParams2.lpSecurityAttributes = NULL;
+  pCreateExParams2.hTemplateFile = NULL;
+  retVal = CreateFile2(
+    (const wchar_t*)fNameW.ToExtString(), dwDesiredAccess,
+    FILE_SHARE_READ | FILE_SHARE_WRITE,
+    dwCreationDistribution, &pCreateExParams2
+  );
+#endif
 
   *fNew = TRUE;
 
@@ -2357,7 +2406,6 @@ Standard_Integer __fastcall _get_file_type (
                             ) {
 
  Standard_Integer retVal = 0;
- DWORD            dwType;
  int              fileType;
 
  fileType = (fileHandle == INVALID_HANDLE_VALUE ? 
@@ -2375,10 +2423,11 @@ Standard_Integer __fastcall _get_file_type (
   {
    // make wide character string from UTF-8
    TCollection_ExtendedString fNameW(fName, Standard_True);
-   dwType = GetFileAttributesW ( (const wchar_t*) fNameW.ToExtString() );
-   if (  dwType  != 0xFFFFFFFF  )
 
-    retVal =  dwType & FILE_ATTRIBUTE_DIRECTORY ? FLAG_DIRECTORY : FLAG_FILE;
+   WIN32_FILE_ATTRIBUTE_DATA aFileInfo;
+   if (GetFileAttributesExW((const wchar_t*)fNameW.ToExtString(), GetFileExInfoStandard, &aFileInfo))
+
+    retVal = aFileInfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ? FLAG_DIRECTORY : FLAG_FILE;
 
    else
 
@@ -2410,6 +2459,8 @@ Standard_Integer __fastcall _get_file_type (
 #define __leave return retVal
 #endif
 
+#ifndef OCCT_UWP
+// None of the existing security APIs are supported in a UWP applications
 BOOL __fastcall _osd_wnt_sd_to_protection (
                  PSECURITY_DESCRIPTOR pSD, OSD_Protection& prot, BOOL fDir
                 ) {
@@ -2495,13 +2546,14 @@ leave: ;      // added for VisualAge
  return retVal;
 
 }  // end _osd_wnt_sd_to_protection
+#endif
 
 #if defined(__CYGWIN32__) || defined(__MINGW32__)
 #undef __try
 #undef __finally
 #undef __leave
 #endif
-
+#ifndef OCCT_UWP
 static OSD_SingleProtection __fastcall _get_protection ( DWORD mask ) {
 
  OSD_SingleProtection retVal;
@@ -2717,6 +2769,7 @@ static OSD_SingleProtection __fastcall _get_protection_dir ( DWORD mask ) {
  return retVal;
 
 }  // end _get_protection_dir
+#endif
 
 #if defined(__CYGWIN32__) || defined(__MINGW32__)
 #define __try
@@ -2724,6 +2777,7 @@ static OSD_SingleProtection __fastcall _get_protection_dir ( DWORD mask ) {
 #define __leave return fOK
 #endif
 
+#ifndef OCCT_UWP
 BOOL __fastcall _osd_print (const Standard_PCharacter pName, const wchar_t* fName ) {
 
  BOOL   fOK, fJob;                
@@ -2802,6 +2856,7 @@ leave: ;       // added for VisualAge
  return fOK;
                 
 }  // end _osd_print
+#endif
 
 #if defined(__CYGWIN32__) || defined(__MINGW32__)
 #undef __try

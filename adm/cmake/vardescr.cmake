@@ -108,6 +108,9 @@ set (BUILD_MODULE_MfcSamples_DESCR
 These samples show some possibilities of using OCCT and they can be executed
 with script samples.bat from the installation directory (INSTALL_DIR)")
 
+set (BUILD_MODULE_UwpSample_DESCR
+"Indicates whether OCCT UWP sample should be built together with OCCT.")
+
 set (BUILD_DOC_Overview_DESCR
 "Indicates whether OCCT overview documentation project (Markdown format) should be
 created together with OCCT. It is not built together with OCCT. Checking this options
@@ -144,5 +147,11 @@ set (USE_GLX_DESCR "Indicates whether X11 OpenGl on OSX is used or not")
 set (USE_D3D_DESCR "Indicates whether optional Direct3D wrapper in OCCT visualization module should be build or not")
 
 macro (BUILD_MODULE MODULE_NAME)
-  set (BUILD_MODULE_${MODULE_NAME} ON CACHE BOOL "${BUILD_MODULE_${MODULE_NAME}_DESCR}")
+  set (ENABLE_MODULE TRUE)
+  set (OCCT_MODULES_FOR_UWP FoundationClasses ModelingAlgorithms ModelingData)
+  list (FIND OCCT_MODULES_FOR_UWP ${OCCT_MODULE} CAN_BE_USED_IN_UWP)
+  if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore" AND CAN_BE_USED_IN_UWP EQUAL -1)
+    set (ENABLE_MODULE FALSE)
+  endif()
+  set (BUILD_MODULE_${MODULE_NAME} ${ENABLE_MODULE} CACHE BOOL "${BUILD_MODULE_${MODULE_NAME}_DESCR}")
 endmacro()

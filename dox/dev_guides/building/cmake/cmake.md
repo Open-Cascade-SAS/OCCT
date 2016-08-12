@@ -60,6 +60,10 @@ Once the source and build directories are selected, "Configure" button should be
 
 @figure{/dev_guides/building/cmake/images/cmake_image002.png}
 
+To build OCCT with using Universal Windows Platform (UWP) specify path to toolchain file for cross-compiling <i>d:/occt/adm/templates/uwp.toolchain.config.cmake</i>.
+
+**Note**: Universal Windows Platform (UWP) is supported only on "Visual Studio 14 2015". File <i>d:/occt/samples/xaml/ReadMe.md</i> desribes building procedure of XAML (UWP) sample.
+
 Once "Finish" button is pressed, the first pass of the configuration process is executed. At the end of the process, CMake outputs the list of environment variables which have to be properly specified for successful configuration. 
 
 @figure{/dev_guides/building/cmake/images/cmake_image003.png}

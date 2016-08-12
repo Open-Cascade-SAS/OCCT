@@ -37,9 +37,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SessionPilot,IFSelect_Activator)
 #define MAXCARS 1000
 
 static int initactor = 0;
-static char* trace;
-
 static TCollection_AsciiString nulword;
+
+//#define DEBUG_TRACE
 
 // Nb Maxi de words : cf thewords et method SetCommandLine
 
@@ -57,7 +57,6 @@ static TCollection_AsciiString nulword;
   Add (4,"xsource");
   Add (5,"xstep");
   Add (6,"xnew");
-  trace = getenv("DEBUGMODE");
 }
 
 
@@ -100,7 +99,9 @@ static TCollection_AsciiString nulword;
       if (thenbwords >= MAXWORDS) {  unarg[nc] = val;  nc ++;  continue;  }
       unarg[nc] = '\0';
       thewords(thenbwords).Clear();  thewords(thenbwords).AssignCat(unarg);
-      if (trace) cout<<"thewords("<<thenbwords<<") ="<<unarg<<endl;
+#ifdef DEBUG_TRACE
+      cout<<"thewords("<<thenbwords<<") ="<<unarg<<endl;
+#endif
       thenbwords ++; nc = 0;
       continue;
     }
@@ -111,7 +112,9 @@ static TCollection_AsciiString nulword;
   if (nc > 0) {
     unarg[nc] = '\0'; thewords(thenbwords).Clear();
     thewords(thenbwords).AssignCat(unarg);
-    if (trace) cout<<"thewords("<<thenbwords<<")="<<unarg<<endl<<" .. Fin avec thenbwords="<<thenbwords+1<<endl;
+#ifdef DEBUG_TRACE
+    cout<<"thewords("<<thenbwords<<")="<<unarg<<endl<<" .. Fin avec thenbwords="<<thenbwords+1<<endl;
+#endif
     thenbwords ++;
   }
 /*

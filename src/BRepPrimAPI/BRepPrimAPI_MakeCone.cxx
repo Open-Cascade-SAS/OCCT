@@ -23,31 +23,6 @@
 #include <gp_Dir.hxx>
 #include <Standard_DomainError.hxx>
 
-static gp_Ax2 ConeComputeAxes() { 
-  static Standard_Integer firsttime=1;
-  static Standard_Integer modif=0;
-  static Standard_Real cosa=cos(0.122);
-  static Standard_Real sina=sin(0.122);
-  static Standard_Real ux=1.0;
-  static Standard_Real uy=0.0;
-  
-  if(firsttime) { 
-    modif = getenv("PRIM_CONE") != NULL;
-    firsttime = 0;
-  }
-  if(modif) { 
-    Standard_Real nux = cosa*ux+sina*uy;
-    Standard_Real nuy =-sina*ux+cosa*uy;
-    ux=nux; uy=nuy;
-    return(gp_Ax2(gp::Origin(),gp::DZ(),gp_Dir(ux,uy,0.0)));
-  }
-  else { 
-    return(gp::XOY());
-  }
-}
-
-
-
 //=======================================================================
 //function : BRepPrimAPI_MakeCone
 //purpose  : 
@@ -56,7 +31,7 @@ static gp_Ax2 ConeComputeAxes() {
 BRepPrimAPI_MakeCone::BRepPrimAPI_MakeCone(const Standard_Real R1,
 				   const Standard_Real R2, 
 				   const Standard_Real H) :
-       myCone(ConeComputeAxes(),R1, R2, H)
+       myCone(gp::XOY(),R1, R2, H)
 {
 }
 

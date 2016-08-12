@@ -65,7 +65,7 @@ if (DEFINED CMAKE_BUILD_TYPE AND NOT CMAKE_BUILD_TYPE) # single-configuration ge
 endif()
 
 # enable extended messages of many OCCT algorithms
-if ((SINGLE_GENERATOR AND "${CMAKE_BUILD_TYPE}" STREQUAL "Debug") OR NOT SINGLE_GENERATOR)
+if (((SINGLE_GENERATOR AND "${CMAKE_BUILD_TYPE}" STREQUAL "Debug") OR NOT SINGLE_GENERATOR) AND (NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore"))
   if (NOT BUILD_WITH_DEBUG)
     set (BUILD_WITH_DEBUG OFF CACHE BOOL "${BUILD_WITH_DEBUG_DESCR}")
   endif()
@@ -307,6 +307,15 @@ separate_arguments (BUILD_ADDITIONAL_TOOLKITS)
 
 if (MSVC)
   set (BUILD_MODULE_MfcSamples OFF CACHE BOOL "${BUILD_MODULE_MfcSamples_DESCR}")
+endif()
+
+# uwp sample
+if (MSVC)
+  if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
+    set (BUILD_MODULE_UwpSample OFF CACHE BOOL "${BUILD_MODULE_UwpSample_DESCR}")
+  else()
+    unset (BUILD_MODULE_UwpSample)
+  endif()
 endif()
 
 # whether use optional 3rdparty or not
@@ -647,6 +656,10 @@ if (INSTALL_SAMPLES)
     OCCT_INSTALL_FILE_OR_DIR ("samples/CSharp" "${INSTALL_DIR}/${INSTALL_DIR_SAMPLES}")
     OCCT_INSTALL_FILE_OR_DIR ("samples/mfc" "${INSTALL_DIR}/${INSTALL_DIR_SAMPLES}")
 
+    if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
+      OCCT_INSTALL_FILE_OR_DIR ("samples/xaml" "${INSTALL_DIR}/${INSTALL_DIR_SAMPLES}")
+    endif()
+
     install (FILES "${CMAKE_BINARY_DIR}/env.samples.${SCRIPT_EXT}" DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_SAMPLES}/CSharp" RENAME "env.${SCRIPT_EXT}")
     install (FILES "${CMAKE_BINARY_DIR}/env.samples.${SCRIPT_EXT}" DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_SAMPLES}/mfc/standard" RENAME "env.${SCRIPT_EXT}")
   endif()
@@ -793,6 +806,10 @@ if (BUILD_MODULE_MfcSamples)
   add_subdirectory(samples/mfc/standard/08_HLR)
   add_subdirectory(samples/mfc/standard/09_Animation)
   add_subdirectory(samples/mfc/standard/10_Convert)
+endif()
+
+if (BUILD_MODULE_UwpSample)
+  add_subdirectory(samples/xaml)
 endif()
 
 # Prepare variables for configuration of OpenCASCADE cmake config file

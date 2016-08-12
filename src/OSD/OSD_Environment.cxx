@@ -246,7 +246,9 @@ Standard_Integer OSD_Environment::Error() const
   #pragma warning( disable : 4700 )
 #endif
 
+#ifndef OCCT_UWP
 static void __fastcall _set_error ( OSD_Error&, DWORD );
+#endif
 
 OSD_Environment :: OSD_Environment () {
 
@@ -276,6 +278,7 @@ void OSD_Environment :: SetValue ( const TCollection_AsciiString& Value ) {
 
 TCollection_AsciiString OSD_Environment::Value()
 {
+#ifndef OCCT_UWP
   myValue.Clear();
 
   SetLastError (ERROR_SUCCESS);
@@ -306,6 +309,10 @@ TCollection_AsciiString OSD_Environment::Value()
   }
   myValue = aValue.ToCString();
   return myValue;
+#else
+  myValue = "";
+  return myValue;
+#endif
 }
 
 void OSD_Environment :: SetName ( const TCollection_AsciiString& name ) {
@@ -322,14 +329,18 @@ TCollection_AsciiString OSD_Environment :: Name () const {
 
 void OSD_Environment::Build()
 {
+#ifndef OCCT_UWP
   NCollection_Utf8String aSetVariable = NCollection_Utf8String(myName.ToCString()) + "=" + myValue.ToCString();
   _wputenv (aSetVariable.ToUtfWide().ToCString());
+#endif
 }
 
 void OSD_Environment::Remove()
 {
+#ifndef OCCT_UWP
   NCollection_Utf8String aSetVariable = NCollection_Utf8String(myName.ToCString()) + "=";
   _wputenv (aSetVariable.ToUtfWide().ToCString());
+#endif
 }
 
 Standard_Boolean OSD_Environment :: Failed () const {
@@ -355,6 +366,7 @@ Standard_Integer OSD_Environment :: Error () const {
 
 }  // end OSD_Environment :: Error
 
+#ifndef OCCT_UWP
 static void __fastcall _set_error ( OSD_Error& err, DWORD code ) {
 
  DWORD              errCode;
@@ -377,5 +389,6 @@ static void __fastcall _set_error ( OSD_Error& err, DWORD code ) {
  err.SetValue ( errCode, OSD_WEnvironment, buffer );
 
 }  // end _set_error
+#endif
 
 #endif

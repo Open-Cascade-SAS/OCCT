@@ -57,7 +57,7 @@ void OSD_MemInfo::Update()
   {
     myCounters[anIter] = Standard_Size(-1);
   }
-
+#ifndef OCCT_UWP
 #if defined(_WIN32)
 #if (_WIN32_WINNT >= 0x0500)
   MEMORYSTATUSEX aStatEx;
@@ -166,6 +166,7 @@ void OSD_MemInfo::Update()
 
     myCounters[MemHeapUsage] = aStats.size_in_use;
   }
+#endif
 #endif
 }
 

@@ -30,13 +30,14 @@
     #endif
 #endif
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(OCCT_UWP)
 namespace {
   // for a 64-bit app running under 64-bit Windows, this is FALSE
   static bool isWow64()
   {
     typedef BOOL (WINAPI *LPFN_ISWOW64PROCESS) (HANDLE , PBOOL);
     BOOL bIsWow64 = FALSE;
+
     HMODULE aKern32Module = GetModuleHandleW(L"kernel32");
     LPFN_ISWOW64PROCESS aFunIsWow64 = (aKern32Module == NULL) ? (LPFN_ISWOW64PROCESS )NULL
       : (LPFN_ISWOW64PROCESS)GetProcAddress(aKern32Module, "IsWow64Process");
@@ -62,11 +63,14 @@ Standard_Integer OSD_Parallel::NbLogicalProcessors()
 #ifdef _WIN32
   // GetSystemInfo() will return the number of processors in a data field in a SYSTEM_INFO structure.
   SYSTEM_INFO aSysInfo;
+#ifndef OCCT_UWP
   if ( isWow64() )
   {
     typedef BOOL (WINAPI *LPFN_GSI)(LPSYSTEM_INFO );
+
     HMODULE aKern32 = GetModuleHandleW(L"kernel32");
     LPFN_GSI aFuncSysInfo = (LPFN_GSI )GetProcAddress(aKern32, "GetNativeSystemInfo");
+
     // So, they suggest 32-bit apps should call this instead of the other in WOW64
     if ( aFuncSysInfo != NULL )
     {
@@ -81,6 +85,9 @@ Standard_Integer OSD_Parallel::NbLogicalProcessors()
   {
     GetSystemInfo(&aSysInfo);
   }
+#else
+  GetNativeSystemInfo(&aSysInfo);
+#endif
   aNumLogicalProcessors = aSysInfo.dwNumberOfProcessors;
 #else
   // These are the choices. We'll check number of processors online.

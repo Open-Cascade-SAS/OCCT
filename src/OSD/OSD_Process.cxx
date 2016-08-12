@@ -210,7 +210,7 @@ OSD_Process :: OSD_Process () {
 
 Standard_Integer OSD_Process::Spawn (const TCollection_AsciiString& cmd,
 			    const Standard_Boolean ShowWindow /* = Standard_True */) {
-
+#ifndef OCCT_UWP
  STARTUPINFO         si;
  PROCESS_INFORMATION pi;
  DWORD aRes = 0;
@@ -248,6 +248,11 @@ Standard_Integer OSD_Process::Spawn (const TCollection_AsciiString& cmd,
  }  // end else
 
  return aRes;
+#else
+  (void)cmd;
+  (void)ShowWindow;
+  return 0;
+#endif
 }  // end OSD_Process :: Spawn
 
 void OSD_Process :: TerminalType ( TCollection_AsciiString& Name ) {
@@ -273,6 +278,7 @@ Quantity_Date OSD_Process :: SystemDate () {
 
 TCollection_AsciiString OSD_Process :: UserName () 
 {
+#ifndef OCCT_UWP
 	Standard_PCharacter pBuff = new char[UNLEN + 1];
 	DWORD                   dwSize = UNLEN + 1;
 	TCollection_AsciiString retVal;
@@ -287,10 +293,13 @@ TCollection_AsciiString OSD_Process :: UserName ()
 	}
 	delete [] pBuff;
 	return retVal;
+#else
+  return "";
+#endif
 }  // end OSD_Process :: UserName
 
 Standard_Boolean OSD_Process :: IsSuperUser () {
-
+#ifndef OCCT_UWP
  Standard_Boolean retVal = FALSE;
  PSID             pSIDadmin;
  HANDLE           hProcessToken = INVALID_HANDLE_VALUE;
@@ -327,7 +336,9 @@ Standard_Boolean OSD_Process :: IsSuperUser () {
  if ( pTKgroups     != NULL                 ) FreeTokenInformation ( pTKgroups );
 
  return retVal;
-
+#else
+ return FALSE;
+#endif
 }  // end OSD_Process :: IsSuperUser
 
 Standard_Integer OSD_Process :: ProcessId () {
@@ -337,9 +348,8 @@ Standard_Integer OSD_Process :: ProcessId () {
 }  // end OSD_Process :: ProcessId
 
 OSD_Path OSD_Process :: CurrentDirectory () {
-
   OSD_Path anCurrentDirectory;
-
+#ifndef OCCT_UWP
   DWORD dwSize = PATHLEN + 1;
   Standard_WideChar* pBuff = new wchar_t[dwSize];
 
@@ -353,6 +363,7 @@ OSD_Path OSD_Process :: CurrentDirectory () {
     _osd_wnt_set_error ( myError, OSD_WProcess );
  
   delete[] pBuff;
+#endif
   return anCurrentDirectory;
 }  // end OSD_Process :: CurrentDirectory
 

@@ -53,7 +53,6 @@
 #include <gp_GTrsf2d.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_TrsfForm.hxx>
-#include <OSD_Chronometer.hxx>
 #include <ProjLib_ComputeApprox.hxx>
 #include <ProjLib_ComputeApproxOnPolarSurface.hxx>
 #include <Standard_NoSuchObject.hxx>

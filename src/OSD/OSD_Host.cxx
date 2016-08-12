@@ -200,7 +200,7 @@ static TCollection_AsciiString interAddr;
 static Standard_Integer        memSize;
 
 OSD_Host :: OSD_Host () {
-
+#ifndef OCCT_UWP
  DWORD              nSize;
  Standard_Character szHostName[ MAX_COMPUTERNAME_LENGTH + 1 ];
  char*              hostAddr = 0;
@@ -280,7 +280,7 @@ OSD_Host :: OSD_Host () {
  if ( fInit )
 
   myName = hostName;
-
+#endif
 }  // end constructor
 
 TCollection_AsciiString OSD_Host :: SystemVersion () {

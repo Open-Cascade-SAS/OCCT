@@ -23,32 +23,6 @@
 #include <gp_Dir.hxx>
 #include <Standard_DomainError.hxx>
 
-static gp_Ax2 CylinderComputeAxes() { 
-  static Standard_Integer firsttime=1;
-  static Standard_Integer modif=0;
-  static Standard_Real cosa=cos(0.1);
-  static Standard_Real sina=sin(0.1);
-  static Standard_Real ux=1.0;
-  static Standard_Real uy=0.0;
-  
-  if(firsttime) { 
-    modif = getenv("PRIM_CYLINDER") != NULL;
-    firsttime = 0;
-  }
-  if(modif) { 
-    Standard_Real nux = cosa*ux+sina*uy;
-    Standard_Real nuy =-sina*ux+cosa*uy;
-    ux=nux; uy=nuy;
-    return(gp_Ax2(gp::Origin(),gp::DZ(),gp_Dir(ux,uy,0.0)));
-  }
-  else { 
-    return(gp::XOY());
-  }
-
-}
-
-
-
 //=======================================================================
 //function : BRepPrimAPI_MakeCylinder
 //purpose  : 
@@ -56,7 +30,7 @@ static gp_Ax2 CylinderComputeAxes() {
 
 BRepPrimAPI_MakeCylinder::BRepPrimAPI_MakeCylinder(const Standard_Real R,
 					   const Standard_Real H) :
-       myCylinder(CylinderComputeAxes(), R , H)
+       myCylinder(gp::XOY(), R , H)
 {
 }
 

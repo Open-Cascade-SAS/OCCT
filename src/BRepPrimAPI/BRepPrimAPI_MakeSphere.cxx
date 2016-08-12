@@ -24,37 +24,13 @@
 #include <gp_Pnt.hxx>
 #include <Standard_DomainError.hxx>
 
-static gp_Ax2 SphereComputeAxes() { 
-  static Standard_Integer firsttime=1;
-  static Standard_Integer modif=0;
-  static Standard_Real cosa=cos(0.111);
-  static Standard_Real sina=sin(0.111);
-  static Standard_Real ux=1.0;
-  static Standard_Real uy=0.0;
-  
-  if(firsttime) { 
-    modif = getenv("PRIM_SPHERE") != NULL;
-    firsttime = 0;
-  }
-  if(modif) { 
-    Standard_Real nux = cosa*ux+sina*uy;
-    Standard_Real nuy =-sina*ux+cosa*uy;
-    ux=nux; uy=nuy;
-    return(gp_Ax2(gp::Origin(),gp::DZ(),gp_Dir(ux,uy,0.0)));
-  }
-  else { 
-    return(gp::XOY());
-  }
-}
-
-
 //=======================================================================
 //function : BRepPrimAPI_MakeSphere
 //purpose  : 
 //=======================================================================
 
 BRepPrimAPI_MakeSphere::BRepPrimAPI_MakeSphere(const Standard_Real R) :
-       mySphere(SphereComputeAxes(),R)
+       mySphere(gp::XOY(),R)
 {
 }
 

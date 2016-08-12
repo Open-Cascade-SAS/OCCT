@@ -100,11 +100,6 @@
 #include <TopTools_ListOfShape.hxx>
 
 #include <stdio.h>
-#ifdef OCCT_DEBUG
-// For measurements.
-#include <OSD_Chronometer.hxx>
-//static OSD_Chronometer appclock;
-#endif
 
 //#define DRAW 
 

@@ -20,7 +20,6 @@
 #include <CDF_MetaDataDriverError.hxx>
 #include <CDF_Session.hxx>
 #include <CDF_StoreList.hxx>
-#include <CDF_Timer.hxx>
 #include <CDM_Document.hxx>
 #include <CDM_MetaData.hxx>
 #include <CDM_ReferenceIterator.hxx>
@@ -28,9 +27,7 @@
 #include <PCDM_Document.hxx>
 #include <PCDM_StorageDriver.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <Standard_Macro.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(CDF_StoreList,Standard_Transient)
@@ -112,15 +109,9 @@ PCDM_StoreStatus CDF_StoreList::Store (Handle(CDM_MetaData)& aMetaData, TCollect
           }
           TCollection_ExtendedString theName=theMetaDataDriver->BuildFileName(theDocument);
 
-          CDF_Timer theTimer;
           aDocumentStorageDriver->Write(theDocument,theName);
           status = aDocumentStorageDriver->GetStoreStatus();
-
-          theTimer.ShowAndRestart("Driver->Write: ");
-
           aMetaData = theMetaDataDriver->CreateMetaData(theDocument,theName);
-          theTimer.ShowAndStop("metadata creating: ");
-
           theDocument->SetMetaData(aMetaData);
 
           CDM_ReferenceIterator it(theDocument);

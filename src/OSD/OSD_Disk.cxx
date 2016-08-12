@@ -162,6 +162,8 @@ Standard_Integer OSD_Disk::Error()const{
 #include <OSD_OSDError.hxx>
 #include <OSD_Path.hxx>
 #include <Standard_ProgramError.hxx>
+#include <NCollection_String.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 #include <windows.h>
 
@@ -170,14 +172,22 @@ void _osd_wnt_set_error ( OSD_Error&, OSD_WhoAmI, ... );
 static void __fastcall _osd_wnt_set_disk_name ( TCollection_AsciiString&, const OSD_Path& );
 
 OSD_Disk :: OSD_Disk () {
-
- TCHAR cwd[ MAX_PATH ];
-
- GetCurrentDirectory ( MAX_PATH, cwd );
-
- cwd[ 3 ] = TEXT( '\x00' );
- DiskName = cwd;
-
+ DWORD aBuffLen = GetCurrentDirectoryW(0, NULL);
+ wchar_t* aBuff = new wchar_t[size_t(aBuffLen) + 1];
+ GetCurrentDirectoryW(aBuffLen, aBuff);
+ aBuff[aBuffLen - 1] = (aBuff[aBuffLen - 2] == L'\\') ? L'\0' : L'\\';
+ aBuff[aBuffLen] = L'\0';
+ if (aBuffLen > 3 && aBuff[0] != L'\\')
+ {
+   aBuff[3] = L'\0';
+   NCollection_String aFolder(aBuff);
+   DiskName = aFolder.ToCString();
+   delete[] aBuff;
+ }
+ else
+ {
+   DiskName = "";
+ }
 }  // end constructor ( 1 )
 
 OSD_Disk :: OSD_Disk ( const OSD_Path& Name ) {
@@ -223,8 +233,8 @@ Standard_Integer OSD_Disk :: DiskSize () {
   ULARGE_INTEGER lpTotalNumberOfBytes;    // receives the number of bytes on disk
   ULARGE_INTEGER lpTotalNumberOfFreeBytes;// receives the free bytes on disk
 
-
-  if (!GetDiskFreeSpaceEx (DiskName.ToCString (),
+  TCollection_ExtendedString DiskNameW(DiskName);
+  if (!GetDiskFreeSpaceExW ((const wchar_t*)DiskNameW.ToExtString(),
 			   &lpFreeBytesAvailableToCaller,
 			   &lpTotalNumberOfBytes,
 			   &lpTotalNumberOfFreeBytes))
@@ -261,8 +271,8 @@ Standard_Integer OSD_Disk :: DiskFree () {
   ULARGE_INTEGER lpTotalNumberOfFreeBytes;// receives the free bytes on disk
 
   // if (   !GetDiskFreeSpace (  DiskName.ToCString (), &dwSpC, &dwBpS, &dwFC, &dwC  )   )
-
-  if (!GetDiskFreeSpaceEx (DiskName.ToCString (),
+  TCollection_ExtendedString DiskNameW(DiskName);
+  if (!GetDiskFreeSpaceExW((const wchar_t*)DiskNameW.ToExtString(),
 			   &lpFreeBytesAvailableToCaller,
 			   &lpTotalNumberOfBytes,
 			   &lpTotalNumberOfFreeBytes))
@@ -349,26 +359,26 @@ static void __fastcall _osd_wnt_set_disk_name ( TCollection_AsciiString& result,
   dir = path.Trek ();
   
   if (   (  j = dir.UsefullLength ()  ) > 2 &&
-         dir.Value ( 1 ) == TEXT( '|' )     &&
-         dir.Value ( 2 ) == TEXT( '|' )
+         dir.Value ( 1 ) == '|'     &&
+         dir.Value ( 2 ) == '|'
   ) {
   
-   dir.SetValue (  1, TEXT( '\\' )  );
-   dir.SetValue (  2, TEXT( '\\' )  );
+   dir.SetValue (  1, '\\');
+   dir.SetValue (  2, '\\');
    
    for ( i = 3, k = 0; i <= j; ++i )
 
-    if (  dir.Value ( i ) == TEXT( '|' )  ) {
+    if (  dir.Value ( i ) == '|') {
     
      if ( k == 0 ) {
 
-      dir.SetValue (  i, TEXT( "\\" )  );     
+      dir.SetValue (  i, '\\');
       ++k;
       continue; 
      
      }  // end if
 
-     dir.SetValue (  i, TEXT( "\\" )  );
+     dir.SetValue (  i, '\\');
      break;
      
     }  /* end if */
@@ -381,14 +391,14 @@ static void __fastcall _osd_wnt_set_disk_name ( TCollection_AsciiString& result,
 
      else {
 
-      dir += TEXT( "\\" );
+      dir += '\\';
       dir += path.Name ();
       dir += path.Extension ();
       
      }  // end else    
     }
 
-    if (   dir.Value (  dir.UsefullLength ()  ) != TEXT( '\\' )   ) dir += TEXT( "\\" );
+    if (   dir.Value (  dir.UsefullLength ()  ) != '\\') dir += '\\';
 
     result = dir;
   
@@ -398,7 +408,7 @@ badPath:
 
   }  // end else
  
- } else result += TEXT( "/" );
+ } else result += '/';
 
 }  // end _osd_set_disk_name
 

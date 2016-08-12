@@ -71,6 +71,7 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
 #ifdef OCCT_DEBUG
+#include <OSD_Chronometer.hxx>
 extern Standard_Boolean ChFi3d_GettraceCHRON();
 extern Standard_Real  t_computedata ,t_completedata; 
                     

@@ -161,7 +161,6 @@
 #include <ChFi3d_Builder_0.hxx>
 
 #ifdef OCCT_DEBUG
-#include <OSD_Chronometer.hxx>
 extern Standard_Boolean ChFi3d_GetcontextFORCEBLEND(); 
 extern Standard_Boolean ChFi3d_GettraceDRAWINT();
 extern Standard_Boolean ChFi3d_GettraceDRAWENLARGE();
@@ -169,8 +168,6 @@ extern Standard_Boolean ChFi3d_GettraceDRAWSPINE();
 extern Standard_Real  t_sameparam, t_batten;
 extern void ChFi3d_SettraceDRAWINT(const Standard_Boolean b);
 extern void ChFi3d_SettraceDRAWSPINE(const Standard_Boolean b);
-extern void ChFi3d_InitChron(OSD_Chronometer& ch);
-extern void ChFi3d_ResultChron(OSD_Chronometer & ch,Standard_Real& time);
 #endif
 
 #include <stdio.h>

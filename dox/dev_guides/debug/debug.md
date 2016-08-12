@@ -35,6 +35,8 @@ This feature can be activated by defining environment variable *CSF_DEBUG_BOP*, 
 
 The diagnostic code checks validity of the input arguments and the result of each Boolean operation. When an invalid situation is detected, the report consisting of argument shapes and a DRAW script to reproduce the problematic operation is saved to the directory pointed by *CSF_DEBUG_BOP*.
 
+Note that this feature does not applicable for UWP build.
+
 @section occt_debug_call Functions for calling from debugger
 
 Modern interactive debuggers provide the possibility to execute application code at a program break point. This feature can be used to analyse the temporary objects available only in the context of the debugged code. OCCT provides several global functions that can be used in this way.

@@ -13,6 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <Standard_MMgrOpt.hxx>
 #include <Standard_OutOfMemory.hxx>
 #include <Standard_Assert.hxx>
@@ -20,9 +24,7 @@
 #include <stdio.h>
 #include <errno.h>
 
-#ifdef _WIN32
-# include <windows.h>
-#else
+#ifndef _WIN32
 # include <sys/mman.h>    /* mmap() */
 #endif
 
@@ -32,6 +34,9 @@
 extern "C" int getpagesize() ;
 #endif
 
+#ifdef _WIN32
+#include <Strsafe.h>
+#endif
 //======================================================================
 // Assumptions
 //======================================================================
@@ -752,10 +757,16 @@ retry:
         goto retry;
       // if nothing helps, make error message and raise exception
       const int BUFSIZE=1024;
-      char message[BUFSIZE];
-      if ( FormatMessage (FORMAT_MESSAGE_FROM_SYSTEM, 0, GetLastError(), 0, message, BUFSIZE-1, 0) <=0 )
-        strcpy (message, "Standard_MMgrOpt::AllocMemory() failed to mmap");
-      Standard_OutOfMemory::Raise (message);
+
+      wchar_t message[BUFSIZE];
+
+      if ( FormatMessageW (FORMAT_MESSAGE_FROM_SYSTEM, 0, GetLastError(), 0,
+        message, BUFSIZE-1, 0) <=0 )
+        StringCchCopyW(message, _countof(message), L"Standard_MMgrOpt::AllocMemory() failed to mmap");
+
+      char messageA[BUFSIZE];
+      WideCharToMultiByte(CP_UTF8, 0, message, -1, messageA, sizeof(messageA), NULL, NULL);
+      Standard_OutOfMemory::Raise(messageA);
     }
 
     // record map handle in the beginning

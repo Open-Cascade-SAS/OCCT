@@ -33,13 +33,13 @@
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <gp_Ax1.hxx>
-#include <OSD_Chronometer.hxx>
 
 #ifdef DRAW
 #include <DBRep.hxx>
 #endif
 
 #ifdef OCCT_DEBUG
+#include <OSD_Chronometer.hxx>
 OSD_Chronometer simul,elspine,chemine;
 #endif
 
@@ -169,6 +169,7 @@ void ChFi3d_SetcontextNOOPT(const Standard_Boolean b)
 Standard_Boolean ChFi3d_GetcontextNOOPT() 
 { return ChFi3d_contextNOOPT; }
 
+#ifdef OCCT_DEBUG
 // ***********************************************
 //    initialization and result of a chrono 
 //************************************************
@@ -186,7 +187,7 @@ Standard_EXPORT void ChFi3d_ResultChron( OSD_Chronometer & ch,
     ch.Show(tch);
     time=time +tch;
 }
-
+#endif
 
 //==============================================================
 // function : ChFi3d_CheckSurfData

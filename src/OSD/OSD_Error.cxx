@@ -449,6 +449,7 @@ void OSD_Error::Perror() {
 #include <TCollection_ExtendedString.hxx>
 
 #include <windows.h>
+#include <Strsafe.h>
 
 typedef struct _error_table {
 
@@ -570,82 +571,60 @@ OSD_Error :: OSD_Error () :
 
 void OSD_Error :: Perror () {
 
- Standard_Character buff[ 32 ];
- Standard_CString   ptr;
+ wchar_t buff[32];
 
-  lstrcpy (  buff, "Error ( "  );
+  StringCchCopyW(buff, _countof(buff), L"Error ( ");
 
   switch ( myCode ) {
   
    case OSD_WDirectoryIterator:
-
-    ptr = "OSD_DirectoryIterator";
-
+     StringCchCatW(buff, _countof(buff), L"OSD_DirectoryIterator");
    break;
 
    case OSD_WDirectory:
-
-    ptr = "OSD_Directory";
-
+    StringCchCatW(buff, _countof(buff), L"OSD_Directory");
    break;
 
    case OSD_WFileIterator:
-
-    ptr = "OSD_FileIterator";
-
+    StringCchCatW(buff, _countof(buff), L"OSD_FileIterator");
    break;
 
    case OSD_WFile:
-  
-    ptr = "OSD_File";
-
+    StringCchCatW(buff, _countof(buff), L"OSD_File");
    break;
 
    case OSD_WFileNode:
-
-    ptr = "OSD_FileNode";
-
+    StringCchCatW(buff, _countof(buff), L"OSD_FileNode");
    break;
 
    case OSD_WHost:
-
-    ptr = "OSD_Host";
-
+    StringCchCatW(buff, _countof(buff), L"OSD_Host");
    break;
 
    case OSD_WProcess:
-
-    ptr = "OSD_Environment";
-
+    StringCchCatW(buff, _countof(buff), L"OSD_Environment");
    break;
 
    case OSD_WEnvironmentIterator:
-
-    ptr = "OSD_EnvironmentIterator";
-
+     StringCchCatW(buff, _countof(buff), L"OSD_EnvironmentIterator");
    break;
 
    case OSD_WEnvironment:
-
-    ptr = "OSD_Environment";
-
+     StringCchCatW(buff, _countof(buff), L"OSD_Environment");
    break;
 
    case OSD_WDisk:
-
-    ptr = "OSD_Disk";
-
+     StringCchCatW(buff, _countof(buff), L"OSD_Disk");
    break;
 
    default:
-
-    ptr = "Unknown";
+     StringCchCatW(buff, _countof(buff), L"Unknown");
 
   }  // end switch
 
-  lstrcat ( buff, ptr );
-  lstrcat (  buff, " )"  );
-  std::cerr << buff;
+  StringCchCatW(buff, _countof(buff), L" )");
+
+  std::wcerr << buff;
  
  std::cerr << myMessage.ToCString() << std::endl << std::flush;
 

@@ -136,10 +136,15 @@ static inline __int64 EncodeFILETIME (PFILETIME pFt)
 //=======================================================================
 void OSD_Chronometer::GetProcessCPU (Standard_Real& UserSeconds, Standard_Real& SystemSeconds)
 {
+#ifndef OCCT_UWP
   FILETIME ftStart, ftExit, ftKernel, ftUser;
   ::GetProcessTimes (GetCurrentProcess(), &ftStart, &ftExit, &ftKernel, &ftUser);
   UserSeconds   = 0.0000001 * EncodeFILETIME (&ftUser);
   SystemSeconds = 0.0000001 * EncodeFILETIME (&ftKernel);
+#else
+  UserSeconds = 0.0;
+  SystemSeconds = 0.0;
+#endif
 }
 
 //=======================================================================
@@ -148,10 +153,15 @@ void OSD_Chronometer::GetProcessCPU (Standard_Real& UserSeconds, Standard_Real& 
 //=======================================================================
 void OSD_Chronometer::GetThreadCPU (Standard_Real& UserSeconds, Standard_Real& SystemSeconds)
 {
+#ifndef OCCT_UWP
   FILETIME ftStart, ftExit, ftKernel, ftUser;
   ::GetThreadTimes (GetCurrentThread(), &ftStart, &ftExit, &ftKernel, &ftUser);
   UserSeconds   = 0.0000001 * EncodeFILETIME (&ftUser);
   SystemSeconds = 0.0000001 * EncodeFILETIME (&ftKernel);
+#else
+  UserSeconds = 0.0;
+  SystemSeconds = 0.0;
+#endif
 }
 
 #endif /* _WIN32 */

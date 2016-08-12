@@ -38,12 +38,6 @@
 #include <TColgp_Array1OfVec.hxx>
 #include <TColgp_Array1OfVec2d.hxx>
 
-#include <OSD_Chronometer.hxx>
-
-static OSD_Chronometer chr1;
-
-
-
 static AppParCurves_Constraint FirstConstraint
   (const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
    const Standard_Integer FirstPoint)

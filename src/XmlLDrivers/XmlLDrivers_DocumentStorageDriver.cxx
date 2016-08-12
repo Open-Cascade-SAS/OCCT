@@ -200,11 +200,12 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument (const Ha
     "CSF_XmlOcafResource",
     "CASROOT"
   };
-  TCollection_AsciiString aResourceDir = "";
-  aResourceDir = getenv (aCSFVariable[0]);
+  OSD_Environment anEnv (aCSFVariable[0]);
+  TCollection_AsciiString aResourceDir = anEnv.Value();
   if (aResourceDir.IsEmpty()) {
     // now try by CASROOT
-    aResourceDir = getenv (aCSFVariable[1]);
+    OSD_Environment anEnv2(aCSFVariable[1]);
+    aResourceDir = anEnv2.Value();
     if ( !aResourceDir.IsEmpty() ) {
       aResourceDir += "/src/XmlOcafResource" ;
       aToSetCSFVariable = Standard_True; //CSF variable to be set later

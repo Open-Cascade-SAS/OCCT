@@ -69,7 +69,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Sphere.hxx>
-#include <OSD_Chronometer.hxx>
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
@@ -92,14 +91,20 @@
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 
+#ifdef OCCT_DEBUG
+#include <OSD_Chronometer.hxx>
+#endif
+
 #include <stdio.h>
 // include - all hxx,
 //         - all small static functions.
 //======================== START STATIC FUNCTIONS ============
 // variables for performance 
 Standard_Real t_mkcurve;
+#ifdef OCCT_DEBUG
 extern void ChFi3d_InitChron(OSD_Chronometer& ch);
 extern void ChFi3d_ResultChron(OSD_Chronometer & ch, Standard_Real&    time);
+#endif
 #ifdef DRAW
 static Standard_Boolean Affich = Standard_False;
 static char name[100];

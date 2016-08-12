@@ -35,7 +35,6 @@
 #include <gp_Pnt2d.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
-#include <OSD_Chronometer.hxx>
 #include <Precision.hxx>
 #include <Standard_Failure.hxx>
 #include <TCollection_AsciiString.hxx>

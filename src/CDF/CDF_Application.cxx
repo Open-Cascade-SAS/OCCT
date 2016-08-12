@@ -20,7 +20,6 @@
 #include <CDF_Directory.hxx>
 #include <CDF_MetaDataDriver.hxx>
 #include <CDF_Session.hxx>
-#include <CDF_Timer.hxx>
 #include <CDM_CanCloseStatus.hxx>
 #include <CDM_Document.hxx>
 #include <CDM_MetaData.hxx>
@@ -99,11 +98,8 @@ Handle(CDM_Document) CDF_Application::Retrieve(const TCollection_ExtendedString&
 Handle(CDM_Document)  CDF_Application::Retrieve(const TCollection_ExtendedString& aFolder, 
 				     const TCollection_ExtendedString& aName,
 				     const TCollection_ExtendedString& aVersion,
-				     const Standard_Boolean UseStorageConfiguration) {
-#ifdef OCCT_DEBUG
-  CDF_Timer theTimer;
-#endif
-
+				     const Standard_Boolean UseStorageConfiguration)
+{
   Handle(CDM_MetaData) theMetaData; 
   
   if(aVersion.Length() == 0) 
@@ -111,28 +107,14 @@ Handle(CDM_Document)  CDF_Application::Retrieve(const TCollection_ExtendedString
   else 
     theMetaData=theMetaDataDriver->MetaData(aFolder,aName,aVersion);
 
-#ifdef OCCT_DEBUG
-  theTimer.ShowAndRestart("Getting MetaData: ");
-#endif
-
   CDF_TypeOfActivation theTypeOfActivation=TypeOfActivation(theMetaData);
   Handle(CDM_Document) theDocument=Retrieve(theMetaData,UseStorageConfiguration,Standard_False);
-
-#ifdef OCCT_DEBUG
-  theTimer.ShowAndRestart("Creating Transient: ");
-#endif
 
   CDF_Session::CurrentSession()->Directory()->Add(theDocument);
   Activate(theDocument,theTypeOfActivation);
 
-#ifdef OCCT_DEBUG
-  theTimer.ShowAndStop("Activate: ");
-#endif
-
   theDocument->Open(this);
   return theDocument;
-
-
 }
 
 //=======================================================================
@@ -150,24 +132,12 @@ PCDM_ReaderStatus CDF_Application::CanRetrieve(const TCollection_ExtendedString&
 //=======================================================================
 PCDM_ReaderStatus CDF_Application::CanRetrieve(const TCollection_ExtendedString&  aFolder, const TCollection_ExtendedString&  aName, const TCollection_ExtendedString&  aVersion) {
   
-#ifdef OCCT_DEBUG
-  CDF_Timer theTimer;
-#endif
-
   if (!theMetaDataDriver->Find(aFolder,aName,aVersion))
     return PCDM_RS_UnknownDocument;
   else if (!theMetaDataDriver->HasReadPermission(aFolder,aName,aVersion))
     return PCDM_RS_PermissionDenied;
   else {
-#ifdef OCCT_DEBUG
-    theTimer.ShowAndRestart("theMetaDataDriver->Find: ");
-#endif
-
     Handle(CDM_MetaData) theMetaData = theMetaDataDriver->MetaData(aFolder,aName,aVersion);
-
-#ifdef OCCT_DEBUG
-    theTimer.ShowAndStop("Getting MetaData: ");
-#endif
 
     if(theMetaData->IsRetrieved()) {
       return theMetaData->Document()->IsModified()
@@ -199,10 +169,7 @@ PCDM_ReaderStatus CDF_Application::CanRetrieve(const TCollection_ExtendedString&
     }
   }
   return PCDM_RS_OK;
-  
 }
-
-
 
 //=======================================================================
 //function : Activate

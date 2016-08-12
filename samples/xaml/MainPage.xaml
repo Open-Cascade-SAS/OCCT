@@ -1,0 +1,47 @@
+<Page
+  x:Class="uwp.MainPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:local="using:uwp"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  mc:Ignorable="d">
+
+  <!-- Common grid-->
+  <Grid x:Name="contentPanel" HorizontalAlignment="Center" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" MinWidth="800" MinHeight="800">
+    <Grid.RowDefinitions>
+      <RowDefinition MinHeight="40" MaxHeight="40"/>
+      <RowDefinition MinHeight="30" MaxHeight="30"/>
+      <RowDefinition MinHeight="30"/>
+    </Grid.RowDefinitions>
+
+    <!-- Grid for buttons (locates at first row of Common grid)-->
+    <Grid x:Name="buttonPanel" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Grid.Row="0">
+      <Grid.RowDefinitions>
+        <RowDefinition MinHeight="40"/>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition MinWidth="190"/>
+        <ColumnDefinition MinWidth="190"/>
+        <ColumnDefinition MinWidth="190"/>
+        <ColumnDefinition MinWidth="190"/>
+        <ColumnDefinition MinWidth="190"/>
+      </Grid.ColumnDefinitions>
+      <Button x:Name="offset"  MaxHeight="30" MinHeight="30" MaxWidth="180" MinWidth="180" Content="Test offset"                 Grid.Row="0" Grid.Column="0" Click="OnClickOffset"/>
+      <Button x:Name="mesh"    MaxHeight="30" MinHeight="30" MaxWidth="180" MinWidth="180" Content="Test mesh"                   Grid.Row="0" Grid.Column="1" Click="OnClickMesh"/>
+      <Button x:Name="boolean" MaxHeight="30" MinHeight="30" MaxWidth="180" MinWidth="180" Content="Test boolean operation"      Grid.Row="0" Grid.Column="2" Click="OnClickBoolean"/>
+      <Button x:Name="tmpdir"  MaxHeight="30" MinHeight="30" MaxWidth="180" MinWidth="180" Content="Create temp file"            Grid.Row="0" Grid.Column="3" Click="OnClickBuildTemporary"/>
+      <Button x:Name="de"      MaxHeight="30" MinHeight="30" MaxWidth="180" MinWidth="180" Content="Test DataExchange"           Grid.Row="0" Grid.Column="4" Click="OnClickDataExchange"/>
+    </Grid>
+
+    <!-- TextBlock for label -->
+    <StackPanel Grid.Row="1"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+      <TextBlock Text="Output:" HorizontalAlignment="Left" Grid.Row="1"/>
+    </StackPanel>
+
+    <!-- TextBlock for output information -->
+    <StackPanel Grid.Row="2"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+      <TextBlock x:Name="Output_TextBlock" Text="" HorizontalAlignment="Left" Grid.Row="2"/>
+    </StackPanel>
+  </Grid>
+</Page>

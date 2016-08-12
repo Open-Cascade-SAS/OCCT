@@ -36,6 +36,12 @@
   extern "C" int posix_memalign (void** thePtr, size_t theAlign, size_t theSize);
 #endif
 
+// There is no support for environment variables in UWP
+// OSD_Environment could not be used here because of cyclic dependency
+#ifdef OCCT_UWP
+#define getenv(x) NULL
+#endif
+
 #ifndef OCCT_MMGT_OPT_DEFAULT
 #define OCCT_MMGT_OPT_DEFAULT 0
 #endif

@@ -57,13 +57,14 @@ public:
   
   //! Copies <me> to another FileNode
   Standard_EXPORT void Copy (const OSD_Path& ToPath);
-  
+
+  // None of the existing security APIs are supported in a UWP applications
   //! Returns access mode of <me>.
   Standard_EXPORT OSD_Protection Protection();
   
   //! Changes protection of the FileNode
   Standard_EXPORT void SetProtection (const OSD_Protection& Prot);
-  
+
   //! Returns last write access.
   //! On UNIX, AccessMoment and CreationMoment return the
   //! same value.

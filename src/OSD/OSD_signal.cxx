@@ -24,7 +24,12 @@
 #ifdef NOUSER
 #undef NOUSER
 #endif
+#ifdef NONLS
+#undef NONLS
+#endif
 #include <windows.h>
+
+#include <Strsafe.h>
 
 #ifndef STATUS_FLOAT_MULTIPLE_FAULTS
   // <ntstatus.h>
@@ -72,7 +77,9 @@ static Standard_Mutex THE_SIGNAL_MUTEX;
 static LONG __fastcall _osd_raise ( DWORD, LPSTR );
 static BOOL WINAPI     _osd_ctrl_break_handler ( DWORD );
 
+#ifndef OCCT_UWP
 static LONG _osd_debug   ( void );
+#endif
 
 //# define _OSD_FPX ( _EM_INVALID | _EM_DENORMAL | _EM_ZERODIVIDE | _EM_OVERFLOW | _EM_UNDERFLOW )
 # define _OSD_FPX ( _EM_INVALID | _EM_DENORMAL | _EM_ZERODIVIDE | _EM_OVERFLOW )
@@ -86,7 +93,9 @@ static LONG CallHandler (DWORD dwExceptionCode,
                          ptrdiff_t ExceptionInformation0)
 {
   Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
-  static char          buffer[ 2048 ];
+
+  static wchar_t         buffer[2048];
+
   int                  flterr = 0;
 
   buffer[0] = '\0' ;
@@ -95,47 +104,47 @@ static LONG CallHandler (DWORD dwExceptionCode,
   switch ( dwExceptionCode ) {
     case EXCEPTION_FLT_DENORMAL_OPERAND:
 //      cout << "CallHandler : EXCEPTION_FLT_DENORMAL_OPERAND:" << endl ;
-      lstrcpyA (  buffer, "FLT DENORMAL OPERAND"  );
+      StringCchCopyW (buffer, _countof(buffer), L"FLT DENORMAL OPERAND");
       flterr = 1 ;
       break ;
     case EXCEPTION_FLT_DIVIDE_BY_ZERO:
 //      cout << "CallHandler : EXCEPTION_FLT_DIVIDE_BY_ZERO:" << endl ;
-      lstrcpyA (  buffer, "FLT DIVIDE BY ZERO"  );
+      StringCchCopyW (buffer, _countof(buffer), L"FLT DIVIDE BY ZERO");
       flterr = 1 ;
       break ;
     case EXCEPTION_FLT_INEXACT_RESULT:
 //      cout << "CallHandler : EXCEPTION_FLT_INEXACT_RESULT:" << endl ;
-      lstrcpyA (  buffer, "FLT INEXACT RESULT"  );
+      StringCchCopyW (buffer, _countof(buffer), L"FLT INEXACT RESULT");
       flterr = 1 ;
       break ;
     case EXCEPTION_FLT_INVALID_OPERATION:
 //      cout << "CallHandler : EXCEPTION_FLT_INVALID_OPERATION:" << endl ;
-      lstrcpyA (  buffer, "FLT INVALID OPERATION"  );
+      StringCchCopyW (buffer, _countof(buffer), L"FLT INVALID OPERATION");
       flterr = 1 ;
       break ;
     case EXCEPTION_FLT_OVERFLOW:
 //      cout << "CallHandler : EXCEPTION_FLT_OVERFLOW:" << endl ;
-      lstrcpyA (  buffer, "FLT OVERFLOW"  );
+      StringCchCopyW (buffer, _countof(buffer), L"FLT OVERFLOW");
       flterr = 1 ;
       break ;
     case EXCEPTION_FLT_STACK_CHECK:
 //      cout << "CallHandler : EXCEPTION_FLT_STACK_CHECK:" << endl ;
-      lstrcpyA (  buffer, "FLT STACK CHECK"  );
+      StringCchCopyW (buffer, _countof(buffer), L"FLT STACK CHECK");
       flterr = 1 ;
       break ;
     case EXCEPTION_FLT_UNDERFLOW:
 //      cout << "CallHandler : EXCEPTION_FLT_UNDERFLOW:" << endl ;
-      lstrcpyA (  buffer, "FLT UNDERFLOW"  );
+      StringCchCopyW (buffer, _countof(buffer), L"FLT UNDERFLOW");
       flterr = 1 ;
       break ;
     case STATUS_FLOAT_MULTIPLE_TRAPS:
 //      cout << "CallHandler : EXCEPTION_FLT_UNDERFLOW:" << endl ;
-      lstrcpyA (  buffer, "FLT MULTIPLE TRAPS (possible overflow in conversion of double to integer)"  );
+      StringCchCopyW (buffer, _countof(buffer), L"FLT MULTIPLE TRAPS (possible overflow in conversion of double to integer)");
       flterr = 1 ;
       break ;
     case STATUS_FLOAT_MULTIPLE_FAULTS:
 //      cout << "CallHandler : EXCEPTION_FLT_UNDERFLOW:" << endl ;
-      lstrcpyA (  buffer, "FLT MULTIPLE FAULTS"  );
+      StringCchCopyW (buffer, _countof(buffer), L"FLT MULTIPLE FAULTS");
       flterr = 1 ;
       break ;
     case STATUS_NO_MEMORY:
@@ -144,89 +153,92 @@ static LONG CallHandler (DWORD dwExceptionCode,
       Raise (  "MEMORY ALLOCATION ERROR ( no room in the process heap )"  );
     case EXCEPTION_ACCESS_VIOLATION:
 //      cout << "CallHandler : EXCEPTION_ACCESS_VIOLATION:" << endl ;
-      wsprintf ( buffer, "%s%s%s0x%.8p%s%s%s", "ACCESS VIOLATION",
-                 fMsgBox ? "\n" : " ", "at address ",
+      StringCchPrintfW (buffer, _countof(buffer), L"%s%s%s0x%.8p%s%s%s", L"ACCESS VIOLATION",
+                 fMsgBox ? L"\n" : L" ", L"at address ",
                  ExceptionInformation1 ,
-                 " during '",
-                 ExceptionInformation0 ? "WRITE" : "READ",
-                 "' operation");
+                 L" during '",
+                 ExceptionInformation0 ? L"WRITE" : L"READ",
+                 L"' operation");
       break;
     case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:
 //      cout << "CallHandler : EXCEPTION_ARRAY_BOUNDS_EXCEEDED:" << endl ;
-      lstrcpyA (  buffer, "ARRAY BOUNDS EXCEEDED"  );
+      StringCchCopyW (buffer, _countof(buffer), L"ARRAY BOUNDS EXCEEDED");
       break;
     case EXCEPTION_DATATYPE_MISALIGNMENT:
 //      cout << "CallHandler : EXCEPTION_DATATYPE_MISALIGNMENT:" << endl ;
-      lstrcpyA (  buffer, "DATATYPE MISALIGNMENT"  );
+      StringCchCopyW (buffer, _countof(buffer), L"DATATYPE MISALIGNMENT");
       break;
 
     case EXCEPTION_ILLEGAL_INSTRUCTION:
 //      cout << "CallHandler : EXCEPTION_ILLEGAL_INSTRUCTION:" << endl ;
-      lstrcpyA (  buffer, "ILLEGAL INSTRUCTION"  );
+      StringCchCopyW (buffer, _countof(buffer), L"ILLEGAL INSTRUCTION");
       break;
 
     case EXCEPTION_IN_PAGE_ERROR:
 //      cout << "CallHandler : EXCEPTION_IN_PAGE_ERROR:" << endl ;
-      lstrcpyA (  buffer, "IN_PAGE ERROR"  );
+      StringCchCopyW (buffer, _countof(buffer), L"IN_PAGE ERROR");
       break;
 
     case EXCEPTION_INT_DIVIDE_BY_ZERO:
 //      cout << "CallHandler : EXCEPTION_INT_DIVIDE_BY_ZERO:" << endl ;
-      lstrcpyA (  buffer, "INTEGER DIVISION BY ZERO"  );
+      StringCchCopyW (buffer, _countof(buffer), L"INTEGER DIVISION BY ZERO");
       break;
 
     case EXCEPTION_INT_OVERFLOW:
 //      cout << "CallHandler : EXCEPTION_INT_OVERFLOW:" << endl ;
-      lstrcpyA (  buffer, "INTEGER OVERFLOW"  );
+      StringCchCopyW (buffer, _countof(buffer), L"INTEGER OVERFLOW");
       break;
 
     case EXCEPTION_INVALID_DISPOSITION:
 //      cout << "CallHandler : EXCEPTION_INVALID_DISPOSITION:" << endl ;
-      lstrcpyA (  buffer, "INVALID DISPOSITION"  );
+      StringCchCopyW (buffer, _countof(buffer), L"INVALID DISPOSITION");
       break;
 
     case EXCEPTION_NONCONTINUABLE_EXCEPTION:
 //      cout << "CallHandler : EXCEPTION_NONCONTINUABLE_EXCEPTION:" << endl ;
-      lstrcpyA (  buffer, "NONCONTINUABLE EXCEPTION"  );
+      StringCchCopyW (buffer, _countof(buffer), L"NONCONTINUABLE EXCEPTION");
       break;
 
     case EXCEPTION_PRIV_INSTRUCTION:
 //      cout << "CallHandler : EXCEPTION_PRIV_INSTRUCTION:" << endl ;
-      lstrcpyA (  buffer, "PRIVELEGED INSTRUCTION ENCOUNTERED"  );
+      StringCchCopyW (buffer, _countof(buffer), L"PRIVELEGED INSTRUCTION ENCOUNTERED");
       break;
 
     case EXCEPTION_STACK_OVERFLOW:
 //      cout << "CallHandler : EXCEPTION_STACK_OVERFLOW:" << endl ;
-#if defined( _MSC_VER ) && ( _MSC_VER >= 1300 )
+#if defined( _MSC_VER ) && ( _MSC_VER >= 1300 ) && !defined(OCCT_UWP)
     // try recovering from stack overflow: available in MS VC++ 7.0
       if (!_resetstkoflw())
-        lstrcpyA (  buffer, "Unrecoverable STACK OVERFLOW"  );
+        StringCchCopyW (buffer, _countof(buffer), L"Unrecoverable STACK OVERFLOW");
       else
 #endif
-        lstrcpyA (  buffer, "STACK OVERFLOW"  );
+      StringCchCopyW (buffer, _countof(buffer), L"STACK OVERFLOW");
       break;
 
     default:
-      wsprintf( buffer, "unknown exception code 0x%x, params 0x%p 0x%p",
+      StringCchPrintfW (buffer, _countof(buffer), L"unknown exception code 0x%x, params 0x%p 0x%p",
                 dwExceptionCode, ExceptionInformation1, ExceptionInformation0 );
 
   }  // end switch
 
  // provide message to the user with possibility to stop
-  int idx = lstrlenA ( buffer );
+  size_t idx;
+  StringCchLengthW (buffer, _countof(buffer),&idx);
   if ( idx && fMsgBox && dwExceptionCode != EXCEPTION_NONCONTINUABLE_EXCEPTION ) {
      // reset FP operations before message box, otherwise it may fail to show up
     _fpreset();
     _clearfp();
 
+#ifndef OCCT_UWP
     MessageBeep ( MB_ICONHAND );
-    int aChoice = ::MessageBox (0, buffer, "OCCT Exception Handler", MB_ABORTRETRYIGNORE | MB_ICONSTOP);
+    int aChoice = ::MessageBoxW (0, buffer, L"OCCT Exception Handler", MB_ABORTRETRYIGNORE | MB_ICONSTOP);
     if (aChoice == IDRETRY)
     {
       _osd_debug();
       DebugBreak();
     } else if (aChoice == IDABORT)
       exit(0xFFFF);
+#endif
   }
 
   // reset FPE state
@@ -237,7 +249,10 @@ static LONG CallHandler (DWORD dwExceptionCode,
    _controlfp ( 0, _OSD_FPX ) ;          // JR add :
 //     cout << "OSD::WntHandler _controlfp( 0, _OSD_FPX ) " << hex << _controlfp(0,0) << dec << endl ;
   }
-  return _osd_raise ( dwExceptionCode, buffer );
+
+  char aBufferA[2048];
+  WideCharToMultiByte(CP_UTF8, 0, buffer, -1, aBufferA, sizeof(aBufferA), NULL, NULL);
+  return _osd_raise(dwExceptionCode, aBufferA);
 }
 
 //=======================================================================
@@ -292,7 +307,9 @@ static void SIGWntHandler (int signum, int sub_code)
       cout << "SIGWntHandler unexpected signal : " << signum << endl ;
       break ;
   }
+#ifndef OCCT_UWP
   DebugBreak ();
+#endif
 }
 #endif
 
@@ -348,7 +365,7 @@ void OSD::SetSignal (const Standard_Boolean theFloatingSignal)
   Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
   LPTOP_LEVEL_EXCEPTION_FILTER aPreviousFilter;
 
-  OSD_Environment env (TEXT("CSF_DEBUG_MODE"));
+  OSD_Environment env ("CSF_DEBUG_MODE");
   TCollection_AsciiString val = env.Value();
   if (!env.Failed())
   {
@@ -377,8 +394,9 @@ void OSD::SetSignal (const Standard_Boolean theFloatingSignal)
 
   // Set Ctrl-C and Ctrl-Break handler
   fCtrlBrk = Standard_False;
+#ifndef OCCT_UWP
   SetConsoleCtrlHandler (&_osd_ctrl_break_handler, TRUE);
-
+#endif
 #ifdef _MSC_VER
 //  _se_translator_function pOldSeFunc =
   _set_se_translator (TranslateSE);
@@ -401,11 +419,11 @@ void OSD::SetSignal (const Standard_Boolean theFloatingSignal)
 void OSD::ControlBreak () {
   if ( fCtrlBrk ) {
     fCtrlBrk = Standard_False;
-    OSD_Exception_CTRL_BREAK :: Raise (  TEXT( "*** INTERRUPT ***" )  );
+    OSD_Exception_CTRL_BREAK :: Raise ( "*** INTERRUPT ***" );
   }
 }  // end OSD :: ControlBreak
-
 #if !defined(__MINGW32__) && !defined(__CYGWIN32__)
+#ifndef OCCT_UWP
 //============================================================================
 //==== _osd_ctrl_break_handler
 //============================================================================
@@ -418,7 +436,7 @@ static BOOL WINAPI _osd_ctrl_break_handler ( DWORD dwCode ) {
 
   return TRUE;
 }  // end _osd_ctrl_break_handler
-
+#endif
 //============================================================================
 //==== _osd_raise
 //============================================================================
@@ -487,6 +505,7 @@ static LONG __fastcall _osd_raise ( DWORD dwCode, LPSTR msg )
 //============================================================================
 //==== _osd_debug
 //============================================================================
+#ifndef OCCT_UWP
 LONG _osd_debug ( void ) {
 
   LONG action ;
@@ -525,7 +544,7 @@ LONG _osd_debug ( void ) {
 
       if (   (  hEvent = CreateEvent ( &sa, TRUE, FALSE, NULL )  ) == NULL   ) __leave;
 
-      wsprintf (  cmdLine, keyValue, GetCurrentProcessId (), hEvent  );
+      StringCchPrintf(cmdLine, _countof(cmdLine), keyValue, GetCurrentProcessId(), hEvent);
 
       ZeroMemory (  &si, sizeof ( STARTUPINFO )  );
 
@@ -569,8 +588,9 @@ LONG _osd_debug ( void ) {
   return action ;
 
 }  // end _osd_debug
-#endif
 
+#endif
+#endif
 #else
 
 //---------- All Systems except Windows NT : ----------------------------------
