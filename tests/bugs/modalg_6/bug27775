@@ -1,0 +1,25 @@
+puts "REQUIRED All: Standard_ConstructionError\: GeomFill_BSplineCurves\: invalid filling style"
+
+puts "========"
+puts "OCC27704"
+puts "========"
+puts ""
+#################################################
+# Different behavior of GeomFill_BSplineCurves algorithm in DEBUG and RELEASE mode
+#################################################
+
+#Indeed, the input data are invalid here:
+#1. Algorithm requires B-Spline with 4+ poles. Source curves contains two pole only.
+#2. Four curves must comprise closed region. But it is not here.
+#Therefore, the normal behavior is to throw an exception.
+
+bsplinecurve c1 1 2 0 2 100.000001513789 2 -24033.3957701043 -6337.90755953146 -16577.8188547128 1 -23933.3957701044 -6337.90755953146 -16577.8362547128 1
+bsplinecurve c2 1 2 0 2 100.000001513789 2 -23933.3957701044 -6337.90755953146 -16577.8362547128 1 -24033.3957701043 -6337.90755953146 -16577.8188547128 1
+bsplinecurve c3 1 2 0 2 33.1099999999979 2 -24033.3957701043 -6371.01755953146 -16577.8188547128 1 -24033.3957701043 -6337.90755953146 -16577.8188547128 1
+bsplinecurve c4 1 2 0 2 100.000001513789 2 -24033.3957701043 -6371.01755953146 -16577.8188547128 1 -23933.3957701044 -6371.01755953146 -16577.8362547128 1
+
+if {[catch {fillcurves res c1 c2 c3 c4 2}]} {
+  puts "OK: The incorrect input data were processed correctly!"  
+} else {
+  puts "Error: The output result must be invalid because the input data are wrong!"
+}
