@@ -1,0 +1,26 @@
+puts "REQUIRED ALL: Faulty shapes in variables faulty_1 to faulty_1"
+
+puts "========"
+puts "OCC21246"
+puts "========"
+puts "Checkshape command does not return faulty shapes."
+puts "========"
+
+#########################################################
+## Command "checkshape" "gives" exception during attempt to check attached shape.
+#########################################################
+
+restore [locate_data_file bug21246.brep] result
+
+set info [checkshape result]
+
+if { [regexp "Faulty shapes in variables faulty_1 to faulty_2" ${info}] != 1 } {
+ 
+   puts "OK : Good result of checkshape"
+
+} elseif { [regexp "Problems are not detected" $info] == 1 } {
+ 
+   puts "Error : Wrong result of checkshape"
+
+}  
+checkview -display result -2d -path ${imagedir}/${test_image}.png 
