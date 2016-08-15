@@ -106,10 +106,24 @@ myPts(Pts)
   if (NN == 1)
     BestVec = Normals(1);
   else if (NN == 2)
+  {
+    BestVec = Normals(1) + Normals(2);
+    const Standard_Real aSqMagn = BestVec.SquareMagnitude();
+    if(aSqMagn < Precision::SquareConfusion())
     {
-      BestVec = Normals(1) + Normals(2);
-      BestVec.Normalize();
+      const Standard_Real aSq1 = Normals(1).SquareMagnitude(),
+        aSq2 = Normals(2).SquareMagnitude();
+
+      if(aSq1 > aSq2)
+        BestVec = Normals(1).Normalized();
+      else
+        BestVec = Normals(2).Normalized();
     }
+    else
+    {
+      BestVec.Divide(sqrt(aSqMagn));
+    }      
+  }
   else //the common case
     {
       Standard_Real MaxAngle = 0.;
@@ -131,38 +145,46 @@ myPts(Pts)
       
       k = 1;
       for (i = 1; i <= NN-1; i++)
-	for (j = i+1; j <= NN; j++)
-	  {
-	    Standard_Real Step = MaxAngle/Nint;
-	    Vec = Normals(i) + Normals(j);
-	    Vec.Normalize();
-	    
-	    Cross1 = Normals(i) ^ Normals(j);
-	    Cross2 = Vec ^ Cross1;
-	    gp_Ax1 Axe( gp_Pnt(0,0,0), Cross2 );
-	    
-	    Vec1 = Vec.Rotated( Axe, -MaxAngle );
-	    //Vec2 = Vec.Rotated( Axe, MaxAngle );
-	    
-	    OptScal(k) = RealFirst();
-	    for (n = 0; n <= 2*Nint; n++)
-	      {
-		Vec1.Rotate( Axe, Step );
-		Standard_Real minScal = RealLast();
-		for (m = 1; m <= NN; m++)
-		  {
-		    Standard_Real Scal = Vec1 * Normals(m);
-		    if (Scal < minScal)
-		      minScal = Scal;
-		  }
-		if (minScal > OptScal(k))
-		  {
-		    OptScal(k) = minScal;
-		    OptVec(k) = Vec1;
-		  }
-	      }
-	    k++;
-	  } // for i, for j
+        for (j = i+1; j <= NN; j++, k++)
+        {
+          OptScal(k) = RealFirst();  
+
+          Standard_Real Step = MaxAngle/Nint;
+          Vec = Normals(i) + Normals(j);
+
+          const Standard_Real aSqMagn = Vec.SquareMagnitude();
+
+          if(aSqMagn < Precision::SquareConfusion())
+          {
+            continue;
+          }
+
+          Vec.Divide(sqrt(aSqMagn));
+
+          Cross1 = Normals(i) ^ Normals(j);
+          Cross2 = Vec ^ Cross1;
+          gp_Ax1 Axe( gp_Pnt(0,0,0), Cross2 );
+
+          Vec1 = Vec.Rotated( Axe, -MaxAngle );
+          //Vec2 = Vec.Rotated( Axe, MaxAngle );
+
+          for (n = 0; n <= 2*Nint; n++)
+          {
+            Vec1.Rotate( Axe, Step );
+            Standard_Real minScal = RealLast();
+            for (m = 1; m <= NN; m++)
+            {
+              Standard_Real Scal = Vec1 * Normals(m);
+              if (Scal < minScal)
+                minScal = Scal;
+            }
+            if (minScal > OptScal(k))
+            {
+              OptScal(k) = minScal;
+              OptVec(k) = Vec1;
+            }
+          }
+        } // for i, for j
       //Find maximum among all maximums
 
       Standard_Real BestScal = RealFirst();
