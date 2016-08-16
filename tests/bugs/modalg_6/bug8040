@@ -1,0 +1,39 @@
+puts "============"
+puts "OCC8040"
+puts "============"
+puts ""
+##################################
+#  Offset direction is wrong for a closed circle
+##################################
+
+circle c 1 0 0 20
+offset c1 c 10 0 0 1
+offset c2 c -10 0 0 1
+checklength c -l 125.66370614359172
+checklength c1 -l 188.49555921538757
+checklength c2 -l 62.831853071795862
+
+mkedge e c
+mkedge e1 c1
+mkedge e2 c2
+vertex v1 0 35 0
+vertex v2 0 -35 0
+edge e3 v1 v2
+set index 0
+set number_of_vertex 0
+foreach s {e e1 e2} {
+set index [expr $index + 1 ]
+bop $s e3
+bopsection result$index
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result$index] full nbv
+set number_of_vertex [expr $number_of_vertex + $nbv]
+puts "number_of_vertex = $number_of_vertex" 
+}
+
+if { $number_of_vertex != 6 } { puts "Error : Section is incorrect" }
+
+smallview
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
