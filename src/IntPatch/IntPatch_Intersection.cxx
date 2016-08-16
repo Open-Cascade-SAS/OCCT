@@ -910,9 +910,9 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
   //                              3. ts1 == ts2 == 0 <Param-Param>
 
   // Geom - Geom
+  const Standard_Boolean RestrictLine = Standard_True;
   if(ts1 == ts2 && ts1 == 1)
   {
-    const Standard_Boolean RestrictLine = Standard_True;
     IntSurf_ListOfPntOn2S ListOfPnts;
     ListOfPnts.Clear();
     if(isGeomInt)
@@ -946,7 +946,6 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
   // Param - Param 
   if(ts1 == ts2 && ts1 == 0)
   {
-    const Standard_Boolean RestrictLine = Standard_True;
     IntSurf_ListOfPntOn2S ListOfPnts;
     ListOfPnts.Clear();
 
@@ -964,7 +963,8 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
     if(aWL.IsNull())
       continue;
 
-    Handle(IntPatch_WLine) aRW = IntPatch_WLineTool::ComputePurgedWLine(aWL, theS1, theS2, theD1, theD2);
+    Handle(IntPatch_WLine) aRW =
+      IntPatch_WLineTool::ComputePurgedWLine(aWL, theS1, theS2, theD1, theD2, RestrictLine);
 
     if(aRW.IsNull())
       continue;
@@ -1207,7 +1207,8 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
     if(!aWL->IsPurgingAllowed())
       continue;
 
-    Handle(IntPatch_WLine) aRW = IntPatch_WLineTool::ComputePurgedWLine(aWL, theS1, theS2, theD1, theD2);
+    Handle(IntPatch_WLine) aRW = 
+      IntPatch_WLineTool::ComputePurgedWLine(aWL, theS1, theS2, theD1, theD2, RestrictLine);
 
     if(aRW.IsNull())
       continue;
@@ -1720,7 +1721,8 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
     if(aWL.IsNull())
       continue;
 
-    Handle(IntPatch_WLine) aRW = IntPatch_WLineTool::ComputePurgedWLine(aWL, S1, S2, D1, D2);
+    Handle(IntPatch_WLine) aRW =
+      IntPatch_WLineTool::ComputePurgedWLine(aWL, S1, S2, D1, D2, Standard_True);
 
     if(aRW.IsNull())
       continue;
