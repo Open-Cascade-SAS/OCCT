@@ -247,21 +247,21 @@ OpenGl_Context::~OpenGl_Context()
     myTexSampler->Release (this);
   }
 
-#if !defined(GL_ES_VERSION_2_0)
   if (arbDbg != NULL
    && myIsGlDebugCtx
    && IsValid())
   {
     // reset callback
+  #if !defined(GL_ES_VERSION_2_0)
     void* aPtr = NULL;
     glGetPointerv (GL_DEBUG_CALLBACK_USER_PARAM, &aPtr);
     if (aPtr == this)
+  #endif
     {
-      arbDbg->glDebugMessageCallbackARB (NULL, NULL);
+      arbDbg->glDebugMessageCallback (NULL, NULL);
     }
     myIsGlDebugCtx = Standard_False;
   }
-#endif
 }
 
 // =======================================================================
@@ -936,7 +936,6 @@ static Standard_CString THE_DBGMSG_SEV_HIGH   = "High";   // GL_DEBUG_SEVERITY_H
 static Standard_CString THE_DBGMSG_SEV_MEDIUM = "Medium"; // GL_DEBUG_SEVERITY_MEDIUM
 static Standard_CString THE_DBGMSG_SEV_LOW    = "Low";    // GL_DEBUG_SEVERITY_LOW
 
-#if !defined(GL_ES_VERSION_2_0)
 //! Callback for GL_ARB_debug_output extension
 static void APIENTRY debugCallbackWrap(unsigned int theSource,
                                        unsigned int theType,
@@ -949,7 +948,6 @@ static void APIENTRY debugCallbackWrap(unsigned int theSource,
   OpenGl_Context* aCtx = (OpenGl_Context* )theUserParam;
   aCtx->PushMessage (theSource, theType, theId, theSeverity, theMessage);
 }
-#endif
 
 // =======================================================================
 // function : PushMessage
@@ -1195,6 +1193,37 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   {
     arbTBO = reinterpret_cast<OpenGl_ArbTBO*> (myFuncs.get());
   }
+
+  // initialize debug context extension
+  if (CheckExtension ("GL_KHR_debug"))
+  {
+    // this functionality become a part of OpenGL ES 3.2
+    arbDbg = NULL;
+    // According to GL_KHR_debug spec, all functions should have KHR suffix.
+    // However, some implementations can export these functions without suffix.
+    if (FindProc ("glDebugMessageControlKHR",  myFuncs->glDebugMessageControl)
+     && FindProc ("glDebugMessageInsertKHR",   myFuncs->glDebugMessageInsert)
+     && FindProc ("glDebugMessageCallbackKHR", myFuncs->glDebugMessageCallback)
+     && FindProc ("glGetDebugMessageLogKHR",   myFuncs->glGetDebugMessageLog))
+    {
+      arbDbg = (OpenGl_ArbDbg* )(&(*myFuncs));
+    }
+
+    if (arbDbg != NULL
+     && caps->contextDebug)
+    {
+      // setup default callback
+      myIsGlDebugCtx = Standard_True;
+      arbDbg->glDebugMessageCallback (debugCallbackWrap, this);
+      ::glEnable (GL_DEBUG_OUTPUT);
+      if (caps->contextSyncDebug)
+      {
+        // note that some broken implementations (e.g. simulators) might generate error message on this call
+        ::glEnable (GL_DEBUG_OUTPUT_SYNCHRONOUS);
+      }
+    }
+  }
+
 #else
 
   myTexClamp = IsGlGreaterEqual (1, 2) ? GL_CLAMP_TO_EDGE : GL_CLAMP;
@@ -1292,30 +1321,6 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     }
     //extSwapTear = CheckExtension (aGlxExts, "GLX_EXT_swap_control_tear");
 #endif
-
-  // initialize debug context extension
-  if (CheckExtension ("GL_ARB_debug_output"))
-  {
-    arbDbg = NULL;
-    if (FindProcShort (glDebugMessageControlARB)
-     && FindProcShort (glDebugMessageInsertARB)
-     && FindProcShort (glDebugMessageCallbackARB)
-     && FindProcShort (glGetDebugMessageLogARB))
-    {
-      arbDbg = (OpenGl_ArbDbg* )(&(*myFuncs));
-    }
-    if (arbDbg != NULL
-     && caps->contextDebug)
-    {
-      // setup default callback
-      myIsGlDebugCtx = Standard_True;
-      arbDbg->glDebugMessageCallbackARB (debugCallbackWrap, this);
-      if (caps->contextSyncDebug)
-      {
-        ::glEnable (GL_DEBUG_OUTPUT_SYNCHRONOUS);
-      }
-    }
-  }
 
   // load OpenGL 1.2 new functions
   has12 = IsGlGreaterEqual (1, 2)
@@ -2051,6 +2056,39 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glBindSamplers)
        && FindProcShort (glBindImageTextures)
        && FindProcShort (glBindVertexBuffers);
+
+  // initialize debug context extension
+  if (CheckExtension ("GL_ARB_debug_output"))
+  {
+    arbDbg = NULL;
+    if (has43)
+    {
+      arbDbg = (OpenGl_ArbDbg* )(&(*myFuncs));
+    }
+    else if (FindProc ("glDebugMessageControlARB",  myFuncs->glDebugMessageControl)
+          && FindProc ("glDebugMessageInsertARB",   myFuncs->glDebugMessageInsert)
+          && FindProc ("glDebugMessageCallbackARB", myFuncs->glDebugMessageCallback)
+          && FindProc ("glGetDebugMessageLogARB",   myFuncs->glGetDebugMessageLog))
+    {
+      arbDbg = (OpenGl_ArbDbg* )(&(*myFuncs));
+    }
+
+    if (arbDbg != NULL
+     && caps->contextDebug)
+    {
+      // setup default callback
+      myIsGlDebugCtx = Standard_True;
+      arbDbg->glDebugMessageCallback (debugCallbackWrap, this);
+      if (has43)
+      {
+        ::glEnable (GL_DEBUG_OUTPUT);
+      }
+      if (caps->contextSyncDebug)
+      {
+        ::glEnable (GL_DEBUG_OUTPUT_SYNCHRONOUS);
+      }
+    }
+  }
 
   // initialize TBO extension (ARB)
   if (!has31

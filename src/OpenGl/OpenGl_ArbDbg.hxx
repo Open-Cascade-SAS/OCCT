@@ -21,12 +21,10 @@
 //! Debug context routines
 struct OpenGl_ArbDbg : protected OpenGl_GlFunctions
 {
-#if !defined(GL_ES_VERSION_2_0)
-  using OpenGl_GlFunctions::glDebugMessageControlARB;
-  using OpenGl_GlFunctions::glDebugMessageInsertARB;
-  using OpenGl_GlFunctions::glDebugMessageCallbackARB;
-  using OpenGl_GlFunctions::glGetDebugMessageLogARB;
-#endif
+  using OpenGl_GlFunctions::glDebugMessageControl;
+  using OpenGl_GlFunctions::glDebugMessageInsert;
+  using OpenGl_GlFunctions::glDebugMessageCallback;
+  using OpenGl_GlFunctions::glGetDebugMessageLog;
 };
 
 #endif // _OpenGl_ArbDbg_H__

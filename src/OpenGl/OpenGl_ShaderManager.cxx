@@ -1586,8 +1586,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
           EOL"uniform mat4 uMultL;"
           EOL"uniform mat4 uMultR;"
           EOL
-          EOL"vec4 THE_POW_UP   = vec4 (2.2, 2.2, 2.2, 1.0);"
-          EOL"vec4 THE_POW_DOWN = 1.0 / THE_POW_UP;"
+          EOL"const vec4 THE_POW_UP   =       vec4 (2.2, 2.2, 2.2, 1.0);"
+          EOL"const vec4 THE_POW_DOWN = 1.0 / vec4 (2.2, 2.2, 2.2, 1.0);"
           EOL
           EOL"THE_SHADER_IN vec2 TexCoord;"
           EOL

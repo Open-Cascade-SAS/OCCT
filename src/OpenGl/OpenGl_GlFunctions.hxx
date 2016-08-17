@@ -153,6 +153,7 @@
   #define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
 
   // debug ARB extension
+  #define GL_DEBUG_OUTPUT               0x92E0
   #define GL_DEBUG_OUTPUT_SYNCHRONOUS   0x8242
   #define GL_DEBUG_NEXT_LOGGED_MESSAGE_LENGTH 0x8243
   #define GL_DEBUG_CALLBACK_FUNCTION    0x8244
@@ -750,6 +751,27 @@ public: //! @name OpenGL ES 3.2
 
   typedef void (*glTexBuffer_t)(GLenum target, GLenum internalFormat, GLuint buffer);
   glTexBuffer_t glTexBuffer;
+
+public: //! @name GL_KHR_debug (optional)
+
+  typedef void   (APIENTRY  *GLDEBUGPROCARB)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
+
+  typedef void   (APIENTRYP glDebugMessageControl_t ) (GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint* ids, GLboolean enabled);
+  typedef void   (APIENTRYP glDebugMessageInsert_t  ) (GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* buf);
+  typedef void   (APIENTRYP glDebugMessageCallback_t) (GLDEBUGPROCARB callback, const void* userParam);
+  typedef GLuint (APIENTRYP glGetDebugMessageLog_t  ) (GLuint   count,
+                                                       GLsizei  bufSize,
+                                                       GLenum*  sources,
+                                                       GLenum*  types,
+                                                       GLuint*  ids,
+                                                       GLenum*  severities,
+                                                       GLsizei* lengths,
+                                                       GLchar*  messageLog);
+
+  glDebugMessageControl_t  glDebugMessageControl;
+  glDebugMessageInsert_t   glDebugMessageInsert;
+  glDebugMessageCallback_t glDebugMessageCallback;
+  glGetDebugMessageLog_t   glGetDebugMessageLog;
 
 #else // OpenGL ES vs. desktop
 
@@ -1436,13 +1458,6 @@ public: //! @name OpenGL 4.4
   PFNGLBINDSAMPLERSPROC      glBindSamplers;
   PFNGLBINDIMAGETEXTURESPROC glBindImageTextures;
   PFNGLBINDVERTEXBUFFERSPROC glBindVertexBuffers;
-
-public: //! @name GL_ARB_debug_output (optional)
-
-  PFNGLDEBUGMESSAGECONTROLARBPROC  glDebugMessageControlARB;
-  PFNGLDEBUGMESSAGEINSERTARBPROC   glDebugMessageInsertARB;
-  PFNGLDEBUGMESSAGECALLBACKARBPROC glDebugMessageCallbackARB;
-  PFNGLGETDEBUGMESSAGELOGARBPROC   glGetDebugMessageLogARB;
 
 public: //! @name GL_EXT_geometry_shader4
 
