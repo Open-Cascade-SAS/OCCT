@@ -316,6 +316,15 @@ public:
     return aMin1 < aMin2 ? aMin1 : aMin2;
   }
 
+  //! Computes the dot product.
+  Element_t Dot (const NCollection_Vec4& theOther) const
+  {
+    return x() * theOther.x() +
+           y() * theOther.y() +
+           z() * theOther.z() +
+           w() * theOther.w();
+  }
+
   //! Compute per-component division by scale factor.
   NCollection_Vec4& operator/= (const Element_t theInvFactor)
   {

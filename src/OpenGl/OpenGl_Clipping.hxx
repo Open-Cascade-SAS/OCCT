@@ -86,6 +86,12 @@ public: //! @name non-modifying getters
     return (myNbClipping + myNbCapping) > 0;
   }
 
+  //! @return number of enabled clipping + capping planes
+  Standard_Integer NbClippingOrCappingOn() const
+  {
+    return myNbClipping + myNbCapping;
+  }
+
 public: //! @name clipping state modification commands
 
   //! Add planes to the context clipping at the specified system of coordinates.

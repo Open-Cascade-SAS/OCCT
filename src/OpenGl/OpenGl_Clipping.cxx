@@ -147,14 +147,14 @@ void OpenGl_Clipping::Remove (const Handle(OpenGl_Context)&         theGlCtx,
   for (; aPlaneIt.More(); aPlaneIt.Next())
   {
     const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
-    if (!Contains (aPlane))
+    PlaneProps* aProps = myPlaneStates.ChangeSeek (aPlane);
+    if (aProps == NULL)
     {
       continue;
     }
 
-    Standard_Integer anID = myPlaneStates.Find (aPlane).ContextID;
-    PlaneProps& aProps = myPlaneStates.ChangeFind (aPlane);
-    if (aProps.IsEnabled)
+    Standard_Integer anID = aProps->ContextID;
+    if (aProps->IsEnabled)
     {
     #if !defined(GL_ES_VERSION_2_0)
       if (toUseFfp)
@@ -200,19 +200,15 @@ void OpenGl_Clipping::SetEnabled (const Handle(OpenGl_Context)&      theGlCtx,
                                   const Handle(Graphic3d_ClipPlane)& thePlane,
                                   const Standard_Boolean             theIsEnabled)
 {
-  if (!Contains (thePlane))
-  {
-    return;
-  }
-
-  PlaneProps& aProps = myPlaneStates.ChangeFind (thePlane);
-  if (theIsEnabled == aProps.IsEnabled)
+  PlaneProps* aProps = myPlaneStates.ChangeSeek (thePlane);
+  if (aProps == NULL
+   || aProps->IsEnabled == theIsEnabled)
   {
     return;
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  GLenum anID = (GLenum)aProps.ContextID;
+  GLenum anID = (GLenum)aProps->ContextID;
   const bool toUseFfp = theGlCtx->core11 != NULL
                      && theGlCtx->caps->ffpEnable;
 #else
@@ -253,5 +249,5 @@ void OpenGl_Clipping::SetEnabled (const Handle(OpenGl_Context)&      theGlCtx,
     }
   }
 
-  aProps.IsEnabled = theIsEnabled;
+  aProps->IsEnabled = theIsEnabled;
 }

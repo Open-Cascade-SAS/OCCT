@@ -22,14 +22,16 @@
 //! Standard GLSL program combination bits.
 enum OpenGl_ProgramOptions
 {
-  OpenGl_PO_ClipPlanes  = 0x01, //!< handle clipping planes
-  OpenGl_PO_Point       = 0x02, //!< point marker
-  OpenGl_PO_VertColor   = 0x04, //!< per-vertex color
-  OpenGl_PO_TextureRGB  = 0x08, //!< handle RGB   texturing
-  OpenGl_PO_TextureA    = 0x10, //!< handle Alpha texturing
-  OpenGl_PO_TextureEnv  = 0x20, //!< handle environment map
-  OpenGl_PO_StippleLine = 0x40, //!< stipple line
-  OpenGl_PO_NB          = 0x80  //!< overall number of combinations
+  OpenGl_PO_Point       = 0x001, //!< point marker
+  OpenGl_PO_VertColor   = 0x002, //!< per-vertex color
+  OpenGl_PO_TextureRGB  = 0x004, //!< handle RGB   texturing
+  OpenGl_PO_TextureA    = 0x008, //!< handle Alpha texturing
+  OpenGl_PO_TextureEnv  = 0x010, //!< handle environment map
+  OpenGl_PO_StippleLine = 0x020, //!< stipple line
+  OpenGl_PO_ClipPlanes1 = 0x040, //!< handle 1 clipping plane
+  OpenGl_PO_ClipPlanes2 = 0x080, //!< handle 2 clipping planes
+  OpenGl_PO_ClipPlanesN = 0x100, //!< handle N clipping planes
+  OpenGl_PO_NB          = 0x200  //!< overall number of combinations
 };
 
 //! Alias to programs array of predefined length

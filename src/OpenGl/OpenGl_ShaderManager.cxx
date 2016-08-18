@@ -221,7 +221,7 @@ const char THE_FUNC_directionalLightFirst[] =
 
 //! Process clipping planes in Fragment Shader.
 //! Should be added at the beginning of the main() function.
-const char THE_FRAG_CLIP_PLANES[] =
+const char THE_FRAG_CLIP_PLANES_N[] =
   EOL"  for (int aPlaneIter = 0; aPlaneIter < occClipPlaneCount; ++aPlaneIter)"
   EOL"  {"
   EOL"    vec4 aClipEquation = occClipPlaneEquations[aPlaneIter];"
@@ -229,6 +229,24 @@ const char THE_FRAG_CLIP_PLANES[] =
   EOL"    {"
   EOL"      discard;"
   EOL"    }"
+  EOL"  }";
+
+//! Process 1 clipping plane in Fragment Shader.
+const char THE_FRAG_CLIP_PLANES_1[] =
+  EOL"  vec4 aClipEquation0 = occClipPlaneEquations[0];"
+  EOL"  if (dot (aClipEquation0.xyz, PositionWorld.xyz / PositionWorld.w) + aClipEquation0.w < 0.0)"
+  EOL"  {"
+  EOL"    discard;"
+  EOL"  }";
+
+//! Process 2 clipping planes in Fragment Shader.
+const char THE_FRAG_CLIP_PLANES_2[] =
+  EOL"  vec4 aClipEquation0 = occClipPlaneEquations[0];"
+  EOL"  vec4 aClipEquation1 = occClipPlaneEquations[1];"
+  EOL"  if (dot (aClipEquation0.xyz, PositionWorld.xyz / PositionWorld.w) + aClipEquation0.w < 0.0"
+  EOL"   || dot (aClipEquation1.xyz, PositionWorld.xyz / PositionWorld.w) + aClipEquation1.w < 0.0)"
+  EOL"  {"
+  EOL"    discard;"
   EOL"  }";
 
 }
@@ -1048,7 +1066,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
     aSrcFragExtraOut  += EOL"THE_SHADER_IN  vec4 VertColor;";
     aSrcFragGetColor  =  EOL"vec4 getColor(void) { return VertColor; }";
   }
-  if ((theBits & OpenGl_PO_ClipPlanes) != 0)
+  if ((theBits & OpenGl_PO_ClipPlanesN) != 0)
   {
     aSrcVertExtraOut +=
       EOL"THE_SHADER_OUT vec4 PositionWorld;"
@@ -1059,7 +1077,19 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
     aSrcVertExtraMain +=
       EOL"  PositionWorld = occModelWorldMatrix * occVertex;"
       EOL"  Position      = occWorldViewMatrix * PositionWorld;";
-    aSrcFragExtraMain += THE_FRAG_CLIP_PLANES;
+
+    if ((theBits & OpenGl_PO_ClipPlanes1) != 0)
+    {
+      aSrcFragExtraMain += THE_FRAG_CLIP_PLANES_1;
+    }
+    else if ((theBits & OpenGl_PO_ClipPlanes2) != 0)
+    {
+      aSrcFragExtraMain += THE_FRAG_CLIP_PLANES_2;
+    }
+    else
+    {
+      aSrcFragExtraMain += THE_FRAG_CLIP_PLANES_N;
+    }
   }
 
   TCollection_AsciiString aSrcVertEndMain;
@@ -1325,7 +1355,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
     aSrcVertColor = EOL"vec4 getVertColor(void) { return occVertColor; }";
   }
 
-  if ((theBits & OpenGl_PO_ClipPlanes) != 0)
+  if ((theBits & OpenGl_PO_ClipPlanesN) != 0)
   {
     aSrcVertExtraOut +=
       EOL"THE_SHADER_OUT vec4 PositionWorld;"
@@ -1336,7 +1366,19 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
     aSrcVertExtraMain +=
       EOL"  PositionWorld = aPositionWorld;"
       EOL"  Position      = aPosition;";
-    aSrcFragExtraMain += THE_FRAG_CLIP_PLANES;
+
+    if ((theBits & OpenGl_PO_ClipPlanes1) != 0)
+    {
+      aSrcFragExtraMain += THE_FRAG_CLIP_PLANES_1;
+    }
+    else if ((theBits & OpenGl_PO_ClipPlanes2) != 0)
+    {
+      aSrcFragExtraMain += THE_FRAG_CLIP_PLANES_2;
+    }
+    else
+    {
+      aSrcFragExtraMain += THE_FRAG_CLIP_PLANES_N;
+    }
   }
 
   const TCollection_AsciiString aLights = stdComputeLighting ((theBits & OpenGl_PO_VertColor) != 0);
@@ -1446,9 +1488,20 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
                            EOL"vec4 getVertColor(void) { return VertColor; }";
   }
 
-  if ((theBits & OpenGl_PO_ClipPlanes) != 0)
+  if ((theBits & OpenGl_PO_ClipPlanesN) != 0)
   {
-    aSrcFragExtraMain += THE_FRAG_CLIP_PLANES;
+    if ((theBits & OpenGl_PO_ClipPlanes1) != 0)
+    {
+      aSrcFragExtraMain += THE_FRAG_CLIP_PLANES_1;
+    }
+    else if ((theBits & OpenGl_PO_ClipPlanes2) != 0)
+    {
+      aSrcFragExtraMain += THE_FRAG_CLIP_PLANES_2;
+    }
+    else
+    {
+      aSrcFragExtraMain += THE_FRAG_CLIP_PLANES_N;
+    }
   }
 
   aSrcVert = TCollection_AsciiString()

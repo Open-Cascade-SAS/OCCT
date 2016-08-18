@@ -277,10 +277,21 @@ protected:
 
   {
     Standard_Integer aBits = 0;
-    if (myContext->Clipping().IsClippingOrCappingOn())
+
+    const Standard_Integer aNbPlanes = myContext->Clipping().NbClippingOrCappingOn();
+    if (aNbPlanes > 0)
     {
-      aBits |= OpenGl_PO_ClipPlanes;
+      aBits |= OpenGl_PO_ClipPlanesN;
+      if (aNbPlanes == 1)
+      {
+        aBits |= OpenGl_PO_ClipPlanes1;
+      }
+      else if (aNbPlanes == 2)
+      {
+        aBits |= OpenGl_PO_ClipPlanes2;
+      }
     }
+
     if (theEnableEnvMap)
     {
       // Environment map overwrites material texture
