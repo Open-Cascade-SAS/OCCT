@@ -421,7 +421,7 @@ public:
   Standard_EXPORT Standard_Boolean CheckNotchedEdges (const Standard_Integer num, Standard_Integer& shortNum, Standard_Real& param, const Standard_Real Tolerance = 0.0);
   
   //! Checks if wire has parametric area less than precision.
-  Standard_EXPORT Standard_Boolean CheckSmallArea (const TopoDS_Wire& theWire, const Standard_Boolean theIsOuterWire);
+  Standard_EXPORT Standard_Boolean CheckSmallArea (const TopoDS_Wire& theWire);
   
   //! Checks with what orientation <shape> (wire or edge) can be
   //! connected to the wire.

@@ -1889,7 +1889,6 @@ Standard_Boolean ShapeFix_Face::FixSmallAreaWire(const Standard_Boolean theIsRem
   TopoDS_Shape anEmptyCopy = myFace.EmptyCopied();
   TopoDS_Face  aFace = TopoDS::Face(anEmptyCopy);
 
-  const TopoDS_Wire   anOuterWire  = BRepTools::OuterWire(myFace);
   const Standard_Real aTolerance3d = ShapeFix_Root::Precision();
   for (TopoDS_Iterator aWIt(myFace, Standard_False); aWIt.More(); aWIt.Next())
   {
@@ -1902,9 +1901,8 @@ Standard_Boolean ShapeFix_Face::FixSmallAreaWire(const Standard_Boolean theIsRem
     }
 
     const TopoDS_Wire&         aWire       = TopoDS::Wire(aShape);
-    const Standard_Boolean     isOuterWire = anOuterWire.IsEqual(aWire);
     Handle(ShapeAnalysis_Wire) anAnalyzer  = new ShapeAnalysis_Wire(aWire, myFace, aTolerance3d);
-    if ( anAnalyzer->CheckSmallArea(aWire, isOuterWire) )
+    if ( anAnalyzer->CheckSmallArea(aWire) )
     {
       // Null area wire detected, wire skipped
       SendWarning(aWire, Message_Msg("FixAdvFace.FixSmallAreaWire.MSG0"));
