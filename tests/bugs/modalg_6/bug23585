@@ -1,0 +1,39 @@
+puts "============"
+puts "OCC23585"
+puts "============"
+puts ""
+######################################################
+# Boolean Fuse Operation Fails
+######################################################
+
+restore [locate_data_file bug23585a.brep] p
+restore [locate_data_file bug23585b.brep] v
+
+checkshape p
+tolerance p
+
+checkshape v
+tolerance v
+
+bop p v
+bopfuse result
+
+checkprops result -s 14796.8 
+
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in result
+ VERTEX    : 18
+ EDGE      : 30
+ WIRE      : 14
+ FACE      : 14
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 79
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "Result obtained by Boolean cut operation"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
