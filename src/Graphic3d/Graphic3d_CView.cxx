@@ -290,7 +290,7 @@ void Graphic3d_CView::ReCompute (const Handle(Graphic3d_Structure)& theStruct)
    && !theStruct->CStructure()->IsForHighlight
    && !theStruct->CStructure()->IsInfinite)
   {
-    const Standard_Integer aLayerId = theStruct->DisplayPriority();
+    const Graphic3d_ZLayerId aLayerId = theStruct->GetZLayer();
     InvalidateBVHData (aLayerId);
   }
 

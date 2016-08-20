@@ -109,6 +109,7 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
                                      const Standard_Integer theViewportWidth,
                                      const Standard_Integer theViewportHeight) const
 {
+  (void )theViewportWidth;
   if (!Flags)
   {
     return;
@@ -160,46 +161,41 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
     Graphic3d_TransformUtils::Scale     (theWorldView, T(aScale),      T(aScale),      T(aScale));
     return;
   }
-
-  if (Flags & Graphic3d_TMF_2d)
+  else if (Flags == Graphic3d_TMF_2d)
   {
-    T aLeft   = -static_cast<T> (theViewportWidth  / 2);
-    T aRight  =  static_cast<T> (theViewportWidth  / 2);
-    T aBottom = -static_cast<T> (theViewportHeight / 2);
-    T aTop    =  static_cast<T> (theViewportHeight / 2);
-    T aGap    =  static_cast<T> (Point.z());
-    if (Point.x() > 0)
-    {
-      aLeft  -= static_cast<T> (theViewportWidth / 2) - aGap;
-      aRight -= static_cast<T> (theViewportWidth / 2) - aGap;
-    }
-    else if (Point.x() < 0)
-    {
-      aLeft  += static_cast<T> (theViewportWidth / 2) - aGap;
-      aRight += static_cast<T> (theViewportWidth / 2) - aGap;
-    }
-    if (Point.y() > 0)
-    {
-      aBottom -= static_cast<T> (theViewportHeight / 2) - aGap;
-      aTop    -= static_cast<T> (theViewportHeight / 2) - aGap;
-    }
-    else if (Point.y() < 0)
-    {
-      aBottom += static_cast<T> (theViewportHeight / 2) - aGap;
-      aTop    += static_cast<T> (theViewportHeight / 2) - aGap;
-    }
-    if (Flags == Graphic3d_TMF_2d_IsTopDown)
-    {
-      const T aTemp = aTop;
-      aTop    = aBottom;
-      aBottom = aTemp;
-    }
+    const Standard_Real aFocus = theCamera->IsOrthographic()
+                               ? theCamera->Distance()
+                               : (theCamera->ZFocusType() == Graphic3d_Camera::FocusType_Relative
+                                ? Standard_Real(theCamera->ZFocus() * theCamera->Distance())
+                                : Standard_Real(theCamera->ZFocus()));
 
-    Graphic3d_TransformUtils::Ortho2D<T> (theProjection, aLeft, aRight, aBottom, aTop);
+    // scale factor to pixels
+    const gp_XYZ        aViewDim = theCamera->ViewDimensions (aFocus);
+    const Standard_Real aScale   = Abs(aViewDim.Y()) / Standard_Real(theViewportHeight);
+    gp_XYZ aCenter (0.0, 0.0, -aFocus);
+    if (Point.x() != 0.0)
+    {
+      aCenter.SetX (-aViewDim.X() * 0.5 + Point.z() * aScale);
+      if (Point.x() > 0.0)
+      {
+        aCenter.SetX (-aCenter.X());
+      }
+    }
+    if (Point.y() != 0.0)
+    {
+      aCenter.SetY (-aViewDim.Y() * 0.5 + Point.z() * aScale);
+      if (Point.y() > 0.0)
+      {
+        aCenter.SetY (-aCenter.Y());
+      }
+    }
 
     theWorldView.InitIdentity();
+    Graphic3d_TransformUtils::Translate (theWorldView, T(aCenter.X()), T(aCenter.Y()), T(aCenter.Z()));
+    Graphic3d_TransformUtils::Scale     (theWorldView, T(aScale),      T(aScale),      T(aScale));
+    return;
   }
-  else
+
   {
     // Compute reference point for transformation in untransformed projection space.
     NCollection_Vec4<T> aRefPoint (static_cast<T> (Point.x()),

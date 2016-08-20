@@ -159,7 +159,7 @@ private:
   mutable OpenGl_BVHClipPrimitiveTrsfPersSet myBVHPrimitivesTrsfPers;
 
   //! Indexed map of always rendered structures.
-  NCollection_IndexedMap<const OpenGl_Structure*> myAlwaysRenderedMap;
+  mutable NCollection_IndexedMap<const OpenGl_Structure*> myAlwaysRenderedMap;
 
   //! Is needed for implementation of stochastic order of BVH traverse.
   mutable Standard_Boolean myBVHIsLeftChildQueuedFirst;

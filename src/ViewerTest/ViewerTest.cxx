@@ -3527,11 +3527,6 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       toSetTrsfPers  = Standard_True;
       aTrsfPersFlags = Graphic3d_TMF_2d;
     }
-    else if (aNameCase == "-2dtopdown")
-    {
-      toSetTrsfPers  = Standard_True;
-      aTrsfPersFlags = Graphic3d_TMF_2d | Graphic3d_TMF_2d_IsTopDown;
-    }
     else if (aNameCase == "-trsfpers"
           || aNameCase == "-pers")
     {
@@ -5567,7 +5562,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add("vdisplay",
               "vdisplay [-noupdate|-update] [-local] [-mutable] [-neutral]"
-      "\n\t\t:          [-trsfPers {pan|zoom|rotate|trihedron|full|none}=none] [-trsfPersPos X Y [Z]] [-3d|-2d|-2dTopDown]"
+      "\n\t\t:          [-trsfPers {pan|zoom|rotate|trihedron|full|none}=none] [-trsfPersPos X Y [Z]] [-3d|-2d]"
       "\n\t\t:          [-dispMode mode] [-highMode mode]"
       "\n\t\t:          [-layer index] [-top|-topmost|-overlay|-underlay]"
       "\n\t\t:          [-redisplay]"
@@ -5587,7 +5582,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:  -selectable|-noselect controls selection of objects."
       "\n\t\t:  -trsfPers    sets a transform persistence flags. Flag 'full' is pan, zoom and rotate."
       "\n\t\t:  -trsfPersPos sets an anchor point for transform persistence."
-      "\n\t\t:  -2d|-2dTopDown displays object in screen coordinates."
+      "\n\t\t:  -2d          displays object in screen coordinates (DY looks up)."
       "\n\t\t:  -dispmode sets display mode for objects."
       "\n\t\t:  -highmode sets hilight mode for objects."
       "\n\t\t:  -redisplay recomputes presentation of objects.",

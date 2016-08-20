@@ -137,7 +137,7 @@ const NCollection_Handle<BVH_Tree<Standard_Real, 3> >&
 
     Bnd_Box aBoundingBox;
 
-    if (anObject->TransformPersistence().Flags && !(anObject->TransformPersistence().Flags & Graphic3d_TMF_2d))
+    if (anObject->TransformPersistence().Flags != 0)
     {
       anObject->BoundingBox (aBoundingBox);
       if (!aBoundingBox.IsVoid())

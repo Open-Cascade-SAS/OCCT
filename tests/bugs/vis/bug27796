@@ -1,0 +1,106 @@
+puts "========"
+puts "Allow 3D objects with Graphic3d_TMF_2d flag"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+# four rectangles
+box b4 -175 -125 -5 350 250 1
+box b3 -150 -100 -4 300 200 1
+box b2 -125 -75  -3 250 150 1
+box b1 -100 -50  -2 200 100 1
+
+# text label
+text2brep t "texT | Text\ntexT | Text" -height 50
+set aTB [bounding t]
+set aTX [expr [lindex $aTB 3] * -0.5]
+set aTY [expr [lindex $aTB 4] * -0.5]
+ttranslate t $aTX $aTY 1
+
+# sphere
+psphere s 50
+
+# clock marks
+set aPnts {}
+for {set i 1} {$i <= 1} {incr i} { vertex p1_$i  [expr   75+5*$i]  86 1; lappend aPnts p1_$i }
+compound  {*}$aPnts p1
+
+set aPnts {}
+for {set i 1} {$i <= 2} {incr i} { vertex p2_$i  [expr  130+5*$i]  86 1; lappend aPnts p2_$i }
+compound  {*}$aPnts p2
+
+set aPnts {}
+for {set i 1} {$i <= 3} {incr i} { vertex p3_$i  [expr  130+5*$i]   0 1; lappend aPnts p3_$i }
+compound  {*}$aPnts p3
+
+set aPnts {}
+for {set i 1} {$i <= 4} {incr i} { vertex p4_$i  [expr  120+5*$i] -85 1; lappend aPnts p4_$i }
+compound  {*}$aPnts p4
+
+set aPnts {}
+for {set i 1} {$i <= 5} {incr i} { vertex p5_$i  [expr   55+5*$i] -85 1; lappend aPnts p5_$i }
+compound  {*}$aPnts p5
+
+set aPnts {}
+for {set i 1} {$i <= 6} {incr i} { vertex p6_$i  [expr  -18+5*$i] -85 1; lappend aPnts p6_$i }
+compound  {*}$aPnts p6
+
+set aPnts {}
+for {set i 1} {$i <= 7} {incr i} { vertex p7_$i  [expr  -85+5*$i] -85 1; lappend aPnts p7_$i }
+compound  {*}$aPnts p7
+
+set aPnts {}
+for {set i 1} {$i <= 8} {incr i} { vertex p8_$i  [expr -160+5*$i] -85 1; lappend aPnts p8_$i }
+compound  {*}$aPnts p8
+
+set aPnts {}
+for {set i 1} {$i <= 9} {incr i} { vertex p9_$i  [expr -160+5*$i]   0 1; lappend aPnts p9_$i }
+compound  {*}$aPnts p9
+
+set aPnts {}
+for {set i 1} {$i <=10} {incr i} { vertex p10_$i [expr -165+5*$i]  86 1; lappend aPnts p10_$i }
+compound  {*}$aPnts p10
+
+set aPnts {}
+for {set i 1} {$i <=11} {incr i} { vertex p11_$i [expr  -100+5*$i]  86 1; lappend aPnts p11_$i }
+compound  {*}$aPnts p11
+
+set aPnts {}
+for {set i 1} {$i <=12} {incr i} { vertex p12_$i [expr  -30+5*$i]  86 1; lappend aPnts p12_$i }
+compound  {*}$aPnts p12
+
+# entire list of 2d presentations
+set aList {b1 b2 b3 b4 s t p1 p2 p3 p4 p5 p6 p7 p8 p9 p10 p11 p12}
+
+vclear
+vinit View1
+vdisplay -dispMode 1 -highMode 1 -2d -trsfPersPos 0 0 {*}$aList
+vsetmaterial b1 b2 b3 b4 t PLASTIC
+vsetcolor b1 RED
+vsetcolor b2 GREEN
+vsetcolor b3 BLUE1
+vsetcolor b4 MAGENTA1
+vsetcolor t  GOLD
+vsetlocation s 0 0 -1
+
+box bb 1000 1000 1000
+vdisplay -dispMode 0 bb
+vfit
+vdump $imagedir/${casename}_center.png
+
+vdisplay -dispMode 1 -highMode 1 -2d -trsfPersPos -1  1 {*}$aList
+vdump $imagedir/${casename}_tl.png
+
+vdisplay -dispMode 1 -highMode 1 -2d -trsfPersPos  1  1 {*}$aList
+vdump $imagedir/${casename}_tr.png
+
+vdisplay -dispMode 1 -highMode 1 -2d -trsfPersPos  1 -1 {*}$aList
+vdump $imagedir/${casename}_br.png
+
+vdisplay -dispMode 1 -highMode 1 -2d -trsfPersPos -1 -1 {*}$aList
+vdump $imagedir/${casename}_bl.png
+
+vmoveto 110 385
+vselect 110 385
+set aColor [vreadpixel 110 385 rgb name]
+if { $aColor != "WHITE" } { puts "Error: wrong object is highlighted" }

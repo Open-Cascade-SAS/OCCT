@@ -174,6 +174,8 @@ Graphic3d_BndBox4f OpenGl_Layer::BoundingBox (const Standard_Integer          th
                                               const Standard_Integer          theWindowHeight,
                                               const Standard_Boolean          theToIncludeAuxiliary) const
 {
+  updateBVH();
+
   const Standard_Integer aBoxId = !theToIncludeAuxiliary ? 0 : 1;
   const Graphic3d_Mat4& aProjectionMat = theCamera->ProjectionMatrixF();
   const Graphic3d_Mat4& aWorldViewMat  = theCamera->OrientationMatrixF();
@@ -267,7 +269,7 @@ Graphic3d_BndBox4f OpenGl_Layer::BoundingBox (const Standard_Integer          th
     {
       continue;
     }
-    else if ((aStructure->TransformPersistence.Flags & Graphic3d_TMF_TriedronPers) == 0)
+    else if ((aStructure->TransformPersistence.Flags & (Graphic3d_TMF_TriedronPers | Graphic3d_TMF_2d)) == 0)
     {
       continue;
     }
@@ -459,6 +461,7 @@ void OpenGl_Layer::updateBVH() const
 
   myBVHPrimitives.Clear();
   myBVHPrimitivesTrsfPers.Clear();
+  myAlwaysRenderedMap.Clear();
   myIsBVHPrimitivesNeedsReset = Standard_False;
   for (Standard_Integer aPriorityIdx = 0, aNbPriorities = myArray.Length(); aPriorityIdx < aNbPriorities; ++aPriorityIdx)
   {
@@ -467,10 +470,10 @@ void OpenGl_Layer::updateBVH() const
       const OpenGl_Structure* aStruct = aStructIter.Value();
       if (aStruct->IsAlwaysRendered())
       {
-        continue;
+        aStruct->MarkAsNotCulled();
+        myAlwaysRenderedMap.Add (aStruct);
       }
-
-      if (aStruct->TransformPersistence.Flags == Graphic3d_TMF_None)
+      else if (aStruct->TransformPersistence.Flags == Graphic3d_TMF_None)
       {
         myBVHPrimitives.Add (aStruct);
       }
