@@ -475,7 +475,8 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   {
     OpenGl_Mat4 aProjection = aCtx->ProjectionState.Current();
     OpenGl_Mat4 aWorldView  = aCtx->WorldViewState.Current();
-    TransformPersistence.Apply (theWorkspace->View()->Camera(), aProjection, aWorldView, theWorkspace->Width(), theWorkspace->Height());
+    TransformPersistence.Apply (theWorkspace->View()->Camera(), aProjection, aWorldView,
+                                aCtx->Viewport()[2], aCtx->Viewport()[3]);
 
     aCtx->ProjectionState.Push();
     aCtx->WorldViewState.Push();

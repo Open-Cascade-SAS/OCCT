@@ -503,7 +503,7 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_Context)& theCtx,
                                                         myWinZ + theDVec.z(),
                                                         OpenGl_Mat4d::Map (THE_IDENTITY_MATRIX),
                                                         OpenGl_Mat4d::Map (aProjectMat),
-                                                        myViewport,
+                                                        theCtx->Viewport(),
                                                         anObjX,
                                                         anObjY,
                                                         anObjZ);
@@ -776,14 +776,12 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
 
   if (!myIs2d)
   {
-    glGetIntegerv (GL_VIEWPORT,          myViewport);
-
     Graphic3d_TransformUtils::Project<Standard_Real> (myPoint.x(),
                                                       myPoint.y(),
                                                       myPoint.z(),
                                                       myModelMatrix,
                                                       myProjMatrix,
-                                                      myViewport,
+                                                      theCtx->Viewport(),
                                                       myWinX,
                                                       myWinY,
                                                       myWinZ);
@@ -795,7 +793,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
                                                         myWinZ,
                                                         OpenGl_Mat4d::Map (THE_IDENTITY_MATRIX),
                                                         myProjMatrix,
-                                                        myViewport,
+                                                        theCtx->Viewport(),
                                                         x1,
                                                         y1,
                                                         z1);
@@ -807,7 +805,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
                                                         myWinZ,
                                                         OpenGl_Mat4d::Map (THE_IDENTITY_MATRIX),
                                                         myProjMatrix,
-                                                        myViewport,
+                                                        theCtx->Viewport(),
                                                         x2,
                                                         y2,
                                                         z2);

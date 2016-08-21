@@ -154,6 +154,11 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myIsGlDebugCtx (Standard_False),
   myResolutionRatio (1.0f)
 {
+  myViewport[0] = 0;
+  myViewport[1] = 0;
+  myViewport[2] = 0;
+  myViewport[3] = 0;
+
   // system-dependent fields
 #if defined(HAVE_EGL)
   myDisplay  = (Aspect_Display          )EGL_NO_DISPLAY;
@@ -286,6 +291,19 @@ void OpenGl_Context::forcedRelease()
     myUnusedResources->First()->Release (this);
     myUnusedResources->RemoveFirst();
   }
+}
+
+// =======================================================================
+// function : ResizeViewport
+// purpose  :
+// =======================================================================
+void OpenGl_Context::ResizeViewport (const Standard_Integer* theRect)
+{
+  core11fwd->glViewport (theRect[0], theRect[1], theRect[2], theRect[3]);
+  myViewport[0] = theRect[0];
+  myViewport[1] = theRect[1];
+  myViewport[2] = theRect[2];
+  myViewport[3] = theRect[3];
 }
 
 #if !defined(GL_ES_VERSION_2_0)

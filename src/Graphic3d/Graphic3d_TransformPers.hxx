@@ -115,6 +115,7 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
     return;
   }
 
+  const Standard_Integer aVPSizeY = theCamera->Tile().IsValid() ? theCamera->Tile().TotalSize.y() : theViewportHeight;
   if (Flags == Graphic3d_TMF_TriedronPers)
   {
     // reset Z focus for trihedron persistence
@@ -126,7 +127,7 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
 
     // scale factor to pixels
     const gp_XYZ aViewDim = theCamera->ViewDimensions (aFocus);
-    const Standard_Real aScale = Abs(aViewDim.Y()) / Standard_Real(theViewportHeight);
+    const Standard_Real aScale = Abs(aViewDim.Y()) / Standard_Real(aVPSizeY);
 
     // offset from the corner
     const Standard_Real anOffset = Point.z() * aScale;
@@ -171,7 +172,7 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
 
     // scale factor to pixels
     const gp_XYZ        aViewDim = theCamera->ViewDimensions (aFocus);
-    const Standard_Real aScale   = Abs(aViewDim.Y()) / Standard_Real(theViewportHeight);
+    const Standard_Real aScale   = Abs(aViewDim.Y()) / Standard_Real(aVPSizeY);
     gp_XYZ aCenter (0.0, 0.0, -aFocus);
     if (Point.x() != 0.0)
     {

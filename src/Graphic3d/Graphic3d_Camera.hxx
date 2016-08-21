@@ -16,6 +16,7 @@
 #ifndef _Graphic3d_Camera_HeaderFile
 #define _Graphic3d_Camera_HeaderFile
 
+#include <Graphic3d_CameraTile.hxx>
 #include <Graphic3d_Mat4d.hxx>
 #include <Graphic3d_Mat4.hxx>
 #include <Graphic3d_Vec3.hxx>
@@ -375,6 +376,14 @@ public:
     return myIODType;
   }
 
+  //! Get current tile.
+  const Graphic3d_CameraTile& Tile() const { return myTile; }
+
+  //! Sets the Tile defining the drawing sub-area within View.
+  //! Note that tile defining a region outside the view boundaries is also valid - use method Graphic3d_CameraTile::Cropped() to assign a cropped copy.
+  //! @param theTile tile definition
+  Standard_EXPORT void SetTile (const Graphic3d_CameraTile& theTile);
+
 //! @name Basic camera operations
 public:
 
@@ -638,6 +647,8 @@ private:
 
   Standard_Real myIOD;     //!< Intraocular distance value.
   IODType       myIODType; //!< Intraocular distance definition type.
+
+  Graphic3d_CameraTile myTile;//!< Tile defining sub-area for drawing
 
   mutable TransformMatrices<Standard_Real>      myMatricesD;
   mutable TransformMatrices<Standard_ShortReal> myMatricesF;

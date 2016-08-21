@@ -110,8 +110,8 @@ public:
                                                    void*                   theEglConfig);
 #endif
 
-  Standard_EXPORT Standard_Integer InquireLightLimit () Standard_OVERRIDE;
-  Standard_EXPORT Standard_Integer InquireViewLimit () Standard_OVERRIDE;
+  //! Request limit of graphic resource of specific type.
+  Standard_EXPORT virtual Standard_Integer InquireLimit (const Graphic3d_TypeOfLimit theType) const Standard_OVERRIDE;
 
 public:
 
@@ -133,8 +133,6 @@ public:
                                  Standard_ShortReal&            theWidth,
                                  Standard_ShortReal&            theAscent,
                                  Standard_ShortReal&            theDescent) const Standard_OVERRIDE;
-
-  Standard_EXPORT Standard_Integer InquirePlaneLimit() Standard_OVERRIDE;
 
   Standard_EXPORT Standard_ShortReal DefaultTextHeight() const Standard_OVERRIDE;
 

@@ -167,15 +167,6 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
     aCtx->core11fwd->glDisable (GL_DEPTH_TEST);
   }
 
-  aCtx->ProjectionState.Push();
-  aCtx->WorldViewState.Push();
-  aCtx->ModelWorldState.Push();
-  aCtx->ProjectionState.SetIdentity();
-  aCtx->WorldViewState.SetIdentity();
-  aCtx->ModelWorldState.SetIdentity();
-  aCtx->ApplyProjectionMatrix();
-  aCtx->ApplyModelViewMatrix();
-
   // Drawing background gradient if:
   // - gradient fill type is not Aspect_GFM_NONE and
   // - either background texture is no specified or it is drawn in Aspect_FM_CENTERED mode
@@ -193,11 +184,6 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
       aCtx->core11->glShadeModel (GL_SMOOTH);
     }
   #endif
-
-    if (myBgGradientArray->IsDataChanged())
-    {
-      myBgGradientArray->Init (theWorkspace);
-    }
 
     myBgGradientArray->Render (theWorkspace);
 
@@ -217,24 +203,9 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
     aCtx->core11fwd->glDisable (GL_BLEND);
 
     const OpenGl_AspectFace* anOldAspectFace = theWorkspace->SetAspectFace (myTextureParams);
-
-    if (myBgTextureArray->IsDataChanged()
-     || myBgTextureArray->IsViewSizeChanged (theWorkspace))
-    {
-      myBgTextureArray->Init (theWorkspace);
-    }
-
     myBgTextureArray->Render (theWorkspace);
-
-    // restore aspects
     theWorkspace->SetAspectFace (anOldAspectFace);
   }
-
-  aCtx->ModelWorldState.Pop();
-  aCtx->WorldViewState.Pop();
-  aCtx->ProjectionState.Pop();
-  aCtx->ApplyProjectionMatrix();
-  aCtx->ApplyModelViewMatrix();
 
   if (wasUsedZBuffer)
   {
@@ -437,7 +408,7 @@ void OpenGl_View::Redraw()
   }
   else
   {
-    OpenGl_FrameBuffer* aMainFbo = myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : NULL;
+    OpenGl_FrameBuffer* aMainFbo = myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : aFrameBuffer;
     OpenGl_FrameBuffer* anImmFbo = aFrameBuffer;
     if (!aCtx->caps->useSystemBuffer && myImmediateSceneFbos[0]->IsValid())
     {
@@ -449,13 +420,12 @@ void OpenGl_View::Redraw()
     }
 
   #if !defined(GL_ES_VERSION_2_0)
-    if (aMainFbo     == NULL
-     && aFrameBuffer == NULL)
+    if (aMainFbo == NULL)
     {
       aCtx->SetReadDrawBuffer (GL_BACK);
     }
   #endif
-    redraw (aProjectType, aMainFbo != NULL ? aMainFbo : aFrameBuffer);
+    redraw (aProjectType, aMainFbo);
     myBackBufferRestored = Standard_True;
     myIsImmediateDrawn   = Standard_False;
     if (!redrawImmediate (aProjectType, aMainFbo, anImmFbo))
@@ -676,7 +646,8 @@ void OpenGl_View::redraw (const Graphic3d_Camera::Projection theProjection, Open
   }
   else
   {
-    aCtx->core11fwd->glViewport (0, 0, myWindow->Width(), myWindow->Height());
+    const Standard_Integer aViewport[4] = { 0, 0, myWindow->Width(), myWindow->Height() };
+    aCtx->ResizeViewport (aViewport);
   }
 
   // request reset of material
@@ -1257,7 +1228,8 @@ void OpenGl_View::bindDefaultFbo (OpenGl_FrameBuffer* theCustomFbo)
       aCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
     }
   #endif
-    aCtx->core11fwd->glViewport (0, 0, myWindow->Width(), myWindow->Height());
+    const Standard_Integer aViewport[4] = { 0, 0, myWindow->Width(), myWindow->Height() };
+    aCtx->ResizeViewport (aViewport);
   }
 }
 

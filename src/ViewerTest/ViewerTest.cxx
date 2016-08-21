@@ -807,11 +807,10 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
 
   Standard_Integer      anArgIter   = 1;
   Standard_CString      aFilePath   = theArgVec[anArgIter++];
-  Graphic3d_BufferType  aBufferType = Graphic3d_BT_RGB;
-  V3d_StereoDumpOptions aStereoOpts = V3d_SDO_MONO;
   ViewerTest_StereoPair aStereoPair = ViewerTest_SP_Single;
-  Standard_Integer      aWidth      = 0;
-  Standard_Integer      aHeight     = 0;
+  V3d_ImageDumpOptions  aParams;
+  aParams.BufferType    = Graphic3d_BT_RGB;
+  aParams.StereoOptions = V3d_SDO_MONO;
   for (; anArgIter < theArgNb; ++anArgIter)
   {
     TCollection_AsciiString anArg (theArgVec[anArgIter]);
@@ -828,15 +827,15 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
       aBufArg.LowerCase();
       if (aBufArg == "rgba")
       {
-        aBufferType = Graphic3d_BT_RGBA;
+        aParams.BufferType = Graphic3d_BT_RGBA;
       }
       else if (aBufArg == "rgb")
       {
-        aBufferType = Graphic3d_BT_RGB;
+        aParams.BufferType = Graphic3d_BT_RGB;
       }
       else if (aBufArg == "depth")
       {
-        aBufferType = Graphic3d_BT_Depth;
+        aParams.BufferType = Graphic3d_BT_Depth;
       }
       else
       {
@@ -857,22 +856,22 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
       if (aStereoArg == "l"
        || aStereoArg == "left")
       {
-        aStereoOpts = V3d_SDO_LEFT_EYE;
+        aParams.StereoOptions = V3d_SDO_LEFT_EYE;
       }
       else if (aStereoArg == "r"
             || aStereoArg == "right")
       {
-        aStereoOpts = V3d_SDO_RIGHT_EYE;
+        aParams.StereoOptions = V3d_SDO_RIGHT_EYE;
       }
       else if (aStereoArg == "mono")
       {
-        aStereoOpts = V3d_SDO_MONO;
+        aParams.StereoOptions = V3d_SDO_MONO;
       }
       else if (aStereoArg == "blended"
             || aStereoArg == "blend"
             || aStereoArg == "stereo")
       {
-        aStereoOpts = V3d_SDO_BLENDED;
+        aParams.StereoOptions = V3d_SDO_BLENDED;
       }
       else if (aStereoArg == "sbs"
             || aStereoArg == "sidebyside")
@@ -893,24 +892,23 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
     else if (anArg == "-rgba"
           || anArg ==  "rgba")
     {
-      aBufferType = Graphic3d_BT_RGBA;
+      aParams.BufferType = Graphic3d_BT_RGBA;
     }
     else if (anArg == "-rgb"
           || anArg ==  "rgb")
     {
-      aBufferType = Graphic3d_BT_RGB;
+      aParams.BufferType = Graphic3d_BT_RGB;
     }
     else if (anArg == "-depth"
           || anArg ==  "depth")
     {
-      aBufferType = Graphic3d_BT_Depth;
+      aParams.BufferType = Graphic3d_BT_Depth;
     }
-
     else if (anArg == "-width"
           || anArg ==  "width"
           || anArg ==  "sizex")
     {
-      if (aWidth != 0)
+      if (aParams.Width != 0)
       {
         std::cout << "Error: wrong syntax at " << theArgVec[anArgIter] << "\n";
         return 1;
@@ -920,13 +918,13 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
         std::cout << "Error: integer value is expected right after 'width'\n";
         return 1;
       }
-      aWidth = Draw::Atoi (theArgVec[anArgIter]);
+      aParams.Width = Draw::Atoi (theArgVec[anArgIter]);
     }
     else if (anArg == "-height"
           || anArg ==  "height"
           || anArg ==  "-sizey")
     {
-      if (aHeight != 0)
+      if (aParams.Height != 0)
       {
         std::cout << "Error: wrong syntax at " << theArgVec[anArgIter] << "\n";
         return 1;
@@ -936,7 +934,17 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
         std::cout << "Error: integer value is expected right after 'height'\n";
         return 1;
       }
-      aHeight = Draw::Atoi (theArgVec[anArgIter]);
+      aParams.Height = Draw::Atoi (theArgVec[anArgIter]);
+    }
+    else if (anArg == "-tile"
+          || anArg == "-tilesize")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: integer value is expected right after 'tileSize'\n";
+        return 1;
+      }
+      aParams.TileSize = Draw::Atoi (theArgVec[anArgIter]);
     }
     else
     {
@@ -944,10 +952,10 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
       return 1;
     }
   }
-  if ((aWidth <= 0 && aHeight >  0)
-   || (aWidth >  0 && aHeight <= 0))
+  if ((aParams.Width <= 0 && aParams.Height >  0)
+   || (aParams.Width >  0 && aParams.Height <= 0))
   {
-    std::cout << "Error: dimensions " << aWidth << "x" << aHeight << " are incorrect\n";
+    std::cout << "Error: dimensions " << aParams.Width << "x" << aParams.Height << " are incorrect\n";
     return 1;
   }
 
@@ -958,16 +966,16 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
     return 1;
   }
 
-  if (aWidth <= 0 || aHeight <= 0)
+  if (aParams.Width <= 0 || aParams.Height <= 0)
   {
-    aView->Window()->Size (aWidth, aHeight);
+    aView->Window()->Size (aParams.Width, aParams.Height);
   }
 
   Image_AlienPixMap aPixMap;
 
   bool isBigEndian = Image_PixMap::IsBigEndianHost();
   Image_PixMap::ImgFormat aFormat = Image_PixMap::ImgUNKNOWN;
-  switch (aBufferType)
+  switch (aParams.BufferType)
   {
     case Graphic3d_BT_RGB:   aFormat = isBigEndian ? Image_PixMap::ImgRGB  : Image_PixMap::ImgBGR;  break;
     case Graphic3d_BT_RGBA:  aFormat = isBigEndian ? Image_PixMap::ImgRGBA : Image_PixMap::ImgBGRA; break;
@@ -978,22 +986,22 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
   {
     case ViewerTest_SP_Single:
     {
-      if (!aView->ToPixMap (aPixMap, aWidth, aHeight, aBufferType, Standard_True, aStereoOpts))
+      if (!aView->ToPixMap (aPixMap, aParams))
       {
         theDI << "Fail: view dump failed!\n";
         return 0;
       }
-      else if (aPixMap.SizeX() != Standard_Size(aWidth)
-            || aPixMap.SizeY() != Standard_Size(aHeight))
+      else if (aPixMap.SizeX() != Standard_Size(aParams.Width)
+            || aPixMap.SizeY() != Standard_Size(aParams.Height))
       {
         theDI << "Fail: dumped dimensions "    << (Standard_Integer )aPixMap.SizeX() << "x" << (Standard_Integer )aPixMap.SizeY()
-              << " are lesser than requested " << aWidth << "x" << aHeight << "\n";
+              << " are lesser than requested " << aParams.Width << "x" << aParams.Height << "\n";
       }
       break;
     }
     case ViewerTest_SP_SideBySide:
     {
-      if (!aPixMap.InitZero (aFormat, aWidth * 2, aHeight))
+      if (!aPixMap.InitZero (aFormat, aParams.Width * 2, aParams.Height))
       {
         theDI << "Fail: not enough memory for image allocation!\n";
         return 0;
@@ -1001,12 +1009,15 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
 
       Image_PixMap aPixMapL, aPixMapR;
       aPixMapL.InitWrapper (aPixMap.Format(), aPixMap.ChangeData(),
-                            aWidth, aHeight, aPixMap.SizeRowBytes());
-      aPixMapR.InitWrapper (aPixMap.Format(), aPixMap.ChangeData() + aPixMap.SizePixelBytes() * aWidth,
-                            aWidth, aHeight, aPixMap.SizeRowBytes());
-      if (!aView->ToPixMap (aPixMapL, aWidth, aHeight, aBufferType, Standard_True, V3d_SDO_LEFT_EYE)
-       || !aView->ToPixMap (aPixMapR, aWidth, aHeight, aBufferType, Standard_True, V3d_SDO_RIGHT_EYE)
-       )
+                            aParams.Width, aParams.Height, aPixMap.SizeRowBytes());
+      aPixMapR.InitWrapper (aPixMap.Format(), aPixMap.ChangeData() + aPixMap.SizePixelBytes() * aParams.Width,
+                            aParams.Width, aParams.Height, aPixMap.SizeRowBytes());
+
+      aParams.StereoOptions = V3d_SDO_LEFT_EYE;
+      Standard_Boolean isOk = aView->ToPixMap (aPixMapL, aParams);
+      aParams.StereoOptions = V3d_SDO_RIGHT_EYE;
+      isOk          = isOk && aView->ToPixMap (aPixMapR, aParams);
+      if (!isOk)
       {
         theDI << "Fail: view dump failed!\n";
         return 0;
@@ -1015,7 +1026,7 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
     }
     case ViewerTest_SP_OverUnder:
     {
-      if (!aPixMap.InitZero (aFormat, aWidth, aHeight * 2))
+      if (!aPixMap.InitZero (aFormat, aParams.Width, aParams.Height * 2))
       {
         theDI << "Fail: not enough memory for image allocation!\n";
         return 0;
@@ -1023,11 +1034,15 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
 
       Image_PixMap aPixMapL, aPixMapR;
       aPixMapL.InitWrapper (aFormat, aPixMap.ChangeData(),
-                            aWidth, aHeight, aPixMap.SizeRowBytes());
-      aPixMapR.InitWrapper (aFormat, aPixMap.ChangeData() + aPixMap.SizeRowBytes() * aHeight,
-                            aWidth, aHeight, aPixMap.SizeRowBytes());
-      if (!aView->ToPixMap (aPixMapL, aWidth, aHeight, aBufferType, Standard_True, V3d_SDO_LEFT_EYE)
-       || !aView->ToPixMap (aPixMapR, aWidth, aHeight, aBufferType, Standard_True, V3d_SDO_RIGHT_EYE))
+                            aParams.Width, aParams.Height, aPixMap.SizeRowBytes());
+      aPixMapR.InitWrapper (aFormat, aPixMap.ChangeData() + aPixMap.SizeRowBytes() * aParams.Height,
+                            aParams.Width, aParams.Height, aPixMap.SizeRowBytes());
+
+      aParams.StereoOptions = V3d_SDO_LEFT_EYE;
+      Standard_Boolean isOk = aView->ToPixMap (aPixMapL, aParams);
+      aParams.StereoOptions = V3d_SDO_RIGHT_EYE;
+      isOk          = isOk && aView->ToPixMap (aPixMapR, aParams);
+      if (!isOk)
       {
         theDI << "Fail: view dump failed!\n";
         return 0;
@@ -5672,6 +5687,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
               "vdump <filename>." DUMP_FORMATS " [-width Width -height Height]"
       "\n\t\t:       [-buffer rgb|rgba|depth=rgb]"
       "\n\t\t:       [-stereo mono|left|right|blend|sideBySide|overUnder=mono]"
+      "\n\t\t:       [-tileSize Size=0]"
       "\n\t\t: Dumps content of the active view into image file",
 		  __FILE__,VDump,group);
 

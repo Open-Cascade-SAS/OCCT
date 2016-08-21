@@ -148,7 +148,6 @@ protected:
   mutable OpenGl_Mat4d myProjMatrix;
   mutable OpenGl_Mat4d myModelMatrix;
   mutable OpenGl_Mat4d myOrientationMatrix;
-  mutable GLint    myViewport[4];
   mutable GLdouble myWinX;
   mutable GLdouble myWinY;
   mutable GLdouble myWinZ;

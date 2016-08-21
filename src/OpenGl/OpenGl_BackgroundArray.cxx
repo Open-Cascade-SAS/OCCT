@@ -18,6 +18,7 @@
 #include <Aspect_FillMethod.hxx>
 #include <NCollection_AlignedAllocator.hxx>
 #include <OpenGl_Texture.hxx>
+#include <OpenGl_View.hxx>
 #include <Graphic3d_TextureParams.hxx>
 
 // =======================================================================
@@ -26,11 +27,11 @@
 // =======================================================================
 OpenGl_BackgroundArray::OpenGl_BackgroundArray (const Graphic3d_TypeOfBackground theType)
 : OpenGl_PrimitiveArray (NULL, Graphic3d_TOPA_TRIANGLESTRIPS, NULL, NULL, NULL),
-  myToUpdate (Standard_False),
   myType (theType),
+  myFillMethod (Aspect_FM_NONE),
   myViewWidth (0),
   myViewHeight (0),
-  myFillMethod (Aspect_FM_NONE)
+  myToUpdate (Standard_False)
 {
   Handle(NCollection_AlignedAllocator) anAlloc = new NCollection_AlignedAllocator (16);
   myAttribs = new Graphic3d_Buffer (anAlloc);
@@ -40,6 +41,18 @@ OpenGl_BackgroundArray::OpenGl_BackgroundArray (const Graphic3d_TypeOfBackground
   myGradientParams.color1 = OpenGl_Vec4 (0.0f, 0.0f, 0.0f, 1.0f);
   myGradientParams.color2 = OpenGl_Vec4 (0.0f, 0.0f, 0.0f, 1.0f);
   myGradientParams.type   = Aspect_GFM_NONE;
+
+  myTrsfPers.Flags = Graphic3d_TMF_2d;
+  if (myType == Graphic3d_TOB_TEXTURE)
+  {
+    myTrsfPers.Point.x() = 0.0;
+    myTrsfPers.Point.y() = 0.0;
+  }
+  else
+  {
+    myTrsfPers.Point.x() = -1.0;
+    myTrsfPers.Point.y() = -1.0;
+  }
 }
 
 // =======================================================================
@@ -131,10 +144,10 @@ void OpenGl_BackgroundArray::invalidateData()
 }
 
 // =======================================================================
-// method  : Init
+// method  : init
 // purpose :
 // =======================================================================
-Standard_Boolean OpenGl_BackgroundArray::Init (const Handle(OpenGl_Workspace)& theWorkspace)
+Standard_Boolean OpenGl_BackgroundArray::init (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   switch (myType)
   {
@@ -148,8 +161,6 @@ Standard_Boolean OpenGl_BackgroundArray::Init (const Handle(OpenGl_Workspace)& t
     }
     case Graphic3d_TOB_TEXTURE:
     {
-      myViewWidth  = theWorkspace->Width();
-      myViewHeight = theWorkspace->Height();
       if (!createTextureArray (theWorkspace))
       {
         return Standard_False;
@@ -181,7 +192,7 @@ Standard_Boolean OpenGl_BackgroundArray::Init (const Handle(OpenGl_Workspace)& t
 // method  : createGradientArray
 // purpose :
 // =======================================================================
-Standard_Boolean OpenGl_BackgroundArray::createGradientArray()
+Standard_Boolean OpenGl_BackgroundArray::createGradientArray() const
 {
   // Initialize data for primitive array
   Graphic3d_Attribute aGragientAttribInfo[] =
@@ -197,10 +208,10 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray()
 
   OpenGl_Vec2 aVertices[4] =
   {
-    OpenGl_Vec2( 1.0f, -1.0f),
-    OpenGl_Vec2( 1.0f,  1.0f),
-    OpenGl_Vec2(-1.0f, -1.0f),
-    OpenGl_Vec2(-1.0f,  1.0f)
+    OpenGl_Vec2(float(myViewWidth), 0.0f),
+    OpenGl_Vec2(float(myViewWidth), float(myViewHeight)),
+    OpenGl_Vec2(0.0f,               0.0f),
+    OpenGl_Vec2(0.0f,               float(myViewHeight))
   };
 
   float* aCorners[4]     = {};
@@ -249,10 +260,10 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray()
     }
     case Aspect_GFM_CORNER1:
     {
-      aVertices[0] = OpenGl_Vec2( 1.0f,  1.0f);
-      aVertices[1] = OpenGl_Vec2(-1.0f,  1.0f);
-      aVertices[2] = OpenGl_Vec2( 1.0f, -1.0f);
-      aVertices[3] = OpenGl_Vec2(-1.0f, -1.0f);
+      aVertices[0] = OpenGl_Vec2(float(myViewWidth), float(myViewHeight));
+      aVertices[1] = OpenGl_Vec2(0.0f,               float(myViewHeight));
+      aVertices[2] = OpenGl_Vec2(float(myViewWidth), 0.0f);
+      aVertices[3] = OpenGl_Vec2(0.0f,               0.0f);
 
       aCorners[0] = myGradientParams.color2.xyz().ChangeData();
       aCorners[1] = myGradientParams.color1.xyz().ChangeData();
@@ -270,10 +281,10 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray()
     }
     case Aspect_GFM_CORNER3:
     {
-      aVertices[0] = OpenGl_Vec2( 1.0f,  1.0f);
-      aVertices[1] = OpenGl_Vec2(-1.0f,  1.0f);
-      aVertices[2] = OpenGl_Vec2( 1.0f, -1.0f);
-      aVertices[3] = OpenGl_Vec2(-1.0f, -1.0f);
+      aVertices[0] = OpenGl_Vec2(float(myViewWidth), float(myViewHeight));
+      aVertices[1] = OpenGl_Vec2(0.0f,               float(myViewHeight));
+      aVertices[2] = OpenGl_Vec2(float(myViewWidth), 0.0f);
+      aVertices[3] = OpenGl_Vec2(0.0f,               0.0f);
 
       aCorners[0] = myGradientParams.color2.xyz().ChangeData();
       aCorners[1] = myGradientParams.color2.xyz().ChangeData();
@@ -311,7 +322,7 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray()
 // method  : createTextureArray
 // purpose :
 // =======================================================================
-Standard_Boolean OpenGl_BackgroundArray::createTextureArray (const Handle(OpenGl_Workspace)& theWorkspace)
+Standard_Boolean OpenGl_BackgroundArray::createTextureArray (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   Graphic3d_Attribute aTextureAttribInfo[] =
   {
@@ -328,8 +339,8 @@ Standard_Boolean OpenGl_BackgroundArray::createTextureArray (const Handle(OpenGl
   GLfloat aTexRangeY = 1.0f; // texture <t> coordinate
 
   // Set up for stretching or tiling
-  GLfloat anOffsetX = 1.0f;
-  GLfloat anOffsetY = 1.0f;
+  GLfloat anOffsetX = 0.5f * (float )myViewWidth;
+  GLfloat anOffsetY = 0.5f * (float )myViewHeight;
 
   // Setting this coefficient to -1.0f allows to tile textures relatively to the top-left corner of the view
   // (value 1.0f corresponds to the initial behavior - tiling from the bottom-left corner)
@@ -343,8 +354,8 @@ Standard_Boolean OpenGl_BackgroundArray::createTextureArray (const Handle(OpenGl
 
   if (myFillMethod == Aspect_FM_CENTERED)
   {
-    anOffsetX = aTextureWidth  / (GLfloat )myViewWidth;
-    anOffsetY = aTextureHeight / (GLfloat )myViewHeight;
+    anOffsetX = 0.5f * aTextureWidth;
+    anOffsetY = 0.5f * aTextureHeight;
   }
   else if (myFillMethod == Aspect_FM_TILED)
   {
@@ -374,4 +385,46 @@ Standard_Boolean OpenGl_BackgroundArray::createTextureArray (const Handle(OpenGl
   aData[1] = OpenGl_Vec2 (0.0f, aCoef * aTexRangeY);
 
   return Standard_True;
+}
+
+// =======================================================================
+// method  : createTextureArray
+// purpose :
+// =======================================================================
+void OpenGl_BackgroundArray::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
+{
+  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
+  Standard_Integer aViewSizeX = aCtx->Viewport()[2];
+  Standard_Integer aViewSizeY = aCtx->Viewport()[3];
+  if (theWorkspace->View()->Camera()->Tile().IsValid())
+  {
+    aViewSizeX = theWorkspace->View()->Camera()->Tile().TotalSize.x();
+    aViewSizeY = theWorkspace->View()->Camera()->Tile().TotalSize.y();
+  }
+  if (myToUpdate
+   || myViewWidth  != aViewSizeX
+   || myViewHeight != aViewSizeY)
+  {
+    myViewWidth  = aViewSizeX;
+    myViewHeight = aViewSizeY;
+    init (theWorkspace);
+  }
+
+  OpenGl_Mat4 aProjection = aCtx->ProjectionState.Current();
+  OpenGl_Mat4 aWorldView  = aCtx->WorldViewState.Current();
+  myTrsfPers.Apply (theWorkspace->View()->Camera(), aProjection, aWorldView,
+                    aCtx->Viewport()[2], aCtx->Viewport()[3]);
+
+  aCtx->ProjectionState.Push();
+  aCtx->WorldViewState.Push();
+  aCtx->ProjectionState.SetCurrent (aProjection);
+  aCtx->WorldViewState.SetCurrent (aWorldView);
+  aCtx->ApplyProjectionMatrix();
+  aCtx->ApplyModelViewMatrix();
+
+  OpenGl_PrimitiveArray::Render (theWorkspace);
+
+  aCtx->ProjectionState.Pop();
+  aCtx->WorldViewState.Pop();
+  aCtx->ApplyProjectionMatrix();
 }

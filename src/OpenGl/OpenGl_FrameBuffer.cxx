@@ -433,9 +433,10 @@ void OpenGl_FrameBuffer::Release (OpenGl_Context* theGlCtx)
 // function : SetupViewport
 // purpose  :
 // =======================================================================
-void OpenGl_FrameBuffer::SetupViewport (const Handle(OpenGl_Context)& /*theGlCtx*/)
+void OpenGl_FrameBuffer::SetupViewport (const Handle(OpenGl_Context)& theGlCtx)
 {
-  glViewport (0, 0, myVPSizeX, myVPSizeY);
+  const Standard_Integer aViewport[4] = { 0, 0, myVPSizeX, myVPSizeY };
+  theGlCtx->ResizeViewport (aViewport);
 }
 
 // =======================================================================

@@ -68,7 +68,7 @@
 
 #include <V3d_Coordinate.hxx>
 #include <V3d_ListOfTransient.hxx>
-#include <V3d_StereoDumpOptions.hxx>
+#include <V3d_ImageDumpOptions.hxx>
 #include <V3d_TypeOfAxe.hxx>
 
 #include <V3d_TypeOfBackfacingModel.hxx>
@@ -814,17 +814,32 @@ public:
                                            const Graphic3d_ExportFormat theFormat,
                                            const Graphic3d_SortType theSortType = Graphic3d_ST_BSP_Tree);
 
-  //! Dumps the full contents of the view
-  //! to a pixmap of pixel size <theWidth> * <theHeight> and
-  //! buffer type <theBufferType>. If <theToKeepAspect> is true
-  //! the aspect ratio of view will be kept if <theWidth> and <theHeight>
-  //! define another ratio.
-  //! Pixmap will be automatically (re)allocated when needed.
-  //! When dumping stereographic camera - the corresponding
-  //! middle-point monographic projection will be used for dumping by default.
-  //! <theStereoOptions> flags are to be used for dumping then left or
-  //! right eye projections.
-  Standard_EXPORT Standard_Boolean ToPixMap (Image_PixMap& theImage, const Standard_Integer theWidth, const Standard_Integer theHeight, const Graphic3d_BufferType& theBufferType = Graphic3d_BT_RGB, const Standard_Boolean theToKeepAspect = Standard_True, const V3d_StereoDumpOptions theStereoOptions = V3d_SDO_MONO);
+  //! Dumps the full contents of the view to a pixmap with specified parameters.
+  Standard_EXPORT Standard_Boolean ToPixMap (Image_PixMap&               theImage,
+                                             const V3d_ImageDumpOptions& theParams);
+
+  //! Dumps the full contents of the view to a pixmap.
+  //! @param theImage          target image, will be re-allocated to match theWidth x theHeight
+  //! @param theWidth          target image width
+  //! @param theHeight         target image height
+  //! @param theBufferType     type of the view buffer to dump (color / depth)
+  //! @param theToAdjustAspect when true, active view aspect ratio will be overridden by (theWidth / theHeight)
+  //! @param theStereoOptions  how to dump stereographic camera
+  Standard_Boolean ToPixMap (Image_PixMap& theImage,
+                             const Standard_Integer theWidth,
+                             const Standard_Integer theHeight,
+                             const Graphic3d_BufferType& theBufferType     = Graphic3d_BT_RGB,
+                             const Standard_Boolean      theToAdjustAspect = Standard_True,
+                             const V3d_StereoDumpOptions theStereoOptions  = V3d_SDO_MONO)
+  {
+    V3d_ImageDumpOptions aParams;
+    aParams.Width  = theWidth;
+    aParams.Height = theHeight;
+    aParams.BufferType = theBufferType;
+    aParams.StereoOptions  = theStereoOptions;
+    aParams.ToAdjustAspect = theToAdjustAspect;
+    return ToPixMap (theImage, aParams);
+  }
 
   //! Manages display of the back faces
   //! When <aModel> is TOBM_AUTOMATIC the object backfaces

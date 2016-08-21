@@ -46,6 +46,7 @@
 #include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <Graphic3d_CLight.hxx>
+#include <Graphic3d_TypeOfLimit.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 
@@ -68,16 +69,20 @@ class Graphic3d_GraphicDriver : public MMgt_TShared
 
 public:
 
-  
-  //! call_togl_inquirelight
-  virtual Standard_Integer InquireLightLimit() = 0;
-  
-  //! call_togl_inquireplane
-  virtual Standard_Integer InquirePlaneLimit() = 0;
-  
-  //! call_togl_inquireview
-  virtual Standard_Integer InquireViewLimit() = 0;
-  
+  //! Request limit of graphic resource of specific type.
+  virtual Standard_Integer InquireLimit (const Graphic3d_TypeOfLimit theType) const = 0;
+
+  //! Request maximum number of active light sources supported by driver and hardware.
+  Standard_Integer InquireLightLimit() const { return InquireLimit (Graphic3d_TypeOfLimit_MaxNbLights); }
+
+  //! Request maximum number of active clipping planes supported by driver and hardware.
+  Standard_Integer InquirePlaneLimit() const { return InquireLimit (Graphic3d_TypeOfLimit_MaxNbClipPlanes); }
+
+  //! Request maximum number of views supported by driver.
+  Standard_Integer InquireViewLimit() const { return InquireLimit (Graphic3d_TypeOfLimit_MaxNbViews); }
+
+public:
+
   //! Creates new empty graphic structure
   virtual Handle(Graphic3d_CStructure) CreateStructure (const Handle(Graphic3d_StructureManager)& theManager) = 0;
   

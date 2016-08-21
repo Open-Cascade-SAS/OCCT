@@ -731,9 +731,10 @@ void OpenGl_Window::Init()
 
   glDisable (GL_DITHER);
   glDisable (GL_SCISSOR_TEST);
-  glViewport (0, 0, myWidth, myHeight);
+  const Standard_Integer aViewport[4] = { 0, 0, myWidth, myHeight };
+  myGlContext->ResizeViewport (aViewport);
 #if !defined(GL_ES_VERSION_2_0)
-  glDrawBuffer (GL_BACK);
+  myGlContext->SetDrawBuffer (GL_BACK);
   if (myGlContext->core11 != NULL)
   {
     glMatrixMode (GL_MODELVIEW);

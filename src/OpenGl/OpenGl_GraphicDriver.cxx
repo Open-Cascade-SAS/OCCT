@@ -363,31 +363,28 @@ Standard_Boolean OpenGl_GraphicDriver::InitEglContext (Aspect_Display          t
 #endif
 
 // =======================================================================
-// function : InquireLightLimit
+// function : InquireLimit
 // purpose  :
 // =======================================================================
-Standard_Integer OpenGl_GraphicDriver::InquireLightLimit()
-{
-  return OpenGLMaxLights;
-}
-
-// =======================================================================
-// function : InquireViewLimit
-// purpose  :
-// =======================================================================
-Standard_Integer OpenGl_GraphicDriver::InquireViewLimit()
-{
-  return 10000;
-}
-
-// =======================================================================
-// function : InquirePlaneLimit
-// purpose  :
-// =======================================================================
-Standard_Integer OpenGl_GraphicDriver::InquirePlaneLimit()
+Standard_Integer OpenGl_GraphicDriver::InquireLimit (const Graphic3d_TypeOfLimit theType) const
 {
   const Handle(OpenGl_Context)& aCtx = GetSharedContext();
-  return aCtx.IsNull() ? aCtx->MaxClipPlanes() : 0;
+  switch (theType)
+  {
+    case Graphic3d_TypeOfLimit_MaxNbLights:
+      return OpenGLMaxLights;
+    case Graphic3d_TypeOfLimit_MaxNbClipPlanes:
+      return !aCtx.IsNull() ? aCtx->MaxClipPlanes() : 0;
+    case Graphic3d_TypeOfLimit_MaxNbViews:
+      return 10000;
+    case Graphic3d_TypeOfLimit_MaxTextureSize:
+      return !aCtx.IsNull() ? aCtx->MaxTextureSize() : 1024;
+    case Graphic3d_TypeOfLimit_MaxMsaa:
+      return !aCtx.IsNull() ? aCtx->MaxMsaaSamples() : 0;
+    case Graphic3d_TypeOfLimit_NB:
+      return 0;
+  }
+  return 0;
 }
 
 // =======================================================================

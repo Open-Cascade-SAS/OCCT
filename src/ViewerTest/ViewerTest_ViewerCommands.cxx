@@ -4279,6 +4279,108 @@ static int VGraduatedTrihedron (Draw_Interpretor& /*theDi*/, Standard_Integer th
 }
 
 //==============================================================================
+//function : VTile
+//purpose  :
+//==============================================================================
+static int VTile (Draw_Interpretor& theDI,
+                  Standard_Integer  theArgNb,
+                  const char**      theArgVec)
+{
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    std::cerr << "Error: no active viewer.\n";
+    return 1;
+  }
+
+  Graphic3d_CameraTile aTile = aView->Camera()->Tile();
+  if (theArgNb < 2)
+  {
+    theDI << "Total size: " << aTile.TotalSize.x() << " " << aTile.TotalSize.y() << "\n"
+          << "Tile  size: " << aTile.TileSize.x()  << " " << aTile.TileSize.y()  << "\n"
+          << "Lower left: " << aTile.Offset.x()    << " " << aTile.Offset.y()    << "\n";
+    return 0;
+  }
+
+  aView->Window()->Size (aTile.TileSize.x(), aTile.TileSize.y());
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "-lowerleft"
+     || anArg == "-upperleft")
+    {
+      if (anArgIter + 3 < theArgNb)
+      {
+        std::cerr << "Syntax error at '" << theArgVec[anArgIter] << "'.\n";
+        return 1;
+      }
+      aTile.IsTopDown = (anArg == "-upperleft") == Standard_True;
+      aTile.Offset.x() = Draw::Atoi (theArgVec[anArgIter + 1]);
+      aTile.Offset.y() = Draw::Atoi (theArgVec[anArgIter + 2]);
+    }
+    else if (anArg == "-total"
+          || anArg == "-totalsize"
+          || anArg == "-viewsize")
+    {
+      if (anArgIter + 3 < theArgNb)
+      {
+        std::cerr << "Syntax error at '" << theArgVec[anArgIter] << "'.\n";
+        return 1;
+      }
+      aTile.TotalSize.x() = Draw::Atoi (theArgVec[anArgIter + 1]);
+      aTile.TotalSize.y() = Draw::Atoi (theArgVec[anArgIter + 2]);
+      if (aTile.TotalSize.x() < 1
+       || aTile.TotalSize.y() < 1)
+      {
+        std::cerr << "Error: total size is incorrect.\n";
+        return 1;
+      }
+    }
+    else if (anArg == "-tilesize")
+    {
+      if (anArgIter + 3 < theArgNb)
+      {
+        std::cerr << "Syntax error at '" << theArgVec[anArgIter] << "'.\n";
+        return 1;
+      }
+
+      aTile.TileSize.x() = Draw::Atoi (theArgVec[anArgIter + 1]);
+      aTile.TileSize.y() = Draw::Atoi (theArgVec[anArgIter + 2]);
+      if (aTile.TileSize.x() < 1
+       || aTile.TileSize.y() < 1)
+      {
+        std::cerr << "Error: tile size is incorrect.\n";
+        return 1;
+      }
+    }
+    else if (anArg == "-unset")
+    {
+      aView->Camera()->SetTile (Graphic3d_CameraTile());
+      aView->Redraw();
+      return 0;
+    }
+  }
+
+  if (aTile.TileSize.x() < 1
+   || aTile.TileSize.y() < 1)
+  {
+    std::cerr << "Error: tile size is undefined.\n";
+    return 1;
+  }
+  else if (aTile.TotalSize.x() < 1
+        || aTile.TotalSize.y() < 1)
+  {
+    std::cerr << "Error: total size is undefined.\n";
+    return 1;
+  }
+
+  aView->Camera()->SetTile (aTile);
+  aView->Redraw();
+  return 0;
+}
+
+//==============================================================================
 //function : VZLayer
 //purpose  : Test z layer operations for v3d viewer
 //==============================================================================
@@ -9064,6 +9166,14 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     " - xticks, yticks, xzicks - number of tickmark on axes. Default: 5\n"
     " - xticklength, yticklength, xzicklength - length of tickmark on axes. Default: 10\n",
     __FILE__,VGraduatedTrihedron,group);
+  theCommands.Add("vtile" ,
+            "vtile [-totalSize W H] [-lowerLeft X Y] [-upperLeft X Y] [-tileSize W H]"
+    "\n\t\t: Setup view to draw a tile (a part of virtual bigger viewport)."
+    "\n\t\t:  -totalSize the size of virtual bigger viewport"
+    "\n\t\t:  -tileSize  tile size (the view size will be used if omitted)"
+    "\n\t\t:  -lowerLeft tile offset as lower left corner"
+    "\n\t\t:  -upperLeft tile offset as upper left corner",
+    __FILE__, VTile, group);
   theCommands.Add("vzlayer",
     "vzlayer add/del/get/settings/enable/disable [id]\n"
     " add - add new z layer to viewer and print its id\n"

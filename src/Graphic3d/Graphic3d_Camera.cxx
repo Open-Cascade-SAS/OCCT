@@ -112,6 +112,7 @@ void Graphic3d_Camera::CopyMappingData (const Handle(Graphic3d_Camera)& theOther
   SetZFocus         (theOtherCamera->ZFocusType(), theOtherCamera->ZFocus());
   SetIOD            (theOtherCamera->GetIODType(), theOtherCamera->IOD());
   SetProjectionType (theOtherCamera->ProjectionType());
+  SetTile           (theOtherCamera->myTile);
 }
 
 // =======================================================================
@@ -422,6 +423,21 @@ void Graphic3d_Camera::SetIOD (const IODType theType, const Standard_Real theIOD
   myIODType = theType;
   myIOD     = theIOD;
 
+  InvalidateProjection();
+}
+
+// =======================================================================
+// function : SetTile
+// purpose  :
+// =======================================================================
+void Graphic3d_Camera::SetTile (const Graphic3d_CameraTile& theTile)
+{
+  if (myTile == theTile)
+  {
+    return;
+  }
+
+  myTile = theTile;
   InvalidateProjection();
 }
 
@@ -823,6 +839,17 @@ Graphic3d_Camera::TransformMatrices<Elem_t>&
   Elem_t aFocus = myZFocusType == FocusType_Relative 
     ? static_cast<Elem_t> (myZFocus * Distance())
     : static_cast<Elem_t> (myZFocus);
+
+  if (myTile.IsValid())
+  {
+    const Elem_t aDXFull = Elem_t(2) * aDXHalf;
+    const Elem_t aDYFull = Elem_t(2) * aDYHalf;
+    const Graphic3d_Vec2i anOffset = myTile.OffsetLowerLeft();
+    aLeft  = -aDXHalf + aDXFull * static_cast<Elem_t> (anOffset.x())                       / static_cast<Elem_t> (myTile.TotalSize.x());
+    aRight = -aDXHalf + aDXFull * static_cast<Elem_t> (anOffset.x() + myTile.TileSize.x()) / static_cast<Elem_t> (myTile.TotalSize.x());
+    aBot   = -aDYHalf + aDYFull * static_cast<Elem_t> (anOffset.y())                       / static_cast<Elem_t> (myTile.TotalSize.y());
+    aTop   = -aDYHalf + aDYFull * static_cast<Elem_t> (anOffset.y() + myTile.TileSize.y()) / static_cast<Elem_t> (myTile.TotalSize.y());
+  }
 
   switch (myProjType)
   {

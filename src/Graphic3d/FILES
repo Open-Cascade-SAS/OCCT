@@ -37,6 +37,7 @@ Graphic3d_Buffer.hxx
 Graphic3d_BufferType.hxx
 Graphic3d_Camera.cxx
 Graphic3d_Camera.hxx
+Graphic3d_CameraTile.hxx
 Graphic3d_CappingFlags.hxx
 Graphic3d_CLight.hxx
 Graphic3d_ClipPlane.cxx
@@ -132,6 +133,7 @@ Graphic3d_TypeOfBackground.hxx
 Graphic3d_TypeOfComposition.hxx
 Graphic3d_TypeOfConnection.hxx
 Graphic3d_TypeOfLightSource.hxx
+Graphic3d_TypeOfLimit.hxx
 Graphic3d_TypeOfMaterial.hxx
 Graphic3d_TypeOfPrimitiveArray.hxx
 Graphic3d_TypeOfReflection.hxx

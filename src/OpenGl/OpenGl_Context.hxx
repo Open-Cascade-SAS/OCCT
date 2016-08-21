@@ -542,6 +542,13 @@ public:
 
 public: //! @name methods to alter or retrieve current state
 
+  //! Return cached viewport definition (x, y, width, height).
+  const Standard_Integer* Viewport() const { return myViewport; }
+
+  //! Resize the viewport (alias for glViewport).
+  //! @param theRect viewport definition (x, y, width, height)
+  Standard_EXPORT void ResizeViewport (const Standard_Integer theRect[4]);
+
   //! Return active read buffer.
   Standard_Integer ReadBuffer() { return myReadBuffer; }
 
@@ -763,6 +770,7 @@ private: //! @name fields tracking current state
   Handle(OpenGl_Sampler)        myTexSampler;      //!< currently active sampler object
   Handle(OpenGl_FrameBuffer)    myDefaultFbo;      //!< default Frame Buffer Object
   Handle(OpenGl_LineAttributes) myHatchStyles;     //!< resource holding predefined hatch styles patterns
+  Standard_Integer              myViewport[4];     //!< current viewport
   Standard_Integer              myPointSpriteOrig; //!< GL_POINT_SPRITE_COORD_ORIGIN state (GL_UPPER_LEFT by default)
   Standard_Integer              myRenderMode;      //!< value for active rendering mode
   Standard_Integer              myPolygonMode;     //!< currently used polygon rasterization mode (glPolygonMode)

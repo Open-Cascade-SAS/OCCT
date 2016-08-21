@@ -128,8 +128,7 @@ void OpenGl_GraduatedTrihedron::initGlResources (const Handle(OpenGl_Context)& t
 Standard_ShortReal OpenGl_GraduatedTrihedron::getNormal (const Handle(OpenGl_Context)& theContext,
                                                          OpenGl_Vec3& theNormal) const
 {
-  GLint aViewport[4] = {};
-  glGetIntegerv(GL_VIEWPORT, aViewport);
+  const Standard_Integer* aViewport = theContext->Viewport();
 
   OpenGl_Mat4 aModelMatrix;
   OpenGl_Mat4 aProjMatrix;
@@ -432,8 +431,6 @@ void OpenGl_GraduatedTrihedron::renderAxis (const Handle(OpenGl_Workspace)& theW
   // Get current Model-View and Projection states
   OpenGl_Mat4 aModelMat;
   OpenGl_Mat4 aProjMat;
-  GLint aViewport[4];
-  aContext->core11fwd->glGetIntegerv (GL_VIEWPORT, aViewport);
   aModelMat.Convert (aContext->WorldViewState.Current() * aContext->ModelWorldState.Current());
   aProjMat .Convert (aContext->ProjectionState.Current());
 
@@ -441,7 +438,7 @@ void OpenGl_GraduatedTrihedron::renderAxis (const Handle(OpenGl_Workspace)& theW
   OpenGl_Vec3 aEndPoint = -anAxis.Direction * myData.ArrowsLength();
   OpenGl_Vec3 aWinPoint;
   Graphic3d_TransformUtils::Project<Standard_ShortReal> (aEndPoint.x(), aEndPoint.y(), aEndPoint.z(),
-                                                         aModelMat, aProjMat, aViewport,
+                                                         aModelMat, aProjMat, aContext->Viewport(),
                                                          aWinPoint.x(), aWinPoint.y(), aWinPoint.z());
 
   aContext->ModelWorldState.SetIdentity();
@@ -451,7 +448,7 @@ void OpenGl_GraduatedTrihedron::renderAxis (const Handle(OpenGl_Workspace)& theW
   // Get start point of zoom persistent arrow
   OpenGl_Vec3 anArrowStart;
   Graphic3d_TransformUtils::UnProject<Standard_ShortReal> (aWinPoint.x(), aWinPoint.y(), aWinPoint.z(),
-                                                           aModelMat, aProjMat, aViewport,
+                                                           aModelMat, aProjMat, aContext->Viewport(),
                                                            anArrowStart.x(), anArrowStart.y(), anArrowStart.z());
   // Render axis line
   aModelMat = theMat;

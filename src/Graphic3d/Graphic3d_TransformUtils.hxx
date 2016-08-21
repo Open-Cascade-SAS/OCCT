@@ -15,6 +15,7 @@
 #ifndef _Graphic3d_TransformUtils_HeaderFile
 #define _Graphic3d_TransformUtils_HeaderFile
 
+#include <gp_Trsf.hxx>
 #include <Graphic3d_Vec.hxx>
 #include <Standard_math.hxx> // M_PI
 

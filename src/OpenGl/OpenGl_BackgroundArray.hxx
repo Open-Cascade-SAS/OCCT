@@ -33,13 +33,11 @@ public:
   //! Main constructor.
   Standard_EXPORT OpenGl_BackgroundArray (const Graphic3d_TypeOfBackground theType);
 
+  //! Render primitives to the window
+  Standard_EXPORT virtual void Render (const Handle(OpenGl_Workspace)& theWorkspace) const Standard_OVERRIDE;
+
   //! Check if background parameters are set properly
   Standard_EXPORT bool IsDefined() const;
-
-  //! Fill attributes arrays for background array according to its type:
-  //! - for gradient background its attributes consist of colors and gradient coordinates
-  //! - for texture one its attributes consist of position and texure coordinates.
-  Standard_EXPORT Standard_Boolean Init (const Handle(OpenGl_Workspace)& theWorkspace);
 
   //! Sets background texture parameters
   Standard_EXPORT void SetTextureParameters (const Aspect_FillMethod theFillMethod);
@@ -64,18 +62,6 @@ public:
                                               const Quantity_Color&           theColor2,
                                               const Aspect_GradientFillMethod theType);
 
-  //! Shows if array parameters were changed
-  Standard_Boolean IsDataChanged() const { return myToUpdate; }
-
-  //! Shows if view sizes were changed
-  //! (texture coordinates is no be changed)
-  Standard_Boolean IsViewSizeChanged (const Handle(OpenGl_Workspace)& theWorkspace) const
-  {
-    return myType == Graphic3d_TOB_TEXTURE
-       && (myViewWidth  != theWorkspace->Width()
-        || myViewHeight != theWorkspace->Height());
-  }
-
 protected: //! @name Internal structure for storing gradient parameters
 
   struct OpenGl_GradientParameters
@@ -87,12 +73,17 @@ protected: //! @name Internal structure for storing gradient parameters
 
 protected:
 
+  //! Fill attributes arrays for background array according to its type:
+  //! - for gradient background its attributes consist of colors and gradient coordinates
+  //! - for texture one its attributes consist of position and texture coordinates.
+  Standard_EXPORT Standard_Boolean init (const Handle(OpenGl_Workspace)& theWorkspace) const;
+
   //! Initializes gradient arrays.
-  Standard_EXPORT Standard_Boolean createGradientArray();
+  Standard_EXPORT Standard_Boolean createGradientArray() const;
 
   //! Initializes texture arrays.
   //! @param theWorkspace OpenGl workspace that stores texture in the current enabled face aspect.
-  Standard_EXPORT Standard_Boolean createTextureArray (const Handle(OpenGl_Workspace)& theWorkspace);
+  Standard_EXPORT Standard_Boolean createTextureArray (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
   //! Marks array parameters as changed,
   //! on next rendering stage array data is to be updated.
@@ -100,12 +91,13 @@ protected:
 
 protected:
 
-  Standard_Boolean           myToUpdate;       //!< Shows if array parameters were changed and data (myAttribs storage) is to be updated
-  Graphic3d_TypeOfBackground myType;           //!< Type of background: texture or gradient.
-  Standard_Integer           myViewWidth;      //!< view width  used for array initialization
-  Standard_Integer           myViewHeight;     //!< view height used for array initialization
-  Aspect_FillMethod          myFillMethod;     //!< Texture parameters
-  OpenGl_GradientParameters  myGradientParams; //!< Gradient parameters
+  Graphic3d_TransformPers           myTrsfPers;       //!< transformation persistence
+  Graphic3d_TypeOfBackground        myType;           //!< Type of background: texture or gradient.
+  Aspect_FillMethod                 myFillMethod;     //!< Texture parameters
+  mutable OpenGl_GradientParameters myGradientParams; //!< Gradient parameters
+  mutable Standard_Integer          myViewWidth;      //!< view width  used for array initialization
+  mutable Standard_Integer          myViewHeight;     //!< view height used for array initialization
+  mutable Standard_Boolean          myToUpdate;       //!< Shows if array parameters were changed and data (myAttribs storage) is to be updated
 
 };
 

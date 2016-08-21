@@ -11,60 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-/***********************************************************************
-FONCTION :
-----------
-Classe V3d_View :
-HISTORIQUE DES MODIFICATIONS   :
---------------------------------
-00-09-92 : GG  ; Creation.
-02-10-96 : FMN ; Suppression appel Redraw sans MustBeResized()
-05-06-97 : FMN ; Correction FitAll()
-30-06-97 : GG ; Correction + Optimisation de Panning(...)
-On fait la translation + le zoom en une seule
-operation au lieu de 2 precedemment qui etait buggee.
-09-07-97 : FMN ; Correction FitAll() sur le Ratio
-16-07-97 : FMN ; Correction FitAll() sur le calcul de la Box
-22-07-97 : FMN ; Ajout mode RetainMode pour le Transient
-15-12-97 : FMN ; Ajout texture mapping
-17-12-97 : FMN ; CTS19129 Correction FitAll() multiple
-18-12-97 : FMN ; Ajout mode Ajout
-24-12-97 : FMN ; Remplacement de math par MathGra
-24-12-97 : CQO ; BUC50037 Xw_Window -> Aspect_Window
-31-12-97 : CAL ; Remplacement de MathGra par Array2OfReal
-07-01-98 : CAL ; Ajout de la methode DoMapping.
-07-01-98 : CAL ; Retrait de tous les "this->" inutiles
-21-01-98 : CAL ; Remplacement des Window->Position () par Window->Size ()
-27-01-98 : FMN ; PERF: OPTIMISATION LOADER (LOPTIM)
-12-02-98 : GG  ; Reactivation du Redraw dans MustBeResized()
-23-02-98 : FMN ; Remplacement PI par Standard_PI
-25-02-98 : FMN ; PERF.27: Optimisation of view creation from existing view
-11-03-98 : STT ; S3558
-19-03-98 : FMN ; Probleme dans FitAll car la methode WNT_Window::Size(Real,Real)
-ne marche pas.
-08-04-98 : STT ; suppr. S3558
-10-04-98 : CAL ; Ajout des methodes RefToPix et PixToRef
-13-06-98 : FMN ; Probleme dans FitAll car la methode WNT_Window::Size(Real,Real)
-ne marche pas. Contournement en appelant WNT_Window::Size(Int,Int).
-16-08-98 : CAL ; S3892. Ajout grilles 3d.
-09-09-98 : CAL ; S3892. Generalisation de TrsPoint.
-06-10-98 : CAL ; Ajout d'un TIMER si CSF_GraphicTimer est definie.
-16-10-98 : CAL ; Retrait d'un TIMER si CSF_GraphicTimer est definie.
-06-11-98 : CAL ; PRO ?????. Probleme dans ZFitAll si un point dans la vue.
-29-OCT-98 : DCB : Adding ScreenCopy () method.
-REMARQUES :
------------
-About  FitAll() multiple. This probleme is caused by missing
-precision of transformation matrices. If it is supposed that
-projection is made in the plane (U,V), there is a difference
-after several Zoom - compared to the exact value (cf ZoomX).
-Don't forget that the matrices work in float and not in double.
-To solve the problem (for lack of a better solution) I make 2 passes.
-************************************************************************/
-/*----------------------------------------------------------------------*/
-/*
-* Includes
-*/
+#include <V3d_View.hxx>
 
 #include <Aspect_GradientBackground.hxx>
 #include <Aspect_Grid.hxx>
@@ -82,6 +29,8 @@ To solve the problem (for lack of a better solution) I make 2 passes.
 #include <Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_Vector.hxx>
 #include <Image_AlienPixMap.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 #include <Quantity_Color.hxx>
@@ -100,20 +49,9 @@ To solve the problem (for lack of a better solution) I make 2 passes.
 #include <V3d_Light.hxx>
 #include <V3d_StereoDumpOptions.hxx>
 #include <V3d_UnMapped.hxx>
-#include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(V3d_View,MMgt_TShared)
-
-#define V3d_FLAG_COMPUTATION   0x00000004
-
-// Perspective
-#include <OSD_Environment.hxx>
-
-/*----------------------------------------------------------------------*/
-/*
-* Constant
-*/
 
 #define DEUXPI (2. * M_PI)
 
@@ -2900,71 +2838,117 @@ Standard_Boolean V3d_View::Dump (const Standard_CString      theFile,
 //purpose  :
 //=============================================================================
 Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
-                                     const Standard_Integer      theWidth,
-                                     const Standard_Integer      theHeight,
-                                     const Graphic3d_BufferType& theBufferType,
-                                     const Standard_Boolean      theToKeepAspect,
-                                     const V3d_StereoDumpOptions theStereoOptions)
+                                     const V3d_ImageDumpOptions& theParams)
 {
-  // always prefer hardware accelerated offscreen buffer
+  Graphic3d_Vec2i aTargetSize (theParams.Width, theParams.Height);
+  if (aTargetSize.x() != 0
+   && aTargetSize.y() != 0)
+  {
+    // allocate image buffer for dumping
+    if (theImage.IsEmpty()
+     || theImage.SizeX() != Standard_Size(aTargetSize.x())
+     || theImage.SizeY() != Standard_Size(aTargetSize.y()))
+    {
+      const bool isBigEndian = Image_PixMap::IsBigEndianHost();
+      Image_PixMap::ImgFormat aFormat = Image_PixMap::ImgUNKNOWN;
+      switch (theParams.BufferType)
+      {
+        case Graphic3d_BT_RGB:   aFormat = isBigEndian ? Image_PixMap::ImgRGB  : Image_PixMap::ImgBGR;  break;
+        case Graphic3d_BT_RGBA:  aFormat = isBigEndian ? Image_PixMap::ImgRGBA : Image_PixMap::ImgBGRA; break;
+        case Graphic3d_BT_Depth: aFormat = Image_PixMap::ImgGrayF; break;
+      }
+
+      if (!theImage.InitZero (aFormat, Standard_Size(aTargetSize.x()), Standard_Size(aTargetSize.y())))
+      {
+        Message::DefaultMessenger()->Send (TCollection_AsciiString ("Fail to allocate an image ") + aTargetSize.x() + "x" + aTargetSize.y()
+                                                                 + " for view dump", Message_Fail);
+        return Standard_False;
+      }
+    }
+  }
+  if (theImage.IsEmpty())
+  {
+    Message::DefaultMessenger()->Send (TCollection_AsciiString ("V3d_View::ToPixMap() has been called without image dimensions"), Message_Fail);
+    return Standard_False;
+  }
+  aTargetSize.x() = (Standard_Integer )theImage.SizeX();
+  aTargetSize.y() = (Standard_Integer )theImage.SizeY();
+
   Handle(Standard_Transient) aFBOPtr;
   Handle(Standard_Transient) aPrevFBOPtr = myView->FBO();
-  Standard_Integer aFBOVPSizeX (theWidth), aFBOVPSizeY (theHeight), aFBOSizeXMax (0), aFBOSizeYMax (0);
-  Standard_Integer aPrevFBOVPSizeX (0), aPrevFBOVPSizeY (0), aPrevFBOSizeXMax (0), aPrevFBOSizeYMax (0);
+  Graphic3d_Vec2i aFBOVPSize = aTargetSize;
+
+  bool isTiling = false;
+  if (theParams.TileSize > 0)
+  {
+    if (aFBOVPSize.x() > theParams.TileSize
+     || aFBOVPSize.y() > theParams.TileSize)
+    {
+      aFBOVPSize.x() = Min (aFBOVPSize.x(), theParams.TileSize);
+      aFBOVPSize.y() = Min (aFBOVPSize.y(), theParams.TileSize);
+      isTiling = true;
+    }
+  }
+
+  Graphic3d_Vec2i aPrevFBOVPSize;
   if (!aPrevFBOPtr.IsNull())
   {
+    Graphic3d_Vec2i aPrevFBOSizeMax;
     myView->FBOGetDimensions (aPrevFBOPtr,
-                              aPrevFBOVPSizeX, aPrevFBOVPSizeY,
-                              aPrevFBOSizeXMax, aPrevFBOSizeYMax);
-    if (aFBOVPSizeX <= aPrevFBOSizeXMax && aFBOVPSizeY <= aPrevFBOSizeYMax)
+                              aPrevFBOVPSize.x(),  aPrevFBOVPSize.y(),
+                              aPrevFBOSizeMax.x(), aPrevFBOSizeMax.y());
+    if (aFBOVPSize.x() <= aPrevFBOSizeMax.x()
+     && aFBOVPSize.y() <= aPrevFBOSizeMax.y())
     {
-      myView->FBOChangeViewport (aPrevFBOPtr, aFBOVPSizeX, aFBOVPSizeY);
       aFBOPtr = aPrevFBOPtr;
     }
   }
 
   if (aFBOPtr.IsNull())
   {
-    // Try to create hardware accelerated buffer
-    aFBOPtr = myView->FBOCreate (aFBOVPSizeX, aFBOVPSizeY);
-    if (!aFBOPtr.IsNull())
+    Standard_Integer aMaxTexSize = MyViewer->Driver()->InquireLimit (Graphic3d_TypeOfLimit_MaxTextureSize);
+    if (theParams.TileSize > aMaxTexSize)
     {
-      myView->FBOGetDimensions (aFBOPtr,
-                                aFBOVPSizeX,  aFBOVPSizeY,
-                                aFBOSizeXMax, aFBOSizeYMax);
-      // reduce viewport in case of hardware limits
-      if (aFBOVPSizeX > aFBOSizeXMax) aFBOVPSizeX = aFBOSizeXMax;
-      if (aFBOVPSizeY > aFBOSizeYMax) aFBOVPSizeY = aFBOSizeYMax;
-      myView->FBOChangeViewport (aFBOPtr, aFBOVPSizeX, aFBOVPSizeY);
+      Message::DefaultMessenger()->Send (TCollection_AsciiString ("Image dump can not be performed - specified tile size (")
+                                                                 + theParams.TileSize + ") exceeds hardware limits (" + aMaxTexSize + ")", Message_Fail);
+      return Standard_False;
     }
+
+    if (aFBOVPSize.x() > aMaxTexSize
+     || aFBOVPSize.y() > aMaxTexSize)
+    {
+      aFBOVPSize.x() = Min (aFBOVPSize.x(), aMaxTexSize);
+      aFBOVPSize.y() = Min (aFBOVPSize.y(), aMaxTexSize);
+      isTiling = true;
+    }
+
+    // Try to create hardware accelerated buffer
+    aFBOPtr = myView->FBOCreate (aFBOVPSize.x(), aFBOVPSize.y());
   }
   myView->SetFBO (aFBOPtr);
 
-  // If hardware accelerated buffer - try to use onscreen buffer
-  // Results may be bad!
   if (aFBOPtr.IsNull())
   {
-    // retrieve window sizes
-    Standard_Integer aWinWidth, aWinHeight;
-    MyWindow->Size (aWinWidth, aWinHeight);
-
-    // technically we can reduce existing viewport...
-    // but currently allow only dumping the window itself
-    if (aFBOVPSizeX != aWinWidth || aFBOVPSizeY != aWinHeight)
+    // try to use on-screen buffer
+    Graphic3d_Vec2i aWinSize;
+    MyWindow->Size (aWinSize.x(), aWinSize.y());
+    if (aFBOVPSize.x() != aWinSize.x()
+     || aFBOVPSize.y() != aWinSize.y())
     {
-      return Standard_False;
+      isTiling = true;
     }
+    aFBOVPSize = aWinSize;
+
+    Message::DefaultMessenger()->Send (TCollection_AsciiString ("Warning, on screen buffer is used for image dump - content might be invalid"), Message_Warning);
   }
 
+  // backup camera parameters
   Handle(Graphic3d_Camera) aStoreMapping = new Graphic3d_Camera();
-
   Handle(Graphic3d_Camera) aCamera = Camera();
-
   aStoreMapping->Copy (aCamera);
-
   if (aCamera->IsStereo())
   {
-    switch (theStereoOptions)
+    switch (theParams.StereoOptions)
     {
       case V3d_SDO_MONO:
       {
@@ -2987,57 +2971,95 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
       }
     }
   }
+  if (theParams.ToAdjustAspect)
+  {
+    aCamera->SetAspect (Standard_Real(aTargetSize.x()) / Standard_Real(aTargetSize.y()));
+  }
+  AutoZFit();
 
   // render immediate structures into back buffer rather than front
   const Standard_Boolean aPrevImmediateMode = myView->SetImmediateModeDrawToFront (Standard_False);
 
-  const Standard_Boolean toAutoUpdate = myImmediateUpdate;
-  myImmediateUpdate = Standard_False;
-  AutoZFit();
-  myImmediateUpdate = toAutoUpdate;
-
-  if (theToKeepAspect)
-  {
-    aCamera->SetAspect ((Standard_Real) aFBOVPSizeX / aFBOVPSizeY);
-  }
-
-  Redraw();
-
-  myView->SetImmediateModeDrawToFront (aPrevImmediateMode);
-
-  aCamera->Copy (aStoreMapping);
-
   Standard_Boolean isSuccess = Standard_True;
-
-  // allocate image buffer for dumping
-  if (theImage.IsEmpty()
-   || (Standard_Size )aFBOVPSizeX != theImage.SizeX()
-   || (Standard_Size )aFBOVPSizeY != theImage.SizeY())
+  if (!isTiling)
   {
-    bool isBigEndian = Image_PixMap::IsBigEndianHost();
-    Image_PixMap::ImgFormat aFormat = Image_PixMap::ImgUNKNOWN;
-    switch (theBufferType)
+    if (!aFBOPtr.IsNull())
     {
-      case Graphic3d_BT_RGB:   aFormat = isBigEndian ? Image_PixMap::ImgRGB  : Image_PixMap::ImgBGR;  break;
-      case Graphic3d_BT_RGBA:  aFormat = isBigEndian ? Image_PixMap::ImgRGBA : Image_PixMap::ImgBGRA; break;
-      case Graphic3d_BT_Depth: aFormat = Image_PixMap::ImgGrayF; break;
+      myView->FBOChangeViewport (aFBOPtr, aTargetSize.x(), aTargetSize.y());
     }
-
-    isSuccess = isSuccess && theImage.InitZero (aFormat, aFBOVPSizeX, aFBOVPSizeY);
+    Redraw();
+    isSuccess = isSuccess && myView->BufferDump (theImage, theParams.BufferType);
   }
-  isSuccess = isSuccess && myView->BufferDump (theImage, theBufferType);
+  else
+  {
+    Image_PixMap aTilePixMap;
+    aTilePixMap.SetTopDown (theImage.IsTopDown());
 
-  // FBO now useless, free resources
+    Graphic3d_Vec2i anOffset (0, 0);
+    for (; anOffset.y() < aTargetSize.y(); anOffset.y() += aFBOVPSize.y())
+    {
+      anOffset.x() = 0;
+      for (; anOffset.x() < aTargetSize.x(); anOffset.x() += aFBOVPSize.x())
+      {
+        Graphic3d_CameraTile aTile;
+        aTile.Offset    = anOffset;
+        aTile.TotalSize = aTargetSize;
+        aTile.TileSize  = aFBOVPSize;
+        if (!aFBOPtr.IsNull())
+        {
+          // crop corners in case of FBO
+          // (no API to resize viewport of on-screen buffer - keep uncropped in this case)
+          aTile = aTile.Cropped();
+        }
+        if (aTile.TileSize.x() < 1
+         || aTile.TileSize.y() < 1)
+        {
+          continue;
+        }
+
+        const Standard_Integer aLeft   = aTile.Offset.x();
+        Standard_Integer       aBottom = aTile.Offset.y();
+        if (theImage.IsTopDown())
+        {
+          const Standard_Integer aTop = aTile.Offset.y() + aTile.TileSize.y();
+          aBottom = aTargetSize.y() - aTop;
+        }
+        aTilePixMap.InitWrapper (theImage.Format(), theImage.ChangeData()
+                               + theImage.SizeRowBytes() * aBottom + theImage.SizePixelBytes() * aLeft,
+                                 aTile.TileSize.x(), aTile.TileSize.y(),
+                                 theImage.SizeRowBytes());
+
+        aCamera->SetTile (aTile);
+        if (!aFBOPtr.IsNull())
+        {
+          myView->FBOChangeViewport (aFBOPtr, aTile.TileSize.x(), aTile.TileSize.y());
+        }
+        Redraw();
+        isSuccess = isSuccess && myView->BufferDump (aTilePixMap, theParams.BufferType);
+        if (!isSuccess)
+        {
+          break;
+        }
+      }
+      if (!isSuccess)
+      {
+        break;
+      }
+    }
+  }
+
+  // restore state
+  myView->SetImmediateModeDrawToFront (aPrevImmediateMode);
+  aCamera->Copy (aStoreMapping);
   if (aFBOPtr != aPrevFBOPtr)
   {
     myView->FBORelease (aFBOPtr);
   }
   else if (!aPrevFBOPtr.IsNull())
   {
-    myView->FBOChangeViewport (aPrevFBOPtr, aPrevFBOVPSizeX, aPrevFBOVPSizeY);
+    myView->FBOChangeViewport (aPrevFBOPtr, aPrevFBOVPSize.x(), aPrevFBOVPSize.y());
   }
   myView->SetFBO (aPrevFBOPtr);
-
   return isSuccess;
 }
 
