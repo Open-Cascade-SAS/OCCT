@@ -229,17 +229,22 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
   {
     if (!anOwner.IsNull())
     {
+      Handle(SelectMgr_SelectableObject) aSelectable = anOwner->Selectable();
       if (HasDepthClipping (anOwner) && theMgr.GetActiveSelectionType() == SelectMgr_SelectingVolumeManager::Point)
       {
-        Standard_Boolean isClipped = mySelectingVolumeMgr.IsClipped (anOwner->Selectable()->GetClipPlanes(),
+        Standard_Boolean isClipped = mySelectingVolumeMgr.IsClipped (aSelectable->GetClipPlanes(),
                                                                      aPickResult.Depth());
         if (isClipped)
           return;
       }
 
-      Standard_Integer aPriority = anOwner->Priority();
-
-      SelectMgr_SortCriterion aCriterion (aPriority, aPickResult.Depth(), aPickResult.DistToGeomCenter(), theEntity->SensitivityFactor() / 33.0, preferclosest);
+      SelectMgr_SortCriterion aCriterion;
+      myZLayerOrderMap.Find (aSelectable->ZLayer(), aCriterion.ZLayerPosition);
+      aCriterion.Priority  = anOwner->Priority();
+      aCriterion.Depth     = aPickResult.Depth();
+      aCriterion.MinDist   = aPickResult.DistToGeomCenter();
+      aCriterion.Tolerance = theEntity->SensitivityFactor() / 33.0;
+      aCriterion.ToPreferClosest = preferclosest;
       if (mystored.Contains (anOwner))
       {
         if (theMgr.GetActiveSelectionType() != 1)

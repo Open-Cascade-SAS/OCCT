@@ -489,6 +489,50 @@ void OpenGl_GraphicDriver::TextSize (const Handle(Graphic3d_CView)& theView,
 }
 
 //=======================================================================
+//function : addZLayerIndex
+//purpose  :
+//=======================================================================
+void OpenGl_GraphicDriver::addZLayerIndex (const Graphic3d_ZLayerId theLayerId)
+{
+  // remove index
+  for (TColStd_SequenceOfInteger::Iterator aLayerIt (myLayerSeq); aLayerIt.More(); aLayerIt.Next())
+  {
+    if (aLayerIt.Value() == theLayerId)
+    {
+      myLayerSeq.Remove (aLayerIt);
+      break;
+    }
+  }
+
+  if (myMapOfZLayerSettings.Find (theLayerId).IsImmediate)
+  {
+    myLayerSeq.Append (theLayerId);
+    return;
+  }
+
+  for (TColStd_SequenceOfInteger::Iterator aLayerIt (myLayerSeq); aLayerIt.More(); aLayerIt.Next())
+  {
+    const Graphic3d_ZLayerSettings& aSettings = myMapOfZLayerSettings.Find (aLayerIt.Value());
+    if (aSettings.IsImmediate)
+    {
+      aLayerIt.Previous();
+      if (aLayerIt.More())
+      {
+        myLayerSeq.InsertAfter (aLayerIt, theLayerId);
+        return;
+      }
+
+      // first non-immediate layer
+      myLayerSeq.Prepend (theLayerId);
+      return;
+    }
+  }
+
+  // no immediate layers
+  myLayerSeq.Append (theLayerId);
+}
+
+//=======================================================================
 //function : AddZLayer
 //purpose  :
 //=======================================================================
@@ -501,11 +545,11 @@ void OpenGl_GraphicDriver::AddZLayer (const Graphic3d_ZLayerId theLayerId)
                            "negative and zero IDs are reserved");
   }
 
-  myLayerIds.Add    (theLayerId);
-  myLayerSeq.Append (theLayerId);
+  myLayerIds.Add (theLayerId);
 
   // Default z-layer settings
   myMapOfZLayerSettings.Bind (theLayerId, Graphic3d_ZLayerSettings());
+  addZLayerIndex (theLayerId);
 
   // Add layer to all views
   NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIt (myMapOfView);
@@ -547,11 +591,11 @@ void OpenGl_GraphicDriver::RemoveZLayer (const Graphic3d_ZLayerId theLayerId)
   }
 
   // Remove index
-  for (int aIdx = 1; aIdx <= myLayerSeq.Length (); aIdx++)
+  for (TColStd_SequenceOfInteger::Iterator aLayerIt (myLayerSeq); aLayerIt.More(); aLayerIt.Next())
   {
-    if (myLayerSeq (aIdx) == theLayerId)
+    if (aLayerIt.Value() == theLayerId)
     {
-      myLayerSeq.Remove (aIdx);
+      myLayerSeq.Remove (aLayerIt);
       break;
     }
   }
@@ -583,13 +627,21 @@ void OpenGl_GraphicDriver::SetZLayerSettings (const Graphic3d_ZLayerId theLayerI
     aViewIt.Value()->SetZLayerSettings (theLayerId, theSettings);
   }
 
-  if (myMapOfZLayerSettings.IsBound (theLayerId))
+  Graphic3d_ZLayerSettings* aSettings = myMapOfZLayerSettings.ChangeSeek (theLayerId);
+  if (aSettings != NULL)
   {
-    myMapOfZLayerSettings.ChangeFind (theLayerId) = theSettings;
+    const bool isChanged = (aSettings->IsImmediate != theSettings.IsImmediate);
+    *aSettings = theSettings;
+    if (isChanged)
+    {
+      addZLayerIndex (theLayerId);
+    }
   }
   else
   {
+    // abnormal case
     myMapOfZLayerSettings.Bind (theLayerId, theSettings);
+    addZLayerIndex (theLayerId);
   }
 }
 

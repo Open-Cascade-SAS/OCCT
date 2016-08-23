@@ -328,6 +328,7 @@ protected:
   mutable SelectMgr_SelectableObjectSet         mySelectableObjects;
   mutable SelectMgr_SelectableObjectTrsfPersSet mySelectableObjectsTrsfPers;
   SelectMgr_ToleranceMap                        myTolerances;
+  NCollection_DataMap<Graphic3d_ZLayerId, Standard_Integer> myZLayerOrderMap;
 
 private:
 

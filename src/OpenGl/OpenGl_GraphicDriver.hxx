@@ -201,6 +201,9 @@ public:
   void*                   getRawGlConfig()  const { return myEglConfig; }
 #endif
 
+  //! Insert index layer at proper position.
+  Standard_EXPORT void addZLayerIndex (const Graphic3d_ZLayerId theLayerId);
+
 public:
 
   DEFINE_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)

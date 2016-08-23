@@ -83,12 +83,17 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StdSelect_ViewerSelector3d,SelectMgr_ViewerSelector)
 
-private:
+protected:
 
-  void ComputeSensitivePrs (const Handle(Graphic3d_Structure)& theStructure,
-                            const Handle(SelectMgr_Selection)& theSel,
-                            const gp_Trsf& theLoc,
-                            const Graphic3d_TransformPers& theTransPers);
+  Standard_EXPORT void computeSensitivePrs (const Handle(Graphic3d_Structure)& theStructure,
+                                            const Handle(SelectMgr_Selection)& theSel,
+                                            const gp_Trsf& theLoc,
+                                            const Graphic3d_TransformPers& theTransPers);
+
+  //! Update z-layers order map.
+  Standard_EXPORT void updateZLayers (const Handle(V3d_View)& theView);
+
+protected:
 
   Graphic3d_SequenceOfStructure myStructs;
 };

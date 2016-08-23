@@ -47,9 +47,7 @@ SelectMgr_SequenceOfOwner.hxx
 SelectMgr_SequenceOfSelection.hxx
 SelectMgr_SequenceOfSelector.hxx
 SelectMgr_SOPtr.hxx
-SelectMgr_SortCriterion.cxx
 SelectMgr_SortCriterion.hxx
-SelectMgr_SortCriterion.lxx
 SelectMgr_StateOfSelection.hxx
 SelectMgr_TriangularFrustum.cxx
 SelectMgr_TriangularFrustum.hxx
