@@ -2489,11 +2489,11 @@ static Standard_Boolean readDatumsAP242(const Handle(Standard_Transient)& theEnt
                 {
                   for(Standard_Integer k = aModifE->Lower(); k <= aModifE->Upper(); k++)
                   {
-                    if(aModifE->Value(k).CaseNumber() == 1)
+                    if(aModifE->Value(k).CaseNumber() == 2)
                       aXCAFModifiers.Append(
                       (XCAFDimTolObjects_DatumSingleModif)aModifE->Value(k).
                       SimpleDatumReferenceModifierMember()->Value());
-                    else if (aModifE->Value(k).CaseNumber() == 2)
+                    else if (aModifE->Value(k).CaseNumber() == 1)
                     {
                       aXCAFModifWithVal = (XCAFDimTolObjects_DatumModifWithValue)(aModifE->Value(k).DatumReferenceModifierWithValue()->ModifierType() + 1);
                       Standard_Real aVal = aModifE->Value(k).DatumReferenceModifierWithValue()->ModifierValue()->ValueComponent();
@@ -2581,6 +2581,22 @@ static TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
      !theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance)))
   {
     return aGDTL;
+  }
+  // protection against invalid input
+  if (theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance))) {
+    Handle(StepDimTol_GeometricTolerance) aGeomTol = Handle(StepDimTol_GeometricTolerance)::DownCast(theEnt);
+    if (aGeomTol->TolerancedShapeAspect().IsNull())
+      return aGDTL;
+  }
+  if (theEnt->IsKind(STANDARD_TYPE(StepShape_DimensionalSize))) {
+    Handle(StepShape_DimensionalSize) aDim = Handle(StepShape_DimensionalSize)::DownCast(theEnt);
+    if (aDim->AppliesTo().IsNull())
+      return aGDTL;
+  }
+  if (theEnt->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation))) {
+    Handle(StepShape_DimensionalLocation) aDim = Handle(StepShape_DimensionalLocation)::DownCast(theEnt);
+    if (aDim->RelatedShapeAspect().IsNull() || aDim->RelatingShapeAspect().IsNull())
+      return aGDTL;
   }
 
   Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool( theDoc->Main() );

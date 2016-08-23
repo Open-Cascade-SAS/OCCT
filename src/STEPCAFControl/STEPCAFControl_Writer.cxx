@@ -2905,7 +2905,7 @@ static Handle(StepDimTol_HArray1OfDatumSystemOrReference) WriteDatumSystem(const
     if (aDatumSeqPos.Length() == 1) {
       // Datum entity
       Handle(Standard_Transient) aFDValue;
-      if (theDatumMap.Find(aDatumSeqPos.Value(1)->GetName()->String(), aFDValue))
+      if (theDatumMap.Find(aDatumSeqPos.Value(1)->GetName()->String(), aFDValue) && !aFDValue.IsNull())
         aFirstDatum = Handle(StepDimTol_Datum)::DownCast (aFDValue);
       aDatumRef.SetValue(aFirstDatum);
       // Modifiers
@@ -2945,7 +2945,7 @@ static Handle(StepDimTol_HArray1OfDatumSystemOrReference) WriteDatumSystem(const
         // Add Datum_Reference_Modifier_With_Value
         if (!anElemModifiers.IsNull()) {
           Handle(StepDimTol_DatumReferenceModifierWithValue) aDRMWV = 
-            anElemModifiers->Value(aModifiers->Length()).DatumReferenceModifierWithValue();
+            anElemModifiers->Value(anElemModifiers->Length()).DatumReferenceModifierWithValue();
           if (!aDRMWV.IsNull()) {
             Model->AddWithRefs(aDRMWV);
           }
@@ -3701,15 +3701,16 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
       for (Standard_Integer shIt = 1; shIt <= aFirstShapeL.Length(); shIt++) {
         TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(aFirstShapeL.Value(shIt));
         Handle(StepRepr_ShapeAspect) aSA = WriteShapeAspect(WS, aDimensionL, aShape, dummyRC, dummyGISU);
-        if (aCSA.IsNull() && !aSA.IsNull())
+        if (aSA.IsNull())
+          continue;
+        if (aCSA.IsNull()) {
           aCSA = new StepRepr_CompositeShapeAspect();
           aCSA->Init(aSA->Name(), aSA->Description(), aSA->OfShape(), aSA->ProductDefinitional());
           aModel->AddWithRefs(aCSA);
-        if (!aSA.IsNull()) {
-          Handle(StepRepr_ShapeAspectRelationship) aSAR = new StepRepr_ShapeAspectRelationship();
-          aSAR->Init(new TCollection_HAsciiString(), Standard_False, new TCollection_HAsciiString(), aCSA, aSA);
-          aModel->AddWithRefs(aSAR);
         }
+        Handle(StepRepr_ShapeAspectRelationship) aSAR = new StepRepr_ShapeAspectRelationship();
+        aSAR->Init(new TCollection_HAsciiString(), Standard_False, new TCollection_HAsciiString(), aCSA, aSA);
+        aModel->AddWithRefs(aSAR);
         if (aRC.IsNull() && !dummyRC.IsNull())
           aRC = dummyRC;
       }
