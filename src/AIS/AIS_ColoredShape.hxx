@@ -38,10 +38,10 @@ public: //! @name sub-shape aspects
   //! Customize properties of specified sub-shape.
   //! The shape will be stored in the map but ignored, if it is not sub-shape of main Shape!
   //! This method can be used to mark sub-shapes with customizable properties.
-  Standard_EXPORT Handle(AIS_ColoredDrawer) CustomAspects (const TopoDS_Shape& theShape);
+  Standard_EXPORT virtual Handle(AIS_ColoredDrawer) CustomAspects (const TopoDS_Shape& theShape);
 
   //! Reset the map of custom sub-shape aspects.
-  Standard_EXPORT void ClearCustomAspects();
+  Standard_EXPORT virtual void ClearCustomAspects();
 
   //! Reset custom properties of specified sub-shape.
   //! @param theToUnregister unregister or not sub-shape from the map

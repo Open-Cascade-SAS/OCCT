@@ -1556,12 +1556,6 @@ friend class AIS_LocalContext;
 
 protected:
 
-
-
-
-private:
-
-  
   Standard_EXPORT void GetDefModes (const Handle(AIS_InteractiveObject)& anIobj, Standard_Integer& Dmode, Standard_Integer& HiMod, Standard_Integer& SelMode) const;
   
   Standard_EXPORT void EraseGlobal (const Handle(AIS_InteractiveObject)& anObj, const Standard_Boolean updateviewer = Standard_True);
@@ -1581,28 +1575,30 @@ private:
   Standard_EXPORT void redisplayPrsRecModes (const Handle(AIS_InteractiveObject)& theIObj, const Standard_Boolean theToUpdateViewer = Standard_True);
 
   //! Helper function to unhighlight all entity owners currently highlighted with seleciton color.
-  void unhighlightOwners (const Handle(AIS_InteractiveObject)& theObject);
+  Standard_EXPORT void unhighlightOwners (const Handle(AIS_InteractiveObject)& theObject);
 
   //! Helper function that highlights the owner given with <theColor> without
   //! performing AutoHighlight checks, e.g. is used for dynamic highlight.
   //! If the parameter <theViewer> is set and <theIsImmediate> is true, highlight will be synchronized
   //! automatically in all views of the viewer.
-  void highlightWithColor (const Handle(SelectMgr_EntityOwner)& theOwner,
-                           const Quantity_NameOfColor theColor,
-                           const Handle(V3d_Viewer)& theViewer = NULL);
+  Standard_EXPORT void highlightWithColor (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                           const Quantity_NameOfColor theColor,
+                                           const Handle(V3d_Viewer)& theViewer = NULL);
 
   //! Helper function that highlights the owner given with <theColor> with check
   //! for AutoHighlight, e.g. is used for selection.
   //! If the parameter <theViewer> is set and <theIsImmediate> is true, selection color will be synchronized
   //! automatically in all views of the viewer.
-  void highlightSelected (const Handle(SelectMgr_EntityOwner)& theOwner,
-                          const Quantity_NameOfColor theSelColor);
+  Standard_EXPORT void highlightSelected (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                          const Quantity_NameOfColor theSelColor);
 
   //! Helper function that unhighlights all owners that are stored in current AIS_Selection.
   //! The function updates global status and selection state of owner and interactive object.
   //! If the parameter <theIsToHilightSubIntensity> is set to true, interactive objects with sub-intensity
   //! switched on in AIS_GlobalStatus will be highlighted with context's sub-intensity color.
-  void unhighlightSelected (const Standard_Boolean theIsToHilightSubIntensity = Standard_False);
+  Standard_EXPORT void unhighlightSelected (const Standard_Boolean theIsToHilightSubIntensity = Standard_False);
+
+protected:
 
   AIS_DataMapOfIOStatus myObjects;
   Handle(SelectMgr_SelectionManager) mgrSelector;
