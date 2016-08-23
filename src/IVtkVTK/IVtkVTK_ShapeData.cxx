@@ -14,9 +14,9 @@
 // commercial license or contractual agreement.
 
 #include <IVtkVTK_ShapeData.hxx>
-#include <vtkCellArray.h>
 #include <vtkCellData.h>
 #include <vtkDoubleArray.h>
+#include <vtkIdList.h>
 #include <vtkIdTypeArray.h>
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
@@ -38,7 +38,7 @@ IVtkVTK_ShapeData::IVtkVTK_ShapeData()
 {
   myPolyData = vtkSmartPointer<vtkPolyData>::New();
   myPolyData->Allocate();
-  myPolyData->SetPoints (vtkPoints::New());
+  myPolyData->SetPoints (vtkSmartPointer<vtkPoints>::New());
 
   mySubShapeIDs = vtkSmartPointer<vtkIdTypeArray>::New();
   mySubShapeIDs->SetName (IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS);
@@ -112,7 +112,7 @@ void IVtkVTK_ShapeData::InsertLine (const IVtk_IdType       theShapeID,
 {
   if (!thePointIds->IsEmpty())
   {
-    vtkIdList* anIdList = vtkIdList::New();
+    vtkSmartPointer<vtkIdList> anIdList = vtkSmartPointer<vtkIdList>::New();
     // Fill the vtk id list by ids from IVtk_PointIdList.
     IVtk_PointIdList::Iterator anIterOfIds = 
         IVtk_PointIdList::Iterator(*thePointIds);
@@ -127,7 +127,6 @@ void IVtkVTK_ShapeData::InsertLine (const IVtk_IdType       theShapeID,
     mySubShapeIDs->InsertNextTupleValue (&aShapeIDVTK);
     const vtkIdType aType = theMeshType;
     myMeshTypes->InsertNextTupleValue (&aType);
-    anIdList->Delete();
   }
 }
 

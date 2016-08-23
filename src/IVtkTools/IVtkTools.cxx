@@ -24,9 +24,10 @@ namespace IVtkTools
 // Method: InitLookupTable
 // Purpose: Returns vtkLookupTable instance initialized by standrad OCCT colors.
 //============================================================================
-vtkLookupTable* InitLookupTable()
+vtkSmartPointer<vtkLookupTable> InitLookupTable()
 {
-  vtkLookupTable* aColorTable = vtkLookupTable::New();
+  vtkSmartPointer<vtkLookupTable> aColorTable = 
+    vtkSmartPointer<vtkLookupTable>::New();
   // Set colors table for 3D shapes
   double aRange[2];
   aRange[0] = MT_Undefined;

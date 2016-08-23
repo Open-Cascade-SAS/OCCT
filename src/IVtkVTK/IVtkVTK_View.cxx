@@ -161,7 +161,8 @@ bool IVtkVTK_View::DisplayToWorld (const gp_XY& theDisplayPnt, gp_XYZ& theWorldP
     return false;
   }
 
-  theWorldPnt = gp_XYZ (aCoords[0] / aCoords[3], aCoords[1] / aCoords[3], aCoords[2] / aCoords[3]);
+  theWorldPnt = gp_XYZ (aCoords[0] / aCoords[3], 
+    aCoords[1] / aCoords[3], aCoords[2] / aCoords[3]);
 
   return true;
 }
@@ -188,9 +189,10 @@ void IVtkVTK_View::GetCamera (Graphic3d_Mat4d& theProj,
   theIsOrtho = !IsPerspective();
 
   vtkMatrix4x4* aCompositeProj =
-    myRenderer->GetActiveCamera()->GetCompositeProjectionTransformMatrix (myRenderer->GetTiledAspectRatio(),
-                                                                          0,
-                                                                          1);
+    myRenderer->GetActiveCamera()->
+    GetCompositeProjectionTransformMatrix (myRenderer->GetTiledAspectRatio(),
+                                           0,
+                                           1);
   for (Standard_Integer aRow = 0; aRow < 4; ++aRow)
   {
     for (Standard_Integer aCol = 0; aCol < 4; ++aCol)

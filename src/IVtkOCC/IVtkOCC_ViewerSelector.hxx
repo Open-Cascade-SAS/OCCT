@@ -31,6 +31,8 @@ class IVtkOCC_ViewerSelector : public SelectMgr_ViewerSelector
 public:
   IVtkOCC_ViewerSelector();
 
+  virtual ~IVtkOCC_ViewerSelector();
+
   //! Implements point picking
   //! @param [in] theXPix, theYPix Display coordinates of the point
   //! @param [in] theView  ICamera interface to update the projection parameters.

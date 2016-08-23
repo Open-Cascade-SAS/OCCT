@@ -17,11 +17,10 @@
 #define __IVTKVTK_SHAPEDATA_H__
 
 #include <IVtk_IShapeData.hxx>
-#include <vtkType.h>
+#include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 
 class vtkIdTypeArray;
-class vtkPolyData;
 
 class IVtkVTK_ShapeData;
 DEFINE_STANDARD_HANDLE( IVtkVTK_ShapeData, IVtk_IShapeData )
@@ -106,7 +105,7 @@ public: //! @name Specific methods
 
   //! Get VTK PolyData.
   //! @return VTK PolyData
-  vtkSmartPointer< vtkPolyData > getVtkPolyData() const
+  vtkPolyData* getVtkPolyData() const
   { return myPolyData; }
 
 private:

@@ -14,7 +14,6 @@
 // commercial license or contractual agreement.
 
 #ifdef _WIN32
-#define _WIN32_WINNT 0x0400  // for trackmouseevent support  requires Win95 with IE 3.0 or greater.
 #include <windows.h>
 #include <vtkWin32RenderWindowInteractor.h>
 #include <vtkWin32OpenGLRenderWindow.h>
@@ -225,7 +224,7 @@ void IVtkDraw_Interactor::MoveTo (Standard_Integer theX, Standard_Integer theY)
 {
   // Processing highlighting
   mySelector->Pick (theX, theY, 0.0);
-  vtkActorCollection* anActorCollection = mySelector->GetPickedActors();
+  vtkSmartPointer<vtkActorCollection> anActorCollection = mySelector->GetPickedActors();
 
   if (anActorCollection)
   {
@@ -290,7 +289,7 @@ void IVtkDraw_Interactor::MoveTo (Standard_Integer theX, Standard_Integer theY)
 void IVtkDraw_Interactor::OnSelection()
 {
   // Processing selection
-  vtkActorCollection* anActorCollection = mySelector->GetPickedActors();
+  vtkSmartPointer<vtkActorCollection> anActorCollection = mySelector->GetPickedActors();
 
   if (anActorCollection)
   {

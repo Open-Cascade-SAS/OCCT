@@ -28,7 +28,17 @@ IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_ViewerSelector,SelectMgr_ViewerSelector)
 IVtkOCC_ViewerSelector::IVtkOCC_ViewerSelector()
 : SelectMgr_ViewerSelector(),
 myPixTol(2),
-myToUpdateTol(Standard_True) {}
+myToUpdateTol(Standard_True) 
+{
+}
+
+//============================================================================
+// Method:  Destructor
+// Purpose:
+//============================================================================
+IVtkOCC_ViewerSelector::~IVtkOCC_ViewerSelector()
+{
+}
 
 //============================================================================
 // Method:  Pick

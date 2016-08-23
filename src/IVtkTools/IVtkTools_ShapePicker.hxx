@@ -20,6 +20,7 @@
 #include <IVtk_Types.hxx>
 #include <IVtkOCC_ShapePickerAlgo.hxx>
 #include <vtkAbstractPropPicker.h>
+#include <vtkSmartPointer.h>
 
 class vtkRenderer;
 class vtkActorCollection;
@@ -79,9 +80,9 @@ public:
                          const bool theIsTurnOn = true) const;
 
   //! Turn on/off a selection mode for a shape actor.
-  //! @param [in] shapeActor shape presentation actor to set a selection mode for
-  //! @param [in] mode selection mode to be activated
-  //! @param [in] turnOn Flag to turn on/off the selection mode
+  //! @param [in] theShapeActor shape presentation actor to set a selection mode for
+  //! @param [in] theMode selection mode to be activated
+  //! @param [in] theIsTurnOn Flag to turn on/off the selection mode
   void SetSelectionMode (vtkActor* theShapeActor,
                          const IVtk_SelectionMode theMode,
                          const bool theIsTurnOn = true) const;
@@ -99,29 +100,37 @@ public:
   //! all OccShape objects found by the picking algorithm. e.g. all 
   //! shapes under the mouse cursor. Otherwise, ID of the shape closest to the eye
   //! is returned.
-  //! @param [in] all Controls if all selected shapes or just the only
+  //! @param [in] theIsAll Get all selected shapes or just the only
   //!        top one is returned, has no effect during area selection.
   //! @return List of top-level shape IDs
   IVtk_ShapeIdList GetPickedShapesIds (bool theIsAll = false) const;
 
   //! Access to the list of sub-shapes ids picked. 
-  //! @param [in] id top-level shape ID
-  //! @param [in] all Controls if all selected sub-shapes or just the 
+  //! @param [in] theId top-level shape ID
+  //! @param [in] theIsAll Get all selected sub-shapes or just the 
   //!        only top one is returned, has no effect during area selection.
   //! @return List of sub-shapes IDs
   IVtk_ShapeIdList GetPickedSubShapesIds (const IVtk_IdType theId, bool theIsAll = false) const;
 
   //! Access to the list of actors picked. 
-  //! @param [in] all Controls if all selected actors or just the only
+  //! @param [in] theIsAll Get all selected actors or just the only
   //!         top one is returned, has no effect during area selection.
   //! @return List of actors IDs
-  vtkActorCollection* GetPickedActors (bool theIsAll = false) const;
+  vtkSmartPointer<vtkActorCollection> GetPickedActors (bool theIsAll = false) const;
+
+  //! Remove selectable object from the picker (from internal maps).
+  //! @param [in] theShape the selectable shape
+  void RemoveSelectableObject(const IVtk_IShape::Handle& theShape);
+
+  //! Remove selectable object from the picker (from internal maps).
+  //! @param [in] theShapeActor the shape presentation actor to be removed from the picker
+  void RemoveSelectableActor(vtkActor* theShapeActor);
 
 protected:
   //! Constructs the picker with empty renderer and ready for point selection.
   IVtkTools_ShapePicker(); 
   //! Destructor
-  ~IVtkTools_ShapePicker(); 
+  virtual ~IVtkTools_ShapePicker();
 
   //! Convert display coordinates to world coordinates
   static bool convertDisplayToWorld (vtkRenderer *theRenderer,
@@ -143,7 +152,7 @@ private: // not copyable
 
 private:
   IVtkOCC_ShapePickerAlgo::Handle     myOccPickerAlgo;  //!< Picking algorithm implementation
-  vtkRenderer*                        myRenderer;       //!< VTK renderer
+  vtkSmartPointer<vtkRenderer>        myRenderer;       //!< VTK renderer
   bool                                myIsRectSelection;//!< Rectangle selection mode flag
   bool                                myIsPolySelection;//!< Polyline selection mode flag
   float                               myTolerance;      //!< Selectoin tolerance

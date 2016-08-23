@@ -19,10 +19,7 @@
 #include <IVtkTools.hxx>
 #include <IVtkOCC_Shape.hxx>
 #include <IVtkVTK_ShapeData.hxx>
-#include <vtkInformationIdTypeKey.h>
 #include <vtkPolyDataAlgorithm.h>
-#include <vtkType.h>
-#include <vtkSmartPointer.h>
 
 class vtkIdTypeArray;
 class vtkPolyData;
@@ -91,7 +88,7 @@ protected: //! @name Internals
 protected:
 
   IVtkTools_ShapeDataSource();
-  ~IVtkTools_ShapeDataSource();
+  virtual ~IVtkTools_ShapeDataSource();
 
 private:
 

@@ -96,6 +96,10 @@ public: //! @name Obtain picking results
   Standard_EXPORT virtual void 
     SubShapesPicked (const IVtk_IdType theId, IVtk_ShapeIdList& theShapeList) const Standard_OVERRIDE;
 
+  //! Remove selectable object from the picker (from internal maps).
+  //! @param [in] theShape the selectable shape
+  Standard_EXPORT virtual void RemoveSelectableObject(const IVtk_IShape::Handle& theShape);
+
 public:
 
   DEFINE_STANDARD_RTTIEXT(IVtkOCC_ShapePickerAlgo,IVtk_IShapePickerAlgo)

@@ -473,11 +473,7 @@ void Draw_Interpretor::AppendElement(const Standard_CString s)
 
 Standard_Integer Draw_Interpretor::Eval(const Standard_CString line)
 {
-  Standard_PCharacter pLine;
-  //
-  pLine=(Standard_PCharacter)line;
-  //
-  return Tcl_Eval(myInterp,pLine);
+  return Tcl_Eval(myInterp,line);
 }
 
 
@@ -489,10 +485,7 @@ Standard_Integer Draw_Interpretor::Eval(const Standard_CString line)
 Standard_Integer Draw_Interpretor::RecordAndEval(const Standard_CString line,
 						 const Standard_Integer flags)
 {
-  Standard_PCharacter pLine;
-  //
-  pLine=(Standard_PCharacter)line;
-  return Tcl_RecordAndEval(myInterp,pLine,flags);
+  return Tcl_RecordAndEval(myInterp,line,flags);
 }
 
 //=======================================================================
@@ -502,10 +495,7 @@ Standard_Integer Draw_Interpretor::RecordAndEval(const Standard_CString line,
 
 Standard_Integer Draw_Interpretor::EvalFile(const Standard_CString fname)
 {
-  Standard_PCharacter pfname;
-  //
-  pfname=(Standard_PCharacter)fname;
-  return Tcl_EvalFile(myInterp,pfname);
+  return Tcl_EvalFile(myInterp,fname);
 }
 
 //=======================================================================

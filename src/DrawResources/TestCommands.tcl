@@ -2489,3 +2489,56 @@ proc _checkpoint {coord_x coord_y rd_ch gr_ch bl_ch} {
     }
     return $mistake
 }
+
+# Procedure to check if sequence of values in listval follows linear trend
+# adding the same delta on each step.
+#
+# The function does statistical estimation of the mean variation of the
+# values of the sequence, and dispersion, and returns true only if both 
+# dispersion and deviation of the mean from expected delta are within 
+# specified tolerance.
+#
+# If mean variation differs from expected delta on more than two dispersions,
+# the check fails and procedure raises error with specified message.
+#
+# Otherwise the procedure returns false meaning that more iterations are needed.
+# Note that false is returned in any case if length of listval is less than 3.
+#
+# See example of use to check memory leaks in bugs/caf/bug23489
+#
+proc checktrend {listval delta tolerance message} {
+    set nbval [llength $listval]
+    if { $nbval < 3} {
+        return 0
+    }
+
+    # calculate mean value
+    set mean 0.
+    set prev [lindex $listval 0]
+    foreach val [lrange $listval 1 end] {
+        set mean [expr $mean + ($val - $prev)]
+        set prev $val
+    }
+    set mean [expr $mean / ($nbval - 1)]
+
+    # calculate dispersion
+    set sigma 0.
+    set prev [lindex $listval 0]
+    foreach val [lrange $listval 1 end] {
+        set d [expr ($val - $prev) - $mean]
+        set sigma [expr $sigma + $d * $d]
+        set prev $val
+    }
+    set sigma [expr sqrt ($sigma / ($nbval - 2))]
+
+    puts "Checking trend: nb = $nbval, mean delta = $mean, sigma = $sigma"
+
+    # check if deviation is definitely too big
+    if { abs ($mean - $delta) > $tolerance + 2. * $sigma } {
+        puts "Checking trend failed: mean delta per step = $mean, sigma = $sigma, expected delta = $delta"
+        error "$message"
+    }
+
+    # check if deviation is clearly within a range
+    return [expr abs ($mean - $delta) <= $sigma && $sigma <= $tolerance]
+}

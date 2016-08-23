@@ -17,6 +17,7 @@
 #define IVtkTOOLS_H
 
 #include <IVtk_Types.hxx>
+#include <vtkSmartPointer.h>
 
 #if defined(_WIN32) && !defined(HAVE_NO_DLL)
   #ifdef __IVtkTools_DLL
@@ -38,7 +39,7 @@ namespace IVtkTools
   //! Returns vtkLookupTable instance initialized by standrad OCCT colors used 
   //! in wireframe mode for different kinds of sub-shapes (free/boundary/shared 
   //! edges, isolines,...)
-  Standard_EXPORT vtkLookupTable* InitLookupTable();
+  Standard_EXPORT vtkSmartPointer<vtkLookupTable> InitLookupTable();
 
   //! Set a color for given type of sub-shapes.
   //! @param [in,out] theColorTable vtkLookupTable to set the color.

@@ -1,0 +1,66 @@
+puts "For OCC27871: Possible memory leak in viewers in virtual windows mode"
+puts "For OCC27871: Use 120 kb tolerance for checktrend because of leak on Linux in virtual windows mode"
+puts "============"
+puts "OCC27567"
+puts "============"
+puts ""
+#######################################################################
+# Visualization - possible memory leaks due to use of plain pointers 
+# in IVTK
+#######################################################################
+
+ivtkinit
+
+dlog off
+# Create i_max number of shapes
+set i_max 15
+
+set listmem {}
+for {set i 1} {${i} <= ${i_max}} {incr i} {
+    
+  psphere s 10 15 80
+  box box1 5 5 -5
+  box box2 -5 -5 -5
+  ptorus t 10 3
+
+  compound s box1 box2 t b$i
+
+  unset s
+  unset box1
+  unset box2
+  unset t
+  
+
+  # Display the j-th shape
+  ivtkdisplay b$i
+		
+  # Display shaded
+  ivtksetdispmode 1
+		
+  # Display wired
+  ivtksetdispmode 0
+		
+  # Select the shape
+  ivtkselect 200 200
+		
+  # Deselect the shape
+  ivtkselect 0 0
+		
+  # Highlight the shape 
+  ivtkmoveto 200 200
+		  
+  # Unhighlight the shape 
+  ivtkmoveto 50 50
+		  
+  # Hide the shape
+  ivtkerase b$i
+    
+  # Remove the shape presentation from memory
+  ivtkremove b$i
+  
+  unset b$i
+
+  lappend listmem [meminfo h]
+  checktrend $listmem 0 120000 "Memory leak detected"
+}
+

@@ -16,12 +16,10 @@
 #include <IVtkTools_ShapeObject.hxx>
 #include <IVtkTools_ShapeDataSource.hxx>
 #include <vtkActor.h>
-#include <vtkObjectBase.h>
 #include <vtkObjectFactory.h> 
 #include <vtkDataSet.h>
 #include <vtkInformation.h>
 #include <vtkInformationObjectBaseKey.h>
-#include <vtkDebugLeaks.h>
 #include <vtkPolyData.h>
 
 IVtkTools_ShapeObject::KeyPtr IVtkTools_ShapeObject::myKey = 0;
@@ -49,8 +47,9 @@ IVtkTools_ShapeObject::KeyPtr IVtkTools_ShapeObject::getKey()
 IVtkOCC_Shape::Handle IVtkTools_ShapeObject::GetOccShape (vtkActor* theActor)
 {
   IVtkOCC_Shape::Handle anOccShape;
-  IVtkTools_ShapeDataSource* aSrc = IVtkTools_ShapeObject::GetShapeSource (theActor);
-  if (aSrc)
+  vtkSmartPointer<IVtkTools_ShapeDataSource> aSrc = 
+    IVtkTools_ShapeObject::GetShapeSource (theActor);
+  if (aSrc.GetPointer() != NULL)
   {
     anOccShape = aSrc->GetShape();
   }
@@ -62,16 +61,18 @@ IVtkOCC_Shape::Handle IVtkTools_ShapeObject::GetOccShape (vtkActor* theActor)
 // Purpose: Static method to get OCC shape source from VTK actor's data from 
 //          information object by key.
 //============================================================================
-IVtkTools_ShapeDataSource* IVtkTools_ShapeObject::GetShapeSource (vtkActor* theActor)
+vtkSmartPointer<IVtkTools_ShapeDataSource> IVtkTools_ShapeObject
+::GetShapeSource (vtkActor* theActor)
 {
-  IVtkTools_ShapeDataSource* anOccShapeSource = 0;
-  vtkInformation* anInfo = theActor->GetPropertyKeys();
-  if (anInfo)
+  vtkSmartPointer<IVtkTools_ShapeDataSource> anOccShapeSource;
+  vtkSmartPointer<vtkInformation> anInfo = theActor->GetPropertyKeys();
+  if (anInfo.GetPointer() != NULL)
   {
     KeyPtr aKey = getKey();
     if (aKey->Has(anInfo))
     {
-      IVtkTools_ShapeObject* aShapeObj = (IVtkTools_ShapeObject*)(aKey->Get (anInfo));
+      vtkSmartPointer<IVtkTools_ShapeObject> aShapeObj = 
+        IVtkTools_ShapeObject::SafeDownCast(aKey->Get (anInfo));
       anOccShapeSource = aShapeObj->GetShapeSource();
     }
   }
@@ -88,14 +89,14 @@ void IVtkTools_ShapeObject::SetShapeSource (IVtkTools_ShapeDataSource* theDataSo
 {
   if (!theDataSet->GetInformation() )
   {
-    theDataSet->SetInformation (vtkInformation::New());
+    theDataSet->SetInformation (vtkSmartPointer<vtkInformation>::New());
   }
-  vtkInformation* aDatasetInfo = theDataSet->GetInformation();
+  vtkSmartPointer<vtkInformation> aDatasetInfo = theDataSet->GetInformation();
   KeyPtr aKey = getKey();
-  IVtkTools_ShapeObject* aShapeObj = IVtkTools_ShapeObject::New();
+  vtkSmartPointer<IVtkTools_ShapeObject> aShapeObj = 
+    vtkSmartPointer<IVtkTools_ShapeObject>::New();
   aShapeObj->SetShapeSource (theDataSource);
   aKey->Set(aDatasetInfo, aShapeObj);
-  aShapeObj->Delete();
 }
 
 //============================================================================
@@ -108,15 +109,15 @@ void IVtkTools_ShapeObject::SetShapeSource (IVtkTools_ShapeDataSource* theDataSo
 {
   if ( !theActor->GetPropertyKeys() )
   {
-    theActor->SetPropertyKeys (vtkInformation::New());
+    theActor->SetPropertyKeys (vtkSmartPointer<vtkInformation>::New());
   }
 
-  vtkInformation* anInfo = theActor->GetPropertyKeys();
+  vtkSmartPointer<vtkInformation> anInfo = theActor->GetPropertyKeys();
   KeyPtr aKey = getKey();
-  IVtkTools_ShapeObject* aShapeObj = IVtkTools_ShapeObject::New();
-  aShapeObj->SetShapeSource (theDataSource);
+  vtkSmartPointer<IVtkTools_ShapeObject> aShapeObj =
+    vtkSmartPointer<IVtkTools_ShapeObject>::New();
+  aShapeObj->SetShapeSource(theDataSource);
   aKey->Set (anInfo, aShapeObj);
-  aShapeObj->Delete();
 }
 
 //! @class IVtkTools_ShapeObject 
@@ -150,7 +151,7 @@ void IVtkTools_ShapeObject::SetShapeSource (IVtkTools_ShapeDataSource* theDataSo
 //  Method: GetShapeSource
 // Purpose: 
 //============================================================================
-IVtkTools_ShapeDataSource* IVtkTools_ShapeObject::GetShapeSource () const
+IVtkTools_ShapeDataSource* IVtkTools_ShapeObject::GetShapeSource() const
 {
   return myShapeSource;
 }

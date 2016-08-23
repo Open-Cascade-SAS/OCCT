@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Adaptor3d_HCurve.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
@@ -107,7 +106,7 @@ Standard_Real IVtkOCC_ShapeMesher::GetDeflection() const
 //================================================================
 void IVtkOCC_ShapeMesher::meshShape()
 {
-  TopoDS_Shape anOcctShape = GetShapeObj()->GetShape();
+  const TopoDS_Shape& anOcctShape = GetShapeObj()->GetShape();
   if (anOcctShape.IsNull())
   {
     return;
@@ -164,7 +163,7 @@ void IVtkOCC_ShapeMesher::addFreeVertices()
     {
       aType = MT_SharedVertex;
     }
-    TopoDS_Vertex aVertex = TopoDS::Vertex (aVertexMap.FindKey (anIt));
+    const TopoDS_Vertex& aVertex = TopoDS::Vertex (aVertexMap.FindKey (anIt));
     addVertex (aVertex, GetShapeObj()->GetSubShapeId (aVertex), aType);
   }
 }
@@ -188,7 +187,7 @@ void IVtkOCC_ShapeMesher::addEdges()
   TopExp_Explorer anEdgeIter (GetShapeObj()->GetShape(), TopAbs_EDGE);
   for (; anEdgeIter.More(); anEdgeIter.Next())
   {
-    TopoDS_Edge anOcctEdge = TopoDS::Edge (anEdgeIter.Current());
+    const TopoDS_Edge& anOcctEdge = TopoDS::Edge (anEdgeIter.Current());
     aNbFaces = anEdgesMap.FindFromKey (anOcctEdge).Extent();
     if (aNbFaces == 0)
     {
@@ -222,7 +221,7 @@ void IVtkOCC_ShapeMesher::addWireFrameFaces()
   TopExp_Explorer aFaceIter (GetShapeObj()->GetShape(), TopAbs_FACE);
   for (; aFaceIter.More(); aFaceIter.Next())
   {
-    TopoDS_Face anOcctFace = TopoDS::Face (aFaceIter.Current());
+    const TopoDS_Face& anOcctFace = TopoDS::Face (aFaceIter.Current());
     try
     {
       OCC_CATCH_SIGNALS
@@ -243,7 +242,7 @@ void IVtkOCC_ShapeMesher::addShadedFaces()
   TopExp_Explorer aFaceIter (GetShapeObj()->GetShape(), TopAbs_FACE);
   for (; aFaceIter.More(); aFaceIter.Next())
   {
-    TopoDS_Face anOcctFace = TopoDS::Face (aFaceIter.Current());
+    const TopoDS_Face& anOcctFace = TopoDS::Face (aFaceIter.Current());
     addShadedFace (anOcctFace,
                    GetShapeObj()->GetSubShapeId (anOcctFace));
   }
@@ -287,7 +286,7 @@ void IVtkOCC_ShapeMesher::processPolyline (Standard_Integer          theNbNodes,
     return;
   }
 
-  IVtk_PointIdList *aPolyPointIds = new IVtk_PointIdList();
+  IVtk_PointIdList aPolyPointIds;
 
   IVtk_PointId anId;
   for (Standard_Integer aJ = 0; aJ < theNbNodes; aJ++)
@@ -302,12 +301,10 @@ void IVtkOCC_ShapeMesher::processPolyline (Standard_Integer          theNbNodes,
     }
 
     anId = myShapeData->InsertCoordinate (point.X(), point.Y(), point.Z());
-    aPolyPointIds->Append (anId);
+    aPolyPointIds.Append (anId);
   }
 
-  myShapeData->InsertLine (theOcctId, aPolyPointIds, theMeshType);
-
-  delete aPolyPointIds;
+  myShapeData->InsertLine (theOcctId, &aPolyPointIds, theMeshType);
 }
 
 //================================================================
@@ -821,7 +818,7 @@ void IVtkOCC_ShapeMesher::addWFFace (const TopoDS_Face& theFace,
   TopExp_Explorer anEdgeIter (aFaceToMesh, TopAbs_EDGE );
   for (; anEdgeIter.More(); anEdgeIter.Next())
   {
-    TopoDS_Edge anOcctEdge = TopoDS::Edge (anEdgeIter.Current());
+    const TopoDS_Edge& anOcctEdge = TopoDS::Edge (anEdgeIter.Current());
     addEdge (anOcctEdge, theShapeId, myEdgesTypes (anOcctEdge));
   }
 

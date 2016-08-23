@@ -20,7 +20,7 @@
 #include <IVtkOCC_Shape.hxx>
 #include <vtkDataObject.h>
 #include <vtkSetGet.h>
-#include <vtkSmartPointer.h>
+#include <vtkWeakPointer.h>
 
 class vtkActor;
 class vtkDataSet;
@@ -42,7 +42,7 @@ public:
   static IVtkTools_ShapeObject* New(); 
 
   //! Get OCC shape source from VTK data from actor's information object by key.
-  static IVtkTools_ShapeDataSource* GetShapeSource (vtkActor* theActor);
+  static vtkSmartPointer<IVtkTools_ShapeDataSource> GetShapeSource (vtkActor* theActor);
 
   //! Get OCC shape from VTK data from actor's information object by key.
   static IVtkOCC_Shape::Handle GetOccShape (vtkActor* theActor);
@@ -66,18 +66,18 @@ public:
   void SetShapeSource (IVtkTools_ShapeDataSource* theDataSource);
 
   //! OCC shape source getter.
-  IVtkTools_ShapeDataSource* GetShapeSource () const;
+  IVtkTools_ShapeDataSource* GetShapeSource() const;
 
 protected:
   IVtkTools_ShapeObject();
-  ~IVtkTools_ShapeObject();
+  virtual ~IVtkTools_ShapeObject();
 
 private: // not copyable
   IVtkTools_ShapeObject (const IVtkTools_ShapeObject&);
   IVtkTools_ShapeObject& operator= (const IVtkTools_ShapeObject&);
 
 private: // OCC
-  vtkSmartPointer<IVtkTools_ShapeDataSource> myShapeSource;
+  vtkWeakPointer<IVtkTools_ShapeDataSource> myShapeSource;
 
   static KeyPtr myKey;
 };

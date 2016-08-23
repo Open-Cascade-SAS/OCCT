@@ -121,7 +121,7 @@ IVtkTools::InitShapeMapper(Mapper);
 It is possible to get an instance of *vtkLookupTable class* with a default OCCT color scheme by means of the following method:
 
 ~~~~
-vtkLookupTable* Table = IVtkTools::InitLookupTable();
+vtkSmartPointer<vtkLookupTable> Table = IVtkTools::InitLookupTable();
 ~~~~
 
 @subsubsection occt_vis_3_2_2	Custom color scheme

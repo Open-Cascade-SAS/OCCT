@@ -22,12 +22,16 @@
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_Selection.hxx>
 
+class IVtkOCC_SelectableObject;
+DEFINE_STANDARD_HANDLE(IVtkOCC_SelectableObject, SelectMgr_SelectableObject)
 // -----------------------------------------------------------------------------
 //! @class IVtkOCC_SelectableObject
 //! @brief Class with selection primitives used by OCCT selection algorithm.
 class IVtkOCC_SelectableObject : public SelectMgr_SelectableObject
 {
 public:
+
+  typedef Handle(IVtkOCC_SelectableObject) Handle;
 
   //! Constructs a selectable object initialized by the given shape
   //! @param [in] theShape Selectable shape
@@ -37,9 +41,11 @@ public:
   //! setShape() should be called later.
   IVtkOCC_SelectableObject();
 
+  virtual ~IVtkOCC_SelectableObject();
+
   //! Sets the selectable shape
   //! @param [in] theShape Selectable shape
-  void SetShape (const IVtkOCC_Shape::Handle& theShape);
+  Standard_EXPORT void SetShape (const IVtkOCC_Shape::Handle& theShape);
 
   const IVtkOCC_Shape::Handle&  GetShape() const { return myShape; };
 
@@ -63,7 +69,5 @@ private:
   Bnd_Box               myBndBox;
   Handle(Prs3d_Drawer)  myOCCTDrawer;
 };
-
-DEFINE_STANDARD_HANDLE( IVtkOCC_SelectableObject, SelectMgr_SelectableObject )
 
 #endif // __IVTKOCC_SELECTABLEOBJECT_H__

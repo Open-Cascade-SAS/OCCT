@@ -19,7 +19,6 @@
 #include <IVtkTools.hxx>
 
 #include "vtkPolyDataAlgorithm.h"
-#include <IVtk_Types.hxx>
 
 //! @class IVtkTools_SubPolyDataFilter 
 //! @brief Cells filter according to the given set of cells ids.
@@ -57,7 +56,7 @@ protected:
   virtual int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 
   IVtkTools_SubPolyDataFilter();
-  ~IVtkTools_SubPolyDataFilter();
+  virtual ~IVtkTools_SubPolyDataFilter();
 
 protected:
   //! Set of ids to be passed through this filter.

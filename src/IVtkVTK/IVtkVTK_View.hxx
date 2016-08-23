@@ -17,6 +17,7 @@
 #define __IVTKVTK_VIEW_H__
 
 #include <IVtk_IView.hxx>
+#include <vtkSmartPointer.h>
 
 class vtkRenderer;
 
@@ -92,7 +93,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IVtkVTK_View,IVtk_IView)
 
 private:
-  vtkRenderer* myRenderer;
+  vtkSmartPointer<vtkRenderer> myRenderer;
 };
 
 #endif // __IVTKVTK_VIEW_H__

@@ -18,7 +18,6 @@
 
 #include <IVtkTools.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
-#include <IVtk_Types.hxx>
 #include <NCollection_DataMap.hxx>
 
 //! @class IVtkTools_DisplayModeFilter 
@@ -47,7 +46,7 @@ protected:
   virtual int RequestData (vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 
   IVtkTools_DisplayModeFilter();
-  ~IVtkTools_DisplayModeFilter();  
+  virtual ~IVtkTools_DisplayModeFilter();
 
 protected:
   //! Display mode defining mesh types to pass through this filter.

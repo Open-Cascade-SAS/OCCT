@@ -57,6 +57,13 @@ IVtkOCC_SelectableObject::IVtkOCC_SelectableObject()
 { }
 
 //============================================================================
+// Method:  Destructor
+// Purpose: 
+//============================================================================
+IVtkOCC_SelectableObject::~IVtkOCC_SelectableObject()
+{ }
+
+//============================================================================
 // Method:  SetShape
 // Purpose: Sets the selectable shape
 //============================================================================

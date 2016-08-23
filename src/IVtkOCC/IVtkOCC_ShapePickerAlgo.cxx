@@ -259,9 +259,7 @@ void IVtkOCC_ShapePickerAlgo::SubShapesPicked (const IVtk_IdType theId, IVtk_Sha
 {
   if (mySubShapesPicked.IsBound (theId))
   {
-    // Need non-const this to call the map's operator[]
-    IVtkOCC_ShapePickerAlgo* that = const_cast< IVtkOCC_ShapePickerAlgo* >(this);
-    theShapeList = that->mySubShapesPicked (theId);
+    theShapeList = mySubShapesPicked (theId);
   }
 }
 
@@ -353,4 +351,24 @@ bool IVtkOCC_ShapePickerAlgo::processPicked()
   }
 
   return !myShapesPicked.IsEmpty();
+}
+
+//============================================================================
+//  Method: RemoveSelectableActor
+// Purpose: Remove selectable object from the picker (from internal maps).
+//============================================================================
+void IVtkOCC_ShapePickerAlgo::RemoveSelectableObject(const IVtk_IShape::Handle& theShape)
+{
+  clearPicked();
+  // Get shape implementation from shape interface.
+  Handle(IVtkOCC_Shape) aShapeImpl =
+    Handle(IVtkOCC_Shape)::DownCast(theShape);
+
+  // Get selectable object from the shape implementation.
+  Handle(IVtkOCC_SelectableObject) aSelObj =
+    Handle(IVtkOCC_SelectableObject)::DownCast(aShapeImpl->GetSelectableObject());
+
+  myViewerSelector->RemoveSelectableObject(aSelObj);
+  myViewerSelector->Clear();
+  aShapeImpl->SetSelectableObject(NULL);
 }

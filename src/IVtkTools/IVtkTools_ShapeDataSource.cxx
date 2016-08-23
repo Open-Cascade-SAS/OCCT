@@ -14,20 +14,17 @@
 // commercial license or contractual agreement.
 
 // VIS includes
-#include <IVtkOCC_ShapeMesher.hxx>
 #include <IVtkTools_ShapeDataSource.hxx>
+#include <IVtkOCC_ShapeMesher.hxx>
 #include <IVtkTools_ShapeObject.hxx>
 
 // VTK includes
-#include <vtkCellArray.h>
+#include <vtkObjectFactory.h> 
 #include <vtkCellData.h>
-#include <vtkDoubleArray.h>
 #include <vtkIdTypeArray.h>
 #include <vtkInformation.h>
-#include <vtkObjectFactory.h> 
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
-#include <vtkStreamingDemandDrivenPipeline.h>
 #include <vtkTransform.h>
 #include <vtkTransformPolyDataFilter.h>
 
@@ -42,7 +39,8 @@ IVtkTools_ShapeDataSource::IVtkTools_ShapeDataSource()
   myIsFastTransformMode (Standard_False),
   myIsTransformOnly (Standard_False)
 {
-  this->SetNumberOfInputPorts (0);
+  this->SetNumberOfInputPorts(0);
+  this->SetNumberOfOutputPorts(1);
 }
 
 //================================================================
@@ -85,73 +83,75 @@ IVtkOCC_Shape::Handle IVtkTools_ShapeDataSource::GetShape()
 // Function : RequestData
 // Purpose  : 
 //================================================================
-int IVtkTools_ShapeDataSource::RequestData (vtkInformation* theRequest,
-                                            vtkInformationVector** theInputVector,
-                                            vtkInformationVector* theOutputVector)
+int IVtkTools_ShapeDataSource::RequestData(vtkInformation        *vtkNotUsed(theRequest),
+                                           vtkInformationVector **vtkNotUsed(theInputVector),
+                                           vtkInformationVector  *theOutputVector)
 {
-  vtkPolyData* aPolyData = vtkPolyData::GetData (theOutputVector);
-  aPolyData->Allocate();
-  vtkPoints* aPts = vtkPoints::New();
-  aPolyData->SetPoints (aPts);
-  aPts->Delete();
-
-  vtkSmartPointer<vtkPolyData> aTransformedData;
-  TopoDS_Shape aShape = myOccShape->GetShape();
-  TopLoc_Location aShapeLoc = aShape.Location();
-
-  if (myIsTransformOnly)
+  vtkSmartPointer<vtkPolyData> aPolyData = vtkPolyData::GetData (theOutputVector);
+  if (aPolyData.GetPointer() != NULL)
   {
-    vtkPolyData* aPrevData = myPolyData->getVtkPolyData();
-    if (!aShapeLoc.IsIdentity() )
+    aPolyData->Allocate();
+    vtkSmartPointer<vtkPoints> aPts = vtkSmartPointer<vtkPoints>::New();
+    aPolyData->SetPoints (aPts);
+
+    vtkSmartPointer<vtkPolyData> aTransformedData;
+    TopoDS_Shape aShape = myOccShape->GetShape();
+    TopLoc_Location aShapeLoc = aShape.Location();
+
+    if (myIsTransformOnly)
     {
-      aTransformedData = this->transform (aPrevData, aShapeLoc);
+      vtkSmartPointer<vtkPolyData> aPrevData = myPolyData->getVtkPolyData();
+      if ( !aShapeLoc.IsIdentity() )
+      {
+        aTransformedData = this->transform (aPrevData, aShapeLoc);
+      }
+      else
+      {
+        aTransformedData = aPrevData;
+      }
     }
     else
     {
-      aTransformedData = aPrevData;
+      IVtkOCC_Shape::Handle aShapeWrapperCopy;
+      if ( myIsFastTransformMode && !aShapeLoc.IsIdentity() )
+      {
+        // Reset location before meshing
+        aShape.Location (TopLoc_Location());
+        aShapeWrapperCopy = new IVtkOCC_Shape (aShape);
+        aShapeWrapperCopy->SetId (myOccShape->GetId());
+      }
+      else
+      {
+        aShapeWrapperCopy = myOccShape;
+      }
+
+      myPolyData = new IVtkVTK_ShapeData;
+      IVtkOCC_ShapeMesher::Handle aMesher = new IVtkOCC_ShapeMesher;
+      aMesher->Build (aShapeWrapperCopy, myPolyData);
+      vtkSmartPointer<vtkPolyData> aMeshData = myPolyData->getVtkPolyData();
+
+      if ( myIsFastTransformMode && !aShapeLoc.IsIdentity() )
+      {
+        aTransformedData = this->transform (aMeshData, aShapeLoc);
+      }
+      else
+      {
+        aTransformedData = aMeshData;
+      }
     }
+
+    aPolyData->CopyStructure (aTransformedData);  // Copy points and cells
+    aPolyData->CopyAttributes (aTransformedData); // Copy data arrays (sub-shapes IDs)
+
+    // We store the OccShape instance in a IVtkTools_ShapeObject
+    // wrapper in vtkInformation object of vtkDataObject, then pass it
+    // to the actors through pipelines, so selection logic can access
+    // OccShape easily given the actor instance.
+    IVtkTools_ShapeObject::SetShapeSource (this, aPolyData);
+    aPolyData->GetAttributes (vtkDataObject::CELL)->SetPedigreeIds (SubShapeIDs());
   }
-  else
-  {
-    IVtkOCC_Shape::Handle aShapeWrapperCopy;
-    if (myIsFastTransformMode && !aShapeLoc.IsIdentity() )
-    {
-      // Reset location before meshing
-      aShape.Location (TopLoc_Location() );
-      aShapeWrapperCopy = new IVtkOCC_Shape (aShape);
-      aShapeWrapperCopy->SetId (myOccShape->GetId() );
-    }
-    else
-    {
-      aShapeWrapperCopy = myOccShape;
-    }
 
-    myPolyData = new IVtkVTK_ShapeData;
-    IVtkOCC_ShapeMesher::Handle aMesher = new IVtkOCC_ShapeMesher;
-    aMesher->Build (aShapeWrapperCopy, myPolyData);
-    vtkPolyData* aMeshData = myPolyData->getVtkPolyData();
-
-    if (myIsFastTransformMode && !aShapeLoc.IsIdentity() )
-    {
-      aTransformedData = this->transform (aMeshData, aShapeLoc);
-    }
-    else
-    {
-      aTransformedData = aMeshData;
-    }
-  }
-
-  aPolyData->CopyStructure (aTransformedData);  // Copy points and cells
-  aPolyData->CopyAttributes (aTransformedData); // Copy data arrays (sub-shapes IDs)
-
-  // We store the OccShape instance in a IVtkTools_ShapeObject
-  // wrapper in vtkInformation object of vtkDataObject, then pass it
-  // to the actors through pipelines, so selection logic can access
-  // OccShape easily given the actor instance.
-  IVtkTools_ShapeObject::SetShapeSource (this, aPolyData);
-  aPolyData->GetAttributes (vtkDataObject::CELL)->SetPedigreeIds (SubShapeIDs() );
-
-  return Superclass::RequestData (theRequest, theInputVector, theOutputVector);
+  return 1;
 }
 
 //================================================================
@@ -160,8 +160,10 @@ int IVtkTools_ShapeDataSource::RequestData (vtkInformation* theRequest,
 //================================================================
 vtkSmartPointer<vtkIdTypeArray> IVtkTools_ShapeDataSource::SubShapeIDs()
 {
-  vtkDataArray* arr = GetOutput()->GetCellData()->GetArray(IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS);
-  return vtkSmartPointer<vtkIdTypeArray>( vtkIdTypeArray::SafeDownCast(arr) );
+  vtkSmartPointer<vtkDataArray> arr = 
+    GetOutput()->GetCellData()->GetArray(IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS);
+  return vtkSmartPointer<vtkIdTypeArray>( 
+    vtkIdTypeArray::SafeDownCast(arr.GetPointer()) );
 }
 
 //================================================================
@@ -210,7 +212,7 @@ vtkSmartPointer<vtkPolyData> IVtkTools_ShapeDataSource::transform (vtkPolyData* 
   aTrsfFilter->SetInputData (theSource);
   aTrsfFilter->Update();
 
-  vtkPolyData* aTransformed = aTrsfFilter->GetOutput();
+  vtkSmartPointer<vtkPolyData> aTransformed = aTrsfFilter->GetOutput();
   aResult->CopyStructure (aTransformed);  // Copy points and cells
   aResult->CopyAttributes (aTransformed); // Copy data arrays (sub-shapes ids)
 
