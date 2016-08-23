@@ -48,6 +48,9 @@ public:
 
   virtual ~SelectMgr_BaseFrustum() {}
 
+  //! Return camera definition.
+  const Handle(Graphic3d_Camera)& Camera() const { return myCamera; }
+
   //! Passes camera projection and orientation matrices to builder
   Standard_EXPORT void SetCamera (const Handle(Graphic3d_Camera)& theCamera);
 
@@ -173,6 +176,7 @@ protected:
   Standard_Boolean    myIsOrthographic;      //!< Defines if current camera is orthographic
 
   Handle(SelectMgr_FrustumBuilder) myBuilder; //!< A tool implementing methods for volume build
+  Handle(Graphic3d_Camera)         myCamera;  //!< camera definition
 };
 
 #endif // _SelectMgr_BaseFrustum_HeaderFile

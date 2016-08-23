@@ -242,7 +242,7 @@ void OpenGl_LayerList::ChangeLayer (const OpenGl_Structure*  theStructure,
 
   // take priority and remove structure from list found by <theOldLayerId>
   // if the structure is not found there, scan through all other layers
-  if (aLayer.Remove (theStructure, aPriority, Standard_True))
+  if (aLayer.Remove (theStructure, aPriority, Standard_False))
   {
     --myNbStructures;
     if (aLayer.LayerSettings().IsImmediate)

@@ -46,6 +46,9 @@ public:
   //! Must be called at the beginning of each BVH tree traverse loop.
   Standard_EXPORT void CacheClipPtsProjections();
 
+  //! Return the camera definition.
+  const Handle(Graphic3d_Camera)& Camera() const { return myCamera; }
+
   //! Returns current projection matrix.
   const OpenGl_Mat4& ProjectionMatrix() const
   {
@@ -114,6 +117,8 @@ protected:
 
   OpenGl_Vec4 myClipPlanes[PlanesNB];      //!< Plane equations
   OpenGl_Vec4 myClipVerts[ClipVerticesNB]; //!< Vertices
+
+  Handle(Graphic3d_Camera) myCamera; //!< camera definition
 
   // for caching clip points projections onto viewing area normals once per traverse
   // ORDER: TOP, BOTTOM, LEFT, RIGHT, NEAR, FAR

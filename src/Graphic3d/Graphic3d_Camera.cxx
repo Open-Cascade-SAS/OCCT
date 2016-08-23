@@ -270,7 +270,7 @@ void Graphic3d_Camera::SetScale (const Standard_Real theScale)
     case Projection_MonoLeftEye  :
     case Projection_MonoRightEye :
     {
-      Standard_Real aDistance = theScale * 0.5 / Tan(myFOVy * M_PI / 360.0);
+      Standard_Real aDistance = theScale * 0.5 / Tan(DTR_HALF * myFOVy);
       SetDistance (aDistance);
     }
 
@@ -297,7 +297,7 @@ Standard_Real Graphic3d_Camera::Scale() const
     // case Projection_MonoLeftEye  :
     // case Projection_MonoRightEye :
     default :
-      return Distance() * 2.0 * Tan (myFOVy * M_PI / 360.0);
+      return Distance() * 2.0 * Tan (DTR_HALF * myFOVy);
   }
 }
 
@@ -627,10 +627,10 @@ gp_Pnt Graphic3d_Camera::ConvertView2World (const gp_Pnt& thePnt) const
 // function : ViewDimensions
 // purpose  :
 // =======================================================================
-gp_XYZ Graphic3d_Camera::ViewDimensions() const
+gp_XYZ Graphic3d_Camera::ViewDimensions (const Standard_Real theZValue) const
 {
   // view plane dimensions
-  Standard_Real aSize = IsOrthographic() ? myScale : (2.0 * Distance() * Tan (DTR_HALF * myFOVy));
+  Standard_Real aSize = IsOrthographic() ? myScale : (2.0 * theZValue * Tan (DTR_HALF * myFOVy));
   Standard_Real aSizeX, aSizeY;
   if (myAspect > 1.0)
   {

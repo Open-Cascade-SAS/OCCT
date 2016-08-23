@@ -333,7 +333,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
       mySelectingVolumeMgr.WindowSize (aViewportWidth, aViewportHeight);
 
       gp_GTrsf aTPers;
-      Graphic3d_Mat4d aMat = theObject->TransformPersistence().Compute (aProjection, aWorldView, aViewportWidth, aViewportHeight);
+      Graphic3d_Mat4d aMat = theObject->TransformPersistence().Compute (mySelectingVolumeMgr.Camera(), aProjection, aWorldView, aViewportWidth, aViewportHeight);
       aTPers.SetValue (1, 1, aMat.GetValue (0, 0));
       aTPers.SetValue (1, 2, aMat.GetValue (0, 1));
       aTPers.SetValue (1, 3, aMat.GetValue (0, 2));
@@ -449,7 +449,7 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
       Standard_Integer aViewportWidth;
       Standard_Integer aViewportHeight;
       mySelectingVolumeMgr.WindowSize (aViewportWidth, aViewportHeight);
-      aBVHTree = mySelectableObjectsTrsfPers.BVH (aProjection, aWorldView, aViewportWidth, aViewportHeight, aWVPState);
+      aBVHTree = mySelectableObjectsTrsfPers.BVH (mySelectingVolumeMgr.Camera(), aProjection, aWorldView, aViewportWidth, aViewportHeight, aWVPState);
     }
     else
     {
@@ -888,7 +888,7 @@ void SelectMgr_ViewerSelector::RebuildObjectsTree (const Standard_Boolean theIsF
     mySelectingVolumeMgr.WindowSize (aViewportWidth, aViewportHeight);
 
     mySelectableObjects.BVH();
-    mySelectableObjectsTrsfPers.BVH (aProjection, aWorldView, aViewportWidth, aViewportHeight, aWVPState);
+    mySelectableObjectsTrsfPers.BVH (mySelectingVolumeMgr.Camera(), aProjection, aWorldView, aViewportWidth, aViewportHeight, aWVPState);
   }
 }
 

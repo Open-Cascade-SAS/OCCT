@@ -197,12 +197,18 @@ public:
   Standard_EXPORT virtual void InvalidateZLayerBoundingBox (const Graphic3d_ZLayerId theLayerId) const Standard_OVERRIDE;
 
   //! Returns the bounding box of all structures displayed in the Z layer.
-  //! Never fails. If Z layer does not exist the empty box is returned.
+  //! If Z layer does not exist the empty box is returned.
+  //! @param theLayerId            layer identifier
+  //! @param theCamera             camera definition
+  //! @param theWindowWidth        viewport width  (for applying transformation-persistence)
+  //! @param theWindowHeight       viewport height (for applying transformation-persistence)
+  //! @param theToIncludeAuxiliary consider also auxiliary presentations (with infinite flag or with trihedron transformation persistence)
+  //! @return computed bounding box
   Standard_EXPORT virtual Graphic3d_BndBox4f ZLayerBoundingBox (const Graphic3d_ZLayerId        theLayerId,
                                                                 const Handle(Graphic3d_Camera)& theCamera,
                                                                 const Standard_Integer          theWindowWidth,
                                                                 const Standard_Integer          theWindowHeight,
-                                                                const Standard_Boolean          theToIgnoreInfiniteFlag) const Standard_OVERRIDE;
+                                                                const Standard_Boolean          theToIncludeAuxiliary) const Standard_OVERRIDE;
 
   //! Returns pointer to an assigned framebuffer object.
   Standard_EXPORT virtual Handle(Standard_Transient) FBO() const Standard_OVERRIDE;
@@ -439,8 +445,7 @@ private:
   Standard_EXPORT virtual Standard_Real considerZoomPersistenceObjects (const Graphic3d_ZLayerId        theLayerId,
                                                                         const Handle(Graphic3d_Camera)& theCamera,
                                                                         const Standard_Integer          theWindowWidth,
-                                                                        const Standard_Integer          theWindowHeight,
-                                                                        const Standard_Boolean          theToIgnoreInfiniteFlag) const Standard_OVERRIDE;
+                                                                        const Standard_Integer          theWindowHeight) const Standard_OVERRIDE;
 
 private:
 

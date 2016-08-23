@@ -99,18 +99,23 @@ public:
   }
 
   //! Returns layer bounding box.
-  const Graphic3d_BndBox4f& BoundingBox (const Standard_Integer          theViewId,
-                                         const Handle(Graphic3d_Camera)& theCamera,
-                                         const Standard_Integer          theWindowWidth,
-                                         const Standard_Integer          theWindowHeight,
-                                         const Standard_Boolean          theToIgnoreInfiniteFlag) const;
+  //! @param theViewId             view index to consider View Affinity in structure
+  //! @param theCamera             camera definition
+  //! @param theWindowWidth        viewport width  (for applying transformation-persistence)
+  //! @param theWindowHeight       viewport height (for applying transformation-persistence)
+  //! @param theToIncludeAuxiliary consider also auxiliary presentations (with infinite flag or with trihedron transformation persistence)
+  //! @return computed bounding box
+  Graphic3d_BndBox4f BoundingBox (const Standard_Integer          theViewId,
+                                  const Handle(Graphic3d_Camera)& theCamera,
+                                  const Standard_Integer          theWindowWidth,
+                                  const Standard_Integer          theWindowHeight,
+                                  const Standard_Boolean          theToIncludeAuxiliary) const;
 
   //! Returns zoom-scale factor.
   Standard_Real considerZoomPersistenceObjects (const Standard_Integer          theViewId,
                                                 const Handle(Graphic3d_Camera)& theCamera,
                                                 const Standard_Integer          theWindowWidth,
-                                                const Standard_Integer          theWindowHeight,
-                                                const Standard_Boolean          theToIgnoreInfiniteFlag) const;
+                                                const Standard_Integer          theWindowHeight) const;
 
   // Render all structures.
   void Render (const Handle(OpenGl_Workspace)&   theWorkspace,
@@ -123,6 +128,9 @@ public:
   }
 
 protected:
+
+  //! Updates BVH trees if their state has been invalidated.
+  void updateBVH() const;
 
   //! Traverses through BVH tree to determine which structures are in view volume.
   void traverse (OpenGl_BVHTreeSelector& theSelector) const;
@@ -149,6 +157,9 @@ private:
 
   //! Set of transform persistent OpenGl_Structures for building BVH tree.
   mutable OpenGl_BVHClipPrimitiveTrsfPersSet myBVHPrimitivesTrsfPers;
+
+  //! Indexed map of always rendered structures.
+  NCollection_IndexedMap<const OpenGl_Structure*> myAlwaysRenderedMap;
 
   //! Is needed for implementation of stochastic order of BVH traverse.
   mutable Standard_Boolean myBVHIsLeftChildQueuedFirst;

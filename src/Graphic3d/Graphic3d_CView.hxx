@@ -135,17 +135,18 @@ public:
                                                Handle(Graphic3d_Structure)& theComputedStruct) const;
 
   //! Returns the bounding box of all structures displayed in the view.
-  //! If <theToIgnoreInfiniteFlag> is TRUE, then the boundary box
-  //! also includes minimum and maximum limits of graphical elements
-  //! forming parts of infinite structures.
-  Standard_EXPORT Bnd_Box MinMaxValues (const Standard_Boolean theToIgnoreInfiniteFlag = Standard_False) const;
+  //! If theToIncludeAuxiliary is TRUE, then the boundary box also includes minimum and maximum limits
+  //! of graphical elements forming parts of infinite and other auxiliary structures.
+  //! @param theToIncludeAuxiliary consider also auxiliary presentations (with infinite flag or with trihedron transformation persistence)
+  //! @return computed bounding box
+  Standard_EXPORT Bnd_Box MinMaxValues (const Standard_Boolean theToIncludeAuxiliary = Standard_False) const;
 
   //! Returns the coordinates of the boundary box of all structures in the set <theSet>.
   //! If <theToIgnoreInfiniteFlag> is TRUE, then the boundary box
   //! also includes minimum and maximum limits of graphical elements
   //! forming parts of infinite structures.
   Standard_EXPORT Bnd_Box MinMaxValues (const Graphic3d_MapOfStructure& theSet,
-                                        const Standard_Boolean theToIgnoreInfiniteFlag = Standard_False) const;
+                                        const Standard_Boolean theToIncludeAuxiliary = Standard_False) const;
 
   //! Returns the structure manager handle which manage structures associated with this view.
   const Handle(Graphic3d_StructureManager)& StructureManager() const { return myStructureManager; }
@@ -322,11 +323,17 @@ public:
   virtual void InvalidateZLayerBoundingBox (const Graphic3d_ZLayerId theLayerId) const = 0;
 
   //! Returns the bounding box of all structures displayed in the Z layer.
+  //! @param theLayerId            layer identifier
+  //! @param theCamera             camera definition
+  //! @param theWindowWidth        viewport width  (for applying transformation-persistence)
+  //! @param theWindowHeight       viewport height (for applying transformation-persistence)
+  //! @param theToIncludeAuxiliary consider also auxiliary presentations (with infinite flag or with trihedron transformation persistence)
+  //! @return computed bounding box
   virtual Graphic3d_BndBox4f ZLayerBoundingBox (const Graphic3d_ZLayerId        theLayerId,
                                                 const Handle(Graphic3d_Camera)& theCamera,
                                                 const Standard_Integer          theWindowWidth,
                                                 const Standard_Integer          theWindowHeight,
-                                                const Standard_Boolean          theToIgnoreInfiniteFlag) const = 0;
+                                                const Standard_Boolean          theToIncludeAuxiliary) const = 0;
 
   //! Remove Z layer from the specified view. All structures
   //! displayed at the moment in layer will be displayed in default layer
@@ -473,8 +480,7 @@ private:
   virtual Standard_Real considerZoomPersistenceObjects (const Graphic3d_ZLayerId        theLayerId,
                                                         const Handle(Graphic3d_Camera)& theCamera,
                                                         const Standard_Integer          theWindowWidth,
-                                                        const Standard_Integer          theWindowHeight,
-                                                        const Standard_Boolean          theToIgnoreInfiniteFlag) const = 0;
+                                                        const Standard_Integer          theWindowHeight) const = 0;
 
 protected:
 

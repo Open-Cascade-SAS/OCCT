@@ -2224,7 +2224,7 @@ void V3d_View::Gravity (Standard_Real& theX,
   if (aNbPoints == 0)
   {
     // fallback - just use bounding box of entire scene
-    Bnd_Box aBox = myView->MinMaxValues (Standard_True);
+    Bnd_Box aBox = myView->MinMaxValues();
     if (!aBox.IsVoid())
     {
       aBox.Get (Xmin, Ymin, Zmin,

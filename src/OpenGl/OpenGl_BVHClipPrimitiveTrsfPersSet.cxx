@@ -133,7 +133,8 @@ const OpenGl_Structure* OpenGl_BVHClipPrimitiveTrsfPersSet::GetStructureById (St
 // purpose  :
 //=======================================================================
 const NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> >&
-  OpenGl_BVHClipPrimitiveTrsfPersSet::BVH (const OpenGl_Mat4& theProjectionMatrix,
+  OpenGl_BVHClipPrimitiveTrsfPersSet::BVH (const Handle(Graphic3d_Camera)& theCamera,
+                                           const OpenGl_Mat4& theProjectionMatrix,
                                            const OpenGl_Mat4& theWorldViewMatrix,
                                            const Standard_Integer theViewportWidth,
                                            const Standard_Integer theViewportHeight,
@@ -154,7 +155,7 @@ const NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> >&
 
     HBndBox4f aBoundingBox = new Graphic3d_BndBox4f;
     *aBoundingBox = aStructure->BoundingBox();
-     aStructure->TransformPersistence.Apply (theProjectionMatrix, theWorldViewMatrix, theViewportWidth, theViewportHeight, *aBoundingBox);
+     aStructure->TransformPersistence.Apply (theCamera, theProjectionMatrix, theWorldViewMatrix, theViewportWidth, theViewportHeight, *aBoundingBox);
 
     myStructBoxes.Add (aBoundingBox);
   }

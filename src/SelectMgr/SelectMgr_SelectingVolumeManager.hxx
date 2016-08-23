@@ -53,6 +53,9 @@ public:
 
   Standard_EXPORT void SetActiveSelectionType (const SelectionType& theType);
 
+  //! Returns current camera definition.
+  const Handle(Graphic3d_Camera)& Camera() const { return mySelectingVolumes[Frustum]->Camera(); }
+
   //! Updates camera projection and orientation matrices in all selecting volumes
   Standard_EXPORT void SetCamera (const Handle(Graphic3d_Camera) theCamera);
 

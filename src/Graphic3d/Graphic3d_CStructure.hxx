@@ -71,6 +71,14 @@ public:
   //! Return structure visibility flag
   bool IsVisible() const { return visible != 0; }
 
+  //! Return structure visibility considering both View Affinity and global visibility state.
+  bool IsVisible (const Standard_Integer theViewId) const
+  {
+    return visible != 0
+        && (ViewAffinity.IsNull()
+         || ViewAffinity->IsVisible (theViewId));
+  }
+
   //! Set z layer ID to display the structure in specified layer
   void SetZLayer (const Graphic3d_ZLayerId theLayerIndex) { myZLayer = theLayerIndex; }
 

@@ -4460,7 +4460,7 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
         Standard_Integer aViewportHeight = 0;
         aMgr.WindowSize (aViewportWidth, aViewportHeight);
 
-        Graphic3d_Mat4d aMat = anObj->TransformPersistence().Compute (aProjection, aWorldView, aViewportWidth, aViewportHeight);
+        Graphic3d_Mat4d aMat = anObj->TransformPersistence().Compute (aMgr.Camera(), aProjection, aWorldView, aViewportWidth, aViewportHeight);
 
         anInvTrsf.SetValue (1, 1, aMat.GetValue (0, 0));
         anInvTrsf.SetValue (1, 2, aMat.GetValue (0, 1));

@@ -1031,6 +1031,12 @@ Applications should explicitly enable deprecated functionality by setting OpenGl
 but being aware that this functionality is likely to be removed in a next OCCT release.
 Thus the recommended way to generate vector image of a 3D model or scene is to use application-level solution independent from OpenGL.
 
+@subsection upgrade_710_trsfpers Transformation persistence
+
+The behavior of transformation persistence flags Graphic3d_TMF_ZoomPers and Graphic3d_TMF_TriedronPers have been changed to be consistent with textured fixed-size 2D text.
+Object with these flags is considered to be defined in pixel units, and presentation is no more scaled depending on view height.
+Applications that need to scale such objects depending on viewport size should update them manually.
+
 @subsection upgrade_710_removed Removed features
 
 The following obsolete features have been removed:

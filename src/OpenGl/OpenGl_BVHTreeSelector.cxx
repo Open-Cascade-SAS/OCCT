@@ -40,6 +40,7 @@ void OpenGl_BVHTreeSelector::SetViewVolume (const Handle(Graphic3d_Camera)& theC
 
   myIsProjectionParallel = theCamera->IsOrthographic();
 
+  myCamera             = theCamera;
   myProjectionMat      = theCamera->ProjectionMatrixF();
   myWorldViewMat       = theCamera->OrientationMatrixF();
   myWorldViewProjState = theCamera->WorldViewProjState();

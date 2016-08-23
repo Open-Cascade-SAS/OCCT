@@ -432,7 +432,7 @@ void Graphic3d_CView::DisplayedStructures (Graphic3d_MapOfStructure& theStructur
 // function : MinMaxValues
 // purpose  :
 // =======================================================================
-Bnd_Box Graphic3d_CView::MinMaxValues (const Standard_Boolean theToIgnoreInfiniteFlag) const
+Bnd_Box Graphic3d_CView::MinMaxValues (const Standard_Boolean theToIncludeAuxiliary) const
 {
   Bnd_Box aResult;
 
@@ -453,14 +453,18 @@ Bnd_Box Graphic3d_CView::MinMaxValues (const Standard_Boolean theToIgnoreInfinit
                                                  aCamera,
                                                  aWinWidth,
                                                  aWinHeight,
-                                                 theToIgnoreInfiniteFlag);
+                                                 theToIncludeAuxiliary);
     combineBox (aResult, aBox);
   }
 
   Standard_Integer aMaxZLayer = ZLayerMax();
   for (Standard_Integer aLayerId = Graphic3d_ZLayerId_Default; aLayerId <= aMaxZLayer; ++aLayerId)
   {
-    Graphic3d_BndBox4f aBox = ZLayerBoundingBox (aLayerId, aCamera, aWinWidth, aWinHeight, theToIgnoreInfiniteFlag);
+    Graphic3d_BndBox4f aBox = ZLayerBoundingBox (aLayerId,
+                                                 aCamera,
+                                                 aWinWidth,
+                                                 aWinHeight,
+                                                 theToIncludeAuxiliary);
     combineBox (aResult, aBox);
   }
 
@@ -487,12 +491,12 @@ Standard_Real Graphic3d_CView::ConsiderZoomPersistenceObjects()
   Standard_Real aMaxCoef = 1.0;
   for (Standard_Integer aLayer = 0; aLayer < THE_NB_DEFAULT_LAYERS; ++aLayer)
   {
-    aMaxCoef = Max (aMaxCoef, considerZoomPersistenceObjects (THE_DEFAULT_LAYERS[aLayer], aCamera, aWinWidth, aWinHeight, Standard_False));
+    aMaxCoef = Max (aMaxCoef, considerZoomPersistenceObjects (THE_DEFAULT_LAYERS[aLayer], aCamera, aWinWidth, aWinHeight));
   }
 
   for (Standard_Integer aLayer = Graphic3d_ZLayerId_Default; aLayer <= ZLayerMax(); ++aLayer)
   {
-    aMaxCoef = Max (aMaxCoef, considerZoomPersistenceObjects (aLayer, aCamera, aWinWidth, aWinHeight, Standard_False));
+    aMaxCoef = Max (aMaxCoef, considerZoomPersistenceObjects (aLayer, aCamera, aWinWidth, aWinHeight));
   }
 
   return aMaxCoef;
@@ -519,12 +523,8 @@ Bnd_Box Graphic3d_CView::MinMaxValues (const Graphic3d_MapOfStructure& theSet,
   for (Graphic3d_MapIteratorOfMapOfStructure aStructIter (theSet); aStructIter.More(); aStructIter.Next())
   {
     const Handle(Graphic3d_Structure)& aStructure = aStructIter.Key();
-    if (!aStructure->IsVisible() || aStructure->IsEmpty())
-    {
-      continue;
-    }
-    else if (!aStructure->CStructure()->ViewAffinity.IsNull()
-          && !aStructure->CStructure()->ViewAffinity->IsVisible (aViewId))
+    if (aStructure->IsEmpty()
+    || !aStructure->CStructure()->IsVisible (aViewId))
     {
       continue;
     }
@@ -554,7 +554,7 @@ Bnd_Box Graphic3d_CView::MinMaxValues (const Graphic3d_MapOfStructure& theSet,
     {
       const Graphic3d_Mat4d& aProjectionMat = aCamera->ProjectionMatrix();
       const Graphic3d_Mat4d& aWorldViewMat  = aCamera->OrientationMatrix();
-      aStructure->TransformPersistence().Apply (aProjectionMat, aWorldViewMat, aWinWidth, aWinHeight, aBox);
+      aStructure->TransformPersistence().Apply (aCamera, aProjectionMat, aWorldViewMat, aWinWidth, aWinHeight, aBox);
     }
 
     // To prevent float overflow at camera parameters calculation and further

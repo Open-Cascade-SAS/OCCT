@@ -35,6 +35,7 @@ SelectMgr_BaseFrustum::SelectMgr_BaseFrustum()
 //=======================================================================
 void SelectMgr_BaseFrustum::SetCamera (const Handle(Graphic3d_Camera)& theCamera)
 {
+  myCamera = theCamera;
   myBuilder->SetWorldViewMatrix (theCamera->OrientationMatrix());
   myBuilder->SetProjectionMatrix (theCamera->ProjectionMatrix());
   myBuilder->SetWorldViewProjState (theCamera->WorldViewProjState());
@@ -51,6 +52,7 @@ void SelectMgr_BaseFrustum::SetCamera (const Graphic3d_Mat4d& theProjection,
                                        const Standard_Integer theIsOrthographic,
                                        const Graphic3d_WorldViewProjState& theWVPState)
 {
+  myCamera.Nullify();
   myBuilder->SetWorldViewMatrix (theWorldView);
   myBuilder->SetProjectionMatrix (theProjection);
   myBuilder->SetWorldViewProjState (theWVPState);

@@ -18,6 +18,7 @@
 
 #include <Bnd_Box.hxx>
 #include <BVH_Box.hxx>
+#include <Graphic3d_Camera.hxx>
 #include <Graphic3d_TransformUtils.hxx>
 #include <Graphic3d_TransModeFlags.hxx>
 #include <NCollection_Mat4.hxx>
@@ -44,26 +45,30 @@ public:
 public:
 
   //! Apply transformation to bounding box of presentation.
+  //! @param theCamera [in] camera definition
   //! @param theProjection [in] the projection transformation matrix.
   //! @param theWorldView [in] the world view transformation matrix.
   //! @param theViewportWidth [in] the width of viewport (for 2d persistence).
   //! @param theViewportHeight [in] the height of viewport (for 2d persistence).
   //! @param theBoundingBox [in/out] the bounding box to transform.
   template<class T>
-  void Apply (const NCollection_Mat4<T>& theProjection,
+  void Apply (const Handle(Graphic3d_Camera)& theCamera,
+              const NCollection_Mat4<T>& theProjection,
               const NCollection_Mat4<T>& theWorldView,
               const Standard_Integer theViewportWidth,
               const Standard_Integer theViewportHeight,
               Bnd_Box& theBoundingBox) const;
 
   //! Apply transformation to bounding box of presentation
+  //! @param theCamera [in] camera definition
   //! @param theProjection [in] the projection transformation matrix.
   //! @param theWorldView [in] the world view transformation matrix.
   //! @param theViewportWidth [in] the width of viewport (for 2d persistence).
   //! @param theViewportHeight [in] the height of viewport (for 2d persistence).
   //! @param theBoundingBox [in/out] the bounding box to transform.
   template<class T>
-  void Apply (const NCollection_Mat4<T>& theProjection,
+  void Apply (const Handle(Graphic3d_Camera)& theCamera,
+              const NCollection_Mat4<T>& theProjection,
               const NCollection_Mat4<T>& theWorldView,
               const Standard_Integer theViewportWidth,
               const Standard_Integer theViewportHeight,
@@ -72,19 +77,22 @@ public:
   //! Compute transformation.
   //! Computed matrix can be applied to model world transformation
   //! of an object to implement effect of transformation persistence.
+  //! @param theCamera [in] camera definition
   //! @param theProjection [in] the projection transformation matrix.
   //! @param theWorldView [in] the world view transformation matrix.
   //! @param theViewportWidth [in] the width of viewport (for 2d persistence).
   //! @param theViewportHeight [in] the height of viewport (for 2d persistence).
   //! @return transformation matrix to be applied to model world transformation of an object.
   template<class T>
-  NCollection_Mat4<T> Compute (const NCollection_Mat4<T>& theProjection,
+  NCollection_Mat4<T> Compute (const Handle(Graphic3d_Camera)& theCamera,
+                               const NCollection_Mat4<T>& theProjection,
                                const NCollection_Mat4<T>& theWorldView,
                                const Standard_Integer theViewportWidth,
                                const Standard_Integer theViewportHeight) const;
 
   template<class T>
-  void Apply (NCollection_Mat4<T>& theProjection,
+  void Apply (const Handle(Graphic3d_Camera)& theCamera,
+              NCollection_Mat4<T>& theProjection,
               NCollection_Mat4<T>& theWorldView,
               const Standard_Integer theViewportWidth,
               const Standard_Integer theViewportHeight) const;
@@ -95,13 +103,61 @@ public:
 // purpose  : Apply transformation to world view and projection matrices.
 // =======================================================================
 template<class T>
-void Graphic3d_TransformPers::Apply (NCollection_Mat4<T>& theProjection,
+void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
+                                     NCollection_Mat4<T>& theProjection,
                                      NCollection_Mat4<T>& theWorldView,
                                      const Standard_Integer theViewportWidth,
                                      const Standard_Integer theViewportHeight) const
 {
   if (!Flags)
   {
+    return;
+  }
+
+  if (Flags == Graphic3d_TMF_TriedronPers)
+  {
+    // reset Z focus for trihedron persistence
+    const Standard_Real aFocus = theCamera->IsOrthographic()
+                               ? theCamera->Distance()
+                               : (theCamera->ZFocusType() == Graphic3d_Camera::FocusType_Relative
+                                ? Standard_Real(theCamera->ZFocus() * theCamera->Distance())
+                                : Standard_Real(theCamera->ZFocus()));
+
+    // scale factor to pixels
+    const gp_XYZ aViewDim = theCamera->ViewDimensions (aFocus);
+    const Standard_Real aScale = Abs(aViewDim.Y()) / Standard_Real(theViewportHeight);
+
+    // offset from the corner
+    const Standard_Real anOffset = Point.z() * aScale;
+
+    const gp_Dir aForward (theCamera->Center().XYZ() - theCamera->Eye().XYZ());
+    gp_XYZ aCenter = theCamera->Center().XYZ() + aForward.XYZ() * (aFocus - theCamera->Distance());
+    if (Point.x() != 0.0)
+    {
+      const gp_Dir aSide = aForward.Crossed (theCamera->Up());
+      if (Point.x() > 0.0)
+      {
+        aCenter += aSide.XYZ() * (Abs(aViewDim.X()) * 0.5 - anOffset);
+      }
+      else
+      {
+        aCenter -= aSide.XYZ() * (Abs(aViewDim.X()) * 0.5 - anOffset);
+      }
+    }
+    if (Point.y() != 0.0)
+    {
+      if (Point.y() > 0.0)
+      {
+        aCenter += theCamera->Up().XYZ() * (Abs(aViewDim.Y()) * 0.5 - anOffset);
+      }
+      else
+      {
+        aCenter -= theCamera->Up().XYZ() * (Abs(aViewDim.Y()) * 0.5 - anOffset);
+      }
+    }
+
+    Graphic3d_TransformUtils::Translate (theWorldView, T(aCenter.X()), T(aCenter.Y()), T(aCenter.Z()));
+    Graphic3d_TransformUtils::Scale     (theWorldView, T(aScale),      T(aScale),      T(aScale));
     return;
   }
 
@@ -158,8 +214,7 @@ void Graphic3d_TransformPers::Apply (NCollection_Mat4<T>& theProjection,
     }
 
     // Prevent zooming.
-    if ((Flags == Graphic3d_TMF_TriedronPers)
-     || (Flags & Graphic3d_TMF_ZoomPers))
+    if ((Flags & Graphic3d_TMF_ZoomPers) != 0)
     {
       const T aSize = static_cast<T> (1.0);
       const Standard_Integer aViewport[4] = { 0, 0, theViewportHeight, theViewportHeight };
@@ -189,7 +244,7 @@ void Graphic3d_TransformPers::Apply (NCollection_Mat4<T>& theProjection,
     }
 
     // Prevent translation by nullifying translation component.
-    if ((Flags & Graphic3d_TMF_PanPers) || Flags == Graphic3d_TMF_TriedronPers)
+    if ((Flags & Graphic3d_TMF_PanPers) != 0)
     {
       theWorldView .SetValue (0, 3, static_cast<T> (0.0));
       theWorldView .SetValue (1, 3, static_cast<T> (0.0));
@@ -215,35 +270,7 @@ void Graphic3d_TransformPers::Apply (NCollection_Mat4<T>& theProjection,
       theWorldView.SetValue (2, 2, static_cast<T> (1.0));
     }
 
-    if (Flags == Graphic3d_TMF_TriedronPers)
-    {
-      if (Point.x() != 0.0 && Point.y() != 0.0)
-      {
-        NCollection_Mat4<T> anUnviewMat;
-
-        if (!(theProjection).Inverted (anUnviewMat))
-        {
-          Standard_ProgramError::Raise ("Graphic3d_TransformPers::Apply, can not inverse projection matrix.");
-        }
-
-        NCollection_Vec4<T> aProjMax (static_cast<T> ( 1.0), static_cast<T> ( 1.0), static_cast<T> (0.0), static_cast<T> (1.0));
-        NCollection_Vec4<T> aProjMin (static_cast<T> (-1.0), static_cast<T> (-1.0), static_cast<T> (0.0), static_cast<T> (1.0));
-        NCollection_Vec4<T> aViewMax = anUnviewMat * aProjMax;
-        NCollection_Vec4<T> aViewMin = anUnviewMat * aProjMin;
-
-        aViewMax /= aViewMax.w();
-        aViewMin /= aViewMin.w();
-
-        T aMoveX = static_cast<T> (0.5) * (aViewMax.x() - aViewMin.x() - static_cast<T> (Point.z()));
-        T aMoveY = static_cast<T> (0.5) * (aViewMax.y() - aViewMin.y() - static_cast<T> (Point.z()));
-
-        aMoveX = (Point.x() > 0.0) ? aMoveX : -aMoveX;
-        aMoveY = (Point.y() > 0.0) ? aMoveY : -aMoveY;
-
-        Graphic3d_TransformUtils::Translate<T> (theProjection, aMoveX, aMoveY, static_cast<T> (0.0));
-      }
-    }
-    else if ((Flags & Graphic3d_TMF_PanPers) != Graphic3d_TMF_PanPers)
+    if ((Flags & Graphic3d_TMF_PanPers) != Graphic3d_TMF_PanPers)
     {
       NCollection_Mat4<T> anUnviewMat;
 
@@ -266,12 +293,18 @@ void Graphic3d_TransformPers::Apply (NCollection_Mat4<T>& theProjection,
 // purpose  : Apply transformation to bounding box of presentation.
 // =======================================================================
 template<class T>
-void Graphic3d_TransformPers::Apply (const NCollection_Mat4<T>& theProjection,
+void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
+                                     const NCollection_Mat4<T>& theProjection,
                                      const NCollection_Mat4<T>& theWorldView,
                                      const Standard_Integer theViewportWidth,
                                      const Standard_Integer theViewportHeight,
                                      Bnd_Box& theBoundingBox) const
 {
+  if (theBoundingBox.IsVoid())
+  {
+    return;
+  }
+
   T aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
 
   theBoundingBox.Get (aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
@@ -280,7 +313,7 @@ void Graphic3d_TransformPers::Apply (const NCollection_Mat4<T>& theProjection,
   typename BVH_Box<T, 4>::BVH_VecNt aMax (aXmax, aYmax, aZmax, static_cast<T> (1.0));
   BVH_Box<T, 4> aBBox (aMin, aMax);
 
-  Apply (theProjection, theWorldView, theViewportWidth, theViewportHeight, aBBox);
+  Apply (theCamera, theProjection, theWorldView, theViewportWidth, theViewportHeight, aBBox);
 
   theBoundingBox = Bnd_Box();
   theBoundingBox.Update (aBBox.CornerMin().x(), aBBox.CornerMin().y(), aBBox.CornerMin().z(),
@@ -292,15 +325,16 @@ void Graphic3d_TransformPers::Apply (const NCollection_Mat4<T>& theProjection,
 // purpose  : Apply transformation to bounding box of presentation.
 // =======================================================================
 template<class T>
-void Graphic3d_TransformPers::Apply (const NCollection_Mat4<T>& theProjection,
+void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
+                                     const NCollection_Mat4<T>& theProjection,
                                      const NCollection_Mat4<T>& theWorldView,
                                      const Standard_Integer theViewportWidth,
                                      const Standard_Integer theViewportHeight,
                                      BVH_Box<T, 4>& theBoundingBox) const
 {
-  NCollection_Mat4<T> aTPers = Compute (theProjection, theWorldView, theViewportWidth, theViewportHeight);
-
-  if (aTPers.IsIdentity())
+  NCollection_Mat4<T> aTPers = Compute (theCamera, theProjection, theWorldView, theViewportWidth, theViewportHeight);
+  if (aTPers.IsIdentity()
+  || !theBoundingBox.IsValid())
   {
     return;
   }
@@ -333,7 +367,8 @@ void Graphic3d_TransformPers::Apply (const NCollection_Mat4<T>& theProjection,
 // purpose  : Compute transformation.
 // =======================================================================
 template<class T>
-NCollection_Mat4<T> Graphic3d_TransformPers::Compute (const NCollection_Mat4<T>& theProjection,
+NCollection_Mat4<T> Graphic3d_TransformPers::Compute (const Handle(Graphic3d_Camera)& theCamera,
+                                                      const NCollection_Mat4<T>& theProjection,
                                                       const NCollection_Mat4<T>& theWorldView,
                                                       const Standard_Integer theViewportWidth,
                                                       const Standard_Integer theViewportHeight) const
@@ -353,7 +388,7 @@ NCollection_Mat4<T> Graphic3d_TransformPers::Compute (const NCollection_Mat4<T>&
   NCollection_Mat4<T> aProjection (theProjection);
   NCollection_Mat4<T> aWorldView (theWorldView);
 
-  Apply (aProjection, aWorldView, theViewportWidth, theViewportHeight);
+  Apply (theCamera, aProjection, aWorldView, theViewportWidth, theViewportHeight);
 
   return anUnviewMat * (aProjection * aWorldView);
 }

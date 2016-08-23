@@ -386,7 +386,16 @@ public:
   //! Calculate view plane size at center (target) point
   //! and distance between ZFar and ZNear planes.
   //! @return values in form of gp_Pnt (Width, Height, Depth).
-  Standard_EXPORT gp_XYZ ViewDimensions() const;
+  gp_XYZ ViewDimensions() const
+  {
+    return ViewDimensions (Distance());
+  }
+
+  //! Calculate view plane size at center point with specified Z offset
+  //! and distance between ZFar and ZNear planes.
+  //! @param theZValue [in] the distance from the eye in eye-to-center direction
+  //! @return values in form of gp_Pnt (Width, Height, Depth).
+  Standard_EXPORT gp_XYZ ViewDimensions (const Standard_Real theZValue) const;
 
   //! Calculate WCS frustum planes for the camera projection volume.
   //! Frustum is a convex volume determined by six planes directing

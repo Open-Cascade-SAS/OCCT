@@ -548,7 +548,7 @@ Graphic3d_BndBox4f OpenGl_View::ZLayerBoundingBox (const Graphic3d_ZLayerId     
                                                    const Handle(Graphic3d_Camera)& theCamera,
                                                    const Standard_Integer          theWindowWidth,
                                                    const Standard_Integer          theWindowHeight,
-                                                   const Standard_Boolean          theToIgnoreInfiniteFlag) const
+                                                   const Standard_Boolean          theToIncludeAuxiliary) const
 {
   if (myZLayers.LayerIDs().IsBound (theLayerId))
   {
@@ -556,7 +556,7 @@ Graphic3d_BndBox4f OpenGl_View::ZLayerBoundingBox (const Graphic3d_ZLayerId     
                                                      theCamera,
                                                      theWindowWidth,
                                                      theWindowHeight,
-                                                     theToIgnoreInfiniteFlag);
+                                                     theToIncludeAuxiliary);
   }
 
   return Graphic3d_BndBox4f();
@@ -569,16 +569,14 @@ Graphic3d_BndBox4f OpenGl_View::ZLayerBoundingBox (const Graphic3d_ZLayerId     
 Standard_Real OpenGl_View::considerZoomPersistenceObjects (const Graphic3d_ZLayerId        theLayerId,
                                                            const Handle(Graphic3d_Camera)& theCamera,
                                                            const Standard_Integer          theWindowWidth,
-                                                           const Standard_Integer          theWindowHeight,
-                                                           const Standard_Boolean          theToIgnoreInfiniteFlag) const
+                                                           const Standard_Integer          theWindowHeight) const
 {
   if (myZLayers.LayerIDs().IsBound (theLayerId))
   {
     return myZLayers.Layer (theLayerId).considerZoomPersistenceObjects (Identification(),
                                                                         theCamera,
                                                                         theWindowWidth,
-                                                                        theWindowHeight,
-                                                                        theToIgnoreInfiniteFlag);
+                                                                        theWindowHeight);
   }
 
   return 1.0;

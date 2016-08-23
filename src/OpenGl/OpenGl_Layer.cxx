@@ -61,6 +61,10 @@ void OpenGl_Layer::Add (const OpenGl_Structure* theStruct,
   if (theStruct->IsAlwaysRendered())
   {
     theStruct->MarkAsNotCulled();
+    if (!isForChangePriority)
+    {
+      myAlwaysRenderedMap.Add (theStruct);
+    }
   }
   else if (!isForChangePriority)
   {
@@ -101,12 +105,23 @@ bool OpenGl_Layer::Remove (const OpenGl_Structure* theStruct,
       aStructures.Swap (anIndex, aStructures.Size());
       aStructures.RemoveLast();
 
-      if (!theStruct->IsAlwaysRendered()
-       && !isForChangePriority)
+      if (!isForChangePriority)
       {
-        if (!myBVHPrimitives.Remove (theStruct))
+        if (theStruct->IsAlwaysRendered())
         {
-          myBVHPrimitivesTrsfPers.Remove (theStruct);
+          const Standard_Integer anIndex2 = myAlwaysRenderedMap.FindIndex (theStruct);
+          if (anIndex2 != 0)
+          {
+            myAlwaysRenderedMap.Swap (myAlwaysRenderedMap.Size(), anIndex2);
+            myAlwaysRenderedMap.RemoveLast();
+          }
+        }
+        else
+        {
+          if (!myBVHPrimitives.Remove (theStruct))
+          {
+            myBVHPrimitivesTrsfPers.Remove (theStruct);
+          }
         }
       }
       --myNbStructures;
@@ -128,18 +143,40 @@ void OpenGl_Layer::InvalidateBVHData() const
   myIsBVHPrimitivesNeedsReset = Standard_True;
 }
 
+//! Calculate a finite bounding box of infinite object as its middle point.
+inline Graphic3d_BndBox4f centerOfinfiniteBndBox (const Graphic3d_BndBox4f& theBndBox)
+{
+  // bounding borders of infinite line has been calculated as own point in center of this line
+  const Graphic3d_Vec4 aDiagVec = theBndBox.CornerMax() - theBndBox.CornerMin();
+  return aDiagVec.xyz().SquareModulus() >= 500000.0f * 500000.0f
+       ? Graphic3d_BndBox4f ((theBndBox.CornerMin() + theBndBox.CornerMax()) * 0.5f)
+       : Graphic3d_BndBox4f();
+}
+
+//! Return true if at least one vertex coordinate out of float range.
+inline bool isInfiniteBndBox (const Graphic3d_BndBox4f& theBndBox)
+{
+  return Abs (theBndBox.CornerMax().x()) >= ShortRealLast()
+      || Abs (theBndBox.CornerMax().y()) >= ShortRealLast()
+      || Abs (theBndBox.CornerMax().z()) >= ShortRealLast()
+      || Abs (theBndBox.CornerMin().x()) >= ShortRealLast()
+      || Abs (theBndBox.CornerMin().y()) >= ShortRealLast()
+      || Abs (theBndBox.CornerMin().z()) >= ShortRealLast();
+}
+
 // =======================================================================
 // function : BoundingBox
 // purpose  :
 // =======================================================================
-const Graphic3d_BndBox4f& OpenGl_Layer::BoundingBox (const Standard_Integer          theViewId,
-                                                     const Handle(Graphic3d_Camera)& theCamera,
-                                                     const Standard_Integer          theWindowWidth,
-                                                     const Standard_Integer          theWindowHeight,
-                                                     const Standard_Boolean          theToIgnoreInfiniteFlag) const
+Graphic3d_BndBox4f OpenGl_Layer::BoundingBox (const Standard_Integer          theViewId,
+                                              const Handle(Graphic3d_Camera)& theCamera,
+                                              const Standard_Integer          theWindowWidth,
+                                              const Standard_Integer          theWindowHeight,
+                                              const Standard_Boolean          theToIncludeAuxiliary) const
 {
-  const Standard_Integer aBoxId = theToIgnoreInfiniteFlag == 0 ? 0 : 1;
-
+  const Standard_Integer aBoxId = !theToIncludeAuxiliary ? 0 : 1;
+  const Graphic3d_Mat4& aProjectionMat = theCamera->ProjectionMatrixF();
+  const Graphic3d_Mat4& aWorldViewMat  = theCamera->OrientationMatrixF();
   if (myIsBoundingBoxNeedsReset[aBoxId])
   {
     // Recompute layer bounding box
@@ -152,12 +189,7 @@ const Graphic3d_BndBox4f& OpenGl_Layer::BoundingBox (const Standard_Integer     
       for (Standard_Integer aStructIdx = 1; aStructIdx <= aStructures.Size(); ++aStructIdx)
       {
         const OpenGl_Structure* aStructure = aStructures.FindKey (aStructIdx);
-        if (!aStructure->IsVisible())
-        {
-          continue;
-        }
-        else if (!aStructure->ViewAffinity.IsNull()
-              && !aStructure->ViewAffinity->IsVisible (theViewId))
+        if (!aStructure->IsVisible (theViewId))
         {
           continue;
         }
@@ -166,7 +198,8 @@ const Graphic3d_BndBox4f& OpenGl_Layer::BoundingBox (const Standard_Integer     
         // but adds transform persistence point in a bounding box of layer (only zoom pers. objects).
         if (aStructure->TransformPersistence.Flags != Graphic3d_TMF_None)
         {
-          if (!theToIgnoreInfiniteFlag && (aStructure->TransformPersistence.Flags & Graphic3d_TMF_ZoomPers))
+          if (!theToIncludeAuxiliary
+           && (aStructure->TransformPersistence.Flags & Graphic3d_TMF_ZoomPers) != 0)
           {
             BVH_Vec4f aTPPoint (static_cast<float> (aStructure->TransformPersistence.Point.x()),
                                 static_cast<float> (aStructure->TransformPersistence.Point.y()),
@@ -178,66 +211,86 @@ const Graphic3d_BndBox4f& OpenGl_Layer::BoundingBox (const Standard_Integer     
           }
           // Panning and 2d persistence apply changes to projection or/and its translation components.
           // It makes them incompatible with z-fitting algorithm. Ignored by now.
-          else if (!theToIgnoreInfiniteFlag
-           || (aStructure->TransformPersistence.Flags & Graphic3d_TMF_2d)
-           || (aStructure->TransformPersistence.Flags & Graphic3d_TMF_PanPers)
-           || (aStructure->TransformPersistence.Flags & Graphic3d_TMF_TriedronPers))
+          else if (!theToIncludeAuxiliary
+                || (aStructure->TransformPersistence.Flags & (Graphic3d_TMF_2d | Graphic3d_TMF_PanPers | Graphic3d_TMF_TriedronPers)) != 0)
           {
             continue;
           }
         }
 
         Graphic3d_BndBox4f aBox = aStructure->BoundingBox();
+        if (!aBox.IsValid())
+        {
+          continue;
+        }
 
         if (aStructure->IsInfinite
-        && !theToIgnoreInfiniteFlag)
+        && !theToIncludeAuxiliary)
         {
-          const Graphic3d_Vec4 aDiagVec = aBox.CornerMax() - aBox.CornerMin();
-          if (aDiagVec.xyz().SquareModulus() >= 500000.0f * 500000.0f)
-          {
-            // bounding borders of infinite line has been calculated as own point in center of this line
-            aBox = Graphic3d_BndBox4f ((aBox.CornerMin() + aBox.CornerMax()) * 0.5f);
-          }
-          else
-          {
-            aBox = Graphic3d_BndBox4f (Graphic3d_Vec4 (ShortRealFirst(), ShortRealFirst(), ShortRealFirst(), 1.0f),
-                                       Graphic3d_Vec4 (ShortRealLast(),  ShortRealLast(),  ShortRealLast(),  1.0f));
-          }
+          // include center of infinite object
+          aBox = centerOfinfiniteBndBox (aBox);
         }
 
         if (aStructure->TransformPersistence.Flags != Graphic3d_TMF_None)
         {
-          const Graphic3d_Mat4& aProjectionMat = theCamera->ProjectionMatrixF();
-          const Graphic3d_Mat4& aWorldViewMat  = theCamera->OrientationMatrixF();
-
-          aStructure->TransformPersistence.Apply (aProjectionMat,
+          aStructure->TransformPersistence.Apply (theCamera,
+                                                  aProjectionMat,
                                                   aWorldViewMat,
                                                   theWindowWidth,
                                                   theWindowHeight,
                                                   aBox);
         }
 
-        // To prevent float overflow at camera parameters calculation and further
-        // rendering, bounding boxes with at least one vertex coordinate out of
-        // float range are skipped by view fit algorithms
-        if (Abs (aBox.CornerMax().x()) >= ShortRealLast()
-         || Abs (aBox.CornerMax().y()) >= ShortRealLast()
-         || Abs (aBox.CornerMax().z()) >= ShortRealLast()
-         || Abs (aBox.CornerMin().x()) >= ShortRealLast()
-         || Abs (aBox.CornerMin().y()) >= ShortRealLast()
-         || Abs (aBox.CornerMin().z()) >= ShortRealLast())
+        // skip too big boxes to prevent float overflow at camera parameters calculation
+        if (!isInfiniteBndBox (aBox))
         {
-          continue;
+          myBoundingBox[aBoxId].Combine (aBox);
         }
-
-        myBoundingBox[aBoxId].Combine (aBox);
       }
     }
 
     myIsBoundingBoxNeedsReset[aBoxId] = false;
   }
 
-  return myBoundingBox[aBoxId];
+  if (!theToIncludeAuxiliary
+    || myAlwaysRenderedMap.IsEmpty())
+  {
+    return myBoundingBox[aBoxId];
+  }
+
+  // add transformation-persistent objects which depend on camera position (and thus can not be cached) for operations like Z-fit
+  Graphic3d_BndBox4f aResBox = myBoundingBox[aBoxId];
+  for (NCollection_IndexedMap<const OpenGl_Structure*>::Iterator aStructIter (myAlwaysRenderedMap); aStructIter.More(); aStructIter.Next())
+  {
+    const OpenGl_Structure* aStructure = aStructIter.Value();
+    if (!aStructure->IsVisible (theViewId))
+    {
+      continue;
+    }
+    else if ((aStructure->TransformPersistence.Flags & Graphic3d_TMF_TriedronPers) == 0)
+    {
+      continue;
+    }
+
+    Graphic3d_BndBox4f aBox = aStructure->BoundingBox();
+    if (!aBox.IsValid())
+    {
+      continue;
+    }
+
+    aStructure->TransformPersistence.Apply (theCamera,
+                                            aProjectionMat,
+                                            aWorldViewMat,
+                                            theWindowWidth,
+                                            theWindowHeight,
+                                            aBox);
+    if (!isInfiniteBndBox (aBox))
+    {
+      aResBox.Combine (aBox);
+    }
+  }
+
+  return aResBox;
 }
 
 // =======================================================================
@@ -247,8 +300,7 @@ const Graphic3d_BndBox4f& OpenGl_Layer::BoundingBox (const Standard_Integer     
 Standard_Real OpenGl_Layer::considerZoomPersistenceObjects (const Standard_Integer          theViewId,
                                                             const Handle(Graphic3d_Camera)& theCamera,
                                                             Standard_Integer                theWindowWidth,
-                                                            Standard_Integer                theWindowHeight,
-                                                            Standard_Boolean                /*theToIgnoreInfiniteFlag*/) const
+                                                            Standard_Integer                theWindowHeight) const
 {
   if (NbOfTransformPersistenceObjects() == 0)
   {
@@ -266,23 +318,19 @@ Standard_Real OpenGl_Layer::considerZoomPersistenceObjects (const Standard_Integ
     for (Standard_Integer aStructIdx = 1; aStructIdx <= aStructures.Size(); ++aStructIdx)
     {
       OpenGl_Structure* aStructure = const_cast<OpenGl_Structure*> (aStructures.FindKey (aStructIdx));
-      if (!aStructure->IsVisible())
-      {
-        continue;
-      }
-      else if (!aStructure->ViewAffinity.IsNull()
-            && !aStructure->ViewAffinity->IsVisible (theViewId))
-      {
-        continue;
-      }
-
-      if (!(aStructure->TransformPersistence.Flags & Graphic3d_TMF_ZoomPers))
+      if (!aStructure->IsVisible (theViewId)
+       || (aStructure->TransformPersistence.Flags & Graphic3d_TMF_ZoomPers) == 0)
       {
         continue;
       }
 
       Graphic3d_BndBox4f aBox = aStructure->BoundingBox();
-      aStructure->TransformPersistence.Apply (aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBox);
+      if (!aBox.IsValid())
+      {
+        continue;
+      }
+
+      aStructure->TransformPersistence.Apply (theCamera, aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBox);
 
       const BVH_Vec4f&       aCornerMin           = aBox.CornerMin();
       const BVH_Vec4f&       aCornerMax           = aBox.CornerMax();
@@ -399,36 +447,48 @@ void OpenGl_Layer::renderAll (const Handle(OpenGl_Workspace)& theWorkspace) cons
 }
 
 // =======================================================================
+// function : updateBVH
+// purpose  :
+// =======================================================================
+void OpenGl_Layer::updateBVH() const
+{
+  if (!myIsBVHPrimitivesNeedsReset)
+  {
+    return;
+  }
+
+  myBVHPrimitives.Clear();
+  myBVHPrimitivesTrsfPers.Clear();
+  myIsBVHPrimitivesNeedsReset = Standard_False;
+  for (Standard_Integer aPriorityIdx = 0, aNbPriorities = myArray.Length(); aPriorityIdx < aNbPriorities; ++aPriorityIdx)
+  {
+    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (myArray (aPriorityIdx)); aStructIter.More(); aStructIter.Next())
+    {
+      const OpenGl_Structure* aStruct = aStructIter.Value();
+      if (aStruct->IsAlwaysRendered())
+      {
+        continue;
+      }
+
+      if (aStruct->TransformPersistence.Flags == Graphic3d_TMF_None)
+      {
+        myBVHPrimitives.Add (aStruct);
+      }
+      else
+      {
+        myBVHPrimitivesTrsfPers.Add (aStruct);
+      }
+    }
+  }
+}
+
+// =======================================================================
 // function : renderTraverse
 // purpose  :
 // =======================================================================
 void OpenGl_Layer::renderTraverse (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  if (myIsBVHPrimitivesNeedsReset)
-  {
-    myBVHPrimitives.Clear();
-    myBVHPrimitivesTrsfPers.Clear();
-    myIsBVHPrimitivesNeedsReset = Standard_False;
-    for (Standard_Integer aPriorityIdx = 0, aNbPriorities = myArray.Length(); aPriorityIdx < aNbPriorities; ++aPriorityIdx)
-    {
-      for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (myArray (aPriorityIdx)); aStructIter.More(); aStructIter.Next())
-      {
-        const OpenGl_Structure* aStruct = aStructIter.Value();
-
-        if (aStruct->IsAlwaysRendered())
-          continue;
-
-        if (aStruct->TransformPersistence.Flags == Graphic3d_TMF_None)
-        {
-          myBVHPrimitives.Add (aStruct);
-        }
-        else
-        {
-          myBVHPrimitivesTrsfPers.Add (aStruct);
-        }
-      }
-    }
-  }
+  updateBVH();
 
   OpenGl_BVHTreeSelector& aSelector = theWorkspace->View()->BVHTreeSelector();
   traverse (aSelector);
@@ -441,13 +501,8 @@ void OpenGl_Layer::renderTraverse (const Handle(OpenGl_Workspace)& theWorkspace)
     for (Standard_Integer aStructIdx = 1; aStructIdx <= aStructures.Size(); ++aStructIdx)
     {
       const OpenGl_Structure* aStruct = aStructures.FindKey (aStructIdx);
-      if (!aStruct->IsVisible()
-        || aStruct->IsCulled())
-      {
-        continue;
-      }
-      else if (!aStruct->ViewAffinity.IsNull()
-            && !aStruct->ViewAffinity->IsVisible (aViewId))
+      if (aStruct->IsCulled()
+      || !aStruct->IsVisible (aViewId))
       {
         continue;
       }
@@ -487,7 +542,7 @@ void OpenGl_Layer::traverse (OpenGl_BVHTreeSelector& theSelector) const
       const Standard_Integer aViewportWidth         = theSelector.ViewportWidth();
       const Standard_Integer aViewportHeight        = theSelector.ViewportHeight();
 
-      aBVHTree = myBVHPrimitivesTrsfPers.BVH (aProjection, aWorldView, aViewportWidth, aViewportHeight, aWVPState);
+      aBVHTree = myBVHPrimitivesTrsfPers.BVH (theSelector.Camera(), aProjection, aWorldView, aViewportWidth, aViewportHeight, aWVPState);
     }
     else
     {
