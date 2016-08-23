@@ -60,10 +60,11 @@
 #include <signal.h>
 #include <float.h>
 
+static Standard_Boolean fCtrlBrk;
+#if !defined(__CYGWIN32__) && !defined(__MINGW32__)
 static Standard_Boolean fMsgBox;
 static Standard_Boolean fFltExceptions;
 static Standard_Boolean fDbgLoaded;
-static Standard_Boolean fCtrlBrk;
 
 // used to forbid simultaneous execution of setting / executing handlers
 static Standard_Mutex THE_SIGNAL_MUTEX;
@@ -84,9 +85,6 @@ static LONG CallHandler (DWORD dwExceptionCode,
                          ptrdiff_t ExceptionInformation1,
                          ptrdiff_t ExceptionInformation0)
 {
-
-#if !defined(__CYGWIN32__) && !defined(__MINGW32__)
-
   Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
   static char          buffer[ 2048 ];
   int                  flterr = 0;
@@ -240,9 +238,6 @@ static LONG CallHandler (DWORD dwExceptionCode,
 //     cout << "OSD::WntHandler _controlfp( 0, _OSD_FPX ) " << hex << _controlfp(0,0) << dec << endl ;
   }
   return _osd_raise ( dwExceptionCode, buffer );
-#else
-  return 0;
-#endif
 }
 
 //=======================================================================
@@ -253,7 +248,6 @@ static LONG CallHandler (DWORD dwExceptionCode,
 //=======================================================================
 static void SIGWntHandler (int signum, int sub_code)
 {
-#if !defined(__CYGWIN32__) && !defined(__MINGW32__)
   Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
   switch( signum ) {
     case SIGFPE :
@@ -299,8 +293,8 @@ static void SIGWntHandler (int signum, int sub_code)
       break ;
   }
   DebugBreak ();
-#endif
 }
+#endif
 
 //=======================================================================
 //function : TranslateSE
@@ -333,6 +327,7 @@ static void TranslateSE( unsigned int theCode, EXCEPTION_POINTERS* theExcPtr )
 //           option and unless user sets his own exception handler with
 //           ::SetUnhandledExceptionFilter().
 //=======================================================================
+#if !defined(__CYGWIN32__) && !defined(__MINGW32__)
 static LONG WINAPI WntHandler (EXCEPTION_POINTERS *lpXP)
 {
   DWORD               dwExceptionCode = lpXP->ExceptionRecord->ExceptionCode;
@@ -341,6 +336,7 @@ static LONG WINAPI WntHandler (EXCEPTION_POINTERS *lpXP)
                       lpXP->ExceptionRecord->ExceptionInformation[1],
                       lpXP->ExceptionRecord->ExceptionInformation[0]);
 }
+#endif
 
 //=======================================================================
 //function : SetSignal
@@ -409,6 +405,7 @@ void OSD::ControlBreak () {
   }
 }  // end OSD :: ControlBreak
 
+#if !defined(__MINGW32__) && !defined(__CYGWIN32__)
 //============================================================================
 //==== _osd_ctrl_break_handler
 //============================================================================
@@ -490,12 +487,6 @@ static LONG __fastcall _osd_raise ( DWORD dwCode, LPSTR msg )
 //============================================================================
 //==== _osd_debug
 //============================================================================
-#if defined(__CYGWIN32__) || defined(__MINGW32__)
-#define __try
-#define __finally
-#define __leave return 0
-#endif
-
 LONG _osd_debug ( void ) {
 
   LONG action ;
@@ -578,11 +569,6 @@ LONG _osd_debug ( void ) {
   return action ;
 
 }  // end _osd_debug
-
-#if defined(__CYGWIN32__) || defined(__MINGW32__)
-#undef __try
-#undef __finally
-#undef __leave
 #endif
 
 #else
