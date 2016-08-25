@@ -129,8 +129,8 @@ inline static void WriteDouble2Float(OSD_File& ofile,Standard_Real value)
 inline static Standard_Real ReadFloat2Double(OSD_File &aFile)
 {
   union {
-    Standard_Boolean i; // don't be afraid, this is just an unsigned int
-    Standard_ShortReal f;
+    uint32_t i;
+    float    f;
   }bidargum;
 
   char c[4];

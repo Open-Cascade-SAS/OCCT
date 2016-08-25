@@ -619,7 +619,7 @@ void TopOpeBRep_FacesFiller::ProcessVPonR
 {
   Standard_Integer absindex = VP.ShapeIndex(); // 0,1,2,3
   Standard_Integer iVP = VP.Index();
-  Standard_Boolean OOShapeIndex = (ShapeIndex == 1) ? 2 : 1;
+  Standard_Integer OOShapeIndex = (ShapeIndex == 1) ? 2 : 1;
   Standard_Boolean on2edges = (absindex == 3);
   Standard_Boolean hasONedge = (VP.State(OOShapeIndex) == TopAbs_ON);
   Standard_Boolean hasOOedge = (on2edges) ? Standard_True : hasONedge;

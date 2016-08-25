@@ -1095,7 +1095,7 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
     TopoDS_Face af = TopoDS::Face ( dummy );
     af.Orientation ( TopAbs_FORWARD );
     B.Add (af,ws.Value(1));
-    if ((myFixAddNaturalBoundMode != Standard_True || //: abv 29.08.01: Spatial_firex_lofting.sat
+    if ((myFixAddNaturalBoundMode != 1 ||
          !IsSurfaceUVPeriodic (mySurf->Surface())    ) &&
         !ShapeAnalysis::IsOuterBound (af)                )
     {

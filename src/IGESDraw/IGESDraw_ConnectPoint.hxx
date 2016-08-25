@@ -166,7 +166,7 @@ private:
   Handle(IGESGraph_TextDisplayTemplate) theFunctionTemplate;
   Standard_Integer thePointIdentifier;
   Standard_Integer theFunctionCode;
-  Standard_Integer theSwapFlag;
+  Standard_Boolean theSwapFlag;
   Handle(IGESData_IGESEntity) theOwnerSubfigure;
 
 

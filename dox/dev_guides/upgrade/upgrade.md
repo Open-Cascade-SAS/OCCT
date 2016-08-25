@@ -1014,6 +1014,7 @@ Now such code would produce unexpected result and therefore should be updated to
 @subsection upgrade_710_types Typedefs
 
 The following type definitions in OCCT has been modified to use C++11 types:
+- *Standard_Boolean* is now *bool* (previously *unsigned int*).
 - *Standard_ExtCharacter* is now *char16_t* (previously *short*).
 - *Standard_ExtString;* is now *const char16_t* (previously *const short*).
 - *Standard_Utf16Char* is now *char16_t* (previously *uint16_t* for compatibility with old compilers).

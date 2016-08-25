@@ -783,7 +783,7 @@ Standard_Boolean ShapeAnalysis_Surface::IsVClosed(const Standard_Real preci)
 //function : SurfaceNewton
 //purpose  : Newton algo (S4030)
 //=======================================================================
-Standard_Boolean ShapeAnalysis_Surface::SurfaceNewton(const gp_Pnt2d &p2dPrev,
+Standard_Integer ShapeAnalysis_Surface::SurfaceNewton(const gp_Pnt2d &p2dPrev,
                                                       const gp_Pnt& P3D,
                                                       const Standard_Real preci,
                                                       gp_Pnt2d &sol)
@@ -852,7 +852,7 @@ Standard_Boolean ShapeAnalysis_Surface::SurfaceNewton(const gp_Pnt2d &p2dPrev,
 //	cout << "Newton: solution found in " << i+1 << " iterations" << endl;
     sol.SetCoord( U, V );
     
-    return ( nrm2 < 0.01 * ru2 * rv2 ? 2 : Standard_True ); //:q6
+    return ( nrm2 < 0.01 * ru2 * rv2 ? 2 : 1 ); //:q6
   }
 //      cout << "Newton: failed after " << i+1 << " iterations (fail " << fail << " )" << endl;
   return Standard_False;
@@ -911,8 +911,8 @@ gp_Pnt2d ShapeAnalysis_Surface::NextValueOfUV(const gp_Pnt2d &p2dPrev,
       }
 
       gp_Pnt2d sol;
-      Standard_Boolean res = SurfaceNewton(p2dPrev,P3D,preci,sol);
-      if ( res )
+      Standard_Integer res = SurfaceNewton(p2dPrev,P3D,preci,sol);
+      if (res != 0)
       {
         Standard_Real gap = P3D.Distance ( Value(sol) );
         if ( res == 2 || //:q6 abv 19 Mar 99: protect against strange attractors
@@ -1002,7 +1002,8 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D,const Standard_Real 
 	//conic case
 	gp_Pnt2d prev(S,T);
 	gp_Pnt2d solution;
-	if (SurfaceNewton(prev,P3D,preci,solution)) {
+	if (SurfaceNewton(prev,P3D,preci,solution) != 0)
+  {
 #ifdef OCCT_DEBUG
 	  cout <<"Newton found point on conic extrusion"<<endl;
 #endif
@@ -1073,7 +1074,8 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D,const Standard_Real 
 	Standard_Boolean possLockal = Standard_False; //:study S4030 (optimizing)
 	if (disSurf > preci) {
 	  gp_Pnt2d pp(UU,VV);
-	  if ( SurfaceNewton(pp,P3D,preci,pp))  { //:q2 abv 16 Mar 99: PRO7226 #412920
+	  if (SurfaceNewton (pp, P3D, preci, pp) != 0)
+    { //:q2 abv 16 Mar 99: PRO7226 #412920
 	    Standard_Real dist = P3D.Distance ( Value(pp) );
 	    if ( dist < disSurf ) {
 	      disSurf = dist;

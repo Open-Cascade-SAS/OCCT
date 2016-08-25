@@ -587,9 +587,9 @@ TopoDS_Solid ShapeFix_Solid::SolidFromShell (const TopoDS_Shell& shell)
 //purpose  : 
 //=======================================================================
 
- Standard_Boolean ShapeFix_Solid::Status(const ShapeExtend_Status /*status*/) const
+Standard_Boolean ShapeFix_Solid::Status (const ShapeExtend_Status theStatus) const
 {
- return myStatus;
+  return ShapeExtend::DecodeStatus (myStatus, theStatus);
 }
 
 //=======================================================================

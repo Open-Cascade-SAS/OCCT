@@ -643,7 +643,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape (const Handle(Tran
     return TransferCompound(start, SDR0, FP);
 
   // [BEGIN] Separate manifold topology from non-manifold in group mode 0 (ssv; 18.11.2010)
-  Standard_Boolean isNMMode = Interface_Static::IVal("write.step.nonmanifold");
+  Standard_Boolean isNMMode = Interface_Static::IVal("write.step.nonmanifold") != 0;
   Handle(Transfer_Binder) aNMBinder;
   if (isNMMode && !GroupMode() && theShape.ShapeType() == TopAbs_COMPOUND) {
     TopoDS_Compound aNMCompound;
@@ -1278,7 +1278,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferCompound (const Handle(T
   TopoDS_Shape theShape = mapper->Value();
 
   // Inspect non-manifold topology case (ssv; 10.11.2010)
-  Standard_Boolean isNMMode = Interface_Static::IVal("write.step.nonmanifold");
+  Standard_Boolean isNMMode = Interface_Static::IVal("write.step.nonmanifold") != 0;
   Standard_Boolean isManifold;
   if (isNMMode)
     isManifold = IsManifoldShape(theShape);

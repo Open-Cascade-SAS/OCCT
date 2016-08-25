@@ -122,7 +122,7 @@ private:
   Standard_Real theRadius;
   Standard_Real theStartAngle;
   Standard_Real theDeltaAngle;
-  Standard_Integer theDoDontFlag;
+  Standard_Boolean theDoDontFlag;
   Handle(TColStd_HArray1OfInteger) thePositions;
 
 

@@ -665,7 +665,7 @@ static Standard_Integer VtkSetSelectionMode (Draw_Interpretor& theDI,
   if (theArgNum == 3)
   {
     aMode = atoi (theArgs[1]);
-    isTurnOn = atoi (theArgs[2]);
+    isTurnOn = (atoi (theArgs[2]) != 0);
     if (aMode < 0 || aMode > 8)
     {
       theDI << theArgs[0] << " error: only 0-8 selection modes are supported\n";
@@ -726,7 +726,7 @@ static Standard_Integer VtkSetSelectionMode (Draw_Interpretor& theDI,
   if (theArgNum == 4)
   {
     aMode = atoi (theArgs[2]);
-    isTurnOn = atoi (theArgs[3]);
+    isTurnOn = (atoi (theArgs[3]) != 0);
 
     if (aMode < 0 || aMode > 8)
     {

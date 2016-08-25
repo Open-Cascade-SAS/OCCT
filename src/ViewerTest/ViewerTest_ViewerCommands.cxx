@@ -1887,7 +1887,7 @@ static LRESULT WINAPI AdvViewerWindowProc( HWND hwnd,
           ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
         }
 
-        VT_ProcessButton1Release (fwKeys & MK_SHIFT);
+        VT_ProcessButton1Release ((fwKeys & MK_SHIFT) != 0);
       }
       IsDragged = Standard_False;
       return ViewerWindowProc( hwnd, Msg, wParam, lParam );
@@ -2069,13 +2069,13 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
 
         if (Msg == WM_LBUTTONDOWN)
         {
-          if (fwKeys & MK_CONTROL)
+          if ((fwKeys & MK_CONTROL) != 0)
           {
-            Ppick = VT_ProcessButton1Press (Pargc, Pargv, Ppick, (fwKeys & MK_SHIFT));
+            Ppick = VT_ProcessButton1Press (Pargc, Pargv, Ppick, (fwKeys & MK_SHIFT) != 0);
           }
           else
           {
-            VT_ProcessButton1Press (Pargc, Pargv, Ppick, (fwKeys & MK_SHIFT));
+            VT_ProcessButton1Press (Pargc, Pargv, Ppick, (fwKeys & MK_SHIFT) != 0);
           }
         }
         else if (Msg == WM_RBUTTONDOWN)
@@ -2117,27 +2117,32 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
         Y_Motion = HIWORD(lParam);
 
         if ( Up &&
-          fwKeys & ( MK_LBUTTON|MK_MBUTTON|MK_RBUTTON ) ) {
+          (fwKeys & ( MK_LBUTTON|MK_MBUTTON|MK_RBUTTON )) != 0 )
+          {
             Up = 0;
             X_ButtonPress = LOWORD(lParam);
             Y_ButtonPress = HIWORD(lParam);
 
-            if ( fwKeys & MK_RBUTTON ) {
+            if ((fwKeys & MK_RBUTTON) != 0) {
               // Start rotation
               VT_ProcessButton3Press();
             }
           }
 
-          if ( fwKeys & MK_CONTROL ) {
-            if ( fwKeys & MK_LBUTTON ) {
+          if ((fwKeys & MK_CONTROL) != 0)
+          {
+            if ((fwKeys & MK_LBUTTON) != 0)
+            {
               ProcessControlButton1Motion();
             }
-            else if ( fwKeys & MK_MBUTTON ||
-              ((fwKeys&MK_LBUTTON) &&
-              (fwKeys&MK_RBUTTON) ) ){
-                VT_ProcessControlButton2Motion();
-              }
-            else if ( fwKeys & MK_RBUTTON ) {
+            else if ((fwKeys & MK_MBUTTON) != 0
+                 || ((fwKeys & MK_LBUTTON) != 0
+                  && (fwKeys & MK_RBUTTON) != 0))
+            {
+              VT_ProcessControlButton2Motion();
+            }
+            else if ((fwKeys & MK_RBUTTON) != 0)
+            {
               VT_ProcessControlButton3Motion();
             }
           }
@@ -5637,7 +5642,7 @@ static Standard_Integer VSelect (Draw_Interpretor& di,
     }
 
     Standard_Integer isToAllow = isShiftSelection ? Draw::Atoi(argv[argc - 2]) : Draw::Atoi(argv[argc - 1]);
-    myAIScontext->MainSelector()->AllowOverlapDetection((Standard_Boolean)isToAllow);
+    myAIScontext->MainSelector()->AllowOverlapDetection (isToAllow != 0);
     aCoordsNb -= 2;
   }
 

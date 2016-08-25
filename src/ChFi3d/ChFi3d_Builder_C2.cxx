@@ -140,7 +140,7 @@ static void Reduce(const Standard_Real& p1,
 //           path is used; 3D curve and 2 pcurves are approximated.
 //=======================================================================
 
-Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer Index)
+Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer Index)
 
 {
   done = 0;

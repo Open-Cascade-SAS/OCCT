@@ -363,14 +363,16 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
   else
   {
     char cmd[255];
-    do {
+    for (;;)
+    {
       cout << "Viewer>";
       i = -1;
       do {
         cin.get(cmd[++i]);
       } while ((cmd[i] != '\n') && (!cin.fail()));
       cmd[i] = '\0';
-    } while (Draw_Interprete(cmd) != (unsigned int ) -2);
+      Draw_Interprete(cmd);
+    }
   }
 #ifdef _WIN32
   // Destruction de l'application

@@ -437,7 +437,7 @@ static Standard_Integer DDataStd_SetIntArray (Draw_Interpretor& di,
   if (!DDF::GetDF(arg[1],DF))  return 1; 
   TDF_Label label;
   DDF::AddLabel(DF, arg[2], label);
-  Standard_Integer isDelta = Draw::Atoi(arg[3]);
+  Standard_Boolean isDelta = Draw::Atoi(arg[3]) != 0;
   Standard_Integer From = Draw::Atoi(arg[4]), To = Draw::Atoi( arg[5] ), j;
   di << "Array of Standard_Integer with bounds from = " << From  << " to = " << To  << "\n";
   Handle(TDataStd_IntegerArray) A = TDataStd_IntegerArray::Set(label, From, To, isDelta);
@@ -623,7 +623,7 @@ static Standard_Integer DDataStd_SetIntArrayTest (Draw_Interpretor& di,
   if (!DDF::GetDF(arg[1],DF))  return 1; 
   TDF_Label label;
   DDF::AddLabel(DF, arg[2], label);
-  Standard_Integer isDelta = Draw::Atoi(arg[3]);
+  Standard_Boolean isDelta = Draw::Atoi(arg[3]) != 0;
   Standard_Integer From = Draw::Atoi(arg[4]), To = Draw::Atoi( arg[5] ), j;
   di << "Array of Standard_Integer with bounds from = " << From  << " to = " << To  << "\n";
   Handle(TDataStd_IntegerArray) A = TDataStd_IntegerArray::Set(label, From, To, isDelta);
@@ -651,7 +651,7 @@ static Standard_Integer DDataStd_SetRealArray (Draw_Interpretor& di,
   if (!DDF::GetDF(arg[1],DF))  return 1;  
   TDF_Label label; 
   DDF::AddLabel(DF, arg[2], label);
-  Standard_Integer isDelta = Draw::Atoi(arg[3]);
+  Standard_Boolean isDelta = Draw::Atoi(arg[3]) != 0;
  
   Standard_Integer From = Draw::Atoi(arg[4]), To = Draw::Atoi( arg[5] ), j;
   di << " Array of Standard_Real with bounds from = " << From  << " to = " << To  << "\n";
@@ -843,7 +843,7 @@ static Standard_Integer DDataStd_SetVariable (Draw_Interpretor& di,
     const char* aUnits = arg[4];
     aV->Unit(Standard_CString(aUnits));
 
-    aV->Constant(Standard_Boolean(Draw::Atoi(arg[3])));
+    aV->Constant (Draw::Atoi(arg[3]) != 0);
     return 0; 
   }
 
@@ -1043,7 +1043,7 @@ static Standard_Integer DDataStd_SetExtStringArray (Draw_Interpretor& di,
   if (!DDF::GetDF(arg[1],DF))  return 1; 
   TDF_Label label;
   DDF::AddLabel(DF, arg[2], label);
-  Standard_Integer isDelta = Draw::Atoi(arg[3]);
+  Standard_Boolean isDelta = Draw::Atoi(arg[3]) != 0;
 
   Standard_Integer From = Draw::Atoi(arg[4]), To = Draw::Atoi( arg[5] ), j;
   di << "Array of ExtString with bounds from = " << From  << " to = " << To  << "\n";
@@ -1340,7 +1340,7 @@ static Standard_Integer DDataStd_SetByteArray (Draw_Interpretor& di,
     if (!DDF::GetDF(arg[1],DF))  return 1; 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
-    Standard_Integer isDelta = Draw::Atoi(arg[3]);
+    Standard_Boolean isDelta = Draw::Atoi(arg[3]) != 0;
     Standard_Integer From = Draw::Atoi(arg[4]), To = Draw::Atoi( arg[5] ), j;
     di << "Array of Standard_Byte with bounds from = " << From  << " to = " << To  << "\n";
     Handle(TDataStd_ByteArray) A = TDataStd_ByteArray::Set(label, From, To, isDelta);
@@ -1430,7 +1430,7 @@ static Standard_Integer DDataStd_SetBooleanArray (Draw_Interpretor& di,
           cout << "Bad value = " << ival<< ". 0 or 1 is expected." << endl;
           return 1;
         }
-        A->SetValue(i, (Standard_Boolean)ival); 
+        A->SetValue(i, ival != 0); 
         j++;
       }
     }
@@ -1471,7 +1471,7 @@ static Standard_Integer DDataStd_SetBooleanArrayValue (Draw_Interpretor& di,
   Handle(TDataStd_BooleanArray) arr;
   if (label.FindAttribute(TDataStd_BooleanArray::GetID(), arr))
   {
-    arr->SetValue(index, (Standard_Boolean) value); 
+    arr->SetValue(index, value != 0);
     return 0;
   }
 
@@ -1561,7 +1561,7 @@ static Standard_Integer DDataStd_SetBooleanList (Draw_Interpretor& di,
         cout << "Bad value = " << ival<< ". 0 or 1 is expected." << endl;
         return 1;
       }
-      A->Append((Standard_Boolean)ival); 
+      A->Append (ival != 0);
     }
     return 0; 
   }
@@ -1739,7 +1739,7 @@ static Standard_Integer DDataStd_InsertBeforeBooleanList (Draw_Interpretor& di,
         return 1;
 
     Standard_Integer index = Draw::Atoi(arg[3]);
-    Standard_Boolean value = (Standard_Boolean) Draw::Atoi(arg[4]);
+    Standard_Boolean value = Draw::Atoi(arg[4]) != 0;
 
     if (A->InsertBefore(index, value))    
       return 0; 
@@ -1771,7 +1771,7 @@ static Standard_Integer DDataStd_InsertAfterBooleanList (Draw_Interpretor& di,
         return 1;
 
     Standard_Integer index = Draw::Atoi(arg[3]);
-    Standard_Boolean value = (Standard_Boolean) Draw::Atoi(arg[4]);
+    Standard_Boolean value = Draw::Atoi(arg[4]) != 0;
 
     if (A->InsertAfter(index, value))    
       return 0; 
@@ -2541,7 +2541,7 @@ static Standard_Integer DDataStd_SetIntPackedMap (Draw_Interpretor& di,
     if (!DDF::GetDF(arg[1],DF))  return 1; 
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
-    Standard_Integer isDelta = Draw::Atoi(arg[3]);
+    Standard_Boolean isDelta = Draw::Atoi(arg[3]) != 0;
     Standard_Integer aNum = nb - 4;
     Handle(TDataStd_IntPackedMap) anAtt;
     if(!aLabel.FindAttribute(TDataStd_IntPackedMap::GetID(), anAtt))
@@ -2741,7 +2741,7 @@ static Standard_Integer DDataStd_SetIntPHugeMap (Draw_Interpretor& di,
     if (!DDF::GetDF(arg[1],DF))  return 1; 
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
-    Standard_Integer isDelta = Draw::Atoi(arg[3]);
+    Standard_Boolean isDelta = Draw::Atoi(arg[3]) != 0;
     Standard_Integer aNum = Draw::Atoi(arg[4]);
     Handle(TDataStd_IntPackedMap) anAtt;
     if(!aLabel.FindAttribute(TDataStd_IntPackedMap::GetID(), anAtt))

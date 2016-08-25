@@ -39,7 +39,7 @@ const Handle(Standard_Type)& Standard_Transient::DynamicType() const
 //
 Standard_Boolean Standard_Transient::IsInstance(const Handle(Standard_Type) &AType) const
 {
-  return (Standard_Boolean) (AType ==  DynamicType());
+  return (AType == DynamicType());
 }
 
 //

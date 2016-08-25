@@ -119,7 +119,7 @@ Standard_Integer brunparallel(Draw_Interpretor& di,
     return 0;  
   }
   //
-  bRunParallel=(Standard_Boolean)(iX);
+  bRunParallel = (iX != 0);
   BOPTest_Objects::SetRunParallel(bRunParallel);
   //
   return 0;
@@ -146,7 +146,7 @@ Standard_Integer bnondestructive(Draw_Interpretor& di,
     return 0;
   }
   //
-  bNonDestructive = (Standard_Boolean)(iX);
+  bNonDestructive = (iX != 0);
   BOPTest_Objects::SetNonDestructive(bNonDestructive);
   //
   return 0;

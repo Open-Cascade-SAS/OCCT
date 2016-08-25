@@ -342,7 +342,7 @@ void BRepBuilderAPI_Sewing::SameParameter(const TopoDS_Edge& edge) const
 
 TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Shape& edge,
 					       const TopTools_SequenceOfShape& seqEdges,
-					       const TColStd_SequenceOfInteger& seqForward,
+					       const TColStd_SequenceOfBoolean& seqForward,
 					       TopTools_MapOfShape& mapMerged,
 					       const Handle(BRepTools_ReShape)& locReShape)
 {
@@ -405,8 +405,8 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Shape& edge,
       if (locReShape != myReShape) Edge2 = TopoDS::Edge(aTmpShape);
 
       // Calculate relative orientation
-      Standard_Integer Orientation = seqForward(i);
-      if (!isForward) Orientation = (Orientation? 0 : 1);
+      Standard_Boolean Orientation = seqForward(i);
+      if (!isForward) Orientation = !Orientation;
 
       // Retrieve faces information for the second edge
       TopoDS_Shape bnd2 = oedge2;
@@ -1335,7 +1335,7 @@ Standard_Boolean BRepBuilderAPI_Sewing::IsMergedClosed(const TopoDS_Edge& Edge1,
 
 void BRepBuilderAPI_Sewing::AnalysisNearestEdges(const TopTools_SequenceOfShape& sequenceSec,
                                                  TColStd_SequenceOfInteger& seqIndCandidate,
-                                                 TColStd_SequenceOfInteger& seqOrientations,
+                                                 TColStd_SequenceOfBoolean& seqOrientations,
                                                  const Standard_Boolean evalDist)
 {
 
@@ -1465,7 +1465,7 @@ void BRepBuilderAPI_Sewing::AnalysisNearestEdges(const TopTools_SequenceOfShape&
 Standard_Boolean BRepBuilderAPI_Sewing::FindCandidates(TopTools_SequenceOfShape& seqSections,
                                                        TColStd_IndexedMapOfInteger& mapReference,
                                                        TColStd_SequenceOfInteger& seqCandidates,
-                                                       TColStd_SequenceOfInteger& seqOrientations)
+                                                       TColStd_SequenceOfBoolean& seqOrientations)
 {
   Standard_Integer i, nbSections = seqSections.Length();
   if(nbSections <= 1)
@@ -1521,8 +1521,8 @@ Standard_Boolean BRepBuilderAPI_Sewing::FindCandidates(TopTools_SequenceOfShape&
         
         // Reference section is connected to section #i
         Standard_Boolean isInserted = Standard_False;
-        Standard_Integer j, ori = (arrForward(i)? 1 : 0);
-        for (j = 1; (j <= seqCandidates.Length()) && !isInserted; j++) {
+        Standard_Boolean ori = arrForward(i);
+        for (Standard_Integer j = 1; (j <= seqCandidates.Length()) && !isInserted; j++) {
           Standard_Real aDelta = arrDistance(i) - arrDistance(seqCandidates.Value(j));
           
           if( aDelta < Precision::Confusion()) {
@@ -1558,9 +1558,9 @@ Standard_Boolean BRepBuilderAPI_Sewing::FindCandidates(TopTools_SequenceOfShape&
 
   if (myNonmanifold && nbCandidates >1) {
     TColStd_SequenceOfInteger seqNewCandidates;
-    TColStd_SequenceOfInteger seqOrientationsNew;
+    TColStd_SequenceOfBoolean seqOrientationsNew;
     seqCandidates.Prepend(1);
-    seqOrientations.Prepend(1);
+    seqOrientations.Prepend(Standard_True);
     for(Standard_Integer k = 1; k <= seqSections.Length() && seqCandidates.Length() > 1 ; k++) {
       AnalysisNearestEdges(seqSections,seqCandidates,seqOrientations,(k==1));
       if(k == 1 && !seqCandidates.Length()) return Standard_False;
@@ -1660,7 +1660,8 @@ Standard_Boolean BRepBuilderAPI_Sewing::FindCandidates(TopTools_SequenceOfShape&
       if (mapReference.Contains(indCandidate)) break;
       // Find candidates for candidate #indCandidate
       mapReference.Add(indCandidate); // Push candidate in the map
-      TColStd_SequenceOfInteger seqCandidates1, seqOrientations1;
+      TColStd_SequenceOfInteger seqCandidates1;
+      TColStd_SequenceOfBoolean seqOrientations1;
       Standard_Boolean isFound =
         FindCandidates(seqSections,mapReference,seqCandidates1,seqOrientations1);
       mapReference.RemoveLast(); // Pop candidate from the map
@@ -3185,7 +3186,7 @@ void BRepBuilderAPI_Sewing::Merging(const Standard_Boolean /* firstTime */,
     if (!isPrevSplit) {
       // Obtain sequence of edges merged with bound
       TopTools_SequenceOfShape seqMergedWithBound;
-      TColStd_SequenceOfInteger seqMergedWithBoundOri;
+      TColStd_SequenceOfBoolean seqMergedWithBoundOri;
       if (MergedNearestEdges(bound,seqMergedWithBound,seqMergedWithBoundOri)) {
         // Store bound in the map
         MergedWithBound.Bind(bound,bound);
@@ -3262,7 +3263,7 @@ void BRepBuilderAPI_Sewing::Merging(const Standard_Boolean /* firstTime */,
         if (!nbMerged) MergedWithBound.UnBind(bound);
       }
     }
-    Standard_Boolean isMerged = MergedWithBound.Extent();
+    const Standard_Boolean isMerged = !MergedWithBound.IsEmpty();
 
     // Merge with cutting sections
     Handle(BRepTools_ReShape) SectionsReShape = new BRepTools_ReShape;
@@ -3277,7 +3278,7 @@ void BRepBuilderAPI_Sewing::Merging(const Standard_Boolean /* firstTime */,
         if (myMergedEdges.Contains(section)) continue;
         // Merge cutting section
         TopTools_SequenceOfShape seqMergedWithSection;
-        TColStd_SequenceOfInteger seqMergedWithSectionOri;
+        TColStd_SequenceOfBoolean seqMergedWithSectionOri;
         if (MergedNearestEdges(section,seqMergedWithSection,seqMergedWithSectionOri)) {
           // Store section in the map
           MergedWithSections.Bind(section,section);
@@ -3363,7 +3364,7 @@ void BRepBuilderAPI_Sewing::Merging(const Standard_Boolean /* firstTime */,
         }
       }
     }
-    Standard_Boolean isMergedSplit = MergedWithSections.Extent();
+    const Standard_Boolean isMergedSplit = !MergedWithSections.IsEmpty();
 
     if (!isMerged && !isMergedSplit) {
       // Nothing was merged in this iteration
@@ -3464,7 +3465,7 @@ void BRepBuilderAPI_Sewing::Merging(const Standard_Boolean /* firstTime */,
 
 Standard_Boolean BRepBuilderAPI_Sewing::MergedNearestEdges(const TopoDS_Shape& edge,
                                                            TopTools_SequenceOfShape& SeqMergedEdge,
-                                                           TColStd_SequenceOfInteger& SeqMergedOri)
+                                                           TColStd_SequenceOfBoolean& SeqMergedOri)
 {
   // Retrieve edge nodes
   TopoDS_Vertex no1, no2;
@@ -3580,7 +3581,7 @@ Standard_Boolean BRepBuilderAPI_Sewing::MergedNearestEdges(const TopoDS_Shape& e
     }
 
     // Find merging candidates
-    TColStd_SequenceOfInteger seqForward;
+    TColStd_SequenceOfBoolean seqForward;
     TColStd_SequenceOfInteger seqCandidates;
     TColStd_IndexedMapOfInteger mapReference;
     mapReference.Add(indRef); // Add index of reference section
@@ -3590,12 +3591,12 @@ Standard_Boolean BRepBuilderAPI_Sewing::MergedNearestEdges(const TopoDS_Shape& e
       for (i = 1; i <= nbCandidates; i++) {
         // Retrieve merged edge
         TopoDS_Shape iedge = seqEdges(seqCandidates(i));
-        Standard_Integer ori = (seqForward(i))? 1 : 0;
+        Standard_Boolean ori = seqForward(i) != 0;
         SeqMergedEdge.Append(iedge);
         SeqMergedOri.Append(ori);
         if (!myNonmanifold) break;
       }
-      success = nbCandidates;
+      success = (nbCandidates != 0);
     }
   }
 

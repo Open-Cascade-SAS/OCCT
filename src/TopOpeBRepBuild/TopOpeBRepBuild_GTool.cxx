@@ -26,9 +26,9 @@
 TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GFusUnsh
 (const TopAbs_ShapeEnum t1, const TopAbs_ShapeEnum t2)
 {
-  return TopOpeBRepBuild_GTopo(0,0,0,
-			       0,0,1,
-			       0,1,0,
+  return TopOpeBRepBuild_GTopo(false, false, false,
+			       false, false, true,
+			       false, true,  false,
 			       t1,t2,
 			       TopOpeBRepDS_UNSHGEOMETRY,TopOpeBRepDS_UNSHGEOMETRY);
 }
@@ -41,9 +41,9 @@ TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GFusUnsh
 TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GFusSame
 (const TopAbs_ShapeEnum t1, const TopAbs_ShapeEnum t2)
 {
-  return TopOpeBRepBuild_GTopo(0,0,0,
-			       0,1,1,
-			       0,1,0,
+  return TopOpeBRepBuild_GTopo(false, false, false,
+			       false, true, true,
+			       false, true, false,
 			       t1,t2,
 			       TopOpeBRepDS_SAMEORIENTED,TopOpeBRepDS_SAMEORIENTED);
 }
@@ -56,9 +56,9 @@ TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GFusSame
 TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GFusDiff
 (const TopAbs_ShapeEnum t1, const TopAbs_ShapeEnum t2)
 {
-  return TopOpeBRepBuild_GTopo(0,0,0,
-			       0,0,1,
-			       0,1,0,
+  return TopOpeBRepBuild_GTopo(false, false, false,
+			       false, false, true,
+			       false, true,  false,
 			       t1,t2,
 			       TopOpeBRepDS_DIFFORIENTED,TopOpeBRepDS_SAMEORIENTED);
 }
@@ -71,9 +71,9 @@ TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GFusDiff
 TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GCutUnsh
 (const TopAbs_ShapeEnum t1, const TopAbs_ShapeEnum t2)
 {
-  return TopOpeBRepBuild_GTopo(0,1,0,
-			       0,0,1,
-			       0,0,0,
+  return TopOpeBRepBuild_GTopo(false, true, false,
+			       false, false, true,
+			       false, false, false,
 			       t1,t2,
 			       TopOpeBRepDS_UNSHGEOMETRY,TopOpeBRepDS_UNSHGEOMETRY);
 }
@@ -86,9 +86,9 @@ TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GCutUnsh
 TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GCutSame
 (const TopAbs_ShapeEnum t1, const TopAbs_ShapeEnum t2)
 {
-  return TopOpeBRepBuild_GTopo(0,1,0,
-			       0,0,1,
-			       0,0,0,
+  return TopOpeBRepBuild_GTopo(false, true, false,
+			       false, false, true,
+			       false, false, false,
 			       t1,t2,
 			       TopOpeBRepDS_SAMEORIENTED,TopOpeBRepDS_SAMEORIENTED);
 }
@@ -101,9 +101,9 @@ TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GCutSame
 TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GCutDiff
 (const TopAbs_ShapeEnum t1, const TopAbs_ShapeEnum t2)
 {
-  return TopOpeBRepBuild_GTopo(0,1,0,
-			       0,1,1,
-			       0,0,0,
+  return TopOpeBRepBuild_GTopo(false, true, false,
+			       false, true,  true,
+			       false, false, false,
 			       t1,t2,
 			       TopOpeBRepDS_DIFFORIENTED,TopOpeBRepDS_SAMEORIENTED);
 }
@@ -117,9 +117,9 @@ TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GCutDiff
 TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GComUnsh
 (const TopAbs_ShapeEnum t1, const TopAbs_ShapeEnum t2)
 {
-  return TopOpeBRepBuild_GTopo(0,1,0,
-			       1,0,0,
-			       0,0,0,
+  return TopOpeBRepBuild_GTopo(false, true, false,
+			       true,  false, false,
+			       false, false, false,
 			       t1,t2,
 			       TopOpeBRepDS_UNSHGEOMETRY,TopOpeBRepDS_UNSHGEOMETRY);
 }
@@ -132,9 +132,9 @@ TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GComUnsh
 TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GComSame
 (const TopAbs_ShapeEnum t1, const TopAbs_ShapeEnum t2)
 {
-  return TopOpeBRepBuild_GTopo(0,1,0,
-			       1,1,0,
-			       0,0,0,
+  return TopOpeBRepBuild_GTopo(false, true, false,
+			       true,  true,  false,
+			       false, false, false,
 			       t1,t2,
 			       TopOpeBRepDS_SAMEORIENTED,TopOpeBRepDS_SAMEORIENTED);
 }
@@ -147,9 +147,9 @@ TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GComSame
 TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GComDiff
 (const TopAbs_ShapeEnum t1, const TopAbs_ShapeEnum t2)
 {
-  return TopOpeBRepBuild_GTopo(0,1,0,
-			       1,0,0,
-			       0,0,0,
+  return TopOpeBRepBuild_GTopo(false, true, false,
+			       true,  false, false,
+			       false, false, false,
 			       t1,t2,
 			       TopOpeBRepDS_DIFFORIENTED,TopOpeBRepDS_SAMEORIENTED);
 }

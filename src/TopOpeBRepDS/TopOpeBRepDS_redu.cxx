@@ -137,18 +137,18 @@ Standard_EXPORT Standard_Boolean FUN_ds_GetTr(
   
   TopOpeBRepDS_ListOfInterference l1dFOR,l1dREV,l1dINT,l1dEXT; Standard_Integer FOR1d,REV1d,INT1d,EXT1d;
   ::FUN_scanloi(l1d, l1dFOR,FOR1d, l1dREV,REV1d, l1dINT,INT1d, l1dEXT,EXT1d);
-  Standard_Boolean beforeIN1d = (REV1d + INT1d > 0); Standard_Boolean beforeOU1d = (FOR1d + EXT1d); 
-  Standard_Boolean afterIN1d  = (FOR1d + INT1d > 0);	Standard_Boolean afterOU1d = (REV1d + EXT1d);  
+  Standard_Boolean beforeIN1d = (REV1d + INT1d > 0); Standard_Boolean beforeOU1d = (FOR1d + EXT1d) != 0;
+  Standard_Boolean afterIN1d  = (FOR1d + INT1d > 0); Standard_Boolean afterOU1d  = (REV1d + EXT1d) != 0;
   
   TopOpeBRepDS_ListOfInterference l2dFOR,l2dREV,l2dINT,l2dEXT; Standard_Integer FOR2d,REV2d,INT2d,EXT2d;
   ::FUN_scanloi(l2d, l2dFOR,FOR2d, l2dREV,REV2d, l2dINT,INT2d, l2dEXT,EXT2d);
-  Standard_Boolean beforeIN2d = (REV2d + INT2d > 0); Standard_Boolean beforeOU2d = (FOR2d + EXT2d); 
-  Standard_Boolean afterIN2d  = (FOR2d + INT2d > 0);	Standard_Boolean afterOU2d = (REV2d + EXT2d);  
+  Standard_Boolean beforeIN2d = (REV2d + INT2d > 0); Standard_Boolean beforeOU2d = (FOR2d + EXT2d) != 0;
+  Standard_Boolean afterIN2d  = (FOR2d + INT2d > 0); Standard_Boolean afterOU2d  = (REV2d + EXT2d) != 0;
 
   TopOpeBRepDS_ListOfInterference l3dFOR,l3dREV,l3dINT,l3dEXT; Standard_Integer FOR3d,REV3d,INT3d,EXT3d;
   ::FUN_scanloi(l3d, l3dFOR,FOR3d, l3dREV,REV3d, l3dINT,INT3d, l3dEXT,EXT3d);
-  Standard_Boolean beforeIN3d = (REV3d + INT3d > 0); Standard_Boolean beforeOU3d = (FOR3d + EXT3d); 
-  Standard_Boolean afterIN3d  = (FOR3d + INT3d > 0);	Standard_Boolean afterOU3d = (REV3d + EXT3d);  
+  Standard_Boolean beforeIN3d = (REV3d + INT3d > 0); Standard_Boolean beforeOU3d = (FOR3d + EXT3d) != 0;
+  Standard_Boolean afterIN3d  = (FOR3d + INT3d > 0); Standard_Boolean afterOU3d  = (REV3d + EXT3d) != 0;
 
   // state before
   stb = TopAbs_UNKNOWN; isb=0; bdim=0;

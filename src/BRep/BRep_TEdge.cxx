@@ -50,9 +50,9 @@ BRep_TEdge::BRep_TEdge() :
 //purpose  : 
 //=======================================================================
 
- Standard_Boolean  BRep_TEdge::SameParameter()const 
+Standard_Boolean BRep_TEdge::SameParameter() const
 {
-  return myFlags & ParameterMask;
+  return (myFlags & ParameterMask) != 0;
 }
 
 
@@ -73,11 +73,10 @@ BRep_TEdge::BRep_TEdge() :
 //purpose  : 
 //=======================================================================
 
- Standard_Boolean  BRep_TEdge::SameRange()const 
+Standard_Boolean BRep_TEdge::SameRange() const
 {
-  return myFlags & RangeMask;
+  return (myFlags & RangeMask) != 0;
 }
-
 
 //=======================================================================
 //function : SameRange
@@ -96,11 +95,10 @@ BRep_TEdge::BRep_TEdge() :
 //purpose  : 
 //=======================================================================
 
- Standard_Boolean  BRep_TEdge::Degenerated()const 
+Standard_Boolean BRep_TEdge::Degenerated() const
 {
-  return myFlags & DegeneratedMask;
+  return (myFlags & DegeneratedMask) != 0;
 }
-
 
 //=======================================================================
 //function : Degenerated

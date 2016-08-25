@@ -405,9 +405,9 @@ Handle(TopoDS_TShape) ShapePersistent_BRep::pTEdge::createTShape() const
   Handle(BRep_TEdge) aTEdge = new BRep_TEdge;
 
   aTEdge->Tolerance     (myTolerance);
-  aTEdge->SameParameter (myFlags & ParameterMask);
-  aTEdge->SameRange     (myFlags & RangeMask);
-  aTEdge->Degenerated   (myFlags & DegeneratedMask);
+  aTEdge->SameParameter ((myFlags & ParameterMask)   != 0);
+  aTEdge->SameRange     ((myFlags & RangeMask)       != 0);
+  aTEdge->Degenerated   ((myFlags & DegeneratedMask) != 0);
 
   myCurves->Import (aTEdge->ChangeCurves());
 

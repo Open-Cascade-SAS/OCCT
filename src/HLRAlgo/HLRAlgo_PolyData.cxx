@@ -14,21 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef No_Exception
-//#define No_Exception
-#endif
-
+#include <HLRAlgo_PolyData.hxx>
 
 #include <HLRAlgo_EdgeStatus.hxx>
-#include <HLRAlgo_PolyData.hxx>
+
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyData,MMgt_TShared)
 
-#define EMskGrALin1  ((Standard_Boolean)   8)
-#define EMskGrALin2  ((Standard_Boolean)  16)
-#define EMskGrALin3  ((Standard_Boolean)  32)
-#define FMskHiding   ((Standard_Boolean) 256)
+#define EMskGrALin1  ((Standard_Integer)   8)
+#define EMskGrALin2  ((Standard_Integer)  16)
+#define EMskGrALin3  ((Standard_Integer)  32)
+#define FMskHiding   ((Standard_Integer) 256)
 
 #define FIndex  myIndices[0]
 #define MinFac  myIndices[1]
@@ -37,15 +34,7 @@ IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyData,MMgt_TShared)
 #define TriNode1   ((Standard_Integer*)TriIndices)[0]
 #define TriNode2   ((Standard_Integer*)TriIndices)[1]
 #define TriNode3   ((Standard_Integer*)TriIndices)[2]
-#define TriFlags   ((Standard_Boolean*)TriIndices)[3]
-
-#define Crossing   ((Standard_Boolean*)BooleanPtr)[0]
-#define HideBefore ((Standard_Boolean*)BooleanPtr)[1]
-#define TrFlags    ((Standard_Boolean*)BooleanPtr)[2]
-
-#define Crosi      BooleanPtr[0]
-#define HdBef      BooleanPtr[1]
-#define TFlag      BooleanPtr[2]
+#define TriFlags   ((Standard_Integer*)TriIndices)[3]
 
 #define PntX1  ((Standard_Real*)Coordinates)[ 0]
 #define PntY1  ((Standard_Real*)Coordinates)[ 1]
@@ -201,7 +190,10 @@ void HLRAlgo_PolyData::HideByPolyData (const Standard_Address Coordinates,
     HLRAlgo_Array1OfPHDat& PHDat = myHPHDat->ChangeArray1();
     const HLRAlgo_Array1OfTData& TData = myHTData->Array1();
     Standard_Real d1,d2;
-    Standard_Boolean NotConnex,BooleanPtr[3];
+    Standard_Boolean NotConnex    = Standard_False;
+    Standard_Boolean isCrossing   = Standard_False;
+    Standard_Boolean toHideBefore = Standard_False;
+    Standard_Integer TFlag = 0;
     Standard_Address PlanPtr,MinMaxPtr,TriIndices;
     Standard_Integer h,h2 = PHDat.Upper();
     HLRAlgo_PolyHidingData* PH = &(PHDat(1));
@@ -237,8 +229,8 @@ void HLRAlgo_PolyData::HideByPolyData (const Standard_Address Coordinates,
 	  if      (d1 >  Tolerance) {
 	    if    (d2 < -Tolerance) {
 	      Param = d1 / ( d1 - d2 );
-	      HdBef = Standard_False;
-	      Crosi = Standard_True;
+	      toHideBefore = Standard_False;
+	      isCrossing   = Standard_True;
 	      TFlag = TriFlags;
 	      const TColgp_Array1OfXYZ& Nodes = myHNodes->Array1();
 	      const gp_XYZ            & P1    = Nodes(TriNode1);
@@ -250,18 +242,14 @@ void HLRAlgo_PolyData::HideByPolyData (const Standard_Address Coordinates,
 	      YV2 = P2.Y();
 	      XV3 = P3.X();
 	      YV3 = P3.Y();
-	      HideByOneTriangle(Coordinates,
-				RealPtr,
-				&BooleanPtr,
-				PlanPtr,
-				status);
+	      hideByOneTriangle (Coordinates, RealPtr, isCrossing, toHideBefore, TFlag, status);
 	    }
 	  }
 	  else if (d1 < -Tolerance) {
 	    if    (d2 >  Tolerance) {
 	      Param = d1 / ( d1 - d2 );
-	      HdBef = Standard_True;
-	      Crosi = Standard_True;
+	      toHideBefore = Standard_True;
+	      isCrossing   = Standard_True;
 	      TFlag = TriFlags;
 	      const TColgp_Array1OfXYZ& Nodes = myHNodes->Array1();
 	      const gp_XYZ            & P1    = Nodes(TriNode1);
@@ -273,14 +261,10 @@ void HLRAlgo_PolyData::HideByPolyData (const Standard_Address Coordinates,
 	      YV2 = P2.Y();
 	      XV3 = P3.X();
 	      YV3 = P3.Y();
-	      HideByOneTriangle(Coordinates,
-				RealPtr,
-				&BooleanPtr,
-				PlanPtr,
-				status);
+	      hideByOneTriangle (Coordinates, RealPtr, isCrossing, toHideBefore, TFlag, status);
 	    }
 	    else {
-	      Crosi = Standard_False;
+	      isCrossing = Standard_False;
 	      TFlag = TriFlags;
 	      const TColgp_Array1OfXYZ& Nodes = myHNodes->Array1();
 	      const gp_XYZ            & P1    = Nodes(TriNode1);
@@ -292,15 +276,11 @@ void HLRAlgo_PolyData::HideByPolyData (const Standard_Address Coordinates,
 	      YV2 = P2.Y();
 	      XV3 = P3.X();
 	      YV3 = P3.Y();
-	      HideByOneTriangle(Coordinates,
-				RealPtr,
-				&BooleanPtr,
-				PlanPtr,
-				status);
+	      hideByOneTriangle (Coordinates, RealPtr, isCrossing, toHideBefore, TFlag, status);
 	    }
 	  }
 	  else if (d2 < -Tolerance) {
-	    Crosi = Standard_False;
+	    isCrossing = Standard_False;
 	    TFlag = TriFlags;
 	    const TColgp_Array1OfXYZ& Nodes = myHNodes->Array1();
 	    const gp_XYZ            & P1    = Nodes(TriNode1);
@@ -312,11 +292,7 @@ void HLRAlgo_PolyData::HideByPolyData (const Standard_Address Coordinates,
 	    YV2 = P2.Y();
 	    XV3 = P3.X();
 	    YV3 = P3.Y();
-	    HideByOneTriangle(Coordinates,
-			      RealPtr,
-			      &BooleanPtr,
-			      PlanPtr,
-			      status);
+	    hideByOneTriangle(Coordinates, RealPtr, isCrossing, toHideBefore, TFlag, status);
 	  }
 	}
       }
@@ -326,16 +302,16 @@ void HLRAlgo_PolyData::HideByPolyData (const Standard_Address Coordinates,
 }
 
 //=======================================================================
-//function : HideByOneTriangle
-//purpose  : 
+//function : hideByOneTriangle
+//purpose  :
 //=======================================================================
 
-void HLRAlgo_PolyData::
-HideByOneTriangle (const Standard_Address Coordinates,
-		   const Standard_Address RealPtr,
-		   const Standard_Address BooleanPtr,
-		   const Standard_Address ,
-		   HLRAlgo_EdgeStatus& status)
+void HLRAlgo_PolyData::hideByOneTriangle (const Standard_Address Coordinates,
+                                          const Standard_Address RealPtr,
+                                          const Standard_Boolean Crossing,
+                                          const Standard_Boolean HideBefore,
+                                          const Standard_Integer TrFlags,
+                                          HLRAlgo_EdgeStatus& status)
 {
   Standard_Boolean o[2],m[2];
   Standard_Integer l,n1=0,nn1,nn2,npi=-1,npiRej=0;

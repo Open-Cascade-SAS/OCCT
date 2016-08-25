@@ -148,7 +148,7 @@ const Handle(Image_PixMap)& Graphic3d_MarkerImage::GetImage()
     Standard_Byte* anImageRow = myImage->ChangeRow (aRowIter + aRowOffset);
     for (Standard_Integer aColumnIter = 0; aColumnIter < myWidth; aColumnIter++)
     {
-      Standard_Boolean aBitOn = myBitMap->Value (aLowerIndex + aNumOfBytesInRow * aRowIter + aColumnIter / 8) & (0x80 >> (aColumnIter % 8));
+      Standard_Boolean aBitOn = (myBitMap->Value (aLowerIndex + aNumOfBytesInRow * aRowIter + aColumnIter / 8) & (0x80 >> (aColumnIter % 8))) != 0;
       anImageRow[aColumnIter + aColumnOffset] = aBitOn ? 255 : 0;
     }
   }

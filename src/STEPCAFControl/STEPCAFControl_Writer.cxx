@@ -667,7 +667,7 @@ Standard_Boolean STEPCAFControl_Writer::Transfer (STEPControl_Writer &writer,
     *  Write names for the sub-shapes
     * ================================ */
 
-  if ( Interface_Static::IVal("write.stepcaf.subshapes.name") )
+  if (Interface_Static::IVal("write.stepcaf.subshapes.name") != 0)
   {
     const Handle(XSControl_TransferWriter) &TW = this->ChangeWriter().WS()->TransferWriter();
     const Handle(Transfer_FinderProcess) &FP = TW->FinderProcess();

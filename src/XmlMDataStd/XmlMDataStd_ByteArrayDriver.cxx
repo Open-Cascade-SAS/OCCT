@@ -129,7 +129,7 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
 	return Standard_False;
       } 
     else
-      aDelta = (Standard_Boolean)aDeltaValue;
+      aDelta = aDeltaValue != 0;
   }
 #ifdef OCCT_DEBUG
   else if(XmlMDataStd::DocumentVersion() == -1)
@@ -155,7 +155,7 @@ void XmlMDataStd_ByteArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
 
   theTarget.Element().setAttribute(::FirstIndexString(), aL);
   theTarget.Element().setAttribute(::LastIndexString(), anU);
-  theTarget.Element().setAttribute(::IsDeltaOn(),aByteArray->GetDelta());
+  theTarget.Element().setAttribute(::IsDeltaOn(),aByteArray->GetDelta() ? 1 : 0);
 
   const Handle(TColStd_HArray1OfByte)& hArr = aByteArray->InternalArray();
   if (!hArr.IsNull() && hArr->Length())

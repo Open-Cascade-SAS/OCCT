@@ -76,7 +76,7 @@ Standard_Boolean BinMDataStd_ByteArrayDriver::Paste(const BinObjMgt_Persistent& 
     if (! (theSource >> aDeltaValue))
       return Standard_False;
     else
-      aDelta = (Standard_Boolean)aDeltaValue;
+      aDelta = (aDeltaValue != 0);
   }
   anAtt->SetDelta(aDelta);
   return Standard_True;
@@ -106,5 +106,5 @@ void BinMDataStd_ByteArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
   }
   Standard_Byte *aPtr = (Standard_Byte *) &aSourceArray(lower);
   theTarget.PutByteArray(aPtr, bytes->Length());
-  theTarget << (Standard_Byte)anAtt->GetDelta();
+  theTarget << (Standard_Byte)(anAtt->GetDelta() ? 1 : 0);
 }

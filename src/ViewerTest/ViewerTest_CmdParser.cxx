@@ -248,5 +248,5 @@ Standard_Integer ViewerTest_CmdParser::ArgInt (const std::string& theOptionName,
 //===============================================================================================
 Standard_Boolean ViewerTest_CmdParser::ArgBool (const std::string& theOptionName, const Standard_Integer theArgumentIndex)
 {
-  return static_cast<Standard_Boolean> (Draw::Atoi (Arg (theOptionName, theArgumentIndex).c_str()));
+  return Draw::Atoi (Arg (theOptionName, theArgumentIndex).c_str()) != 0;
 }

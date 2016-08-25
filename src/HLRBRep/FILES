@@ -9,12 +9,8 @@ HLRBRep_Array1OfFData.hxx
 HLRBRep_BCurveTool.cxx
 HLRBRep_BCurveTool.hxx
 HLRBRep_BCurveTool.lxx
-HLRBRep_BiPnt2D.cxx
 HLRBRep_BiPnt2D.hxx
-HLRBRep_BiPnt2D.lxx
-HLRBRep_BiPoint.cxx
 HLRBRep_BiPoint.hxx
-HLRBRep_BiPoint.lxx
 HLRBRep_BSurfaceTool.cxx
 HLRBRep_BSurfaceTool.hxx
 HLRBRep_BSurfaceTool.lxx

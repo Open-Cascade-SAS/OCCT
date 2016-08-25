@@ -1546,7 +1546,7 @@ Standard_Boolean ChoixUV(const TopoDS_Edge& Last,
     GetDirection(theResEdge, F, plst, dlst, Standard_False);
   }
 
-  return (imin);
+  return imin != 0;
 }
 
 //=======================================================================

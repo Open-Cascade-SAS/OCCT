@@ -616,8 +616,8 @@ ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
 			     const Standard_Boolean              RecOnS1,
 			     const Standard_Boolean              RecOnS2,
 			     const math_Vector&                  Soldep,
-			     Standard_Boolean&                   intf,
-			     Standard_Boolean&                   intl)
+			     Standard_Integer&                   intf,
+			     Standard_Integer&                   intl)
 {
   Handle(ChFiDS_FilSpine) fsp = Handle(ChFiDS_FilSpine)::DownCast(Spine);
   if(fsp.IsNull()) Standard_ConstructionError::Raise
@@ -701,12 +701,13 @@ ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
 			Standard_False, Data->ChangeVertexLastOnS2(),tolesp);
   Standard_Boolean reverse = (!Forward || Inside);
   if(intf && reverse){
-    Standard_Boolean ok = 0;
+    Standard_Boolean ok = Standard_False;
     const ChFiDS_CommonPoint& cp1 = Data->VertexFirstOnS1();
     if(cp1.IsOnArc()){
       TopoDS_Face F1 = S1->ChangeSurface().Face();
       TopoDS_Face bid;
-      ok = intf = !SearchFace(Spine,cp1,F1,bid);
+      intf = !SearchFace(Spine,cp1,F1,bid);
+      ok = intf != 0;
     }
     const ChFiDS_CommonPoint& cp2 = Data->VertexFirstOnS2();
     if(cp2.IsOnArc() && !ok){
@@ -721,7 +722,8 @@ ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
     if(cp1.IsOnArc()){
       TopoDS_Face F1 = S1->ChangeSurface().Face();
       TopoDS_Face bid;
-      ok = intl = !SearchFace(Spine,cp1,F1,bid);
+      intl = !SearchFace(Spine,cp1,F1,bid);
+      ok = intl != 0;
     }
     const ChFiDS_CommonPoint& cp2 = Data->VertexLastOnS2();
     if(cp2.IsOnArc() && !ok){
@@ -1237,8 +1239,8 @@ ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
 			       const Standard_Boolean              RecOnS1,
 			       const Standard_Boolean              RecOnS2,
 			       const math_Vector&                  Soldep,
-			       Standard_Boolean&                   intf,
-			       Standard_Boolean&                   intl)
+			       Standard_Integer&                   intf,
+			       Standard_Integer&                   intl)
 {
 #ifdef OCCT_DEBUG
   OSD_Chronometer ch;

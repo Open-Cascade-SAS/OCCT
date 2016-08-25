@@ -477,7 +477,7 @@ static Standard_Integer closed (Draw_Interpretor& theDI, Standard_Integer theArg
     Handle(MeshVS_Mesh) aMesh = getMesh (theArgv[1], theDI);
     if (!aMesh.IsNull())
     {
-      Standard_Integer aFlag = Draw::Atoi (theArgv[2]);
+      Standard_Boolean aFlag = Draw::Atoi (theArgv[2]) != 0;
       aMesh->GetDrawer()->SetBoolean (MeshVS_DA_SupressBackFaces, aFlag);
 
       Handle( AIS_InteractiveContext ) aContext = ViewerTest::GetAISContext();
@@ -841,7 +841,7 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
             aMesh->AddBuilder(aBuilder, Standard_True);
           }
 
-          aMesh->GetDrawer()->SetBoolean ( MeshVS_DA_ColorReflection, Standard_Boolean(aReflection) );
+          aMesh->GetDrawer()->SetBoolean (MeshVS_DA_ColorReflection, aReflection != 0);
 
           anIC->Redisplay( aMesh );
         }
@@ -919,7 +919,7 @@ static Standard_Integer meshvectors( Draw_Interpretor& di,
       }
       else if (aParam == "-issimple")
       {
-        isSimplePrs = Draw::Atoi(argv[anIdx]);
+        isSimplePrs = Draw::Atoi(argv[anIdx]) != 0;
       }
       aParam.Clear();
     }

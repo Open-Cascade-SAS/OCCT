@@ -72,7 +72,7 @@ TopoDS_Shape BRepAlgo_Tool::Deboucle3D(const TopoDS_Shape& S,
       // iterate on sub-shapes and add non-empty.
       TopoDS_Iterator it(S);
       TopoDS_Shape SubShape;
-      Standard_Boolean NbSub = 0;
+      Standard_Integer NbSub = 0;
       BRep_Builder B;
       if (S.ShapeType() == TopAbs_COMPOUND) {
 	B.MakeCompound(TopoDS::Compound(SS));

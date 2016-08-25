@@ -34,12 +34,6 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
-#undef Standard_True
-#undef Standard_False
-
-#define Standard_True ((Standard_Boolean) 1)
-#define Standard_False ((Standard_Boolean) 0)
-
 #define NBFACES 6
 #define NBWIRES 6
 #define NBEDGES 12

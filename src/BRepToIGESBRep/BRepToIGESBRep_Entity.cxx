@@ -724,10 +724,10 @@ Handle(IGESSolid_ManifoldSolid) BRepToIGESBRep_Entity ::TransferSolid (const Top
     FirstShell = GetCasted(IGESSolid_Shell, Seq->Value(1));
     ShellFlag = SeqFlag.Value(1);
     Tab.Nullify();  TabFlag.Nullify();
-    mysol->Init(FirstShell, ShellFlag, Tab, TabFlag);
+    mysol->Init(FirstShell, ShellFlag != 0, Tab, TabFlag);
   }
   else if (nbshells >=2 ) {
-    mysol->Init(FirstShell, ShellFlag, Tab, TabFlag);
+    mysol->Init(FirstShell, ShellFlag != 0, Tab, TabFlag);
   }
   else
     AddWarning (start, " no Result ");

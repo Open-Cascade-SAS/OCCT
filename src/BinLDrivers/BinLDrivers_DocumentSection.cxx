@@ -165,7 +165,7 @@ void BinLDrivers_DocumentSection::Write (Standard_OStream&   theStream,
   Standard_Integer aVal[3] = {
     Standard_Integer(myValue[0]),
     Standard_Integer(myValue[1]),
-    Standard_Integer(myIsPostRead)
+    Standard_Integer(myIsPostRead ? 1 : 0)
   };
 #if DO_INVERSE
   aVal[0] = InverseSize(aVal[0]);
@@ -204,6 +204,6 @@ void BinLDrivers_DocumentSection::ReadTOC
 #endif
     theSection.myValue[0] = (Standard_Size)aValue[0];
     theSection.myValue[1] = (Standard_Size)aValue[1];
-    theSection.myIsPostRead = (Standard_Boolean)aValue[2];
+    theSection.myIsPostRead = aValue[2] != 0;
   }
 }

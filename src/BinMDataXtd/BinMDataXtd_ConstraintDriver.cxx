@@ -124,9 +124,9 @@ Standard_Boolean BinMDataXtd_ConstraintDriver::Paste
   Standard_Integer flags;
   if (! (theSource >> flags))
     return Standard_False;
-  aC->Verified( flags & 1);
-  aC->Inverted( flags & 2);
-  aC->Reversed( flags & 4);
+  aC->Verified ((flags & 1) != 0);
+  aC->Inverted ((flags & 2) != 0);
+  aC->Reversed ((flags & 4) != 0);
 
   return Standard_True;
 }

@@ -13,7 +13,6 @@ TFunction_DriverTable.hxx
 TFunction_ExecutionStatus.hxx
 TFunction_Function.cxx
 TFunction_Function.hxx
-TFunction_Function.lxx
 TFunction_GraphNode.cxx
 TFunction_GraphNode.hxx
 TFunction_HArray1OfDataMapOfGUIDDriver.hxx

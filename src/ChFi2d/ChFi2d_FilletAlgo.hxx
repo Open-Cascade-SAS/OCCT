@@ -23,6 +23,7 @@
 #include <Geom_Plane.hxx>
 #include <TColStd_ListOfReal.hxx>
 #include <TColStd_SequenceOfReal.hxx>
+#include <TColStd_SequenceOfBoolean.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 
 class FilletPoint;
@@ -163,7 +164,7 @@ public:
   Standard_Real getDiff(int theIndex) {return myD.Value(theIndex);}
 
   //! Returns true if function is valid (rediuses vectors of fillet do not intersect any curve).
-  Standard_Boolean isValid(int theIndex) {return (Standard_Boolean)myValid.Value(theIndex);}
+  Standard_Boolean isValid(int theIndex) {return myValid.Value(theIndex);}
 
   //! Returns the index of the nearest value
   int getNear(int theIndex) {return myNear.Value(theIndex);}
@@ -225,7 +226,8 @@ private:
   gp_Pnt2d myCenter;
   //! Flags for storage the validity of solutions. Indexes corresponds to indexes
   //! in sequences myV, myD.
-  TColStd_SequenceOfInteger myValid, myNear;
+  TColStd_SequenceOfBoolean myValid;
+  TColStd_SequenceOfInteger myNear;
 };
 
 #endif // _FILLETALGO_H_

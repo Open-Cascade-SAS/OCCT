@@ -654,12 +654,12 @@ void FilletPoint::appendValue(Standard_Real theValue, Standard_Boolean theValid)
     if (theValue < myV.Value(a)) 
     {
       myV.InsertBefore(a, theValue);
-      myValid.InsertBefore(a, (int)theValid);
+      myValid.InsertBefore(a, theValid);
       return;
     }
   }
   myV.Append(theValue);
-  myValid.Append((int)theValid);
+  myValid.Append(theValid);
 }
 
 Standard_Boolean FilletPoint::calculateDiff(FilletPoint* thePoint) 

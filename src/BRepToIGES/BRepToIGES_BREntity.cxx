@@ -56,8 +56,8 @@ char Name[100];
 
 BRepToIGES_BREntity::BRepToIGES_BREntity()
 : TheUnitFactor(1.0),
-  myConvSurface(Interface_Static::IVal("write.convertsurface.mode")),
-  myPCurveMode (Interface_Static::IVal("write.surfacecurve.mode")),
+  myConvSurface(Interface_Static::IVal("write.convertsurface.mode") != 0),
+  myPCurveMode (Interface_Static::IVal("write.surfacecurve.mode")   != 0),
   TheMap       (new Transfer_FinderProcess())
 {
 }
@@ -71,8 +71,8 @@ void BRepToIGES_BREntity::Init()
 {  
   TheMap = new Transfer_FinderProcess();
   TheUnitFactor = 1.;
-  myConvSurface = Interface_Static::IVal("write.convertsurface.mode");
-  myPCurveMode = Interface_Static::IVal("write.surfacecurve.mode");
+  myConvSurface = Interface_Static::IVal("write.convertsurface.mode") != 0;
+  myPCurveMode  = Interface_Static::IVal("write.surfacecurve.mode")   != 0;
 }
 
 //=======================================================================

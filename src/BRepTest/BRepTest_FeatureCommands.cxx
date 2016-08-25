@@ -330,7 +330,7 @@ static Standard_Integer CONTROL(Draw_Interpretor& theCommands,
 				Standard_Integer narg, const char** a)
 {
   if (narg >= 2) {
-    WithControl = strcmp("0",a[1]);
+    WithControl = strcmp("0", a[1]) != 0;
   }
   if (WithControl) {
     theCommands << "Mode avec controle";
@@ -787,7 +787,7 @@ static Standard_Integer SPLS(Draw_Interpretor& ,
         for (; aExpE.More(); aExpE.Next())
           aSplitEdges.Append(aExpE.Current());
 
-        isSplittingEdges = (aSplitEdges.Length());
+        isSplittingEdges = !aSplitEdges.IsEmpty();
       }
     }
 
@@ -1050,7 +1050,7 @@ Standard_Integer offsetparameter(Draw_Interpretor& di,
   if ( n < 4 ) return 1;
   //
   TheTolerance = Draw::Atof(a[1]);
-  TheInter     = strcmp(a[2],"p");
+  TheInter     = strcmp(a[2],"p") != 0;
   //
   if      ( !strcmp(a[3],"a")) TheJoin = GeomAbs_Arc;
   else if ( !strcmp(a[3],"i")) TheJoin = GeomAbs_Intersection;

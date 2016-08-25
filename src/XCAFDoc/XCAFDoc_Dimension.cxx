@@ -309,7 +309,7 @@ Handle(XCAFDimTolObjects_DimensionObject) XCAFDoc_Dimension::GetObject()  const
   if(Label().FindChild(ChildLab_Class).FindAttribute(TDataStd_IntegerArray::GetID(), aClass) 
      && !aClass->Array().IsNull() && aClass->Array()->Length() > 0)
   {
-    anObj->SetClassOfTolerance(aClass->Array()->Value(1), (XCAFDimTolObjects_DimensionFormVariance)aClass->Array()->Value(2), (XCAFDimTolObjects_DimensionGrade)aClass->Array()->Value(3));
+    anObj->SetClassOfTolerance(aClass->Array()->Value(1) != 0, (XCAFDimTolObjects_DimensionFormVariance)aClass->Array()->Value(2), (XCAFDimTolObjects_DimensionGrade)aClass->Array()->Value(3));
   }
 
   Handle(TDataStd_IntegerArray) aDec;

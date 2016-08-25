@@ -583,7 +583,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
 	finv.Set(Rdeb,choix);
 	Standard_Real TolGuide = cornerspine->Resolution(tolesp); 
 	
-	Standard_Boolean intf = 3, intl = 3;
+	Standard_Integer intf = 3, intl = 3;
 	done = ComputeData(coin,cornerspine,NullSpine,lin,Fac,IFac,Surf,ISurf,
 			   func,finv,ffi,pasmax,locfleche,TolGuide,ffi,lla,
 			   0,0,1,Soldep,intf,intl,Gd1,Gd2,Gf1,Gf2,0,1);
@@ -605,7 +605,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
 	func.Set(myShape);
 	finv.Set(choix);
 	Standard_Real TolGuide = cornerspine->Resolution(tolesp);
-	Standard_Boolean intf = 3, intl = 3;
+	Standard_Integer intf = 3, intl = 3;
 	done = ComputeData(coin,cornerspine,NullSpine,lin,Fac,IFac,Surf,ISurf,
 			   func,finv,ffi,pasmax,locfleche,TolGuide,ffi,lla,
 			   0,0,1,Soldep,intf,intl,Gd1,Gd2,Gf1,Gf2,0,1);

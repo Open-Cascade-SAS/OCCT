@@ -773,7 +773,7 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
 	    }
 	  }
 
-	  Standard_Boolean nbTreated = 0;
+	  Standard_Integer nbTreated = 0;
 	  for (Standard_Integer ip=0; ip < nbpt; ip++) {
 	    GetLinePoint2d (L, W1[ip]+1, !OnFirst, U,V);
 

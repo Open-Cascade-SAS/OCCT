@@ -999,8 +999,8 @@ static Standard_Integer bsplineprof(Draw_Interpretor& di,
     0.0e0) ;
   gp_Pnt2d first_point(0.0e0,
     0.0e0) ;
-  Standard_Integer i = 2,
-    wait = 1 ;
+  Standard_Integer i = 2;
+  Standard_Boolean wait = Standard_True;
 //  Standard_Real x0 = 0, y0 = 0, x = 0, y = 0, dx = 1, dy = 0;
   Standard_Real x = 0, y = 0, dx = 1, dy = 0;
   BRepBuilderAPI_MakeWire MW;

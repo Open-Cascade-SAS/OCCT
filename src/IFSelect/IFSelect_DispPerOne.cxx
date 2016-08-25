@@ -35,10 +35,6 @@ IFSelect_DispPerOne::IFSelect_DispPerOne ()    {  }
   (const Standard_Integer nbent, Standard_Integer& pcount) const 
 {  pcount = nbent;  return Standard_True;  }
 
-    Standard_Boolean  IFSelect_DispPerOne::PacketsCount
-  (const Interface_Graph& G, Standard_Integer& pcount) const 
-{  pcount = G.Size();  return Standard_True;  }
-
     void  IFSelect_DispPerOne::Packets
   (const Interface_Graph& G, IFGraph_SubPartsIterator& packs) const 
 {

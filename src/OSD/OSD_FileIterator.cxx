@@ -51,7 +51,7 @@ extern char *vmsify PARAMS ((char *name, int type));
 
 
 OSD_FileIterator::OSD_FileIterator()
-: myFlag(0),
+: myFlag(false),
   myDescr(0),
   myEntry(0),
   myInit(0)
@@ -60,7 +60,7 @@ OSD_FileIterator::OSD_FileIterator()
 
 OSD_FileIterator::OSD_FileIterator(const OSD_Path& where,
                                    const TCollection_AsciiString& Mask)
-: myFlag(0),
+: myFlag(false),
   myDescr(0),
   myEntry(0),
   myInit(0)
@@ -96,7 +96,7 @@ Standard_Boolean OSD_FileIterator::More(){
      Next();          // Now find first entry
    }
  }
- return (myFlag);
+ return myFlag;
 }
 
 // Private :  See if file name matches with a mask (like "*.c")
@@ -178,7 +178,7 @@ int again = 1;
 struct stat stat_buf;
 char full_name[255];
 
- myFlag = 0;   // Initialize to nothing found
+ myFlag = false;   // Initialize to nothing found
 
  do {
     myEntry = readdir((DIR *)myDescr);

@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Bnd_Box.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Lin.hxx>
@@ -23,35 +22,7 @@
 #include <gp_Trsf.hxx>
 #include <Standard_ConstructionError.hxx>
 
-#define VoidMask  0x01
-#define XminMask  0x02
-#define XmaxMask  0x04
-#define YminMask  0x08
-#define YmaxMask  0x10
-#define ZminMask  0x20
-#define ZmaxMask  0x40
-#define WholeMask 0x7e
-
-// Standard_True if the flag is one
-#define VoidFlag()  ( Flags & VoidMask )
-#define XminFlag()  ( Flags & XminMask )
-#define XmaxFlag()  ( Flags & XmaxMask )
-#define YminFlag()  ( Flags & YminMask )
-#define YmaxFlag()  ( Flags & YmaxMask )
-#define ZminFlag()  ( Flags & ZminMask )
-#define ZmaxFlag()  ( Flags & ZmaxMask )
-#define WholeFlag() ( (Flags & WholeMask) == WholeMask )
-
 // set the flag to one
-#define SetVoidFlag()  ( Flags = VoidMask )
-#define SetXminFlag()  ( Flags |= XminMask )
-#define SetXmaxFlag()  ( Flags |= XmaxMask )
-#define SetYminFlag()  ( Flags |= YminMask )
-#define SetYmaxFlag()  ( Flags |= YmaxMask )
-#define SetZminFlag()  ( Flags |= ZminMask )
-#define SetZmaxFlag()  ( Flags |= ZmaxMask )
-#define SetWholeFlag() ( Flags = WholeMask )
-
 #define ClearVoidFlag() ( Flags &= ~VoidMask )
 
 #include <Standard_Stream.hxx>
@@ -68,27 +39,6 @@ Bnd_Box::Bnd_Box()
      : Xmin(0.), Xmax(0.), Ymin(0.), Ymax(0.),  Zmin(0.), Zmax(0.), Gap(0.)
 {
   SetVoid();
-}
-
-//=======================================================================
-//function : SetWhole
-//purpose  : 
-//=======================================================================
-
-void Bnd_Box::SetWhole ()
-{
-  SetWholeFlag();
-}
-
-//=======================================================================
-//function : SetVoid
-//purpose  : 
-//=======================================================================
-
-void Bnd_Box::SetVoid ()
-{
-  SetVoidFlag();
-  Gap=0.;
 }
 
 //=======================================================================
@@ -126,7 +76,8 @@ void Bnd_Box::Update (const Standard_Real x,
 		      const Standard_Real Y, 
 		      const Standard_Real Z)
 {
-  if (VoidFlag()) {
+  if (IsVoid())
+  {
     Xmin = x;
     Ymin = y;
     Zmin = z;
@@ -136,12 +87,12 @@ void Bnd_Box::Update (const Standard_Real x,
     ClearVoidFlag();
   }
   else {
-    if (!XminFlag() && (x < Xmin)) Xmin = x;
-    if (!XmaxFlag() && (X > Xmax)) Xmax = X;
-    if (!YminFlag() && (y < Ymin)) Ymin = y;
-    if (!YmaxFlag() && (Y > Ymax)) Ymax = Y;
-    if (!ZminFlag() && (z < Zmin)) Zmin = z;
-    if (!ZmaxFlag() && (Z > Zmax)) Zmax = Z;
+    if (!IsOpenXmin() && (x < Xmin)) Xmin = x;
+    if (!IsOpenXmax() && (X > Xmax)) Xmax = X;
+    if (!IsOpenYmin() && (y < Ymin)) Ymin = y;
+    if (!IsOpenYmax() && (Y > Ymax)) Ymax = Y;
+    if (!IsOpenZmin() && (z < Zmin)) Zmin = z;
+    if (!IsOpenZmax() && (Z > Zmax)) Zmax = Z;
   }
 }
 
@@ -154,7 +105,8 @@ void Bnd_Box::Update (const Standard_Real X,
 		      const Standard_Real Y,
 		      const Standard_Real Z)
 {
-  if (VoidFlag()) {
+  if (IsVoid())
+  {
     Xmin = X;
     Ymin = Y;
     Zmin = Z;
@@ -164,12 +116,12 @@ void Bnd_Box::Update (const Standard_Real X,
     ClearVoidFlag();
   }
   else {
-    if      (!XminFlag() && (X < Xmin)) Xmin = X;
-    else if (!XmaxFlag() && (X > Xmax)) Xmax = X;
-    if      (!YminFlag() && (Y < Ymin)) Ymin = Y;
-    else if (!YmaxFlag() && (Y > Ymax)) Ymax = Y;
-    if      (!ZminFlag() && (Z < Zmin)) Zmin = Z;
-    else if (!ZmaxFlag() && (Z > Zmax)) Zmax = Z;
+    if      (!IsOpenXmin() && (X < Xmin)) Xmin = X;
+    else if (!IsOpenXmax() && (X > Xmax)) Xmax = X;
+    if      (!IsOpenYmin() && (Y < Ymin)) Ymin = Y;
+    else if (!IsOpenYmax() && (Y > Ymax)) Ymax = Y;
+    if      (!IsOpenZmin() && (Z < Zmin)) Zmin = Z;
+    else if (!IsOpenZmax() && (Z > Zmax)) Zmax = Z;
   }
 }
 
@@ -215,23 +167,23 @@ void Bnd_Box::Get (Standard_Real& theXmin,
                    Standard_Real& theYmax,
                    Standard_Real& theZmax) const
 {
-  if (VoidFlag())
+  if (IsVoid())
   {
     Standard_ConstructionError::Raise ("Bnd_Box is void");
   }
 
-  if (XminFlag())  theXmin = -Bnd_Precision_Infinite;
-  else             theXmin = Xmin - Gap;
-  if (XmaxFlag())  theXmax = Bnd_Precision_Infinite;
-  else             theXmax = Xmax + Gap;
-  if (YminFlag())  theYmin = -Bnd_Precision_Infinite;
-  else             theYmin = Ymin - Gap;
-  if (YmaxFlag())  theYmax = Bnd_Precision_Infinite;
-  else             theYmax = Ymax + Gap;
-  if (ZminFlag())  theZmin = -Bnd_Precision_Infinite;
-  else             theZmin = Zmin - Gap;
-  if (ZmaxFlag())  theZmax = Bnd_Precision_Infinite;
-  else             theZmax = Zmax + Gap;
+  if (IsOpenXmin()) theXmin = -Bnd_Precision_Infinite;
+  else              theXmin = Xmin - Gap;
+  if (IsOpenXmax()) theXmax = Bnd_Precision_Infinite;
+  else              theXmax = Xmax + Gap;
+  if (IsOpenYmin()) theYmin = -Bnd_Precision_Infinite;
+  else              theYmin = Ymin - Gap;
+  if (IsOpenYmax()) theYmax = Bnd_Precision_Infinite;
+  else              theYmax = Ymax + Gap;
+  if (IsOpenZmin()) theZmin = -Bnd_Precision_Infinite;
+  else              theZmin = Zmin - Gap;
+  if (IsOpenZmax()) theZmax = Bnd_Precision_Infinite;
+  else              theZmax = Zmax + Gap;
 }
 
 //=======================================================================
@@ -242,17 +194,17 @@ void Bnd_Box::Get (Standard_Real& theXmin,
 gp_Pnt Bnd_Box::CornerMin() const
 {
   gp_Pnt aCornerMin;
-  if (VoidFlag())
+  if (IsVoid())
   {
     Standard_ConstructionError::Raise ("Bnd_Box is void");
     return aCornerMin;
   }
-  if (XminFlag())  aCornerMin.SetX (-Bnd_Precision_Infinite);
-  else             aCornerMin.SetX (Xmin - Gap);
-  if (YminFlag())  aCornerMin.SetY (-Bnd_Precision_Infinite);
-  else             aCornerMin.SetY (Ymin - Gap);
-  if (ZminFlag())  aCornerMin.SetZ (-Bnd_Precision_Infinite);
-  else             aCornerMin.SetZ (Zmin - Gap);
+  if (IsOpenXmin()) aCornerMin.SetX (-Bnd_Precision_Infinite);
+  else              aCornerMin.SetX (Xmin - Gap);
+  if (IsOpenYmin()) aCornerMin.SetY (-Bnd_Precision_Infinite);
+  else              aCornerMin.SetY (Ymin - Gap);
+  if (IsOpenZmin()) aCornerMin.SetZ (-Bnd_Precision_Infinite);
+  else              aCornerMin.SetZ (Zmin - Gap);
   return aCornerMin;
 }
 
@@ -264,158 +216,18 @@ gp_Pnt Bnd_Box::CornerMin() const
 gp_Pnt Bnd_Box::CornerMax() const
 {
   gp_Pnt aCornerMax;
-  if(VoidFlag())
+  if (IsVoid())
   {
     Standard_ConstructionError::Raise ("Bnd_Box is void");
     return aCornerMax;
   }
-  if (XmaxFlag())  aCornerMax.SetX (Bnd_Precision_Infinite);
-  else             aCornerMax.SetX (Xmax + Gap);
-  if (YminFlag())  aCornerMax.SetY (Bnd_Precision_Infinite);
-  else             aCornerMax.SetY (Ymax + Gap);
-  if (ZminFlag())  aCornerMax.SetZ (Bnd_Precision_Infinite);
-  else             aCornerMax.SetZ (Zmax + Gap);
+  if (IsOpenXmax()) aCornerMax.SetX (Bnd_Precision_Infinite);
+  else              aCornerMax.SetX (Xmax + Gap);
+  if (IsOpenYmin()) aCornerMax.SetY (Bnd_Precision_Infinite);
+  else              aCornerMax.SetY (Ymax + Gap);
+  if (IsOpenZmin()) aCornerMax.SetZ (Bnd_Precision_Infinite);
+  else              aCornerMax.SetZ (Zmax + Gap);
   return aCornerMax;
-}
-
-//=======================================================================
-//function : OpenXmin
-//purpose  : 
-//=======================================================================
-
-void Bnd_Box::OpenXmin ()
-{
-  SetXminFlag();
-}
-
-//=======================================================================
-//function : OpenXmax
-//purpose  : 
-//=======================================================================
-
-void Bnd_Box::OpenXmax ()
-{
-  SetXmaxFlag();
-}
-
-//=======================================================================
-//function : OpenYmin
-//purpose  : 
-//=======================================================================
-
-void Bnd_Box::OpenYmin ()
-{
-  SetYminFlag();
-}
-
-//=======================================================================
-//function : OpenYmax
-//purpose  : 
-//=======================================================================
-
-void Bnd_Box::OpenYmax ()
-{
-  SetYmaxFlag();
-}
-
-//=======================================================================
-//function : OpenZmin
-//purpose  : 
-//=======================================================================
-
-void Bnd_Box::OpenZmin ()
-{
-  SetZminFlag();
-}
-
-//=======================================================================
-//function : OpenZmax
-//purpose  : 
-//=======================================================================
-
-void Bnd_Box::OpenZmax ()
-{
-  SetZmaxFlag();
-}
-
-//=======================================================================
-//function : IsOpenXmin
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Bnd_Box::IsOpenXmin () const
-{
-  return XminFlag();
-}
-
-//=======================================================================
-//function : IsOpenXmax
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Bnd_Box::IsOpenXmax () const
-{
-  return XmaxFlag();
-}
-
-//=======================================================================
-//function : IsOpenYmin
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Bnd_Box::IsOpenYmin () const
-{
-  return YminFlag();
-}
-
-//=======================================================================
-//function : IsOpenYmax
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Bnd_Box::IsOpenYmax () const
-{
-  return YmaxFlag();
-}
-
-//=======================================================================
-//function : IsOpenZmin
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Bnd_Box::IsOpenZmin () const
-{
-  return ZminFlag();
-}
-
-//=======================================================================
-//function : IsOpenZmax
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Bnd_Box::IsOpenZmax () const
-{
-  return ZmaxFlag();
-}
-
-//=======================================================================
-//function : IsWhole
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Bnd_Box::IsWhole () const
-{
-  return WholeFlag();
-}
-
-//=======================================================================
-//function : IsVoid
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Bnd_Box::IsVoid () const
-{
-  return VoidFlag();
 }
 
 //=======================================================================
@@ -427,8 +239,8 @@ Standard_Boolean Bnd_Box::IsXThin (const Standard_Real tol) const
 {
   if (IsWhole())       return Standard_False;
   if (IsVoid())        return Standard_True;
-  if (XminFlag())      return Standard_False;
-  if (XmaxFlag())      return Standard_False;
+  if (IsOpenXmin())    return Standard_False;
+  if (IsOpenXmax())    return Standard_False;
   if (Xmax-Xmin < tol) return Standard_True;
   return Standard_False;
 }
@@ -442,8 +254,8 @@ Standard_Boolean Bnd_Box::IsYThin (const Standard_Real tol) const
 {
   if (IsWhole())       return Standard_False;
   if (IsVoid())        return Standard_True;
-  if (YminFlag())      return Standard_False;
-  if (YmaxFlag())      return Standard_False;
+  if (IsOpenYmin())    return Standard_False;
+  if (IsOpenYmax())    return Standard_False;
   if (Ymax-Ymin < tol) return Standard_True;
   return Standard_False;
 }
@@ -457,8 +269,8 @@ Standard_Boolean Bnd_Box::IsZThin (const Standard_Real tol) const
 {
   if (IsWhole())       return Standard_False;
   if (IsVoid())        return Standard_True;
-  if (ZminFlag())      return Standard_False;
-  if (ZmaxFlag())      return Standard_False;
+  if (IsOpenZmin())    return Standard_False;
+  if (IsOpenZmax())    return Standard_False;
   if (Zmax-Zmin < tol) return Standard_True;
   return Standard_False;
 }
@@ -491,12 +303,12 @@ Bnd_Box Bnd_Box::Transformed (const gp_Trsf& T) const
   else if (F == gp_Translation) {
     Standard_Real DX,DY,DZ;
     (T.TranslationPart()).Coord(DX,DY,DZ);
-    if (!XminFlag())  newb.Xmin += DX;
-    if (!XmaxFlag())  newb.Xmax += DX;
-    if (!YminFlag())  newb.Ymin += DY;
-    if (!YmaxFlag())  newb.Ymax += DY;
-    if (!ZminFlag())  newb.Zmin += DZ;
-    if (!ZmaxFlag())  newb.Zmax += DZ;
+    if (!IsOpenXmin()) newb.Xmin += DX;
+    if (!IsOpenXmax()) newb.Xmax += DX;
+    if (!IsOpenYmin()) newb.Ymin += DY;
+    if (!IsOpenYmax()) newb.Ymax += DY;
+    if (!IsOpenZmin()) newb.Zmin += DZ;
+    if (!IsOpenZmax()) newb.Zmax += DZ;
   }
   else {
     gp_Pnt P[8];
@@ -507,32 +319,38 @@ Bnd_Box Bnd_Box::Transformed (const gp_Trsf& T) const
 //    Standard_Integer vertices = 0;
     Standard_Integer directions = 0;
 
-    if (XminFlag()) {
+    if (IsOpenXmin())
+    {
       directions++;
       D[directions-1].SetCoord(-1., 0., 0.);
       Vertex[0] = Vertex[2] = Vertex[4] = Vertex[6] = Standard_False;
     }
-    if (XmaxFlag()) {
+    if (IsOpenXmax())
+    {
       directions++;
       D[directions-1].SetCoord( 1., 0., 0.);
       Vertex[1] = Vertex[3] = Vertex[5] = Vertex[7] = Standard_False;
     }
-    if (YminFlag()) {
+    if (IsOpenYmin())
+    {
       directions++;
       D[directions-1].SetCoord( 0.,-1., 0.);
       Vertex[0] = Vertex[1] = Vertex[4] = Vertex[5] = Standard_False;
     }
-    if (YmaxFlag()) {
+    if (IsOpenYmax())
+    {
       directions++;
       D[directions-1].SetCoord( 0., 1., 0.);
       Vertex[2] = Vertex[3] = Vertex[6] = Vertex[7] = Standard_False;
     }
-    if (ZminFlag()) {
+    if (IsOpenZmin())
+    {
       directions++;
       D[directions-1].SetCoord( 0., 0.,-1.);
       Vertex[0] = Vertex[1] = Vertex[2] = Vertex[3] = Standard_False;
     }
-    if (ZmaxFlag()) {
+    if (IsOpenZmax())
+    {
       directions++;
       D[directions-1].SetCoord( 0., 0., 1.);
       Vertex[4] = Vertex[5] = Vertex[6] = Vertex[7] = Standard_False;
@@ -671,12 +489,12 @@ Standard_Boolean Bnd_Box::IsOut (const gp_Pnt& P) const
   else {
     Standard_Real X,Y,Z;
     P.Coord(X,Y,Z);
-    if      (!XminFlag() && (X < (Xmin-Gap))) return Standard_True;
-    else if (!XmaxFlag() && (X > (Xmax+Gap))) return Standard_True;
-    else if (!YminFlag() && (Y < (Ymin-Gap))) return Standard_True;
-    else if (!YmaxFlag() && (Y > (Ymax+Gap))) return Standard_True;
-    else if (!ZminFlag() && (Z < (Zmin-Gap))) return Standard_True;
-    else if (!ZmaxFlag() && (Z > (Zmax+Gap))) return Standard_True;
+    if      (!IsOpenXmin() && (X < (Xmin-Gap))) return Standard_True;
+    else if (!IsOpenXmax() && (X > (Xmax+Gap))) return Standard_True;
+    else if (!IsOpenYmin() && (Y < (Ymin-Gap))) return Standard_True;
+    else if (!IsOpenYmax() && (Y > (Ymax+Gap))) return Standard_True;
+    else if (!IsOpenZmin() && (Z < (Zmin-Gap))) return Standard_True;
+    else if (!IsOpenZmax() && (Z > (Zmax+Gap))) return Standard_True;
     else return Standard_False;
   }
 }
@@ -839,19 +657,19 @@ Standard_Boolean Bnd_Box::IsOut (const Bnd_Box& Other) const
 
   Standard_Real delta = Other.Gap + Gap;
 
-  if (!XminFlag() && !Other.IsOpenXmax())
+  if (!IsOpenXmin() && !Other.IsOpenXmax())
     if (Xmin - Other.Xmax > delta) return Standard_True;
-  if (!XmaxFlag() && !Other.IsOpenXmin())
+  if (!IsOpenXmax() && !Other.IsOpenXmin())
     if (Other.Xmin - Xmax > delta) return Standard_True;
   
-  if (!YminFlag() && !Other.IsOpenYmax())
+  if (!IsOpenYmin() && !Other.IsOpenYmax())
     if (Ymin - Other.Ymax > delta) return Standard_True;
-  if (!YmaxFlag() && !Other.IsOpenYmin())
+  if (!IsOpenYmax() && !Other.IsOpenYmin())
     if (Other.Ymin - Ymax > delta) return Standard_True;
   
-  if (!ZminFlag() && !Other.IsOpenZmax())
+  if (!IsOpenZmin() && !Other.IsOpenZmax())
     if (Zmin - Other.Zmax > delta) return Standard_True;
-  if (!ZmaxFlag() && !Other.IsOpenZmin())
+  if (!IsOpenZmax() && !Other.IsOpenZmin())
     if (Other.Zmin - Zmax > delta) return Standard_True;
 
   return Standard_False;

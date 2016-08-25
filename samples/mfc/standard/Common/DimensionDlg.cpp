@@ -602,7 +602,7 @@ void CDimensionDlg::OnDestroy()
 const Standard_Boolean CDimensionDlg::GetTextType() const
 {
   CButton* a3DButton = (CButton*)GetDlgItem (IDC_3DText);
-  return a3DButton->GetCheck();
+  return a3DButton->GetCheck() != 0;
 }
 
 //=======================================================================

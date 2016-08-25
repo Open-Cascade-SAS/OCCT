@@ -563,7 +563,6 @@ Standard_Boolean STEPControl_Reader::findUnits(
     nbFind++;
        
    }
-    
-  return (nbFind);
+
+  return nbFind != 0;
 }
-                                   

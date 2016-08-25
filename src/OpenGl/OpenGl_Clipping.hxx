@@ -179,8 +179,8 @@ private:
   Graphic3d_SequenceOfHClipPlane myPlanes;        //!< defined clipping planes
   OpenGl_MapOfPlaneStates        myPlaneStates;   //!< map of clip planes bound for the props
   OpenGl_EmptyPlaneIds           myEmptyPlaneIds; //!< generator of empty ids
-  Standard_Boolean               myNbClipping;    //!< number of enabled clipping-only planes (NOT capping)
-  Standard_Boolean               myNbCapping;     //!< number of enabled capping  planes
+  Standard_Integer               myNbClipping;    //!< number of enabled clipping-only planes (NOT capping)
+  Standard_Integer               myNbCapping;     //!< number of enabled capping  planes
 
 private:
 

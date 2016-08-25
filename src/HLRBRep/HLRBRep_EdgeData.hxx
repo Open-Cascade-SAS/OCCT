@@ -123,20 +123,28 @@ public:
   
     Standard_ShortReal Tolerance() const;
 
-
-
-
 protected:
 
-
-
-
+  enum EMaskFlags
+  {
+    EMaskSelected = 1,
+    EMaskUsed     = 2,
+    EMaskRg1Line  = 4,
+    EMaskVertical = 8,
+    EMaskSimple   = 16,
+    EMaskOutLVSta = 32,
+    EMaskOutLVEnd = 64,
+    EMaskIntDone  = 128,
+    EMaskCutAtSta = 256,
+    EMaskCutAtEnd = 512,
+    EMaskVerAtSta = 1024,
+    EMaskVerAtEnd = 2048,
+    EMaskRgNLine  = 4096
+  };
 
 private:
 
-
-
-  Standard_Boolean myFlags;
+  Standard_Integer myFlags;
   Standard_Integer myHideCount;
   Standard_Integer myVSta;
   Standard_Integer myVEnd;
@@ -145,14 +153,8 @@ private:
   HLRBRep_Curve myGeometry;
   Standard_ShortReal myTolerance;
 
-
 };
 
-
 #include <HLRBRep_EdgeData.lxx>
-
-
-
-
 
 #endif // _HLRBRep_EdgeData_HeaderFile

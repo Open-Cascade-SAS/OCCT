@@ -343,7 +343,7 @@ Standard_Boolean ShapeFix_Wire::Perform()
   if ( !Context().IsNull() )
     myFixEdge->SetContext( Context() );
 
-  Standard_Integer Fixed = Standard_False;
+  Standard_Boolean Fixed = Standard_False;
   
   // FixReorder is first, because as a rule wire is required to be ordered
   // We shall analyze the order of edges in the wire and set appropriate 

@@ -65,7 +65,7 @@ class TColStd_PackedMapOfInteger : private TCollection_BasicMap
   inline Standard_Integer Extent        () const
   { return Standard_Integer (myExtent); }
 
-  inline Standard_Integer IsEmpty       () const
+  inline Standard_Boolean IsEmpty       () const
   { return TCollection_BasicMap::IsEmpty(); }
 
   inline void             Statistics    (Standard_OStream& outStream) const

@@ -86,7 +86,7 @@ public:
 
 private:
   OSD_Directory TheIterator;
-  Standard_Integer myFlag;
+  Standard_Boolean myFlag;
   TCollection_AsciiString myMask;
   TCollection_AsciiString myPlace;
   OSD_Error myError;

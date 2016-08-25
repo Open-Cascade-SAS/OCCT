@@ -222,8 +222,9 @@ void BRepMesh_FastDiscretFace::initDataStructure()
                                       thetype == GeomAbs_BSplineSurface);
   const Standard_Boolean useUVParam = (thetype == GeomAbs_Torus || IsCompexSurface (thetype));
 
-  myUParam.Clear(aAllocator); 
-  myVParam.Clear(aAllocator);
+  Handle(NCollection_BaseAllocator) aBaseAlloc = aAllocator;
+  myUParam.Clear (aBaseAlloc);
+  myVParam.Clear (aBaseAlloc);
 
   // essai de determination de la longueur vraie:
   // akm (bug OCC16) : We must calculate these measures in non-singular

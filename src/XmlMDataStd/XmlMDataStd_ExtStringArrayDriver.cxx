@@ -195,7 +195,7 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste
 	return Standard_False;
       } 
     else
-      aDelta = (Standard_Boolean)aDeltaValue;
+      aDelta = aDeltaValue != 0;
   }
 #ifdef OCCT_DEBUG
   else if(XmlMDataStd::DocumentVersion() == -1)
@@ -223,7 +223,7 @@ void XmlMDataStd_ExtStringArrayDriver::Paste (const Handle(TDF_Attribute)& theSo
 
   if (aL != 1) anElement.setAttribute(::FirstIndexString(), aL);
   anElement.setAttribute(::LastIndexString(), anU);
-  anElement.setAttribute(::IsDeltaOn(), aExtStringArray->GetDelta()); 
+  anElement.setAttribute(::IsDeltaOn(), aExtStringArray->GetDelta() ? 1 : 0);
 
   // Find a separator.
   Standard_Boolean found(Standard_True);

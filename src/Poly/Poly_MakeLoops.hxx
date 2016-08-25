@@ -59,7 +59,7 @@ public:
 
     Standard_Boolean IsReversed() const
     {
-      return flags & Poly_MakeLoops::LF_Reversed;
+      return (flags & Poly_MakeLoops::LF_Reversed) != 0;
     }
 
     void Nullify()

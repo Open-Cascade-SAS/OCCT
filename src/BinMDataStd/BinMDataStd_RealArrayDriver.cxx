@@ -75,7 +75,7 @@ Standard_Boolean BinMDataStd_RealArrayDriver::Paste
     if (! (theSource >> aDeltaValue))
       return Standard_False;
     else
-      aDelta = (Standard_Boolean)aDeltaValue;
+      aDelta = (aDeltaValue != 0);
   }
   anAtt->SetDelta(aDelta);
   return Standard_True; 
@@ -100,5 +100,5 @@ void BinMDataStd_RealArrayDriver::Paste
   theTarget << aFirstInd << aLastInd;
   Standard_Real *aPtr = (Standard_Real *) &aSourceArray(aFirstInd);
   theTarget.PutRealArray (aPtr, aLength);
-  theTarget << (Standard_Byte)anAtt->GetDelta(); 
+  theTarget << (Standard_Byte)(anAtt->GetDelta() ? 1 : 0);
 }

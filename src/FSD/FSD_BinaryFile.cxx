@@ -286,11 +286,10 @@ Storage_BaseDriver& FSD_BinaryFile::PutBoolean(const Standard_Boolean aValue)
 {
 #if OCCT_BINARY_FILE_DO_INVERSE
   Standard_Integer t = InverseInt ((Standard_Integer) aValue);
-  
-  if (!fwrite(&t,sizeof(Standard_Integer),1,myStream)) Storage_StreamWriteError::Raise();
 #else
-  if (!fwrite(&aValue,sizeof(Standard_Boolean),1,myStream)) Storage_StreamWriteError::Raise();
+  Standard_Integer t = aValue ? 1 : 0;
 #endif
+  if (!fwrite(&t,sizeof(Standard_Integer),1,myStream)) Storage_StreamWriteError::Raise();
   return *this;
 }
 
@@ -429,11 +428,13 @@ void FSD_BinaryFile::GetInteger (Standard_IStream& theIStream, Standard_Integer&
 
 Storage_BaseDriver& FSD_BinaryFile::GetBoolean(Standard_Boolean& aValue)
 {
-  if (!fread(&aValue,sizeof(Standard_Boolean),1,myStream))
+  Standard_Integer anInt = 0;
+  if (!fread(&anInt,sizeof(Standard_Integer),1,myStream))
     Storage_StreamTypeMismatchError::Raise();
 #if OCCT_BINARY_FILE_DO_INVERSE
-  aValue = InverseInt ((Standard_Integer) aValue);
+  anInt = InverseInt (anInt);
 #endif
+  aValue = (anInt != 0);
   return *this;
 }
 

@@ -202,7 +202,7 @@ static Standard_Integer QANewDBRepNaming_NamePrism (Draw_Interpretor& di,
       namePrism.Load(mkPrism, Basis);
     }      
     else if (nb == 9) {
-      BRepPrimAPI_MakePrism mkPrism(Basis, Direction, (Standard_Boolean)Draw::Atoi(arg[8]));  
+      BRepPrimAPI_MakePrism mkPrism(Basis, Direction, Draw::Atoi(arg[8]) != 0);  
       mkPrism.Build();
       
       if(!mkPrism.IsDone()) {

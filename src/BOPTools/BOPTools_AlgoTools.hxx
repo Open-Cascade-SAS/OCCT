@@ -101,12 +101,19 @@ public:
   //! couple of faces theFace1, theFace2.
   //! The faces theFace, theFace1, theFace2  must
   //! share the edge theEdge
+  //! Return values:
+  //!  * 0 state is not IN
+  //!  * 1 state is IN
+  //!  * 2 state can not be found by the method of angles
   Standard_EXPORT static Standard_Integer IsInternalFace (const TopoDS_Face& theFace, const TopoDS_Edge& theEdge, const TopoDS_Face& theFace1, const TopoDS_Face& theFace2, Handle(IntTools_Context)& theContext);
   
   //! Returns True if the face theFace is inside of the
   //! appropriate couple of faces (from the set theLF)    .
   //! The faces of the set theLF and theFace  must
   //! share the edge theEdge
+  //!  * 0 state is not IN
+  //!  * 1 state is IN
+  //!  * 2 state can not be found by the method of angles
   Standard_EXPORT static Standard_Integer IsInternalFace (const TopoDS_Face& theFace, const TopoDS_Edge& theEdge, BOPCol_ListOfShape& theLF, Handle(IntTools_Context)& theContext);
   
   //! Returns True if the face theFace is inside the
@@ -114,7 +121,7 @@ public:
   //! theMEF - Map Edge/Faces for theSolid
   //! theTol - value of precision of computation
   //! theContext- cahed geometrical tools
-  Standard_EXPORT static Standard_Integer IsInternalFace (const TopoDS_Face& theFace, const TopoDS_Solid& theSolid, BOPCol_IndexedDataMapOfShapeListOfShape& theMEF, const Standard_Real theTol, Handle(IntTools_Context)& theContext);
+  Standard_EXPORT static Standard_Boolean IsInternalFace (const TopoDS_Face& theFace, const TopoDS_Solid& theSolid, BOPCol_IndexedDataMapOfShapeListOfShape& theMEF, const Standard_Real theTol, Handle(IntTools_Context)& theContext);
   
   //! For the face theFace gets the edge theEdgeOnF
   //! that is the same as theEdge

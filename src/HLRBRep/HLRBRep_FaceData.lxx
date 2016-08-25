@@ -14,21 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define EMaskOrient   ((Standard_Boolean)15)
-#define FMaskSelected ((Standard_Boolean)16)
-#define FMaskBack     ((Standard_Boolean)32)
-#define FMaskSide     ((Standard_Boolean)64)
-#define FMaskClosed   ((Standard_Boolean)128)
-#define FMaskHiding   ((Standard_Boolean)256)
-#define FMaskSimple   ((Standard_Boolean)512)
-#define FMaskCut      ((Standard_Boolean)1024)
-#define FMaskWithOutL ((Standard_Boolean)2048)
-#define FMaskPlane    ((Standard_Boolean)4096)
-#define FMaskCylinder ((Standard_Boolean)8192)
-#define FMaskCone     ((Standard_Boolean)16384)
-#define FMaskSphere   ((Standard_Boolean)32768)
-#define FMaskTorus    ((Standard_Boolean)65536)
-
 //=======================================================================
 //function : Selected
 //purpose  : 
@@ -308,7 +293,7 @@ inline TopAbs_Orientation HLRBRep_FaceData::Orientation() const
 inline void HLRBRep_FaceData::Orientation(const TopAbs_Orientation O)
 {
   myFlags &= ~EMaskOrient;
-  myFlags |= (((Standard_Boolean)O) & EMaskOrient);
+  myFlags |= (O & EMaskOrient);
 }
 
 //=======================================================================

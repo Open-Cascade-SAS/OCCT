@@ -87,7 +87,7 @@ Standard_Boolean BinMDataStd_ExtStringArrayDriver::Paste
 	    return Standard_False;
 	  }
       else
-	aDelta = (Standard_Boolean)aDeltaValue;
+	aDelta = (aDeltaValue != 0);
 	}
     anAtt->SetDelta(aDelta);
   }
@@ -113,5 +113,5 @@ void BinMDataStd_ExtStringArrayDriver::Paste
   for (Standard_Integer i = aFirstInd; i <= aLastInd; i ++)
     theTarget << anAtt->Value( i );
 
-  theTarget << (Standard_Byte)anAtt->GetDelta();
+  theTarget << (Standard_Byte)(anAtt->GetDelta() ? 1 : 0);
 }

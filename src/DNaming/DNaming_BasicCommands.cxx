@@ -383,7 +383,7 @@ static Standard_Integer Collect (Draw_Interpretor& di,
     if (!DDF::GetDF(arg[1],DF)) return 1;
     if (!DDF::Find(DF,arg[2],TNaming_NamedShape::GetID(),A)) return 1;
     if (nb >= 4) {
-      OnlyModif = Draw::Atoi(arg[3]);
+      OnlyModif = (Draw::Atoi(arg[3]) != 0);
     }
     TNaming_Tool::Collect(A,MNS,OnlyModif);
     for (TNaming_MapIteratorOfMapOfNamedShape it(MNS); it.More(); it.Next()) {
@@ -484,7 +484,7 @@ static Standard_Integer CheckIter (Draw_Interpretor& di,
 	const TopoDS_Shape& aShape = DBRep::Get(arg[3]);
 	aNB.Generated(aShape);
 	TNaming_Iterator aNameIter(aLabel);
-	if(nb == 5) aNew = (Standard_Boolean) atoi(arg[4]);
+	if(nb == 5) aNew = (Draw::Atoi (arg[4]) != 0);
 	if(aNew) {
 	  TNaming_NewShapeIterator aNewShapeIter(aNameIter); 
 	  di << "DNaming_CheckIterator : New It is OK\n";

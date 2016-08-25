@@ -124,7 +124,7 @@ void CColoredMeshDlg::OnRadio3()
 
 void CColoredMeshDlg::OnCheckX1()
 {
-	X1OnOff = m_CheckX1OnOff;
+	X1OnOff = m_CheckX1OnOff != 0;
 }
 
 void CColoredMeshDlg::OnCHECKXBlue() 
@@ -156,7 +156,7 @@ void CColoredMeshDlg::OnCHECKXRed()
 
 void CColoredMeshDlg::OnCheckY1() 
 {
-	Y1OnOff = m_CheckY1OnOff;	
+	Y1OnOff = m_CheckY1OnOff != 0;
 }
 
 void CColoredMeshDlg::OnCHECKYBlue() 
@@ -188,7 +188,7 @@ void CColoredMeshDlg::OnCHECKYRed()
 
 void CColoredMeshDlg::OnCheckZ1() 
 {
-	Z1OnOff	= m_CheckZ1OnOff;
+	Z1OnOff	= m_CheckZ1OnOff != 0;
 }
 
 void CColoredMeshDlg::OnCHECKZBlue() 

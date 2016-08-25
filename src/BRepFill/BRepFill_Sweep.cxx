@@ -73,6 +73,7 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfBoolean.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array2OfBoolean.hxx>
 #include <TColStd_Array2OfInteger.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
@@ -1957,10 +1958,10 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 
   // (1.1) Construction of Tables
 
-  TColStd_Array2OfInteger ExchUV(1, NbLaw, 1, NbPath);
-  TColStd_Array2OfInteger UReverse(1, NbLaw, 1, NbPath);
-  TColStd_Array2OfInteger Degenerated(1, NbLaw, 1, NbPath);
-  Degenerated.Init(0);
+  TColStd_Array2OfBoolean ExchUV     (1, NbLaw, 1, NbPath);
+  TColStd_Array2OfBoolean UReverse   (1, NbLaw, 1, NbPath);
+  TColStd_Array2OfBoolean Degenerated(1, NbLaw, 1, NbPath);
+  Degenerated.Init (false);
   // No VReverse for the moment...
   TColStd_Array2OfReal TabErr(1, NbLaw   , 1, NbPath);
   TColGeom_Array2OfSurface TabS(1, NbLaw , 1, NbPath);

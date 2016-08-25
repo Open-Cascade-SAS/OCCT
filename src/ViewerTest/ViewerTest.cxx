@@ -1043,42 +1043,46 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
   return 0;
 }
 
-//==============================================================================
-//function : Displays,Erase...
-//purpose  :
-//Draw arg :
-//==============================================================================
-static int VwrTst_DispErase(const Handle(AIS_InteractiveObject)& IO,
-			    const Standard_Integer Mode,
-			    const Standard_Integer TypeOfOperation,
-			    const Standard_Boolean Upd)
+enum TypeOfDispOperation
 {
-  Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
+  TypeOfDispOperation_SetDispMode,
+  TypeOfDispOperation_UnsetDispMode
+};
 
-  switch(TypeOfOperation){
-  case 1:
-    Ctx->Display(IO,Mode,Upd);
-    break;
-  case 2:{
-    Ctx->Erase(IO,Upd);
-    break;
+//! Displays,Erase...
+static void VwrTst_DispErase (const Handle(AIS_InteractiveObject)& thePrs,
+			                        const Standard_Integer theMode,
+			                        const TypeOfDispOperation theType,
+			                        const Standard_Boolean theToUpdate)
+{
+  Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  switch (theType)
+  {
+    case TypeOfDispOperation_SetDispMode:
+    {
+      if (!thePrs.IsNull())
+      {
+        aCtx->SetDisplayMode (thePrs, theMode, theToUpdate);
+      }
+      else
+      {
+        aCtx->SetDisplayMode ((AIS_DisplayMode )theMode, theToUpdate);
+      }
+      break;
+    }
+    case TypeOfDispOperation_UnsetDispMode:
+    {
+      if (!thePrs.IsNull())
+      {
+        aCtx->UnsetDisplayMode (thePrs, theToUpdate);
+      }
+      else
+      {
+        aCtx->SetDisplayMode (AIS_WireFrame, theToUpdate);
+      }
+      break;
+    }
   }
-  case 3:{
-    if(IO.IsNull())
-      Ctx->SetDisplayMode((AIS_DisplayMode)Mode,Upd);
-    else
-      Ctx->SetDisplayMode(IO,Mode,Upd);
-    break;
-  }
-  case 4:{
-    if(IO.IsNull())
-      Ctx->SetDisplayMode(0,Upd);
-    else
-      Ctx->UnsetDisplayMode(IO,Upd);
-    break;
-  }
-  }
-  return 0;
 }
 
 //=======================================================================
@@ -1087,65 +1091,73 @@ static int VwrTst_DispErase(const Handle(AIS_InteractiveObject)& IO,
 //=======================================================================
 static int VDispMode (Draw_Interpretor& , Standard_Integer argc, const char** argv)
 {
-
-  TCollection_AsciiString name;
-  if(argc>3)
+  if (argc < 1
+   || argc > 3)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
     return 1;
-  // display others presentations
-  Standard_Integer TypeOfOperation = (strcasecmp(argv[0],"vdispmode")==0)? 1:
-    (strcasecmp(argv[0],"verasemode")==0) ? 2 :
-      (strcasecmp(argv[0],"vsetdispmode")==0) ? 3 :
-	(strcasecmp(argv[0],"vunsetdispmode")==0) ? 4 : -1;
+  }
 
-  Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
-
-  //unset displaymode.. comportement particulier...
-  if(TypeOfOperation==4){
-    if(argc==1){
-      if(Ctx->NbSelected()==0){
-	Handle(AIS_InteractiveObject) IO;
-	VwrTst_DispErase(IO,-1,4,Standard_False);
+  TypeOfDispOperation aType = TCollection_AsciiString (argv[0]) == "vunsetdispmode"
+                            ? TypeOfDispOperation_UnsetDispMode
+                            : TypeOfDispOperation_SetDispMode;
+  Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  if (aType == TypeOfDispOperation_UnsetDispMode)
+  {
+    if (argc == 1)
+    {
+      if (aCtx->NbSelected() == 0)
+      {
+        VwrTst_DispErase (Handle(AIS_InteractiveObject)(), -1, TypeOfDispOperation_UnsetDispMode, Standard_False);
       }
-      else{
-	for(Ctx->InitSelected();Ctx->MoreSelected();Ctx->NextSelected())
-	  VwrTst_DispErase(Ctx->SelectedInteractive(),-1,4,Standard_False);}
-      Ctx->UpdateCurrentViewer();
+      else
+      {
+        for (aCtx->InitSelected(); aCtx->MoreSelected(); aCtx->NextSelected())
+        {
+          VwrTst_DispErase (aCtx->SelectedInteractive(), -1, TypeOfDispOperation_UnsetDispMode, Standard_False);
+        }
+      }
+      aCtx->UpdateCurrentViewer();
     }
-    else{
-      Handle(AIS_InteractiveObject) IO;
-      name = argv[1];
-      if(GetMapOfAIS().IsBound2(name)){
-	IO = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
-        if (!IO.IsNull())
-          VwrTst_DispErase(IO,-1,4,Standard_True);
+    else
+    {
+      TCollection_AsciiString aName = argv[1];
+      if (GetMapOfAIS().IsBound2 (aName))
+      {
+        Handle(AIS_InteractiveObject) aPrs = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2 (aName));
+        if (!aPrs.IsNull())
+        {
+          VwrTst_DispErase (aPrs, -1, TypeOfDispOperation_UnsetDispMode, Standard_True);
+        }
       }
     }
   }
-  else if(argc==2){
-    Standard_Integer Dmode = Draw::Atoi(argv[1]);
-    if(Ctx->NbSelected()==0 && TypeOfOperation==3){
-      Handle(AIS_InteractiveObject) IO;
-      VwrTst_DispErase(IO,Dmode,TypeOfOperation,Standard_True);
+  else if (argc == 2)
+  {
+    Standard_Integer aDispMode = Draw::Atoi (argv[1]);
+    if (aCtx->NbSelected() == 0
+     && aType == TypeOfDispOperation_SetDispMode)
+    {
+      VwrTst_DispErase (Handle(AIS_InteractiveObject)(), aDispMode, TypeOfDispOperation_SetDispMode, Standard_True);
     }
-    if(!Ctx->HasOpenedContext()){
-      // set/unset display mode sur le Contexte...
-      for(Ctx->InitSelected();Ctx->MoreSelected();Ctx->NextSelected()){
-	VwrTst_DispErase(Ctx->SelectedInteractive(),Dmode,TypeOfOperation,Standard_False);
-      }
-      Ctx->UpdateCurrentViewer();
+    for (aCtx->InitSelected(); aCtx->MoreSelected(); aCtx->NextSelected())
+    {
+      VwrTst_DispErase (aCtx->SelectedInteractive(), aDispMode, aType, Standard_False);
     }
-    else{
-      for(Ctx->InitSelected();Ctx->MoreSelected();Ctx->NextSelected())
-	Ctx->Display(Ctx->SelectedInteractive(),Dmode);
-    }
+    aCtx->UpdateCurrentViewer();
   }
-  else{
-    Handle(AIS_InteractiveObject) IO;
-    name = argv[1];
-    if(GetMapOfAIS().IsBound2(name))
-      IO = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
-    if (!IO.IsNull())
-      VwrTst_DispErase(IO,Draw::Atoi(argv[2]),TypeOfOperation,Standard_True);
+  else
+  {
+    Handle(AIS_InteractiveObject) aPrs;
+    TCollection_AsciiString aName (argv[1]);
+    if (GetMapOfAIS().IsBound2 (aName))
+    {
+      aPrs = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2 (aName));
+    }
+    if (!aPrs.IsNull())
+    {
+      VwrTst_DispErase (aPrs, Draw::Atoi(argv[2]), aType, Standard_True);
+    }
   }
   return 0;
 }
@@ -5525,7 +5537,7 @@ static int VAutoActivateSelection (Draw_Interpretor& theDi,
   }
   else
   {
-    Standard_Boolean toActivate = Draw::Atoi (theArgVec[1]);
+    Standard_Boolean toActivate = Draw::Atoi (theArgVec[1]) != 0;
     aCtx->SetAutoActivateSelection (toActivate);
   }
 
@@ -5641,14 +5653,6 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
   theCommands.Add("vdisplaytype",
 		  "vdisplaytype        : vdisplaytype <Type> <Signature> \n\t display all the objects of one given kind (see vtypes) which are stored the AISContext ",
 		  __FILE__,VDisplayType,group);
-
-  theCommands.Add("vdisplaymode",
-		  "vdispmode       : vdispmode  [name] mode(1,2,..) : no name -> on selected objects ",
-		  __FILE__,VDispMode,group);
-
-  theCommands.Add("verasemode",
-		  "verasemode      : verasemode [name] mode(1,2,..) : no name -> on selected objects",
-		  __FILE__,VDispMode,group);
 
   theCommands.Add("vsetdispmode",
 		  "vsetdispmode [name] mode(1,2,..)"

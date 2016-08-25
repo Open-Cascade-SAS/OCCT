@@ -131,7 +131,7 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste
 	return Standard_False;
       } 
     else
-      aDelta = (Standard_Boolean)aDeltaValue;
+      aDelta = aDeltaValue != 0;
   }
 #ifdef OCCT_DEBUG
   else if(XmlMDataStd::DocumentVersion() == -1)
@@ -160,7 +160,7 @@ void XmlMDataStd_IntegerArrayDriver::Paste
   if (aL != 1) 
     theTarget.Element().setAttribute(::FirstIndexString(), aL);
   theTarget.Element().setAttribute(::LastIndexString(), anU);
-  theTarget.Element().setAttribute(::IsDeltaOn(), anIntArray->GetDelta());
+  theTarget.Element().setAttribute(::IsDeltaOn(), anIntArray->GetDelta() ? 1 : 0);
 
   // Allocation of 12 chars for each integer including the space.
   // An example: -2 147 483 648

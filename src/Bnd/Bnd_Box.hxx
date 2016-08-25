@@ -68,14 +68,18 @@ public:
   //! Creates an empty Box.
   //! The constructed box is qualified Void. Its gap is null.
   Standard_EXPORT Bnd_Box();
-  
+
   //! Sets this bounding box so that it  covers the whole of 3D space.
   //! It is infinitely  long in all directions.
-  Standard_EXPORT void SetWhole();
-  
+  void SetWhole() { Flags = WholeMask; }
+
   //! Sets this bounding box so that it is empty. All points are outside a void box.
-  Standard_EXPORT void SetVoid();
-  
+  void SetVoid()
+  {
+    Flags = VoidMask;
+    Gap   = 0.0;
+  }
+
   //! Sets this bounding box so that it bounds
   //! -   the point P. This involves first setting this bounding box
   //! to be void and then adding the point P.
@@ -132,55 +136,55 @@ public:
   //! Standard_ConstructionError exception will be thrown if the box is void.
   //! if IsVoid()
   Standard_EXPORT gp_Pnt CornerMax() const;
-  
+
   //! The   Box will be   infinitely   long  in the Xmin
   //! direction.
-  Standard_EXPORT void OpenXmin();
-  
+  void OpenXmin() { Flags |= XminMask; }
+
   //! The   Box will be   infinitely   long  in the Xmax
   //! direction.
-  Standard_EXPORT void OpenXmax();
-  
+  void OpenXmax() { Flags |= XmaxMask; }
+
   //! The   Box will be   infinitely   long  in the Ymin
   //! direction.
-  Standard_EXPORT void OpenYmin();
-  
+  void OpenYmin() { Flags |= YminMask; }
+
   //! The   Box will be   infinitely   long  in the Ymax
   //! direction.
-  Standard_EXPORT void OpenYmax();
-  
+  void OpenYmax() { Flags |= YmaxMask; }
+
   //! The   Box will be   infinitely   long  in the Zmin
   //! direction.
-  Standard_EXPORT void OpenZmin();
-  
+  void OpenZmin() { Flags |= ZminMask; }
+
   //! The   Box will be   infinitely   long  in the Zmax
   //! direction.
-  Standard_EXPORT void OpenZmax();
-  
+  void OpenZmax() { Flags |= ZmaxMask; }
+
   //! Returns true if this bounding box is open in the  Xmin direction.
-  Standard_EXPORT Standard_Boolean IsOpenXmin() const;
-  
+  Standard_Boolean IsOpenXmin() const { return (Flags & XminMask) != 0; }
+
   //! Returns true if this bounding box is open in the  Xmax direction.
-  Standard_EXPORT Standard_Boolean IsOpenXmax() const;
-  
+  Standard_Boolean IsOpenXmax() const { return (Flags & XmaxMask) != 0; }
+
   //! Returns true if this bounding box is open in the  Ymix direction.
-  Standard_EXPORT Standard_Boolean IsOpenYmin() const;
-  
+  Standard_Boolean IsOpenYmin() const { return (Flags & YminMask) != 0; }
+
   //! Returns true if this bounding box is open in the  Ymax direction.
-  Standard_EXPORT Standard_Boolean IsOpenYmax() const;
-  
+  Standard_Boolean IsOpenYmax() const { return (Flags & YmaxMask) != 0; }
+
   //! Returns true if this bounding box is open in the  Zmin direction.
-  Standard_EXPORT Standard_Boolean IsOpenZmin() const;
-  
+  Standard_Boolean IsOpenZmin() const { return (Flags & ZminMask) != 0; }
+
   //! Returns true if this bounding box is open in the  Zmax  direction.
-  Standard_EXPORT Standard_Boolean IsOpenZmax() const;
-  
+  Standard_Boolean IsOpenZmax() const { return (Flags & ZmaxMask) != 0; }
+
   //! Returns true if this bounding box is infinite in all 6 directions (WholeSpace flag).
-  Standard_EXPORT Standard_Boolean IsWhole() const;
-  
+  Standard_Boolean IsWhole()    const { return (Flags & WholeMask) == WholeMask; }
+
   //! Returns true if this bounding box is empty (Void flag).
-  Standard_EXPORT Standard_Boolean IsVoid() const;
-  
+  Standard_Boolean IsVoid()     const { return (Flags & VoidMask) != 0; }
+
   //! true if xmax-xmin < tol.
   Standard_EXPORT Standard_Boolean IsXThin (const Standard_Real tol) const;
   
@@ -245,22 +249,37 @@ public:
   Standard_EXPORT Standard_Real Distance (const Bnd_Box& Other) const;
   
   Standard_EXPORT void Dump() const;
-  
+
   //! Computes the squared diagonal of me.
-    Standard_Real SquareExtent() const;
+  Standard_Real SquareExtent() const
+  {
+    if (IsVoid())
+    {
+      return 0.0;
+    }
 
-
-
+    const Standard_Real aDx = Xmax - Xmin + Gap + Gap;
+    const Standard_Real aDy = Ymax - Ymin + Gap + Gap;
+    const Standard_Real aDz = Zmax - Zmin + Gap + Gap;
+    return aDx * aDx + aDy * aDy + aDz * aDz;
+  }
 
 protected:
 
-
-
-
+  //! Bit flags.
+  enum MaskFlags
+  {
+    VoidMask  = 0x01,
+    XminMask  = 0x02,
+    XmaxMask  = 0x04,
+    YminMask  = 0x08,
+    YmaxMask  = 0x10,
+    ZminMask  = 0x20,
+    ZmaxMask  = 0x40,
+    WholeMask = 0x7e
+  };
 
 private:
-
-
 
   Standard_Real Xmin;
   Standard_Real Xmax;
@@ -271,14 +290,6 @@ private:
   Standard_Real Gap;
   Standard_Integer Flags;
 
-
 };
-
-
-#include <Bnd_Box.lxx>
-
-
-
-
 
 #endif // _Bnd_Box_HeaderFile

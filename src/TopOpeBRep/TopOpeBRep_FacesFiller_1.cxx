@@ -1152,7 +1152,7 @@ Standard_Boolean TopOpeBRep_FacesFiller::GetFFGeometry(const TopOpeBRepDS_Point&
 Standard_Boolean TopOpeBRep_FacesFiller::GetFFGeometry(const TopOpeBRep_VPointInter& VP,TopOpeBRepDS_Kind& K,Standard_Integer& G) const 
 {
   TopOpeBRepDS_Point DSP = TopOpeBRep_PointGeomTool::MakePoint(VP);
-  Standard_Integer found = GetFFGeometry(DSP,K,G);
+  Standard_Boolean found = GetFFGeometry(DSP,K,G);
   return found;
 }
 

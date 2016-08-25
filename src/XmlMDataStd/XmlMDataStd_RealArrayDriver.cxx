@@ -137,7 +137,7 @@ Standard_Boolean XmlMDataStd_RealArrayDriver::Paste
 	return Standard_False;
       } 
     else
-      aDelta = (Standard_Boolean)aDeltaValue;
+      aDelta = aDeltaValue != 0;
   }
 #ifdef OCCT_DEBUG
   else if(XmlMDataStd::DocumentVersion() == -1)
@@ -164,7 +164,7 @@ void XmlMDataStd_RealArrayDriver::Paste (const Handle(TDF_Attribute)& theSource,
 
   if (aL != 1) theTarget.Element().setAttribute(::FirstIndexString(), aL);
   theTarget.Element().setAttribute(::LastIndexString(), anU);
-  theTarget.Element().setAttribute(::IsDeltaOn(), aRealArray->GetDelta());
+  theTarget.Element().setAttribute(::IsDeltaOn(), aRealArray->GetDelta() ? 1 : 0);
 
   // Allocation of 25 chars for each double value including the space:
   // An example: -3.1512678732195273e+020

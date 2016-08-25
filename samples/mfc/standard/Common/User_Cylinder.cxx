@@ -124,21 +124,21 @@ case 6: //color
 
     myX1OnOff = Dlg.X1OnOff;
 
-    myXBlueOnOff = Dlg.m_CheckXBlueOnOff;
-    myXGreenOnOff = Dlg.m_CheckXGreenOnOff;
-    myXRedOnOff = Dlg.m_CheckXRedOnOff;
+    myXBlueOnOff  = Dlg.m_CheckXBlueOnOff  != 0;
+    myXGreenOnOff = Dlg.m_CheckXGreenOnOff != 0;
+    myXRedOnOff   = Dlg.m_CheckXRedOnOff   != 0;
 
     myY1OnOff = Dlg.Y1OnOff;
 
-    myYBlueOnOff = Dlg.m_CheckYBlueOnOff;
-    myYGreenOnOff = Dlg.m_CheckYGreenOnOff;
-    myYRedOnOff = Dlg.m_CheckYRedOnOff;
+    myYBlueOnOff  = Dlg.m_CheckYBlueOnOff  != 0;
+    myYGreenOnOff = Dlg.m_CheckYGreenOnOff != 0;
+    myYRedOnOff   = Dlg.m_CheckYRedOnOff   != 0;
 
     myZ1OnOff = Dlg.Z1OnOff;
 
-    myZBlueOnOff = Dlg.m_CheckZBlueOnOff;
-    myZGreenOnOff = Dlg.m_CheckZGreenOnOff;
-    myZRedOnOff = Dlg.m_CheckZRedOnOff;
+    myZBlueOnOff  = Dlg.m_CheckZBlueOnOff  != 0;
+    myZGreenOnOff = Dlg.m_CheckZGreenOnOff != 0;
+    myZRedOnOff   = Dlg.m_CheckZRedOnOff   != 0;
 
     // Adds a triangulation of the shape myShape to its topological data structure.
     // This triangulation is computed with the deflection myDeflection.

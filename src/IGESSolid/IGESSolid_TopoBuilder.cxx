@@ -225,7 +225,7 @@ IGESSolid_TopoBuilder::IGESSolid_TopoBuilder ()    {  Clear();  }
   if (surface.IsNull())
     Standard_DomainError::Raise ("IGESSolid_TopoBuilder : MakeFace");
   thesurf  = surface;
-  theouter = 0;
+  theouter = Standard_False;
   theinner->Clear();
   theface  = new IGESSolid_Face;
 }
@@ -233,7 +233,7 @@ IGESSolid_TopoBuilder::IGESSolid_TopoBuilder ()    {  Clear();  }
     void  IGESSolid_TopoBuilder::SetOuter ()
 {
   EndLoop();
-  theouter = 1;
+  theouter = Standard_True;
   theinner->Append (theloop);
   theloop.Nullify();
 }
@@ -291,7 +291,7 @@ IGESSolid_TopoBuilder::IGESSolid_TopoBuilder ()    {  Clear();  }
 {
   EndShell();
   themains = theshell;
-  themflag = orientation;
+  themflag = orientation != 0;
   theshell.Nullify();
 }
 

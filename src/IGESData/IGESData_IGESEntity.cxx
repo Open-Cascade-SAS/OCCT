@@ -409,7 +409,7 @@ Handle(TCollection_HAsciiString) IGESData_IGESEntity::NameValue () const
     Standard_Boolean IGESData_IGESEntity::ArePresentAssociativities () const
 {
   if (!theAssocs.IsEmpty()) return Standard_True;
-  return (theStatusNum & IGESFlagAssocs);
+  return (theStatusNum & IGESFlagAssocs) != 0;
 }
 
     Standard_Integer IGESData_IGESEntity::NbAssociativities () const
@@ -460,7 +460,7 @@ Handle(TCollection_HAsciiString) IGESData_IGESEntity::NameValue () const
     Standard_Boolean IGESData_IGESEntity::ArePresentProperties () const
 {
   if (!theProps.IsEmpty()) return Standard_True;
-  return (theStatusNum & IGESFlagProps);
+  return (theStatusNum & IGESFlagProps) != 0;
 }
 
     Standard_Integer IGESData_IGESEntity::NbProperties () const

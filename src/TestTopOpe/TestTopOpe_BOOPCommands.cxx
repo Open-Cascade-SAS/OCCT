@@ -462,7 +462,7 @@ Standard_Integer VARSTOPOARGS(TestTopOpe_BOOP& PT,Standard_Integer& na,const cha
     else if (!strcmp(thea,"-c")) {
       suppressarg(na,a,ia);
       if (ia < na) {
-	VT.SetClear((Standard_Boolean)Draw::Atoi(a[ia]));
+	VT.SetClear (Draw::Atoi(a[ia]) != 0);
 	suppressarg(na,a,ia);
       }
       else VT.SetClear(Standard_True);
@@ -563,7 +563,7 @@ Standard_Integer TOPOCOMMANDS(TestTopOpe_BOOP& PT,Standard_Integer na,const char
   
 #ifdef OCCT_DEBUG
   Standard_Boolean tend = TopOpeBRepTool_GettraceEND();
-  TopOpeBRepTool_SettraceEND(PT.ChangeVarsTopo().GetVerbose());
+  TopOpeBRepTool_SettraceEND(PT.ChangeVarsTopo().GetVerbose() != 0);
 #endif
 
   err = 0;

@@ -376,7 +376,7 @@ static Standard_Integer DDataStd_ChildNodeIterate (Draw_Interpretor& di,
   if (n >= 4) {
     Handle(TDF_Data) DF;
     if (!DDF::GetDF(a[1],DF)) return 1;
-    const Standard_Boolean AllLevels(Draw::Atoi(a[3]));
+    const Standard_Boolean AllLevels = (Draw::Atoi(a[3]) != 0);
     Handle(TDataStd_TreeNode) TN, Value;
 
     Standard_GUID ID;
@@ -439,7 +439,7 @@ static Standard_Integer DDataStd_InitChildNodeIterator (Draw_Interpretor& di,
     }
 
     if (!DDF::Find(DF, a[2], ID, TN)) return 1; 
-    const Standard_Boolean AllLevels(Draw::Atoi(a[3]));
+    const Standard_Boolean AllLevels = (Draw::Atoi(a[3]) != 0);
     cni.Initialize(TN, AllLevels);
     return 0;
   }

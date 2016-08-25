@@ -504,7 +504,7 @@ TopoDS_Shape BRepTools_Quilt::Shells() const
   // Unclose all shells having free edges
   for (TopTools_DataMapIteratorOfDataMapOfShapeShape it(M); it.More(); it.Next()) {
     TopoDS_Shape S = it.Value();
-    S.Closed(Standard_Boolean(Standard_False));
+    S.Closed (Standard_False);
   }
   
   TopTools_MapIteratorOfMapOfShape itother(MapOtherShape); //gka version for free edges

@@ -57,7 +57,7 @@ public:
   //! Passes camera projection and orientation matrices to builder
   Standard_EXPORT void SetCamera (const Graphic3d_Mat4d& theProjection,
                                   const Graphic3d_Mat4d& theWorldView,
-                                  const Standard_Integer theIsOrthographic,
+                                  const Standard_Boolean theIsOrthographic,
                                   const Graphic3d_WorldViewProjState& theWVPState = Graphic3d_WorldViewProjState());
 
   //! @return current camera projection transformation common for all selecting volumes

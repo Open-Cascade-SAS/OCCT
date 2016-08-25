@@ -288,8 +288,8 @@ static TCollection_AsciiString nulword;
 //  Ici, resultat non nomme;  Resultat nomme par commande x (plus loin)
     if (!theobjrec.IsNull()) {
       thesession->RemoveItem(theobjrec);  //// depannage ?
-      Standard_Boolean addws = thesession->AddItem(theobjrec);
-      if (!addws) { cout<<"Could not add item to session, sorry"<<endl; return IFSelect_RetFail; }
+      Standard_Integer addws = thesession->AddItem(theobjrec);
+      if (addws == 0) { cout<<"Could not add item to session, sorry"<<endl; return IFSelect_RetFail; }
     }
 
     if (stat == IFSelect_RetVoid || stat == IFSelect_RetDone) {
@@ -500,10 +500,10 @@ static TCollection_AsciiString nulword;
 //  Prise en compte des commandes a resultat
 	  if (!theobjrec.IsNull()) {
 	    thesession->RemoveItem(theobjrec);  //// depannage ?
-	    Standard_Boolean addws =
+	    Standard_Integer addws =
 	      thesession->AddNamedItem(name.ToCString(),theobjrec);
 	    theobjrec.Nullify();
-	    if (!addws) { cout<<"Could not add named item:"<<name<<", sorry"<<endl; return IFSelect_RetFail; }
+	    if (addws == 0) { cout<<"Could not add named item:"<<name<<", sorry"<<endl; return IFSelect_RetFail; }
 	  }
 	  else cout<<"Remark : xsnew with name:"<<name<<" and no result"<<endl;
 

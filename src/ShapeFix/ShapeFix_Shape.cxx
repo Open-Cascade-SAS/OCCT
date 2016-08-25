@@ -144,7 +144,7 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
   case TopAbs_COMPOUND:  
   case TopAbs_COMPSOLID: {
     TopoDS_Shape shape = myShape;
-    Standard_Boolean savFixSameParameterMode = myFixSameParameterMode;
+    Standard_Integer savFixSameParameterMode = myFixSameParameterMode;
     myFixSameParameterMode = Standard_False;
     myFixVertexTolMode = Standard_False;
     Standard_Integer aShapesNb = 0;
@@ -195,7 +195,7 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
   case TopAbs_FACE: {
     if ( ! NeedFix ( myFixFaceMode ) ) break;
     Handle(ShapeFix_Face) sff = FixFaceTool();
-    Standard_Integer savTopoMode = sff->FixWireTool()->ModifyTopologyMode();
+    Standard_Boolean savTopoMode = sff->FixWireTool()->ModifyTopologyMode();
     sff->FixWireTool()->ModifyTopologyMode() = Standard_True;
     sff->Init(TopoDS::Face(S)); 
     sff->SetContext(Context());
@@ -210,8 +210,8 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
   case TopAbs_WIRE: {
     if ( ! NeedFix ( myFixWireMode ) ) break;
     Handle(ShapeFix_Wire) sfw = FixWireTool();
-    Standard_Integer savTopoMode = sfw->ModifyTopologyMode();
-    Standard_Integer savClosedMode = sfw->ClosedWireMode();
+    Standard_Boolean savTopoMode = sfw->ModifyTopologyMode();
+    Standard_Boolean savClosedMode = sfw->ClosedWireMode();
     sfw->ModifyTopologyMode() = Standard_True;
     if ( ! S.Closed() ) 
       sfw->ClosedWireMode() = Standard_False;

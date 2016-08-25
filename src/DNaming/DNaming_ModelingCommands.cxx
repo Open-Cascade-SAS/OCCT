@@ -682,10 +682,10 @@ static Standard_Integer DNaming_AttachShape (Draw_Interpretor& di,
 	  aResultLabel.ForgetAllAttributes(Standard_True);
 	  Standard_Boolean aKeepOrientation(Standard_False);
 	  if (nb >= 6) 
-	    aKeepOrientation = (Standard_Boolean) Draw::Atoi(a[5]);
+	    aKeepOrientation = Draw::Atoi(a[5]) != 0;
 	  Standard_Boolean aGeometry(Standard_False);
 	  if (nb == 7) 
-	    aGeometry = (Standard_Boolean) Draw::Atoi(a[6]);
+	    aGeometry = Draw::Atoi(a[6]) != 0;
 	  Handle(TNaming_NamedShape) aCont =  DNaming::GetObjectValue(aContext);
 #ifdef OCCT_DEBUG
 	  if(aCont.IsNull() || aCont->IsEmpty())
@@ -759,10 +759,10 @@ static Standard_Integer DNaming_XAttachShape (Draw_Interpretor& di,
 	  aResultLabel.ForgetAllAttributes(Standard_True);
 	  Standard_Boolean aKeepOrientation(Standard_False);
 	  if (nb >= 5) 
-	    aKeepOrientation = (Standard_Boolean) Draw::Atoi(a[4]);
+	    aKeepOrientation = Draw::Atoi(a[4]) != 0;
 	  Standard_Boolean aGeometry(Standard_False);
 	  if (nb == 6) 
-	    aGeometry = (Standard_Boolean) Draw::Atoi(a[5]);
+	    aGeometry = Draw::Atoi(a[5]) != 0;
 	  Handle(TNaming_NamedShape) aCont =  DNaming::GetObjectValue(aContext);
 
 	  if(aCont.IsNull() || aCont->IsEmpty())
@@ -1536,17 +1536,17 @@ static Standard_Integer DNaming_PntOffset (Draw_Interpretor& theDI,
     Handle(TFunction_Function) aFun = GetFunction(objLabel,funGUID);
     if(!aFun.IsNull()) {
       Standard_Real value(0.0);
-      Standard_Boolean isDX = (strcmp(theArg[3],"skip"));
+      Standard_Boolean isDX = strcmp(theArg[3],"skip") != 0;
       if(isDX) {
 	value = Draw::Atof(theArg[3]);
 	DNaming::GetReal(aFun,PNT_DX)->Set(value);
       }
-      Standard_Boolean isDY = (strcmp(theArg[4],"skip"));
+      Standard_Boolean isDY = strcmp(theArg[4],"skip") != 0;
       if(isDY) {
 	value = Draw::Atof(theArg[4]);
 	DNaming::GetReal(aFun,PNT_DY)->Set(value);
       }
-      Standard_Boolean isDZ = (strcmp(theArg[5],"skip"));
+      Standard_Boolean isDZ = strcmp(theArg[5],"skip") != 0;
       if(isDZ) {
 	value = Draw::Atof(theArg[5]);
 	DNaming::GetReal(aFun,PNT_DZ)->Set(value);
@@ -1903,11 +1903,11 @@ static Standard_Integer DNaming_TestSingle (Draw_Interpretor& theDI,
     Standard_Boolean XSelection(Standard_False);
     Standard_Boolean Geometry(Standard_False);
     if(theNb == 4)
-      Orientation = (Standard_Boolean)Draw::Atoi(theArg[3]);
+      Orientation = Draw::Atoi(theArg[3]) != 0;
     if(theNb == 5)
-      XSelection = (Standard_Boolean)Draw::Atoi(theArg[4]);
+      XSelection = Draw::Atoi(theArg[4]) != 0;
     if (theNb == 6) 
-      Geometry = (Standard_Boolean) Draw::Atoi(theArg[5]);
+      Geometry = Draw::Atoi(theArg[5]) != 0;
     Handle(TNaming_NamedShape) aNS = DNaming::GetObjectValue( aCntObj);
 
     if(!aNS.IsNull() && !aNS->IsEmpty()) {
@@ -2042,11 +2042,11 @@ static Standard_Integer DNaming_Multiple (Draw_Interpretor& theDI,
     Standard_Boolean XSelection(Standard_False);
     Standard_Boolean Geometry(Standard_False);
     if(theNb == 4)
-      Orientation = (Standard_Boolean)Draw::Atoi(theArg[3]);
+      Orientation = Draw::Atoi(theArg[3]) != 0;
     if(theNb == 5)
-      XSelection = (Standard_Boolean)Draw::Atoi(theArg[4]);
+      XSelection = Draw::Atoi(theArg[4]) != 0;
     if (theNb == 6) 
-      Geometry = (Standard_Boolean) Draw::Atoi(theArg[5]);
+      Geometry = Draw::Atoi(theArg[5]) != 0;
     Handle(TNaming_NamedShape) aNS = DNaming::GetObjectValue( aCntObj);
 
     if(!aNS.IsNull() && !aNS->IsEmpty()) {

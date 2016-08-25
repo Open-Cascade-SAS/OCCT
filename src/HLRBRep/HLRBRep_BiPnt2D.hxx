@@ -25,9 +25,6 @@
 #include <TopoDS_Shape.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-class TopoDS_Shape;
-class gp_Pnt2d;
-
 
 //! Contains the colors of a shape.
 class HLRBRep_BiPnt2D 
@@ -36,61 +33,55 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT HLRBRep_BiPnt2D();
-  
-  Standard_EXPORT HLRBRep_BiPnt2D(const Standard_Real x1, const Standard_Real y1, const Standard_Real x2, const Standard_Real y2, const TopoDS_Shape& S, const Standard_Boolean reg1, const Standard_Boolean regn, const Standard_Boolean outl, const Standard_Boolean intl);
-  
-    const gp_Pnt2d& P1() const;
-  
-    const gp_Pnt2d& P2() const;
-  
-    const TopoDS_Shape& Shape() const;
-  
-    void Shape (const TopoDS_Shape& S);
-  
-    Standard_Boolean Rg1Line() const;
-  
-    void Rg1Line (const Standard_Boolean B);
-  
-    Standard_Boolean RgNLine() const;
-  
-    void RgNLine (const Standard_Boolean B);
-  
-    Standard_Boolean OutLine() const;
-  
-    void OutLine (const Standard_Boolean B);
-  
-    Standard_Boolean IntLine() const;
-  
-    void IntLine (const Standard_Boolean B);
+  HLRBRep_BiPnt2D()
+  : myRg1Line (false),
+    myRgNLine (false),
+    myOutLine (false),
+    myIntLine (false) {}
 
+  HLRBRep_BiPnt2D(const Standard_Real x1, const Standard_Real y1, const Standard_Real x2, const Standard_Real y2, const TopoDS_Shape& S, const Standard_Boolean reg1, const Standard_Boolean regn, const Standard_Boolean outl, const Standard_Boolean intl)
+  : myP1(x1,y1),
+	  myP2(x2,y2),
+	  myShape(S),
+    myRg1Line (reg1),
+    myRgNLine (regn),
+    myOutLine (outl),
+    myIntLine (intl) {}
 
+  const gp_Pnt2d& P1() const { return myP1; }
 
+  const gp_Pnt2d& P2() const { return myP2; }
 
-protected:
+  const TopoDS_Shape& Shape() const { return myShape; }
 
+  void Shape (const TopoDS_Shape& S) { myShape = S; }
 
+  Standard_Boolean Rg1Line() const { return myRg1Line; }
 
+  void Rg1Line (const Standard_Boolean B) { myRg1Line = B; }
 
+  Standard_Boolean RgNLine() const { return myRgNLine; }
+
+  void RgNLine (const Standard_Boolean B) { myRgNLine = B; }
+
+  Standard_Boolean OutLine() const { return myOutLine; }
+
+  void OutLine (const Standard_Boolean B) { myOutLine = B; }
+
+  Standard_Boolean IntLine() const { return myIntLine; }
+
+  void IntLine (const Standard_Boolean B) { myIntLine = B; }
 
 private:
-
-
 
   gp_Pnt2d myP1;
   gp_Pnt2d myP2;
   TopoDS_Shape myShape;
-  Standard_Boolean myFlags;
-
+  bool myRg1Line;
+  bool myRgNLine;
+  bool myOutLine;
+  bool myIntLine;
 
 };
-
-
-#include <HLRBRep_BiPnt2D.lxx>
-
-
-
-
 
 #endif // _HLRBRep_BiPnt2D_HeaderFile

@@ -917,7 +917,7 @@ Standard_Integer Adaptor3d_IsoCurve::Degree() const
 
 Standard_Boolean Adaptor3d_IsoCurve::IsRational() const 
 {
-  Standard_Integer is_rational = Standard_False ;
+  Standard_Boolean is_rational = Standard_False;
   GeomAbs_SurfaceType type = mySurface->GetType() ;
   switch(type) {
   case GeomAbs_BezierSurface:

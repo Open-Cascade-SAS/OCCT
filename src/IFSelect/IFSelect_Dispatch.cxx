@@ -67,10 +67,6 @@ void  IFSelect_Dispatch::SetRootName
   (const Interface_Graph& G) const
       {  return thefinal->UniqueResult(G);  }
 
-    Standard_Boolean  IFSelect_Dispatch::PacketsCount
-  (const Interface_Graph& , Standard_Integer& pcount) const 
-      {  pcount = 0;  return Standard_False;  }    // par defaut 0
-
     Interface_EntityIterator  IFSelect_Dispatch::Packeted
   (const Interface_Graph& G) const
 {

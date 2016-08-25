@@ -14,20 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define EMaskSelected ((Standard_Boolean)1)
-#define EMaskUsed     ((Standard_Boolean)2)
-#define EMaskRg1Line  ((Standard_Boolean)4)
-#define EMaskVertical ((Standard_Boolean)8)
-#define EMaskSimple   ((Standard_Boolean)16)
-#define EMaskOutLVSta ((Standard_Boolean)32)
-#define EMaskOutLVEnd ((Standard_Boolean)64)
-#define EMaskIntDone  ((Standard_Boolean)128)
-#define EMaskCutAtSta ((Standard_Boolean)256)
-#define EMaskCutAtEnd ((Standard_Boolean)512)
-#define EMaskVerAtSta ((Standard_Boolean)1024)
-#define EMaskVerAtEnd ((Standard_Boolean)2048)
-#define EMaskRgNLine  ((Standard_Boolean)4096)
-
 //=======================================================================
 //function : Selected
 //purpose  : 

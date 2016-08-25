@@ -49,7 +49,7 @@ void SelectMgr_BaseFrustum::SetCamera (const Handle(Graphic3d_Camera)& theCamera
 //=======================================================================
 void SelectMgr_BaseFrustum::SetCamera (const Graphic3d_Mat4d& theProjection,
                                        const Graphic3d_Mat4d& theWorldView,
-                                       const Standard_Integer theIsOrthographic,
+                                       const Standard_Boolean theIsOrthographic,
                                        const Graphic3d_WorldViewProjState& theWVPState)
 {
   myCamera.Nullify();

@@ -775,7 +775,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
   Message_ProgressSentry PS ( TP->GetProgress(), "Sub-assembly", 0, nb, 1 );
 
   // [BEGIN] Proceed with non-manifold topology (ssv; 12.11.2010)
-  Standard_Boolean isNMMode = Interface_Static::IVal("read.step.nonmanifold");
+  Standard_Boolean isNMMode = Interface_Static::IVal("read.step.nonmanifold") != 0;
   Standard_Boolean isManifold = Standard_True;
   if ( isNMMode && sr->IsKind(STANDARD_TYPE(StepShape_NonManifoldSurfaceShapeRepresentation)) ) {
     isManifold = Standard_False;

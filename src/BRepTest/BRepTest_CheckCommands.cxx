@@ -355,7 +355,7 @@ static Standard_Integer checkdiff(Draw_Interpretor& di,
       di << syntaxe << "\n";
       return 1;
     }
-    closedSolid=Draw::Atoi(a[narg-1]);
+    closedSolid = Draw::Atoi(a[narg-1]) != 0;
     resu = DBRep::Get(a[narg-2]);
     lastArg=narg-3;
     if (resu.IsNull()) {
@@ -365,7 +365,7 @@ static Standard_Integer checkdiff(Draw_Interpretor& di,
 	return 1;
       }
       geomCtrl=closedSolid;
-      closedSolid=Draw::Atoi(a[narg-2]);
+      closedSolid = Draw::Atoi(a[narg-2]) != 0;
       resu = DBRep::Get(a[narg-3]);
       lastArg=narg-4;
       if (resu.IsNull()) {

@@ -130,7 +130,7 @@ private:
   Standard_Real theColumnSeparation;
   Standard_Real theRowSeparation;
   Standard_Real theRotationAngle;
-  Standard_Integer theDoDontFlag;
+  Standard_Boolean theDoDontFlag;
   Handle(TColStd_HArray1OfInteger) thePositions;
 
 

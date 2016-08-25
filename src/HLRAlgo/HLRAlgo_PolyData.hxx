@@ -70,35 +70,25 @@ public:
   
     Standard_Address Indices();
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyData,MMgt_TShared)
-
-protected:
-
-
-
 
 private:
 
-  
   //! evident.
-  Standard_EXPORT void HideByOneTriangle (const Standard_Address Coordinates, const Standard_Address RealPtr, const Standard_Address BooleanPtr, const Standard_Address PlanPtr, HLRAlgo_EdgeStatus& status);
+  void hideByOneTriangle (const Standard_Address Coordinates,
+                          const Standard_Address RealPtr,
+                          const Standard_Boolean Crossing,
+                          const Standard_Boolean HideBefore,
+                          const Standard_Integer TrFlags,
+                          HLRAlgo_EdgeStatus& status);
 
   Standard_Integer myIndices[3];
   Handle(TColgp_HArray1OfXYZ) myHNodes;
   Handle(HLRAlgo_HArray1OfTData) myHTData;
   Handle(HLRAlgo_HArray1OfPHDat) myHPHDat;
 
-
 };
 
-
 #include <HLRAlgo_PolyData.lxx>
-
-
-
-
 
 #endif // _HLRAlgo_PolyData_HeaderFile

@@ -93,7 +93,7 @@ static
   Standard_Real CurveDeflection(const BRepAdaptor_Curve& theBAC,
                                 const IntTools_Range& theRange);
 static 
-  Standard_Integer IsClosed(const Handle(Geom_Curve)& theCurve,
+  Standard_Boolean IsClosed(const Handle(Geom_Curve)& theCurve,
                             const Standard_Real aT1,
                             const Standard_Real aT2,
                             const Standard_Real theTol,
@@ -1506,26 +1506,21 @@ Standard_Real CurveDeflection(const BRepAdaptor_Curve& theBAC,
 //function : IsClosed
 //purpose  : 
 //=======================================================================
-Standard_Integer IsClosed(const Handle(Geom_Curve)& theCurve,
+Standard_Boolean IsClosed(const Handle(Geom_Curve)& theCurve,
                           const Standard_Real aT1,
                           const Standard_Real aT2,
                           const Standard_Real theTol,
                           const Standard_Real theRes)
 {
-  Standard_Boolean bClosed;
-  Standard_Real aD;
-  gp_Pnt aP1, aP2;
-  //
-  bClosed = Standard_False;
-  if (Abs(aT1 - aT2) < theRes) {
-    return bClosed;
+  if (Abs(aT1 - aT2) < theRes)
+  {
+    return Standard_False;
   }
-  //
+
+  gp_Pnt aP1, aP2;
   theCurve->D0(aT1, aP1);
   theCurve->D0(aT2, aP2);
   //
-  aD = aP1.Distance(aP2);
-  bClosed = aD < theTol;
-  //
-  return bClosed;
+  Standard_Real aD = aP1.Distance(aP2);
+  return aD < theTol;
 }

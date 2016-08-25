@@ -127,11 +127,7 @@ static Standard_Integer NDEP(Draw_Interpretor& theCommands,
       return 1;
     }
 
-//#ifdef OCCT_DEBUG
-//    Flag = Draw::Atof(a[9*ii+7]); // BUG?? Real -> Boolean ???
-//#else
-    Flag = (Standard_Boolean ) Draw::Atof(a[9*ii+7]);
-//#endif
+    Flag  = Draw::Atoi(a[9*ii+7]) != 0;
     Angle = Draw::Atof(a[9*ii+8])*M_PI/180.;
     Pax.SetCoord(Draw::Atof(a[9*ii+9]),Draw::Atof(a[9*ii+10]),Draw::Atof(a[9*ii+11]));
     Dax.SetCoord(Draw::Atof(a[9*ii+12]),Draw::Atof(a[9*ii+13]),Draw::Atof(a[9*ii+14]));

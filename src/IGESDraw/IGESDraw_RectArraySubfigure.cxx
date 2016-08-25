@@ -53,7 +53,7 @@ IGESDraw_RectArraySubfigure::IGESDraw_RectArraySubfigure ()    {  }
   theColumnSeparation = hDisp;
   theRowSeparation    = vtDisp;
   theRotationAngle    = rotationAngle;
-  theDoDontFlag       = doDont;
+  theDoDontFlag       = doDont != 0;
   thePositions        = allNumPos;
   InitTypeAndForm(412,0);
 }

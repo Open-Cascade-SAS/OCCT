@@ -49,7 +49,7 @@ IGESDraw_CircArraySubfigure::IGESDraw_CircArraySubfigure ()    {  }
   theRadius      = aRadius;
   theStartAngle  = aStAngle;
   theDeltaAngle  = aDelAngle;
-  theDoDontFlag  = aFlag;
+  theDoDontFlag  = aFlag != 0;
   thePositions   = allNumPos;
   InitTypeAndForm(414,0);
 }
@@ -109,7 +109,7 @@ IGESDraw_CircArraySubfigure::IGESDraw_CircArraySubfigure ()    {  }
 
     Standard_Boolean IGESDraw_CircArraySubfigure::DoDontFlag () const
 {
-  return (theDoDontFlag == 1);
+  return theDoDontFlag;
 }
 
     Standard_Boolean IGESDraw_CircArraySubfigure::PositionNum

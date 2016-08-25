@@ -529,7 +529,7 @@ static Standard_Integer setsweep(Draw_Interpretor& di,
      else
 	{  
 	  TopoDS_Shape Guide = DBRep::Get(a[2],TopAbs_WIRE);
-          Standard_Integer CurvilinearEquivalence = Draw::Atoi(a[3]);
+          Standard_Boolean CurvilinearEquivalence = Draw::Atoi(a[3]) != 0;
           Standard_Integer KeepContact = Draw::Atoi(a[4]);
           Sweep->SetMode(TopoDS::Wire(Guide),
                          CurvilinearEquivalence,

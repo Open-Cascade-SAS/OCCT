@@ -134,26 +134,17 @@ protected:
 
 private:
 
-
-
   TopTools_IndexedMapOfShape mySameDomMap;
   TopoDS_Shape mySDFaceToFill;
   TopoDS_Shape myBaseFaceToFill;
   TopTools_IndexedDataMapOfShapeListOfShape myMapOfEdgeFaces;
-  TopTools_DataMapOfOrientedShapeInteger myMapOfEdgeWithFaceState;
+  NCollection_DataMap<TopoDS_Shape, Standard_Boolean, TopTools_OrientedShapeMapHasher> myMapOfEdgeWithFaceState;
   TopTools_IndexedMapOfShape myProcessedPartsOut2d;
   TopTools_IndexedMapOfShape myProcessedPartsON2d;
   TopTools_IndexedMapOfShape mySplitsONtoKeep;
   TopTools_IndexedMapOfOrientedShape mySourceShapes;
   TopTools_IndexedDataMapOfShapeShape myMapOfCorrect2dEdges;
 
-
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepBuild_Builder1_HeaderFile

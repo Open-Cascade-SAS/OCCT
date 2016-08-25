@@ -26,7 +26,13 @@
 //function : HLRAlgo_EdgeStatus
 //purpose  : 
 //=======================================================================
-HLRAlgo_EdgeStatus::HLRAlgo_EdgeStatus ()
+HLRAlgo_EdgeStatus::HLRAlgo_EdgeStatus()
+: myStart     (0.0),
+  myEnd       (0.0),
+  myTolStart  (0.0f),
+  myTolEnd    (0.0f),
+  myAllHidden (false),
+  myAllVisible(false)
 {
 }
 
@@ -43,7 +49,8 @@ HLRAlgo_EdgeStatus::HLRAlgo_EdgeStatus (const Standard_Real Start,
   myEnd       (End),
   myTolStart  (TolStart),
   myTolEnd    (TolEnd),
-  myFlags     (0)
+  myAllHidden (false),
+  myAllVisible(false)
 {
   ShowAll();
 }

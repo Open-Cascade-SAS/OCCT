@@ -4068,7 +4068,7 @@ static Standard_Integer OCC26195 (Draw_Interpretor& theDI, Standard_Integer theA
   Standard_Boolean toPrint = Standard_False;
   if (theArgNb % 2 == 0)
   {
-    toPrint = Draw::Atoi (theArgVec[theArgNb - 1]);
+    toPrint = Draw::Atoi (theArgVec[theArgNb - 1]) != 0;
   }
 
   SelectMgr_SelectingVolumeManager* aMgr = new SelectMgr_SelectingVolumeManager();

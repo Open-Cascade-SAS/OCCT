@@ -843,7 +843,7 @@ void IVtkOCC_ShapeMesher::addWFFace (const TopoDS_Face& theFace,
   // Introducing a local scope here to simplify variable naming
   {
     buildIsoLines (aSurfAdaptor,
-                   myNbIsos[0],
+                   myNbIsos[0] != 0,
                    Standard_False,
                    myNbIsos[0],
                    0,
@@ -881,7 +881,7 @@ void IVtkOCC_ShapeMesher::addWFFace (const TopoDS_Face& theFace,
     aPolylines.Clear();
     buildIsoLines (aSurfAdaptor,
                    Standard_False,
-                   myNbIsos[1],
+                   myNbIsos[1] != 0,
                    0,
                    myNbIsos[1],
                    aPolylines);

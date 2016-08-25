@@ -56,7 +56,7 @@ IFSelect_SelectRootComps::IFSelect_SelectRootComps ()    {  }
 //  (N.B.: on prend inp1, qui donne UNE entite par composant, simple ou cycle)
   for (inp1.Start(); inp1.More(); inp1.Next()) {
     Handle(Standard_Transient) ent = inp1.Value();
-    if ((Standard_Boolean)(GC.NbTimes(ent) <= 1) == IsDirect()) iter.GetOneItem(ent);
+    if ((GC.NbTimes(ent) <= 1) == IsDirect()) iter.GetOneItem(ent);
   }
   return iter;
 }

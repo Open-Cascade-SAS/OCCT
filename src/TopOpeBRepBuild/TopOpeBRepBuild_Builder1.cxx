@@ -555,9 +555,8 @@ void TopOpeBRepBuild_Builder1::GFillFaceSameDomSFS(const TopoDS_Shape& FOR,
     Standard_Boolean rev = Standard_False;
     for(Standard_Integer i = 1; i <= aEM.Extent(); i++) {
       const TopoDS_Shape& anEdge = aEM(i);
-      if(myMapOfEdgeWithFaceState.IsBound(anEdge)) {
-	rev = (Standard_Boolean)myMapOfEdgeWithFaceState.Find(anEdge);
-	break;
+      if (myMapOfEdgeWithFaceState.Find (anEdge, rev)) {
+        break;
       }
     }
     if(OrigRev)
@@ -671,7 +670,7 @@ void TopOpeBRepBuild_Builder1::GFillFaceSameDomWES(const TopoDS_Shape& FOR1,
 	      WES.AddStartElement(EOR);
 	    }
 	    
-	    myMapOfEdgeWithFaceState.Bind(EOR, (Standard_Integer)stateOfFaceOri); 
+	    myMapOfEdgeWithFaceState.Bind (EOR, stateOfFaceOri);
 	  }
 
 	  if(!UseEdges) {
@@ -740,7 +739,7 @@ void TopOpeBRepBuild_Builder1::GFillWireSameDomWES(const TopoDS_Shape& W,
 
 	OrientateEdgeOnFace(TopoDS::Edge(EOR), TopoDS::Face(myBaseFaceToFill), 
 			    TopoDS::Face(mySDFaceToFill), G1, stateOfFaceOri);
-	myMapOfEdgeWithFaceState.Bind(EOR, (Standard_Integer)stateOfFaceOri);
+	myMapOfEdgeWithFaceState.Bind (EOR, stateOfFaceOri);
 	WES.AddElement(EOR);
       }
     }
@@ -796,7 +795,7 @@ void TopOpeBRepBuild_Builder1::GFillEdgeSameDomWES(const TopoDS_Shape& EOR,
     Standard_Boolean stateOfFaceOri = Standard_False;
     OrientateEdgeOnFace(newE, TopoDS::Face(myBaseFaceToFill), 
 			TopoDS::Face(mySDFaceToFill), G1, stateOfFaceOri);
-    myMapOfEdgeWithFaceState.Bind(newE, (Standard_Integer)stateOfFaceOri);
+    myMapOfEdgeWithFaceState.Bind (newE, stateOfFaceOri);
 
     WES.AddStartElement(newE);
   }
@@ -849,7 +848,7 @@ void TopOpeBRepBuild_Builder1::GFillEdgeSameDomWES(const TopoDS_Shape& EOR,
 	  if(!IsRev)
 	    aPieceToKeep.Reverse();
 
-	  myMapOfEdgeWithFaceState.Bind(aPieceToKeep, (Standard_Integer)stateOfFaceOri);
+	  myMapOfEdgeWithFaceState.Bind (aPieceToKeep, stateOfFaceOri);
 
 	  WES.AddStartElement(aPieceToKeep);
 	}
@@ -980,7 +979,7 @@ void TopOpeBRepBuild_Builder1::GFillEdgeSameDomWES(const TopoDS_Shape& EOR,
 	Standard_Boolean stateOfFaceOri = Standard_False;
 	OrientateEdgeOnFace(aSplitPart, TopoDS::Face(myBaseFaceToFill), 
 			    TopoDS::Face(mySDFaceToFill), G1, stateOfFaceOri);
-	myMapOfEdgeWithFaceState.Bind(aSplitPart, (Standard_Integer)stateOfFaceOri);
+	myMapOfEdgeWithFaceState.Bind (aSplitPart, stateOfFaceOri);
 	
 	WES.AddStartElement(aSplitPart);	
       }
@@ -1003,7 +1002,7 @@ void TopOpeBRepBuild_Builder1::GFillEdgeSameDomWES(const TopoDS_Shape& EOR,
       //compute orientation of the future face
       Standard_Boolean stateOfFaceOri = Standard_False;
       OrientateEdgeOnFace(aSplitPart, TopoDS::Face(myBaseFaceToFill), aSDFace, G1, stateOfFaceOri);
-      myMapOfEdgeWithFaceState.Bind(aSplitPart, (Standard_Integer)stateOfFaceOri);
+      myMapOfEdgeWithFaceState.Bind (aSplitPart, stateOfFaceOri);
 
       if(myBaseFaceToFill == mySDFaceToFill) {
 	mySourceShapes.Add(aSplitPart);
@@ -1179,7 +1178,7 @@ void TopOpeBRepBuild_Builder1::PerformONParts(const TopoDS_Shape& FOR1,
 	}
 	newE.Orientation(neworiE);
 
-	myMapOfEdgeWithFaceState.Bind(newE, (Standard_Integer)stateOfFaceOri);
+	myMapOfEdgeWithFaceState.Bind (newE, stateOfFaceOri);
 	WES.AddStartElement(newE);
       }
     }//end iteration on splON

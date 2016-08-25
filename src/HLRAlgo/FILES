@@ -6,7 +6,6 @@ HLRAlgo_Array1OfPISeg.hxx
 HLRAlgo_Array1OfTData.hxx
 HLRAlgo_BiPoint.cxx
 HLRAlgo_BiPoint.hxx
-HLRAlgo_BiPoint.lxx
 HLRAlgo_Coincidence.cxx
 HLRAlgo_Coincidence.hxx
 HLRAlgo_Coincidence.lxx
@@ -15,10 +14,8 @@ HLRAlgo_EdgeIterator.hxx
 HLRAlgo_EdgeIterator.lxx
 HLRAlgo_EdgesBlock.cxx
 HLRAlgo_EdgesBlock.hxx
-HLRAlgo_EdgesBlock.lxx
 HLRAlgo_EdgeStatus.cxx
 HLRAlgo_EdgeStatus.hxx
-HLRAlgo_EdgeStatus.lxx
 HLRAlgo_HArray1OfPHDat.hxx
 HLRAlgo_HArray1OfPINod.hxx
 HLRAlgo_HArray1OfPISeg.hxx

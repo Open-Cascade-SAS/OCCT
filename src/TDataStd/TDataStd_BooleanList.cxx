@@ -230,7 +230,7 @@ void TDataStd_BooleanList::Restore(const Handle(TDF_Attribute)& With)
   TDataStd_ListIteratorOfListOfByte itr(aList->List());
   for (; itr.More(); itr.Next())
   {
-    myList.Append(itr.Value());
+    myList.Append (itr.Value() ? 1 : 0);
   }
 }
 
@@ -246,7 +246,7 @@ void TDataStd_BooleanList::Paste (const Handle(TDF_Attribute)& Into,
   TDataStd_ListIteratorOfListOfByte itr(myList);
   for (; itr.More(); itr.Next())
   {
-    aList->Append(itr.Value());
+    aList->Append (itr.Value() != 0);
   }
 }
 

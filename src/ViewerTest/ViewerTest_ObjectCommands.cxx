@@ -2150,7 +2150,7 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
   {
     // Get arguments
     TCollection_AsciiString aName(argv[1]);
-    Standard_Boolean isFilled = (Standard_Boolean)Draw::Atoi(argv[5]);
+    Standard_Boolean isFilled = Draw::Atoi(argv[5]) != 0;
 
     Handle(AIS_InteractiveObject) theShapeA;
     Handle(AIS_InteractiveObject) theShapeB;
@@ -4445,7 +4445,7 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
   }
 
   const Standard_Integer aSelectionMode = Draw::Atoi (anArgNb == 3 ? theArgv[1] : theArgv[2]);
-  const Standard_Boolean toTurnOn       = Draw::Atoi (anArgNb == 3 ? theArgv[2] : theArgv[3]);
+  const Standard_Boolean toTurnOn       = Draw::Atoi (anArgNb == 3 ? theArgv[2] : theArgv[3]) != 0;
   if (aSelectionMode == 0 && anAISContext->HasOpenedContext())
   {
     anAISContext->CloseLocalContext();

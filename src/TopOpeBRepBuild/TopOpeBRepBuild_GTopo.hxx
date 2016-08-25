@@ -40,8 +40,12 @@ public:
   
   Standard_EXPORT TopOpeBRepBuild_GTopo();
   
-  Standard_EXPORT TopOpeBRepBuild_GTopo(const Standard_Integer II, const Standard_Integer IN, const Standard_Integer IO, const Standard_Integer NI, const Standard_Integer NN, const Standard_Integer NO, const Standard_Integer OI, const Standard_Integer ON, const Standard_Integer OO, const TopAbs_ShapeEnum t1, const TopAbs_ShapeEnum t2, const TopOpeBRepDS_Config C1, const TopOpeBRepDS_Config C2);
-  
+  Standard_EXPORT TopOpeBRepBuild_GTopo (const Standard_Boolean II, const Standard_Boolean IN, const Standard_Boolean IO,
+                                         const Standard_Boolean NI, const Standard_Boolean NN, const Standard_Boolean NO,
+                                         const Standard_Boolean OI, const Standard_Boolean ON, const Standard_Boolean OO,
+                                         const TopAbs_ShapeEnum t1, const TopAbs_ShapeEnum t2,
+                                         const TopOpeBRepDS_Config C1, const TopOpeBRepDS_Config C2);
+
   Standard_EXPORT void Reset();
   
   Standard_EXPORT void Set (const Standard_Boolean II, const Standard_Boolean IN, const Standard_Boolean IO, const Standard_Boolean NI, const Standard_Boolean NN, const Standard_Boolean NO, const Standard_Boolean OI, const Standard_Boolean ON, const Standard_Boolean OO);

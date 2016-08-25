@@ -388,7 +388,7 @@ static Standard_Integer Collect (Draw_Interpretor& di,
     if (!DDF::GetDF(arg[1],DF)) return 1;
     if (!DDF::Find(DF,arg[2],TNaming_NamedShape::GetID(),A)) return 1;
     if (nb >= 4) {
-      OnlyModif = Draw::Atoi(arg[3]);
+      OnlyModif = Draw::Atoi(arg[3]) != 0;
     }
     TNaming_Tool::Collect(A,MNS,OnlyModif);
     for (TNaming_MapIteratorOfMapOfNamedShape it(MNS); it.More(); it.Next()) {

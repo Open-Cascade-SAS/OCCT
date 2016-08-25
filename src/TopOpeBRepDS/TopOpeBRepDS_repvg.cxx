@@ -49,7 +49,7 @@ Standard_EXPORT void FDS_repvg2
   Standard_Boolean ispoint  = (GT == TopOpeBRepDS_POINT);
   Standard_Boolean isvertex = (GT == TopOpeBRepDS_VERTEX);
 
-  Standard_Boolean nLI = LI.Extent();
+  Standard_Integer nLI = LI.Extent();
 
   TopOpeBRepDS_ListIteratorOfListOfInterference it1(LI);
   while (it1.More()) {

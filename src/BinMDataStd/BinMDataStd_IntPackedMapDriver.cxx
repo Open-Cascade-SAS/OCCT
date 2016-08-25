@@ -92,7 +92,7 @@ Standard_Boolean BinMDataStd_IntPackedMapDriver::Paste
     if (! (Source >> aDeltaValue))
       return Standard_False;
     else
-      aDelta = (Standard_Boolean)aDeltaValue;
+      aDelta = (aDeltaValue != 0);
   }
   aTagAtt->SetDelta(aDelta);
   return Standard_True;
@@ -120,5 +120,5 @@ void BinMDataStd_IntPackedMapDriver::Paste
     for(;anIt.More();anIt.Next())
       Target << anIt.Key();
   }
-  Target << (Standard_Byte)anAtt->GetDelta(); 
+  Target << (Standard_Byte)(anAtt->GetDelta() ? 1 : 0);
 }

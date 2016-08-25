@@ -1467,5 +1467,5 @@ Standard_Boolean LocOpe_WiresOnShape::Add(const TopTools_SequenceOfShape& theEdg
     }
 
   }
-  return (anUsedEdges.Extent());
+  return !anUsedEdges.IsEmpty();
 }

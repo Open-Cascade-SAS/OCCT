@@ -63,27 +63,26 @@ public:
   Standard_EXPORT static const Standard_GUID& GetID();
   
   Standard_EXPORT TFunction_Function();
-  
+
   //! Returns the GUID for this function's driver.
-    const Standard_GUID& GetDriverGUID() const;
-  
+  const Standard_GUID& GetDriverGUID() const { return myDriverGUID; }
+
   //! Sets the driver for this function as that
   //! indentified by the GUID guid.
   Standard_EXPORT void SetDriverGUID (const Standard_GUID& guid);
-  
+
   //! Returns true if the execution failed
-    Standard_Boolean Failed() const;
-  
+  Standard_Boolean Failed() const { return myFailure != 0; }
+
   //! Sets the failed index.
   Standard_EXPORT void SetFailure (const Standard_Integer mode = 0);
-  
 
   //! Returns an index of failure if the execution of this function failed.
   //! If this integer value is 0, no failure has occurred.
   //! Implementation of Attribute methods:
   //! ===================================
-    Standard_Integer GetFailure() const;
-  
+  Standard_Integer GetFailure() const { return myFailure; }
+
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   
   Standard_EXPORT virtual void Restore (const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
@@ -96,30 +95,13 @@ public:
   
   Standard_EXPORT virtual Standard_OStream& Dump (Standard_OStream& anOS) const Standard_OVERRIDE;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(TFunction_Function,TDF_Attribute)
 
-protected:
-
-
-
-
 private:
-
 
   Standard_GUID myDriverGUID;
   Standard_Integer myFailure;
 
-
 };
-
-
-#include <TFunction_Function.lxx>
-
-
-
-
 
 #endif // _TFunction_Function_HeaderFile

@@ -296,7 +296,7 @@ static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const
 
   Standard_Integer k;
   Standard_Real Udeb, Ufin, UIso, VIso;
-  Standard_Integer Only2d, Only3d;
+  Standard_Boolean Only2d, Only3d;
   gp_Pnt2d P2d, Pdeb, Pfin;
   gp_Pnt P;
   Handle(Adaptor2d_HCurve2d) HPCur;

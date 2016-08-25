@@ -105,17 +105,7 @@ public:
   //! input Graph
   //! This the starting step for an Evaluation (Packets - Remainder)
   Standard_EXPORT Interface_EntityIterator GetEntities (const Interface_Graph& G) const;
-  
-  //! Returns True if Count of Packets is actually known, and the
-  //! value of the count in argument "count". Returns False if
-  //! this count is unknown. Input is given as a Graph.
-  //! This method is intended to be quick (used for file names)
-  //! hence if this count is long to compute (that is, as a result
-  //! of complete evaluation made by method Packets), it is
-  //! preferable to answer "unknown" by returning False
-  //! Default answer if False. Can be redefined.
-  Standard_EXPORT virtual Standard_Boolean PacketsCount (const Interface_Graph& G, Standard_Integer& count) const;
-  
+
   //! Returns the list of produced Packets into argument <pack>.
   //! Each Packet corresponds to a Part, the Entities listed are the
   //! Roots given by the Selection. Input is given as a Graph.

@@ -41,12 +41,12 @@ void ShapePersistent_TopoDS::pTBase::setFlags
   (const Handle(TopoDS_TShape)& theTShape) const
 {
   theTShape->Free       (Standard_False); // Always frozen when coming from DB
-  theTShape->Modified   (myFlags & ModifiedMask);
-  theTShape->Checked    (myFlags & CheckedMask);
-  theTShape->Orientable (myFlags & OrientableMask);
-  theTShape->Closed     (myFlags & ClosedMask);
-  theTShape->Infinite   (myFlags & InfiniteMask);
-  theTShape->Convex     (myFlags & ConvexMask);
+  theTShape->Modified   ((myFlags & ModifiedMask)   != 0);
+  theTShape->Checked    ((myFlags & CheckedMask)    != 0);
+  theTShape->Orientable ((myFlags & OrientableMask) != 0);
+  theTShape->Closed     ((myFlags & ClosedMask)     != 0);
+  theTShape->Infinite   ((myFlags & InfiniteMask)   != 0);
+  theTShape->Convex     ((myFlags & ConvexMask)     != 0);
 }
 
 static inline void AddShape

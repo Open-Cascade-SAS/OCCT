@@ -49,65 +49,81 @@ class HLRAlgo_EdgesBlock : public MMgt_TShared
 
 public:
 
-  
   //! Create a Block of Edges for a wire.
   Standard_EXPORT HLRAlgo_EdgesBlock(const Standard_Integer NbEdges);
-  
-    Standard_Integer NbEdges() const;
-  
-    void Edge (const Standard_Integer I, const Standard_Integer EI);
-  
-    Standard_Integer Edge (const Standard_Integer I) const;
-  
-    void Orientation (const Standard_Integer I, const TopAbs_Orientation Or);
-  
-    TopAbs_Orientation Orientation (const Standard_Integer I) const;
-  
-    Standard_Boolean OutLine (const Standard_Integer I) const;
-  
-    void OutLine (const Standard_Integer I, const Standard_Boolean B);
-  
-    Standard_Boolean Internal (const Standard_Integer I) const;
-  
-    void Internal (const Standard_Integer I, const Standard_Boolean B);
-  
-    Standard_Boolean Double (const Standard_Integer I) const;
-  
-    void Double (const Standard_Integer I, const Standard_Boolean B);
-  
-    Standard_Boolean IsoLine (const Standard_Integer I) const;
-  
-    void IsoLine (const Standard_Integer I, const Standard_Boolean B);
-  
+
+  Standard_Integer NbEdges() const { return myEdges.Upper(); }
+
+  void Edge (const Standard_Integer I, const Standard_Integer EI) { myEdges(I) = EI; }
+
+  Standard_Integer Edge (const Standard_Integer I) const { return myEdges(I); }
+
+  void Orientation (const Standard_Integer I, const TopAbs_Orientation Or)
+  {
+    myFlags(I) &= ~EMaskOrient;
+    myFlags(I) |= (Or & EMaskOrient);
+  }
+
+  TopAbs_Orientation Orientation (const Standard_Integer I) const
+  {
+    return ((TopAbs_Orientation)(myFlags(I) & EMaskOrient));
+  }
+
+  Standard_Boolean OutLine (const Standard_Integer I) const { return (myFlags(I) & EMaskOutLine) != 0; }
+
+  void OutLine (const Standard_Integer I, const Standard_Boolean B)
+  {
+    if (B) myFlags(I) |=  EMaskOutLine;
+    else   myFlags(I) &= ~EMaskOutLine;
+  }
+
+  Standard_Boolean Internal (const Standard_Integer I) const { return (myFlags(I) & EMaskInternal) != 0; }
+
+  void Internal (const Standard_Integer I, const Standard_Boolean B)
+  {
+    if (B) myFlags(I) |=  EMaskInternal;
+    else   myFlags(I) &= ~EMaskInternal;
+  }
+
+  Standard_Boolean Double (const Standard_Integer I) const { return (myFlags(I) & EMaskDouble) != 0; }
+
+  void Double (const Standard_Integer I, const Standard_Boolean B)
+  {
+    if (B) myFlags(I) |=  EMaskDouble;
+    else   myFlags(I) &= ~EMaskDouble;
+  }
+
+  Standard_Boolean IsoLine (const Standard_Integer I) const { return (myFlags(I) & EMaskIsoLine) != 0; }
+
+  void IsoLine (const Standard_Integer I, const Standard_Boolean B)
+  {
+    if (B) myFlags(I) |=  EMaskIsoLine;
+    else   myFlags(I) &= ~EMaskIsoLine;
+  }
+
   Standard_EXPORT void UpdateMinMax (const Standard_Address TotMinMax);
-  
-    Standard_Address MinMax() const;
 
-
-
+  Standard_Address MinMax() const { return (Standard_Address )&myMinMax; }
 
   DEFINE_STANDARD_RTTIEXT(HLRAlgo_EdgesBlock,MMgt_TShared)
 
 protected:
 
-
-
+  enum EMskFlags
+  {
+    EMaskOrient   = 15,
+    EMaskOutLine  = 16,
+    EMaskInternal = 32,
+    EMaskDouble   = 64,
+    EMaskIsoLine  = 128
+  };
 
 private:
 
-
   TColStd_Array1OfInteger myEdges;
-  TColStd_Array1OfBoolean myFlags;
+  TColStd_Array1OfInteger myFlags;
   Standard_Integer myMinMax[16];
 
-
 };
-
-
-#include <HLRAlgo_EdgesBlock.lxx>
-
-
-
-
 
 #endif // _HLRAlgo_EdgesBlock_HeaderFile

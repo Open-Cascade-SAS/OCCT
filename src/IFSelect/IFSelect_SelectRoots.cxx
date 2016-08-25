@@ -44,7 +44,7 @@ IFSelect_SelectRoots::IFSelect_SelectRoots ()    {  }
 //  A present, on retient, parmi les inputs, celles comptees une seule fois
   for (input.Start(); input.More(); input.Next()) {
     Handle(Standard_Transient) ent = input.Value();
-    if ((Standard_Boolean)(GC.NbTimes(ent) <= 1) == IsDirect()) iter.GetOneItem(ent);
+    if ((GC.NbTimes(ent) <= 1) == IsDirect()) iter.GetOneItem(ent);
   }
   return iter;
 }

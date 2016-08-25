@@ -142,7 +142,7 @@ const Handle(Aspect_Window)& IVtkDraw_Interactor::GetOCCWindow() const
 //===========================================================
 Standard_Boolean IVtkDraw_Interactor::IsEnabled() const
 {
-  return Enabled;
+  return (Enabled != 0);
 }
 
 //===========================================================

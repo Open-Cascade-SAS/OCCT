@@ -127,7 +127,7 @@ BRepMesh_IncrementalMesh::~BRepMesh_IncrementalMesh()
 void BRepMesh_IncrementalMesh::clear()
 {
   // the allocator will be alive while the structures are alive
-  Handle(NCollection_IncAllocator) anAlloc =
+  Handle(NCollection_BaseAllocator) anAlloc =
     new NCollection_IncAllocator(BRepMesh::MEMORY_BLOCK_SIZE_HUGE);
   myEdges.Clear(anAlloc);
   myEdgeDeflection.Clear(anAlloc);

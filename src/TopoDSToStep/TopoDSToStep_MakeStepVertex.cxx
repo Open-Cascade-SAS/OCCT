@@ -62,7 +62,7 @@ void TopoDSToStep_MakeStepVertex::Init(const TopoDS_Vertex& aVertex,
   aTool.SetCurrentVertex(aVertex);
 
   // [BEGIN] Processing non-manifold topology (ssv; 11.11.2010)
-  Standard_Boolean isNMMode = Interface_Static::IVal("write.step.nonmanifold");
+  Standard_Boolean isNMMode = Interface_Static::IVal("write.step.nonmanifold") != 0;
   if (isNMMode) {
     Handle(StepShape_VertexPoint) aVP;
     Handle(TransferBRep_ShapeMapper) aSTEPMapper = TransferBRep::ShapeMapper(FP, aVertex);

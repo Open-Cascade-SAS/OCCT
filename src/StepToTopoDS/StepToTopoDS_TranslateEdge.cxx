@@ -375,7 +375,7 @@ static void GetCartesianPoints ( const Handle(StepShape_EdgeCurve)& EC,
 				 gp_Pnt &P1, gp_Pnt &P2)
 {
   for ( Standard_Integer i=1; i<=2; i++ ) {
-    const Handle(StepShape_Vertex) V = ( (Standard_Boolean)(i==1) == EC->SameSense() ? EC->EdgeStart() : EC->EdgeEnd() );
+    const Handle(StepShape_Vertex) V = ((i == 1) == EC->SameSense() ? EC->EdgeStart() : EC->EdgeEnd() );
     const Handle(StepShape_VertexPoint) VP = Handle(StepShape_VertexPoint)::DownCast(V);
     if ( VP.IsNull() ) continue;
     const Handle(StepGeom_CartesianPoint) P = Handle(StepGeom_CartesianPoint)::DownCast(VP->VertexGeometry());

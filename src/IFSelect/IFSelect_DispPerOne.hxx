@@ -48,11 +48,7 @@ public:
   
   //! Returns True, maximum limit is given as <nbent>
   Standard_EXPORT virtual Standard_Boolean LimitedMax (const Standard_Integer nbent, Standard_Integer& max) const Standard_OVERRIDE;
-  
-  //! Returns True (count is easy to know) and count is the length
-  //! of the input list (RootResult from FinalSelection)
-  Standard_EXPORT virtual Standard_Boolean PacketsCount (const Interface_Graph& G, Standard_Integer& count) const Standard_OVERRIDE;
-  
+
   //! Returns the list of produced Packets. It defines one Packet
   //! per Entity given by RootResult from the Final Selection.
   Standard_EXPORT void Packets (const Interface_Graph& G, IFGraph_SubPartsIterator& packs) const Standard_OVERRIDE;

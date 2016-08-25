@@ -121,33 +121,36 @@ public:
   
     Standard_ShortReal Tolerance() const;
 
-
-
-
 protected:
 
-
-
-
+  enum EMaskFlags
+  {
+    EMaskOrient   = 15,
+    FMaskSelected = 16,
+    FMaskBack     = 32,
+    FMaskSide     = 64,
+    FMaskClosed   = 128,
+    FMaskHiding   = 256,
+    FMaskSimple   = 512,
+    FMaskCut      = 1024,
+    FMaskWithOutL = 2048,
+    FMaskPlane    = 4096,
+    FMaskCylinder = 8192,
+    FMaskCone     = 16384,
+    FMaskSphere   = 32768,
+    FMaskTorus    = 65536
+  };
 
 private:
 
-
-
-  Standard_Boolean myFlags;
+  Standard_Integer myFlags;
   Handle(HLRAlgo_WiresBlock) myWires;
   HLRBRep_Surface myGeometry;
   Standard_Real mySize;
   Standard_ShortReal myTolerance;
 
-
 };
 
-
 #include <HLRBRep_FaceData.lxx>
-
-
-
-
 
 #endif // _HLRBRep_FaceData_HeaderFile

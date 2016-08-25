@@ -82,13 +82,11 @@
 //           la distance de PntD par rapport au plan passant par les trois 
 //           points PntA, PntB, PntC
 //=======================================================================
-static int CoPlanar(const gp_Pnt  PntA,
+static Standard_Boolean CoPlanar(const gp_Pnt  PntA,
 	            const gp_Pnt  PntB,
 		    const gp_Pnt  PntC,
 		    const gp_Pnt  PntD)
 {
-  Standard_Boolean IsCoplanar;
-
   gp_Vec vecAB(PntA, PntB);
   gp_Vec vecAC(PntA, PntC);
   gp_Vec vecAD(PntA, PntD);
@@ -101,20 +99,16 @@ static int CoPlanar(const gp_Pnt  PntA,
   Standard_Real Alpha  = nor2AB * nor2AC - ProABAC * ProABAC;
 
   if (Alpha < Precision::Confusion()) {
-    IsCoplanar = Standard_True;
-  }
-  else {
-    Standard_Real ProABAD = vecAB.Dot(vecAD);
-    Standard_Real ProACAD = vecAC.Dot(vecAD);
-    Standard_Real Alpha1 = ProABAD * nor2AC - ProABAC * ProACAD;
-    Standard_Real Alpha2 = ProACAD * nor2AB - ProABAC * ProABAD;
-    gp_Vec vecDABC = Alpha1 * vecAB + Alpha2 * vecAC - Alpha * vecAD;
-
-    IsCoplanar = (vecDABC.Magnitude() / Alpha < Precision::Confusion() );
-
+    return Standard_True;
   }
 
-  return IsCoplanar;
+  Standard_Real ProABAD = vecAB.Dot(vecAD);
+  Standard_Real ProACAD = vecAC.Dot(vecAD);
+  Standard_Real Alpha1 = ProABAD * nor2AC - ProABAC * ProACAD;
+  Standard_Real Alpha2 = ProACAD * nor2AB - ProABAC * ProABAD;
+  gp_Vec vecDABC = Alpha1 * vecAB + Alpha2 * vecAC - Alpha * vecAD;
+
+  return (vecDABC.Magnitude() / Alpha) < Precision::Confusion();
 }
 
 

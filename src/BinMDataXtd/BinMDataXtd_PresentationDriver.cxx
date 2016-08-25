@@ -58,7 +58,7 @@ Standard_Boolean BinMDataXtd_PresentationDriver::Paste
   Standard_Integer aValue;
   ok = theSource >> aValue;
   if (!ok) return ok;
-  anAttribute->SetDisplayed(static_cast<Standard_Boolean>(aValue));
+  anAttribute->SetDisplayed (aValue != 0);
 
   // GUID
   Standard_GUID aGUID;

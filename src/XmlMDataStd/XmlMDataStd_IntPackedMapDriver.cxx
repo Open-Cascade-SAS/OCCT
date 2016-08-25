@@ -118,7 +118,7 @@ Standard_Boolean XmlMDataStd_IntPackedMapDriver::Paste
 	    return Standard_False;
 	  } 
 	else
-	  aDelta = (Standard_Boolean)aDeltaValue;
+	  aDelta = aDeltaValue != 0;
       }
 #ifdef OCCT_DEBUG
       else if(XmlMDataStd::DocumentVersion() == -1)
@@ -148,7 +148,7 @@ void XmlMDataStd_IntPackedMapDriver::Paste (const Handle(TDF_Attribute)& theSour
 
   Standard_Integer aSize = (aS->IsEmpty()) ? 0 : aS->Extent();
   theTarget.Element().setAttribute(::IntPackedMapSize(), aSize);
-  theTarget.Element().setAttribute(::IsDeltaOn(),aS->GetDelta());
+  theTarget.Element().setAttribute(::IsDeltaOn(), aS->GetDelta() ? 1 : 0);
 
   if(aSize)
   {

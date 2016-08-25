@@ -308,7 +308,7 @@ Standard_Boolean ShapeProcess_Context::GetBoolean (const Standard_CString param,
   if ( myRC.IsNull() ) return Standard_False;
   try {
     OCC_CATCH_SIGNALS
-    val = (Standard_Boolean)myRC->Integer ( MakeName ( myScope, param )->ToCString() );
+    val = myRC->Integer (MakeName (myScope, param)->ToCString()) != 0;
     return Standard_True;
   }
   catch (Standard_Failure) {

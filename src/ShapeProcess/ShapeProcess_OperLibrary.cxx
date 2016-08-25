@@ -143,7 +143,7 @@ static Standard_Boolean sameparam (const Handle(ShapeProcess_Context)& context)
   if ( ! ctx->Messages().IsNull() ) msg = new ShapeExtend_MsgRegistrator;
 
   ShapeFix::SameParameter ( ctx->Result(),
-                            ctx->IntegerVal ( "Force", Standard_False ),
+                            ctx->BooleanVal ( "Force", Standard_False ),
                             ctx->RealVal ( "Tolerance3d", Precision::Confusion() /* -1 */),
                             NULL, msg );
 
@@ -232,9 +232,9 @@ static Standard_Boolean bsplinerestriction (const Handle(ShapeProcess_Context)& 
   Handle(ShapeExtend_MsgRegistrator) msg;
   if ( ! ctx->Messages().IsNull() ) msg = new ShapeExtend_MsgRegistrator;
 
-  Standard_Boolean ModeSurf  = ctx->IntegerVal ( "SurfaceMode", Standard_True );
-  Standard_Boolean ModeC3d   = ctx->IntegerVal ( "Curve3dMode", Standard_True );
-  Standard_Boolean ModeC2d   = ctx->IntegerVal ( "Curve2dMode", Standard_True );
+  Standard_Boolean ModeSurf  = ctx->BooleanVal ( "SurfaceMode", Standard_True );
+  Standard_Boolean ModeC3d   = ctx->BooleanVal ( "Curve3dMode", Standard_True );
+  Standard_Boolean ModeC2d   = ctx->BooleanVal ( "Curve2dMode", Standard_True );
 
   Standard_Real aTol3d = ctx->RealVal ( "Tolerance3d", 0.01 );
   Standard_Real aTol2d = ctx->RealVal ( "Tolerance2d", 1e-06 );
@@ -245,8 +245,8 @@ static Standard_Boolean bsplinerestriction (const Handle(ShapeProcess_Context)& 
   Standard_Integer aMaxDeg = ctx->IntegerVal ( "RequiredDegree", 9 );
   Standard_Integer aMaxSeg = ctx->IntegerVal ( "RequiredNbSegments", 10000 );
   
-  Standard_Boolean ModeDeg  = ctx->IntegerVal ( "PreferDegree", Standard_True );
-  Standard_Boolean Rational = ctx->IntegerVal ( "RationalToPolynomial", Standard_False );
+  Standard_Boolean ModeDeg  = ctx->BooleanVal ( "PreferDegree", Standard_True );
+  Standard_Boolean Rational = ctx->BooleanVal ( "RationalToPolynomial", Standard_False );
   
   Handle(ShapeCustom_RestrictionParameters)   aParameters = new ShapeCustom_RestrictionParameters;
   ctx->GetInteger ( "MaxDegree",          aParameters->GMaxDegree() );
@@ -711,7 +711,7 @@ static Standard_Boolean fixshape (const Handle(ShapeProcess_Context)& context)
   sfs->FixVertexPositionMode() = ctx->IntegerVal ( "FixVertexPositionMode", 0 );
 
   sfs->FixSolidTool()->FixShellMode() = ctx->IntegerVal ( "FixShellMode", -1 );
-  sfs->FixSolidTool()->CreateOpenSolidMode() = ctx->IntegerVal ( "CreateOpenSolidMode", 1 );
+  sfs->FixSolidTool()->CreateOpenSolidMode() = ctx->BooleanVal ( "CreateOpenSolidMode", Standard_True );
 
   sfs->FixShellTool()->FixFaceMode() = ctx->IntegerVal ( "FixFaceMode", -1 );
 

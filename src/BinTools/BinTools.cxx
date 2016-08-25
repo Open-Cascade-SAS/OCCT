@@ -26,7 +26,7 @@
 //=======================================================================
 Standard_OStream& BinTools::PutBool(Standard_OStream& OS, const Standard_Boolean aValue)
 {
-  OS.put((Standard_Byte)aValue);
+  OS.put((Standard_Byte)(aValue ? 1 : 0));
   return OS;
 }
 
@@ -128,7 +128,7 @@ Standard_IStream& BinTools::GetExtChar(Standard_IStream& IS, Standard_ExtCharact
 
 Standard_IStream& BinTools::GetBool(Standard_IStream& IS, Standard_Boolean& aValue)
 {
-  aValue = (Standard_Boolean)IS.get();
+  aValue = (IS.get() != 0);
   return IS;
 }
 

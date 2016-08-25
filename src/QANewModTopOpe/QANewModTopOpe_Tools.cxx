@@ -175,21 +175,18 @@ Standard_Boolean QANewModTopOpe_Tools::HasSameDomain
   (const BOPAlgo_PBuilder& theBuilder, 
    const TopoDS_Shape& theFace) 
 {
-  Standard_Integer bRet;
-  bRet = Standard_False;
-  //
   if(theFace.IsNull() || (theFace.ShapeType() != TopAbs_FACE))
-    return bRet;
+    return Standard_False;
 
   BOPCol_ListIteratorOfListOfShape aIt;
   const BOPCol_DataMapOfShapeListOfShape& aImages = theBuilder->Images();
   if (!aImages.IsBound(theFace)) {
-    return bRet;
+    return Standard_False;
   }
   const BOPCol_ListOfShape& aLF=aImages.Find(theFace);
   
   if (aLF.Extent() == 0) {
-    return bRet;
+    return Standard_False;
   }
   const BOPCol_DataMapOfShapeShape& aShapesSD = theBuilder->ShapesSD();
 
@@ -197,12 +194,11 @@ Standard_Boolean QANewModTopOpe_Tools::HasSameDomain
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aFsp = aIt.Value();
     if (aShapesSD.IsBound(aFsp)) {
-      bRet = Standard_True;
-      break;
+      return Standard_True;
     }
   }
 
-  return bRet;
+  return Standard_False;
 }
 
 // ========================================================================================

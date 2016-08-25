@@ -69,8 +69,8 @@ Standard_Boolean BinMDataXtd_PatternStdDriver::Paste
   Standard_Integer revFlags;
   if (! (theSource >> revFlags))
     return Standard_False;
-  aP->Axis1Reversed( revFlags & 1 );
-  aP->Axis2Reversed( revFlags & 2 );
+  aP->Axis1Reversed ((revFlags & 1) != 0);
+  aP->Axis2Reversed ((revFlags & 2) != 0);
 
   Handle(TNaming_NamedShape) TNS;
   Standard_Integer aNb;

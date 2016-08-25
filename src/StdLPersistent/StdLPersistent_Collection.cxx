@@ -33,6 +33,14 @@ struct StdLPersistent_Collection::byteConverter
     { return static_cast<Standard_Byte> (theValue); }
 };
 
+struct StdLPersistent_Collection::boolConverter
+{
+  boolConverter (const Handle(TDF_Data)&) {}
+
+  Standard_Boolean operator() (Standard_Integer theValue) const
+    { return theValue != 0; }
+};
+
 struct StdLPersistent_Collection::stringConverter
 {
   stringConverter (const Handle(TDF_Data)&) {}
@@ -222,7 +230,7 @@ template class StdLPersistent_Collection::instance
   <StdLPersistent_Collection::listBase,
    StdLPersistent_Collection::integer,
    TDataStd_BooleanList,
-   StdLPersistent_Collection::noConversion>;
+   StdLPersistent_Collection::boolConverter>;
 
 template class StdLPersistent_Collection::instance
   <StdLPersistent_Collection::listBase,

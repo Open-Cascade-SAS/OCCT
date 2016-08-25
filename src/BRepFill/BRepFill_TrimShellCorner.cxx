@@ -435,7 +435,7 @@ Standard_Boolean MakeFacesNonSec(const Standard_Integer                     theI
 
   // search common vertices between uedges. begin
   TopTools_ListOfShape aCommonVertices;
-  Standard_Boolean acommonflag = 0; // 0 - no, 1 - first pair, 2 - second pair, 3 - both
+  Standard_Integer acommonflag = 0; // 0 - no, 1 - first pair, 2 - second pair, 3 - both
   Standard_Integer ueit = 0, eindex = 0;
 
   for(ueit = 1, eindex = theIndex; ueit <= 2; ueit++, eindex++) {
@@ -705,7 +705,7 @@ Standard_Boolean MakeFacesSec(const Standard_Integer                     theInde
   }
 
   TopTools_ListOfShape aCommonVertices;
-//  Standard_Boolean acommonflag = 0; // 0 - no, 1 - first pair, 2 - second pair, 3 - both
+//  Standard_Integer acommonflag = 0; // 0 - no, 1 - first pair, 2 - second pair, 3 - both
   Standard_Integer fit = 0; //, ueit = 0, eindex = 0, i = 0;
   Handle(BRepTools_ReShape) aSubstitutor = new BRepTools_ReShape();
 

@@ -592,7 +592,7 @@ TopAbs_State BOPTools_AlgoTools::ComputeState
 //function : IsInternalFace
 //purpose  : 
 //=======================================================================
-Standard_Integer BOPTools_AlgoTools::IsInternalFace
+Standard_Boolean BOPTools_AlgoTools::IsInternalFace
   (const TopoDS_Face& theFace,
    const TopoDS_Solid& theSolid,
    BOPCol_IndexedDataMapOfShapeListOfShape& theMEF,
@@ -640,7 +640,7 @@ Standard_Integer BOPTools_AlgoTools::IsInternalFace
     BOPCol_ListOfShape& aLF=theMEF.ChangeFromKey(aE);
     aNbF=aLF.Extent();
     if (!aNbF) {
-      return iRet; // it can not be so
+      return iRet != 0; // it can not be so
     }
     //
     else if (aNbF==1) {
@@ -670,8 +670,7 @@ Standard_Integer BOPTools_AlgoTools::IsInternalFace
     }
     //
     if (aNbF%2) {
-      iRet=0;
-      return iRet; // it can not be so
+      return Standard_False; // it can not be so
     }
     else { // aNbF=2,4,6,8,...
       iRet=BOPTools_AlgoTools::IsInternalFace(theFace, aE, aLF, 
@@ -686,7 +685,7 @@ Standard_Integer BOPTools_AlgoTools::IsInternalFace
   }
   //
   if (iRet!=2) {
-    return iRet;
+    return iRet == 1;
   }
   //
   //========================================
@@ -699,10 +698,7 @@ Standard_Integer BOPTools_AlgoTools::IsInternalFace
   //
   aState=BOPTools_AlgoTools::ComputeState(theFace, theSolid, 
                                           theTol, aBounds, theContext);
-  //
-  iRet=(aState==TopAbs_IN)? 1 : 0;
-  //
-  return iRet;
+  return aState == TopAbs_IN;
 }
 //=======================================================================
 //function : IsInternalFace

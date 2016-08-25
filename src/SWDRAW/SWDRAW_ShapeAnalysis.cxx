@@ -613,8 +613,8 @@ static Standard_Integer freebounds (Draw_Interpretor& di,
   if (shape.IsNull()) return 1;
   Standard_Real toler = Draw::Atof (a[2]);
   Standard_Boolean splitclosed = Standard_False, splitopen = Standard_False;
-  if ( n > 3) splitclosed = Draw::Atoi (a[3]);
-  if ( n > 4) splitopen   = Draw::Atoi (a[4]);
+  if ( n > 3) splitclosed = Draw::Atoi (a[3]) != 0;
+  if ( n > 4) splitopen   = Draw::Atoi (a[4]) != 0;
 
   ShapeAnalysis_FreeBounds F;
   if (toler <= 0)
@@ -677,8 +677,8 @@ static Standard_Integer FreeBoundsProps(Draw_Interpretor& di,
   Standard_Real toler = 0.;
   Standard_Boolean splitclosed = Standard_False, splitopen = Standard_False;
   if (n > 2) toler =  Draw::Atof(a[2]);
-  if (n > 3) splitclosed = Draw::Atoi(a[3]);
-  if (n > 4) splitopen   = Draw::Atoi(a[4]);
+  if (n > 3) splitclosed = Draw::Atoi(a[3]) != 0;
+  if (n > 4) splitopen   = Draw::Atoi(a[4]) != 0;
   ShapeAnalysis_FreeBoundsProperties analyzer;
   if (toler > 0)
     analyzer.Init(source, toler, splitclosed, splitopen);
@@ -735,8 +735,8 @@ static Standard_Integer closefreebounds (Draw_Interpretor& di,
   if (shape.IsNull()) return 1;
   Standard_Real sewtoler = Draw::Atof (a[2]), closetoler = Draw::Atof (a[3]);
   Standard_Boolean splitclosed = Standard_False, splitopen = Standard_False;
-  if ( n > 4) splitclosed = Draw::Atoi (a[3]);
-  if ( n > 5) splitopen   = Draw::Atoi (a[4]);
+  if ( n > 4) splitclosed = Draw::Atoi (a[3]) != 0;
+  if ( n > 5) splitopen   = Draw::Atoi (a[4]) != 0;
 
   ShapeFix_FreeBounds F;
   if (sewtoler <= 0)

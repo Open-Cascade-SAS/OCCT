@@ -19,10 +19,8 @@ Bnd_BoundSortBox2d.cxx
 Bnd_BoundSortBox2d.hxx
 Bnd_Box.cxx
 Bnd_Box.hxx
-Bnd_Box.lxx
 Bnd_Box2d.cxx
 Bnd_Box2d.hxx
-Bnd_Box2d.lxx
 Bnd_HArray1OfBox.hxx
 Bnd_HArray1OfBox2d.hxx
 Bnd_HArray1OfSphere.hxx

@@ -54,7 +54,7 @@ IGESDraw_ConnectPoint::IGESDraw_ConnectPoint ()    {  }
   theFunctionTemplate   = aFunctionTemplate;
   thePointIdentifier    = aPointIdentifier;
   theFunctionCode       = aFunctionCode;
-  theSwapFlag           = aSwapFlag;
+  theSwapFlag           = aSwapFlag != 0;
   theOwnerSubfigure     = anOwnerSubfigure;
   InitTypeAndForm(132,0);
 }

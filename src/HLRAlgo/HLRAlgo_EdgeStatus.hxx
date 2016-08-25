@@ -56,9 +56,15 @@ public:
   //! Edge is   bounded by the  interval  <Start>, <End>
   //! with the tolerances <TolStart>, <TolEnd>.
   Standard_EXPORT void Initialize (const Standard_Real Start, const Standard_ShortReal TolStart, const Standard_Real End, const Standard_ShortReal TolEnd);
-  
-    void Bounds (Standard_Real& Start, Standard_ShortReal& TolStart, Standard_Real& End, Standard_ShortReal& TolEnd) const;
-  
+
+  void Bounds (Standard_Real& theStart, Standard_ShortReal& theTolStart, Standard_Real& theEnd, Standard_ShortReal& theTolEnd) const
+  {
+    theStart    = myStart;
+    theTolStart = myTolStart;
+    theEnd      = myEnd;
+    theTolEnd   = myTolEnd;
+  }
+
   Standard_EXPORT Standard_Integer NbVisiblePart() const;
   
   Standard_EXPORT void VisiblePart (const Standard_Integer Index, Standard_Real& Start, Standard_ShortReal& TolStart, Standard_Real& End, Standard_ShortReal& TolEnd) const;
@@ -71,49 +77,39 @@ public:
   //! or  inside  ) the boundary  of  the  face the flag
   //! <OnBoundary> is True ( or False ).
   Standard_EXPORT void Hide (const Standard_Real Start, const Standard_ShortReal TolStart, const Standard_Real End, const Standard_ShortReal TolEnd, const Standard_Boolean OnFace, const Standard_Boolean OnBoundary);
-  
+
   //! Hide the whole Edge.
-    void HideAll();
-  
+  void HideAll()
+  {
+    AllVisible(Standard_False);
+    AllHidden (Standard_True);
+  }
+
   //! Show the whole Edge.
-    void ShowAll();
-  
-    Standard_Boolean AllHidden() const;
-  
-    void AllHidden (const Standard_Boolean B);
-  
-    Standard_Boolean AllVisible() const;
-  
-    void AllVisible (const Standard_Boolean B);
+  void ShowAll()
+  {
+    AllVisible(Standard_True);
+    AllHidden (Standard_False);
+  }
 
+  Standard_Boolean AllHidden() const { return myAllHidden; }
 
+  void AllHidden (const Standard_Boolean B) { myAllHidden = B; }
 
+  Standard_Boolean AllVisible() const { return myAllVisible; }
 
-protected:
-
-
-
-
+  void AllVisible (const Standard_Boolean B) { myAllVisible = B; }
 
 private:
-
-
 
   Standard_Real myStart;
   Standard_Real myEnd;
   Standard_ShortReal myTolStart;
   Standard_ShortReal myTolEnd;
-  Standard_Boolean myFlags;
+  Standard_Boolean myAllHidden;
+  Standard_Boolean myAllVisible;
   Intrv_Intervals myVisibles;
 
-
 };
-
-
-#include <HLRAlgo_EdgeStatus.lxx>
-
-
-
-
 
 #endif // _HLRAlgo_EdgeStatus_HeaderFile

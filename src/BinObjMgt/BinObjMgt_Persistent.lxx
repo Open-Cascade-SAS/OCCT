@@ -227,6 +227,6 @@ inline const BinObjMgt_Persistent& BinObjMgt_Persistent::GetBoolean
 //  Standard_Integer anIntVal = (Standard_Integer) theValue;
   Standard_Integer anIntVal;
   GetInteger (anIntVal);
-  theValue = (Standard_Boolean) anIntVal;
+  theValue = anIntVal != 0;
   return *this;
 }

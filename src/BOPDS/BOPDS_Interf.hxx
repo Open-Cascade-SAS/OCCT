@@ -163,7 +163,7 @@ class BOPDS_Interf  {
    * @return true if the interference has index of new shape
    */
   Standard_Boolean HasIndexNew() const {
-    return (myIndexNew+1);
+    return (myIndexNew+1) != 0;
   }
   //
  protected:     

@@ -148,7 +148,7 @@ Handle(Transfer_Binder) IGESToBRep_Actor::Transfer
   if (mymodel.IsNull() || ent.IsNull()) return NullResult();
   Standard_Integer anum = mymodel->Number(start);
   
-  if(!Interface_Static::IVal("read.iges.faulty.entities") && mymodel->IsErrorEntity(anum)) 
+  if (Interface_Static::IVal("read.iges.faulty.entities") == 0 && mymodel->IsErrorEntity(anum)) 
     return NullResult();
   TopoDS_Shape shape;
 

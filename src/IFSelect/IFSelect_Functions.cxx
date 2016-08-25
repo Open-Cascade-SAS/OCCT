@@ -124,7 +124,7 @@ static IFSelect_ReturnStatus fun1
 {
   Handle(IFSelect_WorkSession) WS = pilot->Session();
 //        ****    ToggleHandler     ****
-  int hand = !WS->ErrorHandle();
+  Standard_Boolean hand = !WS->ErrorHandle();
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (hand) sout << " --  Mode Catch Error now Active"   <<endl;
   else      sout << " --  Mode Catch Error now Inactive" <<endl;

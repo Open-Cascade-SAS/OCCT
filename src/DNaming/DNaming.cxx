@@ -336,7 +336,7 @@ static Standard_Boolean GetDangleShapes(const TopoDS_Shape& ShapeIn,
     const TopTools_ListOfShape& ancestors = subShapeAndAncestors.FindFromIndex(i);
     if (ancestors.Extent() == 1) Dangles.Bind(ancestors.First(), mayBeDangle);
   }
-  return Dangles.Extent();
+  return !Dangles.IsEmpty();
 }
 
 //=======================================================================

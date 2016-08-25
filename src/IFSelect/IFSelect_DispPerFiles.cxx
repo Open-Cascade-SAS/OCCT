@@ -59,10 +59,6 @@ IFSelect_DispPerFiles::IFSelect_DispPerFiles ()    {  }
   return Standard_True;
 }
 
-    Standard_Boolean  IFSelect_DispPerFiles::PacketsCount
-  (const Interface_Graph& G, Standard_Integer& /*count*/) const 
-      {  return (G.Size() < CountValue() ? G.Size() : CountValue());  }
-
     void  IFSelect_DispPerFiles::Packets
   (const Interface_Graph& G, IFGraph_SubPartsIterator& packs) const 
 {

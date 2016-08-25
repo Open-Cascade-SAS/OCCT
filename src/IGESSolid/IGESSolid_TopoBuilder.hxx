@@ -183,7 +183,7 @@ private:
 
   Handle(IGESSolid_ManifoldSolid) thesolid;
   Handle(IGESSolid_Shell) themains;
-  Standard_Integer themflag;
+  Standard_Boolean themflag;
   Handle(TColStd_HSequenceOfTransient) thevoids;
   Handle(TColStd_HSequenceOfInteger) thevflag;
   Handle(IGESSolid_Shell) theshell;
@@ -191,7 +191,7 @@ private:
   Handle(TColStd_HSequenceOfInteger) thefflag;
   Handle(IGESSolid_Face) theface;
   Handle(IGESData_IGESEntity) thesurf;
-  Standard_Integer theouter;
+  Standard_Boolean theouter;
   Handle(TColStd_HSequenceOfTransient) theinner;
   Handle(IGESSolid_Loop) theloop;
   Handle(TColStd_HSequenceOfInteger) theetype;

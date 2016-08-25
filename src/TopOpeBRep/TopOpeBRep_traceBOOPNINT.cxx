@@ -115,7 +115,9 @@ Standard_EXPORT Standard_Integer TopOpeBRep_SettraceNVP(const Standard_Boolean b
 }
 
 Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceNVP(Standard_Integer n,char**a)
-{ Standard_Integer b = BOOPNVP.Get(n,a); return b; }
+{
+  return BOOPNVP.Get(n,a);
+}
 
 Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceNVP(Standard_Integer i1,Standard_Integer i2,Standard_Integer i3,Standard_Integer i4,Standard_Integer i5)
 {
@@ -135,12 +137,14 @@ Standard_EXPORT Standard_Integer TopOpeBRep_SettraceSHA(const Standard_Boolean b
 }
 
 Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceSHA(Standard_Integer n,char**a)
-{ Standard_Integer b = BOOPSHA.Get(n,a); return b; }
+{
+  return BOOPSHA.Get(n,a);
+}
 
 Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceSHA(const Standard_Integer i1)
 {
   char* t[1]; t[0]=AS(i1);
-  Standard_Boolean b = BOOPSHA.Get(1,t);return b;
+  return BOOPSHA.Get(1,t);
 }
 
 // #ifdef OCCT_DEBUG

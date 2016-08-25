@@ -37,6 +37,7 @@ class StdLPersistent_Collection
   // Converters
   struct noConversion;
   struct byteConverter;
+  struct boolConverter;
   struct stringConverter;
   struct referenceConverter;
 
@@ -175,7 +176,7 @@ public:
   typedef listT <real, TDataStd_RealList>
     RealList;
 
-  typedef listT <integer, TDataStd_BooleanList>
+  typedef listT <integer, TDataStd_BooleanList, boolConverter>
     BooleanList;
 
   typedef listT <persistent, TDataStd_ExtStringList, stringConverter>
