@@ -214,7 +214,7 @@ public:
      * This method should be used instead of operator delete.
      */ 
     static void delNode (TreeNode * theNode,
-                         Handle(NCollection_BaseAllocator)& theAlloc)
+                         const Handle(NCollection_BaseAllocator)& theAlloc)
     {
       if (theNode) {
         if (theNode -> myChildren) {
