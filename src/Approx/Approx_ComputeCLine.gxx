@@ -228,16 +228,14 @@ Standard_Boolean Approx_ComputeCLine::Compute(const MultiLine& Line,
 
   for (deg = mydegremin; deg <= mydegremax; deg++) {
 
-    AppParCurves_MultiCurve mySCU(deg+1);
     AppCont_LeastSquare LSquare(Line, Ufirst, Ulast, myfirstC, mylastC, deg, NbPoints);
     mydone = LSquare.IsDone();
     if (mydone) {
       LSquare.Error(Fv, TheTol3d, TheTol2d);
       if (TheTol3d <= mytol3d && TheTol2d <= mytol2d) {
-	mySCU = LSquare.Value();
 	// Stockage de la multicurve approximee.
 	tolreached = Standard_True;
-	myMultiCurves.Append(mySCU);
+        myMultiCurves.Append(LSquare.Value());
 	myfirstparam.Append(Ufirst);
 	mylastparam.Append(Ulast);
 	Tolers3d.Append(TheTol3d);

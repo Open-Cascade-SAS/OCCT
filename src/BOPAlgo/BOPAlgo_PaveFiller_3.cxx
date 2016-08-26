@@ -412,15 +412,22 @@ void BOPAlgo_PaveFiller::PerformEE()
     const IntTools_SequenceOfCommonPrts& aCPrts = anEdgeEdge.CommonParts();
     aNbCPrts = aCPrts.Length();
     //
-    Standard_Boolean bLineLine = Standard_False;
+    Standard_Boolean bAnalytical = Standard_False;
     if (aNbCPrts) {
       const TopoDS_Edge& aOE1 = *(TopoDS_Edge*)&myDS->Shape(nE1);
       const TopoDS_Edge& aOE2 = *(TopoDS_Edge*)&myDS->Shape(nE2);
       //
       BRepAdaptor_Curve aBAC1(aOE1), aBAC2(aOE2);
       //
-      bLineLine = (aBAC1.GetType() == GeomAbs_Line &&
-                   aBAC2.GetType() == GeomAbs_Line);
+      GeomAbs_CurveType aType1 = aBAC1.GetType();
+      GeomAbs_CurveType aType2 = aBAC2.GetType();
+      //
+      bAnalytical = (((aType1 == GeomAbs_Line) &&
+                      (aType2 == GeomAbs_Line ||
+                       aType2 == GeomAbs_Circle)) ||
+                     ((aType2 == GeomAbs_Line) &&
+                      (aType1 == GeomAbs_Line ||
+                       aType1 == GeomAbs_Circle)));
     }
     //
     for (i=1; i<=aNbCPrts; ++i) {
@@ -483,10 +490,11 @@ void BOPAlgo_PaveFiller::PerformEE()
           //
           BOPTools_AlgoTools::MakeNewVertex(aE1, aT1, aE2, aT2, aVnew);
           Standard_Real aTolVnew = BRep_Tool::Tolerance(aVnew);
-          if (bLineLine) {
+          if (bAnalytical) {
             // increase tolerance for Line/Line intersection, but do not update 
             // the vertex till its intersection with some other shape
-            Standard_Real aTolMin = (aCR1.Last() - aCR1.First()) / 2.;
+            Standard_Real aTolMin = (BRepAdaptor_Curve(aE1).GetType() == GeomAbs_Line) ?
+              (aCR1.Last() - aCR1.First()) / 2. : (aCR2.Last() - aCR2.First()) / 2.;
             if (aTolMin > aTolVnew) {
               aTolVnew = aTolMin;
             }
@@ -780,6 +788,7 @@ void BOPAlgo_PaveFiller::TreatNewVertices
                             Bnd_Box> aTreeFiller(aBBTree);
   BOPAlgo_VectorOfTNV aVTNV;
   //
+  Standard_Real aTolAdd = Precision::Confusion() / 2.;
   aNbV = theMVCPB.Extent();
   for (i=1; i<=aNbV; ++i) {
     const TopoDS_Vertex& aV = *((TopoDS_Vertex*)&theMVCPB.FindKey(i));
@@ -787,7 +796,7 @@ void BOPAlgo_PaveFiller::TreatNewVertices
     //
     aTol = theMVCPB.FindFromIndex(i).Tolerance();
     aBox.Add(BRep_Tool::Pnt(aV));
-    aBox.SetGap(aTol);
+    aBox.SetGap(aTol + aTolAdd);
     //
     aTreeFiller.Add(i, aBox);
     //

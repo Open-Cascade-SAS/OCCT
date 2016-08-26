@@ -894,6 +894,40 @@ class ProjLib_Function : public AppCont_Function
 };
 
 //=======================================================================
+//function : ComputeTolU
+//purpose  : 
+//=======================================================================
+
+static Standard_Real ComputeTolU(const Handle(Adaptor3d_HSurface)& theSurf,
+                                 const Standard_Real theTolerance)
+{
+  Standard_Real aTolU = theSurf->UResolution(theTolerance);
+  if (theSurf->IsUPeriodic())
+  {
+    aTolU = Min(aTolU, 0.01*theSurf->UPeriod());
+  }
+
+  return aTolU;
+}
+
+//=======================================================================
+//function : ComputeTolV
+//purpose  : 
+//=======================================================================
+
+static Standard_Real ComputeTolV(const Handle(Adaptor3d_HSurface)& theSurf,
+                                 const Standard_Real theTolerance)
+{
+  Standard_Real aTolV = theSurf->VResolution(theTolerance);
+  if (theSurf->IsVPeriodic())
+  {
+    aTolV = Min(aTolV, 0.01*theSurf->VPeriod());
+  }
+
+  return aTolV;
+}
+
+//=======================================================================
 //function : ProjLib_ComputeApprox
 //purpose  : 
 //=======================================================================
@@ -1031,8 +1065,13 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox
       Deg2 = 12; 
     }
 //-------------
-    Approx_FitAndDivide2d Fit(F,Deg1,Deg2,myTolerance,myTolerance,
-			      Standard_True);
+    const Standard_Real aTolU = ComputeTolU(S, myTolerance);
+    const Standard_Real aTolV = ComputeTolV(S, myTolerance);
+    const Standard_Real aTol2d = Max(Sqrt(aTolU*aTolU + aTolV*aTolV), Precision::PConfusion());
+
+    Approx_FitAndDivide2d Fit(F, Deg1, Deg2, myTolerance, aTol2d, Standard_True);
+
+    Standard_Real aNewTol2d = 0;
     if(Fit.IsAllApproximated()) {
       Standard_Integer i;
       Standard_Integer NbCurves = Fit.NbMultiCurves();
@@ -1040,11 +1079,10 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox
     // on essaie de rendre la courbe au moins C1
       Convert_CompBezierCurves2dToBSplineCurve2d Conv;
 
-      myTolerance = 0;
       Standard_Real Tol3d,Tol2d;
       for (i = 1; i <= NbCurves; i++) {
 	      Fit.Error(i,Tol3d, Tol2d);
-	      myTolerance = Max(myTolerance, Tol2d);
+              aNewTol2d = Max(aNewTol2d, Tol2d);
 	      AppParCurves_MultiCurve MC = Fit.Value( i);       //Charge la Ieme Curve
 	      TColgp_Array1OfPnt2d Poles2d( 1, MC.Degree() + 1);//Recupere les poles
 	      MC.Curve(1, Poles2d);
@@ -1095,9 +1133,18 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox
       if(NbCurves != 0) {
 	      Standard_Real Tol3d,Tol2d;
 	      Fit.Error(NbCurves,Tol3d, Tol2d);
-	      myTolerance = Tol2d;
+              aNewTol2d = Tol2d;
       }
     }
+
+    // restore tolerance 3d from 2d
+
+    //Here we consider that 
+    //   aTolU(new)/aTolV(new) = aTolU(old)/aTolV(old)
+    //(it is assumption indeed).
+    //Then,
+    //  Tol3D(new)/Tol3D(old) = Tol2D(new)/Tol2D(old).
+    myTolerance *= (aNewTol2d / aTol2d);
 
     //Return curve home
     Standard_Real UFirst = F.FirstParameter();
