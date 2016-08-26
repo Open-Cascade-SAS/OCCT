@@ -37,6 +37,7 @@
 #include <StepBasic_ProductDefinitionFormation.hxx>
 #include <StepBasic_ProductDefinitionRelationship.hxx>
 #include <StepBasic_SiUnit.hxx>
+#include <StepBasic_SiUnitAndLengthUnit.hxx>
 #include <StepBasic_Unit.hxx>
 #include <STEPCAFControl_Controller.hxx>
 #include <STEPCAFControl_DataMapIteratorOfDataMapOfShapePD.hxx>
@@ -97,6 +98,8 @@
 #include <StepDimTol_GeoTolAndGeoTolWthMod.hxx>
 #include <StepDimTol_GeometricToleranceWithMaximumTolerance.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
+#include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
 #include <StepGeom_Plane.hxx>
 #include <StepGeom_Polyline.hxx>
 #include <StepDimTol_PlacedDatumTargetFeature.hxx>
@@ -174,6 +177,7 @@
 #include <StepVisual_AnnotationPlane.hxx>
 #include <StepVisual_DraughtingCallout.hxx>
 #include <StepVisual_DraughtingCalloutElement.hxx>
+#include <StepVisual_DraughtingModel.hxx>
 #include <StepVisual_Invisibility.hxx>
 #include <StepVisual_LayeredItem.hxx>
 #include <StepVisual_PlanarBox.hxx>
@@ -1642,7 +1646,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadSHUOs (const Handle(XSControl_WorkSe
 //function : GetLengthConversionFactor
 //purpose  : 
 //=======================================================================
-static Standard_Boolean GetLengthConversionFactor(Handle(StepBasic_NamedUnit)& NU,
+static Standard_Boolean GetLengthConversionFactor(const Handle(StepBasic_NamedUnit)& NU,
                                                   Standard_Real& afact)
 {
   afact=1.;
@@ -1667,6 +1671,44 @@ static Standard_Boolean GetLengthConversionFactor(Handle(StepBasic_NamedUnit)& N
   return Standard_True;
 }
 
+//=======================================================================
+//function : GetLengthConversionFactorFromContext
+//purpose  : 
+//=======================================================================
+static Standard_Boolean GetLengthConversionFactorFromContext(const Handle(StepRepr_RepresentationContext)& theRC,
+                                                             Standard_Real& theFact)
+{
+  theFact = 1;
+  if (theRC.IsNull())
+    return Standard_False;
+  Handle(StepBasic_ConversionBasedUnitAndLengthUnit) aSiLU;
+  Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext) aCtx =
+    Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)::DownCast(theRC);
+  if (!aCtx.IsNull()) {
+    for (Standard_Integer j = 1; j <= aCtx->NbUnits(); j++) {
+      if (aCtx->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndLengthUnit))) {
+        aSiLU = Handle(StepBasic_ConversionBasedUnitAndLengthUnit)::DownCast(aCtx->UnitsValue(j));
+        break;
+      }
+    }
+  }
+  if (aSiLU.IsNull()) {
+    Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx) aCtx1 =
+      Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx)::DownCast(theRC);
+    if (!aCtx1.IsNull()) {
+      for (Standard_Integer j = 1; j <= aCtx1->NbUnits(); j++) {
+        if (aCtx1->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndLengthUnit))) {
+          aSiLU = Handle(StepBasic_ConversionBasedUnitAndLengthUnit)::DownCast(aCtx1->UnitsValue(j));
+          break;
+        }
+      }
+    }
+  }
+  if (aSiLU.IsNull())
+    return Standard_False;
+  return GetLengthConversionFactor(aSiLU, theFact);
+  
+}
 
 //=======================================================================
 //function : GetAngleConversionFactor
@@ -1753,6 +1795,13 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
   if (aDMIA.IsNull() || aDMIA->NbIdentifiedItem() == 0)
     return;
 
+  // calculate units
+  Handle(StepVisual_DraughtingModel) aDModel = 
+    Handle(StepVisual_DraughtingModel)::DownCast(aDMIA->UsedRepresentation());
+  Standard_Real aFact = 1;
+  if (!aDModel.IsNull())
+    GetLengthConversionFactorFromContext(aDModel->ContextOfItems(), aFact);
+
   // retrieve AnnotationPlane
   Standard_Boolean isHasPlane = Standard_False;
   gp_Ax2 aPlaneAxes;
@@ -1792,7 +1841,7 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
         //set location of the annotation plane
         Handle(TColStd_HArray1OfReal) aLocCoords;
         Handle(StepGeom_CartesianPoint) aLoc = aA2P3D->Location();
-        gp_Pnt aLocPos( aLoc->CoordinatesValue (1), aLoc->CoordinatesValue (2), aLoc->CoordinatesValue (3));
+        gp_Pnt aLocPos( aLoc->CoordinatesValue(1) * aFact, aLoc->CoordinatesValue(2) * aFact, aLoc->CoordinatesValue(3) * aFact);
         aPlaneAxes.SetLocation(aLocPos);
         isHasPlane = Standard_True;
       }
@@ -1878,7 +1927,7 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
         }
       }
     }
-    //case of tesselated entities
+    //case of tessellated entities
     else
     {
       Handle(StepRepr_RepresentationItem) aTessItem = anItem->Item();
@@ -1921,8 +1970,8 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
           Standard_Integer indnext = anIndexes->Value(n + 1);
           if( ind > aPoints->Length() || indnext > aPoints->Length())
             continue;
-          gp_Pnt aP1(aPoints->Value(ind));
-          gp_Pnt aP2(aPoints->Value(indnext));
+          gp_Pnt aP1(aPoints->Value(ind) * aFact);
+          gp_Pnt aP2(aPoints->Value(indnext) * aFact);
           BRepBuilderAPI_MakeEdge aMaker(aP1, aP2);
           if( aMaker.IsDone())
           {
@@ -1995,6 +2044,15 @@ void readConnectionPoints(const Handle(XSControl_TransferReader)& theTR,
 {
   Handle(Transfer_TransientProcess) aTP = theTR->TransientProcess();
   const Interface_Graph& aGraph = aTP->Graph();
+
+  //calculate units
+  Standard_Real aFact = 1;
+  Handle(StepShape_ShapeDimensionRepresentation) aSDR = NULL;
+  for (Interface_EntityIterator anIt = aGraph.Sharings(theGDT); aSDR.IsNull() && anIt.More(); anIt.Next()) {
+    aSDR = Handle(StepShape_ShapeDimensionRepresentation)::DownCast(anIt.Value());
+  }
+  if (!aSDR.IsNull())
+    GetLengthConversionFactorFromContext(aSDR->ContextOfItems(), aFact);
   
   if (theGDT->IsKind(STANDARD_TYPE(StepShape_DimensionalSize))) {
     // retrieve derived geometry
@@ -2019,7 +2077,7 @@ void readConnectionPoints(const Handle(XSControl_TransferReader)& theTR,
     }
   
     // set connection point to object
-    gp_Pnt aPnt(aPoint->CoordinatesValue(1), aPoint->CoordinatesValue(2), aPoint->CoordinatesValue(3));
+    gp_Pnt aPnt(aPoint->CoordinatesValue(1) * aFact, aPoint->CoordinatesValue(2) * aFact, aPoint->CoordinatesValue(3) * aFact);
     theDimObject->SetPoint(aPnt);
   }
   else if (theGDT->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation))) {
@@ -2053,7 +2111,7 @@ void readConnectionPoints(const Handle(XSControl_TransferReader)& theTR,
       }
       if (!aPoint.IsNull()) {
         // set connection point to object
-        gp_Pnt aPnt(aPoint->CoordinatesValue(1), aPoint->CoordinatesValue(2), aPoint->CoordinatesValue(3));
+        gp_Pnt aPnt(aPoint->CoordinatesValue(1) * aFact, aPoint->CoordinatesValue(2) * aFact, aPoint->CoordinatesValue(3) * aFact);
         theDimObject->SetPoint(aPnt);
       }
     }
@@ -2069,7 +2127,7 @@ void readConnectionPoints(const Handle(XSControl_TransferReader)& theTR,
       }
       if (!aPoint.IsNull()) {
         // set connection point to object
-        gp_Pnt aPnt(aPoint->CoordinatesValue(1), aPoint->CoordinatesValue(2), aPoint->CoordinatesValue(3));
+        gp_Pnt aPnt(aPoint->CoordinatesValue(1) * aFact, aPoint->CoordinatesValue(2) * aFact, aPoint->CoordinatesValue(3) * aFact);
         theDimObject->SetPoint2(aPnt);
       }
     }

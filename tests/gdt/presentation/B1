@@ -1,0 +1,8 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug27645_nist_ftc_08_asme1_ct5240_rc-1.stp
+
+set ref_data {
+Centre of mass: 1162.5107814948756 1182.2988239749477 863.67748864175542
+Mass: 544183.72366787971
+
+}

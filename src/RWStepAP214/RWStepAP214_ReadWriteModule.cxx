@@ -1381,6 +1381,7 @@ Handle(atype) result = Handle(atype)::DownCast (start)
 #include <StepVisual_TessellatedGeometricSet.hxx>
 #include <StepVisual_TessellatedCurveSet.hxx>
 #include <StepVisual_CoordinatesList.hxx>
+#include <StepRepr_CharacterizedRepresentation.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentation.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
 
@@ -1389,8 +1390,12 @@ Handle(atype) result = Handle(atype)::DownCast (start)
 #include <RWStepVisual_RWTessellatedGeometricSet.hxx>
 #include <RWStepVisual_RWTessellatedCurveSet.hxx>
 #include <RWStepVisual_RWCoordinatesList.hxx>
+#include <RWStepRepr_RWCharacterizedRepresentation.hxx>
 #include <RWStepRepr_RWConstructiveGeometryRepresentation.hxx>
 #include <RWStepRepr_RWConstructiveGeometryRepresentationRelationship.hxx>
+#include <StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation.hxx>
+#include <RWStepVisual_RWCharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation.hxx>
+
 
 // -- General Declarations (Recognize, StepType) ---
 
@@ -2028,6 +2033,7 @@ static TCollection_AsciiString Reco_TessellatedCurveSet("TESSELLATED_CURVE_SET")
 static TCollection_AsciiString Reco_CoordinatesList("COORDINATES_LIST");
 static TCollection_AsciiString Reco_ConstructiveGeometryRepresentation("CONSTRUCTIVE_GEOMETRY_REPRESENTATION");
 static TCollection_AsciiString Reco_ConstructiveGeometryRepresentationRelationship("CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP");
+static TCollection_AsciiString Reco_CharacterizedRepresentation("CHARACTERIZED_REPRESENTATION");
 // -- Definition of the libraries --
 
 static Handle(Dico_DictionaryOfInteger) typenums;
@@ -2681,6 +2687,7 @@ RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule ()
   typenums->SetItem ( Reco_CoordinatesList, 711);
   typenums->SetItem ( Reco_ConstructiveGeometryRepresentation, 712);
   typenums->SetItem ( Reco_ConstructiveGeometryRepresentationRelationship, 713);
+  typenums->SetItem ( Reco_CharacterizedRepresentation, 714);
 
   
 //    SHORT NAMES
@@ -3556,6 +3563,12 @@ Standard_Integer RWStepAP214_ReadWriteModule::CaseStep
                  types(4).IsEqual(StepType(624))))) {
         return 706;
       }
+      else if (types(1).IsEqual(StepType(402)) &&
+               types(2).IsEqual(StepType(714)) &&
+               types(3).IsEqual(StepType(441)) &&
+               types(4).IsEqual(StepType(245))) {
+        return 715;
+      }
     }
     else if (NbComp == 3) {
       if ((types(1).IsEqual(StepType(158))) &&
@@ -3849,6 +3862,8 @@ Standard_Boolean RWStepAP214_ReadWriteModule::IsComplex
     case 705:
       return Standard_True;
     case 706:
+      return Standard_True;
+    case 715:
       return Standard_True;
     default:
       return Standard_False;
@@ -4504,6 +4519,7 @@ const TCollection_AsciiString& RWStepAP214_ReadWriteModule::StepType
   case 711 : return Reco_CoordinatesList;
   case 712 : return Reco_ConstructiveGeometryRepresentation;
   case 713 : return Reco_ConstructiveGeometryRepresentationRelationship;
+  case 714 : return Reco_CharacterizedRepresentation;
 
   default : return PasReco;
   }
@@ -4813,6 +4829,11 @@ Standard_Boolean RWStepAP214_ReadWriteModule::ComplexType(const Standard_Integer
       types.Append (StepType(676));
       types.Append (StepType(625));
       break;
+    case 715:
+      types.Append(StepType(402));
+      types.Append(StepType(714));
+      types.Append(StepType(441));
+      types.Append(StepType(245));
     }
   return Standard_True;
 }
@@ -9333,6 +9354,20 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
       DeclareAndCast(StepRepr_ConstructiveGeometryRepresentationRelationship,anent,ent);
       RWStepRepr_RWConstructiveGeometryRepresentationRelationship tool;
       tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+     case 714:
+    {
+      DeclareAndCast(StepRepr_CharacterizedRepresentation, anent, ent);
+      RWStepRepr_RWCharacterizedRepresentation tool;
+      tool.ReadStep(data, num, ach, anent);
+    }
+    break;
+     case 715:
+    {
+      DeclareAndCast(StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation, anent, ent);
+      RWStepVisual_RWCharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation tool;
+      tool.ReadStep(data, num, ach, anent);
     }
     break;
 
@@ -14133,6 +14168,20 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
       DeclareAndCast(StepRepr_ConstructiveGeometryRepresentationRelationship,anent,ent);
       RWStepRepr_RWConstructiveGeometryRepresentationRelationship tool;
       tool.WriteStep(SW,anent);
+    }
+    break;
+      case 714:
+    {
+      DeclareAndCast(StepRepr_CharacterizedRepresentation, anent, ent);
+      RWStepRepr_RWCharacterizedRepresentation tool;
+      tool.WriteStep(SW, anent);
+    }
+    break;
+      case 715:
+    {
+      DeclareAndCast(StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation, anent, ent);
+      RWStepVisual_RWCharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation tool;
+      tool.WriteStep(SW, anent);
     }
     break;
 

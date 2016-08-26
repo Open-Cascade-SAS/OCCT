@@ -1,0 +1,10 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug27645_nist_ftc_06_asme1_cr3000_rd.prt.stp
+puts "TODO CR27235 ALL:Error : 4 differences with reference data found :"
+puts "TODO CR27235 ALL:Error on writing file"
+
+set ref_data {
+Centre of mass: 571.08730967855467 2205.0751810551806 -1537.7275040606771
+Mass: 535373.51735687314
+
+}

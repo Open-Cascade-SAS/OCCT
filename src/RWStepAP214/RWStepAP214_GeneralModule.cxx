@@ -1355,7 +1355,10 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_GeneralModule,StepData_GeneralModule)
 #include <RWStepVisual_RWTessellatedGeometricSet.hxx>
 #include <RWStepVisual_RWTessellatedCurveSet.hxx>
 #include <RWStepVisual_RWCoordinatesList.hxx>
-
+#include <StepRepr_CharacterizedRepresentation.hxx>
+#include <RWStepRepr_RWCharacterizedRepresentation.hxx>
+#include <StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation.hxx>
+#include <RWStepVisual_RWCharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation.hxx>
 
 static Standard_Integer catsh,catdr,catstr,catdsc,cataux;
 
@@ -5101,6 +5104,20 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer CN,
       tool.Share(anent,iter);
     }
     break;
+  case 714:
+  {
+    DeclareAndCast(StepRepr_CharacterizedRepresentation, anent, ent);
+    RWStepRepr_RWCharacterizedRepresentation tool;
+    tool.Share(anent, iter);
+  }
+  break;
+  case 715:
+  {
+    DeclareAndCast(StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation, anent, ent);
+    RWStepVisual_RWCharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation tool;
+    tool.Share(anent, iter);
+  }
+  break;
     default : break;
     }
 }
@@ -7068,34 +7085,34 @@ Standard_Boolean RWStepAP214_GeneralModule::NewVoid
   case 706:
     ent = new StepDimTol_GeoTolAndGeoTolWthMaxTol;
     break;
-
    case 707:
         ent = new StepVisual_TessellatedAnnotationOccurrence;
      break;
-
    case 708:
      ent = new StepVisual_TessellatedItem;     
     break;
-
    case 709:
      ent = new StepVisual_TessellatedGeometricSet;
    break;
-
    case 710:
      ent = new StepVisual_TessellatedCurveSet;
    break;
-   
    case 711:
        ent = new StepVisual_CoordinatesList;
    break;
-
    case 712:
        ent = new StepRepr_ConstructiveGeometryRepresentation;
    break;
-
    case 713:
        ent = new StepRepr_ConstructiveGeometryRepresentationRelationship;
    break;
+   case 714:
+   ent = new StepRepr_CharacterizedRepresentation;
+   break;
+   case 715:
+   ent = new StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation;
+   break;
+
     
   default: 
     return Standard_False;
@@ -7689,6 +7706,8 @@ Standard_Integer  RWStepAP214_GeneralModule::CategoryNumber
   case 711: return cataux;
   case 712:
   case 713: return catsh;
+  case 714: return catstr;
+  case 715: return catdsc;
     
   default : break;
   }
