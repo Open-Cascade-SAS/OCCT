@@ -1501,8 +1501,8 @@ Standard_Real AIS_InteractiveContext::HLRAngle() const
 //function : SetDisplayMode
 //purpose  :
 //=======================================================================
-void AIS_InteractiveContext::SetDisplayMode (const AIS_DisplayMode  theMode,
-                                             const Standard_Boolean theToUpdateViewer)
+void AIS_InteractiveContext::SetDisplayMode(const Standard_Integer theMode,
+                                            const Standard_Boolean theToUpdateViewer)
 {
   if (theMode == myDisplayMode)
   {

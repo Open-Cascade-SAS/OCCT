@@ -672,7 +672,7 @@ public:
   //! object is displayed but no viewer will be updated.
   //! Note that display mode 3 is only used if you have an
   //! AIS_Textured Shape.
-  Standard_EXPORT void SetDisplayMode (const AIS_DisplayMode AMode, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetDisplayMode (const Standard_Integer AMode, const Standard_Boolean updateviewer = Standard_True);
   
 
   //! Sets the deviation coefficient aCoefficient.
