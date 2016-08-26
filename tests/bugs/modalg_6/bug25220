@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC25220"
+puts "============"
+puts ""
+######################################################
+# Using BRepFill_OffsetWire withs wires containing arc edges throws exception "Standard_NullValue"
+######################################################
+
+restore [locate_data_file bug25220.brep] a
+
+mkoffset r a 1 -5
+
+checkprops r_1 -l 939.882
+
+set info [checksection r_1]
+
+if { [regexp "nb alone Vertices : 0" ${info}] != 1 } {
+  puts "Error: Result of offset is incorrect"
+} else {
+  puts "OK : Result of offset is correct"
+} 
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${casename}.png
