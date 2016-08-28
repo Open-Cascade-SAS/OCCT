@@ -114,6 +114,7 @@ void StdSelect_BRepOwner::Hilight(const Handle(PrsMgr_PresentationManager)& PM,
     if (!aSel.IsNull())
     {
       myPrsSh->SetZLayer (aSel->ZLayer());
+      myPrsSh->SetTransformPersistence (aSel->GetTransformPersistenceMode(), aSel->GetTransformPersistencePoint());
     }
 
     // highlight and set layer
@@ -176,6 +177,7 @@ void StdSelect_BRepOwner::HilightWithColor(const Handle(PrsMgr_PresentationManag
     if (!aSel.IsNull())
     {
       myPrsSh->SetZLayer (aSel->ZLayer());
+      myPrsSh->SetTransformPersistence (aSel->GetTransformPersistenceMode(), aSel->GetTransformPersistencePoint());
     }
 
     // highlight with color and set layer

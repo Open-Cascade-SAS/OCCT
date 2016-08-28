@@ -1,0 +1,17 @@
+puts "========"
+puts "StdSelect_BRepOwner - copy transformation persistence flag"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+vclear
+vinit View1
+vtrihedron t
+vdisplay -trsfPers trihedron -trsfPersPos -1 -1 40 t
+box b 30 40 50
+vdisplay -trsfPers trihedron -trsfPersPos -1 -1 40 -dispMode 1 -highMode 1 b
+vselmode b 4 1
+vmoveto 50 350
+if { [vreadpixel 50 350 rgb name] != "DARKTURQUOISE" } { puts "Error: face is not highlighted" }
+
+vdump $imagedir/${casename}.png
