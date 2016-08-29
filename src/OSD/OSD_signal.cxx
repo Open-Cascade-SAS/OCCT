@@ -615,7 +615,7 @@ LONG _osd_debug ( void ) {
 // POSIX threads
 #include <pthread.h>
 
-#ifdef linux
+#ifdef __linux__
 #include <fenv.h>
 static Standard_Boolean fFltExceptions = Standard_False;
 #endif
@@ -798,7 +798,7 @@ static void Handler (const int theSignal)
   // cout << "OSD::Handler: signal " << (int) theSignal << " occured inside a try block " <<  endl ;
   if ( ADR_ACT_SIGIO_HANDLER != NULL )
     (*ADR_ACT_SIGIO_HANDLER)() ;
-#ifdef linux
+#ifdef __linux__
   if (fFltExceptions)
     feenableexcept (FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
     //feenableexcept (FE_INVALID | FE_DIVBYZERO);
@@ -922,7 +922,7 @@ static void SegvHandler(const int theSignal,
   (void)theSignal; // silence GCC warnings
   (void)theContext;
 #endif
-#ifdef linux
+#ifdef __linux__
   if (fFltExceptions)
     feenableexcept (FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
     //feenableexcept (FE_INVALID | FE_DIVBYZERO);
@@ -1009,7 +1009,7 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
       cerr << "ieee_handler does not work !!! KO " << endl;
 #endif
     }
-#elif defined (linux)
+#elif defined (__linux__)
     feenableexcept (FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
     //feenableexcept (FE_INVALID | FE_DIVBYZERO);
     fFltExceptions = Standard_True;
@@ -1096,7 +1096,7 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
 	sigaction(SIGBUS,&oact,&oact);
 #endif
 
-#if (!defined (linux)) && (!defined(__linux__))
+#if !defined(__linux__)
   sigaction(SIGSYS,&act,&oact);   // ...... bad argument to system call
 
 # ifdef OBJS

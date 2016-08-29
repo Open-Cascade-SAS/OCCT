@@ -6,12 +6,7 @@ puts ""
 # Exception in intersection algorithm if FPE is switched on
 ######################################################
 
-puts "TODO OCC26329 ALL: Error: dsetsignal command does not exist"
-
-# This "if" should be deleted after integration the fix for issue #26329
-if { [catch { dsetsignal 1 } ] } {
-  puts "Error: dsetsignal command does not exist"
-}
+dsetsignal 1
 
 restore [locate_data_file bug27842_shape1_fix.brep] b1 
 restore [locate_data_file bug27842_shape2_fix.brep] b2

@@ -2452,7 +2452,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
     }
     catch(Standard_NumericError) // Linux, Windows with SSE2
     {
-      di << "Exception is caught, OK\n";
+      di << "Caught, OK\n";
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
