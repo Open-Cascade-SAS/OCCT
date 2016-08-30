@@ -200,6 +200,7 @@ void BOPAlgo_MakerVolume::CollectFaces()
   //
   Standard_Integer i, aNbShapes;
   BOPCol_ListIteratorOfListOfShape aIt;
+  BOPCol_MapOfShape aMFence;
   //
   aNbShapes = myDS->NbSourceShapes();
   for (i = 0; i < aNbShapes; ++i) {
@@ -217,7 +218,9 @@ void BOPAlgo_MakerVolume::CollectFaces()
       aIt.Initialize(aLFIm);
       for (; aIt.More(); aIt.Next()) {
         const TopoDS_Shape& aFIm = aIt.Value();
-        AddFace(aFIm, myFaces);
+        if (aMFence.Add(aFIm)) {
+          AddFace(aFIm, myFaces);
+        }
       }
     }
     else {

@@ -1734,7 +1734,7 @@ Standard_Boolean BOPDS_DS::CheckCoincidence
     aD=aPPC.LowerDistance();
     //
     aTol=BRep_Tool::Tolerance(aE1);
-    aTol=aTol+BRep_Tool::Tolerance(aE2);
+    aTol=aTol+BRep_Tool::Tolerance(aE2) + Precision::Confusion();
     if (aD<aTol) {
       aT2x=aPPC.LowerDistanceParameter();
       if (aT2x>aT21 && aT2x<aT22) {
