@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC27759"
+puts "========"
+puts ""
+#################################################
+# Invalid result of a Boolean fuse operation
+#################################################
+
+restore [locate_data_file bug27759_shapes.brep] b
+explode b
+
+# use the fuzzy option
+bfuzzyvalue 1e-3
+bfuse result b_1 b_2
+
+checkshape result
+checknbshapes result -shell 2 -solid 2
+checkprops result -s 3.45465 -v 0.176959
+
+
+# restore default value
+bfuzzyvalue 0.0
