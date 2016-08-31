@@ -363,6 +363,7 @@ void OSD::SetSignal (const Standard_Boolean theFloatingSignal)
 {
 #if !defined(__CYGWIN32__) && !defined(__MINGW32__)
   Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
+#if !defined(OCCT_UWP) || defined(NTDDI_WIN10_TH2)
   LPTOP_LEVEL_EXCEPTION_FILTER aPreviousFilter;
 
   OSD_Environment env ("CSF_DEBUG_MODE");
@@ -382,6 +383,7 @@ void OSD::SetSignal (const Standard_Boolean theFloatingSignal)
   // Replaces the existing top-level exception filter for all existing and all future threads
   // in the calling process
   aPreviousFilter = ::SetUnhandledExceptionFilter (/*(LPTOP_LEVEL_EXCEPTION_FILTER)*/ WntHandler);
+#endif // NTDDI_WIN10_TH2
 
   // Signal handlers will only be used when the method ::raise() will be used
   // Handlers must be set for every thread

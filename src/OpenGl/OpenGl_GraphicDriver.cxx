@@ -13,6 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#if defined(_WIN32)
+  #include <windows.h>
+#endif
+
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_Flipper.hxx>
@@ -44,7 +48,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
   #include <X11/Xlib.h> // XOpenDisplay()
 #endif
 
-#if defined(HAVE_EGL) || defined(__ANDROID__) || defined(__QNX__)
+#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__)
   #include <EGL/egl.h>
 #endif
 
@@ -61,7 +65,7 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
                                             const Standard_Boolean                  theToInitialize)
 : Graphic3d_GraphicDriver (theDisp),
   myIsOwnContext (Standard_False),
-#if defined(HAVE_EGL) || defined(__ANDROID__) || defined(__QNX__)
+#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__)
   myEglDisplay ((Aspect_Display )EGL_NO_DISPLAY),
   myEglContext ((Aspect_RenderingContext )EGL_NO_CONTEXT),
   myEglConfig  (NULL),
@@ -82,7 +86,7 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
              || ::getenv ("CALL_SYNCHRO_X")  != NULL;
   XSynchronize (aDisplay, toSync);
 
-#if !defined(HAVE_EGL)
+#if !defined(HAVE_EGL) && !defined(HAVE_GLES2)
   // does the server know about OpenGL & GLX?
   int aDummy;
   if (!XQueryExtension (aDisplay, "GLX", &aDummy, &aDummy, &aDummy))
@@ -206,7 +210,7 @@ void OpenGl_GraphicDriver::ReleaseContext()
     aWindow->GetGlContext()->forcedRelease();
   }
 
-#if defined(HAVE_EGL) || defined(__ANDROID__) || defined(__QNX__)
+#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__)
   if (myIsOwnContext)
   {
     if (myEglContext != (Aspect_RenderingContext )EGL_NO_CONTEXT)
@@ -241,7 +245,7 @@ void OpenGl_GraphicDriver::ReleaseContext()
 Standard_Boolean OpenGl_GraphicDriver::InitContext()
 {
   ReleaseContext();
-#if defined(HAVE_EGL) || defined(__ANDROID__) || defined(__QNX__)
+#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__)
 
 #if !defined(_WIN32) && !defined(__ANDROID__) && !defined(__QNX__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   if (myDisplayConnection.IsNull())
@@ -322,17 +326,18 @@ Standard_Boolean OpenGl_GraphicDriver::InitContext()
     ::Message::DefaultMessenger()->Send ("Error: EGL is unable to create OpenGL context!", Message_Fail);
     return Standard_False;
   }
-  if (eglMakeCurrent ((EGLDisplay )myEglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, (EGLContext )myEglContext) != EGL_TRUE)
-  {
-    ::Message::DefaultMessenger()->Send ("Error: EGL is unable bind OpenGL context!", Message_Fail);
-    return Standard_False;
-  }
+  // eglMakeCurrent() fails or even crash with EGL_NO_SURFACE on some implementations
+  //if (eglMakeCurrent ((EGLDisplay )myEglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, (EGLContext )myEglContext) != EGL_TRUE)
+  //{
+  //  ::Message::DefaultMessenger()->Send ("Error: EGL is unable bind OpenGL context!", Message_Fail);
+  //  return Standard_False;
+  //}
 #endif
   myIsOwnContext = Standard_True;
   return Standard_True;
 }
 
-#if defined(HAVE_EGL) || defined(__ANDROID__) || defined(__QNX__)
+#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__)
 // =======================================================================
 // function : InitEglContext
 // purpose  :
@@ -778,7 +783,7 @@ Standard_Boolean OpenGl_GraphicDriver::ViewExists (const Handle(Aspect_Window)& 
   // Parse the list of views to find
   // a view with the specified window
 
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(OCCT_UWP)
   const Handle(WNT_Window) THEWindow = Handle(WNT_Window)::DownCast (AWindow);
   Aspect_Handle TheSpecifiedWindowId = THEWindow->HWindow ();
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
@@ -788,7 +793,7 @@ Standard_Boolean OpenGl_GraphicDriver::ViewExists (const Handle(Aspect_Window)& 
   #else
     NSView* TheSpecifiedWindowId = THEWindow->HView();
   #endif
-#elif defined(__ANDROID__) || defined(__QNX__)
+#elif defined(__ANDROID__) || defined(__QNX__) || defined(OCCT_UWP)
   (void )AWindow;
   int TheSpecifiedWindowId = -1;
 #else
@@ -804,7 +809,7 @@ Standard_Boolean OpenGl_GraphicDriver::ViewExists (const Handle(Aspect_Window)& 
     {
       const Handle(Aspect_Window) AspectWindow = aView->Window();
 
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(OCCT_UWP)
       const Handle(WNT_Window) theWindow = Handle(WNT_Window)::DownCast (AspectWindow);
       Aspect_Handle TheWindowIdOfView = theWindow->HWindow ();
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
@@ -814,7 +819,7 @@ Standard_Boolean OpenGl_GraphicDriver::ViewExists (const Handle(Aspect_Window)& 
       #else
         NSView* TheWindowIdOfView = theWindow->HView();
       #endif
-#elif defined(__ANDROID__) || defined(__QNX__)
+#elif defined(__ANDROID__) || defined(__QNX__) || defined(OCCT_UWP)
       int TheWindowIdOfView = 0;
 #else
       const Handle(Xw_Window) theWindow = Handle(Xw_Window)::DownCast (AspectWindow);

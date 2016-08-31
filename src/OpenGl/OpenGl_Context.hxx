@@ -721,6 +721,7 @@ public: //! @name extensions
   OpenGl_ArbDbg*         arbDbg;         //!< GL_ARB_debug_output
   OpenGl_ArbFBO*         arbFBO;         //!< GL_ARB_framebuffer_object
   OpenGl_ArbFBOBlit*     arbFBOBlit;     //!< glBlitFramebuffer function, moved out from OpenGl_ArbFBO structure for compatibility with OpenGL ES 2.0
+  Standard_Boolean       extFragDepth;   //!< GL_EXT_frag_depth on OpenGL ES 2.0 (gl_FragDepthEXT built-in variable, before OpenGL ES 3.0)
   OpenGl_ExtGS*          extGS;          //!< GL_EXT_geometry_shader4
   Standard_Boolean       extBgra;        //!< GL_EXT_bgra or GL_EXT_texture_format_BGRA8888 on OpenGL ES
   Standard_Boolean       extAnis;        //!< GL_EXT_texture_filter_anisotropic

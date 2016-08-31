@@ -14,11 +14,14 @@
 
 #include <windows.h>
 
+#include <WNT_WClass.hxx>
+
 #include <Standard_PCharacter.hxx>
 #include <Standard_Type.hxx>
 #include <WNT_ClassDefinitionError.hxx>
-#include <WNT_WClass.hxx>
 #include <WNT_Window.hxx>
+
+#if defined(_WIN32) && !defined(OCCT_UWP)
 
 #include <string.h>
 IMPLEMENT_STANDARD_RTTIEXT(WNT_WClass,MMgt_TShared)
@@ -78,3 +81,4 @@ WNT_WClass::~WNT_WClass ()
 
 }  // end WNT_WClass :: Destroy
 
+#endif // _WIN32

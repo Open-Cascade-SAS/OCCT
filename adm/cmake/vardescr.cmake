@@ -72,6 +72,8 @@ INSTALL_MESSAGE (INSTALL_SAMPLES          "OCCT samples")
 INSTALL_MESSAGE (INSTALL_TEST_CASES       "non-regression OCCT test scripts")
 INSTALL_MESSAGE (INSTALL_DOC_Overview     "OCCT overview documentation (HTML format)")
 INSTALL_MESSAGE (INSTALL_FREEIMAGE        "FreeImage binaries")
+INSTALL_MESSAGE (INSTALL_EGL              "EGL binaries")
+INSTALL_MESSAGE (INSTALL_GLES2            "OpenGL ES 2.0 binaries")
 INSTALL_MESSAGE (INSTALL_FREETYPE         "FreeType binaries")
 INSTALL_MESSAGE (INSTALL_GL2PS            "GL2PS binaries")
 INSTALL_MESSAGE (INSTALL_TBB              "TBB binaries")
@@ -127,6 +129,14 @@ set (USE_FREEIMAGE_DESCR
 "Indicates whether Freeimage product should be used in OCCT visualization
 module for support of popular graphics image formats (PNG, BMP etc)")
 
+set (USE_EGL_DESCR
+"Indicates whether EGL should be used in OCCT visualization
+module instead of conventional OpenGL context creation APIs")
+
+set (USE_GLES2_DESCR
+"Indicates whether OpenGL ES 2.0 should be used in OCCT visualization
+module instead of desktop OpenGL")
+
 set (USE_GL2PS_DESCR
 "Indicates whether GL2PS product should be used in OCCT visualization
 module for support of vector image formats (PS, EPS etc)")
@@ -148,7 +158,7 @@ set (USE_D3D_DESCR "Indicates whether optional Direct3D wrapper in OCCT visualiz
 
 macro (BUILD_MODULE MODULE_NAME)
   set (ENABLE_MODULE TRUE)
-  set (OCCT_MODULES_FOR_UWP FoundationClasses ModelingAlgorithms ModelingData)
+  set (OCCT_MODULES_FOR_UWP FoundationClasses ModelingAlgorithms ModelingData DataExchange Visualization)
   list (FIND OCCT_MODULES_FOR_UWP ${OCCT_MODULE} CAN_BE_USED_IN_UWP)
   if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore" AND CAN_BE_USED_IN_UWP EQUAL -1)
     set (ENABLE_MODULE FALSE)

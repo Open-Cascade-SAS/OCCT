@@ -25,6 +25,8 @@ Aspect_Grid.cxx
 Aspect_Grid.hxx
 Aspect_GridDrawMode.hxx
 Aspect_GridType.hxx
+Aspect_NeutralWindow.cxx
+Aspect_NeutralWindow.hxx
 Aspect_Handle.hxx
 Aspect_HatchStyle.hxx
 Aspect_IdentDefinitionError.hxx

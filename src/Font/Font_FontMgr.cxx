@@ -316,7 +316,10 @@ void Font_FontMgr::InitFontDataBase()
   myListOfFonts.Clear();
   Handle(Font_FTLibrary) aFtLibrary;
 
-#if defined(_WIN32)
+#if defined(OCCT_UWP)
+  // system font files are not accessible
+  (void )aFtLibrary;
+#elif defined(_WIN32)
 
   // font directory is placed in "C:\Windows\Fonts\"
   UINT aStrLength = GetSystemWindowsDirectoryA (NULL, 0);

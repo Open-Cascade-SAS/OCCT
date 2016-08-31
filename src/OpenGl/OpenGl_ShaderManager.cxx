@@ -913,6 +913,11 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFboBlit()
   {
     aProgramSrc->SetHeader ("#version 300 es");
   }
+  else if (myContext->extFragDepth)
+  {
+    aProgramSrc->SetHeader ("#extension GL_EXT_frag_depth : enable"
+                         EOL"#define gl_FragDepth gl_FragDepthEXT");
+  }
   else
   {
     // there is no way to draw into depth buffer

@@ -12,6 +12,7 @@ export HAVE_OPENCL="false";
 export HAVE_FREEIMAGE="false";
 export HAVE_GL2PS="false";
 export HAVE_VTK="false";
+export HAVE_GLES2="false";
 export MACOSX_USE_GLX="false";
 export CSF_OPT_INC=""
 export CSF_OPT_LIB32=""
@@ -101,6 +102,9 @@ if [ "$HAVE_FREEIMAGE" == "true" ]; then
 fi
 if [ "$HAVE_GL2PS" == "true" ]; then
   export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_GL2PS"
+fi
+if [ "$HAVE_GLES2" == "true" ]; then
+  export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_GLES2"
 fi
 if [ "$HAVE_VTK" == "true" ]; then
   export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_VTK"

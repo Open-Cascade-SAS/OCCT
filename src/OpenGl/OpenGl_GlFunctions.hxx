@@ -22,6 +22,9 @@
   #include <windows.h>
 #endif
 
+#include <Standard_Macro.hxx>
+#include <Standard_TypeDef.hxx>
+
 #ifndef APIENTRY
   #define APIENTRY
 #endif
@@ -45,7 +48,12 @@
     #include <OpenGL/gl.h>
   #endif
   #define __X_GL_H // prevent chaotic gl.h inclusions to avoid compile errors
-#elif defined(HAVE_GLES2) || defined(__ANDROID__) || defined(__QNX__)
+#elif defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__)
+  #if defined(_WIN32)
+    // Angle OpenGL ES headers do not define function prototypes even for core functions,
+    // however OCCT is expected to be linked against libGLESv2
+    #define GL_GLEXT_PROTOTYPES
+  #endif
   #include <GLES2/gl2.h>
   //#include <GLES3/gl3.h>
 #else
@@ -178,7 +186,7 @@
   #define GL_DEBUG_SEVERITY_LOW         0x9148
 #endif
 
-#if defined(__ANDROID__) || defined(__QNX__)
+#if !defined(HAVE_EGL) && (defined(__ANDROID__) || defined(__QNX__) || defined(HAVE_GLES2) || defined(OCCT_UWP))
   #define HAVE_EGL
 #endif
 

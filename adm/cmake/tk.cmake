@@ -84,7 +84,7 @@ if (BUILD_SHARED_LIBS)
 
   if (WIN32)
     if (NOT 3RDPARTY_TK_DLL)
-        set (CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll")
+        set (CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll" ".a")
 
         set (DLL_FOLDER_FOR_SEARCH "")
         if (3RDPARTY_TK_DLL_DIR)
@@ -151,7 +151,7 @@ if (BUILD_SHARED_LIBS)
 
   if (WIN32)
     if (NOT 3RDPARTY_TK_DLL)
-      set (CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll")
+      set (CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll" ".a")
 
       set (DLL_FOLDER_FOR_SEARCH "")
       if (3RDPARTY_TK_DLL_DIR)

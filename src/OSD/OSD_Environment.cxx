@@ -240,13 +240,22 @@ Standard_Integer OSD_Environment::Error() const
 
 #include <windows.h>
 
+#include <NCollection_DataMap.hxx>
 #include <NCollection_UtfString.hxx>
+#include <Standard_Mutex.hxx>
 
 #if defined(_MSC_VER)
   #pragma warning( disable : 4700 )
 #endif
 
-#ifndef OCCT_UWP
+#ifdef OCCT_UWP
+namespace
+{
+  // emulate global map of environment variables
+  static Standard_Mutex THE_ENV_LOCK;
+  static NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> THE_ENV_MAP;
+}
+#else
 static void __fastcall _set_error ( OSD_Error&, DWORD );
 #endif
 
@@ -278,9 +287,11 @@ void OSD_Environment :: SetValue ( const TCollection_AsciiString& Value ) {
 
 TCollection_AsciiString OSD_Environment::Value()
 {
-#ifndef OCCT_UWP
   myValue.Clear();
-
+#ifdef OCCT_UWP
+  Standard_Mutex::Sentry aLock (THE_ENV_LOCK);
+  THE_ENV_MAP.Find (myName, myValue);
+#else
   SetLastError (ERROR_SUCCESS);
   wchar_t* anEnvVal = NULL;
   NCollection_UtfWideString aNameWide (myName.ToCString());
@@ -308,11 +319,8 @@ TCollection_AsciiString OSD_Environment::Value()
     Reset();
   }
   myValue = aValue.ToCString();
-  return myValue;
-#else
-  myValue = "";
-  return myValue;
 #endif
+  return myValue;
 }
 
 void OSD_Environment :: SetName ( const TCollection_AsciiString& name ) {
@@ -329,7 +337,10 @@ TCollection_AsciiString OSD_Environment :: Name () const {
 
 void OSD_Environment::Build()
 {
-#ifndef OCCT_UWP
+#ifdef OCCT_UWP
+  Standard_Mutex::Sentry aLock(THE_ENV_LOCK);
+  THE_ENV_MAP.Bind (myName, myValue);
+#else
   NCollection_Utf8String aSetVariable = NCollection_Utf8String(myName.ToCString()) + "=" + myValue.ToCString();
   _wputenv (aSetVariable.ToUtfWide().ToCString());
 #endif
@@ -337,7 +348,10 @@ void OSD_Environment::Build()
 
 void OSD_Environment::Remove()
 {
-#ifndef OCCT_UWP
+#ifdef OCCT_UWP
+  Standard_Mutex::Sentry aLock(THE_ENV_LOCK);
+  THE_ENV_MAP.UnBind (myName);
+#else
   NCollection_Utf8String aSetVariable = NCollection_Utf8String(myName.ToCString()) + "=";
   _wputenv (aSetVariable.ToUtfWide().ToCString());
 #endif

@@ -18,8 +18,10 @@
 #define _WNT_WClass_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
+#if defined(_WIN32) && !defined(OCCT_UWP)
+
+#include <Standard_Type.hxx>
 #include <Standard_CString.hxx>
 #include <Aspect_Handle.hxx>
 #include <Standard_Address.hxx>
@@ -80,24 +82,13 @@ friend class WNT_Window;
 
 protected:
 
-
   Standard_CString lpszName;
   Aspect_Handle hInstance;
   Standard_Address lpfnWndProc;
 
-
-private:
-
-
-
-
 };
-
 
 #include <WNT_WClass.lxx>
 
-
-
-
-
+#endif // _WIN32
 #endif // _WNT_WClass_HeaderFile

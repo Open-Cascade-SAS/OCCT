@@ -1,0 +1,6 @@
+# OpenGL ES 2.0
+if (WIN32)
+  THIRDPARTY_PRODUCT("GLES2" "GLES2/gl2.h" "libGLESv2" "libGLESv2")
+else()
+  THIRDPARTY_PRODUCT("GLES2" "GLES2/gl2.h" "GLESv2" "GLESv2")
+endif()

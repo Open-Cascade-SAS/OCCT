@@ -1388,6 +1388,13 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
     aCtx->core20fwd->glDepthFunc (GL_ALWAYS);
     aCtx->core20fwd->glDepthMask (GL_TRUE);
     aCtx->core20fwd->glEnable (GL_DEPTH_TEST);
+  #if defined(GL_ES_VERSION_2_0)
+    if (!aCtx->IsGlGreaterEqual (3, 0)
+     && !aCtx->extFragDepth)
+    {
+      aCtx->core20fwd->glDisable (GL_DEPTH_TEST);
+    }
+  #endif
 
     myWorkspace->DisableTexture();
 

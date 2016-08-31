@@ -15,6 +15,9 @@
 // include windows.h first to have all definitions available
 #include <windows.h>
 
+#include <WNT_Window.hxx>
+
+#if defined(_WIN32) && !defined(OCCT_UWP)
 
 #include <Aspect_Convert.hxx>
 #include <Aspect_WindowDefinitionError.hxx>
@@ -22,7 +25,6 @@
 #include <Image_AlienPixMap.hxx>
 #include <Standard_Type.hxx>
 #include <WNT_WClass.hxx>
-#include <WNT_Window.hxx>
 
 #include <stdio.h>
 
@@ -354,3 +356,5 @@ void WNT_Window::SetPos (const Standard_Integer theX,  const Standard_Integer th
   aXRight  = theX1;
   aYBottom = theY1;
 }
+
+#endif // _WIN32

@@ -1106,6 +1106,9 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
     set aLibsMap(CSF_netapi32)     "netapi32"
     set aLibsMap(CSF_AviLibs)      "ws2_32 vfw32"
     set aLibsMap(CSF_OpenGlLibs)   "opengl32"
+    if { "$::HAVE_GLES2" == "true" } {
+      set aLibsMap(CSF_OpenGlLibs) "libEGL libGLESv2"
+    }
     set aLibsMap(CSF_winspool)     "Winspool"
     set aLibsMap(CSF_psapi)        "Psapi"
     set aLibsMap(CSF_d3d9)         "d3d9"
@@ -1138,6 +1141,10 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
         set aLibsMap(CSF_TclTkLibs)  "X11 tk8.6"
         set aLibsMap(CSF_XwLibs)     "X11 Xext Xmu Xi"
         set aLibsMap(CSF_MotifLibs)  "X11"
+      }
+
+      if { "$::HAVE_GLES2" == "true" } {
+        set aLibsMap(CSF_OpenGlLibs) "EGL GLESv2"
       }
     }
   }

@@ -13,14 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// On Windows, function TryEnterCriticalSection has appeared in Windows NT
-// and is surrounded by #ifdef in MS VC++ 7.1 headers.
-// Thus to use it we need to define appropriate macro saying that we wil
-// run on Windows NT 4.0 at least
-#if ((defined(_WIN32) || defined(__WIN32__)) && !defined(_WIN32_WINNT))
-  #define _WIN32_WINNT 0x0400
-#endif
-
 #include <Standard_Mutex.hxx>
 #include <Standard_OStream.hxx>
 

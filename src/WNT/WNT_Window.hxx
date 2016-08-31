@@ -18,8 +18,10 @@
 #define _WNT_Window_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
+#if defined(_WIN32) && !defined(OCCT_UWP)
+
+#include <Standard_Type.hxx>
 #include <Standard_Integer.hxx>
 #include <Aspect_Handle.hxx>
 #include <Standard_Boolean.hxx>
@@ -118,7 +120,6 @@ public:
 
 protected:
 
-
   Standard_Integer aXLeft;
   Standard_Integer aYTop;
   Standard_Integer aXRight;
@@ -128,19 +129,9 @@ protected:
   Aspect_Handle myHParentWindow;
   Standard_Boolean myIsForeign;
 
-
-private:
-
-
-
-
 };
-
 
 #include <WNT_Window.lxx>
 
-
-
-
-
+#endif // _WIN32
 #endif // _WNT_Window_HeaderFile

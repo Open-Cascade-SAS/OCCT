@@ -165,6 +165,7 @@ void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
   aTA->Aspect()->Font();
   OpenGl_Vec4 aColor = theWorkspace->LineColor();
 
+#if !defined(GL_ES_VERSION_2_0)
   // Finally draw something to make sure UserDraw really works
   glPushAttrib(GL_ENABLE_BIT);
   glDisable(GL_LIGHTING);
@@ -176,6 +177,7 @@ void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
   glVertex3f(myCoords[0], myCoords[1], myCoords[5]);
   glEnd();
   glPopAttrib();
+#endif
 }
 
 } // end of anonymous namespace
@@ -222,6 +224,7 @@ static int VFeedback (Draw_Interpretor& theDI,
                       Standard_Integer  /*theArgNb*/,
                       const char**      /*theArgVec*/)
 {
+#if !defined(GL_ES_VERSION_2_0)
   // get the active view
   Handle(V3d_View) aView = ViewerTest::CurrentView();
   if (aView.IsNull())
@@ -363,6 +366,11 @@ static int VFeedback (Draw_Interpretor& theDI,
           << "Buffer size GL_3D_COLOR: " << aLen3D_rgba * double(sizeof(GLfloat)) / double(1024 * 1024) << " MiB\n";
     return 0;
   }
+#else
+  (void )theDI;
+  std::cout << "Command is unsupported on current platform.\n";
+  return 1;
+#endif
 }
 
 //==============================================================================

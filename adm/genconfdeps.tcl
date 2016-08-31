@@ -47,6 +47,7 @@ set HAVE_FREEIMAGE "false"
 set HAVE_GL2PS     "false"
 set HAVE_TBB       "false"
 set HAVE_D3D       "false"
+set HAVE_GLES2     "false"
 set HAVE_OPENCL    "false"
 set HAVE_VTK       "false"
 set MACOSX_USE_GLX "false"
@@ -88,6 +89,9 @@ if { [info exists ::env(HAVE_TBB)] } {
 }
 if { [info exists ::env(HAVE_D3D)] } {
   set HAVE_D3D "$::env(HAVE_D3D)"
+}
+if { [info exists ::env(HAVE_GLES2)] } {
+  set HAVE_GLES2 "$::env(HAVE_GLES2)"
 }
 if { [info exists ::env(HAVE_OPENCL)] } {
   set HAVE_OPENCL "$::env(HAVE_OPENCL)"
@@ -647,6 +651,148 @@ proc wokdep:SearchOpenCL {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBi
   return "$isFound"
 }
 
+# Search EGL library placement
+proc wokdep:SearchEGL {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64} {
+  upvar $theErrInc   anErrInc
+  upvar $theErrLib32 anErrLib32
+  upvar $theErrLib64 anErrLib64
+  upvar $theErrBin32 anErrBin32
+  upvar $theErrBin64 anErrBin64
+
+  set isFound "true"
+  set aHeaderPath [wokdep:SearchHeader "EGL/egl.h"]
+  if { "$aHeaderPath"  == "" } {
+    set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{EGL}*] "$::VCVER" "$::ARCH" ]
+    if { "$aPath" == "" || ![file exists "$aPath/include/EGL/egl.h"] } {
+      set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{angle}*] "$::VCVER" "$::ARCH" ]
+    }
+
+    if { "$aPath" != "" && [file exists "$aPath/include/EGL/egl.h"] } {
+      lappend ::CSF_OPT_INC "$aPath/include"
+    } else {
+      lappend anErrInc "Error: 'EGL/egl.h' not found (EGL)"
+      set isFound "false"
+    }
+  }
+
+  set aLibName "EGL"
+  if { "$::tcl_platform(platform)" == "windows" } {
+    # awkward exception
+    set aLibName "libEGL"
+  }
+
+  foreach anArchIter {64 32} {
+    set aLibPath [wokdep:SearchLib "$aLibName" "$anArchIter"]
+    if { "$aLibPath" == "" } {
+      set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{EGL}*] "$::VCVER" "$anArchIter" ]
+      set aLibPath [wokdep:SearchLib "$aLibName" "$anArchIter" "$aPath/lib"]
+      if { "$aLibPath" == "" } {
+        set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{angle}*] "$::VCVER" "$anArchIter" ]
+        set aLibPath [wokdep:SearchLib "$aLibName" "$anArchIter" "$aPath/lib"]
+      }
+
+      if { "$aLibPath" != "" } {
+        lappend ::CSF_OPT_LIB$anArchIter "$aPath/lib"
+      } else {
+        lappend anErrLib$anArchIter "Error: '${::SYS_LIB_PREFIX}${aLibName}.${::SYS_LIB_SUFFIX}' not found (EGL)"
+        if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
+      }
+    }
+
+    if { "$::tcl_platform(platform)" == "windows" } {
+      set aDllPath [wokdep:SearchBin "libEGL.dll" "$anArchIter"]
+      if { "$aDllPath" == "" } {
+        set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{EGL}*] "$::VCVER" "$anArchIter" ]
+        set aDllPath [wokdep:SearchBin "libEGL.dll" "$anArchIter" "$aPath/bin"]
+        if { "$aDllPath" == "" } {
+          set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{angle}*] "$::VCVER" "$anArchIter" ]
+          set aDllPath [wokdep:SearchBin "libEGL.dll" "$anArchIter" "$aPath/bin"]
+        }
+
+        if { "$aDllPath" != "" } {
+          lappend ::CSF_OPT_BIN$anArchIter "$aPath/bin"
+        } else {
+          lappend anErrBin$anArchIter "Error: 'libEGL.dll' not found (EGL)"
+          if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
+        }
+      }
+    }
+  }
+
+  return "$isFound"
+}
+
+# Search OpenGL ES 2.0 library placement
+proc wokdep:SearchGLES {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64} {
+  upvar $theErrInc   anErrInc
+  upvar $theErrLib32 anErrLib32
+  upvar $theErrLib64 anErrLib64
+  upvar $theErrBin32 anErrBin32
+  upvar $theErrBin64 anErrBin64
+
+  set isFound "true"
+  set aHeaderPath [wokdep:SearchHeader "GLES2/gl2.h"]
+  if { "$aHeaderPath"  == "" } {
+    set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{GLES}*] "$::VCVER" "$::ARCH" ]
+    if { "$aPath" == "" || ![file exists "$aPath/include/GLES2/gl2.h"] } {
+      set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{angle}*] "$::VCVER" "$::ARCH" ]
+    }
+
+    if { "$aPath" != "" && [file exists "$aPath/include/GLES2/gl2.h"] } {
+      lappend ::CSF_OPT_INC "$aPath/include"
+    } else {
+      lappend anErrInc "Error: 'GLES2/gl2.h' not found (OpenGL ES 2.0)"
+      set isFound "false"
+    }
+  }
+
+  set aLibName "GLESv2"
+  if { "$::tcl_platform(platform)" == "windows" } {
+    # awkward exception
+    set aLibName "libGLESv2"
+  }
+
+  foreach anArchIter {64 32} {
+    set aLibPath [wokdep:SearchLib "$aLibName" "$anArchIter"]
+    if { "$aLibPath" == "" } {
+      set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{GLES}*] "$::VCVER" "$anArchIter" ]
+      set aLibPath [wokdep:SearchLib "$aLibName" "$anArchIter" "$aPath/lib"]
+      if { "$aLibPath" == "" } {
+        set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{angle}*] "$::VCVER" "$anArchIter" ]
+        set aLibPath [wokdep:SearchLib "$aLibName" "$anArchIter" "$aPath/lib"]
+      }
+
+      if { "$aLibPath" != "" } {
+        lappend ::CSF_OPT_LIB$anArchIter "$aPath/lib"
+      } else {
+        lappend anErrLib$anArchIter "Error: '${::SYS_LIB_PREFIX}${aLibName}.${::SYS_LIB_SUFFIX}' not found (OpenGL ES 2.0)"
+        if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
+      }
+    }
+
+    if { "$::tcl_platform(platform)" == "windows" } {
+      set aDllPath [wokdep:SearchBin "libGLESv2.dll" "$anArchIter"]
+      if { "$aDllPath" == "" } {
+        set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{EGL}*] "$::VCVER" "$anArchIter" ]
+        set aDllPath [wokdep:SearchBin "libGLESv2.dll" "$anArchIter" "$aPath/bin"]
+        if { "$aDllPath" == "" } {
+          set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{angle}*] "$::VCVER" "$anArchIter" ]
+          set aDllPath [wokdep:SearchBin "libGLESv2.dll" "$anArchIter" "$aPath/bin"]
+        }
+
+        if { "$aDllPath" != "" } {
+          lappend ::CSF_OPT_BIN$anArchIter "$aPath/bin"
+        } else {
+          lappend anErrBin$anArchIter "Error: 'libGLESv2.dll' not found (OpenGL ES 2.0)"
+          if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
+        }
+      }
+    }
+  }
+
+  return "$isFound"
+}
+
 # Auxiliary function, gets VTK version to set default search directory
 proc wokdep:VtkVersion { thePath } {
   set aResult "6.1"
@@ -932,6 +1078,7 @@ proc wokdep:SaveCustom {} {
     puts $aFile "set HAVE_FREEIMAGE=$::HAVE_FREEIMAGE"
     puts $aFile "set HAVE_GL2PS=$::HAVE_GL2PS"
     puts $aFile "set HAVE_TBB=$::HAVE_TBB"
+    puts $aFile "set HAVE_GLES2=$::HAVE_GLES2"
     puts $aFile "set HAVE_D3D=$::HAVE_D3D"
     puts $aFile "set HAVE_OPENCL=$::HAVE_OPENCL"
     puts $aFile "set HAVE_VTK=$::HAVE_VTK"
@@ -982,6 +1129,7 @@ proc wokdep:SaveCustom {} {
     puts $aFile "export HAVE_FREEIMAGE=$::HAVE_FREEIMAGE"
     puts $aFile "export HAVE_GL2PS=$::HAVE_GL2PS"
     puts $aFile "export HAVE_TBB=$::HAVE_TBB"
+    puts $aFile "export HAVE_GLES2=$::HAVE_GLES2"
     puts $aFile "export HAVE_OPENCL=$::HAVE_OPENCL"
     puts $aFile "export HAVE_VTK=$::HAVE_VTK"
     if { "$::tcl_platform(os)" == "Darwin" } {
