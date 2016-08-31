@@ -26,7 +26,6 @@ SelectMgr_RectangularFrustum.cxx
 SelectMgr_RectangularFrustum.hxx
 SelectMgr_SelectableObject.cxx
 SelectMgr_SelectableObject.hxx
-SelectMgr_SelectableObject.lxx
 SelectMgr_SelectableObjectSet.cxx
 SelectMgr_SelectableObjectSet.hxx
 SelectMgr_SelectableObjectTrsfPersSet.cxx

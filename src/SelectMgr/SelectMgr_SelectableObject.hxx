@@ -101,17 +101,29 @@ public:
   Standard_EXPORT virtual Standard_Boolean HasSelection (const Standard_Integer theMode) const;
   
   //! Begins the iteration scanning for sensitive primitives.
-    void Init();
-  
+  void Init()
+  {
+    mycurrent = 1;
+  }
+
   //! Continues the iteration scanning for sensitive primitives.
-    Standard_Boolean More() const;
-  
+  Standard_Boolean More() const
+  {
+    return mycurrent <= myselections.Length();
+  }
+
   //! Continues the iteration scanning for sensitive primitives.
-    void Next();
-  
+  void Next()
+  {
+    mycurrent++;
+  }
+
   //! Returns the current selection in this framework.
-    const Handle(SelectMgr_Selection)& CurrentSelection() const;
-  
+  const Handle(SelectMgr_Selection)& CurrentSelection() const
+  {
+    return myselections (mycurrent);
+  }
+
   Standard_EXPORT void ResetTransformation() Standard_OVERRIDE;
   
   //! Recomputes the location of the selection aSelection.
@@ -153,8 +165,11 @@ public:
   
   //! Sets update status FULL to selections of the object. Must be used as the only method of UpdateSelection
   //! from outer classes to prevent BVH structures from being outdated.
-  Standard_EXPORT void UpdateSelection (const Standard_Integer theMode = -1);
-  
+  void UpdateSelection (const Standard_Integer theMode = -1)
+  {
+    updateSelection (theMode);
+  }
+
   //! Returns bounding box of selectable object
   //! by storing its minimum and maximum 3d coordinates
   //! to output parameters
@@ -164,8 +179,11 @@ public:
   Standard_EXPORT virtual void SetAttributes (const Handle(Prs3d_Drawer)& theDrawer);
   
   //! Returns the attributes settings.
-    const Handle(Prs3d_Drawer)& Attributes() const;
-  
+  const Handle(Prs3d_Drawer)& Attributes() const
+  {
+    return myDrawer;
+  }
+
   //! Clears settings provided by the drawing tool theDrawer.
   Standard_EXPORT virtual void UnsetAttributes();
   
@@ -173,8 +191,11 @@ public:
   Standard_EXPORT virtual void SetHilightAttributes (const Handle(Prs3d_Drawer)& theDrawer);
   
   //! Returns the hilight attributes settings.
-    const Handle(Prs3d_Drawer)& HilightAttributes() const;
-  
+  const Handle(Prs3d_Drawer)& HilightAttributes() const
+  {
+    return myHilightDrawer;
+  }
+
   //! Clears settings provided by the hilight drawing tool theDrawer.
   Standard_EXPORT virtual void UnsetHilightAttributes();
   
@@ -192,7 +213,10 @@ public:
   Standard_EXPORT Bnd_Box BndBoxOfSelected (Handle(SelectMgr_IndexedMapOfOwner)& theOwners);
 
   //! Returns the mode for selection of object as a whole
-  inline Standard_Integer GlobalSelectionMode() const;
+  Standard_Integer GlobalSelectionMode() const
+  {
+    return myGlobalSelMode;
+  }
 
   //! Returns the owner of mode for selection of object as a whole
   Standard_EXPORT virtual Handle(SelectMgr_EntityOwner) GlobalSelOwner() const;
@@ -205,34 +229,29 @@ friend class SelectMgr_SelectionManager;
 
 protected:
 
-  
   Standard_EXPORT SelectMgr_SelectableObject(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d = PrsMgr_TOP_AllView);
 
-  inline void setGlobalSelMode (const Standard_Integer theMode);
+  void setGlobalSelMode (const Standard_Integer theMode)
+  {
+    myGlobalSelMode = theMode > 0 ? theMode : 0;
+  }
+
+  Standard_EXPORT virtual void updateSelection (const Standard_Integer theMode);
+
+protected:
 
   SelectMgr_SequenceOfSelection myselections;
   Handle(Prs3d_Drawer) myDrawer;
   Handle(Prs3d_Drawer) myHilightDrawer;
   Handle(SelectMgr_EntityOwner) myAssemblyOwner;
-
+  Standard_Boolean myAutoHilight;
 
 private:
 
-
   Standard_Integer mycurrent;
-  Standard_Boolean myAutoHilight;
   Handle(Prs3d_Presentation) mySelectionPrs;
   Handle(Prs3d_Presentation) myHilightPrs;
   Standard_Integer myGlobalSelMode;
-
-
 };
-
-
-#include <SelectMgr_SelectableObject.lxx>
-
-
-
-
 
 #endif // _SelectMgr_SelectableObject_HeaderFile

@@ -411,12 +411,12 @@ void SelectMgr_SelectableObject::SetZLayer (const Graphic3d_ZLayerId theLayerId)
 }
 
 //=======================================================================
-//function : UpdateSelection
+//function : updateSelection
 //purpose  : Sets update status FULL to selections of the object. Must be
 //           used as the only method of UpdateSelection from outer classes
 //           to prevent BVH structures from being outdated.
 //=======================================================================
-void SelectMgr_SelectableObject::UpdateSelection (const Standard_Integer theMode)
+void SelectMgr_SelectableObject::updateSelection (const Standard_Integer theMode)
 {
   if (theMode == -1)
   {
