@@ -256,14 +256,12 @@ void MainPage::OnClickDataExchange(Platform::Object^  theSender,
   if (SaveSTL(filePath, theBox))
     Output_TextBlock->Text += L"OK: export to .stl\n";
 
-/*
   // Export box to .vrml
   StringCchCopyW(filePath, _countof(filePath), tmpPath);
   StringCchCatW(filePath, _countof(filePath), L"/box.vrml");
 
   if (SaveVRML(filePath, theBox))
     Output_TextBlock->Text += L"OK: export to .vrml\n";
-*/
 }
 
 //=======================================================================
@@ -371,7 +369,6 @@ Standard_Boolean MainPage::SaveSTL(const wchar_t* theFilePath, const TopoDS_Shap
 //function : SaveVRML
 //purpose  : Export shape to .vrml
 //=======================================================================
-/*
 Standard_Boolean MainPage::SaveVRML(const wchar_t* theFilePath, const TopoDS_Shape& theShape)
 {
   VrmlAPI_Writer aWriter;
@@ -383,7 +380,6 @@ Standard_Boolean MainPage::SaveVRML(const wchar_t* theFilePath, const TopoDS_Sha
 
   return Standard_True;
 }
-*/
 
 //=======================================================================
 //function : ReadBREP

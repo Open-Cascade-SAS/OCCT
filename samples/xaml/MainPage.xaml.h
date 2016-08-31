@@ -41,7 +41,7 @@ namespace uwp
     Standard_Boolean SaveIGES(const wchar_t* theFilePath, const TopoDS_Shape& theShape);
     Standard_Boolean SaveSTEP(const wchar_t* theFilePath, const TopoDS_Shape& theShape, const STEPControl_StepModelType theValue);
     Standard_Boolean SaveSTL (const wchar_t* theFilePath, const TopoDS_Shape& theShape);
-    // Standard_Boolean SaveVRML(const wchar_t* theFilePath, const TopoDS_Shape& theShape);
+    Standard_Boolean SaveVRML(const wchar_t* theFilePath, const TopoDS_Shape& theShape);
 
     // test data exchange import functionality
     Standard_Boolean ReadBREP(const wchar_t* theFilePath, TopoDS_Shape& theShape);

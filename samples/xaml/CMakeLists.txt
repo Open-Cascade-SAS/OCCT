@@ -51,9 +51,22 @@ source_group("Header Files" FILES ${HEADER_FILES})
 source_group("Resource Files" FILES ${RESOURCE_FILES})
 source_group("Xaml Files" FILES ${XAML_FILES})
 
-add_executable(uwp WIN32 ${SOURCE_FILES} ${HEADER_FILES} ${RESOURCE_FILES} ${XAML_FILES})
+if (USE_FREETYPE)
+  list (APPEND 3RDPARTY_DLLS "${3RDPARTY_FREETYPE_DLL}")
+  set_property(SOURCE ${3RDPARTY_DLLS} PROPERTY VS_DEPLOYMENT_CONTENT 1)
+endif()
+
+add_executable(uwp WIN32 ${SOURCE_FILES} ${HEADER_FILES} ${RESOURCE_FILES} ${XAML_FILES} ${3RDPARTY_DLLS})
 
 set_property(TARGET uwp PROPERTY VS_WINRT_COMPONENT TRUE)
+
+# Set Visual Studio Windows target platform minimum version equal to OS version
+string(REGEX MATCH "^([0-9]+\.[0-9]+\.[0-9]+)$" PLATFORM_WO_DEV_VER "${CMAKE_HOST_SYSTEM_VERSION}")
+if (PLATFORM_WO_DEV_VER)
+  # Add tailing zero to platfrom version 10.0.14393 -> 10.0.14393.0 to have correct version
+  set (CMAKE_HOST_SYSTEM_VERSION "${CMAKE_HOST_SYSTEM_VERSION}.0")
+endif()
+set_property(TARGET uwp PROPERTY VS_WINDOWS_TARGET_PLATFORM_MIN_VERSION "${CMAKE_HOST_SYSTEM_VERSION}")
 
 set_property (TARGET uwp PROPERTY FOLDER Samples)
 
@@ -93,7 +106,7 @@ set (uwp_USED_LIBS        TKernel
                           TKSTEP
                           TKXSBase
                           TKSTL
-#                         TKVRML
+                          TKVRML
                           )
 
 target_link_libraries (uwp ${uwp_USED_LIBS})
