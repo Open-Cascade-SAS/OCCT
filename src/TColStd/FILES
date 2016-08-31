@@ -50,6 +50,7 @@ TColStd_HSequenceOfHExtendedString.hxx
 TColStd_HSequenceOfInteger.hxx
 TColStd_HSequenceOfReal.hxx
 TColStd_HSequenceOfTransient.hxx
+TColStd_IndexedDataMapOfStringString.hxx
 TColStd_IndexedDataMapOfTransientTransient.hxx
 TColStd_IndexedMapOfInteger.hxx
 TColStd_IndexedMapOfReal.hxx

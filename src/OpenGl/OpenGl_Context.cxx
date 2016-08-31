@@ -54,6 +54,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Context,Standard_Transient)
     //
   #else
     #include <OpenGL/OpenGL.h>
+    #include <CoreGraphics/CoreGraphics.h>
   #endif
 #else
   #include <GL/glx.h> // glXGetProcAddress()
@@ -71,6 +72,23 @@ namespace
 {
   static const Handle(OpenGl_Resource) NULL_GL_RESOURCE;
   static const OpenGl_Mat4 THE_IDENTITY_MATRIX;
+
+  //! Add key-value pair to the dictionary.
+  static void addInfo (TColStd_IndexedDataMapOfStringString& theDict,
+                       const TCollection_AsciiString& theKey,
+                       const TCollection_AsciiString& theValue)
+  {
+    theDict.ChangeFromIndex (theDict.Add (theKey, theValue)) = theValue;
+  }
+
+  //! Add key-value pair to the dictionary.
+  static void addInfo (TColStd_IndexedDataMapOfStringString& theDict,
+                       const TCollection_AsciiString& theKey,
+                       const char* theValue)
+  {
+    TCollection_AsciiString aValue (theValue != NULL ? theValue : "");
+    theDict.ChangeFromIndex (theDict.Add (theKey, aValue)) = aValue;
+  }
 }
 
 // =======================================================================
@@ -1337,6 +1355,13 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     {
       FindProcShort (glXSwapIntervalSGI);
     }
+    if (CheckExtension (aGlxExts, "GLX_MESA_query_renderer"))
+    {
+      FindProcShort (glXQueryRendererIntegerMESA);
+      FindProcShort (glXQueryCurrentRendererIntegerMESA);
+      FindProcShort (glXQueryRendererStringMESA);
+      FindProcShort (glXQueryCurrentRendererStringMESA);
+    }
     //extSwapTear = CheckExtension (aGlxExts, "GLX_EXT_swap_control_tear");
 #endif
 
@@ -2407,7 +2432,71 @@ Standard_Size OpenGl_Context::AvailableMemory() const
 // =======================================================================
 TCollection_AsciiString OpenGl_Context::MemoryInfo() const
 {
-  TCollection_AsciiString anInfo;
+  TColStd_IndexedDataMapOfStringString aDict;
+  MemoryInfo (aDict);
+
+  TCollection_AsciiString aText;
+  for (TColStd_IndexedDataMapOfStringString::Iterator anIter (aDict); anIter.More(); anIter.Next())
+  {
+    if (!aText.IsEmpty())
+    {
+      aText += "\n";
+    }
+    aText += TCollection_AsciiString("  ") + anIter.Key() + ": " + anIter.Value();
+  }
+  return aText;
+}
+
+// =======================================================================
+// function : MemoryInfo
+// purpose  :
+// =======================================================================
+void OpenGl_Context::MemoryInfo (TColStd_IndexedDataMapOfStringString& theDict) const
+{
+#if defined(GL_ES_VERSION_2_0)
+  (void )theDict;
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  GLint aGlRendId = 0;
+  CGLGetParameter (CGLGetCurrentContext(), kCGLCPCurrentRendererID, &aGlRendId);
+
+  CGLRendererInfoObj  aRendObj = NULL;
+  CGOpenGLDisplayMask aDispMask = CGDisplayIDToOpenGLDisplayMask (kCGDirectMainDisplay);
+  GLint aRendNb = 0;
+  CGLQueryRendererInfo (aDispMask, &aRendObj, &aRendNb);
+  for (GLint aRendIter = 0; aRendIter < aRendNb; ++aRendIter)
+  {
+    GLint aRendId = 0;
+    if (CGLDescribeRenderer (aRendObj, aRendIter, kCGLRPRendererID, &aRendId) != kCGLNoError
+     || aRendId != aGlRendId)
+    {
+      continue;
+    }
+
+    //kCGLRPVideoMemoryMegabytes   = 131;
+    //kCGLRPTextureMemoryMegabytes = 132;
+    GLint aVMem = 0;
+  #if MAC_OS_X_VERSION_MIN_REQUIRED >= 1070
+    if (CGLDescribeRenderer(aRendObj, aRendIter, kCGLRPVideoMemoryMegabytes, &aVMem) == kCGLNoError)
+    {
+      addInfo (theDict, "GPU memory",         TCollection_AsciiString() + aVMem + " MiB");
+    }
+    if (CGLDescribeRenderer(aRendObj, aRendIter, kCGLRPTextureMemoryMegabytes, &aVMem) == kCGLNoError)
+    {
+      addInfo (theDict, "GPU Texture memory", TCollection_AsciiString() + aVMem + " MiB");
+    }
+  #else
+    if (CGLDescribeRenderer(aRendObj, aRendIter, kCGLRPVideoMemory, &aVMem) == kCGLNoError)
+    {
+      addInfo (theDict, "GPU memory",         TCollection_AsciiString() + (aVMem / (1024 * 1024)) + " MiB");
+    }
+    if (CGLDescribeRenderer(aRendObj, aRendIter, kCGLRPTextureMemory, &aVMem) == kCGLNoError)
+    {
+      addInfo (theDict, "GPU Texture memory", TCollection_AsciiString() + (aVMem / (1024 * 1024)) + " MiB");
+    }
+  #endif
+  }
+#endif
+
 #if !defined(GL_ES_VERSION_2_0)
   if (atiMem)
   {
@@ -2416,14 +2505,17 @@ TCollection_AsciiString OpenGl_Context::MemoryInfo() const
     glGetIntegerv (GL_VBO_FREE_MEMORY_ATI, aValues);
 
     // total memory free in the pool
-    anInfo += TCollection_AsciiString ("  GPU free memory:    ") + (aValues[0] / 1024) + " MiB\n";
+    addInfo (theDict, "GPU free memory",    TCollection_AsciiString() + (aValues[0] / 1024) + " MiB");
 
-    // largest available free block in the pool
-    anInfo += TCollection_AsciiString ("  Largest free block: ") + (aValues[1] / 1024) + " MiB\n";
+    if (aValues[1] != aValues[0])
+    {
+      // largest available free block in the pool
+      addInfo (theDict, "Largest free block", TCollection_AsciiString() + (aValues[1] / 1024) + " MiB");
+    }
     if (aValues[2] != aValues[0])
     {
       // total auxiliary memory free
-      anInfo += TCollection_AsciiString ("  Free memory:        ") + (aValues[2] / 1024) + " MiB\n";
+      addInfo (theDict, "Free auxiliary memory", TCollection_AsciiString() + (aValues[2] / 1024) + " MiB");
     }
   }
   else if (nvxMem)
@@ -2431,25 +2523,140 @@ TCollection_AsciiString OpenGl_Context::MemoryInfo() const
     //current available dedicated video memory (in KiB), currently unused GPU memory
     GLint aValue = 0;
     glGetIntegerv (GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &aValue);
-    anInfo += TCollection_AsciiString ("  GPU free memory:    ") + (aValue / 1024) + " MiB\n";
+    addInfo (theDict, "GPU free memory", TCollection_AsciiString() + (aValue / 1024) + " MiB");
 
     // dedicated video memory, total size (in KiB) of the GPU memory
     GLint aDedicated = 0;
     glGetIntegerv (GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &aDedicated);
-    anInfo += TCollection_AsciiString ("  GPU memory:         ") + (aDedicated / 1024) + " MiB\n";
+    addInfo (theDict, "GPU memory", TCollection_AsciiString() + (aDedicated / 1024) + " MiB");
 
     // total available memory, total size (in KiB) of the memory available for allocations
     glGetIntegerv (GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &aValue);
     if (aValue != aDedicated)
     {
       // different only for special configurations
-      anInfo += TCollection_AsciiString ("  Total memory:       ") + (aValue / 1024) + " MiB\n";
+      addInfo (theDict, "Total memory", TCollection_AsciiString() + (aValue / 1024) + " MiB");
     }
   }
 #endif
-  return anInfo;
+
+#if !defined(GL_ES_VERSION_2_0) && !defined(__APPLE__) && !defined(_WIN32)
+  // GLX_RENDERER_VENDOR_ID_MESA
+  if (myFuncs->glXQueryCurrentRendererIntegerMESA != NULL)
+  {
+    unsigned int aVMemMiB = 0;
+    if (myFuncs->glXQueryCurrentRendererIntegerMESA (GLX_RENDERER_VIDEO_MEMORY_MESA, &aVMemMiB) != False)
+    {
+      addInfo (theDict, "GPU memory", TCollection_AsciiString() + int(aVMemMiB) + " MiB");
+    }
+  }
+#endif
 }
 
+// =======================================================================
+// function : DiagnosticInfo
+// purpose  :
+// =======================================================================
+void OpenGl_Context::DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theDict,
+                                            Graphic3d_DiagnosticInfo theFlags) const
+{
+  if ((theFlags & Graphic3d_DiagnosticInfo_NativePlatform) != 0)
+  {
+  #if defined(HAVE_EGL)
+    addInfo (theDict, "EGLVersion",    ::eglQueryString ((Aspect_Display)myDisplay, EGL_VERSION));
+    addInfo (theDict, "EGLVendor",     ::eglQueryString ((Aspect_Display)myDisplay, EGL_VENDOR));
+    addInfo (theDict, "EGLClientAPIs", ::eglQueryString ((Aspect_Display)myDisplay, EGL_CLIENT_APIS));
+    if ((theFlags & Graphic3d_DiagnosticInfo_Extensions) != 0)
+    {
+      addInfo (theDict, "EGLExtensions", ::eglQueryString ((Aspect_Display)myDisplay, EGL_EXTENSIONS));
+    }
+  #elif defined(_WIN32)
+    if ((theFlags & Graphic3d_DiagnosticInfo_Extensions) != 0
+     && myFuncs->wglGetExtensionsStringARB != NULL)
+    {
+      const char* aWglExts = myFuncs->wglGetExtensionsStringARB ((HDC )myWindowDC);
+      addInfo (theDict, "WGLExtensions", aWglExts);
+    }
+  #elif defined(__APPLE__)
+    //
+  #else
+    Display* aDisplay = (Display*)myDisplay;
+    const int aScreen = DefaultScreen(aDisplay);
+    addInfo (theDict, "GLXDirectRendering", ::glXIsDirect (aDisplay, (GLXContext )myGContext) ? "Yes" : "No");
+    addInfo (theDict, "GLXVendor",  ::glXQueryServerString (aDisplay, aScreen, GLX_VENDOR));
+    addInfo (theDict, "GLXVersion", ::glXQueryServerString (aDisplay, aScreen, GLX_VERSION));
+    if ((theFlags & Graphic3d_DiagnosticInfo_Extensions) != 0)
+    {
+      const char* aGlxExts = ::glXQueryExtensionsString (aDisplay, aScreen);
+      addInfo(theDict, "GLXExtensions", aGlxExts);
+    }
+
+    addInfo (theDict, "GLXClientVendor",  ::glXGetClientString (aDisplay, GLX_VENDOR));
+    addInfo (theDict, "GLXClientVersion", ::glXGetClientString (aDisplay, GLX_VERSION));
+    if ((theFlags & Graphic3d_DiagnosticInfo_Extensions) != 0)
+    {
+      addInfo (theDict, "GLXClientExtensions", ::glXGetClientString (aDisplay, GLX_EXTENSIONS));
+    }
+  #endif
+  }
+
+  if ((theFlags & Graphic3d_DiagnosticInfo_Device) != 0)
+  {
+    addInfo (theDict, "GLvendor",    (const char*)::glGetString (GL_VENDOR));
+    addInfo (theDict, "GLdevice",    (const char*)::glGetString (GL_RENDERER));
+    addInfo (theDict, "GLversion",   (const char*)::glGetString (GL_VERSION));
+    addInfo (theDict, "GLSLversion", (const char*)::glGetString (GL_SHADING_LANGUAGE_VERSION));
+    if (myIsGlDebugCtx)
+    {
+      addInfo (theDict, "GLdebug", "ON");
+    }
+  }
+
+  if ((theFlags & Graphic3d_DiagnosticInfo_Limits) != 0)
+  {
+    addInfo (theDict, "Max texture size", TCollection_AsciiString(myMaxTexDim));
+    addInfo (theDict, "Max MSAA samples", TCollection_AsciiString(myMaxMsaaSamples));
+  }
+
+  if ((theFlags & Graphic3d_DiagnosticInfo_FrameBuffer) != 0)
+  {
+    GLint aViewport[4] = {};
+    ::glGetIntegerv (GL_VIEWPORT, aViewport);
+    addInfo (theDict, "Viewport", TCollection_AsciiString() + aViewport[2] + "x" + aViewport[3]);
+  }
+
+  if ((theFlags & Graphic3d_DiagnosticInfo_Memory) != 0)
+  {
+    MemoryInfo (theDict);
+  }
+
+  if ((theFlags & Graphic3d_DiagnosticInfo_Extensions) != 0)
+  {
+  #if !defined(GL_ES_VERSION_2_0)
+    if (IsGlGreaterEqual (3, 0)
+     && myFuncs->glGetStringi != NULL)
+    {
+      TCollection_AsciiString anExtList;
+      GLint anExtNb = 0;
+      ::glGetIntegerv (GL_NUM_EXTENSIONS, &anExtNb);
+      for (GLint anIter = 0; anIter < anExtNb; ++anIter)
+      {
+        const char* anExtension = (const char*)myFuncs->glGetStringi (GL_EXTENSIONS, (GLuint)anIter);
+        if (!anExtList.IsEmpty())
+        {
+          anExtList += " ";
+        }
+        anExtList += anExtension;
+      }
+      addInfo(theDict, "GLextensions", anExtList);
+    }
+    else
+  #endif
+    {
+      addInfo (theDict, "GLextensions", (const char*)::glGetString (GL_EXTENSIONS));
+    }
+  }
+}
 
 // =======================================================================
 // function : GetResource

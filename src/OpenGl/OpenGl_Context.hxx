@@ -23,6 +23,7 @@
 #include <Aspect_RenderingContext.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <NCollection_DataMap.hxx>
+#include <Graphic3d_DiagnosticInfo.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Handle.hxx>
 #include <NCollection_List.hxx>
@@ -33,7 +34,7 @@
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_Resource.hxx>
 #include <Standard_Transient.hxx>
-#include <TCollection_AsciiString.hxx>
+#include <TColStd_IndexedDataMapOfStringString.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <OpenGl_Clipping.hxx>
 #include <OpenGl_GlCore11.hxx>
@@ -307,6 +308,12 @@ public:
         || (myGlVerMajor == theVerMajor && myGlVerMinor >= theVerMinor);
   }
 
+  //! Return cached GL version major number.
+  Standard_Integer VersionMajor() const { return myGlVerMajor; }
+
+  //! Return cached GL version minor number.
+  Standard_Integer VersionMinor() const { return myGlVerMinor; }
+
   //! Access entire map of loaded OpenGL functions.
   const OpenGl_GlFunctions* Functions() const { return myFuncs.operator->(); }
 
@@ -359,6 +366,14 @@ public:
   //! This function retrieves information from GL about GPU memory
   //! and contains more vendor-specific values than AvailableMemory().
   Standard_EXPORT TCollection_AsciiString MemoryInfo() const;
+
+  //! This function retrieves information from GL about GPU memory.
+  Standard_EXPORT void MemoryInfo (TColStd_IndexedDataMapOfStringString& theDict) const;
+
+  //! Fill in the dictionary with OpenGL info.
+  //! Should be called with bound context.
+  Standard_EXPORT void DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theDict,
+                                              Graphic3d_DiagnosticInfo theFlags) const;
 
   //! Access shared resource by its name.
   //! @param  theKey - unique identifier;

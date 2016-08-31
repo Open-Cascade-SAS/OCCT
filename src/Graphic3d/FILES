@@ -49,6 +49,7 @@ Graphic3d_CView.cxx
 Graphic3d_CView.hxx
 Graphic3d_DataStructureManager.cxx
 Graphic3d_DataStructureManager.hxx
+Graphic3d_DiagnosticInfo.hxx
 Graphic3d_ExportFormat.hxx
 Graphic3d_GraduatedTrihedron.hxx
 Graphic3d_GraphicDriver.cxx

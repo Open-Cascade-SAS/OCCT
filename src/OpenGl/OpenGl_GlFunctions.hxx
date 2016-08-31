@@ -1644,6 +1644,37 @@ public: //! @name glX extensions
 
   typedef int         (*glXSwapIntervalSGI_t)(int theInterval);
   glXSwapIntervalSGI_t glXSwapIntervalSGI;
+
+  // GLX_MESA_query_renderer
+#ifndef GLX_RENDERER_VENDOR_ID_MESA
+  // for glXQueryRendererIntegerMESA() and glXQueryCurrentRendererIntegerMESA()
+  #define GLX_RENDERER_VENDOR_ID_MESA                      0x8183
+  #define GLX_RENDERER_DEVICE_ID_MESA                      0x8184
+  #define GLX_RENDERER_VERSION_MESA                        0x8185
+  #define GLX_RENDERER_ACCELERATED_MESA                    0x8186
+  #define GLX_RENDERER_VIDEO_MEMORY_MESA                   0x8187
+  #define GLX_RENDERER_UNIFIED_MEMORY_ARCHITECTURE_MESA    0x8188
+  #define GLX_RENDERER_PREFERRED_PROFILE_MESA              0x8189
+  #define GLX_RENDERER_OPENGL_CORE_PROFILE_VERSION_MESA    0x818A
+  #define GLX_RENDERER_OPENGL_COMPATIBILITY_PROFILE_VERSION_MESA 0x818B
+  #define GLX_RENDERER_OPENGL_ES_PROFILE_VERSION_MESA      0x818C
+  #define GLX_RENDERER_OPENGL_ES2_PROFILE_VERSION_MESA     0x818D
+
+  #define GLX_RENDERER_ID_MESA                             0x818E
+#endif // GLX_RENDERER_VENDOR_ID_MESA
+
+  typedef Bool (*glXQueryRendererIntegerMESA_t)(Display* theDisplay, int theScreen,
+                                                int theRenderer, int theAttribute,
+                                                unsigned int* theValue);
+  typedef Bool (*glXQueryCurrentRendererIntegerMESA_t)(int theAttribute, unsigned int* theValue);
+  typedef const char* (*glXQueryRendererStringMESA_t)(Display* theDisplay, int theScreen,
+                                                      int theRenderer, int theAttribute);
+  typedef const char* (*glXQueryCurrentRendererStringMESA_t)(int theAttribute);
+
+  glXQueryRendererIntegerMESA_t        glXQueryRendererIntegerMESA;
+  glXQueryCurrentRendererIntegerMESA_t glXQueryCurrentRendererIntegerMESA;
+  glXQueryRendererStringMESA_t         glXQueryRendererStringMESA;
+  glXQueryCurrentRendererStringMESA_t  glXQueryCurrentRendererStringMESA;
 #endif
 
 #endif // OpenGL ES vs. desktop

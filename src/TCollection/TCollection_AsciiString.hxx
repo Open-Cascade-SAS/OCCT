@@ -659,6 +659,10 @@ friend Standard_EXPORT Standard_IStream& operator >> (Standard_IStream& astream,
   //! (Just for HashCode for AsciiString)
     static Standard_Boolean IsEqual (const TCollection_AsciiString& string1, const Standard_CString string2);
 
+  //! Returns True if the strings contain same characters.
+  Standard_EXPORT static Standard_Boolean IsSameString (const TCollection_AsciiString& theString1,
+                                                        const TCollection_AsciiString& theString2,
+                                                        const Standard_Boolean theIsCaseSensitive);
 
 friend class TCollection_HAsciiString;
 

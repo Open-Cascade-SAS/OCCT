@@ -931,6 +931,17 @@ friend
   //! has been Iconified .
   Standard_EXPORT void V3d_Viewer::SetViewOff (const Handle(V3d_View)& View);
 
+  //! Fill in the dictionary with diagnostic info.
+  //! Should be called within rendering thread.
+  //!
+  //! This API should be used only for user output or for creating automated reports.
+  //! The format of returned information (e.g. key-value layout)
+  //! is NOT part of this API and can be changed at any time.
+  //! Thus application should not parse returned information to weed out specific parameters.
+  //! @param theDict  destination map for information
+  //! @param theFlags defines the information to be retrieved
+  Standard_EXPORT void DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theDict,
+                                              Graphic3d_DiagnosticInfo theFlags) const;
 
   DEFINE_STANDARD_RTTIEXT(V3d_View,MMgt_TShared)
 

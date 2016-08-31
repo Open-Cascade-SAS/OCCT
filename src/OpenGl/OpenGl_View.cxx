@@ -818,3 +818,25 @@ void OpenGl_View::changePriority (const Handle(Graphic3d_CStructure)& theStructu
   const OpenGl_Structure* aStruct = reinterpret_cast<const OpenGl_Structure*> (theStructure.operator->());
   myZLayers.ChangePriority (aStruct, aLayerId, theNewPriority);
 }
+
+//=======================================================================
+//function : DiagnosticInformation
+//purpose  :
+//=======================================================================
+void OpenGl_View::DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theDict,
+                                         Graphic3d_DiagnosticInfo theFlags) const
+{
+  Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
+  if (!myWorkspace->Activate()
+   || aCtx.IsNull())
+  {
+    return;
+  }
+
+  aCtx->DiagnosticInformation (theDict, theFlags);
+  if ((theFlags & Graphic3d_DiagnosticInfo_FrameBuffer) != 0)
+  {
+    TCollection_AsciiString aResRatio (myRenderParams.ResolutionRatio());
+    theDict.ChangeFromIndex (theDict.Add ("ResolutionRatio", aResRatio)) = aResRatio;
+  }
+}

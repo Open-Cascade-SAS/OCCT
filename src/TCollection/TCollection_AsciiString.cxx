@@ -571,6 +571,34 @@ Standard_Boolean TCollection_AsciiString::IsEqual
 }
 
 // ----------------------------------------------------------------------------
+// IsSameString
+// ----------------------------------------------------------------------------
+Standard_Boolean TCollection_AsciiString::IsSameString (const TCollection_AsciiString& theString1,
+                                                        const TCollection_AsciiString& theString2,
+                                                        const Standard_Boolean theIsCaseSensitive)
+{
+  const Standard_Integer aSize1 = theString1.Length();
+  if (aSize1 != theString2.Length())
+  {
+    return Standard_False;
+  }
+
+  if (theIsCaseSensitive)
+  {
+    return (strncmp (theString1.ToCString(), theString2.ToCString(), aSize1) == 0);
+  }
+
+  for (Standard_Integer aCharIter = 1; aCharIter <= aSize1; ++aCharIter)
+  {
+    if (toupper (theString1.Value (aCharIter)) != toupper (theString2.Value (aCharIter)))
+    {
+      return Standard_False;
+    }
+  }
+  return Standard_True;
+}
+
+// ----------------------------------------------------------------------------
 // IsEmpty
 // ----------------------------------------------------------------------------
 Standard_Boolean TCollection_AsciiString::IsEmpty() const

@@ -25,6 +25,7 @@
 #include <Graphic3d_CLight.hxx>
 #include <Graphic3d_CStructure.hxx>
 #include <Graphic3d_DataStructureManager.hxx>
+#include <Graphic3d_DiagnosticInfo.hxx>
 #include <Graphic3d_ExportFormat.hxx>
 #include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_MapOfStructure.hxx>
@@ -46,6 +47,7 @@
 #include <Quantity_NameOfColor.hxx>
 #include <Standard_Address.hxx>
 #include <Standard_Transient.hxx>
+#include <TColStd_IndexedDataMapOfStringString.hxx>
 
 class Graphic3d_CView;
 class Graphic3d_GraphicDriver;
@@ -458,6 +460,16 @@ public:
 
   //! Sets list of clip planes for the view.
   virtual void SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes) = 0;
+
+  //! Fill in the dictionary with diagnostic info.
+  //! Should be called within rendering thread.
+  //!
+  //! This API should be used only for user output or for creating automated reports.
+  //! The format of returned information (e.g. key-value layout)
+  //! is NOT part of this API and can be changed at any time.
+  //! Thus application should not parse returned information to weed out specific parameters.
+  virtual void DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theDict,
+                                      Graphic3d_DiagnosticInfo theFlags) const = 0;
 
 private:
 

@@ -401,6 +401,20 @@ static int VImmediateFront (Draw_Interpretor& /*theDI*/,
   return 0;
 }
 
+//! Search the info from the key.
+inline TCollection_AsciiString searchInfo (const TColStd_IndexedDataMapOfStringString& theDict,
+                                           const TCollection_AsciiString& theKey)
+{
+  for (TColStd_IndexedDataMapOfStringString::Iterator anIter (theDict); anIter.More(); anIter.Next())
+  {
+    if (TCollection_AsciiString::IsSameString (anIter.Key(), theKey, Standard_False))
+    {
+      return anIter.Value();
+    }
+  }
+  return TCollection_AsciiString();
+}
+
 //==============================================================================
 //function : VGlInfo
 //purpose  :
@@ -418,53 +432,76 @@ static int VGlInfo (Draw_Interpretor& theDI,
     return 1;
   }
 
-  if (theArgNb <= 1)
+  Standard_Integer anArgIter = 1;
+  Graphic3d_DiagnosticInfo anInfoLevel = Graphic3d_DiagnosticInfo_Basic;
+  if (theArgNb == 2)
   {
-    Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aView->Viewer()->Driver());
-    if (aDriver.IsNull())
+    TCollection_AsciiString aName (theArgVec[1]);
+    aName.LowerCase();
+    if (aName == "-short")
     {
-      std::cerr << "Error: view does not use OpenGL.\n";
-      return 1;
+      ++anArgIter;
+      anInfoLevel = Graphic3d_DiagnosticInfo_Short;
     }
-    Handle(OpenGl_Context) aCtx = aDriver->GetSharedContext();
-    Standard_CString aDebugInfo = !aCtx.IsNull() && aCtx->IsDebugContext()
-                                ? "  GLdebug     =  ON\n"
-                                : "";
+    else if (aName == "-basic")
+    {
+      ++anArgIter;
+      anInfoLevel = Graphic3d_DiagnosticInfo_Basic;
+    }
+    else if (aName == "-complete"
+          || aName == "-full")
+    {
+      ++anArgIter;
+      anInfoLevel = Graphic3d_DiagnosticInfo_Complete;
+    }
+  }
+
+  TColStd_IndexedDataMapOfStringString aDict;
+  if (anArgIter >= theArgNb)
+  {
+    aView->DiagnosticInformation (aDict, anInfoLevel);
+    TCollection_AsciiString aText;
+    for (TColStd_IndexedDataMapOfStringString::Iterator aValueIter (aDict); aValueIter.More(); aValueIter.Next())
+    {
+      if (!aText.IsEmpty())
+      {
+        aText += "\n";
+      }
+      aText += TCollection_AsciiString("  ") + aValueIter.Key() + ": " + aValueIter.Value();
+    }
+
     theDI << "OpenGL info:\n"
-          << "  GLvendor    = '" << (const char* )glGetString(GL_VENDOR)   << "'\n"
-          << "  GLdevice    = '" << (const char* )glGetString(GL_RENDERER) << "'\n"
-          << "  GLversion   = '" << (const char* )glGetString(GL_VERSION)  << "'\n"
-          << "  GLSLversion = '" << (const char* )glGetString(GL_SHADING_LANGUAGE_VERSION) << "'\n"
-          << aDebugInfo;
+          << aText;
     return 0;
   }
 
   const Standard_Boolean isList = theArgNb >= 3;
-  for (Standard_Integer anIter = 1; anIter < theArgNb; ++anIter)
+  aView->DiagnosticInformation (aDict, Graphic3d_DiagnosticInfo_Complete);
+  for (; anArgIter < theArgNb; ++anArgIter)
   {
-    TCollection_AsciiString aName (theArgVec[anIter]);
+    TCollection_AsciiString aName (theArgVec[anArgIter]);
     aName.UpperCase();
-    const char* aValue = NULL;
+    TCollection_AsciiString aValue;
     if (aName.Search ("VENDOR") != -1)
     {
-      aValue = (const char* )glGetString (GL_VENDOR);
+      aValue = searchInfo (aDict, "GLvendor");
     }
     else if (aName.Search ("RENDERER") != -1)
     {
-      aValue = (const char* )glGetString (GL_RENDERER);
+      aValue = searchInfo (aDict, "GLdevice");
     }
     else if (aName.Search ("SHADING_LANGUAGE_VERSION") != -1
           || aName.Search ("GLSL") != -1)
     {
-      aValue = (const char* )glGetString (GL_SHADING_LANGUAGE_VERSION);
+      aValue = searchInfo (aDict, "GLSLversion");
     }
     else if (aName.Search ("VERSION") != -1)
     {
-      aValue = (const char* )glGetString (GL_VERSION);
+      aValue = searchInfo (aDict, "GLversion");
     }
     else if (aName.Search ("EXTENSIONS") != -1)
     {
-      aValue = (const char* )glGetString (GL_EXTENSIONS);
+      aValue = searchInfo (aDict, "GLextensions");
     }
     else
     {
@@ -630,8 +667,10 @@ void ViewerTest::OpenGlCommands(Draw_Interpretor& theCommands)
     "vimmediatefront : render immediate mode to front buffer or to back buffer",
     __FILE__, VImmediateFront, aGroup);
   theCommands.Add("vglinfo",
-    "vglinfo [GL_VENDOR] [GL_RENDERER] [GL_VERSION] [GL_SHADING_LANGUAGE_VERSION] [GL_EXTENSIONS]"
-    " : prints GL info",
+                "vglinfo [-short|-basic|-complete]"
+        "\n\t\t:         [GL_VENDOR] [GL_RENDERER] [GL_VERSION]"
+        "\n\t\t:         [GL_SHADING_LANGUAGE_VERSION] [GL_EXTENSIONS]"
+        "\n\t\t: print OpenGL info",
     __FILE__, VGlInfo, aGroup);
   theCommands.Add("vshaderprog",
             "   'vshaderprog [name] pathToVertexShader pathToFragmentShader'"

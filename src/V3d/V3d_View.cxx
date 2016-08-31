@@ -3330,3 +3330,13 @@ void V3d_View::SetFrustumCulling (const Standard_Boolean theToClip)
 {
   myView->SetCullingEnabled (theToClip);
 }
+
+// =======================================================================
+// function : DiagnosticInformation
+// purpose  :
+// =======================================================================
+void V3d_View::DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theDict,
+                                      Graphic3d_DiagnosticInfo theFlags) const
+{
+  myView->DiagnosticInformation (theDict, theFlags);
+}

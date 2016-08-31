@@ -320,19 +320,7 @@ Standard_Boolean TCollection_HAsciiString::IsSameString
                      const Standard_Boolean CaseSensitive) const 
 {
   if(S.IsNull()) Standard_NullObject::Raise("TCollection_HAsciiString::IsSameString");
-
-  const Standard_Integer size1 = Length();
-  if ( size1 != S->Length() ) return Standard_False;
-  if ( CaseSensitive ) {
-    return ( strncmp( myString.ToCString(), S->ToCString(), size1 ) == 0 );
-  }
-  else {
-    for ( Standard_Integer i = 1 ; i <= size1; i++) {
-       if ( toupper( Value(i) ) != toupper( S->Value(i) ) )
-         return Standard_False;
-     }
-    return Standard_True ;
-  }
+  return TCollection_AsciiString::IsSameString (myString, S->myString, CaseSensitive);
 }
 
 //------------------------------------------------------------------------
