@@ -235,8 +235,8 @@ GeomAbs_Shape GeomAdaptor_Surface::UContinuity() const
       case GeomAbs_G2 :
       case GeomAbs_C2 : return GeomAbs_C1;
       case GeomAbs_G1 :
-      case GeomAbs_C1 : return GeomAbs_C0;
-      case GeomAbs_C0 : break;
+      case GeomAbs_C1 :
+      case GeomAbs_C0 : return GeomAbs_C0;
       }
       Standard_NoSuchObject::Raise("GeomAdaptor_Surface::UContinuity");
       break;
@@ -289,8 +289,8 @@ GeomAbs_Shape GeomAdaptor_Surface::VContinuity() const
       case GeomAbs_G2 :
       case GeomAbs_C2 : return GeomAbs_C1;
       case GeomAbs_G1 :
-      case GeomAbs_C1 : return GeomAbs_C0;
-      case GeomAbs_C0 : break;
+      case GeomAbs_C1 :
+      case GeomAbs_C0 : return GeomAbs_C0;
       }
       Standard_NoSuchObject::Raise("GeomAdaptor_Surface::VContinuity");
       break;
