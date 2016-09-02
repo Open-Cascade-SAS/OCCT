@@ -14,10 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modified by  ...
-//              ROB JAN/07/98 : Improve Storage of detected entities
-//              AGV OCT/23/03 : Optimize the method SortResult() (OCC4201)
-
 #ifndef _SelectMgr_ViewerSelector_HeaderFile
 #define _SelectMgr_ViewerSelector_HeaderFile
 
@@ -27,10 +23,6 @@
 #include <OSD_Chronometer.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <SelectMgr_IndexedDataMapOfOwnerCriterion.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 #include <SelectMgr_Selection.hxx>
@@ -38,66 +30,18 @@
 #include <SelectMgr_SelectableObjectSet.hxx>
 #include <SelectMgr_SelectableObjectTrsfPersSet.hxx>
 #include <SelectMgr_StateOfSelection.hxx>
+#include <SelectMgr_ToleranceMap.hxx>
 #include <Standard_OStream.hxx>
 
 class SelectMgr_SelectionManager;
-class SelectMgr_Selection;
 class SelectMgr_SensitiveEntitySet;
 class SelectMgr_EntityOwner;
-class TCollection_AsciiString;
 class SelectBasics_SensitiveEntity;
-class SelectMgr_SelectableObjectSet;
 
 typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), NCollection_Handle<SelectMgr_SensitiveEntitySet> > SelectMgr_MapOfObjectSensitives;
 typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), NCollection_Handle<SelectMgr_SensitiveEntitySet> >::Iterator SelectMgr_MapOfObjectSensitivesIterator;
 
-typedef NCollection_DataMap<Handle(SelectMgr_EntityOwner), Standard_Integer> SelectMgr_MapOfOwnerDetectedEntities;
-typedef NCollection_DataMap<Handle(SelectMgr_EntityOwner), Standard_Integer>::Iterator SelectMgr_MapOfOwnerDetectedEntitiesIterator;
-
 typedef NCollection_DataMap<Standard_Integer, SelectMgr_SelectingVolumeManager> SelectMgr_FrustumCache;
-
-//! An internal class for calculation of current largest tolerance value which will be applied
-//! for creation of selecting frustum by default. Each time the selection set is deactivated,
-//! maximum tolerance value will be recalculated. If a user enables custom precision using
-//! StdSelect_ViewerSelector3d::SetPixelTolerance, it will be applied to all sensitive entities
-//! without any checks.
-class SelectMgr_ToleranceMap
-{
-public:
-
-  //! Sets tolerance values to -1.0
-  Standard_EXPORT SelectMgr_ToleranceMap();
-
-  Standard_EXPORT ~SelectMgr_ToleranceMap();
-
-  //! Adds the value given to map, checks if the current tolerance value
-  //! should be replaced by theTolerance
-  Standard_EXPORT void Add (const Standard_Integer& theTolerance);
-
-  //! Decrements a counter of the tolerance given, checks if the current tolerance value
-  //! should be recalculated
-  Standard_EXPORT void Decrement (const Standard_Integer& theTolerance);
-
-  //! Returns a current tolerance that must be applied
-  inline Standard_Integer Tolerance() const;
-
-  //! Sets tolerance to the given one and disables adaptive checks
-  inline void SetCustomTolerance (const Standard_Integer theTolerance);
-
-  //! Unsets a custom tolerance and enables adaptive checks
-  inline void ResetDefaults();
-
-  //! Returns the value of custom tolerance regardless of it validity
-  inline Standard_Integer CustomTolerance() const;
-
-  //! Returns true if custom tolerance value is greater than zero
-  inline Standard_Boolean IsCustomTolSet() const;
-
-private:
-  NCollection_DataMap<Standard_Integer, Standard_Integer> myTolerances;
-  Standard_Integer                                        myLargestKey;
-  Standard_Integer                                        myCustomTolerance;
-};
 
 //! A framework to define finding, sorting the sensitive
 //! primitives in a view. Services are also provided to
@@ -131,37 +75,28 @@ private:
 //!    intersection detection will be resized according to its sensitivity.
 class SelectMgr_ViewerSelector : public MMgt_TShared
 {
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_ViewerSelector, MMgt_TShared)
+  friend class SelectMgr_SelectionManager;
 public:
 
   //! Empties all the tables, removes all selections...
   Standard_EXPORT void Clear();
 
   //! returns the Sensitivity of picking
-  Standard_Real Sensitivity() const;
+  Standard_Real Sensitivity() const { return myTolerances.Tolerance(); }
 
   //! Sorts the detected entites by priority and distance.
   //!          to be redefined if other criterion are used...
   Standard_EXPORT void SortResult();
 
-  //! Begins an iteration scanning for the owners detected at a position in the view.
-  void Init();
-
-  //!  Continues the interation scanning for the owners
-  //!   detected at a position in the view, or
-  //! -   continues the iteration scanning for the owner
-  //!   closest to the position in the view.
-  Standard_EXPORT Standard_Boolean More();
-
-  //! Returns the next owner found in the iteration. This is
-  //! a scan for the owners detected at a position in the view.
-  void Next();
-
-  //! Returns the current selected entity detected by the selector;
-  Standard_EXPORT Handle(SelectMgr_EntityOwner) Picked() const;
-
   //! Returns the picked element with the highest priority,
   //! and which is the closest to the last successful mouse position.
-  Standard_EXPORT Handle(SelectMgr_EntityOwner) OnePicked();
+  Handle(SelectMgr_EntityOwner) OnePicked() const
+  {
+    return mystored.IsEmpty()
+         ? Handle(SelectMgr_EntityOwner)()
+         : Picked (1);
+  }
 
   //! Set preference of selecting one object for OnePicked() method:
   //! - If True, objects with less depth (distance fron the view plane) are
@@ -169,15 +104,27 @@ public:
   //!   objects with similar depth),
   //! - If False, objects with higher priority are preferred regardless of the
   //!   depth which is used to choose among objects of the same priority.
-  void SetPickClosest (const Standard_Boolean preferClosest);
+  void SetPickClosest (const Standard_Boolean theToPreferClosest) { preferclosest = theToPreferClosest; }
 
-  //! Returns the number of owners found at a position in
-  //! the view by the Init - More - Next - Picked iteration.
-  Standard_EXPORT Standard_Integer NbPicked() const;
+  //! Returns the number of detected owners.
+  Standard_Integer NbPicked() const { return mystored.Extent(); }
 
-  //! Returns the  entity which is at rank <aRank>
-  //!          in the list of stored ones.
-  Standard_EXPORT Handle(SelectMgr_EntityOwner) Picked (const Standard_Integer aRank) const;
+  //! Returns the entity Owner for the object picked at specified position.
+  //! @param theRank rank of detected object within range 1...NbPicked()
+  Standard_EXPORT Handle(SelectMgr_EntityOwner) Picked (const Standard_Integer theRank) const;
+
+  //! Returns the Entity for the object picked at specified position.
+  //! @param theRank rank of detected object within range 1...NbPicked()
+  Standard_EXPORT const SelectMgr_SortCriterion& PickedData (const Standard_Integer theRank) const;
+
+  //! Returns the Entity for the object picked at specified position.
+  //! @param theRank rank of detected object within range 1...NbPicked()
+  const Handle(SelectBasics_SensitiveEntity)& PickedEntity (const Standard_Integer theRank) const { return PickedData (theRank).Entity; }
+
+  //! Returns the 3D point (intersection of picking axis with the object nearest to eye)
+  //! for the object picked at specified position.
+  //! @param theRank rank of detected object within range 1...NbPicked()
+  gp_Pnt PickedPoint (const Standard_Integer theRank) const { return PickedData (theRank).Point; }
 
   Standard_EXPORT Standard_Boolean Contains (const Handle(SelectMgr_SelectableObject)& theObject) const;
 
@@ -238,22 +185,8 @@ public:
   Standard_EXPORT void RebuildSensitivesTree (const Handle(SelectMgr_SelectableObject)& theObject,
                                               const Standard_Boolean theIsForce = Standard_False);
 
-  //! Initializes internal iterator for stored detected sensitive entities
-  void InitDetected();
-
-  //! Makes a step along the map of detected sensitive entities and their owners
-  void NextDetected();
-
-  //! Returns true if iterator of map of detected sensitive entities has reached
-  //! its end
-  Standard_Boolean MoreDetected();
-
-  //! Returns sensitive entity that was detected during the previous run of
-  //! selection algorithm
-  Standard_EXPORT const Handle(SelectBasics_SensitiveEntity)& DetectedEntity() const;
-
   //! Returns instance of selecting volume manager of the viewer selector
-  SelectMgr_SelectingVolumeManager& GetManager();
+  SelectMgr_SelectingVolumeManager& GetManager() { return mySelectingVolumeMgr; }
 
   //! Marks all added sensitive entities of all objects as non-selectable
   Standard_EXPORT void ResetSelectionActivationStatus();
@@ -263,9 +196,41 @@ public:
   //! mark both included and overlapped entities as matched
   Standard_EXPORT void AllowOverlapDetection (const Standard_Boolean theIsToAllow);
 
-  friend class SelectMgr_SelectionManager;
+public:
 
-  DEFINE_STANDARD_RTTIEXT(SelectMgr_ViewerSelector,MMgt_TShared)
+  //! Begins an iteration scanning for the owners detected at a position in the view.
+  Standard_DEPRECATED("Deprecated method Init()")
+  void Init() { initPicked(); }
+
+  //! Continues the interation scanning for the owners detected at a position in the view,
+  //! or continues the iteration scanning for the owner closest to the position in the view.
+  Standard_DEPRECATED("Deprecated method More()")
+  Standard_EXPORT Standard_Boolean More() { return morePicked(); }
+
+  //! Returns the next owner found in the iteration. This is
+  //! a scan for the owners detected at a position in the view.
+  Standard_DEPRECATED("Deprecated method Next()")
+  void Next() { nextPicked(); }
+
+  //! Returns the current selected entity detected by the selector;
+  Standard_DEPRECATED("Deprecated method Picked()")
+  Standard_EXPORT Handle(SelectMgr_EntityOwner) Picked() const;
+
+  //! Initializes internal iterator for stored detected sensitive entities
+  Standard_DEPRECATED("Deprecated method InitDetected()")
+  void InitDetected() { initPicked(); }
+
+  //! Makes a step along the map of detected sensitive entities and their owners
+  Standard_DEPRECATED("Deprecated method NextDetected()")
+  void NextDetected() { nextPicked(); }
+
+  //! Returns true if iterator of map of detected sensitive entities has reached its end
+  Standard_DEPRECATED("Deprecated method MoreDetected()")
+  Standard_Boolean MoreDetected() { return morePicked(); }
+
+  //! Returns sensitive entity that was detected during the previous run of selection algorithm
+  Standard_DEPRECATED("Deprecated method DetectedEntity() should be replaced by DetectedEntity(int)")
+  Standard_EXPORT const Handle(SelectBasics_SensitiveEntity)& DetectedEntity() const;
 
 protected:
 
@@ -291,7 +256,7 @@ protected:
   //! Internal function that checks if a particular sensitive
   //! entity theEntity overlaps current selecting volume precisely
   Standard_EXPORT void checkOverlap (const Handle(SelectBasics_SensitiveEntity)& theEntity,
-                                     const Standard_Integer theEntityIdx,
+                                     const gp_GTrsf& theInversedTrsf,
                                      SelectMgr_SelectingVolumeManager& theMgr);
 
 private:
@@ -319,6 +284,22 @@ private:
                        SelectMgr_SelectingVolumeManager&           theResMgr);
 
 
+private: // implementation of deprecated methods
+
+  //! Initializes internal iterator for stored detected sensitive entities
+  void initPicked() { myCurRank = 1; }
+
+  //! Makes a step along the map of detected sensitive entities and their owners
+  void nextPicked() { ++myCurRank; }
+
+  //! Returns true if iterator of map of detected sensitive entities has reached its end
+  Standard_Boolean morePicked() const
+  {
+    if (mystored.Extent() == 0) return Standard_False;
+    if (myCurRank == 0) return Standard_False;
+    return myCurRank <= myIndexes->Length();
+  }
+
 protected:
 
   Standard_Boolean                              preferclosest;
@@ -337,12 +318,9 @@ private:
   Standard_Boolean                             myIsLeftChildQueuedFirst;
   Standard_Integer                             myEntityIdx;
   SelectMgr_MapOfObjectSensitives              myMapOfObjectSensitives;
-  SelectMgr_MapOfOwnerDetectedEntities         myMapOfDetected;
-  SelectMgr_MapOfOwnerDetectedEntitiesIterator myDetectedIter;
+
 };
 
 DEFINE_STANDARD_HANDLE(SelectMgr_ViewerSelector, MMgt_TShared)
-
-#include <SelectMgr_ViewerSelector.lxx>
 
 #endif

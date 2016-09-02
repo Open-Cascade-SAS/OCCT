@@ -14,16 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modified by  ...
-//              ROB JAN/07/98 : Improve Storage of detected entities
-//              AGV OCT/23/03 : Optimize the method SortResult() (OCC4201)
+#include <SelectMgr_ViewerSelector.hxx>
 
 #include <BVH_Tree.hxx>
 #include <gp_GTrsf.hxx>
 #include <gp_Pnt.hxx>
 #include <OSD_Environment.hxx>
 #include <Precision.hxx>
-#include <SelectMgr_ViewerSelector.hxx>
 #include <SelectBasics_EntityOwner.hxx>
 #include <SelectBasics_SensitiveEntity.hxx>
 #include <SelectBasics_PickResult.hxx>
@@ -61,78 +58,24 @@ namespace {
   private:
     const SelectMgr_IndexedDataMapOfOwnerCriterion&  myMapOfCriterion;
   };
-}
 
-//=======================================================================
-// function: SelectMgr_ToleranceMap
-// purpose : Sets tolerance values to -1.0
-//=======================================================================
-SelectMgr_ToleranceMap::SelectMgr_ToleranceMap()
-{
-  myLargestKey = -1;
-  myCustomTolerance = -1;
-}
-
-//=======================================================================
-// function: ~SelectMgr_ToleranceMap
-// purpose :
-//=======================================================================
-SelectMgr_ToleranceMap::~SelectMgr_ToleranceMap()
-{
-  myTolerances.Clear();
-}
-
-//=======================================================================
-// function: Add
-// purpose : Adds the value given to map, checks if the current tolerance value
-//           should be replaced by theTolerance
-//=======================================================================
-void SelectMgr_ToleranceMap::Add (const Standard_Integer& theTolerance)
-{
-  if (myTolerances.IsBound (theTolerance))
+  //! Compute 3d position for detected entity.
+  inline void updatePoint3d (SelectMgr_SortCriterion& theCriterion,
+                             const gp_GTrsf& theInversedTrsf,
+                             SelectMgr_SelectingVolumeManager& theMgr)
   {
-    Standard_Integer& aFreq = myTolerances.ChangeFind (theTolerance);
-    aFreq++;
-
-    if (aFreq == 1 && theTolerance != myLargestKey)
-      myLargestKey = Max (theTolerance, myLargestKey);
-  }
-  else
-  {
-    if (myTolerances.IsEmpty())
+    theCriterion.Point = theMgr.DetectedPoint (theCriterion.Depth);
+    gp_GTrsf anInvTrsf = theInversedTrsf;
+    if (theCriterion.Entity->HasInitLocation())
     {
-      myTolerances.Bind (theTolerance, 1);
-      myLargestKey = theTolerance;
-      return;
+      anInvTrsf = theCriterion.Entity->InvInitLocation() * anInvTrsf;
     }
-
-    myTolerances.Bind (theTolerance, 1);
-    myLargestKey = Max (theTolerance, myLargestKey);
-  }
-}
-
-//=======================================================================
-// function: Decrement
-// purpose : Decrements a counter of the tolerance given, checks if the current tolerance value
-//           should be recalculated
-//=======================================================================
-void SelectMgr_ToleranceMap::Decrement (const Standard_Integer& theTolerance)
-{
-  if (myTolerances.IsBound (theTolerance))
-  {
-    Standard_Integer& aFreq = myTolerances.ChangeFind (theTolerance);
-    aFreq--;
-
-    if (Abs (theTolerance - myLargestKey) < Precision::Confusion() && aFreq == 0)
+    if (anInvTrsf.Form() != gp_Identity)
     {
-      myLargestKey = 0;
-      for (NCollection_DataMap<Standard_Integer, Standard_Integer>::Iterator anIter (myTolerances); anIter.More(); anIter.Next())
-      {
-        if (anIter.Value() != 0)
-          myLargestKey = Max (myLargestKey, anIter.Key());
-      }
+      anInvTrsf.Inverted().Transforms (theCriterion.Point.ChangeCoord());
     }
   }
+
 }
 
 //==================================================
@@ -189,7 +132,6 @@ void SelectMgr_ViewerSelector::Deactivate (const Handle(SelectMgr_Selection)& th
 void SelectMgr_ViewerSelector::Clear()
 {
   mystored.Clear();
-  myMapOfDetected.Clear();
 }
 
 //=======================================================================
@@ -219,7 +161,7 @@ Standard_Integer SelectMgr_ViewerSelector::sensitivity (const Handle(SelectBasic
 //           entity theEntity overlaps current selecting volume precisely
 //=======================================================================
 void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_SensitiveEntity)& theEntity,
-                                             const Standard_Integer theEntityIdx,
+                                             const gp_GTrsf& theInversedTrsf,
                                              SelectMgr_SelectingVolumeManager& theMgr)
 {
   Handle(SelectMgr_EntityOwner) anOwner (Handle(SelectMgr_EntityOwner)::DownCast (theEntity->OwnerId()));
@@ -240,27 +182,30 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
 
       SelectMgr_SortCriterion aCriterion;
       myZLayerOrderMap.Find (aSelectable->ZLayer(), aCriterion.ZLayerPosition);
+      aCriterion.Entity    = theEntity;
       aCriterion.Priority  = anOwner->Priority();
       aCriterion.Depth     = aPickResult.Depth();
       aCriterion.MinDist   = aPickResult.DistToGeomCenter();
       aCriterion.Tolerance = theEntity->SensitivityFactor() / 33.0;
       aCriterion.ToPreferClosest = preferclosest;
-      if (mystored.Contains (anOwner))
+
+      const Standard_Integer aPrevStoredIndex = mystored.FindIndex (anOwner);
+      if (aPrevStoredIndex != 0)
       {
-        if (theMgr.GetActiveSelectionType() != 1)
+        if (theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Box)
         {
-          SelectMgr_SortCriterion& aPrevCriterion = mystored.ChangeFromKey (anOwner);
+          SelectMgr_SortCriterion& aPrevCriterion = mystored.ChangeFromIndex (aPrevStoredIndex);
           if (aCriterion > aPrevCriterion)
           {
+            updatePoint3d (aCriterion, theInversedTrsf, theMgr);
             aPrevCriterion = aCriterion;
-            myMapOfDetected.ChangeFind (anOwner) = theEntityIdx;
           }
         }
       }
       else
       {
+        updatePoint3d (aCriterion, theInversedTrsf, theMgr);
         mystored.Add (anOwner, aCriterion);
-        myMapOfDetected.Bind (anOwner, theEntityIdx);
       }
     }
   }
@@ -409,7 +354,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
           const Handle(SelectBasics_SensitiveEntity)& anEnt = aSensitive->BaseSensitive();
           SelectMgr_SelectingVolumeManager aTmpMgr = aMgr;
           computeFrustum (anEnt, aInversedTrsf, aScaledTrnsfFrustums, aTmpMgr);
-          checkOverlap (anEnt, anIdx, aTmpMgr);
+          checkOverlap (anEnt, aInversedTrsf, aTmpMgr);
         }
       }
       if (aHead < 0)
@@ -431,7 +376,6 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
 void SelectMgr_ViewerSelector::TraverseSensitives()
 {
   mystored.Clear();
-  myMapOfDetected.Clear();
 
   NCollection_Handle<BVH_Tree<Standard_Real, 3> > aBVHTree;
   for (Standard_Integer aBVHTreeIdx = 0; aBVHTreeIdx < 2; ++aBVHTreeIdx)
@@ -543,67 +487,33 @@ Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector
   return Ownr;
 }
 
-
-
-//=======================================================================
-//function : More
-//purpose  :
-//=======================================================================
-Standard_Boolean SelectMgr_ViewerSelector::More()
-{
-  if(mystored.Extent()==0) return Standard_False;
-  if(myCurRank==0) return Standard_False;
-  return myCurRank <= myIndexes->Length();
-}
-
-//==================================================
-// Function: OnePicked
-// Purpose : only the best one is chosen
-//           depend on priority and mindist...
-//==================================================
-
-Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector
-::OnePicked()
-{
-
-  Init();
-  if(More()){
-    Standard_Integer RankInMap = myIndexes->Value (myIndexes->Lower());
-    const Handle(SelectBasics_EntityOwner)& toto = mystored.FindKey(RankInMap);
-    Handle(SelectMgr_EntityOwner) Ownr = Handle(SelectMgr_EntityOwner)::DownCast (toto);
-    return Ownr;
-  }
-
-  Handle (SelectMgr_EntityOwner) NullObj; //returns a null Handle if there was not successfull pick...
-  return NullObj;
-}
-
-
-//=======================================================================
-//function : NbPicked
-//purpose  :
-//=======================================================================
-
-Standard_Integer SelectMgr_ViewerSelector::NbPicked() const
-{
-  return mystored.Extent();
-}
 //=======================================================================
 //function : Picked
 //purpose  :
 //=======================================================================
-Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector::Picked(const Standard_Integer aRank) const
+Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector::Picked (const Standard_Integer theRank) const
 {
-
   Handle(SelectMgr_EntityOwner) anOwner;
-  if (aRank < 1 || aRank > NbPicked())
+  if (theRank < 1 || theRank > NbPicked())
+  {
     return anOwner;
-  Standard_Integer anOwnerIdx = myIndexes->Value (aRank);
+  }
 
-
+  const Standard_Integer anOwnerIdx = myIndexes->Value (theRank);
   const Handle(SelectBasics_EntityOwner)& aStoredOwner = mystored.FindKey (anOwnerIdx);
   anOwner = Handle(SelectMgr_EntityOwner)::DownCast (aStoredOwner);
   return anOwner;
+}
+
+//=======================================================================
+//function : PickedData
+//purpose  :
+//=======================================================================
+const SelectMgr_SortCriterion& SelectMgr_ViewerSelector::PickedData(const Standard_Integer theRank) const
+{
+  Standard_OutOfRange_Raise_if (theRank < 1 || theRank > NbPicked(), "SelectMgr_ViewerSelector::PickedData() out of range index");
+  const Standard_Integer anOwnerIdx = myIndexes->Value (theRank);
+  return mystored.FindFromIndex (anOwnerIdx);
 }
 
 //===================================================
@@ -939,12 +849,8 @@ void SelectMgr_ViewerSelector::ResetSelectionActivationStatus()
 //=======================================================================
 const Handle(SelectBasics_SensitiveEntity)& SelectMgr_ViewerSelector::DetectedEntity() const
 {
-  const Handle(SelectMgr_EntityOwner)& anOwner = myDetectedIter.Key();
-  const Handle(SelectMgr_SelectableObject)& anObject = anOwner->Selectable();
-  const NCollection_Handle<SelectMgr_SensitiveEntitySet>& anEntitySet =
-    myMapOfObjectSensitives.Find (anObject);
-
-  return anEntitySet->GetSensitiveById (myDetectedIter.Value())->BaseSensitive();
+  const Standard_Integer aRankInMap = myIndexes->Value(myCurRank);
+  return mystored.FindFromIndex (aRankInMap).Entity;
 }
 
 //=======================================================================

@@ -359,10 +359,9 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Integer  theXPMi
   }
 
   aSelector->Pick (theXPMin, theYPMin, theXPMax, theYPMax, theView);
-
-  for (aSelector->Init(); aSelector->More(); aSelector->Next())
+  for (Standard_Integer aPickIter = 1; aPickIter <= aSelector->NbPicked(); ++aPickIter)
   {
-    const Handle(SelectMgr_EntityOwner)& aCurOwner = aSelector->Picked();
+    const Handle(SelectMgr_EntityOwner)& aCurOwner = aSelector->Picked (aPickIter);
     if (aCurOwner.IsNull() || !aCurOwner->HasSelectable() || !myFilters->IsOk (aCurOwner))
       continue;
 
@@ -407,10 +406,9 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const TColgp_Array1OfPnt2d& the
   }
 
   aSelector->Pick (thePolyline, theView);
-
-  for (aSelector->Init(); aSelector->More(); aSelector->Next())
+  for (Standard_Integer aPickIter = 1; aPickIter <= aSelector->NbPicked(); ++aPickIter)
   {
-    const Handle(SelectMgr_EntityOwner) anOwner = aSelector->Picked();
+    const Handle(SelectMgr_EntityOwner) anOwner = aSelector->Picked (aPickIter);
     if (anOwner.IsNull() || !anOwner->HasSelectable() || !myFilters->IsOk (anOwner))
       continue;
 
@@ -544,9 +542,9 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const Standard_Integer the
   }
 
   aSelector->Pick (theXPMin, theYPMin, theXPMax, theYPMax, theView);
-  for (aSelector->Init(); aSelector->More(); aSelector->Next())
+  for (Standard_Integer aPickIter = 1; aPickIter <= aSelector->NbPicked(); ++aPickIter)
   {
-    const Handle(SelectMgr_EntityOwner) anOwner = aSelector->Picked();
+    const Handle(SelectMgr_EntityOwner) anOwner = aSelector->Picked (aPickIter);
     if (anOwner.IsNull() || !anOwner->HasSelectable() || !myFilters->IsOk (anOwner))
       continue;
 
@@ -593,10 +591,9 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const TColgp_Array1OfPnt2d
   }
 
   aSelector->Pick (thePolyline, theView);
-
-  for (aSelector->Init(); aSelector->More(); aSelector->Next())
+  for (Standard_Integer aPickIter = 1; aPickIter <= aSelector->NbPicked(); ++aPickIter)
   {
-    const Handle(SelectMgr_EntityOwner) anOwner = aSelector->Picked();
+    const Handle(SelectMgr_EntityOwner) anOwner = aSelector->Picked (aPickIter);
     if (anOwner.IsNull() || !anOwner->HasSelectable() || !myFilters->IsOk (anOwner))
       continue;
 

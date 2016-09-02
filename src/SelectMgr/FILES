@@ -48,6 +48,8 @@ SelectMgr_SequenceOfSelector.hxx
 SelectMgr_SOPtr.hxx
 SelectMgr_SortCriterion.hxx
 SelectMgr_StateOfSelection.hxx
+SelectMgr_ToleranceMap.hxx
+SelectMgr_ToleranceMap.cxx
 SelectMgr_TriangularFrustum.cxx
 SelectMgr_TriangularFrustum.hxx
 SelectMgr_TriangularFrustumSet.cxx
@@ -58,4 +60,3 @@ SelectMgr_VectorTypes.hxx
 SelectMgr_ViewClipRange.hxx
 SelectMgr_ViewerSelector.cxx
 SelectMgr_ViewerSelector.hxx
-SelectMgr_ViewerSelector.lxx

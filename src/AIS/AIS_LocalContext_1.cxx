@@ -225,9 +225,7 @@ AIS_StatusOfPick AIS_LocalContext::Select (const Standard_Integer  theXPMin,
     }
 
     Standard_Integer aSelNum = mySelection->Extent();
-
-    myMainVS->Init();
-    if (!myMainVS->More())
+    if (myMainVS->NbPicked() == 0)
     {
       ClearSelected (toUpdateViewer);
       mylastindex = 0;
@@ -236,9 +234,9 @@ AIS_StatusOfPick AIS_LocalContext::Select (const Standard_Integer  theXPMin,
 
     ClearSelected (Standard_False);
 
-    for (myMainVS->Init(); myMainVS->More(); myMainVS->Next())
+    for (Standard_Integer aPickIter = 1; aPickIter <= myMainVS->NbPicked(); ++aPickIter)
     {
-      const Handle(SelectMgr_EntityOwner)& anOwner = myMainVS->Picked();
+      const Handle(SelectMgr_EntityOwner)& anOwner = myMainVS->Picked (aPickIter);
       if (myFilters->IsOk (anOwner))
       {
         // it can be helpful to classify this owner immediately...
@@ -276,8 +274,7 @@ AIS_StatusOfPick AIS_LocalContext::Select (const TColgp_Array1OfPnt2d& thePolyli
     myMainVS->Pick (thePolyline, theView);
 
     Standard_Integer aLastSelNum = mySelection->Extent();
-    myMainVS->Init();
-    if (!myMainVS->More())
+    if (myMainVS->NbPicked() == 0)
     {
       // Nothing is selected clear selection.
       ClearSelected (toUpdateViewer);
@@ -295,9 +292,9 @@ AIS_StatusOfPick AIS_LocalContext::Select (const TColgp_Array1OfPnt2d& thePolyli
     // Clear previous selection without update to process this selection
     ClearSelected (Standard_False);
 
-    for (myMainVS->Init(); myMainVS->More(); myMainVS->Next())
+    for (Standard_Integer aPickIter = 1; aPickIter <= myMainVS->NbPicked(); ++aPickIter)
     {
-      const Handle(SelectMgr_EntityOwner)& anOwner = myMainVS->Picked();
+      const Handle(SelectMgr_EntityOwner)& anOwner = myMainVS->Picked (aPickIter);
       if (myFilters->IsOk (anOwner))
       {
         // it can be helpful to classify this owner immediately...
@@ -385,9 +382,7 @@ AIS_StatusOfPick AIS_LocalContext::ShiftSelect (const Standard_Integer  theXPMin
     myMainVS->Pick (theXPMin, theYPMin, theXPMax, theYPMax, theView);
 
     Standard_Integer aLastSelNum = mySelection->Extent();
-
-    myMainVS->Init();
-    if (!myMainVS->More())
+    if (myMainVS->NbPicked() == 0)
     {
       // Nothing is selected clear selection, but don't clear the selection
       // as it is shift selection and previous selection matters.
@@ -400,9 +395,9 @@ AIS_StatusOfPick AIS_LocalContext::ShiftSelect (const Standard_Integer  theXPMin
       UnhilightPicked (Standard_False);
     }
 
-    for (myMainVS->Init(); myMainVS->More(); myMainVS->Next())
+    for (Standard_Integer aPickIter = 1; aPickIter <= myMainVS->NbPicked(); ++aPickIter)
     {
-      const Handle(SelectMgr_EntityOwner)& anOwner = myMainVS->Picked();
+      const Handle(SelectMgr_EntityOwner)& anOwner = myMainVS->Picked (aPickIter);
       if(myFilters->IsOk (anOwner))
       {
         Standard_Boolean toSelect = anOwner->IsSelected() ? Standard_False : Standard_True;
@@ -437,8 +432,7 @@ AIS_StatusOfPick AIS_LocalContext::ShiftSelect (const TColgp_Array1OfPnt2d& theP
     myMainVS->Pick (thePolyline, theView);
 
     Standard_Integer aLastSelNum = mySelection->Extent();
-    myMainVS->Init();
-    if(!myMainVS->More())
+    if (myMainVS->NbPicked() == 0)
     {
       // Nothing is selected clear selection, but don't clear the selection
       // as it is shift selection and previous selection matters.
@@ -451,9 +445,9 @@ AIS_StatusOfPick AIS_LocalContext::ShiftSelect (const TColgp_Array1OfPnt2d& theP
       UnhilightPicked (Standard_False);
     }
 
-    for (myMainVS->Init(); myMainVS->More(); myMainVS->Next())
+    for (Standard_Integer aPickIter = 1; aPickIter <= myMainVS->NbPicked(); ++aPickIter)
     {
-      const Handle(SelectMgr_EntityOwner)& anOwner = myMainVS->Picked();
+      const Handle(SelectMgr_EntityOwner)& anOwner = myMainVS->Picked (aPickIter);
       if (myFilters->IsOk (anOwner))
       {
         Standard_Boolean toSelect = anOwner->IsSelected() ? Standard_False : Standard_True;
