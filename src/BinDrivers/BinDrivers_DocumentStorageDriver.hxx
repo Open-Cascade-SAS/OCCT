@@ -44,8 +44,12 @@ public:
   //! implements the procedure of writing a shape section to file
   Standard_EXPORT virtual void WriteShapeSection (BinLDrivers_DocumentSection& theDocSection, Standard_OStream& theOS) Standard_OVERRIDE;
 
+  //! Return true if shape should be stored with triangles.
+  Standard_EXPORT Standard_Boolean IsWithTriangles() const;
 
-
+  //! Set if triangulation should be stored or not.
+  Standard_EXPORT void SetWithTriangles (const Handle(CDM_MessageDriver)& theMessageDriver,
+                                         const Standard_Boolean theWithTriangulation);
 
   DEFINE_STANDARD_RTTIEXT(BinDrivers_DocumentStorageDriver,BinLDrivers_DocumentStorageDriver)
 

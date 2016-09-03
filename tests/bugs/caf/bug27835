@@ -1,0 +1,41 @@
+puts "========"
+puts "OCC27835"
+puts "BinXCAF - handle correctly faces with NULL surface within BinTools_ShapeSet"
+puts "========"
+puts ""
+
+set anImgDoc1 $imagedir/${casename}_doc1.png
+set anImgDoc2 $imagedir/${casename}_doc2.png
+set anImgDiff $imagedir/${casename}_diff.png
+
+pload XDE OCAF MODELING VISUALIZATION
+
+restore [locate_data_file bug27821_nullsurf.brep] s
+explode s F
+
+NewDocument D BinXCAF
+XAddShape D s
+XSetColor D s_1 1 0 0
+XShow D
+vaxo
+vfit
+vrotate 3 0 0
+vsetdispmode 1
+vdump $anImgDoc1
+
+StoreTriangulation 1
+SaveAs D test.xbf
+Close D
+
+XOpen test.xbf D
+XShow D
+vsetdispmode 1
+vaxo
+vfit
+vrotate 3 0 0
+vdump $anImgDoc2
+
+set aDiffRes [diffimage $anImgDoc2 $anImgDoc1 0.0 0 0 $anImgDiff]
+if {$aDiffRes != 0} {
+  puts "Error: document has changed after Save/Read"
+}

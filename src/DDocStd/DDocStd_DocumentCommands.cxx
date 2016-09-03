@@ -15,6 +15,7 @@
 
 #include <DDocStd.hxx>
 
+#include <BinDrivers_DocumentStorageDriver.hxx>
 #include <DDF.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
@@ -405,6 +406,42 @@ static Standard_Integer DDocStd_Propagate (Draw_Interpretor& di,Standard_Integer
 }
 
 //=======================================================================
+//function : DDocStd_StoreTriangulation
+//purpose  :
+//=======================================================================
+
+static Standard_Integer DDocStd_StoreTriangulation (Draw_Interpretor& theDi,
+                                                    Standard_Integer theNbArgs,
+                                                    const char** theArgVec)
+{
+  const Handle(TDocStd_Application)& anApp = DDocStd::GetApplication();
+  Handle(BinDrivers_DocumentStorageDriver) aDriverXCaf = Handle(BinDrivers_DocumentStorageDriver)::DownCast(anApp->WriterFromFormat ("BinXCAF"));
+  Handle(BinDrivers_DocumentStorageDriver) aDriverOcaf = Handle(BinDrivers_DocumentStorageDriver)::DownCast(anApp->WriterFromFormat ("BinOcaf"));
+  if (aDriverXCaf.IsNull()
+   || aDriverOcaf.IsNull())
+  {
+    std::cout << "Error: BinXCAF or BinOcaf storage formats are not registered\n";
+    return 1;
+  }
+
+  if (theNbArgs == 1)
+  {
+    theDi << (aDriverXCaf->IsWithTriangles() ? "1" : "0");
+    return 0;
+  }
+  else if (theNbArgs != 2)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
+  }
+
+  const Standard_Boolean toEnable = (Draw::Atoi (theArgVec[1]) != 0);
+  aDriverXCaf->SetWithTriangles (anApp->MessageDriver(), toEnable);
+  aDriverOcaf->SetWithTriangles (anApp->MessageDriver(), toEnable);
+  return 0;
+}
+
+//=======================================================================
 //function : DocumentCommands
 //purpose  : 
 //=======================================================================
@@ -434,6 +471,11 @@ void DDocStd::DocumentCommands(Draw_Interpretor& theCommands)
   theCommands.Add ("DumpDocument", 
                    "DumpDocument (DOC)",
 		   __FILE__, DDocStd_DumpDocument, g);   
+
+  theCommands.Add ("StoreTriangulation",
+                   "StoreTriangulation [toStore={0|1}]"
+                   "\nSetup BinXCAF/BinOcaf storage drivers to write triangulation",
+                   __FILE__, DDocStd_StoreTriangulation, g);
 
   // XREF
 

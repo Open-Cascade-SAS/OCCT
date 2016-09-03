@@ -59,9 +59,12 @@ public:
   
   //! Clear myShapeSet
   Standard_EXPORT void Clear();
-  
+
+  //! Return true if shape should be stored with triangles.
+  Standard_Boolean IsWithTriangles() const { return myShapeSet.IsWithTriangles(); }
+
   //! set whether to store triangulation
-    void SetWithTriangles (const Standard_Boolean isWithTriangles);
+  void SetWithTriangles (const Standard_Boolean isWithTriangles);
   
   //! set the format of topology
   //! First : does not write CurveOnSurface UV Points into the file

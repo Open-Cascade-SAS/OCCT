@@ -87,15 +87,6 @@ BinTools_ShapeSet::~BinTools_ShapeSet()
 {}
 
 //=======================================================================
-//function : SetWithTriangles
-//purpose  : 
-//=======================================================================
-void BinTools_ShapeSet::SetWithTriangles(const Standard_Boolean isWithTriangles)
-{
-  myWithTriangles = isWithTriangles;
-}
-
-//=======================================================================
 //function : SetFormatNb
 //purpose  : 
 //=======================================================================
@@ -287,7 +278,9 @@ void BinTools_ShapeSet::AddGeometry(const TopoDS_Shape& S)
     Handle(BRep_TFace) TF = Handle(BRep_TFace)::DownCast(S.TShape());
     if (!TF->Surface().IsNull())  mySurfaces.Add(TF->Surface());
 
-    if (myWithTriangles) {
+    if (myWithTriangles
+     || TF->Surface().IsNull())
+    {
       Handle(Poly_Triangulation) Tr = TF->Triangulation();
       if (!Tr.IsNull()) myTriangulations.Add(Tr);
     }
@@ -730,17 +723,19 @@ void  BinTools_ShapeSet::WriteGeometry(const TopoDS_Shape& S,
 
       Handle(BRep_TFace) TF = Handle(BRep_TFace)::DownCast(S.TShape());
       const TopoDS_Face& F = TopoDS::Face(S);
-      
-      if (!(TF->Surface()).IsNull()) {
-	Standard_Boolean aNatRes = (BRep_Tool::NaturalRestriction(F)) ? Standard_True : Standard_False;
-	BinTools::PutBool(OS, aNatRes);
 
       // Write the surface geometry
-	BinTools::PutReal(OS, TF->Tolerance());
-	BinTools::PutInteger(OS, mySurfaces.Index(TF->Surface()));
-	BinTools::PutInteger(OS, Locations().Index(TF->Location()));
-      }
-      if (myWithTriangles) {
+      Standard_Boolean aNatRes = (BRep_Tool::NaturalRestriction(F)) ? Standard_True : Standard_False;
+      BinTools::PutBool (OS, aNatRes);
+      BinTools::PutReal (OS, TF->Tolerance());
+      BinTools::PutInteger (OS, !TF->Surface().IsNull()
+                               ? mySurfaces.Index (TF->Surface())
+                               : 0);
+      BinTools::PutInteger (OS, Locations().Index (TF->Location()));
+
+      if (myWithTriangles
+       || TF->Surface().IsNull())
+      {
 	if (!(TF->Triangulation()).IsNull()) {
 	  OS << (Standard_Byte) 2;
         // Write the triangulation
@@ -1103,12 +1098,11 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 	BinTools::GetReal(IS, tol);
 	BinTools::GetInteger(IS, s); //surface indx
 	BinTools::GetInteger(IS, l); //location indx
-	if (!mySurfaces.Surface(s).IsNull()) {
-	  myBuilder.UpdateFace(TopoDS::Face(S),
-			       mySurfaces.Surface(s),
-			       Locations().Location(l),tol);
-	  myBuilder.NaturalRestriction(TopoDS::Face(S),bval );
-	}
+	myBuilder.UpdateFace (F,
+                        s > 0 ? mySurfaces.Surface(s) : Handle(Geom_Surface)(),
+			                  Locations().Location(l),
+                        tol);
+	myBuilder.NaturalRestriction (F, bval);
     
 	Standard_Byte aByte = (Standard_Byte)IS.get();
       // cas triangulation

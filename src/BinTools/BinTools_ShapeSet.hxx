@@ -49,10 +49,14 @@ public:
   Standard_EXPORT BinTools_ShapeSet(const Standard_Boolean isWithTriangles = Standard_False);
   
   Standard_EXPORT virtual ~BinTools_ShapeSet();
-  
-  //! Define if shape will be stored with triangles
-  Standard_EXPORT void SetWithTriangles (const Standard_Boolean isWithTriangles);
-  
+
+  //! Return true if shape should be stored with triangles.
+  Standard_Boolean IsWithTriangles() const { return myWithTriangles; }
+
+  //! Define if shape will be stored with triangles.
+  //! Ignored (always written) if face defines only triangulation (no surface).
+  void SetWithTriangles (const Standard_Boolean isWithTriangles) { myWithTriangles = isWithTriangles; }
+
   Standard_EXPORT void SetFormatNb (const Standard_Integer theFormatNb);
   
   //! two formats available for the moment:
