@@ -12,143 +12,112 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <AIS_Selection.hxx>
 
 #include <AIS_InteractiveObject.hxx>
-#include <AIS_Selection.hxx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <Standard_MultiplyDefined.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_TypeMismatch.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(AIS_Selection,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(AIS_Selection, Standard_Transient)
 
-#define MaxSizeOfResult 100000
-
-//=======================================================================
-//function : AIS_Selection
-//purpose  : 
-//=======================================================================
-AIS_Selection::AIS_Selection() :
-myNb(0)
+namespace
 {
-  myResultMap.ReSize( MaxSizeOfResult ); // for maximum performnace on medium selections ( < 100000 objects )
+  static const Standard_Integer THE_MaxSizeOfResult = 100000;
 }
 
 //=======================================================================
-//function : Select
-//purpose  : 
+//function : AIS_Selection
+//purpose  :
 //=======================================================================
-void AIS_Selection::Select() 
+AIS_Selection::AIS_Selection()
 {
-  myNb=0;
+  // for maximum performance on medium selections (< 100000 objects)
+  myResultMap.ReSize (THE_MaxSizeOfResult);
+}
+
+//=======================================================================
+//function : Clear
+//purpose  :
+//=======================================================================
+void AIS_Selection::Clear()
+{
   myresult.Clear();
   myResultMap.Clear();
 }
 
 //=======================================================================
 //function : Select
-//purpose  : 
+//purpose  :
 //=======================================================================
-AIS_SelectStatus AIS_Selection::Select(const Handle(Standard_Transient)& anObject) 
+AIS_SelectStatus AIS_Selection::Select (const Handle(SelectMgr_EntityOwner)& theObject)
 {
-  Handle(AIS_InteractiveObject) anAISObj;
-  Handle(SelectMgr_EntityOwner) owner = Handle(SelectMgr_EntityOwner)::DownCast( anObject );
-  if ( owner.IsNull() )
-    anAISObj = Handle(AIS_InteractiveObject)::DownCast( anObject );
-  if ( myResultMap.IsBound( anObject ) ){
-    AIS_NListTransient::Iterator aListIter = myResultMap.Find( anObject );
-//skt-----------------------------------------------------------------
-    if( myIterator == aListIter ) {
-      if( myIterator.More() )
-          myIterator.Next();
-      else
-          myIterator = AIS_NListTransient::Iterator();
-    }
-//--------------------------------------------------------------------
-    // In the mode of advanced mesh selection only one owner is created
-    // for all selection modes. It is necessary to check the current detected
-    // entity and remove the owner from map only if the detected entity is
-    // the same as previous selected (IsForcedHilight call)
-    if( !anAISObj.IsNull() || ( !owner.IsNull() && !owner->IsForcedHilight() ) )
+  if (theObject.IsNull()
+  || !theObject->HasSelectable())
+  {
+    return AIS_SS_NotDone;
+  }
+
+  if (!myResultMap.IsBound (theObject))
+  {
+    AIS_NListOfEntityOwner::Iterator aListIter;
+    myresult.Append  (theObject, aListIter);
+    myResultMap.Bind (theObject, aListIter);
+    return AIS_SS_Added;
+  }
+
+  AIS_NListOfEntityOwner::Iterator aListIter = myResultMap.Find (theObject);
+  if (myIterator == aListIter)
+  {
+    if (myIterator.More())
     {
-      myresult.Remove( aListIter );
-      myResultMap.UnBind( anObject );
-    
-      // update list iterator for next object in <myresult> list if any
-      if ( aListIter.More() ){
-	const Handle(Standard_Transient)& aNextObject = aListIter.Value();
-	if ( myResultMap.IsBound( aNextObject ) )
-	  myResultMap( aNextObject ) = aListIter;
-	else
-	  myResultMap.Bind( aNextObject, aListIter );
-      }
-      return AIS_SS_Removed;
+      myIterator.Next();
     }
     else
-      return AIS_SS_Added;
+    {
+      myIterator = AIS_NListOfEntityOwner::Iterator();
+    }
   }
-  
-  AIS_NListTransient::Iterator aListIter;
-  myresult.Append( anObject, aListIter );
-  myResultMap.Bind( anObject, aListIter );
-  return AIS_SS_Added;
+
+  // In the mode of advanced mesh selection only one owner is created for all selection modes.
+  // It is necessary to check the current detected entity
+  // and remove the owner from map only if the detected entity is the same as previous selected (IsForcedHilight call)
+  if (theObject->IsForcedHilight())
+  {
+    return AIS_SS_Added;
+  }
+
+  myresult.Remove (aListIter);
+  myResultMap.UnBind (theObject);
+
+  // update list iterator for next object in <myresult> list if any
+  if (aListIter.More())
+  {
+    const Handle(SelectMgr_EntityOwner)& aNextObject = aListIter.Value();
+    if (myResultMap.IsBound (aNextObject))
+    {
+      myResultMap (aNextObject) = aListIter;
+    }
+    else
+    {
+      myResultMap.Bind (aNextObject, aListIter);
+    }
+  }
+  return AIS_SS_Removed;
 }
 
 //=======================================================================
 //function : AddSelect
-//purpose  : Always add int the selection
+//purpose  :
 //=======================================================================
-AIS_SelectStatus AIS_Selection::AddSelect(const Handle(Standard_Transient)& anObject) 
+AIS_SelectStatus AIS_Selection::AddSelect (const Handle(SelectMgr_EntityOwner)& theObject)
 {
-  if ( myResultMap.IsBound( anObject ) )
+  if (theObject.IsNull()
+  || !theObject->HasSelectable()
+  ||  myResultMap.IsBound (theObject))
+  {
     return AIS_SS_NotDone;
-      
-  AIS_NListTransient::Iterator aListIter;
-  myresult.Append( anObject, aListIter );
-  myResultMap.Bind( anObject, aListIter );
+  }
+
+  AIS_NListOfEntityOwner::Iterator aListIter;
+  myresult.Append  (theObject, aListIter);
+  myResultMap.Bind (theObject, aListIter);
   return AIS_SS_Added;
 }
-
-
-//=======================================================================
-//function : ClearAndSelect
-//purpose  : 
-//=======================================================================
-
-void AIS_Selection::ClearAndSelect(const Handle(Standard_Transient)& anObject)
-{
-  Select();
-  Select(anObject);
-}
-
-
-//=======================================================================
-//function : Extent
-//purpose  : 
-//=======================================================================
-Standard_Integer AIS_Selection::Extent() const
-{
-  return myresult.Extent();
-}
-
-//=======================================================================
-//function : Single
-//purpose  : 
-//=======================================================================
-Handle(Standard_Transient)  AIS_Selection::Single() 
-{
-  Init();
-  return Value();
-}
-//=======================================================================
-//function : IsSelected
-//purpose  : 
-//=======================================================================
-Standard_Boolean AIS_Selection::IsSelected(const Handle(Standard_Transient)& anObject) const
-{
-  return myResultMap.IsBound( anObject );
-}
-
-

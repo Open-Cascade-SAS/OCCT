@@ -104,7 +104,7 @@ myIsAutoActivateSelMode(Standard_True)
 void AIS_InteractiveContext::Delete() const
 {
   // clear the current selection
-  mySelection->Select();
+  mySelection->Clear();
 
   // let's remove one reference explicitly. this operation's supposed to
   // be performed when mgrSelector will be destroyed but anyway...
@@ -645,7 +645,7 @@ void AIS_InteractiveContext::DisplaySelected (const Standard_Boolean theToUpdate
   Standard_Boolean      isFound  = Standard_False;
   for (mySelection->Init(); mySelection->More(); mySelection->Next())
   {
-    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (mySelection->Value());
+    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (mySelection->Value()->Selectable());
     Display (anObj, Standard_False);
     isFound = Standard_True;
   }
@@ -671,7 +671,7 @@ void AIS_InteractiveContext::EraseSelected (const Standard_Boolean theToUpdateVi
   mySelection->Init();
   while (mySelection->More())
   {
-    Handle(SelectMgr_EntityOwner) anOwner = Handle(SelectMgr_EntityOwner)::DownCast (mySelection->Value());
+    Handle(SelectMgr_EntityOwner) anOwner = mySelection->Value();
     Handle(AIS_InteractiveObject) anObj   = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
 
     Erase (anObj, Standard_False);
@@ -2198,10 +2198,10 @@ void AIS_InteractiveContext::SetSelectedAspect (const Handle(Prs3d_BasicAspect)&
   }
 
   Standard_Boolean isFound = Standard_False;
-  for (mySelection->Init(); mySelection->More(); mySelection->Next())
+  for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
   {
     isFound = Standard_True;
-    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (mySelection->Value());
+    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (aSelIter.Value()->Selectable());
     anObj->SetAspect (theAspect);
   }
 
@@ -2399,21 +2399,18 @@ void AIS_InteractiveContext::EraseGlobal (const Handle(AIS_InteractiveObject)& t
 //=======================================================================
 void AIS_InteractiveContext::unhighlightOwners (const Handle(AIS_InteractiveObject)& theObject)
 {
-  mySelection->Init();
-  while (mySelection->More())
+  SelectMgr_SequenceOfOwner aSeq;
+  for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
   {
-    const Handle(SelectMgr_EntityOwner) anOwner =
-      Handle(SelectMgr_EntityOwner)::DownCast (mySelection->Value());
-    if (anOwner->Selectable() == theObject)
+    if (aSelIter.Value()->Selectable() == theObject
+     && aSelIter.Value()->IsSelected())
     {
-      if (anOwner->IsSelected())
-      {
-        AddOrRemoveSelected (anOwner, Standard_False);
-        mySelection->Init();
-        continue;
-      }
+      aSeq.Append (aSelIter.Value());
     }
-    mySelection->Next();
+  }
+  for (SelectMgr_SequenceOfOwner::Iterator aDelIter (aSeq); aDelIter.More(); aDelIter.Next())
+  {
+    AddOrRemoveSelected (aDelIter.Value(), Standard_False);
   }
 }
 
@@ -2889,22 +2886,21 @@ void AIS_InteractiveContext::FitSelected (const Handle(V3d_View)& theView,
   AIS_MapOfObjectOwners anObjectOwnerMap;
   for (aSelection->Init(); aSelection->More(); aSelection->Next())
   {
-    Handle(AIS_InteractiveObject) anObj (Handle(AIS_InteractiveObject)::DownCast (aSelection->Value()));
-    if (!anObj.IsNull())
+    const Handle(SelectMgr_EntityOwner)& anOwner = aSelection->Value();
+    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast(anOwner->Selectable());
+    if (anObj->IsInfinite())
     {
-      if (anObj->IsInfinite())
-        continue;
+      continue;
+    }
 
+    if (anOwner == anObj->GlobalSelOwner())
+    {
       Bnd_Box aTmpBnd;
       anObj->BoundingBox (aTmpBnd);
       aBndSelected.Add (aTmpBnd);
     }
     else
     {
-      Handle(SelectMgr_EntityOwner) anOwner (Handle(SelectMgr_EntityOwner)::DownCast (aSelection->Value()));
-      if (anOwner.IsNull())
-        continue;
-
       Handle(SelectMgr_IndexedMapOfOwner) anOwnerMap;
       if (!anObjectOwnerMap.Find (anOwner->Selectable(), anOwnerMap))
       {

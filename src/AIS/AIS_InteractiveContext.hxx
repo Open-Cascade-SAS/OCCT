@@ -881,7 +881,13 @@ public:
   Standard_EXPORT Standard_Integer HilightPreviousDetected (const Handle(V3d_View)& theView, const Standard_Boolean theToRedrawImmediate = Standard_True);
   
   //! Adds object in the selection.
-  Standard_EXPORT AIS_StatusOfPick AddSelect (const Handle(Standard_Transient)& theObject);
+  Standard_EXPORT AIS_StatusOfPick AddSelect (const Handle(SelectMgr_EntityOwner)& theObject);
+
+  //! Adds object in the selection.
+  AIS_StatusOfPick AddSelect (const Handle(AIS_InteractiveObject)& theObject)
+  {
+    return AddSelect (theObject->GlobalSelOwner());
+  }
 
   //! Selects everything found in the bounding rectangle
   //! defined by the pixel minima and maxima, XPMin,

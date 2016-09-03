@@ -612,13 +612,11 @@ void AIS_LocalContext::Terminate (const Standard_Boolean theToUpdate)
   // clear the selector...
   myMainVS->Clear();
   
-  Handle(Standard_Transient) Tr;
-  for (mySelection->Init(); mySelection->More(); mySelection->Next()){
-    Tr = mySelection->Value();
-    Handle(SelectMgr_EntityOwner)::DownCast (Tr)->SetSelected (Standard_False);
+  for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
+  {
+    aSelIter.Value()->SetSelected (Standard_False);
   }
-
-  mySelection->Select();
+  mySelection->Clear();
 
   Handle(V3d_View) aDummyView;
   myMainVS->ClearSensitive (aDummyView);

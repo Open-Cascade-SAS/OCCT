@@ -167,7 +167,7 @@ public:
   Standard_EXPORT Standard_Boolean UnhilightLastDetected (const Handle(V3d_View)& aView);
   
   //! returns the number of selected
-  Standard_EXPORT AIS_StatusOfPick AddSelect (const Handle(Standard_Transient)& theObject);
+  Standard_EXPORT AIS_StatusOfPick AddSelect (const Handle(SelectMgr_EntityOwner)& theObject);
 
   Standard_EXPORT AIS_StatusOfPick Select (const Standard_Boolean updateviewer = Standard_True);
   

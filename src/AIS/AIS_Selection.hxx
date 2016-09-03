@@ -17,95 +17,72 @@
 #ifndef _AIS_Selection_HeaderFile
 #define _AIS_Selection_HeaderFile
 
+#include <AIS_NListOfEntityOwner.hxx>
+#include <AIS_SelectStatus.hxx>
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <AIS_NListTransient.hxx>
-#include <AIS_NListIteratorOfListTransient.hxx>
-#include <AIS_NDataMapOfTransientIteratorOfListTransient.hxx>
-#include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
-#include <AIS_SelectStatus.hxx>
-class Standard_NoSuchObject;
-class Standard_MultiplyDefined;
-class Standard_TypeMismatch;
-class Standard_Transient;
-
-
-class AIS_Selection;
-DEFINE_STANDARD_HANDLE(AIS_Selection, MMgt_TShared)
-
-
-class AIS_Selection : public MMgt_TShared
+//! Class holding the list of selected owners.
+class AIS_Selection : public Standard_Transient
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_Selection, Standard_Transient)
 public:
 
-  
   //! creates a new selection.
-
   Standard_EXPORT AIS_Selection();
   
   //! removes all the object of the selection.
-  Standard_EXPORT void Select();
+  Standard_EXPORT void Clear();
   
   //! if the object is not yet in the selection, it will be added.
   //! if the object is already in the selection, it will be removed.
-  Standard_EXPORT AIS_SelectStatus Select (const Handle(Standard_Transient)& anObject);
+  Standard_EXPORT AIS_SelectStatus Select (const Handle(SelectMgr_EntityOwner)& theObject);
   
   //! the object is always add int the selection.
   //! faster when the number of objects selected is great.
-  Standard_EXPORT AIS_SelectStatus AddSelect (const Handle(Standard_Transient)& anObject);
-  
+  Standard_EXPORT AIS_SelectStatus AddSelect (const Handle(SelectMgr_EntityOwner)& theObject);
+
   //! clears the selection and adds the object in the selection.
-  Standard_EXPORT void ClearAndSelect (const Handle(Standard_Transient)& anObject);
+  void ClearAndSelect (const Handle(SelectMgr_EntityOwner)& theObject)
+  {
+    Clear();
+    Select (theObject);
+  }
 
   //! checks if the object is in the selection.
-  Standard_EXPORT Standard_Boolean IsSelected (const Handle(Standard_Transient)& anObject) const;
-  
-  //! returns the number of objects selected.
-  Standard_EXPORT Standard_Integer Extent() const;
-  
-  //! returns the single object selected.
-  //! Warning: raises TypeMismatch from Standard if Extent is not equal to 1.
-  Standard_EXPORT Handle(Standard_Transient) Single();
-  
-  void Init();
-  
-  Standard_Boolean More() const;
-  
-  void Next();
-  
-  const Handle(Standard_Transient)& Value() const;
-  
-  Standard_Integer NbStored() const;
-  
-  const AIS_NListTransient& Objects() const;
+  Standard_Boolean IsSelected (const Handle(SelectMgr_EntityOwner)& theObject) const { return myResultMap.IsBound (theObject); }
 
-  DEFINE_STANDARD_RTTIEXT(AIS_Selection,MMgt_TShared)
+  //! Return the list of selected objects.
+  const AIS_NListOfEntityOwner& Objects() const { return myresult; }
 
-protected:
+  //! Return the number of selected objects.
+  Standard_Integer Extent() const { return myresult.Size(); }
 
+  //! Return true if list of selected objects is empty.
+  Standard_Boolean IsEmpty() const { return myresult.IsEmpty(); }
 
+public:
 
+  //! Start iteration through selected objects.
+  void Init() { myIterator = AIS_NListOfEntityOwner::Iterator(myresult); }
+
+  //! Return true if iterator points to selected object.
+  Standard_Boolean More() const { return myIterator.More(); }
+
+  //! Continue iteration through selected objects.
+  void Next() { myIterator.Next(); }
+
+  //! Return selected object at iterator position.
+  const Handle(SelectMgr_EntityOwner)& Value() const { return myIterator.Value(); }
 
 private:
 
-  AIS_NListTransient myresult;
-  AIS_NListIteratorOfListTransient myIterator;
-  AIS_NDataMapOfTransientIteratorOfListTransient myResultMap;
-  Standard_Integer myNb;
-
+  AIS_NListOfEntityOwner myresult;
+  AIS_NListOfEntityOwner::Iterator myIterator;
+  NCollection_DataMap<Handle(SelectMgr_EntityOwner), AIS_NListOfEntityOwner::Iterator> myResultMap;
 
 };
 
-
-#include <AIS_Selection.lxx>
-
-
-
-
+DEFINE_STANDARD_HANDLE(AIS_Selection, Standard_Transient)
 
 #endif // _AIS_Selection_HeaderFile

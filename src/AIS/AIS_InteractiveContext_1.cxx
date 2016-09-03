@@ -94,13 +94,12 @@ void AIS_InteractiveContext::highlightSelected (const Handle(SelectMgr_EntityOwn
   if (!theOwner->IsAutoHilight())
   {
     SelectMgr_SequenceOfOwner aSeq;
-    for (mySelection->Init(); mySelection->More(); mySelection->Next())
+    for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
     {
-      const Handle(SelectMgr_EntityOwner) aSelOwnr =
-        Handle(SelectMgr_EntityOwner)::DownCast (mySelection->Value());
-      if (aSelOwnr->Selectable() != anObj)
-        continue;
-      aSeq.Append (aSelOwnr);
+      if (aSelIter.Value()->Selectable() == anObj)
+      {
+        aSeq.Append (aSelIter.Value());
+      }
     }
     anObj->HilightSelected (myMainPM, aSeq);
   }
@@ -117,15 +116,10 @@ void AIS_InteractiveContext::highlightSelected (const Handle(SelectMgr_EntityOwn
 void AIS_InteractiveContext::unhighlightSelected (const Standard_Boolean theIsToHilightSubIntensity)
 {
   NCollection_IndexedMap<Handle(AIS_InteractiveObject)> anObjToClear;
-  for (mySelection->Init(); mySelection->More(); mySelection->Next())
+  for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
   {
-    const Handle(SelectMgr_EntityOwner) anOwner =
-      Handle(SelectMgr_EntityOwner)::DownCast (mySelection->Value());
-    if (anOwner.IsNull() || !anOwner->HasSelectable())
-      continue;
-
-    const Handle(AIS_InteractiveObject) anInteractive =
-      Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+    const Handle(SelectMgr_EntityOwner) anOwner = aSelIter.Value();
+    const Handle(AIS_InteractiveObject) anInteractive = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
     if (anOwner->IsAutoHilight())
     {
       const Standard_Integer aHiMode = anInteractive->HasHilightMode() ? anInteractive->HilightMode() : 0;
@@ -313,7 +307,7 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
 //function : AddSelect
 //purpose  : 
 //=======================================================================
-AIS_StatusOfPick AIS_InteractiveContext::AddSelect (const Handle(Standard_Transient)& theObject)
+AIS_StatusOfPick AIS_InteractiveContext::AddSelect (const Handle(SelectMgr_EntityOwner)& theObject)
 {
   if (HasOpenedContext())
   {
@@ -461,7 +455,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Boolean toUpdate
   {
     unhighlightSelected (Standard_True);
 
-    mySelection->Select();
+    mySelection->Clear();
     if (toUpdateViewer && myWasLastMain)
     {
         UpdateCurrentViewer();
@@ -768,40 +762,35 @@ void AIS_InteractiveContext::HilightSelected (const Standard_Boolean theToUpdate
   // In case of selection without using local context
   myMainPM->ClearImmediateDraw();
   AIS_MapOfObjSelectedOwners anObjOwnerMap;
-  for (mySelection->Init(); mySelection->More(); mySelection->Next())
+  for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
   {
-    const Handle(SelectMgr_EntityOwner) anOwner =
-      Handle(SelectMgr_EntityOwner)::DownCast (mySelection->Value());
-    if (!anOwner.IsNull() && anOwner->HasSelectable())
+    const Handle(SelectMgr_EntityOwner) anOwner = aSelIter.Value();
+    const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+    if (anOwner == anObj->GlobalSelOwner())
     {
-      const Handle(AIS_InteractiveObject) anObj =
-        Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
-      if (anOwner == anObj->GlobalSelOwner())
+      Handle(AIS_GlobalStatus)& aState = myObjects.ChangeFind (anObj);
+      aState->SetHilightStatus (Standard_True);
+      aState->SetHilightColor (mySelectionColor);
+    }
+    anOwner->State (1);
+    if (!anOwner->IsAutoHilight())
+    {
+      NCollection_Handle<SelectMgr_SequenceOfOwner> aSeq;
+      if (anObjOwnerMap.Find (anObj, aSeq))
       {
-        Handle(AIS_GlobalStatus)& aState = myObjects.ChangeFind (anObj);
-        aState->SetHilightStatus (Standard_True);
-        aState->SetHilightColor (mySelectionColor);
-      }
-      anOwner->State (1);
-      if (!anOwner->IsAutoHilight())
-      {
-        NCollection_Handle<SelectMgr_SequenceOfOwner> aSeq;
-        if (anObjOwnerMap.Find (anObj, aSeq))
-        {
-          aSeq->Append (anOwner);
-        }
-        else
-        {
-          aSeq = new SelectMgr_SequenceOfOwner();
-          aSeq->Append (anOwner);
-          anObjOwnerMap.Bind (anObj, aSeq);
-        }
+        aSeq->Append (anOwner);
       }
       else
       {
-        const Standard_Integer aHiMode = anObj->HasHilightMode() ? anObj->HilightMode() : 0;
-        anOwner->HilightWithColor (myMainPM, mySelectionColor, aHiMode);
+        aSeq = new SelectMgr_SequenceOfOwner();
+        aSeq->Append (anOwner);
+        anObjOwnerMap.Bind (anObj, aSeq);
       }
+    }
+    else
+    {
+      const Standard_Integer aHiMode = anObj->HasHilightMode() ? anObj->HilightMode() : 0;
+      anOwner->HilightWithColor (myMainPM, mySelectionColor, aHiMode);
     }
   }
 
@@ -829,22 +818,18 @@ void AIS_InteractiveContext::UnhilightSelected (const Standard_Boolean theToUpda
     return myLocalContexts (myCurLocalIndex)->UnhilightPicked (theToUpdateViewer);
   }
 
-  for (mySelection->Init(); mySelection->More(); mySelection->Next())
+  for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
   {
-    const Handle(SelectMgr_EntityOwner) anOwner =
-      Handle(SelectMgr_EntityOwner)::DownCast (mySelection->Value());
-    if (!anOwner.IsNull() && anOwner->HasSelectable())
+    const Handle(SelectMgr_EntityOwner) anOwner = aSelIter.Value();
+    const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+    if (anOwner == anObj->GlobalSelOwner())
     {
-      const Handle(AIS_InteractiveObject) anObj =
-        Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
-      if (anOwner == anObj->GlobalSelOwner())
-      {
-        myObjects.ChangeFind (anObj)->SetHilightStatus (Standard_False);
-      }
-      anOwner->State (0);
-      const Standard_Integer aHiMode = anObj->HasHilightMode() ? anObj->HasHilightMode() : 0;
-      anOwner->Unhilight (myMainPM, aHiMode);
+      myObjects.ChangeFind (anObj)->SetHilightStatus (Standard_False);
     }
+
+    anOwner->State (0);
+    const Standard_Integer aHiMode = anObj->HasHilightMode() ? anObj->HasHilightMode() : 0;
+    anOwner->Unhilight (myMainPM, aHiMode);
   }
 
   if (theToUpdateViewer)
@@ -866,7 +851,7 @@ void AIS_InteractiveContext::ClearSelected (const Standard_Boolean theToUpdateVi
 
   unhighlightSelected();
 
-  mySelection->Select();
+  mySelection->Clear();
   myMainPM->ClearImmediateDraw();
 
   if (theToUpdateViewer)
@@ -922,10 +907,11 @@ void AIS_InteractiveContext::SetSelected (const Handle(AIS_InteractiveObject)& t
 
   for (mySelection->Init(); mySelection->More(); mySelection->Next())
   {
-    const Handle(SelectMgr_EntityOwner) anOwner =
-      Handle(SelectMgr_EntityOwner)::DownCast (mySelection->Value());
-    if (anOwner.IsNull() || !anOwner->HasSelectable() || !myFilters->IsOk (anOwner))
+    const Handle(SelectMgr_EntityOwner) anOwner = mySelection->Value();
+    if (!myFilters->IsOk (anOwner))
+    {
       continue;
+    }
 
     Handle(AIS_InteractiveObject) aSelectable =
       Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
@@ -1199,7 +1185,6 @@ void AIS_InteractiveContext::NextSelected()
   if(HasOpenedContext())
   {
     return myLocalContexts (myCurLocalIndex)->NextSelected();
-    return;
   }
 
   mySelection->Next();
@@ -1231,7 +1216,7 @@ TopoDS_Shape AIS_InteractiveContext::SelectedShape() const
     return myLocalContexts (myCurLocalIndex)->SelectedShape();
   }
 
-  if (mySelection->Extent() == 0)
+  if (!mySelection->More())
     return TopoDS_Shape();
 
   const Handle(StdSelect_BRepOwner) anOwner =
@@ -1253,12 +1238,9 @@ Handle(AIS_InteractiveObject) AIS_InteractiveContext::SelectedInteractive() cons
     return myLocalContexts(myCurLocalIndex)->SelectedInteractive();
   }
 
-  const Handle(SelectMgr_EntityOwner) anOwner =
-    Handle(SelectMgr_EntityOwner)::DownCast (mySelection->Value());
-  if (anOwner.IsNull() || !anOwner->HasSelectable())
-    return NULL;
-
-  return Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+  return !mySelection->More()
+       ? Handle(AIS_InteractiveObject)()
+       : Handle(AIS_InteractiveObject)::DownCast (mySelection->Value()->Selectable());
 }
 //=======================================================================
 //function : SelectedOwner
@@ -1271,8 +1253,9 @@ Handle(SelectMgr_EntityOwner) AIS_InteractiveContext::SelectedOwner() const
     return myLocalContexts(myCurLocalIndex)->SelectedOwner();
   }
 
-  return mySelection->Extent() > 0 ?
-    Handle(SelectMgr_EntityOwner)::DownCast (mySelection->Value()) : NULL;
+  return !mySelection->More()
+       ? Handle(SelectMgr_EntityOwner)()
+       : mySelection->Value();
 }
 
 //=======================================================================

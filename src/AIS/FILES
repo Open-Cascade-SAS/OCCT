@@ -117,9 +117,7 @@ AIS_MinRadiusDimension.hxx
 AIS_MultipleConnectedInteractive.cxx
 AIS_MultipleConnectedInteractive.hxx
 AIS_MultipleConnectedInteractive.lxx
-AIS_NDataMapOfTransientIteratorOfListTransient.hxx
-AIS_NListIteratorOfListTransient.hxx
-AIS_NListTransient.hxx
+AIS_NListOfEntityOwner.hxx
 AIS_OffsetDimension.cxx
 AIS_OffsetDimension.hxx
 AIS_OffsetDimension.lxx
@@ -149,7 +147,6 @@ AIS_RubberBand.hxx
 AIS_RubberBand.cxx
 AIS_Selection.cxx
 AIS_Selection.hxx
-AIS_Selection.lxx
 AIS_SelectStatus.hxx
 AIS_SequenceOfDimension.hxx
 AIS_SequenceOfInteractive.hxx

@@ -13,13 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _AIS_NDataMapOfTransientIteratorOfListTransient_HeaderFile
-#define _AIS_NDataMapOfTransientIteratorOfListTransient_HeaderFile
+#ifndef _AIS_NListTransient_HeaderFile
+#define _AIS_NListTransient_HeaderFile
 
-#include <AIS_NListIteratorOfListTransient.hxx>
-#include <NCollection_DataMap.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <NCollection_List.hxx>
 
-typedef NCollection_DataMap<Handle(Standard_Transient), AIS_NListIteratorOfListTransient> 
-        AIS_NDataMapOfTransientIteratorOfListTransient;
+typedef NCollection_List<Handle(SelectMgr_EntityOwner)> AIS_NListOfEntityOwner;
 
 #endif

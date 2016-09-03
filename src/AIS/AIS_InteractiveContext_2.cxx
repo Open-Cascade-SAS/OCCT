@@ -413,7 +413,7 @@ SubIntensityOff(const Handle(AIS_InteractiveObject)& anIObj,
     
     Standard_Integer DM,HM,SM;
     GetDefModes(anIObj,DM,HM,SM);
-    if(mySelection->IsSelected(anIObj))
+    if(IsSelected(anIObj))
       myMainPM->Highlight(anIObj,HM);
     
     if(updateviewer){
