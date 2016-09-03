@@ -90,12 +90,25 @@ public:
                                const Standard_Integer theViewportWidth,
                                const Standard_Integer theViewportHeight) const;
 
+  //! Apply transformation persistence on specified matrices.
+  //! @param theCamera camera definition
+  //! @param theProjection projection matrix to modify
+  //! @param theWorldView  world-view matrix to modify
+  //! @param theViewportWidth  viewport width
+  //! @param theViewportHeight viewport height
   template<class T>
   void Apply (const Handle(Graphic3d_Camera)& theCamera,
               NCollection_Mat4<T>& theProjection,
               NCollection_Mat4<T>& theWorldView,
               const Standard_Integer theViewportWidth,
               const Standard_Integer theViewportHeight) const;
+
+  //! Return true if transformation persistence alters projection matrix.
+  bool AltersProjectionMatrix() const
+  {
+    return (Flags & Graphic3d_TMF_PanPers) != 0;
+  }
+
 };
 
 // =======================================================================
@@ -110,7 +123,8 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
                                      const Standard_Integer theViewportHeight) const
 {
   (void )theViewportWidth;
-  if (!Flags)
+  if (Flags == Graphic3d_TMF_None
+   || theViewportHeight == 0)
   {
     return;
   }
@@ -375,19 +389,30 @@ NCollection_Mat4<T> Graphic3d_TransformPers::Compute (const Handle(Graphic3d_Cam
     return NCollection_Mat4<T>();
   }
 
+  NCollection_Mat4<T> aProjection (theProjection);
+  NCollection_Mat4<T> aWorldView  (theWorldView);
   NCollection_Mat4<T> anUnviewMat;
+  if (AltersProjectionMatrix())
+  {
+    // destructive transformation persistence which directly modifies projection matrix
+    if (!(theProjection * theWorldView).Inverted (anUnviewMat))
+    {
+      return NCollection_Mat4<T>();
+    }
 
-  if (!(theProjection * theWorldView).Inverted (anUnviewMat))
+    Apply (theCamera, aProjection, aWorldView, theViewportWidth, theViewportHeight);
+    return anUnviewMat * (aProjection * aWorldView);
+  }
+
+  if (!theWorldView.Inverted (anUnviewMat))
   {
     return NCollection_Mat4<T>();
   }
 
-  NCollection_Mat4<T> aProjection (theProjection);
-  NCollection_Mat4<T> aWorldView (theWorldView);
-
+  // compute only world-view matrix difference to avoid floating point instability
+  // caused by projection matrix modifications outside of this algorithm (e.g. by Z-fit)
   Apply (theCamera, aProjection, aWorldView, theViewportWidth, theViewportHeight);
-
-  return anUnviewMat * (aProjection * aWorldView);
+  return anUnviewMat * aWorldView;
 }
 
 #endif // _Graphic3d_TransformPers_HeaderFile

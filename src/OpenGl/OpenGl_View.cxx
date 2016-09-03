@@ -550,16 +550,45 @@ Graphic3d_BndBox4f OpenGl_View::ZLayerBoundingBox (const Graphic3d_ZLayerId     
                                                    const Standard_Integer          theWindowHeight,
                                                    const Standard_Boolean          theToIncludeAuxiliary) const
 {
+  Graphic3d_BndBox4f aBox;
   if (myZLayers.LayerIDs().IsBound (theLayerId))
   {
-    return myZLayers.Layer (theLayerId).BoundingBox (Identification(),
+    aBox = myZLayers.Layer (theLayerId).BoundingBox (Identification(),
                                                      theCamera,
                                                      theWindowWidth,
                                                      theWindowHeight,
                                                      theToIncludeAuxiliary);
   }
 
-  return Graphic3d_BndBox4f();
+  // add bounding box of gradient/texture background for proper Z-fit
+  if (theToIncludeAuxiliary
+   && theLayerId == Graphic3d_ZLayerId_BotOSD
+   && (myBgTextureArray->IsDefined()
+    || myBgGradientArray->IsDefined()))
+  {
+    // Background is drawn using 2D transformation persistence
+    // (e.g. it is actually placed in 3D coordinates within active camera position).
+    // We add here full-screen plane with 2D transformation persistence
+    // for simplicity (myBgTextureArray might define a little bit different options
+    // but it is updated within ::Render())
+    const Graphic3d_Mat4& aProjectionMat = theCamera->ProjectionMatrixF();
+    const Graphic3d_Mat4& aWorldViewMat  = theCamera->OrientationMatrixF();
+    Graphic3d_BndBox4f aBox2d (Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f),
+                               Graphic3d_Vec4 (float(theWindowWidth), float(theWindowHeight), 0.0f, 0.0f));
+
+    Graphic3d_TransformPers aTrsfPers;
+    aTrsfPers.Flags = Graphic3d_TMF_2d;
+    aTrsfPers.Point = Graphic3d_Vec3d(-1.0, -1.0, 0.0);
+    aTrsfPers.Apply (theCamera,
+                     aProjectionMat,
+                     aWorldViewMat,
+                     theWindowWidth,
+                     theWindowHeight,
+                     aBox2d);
+    aBox.Combine (aBox2d);
+  }
+
+  return aBox;
 }
 
 //=======================================================================

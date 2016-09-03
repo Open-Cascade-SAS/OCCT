@@ -1,0 +1,24 @@
+puts "========"
+puts "Gradient background is lost at some camera positions"
+puts "========"
+
+# Test case setup the camera in such a position,
+# so that background plane will be clipped by Z-range if not handled by Z-fit.
+
+pload MODELING VISUALIZATION
+box b 0 0 -100 100 90 10
+
+vclear
+vinit View1
+vaxo
+vsetgradientbg 180 200 255 180 180 180 2
+vzbufftrihedron
+vdisplay -dispMode 1 b
+vsetlocation b 0 0 1000
+vfit
+
+vviewparams -scale 6.66 -eye 48 43 -210 -at 50 45 -95
+
+if { [vreadpixel 100 300 rgb name] != "GRAY74" } { puts "Error: gradient background is not displayed" }
+
+vdump $imagedir/${casename}.png
