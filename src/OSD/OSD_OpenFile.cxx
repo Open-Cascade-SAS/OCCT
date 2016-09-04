@@ -16,8 +16,6 @@
 #endif
 
 #include <OSD_OpenFile.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <NCollection_UtfString.hxx>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -34,8 +32,8 @@ FILE* OSD_OpenFile(const char* theName,
   // file name is treated as UTF-8 string and converted to UTF-16 one
   const TCollection_ExtendedString aFileNameW (theName, Standard_True);
   const TCollection_ExtendedString aFileModeW (theMode, Standard_True);
-  aFile = ::_wfopen ((const wchar_t* )aFileNameW.ToExtString(),
-                     (const wchar_t* )aFileModeW.ToExtString());
+  aFile = ::_wfopen (aFileNameW.ToWideString(),
+                     aFileModeW.ToWideString());
 #else
   aFile = ::fopen (theName, theMode);
 #endif
@@ -52,116 +50,14 @@ FILE* OSD_OpenFile(const TCollection_ExtendedString& theName,
   FILE* aFile = 0;
 #if defined(_WIN32)
   const TCollection_ExtendedString aFileModeW (theMode, Standard_True);
-  aFile = ::_wfopen ((const wchar_t* )theName.ToExtString(),
-                     (const wchar_t* )aFileModeW.ToExtString());
+  aFile = ::_wfopen (theName.ToWideString(),
+                     aFileModeW.ToWideString());
 #else
   // conversion in UTF-8 for linux
-  NCollection_Utf8String aString((const Standard_Utf16Char*)theName.ToExtString());
+  NCollection_Utf8String aString (theName.ToExtString());
   aFile = ::fopen (aString.ToCString(),theMode);
 #endif
   return aFile;
-}
-
-// ==============================================
-// function : OSD_OpenFileBuf
-// purpose : Opens file buffer
-// ==============================================
-void OSD_OpenFileBuf(std::filebuf& theBuff,
-                     const char* theName,
-                     const std::ios_base::openmode theMode)
-{
-#if defined(_WIN32) && defined(_MSC_VER)
-  // file name is treated as UTF-8 string and converted to UTF-16 one
-  const TCollection_ExtendedString aFileNameW (theName, Standard_True);
-  theBuff.open ((const wchar_t* )aFileNameW.ToExtString(), theMode);
-#else
-  theBuff.open (theName, theMode);
-#endif
-}
-
-// ==============================================
-// function : OSD_OpenFileBuf
-// purpose : Opens file buffer
-// ==============================================
-void OSD_OpenFileBuf(std::filebuf& theBuff,
-                     const TCollection_ExtendedString& theName,
-                     const std::ios_base::openmode theMode)
-{
-#if defined(_WIN32) && defined(_MSC_VER)
-  theBuff.open ((const wchar_t* )theName.ToExtString(), theMode);
-#else
-  // conversion in UTF-8 for linux
-  NCollection_Utf8String aString((const Standard_Utf16Char*)theName.ToExtString());
-  theBuff.open (aString.ToCString(),theMode);
-#endif
-}
-
-// ==============================================
-// function : OSD_OpenStream
-// purpose : Opens file stream
-// ==============================================
-void OSD_OpenStream(std::ofstream& theStream,
-                    const char* theName,
-                    const std::ios_base::openmode theMode)
-{
-#if defined(_WIN32) && defined(_MSC_VER)
-  // file name is treated as UTF-8 string and converted to UTF-16 one
-  const TCollection_ExtendedString aFileNameW (theName, Standard_True);
-  theStream.open ((const wchar_t* )aFileNameW.ToExtString(), theMode);
-#else
-  theStream.open (theName, theMode);
-#endif
-}
-
-// ==============================================
-// function : OSD_OpenStream
-// purpose : Opens file stream
-// ==============================================
-void OSD_OpenStream(std::ofstream& theStream,
-                    const TCollection_ExtendedString& theName,
-                    const std::ios_base::openmode theMode)
-{
-#if defined(_WIN32) && defined(_MSC_VER)
-  theStream.open ((const wchar_t* )theName.ToExtString(), theMode);
-#else
-  // conversion in UTF-8 for linux
-  NCollection_Utf8String aString((const Standard_Utf16Char*)theName.ToExtString());
-  theStream.open (aString.ToCString(),theMode);
-#endif
-}
-
-// ==============================================
-// function : OSD_OpenStream
-// purpose  : Opens file stream
-// ==============================================
-void OSD_OpenStream (std::ifstream&                theStream,
-                     const char*                   theName,
-                     const std::ios_base::openmode theMode)
-{
-#if defined(_WIN32) && defined(_MSC_VER)
-  // file name is treated as UTF-8 string and converted to UTF-16 one
-  const TCollection_ExtendedString aFileNameW (theName, Standard_True);
-  theStream.open ((const wchar_t*)aFileNameW.ToExtString(), theMode);
-#else
-  theStream.open (theName, theMode);
-#endif
-}
-
-// ==============================================
-// function : OSD_OpenStream
-// purpose  : Opens file stream
-// ==============================================
-void OSD_OpenStream (std::ifstream&                    theStream,
-                     const TCollection_ExtendedString& theName,
-                     const std::ios_base::openmode     theMode)
-{
-#if defined(_WIN32) && defined(_MSC_VER)
-  theStream.open ((const wchar_t*)theName.ToExtString(), theMode);
-#else
-  // conversion in UTF-8 for linux
-  NCollection_Utf8String aString ((const Standard_Utf16Char*)theName.ToExtString());
-  theStream.open (aString.ToCString(), theMode);
-#endif
 }
 
 // ==============================================
@@ -175,7 +71,7 @@ Standard_Time OSD_FileStatCTime (const char* theName)
   // file name is treated as UTF-8 string and converted to UTF-16 one
   const TCollection_ExtendedString aFileNameW (theName, Standard_True);
   struct __stat64 aStat;
-  if (_wstat64 ((const wchar_t* )aFileNameW.ToExtString(), &aStat) == 0)
+  if (_wstat64 (aFileNameW.ToWideString(), &aStat) == 0)
   {
     aTime = (Standard_Time )aStat.st_ctime;
   }

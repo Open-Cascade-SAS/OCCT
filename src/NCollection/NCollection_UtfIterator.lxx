@@ -230,6 +230,16 @@ Standard_Utf8UChar* NCollection_UtfIterator<Type>::GetUtf8 (Standard_Utf8UChar* 
 template<typename Type> inline
 Standard_Integer NCollection_UtfIterator<Type>::AdvanceBytesUtf16() const
 {
+  return AdvanceCodeUnitsUtf16() * sizeof(Standard_Utf16Char);
+}
+
+// =======================================================================
+// function : AdvanceCodeUnitsUtf16
+// purpose  :
+// =======================================================================
+template<typename Type> inline
+Standard_Integer NCollection_UtfIterator<Type>::AdvanceCodeUnitsUtf16() const
+{
   if (myCharUtf32 <= UTF32_MAX_BMP) // target is a character <= 0xFFFF
   {
     // UTF-16 surrogate values are illegal in UTF-32; 0xffff or 0xfffe are both reserved values
@@ -240,7 +250,7 @@ Standard_Integer NCollection_UtfIterator<Type>::AdvanceBytesUtf16() const
     }
     else
     {
-      return Standard_Integer(sizeof(Standard_Utf16Char));
+      return 1;
     }
   }
   else if (myCharUtf32 > UTF32_MAX_LEGAL)
@@ -252,7 +262,7 @@ Standard_Integer NCollection_UtfIterator<Type>::AdvanceBytesUtf16() const
   {
     // target is a character in range 0xFFFF - 0x10FFFF
     // surrogate pair
-    return Standard_Integer(sizeof(Standard_Utf16Char) * 2);
+    return 2;
   }
 }
 

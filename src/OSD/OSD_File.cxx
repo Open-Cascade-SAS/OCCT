@@ -823,7 +823,7 @@ void OSD_File::Rewind() {
 
 void                            _osd_wnt_set_error        ( OSD_Error&, OSD_WhoAmI, ... );
 #ifndef OCCT_UWP
-PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd ( const OSD_Protection&, BOOL, wchar_t* = NULL );
+PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd ( const OSD_Protection&, BOOL, const wchar_t* );
 BOOL                 __fastcall _osd_wnt_sd_to_protection (
                                  PSECURITY_DESCRIPTOR, OSD_Protection&, BOOL
                                 );
@@ -1653,7 +1653,7 @@ Standard_Boolean OSD_File :: IsOpen () const {
 
 #ifndef OCCT_UWP
 PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd (
-                                 const OSD_Protection& prot, BOOL fDir, wchar_t* fName
+                                 const OSD_Protection& prot, BOOL fDir, const wchar_t* fName
                                 ) {
 
  int                  i, j;
@@ -2289,7 +2289,7 @@ static HANDLE __fastcall _open_file (
  TCollection_ExtendedString fNameW(fName, Standard_True);
 #ifndef OCCT_UWP
  retVal = CreateFileW (
-           (const wchar_t*) fNameW.ToExtString(), dwDesiredAccess,
+           fNameW.ToWideString(), dwDesiredAccess,
            FILE_SHARE_READ | FILE_SHARE_WRITE,
            NULL, dwCreationDistribution, FILE_ATTRIBUTE_NORMAL, NULL
           );
@@ -2300,7 +2300,7 @@ static HANDLE __fastcall _open_file (
  pCreateExParams.lpSecurityAttributes = NULL;
  pCreateExParams.hTemplateFile = NULL;
  retVal = CreateFile2 (
-           (const wchar_t*) fNameW.ToExtString(), dwDesiredAccess,
+           fNameW.ToWideString(), dwDesiredAccess,
            FILE_SHARE_READ | FILE_SHARE_WRITE,
            dwCreationDistribution, &pCreateExParams
           );
@@ -2314,7 +2314,7 @@ static HANDLE __fastcall _open_file (
   dwCreationDistribution = CREATE_ALWAYS;
 #ifndef OCCT_UWP
   retVal = CreateFileW (
-            (const wchar_t*) fNameW.ToExtString(), dwDesiredAccess,
+            fNameW.ToWideString(), dwDesiredAccess,
             FILE_SHARE_READ | FILE_SHARE_WRITE,
             NULL, dwCreationDistribution, FILE_ATTRIBUTE_NORMAL, NULL
            );
@@ -2325,7 +2325,7 @@ static HANDLE __fastcall _open_file (
   pCreateExParams2.lpSecurityAttributes = NULL;
   pCreateExParams2.hTemplateFile = NULL;
   retVal = CreateFile2(
-    (const wchar_t*)fNameW.ToExtString(), dwDesiredAccess,
+    fNameW.ToWideString(), dwDesiredAccess,
     FILE_SHARE_READ | FILE_SHARE_WRITE,
     dwCreationDistribution, &pCreateExParams2
   );
@@ -2363,7 +2363,7 @@ Standard_Integer __fastcall _get_file_type (
    TCollection_ExtendedString fNameW(fName, Standard_True);
 
    WIN32_FILE_ATTRIBUTE_DATA aFileInfo;
-   if (GetFileAttributesExW((const wchar_t*)fNameW.ToExtString(), GetFileExInfoStandard, &aFileInfo))
+   if (GetFileAttributesExW (fNameW.ToWideString(), GetFileExInfoStandard, &aFileInfo))
 
     retVal = aFileInfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ? FLAG_DIRECTORY : FLAG_FILE;
 

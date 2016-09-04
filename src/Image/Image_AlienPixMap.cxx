@@ -253,7 +253,7 @@ bool Image_AlienPixMap::Load (const TCollection_AsciiString& theImagePath)
 
 #ifdef _WIN32
   const TCollection_ExtendedString aFileNameW (theImagePath.ToCString(), Standard_True);
-  FREE_IMAGE_FORMAT aFIF = FreeImage_GetFileTypeU ((const wchar_t* )aFileNameW.ToExtString(), 0);
+  FREE_IMAGE_FORMAT aFIF = FreeImage_GetFileTypeU (aFileNameW.ToWideString(), 0);
 #else
   FREE_IMAGE_FORMAT aFIF = FreeImage_GetFileType (theImagePath.ToCString(), 0);
 #endif
@@ -284,7 +284,7 @@ bool Image_AlienPixMap::Load (const TCollection_AsciiString& theImagePath)
   }
 
 #ifdef _WIN32
-  FIBITMAP* anImage = FreeImage_LoadU (aFIF, (const wchar_t* )aFileNameW.ToExtString(), aLoadFlags);
+  FIBITMAP* anImage = FreeImage_LoadU (aFIF, aFileNameW.ToWideString(), aLoadFlags);
 #else
   FIBITMAP* anImage = FreeImage_Load  (aFIF, theImagePath.ToCString(), aLoadFlags);
 #endif
@@ -383,7 +383,7 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
 
 #ifdef _WIN32
   const TCollection_ExtendedString aFileNameW (theFileName.ToCString(), Standard_True);
-  FREE_IMAGE_FORMAT anImageFormat = FreeImage_GetFIFFromFilenameU ((const wchar_t* )aFileNameW.ToExtString());
+  FREE_IMAGE_FORMAT anImageFormat = FreeImage_GetFIFFromFilenameU (aFileNameW.ToWideString());
 #else
   FREE_IMAGE_FORMAT anImageFormat = FreeImage_GetFIFFromFilename (theFileName.ToCString());
 #endif
@@ -519,7 +519,7 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
   }
 
 #ifdef _WIN32
-  bool isSaved = (FreeImage_SaveU (anImageFormat, anImageToDump, (const wchar_t* )aFileNameW.ToExtString()) != FALSE);
+  bool isSaved = (FreeImage_SaveU (anImageFormat, anImageToDump, aFileNameW.ToWideString()) != FALSE);
 #else
   bool isSaved = (FreeImage_Save  (anImageFormat, anImageToDump, theFileName.ToCString()) != FALSE);
 #endif

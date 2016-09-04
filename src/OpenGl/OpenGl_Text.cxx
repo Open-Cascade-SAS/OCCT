@@ -286,7 +286,7 @@ void OpenGl_Text::Init (const Handle(OpenGl_Context)&     theCtx,
   myParams     = theParams;
   myPoint.xy() = thePoint;
   myPoint.z()  = 0.0f;
-  myString.FromUnicode ((Standard_Utf16Char* )theText.ToExtString());
+  myString.FromUnicode (theText.ToExtString());
 }
 
 // =======================================================================

@@ -38,16 +38,21 @@ class Standard_NegativeValue;
 class TCollection_AsciiString;
 
 
-//! A variable-length sequence of "extended"
-//! (UNICODE) characters (16-bit character type). It
-//! provides editing operations with built-in memory
-//! management to make ExtendedString objects
-//! easier to use than ordinary extended character arrays.
-//! ExtendedString objects follow "value
-//! semantics", that is, they are the actual strings,
-//! not handles to strings, and are copied through
-//! assignment. You may use HExtendedString
-//! objects to get handles to strings.
+//! A variable-length sequence of "extended" (UNICODE) characters (16-bit character type).
+//! It provides editing operations with built-in memory management
+//! to make ExtendedString objects easier to use than ordinary extended character arrays.
+//! ExtendedString objects follow "value semantics", that is, they are the actual strings,
+//! not handles to strings, and are copied through assignment.
+//! You may use HExtendedString objects to get handles to strings.
+//!
+//! Beware that class can transparently store UTF-16 string with surrogate pairs
+//! (Unicode symbol represented by two 16-bit code units).
+//! However, surrogate pairs are not considered by the following methods:
+//! - Method ::Length() return the number of 16-bit code units, not the number of Unicode symbols.
+//! - Methods taking/returning symbol index work with 16-bit code units, not true Unicode symbols,
+//!   including ::Remove(), ::SetValue(), ::Value(), ::Search(), ::Trunc() and others.
+//! If application needs to process surrogate pairs, NCollection_Utf16Iter class can be used
+//! for iterating through Unicode string (UTF-32 code unit will be returned for each position).
 class TCollection_ExtendedString 
 {
 public:
@@ -67,6 +72,15 @@ public:
   
   //! Creation by converting an ExtString to an extended string.
   Standard_EXPORT TCollection_ExtendedString(const Standard_ExtString astring);
+
+#if !defined(_WIN32) || defined(_NATIVE_WCHAR_T_DEFINED)
+  //! Initialize from wide-char string considering it as Unicode string
+  //! (the size of wide char is a platform-dependent - e.g. on Windows wchar_t is UTF-16).
+  //!
+  //! This constructor is unavailable if application is built with deprecated msvc option "-Zc:wchar_t-",
+  //! since OCCT itself is never built with this option.
+  Standard_EXPORT TCollection_ExtendedString (const Standard_WideChar* theStringUtf);
+#endif
   
   //! Initializes a AsciiString with a single character.
   Standard_EXPORT TCollection_ExtendedString(const Standard_Character aChar);
@@ -128,21 +142,17 @@ void operator = (const TCollection_ExtendedString& fromwhere)
 }
   
   //! Frees memory allocated by ExtendedString.
-  Standard_EXPORT void Destroy();
-~TCollection_ExtendedString()
-{
-  Destroy();
-}
+  Standard_EXPORT ~TCollection_ExtendedString();
   
   //! Insert a Character at position <where>.
   Standard_EXPORT void Insert (const Standard_Integer where, const Standard_ExtCharacter what);
   
   //! Insert a ExtendedString at position <where>.
   Standard_EXPORT void Insert (const Standard_Integer where, const TCollection_ExtendedString& what);
-  
+
   //! Returns True if this string contains no characters.
-    Standard_Boolean IsEmpty() const;
-  
+  Standard_Boolean IsEmpty() const { return mylength == 0; }
+
   //! Returns true if the characters in this extended
   //! string are identical to the characters in the other extended string.
   //! Note that this method is an alias of operator ==
@@ -206,13 +216,19 @@ Standard_Boolean operator > (const TCollection_ExtendedString& other) const
 {
   return IsGreater(other);
 }
-  
+
+  //! Determines whether the beginning of this string instance matches the specified string.
+  Standard_EXPORT Standard_Boolean StartsWith (const TCollection_ExtendedString& theStartString) const;
+
+  //! Determines whether the end of this string instance matches the specified string.
+  Standard_EXPORT Standard_Boolean EndsWith (const TCollection_ExtendedString& theEndString) const;
+
   //! Returns True if the ExtendedString contains only
   //! "Ascii Range" characters .
   Standard_EXPORT Standard_Boolean IsAscii() const;
-  
-  //! Returns number of characters in <me>.
-  //! This is the same functionality as 'strlen' in C.
+
+  //! Returns the number of 16-bit code units
+  //! (might be greater than number of Unicode symbols if string contains surrogate pairs).
   Standard_EXPORT Standard_Integer Length() const;
   
   //! Displays <me> .
@@ -274,7 +290,14 @@ friend Standard_EXPORT Standard_OStream& operator << (Standard_OStream& astream,
   
   //! Returns pointer to ExtString
   Standard_EXPORT Standard_ExtString ToExtString() const;
-  
+
+#ifdef _WIN32
+  //! Returns pointer to string as wchar_t* on Windows platform where wchar_t* is considered as UTF-16 string.
+  //! This method is useful to pass string into wide-char system APIs,
+  //! and makes sense only on Windows (other systems use UTF-8 and can miss wide-char functions at all).
+  const Standard_WideChar* ToWideString() const { return (const Standard_WideChar*)ToExtString(); }
+#endif
+
   //! Truncates <me> to <ahowmany> characters.
   //! Example:  me = "Hello Dolly" -> Trunc(3) -> me = "Hel"
   //! Exceptions
@@ -292,19 +315,25 @@ friend Standard_EXPORT Standard_OStream& operator << (Standard_OStream& astream,
   //! Standard_OutOfRange if where lies outside
   //! the bounds of this extended string.
   Standard_EXPORT Standard_ExtCharacter Value (const Standard_Integer where) const;
-  
-  //! Returns a hashed value for the extended string
-  //! astring within the range 1..Upper.
-  //! Note: if astring is ASCII, the computed value is
-  //! the same as the value computed with the HashCode function on a
-  //! TCollection_AsciiString string composed with equivalent ASCII characters
-    static Standard_Integer HashCode (const TCollection_ExtendedString& astring, const Standard_Integer Upper);
-  
+
+  //! Returns a hashed value for the extended string within the range 1..theUpper.
+  //! Note: if string is ASCII, the computed value is the same as the value computed with the HashCode function on a
+  //! TCollection_AsciiString string composed with equivalent ASCII characters.
+  static Standard_Integer HashCode (const TCollection_ExtendedString& theString,
+                                    const Standard_Integer theUpper)
+  {
+    return ::HashCode (theString.ToExtString(), theUpper);
+  }
+
   //! Returns true if the characters in this extended
   //! string are identical to the characters in the other extended string.
   //! Note that this method is an alias of operator ==.
-    static Standard_Boolean IsEqual (const TCollection_ExtendedString& string1, const TCollection_ExtendedString& string2);
-  
+  static Standard_Boolean IsEqual (const TCollection_ExtendedString& theString1,
+                                   const TCollection_ExtendedString& theString2)
+  {
+    return theString1.IsEqual (theString2);
+  }
+
   //! Converts the internal <mystring> to UTF8 coding and
   //! returns length of the out CString. A memory for the
   //! <theCString> should be allocated before call!
@@ -315,34 +344,24 @@ friend Standard_EXPORT Standard_OStream& operator << (Standard_OStream& astream,
   //! to CString containing symbols in UTF8 coding.
   Standard_EXPORT Standard_Integer LengthOfCString() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
-  
   //! Returns true if the input CString was successfuly converted
   //! to UTF8 coding
   Standard_EXPORT Standard_Boolean ConvertToUnicode (const Standard_CString astring);
 
+private:
 
-  Standard_PExtCharacter mystring;
-  Standard_Integer mylength;
-
+  Standard_PExtCharacter mystring; //!< NULL-terminated string
+  Standard_Integer       mylength; //!< length in 16-bit code units (excluding terminating NULL symbol)
 
 };
 
-
-#include <TCollection_ExtendedString.lxx>
-
-
-
-
+//! Compute hash code for extended string
+inline Standard_Integer HashCode (const TCollection_ExtendedString& theString,
+                                  const Standard_Integer theUpper)
+{
+  return TCollection_ExtendedString::HashCode (theString, theUpper);
+}
 
 #endif // _TCollection_ExtendedString_HeaderFile

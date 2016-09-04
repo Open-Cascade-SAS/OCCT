@@ -353,10 +353,10 @@ OSD_Path OSD_Process :: CurrentDirectory () {
   DWORD dwSize = PATHLEN + 1;
   Standard_WideChar* pBuff = new wchar_t[dwSize];
 
-  if ( GetCurrentDirectoryW(dwSize, (wchar_t*)pBuff) > 0 )
+  if (GetCurrentDirectoryW (dwSize, pBuff) > 0)
   {
     // conversion to UTF-8 is performed inside
-    TCollection_AsciiString aPath(TCollection_ExtendedString((Standard_ExtString)pBuff));
+    TCollection_AsciiString aPath (pBuff);
     anCurrentDirectory = OSD_Path ( aPath );
   }
   else
@@ -374,7 +374,7 @@ void OSD_Process :: SetCurrentDirectory ( const OSD_Path& where ) {
  where.SystemName ( path );
  TCollection_ExtendedString pathW(path);
 
- if (   !::SetCurrentDirectoryW ( (const wchar_t*) pathW.ToExtString ()  )   )
+ if (!::SetCurrentDirectoryW (pathW.ToWideString()))
 
   _osd_wnt_set_error ( myError, OSD_WProcess );
 

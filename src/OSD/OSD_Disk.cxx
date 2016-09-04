@@ -180,8 +180,7 @@ OSD_Disk :: OSD_Disk () {
  if (aBuffLen > 3 && aBuff[0] != L'\\')
  {
    aBuff[3] = L'\0';
-   NCollection_String aFolder(aBuff);
-   DiskName = aFolder.ToCString();
+   DiskName = TCollection_AsciiString (aBuff);
    delete[] aBuff;
  }
  else
@@ -234,7 +233,7 @@ Standard_Integer OSD_Disk :: DiskSize () {
   ULARGE_INTEGER lpTotalNumberOfFreeBytes;// receives the free bytes on disk
 
   TCollection_ExtendedString DiskNameW(DiskName);
-  if (!GetDiskFreeSpaceExW ((const wchar_t*)DiskNameW.ToExtString(),
+  if (!GetDiskFreeSpaceExW (DiskNameW.ToWideString(),
 			   &lpFreeBytesAvailableToCaller,
 			   &lpTotalNumberOfBytes,
 			   &lpTotalNumberOfFreeBytes))
@@ -272,7 +271,7 @@ Standard_Integer OSD_Disk :: DiskFree () {
 
   // if (   !GetDiskFreeSpace (  DiskName.ToCString (), &dwSpC, &dwBpS, &dwFC, &dwC  )   )
   TCollection_ExtendedString DiskNameW(DiskName);
-  if (!GetDiskFreeSpaceExW((const wchar_t*)DiskNameW.ToExtString(),
+  if (!GetDiskFreeSpaceExW (DiskNameW.ToWideString(),
 			   &lpFreeBytesAvailableToCaller,
 			   &lpTotalNumberOfBytes,
 			   &lpTotalNumberOfFreeBytes))

@@ -294,7 +294,7 @@ TCollection_ExtendedString AIS_Dimension::GetValueString (Standard_Real& theWidt
 
   // Get text style parameters
   Handle(Prs3d_TextAspect) aTextAspect = myDrawer->DimensionAspect()->TextAspect();
-  NCollection_Utf8String anUTFString = (Standard_Utf16Char* )aValueStr.ToExtString();
+  NCollection_Utf8String anUTFString (aValueStr.ToExtString());
 
   theWidth = 0.0;
 
@@ -408,7 +408,7 @@ void AIS_Dimension::drawText (const Handle(Prs3d_Presentation)& thePresentation,
     // creating TopoDS_Shape for text
     Font_BRepFont aFont (aTextAspect->Aspect()->Font().ToCString(),
                          aFontAspect, aFontHeight);
-    NCollection_Utf8String anUTFString = (Standard_Utf16Char* )theText.ToExtString();
+    NCollection_Utf8String anUTFString (theText.ToExtString());
 
     Font_BRepTextBuilder aBuilder;
     TopoDS_Shape aTextShape = aBuilder.Perform (aFont, anUTFString);

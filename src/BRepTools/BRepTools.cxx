@@ -826,7 +826,7 @@ Standard_Boolean BRepTools::Read(TopoDS_Shape& Sh,
 {
   filebuf fic;
   istream in(&fic);
-  OSD_OpenFileBuf(fic,File,ios::in);
+  OSD_OpenStream (fic, File, ios::in);
   if(!fic.is_open()) return Standard_False;
   
   BRepTools_ShapeSet SS(B);

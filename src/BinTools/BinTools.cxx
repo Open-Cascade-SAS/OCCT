@@ -184,7 +184,7 @@ Standard_Boolean BinTools::Write (const TopoDS_Shape& theShape, const Standard_C
 Standard_Boolean BinTools::Read (TopoDS_Shape& theShape, const Standard_CString theFile)
 {
   filebuf aBuf;
-  OSD_OpenFileBuf (aBuf, theFile, ios::in | ios::binary);
+  OSD_OpenStream (aBuf, theFile, ios::in | ios::binary);
   if (!aBuf.is_open())
     return Standard_False;
 

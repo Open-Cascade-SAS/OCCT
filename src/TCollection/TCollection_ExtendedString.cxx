@@ -12,7 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TCollection_ExtendedString.hxx>
 
+#include <NCollection_UtfIterator.hxx>
 #include <Standard.hxx>
 #include <Standard_ExtString.hxx>
 #include <Standard_NegativeValue.hxx>
@@ -20,173 +22,147 @@
 #include <Standard_NumericError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
 
 #include <cctype>
 #include <cstdio>
 
 namespace
 {
-  static Standard_PExtCharacter Allocate (const Standard_Size theLength)
+  //! Allocate string buffer (automatically adding extra symbol for NULL-termination).
+  static Standard_ExtCharacter* allocateExtChars (const Standard_Size theLength)
   {
-    return (Standard_PExtCharacter )Standard::Allocate (theLength);
+    return (Standard_ExtCharacter* )Standard::Allocate ((theLength + 1) * sizeof(Standard_ExtCharacter));
   }
 
-  static Standard_PExtCharacter Reallocate (Standard_Address theAddr, const Standard_Size theLength)
+  //! Re-allocate string buffer (automatically adding extra symbol for NULL-termination).
+  static Standard_ExtCharacter* reallocateExtChars (Standard_Address theAddr,
+                                                    const Standard_Size theLength)
   {
-    return (Standard_PExtCharacter )Standard::Reallocate (theAddr, theLength);
+    return (Standard_ExtCharacter* )Standard::Reallocate (theAddr, (theLength + 1) * sizeof(Standard_ExtCharacter));
   }
 
   static const Standard_ExtCharacter NULL_EXTSTRING[1] = {0};
-}
 
-//============================== input value have len = 2 bytes ====
-inline Standard_ExtCharacter ConvertToUnicode2B (unsigned char *p)
-{
-  // *p, *(p+1)
-  // little endian
-  union {
-    struct {
-      unsigned char  l;
-      unsigned char  h;
-    } hl;
-    Standard_ExtCharacter chr;
-  } EL;
-
-  unsigned char l = *(p+1);
-  l |= 0xC0;
-  unsigned char h = *p;
-  h <<= 6;
-  h |= 0x3F;
-  l &= h;// l is defined
-  h = *p;
-  h >>= 2;
-  h &= 0x07;
-  EL.hl.l = l;
-  EL.hl.h = h;
-  return EL.chr;
-}
-
-//============================== input value have len = 3 bytes ====
-inline Standard_ExtCharacter ConvertToUnicode3B (unsigned char *p)
-{
-  // *p, *(p+1), *(p+2) =>0 , 1, 2
-  // little endian
-  union {
-    struct {
-      unsigned char  l;
-      unsigned char  h;
-    } hl;
-    Standard_ExtCharacter chr;
-  } EL;
-
-
-  unsigned char h = *(p+1);//h = 10yyyyyy
-  unsigned char l = *(p+2);//h = 10zzzzzz
-
-  l |= 0xC0;
-  h <<= 6;   //yy------
-  h |= 0x3F; //yy111111
-  l &= h;   //  yyzzzzzz - l is defined 
-  EL.hl.l = l; 
- 
-  unsigned char a = *p;// a = 1110xxxx
-  a <<= 4;//xxxx----
-  a |= 0x0F;//a = xxxx1111
-  h = *(p+1);
-  h >>= 2;//----yyyy
-  h |= 0xF0; //1111yyyy
-  a &= h; // a = xxxxyyyy
-  EL.hl.h = a; //h is defined
-  return EL.chr;
-}
-//============================== returns number of symbols in UTF8 string ====
-inline Standard_Integer  nbSymbols(const Standard_CString aStr) {
-  Standard_Integer aLen = 0;// length in symbols
-  int i = 0;
-  while (aStr[i] != '\0') {  
-    if((aStr[i] & 0x80) == 0x00) //1byte => 1 symb - Lat1
-      {aLen++; i++;}
-    else if((aStr[i] & 0xE0) == 0xC0 && 
-            (aStr[i+1] && 
-             (aStr[i+1] & 0xC0) == 0x80)) {//2 bytes => 1 symb
-      aLen++;
-      i += 2;
-    } else if((aStr[i] & 0xF0) == 0xE0 && 
-              ((aStr[i+1] && (aStr[i+1] & 0xC0) == 0x80)) &&
-              (aStr[i+2] && (aStr[i+2] & 0xC0) == 0x80)) {
-      aLen++;
-      i += 3;
-    } else 
-      i++; 
+  //! Returns the number of 16-bit code units in Unicode string
+  template<typename T>
+  static Standard_Integer nbSymbols (const T* theUtfString)
+  {
+    Standard_Integer aNbCodeUnits = 0;
+    for (NCollection_UtfIterator<T> anIter (theUtfString); *anIter != 0; ++anIter)
+    {
+      aNbCodeUnits += anIter.AdvanceCodeUnitsUtf16();
+    }
+    return aNbCodeUnits;
   }
-  return aLen;
+
+  //! Convert from wchar_t* to extended string.
+  //! Default implementation when size of wchar_t and extended char is different (e.g. Linux / UNIX).
+  template<size_t CharSize>
+  inline Standard_ExtCharacter* Standard_UNUSED fromWideString (const Standard_WideChar* theUtfString,
+                                                                Standard_Integer& theLength)
+  {
+    theLength = nbSymbols (theUtfString);
+    Standard_ExtCharacter* aString = allocateExtChars (theLength);
+    NCollection_UtfWideIter anIterRead (theUtfString);
+    for (Standard_ExtCharacter* anIterWrite = aString; *anIterRead != 0; ++anIterRead)
+    {
+      anIterWrite = anIterRead.GetUtf (anIterWrite);
+    }
+    aString[theLength] = '\0';
+    return aString;
+  }
+
+  //! Use memcpy() conversion when size is the same (e.g. on Windows).
+  template<>
+  inline Standard_ExtCharacter* Standard_UNUSED fromWideString<sizeof(Standard_ExtCharacter)> (const Standard_WideChar* theUtfString,
+                                                                                               Standard_Integer& theLength)
+  {
+    for (theLength = 0; theUtfString[theLength] != L'\0'; ++theLength) {}
+    Standard_ExtCharacter* aString = allocateExtChars (theLength);
+    const Standard_Integer aSize = theLength * sizeof(Standard_ExtCharacter);
+    memcpy (aString, theUtfString, aSize);
+    aString[theLength] = '\0';
+    return aString;
+  }
+
 }
 
 //-----------------------------------------------------------------------------
 // Create an empty ExtendedString
 // ----------------------------------------------------------------------------
 TCollection_ExtendedString::TCollection_ExtendedString()
+: mystring (allocateExtChars (0)),
+  mylength (0)
 {
-//  mystring = 0L;
-  mylength = 0;
-  mystring = Allocate((mylength+1)*2);
-  mystring[mylength] = '\0';
+  mystring[0] = '\0';
 }
 
 //----------------------------------------------------------------------------
 // Create an ExtendedString from a Standard_CString
 //----------------------------------------------------------------------------
 TCollection_ExtendedString::TCollection_ExtendedString
-                                          (const Standard_CString astring, 
+                                          (const Standard_CString theString,
                                            const Standard_Boolean isMultiByte) 
-  : mystring(0), mylength(0)
+: mystring (NULL),
+  mylength (0)
 {
-  if (astring) {
-    if(!isMultiByte) {
-      mylength = (int)strlen( astring );
-      mystring = Allocate((mylength+1)*2);
-      for (int i = 0 ; i < mylength ; i++)
-        mystring[i] = ToExtCharacter(astring[i]); 
-      mystring[mylength] =  '\0';
-    }
-    else {
-      mylength = nbSymbols(astring);
-      mystring = Allocate( (mylength+1)*2 );
-      if(!ConvertToUnicode (astring))
-      {
-        mylength = (int)strlen( astring );
-        mystring = Reallocate(mystring, (mylength+1)*2);
-        for (int i = 0 ; i < mylength ; i++)
-          mystring[i] = ToExtCharacter(astring[i]); 
-        mystring[mylength] =  '\0';
-      }
+  if (theString == NULL)
+  {
+    Standard_NullObject::Raise ("TCollection_ExtendedString : null parameter ");
+  }
+
+  if (isMultiByte)
+  {
+    mylength = nbSymbols (theString);
+    mystring = allocateExtChars (mylength);
+    mystring[mylength] = '\0';
+    if (ConvertToUnicode (theString))
+    {
+      return;
     }
   }
-  else {
-    Standard_NullObject::Raise("TCollection_ExtendedString : "
-                               "parameter 'astring'");
+
+  mylength = (int)strlen(theString);
+  mystring = reallocateExtChars (mystring, mylength);
+  for (int aCharIter = 0; aCharIter < mylength; ++aCharIter)
+  {
+    mystring[aCharIter] = ToExtCharacter (theString[aCharIter]);
   }
+  mystring[mylength] = '\0';
 }
 
 //---------------------------------------------------------------------------
 // Create an ExtendedString from an ExtString
 //--------------------------------------------------------------------------
-TCollection_ExtendedString::TCollection_ExtendedString
-                                        (const Standard_ExtString astring) 
-  : mystring(0), mylength(0)
+TCollection_ExtendedString::TCollection_ExtendedString (const Standard_ExtString theString)
+: mystring (NULL),
+  mylength (0)
 {
-
-  if (astring) {
-    for ( mylength=0; astring[mylength]; ++mylength );
-    const Standard_Integer size = (mylength+1)*2;
-    mystring = Allocate(size);
-    memcpy( mystring, astring, size );
-    mystring[mylength] =  '\0';
-  }
-  else {
+  if (theString == NULL)
+  {
     Standard_NullObject::Raise("TCollection_ExtendedString : null parameter ");
   }
+
+  for (mylength = 0; theString[mylength] != '\0'; ++mylength) {}
+  mystring = allocateExtChars (mylength);
+  const Standard_Integer aSizeBytes = mylength * sizeof(Standard_ExtCharacter);
+  memcpy (mystring, theString, aSizeBytes);
+  mystring[mylength] = '\0';
+}
+
+// ----------------------------------------------------------------------------
+// TCollection_ExtendedString
+// ----------------------------------------------------------------------------
+TCollection_ExtendedString::TCollection_ExtendedString (const Standard_WideChar* theStringUtf)
+: mystring (NULL),
+  mylength (0)
+{
+  if (theStringUtf == NULL)
+  {
+    Standard_NullObject::Raise ("TCollection_ExtendedString : null parameter ");
+  }
+
+  mystring = fromWideString<sizeof(Standard_WideChar)> (theStringUtf, mylength);
 }
 
 // ----------------------------------------------------------------------------
@@ -197,15 +173,15 @@ TCollection_ExtendedString::TCollection_ExtendedString
 {
   if ( aChar != '\0' ) {
     mylength    = 1;
-    mystring    = Allocate(2*2);
+    mystring    = allocateExtChars (1);
     mystring[0] = ToExtCharacter(aChar);
-    mystring[1] =  '\0';
+    mystring[1] = '\0';
   }
   else {
     //    mystring = 0L;
     mylength = 0;
-    mystring = Allocate((mylength+1)*2);
-    mystring[mylength] = '\0';
+    mystring = allocateExtChars (0);
+    mystring[0] = '\0';
   }
 }
 
@@ -216,9 +192,9 @@ TCollection_ExtendedString::TCollection_ExtendedString
                                         (const Standard_ExtCharacter aChar)
 {
   mylength    = 1;
-  mystring    = Allocate(2*2);
+  mystring    = allocateExtChars (1);
   mystring[0] = aChar;
-  mystring[1] =  '\0';
+  mystring[1] = '\0';
 }
 
 // ----------------------------------------------------------------------------
@@ -228,10 +204,10 @@ TCollection_ExtendedString::TCollection_ExtendedString
                                         (const Standard_Integer      length,
                                          const Standard_ExtCharacter filler )
 {
-  mystring = Allocate( (length+1)*2 );
+  mystring = allocateExtChars (length);
   mylength = length;
   for (int i = 0 ; i < length ; i++) mystring[i] = filler;
-  mystring[length] =  '\0';
+  mystring[mylength] = '\0';
 }
 
 // ----------------------------------------------------------------------------
@@ -244,9 +220,9 @@ TCollection_ExtendedString::TCollection_ExtendedString
          char t [13];} CHN ;
   Sprintf(&CHN.t[0],"%d",aValue);
   mylength = (int)strlen(CHN.t);
-  mystring = Allocate((mylength+1)*2);
+  mystring = allocateExtChars (mylength);
   for (int i = 0 ; i < mylength ; i++) mystring[i] = ToExtCharacter(CHN.t[i]);
-  mystring[mylength] =  '\0';
+  mystring[mylength] = '\0';
 }
 
 // ----------------------------------------------------------------------------
@@ -259,9 +235,9 @@ TCollection_ExtendedString::TCollection_ExtendedString
          char t [50];} CHN ;
   Sprintf(&CHN.t[0],"%g",aValue);
   mylength = (int)strlen( CHN.t );
-  mystring = Allocate((mylength+1)*2);
+  mystring = allocateExtChars (mylength);
   for (int i = 0 ; i < mylength ; i++) mystring[i] = ToExtCharacter(CHN.t[i]);
-  mystring[mylength] =  '\0';
+  mystring[mylength] = '\0';
 }
 
 //-----------------------------------------------------------------------------
@@ -270,51 +246,61 @@ TCollection_ExtendedString::TCollection_ExtendedString
 TCollection_ExtendedString::TCollection_ExtendedString
                                 (const TCollection_ExtendedString& astring)
 {
-  const Standard_Integer size = (astring.mylength+1)*2;
+  const Standard_Integer aSizeBytes = astring.mylength * sizeof(Standard_ExtCharacter);
   mylength = astring.mylength;
-  mystring = Allocate(size);
-  memcpy( mystring, astring.mystring, size );
-  mystring[mylength] =  '\0';
+  mystring = allocateExtChars (astring.mylength);
+  memcpy (mystring, astring.mystring, aSizeBytes);
+  mystring[mylength] = '\0';
 }
 
 //---------------------------------------------------------------------------
 //  Create an extendedstring from an AsciiString 
 //---------------------------------------------------------------------------
 TCollection_ExtendedString::TCollection_ExtendedString
-                                (const TCollection_AsciiString& astring) 
+                                (const TCollection_AsciiString& theString)
 {
-  mylength = nbSymbols(astring.ToCString());
-  mystring = Allocate((mylength+1)*2);
-  if(!ConvertToUnicode (astring.ToCString()))
+  mylength = nbSymbols (theString.ToCString());
+  mystring = allocateExtChars (mylength);
+  mystring[mylength] = '\0';
+  if (ConvertToUnicode (theString.ToCString()))
   {
-    mylength = astring.Length();
-    mystring = Reallocate(mystring, (mylength+1)*2);
-    Standard_CString aCString = astring.ToCString();
-    for (Standard_Integer i = 0; i <= mylength ; i++)
-      mystring[i] = ToExtCharacter( aCString[i] );
+    return;
   }
+
+  mylength = theString.Length();
+  mystring = reallocateExtChars (mystring, mylength);
+  Standard_CString aCString = theString.ToCString();
+  for (Standard_Integer aCharIter = 0; aCharIter <= mylength; ++aCharIter)
+  {
+    mystring[aCharIter] = ToExtCharacter (aCString[aCharIter]);
+  }
+  mystring[mylength] = '\0';
 }
 
 // ----------------------------------------------------------------------------
 //  AssignCat
 // ----------------------------------------------------------------------------
-void TCollection_ExtendedString::AssignCat
-                                (const TCollection_ExtendedString& other) 
+void TCollection_ExtendedString::AssignCat (const TCollection_ExtendedString& theOther)
 {
-  Standard_Integer otherlength = other.mylength; 
-  if (otherlength) {
-    Standard_ExtString sother = other.mystring;
-    Standard_Integer newlength = mylength + otherlength; 
-    if (mystring) {
-      mystring = Reallocate(mystring, (newlength+1)*2 );
-      memcpy( mystring + mylength, sother, (otherlength+1)*2 );
-    }
-    else {
-      mystring = Allocate( (newlength+1)*2 );
-      memcpy( mystring, sother, (otherlength+1)*2 );
-    }
-    mylength = newlength;
+  if (theOther.mylength == 0)
+  {
+    return;
   }
+
+  const Standard_Integer anOtherLength = theOther.mylength;
+  const Standard_Integer aNewlength    = mylength + anOtherLength;
+  if (mystring != NULL)
+  {
+    mystring = reallocateExtChars (mystring, aNewlength);
+    memcpy (mystring + mylength, theOther.mystring, anOtherLength * sizeof(Standard_ExtCharacter));
+  }
+  else
+  {
+    mystring = allocateExtChars (aNewlength);
+    memcpy (mystring, theOther.mystring, anOtherLength * sizeof(Standard_ExtCharacter));
+  }
+  mylength = aNewlength;
+  mystring[mylength] = '\0';
 }
 
 // ----------------------------------------------------------------------------
@@ -346,11 +332,15 @@ void TCollection_ExtendedString::ChangeAll(const Standard_ExtCharacter aChar,
 // ----------------------------------------------------------------------------
 void TCollection_ExtendedString::Clear()
 {
-  if (mystring) Standard::Free(mystring);
-//  mystring = 0L;
+  if (mylength == 0)
+  {
+    return;
+  }
+
+  Standard::Free (mystring);
   mylength = 0;
-  mystring = Allocate((mylength+1)*2);
-  mystring[mylength] = '\0';
+  mystring = allocateExtChars (mylength);
+  mystring[0] = '\0';
 }
 
 // ----------------------------------------------------------------------------
@@ -360,21 +350,25 @@ void TCollection_ExtendedString::Copy (const TCollection_ExtendedString& fromwhe
 {
 
   if (fromwhere.mystring) {
-    const Standard_Integer newlength = fromwhere.mylength;
-    const Standard_Integer size      = (newlength + 1) * 2;
-    if (mystring) {
-      mystring = Reallocate(mystring, size );
+    const Standard_Integer newlength  = fromwhere.mylength;
+    const Standard_Integer aSizeBytes = newlength * sizeof(Standard_ExtCharacter);
+    if (mystring != NULL)
+    {
+      mystring = reallocateExtChars (mystring, newlength);
     }
     else {
-      mystring = Allocate( size );
+      mystring = allocateExtChars (newlength);
     }
     mylength = newlength;
-    memcpy( mystring, fromwhere.mystring, size );
+    memcpy (mystring, fromwhere.mystring, aSizeBytes);
+    mystring[mylength] = '\0';
   }
-  else {
-    if (mystring) {
+  else
+  {
+    if (mystring != 0)
+    {
       mylength = 0;
-      mystring[mylength] =  '\0';
+      mystring[0] = '\0';
     }
   }
 }
@@ -382,7 +376,7 @@ void TCollection_ExtendedString::Copy (const TCollection_ExtendedString& fromwhe
 // ----------------------------------------------------------------------------
 // Destroy
 // ----------------------------------------------------------------------------
-void TCollection_ExtendedString::Destroy()
+TCollection_ExtendedString::~TCollection_ExtendedString()
 {
   if (mystring) Standard::Free(mystring);
   mystring = 0L;
@@ -401,11 +395,12 @@ void TCollection_ExtendedString::Insert(const Standard_Integer where,
     Standard_OutOfRange::Raise("TCollection_ExtendedString::Insert : "
                                "Parameter where is negative");
 
-  if (mystring) {
-      mystring = Reallocate(mystring, (mylength+2)*2);
+  if (mystring != NULL)
+  {
+    mystring = reallocateExtChars (mystring, mylength + 1);
   }
   else {
-    mystring = Allocate((mylength+2)*2);
+    mystring = allocateExtChars (mylength + 1);
   }
   if (where != mylength +1) {
     for (int i=mylength-1; i >= where-1; i--)
@@ -413,7 +408,7 @@ void TCollection_ExtendedString::Insert(const Standard_Integer where,
   }
   mystring[where-1] = what;
   mylength++;
-  mystring[mylength] =  '\0';
+  mystring[mylength] = '\0';
 }
 
 // ----------------------------------------------------------------------------
@@ -429,10 +424,10 @@ void TCollection_ExtendedString::Insert(const Standard_Integer            where,
       Standard_Integer newlength = mylength + whatlength;
       
       if (mystring) {
-          mystring = Reallocate(mystring,(newlength+1)*2);
+          mystring = reallocateExtChars (mystring, newlength);
       }
       else {
-        mystring = Allocate((newlength+1)*2);
+        mystring = allocateExtChars (newlength);
       }
       if (where != mylength +1) {
         for (int i=mylength-1; i >= where-1; i--)
@@ -442,7 +437,7 @@ void TCollection_ExtendedString::Insert(const Standard_Integer            where,
         mystring[where-1+i] = swhat[i];
       
       mylength = newlength;
-      mystring[mylength] =  '\0';
+      mystring[mylength] = '\0';
     }
   }
   else {
@@ -521,6 +516,34 @@ Standard_Boolean TCollection_ExtendedString::IsGreater
                                 (const TCollection_ExtendedString& other) const
 {
   return ( memcmp( mystring, other.mystring, (mylength+1)*2 ) > 0 );
+}
+
+// ----------------------------------------------------------------------------
+// StartsWith
+// ----------------------------------------------------------------------------
+Standard_Boolean TCollection_ExtendedString::StartsWith (const TCollection_ExtendedString& theStartString) const
+{
+  if (this == &theStartString)
+  {
+    return true;
+  }
+
+  return mylength >= theStartString.mylength
+      && memcmp (theStartString.mystring, mystring, theStartString.mylength) == 0;
+}
+
+// ----------------------------------------------------------------------------
+// EndsWith
+// ----------------------------------------------------------------------------
+Standard_Boolean TCollection_ExtendedString::EndsWith (const TCollection_ExtendedString& theEndString) const
+{
+  if (this == &theEndString)
+  {
+    return true;
+  }
+
+  return mylength >= theEndString.mylength
+      && memcmp (theEndString.mystring, mystring + mylength - theEndString.mylength, theEndString.mylength) == 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -672,10 +695,10 @@ void TCollection_ExtendedString::SetValue
     size += (where - 1);  
     if (size >= mylength){
       if (mystring) {
-        mystring = Reallocate (mystring,(size+1)*2);
+        mystring = reallocateExtChars (mystring, size);
       }
       else {
-        mystring = Allocate((size+1)*2);
+        mystring = allocateExtChars (size);
       }
       mylength = size;
     } 
@@ -717,7 +740,7 @@ TCollection_ExtendedString TCollection_ExtendedString::Token
                                "parameter 'separators'");
   
   int                   i,j,k,l;
-  Standard_PExtCharacter  buftmp = Allocate((mylength+1)*2); 
+  Standard_PExtCharacter  buftmp = allocateExtChars (mylength);
   Standard_ExtCharacter aSep;
   
   Standard_Boolean isSepFound   = Standard_False, otherSepFound;
@@ -776,6 +799,7 @@ TCollection_ExtendedString TCollection_ExtendedString::Token
     Standard::Free(res.mystring);
     res.mystring = buftmp;
     for ( res.mylength=0; buftmp[res.mylength]; ++res.mylength );
+    res.mystring[res.mylength] = '\0';
   }
   return res;
 }
@@ -820,49 +844,39 @@ Standard_ExtCharacter TCollection_ExtendedString::Value
 //----------------------------------------------------------------------------
 // Convert CString (including multibyte case) to UniCode representation
 //----------------------------------------------------------------------------
-Standard_Boolean TCollection_ExtendedString::ConvertToUnicode 
-                                                (const Standard_CString aStr)
+Standard_Boolean TCollection_ExtendedString::ConvertToUnicode (const Standard_CString theStringUtf)
 {
-  Standard_Boolean aRes = Standard_True;
-  Standard_ExtCharacter* p = mystring;
-  int i = 0;
-  while (aStr[i] != '\0') { 
-    if((aStr[i] & 0x80) == 0x00) //1byte => 1 symb - Lat1
-      {*p++ = ToExtCharacter(aStr[i]); i++;}
-    else if((aStr[i] & 0xE0) == 0xC0 && 
-            (aStr[i+1] && 
-             (aStr[i+1] & 0xC0) == 0x80)) {//2 bytes => 1 symb
-      *p++ = ConvertToUnicode2B((unsigned char*)&aStr[i]);
-      i += 2;
-    } else if((aStr[i] & 0xF0) == 0xE0 && 
-              ((aStr[i+1] && (aStr[i+1] & 0xC0) == 0x80)) &&
-              (aStr[i+2] && (aStr[i+2] & 0xC0) == 0x80)) {      
-      *p++ = ConvertToUnicode3B((unsigned char*)&aStr[i]);
-      i += 3;
-    } else { //unsupported case ==> not UTF8
-      aRes = Standard_False;
-      break;
-    }
+  NCollection_Utf8Iter anIterRead (theStringUtf);
+  Standard_ExtCharacter* anIterWrite = mystring;
+  if (*anIterRead == 0)
+  {
+    *anIterWrite = '\0';
+    return Standard_True;
   }
-  *p = 0x0000;
-  return aRes;
+
+  for (; *anIterRead != 0; ++anIterRead)
+  {
+    if (!anIterRead.IsValid())
+    {
+      return Standard_False;
+    }
+
+    anIterWrite = anIterRead.GetUtf (anIterWrite);
+  }
+  return Standard_True;
 }
+
 //----------------------------------------------------------------------------
 // Returns expected CString length in UTF8 coding.
 //----------------------------------------------------------------------------
 Standard_Integer TCollection_ExtendedString::LengthOfCString() const
 {
-  Standard_Integer i=0, aLen=0;
-  while(mystring[i]) {
-    if((mystring[i] & 0xFF80) == 0) 
-      aLen++;
-    else if((mystring[i] & 0xF800) == 0) 
-      aLen +=2;
-    else  
-      aLen += 3;
-    i++;
+  Standard_Integer aSizeBytes = 0;
+  for (NCollection_Utf16Iter anIter (mystring); *anIter != 0; ++anIter)
+  {
+    aSizeBytes += anIter.AdvanceBytesUtf8();
   }
- return aLen;
+  return aSizeBytes;
 }
 
 //----------------------------------------------------------------------------
@@ -871,43 +885,18 @@ Standard_Integer TCollection_ExtendedString::LengthOfCString() const
 //----------------------------------------------------------------------------
 Standard_Integer TCollection_ExtendedString::ToUTF8CString(Standard_PCharacter& theCString) const
 {
-  Standard_Integer i=0, j=0;
-  unsigned char a,b,c;
-  while(mystring[i]) {
-    if((mystring[i] & 0xFF80) == 0) {
-      theCString[j++] = (char)mystring[i];
-    } 
-    else if((mystring[i] & 0xF800) == 0) {
-      b = (unsigned char)mystring[i];//yyzzzzzz
-      c = (unsigned char)mystring[i];//yyzzzzzz
-      a = (unsigned char)(mystring[i]>>8);//00000yyy
-      b &= 0x3F;
-      b |= 0x80;
-      a <<=2;
-      a |= 0xC0;//110yyy00;
-      c >>=6;
-      c &= 0x03;
-      a |=c;
-      theCString[j++] = a;
-      theCString[j++] = b;
-    } else {
-      b = (unsigned char)mystring[i];//yyzzzzzz
-      c = (unsigned char)mystring[i];//yyzzzzzz
-      unsigned char d = a = (unsigned char)(mystring[i]>>8);//xxxxyyyy
-      c &= 0x3F;
-      c |= 0x80;//10zzzzzz
-      b >>= 6; //000000yy
-      d <<= 2;//xxyyyy00;
-      b |= d;
-      b = (b & 0x3F) | 0x80;//10yyyyyy
-      a >>= 4; //0000xxxx
-      a |= 0xE0;//1110xxxx
-      theCString[j++] = a;
-      theCString[j++] = b;
-      theCString[j++] = c;
-    }
-    i++;
+  NCollection_Utf16Iter anIterRead (mystring);
+  Standard_Utf8Char* anIterWrite = theCString;
+  if (*anIterRead == 0)
+  {
+    *anIterWrite = '\0';
+    return 0;
   }
-  theCString[j] = 0x00;
-  return j;
+
+  for (; *anIterRead != 0; ++anIterRead)
+  {
+    anIterWrite = anIterRead.GetUtf (anIterWrite);
+  }
+  *anIterWrite = '\0';
+  return Standard_Integer(anIterWrite - theCString);
 }

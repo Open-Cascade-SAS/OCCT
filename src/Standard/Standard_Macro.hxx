@@ -29,6 +29,14 @@
   #define Standard_OVERRIDE
 #endif
 
+// Macro for marking variables / functions as possibly unused
+// so that compiler will not emit redundant "unused" warnings.
+#if defined(__GNUC__) || defined(__clang__)
+  #define Standard_UNUSED __attribute__((unused))
+#else
+  #define Standard_UNUSED
+#endif
+
 // Macro Standard_DEPRECATED("message") can be used to declare a method deprecated.
 // If OCCT_NO_DEPRECATED is defined, Standard_DEPRECATED is defined empty.
 #ifdef OCCT_NO_DEPRECATED

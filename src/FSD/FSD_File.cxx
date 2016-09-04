@@ -12,9 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <FSD_File.hxx>
+
 #include <OSD.hxx>
+#include <OSD_OpenFile.hxx>
 #include <Storage_BaseDriver.hxx>
 #include <Storage_StreamExtCharParityError.hxx>
 #include <Storage_StreamFormatError.hxx>
@@ -79,30 +80,36 @@ Storage_Error FSD_File::Open(const TCollection_AsciiString& aName,const Storage_
 
   SetName(aName);
 
-  if (OpenMode() == Storage_VSNone) {
-
-#if defined(_MSC_VER)
-    TCollection_ExtendedString aWName(aName);
-    if (aMode == Storage_VSRead) {
-      myStream.open( (const wchar_t*) aWName.ToExtString(),ios::in); // ios::nocreate is not portable
+  if (OpenMode() == Storage_VSNone)
+  {
+    std::ios_base::openmode anOpenMode = std::ios_base::openmode(0);
+    switch (aMode)
+    {
+      case Storage_VSNone:
+      {
+        break;
+      }
+      case Storage_VSRead:
+      {
+        // ios::nocreate is not portable
+        anOpenMode = ios::in;
+        break;
+      }
+      case Storage_VSWrite:
+      {
+        anOpenMode = ios::out;
+        break;
+      }
+      case Storage_VSReadWrite:
+      {
+        anOpenMode = ios::in | ios::out;
+        break;
+      }
     }
-    else if (aMode == Storage_VSWrite) {
-      myStream.open( (const wchar_t*) aWName.ToExtString(),ios::out);
+    if (anOpenMode != 0)
+    {
+      OSD_OpenStream (myStream, aName.ToCString(), anOpenMode);
     }
-    else if (aMode == Storage_VSReadWrite) {
-      myStream.open( (const wchar_t*) aWName.ToExtString(),ios::in|ios::out);
-#else
-    if (aMode == Storage_VSRead) {
-      myStream.open(aName.ToCString(),ios::in); // ios::nocreate is not portable
-    }
-    else if (aMode == Storage_VSWrite) {
-      myStream.open(aName.ToCString(),ios::out);
-    }
-    else if (aMode == Storage_VSReadWrite) {
-      myStream.open(aName.ToCString(),ios::in|ios::out);
-#endif
-    }
-    
     if (myStream.fail()) {
       result = Storage_VSOpenError;
     }

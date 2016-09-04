@@ -36,17 +36,19 @@ class Standard_NegativeValue;
 class TCollection_HAsciiString;
 class TCollection_ExtendedString;
 
-
-//! A variable-length sequence of ASCII characters
-//! (normal 8-bit character type). It provides editing
-//! operations with built-in memory management to
-//! make AsciiString objects easier to use than
-//! ordinary character arrays.
-//! AsciiString objects follow value semantics; in
-//! other words, they are the actual strings, not
-//! handles to strings, and are copied through
-//! assignment. You may use HAsciiString objects
-//! to get handles to strings.
+//! Class defines a variable-length sequence of 8-bit characters.
+//! Despite class name (kept for historical reasons), it is intended to store UTF-8 string, not just ASCII characters.
+//! However, multi-byte nature of UTF-8 is not considered by the following methods:
+//! - Method ::Length() return the number of bytes, not the number of Unicode symbols.
+//! - Methods taking/returning symbol index work with 8-bit code units, not true Unicode symbols,
+//!   including ::Remove(), ::SetValue(), ::Value(), ::Search(), ::Trunc() and others.
+//! If application needs to process multi-byte Unicode symbols explicitly, NCollection_Utf8Iter class can be used
+//! for iterating through Unicode string (UTF-32 code unit will be returned for each position).
+//!
+//! Class provides editing operations with built-in memory management to make AsciiString objects easier to use than ordinary character arrays.
+//! AsciiString objects follow value semantics; in other words, they are the actual strings,
+//! not handles to strings, and are copied through assignment.
+//! You may use HAsciiString objects to get handles to strings.
 class TCollection_AsciiString 
 {
 public:
@@ -96,7 +98,16 @@ public:
   //! in place of any non-ascii character found in the source string.
   //! Otherwise, creates UTF-8 unicode string.
   Standard_EXPORT TCollection_AsciiString(const TCollection_ExtendedString& astring, const Standard_Character replaceNonAscii = 0);
-  
+
+#if !defined(_WIN32) || defined(_NATIVE_WCHAR_T_DEFINED)
+  //! Initialize UTF-8 Unicode string from wide-char string considering it as Unicode string
+  //! (the size of wide char is a platform-dependent - e.g. on Windows wchar_t is UTF-16).
+  //!
+  //! This constructor is unavailable if application is built with deprecated msvc option "-Zc:wchar_t-",
+  //! since OCCT itself is never built with this option.
+  Standard_EXPORT TCollection_AsciiString (const Standard_WideChar* theStringUtf);
+#endif
+
   //! Appends <other>  to me. This is an unary operator.
   Standard_EXPORT void AssignCat (const Standard_Character other);
 void operator += (const Standard_Character other)
@@ -261,11 +272,7 @@ void operator = (const TCollection_AsciiString& fromwhere)
 }
   
   //! Frees memory allocated by AsciiString.
-  Standard_EXPORT void Destroy();
-~TCollection_AsciiString()
-{
-  Destroy();
-}
+  Standard_EXPORT ~TCollection_AsciiString();
   
   //! Returns the index of the first character of <me> that is
   //! present in <Set>.
@@ -337,8 +344,8 @@ void operator = (const TCollection_AsciiString& fromwhere)
   Standard_EXPORT void InsertBefore (const Standard_Integer Index, const TCollection_AsciiString& other);
   
   //! Returns True if the string <me> contains zero character.
-  Standard_EXPORT Standard_Boolean IsEmpty() const;
-  
+  Standard_Boolean IsEmpty() const { return mylength == 0; }
+
   //! Returns true if the characters in this ASCII string
   //! are identical to the characters in ASCII string other.
   //! Note that this method is an alias of operator ==.
@@ -402,7 +409,13 @@ Standard_Boolean operator > (const TCollection_AsciiString& other) const
 {
   return IsGreater(other);
 }
-  
+
+  //! Determines whether the beginning of this string instance matches the specified string.
+  Standard_EXPORT Standard_Boolean StartsWith (const TCollection_AsciiString& theStartString) const;
+
+  //! Determines whether the end of this string instance matches the specified string.
+  Standard_EXPORT Standard_Boolean EndsWith (const TCollection_AsciiString& theEndString) const;
+
   //! Converts a AsciiString containing a numeric expression to
   //! an Integer.
   //! Example: "215" returns 215.
@@ -666,34 +679,21 @@ friend Standard_EXPORT Standard_IStream& operator >> (Standard_IStream& astream,
 
 friend class TCollection_HAsciiString;
 
-
-protected:
-
-
-
-
-
 private:
 
-  
   Standard_EXPORT void Split (const Standard_Integer where, TCollection_AsciiString& result);
   
   Standard_EXPORT void SubString (const Standard_Integer FromIndex, const Standard_Integer ToIndex, TCollection_AsciiString& result) const;
   
   Standard_EXPORT void Token (const Standard_CString separators, const Standard_Integer whichone, TCollection_AsciiString& result) const;
 
+private:
 
-  Standard_PCharacter mystring;
-  Standard_Integer mylength;
-
+  Standard_PCharacter mystring; //!< NULL-terminated string
+  Standard_Integer    mylength; //!< length in bytes (excluding terminating NULL symbol)
 
 };
 
-
 #include <TCollection_AsciiString.lxx>
-
-
-
-
 
 #endif // _TCollection_AsciiString_HeaderFile

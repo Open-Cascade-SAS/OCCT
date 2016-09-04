@@ -226,11 +226,11 @@ void OSD_SharedLibrary :: SetName ( const Standard_CString aName ) {
  name = path.Name ();
  name.AssignCat (  path.Extension ()  );
 
+ TCollection_ExtendedString nameW (name);
 #ifndef OCCT_UWP
- myHandle = GetModuleHandle(name.ToCString());
+ myHandle = GetModuleHandleW (nameW.ToWideString());
 #else
- TCollection_ExtendedString nameW(name);
- myHandle = LoadPackagedLibrary ((const wchar_t*)nameW.ToExtString(), NULL  );
+ myHandle = LoadPackagedLibrary (nameW.ToWideString(), NULL);
  FreeLibrary ((HMODULE) myHandle);
 #endif
 
@@ -246,12 +246,13 @@ Standard_Boolean OSD_SharedLibrary :: DlOpen ( const OSD_LoadMode /*Mode*/ ) {
 
  Standard_Boolean retVal = Standard_True;
 
- if ( myHandle == NULL ) {
+ if (myHandle == NULL)
+ {
+  TCollection_ExtendedString myNameW (myName);
 #ifndef OCCT_UWP
-  myHandle = (HINSTANCE)LoadLibraryEx(myName, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
+  myHandle = (HINSTANCE)LoadLibraryExW (myNameW.ToWideString(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
 #else
-  TCollection_ExtendedString myNameW(myName);
-  myHandle = (HINSTANCE)LoadPackagedLibrary((const wchar_t*)myNameW.ToExtString(), NULL);
+  myHandle = (HINSTANCE)LoadPackagedLibrary (myNameW.ToWideString(), NULL);
 #endif
   if ( myHandle == NULL ) {
    lastDLLError = GetLastError ();

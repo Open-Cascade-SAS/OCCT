@@ -93,6 +93,9 @@ Standard_MMgrFactory::Standard_MMgrFactory()
   Standard_STATIC_ASSERT(sizeof(short) == 2);
   Standard_STATIC_ASSERT(sizeof(Standard_Utf16Char) == 2);
   Standard_STATIC_ASSERT(sizeof(Standard_Utf32Char) == 4);
+#ifdef _WIN32
+  Standard_STATIC_ASSERT(sizeof(Standard_WideChar) == sizeof(Standard_Utf16Char));
+#endif
 
   char* aVar;
   aVar = getenv ("MMGT_OPT");

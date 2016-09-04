@@ -121,7 +121,8 @@ void OSD_Directory :: Build (const OSD_Protection& Protect) {
 
   Standard_ProgramError :: Raise ( "OSD_Directory :: Build (): incorrect call - no directory name");
  TCollection_ExtendedString dirNameW(dirName);
- if (Exists() || CreateDirectoryW((const wchar_t*)dirNameW.ToExtString(), NULL)) {
+ if (Exists() || CreateDirectoryW (dirNameW.ToWideString(), NULL))
+ {
 #ifndef OCCT_UWP
    SetProtection(Protect);
 #else
@@ -139,8 +140,7 @@ OSD_Directory OSD_Directory :: BuildTemporary () {
  OSD_Protection          prt;
 
  wchar_t* aName = _wtmpnam(NULL);
- NCollection_String aFolder(aName != NULL ? aName : L"");
- OSD_Path dirPath(aFolder.ToCString());
+ OSD_Path dirPath (TCollection_AsciiString (aName != NULL ? aName : L""));
 
  retVal.SetPath ( dirPath );
  retVal.Build ( prt );                            

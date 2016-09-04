@@ -26,7 +26,6 @@ TCollection_DoubleMapNode.gxx
 TCollection_DoubleMapNode.lxx
 TCollection_ExtendedString.cxx
 TCollection_ExtendedString.hxx
-TCollection_ExtendedString.lxx
 TCollection_HArray1.gxx
 TCollection_HArray1.lxx
 TCollection_HArray2.gxx

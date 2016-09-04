@@ -212,7 +212,7 @@ static Standard_Integer restore(Draw_Interpretor& di, Standard_Integer n, const 
   
   filebuf fic;
   istream in(&fic);
-  OSD_OpenFileBuf(fic,fname,ios::in);
+  OSD_OpenStream (fic, fname, ios::in);
   if (!fic.is_open()) {
     di << "Cannot open file for reading : "<<fname;
     return 1;

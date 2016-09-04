@@ -261,7 +261,7 @@ void AIS_TextLabel::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
                           anAsp->Aspect()->GetTextFontAspect(), (unsigned int)anAsp->Height(), aResolution))
           {
             isInit = Standard_True;
-            const NCollection_String aText ((Standard_Utf16Char* )myText.ToExtString());
+            const NCollection_String aText (myText.ToExtString());
             Font_Rect aBndBox = aFont.BoundingBox (aText, anAsp->HorizontalJustification(), anAsp->VerticalJustification());
             Standard_Real aWidth = Abs (aBndBox.Width());
             Standard_Real aHeight = Abs (aBndBox.Height());

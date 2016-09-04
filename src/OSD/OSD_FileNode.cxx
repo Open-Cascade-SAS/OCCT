@@ -387,7 +387,7 @@ Standard_Integer OSD_FileNode::Error()const{
 
 #ifndef OCCT_UWP
 // None of the existing security APIs are supported in a UWP applications
-PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd ( const OSD_Protection&, BOOL, wchar_t* = NULL );
+PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd ( const OSD_Protection&, BOOL, const wchar_t* );
 BOOL                 __fastcall _osd_wnt_sd_to_protection (
                                  PSECURITY_DESCRIPTOR pSD, OSD_Protection& prot, BOOL
                                 );
@@ -396,7 +396,7 @@ Standard_Integer     __fastcall _get_file_type ( Standard_CString, HANDLE );
 
 void _osd_wnt_set_error ( OSD_Error&, OSD_WhoAmI, ... );
 
-static BOOL __fastcall _get_file_time ( Standard_ExtString, LPSYSTEMTIME, BOOL );
+static BOOL __fastcall _get_file_time (const wchar_t*, LPSYSTEMTIME, BOOL );
 static void __fastcall _test_raise ( TCollection_AsciiString, Standard_CString );
 
 //=======================================================================
@@ -460,14 +460,17 @@ Standard_Boolean OSD_FileNode::Exists () {
 
  WIN32_FILE_ATTRIBUTE_DATA aFileInfo;
 
- if ( !GetFileAttributesExW((const wchar_t*)fNameW.ToExtString(), GetFileExInfoStandard, &aFileInfo)) {
-
-  if (  GetLastError () != ERROR_FILE_NOT_FOUND  )
-    _osd_wnt_set_error(myError, OSD_WFileNode, (const wchar_t*)fNameW.ToExtString());
-
- } else
-
+ if (!GetFileAttributesExW (fNameW.ToWideString(), GetFileExInfoStandard, &aFileInfo))
+ {
+  if (GetLastError() != ERROR_FILE_NOT_FOUND)
+  {
+    _osd_wnt_set_error (myError, OSD_WFileNode, fNameW.ToWideString());
+  }
+ }
+ else
+ {
   retVal = Standard_True;
+ }
 
  return retVal;
 
@@ -491,8 +494,8 @@ void OSD_FileNode::Remove () {
 
   case FLAG_FILE:
 
-   if (   !DeleteFileW (  (const wchar_t*) fNameW.ToExtString ()  )   )
-     _osd_wnt_set_error (  myError, OSD_WFileNode, (const wchar_t*)fNameW.ToExtString());
+   if (!DeleteFileW (fNameW.ToWideString()))
+     _osd_wnt_set_error (  myError, OSD_WFileNode, fNameW.ToWideString());
   break;
 
   case FLAG_DIRECTORY:
@@ -501,8 +504,8 @@ void OSD_FileNode::Remove () {
 // LD : Suppression de l'appel a DeleteDirectory pour 
 //      ne pas detruire un repertoire no vide.
 
-   if (   !RemoveDirectoryW ( (const wchar_t*) fNameW.ToExtString ()  )   )
-     _osd_wnt_set_error (  myError, OSD_WFileNode, (const wchar_t*)fNameW.ToExtString());
+   if (!RemoveDirectoryW (fNameW.ToWideString()))
+     _osd_wnt_set_error (myError, OSD_WFileNode, fNameW.ToWideString());
   break;
 
   default:
@@ -533,21 +536,16 @@ void OSD_FileNode::Move ( const OSD_Path& NewPath ) {
 
   case FLAG_FILE:
 
-   if (!MoveFileExW ((const wchar_t*)fNameW.ToExtString (),
-                     (const wchar_t*)fNameDstW.ToExtString (),
-                     MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED
-                     )
-       )
-     _osd_wnt_set_error(myError, OSD_WFileNode, (const wchar_t*)fNameW.ToExtString(), (const wchar_t*)fNameDstW.ToExtString());
+   if (!MoveFileExW (fNameW.ToWideString (),
+                     fNameDstW.ToWideString (),
+                     MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED))
+     _osd_wnt_set_error(myError, OSD_WFileNode, fNameW.ToWideString(), fNameDstW.ToWideString());
   break;
 
   case FLAG_DIRECTORY:
 
-   if (   !MoveDirectory (
-            (const wchar_t*) fNameW.ToExtString (), (const wchar_t*) fNameDstW.ToExtString ()
-           )
-   )
-   _osd_wnt_set_error(myError, OSD_WFileNode, (const wchar_t*)fNameW.ToExtString(), (const wchar_t*)fNameDstW.ToExtString());
+   if (!MoveDirectory (fNameW.ToWideString(), fNameDstW.ToWideString()))
+   _osd_wnt_set_error(myError, OSD_WFileNode, fNameW.ToWideString(), fNameDstW.ToWideString());
   break;
 
   default:
@@ -578,23 +576,17 @@ void OSD_FileNode::Copy ( const OSD_Path& ToPath ) {
 
   case FLAG_FILE:
 #ifndef OCCT_UWP
-    if (!CopyFileW((const wchar_t*)fNameW.ToExtString(),
-      (const wchar_t*)fNameDstW.ToExtString(), FALSE))
+    if (!CopyFileW (fNameW.ToWideString(), fNameDstW.ToWideString(), FALSE))
 #else
-   if (CopyFile2((const wchar_t*)fNameW.ToExtString (),
-                 (const wchar_t*)fNameDstW.ToExtString (), FALSE ) != S_OK)
+   if (CopyFile2 (fNameW.ToWideString(), fNameDstW.ToWideString(), FALSE) != S_OK)
 #endif
-   _osd_wnt_set_error(myError, OSD_WFileNode, (const wchar_t*)fNameW.ToExtString(), (const wchar_t*)fNameDstW.ToExtString());
+   _osd_wnt_set_error (myError, OSD_WFileNode, fNameW.ToWideString(), fNameDstW.ToWideString());
   break;
 
   case FLAG_DIRECTORY:
 
-   if (   !CopyDirectory (
-            (const wchar_t*)fNameW.ToExtString (), (const wchar_t*)fNameDstW.ToExtString ()
-          )
-   )
-
-   _osd_wnt_set_error(myError, OSD_WFileNode, (const wchar_t*)fNameW.ToExtString(), (const wchar_t*)fNameDstW.ToExtString());
+   if (!CopyDirectory (fNameW.ToWideString(), fNameDstW.ToWideString()))
+   _osd_wnt_set_error (myError, OSD_WFileNode, fNameW.ToWideString(), fNameDstW.ToWideString());
 
   break;
 
@@ -624,12 +616,8 @@ OSD_Protection OSD_FileNode::Protection () {
 
  TEST_RAISE(  "Protection"  );
 
- if (   (  pSD = GetFileSecurityEx (
-                  (const wchar_t*) fNameW.ToExtString (), DACL_SECURITY_INFORMATION |
-                  OWNER_SECURITY_INFORMATION
-                 )
-        ) == NULL ||
-        !_osd_wnt_sd_to_protection (
+ if ((pSD = GetFileSecurityEx (fNameW.ToWideString(), DACL_SECURITY_INFORMATION |OWNER_SECURITY_INFORMATION)) == NULL
+  || !_osd_wnt_sd_to_protection (
           pSD, retVal,
           _get_file_type (fName.ToCString(), INVALID_HANDLE_VALUE) == FLAG_DIRECTORY)
  )
@@ -659,18 +647,12 @@ void OSD_FileNode::SetProtection ( const OSD_Protection& Prot ) {
 
  TEST_RAISE(  "SetProtection"  );
 
- pSD = _osd_wnt_protection_to_sd (
-        Prot,
-        _get_file_type (fName.ToCString(), INVALID_HANDLE_VALUE) ==
-        FLAG_DIRECTORY,
-        (wchar_t *)fNameW.ToExtString ()
-       );
+ pSD = _osd_wnt_protection_to_sd (Prot,
+        _get_file_type (fName.ToCString(), INVALID_HANDLE_VALUE) == FLAG_DIRECTORY,
+        fNameW.ToWideString());
  
- if ( pSD == NULL || !SetFileSecurityW (
-                       (const wchar_t*) fNameW.ToExtString (), DACL_SECURITY_INFORMATION, pSD
-                      )
- )
-  _osd_wnt_set_error (  myError, OSD_WFileNode, (const wchar_t*)fNameW.ToExtString());
+ if (pSD == NULL || !SetFileSecurityW (fNameW.ToWideString(), DACL_SECURITY_INFORMATION, pSD))
+  _osd_wnt_set_error (myError, OSD_WFileNode, fNameW.ToWideString());
 
  if ( pSD != NULL )
 
@@ -695,11 +677,11 @@ OSD_Protection OSD_FileNode::Protection ()
  TCollection_ExtendedString fNameW(fName);
 
  OSD_SingleProtection aProt = OSD_None;
- if (_waccess_s ((const wchar_t*)fNameW.ToExtString(), 6))
+ if (_waccess_s (fNameW.ToWideString(), 6))
    aProt = OSD_RW;
- else if (_waccess_s ((const wchar_t*)fNameW.ToExtString(), 2))
+ else if (_waccess_s (fNameW.ToWideString(), 2))
    aProt = OSD_W;
- else if (_waccess_s ((const wchar_t*)fNameW.ToExtString(), 4))
+ else if (_waccess_s (fNameW.ToWideString(), 4))
    aProt = OSD_R;
 
  // assume full access for system and none for everybody
@@ -735,9 +717,7 @@ Quantity_Date OSD_FileNode::AccessMoment () {
 
  TEST_RAISE(  "AccessMoment"  );
 
-// if (   _get_file_time (  fName.ToCString (), &stAccessMoment, TRUE  )   )
- if (   _get_file_time (  fNameW.ToExtString (), &stAccessSystemMoment, TRUE  ) )
-//POP
+ if (_get_file_time (fNameW.ToWideString(), &stAccessSystemMoment, TRUE))
 {
   SYSTEMTIME * aSysTime = &stAccessMoment;
   BOOL aFlag = SystemTimeToTzSpecificLocalTime (NULL ,
@@ -752,7 +732,9 @@ Quantity_Date OSD_FileNode::AccessMoment () {
                     );
 }
  else
-  _osd_wnt_set_error (  myError, OSD_WFileNode, (const wchar_t*)fNameW.ToExtString());
+ {
+  _osd_wnt_set_error (myError, OSD_WFileNode, fNameW.ToWideString());
+ }
 
  return retVal;
 
@@ -775,9 +757,7 @@ Quantity_Date OSD_FileNode::CreationMoment () {
 
  TEST_RAISE(  "CreationMoment"  );
 
-// if (   _get_file_time (  fName.ToCString (), &stCreationMoment, FALSE  )   )
- if ( _get_file_time ( fNameW.ToExtString (), &stCreationSystemMoment, TRUE  )   ) 
-//POP 
+ if (_get_file_time (fNameW.ToWideString(), &stCreationSystemMoment, TRUE))
 {
   SYSTEMTIME * aSysTime = &stCreationMoment;
   BOOL aFlag = SystemTimeToTzSpecificLocalTime (NULL,
@@ -792,7 +772,9 @@ Quantity_Date OSD_FileNode::CreationMoment () {
                     );
 }
  else
-  _osd_wnt_set_error (  myError, OSD_WFileNode, (const wchar_t*)fNameW.ToExtString());
+ {
+  _osd_wnt_set_error (myError, OSD_WFileNode, fNameW.ToWideString());
+ }
 
  return retVal;
 
@@ -880,10 +862,8 @@ void _osd_wnt_set_error ( OSD_Error& err, OSD_WhoAmI who, ... ) {
 #define __leave return retVal
 #endif
 
-static BOOL __fastcall _get_file_time (
-                        Standard_ExtString fName, LPSYSTEMTIME lpSysTime, BOOL fAccess
-                       ) {
-
+static BOOL __fastcall _get_file_time (const wchar_t* fName, LPSYSTEMTIME lpSysTime, BOOL fAccess)
+{
  BOOL       retVal = FALSE;
  FILETIME   ftCreationTime;
  FILETIME   ftLastWriteTime;
@@ -892,7 +872,7 @@ static BOOL __fastcall _get_file_time (
 
  __try {
 #ifndef OCCT_UWP
-   if ((hFile = CreateFileW((const wchar_t*)fName, 0, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)
+   if ((hFile = CreateFileW (fName, 0, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)
      ) == INVALID_HANDLE_VALUE
      )
 #else
@@ -901,11 +881,7 @@ static BOOL __fastcall _get_file_time (
    pCreateExParams.dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
    pCreateExParams.lpSecurityAttributes = NULL;
    pCreateExParams.hTemplateFile = NULL;
-   if ((hFile = CreateFile2(
-     (const wchar_t*)fName, NULL, NULL,
-     OPEN_EXISTING, &pCreateExParams)
-     ) == INVALID_HANDLE_VALUE
-     )
+   if ((hFile = CreateFile2 (fName, NULL, NULL, OPEN_EXISTING, &pCreateExParams)) == INVALID_HANDLE_VALUE)
 #endif
     __leave;
 

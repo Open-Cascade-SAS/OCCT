@@ -23,55 +23,7 @@
 
 #include <fstream>
 #include <TCollection_ExtendedString.hxx>
-
-//! Function opens the file stream.
-//! @param theStream stream to open
-//! @param theName name of file encoded in UTF-8
-//! @param theMode opening mode
-__Standard_API void OSD_OpenStream (std::ofstream& theStream,
-                                    const char* theName,
-                                    const std::ios_base::openmode theMode);
-
-//! Function opens the file stream.
-//! @param theStream stream to open
-//! @param theName name of file encoded in UTF-16
-//! @param theMode opening mode
-__Standard_API void OSD_OpenStream (std::ofstream& theStream,
-                                    const TCollection_ExtendedString& theName,
-                                    const std::ios_base::openmode theMode);
-
-//! Function opens the file stream.
-//! @param theStream stream to open
-//! @param theName name of file encoded in UTF-8
-//! @param theMode opening mode
-__Standard_API void OSD_OpenStream (std::ifstream&                theStream,
-                                    const char*                   theName,
-                                    const std::ios_base::openmode theMode);
-
-//! Function opens the file stream.
-//! @param theStream stream to open
-//! @param theName name of file encoded in UTF-16
-//! @param theMode opening mode
-__Standard_API void OSD_OpenStream (std::ifstream&                    theStream,
-                                    const TCollection_ExtendedString& theName,
-                                    const std::ios_base::openmode     theMode);
-
-//! Function opens the file buffer.
-//! @param theBuff file buffer to open
-//! @param theName name of file encoded in UTF-8
-//! @param theMode opening mode
-__Standard_API void OSD_OpenFileBuf (std::filebuf& theBuff,
-                                     const char* theName,
-                                     const std::ios_base::openmode theMode);
-
-//! Function opens the file buffer.
-//! @param theBuff file buffer to open
-//! @param theName name of file encoded in UTF-16
-//! @param theMode opening mode
-__Standard_API void OSD_OpenFileBuf (std::filebuf& theBuff,
-                                     const TCollection_ExtendedString& theName,
-                                     const std::ios_base::openmode theMode);
-
+#include <NCollection_UtfString.hxx>
 
 //! Function opens the file.
 //! @param theName name of file encoded in UTF-16
@@ -84,6 +36,42 @@ __Standard_API FILE* OSD_OpenFile (const TCollection_ExtendedString& theName,
 //! @param theName name of file encoded in UTF-8
 //! @return stat.st_ctime value
 __Standard_API Standard_Time OSD_FileStatCTime (const char* theName);
+
+//! Function opens the file stream.
+//! @param theStream stream to open
+//! @param theName name of file encoded in UTF-8
+//! @param theMode opening mode
+template <typename T>
+inline void OSD_OpenStream (T& theStream,
+                            const char* theName,
+                            const std::ios_base::openmode theMode)
+{
+#if defined(_WIN32) && defined(_MSC_VER)
+  // file name is treated as UTF-8 string and converted to UTF-16 one
+  const TCollection_ExtendedString aFileNameW (theName, Standard_True);
+  theStream.open (aFileNameW.ToWideString(), theMode);
+#else
+  theStream.open (theName, theMode);
+#endif
+}
+
+//! Function opens the file stream.
+//! @param theStream stream to open
+//! @param theName name of file encoded in UTF-16
+//! @param theMode opening mode
+template <typename T>
+inline void OSD_OpenStream (T& theStream,
+                            const TCollection_ExtendedString& theName,
+                            const std::ios_base::openmode theMode)
+{
+#if defined(_WIN32) && defined(_MSC_VER)
+  theStream.open (theName.ToWideString(), theMode);
+#else
+  // conversion in UTF-8 for linux
+  NCollection_Utf8String aString (theName.ToExtString());
+  theStream.open (aString.ToCString(), theMode);
+#endif
+}
 
 extern "C" {
 #endif // __cplusplus

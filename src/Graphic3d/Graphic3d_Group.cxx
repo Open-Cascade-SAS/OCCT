@@ -425,7 +425,7 @@ void Graphic3d_Group::Text (const TCollection_ExtendedString&       theText,
                             const Graphic3d_VerticalTextAlignment   theVta,
                             const Standard_Boolean                  theToEvalMinMax)
 {
-  const NCollection_String aText ((Standard_Utf16Char* )theText.ToExtString());
+  const NCollection_String aText (theText.ToExtString());
   Text (aText.ToCString(), thePoint, theHeight, theAngle,
         theTp, theHta, theVta, theToEvalMinMax);
 }
@@ -444,7 +444,7 @@ void Graphic3d_Group::Text (const TCollection_ExtendedString&       theText,
                             const Standard_Boolean                  theToEvalMinMax,
                             const Standard_Boolean                  theHasOwnAnchor)
 {
-  const NCollection_String aText ((Standard_Utf16Char*)(theText.ToExtString()));
+  const NCollection_String aText (theText.ToExtString());
   Text (aText.ToCString(),
         theOrientation,
         theHeight,
@@ -495,7 +495,7 @@ void Graphic3d_Group::Text (const TCollection_ExtendedString& theText,
                             const Standard_Real               theHeight,
                             const Standard_Boolean            theToEvalMinMax)
 {
-  const NCollection_String aText ((Standard_Utf16Char* )theText.ToExtString());
+  const NCollection_String aText (theText.ToExtString());
   Text (aText.ToCString(), thePoint, theHeight, 0.0,
         Graphic3d_TP_RIGHT, Graphic3d_HTA_LEFT, Graphic3d_VTA_BOTTOM, theToEvalMinMax);
 }

@@ -88,6 +88,12 @@ public:
     return myPosition == theRight.myPosition;
   }
 
+  //! Return true if Unicode symbol is within valid range.
+  bool IsValid() const
+  {
+    return myCharUtf32 <= UTF32_MAX_LEGAL;
+  }
+
   //! Dereference operator.
   //! @return the UTF-32 codepoint of the character currently pointed by iterator.
   Standard_Utf32Char operator*() const
@@ -120,6 +126,12 @@ public:
   //! 2 bytes is a general case;
   //! 4 bytes for surrogate pair.
   Standard_Integer AdvanceBytesUtf16() const;
+
+  //! @return the advance in bytes to store current symbol in UTF-16.
+  //! 0 means an invalid symbol;
+  //! 1 16-bit code unit is a general case;
+  //! 2 16-bit code units for surrogate pair.
+  Standard_Integer AdvanceCodeUnitsUtf16() const;
 
   //! @return the advance in bytes to store current symbol in UTF-32.
   //! Always 4 bytes (method for consistency).
