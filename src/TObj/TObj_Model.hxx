@@ -64,8 +64,8 @@ class TObj_Model : public MMgt_TShared
   Standard_EXPORT ~TObj_Model ();
 
   //! Check whether the document contains the OCAF data.
-  //! This implementation checks theFile on NULL only.
-  Standard_EXPORT virtual Standard_Boolean checkDocumentEmpty (const char* theFile);
+  Standard_EXPORT virtual Standard_Boolean 
+    checkDocumentEmpty(const TCollection_ExtendedString theFile);
 
  public:
   /**
@@ -84,11 +84,12 @@ class TObj_Model : public MMgt_TShared
   * Implementation of Load/Save for OCAF based models
   */
   
-  //! Load the OCAF model from a file
-  virtual Standard_EXPORT Standard_Boolean Load (const char* theFile);
+  //! Load the OCAF model from a file. If the filename is empty or file does
+  //! not exists, it just initializes model by empty data.
+  virtual Standard_EXPORT Standard_Boolean Load (const TCollection_ExtendedString theFile);
 
   //! Save the model to a file
-  virtual Standard_EXPORT Standard_Boolean SaveAs (const char* theFile);
+  virtual Standard_EXPORT Standard_Boolean SaveAs (const TCollection_ExtendedString theFile);
 
   //! Save the model to the same file
   Standard_EXPORT Standard_Boolean Save ();
@@ -110,7 +111,7 @@ class TObj_Model : public MMgt_TShared
 
   //! Returns the full file name this model is to be saved to, 
   //! or null if the model was not saved yet
-  virtual Standard_EXPORT Handle(TCollection_HAsciiString) GetFile() const;
+  virtual Standard_EXPORT Handle(TCollection_HExtendedString) GetFile() const;
 
  public:
   /**

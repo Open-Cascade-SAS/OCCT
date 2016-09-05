@@ -67,38 +67,36 @@ Standard_CString TObj_Application::ResourcesName()
 //=======================================================================
 
 Standard_Boolean TObj_Application::SaveDocument
-                        (const Handle(TDocStd_Document)&   theSourceDoc,
-                         const char*                       theTargetFile)
+                        (const Handle(TDocStd_Document)&  theSourceDoc,
+                         const TCollection_ExtendedString theTargetFile)
 {
   myIsError = Standard_False;
-  TCollection_ExtendedString aPath ((const Standard_CString)theTargetFile);
-
-  PCDM_StoreStatus aStatus = SaveAs (theSourceDoc, aPath);
+  PCDM_StoreStatus aStatus = SaveAs (theSourceDoc, theTargetFile);
   myIsError = aStatus != PCDM_SS_OK;
   if (myIsError)
   {
     switch (aStatus)
     {
     case PCDM_SS_DriverFailure:
-      ErrorMessage (Message_Msg("TObj_Appl_SDriverFailure") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_SDriverFailure") << theTargetFile);
       break;
     case PCDM_SS_WriteFailure:
-      ErrorMessage (Message_Msg("TObj_Appl_SWriteFailure") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_SWriteFailure") << theTargetFile);
       break;
     case PCDM_SS_Failure:
-      ErrorMessage (Message_Msg("TObj_Appl_SFailure") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_SFailure") << theTargetFile);
       break;
     case PCDM_SS_Doc_IsNull:
-      ErrorMessage (Message_Msg("TObj_Appl_SDocIsNull") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_SDocIsNull") << theTargetFile);
       break;
     case PCDM_SS_No_Obj:
-      ErrorMessage (Message_Msg("TObj_Appl_SNoObj") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_SNoObj") << theTargetFile);
       break;
     case PCDM_SS_Info_Section_Error:
-      ErrorMessage (Message_Msg("TObj_Appl_SInfoSectionError") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_SInfoSectionError") << theTargetFile);
       break;
     default:
-      ErrorMessage (Message_Msg("TObj_Appl_SUnknownFailure") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_SUnknownFailure") << theTargetFile);
       break;
     }
   }
@@ -114,17 +112,15 @@ Standard_Boolean TObj_Application::SaveDocument
 //=======================================================================
 
 Standard_Boolean TObj_Application::LoadDocument
-                        (const char*                       theSourceFile,
-                         Handle(TDocStd_Document)&         theTargetDoc)
+                        (const TCollection_ExtendedString theSourceFile,
+                         Handle(TDocStd_Document)&        theTargetDoc)
 {
   myIsError = Standard_False;
-  TCollection_ExtendedString aPath ((const Standard_CString)theSourceFile);
-
   PCDM_ReaderStatus aStatus = PCDM_RS_ReaderException;
   {
     try
     {
-      aStatus = Open (aPath, theTargetDoc);
+      aStatus = Open (theSourceFile, theTargetDoc);
     }
     catch (Standard_Failure)
     {
@@ -140,55 +136,55 @@ Standard_Boolean TObj_Application::LoadDocument
     switch (aStatus)
     {
     case PCDM_RS_UnknownDocument:
-      ErrorMessage (Message_Msg("TObj_Appl_RUnknownDocument") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_RUnknownDocument") << theSourceFile);
       break;
     case PCDM_RS_AlreadyRetrieved:
-      ErrorMessage (Message_Msg("TObj_Appl_RAlreadyRetrieved") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_RAlreadyRetrieved") << theSourceFile);
       break;
     case PCDM_RS_AlreadyRetrievedAndModified:
-      ErrorMessage (Message_Msg("TObj_Appl_RAlreadyRetrievedAndModified") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_RAlreadyRetrievedAndModified") << theSourceFile);
       break;
     case PCDM_RS_NoDriver:
-      ErrorMessage (Message_Msg("TObj_Appl_RNoDriver") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_RNoDriver") << theSourceFile);
       break;
     case PCDM_RS_UnknownFileDriver:
-      ErrorMessage (Message_Msg("TObj_Appl_RNoDriver") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_RNoDriver") << theSourceFile);
       break;
     case PCDM_RS_OpenError:
-      ErrorMessage (Message_Msg("TObj_Appl_ROpenError") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_ROpenError") << theSourceFile);
       break;
     case PCDM_RS_NoVersion:
-      ErrorMessage (Message_Msg("TObj_Appl_RNoVersion") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_RNoVersion") << theSourceFile);
       break;
     case PCDM_RS_NoModel:
-      ErrorMessage (Message_Msg("TObj_Appl_RNoModel") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_RNoModel") << theSourceFile);
       break;
     case PCDM_RS_NoDocument:
-      ErrorMessage (Message_Msg("TObj_Appl_RNoDocument") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_RNoDocument") << theSourceFile);
       break;
     case PCDM_RS_FormatFailure:
-      ErrorMessage (Message_Msg("TObj_Appl_RFormatFailure") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_RFormatFailure") << theSourceFile);
       break;
     case PCDM_RS_TypeNotFoundInSchema:
-      ErrorMessage (Message_Msg("TObj_Appl_RTypeNotFound") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_RTypeNotFound") << theSourceFile);
       break;
     case PCDM_RS_UnrecognizedFileFormat:
-      ErrorMessage (Message_Msg("TObj_Appl_RBadFileFormat") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_RBadFileFormat") << theSourceFile);
       break;
     case PCDM_RS_MakeFailure:
-      ErrorMessage (Message_Msg("TObj_Appl_RMakeFailure") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_RMakeFailure") << theSourceFile);
       break;
     case PCDM_RS_PermissionDenied:
-      ErrorMessage (Message_Msg("TObj_Appl_RPermissionDenied") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_RPermissionDenied") << theSourceFile);
       break;
     case PCDM_RS_DriverFailure:
-      ErrorMessage (Message_Msg("TObj_Appl_RDriverFailure") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_RDriverFailure") << theSourceFile);
       break;
     case PCDM_RS_ReaderException:
-      ErrorMessage (Message_Msg("TObj_Appl_RException") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_RException") << theSourceFile);
       break;
     default:
-      ErrorMessage (Message_Msg("TObj_Appl_RUnknownFail") << aPath);
+      ErrorMessage (Message_Msg("TObj_Appl_RUnknownFail") << theSourceFile);
       break;
     }
   }

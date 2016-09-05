@@ -108,7 +108,7 @@ void TObj_Model::CloseDocument (const Handle(TDocStd_Document)& theDoc)
 //purpose  : Loads the model from the file
 //=======================================================================
 
-Standard_Boolean TObj_Model::Load (const char* theFile)
+Standard_Boolean TObj_Model::Load (const TCollection_ExtendedString theFile)
 {
   // Return status
   Standard_Boolean aStatus = Standard_True;
@@ -144,7 +144,7 @@ Standard_Boolean TObj_Model::Load (const char* theFile)
   else
   {
     // retrieve TDocStd_Document from <theFile>
-    Messenger()->Send(Message_Msg("TObj_M_LoadDocument") << (Standard_CString)theFile,
+    Messenger()->Send(Message_Msg("TObj_M_LoadDocument") << theFile,
 			     Message_Info);
     aStatus = anApplication->LoadDocument(theFile,aDoc);
 
@@ -168,7 +168,7 @@ Standard_Boolean TObj_Model::Load (const char* theFile)
       {
         if (!aDoc.IsNull()) CloseDocument (aDoc);
         myLabel.Nullify();
-        Messenger()->Send(Message_Msg("TObj_M_WrongFile") << (Standard_CString)theFile,
+        Messenger()->Send(Message_Msg("TObj_M_WrongFile") << theFile,
 				 Message_Alarm);
         aStatus = Standard_False;
       }
@@ -198,7 +198,7 @@ Standard_Boolean TObj_Model::Load (const char* theFile)
         aString = aString + ": " + anExc->GetMessageString();
         Messenger()->Send(Message_Msg("TObj_Appl_Exception") << aString);
 #endif
-        Messenger()->Send(Message_Msg("TObj_M_WrongFile") << (Standard_CString)theFile,
+        Messenger()->Send(Message_Msg("TObj_M_WrongFile") << theFile,
 				 Message_Alarm);
       }
     }
@@ -220,19 +220,19 @@ Standard_Boolean TObj_Model::Load (const char* theFile)
 //           or null if the model was not saved yet
 //=======================================================================
 
-Handle(TCollection_HAsciiString) TObj_Model::GetFile() const
+Handle(TCollection_HExtendedString) TObj_Model::GetFile() const
 {
   Handle(TDocStd_Document) aDoc = GetDocument();
   if ( aDoc.IsNull()
    || !aDoc->IsStored())
   {
-    return Handle(TCollection_HAsciiString)();
+    return Handle(TCollection_HExtendedString)();
   }
 
-  TCollection_AsciiString aPath (aDoc->GetPath());
+  TCollection_ExtendedString aPath(aDoc->GetPath());
   return !aPath.IsEmpty()
-       ? new TCollection_HAsciiString (aPath)
-       : Handle(TCollection_HAsciiString)();
+       ? new TCollection_HExtendedString(aPath)
+       : Handle(TCollection_HExtendedString)();
 }
 
 //=======================================================================
@@ -243,12 +243,12 @@ Handle(TCollection_HAsciiString) TObj_Model::GetFile() const
 Standard_Boolean TObj_Model::Save ()
 {
   Handle(TDocStd_Document) aDoc = TDocStd_Document::Get(GetLabel());
-  if ( aDoc.IsNull() )
+  if (aDoc.IsNull())
     return Standard_False;
 
-  TCollection_AsciiString anOldPath( aDoc->GetPath() );
-  if ( !anOldPath.IsEmpty() )
-    return SaveAs( anOldPath.ToCString() );
+  
+  if (!aDoc->GetPath().IsEmpty() )
+    return SaveAs(aDoc->GetPath());
   return Standard_True;
 }
 
@@ -257,7 +257,7 @@ Standard_Boolean TObj_Model::Save ()
 //purpose  : Save the model to a file
 //=======================================================================
 
-Standard_Boolean TObj_Model::SaveAs (const char* theFile)
+Standard_Boolean TObj_Model::SaveAs (const TCollection_ExtendedString theFile)
 {
   TObj_Assistant::ClearTypeMap();
   // OCAF document
@@ -265,19 +265,12 @@ Standard_Boolean TObj_Model::SaveAs (const char* theFile)
   if ( aDoc.IsNull() )
     return Standard_False;
 
-  // checking that file is present on disk
-  /* do not check, because could try to save as new document to existent file 
-  if(!access(theFile, 0))
-  {
-    // checking that document has not been changed from last save
-    if(!aDoc->IsChanged())
-      return Standard_True;
-  }
-  */
+  // checking that file is present on disk is not needed because could try to save as new
+  // document to existent file 
   // checking write access permission
   FILE *aF = OSD_OpenFile (theFile, "w");
   if (aF == NULL) {
-    Messenger()->Send (Message_Msg("TObj_M_NoWriteAccess") << (Standard_CString)theFile, 
+    Messenger()->Send (Message_Msg("TObj_M_NoWriteAccess") << theFile, 
 			      Message_Alarm);
     return Standard_False;
   }
@@ -751,16 +744,12 @@ void TObj_Model::SetModified (const Standard_Boolean theModified)
 //purpose  : Check whether the document contains the Ocaf data
 //=======================================================================
 
-Standard_Boolean TObj_Model::checkDocumentEmpty (const char* theFile)
+Standard_Boolean TObj_Model::checkDocumentEmpty (const TCollection_ExtendedString theFile)
 {
-  if (!theFile)
+  if (theFile.IsEmpty())
     return Standard_True;
 
-  TCollection_AsciiString aFile ((Standard_CString) theFile);
-  if (aFile.IsEmpty())
-    return Standard_True;
-
-  OSD_Path aPath (aFile);
+  OSD_Path aPath (theFile);
   OSD_File osdfile (aPath);
   if ( !osdfile.Exists() )
     return Standard_True;

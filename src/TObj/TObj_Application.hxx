@@ -46,13 +46,13 @@ public:
 
   //! Saving the OCAF document to a file
   virtual Standard_EXPORT Standard_Boolean SaveDocument
-                         (const Handle(TDocStd_Document)& theSourceDoc,
-                          const char*                     theTargetFile);
+                         (const Handle(TDocStd_Document)&  theSourceDoc,
+                          const TCollection_ExtendedString theTargetFile);
 
   //! Loading the OCAF document from a file
   virtual Standard_EXPORT Standard_Boolean LoadDocument
-                         (const char*                     theSourceFile,
-                          Handle(TDocStd_Document)&       theTargetDoc);
+                         (const TCollection_ExtendedString theSourceFile,
+                          Handle(TDocStd_Document)&        theTargetDoc);
 
   //! Create the OCAF document from scratch
   virtual Standard_EXPORT Standard_Boolean CreateNewDocument

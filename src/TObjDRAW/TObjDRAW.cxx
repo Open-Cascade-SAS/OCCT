@@ -159,7 +159,8 @@ static Standard_Integer newModel (Draw_Interpretor& di, Standard_Integer argc, c
 
   if (!DDocStd::GetDocument(argv[1],D,Standard_False)) {
     Handle(TObjDRAW_Model) aModel = new TObjDRAW_Model();
-    aModel->Load(0);
+    // initializes the new model: filename is empty
+    aModel->Load("");
     D = aModel->GetDocument();
     DD = new DDocStd_DrawDocument(D);
     TDataStd_Name::Set(D->GetData()->Root(),argv[1]);

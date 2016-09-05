@@ -1050,3 +1050,7 @@ The following obsolete features have been removed:
 * 3D viewer printing API *V3d_View::Print()* has been removed. This functionality was available on Windows platforms only.
   Applications should use general image dump API *V3d_View::ToPixMap()* and manage printing using platform-specific API at application level.
   Text resolution can be managed by rendering parameter *Graphic3d_RenderingParams::Resolution*, returned by *V3d_View::ChangeRenderingParams()*.
+
+@subsection upgrade_occt710_correction_of_TObj_Model Correction in TObj_Model class
+
+Methods *TObj_Model::SaveAs* and *TObj_Model::Load* receive *TCollection_ExtendedString* filename arguments instead of char*. This shows that the filename may be not-ASCII explicitly. Also it makes OCAF API related to this functionality more conform.
