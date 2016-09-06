@@ -152,27 +152,50 @@ protected:
                                       const Standard_Real theDeltaU2,
                                       const Standard_Real theDeltaV2);
 
-
-
-
-
-private:
-
+  //! Uses Gradient method in order to find intersection point between the given surfaces
+  //! Arrays theInit (initial point to be precise) and theStep0 (steps-array) must contain
+  //! four items and must be filled strictly in following order:
+  //! {U-parameter on S1, V-parameter on S1, U-parameter on S2, V-parameter on S2}
+  Standard_EXPORT Standard_Boolean DistanceMinimizeByGradient(const Handle(Adaptor3d_HSurface)& theASurf1,
+                                                              const Handle(Adaptor3d_HSurface)& theASurf2,
+                                                              TColStd_Array1OfReal& theInit,
+                                                              const Standard_Real* theStep0 = 0);
   
-  Standard_EXPORT Standard_Boolean ExtendLineInCommonZone (const IntImp_ConstIsoparametric theChoixIso, const Standard_Boolean theDirectionFlag);
+  //! Finds the point on theASurf which is the nearest point to theP0.
+  //! theU0 and theV0 must be initialized (before calling the method) by initial
+  //! parameters on theASurf. Their values are changed while algorithm being launched.
+  //! Array theStep0 (steps-array) must contain two items and must be filled strictly in following order:
+  //! {U-parameter, V-parameter}
+  Standard_EXPORT Standard_Boolean DistanceMinimizeByExtrema (const Handle(Adaptor3d_HSurface)& theASurf,
+                                                              const gp_Pnt& theP0,                                                              
+                                                              Standard_Real& theU0,
+                                                              Standard_Real& theV0,
+                                                              const Standard_Real* theStep0 = 0);
   
-  Standard_EXPORT Standard_Boolean DistanceMinimizeByGradient (const Handle(Adaptor3d_HSurface)& theASurf1, const Handle(Adaptor3d_HSurface)& theASurf2, Standard_Real& theU1, Standard_Real& theV1, Standard_Real& theU2, Standard_Real& theV2, const Standard_Real theStep0U1V1 = 1.0e-6, const Standard_Real theStep0U2V2 = 1.0e-6);
-  
-  Standard_EXPORT Standard_Boolean DistanceMinimizeByExtrema (const Handle(Adaptor3d_HSurface)& theASurf1, const gp_Pnt& theP0, Standard_Real& theU0, Standard_Real& theV0, const Standard_Real theStep0U = 1.0, const Standard_Real theStep0V = 1.0);
-  
-  Standard_EXPORT Standard_Boolean SeekPointOnBoundary (const Handle(Adaptor3d_HSurface)& theASurf1, const Handle(Adaptor3d_HSurface)& theASurf2, const Standard_Real theU1, const Standard_Real theV1, const Standard_Real theU2, const Standard_Real theV2, const Standard_Boolean isTheFirst);
+  //! Searches an intersection point which lies on the some surface boundary.
+  //! Found point (in case of successful result) is added in the line.
+  //! theU1, theV1, theU2 and theV2 parameters are initial parameters in
+  //! for used numeric algorithms. If isTheFirst == TRUE then
+  //! a point on theASurf1 is searched. Otherwise, the point on theASurf2 is searched.
+  Standard_EXPORT Standard_Boolean SeekPointOnBoundary (const Handle(Adaptor3d_HSurface)& theASurf1,
+                                                        const Handle(Adaptor3d_HSurface)& theASurf2,
+                                                        const Standard_Real theU1,
+                                                        const Standard_Real theV1,
+                                                        const Standard_Real theU2,
+                                                        const Standard_Real theV2,
+                                                        const Standard_Boolean isTheFirst);
+
 
   // Method to handle single singular point. Sub-method in SeekPointOnBoundary.
-  Standard_Boolean HandleSingleSingularPoint(const Handle(Adaptor3d_HSurface) &theASurf1,
-                                             const Handle(Adaptor3d_HSurface) &theASurf2,
-                                             const Standard_Real the3DTol,
-                                             TColStd_Array1OfReal &thePnt);
+  Standard_EXPORT Standard_Boolean HandleSingleSingularPoint(const Handle(Adaptor3d_HSurface) &theASurf1,
+                                                             const Handle(Adaptor3d_HSurface) &theASurf2,
+                                                             const Standard_Real the3DTol,
+                                                             TColStd_Array1OfReal &thePnt);
+  
+  Standard_EXPORT Standard_Boolean ExtendLineInCommonZone (const IntImp_ConstIsoparametric theChoixIso,
+                                                           const Standard_Boolean theDirectionFlag);
 
+private:
   Standard_Boolean done;
   Handle(IntSurf_LineOn2S) line;
   Standard_Boolean close;
