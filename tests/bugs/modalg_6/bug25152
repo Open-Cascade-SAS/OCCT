@@ -1,0 +1,42 @@
+puts "============"
+puts "OCC25152"
+puts "============"
+puts ""
+#######################################################
+# Incorrect result of Boolean Union by BRepAlgoAPI_Fuse
+#######################################################
+
+isos 0
+
+restore [locate_data_file bug25152.brep] a
+
+explode a
+
+checkshape a_1
+tolerance a_1
+
+checkshape a_2
+tolerance a_2
+
+bop a_1 a_2
+bopfuse result
+
+checkprops result -s 64.4145 
+
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in result
+ VERTEX    : 22
+ EDGE      : 30
+ WIRE      : 12
+ FACE      : 11
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 78
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "Result obtained by Boolean cut operation"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
