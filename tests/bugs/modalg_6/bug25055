@@ -1,0 +1,31 @@
+puts "##################################################"
+puts "0025055: Incorrect shape copying in BRepBuilderAPI_Copy"
+puts "##################################################"
+
+# load and check shape
+restore [locate_data_file bug25055.brep] a
+
+tolerance a
+
+# call fixshape 
+fixshape aa a 1e-3
+checkshape aa
+tcopy aa b
+checkshape b
+
+tclean result 
+incmesh aa 0.1
+regexp {([0-9]+) +triangles.*[^0-9]([0-9]+) +nodes} [trinfo aa] full NbTrian_1 NbNodes_1
+ 
+tclean result 
+incmesh b 0.1
+
+set info_good [tricheck b]
+if { [string compare $info_good "" ] != 0 } {
+    puts "Error : Result tricheck is BAD"
+} 
+
+checktrinfo b -tri ${NbTrian_1} -nod ${NbNodes_1} 
+
+checkview -display b -2d -path ${imagedir}/${test_image}.png
+
