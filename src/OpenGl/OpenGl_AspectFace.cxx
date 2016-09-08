@@ -102,6 +102,12 @@ void OpenGl_AspectFace::SetAspect (const Handle(Graphic3d_AspectFillArea3d)& the
   {
     myResources.ResetTextureReadiness();
   }
+  else if (!myResources.Texture.IsNull()
+        && !myAspect->TextureMap().IsNull()
+        &&  myResources.Texture->Revision() != myAspect->TextureMap()->Revision())
+  {
+    myResources.ResetTextureReadiness();
+  }
 
   // update shader program binding
   const TCollection_AsciiString& aShaderKey = myAspect->ShaderProgram().IsNull() ? THE_EMPTY_KEY : myAspect->ShaderProgram()->GetId();
@@ -165,6 +171,19 @@ void OpenGl_AspectFace::Resources::BuildTexture (const Handle(OpenGl_Context)&  
   // release old texture resource
   if (!Texture.IsNull())
   {
+    if (!theTexture.IsNull()
+     &&  theTexture->GetId()    == TextureId
+     &&  theTexture->Revision() != Texture->Revision())
+    {
+      Handle(Image_PixMap) anImage = theTexture->GetImage();
+      if (!anImage.IsNull())
+      {
+        Texture->Init (theCtx, *anImage.operator->(), theTexture->Type());
+        Texture->SetRevision (Texture->Revision());
+        return;
+      }
+    }
+
     if (TextureId.IsEmpty())
     {
       theCtx->DelayedRelease (Texture);
@@ -188,6 +207,7 @@ void OpenGl_AspectFace::Resources::BuildTexture (const Handle(OpenGl_Context)&  
       if (!anImage.IsNull())
       {
         Texture->Init (theCtx, *anImage.operator->(), theTexture->Type());
+        Texture->SetRevision (Texture->Revision());
       }
       if (!TextureId.IsEmpty())
       {

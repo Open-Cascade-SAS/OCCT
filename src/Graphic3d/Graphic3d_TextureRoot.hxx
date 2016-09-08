@@ -17,48 +17,41 @@
 #ifndef _Graphic3d_TextureRoot_HeaderFile
 #define _Graphic3d_TextureRoot_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <TCollection_AsciiString.hxx>
 #include <Image_PixMap.hxx>
 #include <OSD_Path.hxx>
 #include <Graphic3d_TypeOfTexture.hxx>
-#include <MMgt_TShared.hxx>
-#include <Standard_Boolean.hxx>
+#include <Standard.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+
 class Graphic3d_TextureParams;
-class TCollection_AsciiString;
-class OSD_Path;
-
-
-class Graphic3d_TextureRoot;
-DEFINE_STANDARD_HANDLE(Graphic3d_TextureRoot, MMgt_TShared)
 
 //! This is the texture root class enable the dialog with the GraphicDriver allows the loading of texture.
-class Graphic3d_TextureRoot : public MMgt_TShared
+class Graphic3d_TextureRoot : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_TextureRoot, Standard_Transient)
+public:
+
+  //! The path to textures determined from CSF_MDTVTexturesDirectory or CASROOT environment variables.
+  //! @return the root folder with default textures.
+  Standard_EXPORT static TCollection_AsciiString TexturesFolder();
 
 public:
 
-  
-  Standard_EXPORT void Destroy() const;
-~Graphic3d_TextureRoot()
-{
-  Destroy();
-}
-  
+  //! Destructor.
+  Standard_EXPORT ~Graphic3d_TextureRoot();
+
   //! Checks if a texture class is valid or not.
   //! @return true if the construction of the class is correct
   Standard_EXPORT virtual Standard_Boolean IsDone() const;
-  
 
   //! Returns the full path of the defined texture.
   //! It could be empty path if GetImage() is overridden to load image not from file.
-  Standard_EXPORT const OSD_Path& Path() const;
-  
+  const OSD_Path& Path() const { return myPath; }
+
   //! @return the texture type.
-  Standard_EXPORT Graphic3d_TypeOfTexture Type() const;
-  
+  Graphic3d_TypeOfTexture Type() const { return myType; }
 
   //! This ID will be used to manage resource in graphic driver.
   //!
@@ -74,7 +67,15 @@ public:
   //! for each instance of Graphic3d_AspectFillArea3d where texture will be used.
   //!
   //! @return texture identifier.
-  Standard_EXPORT const TCollection_AsciiString& GetId() const;
+  const TCollection_AsciiString& GetId() const { return myTexId; }
+
+  //! Return image revision.
+  Standard_Size Revision() const { return myRevision; }
+
+  //! Update image revision.
+  //! Can be used for signalling changes in the texture source (e.g. file update, pixmap update)
+  //! without re-creating texture source itself (e.g. preserving the unique id).
+  void UpdateRevision() { ++myRevision; }
 
   //! This method will be called by graphic driver each time when texture resource should be created.
   //! Default constructors allow defining the texture source as path to texture image or directly as pixmap.
@@ -86,20 +87,10 @@ public:
   Standard_EXPORT virtual Handle(Image_PixMap) GetImage() const;
 
   //! @return low-level texture parameters
-  Standard_EXPORT const Handle(Graphic3d_TextureParams)& GetParams() const;
-  
-
-  //! The path to textures determined from CSF_MDTVTexturesDirectory or CASROOT environment variables.
-  //! @return the root folder with default textures.
-  Standard_EXPORT static TCollection_AsciiString TexturesFolder();
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_TextureRoot,MMgt_TShared)
+  const Handle(Graphic3d_TextureParams)& GetParams() const { return myParams; }
 
 protected:
 
-  
   //! Creates a texture from a file
   //! Warning: Note that if <FileName> is NULL the texture must be realized
   //! using LoadTexture(image) method.
@@ -110,24 +101,20 @@ protected:
   //! to be in Bottom-Up order (see Image_PixMap::IsTopDown()).
   Standard_EXPORT Graphic3d_TextureRoot(const Handle(Image_PixMap)& thePixmap, const Graphic3d_TypeOfTexture theType);
 
-  Handle(Graphic3d_TextureParams) myParams;
-  TCollection_AsciiString myTexId;
-  Handle(Image_PixMap) myPixMap;
-  OSD_Path myPath;
+  //! Unconditionally generate new texture id.
+  Standard_EXPORT void generateId();
 
+protected:
 
-private:
-
-
-  Graphic3d_TypeOfTexture myType;
-
+  Handle(Graphic3d_TextureParams) myParams;   //!< associated texture parameters
+  TCollection_AsciiString         myTexId;    //!< unique identifier of this resource (for sharing)
+  Handle(Image_PixMap)            myPixMap;   //!< image pixmap - as one of the ways for defining the texture source
+  OSD_Path                        myPath;     //!< image file path - as one of the ways for defining the texture source
+  Standard_Size                   myRevision; //!< image revision - for signalling changes in the texture source (e.g. file update, pixmap update)
+  Graphic3d_TypeOfTexture         myType;     //!< texture type
 
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(Graphic3d_TextureRoot, Standard_Transient)
 
 #endif // _Graphic3d_TextureRoot_HeaderFile

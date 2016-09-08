@@ -14,12 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Graphic3d_Texture2Dmanual.hxx>
+
 #include <Graphic3d_TextureParams.hxx>
 #include <Graphic3d_TypeOfTextureMode.hxx>
-#include <Standard_Type.hxx>
-#include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Texture2Dmanual,Graphic3d_Texture2D)
 

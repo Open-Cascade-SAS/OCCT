@@ -51,6 +51,7 @@ struct OpenGl_UnpackAlignmentSentry
 // =======================================================================
 OpenGl_Texture::OpenGl_Texture (const Handle(Graphic3d_TextureParams)& theParams)
 : OpenGl_Resource(),
+  myRevision (0),
   myTextureId (NO_TEXTURE),
   myTarget (GL_TEXTURE_2D),
   mySizeX (0),
@@ -136,7 +137,7 @@ void OpenGl_Texture::Release (OpenGl_Context* theGlCtx)
     glDeleteTextures (1, &myTextureId);
   }
   myTextureId = NO_TEXTURE;
-  mySizeX = mySizeY = 0;
+  mySizeX = mySizeY = mySizeZ = 0;
 }
 
 // =======================================================================
@@ -357,6 +358,20 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
                            const Graphic3d_TypeOfTexture theType,
                            const Image_PixMap*           theImage)
 {
+#if !defined(GL_ES_VERSION_2_0)
+  const GLenum aTarget = theType == Graphic3d_TOT_1D
+                       ? GL_TEXTURE_1D
+                       : GL_TEXTURE_2D;
+#else
+  const GLenum aTarget = GL_TEXTURE_2D;
+#endif
+  const Standard_Boolean toCreateMipMaps = (theType == Graphic3d_TOT_2D_MIPMAP);
+  const bool toPatchExisting = IsValid()
+                            && myTextFormat == thePixelFormat
+                            && myTarget == aTarget
+                            && myHasMipmaps == toCreateMipMaps
+                            && mySizeX  == theSizeX
+                            && (mySizeY == theSizeY || theType == Graphic3d_TOT_1D);
   if (!Create (theCtx))
   {
     Release (theCtx.operator->());
@@ -373,7 +388,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     myIsAlpha = thePixelFormat == GL_ALPHA;
   }
 
-  myHasMipmaps             = Standard_False;
+  myHasMipmaps             = toCreateMipMaps;
   myTextFormat             = thePixelFormat;
 #if !defined(GL_ES_VERSION_2_0)
   const GLint anIntFormat  = theTextFormat;
@@ -382,14 +397,13 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   const GLint anIntFormat  = thePixelFormat;
   (void) theTextFormat;
 #endif
-  const GLsizei aWidth     = theSizeX;
-  const GLsizei aHeight    = theSizeY;
-  const GLsizei aMaxSize   = theCtx->MaxTextureSize();
 
-  if (aWidth > aMaxSize || aHeight > aMaxSize)
+  const GLsizei aMaxSize = theCtx->MaxTextureSize();
+  if (theSizeX > aMaxSize
+   || theSizeY > aMaxSize)
   {
     TCollection_ExtendedString aWarnMessage = TCollection_ExtendedString ("Error: Texture dimension - ")
-      + aWidth + "x" + aHeight + " exceeds hardware limits (" + aMaxSize + "x" + aMaxSize + ")";
+      + theSizeX + "x" + theSizeY + " exceeds hardware limits (" + aMaxSize + "x" + aMaxSize + ")";
 
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aWarnMessage);
     Release (theCtx.operator->());
@@ -402,13 +416,14 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     // however some hardware (NV30 - GeForce FX, RadeOn 9xxx and Xxxx) supports GLSL but not NPOT!
     // Trying to create NPOT textures on such hardware will not fail
     // but driver will fall back into software rendering,
-    const GLsizei aWidthP2  = OpenGl_Context::GetPowerOfTwo (aWidth, aMaxSize);
-    const GLsizei aHeightP2 = OpenGl_Context::GetPowerOfTwo (aHeight, aMaxSize);
+    const GLsizei aWidthP2  = OpenGl_Context::GetPowerOfTwo (theSizeX, aMaxSize);
+    const GLsizei aHeightP2 = OpenGl_Context::GetPowerOfTwo (theSizeY, aMaxSize);
 
-    if (aWidth != aWidthP2 || (theType != Graphic3d_TOT_1D && aHeight != aHeightP2))
+    if (theSizeX != aWidthP2
+     || (theType != Graphic3d_TOT_1D && theSizeY != aHeightP2))
     {
       TCollection_ExtendedString aWarnMessage =
-        TCollection_ExtendedString ("Error: NPOT Textures (") + aWidth + "x" + aHeight + ") are not supported by hardware.";
+        TCollection_ExtendedString ("Error: NPOT Textures (") + theSizeX + "x" + theSizeY + ") are not supported by hardware.";
 
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH, aWarnMessage);
 
@@ -420,13 +435,14 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   else if (!theCtx->IsGlGreaterEqual (3, 0) && theType == Graphic3d_TOT_2D_MIPMAP)
   {
     // Mipmap NPOT textures are not supported by OpenGL ES 2.0.
-    const GLsizei aWidthP2  = OpenGl_Context::GetPowerOfTwo (aWidth, aMaxSize);
-    const GLsizei aHeightP2 = OpenGl_Context::GetPowerOfTwo (aHeight, aMaxSize);
+    const GLsizei aWidthP2  = OpenGl_Context::GetPowerOfTwo (theSizeX, aMaxSize);
+    const GLsizei aHeightP2 = OpenGl_Context::GetPowerOfTwo (theSizeY, aMaxSize);
 
-    if (aWidth != aWidthP2 || aHeight != aHeightP2)
+    if (theSizeX != aWidthP2
+     || theSizeY != aHeightP2)
     {
       TCollection_ExtendedString aWarnMessage =
-        TCollection_ExtendedString ("Error: Mipmap NPOT Textures (") + aWidth + "x" + aHeight + ") are not supported by OpenGL ES 2.0";
+        TCollection_ExtendedString ("Error: Mipmap NPOT Textures (") + theSizeX + "x" + theSizeY + ") are not supported by OpenGL ES 2.0";
 
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH, aWarnMessage);
 
@@ -462,20 +478,27 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   #endif
   }
 
+  myTarget = aTarget;
   switch (theType)
   {
     case Graphic3d_TOT_1D:
     {
     #if !defined(GL_ES_VERSION_2_0)
-      myTarget = GL_TEXTURE_1D;
       Bind (theCtx);
       glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, aFilter);
       glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, aFilter);
       glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_WRAP_S,     aWrapMode);
+      if (toPatchExisting)
+      {
+        glTexSubImage1D (GL_TEXTURE_1D, 0, 0,
+                         theSizeX, thePixelFormat, theDataType, aDataPtr);
+        Unbind (theCtx);
+        return true;
+      }
 
       // use proxy to check texture could be created or not
       glTexImage1D (GL_PROXY_TEXTURE_1D, 0, anIntFormat,
-                    aWidth, 0,
+                    theSizeX, 0,
                     thePixelFormat, theDataType, NULL);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &aTestWidth);
       if (aTestWidth == 0)
@@ -487,7 +510,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       }
 
       glTexImage1D (GL_TEXTURE_1D, 0, anIntFormat,
-                    aWidth, 0,
+                    theSizeX, 0,
                     thePixelFormat, theDataType, aDataPtr);
       if (glGetError() != GL_NO_ERROR)
       {
@@ -496,7 +519,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         return false;
       }
 
-      mySizeX = aWidth;
+      mySizeX = theSizeX;
       mySizeY = 1;
 
       Unbind (theCtx);
@@ -508,17 +531,25 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     }
     case Graphic3d_TOT_2D:
     {
-      myTarget = GL_TEXTURE_2D;
       Bind (theCtx);
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, aFilter);
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, aFilter);
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     aWrapMode);
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     aWrapMode);
+      if (toPatchExisting)
+      {
+        glTexSubImage2D (GL_TEXTURE_2D, 0,
+                         0, 0,
+                         theSizeX, theSizeY,
+                         thePixelFormat, theDataType, aDataPtr);
+        Unbind (theCtx);
+        return true;
+      }
 
     #if !defined(GL_ES_VERSION_2_0)
       // use proxy to check texture could be created or not
       glTexImage2D (GL_PROXY_TEXTURE_2D, 0, anIntFormat,
-                    aWidth, aHeight, 0,
+                    theSizeX, theSizeY, 0,
                     thePixelFormat, theDataType, NULL);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &aTestWidth);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &aTestHeight);
@@ -532,7 +563,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     #endif
 
       glTexImage2D (GL_TEXTURE_2D, 0, anIntFormat,
-                    aWidth, aHeight, 0,
+                    theSizeX, theSizeY, 0,
                     thePixelFormat, theDataType, aDataPtr);
       if (glGetError() != GL_NO_ERROR)
       {
@@ -541,17 +572,14 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         return false;
       }
 
-      mySizeX = aWidth;
-      mySizeY = aHeight;
+      mySizeX = theSizeX;
+      mySizeY = theSizeY;
 
       Unbind (theCtx);
       return true;
     }
     case Graphic3d_TOT_2D_MIPMAP:
     {
-      myTarget     = GL_TEXTURE_2D;
-      myHasMipmaps = Standard_True;
-
       GLenum aFilterMin = aFilter;
       aFilterMin = GL_NEAREST_MIPMAP_NEAREST;
       if (myParams->Filter() == Graphic3d_TOTF_BILINEAR)
@@ -568,11 +596,32 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, aFilter);
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     aWrapMode);
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     aWrapMode);
+      if (toPatchExisting)
+      {
+        glTexSubImage2D (GL_TEXTURE_2D, 0,
+                         0, 0,
+                         theSizeX, theSizeY,
+                         thePixelFormat, theDataType, aDataPtr);
+        if (theCtx->arbFBO != NULL)
+        {
+          // generate mipmaps
+          theCtx->arbFBO->glGenerateMipmap (GL_TEXTURE_2D);
+          if (glGetError() != GL_NO_ERROR)
+          {
+            Unbind (theCtx);
+            Release (theCtx.operator->());
+            return false;
+          }
+        }
+
+        Unbind (theCtx);
+        return true;
+      }
 
     #if !defined(GL_ES_VERSION_2_0)
       // use proxy to check texture could be created or not
       glTexImage2D (GL_PROXY_TEXTURE_2D, 0, anIntFormat,
-                    aWidth, aHeight, 0,
+                    theSizeX, theSizeY, 0,
                     thePixelFormat, theDataType, NULL);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &aTestWidth);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &aTestHeight);
@@ -587,7 +636,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
 
       // upload main picture
       glTexImage2D (GL_TEXTURE_2D, 0, anIntFormat,
-                    aWidth, aHeight, 0,
+                    theSizeX, theSizeY, 0,
                     thePixelFormat, theDataType, theImage->Data());
       if (glGetError() != GL_NO_ERROR)
       {
@@ -596,8 +645,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         return false;
       }
 
-      mySizeX = aWidth;
-      mySizeY = aHeight;
+      mySizeX = theSizeX;
+      mySizeY = theSizeY;
 
       if (theCtx->arbFBO != NULL)
       {
@@ -626,12 +675,10 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       Unbind (theCtx);
       return true;
     }
-    default:
-    {
-      Release (theCtx.operator->());
-      return false;
-    }
   }
+
+  Release (theCtx.operator->());
+  return false;
 }
 
 // =======================================================================

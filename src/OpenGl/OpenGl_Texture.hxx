@@ -363,6 +363,12 @@ public:
   Standard_EXPORT void Unbind (const Handle(OpenGl_Context)& theCtx,
                                const GLenum                  theTextureUnit = GL_TEXTURE0) const;
 
+  //! Revision of associated data source.
+  Standard_Size Revision() const { return myRevision; }
+
+  //! Set revision of associated data source.
+  void SetRevision (const Standard_Size theRevision) { myRevision = theRevision; }
+
   //! Notice that texture will be unbound after this call.
   Standard_EXPORT bool Init (const Handle(OpenGl_Context)& theCtx,
                              const Image_PixMap&           theImage,
@@ -422,6 +428,7 @@ public:
 
 protected:
 
+  Standard_Size    myRevision;   //!< revision of associated data source
   GLuint           myTextureId;  //!< GL resource ID
   GLenum           myTarget;     //!< GL_TEXTURE_1D/GL_TEXTURE_2D/GL_TEXTURE_3D
   GLsizei          mySizeX;      //!< texture width

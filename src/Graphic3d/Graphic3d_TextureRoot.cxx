@@ -14,21 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Graphic3d_TextureRoot.hxx>
 
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_TextureParams.hxx>
-#include <Graphic3d_TextureRoot.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <OSD_Directory.hxx>
 #include <OSD_Environment.hxx>
 #include <OSD_File.hxx>
-#include <OSD_Path.hxx>
 #include <OSD_Protection.hxx>
 #include <Standard_Atomic.hxx>
-#include <Standard_Type.hxx>
-#include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_TextureRoot,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_TextureRoot, Standard_Transient)
 
 namespace
 {
@@ -91,12 +88,12 @@ TCollection_AsciiString Graphic3d_TextureRoot::TexturesFolder()
 // =======================================================================
 Graphic3d_TextureRoot::Graphic3d_TextureRoot (const TCollection_AsciiString& theFileName,
                                               const Graphic3d_TypeOfTexture  theType)
-: myParams (new Graphic3d_TextureParams()),
-  myPath   (theFileName),
-  myType   (theType)
+: myParams   (new Graphic3d_TextureParams()),
+  myPath     (theFileName),
+  myRevision (0),
+  myType     (theType)
 {
-  myTexId = TCollection_AsciiString ("Graphic3d_TextureRoot_") //DynamicType()->Name()
-          + TCollection_AsciiString (Standard_Atomic_Increment (&THE_TEXTURE_COUNTER));
+  generateId();
 }
 
 // =======================================================================
@@ -105,39 +102,31 @@ Graphic3d_TextureRoot::Graphic3d_TextureRoot (const TCollection_AsciiString& the
 // =======================================================================
 Graphic3d_TextureRoot::Graphic3d_TextureRoot (const Handle(Image_PixMap)&   thePixMap,
                                               const Graphic3d_TypeOfTexture theType)
-: myParams (new Graphic3d_TextureParams()),
-  myPixMap (thePixMap),
-  myType   (theType)
+: myParams   (new Graphic3d_TextureParams()),
+  myPixMap   (thePixMap),
+  myRevision (0),
+  myType     (theType)
 {
-  myTexId = TCollection_AsciiString ("Graphic3d_TextureRoot_")
-          + TCollection_AsciiString (Standard_Atomic_Increment (&THE_TEXTURE_COUNTER));
+  generateId();
 }
 
 // =======================================================================
-// function : Destroy
+// function : ~Graphic3d_TextureRoot
 // purpose  :
 // =======================================================================
-void Graphic3d_TextureRoot::Destroy() const
+Graphic3d_TextureRoot::~Graphic3d_TextureRoot()
 {
   //
 }
 
 // =======================================================================
-// function : GetId
+// function : generateId
 // purpose  :
 // =======================================================================
-const TCollection_AsciiString& Graphic3d_TextureRoot::GetId() const
+void Graphic3d_TextureRoot::generateId()
 {
-  return myTexId;
-}
-
-// =======================================================================
-// function : GetParams
-// purpose  :
-// =======================================================================
-const Handle(Graphic3d_TextureParams)& Graphic3d_TextureRoot::GetParams() const
-{
-  return myParams;
+  myTexId = TCollection_AsciiString ("Graphic3d_TextureRoot_")
+          + TCollection_AsciiString (Standard_Atomic_Increment (&THE_TEXTURE_COUNTER));
 }
 
 // =======================================================================
@@ -184,22 +173,4 @@ Standard_Boolean Graphic3d_TextureRoot::IsDone() const
   // Case 2: texture source is specified as path
   OSD_File aTextureFile (myPath);
   return aTextureFile.Exists();
-}
-
-// =======================================================================
-// function : Path
-// purpose  :
-// =======================================================================
-const OSD_Path& Graphic3d_TextureRoot::Path() const
-{
-  return myPath;
-}
-
-// =======================================================================
-// function : Type
-// purpose  :
-// =======================================================================
-Graphic3d_TypeOfTexture Graphic3d_TextureRoot::Type() const
-{
-  return myType;
 }

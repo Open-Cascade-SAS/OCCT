@@ -14,11 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Graphic3d_Texture2D.hxx>
+
 #include <Standard_OutOfRange.hxx>
-#include <Standard_Type.hxx>
-#include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Texture2D,Graphic3d_TextureMap)
 
@@ -115,4 +113,15 @@ TCollection_AsciiString Graphic3d_Texture2D::TextureName (const Standard_Integer
   TCollection_AsciiString aFileName (NameOfTexture_to_FileName[theRank - 1]);
   Standard_Integer i = aFileName.SearchFromEnd (".");
   return aFileName.SubString (4, i - 1);
+}
+
+// =======================================================================
+// function : SetImage
+// purpose  :
+// =======================================================================
+void Graphic3d_Texture2D::SetImage (const Handle(Image_PixMap)& thePixMap)
+{
+  myPixMap = thePixMap;
+  myPath = OSD_Path();
+  myName = Graphic3d_NOT_2D_UNKNOWN;
 }

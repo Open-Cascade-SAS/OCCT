@@ -17,48 +17,39 @@
 #ifndef _Graphic3d_Texture2D_HeaderFile
 #define _Graphic3d_Texture2D_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <Graphic3d_NameOfTexture2D.hxx>
 #include <Graphic3d_TextureMap.hxx>
-#include <Graphic3d_TypeOfTexture.hxx>
-#include <Image_PixMap.hxx>
-#include <Standard_Integer.hxx>
-class Standard_OutOfRange;
-class TCollection_AsciiString;
-
-
-class Graphic3d_Texture2D;
-DEFINE_STANDARD_HANDLE(Graphic3d_Texture2D, Graphic3d_TextureMap)
 
 //! This abstract class for managing 2D textures
 class Graphic3d_Texture2D : public Graphic3d_TextureMap
 {
-
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_Texture2D, Graphic3d_TextureMap)
 public:
-
-  
-
-  //! Returns the name of the predefined textures or NOT_2D_UNKNOWN
-  //! when the name is given as a filename.
-  Standard_EXPORT Graphic3d_NameOfTexture2D Name() const;
-  
 
   //! Returns the number of predefined textures.
   Standard_EXPORT static Standard_Integer NumberOfTextures();
-  
 
   //! Returns the name of the predefined texture of rank <aRank>
   Standard_EXPORT static TCollection_AsciiString TextureName (const Standard_Integer theRank);
 
+public:
 
+  //! Returns the name of the predefined textures or NOT_2D_UNKNOWN
+  //! when the name is given as a filename.
+  Standard_EXPORT Graphic3d_NameOfTexture2D Name() const;
 
+  //! Assign new image to the texture.
+  //! Note that this method does not invalidate already uploaded resources - consider calling ::UpdateRevision() if needed.
+  Standard_EXPORT void SetImage (const Handle(Image_PixMap)& thePixMap);
 
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_Texture2D,Graphic3d_TextureMap)
+  //! Return true if mip-maps should be used.
+  Standard_Boolean HasMipMaps() const { return myType == Graphic3d_TOT_2D_MIPMAP; }
+
+  //! Set if mip-maps should be used (generated if needed).
+  //! Note that this method should be called before loading / using the texture.
+  void SetMipMaps (const Standard_Boolean theToUse) { myType = theToUse ? Graphic3d_TOT_2D_MIPMAP : Graphic3d_TOT_2D; }
 
 protected:
-
   
   Standard_EXPORT Graphic3d_Texture2D(const TCollection_AsciiString& theFileName, const Graphic3d_TypeOfTexture theType);
   
@@ -66,20 +57,12 @@ protected:
   
   Standard_EXPORT Graphic3d_Texture2D(const Handle(Image_PixMap)& thePixMap, const Graphic3d_TypeOfTexture theType);
 
-
-
-private:
-
+protected:
 
   Graphic3d_NameOfTexture2D myName;
 
-
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(Graphic3d_Texture2D, Graphic3d_TextureMap)
 
 #endif // _Graphic3d_Texture2D_HeaderFile
