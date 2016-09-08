@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC22454"
+puts "============"
+puts ""
+###########################################################
+# Export /Import of valid model leads to lost of tolerances
+###########################################################
+
+pload DATAEXCHANGE
+
+restore [locate_data_file bug22454.brep] s
+
+checkshape s
+stepwrite m s $imagedir/shape.stp
+stepread $imagedir/shape.stp a *
+
+set tolref [checkmaxtol s]
+
+set tol [checkmaxtol a_1]
+
+puts "MAX tolerance shape before export : $tolref"
+puts "MAX tolerance shape after import : $tol"
+
+if { ${tol} > ${tolref} } {
+	    puts "Error: Export /Import cause increasing tolerances of shape"
+	} else {
+	    puts "Export /Import does not cause increasing tolerances of shape"
+	}  
+
+checkview -display a_1 -2d -path ${imagedir}/${test_image}.png
