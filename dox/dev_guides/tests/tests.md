@@ -878,7 +878,18 @@ The test grid name is constructed depending on the type of the tested chamfers. 
 | dist_angle_complex	| |	Distance from edge and given angle |
 | dist_angle_sequence	| |	Distance from edge and given angle |
 
-@subsubsection testmanual_5_1_7 demo
+@subsubsection testmanual_5_1_7 de
+
+This group tests reading and writing of CAD data files (iges, step) to and from OCCT.
+
+Test cases check transfer status, shape and attributes against expected reference values.
+
+| Grid	| Commands | Functionality |
+| :---- | :----- | :------- | 
+| iges_1, iges_2, iges_3 | igesbrep, brepiges, ReadIges, WriteIges | IGES tests | 
+| step_1, step_2, step_3, step_4, step_5 | stepread, stepwrite, ReadStep, WriteStep | STEP tests |
+
+@subsubsection testmanual_5_1_8 demo
 
 This group allows demonstrating how testing cases are created, and testing DRAW commands and the test system as a whole.
 
@@ -889,7 +900,7 @@ This group allows demonstrating how testing cases are created, and testing DRAW 
 | samples	| |	OCCT samples | 
 
 
-@subsubsection testmanual_5_1_8 draft
+@subsubsection testmanual_5_1_9 draft
 
 This group allows testing draft operations.
 
@@ -900,7 +911,7 @@ DRAW module: MODELING.
 | Angle	| depouille	| Drafts with angle (inclined walls) |
 
 
-@subsubsection testmanual_5_1_9 feat
+@subsubsection testmanual_5_1_10 feat
 
 This group allows testing creation of features on a shape.
 
@@ -914,7 +925,7 @@ DRAW module: MODELING (package *BRepTest*).
 | featrevol		| | | 
 | featrf		| | |
 
-@subsubsection testmanual_5_1_10 heal
+@subsubsection testmanual_5_1_11 heal
 
 This group allows testing the functionality provided by *ShapeHealing* toolkit.
 
@@ -943,7 +954,7 @@ DRAW module: XSDRAW
 | surface_to_revolution_standard |	DT_ShapeConvertRev	| Convert elementary surfaces to revolutions, simple cases |
 | update_tolerance_locked	| updatetolerance	| Update the tolerance of shape so that it satisfy the rule: toler(face)<=toler(edge)<=toler(vertex) |
 
-@subsubsection testmanual_5_1_11 mesh
+@subsubsection testmanual_5_1_12 mesh
 
 This group allows testing shape tessellation (*BRepMesh*) and shading.
 
@@ -960,7 +971,7 @@ DRAW modules: MODELING (package *MeshTest*), VISUALIZATION (package *ViewerTest*
 | advanced_incmesh_parallel | incmesh | Meshing of complex shapes, parallel mode |
 | standard_incmesh_parallel | incmesh | Meshing of simple shapes, parallel mode |
 
-@subsubsection testmanual_5_1_12 mkface
+@subsubsection testmanual_5_1_13 mkface
 
 This group allows testing creation of simple surfaces.
 
@@ -975,7 +986,7 @@ DRAW module: MODELING (package *BRepTest*)
 | after_revsurf_and_offset | mkface	| | 
 | mkplane | mkplane	| |
 
-@subsubsection testmanual_5_1_13 nproject
+@subsubsection testmanual_5_1_14 nproject
 
 This group allows testing normal projection of edges and wires onto a face.
 
@@ -985,7 +996,7 @@ DRAW module: MODELING (package *BRepTest*)
 | :---- | :----- | :------- | 
 | Base	| nproject	|  |
 
-@subsubsection testmanual_5_1_14 offset
+@subsubsection testmanual_5_1_15 offset
 
 This group allows testing offset functionality for curves and surfaces.
 
@@ -1001,7 +1012,7 @@ DRAW module: MODELING (package *BRepTest*)
 | shape	 | offsetshape	| |
 | wire_closed_outside_0_005, wire_closed_outside_0_025, wire_closed_outside_0_075, wire_closed_inside_0_005, wire_closed_inside_0_025, wire_closed_inside_0_075, wire_unclosed_outside_0_005, wire_unclosed_outside_0_025, wire_unclosed_outside_0_075	|	mkoffset | 2d offset of closed and unclosed planar wires with different offset step and directions of offset ( inside / outside ) |
 	
-@subsubsection testmanual_5_1_15 pipe
+@subsubsection testmanual_5_1_16 pipe
 
 This group allows testing construction of pipes (sweeping of a contour along profile).
 
@@ -1011,7 +1022,7 @@ DRAW module: MODELING (package *BRepTest*)
 | :---- | :----- | :------- | 
 | Standard	| pipe	| |
 
-@subsubsection testmanual_5_1_16 prism
+@subsubsection testmanual_5_1_17 prism
 
 This group allows testing construction of prisms.
 
@@ -1021,7 +1032,7 @@ DRAW module: MODELING (package *BRepTest*)
 | :---- | :----- | :------- | 
 | seminf | prism	| |
 
-@subsubsection testmanual_5_1_17 sewing
+@subsubsection testmanual_5_1_18 sewing
 
 This group allows testing sewing of faces by connecting edges.
 
@@ -1033,7 +1044,7 @@ DRAW module: MODELING (package *BRepTest*)
 | tol_1	| sewing | Sewing faces with tolerance 1 |
 | tol_100 | sewing | Sewing faces with tolerance 100 | 
 
-@subsubsection testmanual_5_1_18 thrusection
+@subsubsection testmanual_5_1_19 thrusection
 
 This group allows testing construction of shell or a solid passing through a set of sections in a given sequence (loft).
 
@@ -1042,7 +1053,7 @@ This group allows testing construction of shell or a solid passing through a set
 | solids	| thrusection | Lofting with resulting solid | 
 | not_solids | thrusection	| Lofting with resulting shell or face | 
 
-@subsubsection testmanual_5_1_19 xcaf
+@subsubsection testmanual_5_1_20 xcaf
 
 This group allows  testing extended data exchange packages.
 
