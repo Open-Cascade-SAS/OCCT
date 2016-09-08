@@ -20,6 +20,7 @@
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <ElCLib.hxx>
 #include <Geom2d_Curve.hxx>
+#include <GeomInt.hxx>
 #include <gp.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Dir2d.hxx>
@@ -2093,39 +2094,24 @@ HLRBRep_Data::Classify (const Standard_Integer E,
       IntCurveSurface_TransitionOnCurve Tr;
       
       for (i = 1; i <= nbPoints; i++) {
-	Standard_Boolean InsideRestriction = Standard_False;
 	myIntersector.CSPoint(i).Values(PInter,u,v,w,Tr);
 	if (w < wLim) {
-	  if (PeriodU)
-	    while (u > UMin) 
-	      u -= PeriodU;
-	  if (PeriodV)
-	    while (v > VMin)
-	      v -= PeriodV;
-//	  Standard_Real UInit = u;
-	  Standard_Real VInit = v;
+          Standard_Real aDummyShift;
+          if (PeriodU > 0.)
+            GeomInt::AdjustPeriodic(u, UMin, UMax, PeriodU, u, aDummyShift);
+          if (PeriodV > 0.)
+            GeomInt::AdjustPeriodic(v, VMin, VMax, PeriodV, v, aDummyShift);
 	  
-	  do {
-	    v = VInit;
-	    
-	    do {
-	      gp_Pnt2d pnt2d(u,v);
-	      if (myClassifier->Classify(pnt2d,Precision::PConfusion())
-                  != TopAbs_OUT)
-              {
-		InsideRestriction = Standard_True;
-		state = TopAbs_IN;
-		Level++;
-		if (!LevelFlag) {
-		  return state;
-		}
-	      }
-	      v += PeriodV;
-	    }
-	    while (PeriodV && v < VMax && !InsideRestriction);
-	    u += PeriodU;
-	  }
-	  while (PeriodU && u < UMax && !InsideRestriction);
+          gp_Pnt2d pnt2d(u, v);
+          if (myClassifier->Classify(pnt2d, Precision::PConfusion())
+            != TopAbs_OUT)
+          {
+            state = TopAbs_IN;
+            Level++;
+            if (!LevelFlag) {
+              return state;
+            }
+          }
 	}
       }
     }
@@ -2443,4 +2429,35 @@ HLRBRep_Data::SameVertex (const Standard_Boolean h1,
     }
   }
   return SameV;
+}
+
+//=======================================================================
+//function : IsBadFace
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean HLRBRep_Data::IsBadFace() const
+{
+  if (iFaceGeom)
+  {
+    // check for garbage data - if periodic then bounds must not exceed period
+    HLRBRep_Surface *pGeom = (HLRBRep_Surface*)iFaceGeom;
+    if (pGeom->IsUPeriodic())
+    {
+      Standard_Real aPeriod = pGeom->UPeriod();
+      Standard_Real aMin = pGeom->FirstUParameter();
+      Standard_Real aMax = pGeom->LastUParameter();
+      if (aPeriod * 2 < aMax - aMin)
+        return Standard_True;
+    }
+    if (pGeom->IsVPeriodic())
+    {
+      Standard_Real aPeriod = pGeom->VPeriod();
+      Standard_Real aMin = pGeom->FirstVParameter();
+      Standard_Real aMax = pGeom->LastVParameter();
+      if (aPeriod * 2 < aMax - aMin)
+        return Standard_True;
+    }
+  }
+  return Standard_False;
 }

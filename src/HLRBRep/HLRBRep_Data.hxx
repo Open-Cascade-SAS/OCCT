@@ -173,7 +173,10 @@ public:
   
   //! Classification of an edge.
   Standard_EXPORT TopAbs_State Classify (const Standard_Integer E, const HLRBRep_EdgeData& ED, const Standard_Boolean LevelFlag, Standard_Integer& Level, const Standard_Real param);
-  
+
+  //! Returns true if the current face is bad.
+  Standard_EXPORT Standard_Boolean IsBadFace() const;
+
   Standard_EXPORT void Destroy();
 ~HLRBRep_Data()
 {

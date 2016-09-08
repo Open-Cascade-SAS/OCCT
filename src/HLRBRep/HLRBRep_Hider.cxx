@@ -103,6 +103,8 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
   myDS->InitEdge(FI,MST);
   if (!myDS->MoreEdge())                        // there is nothing to do
      return;                                    // **********************
+  if (myDS->IsBadFace())
+    return;
   HLRBRep_EdgeInterferenceTool EIT(myDS); // List of Intersections
   HLRBRep_Array1OfEData& myEData = myDS->EDataArray();
 
