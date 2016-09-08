@@ -25,6 +25,7 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 class gp_Pnt;
+class gp_Pnt2d;
 
 
 //! This class defines the geometric informations
@@ -58,24 +59,31 @@ public:
   
   //! Set the values of the point in the parametric
   //! space of one of the surface.
-    void SetValue (const Standard_Real U1, const Standard_Real V1, const Standard_Real U2, const Standard_Real V2);
+      void SetValue (const Standard_Real U1, const Standard_Real V1, const Standard_Real U2, const Standard_Real V2) ;
   
   //! Returns the point in 3d space.
-    const gp_Pnt& Value() const;
+     const  gp_Pnt& Value()  const;
+  
+  //! Returns the point in 2d space of one of the surfaces.
+  Standard_EXPORT   gp_Pnt2d ValueOnSurface (const Standard_Boolean OnFirst)  const;
   
   //! Returns the parameters of the point on the first surface.
     void ParametersOnS1 (Standard_Real& U1, Standard_Real& V1) const;
   
   //! Returns the parameters of the point on the second surface.
-    void ParametersOnS2 (Standard_Real& U2, Standard_Real& V2) const;
+      void ParametersOnS2 (Standard_Real& U2, Standard_Real& V2)  const;
+  
+  //! Returns the parameters of the point in the
+  //! parametric space of one of the surface.
+  Standard_EXPORT   void ParametersOnSurface (const Standard_Boolean OnFirst, Standard_Real& U, Standard_Real& V)  const;
   
   //! Returns the parameters of the point on both surfaces.
-    void Parameters (Standard_Real& U1, Standard_Real& V1, Standard_Real& U2, Standard_Real& V2) const;
+      void Parameters (Standard_Real& U1, Standard_Real& V1, Standard_Real& U2, Standard_Real& V2)  const;
   
   //! Returns TRUE if 2D- and 3D-coordinates of theOterPoint are equal to
   //! corresponding coordinates of me (with given tolerance).
   //! If theTol2D < 0.0 we will compare 3D-points only.
-  Standard_EXPORT Standard_Boolean IsSame (const IntSurf_PntOn2S& theOterPoint, const Standard_Real theTol3D = 0.0, const Standard_Real theTol2D = -1.0) const;
+  Standard_EXPORT Standard_Boolean IsSame (const IntSurf_PntOn2S& theOtherPoint, const Standard_Real theTol3D = 0.0, const Standard_Real theTol2D = -1.0) const;
 
 
 

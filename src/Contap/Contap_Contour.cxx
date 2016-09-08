@@ -1491,7 +1491,8 @@ void Contap_Contour::Perform
 
   if (seqpdep.Length() != 0 || seqpins.Length() != 0) {
 
-    Contap_TheIWalking iwalk(Preci,Fleche,Pas);
+    Standard_Boolean theToFillHoles = Standard_True;
+    Contap_TheIWalking iwalk(Preci,Fleche,Pas,theToFillHoles);
     iwalk.Perform(seqpdep,seqpins,mySFunc ,Surf);
     if(!iwalk.IsDone()) {
       return;

@@ -63,7 +63,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 //    end of conditions.
 
 {
-  Standard_Integer I, N;
+  Standard_Integer I, N = 0, SaveN = 0;
   Standard_Real aBornInf[2], aBornSup[2], aUVap[2];
   math_Vector BornInf(aBornInf,1,2), BornSup(aBornSup,1,2), UVap(aUVap,1,2);
   Standard_Real PasC, PasCu, PasCv;
@@ -190,6 +190,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
               CurrentLine->AddStatusLast(Standard_False);
               Tgtend = Standard_True; // check
               Rajout = Standard_True;
+              seqAlone.Append(lines.Length() + 1);
               seqAjout.Append(lines.Length() + 1);
             }  
           }
@@ -203,6 +204,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
             else {
               if (Rajout) {
                 ArretAjout =TestArretAjout(Func, UVap, N, Psol);
+                SaveN = N;
                 if (ArretAjout) {
                   // jag 940615
                   Tgtend = lines.Value(N)->IsTangentAtEnd();
@@ -253,9 +255,16 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
             else if (ArretAjout || Cadre) {
               Arrive = Standard_True;
               CurrentLine->AddStatusLast(Standard_False);
-              if (Status != IntWalk_ArretSurPointPrecedent) {
-                CurrentLine->AddPoint(Psol);                      
-              }
+              //if (Status != IntWalk_ArretSurPointPrecedent)
+              CurrentLine->AddPoint(Psol);                      
+              //Remove <SaveN> from <seqAlone>
+              for (Standard_Integer iseq = 1; iseq <= seqAlone.Length(); iseq++)
+                if (seqAlone(iseq) == SaveN)
+                {
+                  seqAlone.Remove(iseq);
+                  break;
+                }
+
               if (Cadre && N==0) {
                 Rajout = Standard_True;
                 seqAjout.Append(lines.Length()+1);
@@ -268,6 +277,8 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
               }
               Arrive = Standard_True;
               Rajout = Standard_True;
+              //AddAlonePoint();
+              seqAlone.Append(lines.Length() + 1);
               seqAjout.Append(lines.Length() + 1);
               CurrentLine->AddStatusLast(Standard_False);
               Tgtend = Standard_True; // check
@@ -329,6 +340,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
               MakeWalkingPoint(1, UVap(1), UVap(2), Func, Psol);
               CurrentLine->AddPoint(Psol);
               Rajout = Standard_True;
+              seqAlone.Append(lines.Length() + 1);
               seqAjout.Append(lines.Length() + 1);
             }
             else if (Status == IntWalk_OK) { 
@@ -353,6 +365,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
             CurrentLine->AddStatusLast(Standard_False);
             Tgtend = Standard_True; // need check
             Rajout = Standard_True;
+            seqAlone.Append(lines.Length() + 1);
             seqAjout.Append(lines.Length() + 1);
           }  
         }

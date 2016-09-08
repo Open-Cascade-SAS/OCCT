@@ -70,7 +70,8 @@ static Standard_Boolean IsTangentExtCheck(TheIWFunction& theFunc,
 
 IntWalk_IWalking::IntWalk_IWalking (const Standard_Real Epsilon,
                                     const Standard_Real Deflection,
-                                    const Standard_Real Increment ) :
+                                    const Standard_Real Increment,
+                                    const Standard_Boolean theToFillHoles) :
       done(Standard_False),
       fleche(Deflection),
       pas(Increment),
@@ -78,7 +79,8 @@ IntWalk_IWalking::IntWalk_IWalking (const Standard_Real Epsilon,
       epsilon(Epsilon*Epsilon),
       wd1 (IntWalk_VectorOfWalkingData::allocator_type (new NCollection_IncAllocator)),
       wd2 (wd1.get_allocator()),
-      nbMultiplicities (wd1.get_allocator())
+      nbMultiplicities (wd1.get_allocator()),
+      ToFillHoles(theToFillHoles)
 {
 }
 
@@ -215,7 +217,35 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
 
   // calculation of all closed lines 
   if (nbPnts2 != 0)
-    ComputeCloseLine(Umult,Vmult,Pnts1,Pnts2,Func,Rajout); 
+    ComputeCloseLine(Umult,Vmult,Pnts1,Pnts2,Func,Rajout);
+
+  if (ToFillHoles)
+  {
+    Standard_Integer MaxNbIter = 10, nb_iter = 0;
+    while (seqAlone.Length() > 1 && nb_iter < MaxNbIter)
+    {
+      nb_iter++;
+      IntSurf_SequenceOfInteriorPoint PntsInHoles;
+      TColStd_SequenceOfInteger CopySeqAlone = seqAlone;
+      FillPntsInHoles(Func, CopySeqAlone, PntsInHoles);
+      wd2.clear();
+      IntWalk_WalkingData aDummy;
+      aDummy.etat = -10;
+      aDummy.ustart = aDummy.vstart = 0.;
+      wd2.push_back (aDummy);
+      Standard_Integer nbHoles = PntsInHoles.Length();
+      wd2.reserve(nbHoles);
+      for (I = 1; I <= nbHoles; I++)
+      {
+        IntWalk_WalkingData aWD2;
+        aWD2.etat = 13;
+        const IntSurf_InteriorPoint& anIP = PntsInHoles.Value(I);
+        ThePointOfLoopTool::Value2d(anIP, aWD2.ustart, aWD2.vstart);
+        wd2.push_back (aWD2);
+      }
+      ComputeCloseLine(Umult,Vmult,Pnts1,PntsInHoles,Func,Rajout);
+    }
+  }
   
   for (I = 1; I <= nbPnts1; I++) { 
     if (wd1[I].etat >0) seqSingle.Append(Pnts1(I));

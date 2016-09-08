@@ -115,10 +115,55 @@ void IntWalk_IWalking::OpenLine(const Standard_Integer N,
   Line->SetTangentVector(previousd3d.Reversed(),Line->NbPoints());
 }
 
+Standard_Boolean IntWalk_IWalking::IsValidEndPoint(const Standard_Integer IndOfPoint,
+                                                   const Standard_Integer IndOfLine)
+{
+  if (PointLineLine.IsEmpty())
+    return Standard_True;
+  
+  TColStd_ListIteratorOfListOfInteger itl(PointLineLine(IndOfPoint));
+  for (; itl.More(); itl.Next())
+    if (itl.Value() == IndOfLine)
+    {
+      PointLineLine(IndOfPoint).Remove(itl);
+      return Standard_True;
+    }
+  return Standard_False;
+}
 
+void IntWalk_IWalking::RemoveTwoEndPoints(const Standard_Integer IndOfPoint)
+{
+  if (PointLineLine.IsBound(IndOfPoint))
+  {
+    Standard_Integer Line1 = PointLineLine(IndOfPoint).First();
+    Standard_Integer Line2 = PointLineLine(IndOfPoint).Last();
+    for (Standard_Integer iseq = 1; iseq <= seqAlone.Length(); iseq++)
+    {
+      if (seqAlone(iseq) == Line1 ||
+          seqAlone(iseq) == Line2)
+        seqAlone.Remove(iseq--);
+    }
+  }
+}
 
-
-
-
-
-
+Standard_Boolean IntWalk_IWalking::IsPointOnLine(const gp_Pnt2d& theP2d,
+                                                 const Standard_Integer Irang)
+{
+  const Handle(IntWalk_TheIWLine)& aLine = lines.Value(Abs(Irang));
+  for (Standard_Integer i = 1; i <= aLine->NbPoints(); i++)
+  {
+    gp_Pnt2d P2d1 = aLine->Value(i).ValueOnSurface(reversed);
+    if (Abs(P2d1.X() - theP2d.X()) <= tolerance(1) &&
+        Abs(P2d1.Y() - theP2d.Y()) <= tolerance(2))
+      return Standard_True;
+    if (i < aLine->NbPoints())
+    {
+      gp_Pnt2d P2d2 = aLine->Value(i+1).ValueOnSurface(reversed);
+      gp_Vec2d PP1(theP2d, P2d1);
+      gp_Vec2d PP2(theP2d, P2d2);
+      if (PP1 * PP2 < 0)
+        return Standard_True;
+    }
+  }
+  return Standard_False;
+}

@@ -16,7 +16,9 @@
 #include <gp_Pnt.hxx>
 #include <IntSurf_PntOn2S.hxx>
 
-IntSurf_PntOn2S::IntSurf_PntOn2S () : pt(0,0,0),u1(0),v1(0),u2(0),v2(0) {}
+IntSurf_PntOn2S::IntSurf_PntOn2S ()
+  : pt(0,0,0),u1(0),v1(0),u2(0),v2(0)
+{}
 
 void IntSurf_PntOn2S::SetValue (const gp_Pnt& Pt,
 				const Standard_Boolean OnFirst,
@@ -49,6 +51,29 @@ void IntSurf_PntOn2S::SetValue (const Standard_Boolean OnFirst,
   }
 }
 
+gp_Pnt2d IntSurf_PntOn2S::ValueOnSurface(const Standard_Boolean OnFirst) const
+{
+  gp_Pnt2d PointOnSurf;
+  if (OnFirst)
+    PointOnSurf.SetCoord(u1,v1);
+  else
+    PointOnSurf.SetCoord(u2,v2);
+  return PointOnSurf;
+}
+
+void IntSurf_PntOn2S::ParametersOnSurface(const Standard_Boolean OnFirst,
+                                          Standard_Real& U,
+                                          Standard_Real& V) const
+{
+  if (OnFirst) {
+    U = u1;
+    V = v1;
+  }
+  else {
+    U = u2;
+    V = v2;
+  }
+}
 
 Standard_Boolean IntSurf_PntOn2S::IsSame( const IntSurf_PntOn2S& theOterPoint,
                                           const Standard_Real theTol3D,

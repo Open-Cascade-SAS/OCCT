@@ -41,7 +41,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 //
 // ******************************************************************** 
 {
-  Standard_Integer I,N = 0;
+  Standard_Integer I,N = 0,SaveN = 0;
   Standard_Real aBornInf[2], aBornSup[2], aUVap[2];
   math_Vector BornInf(aBornInf,1,2), BornSup(aBornSup,1,2);
   math_Vector Uvap(aUVap,1,2);// parameters of current approach
@@ -180,13 +180,40 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
             PasCv = Abs(PasC*previousd2d.Y());
 
             if (PasCu <= tolerance(1) && PasCv <= tolerance(2)) {
-              if (CurrentLine->NbPoints()==1) break;
+              if (CurrentLine->NbPoints()==1)
+              {
+                RemoveTwoEndPoints(I);
+                break; //cancel the line
+              }
+              if (wd2[I].etat >12) { //the line should become open
+                wd2[I].etat = 12; //declare it open
+                ArretAjout = Standard_False;
+                OpenLine(0,Psol,Pnts1,Func,CurrentLine);
+                StepSign = -1;
+                StatusPrecedent = IntWalk_OK;
+                Arrive = Standard_False;
+                PasC = PasSav;
+                Rajout = Standard_True;
+                seqAlone.Append(-lines.Length()-1);
+                seqAjout.Append(-lines.Length()-1);
+              }
+              else { // line s is open                 
+                Arrive =Standard_True;
+                CurrentLine->AddStatusLast(Standard_False);
+                Rajout = Standard_True;
+                seqAlone.Append(lines.Length()+1);
+                seqAjout.Append(lines.Length()+1);
+                Tgtend = Standard_True;
+              } 
+              /*              
               Arrive = Standard_True;
               CurrentLine->AddStatusFirstLast(Standard_False,
                 Standard_False,Standard_False);
               Rajout = Standard_True;
+              seqAlone.Append(lines.Length()+1);
               seqAjout.Append(lines.Length()+1);
               Tgtend = Standard_True;
+              */
             }
           }
           else { // there is a solution
@@ -246,6 +273,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
             else { // modif jag 940615
               if (Rajout) {    // test on added points
                 ArretAjout =TestArretAjout(Func,Uvap,N,Psol);
+                SaveN = N;
                 if (ArretAjout) {
                   if (N >0) {
                     Tgtend = lines.Value(N)->IsTangentAtEnd();
@@ -259,8 +287,13 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
               }
 
               if (!ArretAjout&& Cadre) {  // test on already marked points
-                if (CurrentLine->NbPoints() == 1)  break; // cancel the line
+                if (CurrentLine->NbPoints() == 1)
+                {
+                  RemoveTwoEndPoints(I);
+                  break; // cancel the line
+                }
                 TestArretCadre(Umult,Vmult,CurrentLine,Func,Uvap,N);
+                SaveN = N;
                 //		if (N==0) {
                 if (N <= 0) { // jag 941017
                   MakeWalkingPoint(2,Uvap(1),Uvap(2),Func,Psol);
@@ -289,11 +322,42 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 
               if (Arrive) { // line s is open
                 CurrentLine->AddStatusLast(Standard_False);
-                if (Status != IntWalk_ArretSurPointPrecedent) {
-                  CurrentLine->AddPoint(Psol);                      
+                //if (Status != IntWalk_ArretSurPointPrecedent)
+                CurrentLine->AddPoint(Psol);
+
+                //Remove <SaveN> from <seqAlone> and, if it is first found point,
+                //from <seqAjout> too
+                if (IsValidEndPoint(I, SaveN))
+                {
+                  for (Standard_Integer iseq = 1; iseq <= seqAlone.Length(); iseq++)
+                    if (seqAlone(iseq) == SaveN)
+                    {
+                      seqAlone.Remove(iseq);
+                      break;
+                    }
+                  if (CurrentLine->NbPoints() <= 3)
+                    for (Standard_Integer iseq = 1; iseq <= seqAjout.Length(); iseq++)
+                      if (seqAjout(iseq) == SaveN)
+                      {
+                        seqAjout.Remove(iseq);
+                        break;
+                      }
                 }
+                else
+                {
+                  if (seqAlone.Last() == -lines.Length()-1)
+                  {
+                    seqAlone.Remove(seqAlone.Length());
+                    seqAjout.Remove(seqAjout.Length());
+                  }
+                  RemoveTwoEndPoints(I);
+                  Arrive = Standard_False;
+                  break; //cancel the line
+                }
+
                 if (Cadre && N==0) {
                   Rajout = Standard_True;
+                  //seqAlone.Append(lines.Length()+1);
                   seqAjout.Append(lines.Length()+1);
                 }
 
@@ -307,11 +371,36 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
                 StatusPrecedent = IntWalk_OK;
                 PasC = PasSav;
                 if (Status == IntWalk_ArretSurPointPrecedent) {
+                  CurrentLine->AddPoint(Psol);
                   OpenLine(0,Psol,Pnts1,Func,CurrentLine);
                 }
                 else {
                   OpenLine(-lines.Length()-1,Psol,Pnts1,Func,CurrentLine);
                 }
+                //Remove <SaveN> from <seqAlone> and, if it is first found point,
+                //from <seqAjout> too
+                if (IsValidEndPoint(I, SaveN))
+                {
+                  for (Standard_Integer iseq = 1; iseq <= seqAlone.Length(); iseq++)
+                    if (seqAlone(iseq) == SaveN)
+                    {
+                      seqAlone.Remove(iseq);
+                      break;
+                    }
+                  if (CurrentLine->NbPoints() <= 2)
+                    for (Standard_Integer iseq = 1; iseq <= seqAjout.Length(); iseq++)
+                      if (seqAjout(iseq) == SaveN)
+                      {
+                        seqAjout.Remove(iseq);
+                        break;
+                      }
+                }
+                else
+                {
+                  RemoveTwoEndPoints(I);
+                  break; //cancel the line
+                }
+                
                 if (Cadre && N==0) {
                   Rajout = Standard_True;
                   seqAjout.Append(-lines.Length()-1);
@@ -321,6 +410,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
             else if ( Status == IntWalk_ArretSurPointPrecedent) {
               if (CurrentLine->NbPoints() == 1) { //cancel the line
                 Arrive = Standard_False;
+                RemoveTwoEndPoints(I);
                 break;
               }
               if (wd2[I].etat >12) { //the line should become open
@@ -332,12 +422,14 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
                 Arrive = Standard_False;
                 PasC = PasSav;
                 Rajout = Standard_True;
+                seqAlone.Append(-lines.Length()-1);
                 seqAjout.Append(-lines.Length()-1);
               }
               else { // line s is open                 
                 Arrive =Standard_True;
                 CurrentLine->AddStatusLast(Standard_False);
                 Rajout = Standard_True;
+                seqAlone.Append(lines.Length()+1);
                 seqAjout.Append(lines.Length()+1);
               } 
             }
@@ -363,6 +455,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
                 OpenLine(N,Psol,Pnts1,Func,CurrentLine);
                 StepSign = -1;
                 Rajout = Standard_True;
+                seqAlone.Append(N);
                 seqAjout.Append(N);
                 StatusPrecedent = IntWalk_OK;
                 Arrive = Standard_False;
@@ -381,6 +474,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
                   newP.SetValue(Func.Point(),reversed,Uvap(1),Uvap(2));
                   CurrentLine->AddPoint(newP);
                   Rajout = Standard_True;
+                  seqAlone.Append(lines.Length()+1);
                   seqAjout.Append(lines.Length()+1);
                 }
               }
@@ -404,13 +498,40 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
           PasCv = Abs(PasC*previousd2d.Y());
 
           if (PasCu <= tolerance(1) && PasCv <= tolerance(2)) {
-            if (CurrentLine->NbPoints() == 1)  break; // cancel the line
+            if (CurrentLine->NbPoints() == 1)
+            {
+              RemoveTwoEndPoints(I);
+              break; // cancel the line
+            }
+            if (wd2[I].etat >12) { //the line should become open
+              wd2[I].etat = 12; //declare it open
+              ArretAjout = Standard_False;
+              OpenLine(0,Psol,Pnts1,Func,CurrentLine);
+              StepSign = -1;
+              StatusPrecedent = IntWalk_OK;
+              Arrive = Standard_False;
+              PasC = PasSav;
+              Rajout = Standard_True;
+              seqAlone.Append(-lines.Length()-1);
+              seqAjout.Append(-lines.Length()-1);
+            }
+            else { // line s is open                 
+              Arrive =Standard_True;
+              CurrentLine->AddStatusLast(Standard_False);
+              Tgtend = Standard_True;
+              Rajout = Standard_True;
+              seqAlone.Append(lines.Length()+1);
+              seqAjout.Append(lines.Length()+1);
+            } 
+            /*
             Arrive = Standard_True;
             CurrentLine->AddStatusFirstLast(Standard_False,Standard_False,
               Standard_False);
             Tgtend = Standard_True;
             Rajout = Standard_True;
+            seqAlone.Append(lines.Length()+1);
             seqAjout.Append(lines.Length()+1);
+            */
           }  
         }
 

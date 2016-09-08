@@ -14,6 +14,8 @@
 
 //-- IntWalk_IWalking_2.gxx
 
+#include <TColStd_MapOfInteger.hxx>
+
 #ifndef OCCT_DEBUG
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
@@ -571,6 +573,158 @@ Standard_Boolean IntWalk_IWalking::TestArretAjout
     }
   }
   return Arrive;
+}
+
+void IntWalk_IWalking::FillPntsInHoles(TheIWFunction& sp,
+                                       TColStd_SequenceOfInteger& CopySeqAlone,
+                                       IntSurf_SequenceOfInteriorPoint& PntsInHoles)
+{
+  math_Vector BornInf(1,2), BornSup(1,2);
+  BornInf(1) = Um;
+  BornSup(1) = UM;
+  BornInf(2) = Vm;
+  BornSup(2) = VM;
+  PointLineLine.Clear();
+  TColStd_SequenceOfInteger SeqToRemove;
+  TColStd_MapOfInteger BadSolutions;
+  
+  for (Standard_Integer i = 1; i < CopySeqAlone.Length(); i++)
+  {
+    Standard_Integer Irang1 = CopySeqAlone(i);
+    if (Irang1 == 0)
+      continue;
+    Standard_Boolean ToRemove = Standard_False;
+    IntSurf_PntOn2S PointAlone1, PointAlone2;
+    const Handle(IntWalk_TheIWLine)& Line1 = lines.Value(Abs(Irang1));
+    if (Irang1 > 0) 
+      PointAlone1 = Line1->Value(Line1->NbPoints()); 
+    else 
+      PointAlone1 = Line1->Value(1);
+    gp_Pnt2d P2d1 = PointAlone1.ValueOnSurface(reversed), P2d2;
+    Standard_Real MinSqDist = RealLast();
+    Standard_Integer MinRang = 0, MinIndex = 0;
+    for (Standard_Integer j = i+1; j <= CopySeqAlone.Length(); j++)
+    {
+      Standard_Integer Irang2 = CopySeqAlone(j);
+      if (Irang2 == 0 ||
+          BadSolutions.Contains(Irang2))
+        continue;
+      const Handle(IntWalk_TheIWLine)& Line2 = lines.Value(Abs(Irang2));
+      if (Irang2 > 0)
+        PointAlone2 = Line2->Value(Line2->NbPoints());
+      else
+        PointAlone2 = Line2->Value(1);
+      P2d2 = PointAlone2.ValueOnSurface(reversed);
+      Standard_Real aSqDist = P2d1.SquareDistance(P2d2);
+      if (aSqDist < MinSqDist)
+      {
+        MinSqDist = aSqDist;
+        MinRang = Irang2;
+        MinIndex = j;
+      }
+    }
+    //processing points from Irang1 and MinRang
+    if (MinRang == 0)
+    {
+      SeqToRemove.Append(Irang1);
+      BadSolutions.Clear();
+      continue;
+    }
+    //Ends of same line
+    if (Abs(Irang1) == Abs(MinRang) &&
+        lines.Value(Abs(Irang1))->NbPoints() == 2)
+    {
+      SeqToRemove.Append(Irang1);
+      SeqToRemove.Append(MinRang);
+      CopySeqAlone(i) = 0;
+      CopySeqAlone(MinIndex) = 0;
+      BadSolutions.Clear();
+      continue;
+    }
+    ///////////////////
+    const Handle(IntWalk_TheIWLine)& Line2 = lines.Value(Abs(MinRang));
+    if (MinRang > 0)
+      PointAlone2 = Line2->Value(Line2->NbPoints());
+    else
+      PointAlone2 = Line2->Value(1);
+    gp_Pnt Pnt1 = PointAlone1.Value();
+    gp_Pnt Pnt2 = PointAlone2.Value();
+    P2d2 = PointAlone2.ValueOnSurface(reversed);
+    Standard_Real MinSqDist3d = Pnt1.SquareDistance(Pnt2);
+    if (MinSqDist3d <= epsilon ||
+        (Abs(P2d1.X() - P2d2.X()) <= tolerance(1) &&
+         Abs(P2d1.Y() - P2d2.Y()) <= tolerance(2))) //close points
+      ToRemove = Standard_True;
+    else //real curve
+    {
+      math_Vector UVap(1,2), UV(1,2);
+      UVap(1) = (P2d1.X() + P2d2.X())/2;
+      UVap(2) = (P2d1.Y() + P2d2.Y())/2;
+      math_FunctionSetRoot Rsnld(sp, tolerance);
+      Rsnld.Perform(sp, UVap, BornInf, BornSup);
+      if (Rsnld.IsDone() &&
+          Abs(sp.Root()) <= sp.Tolerance() &&
+          !sp.IsTangent())
+      {
+        Rsnld.Root(UV);
+        gp_Pnt2d Pmid(UV(1),UV(2));
+        gp_Vec2d P1P2(P2d1, P2d2);
+        gp_Vec2d P1Pmid(P2d1, Pmid);
+        gp_Vec2d P2Pmid(P2d2, Pmid);
+        Standard_Real ScalProd1 = P1P2 * P1Pmid;
+        Standard_Real ScalProd2 = P1P2 * P2Pmid;
+        Standard_Boolean IsPmidValid = (ScalProd1 > 0. && ScalProd2 < 0); //Pmid is in the middle
+        if (IsPmidValid)
+        {
+          for (Standard_Integer iline = 1; iline <= lines.Length(); iline++)
+            if (IsPointOnLine(Pmid,iline))
+            {
+              IsPmidValid = Standard_False;
+              break;
+            }
+        }
+        if (IsPmidValid)
+        {
+          IntSurf_InteriorPoint aPoint(sp.Point(), UV(1), UV(2),
+                                       sp.Direction3d(),
+                                       sp.Direction2d());
+          PntsInHoles.Append(aPoint);
+          TColStd_ListOfInteger LineLine;
+          LineLine.Append(Irang1);
+          LineLine.Append(MinRang);
+          PointLineLine.Bind(PntsInHoles.Length(), LineLine);
+        }
+        else
+        {
+          BadSolutions.Add(MinRang);
+          i--;
+          continue;
+        }
+      }
+      else
+      {
+        BadSolutions.Add(MinRang);
+        i--;
+        continue;
+      }
+    }
+    CopySeqAlone(i) = 0;
+    CopySeqAlone(MinIndex) = 0;
+    if (ToRemove)
+    {
+      SeqToRemove.Append(Irang1);
+      SeqToRemove.Append(MinRang);
+    }
+    BadSolutions.Clear();
+  }
+
+  for (Standard_Integer i = 1; i <= SeqToRemove.Length(); i++)
+    for (Standard_Integer j = 1; j <= seqAlone.Length(); j++)
+      if (seqAlone(j) == SeqToRemove(i))
+      {
+        seqAlone.Remove(j);
+        break;
+      }
 }
 
 void IntWalk_IWalking::TestArretCadre

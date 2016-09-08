@@ -10,7 +10,7 @@ pload QAcommands
 
 restore [locate_data_file bug27720_BSpline.brep] a
 
-set viewname "top"
+set viewname "left"
 
 top
 clear
@@ -20,7 +20,7 @@ build3d result
 
 fit
 
-checkprops result -l 0.980943
-checknbshapes result -vertex 58 -edge 29
+checkprops result -l 0.820309
+checknbshapes result -vertex 74 -edge 37
 
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png
