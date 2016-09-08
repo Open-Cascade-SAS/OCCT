@@ -104,6 +104,28 @@ static Standard_Integer OCC181 (Draw_Interpretor& di, Standard_Integer argc, con
   return 0;
 }
 
+static Standard_Integer OCC27849 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+  if (argc != 3) {
+    di << "Usage : " << argv[0] << " <environment variable name> <resource name>\n";
+    return 1;
+  }
+  Standard_CString aEnvName = argv[1];
+  Standard_CString aResName = argv[2];
+
+  Resource_Manager aManager (aEnvName);
+  if (aManager.Find (aResName))
+  {
+    di << aManager.Value (aResName);
+  }
+  else
+  {
+    di << "Error: could not find resource " << aResName;
+  }
+
+  return 0;
+}
+
 static Standard_Real delta_percent (Standard_Real a, Standard_Real b)
 {
   Standard_Real result;
@@ -220,6 +242,7 @@ void QABugs::Commands_18(Draw_Interpretor& theCommands) {
 
   theCommands.Add("OCC267", "OCC267 DOC path", __FILE__, OCC267, group);
   theCommands.Add("OCC181", "OCC181 FileName path1 path2 verbose=0/1", __FILE__, OCC181, group);
+  theCommands.Add("OCC27849", "OCC27849 <resource env name> <resource name>", __FILE__, OCC27849, group);
   theCommands.Add("OCC367", "OCC367 shape step goodX goodY goodZ percent_tolerance", __FILE__, OCC367, group);
 
   return;

@@ -61,8 +61,12 @@ Resource_Manager::Resource_Manager(const Standard_CString aName,
 {
   if ( !aDefaultsDirectory.IsEmpty() ) {
     OSD_Path anOSDPath(aDefaultsDirectory);
-    anOSDPath.DownTrek(anOSDPath.Name());
+    if (!anOSDPath.Name().IsEmpty())
+    {
+      anOSDPath.DownTrek (anOSDPath.Name () + anOSDPath.Extension ());
+    }
     anOSDPath.SetName(aName);
+    anOSDPath.SetExtension("");
     TCollection_AsciiString aPath;
     anOSDPath.SystemName(aPath);
     Load(aPath,myRefMap);
@@ -73,8 +77,12 @@ Resource_Manager::Resource_Manager(const Standard_CString aName,
 
   if ( !anUserDefaultsDirectory.IsEmpty() ) {
     OSD_Path anOSDPath(anUserDefaultsDirectory);
-    anOSDPath.DownTrek(anOSDPath.Name());
+    if (!anOSDPath.Name().IsEmpty())
+    {
+      anOSDPath.DownTrek (anOSDPath.Name () + anOSDPath.Extension ());
+    }
     anOSDPath.SetName(aName);
+    anOSDPath.SetExtension("");
     TCollection_AsciiString aPath;
     anOSDPath.SystemName(aPath);
     Load(aPath,myRefMap);
@@ -267,8 +275,12 @@ Standard_Boolean Resource_Manager::Save() const
     }
   }
 
-  anOSDPath.DownTrek(anOSDPath.Name());
+  if (!anOSDPath.Name().IsEmpty())
+  {
+    anOSDPath.DownTrek (anOSDPath.Name () + anOSDPath.Extension ());
+  }
   anOSDPath.SetName(myName);
+  anOSDPath.SetExtension("");
   anOSDPath.SystemName(aFilePath);
 
   OSD_File File = anOSDPath;
@@ -496,10 +508,10 @@ void Resource_Manager::GetResourcePath (TCollection_AsciiString& aPath, const St
 
   if (!anOSDPath.Name().IsEmpty())
   {
-    anOSDPath.DownTrek(anOSDPath.Name());
+    anOSDPath.DownTrek (anOSDPath.Name () + anOSDPath.Extension ());
   }
-
-  anOSDPath.SetName(aName);
+  anOSDPath.SetName (aName);
+  anOSDPath.SetExtension ("");
 
   anOSDPath.SystemName(aPath);
 }

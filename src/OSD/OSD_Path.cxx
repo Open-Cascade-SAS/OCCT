@@ -255,17 +255,9 @@ static void DosExtract(const TCollection_AsciiString& what,
   buffer.Remove(1,disk.Length());  // Removes <<disk:>>
  }
 
- if (buffer.Search(".") != -1){ // There is an extension to extract
-  ext = buffer.Token(".",2); 
-  ext.Insert(1,'.');            // Prepends 'dot'
-  pos = buffer.Search(".");     // Removes extension from buffer
-  if (pos != -1)
-   buffer.Remove(pos,ext.Length());
- }
-
  trek = buffer;
 
- trek.ChangeAll('\\','|');  
+ trek.ChangeAll('\\','|');
 
  pos = trek.Search("..");
  while (pos != -1){        // Changes every ".." by '^'
@@ -274,16 +266,20 @@ static void DosExtract(const TCollection_AsciiString& what,
   pos = trek.Search("..");
  }
 
- pos = trek.SearchFromEnd("|");  // Extract name
+ pos = trek.SearchFromEnd ("|");  // Extract name
  if (pos != -1) {
-  p = (Standard_PCharacter)trek.ToCString();
-  name = &p[pos];
-  trek.Remove(trek.Search(name),name.Length());
+   p = (Standard_PCharacter)trek.ToCString ();
+   name = &p[pos];
+   if (name.Length ()) trek.Remove (pos + 1, name.Length ());
  }
  else {   // No '|' means no trek but a name
-  name = buffer;
-  trek = "";
+   name = buffer;
+   trek = "";
  }
+
+ pos = name.SearchFromEnd (".");
+ if (pos != -1)      // There is an extension to extract
+   ext = name.Split (pos - 1);
 }
 
 

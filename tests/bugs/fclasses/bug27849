@@ -1,0 +1,32 @@
+puts "Test loading of resources from different paths"
+puts "0027849: ResourceManager path computations fail for the folders containing dots"
+
+pload QAcommands
+
+
+set paths {
+  "path"
+  "path.with.dots"
+  "path with spaces"
+  "nested/dirs/path with spaces"
+}
+
+# key word to be saved in resource file and then checked
+set keyw ok
+
+foreach p $paths {
+  set path [file join $imagedir $p]
+
+  file mkdir $path
+
+  set fd [open $path/TestResource w]
+  puts $fd "test.resource : $keyw"
+  close $fd
+  
+
+  dsetenv CSF_TestResourceDefaults $path
+  
+  if { [OCC27849 TestResource test.resource] != "$keyw" } {
+    puts "Error: cannot read resource file in $path"
+  }
+}
