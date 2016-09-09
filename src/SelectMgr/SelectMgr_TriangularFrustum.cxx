@@ -44,7 +44,7 @@ namespace
 // purpose  : Caches projection of frustum's vertices onto its plane directions
 //            and {i, j, k}
 // =======================================================================
-void SelectMgr_TriangularFrustum::cacheVertexProjections (SelectMgr_TriangularFrustum* theFrustum)
+void SelectMgr_TriangularFrustum::cacheVertexProjections (SelectMgr_TriangularFrustum* theFrustum) const
 {
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 5; ++aPlaneIdx)
   {
@@ -128,10 +128,10 @@ void SelectMgr_TriangularFrustum::Build (const gp_Pnt2d& theP1,
 //                  as any negative value;
 //                - scale only is needed: @theTrsf must be set to gp_Identity.
 //=======================================================================
-NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_TriangularFrustum::ScaleAndTransform (const Standard_Integer /*theScale*/,
-                                                                                          const gp_GTrsf& theTrsf)
+Handle(SelectMgr_BaseFrustum) SelectMgr_TriangularFrustum::ScaleAndTransform (const Standard_Integer /*theScale*/,
+                                                                              const gp_GTrsf& theTrsf) const
 {
-  SelectMgr_TriangularFrustum* aRes = new SelectMgr_TriangularFrustum();
+  Handle(SelectMgr_TriangularFrustum) aRes = new SelectMgr_TriangularFrustum();
 
   for (Standard_Integer anIt = 0; anIt < 6; anIt++)
   {
@@ -157,9 +157,9 @@ NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_TriangularFrustum::ScaleAndT
 
   computeFrustumNormals (aRes->myEdgeDirs, aRes->myPlanes);
 
-  cacheVertexProjections (aRes);
+  cacheVertexProjections (aRes.get());
 
-  return NCollection_Handle<SelectMgr_BaseFrustum> (aRes);
+  return aRes;
 }
 
 //=======================================================================

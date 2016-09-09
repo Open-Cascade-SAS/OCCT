@@ -46,8 +46,11 @@ public:
   //! There are no default parameters, but in case if:
   //!    - transformation only is needed: @theScaleFactor must be initialized as any negative value;
   //!    - scale only is needed: @theTrsf must be set to gp_Identity.
+  //! Builder is an optional argument that represents corresponding settings for re-constructing transformed
+  //! frustum from scratch. Can be null if reconstruction is not expected furthermore.
   Standard_EXPORT virtual SelectMgr_SelectingVolumeManager ScaleAndTransform (const Standard_Integer theScaleFactor,
-                                                                              const gp_GTrsf& theTrsf);
+                                                                              const gp_GTrsf& theTrsf,
+                                                                              const Handle(SelectMgr_FrustumBuilder)& theBuilder = NULL) const;
 
   Standard_EXPORT virtual Standard_Integer GetActiveSelectionType() const Standard_OVERRIDE;
 
@@ -71,7 +74,7 @@ public:
   //! @return current world view transformation common for all selecting volumes
   Standard_EXPORT const Graphic3d_Mat4d& WorldViewMatrix() const;
 
-  Standard_EXPORT void WindowSize (Standard_Integer& theWidth, Standard_Integer& theHeight);
+  Standard_EXPORT void WindowSize (Standard_Integer& theWidth, Standard_Integer& theHeight) const;
 
   //! @return current camera world view projection transformation state common for all selecting volumes
   Standard_EXPORT const Graphic3d_WorldViewProjState& WorldViewProjState() const;
@@ -189,8 +192,8 @@ public:
 private:
   enum { Frustum, FrustumSet, VolumeTypesNb };       //!< Defines the amount of available selecting volumes
 
-  NCollection_Handle<SelectMgr_BaseFrustum> mySelectingVolumes[VolumeTypesNb];      //!< Array of selecting volumes
-  Standard_Boolean                          myToAllowOverlap;      //!< Defines if partially overlapped entities will me detected or not
+  Handle(SelectMgr_BaseFrustum) mySelectingVolumes[VolumeTypesNb];      //!< Array of selecting volumes
+  Standard_Boolean              myToAllowOverlap;      //!< Defines if partially overlapped entities will me detected or not
 };
 
 #endif

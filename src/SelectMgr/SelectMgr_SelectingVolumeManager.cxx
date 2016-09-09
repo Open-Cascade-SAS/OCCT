@@ -42,9 +42,13 @@ SelectMgr_SelectingVolumeManager::SelectMgr_SelectingVolumeManager (Standard_Boo
 //                - transformation only is needed: @theScaleFactor must be initialized
 //                  as any negative value;
 //                - scale only is needed: @theTrsf must be set to gp_Identity.
+//            Builder is an optional argument that represents corresponding settings for
+//            re-constructing transformed frustum from scratch. Can be null if reconstruction
+//            is not needed furthermore in the code.
 //=======================================================================
 SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::ScaleAndTransform (const Standard_Integer theScaleFactor,
-                                                                                      const gp_GTrsf& theTrsf)
+                                                                                      const gp_GTrsf& theTrsf,
+                                                                                      const Handle(SelectMgr_FrustumBuilder)& theBuilder) const
 {
   SelectMgr_SelectingVolumeManager aMgr (Standard_False);
 
@@ -52,10 +56,10 @@ SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::ScaleAndTrans
     return aMgr;
 
   aMgr.myActiveSelectionType = myActiveSelectionType;
-
   aMgr.mySelectingVolumes[myActiveSelectionType / 2]
     = mySelectingVolumes[myActiveSelectionType / 2]->ScaleAndTransform (theScaleFactor, theTrsf);
   aMgr.myToAllowOverlap = myToAllowOverlap;
+  aMgr.mySelectingVolumes[myActiveSelectionType / 2]->SetBuilder (theBuilder);
 
   return aMgr;
 }
@@ -141,7 +145,7 @@ const Graphic3d_WorldViewProjState& SelectMgr_SelectingVolumeManager::WorldViewP
 // function : WindowSize
 // purpose  :
 //=======================================================================
-void SelectMgr_SelectingVolumeManager::WindowSize (Standard_Integer& theWidth, Standard_Integer& theHeight)
+void SelectMgr_SelectingVolumeManager::WindowSize (Standard_Integer& theWidth, Standard_Integer& theHeight) const
 {
   mySelectingVolumes[Frustum]->WindowSize (theWidth, theHeight);
 }

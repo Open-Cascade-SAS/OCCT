@@ -119,7 +119,7 @@ void SelectMgr_FrustumBuilder::SetViewport (const Standard_Real theX,
 // purpose  :
 //=======================================================================
 void SelectMgr_FrustumBuilder::WindowSize (Standard_Integer& theWidth,
-                                           Standard_Integer& theHeight)
+                                           Standard_Integer& theHeight) const
 {
   theWidth = myWidth;
   theHeight = myHeight;

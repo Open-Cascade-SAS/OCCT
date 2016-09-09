@@ -124,7 +124,7 @@ void SelectMgr_BaseFrustum::SetWindowSize (const Standard_Integer theWidth, cons
 // purpose  :
 //=======================================================================
 void SelectMgr_BaseFrustum::WindowSize (Standard_Integer& theWidth,
-                                        Standard_Integer& theHeight)
+                                        Standard_Integer& theHeight) const
 {
   myBuilder->WindowSize (theWidth, theHeight);
 }

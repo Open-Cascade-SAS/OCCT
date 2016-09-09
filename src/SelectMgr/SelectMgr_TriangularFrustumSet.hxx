@@ -47,8 +47,8 @@ public:
   Standard_EXPORT virtual void Build (const TColgp_Array1OfPnt2d& thePoints) Standard_OVERRIDE;
 
   //! Returns a copy of the frustum with all sub-volumes transformed according to the matrix given
-  Standard_EXPORT virtual NCollection_Handle<SelectMgr_BaseFrustum> ScaleAndTransform (const Standard_Integer theScale,
-                                                                                       const gp_GTrsf& theTrsf) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(SelectMgr_BaseFrustum) ScaleAndTransform (const Standard_Integer theScale,
+                                                                           const gp_GTrsf& theTrsf) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPnt,
                                                      const SelectMgr_Vec3& theMaxPnt,

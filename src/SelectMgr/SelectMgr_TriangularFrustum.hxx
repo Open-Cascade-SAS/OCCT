@@ -40,8 +40,8 @@ public:
                                       const gp_Pnt2d& theP3) Standard_OVERRIDE;
 
   //! Returns a copy of the frustum transformed according to the matrix given
-  Standard_EXPORT virtual NCollection_Handle<SelectMgr_BaseFrustum> ScaleAndTransform (const Standard_Integer theScale,
-                                                                                       const gp_GTrsf& theTrsf) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(SelectMgr_BaseFrustum) ScaleAndTransform (const Standard_Integer theScale,
+                                                                           const gp_GTrsf& theTrsf) const Standard_OVERRIDE;
 
   // SAT Tests for different objects
 
@@ -86,7 +86,7 @@ public:
 
 private:
 
-  void cacheVertexProjections (SelectMgr_TriangularFrustum* theFrustum);
+  void cacheVertexProjections (SelectMgr_TriangularFrustum* theFrustum) const;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_TriangularFrustum,Standard_Transient)
 };

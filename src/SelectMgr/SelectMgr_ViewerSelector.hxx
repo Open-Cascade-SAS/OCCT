@@ -28,7 +28,6 @@
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_SelectableObjectSet.hxx>
-#include <SelectMgr_SelectableObjectTrsfPersSet.hxx>
 #include <SelectMgr_StateOfSelection.hxx>
 #include <SelectMgr_ToleranceMap.hxx>
 #include <Standard_OStream.hxx>
@@ -248,10 +247,20 @@ protected:
   //! @return True if owner provides depth limits for sensitive clipping.
   Standard_EXPORT virtual Standard_Boolean HasDepthClipping (const Handle(SelectMgr_EntityOwner)& theOwner) const;
 
-  //! Internal function that checks if there is possible overlap
-  //! between some entity of selectable object theObject and
-  //! current selecting volume
-  Standard_EXPORT void traverseObject (const Handle(SelectMgr_SelectableObject)& theObject);
+  //! Internal function that checks if there is possible overlap between some entity of selectable object theObject and
+  //! current selecting volume.
+  //! @param theObject [in] the selectable object for traversal.
+  //! @param theMgr [in] the (un)transformed copy of the selecting volume manager representing active selection frustum.
+  //! @param theCamera, theProjectionMat, theWorldViewMat [in] the source camera and matrices for theMgr given.
+  //! @param theViewportWidth, theViewportHeight [in] viewport (window) dimensions for evaluating 
+  //!        object's transformation persistence.
+  Standard_EXPORT void traverseObject (const Handle(SelectMgr_SelectableObject)& theObject,
+                                       const SelectMgr_SelectingVolumeManager& theMgr,
+                                       const Handle(Graphic3d_Camera)& theCamera,
+                                       const Graphic3d_Mat4d& theProjectionMat,
+                                       const Graphic3d_Mat4d& theWorldViewMat,
+                                       const Standard_Integer theViewportWidth,
+                                       const Standard_Integer theViewportHeight);
 
   //! Internal function that checks if a particular sensitive
   //! entity theEntity overlaps current selecting volume precisely
@@ -279,6 +288,7 @@ private:
   //! needs to be scaled and transformed for the entity and performs
   //! necessary calculations
   void computeFrustum (const Handle(SelectBasics_SensitiveEntity)& theEnt,
+                       const SelectMgr_SelectingVolumeManager&     theMgr,
                        const gp_GTrsf&                             theInvTrsf,
                        SelectMgr_FrustumCache&                     theCachedMgrs,
                        SelectMgr_SelectingVolumeManager&           theResMgr);
@@ -307,7 +317,6 @@ protected:
   SelectMgr_IndexedDataMapOfOwnerCriterion      mystored;
   SelectMgr_SelectingVolumeManager              mySelectingVolumeMgr;
   mutable SelectMgr_SelectableObjectSet         mySelectableObjects;
-  mutable SelectMgr_SelectableObjectTrsfPersSet mySelectableObjectsTrsfPers;
   SelectMgr_ToleranceMap                        myTolerances;
   NCollection_DataMap<Graphic3d_ZLayerId, Standard_Integer> myZLayerOrderMap;
 

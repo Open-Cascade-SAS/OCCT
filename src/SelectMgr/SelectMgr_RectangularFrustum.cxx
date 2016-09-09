@@ -178,11 +178,11 @@ namespace
     // Top
     theNormals[0] = theEdges[0].Crossed (theEdges[4]);
     // Bottom
-    theNormals[1] = theEdges[2].Crossed (theEdges[3]);
+    theNormals[1] = theEdges[2].Crossed (theEdges[0]);
     // Left
     theNormals[2] = theEdges[4].Crossed (theEdges[1]);
     // Right
-    theNormals[3] = theEdges[5].Crossed (theEdges[3]);
+    theNormals[3] = theEdges[1].Crossed (theEdges[5]);
     // Near
     theNormals[4] = theEdges[0].Crossed (theEdges[1]);
     // Far
@@ -195,7 +195,7 @@ namespace
 // purpose  : Caches projection of frustum's vertices onto its plane directions
 //            and {i, j, k}
 // =======================================================================
-void SelectMgr_RectangularFrustum::cacheVertexProjections (SelectMgr_RectangularFrustum* theFrustum)
+void SelectMgr_RectangularFrustum::cacheVertexProjections (SelectMgr_RectangularFrustum* theFrustum) const
 {
   if (theFrustum->myIsOrthographic)
   {
@@ -322,13 +322,13 @@ void SelectMgr_RectangularFrustum::Build (const gp_Pnt2d& theMinPnt,
 //                  as any negative value;
 //                - scale only is needed: @theTrsf must be set to gp_Identity.
 // =======================================================================
-NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_RectangularFrustum::ScaleAndTransform (const Standard_Integer theScaleFactor,
-                                                                                           const gp_GTrsf& theTrsf)
+Handle(SelectMgr_BaseFrustum) SelectMgr_RectangularFrustum::ScaleAndTransform (const Standard_Integer theScaleFactor,
+                                                                               const gp_GTrsf& theTrsf) const
 {
   Standard_ASSERT_RAISE (theScaleFactor > 0,
     "Error! Pixel tolerance for selection should be greater than zero");
 
-  SelectMgr_RectangularFrustum* aRes = new SelectMgr_RectangularFrustum();
+  Handle(SelectMgr_RectangularFrustum) aRes = new SelectMgr_RectangularFrustum();
   const Standard_Boolean isToScale = theScaleFactor != 1;
   const Standard_Boolean isToTrsf  = theTrsf.Form() != gp_Identity;
 
@@ -336,7 +336,7 @@ NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_RectangularFrustum::ScaleAnd
     return aRes;
 
   aRes->myIsOrthographic = myIsOrthographic;
-  SelectMgr_RectangularFrustum* aRef = this;
+  const SelectMgr_RectangularFrustum* aRef = this;
 
   if (isToScale)
   {
@@ -352,7 +352,7 @@ NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_RectangularFrustum::ScaleAnd
     // recompute base frustum characteristics from scratch
     computeFrustum (aMinPnt, aMaxPnt, myBuilder, aRes->myVertices, aRes->myEdgeDirs);
 
-    aRef = aRes;
+    aRef = aRes.get();
   }
 
   if (isToTrsf)
@@ -396,11 +396,12 @@ NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_RectangularFrustum::ScaleAnd
   // compute frustum normals
   computeNormals (aRes->myEdgeDirs, aRes->myPlanes);
 
-  cacheVertexProjections (aRes);
+  cacheVertexProjections (aRes.get());
 
   aRes->myViewClipRange = myViewClipRange;
+  aRes->myMousePos      = myMousePos;
 
-  return NCollection_Handle<SelectMgr_BaseFrustum> (aRes);
+  return aRes;
 }
 
 // =======================================================================

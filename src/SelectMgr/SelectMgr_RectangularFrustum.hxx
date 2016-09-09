@@ -50,8 +50,8 @@ public:
   //! There are no default parameters, but in case if:
   //!    - transformation only is needed: @theScaleFactor must be initialized as any negative value;
   //!    - scale only is needed: @theTrsf must be set to gp_Identity.
-  Standard_EXPORT virtual NCollection_Handle<SelectMgr_BaseFrustum> ScaleAndTransform (const Standard_Integer theScaleFactor,
-                                                                                       const gp_GTrsf& theTrsf) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(SelectMgr_BaseFrustum) ScaleAndTransform (const Standard_Integer theScaleFactor,
+                                                                           const gp_GTrsf& theTrsf) const Standard_OVERRIDE;
 
 
   // SAT Tests for different objects
@@ -143,7 +143,7 @@ protected:
 
 private:
 
-  void cacheVertexProjections (SelectMgr_RectangularFrustum* theFrustum);
+  void cacheVertexProjections (SelectMgr_RectangularFrustum* theFrustum) const;
 
 private:
   enum { LeftTopNear, LeftTopFar,

@@ -183,9 +183,11 @@ void StdSelect_ViewerSelector3d::Pick (const TColgp_Array1OfPnt2d& thePolyline,
 //=======================================================================
 void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(V3d_View)& theView)
 {
-  for (Standard_Integer anObjectIdx = 0; anObjectIdx <= mySelectableObjects.Size(); ++anObjectIdx)
+  SelectMgr_SelectableObjectSet::Iterator aSelectableIt (mySelectableObjects);
+
+  for (; aSelectableIt.More(); aSelectableIt.Next())
   {
-    const Handle (SelectMgr_SelectableObject)& anObj = mySelectableObjects.GetObjectById (anObjectIdx);
+    const Handle (SelectMgr_SelectableObject)& anObj = aSelectableIt.Value();
 
     Handle(Graphic3d_Structure) aStruct = new Graphic3d_Structure (theView->Viewer()->StructureManager());
 
@@ -194,28 +196,6 @@ void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(V3d_View)& theVi
       if (anObj->CurrentSelection()->GetSelectionState() == SelectMgr_SOS_Activated)
       {
         computeSensitivePrs (aStruct, anObj->CurrentSelection(), anObj->Transformation(), Graphic3d_TransformPers());
-      }
-    }
-
-    myStructs.Append (aStruct);
-  }
-
-  for (Standard_Integer anObjectIdx = 0; anObjectIdx <= mySelectableObjectsTrsfPers.Size(); ++anObjectIdx)
-  {
-    const Handle (SelectMgr_SelectableObject)& anObj = mySelectableObjectsTrsfPers.GetObjectById (anObjectIdx);
-
-    Handle(Graphic3d_Structure) aStruct = new Graphic3d_Structure (theView->Viewer()->StructureManager());
-
-    if (anObj->TransformPersistence().Flags == 0)
-    {
-      continue;
-    }
-
-    for (anObj->Init(); anObj->More(); anObj->Next())
-    {
-      if (anObj->CurrentSelection()->GetSelectionState() == SelectMgr_SOS_Activated)
-      {
-        computeSensitivePrs (aStruct, anObj->CurrentSelection(), anObj->Transformation(), anObj->TransformPersistence());
       }
     }
 

@@ -63,7 +63,7 @@ public:
   Standard_EXPORT void InvalidateViewport();
 
   Standard_EXPORT void WindowSize (Standard_Integer& theWidth,
-                                   Standard_Integer& theHeight);
+                                   Standard_Integer& theHeight) const;
 
   //! Calculates signed distance between plane with equation
   //! theEq and point thePnt
