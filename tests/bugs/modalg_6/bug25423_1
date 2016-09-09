@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC25423"
+puts "============"
+puts ""
+######################################################
+# Incorrect result of splitting some shapes. Case 1
+######################################################
+
+restore [locate_data_file bug25423a.brep] f
+
+restore [locate_data_file bug25423b.brep] e 
+
+checkshape f
+
+checkshape e
+
+splitshape result f f e
+
+checkshape result
+
+maxtolerance result
+
+
+checknbshapes result -face 2
+
+checkprops result -s 16.918
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
