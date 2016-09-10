@@ -158,10 +158,5 @@ set (USE_D3D_DESCR "Indicates whether optional Direct3D wrapper in OCCT visualiz
 
 macro (BUILD_MODULE MODULE_NAME)
   set (ENABLE_MODULE TRUE)
-  set (OCCT_MODULES_FOR_UWP FoundationClasses ModelingAlgorithms ModelingData DataExchange Visualization)
-  list (FIND OCCT_MODULES_FOR_UWP ${OCCT_MODULE} CAN_BE_USED_IN_UWP)
-  if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore" AND CAN_BE_USED_IN_UWP EQUAL -1)
-    set (ENABLE_MODULE FALSE)
-  endif()
   set (BUILD_MODULE_${MODULE_NAME} ${ENABLE_MODULE} CACHE BOOL "${BUILD_MODULE_${MODULE_NAME}_DESCR}")
 endmacro()

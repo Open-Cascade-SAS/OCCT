@@ -340,6 +340,10 @@ if (ANDROID AND BUILD_MODULE_Draw)
   message (STATUS "Info. Draw module is turned off due to it is not supported on Android")
   set (BUILD_MODULE_Draw OFF CACHE BOOL "${BUILD_MODULE_Draw_DESCR}" FORCE)
 endif()
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore" AND BUILD_MODULE_Draw)
+  message (STATUS "Info. Draw module is turned off due to it is not supported on UWP")
+  set (BUILD_MODULE_Draw OFF CACHE BOOL "${BUILD_MODULE_Draw_DESCR}" FORCE)
+endif()
 
 # Overview
 if (NOT DEFINED BUILD_DOC_Overview)
