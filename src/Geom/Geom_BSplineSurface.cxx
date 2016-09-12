@@ -1099,8 +1099,11 @@ void Geom_BSplineSurface::SetVKnot
     } 
   }
   
-  maxderivinvok = 0;
-  UpdateVKnots();
+  if (K != vknots->Value (NewIndex)) {
+    vknots->SetValue (NewIndex, K);
+    maxderivinvok = 0;
+    UpdateVKnots();
+  }
 }
 
 //=======================================================================
