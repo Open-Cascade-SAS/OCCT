@@ -2606,11 +2606,12 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
     B.MakeCompound(Comp);
     for (isec=1; isec <=  NbLaw+1; isec++) 
       for (ipath=1, IPath=IFirst; ipath<=  NbPath+1; ipath++, IPath++) {
-      if (ipath <= NbPath) myUEdges->SetValue(isec, IPath, UEdge(isec, ipath));
-      if (isec <= NbLaw) myVEdges->SetValue(isec, IPath, VEdge(isec, ipath)); 
-      if ((ipath <= NbPath) && (isec <= NbLaw) && 
-	  (myFaces->Value(isec, IPath).ShapeType() == TopAbs_FACE))
-	B.Add(Comp, myFaces->Value(isec, IPath));
+        if (ipath <= NbPath) myUEdges->SetValue(isec, IPath, UEdge(isec, ipath));
+        if (isec <= NbLaw) myVEdges->SetValue(isec, IPath, VEdge(isec, ipath)); 
+        if ((ipath <= NbPath) && (isec <= NbLaw) && 
+            !myFaces->Value(isec, IPath).IsNull() &&
+            myFaces->Value(isec, IPath).ShapeType() == TopAbs_FACE)
+          B.Add(Comp, myFaces->Value(isec, IPath));
     }
     BRepLib::EncodeRegularity(Comp, myTolAngular);
   }
