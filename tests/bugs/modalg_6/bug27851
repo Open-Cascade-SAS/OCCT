@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC27851"
+puts "============"
+puts ""
+############################################################################
+# Wrong result of classification of the point relative to the solid
+############################################################################
+
+restore [locate_data_file bug27851_shape.brep] s
+
+point p1 249.16536718159901 0.22123613283038124 5.3100000000000005
+point p2 249.16536718159901 0.22123613283038124 6.1800000000000006
+
+set cls1 [bclassify s p1]
+set cls2 [bclassify s p2]
+
+if { [regexp {IN} $cls1] } {
+    puts "OK : Good result of classification of a point p1 relative to solid"
+} else {
+    puts "Error : Wrong result of classification of a point p1 relative to solid"
+}
+
+if { [regexp {IN} $cls2] } {
+    puts "OK : Good result of classification of a point p2 relative to solid"
+} else {
+    puts "Error : Wrong result of classification of a point p2 relative to solid"
+}
