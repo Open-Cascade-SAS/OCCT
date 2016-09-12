@@ -1070,9 +1070,8 @@ Standard_Boolean ShapeAnalysis_Curve::GetSamplePoints (const Handle(Geom_Curve)&
 
   GeomAdaptor_Curve GAC(curve);
   Standard_Real step = ( last - first ) / (Standard_Real)( nbp - 1 );
-  Standard_Real par = first, stop = last - 0.5 * step;
-  for ( ; par < stop; par += step )
-    seq.Append(GAC.Value(par));
+  for (Standard_Integer i = 0; i < nbp - 1; ++i)
+    seq.Append(GAC.Value(first + step * i));
   seq.Append(GAC.Value(last));
   return Standard_True;
 }
@@ -1093,9 +1092,8 @@ Standard_Boolean ShapeAnalysis_Curve::GetSamplePoints (const Handle(Geom2d_Curve
   //-- Attention aux bsplines rationnelles de degree 3. (bouts de cercles entre autres)
   if (nbs > 2) nbs*=4;
   Standard_Real step = ( last - first ) / (Standard_Real)( nbs - 1 );
-  Standard_Real par = first, stop = last - 0.5 * step;
-  for ( ; par < stop; par += step )
-    seq.Append(C.Value(par));
+  for (Standard_Integer i = 0; i < nbs - 1; ++i)
+    seq.Append(C.Value(first + step * i));
   seq.Append(C.Value(last));
   return Standard_True;
 /*
