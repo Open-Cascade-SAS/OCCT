@@ -62,8 +62,6 @@ OSD_Path.hxx
 OSD_PerfMeter.cxx
 OSD_PerfMeter.h
 OSD_PerfMeter.hxx
-OSD_Printer.cxx
-OSD_Printer.hxx
 OSD_Process.cxx
 OSD_Process.hxx
 OSD_Protection.cxx

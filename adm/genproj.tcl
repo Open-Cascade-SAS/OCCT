@@ -1109,7 +1109,6 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
     if { "$::HAVE_GLES2" == "true" } {
       set aLibsMap(CSF_OpenGlLibs) "libEGL libGLESv2"
     }
-    set aLibsMap(CSF_winspool)     "Winspool"
     set aLibsMap(CSF_psapi)        "Psapi"
     set aLibsMap(CSF_d3d9)         "d3d9"
 

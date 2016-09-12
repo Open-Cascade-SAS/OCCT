@@ -34,7 +34,6 @@ class OSD_FileIterator;
 class OSD_Directory;
 class OSD_DirectoryIterator;
 class OSD_Timer;
-class OSD_Printer;
 class OSD_Host;
 class OSD_Environment;
 class OSD_EnvironmentIterator;

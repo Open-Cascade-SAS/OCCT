@@ -33,7 +33,6 @@ OSD_WDisk,
 OSD_WChronometer,
 OSD_WTimer,
 OSD_WPackage,
-OSD_WPrinter,
 OSD_WEnvironmentIterator
 };
 

@@ -5,5 +5,4 @@ CSF_user32
 CSF_TBB
 CSF_dl
 CSF_wsock32
-CSF_winspool
 CSF_psapi

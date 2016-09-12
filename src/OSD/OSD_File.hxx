@@ -34,7 +34,6 @@ class Standard_ProgramError;
 class OSD_Path;
 class OSD_Protection;
 class TCollection_AsciiString;
-class OSD_Printer;
 
 
 //! Basic tools to manage files
@@ -158,10 +157,7 @@ public:
   
   //! Returns actual number of bytes of <me>.
   Standard_EXPORT Standard_Size Size();
-  
-  //! Prints a file on selected printer.
-  Standard_EXPORT void Print (const OSD_Printer& WhichPrinter);
-  
+
   //! Returns TRUE if <me> is open.
   Standard_EXPORT Standard_Boolean IsOpen() const;
   

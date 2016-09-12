@@ -23,7 +23,6 @@
 #include <OSD_FromWhere.hxx>
 #include <OSD_OSDError.hxx>
 #include <OSD_Path.hxx>
-#include <OSD_Printer.hxx>
 #include <OSD_Protection.hxx>
 #include <OSD_WhoAmI.hxx>
 #include <Standard_PCharacter.hxx>
@@ -725,33 +724,6 @@ Standard_Size  OSD_File::Size(){
  return (Standard_Size)buffer.st_size;
 }
 
-
-// -------------------------------------------------------------------------- 
-// Print contains of a file
-// -------------------------------------------------------------------------- 
-
-void OSD_File::Print (const OSD_Printer &WhichPrinter ){
-char buffer[255];
-TCollection_AsciiString PrinterName;
-
- if (myPath.Name().Length()==0)
-   Standard_ProgramError::Raise("OSD_File::Print : empty file name");
-
- WhichPrinter.Name(PrinterName);
-
- TCollection_AsciiString aBuffer;
- myPath.SystemName ( aBuffer );
-
- if (PrinterName.Length()==0)
-   sprintf(buffer,"lp %s",aBuffer.ToCString());
- else
-   sprintf(buffer,"lpr -P%s %s",PrinterName.ToCString(),aBuffer.ToCString());
-
- if (system(buffer) != 0)
-   Standard_ProgramError::Raise("OSD_File::Print : No output device was available, or an error occurred");
-}
-
-
 // -------------------------------------------------------------------------- 
 // Test if a file is open
 // -------------------------------------------------------------------------- 
@@ -825,7 +797,6 @@ void OSD_File::Rewind() {
 
 #include <OSD_File.hxx>
 #include <OSD_Protection.hxx>
-#include <OSD_Printer.hxx>
 #include <Standard_ProgramError.hxx>
 
 #include <OSD_WNT_1.hxx>
@@ -835,19 +806,10 @@ void OSD_File::Rewind() {
 #include <Standard_PCharacter.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-#ifndef _INC_TCHAR
-# include <tchar.h>
-#endif  // _INC_TCHAR
-
 #include <Strsafe.h>
 
 #if defined(__CYGWIN32__) || defined(__MINGW32__)
 #define VAC
-#endif
-
-#if defined(_MSC_VER)
-  #pragma comment( lib, "WSOCK32.LIB"  )
-  #pragma comment( lib, "WINSPOOL.LIB" )
 #endif
 
 #define ACE_HEADER_SIZE (  sizeof ( ACCESS_ALLOWED_ACE ) - sizeof ( DWORD )  )
@@ -865,7 +827,6 @@ PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd ( const OSD_Protection
 BOOL                 __fastcall _osd_wnt_sd_to_protection (
                                  PSECURITY_DESCRIPTOR, OSD_Protection&, BOOL
                                 );
-BOOL                 __fastcall _osd_print (const Standard_PCharacter, const wchar_t* );
 static int       __fastcall _get_buffer(HANDLE, Standard_PCharacter&, DWORD, BOOL, BOOL);
 #endif
 static void      __fastcall _test_raise ( HANDLE, Standard_CString );
@@ -1674,29 +1635,6 @@ Standard_Size OSD_File::Size()
 #endif
 }
 
-// -------------------------------------------------------------------------- 
-// Print contains of a file
-// -------------------------------------------------------------------------- 
-void OSD_File :: Print ( const OSD_Printer& WhichPrinter) {
-#ifndef OCCT_UWP
- if (myFileHandle != INVALID_HANDLE_VALUE)
-
-  RAISE(  "OSD_File :: Print (): incorrect call - file opened"  );
-
- TCollection_AsciiString pName, fName;
-
- WhichPrinter.Name ( pName );
- myPath.SystemName ( fName );
- TCollection_ExtendedString fNameW(fName);
-
- if (   !_osd_print ( (Standard_PCharacter)pName.ToCString (),
-                      (const wchar_t*)fNameW.ToExtString ()  )   )
-
-  _osd_wnt_set_error ( myError, OSD_WFile );
-#else
-  (void)WhichPrinter;
-#endif
-}  // end OSD_File :: Print
 // -------------------------------------------------------------------------- 
 // Test if a file is open
 // -------------------------------------------------------------------------- 
@@ -2769,99 +2707,6 @@ static OSD_SingleProtection __fastcall _get_protection_dir ( DWORD mask ) {
  return retVal;
 
 }  // end _get_protection_dir
-#endif
-
-#if defined(__CYGWIN32__) || defined(__MINGW32__)
-#define __try
-#define __finally
-#define __leave return fOK
-#endif
-
-#ifndef OCCT_UWP
-BOOL __fastcall _osd_print (const Standard_PCharacter pName, const wchar_t* fName ) {
-
- BOOL   fOK, fJob;                
- HANDLE hPrinter = NULL;
- BYTE   jobInfo[ MAX_PATH + sizeof ( DWORD ) ];
- DWORD  dwNeeded, dwCode = 0;
-
- fOK = fJob = FALSE;
-
- __try {
- 
-  if (  !OpenPrinter ( Standard_PCharacter(pName), &hPrinter, NULL )  ) {
-  
-   hPrinter = NULL;
-   __leave;
-  
-  }  // end if
-
-  if (   !AddJobW (
-           hPrinter, 1, jobInfo, MAX_PATH + sizeof ( DWORD ), &dwNeeded
-          )
-  ) __leave;
-
-  fJob = TRUE;
-
-  if (  !CopyFileW (
-          fName, (LPWSTR) (  ( ADDJOB_INFO_1* )jobInfo  ) -> Path, FALSE
-         )
-  ) __leave;
-
-  if (  !ScheduleJob (
-          hPrinter, (  ( ADDJOB_INFO_1* )jobInfo  ) -> JobId
-         )
-  ) __leave;
-  
-  fOK = TRUE;
- 
- }  // end __try
-
- __finally {
- 
-  if ( !fOK ) {
-  
-   BYTE  info[ 1024 ];
-   DWORD dwBytesNeeded;
-
-   dwCode = GetLastError ();
-
-   if ( fJob && hPrinter != NULL ) {
-
-    GetJob (
-     hPrinter, (  ( ADDJOB_INFO_1* )jobInfo  ) -> JobId, 1, 
-     info, 1024, &dwBytesNeeded
-    );
-
-    if ( fJob ) SetJob (
-                 hPrinter,
-                 (  ( ADDJOB_INFO_1* )jobInfo  ) -> JobId,
-                 1, info, JOB_CONTROL_CANCEL
-                );
-
-   }  // end if
-
-  }  // end if
-
-  if ( hPrinter != NULL ) ClosePrinter ( hPrinter );
- 
- }  // end __finally
-
-#ifdef VAC
-leave: ;       // added for VisualAge
-#endif
-
- if ( !fOK ) SetLastError ( dwCode );
-
- return fOK;
-                
-}  // end _osd_print
-#endif
-
-#if defined(__CYGWIN32__) || defined(__MINGW32__)
-#undef __try
-#undef __finally
-#undef __leave
 #endif
 
 Standard_Boolean OSD_File::IsReadable()
