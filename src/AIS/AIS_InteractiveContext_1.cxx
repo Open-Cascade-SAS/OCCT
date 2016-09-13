@@ -1200,9 +1200,13 @@ Standard_Boolean AIS_InteractiveContext::HasSelectedShape() const
   {
     return myLocalContexts(myCurLocalIndex)->HasSelectedShape();
   }
+  if (!mySelection->More())
+    return Standard_False;
 
-  Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (SelectedInteractive());
-  return !aShape.IsNull();
+  const Handle(StdSelect_BRepOwner) anOwner =
+    Handle(StdSelect_BRepOwner)::DownCast (mySelection->Value());
+
+  return !anOwner.IsNull() && anOwner->HasShape();
 }
 
 //=======================================================================
