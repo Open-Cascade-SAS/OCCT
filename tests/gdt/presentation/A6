@@ -1,10 +1,10 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-set filename bug27645_nist_ftc_06_asme1_ct5240_rd.stp
+set filename bug27808_nist_ftc_06_asme1_ct5240_rd.stp
 puts "TODO CR27235 ALL:Error : 4 differences with reference data found :"
 puts "TODO CR27235 ALL:Error on writing file"
 
 set ref_data {
-Centre of mass: 1.2441670631221204 66.716892937106863 -65.116654400171385
-Mass: 21888.331129713944
+Centre of mass: 4.9764239505863603 64.18438466729144 -67.058903377273126
+Mass: 24387.315415267363
 
 }

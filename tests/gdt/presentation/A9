@@ -1,8 +1,8 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-set filename bug27645_nist_ftc_08_asme1_ct5240_rc.stp
+set filename bug27808_nist_ftc_08_asme1_ct5240_rc.stp
 
 set ref_data {
-Centre of mass: 45.768141003733746 46.547197794287811 34.003050733925484
-Mass: 21424.556049917097
+Centre of mass: 44.537314289484314 44.054934745863214 33.295311157211145
+Mass: 22754.349304272349
 
 }

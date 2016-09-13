@@ -1,19 +1,20 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-set filename bug27645_nist_ftc_06_asme1_ct5240_rd.stp
+set filename bug27808_nist_ftc_06_asme1_ct5240_rd.stp
 puts "TODO CR26859 ALL:Error : 3 differences with reference data found :"
 puts "TODO CR26859 ALL:Error on writing file"
+
 set ref_data {
 
  NbOfDimensions          : 22
-  NbOfDimensionalSize    : 14
-  NbOfDimensionalLocation: 8
+  NbOfDimensionalSize    : 12
+  NbOfDimensionalLocation: 10
   NbOfAngular            : 0
   NbOfWithPath           : 0
- NbOfTolerances          : 21
+ NbOfTolerances          : 27
   NbOfGTWithModifiers    : 4
   NbOfGTWithMaxTolerance : 0
-  NbOfGTWithDatums       : 20
+  NbOfGTWithDatums       : 23
  NbOfDatumFeature        : 6
- NbOfAttachedDatum       : 46
+ NbOfAttachedDatum       : 54
  NbOfDatumTarget         : 0
 }

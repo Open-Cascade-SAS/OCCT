@@ -4,7 +4,7 @@ puts "TODO CR27235 ALL:Error : 4 differences with reference data found :"
 puts "TODO CR27235 ALL:Error on writing file"
 
 set ref_data {
-Centre of mass: 31.601843403303537 1694.6090806025425 -1653.9630217643687
-Mass: 555963.61069472972
+Centre of mass: 126.40116834489778 1630.2833705491985 -1703.2961457827012
+Mass: 619437.81154779939
 
 }

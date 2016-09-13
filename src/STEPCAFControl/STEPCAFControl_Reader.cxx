@@ -2604,6 +2604,10 @@ static void collectShapeAspect(const Handle(StepRepr_ShapeAspect)& theSA,
     if (!aSADR.IsNull())
       collectShapeAspect(aSADR->RelatedShapeAspect(), theWS, theSAs);
   }
+  else if (theSA->IsKind(STANDARD_TYPE(StepDimTol_DatumFeature))) {
+    theSAs.Append(theSA);
+    return;
+  }
   else {
     // Find all children Shape_Aspect
     Standard_Boolean isSimple = Standard_True;
@@ -2950,7 +2954,8 @@ static TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
       }
     }
   }
-  if(aSeqRI1.IsEmpty()) return aGDTL;
+  if(aSeqRI1.IsEmpty()) 
+    return aGDTL;
 
   TDF_LabelSequence aShLS1, aShLS2;
 
