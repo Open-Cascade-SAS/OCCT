@@ -309,10 +309,10 @@ public:
   }
 
   //! Returns list of clip planes set for the view.
-  virtual const Graphic3d_SequenceOfHClipPlane& ClipPlanes() const Standard_OVERRIDE { return myClipPlanes; }
+  virtual const Handle(Graphic3d_SequenceOfHClipPlane)& ClipPlanes() const Standard_OVERRIDE { return myClipPlanes; }
 
   //! Sets list of clip planes for the view.
-  virtual void SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes) Standard_OVERRIDE { myClipPlanes = thePlanes; }
+  virtual void SetClipPlanes (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes) Standard_OVERRIDE { myClipPlanes = thePlanes; }
 
   //! Fill in the dictionary with diagnostic info.
   //! Should be called within rendering thread.
@@ -481,7 +481,7 @@ protected:
   Graphic3d_TypeOfShadingModel    myShadingModel;
   Graphic3d_TypeOfBackfacingModel myBackfacing;
   Quantity_ColorRGBA              myBgColor;
-  Graphic3d_SequenceOfHClipPlane  myClipPlanes;
+  Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;
   Handle(Graphic3d_Camera)        myCamera;
   Handle(OpenGl_FrameBuffer)      myFBO;
   Standard_Boolean                myUseGLLight;

@@ -47,13 +47,13 @@ public:
   }
 
   //! @return associated clip planes
-  const Graphic3d_SequenceOfHClipPlane& ClipPlanes() const
+  const Handle(Graphic3d_SequenceOfHClipPlane)& ClipPlanes() const
   {
     return myClipPlanes;
   }
 
   //! Pass clip planes to the associated graphic driver structure
-  void SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes) { myClipPlanes = thePlanes; }
+  void SetClipPlanes (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes) { myClipPlanes = thePlanes; }
 
   //! @return bounding box of this presentation
   const Graphic3d_BndBox4f& BoundingBox() const
@@ -155,7 +155,7 @@ protected:
   Handle(Graphic3d_GraphicDriver) myGraphicDriver;
   Graphic3d_SequenceOfGroup       myGroups;
   Graphic3d_BndBox4f              myBndBox;
-  Graphic3d_SequenceOfHClipPlane  myClipPlanes;
+  Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;
 
 public:
 

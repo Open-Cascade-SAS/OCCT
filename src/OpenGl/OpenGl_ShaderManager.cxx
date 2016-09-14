@@ -767,30 +767,21 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
     return;
   }
 
-  GLint aPlanesNb = 0;
-  for (Graphic3d_SequenceOfHClipPlane::Iterator anIter (myContext->Clipping().Planes());
-       anIter.More(); anIter.Next())
-  {
-    const Handle(Graphic3d_ClipPlane)& aPlane = anIter.Value();
-    if (!myContext->Clipping().IsEnabled (aPlane))
-    {
-      continue;
-    }
-
-    ++aPlanesNb;
-  }
-  if (aPlanesNb < 1)
+  const GLint aNbPlanes = Min (myContext->Clipping().NbClippingOrCappingOn(), THE_MAX_CLIP_PLANES);
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_COUNT),
+                          aNbPlanes);
+  if (aNbPlanes < 1)
   {
     return;
   }
 
   OpenGl_Vec4 anEquations[THE_MAX_CLIP_PLANES];
   GLuint aPlaneId = 0;
-  for (Graphic3d_SequenceOfHClipPlane::Iterator anIter (myContext->Clipping().Planes());
-       anIter.More(); anIter.Next())
+  for (OpenGl_ClippingIterator aPlaneIter (myContext->Clipping()); aPlaneIter.More(); aPlaneIter.Next())
   {
-    const Handle(Graphic3d_ClipPlane)& aPlane = anIter.Value();
-    if (!myContext->Clipping().IsEnabled (aPlane))
+    const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIter.Value();
+    if (aPlaneIter.IsDisabled())
     {
       continue;
     }
@@ -810,9 +801,6 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
     ++aPlaneId;
   }
 
-  theProgram->SetUniform (myContext,
-                          theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_COUNT),
-                          aPlanesNb);
   theProgram->SetUniform (myContext, aLocEquations, THE_MAX_CLIP_PLANES, anEquations);
 }
 

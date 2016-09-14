@@ -172,7 +172,11 @@ public:
 
   //! Valid for point selection only!
   //! Computes depth range for global (defined for the whole view) clipping planes.
-  Standard_EXPORT void SetViewClipping (const Graphic3d_SequenceOfHClipPlane& thePlanes);
+  Standard_EXPORT void SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes);
+
+  //! Set if view clipping plane is enabled or not.
+  //! @return previous flag value
+  Standard_EXPORT Standard_Boolean SetViewClippingEnabled (const Standard_Boolean theToEnable);
 
   //! A set of helper functions that return rectangular selecting frustum data
   Standard_EXPORT const gp_Pnt* GetVertices() const;

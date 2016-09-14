@@ -4,7 +4,6 @@ PrsMgr_ModedPresentation.cxx
 PrsMgr_ModedPresentation.hxx
 PrsMgr_PresentableObject.cxx
 PrsMgr_PresentableObject.hxx
-PrsMgr_PresentableObject.lxx
 PrsMgr_PresentableObjectPointer.hxx
 PrsMgr_Presentation.cxx
 PrsMgr_Presentation.hxx

@@ -166,49 +166,68 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
                                              SelectMgr_SelectingVolumeManager& theMgr)
 {
   Handle(SelectMgr_EntityOwner) anOwner (Handle(SelectMgr_EntityOwner)::DownCast (theEntity->OwnerId()));
+  Handle(SelectMgr_SelectableObject) aSelectable;
+  Standard_Boolean toRestoresViewClipEnabled = Standard_False;
+  if (!anOwner.IsNull())
+  {
+    aSelectable = anOwner->Selectable();
+    if (aSelectable->TransformPersistence().Flags == Graphic3d_TMF_TriedronPers
+     || aSelectable->TransformPersistence().Flags == Graphic3d_TMF_2d
+     || (!aSelectable->ClipPlanes().IsNull() && aSelectable->ClipPlanes()->ToOverrideGlobal()))
+    {
+      theMgr.SetViewClippingEnabled (Standard_False);
+      toRestoresViewClipEnabled = Standard_True;
+    }
+  }
 
   SelectBasics_PickResult aPickResult;
-  if (theEntity->Matches (theMgr, aPickResult))
+  const Standard_Boolean isMatched = theEntity->Matches(theMgr, aPickResult);
+  if (toRestoresViewClipEnabled)
   {
-    if (!anOwner.IsNull())
+    theMgr.SetViewClippingEnabled (Standard_True);
+  }
+
+  if (!isMatched
+    || anOwner.IsNull())
+  {
+    return;
+  }
+
+  if (HasDepthClipping (anOwner)
+  &&  theMgr.GetActiveSelectionType() == SelectMgr_SelectingVolumeManager::Point)
+  {
+    Standard_Boolean isClipped = mySelectingVolumeMgr.IsClipped (*aSelectable->ClipPlanes(),
+                                                                  aPickResult.Depth());
+    if (isClipped)
+      return;
+  }
+
+  SelectMgr_SortCriterion aCriterion;
+  myZLayerOrderMap.Find (aSelectable->ZLayer(), aCriterion.ZLayerPosition);
+  aCriterion.Entity    = theEntity;
+  aCriterion.Priority  = anOwner->Priority();
+  aCriterion.Depth     = aPickResult.Depth();
+  aCriterion.MinDist   = aPickResult.DistToGeomCenter();
+  aCriterion.Tolerance = theEntity->SensitivityFactor() / 33.0;
+  aCriterion.ToPreferClosest = preferclosest;
+
+  const Standard_Integer aPrevStoredIndex = mystored.FindIndex (anOwner);
+  if (aPrevStoredIndex != 0)
+  {
+    if (theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Box)
     {
-      Handle(SelectMgr_SelectableObject) aSelectable = anOwner->Selectable();
-      if (HasDepthClipping (anOwner) && theMgr.GetActiveSelectionType() == SelectMgr_SelectingVolumeManager::Point)
-      {
-        Standard_Boolean isClipped = mySelectingVolumeMgr.IsClipped (aSelectable->GetClipPlanes(),
-                                                                     aPickResult.Depth());
-        if (isClipped)
-          return;
-      }
-
-      SelectMgr_SortCriterion aCriterion;
-      myZLayerOrderMap.Find (aSelectable->ZLayer(), aCriterion.ZLayerPosition);
-      aCriterion.Entity    = theEntity;
-      aCriterion.Priority  = anOwner->Priority();
-      aCriterion.Depth     = aPickResult.Depth();
-      aCriterion.MinDist   = aPickResult.DistToGeomCenter();
-      aCriterion.Tolerance = theEntity->SensitivityFactor() / 33.0;
-      aCriterion.ToPreferClosest = preferclosest;
-
-      const Standard_Integer aPrevStoredIndex = mystored.FindIndex (anOwner);
-      if (aPrevStoredIndex != 0)
-      {
-        if (theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Box)
-        {
-          SelectMgr_SortCriterion& aPrevCriterion = mystored.ChangeFromIndex (aPrevStoredIndex);
-          if (aCriterion > aPrevCriterion)
-          {
-            updatePoint3d (aCriterion, theInversedTrsf, theMgr);
-            aPrevCriterion = aCriterion;
-          }
-        }
-      }
-      else
+      SelectMgr_SortCriterion& aPrevCriterion = mystored.ChangeFromIndex (aPrevStoredIndex);
+      if (aCriterion > aPrevCriterion)
       {
         updatePoint3d (aCriterion, theInversedTrsf, theMgr);
-        mystored.Add (anOwner, aCriterion);
+        aPrevCriterion = aCriterion;
       }
     }
+  }
+  else
+  {
+    updatePoint3d (aCriterion, theInversedTrsf, theMgr);
+    mystored.Add (anOwner, aCriterion);
   }
 }
 

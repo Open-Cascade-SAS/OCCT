@@ -161,11 +161,11 @@ public:
   
   //! Changes a sequence of clip planes slicing the structure on rendering.
   //! @param thePlanes [in] the set of clip planes.
-  Standard_EXPORT void SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes);
+  Standard_EXPORT void SetClipPlanes (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes);
   
   //! Get clip planes slicing the structure on rendering.
   //! @return set of clip planes.
-  Standard_EXPORT const Graphic3d_SequenceOfHClipPlane& GetClipPlanes() const;
+  Standard_EXPORT const Handle(Graphic3d_SequenceOfHClipPlane)& ClipPlanes() const;
 
   //! Modifies the visibility indicator to Standard_True or
   //! Standard_False for the structure <me>.

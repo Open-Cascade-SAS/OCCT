@@ -456,10 +456,10 @@ public:
   virtual void SetLights (const Graphic3d_ListOfCLight& theLights) = 0;
 
   //! Returns list of clip planes set for the view.
-  virtual const Graphic3d_SequenceOfHClipPlane& ClipPlanes() const = 0;
+  virtual const Handle(Graphic3d_SequenceOfHClipPlane)& ClipPlanes() const = 0;
 
   //! Sets list of clip planes for the view.
-  virtual void SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes) = 0;
+  virtual void SetClipPlanes (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes) = 0;
 
   //! Fill in the dictionary with diagnostic info.
   //! Should be called within rendering thread.

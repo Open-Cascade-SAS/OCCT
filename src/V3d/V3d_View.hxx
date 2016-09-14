@@ -880,11 +880,18 @@ public:
   //! Graphic3d_GraphicDriver. Please be aware that the planes that
   //! exceed the limit are ignored during rendering.
   //! @param thePlanes [in] the clip planes to set.
-  Standard_EXPORT void SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes);
+  Standard_EXPORT void SetClipPlanes (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes);
+
+  Standard_DEPRECATED("This method is deprecated - overload taking Handle should be used instead")
+  void SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes)
+  {
+    Handle(Graphic3d_SequenceOfHClipPlane) aPlanes = new Graphic3d_SequenceOfHClipPlane (thePlanes);
+    SetClipPlanes (aPlanes);
+  }
 
   //! Get clip planes.
   //! @return sequence clip planes that have been set for the view
-  Standard_EXPORT const Graphic3d_SequenceOfHClipPlane& GetClipPlanes() const;
+  Standard_EXPORT const Handle(Graphic3d_SequenceOfHClipPlane)& ClipPlanes() const;
 
   //! Returns the MAX number of clipping planes associated to the view.
   Standard_EXPORT Standard_Integer PlaneLimit() const;

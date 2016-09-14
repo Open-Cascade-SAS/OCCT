@@ -399,6 +399,7 @@ Handle(SelectMgr_BaseFrustum) SelectMgr_RectangularFrustum::ScaleAndTransform (c
   cacheVertexProjections (aRes.get());
 
   aRes->myViewClipRange = myViewClipRange;
+  aRes->myIsViewClipEnabled = myIsViewClipEnabled;
   aRes->myMousePos      = myMousePos;
 
   return aRes;
@@ -716,16 +717,17 @@ Standard_Boolean SelectMgr_RectangularFrustum::IsClipped (const Graphic3d_Sequen
 // function : SetViewClipping
 // purpose  :
 // =======================================================================
-void SelectMgr_RectangularFrustum::SetViewClipping (const Graphic3d_SequenceOfHClipPlane& thePlanes)
+void SelectMgr_RectangularFrustum::SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes)
 {
-  if (thePlanes.Size() == 0)
+  if (thePlanes.IsNull()
+   || thePlanes->IsEmpty())
   {
     myViewClipRange.Clear();
     return;
   }
 
   Standard_Real aMaxDepth, aMinDepth;
-  computeClippingRange (thePlanes, aMinDepth, aMaxDepth);
+  computeClippingRange (*thePlanes, aMinDepth, aMaxDepth);
   myViewClipRange.Set (aMinDepth, aMaxDepth);
 }
 
@@ -735,8 +737,11 @@ void SelectMgr_RectangularFrustum::SetViewClipping (const Graphic3d_SequenceOfHC
 // =======================================================================
 Standard_Boolean SelectMgr_RectangularFrustum::isViewClippingOk (const Standard_Real theDepth) const
 {
-  if (!myViewClipRange.IsValid())
+  if (!myViewClipRange.IsValid()
+   || !myIsViewClipEnabled)
+  {
     return Standard_True;
+  }
 
   return myViewClipRange.MaxDepth() > theDepth
     && myViewClipRange.MinDepth() < theDepth;

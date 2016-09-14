@@ -76,7 +76,7 @@ public:
   Standard_EXPORT PrsMgr_Presentations& Presentations();
 
   //! Returns information on whether the object accepts display in HLR mode or not.
-  PrsMgr_TypeOfPresentation3d TypeOfPresentation3d() const;
+  PrsMgr_TypeOfPresentation3d TypeOfPresentation3d() const { return myTypeOfPresentation3d; }
 
   //! Sets up Transform Persistence Mode for this object.
   //! This function used to lock in object position, rotation and / or zooming relative to camera position.
@@ -107,7 +107,7 @@ public:
   Standard_EXPORT gp_Pnt GetTransformPersistencePoint() const;
 
   //! @return transform persistence of the presentable object.
-  const Graphic3d_TransformPers& TransformPersistence() const;
+  const Graphic3d_TransformPers& TransformPersistence() const { return myTransformPersistence; }
 
   Standard_EXPORT void SetTypeOfPresentation (const PrsMgr_TypeOfPresentation3d aType);
   
@@ -126,12 +126,12 @@ public:
   
   //! Returns true if object has a transformation that is different from the identity.
   Standard_EXPORT Standard_Boolean HasTransformation() const;
-  
-    const gp_Trsf& LocalTransformation() const;
-  
-    const gp_Trsf& Transformation() const;
-  
-    const gp_GTrsf& InversedTransformation() const;
+
+  const gp_Trsf& LocalTransformation() const { return myLocalTransformation; }
+
+  const gp_Trsf& Transformation() const { return myTransformation; }
+
+  const gp_GTrsf& InversedTransformation() const { return myInvTransformation; }
   
   //! resets local transformation to identity.
   Standard_EXPORT virtual void ResetTransformation();
@@ -162,25 +162,32 @@ public:
   Standard_EXPORT virtual void RemoveClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane);
   
   //! Set clip planes for graphical clipping for all display mode presentations.
-  //! The composition of clip planes truncates the rendering space to convex
-  //! volume. Please be aware that number of supported clip plane is limited.
-  //! The planes which exceed the limit are ignored. Besides of this, some
-  //! planes can be already set in view where the object is shown: the number
-  //! of these planes should be substracted from limit to predict the maximum
+  //! The composition of clip planes truncates the rendering space to convex volume.
+  //! Please be aware that number of supported clip plane is limited.
+  //! The planes which exceed the limit are ignored.
+  //! Besides of this, some planes can be already set in view where the object is shown:
+  //! the number of these planes should be subtracted from limit to predict the maximum
   //! possible number of object clipping planes.
-  Standard_EXPORT virtual void SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes);
-  
+  Standard_EXPORT virtual void SetClipPlanes (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes);
+
+  Standard_DEPRECATED("This method is deprecated - overload taking Handle should be used instead")
+  void SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes)
+  {
+    Handle(Graphic3d_SequenceOfHClipPlane) aPlanes = new Graphic3d_SequenceOfHClipPlane (thePlanes);
+    SetClipPlanes (aPlanes);
+  }
+
   //! Get clip planes.
   //! @return set of previously added clip planes for all display mode presentations.
-    const Graphic3d_SequenceOfHClipPlane& GetClipPlanes() const;
-  
+  const Handle(Graphic3d_SequenceOfHClipPlane)& ClipPlanes() const { return myClipPlanes; }
+
   //! Sets if the object has mutable nature (content or location will be changed regularly).
   //! This method should be called before object displaying to take effect.
   Standard_EXPORT virtual void SetMutable (const Standard_Boolean theIsMutable);
   
   //! Returns true if object has mutable nature (content or location are be changed regularly).
   //! Mutable object will be managed in different way than static onces (another optimizations).
-  Standard_EXPORT Standard_Boolean IsMutable() const;
+  Standard_Boolean IsMutable() const { return myIsMutable; }
   
   //! Makes theObject child of current object in scene hierarchy.
   Standard_EXPORT virtual void AddChild (const Handle(PrsMgr_PresentableObject)& theObject);
@@ -189,13 +196,13 @@ public:
   Standard_EXPORT virtual void RemoveChild (const Handle(PrsMgr_PresentableObject)& theObject);
   
   //! Returns children of the current object.
-  const PrsMgr_ListOfPresentableObjects& Children() const;
+  const PrsMgr_ListOfPresentableObjects& Children() const { return myChildren; }
 
   //! Returns true if object should have own presentations.
-  Standard_Boolean HasOwnPresentations() const;
+  Standard_Boolean HasOwnPresentations() const { return myHasOwnPresentations; }
 
   //! Returns parent of current object in scene hierarchy.
-  PrsMgr_PresentableObjectPointer Parent() const;
+  PrsMgr_PresentableObjectPointer Parent() const { return myParent; }
 
 
 friend class PrsMgr_Presentation;
@@ -271,16 +278,16 @@ Standard_EXPORT virtual ~PrsMgr_PresentableObject();
   //! implementation propagate clip planes to every presentation.
   Standard_EXPORT virtual void UpdateClipping();
 
+protected:
+
   PrsMgr_Presentations myPresentations;
   PrsMgr_TypeOfPresentation3d myTypeOfPresentation3d;
-  Graphic3d_SequenceOfHClipPlane myClipPlanes;
+  Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;
   Standard_Boolean myIsMutable;
   Graphic3d_ZLayerId myZLayer;
   Standard_Boolean myHasOwnPresentations;
 
-
 private:
-
 
   Graphic3d_TransformPers myTransformPersistence;
   PrsMgr_PresentableObjectPointer myParent;
@@ -290,14 +297,6 @@ private:
   gp_Trsf myCombinedParentTransform;
   PrsMgr_ListOfPresentableObjects myChildren;
 
-
 };
-
-
-#include <PrsMgr_PresentableObject.lxx>
-
-
-
-
 
 #endif // _PrsMgr_PresentableObject_HeaderFile

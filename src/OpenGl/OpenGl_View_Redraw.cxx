@@ -1087,25 +1087,10 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
   const Handle(OpenGl_Context)& aContext = myWorkspace->GetGlContext();
 
   // Specify clipping planes in view transformation space
-  aContext->ChangeClipping().RemoveAll (aContext);
-  if (!myClipPlanes.IsEmpty())
+  aContext->ChangeClipping().Reset (aContext, myClipPlanes);
+  if (!myClipPlanes.IsNull()
+   && !myClipPlanes->IsEmpty())
   {
-    Graphic3d_SequenceOfHClipPlane aUserPlanes;
-    Graphic3d_SequenceOfHClipPlane::Iterator aClippingIt (myClipPlanes);
-    for (; aClippingIt.More(); aClippingIt.Next())
-    {
-      const Handle(Graphic3d_ClipPlane)& aClipPlane = aClippingIt.Value();
-      if (aClipPlane->IsOn())
-      {
-        aUserPlanes.Append (aClipPlane);
-      }
-    }
-
-    if (!aUserPlanes.IsEmpty())
-    {
-      aContext->ChangeClipping().AddWorld (aContext, aUserPlanes);
-    }
-
     aContext->ShaderManager()->UpdateClippingState();
   }
 
@@ -1193,8 +1178,9 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
   // Apply restored view matrix.
   aContext->ApplyWorldViewMatrix();
 
-  aContext->ChangeClipping().RemoveAll (aContext);
-  if (!myClipPlanes.IsEmpty())
+  aContext->ChangeClipping().Reset (aContext, Handle(Graphic3d_SequenceOfHClipPlane)());
+  if (!myClipPlanes.IsNull()
+   && !myClipPlanes->IsEmpty())
   {
     aContext->ShaderManager()->RevertClippingState();
   }

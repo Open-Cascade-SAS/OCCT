@@ -167,7 +167,11 @@ public:
 
   //! Valid for point selection only!
   //! Computes depth range for global (defined for the whole view) clipping planes.
-  virtual void SetViewClipping (const Graphic3d_SequenceOfHClipPlane& /*thePlanes*/) {};
+  virtual void SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& /*thePlanes*/) {};
+
+  //! Set if view clipping plane is enabled or not.
+  //! @return previous value of the flag
+  virtual Standard_Boolean SetViewClippingEnabled (const Standard_Boolean /*theToEnable*/) { return Standard_False; }
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_BaseFrustum,Standard_Transient)
 

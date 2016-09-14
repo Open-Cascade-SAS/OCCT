@@ -422,7 +422,12 @@ Graphic3d_ZLayerId PrsMgr_PresentableObject::ZLayer() const
 void PrsMgr_PresentableObject::AddClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane)
 {
   // add to collection and process changes
-  myClipPlanes.Append (thePlane);
+  if (myClipPlanes.IsNull())
+  {
+    myClipPlanes = new Graphic3d_SequenceOfHClipPlane();
+  }
+
+  myClipPlanes->Append (thePlane);
   UpdateClipping();
 }
 
@@ -432,15 +437,19 @@ void PrsMgr_PresentableObject::AddClipPlane (const Handle(Graphic3d_ClipPlane)& 
 // =======================================================================
 void PrsMgr_PresentableObject::RemoveClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane)
 {
+  if (myClipPlanes.IsNull())
+  {
+    return;
+  }
+
   // remove from collection and process changes
-  Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (myClipPlanes);
-  for (; aPlaneIt.More(); aPlaneIt.Next())
+  for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (*myClipPlanes); aPlaneIt.More(); aPlaneIt.Next())
   {
     const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
     if (aPlane != thePlane)
       continue;
 
-    myClipPlanes.Remove (aPlaneIt);
+    myClipPlanes->Remove (aPlaneIt);
     UpdateClipping();
     return;
   }
@@ -450,7 +459,7 @@ void PrsMgr_PresentableObject::RemoveClipPlane (const Handle(Graphic3d_ClipPlane
 // function : SetClipPlanes
 // purpose  :
 // =======================================================================
-void PrsMgr_PresentableObject::SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes)
+void PrsMgr_PresentableObject::SetClipPlanes (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes)
 {
   // change collection and process changes
   myClipPlanes = thePlanes;
@@ -502,13 +511,4 @@ void PrsMgr_PresentableObject::SetMutable (const Standard_Boolean theIsMutable)
 
     aModedPrs.Presentation()->Presentation()->SetMutable (theIsMutable);
   }
-}
-
-// =======================================================================
-// function : IsMutable
-// purpose  :
-// =======================================================================
-Standard_Boolean PrsMgr_PresentableObject::IsMutable() const
-{
-  return myIsMutable;
 }

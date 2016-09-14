@@ -128,7 +128,7 @@ void StdSelect_ViewerSelector3d::Pick (const Standard_Integer theXPix,
   gp_Pnt2d aMousePos (static_cast<Standard_Real> (theXPix),
                       static_cast<Standard_Real> (theYPix));
   mySelectingVolumeMgr.BuildSelectingVolume (aMousePos);
-  mySelectingVolumeMgr.SetViewClipping (theView->GetClipPlanes());
+  mySelectingVolumeMgr.SetViewClipping (theView->ClipPlanes());
 
   TraverseSensitives();
 }
@@ -644,7 +644,8 @@ Standard_Boolean StdSelect_ViewerSelector3d::HasDepthClipping (const Handle(Sele
   }
 
   const Handle(SelectMgr_SelectableObject)& aSelectable = theOwner->Selectable();
-  return (aSelectable->GetClipPlanes().Size() > 0);
+  return !aSelectable->ClipPlanes().IsNull()
+      && !aSelectable->ClipPlanes()->IsEmpty();
 }
 
 //=======================================================================

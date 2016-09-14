@@ -185,8 +185,13 @@ Standard_Integer V3d_View::LightLimit() const
 //=======================================================================
 void V3d_View::AddClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane)
 {
-  Graphic3d_SequenceOfHClipPlane aSeqOfPlanes = GetClipPlanes();
-  aSeqOfPlanes.Append (thePlane);
+  Handle(Graphic3d_SequenceOfHClipPlane) aSeqOfPlanes = ClipPlanes();
+  if (aSeqOfPlanes.IsNull())
+  {
+    aSeqOfPlanes = new Graphic3d_SequenceOfHClipPlane();
+  }
+
+  aSeqOfPlanes->Append (thePlane);
   SetClipPlanes (aSeqOfPlanes);
 }
 
@@ -196,15 +201,19 @@ void V3d_View::AddClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane)
 //=======================================================================
 void V3d_View::RemoveClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane)
 {
-  Graphic3d_SequenceOfHClipPlane aSeqOfPlanes = GetClipPlanes();
-  Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (aSeqOfPlanes);
-  for (; aPlaneIt.More(); aPlaneIt.Next())
+  Handle(Graphic3d_SequenceOfHClipPlane) aSeqOfPlanes = ClipPlanes();
+  if (aSeqOfPlanes.IsNull())
+  {
+    return;
+  }
+
+  for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt(*aSeqOfPlanes); aPlaneIt.More(); aPlaneIt.Next())
   {
     const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
     if (aPlane != thePlane)
       continue;
 
-    aSeqOfPlanes.Remove (aPlaneIt);
+    aSeqOfPlanes->Remove (aPlaneIt);
     SetClipPlanes (aSeqOfPlanes);
     return;
   }
@@ -214,16 +223,16 @@ void V3d_View::RemoveClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane)
 //function : SetClipPlanes
 //purpose  :
 //=======================================================================
-void V3d_View::SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes)
+void V3d_View::SetClipPlanes (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes)
 {
   myView->SetClipPlanes (thePlanes);
 }
 
 //=======================================================================
-//function : GetClipPlanes
+//function : ClipPlanes
 //purpose  :
 //=======================================================================
-const Graphic3d_SequenceOfHClipPlane& V3d_View::GetClipPlanes() const
+const Handle(Graphic3d_SequenceOfHClipPlane)& V3d_View::ClipPlanes() const
 {
   return myView->ClipPlanes();
 }

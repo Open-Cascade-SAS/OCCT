@@ -465,10 +465,22 @@ gp_Pnt SelectMgr_SelectingVolumeManager::GetFarPickedPnt() const
 // function : SetViewClipping
 // purpose  :
 //=======================================================================
-void SelectMgr_SelectingVolumeManager::SetViewClipping (const Graphic3d_SequenceOfHClipPlane& thePlanes)
+void SelectMgr_SelectingVolumeManager::SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes)
 {
   if (myActiveSelectionType != Point)
     return;
 
   mySelectingVolumes[Frustum]->SetViewClipping (thePlanes);
+}
+
+//=======================================================================
+// function : SetViewClippingEnabled
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_SelectingVolumeManager::SetViewClippingEnabled (const Standard_Boolean theToEnable)
+{
+  if (myActiveSelectionType != Point)
+    return Standard_False;
+
+  return mySelectingVolumes[Frustum]->SetViewClippingEnabled (theToEnable);
 }

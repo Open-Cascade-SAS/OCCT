@@ -1595,7 +1595,7 @@ Graphic3d_ZLayerId Graphic3d_Structure::GetZLayer() const
 //function : SetClipPlanes
 //purpose  :
 //=======================================================================
-void Graphic3d_Structure::SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes)
+void Graphic3d_Structure::SetClipPlanes (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes)
 {
   myCStructure->SetClipPlanes (thePlanes);
 }
@@ -1604,7 +1604,7 @@ void Graphic3d_Structure::SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& t
 //function : GetClipPlanes
 //purpose  :
 //=======================================================================
-const Graphic3d_SequenceOfHClipPlane& Graphic3d_Structure::GetClipPlanes() const
+const Handle(Graphic3d_SequenceOfHClipPlane)& Graphic3d_Structure::ClipPlanes() const
 {
   return myCStructure->ClipPlanes();
 }

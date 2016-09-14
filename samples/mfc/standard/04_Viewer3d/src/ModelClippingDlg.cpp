@@ -121,13 +121,16 @@ BOOL CModelClippingDlg::OnInitDialog()
   {
     // register and activate clipping plane
     Standard_Boolean toAddPlane = Standard_True;
-    Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (myView->GetClipPlanes());
-    for (; aPlaneIt.More(); aPlaneIt.Next())
+    Handle(Graphic3d_SequenceOfHClipPlane) aPlanes = myView->ClipPlanes();
+    if (!aPlanes.IsNull())
     {
-      if (aPlaneIt.Value() == myClippingPlane)
+      for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (*aPlanes); aPlaneIt.More(); aPlaneIt.Next())
       {
-        toAddPlane = Standard_False;
-        break;
+        if (aPlaneIt.Value() == myClippingPlane)
+        {
+          toAddPlane = Standard_False;
+          break;
+        }
       }
     }
 
@@ -200,13 +203,16 @@ void CModelClippingDlg::OnCheckModelclippingonoff()
   {
     // register and activate clipping plane
     Standard_Boolean toAddPlane = Standard_True;
-    Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (myView->GetClipPlanes());
-    for (; aPlaneIt.More(); aPlaneIt.Next())
+    Handle(Graphic3d_SequenceOfHClipPlane) aPlanes = myView->ClipPlanes();
+    if (!aPlanes.IsNull())
     {
-      if (aPlaneIt.Value() == myClippingPlane)
+      for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (*aPlanes); aPlaneIt.More(); aPlaneIt.Next())
       {
-        toAddPlane = Standard_False;
-        break;
+        if (aPlaneIt.Value() == myClippingPlane)
+        {
+          toAddPlane = Standard_False;
+          break;
+        }
       }
     }
 
@@ -233,7 +239,7 @@ void CModelClippingDlg::OnCheckModelclippingonoff()
     EOL "if (...)"
     EOL "{"
     EOL "  // register and activate clipping plane"
-    EOL "  if (!myView->GetClipPlanes().Contains (myClippingPlane))"
+    EOL "  if (!myView->ClipPlanes()->Contains (myClippingPlane))"
     EOL "  {"
     EOL "    myView->AddClipPlane (myClippingPlane);"
     EOL "  }"

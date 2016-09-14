@@ -371,7 +371,7 @@ void PrsMgr_PresentationManager::displayImmediate (const Handle(V3d_Viewer)& the
         aShadowPrs = new Prs3d_PresentationShadow (myStructureManager, 
                                                    Handle(Prs3d_Presentation)::DownCast (aViewDepPrs));
         aShadowPrs->SetZLayer (aViewDepPrs->CStructure()->ZLayer());
-        aShadowPrs->SetClipPlanes (aViewDepPrs->GetClipPlanes());
+        aShadowPrs->SetClipPlanes (aViewDepPrs->ClipPlanes());
         aShadowPrs->CStructure()->IsForHighlight = 1;
         aShadowPrs->Highlight (Aspect_TOHM_COLOR, aPrs->HighlightColor());
         myViewDependentImmediateList.Append (aShadowPrs);
@@ -626,7 +626,7 @@ void PrsMgr_PresentationManager::Color (const Handle(PrsMgr_PresentableObject)& 
   {
     Handle(Prs3d_PresentationShadow) aShadow = new Prs3d_PresentationShadow (myStructureManager, aPrs->Presentation());
     aShadow->SetZLayer (theImmediateStructLayerId);
-    aShadow->SetClipPlanes (aPrs->Presentation()->GetClipPlanes());
+    aShadow->SetClipPlanes (aPrs->Presentation()->ClipPlanes());
     aShadow->CStructure()->IsForHighlight = 1;
     aShadow->Highlight (Aspect_TOHM_COLOR, theColor);
     AddToImmediateList (aShadow);
