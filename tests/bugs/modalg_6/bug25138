@@ -1,0 +1,35 @@
+puts "============"
+puts "OCC25138"
+puts "============"
+puts ""
+#######################################################
+# Incorrect result of Boolean Union by BRepAlgoAPI_Fuse
+#######################################################
+
+restore [locate_data_file bug25138a.brep] s
+mksweep s
+setsweep -CF
+restore [locate_data_file bug25138b.brep] p
+addsweep p
+buildsweep result -C
+
+checkshape result
+
+checkprops result -s 112902
+
+set nbshapes_expected "
+Number of shapes in result
+ VERTEX    : 6
+ EDGE      : 9
+ WIRE      : 3
+ FACE      : 3
+ SHELL     : 1
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 22
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "Result obtained by sweep operation"
+ 
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
