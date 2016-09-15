@@ -1,4 +1,3 @@
-
 puts "============"
 puts "OCC11856"
 puts "============"
@@ -13,7 +12,7 @@ stepread [locate_data_file OCC11856.stp] a *
 
 tpcompound result
 
-checkprops result -s 611185 -eps 0.1
+checkprops result -s 653034
 checkshape result
 checknbshapes result -vertex 684 -edge 1222 -wire 519 -face 512 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 2940
 checkview -display result -2d -path ${imagedir}/${test_image}.png

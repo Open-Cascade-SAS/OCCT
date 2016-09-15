@@ -1419,16 +1419,18 @@ static Standard_Integer OCC524 (Draw_Interpretor& di, Standard_Integer argc, con
 //=======================================================================
 static Standard_Integer OCC525(Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** /*argv*/)
 {
-  try
-  {
-    OCC_CATCH_SIGNALS
-    GeomPlate_BuildPlateSurface aBuilder;
-    aBuilder.Perform();
-  }
-  catch (Standard_RangeError) { di << "OCC525 Exception \n" ;return 0; }
-  //catch (...) { di << "OCC525 Exception \n" ;return 0; }
+  GeomPlate_BuildPlateSurface aBuilder;
+  aBuilder.Perform();
 
-  di << "OCC525 OK \n";
+  if (aBuilder.IsDone())
+  {
+    di << "Error in OCC525. Null result is expected.\n";
+  }
+  else
+  {
+    di << "OCC525 OK \n";
+  }
+
   return 0;
 }
 

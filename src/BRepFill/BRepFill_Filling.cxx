@@ -479,11 +479,20 @@ void BRepFill_Filling::FindExtremitiesOfHoles(const TopTools_ListOfShape& WireLi
   theWire = TopoDS::Wire(WireSeq(1));
   WireSeq.Remove(1);
 
-  if (theWire.Closed())
+  if (BRep_Tool::IsClosed(theWire))
     return;
 
   TopoDS_Vertex Vfirst, Vlast;
   TopExp::Vertices( theWire, Vfirst, Vlast );
+
+  if (Vfirst.IsSame(Vlast))
+  {
+    // The Wire is closed indeed despite its 
+    // being not detected earlier.
+
+    return;
+  }
+
   gp_Vec FinVec = MakeFinVec( theWire, Vlast );
   TopoDS_Vertex theVertex = Vlast;
   VerSeq.Append( Vlast );

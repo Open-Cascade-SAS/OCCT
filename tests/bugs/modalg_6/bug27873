@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC27873"
+puts "============"
+puts ""
+######################################################
+# Exception is raised in BRepFill_Filling::FindExtremitiesOfHoles()
+######################################################
+
+# Input data are true invalid.
+# 1. Non-manifold wire;
+# 2. The wire contains internal edge in its boundary (i.e. if we remove this edge we will obtain not-closed wire).
+
+restore [locate_data_file bug27873_filling.brep] a
+explode a
+
+if { ![regexp {filling failed} [filling result 11 0 0 a_1 0 a_2 0 a_3 0 a_4 0 a_5 0 a_6 0 a_7 0 a_8 0 a_9 0 a_10 0 a_11 0] ] } {
+  puts "Error: Null result is expected but is not returned."
+}

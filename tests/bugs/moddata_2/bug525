@@ -1,4 +1,4 @@
-puts "REQUIRED All: OCC525 Exception"
+puts "REQUIRED All: Error in OCC525. Null result is expected."
 
 pload QAcommands
 

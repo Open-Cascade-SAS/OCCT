@@ -474,8 +474,14 @@ void GeomPlate_BuildPlateSurface::Perform()
   NTPntCont = myPntCont->Length(), NbBoucle=0;
   // La variable  NTPoint peut etre enlevee
   Standard_Boolean Fini=Standard_True;
-  if ((NTLinCont+NTPntCont)==0)
-    Standard_RangeError::Raise("GeomPlate : The number of constraints is null.");
+  if ((NTLinCont + NTPntCont) == 0)
+  {
+#ifdef OCCT_DEBUG
+    cout << "WARNING : GeomPlate : The number of constraints is null." << endl;
+#endif
+
+    return;
+  }
 
   //======================================================================   
   // Surface Initiale
@@ -503,6 +509,11 @@ void GeomPlate_BuildPlateSurface::Perform()
        myInitOrder = new TColStd_HArray1OfInteger( 1, NTLinCont, 1 );
      }
  }
+
+  if (mySurfInit.IsNull())
+  {
+    return;
+  }
 
   Standard_Real u1,v1,u2,v2;
   mySurfInit->Bounds(u1,v1,u2,v2);
@@ -647,9 +658,16 @@ void GeomPlate_BuildPlateSurface::Perform()
 	  //Resolution de la surface
 	  //====================================================================
 	  myPlate.SolveTI(myDegree, ComputeAnisotropie());
-	  if (!myPlate.IsDone())   
-	    Standard_Failure::Raise("GeomPlate : abort calcul of Plate.");
-	  myGeomPlateSurface = new GeomPlate_Surface(mySurfInit,myPlate);
+          if (!myPlate.IsDone())
+          {
+#ifdef OCCT_DEBUG
+            cout << "WARNING : GeomPlate : abort calcul of Plate." << endl;
+#endif
+
+            return;
+          }
+
+          myGeomPlateSurface = new GeomPlate_Surface(mySurfInit,myPlate);
 	  Standard_Real Umin,Umax,Vmin,Vmax; 
           myPlate.UVBox(Umin,Umax,Vmin,Vmax);
 	  myGeomPlateSurface->SetBounds(Umin,Umax,Vmin,Vmax);
@@ -674,9 +692,15 @@ void GeomPlate_BuildPlateSurface::Perform()
 	  //Resolution de la surface
 	  //====================================================================
 	  myPlate.SolveTI(myDegree, ComputeAnisotropie());
-	  if (!myPlate.IsDone())   
-	    Standard_Failure::Raise("GeomPlate : abort calcul of Plate.");
-	  myGeomPlateSurface = new GeomPlate_Surface(mySurfInit,myPlate);
+          if (!myPlate.IsDone())
+          {
+#ifdef OCCT_DEBUG
+            cout << "WARNING : GeomPlate : abort calcul of Plate." << endl;
+#endif
+            return;
+          }
+
+          myGeomPlateSurface = new GeomPlate_Surface(mySurfInit,myPlate);
 	  Standard_Real Umin,Umax,Vmin,Vmax; 
           myPlate.UVBox(Umin,Umax,Vmin,Vmax);
 	  myGeomPlateSurface->SetBounds(Umin,Umax,Vmin,Vmax);
@@ -1550,7 +1574,14 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit()
       if (!CourbeJoint)
 	myNbBounds = 0;
       GeomPlate_BuildAveragePlane BAP( Pts, NbPoint*myNbBounds, myTol3d/1000, popt, nopt );
-      if (!BAP.IsPlane()) Standard_Failure::Raise("the initial surface is not a plane.");
+      if (!BAP.IsPlane())
+      {
+#ifdef OCCT_DEBUG
+        cout << "WARNING : GeomPlate : the initial surface is not a plane." << endl;
+#endif
+
+        return;
+      }
       Standard_Real u1,u2,v1,v2;
       BAP.MinMaxBox(u1,u2,v1,v2);
       // On agrandit le bazar pour les projections
@@ -1688,8 +1719,13 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit()
       //Resolution de la surface
       //====================================================================
       myPlate.SolveTI(2, ComputeAnisotropie());
-      if (!myPlate.IsDone())   
-	Standard_Failure::Raise("GeomPlate : abort calcul of Plate.");
+      if (!myPlate.IsDone())
+      {
+#ifdef OCCT_DEBUG
+        cout << "WARNING : GeomPlate : abort calcul of Plate." << endl;
+#endif
+        return;
+      }
 
       myGeomPlateSurface = new GeomPlate_Surface( mySurfInit, myPlate );
 
