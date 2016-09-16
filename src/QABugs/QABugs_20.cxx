@@ -2114,6 +2114,33 @@ static Standard_Integer OCC27552(Draw_Interpretor&,
   return 0;
 }
 
+#include <NCollection_IncAllocator.hxx>
+static Standard_Integer OCC27875(Draw_Interpretor& theDI,
+                                 Standard_Integer theNArg,
+                                 const char ** theArgVal)
+{
+  if (theNArg < 2)
+  {
+    theDI << "Use: OCC27875 curve\n";
+  }
+
+  TColGeom_SequenceOfCurve aNC(new NCollection_IncAllocator());
+
+  const Handle(Geom_Curve) aC = Handle(Geom_Curve)::DownCast(DrawTrSurf::Get(theArgVal[1]));
+
+  aNC.Append(aC);
+
+  GeomFill_NSections aNS(aNC);
+
+  if (aNS.BSplineSurface().IsNull())
+  {
+    theDI << "GeomFill_NSections is not done.\n";
+  }
+
+  return 0;
+}
+
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -2132,5 +2159,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC27357", "OCC27357", __FILE__, OCC27357, group);
   theCommands.Add("OCC26270", "OCC26270 shape result", __FILE__, OCC26270, group);
   theCommands.Add ("OCC27552", "OCC27552", __FILE__, OCC27552, group); 
+  theCommands.Add("OCC27875", "OCC27875 curve", __FILE__, OCC27875, group);
+
   return;
 }

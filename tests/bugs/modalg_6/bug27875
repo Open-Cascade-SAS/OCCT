@@ -1,0 +1,19 @@
+puts "================"
+puts "OCC27875"
+puts "================"
+puts ""
+###############################
+## GeomFill_NSections constructor crash on sequence of curve containing only one curve
+###############################
+
+# GeomFill_NSections does not work if the sequence of curves contains only single curve.
+# Therefore, we should not expect any correct result from this operation. However, the
+# exception must not be thrown.
+
+pload QAcommands
+
+restore [locate_data_file OCC606_2.brep] w2
+explode w2 e
+mkcurve cc w2_1
+trim cc cc
+OCC27875 cc

@@ -524,6 +524,12 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
     Standard_Real myPres3d = 1.e-06;
     Standard_Integer i,j,jdeb=1,jfin=mySections.Length();
     
+    if (jfin <= jdeb)
+    {
+      //We will not be able to create surface from single curve.
+      return;
+    }
+
     GeomFill_SectionGenerator section;
     Handle(Geom_BSplineSurface) surface;
 
@@ -641,9 +647,12 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
                                             Standard_Integer& NbKnots,
                                             Standard_Integer& Degree) const
 {
-   NbPoles = mySurface->NbUPoles();
-   NbKnots = mySurface->NbUKnots();
-   Degree  = mySurface->UDegree();
+  if (mySurface.IsNull())
+    return;
+  
+  NbPoles = mySurface->NbUPoles();
+  NbKnots = mySurface->NbUKnots();
+  Degree  = mySurface->UDegree();
 }
 
 //=======================================================
@@ -651,7 +660,8 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
 //=======================================================
  void GeomFill_NSections::Knots(TColStd_Array1OfReal& TKnots) const
 {
-  mySurface->UKnots(TKnots);
+  if (!mySurface.IsNull())
+    mySurface->UKnots(TKnots);
 }
 
 //=======================================================
@@ -659,7 +669,8 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
 //=======================================================
  void GeomFill_NSections::Mults(TColStd_Array1OfInteger& TMults) const
 {
-  mySurface->UMultiplicities(TMults);
+  if (!mySurface.IsNull())
+    mySurface->UMultiplicities(TMults);
 }
 
 
@@ -668,7 +679,10 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
 //=======================================================
  Standard_Boolean GeomFill_NSections::IsRational() const
 {
-  return mySurface->IsURational();
+  if (!mySurface.IsNull())
+    return mySurface->IsURational();
+
+  return Standard_False;
 }
 
 //=======================================================
@@ -676,7 +690,10 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
 //=======================================================
  Standard_Boolean GeomFill_NSections::IsUPeriodic() const
 {
-  return  mySurface->IsUPeriodic();
+  if (!mySurface.IsNull())
+    return  mySurface->IsUPeriodic();
+
+  return Standard_False;
 }
 
 //=======================================================
@@ -684,7 +701,10 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
 //=======================================================
  Standard_Boolean GeomFill_NSections::IsVPeriodic() const
 {
-  return  mySurface->IsVPeriodic();
+  if (!mySurface.IsNull())
+    return  mySurface->IsVPeriodic();
+
+  return Standard_False;
 }
 
 //=======================================================
@@ -692,6 +712,9 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
 //=======================================================
  Standard_Integer GeomFill_NSections::NbIntervals(const GeomAbs_Shape S) const
 {
+  if (mySurface.IsNull())
+    return 0;
+
   GeomAdaptor_Surface AdS(mySurface);
   return AdS.NbVIntervals(S);
 }
@@ -703,6 +726,9 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
  void GeomFill_NSections::Intervals(TColStd_Array1OfReal& T,
                                          const GeomAbs_Shape S) const
 {
+  if (mySurface.IsNull())
+    return;
+
   GeomAdaptor_Surface AdS(mySurface);
   AdS.VIntervals(T,S);
 }
@@ -763,6 +789,9 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
   gp_Pnt P, Bary;
   Bary.SetCoord(0., 0., 0.);
 
+  if (mySurface.IsNull())
+    return Bary;
+
   Standard_Integer ii,jj;
   Standard_Real U0, U1, V0, V1;
   mySurface->Bounds(U0,U1,V0,V1);
@@ -801,6 +830,9 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
 //=======================================================
 void GeomFill_NSections::GetMinimalWeight(TColStd_Array1OfReal& Weights) const
 {
+  if (mySurface.IsNull())
+    return;
+
   if (mySurface->IsURational()) {
     Standard_Integer NbU = mySurface->NbUPoles(),
                      NbV = mySurface->NbVPoles();
