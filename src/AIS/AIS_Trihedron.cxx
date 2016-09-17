@@ -14,13 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <AIS_Trihedron.hxx>
 
 #include <AIS_Axis.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_Plane.hxx>
 #include <AIS_Point.hxx>
-#include <AIS_Trihedron.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <DsgPrs_DatumPrs.hxx>
 #include <Geom_Axis2Placement.hxx>
@@ -102,18 +102,18 @@ void AIS_Trihedron::SetComponent(const Handle(Geom_Axis2Placement)& aComponent)
 }
 
 //=======================================================================
-//function : SetLocation
-//purpose  : 
+//function : setLocalTransformation
+//purpose  :
 //=======================================================================
 
-void AIS_Trihedron::SetLocalTransformation (const gp_Trsf& theTransformation)
+void AIS_Trihedron::setLocalTransformation (const Handle(Geom_Transformation)& theTrsf)
 {
   // Update location to the subshapes
   Standard_Integer anIdx;
   for (anIdx = 0; anIdx < 7; anIdx++)
-    myShapes[anIdx]->SetLocalTransformation (theTransformation);
+    myShapes[anIdx]->SetLocalTransformation (theTrsf);
 
-  AIS_InteractiveObject::SetLocalTransformation (theTransformation);
+  AIS_InteractiveObject::setLocalTransformation (theTrsf);
 }
 
 //=======================================================================

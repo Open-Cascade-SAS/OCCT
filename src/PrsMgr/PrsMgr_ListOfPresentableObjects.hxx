@@ -16,11 +16,11 @@
 #ifndef _PrsMgr_ListOfPresentableObjects_HeaderFile
 #define _PrsMgr_ListOfPresentableObjects_HeaderFile
 
-#include <PrsMgr_PresentableObject.hxx>
 #include <NCollection_List.hxx>
+#include <Standard_Transient.hxx>
 
+class PrsMgr_PresentableObject; // use forward declaration since PrsMgr_PresentableObject.hxx uses PrsMgr_ListOfPresentableObjects
 typedef NCollection_List<Handle(PrsMgr_PresentableObject)> PrsMgr_ListOfPresentableObjects;
 typedef NCollection_List<Handle(PrsMgr_PresentableObject)>::Iterator PrsMgr_ListOfPresentableObjectsIter;
-
 
 #endif // _PrsMgr_ListOfPresentableObjects_HeaderFile

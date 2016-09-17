@@ -593,7 +593,7 @@ void PrsMgr_PresentationManager::Transform (const Handle(PrsMgr_PresentableObjec
                                             const Handle(Geom_Transformation)&      theTransformation,
                                             const Standard_Integer                  theMode)
 {
-  Presentation (thePrsObj, theMode)->Transform (theTransformation);
+  Presentation (thePrsObj, theMode)->SetTransformation (theTransformation);
 }
 
 
@@ -656,13 +656,13 @@ namespace
 {
   // =======================================================================
   // function : updatePrsTransformation
-  // purpose  : Internal funtion that scans thePrsList for shadow presentations
+  // purpose  : Internal function that scans thePrsList for shadow presentations
   //            and applies transformation theTrsf to them in case if parent ID
   //            of shadow presentation is equal to theRefId
   // =======================================================================
   void updatePrsTransformation (const PrsMgr_ListOfPresentations& thePrsList,
                                 const Standard_Integer theRefId,
-                                const Graphic3d_Mat4& theTrsf)
+                                const Handle(Geom_Transformation)& theTrsf)
   {
     for (PrsMgr_ListOfPresentations::Iterator anIter (thePrsList); anIter.More(); anIter.Next())
     {
@@ -674,7 +674,7 @@ namespace
       if (aShadowPrs.IsNull() || aShadowPrs->ParentId() != theRefId)
         continue;
 
-      aShadowPrs->CStructure()->Transformation = theTrsf;
+      aShadowPrs->CStructure()->SetTransformation (theTrsf);
     }
   }
 }
@@ -696,7 +696,7 @@ void PrsMgr_PresentationManager::UpdateHighlightTrsf (const Handle(V3d_Viewer)& 
     aBasePrs : Presentation (theSelObj, theMode, Standard_False)->Presentation();
   const Standard_Integer aParentId = aParentPrs->CStructure()->Id;
 
-  updatePrsTransformation (myImmediateList, aParentId, aBasePrs->CStructure()->Transformation);
+  updatePrsTransformation (myImmediateList, aParentId, aBasePrs->CStructure()->Transformation());
 
   if (!myViewDependentImmediateList.IsEmpty())
   {
@@ -708,7 +708,7 @@ void PrsMgr_PresentationManager::UpdateHighlightTrsf (const Handle(V3d_Viewer)& 
       {
         updatePrsTransformation (myViewDependentImmediateList,
                                  aViewDepParentPrs->CStructure()->Id,
-                                 aBasePrs->CStructure()->Transformation);
+                                 aBasePrs->CStructure()->Transformation());
       }
     }
   }

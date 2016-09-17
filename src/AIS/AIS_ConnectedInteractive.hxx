@@ -17,28 +17,9 @@
 #ifndef _AIS_ConnectedInteractive_HeaderFile
 #define _AIS_ConnectedInteractive_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <TopoDS_Shape.hxx>
 #include <AIS_InteractiveObject.hxx>
-#include <PrsMgr_TypeOfPresentation3d.hxx>
 #include <AIS_KindOfInteractive.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <SelectMgr_Selection.hxx>
-class AIS_InteractiveObject;
-class Standard_NotImplemented;
-class gp_Trsf;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
-class TopoDS_Shape;
-
-
-class AIS_ConnectedInteractive;
-DEFINE_STANDARD_HANDLE(AIS_ConnectedInteractive, AIS_InteractiveObject)
+#include <TopoDS_Shape.hxx>
 
 //! Creates an arbitrary located instance of another Interactive Object,
 //! which serves as a reference.
@@ -54,7 +35,7 @@ DEFINE_STANDARD_HANDLE(AIS_ConnectedInteractive, AIS_InteractiveObject)
 //! Also ConnectedInteractive will handle HLR if its reference based on AIS_Shape.
 class AIS_ConnectedInteractive : public AIS_InteractiveObject
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_ConnectedInteractive, AIS_InteractiveObject)
 public:
 
   //! Disconnects the previous view and sets highlight
@@ -71,12 +52,19 @@ public:
   
   //! Establishes the connection between the Connected
   //! Interactive Object, anotherIobj, and its reference.
-  Standard_EXPORT virtual void Connect (const Handle(AIS_InteractiveObject)& anotherIObj);
+  Standard_EXPORT void Connect (const Handle(AIS_InteractiveObject)& theAnotherObj) { connect (theAnotherObj, Handle(Geom_Transformation)()); }
 
   //! Establishes the connection between the Connected
   //! Interactive Object, anotherIobj, and its reference.
   //! Locates instance in aLocation.
-  Standard_EXPORT virtual void Connect (const Handle(AIS_InteractiveObject)& anotherIobj, const gp_Trsf& aLocation);
+  Standard_EXPORT void Connect (const Handle(AIS_InteractiveObject)& theAnotherObj,
+                                const gp_Trsf& theLocation)  { connect (theAnotherObj, new Geom_Transformation (theLocation)); }
+
+  //! Establishes the connection between the Connected
+  //! Interactive Object, anotherIobj, and its reference.
+  //! Locates instance in aLocation.
+  Standard_EXPORT void Connect (const Handle(AIS_InteractiveObject)& theAnotherObj,
+                                const Handle(Geom_Transformation)& theLocation) { connect (theAnotherObj, theLocation); }
 
   //! Returns true if there is a connection established
   //! between the presentation and its source reference.
@@ -103,8 +91,6 @@ public:
     return myReference.IsNull()
         || myReference->AcceptDisplayMode (theMode);
   }
-
-  DEFINE_STANDARD_RTTIEXT(AIS_ConnectedInteractive,AIS_InteractiveObject)
 
 protected:
 
@@ -148,11 +134,16 @@ protected:
   //! given by <aProjector>.
   Standard_EXPORT void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation, const TopoDS_Shape& aShape);
 
+  Standard_EXPORT void connect (const Handle(AIS_InteractiveObject)& theAnotherObj,
+                                const Handle(Geom_Transformation)& theLocation);
+
 protected:
 
   Handle(AIS_InteractiveObject) myReference;
   TopoDS_Shape myShape;
 
 };
+
+DEFINE_STANDARD_HANDLE(AIS_ConnectedInteractive, AIS_InteractiveObject)
 
 #endif // _AIS_ConnectedInteractive_HeaderFile

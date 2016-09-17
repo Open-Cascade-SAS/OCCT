@@ -136,40 +136,22 @@ void V3d_RectangularGrid::UpdateDisplay ()
   if (MakeTransform) {
     const Standard_Real CosAlpha = Cos (RotationAngle ());
     const Standard_Real SinAlpha = Sin (RotationAngle ());
-    TColStd_Array2OfReal Trsf (1, 4, 1, 4);
-    Trsf (4, 4) = 1.0;
-    Trsf (4, 1) = Trsf (4, 2) = Trsf (4, 3) = 0.0;
+
+    gp_Trsf aTrsf;
     // Translation
-    Trsf (1, 4) = xl,
-    Trsf (2, 4) = yl,
-    Trsf (3, 4) = zl;
     // Transformation of change of marker
-    Trsf (1, 1) = xdx,
-    Trsf (2, 1) = xdy,
-    Trsf (3, 1) = xdz,
-    Trsf (1, 2) = ydx,
-    Trsf (2, 2) = ydy,
-    Trsf (3, 2) = ydz,
-    Trsf (1, 3) = dx,
-    Trsf (2, 3) = dy,
-    Trsf (3, 3) = dz;
-    myStructure->SetTransform (Trsf, Graphic3d_TOC_REPLACE);
+    aTrsf.SetValues (xdx, ydx, dx, xl,
+                     xdy, ydy, dy, yl,
+                     xdz, ydz, dz, zl);
 
     // Translation of the origin
-    Trsf (1, 4) = -XOrigin (),
-    Trsf (2, 4) = -YOrigin (),
-    Trsf (3, 4) = 0.0;
     // Rotation Alpha around axis -Z
-    Trsf (1, 1) = CosAlpha,
-    Trsf (2, 1) = -SinAlpha,
-    Trsf (3, 1) = 0.0,
-    Trsf (1, 2) = SinAlpha,
-    Trsf (2, 2) = CosAlpha,
-    Trsf (3, 2) = 0.0,
-    Trsf (1, 3) = 0.0,
-    Trsf (2, 3) = 0.0,
-    Trsf (3, 3) = 1.0;
-    myStructure->SetTransform (Trsf,Graphic3d_TOC_POSTCONCATENATE);
+    gp_Trsf aTrsf2;
+    aTrsf2.SetValues ( CosAlpha, SinAlpha, 0.0, -XOrigin(),
+                      -SinAlpha, CosAlpha, 0.0, -YOrigin(),
+                            0.0,      0.0, 1.0, 0.0);
+    aTrsf.Multiply (aTrsf2);
+    myStructure->SetTransformation (new Geom_Transformation (aTrsf));
 
     myCurAngle = RotationAngle ();
     myCurXo = XOrigin (), myCurYo = YOrigin ();

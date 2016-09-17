@@ -22,7 +22,6 @@
 
 #include <Graphic3d_Structure.hxx>
 #include <Standard_Boolean.hxx>
-#include <TColStd_Array2OfReal.hxx>
 #include <Quantity_Length.hxx>
 class Prs3d_Root;
 class Graphic3d_StructureManager;
@@ -49,7 +48,6 @@ class Prs3d_Presentation : public Graphic3d_Structure
 
 public:
 
-  
   //! Constructs a presentation object
   //! if <Init> is false, no color initialization is done.
   Standard_EXPORT Prs3d_Presentation(const Handle(Graphic3d_StructureManager)& theStructManager, const Standard_Boolean theToInit = Standard_True);
@@ -60,54 +58,31 @@ public:
   Standard_EXPORT virtual Handle(Graphic3d_Structure) Compute (const Handle(Graphic3d_DataStructureManager)& aProjector) Standard_OVERRIDE;
   
   //! Returns the new Structure defined for the new visualization
-  Standard_EXPORT virtual Handle(Graphic3d_Structure) Compute (const Handle(Graphic3d_DataStructureManager)& aProjector, const TColStd_Array2OfReal& AMatrix) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Handle(Graphic3d_Structure) Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
+                                                               const Handle(Geom_Transformation)& theTrsf) Standard_OVERRIDE;
+
   //! Returns the new Structure defined for the new visualization
   Standard_EXPORT virtual void Compute (const Handle(Graphic3d_DataStructureManager)& aProjector, Handle(Graphic3d_Structure)& aStructure) Standard_OVERRIDE;
   
   //! Returns the new Structure defined for the new visualization
-  Standard_EXPORT virtual void Compute (const Handle(Graphic3d_DataStructureManager)& aProjector, const TColStd_Array2OfReal& AMatrix, Handle(Graphic3d_Structure)& aStructure) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
+                                        const Handle(Geom_Transformation)& theTrsf,
+                                        Handle(Graphic3d_Structure)& theStructure) Standard_OVERRIDE;
 
-  Standard_EXPORT void Transform (const Handle(Geom_Transformation)& aTransformation);
-  
-  Standard_EXPORT void Place (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z);
-  
-  Standard_EXPORT void Multiply (const Handle(Geom_Transformation)& aTransformation);
-  
-  Standard_EXPORT void Move (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z);
-  
-  Standard_EXPORT Handle(Geom_Transformation) Transformation() const;
-  
   Standard_EXPORT void Connect (const Handle(Prs3d_Presentation)& aPresentation);
   
   Standard_EXPORT void Remove (const Handle(Prs3d_Presentation)& aPresentation);
   
   Standard_EXPORT void RemoveAll();
 
-
 friend class Prs3d_Root;
-
 
   DEFINE_STANDARD_RTTIEXT(Prs3d_Presentation,Graphic3d_Structure)
 
-protected:
-
-
-
-
 private:
-
   
   Standard_EXPORT Handle(Graphic3d_Group) CurrentGroup() const;
 
-
-
 };
-
-
-
-
-
-
 
 #endif // _Prs3d_Presentation_HeaderFile

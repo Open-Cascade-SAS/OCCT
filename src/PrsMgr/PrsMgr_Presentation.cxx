@@ -226,43 +226,12 @@ void PrsMgr_Presentation::Connect (const Handle(PrsMgr_Presentation)& theOther) 
 }
 
 //=======================================================================
-//function : Transform
+//function : SetTransformation
 //purpose  :
 //=======================================================================
-void PrsMgr_Presentation::Transform (const Handle(Geom_Transformation)& theTrsf) const
+void PrsMgr_Presentation::SetTransformation (const Handle(Geom_Transformation)& theTrsf) const
 {
-  myStructure->Transform (theTrsf);
-}
-
-//=======================================================================
-//function : Place
-//purpose  :
-//=======================================================================
-void PrsMgr_Presentation::Place (const Quantity_Length theX,
-                                 const Quantity_Length theY,
-                                 const Quantity_Length theZ) const
-{
-  myStructure->Place (theX, theY, theZ);
-}
-
-//=======================================================================
-//function : Multiply
-//purpose  :
-//=======================================================================
-void PrsMgr_Presentation::Multiply (const Handle(Geom_Transformation)& theTrsf) const
-{
-  myStructure->Multiply (theTrsf);
-}
-
-//=======================================================================
-//function : Move
-//purpose  :
-//=======================================================================
-void PrsMgr_Presentation::Move (const Quantity_Length theX,
-                                const Quantity_Length theY,
-                                const Quantity_Length theZ) const
-{
-  myStructure->Move (theX, theY, theZ);
+  myStructure->SetTransformation (theTrsf);
 }
 
 //=======================================================================
@@ -321,7 +290,7 @@ Handle(Graphic3d_Structure) PrsMgr_Presentation::Compute (const Handle(Graphic3d
   if (theTrsf->Form() == gp_Translation)
   {
     myPresentableObject->Compute (Projector (theProjector), aPrs3d);
-    aPrs3d->Transform (theTrsf);
+    aPrs3d->SetTransformation (theTrsf);
     return aPrs3d;
   }
 
@@ -342,7 +311,7 @@ Handle(Graphic3d_Structure) PrsMgr_Presentation::Compute (const Handle(Graphic3d
   }
 
   myPresentableObject->Compute (Projector (theProjector), aPrs3d);
-  aPrs3d->Transform (theTrsf);
+  aPrs3d->SetTransformation (theTrsf);
   return aPrs3d;
 }
 

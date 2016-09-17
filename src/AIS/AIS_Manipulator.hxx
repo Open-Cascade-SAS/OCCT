@@ -252,14 +252,6 @@ public: //! @name Configuration of graphical transformations
   //! when enabling zoom persistence.
   Standard_EXPORT virtual void SetTransformPersistence (const  Handle(Graphic3d_TransformPers)& theTrsfPers) Standard_OVERRIDE;
 
-  //! Redefines local transformation management method to inform user of inproper use.
-  //! @warning this interactive object does not support setting custom local transformation,
-  //! this class solely uses this property to implement visual positioning of the manipulator
-  //! without need for recomputing presentation.
-  //! @warning Invokes debug assertion in debug to catch incompatible usage of the
-  //! method, silently does nothing in release mode.
-  Standard_EXPORT virtual void SetLocalTransformation (const gp_Trsf& theTransformation) Standard_OVERRIDE;
-
 public: //! @name Setters for parameters
 
   AIS_ManipulatorMode ActiveMode() const { return myCurrentMode; }
@@ -348,6 +340,15 @@ protected:
   Standard_EXPORT void adjustSize (const Bnd_Box& theBox);
 
   Standard_EXPORT void setTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers);
+
+  //! Redefines local transformation management method to inform user of inproper use.
+  //! @warning this interactive object does not support setting custom local transformation,
+  //! this class solely uses this property to implement visual positioning of the manipulator
+  //! without need for recomputing presentation.
+  //! @warning Invokes debug assertion in debug to catch incompatible usage of the
+  //! method, silently does nothing in release mode.
+  Standard_EXPORT virtual void setLocalTransformation (const Handle(Geom_Transformation)& theTrsf) Standard_OVERRIDE;
+  using AIS_InteractiveObject::SetLocalTransformation; // hide visibility
 
 protected: //! @name Auxilliary classes to fill presentation with proper primitives
 
@@ -511,17 +512,17 @@ protected: //! @name Auxilliary classes to fill presentation with proper primiti
     {
       if (!myHighlightTranslator.IsNull())
       {
-        myHighlightTranslator->Transform (theTransformation);
+        myHighlightTranslator->SetTransformation (theTransformation);
       }
 
       if (!myHighlightScaler.IsNull())
       {
-        myHighlightScaler->Transform (theTransformation);
+        myHighlightScaler->SetTransformation (theTransformation);
       }
 
       if (!myHighlightRotator.IsNull())
       {
-        myHighlightRotator->Transform (theTransformation);
+        myHighlightRotator->SetTransformation (theTransformation);
       }
     }
 

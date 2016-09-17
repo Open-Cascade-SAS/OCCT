@@ -32,7 +32,6 @@
 #include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Standard_Real.hxx>
-#include <TColStd_Array2OfReal.hxx>
 #include <Graphic3d_SequenceOfGroup.hxx>
 #include <Graphic3d_TypeOfConnection.hxx>
 #include <Graphic3d_MapOfStructure.hxx>
@@ -200,14 +199,17 @@ public:
   Standard_EXPORT virtual Handle(Graphic3d_Structure) Compute (const Handle(Graphic3d_DataStructureManager)& aProjector);
   
   //! Returns the new Structure defined for the new visualization
-  Standard_EXPORT virtual Handle(Graphic3d_Structure) Compute (const Handle(Graphic3d_DataStructureManager)& aProjector, const TColStd_Array2OfReal& AMatrix);
+  Standard_EXPORT virtual Handle(Graphic3d_Structure) Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
+                                                               const Handle(Geom_Transformation)& theTrsf);
   
   //! Returns the new Structure defined for the new visualization
   Standard_EXPORT virtual void Compute (const Handle(Graphic3d_DataStructureManager)& aProjector, Handle(Graphic3d_Structure)& aStructure);
   
   //! Returns the new Structure defined for the new visualization
-  Standard_EXPORT virtual void Compute (const Handle(Graphic3d_DataStructureManager)& aProjector, const TColStd_Array2OfReal& AMatrix, Handle(Graphic3d_Structure)& aStructure);
-  
+  Standard_EXPORT virtual void Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
+                                        const Handle(Geom_Transformation)& theTrsf,
+                                        Handle(Graphic3d_Structure)& theStructure);
+
   //! Forces a new construction of the structure <me>
   //! if <me> is displayed and TOS_COMPUTED.
   Standard_EXPORT void ReCompute();
@@ -330,53 +332,14 @@ public:
   
   Standard_EXPORT Standard_Boolean HLRValidation() const;
 
-  //! Modifies the current local modelling transformation
-  //! in the structure <me>.
-  //!
-  //! It is defined as a 4*4 real matrix.
-  //!
-  //! -------------------
-  //! | a11 a12 a13  t1 |
-  //! | a21 a22 a23  t2 |
-  //! | a31 a32 a33  t3 |
-  //! |  0   0   0   1  |
-  //! -------------------
-  //!
-  //! TypeOfComposition : TOC_REPLACE
-  //! TOC_POSTCONCATENATE
-  //!
-  //! Then the modified Local Modelling Transformation is composed
-  //! with the current Global Modelling Transformation to create a
-  //! new Composite Modelling Transformation.
-  //!
-  //! The compose type specifies the role of the current local
-  //! modelling transformation (L) in composing the new value for
-  //! the current local modelling transformation (L'), which is
-  //! then combined with the current global modelling transforma-
-  //! tion (G) to calculate the new composite modelling transfor-
-  //! mation (C).
-  //!
-  //! TOC_REPLACE
-  //! The transformation matrix (T) replaces the value of
-  //! current local modelling transformation (L).
-  //!
-  //! L' <- T
-  //! C <- G x L'
-  //!
-  //! TOC_POSTCONCATENATE
-  //! The current local modelling transformation (L) is multiplied
-  //! by the transformation matrix (T):
-  //!
-  //! L' <- T x L
-  //! C <- G x L'
-  //!
-  //! Category: Methods to manage the structure transformation
-  //! Warning: Raises TransformError if the matrix is not a 4x4 matrix.
-  Standard_EXPORT void SetTransform (const TColStd_Array2OfReal& AMatrix, const Graphic3d_TypeOfComposition AType);
-  
-  //! Returns the transformation associated with
-  //! the structure <me>.
-  Standard_EXPORT void Transform (TColStd_Array2OfReal& AMatrix) const;
+  //! Return local transformation.
+  const Handle(Geom_Transformation)& Transformation() const { return myCStructure->Transformation(); }
+
+  //! Modifies the current local transformation
+  Standard_EXPORT void SetTransformation (const Handle(Geom_Transformation)& theTrsf);
+
+  Standard_DEPRECATED("This method is deprecated - SetTransformation() should be called instead")
+  void Transform (const Handle(Geom_Transformation)& theTrsf) { SetTransformation (theTrsf); }
 
   //! Modifies the current transform persistence (pan, zoom or rotate)
   Standard_EXPORT void SetTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers);
@@ -403,7 +366,8 @@ public:
   //! Highlights the structure <me>.
   Standard_EXPORT void GraphicHighlight (const Aspect_TypeOfHighlightMethod Method);
   
-  Standard_EXPORT void GraphicTransform (const TColStd_Array2OfReal& AMatrix);
+  //! Internal method which sets new transformation without calling graphic manager callbacks.
+  Standard_EXPORT void GraphicTransform (const Handle(Geom_Transformation)& theTrsf);
   
   //! Suppress the highlight for the structure <me>.
   Standard_EXPORT void GraphicUnHighlight();
@@ -421,15 +385,11 @@ public:
   
   Standard_EXPORT void SetComputeVisual (const Graphic3d_TypeOfStructure AVisual);
   
-  //! Transforms <X>, <Y>, <Z> with the transformation <ATrsf>.
-  Standard_EXPORT static void Transforms (const TColStd_Array2OfReal& ATrsf, const Standard_Real X, const Standard_Real Y, const Standard_Real Z, Standard_Real& NewX, Standard_Real& NewY, Standard_Real& NewZ);
-  
-  //! Transforms <Coord> with the transformation <ATrsf>.
-  Standard_EXPORT static Graphic3d_Vector Transforms (const TColStd_Array2OfReal& ATrsf, const Graphic3d_Vector& Coord);
-  
-  //! Transforms <Coord> with the transformation <ATrsf>.
-  Standard_EXPORT static Graphic3d_Vertex Transforms (const TColStd_Array2OfReal& ATrsf, const Graphic3d_Vertex& Coord);
-  
+  //! Transforms theX, theY, theZ with the transformation theTrsf.
+  Standard_EXPORT static void Transforms (const gp_Trsf& theTrsf,
+                                          const Standard_Real theX, const Standard_Real theY, const Standard_Real theZ,
+                                          Standard_Real& theNewX, Standard_Real& theNewY, Standard_Real& theNewZ);
+
   //! Returns the low-level structure
   const Handle(Graphic3d_CStructure)& CStructure() const { return myCStructure; }
 
@@ -441,8 +401,10 @@ friend class Graphic3d_Group;
 protected:
 
   //! Transforms boundaries with <theTrsf> transformation.
-  Standard_EXPORT static void TransformBoundaries (const TColStd_Array2OfReal& theTrsf, Standard_Real& theXMin, Standard_Real& theYMin, Standard_Real& theZMin, Standard_Real& theXMax, Standard_Real& theYMax, Standard_Real& theZMax);
-  
+  Standard_EXPORT static void TransformBoundaries (const gp_Trsf& theTrsf,
+                                                   Standard_Real& theXMin, Standard_Real& theYMin, Standard_Real& theZMin,
+                                                   Standard_Real& theXMax, Standard_Real& theYMax, Standard_Real& theZMax);
+
   //! Appends new descendant structure.
   Standard_EXPORT Standard_Boolean AppendDescendant (const Standard_Address theDescendant);
   

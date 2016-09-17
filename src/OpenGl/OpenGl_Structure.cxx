@@ -139,19 +139,21 @@ OpenGl_Structure::~OpenGl_Structure()
 }
 
 // =======================================================================
-// function : UpdateTransformation
+// function : SetTransformation
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::UpdateTransformation()
+void OpenGl_Structure::SetTransformation (const Handle(Geom_Transformation)& theTrsf)
 {
-  const OpenGl_Mat4& aMat = Graphic3d_CStructure::Transformation;
-  Standard_ShortReal aDet =
-    aMat.GetValue(0, 0) * (aMat.GetValue(1, 1) * aMat.GetValue(2, 2) - aMat.GetValue(2, 1) * aMat.GetValue(1, 2)) -
-    aMat.GetValue(0, 1) * (aMat.GetValue(1, 0) * aMat.GetValue(2, 2) - aMat.GetValue(2, 0) * aMat.GetValue(1, 2)) +
-    aMat.GetValue(0, 2) * (aMat.GetValue(1, 0) * aMat.GetValue(2, 1) - aMat.GetValue(2, 0) * aMat.GetValue(1, 1));
-
-  // Determinant of transform matrix less then 0 means that mirror transform applied.
-  myIsMirrored = aDet < 0.0f;
+  myTrsf = theTrsf;
+  myIsMirrored = Standard_False;
+  if (!myTrsf.IsNull())
+  {
+    // Determinant of transform matrix less then 0 means that mirror transform applied.
+    const Standard_Real aDet = myTrsf->Value(1, 1) * (myTrsf->Value (2, 2) * myTrsf->Value (3, 3) - myTrsf->Value (3, 2) * myTrsf->Value (2, 3))
+                             - myTrsf->Value(1, 2) * (myTrsf->Value (2, 1) * myTrsf->Value (3, 3) - myTrsf->Value (3, 1) * myTrsf->Value (2, 3))
+                             + myTrsf->Value(1, 3) * (myTrsf->Value (2, 1) * myTrsf->Value (3, 2) - myTrsf->Value (3, 1) * myTrsf->Value (2, 2));
+    myIsMirrored = aDet < 0.0;
+  }
 
   if (IsRaytracable())
   {
@@ -455,16 +457,25 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
 
   // Apply local transformation
   aCtx->ModelWorldState.Push();
-  aCtx->ModelWorldState.SetCurrent (Transformation);
+  OpenGl_Mat4& aModelWorld = aCtx->ModelWorldState.ChangeCurrent();
+  if (!myTrsf.IsNull())
+  {
+    myTrsf->Trsf().GetMat4 (aModelWorld);
+  }
+  else
+  {
+    aModelWorld.InitIdentity();
+  }
 
   const Standard_Boolean anOldGlNormalize = aCtx->IsGlNormalizeEnabled();
 
 #if !defined(GL_ES_VERSION_2_0)
   // detect scale transform
-  if (aCtx->core11 != NULL)
+  if (aCtx->core11 != NULL
+  && !myTrsf.IsNull())
   {
-    const Standard_ShortReal aScaleX = Transformation.GetRow (0).xyz().SquareModulus();
-    if (Abs (aScaleX - 1.f) > Precision::Confusion())
+    const Standard_Real aScale = myTrsf->ScaleFactor();
+    if (Abs (aScale - 1.0) > Precision::Confusion())
     {
       aCtx->SetGlNormalizeEnabled (Standard_True);
     }

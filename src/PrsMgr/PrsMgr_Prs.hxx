@@ -28,16 +28,13 @@ class Graphic3d_StructureManager;
 class Graphic3d_Structure;
 class Graphic3d_DataStructureManager;
 
-
 class PrsMgr_Prs;
 DEFINE_STANDARD_HANDLE(PrsMgr_Prs, Prs3d_Presentation)
-
 
 class PrsMgr_Prs : public Prs3d_Presentation
 {
 
 public:
-
   
   Standard_EXPORT PrsMgr_Prs(const Handle(Graphic3d_StructureManager)& theStructManager, const PrsMgr_PresentationPointer& thePresentation, const PrsMgr_TypeOfPresentation3d theTypeOfPresentation3d);
   
@@ -51,8 +48,9 @@ public:
   //! We have to take in account this Transformation
   //! in the computation of hidden line removal...
   //! returns a filled Graphic Structure.
-  Standard_EXPORT Handle(Graphic3d_Structure) Compute (const Handle(Graphic3d_DataStructureManager)& aProjector, const TColStd_Array2OfReal& AMatrix) Standard_OVERRIDE;
-  
+  Standard_EXPORT Handle(Graphic3d_Structure) Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
+                                                       const Handle(Geom_Transformation)& theTrsf) Standard_OVERRIDE;
+
   //! No need to return a structure, just to fill
   //! <ComputedStruct> ....
   Standard_EXPORT void Compute (const Handle(Graphic3d_DataStructureManager)& aProjector, Handle(Graphic3d_Structure)& ComputedStruct) Standard_OVERRIDE;
@@ -60,30 +58,16 @@ public:
   //! No Need to return a Structure, just to
   //! Fill <aStructure>. The Trsf has to be taken in account
   //! in the computation (Rotation Part....)
-  Standard_EXPORT void Compute (const Handle(Graphic3d_DataStructureManager)& aProjector, const TColStd_Array2OfReal& AMatrix, Handle(Graphic3d_Structure)& aStructure) Standard_OVERRIDE;
-
-
-
+  Standard_EXPORT void Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
+                                const Handle(Geom_Transformation)& theTrsf,
+                                Handle(Graphic3d_Structure)& theStructure) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(PrsMgr_Prs,Prs3d_Presentation)
 
-protected:
-
-
-
-
 private:
-
 
   PrsMgr_PresentationPointer myPresentation3d;
 
-
 };
-
-
-
-
-
-
 
 #endif // _PrsMgr_Prs_HeaderFile

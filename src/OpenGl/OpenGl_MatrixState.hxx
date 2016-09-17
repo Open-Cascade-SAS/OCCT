@@ -65,6 +65,12 @@ public:
     myCurrent = theNewCurrent;
   }
 
+  //! Change current matrix.
+  typename OpenGl::MatrixType<T>::Mat4& ChangeCurrent()
+  {
+    return myCurrent;
+  }
+
   //! Sets given matrix as current.
   template <typename Other_t>
   void SetCurrent (const typename OpenGl::MatrixType<Other_t>::Mat4& theNewCurrent)

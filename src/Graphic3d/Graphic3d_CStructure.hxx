@@ -24,6 +24,7 @@
 #include <Graphic3d_TransformPers.hxx>
 #include <Graphic3d_Vec3.hxx>
 #include <Graphic3d_ZLayerId.hxx>
+#include <Geom_Transformation.hxx>
 
 class Graphic3d_GraphicDriver;
 class Graphic3d_StructureManager;
@@ -45,6 +46,12 @@ public:
   {
     return myGroups;
   }
+
+  //! Return transformation.
+  const Handle(Geom_Transformation)& Transformation() const { return myTrsf; }
+
+  //! Assign transformation.
+  virtual void SetTransformation (const Handle(Geom_Transformation)& theTrsf) { myTrsf = theTrsf; }
 
   //! Return transformation persistence.
   const Handle(Graphic3d_TransformPers)& TransformPersistence() const { return myTrsfPers; }
@@ -105,9 +112,6 @@ public:
   //! Disconnect other structure to this one
   virtual void Disconnect (Graphic3d_CStructure& theStructure) = 0;
 
-  //! Synchronize structure transformation
-  virtual void UpdateTransformation() = 0;
-
   //! Highlight entire structure with color
   virtual void HighlightWithColor  (const Graphic3d_Vec3&  theColor,
                                     const Standard_Boolean theToCreate) = 0;
@@ -134,8 +138,6 @@ public:
 
   Quantity_Color           HighlightColor;
 
-  Graphic3d_Mat4           Transformation;
-
   int   ContainsFacet;
 
   Handle(Graphic3d_ViewAffinity) ViewAffinity; //!< view affinity mask
@@ -159,6 +161,7 @@ protected:
   Handle(Graphic3d_GraphicDriver) myGraphicDriver;
   Graphic3d_SequenceOfGroup       myGroups;
   Graphic3d_BndBox4f              myBndBox;
+  Handle(Geom_Transformation)     myTrsf;
   Handle(Graphic3d_TransformPers) myTrsfPers;
   Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;
 

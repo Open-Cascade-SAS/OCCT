@@ -12,6 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <PrsMgr_Prs.hxx>
 
 #include <Geom_Transformation.hxx>
 #include <gp_Trsf.hxx>
@@ -20,7 +21,6 @@
 #include <Graphic3d_StructureManager.hxx>
 #include <Precision.hxx>
 #include <PrsMgr_Presentation.hxx>
-#include <PrsMgr_Prs.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_Prs,Prs3d_Presentation)
@@ -55,20 +55,13 @@ Handle(Graphic3d_Structure) PrsMgr_Prs::Compute(const Handle(Graphic3d_DataStruc
 }
 //=======================================================================
 //function : Compute
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-Handle(Graphic3d_Structure) PrsMgr_Prs::Compute(const Handle(Graphic3d_DataStructureManager)& aProjector,
-						const TColStd_Array2OfReal& AMatrix) 
+Handle(Graphic3d_Structure) PrsMgr_Prs::Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
+						                                     const Handle(Geom_Transformation)& theTrsf)
 {
-  gp_Trsf TheTrsf;
-  Standard_Integer LC(AMatrix.LowerCol()),LR(AMatrix.LowerRow());
-  TheTrsf.SetValues(AMatrix(LR,LC),AMatrix(LR,LC+1),AMatrix(LR,LC+2),AMatrix(LR,LC+3),
-		    AMatrix(LR+1,LC),AMatrix(LR+1,LC+1),AMatrix(LR+1,LC+2),AMatrix(LR+1,LC+3),
-		    AMatrix(LR+2,LC),AMatrix(LR+2,LC+1),AMatrix(LR+2,LC+2),AMatrix(LR+2,LC+3));
-   Handle(Geom_Transformation) G = new Geom_Transformation(TheTrsf);
-  
-  return myPresentation3d->Compute(aProjector,G);
+  return myPresentation3d->Compute (theProjector, theTrsf);
 }
 
 //=======================================================================
@@ -85,20 +78,12 @@ void PrsMgr_Prs::Compute(const Handle(Graphic3d_DataStructureManager)& aProjecto
 
 //=======================================================================
 //function : Compute
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-void PrsMgr_Prs::Compute(const Handle(Graphic3d_DataStructureManager)& aProjector,
-			 const TColStd_Array2OfReal& AMatrix,
-			  Handle(Graphic3d_Structure)& aGivenStruct) 
+void PrsMgr_Prs::Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
+                          const Handle(Geom_Transformation)& theTrsf,
+                          Handle(Graphic3d_Structure)& theGivenStruct)
 {
-  gp_Trsf TheTrsf;
-  Standard_Integer LC(AMatrix.LowerCol()),LR(AMatrix.LowerRow());
-  TheTrsf.SetValues(AMatrix(LR,LC),AMatrix(LR,LC+1),AMatrix(LR,LC+2),AMatrix(LR,LC+3),
-		    AMatrix(LR+1,LC),AMatrix(LR+1,LC+1),AMatrix(LR+1,LC+2),AMatrix(LR+1,LC+3),
-		    AMatrix(LR+2,LC),AMatrix(LR+2,LC+1),AMatrix(LR+2,LC+2),AMatrix(LR+2,LC+3));
-  Handle(Geom_Transformation) G = new Geom_Transformation(TheTrsf);
-
-
-  myPresentation3d->Compute(aProjector,G,aGivenStruct);
+  myPresentation3d->Compute (theProjector, theTrsf, theGivenStruct);
 }

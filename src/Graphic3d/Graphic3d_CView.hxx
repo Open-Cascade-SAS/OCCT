@@ -194,7 +194,7 @@ private:
 
   //! Transforms the structure in the view.
   Standard_EXPORT void SetTransform (const Handle(Graphic3d_Structure)& theStructure,
-                                     const TColStd_Array2OfReal& theTrsf);
+                                     const Handle(Geom_Transformation)& theTrsf);
 
   //! Suppress the highlighting on the structure <AStructure>
   //! in the view <me>.

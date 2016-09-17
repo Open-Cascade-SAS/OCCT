@@ -14,23 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <AIS_MultipleConnectedInteractive.hxx>
 
 #include <AIS_ConnectedInteractive.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
-#include <AIS_MultipleConnectedInteractive.hxx>
-#include <Geom_Transformation.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Trsf.hxx>
-#include <NCollection_DataMap.hxx>
-#include <Prs3d_Presentation.hxx>
 #include <Prs3d_Projector.hxx>
 #include <PrsMgr_ModedPresentation.hxx>
-#include <PrsMgr_Presentation.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_MultipleConnectedInteractive,AIS_InteractiveObject)
@@ -190,11 +183,11 @@ Standard_Integer AIS_MultipleConnectedInteractive::Signature() const
 }
 
 //=======================================================================
-//function : Connect
+//function : connect
 //purpose  :
 //=======================================================================
-Handle(AIS_InteractiveObject) AIS_MultipleConnectedInteractive::Connect (const Handle(AIS_InteractiveObject)& theAnotherObj,
-                                                                         const gp_Trsf&                       theTransformation,
+Handle(AIS_InteractiveObject) AIS_MultipleConnectedInteractive::connect (const Handle(AIS_InteractiveObject)& theAnotherObj,
+                                                                         const Handle(Geom_Transformation)& theTrsf,
                                                                          const Handle(Graphic3d_TransformPers)& theTrsfPers)
 {
   if (myAssemblyOwner.IsNull())
@@ -207,7 +200,7 @@ Handle(AIS_InteractiveObject) AIS_MultipleConnectedInteractive::Connect (const H
   { 
     Handle(AIS_MultipleConnectedInteractive) aNewMultiConnected = new AIS_MultipleConnectedInteractive();
     aNewMultiConnected->myAssemblyOwner = myAssemblyOwner;
-    aNewMultiConnected->SetLocalTransformation (aMultiConnected->LocalTransformation());
+    aNewMultiConnected->SetLocalTransformation (aMultiConnected->LocalTransformationGeom());
 
     // Perform deep copy of instance tree
     for (PrsMgr_ListOfPresentableObjectsIter anIter (aMultiConnected->Children()); anIter.More(); anIter.Next())
@@ -226,38 +219,18 @@ Handle(AIS_InteractiveObject) AIS_MultipleConnectedInteractive::Connect (const H
   else
   {
     Handle(AIS_ConnectedInteractive) aNewConnected = new AIS_ConnectedInteractive();
-    aNewConnected->Connect (theAnotherObj);
-    aNewConnected->SetLocalTransformation (theAnotherObj->LocalTransformation());
+    aNewConnected->Connect (theAnotherObj, theAnotherObj->LocalTransformationGeom());
 
     anObjectToAdd = aNewConnected;
   }
 
-  anObjectToAdd->SetLocalTransformation (theTransformation);
+  anObjectToAdd->SetLocalTransformation (theTrsf);
   if (!theTrsfPers.IsNull())
   {
     anObjectToAdd->SetTransformPersistence (theTrsfPers);
   }
   AddChild (anObjectToAdd);
   return anObjectToAdd;
-}
-
-//=======================================================================
-//function : Connect
-//purpose  :
-//=======================================================================
-Handle(AIS_InteractiveObject) AIS_MultipleConnectedInteractive::Connect (const Handle(AIS_InteractiveObject)& theAnotherObj)
-{
-  return Connect (theAnotherObj, theAnotherObj->LocalTransformation(), theAnotherObj->TransformPersistence());
-}
-
-//=======================================================================
-//function : Connect
-//purpose  :
-//=======================================================================
-Handle(AIS_InteractiveObject) AIS_MultipleConnectedInteractive::Connect (const Handle(AIS_InteractiveObject)& theAnotherObj,
-                                                                         const gp_Trsf&                       theTransformation)
-{
-  return Connect (theAnotherObj, theTransformation, theAnotherObj->TransformPersistence());
 }
 
 //=======================================================================

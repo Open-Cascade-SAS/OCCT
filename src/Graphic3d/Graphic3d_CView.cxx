@@ -236,9 +236,7 @@ void Graphic3d_CView::SetComputedMode (const Standard_Boolean theMode)
     }
     else
     {
-      TColStd_Array2OfReal aTrsf (0, 3, 0, 3);
-      aStruct->Transform (aTrsf);
-      Handle(Graphic3d_Structure) aCompStruct = aStruct->IsTransformed() ? aStruct->Compute (this, aTrsf) : aStruct->Compute (this);
+      Handle(Graphic3d_Structure) aCompStruct = aStruct->IsTransformed() ? aStruct->Compute (this, aStruct->Transformation()) : aStruct->Compute (this);
       aCompStruct->SetHLRValidation (Standard_True);
 
       const Standard_Boolean toComputeWireframe = myVisualization == Graphic3d_TOV_WIREFRAME
@@ -314,22 +312,11 @@ void Graphic3d_CView::ReCompute (const Handle(Graphic3d_Structure)& theStruct)
   }
 
   // compute + validation
-  TColStd_Array2OfReal anIdent (0, 3, 0, 3);
-  for (Standard_Integer aRow = 0; aRow <= 3; ++aRow)
-  {
-    for (Standard_Integer aCol = 0; aCol <= 3; ++aCol)
-    {
-      anIdent (aRow, aCol) = (aRow == aCol ? 1.0 : 0.0);
-    }
-  }
-  TColStd_Array2OfReal aTrsf (0, 3, 0, 3);
-  theStruct->Transform (aTrsf);
-
   Handle(Graphic3d_Structure) aCompStructOld = myStructsComputed.ChangeValue (anIndex);
   Handle(Graphic3d_Structure) aCompStruct    = aCompStructOld;
-  aCompStruct->SetTransform (anIdent, Graphic3d_TOC_REPLACE);
-  theStruct->IsTransformed() ? theStruct->Compute (this, aTrsf, aCompStruct)
-                             : theStruct->Compute (this,        aCompStruct);
+  aCompStruct->SetTransformation (Handle(Geom_Transformation)());
+  theStruct->IsTransformed() ? theStruct->Compute (this, theStruct->Transformation(), aCompStruct)
+                             : theStruct->Compute (this,                              aCompStruct);
   aCompStruct->SetHLRValidation (Standard_True);
 
   // of which type will be the computed?
@@ -811,24 +798,13 @@ void Graphic3d_CView::Display (const Handle(Graphic3d_Structure)& theStructure,
 
   // Compute + Validation
   Handle(Graphic3d_Structure) aStruct;
-  TColStd_Array2OfReal aTrsf (0, 3, 0, 3);
-  theStructure->Transform (aTrsf);
   if (anIndex != 0)
   {
-    TColStd_Array2OfReal anIdent (0, 3, 0, 3);
-    for (Standard_Integer ii = 0; ii <= 3; ++ii)
-    {
-      for (Standard_Integer jj = 0; jj <= 3; ++jj)
-      {
-        anIdent (ii, jj) = (ii == jj ? 1.0 : 0.0);
-      }
-    }
-
     aStruct = myStructsComputed.Value (anIndex);
-    aStruct->SetTransform (anIdent, Graphic3d_TOC_REPLACE);
+    aStruct->SetTransformation (Handle(Geom_Transformation)());
     if (theStructure->IsTransformed())
     {
-      theStructure->Compute (this, aTrsf, aStruct);
+      theStructure->Compute (this, theStructure->Transformation(), aStruct);
     }
     else
     {
@@ -838,7 +814,7 @@ void Graphic3d_CView::Display (const Handle(Graphic3d_Structure)& theStructure,
   else
   {
     aStruct = theStructure->IsTransformed()
-            ? theStructure->Compute (this, aTrsf)
+            ? theStructure->Compute (this, theStructure->Transformation())
             : theStructure->Compute (this);
   }
 
@@ -952,7 +928,7 @@ void Graphic3d_CView::Highlight (const Handle(Graphic3d_Structure)& theStructure
 // purpose  :
 // =======================================================================
 void Graphic3d_CView::SetTransform (const Handle(Graphic3d_Structure)& theStructure,
-                                    const TColStd_Array2OfReal& theTrsf)
+                                    const Handle(Geom_Transformation)& theTrsf)
 {
   const Standard_Integer anIndex = IsComputed (theStructure);
   if (anIndex != 0)
@@ -961,9 +937,10 @@ void Graphic3d_CView::SetTransform (const Handle(Graphic3d_Structure)& theStruct
     // trsf is transferred only if it is :
     // a translation
     // a scale
-    if (theTrsf (0, 1) != 0.0 || theTrsf (0, 2) != 0.0
-     || theTrsf (1, 0) != 0.0 || theTrsf (1, 2) != 0.0
-     || theTrsf (2, 0) != 0.0 || theTrsf (2, 1) != 0.0)
+    if (!theTrsf.IsNull()
+      && (theTrsf->Form() == gp_Translation
+       || theTrsf->Form() == gp_Scale
+       || theTrsf->Form() == gp_CompoundTrsf))
     {
       ReCompute (theStructure);
     }

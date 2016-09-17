@@ -29,7 +29,6 @@
 #include <Graphic3d_Vector.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_Array2OfReal.hxx>
 
 #include "Graphic3d_Structure.pxx"
 
@@ -410,7 +409,8 @@ Standard_Boolean Graphic3d_Structure::IsVisible() const
 //=============================================================================
 Standard_Boolean Graphic3d_Structure::IsTransformed() const
 {
-  return !myCStructure->Transformation.IsIdentity();
+  return !myCStructure->Transformation().IsNull()
+       && myCStructure->Transformation()->Form() != gp_Identity;
 }
 
 //=============================================================================
@@ -511,7 +511,7 @@ Handle(Graphic3d_Structure) Graphic3d_Structure::Compute (const Handle(Graphic3d
 //purpose  :
 //=============================================================================
 Handle(Graphic3d_Structure) Graphic3d_Structure::Compute (const Handle(Graphic3d_DataStructureManager)& ,
-                                                          const TColStd_Array2OfReal& )
+                                                          const Handle(Geom_Transformation)& )
 {
   // Implemented by Presentation
   return this;
@@ -532,7 +532,7 @@ void Graphic3d_Structure::Compute (const Handle(Graphic3d_DataStructureManager)&
 //purpose  :
 //=============================================================================
 void Graphic3d_Structure::Compute (const Handle(Graphic3d_DataStructureManager)& ,
-                                   const TColStd_Array2OfReal& ,
+                                   const Handle(Geom_Transformation)& ,
                                    Handle(Graphic3d_Structure)& )
 {
   // Implemented by Presentation
@@ -942,83 +942,20 @@ void Graphic3d_Structure::DisconnectAll (const Graphic3d_TypeOfConnection theTyp
 //function : SetTransform
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::SetTransform (const TColStd_Array2OfReal&       theMatrix,
-                                        const Graphic3d_TypeOfComposition theType)
+void Graphic3d_Structure::SetTransformation (const Handle(Geom_Transformation)& theTrsf)
 {
   if (IsDeleted()) return;
 
-  Standard_Real valuetrsf;
-  Standard_Real valueoldtrsf;
-  Standard_Real valuenewtrsf;
-  TColStd_Array2OfReal aNewTrsf  (0, 3, 0, 3);
-  TColStd_Array2OfReal aMatrix44 (0, 3, 0, 3);
-
-  // Assign the new transformation in an array [0..3][0..3]
-  // Avoid problems if the user has defined matrix [1..4][1..4]
-  //                                            or [3..6][-1..2] !!
-  Standard_Integer lr = theMatrix.LowerRow();
-  Standard_Integer ur = theMatrix.UpperRow();
-  Standard_Integer lc = theMatrix.LowerCol();
-  Standard_Integer uc = theMatrix.UpperCol();
-
-  if ((ur - lr + 1 != 4) || (uc - lc + 1 != 4))
-  {
-    Graphic3d_TransformError::Raise ("Transform : not a 4x4 matrix");
-  }
-
   const Standard_Boolean wasTransformed = IsTransformed();
-  switch (theType)
+
+  if (!theTrsf.IsNull()
+    && theTrsf->Trsf().Form() == gp_Identity)
   {
-    case Graphic3d_TOC_REPLACE:
-    {
-      // Update of CStructure
-      for (Standard_Integer i = 0; i <= 3; ++i)
-      {
-        for (Standard_Integer j = 0; j <= 3; ++j)
-        {
-          myCStructure->Transformation.ChangeValue (i, j) = float (theMatrix (lr + i, lc + j));
-          aNewTrsf (i, j) = theMatrix (lr + i, lc + j);
-        }
-      }
-      break;
-    }
-    case Graphic3d_TOC_POSTCONCATENATE:
-    {
-      // To simplify management of indices
-      for (Standard_Integer i = 0; i <= 3; ++i)
-      {
-        for (Standard_Integer j = 0; j <= 3; ++j)
-        {
-          aMatrix44 (i, j) = theMatrix (lr + i, lc + j);
-        }
-      }
-
-      // Calculation of the product of matrices
-      for (Standard_Integer i = 0; i <= 3; ++i)
-      {
-        for (Standard_Integer j = 0; j <= 3; ++j)
-        {
-          aNewTrsf (i, j) = 0.0;
-          for (Standard_Integer k = 0; k <= 3; ++k)
-          {
-            valueoldtrsf = myCStructure->Transformation.GetValue (i, k);
-            valuetrsf    = aMatrix44 (k, j);
-            valuenewtrsf = aNewTrsf (i, j) + valueoldtrsf * valuetrsf;
-            aNewTrsf (i, j) = valuenewtrsf;
-          }
-        }
-      }
-
-      // Update of CStructure
-      for (Standard_Integer i = 0; i <= 3; ++i)
-      {
-        for (Standard_Integer j = 0; j <= 3; ++j)
-        {
-          myCStructure->Transformation.ChangeValue (i, j) = float (aNewTrsf (i, j));
-        }
-      }
-      break;
-    }
+    myCStructure->SetTransformation (Handle(Geom_Transformation)());
+  }
+  else
+  {
+    myCStructure->SetTransformation (theTrsf);
   }
 
   // If transformation, no validation of hidden already calculated parts
@@ -1027,36 +964,10 @@ void Graphic3d_Structure::SetTransform (const TColStd_Array2OfReal&       theMat
     ReCompute();
   }
 
-  myCStructure->UpdateTransformation();
-  myStructureManager->SetTransform (this, aNewTrsf);
+  myStructureManager->SetTransform (this, theTrsf);
 
   Update (true);
 }
-
-//=============================================================================
-//function : Transform
-//purpose  :
-//=============================================================================
-void Graphic3d_Structure::Transform (TColStd_Array2OfReal& theMatrix) const
-{
-
-  Standard_Integer lr = theMatrix.LowerRow ();
-  Standard_Integer ur = theMatrix.UpperRow ();
-  Standard_Integer lc = theMatrix.LowerCol ();
-  Standard_Integer uc = theMatrix.UpperCol ();
-
-  if ((ur - lr + 1 != 4) || (uc - lc + 1 != 4))
-    Graphic3d_TransformError::Raise ("Transform : not a 4x4 matrix");
-
-  for (Standard_Integer i = 0; i <= 3; ++i)
-  {
-    for (Standard_Integer j = 0; j <= 3; ++j)
-    {
-      theMatrix (lr + i, lc + j) = myCStructure->Transformation.GetValue (i, j);
-    }
-  }
-}
-
 
 //=============================================================================
 //function : MinMaxValues
@@ -1235,10 +1146,12 @@ void Graphic3d_Structure::addTransformed (Graphic3d_BndBox4d&    theBox,
   aBox = aCombinedBox;
   if (aBox.IsValid())
   {
-    TColStd_Array2OfReal aTrsf (0, 3, 0, 3);
-    Transform (aTrsf);
-    TransformBoundaries (aTrsf, aBox.CornerMin().x(), aBox.CornerMin().y(), aBox.CornerMin().z(),
-                                aBox.CornerMax().x(), aBox.CornerMax().y(), aBox.CornerMax().z());
+    if (!myCStructure->Transformation().IsNull())
+    {
+      TransformBoundaries (myCStructure->Transformation()->Trsf(),
+                           aBox.CornerMin().x(), aBox.CornerMin().y(), aBox.CornerMin().z(),
+                           aBox.CornerMax().x(), aBox.CornerMax().y(), aBox.CornerMax().z());
+    }
 
     // if box is still valid after transformation
     if (aBox.IsValid())
@@ -1256,73 +1169,29 @@ void Graphic3d_Structure::addTransformed (Graphic3d_BndBox4d&    theBox,
 //function : Transforms
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::Transforms (const TColStd_Array2OfReal& theTrsf,
+void Graphic3d_Structure::Transforms (const gp_Trsf& theTrsf,
                                       const Standard_Real theX,    const Standard_Real theY,    const Standard_Real theZ,
                                       Standard_Real&      theNewX, Standard_Real&      theNewY, Standard_Real&      theNewZ)
 {
   const Standard_Real aRL = RealLast();
   const Standard_Real aRF = RealFirst();
+  theNewX = theX;
+  theNewY = theY;
+  theNewZ = theZ;
   if ((theX == aRF) || (theY == aRF) || (theZ == aRF)
    || (theX == aRL) || (theY == aRL) || (theZ == aRL))
   {
-    theNewX = theX;
-    theNewY = theY;
-    theNewZ = theZ;
+    return;
   }
-  else
-  {
-    Standard_Real A, B, C, D;
-    A       = theTrsf (0, 0);
-    B       = theTrsf (0, 1);
-    C       = theTrsf (0, 2);
-    D       = theTrsf (0, 3);
-    theNewX = A * theX + B * theY + C * theZ + D;
-    A       = theTrsf (1, 0);
-    B       = theTrsf (1, 1);
-    C       = theTrsf (1, 2);
-    D       = theTrsf (1, 3);
-    theNewY = A * theX + B * theY + C * theZ + D;
-    A       = theTrsf (2, 0);
-    B       = theTrsf (2, 1);
-    C       = theTrsf (2, 2);
-    D       = theTrsf (2, 3);
-    theNewZ = A * theX + B * theY + C * theZ + D;
-  }
+
+  theTrsf.Transforms (theNewX, theNewY, theNewZ);
 }
 
 //=============================================================================
 //function : Transforms
 //purpose  :
 //=============================================================================
-Graphic3d_Vector Graphic3d_Structure::Transforms (const TColStd_Array2OfReal& theTrsf,
-                                                  const Graphic3d_Vector&     theCoord)
-{
-  Standard_Real anXYZ[3];
-  Graphic3d_Structure::Transforms (theTrsf,
-                                   theCoord.X(), theCoord.Y(), theCoord.Z(),
-                                   anXYZ[0], anXYZ[1], anXYZ[2]);
-  return Graphic3d_Vector (anXYZ[0], anXYZ[1], anXYZ[2]);
-}
-
-//=============================================================================
-//function : Transforms
-//purpose  :
-//=============================================================================
-Graphic3d_Vertex Graphic3d_Structure::Transforms (const TColStd_Array2OfReal& theTrsf,
-                                                  const Graphic3d_Vertex&     theCoord)
-{
-  Standard_Real anXYZ[3];
-  Graphic3d_Structure::Transforms (theTrsf,
-                                   theCoord.X(), theCoord.Y(), theCoord.Z(),
-                                   anXYZ[0], anXYZ[1], anXYZ[2]);
-  return Graphic3d_Vertex (anXYZ[0], anXYZ[1], anXYZ[2]);
-}
-
-//=============================================================================
-//function : Transforms
-//purpose  :
-//=============================================================================
-void Graphic3d_Structure::TransformBoundaries (const TColStd_Array2OfReal& theTrsf,
+void Graphic3d_Structure::TransformBoundaries (const gp_Trsf& theTrsf,
                                                Standard_Real& theXMin,
                                                Standard_Real& theYMin,
                                                Standard_Real& theZMin,
@@ -1461,16 +1330,9 @@ void Graphic3d_Structure::GraphicHighlight (const Aspect_TypeOfHighlightMethod t
 //function : GraphicTransform
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::GraphicTransform (const TColStd_Array2OfReal& theMatrix)
+void Graphic3d_Structure::GraphicTransform (const Handle(Geom_Transformation)& theTrsf)
 {
-  for (Standard_Integer i = 0; i <= 3; ++i)
-  {
-    for (Standard_Integer j = 0; j <= 3; ++j)
-    {
-      myCStructure->Transformation.ChangeValue (i, j) = float (theMatrix (i, j));
-    }
-  }
-  myCStructure->UpdateTransformation();
+  myCStructure->SetTransformation (theTrsf);
 }
 
 //=============================================================================

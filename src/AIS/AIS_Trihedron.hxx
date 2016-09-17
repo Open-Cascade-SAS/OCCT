@@ -68,7 +68,7 @@ DEFINE_STANDARD_HANDLE(AIS_Trihedron, AIS_InteractiveObject)
 //! Plane to retrieve the shapes.
 class AIS_Trihedron : public AIS_InteractiveObject
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_Trihedron, AIS_InteractiveObject)
 public:
 
   
@@ -132,9 +132,7 @@ public:
   //! WARNING :<aTrsf> must be applied
   //! to the object to display before computation  !!!
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
-  
-  Standard_EXPORT void SetLocalTransformation (const gp_Trsf& theTransformation) Standard_OVERRIDE;
-  
+
   //! Returns index 3, selection of the planes XOY, YOZ, XOZ.
   Standard_EXPORT virtual Standard_Integer Signature() const Standard_OVERRIDE;
   
@@ -168,15 +166,11 @@ public:
   //! Removes the non-default settings for width set in SetWidth.
   Standard_EXPORT void UnsetWidth() Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(AIS_Trihedron,AIS_InteractiveObject)
-
 protected:
 
-
-
+  Standard_EXPORT virtual void setLocalTransformation (const Handle(Geom_Transformation)& theTrsf) Standard_OVERRIDE;
 
 private:
-
   
   Standard_EXPORT void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
   

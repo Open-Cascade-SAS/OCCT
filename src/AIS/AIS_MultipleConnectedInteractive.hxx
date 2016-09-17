@@ -17,26 +17,8 @@
 #ifndef _AIS_MultipleConnectedInteractive_HeaderFile
 #define _AIS_MultipleConnectedInteractive_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <AIS_InteractiveObject.hxx>
-#include <Graphic3d_TransModeFlags.hxx>
 #include <AIS_KindOfInteractive.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <SelectMgr_Selection.hxx>
-class AIS_InteractiveObject;
-class gp_Trsf;
-class gp_Pnt;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
-
-
-class AIS_MultipleConnectedInteractive;
-DEFINE_STANDARD_HANDLE(AIS_MultipleConnectedInteractive, AIS_InteractiveObject)
 
 //! Defines an Interactive Object by gathering together
 //! several object presentations. This is done through a
@@ -45,40 +27,23 @@ DEFINE_STANDARD_HANDLE(AIS_MultipleConnectedInteractive, AIS_InteractiveObject)
 //! calculations of presentation are avoided.
 class AIS_MultipleConnectedInteractive : public AIS_InteractiveObject
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_MultipleConnectedInteractive, AIS_InteractiveObject)
 public:
 
-  
   //! Initializes the Interactive Object with multiple
   //! connections to AIS_Interactive objects.
   Standard_EXPORT AIS_MultipleConnectedInteractive();
-  
-  //! Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.
-  //! Copies local transformation and transformation persistence mode from theInteractive.
-  //! @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
-  Standard_EXPORT Handle(AIS_InteractiveObject) Connect (const Handle(AIS_InteractiveObject)& theInteractive);
-  
-  //! Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.
-  //! Locates instance in theLocation and copies transformation persistence mode from theInteractive.
-  //! @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
-  Standard_EXPORT Handle(AIS_InteractiveObject) Connect (const Handle(AIS_InteractiveObject)& theInteractive, const gp_Trsf& theLocation);
-  
+
   //! Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.
   //! Locates instance in theLocation and applies specified transformation persistence mode.
   //! @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
-  Standard_EXPORT virtual Handle(AIS_InteractiveObject) Connect (const Handle(AIS_InteractiveObject)& theInteractive,
-                                                                 const gp_Trsf& theLocation,
-                                                                 const Handle(Graphic3d_TransformPers)& theTrsfPers);
-
-  Standard_DEPRECATED("This method is deprecated - Connect() taking Graphic3d_TransformPers should be called instead")
-  Handle(AIS_InteractiveObject) Connect (const Handle(AIS_InteractiveObject)& theInteractive,
-                                         const gp_Trsf& theLocation,
-                                         const Graphic3d_TransModeFlags& theTrsfPersFlag,
-                                         const gp_Pnt& theTrsfPersPoint)
+  Handle(AIS_InteractiveObject) Connect (const Handle(AIS_InteractiveObject)& theAnotherObj,
+                                         const Handle(Geom_Transformation)& theLocation,
+                                         const Handle(Graphic3d_TransformPers)& theTrsfPers)
   {
-    return Connect (theInteractive, theLocation, Graphic3d_TransformPers::FromDeprecatedParams (theTrsfPersFlag, theTrsfPersPoint));
+    return connect (theAnotherObj, theLocation, theTrsfPers);
   }
-  
+
   Standard_EXPORT virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE;
   
   Standard_EXPORT virtual Standard_Integer Signature() const Standard_OVERRIDE;
@@ -114,10 +79,45 @@ public:
   //! children of multiple connected interactive object.
   Standard_EXPORT virtual Standard_Boolean HasSelection (const Standard_Integer theMode) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(AIS_MultipleConnectedInteractive,AIS_InteractiveObject)
+public: // short aliases to Connect() method
+
+  //! Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.
+  //! Copies local transformation and transformation persistence mode from theInteractive.
+  //! @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
+  Handle(AIS_InteractiveObject) Connect (const Handle(AIS_InteractiveObject)& theAnotherObj)
+  {
+    return connect (theAnotherObj, theAnotherObj->LocalTransformationGeom(), theAnotherObj->TransformPersistence());
+  }
+
+  //! Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.
+  //! Locates instance in theLocation and copies transformation persistence mode from theInteractive.
+  //! @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
+  Handle(AIS_InteractiveObject) Connect (const Handle(AIS_InteractiveObject)& theAnotherObj,
+                                         const gp_Trsf& theLocation)
+  {
+    return connect (theAnotherObj, new Geom_Transformation (theLocation), theAnotherObj->TransformPersistence());
+  }
+
+  //! Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.
+  //! Locates instance in theLocation and applies specified transformation persistence mode.
+  //! @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
+  Handle(AIS_InteractiveObject) Connect (const Handle(AIS_InteractiveObject)& theAnotherObj,
+                                         const gp_Trsf& theLocation,
+                                         const Handle(Graphic3d_TransformPers)& theTrsfPers)
+  {
+    return connect (theAnotherObj, new Geom_Transformation (theLocation), theTrsfPers);
+  }
+
+  Standard_DEPRECATED("This method is deprecated - Connect() taking Graphic3d_TransformPers should be called instead")
+  Handle(AIS_InteractiveObject) Connect (const Handle(AIS_InteractiveObject)& theInteractive,
+                                         const gp_Trsf& theLocation,
+                                         const Graphic3d_TransModeFlags& theTrsfPersFlag,
+                                         const gp_Pnt& theTrsfPersPoint)
+  {
+    return connect (theInteractive, new Geom_Transformation (theLocation), Graphic3d_TransformPers::FromDeprecatedParams (theTrsfPersFlag, theTrsfPersPoint));
+  }
 
 protected:
-
   
   //! this method is redefined virtual;
   //! when the instance is connected to another
@@ -127,22 +127,20 @@ protected:
   //! a transformation if there's one stored.
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
 
-
+  //! Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.
+  //! Locates instance in theLocation and applies specified transformation persistence mode.
+  //! @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
+  Standard_EXPORT virtual Handle(AIS_InteractiveObject) connect (const Handle(AIS_InteractiveObject)& theInteractive,
+                                                                 const Handle(Geom_Transformation)& theLocation,
+                                                                 const Handle(Graphic3d_TransformPers)& theTrsfPers);
 
 private:
-
   
   //! Computes the selection for whole subtree in scene hierarchy.
   Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection, const Standard_Integer aMode) Standard_OVERRIDE;
 
-
-
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(AIS_MultipleConnectedInteractive, AIS_InteractiveObject)
 
 #endif // _AIS_MultipleConnectedInteractive_HeaderFile

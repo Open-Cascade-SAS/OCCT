@@ -109,13 +109,7 @@ private:
   
   Standard_EXPORT void Connect (const Handle(PrsMgr_Presentation)& theOther) const;
   
-  Standard_EXPORT void Transform (const Handle(Geom_Transformation)& theTrsf) const;
-  
-  Standard_EXPORT void Place (const Quantity_Length theX, const Quantity_Length theY, const Quantity_Length theZ) const;
-  
-  Standard_EXPORT void Multiply (const Handle(Geom_Transformation)& theTrsf) const;
-  
-  Standard_EXPORT void Move (const Quantity_Length theX, const Quantity_Length theY, const Quantity_Length theZ) const;
+  Standard_EXPORT void SetTransformation (const Handle(Geom_Transformation)& theTrsf) const;
 
   Standard_EXPORT void Compute (const Handle(Graphic3d_Structure)& theStructure);
   

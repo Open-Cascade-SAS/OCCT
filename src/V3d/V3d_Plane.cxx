@@ -134,27 +134,14 @@ Standard_Boolean V3d_Plane::IsDisplayed() const
 // =======================================================================
 void V3d_Plane::Update()
 {
-  if(!myGraphicStructure.IsNull())
+  if (myGraphicStructure.IsNull())
   {
-    TColStd_Array2OfReal aMatrix (1, 4, 1, 4);
-    Standard_Real theA, theB, theC, theD;
-    this->Plane(theA, theB, theC, theD);
-    gp_Pln aGeomPln (theA, theB, theC, theD);
-    gp_Trsf aTransform;
-    aTransform.SetTransformation (aGeomPln.Position());
-    aTransform.Invert();
-    for (Standard_Integer i = 1; i <= 3; i++)
-    {
-      for (Standard_Integer j = 1; j <= 4; j++)
-      {
-        aMatrix.SetValue (i, j, aTransform.Value (i,j));
-      }
-    }
-
-    aMatrix.SetValue (4,1,0.);
-    aMatrix.SetValue (4,2,0.);
-    aMatrix.SetValue (4,3,0.);
-    aMatrix.SetValue (4,4,1.);
-    myGraphicStructure->SetTransform (aMatrix, Graphic3d_TOC_REPLACE);
+    return;
   }
+
+  const gp_Pln aGeomPln = myPlane->ToPlane();
+  gp_Trsf aTransform;
+  aTransform.SetTransformation (aGeomPln.Position());
+  aTransform.Invert();
+  myGraphicStructure->SetTransformation (new Geom_Transformation (aTransform));
 }

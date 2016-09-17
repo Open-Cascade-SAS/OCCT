@@ -640,10 +640,11 @@ void AIS_Manipulator::updateTransformation()
     aTrsf.SetTransformation (gp_Ax2 (gp::Origin(), aVDir, aXDir), gp::XOY());
   }
 
-  AIS_InteractiveObject::SetLocalTransformation (aTrsf);
-
-  Handle(Geom_Transformation) aGeomTrsf = new Geom_Transformation (this->Transformation());
-
+  Handle(Geom_Transformation) aGeomTrsf = new Geom_Transformation (aTrsf);
+  // we explicitly call here setLocalTransformation() of the base class
+  // since AIS_Manipulator::setLocalTransformation() implementation throws exception
+  // as protection from external calls
+  AIS_InteractiveObject::setLocalTransformation (aGeomTrsf);
   for (Standard_Integer anIt = 0; anIt < 3; ++anIt)
   {
     myAxes[anIt].Transform (aGeomTrsf);
@@ -769,14 +770,13 @@ void AIS_Manipulator::setTransformPersistence (const Handle(Graphic3d_TransformP
 }
 
 //=======================================================================
-//function : SetLocalTransformation
-//purpose  : 
+//function : setLocalTransformation
+//purpose  :
 //=======================================================================
-void AIS_Manipulator::SetLocalTransformation (const gp_Trsf& /*theTransformation*/)
+void AIS_Manipulator::setLocalTransformation (const Handle(Geom_Transformation)& /*theTrsf*/)
 {
-  Standard_ASSERT_INVOKE (
-    "AIS_Manipulator::SetLocalTransformation: "
-    "Custom transformation is not supported by this class");
+  Standard_ASSERT_INVOKE ("AIS_Manipulator::setLocalTransformation: "
+                          "Custom transformation is not supported by this class");
 }
 
 //=======================================================================

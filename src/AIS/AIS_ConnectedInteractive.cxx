@@ -14,21 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <AIS_ConnectedInteractive.hxx>
+
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_InteractiveObject.hxx>
 #include <AIS_Shape.hxx>
 #include <BRepTools.hxx>
-#include <Geom_Transformation.hxx>
-#include <gp_Trsf.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Prs3d_Presentation.hxx>
 #include <Prs3d_Projector.hxx>
 #include <PrsMgr_ModedPresentation.hxx>
-#include <PrsMgr_Presentation.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
@@ -57,12 +52,17 @@ AIS_InteractiveObject(aTypeOfPresentation3d)
 }
 
 //=======================================================================
-//function : Connect
-//purpose  : 
+//function : connect
+//purpose  :
 //=======================================================================
-void AIS_ConnectedInteractive::Connect (const Handle(AIS_InteractiveObject)& theAnotherObj)
+void AIS_ConnectedInteractive::connect (const Handle(AIS_InteractiveObject)& theAnotherObj,
+                                        const Handle(Geom_Transformation)&   theLocation)
 {
-  if (myReference == theAnotherObj) return;
+  if (myReference == theAnotherObj)
+  {
+    setLocalTransformation (theLocation);
+    return;
+  }
 
   Handle(AIS_ConnectedInteractive) aConnected = Handle(AIS_ConnectedInteractive)::DownCast (theAnotherObj);
   if (!aConnected.IsNull())
@@ -82,20 +82,8 @@ void AIS_ConnectedInteractive::Connect (const Handle(AIS_InteractiveObject)& the
   {
     myTypeOfPresentation3d = myReference->TypeOfPresentation3d();
   }
+  setLocalTransformation (theLocation);
 }
-
-//=======================================================================
-//function : Connect
-//purpose  : 
-//=======================================================================
-void AIS_ConnectedInteractive::Connect (const Handle(AIS_InteractiveObject)& theAnotherObj, 
-                                        const gp_Trsf&                       theLocation)
-{
-  Connect (theAnotherObj);
-
-  SetLocalTransformation (theLocation);
-}
-
 
 //=======================================================================
 //function : Disconnect

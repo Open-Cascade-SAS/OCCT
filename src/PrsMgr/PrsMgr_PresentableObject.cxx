@@ -16,23 +16,28 @@
 
 #include <PrsMgr_PresentableObject.hxx>
 
-#include <Geom_Transformation.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Trsf.hxx>
-#include <Graphic3d_DataStructureManager.hxx>
-#include <Graphic3d_Structure.hxx>
-#include <Graphic3d_TypeOfStructure.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Projector.hxx>
 #include <PrsMgr_ModedPresentation.hxx>
-#include <PrsMgr_Presentation.hxx>
-#include <PrsMgr_PresentationManager.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_MapOfInteger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_PresentableObject,MMgt_TShared)
+
+namespace
+{
+  static const gp_Trsf THE_IDENTITY_TRSF;
+}
+
+//=======================================================================
+//function : getIdentityTrsf
+//purpose  :
+//=======================================================================
+const gp_Trsf& PrsMgr_PresentableObject::getIdentityTrsf()
+{
+  return THE_IDENTITY_TRSF;
+}
 
 //=======================================================================
 //function : PrsMgr_PresentableObject
@@ -54,10 +59,9 @@ PrsMgr_PresentableObject::PrsMgr_PresentableObject (const PrsMgr_TypeOfPresentat
 //=======================================================================
 PrsMgr_PresentableObject::~PrsMgr_PresentableObject()
 {
-  gp_Trsf anIdentity;
   for (PrsMgr_ListOfPresentableObjectsIter anIter (myChildren); anIter.More(); anIter.Next())
   {
-    anIter.Value()->SetCombinedParentTransform (anIdentity);
+    anIter.Value()->SetCombinedParentTransform (Handle(Geom_Transformation)());
     anIter.Value()->myParent = NULL;
   }
 }
@@ -165,23 +169,6 @@ void PrsMgr_PresentableObject::Update (const Standard_Integer aMode, const Stand
 }
 
 //=======================================================================
-//function : Presentations
-//purpose  : 
-//=======================================================================
-PrsMgr_Presentations& PrsMgr_PresentableObject::Presentations() {
-  return myPresentations;
-}
-
-//=======================================================================
-//function : HasTransformation
-//purpose  : 
-//=======================================================================
-Standard_Boolean PrsMgr_PresentableObject::HasTransformation() const 
-{
-  return myTransformation.Form() != gp_Identity;
-}
-
-//=======================================================================
 //function : SetToUpdate
 //purpose  : 
 //=======================================================================
@@ -241,10 +228,10 @@ void PrsMgr_PresentableObject::SetTypeOfPresentation (const PrsMgr_TypeOfPresent
 }
 
 //=======================================================================
-//function : SetLocalTransformation
-//purpose  : WARNING : use with only 3D objects...
+//function : setLocalTransformation
+//purpose  :
 //=======================================================================
-void PrsMgr_PresentableObject::SetLocalTransformation (const gp_Trsf& theTransformation) 
+void PrsMgr_PresentableObject::setLocalTransformation (const Handle(Geom_Transformation)& theTransformation)
 {
   myLocalTransformation = theTransformation;
   UpdateTransformation();
@@ -256,16 +243,16 @@ void PrsMgr_PresentableObject::SetLocalTransformation (const gp_Trsf& theTransfo
 //=======================================================================
 void PrsMgr_PresentableObject::ResetTransformation() 
 {
-  SetLocalTransformation (gp_Trsf());  
+  setLocalTransformation (Handle(Geom_Transformation)());
 }
 
 //=======================================================================
 //function : SetCombinedParentTransform
 //purpose  : 
 //=======================================================================
-void PrsMgr_PresentableObject::SetCombinedParentTransform (const gp_Trsf& theTransformation) 
+void PrsMgr_PresentableObject::SetCombinedParentTransform (const Handle(Geom_Transformation)& theTrsf)
 {
-  myCombinedParentTransform = theTransformation;
+  myCombinedParentTransform = theTrsf;
   UpdateTransformation();
 }
 
@@ -275,20 +262,36 @@ void PrsMgr_PresentableObject::SetCombinedParentTransform (const gp_Trsf& theTra
 //=======================================================================
 void PrsMgr_PresentableObject::UpdateTransformation()
 {
-  myTransformation = myCombinedParentTransform * myLocalTransformation;
-  myInvTransformation = myTransformation.Inverted();
-  Handle(Geom_Transformation) aTrsf = new Geom_Transformation (myTransformation);
+  myTransformation.Nullify();
+  myInvTransformation = gp_Trsf();
+  if (!myCombinedParentTransform.IsNull() && myCombinedParentTransform->Form() != gp_Identity)
+  {
+    if (!myLocalTransformation.IsNull() && myLocalTransformation->Form() != gp_Identity)
+    {
+      const gp_Trsf aTrsf = myCombinedParentTransform->Trsf() * myLocalTransformation->Trsf();
+      myTransformation    = new Geom_Transformation (aTrsf);
+      myInvTransformation = aTrsf.Inverted();
+    }
+    else
+    {
+      myTransformation    = myCombinedParentTransform;
+      myInvTransformation = myCombinedParentTransform->Trsf().Inverted();
+    }
+  }
+  else if (!myLocalTransformation.IsNull() && myLocalTransformation->Form() != gp_Identity)
+  {
+    myTransformation    = myLocalTransformation;
+    myInvTransformation = myLocalTransformation->Trsf().Inverted();
+  }
 
   for (Standard_Integer aPrsIter = 1; aPrsIter <= myPresentations.Length(); ++aPrsIter)
   {
-    myPresentations (aPrsIter).Presentation()->Transform (aTrsf);
+    myPresentations (aPrsIter).Presentation()->SetTransformation (myTransformation);
   }
-  
-  PrsMgr_ListOfPresentableObjectsIter anIter (myChildren);
 
-  for (; anIter.More(); anIter.Next())
+  for (PrsMgr_ListOfPresentableObjectsIter aChildIter (myChildren); aChildIter.More(); aChildIter.Next())
   {
-    anIter.Value()->SetCombinedParentTransform (myTransformation);
+    aChildIter.Value()->SetCombinedParentTransform (myTransformation);
   }
 }
 
@@ -298,8 +301,7 @@ void PrsMgr_PresentableObject::UpdateTransformation()
 //=======================================================================
 void PrsMgr_PresentableObject::UpdateTransformation(const Handle(Prs3d_Presentation)& P)
 {
-  Handle(Geom_Transformation) aTrsf = new Geom_Transformation (myTransformation);
-  P->Transform (aTrsf);  
+  P->SetTransformation (myTransformation);
 }
 
 //=======================================================================
@@ -392,7 +394,7 @@ void PrsMgr_PresentableObject::RemoveChild (const Handle(PrsMgr_PresentableObjec
     if (anIter.Value() == theObject)
     {
       theObject->myParent = NULL;
-      theObject->SetCombinedParentTransform (gp_Trsf());
+      theObject->SetCombinedParentTransform (Handle(Geom_Transformation)());
       myChildren.Remove (anIter);
       break;
     }

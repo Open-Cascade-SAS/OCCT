@@ -399,7 +399,7 @@ void Graphic3d_StructureManager::UnHighlight()
 // purpose  :
 // ========================================================================
 void Graphic3d_StructureManager::SetTransform (const Handle(Graphic3d_Structure)& theStructure,
-                                               const TColStd_Array2OfReal& theTrsf)
+                                               const Handle(Geom_Transformation)& theTrsf)
 {
   for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
   {

@@ -15,29 +15,25 @@
 #ifndef _gp_Trsf_HeaderFile
 #define _gp_Trsf_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
 #include <gp_TrsfForm.hxx>
 #include <gp_Mat.hxx>
 #include <gp_XYZ.hxx>
+#include <NCollection_Mat4.hxx>
+#include <Standard.hxx>
 #include <Standard_Boolean.hxx>
+#include <Standard_DefineAlloc.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_Handle.hxx>
+#include <Standard_Real.hxx>
+
 class Standard_ConstructionError;
 class Standard_OutOfRange;
-class gp_GTrsf;
-class gp_Trsf2d;
 class gp_Pnt;
 class gp_Ax1;
 class gp_Ax2;
 class gp_Quaternion;
 class gp_Ax3;
 class gp_Vec;
-class gp_XYZ;
-class gp_Mat;
-
 
 //! Defines a non-persistent transformation in 3D space.
 //! The following transformations are implemented :
@@ -320,36 +316,50 @@ void operator *= (const gp_Trsf& T)
   //! Transformation of a triplet XYZ with a Trsf
     void Transforms (gp_XYZ& Coord) const;
 
+  //! Convert transformation to 4x4 matrix.
+  template<class T>
+  void GetMat4 (NCollection_Mat4<T>& theMat) const
+  {
+    if (shape == gp_Identity)
+    {
+      theMat.InitIdentity();
+      return;
+    }
+
+    theMat.SetValue (0, 0, static_cast<T> (Value (1, 1)));
+    theMat.SetValue (0, 1, static_cast<T> (Value (1, 2)));
+    theMat.SetValue (0, 2, static_cast<T> (Value (1, 3)));
+    theMat.SetValue (0, 3, static_cast<T> (Value (1, 4)));
+    theMat.SetValue (1, 0, static_cast<T> (Value (2, 1)));
+    theMat.SetValue (1, 1, static_cast<T> (Value (2, 2)));
+    theMat.SetValue (1, 2, static_cast<T> (Value (2, 3)));
+    theMat.SetValue (1, 3, static_cast<T> (Value (2, 4)));
+    theMat.SetValue (2, 0, static_cast<T> (Value (3, 1)));
+    theMat.SetValue (2, 1, static_cast<T> (Value (3, 2)));
+    theMat.SetValue (2, 2, static_cast<T> (Value (3, 3)));
+    theMat.SetValue (2, 3, static_cast<T> (Value (3, 4)));
+    theMat.SetValue (3, 0, static_cast<T> (0));
+    theMat.SetValue (3, 1, static_cast<T> (0));
+    theMat.SetValue (3, 2, static_cast<T> (0));
+    theMat.SetValue (3, 3, static_cast<T> (1));
+  }
 
 friend class gp_GTrsf;
 
-
 protected:
 
-  
   //! Makes orthogonalization of "matrix"
   Standard_EXPORT void Orthogonalize();
 
-
-
-
 private:
-
-
 
   Standard_Real scale;
   gp_TrsfForm shape;
   gp_Mat matrix;
   gp_XYZ loc;
 
-
 };
 
-
 #include <gp_Trsf.lxx>
-
-
-
-
 
 #endif // _gp_Trsf_HeaderFile

@@ -17,40 +17,19 @@
 #ifndef _PrsMgr_PresentableObject_HeaderFile
 #define _PrsMgr_PresentableObject_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <PrsMgr_Presentations.hxx>
-#include <PrsMgr_TypeOfPresentation3d.hxx>
-#include <Graphic3d_SequenceOfHClipPlane.hxx>
-#include <Standard_Boolean.hxx>
-#include <Graphic3d_ZLayerId.hxx>
-#include <PrsMgr_PresentableObjectPointer.hxx>
 #include <gp_GTrsf.hxx>
-#include <gp_Trsf.hxx>
-#include <PrsMgr_ListOfPresentableObjects.hxx>
-#include <MMgt_TShared.hxx>
-#include <PrsMgr_Presentation.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Standard_Integer.hxx>
+#include <Graphic3d_ClipPlane.hxx>
+#include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_TransformPers.hxx>
 #include <Graphic3d_TransModeFlags.hxx>
+#include <Graphic3d_ZLayerId.hxx>
+#include <PrsMgr_ListOfPresentableObjects.hxx>
+#include <PrsMgr_Presentation.hxx>
+#include <PrsMgr_Presentations.hxx>
+#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentableObjectPointer.hxx>
+#include <PrsMgr_TypeOfPresentation3d.hxx>
 #include <TColStd_ListOfInteger.hxx>
-#include <Graphic3d_ClipPlane.hxx>
-class Standard_NotImplemented;
-class PrsMgr_Presentation;
-class PrsMgr_PresentationManager;
-class Graphic3d_Structure;
-class Graphic3d_DataStructureManager;
-class Geom_Transformation;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class gp_Pnt;
-class gp_Trsf;
-
-
-class PrsMgr_PresentableObject;
-DEFINE_STANDARD_HANDLE(PrsMgr_PresentableObject, MMgt_TShared)
 
 //! A framework to supply the Graphic3d
 //! structure of the object to be presented. On the first
@@ -69,11 +48,10 @@ DEFINE_STANDARD_HANDLE(PrsMgr_PresentableObject, MMgt_TShared)
 //! creation of new interactive objects.
 class PrsMgr_PresentableObject : public MMgt_TShared
 {
-
+  DEFINE_STANDARD_RTTIEXT(PrsMgr_PresentableObject, MMgt_TShared)
 public:
 
-  
-  Standard_EXPORT PrsMgr_Presentations& Presentations();
+  PrsMgr_Presentations& Presentations() { return myPresentations; }
 
   //! Returns information on whether the object accepts display in HLR mode or not.
   PrsMgr_TypeOfPresentation3d TypeOfPresentation3d() const { return myTypeOfPresentation3d; }
@@ -132,15 +110,30 @@ public:
   //! gives the list of modes which are flagged "to be updated".
   Standard_EXPORT void ToBeUpdated (TColStd_ListOfInteger& ListOfMode) const;
   
+  //! Return the local transformation.
+  const Handle(Geom_Transformation)& LocalTransformationGeom() const { return myLocalTransformation; }
+
   //! Sets local transformation to theTransformation.
-  Standard_EXPORT virtual void SetLocalTransformation (const gp_Trsf& theTransformation);
-  
+  void SetLocalTransformation (const gp_Trsf& theTrsf) { setLocalTransformation (new Geom_Transformation (theTrsf)); }
+
+  //! Sets local transformation to theTransformation.
+  void SetLocalTransformation (const Handle(Geom_Transformation)& theTrsf) { setLocalTransformation (theTrsf); }
+
   //! Returns true if object has a transformation that is different from the identity.
-  Standard_EXPORT Standard_Boolean HasTransformation() const;
+  Standard_Boolean HasTransformation() const { return !myTransformation.IsNull() && myTransformation->Form() != gp_Identity; }
 
-  const gp_Trsf& LocalTransformation() const { return myLocalTransformation; }
+  //! Return the transformation taking into account transformation of parent object(s).
+  const Handle(Geom_Transformation)& TransformationGeom() const { return myTransformation; }
 
-  const gp_Trsf& Transformation() const { return myTransformation; }
+  //! Return the local transformation.
+  const gp_Trsf& LocalTransformation() const { return !myLocalTransformation.IsNull()
+                                                     ? myLocalTransformation->Trsf()
+                                                     : getIdentityTrsf(); }
+
+  //! Return the transformation taking into account transformation of parent object(s).
+  const gp_Trsf& Transformation() const { return !myTransformation.IsNull()
+                                                ? myTransformation->Trsf()
+                                                : getIdentityTrsf(); }
 
   const gp_GTrsf& InversedTransformation() const { return myInvTransformation; }
   
@@ -227,9 +220,6 @@ friend
 friend   
   Standard_EXPORT void PrsMgr_Presentation::Compute (const Handle(Graphic3d_DataStructureManager)& theProjector, const Handle(Geom_Transformation)& theTrsf, const Handle(Graphic3d_Structure)& theGivenStruct);
 
-
-  DEFINE_STANDARD_RTTIEXT(PrsMgr_PresentableObject,MMgt_TShared)
-
 protected:
 
   
@@ -282,12 +272,20 @@ Standard_EXPORT virtual ~PrsMgr_PresentableObject();
   
   //! Sets myCombinedParentTransform to theTransformation. Thus object receives transformation
   //! from parent node and able to derive its own.
-  Standard_EXPORT virtual void SetCombinedParentTransform (const gp_Trsf& theTransformation);
+  Standard_EXPORT virtual void SetCombinedParentTransform (const Handle(Geom_Transformation)& theTrsf);
   
   //! General virtual method for internal update of presentation state
   //! when some modifications on list of clip planes occurs. Base
   //! implementation propagate clip planes to every presentation.
   Standard_EXPORT virtual void UpdateClipping();
+
+  //! Sets local transformation to theTransformation.
+  Standard_EXPORT virtual void setLocalTransformation (const Handle(Geom_Transformation)& theTransformation);
+
+private:
+
+  //! Return the identity transformation.
+  Standard_EXPORT static const gp_Trsf& getIdentityTrsf();
 
 protected:
 
@@ -302,12 +300,14 @@ private:
 
   Handle(Graphic3d_TransformPers) myTransformPersistence;
   PrsMgr_PresentableObjectPointer myParent;
-  gp_Trsf myLocalTransformation;
-  gp_Trsf myTransformation;
+  Handle(Geom_Transformation) myLocalTransformation;
+  Handle(Geom_Transformation) myTransformation;
+  Handle(Geom_Transformation) myCombinedParentTransform;
   gp_GTrsf myInvTransformation;
-  gp_Trsf myCombinedParentTransform;
   PrsMgr_ListOfPresentableObjects myChildren;
 
 };
+
+DEFINE_STANDARD_HANDLE(PrsMgr_PresentableObject, MMgt_TShared)
 
 #endif // _PrsMgr_PresentableObject_HeaderFile

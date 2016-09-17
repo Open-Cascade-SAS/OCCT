@@ -78,7 +78,7 @@ public:
   Standard_EXPORT virtual void Disconnect (Graphic3d_CStructure& theStructure) Standard_OVERRIDE;
 
   //! Synchronize structure transformation
-  Standard_EXPORT virtual void UpdateTransformation() Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTransformation (const Handle(Geom_Transformation)& theTrsf) Standard_OVERRIDE;
 
   //! Highlight entire structure with color
   Standard_EXPORT virtual void HighlightWithColor (const Graphic3d_Vec3&  theColor,
