@@ -558,8 +558,17 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
     (void)theDisplayName; // avoid warning on unused argument
     SetDisplayConnection (new Aspect_DisplayConnection ());
   #endif
+
+    if (Draw_VirtualWindows)
+    {
+      // don't waste the time waiting for VSync when window is not displayed on the screen
+      ViewerTest_myDefaultCaps.swapInterval = 0;
+      // alternatively we can disable buffer swap at all, but this might be inappropriate for testing
+      //ViewerTest_myDefaultCaps.buffersNoSwap = true;
+    }
     aGraphicDriver = new OpenGl_GraphicDriver (GetDisplayConnection());
     aGraphicDriver->ChangeOptions() = ViewerTest_myDefaultCaps;
+
     ViewerTest_myDrivers.Bind (aViewNames.GetDriverName(), aGraphicDriver);
     toCreateViewer = Standard_True;
   }
