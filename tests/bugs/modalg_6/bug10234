@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC10234"
+puts "============"
+puts ""
+############################################################################
+# BRepOffsetAPI_MakePipeShell fails on spine built from two segments and profile built from arc
+############################################################################
+
+restore [locate_data_file bug10234a.brep] pr
+restore [locate_data_file bug10234b.brep] sp
+
+mksweep sp
+addsweep pr
+buildsweep result -C
+
+checkshape result
+
+checkprops result -s 45.9872
+
+set nbshapes_expected "
+Number of shapes in result
+ VERTEX    : 6
+ EDGE      : 7
+ WIRE      : 2
+ FACE      : 2
+ SHELL     : 1
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 18
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "Result obtained by Boolean cut operation"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+
