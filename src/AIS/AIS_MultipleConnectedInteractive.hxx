@@ -66,7 +66,18 @@ public:
   //! Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.
   //! Locates instance in theLocation and applies specified transformation persistence mode.
   //! @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
-  Standard_EXPORT virtual Handle(AIS_InteractiveObject) Connect (const Handle(AIS_InteractiveObject)& theInteractive, const gp_Trsf& theLocation, const Graphic3d_TransModeFlags& theTrsfPersFlag, const gp_Pnt& theTrsfPersPoint);
+  Standard_EXPORT virtual Handle(AIS_InteractiveObject) Connect (const Handle(AIS_InteractiveObject)& theInteractive,
+                                                                 const gp_Trsf& theLocation,
+                                                                 const Handle(Graphic3d_TransformPers)& theTrsfPers);
+
+  Standard_DEPRECATED("This method is deprecated - Connect() taking Graphic3d_TransformPers should be called instead")
+  Handle(AIS_InteractiveObject) Connect (const Handle(AIS_InteractiveObject)& theInteractive,
+                                         const gp_Trsf& theLocation,
+                                         const Graphic3d_TransModeFlags& theTrsfPersFlag,
+                                         const gp_Pnt& theTrsfPersPoint)
+  {
+    return Connect (theInteractive, theLocation, Graphic3d_TransformPers::FromDeprecatedParams (theTrsfPersFlag, theTrsfPersPoint));
+  }
   
   Standard_EXPORT virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE;
   

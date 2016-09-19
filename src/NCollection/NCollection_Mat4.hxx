@@ -410,15 +410,19 @@ public:
     return true;
   }
 
-  // Converts NCollection_Mat4 with different element type.
+  //! Take values from NCollection_Mat4 with a different element type with type conversion.
   template <typename Other_t>
-  void Convert (const NCollection_Mat4<Other_t>& theOther)
+  void ConvertFrom (const NCollection_Mat4<Other_t>& theFrom)
   {
     for (int anIdx = 0; anIdx < 16; ++anIdx)
     {
-      myMat[anIdx] = static_cast<Element_t> (theOther.myMat[anIdx]);
+      myMat[anIdx] = static_cast<Element_t> (theFrom.myMat[anIdx]);
     }
   }
+
+  //! Take values from NCollection_Mat4 with a different element type with type conversion.
+  template <typename Other_t>
+  void Convert (const NCollection_Mat4<Other_t>& theFrom) { ConvertFrom (theFrom); }
 
   //! Maps plain C array to matrix type.
   static NCollection_Mat4<Element_t>& Map (Element_t* theData)

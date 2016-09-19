@@ -125,14 +125,14 @@ namespace
 
         Bnd_Box aBoundingBox;
         anObject->BoundingBox (aBoundingBox);
-        if (aBoundingBox.IsVoid())
+        if (aBoundingBox.IsVoid()
+         || anObject->TransformPersistence().IsNull())
         {
           myBoundings.Add (new Select3D_HBndBox3d());
         }
         else
         {
-          anObject->TransformPersistence().Apply (
-            theCamera, theProjectionMat, theWorldViewMat, theWidth, theHeight, aBoundingBox);
+          anObject->TransformPersistence()->Apply (theCamera, theProjectionMat, theWorldViewMat, theWidth, theHeight, aBoundingBox);
 
           const gp_Pnt aMin = aBoundingBox.CornerMin();
           const gp_Pnt aMax = aBoundingBox.CornerMax();

@@ -250,7 +250,7 @@ public: //! @name Configuration of graphical transformations
   //! silently does nothing in release mode.
   //! @warning revise use of AdjustSize argument of of \sa AttachToObjects method
   //! when enabling zoom persistence.
-  Standard_EXPORT virtual void SetTransformPersistence (const Graphic3d_TransModeFlags& theFlag, const gp_Pnt& thePoint) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTransformPersistence (const  Handle(Graphic3d_TransformPers)& theTrsfPers) Standard_OVERRIDE;
 
   //! Redefines local transformation management method to inform user of inproper use.
   //! @warning this interactive object does not support setting custom local transformation,
@@ -347,7 +347,7 @@ protected:
 
   Standard_EXPORT void adjustSize (const Bnd_Box& theBox);
 
-  Standard_EXPORT void setTransformPersistence (const Graphic3d_TransModeFlags& theFlag, const gp_Pnt& thePoint);
+  Standard_EXPORT void setTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers);
 
 protected: //! @name Auxilliary classes to fill presentation with proper primitives
 
@@ -489,27 +489,23 @@ protected: //! @name Auxilliary classes to fill presentation with proper primiti
 
     const gp_Ax1& Position() const { return myPosition; }
 
-    void SetTransformPersistence (const Graphic3d_TransModeFlags& theFlags, const gp_Pnt& thePoint)
+    void SetTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers)
     {
       if (!myHighlightTranslator.IsNull())
       {
-        myHighlightTranslator->SetTransformPersistence (theFlags, thePoint);
+        myHighlightTranslator->SetTransformPersistence (theTrsfPers);
       }
 
       if (!myHighlightScaler.IsNull())
       {
-        myHighlightScaler->SetTransformPersistence (theFlags, thePoint);
+        myHighlightScaler->SetTransformPersistence (theTrsfPers);
       }
 
       if (!myHighlightRotator.IsNull())
       {
-        myHighlightRotator->SetTransformPersistence (theFlags, thePoint);
+        myHighlightRotator->SetTransformPersistence (theTrsfPers);
       }
     }
-
-    Graphic3d_TransModeFlags GetTransformPersistenceMode() const { return myHighlightTranslator->TransformPersistenceMode(); }
-
-    gp_Pnt GetTransformPersistencePoint() const { return myHighlightTranslator->TransformPersistencePoint(); }
 
     void Transform (const Handle(Geom_Transformation)& theTransformation)
     {

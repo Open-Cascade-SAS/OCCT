@@ -2932,11 +2932,9 @@ void AIS_InteractiveContext::FitSelected (const Handle(V3d_View)& theView,
 //purpose  :
 //=======================================================================
 void AIS_InteractiveContext::SetTransformPersistence (const Handle(AIS_InteractiveObject)& theObject,
-                                                      const Graphic3d_TransModeFlags&      theFlag,
-                                                      const gp_Pnt&                        thePoint)
+                                                      const Handle(Graphic3d_TransformPers)& theTrsfPers)
 {
-  theObject->SetTransformPersistence (theFlag, thePoint);
-
+  theObject->SetTransformPersistence (theTrsfPers);
   if (!myObjects.IsBound (theObject))
   {
     return;

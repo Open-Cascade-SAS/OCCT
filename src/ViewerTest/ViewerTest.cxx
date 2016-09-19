@@ -3385,31 +3385,88 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
 
 //! Auxiliary method to parse transformation persistence flags
 inline Standard_Boolean parseTrsfPersFlag (const TCollection_AsciiString& theFlagString,
-                                           Standard_Integer&              theFlags)
+                                           Graphic3d_TransModeFlags&      theFlags)
 {
-  if (theFlagString == "pan")
+  if (theFlagString == "zoom")
   {
-    theFlags |= Graphic3d_TMF_PanPers;
-  }
-  else if (theFlagString == "zoom")
-  {
-    theFlags |= Graphic3d_TMF_ZoomPers;
+    theFlags = Graphic3d_TMF_ZoomPers;
   }
   else if (theFlagString == "rotate")
   {
-    theFlags |= Graphic3d_TMF_RotatePers;
+    theFlags = Graphic3d_TMF_RotatePers;
   }
-  else if (theFlagString == "trihedron")
+  else if (theFlagString == "zoomrotate")
+  {
+    theFlags = Graphic3d_TMF_ZoomRotatePers;
+  }
+  else if (theFlagString == "trihedron"
+        || theFlagString == "triedron")
   {
     theFlags = Graphic3d_TMF_TriedronPers;
-  }
-  else if (theFlagString == "full")
-  {
-    theFlags = Graphic3d_TMF_FullPers;
   }
   else if (theFlagString == "none")
   {
     theFlags = Graphic3d_TMF_None;
+  }
+  else
+  {
+    return Standard_False;
+  }
+
+  return Standard_True;
+}
+
+//! Auxiliary method to parse transformation persistence flags
+inline Standard_Boolean parseTrsfPersCorner (const TCollection_AsciiString& theString,
+                                             Aspect_TypeOfTriedronPosition& theCorner)
+{
+  TCollection_AsciiString aString (theString);
+  aString.LowerCase();
+  if (aString == "center")
+  {
+    theCorner = Aspect_TOTP_CENTER;
+  }
+  else if (aString == "top"
+        || aString == "upper")
+  {
+    theCorner = Aspect_TOTP_TOP;
+  }
+  else if (aString == "bottom"
+        || aString == "lower")
+  {
+    theCorner = Aspect_TOTP_BOTTOM;
+  }
+  else if (aString == "left")
+  {
+    theCorner = Aspect_TOTP_LEFT;
+  }
+  else if (aString == "right")
+  {
+    theCorner = Aspect_TOTP_RIGHT;
+  }
+  else if (aString == "topleft"
+        || aString == "leftupper"
+        || aString == "upperleft")
+  {
+    theCorner = Aspect_TOTP_LEFT_UPPER;
+  }
+  else if (aString == "bottomleft"
+        || aString == "leftlower"
+        || aString == "lowerleft")
+  {
+    theCorner = Aspect_TOTP_LEFT_LOWER;
+  }
+  else if (aString == "topright"
+        || aString == "rightupper"
+        || aString == "upperright")
+  {
+    theCorner = Aspect_TOTP_RIGHT_UPPER;
+  }
+  else if (aString == "bottomright"
+        || aString == "lowerright"
+        || aString == "rightlower")
+  {
+    theCorner = Aspect_TOTP_RIGHT_LOWER;
   }
   else
   {
@@ -3451,8 +3508,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
   Standard_Integer   anObjDispMode  = -2;
   Standard_Integer   anObjHighMode  = -2;
   Standard_Boolean   toSetTrsfPers  = Standard_False;
-  Graphic3d_TransModeFlags aTrsfPersFlags = Graphic3d_TMF_None;
-  gp_Pnt aTPPosition;
+  Handle(Graphic3d_TransformPers) aTrsfPers;
   TColStd_SequenceOfAsciiString aNamesOfDisplayIO;
   AIS_DisplayStatus aDispStatus = AIS_DS_None;
   Standard_Integer toDisplayInView = Standard_False;
@@ -3528,51 +3584,71 @@ static int VDisplay2 (Draw_Interpretor& theDI,
     else if (aNameCase == "-3d")
     {
       toSetTrsfPers  = Standard_True;
-      aTrsfPersFlags = Graphic3d_TMF_None;
+      aTrsfPers.Nullify();
     }
-    else if (aNameCase == "-2d")
+    else if (aNameCase == "-2d"
+          || aNameCase == "-trihedron"
+          || aNameCase == "-triedron")
     {
       toSetTrsfPers  = Standard_True;
-      aTrsfPersFlags = Graphic3d_TMF_2d;
+      aTrsfPers = new Graphic3d_TransformPers (aNameCase == "-2d" ? Graphic3d_TMF_2d : Graphic3d_TMF_TriedronPers, Aspect_TOTP_LEFT_LOWER);
+
+      if (anArgIter + 1 < theArgNb)
+      {
+        Aspect_TypeOfTriedronPosition aCorner = Aspect_TOTP_CENTER;
+        if (parseTrsfPersCorner (theArgVec[anArgIter + 1], aCorner))
+        {
+          ++anArgIter;
+          aTrsfPers->SetCorner2d (aCorner);
+
+          if (anArgIter + 2 < theArgNb)
+          {
+            TCollection_AsciiString anX (theArgVec[anArgIter + 1]);
+            TCollection_AsciiString anY (theArgVec[anArgIter + 2]);
+            if (anX.IsIntegerValue()
+             && anY.IsIntegerValue())
+            {
+              anArgIter += 2;
+              aTrsfPers->SetOffset2d (Graphic3d_Vec2i (anX.IntegerValue(), anY.IntegerValue()));
+            }
+          }
+        }
+      }
     }
     else if (aNameCase == "-trsfpers"
           || aNameCase == "-pers")
     {
-      if (++anArgIter >= theArgNb)
+      if (++anArgIter >= theArgNb
+       || !aTrsfPers.IsNull())
       {
         std::cerr << "Error: wrong syntax at " << aName << ".\n";
         return 1;
       }
 
       toSetTrsfPers  = Standard_True;
-      aTrsfPersFlags = Graphic3d_TMF_None;
+      Graphic3d_TransModeFlags aTrsfPersFlags = Graphic3d_TMF_None;
       TCollection_AsciiString aPersFlags (theArgVec [anArgIter]);
       aPersFlags.LowerCase();
-      for (Standard_Integer aParserPos = aPersFlags.Search ("|");; aParserPos = aPersFlags.Search ("|"))
+      if (!parseTrsfPersFlag (aPersFlags, aTrsfPersFlags))
       {
-        if (aParserPos == -1)
-        {
-          if (!parseTrsfPersFlag (aPersFlags, aTrsfPersFlags))
-          {
-            std::cerr << "Error: wrong transform persistence flags " << theArgVec [anArgIter] << ".\n";
-            return 1;
-          }
-          break;
-        }
+        std::cerr << "Error: wrong transform persistence flags " << theArgVec [anArgIter] << ".\n";
+        return 1;
+      }
 
-        TCollection_AsciiString anOtherFlags = aPersFlags.Split (aParserPos - 1);
-        if (!parseTrsfPersFlag (aPersFlags, aTrsfPersFlags))
-        {
-          std::cerr << "Error: wrong transform persistence flags " << theArgVec [anArgIter] << ".\n";
-          return 1;
-        }
-        aPersFlags = anOtherFlags;
+      if (aTrsfPersFlags == Graphic3d_TMF_TriedronPers)
+      {
+        aTrsfPers = new Graphic3d_TransformPers (Graphic3d_TMF_TriedronPers, Aspect_TOTP_LEFT_LOWER);
+      }
+      else if (aTrsfPersFlags != Graphic3d_TMF_None)
+      {
+        aTrsfPers = new Graphic3d_TransformPers (aTrsfPersFlags, gp_Pnt());
       }
     }
     else if (aNameCase == "-trsfperspos"
           || aNameCase == "-perspos")
     {
-      if (anArgIter + 2 >= theArgNb)
+      if (anArgIter + 2 >= theArgNb
+       || aTrsfPers.IsNull())
       {
         std::cerr << "Error: wrong syntax at " << aName << ".\n";
         return 1;
@@ -3581,8 +3657,8 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       TCollection_AsciiString aX (theArgVec[++anArgIter]);
       TCollection_AsciiString aY (theArgVec[++anArgIter]);
       TCollection_AsciiString aZ = "0";
-      if (!aX.IsIntegerValue()
-       || !aY.IsIntegerValue())
+      if (!aX.IsRealValue()
+       || !aY.IsRealValue())
       {
         std::cerr << "Error: wrong syntax at " << aName << ".\n";
         return 1;
@@ -3590,13 +3666,22 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       if (anArgIter + 1 < theArgNb)
       {
         TCollection_AsciiString aTemp = theArgVec[anArgIter + 1];
-        if (aTemp.IsIntegerValue())
+        if (aTemp.IsRealValue())
         {
           aZ = aTemp;
           ++anArgIter;
         }
       }
-      aTPPosition.SetCoord (aX.IntegerValue(), aY.IntegerValue(), aZ.IntegerValue());
+
+      const gp_Pnt aPnt (aX.RealValue(), aY.RealValue(), aZ.RealValue());
+      if (aTrsfPers->IsZoomOrRotate())
+      {
+        aTrsfPers->SetAnchorPoint (aPnt);
+      }
+      else if (aTrsfPers->IsTrihedronOr2d())
+      {
+        aTrsfPers = Graphic3d_TransformPers::FromDeprecatedParams (aTrsfPers->Mode(), aPnt);
+      }
     }
     else if (aNameCase == "-layer")
     {
@@ -3672,7 +3757,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
         }
         if (toSetTrsfPers)
         {
-          aCtx->SetTransformPersistence (aShape, aTrsfPersFlags, aTPPosition);
+          aCtx->SetTransformPersistence (aShape, aTrsfPers);
         }
         if (anObjDispMode != -2)
         {
@@ -3726,7 +3811,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
     }
     if (toSetTrsfPers)
     {
-      aCtx->SetTransformPersistence (aShape, aTrsfPersFlags, aTPPosition);
+      aCtx->SetTransformPersistence (aShape, aTrsfPers);
     }
     if (anObjDispMode != -2)
     {
@@ -5523,7 +5608,11 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add("vdisplay",
               "vdisplay [-noupdate|-update] [-local] [-mutable] [-neutral]"
-      "\n\t\t:          [-trsfPers {pan|zoom|rotate|trihedron|full|none}=none] [-trsfPersPos X Y [Z]] [-3d|-2d]"
+      "\n\t\t:          [-trsfPers {zoom|rotate|zoomRotate|none}=none]"
+      "\n\t\t:                            [-trsfPersPos X Y [Z]] [-3d]"
+      "\n\t\t:          [-2d|-trihedron [{top|bottom|left|right|topLeft"
+      "\n\t\t:                           |topRight|bottomLeft|bottomRight}"
+      "\n\t\t:                                         [offsetX offsetY]]]"
       "\n\t\t:          [-dispMode mode] [-highMode mode]"
       "\n\t\t:          [-layer index] [-top|-topmost|-overlay|-underlay]"
       "\n\t\t:          [-redisplay]"
@@ -5532,21 +5621,28 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t: Option -local enables displaying of objects in local"
       "\n\t\t: selection context. Local selection context will be opened"
       "\n\t\t: if there is not any."
-      "\n\t\t:  -noupdate    suppresses viewer redraw call."
-      "\n\t\t:  -mutable     enables optimizations for mutable objects."
-      "\n\t\t:  -neutral     draws objects in main viewer."
-      "\n\t\t:  -layer       sets z-layer for objects. It can use -overlay|-underlay|-top|-topmost instead of -layer index for the default z-layers."
-      "\n\t\t:  -top         draws objects on top of main presentations but below topmost."
-      "\n\t\t:  -topmost     draws in overlay for 3D presentations with independent Depth."
-      "\n\t\t:  -overlay     draws objects in overlay for 2D presentations (On-Screen-Display)."
-      "\n\t\t:  -underlay    draws objects in underlay for 2D presentations (On-Screen-Display)."
-      "\n\t\t:  -selectable|-noselect controls selection of objects."
-      "\n\t\t:  -trsfPers    sets a transform persistence flags. Flag 'full' is pan, zoom and rotate."
-      "\n\t\t:  -trsfPersPos sets an anchor point for transform persistence."
-      "\n\t\t:  -2d          displays object in screen coordinates (DY looks up)."
-      "\n\t\t:  -dispmode sets display mode for objects."
-      "\n\t\t:  -highmode sets hilight mode for objects."
-      "\n\t\t:  -redisplay recomputes presentation of objects.",
+      "\n\t\t:  -noupdate    Suppresses viewer redraw call."
+      "\n\t\t:  -mutable     Enables optimizations for mutable objects."
+      "\n\t\t:  -neutral     Draws objects in main viewer."
+      "\n\t\t:  -layer       Sets z-layer for objects."
+      "\n\t\t:               Alternatively -overlay|-underlay|-top|-topmost"
+      "\n\t\t:               options can be used for the default z-layers."
+      "\n\t\t:  -top         Draws object on top of main presentations"
+      "\n\t\t:               but below topmost."
+      "\n\t\t:  -topmost     Draws in overlay for 3D presentations."
+      "\n\t\t:               with independent Depth."
+      "\n\t\t:  -overlay     Draws objects in overlay for 2D presentations."
+      "\n\t\t:               (On-Screen-Display)"
+      "\n\t\t:  -underlay    Draws objects in underlay for 2D presentations."
+      "\n\t\t:               (On-Screen-Display)"
+      "\n\t\t:  -selectable|-noselect Controls selection of objects."
+      "\n\t\t:  -trsfPers    Sets a transform persistence flags."
+      "\n\t\t:  -trsfPersPos Sets an anchor point for transform persistence."
+      "\n\t\t:  -2d          Displays object in screen coordinates."
+      "\n\t\t:               (DY looks up)"
+      "\n\t\t:  -dispmode    Sets display mode for objects."
+      "\n\t\t:  -highmode    Sets hilight mode for objects."
+      "\n\t\t:  -redisplay   Recomputes presentation of objects.",
       __FILE__, VDisplay2, group);
 
   theCommands.Add ("vupdate",

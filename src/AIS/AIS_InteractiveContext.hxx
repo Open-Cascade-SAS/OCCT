@@ -599,9 +599,16 @@ public:
   Standard_EXPORT void Status (const Handle(AIS_InteractiveObject)& anObj, TCollection_ExtendedString& astatus) const;
   
   //! Sets transform persistence.
-  Standard_EXPORT void SetTransformPersistence (const Handle(AIS_InteractiveObject)& theObj,
-                                                const Graphic3d_TransModeFlags&      theFlag,
-                                                const gp_Pnt&                        thePoint = gp_Pnt (0.0, 0.0, 0.0));
+  Standard_EXPORT void SetTransformPersistence (const Handle(AIS_InteractiveObject)& theObject,
+                                                const Handle(Graphic3d_TransformPers)& theTrsfPers);
+
+  Standard_DEPRECATED("This method is deprecated - SetTransformPersistence() taking Graphic3d_TransformPers should be called instead")
+  void SetTransformPersistence (const Handle(AIS_InteractiveObject)& theObj,
+                                const Graphic3d_TransModeFlags&      theFlag,
+                                const gp_Pnt&                        thePoint = gp_Pnt (0.0, 0.0, 0.0))
+  {
+    SetTransformPersistence (theObj, Graphic3d_TransformPers::FromDeprecatedParams (theFlag, thePoint));
+  }
 
   //! Updates the current viewer, the viewer in Neutral Point.
   //! Objects selected when there is no open local context

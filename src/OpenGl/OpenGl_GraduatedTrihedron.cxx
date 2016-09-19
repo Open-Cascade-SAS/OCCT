@@ -411,12 +411,9 @@ void OpenGl_GraduatedTrihedron::renderAxis (const Handle(OpenGl_Workspace)& theW
   // Render arrow
   OpenGl_Vec3 anArrowVec = myMin + anAxis.Direction * (myMax - myMin);
 
-  Graphic3d_TransformPers aTransMode;
-  aTransMode.Flags = Graphic3d_TMF_ZoomPers;
-  aTransMode.Point.x() = anArrowVec.x();
-  aTransMode.Point.y() = anArrowVec.y();
-  aTransMode.Point.z() = anArrowVec.z();
-
+  Graphic3d_TransformPers aTransMode (Graphic3d_TMF_ZoomPers, gp_Pnt (Standard_Real(anArrowVec.x()),
+                                                                      Standard_Real(anArrowVec.y()),
+                                                                      Standard_Real(anArrowVec.z())));
   const OpenGl_Mat4& aProjection = aContext->ProjectionState.Current();
   const OpenGl_Mat4& aWorldView  = aContext->WorldViewState.Current();
   const Standard_Integer aWidth  = theWorkspace->Width();

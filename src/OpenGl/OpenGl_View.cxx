@@ -576,9 +576,7 @@ Graphic3d_BndBox4f OpenGl_View::ZLayerBoundingBox (const Graphic3d_ZLayerId     
     Graphic3d_BndBox4f aBox2d (Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f),
                                Graphic3d_Vec4 (float(theWindowWidth), float(theWindowHeight), 0.0f, 0.0f));
 
-    Graphic3d_TransformPers aTrsfPers;
-    aTrsfPers.Flags = Graphic3d_TMF_2d;
-    aTrsfPers.Point = Graphic3d_Vec3d(-1.0, -1.0, 0.0);
+    Graphic3d_TransformPers aTrsfPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_LOWER);
     aTrsfPers.Apply (theCamera,
                      aProjectionMat,
                      aWorldViewMat,

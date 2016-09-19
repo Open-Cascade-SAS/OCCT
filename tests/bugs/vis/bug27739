@@ -22,9 +22,9 @@ box box2d_loc 100 100 1
 box box_zoom  100 100 100
 
 vdisplay box3d     -dispMode 1 -highMode 0
-vdisplay box2d     -dispMode 1 -highMode 1 -2d
-vdisplay box2d_pos -dispMode 1 -highMode 1 -2d -trsfPersPos -1 -1
-vdisplay box2d_loc -dispMode 1 -highMode 1 -2d
+vdisplay box2d     -dispMode 1 -highMode 1 -2d center
+vdisplay box2d_pos -dispMode 1 -highMode 1 -2d bottomLeft
+vdisplay box2d_loc -dispMode 1 -highMode 1 -2d center
 vdisplay box_zoom  -dispMode 1 -highMode 0 -trsfPers zoom
 vdisplay box2d
 vsetlocation box2d_loc  100  0   0

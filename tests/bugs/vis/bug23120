@@ -10,7 +10,7 @@ box b1 10 20 30
 box b2 10 20 30
 ttranslate b2 50 50 0
 vinit
-vdisplay b1 -trsfPers trihedron
+vdisplay b1 -trihedron center
 
 vdisplay b2
 vfit

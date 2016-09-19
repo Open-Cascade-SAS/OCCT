@@ -284,10 +284,12 @@ void AIS_TextLabel::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
               aCenterOfLabel.ChangeCoord() -= myOrientation3D.XDirection().XYZ() * aWidth * 0.5;
             }
 
-            if (!anAsp->Aspect()->GetTextZoomable())
+            if (!anAsp->Aspect()->GetTextZoomable()
+             && (TransformPersistence().IsNull()
+              || TransformPersistence()->Mode() == Graphic3d_TMF_ZoomPers))
             {
               anAsp->Aspect()->SetTextZoomable (Standard_True);
-              SetTransformPersistence (GetTransformPersistenceMode() | Graphic3d_TMF_ZoomPers, aPosition);
+              SetTransformPersistence (new Graphic3d_TransformPers (Graphic3d_TMF_ZoomPers, aPosition));
               aPosition = gp::Origin();
             }
 

@@ -38,7 +38,7 @@ OpenGl_StructureShadow::OpenGl_StructureShadow (const Handle(Graphic3d_Structure
 
   UpdateTransformation();
   myInstancedStructure = const_cast<OpenGl_Structure*> (myParent->InstancedStructure());
-  TransformPersistence = myParent->TransformPersistence;
+  myTrsfPers = myParent->TransformPersistence();
 
   // reuse instanced structure API
   myInstancedStructure = myParent.operator->();

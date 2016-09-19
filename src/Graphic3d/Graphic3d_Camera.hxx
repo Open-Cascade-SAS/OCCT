@@ -22,8 +22,6 @@
 #include <Graphic3d_Vec3.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>
 
-#include <NCollection_Handle.hxx>
-
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 
@@ -45,46 +43,50 @@ private:
   template<typename Elem_t>
   struct TransformMatrices
   {
+
+    //! Default constructor.
+    TransformMatrices() : myIsOrientationValid (Standard_False), myIsProjectionValid (Standard_False) {}
+
+    //! Initialize orientation.
     void InitOrientation()
     {
-      Orientation = new NCollection_Mat4<Elem_t>();
+      myIsOrientationValid = Standard_True;
+      Orientation.InitIdentity();
     }
 
+    //! Initialize projection.
     void InitProjection()
     {
-      MProjection = new NCollection_Mat4<Elem_t>();
-      LProjection = new NCollection_Mat4<Elem_t>();
-      RProjection = new NCollection_Mat4<Elem_t>();
+      myIsProjectionValid = Standard_True;
+      MProjection.InitIdentity();
+      LProjection.InitIdentity();
+      RProjection.InitIdentity();
     }
 
-    void ResetOrientation()
-    {
-      Orientation.Nullify();
-    }
+    //! Invalidate orientation.
+    void ResetOrientation() { myIsOrientationValid = Standard_False; }
 
-    void ResetProjection()
-    {
-      MProjection.Nullify();
-      LProjection.Nullify();
-      RProjection.Nullify();
-    }
+    //! Invalidate projection.
+    void ResetProjection()  { myIsProjectionValid  = Standard_False; }
 
-    Standard_Boolean IsOrientationValid()
-    {
-      return !Orientation.IsNull();
-    }
+    //! Return true if Orientation was not invalidated.
+    Standard_Boolean IsOrientationValid() const { return myIsOrientationValid; }
 
-    Standard_Boolean IsProjectionValid()
-    {
-      return !MProjection.IsNull() &&
-             !LProjection.IsNull() &&
-             !RProjection.IsNull();
-    }
+    //! Return true if Projection was not invalidated.
+    Standard_Boolean IsProjectionValid()  const { return myIsProjectionValid;  }
 
-    NCollection_Handle< NCollection_Mat4<Elem_t> > Orientation;
-    NCollection_Handle< NCollection_Mat4<Elem_t> > MProjection;
-    NCollection_Handle< NCollection_Mat4<Elem_t> > LProjection;
-    NCollection_Handle< NCollection_Mat4<Elem_t> > RProjection;
+  public:
+
+    NCollection_Mat4<Elem_t> Orientation;
+    NCollection_Mat4<Elem_t> MProjection;
+    NCollection_Mat4<Elem_t> LProjection;
+    NCollection_Mat4<Elem_t> RProjection;
+
+  private:
+
+    Standard_Boolean myIsOrientationValid;
+    Standard_Boolean myIsProjectionValid;
+
   };
 
 public:
@@ -637,6 +639,7 @@ private:
 
   Projection    myProjType; //!< Projection type used for rendering.
   Standard_Real myFOVy;     //!< Field Of View in y axis.
+  Standard_Real myFOVyTan;  //!< Field Of View as Tan(DTR_HALF * myFOVy)
   Standard_Real myZNear;    //!< Distance to near clipping plane.
   Standard_Real myZFar;     //!< Distance to far clipping plane.
   Standard_Real myAspect;   //!< Width to height display ratio.

@@ -17,7 +17,7 @@ OCC_BaseView::OCC_BaseView()
     myCurZoom (0.0),
     myRect (new AIS_RubberBand (Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_SOLID, 1.0) )
 {
-  myRect->SetTransformPersistence (Graphic3d_TMF_2d, gp_Pnt(-1, -1, 0));
+  myRect->SetTransformPersistence (new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_LOWER));
   if (myRect->ZLayer() != Graphic3d_ZLayerId_TopOSD)
   {
     myRect->SetZLayer (Graphic3d_ZLayerId_TopOSD);

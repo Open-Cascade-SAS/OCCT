@@ -471,18 +471,14 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   }
 #endif
 
-  if (TransformPersistence.Flags)
+  if (!myTrsfPers.IsNull())
   {
-    OpenGl_Mat4 aProjection = aCtx->ProjectionState.Current();
-    OpenGl_Mat4 aWorldView  = aCtx->WorldViewState.Current();
-    TransformPersistence.Apply (theWorkspace->View()->Camera(), aProjection, aWorldView,
-                                aCtx->Viewport()[2], aCtx->Viewport()[3]);
+    OpenGl_Mat4 aWorldView = aCtx->WorldViewState.Current();
+    myTrsfPers->Apply (theWorkspace->View()->Camera(), aCtx->ProjectionState.Current(), aWorldView,
+                       aCtx->Viewport()[2], aCtx->Viewport()[3]);
 
-    aCtx->ProjectionState.Push();
     aCtx->WorldViewState.Push();
-    aCtx->ProjectionState.SetCurrent (aProjection);
     aCtx->WorldViewState.SetCurrent (aWorldView);
-    aCtx->ApplyProjectionMatrix();
 
   #if !defined(GL_ES_VERSION_2_0)
     if (!aCtx->IsGlNormalizeEnabled()
@@ -526,8 +522,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   if (aCtx->Clipping().IsClippingOrCappingOn())
   {
     const Graphic3d_BndBox4f& aBBox = BoundingBox();
-    if (TransformPersistence.Flags == Graphic3d_TMF_TriedronPers
-     || TransformPersistence.Flags == Graphic3d_TMF_2d
+    if ((!myTrsfPers.IsNull() && myTrsfPers->IsTrihedronOr2d())
      || (!myClipPlanes.IsNull() && myClipPlanes->ToOverrideGlobal()))
     {
       aCtx->ChangeClipping().DisableGlobal (aCtx);
@@ -537,7 +532,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
     // Set of clipping planes that do not intersect the structure,
     // and thus can be disabled to improve rendering performance
     if (aBBox.IsValid()
-     && TransformPersistence.Flags == Graphic3d_TMF_None)
+     && myTrsfPers.IsNull())
     {
       for (OpenGl_ClippingIterator aPlaneIt (aCtx->Clipping()); aPlaneIt.More(); aPlaneIt.Next())
       {
@@ -617,11 +612,9 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   // Restore local transformation
   aCtx->ModelWorldState.Pop();
   aCtx->SetGlNormalizeEnabled (anOldGlNormalize);
-  if (TransformPersistence.Flags)
+  if (!myTrsfPers.IsNull())
   {
-    aCtx->ProjectionState.Pop();
     aCtx->WorldViewState.Pop();
-    aCtx->ApplyProjectionMatrix();
   }
 
   // Restore highlight color

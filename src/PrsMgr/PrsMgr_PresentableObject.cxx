@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <PrsMgr_PresentableObject.hxx>
 
 #include <Geom_Transformation.hxx>
 #include <gp_Pnt.hxx>
@@ -24,7 +25,6 @@
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Projector.hxx>
 #include <PrsMgr_ModedPresentation.hxx>
-#include <PrsMgr_PresentableObject.hxx>
 #include <PrsMgr_Presentation.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 #include <Standard_NotImplemented.hxx>
@@ -74,7 +74,7 @@ void PrsMgr_PresentableObject::Fill (const Handle(PrsMgr_PresentationManager)& t
   Compute (thePrsMgr, aStruct3d, theMode);
   UpdateTransformation (aStruct3d);
   aStruct3d->SetClipPlanes (myClipPlanes);
-  aStruct3d->SetTransformPersistence (GetTransformPersistenceMode(), GetTransformPersistencePoint());
+  aStruct3d->SetTransformPersistence (TransformPersistence());
 }
 
 //=======================================================================
@@ -306,20 +306,16 @@ void PrsMgr_PresentableObject::UpdateTransformation(const Handle(Prs3d_Presentat
 //function : SetTransformPersistence
 //purpose  :
 //=======================================================================
-void PrsMgr_PresentableObject::SetTransformPersistence (const Graphic3d_TransModeFlags& theFlag,
-                                                        const gp_Pnt&                   thePoint)
+void PrsMgr_PresentableObject::SetTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers)
 {
-  myTransformPersistence.Flags     = theFlag;
-  myTransformPersistence.Point.x() = thePoint.X();
-  myTransformPersistence.Point.y() = thePoint.Y();
-  myTransformPersistence.Point.z() = thePoint.Z();
+  myTransformPersistence = theTrsfPers;
   for (Standard_Integer aPrsIter = 1; aPrsIter <= myPresentations.Length(); ++aPrsIter)
   {
     const Handle(PrsMgr_Presentation)& aPrs3d = myPresentations (aPrsIter).Presentation();
     if (!aPrs3d.IsNull()
      && !aPrs3d->Presentation().IsNull())
     {
-      aPrs3d->Presentation()->SetTransformPersistence (theFlag, thePoint);
+      aPrs3d->Presentation()->SetTransformPersistence (myTransformPersistence);
       aPrs3d->Presentation()->ReCompute();
     }
   }
@@ -327,22 +323,44 @@ void PrsMgr_PresentableObject::SetTransformPersistence (const Graphic3d_TransMod
 
 //=======================================================================
 //function : GetTransformPersistence
-//purpose  : 
-//=======================================================================
-Graphic3d_TransModeFlags PrsMgr_PresentableObject::GetTransformPersistenceMode() const
-{
-  return myTransformPersistence.Flags;
-}
-
-//=======================================================================
-//function : GetTransformPersistence
-//purpose  : 
+//purpose  :
 //=======================================================================
 gp_Pnt PrsMgr_PresentableObject::GetTransformPersistencePoint() const
 {
-  return gp_Pnt (myTransformPersistence.Point.x(),
-                 myTransformPersistence.Point.y(),
-                 myTransformPersistence.Point.z());
+  if (myTransformPersistence.IsNull())
+  {
+    return gp_Pnt();
+  }
+  else if (myTransformPersistence->IsZoomOrRotate())
+  {
+    return myTransformPersistence->AnchorPoint();
+  }
+  else if (!myTransformPersistence->IsTrihedronOr2d())
+  {
+    return gp_Pnt();
+  }
+
+  Standard_Real anX = 0.0;
+  if ((myTransformPersistence->Corner2d() & Aspect_TOTP_RIGHT) != 0)
+  {
+    anX = 1.0;
+  }
+  else if ((myTransformPersistence->Corner2d() & Aspect_TOTP_LEFT) != 0)
+  {
+    anX = -1.0;
+  }
+
+  Standard_Real anY = 0.0;
+  if ((myTransformPersistence->Corner2d() & Aspect_TOTP_TOP) != 0)
+  {
+    anY = 1.0;
+  }
+  else if ((myTransformPersistence->Corner2d() & Aspect_TOTP_BOTTOM) != 0)
+  {
+    anY = -1.0;
+  }
+
+  return gp_Pnt (anX, anY, myTransformPersistence->Offset2d().x());
 }
 
 //=======================================================================

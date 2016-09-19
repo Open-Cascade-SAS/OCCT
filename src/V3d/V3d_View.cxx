@@ -2126,7 +2126,7 @@ void V3d_View::Gravity (Standard_Real& theX,
     }
 
     // skip transformation-persistent objects
-    if (aStruct->TransformPersistence().Flags != Graphic3d_TMF_None)
+    if (!aStruct->TransformPersistence().IsNull())
     {
       continue;
     }

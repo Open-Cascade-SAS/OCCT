@@ -74,6 +74,7 @@ Graphic3d_Camera::Graphic3d_Camera()
   myAxialScale (1.0, 1.0, 1.0),
   myProjType (Projection_Orthographic),
   myFOVy (45.0),
+  myFOVyTan (Tan (DTR_HALF * 45.0)),
   myZNear (DEFAULT_ZNEAR),
   myZFar (DEFAULT_ZFAR),
   myAspect (1.0),
@@ -271,7 +272,7 @@ void Graphic3d_Camera::SetScale (const Standard_Real theScale)
     case Projection_MonoLeftEye  :
     case Projection_MonoRightEye :
     {
-      Standard_Real aDistance = theScale * 0.5 / Tan(DTR_HALF * myFOVy);
+      Standard_Real aDistance = theScale * 0.5 / myFOVyTan;
       SetDistance (aDistance);
     }
 
@@ -298,7 +299,7 @@ Standard_Real Graphic3d_Camera::Scale() const
     // case Projection_MonoLeftEye  :
     // case Projection_MonoRightEye :
     default :
-      return Distance() * 2.0 * Tan (DTR_HALF * myFOVy);
+      return Distance() * 2.0 * myFOVyTan;
   }
 }
 
@@ -344,6 +345,7 @@ void Graphic3d_Camera::SetFOVy (const Standard_Real theFOVy)
   }
 
   myFOVy = theFOVy;
+  myFOVyTan = Tan(DTR_HALF * myFOVy);
 
   InvalidateProjection();
 }
@@ -646,7 +648,7 @@ gp_Pnt Graphic3d_Camera::ConvertView2World (const gp_Pnt& thePnt) const
 gp_XYZ Graphic3d_Camera::ViewDimensions (const Standard_Real theZValue) const
 {
   // view plane dimensions
-  Standard_Real aSize = IsOrthographic() ? myScale : (2.0 * theZValue * Tan (DTR_HALF * myFOVy));
+  Standard_Real aSize = IsOrthographic() ? myScale : (2.0 * theZValue * myFOVyTan);
   Standard_Real aSizeX, aSizeY;
   if (myAspect > 1.0)
   {
@@ -719,7 +721,7 @@ void Graphic3d_Camera::Frustum (gp_Pln& theLeft,
 // =======================================================================
 const Graphic3d_Mat4d& Graphic3d_Camera::OrientationMatrix() const
 {
-  return *UpdateOrientation (myMatricesD).Orientation;
+  return UpdateOrientation (myMatricesD).Orientation;
 }
 
 // =======================================================================
@@ -728,7 +730,7 @@ const Graphic3d_Mat4d& Graphic3d_Camera::OrientationMatrix() const
 // =======================================================================
 const Graphic3d_Mat4& Graphic3d_Camera::OrientationMatrixF() const
 {
-  return *UpdateOrientation (myMatricesF).Orientation;
+  return UpdateOrientation (myMatricesF).Orientation;
 }
 
 // =======================================================================
@@ -737,7 +739,7 @@ const Graphic3d_Mat4& Graphic3d_Camera::OrientationMatrixF() const
 // =======================================================================
 const Graphic3d_Mat4d& Graphic3d_Camera::ProjectionMatrix() const
 {
-  return *UpdateProjection (myMatricesD).MProjection;
+  return UpdateProjection (myMatricesD).MProjection;
 }
 
 // =======================================================================
@@ -746,7 +748,7 @@ const Graphic3d_Mat4d& Graphic3d_Camera::ProjectionMatrix() const
 // =======================================================================
 const Graphic3d_Mat4& Graphic3d_Camera::ProjectionMatrixF() const
 {
-  return *UpdateProjection (myMatricesF).MProjection;
+  return UpdateProjection (myMatricesF).MProjection;
 }
 
 // =======================================================================
@@ -755,7 +757,7 @@ const Graphic3d_Mat4& Graphic3d_Camera::ProjectionMatrixF() const
 // =======================================================================
 const Graphic3d_Mat4d& Graphic3d_Camera::ProjectionStereoLeft() const
 {
-  return *UpdateProjection (myMatricesD).LProjection;
+  return UpdateProjection (myMatricesD).LProjection;
 }
 
 // =======================================================================
@@ -764,7 +766,7 @@ const Graphic3d_Mat4d& Graphic3d_Camera::ProjectionStereoLeft() const
 // =======================================================================
 const Graphic3d_Mat4& Graphic3d_Camera::ProjectionStereoLeftF() const
 {
-  return *UpdateProjection (myMatricesF).LProjection;
+  return UpdateProjection (myMatricesF).LProjection;
 }
 
 // =======================================================================
@@ -773,7 +775,7 @@ const Graphic3d_Mat4& Graphic3d_Camera::ProjectionStereoLeftF() const
 // =======================================================================
 const Graphic3d_Mat4d& Graphic3d_Camera::ProjectionStereoRight() const
 {
-  return *UpdateProjection (myMatricesD).RProjection;
+  return UpdateProjection (myMatricesD).RProjection;
 }
 
 // =======================================================================
@@ -782,7 +784,7 @@ const Graphic3d_Mat4d& Graphic3d_Camera::ProjectionStereoRight() const
 // =======================================================================
 const Graphic3d_Mat4& Graphic3d_Camera::ProjectionStereoRightF() const
 {
-  return *UpdateProjection (myMatricesF).RProjection;
+  return UpdateProjection (myMatricesF).RProjection;
 }
 
 // =======================================================================
@@ -813,8 +815,8 @@ Graphic3d_Camera::TransformMatrices<Elem_t>&
   }
   else
   {
-    aDXHalf = aZNear * Elem_t (Tan (DTR_HALF * myFOVy));
-    aDYHalf = aZNear * Elem_t (Tan (DTR_HALF * myFOVy));
+    aDXHalf = aZNear * Elem_t (myFOVyTan);
+    aDYHalf = aZNear * Elem_t (myFOVyTan);
   }
 
   if (anAspect > 1.0)
@@ -854,19 +856,19 @@ Graphic3d_Camera::TransformMatrices<Elem_t>&
   switch (myProjType)
   {
     case Projection_Orthographic :
-      OrthoProj (aLeft, aRight, aBot, aTop, aZNear, aZFar, *theMatrices.MProjection);
+      OrthoProj (aLeft, aRight, aBot, aTop, aZNear, aZFar, theMatrices.MProjection);
       break;
 
     case Projection_Perspective :
-      PerspectiveProj (aLeft, aRight, aBot, aTop, aZNear, aZFar, *theMatrices.MProjection);
+      PerspectiveProj (aLeft, aRight, aBot, aTop, aZNear, aZFar, theMatrices.MProjection);
       break;
 
     case Projection_MonoLeftEye :
     {
       StereoEyeProj (aLeft, aRight, aBot, aTop,
                      aZNear, aZFar, aIOD, aFocus,
-                     Standard_True, *theMatrices.MProjection);
-      *theMatrices.LProjection = *theMatrices.MProjection;
+                     Standard_True, theMatrices.MProjection);
+      theMatrices.LProjection = theMatrices.MProjection;
       break;
     }
 
@@ -874,24 +876,24 @@ Graphic3d_Camera::TransformMatrices<Elem_t>&
     {
       StereoEyeProj (aLeft, aRight, aBot, aTop,
                      aZNear, aZFar, aIOD, aFocus,
-                     Standard_False, *theMatrices.MProjection);
-      *theMatrices.RProjection = *theMatrices.MProjection;
+                     Standard_False, theMatrices.MProjection);
+      theMatrices.RProjection = theMatrices.MProjection;
       break;
     }
 
     case Projection_Stereo :
     {
-      PerspectiveProj (aLeft, aRight, aBot, aTop, aZNear, aZFar, *theMatrices.MProjection);
+      PerspectiveProj (aLeft, aRight, aBot, aTop, aZNear, aZFar, theMatrices.MProjection);
 
       StereoEyeProj (aLeft, aRight, aBot, aTop,
                      aZNear, aZFar, aIOD, aFocus,
                      Standard_True,
-                     *theMatrices.LProjection);
+                     theMatrices.LProjection);
 
       StereoEyeProj (aLeft, aRight, aBot, aTop,
                      aZNear, aZFar, aIOD, aFocus,
                      Standard_False,
-                     *theMatrices.RProjection);
+                     theMatrices.RProjection);
       break;
     }
   }
@@ -930,7 +932,7 @@ Graphic3d_Camera::TransformMatrices<Elem_t>&
                                          static_cast<Elem_t> (myAxialScale.Y()),
                                          static_cast<Elem_t> (myAxialScale.Z()));
 
-  LookOrientation (anEye, aCenter, anUp, anAxialScale, *theMatrices.Orientation);
+  LookOrientation (anEye, aCenter, anUp, anAxialScale, theMatrices.Orientation);
 
   return theMatrices; // for inline accessors
 }

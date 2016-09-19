@@ -47,7 +47,7 @@ AIS_RubberBand::AIS_RubberBand()
   myDrawer->ShadingAspect()->SetTransparency (1.0);
   myDrawer->ShadingAspect()->SetColor (Quantity_NOC_WHITE);
 
-  SetTransformPersistence (Graphic3d_TMF_2d, gp_Pnt(-1, -1, 0));
+  SetTransformPersistence (new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_LOWER));
   SetZLayer (Graphic3d_ZLayerId_TopOSD);
 }
 
@@ -66,7 +66,7 @@ AIS_RubberBand::AIS_RubberBand (const Quantity_Color& theLineColor,
   myDrawer->ShadingAspect()->SetTransparency (1.0);
   myDrawer->ShadingAspect()->SetColor (Quantity_NOC_WHITE);
 
-  SetTransformPersistence (Graphic3d_TMF_2d, gp_Pnt(-1, -1, 0));
+  SetTransformPersistence (new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_LOWER));
   SetZLayer (Graphic3d_ZLayerId_TopOSD);
 }
 
@@ -87,7 +87,7 @@ AIS_RubberBand::AIS_RubberBand (const Quantity_Color& theLineColor,
   myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle (Aspect_IS_SOLID);
   myDrawer->ShadingAspect()->SetTransparency (theTransparency);
 
-  SetTransformPersistence (Graphic3d_TMF_2d, gp_Pnt(-1, -1, 0));
+  SetTransformPersistence (new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_LOWER));
   SetZLayer (Graphic3d_ZLayerId_TopOSD);
 }
 

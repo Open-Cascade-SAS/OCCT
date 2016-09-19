@@ -195,7 +195,7 @@ void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(V3d_View)& theVi
     {
       if (anObj->CurrentSelection()->GetSelectionState() == SelectMgr_SOS_Activated)
       {
-        computeSensitivePrs (aStruct, anObj->CurrentSelection(), anObj->Transformation(), Graphic3d_TransformPers());
+        computeSensitivePrs (aStruct, anObj->CurrentSelection(), anObj->Transformation(), Handle(Graphic3d_TransformPers)());
       }
     }
 
@@ -247,7 +247,7 @@ void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(SelectMgr_Select
 
   Handle(Graphic3d_Structure) aStruct = new Graphic3d_Structure (theView->Viewer()->StructureManager());
 
-  computeSensitivePrs (aStruct, theSel, theTrsf, Graphic3d_TransformPers());
+  computeSensitivePrs (aStruct, theSel, theTrsf, Handle(Graphic3d_TransformPers)());
 
   myStructs.Append (aStruct);
   myStructs.Last()->SetDisplayPriority (10);
@@ -263,11 +263,9 @@ void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(SelectMgr_Select
 void StdSelect_ViewerSelector3d::computeSensitivePrs (const Handle(Graphic3d_Structure)& theStructure,
                                                       const Handle(SelectMgr_Selection)& theSel,
                                                       const gp_Trsf& theLoc,
-                                                      const Graphic3d_TransformPers& theTransPers)
+                                                      const Handle(Graphic3d_TransformPers)& theTrsfPers)
 {
-  theStructure->SetTransformPersistence (theTransPers.Flags, gp_Pnt (theTransPers.Point.x(),
-                                                                     theTransPers.Point.y(),
-                                                                     theTransPers.Point.z()));
+  theStructure->SetTransformPersistence (theTrsfPers);
 
   Handle(Graphic3d_Group) aSensGroup  = theStructure->NewGroup();
 

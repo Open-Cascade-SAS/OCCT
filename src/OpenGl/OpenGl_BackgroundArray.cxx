@@ -27,6 +27,7 @@
 // =======================================================================
 OpenGl_BackgroundArray::OpenGl_BackgroundArray (const Graphic3d_TypeOfBackground theType)
 : OpenGl_PrimitiveArray (NULL, Graphic3d_TOPA_TRIANGLESTRIPS, NULL, NULL, NULL),
+  myTrsfPers (Graphic3d_TMF_2d, theType == Graphic3d_TOB_TEXTURE ? Aspect_TOTP_CENTER : Aspect_TOTP_LEFT_LOWER),
   myType (theType),
   myFillMethod (Aspect_FM_NONE),
   myViewWidth (0),
@@ -41,18 +42,6 @@ OpenGl_BackgroundArray::OpenGl_BackgroundArray (const Graphic3d_TypeOfBackground
   myGradientParams.color1 = OpenGl_Vec4 (0.0f, 0.0f, 0.0f, 1.0f);
   myGradientParams.color2 = OpenGl_Vec4 (0.0f, 0.0f, 0.0f, 1.0f);
   myGradientParams.type   = Aspect_GFM_NONE;
-
-  myTrsfPers.Flags = Graphic3d_TMF_2d;
-  if (myType == Graphic3d_TOB_TEXTURE)
-  {
-    myTrsfPers.Point.x() = 0.0;
-    myTrsfPers.Point.y() = 0.0;
-  }
-  else
-  {
-    myTrsfPers.Point.x() = -1.0;
-    myTrsfPers.Point.y() = -1.0;
-  }
 }
 
 // =======================================================================

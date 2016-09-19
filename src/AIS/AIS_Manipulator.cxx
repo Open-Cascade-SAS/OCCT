@@ -651,10 +651,11 @@ void AIS_Manipulator::updateTransformation()
 
   if (myIsZoomPersistentMode)
   {
-    if (!(GetTransformPersistenceMode () == Graphic3d_TMF_ZoomPers
-       && GetTransformPersistencePoint().IsEqual (myPosition.Location(), 0.)))
+    if (TransformPersistence().IsNull()
+    ||  TransformPersistence()->Mode() != Graphic3d_TMF_ZoomPers
+    || !TransformPersistence()->AnchorPoint().IsEqual (myPosition.Location(), 0.0))
     {
-      setTransformPersistence (Graphic3d_TMF_ZoomPers, myPosition.Location());
+      setTransformPersistence (new Graphic3d_TransformPers (Graphic3d_TMF_ZoomPers, myPosition.Location()));
     }
   }
 }
@@ -734,7 +735,7 @@ void AIS_Manipulator::SetZoomPersistence (const Standard_Boolean theToEnable)
 
   if (!theToEnable)
   {
-    setTransformPersistence (Graphic3d_TMF_None, gp::Origin());
+    setTransformPersistence (Handle(Graphic3d_TransformPers)());
   }
 
   updateTransformation();
@@ -742,28 +743,28 @@ void AIS_Manipulator::SetZoomPersistence (const Standard_Boolean theToEnable)
 
 //=======================================================================
 //function : SetTransformPersistence
-//purpose  : 
+//purpose  :
 //=======================================================================
-void AIS_Manipulator::SetTransformPersistence (const Graphic3d_TransModeFlags& theFlag, const gp_Pnt& thePoint)
+void AIS_Manipulator::SetTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers)
 {
   Standard_ASSERT_RETURN (!myIsZoomPersistentMode,
     "AIS_Manipulator::SetTransformPersistence: "
-    "Custom settings are not supported by this class in ZoomPersistence mode",);
+    "Custom settings are not allowed by this class in ZoomPersistence mode",);
 
-  setTransformPersistence (theFlag, thePoint);
+  setTransformPersistence (theTrsfPers);
 }
 
 //=======================================================================
 //function : setTransformPersistence
 //purpose  : 
 //=======================================================================
-void AIS_Manipulator::setTransformPersistence (const Graphic3d_TransModeFlags& theFlag, const gp_Pnt& thePoint)
+void AIS_Manipulator::setTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers)
 {
-  AIS_InteractiveObject::SetTransformPersistence (theFlag, thePoint);
+  AIS_InteractiveObject::SetTransformPersistence (theTrsfPers);
 
   for (Standard_Integer anIt = 0; anIt < 3; ++anIt)
   {
-    myAxes[anIt].SetTransformPersistence (theFlag, thePoint);
+    myAxes[anIt].SetTransformPersistence (theTrsfPers);
   }
 }
 
@@ -814,8 +815,7 @@ void AIS_Manipulator::Compute (const Handle(PrsMgr_PresentationManager3d)& thePr
     anAspectAx->SetColor (myAxes[anIt].Color());
     aGroup->SetGroupPrimitivesAspect (anAspectAx->Aspect());
     myAxes[anIt].Compute (thePrsMgr, thePrs, anAspectAx);
-    myAxes[anIt].SetTransformPersistence (GetTransformPersistenceMode(),
-                                          GetTransformPersistencePoint());
+    myAxes[anIt].SetTransformPersistence (TransformPersistence());
   }
 
   updateTransformation();

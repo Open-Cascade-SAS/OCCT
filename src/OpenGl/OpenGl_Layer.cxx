@@ -68,7 +68,7 @@ void OpenGl_Layer::Add (const OpenGl_Structure* theStruct,
   }
   else if (!isForChangePriority)
   {
-    if (theStruct->TransformPersistence.Flags == Graphic3d_TMF_None)
+    if (theStruct->TransformPersistence().IsNull())
     {
       myBVHPrimitives.Add (theStruct);
     }
@@ -198,14 +198,15 @@ Graphic3d_BndBox4f OpenGl_Layer::BoundingBox (const Standard_Integer          th
 
         // "FitAll" operation ignores object with transform persistence parameter
         // but adds transform persistence point in a bounding box of layer (only zoom pers. objects).
-        if (aStructure->TransformPersistence.Flags != Graphic3d_TMF_None)
+        if (!aStructure->TransformPersistence().IsNull())
         {
           if (!theToIncludeAuxiliary
-           && (aStructure->TransformPersistence.Flags & Graphic3d_TMF_ZoomPers) != 0)
+            && aStructure->TransformPersistence()->IsZoomOrRotate())
           {
-            BVH_Vec4f aTPPoint (static_cast<float> (aStructure->TransformPersistence.Point.x()),
-                                static_cast<float> (aStructure->TransformPersistence.Point.y()),
-                                static_cast<float> (aStructure->TransformPersistence.Point.z()),
+            const gp_Pnt anAnchor = aStructure->TransformPersistence()->AnchorPoint();
+            BVH_Vec4f aTPPoint (static_cast<float> (anAnchor.X()),
+                                static_cast<float> (anAnchor.Y()),
+                                static_cast<float> (anAnchor.Z()),
                                 1.0f);
 
             myBoundingBox[aBoxId].Combine (aTPPoint);
@@ -214,7 +215,7 @@ Graphic3d_BndBox4f OpenGl_Layer::BoundingBox (const Standard_Integer          th
           // Panning and 2d persistence apply changes to projection or/and its translation components.
           // It makes them incompatible with z-fitting algorithm. Ignored by now.
           else if (!theToIncludeAuxiliary
-                || (aStructure->TransformPersistence.Flags & (Graphic3d_TMF_2d | Graphic3d_TMF_PanPers | Graphic3d_TMF_TriedronPers)) != 0)
+                 || aStructure->TransformPersistence()->IsTrihedronOr2d())
           {
             continue;
           }
@@ -233,14 +234,9 @@ Graphic3d_BndBox4f OpenGl_Layer::BoundingBox (const Standard_Integer          th
           aBox = centerOfinfiniteBndBox (aBox);
         }
 
-        if (aStructure->TransformPersistence.Flags != Graphic3d_TMF_None)
+        if (!aStructure->TransformPersistence().IsNull())
         {
-          aStructure->TransformPersistence.Apply (theCamera,
-                                                  aProjectionMat,
-                                                  aWorldViewMat,
-                                                  theWindowWidth,
-                                                  theWindowHeight,
-                                                  aBox);
+          aStructure->TransformPersistence()->Apply (theCamera, aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBox);
         }
 
         // skip too big boxes to prevent float overflow at camera parameters calculation
@@ -269,7 +265,8 @@ Graphic3d_BndBox4f OpenGl_Layer::BoundingBox (const Standard_Integer          th
     {
       continue;
     }
-    else if ((aStructure->TransformPersistence.Flags & (Graphic3d_TMF_TriedronPers | Graphic3d_TMF_2d)) == 0)
+    else if (aStructure->TransformPersistence().IsNull()
+         || !aStructure->TransformPersistence()->IsTrihedronOr2d())
     {
       continue;
     }
@@ -280,12 +277,7 @@ Graphic3d_BndBox4f OpenGl_Layer::BoundingBox (const Standard_Integer          th
       continue;
     }
 
-    aStructure->TransformPersistence.Apply (theCamera,
-                                            aProjectionMat,
-                                            aWorldViewMat,
-                                            theWindowWidth,
-                                            theWindowHeight,
-                                            aBox);
+    aStructure->TransformPersistence()->Apply (theCamera, aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBox);
     if (!isInfiniteBndBox (aBox))
     {
       aResBox.Combine (aBox);
@@ -321,7 +313,8 @@ Standard_Real OpenGl_Layer::considerZoomPersistenceObjects (const Standard_Integ
     {
       OpenGl_Structure* aStructure = const_cast<OpenGl_Structure*> (aStructures.FindKey (aStructIdx));
       if (!aStructure->IsVisible (theViewId)
-       || (aStructure->TransformPersistence.Flags & Graphic3d_TMF_ZoomPers) == 0)
+       ||  aStructure->TransformPersistence().IsNull()
+       || !aStructure->TransformPersistence()->IsZoomOrRotate())
       {
         continue;
       }
@@ -332,7 +325,7 @@ Standard_Real OpenGl_Layer::considerZoomPersistenceObjects (const Standard_Integ
         continue;
       }
 
-      aStructure->TransformPersistence.Apply (theCamera, aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBox);
+      aStructure->TransformPersistence()->Apply (theCamera, aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBox);
 
       const BVH_Vec4f&       aCornerMin           = aBox.CornerMin();
       const BVH_Vec4f&       aCornerMax           = aBox.CornerMax();
@@ -372,9 +365,7 @@ Standard_Real OpenGl_Layer::considerZoomPersistenceObjects (const Standard_Integ
         continue;
       }
 
-      const gp_Pnt aTPPoint (aStructure->TransformPersistence.Point.x(),
-                             aStructure->TransformPersistence.Point.y(),
-                             aStructure->TransformPersistence.Point.z());
+      const gp_Pnt aTPPoint = aStructure->TransformPersistence()->AnchorPoint();
       gp_Pnt aConvertedTPPoint = theCamera->Project (aTPPoint);
       aConvertedTPPoint.SetZ (0.0);
 
@@ -473,7 +464,7 @@ void OpenGl_Layer::updateBVH() const
         aStruct->MarkAsNotCulled();
         myAlwaysRenderedMap.Add (aStruct);
       }
-      else if (aStruct->TransformPersistence.Flags == Graphic3d_TMF_None)
+      else if (aStruct->TransformPersistence().IsNull())
       {
         myBVHPrimitives.Add (aStruct);
       }

@@ -139,11 +139,6 @@
 #include <TColStd_HArray1OfAsciiString.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 
-#if defined(_MSC_VER)
-# define _CRT_SECURE_NO_DEPRECATE
-# pragma warning (disable:4996)
-#endif
-
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theName,
                                            const Handle(AIS_InteractiveObject)& theAISObj,
@@ -2508,10 +2503,8 @@ static int VDrawText (Draw_Interpretor& theDI,
 
   aTextPrs->SetText (aText);
 
-  Graphic3d_TransModeFlags aTrsfPersFlags = Graphic3d_TMF_None;
-  gp_Pnt aTPPosition;
+  Handle(Graphic3d_TransformPers) aTrsfPers;
   Aspect_TypeOfDisplayText aDisplayType = Aspect_TODT_NORMAL;
-
 
   Standard_Boolean aHasPlane = Standard_False;
   gp_Dir           aNormal;
@@ -2799,7 +2792,7 @@ static int VDrawText (Draw_Interpretor& theDI,
     }
     else if (aParam == "-2d")
     {
-      aTrsfPersFlags = Graphic3d_TMF_2d;
+      aTrsfPers = new Graphic3d_TransformPers (Graphic3d_TMF_2d);
     }
     else if (aParam == "-trsfperspos"
           || aParam == "-perspos")
@@ -2828,7 +2821,8 @@ static int VDrawText (Draw_Interpretor& theDI,
           ++anArgIt;
         }
       }
-      aTPPosition.SetCoord (aX.IntegerValue(), aY.IntegerValue(), aZ.IntegerValue());
+
+      aTrsfPers = Graphic3d_TransformPers::FromDeprecatedParams (Graphic3d_TMF_2d, gp_Pnt (aX.IntegerValue(), aY.IntegerValue(), aZ.IntegerValue()));
     }
     else
     {
@@ -2844,18 +2838,18 @@ static int VDrawText (Draw_Interpretor& theDI,
 
   aTextPrs->SetDisplayType (aDisplayType);
 
-  if (aTrsfPersFlags != Graphic3d_TMF_None)
+  if (!aTrsfPers.IsNull())
   {
-    aContext->SetTransformPersistence (aTextPrs, aTrsfPersFlags, aTPPosition);
+    aContext->SetTransformPersistence (aTextPrs, aTrsfPers);
     aTextPrs->SetZLayer(Graphic3d_ZLayerId_TopOSD);
     if (aTextPrs->Position().Z() != 0)
     {
       aTextPrs->SetPosition (gp_Pnt(aTextPrs->Position().X(), aTextPrs->Position().Y(), 0));
     }
   }
-  else if (aTrsfPersFlags != aTextPrs->TransformPersistence().Flags)
+  else if (!aTextPrs->TransformPersistence().IsNull())
   {
-    aContext->SetTransformPersistence (aTextPrs, aTrsfPersFlags);
+    aContext->SetTransformPersistence (aTextPrs, Handle(Graphic3d_TransformPers)());
   }
   ViewerTest::Display (aName, aTextPrs, Standard_False);
   return 0;

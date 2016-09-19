@@ -171,8 +171,7 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
   if (!anOwner.IsNull())
   {
     aSelectable = anOwner->Selectable();
-    if (aSelectable->TransformPersistence().Flags == Graphic3d_TMF_TriedronPers
-     || aSelectable->TransformPersistence().Flags == Graphic3d_TMF_2d
+    if ((!aSelectable->TransformPersistence().IsNull() && aSelectable->TransformPersistence()->IsTrihedronOr2d())
      || (!aSelectable->ClipPlanes().IsNull() && aSelectable->ClipPlanes()->ToOverrideGlobal()))
     {
       theMgr.SetViewClippingEnabled (Standard_False);
@@ -289,17 +288,16 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
 
   gp_GTrsf aInversedTrsf;
 
-  if (theObject->HasTransformation() || theObject->TransformPersistence().Flags)
+  if (theObject->HasTransformation() || !theObject->TransformPersistence().IsNull())
   {
-    if (!theObject->TransformPersistence().Flags)
+    if (theObject->TransformPersistence().IsNull())
     {
       aInversedTrsf = theObject->InversedTransformation();
     }
     else
     {
       gp_GTrsf aTPers;
-      Graphic3d_Mat4d aMat = theObject->TransformPersistence().Compute (
-        theCamera, theProjectionMat, theWorldViewMat, theViewportWidth, theViewportHeight);
+      Graphic3d_Mat4d aMat = theObject->TransformPersistence()->Compute (theCamera, theProjectionMat, theWorldViewMat, theViewportWidth, theViewportHeight);
 
       aTPers.SetValue (1, 1, aMat.GetValue (0, 0));
       aTPers.SetValue (1, 2, aMat.GetValue (0, 1));

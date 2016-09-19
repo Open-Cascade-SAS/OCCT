@@ -1034,9 +1034,16 @@ Thus the recommended way to generate vector image of a 3D model or scene is to u
 
 @subsection upgrade_710_trsfpers Transformation persistence
 
-The behavior of transformation persistence flags Graphic3d_TMF_ZoomPers and Graphic3d_TMF_TriedronPers have been changed to be consistent with textured fixed-size 2D text.
+The behavior of transformation persistence flags *Graphic3d_TMF_ZoomPers* and *Graphic3d_TMF_TriedronPers* have been changed to be consistent with textured fixed-size 2D text.
 Object with these flags is considered to be defined in pixel units, and presentation is no more scaled depending on view height.
 Applications that need to scale such objects depending on viewport size should update them manually.
+
+Flags *Graphic3d_TMF_PanPers* and *Graphic3d_TMF_FullPers* has been removed.
+*Graphic3d_TMF_TriedronPers* or *Graphic3d_TMF_2d* can be used instead depending on context.
+
+*Graphic3d_TransModeFlags* is not an integer bitmask anymore - enumeration values should be specified instead.
+Several transformation persistence methods in PrsMgr_PresentableObject have been marked deprecated.
+Transformation persistence should be defined using directly Graphic3d_TransformPers constructor and passed by a handle, not value.
 
 @subsection upgrade_710_removed Removed features
 

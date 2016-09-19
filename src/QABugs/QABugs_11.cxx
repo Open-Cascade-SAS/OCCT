@@ -4556,9 +4556,10 @@ static Standard_Integer OCC12584 (Draw_Interpretor& di, Standard_Integer argc, c
   {
     aCS->SetZLayer (Graphic3d_ZLayerId_TopOSD);
   }
-  if (aCS->GetTransformPersistenceMode() != Graphic3d_TMF_2d)
+  if (aCS->TransformPersistence().IsNull()
+   || aCS->TransformPersistence()->Mode() != Graphic3d_TMF_2d)
   {
-    aContext->SetTransformPersistence (aCS, Graphic3d_TMF_2d, gp_Pnt (-1,-1,0));
+    aContext->SetTransformPersistence (aCS, new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_LOWER));
   }
   Standard_Integer aWinWidth, aWinHeight;
   V->Window()->Size (aWinWidth, aWinHeight);

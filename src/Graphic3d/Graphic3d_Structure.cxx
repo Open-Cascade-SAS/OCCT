@@ -1103,46 +1103,14 @@ Standard_Integer Graphic3d_Structure::Identification() const
 //function : SetTransformPersistence
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::SetTransformPersistence (const Graphic3d_TransModeFlags& theFlag)
+void Graphic3d_Structure::SetTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers)
 {
-  SetTransformPersistence (theFlag, gp_Pnt (0.0, 0.0, 0.0));
-}
+  if (IsDeleted())
+  {
+    return;
+  }
 
-//=============================================================================
-//function : SetTransformPersistence
-//purpose  :
-//=============================================================================
-void Graphic3d_Structure::SetTransformPersistence (const Graphic3d_TransModeFlags& theFlag,
-                                                   const gp_Pnt&                   thePoint)
-{
-  if (IsDeleted()) return;
-
-  myCStructure->TransformPersistence.Flags     = theFlag;
-  myCStructure->TransformPersistence.Point.x() = thePoint.X();
-  myCStructure->TransformPersistence.Point.y() = thePoint.Y();
-  myCStructure->TransformPersistence.Point.z() = thePoint.Z();
-}
-
-//=============================================================================
-//function : TransformPersistenceMode
-//purpose  :
-//=============================================================================
-Graphic3d_TransModeFlags Graphic3d_Structure::TransformPersistenceMode() const
-{
-  return myCStructure->TransformPersistence.Flags;
-}
-
-//=============================================================================
-//function : TransformPersistencePoint
-//purpose  :
-//=============================================================================
-gp_Pnt Graphic3d_Structure::TransformPersistencePoint() const
-{
-  gp_Pnt aPnt (0.0, 0.0, 0.0);
-  aPnt.SetX (myCStructure->TransformPersistence.Point.x());
-  aPnt.SetY (myCStructure->TransformPersistence.Point.y());
-  aPnt.SetZ (myCStructure->TransformPersistence.Point.z());
-  return aPnt;
+  myCStructure->SetTransformPersistence (theTrsfPers);
 }
 
 //=============================================================================

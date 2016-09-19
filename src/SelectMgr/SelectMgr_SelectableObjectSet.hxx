@@ -184,11 +184,11 @@ private:
   //! Returns an appropriate subset of theObject given depending on its persistence type.
   Standard_Integer appropriateSubset (const Handle(SelectMgr_SelectableObject)& theObject)
   {
-    if (!theObject->TransformPersistence().Flags)
+    if (theObject->TransformPersistence().IsNull())
     {
       return SelectMgr_SelectableObjectSet::BVHSubset_3d;
     }
-    else if (theObject->TransformPersistence().Flags & Graphic3d_TMF_2d)
+    else if (theObject->TransformPersistence()->Mode() == Graphic3d_TMF_2d)
     {
       return SelectMgr_SelectableObjectSet::BVHSubset_2dPersistent;
     }

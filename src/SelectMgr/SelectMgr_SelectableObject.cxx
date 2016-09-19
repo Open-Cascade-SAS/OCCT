@@ -348,14 +348,13 @@ void SelectMgr_SelectableObject::SetAutoHilight ( const Standard_Boolean newAuto
 //function : GetHilightPresentation
 //purpose  : 
 //=======================================================================
-Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetHilightPresentation( const Handle(PrsMgr_PresentationManager3d)& TheMgr )
+Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetHilightPresentation (const Handle(PrsMgr_PresentationManager3d)& theMgr)
 {
-  if( myHilightPrs.IsNull() && !TheMgr.IsNull() )
-    {
-      myHilightPrs = new Prs3d_Presentation( TheMgr->StructureManager() );
-      myHilightPrs->SetTransformPersistence( GetTransformPersistenceMode(), 
-					 GetTransformPersistencePoint() );
-    }
+  if (myHilightPrs.IsNull() && !theMgr.IsNull())
+  {
+    myHilightPrs = new Prs3d_Presentation (theMgr->StructureManager());
+    myHilightPrs->SetTransformPersistence (TransformPersistence());
+  }
 
   return myHilightPrs;
 }
@@ -365,13 +364,14 @@ Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetHilightPresentation( c
 //function : GetSelectPresentation
 //purpose  : 
 //=======================================================================
-Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetSelectPresentation( const Handle(PrsMgr_PresentationManager3d)& TheMgr )
+Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetSelectPresentation (const Handle(PrsMgr_PresentationManager3d)& theMgr)
 {
-  if( mySelectionPrs.IsNull() && !TheMgr.IsNull() ) {
-    mySelectionPrs = new Prs3d_Presentation( TheMgr->StructureManager() );
-    mySelectionPrs->SetTransformPersistence( GetTransformPersistenceMode(), 
-					     GetTransformPersistencePoint() );
+  if (mySelectionPrs.IsNull() && !theMgr.IsNull())
+  {
+    mySelectionPrs = new Prs3d_Presentation (theMgr->StructureManager());
+    mySelectionPrs->SetTransformPersistence (TransformPersistence());
   }
+
   return mySelectionPrs;
 }
 

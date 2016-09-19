@@ -88,7 +88,7 @@ protected:
   Standard_EXPORT void computeSensitivePrs (const Handle(Graphic3d_Structure)& theStructure,
                                             const Handle(SelectMgr_Selection)& theSel,
                                             const gp_Trsf& theLoc,
-                                            const Graphic3d_TransformPers& theTransPers);
+                                            const Handle(Graphic3d_TransformPers)& theTrsfPers);
 
   //! Update z-layers order map.
   Standard_EXPORT void updateZLayers (const Handle(V3d_View)& theView);

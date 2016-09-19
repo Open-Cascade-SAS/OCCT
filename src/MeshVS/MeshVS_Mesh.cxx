@@ -929,7 +929,7 @@ void MeshVS_Mesh::HilightSelected ( const Handle(PrsMgr_PresentationManager3d)& 
   aSelectionPrs = GetSelectPresentation( thePM );
 
   if( HasPresentation() )
-    aSelectionPrs->SetTransformPersistence( Presentation()->TransformPersistenceMode(), Presentation()->TransformPersistencePoint() );
+    aSelectionPrs->SetTransformPersistence (Presentation()->TransformPersistence());
   //----------------
 
   //   It is very important to call this parent method, because it check whether
@@ -1083,7 +1083,7 @@ void MeshVS_Mesh::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationManage
 
   //new functionality
   if( HasPresentation() )
-    aHilightPrs->SetTransformPersistence( Presentation()->TransformPersistenceMode(), Presentation()->TransformPersistencePoint() );
+    aHilightPrs->SetTransformPersistence (Presentation()->TransformPersistence());
   //----------------
 
   const Standard_Boolean isMeshEntityOwner = Owner->IsKind ( STANDARD_TYPE ( MeshVS_MeshEntityOwner ) );

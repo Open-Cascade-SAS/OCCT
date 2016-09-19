@@ -78,36 +78,47 @@ public:
   //! Returns information on whether the object accepts display in HLR mode or not.
   PrsMgr_TypeOfPresentation3d TypeOfPresentation3d() const { return myTypeOfPresentation3d; }
 
+  //! @return transform persistence of the presentable object.
+  const Handle(Graphic3d_TransformPers)& TransformPersistence() const { return myTransformPersistence; }
+
+  //! Sets up Transform Persistence for this object.
+  Standard_EXPORT virtual void SetTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers);
+
   //! Sets up Transform Persistence Mode for this object.
   //! This function used to lock in object position, rotation and / or zooming relative to camera position.
-  //! Object will be drawn in the origin setted by APoint parameter (except Graphic3d_TMF_TriedronPers flag
-  //! - see description later). aFlag should be:
+  //! Object will be drawn in the origin setted by thePoint parameter (except Graphic3d_TMF_TriedronPers flag
+  //! - see description later). theMode should be:
   //! -   Graphic3d_TMF_None - no persistence attributes (reset);
-  //! -   Graphic3d_TMF_PanPers - object doesn't move;
   //! -   Graphic3d_TMF_ZoomPers - object doesn't resize;
   //! -   Graphic3d_TMF_RotatePers - object doesn't rotate;
-  //! -   Graphic3d_TMF_FullPers - pan, zoom and rotate transform persistence;
-  //! -   Graphic3d_TMF_TriedronPers - object behaves like trihedron;
-  //! -   combination (Graphic3d_TMF_PanPers | Graphic3d_TMF_ZoomPers);
-  //! -   combination (Graphic3d_TMF_PanPers | Graphic3d_TMF_RotatePers);
-  //! -   combination (Graphic3d_TMF_ZoomPers | Graphic3d_TMF_RotatePers).
-  //! If Graphic3d_TMF_TriedronPers or Graphic3d_TMF_2d persistence mode selected APoint coordinates X and Y means:
+  //! -   Graphic3d_TMF_ZoomRotatePers - object doesn't resize and rotate;
+  //! -   Graphic3d_TMF_RotatePers - object doesn't rotate;
+  //! -   Graphic3d_TMF_TriedronPers - object behaves like trihedron.
+  //! If Graphic3d_TMF_TriedronPers or Graphic3d_TMF_2d persistence mode selected thePoint coordinates X and Y means:
   //! -   X = 0.0, Y = 0.0 - center of view window;
   //! -   X > 0.0, Y > 0.0 - right upper corner of view window;
   //! -   X > 0.0, Y < 0.0 - right lower corner of view window;
   //! -   X < 0.0, Y > 0.0 - left  upper corner of view window;
   //! -   X < 0.0, Y < 0.0 - left  lower corner of view window.
   //! And Z coordinate defines the gap from border of view window (except center position).
-  Standard_EXPORT virtual void SetTransformPersistence (const Graphic3d_TransModeFlags& aFlag, const gp_Pnt& APoint = gp_Pnt (0.0, 0.0, 0.0));
+  Standard_DEPRECATED("This method is deprecated - SetTransformPersistence() taking Graphic3d_TransformPers should be called instead")
+  void SetTransformPersistence (const Graphic3d_TransModeFlags theMode, const gp_Pnt& thePoint = gp_Pnt (0.0, 0.0, 0.0))
+  {
+    SetTransformPersistence (Graphic3d_TransformPers::FromDeprecatedParams (theMode, thePoint));
+  }
 
   //! Gets  Transform  Persistence Mode  for  this  object
-  Standard_EXPORT Graphic3d_TransModeFlags GetTransformPersistenceMode() const;
-  
-  //! Gets  point  of  transform  persistence for  this  object
-  Standard_EXPORT gp_Pnt GetTransformPersistencePoint() const;
+  Standard_DEPRECATED("This method is deprecated - TransformPersistence() should be called instead")
+  Graphic3d_TransModeFlags GetTransformPersistenceMode() const
+  {
+    return myTransformPersistence.IsNull()
+         ? Graphic3d_TMF_None
+         : myTransformPersistence->Mode();
+  }
 
-  //! @return transform persistence of the presentable object.
-  const Graphic3d_TransformPers& TransformPersistence() const { return myTransformPersistence; }
+  //! Gets  point  of  transform  persistence for  this  object
+  Standard_DEPRECATED("This method is deprecated - TransformPersistence() should be called instead")
+  Standard_EXPORT gp_Pnt GetTransformPersistencePoint() const;
 
   Standard_EXPORT void SetTypeOfPresentation (const PrsMgr_TypeOfPresentation3d aType);
   
@@ -289,7 +300,7 @@ protected:
 
 private:
 
-  Graphic3d_TransformPers myTransformPersistence;
+  Handle(Graphic3d_TransformPers) myTransformPersistence;
   PrsMgr_PresentableObjectPointer myParent;
   gp_Trsf myLocalTransformation;
   gp_Trsf myTransformation;

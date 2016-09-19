@@ -46,6 +46,12 @@ public:
     return myGroups;
   }
 
+  //! Return transformation persistence.
+  const Handle(Graphic3d_TransformPers)& TransformPersistence() const { return myTrsfPers; }
+
+  //! Set transformation persistence.
+  void SetTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers) { myTrsfPers = theTrsfPers; }
+
   //! @return associated clip planes
   const Handle(Graphic3d_SequenceOfHClipPlane)& ClipPlanes() const
   {
@@ -143,8 +149,6 @@ public:
   unsigned IsMutable      : 1;
   unsigned Is2dText       : 1;
 
-  Graphic3d_TransformPers TransformPersistence;
-
 protected:
 
   //! Create empty structure.
@@ -155,6 +159,7 @@ protected:
   Handle(Graphic3d_GraphicDriver) myGraphicDriver;
   Graphic3d_SequenceOfGroup       myGroups;
   Graphic3d_BndBox4f              myBndBox;
+  Handle(Graphic3d_TransformPers) myTrsfPers;
   Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;
 
 public:

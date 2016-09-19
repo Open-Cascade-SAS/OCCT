@@ -377,20 +377,12 @@ public:
   //! Returns the transformation associated with
   //! the structure <me>.
   Standard_EXPORT void Transform (TColStd_Array2OfReal& AMatrix) const;
-  
-  //! Modifies the current modelling transform persistence (pan, zoom or rotate)
-  Standard_EXPORT void SetTransformPersistence (const Graphic3d_TransModeFlags& AFlag, const gp_Pnt& APoint);
-  
-  Standard_EXPORT void SetTransformPersistence (const Graphic3d_TransModeFlags& AFlag);
-  
-  //! Get the current modelling transform persistence (pan, zoom or rotate)
-  Standard_EXPORT Graphic3d_TransModeFlags TransformPersistenceMode() const;
-  
-  //! Get the current point of relative modelling transform persistence
-  Standard_EXPORT gp_Pnt TransformPersistencePoint() const;
+
+  //! Modifies the current transform persistence (pan, zoom or rotate)
+  Standard_EXPORT void SetTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers);
 
   //! @return transform persistence of the presentable object.
-  const Graphic3d_TransformPers& TransformPersistence() const;
+  const Handle(Graphic3d_TransformPers)& TransformPersistence() const { return myCStructure->TransformPersistence(); }
 
   //! Sets if the structure location has mutable nature (content or location will be changed regularly).
   Standard_EXPORT void SetMutable (const Standard_Boolean theIsMutable);
@@ -439,7 +431,7 @@ public:
   Standard_EXPORT static Graphic3d_Vertex Transforms (const TColStd_Array2OfReal& ATrsf, const Graphic3d_Vertex& Coord);
   
   //! Returns the low-level structure
-    const Handle(Graphic3d_CStructure)& CStructure() const;
+  const Handle(Graphic3d_CStructure)& CStructure() const { return myCStructure; }
 
 friend class Graphic3d_Group;
 
@@ -505,14 +497,6 @@ protected:
   Standard_Address myOwner;
   Graphic3d_TypeOfStructure myVisual;
 
-
 };
-
-
-#include <Graphic3d_Structure.lxx>
-
-
-
-
 
 #endif // _Graphic3d_Structure_HeaderFile

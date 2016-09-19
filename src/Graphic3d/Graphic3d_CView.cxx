@@ -530,14 +530,12 @@ Bnd_Box Graphic3d_CView::MinMaxValues (const Graphic3d_MapOfStructure& theSet,
     }
 
     // "FitAll" operation ignores object with transform persistence parameter
-    if (aStructure->TransformPersistence().Flags != Graphic3d_TMF_None)
+    if (!aStructure->TransformPersistence().IsNull())
     {
       // Panning and 2d persistence apply changes to projection or/and its translation components.
       // It makes them incompatible with z-fitting algorithm. Ignored by now.
-      if (!theToIgnoreInfiniteFlag ||
-          (aStructure->TransformPersistence().Flags & Graphic3d_TMF_2d) ||
-          (aStructure->TransformPersistence().Flags & Graphic3d_TMF_PanPers) ||
-          (aStructure->TransformPersistence().Flags & Graphic3d_TMF_TriedronPers))
+      if (!theToIgnoreInfiniteFlag
+       || aStructure->TransformPersistence()->IsTrihedronOr2d())
       {
         continue;
       }
@@ -550,11 +548,11 @@ Bnd_Box Graphic3d_CView::MinMaxValues (const Graphic3d_MapOfStructure& theSet,
       continue;
     }
 
-    if (aStructure->TransformPersistence().Flags != Graphic3d_TMF_None)
+    if (!aStructure->TransformPersistence().IsNull())
     {
       const Graphic3d_Mat4d& aProjectionMat = aCamera->ProjectionMatrix();
       const Graphic3d_Mat4d& aWorldViewMat  = aCamera->OrientationMatrix();
-      aStructure->TransformPersistence().Apply (aCamera, aProjectionMat, aWorldViewMat, aWinWidth, aWinHeight, aBox);
+      aStructure->TransformPersistence()->Apply (aCamera, aProjectionMat, aWorldViewMat, aWinWidth, aWinHeight, aBox);
     }
 
     // To prevent float overflow at camera parameters calculation and further

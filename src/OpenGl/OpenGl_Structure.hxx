@@ -145,9 +145,7 @@ public:
         || IsForHighlight
         || IsMutable
         || Is2dText
-        || (TransformPersistence.Flags & Graphic3d_TMF_2d)           != 0
-        || (TransformPersistence.Flags & Graphic3d_TMF_PanPers)      != 0
-        || (TransformPersistence.Flags & Graphic3d_TMF_TriedronPers) != 0;
+        || (!myTrsfPers.IsNull() && myTrsfPers->IsTrihedronOr2d());
   }
 
   //! This method releases GL resources without actual elements destruction.
