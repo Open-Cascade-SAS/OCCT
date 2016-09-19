@@ -321,7 +321,7 @@ void CViewer2dDoc::OnBUTTONTestImage()
                               NULL,
                               NULL,
                               OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-                              SupportedImageFormats() + "| all files (*.*)|*.*;||",
+                              SupportedImageFormats() + L"| all files (*.*)|*.*;||",
                               NULL);
 
   CString anInitDir (((OCC_App*) AfxGetApp())->GetInitDataDir());
@@ -332,8 +332,7 @@ void CViewer2dDoc::OnBUTTONTestImage()
   {
     SetCursor(AfxGetApp()->LoadStandardCursor (IDC_WAIT));
     CString aFilePath = anOpenImageDlg.GetPathName();
-    TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )aFilePath);
-    TCollection_AsciiString    aFileName  (aFileNameW, '?');
+    TCollection_AsciiString aFileName ((const wchar_t* )aFilePath);
 
     //erase viewer
     if(myAISContext->HasOpenedContext())
@@ -355,7 +354,7 @@ void CViewer2dDoc::OnBUTTONMultipleImage()
                               NULL,
                               NULL,
                               OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-                              SupportedImageFormats() + "| all files (*.*)|*.*;||",
+                              SupportedImageFormats() + L"| all files (*.*)|*.*;||",
                               NULL);
 
   CString anInitDir (((OCC_App*) AfxGetApp())->GetInitDataDir());
@@ -367,8 +366,7 @@ void CViewer2dDoc::OnBUTTONMultipleImage()
   {
     SetCursor(AfxGetApp()->LoadStandardCursor (IDC_WAIT));
     CString aFilePath = anOpenImageDlg.GetPathName();
-    TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )aFilePath);
-    TCollection_AsciiString    aFileName (aFileNameW, '?');
+    TCollection_AsciiString aFileName ((const wchar_t* )aFilePath);
 
     //erase viewer
     if(myAISContext->HasOpenedContext())

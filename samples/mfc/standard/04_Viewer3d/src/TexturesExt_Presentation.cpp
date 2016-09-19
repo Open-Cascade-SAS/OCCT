@@ -143,8 +143,7 @@ Handle(AIS_TexturedShape) TexturesExt_Presentation::Texturize(const TopoDS_Shape
 	initfile += aTFileName.ToCString();
   }
 
-  TCollection_ExtendedString aFileName ((Standard_ExtString )(const wchar_t* )initfile);
-  aTShape->SetTextureFileName (TCollection_AsciiString (aFileName, '?'));
+  aTShape->SetTextureFileName (TCollection_AsciiString ((const wchar_t* )initfile));
 
   // do other initialization of AIS_TexturedShape
   aTShape->SetTextureMapOn();

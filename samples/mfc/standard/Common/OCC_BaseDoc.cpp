@@ -25,8 +25,7 @@ void OCC_BaseDoc::ExportView (const Handle(V3d_View)& theView) const
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
 
     CString aFileExt = anExportDlg.GetFileExt();
-    TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )anExportDlg.GetPathName());
-    TCollection_AsciiString    aFileName  (aFileNameW, '?');
+    TCollection_AsciiString aFileName ((const wchar_t* )anExportDlg.GetPathName());
 
     // For vector formats use V3d_View::Export() method
     if (!(aFileExt.CompareNoCase (L"ps"))  || !(aFileExt.CompareNoCase (L"pdf"))

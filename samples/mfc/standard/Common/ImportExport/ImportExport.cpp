@@ -273,8 +273,7 @@ dlg.m_ofn.lpstrInitialDir = initdir;
   if (dlg.DoModal() == IDOK) 
   {
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )dlg.GetPathName());
-    TCollection_AsciiString    aFileName  (aFileNameW, '?');
+    TCollection_AsciiString aFileName ((const wchar_t* )dlg.GetPathName());
     Standard_Integer status = ReadIGES (aFileName.ToCString(), aSequence);
     if (status != IFSelect_RetDone)
     {
@@ -338,8 +337,7 @@ dlg.m_ofn.lpstrInitialDir = initdir;
   { 
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT)); 
 
-    TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )dlg.GetPathName());
-    TCollection_AsciiString    aFileName  (aFileNameW, '?');
+    TCollection_AsciiString aFileName ((const wchar_t* )dlg.GetPathName());
 
     result = SaveIGES (aFileName.ToCString(), aHSequenceOfShape);
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
@@ -400,8 +398,7 @@ dlg.m_ofn.lpstrInitialDir = initdir;
   if (dlg.DoModal() == IDOK) 
   {
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )dlg.GetPathName());
-    TCollection_AsciiString    aFileName  (aFileNameW, '?');
+    TCollection_AsciiString aFileName ((const wchar_t* )dlg.GetPathName());
 	IFSelect_ReturnStatus ReturnStatus = ReadSTEP (aFileName.ToCString(), aSequence);
     switch (ReturnStatus) 
     {
@@ -518,8 +515,7 @@ IFSelect_ReturnStatus CImportExport::SaveSTEP(const Handle(TopTools_HSequenceOfS
 
 	if (aDlg.DoModal() == IDOK) {
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT)); 
-    TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )aDlg.GetPathName());
-    TCollection_AsciiString    aFileName  (aFileNameW, '?');
+    TCollection_AsciiString aFileName ((const wchar_t* )aDlg.GetPathName());
 
 		STEPControl_StepModelType selection = aDlg.m_Cc1ModelType;
 
@@ -605,11 +601,10 @@ dlg.m_ofn.lpstrInitialDir = initdir;
 
 	if (dlg.DoModal() == IDOK) {
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT)); 
-        TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )dlg.GetPathName());
-        TCollection_AsciiString    aFileName  (aFileNameW, '?');
+        TCollection_AsciiString aFileName ((const wchar_t* )dlg.GetPathName());
         TCollection_AsciiString Message;
         result = SaveSTL (aFileName.ToCString(), aHSequenceOfShape, Message);
-        CString aMsg (Message.ToCString());
+        CString aMsg (TCollection_ExtendedString (Message).ToWideString());
         MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, aMsg, result ? L"CasCade" : L"CasCade Error", result ? MB_OK : MB_ICONERROR);
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW)); 
     } 
@@ -696,11 +691,10 @@ dlg.m_ofn.lpstrInitialDir = initdir;
 
 	if (dlg.DoModal() == IDOK) {
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT)); 
-        TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )dlg.GetPathName());
-        TCollection_AsciiString    aFileName  (aFileNameW, '?');
+        TCollection_AsciiString aFileName ((const wchar_t* )dlg.GetPathName());
         TCollection_AsciiString Message;
         result = SaveVRML (aFileName.ToCString(), aHSequenceOfShape, anArrayOfColors, anArrayOfTransparencies, Message);
-        CString aMsg (Message.ToCString());
+        CString aMsg (TCollection_ExtendedString(Message).ToWideString());
         MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, aMsg, result ? L"CasCade" : L"CasCade Error", result ? MB_OK : MB_ICONERROR);
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW)); 
     } 

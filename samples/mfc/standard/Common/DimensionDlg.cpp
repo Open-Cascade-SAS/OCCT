@@ -715,8 +715,7 @@ const TCollection_AsciiString CDimensionDlg::GetUnits() const
     return TCollection_AsciiString();
   CString aStr;
   GetDlgItem (IDC_DisplayUnits)->GetWindowText (aStr);
-  TCollection_ExtendedString aCharsW ((Standard_ExtString )(const wchar_t* )aStr);
-  return TCollection_AsciiString (aCharsW, '?');
+  return TCollection_AsciiString ((const wchar_t* )aStr);
 }
 
 //=======================================================================

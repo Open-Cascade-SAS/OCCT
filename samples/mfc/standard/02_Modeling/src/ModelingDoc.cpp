@@ -4388,7 +4388,7 @@ Standard_Real Length = System.Mass();\n\
 gp_Mat I = System.MatrixOfInertia();\n\
 \n");
 	PocessTextInDialog("Linear Properties", Message);
-	MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, (const wchar_t* )string.ToExtString(), L"Linear Properties", MB_OK);
+	MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, string.ToWideString(), L"Linear Properties", MB_OK);
 }
 
 void CModelingDoc::OnSurface() 
@@ -4503,7 +4503,7 @@ Standard_Real Area = System.Mass();\n\
 gp_Mat I = System.MatrixOfInertia();\n\
 \n");
   PocessTextInDialog("Surface Properties", Message);
-	MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, (const wchar_t* )string.ToExtString(), L"Surface Properties", MB_OK);
+	MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, string.ToWideString(), L"Surface Properties", MB_OK);
 
 }
 
@@ -4585,7 +4585,7 @@ Standard_Real Volume = System.Mass();\n\
 gp_Mat I = System.MatrixOfInertia();\n\
 \n");
   PocessTextInDialog("Volume Properties", Message);
-	MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, (const wchar_t* )string.ToExtString(), L"Volume Properties", MB_OK);
+	MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, string.ToWideString(), L"Volume Properties", MB_OK);
 }
 
 

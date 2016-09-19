@@ -213,7 +213,7 @@ void COcafDoc::OnCreatebox()
 
 	// Create a new box using the CNewBoxDlg Dialog parameters as attributes
   TDF_Label L = TSC.CreateBox (Dlg.m_x, Dlg.m_y, Dlg.m_z, Dlg.m_w, Dlg.m_l, Dlg.m_h,
-                               TCollection_ExtendedString ((Standard_ExtString )(const wchar_t* )Dlg.m_Name));
+                               TCollection_ExtendedString ((const wchar_t* )Dlg.m_Name));
 
 	// Get the TPrsStd_AISPresentation of the new box TNaming_NamedShape
 	Handle(TPrsStd_AISPresentation) prs= TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID()); 
@@ -270,7 +270,7 @@ void COcafDoc::OnCreatecyl()
 
 	// Create a new box using the CNewCylDlg Dialog parameters as attributes
   TDF_Label L = TSC.CreateCyl (Dlg.m_x, Dlg.m_y, Dlg.m_z, Dlg.m_r, Dlg.m_h,
-                               TCollection_ExtendedString ((Standard_ExtString )(const wchar_t* )Dlg.m_Name));
+                               TCollection_ExtendedString ((const wchar_t* )Dlg.m_Name));
 
 	// Get the TPrsStd_AISPresentation of the new cylinder TNaming_NamedShape
 	Handle(TPrsStd_AISPresentation) prs= TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID()); 
@@ -389,7 +389,7 @@ Handle(TFunction_Function) TFF; \n\
 		// Modify the box
 		TOcaf_Commands TSC(LabObject);
 		TSC.ModifyBox (Dlg.m_x, Dlg.m_y, Dlg.m_z, Dlg.m_w, Dlg.m_l, Dlg.m_h,
-                   TCollection_ExtendedString ((Standard_ExtString )(const wchar_t* )Dlg.m_Name), log);
+                   TCollection_ExtendedString ((const wchar_t* )Dlg.m_Name), log);
 
 		// Get the presentation of the box, display it and set it selected
 		Handle(TPrsStd_AISPresentation) prs= TPrsStd_AISPresentation::Set(LabObject, TNaming_NamedShape::GetID()); 
@@ -474,7 +474,7 @@ D->CommitCommand(); \n\
 		// Modify the cylinder
 		TOcaf_Commands TSC(LabObject);
 		TSC.ModifyCyl (Dlg.m_x, Dlg.m_y, Dlg.m_z, Dlg.m_r, Dlg.m_h,
-                   TCollection_ExtendedString ((Standard_ExtString )(const wchar_t* )Dlg.m_Name), log);
+                   TCollection_ExtendedString ((const wchar_t* )Dlg.m_Name), log);
 
 		// Get the presentation of the cylinder, display it and set it selected
 		Handle(TPrsStd_AISPresentation) prs= TPrsStd_AISPresentation::Set(LabObject, TNaming_NamedShape::GetID()); 
@@ -591,7 +591,7 @@ D->CommitCommand(); \n\
 		// Modify the cylinder
 		TOcaf_Commands ToolTSC(ToolLab);
 		ToolTSC.ModifyCyl (Dlg.m_x, Dlg.m_y, Dlg.m_z, Dlg.m_r, Dlg.m_h,
-                       TCollection_ExtendedString ((Standard_ExtString )(const wchar_t* )Dlg.m_Name), log);
+                       TCollection_ExtendedString ((const wchar_t* )Dlg.m_Name), log);
 
 		// Redisplay the modified Tool object
 		TDataStd_Integer::Set(ToolLab, 1);
@@ -899,7 +899,7 @@ void COcafDoc::OnCloseDocument()
 void COcafDoc::OnFileSaveAs() 
 {
 	const wchar_t* SPathName = PathName;
-	TCollection_ExtendedString TPathName ((Standard_ExtString )SPathName);
+	TCollection_ExtendedString TPathName (SPathName);
 
 	CString Filter;
 
@@ -928,7 +928,7 @@ void COcafDoc::OnFileSaveAs()
 	cout << "Save As " << CSPath << endl;
 	PathName=CSPath;
         const wchar_t* SPath = CSPath;
-	TCollection_ExtendedString TPath ((Standard_ExtString )SPath);
+	TCollection_ExtendedString TPath (SPath);
 
 	    if (TPath.SearchFromEnd(".xml") > 0)
 		{
@@ -984,7 +984,7 @@ void COcafDoc::OnFileSave()
 	if(PathName!="")
 	{
           const wchar_t* SPath = PathName;
-          TCollection_ExtendedString TPath ((Standard_ExtString )SPath);
+          TCollection_ExtendedString TPath (SPath);
 
 	    if (TPath.SearchFromEnd(".xml") > 0)
 		{
@@ -1038,7 +1038,7 @@ m_App->SaveAs(myOcafDoc,(TCollection_ExtendedString) TPath); \n\
 	CString CSPath = dlg.GetPathName();
 
 	const wchar_t* SPath = CSPath;
-    TCollection_ExtendedString TPath ((Standard_ExtString )SPath);
+    TCollection_ExtendedString TPath (SPath);
 
     // Choose storage format
     if (TPath.SearchFromEnd(".xml") > 0)
@@ -1094,7 +1094,7 @@ BOOL COcafDoc::OnOpenDocument(LPCTSTR lpszPathName)
   PathName = lpszPathName;
 
   const wchar_t* aPathName = lpszPathName;
-  TCollection_ExtendedString anOccPathName ((Standard_ExtString)aPathName);
+  TCollection_ExtendedString anOccPathName (aPathName);
 
   // Open the document in the current application
   //PCDM_ReaderStatus RS = m_App->Open(TPath,myOcafDoc);
