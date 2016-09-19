@@ -54,6 +54,8 @@ public:
   
   Standard_EXPORT Standard_Boolean IsVClosed() const;
   
+  Standard_EXPORT Standard_Boolean IsDone() const;
+  
   //! Say if the input sahpe is a  vertex.
   Standard_EXPORT virtual Standard_Boolean IsVertex() const = 0;
   
@@ -82,6 +84,7 @@ protected:
   Handle(GeomFill_HArray1OfSectionLaw) myLaws;
   Standard_Boolean uclosed;
   Standard_Boolean vclosed;
+  Standard_Boolean myDone;
 
 
 private:

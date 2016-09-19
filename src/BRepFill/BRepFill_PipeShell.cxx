@@ -1143,6 +1143,8 @@ void BRepFill_PipeShell::Generated(const TopoDS_Shape&   theShape,
   }
 
   myStatus = myLocation->GetStatus();
+  if (!mySection->IsDone())
+    myStatus = GeomFill_PipeNotOk;
 }
 
 //=======================================================================

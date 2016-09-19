@@ -72,6 +72,7 @@ BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Vertex& V,
     myLaws->ChangeValue(1) = 
       new (GeomFill_UniformSection)(TC);
   }
+  myDone = Standard_True;
 }
 
 //=======================================================================
@@ -88,6 +89,7 @@ BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Wire& W,
 {
   TheLaw.Nullify();
   Init(Build);
+  myDone = Standard_True;
 }
 
 //=======================================================================
@@ -104,6 +106,7 @@ BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Wire& W,
 {
   TheLaw = L;
   Init(Build);
+  myDone = Standard_True;
 }
 
 //=======================================================================

@@ -360,6 +360,7 @@ BRepFill_NSections::BRepFill_NSections(const TopTools_SequenceOfShape& S,
   }
   myParams = par;
   Init(par,Build);
+  myDone = Standard_True;
 }
 
 //=======================================================================
@@ -399,7 +400,10 @@ BRepFill_NSections::BRepFill_NSections(const TopTools_SequenceOfShape& S,
     VFirst = VF;
     VLast = VL;
     Init(P,Build);
+    myDone = Standard_True;
   }
+  else
+    myDone = Standard_False;
 }
 
 //=======================================================================

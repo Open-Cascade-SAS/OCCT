@@ -79,6 +79,15 @@ Standard_Integer BRepFill_SectionLaw::NbLaw() const
 }
 
 //=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+ Standard_Boolean BRepFill_SectionLaw::IsDone() const
+{
+  return myDone;
+}
+
+//=======================================================================
 //function : Init
 //purpose  : Prepare the parsing of a wire
 //=======================================================================

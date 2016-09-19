@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC27822"
+puts "========"
+puts ""
+#######################################################################################
+# Exception access violation is raised in BRepOffsetAPI_MakePipeShell during of build
+#######################################################################################
+
+circle c1 0 100 80 30
+circle c2 0 30 130 30
+mkedge e1 c1
+mkedge e2 c2
+vertex v1 0 0 0
+vertex v2 0 1 0
+edge e3 v1 v2
+wire w1 e1
+wire w2 e2
+wire w3 e3
+mksweep w3
+addsweep w1
+addsweep w2
+
+if {[catch {buildsweep result}]} {
+  puts "OCC27822 is fixed."
+} else {
+  puts "ERROR: OCC27822 does not fixed correctly."
+}
