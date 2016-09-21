@@ -1,0 +1,14 @@
+puts "============"
+puts "OCC27888"
+puts "============"
+puts ""
+######################################################
+# Fuse of valid untouched solids leads to result with faulties
+######################################################
+
+binrestore [locate_data_file bug27888_cut_2_4.bin] a
+explode a
+bfuse r a_1 a_2
+checkshape r
+checknbshapes r -solid 26
+checkprops r -v 1.85614e+006

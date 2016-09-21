@@ -152,14 +152,12 @@ public:
   
   Standard_EXPORT void Destroy();
 
-
-
-
 protected:
 
-
-
-
+  Standard_EXPORT TopAbs_State ClassifyUVPoint
+                   (const IntCurvesFace_Intersector& theIntersector,
+                    const Handle(BRepAdaptor_HSurface)& theSurf,
+                    const gp_Pnt2d& theP2d) const;
 
 private:
 

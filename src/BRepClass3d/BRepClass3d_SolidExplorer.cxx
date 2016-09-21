@@ -226,6 +226,29 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
 }
 
 //=======================================================================
+//function : ClassifyUVPoint
+//purpose  : 
+//=======================================================================
+
+TopAbs_State BRepClass3d_SolidExplorer::ClassifyUVPoint
+                   (const IntCurvesFace_Intersector& theIntersector,
+                    const Handle(BRepAdaptor_HSurface)& theSurf,
+                    const gp_Pnt2d& theP2d) const
+{
+  // first find if the point is near an edge/vertex
+  gp_Pnt aP3d = theSurf->Value(theP2d.X(), theP2d.Y());
+  BRepClass3d_BndBoxTreeSelectorPoint aSelectorPoint(myMapEV);
+  aSelectorPoint.SetCurrentPoint(aP3d);
+  Standard_Integer aSelsVE = myTree.Select(aSelectorPoint);
+  if (aSelsVE > 0)
+  {
+    // The point is inside the tolerance area of vertices/edges => return ON state.
+    return TopAbs_ON;
+  }
+  return theIntersector.ClassifyUVPoint(theP2d);
+}
+
+//=======================================================================
 //function : PointInTheFace
 //purpose  : 
 //=======================================================================
@@ -264,7 +287,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
     if(ptr) { 
       const IntCurvesFace_Intersector& TheIntersector = (*((IntCurvesFace_Intersector *)ptr));
       // Check if the point is already in the face
-      if(IsInside && (TheIntersector.ClassifyUVPoint(gp_Pnt2d(u_,v_))==TopAbs_IN)) {
+      if (IsInside && (ClassifyUVPoint(TheIntersector, surf, gp_Pnt2d(u_, v_)) == TopAbs_IN)) {
         gp_Pnt aPnt;
         surf->D1(u_, v_, aPnt, theVecD1U, theVecD1V);
         if (aPnt.SquareDistance(APoint_) < Precision::Confusion() * Precision::Confusion())
@@ -280,7 +303,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
       for(u=du+(U1+U2)*0.5; u<U2; u+=du) {          //--  0  X    u increases
         for(v=dv+(V1+V2)*0.5; v<V2; v+=dv) {        //--  0  0    v increases
           if(++NbPntCalc>=IndexPoint) { 
-            if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
+            if (ClassifyUVPoint(TheIntersector, surf, gp_Pnt2d(u, v)) == TopAbs_IN) {
               u_=u; v_=v;
               surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
               IndexPoint = NbPntCalc;
@@ -293,7 +316,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
       for(u=-du+(U1+U2)*0.5; u>U1; u-=du) {         //--  0  0    u decreases
         for(v=-dv+(V1+V2)*0.5; v>V1; v-=dv) {       //--  X  0    v decreases
           if(++NbPntCalc>=IndexPoint) {
-            if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
+            if (ClassifyUVPoint(TheIntersector, surf, gp_Pnt2d(u, v)) == TopAbs_IN) {
               u_=u; v_=v;
               surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
               IndexPoint = NbPntCalc;
@@ -305,7 +328,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
       for(u=-du+(U1+U2)*0.5; u>U1; u-=du) {         //--  X  0    u decreases
         for(v=dv+(V1+V2)*0.5; v<V2; v+=dv) {        //--  0  0    v increases
           if(++NbPntCalc>=IndexPoint) { 
-            if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
+            if (ClassifyUVPoint(TheIntersector, surf, gp_Pnt2d(u, v)) == TopAbs_IN) {
               u_=u; v_=v;
               surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
               IndexPoint = NbPntCalc;
@@ -317,7 +340,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
       for(u=du+(U1+U2)*0.5; u<U2; u+=du) {         //--  0  0     u increases
         for(v=-dv+(V1+V2)*0.5; v>V1; v-=dv) {      //--  0  X     v decreases
           if(++NbPntCalc>=IndexPoint) {
-            if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
+            if (ClassifyUVPoint(TheIntersector, surf, gp_Pnt2d(u, v)) == TopAbs_IN) {
               u_=u; v_=v;
               surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
               IndexPoint = NbPntCalc;
@@ -335,7 +358,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
       for(u=du+U1; u<U2; u+=du) { 
         for(v=dv+V1; v<V2; v+=dv) {
           if(++NbPntCalc>=IndexPoint) {
-            if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
+            if (ClassifyUVPoint(TheIntersector, surf, gp_Pnt2d(u, v)) == TopAbs_IN) {
               u_=u; v_=v;
               surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
               IndexPoint = NbPntCalc;
@@ -347,7 +370,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
       u=(U1+U2)*0.5;
       v=(V1+V2)*0.5;
       if(++NbPntCalc>=IndexPoint) {
-        if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
+        if (ClassifyUVPoint(TheIntersector, surf, gp_Pnt2d(u, v)) == TopAbs_IN) {
           u_=u; v_=v;
           surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
           IndexPoint = NbPntCalc;
