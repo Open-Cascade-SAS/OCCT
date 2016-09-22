@@ -344,6 +344,9 @@ static Standard_Integer xdistcs(Draw_Interpretor& di, Standard_Integer n, const 
   iSize=3;
   //
   dT=(aT2-aT1)/(aNbP-1);
+
+  Standard_Real aMaxParam = 0.0;
+  Standard_Real aMaxDist  = 0.0;
   for (i=0; i<aNbP; ++i) {
     aT=aT1+i*dT;
     if (i==aNbP-1) {
@@ -374,7 +377,16 @@ static Standard_Integer xdistcs(Draw_Interpretor& di, Standard_Integer n, const 
     //
     aMr=new Draw_Marker3D(aP, Draw_Plus, aColor, iSize);
     dout << aMr;
+
+    if (aD > aMaxDist)
+    {
+      aMaxParam = aT;
+      aMaxDist = aD;
+    }
   }
+
+  di << "Max distance = "  << aMaxDist << "\n" ;
+  di << "Param = " << aMaxParam << "\n" ;
   //
   return 0;
 }
