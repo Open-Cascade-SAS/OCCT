@@ -233,8 +233,8 @@ Extrema_ExtElC::Extrema_ExtElC ()
 //function : Extrema_ExtElC
 //purpose  : 
 //=======================================================================
-Extrema_ExtElC::Extrema_ExtElC (const gp_Lin& C1, 
-				const gp_Lin& C2,
+Extrema_ExtElC::Extrema_ExtElC (const gp_Lin& theC1, 
+				const gp_Lin& theC2,
 				const Standard_Real)
 // Function:
 //   Find min distance between 2 straight lines.
@@ -245,71 +245,82 @@ Extrema_ExtElC::Extrema_ExtElC (const gp_Lin& C1,
 //   1- if Angle(D1,D2) < AngTol, straight lines are parallel.
 //      The distance is the distance between a point of C1 and the straight line C2.
 //   2- if Angle(D1,D2) > AngTol:
-//      Let P1=C1(u1) and P2=C2(u2) be 2 solution points:
-//      Then, ( P1P2.D1 = 0. (1)
-//             ( P1P2.D2 = 0. (2)
-//   Let O1 and O2 be the origins of C1 and C2;
-//   THen, (1) <=> (O1P2-u1*D1).D1 = 0.       as O1P1 = u1*D1
-// 	     <=> u1 = O1P2.D1               as D1.D1 = 1.
-//          (2) <=> (P1O2+u2*D2).D2 = 0.       as O2P2 = u2*D2
-// 	     <=> u2 = O2P1.D2               as D2.D2 = 1.
-// 	     <=> u2 = (O2O1+O1P1).D2
-// 	     <=> u2 = O2O1.D2+((O1P2.T1)T1).T2) as O1P1 = u1*T1 = (O1P2.T1)T1
-// 	     <=> u2 = O2O1.D2+(((O1O2+O2P2).D1)D1).D2)
-// 	     <=> u2 = O2O1.D2+((O1O2.D1)D1).D2)+(O2P2.D1)(D1.D2)
-// 	     <=> u2 = ((O1O2.D1)D1-O1O2).D2 + u2*(D2.D1)(D1.D2)
-// 	     <=> u2 = (((O1O2.D1)D1-O1O2).D2) / 1.-(D1.D2)**2
+//      Let P1=C1(u1) and P2=C2(u2).
+//      Then we must find u1 and u2 such as the distance P1P2 is minimal.
+//      Target function is:
+//        F(u1, u2) = ((L1x+D1x*u1)-(L2x+D2x*u2))^2 + 
+//                    ((L1y+D1y*u1)-(L2y+D2y*u2))^2 +
+//                    ((L1z+D1z*u1)-(L2z+D2z*u2))^2 --> min,
+//      where L1 and L2 are lines locations, D1 and D2 are lines directions. 
+//    Let simplify the function F
+
+//      F(u1, u2) = (D1x*u1-D2x*u2-Lx)^2 + (D1y*u1-D2y*u2-Ly)^2 + (D1z*u1-D2z*u2-Lz)^2,
+//    where L is a vector L1L2.
+
+//    In point of minimum, the condition
+//      {dF/du1 = 0
+//      {dF/du2 = 0
+
+//    must be satisfied.
+
+//      dF/du1 = 2*D1x*(D1x*u1-D2x*u2-Lx) +
+//               2*D1y*(D1y*u1-D2y*u2-Ly) +
+//               2*D1z*(D1z*u1-D2z*u2-Lz) =
+//             = 2*((D1^2)*u1-(D1.D2)*u2-L.D1) =
+//             = 2*(u1-(D1.D2)*u2-L.D1)
+//      dF/du2 = -2*D2x*(D1x*u1-D2x*u2-Lx) - 
+//                2*D2y*(D1y*u1-D2y*u2-Ly) - 
+//                2*D2z*(D1z*u1-D2z*u2-Lz)=
+//             = -2*((D2.D1)*u1-(D2^2)*u2-(D2.L)) = 
+//             = -2*((D2.D1)*u1-u2-(D2.L))
+
+//   Consequently, we have two-equation system with two variables:
+
+//     {u1 - (D1.D2)*u2 = L.D1
+//     {(D1.D2)*u1 - u2 = L.D2
+
+//   This system has one solution if (D1.D2)^2 != 1
+//   (if straight lines are not parallel).
 {
   myDone = Standard_False;
   myNbExt = 0;
+  myIsPar = Standard_False;
 
-  gp_Dir D1 = C1.Position().Direction();
-  gp_Dir D2 = C2.Position().Direction();
-  // MSV 16/01/2000: avoid "divide by zero"
-  Standard_Real D1DotD2 = D1.Dot(D2);
-  Standard_Real aSin = 1.-D1DotD2*D1DotD2;
-  if (aSin < gp::Resolution() ||
-      D1.IsParallel(D2, Precision::Angular())) {
+  const gp_Dir &aD1 = theC1.Position().Direction(),
+               &aD2 = theC2.Position().Direction();
+  const Standard_Real aCosA = aD1.Dot(aD2);
+  const Standard_Real aSqSinA = 1.0 - aCosA * aCosA;
+  Standard_Real aU1 = 0.0, aU2 = 0.0;
+  if (aSqSinA < gp::Resolution() || aD1.IsParallel(aD2, Precision::Angular()))
+  {
     myIsPar = Standard_True;
-    mySqDist[0] = C2.SquareDistance(C1.Location());
-    mySqDist[1] = mySqDist[0];
   }
-  else {
-    myIsPar = Standard_False;
-    gp_Pnt O1 = C1.Location();
-    gp_Pnt O2 = C2.Location();
-    gp_Vec O1O2 (O1,O2);
-    Standard_Real U2 = (D1.XYZ()*(O1O2.Dot(D1))-(O1O2.XYZ())).Dot(D2.XYZ());
-    if( Precision::IsInfinite(U2) ) {
-      myIsPar = Standard_True;
-      mySqDist[0] = C2.SquareDistance(C1.Location());
-      mySqDist[1] = mySqDist[0];
-    }
-    else {
-      U2 /= aSin;
-      if( Precision::IsInfinite(U2) ) {
-	myIsPar = Standard_True;
-	mySqDist[0] = C2.SquareDistance(C1.Location());
-    mySqDist[1] = mySqDist[0];
-      }
-      else {
-	gp_Pnt P2(ElCLib::Value(U2,C2));
-	Standard_Real U1 = (gp_Vec(O1,P2)).Dot(D1);
-	if( Precision::IsInfinite(U1) ) {
-	  myIsPar = Standard_True;
-	  mySqDist[0] = C2.SquareDistance(C1.Location());
-      mySqDist[1] = mySqDist[0];
-	}
-	else {
-	  gp_Pnt P1(ElCLib::Value(U1,C1));
-	  mySqDist[myNbExt] = P1.SquareDistance(P2);
-	  myPoint[myNbExt][0] = Extrema_POnCurv(U1,P1);
-	  myPoint[myNbExt][1] = Extrema_POnCurv(U2,P2);
-	  myNbExt = 1;
-	}
-      }
-    }
+  else
+  {
+    const gp_XYZ aL1L2 = theC2.Location().XYZ() - theC1.Location().XYZ();
+    const Standard_Real aD1L = aD1.XYZ().Dot(aL1L2),
+                        aD2L = aD2.XYZ().Dot(aL1L2);
+    aU1 = (aD1L - aCosA * aD2L) / aSqSinA;
+    aU2 = (aCosA * aD1L - aD2L) / aSqSinA;
+
+    myIsPar = Precision::IsInfinite(aU1) || Precision::IsInfinite(aU2);
   }
+
+  if (myIsPar)
+  {
+    mySqDist[0] = mySqDist[1] = theC2.SquareDistance(theC1.Location());
+    myDone = Standard_True;
+    return;
+  }
+
+  // Here myIsPar == Standard_False;
+  
+  const gp_Pnt aP1(ElCLib::Value(aU1, theC1)),
+               aP2(ElCLib::Value(aU2, theC2));
+  mySqDist[myNbExt] = aP1.SquareDistance(aP2);
+  myPoint[myNbExt][0] = Extrema_POnCurv(aU1, aP1);
+  myPoint[myNbExt][1] = Extrema_POnCurv(aU2, aP2);
+  myNbExt = 1;
   myDone = Standard_True;
 }
 //=======================================================================
