@@ -1,0 +1,34 @@
+puts "============"
+puts "CR27890"
+puts "==========="
+puts ""
+###############################################################################
+# BndLib_Add2dCurve::Add(..) works incorrect on some curves
+###############################################################################
+
+restore [locate_data_file bug27890_t1.draw] 
+
+set rr [gbounding bug27890_t1]
+
+regexp { *([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $rr full v1_x v1_y v2_x v2_y
+
+set tol_abs 1.0e-4
+set tol_rel 0.0001
+
+set expected_v1_x -34.660696189548446
+checkreal "v1_x" ${v1_x} ${expected_v1_x} ${tol_abs} ${tol_rel}
+
+set expected_v1_y -69.996521506152177
+checkreal "v1_y" ${v1_y} ${expected_v1_y} ${tol_abs} ${tol_rel}
+
+set expected_v2_x -15.536166915190313
+checkreal "v2_x" ${v2_x} ${expected_v2_x} ${tol_abs} ${tol_rel}
+
+set expected_v2_y -21.097502159535235
+checkreal "v2_y" ${v2_y} ${expected_v2_y} ${tol_abs} ${tol_rel}
+
+#v2d2
+view 1 -2D-  728 20 400 400
+
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

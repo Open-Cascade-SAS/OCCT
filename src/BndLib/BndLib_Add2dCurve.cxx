@@ -524,9 +524,8 @@ void BndLib_Box2dCurve::PerformOther()
   aNb=33;
   dT=(myT2-myT1)/(aNb-1);
   //
-  aT=myT1;
   for (j=0; j<aNb; ++j) {
-    aT=j*dT;
+    aT=myT1+j*dT;
     myCurve->D0(aT, aP2D);
     myBox.Add(aP2D);
   }

@@ -38,6 +38,7 @@
 #include <BRep_Builder.hxx>
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
+#include <Bnd_Box2d.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <BRepTools_WireExplorer.hxx>
@@ -486,46 +487,98 @@ static Standard_Integer optbounding(Draw_Interpretor& di,Standard_Integer n,cons
 #include <GeomAdaptor_Surface.hxx>
 #include <BndLib_AddSurface.hxx>
 #include <BndLib_Add3dCurve.hxx>
+#include <BndLib_Add2dCurve.hxx>
+#include <Draw_Segment2D.hxx>
 static Standard_Integer gbounding(Draw_Interpretor& di,Standard_Integer n,const char** a)
 {
-  if (n < 2) 
+  if (n != 2 && n != 3) 
   {
-    di << "Usage: gbounding surf/curve \n";
+    di << "Usage: gbounding surf/curve/curve2d [-o] \n";
+    di << "[-o] turn on Optimal mode ('off' by default) \n";
     return 1;
   }
-  Standard_Real axmin,aymin,azmin,axmax,aymax,azmax;
-  Bnd_Box B; Handle(Draw_Box) DB;
-  
-  if (n == 2) { 
+  else
+  {
+    Standard_Boolean IsOptimal = Standard_False;
+    if (n == 3 && !strcmp(a[2], "-o"))
+      IsOptimal = Standard_True;
+    
+    Standard_Real axmin,aymin,azmin,axmax,aymax,azmax;
+    Bnd_Box B;
+    Bnd_Box2d B2d;
+    Handle(Draw_Box) DB;
+    Standard_Boolean Is3d = Standard_True;
     Handle(Geom_Curve) C;
     Handle(Geom_Surface) S;
+    Handle_Geom2d_Curve C2d;
     S = DrawTrSurf::GetSurface(a[1]);
-    if (S.IsNull())
+    if (!S.IsNull())
     {
-      C = DrawTrSurf::GetCurve(a[1]);
-    }
-    if(!S.IsNull())
-    {
+      //add surf
       GeomAdaptor_Surface aGAS(S);
-      BndLib_AddSurface::AddOptimal(aGAS, Precision::Confusion(), B);
-    }
-    else if(!C.IsNull())
-    {
-      GeomAdaptor_Curve aGAC(C);
-      BndLib_Add3dCurve::AddOptimal(aGAC, Precision::Confusion(), B);
+      if (IsOptimal)
+        BndLib_AddSurface::AddOptimal(aGAS, Precision::Confusion(), B);
+      else
+        BndLib_AddSurface::Add(aGAS, Precision::Confusion(), B);
     }
     else
     {
-      di << "Wrong argument \n";
-      return 1;
+      C = DrawTrSurf::GetCurve(a[1]);
+      if (!C.IsNull())
+      {
+        // add cur
+        GeomAdaptor_Curve aGAC(C);
+        if (IsOptimal)
+          BndLib_Add3dCurve::AddOptimal(aGAC, Precision::Confusion(), B);
+        else
+          BndLib_Add3dCurve::Add(aGAC, Precision::Confusion(), B);
+      }
+      else
+      {
+        C2d = DrawTrSurf::GetCurve2d(a[1]);
+        if (!C2d.IsNull())
+        {
+          //add cur2d
+          Is3d = Standard_False;
+          if (IsOptimal)
+            BndLib_Add2dCurve::AddOptimal(C2d, C2d->FirstParameter(), C2d->LastParameter(), Precision::Confusion(), B2d); 
+          else
+            BndLib_Add2dCurve::Add(C2d, C2d->FirstParameter(), C2d->LastParameter(), Precision::Confusion(), B2d); 
+        }
+        else
+        {
+          di << "Wrong argument \n";
+          return 1;
+        }
+      }
     }
-    B.Get(axmin,aymin,azmin,axmax,aymax,azmax);
-    DB = new Draw_Box(gp_Pnt(axmin,aymin,azmin),gp_Pnt(axmax,aymax,azmax),Draw_vert);
-    dout<<DB;
-    di << axmin<<" "<< aymin<<" "<< azmin<<" "<< axmax<<" "<< aymax<<" "<< azmax;
+
+    if (Is3d)
+    {
+      B.Get(axmin,aymin,azmin,axmax,aymax,azmax);
+      DB = new Draw_Box(gp_Pnt(axmin,aymin,azmin),gp_Pnt(axmax,aymax,azmax),Draw_vert);
+      dout<<DB;
+      di << axmin<<" "<< aymin<<" "<< azmin<<" "<< axmax<<" "<< aymax<<" "<< azmax;
+    }
+    else
+    {
+      B2d.Get(axmin,aymin,axmax,aymax);
+      gp_Pnt2d p1(axmin, aymin);
+      gp_Pnt2d p2(axmax, aymin);
+      gp_Pnt2d p3(axmax, aymax);
+      gp_Pnt2d p4(axmin, aymax);
+      Draw_Segment2D* S1 = new Draw_Segment2D(p1, p2, Draw_vert);
+      Draw_Segment2D* S2 = new Draw_Segment2D(p2, p3, Draw_vert);
+      Draw_Segment2D* S3 = new Draw_Segment2D(p3, p4, Draw_vert);
+      Draw_Segment2D* S4 = new Draw_Segment2D(p4, p1, Draw_vert);
+      dout << S1 << S2 << S3 << S4;
+      di << axmin<<" "<< aymin<<" "<< axmax<<" "<< aymax;
+    }
   }
   return 0;
-}//=======================================================================
+}
+
+//=======================================================================
 //function : findplane
 //purpose  : 
 //=======================================================================
@@ -1045,7 +1098,7 @@ void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
 		  optbounding,g);
  //
   theCommands.Add("gbounding",
-		  "gbounding curve/surf ",
+		  "gbounding surf/curve/curve2d [-o] ",
 		  __FILE__,
 		  gbounding,g);
 
