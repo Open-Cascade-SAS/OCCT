@@ -7,7 +7,7 @@ puts ""
 #################################################
 
 set ExpTol 1.0e-7
-set GoodNbCurv 5
+set GoodNbCurv 3
 
 restore [locate_data_file bug27761_c1.brep] c1
 restore [locate_data_file bug27761_c2.brep] c2

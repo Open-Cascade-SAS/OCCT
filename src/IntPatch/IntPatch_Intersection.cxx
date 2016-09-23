@@ -917,18 +917,9 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
     ListOfPnts.Clear();
     if(isGeomInt)
     {
-      if(theD1->DomainIsInfinite() || theD2->DomainIsInfinite())
-      {
-        GeomGeomPerfom( theS1, theD1, theS2, theD2, TolArc, 
-                        TolTang, ListOfPnts, RestrictLine,
-                        typs1, typs2, theIsReqToKeepRLine);
-      }
-      else
-      {
-        GeomGeomPerfomTrimSurf( theS1, theD1, theS2, theD2,
-                                TolArc, TolTang, ListOfPnts, RestrictLine,
-                                typs1, typs2, theIsReqToKeepRLine);
-      }
+      GeomGeomPerfom( theS1, theD1, theS2, theD2, TolArc, 
+                      TolTang, ListOfPnts, RestrictLine,
+                      typs1, typs2, theIsReqToKeepRLine);
     }
     else
     {
@@ -1182,16 +1173,8 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
   }
   else if(ts1 == 1)
   {
-    if(theD1->DomainIsInfinite() || theD2->DomainIsInfinite())
-    {
-      GeomGeomPerfom(theS1, theD1, theS2, theD2, TolArc, 
-                      TolTang, ListOfPnts, RestrictLine, typs1, typs2, theIsReqToKeepRLine);
-    }
-    else
-    {
-      GeomGeomPerfomTrimSurf(theS1, theD1, theS2, theD2,
-              TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2, theIsReqToKeepRLine);
-    }
+    GeomGeomPerfom(theS1, theD1, theS2, theD2, TolArc, 
+                    TolTang, ListOfPnts, RestrictLine, typs1, typs2, theIsReqToKeepRLine);
   }
 
   if(!theIsReqToPostWLProc)
@@ -1438,7 +1421,36 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& the
           slin.Append(wlin);
         }
         else
+        {
+          if(line->ArcType() == IntPatch_Walking)
+          {
+            Handle(IntPatch_WLine)::DownCast(line)->EnablePurging(Standard_False);
+          }
+
           slin.Append(line);
+        }
+      }
+
+      for (Standard_Integer i = 1; i <= interii.NbPnts(); i++)
+      {
+        spnt.Append(interii.Point(i));
+      }
+
+      if((theTyps1 == GeomAbs_Cylinder) && (theTyps2 == GeomAbs_Cylinder))
+      {
+        IntPatch_WLineTool::JoinWLines( slin, spnt, TolTang,
+                                        theS1->IsUPeriodic()? theS1->UPeriod() : 0.0,
+                                        theS2->IsUPeriodic()? theS2->UPeriod() : 0.0,
+                                        theS1->IsVPeriodic()? theS1->VPeriod() : 0.0,
+                                        theS2->IsVPeriodic()? theS2->VPeriod() : 0.0,
+                                        theS1->FirstUParameter(),
+                                        theS1->LastUParameter(),
+                                        theS1->FirstVParameter(),
+                                        theS1->LastVParameter(),
+                                        theS2->FirstUParameter(),
+                                        theS2->LastUParameter(),
+                                        theS2->FirstVParameter(),
+                                        theS2->LastVParameter());
       }
 
       if(isQuadSet)
@@ -1471,11 +1483,6 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& the
                                      theS1->IsVPeriodic()? theS1->VPeriod() : 0.0,
                                      theS2->IsVPeriodic()? theS2->VPeriod() : 0.0,
                                      aBx1, aBx2);
-      }
-
-      for (Standard_Integer i = 1; i <= interii.NbPnts(); i++)
-      {
-        spnt.Append(interii.Point(i));
       }
     }
   }
@@ -1567,84 +1574,6 @@ void IntPatch_Intersection::
     }
   }
 }
-
-//=======================================================================
-//function : GeomGeomPerfomTrimSurf
-//purpose  : This function returns ready walking-line (which is not need
-//            in convertation) as an intersection line between two
-//            trimmed surfaces.
-//=======================================================================
-void IntPatch_Intersection::
-  GeomGeomPerfomTrimSurf( const Handle(Adaptor3d_HSurface)& theS1,
-                          const Handle(Adaptor3d_TopolTool)& theD1,
-                          const Handle(Adaptor3d_HSurface)& theS2,
-                          const Handle(Adaptor3d_TopolTool)& theD2,
-                          const Standard_Real theTolArc,
-                          const Standard_Real theTolTang,
-                          IntSurf_ListOfPntOn2S& theListOfPnts,
-                          const Standard_Boolean RestrictLine,
-                          const GeomAbs_SurfaceType theTyps1,
-                          const GeomAbs_SurfaceType theTyps2,
-                          const Standard_Boolean theIsReqToKeepRLine)
-{
-  IntSurf_Quadric Quad1,Quad2;
-
-  if((theTyps1 == GeomAbs_Cylinder) && (theTyps2 == GeomAbs_Cylinder))
-  {
-    IntPatch_ImpImpIntersection anInt;
-    anInt.Perform(theS1, theD1, theS2, theD2, myTolArc,
-                  myTolTang, Standard_True, theIsReqToKeepRLine);
-
-    done = anInt.IsDone();
-
-    if(done)
-    {
-      empt = anInt.IsEmpty();
-      if (!empt)
-      {
-        tgte = anInt.TangentFaces();
-        if (tgte)
-          oppo = anInt.OppositeFaces();
-
-        const Standard_Integer aNbLin = anInt.NbLines();
-        const Standard_Integer aNbPts = anInt.NbPnts();
-
-        for(Standard_Integer aLID = 1; aLID <= aNbLin; aLID++)
-        {
-          const Handle(IntPatch_Line)& aLine = anInt.Line(aLID);
-          slin.Append(aLine);
-        }
-
-        for(Standard_Integer aPID = 1; aPID <= aNbPts; aPID++)
-        {
-          const IntPatch_Point& aPoint = anInt.Point(aPID);
-          spnt.Append(aPoint);
-        }
-
-        IntPatch_WLineTool::JoinWLines( slin, spnt, theTolTang,
-                                        theS1->IsUPeriodic()? theS1->UPeriod() : 0.0,
-                                        theS2->IsUPeriodic()? theS2->UPeriod() : 0.0,
-                                        theS1->IsVPeriodic()? theS1->VPeriod() : 0.0,
-                                        theS2->IsVPeriodic()? theS2->VPeriod() : 0.0,
-                                        theS1->FirstUParameter(),
-                                        theS1->LastUParameter(),
-                                        theS1->FirstVParameter(),
-                                        theS1->LastVParameter(),
-                                        theS2->FirstUParameter(),
-                                        theS2->LastUParameter(),
-                                        theS2->FirstVParameter(),
-                                        theS2->LastVParameter());
-      }
-    }
-  }
-  else
-  {
-    GeomGeomPerfom(theS1, theD1, theS2, theD2,
-            theTolArc, theTolTang, theListOfPnts,
-            RestrictLine, theTyps1, theTyps2, theIsReqToKeepRLine);
-  }
-}
-
 
 void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
                                     const Handle(Adaptor3d_TopolTool)& D1,

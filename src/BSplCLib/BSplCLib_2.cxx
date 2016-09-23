@@ -31,8 +31,6 @@
 
 #include <math_Matrix.hxx>
 
-static const Standard_Integer aGlobalMaxDegree = 25;
-
 //=======================================================================
 //struct : BSplCLib_DataContainer 
 //purpose: Auxiliary structure providing buffers for poles and knots used in
@@ -44,8 +42,7 @@ struct BSplCLib_DataContainer
   BSplCLib_DataContainer(Standard_Integer Degree)
   {
     (void)Degree; // avoid compiler warning
-    Standard_OutOfRange_Raise_if (Degree > BSplCLib::MaxDegree() ||
-        BSplCLib::MaxDegree() > aGlobalMaxDegree,
+    Standard_OutOfRange_Raise_if (Degree > BSplCLib::MaxDegree(),
         "BSplCLib: bspline degree is greater than maximum supported");
   }
 
@@ -326,7 +323,7 @@ BSplCLib::BuildBSpMatrix(const  TColStd_Array1OfReal&     Parameters,
   ReturnCode = 0,
   FirstNonZeroBsplineIndex,
   BandWidth,
-  MaxOrder = aGlobalMaxDegree+1,
+  MaxOrder = BSplCLib::MaxDegree() + 1,
   Order ;
   
   math_Matrix   BSplineBasis(1, MaxOrder,

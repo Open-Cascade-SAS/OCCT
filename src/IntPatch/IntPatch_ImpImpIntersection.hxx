@@ -62,7 +62,14 @@ public:
   //! When intersection result returns IntPatch_RLine and another
   //! IntPatch_Line (not restriction) we (in case of theIsReqToKeepRLine==TRUE)
   //! will always keep both lines even if they are coincided.
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, const Standard_Boolean isTheTrimmed = Standard_False, const Standard_Boolean theIsReqToKeepRLine = Standard_False);
+  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& S1,
+                                const Handle(Adaptor3d_TopolTool)& D1,
+                                const Handle(Adaptor3d_HSurface)& S2,
+                                const Handle(Adaptor3d_TopolTool)& D2,
+                                const Standard_Real TolArc,
+                                const Standard_Real TolTang,
+                                const Standard_Boolean theIsReqToKeepRLine =
+                                                                  Standard_False);
   
   //! Returns True if the calculus was succesfull.
     Standard_Boolean IsDone() const;
@@ -71,8 +78,8 @@ public:
     Standard_Boolean IsEmpty() const;
   
   //! Returns True if the two patches are considered as
-  //! entierly tangent, i-e every restriction arc of one
-  //! patch is inside the geometric base of the otehr patch.
+  //! entirely tangent, i.e every restriction arc of one
+  //! patch is inside the geometric base of the other patch.
     Standard_Boolean TangentFaces() const;
   
   //! Returns True when the TangentFaces returns True and the

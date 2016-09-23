@@ -6,7 +6,7 @@ puts ""
 # Huge tolerance obtained in the result of intersection of two cylindrical faces
 #################################################
 
-set ExpTol 0.00027580830315682321
+set ExpTol 6.9230965382090094e-006
 set GoodNbCurv 2
 
 restore [locate_data_file OCC496a.brep] a 

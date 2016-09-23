@@ -14,6 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <IntPatch_WLine.hxx>
+
 static 
   Standard_Integer SetQuad(const Handle(Adaptor3d_HSurface)& theS,
                            GeomAbs_SurfaceType& theTS,
@@ -40,7 +42,7 @@ IntPatch_ImpImpIntersection::IntPatch_ImpImpIntersection
         const Standard_Real TolTang,
         const Standard_Boolean theIsReqToKeepRLine)
 {
-  Perform(S1,D1,S2,D2,TolArc,TolTang, Standard_False, theIsReqToKeepRLine);
+  Perform(S1,D1,S2,D2,TolArc,TolTang, theIsReqToKeepRLine);
 }
 //=======================================================================
 //function : Perform
@@ -52,12 +54,13 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
                                           const Handle(Adaptor3d_TopolTool)& D2,
                                           const Standard_Real TolArc,
                                           const Standard_Real TolTang,
-                                          const Standard_Boolean isTheTrimmed,
-                                          const Standard_Boolean theIsReqToKeepRLine) {
+                                          const Standard_Boolean theIsReqToKeepRLine)
+{
   done = Standard_False;
-  Standard_Boolean isTrimmed = isTheTrimmed;
   spnt.Clear();
   slin.Clear();
+
+  Standard_Boolean isPostProcessingRequired = Standard_True;
 
   empt = Standard_True;
   tgte = Standard_False;
@@ -149,59 +152,53 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
     case 22:
       { // Cylinder/Cylinder
         Standard_Boolean isDONE = Standard_False;
-        
-        if(!isTrimmed)
+        Bnd_Box2d aBox1, aBox2;
+
+        const Standard_Real aU1f = S1->FirstUParameter();
+        Standard_Real aU1l = S1->LastUParameter();
+        const Standard_Real aU2f = S2->FirstUParameter();
+        Standard_Real aU2l = S2->LastUParameter();
+
+        const Standard_Real anUperiod = 2.0*M_PI;
+
+        if(aU1l - aU1f > anUperiod)
+          aU1l = aU1f + anUperiod;
+
+        if(aU2l - aU2f > anUperiod)
+          aU2l = aU2f + anUperiod;
+
+        aBox1.Add(gp_Pnt2d(aU1f, S1->FirstVParameter()));
+        aBox1.Add(gp_Pnt2d(aU1l, S1->LastVParameter()));
+        aBox2.Add(gp_Pnt2d(aU2f, S2->FirstVParameter()));
+        aBox2.Add(gp_Pnt2d(aU2l, S2->LastVParameter()));
+
+        // Resolution is too big if the cylinder radius is
+        // too small. Therefore, we shall bounde its value above. 
+        // Here, we use simple constant.
+        const Standard_Real a2DTol = Min(1.0e-4, Min( S1->UResolution(TolTang),
+                                            S2->UResolution(TolTang)));
+
+        //The bigger range the bigger nunber of points in Walking-line (WLine)
+        //we will be able to add and, consequently, we will obtain more
+        //precise intersection line.
+        //Every point of WLine is determined as function from U1-parameter,
+        //where U1 is U-parameter on 1st quadric.
+        //Therefore, we should use quadric with bigger range as 1st parameter
+        //in IntCyCy() function.
+        //On the other hand, there is no point in reversing in case of
+        //analytical intersection (when result is line, ellipse, point...).
+        //This result is independent of the arguments order.
+        Standard_Boolean isReversed = ((aU2l - aU2f) < (aU1l - aU1f));
+
+        if(isReversed)
         {
-          isDONE = IntCyCy(quad1, quad2, TolTang, empt,
-                            SameSurf, multpoint, slin, spnt);
+          isDONE = IntCyCy(quad2, quad1, TolTang, a2DTol, aBox2, aBox1,
+                                    Standard_True, empt, SameSurf, multpoint, slin, spnt);
         }
         else
         {
-          Bnd_Box2d aBox1, aBox2;
-
-          const Standard_Real aU1f = S1->FirstUParameter();
-          Standard_Real aU1l = S1->LastUParameter();
-          const Standard_Real aU2f = S2->FirstUParameter();
-          Standard_Real aU2l = S2->LastUParameter();
-
-          const Standard_Real anUperiod = 2.0*M_PI;
-
-          if(aU1l - aU1f > anUperiod)
-            aU1l = aU1f + anUperiod;
-
-          if(aU2l - aU2f > anUperiod)
-            aU2l = aU2f + anUperiod;
-
-          aBox1.Add(gp_Pnt2d(aU1f, S1->FirstVParameter()));
-          aBox1.Add(gp_Pnt2d(aU1l, S1->LastVParameter()));
-          aBox2.Add(gp_Pnt2d(aU2f, S2->FirstVParameter()));
-          aBox2.Add(gp_Pnt2d(aU2l, S2->LastVParameter()));
-
-          // Resolution is too big if the cylinder radius is
-          // too small. Therefore, we shall bounde its value above. 
-          // Here, we use simple constant.
-          const Standard_Real a2DTol = Min(1.0e-4, Min( S1->UResolution(TolTang),
-                                              S2->UResolution(TolTang)));
-
-          Standard_Boolean isReversed = ((aU2l - aU2f) < (aU1l - aU1f));
-
-          if(isReversed)
-          {
-            isDONE = IntCyCyTrim(quad2, quad1, TolTang, a2DTol, aBox2, aBox1,
-                                                  isReversed, empt, slin, spnt);
-          }
-          else
-          {
-            isDONE = IntCyCyTrim(quad1, quad2, TolTang, a2DTol, aBox1, aBox2,
-                                                  isReversed, empt, slin, spnt);
-          }
-
-          if(!isDONE)
-          {
-            isDONE = IntCyCy(quad1, quad2, TolTang, empt,
-                            SameSurf, multpoint, slin, spnt);
-            isTrimmed = Standard_False;
-          }
+          isDONE = IntCyCy(quad1, quad2, TolTang, a2DTol, aBox1, aBox2,
+                                    Standard_False, empt, SameSurf, multpoint, slin, spnt);
         }
 
         if (!isDONE)
@@ -210,6 +207,17 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
         }
 
         bEmpty = empt;
+        if(!slin.IsEmpty())
+        {
+          const Handle(IntPatch_WLine)& aWLine = 
+                                    Handle(IntPatch_WLine)::DownCast(slin.Value(1));
+
+          if(!aWLine.IsNull())
+          {//No geometric solution
+            isPostProcessingRequired = Standard_False;
+          }
+        }
+
         break;
       }
     //
@@ -302,7 +310,7 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
   }
   //
 
-  if(!isTrimmed)
+  if(isPostProcessingRequired)
   {
     if (!SameSurf) {
       AFunc.SetQuadric(quad2);

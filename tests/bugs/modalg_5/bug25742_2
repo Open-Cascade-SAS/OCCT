@@ -31,16 +31,19 @@ explode b1 f
 explode b2 f
 
 smallview
-donly b1_4 b2_1
+donly b1_4
 fit
+display b2_1
 
- 
 dchrono h reset
 dchrono h start
 
 bopcurves b1_4 b2_1 -2d
 
 dchrono h stop
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}_1.png
+
 set q [dchrono h show]
 
 regexp {CPU user time: ([-0-9.+eE]+) seconds} $q full z
@@ -56,10 +59,10 @@ if { $z > ${max_time} } {
 mksurface s1 b1_4
 mksurface s2 b2_1
 
-dchrono h2 stop
-set q2 [dchrono h2 show]
+dchrono h2 reset
+dchrono h2 start
 
-set CurveNumb [intersect i s1 s2]
+set CurveNumb [intersect resi s1 s2]
 
 dchrono h2 stop
 set q2 [dchrono h2 show]
@@ -79,4 +82,8 @@ if { [llength ${CurveNumb}] < 1 } {
     puts "OK : Good intersection"
 }
 
-checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+don resi*
+fit
+display s1 s2
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}_2.png

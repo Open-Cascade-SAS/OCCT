@@ -17,6 +17,9 @@
 #include <Adaptor3d_TopolTool.hxx>
 #include <ElCLib.hxx>
 
+// It is pure empirical value.
+const Standard_Real IntPatch_WLineTool::myMaxConcatAngle = M_PI/6;
+
 //Bit-mask is used for information about 
 //the operation made in
 //IntPatch_WLineTool::ExtendTwoWlinesToEachOther() method.
@@ -830,27 +833,26 @@ static Standard_Boolean IsOutOfDomain(const Bnd_Box2d& theBoxS1,
 }
 
 //=======================================================================
-//function : CheckArguments
+//function : CheckArgumentsToExtend
 //purpose  : Check if extending is possible
 //            (see IntPatch_WLineTool::ExtendTwoWlinesToEachOther)
 //=======================================================================
-static Standard_Boolean CheckArguments(const IntSurf_Quadric& theS1,
-                                       const IntSurf_Quadric& theS2,
-                                       const IntSurf_PntOn2S& thePtWL1,
-                                       const IntSurf_PntOn2S& thePtWL2,
-                                       IntSurf_PntOn2S& theNewPoint,
-                                       const gp_Vec& theVec1,
-                                       const gp_Vec& theVec2,
-                                       const gp_Vec& theVec3,
-                                       const Bnd_Box2d& theBoxS1,
-                                       const Bnd_Box2d& theBoxS2,
-                                       const Standard_Real theToler3D,
-                                       const Standard_Real theU1Period,
-                                       const Standard_Real theU2Period,
-                                       const Standard_Real theV1Period,
-                                       const Standard_Real theV2Period)
+Standard_Boolean CheckArgumentsToExtend(const IntSurf_Quadric& theS1,
+                                        const IntSurf_Quadric& theS2,
+                                        const IntSurf_PntOn2S& thePtWL1,
+                                        const IntSurf_PntOn2S& thePtWL2,
+                                        IntSurf_PntOn2S& theNewPoint,
+                                        const gp_Vec& theVec1,
+                                        const gp_Vec& theVec2,
+                                        const gp_Vec& theVec3,
+                                        const Bnd_Box2d& theBoxS1,
+                                        const Bnd_Box2d& theBoxS2,
+                                        const Standard_Real theToler3D,
+                                        const Standard_Real theU1Period,
+                                        const Standard_Real theU2Period,
+                                        const Standard_Real theV1Period,
+                                        const Standard_Real theV2Period)
 {
-  const Standard_Real aMaxAngle = M_PI/6; //30 degree
   const Standard_Real aSqToler = theToler3D*theToler3D;
 
   if(theVec3.SquareMagnitude() <= aSqToler)
@@ -858,9 +860,9 @@ static Standard_Boolean CheckArguments(const IntSurf_Quadric& theS1,
     return Standard_False;
   }
 
-  if((theVec1.Angle(theVec2) > aMaxAngle) ||
-     (theVec1.Angle(theVec3) > aMaxAngle) ||
-     (theVec2.Angle(theVec3) > aMaxAngle))
+  if((theVec1.Angle(theVec2) > IntPatch_WLineTool::myMaxConcatAngle) ||
+     (theVec1.Angle(theVec3) > IntPatch_WLineTool::myMaxConcatAngle) ||
+     (theVec2.Angle(theVec3) > IntPatch_WLineTool::myMaxConcatAngle))
   {
     return Standard_False;
   }
@@ -908,6 +910,20 @@ static Standard_Boolean CheckArguments(const IntSurf_Quadric& theS1,
 }
 
 //=======================================================================
+//function : CheckArgumentsToJoin
+//purpose  : Check if joining is possible
+//            (see IntPatch_WLineTool::JoinWLines)
+//=======================================================================
+Standard_Boolean CheckArgumentsToJoin(const gp_Vec& theVec1,
+                                      const gp_Vec& theVec2)
+{
+  // [0, PI] - range
+  const Standard_Real anAngle = theVec1.Angle(theVec2);
+
+  return (anAngle < IntPatch_WLineTool::myMaxConcatAngle);
+}
+
+//=======================================================================
 //function : ExtendTwoWLFirstFirst
 //purpose  : Performs extending theWLine1 and theWLine2 through their
 //            respecting start point.
@@ -932,10 +948,10 @@ static void ExtendTwoWLFirstFirst(const IntSurf_Quadric& theS1,
                                    Standard_Boolean &theHasBeenJoined)
 {
   IntSurf_PntOn2S aPOn2S;
-  if(!CheckArguments(theS1, theS2, thePtWL1, thePtWL2, aPOn2S,
-                     theVec1, theVec2, theVec3, 
-                     theBoxS1, theBoxS2, theToler3D,
-                     theU1Period, theU2Period, theV1Period, theV2Period))
+  if(!CheckArgumentsToExtend(theS1, theS2, thePtWL1, thePtWL2, aPOn2S,
+                             theVec1, theVec2, theVec3, 
+                             theBoxS1, theBoxS2, theToler3D,
+                             theU1Period, theU2Period, theV1Period, theV2Period))
   {
     return;
   }
@@ -1006,10 +1022,10 @@ static void ExtendTwoWLFirstLast(const IntSurf_Quadric& theS1,
                                  Standard_Boolean &theHasBeenJoined)
 {
   IntSurf_PntOn2S aPOn2S;
-  if(!CheckArguments(theS1, theS2, thePtWL1, thePtWL2, aPOn2S,
-                     theVec1, theVec2, theVec3, 
-                     theBoxS1, theBoxS2, theToler3D,
-                     theU1Period, theU2Period, theV1Period, theV2Period))
+  if(!CheckArgumentsToExtend(theS1, theS2, thePtWL1, thePtWL2, aPOn2S,
+                             theVec1, theVec2, theVec3, 
+                             theBoxS1, theBoxS2, theToler3D,
+                             theU1Period, theU2Period, theV1Period, theV2Period))
   {
     return;
   }
@@ -1078,10 +1094,10 @@ static void ExtendTwoWLLastFirst(const IntSurf_Quadric& theS1,
                                  Standard_Boolean &theHasBeenJoined)
 {
   IntSurf_PntOn2S aPOn2S;
-  if(!CheckArguments(theS1, theS2, thePtWL1, thePtWL2, aPOn2S,
-                     theVec1, theVec2, theVec3, 
-                     theBoxS1, theBoxS2, theToler3D,
-                     theU1Period, theU2Period, theV1Period, theV2Period))
+  if(!CheckArgumentsToExtend(theS1, theS2, thePtWL1, thePtWL2, aPOn2S,
+                             theVec1, theVec2, theVec3, 
+                             theBoxS1, theBoxS2, theToler3D,
+                             theU1Period, theU2Period, theV1Period, theV2Period))
   {
     return;
   }
@@ -1146,10 +1162,10 @@ static void ExtendTwoWLLastLast(const IntSurf_Quadric& theS1,
                                 Standard_Boolean &theHasBeenJoined)
 {
   IntSurf_PntOn2S aPOn2S;
-  if(!CheckArguments(theS1, theS2, thePtWL1, thePtWL2, aPOn2S,
-                     theVec1, theVec2, theVec3, 
-                     theBoxS1, theBoxS2, theToler3D,
-                     theU1Period, theU2Period, theV1Period, theV2Period))
+  if(!CheckArgumentsToExtend(theS1, theS2, thePtWL1, thePtWL2, aPOn2S,
+                             theVec1, theVec2, theVec3, 
+                             theBoxS1, theBoxS2, theToler3D,
+                             theU1Period, theU2Period, theV1Period, theV2Period))
   {
     return;
   }
@@ -1387,10 +1403,19 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine& theSlin,
       {
         const IntSurf_PntOn2S& aPt1 = aWLine1->Point(2);
         const IntSurf_PntOn2S& aPt2 = aWLine2->Point(2);
-        if(!IsSeamOrBound(aPt1, aPt2, aPntFWL1, theU1Period, theU2Period,
-                          theV1Period, theV2Period, theUfSurf1, theUlSurf1,
-                          theVfSurf1, theVlSurf1, theUfSurf2, theUlSurf2,
-                          theVfSurf2, theVlSurf2))
+        Standard_Boolean aCond = 
+              CheckArgumentsToJoin(gp_Vec(aPntFWL1.Value(), aPt1.Value()),
+                                   gp_Vec(aPt2.Value(), aPntFWL2.Value()));
+
+        aCond = aCond && !IsSeamOrBound(aPt1, aPt2, aPntFWL1,
+                                        theU1Period, theU2Period,
+                                        theV1Period, theV2Period,
+                                        theUfSurf1, theUlSurf1,
+                                        theVfSurf1, theVlSurf1,
+                                        theUfSurf2, theUlSurf2,
+                                        theVfSurf2, theVlSurf2);
+          
+        if(aCond)
         {
           aWLine1->ClearVertexes();
           for(Standard_Integer aNPt = 1; aNPt <= aNbPntsWL2; aNPt++)
@@ -1413,10 +1438,20 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine& theSlin,
       {
         const IntSurf_PntOn2S& aPt1 = aWLine1->Point(2);
         const IntSurf_PntOn2S& aPt2 = aWLine2->Point(aNbPntsWL2-1);
-        if(!IsSeamOrBound(aPt1, aPt2, aPntFWL1, theU1Period, theU2Period,
-                          theV1Period, theV2Period, theUfSurf1, theUlSurf1,
-                          theVfSurf1, theVlSurf1, theUfSurf2, theUlSurf2,
-                          theVfSurf2, theVlSurf2))
+
+        Standard_Boolean aCond = 
+              CheckArgumentsToJoin(gp_Vec(aPntFWL1.Value(), aPt1.Value()),
+                                   gp_Vec(aPt2.Value(), aPntLWL2.Value()));
+
+        aCond = aCond && !IsSeamOrBound(aPt1, aPt2, aPntFWL1,
+                                        theU1Period, theU2Period,
+                                        theV1Period, theV2Period,
+                                        theUfSurf1, theUlSurf1,
+                                        theVfSurf1, theVlSurf1,
+                                        theUfSurf2, theUlSurf2,
+                                        theVfSurf2, theVlSurf2);
+
+        if(aCond)
         {
           aWLine1->ClearVertexes();
           for(Standard_Integer aNPt = aNbPntsWL2; aNPt >= 1; aNPt--)
@@ -1439,10 +1474,20 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine& theSlin,
       {
         const IntSurf_PntOn2S& aPt1 = aWLine1->Point(aNbPntsWL1-1);
         const IntSurf_PntOn2S& aPt2 = aWLine2->Point(2);
-        if(!IsSeamOrBound(aPt1, aPt2, aPntLWL1, theU1Period, theU2Period,
-                          theV1Period, theV2Period, theUfSurf1, theUlSurf1,
-                          theVfSurf1, theVlSurf1, theUfSurf2, theUlSurf2,
-                          theVfSurf2, theVlSurf2))
+
+        Standard_Boolean aCond = 
+              CheckArgumentsToJoin(gp_Vec(aPt1.Value(), aPntLWL1.Value()),
+                                   gp_Vec(aPntFWL2.Value(), aPt2.Value()));
+
+        aCond = aCond && !IsSeamOrBound(aPt1, aPt2, aPntLWL1,
+                                        theU1Period, theU2Period,
+                                        theV1Period, theV2Period,
+                                        theUfSurf1, theUlSurf1,
+                                        theVfSurf1, theVlSurf1,
+                                        theUfSurf2, theUlSurf2,
+                                        theVfSurf2, theVlSurf2);
+
+        if(aCond)
         {
           aWLine1->ClearVertexes();
           for(Standard_Integer aNPt = 1; aNPt <= aNbPntsWL2; aNPt++)
@@ -1465,10 +1510,20 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine& theSlin,
       {
         const IntSurf_PntOn2S& aPt1 = aWLine1->Point(aNbPntsWL1-1);
         const IntSurf_PntOn2S& aPt2 = aWLine2->Point(aNbPntsWL2-1);
-        if(!IsSeamOrBound(aPt1, aPt2, aPntLWL1, theU1Period, theU2Period,
-                          theV1Period, theV2Period, theUfSurf1, theUlSurf1,
-                          theVfSurf1, theVlSurf1, theUfSurf2, theUlSurf2,
-                          theVfSurf2, theVlSurf2))
+
+        Standard_Boolean aCond = 
+              CheckArgumentsToJoin(gp_Vec(aPt1.Value(), aPntLWL1.Value()),
+                                   gp_Vec(aPntLWL2.Value(), aPt2.Value()));
+
+        aCond = aCond && !IsSeamOrBound(aPt1, aPt2, aPntLWL1, 
+                                        theU1Period, theU2Period,
+                                        theV1Period, theV2Period,
+                                        theUfSurf1, theUlSurf1,
+                                        theVfSurf1, theVlSurf1,
+                                        theUfSurf2, theUlSurf2,
+                                        theVfSurf2, theVlSurf2);
+
+        if(aCond)
         {
           aWLine1->ClearVertexes();
           for(Standard_Integer aNPt = aNbPntsWL2; aNPt >= 1; aNPt--)

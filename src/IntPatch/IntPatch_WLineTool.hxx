@@ -96,6 +96,9 @@ public:
                                                          const Standard_Real theV2Period,
                                                          const Bnd_Box2d& theBoxS1,
                                                          const Bnd_Box2d& theBoxS2);
+
+//! Max angle to concatenate two WLines to avoid result with C0-continuity
+  static const Standard_Real myMaxConcatAngle;
 };
 
 #endif

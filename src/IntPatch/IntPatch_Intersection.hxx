@@ -167,14 +167,6 @@ private:
   //! will always keep both lines even if they are coincided.
   Standard_EXPORT void GeomGeomPerfom (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, IntSurf_ListOfPntOn2S& LOfPnts, const Standard_Boolean RestrictLine, const GeomAbs_SurfaceType typs1, const GeomAbs_SurfaceType typs2, const Standard_Boolean theIsReqToKeepRLine = Standard_False);
   
-  //! Flag theIsReqToKeepRLine has been enterred only for
-  //! compatibility with TopOpeBRep package. It shall be deleted
-  //! after deleting TopOpeBRep.
-  //! When intersection result returns IntPatch_RLine and another
-  //! IntPatch_Line (not restriction) we (in case of theIsReqToKeepRLine==TRUE)
-  //! will always keep both lines even if they are coincided.
-  Standard_EXPORT void GeomGeomPerfomTrimSurf (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, IntSurf_ListOfPntOn2S& LOfPnts, const Standard_Boolean RestrictLine, const GeomAbs_SurfaceType typs1, const GeomAbs_SurfaceType typs2, const Standard_Boolean theIsReqToKeepRLine = Standard_False);
-  
   Standard_EXPORT void GeomParamPerfom (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Boolean isNotAnalitical, const GeomAbs_SurfaceType typs1, const GeomAbs_SurfaceType typs2);
 
 

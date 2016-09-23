@@ -70,16 +70,7 @@ static void ProcessBounds(const Handle(IntPatch_ALine)&,
 			  const Standard_Real);
 
 
-static Standard_Boolean IntCyCy(const IntSurf_Quadric&,
-				const IntSurf_Quadric&,
-				const Standard_Real,
-				Standard_Boolean&,
-				Standard_Boolean&,
-				Standard_Boolean&,
-				IntPatch_SequenceOfLine&,
-				IntPatch_SequenceOfPoint&);
-
-static Standard_Boolean IntCyCyTrim(const IntSurf_Quadric& theQuad1,
+static Standard_Boolean IntCyCy(const IntSurf_Quadric& theQuad1,
                                     const IntSurf_Quadric& theQuad2,
                                     const Standard_Real theTol3D,
                                     const Standard_Real theTol2D,
@@ -87,6 +78,8 @@ static Standard_Boolean IntCyCyTrim(const IntSurf_Quadric& theQuad1,
                                     const Bnd_Box2d& theUVSurf2,
                                     const Standard_Boolean isTheReverse,
                                     Standard_Boolean& isTheEmpty,
+                                    Standard_Boolean& isTheSameSurface,
+                                    Standard_Boolean& isTheMultiplePoint,
                                     IntPatch_SequenceOfLine& theSlin,
                                     IntPatch_SequenceOfPoint& theSPnt);
 
