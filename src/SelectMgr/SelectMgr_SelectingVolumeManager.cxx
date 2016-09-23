@@ -380,7 +380,9 @@ Standard_Real SelectMgr_SelectingVolumeManager::DistToGeometryCenter (const gp_P
 gp_Pnt SelectMgr_SelectingVolumeManager::DetectedPoint (const Standard_Real theDepth) const
 {
   if (myActiveSelectionType != Point)
-    return gp_Pnt (RealLast(), RealLast(), RealLast());
+  {
+    Standard_ProgramError::Raise ("SelectMgr_SelectingVolumeManager::DetectedPoint() should be called only for Point selection type");
+  }
 
   return mySelectingVolumes[Frustum]->DetectedPoint (theDepth);
 }

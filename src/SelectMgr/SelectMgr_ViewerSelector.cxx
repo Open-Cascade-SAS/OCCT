@@ -64,6 +64,11 @@ namespace {
                              const gp_GTrsf& theInversedTrsf,
                              SelectMgr_SelectingVolumeManager& theMgr)
   {
+    if (theMgr.GetActiveSelectionType() != SelectMgr_SelectingVolumeManager::Point)
+    {
+      return;
+    }
+
     theCriterion.Point = theMgr.DetectedPoint (theCriterion.Depth);
     gp_GTrsf anInvTrsf = theInversedTrsf;
     if (theCriterion.Entity->HasInitLocation())

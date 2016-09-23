@@ -71,5 +71,6 @@ vselect 50 223 235 395
 if { [vreadpixel 132 300 rgb name] != "GRAY66" } { puts "Error selecting trihedron persistence object" }
 
 vselect 50 380 400 50
+vstate -entities
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

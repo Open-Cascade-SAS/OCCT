@@ -154,8 +154,8 @@ public:
   //! screen point and given point theCOG
   Standard_EXPORT virtual Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG) Standard_OVERRIDE;
 
-  //! Calculates the point on a view ray that was detected during the run of selection algo by given depth. Is valid for point
-  //! selection only
+  //! Calculates the point on a view ray that was detected during the run of selection algo by given depth.
+  //! Throws exception if active selection type is not Point.
   Standard_EXPORT virtual gp_Pnt DetectedPoint (const Standard_Real theDepth) const Standard_OVERRIDE;
 
   //! Checks if the point of sensitive in which selection was detected belongs

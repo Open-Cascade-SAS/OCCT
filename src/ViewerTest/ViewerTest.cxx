@@ -4530,7 +4530,7 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
       aName.LeftJustify (20, ' ');
       char anInfoStr[512];
       Sprintf (anInfoStr,
-               " Depth: %+.3f Distance: %+.3f Point: %+.3f %+.3f %+.3f",
+               " Depth: %g Distance: %g Point: %g %g %g",
                aPickData.Depth,
                aPickData.MinDist,
                aPickData.Point.X(), aPickData.Point.Y(), aPickData.Point.Z());
