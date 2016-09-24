@@ -1271,10 +1271,19 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
 
   Standard_Boolean aToRebuildShaders = Standard_False;
 
+  if (myRenderParams.RebuildRayTracingShaders) // requires complete re-initialization
+  {
+    myRaytraceInitStatus = OpenGl_RT_NONE;
+    releaseRaytraceResources (theGlContext, Standard_True);
+    myRenderParams.RebuildRayTracingShaders = Standard_False; // clear rebuilding flag
+  }
+
   if (myRaytraceInitStatus == OpenGl_RT_INIT)
   {
     if (!myIsRaytraceDataValid)
+    {
       return Standard_True;
+    }
 
     const Standard_Integer aRequiredStackSize =
       myRaytraceGeometry.TopLevelTreeDepth() + myRaytraceGeometry.BotLevelTreeDepth();
@@ -1385,6 +1394,8 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
 
   if (myRaytraceInitStatus == OpenGl_RT_NONE)
   {
+    myAccumFrames = 0; // reject accumulated frames
+
     if (!theGlContext->IsGlGreaterEqual (3, 1))
     {
       return safeFailBack ("Ray-tracing requires OpenGL 3.1 and higher", theGlContext);
@@ -1681,19 +1692,9 @@ inline void nullifyResource (const Handle(OpenGl_Context)& theGlContext, Handle(
 // function : releaseRaytraceResources
 // purpose  : Releases OpenGL/GLSL shader programs
 // =======================================================================
-void OpenGl_View::releaseRaytraceResources (const Handle(OpenGl_Context)& theGlContext)
+void OpenGl_View::releaseRaytraceResources (const Handle(OpenGl_Context)& theGlContext, const Standard_Boolean theToRebuild)
 {
-  myRaytraceFBO1[0]->Release (theGlContext.operator->());
-  myRaytraceFBO1[1]->Release (theGlContext.operator->());
-  myRaytraceFBO2[0]->Release (theGlContext.operator->());
-  myRaytraceFBO2[1]->Release (theGlContext.operator->());
-
-  nullifyResource (theGlContext, myRaytraceOutputTexture[0]);
-  nullifyResource (theGlContext, myRaytraceOutputTexture[1]);
-
-  nullifyResource (theGlContext, myRaytraceTileOffsetsTexture);
-  nullifyResource (theGlContext, myRaytraceVisualErrorTexture);
-
+  // release shader resources
   nullifyResource (theGlContext, myRaytraceShader);
   nullifyResource (theGlContext, myPostFSAAShader);
 
@@ -1701,24 +1702,38 @@ void OpenGl_View::releaseRaytraceResources (const Handle(OpenGl_Context)& theGlC
   nullifyResource (theGlContext, myPostFSAAProgram);
   nullifyResource (theGlContext, myOutImageProgram);
 
-  nullifyResource (theGlContext, mySceneNodeInfoTexture);
-  nullifyResource (theGlContext, mySceneMinPointTexture);
-  nullifyResource (theGlContext, mySceneMaxPointTexture);
-
-  nullifyResource (theGlContext, myGeometryVertexTexture);
-  nullifyResource (theGlContext, myGeometryNormalTexture);
-  nullifyResource (theGlContext, myGeometryTexCrdTexture);
-  nullifyResource (theGlContext, myGeometryTriangTexture);
-  nullifyResource (theGlContext, mySceneTransformTexture);
-
-  nullifyResource (theGlContext, myRaytraceLightSrcTexture);
-  nullifyResource (theGlContext, myRaytraceMaterialTexture);
-
-  myRaytraceGeometry.ReleaseResources (theGlContext);
-
-  if (myRaytraceScreenQuad.IsValid())
+  if (!theToRebuild) // complete release
   {
-    myRaytraceScreenQuad.Release (theGlContext.operator->());
+    myRaytraceFBO1[0]->Release (theGlContext.operator->());
+    myRaytraceFBO1[1]->Release (theGlContext.operator->());
+    myRaytraceFBO2[0]->Release (theGlContext.operator->());
+    myRaytraceFBO2[1]->Release (theGlContext.operator->());
+
+    nullifyResource (theGlContext, myRaytraceOutputTexture[0]);
+    nullifyResource (theGlContext, myRaytraceOutputTexture[1]);
+
+    nullifyResource (theGlContext, myRaytraceTileOffsetsTexture);
+    nullifyResource (theGlContext, myRaytraceVisualErrorTexture);
+
+    nullifyResource (theGlContext, mySceneNodeInfoTexture);
+    nullifyResource (theGlContext, mySceneMinPointTexture);
+    nullifyResource (theGlContext, mySceneMaxPointTexture);
+
+    nullifyResource (theGlContext, myGeometryVertexTexture);
+    nullifyResource (theGlContext, myGeometryNormalTexture);
+    nullifyResource (theGlContext, myGeometryTexCrdTexture);
+    nullifyResource (theGlContext, myGeometryTriangTexture);
+    nullifyResource (theGlContext, mySceneTransformTexture);
+
+    nullifyResource (theGlContext, myRaytraceLightSrcTexture);
+    nullifyResource (theGlContext, myRaytraceMaterialTexture);
+
+    myRaytraceGeometry.ReleaseResources (theGlContext);
+
+    if (myRaytraceScreenQuad.IsValid ())
+    {
+      myRaytraceScreenQuad.Release (theGlContext.operator->());
+    }
   }
 }
 

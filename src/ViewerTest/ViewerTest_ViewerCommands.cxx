@@ -8522,6 +8522,23 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
         return 1;
       }
     }
+    else if (aFlag == "-rebuildglsl"
+          || aFlag == "-rebuild")
+    {
+      if (toPrint)
+      {
+        theDI << (aParams.RebuildRayTracingShaders ? "on" : "off") << " ";
+        continue;
+      }
+
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+          && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aParams.RebuildRayTracingShaders = toEnable;
+    }
     else
     {
       std::cout << "Error: wrong syntax, unknown flag '" << anArg << "'\n";
@@ -9663,6 +9680,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-env          on|off'  Enables/disables environment map background"
     "\n      '-iss          on|off'  Enables/disables adaptive screen sampling (PT mode)"
     "\n      '-issd         on|off'  Shows screen sampling distribution in ISS mode"
+    "\n      '-rebuildGlsl  on|off'  Rebuild Ray-Tracing GLSL programs (for debugging)"
     "\n      '-shadingModel model'   Controls shading model from enumeration"
     "\n                              color, flat, gouraud, phong"
     "\n      '-resolution   value'   Sets a new pixels density (PPI), defines scaling factor for parameters like text size"

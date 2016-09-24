@@ -869,7 +869,8 @@ protected: //! @name methods related to ray-tracing
   Standard_Boolean initRaytraceResources (const Handle(OpenGl_Context)& theGlContext);
 
   //! Releases OpenGL/GLSL shader programs.
-  void releaseRaytraceResources (const Handle(OpenGl_Context)& theGlContext);
+  void releaseRaytraceResources (const Handle(OpenGl_Context)& theGlContext,
+                                 const Standard_Boolean        theToRebuild = Standard_False);
 
   //! Updates auxiliary OpenGL frame buffers.
   Standard_Boolean updateRaytraceBuffers (const Standard_Integer        theSizeX,
