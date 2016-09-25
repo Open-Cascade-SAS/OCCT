@@ -329,9 +329,14 @@ static Standard_Integer DDocStd_Close (Draw_Interpretor& /*theDI*/,
    && !aDocViewer->GetInteractiveContext().IsNull())
   {
     Handle(V3d_Viewer) aViewer = aDocViewer->GetInteractiveContext()->CurrentViewer();
-    for (aViewer->InitDefinedViews(); aViewer->MoreDefinedViews(); aViewer->NextDefinedViews())
+    V3d_ListOfView aViews;
+    for (V3d_ListOfViewIterator aViewIter (aDocViewer->GetInteractiveContext()->CurrentViewer()->DefinedViewIterator()); aViewIter.More(); aViewIter.Next())
     {
-      Handle(V3d_View) aView = aViewer->DefinedView();
+      aViews.Append (aViewIter.Value());
+    }
+    for (V3d_ListOfViewIterator aViewIter (aViews); aViewIter.More(); aViewIter.Next())
+    {
+      Handle(V3d_View) aView = aViewIter.Value();
       ViewerTest::RemoveView (aView);
     }
   }

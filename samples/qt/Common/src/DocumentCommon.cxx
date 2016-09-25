@@ -19,8 +19,8 @@
 // function : Viewer
 // purpose  :
 // =======================================================================
-Handle(V3d_Viewer) DocumentCommon::Viewer (const Standard_ExtString theName,
-                                           const Standard_CString theDomain,
+Handle(V3d_Viewer) DocumentCommon::Viewer (const Standard_ExtString ,
+                                           const Standard_CString ,
                                            const Standard_Real theViewSize,
                                            const V3d_TypeOfOrientation theViewProj,
                                            const Standard_Boolean theComputedMode,
@@ -37,17 +37,12 @@ Handle(V3d_Viewer) DocumentCommon::Viewer (const Standard_ExtString theName,
     aGraphicDriver = new OpenGl_GraphicDriver (aDisplayConnection);
   }
 
-  return new V3d_Viewer (aGraphicDriver,
-                         theName,
-                         theDomain,
-                         theViewSize,
-                         theViewProj,
-                         Quantity_NOC_GRAY30,
-                         V3d_ZBUFFER,
-                         V3d_GOURAUD,
-                         V3d_WAIT,
-                         theComputedMode,
-                         theDefaultComputedMode);
+  Handle(V3d_Viewer) aViewer = new V3d_Viewer (aGraphicDriver);
+  aViewer->SetDefaultViewSize (theViewSize);
+  aViewer->SetDefaultViewProj (theViewProj);
+  aViewer->SetComputedMode (theComputedMode);
+  aViewer->SetDefaultComputedMode (theDefaultComputedMode);
+  return aViewer;
 }
 
 DocumentCommon::DocumentCommon( const int theIndex, ApplicationCommonWindow* app )

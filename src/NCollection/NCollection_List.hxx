@@ -199,6 +199,20 @@ public:
     PRemove (theIter, ListNode::delNode); 
   }
 
+  //! Remove the first occurrence of the object.
+  Standard_Boolean Remove (const TheItemType& theObject)
+  {
+    for (Iterator anIter (*this); anIter.More(); anIter.Next())
+    {
+      if (anIter.Value() == theObject)
+      {
+        Remove (anIter);
+        return Standard_True;
+      }
+    }
+    return Standard_False;
+  }
+
   //! InsertBefore
   TheItemType& InsertBefore (const TheItemType& theItem,
                              Iterator& theIter) 
@@ -269,6 +283,19 @@ public:
   //! Reverse the list
   void Reverse ()
   { PReverse(); }
+
+  //! Return true if object is stored in the list.
+  Standard_Boolean Contains (const TheItemType& theObject) const
+  {
+    for (Iterator anIter (*this); anIter.More(); anIter.Next())
+    {
+      if (anIter.Value() == theObject)
+      {
+        return Standard_True;
+      }
+    }
+    return Standard_False;
+  }
 
   //! Destructor - clears the List
   virtual ~NCollection_List (void)

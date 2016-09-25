@@ -135,18 +135,6 @@ void AIS_InteractiveContext::UpdateCurrentViewer()
     myMainVwr->Update();
 }
 
-
-//=======================================================================
-//function : DomainOfMainViewer
-//purpose  : 
-//=======================================================================
-
-Standard_CString AIS_InteractiveContext::DomainOfMainViewer() const 
-{
-  return myMainVwr->Domain();
-  
-}
-
 //=======================================================================
 //function : DisplayedObjects
 //purpose  :
@@ -2453,9 +2441,10 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
 
   myObjects.UnBind (theIObj);
   myMainVwr->StructureManager()->UnregisterObject (theIObj);
-  for (myMainVwr->InitDefinedViews(); myMainVwr->MoreDefinedViews(); myMainVwr->NextDefinedViews())
+
+  for (V3d_ListOfViewIterator aDefViewIter (myMainVwr->DefinedViewIterator()); aDefViewIter.More(); aDefViewIter.Next())
   {
-    myMainVwr->DefinedView()->View()->ChangeHiddenObjects()->Remove (theIObj.get());
+    aDefViewIter.Value()->View()->ChangeHiddenObjects()->Remove (theIObj.get());
   }
 
   if (!myLastinMain.IsNull() && myLastinMain->Selectable() == theIObj)
@@ -2944,9 +2933,9 @@ void AIS_InteractiveContext::SetTransformPersistence (const Handle(AIS_Interacti
 
   const Standard_Integer    aLayerId   = myObjects.Find (theObject)->GetLayerIndex();
   const Handle(V3d_Viewer)& aCurViewer = CurrentViewer();
-  for (aCurViewer->InitActiveViews(); aCurViewer->MoreActiveViews(); aCurViewer->NextActiveViews())
+  for (V3d_ListOfViewIterator anActiveViewIter (aCurViewer->ActiveViewIterator()); anActiveViewIter.More(); anActiveViewIter.Next())
   {
-    aCurViewer->ActiveView()->View()->InvalidateBVHData (aLayerId);
-    aCurViewer->ActiveView()->View()->InvalidateZLayerBoundingBox (aLayerId);
+    anActiveViewIter.Value()->View()->InvalidateBVHData (aLayerId);
+    anActiveViewIter.Value()->View()->InvalidateZLayerBoundingBox (aLayerId);
   }
 }

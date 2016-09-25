@@ -56,8 +56,11 @@ void V3d_Viewer::SetPrivilegedPlane(const gp_Ax3& aPlane)
 {
   myPrivilegedPlane = aPlane;
   Grid()->SetDrawMode(Grid()->DrawMode());
-  for (InitActiveViews (); MoreActiveViews (); NextActiveViews ())
-    ActiveView ()->SetGrid (myPrivilegedPlane, Grid ());
+  for (V3d_ListOfView::Iterator anActiveViewIter (myActiveViews); anActiveViewIter.More(); anActiveViewIter.Next())
+  {
+    anActiveViewIter.Value()->SetGrid (myPrivilegedPlane, Grid());
+  }
+
   if(myDisplayPlane)
     DisplayPrivilegedPlane(Standard_True,myDisplayPlaneLength);
   else

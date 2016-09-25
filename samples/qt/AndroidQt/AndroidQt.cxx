@@ -261,9 +261,8 @@ bool AndroidQt::initViewer()
   }
 
   // create viewer
-  myViewer = new V3d_Viewer (aDriver, TCollection_ExtendedString("Viewer").ToExtString(), "", 1000.0,
-                             V3d_XposYnegZpos, AndroidQt_UserInteractionParameters::BgColor.Name(), V3d_ZBUFFER, V3d_GOURAUD, V3d_WAIT,
-                             Standard_True, Standard_False);
+  myViewer = new V3d_Viewer (aDriver);
+  myViewer->SetDefaultBackgroundColor (AndroidQt_UserInteractionParameters::BgColor.Name());
   myViewer->SetDefaultLights();
   myViewer->SetLightOn();
 

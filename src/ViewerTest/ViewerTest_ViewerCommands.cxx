@@ -656,8 +656,7 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   else if (a3DViewer.IsNull())
   {
     toCreateViewer = Standard_True;
-    TCollection_ExtendedString NameOfWindow("Viewer3D");
-    a3DViewer = new V3d_Viewer(aGraphicDriver, NameOfWindow.ToExtString());
+    a3DViewer = new V3d_Viewer(aGraphicDriver);
     a3DViewer->SetDefaultBackgroundColor (ViewerTest_DefaultBackground.FlatColor);
     a3DViewer->SetDefaultBgGradientColors (ViewerTest_DefaultBackground.GradientColor1,
                                            ViewerTest_DefaultBackground.GradientColor2,
@@ -7631,9 +7630,9 @@ static int VLight (Draw_Interpretor& theDi,
   {
     // print lights info
     Standard_Integer aLightId = 0;
-    for (aView->InitActiveLights(); aView->MoreActiveLights(); aView->NextActiveLights(), ++aLightId)
+    for (V3d_ListOfLightIterator aLightIter (aView->ActiveLightIterator()); aLightIter.More(); aLightIter.Next(), ++aLightId)
     {
-      Handle(V3d_Light) aLight = aView->ActiveLight();
+      Handle(V3d_Light) aLight = aLightIter.Value();
       const Quantity_Color aColor = aLight->Color();
       theDi << "Light" << aLightId << "\n";
       switch (aLight->Type())
@@ -7747,11 +7746,11 @@ static int VLight (Draw_Interpretor& theDi,
           || anArgCase.IsEqual ("CLEAR"))
     {
       toCreate = Standard_False;
-      aView->InitActiveLights();
-      while (aView->MoreActiveLights())
+      for (V3d_ListOfLightIterator aLightIter (aView->ActiveLightIterator()); aLightIter.More();)
       {
-        aViewer->DelLight (aView->ActiveLight());
-        aView->InitActiveLights();
+        Handle(V3d_Light) aLight = aLightIter.Value();
+        aViewer->DelLight (aLight);
+        aLightIter = aView->ActiveLightIterator();
       }
     }
     else if (anArgCase.IsEqual ("AMB")
@@ -7815,11 +7814,11 @@ static int VLight (Draw_Interpretor& theDi,
 
       const Standard_Integer aLightId = getLightId (theArgVec[anArgIt]);
       Standard_Integer aLightIt = 0;
-      for (aView->InitActiveLights(); aView->MoreActiveLights(); aView->NextActiveLights(), ++aLightIt)
+      for (V3d_ListOfLightIterator aLightIter (aView->ActiveLightIterator()); aLightIter.More(); aLightIter.Next(), ++aLightIt)
       {
         if (aLightIt == aLightId)
         {
-          aLightOld = aView->ActiveLight();
+          aLightOld = aLightIter.Value();
           break;
         }
       }
@@ -7843,9 +7842,9 @@ static int VLight (Draw_Interpretor& theDi,
       const TCollection_AsciiString anArgNext (theArgVec[anArgIt]);
       const Standard_Integer aLightDelId = getLightId (theArgVec[anArgIt]);
       Standard_Integer aLightIt = 0;
-      for (aView->InitActiveLights(); aView->MoreActiveLights(); aView->NextActiveLights(), ++aLightIt)
+      for (V3d_ListOfLightIterator aLightIter (aView->ActiveLightIterator()); aLightIter.More(); aLightIter.Next(), ++aLightIt)
       {
-        aLightDel = aView->ActiveLight();
+        aLightDel = aLightIter.Value();
         if (aLightIt == aLightDelId)
         {
           break;

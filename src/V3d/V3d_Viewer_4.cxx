@@ -76,9 +76,9 @@ void V3d_Viewer::ActivateGrid (const Aspect_GridType     theType,
     Grid()->Display();
   }
   Grid()->Activate();
-  for (InitActiveViews(); MoreActiveViews(); NextActiveViews())
+  for (V3d_ListOfView::Iterator anActiveViewIter (myActiveViews); anActiveViewIter.More(); anActiveViewIter.Next())
   {
-    ActiveView()->SetGrid (myPrivilegedPlane, Grid());
+    anActiveViewIter.Value()->SetGrid (myPrivilegedPlane, Grid());
   }
   Update();
 }
@@ -92,9 +92,9 @@ void V3d_Viewer::DeactivateGrid()
   Grid()->Erase();
   myGridType = Aspect_GT_Rectangular;
   Grid()->Deactivate();
-  for (InitActiveViews(); MoreActiveViews(); NextActiveViews())
+  for (V3d_ListOfView::Iterator anActiveViewIter (myActiveViews); anActiveViewIter.More(); anActiveViewIter.Next())
   {
-    ActiveView()->SetGridActivity (Standard_False);
+    anActiveViewIter.Value()->SetGridActivity (Standard_False);
     if (myGridEcho
     && !myGridEchoStructure.IsNull())
     {
@@ -141,9 +141,9 @@ void V3d_Viewer::SetRectangularGridValues (const Quantity_Length     theXOrigin,
                                            const Quantity_PlaneAngle theRotationAngle)
 {
   myRGrid->SetGridValues (theXOrigin, theYOrigin, theXStep, theYStep, theRotationAngle);
-  for (InitActiveViews(); MoreActiveViews(); NextActiveViews())
+  for (V3d_ListOfView::Iterator anActiveViewIter (myActiveViews); anActiveViewIter.More(); anActiveViewIter.Next())
   {
-    ActiveView()->SetGrid (myPrivilegedPlane, myRGrid);
+    anActiveViewIter.Value()->SetGrid (myPrivilegedPlane, myRGrid);
   }
   Update();
 }
@@ -177,9 +177,9 @@ void V3d_Viewer::SetCircularGridValues (const Quantity_Length     theXOrigin,
 {
   myCGrid->SetGridValues (theXOrigin, theYOrigin, theRadiusStep,
                           theDivisionNumber, theRotationAngle);
-  for (InitActiveViews(); MoreActiveViews(); NextActiveViews())
+  for (V3d_ListOfView::Iterator anActiveViewIter (myActiveViews); anActiveViewIter.More(); anActiveViewIter.Next())
   {
-    ActiveView()->SetGrid (myPrivilegedPlane, myCGrid);
+    anActiveViewIter.Value()->SetGrid (myPrivilegedPlane, myCGrid);
   }
   Update();
 }

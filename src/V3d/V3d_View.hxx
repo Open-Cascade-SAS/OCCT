@@ -67,7 +67,6 @@
 #include <TColStd_ListIteratorOfListOfTransient.hxx>
 
 #include <V3d_Coordinate.hxx>
-#include <V3d_ListOfTransient.hxx>
 #include <V3d_ImageDumpOptions.hxx>
 #include <V3d_TypeOfAxe.hxx>
 
@@ -695,17 +694,19 @@ public:
   //! activated in this View.
   Standard_EXPORT Standard_Boolean IfMoreLights() const;
 
+  //! Return iterator for defined lights.
+  V3d_ListOfLightIterator ActiveLightIterator() const { return V3d_ListOfLightIterator (myActiveLights); }
+
   //! initializes an iteration on the active Lights.
-  Standard_EXPORT void InitActiveLights();
+  void InitActiveLights() { myActiveLightsIterator.Initialize (myActiveLights); }
 
   //! returns true if there are more active Light(s) to return.
-  Standard_EXPORT Standard_Boolean MoreActiveLights() const;
+  Standard_Boolean MoreActiveLights() const { return myActiveLightsIterator.More(); }
 
-  //! Go to the next active Light
-  //! (if there is not, ActiveLight will raise an exception)
-  Standard_EXPORT void NextActiveLights();
+  //! Go to the next active Light (if there is not, ActiveLight will raise an exception)
+  void NextActiveLights() { myActiveLightsIterator.Next(); }
 
-  Standard_EXPORT Handle(V3d_Light) ActiveLight() const;
+  const Handle(V3d_Light)& ActiveLight() const { return myActiveLightsIterator.Value(); }
 
   //! Returns the MAX number of light associated to the view.
   Standard_EXPORT Standard_Integer LightLimit() const;
@@ -1032,11 +1033,11 @@ protected:
 private:
 
   V3d_ViewerPointer MyViewer;
-  V3d_ListOfTransient MyActiveLights;
+  V3d_ListOfLight myActiveLights;
   Graphic3d_Vector MyDefaultViewAxis;
   Graphic3d_Vertex MyDefaultViewPoint;
   Handle(Aspect_Window) MyWindow;
-  TColStd_ListIteratorOfListOfTransient myActiveLightsIterator;
+  V3d_ListOfLight::Iterator myActiveLightsIterator;
   Standard_Integer sx;
   Standard_Integer sy;
   Standard_Real rx;

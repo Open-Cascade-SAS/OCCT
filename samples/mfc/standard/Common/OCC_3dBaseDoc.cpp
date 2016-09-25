@@ -67,7 +67,7 @@ OCC_3dBaseDoc::OCC_3dBaseDoc()
 
   Handle(Graphic3d_GraphicDriver) aGraphicDriver = ((OCC_App*)AfxGetApp())->GetGraphicDriver();
 
-  myViewer = new V3d_Viewer (aGraphicDriver, Standard_ExtString("Visu3D") );
+  myViewer = new V3d_Viewer (aGraphicDriver);
   myViewer->SetDefaultLights();
   myViewer->SetLightOn();
   myAISContext = new AIS_InteractiveContext (myViewer);

@@ -148,8 +148,7 @@ CGeometryDoc::CGeometryDoc()
   myAISContext->DefaultDrawer()->VIsoAspect()->SetNumber(11);
 
   Handle(Graphic3d_GraphicDriver) aGraphicDriver = ((OCC_App*)AfxGetApp())->GetGraphicDriver();
-  TCollection_ExtendedString a2DName("Visu2D");
-  myViewer2D = new V3d_Viewer(aGraphicDriver,a2DName.ToExtString());
+  myViewer2D = new V3d_Viewer (aGraphicDriver);
   myViewer2D->SetCircularGridValues(0,0,1,8,0);
   myViewer2D->SetRectangularGridValues(0,0,1,1,0);
 

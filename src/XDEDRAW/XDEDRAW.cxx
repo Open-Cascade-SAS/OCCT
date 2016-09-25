@@ -94,11 +94,6 @@
 #include <XmlXCAFDrivers.hxx>
 
 #include <stdio.h>
-#define ZVIEW_SIZE 1000000.0
-// avoid warnings on 'extern "C"' functions returning C++ classes
-#ifdef _MSC_VER
-#pragma warning(4:4190)
-#endif
 
 //=======================================================================
 // Section: General commands
@@ -486,11 +481,6 @@ static Standard_Integer show (Draw_Interpretor& di, Standard_Integer argc, const
     aDocViewer = TPrsStd_AISViewer::New (aRoot, ViewerTest::GetAISContext());
   }
 
-  //szv:CAX-TRJ7 c2-pe-214.stp was clipped
-  aDocViewer->GetInteractiveContext()->CurrentViewer()->InitActiveViews();
-  aDocViewer->GetInteractiveContext()->CurrentViewer()->ActiveView()->SetZSize(ZVIEW_SIZE);
-  //DDF::ReturnLabel(di,viewer->Label());
-
   // collect sequence of labels to display
   Handle(XCAFDoc_ShapeTool) shapes = XCAFDoc_DocumentTool::ShapeTool (aDoc->Main());
   TDF_LabelSequence seq;
@@ -550,10 +540,11 @@ static Standard_Integer xwd (Draw_Interpretor& di, Standard_Integer argc, const 
     return 1;
   }
 
-  Handle(V3d_Viewer) viewer = IC->CurrentViewer();
-  viewer->InitActiveViews();
-  if ( viewer->MoreActiveViews() ) {
-    viewer->ActiveView()->Dump ( argv[2] );
+  Handle(V3d_Viewer) aViewer = IC->CurrentViewer();
+  V3d_ListOfViewIterator aViewIter = aViewer->ActiveViewIterator();
+  if (aViewIter.More())
+  {
+    aViewIter.Value()->Dump ( argv[2] );
   }
   else {
     di << "Cannot find an active view in a viewer " << argv[1] << "\n";

@@ -46,10 +46,10 @@ COCCDemoDoc::COCCDemoDoc()
 	Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
 		((COCCDemoApp*)AfxGetApp())->GetGraphicDriver();
 
-	myViewer = new V3d_Viewer(aGraphicDriver, (Standard_ExtString )"Visu3D");
+	myViewer = new V3d_Viewer(aGraphicDriver);
 	myViewer->SetDefaultLights();
 	myViewer->SetLightOn();
-  myViewer->SetDefaultBackgroundColor(Quantity_TOC_RGB, 0.,0.,0.);
+  myViewer->SetDefaultBackgroundColor (Quantity_NOC_BLACK);
 
 	myAISContext = new AIS_InteractiveContext(myViewer);
   myShowResult = FALSE;

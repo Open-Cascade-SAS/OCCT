@@ -354,9 +354,9 @@ void PrsMgr_PresentationManager::ClearImmediateDraw()
 // =======================================================================
 void PrsMgr_PresentationManager::displayImmediate (const Handle(V3d_Viewer)& theViewer)
 {
-  for (theViewer->InitActiveViews(); theViewer->MoreActiveViews(); theViewer->NextActiveViews())
+  for (V3d_ListOfViewIterator anActiveViewIter (theViewer->ActiveViewIterator()); anActiveViewIter.More(); anActiveViewIter.Next())
   {
-    const Handle(Graphic3d_CView)& aView = theViewer->ActiveView()->View();
+    const Handle(Graphic3d_CView)& aView = anActiveViewIter.Value()->View();
     for (PrsMgr_ListOfPresentations::Iterator anIter (myImmediateList); anIter.More(); anIter.Next())
     {
       const Handle(Prs3d_Presentation)& aPrs = anIter.Value();
@@ -700,9 +700,9 @@ void PrsMgr_PresentationManager::UpdateHighlightTrsf (const Handle(V3d_Viewer)& 
 
   if (!myViewDependentImmediateList.IsEmpty())
   {
-    for (theViewer->InitActiveViews(); theViewer->MoreActiveViews(); theViewer->NextActiveViews())
+    for (V3d_ListOfViewIterator anActiveViewIter (theViewer->ActiveViewIterator()); anActiveViewIter.More(); anActiveViewIter.Next())
     {
-      const Handle(Graphic3d_CView)& aView = theViewer->ActiveView()->View();
+      const Handle(Graphic3d_CView)& aView = anActiveViewIter.Value()->View();
       Handle(Graphic3d_Structure) aViewDepParentPrs;
       if (aView->IsComputed (aParentId, aViewDepParentPrs))
       {

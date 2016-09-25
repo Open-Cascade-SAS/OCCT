@@ -1502,10 +1502,6 @@ public:
   
   //! Returns true if there is an open context.
     Standard_Boolean HasOpenedContext() const;
-  
-  //! Returns the domain name of the main viewer.
-  Standard_EXPORT Standard_CString DomainOfMainViewer() const;
-  
 
   //! This method is only intended for advanced operation, particularly with
   //! the aim to improve performance when many objects have to be selected

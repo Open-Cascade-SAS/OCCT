@@ -129,7 +129,7 @@ void CSelectionDialog::OnDisplay (bool isFit)
     Handle(Graphic3d_GraphicDriver) aGraphicDriver =
       ((CHLRApp*)AfxGetApp())->GetGraphicDriver();
 
-    myActiveViewer = new V3d_Viewer (aGraphicDriver, (Standard_ExtString )"Visu3D");
+    myActiveViewer = new V3d_Viewer (aGraphicDriver);
     myActiveViewer->SetDefaultLights();
     myActiveViewer->SetLightOn();
     myActiveView = myActiveViewer->CreateView();

@@ -66,8 +66,6 @@ namespace
 //=============================================================================
 V3d_View::V3d_View (const Handle(V3d_Viewer)& theViewer, const V3d_TypeOfView theType)
 : MyViewer (theViewer.operator->()),
-  MyActiveLights(),
-  myActiveLightsIterator(),
   SwitchSetFront (Standard_False),
   myZRotation (Standard_False),
   MyTrsf (1, 4, 1, 4)
@@ -117,8 +115,6 @@ V3d_View::V3d_View (const Handle(V3d_Viewer)& theViewer, const V3d_TypeOfView th
 //=============================================================================
 V3d_View::V3d_View (const Handle(V3d_Viewer)& theViewer, const Handle(V3d_View)& theView)
 : MyViewer (theViewer.operator->()),
-  MyActiveLights(),
-  myActiveLightsIterator(),
   SwitchSetFront(Standard_False),
   myZRotation (Standard_False),
   MyTrsf (1, 4, 1, 4)
@@ -373,14 +369,11 @@ Standard_Boolean V3d_View::IsEmpty() const
 void V3d_View::UpdateLights() const
 {
   Graphic3d_ListOfCLight aLights;
-
-  for (TColStd_ListIteratorOfListOfTransient anIt (MyActiveLights); anIt.More(); anIt.Next())
+  for (V3d_ListOfLight::Iterator anActiveLightIter (myActiveLights); anActiveLightIter.More(); anActiveLightIter.Next())
   {
-    aLights.Append (Handle(V3d_Light)::DownCast (anIt.Value())->Light());
+    aLights.Append (anActiveLightIter.Value()->Light());
   }
-
   myView->SetLights (aLights);
-
   Update();
 }
 

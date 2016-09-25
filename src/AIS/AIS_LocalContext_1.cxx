@@ -184,9 +184,9 @@ AIS_StatusOfPick AIS_LocalContext::Select (const Standard_Boolean toUpdateViewer
   if (myAutoHilight)
   {
     const Handle(V3d_Viewer)& aViewer = myCTX->CurrentViewer();
-    for (aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
+    for (V3d_ListOfViewIterator anActiveViewIter (aViewer->ActiveViewIterator()); anActiveViewIter.More(); anActiveViewIter.Next())
     {
-      Unhilight (anOwner, aViewer->ActiveView());
+      Unhilight (anOwner, anActiveViewIter.Value());
     }
 
     // advanced selection highlighting mechanism
@@ -338,9 +338,9 @@ AIS_StatusOfPick AIS_LocalContext::ShiftSelect (const Standard_Boolean toUpdateV
     {
       myMainPM->ClearImmediateDraw();
       const Handle(V3d_Viewer)& aViewer = myCTX->CurrentViewer();
-      for (aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
+      for (V3d_ListOfViewIterator anActiveViewIter (aViewer->ActiveViewIterator()); anActiveViewIter.More(); anActiveViewIter.Next())
       {
-        Unhilight (anOwner, aViewer->ActiveView());
+        Unhilight (anOwner, anActiveViewIter.Value());
       }
 
       // advanced selection highlighting mechanism
@@ -898,9 +898,9 @@ void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObjec
     {
       aRemoveEntites.Append (anOwner);
       anOwner->SetSelected (Standard_False);
-      for (aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
+      for (V3d_ListOfViewIterator anActiveViewIter (aViewer->ActiveViewIterator()); anActiveViewIter.More(); anActiveViewIter.Next())
       {
-        Unhilight (anOwner, aViewer->ActiveView());
+        Unhilight (anOwner, anActiveViewIter.Value());
       }
     }
   }
@@ -927,9 +927,9 @@ void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObjec
     }
     else
     {
-      for (aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
+      for (V3d_ListOfViewIterator anActiveViewIter (aViewer->ActiveViewIterator()); anActiveViewIter.More(); anActiveViewIter.Next())
       {
-        Unhilight (anOwner, aViewer->ActiveView());
+        Unhilight (anOwner, anActiveViewIter.Value());
       }
     }
   }
@@ -964,9 +964,8 @@ void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObjec
       // Last detected owner was removed. First object from sequence become detected.
       // Pass any active view because in current implementation the highlighting is
       // synchronized in all view.
-      aViewer->InitActiveViews();
       manageDetected (myMainVS->Picked (myDetectedSeq.First()),
-                      aViewer->ActiveView(),
+                      aViewer->ActiveViewIterator().Value(),
                       Standard_False);
     }
   }

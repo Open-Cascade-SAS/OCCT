@@ -194,9 +194,8 @@ bool OcctJni_Viewer::init()
   }
 
   // create viewer
-  myViewer = new V3d_Viewer (aDriver, TCollection_ExtendedString("Viewer").ToExtString(), "", 1000.0,
-                             V3d_XposYnegZpos, Quantity_NOC_BLACK, V3d_ZBUFFER, V3d_GOURAUD, V3d_WAIT,
-                             Standard_True, Standard_False);
+  myViewer = new V3d_Viewer (aDriver);
+  myViewer->SetDefaultBackgroundColor (Quantity_NOC_BLACK);
   myViewer->SetDefaultLights();
   myViewer->SetLightOn();
 

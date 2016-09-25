@@ -49,20 +49,14 @@ CHLRDoc::CHLRDoc()
     ((CHLRApp*)AfxGetApp())->GetGraphicDriver();
 
   // VIEWER 3D
-  TCollection_ExtendedString a3DName ("Visu3D");
-  myViewer = new V3d_Viewer (theGraphicDriver, a3DName.ToExtString(), "", 1000.0,
-                             V3d_XposYnegZpos, Quantity_NOC_GRAY30,
-                             V3d_ZBUFFER, V3d_GOURAUD, V3d_WAIT, 
-                             Standard_True, Standard_False);
-
+  myViewer = new V3d_Viewer (theGraphicDriver);
   myViewer->SetDefaultLights();
   myViewer->SetLightOn();
 
   myAISContext =new AIS_InteractiveContext (myViewer);
 
   // 2D VIEWER: exploit V3d viewer for 2D visualization
-  TCollection_ExtendedString a2DName ("Visu2D");
-  my2DViewer = new V3d_Viewer (theGraphicDriver, a2DName.ToExtString());
+  my2DViewer = new V3d_Viewer (theGraphicDriver);
   my2DViewer->SetCircularGridValues (0, 0, 10, 8, 0);
   my2DViewer->SetRectangularGridValues (0, 0, 10, 10, 0);
 

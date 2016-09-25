@@ -22,13 +22,7 @@ OCC_2dDoc::OCC_2dDoc() : OCC_BaseDoc()
     ((OCC_App*)AfxGetApp())->GetGraphicDriver();
 
   // create the Viewer
-  TCollection_ExtendedString aName ("Viewer 2D");
-  TCollection_AsciiString aDomain ("My Domain");
-
-  myViewer = new V3d_Viewer (aGraphicDriver,
-                             aName.ToExtString(),
-                             aDomain.ToCString());
-
+  myViewer = new V3d_Viewer (aGraphicDriver);
   myViewer->SetDefaultLights();
   myViewer->SetLightOn();
   myViewer->SetDefaultViewProj (V3d_Zpos);

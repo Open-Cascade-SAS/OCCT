@@ -11,36 +11,60 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <V3d_Viewer.hxx>
 
-#include <Aspect_Background.hxx>
-#include <Aspect_GradientBackground.hxx>
 #include <Aspect_Grid.hxx>
 #include <Aspect_IdentDefinitionError.hxx>
-#include <gp_Ax3.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>
-#include <Quantity_Color.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Type.hxx>
 #include <V3d.hxx>
 #include <V3d_BadValue.hxx>
 #include <V3d_CircularGrid.hxx>
-#include <V3d_Light.hxx>
+#include <V3d_AmbientLight.hxx>
+#include <V3d_DirectionalLight.hxx>
 #include <V3d_RectangularGrid.hxx>
 #include <V3d_View.hxx>
-#include <V3d_Viewer.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(V3d_Viewer,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(V3d_Viewer, Standard_Transient)
+
+// ========================================================================
+// function : V3d_Viewer
+// purpose  :
+// ========================================================================
+V3d_Viewer::V3d_Viewer (const Handle(Graphic3d_GraphicDriver)& theDriver)
+: myDriver (theDriver),
+  myStructureManager (new Graphic3d_StructureManager (theDriver)),
+  myZLayerGenId (1, IntegerLast()),
+  myBackground (Quantity_NOC_GRAY30),
+  myViewSize (1000.0),
+  myViewProj (V3d_XposYnegZpos),
+  myVisualization (V3d_ZBUFFER),
+  myShadingModel (V3d_GOURAUD),
+  myDefaultTypeOfView (V3d_ORTHOGRAPHIC),
+  myComputedMode (Standard_True),
+  myDefaultComputedMode (Standard_False),
+  myPrivilegedPlane (gp_Ax3 (gp_Pnt (0.,0.,0), gp_Dir (0.,0.,1.), gp_Dir (1.,0.,0.))),
+  myDisplayPlane (Standard_False),
+  myDisplayPlaneLength (1000.0),
+  myGridType (Aspect_GT_Rectangular),
+  myGridEcho (Standard_True),
+  myGridEchoLastVert (ShortRealLast(), ShortRealLast(), ShortRealLast())
+{
+  myRGrid = new V3d_RectangularGrid (this, Quantity_Color (Quantity_NOC_GRAY50), Quantity_Color (Quantity_NOC_GRAY70));
+  myCGrid = new V3d_CircularGrid    (this, Quantity_Color (Quantity_NOC_GRAY50), Quantity_Color (Quantity_NOC_GRAY70));
+}
 
 // ========================================================================
 // function : V3d_Viewer
 // purpose  :
 // ========================================================================
 V3d_Viewer::V3d_Viewer (const Handle(Graphic3d_GraphicDriver)& theDriver,
-                        const Standard_ExtString      theName,
-                        const Standard_CString        theDomain,
+                        const Standard_ExtString ,
+                        const Standard_CString ,
                         const Standard_Real           theViewSize,
                         const V3d_TypeOfOrientation   theViewProj,
                         const Quantity_NameOfColor    theViewBackground,
@@ -49,43 +73,28 @@ V3d_Viewer::V3d_Viewer (const Handle(Graphic3d_GraphicDriver)& theDriver,
                         const V3d_TypeOfUpdate        theUpdateMode,
                         const Standard_Boolean        theComputedMode,
                         const Standard_Boolean        theDefaultComputedMode)
-:myNextCount (-1),
-myDriver (theDriver),
-myName (TCollection_ExtendedString (theName)),
-myDomain (TCollection_AsciiString (theDomain)),
-myStructureManager (new Graphic3d_StructureManager (theDriver)),
-MyDefinedViews(),
-MyActiveViews(),
-MyDefinedLights(),
-MyActiveLights(),
-myActiveViewsIterator(),
-myDefinedViewsIterator(),
-myActiveLightsIterator(),
-myDefinedLightsIterator(),
-myComputedMode (theComputedMode),
-myDefaultComputedMode (theDefaultComputedMode),
-myPrivilegedPlane (gp_Ax3 (gp_Pnt (0.,0.,0), gp_Dir (0.,0.,1.), gp_Dir (1.,0.,0.))),
-myDisplayPlane (Standard_False),
-myDisplayPlaneLength (theViewSize),
-myGridEcho (Standard_True),
-myGridEchoLastVert (ShortRealLast(), ShortRealLast(), ShortRealLast()),
-myZLayerGenId (1, IntegerLast())
+: myDriver (theDriver),
+  myStructureManager (new Graphic3d_StructureManager (theDriver)),
+  myZLayerGenId (1, IntegerLast()),
+  myBackground (theViewBackground),
+  myViewSize (theViewSize),
+  myViewProj (theViewProj),
+  myVisualization (theVisualization),
+  myShadingModel (theShadingModel),
+  myDefaultTypeOfView (V3d_ORTHOGRAPHIC),
+  myComputedMode (theComputedMode),
+  myDefaultComputedMode (theDefaultComputedMode),
+  myPrivilegedPlane (gp_Ax3 (gp_Pnt (0.,0.,0), gp_Dir (0.,0.,1.), gp_Dir (1.,0.,0.))),
+  myDisplayPlane (Standard_False),
+  myDisplayPlaneLength (theViewSize),
+  myGridType (Aspect_GT_Rectangular),
+  myGridEcho (Standard_True),
+  myGridEchoLastVert (ShortRealLast(), ShortRealLast(), ShortRealLast())
 {
-  SetUpdateMode (theUpdateMode);
+  myRGrid = new V3d_RectangularGrid (this, Quantity_Color (Quantity_NOC_GRAY50), Quantity_Color (Quantity_NOC_GRAY70));
+  myCGrid = new V3d_CircularGrid    (this, Quantity_Color (Quantity_NOC_GRAY50), Quantity_Color (Quantity_NOC_GRAY70));
   SetDefaultViewSize (theViewSize);
-  SetDefaultViewProj (theViewProj);
-  SetDefaultBackgroundColor (theViewBackground);
-  SetDefaultVisualization (theVisualization);
-  SetDefaultShadingModel (theShadingModel);
-  SetDefaultAngle (M_PI / 2.);
-  SetDefaultTypeOfView (V3d_ORTHOGRAPHIC);
-
-  Quantity_Color Color1 (Quantity_NOC_GRAY50);
-  Quantity_Color Color2 (Quantity_NOC_GRAY70);
-//  Quantity_Color White (Quantity_NOC_WHITE);
-  myRGrid = new V3d_RectangularGrid (this, Color1, Color2);
-  myCGrid = new V3d_CircularGrid (this, Color1, Color2);
-  myGridType = Aspect_GT_Rectangular;
+  SetUpdateMode (theUpdateMode);
 }
 
 // ========================================================================
@@ -94,7 +103,7 @@ myZLayerGenId (1, IntegerLast())
 // ========================================================================
 Handle(V3d_View) V3d_Viewer::CreateView ()
 {
-  return new V3d_View(this, MyDefaultTypeOfView);
+  return new V3d_View(this, myDefaultTypeOfView);
 }
 
 // ========================================================================
@@ -103,9 +112,9 @@ Handle(V3d_View) V3d_Viewer::CreateView ()
 // ========================================================================
 void V3d_Viewer::SetViewOn()
 {
-  for (InitDefinedViews();MoreDefinedViews();NextDefinedViews())
+  for (V3d_ListOfView::Iterator aDefViewIter (myDefinedViews); aDefViewIter.More(); aDefViewIter.Next())
   {
-    SetViewOn (ActiveView());
+    SetViewOn (aDefViewIter.Value());
   }
 }
 
@@ -115,9 +124,9 @@ void V3d_Viewer::SetViewOn()
 // ========================================================================
 void V3d_Viewer::SetViewOff()
 {
-  for (InitDefinedViews();MoreDefinedViews();NextDefinedViews())
+  for (V3d_ListOfView::Iterator aDefViewIter (myDefinedViews); aDefViewIter.More(); aDefViewIter.Next())
   {
-    SetViewOff (ActiveView());
+    SetViewOff (aDefViewIter.Value());
   }
 }
 
@@ -128,19 +137,21 @@ void V3d_Viewer::SetViewOff()
 void V3d_Viewer::SetViewOn (const Handle(V3d_View)& theView)
 {
   Handle(Graphic3d_CView) aViewImpl = theView->View();
-  if (aViewImpl->IsDefined() && !IsActive (theView))
+  if (!aViewImpl->IsDefined() || myActiveViews.Contains (theView))
   {
-    MyActiveViews.Append (theView);
-    aViewImpl->Activate();
-    for (InitActiveLights();MoreActiveLights();NextActiveLights())
-    {
-      theView->SetLightOn (ActiveLight());
-    }
-
-    theView->SetGrid (myPrivilegedPlane, Grid ());
-    theView->SetGridActivity (Grid ()->IsActive ());
-    theView->Redraw();
+    return;
   }
+
+  myActiveViews.Append (theView);
+  aViewImpl->Activate();
+  for (V3d_ListOfLight::Iterator anActiveLightIter (myActiveLights); anActiveLightIter.More(); anActiveLightIter.Next())
+  {
+    theView->SetLightOn (anActiveLightIter.Value());
+  }
+
+  theView->SetGrid (myPrivilegedPlane, Grid ());
+  theView->SetGridActivity (Grid ()->IsActive ());
+  theView->Redraw();
 }
 
 // ========================================================================
@@ -150,53 +161,22 @@ void V3d_Viewer::SetViewOn (const Handle(V3d_View)& theView)
 void V3d_Viewer::SetViewOff (const Handle(V3d_View)& theView)
 {
   Handle(Graphic3d_CView) aViewImpl = theView->View();
-  if (aViewImpl->IsDefined() && IsActive (theView))
+  if (aViewImpl->IsDefined() && myActiveViews.Contains (theView))
   {
-    MyActiveViews.Remove (theView);
+    myActiveViews.Remove (theView);
     aViewImpl->Deactivate() ;
   }
-}
-
-// ========================================================================
-// function : ComputedMode
-// purpose  :
-// ========================================================================
-Standard_Boolean V3d_Viewer::ComputedMode() const
-{
-  return myComputedMode;
-}
-
-// ========================================================================
-// function : DefaultComputedMode
-// purpose  :
-// ========================================================================
-Standard_Boolean V3d_Viewer::DefaultComputedMode() const
-{
-  return myDefaultComputedMode;
-}
-
-// ========================================================================
-// function : Update
-// purpose  :
-// ========================================================================
-void V3d_Viewer::Update()
-{
-  // Redraw() is still here for compatibility with old code.
-  // See comments, the method is deprecated - Redraw() should
-  // be used instead.
-  Redraw();
 }
 
 // ========================================================================
 // function : Redraw
 // purpose  :
 // ========================================================================
-void V3d_Viewer::Redraw()const
+void V3d_Viewer::Redraw() const
 {
-  TColStd_ListIteratorOfListOfTransient anIt (MyDefinedViews);
-  for (; anIt.More(); anIt.Next())
+  for (V3d_ListOfView::Iterator aDefViewIter (myDefinedViews); aDefViewIter.More(); aDefViewIter.Next())
   {
-    Handle(V3d_View)::DownCast (anIt.Value())->Redraw();
+    aDefViewIter.Value()->Redraw();
   }
 }
 
@@ -206,10 +186,9 @@ void V3d_Viewer::Redraw()const
 // ========================================================================
 void V3d_Viewer::RedrawImmediate() const
 {
-  TColStd_ListIteratorOfListOfTransient anIt (MyDefinedViews);
-  for (; anIt.More(); anIt.Next())
+  for (V3d_ListOfView::Iterator aDefViewIter (myDefinedViews); aDefViewIter.More(); aDefViewIter.Next())
   {
-    Handle(V3d_View)::DownCast (anIt.Value())->RedrawImmediate();
+    aDefViewIter.Value()->RedrawImmediate();
   }
 }
 
@@ -219,10 +198,9 @@ void V3d_Viewer::RedrawImmediate() const
 // ========================================================================
 void V3d_Viewer::Invalidate() const
 {
-  TColStd_ListIteratorOfListOfTransient anIt (MyDefinedViews);
-  for (; anIt.More(); anIt.Next())
+  for (V3d_ListOfView::Iterator aDefViewIter (myDefinedViews); aDefViewIter.More(); aDefViewIter.Next())
   {
-    Handle(V3d_View)::DownCast (anIt.Value())->Invalidate();
+    aDefViewIter.Value()->Invalidate();
   }
 }
 
@@ -253,76 +231,11 @@ void V3d_Viewer::UnHighlight() const
   myStructureManager->UnHighlight();
 }
 
-void V3d_Viewer::SetDefaultBackgroundColor(const Quantity_TypeOfColor Type, const Standard_Real v1, const Standard_Real v2, const Standard_Real v3) {
-  Standard_Real V1 = v1 ;
-  Standard_Real V2 = v2 ;
-  Standard_Real V3 = v3 ;
-
-  if( V1 < 0. ) V1 = 0. ; else if( V1 > 1. ) V1 = 1. ;
-  if( V2 < 0. ) V2 = 0. ; else if( V2 > 1. ) V2 = 1. ;
-  if( V3 < 0. ) V3 = 0. ; else if( V3 > 1. ) V3 = 1. ;
-
-  Quantity_Color C(V1,V2,V3,Type) ;
-  SetDefaultBackgroundColor(C);
-}
-
-void V3d_Viewer::SetDefaultBackgroundColor(const Quantity_NameOfColor Name)
+void V3d_Viewer::SetDefaultViewSize (const Standard_Real theSize)
 {
-  Quantity_Color C(Name) ;
-  SetDefaultBackgroundColor(C);
+  V3d_BadValue_Raise_if (theSize <= 0.0, "V3d_Viewer::SetDefaultViewSize, bad size");
+  myViewSize = theSize;
 }
-
-void V3d_Viewer::SetDefaultBackgroundColor(const Quantity_Color &Color)
-{
-  MyBackground.SetColor(Color) ;
-}
-
-void V3d_Viewer::SetDefaultBgGradientColors( const Quantity_NameOfColor Name1,
-                                             const Quantity_NameOfColor Name2,
-                                             const Aspect_GradientFillMethod FillStyle){
-
-  Quantity_Color C1(Name1) ;
-  Quantity_Color C2(Name2) ;
-  MyGradientBackground.SetColors(C1, C2, FillStyle);
-
-} 
-
-void V3d_Viewer::SetDefaultBgGradientColors( const Quantity_Color& Color1,
-                                             const Quantity_Color& Color2,
-                                             const Aspect_GradientFillMethod FillStyle ){
-
-  MyGradientBackground.SetColors(Color1, Color2, FillStyle);
-
-}  
-
-
-void V3d_Viewer::SetDefaultViewSize(const Standard_Real Size) {
-
-  V3d_BadValue_Raise_if( Size <= 0. ,"V3d_Viewer::SetDefaultViewSize, bad size");
-  MyViewSize = Size ;
-}
-
-void V3d_Viewer::SetDefaultViewProj(const V3d_TypeOfOrientation Orientation) {
-
-  MyViewProj = Orientation ;
-}
-
-void V3d_Viewer::SetDefaultVisualization(const V3d_TypeOfVisualization Type) {
-
-  MyVisualization = Type ;
-}
-
-void V3d_Viewer::SetDefaultShadingModel(const V3d_TypeOfShadingModel Type) {
-
-  MyShadingModel = Type ;
-}
-
-void V3d_Viewer::SetDefaultAngle(const Quantity_PlaneAngle Angle) {
-  MyDefaultAngle = Angle;
-}
-
-void V3d_Viewer::SetDefaultTypeOfView(const V3d_TypeOfView Type) {
-  MyDefaultTypeOfView = Type;}
 
 // ========================================================================
 // function : SetUpdateMode
@@ -331,42 +244,6 @@ void V3d_Viewer::SetDefaultTypeOfView(const V3d_TypeOfView Type) {
 void V3d_Viewer::SetUpdateMode (const V3d_TypeOfUpdate theMode)
 {
   myStructureManager->SetUpdateMode (static_cast<Aspect_TypeOfUpdate> (theMode));
-}
-
-void V3d_Viewer::DefaultBackgroundColor(const Quantity_TypeOfColor Type,Standard_Real &V1,Standard_Real &V2,Standard_Real &V3) const
-{
-  Quantity_Color C = DefaultBackgroundColor();
-  C.Values(V1,V2,V3,Type) ;
-}
-
-Quantity_Color V3d_Viewer::DefaultBackgroundColor() const
-{
-  return MyBackground.Color() ;
-}
-
-void V3d_Viewer::DefaultBgGradientColors(Quantity_Color& Color1,Quantity_Color& Color2) const
-{
-  MyGradientBackground.Colors(Color1,Color2);     
-}
-
-Standard_Real V3d_Viewer::DefaultViewSize() const {
-  return MyViewSize ;
-}
-
-V3d_TypeOfOrientation V3d_Viewer::DefaultViewProj() const {
-  return MyViewProj ;
-}
-
-V3d_TypeOfVisualization V3d_Viewer::DefaultVisualization() const {
-  return MyVisualization ;
-}
-
-V3d_TypeOfShadingModel V3d_Viewer::DefaultShadingModel() const {
-  return MyShadingModel ;
-}
-
-Quantity_PlaneAngle V3d_Viewer::DefaultAngle() const {
-  return MyDefaultAngle;
 }
 
 // ========================================================================
@@ -378,43 +255,35 @@ V3d_TypeOfUpdate V3d_Viewer::UpdateMode() const
   return static_cast<V3d_TypeOfUpdate> (myStructureManager->UpdateMode());
 }
 
-Standard_Boolean V3d_Viewer::IfMoreViews() const {
-  Standard_Boolean TheStatus = Standard_False ;
-
-#ifdef NEW
-  if (MyActiveViews->Length() < myDriver->InquireViewLimit())
-#endif /*NEW*/
-    TheStatus = Standard_True ;
-  return TheStatus ;
-}
-
 // ========================================================================
-// function : StructureManager
+// function : IfMoreViews
 // purpose  :
 // ========================================================================
-Handle(Graphic3d_StructureManager) V3d_Viewer::StructureManager() const
+Standard_Boolean V3d_Viewer::IfMoreViews() const
 {
-  return myStructureManager;
+  return myDefinedViews.Size() < myStructureManager->MaxNumOfViews();
 }
 
-Aspect_Background V3d_Viewer::GetBackgroundColor() const {
-  return MyBackground ;
+// ========================================================================
+// function : AddView
+// purpose  :
+// ========================================================================
+void V3d_Viewer::AddView (const Handle(V3d_View)& theView)
+{
+  if (!myDefinedViews.Contains (theView))
+  {
+    myDefinedViews.Append (theView);
+  }
 }
 
-Aspect_GradientBackground V3d_Viewer::GetGradientBackground() const {
-  return MyGradientBackground;
-}   
-
-void V3d_Viewer::AddView( const Handle(V3d_View)& TheView ) {
-
-  MyDefinedViews.Append(TheView);
-  IncrCount();
-}
-
-void V3d_Viewer::DelView( const Handle(V3d_View)& TheView ) {
-
-  MyActiveViews.Remove(TheView);
-  MyDefinedViews.Remove(TheView);
+// ========================================================================
+// function : DelView
+// purpose  :
+// ========================================================================
+void V3d_Viewer::DelView (const Handle(V3d_View)& theView)
+{
+  myActiveViews.Remove (theView);
+  myDefinedViews.Remove (theView);
 }
 
 //=======================================================================
@@ -488,58 +357,125 @@ Graphic3d_ZLayerSettings V3d_Viewer::ZLayerSettings (const Standard_Integer theL
 }
 
 //=======================================================================
-//function : Domain
+//function : UpdateLights
 //purpose  :
 //=======================================================================
-Standard_CString V3d_Viewer::Domain() const
+void V3d_Viewer::UpdateLights()
 {
-  return myDomain.ToCString();
+  for (V3d_ListOfView::Iterator anActiveViewIter (myActiveViews); anActiveViewIter.More(); anActiveViewIter.Next())
+  {
+    anActiveViewIter.Value()->UpdateLights();
+  }
 }
 
 //=======================================================================
-//function : Driver
+//function : SetLightOn
 //purpose  :
 //=======================================================================
-const Handle(Graphic3d_GraphicDriver)& V3d_Viewer::Driver() const
+void V3d_Viewer::SetLightOn (const Handle(V3d_Light)& theLight)
 {
-  return myDriver;
+  if (!myActiveLights.Contains (theLight))
+  {
+    myActiveLights.Append (theLight);
+  }
+
+  for (V3d_ListOfView::Iterator anActiveViewIter (myActiveViews); anActiveViewIter.More(); anActiveViewIter.Next())
+  {
+    anActiveViewIter.Value()->SetLightOn (theLight);
+  }
 }
 
 //=======================================================================
-//function : NextName
+//function : SetLightOff
 //purpose  :
 //=======================================================================
-Standard_ExtString V3d_Viewer::NextName() const
+void V3d_Viewer::SetLightOff (const Handle(V3d_Light)& theLight)
 {
-  TCollection_ExtendedString aNextName = TCollection_ExtendedString (myName.ToExtString());
-  aNextName.AssignCat (TCollection_ExtendedString (myNextCount));
-  
-  return aNextName.ToExtString();
+  myActiveLights.Remove (theLight);
+  for (V3d_ListOfView::Iterator anActiveViewIter (myActiveViews); anActiveViewIter.More(); anActiveViewIter.Next())
+  {
+    anActiveViewIter.Value()->SetLightOff (theLight);
+  }
 }
 
 //=======================================================================
-//function : IncrCount
+//function : SetLightOn
 //purpose  :
 //=======================================================================
-void V3d_Viewer::IncrCount()
+void V3d_Viewer::SetLightOn()
 {
-  myNextCount++;
+  for (V3d_ListOfLight::Iterator aDefLightIter (myDefinedLights); aDefLightIter.More(); aDefLightIter.Next())
+  {
+    if (!myActiveLights.Contains (aDefLightIter.Value()))
+    {
+      myActiveLights.Append (aDefLightIter.Value());
+      for (V3d_ListOfView::Iterator anActiveViewIter (myActiveViews); anActiveViewIter.More(); anActiveViewIter.Next())
+      {
+        anActiveViewIter.Value()->SetLightOn (aDefLightIter.Value());
+      }
+    }
+  }
 }
 
 //=======================================================================
-//function : DefaultRenderingParams
+//function : SetLightOff
 //purpose  :
 //=======================================================================
-const Graphic3d_RenderingParams& V3d_Viewer::DefaultRenderingParams() const
+void V3d_Viewer::SetLightOff()
 {
-  return myDefaultRenderingParams;
+  for (V3d_ListOfLight::Iterator anActiveLightIter (myActiveLights); anActiveLightIter.More(); anActiveLightIter.Next())
+  {
+    for (V3d_ListOfView::Iterator anActiveViewIter (myActiveViews); anActiveViewIter.More(); anActiveViewIter.Next())
+    {
+      anActiveViewIter.Value()->SetLightOff (anActiveLightIter.Value());
+    }
+  }
+  myActiveLights.Clear();
 }
 
 //=======================================================================
-//function : SetDefaultRenderingParams
+//function : IsGlobalLight
 //purpose  :
 //=======================================================================
-void V3d_Viewer::SetDefaultRenderingParams (const Graphic3d_RenderingParams& theParams)
+Standard_Boolean V3d_Viewer::IsGlobalLight (const Handle(V3d_Light)& theLight) const
 {
-  myDefaultRenderingParams = theParams;
+  return myActiveLights.Contains (theLight);
+}
+
+//=======================================================================
+//function : AddLight
+//purpose  :
+//=======================================================================
+void V3d_Viewer::AddLight (const Handle(V3d_Light)& theLight)
+{
+  if (!myDefinedLights.Contains (theLight))
+  {
+    myDefinedLights.Append (theLight);
+  }
+}
+
+//=======================================================================
+//function : DelLight
+//purpose  :
+//=======================================================================
+void V3d_Viewer::DelLight (const Handle(V3d_Light)& theLight)
+{
+  SetLightOff (theLight);
+  myDefinedLights.Remove (theLight);
+}
+
+//=======================================================================
+//function : SetDefaultLights
+//purpose  :
+//=======================================================================
+void V3d_Viewer::SetDefaultLights()
+{
+  while (!myDefinedLights.IsEmpty())
+  {
+    Handle(V3d_Light) aLight = myDefinedLights.First();
+    DelLight (aLight);
+  }
+
+  SetLightOn (new V3d_DirectionalLight (this, V3d_Zneg, Quantity_NOC_WHITE, Standard_True));
+  SetLightOn (new V3d_AmbientLight (this));
 }

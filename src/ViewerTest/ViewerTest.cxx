@@ -3786,9 +3786,9 @@ static int VDisplay2 (Draw_Interpretor& theDI,
                        aDispStatus);
         if (toDisplayInView)
         {
-          for (aCtx->CurrentViewer()->InitDefinedViews(); aCtx->CurrentViewer()->MoreDefinedViews(); aCtx->CurrentViewer()->NextDefinedViews())
+          for (V3d_ListOfViewIterator aViewIter (aCtx->CurrentViewer()->DefinedViewIterator()); aViewIter.More(); aViewIter.Next())
           {
-            aCtx->SetViewAffinity (aShape, aCtx->CurrentViewer()->DefinedView(), Standard_False);
+            aCtx->SetViewAffinity (aShape, aViewIter.Value(), Standard_False);
           }
           aCtx->SetViewAffinity (aShape, ViewerTest::CurrentView(), Standard_True);
         }

@@ -758,14 +758,7 @@ Standard_Boolean AIS_InteractiveContext::EndImmediateDraw()
     return Standard_False;
   }
 
-  myMainVwr->InitActiveViews();
-  if (!myMainVwr->MoreActiveViews())
-  {
-    return Standard_False;
-  }
-
-  Handle(V3d_View) aView = myMainVwr->ActiveView();
-  return myLocalContexts (myCurLocalIndex)->EndImmediateDraw (aView->Viewer());
+  return myLocalContexts (myCurLocalIndex)->EndImmediateDraw (myMainVwr);
 }
 
 
