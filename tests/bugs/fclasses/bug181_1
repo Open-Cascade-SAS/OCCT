@@ -27,4 +27,8 @@ if { ${status} == "TRUE"} then {
    puts "OCC181: Error"
 }
 
+if { ! [file exists ${tmp}/1/OCC181] } {
+  puts "Error: user resource file is not found!"
+}
+
 file delete -force ${tmp}/1

@@ -1,5 +1,3 @@
-puts "TODO OCC12345 ALL: OCC181: Error"
-
 puts "========"
 puts "OCC181"
 puts "OCC701"
@@ -27,6 +25,10 @@ if { ${status} == "TRUE"} then {
     puts "OCC181: OK"
 } else {
     puts "OCC181: Error"
+}
+
+if { ! [file exists ${tmp}/2/2/3/OCC181] } {
+  puts "Error: user resource file is not found!"
 }
 
 file delete -force ${tmp}/2

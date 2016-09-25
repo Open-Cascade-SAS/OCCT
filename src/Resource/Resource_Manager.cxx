@@ -252,7 +252,7 @@ Standard_Boolean Resource_Manager::Save() const
     {
       try {
         OCC_CATCH_SIGNALS
-        Dir.Build(OSD_Protection(OSD_RX, OSD_RWX, OSD_RX, OSD_RX));
+        Dir.Build(OSD_Protection(OSD_RX, OSD_RWXD, OSD_RX, OSD_RX));
       }
       catch (Standard_Failure) {
         Status = Standard_False;

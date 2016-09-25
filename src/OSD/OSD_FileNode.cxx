@@ -445,7 +445,9 @@ void OSD_FileNode::SetPath ( const OSD_Path& Name ) {
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean OSD_FileNode::Exists () {
+Standard_Boolean OSD_FileNode::Exists ()
+{
+  myError.Reset();
 
  Standard_Boolean        retVal = Standard_False;;
  TCollection_AsciiString fName;

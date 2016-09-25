@@ -43,18 +43,26 @@ TCollection_AsciiString aBuffer;
  myPath.SystemName(aBuffer);
  umask ( 0 );
  status = mkdir (aBuffer.ToCString(), (mode_t)internal_prot);
- if (status == -1) 
-  if (errno != EEXIST) {
-   Standard_PCharacter err_message;
-
-   err_message = new Standard_Character [255];
-   sprintf (err_message,
-	    "OSD_Directory::Build Directory \"%s\"",
+ if (status == -1 && errno == ENOENT)
+ {
+   OSD_Path aSupPath = myPath;
+   aSupPath.UpTrek();
+   aSupPath.SetName (myPath.TrekValue (myPath.TrekLength())); // incredible, but required!
+   OSD_Directory aSupDir (aSupPath);
+   aSupDir.Build (Protect);
+   if (aSupDir.Failed())
+   {
+     myError = aSupDir.myError;
+     return;
+   }
+   status = mkdir (aBuffer.ToCString(), (mode_t)internal_prot);
+ }
+ if (status == -1 && errno != EEXIST) {
+   Standard_Character err_message[2048];
+   Sprintf (err_message, "OSD_Directory::Build Directory \"%.2000s\"",
 	    aBuffer.ToCString());
-   
-   myError.SetValue(errno, Iam, err_message);
-   delete err_message;
-  }
+   myError.SetValue (errno, Iam, err_message);
+ }
 }
 
 OSD_Directory OSD_Directory::BuildTemporary(){
@@ -120,18 +128,48 @@ void OSD_Directory :: Build (const OSD_Protection& Protect) {
  if (  dirName.IsEmpty ()  )
 
   Standard_ProgramError :: Raise ( "OSD_Directory :: Build (): incorrect call - no directory name");
- TCollection_ExtendedString dirNameW(dirName);
- if (Exists() || CreateDirectoryW (dirNameW.ToWideString(), NULL))
- {
+
+  Standard_Boolean isOK = Exists();
+  if (! isOK)
+  {
+    // myError will be set to fail by Exists() if intermediate dirs do not exist
+    myError.Reset();
+
+    // create directory if it does not exist;
+    TCollection_ExtendedString dirNameW(dirName);
+    if (CreateDirectoryW (dirNameW.ToWideString(), NULL))
+    {
+      isOK = Standard_True;
+    }
+    // if failed due to absence of intermediate directories, create them recursively
+    else if (GetLastError() == ERROR_PATH_NOT_FOUND)
+    {
+      OSD_Path aSupPath = myPath;
+      aSupPath.UpTrek();
+      aSupPath.SetName (myPath.TrekValue (myPath.TrekLength())); // incredible, but required!
+      OSD_Directory aSupDir (aSupPath);
+      aSupDir.Build (Protect);
+      if (aSupDir.Failed())
+      {
+        myError = aSupDir.myError;
+        return;
+      }
+      isOK = (CreateDirectoryW (dirNameW.ToWideString(), NULL) != 0);
+    }
+  }
+
+  if (isOK)
+  {
 #ifndef OCCT_UWP
-   SetProtection(Protect);
+    SetProtection(Protect);
 #else
-   (void)Protect;
+    (void)Protect;
 #endif
- } else
-
-  _osd_wnt_set_error ( myError, OSD_WDirectory );
-
+  }
+  else
+  {
+    _osd_wnt_set_error ( myError, OSD_WDirectory );
+  }
 }  // end OSD_Directory :: Build
 
 OSD_Directory OSD_Directory :: BuildTemporary () {
