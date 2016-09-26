@@ -1058,7 +1058,7 @@ Standard_Boolean AIS_InteractiveContext::IsDisplayed (const Handle(AIS_Interacti
   {
     Handle(AIS_GlobalStatus) aStatus = myObjects (theIObj);
     if (aStatus->GraphicStatus() == AIS_DS_Displayed
-     && theIObj->DisplayMode() == theMode)
+     && aStatus->DisplayMode() == theMode)
     {
       return Standard_True;
     }
@@ -1541,6 +1541,7 @@ void AIS_InteractiveContext::SetDisplayMode (const Handle(AIS_InteractiveObject)
   Handle(AIS_GlobalStatus) aStatus = myObjects (theIObj);
   if (aStatus->GraphicStatus() != AIS_DS_Displayed)
   {
+    aStatus->SetDisplayMode (theMode);
     theIObj->SetDisplayMode (theMode);
     return;
   }
