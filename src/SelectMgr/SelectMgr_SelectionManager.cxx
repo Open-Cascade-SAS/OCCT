@@ -370,9 +370,10 @@ void SelectMgr_SelectionManager::Activate (const Handle(SelectMgr_SelectableObje
 
   if (myGlobal.Contains (theObject))
   {
-    if (theMode != 0 && theSelector->IsActive (theObject, 0))
+    const Standard_Integer aGlobalSelMode = theObject->GlobalSelectionMode();
+    if (theMode != aGlobalSelMode && theSelector->IsActive (theObject, aGlobalSelMode))
     {
-      theSelector->Deactivate (theObject->Selection (0));
+      theSelector->Deactivate (theObject->Selection (aGlobalSelMode));
     }
     theSelector->Activate (theObject->Selection (theMode));
   }

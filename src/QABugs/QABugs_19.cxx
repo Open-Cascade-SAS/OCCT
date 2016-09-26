@@ -5311,6 +5311,27 @@ static Standard_Integer OCC27818 (Draw_Interpretor& /*theDI*/, Standard_Integer 
 }
 
 //========================================================================
+//function : OCC27893
+//purpose  : Creates a box and selects it via AIS_InteractiveContext API
+//========================================================================
+static Standard_Integer OCC27893 (Draw_Interpretor& /*theDI*/, Standard_Integer /*theArgc*/, const char** theArgv)
+{
+  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    std::cout << "No interactive context. Use 'vinit' command before " << theArgv[0] << "\n";
+    return 1;
+  }
+
+  TopoDS_Shape aBox = BRepPrimAPI_MakeBox (10.0, 10.0, 10.0).Shape();
+  Handle(AIS_InteractiveObject) aBoxObj = new AIS_Shape (aBox);
+  aCtx->Display (aBoxObj, AIS_Shaded, 0, Standard_False);
+  aCtx->SetSelected (aBoxObj, Standard_True);
+
+  return 0;
+}
+
+//========================================================================
 //function : Commands_19
 //purpose  :
 //========================================================================
@@ -5443,5 +5464,8 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC27818",
                    "OCC27818: Creates three boxes and highlights one of them with own style",
                    __FILE__, OCC27818, group);
+  theCommands.Add ("OCC27893",
+                   "OCC27893: Creates a box and selects it via AIS_InteractiveContext API",
+                   __FILE__, OCC27893, group);
   return;
 }

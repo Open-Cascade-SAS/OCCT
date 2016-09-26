@@ -1031,14 +1031,10 @@ void AIS_LocalContext::SetSelected(const Handle(AIS_InteractiveObject)& anIObj,
 
   Handle(SelectMgr_EntityOwner) EO = FindSelectedOwnerFromIO(anIObj);
   if(EO.IsNull()){
-    //check if in selection number 0 there is an owner that can be triturated...
-    if(anIObj->HasSelection(0)){
-      const Handle(SelectMgr_Selection)& SIOBJ = anIObj->Selection(0);
-      SIOBJ->Init();
-      if(SIOBJ->More()){
-        Handle(SelectBasics_EntityOwner) BO = SIOBJ->Sensitive()->BaseSensitive()->OwnerId();
-	EO = Handle(SelectMgr_EntityOwner)::DownCast (BO);
-      }
+    //check if global selection there is an owner that can be triturated...
+    if (anIObj->HasSelection (anIObj->GlobalSelectionMode()))
+    {
+      EO = anIObj->GlobalSelOwner();
     }
     if(EO.IsNull()) 
       EO = new SelectMgr_EntityOwner((const Handle(SelectMgr_SelectableObject)&)anIObj);
@@ -1069,14 +1065,9 @@ void AIS_LocalContext::AddOrRemoveSelected(const Handle(AIS_InteractiveObject)& 
 
   if (EO.IsNull())
   {
-    if(anIObj->HasSelection(0))
+    if(anIObj->HasSelection (anIObj->GlobalSelectionMode()))
     {
-      const Handle(SelectMgr_Selection)& SIOBJ = anIObj->Selection(0);
-      SIOBJ->Init();
-      if(SIOBJ->More()){
-        Handle(SelectBasics_EntityOwner) BO = SIOBJ->Sensitive()->BaseSensitive()->OwnerId();
-	EO = Handle(SelectMgr_EntityOwner)::DownCast (BO);
-      }
+      EO = anIObj->GlobalSelOwner();
     }
     if(EO.IsNull())
     {

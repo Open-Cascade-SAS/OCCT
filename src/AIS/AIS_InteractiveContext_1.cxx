@@ -1029,7 +1029,7 @@ void AIS_InteractiveContext::SetSelected (const Handle(AIS_InteractiveObject)& t
     return;
   if(!myObjects.IsBound (theObject))
     Display (theObject, Standard_False);
-  if (theObject->HasSelection (0))
+  if (!theObject->HasSelection (theObject->GlobalSelectionMode()))
     return;
 
   const Handle(Graphic3d_HighlightStyle)& anObjSelStyle =
@@ -1067,20 +1067,11 @@ void AIS_InteractiveContext::SetSelected (const Handle(AIS_InteractiveObject)& t
   }
 
   // added to avoid untimely viewer update...
-  const Handle(SelectMgr_Selection)& aSel = theObject->Selection (0);
-  if (aSel->IsEmpty())
+  Handle(SelectMgr_EntityOwner) anOwner = theObject->GlobalSelOwner();
+  if (anOwner.IsNull())
     return;
-  aSel->Init();
-  Handle(SelectMgr_EntityOwner) anOwner =
-    Handle(SelectMgr_EntityOwner)::DownCast (aSel->Sensitive()->BaseSensitive()->OwnerId());
   mySelection->ClearAndSelect (anOwner);
-  anOwner->State (1);
-  if (anOwner == theObject->GlobalSelOwner())
-  {
-    Handle(AIS_GlobalStatus)& aState = myObjects.ChangeFind (theObject);
-    aState->SetHilightStatus (Standard_True);
-    aState->SetHilightStyle (anObjSelStyle);
-  }
+
   Handle(Graphic3d_HighlightStyle) aCustomStyle;
   if (HighlightStyle (theObject, aCustomStyle))
   {
@@ -1093,6 +1084,7 @@ void AIS_InteractiveContext::SetSelected (const Handle(AIS_InteractiveObject)& t
   {
     HilightWithColor (theObject, anObjSelStyle, Standard_False);
   }
+  anOwner->State (1);
 
   if (theToUpdateViewer)
     UpdateCurrentViewer();
