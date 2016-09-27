@@ -1,3 +1,7 @@
+puts "TODO OCC27929 ALL: Error : The area of result shape is"
+puts "TODO OCC27929 ALL: Error :  is WRONG because number of "
+
+
 puts "============"
 puts "OCC8842"
 puts "============"

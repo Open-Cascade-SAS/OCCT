@@ -221,15 +221,15 @@ void Geom_OffsetSurface::SetBasisSurface (const Handle(Geom_Surface)& S,
   
   equivSurf = Surface();
 
-  if (basisSurf->IsKind(STANDARD_TYPE(Geom_BSplineSurface)) ||
-      basisSurf->IsKind(STANDARD_TYPE(Geom_BezierSurface)))
+  if (aCheckingSurf->IsKind(STANDARD_TYPE(Geom_BSplineSurface)) ||
+      aCheckingSurf->IsKind(STANDARD_TYPE(Geom_BezierSurface)))
   {
     // Tolerance en dur pour l'instant ,mais on devrait la proposer dans le constructeur
     // et la mettre en champ, on pourrait utiliser par exemple pour l'extraction d'iso 
     // et aussi pour les singularite. Pour les surfaces osculatrices, on l'utilise pour
     // detecter si une iso est degeneree.
     const Standard_Real Tol = Precision::Confusion(); //0.0001;
-    myOscSurf = new Geom_OsculatingSurface(basisSurf, Tol);
+    myOscSurf = new Geom_OsculatingSurface(aCheckingSurf, Tol);
   }
 
   // Surface value calculator
