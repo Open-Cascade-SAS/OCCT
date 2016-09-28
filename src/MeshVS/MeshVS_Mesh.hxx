@@ -64,7 +64,9 @@ public:
   Standard_EXPORT virtual void HilightSelected (const Handle(PrsMgr_PresentationManager3d)& PM, const SelectMgr_SequenceOfOwner& Owners) Standard_OVERRIDE;
   
   //! Draw hilighted owner presentation
-  Standard_EXPORT virtual void HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& PM, const Quantity_NameOfColor Color, const Handle(SelectMgr_EntityOwner)& Owner) Standard_OVERRIDE;
+  Standard_EXPORT virtual void HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+                                                      const Handle(Graphic3d_HighlightStyle)& theColor,
+                                                      const Handle(SelectMgr_EntityOwner)& theOwner) Standard_OVERRIDE;
   
   //! Clears internal selection presentation
   Standard_EXPORT virtual void ClearSelected() Standard_OVERRIDE;

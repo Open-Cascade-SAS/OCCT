@@ -17,16 +17,6 @@ inline const Handle(V3d_Viewer)& AIS_InteractiveContext::CurrentViewer() const
   return myMainVwr;
 }
 
-inline Quantity_NameOfColor AIS_InteractiveContext::HilightColor() const 
-{ 
-  return myHilightColor;
-}
-
-inline Quantity_NameOfColor AIS_InteractiveContext::SelectionColor() const 
-{
-  return mySelectionColor;
-}
-
 inline Quantity_NameOfColor AIS_InteractiveContext::PreSelectionColor() const 
 {
   return  myPreselectionColor;
@@ -36,28 +26,9 @@ inline Quantity_NameOfColor AIS_InteractiveContext::DefaultColor() const
 {  return myDefaultColor;
 }
 
-inline Quantity_NameOfColor AIS_InteractiveContext::SubIntensityColor() const 
-{
-  return  mySubIntensity;
-}
-inline void AIS_InteractiveContext::SetHilightColor(const Quantity_NameOfColor aHiCol)
-{
-  myHilightColor = aHiCol;
-}
-
-inline void AIS_InteractiveContext::SelectionColor(const Quantity_NameOfColor aCol)
-{
-  mySelectionColor = aCol;
-}
-
 inline void AIS_InteractiveContext::SetPreselectionColor(const Quantity_NameOfColor aCol)
 {
   myPreselectionColor = aCol;
-}
-
-inline void AIS_InteractiveContext::SetSubIntensityColor(const Quantity_NameOfColor aCol)
-{
-  mySubIntensity = aCol;
 }
 
 inline Standard_Integer AIS_InteractiveContext::DisplayMode() const 

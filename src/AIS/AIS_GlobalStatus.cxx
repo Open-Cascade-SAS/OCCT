@@ -27,7 +27,6 @@ myStatus(AIS_DS_None),
 myDispMode(AIS_WireFrame),
 myLayerIndex(0),
 myIsHilit(Standard_False),
-myHiCol(Quantity_NOC_WHITE),
 mySubInt(Standard_False)
 {  
 }
@@ -36,13 +35,11 @@ AIS_GlobalStatus::AIS_GlobalStatus(const AIS_DisplayStatus DS,
 				   const Standard_Integer DMode,
 				   const Standard_Integer SMode,
 				   const Standard_Boolean /*ishilighted*/,
-				   const Quantity_NameOfColor TheHiCol,
 				   const Standard_Integer Layer):
 myStatus(DS),
 myDispMode(DMode),
 myLayerIndex(Layer),
 myIsHilit(Standard_False),
-myHiCol(TheHiCol),
 mySubInt(Standard_False)
 {
   mySelModes.Append(SMode);

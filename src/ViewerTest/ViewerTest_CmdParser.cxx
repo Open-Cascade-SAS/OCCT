@@ -95,7 +95,7 @@ void ViewerTest_CmdParser::Parse (Standard_Integer theArgsNb, const char** theAr
 
   for (Standard_Integer anIter = 1; anIter < theArgsNb; ++anIter)
   {
-    if (theArgVec[anIter][0] == '-')
+    if (theArgVec[anIter][0] == '-' && !std::isdigit (theArgVec[anIter][1]))
     {
       std::string anOptionName (&theArgVec[anIter][1]);
       std::transform (anOptionName.begin(), anOptionName.end(), anOptionName.begin(), ::tolower);

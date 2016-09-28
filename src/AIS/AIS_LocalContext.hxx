@@ -302,13 +302,15 @@ public:
   
   Standard_EXPORT void Hilight (const Handle(AIS_InteractiveObject)& anObject);
   
-  Standard_EXPORT void Hilight (const Handle(AIS_InteractiveObject)& anObject, const Quantity_NameOfColor aCol);
+  Standard_EXPORT void Hilight (const Handle(AIS_InteractiveObject)& theObj,
+                                const Handle(Graphic3d_HighlightStyle)& theStyle);
   
   Standard_EXPORT void Unhilight (const Handle(AIS_InteractiveObject)& anObject);
   
   Standard_EXPORT Standard_Boolean IsHilighted (const Handle(AIS_InteractiveObject)& anObject) const;
   
-  Standard_EXPORT Standard_Boolean IsHilighted (const Handle(AIS_InteractiveObject)& anObject, Standard_Boolean& WithColor, Quantity_NameOfColor& HiCol) const;
+  Standard_EXPORT Standard_Boolean HighlightStyle (const Handle(AIS_InteractiveObject)& theObject,
+                                                   Handle(Graphic3d_HighlightStyle)& theStyle) const;
   
   //! Define the current selection sensitivity for
   //! this local context according to the view size.
@@ -370,8 +372,17 @@ public:
 
 protected:
 
+  //! Helper function that returns correct dynamic highlight style for the object:
+  //! if custom style is defined via object's highlight drawer, it will be used. Otherwise,
+  //! dynamic highlight style of interactive context will be returned.
+  //! @param theObj [in] the object to check
+  Standard_EXPORT const Handle(Graphic3d_HighlightStyle)& getHiStyle (const Handle(SelectMgr_SelectableObject)& theObj) const;
 
-
+  //! Helper function that returns correct selection style for the object:
+  //! if custom style is defined via object's highlight drawer, it will be used. Otherwise,
+  //! selection style of interactive context will be returned.
+  //! @param theObj [in] the object to check
+  Standard_EXPORT const Handle(Graphic3d_HighlightStyle)& getSelStyle (const Handle(AIS_InteractiveObject)& theObj) const;
 
 private:
 
@@ -429,7 +440,7 @@ private:
   Standard_Integer myCurDetected;
   AIS_SequenceOfInteractive myAISDetectedSeq;
   Standard_Integer myAISCurDetected;
-
+  Handle(Graphic3d_HighlightStyle) mySubintStyle;
 
 };
 

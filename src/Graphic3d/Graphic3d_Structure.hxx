@@ -22,8 +22,6 @@
 
 #include <Graphic3d_CStructure.hxx>
 #include <Graphic3d_IndexedMapOfAddress.hxx>
-#include <Quantity_Color.hxx>
-#include <Aspect_TypeOfHighlightMethod.hxx>
 #include <Standard_Address.hxx>
 #include <Graphic3d_TypeOfStructure.hxx>
 #include <MMgt_TShared.hxx>
@@ -46,7 +44,6 @@ class Graphic3d_StructureDefinitionError;
 class Graphic3d_TransformError;
 class Graphic3d_Group;
 class Graphic3d_StructureManager;
-class Quantity_Color;
 class Graphic3d_DataStructureManager;
 class Bnd_Box;
 class gp_Pnt;
@@ -105,10 +102,11 @@ public:
   //! of the visualiser.
   Standard_EXPORT virtual void Erase();
   
-  //! Highlights the structure <me> in all the views of the visualiser, using the following methods:
-  //! TOHM_COLOR    = drawn in the highlight color
-  //! TOHM_BOUNDBOX = enclosed by the boundary box
-  Standard_EXPORT void Highlight (const Aspect_TypeOfHighlightMethod theMethod, const Quantity_Color& theColor, const Standard_Boolean theToUpdateMgr = Standard_True);
+  //! Highlights the structure in all the views with the given style
+  //! @param theStyle [in] the style (type of highlighting: box/color, color and opacity)
+  //! @param theToUpdateMgr [in] defines whether related computed structures will be
+  //! highlighted via structure manager or not
+  Standard_EXPORT void Highlight (const Handle(Graphic3d_HighlightStyle)& theStyle, const Standard_Boolean theToUpdateMgr = Standard_True);
   
   //! Suppress the structure <me>.
   //! It will be erased at the next screen update.
@@ -234,7 +232,7 @@ public:
   
   //! Returns the highlight color for the Highlight method
   //! with the highlight method TOHM_COLOR or TOHM_BOUNDBOX.
-  Standard_EXPORT const Quantity_Color& HighlightColor() const;
+  Standard_EXPORT const Handle(Graphic3d_HighlightStyle)& HighlightStyle() const;
   
   //! Returns Standard_True if the structure <me> is deleted.
   //! <me> is deleted after the call Remove (me).
@@ -362,16 +360,10 @@ public:
   Standard_EXPORT void GraphicConnect (const Handle(Graphic3d_Structure)& ADaughter);
   
   Standard_EXPORT void GraphicDisconnect (const Handle(Graphic3d_Structure)& ADaughter);
-  
-  //! Highlights the structure <me>.
-  Standard_EXPORT void GraphicHighlight (const Aspect_TypeOfHighlightMethod Method);
-  
+
   //! Internal method which sets new transformation without calling graphic manager callbacks.
   Standard_EXPORT void GraphicTransform (const Handle(Geom_Transformation)& theTrsf);
-  
-  //! Suppress the highlight for the structure <me>.
-  Standard_EXPORT void GraphicUnHighlight();
-  
+
   //! Returns the identification number of the structure <me>.
   Standard_EXPORT Standard_Integer Identification() const;
   
@@ -454,8 +446,6 @@ protected:
   Handle(Graphic3d_CStructure) myCStructure;
   Graphic3d_IndexedMapOfAddress myAncestors;
   Graphic3d_IndexedMapOfAddress myDescendants;
-  Quantity_Color myHighlightColor;
-  Aspect_TypeOfHighlightMethod myHighlightMethod;
   Standard_Address myOwner;
   Graphic3d_TypeOfStructure myVisual;
 

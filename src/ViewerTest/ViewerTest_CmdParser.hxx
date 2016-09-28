@@ -40,7 +40,7 @@ public:
   }
 
   //! Adds option to available option list. Several names may be provided if separated with '|'.
-  void AddOption (const std::string& theOptionNames, const std::string& theOptionDescription);
+  void AddOption (const std::string& theOptionNames, const std::string& theOptionDescription = "");
 
   //! Prints help message based on provided command and options descriptions.
   void Help();

@@ -735,47 +735,6 @@ static int VDir (Draw_Interpretor& theDI,
   return 0;
 }
 
-//==============================================================================
-//function : VSelPrecision
-//purpose  : To set the selection tolerance value
-//Draw arg : Selection tolerance value (real value determining the width and
-//           height of selecting frustum bases). Without arguments the function
-//           just prints current tolerance.
-//==============================================================================
-static int VSelPrecision(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if( argc > 2 )
-  {
-    di << "Wrong parameters! Must be: " << argv[0] << " [-unset] [tolerance]\n";
-    return 1;
-  }
-
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if( aContext.IsNull() )
-    return 1;
-
-  if( argc == 1 )
-  {
-    Standard_Real aPixelTolerance = aContext->PixelTolerance();
-    di << "Pixel tolerance : " << aPixelTolerance << "\n";
-  }
-  else if (argc == 2)
-  {
-    TCollection_AsciiString anArg = TCollection_AsciiString (argv[1]);
-    anArg.LowerCase();
-    if (anArg == "-unset")
-    {
-      aContext->SetPixelTolerance (-1);
-    }
-    else
-    {
-      aContext->SetPixelTolerance (anArg.IntegerValue());
-    }
-  }
-
-  return 0;
-}
-
 //! Auxiliary enumeration
 enum ViewerTest_StereoPair
 {
@@ -2918,32 +2877,33 @@ static int VDisplayAll (Draw_Interpretor& ,
   return 0;
 }
 
-//! Auxiliary method to find presentation
-inline Handle(PrsMgr_Presentation) findPresentation (const Handle(AIS_InteractiveContext)& theCtx,
-                                                     const Handle(AIS_InteractiveObject)&  theIO,
-                                                     const Standard_Integer                theMode)
+//! Auxiliary method to check if presentation exists
+inline Standard_Integer checkMode (const Handle(AIS_InteractiveContext)& theCtx,
+                                   const Handle(AIS_InteractiveObject)&  theIO,
+                                   const Standard_Integer                theMode)
 {
-  if (theIO.IsNull())
+  if (theIO.IsNull() || theCtx.IsNull())
   {
-    return Handle(PrsMgr_Presentation)();
+    return -1;
   }
 
   if (theMode != -1)
   {
     if (theCtx->MainPrsMgr()->HasPresentation (theIO, theMode))
     {
-      return theCtx->MainPrsMgr()->Presentation (theIO, theMode);
+      return theMode;
     }
   }
   else if (theCtx->MainPrsMgr()->HasPresentation (theIO, theIO->DisplayMode()))
   {
-    return theCtx->MainPrsMgr()->Presentation (theIO, theIO->DisplayMode());
+    return theIO->DisplayMode();
   }
   else if (theCtx->MainPrsMgr()->HasPresentation (theIO, theCtx->DisplayMode()))
   {
-    return theCtx->MainPrsMgr()->Presentation (theIO, theCtx->DisplayMode());
+    return theCtx->DisplayMode();
   }
-  return Handle(PrsMgr_Presentation)();
+
+  return -1;
 }
 
 enum ViewerTest_BndAction
@@ -2954,28 +2914,36 @@ enum ViewerTest_BndAction
 };
 
 //! Auxiliary method to print bounding box of presentation
-inline void bndPresentation (Draw_Interpretor&                  theDI,
-                             const Handle(PrsMgr_Presentation)& thePrs,
-                             const TCollection_AsciiString&     theName,
-                             const ViewerTest_BndAction         theAction)
+inline void bndPresentation (Draw_Interpretor&                         theDI,
+                             const Handle(PrsMgr_PresentationManager)& theMgr,
+                             const Handle(AIS_InteractiveObject)&      theObj,
+                             const Standard_Integer                    theDispMode,
+                             const TCollection_AsciiString&            theName,
+                             const ViewerTest_BndAction                theAction,
+                             const Handle(Graphic3d_HighlightStyle)&   theStyle)
 {
   switch (theAction)
   {
     case BndAction_Hide:
     {
-      thePrs->Presentation()->GraphicUnHighlight();
+      theMgr->Unhighlight (theObj, theDispMode);
       break;
     }
     case BndAction_Show:
     {
-      Handle(Graphic3d_Structure) aPrs (thePrs->Presentation());
-      aPrs->CStructure()->HighlightColor = Quantity_NOC_GRAY99;
-      aPrs->CStructure()->HighlightWithBndBox (aPrs, Standard_True);
+      theMgr->Color (theObj, theStyle, theDispMode);
       break;
     }
     case BndAction_Print:
     {
-      Bnd_Box aBox = thePrs->Presentation()->MinMaxValues();
+      Bnd_Box aBox;
+      for (PrsMgr_Presentations::Iterator aPrsIter (theObj->Presentations()); aPrsIter.More(); aPrsIter.Next())
+      {
+        if (aPrsIter.Value().Mode() != theDispMode)
+          continue;
+
+        aBox = aPrsIter.Value().Presentation()->Presentation()->MinMaxValues();
+      }
       gp_Pnt aMin = aBox.CornerMin();
       gp_Pnt aMax = aBox.CornerMax();
       theDI << theName  << "\n"
@@ -3004,6 +2972,8 @@ int VBounding (Draw_Interpretor& theDI,
 
   ViewerTest_BndAction anAction = BndAction_Show;
   Standard_Integer     aMode    = -1;
+
+  Handle(Graphic3d_HighlightStyle) aStyle;
 
   Standard_Integer anArgIter = 1;
   for (; anArgIter < theArgNb; ++anArgIter)
@@ -3037,6 +3007,10 @@ int VBounding (Draw_Interpretor& theDI,
     }
   }
 
+  if (anAction == BndAction_Show)
+    aStyle = new Graphic3d_HighlightStyle (Aspect_TOHM_BOUNDBOX, Quantity_NOC_GRAY99, 0.0);
+
+  Standard_Integer aHighlightedMode = -1;
   if (anArgIter < theArgNb)
   {
     // has a list of names
@@ -3050,13 +3024,13 @@ int VBounding (Draw_Interpretor& theDI,
       }
 
       Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
-      Handle(PrsMgr_Presentation)   aPrs = findPresentation (aCtx, anIO, aMode);
-      if (aPrs.IsNull())
+      aHighlightedMode = checkMode (aCtx, anIO, aMode);
+      if (aHighlightedMode == -1)
       {
-        std::cout << "Error: presentation " << aName << " does not exist\n";
+        std::cout << "Error: object " << aName << " has no presentation with mode " << aMode << std::endl;
         return 1;
       }
-      bndPresentation (theDI, aPrs, aName, anAction);
+      bndPresentation (theDI, aCtx->MainPrsMgr(), anIO, aHighlightedMode, aName, anAction, aStyle);
     }
   }
   else if (aCtx->NbSelected() > 0)
@@ -3065,10 +3039,11 @@ int VBounding (Draw_Interpretor& theDI,
     for (aCtx->InitSelected(); aCtx->MoreSelected(); aCtx->NextSelected())
     {
       Handle(AIS_InteractiveObject) anIO = aCtx->SelectedInteractive();
-      Handle(PrsMgr_Presentation)   aPrs = findPresentation (aCtx, anIO, aMode);
-      if (!aPrs.IsNull())
+      aHighlightedMode = checkMode (aCtx, anIO, aMode);
+      if (aHighlightedMode != -1)
       {
-        bndPresentation (theDI, aPrs, GetMapOfAIS().IsBound1 (anIO) ? GetMapOfAIS().Find1 (anIO) : "", anAction);
+        bndPresentation (theDI, aCtx->MainPrsMgr(), anIO, aHighlightedMode,
+          GetMapOfAIS().IsBound1 (anIO) ? GetMapOfAIS().Find1 (anIO) : "", anAction, aStyle);
       }
     }
   }
@@ -3079,10 +3054,10 @@ int VBounding (Draw_Interpretor& theDI,
          anIter.More(); anIter.Next())
     {
       Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
-      Handle(PrsMgr_Presentation)   aPrs = findPresentation (aCtx, anIO, aMode);
-      if (!aPrs.IsNull())
+      aHighlightedMode = checkMode (aCtx, anIO, aMode);
+      if (aHighlightedMode != -1)
       {
-        bndPresentation (theDI, aPrs, anIter.Key2(), anAction);
+        bndPresentation (theDI, aCtx->MainPrsMgr(), anIO, aHighlightedMode, anIter.Key2(), anAction, aStyle);
       }
     }
   }
@@ -5541,51 +5516,6 @@ static Standard_Integer VLoadSelection (Draw_Interpretor& /*theDi*/,
 }
 
 //==============================================================================
-//function : VAutoActivateSelection
-//purpose  : Activates or deactivates auto computation of selection
-//==============================================================================
-static int VAutoActivateSelection (Draw_Interpretor& theDi,
-                                   Standard_Integer theArgNb,
-                                   const char** theArgVec)
-{
-
-  if (theArgNb > 2)
-  {
-    std::cerr << theArgVec[0] << "Error: wrong number of arguments.\n";
-    return 1;
-  }
-
-  Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
-  if (aCtx.IsNull())
-  {
-    ViewerTest::ViewerInit();
-    aCtx = ViewerTest::GetAISContext();
-  }
-
-  if (theArgNb == 1)
-  {
-    TCollection_AsciiString aSelActivationString;
-    if (aCtx->GetAutoActivateSelection())
-    {
-      aSelActivationString.Copy ("ON");
-    }
-    else
-    {
-      aSelActivationString.Copy ("OFF");
-    }
-
-    theDi << "Auto activation of selection is: " << aSelActivationString << "\n";
-  }
-  else
-  {
-    Standard_Boolean toActivate = Draw::Atoi (theArgVec[1]) != 0;
-    aCtx->SetAutoActivateSelection (toActivate);
-  }
-
-  return 0;
-}
-
-//==============================================================================
 //function : ViewerTest::Commands
 //purpose  : Add all the viewer command in the Draw_Interpretor
 //==============================================================================
@@ -5828,12 +5758,6 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "vsensera : erase active entities",
       __FILE__,VClearSensi,group);
 
-  theCommands.Add("vselprecision",
-		  "vselprecision [-unset] [tolerance_value]"
-                  "\n\t\t  Manages selection precision or prints current value if no parameter is passed."
-                  "\n\t\t  -unset - restores default selection tolerance behavior, based on individual entity tolerance",
-		  __FILE__,VSelPrecision,group);
-
   theCommands.Add("vperf",
       "vperf: vperf  ShapeName 1/0(Transfo/Location) 1/0(Primitives sensibles ON/OFF)"
       "\n\t\t: Tests the animation of an object along a predefined trajectory.",
@@ -5943,12 +5867,6 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
     "\n\t\t: primitives for the shapes with names given without displaying them."
     "\n\t\t:   -local - open local context before selection computation",
     __FILE__, VLoadSelection, group);
-
-  theCommands.Add ("vautoactivatesel",
-    "vautoactivatesel [0|1] : manage or display the option to automatically"
-    "\n\t\t: activate selection for newly displayed objects"
-    "\n\t\t:   [0|1] - turn off | on auto activation of selection",
-    __FILE__, VAutoActivateSelection, group);
 
   theCommands.Add("vbsdf", "vbsdf [name] [options]"
     "\nAdjusts parameters of material BSDF:"

@@ -840,12 +840,12 @@ void AIS_Manipulator::HilightSelected (const Handle(PrsMgr_PresentationManager3d
 
   if (!theSeq (1)->IsKind (STANDARD_TYPE (AIS_ManipulatorOwner)))
   {
-    thePM->Color (this, GetContext()->HilightColor(), 0);
+    thePM->Color (this, GetContext()->HighlightStyle(), 0);
     return;
   }
 
   Handle(AIS_ManipulatorOwner) anOwner = Handle(AIS_ManipulatorOwner)::DownCast (theSeq (1));
-  myHighlightAspect->Aspect()->SetInteriorColor (GetContext()->HilightColor());
+  myHighlightAspect->Aspect()->SetInteriorColor (GetContext()->HighlightStyle()->Color());
   Handle(Graphic3d_Group) aGroup = getGroup (anOwner->Index(), anOwner->Mode());
   if (aGroup.IsNull())
   {
@@ -871,7 +871,9 @@ void AIS_Manipulator::ClearSelected()
 //function : HilightOwnerWithColor
 //purpose  : 
 //=======================================================================
-void AIS_Manipulator::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM, const Quantity_NameOfColor theColor, const Handle(SelectMgr_EntityOwner)& theOwner)
+void AIS_Manipulator::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+                                             const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                             const Handle(SelectMgr_EntityOwner)& theOwner)
 {
   Handle(AIS_ManipulatorOwner) anOwner = Handle(AIS_ManipulatorOwner)::DownCast (theOwner);
   Handle(Prs3d_Presentation) aPresentation = getHighlightPresentation (anOwner);
@@ -879,7 +881,7 @@ void AIS_Manipulator::HilightOwnerWithColor (const Handle(PrsMgr_PresentationMan
   {
     return;
   }
-  aPresentation->Highlight (Aspect_TOHM_COLOR, theColor);
+  aPresentation->Highlight (theStyle);
   for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (aPresentation->Groups());
        aGroupIter.More(); aGroupIter.Next())
   {

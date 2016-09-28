@@ -21,10 +21,10 @@
 #include <Standard_Type.hxx>
 
 #include <AIS_DisplayStatus.hxx>
+#include <Graphic3d_HighlightStyle.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <Quantity_NameOfColor.hxx>
 #include <MMgt_TShared.hxx>
 
 
@@ -46,7 +46,7 @@ public:
   
   Standard_EXPORT AIS_GlobalStatus();
   
-  Standard_EXPORT AIS_GlobalStatus(const AIS_DisplayStatus aStat, const Standard_Integer aDispMode, const Standard_Integer aSelMode, const Standard_Boolean ishilighted = Standard_False, const Quantity_NameOfColor TheHiCol = Quantity_NOC_WHITE, const Standard_Integer aLayerIndex = 0);
+  Standard_EXPORT AIS_GlobalStatus(const AIS_DisplayStatus aStat, const Standard_Integer aDispMode, const Standard_Integer aSelMode, const Standard_Boolean ishilighted = Standard_False, const Standard_Integer aLayerIndex = 0);
   
     void SetGraphicStatus (const AIS_DisplayStatus aStat);
   
@@ -61,9 +61,19 @@ public:
     void SetLayerIndex (const Standard_Integer AnIndex);
   
     void SetHilightStatus (const Standard_Boolean aStat);
-  
-    void SetHilightColor (const Quantity_NameOfColor aHiCol);
-  
+
+    //! Changes applied highlight style for a particular object
+    void SetHilightStyle (const Handle(Graphic3d_HighlightStyle)& theStyle)
+    {
+      myHiStyle = theStyle;
+    }
+
+    //! Returns applied highlight style for a particular object
+    const Handle(Graphic3d_HighlightStyle)& HilightStyle() const
+    {
+      return myHiStyle;
+    }
+
     Standard_Boolean IsSubIntensityOn() const;
   
     void SubIntensityOn();
@@ -81,9 +91,7 @@ public:
     const TColStd_ListOfInteger& SelectionModes() const;
   
     Standard_Boolean IsHilighted() const;
-  
-    Quantity_NameOfColor HilightColor() const;
-  
+
   Standard_EXPORT Standard_Boolean IsSModeIn (const Standard_Integer aMode) const;
 
   //! Returns layer index.
@@ -109,7 +117,7 @@ private:
   TColStd_ListOfInteger mySelModes;
   Standard_Integer myLayerIndex;
   Standard_Boolean myIsHilit;
-  Quantity_NameOfColor myHiCol;
+  Handle(Graphic3d_HighlightStyle) myHiStyle;
   Standard_Boolean mySubInt;
 
 

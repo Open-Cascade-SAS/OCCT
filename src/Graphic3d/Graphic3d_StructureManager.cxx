@@ -355,15 +355,14 @@ void Graphic3d_StructureManager::Erase (const Handle(Graphic3d_Structure)& theSt
 // function : Erase
 // purpose  :
 // ========================================================================
-void Graphic3d_StructureManager::Highlight (const Handle(Graphic3d_Structure)& theStructure,
-                                            const Aspect_TypeOfHighlightMethod theMethod)
+void Graphic3d_StructureManager::Highlight (const Handle(Graphic3d_Structure)& theStructure)
 {
   myHighlightedStructure.Add (theStructure);
 
   // Highlight in all defined views
   for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
   {
-    aViewIt.Value()->Highlight (theStructure, theMethod);
+    aViewIt.Value()->Highlight (theStructure);
   }
 }
 

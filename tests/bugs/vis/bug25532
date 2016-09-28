@@ -19,7 +19,7 @@ vaxo
 vcaps -vbo 0
 vsetdispmode 1
 vdefaults absDefl=1.0
-vautoactivatesel 0
+vselprops -autoactivate 0
 set aMemInit [meminfo h]
 
 set aNb 1000

@@ -130,7 +130,7 @@ public:
   Standard_EXPORT virtual void Erase (const Handle(Graphic3d_Structure)& theStructure);
 
   //! Highlights the structure.
-  Standard_EXPORT virtual void Highlight (const Handle(Graphic3d_Structure)& theStructure, const Aspect_TypeOfHighlightMethod theMethod);
+  Standard_EXPORT virtual void Highlight (const Handle(Graphic3d_Structure)& theStructure);
 
   //! Transforms the structure.
   Standard_EXPORT virtual void SetTransform (const Handle(Graphic3d_Structure)& theStructure, const Handle(Geom_Transformation)& theTrsf);

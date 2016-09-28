@@ -63,9 +63,3 @@ inline void AIS_LocalStatus::SetFirstDisplay(const Standard_Boolean aStat)
 
 inline Standard_Boolean AIS_LocalStatus::IsFirstDisplay() const
 {return myFirstDisplay;}
-
-inline void AIS_LocalStatus::SetHilightColor(const Quantity_NameOfColor aCol)
-{myHiCol = aCol;}
-
-inline Quantity_NameOfColor AIS_LocalStatus::HilightColor() const
-{return myHiCol;}

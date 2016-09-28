@@ -94,7 +94,10 @@ Prs3d_Drawer::Prs3d_Drawer()
   myHasOwnDimLengthModelUnits   (Standard_False),
   myHasOwnDimAngleModelUnits    (Standard_False),
   myHasOwnDimLengthDisplayUnits (Standard_False),
-  myHasOwnDimAngleDisplayUnits  (Standard_False)
+  myHasOwnDimAngleDisplayUnits  (Standard_False),
+
+  myHasOwnHighlightStyle        (Standard_False),
+  myHasOwnSelectionStyle        (Standard_False)
 {
   myDimensionModelUnits.SetLengthUnits ("m");
   myDimensionModelUnits.SetAngleUnits ("rad");
@@ -1013,6 +1016,8 @@ void Prs3d_Drawer::ClearLocalAttributes()
   myDatumAspect.Nullify();
   myDimensionAspect.Nullify();
   mySectionAspect.Nullify();
+  myHighlightStyle.Nullify();
+  mySelectionStyle.Nullify();
 
   myHasOwnUIsoAspect           = Standard_False;
   myHasOwnVIsoAspect           = Standard_False;
@@ -1054,6 +1059,8 @@ void Prs3d_Drawer::ClearLocalAttributes()
   myHasOwnDimLengthDisplayUnits   = Standard_False;
   myHasOwnDimAngleModelUnits      = Standard_False;
   myHasOwnDimAngleDisplayUnits    = Standard_False;
+  myHasOwnHighlightStyle          = Standard_False;
+  myHasOwnSelectionStyle          = Standard_False;
 
   myVertexDrawMode = Prs3d_VDM_Inherited;
   myTypeOfHLR      = Prs3d_TOH_NotSet;
@@ -1239,4 +1246,24 @@ void Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theP
       return;
     }
   }
+}
+
+// =======================================================================
+// function : SetHighlightStyle
+// purpose  :
+// =======================================================================
+void Prs3d_Drawer::SetHighlightStyle (const Handle(Graphic3d_HighlightStyle)& theStyle)
+{
+  myHighlightStyle = theStyle;
+  myHasOwnHighlightStyle = !myHighlightStyle.IsNull();
+}
+
+// =======================================================================
+// function : SetSelectionStyle
+// purpose  :
+// =======================================================================
+void Prs3d_Drawer::SetSelectionStyle (const Handle(Graphic3d_HighlightStyle)& theStyle)
+{
+  mySelectionStyle = theStyle;
+  myHasOwnSelectionStyle = !mySelectionStyle.IsNull();
 }

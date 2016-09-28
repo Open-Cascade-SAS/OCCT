@@ -32,6 +32,7 @@ class PrsMgr_PresentableObject;
 class Quantity_Color;
 class Geom_Transformation;
 class Prs3d_Presentation;
+class Graphic3d_HighlightStyle;
 class Graphic3d_Structure;
 class Graphic3d_DataStructureManager;
 class Prs3d_Projector;
@@ -85,7 +86,7 @@ private:
   
   Standard_EXPORT void SetVisible (const Standard_Boolean theValue);
   
-  Standard_EXPORT void Highlight (const Aspect_TypeOfHighlightMethod theMethod, const Quantity_Color& theColor);
+  Standard_EXPORT void Highlight (const Handle(Graphic3d_HighlightStyle)& theStyle);
   
   Standard_EXPORT void Unhighlight() const;
   

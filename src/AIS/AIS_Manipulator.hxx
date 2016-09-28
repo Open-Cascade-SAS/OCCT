@@ -323,7 +323,9 @@ public: //! @name Presentation computation
 
   //! Method which hilight an owner belonging to
   //! this selectable object  ( for fast presentation draw ).
-  Standard_EXPORT virtual void HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM, const Quantity_NameOfColor theColor, const Handle(SelectMgr_EntityOwner)& theOwner) Standard_OVERRIDE;
+  Standard_EXPORT virtual void HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+                                                      const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                                      const Handle(SelectMgr_EntityOwner)& theOwner) Standard_OVERRIDE;
 
 protected:
 

@@ -52,11 +52,9 @@ namespace
 
     Standard_Boolean IsHilighted (const Handle(PrsMgr_PresentationManager)& PM,const Standard_Integer aMode) const;
 
-    void Hilight (const Handle(PrsMgr_PresentationManager)& PM,const Standard_Integer aMode);
-
-    void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& PM,
-                           const Quantity_NameOfColor aColor,
-                           const Standard_Integer aMode);
+    void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+                           const Handle(Graphic3d_HighlightStyle)& theStyle,
+                           const Standard_Integer theMode);
 
     void Unhilight (const Handle(PrsMgr_PresentationManager)& PM, const Standard_Integer aMode);
 
@@ -104,35 +102,22 @@ Standard_Boolean SelectMgr_AssemblyEntityOwner::IsHilighted (const Handle(PrsMgr
 }
 
 //=======================================================================
-//function : Hilight
-//purpose  : 
-//=======================================================================
-void SelectMgr_AssemblyEntityOwner::Hilight (const Handle(PrsMgr_PresentationManager)& PM,
-                                             const Standard_Integer aMode)
-{
-  if (HasSelectable())
-  {
-   PM->Highlight (myAssembly, aMode);
-  }
-}
-
-//=======================================================================
 //function : HilightWithColor
 //purpose  : 
 //=======================================================================
-void SelectMgr_AssemblyEntityOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& PM,
-                                                      const Quantity_NameOfColor aColor,
-                                                      const Standard_Integer aMode)
+void SelectMgr_AssemblyEntityOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+                                                      const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                                      const Standard_Integer theMode)
 {
   if (HasSelectable())
   {
     if (IsAutoHilight())
     {
-      PM->Color (myAssembly, aColor, aMode);
+      thePM->Color (myAssembly, theStyle, theMode);
     }
     else
     {
-      myAssembly->HilightOwnerWithColor (PM, aColor, this);
+      myAssembly->HilightOwnerWithColor (thePM, theStyle, this);
     }
   }
 }

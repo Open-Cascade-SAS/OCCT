@@ -80,25 +80,21 @@ Standard_Boolean SelectMgr_EntityOwner::IsHilighted(const Handle(PrsMgr_Presenta
    return PM->IsHighlighted(mySelectable,aMode);
  return Standard_False;
 }
-void SelectMgr_EntityOwner::Hilight(const Handle(PrsMgr_PresentationManager)& PM,
-				    const Standard_Integer aMode)
-{if(HasSelectable())
-   PM->Highlight(mySelectable,aMode);
-}
 
-void SelectMgr_EntityOwner::HilightWithColor(const Handle(PrsMgr_PresentationManager3d)& PM,
-					     const Quantity_NameOfColor aColor,
-					     const Standard_Integer aMode)
+void SelectMgr_EntityOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+                                              const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                              const Standard_Integer theMode)
 {
-  if( HasSelectable() ) {
-    if( IsAutoHilight() )
+  if (HasSelectable())
+  {
+    if (IsAutoHilight())
     {
       const Graphic3d_ZLayerId aLayerId = mySelectable->GlobalSelOwner().get() == this ?
         Graphic3d_ZLayerId_Top : Graphic3d_ZLayerId_Topmost;
-      PM->Color(mySelectable,aColor,aMode, NULL, aLayerId);
+      thePM->Color (mySelectable, theStyle, theMode, NULL, aLayerId);
     }
     else
-      mySelectable->HilightOwnerWithColor( PM, aColor, this );
+      mySelectable->HilightOwnerWithColor (thePM, theStyle, this);
   }
 }
 
@@ -114,11 +110,6 @@ void SelectMgr_EntityOwner::Clear(const Handle(PrsMgr_PresentationManager)&,
 {
 // nothing done on the selectable here...
 }
-
-
-void SelectMgr_EntityOwner::
-Hilight(){}
-
 
 //=======================================================================
 //function : about Transformation

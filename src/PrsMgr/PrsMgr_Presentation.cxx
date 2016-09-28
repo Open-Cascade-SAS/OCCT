@@ -15,6 +15,7 @@
 #include <PrsMgr_Presentation.hxx>
 
 #include <Geom_Transformation.hxx>
+#include <Graphic3d_HighlightStyle.hxx>
 #include <Graphic3d_DataStructureManager.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Precision.hxx>
@@ -125,8 +126,7 @@ void PrsMgr_Presentation::SetVisible (const Standard_Boolean theValue)
 //function : Highlight
 //purpose  :
 //=======================================================================
-void PrsMgr_Presentation::Highlight (const Aspect_TypeOfHighlightMethod theMethod,
-                                     const Quantity_Color&              theColor)
+void PrsMgr_Presentation::Highlight (const Handle(Graphic3d_HighlightStyle)& theStyle)
 {
   if (!IsHighlighted())
   {
@@ -134,7 +134,7 @@ void PrsMgr_Presentation::Highlight (const Aspect_TypeOfHighlightMethod theMetho
   }
 
   display (Standard_True);
-  myStructure->Highlight (theMethod, theColor);
+  myStructure->Highlight (theStyle);
 }
 
 //=======================================================================

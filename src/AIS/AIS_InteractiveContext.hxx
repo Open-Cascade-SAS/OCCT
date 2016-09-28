@@ -35,6 +35,7 @@
 #include <AIS_KindOfInteractive.hxx>
 #include <Standard_Real.hxx>
 #include <Aspect_TypeOfFacingModel.hxx>
+#include <Graphic3d_HighlightStyle.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
 #include <Standard_ShortReal.hxx>
 #include <TColStd_ListOfInteger.hxx>
@@ -277,8 +278,11 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void Hilight (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Boolean updateviewer = Standard_True);
-  
+  Standard_DEPRECATED("Deprecated method Hilight()")
+  void Hilight (const Handle(AIS_InteractiveObject)& theObj, const Standard_Boolean theIsToUpdateViewer = Standard_True)
+  {
+    return HilightWithColor (theObj, mySelStyle, theIsToUpdateViewer);
+  }
 
   //! Changes the color of all the lines of the object in view,
   //! aniobj. It paints these lines the color passed as the
@@ -287,7 +291,9 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void HilightWithColor (const Handle(AIS_InteractiveObject)& aniobj, const Quantity_NameOfColor aCol, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void HilightWithColor (const Handle(AIS_InteractiveObject)& theObj,
+                                         const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                         const Standard_Boolean theIsToUpdate = Standard_True);
   
 
   //! Removes hilighting from the entity aniobj. Updates the viewer.
@@ -559,19 +565,25 @@ public:
   Standard_EXPORT Standard_Boolean IsDisplayed (const Handle(AIS_InteractiveObject)& anIobj) const;
   
   Standard_EXPORT Standard_Boolean IsDisplayed (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Integer aMode) const;
-  
-  Standard_EXPORT Standard_Boolean IsHilighted (const Handle(AIS_InteractiveObject)& aniobj) const;
-  
-  //! if <anIObj> is hilighted with a specific color
-  //! <WithColor> will be returned TRUE
-  //! <theHiCol> gives the name of the hilightcolor
-  Standard_EXPORT Standard_Boolean IsHilighted (const Handle(AIS_InteractiveObject)& anIobj, Standard_Boolean& WithColor, Quantity_NameOfColor& theHiCol) const;
 
-  //! if <theOwner> is hilighted with a specific color, than <theIsCustomColor> will be set
-  //! to true and <theCustomColorName> will have the name of the color stored
-  Standard_EXPORT Standard_Boolean IsHilighted (const Handle(SelectMgr_EntityOwner)& theOwner,
-                                                Standard_Boolean& theIsCustomColor,
-                                                Quantity_NameOfColor& theCustomColorName) const;
+  //! Returns true if the object is marked as highlighted via its global
+  //! status
+  //! @param theObj [in] the object to check
+  Standard_EXPORT Standard_Boolean IsHilighted (const Handle(AIS_InteractiveObject)& theObj) const;
+
+  //! Returns true if the owner is marked as selected
+  //! @param theOwner [in] the owner to check
+  Standard_EXPORT Standard_Boolean IsHilighted (const Handle(SelectMgr_EntityOwner)& theOwner) const;
+
+  //! Returns highlight style of the object if it is marked as highlighted via global status
+  //! @param theObj [in] the object to check
+  Standard_EXPORT Standard_Boolean HighlightStyle (const Handle(AIS_InteractiveObject)& theObj,
+                                                   Handle(Graphic3d_HighlightStyle)& theStyle) const;
+
+  //! Returns highlight style of the owner if it is selected
+  //! @param theOwner [in] the owner to check
+  Standard_EXPORT Standard_Boolean HighlightStyle (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                   Handle(Graphic3d_HighlightStyle)& theStyle) const;
 
   //! Returns the display priority of the entity anIobj. This
   //! will be display   mode of anIobj if it is in the main
@@ -621,15 +633,46 @@ public:
     Standard_Integer DisplayMode() const;
   
 
-  //! Returns the name of the color used to show
-  //! highlighted entities, that is, entities picked out by the mouse.
-    Quantity_NameOfColor HilightColor() const;
-  
+  //! Returns current dynamic highlight style settings.
+  //! By default:
+  //!   - the color of dynamic highlight is Quantity_NOC_CYAN1;
+  //!   - the presentation for dynamic highlight is completely opaque;
+  //!   - the type of highlight is Aspect_TOHM_COLOR.
+  const Handle(Graphic3d_HighlightStyle)& HighlightStyle() const
+  {
+    return myHiStyle;
+  }
 
-  //! Returns the name of the color used to show selected entities.
-  //! By default, this is Quantity_NOC_GRAY80.
-    Quantity_NameOfColor SelectionColor() const;
-  
+  //! Allows to manage the style of dynamic highlighting.
+  //! By default:
+  //!   - the color of dynamic highlight is Quantity_NOC_CYAN1;
+  //!   - the presentation for dynamic highlight is completely opaque;
+  //!   - the type of highlight is Aspect_TOHM_COLOR.
+  Handle(Graphic3d_HighlightStyle)& ChangeHighlightStyle()
+  {
+    return myHiStyle;
+  }
+
+  //! Returns current selection style settings.
+  //! By default:
+  //!   - the color of selection is Quantity_NOC_GRAY80;
+  //!   - the presentation for selection is completely opaque;
+  //!   - the type of highlight is Aspect_TOHM_COLOR.
+  const Handle(Graphic3d_HighlightStyle)& SelectionStyle() const
+  {
+    return mySelStyle;
+  }
+
+  //! Allows to manage the style of selection highlighting.
+  //! By default:
+  //!   - the color of selection is Quantity_NOC_GRAY80;
+  //!   - the presentation for selection is completely opaque;
+  //!   - the type of highlight is Aspect_TOHM_COLOR.
+  Handle(Graphic3d_HighlightStyle)& ChangeSelectionStyle()
+  {
+    return mySelStyle;
+  }
+
   //! Returns the name of the color used to show preselection.
   //! By default, this is Quantity_NOC_GREEN.
     Quantity_NameOfColor PreSelectionColor() const;
@@ -640,34 +683,33 @@ public:
     Quantity_NameOfColor DefaultColor() const;
   
 
-  //! Returns the name of the color used to show that an
-  //! object is not currently selected.
+  //! Sub-intensity allows temporary highlighting of particular
+  //! objects with specified color in a manner of selection highlight,
+  //! but without actual selection (e.g., global status and owner's
+  //! selection state will not be updated).
+  //! The method returns the color of such highlighting.
+  //! By default, it is Quantity_NOC_GRAY40.
+  const Quantity_Color& SubIntensityColor() const
+  {
+    return mySubintStyle->Color();
+  }
+
+  //! Sub-intensity allows temporary highlighting of particular
+  //! objects with specified color in a manner of selection highlight,
+  //! but without actual selection (e.g., global status and owner's
+  //! selection state will not be updated).
+  //! The method sets up the color for such highlighting.
   //! By default, this is Quantity_NOC_GRAY40.
-    Quantity_NameOfColor SubIntensityColor() const;
-  
-
-  //! Sets the color used to show highlighted entities, that
-  //! is, entities picked by the mouse.
-  //! By default, this is Quantity_NOC_CYAN1.
-    void SetHilightColor (const Quantity_NameOfColor aHiCol);
-  
-
-  //! Sets the color used to show selected entities.
-  //! By default, this is Quantity_NOC_GRAY80.
-    void SelectionColor (const Quantity_NameOfColor aCol);
-  
+  void SetSubIntensityColor (const Quantity_Color& theColor)
+  {
+    mySubintStyle->SetColor (theColor);
+  }
 
   //! Allows you to set the color used to show preselection.
   //! By default, this is Quantity_NOC_GREEN.
   //! A preselected entity is one which has been selected
   //! as the domain of application of a function such as a fillet.
     void SetPreselectionColor (const Quantity_NameOfColor aCol);
-  
-
-  //! Sets the color used to show that an object is not currently selected.
-  //! By default, this is Quantity_NOC_GRAY40.
-    void SetSubIntensityColor (const Quantity_NameOfColor aCol);
-  
 
   //! Sets the display mode of seen Interactive Objects.
   //! aMode provides the display mode index of the entity aniobj.
@@ -1586,26 +1628,77 @@ protected:
   //! Helper function to unhighlight all entity owners currently highlighted with seleciton color.
   Standard_EXPORT void unhighlightOwners (const Handle(AIS_InteractiveObject)& theObject);
 
-  //! Helper function that highlights the owner given with <theColor> without
+  //! Helper function that highlights the owner given with <theStyle> without
   //! performing AutoHighlight checks, e.g. is used for dynamic highlight.
-  //! If the parameter <theViewer> is set and <theIsImmediate> is true, highlight will be synchronized
-  //! automatically in all views of the viewer.
   Standard_EXPORT void highlightWithColor (const Handle(SelectMgr_EntityOwner)& theOwner,
-                                           const Quantity_NameOfColor theColor,
                                            const Handle(V3d_Viewer)& theViewer = NULL);
 
-  //! Helper function that highlights the owner given with <theColor> with check
+  //! Helper function that highlights the owner given with <theStyle> with check
   //! for AutoHighlight, e.g. is used for selection.
-  //! If the parameter <theViewer> is set and <theIsImmediate> is true, selection color will be synchronized
-  //! automatically in all views of the viewer.
-  Standard_EXPORT void highlightSelected (const Handle(SelectMgr_EntityOwner)& theOwner,
-                                          const Quantity_NameOfColor theSelColor);
+  Standard_EXPORT void highlightSelected (const Handle(SelectMgr_EntityOwner)& theOwner);
+
+  //! Helper function that highlights global owner of the object given with <theStyle> with check
+  //! for AutoHighlight, e.g. is used for selection.
+  //! If global owner is null, it simply highlights the whole object
+  Standard_EXPORT void highlightGlobal (const Handle(AIS_InteractiveObject)& theObj,
+                                        const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                        const Standard_Integer theMode) const;
 
   //! Helper function that unhighlights all owners that are stored in current AIS_Selection.
   //! The function updates global status and selection state of owner and interactive object.
   //! If the parameter <theIsToHilightSubIntensity> is set to true, interactive objects with sub-intensity
   //! switched on in AIS_GlobalStatus will be highlighted with context's sub-intensity color.
   Standard_EXPORT void unhighlightSelected (const Standard_Boolean theIsToHilightSubIntensity = Standard_False);
+
+  //! Helper function that unhighlights global selection owner of given interactive.
+  //! The function does not perform any updates of global or owner status
+  Standard_EXPORT void unhighlightGlobal (const Handle(AIS_InteractiveObject)& theObj, const Standard_Integer theMode) const;
+
+  //! Helper function that turns on sub-intensity in global status and highlights
+  //! given objects with sub-intensity color
+  //! @param theObject [in] the object. If NULL is given, than sub-intensity will be turned on for
+  //! all inveractive objects of the context
+  //! @param theDispMode [in] display mode. If -1 is given, sub-intensity will be turned on for
+  //! all display modes in global status's list of modes
+  //! @param theIsDisplayedOnly [in] is true if sub-intensity should be applied only to objects with
+  //! status AIS_DS_Displayed
+  Standard_EXPORT void turnOnSubintensity (const Handle(AIS_InteractiveObject)& theObject = NULL,
+                                           const Standard_Integer theDispMode = -1,
+                                           const Standard_Boolean theIsDisplayedOnly = Standard_True) const;
+
+  //! Helper function that highlights the object with sub-intensity color without any checks
+  //! @param theObject [in] the object that will be highlighted
+  //! @param theMode [in] display mode
+  Standard_EXPORT void highlightWithSubintensity (const Handle(AIS_InteractiveObject)& theObject,
+                                                  const Standard_Integer theMode) const;
+
+  //! Helper function that highlights the owner with sub-intensity color without any checks
+  //! @param theOwner [in] the owner that will be highlighted
+  //! @param theMode [in] display mode
+  Standard_EXPORT void highlightWithSubintensity (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                  const Standard_Integer theMode) const;
+
+  //! Helper function that returns correct dynamic highlight style for the object:
+  //! if custom style is defined via object's highlight drawer, it will be used. Otherwise,
+  //! dynamic highlight style of interactive context will be returned.
+  //! @param theObj [in] the object to check
+  const Handle(Graphic3d_HighlightStyle)& getHiStyle (const Handle(AIS_InteractiveObject)& theObj) const
+  {
+    const Handle(Prs3d_Drawer)& aHiDrawer = theObj->HilightAttributes();
+    return !aHiDrawer.IsNull() && aHiDrawer->HasOwnHighlightStyle()
+      ? aHiDrawer->HighlightStyle() : myHiStyle;
+  }
+
+  //! Helper function that returns correct selection style for the object:
+  //! if custom style is defined via object's highlight drawer, it will be used. Otherwise,
+  //! selection style of interactive context will be returned.
+  //! @param theObj [in] the object to check
+  const Handle(Graphic3d_HighlightStyle)& getSelStyle (const Handle(AIS_InteractiveObject)& theObj) const
+  {
+    const Handle(Prs3d_Drawer)& aHiDrawer = theObj->HilightAttributes();
+    return !aHiDrawer.IsNull() && aHiDrawer->HasOwnSelectionStyle()
+      ? aHiDrawer->SelectionStyle() : mySelStyle;
+  }
 
 protected:
 
@@ -1624,10 +1717,10 @@ protected:
   Handle(Prs3d_Drawer) myDefaultDrawer;
   Handle(AIS_Selection) mySelection;
   Quantity_NameOfColor myDefaultColor;
-  Quantity_NameOfColor myHilightColor;
-  Quantity_NameOfColor mySelectionColor;
+  Handle(Graphic3d_HighlightStyle) myHiStyle;
+  Handle(Graphic3d_HighlightStyle) mySelStyle;
   Quantity_NameOfColor myPreselectionColor;
-  Quantity_NameOfColor mySubIntensity;
+  Handle(Graphic3d_HighlightStyle) mySubintStyle;
   Standard_Integer myDisplayMode;
   AIS_DataMapOfILC myLocalContexts;
   Standard_Integer myCurLocalIndex;

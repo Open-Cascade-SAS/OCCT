@@ -189,8 +189,7 @@ private:
                               const Aspect_TypeOfUpdate theUpdateMode);
 
   //! Highlights the structure in the view.
-  Standard_EXPORT void Highlight (const Handle(Graphic3d_Structure)& theStructure,
-                                  const Aspect_TypeOfHighlightMethod theMethod);
+  Standard_EXPORT void Highlight (const Handle(Graphic3d_Structure)& theStructure);
 
   //! Transforms the structure in the view.
   Standard_EXPORT void SetTransform (const Handle(Graphic3d_Structure)& theStructure,

@@ -77,7 +77,8 @@ mySelection(new AIS_Selection()),
 mylastindex(0),
 mylastgood(0),
 myCurDetected(0),
-myAISCurDetected(0)
+myAISCurDetected(0),
+mySubintStyle (new Graphic3d_HighlightStyle (aCtx->SelectionStyle()))
 
 {
   // bind self to AIS_InteractiveContext::myLocalContexts. Further, the
@@ -636,11 +637,14 @@ void AIS_LocalContext::Terminate (const Standard_Boolean theToUpdate)
 void AIS_LocalContext::SubIntensityOn(const Handle(AIS_InteractiveObject)& anObject)
 {
   if(!myActiveObjects.IsBound(anObject)) return;
+  mySubintStyle->SetColor (myCTX->SubIntensityColor());
   
   const Handle(AIS_LocalStatus)& Att = myActiveObjects(anObject);
 
-  if(Att->IsTemporary()) 
-    myMainPM->Color(anObject,myCTX->SubIntensityColor(),Att->DisplayMode());
+  if(Att->IsTemporary())
+  {
+    myMainPM->Color (anObject, mySubintStyle, Att->DisplayMode());
+  }
   
   Att->SubIntensityOn();
 }
@@ -677,7 +681,7 @@ void AIS_LocalContext::Hilight(const  Handle(AIS_InteractiveObject)& anObject)
     
   }
   const Handle(AIS_LocalStatus)& Att = myActiveObjects(anObject);
-  myMainPM->Color(anObject,myCTX->HilightColor(),Att->HilightMode());
+  myMainPM->Color(anObject, getHiStyle (anObject), Att->HilightMode());
   Att->SubIntensityOn();
 }
 //=======================================================================
@@ -685,21 +689,19 @@ void AIS_LocalContext::Hilight(const  Handle(AIS_InteractiveObject)& anObject)
 //purpose  : 
 //=======================================================================
 
-void AIS_LocalContext::Hilight(const  Handle(AIS_InteractiveObject)& anObject,
-			       const Quantity_NameOfColor Col)
+void AIS_LocalContext::Hilight (const Handle(AIS_InteractiveObject)& theObj,
+                                const Handle(Graphic3d_HighlightStyle)& theStyle)
 {
-  if(!myActiveObjects.IsBound(anObject)){
-    Standard_Integer HiMod = anObject->HasHilightMode()? anObject->HilightMode() : 0; 
-    Handle(AIS_LocalStatus) Att = new AIS_LocalStatus(Standard_True,
-						      Standard_False,
-						      -1,-1,HiMod);
-    myActiveObjects.Bind(anObject,Att);
-    
+  if (!myActiveObjects.IsBound (theObj))
+  {
+    Handle(AIS_LocalStatus) aStatus = new AIS_LocalStatus
+      (Standard_True, Standard_False, -1, -1, theObj->HasHilightMode() ? theObj->HilightMode() : 0);
+    myActiveObjects.Bind (theObj, aStatus);
   }
-  const Handle(AIS_LocalStatus)& Att = myActiveObjects(anObject);
-  myMainPM->Color(anObject,Col,Att->HilightMode());
-  Att->SubIntensityOn();
-  Att->SetHilightColor(Col);
+  const Handle(AIS_LocalStatus)& aStatus = myActiveObjects (theObj);
+  myMainPM->Color (theObj, theStyle, aStatus->HilightMode());
+  aStatus->SubIntensityOn();
+  aStatus->SetHilightStyle (theStyle);
 }
 
 //=======================================================================
@@ -723,7 +725,7 @@ void AIS_LocalContext::Unhilight(const Handle(AIS_InteractiveObject)& anObject)
       myMainPM->SetVisibility (anObject, Att->HilightMode(), Standard_False);
 
   Att->SubIntensityOff();
-  Att->SetHilightColor(Quantity_NOC_WHITE);
+  Att->SetHilightStyle (new Graphic3d_HighlightStyle());
 }
 
 
@@ -749,19 +751,18 @@ Standard_Boolean AIS_LocalContext::IsHilighted(const Handle(AIS_InteractiveObjec
   return myActiveObjects(anObject)->IsSubIntensityOn();
 }
 
-Standard_Boolean AIS_LocalContext::IsHilighted(const Handle(AIS_InteractiveObject)& anObject,
-					       Standard_Boolean& WithColor,
-					       Quantity_NameOfColor& HiCol) const 
+Standard_Boolean AIS_LocalContext::HighlightStyle (const Handle(AIS_InteractiveObject)& theObject,
+                                                   Handle(Graphic3d_HighlightStyle)& theStyle) const
 {
-  if(!myActiveObjects.IsBound(anObject)) return Standard_False;
-  if( myActiveObjects(anObject)->IsSubIntensityOn()){
-    HiCol = myActiveObjects(anObject)->HilightColor();
-    if(HiCol==Quantity_NOC_WHITE)
-      WithColor = Standard_True;
-    else
-      WithColor = Standard_False;
+  if (!myActiveObjects.IsBound (theObject))
+    return Standard_False;
+
+  if (myActiveObjects (theObject)->IsSubIntensityOn())
+  {
+    theStyle = myActiveObjects (theObject)->HilightStyle();
     return Standard_True;
   }
+
   return Standard_False;
 }
 

@@ -26,9 +26,10 @@
 #include <Standard_Integer.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Quantity_NameOfColor.hxx>
+#include <Graphic3d_HighlightStyle.hxx>
 #include <Graphic3d_ZLayerId.hxx>
+#include <SelectMgr_SelectableObject.hxx>
 class Standard_NoSuchObject;
-class SelectMgr_SelectableObject;
 class PrsMgr_PresentationManager;
 class TopLoc_Location;
 class V3d_Viewer;
@@ -69,23 +70,17 @@ public:
   //! second constructor above.
   Standard_EXPORT void Set (const Handle(SelectMgr_SelectableObject)& aSO);
   
-  //! Provides a framework to highlight any selectable
-  //! object found subsequently which can serve as an
-  //! owner of a sensitive primitive.
-  Standard_EXPORT virtual void Hilight();
-  
   //! Returns true if the presentation manager aPM
   //! highlights selections corresponding to the selection mode aMode.
   Standard_EXPORT virtual Standard_Boolean IsHilighted (const Handle(PrsMgr_PresentationManager)& aPM, const Standard_Integer aMode = 0) const;
   
-  //! Highlights the owner of a detected selectable object in
-  //! the presentation manager aPM. This object could be
-  //! the owner of a sensitive primitive.
-  //! The display mode for the highlight is aMode; this has
-  //! the default value of 0, that is, wireframe mode.
-  Standard_EXPORT virtual void Hilight (const Handle(PrsMgr_PresentationManager)& aPM, const Standard_Integer aMode = 0);
-  
-  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& aPM, const Quantity_NameOfColor aColor, const Standard_Integer aMode = 0);
+  //! Highlights selectable object's presentation with mode theMode in presentation manager
+  //! with given highlight style. Also a check for auto-highlight is performed - if
+  //! selectable object manages highlighting on its own, execution will be passed to
+  //! SelectMgr_SelectableObject::HilightOwnerWithColor method
+  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+                                                 const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                                 const Standard_Integer theMode = 0);
   
   //! Removes highlighting from the owner of a detected
   //! selectable object in the presentation manager aPM.
@@ -135,6 +130,12 @@ public:
   Standard_EXPORT virtual void UpdateHighlightTrsf (const Handle(V3d_Viewer)& theViewer,
                                                     const Handle(PrsMgr_PresentationManager3d)& theManager,
                                                     const Standard_Integer theDispMode);
+
+  //! Returns true if pointer to selectable object of this owner is equal to the given one
+  Standard_Boolean IsSameSelectable (const Handle(SelectMgr_SelectableObject)& theOther) const
+  {
+    return mySelectable == theOther.get();
+  }
 
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_EntityOwner,SelectBasics_EntityOwner)

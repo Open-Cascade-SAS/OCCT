@@ -1,0 +1,44 @@
+puts "============"
+puts "OCC27818_1"
+puts "============"
+puts ""
+####################################################################################
+# Visualization - provide an interface to define highlight presentation properties:
+# test change of highlight properties for whole interactive context
+####################################################################################
+
+
+pload VISUALIZATION MODELING
+
+box b 10 20 30
+pcone p 15 0 40
+
+vinit
+vclear
+
+vdisplay b -dispMode 1 -highMode 1
+vdisplay p -dispMode 1 -highMode 1
+vsetcolor b RED
+vsetcolor p GREEN
+
+vviewparams -scale 17.8 -proj 0.9 -0.3 0.3
+vviewparams -up -0.2 0.4 0.9 -at 1.99 2.4 20.9
+vviewparams -eye 56.1 -17.7 39.4
+
+vselprops -hiTransp 0.1 -hiColor PALEGREEN2
+
+vmoveto 167 263
+set aPixelColor [vreadpixel 167 263 name rgba]
+set aTransp [lindex [split $aPixelColor { }] 1]
+if { $aTransp == 1 } {
+  puts "Error: highlighting of a cone is not transparent!"
+}
+
+vmoveto 285 212
+set aPixelColor [vreadpixel 285 212 name rgba]
+set aTransp [lindex [split $aPixelColor { }] 1]
+if { $aTransp == 1 } {
+  puts "Error: highlighting of a box is not transparent!"
+}
+
+vdump $imagedir/${casename}.png

@@ -119,7 +119,6 @@ public:
 // =======================================================================
 OpenGl_Structure::OpenGl_Structure (const Handle(Graphic3d_StructureManager)& theManager)
 : Graphic3d_CStructure (theManager),
-  myHighlightColor     (NULL),
   myInstancedStructure (NULL),
   myIsRaytracable      (Standard_False),
   myModificationState  (0),
@@ -175,32 +174,12 @@ void OpenGl_Structure::clearHighlightBox (const Handle(OpenGl_Context)& theGlCtx
 }
 
 // =======================================================================
-// function : HighlightWithColor
-// purpose  :
-// =======================================================================
-void OpenGl_Structure::HighlightWithColor (const Graphic3d_Vec3&  theColor,
-                                           const Standard_Boolean theToCreate)
-{
-  const Handle(OpenGl_Context)& aContext = GlDriver()->GetSharedContext();
-  if (theToCreate)
-    setHighlightColor   (aContext, theColor);
-  else
-    clearHighlightColor (aContext);
-}
-
-// =======================================================================
 // function : HighlightWithBndBox
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::HighlightWithBndBox (const Handle(Graphic3d_Structure)& theStruct,
-                                            const Standard_Boolean             theToCreate)
+void OpenGl_Structure::highlightWithBndBox (const Handle(Graphic3d_Structure)& theStruct)
 {
   const Handle(OpenGl_Context)& aContext = GlDriver()->GetSharedContext();
-  if (!theToCreate)
-  {
-    clearHighlightBox (aContext);
-    return;
-  }
 
   if (!myHighlightBox.IsNull())
   {
@@ -211,39 +190,43 @@ void OpenGl_Structure::HighlightWithBndBox (const Handle(Graphic3d_Structure)& t
     myHighlightBox = new OpenGl_Group (theStruct);
   }
 
-  myHighlightBox->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d (HighlightColor, Aspect_TOL_SOLID, 1.0));
+  myHighlightBox->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d (myHighlightStyle->Color(), Aspect_TOL_SOLID, 1.0));
 
   OpenGl_BndBoxPrs* aBndBoxPrs = new OpenGl_BndBoxPrs (myBndBox);
   myHighlightBox->AddElement (aBndBoxPrs);
 }
 
 // =======================================================================
-// function : setHighlightColor
+// function : GraphicHighlight
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::setHighlightColor (const Handle(OpenGl_Context)& theGlCtx,
-                                          const Graphic3d_Vec3&         theColor)
+void OpenGl_Structure::GraphicHighlight (const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                         const Handle(Graphic3d_Structure)&      theStruct)
 {
-  clearHighlightBox (theGlCtx);
-  if (myHighlightColor == NULL)
+  myHighlightStyle = theStyle;
+
+  highlight = 1;
+  if (myHighlightStyle->Method() == Aspect_TOHM_BOUNDBOX)
   {
-    myHighlightColor = new OpenGl_Vec4 (theColor, 1.0f);
-  }
-  else
-  {
-    myHighlightColor->xyz() = theColor;
+    highlightWithBndBox (theStruct);
   }
 }
 
 // =======================================================================
-// function : clearHighlightColor
+// function : GraphicUnhighlight
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::clearHighlightColor (const Handle(OpenGl_Context)& theGlCtx)
+void OpenGl_Structure::GraphicUnhighlight()
 {
-  clearHighlightBox(theGlCtx);
-  delete myHighlightColor;
-  myHighlightColor = NULL;
+  highlight = 0;
+
+  if (myHighlightStyle->Method() == Aspect_TOHM_BOUNDBOX)
+  {
+    const Handle(OpenGl_Context)& aContext = GlDriver()->GetSharedContext();
+    clearHighlightBox (aContext);
+  }
+
+  myHighlightStyle.Nullify();
 }
 
 // =======================================================================
@@ -450,7 +433,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
 
   // Render named status
-  if (highlight)
+  if (highlight && myHighlightBox.IsNull())
   {
     theWorkspace->SetHighlight (true);
   }
@@ -521,8 +504,8 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
 
   // Apply highlight color
   const OpenGl_Vec4* aHighlightColor = theWorkspace->HighlightColor;
-  if (myHighlightColor)
-    theWorkspace->HighlightColor = myHighlightColor;
+  if (!myHighlightStyle.IsNull())
+    theWorkspace->HighlightColor = myHighlightStyle->ColorFltPtr();
 
   // Collect clipping planes of structure scope
   aCtx->ChangeClipping().SetLocalPlanes (aCtx, myClipPlanes);
@@ -655,7 +638,8 @@ void OpenGl_Structure::Release (const Handle(OpenGl_Context)& theGlCtx)
 {
   // Release groups
   Clear (theGlCtx);
-  clearHighlightColor (theGlCtx);
+  clearHighlightBox (theGlCtx);
+  myHighlightStyle.Nullify();
 }
 
 // =======================================================================

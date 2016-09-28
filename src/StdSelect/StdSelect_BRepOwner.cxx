@@ -75,71 +75,18 @@ IsHilighted(const Handle(PrsMgr_PresentationManager)& PM,
 }
 
 //=======================================================================
-//function : Hilight/Unhilight Methods...
-//purpose  : 
+//function : HilightWithColor
+//purpose  :
 //=======================================================================
-void StdSelect_BRepOwner::Hilight(const Handle(PrsMgr_PresentationManager)& PM,
-				  const Standard_Integer aMode)
+void StdSelect_BRepOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+                                            const Handle(Graphic3d_HighlightStyle)&     theStyle,
+                                            const Standard_Integer                      theMode)
 {
-  
-  Standard_Integer M = (aMode < 0) ? myCurMode : aMode;
-  Handle(SelectMgr_SelectableObject) aSel = Selectable();
-  if (myFromDecomposition)
-  {
-    // do the update flag check
-    if (!myPrsSh.IsNull())
-    {
-      TColStd_ListOfInteger aModesList;
-      myPrsSh->ToBeUpdated (aModesList);
-      if (!aModesList.IsEmpty())
-        myPrsSh.Nullify();
-    }
-
-    Handle(Prs3d_Drawer) aDrawer;
-    if (!aSel.IsNull())
-    {
-      aDrawer = aSel->HilightAttributes();
-    }
-    else
-    {
-      aDrawer = new Prs3d_Drawer();
-      SelectMgr_SelectableObject::InitDefaultHilightAttributes (aDrawer);
-    }
-
-    // generate new presentable shape
-    if (myPrsSh.IsNull())
-    {
-      myPrsSh = new StdSelect_Shape (myShape, aDrawer);
-    }
-    if (!aSel.IsNull())
-    {
-      myPrsSh->SetZLayer (aSel->ZLayer());
-      myPrsSh->SetTransformPersistence (aSel->TransformPersistence());
-    }
-
-    // highlight and set layer
-    PM->Highlight (myPrsSh, M);
-  }  
-  else
-  {
-    if(myPrsSh.IsNull())
-      PM->Highlight(aSel,M);
-    else
-      PM->Highlight(myPrsSh,M);
-  }
-}
-
-void StdSelect_BRepOwner::Hilight()
-{}
-
-void StdSelect_BRepOwner::HilightWithColor(const Handle(PrsMgr_PresentationManager3d)& PM,
-					   const Quantity_NameOfColor aCol,
-					   const Standard_Integer aMode)
-{
-  Standard_Integer M = (aMode < 0) ? myCurMode : aMode;
+  Standard_Integer M = (theMode < 0) ? myCurMode : theMode;
   Graphic3d_ZLayerId aHiLayer = this == Selectable()->GlobalSelOwner().get() ?
                                 Graphic3d_ZLayerId_Top : Graphic3d_ZLayerId_Topmost;
   Handle(SelectMgr_SelectableObject) aSel = Selectable();
+
   if (myFromDecomposition)
   {
     // do the update flag check
@@ -181,17 +128,17 @@ void StdSelect_BRepOwner::HilightWithColor(const Handle(PrsMgr_PresentationManag
     }
 
     // highlight with color and set layer
-    PM->Color (myPrsSh, aCol, M, aSel, aHiLayer);
+    thePM->Color (myPrsSh, theStyle, M, aSel, aHiLayer);
   }
   else
   {
     if (!myPrsSh.IsNull())
     {
-      PM->Color (myPrsSh, aCol, M, aSel, aHiLayer);
+      thePM->Color (myPrsSh, theStyle, M, aSel, aHiLayer);
     }
     else
     {
-      PM->Color (aSel, aCol, M, NULL, aHiLayer);
+      thePM->Color (aSel, theStyle, M, NULL, aHiLayer);
     }
   }
 }

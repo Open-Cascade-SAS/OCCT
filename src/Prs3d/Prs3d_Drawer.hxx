@@ -23,6 +23,7 @@
 #include <Quantity_Length.hxx>
 #include <Aspect_TypeOfDeflection.hxx>
 #include <Graphic3d_GroupAspect.hxx>
+#include <Graphic3d_HighlightStyle.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
 #include <Standard_Real.hxx>
 #include <Prs3d_VertexDrawMode.hxx>
@@ -823,6 +824,36 @@ public:
   //! that overrides the one in the link.
   Standard_Boolean HasOwnDimAngleDisplayUnits() const { return myHasOwnDimAngleDisplayUnits; }
 
+  //! Returns true if the drawer has its own style of dynamic highlighting
+  //! that overrides the one in the link
+  Standard_Boolean HasOwnHighlightStyle() const { return myHasOwnHighlightStyle; }
+
+  //! Returns own dynamic highlight style or corresponding style of the link. If no one of
+  //! them is defined, invalid handle will be returned.
+  const Handle(Graphic3d_HighlightStyle)& HighlightStyle() const
+  {
+    return HasOwnHighlightStyle() || myLink.IsNull()
+      ? myHighlightStyle : myLink->HighlightStyle();
+  }
+
+  //! Allows to set own dynamic highlight style.
+  Standard_EXPORT void SetHighlightStyle (const Handle(Graphic3d_HighlightStyle)& theStyle);
+
+  //! Returns true if the drawer has its own style of selection highlighting
+  //! that overrides the one in the link
+  Standard_Boolean HasOwnSelectionStyle() const { return myHasOwnSelectionStyle; }
+
+  //! Returns own selection highlight style or corresponding style of the link. If no one of
+  //! them is defined, invalid handle will be returned.
+  const Handle(Graphic3d_HighlightStyle)& SelectionStyle() const
+  {
+    return HasOwnSelectionStyle() || myLink.IsNull()
+      ? mySelectionStyle : myLink->SelectionStyle();
+  }
+
+  //! Allows to set own selection highlight style.
+  Standard_EXPORT void SetSelectionStyle (const Handle(Graphic3d_HighlightStyle)& theStyle);
+
   //! Returns the drawer to which the current object references.
   const Handle(Prs3d_Drawer)& Link() { return myLink; }
 
@@ -936,6 +967,11 @@ protected:
   Prs3d_DimensionUnits          myDimensionDisplayUnits;
   Standard_Boolean              myHasOwnDimLengthDisplayUnits;
   Standard_Boolean              myHasOwnDimAngleDisplayUnits;
+
+  Handle(Graphic3d_HighlightStyle) myHighlightStyle;
+  Standard_Boolean                 myHasOwnHighlightStyle;
+  Handle(Graphic3d_HighlightStyle) mySelectionStyle;
+  Standard_Boolean                 myHasOwnSelectionStyle;
 
 public:
 

@@ -318,10 +318,9 @@ void SelectMgr_SelectableObject::ClearSelected ()
 //function : HilightOwnerWithColor
 //purpose  : 
 //=======================================================================
-void SelectMgr_SelectableObject::HilightOwnerWithColor 
-  ( const Handle(PrsMgr_PresentationManager3d)&,
-    const Quantity_NameOfColor,
-    const Handle(SelectMgr_EntityOwner)&)
+void SelectMgr_SelectableObject::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)&,
+                                                        const Handle(Graphic3d_HighlightStyle)&,
+                                                        const Handle(SelectMgr_EntityOwner)&)
 {
   Standard_NotImplemented::Raise ("SelectMgr_SelectableObject::HilightOwnerWithColor");
 }

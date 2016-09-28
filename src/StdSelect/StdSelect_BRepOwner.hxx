@@ -107,13 +107,9 @@ public:
   //! aMode is highlighted in the presentation manager aPM.
   Standard_EXPORT virtual Standard_Boolean IsHilighted (const Handle(PrsMgr_PresentationManager)& aPM, const Standard_Integer aMode = 0) const Standard_OVERRIDE;
   
-  Standard_EXPORT virtual void Hilight() Standard_OVERRIDE;
-  
-  //! Returns the selection mode aMode defining the type
-  //! of shape highlighted in the presentation manager aPM.
-  Standard_EXPORT virtual void Hilight (const Handle(PrsMgr_PresentationManager)& aPM, const Standard_Integer aMode = 0) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& aPM, const Quantity_NameOfColor aCol, const Standard_Integer aMode = 0) Standard_OVERRIDE;
+  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+                                                 const Handle(Graphic3d_HighlightStyle)&     theStyle,
+                                                 const Standard_Integer                      theMode = 0) Standard_OVERRIDE;
   
   //! Removes highlighting from the type of shape
   //! identified the selection mode aMode in the presentation manager aPM.

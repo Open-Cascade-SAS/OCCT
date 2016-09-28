@@ -35,8 +35,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_PresentationManager,MMgt_TShared)
 // =======================================================================
 PrsMgr_PresentationManager::PrsMgr_PresentationManager (const Handle(Graphic3d_StructureManager)& theStructureManager)
 : myStructureManager (theStructureManager),
-  myImmediateModeOn  (0),
-  mySelectionColor   (Quantity_NOC_GRAY99)
+  myImmediateModeOn  (0)
 {
   //
 }
@@ -155,40 +154,6 @@ void PrsMgr_PresentationManager::SetVisibility (const Handle(PrsMgr_PresentableO
   }
 
   Presentation (thePrsObj, theMode)->SetVisible (theValue);
-}
-
-// =======================================================================
-// function : Highlight
-// purpose  :
-// =======================================================================
-void PrsMgr_PresentationManager::Highlight (const Handle(PrsMgr_PresentableObject)& thePrsObj,
-                                            const Standard_Integer                  theMode)
-{
-  for (PrsMgr_ListOfPresentableObjectsIter anIter (thePrsObj->Children()); anIter.More(); anIter.Next())
-  {
-    Highlight (anIter.Value(), theMode);
-  }
-  if (!thePrsObj->HasOwnPresentations())
-  {
-    return;
-  }
-
-  Handle(PrsMgr_Presentation) aPrs = Presentation (thePrsObj, theMode, Standard_True);
-  if (aPrs->MustBeUpdated())
-  {
-    Update (thePrsObj, theMode);
-  }
-
-  if (myImmediateModeOn > 0)
-  {
-    Handle(Prs3d_PresentationShadow) aShadow = new Prs3d_PresentationShadow (myStructureManager, aPrs->Presentation());
-    aShadow->Highlight (Aspect_TOHM_COLOR, mySelectionColor);
-    AddToImmediateList (aShadow);
-  }
-  else
-  {
-    aPrs->Highlight (Aspect_TOHM_COLOR, mySelectionColor);
-  }
 }
 
 // =======================================================================
@@ -373,7 +338,7 @@ void PrsMgr_PresentationManager::displayImmediate (const Handle(V3d_Viewer)& the
         aShadowPrs->SetZLayer (aViewDepPrs->CStructure()->ZLayer());
         aShadowPrs->SetClipPlanes (aViewDepPrs->ClipPlanes());
         aShadowPrs->CStructure()->IsForHighlight = 1;
-        aShadowPrs->Highlight (Aspect_TOHM_COLOR, aPrs->HighlightColor());
+        aShadowPrs->Highlight (aPrs->HighlightStyle());
         myViewDependentImmediateList.Append (aShadowPrs);
       }
       // handles custom highlight presentations which were defined in overridden
@@ -602,14 +567,14 @@ void PrsMgr_PresentationManager::Transform (const Handle(PrsMgr_PresentableObjec
 // purpose  :
 // =======================================================================
 void PrsMgr_PresentationManager::Color (const Handle(PrsMgr_PresentableObject)& thePrsObj,
-                                        const Quantity_NameOfColor              theColor,
+                                        const Handle(Graphic3d_HighlightStyle)& theStyle,
                                         const Standard_Integer                  theMode,
                                         const Handle(PrsMgr_PresentableObject)& theSelObj,
                                         const Standard_Integer theImmediateStructLayerId)
 {
   for (PrsMgr_ListOfPresentableObjectsIter anIter (thePrsObj->Children()); anIter.More(); anIter.Next())
   {
-    Color (anIter.Value(), theColor, theMode, NULL, theImmediateStructLayerId);
+    Color (anIter.Value(), theStyle, theMode, NULL, theImmediateStructLayerId);
   }
   if (!thePrsObj->HasOwnPresentations())
   {
@@ -628,28 +593,13 @@ void PrsMgr_PresentationManager::Color (const Handle(PrsMgr_PresentableObject)& 
     aShadow->SetZLayer (theImmediateStructLayerId);
     aShadow->SetClipPlanes (aPrs->Presentation()->ClipPlanes());
     aShadow->CStructure()->IsForHighlight = 1;
-    aShadow->Highlight (Aspect_TOHM_COLOR, theColor);
+    aShadow->Highlight (theStyle);
     AddToImmediateList (aShadow);
   }
   else
   {
-    aPrs->Highlight (Aspect_TOHM_COLOR, theColor);
+    aPrs->Highlight (theStyle);
   }
-}
-
-// =======================================================================
-// function : BoundBox
-// purpose  :
-// =======================================================================
-void PrsMgr_PresentationManager::BoundBox (const Handle(PrsMgr_PresentableObject)& thePrsObj,
-                                           const Standard_Integer                  theMode)
-{
-  Handle(PrsMgr_Presentation) aPrs = Presentation (thePrsObj, theMode, Standard_True);
-  if (aPrs->MustBeUpdated())
-  {
-    Update (thePrsObj, theMode);
-  }
-  aPrs->Highlight (Aspect_TOHM_BOUNDBOX, mySelectionColor);
 }
 
 namespace

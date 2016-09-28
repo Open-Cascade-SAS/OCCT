@@ -37,8 +37,6 @@ inline void AIS_GlobalStatus::SetHilightStatus(const Standard_Boolean aStat)
 {
   myIsHilit = aStat;
 }
-inline void AIS_GlobalStatus::SetHilightColor(const Quantity_NameOfColor aCol)
-{myHiCol = aCol;}
 
 inline Standard_Boolean  AIS_GlobalStatus::IsSubIntensityOn() const 
 {
@@ -74,6 +72,3 @@ inline Standard_Boolean AIS_GlobalStatus::IsHilighted() const
 {
   return myIsHilit;
 }
-
-inline Quantity_NameOfColor AIS_GlobalStatus::HilightColor() const 
-{return myHiCol;}

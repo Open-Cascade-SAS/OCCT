@@ -44,8 +44,6 @@ Graphic3d_Structure::Graphic3d_Structure (const Handle(Graphic3d_StructureManage
 : myStructureManager      (theManager.operator->()),
   myFirstStructureManager (theManager.operator->()),
   myComputeVisual         (Graphic3d_TOS_ALL),
-  myHighlightColor        (Quantity_NOC_WHITE),
-  myHighlightMethod       (Aspect_TOHM_COLOR),
   myOwner                 (NULL),
   myVisual                (Graphic3d_TOS_ALL)
 {
@@ -61,8 +59,6 @@ Graphic3d_Structure::Graphic3d_Structure (const Handle(Graphic3d_StructureManage
 : myStructureManager      (theManager.operator->()),
   myFirstStructureManager (theManager.operator->()),
   myComputeVisual         (thePrs->myComputeVisual),
-  myHighlightColor        (thePrs->myHighlightColor),
-  myHighlightMethod       (thePrs->myHighlightMethod),
   myOwner                 (thePrs->myOwner),
   myVisual                (thePrs->myVisual)
 {
@@ -273,16 +269,13 @@ void Graphic3d_Structure::Erase()
 //function : Highlight
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::Highlight (const Aspect_TypeOfHighlightMethod theMethod,
-                                     const Quantity_Color&              theColor,
-                                     const Standard_Boolean             theToUpdateMgr)
+void Graphic3d_Structure::Highlight (const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                     const Standard_Boolean                  theToUpdateMgr)
 {
   if (IsDeleted())
   {
     return;
   }
-
-  myHighlightColor = theColor;
 
   // Highlight on already Highlighted structure.
   if (myCStructure->highlight)
@@ -304,7 +297,7 @@ void Graphic3d_Structure::Highlight (const Aspect_TypeOfHighlightMethod theMetho
 
   SetDisplayPriority (Structure_MAX_PRIORITY - 1);
 
-  GraphicHighlight (theMethod);
+  myCStructure->GraphicHighlight (theStyle, this);
 
   if (!theToUpdateMgr)
   {
@@ -313,7 +306,7 @@ void Graphic3d_Structure::Highlight (const Aspect_TypeOfHighlightMethod theMetho
 
   if (myCStructure->stick)
   {
-    myStructureManager->Highlight (this, theMethod);
+    myStructureManager->Highlight (this);
   }
 
   Update();
@@ -350,7 +343,7 @@ void Graphic3d_Structure::UnHighlight()
   {
     myCStructure->highlight = 0;
 
-    GraphicUnHighlight();
+    myCStructure->GraphicUnhighlight();
     myStructureManager->UnHighlight (this);
 
     ResetDisplayPriority();
@@ -359,12 +352,12 @@ void Graphic3d_Structure::UnHighlight()
 }
 
 //=============================================================================
-//function : HighlightColor
+//function : HighlightStyle
 //purpose  :
 //=============================================================================
-const Quantity_Color& Graphic3d_Structure::HighlightColor() const
+const Handle(Graphic3d_HighlightStyle)& Graphic3d_Structure::HighlightStyle() const
 {
-  return myHighlightColor;
+  return myCStructure->HighlightStyle();
 }
 
 //=============================================================================
@@ -1303,54 +1296,12 @@ void Graphic3d_Structure::Update (const bool theUpdateLayer) const
 }
 
 //=============================================================================
-//function : GraphicHighlight
-//purpose  :
-//=============================================================================
-void Graphic3d_Structure::GraphicHighlight (const Aspect_TypeOfHighlightMethod theMethod)
-{
-  myCStructure->highlight = 1;
-  myHighlightMethod = theMethod;
-  switch (theMethod)
-  {
-    case Aspect_TOHM_COLOR:
-    {
-      myCStructure->HighlightWithColor (myHighlightColor, Standard_True);
-      break;
-    }
-    case Aspect_TOHM_BOUNDBOX:
-    {
-      myCStructure->HighlightColor = myHighlightColor;
-      myCStructure->HighlightWithBndBox (this, Standard_True);
-      break;
-    }
-  }
-}
-
-//=============================================================================
 //function : GraphicTransform
 //purpose  :
 //=============================================================================
 void Graphic3d_Structure::GraphicTransform (const Handle(Geom_Transformation)& theTrsf)
 {
   myCStructure->SetTransformation (theTrsf);
-}
-
-//=============================================================================
-//function : GraphicUnHighlight
-//purpose  :
-//=============================================================================
-void Graphic3d_Structure::GraphicUnHighlight()
-{
-  myCStructure->highlight = 0;
-  switch (myHighlightMethod)
-  {
-    case Aspect_TOHM_COLOR:
-      myCStructure->HighlightWithColor (Graphic3d_Vec3 (0.0f, 0.0f, 0.0f), Standard_False);
-      break;
-    case Aspect_TOHM_BOUNDBOX:
-      myCStructure->HighlightWithBndBox (this, Standard_False);
-      break;
-  }
 }
 
 //=============================================================================

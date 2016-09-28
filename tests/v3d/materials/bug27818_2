@@ -1,0 +1,36 @@
+puts "============"
+puts "OCC27818_2"
+puts "============"
+puts ""
+####################################################################################
+# Visualization - provide an interface to define highlight presentation properties:
+# test change of highlight and selection properties for particular objects
+####################################################################################
+
+
+pload QAcommands VISUALIZATION
+
+vinit
+OCC27818
+
+vfit
+
+vmoveto 200 200
+set aPixelColor [vreadpixel 200 200 name rgba]
+set aColor [lindex [split $aPixelColor { }] 0]
+set aTrsp  [lindex [split $aPixelColor { }] 1]
+if {$aColor != "CHOCOLATE3" && abs($aTrsp - 1.0) < 0.1} {
+  puts "ERROR: dynamic highlight of 2nd box is displayed with wrong color!"
+}
+
+vdump $imagedir/${casename}_dyn.png
+
+vselect 50 200 1
+vselect 200 200 1
+vselect 350 200 1
+
+if {[vreadpixel 350 200 name rgba] != "RED3 1" || [vreadpixel 350 200 1 rgba] == [vreadpixel 200 200 1 rgba]} {
+  puts "ERROR: selection highlight of 3rd box is displayed with wrong color!"
+}
+
+vdump $imagedir/${casename}_sel.png

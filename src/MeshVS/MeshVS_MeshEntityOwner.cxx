@@ -90,29 +90,12 @@ Standard_Boolean MeshVS_MeshEntityOwner::IsHilighted ( const Handle(PrsMgr_Prese
 }
 
 //================================================================
-// Function : Hilight
-// Purpose  :
-//================================================================
-void MeshVS_MeshEntityOwner::Hilight ()
-{
-}
-
-//================================================================
-// Function : Hilight
-// Purpose  :
-//================================================================
-void MeshVS_MeshEntityOwner::Hilight ( const Handle(PrsMgr_PresentationManager)&,
-                                 const Standard_Integer )
-{
-}
-
-//================================================================
 // Function : HilightWithColor
 // Purpose  :
 //================================================================
-void MeshVS_MeshEntityOwner::HilightWithColor ( const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                          const Quantity_NameOfColor theColor,
-                                          const Standard_Integer /*theMode*/ )
+void MeshVS_MeshEntityOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+                                               const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                               const Standard_Integer /*theMode*/ )
 {
   Handle( SelectMgr_SelectableObject ) aSelObj;
   if ( HasSelectable() )
@@ -121,7 +104,7 @@ void MeshVS_MeshEntityOwner::HilightWithColor ( const Handle(PrsMgr_Presentation
   if ( thePM->IsImmediateModeOn() && aSelObj->IsKind( STANDARD_TYPE( MeshVS_Mesh ) ) )
   {
     Handle( MeshVS_Mesh ) aMesh = Handle( MeshVS_Mesh )::DownCast ( aSelObj );
-    aMesh->HilightOwnerWithColor ( thePM, theColor, this );
+    aMesh->HilightOwnerWithColor ( thePM, theStyle, this );
   }
 }
 

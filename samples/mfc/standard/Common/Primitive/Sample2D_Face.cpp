@@ -331,7 +331,7 @@ void Sample2D_Face::ClearSelected ()
 
 //Method for advanced customizable highlighting of picked object
 void Sample2D_Face::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                           const Quantity_NameOfColor theColor,
+                                           const Handle(Graphic3d_HighlightStyle)& theStyle,
                                            const Handle(SelectMgr_EntityOwner)& theOwner)
 {
   Handle( Prs3d_Presentation ) aHighlightPrs;
@@ -347,7 +347,7 @@ void Sample2D_Face::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationMana
   Prs3d_Root::NewGroup ( aHighlightPrs );
   Handle (Graphic3d_Group) aHilightGroup = Prs3d_Root::CurrentGroup(aHighlightPrs);
   Handle(Graphic3d_AspectLine3d) aLineAspect =
-    new Graphic3d_AspectLine3d(theColor, Aspect_TOL_SOLID,2); 
+    new Graphic3d_AspectLine3d(theStyle->Color(), Aspect_TOL_SOLID,2);
   switch(theOwner->Priority())
   {
   case 7:

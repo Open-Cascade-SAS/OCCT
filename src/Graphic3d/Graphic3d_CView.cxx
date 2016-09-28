@@ -230,7 +230,7 @@ void Graphic3d_CView::SetComputedMode (const Standard_Boolean theMode)
         const Handle(Graphic3d_Structure)& aCompStruct = myStructsComputed.Value (anIndex);
         if (!aCompStruct->IsHighlighted())
         {
-          aCompStruct->Highlight (Aspect_TOHM_COLOR, aStruct->HighlightColor(), Standard_False);
+          aCompStruct->Highlight (aStruct->HighlightStyle(), Standard_False);
         }
       }
     }
@@ -248,7 +248,7 @@ void Graphic3d_CView::SetComputedMode (const Standard_Boolean theMode)
 
       if (aStruct->IsHighlighted())
       {
-        aCompStruct->Highlight (Aspect_TOHM_COLOR, aStruct->HighlightColor(), Standard_False);
+        aCompStruct->Highlight (aStruct->HighlightStyle(), Standard_False);
       }
 
       Standard_Boolean hasResult = Standard_False;
@@ -335,7 +335,7 @@ void Graphic3d_CView::ReCompute (const Handle(Graphic3d_Structure)& theStruct)
 
   if (theStruct->IsHighlighted())
   {
-    aCompStruct->Highlight (Aspect_TOHM_COLOR, theStruct->HighlightColor(), Standard_False);
+    aCompStruct->Highlight (theStruct->HighlightStyle(), Standard_False);
   }
 
   // The previous calculation is removed and the new one is displayed
@@ -848,7 +848,7 @@ void Graphic3d_CView::Display (const Handle(Graphic3d_Structure)& theStructure,
 
   if (theStructure->IsHighlighted())
   {
-    aStruct->Highlight (Aspect_TOHM_COLOR, theStructure->HighlightColor(), Standard_False);
+    aStruct->Highlight (theStructure->HighlightStyle(), Standard_False);
   }
 
   // It is displayed only if the calculated structure
@@ -912,14 +912,13 @@ void Graphic3d_CView::Erase (const Handle(Graphic3d_Structure)& theStructure,
 // function : Highlight
 // purpose  :
 // =======================================================================
-void Graphic3d_CView::Highlight (const Handle(Graphic3d_Structure)& theStructure,
-                                 const Aspect_TypeOfHighlightMethod theMethod)
+void Graphic3d_CView::Highlight (const Handle(Graphic3d_Structure)& theStructure)
 {
   const Standard_Integer anIndex = IsComputed (theStructure);
   if (anIndex != 0)
   {
     const Handle(Graphic3d_Structure)& aCompStruct = myStructsComputed.ChangeValue (anIndex);
-    aCompStruct->Highlight (theMethod, theStructure->HighlightColor(), Standard_False);
+    aCompStruct->Highlight (theStructure->HighlightStyle(), Standard_False);
   }
 }
 
@@ -971,7 +970,7 @@ void Graphic3d_CView::UnHighlight (const Handle(Graphic3d_Structure)& theStructu
   if (anIndex != 0)
   {
     const Handle(Graphic3d_Structure)& aCompStruct = myStructsComputed.ChangeValue (anIndex);
-    aCompStruct->GraphicUnHighlight();
+    aCompStruct->CStructure()->GraphicUnhighlight();
   }
 }
 

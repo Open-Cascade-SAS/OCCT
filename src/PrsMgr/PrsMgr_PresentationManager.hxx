@@ -68,11 +68,7 @@ public:
   
   //! Sets the visibility of presentable object.
   Standard_EXPORT void SetVisibility (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode, const Standard_Boolean theValue);
-  
-  //! Highlights the presentation of the presentable object
-  //! thePrsObject in this framework with the display mode theMode.
-  Standard_EXPORT void Highlight (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode = 0);
-  
+
   //! Removes highlighting from the presentation of the
   //! presentable object thePrsObject in this framework with the display mode theMode.
   Standard_EXPORT void Unhighlight (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode = 0);
@@ -129,13 +125,10 @@ public:
   //! thePrsObject has the display mode theMode;
   //! this has the default value of 0, that is, the wireframe display mode.
   Standard_EXPORT void Color (const Handle(PrsMgr_PresentableObject)& thePrsObject,
-                              const Quantity_NameOfColor theColor = Quantity_NOC_YELLOW,
+                              const Handle(Graphic3d_HighlightStyle)& theStyle,
                               const Standard_Integer theMode = 0,
                               const Handle(PrsMgr_PresentableObject)& theSelObj = NULL,
                               const Graphic3d_ZLayerId theImmediateStructLayerId = Graphic3d_ZLayerId_Topmost);
-
-  //! highlights the boundbox of the presentation
-  Standard_EXPORT void BoundBox (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode = 0);
   
   Standard_EXPORT void Connect (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Handle(PrsMgr_PresentableObject)& theOtherObject, const Standard_Integer theMode = 0, const Standard_Integer theOtherMode = 0);
   
@@ -179,7 +172,6 @@ protected:
   Standard_Integer myImmediateModeOn;
   PrsMgr_ListOfPresentations myImmediateList;
   PrsMgr_ListOfPresentations myViewDependentImmediateList;
-  Quantity_Color mySelectionColor;
 
 
 private:

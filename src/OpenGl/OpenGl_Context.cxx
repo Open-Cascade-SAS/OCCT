@@ -2880,6 +2880,7 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
       if (theHighlightColor != NULL)
       {
         aParams.SetColor (*theHighlightColor);
+        aParams.Diffuse.a() = theHighlightColor->a();
       }
 
       myActiveProgram->SetUniform (this, aLoc, OpenGl_Material::NbOfVec4(),

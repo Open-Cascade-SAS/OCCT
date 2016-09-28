@@ -17,6 +17,7 @@
 
 #include <Graphic3d_BndBox4f.hxx>
 #include <Graphic3d_Group.hxx>
+#include <Graphic3d_HighlightStyle.hxx>
 #include <Graphic3d_SequenceOfGroup.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_TypeOfComposition.hxx>
@@ -98,6 +99,10 @@ public:
   //! Get z layer ID
   Graphic3d_ZLayerId ZLayer() const { return myZLayer; }
 
+  //! Returns valid handle to highlight style of the structure in case if
+  //! highlight flag is set to true
+  const Handle(Graphic3d_HighlightStyle)& HighlightStyle() const { return myHighlightStyle; }
+
 public:
 
   //! Update structure visibility state
@@ -112,13 +117,13 @@ public:
   //! Disconnect other structure to this one
   virtual void Disconnect (Graphic3d_CStructure& theStructure) = 0;
 
-  //! Highlight entire structure with color
-  virtual void HighlightWithColor  (const Graphic3d_Vec3&  theColor,
-                                    const Standard_Boolean theToCreate) = 0;
+  //! Highlights structure with the given style
+  virtual void GraphicHighlight (const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                 const Handle(Graphic3d_Structure)&      theStruct) = 0;
 
-  //! Highlight structure using boundary box
-  virtual void HighlightWithBndBox (const Handle(Graphic3d_Structure)& theStruct,
-                                    const Standard_Boolean             theToCreate) = 0;
+  //! Unhighlights the structure and invalidates pointer to structure's highlight
+  //! style
+  virtual void GraphicUnhighlight() = 0;
 
   //! Create shadow link to this structure
   virtual Handle(Graphic3d_CStructure) ShadowLink (const Handle(Graphic3d_StructureManager)& theManager) const = 0;
@@ -135,8 +140,6 @@ public:
   Graphic3d_ZLayerId       myZLayer;
   int                      Priority;
   int                      PreviousPriority;
-
-  Quantity_Color           HighlightColor;
 
   int   ContainsFacet;
 
@@ -164,6 +167,7 @@ protected:
   Handle(Geom_Transformation)     myTrsf;
   Handle(Graphic3d_TransformPers) myTrsfPers;
   Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;
+  Handle(Graphic3d_HighlightStyle)       myHighlightStyle; //! Current highlight style; is set only if highlight flag is true
 
 public:
 

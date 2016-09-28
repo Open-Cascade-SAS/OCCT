@@ -60,14 +60,10 @@ public:
   //! Returns true if owner is hilighted
   Standard_EXPORT virtual Standard_Boolean IsHilighted (const Handle(PrsMgr_PresentationManager)& PM, const Standard_Integer Mode = 0) const Standard_OVERRIDE;
   
-  //! Hilights owner
-  Standard_EXPORT virtual void Hilight() Standard_OVERRIDE;
-  
-  //! Hilights owner
-  Standard_EXPORT virtual void Hilight (const Handle(PrsMgr_PresentationManager)& PM, const Standard_Integer Mode = 0) Standard_OVERRIDE;
-  
   //! Hilights owner with the certain color
-  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& PM, const Quantity_NameOfColor theColor, const Standard_Integer Mode = 0) Standard_OVERRIDE;
+  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+                                                 const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                                 const Standard_Integer theMode = 0) Standard_OVERRIDE;
   
   //! Strip hilight of owner
   Standard_EXPORT virtual void Unhilight (const Handle(PrsMgr_PresentationManager)& PM, const Standard_Integer Mode = 0) Standard_OVERRIDE;

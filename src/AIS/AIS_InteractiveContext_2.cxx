@@ -60,7 +60,7 @@ OpenLocalContext(const Standard_Boolean UseDisplayedObjects,
       const Handle(AIS_InteractiveObject) aLastPickedAIS =
         Handle(AIS_InteractiveObject)::DownCast (myLastPicked->Selectable());
       Standard_Integer HiMod = aLastPickedAIS->HasHilightMode()?aLastPickedAIS->HilightMode():0;
-      myMainPM->Unhighlight (aLastPickedAIS, HiMod);
+      unhighlightGlobal (aLastPickedAIS, HiMod);
     }}
   
   if(!mylastmoveview.IsNull()){
@@ -356,36 +356,18 @@ void AIS_InteractiveContext::
 SubIntensityOn(const Handle(AIS_InteractiveObject)& anIObj,
                const Standard_Boolean updateviewer)
 {
-  if(!HasOpenedContext()){
-    if(!myObjects.IsBound(anIObj))
-      return;
-    const Handle(AIS_GlobalStatus)& GB=myObjects(anIObj);
-    if(GB->IsSubIntensityOn())
-      return;
-    GB->SubIntensityOn();
-    Standard_Boolean UpdMain(Standard_False);
-    
-    if (GB->GraphicStatus() == AIS_DS_Displayed)
-    {
-      myMainPM->Color (anIObj, mySubIntensity, GB->DisplayMode());
-      UpdMain = Standard_True;
-    }
-    if(updateviewer){
-      if(UpdMain)
-        myMainVwr->Update();
-    }
+  if(!HasOpenedContext())
+  {
+    turnOnSubintensity (anIObj);
   }
-  else {
-    if(myObjects.IsBound(anIObj)){
-      const Handle(AIS_GlobalStatus)& STAT = myObjects(anIObj);
-      STAT->SubIntensityOn();
-      myMainPM->Color (anIObj, mySubIntensity, STAT->DisplayMode());
-    }
-    else
-      myLocalContexts(myCurLocalIndex)->SubIntensityOn(anIObj);
-    
-    if(updateviewer) myMainVwr->Update();
+  else
+  {
+    turnOnSubintensity (anIObj, -1, Standard_False);
+    myLocalContexts(myCurLocalIndex)->SubIntensityOn (anIObj);
   }
+
+  if (updateviewer)
+    myMainVwr->Update();
 }
 //=======================================================================
 //function : SubIntensityOff
@@ -414,7 +396,7 @@ SubIntensityOff(const Handle(AIS_InteractiveObject)& anIObj,
     Standard_Integer DM,HM,SM;
     GetDefModes(anIObj,DM,HM,SM);
     if(IsSelected(anIObj))
-      myMainPM->Highlight(anIObj,HM);
+      highlightSelected (anIObj->GlobalSelOwner());
     
     if(updateviewer){
       if(UpdMain)
@@ -422,17 +404,19 @@ SubIntensityOff(const Handle(AIS_InteractiveObject)& anIObj,
     }
   }
   else {
+    const Handle(Graphic3d_HighlightStyle)& anObjSelStyle =
+      getSelStyle (anIObj);
     if(myObjects.IsBound(anIObj)){
       const Handle(AIS_GlobalStatus)& STAT = myObjects(anIObj);
       STAT->SubIntensityOff();
       myMainPM->Unhighlight (anIObj, STAT->DisplayMode());
-      if(STAT->IsHilighted())
-        Hilight(anIObj);
+      if (STAT->IsHilighted())
+        HilightWithColor (anIObj, anObjSelStyle, Standard_False);
     }
     else
       myLocalContexts(myCurLocalIndex)->SubIntensityOff(anIObj);
-    if(IsSelected(anIObj))
-      Hilight(anIObj);
+    if (IsSelected(anIObj))
+      HilightWithColor (anIObj, anObjSelStyle, Standard_False);
     
     if(updateviewer) myMainVwr->Update();
   }
@@ -442,21 +426,15 @@ SubIntensityOff(const Handle(AIS_InteractiveObject)& anIObj,
 //function : SubIntensityOn
 //purpose  : ALL THE DISPLAYED OBJECTS HAVE SUBINTENSITY...
 //=======================================================================
-
-void AIS_InteractiveContext::SubIntensityOn(const Standard_Boolean updateviewer)
+void AIS_InteractiveContext::SubIntensityOn (const Standard_Boolean theIsToUpdateViewer)
 {
-  if(!HasOpenedContext()) return;
-  
-  AIS_DataMapIteratorOfDataMapOfIOStatus It (myObjects);
-  for(;It.More();It.Next()){
-    const Handle(AIS_GlobalStatus)& STAT = It.Value();
-    if(STAT->GraphicStatus()==AIS_DS_Displayed)
-      {
-        STAT->SubIntensityOn();
-        myMainPM->Color (It.Key(), mySubIntensity, STAT->DisplayMode());
-      }
-  }
-  if(updateviewer) myMainVwr->Update();
+  if (!HasOpenedContext())
+    return;
+
+  turnOnSubintensity();
+
+  if (theIsToUpdateViewer)
+    myMainVwr->Update();
 }
 
 //=======================================================================
@@ -782,11 +760,11 @@ void AIS_InteractiveContext::ResetOriginalState(const Standard_Boolean updatevie
       
       // part display...
       myMainPM->Display (iobj, STAT->DisplayMode());
-      if(STAT->IsHilighted()){
-        if(STAT->HilightColor()!=Quantity_NOC_WHITE)
-          HilightWithColor(iobj,STAT->HilightColor(),Standard_False);
-        else
-          Hilight(iobj,Standard_False);
+      if(STAT->IsHilighted())
+      {
+        const Handle(Graphic3d_HighlightStyle)& aStyle = STAT->HilightStyle();
+        if (!aStyle.IsNull() && getSelStyle (iobj) != aStyle)
+          HilightWithColor(iobj,aStyle,Standard_False);
       }
       //part selection
       for(itl.Initialize(STAT->SelectionModes());itl.More();itl.Next()){

@@ -81,21 +81,6 @@ Standard_Boolean AIS_DimensionOwner::IsHilighted (const Handle(PrsMgr_Presentati
 }
 
 //=======================================================================
-//function : Hilight
-//purpose  : 
-//=======================================================================
-void AIS_DimensionOwner::Hilight (const Handle(PrsMgr_PresentationManager)& thePM,
-                                  const Standard_Integer /*theMode*/)
-{
-  if (!HasSelectable())
-  {
-    return;
-  }
-
-  thePM->Highlight (Selectable(), HighlightMode (mySelectionMode));
-}
-
-//=======================================================================
 //function : Unhilight
 //purpose  : 
 //=======================================================================
@@ -115,8 +100,8 @@ void AIS_DimensionOwner::Unhilight (const Handle(PrsMgr_PresentationManager)& th
 //purpose  : 
 //=======================================================================
 void AIS_DimensionOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                           const Quantity_NameOfColor theColor,
+                                           const Handle(Graphic3d_HighlightStyle)& theStyle,
                                            const Standard_Integer /*theMode*/)
 {
-  thePM->Color (Selectable(), theColor, HighlightMode (mySelectionMode));
+  thePM->Color (Selectable(), theStyle, HighlightMode (mySelectionMode));
 }

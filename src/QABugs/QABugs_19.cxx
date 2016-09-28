@@ -5272,6 +5272,45 @@ static Standard_Integer OCC27757 (Draw_Interpretor& /*theDI*/, Standard_Integer 
 }
 
 //========================================================================
+//function : OCC27818
+//purpose  : Creates three boxes and highlights one of them with own style
+//========================================================================
+static Standard_Integer OCC27818 (Draw_Interpretor& /*theDI*/, Standard_Integer /*theArgc*/, const char** theArgv)
+{
+  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    std::cout << "No interactive context. Use 'vinit' command before " << theArgv[0] << "\n";
+    return 1;
+  }
+
+  Handle(AIS_Shape) aBoxObjs[3];
+  for (Standard_Integer aBoxIdx = 0; aBoxIdx < 3; ++aBoxIdx)
+  {
+    TopoDS_Shape aBox = BRepPrimAPI_MakeBox (20.0, 20.0, 20.0).Shape();
+    aBoxObjs[aBoxIdx] = new AIS_Shape (aBox);
+    gp_Trsf aTrsf;
+    aTrsf.SetTranslationPart (gp_Vec (30.0 * aBoxIdx, 30.0 * aBoxIdx, 0.0));
+    aBoxObjs[aBoxIdx]->SetLocalTransformation (aTrsf);
+    aBoxObjs[aBoxIdx]->SetHilightMode (AIS_Shaded);
+  }
+
+  aBoxObjs[1]->HilightAttributes()->SetHighlightStyle (new Graphic3d_HighlightStyle (
+    Aspect_TOHM_COLOR, Quantity_NOC_RED, 0.8f));
+  aBoxObjs[2]->HilightAttributes()->SetSelectionStyle (new Graphic3d_HighlightStyle (
+    Aspect_TOHM_COLOR, Quantity_NOC_RED, 0.0f));
+
+  for (Standard_Integer aBoxIdx = 0; aBoxIdx < 3; ++aBoxIdx)
+  {
+    aCtx->Display (aBoxObjs[aBoxIdx], AIS_Shaded, 0, Standard_False);
+  }
+
+  aCtx->UpdateCurrentViewer();
+
+  return 0;
+}
+
+//========================================================================
 //function : Commands_19
 //purpose  :
 //========================================================================
@@ -5401,5 +5440,8 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC27757",
                    "OCC27757: Creates a box that has a sphere as child object and displays it",
                    __FILE__, OCC27757, group);
+  theCommands.Add ("OCC27818",
+                   "OCC27818: Creates three boxes and highlights one of them with own style",
+                   __FILE__, OCC27818, group);
   return;
 }

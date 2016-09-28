@@ -135,6 +135,9 @@ MeshVS_Mesh::MeshVS_Mesh (const Standard_Boolean theIsAllowOverlapped )
   myHilightDrawer->SetInteger ( MeshVS_DA_MarkerType,  Aspect_TOM_STAR );
   myHilightDrawer->SetColor   ( MeshVS_DA_MarkerColor, Quantity_NOC_GRAY80 );
   myHilightDrawer->SetDouble  ( MeshVS_DA_MarkerScale, 2.0 );
+
+  HilightAttributes()->SetSelectionStyle
+    (new Graphic3d_HighlightStyle (Aspect_TOHM_COLOR, Quantity_NOC_GRAY80, 0.0));
 }
 
 //================================================================
@@ -951,8 +954,9 @@ void MeshVS_Mesh::HilightSelected ( const Handle(PrsMgr_PresentationManager3d)& 
     if (theOwners.Value (i) == GlobalSelOwner())
     {
       const Standard_Integer aHiMode = HasHilightMode() ? HilightMode() : 0;
-      const Quantity_NameOfColor aSelColor = GetContext().IsNull() ? Quantity_NOC_GRAY80 : GetContext()->SelectionColor();
-      thePM->Color (this, aSelColor, aHiMode);
+      const Handle(Graphic3d_HighlightStyle)& aSelStyle = GetContext().IsNull()
+        ? HilightAttributes()->SelectionStyle() : GetContext()->SelectionStyle();
+      thePM->Color (this, aSelStyle, aHiMode);
       continue;
     }
     anOwner = Handle (MeshVS_MeshEntityOwner)::DownCast ( theOwners.Value ( i ) );
@@ -1059,17 +1063,18 @@ void MeshVS_Mesh::HilightSelected ( const Handle(PrsMgr_PresentationManager3d)& 
 // Function : HilightOwnerWithColor
 // Purpose  :
 //================================================================
-void MeshVS_Mesh::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationManager3d)& PM,
-                                          const Quantity_NameOfColor Color,
-                                          const Handle(SelectMgr_EntityOwner)& Owner)
+void MeshVS_Mesh::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationManager3d)& thePM,
+                                          const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                          const Handle(SelectMgr_EntityOwner)& theOwner)
 {
-  if (Owner.IsNull())
+  if (theOwner.IsNull())
     return;
 
-  if (Owner == GlobalSelOwner())
+  const Quantity_Color& aColor = theStyle->Color();
+  if (theOwner == GlobalSelOwner())
   {
     Standard_Integer aHiMode = HasHilightMode() ? HilightMode() : 0;
-    PM->Color (this, Color, aHiMode, NULL, Graphic3d_ZLayerId_Top);
+    thePM->Color (this, theStyle, aHiMode, NULL, Graphic3d_ZLayerId_Top);
     return;
   }
 
@@ -1077,7 +1082,7 @@ void MeshVS_Mesh::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationManage
     return;
 
   Handle( Prs3d_Presentation ) aHilightPrs;
-  aHilightPrs = GetHilightPresentation( PM );
+  aHilightPrs = GetHilightPresentation( thePM );
 
   aHilightPrs->Clear();
 
@@ -1086,26 +1091,26 @@ void MeshVS_Mesh::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationManage
     aHilightPrs->SetTransformPersistence (Presentation()->TransformPersistence());
   //----------------
 
-  const Standard_Boolean isMeshEntityOwner = Owner->IsKind ( STANDARD_TYPE ( MeshVS_MeshEntityOwner ) );
+  const Standard_Boolean isMeshEntityOwner = theOwner->IsKind ( STANDARD_TYPE ( MeshVS_MeshEntityOwner ) );
   const Standard_Boolean isWholeMeshOwner =
 //agv    !Owner.IsNull() && Owner==myWholeMeshOwner;
-    IsWholeMeshOwner (Owner);
+    IsWholeMeshOwner (theOwner);
 
   Standard_Integer aDispMode = MeshVS_DMF_Shading;
   if ( HasDisplayMode() && ( DisplayMode() & MeshVS_DMF_OCCMask ) > MeshVS_DMF_WireFrame )
     aDispMode = ( DisplayMode() & MeshVS_DMF_OCCMask );
   //It because we draw hilighted owners only in shading or shrink (not in wireframe)
 
-  myHilightDrawer->SetColor( MeshVS_DA_InteriorColor, Color );
-  myHilightDrawer->SetColor( MeshVS_DA_BackInteriorColor, Color );
-  myHilightDrawer->SetColor( MeshVS_DA_EdgeColor, Color );
-  myHilightDrawer->SetColor( MeshVS_DA_BeamColor, Color );
-  myHilightDrawer->SetColor( MeshVS_DA_MarkerColor, Color );
+  myHilightDrawer->SetColor( MeshVS_DA_InteriorColor, aColor );
+  myHilightDrawer->SetColor( MeshVS_DA_BackInteriorColor, aColor );
+  myHilightDrawer->SetColor( MeshVS_DA_EdgeColor, aColor );
+  myHilightDrawer->SetColor( MeshVS_DA_BeamColor, aColor );
+  myHilightDrawer->SetColor( MeshVS_DA_MarkerColor, aColor );
   myHilighter->SetDrawer( myHilightDrawer );
 
   if( isMeshEntityOwner )
   {
-    Handle ( MeshVS_MeshEntityOwner ) theAISOwner = Handle ( MeshVS_MeshEntityOwner )::DownCast ( Owner );
+    Handle ( MeshVS_MeshEntityOwner ) theAISOwner = Handle ( MeshVS_MeshEntityOwner )::DownCast ( theOwner );
     MeshVS_EntityType aType = theAISOwner->Type();
     Standard_Integer  anID  = theAISOwner->ID();
 
@@ -1136,7 +1141,7 @@ void MeshVS_Mesh::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationManage
   }
   else 
   {
-    Handle(MeshVS_MeshOwner) aMeshOwner = Handle(MeshVS_MeshOwner)::DownCast ( Owner );
+    Handle(MeshVS_MeshOwner) aMeshOwner = Handle(MeshVS_MeshOwner)::DownCast ( theOwner );
     if( !aMeshOwner.IsNull() )
     {
       Handle(TColStd_HPackedMapOfInteger) aNodes = aMeshOwner->GetDetectedNodes();
@@ -1159,9 +1164,9 @@ void MeshVS_Mesh::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationManage
 
   aHilightPrs->SetZLayer (Graphic3d_ZLayerId_Topmost);
 
-  if (PM->IsImmediateModeOn())
+  if (thePM->IsImmediateModeOn())
   {
-    PM->AddToImmediateList (aHilightPrs);
+    thePM->AddToImmediateList (aHilightPrs);
   }
   myHilighter->SetDrawer ( 0 );
 }

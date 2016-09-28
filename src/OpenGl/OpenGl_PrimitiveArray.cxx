@@ -828,7 +828,36 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     const Graphic3d_Vec4* aFaceColors = !myBounds.IsNull() && !toHilight && anAspectFace->Aspect()->InteriorStyle() != Aspect_IS_HIDDENLINE
                                       ?  myBounds->Colors
                                       :  NULL;
+
+    const Standard_Boolean isHighlightWithTransparency = toHilight &&
+      myDrawMode > GL_LINE_STRIP &&
+      theWorkspace->InteriorColor().a() > 0.05f;
+    GLint  aPrevBlendSrc = GL_SRC_ALPHA, aPrevBlendDst = GL_ONE_MINUS_SRC_ALPHA;
+    GLboolean wasBlendEnabled = GL_FALSE;
+    if (isHighlightWithTransparency)
+    {
+      wasBlendEnabled = glIsEnabled (GL_BLEND);
+      #if !defined(GL_ES_VERSION_2_0)
+        glGetIntegerv (GL_BLEND_SRC, &aPrevBlendSrc);
+        glGetIntegerv (GL_BLEND_DST, &aPrevBlendDst);
+      #endif
+      if (!wasBlendEnabled)
+      {
+        glEnable (GL_BLEND);
+      }
+      glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
     drawArray (theWorkspace, aFaceColors, hasColorAttrib);
+
+    if (isHighlightWithTransparency)
+    {
+      glBlendFunc (aPrevBlendSrc, aPrevBlendDst);
+      if (!wasBlendEnabled)
+      {
+        glDisable (GL_BLEND);
+      }
+    }
   }
 
   if (myDrawMode <= GL_LINE_STRIP)

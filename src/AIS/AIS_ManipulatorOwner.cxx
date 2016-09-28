@@ -36,16 +36,16 @@ AIS_ManipulatorOwner::AIS_ManipulatorOwner (const Handle(SelectMgr_SelectableObj
 //purpose  : 
 //=======================================================================
 void AIS_ManipulatorOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                             const Quantity_NameOfColor theColor,
+                                             const Handle(Graphic3d_HighlightStyle)& theStyle,
                                              const Standard_Integer theMode)
 {
   if (theMode == 0)
   {
-    SelectMgr_EntityOwner::HilightWithColor (thePM, theColor, theMode);
+    SelectMgr_EntityOwner::HilightWithColor (thePM, theStyle, theMode);
     return;
   }
 
-  Selectable()->HilightOwnerWithColor (thePM, theColor, this);
+  Selectable()->HilightOwnerWithColor (thePM, theStyle, this);
 }
 
 //=======================================================================
@@ -61,21 +61,6 @@ Standard_Boolean AIS_ManipulatorOwner::IsHilighted (const Handle(PrsMgr_Presenta
   }
 
   return thePM->IsHighlighted (Selectable(), myMode);
-}
-
-//=======================================================================
-//function : Hilight
-//purpose  : 
-//=======================================================================
-void AIS_ManipulatorOwner::Hilight (const Handle(PrsMgr_PresentationManager)& thePM,
-                                    const Standard_Integer /*theMode*/)
-{
-  if (!HasSelectable())
-  {
-    return;
-  }
-
-  thePM->Highlight (Selectable(), myMode);
 }
 
 //=======================================================================

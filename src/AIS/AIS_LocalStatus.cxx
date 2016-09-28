@@ -20,22 +20,23 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_LocalStatus,MMgt_TShared)
 
-AIS_LocalStatus::AIS_LocalStatus(const Standard_Boolean IsTemp,
-				 const Standard_Boolean Decomp,
-				 const Standard_Integer DMode,
-				 const Standard_Integer SMode,
-				 const Standard_Integer HMode,
-				 const Standard_Boolean SubIntensity,
-				 const Quantity_NameOfColor HiCol):
-myDecomposition(Decomp),
-myIsTemporary(IsTemp),
-myDMode(DMode),
-myFirstDisplay(Standard_False),
-myHMode(HMode),
-mySubIntensity(SubIntensity),
-myHiCol(HiCol)
+AIS_LocalStatus::AIS_LocalStatus (const Standard_Boolean theIsTemporary,
+                                  const Standard_Boolean theIsToDecompose,
+                                  const Standard_Integer theDisplayMode,
+                                  const Standard_Integer theSelectionMode,
+                                  const Standard_Integer theHilightMode,
+                                  const Standard_Boolean theIsSubIntensity,
+                                  const Handle(Graphic3d_HighlightStyle)& theStyle)
+: myDecomposition (theIsToDecompose),
+  myIsTemporary   (theIsTemporary),
+  myDMode         (theDisplayMode),
+  myFirstDisplay  (Standard_False),
+  myHMode         (theHilightMode),
+  mySubIntensity  (theIsSubIntensity),
+  myHiStyle       (theStyle)
 {
-  if(SMode!=-1) mySModes.Append(SMode);
+  if (theSelectionMode != -1)
+    mySModes.Append (theSelectionMode);
 }
 
 

@@ -1045,6 +1045,24 @@ Flags *Graphic3d_TMF_PanPers* and *Graphic3d_TMF_FullPers* has been removed.
 Several transformation persistence methods in PrsMgr_PresentableObject have been marked deprecated.
 Transformation persistence should be defined using directly Graphic3d_TransformPers constructor and passed by a handle, not value.
 
+@subsection_upgrade_710_selprops Dynamic highlight and selection properties
+
+Release 7.1.0 introduces *Graphic3d_HighlightStyle* - an entity that allows flexible customization of highlighting parameters (such as method, highlight color and transparency). Therefore, API of methods related to highlighting in the following core classes:
+- *AIS_InteractiveContext* (methods HilightWithColor(), Hilight());
+- *PrsMgr_PresentationManager* (method Color());
+- *SelectMgr_EntityOwner* (method HilightWithColor())
+was changed to process Graphic3d_HighlightStyle instead of Quantity_Color.
+
+Method AIS_InteractiveContext::Hilight is now deprecated and highlights interactive object with selection style.
+
+Group of methods AIS_InteractiveContext::IsHilighted changed behavior - now they only check object's or owner's highlight flags in global status. If highlight color is required on application level, overloaded methods AIS_InteractiveContext::HighlightStyle for owner and object must be used instead.
+
+The following methods were replaced in AIS_InteractiveContext API:
+- *HilightColor*, *SetHilightColor* were replaced by *HighlightStyle*, *ChangeHighlightStyle*;
+- *SelectionColor* setter and getter were replaced by *SelectionStyle*, *ChangeSelectionStyle*.
+
+API of Prs3d_Drawer was extended to allow setting up styles for both dynamic selection and highlighting. Therefore, on application level changing highlight style for particular object must be implemented via SelectMgr_SelectableObject::HilightAttributes() and processed in entity owner.
+
 @subsection upgrade_710_removed Removed features
 
 The following obsolete features have been removed:
@@ -1057,6 +1075,8 @@ The following obsolete features have been removed:
 * 3D viewer printing API *V3d_View::Print()* has been removed. This functionality was available on Windows platforms only.
   Applications should use general image dump API *V3d_View::ToPixMap()* and manage printing using platform-specific API at application level.
   Text resolution can be managed by rendering parameter *Graphic3d_RenderingParams::Resolution*, returned by *V3d_View::ChangeRenderingParams()*.
+* Methods PrsMgr_PresentationManager::BoundBox, PrsMgr_PresentationManager::Hilight and SelectMgr_EntityOwner::Hilight were removed as not used.
+  Corresponding method in custom implementations of SelectMgr_EntityOwner can be removed safely. PrsMgr_PresentationManager::Color with corresponding style must be used instead of removed presentation manager's methods.
 
 @subsection upgrade_occt710_correction_of_TObj_Model Correction in TObj_Model class
 

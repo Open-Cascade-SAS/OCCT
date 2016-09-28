@@ -9025,6 +9025,133 @@ static int VManipulator (Draw_Interpretor& theDi,
   return 0;
 }
 
+//===============================================================================================
+//function : parseColor
+//purpose  :
+//===============================================================================================
+static Standard_Boolean parseColor (ViewerTest_CmdParser& theParser,
+                                    const std::string&    theOptionName,
+                                    Quantity_Color&       theColor)
+{
+  std::string aColorArg = theParser.Arg (theOptionName, 0);
+  if (std::isdigit (aColorArg[0]))
+  {
+    Graphic3d_Vec3d aColor = theParser.ArgVec3d (theOptionName);
+    if (aColor.x() < 0.0 || aColor.x() > 1.0
+      || aColor.y() < 0.0 || aColor.y() > 1.0
+      || aColor.z() < 0.0 || aColor.z() > 1.0)
+    {
+      std::cerr << "Error: RGB color values should be within range 0..1!\n";
+      return Standard_False;
+    }
+    theColor.SetValues (aColor.x(), aColor.y(), aColor.z(), Quantity_TOC_RGB);
+  }
+  else
+  {
+    Quantity_NameOfColor aName = Quantity_NOC_BLACK;
+    if (!Quantity_Color::ColorFromName (aColorArg.c_str(), aName))
+    {
+      std::cerr << "Name: " << theParser.Arg (theOptionName, 0)
+                << " does not correspond to any color in Quantity_NameOfColor!"
+                << std::endl;
+      return Standard_False;
+    }
+    theColor.SetValues (aName);
+  }
+
+  return Standard_True;
+}
+
+//===============================================================================================
+//function : VSelectionProperties
+//purpose  :
+//===============================================================================================
+static int VSelectionProperties (Draw_Interpretor& theDi,
+                                 Standard_Integer  theArgsNb,
+                                 const char**      theArgVec)
+{
+  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    std::cerr << "No active viewer!\n";
+    return 1;
+  }
+
+  ViewerTest_CmdParser aCmd;
+
+  aCmd.AddOption ("autoActivate");
+  aCmd.AddOption ("pixTol");
+
+  aCmd.AddOption ("selColor");
+  aCmd.AddOption ("hiColor");
+  aCmd.AddOption ("selTransp");
+  aCmd.AddOption ("hiTransp");
+
+  aCmd.AddOption ("print");
+
+  aCmd.Parse (theArgsNb, theArgVec);
+
+  if (aCmd.HasOption ("help"))
+  {
+    theDi.PrintHelp (theArgVec[0]);
+    return 0;
+  }
+
+  if (aCmd.HasOption ("autoActivate", 1, Standard_False))
+  {
+    aCtx->SetAutoActivateSelection (aCmd.ArgBool ("autoActivate"));
+  }
+  if (aCmd.HasOption ("pixTol", 1, Standard_False))
+  {
+    aCtx->SetPixelTolerance (aCmd.ArgInt ("pixTol"));
+  }
+
+  Handle(Graphic3d_HighlightStyle)& aHiStyle = aCtx->ChangeHighlightStyle();
+  Handle(Graphic3d_HighlightStyle)& aSelStyle = aCtx->ChangeSelectionStyle();
+  Standard_Boolean toRedraw = Standard_False;
+  if (aCmd.HasOption ("selColor"))
+  {
+    Quantity_Color aNewColor;
+    if (!parseColor (aCmd, "selColor", aNewColor))
+      return 1;
+    aSelStyle->SetColor (aNewColor);
+    toRedraw = Standard_True;
+  }
+  if (aCmd.HasOption ("hiColor"))
+  {
+    Quantity_Color aNewColor;
+    if (!parseColor (aCmd, "hiColor", aNewColor))
+      return 1;
+    aHiStyle->SetColor (aNewColor);
+  }
+  if (aCmd.HasOption ("selTransp"))
+  {
+    aSelStyle->SetTransparency (aCmd.ArgFloat ("selTransp"));
+    toRedraw = Standard_True;
+  }
+  if (aCmd.HasOption ("hiTransp"))
+  {
+    aHiStyle->SetTransparency (aCmd.ArgFloat ("hiTransp"));
+  }
+
+  if (aCmd.HasOption ("print") || theArgsNb == 1)
+  {
+    theDi << "Auto-activation                : " << (aCtx->GetAutoActivateSelection() ? "On" : "Off") << "\n";
+    theDi << "Selection pixel tolerance      : " << aCtx->MainSelector()->PixelTolerance() << "\n";
+    theDi << "Selection color                : " << Quantity_Color::StringName (aCtx->SelectionStyle()->Color().Name()) << "\n";
+    theDi << "Dynamic highlight color        : " << Quantity_Color::StringName (aCtx->HighlightStyle()->Color().Name()) << "\n";
+    theDi << "Selection transparency         : " << aCtx->SelectionStyle()->Transparency() << "\n";
+    theDi << "Dynamic highlight transparency : " << aCtx->HighlightStyle()->Transparency() << "\n";
+  }
+
+  if (aCtx->NbSelected() != 0 && toRedraw)
+  {
+    aCtx->HilightSelected (Standard_True);
+  }
+
+  return 0;
+}
+
 //=======================================================================
 //function : ViewerCommands
 //purpose  :
@@ -9582,6 +9709,18 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
       "\n      '-size value'                     - set size of manipulator"
       "\n      '-zoomable {0|1}'                 - set zoom persistence",
     __FILE__, VManipulator, group);
+
+  theCommands.Add("vselprops",
+    "\n    vselprops [options]"
+    "\n    Customizes selection and dynamic highlight parameters for the whole interactive context:"
+    "\n    -autoActivate {0|1}     : disables|enables default computation and activation of global selection mode"
+    "\n    -pixTol    value        : sets up pixel tolerance"
+    "\n    -selColor  {name|r g b} : sets selection color"
+    "\n    -hiColor   {name|r g b} : sets dynamic highlight color"
+    "\n    -selTransp value        : sets transparency coefficient for selection"
+    "\n    -hiTransp  value        : sets transparency coefficient for dynamic highlight"
+    "\n    -print                  : prints current state of all mentioned parameters",
+    __FILE__, VSelectionProperties, group);
 
 #if defined(_WIN32)
   theCommands.Add("vprogressive",

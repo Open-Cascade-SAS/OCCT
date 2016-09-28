@@ -1,7 +1,6 @@
-// Created on: 1995-02-06
-// Created by: Mister rmi
-// Copyright (c) 1995-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Created on: 2016-09-23
+// Created by: Varvara POSKONINA
+// Copyright (c) 2016 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,14 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef SelectMgr_SequenceOfOwner_HeaderFile
-#define SelectMgr_SequenceOfOwner_HeaderFile
+#include <Graphic3d_HighlightStyle.hxx>
 
-#include <NCollection_Sequence.hxx>
-
-class SelectMgr_EntityOwner;
-
-typedef NCollection_Sequence<Handle(SelectMgr_EntityOwner)> SelectMgr_SequenceOfOwner;
-
-
-#endif
+IMPLEMENT_STANDARD_RTTIEXT (Graphic3d_HighlightStyle, Standard_Transient)

@@ -80,13 +80,13 @@ public:
   //! Synchronize structure transformation
   Standard_EXPORT virtual void SetTransformation (const Handle(Geom_Transformation)& theTrsf) Standard_OVERRIDE;
 
-  //! Highlight entire structure with color
-  Standard_EXPORT virtual void HighlightWithColor (const Graphic3d_Vec3&  theColor,
-                                                   const Standard_Boolean theToCreate) Standard_OVERRIDE;
+  //! Highlights structure according to the given style and updates corresponding class fields
+  //! (highlight status and style)
+  Standard_EXPORT virtual void GraphicHighlight (const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                                 const Handle(Graphic3d_Structure)&      theStruct) Standard_OVERRIDE;
 
-  //! Highlight structure using boundary box
-  Standard_EXPORT virtual void HighlightWithBndBox (const Handle(Graphic3d_Structure)& theStruct,
-                                                    const Standard_Boolean             theToCreate) Standard_OVERRIDE;
+  //! Unighlights structure and updates corresponding class fields (highlight status and style)
+  Standard_EXPORT virtual void GraphicUnhighlight() Standard_OVERRIDE;
 
   //! Create shadow link to this structure
   Standard_EXPORT virtual Handle(Graphic3d_CStructure) ShadowLink (const Handle(Graphic3d_StructureManager)& theManager) const Standard_OVERRIDE;
@@ -104,13 +104,6 @@ public:
   {
     return (OpenGl_GraphicDriver* )myGraphicDriver.operator->();
   }
-
-  void clearHighlightBox (const Handle(OpenGl_Context)& theGlCtx);
-
-  void setHighlightColor (const Handle(OpenGl_Context)& theGlCtx,
-                          const Graphic3d_Vec3&         theColor);
-
-  void clearHighlightColor (const Handle(OpenGl_Context)& theGlCtx);
 
   Standard_EXPORT void Clear (const Handle(OpenGl_Context)& theGlCtx);
 
@@ -181,10 +174,15 @@ protected:
   Standard_EXPORT void renderGeometry (const Handle(OpenGl_Workspace)& theWorkspace,
                                        bool&                           theHasClosed) const;
 
+  //! Highlight structure using boundary box
+  Standard_EXPORT void highlightWithBndBox (const Handle(Graphic3d_Structure)& theStruct);
+
+  //! Invalidates highlight box and releases graphic resources it uses
+  Standard_EXPORT void clearHighlightBox (const Handle(OpenGl_Context)& theGlCtx);
+
 protected:
 
   Handle(OpenGl_Group)       myHighlightBox;
-  OpenGl_Vec4*               myHighlightColor;
 
   OpenGl_Structure*          myInstancedStructure;
 
