@@ -104,8 +104,6 @@ void AIS_Chamf2dDimension::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
 				   const Handle(Prs3d_Presentation)& aPresentation, 
 				   const Standard_Integer)
 {
-    aPresentation->Clear();
-
     Handle(Geom_Curve) gcurv;
     gp_Pnt pfirst,plast;
     const TopoDS_Edge& thechamfedge = TopoDS::Edge(myFShape);

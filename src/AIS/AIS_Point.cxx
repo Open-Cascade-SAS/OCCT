@@ -79,8 +79,6 @@ void AIS_Point::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
                         const Handle(Prs3d_Presentation)& aPresentation, 
                         const Standard_Integer aMode)
 {
-  aPresentation->Clear();
-
   aPresentation->SetInfiniteState(myInfiniteState);
 
   if (aMode==0)

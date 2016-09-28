@@ -66,8 +66,6 @@ void AIS_ConcentricRelation::Compute(const Handle(PrsMgr_PresentationManager3d)&
 				     const Handle(Prs3d_Presentation)& aPresentation, 
 				     const Standard_Integer)
 {
-  aPresentation->Clear();
-
   TopAbs_ShapeEnum type2(mySShape.ShapeType());
   aPresentation->SetInfiniteState(Standard_True);
   switch (myFShape.ShapeType()) {

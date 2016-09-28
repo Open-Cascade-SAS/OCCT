@@ -78,8 +78,6 @@ void AIS_Circle::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresenta
                          const Handle(Prs3d_Presentation)& aPresentation, 
                          const Standard_Integer /*aMode*/)
 {
-  aPresentation->Clear();
-
   aPresentation->SetDisplayPriority(5);
 
   if (myCircleIsArc) ComputeArc(aPresentation);

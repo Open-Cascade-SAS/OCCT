@@ -90,10 +90,6 @@ void AIS_OffsetDimension::Compute(const Handle(PrsMgr_PresentationManager3d)&,
 				  const Handle(Prs3d_Presentation)& aprs,
 				  const Standard_Integer)
 {
-  aprs->Clear();
-
-  //cout << endl << "This is strange Offset Dimension!" << endl;
-
   gp_Trsf aInvertTrsf = myRelativePos;
   //myArrowSize = fabs (myVal/5.);
   myArrowSize = fabs (myVal/10.0);

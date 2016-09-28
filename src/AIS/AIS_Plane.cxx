@@ -238,8 +238,6 @@ void AIS_Plane::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
 			const Handle(Prs3d_Presentation)& aPresentation, 
 			const Standard_Integer aMode)
 {
-  aPresentation->Clear();
-
   ComputeFields();
   aPresentation->SetInfiniteState(myInfiniteState);
   myDrawer->PlaneAspect()->EdgesAspect()->SetWidth(myCurrentMode == 0? 1 : 3);

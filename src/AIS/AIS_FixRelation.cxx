@@ -171,8 +171,6 @@ void AIS_FixRelation::Compute(const Handle(PrsMgr_PresentationManager3d)&,
 			      const Handle(Prs3d_Presentation)& aPresentation, 
 			      const Standard_Integer)
 {
-  aPresentation->Clear();
-
   // Calculate position of the symbol and
   // point of attach of the segment on the shape
   gp_Pnt curpos;

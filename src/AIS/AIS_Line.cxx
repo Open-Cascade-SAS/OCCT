@@ -117,8 +117,6 @@ void AIS_Line::Compute(const Handle(PrsMgr_PresentationManager3d)&,
 		       const Handle(Prs3d_Presentation)& aPresentation, 
 		       const Standard_Integer)
 {
-  aPresentation->Clear();
-
   aPresentation->SetDisplayPriority(5);
 
   if (!myLineIsSegment) ComputeInfiniteLine(aPresentation);

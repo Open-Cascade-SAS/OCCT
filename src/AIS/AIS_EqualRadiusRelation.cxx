@@ -65,8 +65,6 @@ void AIS_EqualRadiusRelation::Compute( const Handle( PrsMgr_PresentationManager3
 				       const Handle( Prs3d_Presentation )& aPresentation,
 				       const Standard_Integer ) 
 {
-  aPresentation->Clear();
-
   BRepAdaptor_Curve FirstCurve( TopoDS::Edge( myFShape ) ), SecondCurve( TopoDS::Edge( mySShape ) );
 
   Standard_Real FirstPar1 = FirstCurve.FirstParameter(), LastPar1 = FirstCurve.LastParameter(),

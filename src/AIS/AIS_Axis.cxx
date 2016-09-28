@@ -169,9 +169,6 @@ void AIS_Axis::Compute(const Handle(PrsMgr_PresentationManager3d)&,
 		       const Handle(Prs3d_Presentation)& aPresentation, 
 		       const Standard_Integer)
 {
-  aPresentation->Clear();
-
-  //Pro.... : pas de prise en compte des axes lors du FITALL (jmi)
   aPresentation->SetInfiniteState (myInfiniteState);
 
   aPresentation->SetDisplayPriority(5);

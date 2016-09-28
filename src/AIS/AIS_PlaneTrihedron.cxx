@@ -157,7 +157,6 @@ void AIS_PlaneTrihedron::Compute(const Handle(PrsMgr_PresentationManager3d)&,
 				    const Handle(Prs3d_Presentation)& aPresentation, 
 				    const Standard_Integer)
 {
-  aPresentation->Clear();
   aPresentation->SetDisplayPriority(5);
   // drawing axis in X direction
   gp_Pnt first, last;

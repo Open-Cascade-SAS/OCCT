@@ -98,8 +98,6 @@ void AIS_ParallelRelation::Compute(const Handle(PrsMgr_PresentationManager3d)&,
 				   const Handle(Prs3d_Presentation)& aPresentation, 
 				   const Standard_Integer)
 {
-  aPresentation->Clear();
-
   switch (myFShape.ShapeType())
     {
     case TopAbs_FACE :

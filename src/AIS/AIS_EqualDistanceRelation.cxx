@@ -81,9 +81,6 @@ void AIS_EqualDistanceRelation::Compute( const Handle( PrsMgr_PresentationManage
 					 const Handle( Prs3d_Presentation )& aPresentation,
 					 const Standard_Integer ) 
 {
-
-  aPresentation->Clear();
-
   gp_Pnt Position12 =  myPosition, Position34 = myPosition;
 
   Handle(Prs3d_DimensionAspect) la = myDrawer->DimensionAspect();

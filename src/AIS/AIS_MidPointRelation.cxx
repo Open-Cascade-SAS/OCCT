@@ -80,8 +80,6 @@ void AIS_MidPointRelation::Compute(const Handle(PrsMgr_PresentationManager3d)&,
 				   const Handle(Prs3d_Presentation)& aprs, 
 				   const Standard_Integer)
 {
-  aprs->Clear();
-  
   if (myTool.ShapeType() == TopAbs_VERTEX)
     {
       gp_Pnt pp;

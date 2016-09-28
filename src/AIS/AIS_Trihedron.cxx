@@ -276,8 +276,6 @@ void AIS_Trihedron::Compute(
  const Handle(Prs3d_Presentation)& aPresentation, 
  const Standard_Integer aMode)
 {
-  aPresentation->Clear();
-
   aPresentation->SetInfiniteState (Standard_True);
   switch(aMode){
   case 0: 

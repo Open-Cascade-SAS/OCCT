@@ -409,7 +409,6 @@ void AIS_PointCloud::Compute (const Handle(PrsMgr_PresentationManager3d)& /*theP
                               const Handle(Prs3d_Presentation)&           thePrs,
                               const Standard_Integer                      theMode)
 {
-  thePrs->Clear();
   switch (theMode)
   {
     case AIS_PointCloud::DM_Points:

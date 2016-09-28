@@ -309,8 +309,6 @@ void AIS_IdenticRelation::Compute(const Handle(PrsMgr_PresentationManager3d)&,
 				  const Handle(Prs3d_Presentation)& aprs, 
 				  const Standard_Integer)
 {
-  aprs->Clear();
-
   switch ( myFShape.ShapeType() ) {
     
   case TopAbs_VERTEX:

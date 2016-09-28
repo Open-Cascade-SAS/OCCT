@@ -397,8 +397,6 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
                                  const Handle(Prs3d_Presentation)&           thePrs,
                                  const Standard_Integer                      theMode)
 {
-  thePrs->Clear();
-
   if (myshape.IsNull())
   {
     return;

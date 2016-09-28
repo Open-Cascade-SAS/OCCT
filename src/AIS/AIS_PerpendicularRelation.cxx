@@ -86,8 +86,6 @@ void AIS_PerpendicularRelation::Compute(const Handle(PrsMgr_PresentationManager3
 					const Handle(Prs3d_Presentation)& aPresentation, 
 					const Standard_Integer)
 {
-  aPresentation->Clear();
-
   if (myFShape.ShapeType() == mySShape.ShapeType()) {
     switch (myFShape.ShapeType()) {
     case TopAbs_FACE :

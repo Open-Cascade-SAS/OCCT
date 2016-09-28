@@ -99,8 +99,6 @@ void AIS_Chamf3dDimension::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
 				   const Handle(Prs3d_Presentation)& aPresentation, 
 				   const Standard_Integer)
 {
-  aPresentation->Clear();
-
   //----------------------------
   // Calcul du centre de la face
   //----------------------------

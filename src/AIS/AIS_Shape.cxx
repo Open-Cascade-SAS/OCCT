@@ -123,7 +123,6 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
                         const Handle(Prs3d_Presentation)& aPrs,
                         const Standard_Integer theMode)
 {  
-  aPrs->Clear();
   if(myshape.IsNull()) return;
 
   // wire,edge,vertex -> pas de HLR + priorite display superieure

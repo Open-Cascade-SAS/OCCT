@@ -104,8 +104,6 @@ void AIS_MinRadiusDimension::Compute(const Handle(PrsMgr_PresentationManager3d)&
 				     const Handle(Prs3d_Presentation)& aPresentation, 
 				     const Standard_Integer /*aMode*/)
 {
-  aPresentation->Clear();
-
 //  if( myAutomaticPosition )
     //{ //ota : recompute ellipse always
   ComputeGeometry();

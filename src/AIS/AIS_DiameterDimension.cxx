@@ -282,7 +282,6 @@ void AIS_DiameterDimension::Compute (const Handle(PrsMgr_PresentationManager3d)&
                                      const Handle(Prs3d_Presentation)& thePresentation, 
                                      const Standard_Integer theMode)
 {
-  thePresentation->Clear();
   mySelectionGeom.Clear (theMode);
 
   if (!IsValid())
