@@ -44,13 +44,14 @@ namespace
 // purpose  :
 // =======================================================================
 Graphic3d_ClipPlane::Graphic3d_ClipPlane()
-: myAspect (defaultAspect()),
-  myEquation (0.0, 0.0, 1.0, 0.0),
-  myFlags (Graphic3d_CappingFlags_None),
-  myIsOn (Standard_True),
-  myIsCapping (Standard_False),
+: myAspect     (defaultAspect()),
+  myPlane      (0.0, 0.0, 1.0, 0.0),
+  myEquation   (0.0, 0.0, 1.0, 0.0),
+  myFlags      (Graphic3d_CappingFlags_None),
   myEquationMod(0),
-  myAspectMod(0)
+  myAspectMod  (0),
+  myIsOn       (Standard_True),
+  myIsCapping  (Standard_False)
 {
   makeId();
 }
@@ -60,13 +61,14 @@ Graphic3d_ClipPlane::Graphic3d_ClipPlane()
 // purpose  :
 // =======================================================================
 Graphic3d_ClipPlane::Graphic3d_ClipPlane(const Equation& theEquation)
-: myAspect (defaultAspect()),
-  myEquation (theEquation),
-  myFlags (Graphic3d_CappingFlags_None),
-  myIsOn (Standard_True),
-  myIsCapping (Standard_False),
+: myAspect     (defaultAspect()),
+  myPlane      (theEquation.x(), theEquation.y(), theEquation.z(), theEquation.w()),
+  myEquation   (theEquation),
+  myFlags      (Graphic3d_CappingFlags_None),
   myEquationMod(0),
-  myAspectMod(0)
+  myAspectMod  (0),
+  myIsOn       (Standard_True),
+  myIsCapping  (Standard_False)
 {
   makeId();
 }
@@ -77,13 +79,14 @@ Graphic3d_ClipPlane::Graphic3d_ClipPlane(const Equation& theEquation)
 // =======================================================================
 Graphic3d_ClipPlane::Graphic3d_ClipPlane(const Graphic3d_ClipPlane& theOther)
 : Standard_Transient(theOther),
-  myAspect (defaultAspect()),
-  myEquation (theOther.myEquation),
-  myFlags (theOther.myFlags),
-  myIsOn (theOther.myIsOn),
-  myIsCapping (theOther.myIsCapping),
-  myEquationMod (0),
-  myAspectMod (0)
+  myAspect     (defaultAspect()),
+  myPlane      (theOther.myPlane),
+  myEquation   (theOther.myEquation),
+  myFlags      (theOther.myFlags),
+  myEquationMod(0),
+  myAspectMod  (0),
+  myIsOn       (theOther.myIsOn),
+  myIsCapping  (theOther.myIsCapping)
 {
   makeId();
   *myAspect = *theOther.CappingAspect();
@@ -94,16 +97,16 @@ Graphic3d_ClipPlane::Graphic3d_ClipPlane(const Graphic3d_ClipPlane& theOther)
 // purpose  :
 // =======================================================================
 Graphic3d_ClipPlane::Graphic3d_ClipPlane(const gp_Pln& thePlane)
-: myAspect (defaultAspect()),
-  myEquation (),
-  myFlags (Graphic3d_CappingFlags_None),
-  myIsOn (Standard_True),
-  myIsCapping (Standard_False),
+: myAspect     (defaultAspect()),
+  myPlane      (thePlane),
+  myFlags      (Graphic3d_CappingFlags_None),
   myEquationMod(0),
-  myAspectMod(0)
+  myAspectMod  (0),
+  myIsOn       (Standard_True),
+  myIsCapping  (Standard_False)
 {
+  thePlane.Coefficients (myEquation[0], myEquation[1], myEquation[2], myEquation[3]);
   makeId();
-  SetEquation (thePlane);
 }
 
 // =======================================================================
@@ -112,6 +115,7 @@ Graphic3d_ClipPlane::Graphic3d_ClipPlane(const gp_Pln& thePlane)
 // =======================================================================
 void Graphic3d_ClipPlane::SetEquation (const Equation& theEquation)
 {
+  myPlane = gp_Pln (theEquation.x(), theEquation.y(), theEquation.z(), theEquation.w());
   myEquation = theEquation;
   myEquationMod++;
 }
@@ -122,6 +126,7 @@ void Graphic3d_ClipPlane::SetEquation (const Equation& theEquation)
 // =======================================================================
 void Graphic3d_ClipPlane::SetEquation (const gp_Pln& thePlane)
 {
+  myPlane = thePlane;
   thePlane.Coefficients (myEquation[0],
                          myEquation[1],
                          myEquation[2],
@@ -145,18 +150,6 @@ void Graphic3d_ClipPlane::SetOn (const Standard_Boolean theIsOn)
 void Graphic3d_ClipPlane::SetCapping (const Standard_Boolean theIsOn)
 {
   myIsCapping = theIsOn;
-}
-
-// =======================================================================
-// function : ToPlane
-// purpose  :
-// =======================================================================
-gp_Pln Graphic3d_ClipPlane::ToPlane() const
-{
-  return gp_Pln (myEquation[0],
-                 myEquation[1],
-                 myEquation[2],
-                 myEquation[3]);
 }
 
 // =======================================================================

@@ -24,14 +24,14 @@ struct Graphic3d_CLight
 
 public:
 
+  Graphic3d_Vec3d             Position;    //!< light position
   Graphic3d_Vec4              Color;       //!< light color
-  Graphic3d_Vec4              Position;    //!< light position
   Graphic3d_Vec4              Direction;   //!< direction of directional/spot light
   Graphic3d_Vec4              Params;      //!< packed light parameters
-  Graphic3d_TypeOfLightSource Type;        //!< Graphic3d_TypeOfLightSource enumeration
-  Standard_Boolean            IsHeadlight; //!< flag to mark head light
   Standard_ShortReal          Smoothness;  //!< radius (cone angle) for point (directional) light
   Standard_ShortReal          Intensity;   //!< intensity multiplier for light
+  Graphic3d_TypeOfLightSource Type;        //!< Graphic3d_TypeOfLightSource enumeration
+  Standard_Boolean            IsHeadlight; //!< flag to mark head light
 
   //! Const attenuation factor of positional light source
   Standard_ShortReal  ConstAttenuation()  const { return Params.x();  }
@@ -58,14 +58,14 @@ public:
 
   //! Empty constructor
   Graphic3d_CLight()
-  : Color         (1.0f, 1.0f, 1.0f, 1.0f),
-    Position      (0.0f, 0.0f, 0.0f, 1.0f),
+  : Position      (0.0,  0.0,  0.0),
+    Color         (1.0f, 1.0f, 1.0f, 1.0f),
     Direction     (0.0f, 0.0f, 0.0f, 0.0f),
     Params        (0.0f, 0.0f, 0.0f, 0.0f),
-    Type          (Graphic3d_TOLS_AMBIENT),
-    IsHeadlight   (Standard_False),
     Smoothness    (0.0f),
-    Intensity     (1.0f)
+    Intensity     (1.0f),
+    Type          (Graphic3d_TOLS_AMBIENT),
+    IsHeadlight   (Standard_False)
   {
     //
   }

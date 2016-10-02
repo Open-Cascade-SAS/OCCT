@@ -15,7 +15,7 @@
 #ifndef _Graphic3d_CStructure_HeaderFile
 #define _Graphic3d_CStructure_HeaderFile
 
-#include <Graphic3d_BndBox4f.hxx>
+#include <Graphic3d_BndBox3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_HighlightStyle.hxx>
 #include <Graphic3d_SequenceOfGroup.hxx>
@@ -58,7 +58,7 @@ public:
   const Handle(Graphic3d_TransformPers)& TransformPersistence() const { return myTrsfPers; }
 
   //! Set transformation persistence.
-  void SetTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers) { myTrsfPers = theTrsfPers; }
+  virtual void SetTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers) { myTrsfPers = theTrsfPers; }
 
   //! @return associated clip planes
   const Handle(Graphic3d_SequenceOfHClipPlane)& ClipPlanes() const
@@ -70,14 +70,14 @@ public:
   void SetClipPlanes (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes) { myClipPlanes = thePlanes; }
 
   //! @return bounding box of this presentation
-  const Graphic3d_BndBox4f& BoundingBox() const
+  const Graphic3d_BndBox3d& BoundingBox() const
   {
     return myBndBox;
   }
 
   //! @return bounding box of this presentation
   //! without transformation matrix applied
-  Graphic3d_BndBox4f& ChangeBoundingBox()
+  Graphic3d_BndBox3d& ChangeBoundingBox()
   {
     return myBndBox;
   }
@@ -94,7 +94,7 @@ public:
   }
 
   //! Set z layer ID to display the structure in specified layer
-  void SetZLayer (const Graphic3d_ZLayerId theLayerIndex) { myZLayer = theLayerIndex; }
+  virtual void SetZLayer (const Graphic3d_ZLayerId theLayerIndex) { myZLayer = theLayerIndex; }
 
   //! Get z layer ID
   Graphic3d_ZLayerId ZLayer() const { return myZLayer; }
@@ -163,7 +163,7 @@ protected:
 
   Handle(Graphic3d_GraphicDriver) myGraphicDriver;
   Graphic3d_SequenceOfGroup       myGroups;
-  Graphic3d_BndBox4f              myBndBox;
+  Graphic3d_BndBox3d              myBndBox;
   Handle(Geom_Transformation)     myTrsf;
   Handle(Graphic3d_TransformPers) myTrsfPers;
   Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;

@@ -1,0 +1,54 @@
+puts "========"
+puts "0024393: Visualization - objects position with enchanced precision"
+puts "========"
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vaxo
+vzbufftrihedron
+circle c 0 0 0 0.001
+mkedge e c
+wire   w e
+plane  s
+mkface f0    s w
+mkface f1000 s w
+ttranslate f1000 1000 0 0
+# Display object with pre-applied transformation.
+# Result presentation is already corrupted
+# AND it jumps while rotating the camera.
+vpoint v1000 1000 0 0.001
+vdisplay -dispMode 1 f1000
+vfit
+
+# Display object with external transformation.
+# Result presentation jumps while rotating the camera.
+vdisplay -dispMode 1 f0
+vsetlocation f0 1000 0 0
+
+# Display object with external transformation
+# in Z-layer with translated Origin.
+# Result presentation does not jump while rotating the camera.
+vzlayer top -origin 1000 0 0
+vdisplay -dispMode 1 -top f0
+
+# check transformation persistence
+vtrihedron tt
+vdisplay -top -trihedron topLeft 100 100 tt
+
+box zp 40 50 30
+vdisplay -top -dispMode 1 -trsfPers zoom -trsfPersPos 1000 0 0 zp
+
+# check clippling planes
+vclipplane pln -equation -1 0 0 1000 -set
+
+# check positional lights
+vlight add positional pos 1000 0 0.001 color RED1 headlight 0
+
+vremove f1000
+vmoveto 220 220
+
+vdrawtext text Text -pos 0 0 0
+vdisplay -top text -trsfPers zoomRotate -trsfPersPos 1000 0 0.001
+
+vdump $::imagedir/${::casename}.png

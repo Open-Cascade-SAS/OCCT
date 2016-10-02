@@ -238,7 +238,7 @@ public:
               const NCollection_Mat4<T>& theWorldView,
               const Standard_Integer theViewportWidth,
               const Standard_Integer theViewportHeight,
-              BVH_Box<T, 4>& theBoundingBox) const;
+              BVH_Box<T, 3>& theBoundingBox) const;
 
   //! Compute transformation.
   //! Computed matrix can be applied to model world transformation
@@ -408,26 +408,22 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
   else
   {
     // Compute reference point for transformation in untransformed projection space.
-    NCollection_Vec4<T> aRefPoint (static_cast<T> (myParams.Params3d.PntX),
-                                   static_cast<T> (myParams.Params3d.PntY),
-                                   static_cast<T> (myParams.Params3d.PntZ),
-                                   static_cast<T> (1.0));
-
-    Graphic3d_TransformUtils::Translate<T> (theWorldView, aRefPoint.x(), aRefPoint.y(), aRefPoint.z());
+    NCollection_Mat4<Standard_Real> aWorldView = theCamera->OrientationMatrix();
+    Graphic3d_TransformUtils::Translate (aWorldView, myParams.Params3d.PntX, myParams.Params3d.PntY, myParams.Params3d.PntZ);
     if ((myMode & Graphic3d_TMF_RotatePers) != 0)
     {
       // lock rotation by nullifying rotation component
-      theWorldView.SetValue (0, 0, static_cast<T> (1));
-      theWorldView.SetValue (1, 0, static_cast<T> (0));
-      theWorldView.SetValue (2, 0, static_cast<T> (0));
+      aWorldView.SetValue (0, 0, 1.0);
+      aWorldView.SetValue (1, 0, 0.0);
+      aWorldView.SetValue (2, 0, 0.0);
 
-      theWorldView.SetValue (0, 1, static_cast<T> (0));
-      theWorldView.SetValue (1, 1, static_cast<T> (1));
-      theWorldView.SetValue (2, 1, static_cast<T> (0));
+      aWorldView.SetValue (0, 1, 0.0);
+      aWorldView.SetValue (1, 1, 1.0);
+      aWorldView.SetValue (2, 1, 0.0);
 
-      theWorldView.SetValue (0, 2, static_cast<T> (0));
-      theWorldView.SetValue (1, 2, static_cast<T> (0));
-      theWorldView.SetValue (2, 2, static_cast<T> (1));
+      aWorldView.SetValue (0, 2, 0.0);
+      aWorldView.SetValue (1, 2, 0.0);
+      aWorldView.SetValue (2, 2, 1.0);
     }
 
     if ((myMode & Graphic3d_TMF_ZoomPers) != 0)
@@ -438,8 +434,9 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
       const Standard_Real aFocus = aVecToObj.Dot (aVecToEye);
       const gp_XYZ aViewDim = theCamera->ViewDimensions (aFocus);
       const Standard_Real aScale = Abs(aViewDim.Y()) / Standard_Real(aVPSizeY);
-      Graphic3d_TransformUtils::Scale (theWorldView, T(aScale), T(aScale), T(aScale));
+      Graphic3d_TransformUtils::Scale (aWorldView, aScale, aScale, aScale);
     }
+    theWorldView.ConvertFrom (aWorldView);
     return;
   }
 }
@@ -465,9 +462,9 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
 
   theBoundingBox.Get (aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
-  typename BVH_Box<T, 4>::BVH_VecNt aMin (aXmin, aYmin, aZmin, static_cast<T> (1.0));
-  typename BVH_Box<T, 4>::BVH_VecNt aMax (aXmax, aYmax, aZmax, static_cast<T> (1.0));
-  BVH_Box<T, 4> aBBox (aMin, aMax);
+  typename BVH_Box<T, 3>::BVH_VecNt aMin (aXmin, aYmin, aZmin);
+  typename BVH_Box<T, 3>::BVH_VecNt aMax (aXmax, aYmax, aZmax);
+  BVH_Box<T, 3> aBBox (aMin, aMax);
 
   Apply (theCamera, theProjection, theWorldView, theViewportWidth, theViewportHeight, aBBox);
 
@@ -486,7 +483,7 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
                                      const NCollection_Mat4<T>& theWorldView,
                                      const Standard_Integer theViewportWidth,
                                      const Standard_Integer theViewportHeight,
-                                     BVH_Box<T, 4>& theBoundingBox) const
+                                     BVH_Box<T, 3>& theBoundingBox) const
 {
   NCollection_Mat4<T> aTPers = Compute (theCamera, theProjection, theWorldView, theViewportWidth, theViewportHeight);
   if (aTPers.IsIdentity()
@@ -495,8 +492,8 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
     return;
   }
 
-  const typename BVH_Box<T, 4>::BVH_VecNt& aMin = theBoundingBox.CornerMin();
-  const typename BVH_Box<T, 4>::BVH_VecNt& aMax = theBoundingBox.CornerMax();
+  const typename BVH_Box<T, 3>::BVH_VecNt& aMin = theBoundingBox.CornerMin();
+  const typename BVH_Box<T, 3>::BVH_VecNt& aMax = theBoundingBox.CornerMax();
 
   typename BVH_Box<T, 4>::BVH_VecNt anArrayOfCorners[8];
   anArrayOfCorners[0] = typename BVH_Box<T, 4>::BVH_VecNt (aMin.x(), aMin.y(), aMin.z(), static_cast<T> (1.0));
@@ -514,7 +511,7 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
     typename BVH_Box<T, 4>::BVH_VecNt& aCorner = anArrayOfCorners[anIt];
     aCorner  = aTPers * aCorner;
     aCorner /= aCorner.w();
-    theBoundingBox.Add (aCorner);
+    theBoundingBox.Add (aCorner.xyz());
   }
 }
 

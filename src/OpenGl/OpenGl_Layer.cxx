@@ -17,6 +17,7 @@
 
 #include <OpenGl_BVHTreeSelector.hxx>
 #include <OpenGl_Structure.hxx>
+#include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
@@ -144,17 +145,17 @@ void OpenGl_Layer::InvalidateBVHData() const
 }
 
 //! Calculate a finite bounding box of infinite object as its middle point.
-inline Graphic3d_BndBox4f centerOfinfiniteBndBox (const Graphic3d_BndBox4f& theBndBox)
+inline Graphic3d_BndBox3d centerOfinfiniteBndBox (const Graphic3d_BndBox3d& theBndBox)
 {
   // bounding borders of infinite line has been calculated as own point in center of this line
-  const Graphic3d_Vec4 aDiagVec = theBndBox.CornerMax() - theBndBox.CornerMin();
-  return aDiagVec.xyz().SquareModulus() >= 500000.0f * 500000.0f
-       ? Graphic3d_BndBox4f ((theBndBox.CornerMin() + theBndBox.CornerMax()) * 0.5f)
-       : Graphic3d_BndBox4f();
+  const Graphic3d_Vec3d aDiagVec = theBndBox.CornerMax() - theBndBox.CornerMin();
+  return aDiagVec.SquareModulus() >= 500000.0 * 500000.0
+       ? Graphic3d_BndBox3d ((theBndBox.CornerMin() + theBndBox.CornerMax()) * 0.5)
+       : Graphic3d_BndBox3d();
 }
 
 //! Return true if at least one vertex coordinate out of float range.
-inline bool isInfiniteBndBox (const Graphic3d_BndBox4f& theBndBox)
+inline bool isInfiniteBndBox (const Graphic3d_BndBox3d& theBndBox)
 {
   return Abs (theBndBox.CornerMax().x()) >= ShortRealLast()
       || Abs (theBndBox.CornerMax().y()) >= ShortRealLast()
@@ -168,29 +169,28 @@ inline bool isInfiniteBndBox (const Graphic3d_BndBox4f& theBndBox)
 // function : BoundingBox
 // purpose  :
 // =======================================================================
-Graphic3d_BndBox4f OpenGl_Layer::BoundingBox (const Standard_Integer          theViewId,
-                                              const Handle(Graphic3d_Camera)& theCamera,
-                                              const Standard_Integer          theWindowWidth,
-                                              const Standard_Integer          theWindowHeight,
-                                              const Standard_Boolean          theToIncludeAuxiliary) const
+Bnd_Box OpenGl_Layer::BoundingBox (const Standard_Integer          theViewId,
+                                   const Handle(Graphic3d_Camera)& theCamera,
+                                   const Standard_Integer          theWindowWidth,
+                                   const Standard_Integer          theWindowHeight,
+                                   const Standard_Boolean          theToIncludeAuxiliary) const
 {
   updateBVH();
 
   const Standard_Integer aBoxId = !theToIncludeAuxiliary ? 0 : 1;
-  const Graphic3d_Mat4& aProjectionMat = theCamera->ProjectionMatrixF();
-  const Graphic3d_Mat4& aWorldViewMat  = theCamera->OrientationMatrixF();
+  const Graphic3d_Mat4d& aProjectionMat = theCamera->ProjectionMatrix();
+  const Graphic3d_Mat4d& aWorldViewMat  = theCamera->OrientationMatrix();
   if (myIsBoundingBoxNeedsReset[aBoxId])
   {
     // Recompute layer bounding box
-    myBoundingBox[aBoxId].Clear();
+    myBoundingBox[aBoxId].SetVoid();
 
-    const Standard_Integer aNbPriorities = myArray.Length();
-    for (Standard_Integer aPriorityIter = 0; aPriorityIter < aNbPriorities; ++aPriorityIter)
+    for (OpenGl_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
     {
-      const OpenGl_IndexedMapOfStructure& aStructures = myArray (aPriorityIter);
-      for (Standard_Integer aStructIdx = 1; aStructIdx <= aStructures.Size(); ++aStructIdx)
+      const OpenGl_IndexedMapOfStructure& aStructures = aMapIter.Value();
+      for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
       {
-        const OpenGl_Structure* aStructure = aStructures.FindKey (aStructIdx);
+        const OpenGl_Structure* aStructure = aStructIter.Value();
         if (!aStructure->IsVisible (theViewId))
         {
           continue;
@@ -204,12 +204,7 @@ Graphic3d_BndBox4f OpenGl_Layer::BoundingBox (const Standard_Integer          th
             && aStructure->TransformPersistence()->IsZoomOrRotate())
           {
             const gp_Pnt anAnchor = aStructure->TransformPersistence()->AnchorPoint();
-            BVH_Vec4f aTPPoint (static_cast<float> (anAnchor.X()),
-                                static_cast<float> (anAnchor.Y()),
-                                static_cast<float> (anAnchor.Z()),
-                                1.0f);
-
-            myBoundingBox[aBoxId].Combine (aTPPoint);
+            myBoundingBox[aBoxId].Add (anAnchor);
             continue;
           }
           // Panning and 2d persistence apply changes to projection or/and its translation components.
@@ -221,7 +216,7 @@ Graphic3d_BndBox4f OpenGl_Layer::BoundingBox (const Standard_Integer          th
           }
         }
 
-        Graphic3d_BndBox4f aBox = aStructure->BoundingBox();
+        Graphic3d_BndBox3d aBox = aStructure->BoundingBox();
         if (!aBox.IsValid())
         {
           continue;
@@ -240,9 +235,11 @@ Graphic3d_BndBox4f OpenGl_Layer::BoundingBox (const Standard_Integer          th
         }
 
         // skip too big boxes to prevent float overflow at camera parameters calculation
-        if (!isInfiniteBndBox (aBox))
+        if (aBox.IsValid()
+        && !isInfiniteBndBox (aBox))
         {
-          myBoundingBox[aBoxId].Combine (aBox);
+          myBoundingBox[aBoxId].Add (gp_Pnt (aBox.CornerMin().x(), aBox.CornerMin().y(), aBox.CornerMin().z()));
+          myBoundingBox[aBoxId].Add (gp_Pnt (aBox.CornerMax().x(), aBox.CornerMax().y(), aBox.CornerMax().z()));
         }
       }
     }
@@ -250,14 +247,14 @@ Graphic3d_BndBox4f OpenGl_Layer::BoundingBox (const Standard_Integer          th
     myIsBoundingBoxNeedsReset[aBoxId] = false;
   }
 
+  Bnd_Box aResBox = myBoundingBox[aBoxId];
   if (!theToIncludeAuxiliary
     || myAlwaysRenderedMap.IsEmpty())
   {
-    return myBoundingBox[aBoxId];
+    return aResBox;
   }
 
   // add transformation-persistent objects which depend on camera position (and thus can not be cached) for operations like Z-fit
-  Graphic3d_BndBox4f aResBox = myBoundingBox[aBoxId];
   for (NCollection_IndexedMap<const OpenGl_Structure*>::Iterator aStructIter (myAlwaysRenderedMap); aStructIter.More(); aStructIter.Next())
   {
     const OpenGl_Structure* aStructure = aStructIter.Value();
@@ -271,16 +268,18 @@ Graphic3d_BndBox4f OpenGl_Layer::BoundingBox (const Standard_Integer          th
       continue;
     }
 
-    Graphic3d_BndBox4f aBox = aStructure->BoundingBox();
+    Graphic3d_BndBox3d aBox = aStructure->BoundingBox();
     if (!aBox.IsValid())
     {
       continue;
     }
 
     aStructure->TransformPersistence()->Apply (theCamera, aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBox);
-    if (!isInfiniteBndBox (aBox))
+    if (aBox.IsValid()
+    && !isInfiniteBndBox (aBox))
     {
-      aResBox.Combine (aBox);
+      aResBox.Add (gp_Pnt (aBox.CornerMin().x(), aBox.CornerMin().y(), aBox.CornerMin().z()));
+      aResBox.Add (gp_Pnt (aBox.CornerMax().x(), aBox.CornerMax().y(), aBox.CornerMax().z()));
     }
   }
 
@@ -301,17 +300,16 @@ Standard_Real OpenGl_Layer::considerZoomPersistenceObjects (const Standard_Integ
     return 1.0;
   }
 
-  const Standard_Integer aNbPriorities  = myArray.Length();
-  const Graphic3d_Mat4&  aProjectionMat = theCamera->ProjectionMatrixF();
-  const Graphic3d_Mat4&  aWorldViewMat  = theCamera->OrientationMatrixF();
+  const Graphic3d_Mat4d& aProjectionMat = theCamera->ProjectionMatrix();
+  const Graphic3d_Mat4d& aWorldViewMat  = theCamera->OrientationMatrix();
   Standard_Real          aMaxCoef       = -std::numeric_limits<double>::max();
 
-  for (Standard_Integer aPriorityIter = 0; aPriorityIter < aNbPriorities; ++aPriorityIter)
+  for (OpenGl_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
   {
-    const OpenGl_IndexedMapOfStructure& aStructures = myArray (aPriorityIter);
-    for (Standard_Integer aStructIdx = 1; aStructIdx <= aStructures.Size(); ++aStructIdx)
+    const OpenGl_IndexedMapOfStructure& aStructures = aMapIter.Value();
+    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
     {
-      OpenGl_Structure* aStructure = const_cast<OpenGl_Structure*> (aStructures.FindKey (aStructIdx));
+      const OpenGl_Structure* aStructure = aStructIter.Value();
       if (!aStructure->IsVisible (theViewId)
        ||  aStructure->TransformPersistence().IsNull()
        || !aStructure->TransformPersistence()->IsZoomOrRotate())
@@ -319,7 +317,7 @@ Standard_Real OpenGl_Layer::considerZoomPersistenceObjects (const Standard_Integ
         continue;
       }
 
-      Graphic3d_BndBox4f aBox = aStructure->BoundingBox();
+      Graphic3d_BndBox3d aBox = aStructure->BoundingBox();
       if (!aBox.IsValid())
       {
         continue;
@@ -327,8 +325,8 @@ Standard_Real OpenGl_Layer::considerZoomPersistenceObjects (const Standard_Integ
 
       aStructure->TransformPersistence()->Apply (theCamera, aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBox);
 
-      const BVH_Vec4f&       aCornerMin           = aBox.CornerMin();
-      const BVH_Vec4f&       aCornerMax           = aBox.CornerMax();
+      const BVH_Vec3d&       aCornerMin           = aBox.CornerMin();
+      const BVH_Vec3d&       aCornerMax           = aBox.CornerMax();
       const Standard_Integer aNbOfPoints          = 8;
       const gp_Pnt           aPoints[aNbOfPoints] = { gp_Pnt (aCornerMin.x(), aCornerMin.y(), aCornerMin.z()),
                                                       gp_Pnt (aCornerMin.x(), aCornerMin.y(), aCornerMax.z()),
@@ -416,14 +414,13 @@ Standard_Real OpenGl_Layer::considerZoomPersistenceObjects (const Standard_Integ
 // =======================================================================
 void OpenGl_Layer::renderAll (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  const Standard_Integer aNbPriorities = myArray.Length();
-  const Standard_Integer aViewId       = theWorkspace->View()->Identification();
-  for (Standard_Integer aPriorityIter = 0; aPriorityIter < aNbPriorities; ++aPriorityIter)
+  const Standard_Integer aViewId = theWorkspace->View()->Identification();
+  for (OpenGl_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
   {
-    const OpenGl_IndexedMapOfStructure& aStructures = myArray (aPriorityIter);
-    for (Standard_Integer aStructIdx = 1; aStructIdx <= aStructures.Size(); ++aStructIdx)
+    const OpenGl_IndexedMapOfStructure& aStructures = aMapIter.Value();
+    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
     {
-      const OpenGl_Structure* aStruct = aStructures.FindKey (aStructIdx);
+      const OpenGl_Structure* aStruct = aStructIter.Value();
       if (!aStruct->IsVisible())
       {
         continue;
@@ -454,9 +451,10 @@ void OpenGl_Layer::updateBVH() const
   myBVHPrimitivesTrsfPers.Clear();
   myAlwaysRenderedMap.Clear();
   myIsBVHPrimitivesNeedsReset = Standard_False;
-  for (Standard_Integer aPriorityIdx = 0, aNbPriorities = myArray.Length(); aPriorityIdx < aNbPriorities; ++aPriorityIdx)
+  for (OpenGl_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
   {
-    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (myArray (aPriorityIdx)); aStructIter.More(); aStructIter.Next())
+    const OpenGl_IndexedMapOfStructure& aStructures = aMapIter.Value();
+    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
     {
       const OpenGl_Structure* aStruct = aStructIter.Value();
       if (aStruct->IsAlwaysRendered())
@@ -487,14 +485,13 @@ void OpenGl_Layer::renderTraverse (const Handle(OpenGl_Workspace)& theWorkspace)
   OpenGl_BVHTreeSelector& aSelector = theWorkspace->View()->BVHTreeSelector();
   traverse (aSelector);
 
-  const Standard_Integer aNbPriorities = myArray.Length();
-  const Standard_Integer aViewId       = theWorkspace->View()->Identification();
-  for (Standard_Integer aPriorityIter = 0; aPriorityIter < aNbPriorities; ++aPriorityIter)
+  const Standard_Integer aViewId = theWorkspace->View()->Identification();
+  for (OpenGl_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
   {
-    const OpenGl_IndexedMapOfStructure& aStructures = myArray (aPriorityIter);
-    for (Standard_Integer aStructIdx = 1; aStructIdx <= aStructures.Size(); ++aStructIdx)
+    const OpenGl_IndexedMapOfStructure& aStructures = aMapIter.Value();
+    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
     {
-      const OpenGl_Structure* aStruct = aStructures.FindKey (aStructIdx);
+      const OpenGl_Structure* aStruct = aStructIter.Value();
       if (aStruct->IsCulled()
       || !aStruct->IsVisible (aViewId))
       {
@@ -520,7 +517,7 @@ void OpenGl_Layer::traverse (OpenGl_BVHTreeSelector& theSelector) const
 
   theSelector.CacheClipPtsProjections();
 
-  NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> > aBVHTree;
+  NCollection_Handle<BVH_Tree<Standard_Real, 3> > aBVHTree;
 
   for (Standard_Integer aBVHTreeIdx = 0; aBVHTreeIdx < 2; ++aBVHTreeIdx)
   {
@@ -530,8 +527,8 @@ void OpenGl_Layer::traverse (OpenGl_BVHTreeSelector& theSelector) const
       if (myBVHPrimitivesTrsfPers.Size() == 0)
         continue;
 
-      const OpenGl_Mat4& aProjection                = theSelector.ProjectionMatrix();
-      const OpenGl_Mat4& aWorldView                 = theSelector.WorldViewMatrix();
+      const OpenGl_Mat4d& aProjection               = theSelector.ProjectionMatrix();
+      const OpenGl_Mat4d& aWorldView                = theSelector.WorldViewMatrix();
       const Graphic3d_WorldViewProjState& aWVPState = theSelector.WorldViewProjState();
       const Standard_Integer aViewportWidth         = theSelector.ViewportWidth();
       const Standard_Integer aViewportHeight        = theSelector.ViewportHeight();
@@ -623,13 +620,35 @@ Standard_Boolean OpenGl_Layer::Append (const OpenGl_Layer& theOther)
   for (Standard_Integer aPriorityIter = 0; aPriorityIter < aNbPriorities; ++aPriorityIter)
   {
     const OpenGl_IndexedMapOfStructure& aStructures = theOther.myArray (aPriorityIter);
-    for (Standard_Integer aStructIdx = 1; aStructIdx <= aStructures.Size(); ++aStructIdx)
+    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
     {
-      Add (aStructures.FindKey (aStructIdx), aPriorityIter);
+      Add (aStructIter.Value(), aPriorityIter);
     }
   }
 
   return Standard_True;
+}
+
+//=======================================================================
+//function : SetLayerSettings
+//purpose  :
+//=======================================================================
+void OpenGl_Layer::SetLayerSettings (const Graphic3d_ZLayerSettings& theSettings)
+{
+  const Standard_Boolean toUpdateTrsf = !myLayerSettings.Origin().IsEqual (theSettings.Origin(), gp::Resolution());
+  myLayerSettings = theSettings;
+  if (toUpdateTrsf)
+  {
+    for (OpenGl_ArrayOfIndexedMapOfStructure::Iterator aMapIter (myArray); aMapIter.More(); aMapIter.Next())
+    {
+      OpenGl_IndexedMapOfStructure& aStructures = aMapIter.ChangeValue();
+      for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
+      {
+        OpenGl_Structure* aStructure = const_cast<OpenGl_Structure*> (aStructIter.Value());
+        aStructure->updateLayerTransformation();
+      }
+    }
+  }
 }
 
 //=======================================================================
@@ -639,16 +658,16 @@ Standard_Boolean OpenGl_Layer::Append (const OpenGl_Layer& theOther)
 void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
                            const OpenGl_GlobalLayerSettings& theDefaultSettings) const
 {
-  Graphic3d_PolygonOffset anAppliedOffsetParams = theWorkspace->AppliedPolygonOffset();
+  const Graphic3d_PolygonOffset anAppliedOffsetParams = theWorkspace->AppliedPolygonOffset();
 
   // separate depth buffers
-  if (IsSettingEnabled (Graphic3d_ZLayerDepthClear))
+  if (myLayerSettings.ToClearDepth())
   {
     glClear (GL_DEPTH_BUFFER_BIT);
   }
 
   // handle depth test
-  if (IsSettingEnabled (Graphic3d_ZLayerDepthTest))
+  if (myLayerSettings.ToEnableDepthTest())
   {
     // assuming depth test is enabled by default
     glDepthFunc (theDefaultSettings.DepthFunc);
@@ -660,37 +679,86 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
 
   // save environment texture
   Handle(OpenGl_Texture) anEnvironmentTexture = theWorkspace->EnvironmentTexture();
-  if (!myLayerSettings.UseEnvironmentTexture)
+  if (!myLayerSettings.UseEnvironmentTexture())
   {
     theWorkspace->SetEnvironmentTexture (Handle(OpenGl_Texture)());
   }
 
   // handle depth offset
-  if (IsSettingEnabled (Graphic3d_ZLayerDepthOffset))
-  {
-    Graphic3d_PolygonOffset aLayerPolygonOffset;
-    aLayerPolygonOffset.Mode   = Aspect_POM_Fill;
-    aLayerPolygonOffset.Factor = myLayerSettings.DepthOffsetFactor;
-    aLayerPolygonOffset.Units  = myLayerSettings.DepthOffsetUnits;
-    theWorkspace->SetPolygonOffset (aLayerPolygonOffset);
-  }
-  else
-  {
-    theWorkspace->SetPolygonOffset (anAppliedOffsetParams);
-  }
+  theWorkspace->SetPolygonOffset (myLayerSettings.PolygonOffset());
 
   // handle depth write
-  theWorkspace->UseDepthWrite() = IsSettingEnabled (Graphic3d_ZLayerDepthWrite);
+  theWorkspace->UseDepthWrite() = myLayerSettings.ToEnableDepthWrite();
   glDepthMask (theWorkspace->UseDepthWrite() ? GL_TRUE : GL_FALSE);
+
+  const Standard_Boolean hasLocalCS = !myLayerSettings.OriginTransformation().IsNull();
+  const Handle(OpenGl_Context)&   aCtx         = theWorkspace->GetGlContext();
+  const Handle(Graphic3d_Camera)& aWorldCamera = theWorkspace->View()->Camera();
+  Handle(Graphic3d_Camera) aCameraBack;
+  if (hasLocalCS)
+  {
+    // Apply local camera transformation.
+    // The vertex position is computed by the following formula in GLSL program:
+    //   gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;
+    // where:
+    //   occProjectionMatrix - matrix defining orthographic/perspective/stereographic projection
+    //   occWorldViewMatrix  - world-view  matrix defining Camera position and orientation
+    //   occModelWorldMatrix - model-world matrix defining Object transformation from local coordinate system to the world coordinate system
+    //   occVertex           - input vertex position
+    //
+    // Since double precision is quite expensive on modern GPUs, and not available on old hardware,
+    // all these values are passed with single float precision to the shader.
+    // As result, single precision become insufficient for handling objects far from the world origin.
+    //
+    // Several approaches can be used to solve precision issues:
+    //  - [Broute force] migrate to double precision for all matrices and vertex position.
+    //    This is too expensive for most hardware.
+    //  - Store only translation part with double precision and pass it to GLSL program.
+    //    This requires modified GLSL programs for computing transformation
+    //    and extra packing mechanism for hardware not supporting double precision natively.
+    //    This solution is less expensive then previous one.
+    //  - Move translation part of occModelWorldMatrix into occWorldViewMatrix.
+    //    The main idea here is that while moving Camera towards the object,
+    //    Camera translation part and Object translation part will compensate each other
+    //    to fit into single float precision.
+    //    But this operation should be performed with double precision - this is why we are moving
+    //    translation part of occModelWorldMatrix to occWorldViewMatrix.
+    //
+    // All approaches might be useful in different scenarios, but for the moment we consider the last one as main scenario.
+    // Here we do the trick:
+    //  - OpenGl_Layer defines the Local Origin, which is expected to be the center of objects stored within it.
+    //    This Local Origin is included into occWorldViewMatrix during rendering.
+    //  - OpenGl_Structure defines Object local transformation occModelWorldMatrix with subtracted Local Origin of the Layer.
+    //    This means that Object itself should be defined within either Local Transformation equal or near to Local Origin of the Layer.
+    theWorkspace->View()->SetLocalOrigin (myLayerSettings.Origin());
+
+    NCollection_Mat4<Standard_Real> aWorldView = aWorldCamera->OrientationMatrix();
+    Graphic3d_TransformUtils::Translate (aWorldView, myLayerSettings.Origin().X(), myLayerSettings.Origin().Y(), myLayerSettings.Origin().Z());
+
+    NCollection_Mat4<Standard_ShortReal> aWorldViewF;
+    aWorldViewF.ConvertFrom (aWorldView);
+    aCtx->WorldViewState.SetCurrent (aWorldViewF);
+    aCtx->ShaderManager()->UpdateClippingState();
+    aCtx->ShaderManager()->UpdateLightSourceState();
+  }
 
   // render priority list
   theWorkspace->IsCullingEnabled() ? renderTraverse (theWorkspace) : renderAll (theWorkspace);
+
+  if (hasLocalCS)
+  {
+    aCtx->ShaderManager()->RevertClippingState();
+    aCtx->ShaderManager()->UpdateLightSourceState();
+
+    aCtx->WorldViewState.SetCurrent (aWorldCamera->OrientationMatrixF());
+    theWorkspace->View() ->SetLocalOrigin (gp_XYZ (0.0, 0.0, 0.0));
+  }
 
   // always restore polygon offset between layers rendering
   theWorkspace->SetPolygonOffset (anAppliedOffsetParams);
 
   // restore environment texture
-  if (!myLayerSettings.UseEnvironmentTexture)
+  if (!myLayerSettings.UseEnvironmentTexture())
   {
     theWorkspace->SetEnvironmentTexture (anEnvironmentTexture);
   }

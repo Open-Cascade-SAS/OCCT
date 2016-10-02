@@ -21,7 +21,7 @@
 #include <BVH_Tree.hxx>
 #include <Graphic3d_BndBox4f.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>
-#include <NCollection_Handle.hxx>
+#include <NCollection_Shared.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_Vec.hxx>
@@ -30,11 +30,11 @@
 //! Provides built-in mechanism to invalidate tree when world view projection state changes.
 //! Due to frequent invalidation of BVH tree the choice of BVH tree builder is made
 //! in favor of BVH linear builder (quick rebuild).
-class OpenGl_BVHClipPrimitiveTrsfPersSet : public BVH_Set<Standard_ShortReal, 4>
+class OpenGl_BVHClipPrimitiveTrsfPersSet : public BVH_Set<Standard_Real, 3>
 {
 private:
 
-  typedef NCollection_Handle<Graphic3d_BndBox4f> HBndBox4f;
+  typedef NCollection_Shared<Graphic3d_BndBox3d> HBndBox3d;
 
 public:
 
@@ -45,11 +45,11 @@ public:
   virtual Standard_Integer Size() const Standard_OVERRIDE;
 
   //! Returns AABB of the structure.
-  virtual Graphic3d_BndBox4f Box (const Standard_Integer theIdx) const Standard_OVERRIDE;
+  virtual Graphic3d_BndBox3d Box (const Standard_Integer theIdx) const Standard_OVERRIDE;
 
   //! Calculates center of the AABB along given axis.
-  virtual Standard_ShortReal Center (const Standard_Integer theIdx,
-                                     const Standard_Integer theAxis) const Standard_OVERRIDE;
+  virtual Standard_Real Center (const Standard_Integer theIdx,
+                                const Standard_Integer theAxis) const Standard_OVERRIDE;
 
   //! Swaps structures with the given indices.
   virtual void Swap (const Standard_Integer theIdx1,
@@ -76,12 +76,12 @@ public:
   }
 
   //! Returns BVH tree for the given world view projection (builds it if necessary).
-  const NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> >& BVH (const Handle(Graphic3d_Camera)& theCamera,
-                                                                   const OpenGl_Mat4& theProjectionMatrix,
-                                                                   const OpenGl_Mat4& theWorldViewMatrix,
-                                                                   const Standard_Integer theViewportWidth,
-                                                                   const Standard_Integer theViewportHeight,
-                                                                   const Graphic3d_WorldViewProjState& theWVPState);
+  const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& BVH (const Handle(Graphic3d_Camera)& theCamera,
+                                                              const OpenGl_Mat4d& theProjectionMatrix,
+                                                              const OpenGl_Mat4d& theWorldViewMatrix,
+                                                              const Standard_Integer theViewportWidth,
+                                                              const Standard_Integer theViewportHeight,
+                                                              const Graphic3d_WorldViewProjState& theWVPState);
 
 private:
 
@@ -89,10 +89,10 @@ private:
   Standard_Boolean myIsDirty;
 
   //! Constructed bottom-level BVH.
-  NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> > myBVH;
+  NCollection_Handle<BVH_Tree<Standard_Real, 3> > myBVH;
 
   //! Builder for bottom-level BVH.
-  NCollection_Handle<BVH_Builder<Standard_ShortReal, 4> > myBuilder;
+  NCollection_Handle<BVH_Builder<Standard_Real, 3> > myBuilder;
 
   //! Indexed map of structures.
   NCollection_IndexedMap<const OpenGl_Structure*> myStructs;
@@ -100,7 +100,7 @@ private:
   //! Cached set of bounding boxes precomputed for transformation persistent selectable objects.
   //! Cache exists only during computation of BVH Tree. Bounding boxes are world view projection
   //! dependent and should by synchronized.
-  NCollection_IndexedMap<HBndBox4f> myStructBoxes;
+  NCollection_IndexedMap<Handle(HBndBox3d)> myStructBoxes;
 
   //! State of world view projection used for generation of transformation persistence bounding boxes.
   Graphic3d_WorldViewProjState myStructBoxesState;

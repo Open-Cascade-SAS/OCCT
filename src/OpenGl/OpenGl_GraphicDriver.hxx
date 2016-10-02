@@ -157,7 +157,7 @@ public:
   Standard_EXPORT void SetZLayerSettings (const Graphic3d_ZLayerId theLayerId, const Graphic3d_ZLayerSettings& theSettings) Standard_OVERRIDE;
 
   //! Returns the settings of a single Z layer.
-  Standard_EXPORT virtual Graphic3d_ZLayerSettings ZLayerSettings (const Graphic3d_ZLayerId theLayerId) Standard_OVERRIDE;
+  Standard_EXPORT virtual const Graphic3d_ZLayerSettings& ZLayerSettings (const Graphic3d_ZLayerId theLayerId) const Standard_OVERRIDE;
 
 public:
 

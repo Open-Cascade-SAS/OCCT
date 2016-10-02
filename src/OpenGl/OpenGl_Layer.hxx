@@ -51,20 +51,14 @@ public:
   //! Destructor.
   virtual ~OpenGl_Layer();
 
+  //! Return true if layer was marked with immediate flag.
+  Standard_Boolean IsImmediate() const  { return myLayerSettings.IsImmediate(); }
+
   //! Returns settings of the layer object.
   const Graphic3d_ZLayerSettings& LayerSettings() const { return myLayerSettings; };
 
   //! Sets settings of the layer object.
-  void SetLayerSettings (const Graphic3d_ZLayerSettings& theSettings)
-  {
-    myLayerSettings = theSettings;
-  }
-
-  //! Returns true if theSetting is enabled for the layer.
-  Standard_Boolean IsSettingEnabled (const Graphic3d_ZLayerSetting theSetting) const
-  {
-    return myLayerSettings.IsSettingEnabled (theSetting);
-  }
+  void SetLayerSettings (const Graphic3d_ZLayerSettings& theSettings);
 
   void Add (const OpenGl_Structure* theStruct,
             const Standard_Integer  thePriority,
@@ -105,11 +99,11 @@ public:
   //! @param theWindowHeight       viewport height (for applying transformation-persistence)
   //! @param theToIncludeAuxiliary consider also auxiliary presentations (with infinite flag or with trihedron transformation persistence)
   //! @return computed bounding box
-  Graphic3d_BndBox4f BoundingBox (const Standard_Integer          theViewId,
-                                  const Handle(Graphic3d_Camera)& theCamera,
-                                  const Standard_Integer          theWindowWidth,
-                                  const Standard_Integer          theWindowHeight,
-                                  const Standard_Boolean          theToIncludeAuxiliary) const;
+  Bnd_Box BoundingBox (const Standard_Integer          theViewId,
+                       const Handle(Graphic3d_Camera)& theCamera,
+                       const Standard_Integer          theWindowWidth,
+                       const Standard_Integer          theWindowHeight,
+                       const Standard_Boolean          theToIncludeAuxiliary) const;
 
   //! Returns zoom-scale factor.
   Standard_Real considerZoomPersistenceObjects (const Standard_Integer          theViewId,
@@ -171,7 +165,7 @@ private:
   mutable bool myIsBoundingBoxNeedsReset[2];
 
   //! Cached layer bounding box.
-  mutable Graphic3d_BndBox4f myBoundingBox[2];
+  mutable Bnd_Box myBoundingBox[2];
 
 public:
 

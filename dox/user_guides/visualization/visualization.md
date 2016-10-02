@@ -2404,19 +2404,55 @@ For each z-layer, it is allowed to:
 * Enable / disable depth buffer clearing.
 * Enable / disable polygon offset.
 
-The corresponding method *SetZLayerOption (...)* is available in *Graphic3d_GraphicDriver* interface. You can get the options using getter from *Visual3d_ViewManager* and *V3d_Viewer*. It returns *Graphic3d_ZLayerSettings* cached in *Visual3d_ViewManager* for a given *LayerId*.
+You can get the options using getter from *Visual3d_ViewManager* and *V3d_Viewer*. It returns *Graphic3d_ZLayerSettings* for a given *LayerId*.
 
 Example:
 ~~~~~
 // change z-layer settings
 Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (anId);
-aSettings.EnableSetting (Graphic3d_ZLayerDepthTest);
-aSettings.EnableSetting (Graphic3d_ZLayerDepthWrite);
-aSettings.EnableSetting (Graphic3d_ZLayerDepthClear);
-aSettings.EnableSetting (Graphic3d_ZLayerDepthOffset);
+aSettings.SetEnableDepthTest (Standard_True);
+aSettings.SetEnableDepthWrite(Standard_True);
+aSettings.SetClearDepth      (Standard_True);
+aSettings.SetPolygonOffset   (Graphic3d_PolygonOffset());
 aViewer->SetZLayerSettings (anId, aSettings);
 ~~~~~
 
+Another application for Z-Layer feature is treating visual precision issues when displaying objects far from the World Center.
+The key problem with such objects is that visualization data is stored and manipulated with single precision floating-point numbers (32-bit).
+Single precision 32-bit floating-point number gives only 6-9 significant decimal digits precision,
+while double precision 64-bit number gives 15–17 significant decimal digits precision - sufficient enough for most applications.
+
+When moving Object far from the World Center, float number steadily eats precision.
+The camera Eye position adds leading decimal digits to overall Object transformation which discards smaller digits due to floating point number nature.
+For example, the object of size 0.0000123 moved to position 1000 has result transformation 1000.0000123,
+which overflows single precision floating point - considering the most optimistic scenario of 9 significant digits (but it is really not this case), the result number will be 1000.00001.
+
+The result of this imprecision are visual artifacts in 3D Viewer of two kinds:
+
+* Overall per-vertex Object distortion.
+  This happens when each vertex position have been defined within World Coordinate system.
+* Object is not distorted itself, but its position in the World is unstable and imprecise - object jumps during camera manipulations.
+  This happens when vertices have been defined within Local Coordinate system at the distance small enough to keep precision within single precision float,
+  however Local Transformation applied to the Object is corrupted due to single precision float.
+
+The first issue can not be handled without switching entire presentation into double precision (for each vertex position).
+However, visualization hardware is much faster using single precision float number rather than double precision - so this is not an option in most cases.
+The second issue, however, can be negated by applying special rendering tricks.
+
+So, to apply this feature in OCCT, application needs:
+
+* Define Local Transformation for each object so that presentation data will fit into single precision float without distortion.
+* Spatially split the world into smaller areas/cells where single precision float will be sufficient.
+  The size of such cell might vary and depends on the precision required by application (e.g. how much user is able to zoom in camera within application).
+* Define more Z-Layer for each spatial cell containing any object.
+  Define the *Local Origin* property of the Z-Layer according to the center of the cell.
+    Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (anId);
+    aSettings.SetLocalOrigin (400.0, 0.0, 0.0);
+* Assign presentable object to the nearest Z-Layer.
+
+Note that *Local Origin* of the Layer is a rendering-only thing - everything outside will be still defined in the World Coordinate System,
+including Local Transformation of the Object and Detection results.
+E.g., while moving presentation between Z-layers with different Local Origin, the Object will be still left at the same place - only visualization quality will vary.
 
 @subsubsection occt_visu_4_4_16 Clipping planes
 

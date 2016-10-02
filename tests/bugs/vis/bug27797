@@ -11,11 +11,11 @@ vertex v 100 -300 0
 vclear
 vinit View1
 catch { vzlayer del 1 }
-vzlayer add 1
-vzlayer enable 1 depthclear
+set aLayerId [vzlayer add]
+vzlayer ${aLayerId} -enable depthClear
 vaxo
 vdisplay -noupdate -dispMode 1 -highMode 1 b1
-vdisplay -noupdate -dispMode 1 -highMode 1 -layer 1 b2
+vdisplay -noupdate -dispMode 1 -highMode 1 -layer ${aLayerId} b2
 vsetcolor -noupdate b1 RED
 vsetcolor -noupdate b2 GREEN
 vfit

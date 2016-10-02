@@ -425,10 +425,10 @@ private:
   Standard_EXPORT Graphic3d_BndBox4f minMaxCoord() const;
   
   //! Gets untransformed bounding box from structure.
-  Standard_EXPORT void getBox (Graphic3d_BndBox4d& theBox, const Standard_Boolean theToIgnoreInfiniteFlag = Standard_False) const;
+  Standard_EXPORT void getBox (Graphic3d_BndBox3d& theBox, const Standard_Boolean theToIgnoreInfiniteFlag = Standard_False) const;
   
   //! Adds transformed (with myCStructure->Transformation) bounding box of structure to theBox.
-  Standard_EXPORT void addTransformed (Graphic3d_BndBox4d& theBox, const Standard_Boolean theToIgnoreInfiniteFlag = Standard_False) const;
+  Standard_EXPORT void addTransformed (Graphic3d_BndBox3d& theBox, const Standard_Boolean theToIgnoreInfiniteFlag = Standard_False) const;
   
   //! Returns the manager to which <me> is associated.
   Standard_EXPORT Handle(Graphic3d_StructureManager) StructureManager() const;

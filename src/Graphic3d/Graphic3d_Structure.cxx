@@ -100,24 +100,9 @@ void Graphic3d_Structure::Clear (const Standard_Boolean theWithDestruction)
 //=======================================================================
 void Graphic3d_Structure::CalculateBoundBox()
 {
-  Graphic3d_BndBox4d aBox;
+  Graphic3d_BndBox3d aBox;
   addTransformed (aBox, Standard_True);
-  if (aBox.IsValid())
-  {
-    Graphic3d_Vec4 aMinPt (RealToShortReal (aBox.CornerMin().x()),
-                           RealToShortReal (aBox.CornerMin().y()),
-                           RealToShortReal (aBox.CornerMin().z()),
-                           1.0f);
-    Graphic3d_Vec4 aMaxPt (RealToShortReal (aBox.CornerMax().x()),
-                           RealToShortReal (aBox.CornerMax().y()),
-                           RealToShortReal (aBox.CornerMax().z()),
-                           1.0f);
-    myCStructure->ChangeBoundingBox() = Graphic3d_BndBox4f (aMinPt, aMaxPt);
-  }
-  else
-  {
-    myCStructure->ChangeBoundingBox().Clear();
-  }
+  myCStructure->ChangeBoundingBox() = aBox;
 }
 
 //=============================================================================
@@ -968,28 +953,26 @@ void Graphic3d_Structure::SetTransformation (const Handle(Geom_Transformation)& 
 //=============================================================================
 Bnd_Box Graphic3d_Structure::MinMaxValues (const Standard_Boolean theToIgnoreInfiniteFlag) const
 {
-  Graphic3d_BndBox4d aBox;
-  Bnd_Box aResult;
+  Graphic3d_BndBox3d aBox;
   addTransformed (aBox, theToIgnoreInfiniteFlag);
-  if (aBox.IsValid())
+  if (!aBox.IsValid())
   {
-    aResult.Add (gp_Pnt (aBox.CornerMin().x(),
-                         aBox.CornerMin().y(),
-                         aBox.CornerMin().z()));
-    aResult.Add (gp_Pnt (aBox.CornerMax().x(),
-                         aBox.CornerMax().y(),
-                         aBox.CornerMax().z()));
+    return Bnd_Box();
+  }
 
-    Standard_Real aLimMin = ShortRealFirst() + 1.0;
-    Standard_Real aLimMax = ShortRealLast() - 1.0;
-    gp_Pnt aMin = aResult.CornerMin();
-    gp_Pnt aMax = aResult.CornerMax();
-    if (aMin.X() < aLimMin && aMin.Y() < aLimMin && aMin.Z() < aLimMin &&
-        aMax.X() > aLimMax && aMax.Y() > aLimMax && aMax.Z() > aLimMax)
-    {
-      //For structure which infinite in all three dimensions the Whole bounding box will be returned
-      aResult.SetWhole();
-    }
+  Bnd_Box aResult;
+  aResult.Update (aBox.CornerMin().x(), aBox.CornerMin().y(), aBox.CornerMin().z(),
+                  aBox.CornerMax().x(), aBox.CornerMax().y(), aBox.CornerMax().z());
+
+  Standard_Real aLimMin = ShortRealFirst() + 1.0;
+  Standard_Real aLimMax = ShortRealLast()  - 1.0;
+  gp_Pnt aMin = aResult.CornerMin();
+  gp_Pnt aMax = aResult.CornerMax();
+  if (aMin.X() < aLimMin && aMin.Y() < aLimMin && aMin.Z() < aLimMin
+   && aMax.X() > aLimMax && aMax.Y() > aLimMax && aMax.Z() > aLimMax)
+  {
+    //For structure which infinite in all three dimensions the Whole bounding box will be returned
+    aResult.SetWhole();
   }
   return aResult;
 }
@@ -1086,33 +1069,31 @@ Graphic3d_BndBox4f Graphic3d_Structure::minMaxCoord() const
 //function : addTransformed
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::getBox (Graphic3d_BndBox4d&    theBox,
+void Graphic3d_Structure::getBox (Graphic3d_BndBox3d&    theBox,
                                   const Standard_Boolean theToIgnoreInfiniteFlag) const
 {
   Graphic3d_BndBox4f aBoxF = minMaxCoord();
   if (aBoxF.IsValid())
   {
-    theBox = Graphic3d_BndBox4d (Graphic3d_Vec4d ((Standard_Real )aBoxF.CornerMin().x(),
+    theBox = Graphic3d_BndBox3d (Graphic3d_Vec3d ((Standard_Real )aBoxF.CornerMin().x(),
                                                   (Standard_Real )aBoxF.CornerMin().y(),
-                                                  (Standard_Real )aBoxF.CornerMin().z(),
-                                                  (Standard_Real )aBoxF.CornerMin().w()),
-                                 Graphic3d_Vec4d ((Standard_Real )aBoxF.CornerMax().x(),
+                                                  (Standard_Real )aBoxF.CornerMin().z()),
+                                 Graphic3d_Vec3d ((Standard_Real )aBoxF.CornerMax().x(),
                                                   (Standard_Real )aBoxF.CornerMax().y(),
-                                                  (Standard_Real )aBoxF.CornerMax().z(),
-                                                  (Standard_Real )aBoxF.CornerMax().w()));
+                                                  (Standard_Real )aBoxF.CornerMax().z()));
     if (IsInfinite()
     && !theToIgnoreInfiniteFlag)
     {
-      const Graphic3d_Vec4d aDiagVec = theBox.CornerMax() - theBox.CornerMin();
-      if (aDiagVec.xyz().SquareModulus() >= 500000.0 * 500000.0)
+      const Graphic3d_Vec3d aDiagVec = theBox.CornerMax() - theBox.CornerMin();
+      if (aDiagVec.SquareModulus() >= 500000.0 * 500000.0)
       {
         // bounding borders of infinite line has been calculated as own point in center of this line
-        theBox = Graphic3d_BndBox4d ((theBox.CornerMin() + theBox.CornerMax()) * 0.5);
+        theBox = Graphic3d_BndBox3d ((theBox.CornerMin() + theBox.CornerMax()) * 0.5);
       }
       else
       {
-        theBox = Graphic3d_BndBox4d (Graphic3d_Vec4d (RealFirst(), RealFirst(), RealFirst(), 1.0),
-                                     Graphic3d_Vec4d (RealLast(),  RealLast(),  RealLast(),  1.0));
+        theBox = Graphic3d_BndBox3d (Graphic3d_Vec3d (RealFirst(), RealFirst(), RealFirst()),
+                                     Graphic3d_Vec3d (RealLast(),  RealLast(),  RealLast()));
         return;
       }
     }
@@ -1123,10 +1104,10 @@ void Graphic3d_Structure::getBox (Graphic3d_BndBox4d&    theBox,
 //function : addTransformed
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::addTransformed (Graphic3d_BndBox4d&    theBox,
+void Graphic3d_Structure::addTransformed (Graphic3d_BndBox3d&    theBox,
                                           const Standard_Boolean theToIgnoreInfiniteFlag) const
 {
-  Graphic3d_BndBox4d aCombinedBox, aBox;
+  Graphic3d_BndBox3d aCombinedBox, aBox;
   getBox (aCombinedBox, theToIgnoreInfiniteFlag);
 
   for (Graphic3d_IndexedMapOfAddress::Iterator anIter (myDescendants); anIter.More(); anIter.Next())

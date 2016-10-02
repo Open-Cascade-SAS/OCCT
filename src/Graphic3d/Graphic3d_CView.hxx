@@ -308,11 +308,11 @@ public:
   //! @param theWindowHeight       viewport height (for applying transformation-persistence)
   //! @param theToIncludeAuxiliary consider also auxiliary presentations (with infinite flag or with trihedron transformation persistence)
   //! @return computed bounding box
-  virtual Graphic3d_BndBox4f ZLayerBoundingBox (const Graphic3d_ZLayerId        theLayerId,
-                                                const Handle(Graphic3d_Camera)& theCamera,
-                                                const Standard_Integer          theWindowWidth,
-                                                const Standard_Integer          theWindowHeight,
-                                                const Standard_Boolean          theToIncludeAuxiliary) const = 0;
+  virtual Bnd_Box ZLayerBoundingBox (const Graphic3d_ZLayerId        theLayerId,
+                                     const Handle(Graphic3d_Camera)& theCamera,
+                                     const Standard_Integer          theWindowWidth,
+                                     const Standard_Integer          theWindowHeight,
+                                     const Standard_Boolean          theToIncludeAuxiliary) const = 0;
 
   //! Remove Z layer from the specified view. All structures
   //! displayed at the moment in layer will be displayed in default layer

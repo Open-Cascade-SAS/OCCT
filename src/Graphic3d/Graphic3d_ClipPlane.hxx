@@ -16,16 +16,15 @@
 #ifndef _Graphic3d_ClipPlane_HeaderFile
 #define _Graphic3d_ClipPlane_HeaderFile
 
-#include <Standard_Macro.hxx>
-#include <Standard_TypeDef.hxx>
-#include <Standard_Transient.hxx>
-#include <NCollection_Vec4.hxx>
+#include <Aspect_HatchStyle.hxx>
+#include <gp_Pln.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_CappingFlags.hxx>
 #include <Graphic3d_TextureMap.hxx>
-#include <Aspect_HatchStyle.hxx>
-
-class gp_Pln;
+#include <NCollection_Vec4.hxx>
+#include <Standard_Macro.hxx>
+#include <Standard_TypeDef.hxx>
+#include <Standard_Transient.hxx>
 
 //! Container for properties describing graphic driver clipping planes.
 //! It is up to application to create instances of this class and specify its
@@ -114,10 +113,9 @@ public:
     return myIsCapping;
   }
 
-  //! Get geometrical definition. The plane is built up
-  //! from the equation clipping plane equation vector.
-  //! @return geometrical definition of clipping plane.
-  Standard_EXPORT gp_Pln ToPlane() const;
+  //! Get geometrical definition.
+  //! @return geometrical definition of clipping plane
+  const gp_Pln& ToPlane() const { return myPlane; }
 
   //! Clone plane. Virtual method to simplify copying procedure if plane
   //! class is redefined at application level to add specific fields to it
@@ -228,12 +226,13 @@ private:
 
   Handle(Graphic3d_AspectFillArea3d) myAspect;    //!< fill area aspect
   TCollection_AsciiString myId;                   //!< resource id
+  gp_Pln                  myPlane;                //!< plane definition
   Equation                myEquation;             //!< plane equation vector
   unsigned int            myFlags;                //!< capping flags
-  Standard_Boolean        myIsOn;                 //!< state of the clipping plane
-  Standard_Boolean        myIsCapping;            //!< state of graphic driver capping
   unsigned int            myEquationMod;          //!< modification counter for equation
   unsigned int            myAspectMod;            //!< modification counter of aspect
+  Standard_Boolean        myIsOn;                 //!< state of the clipping plane
+  Standard_Boolean        myIsCapping;            //!< state of graphic driver capping
 
 public:
 

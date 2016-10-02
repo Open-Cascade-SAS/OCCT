@@ -130,7 +130,7 @@ public:
   virtual void SetZLayerSettings (const Graphic3d_ZLayerId theLayerId, const Graphic3d_ZLayerSettings& theSettings) = 0;
 
   //! Returns the settings of a single Z layer.
-  virtual Graphic3d_ZLayerSettings ZLayerSettings (const Graphic3d_ZLayerId theLayerId) = 0;
+  virtual const Graphic3d_ZLayerSettings& ZLayerSettings (const Graphic3d_ZLayerId theLayerId) const = 0;
 
   //! Returns view associated with the window if it is exists and is activated.
   //! Returns Standard_True if the view associated to the window exists.

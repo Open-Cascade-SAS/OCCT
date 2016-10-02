@@ -660,12 +660,12 @@ void StdSelect_ViewerSelector3d::updateZLayers (const Handle(V3d_View)& theView)
   for (TColStd_SequenceOfInteger::Iterator aLayerIter (aZLayers); aLayerIter.More(); aLayerIter.Next())
   {
     Graphic3d_ZLayerSettings aSettings = theView->Viewer()->ZLayerSettings (aLayerIter.Value());
-    if (aSettings.IsSettingEnabled (Graphic3d_ZLayerDepthClear)
-     || isPrevDepthWrite != aSettings.IsSettingEnabled (Graphic3d_ZLayerDepthWrite))
+    if (aSettings.ToClearDepth()
+     || isPrevDepthWrite != aSettings.ToEnableDepthWrite())
     {
       ++aPos;
     }
-    isPrevDepthWrite = aSettings.IsSettingEnabled (Graphic3d_ZLayerDepthWrite);
+    isPrevDepthWrite = aSettings.ToEnableDepthWrite();
     myZLayerOrderMap.Bind (aLayerIter.Value(), aPos);
   }
 }

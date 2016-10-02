@@ -258,6 +258,7 @@ const char THE_FRAG_CLIP_PLANES_2[] =
 OpenGl_ShaderManager::OpenGl_ShaderManager (OpenGl_Context* theContext)
 : myShadingModel (Graphic3d_TOSM_VERTEX),
   myContext  (theContext),
+  myHasLocalOrigin (Standard_False),
   myLastView (NULL)
 {
   //
@@ -431,6 +432,15 @@ void OpenGl_ShaderManager::UpdateLightSourceStateTo (const OpenGl_ListOfLight* t
 }
 
 // =======================================================================
+// function : UpdateLightSourceState
+// purpose  :
+// =======================================================================
+void OpenGl_ShaderManager::UpdateLightSourceState()
+{
+  myLightSourceState.Update();
+}
+
+// =======================================================================
 // function : SetShadingModel
 // purpose  :
 // =======================================================================
@@ -506,36 +516,6 @@ const OpenGl_WorldViewState& OpenGl_ShaderManager::WorldViewState() const
   return myWorldViewState;
 }
 
-//! Packed properties of light source
-class OpenGl_ShaderLightParameters
-{
-public:
-
-  OpenGl_Vec4 Color;
-  OpenGl_Vec4 Position;
-  OpenGl_Vec4 Direction;
-  OpenGl_Vec4 Parameters;
-
-  //! Returns packed (serialized) representation of light source properties
-  const OpenGl_Vec4* Packed() const { return reinterpret_cast<const OpenGl_Vec4*> (this); }
-  static Standard_Integer NbOfVec4() { return 4; }
-
-};
-
-//! Packed light source type information
-class OpenGl_ShaderLightType
-{
-public:
-
-  Standard_Integer Type;
-  Standard_Integer IsHeadlight;
-
-  //! Returns packed (serialized) representation of light source type
-  const OpenGl_Vec2i* Packed() const { return reinterpret_cast<const OpenGl_Vec2i*> (this); }
-  static Standard_Integer NbOfVec2i() { return 1; }
-
-};
-
 // =======================================================================
 // function : PushLightSourceState
 // purpose  : Pushes state of OCCT light sources to the program
@@ -548,10 +528,9 @@ void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgr
     return;
   }
 
-  OpenGl_ShaderLightType* aLightTypeArray = new OpenGl_ShaderLightType[OpenGLMaxLights];
   for (Standard_Integer aLightIt = 0; aLightIt < OpenGLMaxLights; ++aLightIt)
   {
-    aLightTypeArray[aLightIt].Type = -1;
+    myLightTypeArray[aLightIt].Type = -1;
   }
 
   const Standard_Integer aLightsDefNb = Min (myLightSourceState.LightSources()->Size(), OpenGLMaxLights);
@@ -566,13 +545,10 @@ void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgr
     theProgram->SetUniform (myContext,
                             theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_TYPES),
                             OpenGLMaxLights * OpenGl_ShaderLightType::NbOfVec2i(),
-                            aLightTypeArray[0].Packed());
+                            myLightTypeArray[0].Packed());
     theProgram->UpdateState (OpenGl_LIGHT_SOURCES_STATE, myLightSourceState.Index());
-    delete[] aLightTypeArray;
     return;
   }
-
-  OpenGl_ShaderLightParameters* aLightParamsArray = new OpenGl_ShaderLightParameters[aLightsDefNb];
 
   OpenGl_Vec4 anAmbient (0.0f, 0.0f, 0.0f, 0.0f);
   Standard_Integer aLightsNb = 0;
@@ -589,15 +565,31 @@ void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgr
       continue;
     }
 
-    OpenGl_ShaderLightType& aLightType = aLightTypeArray[aLightsNb];
+    OpenGl_ShaderLightType& aLightType = myLightTypeArray[aLightsNb];
     aLightType.Type        = aLight.Type;
     aLightType.IsHeadlight = aLight.IsHeadlight;
 
-    OpenGl_ShaderLightParameters& aLightParams = aLightParamsArray[aLightsNb];
-    aLightParams.Color    = aLight.Color;
-    aLightParams.Position = aLight.Type == Graphic3d_TOLS_DIRECTIONAL
-                         ? -aLight.Direction
-                         :  aLight.Position;
+    OpenGl_ShaderLightParameters& aLightParams = myLightParamsArray[aLightsNb];
+    aLightParams.Color = aLight.Color;
+    if (aLight.Type == Graphic3d_TOLS_DIRECTIONAL)
+    {
+      aLightParams.Position = -aLight.Direction;
+    }
+    else if (!aLight.IsHeadlight)
+    {
+      aLightParams.Position.x() = static_cast<float>(aLight.Position.x() - myLocalOrigin.X());
+      aLightParams.Position.y() = static_cast<float>(aLight.Position.y() - myLocalOrigin.Y());
+      aLightParams.Position.z() = static_cast<float>(aLight.Position.z() - myLocalOrigin.Z());
+      aLightParams.Position.w() = 1.0f;
+    }
+    else
+    {
+      aLightParams.Position.x() = static_cast<float>(aLight.Position.x());
+      aLightParams.Position.y() = static_cast<float>(aLight.Position.y());
+      aLightParams.Position.z() = static_cast<float>(aLight.Position.z());
+      aLightParams.Position.w() = 1.0f;
+    }
+
     if (aLight.Type == Graphic3d_TOLS_SPOT)
     {
       aLightParams.Direction = aLight.Direction;
@@ -615,16 +607,14 @@ void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgr
   theProgram->SetUniform (myContext,
                           theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_TYPES),
                           OpenGLMaxLights * OpenGl_ShaderLightType::NbOfVec2i(),
-                          aLightTypeArray[0].Packed());
+                          myLightTypeArray[0].Packed());
   if (aLightsNb > 0)
   {
     theProgram->SetUniform (myContext,
                             theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_PARAMS),
                             aLightsNb * OpenGl_ShaderLightParameters::NbOfVec4(),
-                            aLightParamsArray[0].Packed());
+                            myLightParamsArray[0].Packed());
   }
-  delete[] aLightParamsArray;
-  delete[] aLightTypeArray;
 
   theProgram->UpdateState (OpenGl_LIGHT_SOURCES_STATE, myLightSourceState.Index());
 }
@@ -794,10 +784,17 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
     }
 
     const Graphic3d_ClipPlane::Equation& anEquation = aPlane->GetEquation();
-    anEquations[aPlaneId] = OpenGl_Vec4 ((float) anEquation.x(),
-                                         (float) anEquation.y(),
-                                         (float) anEquation.z(),
-                                         (float) anEquation.w());
+    OpenGl_Vec4& aPlaneEq = anEquations[aPlaneId];
+    aPlaneEq.x() = float(anEquation.x());
+    aPlaneEq.y() = float(anEquation.y());
+    aPlaneEq.z() = float(anEquation.z());
+    aPlaneEq.w() = float(anEquation.w());
+    if (myHasLocalOrigin)
+    {
+      const gp_XYZ        aPos = aPlane->ToPlane().Position().Location().XYZ() - myLocalOrigin;
+      const Standard_Real aD   = -(anEquation.x() * aPos.X() + anEquation.y() * aPos.Y() + anEquation.z() * aPos.Z());
+      aPlaneEq.w() = float(aD);
+    }
     ++aPlaneId;
   }
 

@@ -80,6 +80,12 @@ public:
   //! Synchronize structure transformation
   Standard_EXPORT virtual void SetTransformation (const Handle(Geom_Transformation)& theTrsf) Standard_OVERRIDE;
 
+  //! Set transformation persistence.
+  Standard_EXPORT virtual void SetTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers) Standard_OVERRIDE;
+
+  //! Set z layer ID to display the structure in specified layer
+  Standard_EXPORT virtual void SetZLayer(const Graphic3d_ZLayerId theLayerIndex) Standard_OVERRIDE;
+
   //! Highlights structure according to the given style and updates corresponding class fields
   //! (highlight status and style)
   Standard_EXPORT virtual void GraphicHighlight (const Handle(Graphic3d_HighlightStyle)& theStyle,
@@ -161,6 +167,9 @@ public:
   //! Is the structure ray-tracable (contains ray-tracable elements)?
   Standard_Boolean IsRaytracable() const;
 
+  //! Update render transformation matrix.
+  Standard_EXPORT void updateLayerTransformation();
+
 protected:
 
   Standard_EXPORT virtual ~OpenGl_Structure();
@@ -185,6 +194,7 @@ protected:
   Handle(OpenGl_Group)       myHighlightBox;
 
   OpenGl_Structure*          myInstancedStructure;
+  Graphic3d_Mat4             myRenderTrsf; //!< transformation, actually used for rendering (includes Local Origin shift)
 
   mutable Standard_Boolean   myIsRaytracable;
   mutable Standard_Size      myModificationState;

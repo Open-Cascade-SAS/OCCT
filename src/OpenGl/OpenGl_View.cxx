@@ -175,6 +175,29 @@ void OpenGl_View::Remove()
 // function : SetTextureEnv
 // purpose  :
 // =======================================================================
+void OpenGl_View::SetCamera(const Handle(Graphic3d_Camera)& theCamera)
+{
+  myCamera = theCamera;
+}
+
+// =======================================================================
+// function : SetLocalOrigin
+// purpose  :
+// =======================================================================
+void OpenGl_View::SetLocalOrigin (const gp_XYZ& theOrigin)
+{
+  myLocalOrigin = theOrigin;
+  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+  if (!aCtx.IsNull())
+  {
+    aCtx->ShaderManager()->SetLocalOrigin (theOrigin);
+  }
+}
+
+// =======================================================================
+// function : SetTextureEnv
+// purpose  :
+// =======================================================================
 void OpenGl_View::SetTextureEnv (const Handle(Graphic3d_TextureEnv)& theTextureEnv)
 {
   Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
@@ -488,13 +511,13 @@ void OpenGl_View::InvalidateZLayerBoundingBox (const Graphic3d_ZLayerId theLayer
 //function : ZLayerBoundingBox
 //purpose  :
 //=======================================================================
-Graphic3d_BndBox4f OpenGl_View::ZLayerBoundingBox (const Graphic3d_ZLayerId        theLayerId,
-                                                   const Handle(Graphic3d_Camera)& theCamera,
-                                                   const Standard_Integer          theWindowWidth,
-                                                   const Standard_Integer          theWindowHeight,
-                                                   const Standard_Boolean          theToIncludeAuxiliary) const
+Bnd_Box OpenGl_View::ZLayerBoundingBox (const Graphic3d_ZLayerId        theLayerId,
+                                        const Handle(Graphic3d_Camera)& theCamera,
+                                        const Standard_Integer          theWindowWidth,
+                                        const Standard_Integer          theWindowHeight,
+                                        const Standard_Boolean          theToIncludeAuxiliary) const
 {
-  Graphic3d_BndBox4f aBox;
+  Bnd_Box aBox;
   if (myZLayers.LayerIDs().IsBound (theLayerId))
   {
     aBox = myZLayers.Layer (theLayerId).BoundingBox (Identification(),
@@ -515,10 +538,10 @@ Graphic3d_BndBox4f OpenGl_View::ZLayerBoundingBox (const Graphic3d_ZLayerId     
     // We add here full-screen plane with 2D transformation persistence
     // for simplicity (myBgTextureArray might define a little bit different options
     // but it is updated within ::Render())
-    const Graphic3d_Mat4& aProjectionMat = theCamera->ProjectionMatrixF();
-    const Graphic3d_Mat4& aWorldViewMat  = theCamera->OrientationMatrixF();
-    Graphic3d_BndBox4f aBox2d (Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f),
-                               Graphic3d_Vec4 (float(theWindowWidth), float(theWindowHeight), 0.0f, 0.0f));
+    const Graphic3d_Mat4d& aProjectionMat = theCamera->ProjectionMatrix();
+    const Graphic3d_Mat4d& aWorldViewMat  = theCamera->OrientationMatrix();
+    Graphic3d_BndBox3d aBox2d (Graphic3d_Vec3d (0.0, 0.0, 0.0),
+                               Graphic3d_Vec3d (double(theWindowWidth), double(theWindowHeight), 0.0));
 
     Graphic3d_TransformPers aTrsfPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_LOWER);
     aTrsfPers.Apply (theCamera,
@@ -527,7 +550,8 @@ Graphic3d_BndBox4f OpenGl_View::ZLayerBoundingBox (const Graphic3d_ZLayerId     
                      theWindowWidth,
                      theWindowHeight,
                      aBox2d);
-    aBox.Combine (aBox2d);
+    aBox.Add (gp_Pnt (aBox2d.CornerMin().x(), aBox2d.CornerMin().y(), aBox2d.CornerMin().z()));
+    aBox.Add (gp_Pnt (aBox2d.CornerMax().x(), aBox2d.CornerMax().y(), aBox2d.CornerMax().z()));
   }
 
   return aBox;

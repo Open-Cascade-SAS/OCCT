@@ -2239,9 +2239,9 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& the
 
     if (aLight.Type != Graphic3d_TOLS_DIRECTIONAL)
     {
-      aPosition = BVH_Vec4f (aLight.Position.x(),
-                             aLight.Position.y(),
-                             aLight.Position.z(),
+      aPosition = BVH_Vec4f (static_cast<float>(aLight.Position.x()),
+                             static_cast<float>(aLight.Position.y()),
+                             static_cast<float>(aLight.Position.z()),
                              1.0f);
 
       // store smoothing radius in w-component

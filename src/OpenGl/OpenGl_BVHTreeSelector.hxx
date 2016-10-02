@@ -39,8 +39,8 @@ public:
   //! @param theMinPt [in] maximum point of AABB.
   //! @param theMaxPt [in] minimum point of AABB.
   //! @return Standard_True, if AABB is in viewing area, Standard_False otherwise.
-  Standard_EXPORT Standard_Boolean Intersect (const OpenGl_Vec4& theMinPt,
-                                              const OpenGl_Vec4& theMaxPt) const;
+  Standard_EXPORT Standard_Boolean Intersect (const OpenGl_Vec3d& theMinPt,
+                                              const OpenGl_Vec3d& theMaxPt) const;
 
   //! Caches view volume's vertices projections along its normals and AABBs dimensions.
   //! Must be called at the beginning of each BVH tree traverse loop.
@@ -50,13 +50,13 @@ public:
   const Handle(Graphic3d_Camera)& Camera() const { return myCamera; }
 
   //! Returns current projection matrix.
-  const OpenGl_Mat4& ProjectionMatrix() const
+  const OpenGl_Mat4d& ProjectionMatrix() const
   {
     return myProjectionMat;
   }
 
   //! Returns current world view transformation matrix.
-  const OpenGl_Mat4& WorldViewMatrix() const
+  const OpenGl_Mat4d& WorldViewMatrix() const
   {
     return myWorldViewMat;
   }
@@ -82,8 +82,8 @@ protected:
   //! Calculates signed distance from plane to point.
   //! @param theNormal [in] the plane's normal.
   //! @param thePnt    [in]
-  Standard_EXPORT Standard_ShortReal SignedPlanePointDistance (const OpenGl_Vec4& theNormal,
-                                                               const OpenGl_Vec4& thePnt);
+  Standard_EXPORT Standard_Real SignedPlanePointDistance (const OpenGl_Vec4d& theNormal,
+                                                          const OpenGl_Vec4d& thePnt);
 
 protected:
 
@@ -115,25 +115,25 @@ protected:
 
 protected:
 
-  OpenGl_Vec4 myClipPlanes[PlanesNB];      //!< Plane equations
-  OpenGl_Vec4 myClipVerts[ClipVerticesNB]; //!< Vertices
+  OpenGl_Vec4d myClipPlanes[PlanesNB];      //!< Plane equations
+  OpenGl_Vec4d myClipVerts[ClipVerticesNB]; //!< Vertices
 
   Handle(Graphic3d_Camera) myCamera; //!< camera definition
 
   // for caching clip points projections onto viewing area normals once per traverse
   // ORDER: TOP, BOTTOM, LEFT, RIGHT, NEAR, FAR
-  Standard_ShortReal myMaxClipProjectionPts[PlanesNB]; //!< Max view volume's vertices projections onto its normals
-  Standard_ShortReal myMinClipProjectionPts[PlanesNB]; //!< Min view volume's vertices projections onto its normals
+  Standard_Real myMaxClipProjectionPts[PlanesNB]; //!< Max view volume's vertices projections onto its normals
+  Standard_Real myMinClipProjectionPts[PlanesNB]; //!< Min view volume's vertices projections onto its normals
 
   // for caching clip points projections onto AABB normals once per traverse
   // ORDER: E0, E1, E2
-  Standard_ShortReal myMaxOrthoProjectionPts[3]; //!< Max view volume's vertices projections onto normalized dimensions of AABB
-  Standard_ShortReal myMinOrthoProjectionPts[3]; //!< Min view volume's vertices projections onto normalized dimensions of AABB
+  Standard_Real myMaxOrthoProjectionPts[3]; //!< Max view volume's vertices projections onto normalized dimensions of AABB
+  Standard_Real myMinOrthoProjectionPts[3]; //!< Min view volume's vertices projections onto normalized dimensions of AABB
 
   Standard_Boolean myIsProjectionParallel;
 
-  OpenGl_Mat4 myProjectionMat;
-  OpenGl_Mat4 myWorldViewMat;
+  OpenGl_Mat4d myProjectionMat;
+  OpenGl_Mat4d myWorldViewMat;
 
   Standard_Integer myViewportWidth;
   Standard_Integer myViewportHeight;

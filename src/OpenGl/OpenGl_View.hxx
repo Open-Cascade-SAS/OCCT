@@ -183,11 +183,11 @@ public:
   //! @param theWindowHeight       viewport height (for applying transformation-persistence)
   //! @param theToIncludeAuxiliary consider also auxiliary presentations (with infinite flag or with trihedron transformation persistence)
   //! @return computed bounding box
-  Standard_EXPORT virtual Graphic3d_BndBox4f ZLayerBoundingBox (const Graphic3d_ZLayerId        theLayerId,
-                                                                const Handle(Graphic3d_Camera)& theCamera,
-                                                                const Standard_Integer          theWindowWidth,
-                                                                const Standard_Integer          theWindowHeight,
-                                                                const Standard_Boolean          theToIncludeAuxiliary) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Bnd_Box ZLayerBoundingBox (const Graphic3d_ZLayerId        theLayerId,
+                                                     const Handle(Graphic3d_Camera)& theCamera,
+                                                     const Standard_Integer          theWindowWidth,
+                                                     const Standard_Integer          theWindowHeight,
+                                                     const Standard_Boolean          theToIncludeAuxiliary) const Standard_OVERRIDE;
 
   //! Returns pointer to an assigned framebuffer object.
   Standard_EXPORT virtual Handle(Standard_Transient) FBO() const Standard_OVERRIDE;
@@ -268,8 +268,14 @@ public:
   //! Returns camera object of the view.
   virtual const Handle(Graphic3d_Camera)& Camera() const Standard_OVERRIDE { return myCamera; }
 
+  //! Returns local camera origin currently set for rendering, might be modified during rendering.
+  const gp_XYZ& LocalOrigin() const { return myLocalOrigin; }
+
+  //! Setup local camera origin currently set for rendering.
+  Standard_EXPORT void SetLocalOrigin (const gp_XYZ& theOrigin);
+
   //! Sets camera used by the view.
-  virtual void SetCamera (const Handle(Graphic3d_Camera)& theCamera) Standard_OVERRIDE { myCamera = theCamera; }
+  Standard_EXPORT virtual void SetCamera (const Handle(Graphic3d_Camera)& theCamera) Standard_OVERRIDE;
 
   //! Returns list of lights of the view.
   virtual const Graphic3d_ListOfCLight& Lights() const Standard_OVERRIDE { return myLights; }
@@ -453,6 +459,7 @@ protected:
   Quantity_ColorRGBA              myBgColor;
   Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;
   Handle(Graphic3d_Camera)        myCamera;
+  gp_XYZ                          myLocalOrigin;
   Handle(OpenGl_FrameBuffer)      myFBO;
   Standard_Boolean                myToShowGradTrihedron;
   TCollection_AsciiString         myBackgroundImagePath;

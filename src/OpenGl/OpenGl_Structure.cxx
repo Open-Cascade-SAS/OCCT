@@ -36,14 +36,14 @@ class OpenGl_BndBoxPrs : public OpenGl_Element
 public:
 
   //! Main constructor
-  OpenGl_BndBoxPrs (const Graphic3d_BndBox4f& theBndBox)
+  OpenGl_BndBoxPrs (const Graphic3d_BndBox3d& theBndBox)
   {
-    const float Xm = theBndBox.CornerMin().x();
-    const float Ym = theBndBox.CornerMin().y();
-    const float Zm = theBndBox.CornerMin().z();
-    const float XM = theBndBox.CornerMax().x();
-    const float YM = theBndBox.CornerMax().y();
-    const float ZM = theBndBox.CornerMax().z();
+    const float Xm = (float )theBndBox.CornerMin().x();
+    const float Ym = (float)theBndBox.CornerMin().y();
+    const float Zm = (float)theBndBox.CornerMin().z();
+    const float XM = (float)theBndBox.CornerMax().x();
+    const float YM = (float)theBndBox.CornerMax().y();
+    const float ZM = (float)theBndBox.CornerMax().z();
 
     myVerts[0]  = OpenGl_Vec3 (Xm, Ym, Zm);
     myVerts[1]  = OpenGl_Vec3 (Xm, Ym, ZM);
@@ -125,7 +125,7 @@ OpenGl_Structure::OpenGl_Structure (const Handle(Graphic3d_StructureManager)& th
   myIsCulled           (Standard_True),
   myIsMirrored         (Standard_False)
 {
-  //
+  updateLayerTransformation();
 }
 
 // =======================================================================
@@ -135,6 +135,16 @@ OpenGl_Structure::OpenGl_Structure (const Handle(Graphic3d_StructureManager)& th
 OpenGl_Structure::~OpenGl_Structure()
 {
   Release (Handle(OpenGl_Context)());
+}
+
+// =======================================================================
+// function : SetZLayer
+// purpose  :
+// =======================================================================
+void OpenGl_Structure::SetZLayer (const Graphic3d_ZLayerId theLayerIndex)
+{
+  Graphic3d_CStructure::SetZLayer (theLayerIndex);
+  updateLayerTransformation();
 }
 
 // =======================================================================
@@ -154,10 +164,42 @@ void OpenGl_Structure::SetTransformation (const Handle(Geom_Transformation)& the
     myIsMirrored = aDet < 0.0;
   }
 
+  updateLayerTransformation();
   if (IsRaytracable())
   {
     ++myModificationState;
   }
+}
+
+// =======================================================================
+// function : SetTransformPersistence
+// purpose  :
+// =======================================================================
+void OpenGl_Structure::SetTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers)
+{
+  myTrsfPers = theTrsfPers;
+  updateLayerTransformation();
+}
+
+// =======================================================================
+// function : updateLayerTransformation
+// purpose  :
+// =======================================================================
+void OpenGl_Structure::updateLayerTransformation()
+{
+  gp_Trsf aRenderTrsf;
+  if (!myTrsf.IsNull())
+  {
+    aRenderTrsf = myTrsf->Trsf();
+  }
+
+  const Graphic3d_ZLayerSettings& aLayer = myGraphicDriver->ZLayerSettings (myZLayer);
+  if (!aLayer.OriginTransformation().IsNull()
+    && myTrsfPers.IsNull())
+  {
+    aRenderTrsf.SetTranslationPart (aRenderTrsf.TranslationPart() - aLayer.Origin());
+  }
+  aRenderTrsf.GetMat4 (myRenderTrsf);
 }
 
 // =======================================================================
@@ -441,17 +483,9 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   // Apply local transformation
   aCtx->ModelWorldState.Push();
   OpenGl_Mat4& aModelWorld = aCtx->ModelWorldState.ChangeCurrent();
-  if (!myTrsf.IsNull())
-  {
-    myTrsf->Trsf().GetMat4 (aModelWorld);
-  }
-  else
-  {
-    aModelWorld.InitIdentity();
-  }
+  aModelWorld = myRenderTrsf;
 
   const Standard_Boolean anOldGlNormalize = aCtx->IsGlNormalizeEnabled();
-
 #if !defined(GL_ES_VERSION_2_0)
   // detect scale transform
   if (aCtx->core11 != NULL
@@ -467,19 +501,18 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
 
   if (!myTrsfPers.IsNull())
   {
-    OpenGl_Mat4 aWorldView = aCtx->WorldViewState.Current();
-    myTrsfPers->Apply (theWorkspace->View()->Camera(), aCtx->ProjectionState.Current(), aWorldView,
-                       aCtx->Viewport()[2], aCtx->Viewport()[3]);
-
     aCtx->WorldViewState.Push();
-    aCtx->WorldViewState.SetCurrent (aWorldView);
+    OpenGl_Mat4& aWorldView = aCtx->WorldViewState.ChangeCurrent();
+    myTrsfPers->Apply (theWorkspace->View()->Camera(),
+                       aCtx->ProjectionState.Current(), aWorldView,
+                       aCtx->Viewport()[2], aCtx->Viewport()[3]);
 
   #if !defined(GL_ES_VERSION_2_0)
     if (!aCtx->IsGlNormalizeEnabled()
       && aCtx->core11 != NULL)
     {
       const Standard_Real aScale = Graphic3d_TransformUtils::ScaleFactor<Standard_ShortReal> (aWorldView);
-      if (Abs (aScale - 1.0f) > Precision::Confusion())
+      if (Abs (aScale - 1.0) > Precision::Confusion())
       {
         aCtx->SetGlNormalizeEnabled (Standard_True);
       }
@@ -515,7 +548,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   bool hasDisabled = false;
   if (aCtx->Clipping().IsClippingOrCappingOn())
   {
-    const Graphic3d_BndBox4f& aBBox = BoundingBox();
+    const Graphic3d_BndBox3d& aBBox = BoundingBox();
     if (!myClipPlanes.IsNull()
       && myClipPlanes->ToOverrideGlobal())
     {

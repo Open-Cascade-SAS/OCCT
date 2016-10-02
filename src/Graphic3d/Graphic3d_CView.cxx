@@ -26,18 +26,6 @@ namespace
 
   static const int THE_NB_DEFAULT_LAYERS = sizeof(THE_DEFAULT_LAYERS) / sizeof(*THE_DEFAULT_LAYERS);
 
-  void combineBox (Bnd_Box& aCombined, const Graphic3d_BndBox4f& theBox)
-  {
-    if (theBox.IsValid())
-    {
-      aCombined.Add (gp_Pnt (theBox.CornerMin().x(),
-                             theBox.CornerMin().y(),
-                             theBox.CornerMin().z()));
-      aCombined.Add (gp_Pnt (theBox.CornerMax().x(),
-                             theBox.CornerMax().y(),
-                             theBox.CornerMax().z()));
-    }
-  }
 }
 
 //=======================================================================
@@ -436,23 +424,23 @@ Bnd_Box Graphic3d_CView::MinMaxValues (const Standard_Boolean theToIncludeAuxili
 
   for (Standard_Integer aLayer = 0; aLayer < THE_NB_DEFAULT_LAYERS; ++aLayer)
   {
-    Graphic3d_BndBox4f aBox = ZLayerBoundingBox (THE_DEFAULT_LAYERS[aLayer],
-                                                 aCamera,
-                                                 aWinWidth,
-                                                 aWinHeight,
-                                                 theToIncludeAuxiliary);
-    combineBox (aResult, aBox);
+    Bnd_Box aBox = ZLayerBoundingBox (THE_DEFAULT_LAYERS[aLayer],
+                                      aCamera,
+                                      aWinWidth,
+                                      aWinHeight,
+                                      theToIncludeAuxiliary);
+    aResult.Add (aBox);
   }
 
   Standard_Integer aMaxZLayer = ZLayerMax();
   for (Standard_Integer aLayerId = Graphic3d_ZLayerId_Default; aLayerId <= aMaxZLayer; ++aLayerId)
   {
-    Graphic3d_BndBox4f aBox = ZLayerBoundingBox (aLayerId,
-                                                 aCamera,
-                                                 aWinWidth,
-                                                 aWinHeight,
-                                                 theToIncludeAuxiliary);
-    combineBox (aResult, aBox);
+    Bnd_Box aBox = ZLayerBoundingBox (aLayerId,
+                                      aCamera,
+                                      aWinWidth,
+                                      aWinHeight,
+                                      theToIncludeAuxiliary);
+    aResult.Add(aBox);
   }
 
   return aResult;

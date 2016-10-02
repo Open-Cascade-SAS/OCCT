@@ -2113,7 +2113,7 @@ void V3d_View::Gravity (Standard_Real& theX,
       continue;
     }
 
-    const Graphic3d_BndBox4f& aBox = aStruct->CStructure()->BoundingBox();
+    const Graphic3d_BndBox3d& aBox = aStruct->CStructure()->BoundingBox();
     if (!aBox.IsValid())
     {
       continue;
@@ -2126,12 +2126,12 @@ void V3d_View::Gravity (Standard_Real& theX,
     }
 
     // use camera projection to find gravity point
-    Xmin = (Standard_Real )aBox.CornerMin().x();
-    Ymin = (Standard_Real )aBox.CornerMin().y();
-    Zmin = (Standard_Real )aBox.CornerMin().z();
-    Xmax = (Standard_Real )aBox.CornerMax().x();
-    Ymax = (Standard_Real )aBox.CornerMax().y();
-    Zmax = (Standard_Real )aBox.CornerMax().z();
+    Xmin = aBox.CornerMin().x();
+    Ymin = aBox.CornerMin().y();
+    Zmin = aBox.CornerMin().z();
+    Xmax = aBox.CornerMax().x();
+    Ymax = aBox.CornerMax().y();
+    Zmax = aBox.CornerMax().z();
     gp_Pnt aPnts[THE_NB_BOUND_POINTS] =
     {
       gp_Pnt (Xmin, Ymin, Zmin), gp_Pnt (Xmin, Ymin, Zmax),

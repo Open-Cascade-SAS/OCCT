@@ -28,6 +28,7 @@ Graphic3d_AspectMarker3d.hxx
 Graphic3d_AspectText3d.cxx
 Graphic3d_AspectText3d.hxx
 Graphic3d_AspectTextDefinitionError.hxx
+Graphic3d_BndBox3d.hxx
 Graphic3d_BndBox4d.hxx
 Graphic3d_BndBox4f.hxx
 Graphic3d_BoundBuffer.hxx

@@ -148,7 +148,7 @@ void OpenGl_LayerList::AddStructure (const OpenGl_Structure*  theStruct,
   OpenGl_Layer& aLayer = myLayers.ChangeValue (aSeqPos);
   aLayer.Add (theStruct, thePriority, isForChangePriority);
   ++myNbStructures;
-  if (aLayer.LayerSettings().IsImmediate)
+  if (aLayer.IsImmediate())
   {
     ++myImmediateNbStructures;
   }
@@ -179,7 +179,7 @@ void OpenGl_LayerList::RemoveStructure (const OpenGl_Structure* theStructure)
   if (aLayer.Remove (theStructure, aPriority))
   {
     --myNbStructures;
-    if (aLayer.LayerSettings().IsImmediate)
+    if (aLayer.IsImmediate())
     {
       --myImmediateNbStructures;
     }
@@ -206,7 +206,7 @@ void OpenGl_LayerList::RemoveStructure (const OpenGl_Structure* theStructure)
     if (aLayerEx.Remove (theStructure, aPriority))
     {
       --myNbStructures;
-      if (aLayerEx.LayerSettings().IsImmediate)
+      if (aLayerEx.IsImmediate())
       {
         --myImmediateNbStructures;
       }
@@ -258,7 +258,7 @@ void OpenGl_LayerList::ChangeLayer (const OpenGl_Structure*  theStructure,
     }
 
     --myNbStructures;
-    if (aLayer.LayerSettings().IsImmediate)
+    if (aLayer.IsImmediate())
     {
       --myImmediateNbStructures;
     }
@@ -289,7 +289,7 @@ void OpenGl_LayerList::ChangeLayer (const OpenGl_Structure*  theStructure,
       }
 
       --myNbStructures;
-      if (aLayerEx.LayerSettings().IsImmediate)
+      if (aLayerEx.IsImmediate())
       {
         --myImmediateNbStructures;
       }
@@ -318,7 +318,7 @@ void OpenGl_LayerList::ChangePriority (const OpenGl_Structure*  theStructure,
   if (aLayer.Remove (theStructure, anOldPriority, Standard_True))
   {
     --myNbStructures;
-    if (aLayer.LayerSettings().IsImmediate)
+    if (aLayer.IsImmediate())
     {
       --myImmediateNbStructures;
     }
@@ -339,7 +339,7 @@ void OpenGl_LayerList::ChangePriority (const OpenGl_Structure*  theStructure,
     if (aLayerEx.Remove (theStructure, anOldPriority, Standard_True))
     {
       --myNbStructures;
-      if (aLayerEx.LayerSettings().IsImmediate)
+      if (aLayerEx.IsImmediate())
       {
         --myImmediateNbStructures;
       }
@@ -358,9 +358,9 @@ void OpenGl_LayerList::SetLayerSettings (const Graphic3d_ZLayerId        theLaye
                                          const Graphic3d_ZLayerSettings& theSettings)
 {
   OpenGl_Layer& aLayer = Layer (theLayerId);
-  if (aLayer.LayerSettings().IsImmediate != theSettings.IsImmediate)
+  if (aLayer.LayerSettings().IsImmediate() != theSettings.IsImmediate())
   {
-    if (theSettings.IsImmediate)
+    if (theSettings.IsImmediate())
     {
       myImmediateNbStructures += aLayer.NbStructures();
     }
@@ -409,14 +409,14 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
     }
     else if (theToDrawImmediate)
     {
-      if (!aLayer.LayerSettings().IsImmediate)
+      if (!aLayer.IsImmediate())
       {
         continue;
       }
     }
     else
     {
-      if (aLayer.LayerSettings().IsImmediate)
+      if (aLayer.IsImmediate())
       {
         continue;
       }

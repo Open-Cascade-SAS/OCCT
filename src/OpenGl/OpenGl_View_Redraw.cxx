@@ -107,10 +107,11 @@ static void bindLight (const OpenGl_Light&             theLight,
     case Graphic3d_TOLS_POSITIONAL:
     {
       // to create a realistic effect, set the GL_SPECULAR parameter to the same value as the GL_DIFFUSE
+      const OpenGl_Vec4 aPosition (static_cast<float>(theLight.Position.x()), static_cast<float>(theLight.Position.y()), static_cast<float>(theLight.Position.z()), 1.0f);
       glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
       glLightfv (theLightGlId, GL_DIFFUSE,               theLight.Color.GetData());
       glLightfv (theLightGlId, GL_SPECULAR,              theLight.Color.GetData());
-      glLightfv (theLightGlId, GL_POSITION,              theLight.Position.GetData());
+      glLightfv (theLightGlId, GL_POSITION,              aPosition.GetData());
       glLightfv (theLightGlId, GL_SPOT_DIRECTION,        THE_DEFAULT_SPOT_DIR);
       glLightf  (theLightGlId, GL_SPOT_EXPONENT,         THE_DEFAULT_SPOT_EXPONENT);
       glLightf  (theLightGlId, GL_SPOT_CUTOFF,           THE_DEFAULT_SPOT_CUTOFF);
@@ -121,10 +122,11 @@ static void bindLight (const OpenGl_Light&             theLight,
     }
     case Graphic3d_TOLS_SPOT:
     {
+      const OpenGl_Vec4 aPosition (static_cast<float>(theLight.Position.x()), static_cast<float>(theLight.Position.y()), static_cast<float>(theLight.Position.z()), 1.0f);
       glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
       glLightfv (theLightGlId, GL_DIFFUSE,               theLight.Color.GetData());
       glLightfv (theLightGlId, GL_SPECULAR,              theLight.Color.GetData());
-      glLightfv (theLightGlId, GL_POSITION,              theLight.Position.GetData());
+      glLightfv (theLightGlId, GL_POSITION,              aPosition.GetData());
       glLightfv (theLightGlId, GL_SPOT_DIRECTION,        theLight.Direction.GetData());
       glLightf  (theLightGlId, GL_SPOT_EXPONENT,         theLight.Concentration() * 128.0f);
       glLightf  (theLightGlId, GL_SPOT_CUTOFF,          (theLight.Angle() * 180.0f) / GLfloat(M_PI));
@@ -241,9 +243,9 @@ void OpenGl_View::Redraw()
   myWindow->SetSwapInterval();
 
   ++myFrameCounter;
-  const Graphic3d_StereoMode      aStereoMode  = myRenderParams.StereoMode;
-  Graphic3d_Camera::Projection    aProjectType = myCamera->ProjectionType();
-  Handle(OpenGl_Context)          aCtx         = myWorkspace->GetGlContext();
+  const Graphic3d_StereoMode   aStereoMode  = myRenderParams.StereoMode;
+  Graphic3d_Camera::Projection aProjectType = myCamera->ProjectionType();
+  Handle(OpenGl_Context)       aCtx         = myWorkspace->GetGlContext();
 
   // release pending GL resources
   aCtx->ReleaseDelayed();
@@ -768,30 +770,21 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
 
   // Update matrices if camera has changed.
   Graphic3d_WorldViewProjState aWVPState = myCamera->WorldViewProjState();
-  const Standard_Boolean isCameraChanged = myWorldViewProjState != aWVPState;
-  const Standard_Boolean isSameView      = aManager->IsSameView (this);
-  if (isCameraChanged)
+  if (myWorldViewProjState != aWVPState)
   {
-    aContext->ProjectionState.SetCurrent (myCamera->ProjectionMatrixF());
-    aContext->WorldViewState .SetCurrent (myCamera->OrientationMatrixF());
     myAccumFrames = 0;
+    myWorldViewProjState = aWVPState;
   }
 
-  // Apply new matrix state if camera has changed or this view differs from the one
-  // that was previously used for configuring matrices of shader manager
-  // (ApplyProjectionMatrix and ApplyWorldViewMatrix will affect the manager).
-  if (isCameraChanged || !isSameView)
-  {
-    aContext->ApplyProjectionMatrix();
-    aContext->ApplyWorldViewMatrix();
-  }
-
+  myLocalOrigin.SetCoord (0.0, 0.0, 0.0);
+  aContext->ProjectionState.SetCurrent (myCamera->ProjectionMatrixF());
+  aContext->WorldViewState .SetCurrent (myCamera->OrientationMatrixF());
+  aContext->ApplyProjectionMatrix();
+  aContext->ApplyWorldViewMatrix();
   if (aManager->ModelWorldState().Index() == 0)
   {
     aContext->ShaderManager()->UpdateModelWorldStateTo (OpenGl_Mat4());
   }
-
-  myWorldViewProjState = aWVPState;
 
   // ====================================
   //      Step 2: Redraw background

@@ -23,11 +23,11 @@
 #include <OpenGl_Structure.hxx>
 
 //! Set of OpenGl_Structures for building BVH tree.
-class OpenGl_BVHClipPrimitiveSet : public BVH_PrimitiveSet<Standard_ShortReal, 4>
+class OpenGl_BVHClipPrimitiveSet : public BVH_PrimitiveSet<Standard_Real, 3>
 {
 protected:
 
-  using BVH_PrimitiveSet<Standard_ShortReal, 4>::Box;
+  using BVH_PrimitiveSet<Standard_Real, 3>::Box;
 
 public:
 
@@ -38,11 +38,11 @@ public:
   virtual Standard_Integer Size() const;
 
   //! Returns AABB of the structure.
-  virtual Graphic3d_BndBox4f Box (const Standard_Integer theIdx) const;
+  virtual Graphic3d_BndBox3d Box (const Standard_Integer theIdx) const;
 
   //! Calculates center of the AABB along given axis.
-  virtual Standard_ShortReal Center (const Standard_Integer theIdx,
-                                     const Standard_Integer theAxis) const;
+  virtual Standard_Real Center (const Standard_Integer theIdx,
+                                const Standard_Integer theAxis) const;
 
   //! Swaps structures with the given indices.
   virtual void Swap (const Standard_Integer theIdx1,

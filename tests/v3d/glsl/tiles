@@ -26,40 +26,40 @@ vrotate 0.5 0 0
 vzbufftrihedron
 
 catch { vzlayer del 1 }
-vzlayer add 1
-vzlayer enable 1 depthclear
+set aLayerId [vzlayer add]
+vzlayer $aLayerId -enable depthClear
 
 vtrihedron trh
-vdisplay  -noupdate trh -layer 1 -trihedron topRight 100 100
+vdisplay  -noupdate trh -layer $aLayerId -trihedron topRight 100 100
 
 text2brep tcc "Center" -font $aLabelFont -height 30 -pos -40 0 0
-vdisplay  -noupdate tcc -2d center -layer 1 -dispMode 1
+vdisplay  -noupdate tcc -2d center -layer $aLayerId -dispMode 1
 polyline  lcc -50 -50 0 -50 50 0 50 50 0 50 0 0 0 -50 0 -50 -50 0
-vdisplay  -noupdate lcc -2d center -layer 1
+vdisplay  -noupdate lcc -2d center -layer $aLayerId
 vsetwidth -noupdate lcc 2
 
 text2brep tbl "Bottom-Left" -font $aLabelFont -height 30 -pos 0 3 5
-vdisplay  -noupdate tbl -2d bottomLeft -layer 1 -dispMode 1
+vdisplay  -noupdate tbl -2d bottomLeft -layer $aLayerId -dispMode 1
 polyline  lbl 0 0 0 0 100 0 100 100 0 100 50 0 50 0 0 0 0 0
-vdisplay  -noupdate lbl -2d bottomLeft -layer 1
+vdisplay  -noupdate lbl -2d bottomLeft -layer $aLayerId
 vsetwidth -noupdate lbl 2
 
 text2brep ttl "Top-Left" -font $aLabelFont -height 30 -pos 0 -30 0
-vdisplay  -noupdate ttl -2d topLeft -layer 1 -dispMode 1
+vdisplay  -noupdate ttl -2d topLeft -layer $aLayerId -dispMode 1
 polyline  ltl 0 -100 0 0 0 0 100 0 0 100 -50 0 50 -100 0 0 -100 0
-vdisplay  -noupdate ltl -2d topLeft -layer 1
+vdisplay  -noupdate ltl -2d topLeft -layer $aLayerId
 vsetwidth -noupdate ltl 2
 
 text2brep ttr "Top-Right" -font $aLabelFont -height 30 -pos -130 -30 0
-vdisplay  -noupdate ttr -2d topRight -layer 1 -dispMode 1
+vdisplay  -noupdate ttr -2d topRight -layer $aLayerId -dispMode 1
 polyline  ltr -100 -100 0 -100 0 0 0 0 0 0 -50 0 -50 -100 0 -100 -100 0
-vdisplay  -noupdate ltr -2d topRight -layer 1
+vdisplay  -noupdate ltr -2d topRight -layer $aLayerId
 vsetwidth -noupdate ltr 2
 
 text2brep tbr "Bottom-Right" -font $aLabelFont -height 30 -pos -180 3 0
-vdisplay  -noupdate tbr -2d bottomRight -layer 1 -dispMode 1
+vdisplay  -noupdate tbr -2d bottomRight -layer $aLayerId -dispMode 1
 polyline  lbr -100 0 0 -100 100 0 0 100 0 0 50 0 -50 0 0 -100 0 0
-vdisplay  -noupdate lbr -2d bottomRight -layer 1
+vdisplay  -noupdate lbr -2d bottomRight -layer $aLayerId
 vsetwidth -noupdate lbr 2
 
 vdrawtext t2 "Label" -pos 1 0 1 -font $aLabelFont

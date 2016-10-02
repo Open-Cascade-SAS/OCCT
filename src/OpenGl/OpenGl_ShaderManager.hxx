@@ -56,6 +56,16 @@ public:
   //! Release all resources.
   Standard_EXPORT void clear();
 
+  //! Return local camera transformation.
+  const gp_XYZ& LocalOrigin() const { return myLocalOrigin; }
+
+  //! Setup local camera transformation for compensating float precision issues.
+  void SetLocalOrigin (const gp_XYZ& theOrigin)
+  {
+    myLocalOrigin    = theOrigin;
+    myHasLocalOrigin = !theOrigin.IsEqual (gp_XYZ(0.0, 0.0, 0.0), gp::Resolution());
+  }
+
   //! Creates new shader program or re-use shared instance.
   //! @param theProxy    [IN]  program definition
   //! @param theShareKey [OUT] sharing key
@@ -185,6 +195,9 @@ public:
 
   //! Updates state of OCCT light sources.
   Standard_EXPORT void UpdateLightSourceStateTo (const OpenGl_ListOfLight* theLights);
+
+  //! Invalidate state of OCCT light sources.
+  Standard_EXPORT void UpdateLightSourceState();
 
   //! Pushes current state of OCCT light sources to specified program.
   Standard_EXPORT void PushLightSourceState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
@@ -381,6 +394,32 @@ protected:
 
 protected:
 
+  //! Packed properties of light source
+  struct OpenGl_ShaderLightParameters
+  {
+    OpenGl_Vec4 Color;
+    OpenGl_Vec4 Position;
+    OpenGl_Vec4 Direction;
+    OpenGl_Vec4 Parameters;
+
+    //! Returns packed (serialized) representation of light source properties
+    const OpenGl_Vec4* Packed() const { return reinterpret_cast<const OpenGl_Vec4*> (this); }
+    static Standard_Integer NbOfVec4() { return 4; }
+  };
+
+  //! Packed light source type information
+  struct OpenGl_ShaderLightType
+  {
+    Standard_Integer Type;
+    Standard_Integer IsHeadlight;
+
+    //! Returns packed (serialized) representation of light source type
+    const OpenGl_Vec2i* Packed() const { return reinterpret_cast<const OpenGl_Vec2i*> (this); }
+    static Standard_Integer NbOfVec2i() { return 1; }
+  };
+
+protected:
+
   Graphic3d_TypeOfShadingModel       myShadingModel;       //!< lighting shading model
   OpenGl_ShaderProgramList           myProgramList;        //!< The list of shader programs
   Handle(OpenGl_SetOfShaderPrograms) myLightPrograms;      //!< pointer to active lighting programs matrix
@@ -400,6 +439,11 @@ protected:
   OpenGl_WorldViewState              myWorldViewState;     //!< State of OCCT world-view  transformation
   OpenGl_ClippingState               myClippingState;      //!< State of OCCT clipping planes
   OpenGl_LightSourceState            myLightSourceState;   //!< State of OCCT light sources
+  gp_XYZ                             myLocalOrigin;        //!< local camera transformation
+  Standard_Boolean                   myHasLocalOrigin;     //!< flag indicating that local camera transformation has been set
+
+  mutable OpenGl_ShaderLightType       myLightTypeArray  [OpenGLMaxLights];
+  mutable OpenGl_ShaderLightParameters myLightParamsArray[OpenGLMaxLights];
 
 private:
 

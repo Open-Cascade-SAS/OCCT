@@ -119,9 +119,9 @@ void V3d_PositionalLight::SetPosition (const Standard_Real theXp,
                                        const Standard_Real theYp,
                                        const Standard_Real theZp)
 {
-  myLight.Position.x() = static_cast<Standard_ShortReal> (theXp);
-  myLight.Position.y() = static_cast<Standard_ShortReal> (theYp);
-  myLight.Position.z() = static_cast<Standard_ShortReal> (theZp);
+  myLight.Position.x() = theXp;
+  myLight.Position.y() = theYp;
+  myLight.Position.z() = theZp;
 }
 
 // =======================================================================

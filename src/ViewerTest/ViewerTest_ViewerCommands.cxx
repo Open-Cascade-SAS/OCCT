@@ -4391,210 +4391,377 @@ static int VTile (Draw_Interpretor& theDI,
   return 0;
 }
 
+//! Format ZLayer ID.
+inline const char* formZLayerId (const Standard_Integer theLayerId)
+{
+  switch (theLayerId)
+  {
+    case Graphic3d_ZLayerId_UNKNOWN: return "[INVALID]";
+    case Graphic3d_ZLayerId_Default: return "[DEFAULT]";
+    case Graphic3d_ZLayerId_Top:     return "[TOP]";
+    case Graphic3d_ZLayerId_Topmost: return "[TOPMOST]";
+    case Graphic3d_ZLayerId_TopOSD:  return "[OVERLAY]";
+    case Graphic3d_ZLayerId_BotOSD:  return "[UNDERLAY]";
+  }
+  return "";
+}
+
+//! Print the ZLayer information.
+inline void printZLayerInfo (Draw_Interpretor& theDI,
+                             const Graphic3d_ZLayerSettings& theLayer)
+{
+  if (!theLayer.Name().IsEmpty())
+  {
+    theDI << "  Name: " << theLayer.Name() << "\n";
+  }
+  if (theLayer.IsImmediate())
+  {
+    theDI << "  Immediate: TRUE\n";
+  }
+  theDI << "  Origin: " << theLayer.Origin().X() << " " << theLayer.Origin().Y() << " " << theLayer.Origin().Z() << "\n";
+  theDI << "  Depth test:   "          << (theLayer.ToEnableDepthTest() ? "enabled" : "disabled") << "\n";
+  theDI << "  Depth write:  "          << (theLayer.ToEnableDepthWrite() ? "enabled" : "disabled") << "\n";
+  theDI << "  Depth buffer clearing: " << (theLayer.ToClearDepth() ? "enabled" : "disabled") << "\n";
+  if (theLayer.PolygonOffset().Mode != Aspect_POM_None)
+  {
+    theDI << "  Depth offset: " << theLayer.PolygonOffset().Factor << " " << theLayer.PolygonOffset().Units << "\n";
+  }
+}
+
 //==============================================================================
 //function : VZLayer
 //purpose  : Test z layer operations for v3d viewer
 //==============================================================================
-static int VZLayer (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int VZLayer (Draw_Interpretor& theDI,
+                    Standard_Integer  theArgNb,
+                    const char**      theArgVec)
 {
-  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext ();
+  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
   if (aContextAIS.IsNull())
   {
-    di << "Call vinit before!\n";
-    return 1;
-  }
-  else if (argc < 2)
-  {
-    di << di.PrintHelp (argv[0]);
+    std::cout << "No active viewer!\n";
     return 1;
   }
 
   const Handle(V3d_Viewer)& aViewer = aContextAIS->CurrentViewer();
-  if (aViewer.IsNull())
+  if (theArgNb < 2)
   {
-    di << "No active viewer!\n";
+    TColStd_SequenceOfInteger aLayers;
+    aViewer->GetAllZLayers (aLayers);
+    for (TColStd_SequenceOfInteger::Iterator aLayeriter (aLayers); aLayeriter.More(); aLayeriter.Next())
+    {
+      theDI << "ZLayer " << aLayeriter.Value() << " " << formZLayerId (aLayeriter.Value()) << "\n";
+      Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (aLayeriter.Value());
+      printZLayerInfo (theDI, aSettings);
+    }
     return 1;
   }
 
-  // perform operation
-  TCollection_AsciiString anOp = TCollection_AsciiString (argv[1]);
-  if (anOp == "add")
+  Standard_Integer anArgIter = 1;
+  Standard_Integer aLayerId = Graphic3d_ZLayerId_UNKNOWN;
+  ViewerTest_AutoUpdater anUpdateTool (aContextAIS, ViewerTest::CurrentView());
+  if (anUpdateTool.parseRedrawMode (theArgVec[anArgIter]))
   {
-    Standard_Integer aNewId;
-    if (!aViewer->AddZLayer (aNewId))
-    {
-      di << "Impossible to add new z layer!\n";
-      return 1;
-    }
-
-    di << "New z layer added with index: " << aNewId << "\n";
+    ++anArgIter;
   }
-  else if (anOp == "del")
+
+  TCollection_AsciiString aFirstArg (theArgVec[anArgIter]);
+  if (aFirstArg.IsIntegerValue())
   {
-    if (argc < 3)
-    {
-      di << "Please also provide as argument id of z layer to remove\n";
-      return 1;
-    }
-
-    Standard_Integer aDelId = Draw::Atoi (argv[2]);
-    if (!aViewer->RemoveZLayer (aDelId))
-    {
-      di << "Impossible to remove the z layer or invalid id!\n";
-      return 1;
-    }
-
-    for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anObjIter (GetMapOfAIS());
-         anObjIter.More(); anObjIter.Next())
-    {
-      Handle(PrsMgr_PresentableObject) aPrs = Handle(PrsMgr_PresentableObject)::DownCast (anObjIter.Key1());
-      if (aPrs.IsNull()
-       || aPrs->ZLayer() != aDelId)
-      {
-        continue;
-      }
-      aPrs->SetZLayer (Graphic3d_ZLayerId_Default);
-    }
-
-    di << "Z layer " << aDelId << " has been removed\n";
-  }
-  else if (anOp == "get")
-  {
-    TColStd_SequenceOfInteger anIds;
-    aViewer->GetAllZLayers (anIds);
-    for (Standard_Integer aSeqIdx = 1; aSeqIdx <= anIds.Length(); aSeqIdx++)
-    {
-      di << anIds.Value (aSeqIdx) << " ";
-    }
-
-    di << "\n";
-  }
-  else if (anOp == "settings")
-  {
-    if (argc < 3)
-    {
-      di << "Please also provide an id\n";
-      return 1;
-    }
-
-    Standard_Integer anId = Draw::Atoi (argv[2]);
-    Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (anId);
-
-    di << "Depth test - " << (aSettings.IsSettingEnabled (Graphic3d_ZLayerDepthTest) ? "enabled" : "disabled") << "\n";
-    di << "Depth write - " << (aSettings.IsSettingEnabled (Graphic3d_ZLayerDepthWrite) ? "enabled" : "disabled") << "\n";
-    di << "Depth buffer clearing - " << (aSettings.IsSettingEnabled (Graphic3d_ZLayerDepthClear) ? "enabled" : "disabled") << "\n";
-    di << "Depth offset - " << (aSettings.IsSettingEnabled (Graphic3d_ZLayerDepthOffset) ? "enabled" : "disabled") << "\n";
-
-  }
-  else if (anOp == "enable")
-  {
-    if (argc < 3)
-    {
-      di << "Please also provide an option to enable\n";
-      return 1;
-    }
-
-    if (argc < 4)
-    {
-      di << "Please also provide a layer id\n";
-      return 1;
-    }
-
-    TCollection_AsciiString aSubOp = TCollection_AsciiString (argv[2]);
-    Standard_Integer anId = Draw::Atoi (argv[3]);
-    Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (anId);
-
-    if (aSubOp == "depthtest" || aSubOp == "test")
-    {
-      aSettings.EnableSetting (Graphic3d_ZLayerDepthTest);
-    }
-    else if (aSubOp == "depthwrite" || aSubOp == "write")
-    {
-      aSettings.EnableSetting (Graphic3d_ZLayerDepthWrite);
-    }
-    else if (aSubOp == "depthclear" || aSubOp == "clear")
-    {
-      aSettings.EnableSetting (Graphic3d_ZLayerDepthClear);
-    }
-    else if (aSubOp == "depthoffset" || aSubOp == "offset")
-    {
-      if (argc < 6)
-      {
-        di << "Please also provide a factor and units values for depth offset\n";
-        di << "Format is: vzlayer enable offset [factor] [units] [layerId]\n";
-        return 1;
-      }
-
-      Standard_ShortReal aFactor = static_cast<Standard_ShortReal> (Draw::Atof (argv[3]));
-      Standard_ShortReal aUnits  = static_cast<Standard_ShortReal> (Draw::Atof (argv[4]));
-      anId = Draw::Atoi (argv[5]);
-      aSettings = aViewer->ZLayerSettings (anId);
-
-      aSettings.DepthOffsetFactor = aFactor;
-      aSettings.DepthOffsetUnits  = aUnits;
-
-      aSettings.EnableSetting (Graphic3d_ZLayerDepthOffset);
-    }
-    else if (aSubOp == "positiveoffset" || aSubOp == "poffset")
-    {
-      aSettings.SetDepthOffsetPositive();
-    }
-    else if (aSubOp == "negativeoffset" || aSubOp == "noffset")
-    {
-      aSettings.SetDepthOffsetNegative();
-    }
-    else if (aSubOp == "textureenv")
-    {
-      aSettings.UseEnvironmentTexture = true;
-    }
-
-    aViewer->SetZLayerSettings (anId, aSettings);
-  }
-  else if (anOp == "disable")
-  {
-    if (argc < 3)
-    {
-      di << "Please also provide an option to disable\n";
-      return 1;
-    }
-
-    if (argc < 4)
-    {
-      di << "Please also provide a layer id\n";
-      return 1;
-    }
-
-    TCollection_AsciiString aSubOp = TCollection_AsciiString (argv[2]);
-    Standard_Integer anId = Draw::Atoi (argv[3]);
-    Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (anId);
-
-    if (aSubOp == "depthtest" || aSubOp == "test")
-    {
-      aSettings.DisableSetting (Graphic3d_ZLayerDepthTest);
-    }
-    else if (aSubOp == "depthwrite" || aSubOp == "write")
-    {
-      aSettings.DisableSetting (Graphic3d_ZLayerDepthWrite);
-    }
-    else if (aSubOp == "depthclear" || aSubOp == "clear")
-    {
-      aSettings.DisableSetting (Graphic3d_ZLayerDepthClear);
-    }
-    else if (aSubOp == "depthoffset" || aSubOp == "offset")
-    {
-      aSettings.DisableSetting (Graphic3d_ZLayerDepthOffset);
-    }
-    else if (aSubOp == "textureenv")
-    {
-      aSettings.UseEnvironmentTexture = false;
-    }
-
-    aViewer->SetZLayerSettings (anId, aSettings);
+    ++anArgIter;
+    aLayerId = aFirstArg.IntegerValue();
   }
   else
   {
-    di << "Invalid operation, please use { add / del / get / settings / enable / disable}\n";
-    return 1;
+    aFirstArg.LowerCase();
+    if (aFirstArg == "default"
+     || aFirstArg == "def")
+    {
+      aLayerId = Graphic3d_ZLayerId_Default;
+      ++anArgIter;
+    }
+    else if (aFirstArg == "top")
+    {
+      aLayerId = Graphic3d_ZLayerId_Top;
+      ++anArgIter;
+    }
+    else if (aFirstArg == "topmost")
+    {
+      aLayerId = Graphic3d_ZLayerId_Topmost;
+      ++anArgIter;
+    }
+    else if (aFirstArg == "overlay"
+          || aFirstArg == "toposd")
+    {
+      aLayerId = Graphic3d_ZLayerId_TopOSD;
+      ++anArgIter;
+    }
+    else if (aFirstArg == "underlay"
+          || aFirstArg == "botosd")
+    {
+      aLayerId = Graphic3d_ZLayerId_BotOSD;
+      ++anArgIter;
+    }
+    else
+    {
+      TColStd_SequenceOfInteger aLayers;
+      aViewer->GetAllZLayers (aLayers);
+      for (TColStd_SequenceOfInteger::Iterator aLayeriter (aLayers); aLayeriter.More(); aLayeriter.Next())
+      {
+        Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (aLayeriter.Value());
+        if (TCollection_AsciiString::IsSameString (aSettings.Name(), aFirstArg, Standard_False))
+        {
+          aLayerId = aLayeriter.Value();
+          ++anArgIter;
+          break;
+        }
+      }
+    }
+  }
+
+  for (; anArgIter < theArgNb; ++anArgIter)
+  {
+    // perform operation
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anUpdateTool.parseRedrawMode (anArg))
+    {
+      //
+    }
+    else if (anArg == "-add"
+          || anArg == "add")
+    {
+      aLayerId = Graphic3d_ZLayerId_UNKNOWN;
+      if (!aViewer->AddZLayer (aLayerId))
+      {
+        std::cout << "Error: can not add a new z layer!\n";
+        return 0;
+      }
+
+      theDI << aLayerId;
+    }
+    else if (anArg == "-del"
+          || anArg == "-delete"
+          || anArg == "del")
+    {
+      if (aLayerId == Graphic3d_ZLayerId_UNKNOWN)
+      {
+        if (++anArgIter >= theArgNb)
+        {
+          std::cout << "Syntax error: id of z layer to remove is missing\n";
+          return 1;
+        }
+
+        aLayerId = Draw::Atoi (theArgVec[anArgIter]);
+      }
+
+      if (aLayerId == Graphic3d_ZLayerId_UNKNOWN
+       || aLayerId == Graphic3d_ZLayerId_Default
+       || aLayerId == Graphic3d_ZLayerId_Top
+       || aLayerId == Graphic3d_ZLayerId_Topmost
+       || aLayerId == Graphic3d_ZLayerId_TopOSD
+       || aLayerId == Graphic3d_ZLayerId_BotOSD)
+      {
+        std::cout << "Syntax error: standard Z layer can not be removed\n";
+        return 1;
+      }
+
+      // move all object displayed in removing layer to default layer
+      for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anObjIter (GetMapOfAIS());
+           anObjIter.More(); anObjIter.Next())
+      {
+        Handle(PrsMgr_PresentableObject) aPrs = Handle(PrsMgr_PresentableObject)::DownCast (anObjIter.Key1());
+        if (aPrs.IsNull()
+         || aPrs->ZLayer() != aLayerId)
+        {
+          continue;
+        }
+        aPrs->SetZLayer (Graphic3d_ZLayerId_Default);
+      }
+
+      if (!aViewer->RemoveZLayer (aLayerId))
+      {
+        std::cout << "Z layer can not be removed!\n";
+      }
+      else
+      {
+        theDI << aLayerId << " ";
+      }
+    }
+    else if (anArg == "-get"
+          || anArg == "get")
+    {
+      TColStd_SequenceOfInteger aLayers;
+      aViewer->GetAllZLayers (aLayers);
+      for (TColStd_SequenceOfInteger::Iterator aLayeriter (aLayers); aLayeriter.More(); aLayeriter.Next())
+      {
+        theDI << aLayeriter.Value() << " ";
+      }
+
+      theDI << "\n";
+    }
+    else if (anArg == "-name")
+    {
+      if (aLayerId == Graphic3d_ZLayerId_UNKNOWN)
+      {
+        std::cout << "Syntax error: id of Z layer is missing\n";
+        return 1;
+      }
+
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Syntax error: name is missing\n";
+        return 1;
+      }
+
+      Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (aLayerId);
+      aSettings.SetName (theArgVec[anArgIter]);
+      aViewer->SetZLayerSettings (aLayerId, aSettings);
+    }
+    else if (anArg == "-origin")
+    {
+      if (aLayerId == Graphic3d_ZLayerId_UNKNOWN)
+      {
+        std::cout << "Syntax error: id of Z layer is missing\n";
+        return 1;
+      }
+
+      if (anArgIter + 2 >= theArgNb)
+      {
+        std::cout << "Syntax error: origin coordinates are missing\n";
+        return 1;
+      }
+
+      Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (aLayerId);
+      gp_XYZ anOrigin;
+      anOrigin.SetX (Draw::Atof (theArgVec[anArgIter + 1]));
+      anOrigin.SetY (Draw::Atof (theArgVec[anArgIter + 2]));
+      anOrigin.SetZ (0.0);
+      if (anArgIter + 3 < theArgNb)
+      {
+        anOrigin.SetZ (Draw::Atof (theArgVec[anArgIter + 3]));
+        anArgIter += 3;
+      }
+      else
+      {
+        anArgIter += 2;
+      }
+      aSettings.SetOrigin (anOrigin);
+      aViewer->SetZLayerSettings (aLayerId, aSettings);
+    }
+    else if (anArg == "-settings"
+          || anArg == "settings")
+    {
+      if (aLayerId == Graphic3d_ZLayerId_UNKNOWN)
+      {
+        if (++anArgIter >= theArgNb)
+        {
+          std::cout << "Syntax error: id of Z layer is missing\n";
+          return 1;
+        }
+
+        aLayerId = Draw::Atoi (theArgVec[anArgIter]);
+      }
+
+      Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (aLayerId);
+      printZLayerInfo (theDI, aSettings);
+    }
+    else if (anArg == "-enable"
+          || anArg == "enable"
+          || anArg == "-disable"
+          || anArg == "disable")
+    {
+      const Standard_Boolean toEnable = anArg == "-enable"
+                                     || anArg == "enable";
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Syntax error: option name is missing\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aSubOp (theArgVec[anArgIter]);
+      aSubOp.LowerCase();
+      if (aLayerId == Graphic3d_ZLayerId_UNKNOWN)
+      {
+        if (++anArgIter >= theArgNb)
+        {
+          std::cout << "Syntax error: id of Z layer is missing\n";
+          return 1;
+        }
+
+        aLayerId = Draw::Atoi (theArgVec[anArgIter]);
+      }
+
+      Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (aLayerId);
+      if (aSubOp == "depthtest"
+       || aSubOp == "test")
+      {
+        aSettings.SetEnableDepthTest (toEnable);
+      }
+      else if (aSubOp == "depthwrite"
+            || aSubOp == "write")
+      {
+        aSettings.SetEnableDepthWrite (toEnable);
+      }
+      else if (aSubOp == "depthclear"
+            || aSubOp == "clear")
+      {
+        aSettings.SetClearDepth (toEnable);
+      }
+      else if (aSubOp == "depthoffset"
+            || aSubOp == "offset")
+      {
+        Graphic3d_PolygonOffset aParams;
+        aParams.Mode = toEnable ? Aspect_POM_Fill : Aspect_POM_None;
+        if (toEnable)
+        {
+          if (anArgIter + 2 >= theArgNb)
+          {
+            std::cout << "Syntax error: factor and units values for depth offset are missing\n";
+            return 1;
+          }
+
+          aParams.Factor = static_cast<Standard_ShortReal> (Draw::Atof (theArgVec[++anArgIter]));
+          aParams.Units  = static_cast<Standard_ShortReal> (Draw::Atof (theArgVec[++anArgIter]));
+        }
+        aSettings.SetPolygonOffset (aParams);
+      }
+      else if (aSubOp == "positiveoffset"
+            || aSubOp == "poffset")
+      {
+        if (toEnable)
+        {
+          aSettings.SetDepthOffsetPositive();
+        }
+        else
+        {
+          aSettings.SetPolygonOffset (Graphic3d_PolygonOffset());
+        }
+      }
+      else if (aSubOp == "negativeoffset"
+            || aSubOp == "noffset")
+      {
+        if (toEnable)
+        {
+          aSettings.SetDepthOffsetNegative();
+        }
+        else
+        {
+          aSettings.SetPolygonOffset(Graphic3d_PolygonOffset());
+        }
+      }
+      else if (aSubOp == "textureenv")
+      {
+        aSettings.SetEnvironmentTexture (toEnable);
+      }
+
+      aViewer->SetZLayerSettings (aLayerId, aSettings);
+    }
+    else
+    {
+      std::cout << "Syntax error: unknown option " << theArgVec[anArgIter] << "\n";
+      return 1;
+    }
   }
 
   return 0;
@@ -9364,22 +9531,17 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:  -upperLeft tile offset as upper left corner",
     __FILE__, VTile, group);
   theCommands.Add("vzlayer",
-    "vzlayer add/del/get/settings/enable/disable [id]\n"
-    " add - add new z layer to viewer and print its id\n"
-    " del - del z layer by its id\n"
-    " get - print sequence of z layers in increasing order of their overlay level\n"
-    " settings - print status of z layer settings\n"
-    " enable ([depth]test/[depth]write/[depth]clear/[depth]offset) \n    enables given setting for the z layer\n"
-    " enable (p[ositive]offset/n[egative]offset) \n    enables given setting for the z layer\n"
-    " enable textureenv \n    enables environment texture mapping\n"
-    " disable ([depth]test/[depth]write/[depth]clear/[depth]offset) \n    disables given setting for the z layer\n"
-    " disable textureenv \n    disables environment texture mapping\n"
-    "\nWhere id is the layer identificator\n"
-    "\nExamples:\n"
-    "   vzlayer add\n"
-    "   vzlayer enable poffset 1\n"
-    "   vzlayer disable depthtest 1\n"
-    "   vzlayer del 1\n",
+              "vzlayer [layerId]"
+      "\n\t\t:         [-add|-delete|-get|-settings]"
+      "\n\t\t:         [-enable|-disable {depthTest|depthWrite|depthClear|depthoffset}]"
+      "\n\t\t:         [-enable|-disable {positiveOffset|negativeOffset|textureenv}]"
+      "\n\t\t: ZLayer list management:"
+      "\n\t\t:   -add      add new z layer to viewer and print its id"
+      "\n\t\t:   -delete   delete z layer"
+      "\n\t\t:   -get      print sequence of z layers"
+      "\n\t\t:   -settings print status of z layer settings"
+      "\n\t\t:   -disable  disables given setting"
+      "\n\t\t:   -enable   enables  given setting",
     __FILE__,VZLayer,group);
   theCommands.Add("vlayerline",
     "vlayerline : vlayerline x1 y1 x2 y2 [linewidth=0.5] [linetype=0] [transparency=1.0]",
