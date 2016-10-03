@@ -98,39 +98,20 @@ public:
   //! then aDistance. The drawing is considered between the points
   //! of parameter U1 and U2;
   Standard_EXPORT static Standard_Boolean Match (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z, const Quantity_Length aDistance, const Adaptor3d_Curve& aCurve, const Standard_Real U1, const Standard_Real U2, const Handle(Prs3d_Drawer)& aDrawer);
-  
-  //! returns true if the distance between the point (X,Y,Z) and the
-  //! drawing with respect of the maximal chordial deviation
-  //! aDeflection is less then aDistance.
-  Standard_EXPORT static Standard_Boolean Match (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z, const Quantity_Length aDistance, const Adaptor3d_Curve& aCurve, const Standard_Real aDeflection, const Standard_Real aLimit, const Standard_Real anAngle = 0.2);
-  
-  //! returns true if the distance between the point (X,Y,Z) and the
-  //! drawing with respect of the maximal chordial deviation
-  //! aDeflection is less then aDistance. The drawing is considered
-  //! between the points of parameter U1 and U2;
-  Standard_EXPORT static Standard_Boolean Match (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z, const Quantity_Length aDistance, const Adaptor3d_Curve& aCurve, const Standard_Real U1, const Standard_Real U2, const Standard_Real aDeflection, const Standard_Real anAngle = 0.2);
 
+  //! Returns true if the distance between the point (theX, theY, theZ)
+  //! and the drawing with respect of the maximal chordial deviation theDeflection is less then theDistance.
+  Standard_EXPORT static Standard_Boolean Match (const Quantity_Length theX, const Quantity_Length theY, const Quantity_Length theZ, const Quantity_Length theDistance,
+                                                 const Adaptor3d_Curve& theCurve,
+                                                 const Standard_Real theDeflection, const Standard_Real theLimit, const Standard_Real theAngle);
 
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
+  //! Returns true if the distance between the point (theX, theY, theZ)
+  //! and the drawing with respect of the maximal chordial deviation theDeflection is less then theDistance.
+  //! The drawing is considered between the points of parameter theU1 and theU2.
+  Standard_EXPORT static Standard_Boolean Match (const Quantity_Length theX, const Quantity_Length theY, const Quantity_Length theZ, const Quantity_Length theDistance,
+                                                 const Adaptor3d_Curve& theCurve, const Standard_Real theU1, const Standard_Real theU2,
+                                                 const Standard_Real theDeflection, const Standard_Real theAngle);
 
 };
-
-
-
-
-
-
 
 #endif // _StdPrs_DeflectionCurve_HeaderFile
