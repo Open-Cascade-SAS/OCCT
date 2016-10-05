@@ -37,7 +37,9 @@ public:
   : myRg1Line (false),
     myRgNLine (false),
     myOutLine (false),
-    myIntLine (false) {}
+    myIntLine (false)
+  {
+  }
 
   HLRBRep_BiPnt2D(const Standard_Real x1, const Standard_Real y1, const Standard_Real x2, const Standard_Real y2, const TopoDS_Shape& S, const Standard_Boolean reg1, const Standard_Boolean regn, const Standard_Boolean outl, const Standard_Boolean intl)
   : myP1(x1,y1),
@@ -46,7 +48,27 @@ public:
     myRg1Line (reg1),
     myRgNLine (regn),
     myOutLine (outl),
-    myIntLine (intl) {}
+    myIntLine (intl)
+  {
+  }
+
+  HLRBRep_BiPnt2D(
+      const gp_XY& thePoint1,
+      const gp_XY& thePoint2,
+      const TopoDS_Shape& S,
+      const Standard_Boolean reg1,
+      const Standard_Boolean regn,
+      const Standard_Boolean outl,
+      const Standard_Boolean intl) :
+    myP1(thePoint1),
+    myP2(thePoint2),
+    myShape(S),
+    myRg1Line (reg1),
+    myRgNLine (regn),
+    myOutLine (outl),
+    myIntLine (intl)
+  {
+  }
 
   const gp_Pnt2d& P1() const { return myP1; }
 

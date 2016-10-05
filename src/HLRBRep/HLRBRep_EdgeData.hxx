@@ -17,6 +17,8 @@
 #ifndef _HLRBRep_EdgeData_HeaderFile
 #define _HLRBRep_EdgeData_HeaderFile
 
+#include <HLRAlgo_WiresBlock.hxx>
+
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
@@ -27,7 +29,6 @@
 #include <HLRBRep_Curve.hxx>
 #include <Standard_ShortReal.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Address.hxx>
 class TopoDS_Edge;
 class HLRAlgo_EdgeStatus;
 class HLRBRep_Curve;
@@ -40,9 +41,13 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT HLRBRep_EdgeData();
-  
+  HLRBRep_EdgeData() :
+    myFlags(0),
+    myHideCount(0)
+  {
+    Selected(Standard_True);
+  }
+
   Standard_EXPORT void Set (const Standard_Boolean Reg1, const Standard_Boolean RegN, const TopoDS_Edge& EG, const Standard_Integer V1, const Standard_Integer V2, const Standard_Boolean Out1, const Standard_Boolean Out2, const Standard_Boolean Cut1, const Standard_Boolean Cut2, const Standard_Real Start, const Standard_ShortReal TolStart, const Standard_Real End, const Standard_ShortReal TolEnd);
   
     Standard_Boolean Selected() const;
@@ -109,9 +114,15 @@ public:
   
     void VEnd (const Standard_Integer I);
   
-  Standard_EXPORT void UpdateMinMax (const Standard_Address TotMinMax);
+  void UpdateMinMax (const HLRAlgo_EdgesBlock::MinMaxIndices& theTotMinMax)
+  {
+    myMinMax = theTotMinMax;
+  }
   
-    Standard_Address MinMax() const;
+  HLRAlgo_EdgesBlock::MinMaxIndices& MinMax()
+  {
+    return myMinMax;
+  }
   
     HLRAlgo_EdgeStatus& Status();
   
@@ -119,8 +130,11 @@ public:
   
     const HLRBRep_Curve& Geometry() const;
   
-    Standard_Address Curve();
-  
+    HLRBRep_Curve* Curve()
+    {
+      return &myGeometry;
+    }
+
     Standard_ShortReal Tolerance() const;
 
 protected:
@@ -148,7 +162,7 @@ private:
   Standard_Integer myHideCount;
   Standard_Integer myVSta;
   Standard_Integer myVEnd;
-  Standard_Integer myMinMax[16];
+  HLRAlgo_EdgesBlock::MinMaxIndices myMinMax;
   HLRAlgo_EdgeStatus myStatus;
   HLRBRep_Curve myGeometry;
   Standard_ShortReal myTolerance;

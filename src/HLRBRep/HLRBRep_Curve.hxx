@@ -23,7 +23,6 @@
 
 #include <BRepAdaptor_Curve.hxx>
 #include <GeomAbs_CurveType.hxx>
-#include <Standard_Address.hxx>
 #include <Standard_Real.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Boolean.hxx>
@@ -50,6 +49,7 @@ class gp_Elips2d;
 class gp_Hypr2d;
 class gp_Parab2d;
 class Geom_BSplineCurve;
+class HLRAlgo_Projector;
 
 
 //! Defines a 2d curve by projection of  a 3D curve on
@@ -65,7 +65,8 @@ public:
   //! Creates an undefined Curve.
   Standard_EXPORT HLRBRep_Curve();
   
-    void Projector (const Standard_Address Proj);
+    void Projector (const HLRAlgo_Projector* Proj)
+    {myProj = Proj;}
   
   //! Returns the 3D curve.
     BRepAdaptor_Curve& Curve();
@@ -85,10 +86,10 @@ public:
   Standard_EXPORT Standard_Real Parameter3d (const Standard_Real P2d) const;
   
   //! Update the minmax and the internal data
-  Standard_EXPORT Standard_Real Update (const Standard_Address TotMin, const Standard_Address TotMax);
+  Standard_EXPORT Standard_Real Update (Standard_Real TotMin[16], Standard_Real TotMax[16]);
   
   //! Update the minmax returns tol for enlarge;
-  Standard_EXPORT Standard_Real UpdateMinMax (const Standard_Address TotMin, const Standard_Address TotMax);
+  Standard_EXPORT Standard_Real UpdateMinMax (Standard_Real TotMin[16], Standard_Real TotMax[16]);
   
   //! Computes the Z    coordinate  of the  point  of
   //! parameter U on the curve in the viewing coordinate system
@@ -221,7 +222,7 @@ private:
 
   BRepAdaptor_Curve myCurve;
   GeomAbs_CurveType myType;
-  Standard_Address myProj;
+  const HLRAlgo_Projector* myProj;
   Standard_Real myOX;
   Standard_Real myOZ;
   Standard_Real myVX;

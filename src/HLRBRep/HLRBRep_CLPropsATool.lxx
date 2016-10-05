@@ -24,10 +24,10 @@
 //=======================================================================
 
 inline void  HLRBRep_CLPropsATool::Value
-  (const Standard_Address A, 
+  (const HLRBRep_Curve* A, 
    const Standard_Real U,
    gp_Pnt2d& P)
-{ P = ((HLRBRep_Curve*)A)->Value(U); }
+{ P = A->Value(U); }
 
 //=======================================================================
 //function : D1
@@ -35,11 +35,11 @@ inline void  HLRBRep_CLPropsATool::Value
 //=======================================================================
 
 inline void  HLRBRep_CLPropsATool::D1
-  (const Standard_Address A, 
+  (const HLRBRep_Curve* A, 
    const Standard_Real U,
    gp_Pnt2d& P,
    gp_Vec2d& V1)
-{ ((HLRBRep_Curve*)A)->D1(U,P,V1); }
+{ A->D1(U,P,V1); }
 
 //=======================================================================
 //function : D2
@@ -47,12 +47,12 @@ inline void  HLRBRep_CLPropsATool::D1
 //=======================================================================
 
 inline void  HLRBRep_CLPropsATool::D2
-  (const Standard_Address A, 
+  (const HLRBRep_Curve* A, 
    const Standard_Real U,
    gp_Pnt2d& P,
    gp_Vec2d& V1,
    gp_Vec2d& V2)
-{ ((HLRBRep_Curve*)A)->D2(U, P, V1, V2); }
+{ A->D2(U, P, V1, V2); }
 
 //=======================================================================
 //function : D3
@@ -60,13 +60,13 @@ inline void  HLRBRep_CLPropsATool::D2
 //=======================================================================
 
 inline void  HLRBRep_CLPropsATool::D3
-  (const Standard_Address A, 
+  (const HLRBRep_Curve* A, 
    const Standard_Real U,
    gp_Pnt2d& P,
    gp_Vec2d& V1,
    gp_Vec2d& V2,
    gp_Vec2d& V3)
-{ ((HLRBRep_Curve*)A)->D3(U, P, V1, V2, V3); }
+{ A->D3(U, P, V1, V2, V3); }
 
 //=======================================================================
 //function : Continuity
@@ -74,7 +74,7 @@ inline void  HLRBRep_CLPropsATool::D3
 //=======================================================================
 
 inline Standard_Integer  HLRBRep_CLPropsATool::Continuity
-  (const Standard_Address)
+  (const HLRBRep_Curve*)
 { return GeomAbs_C2; }
 
 //=======================================================================
@@ -83,8 +83,8 @@ inline Standard_Integer  HLRBRep_CLPropsATool::Continuity
 //=======================================================================
 
 inline Standard_Real  HLRBRep_CLPropsATool::FirstParameter
-  (const Standard_Address A)
-{ return ((HLRBRep_Curve*)A)->FirstParameter(); }
+  (const HLRBRep_Curve* A)
+{ return A->FirstParameter(); }
 
 //=======================================================================
 //function : LastParameter
@@ -92,5 +92,5 @@ inline Standard_Real  HLRBRep_CLPropsATool::FirstParameter
 //=======================================================================
 
 inline Standard_Real  HLRBRep_CLPropsATool::LastParameter
-  (const Standard_Address A)
-{ return ((HLRBRep_Curve*)A)->LastParameter(); }
+  (const HLRBRep_Curve* A)
+{ return A->LastParameter(); }

@@ -22,44 +22,13 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Address.hxx>
-
 
 //! to Update OutLines.
-class HLRAlgo_PolyInternalSegment 
+struct HLRAlgo_PolyInternalSegment
 {
-public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-    HLRAlgo_PolyInternalSegment();
-  
-    Standard_Address Indices() const;
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-  Standard_Integer myIndices[6];
-
-
+  Standard_Integer LstSg1, LstSg2, NxtSg1, NxtSg2, Conex1, Conex2;
 };
-
-
-#include <HLRAlgo_PolyInternalSegment.lxx>
-
-
-
-
 
 #endif // _HLRAlgo_PolyInternalSegment_HeaderFile

@@ -34,9 +34,9 @@ HLRAlgo_EdgeIterator::HLRAlgo_EdgeIterator ()
 //purpose  : 
 //=======================================================================
 
-void HLRAlgo_EdgeIterator::InitHidden (const HLRAlgo_EdgeStatus& status)
+void HLRAlgo_EdgeIterator::InitHidden (HLRAlgo_EdgeStatus& status)
 {
-  EHid = (Standard_Address)&status;
+  EHid = &status;
   iHid = 1;
   if (((HLRAlgo_EdgeStatus*)EHid)->AllHidden()) {
     ((HLRAlgo_EdgeStatus*)EHid)->Bounds

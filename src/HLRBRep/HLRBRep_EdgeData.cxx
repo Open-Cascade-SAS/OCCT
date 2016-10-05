@@ -22,15 +22,6 @@
 #include <TopoDS_Edge.hxx>
 
 //=======================================================================
-//function : EdgeData
-//purpose  : 
-//=======================================================================
-HLRBRep_EdgeData::HLRBRep_EdgeData () :
-       myFlags(0),
-       myHideCount(0)
-{ Selected(Standard_True); }
-
-//=======================================================================
 //function : Set
 //purpose  : 
 //=======================================================================
@@ -65,29 +56,4 @@ void HLRBRep_EdgeData::Set (const Standard_Boolean Rg1L,
 				((Standard_Real)TolStart)),
      End  ,(Standard_ShortReal)(ChangeGeometry().Curve().Resolution
 				((Standard_Real)TolEnd  )));
-}
-
-//=======================================================================
-//function : UpdateMinMax
-//purpose  : 
-//=======================================================================
-
-void HLRBRep_EdgeData::UpdateMinMax (const Standard_Address TotMinMax)
-{
-  myMinMax[ 0] = ((Standard_Integer*)TotMinMax)[ 0];
-  myMinMax[ 1] = ((Standard_Integer*)TotMinMax)[ 1];
-  myMinMax[ 2] = ((Standard_Integer*)TotMinMax)[ 2];
-  myMinMax[ 3] = ((Standard_Integer*)TotMinMax)[ 3];
-  myMinMax[ 4] = ((Standard_Integer*)TotMinMax)[ 4];
-  myMinMax[ 5] = ((Standard_Integer*)TotMinMax)[ 5];
-  myMinMax[ 6] = ((Standard_Integer*)TotMinMax)[ 6];
-  myMinMax[ 7] = ((Standard_Integer*)TotMinMax)[ 7];
-  myMinMax[ 8] = ((Standard_Integer*)TotMinMax)[ 8];
-  myMinMax[ 9] = ((Standard_Integer*)TotMinMax)[ 9];
-  myMinMax[10] = ((Standard_Integer*)TotMinMax)[10];
-  myMinMax[11] = ((Standard_Integer*)TotMinMax)[11];
-  myMinMax[12] = ((Standard_Integer*)TotMinMax)[12];
-  myMinMax[13] = ((Standard_Integer*)TotMinMax)[13];
-  myMinMax[14] = ((Standard_Integer*)TotMinMax)[14];
-  myMinMax[15] = ((Standard_Integer*)TotMinMax)[15];
 }

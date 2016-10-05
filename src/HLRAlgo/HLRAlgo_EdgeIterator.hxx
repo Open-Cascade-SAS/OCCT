@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Address.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_ShortReal.hxx>
 #include <Standard_Boolean.hxx>
@@ -41,7 +40,7 @@ public:
   //! edge.
   Standard_EXPORT HLRAlgo_EdgeIterator();
   
-  Standard_EXPORT void InitHidden (const HLRAlgo_EdgeStatus& status);
+  Standard_EXPORT void InitHidden (HLRAlgo_EdgeStatus& status);
   
     Standard_Boolean MoreHidden() const;
   
@@ -51,7 +50,7 @@ public:
   //! of the current Hidden Interval
     void Hidden (Standard_Real& Start, Standard_ShortReal& TolStart, Standard_Real& End, Standard_ShortReal& TolEnd) const;
   
-    void InitVisible (const HLRAlgo_EdgeStatus& status);
+    void InitVisible (HLRAlgo_EdgeStatus& status);
   
     Standard_Boolean MoreVisible() const;
   
@@ -76,8 +75,8 @@ private:
 
   Standard_Integer myNbVis;
   Standard_Integer myNbHid;
-  Standard_Address EVis;
-  Standard_Address EHid;
+  HLRAlgo_EdgeStatus* EVis;
+  HLRAlgo_EdgeStatus* EHid;
   Standard_Integer iVis;
   Standard_Integer iHid;
   Standard_Real myHidStart;

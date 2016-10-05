@@ -311,14 +311,6 @@ inline void HLRBRep_EdgeData::VEnd (const Standard_Integer I)
 { myVEnd = I; }
 
 //=======================================================================
-//function : MinMax
-//purpose  : 
-//=======================================================================
-
-inline Standard_Address HLRBRep_EdgeData::MinMax () const
-{ return (Standard_Address)&myMinMax; }
-
-//=======================================================================
 //function : Status
 //purpose  : 
 //=======================================================================
@@ -341,14 +333,6 @@ inline HLRBRep_Curve & HLRBRep_EdgeData::ChangeGeometry ()
 
 inline const HLRBRep_Curve & HLRBRep_EdgeData::Geometry () const
 { return myGeometry; }
-
-//=======================================================================
-//function : Curve
-//purpose  : 
-//=======================================================================
-
-inline Standard_Address HLRBRep_EdgeData::Curve ()
-{ return ((Standard_Address)&myGeometry); }
 
 //=======================================================================
 //function : Tolerance

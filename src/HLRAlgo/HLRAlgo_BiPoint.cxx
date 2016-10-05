@@ -21,30 +21,6 @@
 
 #include <HLRAlgo_BiPoint.hxx>
 
-#define PntX1  myCoordinates[ 0]
-#define PntY1  myCoordinates[ 1]
-#define PntZ1  myCoordinates[ 2]
-#define PntX2  myCoordinates[ 3]
-#define PntY2  myCoordinates[ 4]
-#define PntZ2  myCoordinates[ 5]
-#define PntXP1 myCoordinates[ 6]
-#define PntYP1 myCoordinates[ 7]
-#define PntZP1 myCoordinates[ 8]
-#define PntXP2 myCoordinates[ 9]
-#define PntYP2 myCoordinates[10]
-#define PntZP2 myCoordinates[11]
-
-#define ShapeIndex  myIndices[0]
-#define FaceConex1  myIndices[1]
-#define Face1Pt1    myIndices[2]
-#define Face1Pt2    myIndices[3]
-#define FaceConex2  myIndices[4]
-#define Face2Pt1    myIndices[5]
-#define Face2Pt2    myIndices[6]
-#define MinSeg      myIndices[7]
-#define MaxSeg      myIndices[8]
-#define SegFlags    myIndices[9]
-
 //=======================================================================
 //function : HLRAlgo_BiPoint
 //purpose  : 
@@ -68,22 +44,14 @@ HLRAlgo_BiPoint::HLRAlgo_BiPoint (const Standard_Real X1,
 				  const Standard_Boolean outl,
 				  const Standard_Boolean intl)
 {
-  PntX1 = X1;
-  PntY1 = Y1;
-  PntZ1 = Z1;
-  PntX2 = X2;
-  PntY2 = Y2;
-  PntZ2 = Z2;
-  PntXP1 = XT1;
-  PntYP1 = YT1;
-  PntZP1 = ZT1;
-  PntXP2 = XT2;
-  PntYP2 = YT2;
-  PntZP2 = ZT2;
-  ShapeIndex = Index;
-  FaceConex1 = Face1Pt1   = Face1Pt2   = 
-    FaceConex2 = Face2Pt1   = Face2Pt2   = 0;
-  SegFlags   = 0;
+  myPoints.Pnt1.SetCoord(X1, Y1, Z1);
+  myPoints.Pnt2.SetCoord(X2, Y2, Z2);
+  myPoints.PntP1.SetCoord(XT1, YT1, ZT1);
+  myPoints.PntP2.SetCoord(XT2, YT2, ZT2);
+  myIndices.ShapeIndex = Index;
+  myIndices.FaceConex1 = myIndices.Face1Pt1 = myIndices.Face1Pt2 =
+    myIndices.FaceConex2 = myIndices.Face2Pt1 = myIndices.Face2Pt2 = 0;
+  myIndices.SegFlags = 0;
   Rg1Line(reg1);
   RgNLine(regn);
   OutLine(outl);
@@ -111,22 +79,14 @@ HLRAlgo_BiPoint::HLRAlgo_BiPoint (const Standard_Real X1,
 				  const Standard_Integer Index,
 				  const Standard_Integer flag)
 {
-  PntX1 = X1;
-  PntY1 = Y1;
-  PntZ1 = Z1;
-  PntX2 = X2;
-  PntY2 = Y2;
-  PntZ2 = Z2;
-  PntXP1 = XT1;
-  PntYP1 = YT1;
-  PntZP1 = ZT1;
-  PntXP2 = XT2;
-  PntYP2 = YT2;
-  PntZP2 = ZT2;
-  ShapeIndex = Index;
-  FaceConex1 = Face1Pt1   = Face1Pt2   = 
-    FaceConex2 = Face2Pt1   = Face2Pt2   = 0;
-  SegFlags   = flag;
+  myPoints.Pnt1 = gp_XYZ(X1, Y1, Z1);
+  myPoints.Pnt2 = gp_XYZ(X2, Y2, Z2);
+  myPoints.PntP1 = gp_XYZ(XT1, YT1, ZT1);
+  myPoints.PntP2 = gp_XYZ(XT2, YT2, ZT2);
+  myIndices.ShapeIndex = Index;
+  myIndices.FaceConex1 = myIndices.Face1Pt1 = myIndices.Face1Pt2 =
+    myIndices.FaceConex2 = myIndices.Face2Pt1 = myIndices.Face2Pt2 = 0;
+  myIndices.SegFlags = flag;
   Hidden(Standard_False);
 }
 
@@ -156,24 +116,16 @@ HLRAlgo_BiPoint::HLRAlgo_BiPoint (const Standard_Real X1,
 				  const Standard_Boolean outl,
 				  const Standard_Boolean intl)
 {
-  PntX1 = X1;
-  PntY1 = Y1;
-  PntZ1 = Z1;
-  PntX2 = X2;
-  PntY2 = Y2;
-  PntZ2 = Z2;
-  PntXP1 = XT1;
-  PntYP1 = YT1;
-  PntZP1 = ZT1;
-  PntXP2 = XT2;
-  PntYP2 = YT2;
-  PntZP2 = ZT2;
-  ShapeIndex = Index;
-  FaceConex1 = i1;
-  Face1Pt1   = i1p1;
-  Face1Pt2   = i1p2;
-  FaceConex2 = Face2Pt1   = Face2Pt2   = 0;
-  SegFlags   = 0;
+  myPoints.Pnt1.SetCoord(X1, Y1, Z1);
+  myPoints.Pnt2.SetCoord(X2, Y2, Z2);
+  myPoints.PntP1.SetCoord(XT1, YT1, ZT1);
+  myPoints.PntP2.SetCoord(XT2, YT2, ZT2);
+  myIndices.ShapeIndex = Index;
+  myIndices.FaceConex1 = i1;
+  myIndices.Face1Pt1 = i1p1;
+  myIndices.Face1Pt2 = i1p2;
+  myIndices.FaceConex2 = myIndices.Face2Pt1 = myIndices.Face2Pt2 = 0;
+  myIndices.SegFlags = 0;
   Rg1Line(reg1);
   RgNLine(regn);
   OutLine(outl);
@@ -204,24 +156,16 @@ HLRAlgo_BiPoint::HLRAlgo_BiPoint (const Standard_Real X1,
 				  const Standard_Integer i1p2,
 				  const Standard_Integer flag)
 {
-  PntX1 = X1;
-  PntY1 = Y1;
-  PntZ1 = Z1;
-  PntX2 = X2;
-  PntY2 = Y2;
-  PntZ2 = Z2;
-  PntXP1 = XT1;
-  PntYP1 = YT1;
-  PntZP1 = ZT1;
-  PntXP2 = XT2;
-  PntYP2 = YT2;
-  PntZP2 = ZT2;
-  ShapeIndex = Index;
-  FaceConex1 = i1;
-  Face1Pt1   = i1p1;
-  Face1Pt2   = i1p2;
-  FaceConex2 = Face2Pt1   = Face2Pt2   = 0;
-  SegFlags   = flag;
+  myPoints.Pnt1.SetCoord(X1, Y1, Z1);
+  myPoints.Pnt2.SetCoord(X2, Y2, Z2);
+  myPoints.PntP1.SetCoord(XT1, YT1, ZT1);
+  myPoints.PntP2.SetCoord(XT2, YT2, ZT2);
+  myIndices.ShapeIndex = Index;
+  myIndices.FaceConex1 = i1;
+  myIndices.Face1Pt1 = i1p1;
+  myIndices.Face1Pt2 = i1p2;
+  myIndices.FaceConex2 = myIndices.Face2Pt1 = myIndices.Face2Pt2 = 0;
+  myIndices.SegFlags = flag;
   Hidden(Standard_False);
 }
 
@@ -254,26 +198,18 @@ HLRAlgo_BiPoint::HLRAlgo_BiPoint (const Standard_Real X1,
 				  const Standard_Boolean outl,
 				  const Standard_Boolean intl)
 {
-  PntX1 = X1;
-  PntY1 = Y1;
-  PntZ1 = Z1;
-  PntX2 = X2;
-  PntY2 = Y2;
-  PntZ2 = Z2;
-  PntXP1 = XT1;
-  PntYP1 = YT1;
-  PntZP1 = ZT1;
-  PntXP2 = XT2;
-  PntYP2 = YT2;
-  PntZP2 = ZT2;
-  ShapeIndex = Index;
-  FaceConex1 = i1;
-  Face1Pt1   = i1p1;
-  Face1Pt2   = i1p2;
-  FaceConex2 = i2;
-  Face2Pt1   = i2p1;
-  Face2Pt2   = i2p2;
-  SegFlags   = 0;
+  myPoints.Pnt1.SetCoord(X1, Y1, Z1);
+  myPoints.Pnt2.SetCoord(X2, Y2, Z2);
+  myPoints.PntP1.SetCoord(XT1, YT1, ZT1);
+  myPoints.PntP2.SetCoord(XT2, YT2, ZT2);
+  myIndices.ShapeIndex = Index;
+  myIndices.FaceConex1 = i1;
+  myIndices.Face1Pt1 = i1p1;
+  myIndices.Face1Pt2 = i1p2;
+  myIndices.FaceConex2 = i2;
+  myIndices.Face2Pt1 = i2p1;
+  myIndices.Face2Pt2 = i2p2;
+  myIndices.SegFlags = 0;
   Rg1Line(reg1);
   RgNLine(regn);
   OutLine(outl);
@@ -307,25 +243,17 @@ HLRAlgo_BiPoint::HLRAlgo_BiPoint (const Standard_Real X1,
 				  const Standard_Integer i2p2,
 				  const Standard_Integer flag)
 {
-  PntX1 = X1;
-  PntY1 = Y1;
-  PntZ1 = Z1;
-  PntX2 = X2;
-  PntY2 = Y2;
-  PntZ2 = Z2;
-  PntXP1 = XT1;
-  PntYP1 = YT1;
-  PntZP1 = ZT1;
-  PntXP2 = XT2;
-  PntYP2 = YT2;
-  PntZP2 = ZT2;
-  ShapeIndex = Index;
-  FaceConex1 = i1;
-  Face1Pt1   = i1p1;
-  Face1Pt2   = i1p2;
-  FaceConex2 = i2;
-  Face2Pt1   = i2p1;
-  Face2Pt2   = i2p2;
-  SegFlags   = flag;
+  myPoints.Pnt1.SetCoord(X1, Y1, Z1);
+  myPoints.Pnt2.SetCoord(X2, Y2, Z2);
+  myPoints.PntP1.SetCoord(XT1, YT1, ZT1);
+  myPoints.PntP2.SetCoord(XT2, YT2, ZT2);
+  myIndices.ShapeIndex = Index;
+  myIndices.FaceConex1 = i1;
+  myIndices.Face1Pt1 = i1p1;
+  myIndices.Face1Pt2 = i1p2;
+  myIndices.FaceConex2 = i2;
+  myIndices.Face2Pt1 = i2p1;
+  myIndices.Face2Pt2 = i2p2;
+  myIndices.SegFlags = flag;
   Hidden(Standard_False);
 }

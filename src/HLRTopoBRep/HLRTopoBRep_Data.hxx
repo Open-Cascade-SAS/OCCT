@@ -28,7 +28,6 @@
 #include <HLRTopoBRep_MapOfShapeListOfVData.hxx>
 #include <HLRTopoBRep_DataMapIteratorOfMapOfShapeListOfVData.hxx>
 #include <HLRTopoBRep_ListIteratorOfListOfVData.hxx>
-#include <Standard_Address.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <Standard_Real.hxx>
@@ -156,7 +155,7 @@ private:
   HLRTopoBRep_MapOfShapeListOfVData myEdgesVertices;
   HLRTopoBRep_DataMapIteratorOfMapOfShapeListOfVData myEIterator;
   HLRTopoBRep_ListIteratorOfListOfVData myVIterator;
-  Standard_Address myVList;
+  HLRTopoBRep_ListOfVData* myVList;
 
 
 };

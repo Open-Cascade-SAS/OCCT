@@ -25,7 +25,6 @@
 #include <Standard_Real.hxx>
 #include <TopAbs_State.hxx>
 
-
 //! The Coincidence class is used in an Inteference to
 //! store informations on the "hiding" edge.
 //!
@@ -38,49 +37,48 @@
 //! intersection   with  the face (before  and after).
 //! This is necessary  when the  intersection is  "ON"
 //! the face.
-class HLRAlgo_Coincidence 
+class HLRAlgo_Coincidence
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT HLRAlgo_Coincidence();
-  
-    void Set2D (const Standard_Integer FE, const Standard_Real Param);
-  
-    void SetState3D (const TopAbs_State stbef, const TopAbs_State staft);
-  
-    void Value2D (Standard_Integer& FE, Standard_Real& Param) const;
-  
-    void State3D (TopAbs_State& stbef, TopAbs_State& staft) const;
+  Standard_EXPORT HLRAlgo_Coincidence() :
+    myFE(0),
+    myParam(0.),
+    myStBef(TopAbs_IN),
+    myStAft(TopAbs_IN)
+  {
+  }
 
+  void Set2D (const Standard_Integer FE, const Standard_Real Param)
+  {
+    myFE    = FE;
+    myParam = Param;
+  }
 
+  void SetState3D (const TopAbs_State stbef, const TopAbs_State staft)
+  {
+    myStBef = stbef;
+    myStAft = staft;
+  }
 
+  void Value2D (Standard_Integer& FE, Standard_Real& Param) const
+  {
+    FE    = myFE;
+    Param = myParam;
+  }
 
-protected:
-
-
-
-
+  void State3D (TopAbs_State& stbef, TopAbs_State& staft) const
+  {
+    stbef = myStBef;
+    staft = myStAft;
+  }
 
 private:
-
-
-
   Standard_Integer myFE;
   Standard_Real myParam;
   TopAbs_State myStBef;
   TopAbs_State myStAft;
-
-
 };
-
-
-#include <HLRAlgo_Coincidence.lxx>
-
-
-
-
 
 #endif // _HLRAlgo_Coincidence_HeaderFile

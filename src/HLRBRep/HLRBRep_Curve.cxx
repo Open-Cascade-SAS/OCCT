@@ -127,8 +127,8 @@ HLRBRep_Curve::Parameter3d (const Standard_Real P2d) const
 //purpose  : 
 //=======================================================================
 
-Standard_Real  HLRBRep_Curve::Update (const Standard_Address TotMin,
-                                      const Standard_Address TotMax)
+Standard_Real HLRBRep_Curve::Update(
+  Standard_Real TotMin[16], Standard_Real TotMax[16])
 {
   GeomAbs_CurveType typ = HLRBRep_BCurveTool::GetType(myCurve);
   myType = GeomAbs_OtherCurve;
@@ -229,9 +229,8 @@ Standard_Real  HLRBRep_Curve::Update (const Standard_Address TotMin,
 //purpose  : 
 //=======================================================================
 
-Standard_Real 
-HLRBRep_Curve::UpdateMinMax (const Standard_Address TotMin,
-			     const Standard_Address TotMax)
+Standard_Real HLRBRep_Curve::UpdateMinMax(
+  Standard_Real TotMin[16], Standard_Real TotMax[16])
 {
   Standard_Real a = HLRBRep_BCurveTool::FirstParameter(myCurve);
   Standard_Real b = HLRBRep_BCurveTool::LastParameter(myCurve);
@@ -302,8 +301,8 @@ void HLRBRep_Curve::Tangent (const Standard_Boolean AtStart,
 
   D0(U,P);
   HLRBRep_CLProps CLP(2,Epsilon(1.));
-  const Standard_Address crv = (const Standard_Address)this;
-  CLP.SetCurve(crv);
+  const HLRBRep_Curve* aCurve = this;
+  CLP.SetCurve(aCurve);
   CLP.SetParameter(U);
   StdFail_UndefinedDerivative_Raise_if
     (!CLP.IsTangentDefined(), "HLRBRep_Curve::Tangent");
@@ -463,7 +462,7 @@ gp_Lin2d HLRBRep_Curve::Line () const
 gp_Circ2d HLRBRep_Curve::Circle () const
 {
   gp_Circ C = HLRBRep_BCurveTool::Circle(myCurve);
-  C.Transform(((HLRAlgo_Projector*) myProj)->Transformation());
+  C.Transform(myProj->Transformation());
   return ProjLib::Project(gp_Pln(gp::XOY()),C);
 }
 
@@ -476,12 +475,12 @@ gp_Elips2d HLRBRep_Curve::Ellipse () const
 {
   if (HLRBRep_BCurveTool::GetType(myCurve) == GeomAbs_Ellipse) {
     gp_Elips E = HLRBRep_BCurveTool::Ellipse(myCurve);
-    E.Transform(((HLRAlgo_Projector*) myProj)->Transformation());
+    E.Transform(myProj->Transformation());
     return ProjLib::Project(gp_Pln(gp::XOY()),E);
   }
   // this is a circle
   gp_Circ C = HLRBRep_BCurveTool::Circle(myCurve);
-  C.Transform(((HLRAlgo_Projector*) myProj)->Transformation());
+  C.Transform(myProj->Transformation());
   const gp_Dir& D1 = C.Axis().Direction();
   const gp_Dir& D3 = D1.Crossed(gp::DZ());
   const gp_Dir& D2 = D1.Crossed(D3);
@@ -526,7 +525,7 @@ void  HLRBRep_Curve::Poles (TColgp_Array1OfPnt2d& TP) const
     (HLRBRep_BCurveTool::Bezier(myCurve))->Poles(TP3);
   }
   for (Standard_Integer i = i1; i <= i2; i++) {
-    ((HLRAlgo_Projector*) myProj)->Transform(TP3(i));
+    myProj->Transform(TP3(i));
     TP(i).SetCoord(TP3(i).X(),TP3(i).Y());
   }
 }

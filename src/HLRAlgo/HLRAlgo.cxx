@@ -40,8 +40,8 @@ static const Standard_Real sinu6 = sin(6.*M_PI/14.);
 void HLRAlgo::UpdateMinMax (const Standard_Real x,
                             const Standard_Real y,
                             const Standard_Real z,
-                            const Standard_Address Min,
-                            const Standard_Address Max)
+                            Standard_Real Min[16],
+                            Standard_Real Max[16])
 {
   Standard_Real d[16];
   d[ 0] = cosu0 * x + sinu0 * y;
@@ -61,12 +61,16 @@ void HLRAlgo::UpdateMinMax (const Standard_Real x,
   d[14] = z;
   d[15] = z;
 
-  Standard_Integer i = 0;
-  while (i < 16)
+  for (Standard_Integer i = 0; i < 16; ++i)
   {
-    if (((Standard_Real*)Min)[i] > d[i]) ((Standard_Real*)Min)[i] = d[i];
-    if (((Standard_Real*)Max)[i] < d[i]) ((Standard_Real*)Max)[i] = d[i];
-    i++;
+    if (Min[i] > d[i])
+    {
+      Min[i] = d[i];
+    }
+    if (Max[i] < d[i])
+    {
+      Max[i] = d[i];
+    }
   }
 }
 
@@ -76,14 +80,14 @@ void HLRAlgo::UpdateMinMax (const Standard_Real x,
 //=======================================================================
 
 void HLRAlgo::EnlargeMinMax (const Standard_Real tol,
-                             const Standard_Address Min,
-                             const Standard_Address Max)
+                             Standard_Real Min[16],
+                             Standard_Real Max[16])
 {
   Standard_Integer i = 0;
   while (i < 16)
   {
-    ((Standard_Real*)Min)[i] -= tol;
-    ((Standard_Real*)Max)[i] += tol;
+    Min[i] -= tol;
+    Max[i] += tol;
     i++;
   }
 }
@@ -94,14 +98,14 @@ void HLRAlgo::EnlargeMinMax (const Standard_Real tol,
 //=======================================================================
 
 void HLRAlgo::InitMinMax (const Standard_Real Big,
-                          const Standard_Address Min,
-                          const Standard_Address Max)
+                          Standard_Real Min[16],
+                          Standard_Real Max[16])
 {
   Standard_Integer i = 0;
   while (i < 16)
   {
-    ((Standard_Real*)Min)[i] =  Big;
-    ((Standard_Real*)Max)[i] = -Big;
+    Min[i] =  Big;
+    Max[i] = -Big;
     i++;
   }
 }
@@ -111,42 +115,42 @@ void HLRAlgo::InitMinMax (const Standard_Real Big,
 //purpose  : 
 //=======================================================================
 
-void HLRAlgo::EncodeMinMax (const Standard_Address Min,
-                            const Standard_Address Max,
-                            const Standard_Address MM)
+void HLRAlgo::EncodeMinMax (HLRAlgo_EdgesBlock::MinMaxIndices& Min,
+                            HLRAlgo_EdgesBlock::MinMaxIndices& Max,
+                            HLRAlgo_EdgesBlock::MinMaxIndices& MM)
 {
-  ((Standard_Integer*)MM)[ 0] = ((Standard_Integer*)Min)[ 1]&0x00007fff;
-  ((Standard_Integer*)MM)[ 8] = ((Standard_Integer*)Max)[ 1]&0x00007fff;
-  ((Standard_Integer*)MM)[ 0]+=(((Standard_Integer*)Min)[ 0]&0x00007fff)<<16;
-  ((Standard_Integer*)MM)[ 8]+=(((Standard_Integer*)Max)[ 0]&0x00007fff)<<16;
-  ((Standard_Integer*)MM)[ 1] = ((Standard_Integer*)Min)[ 3]&0x00007fff;
-  ((Standard_Integer*)MM)[ 9] = ((Standard_Integer*)Max)[ 3]&0x00007fff;
-  ((Standard_Integer*)MM)[ 1]+=(((Standard_Integer*)Min)[ 2]&0x00007fff)<<16;
-  ((Standard_Integer*)MM)[ 9]+=(((Standard_Integer*)Max)[ 2]&0x00007fff)<<16;
-  ((Standard_Integer*)MM)[ 2] = ((Standard_Integer*)Min)[ 5]&0x00007fff;
-  ((Standard_Integer*)MM)[10] = ((Standard_Integer*)Max)[ 5]&0x00007fff;
-  ((Standard_Integer*)MM)[ 2]+=(((Standard_Integer*)Min)[ 4]&0x00007fff)<<16;
-  ((Standard_Integer*)MM)[10]+=(((Standard_Integer*)Max)[ 4]&0x00007fff)<<16;
-  ((Standard_Integer*)MM)[ 3] = ((Standard_Integer*)Min)[ 7]&0x00007fff;
-  ((Standard_Integer*)MM)[11] = ((Standard_Integer*)Max)[ 7]&0x00007fff;
-  ((Standard_Integer*)MM)[ 3]+=(((Standard_Integer*)Min)[ 6]&0x00007fff)<<16;
-  ((Standard_Integer*)MM)[11]+=(((Standard_Integer*)Max)[ 6]&0x00007fff)<<16;
-  ((Standard_Integer*)MM)[ 4] = ((Standard_Integer*)Min)[ 9]&0x00007fff;
-  ((Standard_Integer*)MM)[12] = ((Standard_Integer*)Max)[ 9]&0x00007fff;
-  ((Standard_Integer*)MM)[ 4]+=(((Standard_Integer*)Min)[ 8]&0x00007fff)<<16;
-  ((Standard_Integer*)MM)[12]+=(((Standard_Integer*)Max)[ 8]&0x00007fff)<<16;
-  ((Standard_Integer*)MM)[ 5] = ((Standard_Integer*)Min)[11]&0x00007fff;
-  ((Standard_Integer*)MM)[13] = ((Standard_Integer*)Max)[11]&0x00007fff;
-  ((Standard_Integer*)MM)[ 5]+=(((Standard_Integer*)Min)[10]&0x00007fff)<<16;
-  ((Standard_Integer*)MM)[13]+=(((Standard_Integer*)Max)[10]&0x00007fff)<<16;
-  ((Standard_Integer*)MM)[ 6] = ((Standard_Integer*)Min)[13]&0x00007fff;
-  ((Standard_Integer*)MM)[14] = ((Standard_Integer*)Max)[13]&0x00007fff;
-  ((Standard_Integer*)MM)[ 6]+=(((Standard_Integer*)Min)[12]&0x00007fff)<<16;
-  ((Standard_Integer*)MM)[14]+=(((Standard_Integer*)Max)[12]&0x00007fff)<<16;
-  ((Standard_Integer*)MM)[ 7] = ((Standard_Integer*)Min)[15]&0x00007fff;
-  ((Standard_Integer*)MM)[15] = ((Standard_Integer*)Max)[15]&0x00007fff;
-  ((Standard_Integer*)MM)[ 7]+=(((Standard_Integer*)Min)[14]&0x00007fff)<<16;
-  ((Standard_Integer*)MM)[15]+=(((Standard_Integer*)Max)[14]&0x00007fff)<<16;
+  MM.Min[0] =  Min.Min[1] & 0x00007fff;
+  MM.Max[0] =  Max.Min[1] & 0x00007fff;
+  MM.Min[0] += (Min.Min[0] & 0x00007fff) << 16;
+  MM.Max[0] += (Max.Min[0] & 0x00007fff) <<16;
+  MM.Min[1] =  Min.Min[3] & 0x00007fff;
+  MM.Max[1] =  Max.Min[3] & 0x00007fff;
+  MM.Min[1] += (Min.Min[2] & 0x00007fff) << 16;
+  MM.Max[1] += (Max.Min[2] & 0x00007fff) << 16;
+  MM.Min[2] =  Min.Min[5] & 0x00007fff;
+  MM.Max[2] =  Max.Min[5] & 0x00007fff;
+  MM.Min[2] += (Min.Min[4] & 0x00007fff) << 16;
+  MM.Max[2] += (Max.Min[4] & 0x00007fff) << 16;
+  MM.Min[3] =  Min.Min[7] & 0x00007fff;
+  MM.Max[3] =  Max.Min[7] & 0x00007fff;
+  MM.Min[3] += (Min.Min[6] & 0x00007fff) << 16;
+  MM.Max[3] += (Max.Min[6] & 0x00007fff) << 16;
+  MM.Min[4] =  Min.Max[1] & 0x00007fff;
+  MM.Max[4] =  Max.Max[1] & 0x00007fff;
+  MM.Min[4] += (Min.Max[0] & 0x00007fff) << 16;
+  MM.Max[4] += (Max.Max[0] & 0x00007fff) << 16;
+  MM.Min[5] =  Min.Max[3] & 0x00007fff;
+  MM.Max[5] =  Max.Max[3] & 0x00007fff;
+  MM.Min[5] += (Min.Max[2] & 0x00007fff) << 16;
+  MM.Max[5] += (Max.Max[2] & 0x00007fff) << 16;
+  MM.Min[6] =  Min.Max[5] & 0x00007fff;
+  MM.Max[6] =  Max.Max[5] & 0x00007fff;
+  MM.Min[6] += (Min.Max[4] & 0x00007fff) << 16;
+  MM.Max[6] += (Max.Max[4] & 0x00007fff) << 16;
+  MM.Min[7] =  Min.Max[7] & 0x00007fff;
+  MM.Max[7] =  Max.Max[7] & 0x00007fff;
+  MM.Min[7] += (Min.Max[6] & 0x00007fff) << 16;
+  MM.Max[7] += (Max.Max[6] & 0x00007fff) << 16;
 }
 
 //=======================================================================
@@ -154,15 +158,17 @@ void HLRAlgo::EncodeMinMax (const Standard_Address Min,
 //purpose  : 
 //=======================================================================
 
-Standard_Real HLRAlgo::SizeBox(const Standard_Address Min,
-                               const Standard_Address Max)
+Standard_Real HLRAlgo::SizeBox(HLRAlgo_EdgesBlock::MinMaxIndices& Min,
+                               HLRAlgo_EdgesBlock::MinMaxIndices& Max)
 {
-  Standard_Real s = ((Standard_Integer *)Max)[0] - ((Standard_Integer *)Min)[0];
-  Standard_Integer i = 1;
-  while (i < 14)
+  Standard_Real s = Max.Min[0] - Min.Min[0];
+  for (Standard_Integer aI = 1; aI < 8; ++aI)
   {
-    s *= ((Standard_Integer *)Max)[i] - ((Standard_Integer *)Min)[i];
-    i++;
+    s *= Max.Min[aI] - Min.Min[aI];
+  }
+  for (Standard_Integer aI = 0; aI < 6; ++aI)
+  {
+    s *= Max.Max[aI] - Min.Max[aI];
   }
   return s;
 }
@@ -172,61 +178,42 @@ Standard_Real HLRAlgo::SizeBox(const Standard_Address Min,
 //purpose  : 
 //=======================================================================
 
-void HLRAlgo::DecodeMinMax (const Standard_Address MM,
-                            const Standard_Address Min,
-                            const Standard_Address Max)
+void HLRAlgo::DecodeMinMax (const HLRAlgo_EdgesBlock::MinMaxIndices& MM,
+                            HLRAlgo_EdgesBlock::MinMaxIndices& Min,
+                            HLRAlgo_EdgesBlock::MinMaxIndices& Max)
 {
-  ((Standard_Integer*)Min)[ 0]=(((Standard_Integer*)MM)[ 0]&0x7fff0000)>>16;
-  ((Standard_Integer*)Max)[ 0]=(((Standard_Integer*)MM)[ 8]&0x7fff0000)>>16;
-  ((Standard_Integer*)Min)[ 1]= ((Standard_Integer*)MM)[ 0]&0x00007fff;
-  ((Standard_Integer*)Max)[ 1]= ((Standard_Integer*)MM)[ 8]&0x00007fff;
-  ((Standard_Integer*)Min)[ 2]=(((Standard_Integer*)MM)[ 1]&0x7fff0000)>>16;
-  ((Standard_Integer*)Max)[ 2]=(((Standard_Integer*)MM)[ 9]&0x7fff0000)>>16;
-  ((Standard_Integer*)Min)[ 3]= ((Standard_Integer*)MM)[ 1]&0x00007fff;
-  ((Standard_Integer*)Max)[ 3]= ((Standard_Integer*)MM)[ 9]&0x00007fff;
-  ((Standard_Integer*)Min)[ 4]=(((Standard_Integer*)MM)[ 2]&0x7fff0000)>>16;
-  ((Standard_Integer*)Max)[ 4]=(((Standard_Integer*)MM)[10]&0x7fff0000)>>16;
-  ((Standard_Integer*)Min)[ 5]= ((Standard_Integer*)MM)[ 2]&0x00007fff;
-  ((Standard_Integer*)Max)[ 5]= ((Standard_Integer*)MM)[10]&0x00007fff;
-  ((Standard_Integer*)Min)[ 6]=(((Standard_Integer*)MM)[ 3]&0x7fff0000)>>16;
-  ((Standard_Integer*)Max)[ 6]=(((Standard_Integer*)MM)[11]&0x7fff0000)>>16;
-  ((Standard_Integer*)Min)[ 7]= ((Standard_Integer*)MM)[ 3]&0x00007fff;
-  ((Standard_Integer*)Max)[ 7]= ((Standard_Integer*)MM)[11]&0x00007fff;
-  ((Standard_Integer*)Min)[ 8]=(((Standard_Integer*)MM)[ 4]&0x7fff0000)>>16;
-  ((Standard_Integer*)Max)[ 8]=(((Standard_Integer*)MM)[12]&0x7fff0000)>>16;
-  ((Standard_Integer*)Min)[ 9]= ((Standard_Integer*)MM)[ 4]&0x00007fff;
-  ((Standard_Integer*)Max)[ 9]= ((Standard_Integer*)MM)[12]&0x00007fff;
-  ((Standard_Integer*)Min)[10]=(((Standard_Integer*)MM)[ 5]&0x7fff0000)>>16;
-  ((Standard_Integer*)Max)[10]=(((Standard_Integer*)MM)[13]&0x7fff0000)>>16;
-  ((Standard_Integer*)Min)[11]= ((Standard_Integer*)MM)[ 5]&0x00007fff;
-  ((Standard_Integer*)Max)[11]= ((Standard_Integer*)MM)[13]&0x00007fff;
-  ((Standard_Integer*)Min)[12]=(((Standard_Integer*)MM)[ 6]&0x7fff0000)>>16;
-  ((Standard_Integer*)Max)[12]=(((Standard_Integer*)MM)[14]&0x7fff0000)>>16;
-  ((Standard_Integer*)Min)[13]= ((Standard_Integer*)MM)[ 6]&0x00007fff;
-  ((Standard_Integer*)Max)[13]= ((Standard_Integer*)MM)[14]&0x00007fff;
-  ((Standard_Integer*)Min)[14]=(((Standard_Integer*)MM)[ 7]&0x7fff0000)>>16;
-  ((Standard_Integer*)Max)[14]=(((Standard_Integer*)MM)[15]&0x7fff0000)>>16;
-  ((Standard_Integer*)Min)[15]= ((Standard_Integer*)MM)[ 7]&0x00007fff;
-  ((Standard_Integer*)Max)[15]= ((Standard_Integer*)MM)[15]&0x00007fff;
-}
-
-//=======================================================================
-//function :CopyMinMax
-//purpose  : 
-//=======================================================================
-
-void HLRAlgo::CopyMinMax (const Standard_Address IMin,
-                          const Standard_Address IMax,
-                          const Standard_Address OMin,
-                          const Standard_Address OMax)
-{
-  Standard_Integer i = 0;
-  while (i < 16)
-  {
-    ((Standard_Integer*)OMin)[i]=((Standard_Integer*)IMin)[i];
-    ((Standard_Integer*)OMax)[i]=((Standard_Integer*)IMax)[i];
-    i++;
-  }
+  Min.Min[0] =(MM.Min[0] & 0x7fff0000)>>16;
+  Max.Min[0] =(MM.Max[0] & 0x7fff0000)>>16;
+  Min.Min[1] = MM.Min[0] & 0x00007fff;
+  Max.Min[1] = MM.Max[0] & 0x00007fff;
+  Min.Min[2] =(MM.Min[1] & 0x7fff0000)>>16;
+  Max.Min[2] =(MM.Max[1] & 0x7fff0000)>>16;
+  Min.Min[3] = MM.Min[1] & 0x00007fff;
+  Max.Min[3] = MM.Max[1] & 0x00007fff;
+  Min.Min[4] =(MM.Min[2] & 0x7fff0000)>>16;
+  Max.Min[4] =(MM.Max[2] & 0x7fff0000)>>16;
+  Min.Min[5] = MM.Min[2] & 0x00007fff;
+  Max.Min[5] = MM.Max[2] & 0x00007fff;
+  Min.Min[6] =(MM.Min[3] & 0x7fff0000)>>16;
+  Max.Min[6] =(MM.Max[3] & 0x7fff0000)>>16;
+  Min.Min[7] = MM.Min[3] & 0x00007fff;
+  Max.Min[7] = MM.Max[3] & 0x00007fff;
+  Min.Max[0] =(MM.Min[4] & 0x7fff0000)>>16;
+  Max.Max[0] =(MM.Max[4] & 0x7fff0000)>>16;
+  Min.Max[1] = MM.Min[4] & 0x00007fff;
+  Max.Max[1] = MM.Max[4] & 0x00007fff;
+  Min.Max[2] =(MM.Min[5] & 0x7fff0000)>>16;
+  Max.Max[2] =(MM.Max[5] & 0x7fff0000)>>16;
+  Min.Max[3] = MM.Min[5] & 0x00007fff;
+  Max.Max[3] = MM.Max[5] & 0x00007fff;
+  Min.Max[4] =(MM.Min[6] & 0x7fff0000)>>16;
+  Max.Max[4] =(MM.Max[6] & 0x7fff0000)>>16;
+  Min.Max[5] = MM.Min[6] & 0x00007fff;
+  Max.Max[5] = MM.Max[6] & 0x00007fff;
+  Min.Max[6] =(MM.Min[7] & 0x7fff0000)>>16;
+  Max.Max[6] =(MM.Max[7] & 0x7fff0000)>>16;
+  Min.Max[7] = MM.Min[7] & 0x00007fff;
+  Max.Max[7] = MM.Max[7] & 0x00007fff;
 }
 
 //=======================================================================
@@ -234,18 +221,11 @@ void HLRAlgo::CopyMinMax (const Standard_Address IMin,
 //purpose  : 
 //=======================================================================
 
-void HLRAlgo::AddMinMax (const Standard_Address IMin,
-                         const Standard_Address IMax,
-                         const Standard_Address OMin,
-                         const Standard_Address OMax)
+void HLRAlgo::AddMinMax (HLRAlgo_EdgesBlock::MinMaxIndices& IMin,
+                         HLRAlgo_EdgesBlock::MinMaxIndices& IMax,
+                         HLRAlgo_EdgesBlock::MinMaxIndices& OMin,
+                         HLRAlgo_EdgesBlock::MinMaxIndices& OMax)
 {
-  Standard_Integer i = 0;
-  while (i < 16)
-  {
-    if (((Standard_Integer*)OMin)[i] > ((Standard_Integer*)IMin)[i])
-      ((Standard_Integer*)OMin)[i]=((Standard_Integer*)IMin)[i];
-    if (((Standard_Integer*)OMax)[i] < ((Standard_Integer*)IMax)[i])
-      ((Standard_Integer*)OMax)[i]=((Standard_Integer*)IMax)[i];
-    i++;
-  }
+  OMin.Minimize(IMin);
+  OMax.Maximize(IMax);
 }

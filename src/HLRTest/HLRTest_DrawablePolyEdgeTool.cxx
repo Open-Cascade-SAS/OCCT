@@ -67,7 +67,7 @@ HLRTest_DrawablePolyEdgeTool (const Handle(HLRBRep_PolyAlgo)& Alg,
   Standard_Boolean reg1,regn,outl,intl;
 
   for (myAlgo->InitHide(); myAlgo->MoreHide(); myAlgo->NextHide()) {
-    myAlgo->Hide(Coordinates,status,S,reg1,regn,outl,intl);
+    Coordinates = &myAlgo->Hide(status,S,reg1,regn,outl,intl);
     dx = PntX2 - PntX1;
     dy = PntY2 - PntY1;
     dz = PntZ2 - PntZ1;
@@ -151,7 +151,7 @@ void HLRTest_DrawablePolyEdgeTool::DrawOn (Draw_Display& D) const
       D.SetColor(Draw_vert);
 
       for (myAlgo->InitShow(); myAlgo->MoreShow(); myAlgo->NextShow()) {
-	myAlgo->Show(Coordinates,S,reg1,regn,outl,intl);
+	Coordinates = &myAlgo->Show(S,reg1,regn,outl,intl);
 	Standard_Boolean todraw = Standard_True;
 	if ((!myDispRg1 && reg1 && !outl) ||
 	    (!myDispRgN && regn && !outl))

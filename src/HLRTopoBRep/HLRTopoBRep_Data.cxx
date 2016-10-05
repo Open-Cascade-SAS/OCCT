@@ -345,7 +345,7 @@ void HLRTopoBRep_Data::InsertBefore (const TopoDS_Vertex& V,
 				     const Standard_Real P)
 {
   HLRTopoBRep_VData VD(P,V);
-  ((HLRTopoBRep_ListOfVData*)myVList)->InsertBefore(VD,myVIterator);
+  myVList->InsertBefore(VD,myVIterator);
 }
 
 //=======================================================================
@@ -357,6 +357,6 @@ void HLRTopoBRep_Data::Append (const TopoDS_Vertex& V,
 			       const Standard_Real P)
 {
   HLRTopoBRep_VData VD(P,V);
-  ((HLRTopoBRep_ListOfVData*)myVList)->Append(VD);
+  myVList->Append(VD);
 }
 

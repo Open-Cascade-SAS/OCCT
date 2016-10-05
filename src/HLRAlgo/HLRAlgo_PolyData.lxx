@@ -25,7 +25,9 @@
 
 inline void
 HLRAlgo_PolyData::FaceIndex (const Standard_Integer I)
-{ myIndices[0] = I; }
+{
+  myFaceIndices.Index = I;
+}
 
 //=======================================================================
 //function : FaceIndex
@@ -34,7 +36,9 @@ HLRAlgo_PolyData::FaceIndex (const Standard_Integer I)
 
 inline Standard_Integer
 HLRAlgo_PolyData::FaceIndex () const
-{ return myIndices[0]; }
+{
+  return myFaceIndices.Index;
+}
 
 //=======================================================================
 //function : Nodes
@@ -70,11 +74,3 @@ HLRAlgo_PolyData::PHDat () const
 
 inline Standard_Boolean HLRAlgo_PolyData::Hiding () const
 { return !myHPHDat.IsNull(); }
-
-//=======================================================================
-//function : Indices
-//purpose  : 
-//=======================================================================
-
-inline Standard_Address HLRAlgo_PolyData::Indices ()
-{ return (Standard_Address)myIndices; }

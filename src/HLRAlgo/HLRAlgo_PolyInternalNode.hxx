@@ -23,7 +23,8 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <MMgt_TShared.hxx>
-#include <Standard_Address.hxx>
+#include <gp_XYZ.hxx>
+#include <gp_XY.hxx>
 
 
 class HLRAlgo_PolyInternalNode;
@@ -32,40 +33,42 @@ DEFINE_STANDARD_HANDLE(HLRAlgo_PolyInternalNode, MMgt_TShared)
 //! to Update OutLines.
 class HLRAlgo_PolyInternalNode : public MMgt_TShared
 {
-
 public:
+  struct NodeIndices
+  {
+    Standard_Integer NdSg, Flag, Edg1, Edg2;
+  };
 
-  
-    HLRAlgo_PolyInternalNode();
-  
-    Standard_Address Indices() const;
-  
-    Standard_Address RValues() const;
+  struct NodeData
+  {
+    gp_XYZ Point, Normal;
+    gp_XY UV;
+    Standard_Real PCu1, PCu2, Scal;
+  };
 
+  HLRAlgo_PolyInternalNode()
+  {
+    myIndices.NdSg = 0;
+    myIndices.Flag = 0;
+    myIndices.Edg1 = 0;
+    myIndices.Edg2 = 0;
+  }
 
+  NodeIndices& Indices()
+  {
+    return myIndices;
+  }
 
+  NodeData& Data()
+  {
+    return myData;
+  }
 
   DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyInternalNode,MMgt_TShared)
 
-protected:
-
-
-
-
 private:
-
-
-  Standard_Integer myIndices[4];
-  Standard_Real myRValues[11];
-
-
+  NodeIndices myIndices;
+  NodeData myData;
 };
-
-
-#include <HLRAlgo_PolyInternalNode.lxx>
-
-
-
-
 
 #endif // _HLRAlgo_PolyInternalNode_HeaderFile

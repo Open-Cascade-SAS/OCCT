@@ -23,49 +23,58 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Address.hxx>
 
 
 //! Data structure of a set of Hiding Triangles.
-class HLRAlgo_PolyHidingData 
+class HLRAlgo_PolyHidingData
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-    HLRAlgo_PolyHidingData();
-  
-    void Set (const Standard_Integer Index, const Standard_Integer Minim, const Standard_Integer Maxim, const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D);
-  
-    Standard_Address IndexAndMinMax() const;
-  
-    Standard_Address Plan() const;
+  struct TriangleIndices
+  {
+    Standard_Integer Index, Min, Max;
+  };
 
+  struct PlaneT
+  {
+    gp_XYZ Normal;
+    Standard_Real D;
+  };
 
+  HLRAlgo_PolyHidingData()
+  {
+  }
 
+  void Set (
+    const Standard_Integer Index,
+    const Standard_Integer Minim,
+    const Standard_Integer Maxim,
+    const Standard_Real A,
+    const Standard_Real B,
+    const Standard_Real C,
+    const Standard_Real D)
+  {
+    myIndices.Index = Index;
+    myIndices.Min = Minim;
+    myIndices.Max = Maxim;
+    myPlane.Normal = gp_XYZ(A, B, C);
+    myPlane.D = D;
+  }
 
-protected:
+  TriangleIndices& Indices()
+  {
+    return myIndices;
+  }
 
-
-
-
+  PlaneT& Plane()
+  {
+    return myPlane;
+  }
 
 private:
-
-
-
-  Standard_Integer myMinMax[3];
-  Standard_Real myPlan[4];
-
-
+  TriangleIndices myIndices;
+  PlaneT myPlane;
 };
-
-
-#include <HLRAlgo_PolyHidingData.lxx>
-
-
-
-
 
 #endif // _HLRAlgo_PolyHidingData_HeaderFile

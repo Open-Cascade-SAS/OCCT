@@ -112,14 +112,3 @@ void HLRBRep_ShapeBounds::Bounds (Standard_Integer& V1,
   F1 = myFaceStart;
   F2 = myFaceEnd;
 }
-
-//=======================================================================
-//function : UpdateMinMax
-//purpose  : 
-//=======================================================================
-
-void HLRBRep_ShapeBounds::UpdateMinMax (const Standard_Address TotMinMax)
-{
-  for (Standard_Integer i = 0; i <= 15; i++)
-    myMinMax[i] = ((Standard_Integer*)TotMinMax)[i];
-}

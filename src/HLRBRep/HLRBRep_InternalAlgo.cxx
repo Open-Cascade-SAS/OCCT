@@ -44,40 +44,6 @@ extern Standard_Integer nbCal3Intersection; // curve-surface intersections
 static Standard_Integer TRACE = Standard_True;
 static Standard_Integer TRACE10 = Standard_True; 
 
-#define MinShBI1 MinMaxShBI[ 0]
-#define MinShBI2 MinMaxShBI[ 1]
-#define MinShBI3 MinMaxShBI[ 2]
-#define MinShBI4 MinMaxShBI[ 3]
-#define MinShBI5 MinMaxShBI[ 4]
-#define MinShBI6 MinMaxShBI[ 5]
-#define MinShBI7 MinMaxShBI[ 6]
-#define MinShBI8 MinMaxShBI[ 7]
-#define MaxShBI1 MinMaxShBI[ 8]
-#define MaxShBI2 MinMaxShBI[ 9]
-#define MaxShBI3 MinMaxShBI[10]
-#define MaxShBI4 MinMaxShBI[11]
-#define MaxShBI5 MinMaxShBI[12]
-#define MaxShBI6 MinMaxShBI[13]
-#define MaxShBI7 MinMaxShBI[14]
-#define MaxShBI8 MinMaxShBI[15]
-
-#define MinShBJ1 MinMaxShBJ[ 0]
-#define MinShBJ2 MinMaxShBJ[ 1]
-#define MinShBJ3 MinMaxShBJ[ 2]
-#define MinShBJ4 MinMaxShBJ[ 3]
-#define MinShBJ5 MinMaxShBJ[ 4]
-#define MinShBJ6 MinMaxShBJ[ 5]
-#define MinShBJ7 MinMaxShBJ[ 6]
-#define MinShBJ8 MinMaxShBJ[ 7]
-#define MaxShBJ1 MinMaxShBJ[ 8]
-#define MaxShBJ2 MinMaxShBJ[ 9]
-#define MaxShBJ3 MinMaxShBJ[10]
-#define MaxShBJ4 MinMaxShBJ[11]
-#define MaxShBJ5 MinMaxShBJ[12]
-#define MaxShBJ6 MinMaxShBJ[13]
-#define MaxShBJ7 MinMaxShBJ[14]
-#define MaxShBJ8 MinMaxShBJ[15]
-
 //=======================================================================
 //function : HLRBRep_InternalAlgo
 //purpose  : 
@@ -188,8 +154,8 @@ void HLRBRep_InternalAlgo::Update ()
 
     myDS->Update(myProj);
 
-    Standard_Integer ShapMin[16],ShapMax[16],MinMaxShap[16];
-    Standard_Integer TheMin[16],TheMax[16];
+    HLRAlgo_EdgesBlock::MinMaxIndices ShapMin, ShapMax, MinMaxShap;
+    HLRAlgo_EdgesBlock::MinMaxIndices TheMin, TheMax;
     HLRBRep_Array1OfEData& aEDataArray = myDS->EDataArray();
     HLRBRep_Array1OfFData& aFDataArray = myDS->FDataArray();
 
@@ -201,37 +167,22 @@ void HLRBRep_InternalAlgo::Update ()
 
       for (Standard_Integer e = e1; e <= e2; e++) {
         HLRBRep_EdgeData ed = aEDataArray.ChangeValue(e);
-        HLRAlgo::DecodeMinMax(ed.MinMax(),
-			      (Standard_Address)TheMin,
-			      (Standard_Address)TheMax);
+        HLRAlgo::DecodeMinMax(ed.MinMax(), TheMin, TheMax);
 	if (FirstTime) {
 	  FirstTime = Standard_False;
-	  HLRAlgo::CopyMinMax((Standard_Address)TheMin,
-			      (Standard_Address)TheMax,
-			      (Standard_Address)ShapMin,
-			      (Standard_Address)ShapMax);
+	  HLRAlgo::CopyMinMax(TheMin, TheMax, ShapMin, ShapMax);
 	}
 	else
-	  HLRAlgo::AddMinMax((Standard_Address)TheMin,
-			     (Standard_Address)TheMax,
-			     (Standard_Address)ShapMin,
-			     (Standard_Address)ShapMax);
+	  HLRAlgo::AddMinMax(TheMin, TheMax, ShapMin, ShapMax);
       }
 
       for (Standard_Integer f = f1; f <= f2; f++) {
         HLRBRep_FaceData& fd = aFDataArray.ChangeValue(f);
-        HLRAlgo::DecodeMinMax(fd.Wires()->MinMax(),
-			      (Standard_Address)TheMin,
-			      (Standard_Address)TheMax);
-	HLRAlgo::AddMinMax((Standard_Address)TheMin,
-			   (Standard_Address)TheMax,
-			   (Standard_Address)ShapMin,
-			   (Standard_Address)ShapMax);
+        HLRAlgo::DecodeMinMax(fd.Wires()->MinMax(), TheMin, TheMax);
+	HLRAlgo::AddMinMax(TheMin, TheMax, ShapMin, ShapMax);
       }
-      HLRAlgo::EncodeMinMax((Standard_Address)ShapMin,
-			    (Standard_Address)ShapMax,
-			    (Standard_Address)MinMaxShap);
-      SB.UpdateMinMax((Standard_Address)MinMaxShap);
+      HLRAlgo::EncodeMinMax(ShapMin, ShapMax, MinMaxShap);
+      SB.UpdateMinMax(MinMaxShap);
     }
   }
 }
@@ -676,24 +627,22 @@ void HLRBRep_InternalAlgo::Hide (const Standard_Integer I,
 
     if (I == J) Hide(I);
     else {
-      Standard_Integer* MinMaxShBI =
-	(Standard_Integer*)myShapes(I).MinMax();
-      Standard_Integer* MinMaxShBJ =
-	(Standard_Integer*)myShapes(J).MinMax();
-      if (((MaxShBJ1 - MinShBI1) & 0x80008000) == 0 &&
-	  ((MaxShBI1 - MinShBJ1) & 0x80008000) == 0 &&
-	  ((MaxShBJ2 - MinShBI2) & 0x80008000) == 0 &&
-	  ((MaxShBI2 - MinShBJ2) & 0x80008000) == 0 &&
-	  ((MaxShBJ3 - MinShBI3) & 0x80008000) == 0 &&
-	  ((MaxShBI3 - MinShBJ3) & 0x80008000) == 0 &&
-	  ((MaxShBJ4 - MinShBI4) & 0x80008000) == 0 &&
-	  ((MaxShBI4 - MinShBJ4) & 0x80008000) == 0 &&
-	  ((MaxShBJ5 - MinShBI5) & 0x80008000) == 0 &&
-	  ((MaxShBI5 - MinShBJ5) & 0x80008000) == 0 &&
-	  ((MaxShBJ6 - MinShBI6) & 0x80008000) == 0 &&
-	  ((MaxShBI6 - MinShBJ6) & 0x80008000) == 0 &&
-	  ((MaxShBJ7 - MinShBI7) & 0x80008000) == 0 &&
-	  ((MaxShBJ8 - MinShBI8) & 0x80008000) == 0) {
+      HLRAlgo_EdgesBlock::MinMaxIndices* MinMaxShBI = &myShapes(I).MinMax();
+      HLRAlgo_EdgesBlock::MinMaxIndices* MinMaxShBJ = &myShapes(J).MinMax();
+      if (((MinMaxShBJ->Max[0] - MinMaxShBI->Min[0]) & 0x80008000) == 0 &&
+	  ((MinMaxShBI->Max[0] - MinMaxShBJ->Min[0]) & 0x80008000) == 0 &&
+	  ((MinMaxShBJ->Max[1] - MinMaxShBI->Min[1]) & 0x80008000) == 0 &&
+	  ((MinMaxShBI->Max[1] - MinMaxShBJ->Min[1]) & 0x80008000) == 0 &&
+	  ((MinMaxShBJ->Max[2] - MinMaxShBI->Min[2]) & 0x80008000) == 0 &&
+	  ((MinMaxShBI->Max[2] - MinMaxShBJ->Min[2]) & 0x80008000) == 0 &&
+	  ((MinMaxShBJ->Max[3] - MinMaxShBI->Min[3]) & 0x80008000) == 0 &&
+	  ((MinMaxShBI->Max[3] - MinMaxShBJ->Min[3]) & 0x80008000) == 0 &&
+	  ((MinMaxShBJ->Max[4] - MinMaxShBI->Min[4]) & 0x80008000) == 0 &&
+	  ((MinMaxShBI->Max[4] - MinMaxShBJ->Min[4]) & 0x80008000) == 0 &&
+	  ((MinMaxShBJ->Max[5] - MinMaxShBI->Min[5]) & 0x80008000) == 0 &&
+	  ((MinMaxShBI->Max[5] - MinMaxShBJ->Min[5]) & 0x80008000) == 0 &&
+	  ((MinMaxShBJ->Max[6] - MinMaxShBI->Min[6]) & 0x80008000) == 0 &&
+	  ((MinMaxShBJ->Max[7] - MinMaxShBI->Min[7]) & 0x80008000) == 0) {
 	if (myDebug) {
 	  cout << " hiding the shape " << I;
 	  cout << " by the shape : " << J << endl;

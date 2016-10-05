@@ -72,7 +72,7 @@ void DBRep_HideData::Set(const Standard_Integer viewID,
   HLRAlgo_EdgeStatus status;
 
   for (hider->InitHide(); hider->MoreHide(); hider->NextHide()) {
-    hider->Hide(Coordinates,status,Sori,reg1,regn,outl,intl);
+    Coordinates = &hider->Hide(status,Sori,reg1,regn,outl,intl);
     dx = PntX2 - PntX1;
     dy = PntY2 - PntY1;
     dz = PntZ2 - PntZ1;

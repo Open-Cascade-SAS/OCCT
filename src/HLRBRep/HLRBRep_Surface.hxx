@@ -17,13 +17,14 @@
 #ifndef _HLRBRep_Surface_HeaderFile
 #define _HLRBRep_Surface_HeaderFile
 
+#include <HLRBRep_Curve.hxx>
+
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
 #include <BRepAdaptor_Surface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <Standard_Address.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
@@ -56,7 +57,10 @@ public:
   //! Creates an undefined surface with no face loaded.
   Standard_EXPORT HLRBRep_Surface();
   
-    void Projector (const Standard_Address Proj);
+  void Projector (const HLRAlgo_Projector* Proj)
+  {
+    myProj = Proj;
+  }
   
   //! Returns the 3D Surface.
     BRepAdaptor_Surface& Surface();
@@ -67,7 +71,7 @@ public:
   //! returns true if it is a side face
   Standard_EXPORT Standard_Boolean IsSide (const Standard_Real tolf, const Standard_Real toler) const;
   
-  Standard_EXPORT Standard_Boolean IsAbove (const Standard_Boolean back, const Standard_Address A, const Standard_Real tolC) const;
+  Standard_EXPORT Standard_Boolean IsAbove (const Standard_Boolean back, const HLRBRep_Curve* A, const Standard_Real tolC) const;
   
     Standard_Real FirstUParameter() const;
   
@@ -187,7 +191,7 @@ private:
 
   BRepAdaptor_Surface mySurf;
   GeomAbs_SurfaceType myType;
-  Standard_Address myProj;
+  const HLRAlgo_Projector* myProj;
 
 
 };

@@ -106,7 +106,7 @@ private:
   HLRBRep_CInter myIntersector;
   HLRBRep_InterCSurf myCSIntersector;
   Standard_Address mySurface;
-  Standard_Address myPolyhedron;
+  HLRBRep_ThePolyhedronOfInterCSurf* myPolyhedron;
 
 
 };

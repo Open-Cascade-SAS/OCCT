@@ -22,44 +22,13 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Address.hxx>
-
 
 //! Data structure of a triangle.
-class HLRAlgo_TriangleData 
+struct HLRAlgo_TriangleData
 {
-public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-    HLRAlgo_TriangleData();
-  
-    Standard_Address Indices() const;
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-  Standard_Integer myIndices[4];
-
-
+  Standard_Integer Node1, Node2, Node3, Flags;
 };
-
-
-#include <HLRAlgo_TriangleData.lxx>
-
-
-
-
 
 #endif // _HLRAlgo_TriangleData_HeaderFile

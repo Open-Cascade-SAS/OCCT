@@ -63,11 +63,6 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
-#define INTERPOLATE 0
-#define BRISE       0
-#define APPROX      1
-
-
 //=======================================================================
 //function : Insert
 //purpose  : explore the faces and insert them

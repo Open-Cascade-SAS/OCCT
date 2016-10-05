@@ -29,13 +29,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-#define PntX1 ((Standard_Real*)Coordinates)[0]
-#define PntY1 ((Standard_Real*)Coordinates)[1]
-#define PntZ1 ((Standard_Real*)Coordinates)[2]
-#define PntX2 ((Standard_Real*)Coordinates)[3]
-#define PntY2 ((Standard_Real*)Coordinates)[4]
-#define PntZ2 ((Standard_Real*)Coordinates)[5]
-
 //=======================================================================
 //function : HLRBRep_PolyHLRToShape
 //purpose  : 
@@ -53,7 +46,7 @@ void HLRBRep_PolyHLRToShape::Update (const Handle(HLRBRep_PolyAlgo)& A)
 {
   myAlgo = A;
   myHideMode = Standard_True;
-  Standard_Real sta,end,XSta,YSta,ZSta,XEnd,YEnd,ZEnd,dx,dy;
+  Standard_Real sta,end;
   Standard_ShortReal tolsta,tolend;
   HLRAlgo_EdgeIterator It;
   myBiPntVis.Clear();
@@ -62,21 +55,17 @@ void HLRBRep_PolyHLRToShape::Update (const Handle(HLRBRep_PolyAlgo)& A)
   Standard_Boolean reg1,regn,outl,intl;
   const gp_Trsf& T = myAlgo->Projector().Transformation();
   HLRAlgo_EdgeStatus status;
-  Standard_Address Coordinates;
 
   for (myAlgo->InitHide(); myAlgo->MoreHide(); myAlgo->NextHide()) {
-    myAlgo->Hide(Coordinates,status,S,reg1,regn,outl,intl);
-    XSta = PntX1;
-    YSta = PntY1;
-    ZSta = PntZ1;
-    XEnd = PntX2;
-    YEnd = PntY2;
-    ZEnd = PntZ2;
-    T.Transforms(XSta,YSta,ZSta);
-    T.Transforms(XEnd,YEnd,ZEnd);
-    dx = XEnd - XSta;
-    dy = YEnd - YSta;
-    if (sqrt(dx * dx + dy * dy) > 1.e-10) {
+    HLRAlgo_BiPoint::PointsT& aPoints = myAlgo->Hide(status,S,reg1,regn,outl,intl);
+    gp_XYZ aSta = aPoints.Pnt1;
+    gp_XYZ aEnd = aPoints.Pnt2;
+    T.Transforms(aSta);
+    T.Transforms(aEnd);
+    const gp_XY aSta2D(aSta.X(), aSta.Y());
+    const gp_XY aEnd2D(aEnd.X(), aEnd.Y());
+    const gp_XY aD = aEnd2D - aSta2D;
+    if (aD.Modulus() > 1.e-10) {
     
       for (It.InitVisible(status);
 	   It.MoreVisible();
@@ -84,8 +73,7 @@ void HLRBRep_PolyHLRToShape::Update (const Handle(HLRBRep_PolyAlgo)& A)
 	It.Visible(sta,tolsta,end,tolend);
 	myBiPntVis.Append
 	  (HLRBRep_BiPnt2D
-	   (XSta + sta * dx,YSta + sta * dy,
-	    XSta + end * dx,YSta + end * dy,
+	   (aSta2D + sta * aD, aSta2D + end * aD,
 	    S,reg1,regn,outl,intl));
       }
       
@@ -95,8 +83,7 @@ void HLRBRep_PolyHLRToShape::Update (const Handle(HLRBRep_PolyAlgo)& A)
 	It.Hidden(sta,tolsta,end,tolend);
 	myBiPntHid.Append
 	  (HLRBRep_BiPnt2D
-	   (XSta + sta * dx,YSta + sta * dy,
-	    XSta + end * dx,YSta + end * dy,
+	   (aSta2D + sta * aD, aSta2D + end * aD,
 	    S,reg1,regn,outl,intl));
       }
     }
@@ -153,11 +140,9 @@ HLRBRep_PolyHLRToShape::InternalCompound (const Standard_Integer typ,
   else {
     const gp_Trsf& T = myAlgo->Projector().Transformation();
     TopoDS_Shape SBP;
-    Standard_Real XSta,YSta,ZSta,XEnd,YEnd,ZEnd,dx,dy;
-    Standard_Address Coordinates;
 
     for (myAlgo->InitShow(); myAlgo->MoreShow(); myAlgo->NextShow()) {
-      myAlgo->Show(Coordinates,SBP,reg1,regn,outl,intl);
+      HLRAlgo_BiPoint::PointsT& aPoints = myAlgo->Show(SBP,reg1,regn,outl,intl);
       if      (typ == 1) todraw =  intl;
       else if (typ == 2) todraw =  reg1 && !regn && !outl;
       else if (typ == 3) todraw =  regn && !outl;
@@ -165,19 +150,14 @@ HLRBRep_PolyHLRToShape::InternalCompound (const Standard_Integer typ,
       if (todraw)
 	if (!S.IsNull()) todraw = Map.Contains(SBP);
       if (todraw) {
-	XSta = PntX1;
-	YSta = PntY1;
-	ZSta = PntZ1;
-	XEnd = PntX2;
-	YEnd = PntY2;
-	ZEnd = PntZ2;
-	T.Transforms(XSta,YSta,ZSta);
-	T.Transforms(XEnd,YEnd,ZEnd);
-	dx = XEnd - XSta;
-	dy = YEnd - YSta;
-	if (sqrt(dx * dx + dy * dy) > 1.e-10) {
-	  B.Add(Result,BRepLib_MakeEdge2d(gp_Pnt2d(XSta,YSta),
-					  gp_Pnt2d(XEnd,YEnd)));
+  gp_XYZ aSta = aPoints.Pnt1, aEnd = aPoints.Pnt2;
+	T.Transforms(aSta);
+	T.Transforms(aEnd);
+  const gp_XY aSta2D(aSta.X(), aSta.Y());
+  const gp_XY aEnd2D(aEnd.X(), aEnd.Y());
+  const gp_XY aD = aEnd2D - aSta2D;
+	if (aD.Modulus() > 1.e-10) {
+	  B.Add(Result,BRepLib_MakeEdge2d(aSta2D, aEnd2D));
 	  added = Standard_True;
 	}
       }

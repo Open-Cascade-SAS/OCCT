@@ -57,114 +57,7 @@ static const Standard_Real CutBig = 1.e-1;
 
 //-- voir HLRAlgo.cxx 
 
-#define MinShap1 ((Standard_Integer*)MinMaxShap)[ 0]
-#define MinShap2 ((Standard_Integer*)MinMaxShap)[ 1]
-#define MinShap3 ((Standard_Integer*)MinMaxShap)[ 2]
-#define MinShap4 ((Standard_Integer*)MinMaxShap)[ 3]
-#define MinShap5 ((Standard_Integer*)MinMaxShap)[ 4]
-#define MinShap6 ((Standard_Integer*)MinMaxShap)[ 5]
-#define MinShap7 ((Standard_Integer*)MinMaxShap)[ 6]
-#define MinShap8 ((Standard_Integer*)MinMaxShap)[ 7]
-
-#define MaxShap1 ((Standard_Integer*)MinMaxShap)[ 8]
-#define MaxShap2 ((Standard_Integer*)MinMaxShap)[ 9]
-#define MaxShap3 ((Standard_Integer*)MinMaxShap)[10]
-#define MaxShap4 ((Standard_Integer*)MinMaxShap)[11]
-#define MaxShap5 ((Standard_Integer*)MinMaxShap)[12]
-#define MaxShap6 ((Standard_Integer*)MinMaxShap)[13]
-#define MaxShap7 ((Standard_Integer*)MinMaxShap)[14]
-#define MaxShap8 ((Standard_Integer*)MinMaxShap)[15]
-
-#define MinFace1 ((Standard_Integer*)iFaceMinMax)[ 0]
-#define MinFace2 ((Standard_Integer*)iFaceMinMax)[ 1]
-#define MinFace3 ((Standard_Integer*)iFaceMinMax)[ 2]
-#define MinFace4 ((Standard_Integer*)iFaceMinMax)[ 3]
-#define MinFace5 ((Standard_Integer*)iFaceMinMax)[ 4]
-#define MinFace6 ((Standard_Integer*)iFaceMinMax)[ 5]
-#define MinFace7 ((Standard_Integer*)iFaceMinMax)[ 6]
-#define MinFace8 ((Standard_Integer*)iFaceMinMax)[ 7]
-
-#define MaxFace1 ((Standard_Integer*)iFaceMinMax)[ 8]
-#define MaxFace2 ((Standard_Integer*)iFaceMinMax)[ 9]
-#define MaxFace3 ((Standard_Integer*)iFaceMinMax)[10]
-#define MaxFace4 ((Standard_Integer*)iFaceMinMax)[11]
-#define MaxFace5 ((Standard_Integer*)iFaceMinMax)[12]
-#define MaxFace6 ((Standard_Integer*)iFaceMinMax)[13]
-#define MaxFace7 ((Standard_Integer*)iFaceMinMax)[14]
-#define MaxFace8 ((Standard_Integer*)iFaceMinMax)[15]
-
-#define MinWire1 ((Standard_Integer*)MinMaxWire)[ 0]
-#define MinWire2 ((Standard_Integer*)MinMaxWire)[ 1]
-#define MinWire3 ((Standard_Integer*)MinMaxWire)[ 2]
-#define MinWire4 ((Standard_Integer*)MinMaxWire)[ 3]
-#define MinWire5 ((Standard_Integer*)MinMaxWire)[ 4]
-#define MinWire6 ((Standard_Integer*)MinMaxWire)[ 5]
-#define MinWire7 ((Standard_Integer*)MinMaxWire)[ 6]
-#define MinWire8 ((Standard_Integer*)MinMaxWire)[ 7]
-
-#define MaxWire1 ((Standard_Integer*)MinMaxWire)[ 8]
-#define MaxWire2 ((Standard_Integer*)MinMaxWire)[ 9]
-#define MaxWire3 ((Standard_Integer*)MinMaxWire)[10]
-#define MaxWire4 ((Standard_Integer*)MinMaxWire)[11]
-#define MaxWire5 ((Standard_Integer*)MinMaxWire)[12]
-#define MaxWire6 ((Standard_Integer*)MinMaxWire)[13]
-#define MaxWire7 ((Standard_Integer*)MinMaxWire)[14]
-#define MaxWire8 ((Standard_Integer*)MinMaxWire)[15]
-
-#define MinLEdg1 ((Standard_Integer*)myLEMinMax)[ 0]
-#define MinLEdg2 ((Standard_Integer*)myLEMinMax)[ 1]
-#define MinLEdg3 ((Standard_Integer*)myLEMinMax)[ 2]
-#define MinLEdg4 ((Standard_Integer*)myLEMinMax)[ 3]
-#define MinLEdg5 ((Standard_Integer*)myLEMinMax)[ 4]
-#define MinLEdg6 ((Standard_Integer*)myLEMinMax)[ 5]
-#define MinLEdg7 ((Standard_Integer*)myLEMinMax)[ 6]
-#define MinLEdg8 ((Standard_Integer*)myLEMinMax)[ 7]
-
-#define MaxLEdg1 ((Standard_Integer*)myLEMinMax)[ 8]
-#define MaxLEdg2 ((Standard_Integer*)myLEMinMax)[ 9]
-#define MaxLEdg3 ((Standard_Integer*)myLEMinMax)[10]
-#define MaxLEdg4 ((Standard_Integer*)myLEMinMax)[11]
-#define MaxLEdg5 ((Standard_Integer*)myLEMinMax)[12]
-#define MaxLEdg6 ((Standard_Integer*)myLEMinMax)[13]
-#define MaxLEdg7 ((Standard_Integer*)myLEMinMax)[14]
-#define MaxLEdg8 ((Standard_Integer*)myLEMinMax)[15]
-
-#define MinFEdg1 ((Standard_Integer*)MinMaxFEdg)[ 0]
-#define MinFEdg2 ((Standard_Integer*)MinMaxFEdg)[ 1]
-#define MinFEdg3 ((Standard_Integer*)MinMaxFEdg)[ 2]
-#define MinFEdg4 ((Standard_Integer*)MinMaxFEdg)[ 3]
-#define MinFEdg5 ((Standard_Integer*)MinMaxFEdg)[ 4]
-#define MinFEdg6 ((Standard_Integer*)MinMaxFEdg)[ 5]
-#define MinFEdg7 ((Standard_Integer*)MinMaxFEdg)[ 6]
-#define MinFEdg8 ((Standard_Integer*)MinMaxFEdg)[ 7]
-
-#define MaxFEdg1 ((Standard_Integer*)MinMaxFEdg)[ 8]
-#define MaxFEdg2 ((Standard_Integer*)MinMaxFEdg)[ 9]
-#define MaxFEdg3 ((Standard_Integer*)MinMaxFEdg)[10]
-#define MaxFEdg4 ((Standard_Integer*)MinMaxFEdg)[11]
-#define MaxFEdg5 ((Standard_Integer*)MinMaxFEdg)[12]
-#define MaxFEdg6 ((Standard_Integer*)MinMaxFEdg)[13]
-#define MaxFEdg7 ((Standard_Integer*)MinMaxFEdg)[14]
-#define MaxFEdg8 ((Standard_Integer*)MinMaxFEdg)[15]
-
-#define MinVert1 MinMaxVert[ 0]
-#define MinVert2 MinMaxVert[ 1]
-#define MinVert3 MinMaxVert[ 2]
-#define MinVert4 MinMaxVert[ 3]
-#define MinVert5 MinMaxVert[ 4]
-#define MinVert6 MinMaxVert[ 5]
-#define MinVert7 MinMaxVert[ 6]
-#define MinVert8 MinMaxVert[ 7]
-#define MaxVert1 MinMaxVert[ 8]
-#define MaxVert2 MinMaxVert[ 9]
-#define MaxVert3 MinMaxVert[10]
-#define MaxVert4 MinMaxVert[11]
-#define MaxVert5 MinMaxVert[12]
-#define MaxVert6 MinMaxVert[13]
-#define MaxVert7 MinMaxVert[14]
-#define MaxVert8 MinMaxVert[15]
-
-#define DERIVEE_PREMIERE_NULLE  0.000000000001
+static const Standard_Real DERIVEE_PREMIERE_NULLE = 0.000000000001;
 
 //-- ======================================================================
 //--  
@@ -181,7 +74,7 @@ static long unsigned Mask32[32] = { 1,2,4,8,  16,32,64,128,  256,512,1024,2048,
 				 16777216,33554432,67108864,134217728,
 				 268435456,536870912,1073741824,2147483648U};
 
-#define SIZEUV 8
+static const Standard_Integer SIZEUV = 8;
 
 class TableauRejection { 
 public:
@@ -520,7 +413,7 @@ HLRBRep_Data::HLRBRep_Data (const Standard_Integer NV,
 			    mySLProps(2,Epsilon(1.)),
 			    myHideCount(0)
 {
-  myReject=(void *)(new TableauRejection());
+  myReject = new TableauRejection();
   ((TableauRejection *)myReject)->SetDim(myNbEdges);
 }
 
@@ -601,13 +494,13 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
   Standard_Integer i;
   Standard_Real tolMinMax = 0;
 
-  Standard_Integer FaceMin[16],FaceMax[16],MinMaxFace[16];
-  Standard_Integer WireMin[16],WireMax[16],MinMaxWire[16];
-  Standard_Integer EdgeMin[16],EdgeMax[16],MinMaxEdge[16];
+  HLRAlgo_EdgesBlock::MinMaxIndices FaceMin, FaceMax;
+  HLRAlgo_EdgesBlock::MinMaxIndices MinMaxFace;
+  HLRAlgo_EdgesBlock::MinMaxIndices WireMin, WireMax, MinMaxWire;
+  HLRAlgo_EdgesBlock::MinMaxIndices EdgeMin, EdgeMax;
+  HLRAlgo_EdgesBlock::MinMaxIndices MinMaxEdge;
   Standard_Real TotMin[16],TotMax[16];
-  HLRAlgo::InitMinMax(Precision::Infinite(),
-		      (Standard_Address)TotMin,
-		      (Standard_Address)TotMax);
+  HLRAlgo::InitMinMax(Precision::Infinite(), TotMin, TotMax);
 
   // compute the global MinMax
   // *************************
@@ -617,13 +510,10 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
     HLRBRep_EdgeData& ed = myEData.ChangeValue(edge);
     HLRBRep_Curve& EC = ed.ChangeGeometry();
     EC.Projector(&myProj);
-    Standard_Real enl =EC.Update((Standard_Address)TotMin,
-				 (Standard_Address)TotMax);
+    Standard_Real enl =EC.Update(TotMin, TotMax);
     if (enl > tolMinMax) tolMinMax = enl;
   }
-  HLRAlgo::EnlargeMinMax(tolMinMax,
-			 (Standard_Address)TotMin,
-			 (Standard_Address)TotMax);
+  HLRAlgo::EnlargeMinMax(tolMinMax, TotMin, TotMax);
   Standard_Real d[16];
   Standard_Real precad = -Precision::Infinite();
 
@@ -651,11 +541,8 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
 
     HLRBRep_EdgeData& ed = myEData.ChangeValue(edge);
     HLRBRep_Curve& EC = ed.ChangeGeometry();
-    HLRAlgo::InitMinMax(Precision::Infinite(),
-			(Standard_Address)TotMin,
-			(Standard_Address)TotMax);
-    tolMinMax = EC.UpdateMinMax((Standard_Address)TotMin,
-				(Standard_Address)TotMax);
+    HLRAlgo::InitMinMax(Precision::Infinite(), TotMin, TotMax);
+    tolMinMax = EC.UpdateMinMax(TotMin, TotMax);
     tol = (Standard_Real)(ed.Tolerance());
     ed.Vertical(TotMax[0] - TotMin[0] < tol &&
 		 TotMax[1] - TotMin[1] < tol &&
@@ -664,47 +551,43 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
 		 TotMax[4] - TotMin[4] < tol &&
 		 TotMax[5] - TotMin[5] < tol &&
 		 TotMax[6] - TotMin[6] < tol );
-    HLRAlgo::EnlargeMinMax(tolMinMax,
-			   (Standard_Address)TotMin,
-			   (Standard_Address)TotMax);
+    HLRAlgo::EnlargeMinMax(tolMinMax, TotMin, TotMax);
 // Linux warning :  assignment to `int' from `double'. Cast has been added.
-    EdgeMin[ 0] = (Standard_Integer)( (myDeca[ 0] + TotMin[ 0]) * mySurD[ 0]);
-    EdgeMax[ 0] = (Standard_Integer)( (myDeca[ 0] + TotMax[ 0]) * mySurD[ 0]);
-    EdgeMin[ 1] = (Standard_Integer)( (myDeca[ 1] + TotMin[ 1]) * mySurD[ 1]);
-    EdgeMax[ 1] = (Standard_Integer)( (myDeca[ 1] + TotMax[ 1]) * mySurD[ 1]);
-    EdgeMin[ 2] = (Standard_Integer)( (myDeca[ 2] + TotMin[ 2]) * mySurD[ 2]);
-    EdgeMax[ 2] = (Standard_Integer)( (myDeca[ 2] + TotMax[ 2]) * mySurD[ 2]);
-    EdgeMin[ 3] = (Standard_Integer)( (myDeca[ 3] + TotMin[ 3]) * mySurD[ 3]);
-    EdgeMax[ 3] = (Standard_Integer)( (myDeca[ 3] + TotMax[ 3]) * mySurD[ 3]);
-    EdgeMin[ 4] = (Standard_Integer)( (myDeca[ 4] + TotMin[ 4]) * mySurD[ 4]);
-    EdgeMax[ 4] = (Standard_Integer)( (myDeca[ 4] + TotMax[ 4]) * mySurD[ 4]);
-    EdgeMin[ 5] = (Standard_Integer)( (myDeca[ 5] + TotMin[ 5]) * mySurD[ 5]);
-    EdgeMax[ 5] = (Standard_Integer)( (myDeca[ 5] + TotMax[ 5]) * mySurD[ 5]);
-    EdgeMin[ 6] = (Standard_Integer)( (myDeca[ 6] + TotMin[ 6]) * mySurD[ 6]);
-    EdgeMax[ 6] = (Standard_Integer)( (myDeca[ 6] + TotMax[ 6]) * mySurD[ 6]);
-    EdgeMin[ 7] = (Standard_Integer)( (myDeca[ 7] + TotMin[ 7]) * mySurD[ 7]);
-    EdgeMax[ 7] = (Standard_Integer)( (myDeca[ 7] + TotMax[ 7]) * mySurD[ 7]);
-    EdgeMin[ 8] = (Standard_Integer)( (myDeca[ 8] + TotMin[ 8]) * mySurD[ 8]);
-    EdgeMax[ 8] = (Standard_Integer)( (myDeca[ 8] + TotMax[ 8]) * mySurD[ 8]);
-    EdgeMin[ 9] = (Standard_Integer)( (myDeca[ 9] + TotMin[ 9]) * mySurD[ 9]);
-    EdgeMax[ 9] = (Standard_Integer)( (myDeca[ 9] + TotMax[ 9]) * mySurD[ 9]);
-    EdgeMin[10] = (Standard_Integer)( (myDeca[10] + TotMin[10]) * mySurD[10]);
-    EdgeMax[10] = (Standard_Integer)( (myDeca[10] + TotMax[10]) * mySurD[10]);
-    EdgeMin[11] = (Standard_Integer)( (myDeca[11] + TotMin[11]) * mySurD[11]);
-    EdgeMax[11] = (Standard_Integer)( (myDeca[11] + TotMax[11]) * mySurD[11]);
-    EdgeMin[12] = (Standard_Integer)( (myDeca[12] + TotMin[12]) * mySurD[12]);
-    EdgeMax[12] = (Standard_Integer)( (myDeca[12] + TotMax[12]) * mySurD[12]);
-    EdgeMin[13] = (Standard_Integer)( (myDeca[13] + TotMin[13]) * mySurD[13]);
-    EdgeMax[13] = (Standard_Integer)( (myDeca[13] + TotMax[13]) * mySurD[13]);
-    EdgeMin[14] = (Standard_Integer)( (myDeca[14] + TotMin[14]) * mySurD[14]);
-    EdgeMax[14] = (Standard_Integer)( (myDeca[14] + TotMax[14]) * mySurD[14]);
-    EdgeMin[15] = (Standard_Integer)( (myDeca[15] + TotMin[15]) * mySurD[15]);
-    EdgeMax[15] = (Standard_Integer)( (myDeca[15] + TotMax[15]) * mySurD[15]);
+    EdgeMin.Min[0] = (Standard_Integer)( (myDeca[ 0] + TotMin[ 0]) * mySurD[ 0]);
+    EdgeMax.Min[0] = (Standard_Integer)( (myDeca[ 0] + TotMax[ 0]) * mySurD[ 0]);
+    EdgeMin.Min[1] = (Standard_Integer)( (myDeca[ 1] + TotMin[ 1]) * mySurD[ 1]);
+    EdgeMax.Min[1] = (Standard_Integer)( (myDeca[ 1] + TotMax[ 1]) * mySurD[ 1]);
+    EdgeMin.Min[2] = (Standard_Integer)( (myDeca[ 2] + TotMin[ 2]) * mySurD[ 2]);
+    EdgeMax.Min[2] = (Standard_Integer)( (myDeca[ 2] + TotMax[ 2]) * mySurD[ 2]);
+    EdgeMin.Min[3] = (Standard_Integer)( (myDeca[ 3] + TotMin[ 3]) * mySurD[ 3]);
+    EdgeMax.Min[3] = (Standard_Integer)( (myDeca[ 3] + TotMax[ 3]) * mySurD[ 3]);
+    EdgeMin.Min[4] = (Standard_Integer)( (myDeca[ 4] + TotMin[ 4]) * mySurD[ 4]);
+    EdgeMax.Min[4] = (Standard_Integer)( (myDeca[ 4] + TotMax[ 4]) * mySurD[ 4]);
+    EdgeMin.Min[5] = (Standard_Integer)( (myDeca[ 5] + TotMin[ 5]) * mySurD[ 5]);
+    EdgeMax.Min[5] = (Standard_Integer)( (myDeca[ 5] + TotMax[ 5]) * mySurD[ 5]);
+    EdgeMin.Min[6] = (Standard_Integer)( (myDeca[ 6] + TotMin[ 6]) * mySurD[ 6]);
+    EdgeMax.Min[6] = (Standard_Integer)( (myDeca[ 6] + TotMax[ 6]) * mySurD[ 6]);
+    EdgeMin.Min[7] = (Standard_Integer)( (myDeca[ 7] + TotMin[ 7]) * mySurD[ 7]);
+    EdgeMax.Min[7] = (Standard_Integer)( (myDeca[ 7] + TotMax[ 7]) * mySurD[ 7]);
+    EdgeMin.Max[0] = (Standard_Integer)( (myDeca[ 8] + TotMin[ 8]) * mySurD[ 8]);
+    EdgeMax.Max[0] = (Standard_Integer)( (myDeca[ 8] + TotMax[ 8]) * mySurD[ 8]);
+    EdgeMin.Max[1] = (Standard_Integer)( (myDeca[ 9] + TotMin[ 9]) * mySurD[ 9]);
+    EdgeMax.Max[1] = (Standard_Integer)( (myDeca[ 9] + TotMax[ 9]) * mySurD[ 9]);
+    EdgeMin.Max[2] = (Standard_Integer)( (myDeca[10] + TotMin[10]) * mySurD[10]);
+    EdgeMax.Max[2] = (Standard_Integer)( (myDeca[10] + TotMax[10]) * mySurD[10]);
+    EdgeMin.Max[3] = (Standard_Integer)( (myDeca[11] + TotMin[11]) * mySurD[11]);
+    EdgeMax.Max[3] = (Standard_Integer)( (myDeca[11] + TotMax[11]) * mySurD[11]);
+    EdgeMin.Max[4] = (Standard_Integer)( (myDeca[12] + TotMin[12]) * mySurD[12]);
+    EdgeMax.Max[4] = (Standard_Integer)( (myDeca[12] + TotMax[12]) * mySurD[12]);
+    EdgeMin.Max[5] = (Standard_Integer)( (myDeca[13] + TotMin[13]) * mySurD[13]);
+    EdgeMax.Max[5] = (Standard_Integer)( (myDeca[13] + TotMax[13]) * mySurD[13]);
+    EdgeMin.Max[6] = (Standard_Integer)( (myDeca[14] + TotMin[14]) * mySurD[14]);
+    EdgeMax.Max[6] = (Standard_Integer)( (myDeca[14] + TotMax[14]) * mySurD[14]);
+    EdgeMin.Max[7] = (Standard_Integer)( (myDeca[15] + TotMin[15]) * mySurD[15]);
+    EdgeMax.Max[7] = (Standard_Integer)( (myDeca[15] + TotMax[15]) * mySurD[15]);
 
-    HLRAlgo::EncodeMinMax((Standard_Address)EdgeMin,
-			  (Standard_Address)EdgeMax,
-			  (Standard_Address)MinMaxEdge);
-    ed.UpdateMinMax((Standard_Address)MinMaxEdge);
+    HLRAlgo::EncodeMinMax(EdgeMin, EdgeMax, MinMaxEdge);
+    ed.UpdateMinMax(MinMaxEdge);
     if (ed.Vertical()) {
       ver1 = Standard_True;
       ver2 = Standard_True;
@@ -889,42 +772,24 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
       myFE = myFaceItr1.Edge();
       HLRBRep_EdgeData& EDataFE2 = myEData(myFE);
       if (!fd.Simple()) EDataFE2.AutoIntersectionDone(Standard_False);
-      HLRAlgo::DecodeMinMax(EDataFE2.MinMax(),
-			    (Standard_Address)EdgeMin,
-			    (Standard_Address)EdgeMax);
+      HLRAlgo::DecodeMinMax(EDataFE2.MinMax(), EdgeMin, EdgeMax);
       if (myFaceItr1.BeginningOfWire())
-	HLRAlgo::CopyMinMax((Standard_Address)EdgeMin,
-			    (Standard_Address)EdgeMax,
-			    (Standard_Address)WireMin,
-			    (Standard_Address)WireMax);
+	HLRAlgo::CopyMinMax(EdgeMin, EdgeMax, WireMin, WireMax);
       else
-	HLRAlgo::AddMinMax((Standard_Address)EdgeMin,
-			   (Standard_Address)EdgeMax,
-			   (Standard_Address)WireMin,
-			   (Standard_Address)WireMax);
+	HLRAlgo::AddMinMax(EdgeMin, EdgeMax, WireMin, WireMax);
       if (myFaceItr1.EndOfWire()) {
-	HLRAlgo::EncodeMinMax((Standard_Address)WireMin,
-			      (Standard_Address)WireMax,
-			      (Standard_Address)MinMaxWire);
-	myFaceItr1.Wire()->UpdateMinMax((Standard_Address)MinMaxWire);
+	HLRAlgo::EncodeMinMax(WireMin, WireMax, MinMaxWire);
+	myFaceItr1.Wire()->UpdateMinMax(MinMaxWire);
 	if (FirstTime) {
 	  FirstTime = Standard_False;
-	  HLRAlgo::CopyMinMax((Standard_Address)WireMin,
-			      (Standard_Address)WireMax,
-			      (Standard_Address)FaceMin,
-			      (Standard_Address)FaceMax);
+	  HLRAlgo::CopyMinMax(WireMin, WireMax, FaceMin, FaceMax);
 	}
 	else
-	  HLRAlgo::AddMinMax((Standard_Address)WireMin,
-			     (Standard_Address)WireMax,
-			     (Standard_Address)FaceMin,
-			     (Standard_Address)FaceMax);
+	  HLRAlgo::AddMinMax(WireMin, WireMax, FaceMin, FaceMax);
       }
     }
-    HLRAlgo::EncodeMinMax((Standard_Address)FaceMin,
-			  (Standard_Address)FaceMax,
-			  (Standard_Address)MinMaxFace);
-    fd.Wires()->UpdateMinMax((Standard_Address)MinMaxFace);  
+    HLRAlgo::EncodeMinMax(FaceMin, FaceMax, MinMaxFace);
+    fd.Wires()->UpdateMinMax(MinMaxFace);  
     fd.Size(HLRAlgo::SizeBox(FaceMin,FaceMax));
   }
 }
@@ -935,32 +800,32 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
 //=======================================================================
 
 void 
-HLRBRep_Data::InitBoundSort (const Standard_Address MinMaxTot,
+HLRBRep_Data::InitBoundSort (const HLRAlgo_EdgesBlock::MinMaxIndices& MinMaxTot,
 			     const Standard_Integer e1,
 			     const Standard_Integer e2)
 {
   myNbrSortEd = 0;
-  Standard_Address MinMaxShap = MinMaxTot;
+  const HLRAlgo_EdgesBlock::MinMaxIndices& MinMaxShap = MinMaxTot;
 
   for (Standard_Integer e = e1; e <= e2; e++) {
     HLRBRep_EdgeData& ed = myEData(e);
     if (!ed.Status().AllHidden()) {
-      myLEMinMax = ed.MinMax();
-      if (((MaxShap1 - MinLEdg1) & 0x80008000) == 0 &&
-	  ((MaxLEdg1 - MinShap1) & 0x80008000) == 0 &&
-	  ((MaxShap2 - MinLEdg2) & 0x80008000) == 0 &&
-	  ((MaxLEdg2 - MinShap2) & 0x80008000) == 0 &&
-	  ((MaxShap3 - MinLEdg3) & 0x80008000) == 0 &&
-	  ((MaxLEdg3 - MinShap3) & 0x80008000) == 0 &&
-	  ((MaxShap4 - MinLEdg4) & 0x80008000) == 0 &&
-	  ((MaxLEdg4 - MinShap4) & 0x80008000) == 0 &&
-	  ((MaxShap5 - MinLEdg5) & 0x80008000) == 0 &&
-	  ((MaxLEdg5 - MinShap5) & 0x80008000) == 0 &&
-	  ((MaxShap6 - MinLEdg6) & 0x80008000) == 0 &&
-	  ((MaxLEdg6 - MinShap6) & 0x80008000) == 0 &&
-	  ((MaxShap7 - MinLEdg7) & 0x80008000) == 0 &&
-	  ((MaxLEdg7 - MinShap7) & 0x80008000) == 0 &&
-	  ((MaxShap8 - MinLEdg8) & 0x80008000) == 0) {  //- rejection en z 
+      myLEMinMax = &ed.MinMax();
+      if (((MinMaxShap.Max[0] - myLEMinMax->Min[0]) & 0x80008000) == 0 &&
+	  ((myLEMinMax->Max[0] - MinMaxShap.Min[0]) & 0x80008000) == 0 &&
+	  ((MinMaxShap.Max[1] - myLEMinMax->Min[1]) & 0x80008000) == 0 &&
+	  ((myLEMinMax->Max[1] - MinMaxShap.Min[1]) & 0x80008000) == 0 &&
+	  ((MinMaxShap.Max[2] - myLEMinMax->Min[2]) & 0x80008000) == 0 &&
+	  ((myLEMinMax->Max[2] - MinMaxShap.Min[2]) & 0x80008000) == 0 &&
+	  ((MinMaxShap.Max[3] - myLEMinMax->Min[3]) & 0x80008000) == 0 &&
+	  ((myLEMinMax->Max[3] - MinMaxShap.Min[3]) & 0x80008000) == 0 &&
+	  ((MinMaxShap.Max[4] - myLEMinMax->Min[4]) & 0x80008000) == 0 &&
+	  ((myLEMinMax->Max[4] - MinMaxShap.Min[4]) & 0x80008000) == 0 &&
+	  ((MinMaxShap.Max[5] - myLEMinMax->Min[5]) & 0x80008000) == 0 &&
+	  ((myLEMinMax->Max[5] - MinMaxShap.Min[5]) & 0x80008000) == 0 &&
+	  ((MinMaxShap.Max[6] - myLEMinMax->Min[6]) & 0x80008000) == 0 &&
+	  ((myLEMinMax->Max[6] - MinMaxShap.Min[6]) & 0x80008000) == 0 &&
+	  ((MinMaxShap.Max[7] - myLEMinMax->Min[7]) & 0x80008000) == 0) {  //- rejection en z 
 	myNbrSortEd++;
 	myEdgeIndices(myNbrSortEd) = e;
       }
@@ -980,10 +845,10 @@ void HLRBRep_Data::InitEdge (const Standard_Integer FI,
 
   iFace       = FI;
   iFaceData   = &myFData(iFace);
-  iFaceGeom   = &(((HLRBRep_FaceData*)iFaceData)->Geometry());
-  iFaceBack   =   ((HLRBRep_FaceData*)iFaceData)->Back();
-  iFaceSimp   =   ((HLRBRep_FaceData*)iFaceData)->Simple();
-  iFaceMinMax =   ((HLRBRep_FaceData*)iFaceData)->Wires()->MinMax();
+  iFaceGeom   = &iFaceData->Geometry();
+  iFaceBack   = iFaceData->Back();
+  iFaceSimp   = iFaceData->Simple();
+  iFaceMinMax = &iFaceData->Wires()->MinMax();
   iFaceType   =   ((HLRBRep_Surface*)iFaceGeom)->GetType();
   iFaceTest   = !iFaceSimp;
   mySLProps.SetSurface(iFaceGeom);
@@ -1010,12 +875,12 @@ void HLRBRep_Data::InitEdge (const Standard_Integer FI,
   }
   
   if (iFaceTest) {
-    iFaceSmpl = !((HLRBRep_FaceData*)iFaceData)->Cut();
-    myFaceItr2.InitEdge(*((HLRBRep_FaceData*)iFaceData));
+    iFaceSmpl = !iFaceData->Cut();
+    myFaceItr2.InitEdge(*iFaceData);
   }
   else {
 
-    for (myFaceItr1.InitEdge(*((HLRBRep_FaceData*)iFaceData));
+    for (myFaceItr1.InitEdge(*iFaceData);
 	 myFaceItr1.MoreEdge();
 	 myFaceItr1.NextEdge()) {
       myFE = myFaceItr1.Edge();               // edges of a simple hiding
@@ -1043,18 +908,18 @@ Standard_Boolean HLRBRep_Data::MoreEdge ()
       myLEDouble   = myFaceItr2.Double  ();
       myLEIsoLine  = myFaceItr2.IsoLine ();
       myLEData     = &myEData(myLE);
-      myLEGeom     = &(((HLRBRep_EdgeData*)myLEData)->ChangeGeometry());
-      myLEMinMax   =   ((HLRBRep_EdgeData*)myLEData)->MinMax();
-      myLETol      =   ((HLRBRep_EdgeData*)myLEData)->Tolerance();
-      myLEType     =   ((HLRBRep_Curve   *)myLEGeom)->GetType();
+      myLEGeom     = &myLEData->ChangeGeometry();
+      myLEMinMax   = &myLEData->MinMax();
+      myLETol      = myLEData->Tolerance();
+      myLEType     = myLEGeom->GetType();
       if (!myLEDouble)
-	((HLRBRep_EdgeData*)myLEData)->HideCount(myHideCount-1);
+        myLEData->HideCount(myHideCount-1);
       return Standard_True;
     }
     else {
       iFaceTest = Standard_False;      // at the end of the test
       iFaceSimp = iFaceSmpl;           // we know if it is a simple face
-      ((HLRBRep_FaceData*)iFaceData)->Simple(iFaceSimp);
+      iFaceData->Simple(iFaceSimp);
       myCurSortEd = 1;
       NextEdge(Standard_False);
     }
@@ -1081,10 +946,10 @@ void HLRBRep_Data::NextEdge (const Standard_Boolean skip)
     myLEDouble   = myFaceItr2.Double  ();
     myLEIsoLine  = myFaceItr2.IsoLine ();
     myLEData     = &myEData(myLE);
-    myLEGeom     = &(((HLRBRep_EdgeData*)myLEData)->ChangeGeometry());
-    myLEMinMax   =   ((HLRBRep_EdgeData*)myLEData)->MinMax();
-    myLETol      =   ((HLRBRep_EdgeData*)myLEData)->Tolerance();
-    myLEType     =   ((HLRBRep_Curve   *)myLEGeom)->GetType();
+    myLEGeom     = &myLEData->ChangeGeometry();
+    myLEMinMax   = &myLEData->MinMax();
+    myLETol      = myLEData->Tolerance();
+    myLEType     = myLEGeom->GetType();
     if (((HLRBRep_EdgeData*)myLEData)->Vertical() ||
 	(myLEDouble &&
 	 ((HLRBRep_EdgeData*)myLEData)->HideCount() == myHideCount-1))
@@ -1099,10 +964,10 @@ void HLRBRep_Data::NextEdge (const Standard_Boolean skip)
     myLEDouble   = Standard_False;
     myLEIsoLine  = Standard_False;
     myLEData     = &myEData(myLE);
-    myLEGeom     = &(((HLRBRep_EdgeData*)myLEData)->ChangeGeometry());
-    myLEMinMax   =   ((HLRBRep_EdgeData*)myLEData)->MinMax();
-    myLETol      =   ((HLRBRep_EdgeData*)myLEData)->Tolerance();
-    myLEType     =   ((HLRBRep_Curve   *)myLEGeom)->GetType();
+    myLEGeom     = &myLEData->ChangeGeometry();
+    myLEMinMax   = &myLEData->MinMax();
+    myLETol      = myLEData->Tolerance();
+    myLEType     = myLEGeom->GetType();
   }
   if (((HLRBRep_EdgeData*)myLEData)->Vertical()) {
     NextEdge();
@@ -1116,21 +981,21 @@ void HLRBRep_Data::NextEdge (const Standard_Boolean skip)
     NextEdge();
     return;
   }
-  if (((MaxFace1 - MinLEdg1) & 0x80008000) != 0 ||
-      ((MaxLEdg1 - MinFace1) & 0x80008000) != 0 ||
-      ((MaxFace2 - MinLEdg2) & 0x80008000) != 0 ||
-      ((MaxLEdg2 - MinFace2) & 0x80008000) != 0 ||
-      ((MaxFace3 - MinLEdg3) & 0x80008000) != 0 ||
-      ((MaxLEdg3 - MinFace3) & 0x80008000) != 0 ||
-      ((MaxFace4 - MinLEdg4) & 0x80008000) != 0 ||
-      ((MaxLEdg4 - MinFace4) & 0x80008000) != 0 ||
-      ((MaxFace5 - MinLEdg5) & 0x80008000) != 0 ||
-      ((MaxLEdg5 - MinFace5) & 0x80008000) != 0 ||
-      ((MaxFace6 - MinLEdg6) & 0x80008000) != 0 ||
-      ((MaxLEdg6 - MinFace6) & 0x80008000) != 0 ||
-      ((MaxFace7 - MinLEdg7) & 0x80008000) != 0 ||
-      ((MaxLEdg7 - MinFace7) & 0x80008000) != 0 ||
-      ((MaxFace8 - MinLEdg8) & 0x80008000) != 0) { //-- rejection en z 
+  if (((iFaceMinMax->Max[0] - myLEMinMax->Min[0]) & 0x80008000) != 0 ||
+      ((myLEMinMax->Max[0] - iFaceMinMax->Min[0]) & 0x80008000) != 0 ||
+      ((iFaceMinMax->Max[1] - myLEMinMax->Min[1]) & 0x80008000) != 0 ||
+      ((myLEMinMax->Max[1] - iFaceMinMax->Min[1]) & 0x80008000) != 0 ||
+      ((iFaceMinMax->Max[2] - myLEMinMax->Min[2]) & 0x80008000) != 0 ||
+      ((myLEMinMax->Max[2] - iFaceMinMax->Min[2]) & 0x80008000) != 0 ||
+      ((iFaceMinMax->Max[3] - myLEMinMax->Min[3]) & 0x80008000) != 0 ||
+      ((myLEMinMax->Max[3] - iFaceMinMax->Min[3]) & 0x80008000) != 0 ||
+      ((iFaceMinMax->Max[4] - myLEMinMax->Min[4]) & 0x80008000) != 0 ||
+      ((myLEMinMax->Max[4] - iFaceMinMax->Min[4]) & 0x80008000) != 0 ||
+      ((iFaceMinMax->Max[5] - myLEMinMax->Min[5]) & 0x80008000) != 0 ||
+      ((myLEMinMax->Max[5] - iFaceMinMax->Min[5]) & 0x80008000) != 0 ||
+      ((iFaceMinMax->Max[6] - myLEMinMax->Min[6]) & 0x80008000) != 0 ||
+      ((myLEMinMax->Max[6] - iFaceMinMax->Min[6]) & 0x80008000) != 0 ||
+      ((iFaceMinMax->Max[7] - myLEMinMax->Min[7]) & 0x80008000) != 0) { //-- rejection en z 
     NextEdge();
     return;
   }
@@ -1182,22 +1047,22 @@ void HLRBRep_Data::NextInterference ()
     
     // rejection of current wire
     if (myFaceItr1.BeginningOfWire()) {
-      Standard_Address MinMaxWire = myFaceItr1.Wire()->MinMax();
-      if (((MaxWire1 - MinLEdg1) & 0x80008000) != 0 ||
-	  ((MaxLEdg1 - MinWire1) & 0x80008000) != 0 ||
-	  ((MaxWire2 - MinLEdg2) & 0x80008000) != 0 ||
-	  ((MaxLEdg2 - MinWire2) & 0x80008000) != 0 ||
-	  ((MaxWire3 - MinLEdg3) & 0x80008000) != 0 ||
-	  ((MaxLEdg3 - MinWire3) & 0x80008000) != 0 ||
-	  ((MaxWire4 - MinLEdg4) & 0x80008000) != 0 ||
-	  ((MaxLEdg4 - MinWire4) & 0x80008000) != 0 ||
-	  ((MaxWire5 - MinLEdg5) & 0x80008000) != 0 ||
-	  ((MaxLEdg5 - MinWire5) & 0x80008000) != 0 ||
-	  ((MaxWire6 - MinLEdg6) & 0x80008000) != 0 ||
-	  ((MaxLEdg6 - MinWire6) & 0x80008000) != 0 ||
-	  ((MaxWire7 - MinLEdg7) & 0x80008000) != 0 ||
-	  ((MaxLEdg7 - MinWire7) & 0x80008000) != 0 ||
-	  ((MaxWire8 - MinLEdg8) & 0x80008000) != 0) { //-- Rejection en Z
+      HLRAlgo_EdgesBlock::MinMaxIndices& MinMaxWire = myFaceItr1.Wire()->MinMax();
+      if (((MinMaxWire.Max[0] - myLEMinMax->Min[0]) & 0x80008000) != 0 ||
+	  ((myLEMinMax->Max[0] - MinMaxWire.Min[0]) & 0x80008000) != 0 ||
+	  ((MinMaxWire.Max[1] - myLEMinMax->Min[1]) & 0x80008000) != 0 ||
+	  ((myLEMinMax->Max[1] - MinMaxWire.Min[1]) & 0x80008000) != 0 ||
+	  ((MinMaxWire.Max[2] - myLEMinMax->Min[2]) & 0x80008000) != 0 ||
+	  ((myLEMinMax->Max[2] - MinMaxWire.Min[2]) & 0x80008000) != 0 ||
+	  ((MinMaxWire.Max[3] - myLEMinMax->Min[3]) & 0x80008000) != 0 ||
+	  ((myLEMinMax->Max[3] - MinMaxWire.Min[3]) & 0x80008000) != 0 ||
+	  ((MinMaxWire.Max[4] - myLEMinMax->Min[4]) & 0x80008000) != 0 ||
+	  ((myLEMinMax->Max[4] - MinMaxWire.Min[4]) & 0x80008000) != 0 ||
+	  ((MinMaxWire.Max[5] - myLEMinMax->Min[5]) & 0x80008000) != 0 ||
+	  ((myLEMinMax->Max[5] - MinMaxWire.Min[5]) & 0x80008000) != 0 ||
+	  ((MinMaxWire.Max[6] - myLEMinMax->Min[6]) & 0x80008000) != 0 ||
+	  ((myLEMinMax->Max[6] - MinMaxWire.Min[6]) & 0x80008000) != 0 ||
+	  ((MinMaxWire.Max[7] - myLEMinMax->Min[7]) & 0x80008000) != 0) { //-- Rejection en Z
 	myFaceItr1.SkipWire();
 	continue;
       }
@@ -1218,7 +1083,7 @@ void HLRBRep_Data::NextInterference ()
       // Edge from the boundary
       if (!((HLRBRep_EdgeData*)myFEData)->Vertical() && !(myFEDouble && !myFEOutLine)) {
 	// not a vertical edge and not a double Edge
-	Standard_Address MinMaxFEdg = ((HLRBRep_EdgeData*)myFEData)->MinMax();
+	HLRAlgo_EdgesBlock::MinMaxIndices* MinMaxFEdg = &((HLRBRep_EdgeData*)myFEData)->MinMax();
 	//-- -----------------------------------------------------------------------
 	//-- Max - Min doit etre positif pour toutes les directions 
 	//--
@@ -1236,21 +1101,21 @@ void HLRBRep_Data::NextInterference ()
 	   NoIntersection(myLE,myFE) == Standard_False) { 
 
 	  
-	  if (((MaxFEdg1 - MinLEdg1) & 0x80008000) == 0 &&
-	      ((MaxLEdg1 - MinFEdg1) & 0x80008000) == 0 &&
-	      ((MaxFEdg2 - MinLEdg2) & 0x80008000) == 0 &&
-	      ((MaxLEdg2 - MinFEdg2) & 0x80008000) == 0 &&
-	      ((MaxFEdg3 - MinLEdg3) & 0x80008000) == 0 &&
-	      ((MaxLEdg3 - MinFEdg3) & 0x80008000) == 0 &&
-	      ((MaxFEdg4 - MinLEdg4) & 0x80008000) == 0 &&
-	      ((MaxLEdg4 - MinFEdg4) & 0x80008000) == 0 &&
-	      ((MaxFEdg5 - MinLEdg5) & 0x80008000) == 0 &&
-	      ((MaxLEdg5 - MinFEdg5) & 0x80008000) == 0 &&
-	      ((MaxFEdg6 - MinLEdg6) & 0x80008000) == 0 &&
-	      ((MaxLEdg6 - MinFEdg6) & 0x80008000) == 0 &&
-	      ((MaxFEdg7 - MinLEdg7) & 0x80008000) == 0 && 
-	      ((MaxLEdg7 - MinFEdg7) & 0x80008000) == 0 && 
-	      ((MaxFEdg8 - MinLEdg8) & 0x80008000) == 0) {   //-- Rejection en Z
+	  if (((MinMaxFEdg->Max[0] - myLEMinMax->Min[0]) & 0x80008000) == 0 &&
+	      ((myLEMinMax->Max[0] - MinMaxFEdg->Min[0]) & 0x80008000) == 0 &&
+	      ((MinMaxFEdg->Max[1] - myLEMinMax->Min[1]) & 0x80008000) == 0 &&
+	      ((myLEMinMax->Max[1] - MinMaxFEdg->Min[1]) & 0x80008000) == 0 &&
+	      ((MinMaxFEdg->Max[2] - myLEMinMax->Min[2]) & 0x80008000) == 0 &&
+	      ((myLEMinMax->Max[2] - MinMaxFEdg->Min[2]) & 0x80008000) == 0 &&
+	      ((MinMaxFEdg->Max[3] - myLEMinMax->Min[3]) & 0x80008000) == 0 &&
+	      ((myLEMinMax->Max[3] - MinMaxFEdg->Min[3]) & 0x80008000) == 0 &&
+	      ((MinMaxFEdg->Max[4] - myLEMinMax->Min[4]) & 0x80008000) == 0 &&
+	      ((myLEMinMax->Max[4] - MinMaxFEdg->Min[4]) & 0x80008000) == 0 &&
+	      ((MinMaxFEdg->Max[5] - myLEMinMax->Min[5]) & 0x80008000) == 0 &&
+	      ((myLEMinMax->Max[5] - MinMaxFEdg->Min[5]) & 0x80008000) == 0 &&
+	      ((MinMaxFEdg->Max[6] - myLEMinMax->Min[6]) & 0x80008000) == 0 && 
+	      ((myLEMinMax->Max[6] - MinMaxFEdg->Min[6]) & 0x80008000) == 0 && 
+	      ((MinMaxFEdg->Max[7] - myLEMinMax->Min[7]) & 0x80008000) == 0) {   //-- Rejection en Z
 	    // not rejected perform intersection
 	    Standard_Boolean rej = Standard_False;
 	    if (myLE == myFE) { // test if an auto-intersection is not usefull
@@ -1465,7 +1330,8 @@ void HLRBRep_Data::LocalFEGeometry2D (const Standard_Integer FE,
 				      gp_Dir2d& Nm,
 				      Standard_Real& Cu)
 {
-  myFLProps.SetCurve(&(myEData(FE).ChangeGeometry()));
+  const HLRBRep_Curve* aCurve = &myEData(FE).ChangeGeometry();
+  myFLProps.SetCurve(aCurve);
   myFLProps.SetParameter(Param);
   if (!myFLProps.IsTangentDefined())
     Standard_Failure::Raise("HLRBRep_Data::LocalGeometry2D");
@@ -1794,40 +1660,52 @@ void HLRBRep_Data::OrientOthEdge (const Standard_Integer I,
 //function : Classify
 //purpose  : 
 //=======================================================================
+namespace
+{
 
-#define REJECT1    \
-    VertMin[ 0] = (Standard_Integer)((myDeca[ 0]+TotMin[ 0])*mySurD[ 0]); \
-    VertMax[ 0] = (Standard_Integer)((myDeca[ 0]+TotMax[ 0])*mySurD[ 0]); \
-    VertMin[ 1] = (Standard_Integer)((myDeca[ 1]+TotMin[ 1])*mySurD[ 1]); \
-    VertMax[ 1] = (Standard_Integer)((myDeca[ 1]+TotMax[ 1])*mySurD[ 1]); \
-    VertMin[ 2] = (Standard_Integer)((myDeca[ 2]+TotMin[ 2])*mySurD[ 2]); \
-    VertMax[ 2] = (Standard_Integer)((myDeca[ 2]+TotMax[ 2])*mySurD[ 2]); \
-    VertMin[ 3] = (Standard_Integer)((myDeca[ 3]+TotMin[ 3])*mySurD[ 3]); \
-    VertMax[ 3] = (Standard_Integer)((myDeca[ 3]+TotMax[ 3])*mySurD[ 3]); \
-    VertMin[ 4] = (Standard_Integer)((myDeca[ 4]+TotMin[ 4])*mySurD[ 4]); \
-    VertMax[ 4] = (Standard_Integer)((myDeca[ 4]+TotMax[ 4])*mySurD[ 4]); \
-    VertMin[ 5] = (Standard_Integer)((myDeca[ 5]+TotMin[ 5])*mySurD[ 5]); \
-    VertMax[ 5] = (Standard_Integer)((myDeca[ 5]+TotMax[ 5])*mySurD[ 5]); \
-    VertMin[ 6] = (Standard_Integer)((myDeca[ 6]+TotMin[ 6])*mySurD[ 6]); \
-    VertMax[ 6] = (Standard_Integer)((myDeca[ 6]+TotMax[ 6])*mySurD[ 6]); \
-    VertMin[ 7] = (Standard_Integer)((myDeca[ 7]+TotMin[ 7])*mySurD[ 7]); \
-    VertMax[ 7] = (Standard_Integer)((myDeca[ 7]+TotMax[ 7])*mySurD[ 7]); \
-    VertMin[ 8] = (Standard_Integer)((myDeca[ 8]+TotMin[ 8])*mySurD[ 8]); \
-    VertMax[ 8] = (Standard_Integer)((myDeca[ 8]+TotMax[ 8])*mySurD[ 8]); \
-    VertMin[ 9] = (Standard_Integer)((myDeca[ 9]+TotMin[ 9])*mySurD[ 9]); \
-    VertMax[ 9] = (Standard_Integer)((myDeca[ 9]+TotMax[ 9])*mySurD[ 9]); \
-    VertMin[10] = (Standard_Integer)((myDeca[10]+TotMin[10])*mySurD[10]); \
-    VertMax[10] = (Standard_Integer)((myDeca[10]+TotMax[10])*mySurD[10]); \
-    VertMin[11] = (Standard_Integer)((myDeca[11]+TotMin[11])*mySurD[11]); \
-    VertMax[11] = (Standard_Integer)((myDeca[11]+TotMax[11])*mySurD[11]); \
-    VertMin[12] = (Standard_Integer)((myDeca[12]+TotMin[12])*mySurD[12]); \
-    VertMax[12] = (Standard_Integer)((myDeca[12]+TotMax[12])*mySurD[12]); \
-    VertMin[13] = (Standard_Integer)((myDeca[13]+TotMin[13])*mySurD[13]); \
-    VertMax[13] = (Standard_Integer)((myDeca[13]+TotMax[13])*mySurD[13]); \
-    VertMin[14] = (Standard_Integer)((myDeca[14]+TotMin[14])*mySurD[14]); \
-    VertMax[14] = (Standard_Integer)((myDeca[14]+TotMax[14])*mySurD[14]); \
-    VertMin[15] = (Standard_Integer)((myDeca[15]+TotMin[15])*mySurD[15]); \
-    VertMax[15] = (Standard_Integer)((myDeca[15]+TotMax[15])*mySurD[15]); 
+static void REJECT1(
+  const Standard_Real theDeca[],
+  const Standard_Real theTotMin[],
+  const Standard_Real theTotMax[],
+  const Standard_Real theSurD[],
+  HLRAlgo_EdgesBlock::MinMaxIndices& theVertMin,
+  HLRAlgo_EdgesBlock::MinMaxIndices& theVertMax)
+{
+  theVertMin.Min[0] = (Standard_Integer)((theDeca[ 0]+theTotMin[ 0]) * theSurD[ 0]);
+  theVertMax.Min[0] = (Standard_Integer)((theDeca[ 0]+theTotMax[ 0]) * theSurD[ 0]);
+  theVertMin.Min[1] = (Standard_Integer)((theDeca[ 1]+theTotMin[ 1]) * theSurD[ 1]);
+  theVertMax.Min[1] = (Standard_Integer)((theDeca[ 1]+theTotMax[ 1]) * theSurD[ 1]);
+  theVertMin.Min[2] = (Standard_Integer)((theDeca[ 2]+theTotMin[ 2]) * theSurD[ 2]);
+  theVertMax.Min[2] = (Standard_Integer)((theDeca[ 2]+theTotMax[ 2]) * theSurD[ 2]);
+  theVertMin.Min[3] = (Standard_Integer)((theDeca[ 3]+theTotMin[ 3]) * theSurD[ 3]);
+  theVertMax.Min[3] = (Standard_Integer)((theDeca[ 3]+theTotMax[ 3]) * theSurD[ 3]);
+  theVertMin.Min[4] = (Standard_Integer)((theDeca[ 4]+theTotMin[ 4]) * theSurD[ 4]);
+  theVertMax.Min[4] = (Standard_Integer)((theDeca[ 4]+theTotMax[ 4]) * theSurD[ 4]);
+  theVertMin.Min[5] = (Standard_Integer)((theDeca[ 5]+theTotMin[ 5]) * theSurD[ 5]);
+  theVertMax.Min[5] = (Standard_Integer)((theDeca[ 5]+theTotMax[ 5]) * theSurD[ 5]);
+  theVertMin.Min[6] = (Standard_Integer)((theDeca[ 6]+theTotMin[ 6]) * theSurD[ 6]);
+  theVertMax.Min[6] = (Standard_Integer)((theDeca[ 6]+theTotMax[ 6]) * theSurD[ 6]);
+  theVertMin.Min[7] = (Standard_Integer)((theDeca[ 7]+theTotMin[ 7]) * theSurD[ 7]);
+  theVertMax.Min[7] = (Standard_Integer)((theDeca[ 7]+theTotMax[ 7]) * theSurD[ 7]);
+  theVertMin.Max[0] = (Standard_Integer)((theDeca[ 8]+theTotMin[ 8]) * theSurD[ 8]);
+  theVertMax.Max[0] = (Standard_Integer)((theDeca[ 8]+theTotMax[ 8]) * theSurD[ 8]);
+  theVertMin.Max[1] = (Standard_Integer)((theDeca[ 9]+theTotMin[ 9]) * theSurD[ 9]);
+  theVertMax.Max[1] = (Standard_Integer)((theDeca[ 9]+theTotMax[ 9]) * theSurD[ 9]);
+  theVertMin.Max[2] = (Standard_Integer)((theDeca[10]+theTotMin[10]) * theSurD[10]);
+  theVertMax.Max[2] = (Standard_Integer)((theDeca[10]+theTotMax[10]) * theSurD[10]);
+  theVertMin.Max[3] = (Standard_Integer)((theDeca[11]+theTotMin[11]) * theSurD[11]);
+  theVertMax.Max[3] = (Standard_Integer)((theDeca[11]+theTotMax[11]) * theSurD[11]);
+  theVertMin.Max[4] = (Standard_Integer)((theDeca[12]+theTotMin[12]) * theSurD[12]);
+  theVertMax.Max[4] = (Standard_Integer)((theDeca[12]+theTotMax[12]) * theSurD[12]);
+  theVertMin.Max[5] = (Standard_Integer)((theDeca[13]+theTotMin[13]) * theSurD[13]);
+  theVertMax.Max[5] = (Standard_Integer)((theDeca[13]+theTotMax[13]) * theSurD[13]);
+  theVertMin.Max[6] = (Standard_Integer)((theDeca[14]+theTotMin[14]) * theSurD[14]);
+  theVertMax.Max[6] = (Standard_Integer)((theDeca[14]+theTotMax[14]) * theSurD[14]);
+  theVertMin.Max[7] = (Standard_Integer)((theDeca[15]+theTotMin[15]) * theSurD[15]);
+  theVertMax.Max[7] = (Standard_Integer)((theDeca[15]+theTotMax[15]) * theSurD[15]);
+}
+
+}
 
 TopAbs_State 
 HLRBRep_Data::Classify (const Standard_Integer E,
@@ -1839,7 +1717,7 @@ HLRBRep_Data::Classify (const Standard_Integer E,
   (void)E; // avoid compiler warning
 
   nbClassification++;
-  Standard_Integer VertMin[16],VertMax[16],MinMaxVert[16];
+  HLRAlgo_EdgesBlock::MinMaxIndices VertMin, VertMax, MinMaxVert;
   Standard_Real TotMin[16],TotMax[16];
   
   Standard_Integer i;
@@ -1856,35 +1734,27 @@ HLRBRep_Data::Classify (const Standard_Integer E,
     
     //-- les rejections sont faites dans l intersecteur a moindre frais 
     //-- puisque la surface sera chargee
-    HLRAlgo::InitMinMax(Precision::Infinite(),
-			(Standard_Address)TotMin,
-			(Standard_Address)TotMax);
-    HLRAlgo::UpdateMinMax(xsta,ysta,zsta,
-			  (Standard_Address)TotMin,
-			  (Standard_Address)TotMax);
-    HLRAlgo::EnlargeMinMax(tol,
-			   (Standard_Address)TotMin,
-			   (Standard_Address)TotMax);
-    REJECT1;
+    HLRAlgo::InitMinMax(Precision::Infinite(), TotMin, TotMax);
+    HLRAlgo::UpdateMinMax(xsta,ysta,zsta, TotMin, TotMax);
+    HLRAlgo::EnlargeMinMax(tol, TotMin, TotMax);
+    REJECT1(myDeca, TotMin, TotMax, mySurD, VertMin, VertMax);
 
-    HLRAlgo::EncodeMinMax((Standard_Address)VertMin,
-			  (Standard_Address)VertMax,
-			  (Standard_Address)MinMaxVert);
-    if (((MaxFace1 - MinVert1) & 0x80008000) != 0 ||
-	((MaxVert1 - MinFace1) & 0x80008000) != 0 ||
-	((MaxFace2 - MinVert2) & 0x80008000) != 0 ||
-	((MaxVert2 - MinFace2) & 0x80008000) != 0 ||
-	((MaxFace3 - MinVert3) & 0x80008000) != 0 ||
-	((MaxVert3 - MinFace3) & 0x80008000) != 0 ||
-	((MaxFace4 - MinVert4) & 0x80008000) != 0 ||
-	((MaxVert4 - MinFace4) & 0x80008000) != 0 ||
-	((MaxFace5 - MinVert5) & 0x80008000) != 0 ||
-	((MaxVert5 - MinFace5) & 0x80008000) != 0 ||
-	((MaxFace6 - MinVert6) & 0x80008000) != 0 ||
-	((MaxVert6 - MinFace6) & 0x80008000) != 0 ||
-	((MaxFace7 - MinVert7) & 0x80008000) != 0 ||
-	((MaxVert7 - MinFace7) & 0x80008000) != 0 ||
-	((MaxFace8 - MinVert8) & 0x80008000) != 0) { //-- Rejection en Z 
+    HLRAlgo::EncodeMinMax(VertMin, VertMax, MinMaxVert);
+    if (((iFaceMinMax->Max[0] - MinMaxVert.Min[0]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[0] - iFaceMinMax->Min[0]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[1] - MinMaxVert.Min[1]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[1] - iFaceMinMax->Min[1]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[2] - MinMaxVert.Min[2]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[2] - iFaceMinMax->Min[2]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[3] - MinMaxVert.Min[3]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[3] - iFaceMinMax->Min[3]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[4] - MinMaxVert.Min[4]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[4] - iFaceMinMax->Min[4]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[5] - MinMaxVert.Min[5]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[5] - iFaceMinMax->Min[5]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[6] - MinMaxVert.Min[6]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[6] - iFaceMinMax->Min[6]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[7] - MinMaxVert.Min[7]) & 0x80008000) != 0) { //-- Rejection en Z 
       return state;
     }
   }
@@ -1894,71 +1764,55 @@ HLRBRep_Data::Classify (const Standard_Integer E,
     
     //-- les rejections sont faites dans l intersecteur a moindre frais 
     //-- puisque la surface sera chargee
-    HLRAlgo::InitMinMax(Precision::Infinite(),
-			(Standard_Address)TotMin,
-			(Standard_Address)TotMax);
-    HLRAlgo::UpdateMinMax(xsta,ysta,zsta,
-			  (Standard_Address)TotMin,
-			  (Standard_Address)TotMax);
-    HLRAlgo::EnlargeMinMax(tol,
-			   (Standard_Address)TotMin,
-			   (Standard_Address)TotMax);
+    HLRAlgo::InitMinMax(Precision::Infinite(), TotMin, TotMax);
+    HLRAlgo::UpdateMinMax(xsta,ysta,zsta, TotMin, TotMax);
+    HLRAlgo::EnlargeMinMax(tol, TotMin, TotMax);
 
-    REJECT1; 
+    REJECT1(myDeca, TotMin, TotMax, mySurD, VertMin, VertMax);
 
-    HLRAlgo::EncodeMinMax((Standard_Address)VertMin,
-			  (Standard_Address)VertMax,
-			  (Standard_Address)MinMaxVert);
-    if (((MaxFace1 - MinVert1) & 0x80008000) != 0 ||
-	((MaxVert1 - MinFace1) & 0x80008000) != 0 ||
-	((MaxFace2 - MinVert2) & 0x80008000) != 0 ||
-	((MaxVert2 - MinFace2) & 0x80008000) != 0 ||
-	((MaxFace3 - MinVert3) & 0x80008000) != 0 ||
-	((MaxVert3 - MinFace3) & 0x80008000) != 0 ||
-	((MaxFace4 - MinVert4) & 0x80008000) != 0 ||
-	((MaxVert4 - MinFace4) & 0x80008000) != 0 ||
-	((MaxFace5 - MinVert5) & 0x80008000) != 0 ||
-	((MaxVert5 - MinFace5) & 0x80008000) != 0 ||
-	((MaxFace6 - MinVert6) & 0x80008000) != 0 ||
-	((MaxVert6 - MinFace6) & 0x80008000) != 0 ||
-	((MaxFace7 - MinVert7) & 0x80008000) != 0 ||
-	((MaxVert7 - MinFace7) & 0x80008000) != 0 ||
-	((MaxFace8 - MinVert8) & 0x80008000) != 0) { //-- Rejection en Z 
+    HLRAlgo::EncodeMinMax(VertMin, VertMax, MinMaxVert);
+    if (((iFaceMinMax->Max[0] - MinMaxVert.Min[0]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[0] - iFaceMinMax->Min[0]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[1] - MinMaxVert.Min[1]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[1] - iFaceMinMax->Min[1]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[2] - MinMaxVert.Min[2]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[2] - iFaceMinMax->Min[2]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[3] - MinMaxVert.Min[3]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[3] - iFaceMinMax->Min[3]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[4] - MinMaxVert.Min[4]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[4] - iFaceMinMax->Min[4]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[5] - MinMaxVert.Min[5]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[5] - iFaceMinMax->Min[5]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[6] - MinMaxVert.Min[6]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[6] - iFaceMinMax->Min[6]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[7] - MinMaxVert.Min[7]) & 0x80008000) != 0) { //-- Rejection en Z 
       return state;
     }
     end = EC.Parameter3d(EC.LastParameter());
     myProj.Project(EC.Value3D(end),xend,yend,zend);
     
-    HLRAlgo::InitMinMax(Precision::Infinite(),
-			(Standard_Address)TotMin,
-			(Standard_Address)TotMax);
-    HLRAlgo::UpdateMinMax(xend,yend,zend,
-			  (Standard_Address)TotMin,
-			  (Standard_Address)TotMax);
-    HLRAlgo::EnlargeMinMax(tol,
-			   (Standard_Address)TotMin,
-			   (Standard_Address)TotMax);
+    HLRAlgo::InitMinMax(Precision::Infinite(), TotMin, TotMax);
+    HLRAlgo::UpdateMinMax(xend,yend,zend, TotMin, TotMax);
+    HLRAlgo::EnlargeMinMax(tol, TotMin, TotMax);
 
-    REJECT1;
+    REJECT1(myDeca, TotMin, TotMax, mySurD, VertMin, VertMax);
 
-    HLRAlgo::EncodeMinMax((Standard_Address)VertMin,
-			  (Standard_Address)VertMax,
-			  (Standard_Address)MinMaxVert);
-    if (((MaxFace1 - MinVert1) & 0x80008000) != 0 ||
-	((MaxVert1 - MinFace1) & 0x80008000) != 0 ||
-	((MaxFace2 - MinVert2) & 0x80008000) != 0 ||
-	((MaxVert2 - MinFace2) & 0x80008000) != 0 ||
-	((MaxFace3 - MinVert3) & 0x80008000) != 0 ||
-	((MaxVert3 - MinFace3) & 0x80008000) != 0 ||
-	((MaxFace4 - MinVert4) & 0x80008000) != 0 ||
-	((MaxVert4 - MinFace4) & 0x80008000) != 0 ||
-	((MaxFace5 - MinVert5) & 0x80008000) != 0 ||
-	((MaxVert5 - MinFace5) & 0x80008000) != 0 ||
-	((MaxFace6 - MinVert6) & 0x80008000) != 0 ||
-	((MaxVert6 - MinFace6) & 0x80008000) != 0 ||
-	((MaxFace7 - MinVert7) & 0x80008000) != 0 ||
-	((MaxVert7 - MinFace7) & 0x80008000) != 0 ||
-	((MaxFace8 - MinVert8) & 0x80008000) != 0) { //-- Rejection en Z 
+    HLRAlgo::EncodeMinMax(VertMin, VertMax, MinMaxVert);
+    if (((iFaceMinMax->Max[0] - MinMaxVert.Min[0]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[0] - iFaceMinMax->Min[0]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[1] - MinMaxVert.Min[1]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[1] - iFaceMinMax->Min[1]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[2] - MinMaxVert.Min[2]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[2] - iFaceMinMax->Min[2]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[3] - MinMaxVert.Min[3]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[3] - iFaceMinMax->Min[3]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[4] - MinMaxVert.Min[4]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[4] - iFaceMinMax->Min[4]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[5] - MinMaxVert.Min[5]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[5] - iFaceMinMax->Min[5]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[6] - MinMaxVert.Min[6]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[6] - iFaceMinMax->Min[6]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[7] - MinMaxVert.Min[7]) & 0x80008000) != 0) { //-- Rejection en Z 
       return state;
     }
     sta = 0.4 * sta + 0.6 * end; // dangerous if it is the middle
@@ -1966,20 +1820,12 @@ HLRBRep_Data::Classify (const Standard_Integer E,
     
     //-- les rejections sont faites dans l intersecteur a moindre frais 
     //-- puisque la surface sera chargee
-    HLRAlgo::InitMinMax(Precision::Infinite(),
-			(Standard_Address)TotMin,
-			(Standard_Address)TotMax);
-    HLRAlgo::UpdateMinMax(xsta,ysta,zsta,
-			  (Standard_Address)TotMin,
-			  (Standard_Address)TotMax);
-    HLRAlgo::EnlargeMinMax(tol,
-			   (Standard_Address)TotMin,
-			   (Standard_Address)TotMax);
-    REJECT1;
+    HLRAlgo::InitMinMax(Precision::Infinite(), TotMin, TotMax);
+    HLRAlgo::UpdateMinMax(xsta,ysta,zsta, TotMin, TotMax);
+    HLRAlgo::EnlargeMinMax(tol, TotMin, TotMax);
+    REJECT1(myDeca, TotMin, TotMax, mySurD, VertMin, VertMax);
 
-    HLRAlgo::EncodeMinMax((Standard_Address)VertMin,
-			  (Standard_Address)VertMax,
-			  (Standard_Address)MinMaxVert);
+    HLRAlgo::EncodeMinMax(VertMin, VertMax, MinMaxVert);
     /*
 #ifdef OCCT_DEBUG
 	{
@@ -2022,21 +1868,21 @@ HLRBRep_Data::Classify (const Standard_Integer E,
  #endif
     */
 
-    if (((MaxFace1 - MinVert1) & 0x80008000) != 0 ||
-	((MaxVert1 - MinFace1) & 0x80008000) != 0 ||
-	((MaxFace2 - MinVert2) & 0x80008000) != 0 ||
-	((MaxVert2 - MinFace2) & 0x80008000) != 0 ||
-	((MaxFace3 - MinVert3) & 0x80008000) != 0 ||
-	((MaxVert3 - MinFace3) & 0x80008000) != 0 ||
-	((MaxFace4 - MinVert4) & 0x80008000) != 0 ||
-	((MaxVert4 - MinFace4) & 0x80008000) != 0 ||
-	((MaxFace5 - MinVert5) & 0x80008000) != 0 ||
-	((MaxVert5 - MinFace5) & 0x80008000) != 0 ||
-	((MaxFace6 - MinVert6) & 0x80008000) != 0 ||
-	((MaxVert6 - MinFace6) & 0x80008000) != 0 ||
-	((MaxFace7 - MinVert7) & 0x80008000) != 0 ||
-	((MaxVert7 - MinFace7) & 0x80008000) != 0 ||
-	((MaxFace8 - MinVert8) & 0x80008000) != 0) { //-- Rejection en Z 
+    if (((iFaceMinMax->Max[0] - MinMaxVert.Min[0]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[0] - iFaceMinMax->Min[0]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[1] - MinMaxVert.Min[1]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[1] - iFaceMinMax->Min[1]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[2] - MinMaxVert.Min[2]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[2] - iFaceMinMax->Min[2]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[3] - MinMaxVert.Min[3]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[3] - iFaceMinMax->Min[3]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[4] - MinMaxVert.Min[4]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[4] - iFaceMinMax->Min[4]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[5] - MinMaxVert.Min[5]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[5] - iFaceMinMax->Min[5]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[6] - MinMaxVert.Min[6]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[6] - iFaceMinMax->Min[6]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[7] - MinMaxVert.Min[7]) & 0x80008000) != 0) { //-- Rejection en Z 
       return state;
     }
   }
@@ -2124,7 +1970,7 @@ TopAbs_State HLRBRep_Data::SimplClassify (const Standard_Integer /*E*/,
 					  const Standard_Real p2)
 {
   nbClassification++;
-  Standard_Integer VertMin[16],VertMax[16],MinMaxVert[16];
+  HLRAlgo_EdgesBlock::MinMaxIndices VertMin, VertMax, MinMaxVert;
   Standard_Real TotMin[16],TotMax[16];
   
   Standard_Integer i;
@@ -2141,35 +1987,27 @@ TopAbs_State HLRBRep_Data::SimplClassify (const Standard_Integer /*E*/,
     
     //-- les rejections sont faites dans l intersecteur a moindre frais 
     //-- puisque la surface sera chargee
-    HLRAlgo::InitMinMax(Precision::Infinite(),
-			(Standard_Address)TotMin,
-			(Standard_Address)TotMax);
-    HLRAlgo::UpdateMinMax(xsta,ysta,zsta,
-			  (Standard_Address)TotMin,
-			  (Standard_Address)TotMax);
-    HLRAlgo::EnlargeMinMax(tol,
-			   (Standard_Address)TotMin,
-			   (Standard_Address)TotMax);
-    REJECT1;
+    HLRAlgo::InitMinMax(Precision::Infinite(), TotMin, TotMax);
+    HLRAlgo::UpdateMinMax(xsta,ysta,zsta, TotMin, TotMax);
+    HLRAlgo::EnlargeMinMax(tol, TotMin, TotMax);
+    REJECT1(myDeca, TotMin, TotMax, mySurD, VertMin, VertMax);
 
-    HLRAlgo::EncodeMinMax((Standard_Address)VertMin,
-			  (Standard_Address)VertMax,
-			  (Standard_Address)MinMaxVert);
-    if (((MaxFace1 - MinVert1) & 0x80008000) != 0 ||
-	((MaxVert1 - MinFace1) & 0x80008000) != 0 ||
-	((MaxFace2 - MinVert2) & 0x80008000) != 0 ||
-	((MaxVert2 - MinFace2) & 0x80008000) != 0 ||
-	((MaxFace3 - MinVert3) & 0x80008000) != 0 ||
-	((MaxVert3 - MinFace3) & 0x80008000) != 0 ||
-	((MaxFace4 - MinVert4) & 0x80008000) != 0 ||
-	((MaxVert4 - MinFace4) & 0x80008000) != 0 ||
-	((MaxFace5 - MinVert5) & 0x80008000) != 0 ||
-	((MaxVert5 - MinFace5) & 0x80008000) != 0 ||
-	((MaxFace6 - MinVert6) & 0x80008000) != 0 ||
-	((MaxVert6 - MinFace6) & 0x80008000) != 0 ||
-	((MaxFace7 - MinVert7) & 0x80008000) != 0 ||
-	((MaxVert7 - MinFace7) & 0x80008000) != 0 ||
-	((MaxFace8 - MinVert8) & 0x80008000) != 0) { //-- Rejection en Z 
+    HLRAlgo::EncodeMinMax(VertMin, VertMax, MinMaxVert);
+    if (((iFaceMinMax->Max[0] - MinMaxVert.Min[0]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[0] - iFaceMinMax->Min[0]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[1] - MinMaxVert.Min[1]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[1] - iFaceMinMax->Min[1]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[2] - MinMaxVert.Min[2]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[2] - iFaceMinMax->Min[2]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[3] - MinMaxVert.Min[3]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[3] - iFaceMinMax->Min[3]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[4] - MinMaxVert.Min[4]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[4] - iFaceMinMax->Min[4]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[5] - MinMaxVert.Min[5]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[5] - iFaceMinMax->Min[5]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[6] - MinMaxVert.Min[6]) & 0x80008000) != 0 ||
+	((MinMaxVert.Max[6] - iFaceMinMax->Min[6]) & 0x80008000) != 0 ||
+	((iFaceMinMax->Max[7] - MinMaxVert.Min[7]) & 0x80008000) != 0) { //-- Rejection en Z 
       return TopAbs_OUT;
     }
   }

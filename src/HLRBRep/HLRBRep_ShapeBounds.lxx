@@ -72,11 +72,3 @@ inline void HLRBRep_ShapeBounds::NbOfIso (const Standard_Integer nbIso)
 
 inline Standard_Integer HLRBRep_ShapeBounds::NbOfIso () const
 { return myNbIso; }
-
-//=======================================================================
-//function : MinMax
-//purpose  : 
-//=======================================================================
-
-inline Standard_Address HLRBRep_ShapeBounds::MinMax () const
-{ return (Standard_Address)&myMinMax; }

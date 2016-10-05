@@ -26,7 +26,6 @@
 #include <MMgt_TShared.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Address.hxx>
 
 
 class HLRAlgo_EdgesBlock;
@@ -48,6 +47,42 @@ class HLRAlgo_EdgesBlock : public MMgt_TShared
 {
 
 public:
+  struct MinMaxIndices
+  {
+    Standard_Integer Min[8], Max[8];
+
+    MinMaxIndices& Minimize(const MinMaxIndices& theMinMaxIndices)
+    {
+      for (Standard_Integer aI = 0; aI < 8; ++aI)
+      {
+        if (Min[aI] > theMinMaxIndices.Min[aI])
+        {
+          Min[aI] = theMinMaxIndices.Min[aI];
+        }
+        if (Max[aI] > theMinMaxIndices.Max[aI])
+        {
+          Max[aI] = theMinMaxIndices.Max[aI];
+        }
+      }
+      return *this;
+    }
+
+    MinMaxIndices& Maximize(const MinMaxIndices& theMinMaxIndices)
+    {
+      for (Standard_Integer aI = 0; aI < 8; ++aI)
+      {
+        if (Min[aI] < theMinMaxIndices.Min[aI])
+        {
+          Min[aI] = theMinMaxIndices.Min[aI];
+        }
+        if (Max[aI] < theMinMaxIndices.Max[aI])
+        {
+          Max[aI] = theMinMaxIndices.Max[aI];
+        }
+      }
+      return *this;
+    }
+  };
 
   //! Create a Block of Edges for a wire.
   Standard_EXPORT HLRAlgo_EdgesBlock(const Standard_Integer NbEdges);
@@ -101,9 +136,15 @@ public:
     else   myFlags(I) &= ~EMaskIsoLine;
   }
 
-  Standard_EXPORT void UpdateMinMax (const Standard_Address TotMinMax);
+  void UpdateMinMax(const MinMaxIndices& TotMinMax)
+  {
+    myMinMax = TotMinMax;
+  }
 
-  Standard_Address MinMax() const { return (Standard_Address )&myMinMax; }
+  MinMaxIndices& MinMax()
+  {
+    return myMinMax;
+  }
 
   DEFINE_STANDARD_RTTIEXT(HLRAlgo_EdgesBlock,MMgt_TShared)
 
@@ -122,8 +163,7 @@ private:
 
   TColStd_Array1OfInteger myEdges;
   TColStd_Array1OfInteger myFlags;
-  Standard_Integer myMinMax[16];
-
+  MinMaxIndices myMinMax;
 };
 
 #endif // _HLRAlgo_EdgesBlock_HeaderFile

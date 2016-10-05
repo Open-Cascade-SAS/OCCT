@@ -28,7 +28,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 
-#define Tolpetit 1.e-8
+static const Standard_Real Tolpetit = 1.e-8;
 
 Contap_ContAna::Contap_ContAna (): done(Standard_False) {}
 

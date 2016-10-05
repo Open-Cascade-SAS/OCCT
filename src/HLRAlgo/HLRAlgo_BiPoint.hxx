@@ -24,13 +24,45 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Address.hxx>
+#include <gp_XYZ.hxx>
+#include <gp_XY.hxx>
 
 
 
-class HLRAlgo_BiPoint 
+class HLRAlgo_BiPoint
 {
 public:
+  struct IndicesT
+  {
+    Standard_Integer ShapeIndex;
+    Standard_Integer FaceConex1;
+    Standard_Integer Face1Pt1;
+    Standard_Integer Face1Pt2;
+    Standard_Integer FaceConex2;
+    Standard_Integer Face2Pt1;
+    Standard_Integer Face2Pt2;
+    Standard_Integer MinSeg;
+    Standard_Integer MaxSeg;
+    Standard_Integer SegFlags;
+  };
+
+  struct PointsT
+  {
+    gp_XYZ Pnt1;
+    gp_XYZ Pnt2;
+    gp_XYZ PntP1;
+    gp_XYZ PntP2;
+
+    gp_XY PntP12D() const
+    {
+      return gp_XY(PntP1.X(), PntP1.Y());
+    }
+
+    gp_XY PntP22D() const
+    {
+      return gp_XY(PntP2.X(), PntP2.Y());
+    }
+  };
 
   DEFINE_STANDARD_ALLOC
 
@@ -48,49 +80,70 @@ public:
   
   Standard_EXPORT HLRAlgo_BiPoint(const Standard_Real X1, const Standard_Real Y1, const Standard_Real Z1, const Standard_Real X2, const Standard_Real Y2, const Standard_Real Z2, const Standard_Real XT1, const Standard_Real YT1, const Standard_Real ZT1, const Standard_Real XT2, const Standard_Real YT2, const Standard_Real ZT2, const Standard_Integer Index, const Standard_Integer i1, const Standard_Integer i1p1, const Standard_Integer i1p2, const Standard_Integer i2, const Standard_Integer i2p1, const Standard_Integer i2p2, const Standard_Integer flag);
 
-  Standard_Boolean Rg1Line() const { return (myIndices[9] & EMskRg1Line) != 0; }
+  Standard_Boolean Rg1Line() const
+  {
+    return (myIndices.SegFlags & EMskRg1Line) != 0;
+  }
 
   void Rg1Line (const Standard_Boolean B)
   {
-    if (B) myIndices[9] |=  EMskRg1Line;
-    else   myIndices[9] &= ~EMskRg1Line;
+    if (B) myIndices.SegFlags |=  EMskRg1Line;
+    else   myIndices.SegFlags &= ~EMskRg1Line;
   }
 
-  Standard_Boolean RgNLine() const { return (myIndices[9] & EMskRgNLine) != 0; }
+  Standard_Boolean RgNLine() const
+  {
+    return (myIndices.SegFlags & EMskRgNLine) != 0;
+  }
 
   void RgNLine (const Standard_Boolean B)
   {
-    if (B) myIndices[9] |=  EMskRgNLine;
-    else   myIndices[9] &= ~EMskRgNLine;
+    if (B) myIndices.SegFlags |=  EMskRgNLine;
+    else   myIndices.SegFlags &= ~EMskRgNLine;
   }
 
-  Standard_Boolean OutLine() const { return (myIndices[9] & EMskOutLine) != 0; }
+  Standard_Boolean OutLine() const
+  {
+    return (myIndices.SegFlags & EMskOutLine) != 0;
+  }
 
   void OutLine (const Standard_Boolean B)
   {
-    if (B) myIndices[9] |=  EMskOutLine;
-    else   myIndices[9] &= ~EMskOutLine;
+    if (B) myIndices.SegFlags |=  EMskOutLine;
+    else   myIndices.SegFlags &= ~EMskOutLine;
   }
 
-  Standard_Boolean IntLine() const { return (myIndices[9] & EMskIntLine) != 0; }
+  Standard_Boolean IntLine() const
+  {
+    return (myIndices.SegFlags & EMskIntLine) != 0;
+  }
 
   void IntLine (const Standard_Boolean B)
   {
-    if (B) myIndices[9] |=  EMskIntLine;
-    else   myIndices[9] &= ~EMskIntLine;
+    if (B) myIndices.SegFlags |=  EMskIntLine;
+    else   myIndices.SegFlags &= ~EMskIntLine;
   }
 
-  Standard_Boolean Hidden() const { return (myIndices[9] & EMskHidden) != 0; }
+  Standard_Boolean Hidden() const
+  {
+    return (myIndices.SegFlags & EMskHidden) != 0;
+  }
 
   void Hidden (const Standard_Boolean B)
   {
-    if (B) myIndices[9] |=  EMskHidden;
-    else   myIndices[9] &= ~EMskHidden;
+    if (B) myIndices.SegFlags |=  EMskHidden;
+    else   myIndices.SegFlags &= ~EMskHidden;
   }
 
-  Standard_Address Indices()     const { return const_cast<Standard_Integer* >(myIndices); }
+  IndicesT& Indices()
+  {
+    return myIndices;
+  }
 
-  Standard_Address Coordinates() const { return const_cast<Standard_Real* >(myCoordinates); }
+  PointsT& Points()
+  {
+    return myPoints;
+  }
 
 protected:
 
@@ -104,9 +157,8 @@ protected:
   };
 
 private:
-
-  Standard_Integer myIndices[10];
-  Standard_Real myCoordinates[12];
+  IndicesT myIndices;
+  PointsT myPoints;
 
 };
 

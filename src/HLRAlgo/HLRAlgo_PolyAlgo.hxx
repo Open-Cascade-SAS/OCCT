@@ -17,6 +17,8 @@
 #ifndef _HLRAlgo_PolyAlgo_HeaderFile
 #define _HLRAlgo_PolyAlgo_HeaderFile
 
+#include <HLRAlgo_PolyData.hxx>
+
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
@@ -27,7 +29,7 @@
 #include <Standard_Boolean.hxx>
 #include <MMgt_TShared.hxx>
 #include <TColStd_Array1OfTransient.hxx>
-#include <Standard_Address.hxx>
+
 class HLRAlgo_EdgeStatus;
 
 
@@ -59,7 +61,7 @@ public:
   Standard_EXPORT void NextHide();
   
   //! process hiding between <Pt1> and <Pt2>.
-  Standard_EXPORT void Hide (Standard_Address& Coordinates, HLRAlgo_EdgeStatus& status, Standard_Integer& Index, Standard_Boolean& reg1, Standard_Boolean& regn, Standard_Boolean& outl, Standard_Boolean& intl);
+  Standard_EXPORT HLRAlgo_BiPoint::PointsT& Hide (HLRAlgo_EdgeStatus& status, Standard_Integer& Index, Standard_Boolean& reg1, Standard_Boolean& regn, Standard_Boolean& outl, Standard_Boolean& intl);
   
     void InitShow();
   
@@ -68,7 +70,7 @@ public:
   Standard_EXPORT void NextShow();
   
   //! process hiding between <Pt1> and <Pt2>.
-  Standard_EXPORT void Show (Standard_Address& Coordinates, Standard_Integer& Index, Standard_Boolean& reg1, Standard_Boolean& regn, Standard_Boolean& outl, Standard_Boolean& intl);
+  Standard_EXPORT HLRAlgo_BiPoint::PointsT& Show (Standard_Integer& Index, Standard_Boolean& reg1, Standard_Boolean& regn, Standard_Boolean& outl, Standard_Boolean& intl);
 
 
 
@@ -84,7 +86,7 @@ private:
 
 
   Handle(TColStd_HArray1OfTransient) myHShell;
-  Standard_Real myRealPtr[10];
+  HLRAlgo_PolyData::Triangle myTriangle;
   HLRAlgo_ListIteratorOfListOfBPoint mySegListIt;
   Standard_Integer myNbrShell;
   Standard_Integer myCurShell;

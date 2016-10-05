@@ -95,7 +95,7 @@ void StdPrs_HLRPolyShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
   
   for (hider->InitHide(); hider->MoreHide(); hider->NextHide())
   {
-    hider->Hide(Coordinates, status, S, reg1, regn, outl, intl);
+    Coordinates = &hider->Hide(status, S, reg1, regn, outl, intl);
     
     dx = PntX2 - PntX1;
     dy = PntY2 - PntY1;

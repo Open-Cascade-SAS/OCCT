@@ -50,6 +50,7 @@ class gp_Dir2d;
 class HLRBRep_EdgeData;
 class HLRBRep_FaceData;
 class IntRes2d_IntersectionPoint;
+class TableauRejection;
 
 
 class HLRBRep_Data;
@@ -99,7 +100,7 @@ public:
     TopTools_IndexedMapOfShape& FaceMap();
   
   //! to compare with only non rejected edges.
-  Standard_EXPORT void InitBoundSort (const Standard_Address MinMaxTot, const Standard_Integer e1, const Standard_Integer e2);
+  Standard_EXPORT void InitBoundSort (const HLRAlgo_EdgesBlock::MinMaxIndices& MinMaxTot, const Standard_Integer e1, const Standard_Integer e2);
   
   //! Begin an iteration only  on visible Edges
   //! crossing the face number <FI>.
@@ -228,9 +229,9 @@ private:
   HLRBRep_FaceIterator myFaceItr1;
   HLRBRep_FaceIterator myFaceItr2;
   Standard_Integer iFace;
-  Standard_Address iFaceData;
+  HLRBRep_FaceData* iFaceData;
   Standard_Address iFaceGeom;
-  Standard_Address iFaceMinMax;
+  HLRAlgo_EdgesBlock::MinMaxIndices* iFaceMinMax;
   GeomAbs_SurfaceType iFaceType;
   Standard_Boolean iFaceBack;
   Standard_Boolean iFaceSimp;
@@ -246,9 +247,9 @@ private:
   Standard_Boolean myLEInternal;
   Standard_Boolean myLEDouble;
   Standard_Boolean myLEIsoLine;
-  Standard_Address myLEData;
-  Standard_Address myLEGeom;
-  Standard_Address myLEMinMax;
+  HLRBRep_EdgeData* myLEData;
+  const HLRBRep_Curve* myLEGeom;
+  HLRAlgo_EdgesBlock::MinMaxIndices* myLEMinMax;
   GeomAbs_CurveType myLEType;
   Standard_ShortReal myLETol;
   Standard_Integer myFE;
@@ -256,8 +257,8 @@ private:
   Standard_Boolean myFEOutLine;
   Standard_Boolean myFEInternal;
   Standard_Boolean myFEDouble;
-  Standard_Address myFEData;
-  Standard_Address myFEGeom;
+  HLRBRep_EdgeData* myFEData;
+  HLRBRep_Curve* myFEGeom;
   GeomAbs_CurveType myFEType;
   Standard_ShortReal myFETol;
   HLRBRep_Intersector myIntersector;
@@ -269,7 +270,7 @@ private:
   Standard_Integer iInterf;
   HLRAlgo_Interference myIntf;
   Standard_Boolean myAboveIntf;
-  Standard_Address myReject;
+  TableauRejection* myReject;
 
 
 };

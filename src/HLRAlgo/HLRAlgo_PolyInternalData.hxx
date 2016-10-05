@@ -26,7 +26,6 @@
 #include <HLRAlgo_HArray1OfPISeg.hxx>
 #include <HLRAlgo_HArray1OfPINod.hxx>
 #include <MMgt_TShared.hxx>
-#include <Standard_Address.hxx>
 #include <Standard_Real.hxx>
 #include <HLRAlgo_Array1OfTData.hxx>
 #include <HLRAlgo_Array1OfPISeg.hxx>
@@ -45,19 +44,19 @@ public:
   
   Standard_EXPORT HLRAlgo_PolyInternalData(const Standard_Integer nbNod, const Standard_Integer nbTri);
   
-  Standard_EXPORT void UpdateLinks (Standard_Address& TData, Standard_Address& PISeg, Standard_Address& PINod);
+  Standard_EXPORT void UpdateLinks (HLRAlgo_Array1OfTData*& TData, HLRAlgo_Array1OfPISeg*& PISeg, HLRAlgo_Array1OfPINod*& PINod);
   
-  Standard_EXPORT Standard_Integer AddNode (const Standard_Address Nod1RValues, const Standard_Address Nod2RValues, Standard_Address& PINod1, Standard_Address& PINod2, const Standard_Real coef1, const Standard_Real X3, const Standard_Real Y3, const Standard_Real Z3);
+  Standard_EXPORT Standard_Integer AddNode (HLRAlgo_PolyInternalNode::NodeData& Nod1RValues, HLRAlgo_PolyInternalNode::NodeData& Nod2RValues, HLRAlgo_Array1OfPINod*& PINod1, HLRAlgo_Array1OfPINod*& PINod2, const Standard_Real coef1, const Standard_Real X3, const Standard_Real Y3, const Standard_Real Z3);
   
-  Standard_EXPORT void UpdateLinks (const Standard_Integer ip1, const Standard_Integer ip2, const Standard_Integer ip3, Standard_Address& TData1, Standard_Address& TData2, Standard_Address& PISeg1, Standard_Address& PISeg2, Standard_Address& PINod1, Standard_Address& PINod2);
+  Standard_EXPORT void UpdateLinks (const Standard_Integer ip1, const Standard_Integer ip2, const Standard_Integer ip3, HLRAlgo_Array1OfTData*& TData1, HLRAlgo_Array1OfTData*& TData2, HLRAlgo_Array1OfPISeg*& PISeg1, HLRAlgo_Array1OfPISeg*& PISeg2, HLRAlgo_Array1OfPINod*& PINod1, HLRAlgo_Array1OfPINod*& PINod2);
   
   Standard_EXPORT void Dump() const;
   
-  Standard_EXPORT void IncTData (Standard_Address& TData1, Standard_Address& TData2);
+  Standard_EXPORT void IncTData (HLRAlgo_Array1OfTData*& TData1, HLRAlgo_Array1OfTData*& TData2);
   
-  Standard_EXPORT void IncPISeg (Standard_Address& PISeg1, Standard_Address& PISeg2);
+  Standard_EXPORT void IncPISeg (HLRAlgo_Array1OfPISeg*& PISeg1, HLRAlgo_Array1OfPISeg*& PISeg2);
   
-  Standard_EXPORT void IncPINod (Standard_Address& PINod1, Standard_Address& PINod2);
+  Standard_EXPORT void IncPINod (HLRAlgo_Array1OfPINod*& PINod1, HLRAlgo_Array1OfPINod*& PINod2);
   
     void DecTData();
   

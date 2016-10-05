@@ -93,7 +93,7 @@ HLRBRep_Surface::SideRowsOfPoles (const Standard_Real tol,
   Standard_Real x0,y0,x,y,z;
   Standard_Boolean result;
   Standard_Real tole = (Standard_Real)tol;
-  const gp_Trsf& T = ((HLRAlgo_Projector*) myProj)->Transformation();
+  const gp_Trsf& T = myProj->Transformation();
 
   for (iu = 1; iu <= nbuPoles; iu++) {
     
@@ -160,34 +160,34 @@ HLRBRep_Surface::IsSide (const Standard_Real tolF,
     gp_Ax1 A  = Pl.Axis();
     Pt = A.Location();
     D  = A.Direction();
-    Pt.Transform(((HLRAlgo_Projector*) myProj)->Transformation());
-    D .Transform(((HLRAlgo_Projector*) myProj)->Transformation());
-    if (((HLRAlgo_Projector*) myProj)->Perspective()) {
-      r = D.Z() * ((HLRAlgo_Projector*) myProj)->Focus() - 
+    Pt.Transform(myProj->Transformation());
+    D .Transform(myProj->Transformation());
+    if (myProj->Perspective()) {
+      r = D.Z() * myProj->Focus() - 
 	( D.X() * Pt.X() + D.Y() * Pt.Y() + D.Z() * Pt.Z() );
     }
     else r= D.Z();
     return Abs(r) < toler;
   }
   else if (myType == GeomAbs_Cylinder) {
-    if (((HLRAlgo_Projector*) myProj)->Perspective()) return Standard_False;
+    if (myProj->Perspective()) return Standard_False;
     gp_Cylinder Cyl = HLRBRep_BSurfaceTool::Cylinder(mySurf);
     gp_Ax1 A = Cyl.Axis();
     D  = A.Direction();
-    D .Transform(((HLRAlgo_Projector*) myProj)->Transformation());
+    D .Transform(myProj->Transformation());
     r = Sqrt(D.X() * D.X() + D.Y() * D.Y());
     return r < toler;
   }
   else if (myType == GeomAbs_Cone) {
-    if (!((HLRAlgo_Projector*) myProj)->Perspective()) return Standard_False;
+    if (!myProj->Perspective()) return Standard_False;
     gp_Cone Con = HLRBRep_BSurfaceTool::Cone(mySurf);
     Pt = Con.Apex();
-    Pt.Transform(((HLRAlgo_Projector*) myProj)->Transformation());
+    Pt.Transform(myProj->Transformation());
     Standard_Real tol = 0.001;
-    return Pt.IsEqual(gp_Pnt(0,0,((HLRAlgo_Projector*) myProj)->Focus()),tol);
+    return Pt.IsEqual(gp_Pnt(0,0,myProj->Focus()),tol);
   }
   else if (myType == GeomAbs_BezierSurface) {
-    if (((HLRAlgo_Projector*) myProj)->Perspective()) return Standard_False;
+    if (myProj->Perspective()) return Standard_False;
     Standard_Integer nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
     Standard_Integer nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
     TColgp_Array2OfPnt Pnt(1,nu,1,nv);
@@ -195,7 +195,7 @@ HLRBRep_Surface::IsSide (const Standard_Real tolF,
     return SideRowsOfPoles (tolF,nu,nv,Pnt);
   }
   else if (myType == GeomAbs_BSplineSurface) {
-    if (((HLRAlgo_Projector*) myProj)->Perspective()) return Standard_False;
+    if (myProj->Perspective()) return Standard_False;
     Standard_Integer nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
     Standard_Integer nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
     TColgp_Array2OfPnt Pnt(1,nu,1,nv);
@@ -214,7 +214,7 @@ HLRBRep_Surface::IsSide (const Standard_Real tolF,
 
 Standard_Boolean  
 HLRBRep_Surface::IsAbove (const Standard_Boolean back,
-			  const Standard_Address A,
+			  const HLRBRep_Curve* A,
 			  const Standard_Real tol) const
 { 
   Standard_Boolean planar = (myType == GeomAbs_Plane);
@@ -224,22 +224,20 @@ HLRBRep_Surface::IsAbove (const Standard_Boolean back,
     Pl.Coefficients(a,b,c,d);
     Standard_Real u,u1,u2,dd,x,y,z;
     gp_Pnt P;
-    u1 = ((HLRBRep_Curve*)A)->Parameter3d
-      (((HLRBRep_Curve*)A)->FirstParameter());
-    u2 = ((HLRBRep_Curve*)A)->Parameter3d
-      (((HLRBRep_Curve*)A)->LastParameter());
+    u1 = A->Parameter3d(A->FirstParameter());
+    u2 = A->Parameter3d(A->LastParameter());
     u=u1;
-    ((HLRBRep_Curve*)A)->D0(u,P);
+    A->D0(u,P);
     P.Coord(x,y,z);
     dd = a*x + b*y + c*z + d;
     if (back) dd = -dd;
     if (dd < -tol) return Standard_False;
-    if (((HLRBRep_Curve*)A)->GetType() != GeomAbs_Line) {
+    if (A->GetType() != GeomAbs_Line) {
       Standard_Integer nbPnt = 30;
       Standard_Real step = (u2-u1)/(nbPnt+1);
       for (Standard_Integer i = 1; i <= nbPnt; i++) {
 	u += step;
-	((HLRBRep_Curve*)A)->D0(u,P);
+	A->D0(u,P);
 	P.Coord(x,y,z);
 	dd = a*x + b*y + c*z + d;
 	if (back) dd = -dd;
@@ -247,7 +245,7 @@ HLRBRep_Surface::IsAbove (const Standard_Boolean back,
       }
     }
     u = u2;
-    ((HLRBRep_Curve*)A)->D0(u,P);
+    A->D0(u,P);
     P.Coord(x,y,z);
     dd = a*x + b*y + c*z + d;
     if (back) dd = -dd;

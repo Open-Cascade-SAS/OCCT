@@ -47,9 +47,9 @@ HLRAlgo_EdgeIterator::Hidden (Standard_Real& Start,
 //=======================================================================
 
 inline void 
-HLRAlgo_EdgeIterator::InitVisible (const HLRAlgo_EdgeStatus& status)
+HLRAlgo_EdgeIterator::InitVisible(HLRAlgo_EdgeStatus& status)
 {
-  EVis    = (Standard_Address)&status;
+  EVis    = &status;
   iVis    = 1;
   myNbVis = ((HLRAlgo_EdgeStatus*)EVis)->NbVisiblePart();
 }

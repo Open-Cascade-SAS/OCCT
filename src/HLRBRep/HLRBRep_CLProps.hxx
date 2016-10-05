@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Address.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <gp_Pnt2d.hxx>
@@ -37,6 +36,7 @@ class gp_Vec2d;
 class gp_Pnt2d;
 class gp_Dir2d;
 class HLRBRep_CLPropsATool;
+class HLRBRep_Curve;
 
 
 
@@ -56,12 +56,12 @@ public:
   //! only the tangent, N should be equal to 1.
   //! <Resolution> is the linear tolerance (it is used to test
   //! if a vector is null).
-  Standard_EXPORT HLRBRep_CLProps(const Standard_Address& C, const Standard_Integer N, const Standard_Real Resolution);
+  Standard_EXPORT HLRBRep_CLProps(const HLRBRep_Curve*& C, const Standard_Integer N, const Standard_Real Resolution);
   
   //! Same as previous constructor but here the parameter is
   //! set to the value <U>.
   //! All the computations done will be related to <C> and <U>.
-  Standard_EXPORT HLRBRep_CLProps(const Standard_Address& C, const Standard_Real U, const Standard_Integer N, const Standard_Real Resolution);
+  Standard_EXPORT HLRBRep_CLProps(const HLRBRep_Curve*& C, const Standard_Real U, const Standard_Integer N, const Standard_Real Resolution);
   
   //! Same as previous constructor but here the parameter is
   //! set to the value <U> and the curve is set
@@ -77,7 +77,7 @@ public:
   
   //! Initializes the local properties of the curve
   //! for the new curve.
-  Standard_EXPORT void SetCurve (const Standard_Address& C);
+  Standard_EXPORT void SetCurve (const HLRBRep_Curve*& C);
   
   //! Returns the Point.
   Standard_EXPORT const gp_Pnt2d& Value() const;
@@ -124,7 +124,7 @@ private:
 
 
 
-  Standard_Address myCurve;
+  const HLRBRep_Curve* myCurve;
   Standard_Real myU;
   Standard_Integer myDerOrder;
   Standard_Real myCN;
