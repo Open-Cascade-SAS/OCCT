@@ -8,6 +8,7 @@ set ref_data {
   NbOfDimensionalLocation: 1
   NbOfAngular            : 0
   NbOfWithPath           : 0
+  NbOfCommonLabels       : 0
  NbOfTolerances          : 33
   NbOfGTWithModifiers    : 23
   NbOfGTWithMaxTolerance : 0

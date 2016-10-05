@@ -1,0 +1,8 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug27934_TEST_Machine_Part-brep-pmi.stp
+
+set ref_data {
+Centre of mass: 3148.1200518800083 -633.28945446290447 1352.5172588429191
+Mass: 9340.0806267600256
+
+}

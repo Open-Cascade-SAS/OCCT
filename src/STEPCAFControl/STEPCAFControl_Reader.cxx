@@ -1765,6 +1765,191 @@ static Standard_Boolean GetMassConversionFactor(Handle(StepBasic_NamedUnit)& NU,
   }
   return Standard_True;
 }
+//=======================================================================
+//function : readPMIPresentation
+//purpose  : read polyline or tessellated presentation for 
+// (Annotation_Curve_Occurrence or Draughting_Callout)
+//=======================================================================
+Standard_Boolean readPMIPresentation(const Handle(Standard_Transient)& thePresentEntity,
+                                     const Handle(XSControl_TransferReader)& theTR,
+                                     const Standard_Real theFact,
+                                     TopoDS_Shape& thePresentation, 
+                                     Handle(TCollection_HAsciiString)& thePresentName, 
+                                     Bnd_Box& theBox)
+{
+  Handle(Transfer_TransientProcess) aTP = theTR->TransientProcess();
+  Handle(StepVisual_AnnotationCurveOccurrence) anACO;
+  NCollection_Vector<Handle(StepVisual_StyledItem)> anAnnotations;
+  if (thePresentEntity->IsKind(STANDARD_TYPE(StepVisual_AnnotationCurveOccurrence)))
+  {
+    anACO = Handle(StepVisual_AnnotationCurveOccurrence)::DownCast(thePresentEntity);
+    thePresentName = anACO->Name();
+    if (!anACO.IsNull())
+      anAnnotations.Append(anACO);
+  }
+  else if (thePresentEntity->IsKind(STANDARD_TYPE(StepVisual_DraughtingCallout)))
+  {
+    Handle(StepVisual_DraughtingCallout) aDCallout =
+      Handle(StepVisual_DraughtingCallout)::DownCast(thePresentEntity);
+    thePresentName = aDCallout->Name();
+    for (Standard_Integer i = 1; i <= aDCallout->NbContents() && anACO.IsNull(); i++) {
+      anACO = aDCallout->ContentsValue(i).AnnotationCurveOccurrence();
+      if (!anACO.IsNull())
+      {
+        anAnnotations.Append(anACO);
+        continue;
+      }
+      Handle(StepVisual_TessellatedAnnotationOccurrence) aTesselation =
+        aDCallout->ContentsValue(i).TessellatedAnnotationOccurrence();
+      if (!aTesselation.IsNull())
+        anAnnotations.Append(aTesselation);
+    }
+  }
+
+  if (!anAnnotations.Length())
+    return Standard_False;
+
+
+  BRep_Builder aB;
+  TopoDS_Compound aResAnnotation;
+  aB.MakeCompound(aResAnnotation);
+
+  Standard_Integer i = 0;
+  Bnd_Box aBox;
+  Standard_Integer nbShapes = 0;
+  for (; i < anAnnotations.Length(); i++)
+  {
+    Handle(StepVisual_StyledItem) anItem = anAnnotations(i);
+    anACO = Handle(StepVisual_AnnotationCurveOccurrence)::DownCast(anItem);
+    TopoDS_Shape anAnnotationShape;
+    if (!anACO.IsNull())
+    {
+      Handle(StepRepr_RepresentationItem) aCurveItem = anACO->Item();
+      anAnnotationShape = STEPConstruct::FindShape(aTP, aCurveItem);
+      if (anAnnotationShape.IsNull())
+      {
+        Handle(Transfer_Binder) binder = theTR->Actor()->Transfer(aCurveItem, aTP);
+        if (!binder.IsNull() && binder->HasResult()) {
+          anAnnotationShape = TransferBRep::ShapeResult(aTP, binder);
+        }
+      }
+    }
+    //case of tessellated entities
+    else
+    {
+      Handle(StepRepr_RepresentationItem) aTessItem = anItem->Item();
+      if (aTessItem.IsNull())
+        continue;
+      Handle(StepVisual_TessellatedGeometricSet) aTessSet = Handle(StepVisual_TessellatedGeometricSet)::DownCast(aTessItem);
+      if (aTessSet.IsNull())
+        continue;
+      NCollection_Handle<StepVisual_Array1OfTessellatedItem> aListItems = aTessSet->Items();
+      Standard_Integer nb = aListItems.IsNull() ? 0 : aListItems->Length();
+      Handle(StepVisual_TessellatedCurveSet) aTessCurve;
+      for (Standard_Integer n = 1; n <= nb && aTessCurve.IsNull(); n++)
+      {
+        aTessCurve = Handle(StepVisual_TessellatedCurveSet)::DownCast(aListItems->Value(n));
+      }
+      if (aTessCurve.IsNull())
+        continue;
+      Handle(StepVisual_CoordinatesList) aCoordList = aTessCurve->CoordList();
+      if (aCoordList.IsNull())
+        continue;
+      Handle(TColgp_HArray1OfXYZ)  aPoints = aCoordList->Points();
+
+      if (aPoints.IsNull() || aPoints->Length() == 0)
+        continue;
+      NCollection_Handle<StepVisual_VectorOfHSequenceOfInteger> aCurves = aTessCurve->Curves();
+      Standard_Integer aNbC = (aCurves.IsNull() ? 0 : aCurves->Length());
+      TopoDS_Compound aComp;
+      aB.MakeCompound(aComp);
+
+      Standard_Integer k = 0;
+      for (; k < aNbC; k++)
+      {
+        Handle(TColStd_HSequenceOfInteger) anIndexes = aCurves->Value(k);
+        TopoDS_Wire aCurW;
+        aB.MakeWire(aCurW);
+
+        for (Standard_Integer n = 1; n < anIndexes->Length(); n++)
+        {
+          Standard_Integer ind = anIndexes->Value(n);
+          Standard_Integer indnext = anIndexes->Value(n + 1);
+          if (ind > aPoints->Length() || indnext > aPoints->Length())
+            continue;
+          gp_Pnt aP1(aPoints->Value(ind) * theFact);
+          gp_Pnt aP2(aPoints->Value(indnext) * theFact);
+          BRepBuilderAPI_MakeEdge aMaker(aP1, aP2);
+          if (aMaker.IsDone())
+          {
+            TopoDS_Edge aCurE = aMaker.Edge();
+            aB.Add(aCurW, aCurE);
+          }
+        }
+        aB.Add(aComp, aCurW);
+      }
+      anAnnotationShape = aComp;
+    }
+    if (!anAnnotationShape.IsNull())
+    {
+      nbShapes++;
+      aB.Add(aResAnnotation, anAnnotationShape);
+      if (i == anAnnotations.Length() - 1)
+        BRepBndLib::AddClose(anAnnotationShape, aBox);
+    }
+  }
+
+  thePresentation = aResAnnotation;
+  theBox = aBox;
+  return (nbShapes > 0);
+}
+
+//=======================================================================
+//function : readAnnotationPlane
+//purpose  : read annotation plane
+//=======================================================================
+Standard_Boolean readAnnotationPlane(const Handle(StepVisual_AnnotationPlane) theAnnotationPlane,
+                                     const Standard_Real theFact,
+                                     gp_Ax2& thePlane)
+{
+  if (theAnnotationPlane.IsNull())
+    return Standard_False;
+  gp_Ax2 aPlaneAxes;
+  Handle(StepRepr_RepresentationItem) aPlaneItem = theAnnotationPlane->Item();
+  Handle(StepGeom_Axis2Placement3d) aA2P3D;
+  //retrieve axes from AnnotationPlane
+  if (aPlaneItem->IsKind(STANDARD_TYPE(StepGeom_Plane))) {
+    Handle(StepGeom_Plane) aPlane = Handle(StepGeom_Plane)::DownCast(aPlaneItem);
+    aA2P3D = aPlane->Position();
+  }
+  else if (aPlaneItem->IsKind(STANDARD_TYPE(StepVisual_PlanarBox))) {
+    Handle(StepVisual_PlanarBox) aBox = Handle(StepVisual_PlanarBox)::DownCast(aPlaneItem);
+    aA2P3D = aBox->Placement().Axis2Placement3d();
+  }
+  if (aA2P3D.IsNull())
+    return Standard_False;
+
+  // build gp_Ax2 from axes
+  Handle(StepGeom_Direction) anAxis = aA2P3D->Axis(),
+    aRefDir = aA2P3D->RefDirection();
+  if (anAxis.IsNull() || aRefDir.IsNull())
+    return Standard_False;
+
+  Handle(TColStd_HArray1OfReal) aCoords;
+  aCoords = anAxis->DirectionRatios();
+  gp_Dir aXDir(aCoords->Value(1), aCoords->Value(2), aCoords->Value(3));
+  aCoords = aRefDir->DirectionRatios();
+  gp_Dir aYDir(aCoords->Value(1), aCoords->Value(2), aCoords->Value(3));
+  aPlaneAxes.SetDirection(aXDir.Crossed(aYDir));
+  aPlaneAxes.SetYDirection(aYDir);
+  //set location of the annotation plane
+  Handle(TColStd_HArray1OfReal) aLocCoords;
+  Handle(StepGeom_CartesianPoint) aLoc = aA2P3D->Location();
+  gp_Pnt aLocPos(aLoc->CoordinatesValue(1) * theFact, aLoc->CoordinatesValue(2) * theFact, aLoc->CoordinatesValue(3) * theFact);
+  aPlaneAxes.SetLocation(aLocPos);
+  thePlane = aPlaneAxes;
+  return Standard_True;
+}
 
 //=======================================================================
 //function : readAnnotation
@@ -1803,50 +1988,16 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
     GetLengthConversionFactorFromContext(aDModel->ContextOfItems(), aFact);
 
   // retrieve AnnotationPlane
-  Standard_Boolean isHasPlane = Standard_False;
-  gp_Ax2 aPlaneAxes;
   Handle(StepRepr_RepresentationItem) aDMIAE = aDMIA->IdentifiedItemValue(1);
   if (aDMIAE.IsNull())
     return;
+  gp_Ax2 aPlaneAxes;
   subs = aGraph.Sharings(aDMIAE);
   Handle(StepVisual_AnnotationPlane) anAnPlane;
   for (subs.Start(); subs.More() && anAnPlane.IsNull(); subs.Next()) {
     anAnPlane = Handle(StepVisual_AnnotationPlane)::DownCast(subs.Value());
   }
-  if (!anAnPlane.IsNull()) {
-    Handle(StepRepr_RepresentationItem) aPlaneItem = anAnPlane->Item();
-    Handle(StepGeom_Axis2Placement3d) aA2P3D;
-    //retrieve axes from AnnotationPlane
-    if (aPlaneItem->IsKind(STANDARD_TYPE(StepGeom_Plane))) {
-      Handle(StepGeom_Plane) aPlane = Handle(StepGeom_Plane)::DownCast(aPlaneItem);
-      aA2P3D = aPlane->Position();
-    }
-    else if (aPlaneItem->IsKind(STANDARD_TYPE(StepVisual_PlanarBox))) {
-      Handle(StepVisual_PlanarBox) aBox = Handle(StepVisual_PlanarBox)::DownCast(aPlaneItem);
-      aA2P3D = aBox->Placement().Axis2Placement3d();
-    }
-    // build gp_Ax2 from axes
-    if (!aA2P3D.IsNull())
-    {
-      Handle(StepGeom_Direction) anAxis = aA2P3D->Axis(), 
-        aRefDir = aA2P3D->RefDirection();
-      if (!anAxis.IsNull() && !aRefDir.IsNull()) {
-        Handle(TColStd_HArray1OfReal) aCoords;
-        aCoords = anAxis->DirectionRatios();
-        gp_Dir aXDir(aCoords->Value(1), aCoords->Value(2), aCoords->Value(3));
-        aCoords = aRefDir->DirectionRatios();
-        gp_Dir aYDir(aCoords->Value(1), aCoords->Value(2), aCoords->Value(3));
-        aPlaneAxes.SetDirection(aXDir.Crossed(aYDir));
-        aPlaneAxes.SetYDirection(aYDir);
-        //set location of the annotation plane
-        Handle(TColStd_HArray1OfReal) aLocCoords;
-        Handle(StepGeom_CartesianPoint) aLoc = aA2P3D->Location();
-        gp_Pnt aLocPos( aLoc->CoordinatesValue(1) * aFact, aLoc->CoordinatesValue(2) * aFact, aLoc->CoordinatesValue(3) * aFact);
-        aPlaneAxes.SetLocation(aLocPos);
-        isHasPlane = Standard_True;
-      }
-    }
-  }
+  Standard_Boolean isHasPlane = readAnnotationPlane(anAnPlane, aFact, aPlaneAxes);
 
   // set plane axes to XCAF
   if (isHasPlane) {
@@ -1869,138 +2020,16 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
   }
 
   // Retrieve presentation
-  Handle(StepVisual_AnnotationCurveOccurrence) anACO;
-  NCollection_Vector<Handle(StepVisual_TessellatedAnnotationOccurrence)> aTesselations;
-  NCollection_Vector<Handle(StepVisual_StyledItem)> anAnnotations;
-  if (aDMIAE->IsKind(STANDARD_TYPE(StepVisual_AnnotationCurveOccurrence))) 
-  {
-    anACO = Handle(StepVisual_AnnotationCurveOccurrence)::DownCast(aDMIAE);
-    if( !anACO.IsNull())
-      anAnnotations.Append(anACO);
-  }
-
-  else if (aDMIAE->IsKind(STANDARD_TYPE(StepVisual_DraughtingCallout))) 
-  {
-    Handle(StepVisual_DraughtingCallout) aDCallout =
-      Handle(StepVisual_DraughtingCallout)::DownCast(aDMIAE);
-    for (Standard_Integer i = 1; i <= aDCallout->NbContents() && anACO.IsNull(); i++) {
-      anACO = aDCallout->ContentsValue(i).AnnotationCurveOccurrence();
-      if(!anACO.IsNull())
-      {
-        anAnnotations.Append(anACO);
-        continue;
-      }
-      Handle(StepVisual_TessellatedAnnotationOccurrence) aTesselation = 
-        aDCallout->ContentsValue(i).TessellatedAnnotationOccurrence();
-      if( !aTesselation.IsNull())
-        anAnnotations.Append(aTesselation);
-    }
-  }
-
-  if (!anAnnotations.Length())
-    return;
-
-
-  BRep_Builder aB;
-  aB.MakeCompound(aResAnnotation);
-
-  Standard_Integer i =0;
   Bnd_Box aBox;
-  Standard_Integer nbShapes =0;
-  for( ; i < anAnnotations.Length(); i++)
-  {
-    Handle(StepVisual_StyledItem) anItem = anAnnotations(i);
-  
-    aPresentName = anItem->Name();
-
-    anACO = Handle(StepVisual_AnnotationCurveOccurrence)::DownCast(anItem);
-    TopoDS_Shape anAnnotationShape;
-    if(!anACO.IsNull())
-    {
-      Handle(StepRepr_RepresentationItem) aCurveItem = anACO->Item();
-      anAnnotationShape = STEPConstruct::FindShape (aTP,aCurveItem);
-      if( anAnnotationShape.IsNull())
-      {
-        Handle(Transfer_Binder) binder = theTR->Actor()->Transfer(aCurveItem, aTP);
-        if ( ! binder.IsNull() && binder->HasResult() ) {
-          anAnnotationShape = TransferBRep::ShapeResult ( aTP, binder );
-        }
-      }
-    }
-    //case of tessellated entities
-    else
-    {
-      Handle(StepRepr_RepresentationItem) aTessItem = anItem->Item();
-      if(aTessItem.IsNull())
-        continue;
-      Handle(StepVisual_TessellatedGeometricSet) aTessSet = Handle(StepVisual_TessellatedGeometricSet)::DownCast(aTessItem);
-      if( aTessSet.IsNull())
-        continue;
-      NCollection_Handle<StepVisual_Array1OfTessellatedItem> aListItems = aTessSet->Items();
-      Standard_Integer nb = aListItems.IsNull() ? 0 : aListItems->Length();
-      Handle(StepVisual_TessellatedCurveSet) aTessCurve;
-      for (Standard_Integer n = 1; n <= nb && aTessCurve.IsNull(); n++)
-      {
-        aTessCurve = Handle(StepVisual_TessellatedCurveSet)::DownCast(aListItems->Value(n));
-      }
-      if( aTessCurve.IsNull())
-        continue;
-      Handle(StepVisual_CoordinatesList) aCoordList = aTessCurve->CoordList();
-      if( aCoordList.IsNull())
-        continue;
-      Handle(TColgp_HArray1OfXYZ)  aPoints = aCoordList->Points();
-
-      if (aPoints.IsNull() || aPoints->Length() == 0)
-        continue;
-      NCollection_Handle<StepVisual_VectorOfHSequenceOfInteger> aCurves = aTessCurve->Curves();
-      Standard_Integer aNbC = (aCurves.IsNull() ? 0 : aCurves->Length());
-      TopoDS_Compound aComp;
-      aB.MakeCompound(aComp);
-      
-      Standard_Integer k = 0;
-      for( ; k < aNbC; k++)
-      {
-        Handle(TColStd_HSequenceOfInteger) anIndexes = aCurves->Value(k);
-        TopoDS_Wire aCurW;
-        aB.MakeWire(aCurW);
-
-        for(Standard_Integer n = 1; n < anIndexes->Length(); n++)
-        {
-          Standard_Integer ind = anIndexes->Value(n);
-          Standard_Integer indnext = anIndexes->Value(n + 1);
-          if( ind > aPoints->Length() || indnext > aPoints->Length())
-            continue;
-          gp_Pnt aP1(aPoints->Value(ind) * aFact);
-          gp_Pnt aP2(aPoints->Value(indnext) * aFact);
-          BRepBuilderAPI_MakeEdge aMaker(aP1, aP2);
-          if( aMaker.IsDone())
-          {
-            TopoDS_Edge aCurE = aMaker.Edge();
-            aB.Add(aCurW, aCurE);
-          }
-        }
-        aB.Add(aComp, aCurW);
-      }
-      anAnnotationShape = aComp;
-    }
-    if(!anAnnotationShape.IsNull())
-    {
-      nbShapes++;
-      aB.Add(aResAnnotation, anAnnotationShape);
-      if( i == anAnnotations.Length() - 1)
-        BRepBndLib::AddClose(anAnnotationShape, aBox);
-    }
-  }
-  
-  if(!nbShapes)
+  if (!readPMIPresentation(aDMIAE, theTR, aFact, aResAnnotation, aPresentName, aBox))
     return;
   gp_Pnt aPtext(0., 0., 0.);
   // if Annotation plane location inside bounding box set it to text position
   // else set the center of bounding box to text position
-  if(!aBox.IsVoid())
+  if (!aBox.IsVoid())
   {
-    Standard_Real aXmin, aYmin, aZmin,aXmax, aYmax, aZmax; 
-    aBox.Get(aXmin, aYmin, aZmin,aXmax, aYmax, aZmax);
+    Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+    aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
     if (isHasPlane && !aBox.IsOut(aPlaneAxes.Location())) {
       aPtext = aPlaneAxes.Location();
     }
@@ -3703,6 +3732,8 @@ Standard_Boolean STEPCAFControl_Reader::ReadGDTs(const Handle(XSControl_WorkSess
                                                  Handle(TDocStd_Document)& theDoc) const
 {
   const Handle(Interface_InterfaceModel) &aModel = theWS->Model();
+  const Interface_Graph& aGraph = theWS->Graph();
+  const Handle(XSControl_TransferReader) &aTR = theWS->TransferReader();
   Handle(StepData_StepModel) aSM = Handle(StepData_StepModel)::DownCast(aModel);
   Interface_EntityIterator anI = aSM->Header();
   Handle(HeaderSection_FileSchema) aH;
@@ -3727,6 +3758,55 @@ Standard_Boolean STEPCAFControl_Reader::ReadGDTs(const Handle(XSControl_WorkSess
           setDimObjectToXCAF(anEnt, aGDTL,theDoc,theWS);
         }
       }
+    }
+    else if (anEnt->IsKind(STANDARD_TYPE(StepVisual_DraughtingCallout)) ||
+      anEnt->IsKind(STANDARD_TYPE(StepVisual_AnnotationCurveOccurrence)))
+    {
+      // read common PMIs: presentation, which is not connected to any PMI.
+      Handle(StepVisual_AnnotationPlane) anAnPlane;
+      Handle(StepAP242_DraughtingModelItemAssociation) aDMIA;
+      Standard_Boolean isCommonLabel = Standard_True;
+      for (Interface_EntityIterator anIter = aGraph.Sharings(anEnt); anIter.More(); anIter.Next())
+      {
+        if (anIter.Value()->IsKind(STANDARD_TYPE(StepVisual_AnnotationPlane)))
+          anAnPlane = Handle(StepVisual_AnnotationPlane)::DownCast(anIter.Value());
+        else
+          isCommonLabel = Standard_False;
+      }
+      if (!isCommonLabel)
+        continue;
+      // create empty Dimension
+      TDF_Label aGDTL = aDGTTool->AddDimension();
+      Handle(XCAFDoc_Dimension) aDim = XCAFDoc_Dimension::Set(aGDTL);
+      TCollection_AsciiString aStr("DGT:Common_label");
+      TDataStd_Name::Set(aGDTL, aStr);
+      TDF_LabelSequence anEmptySeq1, anEmptySeq2;
+      aDGTTool->SetDimension(anEmptySeq1, anEmptySeq2, aGDTL);
+      Handle(XCAFDimTolObjects_DimensionObject) aDimObj = new XCAFDimTolObjects_DimensionObject();
+      // read annotations
+      Standard_Real aFact = 1.0;
+      if (!anAnPlane.IsNull())
+      {
+        Handle(StepVisual_DraughtingModel) aDModel;
+        for (Interface_EntityIterator anIter = aGraph.Sharings(anAnPlane); anIter.More() && aDModel.IsNull(); anIter.Next())
+        {
+          if (anIter.Value()->IsKind(STANDARD_TYPE(StepVisual_DraughtingModel)))
+            aDModel = Handle(StepVisual_DraughtingModel)::DownCast(anIter.Value());
+        }
+        if (!aDModel.IsNull())
+          GetLengthConversionFactorFromContext(aDModel->ContextOfItems(), aFact);
+      }
+      gp_Ax2 aPlaneAxes;
+      readAnnotationPlane(anAnPlane, aFact, aPlaneAxes);
+      TopoDS_Shape aPresentation;
+      Handle(TCollection_HAsciiString) aPresentName;
+      Bnd_Box aBox;
+      readPMIPresentation(anEnt, aTR, aFact, aPresentation, aPresentName, aBox);
+      // populate Dimension
+      aDimObj->SetType(XCAFDimTolObjects_DimensionType_CommonLabel);
+      aDimObj->SetPlane(aPlaneAxes);
+      aDimObj->SetPresentation(aPresentation, aPresentName);
+      aDim->SetObject(aDimObj);
     }
   }
   return Standard_True;

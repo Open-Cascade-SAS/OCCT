@@ -9,6 +9,7 @@ set nbDimSize_First 0; set nbDimSize_Second 0;
 set nbDimLoc_First 0; set nbDimLoc_Second 0;
 set nbAng_First 0; set nbAng_Second 0;
 set nbDimWthPath_First 0; set nbDimWthPath_Second 0;
+set nbCommon_First 0; set nbCommon_Second 0;
 # Tolerances
 set nbTol_First 0; set nbTol_Second 0;
 set nbTolWthMod_First 0; set nbTolWthMod_Second 0;
@@ -49,6 +50,7 @@ if { $mist < 1} {
     regexp {NbOfDimensionalLocation +: +([-0-9.+eE]+)} $xst full nbDimLoc_First
     regexp {NbOfAngular +: +([-0-9.+eE]+)} $xst full nbAng_First
     regexp {NbOfWithPath +: +([-0-9.+eE]+)} $xst full nbWthPath_First
+    regexp {NbOfCommonLabels +: +([-0-9.+eE]+)} $xst full nbCommon_First
     regexp {NbOfTolerances +: +([-0-9.+eE]+)} $xst full nbTol_First
     regexp {NbOfGTWithModifiers +: +([-0-9.+eE]+)} $xst full nbTolWthMod_First
     regexp {NbOfGTWithMaxTolerance +: +([-0-9.+eE]+)} $xst full nbTolWthMax_First
@@ -104,6 +106,7 @@ if { $mist < 1} {
     regexp {NbOfDimensionalLocation +: +([-0-9.+eE]+)} $xst2 full nbDimLoc_Second
     regexp {NbOfAngular +: +([-0-9.+eE]+)} $xst2 full nbAng_Second
     regexp {NbOfWithPath +: +([-0-9.+eE]+)} $xst2 full nbWthPath_Second
+    regexp {NbOfCommonLabels +: +([-0-9.+eE]+)} $xst2 full nbCommon_Second
     regexp {NbOfTolerances +: +([-0-9.+eE]+)} $xst2 full nbTol_Second
     regexp {NbOfGTWithModifiers +: +([-0-9.+eE]+)} $xst2 full nbTolWthMod_Second
     regexp {NbOfGTWithMaxTolerance +: +([-0-9.+eE]+)} $xst2 full nbTolWthMax_Second

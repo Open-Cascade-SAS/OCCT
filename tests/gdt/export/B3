@@ -2,6 +2,7 @@
 set filename bug27645_nist_ftc_09_asme1_cr3000_rd.prt.stp
 puts "TODO CR26859 ALL:Error : 1 differences with reference data found :"
 puts "TODO CR26859 ALL:Error on writing file"
+
 set ref_data {
 
  NbOfDimensions          : 21
@@ -9,6 +10,7 @@ set ref_data {
   NbOfDimensionalLocation: 2
   NbOfAngular            : 0
   NbOfWithPath           : 0
+  NbOfCommonLabels       : 0
  NbOfTolerances          : 29
   NbOfGTWithModifiers    : 6
   NbOfGTWithMaxTolerance : 0

@@ -521,7 +521,8 @@ Standard_Boolean STEPCAFControl_GDTProperty::GetDimType(const Handle(TCollection
       theType = XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToInner;
     }
 
-    if(theType != XCAFDimTolObjects_DimensionType_Location_None)
+    if(theType != XCAFDimTolObjects_DimensionType_Location_None &&
+       theType != XCAFDimTolObjects_DimensionType_CommonLabel)
     {
       return Standard_True;
     }

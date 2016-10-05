@@ -3,11 +3,12 @@ set filename bug26689_nist_ctc_05_asme1_ap242-1.stp
 
 set ref_data {
 
- NbOfDimensions          : 2
+ NbOfDimensions          : 6
   NbOfDimensionalSize    : 0
   NbOfDimensionalLocation: 2
   NbOfAngular            : 0
   NbOfWithPath           : 0
+  NbOfCommonLabels       : 4
  NbOfTolerances          : 10
   NbOfGTWithModifiers    : 0
   NbOfGTWithMaxTolerance : 0

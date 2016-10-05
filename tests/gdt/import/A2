@@ -3,7 +3,7 @@ set filename bug26689_nist_ctc_02_asme1_ap242-2.stp
 
 set ref_data {
 
- NbOfDimensions          : 7
+ NbOfDimensions          : 8
  NbOfTolerances          : 22
  NbOfDatumFeature        : 5
  NbOfAttachedDatum       : 24

@@ -2316,6 +2316,7 @@ static Handle(StepRepr_ShapeAspect) WriteShapeAspect (const Handle(XSControl_Wor
 //======================================================================
 static void WritePresentation(const Handle(XSControl_WorkSession) &WS,
                               const TopoDS_Shape thePresentation,
+                              const Handle(TCollection_HAsciiString)& thePrsName,
                               const gp_Ax2 theAnnotationPlane,
                               const gp_Pnt theTextPosition,
                               const Handle(Standard_Transient) theDimension)
@@ -2334,7 +2335,7 @@ static void WritePresentation(const Handle(XSControl_WorkSession) &WS,
   Handle(StepVisual_HArray1OfDraughtingCalloutElement) aTAOs = new StepVisual_HArray1OfDraughtingCalloutElement(1, 1);
   aTAOs->SetValue(1, aDCElement);
   Handle(StepVisual_DraughtingCallout) aDCallout = new StepVisual_DraughtingCallout();
-  aDCallout->Init(new TCollection_HAsciiString(), aTAOs);
+  aDCallout->Init(thePrsName, aTAOs);
   Handle(StepRepr_HArray1OfRepresentationItem) aDCsForDMIA = new StepRepr_HArray1OfRepresentationItem(1, 1);
   aDCsForDMIA->SetValue(1, aDCallout);
   StepAP242_ItemIdentifiedRepresentationUsageDefinition aDimension;
@@ -2368,6 +2369,61 @@ static void WritePresentation(const Handle(XSControl_WorkSession) &WS,
     aCoords->SetValue(i, theTextPosition.Coord(i));
   aTextPos->Init(new TCollection_HAsciiString(), aCoords);
   anAxis->SetLocation(aTextPos);
+  aPlane->Init(new TCollection_HAsciiString(), anAxis);
+  // Annotation plane element
+  StepVisual_AnnotationPlaneElement aPlaneElement;
+  aPlaneElement.SetValue(aDCallout);
+  Handle(StepVisual_HArray1OfAnnotationPlaneElement) aDCsForAnnPln = new StepVisual_HArray1OfAnnotationPlaneElement(1, 1);
+  aDCsForAnnPln->SetValue(1, aPlaneElement);
+  // Init AnnotationPlane entity
+  Handle(StepVisual_AnnotationPlane) anAnnPlane = new StepVisual_AnnotationPlane();
+  anAnnPlane->Init(new TCollection_HAsciiString(), aPrsStyles, aPlane, aDCsForAnnPln);
+  gdtAnnotationPlanes.Append(anAnnPlane);
+  aModel->AddWithRefs(anAnnPlane);
+}
+
+//======================================================================
+//function : WritePresentation
+//purpose  : auxiliary (write annotation plane and presentation for common labels)
+//======================================================================
+static void WritePresentation(const Handle(XSControl_WorkSession) &WS,
+                              const TopoDS_Shape thePresentation,
+                              const Handle(TCollection_HAsciiString)& thePrsName,
+                              const gp_Ax2 theAnnotationPlane)
+{
+  if (thePresentation.IsNull())
+    return;
+  // Get working data
+  const Handle(Interface_InterfaceModel) &aModel = WS->Model();
+
+  // Presentation
+  Handle(StepVisual_TessellatedGeometricSet) aGeomSet = STEPCAFControl_GDTProperty::GetTessellation(thePresentation);
+  Handle(StepVisual_TessellatedAnnotationOccurrence) aTAO = new StepVisual_TessellatedAnnotationOccurrence();
+  aTAO->Init(new TCollection_HAsciiString(), gdtPrsCurveStyle, aGeomSet);
+  StepVisual_DraughtingCalloutElement aDCElement;
+  aDCElement.SetValue(aTAO);
+  Handle(StepVisual_HArray1OfDraughtingCalloutElement) aTAOs = new StepVisual_HArray1OfDraughtingCalloutElement(1, 1);
+  aTAOs->SetValue(1, aDCElement);
+  Handle(StepVisual_DraughtingCallout) aDCallout = new StepVisual_DraughtingCallout();
+  aDCallout->Init(thePrsName, aTAOs);
+  aModel->AddWithRefs(aDCallout);
+
+  // Annotation plane
+  // Presentation Style
+  Handle(StepVisual_NullStyleMember) aNullStyle = new StepVisual_NullStyleMember();
+  aNullStyle->SetEnumText(0, ".NULL.");
+  StepVisual_PresentationStyleSelect aStyleItem;
+  aStyleItem.SetValue(aNullStyle);
+  Handle(StepVisual_HArray1OfPresentationStyleSelect) aStyles = new StepVisual_HArray1OfPresentationStyleSelect(1, 1);
+  aStyles->SetValue(1, aStyleItem);
+  Handle(StepVisual_PresentationStyleAssignment) aPrsStyle = new StepVisual_PresentationStyleAssignment();
+  aPrsStyle->Init(aStyles);
+  Handle(StepVisual_HArray1OfPresentationStyleAssignment) aPrsStyles =
+    new StepVisual_HArray1OfPresentationStyleAssignment(1, 1);
+  aPrsStyles->SetValue(1, aPrsStyle);
+  // Plane
+  Handle(StepGeom_Plane) aPlane = new StepGeom_Plane();
+  Handle(StepGeom_Axis2Placement3d) anAxis = STEPCAFControl_GDTProperty::GetAxis2Placement3D(theAnnotationPlane);
   aPlane->Init(new TCollection_HAsciiString(), anAxis);
   // Annotation plane element
   StepVisual_AnnotationPlaneElement aPlaneElement;
@@ -2579,7 +2635,7 @@ static Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSessi
   Model->AddWithRefs(aSDR);
 
   //Annotation plane and Presentation
-  WritePresentation(WS, anObject->GetPresentation(), anObject->GetPlane(), anObject->GetPointTextAttach(), aSA);
+  WritePresentation(WS, anObject->GetPresentation(), anObject->GetPresentationName(), anObject->GetPlane(), anObject->GetPointTextAttach(), aSA);
 
   return aDatum;
 }
@@ -3245,7 +3301,7 @@ static void WriteGeomTolerance (const Handle(XSControl_WorkSession) &WS,
   Model->AddWithRefs(aGeomTol);
   WriteToleranceZone(WS, anObject, aGeomTol, theRC);
   //Annotation plane and Presentation
-  WritePresentation(WS, anObject->GetPresentation(), anObject->GetPlane(), anObject->GetPointTextAttach(), aGeomTol);
+  WritePresentation(WS, anObject->GetPresentation(), anObject->GetPresentationName(), anObject->GetPlane(), anObject->GetPointTextAttach(), aGeomTol);
 }
 
 //=======================================================================
@@ -3681,13 +3737,18 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
   for (Standard_Integer i = 1; i <= aDGTLabels.Length(); i++) {
     TDF_Label aDimensionL = aDGTLabels.Value(i);
     TDF_LabelSequence aFirstShapeL, aSecondShapeL;
-    if (!DGTTool->GetRefShapeLabel(aDimensionL, aFirstShapeL, aSecondShapeL))
-      continue;
     Handle(XCAFDoc_Dimension) aDimAttr;
     if (!aDimensionL.FindAttribute(XCAFDoc_Dimension::GetID(),aDimAttr)) 
       continue;
     Handle(XCAFDimTolObjects_DimensionObject) anObject = aDimAttr->GetObject();
     if (anObject.IsNull())
+      continue;
+    if (anObject->GetType() == XCAFDimTolObjects_DimensionType_CommonLabel)
+    {
+      WritePresentation(WS, anObject->GetPresentation(), anObject->GetPresentationName(), anObject->GetPlane());
+    }
+
+    if (!DGTTool->GetRefShapeLabel(aDimensionL, aFirstShapeL, aSecondShapeL))
       continue;
 
     // Write links with shapes
@@ -3812,7 +3873,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
     // Write values
     WriteDimValues(WS, anObject, aRC, aDimension);
     //Annotation plane and Presentation
-    WritePresentation(WS, anObject->GetPresentation(), anObject->GetPlane(), anObject->GetPointTextAttach(), aDimension.Value());
+    WritePresentation(WS, anObject->GetPresentation(), anObject->GetPresentationName(), anObject->GetPlane(), anObject->GetPointTextAttach(), aDimension.Value());
   }
   // Write Derived geometry
   if (aConnectionPnts.Length() > 0) {

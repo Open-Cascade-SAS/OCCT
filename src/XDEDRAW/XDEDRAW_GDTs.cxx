@@ -371,7 +371,8 @@ static Standard_Integer DumpNbDGTs (Draw_Interpretor& di, Standard_Integer argc,
     Standard_Integer nbSize = 0,
                      nbLocation = 0,
                      nbAngular = 0,
-                     nbWithPath = 0;
+                     nbWithPath = 0,
+                     nbCommon = 0;
     for (Standard_Integer i = 1; i <= aGDTs.Length(); i++) {
       Handle(XCAFDoc_Dimension) aDimAttr;
       if (!aGDTs.Value(i).FindAttribute(XCAFDoc_Dimension::GetID(),aDimAttr)) 
@@ -380,7 +381,10 @@ static Standard_Integer DumpNbDGTs (Draw_Interpretor& di, Standard_Integer argc,
       if (anObject.IsNull())
         continue;
       XCAFDimTolObjects_DimensionType aDimType = anObject->GetType();
-      if (STEPCAFControl_GDTProperty::IsDimensionalLocation(aDimType)) {
+      if (aDimType == XCAFDimTolObjects_DimensionType_CommonLabel) {
+        nbCommon++;
+      }
+      else if (STEPCAFControl_GDTProperty::IsDimensionalLocation(aDimType)) {
         nbLocation++;
       }
       else if (aDimType == XCAFDimTolObjects_DimensionType_Location_Angular) {
@@ -407,6 +411,7 @@ static Standard_Integer DumpNbDGTs (Draw_Interpretor& di, Standard_Integer argc,
     di << "\n  NbOfDimensionalLocation: " << nbLocation;
     di << "\n  NbOfAngular            : " << nbAngular;
     di << "\n  NbOfWithPath           : " << nbWithPath;
+    di << "\n  NbOfCommonLabels       : " << nbCommon;
   }
 
   aGDTs.Clear();
