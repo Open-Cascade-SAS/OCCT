@@ -258,12 +258,6 @@ void GeomEvaluator_OffsetSurface::CalculateD1(
   Standard_Boolean isOpposite = Standard_False;
   Standard_Boolean AlongU = Standard_False;
   Standard_Boolean AlongV = Standard_False;
-  if (!myOscSurf.IsNull())
-  {
-    AlongU = myOscSurf->UOscSurf(theU, theV, isOpposite, L);
-    AlongV = myOscSurf->VOscSurf(theU, theV, isOpposite, L);
-  }
-  const Standard_Real aSign = ((AlongV || AlongU) && isOpposite) ? -1. : 1.;
 
   // Normalize derivatives before normal calculation because it gives more stable result.
   // There will be normalized only derivatives greater than 1.0 to avoid differences in last significant digit
@@ -276,48 +270,58 @@ void GeomEvaluator_OffsetSurface::CalculateD1(
   if (aD1VNorm2 > 1.0)
     aD1V /= Sqrt(aD1VNorm2);
 
+  Standard_Boolean isSingular = Standard_False;
   Standard_Integer MaxOrder = 0;
   gp_Vec aNorm = aD1U.Crossed(aD1V);
-  if (aNorm.SquareMagnitude() > MagTol * MagTol)
+  if (aNorm.SquareMagnitude() <= MagTol * MagTol)
   {
-    if (!AlongV && !AlongU)
+    if (!myOscSurf.IsNull())
     {
-      // AlongU or AlongV leads to more complex D1 computation
-      // Try to compute D0 and D1 much simpler
-      aNorm.Normalize();
-      theValue.SetXYZ(theValue.XYZ() + myOffset * aSign * aNorm.XYZ());
-
-      gp_Vec aN0(aNorm.XYZ()), aN1U, aN1V;
-      Standard_Real aScale = (theD1U^theD1V).Dot(aN0);
-      aN1U.SetX(theD2U.Y() * theD1V.Z() + theD1U.Y() * theD2UV.Z()
-        - theD2U.Z() * theD1V.Y() - theD1U.Z() * theD2UV.Y());
-      aN1U.SetY((theD2U.X() * theD1V.Z() + theD1U.X() * theD2UV.Z()
-        - theD2U.Z() * theD1V.X() - theD1U.Z() * theD2UV.X()) * -1.0);
-      aN1U.SetZ(theD2U.X() * theD1V.Y() + theD1U.X() * theD2UV.Y()
-        - theD2U.Y() * theD1V.X() - theD1U.Y() * theD2UV.X());
-      Standard_Real aScaleU = aN1U.Dot(aN0);
-      aN1U.Subtract(aScaleU * aN0);
-      aN1U /= aScale;
-
-      aN1V.SetX(theD2UV.Y() * theD1V.Z() + theD2V.Z() * theD1U.Y()
-        - theD2UV.Z() * theD1V.Y() - theD2V.Y() * theD1U.Z());
-      aN1V.SetY((theD2UV.X() * theD1V.Z() + theD2V.Z() * theD1U.X()
-        - theD2UV.Z() * theD1V.X() - theD2V.X() * theD1U.Z()) * -1.0);
-      aN1V.SetZ(theD2UV.X() * theD1V.Y() + theD2V.Y() * theD1U.X()
-        - theD2UV.Y() * theD1V.X() - theD2V.X() * theD1U.Y());
-      Standard_Real aScaleV = aN1V.Dot(aN0);
-      aN1V.Subtract(aScaleV * aN0);
-      aN1V /= aScale;
-
-      theD1U += myOffset * aSign * aN1U;
-      theD1V += myOffset * aSign * aN1V;
-
-      return;
+      AlongU = myOscSurf->UOscSurf(theU, theV, isOpposite, L);
+      AlongV = myOscSurf->VOscSurf(theU, theV, isOpposite, L);
     }
-  }
-  else
-    MaxOrder = 3;
 
+    MaxOrder = 3;
+    isSingular = Standard_True;
+  }
+
+  const Standard_Real aSign = ((AlongV || AlongU) && isOpposite) ? -1. : 1.;
+  
+  if (!isSingular)
+  {
+    // AlongU or AlongV leads to more complex D1 computation
+    // Try to compute D0 and D1 much simpler
+    aNorm.Normalize();
+    theValue.SetXYZ(theValue.XYZ() + myOffset * aSign * aNorm.XYZ());
+
+    gp_Vec aN0(aNorm.XYZ()), aN1U, aN1V;
+    Standard_Real aScale = (theD1U^theD1V).Dot(aN0);
+    aN1U.SetX(theD2U.Y() * theD1V.Z() + theD1U.Y() * theD2UV.Z()
+      - theD2U.Z() * theD1V.Y() - theD1U.Z() * theD2UV.Y());
+    aN1U.SetY((theD2U.X() * theD1V.Z() + theD1U.X() * theD2UV.Z()
+      - theD2U.Z() * theD1V.X() - theD1U.Z() * theD2UV.X()) * -1.0);
+    aN1U.SetZ(theD2U.X() * theD1V.Y() + theD1U.X() * theD2UV.Y()
+      - theD2U.Y() * theD1V.X() - theD1U.Y() * theD2UV.X());
+    Standard_Real aScaleU = aN1U.Dot(aN0);
+    aN1U.Subtract(aScaleU * aN0);
+    aN1U /= aScale;
+
+    aN1V.SetX(theD2UV.Y() * theD1V.Z() + theD2V.Z() * theD1U.Y()
+      - theD2UV.Z() * theD1V.Y() - theD2V.Y() * theD1U.Z());
+    aN1V.SetY((theD2UV.X() * theD1V.Z() + theD2V.Z() * theD1U.X()
+      - theD2UV.Z() * theD1V.X() - theD2V.X() * theD1U.Z()) * -1.0);
+    aN1V.SetZ(theD2UV.X() * theD1V.Y() + theD2V.Y() * theD1U.X()
+      - theD2UV.Y() * theD1V.X() - theD2V.X() * theD1U.Y());
+    Standard_Real aScaleV = aN1V.Dot(aN0);
+    aN1V.Subtract(aScaleV * aN0);
+    aN1V /= aScale;
+
+    theD1U += myOffset * aSign * aN1U;
+    theD1V += myOffset * aSign * aN1V;
+
+    return;
+  }
+  
   Standard_Integer OrderU, OrderV;
   TColgp_Array2OfVec DerNUV(0, MaxOrder + 1, 0, MaxOrder + 1);
   TColgp_Array2OfVec DerSurf(0, MaxOrder + 2, 0, MaxOrder + 2);
@@ -400,7 +404,7 @@ void GeomEvaluator_OffsetSurface::CalculateD2(
   Standard_Boolean isOpposite = Standard_False;
   Standard_Boolean AlongU = Standard_False;
   Standard_Boolean AlongV = Standard_False;
-  if (!myOscSurf.IsNull())
+  if ((NStatus != CSLib_Defined) && !myOscSurf.IsNull())
   {
     AlongU = myOscSurf->UOscSurf(theU, theV, isOpposite, L);
     AlongV = myOscSurf->VOscSurf(theU, theV, isOpposite, L);
@@ -475,7 +479,7 @@ void GeomEvaluator_OffsetSurface::CalculateD3(
   Standard_Boolean isOpposite = Standard_False;
   Standard_Boolean AlongU = Standard_False;
   Standard_Boolean AlongV = Standard_False;
-  if (!myOscSurf.IsNull())
+  if ((NStatus != CSLib_Defined) && !myOscSurf.IsNull())
   {
     AlongU = myOscSurf->UOscSurf(theU, theV, isOpposite, L);
     AlongV = myOscSurf->VOscSurf(theU, theV, isOpposite, L);
@@ -555,7 +559,7 @@ gp_Vec GeomEvaluator_OffsetSurface::CalculateDN(
   Standard_Boolean isOpposite = Standard_False;
   Standard_Boolean AlongU = Standard_False;
   Standard_Boolean AlongV = Standard_False;
-  if (!myOscSurf.IsNull())
+  if ((NStatus != CSLib_Defined) && !myOscSurf.IsNull())
   {
     AlongU = myOscSurf->UOscSurf(theU, theV, isOpposite, L);
     AlongV = myOscSurf->VOscSurf(theU, theV, isOpposite, L);
