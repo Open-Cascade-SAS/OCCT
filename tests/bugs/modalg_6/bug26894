@@ -1,0 +1,67 @@
+puts "================"
+puts "OCC26894"
+puts "================"
+puts ""
+#######################################################################
+# Intersection algorithm between two infinite cylinders is hanging
+#######################################################################
+
+# Attention!!!
+# The test on performance meter.
+# On the MASTER it takes:
+# Elapsed time: 0 Hours 0 Minutes 6.3723911111 Seconds
+# CPU user time: 6.15625 seconds
+# CPU system time: 0.0625 seconds
+
+# The intersection curve is almost infinite.
+# Therefore, we must have failed to return
+# any section curve (see comments to the issue #26894).
+set GoodNbCurv 0
+
+restore [locate_data_file bug26884-f1.brep] f1
+restore [locate_data_file bug26884-f2.brep] f2
+
+mksurface ss1 f1
+mksurface ss2 f2
+
+if { ![ catch {intersect result ss1 ss2 } ] } {
+  puts "Error: intersection algorithm must return fail status. But it is not."
+}
+
+set che [whatis result]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "result" exists
+  renamevar result result_1
+}
+
+set ic 1
+set AllowRepeate 1
+while { $AllowRepeate != 0 } {
+  set che [whatis result_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeate 0
+  } else {
+    display result_$ic
+    
+    bounds result_$ic U1 U2
+    
+    dump U1 U2
+    
+    if {[dval U2-U1] < 1.0e-9} {
+      puts "Error: Wrong curve's range!"
+    }
+    
+    xdistcs result_$ic ss1 U1 U2 10 1.0e-7
+    xdistcs result_$ic ss2 U1 U2 10 1.0e-7
+    
+    incr ic
+  }
+}
+
+if {[expr {$ic - 1}] == $GoodNbCurv} {
+  puts "OK: Number of curves is good!"
+} else {
+  puts "Error: $GoodNbCurv is expected but [expr {$ic - 1}] is found!"
+}

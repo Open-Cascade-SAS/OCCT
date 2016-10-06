@@ -954,6 +954,9 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
     if(aWL.IsNull())
       continue;
 
+    if (!aWL->IsPurgingAllowed())
+      continue;
+
     Handle(IntPatch_WLine) aRW =
       IntPatch_WLineTool::ComputePurgedWLine(aWL, theS1, theS2, theD1, theD2, RestrictLine);
 
@@ -1329,10 +1332,9 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& the
 {
   IntPatch_ImpImpIntersection interii(theS1,theD1,theS2,theD2,
                                       myTolArc,myTolTang, theIsReqToKeepRLine);
-  const Standard_Boolean anIS = interii.IsDone();
-  if (anIS)
+  if (interii.IsDone())
   {
-    done = anIS;
+    done = (interii.GetStatus() == IntPatch_ImpImpIntersection::IntStatus_OK);
     empt = interii.IsEmpty();
     if (!empt)
     {
@@ -1648,6 +1650,9 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
     Handle(IntPatch_WLine) aWL = Handle(IntPatch_WLine)::DownCast(slin.Value(i));
 
     if(aWL.IsNull())
+      continue;
+
+    if (!aWL->IsPurgingAllowed())
       continue;
 
     Handle(IntPatch_WLine) aRW =

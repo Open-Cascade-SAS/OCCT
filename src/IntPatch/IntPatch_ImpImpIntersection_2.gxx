@@ -26,7 +26,7 @@ static
 //purpose  : 
 //=======================================================================
 IntPatch_ImpImpIntersection::IntPatch_ImpImpIntersection ():
-        done(Standard_False)
+myDone(IntStatus_Fail)
 {
 }
 //=======================================================================
@@ -56,7 +56,7 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
                                           const Standard_Real TolTang,
                                           const Standard_Boolean theIsReqToKeepRLine)
 {
-  done = Standard_False;
+  myDone = IntStatus_Fail;
   spnt.Clear();
   slin.Clear();
 
@@ -151,7 +151,6 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
     //
     case 22:
       { // Cylinder/Cylinder
-        Standard_Boolean isDONE = Standard_False;
         Bnd_Box2d aBox1, aBox2;
 
         const Standard_Real aU1f = S1->FirstUParameter();
@@ -192,16 +191,16 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
 
         if(isReversed)
         {
-          isDONE = IntCyCy(quad2, quad1, TolTang, a2DTol, aBox2, aBox1,
+          myDone = IntCyCy(quad2, quad1, TolTang, a2DTol, aBox2, aBox1,
                                     Standard_True, empt, SameSurf, multpoint, slin, spnt);
         }
         else
         {
-          isDONE = IntCyCy(quad1, quad2, TolTang, a2DTol, aBox1, aBox2,
+          myDone = IntCyCy(quad1, quad2, TolTang, a2DTol, aBox1, aBox2,
                                     Standard_False, empt, SameSurf, multpoint, slin, spnt);
         }
 
-        if (!isDONE)
+        if (myDone == IntPatch_ImpImpIntersection::IntStatus_Fail)
         {
           return;
         }
@@ -305,7 +304,9 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
   }
   //
   if (bEmpty) {
-    done = Standard_True;
+    if (myDone == IntStatus_Fail)
+      myDone = IntStatus_OK;
+
     return;
   }
   //
@@ -408,7 +409,7 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
       }
       //
       oppo = quad1.Normale(Ptreference).Dot(quad2.Normale(Ptreference)) < 0.0;
-      done = Standard_True;
+      myDone = IntStatus_OK;
       return;
     }// if (SameSurf || (all1 && all2)) {
 
@@ -547,7 +548,7 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
       }
     }
   }
-  done = Standard_True;
+  myDone = IntStatus_OK;
 }
 
 //=======================================================================

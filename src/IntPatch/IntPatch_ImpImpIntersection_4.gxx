@@ -2487,18 +2487,18 @@ void WorkWithBoundaries::BoundaryEstimation(const gp_Cylinder& theCy1,
 //function : IntCyCy
 //purpose  : 
 //=======================================================================
-Standard_Boolean IntCyCy( const IntSurf_Quadric& theQuad1,
-                          const IntSurf_Quadric& theQuad2,
-                          const Standard_Real theTol3D,
-                          const Standard_Real theTol2D,
-                          const Bnd_Box2d& theUVSurf1,
-                          const Bnd_Box2d& theUVSurf2,
-                          const Standard_Boolean isTheReverse,
-                          Standard_Boolean& isTheEmpty,
-                          Standard_Boolean& isTheSameSurface,
-                          Standard_Boolean& isTheMultiplePoint,
-                          IntPatch_SequenceOfLine& theSlin,
-                          IntPatch_SequenceOfPoint& theSPnt)
+IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
+                                               const IntSurf_Quadric& theQuad2,
+                                               const Standard_Real theTol3D,
+                                               const Standard_Real theTol2D,
+                                               const Bnd_Box2d& theUVSurf1,
+                                               const Bnd_Box2d& theUVSurf2,
+                                               const Standard_Boolean isTheReverse,
+                                               Standard_Boolean& isTheEmpty,
+                                               Standard_Boolean& isTheSameSurface,
+                                               Standard_Boolean& isTheMultiplePoint,
+                                               IntPatch_SequenceOfLine& theSlin,
+                                               IntPatch_SequenceOfPoint& theSPnt)
 {
   isTheEmpty = Standard_True;
   isTheSameSurface = Standard_False;
@@ -2513,15 +2513,18 @@ Standard_Boolean IntCyCy( const IntSurf_Quadric& theQuad1,
 
   if (!anInter.IsDone())
   {
-    return Standard_False;
+    return IntPatch_ImpImpIntersection::IntStatus_Fail;
   }
 
   if(anInter.TypeInter() != IntAna_NoGeometricSolution)
   {
-    return CyCyAnalyticalIntersect( theQuad1, theQuad2, anInter,
-                                    theTol3D, isTheReverse, isTheEmpty,
-                                    isTheSameSurface, isTheMultiplePoint,
-                                    theSlin, theSPnt);
+    if (CyCyAnalyticalIntersect(theQuad1, theQuad2, anInter,
+                                theTol3D, isTheReverse, isTheEmpty,
+                                isTheSameSurface, isTheMultiplePoint,
+                                theSlin, theSPnt))
+    {
+      return IntPatch_ImpImpIntersection::IntStatus_OK;
+    }
   }
   
   Standard_Real aUSurf1f = 0.0, //const
@@ -2557,7 +2560,20 @@ Standard_Boolean IntCyCy( const IntSurf_Quadric& theQuad1,
   Bnd_Range aRangeS1, aRangeS2;
   aBoundWork.BoundaryEstimation(aCyl1, aCyl2, aRangeS1, aRangeS2);
   if (aRangeS1.IsVoid() || aRangeS2.IsVoid())
-    return Standard_True;
+    return IntPatch_ImpImpIntersection::IntStatus_OK;
+
+  {
+  //Quotation of the message from issue #26894 (author MSV):
+  //"We should return fail status from intersector if the result should be an
+  //infinite curve of non-analytical type... I propose to define the limit for the
+  //extent as the radius divided by 1e+2 and multiplied by 1e+7.
+  //Thus, taking into account the number of valuable digits (15), we provide reliable
+  //computations with an error not exceeding R/100."
+    const Standard_Real aF = 1.0e+5;
+    const Standard_Real aMaxV1Range = aF*aCyl1.Radius(), aMaxV2Range = aF*aCyl2.Radius();
+    if ((aRangeS1.Delta() > aMaxV1Range) || (aRangeS2.Delta() > aMaxV2Range))
+      return IntPatch_ImpImpIntersection::IntStatus_InfiniteSectionCurve;
+  }
 
   //Boundaries
   const Standard_Integer aNbOfBoundaries = 2;
@@ -2565,7 +2581,7 @@ Standard_Boolean IntCyCy( const IntSurf_Quadric& theQuad1,
   Standard_Real aU1l[aNbOfBoundaries] = {Precision::Infinite(), Precision::Infinite()};
 
   if(!aBoundWork.BoundariesComputing(aU1f, aU1l))
-    return Standard_True;
+    return IntPatch_ImpImpIntersection::IntStatus_OK;
 
   for(Standard_Integer i = 0; i < aNbOfBoundaries; i++)
   {
@@ -3317,7 +3333,7 @@ Standard_Boolean IntCyCy( const IntSurf_Quadric& theQuad1,
     }
   }
   
-  return Standard_True;
+  return IntPatch_ImpImpIntersection::IntStatus_OK;
 }
 
 //=======================================================================
