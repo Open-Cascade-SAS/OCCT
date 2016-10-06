@@ -26,14 +26,16 @@ class IVtkVTK_ShapeData;
 DEFINE_STANDARD_HANDLE( IVtkVTK_ShapeData, IVtk_IShapeData )
 
 // macros to export static field in class
-#if (defined(_WIN32) || defined(__WIN32__))
-  #ifdef __IVtkVTK_DLL
-    #define IVtkVTK_EXPORT __declspec(dllexport)
+#ifndef IVtkVTK_EXPORT
+  #ifdef _WIN32
+    #ifdef __IVtkVTK_DLL
+      #define IVtkVTK_EXPORT __declspec(dllexport)
+    #else
+      #define IVtkVTK_EXPORT __declspec(dllimport)
+    #endif
   #else
-    #define IVtkVTK_EXPORT __declspec(dllimport)
+    #define IVtkVTK_EXPORT
   #endif
-#else
-  #define IVtkVTK_EXPORT
 #endif
 
 //! @class IVtkVTK_ShapeData 
