@@ -1,0 +1,24 @@
+puts "============"
+puts "CR27905"
+puts "============"
+puts ""
+##########################################################################################################
+# Visualization - randomly directed arrows on test v3d mesh B7
+##########################################################################################################
+
+pload XSDRAW
+
+vinit
+vclear
+
+mesh3delem m
+vsetdispmode m 5
+
+meshvectors m -mode elem -maxlen 10 -color green -arrowpart 0.5 -issipmle 0
+vdump ${imagedir}/${test_image}_1.png
+
+meshvectors m -mode elem -maxlen 10 -color green -arrowpart 0.5 -issipmle 0
+vdump ${imagedir}/${test_image}_2.png
+
+meshvectors m -mode elem -maxlen 10 -color green -arrowpart 0.5 -issipmle 0
+vdump ${imagedir}/${test_image}_3.png

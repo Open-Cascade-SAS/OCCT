@@ -965,9 +965,11 @@ static Standard_Integer meshvectors( Draw_Interpretor& di,
     for ( ; anIter.More(); anIter.Next() )
     {
       Standard_Boolean IsValidData = Standard_False; 
-      if (anIsElement)
-        IsValidData = aMesh->GetDataSource()->GetNormal(anIter.Key(), 3, aCoords.ChangeValue(1), aCoords.ChangeValue(2), aCoords.ChangeValue(3));
-      else
+      if (anIsElement) {
+        aMesh->GetDataSource()->GetGeomType(anIter.Key(), anIsElement, aEntType);
+        if (aEntType == MeshVS_ET_Face)
+          IsValidData = aMesh->GetDataSource()->GetNormal(anIter.Key(), 3, aCoords.ChangeValue(1), aCoords.ChangeValue(2), aCoords.ChangeValue(3));
+      } else
         IsValidData = aMesh->GetDataSource()->GetGeom(anIter.Key(), Standard_False, aCoords, aNbNodes, aEntType);
 
       gp_Vec aNorm;
