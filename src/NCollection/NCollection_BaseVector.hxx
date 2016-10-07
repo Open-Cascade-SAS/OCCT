@@ -117,6 +117,13 @@ protected:
       const Standard_Integer anIndex = myCurIndex + myICurBlock * myVector->myIncrement + theOffset;
       myICurBlock = anIndex / myVector->myIncrement;
       myCurIndex = anIndex % myVector->myIncrement;
+      if (myICurBlock > myIEndBlock)
+      {
+        // make sure that iterator produced by Offset()
+        // is equal to the end() iterator
+        --myICurBlock;
+        myCurIndex += myVector->myIncrement;
+      }
     }
 
     Standard_Integer differV (const Iterator& theOther) const

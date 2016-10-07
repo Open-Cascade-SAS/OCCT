@@ -822,6 +822,30 @@ static Standard_Integer QANVectorStlIterator (Draw_Interpretor&, Standard_Intege
   std::cout << "NCollection_Vector<double> Parallel:            " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
 
+  {
+    // Test case for a corner case described in a bug #0027941
+    // when vector length matches the increment.
+    // In this case NCollection_Vector::Iterator::Offset() produced mathematically equal
+    // but not the same iterator as returned by NCollection_Vector::end()
+    // so that their comparison was not equal.
+    // As result, std::stable_sort() crashed due to out-of-range access.
+    const int THE_INCREMENT = 256;
+    NCollection_Vector<int> aVector (THE_INCREMENT);
+    for (int anIter = 0; anIter < THE_INCREMENT; ++anIter)
+    {
+      aVector.Append (THE_INCREMENT - anIter);
+    }
+
+    NCollection_Vector<int>::iterator aBegin = aVector.begin();
+    NCollection_Vector<int>::iterator anEnd  = aVector.end();
+    NCollection_Vector<int>::iterator aShift = aBegin + THE_INCREMENT;
+    aResult = (aShift == anEnd);
+    std::cout << "NCollection_Vector<int> Offset:                 " <<
+      (aResult ? "SUCCESS" : "FAIL") << std::endl;
+
+    std::stable_sort (aVector.begin(), aVector.end());
+  }
+
   return 0;
 }
 
