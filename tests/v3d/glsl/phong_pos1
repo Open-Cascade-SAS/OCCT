@@ -1,0 +1,45 @@
+puts "========"
+puts "Per-fragment lighting using built-in GLSL program, one positional light source."
+puts "Visual comparison with the reference snapshot should be performed for this test case."
+puts "========"
+
+# create objects
+set anX 0.001
+circle c 0 0 0 0.001
+mkedge e c
+wire   w e
+plane  s
+mkface f1 s w
+mkface f2 s w
+ttranslate f1 $anX -0.001 0
+
+# display objects
+vtop
+vdisplay -dispMode 1 f1 f2
+vsetlocation f2 $anX 0.001 0
+vpoint vl $anX 0 0.001
+vfit
+
+# setup light
+vcaps -ffp 0
+vrenderparams -shadingModel phong
+vlight clear
+vlight add positional pos $anX 0 0.001 color RED1 headLight 0
+
+set aColor1 [vreadpixel 205 180 rgb name]
+set aColor2 [vreadpixel 205 220 rgb name]
+if { "$aColor1" != "RED" || "$aColor2" != "RED" } {
+  puts "Error: expected color near the light spot is RED"
+}
+
+set aColor3 [vreadpixel 205 132 rgb name]
+set aColor4 [vreadpixel 205 280 rgb name]
+if { "$aColor3" != "RED4" || "$aColor4" != "RED4" } {
+  puts "Error: expected color mid from the light spot is RED4"
+}
+
+set aColor5 [vreadpixel 205 100 rgb name]
+set aColor6 [vreadpixel 205 306 rgb name]
+if { "$aColor5" != "RED4" || "$aColor6" != "RED4" } {
+  puts "Error: expected color far from the light spot is RED4"
+}

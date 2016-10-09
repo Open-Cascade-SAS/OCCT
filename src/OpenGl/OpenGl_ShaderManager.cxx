@@ -83,7 +83,7 @@ const char THE_FUNC_pointLight[] =
   EOL"  vec3 aLight = occLight_Position (theId).xyz;"
   EOL"  if (occLight_IsHeadlight (theId) == 0)"
   EOL"  {"
-  EOL"    aLight = vec3 (occWorldViewMatrix * occModelWorldMatrix * vec4 (aLight, 1.0));"
+  EOL"    aLight = vec3 (occWorldViewMatrix * vec4 (aLight, 1.0));"
   EOL"  }"
   EOL"  aLight -= thePoint;"
   EOL
@@ -121,8 +121,8 @@ const char THE_FUNC_spotLight[] =
   EOL"  vec3 aSpotDir = occLight_SpotDirection (theId).xyz;"
   EOL"  if (occLight_IsHeadlight (theId) == 0)"
   EOL"  {"
-  EOL"    aLight   = vec3 (occWorldViewMatrix * occModelWorldMatrix * vec4 (aLight,   1.0));"
-  EOL"    aSpotDir = vec3 (occWorldViewMatrix * occModelWorldMatrix * vec4 (aSpotDir, 0.0));"
+  EOL"    aLight   = vec3 (occWorldViewMatrix * vec4 (aLight,   1.0));"
+  EOL"    aSpotDir = vec3 (occWorldViewMatrix * vec4 (aSpotDir, 0.0));"
   EOL"  }"
   EOL"  aLight -= thePoint;"
   EOL
@@ -171,7 +171,7 @@ const char THE_FUNC_directionalLight[] =
   EOL"  vec3 aLight = normalize (occLight_Position (theId).xyz);"
   EOL"  if (occLight_IsHeadlight (theId) == 0)"
   EOL"  {"
-  EOL"    aLight = vec3 (occWorldViewMatrix * occModelWorldMatrix * vec4 (aLight, 0.0));"
+  EOL"    aLight = vec3 (occWorldViewMatrix * vec4 (aLight, 0.0));"
   EOL"  }"
   EOL
   EOL"  vec3 aHalf = normalize (aLight + theView);"
@@ -200,7 +200,7 @@ const char THE_FUNC_directionalLightFirst[] =
   EOL"  vec3 aLight = normalize (occLightSources[1].xyz);"
   EOL"  if (occLight_IsHeadlight (0) == 0)"
   EOL"  {"
-  EOL"    aLight = vec3 (occWorldViewMatrix * occModelWorldMatrix * vec4 (aLight, 0.0));"
+  EOL"    aLight = vec3 (occWorldViewMatrix * vec4 (aLight, 0.0));"
   EOL"  }"
   EOL
   EOL"  vec3 aHalf = normalize (aLight + theView);"
