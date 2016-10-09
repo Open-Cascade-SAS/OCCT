@@ -150,6 +150,18 @@ void V3d_View::AddClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane)
   {
     aSeqOfPlanes = new Graphic3d_SequenceOfHClipPlane();
   }
+  else
+  {
+    for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (*aSeqOfPlanes); aPlaneIt.More(); aPlaneIt.Next())
+    {
+      const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
+      if (aPlane == thePlane)
+      {
+        // plane is already defined in view
+        return;
+      }
+    }
+  }
 
   aSeqOfPlanes->Append (thePlane);
   SetClipPlanes (aSeqOfPlanes);
