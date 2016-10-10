@@ -1452,6 +1452,8 @@ void BRepOffset_Inter2d::ConnexIntByInt
     TopoDS_Shape aLocalWire = W .Oriented(TopAbs_FORWARD);
     TopoDS_Shape aLocalFace = FI.Oriented(TopAbs_FORWARD);
     wexp.Init(TopoDS::Wire(aLocalWire),TopoDS::Face(aLocalFace));
+    if (!wexp.More())
+      continue; // Protection from case when explorer does not contain edges.
 //    wexp.Init(TopoDS::Wire(W .Oriented(TopAbs_FORWARD)),
 //              TopoDS::Face(FI.Oriented(TopAbs_FORWARD)));
     CurE = FirstE  = wexp.Current(); 
