@@ -81,7 +81,7 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myIsRaytraceDataValid    (Standard_False),
   myIsRaytraceWarnTextures (Standard_False),
   myToUpdateEnvironmentMap (Standard_False),
-  myLayerListState (0)
+  myRaytraceLayerListState (0)
 {
   myWorkspace = new OpenGl_Workspace (this, NULL);
 

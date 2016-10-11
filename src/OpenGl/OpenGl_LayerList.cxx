@@ -27,9 +27,11 @@
 //=======================================================================
 
 OpenGl_LayerList::OpenGl_LayerList (const Standard_Integer theNbPriorities)
-: myNbPriorities (theNbPriorities),
+: myDefaultLayerIndex (0),
+  myNbPriorities (theNbPriorities),
   myNbStructures (0),
-  myImmediateNbStructures (0)
+  myImmediateNbStructures (0),
+  myModifStateOfRaytraceable (0)
 {
   // insert default priority layers
   myLayers.Append (OpenGl_Layer (myNbPriorities));
@@ -46,6 +48,8 @@ OpenGl_LayerList::OpenGl_LayerList (const Standard_Integer theNbPriorities)
 
   myLayers.Append (OpenGl_Layer (myNbPriorities));
   myLayerIds.Bind (Graphic3d_ZLayerId_TopOSD,  myLayers.Upper());
+
+  myDefaultLayerIndex = myLayerIds.Find (Graphic3d_ZLayerId_Default);
 }
 
 //=======================================================================
@@ -116,13 +120,14 @@ void OpenGl_LayerList::RemoveLayer (const Graphic3d_ZLayerId theLayerId)
   myLayerIds.UnBind (theLayerId);
 
   // updated sequence indexes in map
-  OpenGl_LayerSeqIds::Iterator aMapIt (myLayerIds);
-  for ( ; aMapIt.More (); aMapIt.Next ())
+  for (OpenGl_LayerSeqIds::Iterator aMapIt (myLayerIds); aMapIt.More(); aMapIt.Next())
   {
-    Standard_Integer& aSeqIdx = aMapIt.ChangeValue ();
+    Standard_Integer& aSeqIdx = aMapIt.ChangeValue();
     if (aSeqIdx > aRemovePos)
       aSeqIdx--;
   }
+
+  myDefaultLayerIndex = myLayerIds.Find (Graphic3d_ZLayerId_Default);
 }
 
 //=======================================================================
@@ -179,9 +184,10 @@ void OpenGl_LayerList::RemoveStructure (const OpenGl_Structure* theStructure)
       --myImmediateNbStructures;
     }
 
-    if (theStructure->IsRaytracable())
+    if (aLayerId == Graphic3d_ZLayerId_Default
+     && theStructure->IsRaytracable())
     {
-      ++myModificationState;
+      ++myModifStateOfRaytraceable;
     }
 
     return;
@@ -205,9 +211,10 @@ void OpenGl_LayerList::RemoveStructure (const OpenGl_Structure* theStructure)
         --myImmediateNbStructures;
       }
 
-      if (theStructure->IsRaytracable())
+      if (aSeqId == myDefaultLayerIndex
+       && theStructure->IsRaytracable())
       {
-        ++myModificationState;
+        ++myModifStateOfRaytraceable;
       }
       return;
     }
@@ -244,6 +251,12 @@ void OpenGl_LayerList::ChangeLayer (const OpenGl_Structure*  theStructure,
   // if the structure is not found there, scan through all other layers
   if (aLayer.Remove (theStructure, aPriority, Standard_False))
   {
+    if (theOldLayerId == Graphic3d_ZLayerId_Default
+     && theStructure->IsRaytracable())
+    {
+      ++myModifStateOfRaytraceable;
+    }
+
     --myNbStructures;
     if (aLayer.LayerSettings().IsImmediate)
     {
@@ -269,6 +282,12 @@ void OpenGl_LayerList::ChangeLayer (const OpenGl_Structure*  theStructure,
     OpenGl_Layer& aLayerEx = anIts.ChangeValue();
     if (aLayerEx.Remove (theStructure, aPriority, Standard_True))
     {
+      if (aSeqId == myDefaultLayerIndex
+       && theStructure->IsRaytracable())
+      {
+        ++myModifStateOfRaytraceable;
+      }
+
       --myNbStructures;
       if (aLayerEx.LayerSettings().IsImmediate)
       {
@@ -367,20 +386,20 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
   aCtx->core11fwd->glGetIntegerv (GL_DEPTH_FUNC,      &aDefaultSettings.DepthFunc);
   aCtx->core11fwd->glGetBooleanv (GL_DEPTH_WRITEMASK, &aDefaultSettings.DepthMask);
 
-  Standard_Integer aSeqId = myLayers.Lower(), aMainId = myLayerIds.Find (Graphic3d_ZLayerId_Default);
+  Standard_Integer aSeqId = myLayers.Lower();
   for (OpenGl_SequenceOfLayers::Iterator anIts (myLayers); anIts.More(); anIts.Next(), ++aSeqId)
   {
     if (theLayersToProcess == OpenGl_LF_Bottom)
     {
-      if (aSeqId >= aMainId) continue;
+      if (aSeqId >= myDefaultLayerIndex) continue;
     }
     else if (theLayersToProcess == OpenGl_LF_Upper)
     {
-      if (aSeqId <= aMainId) continue;
+      if (aSeqId <= myDefaultLayerIndex) continue;
     }
     else if (theLayersToProcess == OpenGl_LF_Default)
     {
-      if (aSeqId != aMainId) continue;
+      if (aSeqId != myDefaultLayerIndex) continue;
     }
 
     const OpenGl_Layer& aLayer = anIts.Value();

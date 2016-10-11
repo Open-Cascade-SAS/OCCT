@@ -1029,7 +1029,7 @@ protected: //! @name fields related to ray-tracing
   Standard_Boolean myToUpdateEnvironmentMap;
 
   //! State of OpenGL layer list.
-  Standard_Size myLayerListState;
+  Standard_Size myRaytraceLayerListState;
 
   //! Number of accumulated frames (for progressive rendering).
   Standard_Integer myAccumFrames;

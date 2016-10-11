@@ -49,7 +49,7 @@ Standard_Boolean OpenGl_View::updateRaytraceGeometry (const RaytraceUpdateMode  
   // modifications. This is light-weight procedure performed on each frame
   if (theMode == OpenGl_GUM_CHECK)
   {
-    if (myLayerListState != myZLayers.ModificationState())
+    if (myRaytraceLayerListState != myZLayers.ModificationStateOfRaytracable())
     {
       return updateRaytraceGeometry (OpenGl_GUM_PREPARE, theViewId, theGlContext);
     }
@@ -185,7 +185,7 @@ Standard_Boolean OpenGl_View::updateRaytraceGeometry (const RaytraceUpdateMode  
     }
 
     // Actualize OpenGL layer list state
-    myLayerListState = myZLayers.ModificationState();
+    myRaytraceLayerListState = myZLayers.ModificationStateOfRaytracable();
 
     // Rebuild two-level acceleration structure
     myRaytraceGeometry.ProcessAcceleration();

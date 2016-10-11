@@ -27,6 +27,7 @@ class OpenGl_Structure;
 typedef NCollection_Sequence<OpenGl_Layer> OpenGl_SequenceOfLayers;
 typedef NCollection_DataMap<int, int> OpenGl_LayerSeqIds;
 
+//! Class defining the list of layers.
 class OpenGl_LayerList
 {
 public:
@@ -101,19 +102,20 @@ public:
   void InvalidateBVHData (const Graphic3d_ZLayerId theLayerId);
 
   //! Returns structure modification state (for ray-tracing).
-  Standard_Size ModificationState() const { return myModificationState; }
+  Standard_Size ModificationStateOfRaytracable() const { return myModifStateOfRaytraceable; }
 
 protected:
 
   // number of structures temporary put to default layer
   OpenGl_SequenceOfLayers myLayers;
   OpenGl_LayerSeqIds      myLayerIds;
+  Standard_Integer        myDefaultLayerIndex;     //!< index of Graphic3d_ZLayerId_Default layer in myLayers sequence
 
   Standard_Integer        myNbPriorities;
   Standard_Integer        myNbStructures;
   Standard_Integer        myImmediateNbStructures; //!< number of structures within immediate layers
 
-  mutable Standard_Size   myModificationState;
+  mutable Standard_Size   myModifStateOfRaytraceable;
 
 public:
 
