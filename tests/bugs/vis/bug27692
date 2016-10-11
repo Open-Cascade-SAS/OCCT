@@ -1,0 +1,30 @@
+puts "========"
+puts "Visualization, AIS_AngleDimension - exterior angle and arrows visibility improvements"
+puts "========"
+
+# Test case creates three angle dimensions with exterior/interior presentation for the angle
+# and different visual state of presentation arrows
+
+pload MODELING VISUALIZATION
+
+vinit
+vpoint p1 0 0 0
+vpoint p2 10 0 0
+vpoint p3 10 5 0
+vdimension dim1 -angle -plane xoy -shapes p1 p2 p3
+vangleparam dim1 -type exterior -showarrow first
+
+vpoint p4 50 0 0
+vpoint p5 60 0 0
+vpoint p6 60 5 0
+vdimension dim2 -angle -plane xoy -shapes p4 p5 p6
+vangleparam dim2 -type interior -showarrow none
+
+vpoint p7 30 -40 0
+vpoint p8 40 -40 0
+vpoint p9 50 -35 0
+vdimension dim3 -angle -plane xoy -shapes p7 p8 p9
+vangleparam dim3 -type exterior -showarrow second
+
+vfit
+vdump $imagedir/${casename}.png

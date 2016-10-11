@@ -2483,7 +2483,28 @@ vdimparam dim1 -textvalue "w_1"
 vdimparam dim1 -autovalue
 ~~~~~
 
-@subsubsection occt_draw_4_4_22 vmovedim
+@subsubsection occt_draw_4_4_22 vdimangleparam
+
+Syntax:
+~~~~~
+vangleparam name [-type interior|exterior]
+                 [-showarrow first|second|both|none]
+~~~~~
+
+Sets parameters for angle dimension **name**.
+
+**Example:** 
+~~~~~
+vinit
+vpoint p1 0 0 0
+vpoint p2 10 0 0
+vpoint p3 10 5 0
+vdimension dim1 -angle -plane xoy -shapes p1 p2 p3
+vfit
+vangleparam dim1 -type exterior -showarrow first
+~~~~~
+
+@subsubsection occt_draw_4_4_23 vmovedim
 
 Syntax:
 ~~~~~

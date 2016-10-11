@@ -181,6 +181,8 @@ AIS_Trihedron.hxx
 AIS_Trihedron.lxx
 AIS_TypeFilter.cxx
 AIS_TypeFilter.hxx
+AIS_TypeOfAngle.hxx
+AIS_TypeOfAngleArrowVisibility.hxx
 AIS_TypeOfAttribute.hxx
 AIS_TypeOfAxis.hxx
 AIS_TypeOfDist.hxx

@@ -516,6 +516,122 @@ static void SetDimensionParams (const Handle(AIS_Dimension)& theDim,
 }
 
 //=======================================================================
+//function : ParseAngleDimensionParams
+//purpose  : Auxilliary function: sets custom parameters for angle dimension.
+//
+//draw args: -type [interior|exterior]
+//           -showarrow [first|second|both|none]
+//=======================================================================
+static int ParseAngleDimensionParams (Standard_Integer  theArgNum,
+                               const char**      theArgVec,
+                               Standard_Integer  theStartIndex,
+                               NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& theStringParams)
+{
+  theStringParams.Clear();
+
+  // Begin from the second parameter: the first one is dimension name
+  for (Standard_Integer anIt = theStartIndex; anIt < theArgNum; ++anIt)
+  {
+    TCollection_AsciiString aParam (theArgVec[anIt]);
+    aParam.LowerCase();
+
+    if (aParam.Search ("-") == -1)
+    {
+      std::cerr << "Error: wrong parameter '" << aParam << "'.\n";
+      return 1;
+    }
+
+    // Before all non-boolean flags parsing check if a flag have at least one value.
+    if (anIt + 1 >= theArgNum)
+    {
+      std::cerr << "Error: "<< aParam <<" flag should have value.\n";
+      return 1;
+    }
+
+    if (aParam.IsEqual ("-type"))
+    {
+      TCollection_AsciiString aLocalParam(theArgVec[++anIt]);
+
+      theStringParams.Bind ("type", aLocalParam);
+    }
+    else if (aParam.IsEqual ("-showarrow"))
+    {
+      TCollection_AsciiString aLocalParam(theArgVec[++anIt]);
+
+      theStringParams.Bind ("showarrow", aLocalParam);
+    }
+    else
+    {
+      std::cerr << "Error: unknown parameter '" << aParam << "'.\n";
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
+//=======================================================================
+//function : SetAngleDimensionParams
+//purpose  : Sets parameters for angle dimension
+//=======================================================================
+static void SetAngleDimensionParams (const Handle(AIS_Dimension)& theDim,
+                                     const NCollection_DataMap<TCollection_AsciiString,
+                                     TCollection_AsciiString>& theStringParams)
+{
+  Handle(AIS_AngleDimension) anAngleDim = Handle(AIS_AngleDimension)::DownCast (theDim);
+  if (anAngleDim.IsNull())
+  {
+    return;
+  }
+
+  if (theStringParams.IsBound ("type"))
+  {
+    AIS_TypeOfAngle anAngleType = AIS_TOA_Interior;
+    TCollection_AsciiString anAngleTypeStr = theStringParams.Find ("type");
+    if (anAngleTypeStr.IsEqual("interior"))
+    {
+      anAngleType = AIS_TOA_Interior;
+    }
+    else if (anAngleTypeStr.IsEqual("exterior"))
+    {
+      anAngleType = AIS_TOA_Exterior;
+    }
+    else
+    {
+      std::cerr << "Error: wrong angle type.\n";
+    }
+    anAngleDim->SetType(anAngleType);
+  }
+
+  if (theStringParams.IsBound ("showarrow"))
+  {
+    AIS_TypeOfAngleArrowVisibility anArrowType = AIS_TOAV_Both;
+    TCollection_AsciiString anArrowTypeStr = theStringParams.Find ("showarrow");
+    if (anArrowTypeStr.IsEqual("both"))
+    {
+      anArrowType = AIS_TOAV_Both;
+    }
+    else if (anArrowTypeStr.IsEqual("first"))
+    {
+      anArrowType = AIS_TOAV_First;
+    }
+    else if (anArrowTypeStr.IsEqual("second"))
+    {
+      anArrowType = AIS_TOAV_Second;
+    }
+    else if (anArrowTypeStr.IsEqual("none"))
+    {
+      anArrowType = AIS_TOAV_None;
+    }
+    else
+    {
+      std::cerr << "Error: wrong showarrow type.\n";
+    }
+    anAngleDim->SetArrowsVisibility(anArrowType);
+  }
+}
+
+//=======================================================================
 //function : VDimBuilder
 //purpose  : Command for building dimension presentations: angle,
 //           length, radius, diameter
@@ -2585,6 +2701,62 @@ static int VDimParam (Draw_Interpretor& theDi, Standard_Integer theArgNum, const
 }
 
 //=======================================================================
+//function : VAngleParam
+//purpose  : Sets aspect parameters to angle dimension.
+//=======================================================================
+static int VAngleParam (Draw_Interpretor& theDi, Standard_Integer theArgNum, const char** theArgVec)
+{
+  if (theArgNum < 3)
+  {
+    theDi << theArgVec[0] << " error: the wrong number of input parameters.\n";
+    return 1;
+  }
+
+
+  TCollection_AsciiString aName (theArgVec[1]);
+  gp_Pln aWorkingPlane;
+  Standard_Boolean toUpdate = Standard_True;
+
+  NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> aStringParams;
+
+  if (!GetMapOfAIS().IsBound2 (aName))
+  {
+    theDi << theArgVec[0] << "error: no object with this name.\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveObject) anObject = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2 (aName));
+  if (anObject->Type() != AIS_KOI_Dimension)
+  {
+    theDi << theArgVec[0] << "error: no dimension with this name.\n";
+    return 1;
+  }
+
+  Handle(AIS_Dimension) aDim = Handle(AIS_Dimension)::DownCast (anObject);
+  Handle(Prs3d_DimensionAspect) anAspect = aDim->DimensionAspect();
+
+  if (ParseAngleDimensionParams (theArgNum, theArgVec, 2, aStringParams))
+  {
+    return 1;
+  }
+
+  SetAngleDimensionParams (aDim, aStringParams);
+
+  if (!aDim->IsValid())
+  {
+    std::cerr << "Error: Dimension geometry or plane is not valid.\n";
+    return 1;
+  }
+
+  // Redisplay a dimension after parameter changing.
+  if (ViewerTest::GetAISContext()->IsDisplayed (aDim))
+  {
+    ViewerTest::GetAISContext()->Redisplay (aDim, toUpdate);
+  }
+  return 0;
+}
+
+//=======================================================================
 //function : VMoveDim
 //purpose  : Moves dimension or relation text label to defined or picked
 //           position and updates the object.
@@ -2800,6 +2972,12 @@ void ViewerTest::RelationCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vangledim",
 		  "vangledim Name:Selection in the viewer only ",
 		  __FILE__,VAngleDimBuilder,group);
+
+  theCommands.Add("vangleparam",
+    "vangleparam name"
+    "[-type interior|exterior]\n"
+    "[-showarrow first|second|both|none]\n",
+    __FILE__,VAngleParam,group);
   
   theCommands.Add("vdiameterdim",
 		  "vdiameterdim Name : Selection in the viewer only ",

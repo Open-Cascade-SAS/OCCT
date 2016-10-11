@@ -16,6 +16,9 @@
 #define _AIS_AngleDimension_HeaderFile
 
 #include <AIS_Dimension.hxx>
+#include <AIS_TypeOfAngle.hxx>
+#include <AIS_TypeOfAngleArrowVisibility.hxx>
+
 #include <Geom_Plane.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Transformation.hxx>
@@ -208,6 +211,32 @@ public:
 
   Standard_EXPORT virtual const gp_Pnt GetTextPosition () const Standard_OVERRIDE;
 
+  //! Sets angle type.
+  //! @param theType [in] the type value.
+  void SetType(const AIS_TypeOfAngle theType)
+  {
+    myType = theType;
+  }
+
+  //! @return the current angle type.
+  AIS_TypeOfAngle GetType() const
+  {
+    return myType;
+  }
+
+  //! Sets visible arrows type
+  //! @param theType [in] the type of visibility of arrows.
+  void SetArrowsVisibility(const AIS_TypeOfAngleArrowVisibility& theType)
+  {
+    myArrowsVisibility = theType;
+  }
+
+  //! @return the type of visibility of arrows.
+  AIS_TypeOfAngleArrowVisibility GetArrowsVisibility() const
+  {
+    return myArrowsVisibility;
+  }
+
 public:
 
   DEFINE_STANDARD_RTTIEXT(AIS_AngleDimension,AIS_Dimension)
@@ -340,7 +369,15 @@ protected:
                                                   const gp_Pnt& theCenterPoint,
                                                   const gp_Pnt& theSecondPoint) const;
 
+
+  //! Returns true if the arrow should be visible
+  //! @param theArrowType an arrow type
+  //! @return TRUE if the arrow should be visible
+  Standard_EXPORT Standard_Boolean isArrowVisible(const AIS_TypeOfAngleArrowVisibility& theArrowType) const;
+
 private:
+  AIS_TypeOfAngle myType; //!< type of angle
+  AIS_TypeOfAngleArrowVisibility myArrowsVisibility; //!< type of arrows visibility
 
   gp_Pnt myFirstPoint;
   gp_Pnt mySecondPoint;
