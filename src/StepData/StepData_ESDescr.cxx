@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Dico_DictionaryOfInteger.hxx>
 #include <Interface_Macros.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_Described.hxx>
@@ -24,19 +23,19 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepData_ESDescr,StepData_EDescr)
 
 StepData_ESDescr::StepData_ESDescr  (const Standard_CString name)
-:  thenom (name)    {  thenames = new Dico_DictionaryOfInteger;  }
+:  thenom (name)    { }
 
 void  StepData_ESDescr::SetNbFields (const Standard_Integer nb)
 {
   Standard_Integer minb,i, oldnb = NbFields();
-  thenames->Clear();
+  thenames.Clear();
   if (nb == 0)  {  thedescr.Nullify();  return;  }
   Handle(TColStd_HArray1OfTransient) li = new TColStd_HArray1OfTransient(1,nb);
   if (oldnb == 0)  {  thedescr = li;  return;  }
   minb = (oldnb > nb ? nb : oldnb);
   for (i = 1; i <= minb; i ++)  {
     DeclareAndCast(StepData_PDescr,pde,thedescr->Value(i));
-    if (!pde.IsNull())  thenames->SetItem (pde->Name(),i);
+    if (!pde.IsNull())  thenames.Bind(pde->Name(),i);
     li->SetValue (i, pde);
   }
   thedescr = li;
@@ -52,7 +51,7 @@ void  StepData_ESDescr::SetNbFields (const Standard_Integer nb)
   pde->SetFrom (descr);
   pde->SetName (name);
   thedescr->SetValue (num,pde);
-  thenames->SetItem (name,num);
+  thenames.Bind(name,num);
 }
 
     void  StepData_ESDescr::SetBase (const Handle(StepData_ESDescr)& base)
@@ -100,7 +99,8 @@ void  StepData_ESDescr::SetNbFields (const Standard_Integer nb)
     Standard_Integer  StepData_ESDescr::Rank (const Standard_CString name) const
 {
   Standard_Integer rank;
-  if (!thenames->GetItem (name,rank)) return 0;
+  if (!thenames.Find(name, rank))
+    return 0;
   return rank;
 }
 

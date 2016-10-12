@@ -14,9 +14,6 @@
 //#1 svv   10.01.00 : porting on DEC 
 //smh#14 17.03.2000 : FRA62479 Clearing of gtool
 
-#include <Dico_DictionaryOfTransient.hxx>
-#include <Dico_IteratorOfDictionaryOfInteger.hxx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
 #include <IFGraph_SubPartsIterator.hxx>
 #include <IFSelect_CheckCounter.hxx>
 #include <IFSelect_Dispatch.hxx>
@@ -109,7 +106,6 @@ IFSelect_WorkSession::IFSelect_WorkSession ()
 {
   theshareout  = new IFSelect_ShareOut;
   theerrhand   = errhand = Standard_True;
-  thenames     = new Dico_DictionaryOfTransient;
   thecopier    = new IFSelect_ModelCopier;
   thecopier->SetShareOut (theshareout);
   thecheckdone = Standard_False;
@@ -150,8 +146,8 @@ void IFSelect_WorkSession::SetProtocol
 void IFSelect_WorkSession::SetSignType (const Handle(IFSelect_Signature)& signtype)
 {
   thegtool->SetSignType (signtype);
-  if (signtype.IsNull()) thenames->RemoveItem ("xst-sign-type");
-  else thenames->SetItem ("xst-sign-type",signtype);
+  if (signtype.IsNull()) thenames.UnBind("xst-sign-type");
+  else thenames.Bind("xst-sign-type",signtype);
 }
 
 
@@ -678,7 +674,8 @@ Handle(Standard_Transient) IFSelect_WorkSession::NamedItem
     Standard_Integer id = atoi( &name[1] );
     return Item(id);
   }
-  if (!thenames->GetItem(name,res)) res.Nullify();
+  if (!thenames.Find(name,res))
+    res.Nullify();
   return res;
 }
 
@@ -711,7 +708,8 @@ Standard_Integer IFSelect_WorkSession::NameIdent
     Standard_Integer id = atoi( &name[1] );
     return id;
   }
-  if (!thenames->GetItem(name,res)) return 0;
+  if (!thenames.Find(name,res))
+    return 0;
   return ItemIdent(res);
 }
 
@@ -786,12 +784,9 @@ Standard_Integer IFSelect_WorkSession::AddNamedItem
   if (name[0] == '#' || name[0] == '!') return 0;
 // #nnn : pas un nom mais un numero. !... : reserve (interdit pour un nom)
 //   nom deja pris : on ecrase l ancienne valeur
-  if (name[0] != '\0') {
-    Standard_Boolean deja;
-    Handle(Standard_Transient)& newitem = thenames->NewItem(name,deja);
-//    if (deja & item != newitem) return 0;
-    newitem = item;
-  }
+  if (name[0] != '\0')
+    thenames.Bind(name, item);
+
   Standard_Integer  id = theitems.FindIndex(item);
   if (id > 0) {
     Handle(Standard_Transient)& att = theitems.ChangeFromIndex(id);
@@ -865,7 +860,7 @@ Standard_Boolean IFSelect_WorkSession::RemoveName
   Handle(Standard_Transient) item = NamedItem(name);
   if (item.IsNull()) return Standard_False;
   theitems.Add(item,item);    // reste mais sans nom
-  return thenames->RemoveItem(name);
+  return thenames.UnBind(name);
 }
 
 
@@ -888,7 +883,7 @@ Standard_Boolean IFSelect_WorkSession::RemoveItem
 
 //  Marquer "Removed" dans la Map (on ne peut pas la vider)
   if (att->IsKind(STANDARD_TYPE(TCollection_HAsciiString))) {
-    if (!thenames->RemoveItem
+    if (!thenames.UnBind
 	(GetCasted(TCollection_HAsciiString,att)->ToCString()))
       return Standard_False;
   }
@@ -905,7 +900,7 @@ Standard_Boolean IFSelect_WorkSession::RemoveItem
 
 void IFSelect_WorkSession::ClearItems ()
 {
-  thenames->Clear();
+  thenames.Clear();
   theitems.Clear();
   theshareout->Clear(Standard_False);
 }
@@ -1018,9 +1013,10 @@ Handle(TColStd_HSequenceOfHAsciiString) IFSelect_WorkSession::ItemNames
 {
   Handle(TColStd_HSequenceOfHAsciiString) list =
     new TColStd_HSequenceOfHAsciiString();
-  for (Dico_IteratorOfDictionaryOfTransient IT(thenames); IT.More(); IT.Next()){
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator IT(thenames);
+  for (; IT.More(); IT.Next()){
     if (IT.Value()->IsKind(type)) list->Append
-      (new TCollection_HAsciiString(IT.Name().ToCString()));
+      (new TCollection_HAsciiString(IT.Key()));
   }
   return list;
 }

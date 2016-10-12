@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Dico_DictionaryOfInteger.hxx>
 #include <IFSelect_EditForm.hxx>
 #include <IFSelect_Editor.hxx>
 #include <IFSelect_ListEditor.hxx>
@@ -33,7 +32,7 @@ IFSelect_Editor::IFSelect_Editor (const Standard_Integer nbval)
     : thenbval (nbval) , themaxsh (0) , themaxco (0) , themaxla (0) ,
       thevalues (1,nbval) , theshorts (1,nbval) , themodes (1,nbval) ,
       thelists  (1,nbval)
-      {  thenames = new Dico_DictionaryOfInteger;  thelists.Init(-1);  }
+      {  thelists.Init(-1);  }
 
     void  IFSelect_Editor::SetNbValues (const Standard_Integer nbval)
 {
@@ -48,14 +47,14 @@ IFSelect_Editor::IFSelect_Editor (const Standard_Integer nbval)
   if (num < 1 || num > thenbval) return;
   TCollection_AsciiString shn (shortname);
   Standard_Integer lng = shn.Length();
-  if (lng > 0) thenames->SetItem (shortname,num);
+  if (lng > 0) thenames.Bind (shortname,num);
   if (lng > themaxsh) themaxsh = lng;
   lng = (Standard_Integer) strlen (typval->Name());
   if (lng > themaxco) themaxco = lng;
   lng = (Standard_Integer) strlen (typval->Label());
   if (lng > themaxla) themaxla = lng;
 
-  thenames->SetItem (typval->Name(),num);
+  thenames.Bind (typval->Name(),num);
   Standard_Integer edm = (Standard_Integer) editmode;
   thevalues.SetValue (num,typval);
   theshorts.SetValue (num,shn);
@@ -187,7 +186,8 @@ Standard_Integer  IFSelect_Editor::MaxList (const Standard_Integer num) const
   (const Standard_CString name) const
 {
   Standard_Integer res;
-  if (thenames->GetItem(name,res,Standard_False)) return res;
+  if (thenames.Find(name,res))
+    return res;
   res = atoi (name);  // si c est un entier, on tente le coup
   if (res < 1 || res > NbValues()) res = 0;
   return res;

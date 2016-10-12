@@ -13,7 +13,6 @@
 
 
 #include <DBRep.hxx>
-#include <Dico_DictionaryOfInteger.hxx>
 #include <Draw_Appli.hxx>
 #include <IFSelect_Functions.hxx>
 #include <IFSelect_SessionPilot.hxx>
@@ -44,7 +43,7 @@ static int deja = 0, dejald = 0;
 //unused variable 
 //static int okxset = 0;
 
-static Handle(Dico_DictionaryOfInteger)       theolds;
+static NCollection_DataMap<TCollection_AsciiString, Standard_Integer> theolds;
 static Handle(TColStd_HSequenceOfAsciiString) thenews;
 
 static Handle(IFSelect_SessionPilot)    thepilot;  // detient Session, Model
@@ -64,7 +63,6 @@ static Standard_Integer XSTEPDRAWRUN (Draw_Interpretor& , Standard_Integer argc,
     void  XSDRAW::ChangeCommand
   (const Standard_CString oldname, const Standard_CString newname)
 {
-  if (theolds.IsNull()) theolds = new Dico_DictionaryOfInteger;
   Standard_Integer num = 0;
   if (newname[0] != '\0') {
     if (thenews.IsNull()) thenews = new TColStd_HSequenceOfAsciiString();
@@ -72,7 +70,7 @@ static Standard_Integer XSTEPDRAWRUN (Draw_Interpretor& , Standard_Integer argc,
     thenews->Append(newstr);
     num = thenews->Length();
   }
-  theolds->SetItem (oldname,num);
+  theolds.Bind(oldname,num);
 }
 
     void  XSDRAW::RemoveCommand
@@ -118,8 +116,8 @@ void XSDRAW::LoadDraw (Draw_Interpretor& theCommands)
     Standard_Integer nact, num = -1;
     char help[200];
     com = list->Value(i);
-    if (!theolds.IsNull())
-      if (theolds->HasItem(com.ToCString())) num = theolds->Item(com.ToCString());
+    if (!theolds.IsEmpty())
+      theolds.Find(com, num);
     if (num == 0) continue;
     if (!IFSelect_Activator::Select(com.ToCString(),nact,act))
       Sprintf (help,"type :  xhelp %s for help",com.ToCString());

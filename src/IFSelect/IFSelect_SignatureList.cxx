@@ -12,10 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Dico_DictionaryOfInteger.hxx>
-#include <Dico_DictionaryOfTransient.hxx>
-#include <Dico_IteratorOfDictionaryOfInteger.hxx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
 #include <IFSelect_SignatureList.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
@@ -35,8 +31,6 @@ IFSelect_SignatureList::IFSelect_SignatureList
   thesignonly = Standard_False;
   thelistat = withlist;
   thenbnuls = 0;
-  thedicount = new Dico_DictionaryOfInteger;
-  thediclist = new Dico_DictionaryOfTransient;
   SetName("...");
 }
 
@@ -51,8 +45,8 @@ IFSelect_SignatureList::IFSelect_SignatureList
 {
   thelastval.Clear();
   thenbnuls = 0;
-  thedicount = new Dico_DictionaryOfInteger;
-  thediclist = new Dico_DictionaryOfTransient;
+  thedicount.Clear();
+  thediclist.Clear();
 }
 
     void IFSelect_SignatureList::Add
@@ -66,15 +60,19 @@ IFSelect_SignatureList::IFSelect_SignatureList
 
   if (sign[0] == '\0') {  thenbnuls ++;  return;  }
 
-  Standard_Boolean deja;
-  Standard_Integer& nb = thedicount->NewItem(sign,deja);
-  if (!deja) nb = 0;
-  nb ++;
+  if (thedicount.Contains(sign))
+    thedicount.ChangeFromKey(sign)++;
+  else
+    thedicount.Add(sign, 1);
 
   if (thelistat) {
-    Handle(Standard_Transient)& anitem = thediclist->NewItem(sign,deja);
-    DeclareAndCast(TColStd_HSequenceOfTransient,alist,anitem);
-    if (!deja) { alist = new TColStd_HSequenceOfTransient(); anitem = alist;  }
+    Handle(TColStd_HSequenceOfTransient) alist;
+    if (thediclist.Contains(sign))
+      alist = Handle(TColStd_HSequenceOfTransient)::DownCast(thediclist.FindFromKey(sign));
+    else {
+      alist = new TColStd_HSequenceOfTransient();
+      thediclist.Add(sign, alist);
+    }
     alist->Append(ent);
   }
 }
@@ -84,8 +82,8 @@ IFSelect_SignatureList::IFSelect_SignatureList
 
     void IFSelect_SignatureList::Init
   (const Standard_CString name,
-   const Handle(Dico_DictionaryOfInteger)&   theCount,
-   const Handle(Dico_DictionaryOfTransient)& list,
+   const NCollection_IndexedDataMap<TCollection_AsciiString, Standard_Integer>&   theCount,
+   const NCollection_IndexedDataMap<TCollection_AsciiString, Handle(Standard_Transient)>& list,
    const Standard_Integer nbnuls)
 {
   thelastval.Clear();
@@ -93,7 +91,7 @@ IFSelect_SignatureList::IFSelect_SignatureList
   thedicount = theCount;
   thediclist = list;
   thenbnuls  = nbnuls;
-  if (thediclist.IsNull()) thelistat = Standard_False;
+  if (thediclist.IsEmpty()) thelistat = Standard_False;
 }
 
 
@@ -102,10 +100,12 @@ IFSelect_SignatureList::IFSelect_SignatureList
 {
   Handle(TColStd_HSequenceOfHAsciiString) list =
     new TColStd_HSequenceOfHAsciiString();
-  Dico_IteratorOfDictionaryOfInteger iter(thedicount,root);
+  NCollection_IndexedDataMap<TCollection_AsciiString, Standard_Integer>::Iterator iter(thedicount);
   for (; iter.More(); iter.Next()) {
+    if (!iter.Key().StartsWith(root)) continue;
+
     Handle(TCollection_HAsciiString) sign =
-      new TCollection_HAsciiString (iter.Name());
+      new TCollection_HAsciiString (iter.Key());
     list->Append(sign);
   }
   return list;
@@ -121,18 +121,21 @@ IFSelect_SignatureList::IFSelect_SignatureList
     Standard_Integer  IFSelect_SignatureList::NbTimes
   (const Standard_CString sign) const
 {
-  Standard_Integer nb;
-  if (thedicount->GetItem(sign,nb)) return nb;
-  else return 0;
+  Standard_Integer nb = 0;
+  thedicount.FindFromKey(sign, nb);
+  return nb;
 }
 
     Handle(TColStd_HSequenceOfTransient)  IFSelect_SignatureList::Entities
   (const Standard_CString sign) const
 {
   Handle(TColStd_HSequenceOfTransient) list;
+  Handle(Standard_Transient) aTList;
   if (!thelistat) return list;
-  if (thediclist->GetItem(sign,list)) return list;
-  list = new TColStd_HSequenceOfTransient();
+  if (thediclist.FindFromKey(sign, aTList))
+    list = Handle(TColStd_HSequenceOfTransient)::DownCast(aTList);
+  else
+    list = new TColStd_HSequenceOfTransient();
   return list;
 }
 
@@ -147,11 +150,11 @@ IFSelect_SignatureList::IFSelect_SignatureList
     void  IFSelect_SignatureList::PrintCount (const Handle(Message_Messenger)& S) const
 {
   Standard_Integer nbtot = 0, nbsign = 0;
-  Dico_IteratorOfDictionaryOfInteger iter(thedicount,"");
+  NCollection_IndexedDataMap<TCollection_AsciiString, Standard_Integer>::Iterator iter(thedicount);
   S << " Count	"<<thename->ToCString()<<"\n -----	-----------"<<endl;
   for (; iter.More(); iter.Next()) {
     Standard_Integer val = iter.Value();
-    S << Interface_MSG::Blanks(val,6) << val <<"	"<<iter.Name()<<endl;
+    S << Interface_MSG::Blanks(val,6) << val <<"	"<<iter.Key()<<endl;
     nbtot += val;
     nbsign ++;
   }
@@ -172,10 +175,10 @@ IFSelect_SignatureList::IFSelect_SignatureList
     return;
   }
   Standard_Integer nbtot = 0, nbsign = 0;
-  Dico_IteratorOfDictionaryOfTransient iter(thediclist,"");
+  NCollection_IndexedDataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator iter(thediclist);
   for (; iter.More(); iter.Next()) {
     DeclareAndCast(TColStd_HSequenceOfTransient,list,iter.Value());
-    S<<Name()<<" : "<<iter.Name()<<endl;
+    S<<Name()<<" : "<<iter.Key()<<endl;
     if (list.IsNull())  {  S<<"  - (empty list)"<<endl; continue;  }
     Standard_Integer nb = list->Length();
     S<<"  - Nb: "<<nb<<" : ";
@@ -202,7 +205,7 @@ IFSelect_SignatureList::IFSelect_SignatureList
 
     void  IFSelect_SignatureList::PrintSum (const Handle(Message_Messenger)& S) const
 {
-  Dico_IteratorOfDictionaryOfInteger iter(thedicount,"");
+  NCollection_IndexedDataMap<TCollection_AsciiString, Standard_Integer>::Iterator iter(thedicount);
   S << " Summary "<<thename->ToCString()<<"\n -----	-----------"<<endl;
   Standard_Integer nbtot = 0, nbsign = 0, maxent = 0, nbval = 0, nbve = 0, minval = 0, maxval = 0, totval = 0;
   for (; iter.More(); iter.Next()) {
@@ -210,7 +213,7 @@ IFSelect_SignatureList::IFSelect_SignatureList
     nbtot += nbent;
     nbsign ++;
     if (nbent > maxent) maxent = nbent;
-    TCollection_AsciiString name = iter.Name();
+    TCollection_AsciiString name = iter.Key();
 //    if (!name.IsIntegerValue()) continue;  pas bien fiable
     Standard_Integer ic, nc = name.Length();
     Standard_Boolean iaint = Standard_True;

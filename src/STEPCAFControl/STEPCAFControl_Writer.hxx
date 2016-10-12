@@ -29,7 +29,6 @@
 #include <Standard_CString.hxx>
 #include <STEPControl_StepModelType.hxx>
 #include <TDF_LabelSequence.hxx>
-class STEPCAFControl_DictionaryOfExternFile;
 class XSControl_WorkSession;
 class TDocStd_Document;
 class TDF_Label;
@@ -91,7 +90,7 @@ public:
   
   //! Returns data on external files
   //! Returns Null handle if no external files are read
-  Standard_EXPORT const Handle(STEPCAFControl_DictionaryOfExternFile)& ExternFiles() const;
+  Standard_EXPORT const NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)>& ExternFiles() const;
   
   //! Returns data on external file by its original label
   //! Returns False if no external file with given name is read
@@ -197,7 +196,7 @@ private:
 
 
   STEPControl_Writer myWriter;
-  Handle(STEPCAFControl_DictionaryOfExternFile) myFiles;
+  NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)> myFiles;
   STEPCAFControl_DataMapOfLabelShape myLabels;
   STEPCAFControl_DataMapOfLabelExternFile myLabEF;
   Standard_Boolean myColorMode;

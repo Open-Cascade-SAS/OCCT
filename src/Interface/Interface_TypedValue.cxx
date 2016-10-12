@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Dico_DictionaryOfInteger.hxx>
-#include <Dico_IteratorOfDictionaryOfInteger.hxx>
 #include <Interface_InterfaceError.hxx>
 #include <Interface_TypedValue.hxx>
 #include <OSD_Path.hxx>

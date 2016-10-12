@@ -25,7 +25,6 @@
 #include <XSControl_TransferWriter.hxx>
 class XSControl_Controller;
 class XSControl_TransferReader;
-class Dico_DictionaryOfTransient;
 class XSControl_Vars;
 class Message_Messenger;
 class Transfer_TransientProcess;
@@ -85,12 +84,12 @@ class XSControl_WorkSession : public IFSelect_WorkSession
   
   //! Returns the current Context List, Null if not defined
   //! The Context is given to the TransientProcess for TransferRead
-  const Handle(Dico_DictionaryOfTransient) & Context() const
+  const NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> & Context() const
   { return myContext; }
   
   //! Sets the current Context List, as a whole
   //! Sets it to the TransferReader
-  Standard_EXPORT void SetAllContext (const Handle(Dico_DictionaryOfTransient)& theContext);
+  Standard_EXPORT void SetAllContext (const NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& theContext);
   
   //! Clears the whole current Context (nullifies it)
   Standard_EXPORT void ClearContext();
@@ -198,7 +197,7 @@ class XSControl_WorkSession : public IFSelect_WorkSession
   Handle(XSControl_Controller) myController;
   Handle(XSControl_TransferReader) myTransferReader;
   Handle(XSControl_TransferWriter) myTransferWriter;
-  Handle(Dico_DictionaryOfTransient) myContext;
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> myContext;
   Handle(XSControl_Vars) myVars;
 };
 

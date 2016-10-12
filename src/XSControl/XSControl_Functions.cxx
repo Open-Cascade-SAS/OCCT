@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Dico_IteratorOfDictionaryOfInteger.hxx>
 #include <IFSelect_Act.hxx>
 #include <IFSelect_CheckCounter.hxx>
 #include <IFSelect_Functions.hxx>

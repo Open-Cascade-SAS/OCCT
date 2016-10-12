@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Dico_DictionaryOfTransient.hxx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
 #include <MoniTool_AttrList.hxx>
 #include <MoniTool_IntVal.hxx>
 #include <MoniTool_RealVal.hxx>
@@ -33,23 +31,22 @@ MoniTool_AttrList::MoniTool_AttrList ()    {  }
     void  MoniTool_AttrList::SetAttribute
   (const Standard_CString name, const Handle(Standard_Transient)& val)
 {
-  if (theattrib.IsNull()) theattrib = new Dico_DictionaryOfTransient;
-  theattrib->SetItem (name,val);
+  theattrib.Bind(name,val);
 }
 
     Standard_Boolean  MoniTool_AttrList::RemoveAttribute
   (const Standard_CString name)
 {
-  if (theattrib.IsNull()) return Standard_False;
-  return theattrib->RemoveItem (name);
+  if (theattrib.IsEmpty()) return Standard_False;
+  return theattrib.UnBind(name);
 }
 
     Standard_Boolean  MoniTool_AttrList::GetAttribute
   (const Standard_CString name, const Handle(Standard_Type)& type,
    Handle(Standard_Transient)& val) const
 {
-  if (theattrib.IsNull())  {  val.Nullify();  return Standard_False;  }
-  if (!theattrib->GetItem (name,val))  {  val.Nullify();  return Standard_False;  }
+  if (theattrib.IsEmpty())  {  val.Nullify();  return Standard_False;  }
+  if (!theattrib.Find(name, val)) { val.Nullify();  return Standard_False; }
   if (!val->IsKind(type))  {  val.Nullify();  return Standard_False;  }
   return Standard_True;
 }
@@ -58,8 +55,9 @@ MoniTool_AttrList::MoniTool_AttrList ()    {  }
   (const Standard_CString name) const
 {
   Handle(Standard_Transient) atr;
-  if (theattrib.IsNull()) return atr;
-  if (!theattrib->GetItem (name,atr)) atr.Nullify();
+  if (theattrib.IsEmpty()) return atr;
+  if (!theattrib.Find(name, atr))
+    atr.Nullify();
   return atr;
 }
 
@@ -156,7 +154,7 @@ MoniTool_AttrList::MoniTool_AttrList ()    {  }
   return hval->ToCString();
 }
 
-    Handle(Dico_DictionaryOfTransient)  MoniTool_AttrList::AttrList () const
+   const NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& MoniTool_AttrList::AttrList () const
       {  return theattrib;  }
 
     void  MoniTool_AttrList::SameAttributes (const MoniTool_AttrList& other)
@@ -166,13 +164,14 @@ MoniTool_AttrList::MoniTool_AttrList ()    {  }
   (const MoniTool_AttrList& other,
    const Standard_CString fromname, const Standard_Boolean copied)
 {
-  Handle(Dico_DictionaryOfTransient) list = other.AttrList();
-  if (list.IsNull()) return;
-  if (theattrib.IsNull()) theattrib = new Dico_DictionaryOfTransient;
+  const NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& list = other.AttrList();
+  if (list.IsEmpty()) return;
 
-  for (Dico_IteratorOfDictionaryOfTransient iter (list,fromname);
-       iter.More(); iter.Next()) {
-    TCollection_AsciiString name = iter.Name();
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator iter(list);
+  for (; iter.More(); iter.Next()) {
+    TCollection_AsciiString name = iter.Key();
+    if (!name.StartsWith(fromname))
+      continue;
     Handle(Standard_Transient) atr = iter.Value();
     Handle(Standard_Transient) newatr = atr;
 
@@ -200,8 +199,6 @@ MoniTool_AttrList::MoniTool_AttrList ()    {  }
       }
 
     }
-
-    theattrib->SetItem (name.ToCString(),newatr);
-
+    theattrib.Bind(name, newatr);
   }
 }

@@ -27,7 +27,6 @@
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
-class Dico_DictionaryOfTransient;
 class Interface_Protocol;
 class Standard_Transient;
 class Interface_InterfaceModel;
@@ -149,9 +148,9 @@ private:
 
 
   Interface_DataMapOfTransientInteger thedscnum;
-  Handle(Dico_DictionaryOfTransient) thedscnam;
-  Handle(Dico_DictionaryOfTransient) thepdescr;
-  Handle(Dico_DictionaryOfTransient) thedscbas;
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> thedscnam;
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> thepdescr;
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> thedscbas;
 
 
 };

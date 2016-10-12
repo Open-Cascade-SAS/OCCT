@@ -252,24 +252,24 @@ class NCollection_DataMap : public NCollection_BaseMap
   }
 
   //! IsBound
-  Standard_Boolean IsBound(const TheKeyType& K) const
+  Standard_Boolean IsBound(const TheKeyType& theKey) const
   {
     DataMapNode* p;
-    return lookup(K, p);
+    return lookup(theKey, p);
   }
 
   //! UnBind removes Item Key pair from map
-  Standard_Boolean UnBind(const TheKeyType& K)
+  Standard_Boolean UnBind(const TheKeyType& theKey)
   {
     if (IsEmpty()) 
       return Standard_False;
     DataMapNode** data = (DataMapNode**) myData1;
-    Standard_Integer k = Hasher::HashCode(K,NbBuckets());
+    Standard_Integer k = Hasher::HashCode(theKey,NbBuckets());
     DataMapNode* p = data[k];
     DataMapNode* q = NULL;
     while (p) 
     {
-      if (Hasher::IsEqual(p->Key(),K)) 
+      if (Hasher::IsEqual(p->Key(), theKey))
       {
         Decrement();
         if (q) 

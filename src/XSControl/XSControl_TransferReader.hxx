@@ -29,7 +29,6 @@
 class XSControl_Controller;
 class Interface_InterfaceModel;
 class Interface_HGraph;
-class Dico_DictionaryOfTransient;
 class Transfer_ActorOfTransientProcess;
 class Transfer_TransientProcess;
 class Standard_Transient;
@@ -104,7 +103,7 @@ class XSControl_TransferReader : public MMgt_TShared
   
   //! Returns (modifiable) the whole definition of Context
   //! Rather for internal use (ex.: preparing and setting in once)
-  Handle(Dico_DictionaryOfTransient)& Context()
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& Context()
   { return myContext; }
   
   //! Sets a new value for (loaded) file name
@@ -350,7 +349,7 @@ class XSControl_TransferReader : public MMgt_TShared
   TCollection_AsciiString myFileName;
   Handle(Interface_InterfaceModel) myModel;
   Handle(Interface_HGraph) myGraph;
-  Handle(Dico_DictionaryOfTransient) myContext;
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> myContext;
   Handle(Transfer_ActorOfTransientProcess) myActor;
   Handle(Transfer_TransientProcess) myTP;
   TColStd_DataMapOfIntegerTransient myResults;

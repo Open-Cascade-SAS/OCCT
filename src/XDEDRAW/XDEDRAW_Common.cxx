@@ -16,8 +16,6 @@
 
 #include <DDocStd.hxx>
 #include <DDocStd_DrawDocument.hxx>
-#include <Dico_DictionaryOfTransient.hxx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <IFSelect_SessionPilot.hxx>
@@ -25,9 +23,7 @@
 #include <IGESCAFControl_Writer.hxx>
 #include <IGESControl_Controller.hxx>
 #include <Interface_Macros.hxx>
-#include <STEPCAFControl_DictionaryOfExternFile.hxx>
 #include <STEPCAFControl_ExternFile.hxx>
-#include <STEPCAFControl_IteratorOfDictionaryOfExternFile.hxx>
 #include <STEPCAFControl_Reader.hxx>
 #include <STEPCAFControl_Writer.hxx>
 #include <STEPControl_Controller.hxx>
@@ -56,11 +52,11 @@
 //============================================================
 // Support for several models in DRAW
 //============================================================
-static Handle(Dico_DictionaryOfTransient) thedictws = new Dico_DictionaryOfTransient;
+static NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> thedictws;
 
 static Standard_Boolean ClearDicWS()
 {
-  thedictws->Clear();
+  thedictws.Clear();
   return Standard_True;
 }
 
@@ -68,20 +64,20 @@ static void AddWS(TCollection_AsciiString filename,
 		  const Handle(XSControl_WorkSession)& WS)
 {
   WS->SetVars ( new XSDRAW_Vars ); // support of DRAW variables
-  thedictws->SetItem( filename, WS );
+  thedictws.Bind( filename, WS );
 }
 
 
-static Standard_Boolean FillDicWS(Handle(STEPCAFControl_DictionaryOfExternFile)& dicFile)
+static Standard_Boolean FillDicWS(NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)>& dicFile)
 {
   ClearDicWS();
-  if ( dicFile->IsEmpty() ) {
+  if ( dicFile.IsEmpty() ) {
     return Standard_False;
   }
   Handle(STEPCAFControl_ExternFile) EF;
-  STEPCAFControl_IteratorOfDictionaryOfExternFile DicEFIt ( dicFile );
+  NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)>::Iterator DicEFIt(dicFile);
   for (; DicEFIt.More(); DicEFIt.Next() ) {
-    TCollection_AsciiString filename = DicEFIt.Name();
+    TCollection_AsciiString filename = DicEFIt.Key();
     EF = DicEFIt.Value();
     AddWS ( filename, EF->GetWS() );
   }
@@ -90,9 +86,9 @@ static Standard_Boolean FillDicWS(Handle(STEPCAFControl_DictionaryOfExternFile)&
 
 static Standard_Boolean SetCurrentWS (TCollection_AsciiString filename)
 {
-  if ( !thedictws->HasItem(filename) ) return Standard_False;
+  if ( !thedictws.IsBound(filename) ) return Standard_False;
   Handle(XSControl_WorkSession) CurrentWS = 
-    Handle(XSControl_WorkSession)::DownCast( thedictws->Item(filename) );
+    Handle(XSControl_WorkSession)::DownCast( thedictws.ChangeFind(filename) );
   XSDRAW::Pilot()->SetSession( CurrentWS );
   
   return Standard_True;
@@ -123,13 +119,13 @@ static Standard_Integer SetCurWS (Draw_Interpretor& di , Standard_Integer argc, 
 
 static Standard_Integer GetDicWSList (Draw_Interpretor& di, Standard_Integer /*argc*/, const char** /*argv*/)
 {
-  Handle(Dico_DictionaryOfTransient) DictWS = thedictws;
-  if ( DictWS->IsEmpty() ) return 1;
-  Dico_IteratorOfDictionaryOfTransient DicIt ( DictWS );
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> DictWS = thedictws;
+  if ( DictWS.IsEmpty() ) return 1;
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator DicIt(DictWS);
   di << " The list of last translated files:\n";
   Standard_Integer num = 0;
   for (; DicIt.More() ; DicIt.Next(), num++ ) {
-    TCollection_AsciiString strng ( DicIt.Name() );
+    TCollection_AsciiString strng ( DicIt.Key() );
     if ( num ) di << "\n";
     di << "\"" << strng.ToCString() << "\"";
   }
@@ -162,12 +158,12 @@ static Standard_Integer FromShape (Draw_Interpretor& di, Standard_Integer argc, 
   
   char command[256];
   Sprintf ( command, "fromshape %.200s -1", argv[1] );
-  Handle(Dico_DictionaryOfTransient) DictWS = thedictws;
-  if ( DictWS->IsEmpty() ) return di.Eval ( command );
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> DictWS = thedictws;
+  if ( DictWS.IsEmpty() ) return di.Eval ( command );
   
   Handle(XSControl_WorkSession) WS = XSDRAW::Session();
 
-  Dico_IteratorOfDictionaryOfTransient DicIt ( DictWS );
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator DicIt ( DictWS );
 //  di << "Searching for shape among all the loaded files:\n";
   Standard_Integer num = 0;
   for (; DicIt.More() ; DicIt.Next(), num++ ) {
@@ -351,7 +347,7 @@ static Standard_Integer ReadStep (Draw_Interpretor& di, Standard_Integer argc, c
   Draw::Set(argv[1],DD);       
   di << "Document saved with name " << argv[1];
 
-  Handle(STEPCAFControl_DictionaryOfExternFile) DicFile = reader.ExternFiles();
+  NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)> DicFile = reader.ExternFiles();
   FillDicWS( DicFile );
   AddWS ( fnom , XSDRAW::Session() );
   
@@ -460,7 +456,7 @@ static Standard_Integer WriteStep (Draw_Interpretor& di, Standard_Integer argc, 
     case IFSelect_RetDone : {
       di<<"File "<<argv[2]<<" written\n";
 
-      Handle(STEPCAFControl_DictionaryOfExternFile) DicFile = writer.ExternFiles();
+      NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)> DicFile = writer.ExternFiles();
       FillDicWS( DicFile );
       AddWS( argv[2], XSDRAW::Session() );
       break;

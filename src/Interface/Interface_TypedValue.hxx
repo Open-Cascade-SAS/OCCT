@@ -27,7 +27,6 @@
 #include <Standard_CString.hxx>
 #include <Interface_ParamType.hxx>
 #include <MoniTool_ValueType.hxx>
-class Dico_DictionaryOfInteger;
 class TCollection_HAsciiString;
 class Standard_Transient;
 class Interface_InterfaceError;
@@ -101,7 +100,7 @@ private:
   Handle(Standard_Type) theotyp;
   TCollection_AsciiString theunidef;
   Handle(TColStd_HArray1OfAsciiString) theenums;
-  Handle(Dico_DictionaryOfInteger) theeadds;
+  NCollection_DataMap<TCollection_AsciiString, Standard_Integer> theeadds;
   TCollection_AsciiString thesatisn;
   Handle(TCollection_HAsciiString) thehval;
   Handle(Standard_Transient) theoval;

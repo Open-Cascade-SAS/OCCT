@@ -12,10 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Dico_DictionaryOfInteger.hxx>
-#include <Dico_DictionaryOfTransient.hxx>
-#include <Dico_IteratorOfDictionaryOfInteger.hxx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
 #include <Interface_InterfaceError.hxx>
 #include <Interface_Static.hxx>
 #include <Message_Messenger.hxx>
@@ -144,7 +140,7 @@ Standard_Boolean  Interface_Static::Init
 {
   if (name[0] == '\0') return Standard_False;
 
-  if (MoniTool_TypedValue::Stats()->HasItem(name)) return Standard_False;
+  if (MoniTool_TypedValue::Stats().IsBound(name)) return Standard_False;
   Handle(Interface_Static) item;
   if (type == Interface_ParamMisc) {
     Handle(Interface_Static) other = Interface_Static::Static(init);
@@ -153,7 +149,7 @@ Standard_Boolean  Interface_Static::Init
   }
   else item = new Interface_Static (family,name,type,init);
 
-  MoniTool_TypedValue::Stats()->SetItem (name,item);
+  MoniTool_TypedValue::Stats().Bind (name,item);
   return Standard_True;
 }
 
@@ -213,15 +209,15 @@ Standard_Boolean  Interface_Static::Init
 Handle(Interface_Static)  Interface_Static::Static
   (const Standard_CString name)
 {
-  Handle(Interface_Static) result;
-  MoniTool_TypedValue::Stats()->GetItem (name,result);
-  return result;
+  Handle(Standard_Transient) result;
+  MoniTool_TypedValue::Stats().Find(name, result);
+  return Handle(Interface_Static)::DownCast(result);
 }
 
 
 Standard_Boolean  Interface_Static::IsPresent (const Standard_CString name)
 {
-  return MoniTool_TypedValue::Stats()->HasItem (name);
+  return MoniTool_TypedValue::Stats().IsBound (name);
 }
 
 
@@ -392,8 +388,8 @@ Handle(TColStd_HSequenceOfHAsciiString)  Interface_Static::Items
   Standard_Integer modup = (mode / 100);  // 0 any, 1 non-update, 2 update
   Handle(TColStd_HSequenceOfHAsciiString) list =
     new TColStd_HSequenceOfHAsciiString();
-  Dico_IteratorOfDictionaryOfTransient iter(MoniTool_TypedValue::Stats());
-  for (iter.Start(); iter.More(); iter.Next()) {
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator iter(MoniTool_TypedValue::Stats());
+  for (; iter.More(); iter.Next()) {
     Handle(Interface_Static) item =
       Handle(Interface_Static)::DownCast(iter.Value());
     if (item.IsNull()) continue;
@@ -409,7 +405,7 @@ Handle(TColStd_HSequenceOfHAsciiString)  Interface_Static::Items
     if (ok && (modup == 1)) ok = !item->UpdatedStatus();
     if (ok && (modup == 2)) ok =  item->UpdatedStatus();
 
-    if (ok) list->Append (new TCollection_HAsciiString (iter.Name()) );
+    if (ok) list->Append (new TCollection_HAsciiString (iter.Key()) );
   }
   return list;
 }

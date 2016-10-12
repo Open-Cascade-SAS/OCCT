@@ -12,10 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Dico_DictionaryOfInteger.hxx>
-#include <Dico_DictionaryOfTransient.hxx>
-#include <Dico_IteratorOfDictionaryOfInteger.hxx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
 #include <Message_Messenger.hxx>
 #include <MoniTool_Element.hxx>
 #include <MoniTool_TypedValue.hxx>
@@ -31,31 +27,32 @@ IMPLEMENT_STANDARD_RTTIEXT(MoniTool_TypedValue,MMgt_TShared)
 
 // Not Used :
 //static  char defmess[30];
-static Handle(Dico_DictionaryOfTransient) libtv()
+static NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> thelibtv;
+static NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> astats;
+
+static NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& libtv()
 {
-  static Handle(Dico_DictionaryOfTransient) thelibtv;
-  if (thelibtv.IsNull()) {
-    thelibtv = new Dico_DictionaryOfTransient;
+  if (thelibtv.IsEmpty()) {
     Handle(MoniTool_TypedValue) tv;
     tv = new MoniTool_TypedValue("Integer",MoniTool_ValueInteger);
-    thelibtv->SetItem ("Integer",tv);
+    thelibtv.Bind ("Integer",tv);
     tv = new MoniTool_TypedValue("Real",MoniTool_ValueReal);
-    thelibtv->SetItem ("Real",tv);
+    thelibtv.Bind ("Real",tv);
     tv = new MoniTool_TypedValue("Text",MoniTool_ValueText);
-    thelibtv->SetItem ("Text",tv);
+    thelibtv.Bind ("Text",tv);
     tv = new MoniTool_TypedValue("Transient",MoniTool_ValueIdent);
-    thelibtv->SetItem ("Transient",tv);
+    thelibtv.Bind ("Transient",tv);
     tv = new MoniTool_TypedValue("Boolean",MoniTool_ValueEnum);
     tv->AddDef ("enum 0");    //    = 0 False  ,  > 0 True
     tv->AddDef ("eval False");
     tv->AddDef ("eval True");
-    thelibtv->SetItem ("Boolean",tv);
+    thelibtv.Bind ("Boolean",tv);
     tv = new MoniTool_TypedValue("Logical",MoniTool_ValueEnum);
     tv->AddDef ("enum -1");    //    < 0 False  ,  = 0 Unk  ,  > 0 True
     tv->AddDef ("eval False");
     tv->AddDef ("eval Unknown");
     tv->AddDef ("eval True");
-    thelibtv->SetItem ("Logical",tv);
+    thelibtv.Bind ("Logical",tv);
   }
   return thelibtv;
 }
@@ -101,7 +98,7 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
       theival  (other->IntegerValue()) ,  thehval  (other->HStringValue()) ,
       theoval  (other->ObjectValue())
 {
-  Handle(Dico_DictionaryOfInteger) eadds;
+  NCollection_DataMap<TCollection_AsciiString, Standard_Integer> eadds;
   Standard_CString satisname;
   other->Internals (theinterp,thesatisf,satisname, eadds);
   thesatisn.AssignCat (satisname);
@@ -121,10 +118,9 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
     }
   }
 //  dupliquer theeadds
-  if (!eadds.IsNull()) {
-    theeadds = new Dico_DictionaryOfInteger;
-    Dico_IteratorOfDictionaryOfInteger itad (eadds);
-    for (; itad.More(); itad.Next()) theeadds->SetItem (itad.Name(),itad.Value());
+  if (!eadds.IsEmpty()) {
+    NCollection_DataMap<TCollection_AsciiString, Standard_Integer>::Iterator itad(eadds);
+    for (; itad.More(); itad.Next()) theeadds.Bind (itad.Key(),itad.Value());
   }
 
 //  on duplique la string
@@ -135,7 +131,7 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
     void  MoniTool_TypedValue::Internals
   (MoniTool_ValueInterpret& interp, MoniTool_ValueSatisfies& satisf,
    Standard_CString& satisname,
-   Handle(Dico_DictionaryOfInteger)& enums) const
+    NCollection_DataMap<TCollection_AsciiString, Standard_Integer>& enums) const
 {  interp = theinterp; satisf = thesatisf; satisname = thesatisn.ToCString();
    enums = theeadds;  }
 
@@ -192,17 +188,17 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
 	Sprintf(mess," %d:%s",i,enva);
 	def.AssignCat (mess);
       }
-      if (!theeadds.IsNull()) {
-	def.AssignCat(" , alpha: ");
-	Dico_IteratorOfDictionaryOfInteger listadd(theeadds);
-	for (listadd.Start(); listadd.More(); listadd.Next()) {
-          TCollection_AsciiString aName = listadd.Name();
-	  Standard_CString enva = aName.ToCString();
-	  if (enva[0] == '?') continue;
-	  Sprintf(mess,":%d ",listadd.Value());
-	  def.AssignCat (enva);
-	  def.AssignCat (mess);
-	}
+      if (!theeadds.IsEmpty()) {
+        def.AssignCat(" , alpha: ");
+        NCollection_DataMap<TCollection_AsciiString, Standard_Integer>::Iterator listadd(theeadds);
+        for (; listadd.More(); listadd.Next()) {
+          TCollection_AsciiString aName = listadd.Key();
+          Standard_CString enva = aName.ToCString();
+          if (enva[0] == '?') continue;
+          Sprintf(mess,":%d ",listadd.Value());
+          def.AssignCat (enva);
+          def.AssignCat (mess);
+        }
       }
     }
       break;
@@ -392,46 +388,45 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
     theenums = enums;
   }
 
-  if (theeadds.IsNull()) theeadds = new Dico_DictionaryOfInteger;
   if (v1[0] != '\0') {
     theintup ++;  theenums->SetValue(theintup,TCollection_AsciiString(v1));
-    theeadds->SetItem (v1,theintup);
+    theeadds.Bind (v1,theintup);
   }
   if (v2[0] != '\0') {
     theintup ++;  theenums->SetValue(theintup,TCollection_AsciiString(v2));
-    theeadds->SetItem (v2,theintup);
+    theeadds.Bind (v2,theintup);
   }
   if (v3[0] != '\0') {
     theintup ++;  theenums->SetValue(theintup,TCollection_AsciiString(v3));
-    theeadds->SetItem (v3,theintup);
+    theeadds.Bind (v3,theintup);
   }
   if (v4[0] != '\0') {
     theintup ++;  theenums->SetValue(theintup,TCollection_AsciiString(v4));
-    theeadds->SetItem (v4,theintup);
+    theeadds.Bind (v4,theintup);
   }
   if (v5[0] != '\0') {
     theintup ++;  theenums->SetValue(theintup,TCollection_AsciiString(v5));
-    theeadds->SetItem (v5,theintup);
+    theeadds.Bind (v5,theintup);
   }
   if (v6[0] != '\0') {
     theintup ++;  theenums->SetValue(theintup,TCollection_AsciiString(v6));
-    theeadds->SetItem (v6,theintup);
+    theeadds.Bind (v6,theintup);
   }
   if (v7[0] != '\0') {
     theintup ++;  theenums->SetValue(theintup,TCollection_AsciiString(v7));
-    theeadds->SetItem (v7,theintup);
+    theeadds.Bind (v7,theintup);
   }
   if (v8[0] != '\0') {
     theintup ++;  theenums->SetValue(theintup,TCollection_AsciiString(v8));
-    theeadds->SetItem (v8,theintup);
+    theeadds.Bind (v8,theintup);
   }
   if (v9[0] != '\0') {
     theintup ++;  theenums->SetValue(theintup,TCollection_AsciiString(v9));
-    theeadds->SetItem (v9,theintup);
+    theeadds.Bind (v9,theintup);
   }
   if (v10[0] != '\0') {
     theintup ++;  theenums->SetValue(theintup,TCollection_AsciiString(v10));
-    theeadds->SetItem (v10,theintup);
+    theeadds.Bind (v10,theintup);
   }
 }
 
@@ -458,8 +453,7 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
     theenums->SetValue(num,TCollection_AsciiString(val));
 //    On met AUSSI dans le dictionnaire
 //  else {
-    if (theeadds.IsNull()) theeadds = new Dico_DictionaryOfInteger;
-    theeadds->SetItem (val,num);
+    theeadds.Bind (val,num);
 //  }
 }
 
@@ -489,8 +483,8 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
   for (i = theintlow; i <= theintup; i ++)
     if (theenums->Value(i).IsEqual(val)) return i;
 //  cas additionnel ?
-  if (!theeadds.IsNull()) {
-    if (theeadds->GetItem (val,i,Standard_False)) return i;
+  if (!theeadds.IsEmpty()) {
+    if (theeadds.Find(val,i)) return i;
   }
 //  entier possible
   //gka S4054
@@ -735,7 +729,7 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
   if (tv.IsNull()) return Standard_False;
   if (defin[0] != '\0') tv->SetDefinition(defin);
 //  else if (tv->Definition() == '\0') return Standard_False;
-  libtv()->SetItem (tv->Name(),tv);
+  libtv().Bind(tv->Name(),tv);
   return Standard_True;
 }
 
@@ -743,7 +737,11 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
   (const Standard_CString defin)
 {
   Handle(MoniTool_TypedValue) val;
-  if (!libtv()->GetItem (defin,val,Standard_False)) val.Nullify();
+  Handle(Standard_Transient) aTVal;
+  if (libtv().Find(defin, aTVal))
+    val = Handle(MoniTool_TypedValue)::DownCast(aTVal);
+  else
+    val.Nullify();
   return val;
 }
 
@@ -758,19 +756,16 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
     Handle(TColStd_HSequenceOfAsciiString)  MoniTool_TypedValue::LibList ()
 {
   Handle(TColStd_HSequenceOfAsciiString) list = new TColStd_HSequenceOfAsciiString();
-  if (libtv().IsNull()) return list;
-  for (Dico_IteratorOfDictionaryOfTransient it(libtv()); it.More();it.Next()) {
-    list->Append (it.Name());
+  if (libtv().IsEmpty()) return list;
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator it(libtv());
+  for (; it.More();it.Next()) {
+    list->Append (it.Key());
   }
   return list;
 }
 
-
-
-    Handle(Dico_DictionaryOfTransient)  MoniTool_TypedValue::Stats ()
+NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& MoniTool_TypedValue::Stats ()
 {
-  static Handle(Dico_DictionaryOfTransient) astats;
-  if (astats.IsNull()) astats  = new Dico_DictionaryOfTransient;
   return astats;
 }
 
@@ -778,6 +773,10 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
   (const Standard_CString name)
 {
   Handle(MoniTool_TypedValue) result;
-  if (!Stats()->GetItem(name,result)) result.Nullify();
+  Handle(Standard_Transient) aTResult;
+  if (Stats().Find(name, aTResult))
+    result = Handle(MoniTool_TypedValue)::DownCast(aTResult);
+  else
+    result.Nullify();
   return result;
 }

@@ -23,8 +23,9 @@
 #include <MMgt_TShared.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
-class Dico_DictionaryOfTransient;
-class Standard_Transient;
+#include <Standard_Transient.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_AsciiString.hxx>
 class Geom_Geometry;
 class Geom2d_Curve;
 class Geom_Curve;
@@ -92,7 +93,7 @@ protected:
 private:
 
 
-  Handle(Dico_DictionaryOfTransient) thevars;
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> thevars;
 
 
 };

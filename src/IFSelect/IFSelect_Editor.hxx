@@ -29,11 +29,11 @@
 #include <IFSelect_EditValue.hxx>
 #include <Standard_Boolean.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
-class Dico_DictionaryOfInteger;
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_DataMap.hxx>
 class Standard_OutOfRange;
 class Interface_TypedValue;
 class Message_Messenger;
-class TCollection_AsciiString;
 class IFSelect_EditForm;
 class TCollection_HAsciiString;
 class IFSelect_ListEditor;
@@ -182,7 +182,7 @@ private:
   Standard_Integer themaxsh;
   Standard_Integer themaxco;
   Standard_Integer themaxla;
-  Handle(Dico_DictionaryOfInteger) thenames;
+  NCollection_DataMap<TCollection_AsciiString, Standard_Integer> thenames;
   TColStd_Array1OfTransient thevalues;
   TColStd_Array1OfAsciiString theshorts;
   TColStd_Array1OfInteger themodes;

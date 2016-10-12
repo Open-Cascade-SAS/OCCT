@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Dico_DictionaryOfTransient.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
@@ -113,8 +112,7 @@ const Interface_Graph& Transfer_TransientProcess::Graph () const
 void Transfer_TransientProcess::SetContext(const Standard_CString name,
                                            const Handle(Standard_Transient)& ctx)
 {
-  if (thectx.IsNull()) thectx = new Dico_DictionaryOfTransient;
-  thectx->SetItem (name,ctx);
+  thectx.Bind(name,ctx);
 }
 
 
@@ -127,8 +125,10 @@ Standard_Boolean Transfer_TransientProcess::GetContext
   (const Standard_CString name, const Handle(Standard_Type)& type,
    Handle(Standard_Transient)& ctx) const
 {
-  if (thectx.IsNull()) return Standard_False;
-  if (!thectx->GetItem (name,ctx)) ctx.Nullify();
+  if (thectx.IsEmpty()) return Standard_False;
+  if (!thectx.Find(name, ctx))
+    ctx.Nullify();
+
   if (ctx.IsNull()) return Standard_False;
   if (type.IsNull()) return Standard_True;
   if (!ctx->IsKind(type)) ctx.Nullify();
@@ -141,7 +141,7 @@ Standard_Boolean Transfer_TransientProcess::GetContext
 //purpose  : 
 //=======================================================================
 
-Handle(Dico_DictionaryOfTransient)& Transfer_TransientProcess::Context ()
+NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& Transfer_TransientProcess::Context ()
 {
   return thectx;
 }

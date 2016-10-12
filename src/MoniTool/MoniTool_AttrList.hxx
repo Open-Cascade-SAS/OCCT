@@ -27,9 +27,9 @@
 #include <MoniTool_ValueType.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-class Dico_DictionaryOfTransient;
-class Standard_Transient;
-
+#include <NCollection_DataMap.hxx>
+#include <Standard_Transient.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //! a AttrList allows to record a list of attributes as Transients
 //! which can be edited, changed ...
@@ -111,7 +111,7 @@ public:
   Standard_EXPORT Standard_CString StringAttribute (const Standard_CString name) const;
   
   //! Returns the exhaustive list of attributes
-  Standard_EXPORT Handle(Dico_DictionaryOfTransient) AttrList() const;
+  Standard_EXPORT const NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& AttrList() const;
   
   //! Gets the list of attributes from <other>, as such, i.e.
   //! not copied : attributes are shared, any attribute edited,
@@ -145,7 +145,7 @@ private:
 
 
 
-  Handle(Dico_DictionaryOfTransient) theattrib;
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> theattrib;
 
 
 };

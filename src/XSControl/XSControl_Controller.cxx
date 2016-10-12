@@ -12,9 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Dico_DictionaryOfTransient.hxx>
-#include <Dico_IteratorOfDictionaryOfInteger.hxx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
 #include <IFSelect_DispPerCount.hxx>
 #include <IFSelect_DispPerFiles.hxx>
 #include <IFSelect_DispPerOne.hxx>
@@ -69,12 +66,8 @@ IMPLEMENT_STANDARD_RTTIEXT(XSControl_Controller,MMgt_TShared)
 
 //  ParamEditor
 //  Transferts
-static const Handle(Dico_DictionaryOfTransient)& listadapt()
-{
-  static Handle(Dico_DictionaryOfTransient) listad;
-  if (listad.IsNull()) listad = new Dico_DictionaryOfTransient;
-  return listad;
-}
+
+static NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> listad;
 
 //=======================================================================
 //function : XSControl_Controller
@@ -127,16 +120,15 @@ void XSControl_Controller::SetNames (const Standard_CString theLongName, const S
 
 void XSControl_Controller::Record (const Standard_CString theName) const
 {
-  Standard_Boolean isAlreadyRegistered = Standard_False;
-  Handle(Standard_Transient)& newadapt = listadapt()->NewItem(theName,isAlreadyRegistered);
-  if (isAlreadyRegistered) {
-    Handle(Standard_Transient) thisadapt (this);
+  if (listad.IsBound(theName)) {
+    Handle(Standard_Transient) thisadapt(this);
+    Handle(Standard_Transient) newadapt = listad.ChangeFind(theName);
     if (newadapt->IsKind(thisadapt->DynamicType()))
       return;
     if (!(thisadapt->IsKind(newadapt->DynamicType())) && thisadapt != newadapt)
       Standard_DomainError::Raise("XSControl_Controller : Record");
   }
-  newadapt = this;
+  listad.Bind(theName, this);
 }
 
 //=======================================================================
@@ -144,10 +136,10 @@ void XSControl_Controller::Record (const Standard_CString theName) const
 //purpose  : 
 //=======================================================================
 
-Handle(XSControl_Controller) XSControl_Controller::Recorded (const Standard_CString theName)
+Handle(XSControl_Controller) XSControl_Controller::Recorded(const Standard_CString theName)
 {
   Handle(Standard_Transient) recorded;
-  return (listadapt()->GetItem(theName,recorded)?
+  return (listad.Find(theName, recorded)?
     Handle(XSControl_Controller)::DownCast(recorded) :
     Handle(XSControl_Controller)());
 }
@@ -366,9 +358,7 @@ void XSControl_Controller::AddSessionItem
   (const Handle(Standard_Transient)& theItem, const Standard_CString theName, const Standard_Boolean toApply)
 {
   if (theItem.IsNull() || theName[0] == '\0') return;
-  if (myAdaptorSession.IsNull())
-    myAdaptorSession = new Dico_DictionaryOfTransient;
-  myAdaptorSession->SetItem (theName,theItem);
+  myAdaptorSession.Bind(theName,theItem);
   if (toApply && theItem->IsKind(STANDARD_TYPE(IFSelect_GeneralModifier)))
     myAdaptorApplied.Append(theItem);
 }
@@ -381,8 +371,8 @@ void XSControl_Controller::AddSessionItem
 Handle(Standard_Transient)  XSControl_Controller::SessionItem (const Standard_CString theName) const
 {
   Handle(Standard_Transient) item;
-  if (!myAdaptorSession.IsNull())
-    myAdaptorSession->GetItem (theName,item);
+  if (!myAdaptorSession.IsEmpty())
+    item = myAdaptorSession.Find(theName);
   return item;
 }
 
@@ -396,10 +386,10 @@ void XSControl_Controller::Customise (Handle(XSControl_WorkSession)& WS)
   WS->SetParams (myParams,myParamUses);
 
   // General
-  if (!myAdaptorSession.IsNull()) {
-    Dico_IteratorOfDictionaryOfTransient iter(myAdaptorSession);
-    for (iter.Start(); iter.More(); iter.Next())
-      WS->AddNamedItem (iter.Name().ToCString(), iter.Value());
+  if (!myAdaptorSession.IsEmpty()) {
+    NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator iter(myAdaptorSession);
+    for (; iter.More(); iter.Next())
+      WS->AddNamedItem (iter.Key().ToCString(), iter.ChangeValue());
   }
 
   if (WS->NamedItem("xst-model-all").IsNull()) {

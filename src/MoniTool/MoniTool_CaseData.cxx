@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Dico_DictionaryOfInteger.hxx>
-#include <Dico_DictionaryOfTransient.hxx>
 #include <Geom2d_CartesianPoint.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_CartesianPoint.hxx>
@@ -32,26 +30,12 @@
 #include <TopAbs.hxx>
 #include <TopoDS_HShape.hxx>
 #include <TopoDS_Shape.hxx>
+#include <NCollection_DataMap.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MoniTool_CaseData,MMgt_TShared)
 
-//#include <GeomTools.hxx>
-// definitions
-static Handle(Dico_DictionaryOfInteger)& defchecks()
-{
-  static Handle(Dico_DictionaryOfInteger) defch;
-  if (defch.IsNull()) defch = new Dico_DictionaryOfInteger();
-  return defch;
-}
-
-static Handle(Dico_DictionaryOfTransient)& defmess()
-{
-  static Handle(Dico_DictionaryOfTransient) defms;
-  if (defms.IsNull()) defms = new Dico_DictionaryOfTransient();
-  return defms;
-}
-
-
+static NCollection_DataMap<TCollection_AsciiString, Standard_Integer> defch;
+static NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> defms;
 static Standard_Boolean stachr = Standard_False;
 
 //static OSD_Timer chrono;
@@ -411,15 +395,16 @@ Message_Msg  MoniTool_CaseData::Msg () const
 
 
     void  MoniTool_CaseData::SetDefWarning (const Standard_CString acode)
-      {  defchecks()->SetItem (acode,1);  }
+      {  defch.Bind(acode,1);  }
 
     void  MoniTool_CaseData::SetDefFail (const Standard_CString acode)
-      {  defchecks()->SetItem (acode,2);  }
+      {  defch.Bind(acode,2);  }
 
     Standard_Integer  MoniTool_CaseData::DefCheck (const Standard_CString acode)
 {
   Standard_Integer val;
-  if (!defchecks()->GetItem (acode,val)) val = 0;
+  if (!defch.Find(acode, val))
+    val = 0;
   return val;
 }
 
@@ -428,14 +413,14 @@ Message_Msg  MoniTool_CaseData::Msg () const
   (const Standard_CString casecode, const Standard_CString mesdef)
 {
   Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString (mesdef);
-  defmess()->SetItem (casecode,str);
+  defms.Bind(casecode,str);
 }
 
     Standard_CString MoniTool_CaseData::DefMsg (const Standard_CString casecode)
 {
-  //Standard_CString mesd;
-  Handle(TCollection_HAsciiString) str;
-  if (!defmess()->GetItem (casecode,str)) return "";
+  Handle(Standard_Transient) aTStr;
+  if (!defms.Find(casecode, aTStr)) return "";
+  Handle(TCollection_HAsciiString) str = Handle(TCollection_HAsciiString)::DownCast(aTStr);
   if (str.IsNull()) return "";
   return str->ToCString();
 }

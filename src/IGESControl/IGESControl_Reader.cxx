@@ -15,10 +15,6 @@
 //abv 10.04.99 S4136: eliminate using BRepAPI::Precision()
 
 #include <BRepLib.hxx>
-#include <Dico_DictionaryOfInteger.hxx>
-#include <Dico_DictionaryOfTransient.hxx>
-#include <Dico_IteratorOfDictionaryOfInteger.hxx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
 #include <IFSelect_CheckCounter.hxx>
 #include <IFSelect_Functions.hxx>
 #include <IGESControl_Controller.hxx>
@@ -35,6 +31,7 @@
 #include <Interface_Static.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
+#include <NCollection_DataMap.hxx>
 #include <OSD_Timer.hxx>
 #include <ShapeExtend_Explorer.hxx>
 #include <ShapeFix_ShapeTolerance.hxx>
@@ -151,39 +148,39 @@ void  IGESControl_Reader::PrintTransferInfo
     nbRoots = TP->NbRoots();
     //nbResults = TP->NbMapped();
     Transfer_IteratorOfProcessForTransient iterTrans = TP->RootResult(Standard_True);
-    Handle(Dico_DictionaryOfInteger) dicoCountResult = new Dico_DictionaryOfInteger;
-    Handle(Dico_DictionaryOfInteger) dicoCountMapping = new Dico_DictionaryOfInteger;
+    NCollection_DataMap<TCollection_AsciiString, Standard_Integer> aMapCountResult;
+    NCollection_DataMap<TCollection_AsciiString, Standard_Integer> aMapCountMapping;
     for (iterTrans.Start(); iterTrans.More() ; iterTrans.Next() ) {
       nbResults++;
       // Init for dicoCountResult for IFSelect_ResultCount
       if ( mode == IFSelect_ResultCount ) {
-	char mess[300];
-	const Handle(Transfer_Binder) aBinder = iterTrans.Value();
-	sprintf(mess,"\t%s",aBinder->ResultTypeName());
-	Standard_Boolean deja;
-	Standard_Integer& nb = dicoCountResult->NewItem(mess,deja);
-	if (!deja) nb = 0;
-	nb ++;	
+        char mess[300];
+        const Handle(Transfer_Binder) aBinder = iterTrans.Value();
+        sprintf(mess,"\t%s",aBinder->ResultTypeName());
+        if (aMapCountResult.IsBound(mess))
+          aMapCountResult.ChangeFind(mess)++;
+        else
+          aMapCountResult.Bind(mess,1);
       }
       // Init for dicoCountMapping for IFSelect_Mapping
       else if ( mode == IFSelect_Mapping ) {
-	char mess[300];
-	const Handle(Transfer_Binder) aBinder = iterTrans.Value();
-	DeclareAndCast(IGESData_IGESEntity,igesEnt,iterTrans.Starting());
-	
-	sprintf(mess,"%d\t%d\t%s\t%s", igesEnt->TypeNumber(), igesEnt->FormNumber(),
-		"%d", aBinder->ResultTypeName());
-	//cout << mess << endl;
-	Standard_Boolean deja;
-	Standard_Integer& nb = dicoCountMapping->NewItem(mess,deja);
-	if (!deja) nb = 0;
-	nb ++;
-      } 
+        char mess[300];
+        const Handle(Transfer_Binder) aBinder = iterTrans.Value();
+        DeclareAndCast(IGESData_IGESEntity,igesEnt,iterTrans.Starting());
+
+        sprintf(mess,"%d\t%d\t%s\t%s", igesEnt->TypeNumber(), igesEnt->FormNumber(),
+        "%d", aBinder->ResultTypeName());
+        //cout << mess << endl;
+        if (aMapCountMapping.IsBound(mess))
+          aMapCountMapping.ChangeFind(mess)++;
+        else
+          aMapCountMapping.Bind(mess, 1);
+      }
     }
 
     Interface_CheckIterator checkIterator = TP->CheckList(Standard_False);
-    Handle(Dico_DictionaryOfInteger) dicoCount = new Dico_DictionaryOfInteger;
-    Handle(Dico_DictionaryOfTransient) dicoList = new Dico_DictionaryOfTransient;
+    NCollection_DataMap<TCollection_AsciiString, Standard_Integer> aMapCount;
+    NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfInteger)> aMapList;
     // Init the dicoCount dicoList and nbWarn ,nb Fail.
     for(checkIterator.Start(); checkIterator.More(); checkIterator.Next() ) {
       char mess[300];
@@ -193,27 +190,36 @@ void  IGESControl_Reader::PrintTransferInfo
       Standard_Integer type = igesEnt->TypeNumber(), form = igesEnt->FormNumber();
       Standard_Integer nw = aCheck->NbWarnings(), nf = aCheck->NbFails(), i;
       for(i = 1; (failsonly==IFSelect_FailAndWarn) && (i<= nw); i++) {
-	sprintf(mess,"\t W\t%d\t%d\t%s",type,form,aCheck->CWarning(i));
-	Standard_Boolean deja;
-	Standard_Integer& nb = dicoCount->NewItem(mess,deja);
-	if (!deja) nb = 0;
-	nb ++;
-	Handle(Standard_Transient)& anitem = dicoList->NewItem(mess,deja);
-	DeclareAndCast(TColStd_HSequenceOfInteger,alist,anitem);
-	if (!deja) { alist = new TColStd_HSequenceOfInteger(); anitem = alist;  }
-	alist->Append(model->Number(igesEnt)*2-1);
+        sprintf(mess,"\t W\t%d\t%d\t%s",type,form,aCheck->CWarning(i));
+        if (aMapCount.IsBound(mess))
+          aMapCount.ChangeFind(mess)++;
+        else
+          aMapCount.Bind(mess, 1);
+
+        Handle(TColStd_HSequenceOfInteger) alist;
+        if (aMapList.IsBound(mess))
+          alist = aMapList.ChangeFind(mess);
+        else {
+          alist = new TColStd_HSequenceOfInteger();
+          aMapList.Bind(mess, alist);
+        }
+        alist->Append(model->Number(igesEnt)*2-1);
       }
       for(i = 1; i<= nf; i++) {
-	sprintf(mess,"\t F\t%d\t%d\t%s",type,form,aCheck->CFail(i));
-	// TF << mess << endl;
-	Standard_Boolean deja;
-	Standard_Integer& nb = dicoCount->NewItem(mess,deja);
-	if (!deja) nb = 0;
-	nb ++;
-	Handle(Standard_Transient)& anitem = dicoList->NewItem(mess,deja);
-	DeclareAndCast(TColStd_HSequenceOfInteger,alist,anitem);
-	if (!deja) { alist = new TColStd_HSequenceOfInteger(); anitem = alist;  }
-	alist->Append(model->Number(igesEnt)*2-1);
+        sprintf(mess,"\t F\t%d\t%d\t%s",type,form,aCheck->CFail(i));
+        // TF << mess << endl;
+        if (aMapCount.IsBound(mess))
+          aMapCount.ChangeFind(mess)++;
+        else
+          aMapCount.Bind(mess, 1);
+        Handle(TColStd_HSequenceOfInteger) alist;
+        if (aMapList.IsBound(mess))
+          alist = aMapList.ChangeFind(mess);
+        else {
+          alist = new TColStd_HSequenceOfInteger();
+          aMapList.Bind(mess, alist);
+        }
+        alist->Append(model->Number(igesEnt)*2-1);
       }
       nbWarn += nw;
       nbFail += nf;
@@ -235,33 +241,32 @@ void  IGESControl_Reader::PrintTransferInfo
     case IFSelect_ListByItem : {
       Message_Msg msg3030("IGES_3030");
       TF->Send(msg3030, Message_Info);
-      Dico_IteratorOfDictionaryOfInteger dicoCountIter(dicoCount);
-      Dico_IteratorOfDictionaryOfTransient dicoListIter(dicoList);
-      for(dicoCountIter.Start(),dicoListIter.Start(); 
-	  dicoCountIter.More() && dicoListIter.More();
-	  dicoCountIter.Next(),dicoListIter.Next()) {
-	TF << dicoCountIter.Value() << dicoCountIter.Name() << endl;
-	if (mode == IFSelect_ListByItem) {
-	  DeclareAndCast(TColStd_HSequenceOfInteger, entityList, dicoListIter.Value());
-	  Standard_Integer length = entityList->Length();
-	  Message_Msg msg3035("IGES_3035");
-	  TF->Send(msg3035, Message_Info);
-	  char line[80];
-	  sprintf(line,"\t\t\t");
-	  TF << line ;
-	  Standard_Integer nbInLine =0;
-	  for(Standard_Integer i = 1; i <= length ; i++ ) {
-	    // IDT_Out << (entityList->Value(i)) << " ";
-	    sprintf(line,"\t %d", entityList->Value(i));
-	    TF << line ;
-	    if (++nbInLine == 6) {
-	      nbInLine = 0;
-	      sprintf(line,"\n\t\t\t");
-	      TF << line ;
-	    }
-	  }
-	  TF << endl ;
-	}
+      NCollection_DataMap<TCollection_AsciiString, Standard_Integer>::Iterator aMapCountIter(aMapCount);
+      NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfInteger)>::Iterator aMapListIter(aMapList);
+      for(; aMapCountIter.More() && aMapListIter.More();
+            aMapCountIter.Next(), aMapListIter.Next()) {
+        TF << aMapCountIter.Value() << aMapCountIter.Key() << endl;
+        if (mode == IFSelect_ListByItem) {
+          Handle(TColStd_HSequenceOfInteger) entityList = aMapListIter.Value();
+          Standard_Integer length = entityList->Length();
+          Message_Msg msg3035("IGES_3035");
+          TF->Send(msg3035, Message_Info);
+          char line[80];
+          sprintf(line, "\t\t\t");
+          TF << line;
+          Standard_Integer nbInLine = 0;
+          for (Standard_Integer i = 1; i <= length; i++) {
+            // IDT_Out << (entityList->Value(i)) << " ";
+            sprintf(line, "\t %d", entityList->Value(i));
+            TF << line;
+            if (++nbInLine == 6) {
+              nbInLine = 0;
+              sprintf(line, "\n\t\t\t");
+              TF << line;
+            }
+          }
+          TF << endl;
+        }
       }
       break;
     }
@@ -270,9 +275,11 @@ void  IGESControl_Reader::PrintTransferInfo
       Message_Msg msg3011("IGES_3011");msg3011.Arg(nbRoots);TF->Send(msg3011, Message_Info);      
       Message_Msg msg3015("IGES_3015");msg3015.Arg(nbResults);TF->Send(msg3015, Message_Info);
       Message_Msg msg3045("IGES_3045");TF->Send(msg3045, Message_Info);
-      Dico_IteratorOfDictionaryOfInteger dicoCountIter(dicoCountResult);
-      for(dicoCountIter.Start(); dicoCountIter.More(); dicoCountIter.Next()) {
-	TF << dicoCountIter.Value() << dicoCountIter.Name() << endl;
+
+      NCollection_DataMap<TCollection_AsciiString, Standard_Integer>::Iterator aMapIter(aMapCountResult);
+      for (; aMapIter.More(); aMapIter.Next())
+      {
+        TF << aMapIter.Key() << aMapIter.Value() << endl;
       }
       break;
     }
@@ -283,26 +290,26 @@ void  IGESControl_Reader::PrintTransferInfo
       Message_Msg msg3045("IGES_3055");TF->Send(msg3045, Message_Info);
       // Add failed entities in dicoCountMapping
       if (nbRoots!=nbResults) {
-	for( Standard_Integer i = 1; i <= nbRoots ; i++) {
-	  DeclareAndCast(IGESData_IGESEntity, root, TP->Root(i));
-	  if (!TP->IsBound(root)) {
-	    char mess[300];
-    
-	    sprintf(mess,"%d\t%d \t%s\t%s", root->TypeNumber(), root->FormNumber(),
-		    "%d", "Failed");
-	    //cout << mess << endl;
-	    Standard_Boolean deja;
-	    Standard_Integer& nb = dicoCountMapping->NewItem(mess,deja);
-	if (!deja) nb = 0;
-	    nb ++;	    
-	  }
-	}
+        for (Standard_Integer i = 1; i <= nbRoots; i++) {
+          DeclareAndCast(IGESData_IGESEntity, root, TP->Root(i));
+          if (!TP->IsBound(root)) {
+            char mess[300];
+
+            sprintf(mess, "%d\t%d \t%s\t%s", root->TypeNumber(), root->FormNumber(),
+              "%d", "Failed");
+            //cout << mess << endl;
+            if (aMapCountMapping.IsBound(mess))
+              aMapCountMapping.ChangeFind(mess)++;
+            else
+              aMapCountMapping.Bind(mess, 1);
+          }
+        }
       }
-      Dico_IteratorOfDictionaryOfInteger dicoCountIter(dicoCountMapping);
-      for(dicoCountIter.Start(); dicoCountIter.More(); dicoCountIter.Next()) {
-	char mess[80];
-	sprintf(mess, dicoCountIter.Name().ToCString() , dicoCountIter.Value());
-	TF << mess << endl; //dicoCountIter.Value() << dicoCountIter.Name() << endl;
+      NCollection_DataMap<TCollection_AsciiString, Standard_Integer>::Iterator aMapCountIter(aMapCountMapping);
+      for(; aMapCountIter.More(); aMapCountIter.Next()) {
+        char mess[80];
+        sprintf(mess, aMapCountIter.Key().ToCString(), aMapCountIter.Value());
+        TF << mess << endl; //dicoCountIter.Value() << dicoCountIter.Name() << endl;
       }
       break;
     }

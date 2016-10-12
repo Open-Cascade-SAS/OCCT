@@ -17,6 +17,7 @@
 #ifndef _IFSelect_SessionFile_HeaderFile
 #define _IFSelect_SessionFile_HeaderFile
 
+#include <NCollection_DataMap.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
@@ -28,8 +29,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Character.hxx>
+
 class IFSelect_WorkSession;
-class Dico_DictionaryOfInteger;
 class TCollection_AsciiString;
 class Standard_Transient;
 
@@ -279,7 +280,7 @@ protected:
 
   Handle(IFSelect_WorkSession) thesess;
   Handle(TColStd_HArray1OfInteger) thenums;
-  Handle(Dico_DictionaryOfInteger) thenames;
+  NCollection_DataMap<TCollection_AsciiString, Standard_Integer> thenames;
   Standard_Integer thenl;
   TColStd_SequenceOfAsciiString theline;
 

@@ -1081,6 +1081,9 @@ The following obsolete features have been removed:
 * Class *NCollection_QuickSort* has been removed.
   The code that used the tools provided by that class should be corrected manually.
   The recommended approach is to use sorting algorithms provided by STL.
+* Package *Dico* has been removed.
+  The code that used the tools provided by that package should be corrected manually.
+  The recommended approach is to use NCollection_DataMap and NCollection_IndexedDataMap classes.
 
 @subsection upgrade_occt710_correction_of_TObj_Model Correction in TObj_Model class
 

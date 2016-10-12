@@ -44,7 +44,6 @@
 #include <STEPCAFControl_DataMapOfPDExternFile.hxx>
 #include <STEPCAFControl_DataMapOfSDRExternFile.hxx>
 #include <STEPCAFControl_DataMapOfShapePD.hxx>
-#include <STEPCAFControl_DictionaryOfExternFile.hxx>
 #include <STEPCAFControl_ExternFile.hxx>
 #include <STEPCAFControl_Reader.hxx>
 #include <STEPConstruct.hxx>
@@ -322,7 +321,6 @@ STEPCAFControl_Reader::STEPCAFControl_Reader ():
        myMatMode  ( Standard_True )
 {
   STEPCAFControl_Controller::Init();
-  myFiles = new STEPCAFControl_DictionaryOfExternFile;
 }
 
 
@@ -356,7 +354,7 @@ void STEPCAFControl_Reader::Init (const Handle(XSControl_WorkSession)& WS,
 {
 // necessary only in Writer, to set good actor:  WS->SelectNorm ( "STEP" );
   myReader.SetWS (WS,scratch);
-  myFiles = new STEPCAFControl_DictionaryOfExternFile;
+  myFiles.Clear();
 }
 
 
@@ -438,7 +436,7 @@ Standard_Boolean STEPCAFControl_Reader::Perform (const TCollection_AsciiString &
 //purpose  : 
 //=======================================================================
 
-const Handle(STEPCAFControl_DictionaryOfExternFile) &STEPCAFControl_Reader::ExternFiles () const
+const   NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)>& STEPCAFControl_Reader::ExternFiles () const
 {
   return myFiles;
 }
@@ -453,9 +451,9 @@ Standard_Boolean STEPCAFControl_Reader::ExternFile (const Standard_CString name,
 						    Handle(STEPCAFControl_ExternFile) &ef) const
 {
   ef.Nullify();
-  if ( myFiles.IsNull() || ! myFiles->HasItem ( name ) ) 
+  if ( myFiles.IsEmpty() || !myFiles.IsBound ( name ) ) 
     return Standard_False;
-  ef = myFiles->Item ( name );
+  ef = myFiles.Find ( name );
   return Standard_True;
 }
 
@@ -800,8 +798,8 @@ Handle(STEPCAFControl_ExternFile) STEPCAFControl_Reader::ReadExternFile (const S
 									 Handle(TDocStd_Document)& doc) 
 {
   // if the file is already read, associate it with SDR
-  if ( myFiles->HasItem ( file, Standard_True ) ) {
-    return myFiles->Item ( file );
+  if ( myFiles.IsBound ( file ) ) {
+    return myFiles.ChangeFind ( file );
   }
 
 #ifdef OCCT_DEBUG
@@ -829,7 +827,7 @@ Handle(STEPCAFControl_ExternFile) STEPCAFControl_Reader::ReadExternFile (const S
   }
   
   // add read file to dictionary
-  myFiles->SetItem ( file, EF );
+  myFiles.Bind( file, EF );
   
   return EF;
 }

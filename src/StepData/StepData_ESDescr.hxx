@@ -26,9 +26,10 @@
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-class Dico_DictionaryOfInteger;
+#include <NCollection_DataMap.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <Standard_Transient.hxx>
 class StepData_PDescr;
-class TCollection_AsciiString;
 class StepData_Described;
 
 
@@ -117,7 +118,7 @@ private:
 
   TCollection_AsciiString thenom;
   Handle(TColStd_HArray1OfTransient) thedescr;
-  Handle(Dico_DictionaryOfInteger) thenames;
+  NCollection_DataMap<TCollection_AsciiString, Standard_Integer> thenames;
   Handle(StepData_ESDescr) thebase;
   Handle(StepData_ESDescr) thesuper;
 

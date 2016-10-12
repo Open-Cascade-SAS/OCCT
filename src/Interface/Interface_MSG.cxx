@@ -12,11 +12,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Dico_DictionaryOfInteger.hxx>
-#include <Dico_DictionaryOfTransient.hxx>
-#include <Dico_IteratorOfDictionaryOfInteger.hxx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
 #include <Interface_MSG.hxx>
+#include <NCollection_DataMap.hxx>
 #include <OSD_Process.hxx>
 #include <Quantity_Date.hxx>
 #include <Standard_DomainError.hxx>
@@ -25,8 +22,8 @@
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 
 #include <stdio.h>
-static Handle(Dico_DictionaryOfTransient) thedic;
-static Handle(Dico_DictionaryOfInteger)   thelist;
+static NCollection_DataMap<TCollection_AsciiString, Handle(TCollection_HAsciiString)> thedic;
+static NCollection_DataMap<TCollection_AsciiString, Standard_Integer>                 thelist;
 static Handle(TColStd_HSequenceOfHAsciiString) thedup;
 static Standard_Boolean theprint  = Standard_True;
 static Standard_Boolean therec    = Standard_False;
@@ -156,13 +153,13 @@ Standard_Integer  Interface_MSG::Read (Standard_IStream& S)
   (Standard_OStream& S, const Standard_CString rootkey)
 {
   Standard_Integer nb = 0;
-  if (thedic.IsNull()) return nb;
+  if (thedic.IsEmpty()) return nb;
   if (rootkey[0] != '\0') S<<"@@ ROOT:"<<rootkey<<endl;
-  Dico_IteratorOfDictionaryOfTransient iter (thedic,rootkey);
-  for (iter.Start(); iter.More(); iter.Next()) {
-    S<<"@"<<iter.Name()<<"\n";
-    Handle(TCollection_HAsciiString) str =
-      Handle(TCollection_HAsciiString)::DownCast(iter.Value());
+  NCollection_DataMap<TCollection_AsciiString, Handle(TCollection_HAsciiString)>::Iterator iter(thedic);
+  for (; iter.More(); iter.Next()) {
+    if (!iter.Key().StartsWith(rootkey)) continue;
+    S<<"@"<<iter.Key()<<"\n";
+    const Handle(TCollection_HAsciiString) str = iter.Value();
     if (str.IsNull()) continue;
     nb ++;
     S<<str->ToCString()<<"\n";
@@ -183,16 +180,17 @@ Standard_Boolean  Interface_MSG::IsKey (const Standard_CString key)
 Standard_CString  Interface_MSG::Translated (const Standard_CString key)
 {
   if (!therun) return key;
-  if (!thedic.IsNull()) {
+  if (!thedic.IsEmpty()) {
     Handle(TCollection_HAsciiString) str;
-    if (thedic->GetItem(key,str)) return str->ToCString();
+    if (thedic.Find(key, str))
+      return str->ToCString();
   }
   if (theprint) cout<<" **  Interface_MSG:Translate ?? "<<key<<"  **"<<endl;
   if (therec) {
-    Standard_Boolean deja;
-    if (thelist.IsNull()) thelist = new Dico_DictionaryOfInteger;
-    Standard_Integer& nb = thelist->NewItem (key,deja);
-    if (!deja) nb = 0;  nb ++;
+    if (thelist.IsBound(key)) {
+      thelist.ChangeFind(key)++;
+    } else
+      thelist.Bind(key, 1);
   }
   if (theraise) Standard_DomainError::Raise ("Interface_MSG : Translate");
   return key;
@@ -200,15 +198,16 @@ Standard_CString  Interface_MSG::Translated (const Standard_CString key)
 
 
 void  Interface_MSG::Record
-  (const Standard_CString key, const Standard_CString item)
+(const Standard_CString key, const Standard_CString item)
 {
-  if (thedic.IsNull()) thedic = new Dico_DictionaryOfTransient;
-  Standard_Boolean deja;
   Handle(TCollection_HAsciiString) dup;
-  Handle(Standard_Transient)& res = thedic->NewItem (key,deja);
-  Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString (item);
-  res = str;
-  if (!deja) return;
+  Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(item);
+  if (thedic.IsBound(key)) {
+    thedic.ChangeFind(key) = str;
+  } else {
+    thedic.Bind(key,str);
+    return;
+  }
   if (theprint) cout<<" **  Interface_MSG:Record ?? "<<key<<" ** "<<item<<"  **"<<endl;
   if (therec) {
     if (thedup.IsNull()) thedup = new TColStd_HSequenceOfHAsciiString();
@@ -248,10 +247,10 @@ void  Interface_MSG::PrintTrace (Standard_OStream& S)
     S<<" ** "<<dup->ToCString()<<endl;
   }
 
-  if (thelist.IsNull()) return;
-  Dico_IteratorOfDictionaryOfInteger iter (thelist);
-  for (iter.Start(); iter.More(); iter.Next()) {
-    S<<"** MSG(NB="<<iter.Value()<<"): "<<iter.Name()<<endl;
+  if (thelist.IsEmpty()) return;
+  NCollection_DataMap<TCollection_AsciiString, Standard_Integer>::Iterator iter(thelist);
+  for (; iter.More(); iter.Next()) {
+    S<<"** MSG(NB="<<iter.Value()<<"): "<<iter.Key()<<endl;
   }
 }
 

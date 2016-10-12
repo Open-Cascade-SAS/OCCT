@@ -29,10 +29,6 @@ class ShapeProcess_ShapeContext;
 class ShapeProcess_Operator;
 class ShapeProcess_UOperator;
 class ShapeProcess_OperLibrary;
-class ShapeProcess_DictionaryOfOperator;
-class ShapeProcess_IteratorOfDictionaryOfOperator;
-class ShapeProcess_StackItemOfDictionaryOfOperator;
-
 
 //! Shape Processing module
 //! allows to define and apply general Shape Processing as a
@@ -77,9 +73,6 @@ friend class ShapeProcess_ShapeContext;
 friend class ShapeProcess_Operator;
 friend class ShapeProcess_UOperator;
 friend class ShapeProcess_OperLibrary;
-friend class ShapeProcess_DictionaryOfOperator;
-friend class ShapeProcess_IteratorOfDictionaryOfOperator;
-friend class ShapeProcess_StackItemOfDictionaryOfOperator;
 
 };
 

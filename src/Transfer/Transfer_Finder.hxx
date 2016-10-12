@@ -19,7 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
+#include <Standard_Transient.hxx>
 
+#include <NCollection_DataMap.hxx>
 #include <Standard_Integer.hxx>
 #include <MMgt_TShared.hxx>
 #include <Standard_Boolean.hxx>
@@ -27,8 +29,8 @@
 #include <Standard_CString.hxx>
 #include <Interface_ParamType.hxx>
 #include <Standard_Real.hxx>
-class Dico_DictionaryOfTransient;
-class Standard_Transient;
+#include <TCollection_AsciiString.hxx>
+
 
 
 class Transfer_Finder;
@@ -123,7 +125,7 @@ public:
   Standard_EXPORT Standard_CString StringAttribute (const Standard_CString name) const;
   
   //! Returns the exhaustive list of attributes
-  Standard_EXPORT Handle(Dico_DictionaryOfTransient) AttrList() const;
+  Standard_EXPORT NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& AttrList();
   
   //! Gets the list of attributes from <other>, as such, i.e.
   //! not copied : attributes are shared, any attribute edited,
@@ -162,7 +164,7 @@ private:
 
 
   Standard_Integer thecode;
-  Handle(Dico_DictionaryOfTransient) theattrib;
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> theattrib;
 
 
 };

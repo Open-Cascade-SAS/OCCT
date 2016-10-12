@@ -13,8 +13,6 @@
 
 //:i1 pdn 03.04.99  BUC60301  
 
-#include <Dico_DictionaryOfTransient.hxx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
 #include <Geom2d_Point.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CheckIterator.hxx>
@@ -148,7 +146,7 @@ Standard_CString XSControl_WorkSession::SelectedNorm(const Standard_Boolean rsc)
 //purpose  : 
 //=======================================================================
 
-void XSControl_WorkSession::SetAllContext(const Handle(Dico_DictionaryOfTransient)& context)
+void XSControl_WorkSession::SetAllContext(const NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& context)
 {
   myContext = context;
   myTransferReader->Context() = context;
@@ -162,8 +160,8 @@ void XSControl_WorkSession::SetAllContext(const Handle(Dico_DictionaryOfTransien
 
 void XSControl_WorkSession::ClearContext ()
 {
-  myContext.Nullify();
-  myTransferReader->Context().Nullify();
+  myContext.Clear();
+  myTransferReader->Context().Clear();
 }
 
 

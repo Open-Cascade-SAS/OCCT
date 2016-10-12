@@ -1124,7 +1124,7 @@ static int TestCMD(Draw_Interpretor& di, Standard_Integer argc, const char ** ar
   return 0;
 }
 
-#include <Dico_DictionaryOfInteger.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 #include <TopExp.hxx>
 #include <TopoDS_Iterator.hxx>
@@ -1140,10 +1140,10 @@ static Standard_Integer statface (Draw_Interpretor& di,Standard_Integer /*argc*/
     di<<"Invalid input shape\n";
     return 1;
   }
-  Handle(Dico_DictionaryOfInteger) aDico = new Dico_DictionaryOfInteger();
+  NCollection_DataMap<TCollection_AsciiString, Standard_Integer> aMap;
   Handle(TColStd_HSequenceOfAsciiString) aSequence = new TColStd_HSequenceOfAsciiString;
   Standard_CString aString;
-  Standard_Integer i=1,j=1,l=1,aa=1;
+  Standard_Integer l=0;
   TopExp_Explorer expl;
   Standard_Real f3d,l3d;
   for(expl.Init(aShape,TopAbs_FACE);expl.More();expl.Next())
@@ -1153,15 +1153,11 @@ static Standard_Integer statface (Draw_Interpretor& di,Standard_Integer /*argc*/
     Handle(Geom_Surface) aSurface = BRep_Tool::Surface(aFace);
     aString = aSurface->DynamicType()->Name();
 
-    if(aDico->GetItem(aString,aa) != 0)
-    {
-      aDico->GetItem(aString,aa);
-      aDico->SetItem(aString,aa+1);
-    } else  {
-      aDico->SetItem(aString,1);
+    if (aMap.IsBound(aString))
+      aMap.ChangeFind(aString)++;
+    else {
+      aMap.Bind(aString, 1);
       aSequence->Append(aString);
-      aa=1;
-      i++;
     }
   }
   // PCURVES
@@ -1173,51 +1169,42 @@ static Standard_Integer statface (Draw_Interpretor& di,Standard_Integer /*argc*/
     TopoDS_Iterator it (aWire); 
     for (; it.More(); it.Next()) {
       TopoDS_Edge Edge = TopoDS::Edge (it.Value());
-    Handle(Geom2d_Curve) aCurve2d = BRep_Tool::CurveOnSurface(Edge,aFace,f3d,l3d);
-    aString = aCurve2d->DynamicType()->Name();
-        if(aDico->GetItem(aString,aa) != 0)
-        {         
-          aDico->GetItem(aString,aa);
-          aDico->SetItem(aString,aa+1);
-        } else  {
-          aDico->SetItem(aString,1);
-          aSequence->Append(aString);
-          i++;
-          aa=1;
-        }
+      Handle(Geom2d_Curve) aCurve2d = BRep_Tool::CurveOnSurface(Edge,aFace,f3d,l3d);
+      aString = aCurve2d->DynamicType()->Name();
+      if(aMap.IsBound(aString))
+        aMap.ChangeFind(aString)++;
+      else  {
+        aMap.Bind(aString, 1);
+        aSequence->Append(aString);
+      }
     }
   }
   // 3d CURVES
   TopExp_Explorer exp;
   for (exp.Init(aShape,TopAbs_EDGE); exp.More(); exp.Next()) 
   {
-      TopoDS_Edge Edge = TopoDS::Edge (exp.Current());
-      Handle(Geom_Curve) aCurve3d = BRep_Tool::Curve (Edge,f3d,l3d);
-      if(aCurve3d.IsNull())
-      {
-        l++;
-        goto aLabel;
-      }
+    TopoDS_Edge Edge = TopoDS::Edge (exp.Current());
+    Handle(Geom_Curve) aCurve3d = BRep_Tool::Curve (Edge,f3d,l3d);
+    if(aCurve3d.IsNull())
+    {
+      l++;
+    } else {
       aString = aCurve3d->DynamicType()->Name();
-        if(aDico->GetItem(aString,aa) != 0)
-        {
-          aDico->GetItem(aString,aa);
-          aDico->SetItem(aString,aa+1);
-        } else  {
-          aDico->SetItem(aString,1);
-          aSequence->Append(aString);
-          i++;
-          aa=1;
-        }
-    aLabel:;
+      if (aMap.IsBound(aString))
+      {
+        aMap.ChangeFind(aString)++;
+      } else {
+        aMap.Bind(aString, 1);
+        aSequence->Append(aString);
+      }
     }
+  }
   // Output 
   di<<"\n";
-  for(j=1;j<i;j++)
-    {
-      aDico->GetItem(aSequence->Value(j),aa);
-      di<<aa<<"   --   "<<aSequence->Value(j).ToCString()<<"\n";
-    }    
+
+  for (Standard_Integer i = 1; i <= aSequence->Length(); i++) {
+    di << aMap.Find(aSequence->Value(i)) << "   --   " << aSequence->Value(i).ToCString() << "\n";
+  }
 
   di<<"\n";
   di<<"Degenerated edges :\n";

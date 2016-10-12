@@ -28,16 +28,17 @@
 #include <MMgt_TShared.hxx>
 #include <NCollection_Vector.hxx>
 #include <IFSelect_ReturnStatus.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_AsciiString.hxx>
 class IFSelect_WorkLibrary;
 class Interface_Protocol;
 class IFSelect_Signature;
 class Transfer_ActorOfTransientProcess;
 class Transfer_ActorOfFinderProcess;
-class Dico_DictionaryOfTransient;
 class Standard_DomainError;
 class XSControl_WorkSession;
 class Interface_InterfaceModel;
-class Standard_Transient;
 class Transfer_FinderProcess;
 class TopoDS_Shape;
 class Interface_CheckIterator;
@@ -187,7 +188,7 @@ class XSControl_Controller : public MMgt_TShared
   //! Customises a WorkSession, by adding to it the recorded items (by AddSessionItem)
   Standard_EXPORT virtual void Customise (Handle(XSControl_WorkSession)& WS);
   
-  const Handle(Dico_DictionaryOfTransient) & AdaptorSession() const
+  const NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> & AdaptorSession() const
   { return myAdaptorSession; }
 
   DEFINE_STANDARD_RTTIEXT(XSControl_Controller,MMgt_TShared)
@@ -209,7 +210,7 @@ class XSControl_Controller : public MMgt_TShared
   //szv:Handle(IFSelect_Signature) mySignType;
   Handle(Transfer_ActorOfTransientProcess) myAdaptorRead;
   Handle(Transfer_ActorOfFinderProcess) myAdaptorWrite;
-  Handle(Dico_DictionaryOfTransient) myAdaptorSession;
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> myAdaptorSession;
 
  private:
 

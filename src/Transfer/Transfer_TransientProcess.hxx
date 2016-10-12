@@ -26,11 +26,12 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Type.hxx>
+#include <Standard_Transient.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_DataMap.hxx>
 class Interface_InterfaceModel;
 class Interface_HGraph;
-class Dico_DictionaryOfTransient;
 class Interface_Graph;
-class Standard_Transient;
 class Message_Messenger;
 class Interface_EntityIterator;
 
@@ -80,7 +81,7 @@ public:
   
   //! Returns (modifiable) the whole definition of Context
   //! Rather for internal use (ex.: preparing and setting in once)
-  Standard_EXPORT Handle(Dico_DictionaryOfTransient)& Context();
+  Standard_EXPORT NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& Context();
   
   //! Specific printing to trace an entity : prints label and type
   //! (if model is set)
@@ -128,7 +129,7 @@ private:
 
   Handle(Interface_InterfaceModel) themodel;
   Handle(Interface_HGraph) thegraph;
-  Handle(Dico_DictionaryOfTransient) thectx;
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> thectx;
   Handle(TColStd_HSequenceOfTransient) thetrroots;
 
 

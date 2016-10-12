@@ -26,33 +26,34 @@
 #include <TColStd_IndexedDataMapOfTransientTransient.hxx>
 #include <MMgt_TShared.hxx>
 #include <NCollection_Vector.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_CString.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
 #include <Standard_Type.hxx>
+#include <Standard_Transient.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <IFSelect_RemainMode.hxx>
 #include <TColStd_SequenceOfTransient.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <IFSelect_PrintCount.hxx>
+#include <TCollection_AsciiString.hxx>
 class IFSelect_ShareOut;
 class IFSelect_WorkLibrary;
 class Interface_Protocol;
 class Interface_InterfaceModel;
 class Interface_HGraph;
 class Interface_GTool;
-class Dico_DictionaryOfTransient;
+
 class IFSelect_ModelCopier;
 class Standard_DomainError;
 class IFSelect_Signature;
-class Standard_Transient;
 class TCollection_HAsciiString;
 class Interface_Graph;
 class Interface_CheckIterator;
 class IFSelect_IntParam;
-class TCollection_AsciiString;
 class IFSelect_Selection;
 class Interface_EntityIterator;
 class IFSelect_SelectionIterator;
@@ -1094,7 +1095,7 @@ public:
   Handle(Interface_HGraph) thegraph;
   Interface_CheckIterator thecheckrun;
   TColStd_IndexedDataMapOfTransientTransient theitems;
-  Handle(Dico_DictionaryOfTransient) thenames;
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> thenames;
 
  private:
 

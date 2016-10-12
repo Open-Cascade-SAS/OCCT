@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Dico_DictionaryOfInteger.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESGraph_DefinitionLevel.hxx>
 #include <IGESSelect_CounterOfLevelNumber.hxx>

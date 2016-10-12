@@ -16,7 +16,6 @@
 
 #include <BRepBuilderAPI.hxx>
 #include <BRepLib.hxx>
-#include <Dico_DictionaryOfTransient.hxx>
 #include <IFSelect_CheckCounter.hxx>
 #include <IFSelect_SignatureList.hxx>
 #include <Interface_Check.hxx>
@@ -123,8 +122,7 @@ void XSControl_TransferReader::SetGraph(const Handle(Interface_HGraph)& graph)
 void XSControl_TransferReader::SetContext(const Standard_CString name,
                                           const Handle(Standard_Transient)& ctx)
 {
-  if (myContext.IsNull()) myContext = new Dico_DictionaryOfTransient;
-  myContext->SetItem (name,ctx);
+  myContext.Bind(name,ctx);
 }
 
 
@@ -137,8 +135,9 @@ Standard_Boolean XSControl_TransferReader::GetContext
   (const Standard_CString name, const Handle(Standard_Type)& type,
    Handle(Standard_Transient)& ctx) const
 {
-  if (myContext.IsNull()) return Standard_False;
-  if (!myContext->GetItem (name,ctx)) ctx.Nullify();
+  if (myContext.IsEmpty()) return Standard_False;
+  if (!myContext.Find(name, ctx))
+    ctx.Nullify();
   if (ctx.IsNull()) return Standard_False;
   if (type.IsNull()) return Standard_True;
   if (!ctx->IsKind(type)) ctx.Nullify();
@@ -755,7 +754,8 @@ Standard_Boolean XSControl_TransferReader::BeginTransfer ()
   actor = Actor();
   myTP->SetActor (actor);        // Set proprement dit
   myTP->SetErrorHandle (Standard_True);
-  myTP->Context() = myContext;
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& aTPContext = myTP->Context();
+  aTPContext = myContext;
   return Standard_True;
 }
 

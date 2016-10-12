@@ -47,9 +47,7 @@
 #include <StepBasic_SiUnitAndPlaneAngleUnit.hxx>
 #include <STEPCAFControl_ActorWrite.hxx>
 #include <STEPCAFControl_Controller.hxx>
-#include <STEPCAFControl_DictionaryOfExternFile.hxx>
 #include <STEPCAFControl_ExternFile.hxx>
-#include <STEPCAFControl_IteratorOfDictionaryOfExternFile.hxx>
 #include <STEPCAFControl_Writer.hxx>
 #include <STEPConstruct.hxx>
 #include <STEPConstruct_DataMapOfAsciiStringTransient.hxx>
@@ -317,7 +315,7 @@ void STEPCAFControl_Writer::Init (const Handle(XSControl_WorkSession)& WS,
 {
   WS->SelectNorm ( "STEP" );
   myWriter.SetWS (WS,scratch);
-  myFiles = new STEPCAFControl_DictionaryOfExternFile;
+  myFiles.Clear();
   myLabEF.Clear();
   myLabels.Clear();
 }
@@ -339,7 +337,7 @@ IFSelect_ReturnStatus STEPCAFControl_Writer::Write (const Standard_CString filen
   TCollection_AsciiString dpath;
   mainfile.SystemName ( dpath );
 
-  STEPCAFControl_IteratorOfDictionaryOfExternFile it ( myFiles );
+  NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)>::Iterator it(myFiles);
   for ( ; it.More(); it.Next() ) {
     Handle(STEPCAFControl_ExternFile) EF = it.Value();
     if ( EF->GetWriteStatus() != IFSelect_RetVoid ) continue;
@@ -433,7 +431,7 @@ Standard_Boolean STEPCAFControl_Writer::Perform (const Handle(TDocStd_Document) 
 //purpose  :
 //=======================================================================
 
-const Handle(STEPCAFControl_DictionaryOfExternFile) &STEPCAFControl_Writer::ExternFiles () const
+const NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)>& STEPCAFControl_Writer::ExternFiles () const
 {
   return myFiles;
 }
@@ -463,9 +461,9 @@ Standard_Boolean STEPCAFControl_Writer::ExternFile (const Standard_CString name,
 						    Handle(STEPCAFControl_ExternFile) &ef) const
 {
   ef.Nullify();
-  if ( ! myFiles.IsNull() || ! myFiles->HasItem ( name ) )
+  if ( ! myFiles.IsEmpty() || ! myFiles.IsBound ( name ) )
     return Standard_False;
-  ef = myFiles->Item ( name );
+  ef = myFiles.Find( name );
   return Standard_True;
 }
 
@@ -741,13 +739,13 @@ TopoDS_Shape STEPCAFControl_Writer::TransferExternFiles (const TDF_Label &L,
     GetLabelName ( L, basename );
     Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString ( basename );
     name->AssignCat ( ".stp" );
-    if ( myFiles->HasItem ( name->ToCString() ) ) { // avoid confusions
+    if ( myFiles.IsBound( name->ToCString() ) ) { // avoid confusions
       for ( Standard_Integer k=1; k < 32000; k++ ) {
-	name = new TCollection_HAsciiString ( basename );
-	name->AssignCat ( "_" );
-	name->AssignCat ( TCollection_AsciiString ( k ).ToCString() );
-	name->AssignCat ( ".stp" );
-	if ( ! myFiles->HasItem ( name->ToCString() ) ) break;
+        name = new TCollection_HAsciiString ( basename );
+        name->AssignCat ( "_" );
+        name->AssignCat ( TCollection_AsciiString ( k ).ToCString() );
+        name->AssignCat ( ".stp" );
+        if ( ! myFiles.IsBound ( name->ToCString() ) ) break;
       }
     }
 
@@ -762,7 +760,7 @@ TopoDS_Shape STEPCAFControl_Writer::TransferExternFiles (const TDF_Label &L,
     EF->SetTransferStatus ( Transfer ( sw, Lseq, mode, multi, Standard_True ) );
     Interface_Static::SetIVal ("write.step.assembly", assemblymode);
     myLabEF.Bind ( L, EF );
-    myFiles->SetItem ( name->ToCString(), EF );
+    myFiles.Bind ( name->ToCString(), EF );
 
     // return empty compound as replacement for the shape
     myLabels.Bind ( L, C );

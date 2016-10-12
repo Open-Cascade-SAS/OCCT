@@ -11,13 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Dico_DictionaryOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 #include <Interface_DataMapIteratorOfDataMapOfTransientInteger.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Protocol.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
 #include <StepData_Described.hxx>
 #include <StepData_ECDescr.hxx>
 #include <StepData_EDescr.hxx>
@@ -125,17 +123,16 @@ void  StepData_Protocol::AddDescr
 //  Simple : memorisee selon son nom
 //  sinon que faire ? on memorise selon le numero passe en alpha-num ...
 //   (temporaire)
-  if (thedscnam.IsNull()) thedscnam = new Dico_DictionaryOfTransient;
-  if (!sd.IsNull()) thedscnam->SetItem (sd->TypeName(),sd);
+  if (!sd.IsNull()) thedscnam.Bind(sd->TypeName(),sd);
   char fonom[10];
   sprintf(fonom,"%d",CN);
-  thedscnam->SetItem (fonom,adescr);
+  thedscnam.Bind(fonom,adescr);
 }
 
 
 Standard_Boolean  StepData_Protocol::HasDescr () const
 {
-  return !thedscnam.IsNull();
+  return !thedscnam.IsEmpty();
 }
 
 
@@ -143,10 +140,14 @@ Handle(StepData_EDescr)  StepData_Protocol::Descr
   (const Standard_Integer num) const
 {
   Handle(StepData_EDescr) dsc;
-  if (thedscnam.IsNull()) return dsc;
+  if (thedscnam.IsEmpty()) return dsc;
   char fonom[10];
   sprintf(fonom,"%d",num);
-  if (!thedscnam->GetItem (fonom,dsc)) dsc.Nullify();
+  Handle(Standard_Transient) aTDsc;
+  if (thedscnam.Find(fonom, aTDsc))
+    dsc = Handle(StepData_EDescr)::DownCast(aTDsc);
+  else
+    dsc.Nullify();
   return dsc;
 }
 
@@ -155,8 +156,10 @@ Handle(StepData_EDescr)  StepData_Protocol::Descr
   (const Standard_CString name, const Standard_Boolean anylevel) const
 {
   Handle(StepData_EDescr) sd;
-  if (!thedscnam.IsNull()) {
-    if (thedscnam->GetItem (name,sd)) return sd;
+  if (!thedscnam.IsEmpty()) {
+    Handle(Standard_Transient) aTSd;
+    if (thedscnam.Find(name, aTSd))
+      return Handle(StepData_EDescr)::DownCast(aTSd);
   }
   if (!anylevel) return sd;
 
@@ -211,8 +214,7 @@ Handle(StepData_ECDescr)  StepData_Protocol::ECDescr
 void  StepData_Protocol::AddPDescr
   (const Handle(StepData_PDescr)& pdescr)
 {
-  if (thepdescr.IsNull()) thepdescr = new Dico_DictionaryOfTransient;
-  thepdescr->SetItem (pdescr->Name(),pdescr);
+  thepdescr.Bind(pdescr->Name(),pdescr);
 }
 
 
@@ -220,8 +222,10 @@ Handle(StepData_PDescr)  StepData_Protocol::PDescr
   (const Standard_CString name, const Standard_Boolean anylevel) const
 {
   Handle(StepData_PDescr) sd;
-  if (!thepdescr.IsNull()) {
-    if (thepdescr->GetItem (name,sd)) return sd;
+  if (!thepdescr.IsEmpty()) {
+    Handle(Standard_Transient) aTSd;
+    if (thepdescr.Find(name, aTSd))
+      return Handle(StepData_PDescr)::DownCast(aTSd);
   }
   if (!anylevel) return sd;
 
@@ -239,8 +243,7 @@ Handle(StepData_PDescr)  StepData_Protocol::PDescr
 void  StepData_Protocol::AddBasicDescr
   (const Handle(StepData_ESDescr)& esdescr)
 {
-  if (thedscbas.IsNull()) thedscbas = new Dico_DictionaryOfTransient;
-  thedscbas->SetItem (esdescr->TypeName(),esdescr);
+  thedscbas.Bind(esdescr->TypeName(),esdescr);
 }
 
 
@@ -248,8 +251,10 @@ Handle(StepData_EDescr)  StepData_Protocol::BasicDescr
   (const Standard_CString name, const Standard_Boolean anylevel) const
 {
   Handle(StepData_EDescr) sd;
-  if (!thedscbas.IsNull()) {
-    if (thedscbas->GetItem (name,sd)) return sd;
+  if (!thedscbas.IsEmpty()) {
+    Handle(Standard_Transient) aTSd;
+    if (thedscbas.Find(name, aTSd))
+      return Handle(StepData_EDescr)::DownCast(aTSd);
   }
   if (!anylevel) return sd;
 

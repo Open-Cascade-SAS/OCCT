@@ -31,7 +31,6 @@
 #include <STEPCAFControl_DataMapOfPDExternFile.hxx>
 #include <XCAFDoc_DataMapOfShapeLabel.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-class STEPCAFControl_DictionaryOfExternFile;
 class XSControl_WorkSession;
 class TDocStd_Document;
 class TCollection_AsciiString;
@@ -104,7 +103,7 @@ public:
   
   //! Returns data on external files
   //! Returns Null handle if no external files are read
-  Standard_EXPORT const Handle(STEPCAFControl_DictionaryOfExternFile)& ExternFiles() const;
+  Standard_EXPORT const NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)> & ExternFiles() const;
   
   //! Returns data on external file by its name
   //! Returns False if no external file with given name is read
@@ -242,7 +241,7 @@ private:
 
 
   STEPControl_Reader myReader;
-  Handle(STEPCAFControl_DictionaryOfExternFile) myFiles;
+  NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)> myFiles;
   Standard_Boolean myColorMode;
   Standard_Boolean myNameMode;
   Standard_Boolean myLayerMode;

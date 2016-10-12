@@ -32,7 +32,6 @@
 #include <Standard_CString.hxx>
 #include <Standard_Character.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
-class Dico_DictionaryOfInteger;
 class TCollection_HAsciiString;
 class Standard_Transient;
 class Interface_InterfaceError;
@@ -284,7 +283,7 @@ private:
   Standard_Real therealup;
   TCollection_AsciiString theunidef;
   Handle(TColStd_HArray1OfAsciiString) theenums;
-  Handle(Dico_DictionaryOfInteger) theeadds;
+  NCollection_DataMap<TCollection_AsciiString, Standard_Integer> theeadds;
   Interface_StaticSatisfies thesatisf;
   TCollection_AsciiString thesatisn;
   Standard_Boolean theupdate;

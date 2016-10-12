@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Dico_DictionaryOfTransient.hxx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
 #include <Geom2d_CartesianPoint.hxx>
 #include <Interface_IntVal.hxx>
 #include <Standard_Transient.hxx>
@@ -44,23 +42,22 @@ void  Transfer_Finder::SetHashCode (const Standard_Integer code)
     void  Transfer_Finder::SetAttribute
   (const Standard_CString name, const Handle(Standard_Transient)& val)
 {
-  if (theattrib.IsNull()) theattrib = new Dico_DictionaryOfTransient;
-  theattrib->SetItem (name,val);
+  theattrib.Bind(name,val);
 }
 
     Standard_Boolean  Transfer_Finder::RemoveAttribute
   (const Standard_CString name)
 {
-  if (theattrib.IsNull()) return Standard_False;
-  return theattrib->RemoveItem (name);
+  if (theattrib.IsEmpty()) return Standard_False;
+  return theattrib.UnBind (name);
 }
 
     Standard_Boolean  Transfer_Finder::GetAttribute
   (const Standard_CString name, const Handle(Standard_Type)& type,
    Handle(Standard_Transient)& val) const
 {
-  if (theattrib.IsNull())  {  val.Nullify();  return Standard_False;  }
-  if (!theattrib->GetItem (name,val))  {  val.Nullify();  return Standard_False;  }
+  if (theattrib.IsEmpty())  {  val.Nullify();  return Standard_False;  }
+  if (!theattrib.Find(name, val))  {  val.Nullify();  return Standard_False;  }
   if (!val->IsKind(type))  {  val.Nullify();  return Standard_False;  }
   return Standard_True;
 }
@@ -69,8 +66,8 @@ void  Transfer_Finder::SetHashCode (const Standard_Integer code)
   (const Standard_CString name) const
 {
   Handle(Standard_Transient) atr;
-  if (theattrib.IsNull()) return atr;
-  if (!theattrib->GetItem (name,atr)) atr.Nullify();
+  if (theattrib.IsEmpty()) return atr;
+  if (!theattrib.Find(name, atr)) atr.Nullify();
   return atr;
 }
 
@@ -166,8 +163,8 @@ void  Transfer_Finder::SetHashCode (const Standard_Integer code)
   return hval->ToCString();
 }
 
-    Handle(Dico_DictionaryOfTransient)  Transfer_Finder::AttrList () const
-      {  return theattrib;  }
+NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& Transfer_Finder::AttrList ()
+  {  return theattrib;  }
 
     void  Transfer_Finder::SameAttributes (const Handle(Transfer_Finder)& other)
       {  if (!other.IsNull()) theattrib = other->AttrList();  }
@@ -176,14 +173,14 @@ void  Transfer_Finder::SetHashCode (const Standard_Integer code)
   (const Handle(Transfer_Finder)& other,
    const Standard_CString fromname, const Standard_Boolean copied)
 {
-  if (other.IsNull()) return;
-  Handle(Dico_DictionaryOfTransient) list = other->AttrList();
-  if (list.IsNull()) return;
-  if (theattrib.IsNull()) theattrib = new Dico_DictionaryOfTransient;
+      if (other.IsNull()) return;
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& list = other->AttrList();
+  if (list.IsEmpty()) return;
 
-  for (Dico_IteratorOfDictionaryOfTransient iter (list,fromname);
-       iter.More(); iter.Next()) {
-    TCollection_AsciiString name = iter.Name();
+  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator iter(list);
+  for (; iter.More(); iter.Next()) {
+    TCollection_AsciiString name = iter.Key();
+    if (!name.StartsWith(fromname)) continue;
     Handle(Standard_Transient) atr = iter.Value();
     Handle(Standard_Transient) newatr = atr;
 
@@ -211,7 +208,7 @@ void  Transfer_Finder::SetHashCode (const Standard_Integer code)
 
     }
 
-    theattrib->SetItem (name.ToCString(),newatr);
+    theattrib.Bind(name,newatr);
 
   }
 }

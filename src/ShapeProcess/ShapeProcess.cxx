@@ -13,20 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
+#include <NCollection_DataMap.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <ShapeProcess.hxx>
 #include <ShapeProcess_Context.hxx>
-#include <ShapeProcess_DictionaryOfOperator.hxx>
 #include <ShapeProcess_Operator.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
 
-static Handle(ShapeProcess_DictionaryOfOperator) dic;
-
+static NCollection_DataMap<TCollection_AsciiString, Handle(ShapeProcess_Operator)> aMapOfOperators;
 //=======================================================================
 //function : RegisterOperator
 //purpose  : 
@@ -35,14 +33,13 @@ static Handle(ShapeProcess_DictionaryOfOperator) dic;
 Standard_Boolean ShapeProcess::RegisterOperator (const Standard_CString name,
                                                  const Handle(ShapeProcess_Operator)& op)
 {
-  if ( dic.IsNull() ) dic = new ShapeProcess_DictionaryOfOperator;
-  if ( dic->HasItem ( name, Standard_True ) ) {
+  if (aMapOfOperators.IsBound(name)) {
 #ifdef OCCT_DEBUG
     cout << "Warning: operator with name " << name << " is already registered!" << endl;
 #endif
     return Standard_False;
   }
-  dic->SetItem ( name, op );
+  aMapOfOperators.Bind( name, op );
   return Standard_True;
 }
 
@@ -54,14 +51,13 @@ Standard_Boolean ShapeProcess::RegisterOperator (const Standard_CString name,
 Standard_Boolean ShapeProcess::FindOperator (const Standard_CString name,
                                              Handle(ShapeProcess_Operator)& op)
 {
-  if ( dic.IsNull() ) dic = new ShapeProcess_DictionaryOfOperator;
-  if ( ! dic->HasItem ( name, Standard_True ) ) {
+  if (!aMapOfOperators.IsBound(name)) {
 #ifdef OCCT_DEBUG
     cout << "Error: no operator with name " << name << " registered!" << endl;
 #endif
     return Standard_False;
   }
-  op = dic->Item ( name );
+  op = aMapOfOperators.ChangeFind(name);
   return !op.IsNull();
 }
 

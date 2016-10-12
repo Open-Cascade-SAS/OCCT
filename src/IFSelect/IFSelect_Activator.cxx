@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Dico_DictionaryOfInteger.hxx>
-#include <Dico_IteratorOfDictionaryOfInteger.hxx>
 #include <IFSelect_Activator.hxx>
 #include <IFSelect_SessionPilot.hxx>
 #include <Interface_Macros.hxx>
@@ -22,10 +20,11 @@
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_SequenceOfTransient.hxx>
+#include <NCollection_DataMap.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Activator,MMgt_TShared)
 
-static Handle(Dico_DictionaryOfInteger) thedico; // = new Dico_DictionaryOfInteger;
+static NCollection_DataMap<TCollection_AsciiString, Standard_Integer> thedico;
 static TColStd_SequenceOfInteger   thenums, themodes;
 static TColStd_SequenceOfTransient theacts;
 
@@ -36,16 +35,15 @@ static TColStd_SequenceOfTransient theacts;
    const Standard_CString command,
    const Standard_Integer mode)
 {
-  Standard_Boolean deja;
-  if (thedico.IsNull()) thedico = new Dico_DictionaryOfInteger;
-  Standard_Integer& num = thedico->NewItem(command,deja,Standard_True);
-  if (deja) {
 #ifdef OCCT_DEBUG
-    cout<<"****  XSTEP commands, name conflict on "<<command<<" first defined remains  ****"<<endl;
+  if (thedico.IsBound(command)) {
+    cout << "****  XSTEP commands, name conflict on " << command << " first defined remains  ****" << endl;
 //    Standard_DomainError::Raise("IFSelect_Activator : Add");
-#endif
   }
-  num = thenums.Length() + 1;
+#endif
+
+  thedico.Bind(command, thenums.Length() + 1);
+
   thenums.Append(number);
   theacts.Append(actor);
   themodes.Append(mode);
@@ -60,14 +58,14 @@ static TColStd_SequenceOfTransient theacts;
       {  Adding (this,number,command,1);  }
 
     void IFSelect_Activator::Remove (const Standard_CString command)
-      {  thedico->RemoveItem(command);  }
+      {  thedico.UnBind(command);  }
 
     Standard_Boolean IFSelect_Activator::Select
   (const Standard_CString command, Standard_Integer& number,
    Handle(IFSelect_Activator)& actor)
 {
   Standard_Integer num;
-  if (!thedico->GetItem(command,num,Standard_False)) return Standard_False;
+  if (!thedico.Find(command, num)) return Standard_False;
   number = thenums(num);
   actor = Handle(IFSelect_Activator)::DownCast(theacts(num));
   return Standard_True;
@@ -77,7 +75,7 @@ static TColStd_SequenceOfTransient theacts;
   (const Standard_CString command)
 {
   Standard_Integer num;
-  if (!thedico->GetItem(command,num,Standard_False)) return -1;
+  if (!thedico.Find(command, num)) return -1;
   return themodes(num);
 }
 
@@ -86,18 +84,20 @@ static TColStd_SequenceOfTransient theacts;
   (const Standard_Integer mode, const Standard_CString command)
 {
   Standard_Integer num;
-  Dico_IteratorOfDictionaryOfInteger iter (thedico,command);
+  NCollection_DataMap<TCollection_AsciiString, Standard_Integer>::Iterator iter(thedico);
   Handle(TColStd_HSequenceOfAsciiString) list =
     new  TColStd_HSequenceOfAsciiString();
-  for (iter.Start(); iter.More(); iter.Next()) {
+  for (; iter.More(); iter.Next()) {
+    if (!iter.Key().StartsWith(command))
+      continue;
     if (mode < 0) {
       DeclareAndCast(IFSelect_Activator,acti,theacts(iter.Value()));
       if (acti.IsNull()) continue;
       if (command[0] == '\0' || !strcmp(command,acti->Group()) )
-	list->Append(iter.Name());
+        list->Append(iter.Key());
     } else {
       num = iter.Value();
-      if (themodes(num) == mode) list->Append(iter.Name());
+      if (themodes(num) == mode) list->Append(iter.Key());
     }
   }
   return list;

@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Dico_DictionaryOfInteger.hxx>
 #include <IFSelect_BasicDumper.hxx>
 #include <IFSelect_Dispatch.hxx>
 #include <IFSelect_GeneralModifier.hxx>
@@ -183,7 +182,7 @@ static int deja = 0;
   char laligne[200];
   thedone = Standard_True;
 //  ...  Preparation Specifique
-  thenames.Nullify();
+  thenames.Clear();
   Standard_Integer nbidents = thesess->MaxIdent();
   thenums = new TColStd_HArray1OfInteger (0,nbidents); thenums->Init(0);
   Standard_Integer i; // svv Jan11 2000 : porting on DEC
@@ -423,7 +422,7 @@ static int deja = 0;
   thedone = Standard_True;
 //  ...  Preparation Specifique
   thenums.Nullify();
-  thenames = new Dico_DictionaryOfInteger;
+  thenames.Clear();
 //  ..  Donnees generales, controle
   if (!ReadLine()) return 1;
   if (theline.Length() != 4) { sout<<"File Form Incorrect"<<endl; return 1; }
@@ -751,7 +750,7 @@ static int deja = 0;
   }
   else sout<<"Lineno."<<thenl<<" -- Name : "<<name
     <<" : Item could not be defined" << endl;
-  thenames->SetItem(name.ToCString(),id);
+  thenames.Bind(name,id);
 }
 
     Standard_Boolean  IFSelect_SessionFile::IsDone () const
@@ -875,7 +874,7 @@ static int deja = 0;
   TCollection_AsciiString name = theline.Value(nm);
   if (name.Value(1) == ':') name.Remove(1);
   if (name.IsEqual("$")) return res;    // item non-defini justement
-  if (!thenames->GetItem(name.ToCString(),id)) {
+  if (!thenames.Find(name, id)) {
     sout << " -- Item Unknown in File : " << name
       << " lineno " << thenl << " param." << nm << endl;
     id = 0;
