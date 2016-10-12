@@ -897,11 +897,11 @@ OSD_Path ::  OSD_Path (
 {
 
  Standard_Integer        i, j, len;
- static char __drive [ _MAX_DRIVE ];
- static char __dir [ _MAX_DIR ];
- static char __trek [ _MAX_DIR ];
- static char __fname [ _MAX_FNAME ];
- static char __ext [ _MAX_EXT ];
+ char __drive [ _MAX_DRIVE ];
+ char __dir [ _MAX_DIR ];
+ char __trek [ _MAX_DIR ];
+ char __fname [ _MAX_FNAME ];
+ char __ext [ _MAX_EXT ];
 
  memset(__drive, 0,_MAX_DRIVE);
  memset(__dir, 0,_MAX_DIR);
@@ -1022,7 +1022,7 @@ void OSD_Path :: SystemName (
 
  Standard_Integer        i, j;
  TCollection_AsciiString fullPath;
- static Standard_Character trek [ _MAX_PATH ];
+ Standard_Character trek [ _MAX_PATH ];
  Standard_Character      chr;
 
  memset(trek,0,_MAX_PATH);
