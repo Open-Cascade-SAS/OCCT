@@ -906,7 +906,7 @@ int OSD_File::Capture(int theDescr) {
 }
 
 void OSD_File::Rewind() { 
-  LARGE_INTEGER aDistanceToMove = { 0 };
+  LARGE_INTEGER aDistanceToMove;
   aDistanceToMove.QuadPart = 0;
   SetFilePointerEx(myFileHandle, aDistanceToMove, NULL, FILE_BEGIN);
 }
@@ -1141,7 +1141,7 @@ void OSD_File :: ReadLine (
       if (peekChar != '\n')  // if we did not get a <CR><LF> sequence
       {
         // adjust file position
-        LARGE_INTEGER aDistanceToMove = { 0 };
+        LARGE_INTEGER aDistanceToMove;
         aDistanceToMove.QuadPart = -1;
         SetFilePointerEx(myFileHandle, aDistanceToMove, NULL, FILE_CURRENT);
       }
@@ -1152,7 +1152,7 @@ void OSD_File :: ReadLine (
 
    } else if ( aSeekPos != 0 )
    {
-     LARGE_INTEGER aDistanceToMove = { 0 };
+     LARGE_INTEGER aDistanceToMove;
      aDistanceToMove.QuadPart = aSeekPos;
      SetFilePointerEx(myFileHandle, aDistanceToMove, NULL, FILE_CURRENT);
    }
@@ -1331,7 +1331,8 @@ void OSD_File :: Seek (
     RAISE(  "OSD_File :: Seek (): invalid parameter"  );
   
   }  // end switch
-  LARGE_INTEGER aDistanceToMove, aNewFilePointer = { 0 };
+  LARGE_INTEGER aDistanceToMove, aNewFilePointer;
+  aNewFilePointer.QuadPart = 0;
   aDistanceToMove.QuadPart = Offset;
 
   if (!SetFilePointerEx(myFileHandle, aDistanceToMove, &aNewFilePointer, dwMoveMethod))
