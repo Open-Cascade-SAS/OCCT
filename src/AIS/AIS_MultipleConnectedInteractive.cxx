@@ -259,17 +259,13 @@ void AIS_MultipleConnectedInteractive::Compute (const Handle(PrsMgr_Presentation
                                                 const Handle(Prs3d_Presentation)&           /*thePrs*/,
                                                 const Standard_Integer                      /*theMode*/)
 {
+  Handle(AIS_InteractiveContext) aCtx = GetContext();
   for (PrsMgr_ListOfPresentableObjectsIter anIter (Children()); anIter.More(); anIter.Next())
   {
     Handle(AIS_InteractiveObject) aChild = Handle(AIS_InteractiveObject)::DownCast (anIter.Value());
-    if (aChild.IsNull())
+    if (!aChild.IsNull())
     {
-      continue;
-    }
-
-    if (!aChild->HasInteractiveContext())
-    {
-      aChild->SetContext (GetContext());
+      aChild->SetContext (aCtx);
     }
   }
 }
@@ -373,4 +369,21 @@ Standard_Boolean AIS_MultipleConnectedInteractive::HasSelection (const Standard_
   }
 
   return Standard_True;
+}
+
+//=======================================================================
+//function : SetContext
+//purpose  :
+//=======================================================================
+void AIS_MultipleConnectedInteractive::SetContext (const Handle(AIS_InteractiveContext)& theCtx)
+{
+  AIS_InteractiveObject::SetContext (theCtx);
+  for (PrsMgr_ListOfPresentableObjectsIter anIter (Children()); anIter.More(); anIter.Next())
+  {
+    Handle(AIS_InteractiveObject) aChild = Handle(AIS_InteractiveObject)::DownCast (anIter.Value());
+    if (!aChild.IsNull())
+    {
+      aChild->SetContext (theCtx);
+    }
+  }
 }

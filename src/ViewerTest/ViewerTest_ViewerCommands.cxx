@@ -1138,6 +1138,8 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
           break;
         }
       }
+
+      aCurrentContext->RemoveAll (Standard_False);
       if(isRemoveDriver)
       {
         ViewerTest_myDrivers.UnBind2 (aCurrentContext->CurrentViewer()->Driver());

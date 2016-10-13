@@ -51,9 +51,7 @@ void AIS_InteractiveContext::SetPolygonOffsets(
   if ( anObj.IsNull() )
     return;
 
-  if( !anObj->HasInteractiveContext() )
-    anObj->SetContext( this );
-
+  setContextToObject (anObj);
   anObj->SetPolygonOffsets( aMode, aFactor, aUnits );
 
   if ( updateviewer ) {

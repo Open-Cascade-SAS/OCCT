@@ -14,9 +14,9 @@ vinit
 vpoint radP1 0 0 0
 vpoint radP2 50 50 0
 vpoint radP3 100 0 0
-vcircle circle radP1 radP2 radP3 0
+vcircle circle1 radP1 radP2 radP3 0
 verase radP1 radP2 radP3
-vdimension dim1 -radius -shapes circle -font SansFont
+vdimension dim1 -radius -shapes circle1 -font SansFont
 vfit
 vmoveto 123 158
 
@@ -30,8 +30,8 @@ if { $stat != 1 } {
 }
 
 vinit Viewer2/View2
-vdisplay circle
-vdimension dim2 -radius -text 3d -shapes circle -font SansFont
+vcircle circle2 radP1 radP2 radP3 0
+vdimension dim2 -radius -text 3d -shapes circle2 -font SansFont
 vfit
 vmoveto 191 196
 

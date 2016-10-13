@@ -11,10 +11,10 @@ pload VISUALIZATION
 vfont add [locate_data_file DejaVuSans.ttf] SansFont
 
 vinit
-vpoint angleP1 0 0 0
-vpoint angleP2 50 50 50
-vpoint angleP3 50 50 100
-vdimension dim1 -angle -shapes angleP1 angleP2 angleP3 -font SansFont
+vpoint angle1P1 0 0 0
+vpoint angle1P2 50 50 50
+vpoint angle1P3 50 50 100
+vdimension dim1 -angle -shapes angle1P1 angle1P2 angle1P3 -font SansFont
 vfit
 vmoveto 249 206
 
@@ -27,8 +27,10 @@ if { $stat != 1 } {
    puts "Error : Highlighting of angle dimension with 2d text is wrong."
 }
 vinit Viewer2/View2
-vdisplay angleP1 angleP2 angleP3
-vdimension dim2 -angle -text 3d -shapes angleP1 angleP2 angleP3 -font SansFont
+vpoint angle2P1 0 0 0
+vpoint angle2P2 50 50 50
+vpoint angle2P3 50 50 100
+vdimension dim2 -angle -text 3d -shapes angle2P1 angle2P2 angle2P3 -font SansFont
 vfit
 vmoveto 263 251
 

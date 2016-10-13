@@ -79,6 +79,9 @@ public:
   //! children of multiple connected interactive object.
   Standard_EXPORT virtual Standard_Boolean HasSelection (const Standard_Integer theMode) const Standard_OVERRIDE;
 
+  //! Assigns interactive context.
+  Standard_EXPORT virtual void SetContext (const Handle(AIS_InteractiveContext)& theCtx) Standard_OVERRIDE;
+
 public: // short aliases to Connect() method
 
   //! Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.

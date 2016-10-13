@@ -14,9 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modified by  XAB & Serguei Dec 97 (angle &deviation coeffts)
-
 #include <AIS_ConnectedInteractive.hxx>
+
 #include <AIS_DataMapIteratorOfDataMapOfILC.hxx>
 #include <AIS_DataMapIteratorOfDataMapOfIOStatus.hxx>
 #include <AIS_GlobalStatus.hxx>
@@ -61,9 +60,8 @@
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(AIS_InteractiveContext,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(AIS_InteractiveContext, Standard_Transient)
 
-//#include <AIS_DataMapIteratorOfDataMapOfInteractiveInteger.hxx>
 namespace
 {
   typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), Handle(SelectMgr_IndexedMapOfOwner)> AIS_MapOfObjectOwners;
@@ -101,7 +99,11 @@ myIsAutoActivateSelMode(Standard_True)
   InitAttributes();
 }
 
-void AIS_InteractiveContext::Delete() const
+//=======================================================================
+//function : ~AIS_InteractiveContext
+//purpose  :
+//=======================================================================
+AIS_InteractiveContext::~AIS_InteractiveContext()
 {
   // clear the current selection
   mySelection->Clear();
@@ -121,7 +123,6 @@ void AIS_InteractiveContext::Delete() const
       anObj->CurrentSelection()->UpdateBVHStatus (SelectMgr_TBU_Renew);
     }
   }
-  MMgt_TShared::Delete();
 }
 
 //=======================================================================
@@ -389,11 +390,7 @@ void AIS_InteractiveContext::Display (const Handle(AIS_InteractiveObject)& theIO
     return;
   }
 
-  if (!theIObj->HasInteractiveContext())
-  {
-    theIObj->SetContext (this);
-  }
-
+  setContextToObject (theIObj);
   if (theDispStatus == AIS_DS_Temporary
   && !HasOpenedContext())
   {
@@ -494,11 +491,7 @@ void AIS_InteractiveContext::Load (const Handle(AIS_InteractiveObject)& theIObj,
     return;
   }
 
-  if (!theIObj->HasInteractiveContext())
-  {
-    theIObj->SetContext (this);
-  }
-
+  setContextToObject (theIObj);
   if (HasOpenedContext())
   {
     myLocalContexts (myCurLocalIndex)->Load (theIObj, theToAllowDecomposition, theSelMode);
@@ -775,6 +768,15 @@ void AIS_InteractiveContext::Remove (const Handle(AIS_InteractiveObject)& theIOb
     return;
   }
 
+  if (theIObj->HasInteractiveContext())
+  {
+    if (theIObj->myCTXPtr != this)
+    {
+      Standard_ProgramError::Raise ("AIS_InteractiveContext - object has been displayed in another context!");
+    }
+    theIObj->SetContext (Handle(AIS_InteractiveContext)());
+  }
+
   if (HasOpenedContext())
   {
     myLocalContexts (myCurLocalIndex)->Remove (theIObj);
@@ -857,9 +859,7 @@ void AIS_InteractiveContext::HilightWithColor(const Handle(AIS_InteractiveObject
   if (theObj.IsNull())
     return;
 
-  if (!theObj->HasInteractiveContext())
-    theObj->SetContext (this);
-
+  setContextToObject (theObj);
   if (!HasOpenedContext())
   {
     if (!myObjects.IsBound (theObj))
@@ -1115,11 +1115,7 @@ void AIS_InteractiveContext::SetDisplayPriority (const Handle(AIS_InteractiveObj
     return;
   }
 
-  if (!theIObj->HasInteractiveContext())
-  {
-    theIObj->SetContext (this);
-  }
-
+  setContextToObject (theIObj);
   if (myObjects.IsBound (theIObj))
   {
     Handle(AIS_GlobalStatus) aStatus = myObjects (theIObj);
@@ -1523,11 +1519,7 @@ void AIS_InteractiveContext::SetDisplayMode (const Handle(AIS_InteractiveObject)
                                              const Standard_Integer               theMode,
                                              const Standard_Boolean               theToUpdateViewer)
 {
-  if (!theIObj->HasInteractiveContext())
-  {
-    theIObj->SetContext(this);
-  }
-
+  setContextToObject (theIObj);
   if (!myObjects.IsBound (theIObj))
   {
     theIObj->SetDisplayMode (theMode);
@@ -1729,10 +1721,7 @@ void AIS_InteractiveContext::SetColor (const Handle(AIS_InteractiveObject)& theI
     return;
   }
 
-  if (!theIObj->HasInteractiveContext())
-  {
-    theIObj->SetContext (this);
-  }
+  setContextToObject (theIObj);
   theIObj->SetColor (theColor);
   redisplayPrsRecModes (theIObj, theToUpdateViewer);
 }
@@ -1765,12 +1754,8 @@ void AIS_InteractiveContext::SetDeviationCoefficient (const Handle(AIS_Interacti
     return;
   }
 
-  if (!theIObj->HasInteractiveContext())
-  {
-    theIObj->SetContext (this);
-  }
-
   // to be modified after the related methods of AIS_Shape are passed to InteractiveObject
+  setContextToObject (theIObj);
   if (theIObj->Type() != AIS_KOI_Object
    && theIObj->Type() != AIS_KOI_Shape)
   {
@@ -1799,12 +1784,8 @@ void AIS_InteractiveContext::SetHLRDeviationCoefficient (const Handle(AIS_Intera
     return;
   }
 
-  if (!theIObj->HasInteractiveContext())
-  {
-    theIObj->SetContext (this);
-  }
- 
   // To be modified after the related methods of AIS_Shape are passed to InteractiveObject
+  setContextToObject (theIObj);
   if (theIObj->Type() != AIS_KOI_Object
    && theIObj->Type() != AIS_KOI_Shape)
   {
@@ -1833,12 +1814,8 @@ void AIS_InteractiveContext::SetDeviationAngle (const Handle(AIS_InteractiveObje
     return;
   }
 
-  if (!theIObj->HasInteractiveContext())
-  {
-    theIObj->SetContext (this);
-  }
- 
   // To be modified after the related methods of AIS_Shape are passed to InteractiveObject
+  setContextToObject (theIObj);
   if (theIObj->Type() != AIS_KOI_Shape)
   {
     return;
@@ -1866,12 +1843,8 @@ void AIS_InteractiveContext::SetAngleAndDeviation (const Handle(AIS_InteractiveO
     return;
   }
 
-  if (!theIObj->HasInteractiveContext())
-  {
-    theIObj->SetContext (this);
-  }
-
   // To be modified after the related methods of AIS_Shape are passed to InteractiveObject
+  setContextToObject (theIObj);
   if (theIObj->Type() != AIS_KOI_Shape)
   {
     return;
@@ -1908,12 +1881,8 @@ void AIS_InteractiveContext::SetHLRAngleAndDeviation (const Handle(AIS_Interacti
     return;
   }
 
-  if (!theIObj->HasInteractiveContext())
-  {
-    theIObj->SetContext (this);
-  }
-
   // To be modified after the related methods of AIS_Shape are passed to InteractiveObject
+  setContextToObject (theIObj);
   if (theIObj->Type() != AIS_KOI_Shape)
   {
     return;
@@ -1940,12 +1909,8 @@ void AIS_InteractiveContext::SetHLRDeviationAngle (const Handle(AIS_InteractiveO
     return;
   }
 
-  if (!theIObj->HasInteractiveContext())
-  {
-    theIObj->SetContext (this);
-  }
-
   // To be modified after the related methods of AIS_Shape are passed to InteractiveObject
+  setContextToObject (theIObj);
   if (theIObj->Type() != AIS_KOI_Shape)
   {
     return;
@@ -2025,11 +1990,7 @@ void AIS_InteractiveContext::SetWidth (const Handle(AIS_InteractiveObject)& theI
     return;
   }
 
-  if (!theIObj->HasInteractiveContext())
-  {
-    theIObj->SetContext (this);
-  }
-
+  setContextToObject (theIObj);
   theIObj->SetWidth (theWidth);
   redisplayPrsRecModes (theIObj, theToUpdateViewer);
   if (!myLastinMain.IsNull() && myLastinMain->IsSameSelectable (theIObj))
@@ -2080,11 +2041,7 @@ void AIS_InteractiveContext::SetMaterial (const Handle(AIS_InteractiveObject)& t
     return;
   }
 
-  if (!theIObj->HasInteractiveContext())
-  {
-    theIObj->SetContext (this);
-  }
-
+  setContextToObject (theIObj);
   theIObj->SetMaterial (theName);
   redisplayPrsRecModes (theIObj, theToUpdateViewer);
 }
@@ -2117,11 +2074,7 @@ void AIS_InteractiveContext::SetTransparency (const Handle(AIS_InteractiveObject
     return;
   }
 
-  if (!theIObj->HasInteractiveContext())
-  {
-    theIObj->SetContext (this);
-  }
-
+  setContextToObject (theIObj);
   if (!theIObj->IsTransparent()
     && theValue <= 0.05)
   {
@@ -2194,11 +2147,7 @@ void AIS_InteractiveContext::SetLocalAttributes (const Handle(AIS_InteractiveObj
     return;
   }
 
-  if (!theIObj->HasInteractiveContext())
-  {
-    theIObj->SetContext (this);
-  }
-
+  setContextToObject (theIObj);
   theIObj->SetAttributes (theDrawer);
   Update (theIObj, theToUpdateViewer);
 }
@@ -2215,10 +2164,7 @@ void AIS_InteractiveContext::UnsetLocalAttributes (const Handle(AIS_InteractiveO
     return;
   }
 
-  if (!theIObj->HasInteractiveContext())
-  {
-    theIObj->SetContext (this);
-  }
+  setContextToObject (theIObj);
   theIObj->UnsetAttributes();
   Update (theIObj, theToUpdateViewer);
 }

@@ -14,9 +14,9 @@ vinit
 vpoint diamP1 0 0 0
 vpoint diamP2 50 50 0
 vpoint diamP3 100 0 0
-vcircle circle diamP1 diamP2 diamP3 0
+vcircle circle1 diamP1 diamP2 diamP3 0
 verase diamP1 diamP2 diamP3
-vdimension dim1 -diameter -shapes circle -font SansFont
+vdimension dim1 -diameter -shapes circle1 -font SansFont
 vfit
 vmoveto 208 205
 
@@ -30,8 +30,8 @@ if { $stat != 1 } {
 }
 
 vinit Viewer2/View2
-vdisplay circle
-vdimension dim2 -diameter -text 3d -shapes circle -font SansFont
+vcircle circle2 diamP1 diamP2 diamP3 0
+vdimension dim2 -diameter -text 3d -shapes circle2 -font SansFont
 vfit
 vmoveto 208 205
 

@@ -52,14 +52,19 @@ class AIS_IdenticRelation : public AIS_Relation
 
 public:
 
-  
-
   //! Initializes the relation of identity between the two
   //! entities, FirstShape and SecondShape. The plane
   //! aPlane is initialized in case a visual reference is
   //! needed to show identity.
   Standard_EXPORT AIS_IdenticRelation(const TopoDS_Shape& FirstShape, const TopoDS_Shape& SecondShape, const Handle(Geom_Plane)& aPlane);
-  
+
+  Standard_Boolean HasUsers() const { return !myUsers.IsEmpty(); }
+
+  const TColStd_ListOfTransient& Users() const { return myUsers; }
+
+  void AddUser (const Handle(Standard_Transient)& theUser) { myUsers.Append (theUser); }
+
+  void ClearUsers() { myUsers.Clear(); }
 
   //! Returns true if the interactive object is movable.
     virtual Standard_Boolean IsMovable() const Standard_OVERRIDE;
@@ -73,15 +78,7 @@ public:
   //! to the object to display before computation  !!!
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(AIS_IdenticRelation,AIS_Relation)
-
-protected:
-
-
-
 
 private:
 
@@ -136,11 +133,13 @@ private:
   
   Standard_EXPORT gp_Dir ComputeCircleDirection (const Handle(Geom_Circle)& aCirc, const TopoDS_Vertex& ConnectedVertex) const;
 
+private:
+
+  TColStd_ListOfTransient myUsers;
   Standard_Boolean isCircle;
   gp_Pnt myFAttach;
   gp_Pnt mySAttach;
   gp_Pnt myCenter;
-
 
 };
 

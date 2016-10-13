@@ -30,7 +30,6 @@
 #include <Standard_Integer.hxx>
 #include <AIS_DataMapOfILC.hxx>
 #include <AIS_SequenceOfInteractive.hxx>
-#include <MMgt_TShared.hxx>
 #include <AIS_DisplayStatus.hxx>
 #include <AIS_KindOfInteractive.hxx>
 #include <Standard_Real.hxx>
@@ -66,10 +65,6 @@ class SelectMgr_EntityOwner;
 class Standard_Transient;
 class SelectMgr_Filter;
 class TCollection_AsciiString;
-
-
-class AIS_InteractiveContext;
-DEFINE_STANDARD_HANDLE(AIS_InteractiveContext, MMgt_TShared)
 
 //! The Interactive Context allows you to manage
 //! graphic behavior and selection of Interactive Objects
@@ -133,19 +128,19 @@ DEFINE_STANDARD_HANDLE(AIS_InteractiveContext, MMgt_TShared)
 //! selection mode is equal to 0, but it might be redefined if needed. Sub-part selection
 //! of the objects without using local context provides a possibility to activate part
 //! selection modes along with global selection mode.
-class AIS_InteractiveContext : public MMgt_TShared
+class AIS_InteractiveContext : public Standard_Transient
 {
-
+  friend class AIS_LocalContext;
+  DEFINE_STANDARD_RTTIEXT(AIS_InteractiveContext, Standard_Transient)
 public:
-
-  
 
   //! Constructs the interactive context object defined by
   //! the principal viewer MainViewer.
   Standard_EXPORT AIS_InteractiveContext(const Handle(V3d_Viewer)& MainViewer);
-  
-  Standard_EXPORT virtual void Delete() const Standard_OVERRIDE;
-  
+
+  //! Destructor.
+  Standard_EXPORT virtual ~AIS_InteractiveContext();
+
   Standard_EXPORT void SetAutoActivateSelection (const Standard_Boolean Auto);
   
   Standard_EXPORT Standard_Boolean GetAutoActivateSelection() const;
@@ -1599,12 +1594,6 @@ public:
   //! Redraws immediate structures in all views of the viewer given taking into account its visibility.
   Standard_EXPORT void RedrawImmediate (const Handle(V3d_Viewer)& theViewer);
 
-
-friend class AIS_LocalContext;
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_InteractiveContext,MMgt_TShared)
-
 protected:
 
   Standard_EXPORT void GetDefModes (const Handle(AIS_InteractiveObject)& anIobj, Standard_Integer& Dmode, Standard_Integer& HiMod, Standard_Integer& SelMode) const;
@@ -1700,6 +1689,22 @@ protected:
       ? aHiDrawer->SelectionStyle() : mySelStyle;
   }
 
+  //! Assign the context to the object or throw exception if object was already assigned to another context.
+  void setContextToObject (const Handle(AIS_InteractiveObject)& theObj)
+  {
+    if (theObj->HasInteractiveContext())
+    {
+      if (theObj->myCTXPtr != this)
+      {
+        Standard_ProgramError::Raise ("AIS_InteractiveContext - object has been already displayed in another context!");
+      }
+    }
+    else
+    {
+      theObj->SetContext (this);
+    }
+  }
+
 protected:
 
   AIS_DataMapOfIOStatus myObjects;
@@ -1730,14 +1735,10 @@ protected:
   Standard_Boolean myZDetectionFlag;
   Standard_Boolean myIsAutoActivateSelMode;
 
-
 };
 
+DEFINE_STANDARD_HANDLE(AIS_InteractiveContext, Standard_Transient)
 
 #include <AIS_InteractiveContext.lxx>
-
-
-
-
 
 #endif // _AIS_InteractiveContext_HeaderFile

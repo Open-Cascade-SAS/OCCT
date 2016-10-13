@@ -1163,9 +1163,7 @@ void AIS_InteractiveContext::AddOrRemoveSelected (const Handle(AIS_InteractiveOb
   if (!myObjects.IsBound (theObject) || !theObject->HasSelection (aGlobalSelMode))
     return;
 
-  if (!theObject->HasInteractiveContext())
-    theObject->SetContext (this);
-
+  setContextToObject (theObject);
   const Handle(SelectMgr_EntityOwner) anOwner = theObject->GlobalSelOwner();
 
   if (anOwner.IsNull() || !anOwner->HasSelectable())

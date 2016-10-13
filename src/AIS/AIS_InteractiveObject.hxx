@@ -17,35 +17,20 @@
 #ifndef _AIS_InteractiveObject_HeaderFile
 #define _AIS_InteractiveObject_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <AIS_PToContext.hxx>
-#include <TColStd_ListOfTransient.hxx>
-#include <Standard_Real.hxx>
-#include <Quantity_Color.hxx>
-#include <Graphic3d_NameOfMaterial.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <Aspect_TypeOfFacingModel.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <SelectMgr_SelectableObject.hxx>
-#include <PrsMgr_TypeOfPresentation3d.hxx>
 #include <AIS_KindOfInteractive.hxx>
-#include <Quantity_NameOfColor.hxx>
-#include <Standard_ShortReal.hxx>
-class Standard_Transient;
+#include <Graphic3d_NameOfMaterial.hxx>
+#include <PrsMgr_TypeOfPresentation3d.hxx>
+#include <SelectMgr_SelectableObject.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TColStd_ListOfTransient.hxx>
+#include <Quantity_Color.hxx>
+
 class AIS_InteractiveContext;
-class Quantity_Color;
 class Graphic3d_MaterialAspect;
 class Prs3d_Presentation;
 class Prs3d_BasicAspect;
 class Bnd_Box;
-
-
-class AIS_InteractiveObject;
-DEFINE_STANDARD_HANDLE(AIS_InteractiveObject, SelectMgr_SelectableObject)
-
 
 //! Defines a class of objects with display and selection services.
 //! Entities which are visualized and selected are
@@ -74,10 +59,9 @@ DEFINE_STANDARD_HANDLE(AIS_InteractiveObject, SelectMgr_SelectableObject)
 //! affect the same attributes in the Drawer.
 class AIS_InteractiveObject : public SelectMgr_SelectableObject
 {
-
+  friend class AIS_InteractiveContext;
+  DEFINE_STANDARD_RTTIEXT(AIS_InteractiveObject, SelectMgr_SelectableObject)
 public:
-
-  
 
   //! Returns the kind of Interactive Object:
   //! -   None
@@ -125,8 +109,8 @@ public:
   //! Mode 2 :  Selection Of Edges
   //! Mode 3 :  Selection Of Wires
   //! Mode 4 :  Selection Of Faces ...
-    virtual Standard_Boolean AcceptShapeDecomposition() const;
-  
+  virtual Standard_Boolean AcceptShapeDecomposition() const { return Standard_False; }
+
   //! change the current facing model apply on polygons for
   //! SetColor(), SetTransparency(), SetMaterial() methods
   //! default facing model is Aspect_TOFM_TWO_SIDE. This mean that attributes is
@@ -185,17 +169,15 @@ public:
   //! considered as infinite, i.e. its graphic presentations
   //! are not taken in account for View FitAll...
   Standard_EXPORT void SetInfiniteState (const Standard_Boolean aFlag = Standard_True);
-  
 
   //! Returns true if the interactive object is infinite. In this
   //! case, its graphic presentations are not taken into
   //! account in the fit-all view.
-    Standard_Boolean IsInfinite() const;
-  
-  //! Indicates whether the Interactive Object has a pointer
-  //! to an interactive context.
-  Standard_EXPORT Standard_Boolean HasInteractiveContext() const;
-  
+  Standard_Boolean IsInfinite() const { return myInfiniteState; }
+
+  //! Indicates whether the Interactive Object has a pointer to an interactive context.
+  Standard_Boolean HasInteractiveContext() const { return myCTXPtr != NULL; }
+
   //! Returns the context pointer to the interactive context.
   Standard_EXPORT Handle(AIS_InteractiveContext) GetContext() const;
   
@@ -218,32 +200,23 @@ public:
   //! edges, wires, and faces.
   //! -   Users, presentable objects connecting to sensitive
   //! primitives, or a shape which has been decomposed.
-    const Handle(Standard_Transient)& GetOwner() const;
-  
-  //! Allows you to attribute the owner ApplicativeEntity to
+  const Handle(Standard_Transient)& GetOwner() const { return myOwner; }
+
+  //! Allows you to attribute the owner theApplicativeEntity to
   //! an Interactive Object. This can be a shape for a set of
   //! sub-shapes or a sub-shape for sub-shapes which it
   //! is composed of. The owner takes the form of a transient.
-    void SetOwner (const Handle(Standard_Transient)& ApplicativeEntity);
-  
+  void SetOwner (const Handle(Standard_Transient)& theApplicativeEntity) { myOwner = theApplicativeEntity; }
+
   //! Each Interactive Object has methods which allow us
   //! to attribute an Owner to it in the form of a Transient.
   //! This method removes the owner from the graphic entity.
   Standard_EXPORT void ClearOwner();
-  
-  Standard_EXPORT Standard_Boolean HasUsers() const;
-  
-    const TColStd_ListOfTransient& Users() const;
-  
-  Standard_EXPORT void AddUser (const Handle(Standard_Transient)& aUser);
-  
-  Standard_EXPORT void ClearUsers();
-  
 
   //! Returns true if the Interactive Object has a display
   //! mode setting. Otherwise, it is displayed in Neutral Point.
-    Standard_Boolean HasDisplayMode() const;
-  
+  Standard_Boolean HasDisplayMode() const { return myDisplayMode != -1; }
+
   //! Sets the display mode aMode for the interactive object.
   //! An object can have its own temporary display mode,
   //! which is different from that proposed by the interactive context.
@@ -252,17 +225,17 @@ public:
   //! -   AIS_Shaded
   //! This range can, however, be extended through the creation of new display modes.
   Standard_EXPORT void SetDisplayMode (const Standard_Integer aMode);
-  
+
   //! Removes display mode settings from the interactive object.
-    void UnsetDisplayMode();
-  
+  void UnsetDisplayMode() { myDisplayMode = -1; }
+
   //! Returns the display mode setting of the Interactive Object.
   //! The range of possibilities is the following:
   //! -   AIS_WireFrame
   //! -   AIS_Shaded
   //! This range can, however, be extended through the
   //! creation of new display modes.
-    Standard_Integer DisplayMode() const;
+  Standard_Integer DisplayMode() const { return myDisplayMode; }
 
   //! Returns the selection priority setting. -1 indicates that there is none.
   //! You can modify the selection priority of an owner to
@@ -281,20 +254,20 @@ public:
   //! -   priority 5 - its origin
   //! -   priority 3 - its axes
   //! -   priority 2 - its planes
-    Standard_Integer SelectionPriority() const;
-  
-  //! Allows you to provide a setting aPriority for selection priority.
+  Standard_Integer SelectionPriority() const { return mySelPriority; }
+
+  //! Allows you to provide a setting thePriority for selection priority.
   //! You can modify selection priority of an owner to make
   //! one entity more selectionable than another one. The
   //! default selection priority for an owner is 5, for
   //! example. To increase selection priority, choose a
   //! setting between 5 and 10. An entity with priority 7 will
   //! take priority over one with a setting of 6.
-    void SetSelectionPriority (const Standard_Integer aPriority);
-  
+  void SetSelectionPriority (const Standard_Integer thePriority) { mySelPriority = thePriority; }
+
   //! Removes the setting for selection priority. SelectionPriority then returns -1.
-    void UnsetSelectionPriority();
-  
+  void UnsetSelectionPriority() { mySelPriority = -1; }
+
   //! Returns true if there is a setting for selection priority.
   //! You can modify selection priority of an owner to make
   //! one entity more selectionable than another one. The
@@ -302,11 +275,11 @@ public:
   //! example. To increase selection priority, choose a
   //! setting between 5 and 10. An entity with priority 7 will
   //! take priority over one with a setting of 6.
-    Standard_Boolean HasSelectionPriority() const;
-  
+  Standard_Boolean HasSelectionPriority() const { return mySelPriority != -1; }
+
   //! Returns true if the Interactive Object is in highlight mode.
-    Standard_Boolean HasHilightMode() const;
-  
+  Standard_Boolean HasHilightMode() const { return myHilightMode != -1; }
+
   //! Returns the setting for highlight mode.
   //! At dynamic detection, the presentation echoed by the
   //! Interactive Context, is by default the presentation
@@ -321,39 +294,39 @@ public:
   //! wireframe presentation or with shading, we want to
   //! systematically highlight the wireframe presentation.
   //! Consequently, we set the highlight mode to 0.
-    Standard_Integer HilightMode() const;
-  
-  //! Sets the highlight mode anIndex for the interactive object.
+  Standard_Integer HilightMode() const { return myHilightMode; }
+
+  //! Sets the highlight mode theMode for the interactive object.
   //! If, for example, you want to systematically highlight
   //! the wireframe presentation of a shape - whether
   //! visualized in wireframe presentation or with shading -
   //! you set the highlight mode to 0.
-    void SetHilightMode (const Standard_Integer anIndex);
-  
+  void SetHilightMode (const Standard_Integer theMode) { myHilightMode = theMode; }
+
   //! Allows the user to take a given Prs for hilight
   //! ex : for a shape which would be displayed in shading mode
   //! the hilight Prs is the wireframe mode.
   //! if No specific hilight mode is defined, the displayed Prs
   //! will be the hilighted one.
-    void UnsetHilightMode();
-  
+  void UnsetHilightMode() { myHilightMode = -1; }
+
   //! Returns true if the Interactive Object has color.
-    Standard_Boolean HasColor() const;
-  
+  Standard_Boolean HasColor() const { return hasOwnColor; }
+
   //! Returns the color setting of the Interactive Object.
-    virtual Quantity_NameOfColor Color() const;
-  
-    virtual void Color (Quantity_Color& aColor) const;
-  
+  virtual Quantity_NameOfColor Color() const { return myOwnColor.Name(); }
+
+  virtual void Color (Quantity_Color& theColor) const { theColor = myOwnColor; }
+
   //! Returns true if the Interactive Object has width.
-    Standard_Boolean HasWidth() const;
-  
+  Standard_Boolean HasWidth() const { return myOwnWidth != 0.0; }
+
   //! Returns the width setting of the Interactive Object.
-  Standard_Real Width() const;
-  
+  Standard_Real Width() const { return myOwnWidth; }
+
   //! Returns true if the Interactive Object has a setting for material.
-  Standard_Boolean HasMaterial() const;
-  
+  Standard_Boolean HasMaterial() const { return hasOwnMaterial; }
+
   //! Returns the current material setting.
   //! This will be on of the following materials:
   //! -   Brass
@@ -362,8 +335,8 @@ public:
   //! -   Pewter
   //! -   Silver
   //! -   Stone.
-  virtual Graphic3d_NameOfMaterial Material() const;
-  
+  virtual Graphic3d_NameOfMaterial Material() const { return myOwnMaterial; }
+
   //! Sets the name aName for material defining this
   //! display attribute for the interactive object.
   //! Material aspect determines shading aspect, color and
@@ -386,8 +359,8 @@ public:
   Standard_EXPORT virtual void SetTransparency (const Standard_Real aValue = 0.6);
   
   //! Returns true if there is a transparency setting.
-    Standard_Boolean IsTransparent() const;
-  
+  Standard_Boolean IsTransparent() const { return myTransparency > 0.005; }
+
   //! Returns the transparency setting.
   //! This will be between 0.0 and 1.0.
   //! At 0.0 an object will be totally opaque, and at 1.0, fully transparent.
@@ -398,11 +371,7 @@ public:
   
   //! Clears settings provided by the drawing tool aDrawer.
   Standard_EXPORT virtual void UnsetAttributes() Standard_OVERRIDE;
-  
-    void State (const Standard_Integer theState);
-  
-    Standard_Integer State() const;
-  
+
   //! Returns TRUE when this object has a presentation
   //! in the current DisplayMode()
   Standard_EXPORT Standard_Boolean HasPresentation() const;
@@ -459,10 +428,15 @@ public:
   //! so that modifications will take effect on already computed presentation groups (thus avoiding re-displaying the object).
   Standard_EXPORT void SynchronizeAspects();
 
-friend class AIS_InteractiveContext;
+private:
 
+  Standard_EXPORT virtual Standard_Boolean RecomputeEveryPrs() const;
 
-  DEFINE_STANDARD_RTTIEXT(AIS_InteractiveObject,SelectMgr_SelectableObject)
+  Standard_EXPORT void MustRecomputePrs (const Standard_Integer aMode) const;
+
+  Standard_EXPORT const TColStd_ListOfInteger& ListOfRecomputeModes() const;
+
+  Standard_EXPORT void SetRecomputeOk();
 
 protected:
 
@@ -483,33 +457,15 @@ protected:
   Standard_Boolean myRecomputeEveryPrs;
   TColStd_ListOfInteger myToRecomputeModes;
 
-
 private:
 
-  
-  Standard_EXPORT virtual Standard_Boolean RecomputeEveryPrs() const;
-  
-  Standard_EXPORT void MustRecomputePrs (const Standard_Integer aMode) const;
-  
-  Standard_EXPORT const TColStd_ListOfInteger& ListOfRecomputeModes() const;
-  
-  Standard_EXPORT void SetRecomputeOk();
-
-  AIS_PToContext myCTXPtr;
+  AIS_InteractiveContext* myCTXPtr;
   Handle(Standard_Transient) myOwner;
-  TColStd_ListOfTransient myUsers;
   Standard_Integer mySelPriority;
   Standard_Integer myDisplayMode;
-  Standard_Integer mystate;
-
 
 };
 
-
-#include <AIS_InteractiveObject.lxx>
-
-
-
-
+DEFINE_STANDARD_HANDLE(AIS_InteractiveObject, SelectMgr_SelectableObject)
 
 #endif // _AIS_InteractiveObject_HeaderFile

@@ -137,7 +137,6 @@ AIS_Point.hxx
 AIS_Point.lxx
 AIS_PointCloud.cxx
 AIS_PointCloud.hxx
-AIS_PToContext.hxx
 AIS_RadiusDimension.cxx
 AIS_RadiusDimension.hxx
 AIS_Relation.cxx

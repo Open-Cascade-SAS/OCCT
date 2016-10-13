@@ -65,11 +65,8 @@ myCurrentFacingModel(Aspect_TOFM_BOTH_SIDE),
 myRecomputeEveryPrs(Standard_True),
 myCTXPtr(NULL),
 mySelPriority(-1),
-myDisplayMode (-1),
-mystate(0)
+myDisplayMode (-1)
 {
-  Handle (AIS_InteractiveContext) Bid;
-  myCTXPtr = Bid.operator->();
   SetCurrentFacingModel();
 }
 
@@ -113,31 +110,27 @@ Standard_Boolean  AIS_InteractiveObject::RecomputeEveryPrs() const
 //function : 
 //purpose  : 
 //=======================================================================
-Standard_Boolean AIS_InteractiveObject::HasInteractiveContext() const 
-{
-  Handle (AIS_InteractiveContext) aNull;
-  return  (myCTXPtr != aNull.operator->());
-}
-
-//=======================================================================
-//function : 
-//purpose  : 
-//=======================================================================
 Handle(AIS_InteractiveContext) AIS_InteractiveObject::GetContext() const 
 {
   return myCTXPtr;
 }
 
 //=======================================================================
-//function : 
-//purpose  : 
+//function : SetContext
+//purpose  :
 //=======================================================================
-void AIS_InteractiveObject::SetContext(const Handle(AIS_InteractiveContext)& aCtx)
+void AIS_InteractiveObject::SetContext (const Handle(AIS_InteractiveContext)& theCtx)
 {
-  myCTXPtr = aCtx.operator->();
-  if( aCtx.IsNull())
+  if (myCTXPtr == theCtx.get())
+  {
     return;
-  myDrawer->Link(aCtx->DefaultDrawer());
+  }
+
+  myCTXPtr = theCtx.get();
+  if (!theCtx.IsNull())
+  {
+    myDrawer->Link (theCtx->DefaultDrawer());
+  }
 }
 
 //=======================================================================
@@ -159,35 +152,6 @@ void AIS_InteractiveObject::ClearOwner()
 {
   myOwner.Nullify();
 }
-
-//=======================================================================
-//function : 
-//purpose  : 
-//=======================================================================
-Standard_Boolean AIS_InteractiveObject::HasUsers() const 
-{
-  return (!myUsers.IsEmpty());
-}
-
-
-//=======================================================================
-//function : 
-//purpose  : 
-//=======================================================================
-void AIS_InteractiveObject::AddUser(const Handle(Standard_Transient)& aUser)
-{
-  myUsers.Append(aUser);
-}
-
-//=======================================================================
-//function : 
-//purpose  : 
-//=======================================================================
-void AIS_InteractiveObject::ClearUsers()
-{
-  myUsers.Clear();
-}
-
 
 //=======================================================================
 //function : 
