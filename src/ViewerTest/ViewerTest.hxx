@@ -118,8 +118,6 @@ public:
 
   Standard_EXPORT static void Commands (Draw_Interpretor& theCommands);
 
-  Standard_EXPORT static void AviCommands (Draw_Interpretor& theCommands);
-
   Standard_EXPORT static void ViewerCommands (Draw_Interpretor& theCommands);
 
   Standard_EXPORT static void MyCommands (Draw_Interpretor& theCommands);

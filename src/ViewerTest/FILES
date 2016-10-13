@@ -2,7 +2,6 @@ ViewerTest.cxx
 ViewerTest.hxx
 ViewerTest_AutoUpdater.cxx
 ViewerTest_AutoUpdater.hxx
-ViewerTest_AviCommands.cxx
 ViewerTest_CmdParser.cxx
 ViewerTest_CmdParser.hxx
 ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx

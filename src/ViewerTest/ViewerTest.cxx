@@ -6082,7 +6082,6 @@ void ViewerTest::Factory(Draw_Interpretor& theDI)
 {
   // definition of Viewer Command
   ViewerTest::Commands(theDI);
-  ViewerTest::AviCommands(theDI);
 
 #ifdef OCCT_DEBUG
       theDI << "Draw Plugin : OCC V2d & V3d commands are loaded\n";
