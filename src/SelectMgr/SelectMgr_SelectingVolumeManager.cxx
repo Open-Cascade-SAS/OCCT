@@ -60,6 +60,7 @@ SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::ScaleAndTrans
     = mySelectingVolumes[myActiveSelectionType / 2]->ScaleAndTransform (theScaleFactor, theTrsf);
   aMgr.myToAllowOverlap = myToAllowOverlap;
   aMgr.mySelectingVolumes[myActiveSelectionType / 2]->SetBuilder (theBuilder);
+  aMgr.myViewClipPlanes = myViewClipPlanes;
 
   return aMgr;
 }
@@ -469,6 +470,7 @@ gp_Pnt SelectMgr_SelectingVolumeManager::GetFarPickedPnt() const
 //=======================================================================
 void SelectMgr_SelectingVolumeManager::SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes)
 {
+  myViewClipPlanes = thePlanes;
   if (myActiveSelectionType != Point)
     return;
 

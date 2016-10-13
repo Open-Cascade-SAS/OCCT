@@ -170,6 +170,9 @@ public:
 
   Standard_EXPORT virtual Standard_Boolean IsOverlapAllowed() const Standard_OVERRIDE;
 
+  //! Return view clipping planes.
+  const Handle(Graphic3d_SequenceOfHClipPlane)& ViewClipping() const { return myViewClipPlanes; }
+
   //! Valid for point selection only!
   //! Computes depth range for global (defined for the whole view) clipping planes.
   Standard_EXPORT void SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes);
@@ -196,8 +199,9 @@ public:
 private:
   enum { Frustum, FrustumSet, VolumeTypesNb };       //!< Defines the amount of available selecting volumes
 
-  Handle(SelectMgr_BaseFrustum) mySelectingVolumes[VolumeTypesNb];      //!< Array of selecting volumes
-  Standard_Boolean              myToAllowOverlap;      //!< Defines if partially overlapped entities will me detected or not
+  Handle(SelectMgr_BaseFrustum)          mySelectingVolumes[VolumeTypesNb]; //!< Array of selecting volumes
+  Handle(Graphic3d_SequenceOfHClipPlane) myViewClipPlanes;                  //!< view clipping planes
+  Standard_Boolean                       myToAllowOverlap;                  //!< Defines if partially overlapped entities will me detected or not
 };
 
 #endif

@@ -516,9 +516,40 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   if (aCtx->Clipping().IsClippingOrCappingOn())
   {
     const Graphic3d_BndBox4f& aBBox = BoundingBox();
-    if ((!myTrsfPers.IsNull() && myTrsfPers->IsTrihedronOr2d())
-     || (!myClipPlanes.IsNull() && myClipPlanes->ToOverrideGlobal()))
+    if (!myClipPlanes.IsNull()
+      && myClipPlanes->ToOverrideGlobal())
     {
+      aCtx->ChangeClipping().DisableGlobal (aCtx);
+      hasDisabled = aCtx->Clipping().HasDisabled();
+    }
+    else if (!myTrsfPers.IsNull())
+    {
+      if (myTrsfPers->IsZoomOrRotate())
+      {
+        // Zoom/rotate persistence object lives in two worlds at the same time.
+        // Global clipping planes can not be trivially applied without being converted
+        // into local space of transformation persistence object.
+        // As more simple alternative - just clip entire object by its anchor point defined in the world space.
+        const gp_Pnt anAnchor = myTrsfPers->AnchorPoint();
+        for (OpenGl_ClippingIterator aPlaneIt (aCtx->Clipping()); aPlaneIt.More() && aPlaneIt.IsGlobal(); aPlaneIt.Next())
+        {
+          const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
+          if (!aPlane->IsOn())
+          {
+            continue;
+          }
+
+          // check for clipping
+          const Graphic3d_Vec4d& aPlaneEquation = aPlane->GetEquation();
+          const Graphic3d_Vec4d aCheckPnt (anAnchor.X(), anAnchor.Y(), anAnchor.Z(), 1.0);
+          if (aPlaneEquation.Dot (aCheckPnt) < 0.0) // vertex is outside the half-space
+          {
+            isClipped = true;
+            break;
+          }
+        }
+      }
+
       aCtx->ChangeClipping().DisableGlobal (aCtx);
       hasDisabled = aCtx->Clipping().HasDisabled();
     }

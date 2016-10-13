@@ -1,0 +1,72 @@
+puts "==========="
+puts "OCC27945"
+puts "Visualization - handle correctly view clipping planes within zoom-persistent objects"
+puts "==========="
+puts ""
+
+pload MODELING VISUALIZATION
+
+box b 3 1 2
+box z000 50 40 30
+box z010 50 40 30
+box z002 50 40 30
+box z012 50 40 30
+box z300 50 40 30
+box z302 50 40 30
+box z310 50 40 30
+box z312 50 40 30
+box r1 0.2 0.1 0.1
+box r2 0.2 0.1 0.1
+
+vclear
+vinit View1
+vaxo
+vzbufftrihedron
+vdisplay -dispMode 1 b
+
+vdisplay -noupdate -dispMode 1 -trsfPers zoom -trsfPersPos 0 0 0 z000
+vsetlocation z000 -25 -20 -15
+vdrawtext    t000 "000\n" -pos 0 0 0 -color RED -halign right
+
+vdisplay -noupdate -dispMode 1 -trsfPers zoom -trsfPersPos 0 1 0 z010
+vsetlocation z010 -25 -20 -15
+vdrawtext    t010 "010\n" -pos 0 1 0 -color RED -halign right
+
+vdisplay -noupdate -dispMode 1 -trsfPers zoom -trsfPersPos 0 0 2 z002
+vsetlocation z002 -25 -20 -15
+vdrawtext    t002 "002\n" -pos 0 0 2 -color RED -halign right
+
+vdisplay -noupdate -dispMode 1 -trsfPers zoom -trsfPersPos 0 1 2 z012
+vsetlocation z012 -25 -20 -15
+vdrawtext    t012 "012\n" -pos 0 1 2 -color RED -halign right
+
+vdisplay -noupdate -dispMode 1 -trsfPers zoom -trsfPersPos 3 0 0 z300
+vsetlocation z300 -25 -20 -15
+vdrawtext    t300 "300\n" -pos 3 0 0 -color RED -halign left
+
+vdisplay -noupdate -dispMode 1 -trsfPers zoom -trsfPersPos 3 0 2 z302
+vsetlocation z302 -25 -20 -15
+vdrawtext    t302 "302\n" -pos 3 0 2 -color RED -halign left
+
+vdisplay -noupdate -dispMode 1 -trsfPers zoom -trsfPersPos 3 1 0 z310
+vsetlocation z310 -25 -20 -15
+vdrawtext    t310 "310\n" -pos 3 1 0 -color RED -halign left
+
+vdisplay -noupdate -dispMode 1 -trsfPers zoom -trsfPersPos 3 1 2 z312
+vsetlocation z312 -25 -20 -15
+vdrawtext    t312 "312\n" -pos 3 1 2 -color RED -halign left
+
+vdisplay -noupdate -dispMode 1 -trsfPers rotate -trsfPersPos -1 1 2 r1
+vdisplay -noupdate -dispMode 1 -trsfPers rotate -trsfPersPos  4 1 2 r2
+
+vfit
+vrotate 0.1 0 0
+
+vclipplane pln -equation -1 0 0 2 -set
+
+set aColor1 [vreadpixel 320 160 rgb name]
+set aColor2 [vreadpixel 80  250 rgb name]
+if { "$aColor1" != "BLACK"      } { puts "Error: zoom-persistent object is not clipped" }
+if { "$aColor2" != "GOLDENROD3" } { puts "Error: zoom-persistent object is clipped" }
+
+vdump $imagedir/${casename}.png

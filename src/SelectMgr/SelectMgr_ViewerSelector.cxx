@@ -176,9 +176,41 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
   if (!anOwner.IsNull())
   {
     aSelectable = anOwner->Selectable();
-    if ((!aSelectable->TransformPersistence().IsNull() && aSelectable->TransformPersistence()->IsTrihedronOr2d())
-     || (!aSelectable->ClipPlanes().IsNull() && aSelectable->ClipPlanes()->ToOverrideGlobal()))
+    if (!aSelectable->ClipPlanes().IsNull()
+      && aSelectable->ClipPlanes()->ToOverrideGlobal())
     {
+      theMgr.SetViewClippingEnabled (Standard_False);
+      toRestoresViewClipEnabled = Standard_True;
+    }
+    else if (!aSelectable->TransformPersistence().IsNull())
+    {
+      if (aSelectable->TransformPersistence()->IsZoomOrRotate()
+      && !theMgr.ViewClipping().IsNull())
+      {
+        // Zoom/rotate persistence object lives in two worlds at the same time.
+        // Global clipping planes can not be trivially applied without being converted
+        // into local space of transformation persistence object.
+        // As more simple alternative - just clip entire object by its anchor point defined in the world space.
+        const Handle(Graphic3d_SequenceOfHClipPlane)& aViewPlanes = theMgr.ViewClipping();
+
+        const gp_Pnt anAnchor = aSelectable->TransformPersistence()->AnchorPoint();
+        for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (*aViewPlanes); aPlaneIt.More(); aPlaneIt.Next())
+        {
+          const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
+          if (!aPlane->IsOn())
+          {
+            continue;
+          }
+
+          const Graphic3d_Vec4d& aPlaneEquation = aPlane->GetEquation();
+          const Graphic3d_Vec4d  aCheckPnt (anAnchor.X(), anAnchor.Y(), anAnchor.Z(), 1.0);
+          if (aPlaneEquation.Dot (aCheckPnt) < 0.0) // vertex is outside the half-space
+          {
+            return;
+          }
+        }
+      }
+
       theMgr.SetViewClippingEnabled (Standard_False);
       toRestoresViewClipEnabled = Standard_True;
     }
