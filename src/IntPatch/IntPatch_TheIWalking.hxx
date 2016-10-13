@@ -37,6 +37,7 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <IntWalk_StatusDeflection.hxx>
+#include <Bnd_Range.hxx>
 class StdFail_NotDone;
 class Standard_OutOfRange;
 class IntSurf_PathPoint;
@@ -166,6 +167,8 @@ private:
   IntWalk_VectorOfWalkingData wd1;
   IntWalk_VectorOfWalkingData wd2;
   IntWalk_VectorOfInteger nbMultiplicities;
+  Bnd_Range mySRangeU; // Estimated U-range for section curve
+  Bnd_Range mySRangeV; // Estimated V-range for section curve
   Standard_Real Um;
   Standard_Real UM;
   Standard_Real Vm;

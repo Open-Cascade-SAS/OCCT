@@ -183,6 +183,9 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
     }      
 
     ThePointOfPathTool::Value2d(PathPnt, aWD1.ustart, aWD1.vstart);
+    mySRangeU.Add(aWD1.ustart);
+    mySRangeV.Add(aWD1.vstart);
+
     wd1.push_back (aWD1);
     Standard_Integer aNbMult = ThePointOfPathTool::Multiplicity(PathPnt);
     nbMultiplicities.push_back(aNbMult);
@@ -200,6 +203,9 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
     aWD2.etat = 1;
     const IntSurf_InteriorPoint& anIP = Pnts2.Value(I);
     ThePointOfLoopTool::Value2d(anIP, aWD2.ustart, aWD2.vstart);
+    mySRangeU.Add(aWD2.ustart);
+    mySRangeV.Add(aWD2.vstart);
+
     if (!IsTangentExtCheck(Func, aWD2.ustart, aWD2.vstart, aStepU, aStepV, Um, UM, Vm, VM))
       aWD2.etat = 13;
     
@@ -210,6 +216,26 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
   tolerance(2) = ThePSurfaceTool::VResolution(Caro,Precision::Confusion());
 
   Func.Set(Caro);
+
+  if (mySRangeU.Delta() > Max(tolerance(1), Precision::PConfusion()))
+  {
+    mySRangeU.Enlarge(mySRangeU.Delta());
+    mySRangeU.Common(Bnd_Range(Um, UM));
+  }
+  else
+  {
+    mySRangeU = Bnd_Range(Um, UM);
+  }
+
+  if (mySRangeV.Delta() > Max(tolerance(2), Precision::PConfusion()))
+  {
+    mySRangeV.Enlarge(mySRangeV.Delta());
+    mySRangeV.Common(Bnd_Range(Vm, VM));
+  }
+  else
+  {
+    mySRangeV = Bnd_Range(Vm, VM);
+  }
 
   // calculation of all open lines   
   if (nbPnts1 != 0)

@@ -14,6 +14,7 @@
 
 //-- IntWalk_IWalking_2.gxx
 
+#include <Bnd_Range.hxx>
 #include <TColStd_MapOfInteger.hxx>
 
 #ifndef OCCT_DEBUG
@@ -389,11 +390,10 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage
   Standard_Real UV2=UV(2);
 
 
-  //-- Put everything in one box 0 1  x 0 1 
-  //-- actually it is necessary to carry out tests in 3D
-
-  Standard_Real deltau=UM-Um;
-  Standard_Real deltav=VM-Vm;
+  //Normalizing factor. If it is less than 1.0 then the range will be expanded. 
+  //This is no good for computation. Therefore, it is limited.
+  const Standard_Real deltau = mySRangeU.IsVoid() ? UM - Um : Max(mySRangeU.Delta(), 1.0);
+  const Standard_Real deltav = mySRangeV.IsVoid() ? VM - Vm : Max(mySRangeV.Delta(), 1.0);
 
   Up/=deltau; UV1/=deltau; 
   Vp/=deltav; UV2/=deltav;
