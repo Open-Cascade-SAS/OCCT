@@ -435,32 +435,44 @@ Standard_Boolean AIS_LengthDimension::InitEdgeFaceLength (const TopoDS_Edge& the
                                                           const TopoDS_Face& theFace,
                                                           gp_Dir& theEdgeDir)
 {
-  // Compute edge direction
-  BRepAdaptor_Curve aCurveAdaptor (theEdge);
-  Handle(Geom_Curve) aCurve = Handle(Geom_Curve)::DownCast (aCurveAdaptor.Curve().Curve()->Transformed (aCurveAdaptor.Trsf()));
-  if (aCurve.IsNull())
-  {
-    return Standard_False;
-  }
-  Standard_Real aFirst = aCurveAdaptor.FirstParameter();
-  Standard_Real aLast = aCurveAdaptor.LastParameter();
-  gp_Pnt aFirstPoint = !Precision::IsInfinite (aFirst) ? aCurve->Value (aFirst) : gp::Origin();
-  gp_Pnt aSecondPoint = !Precision::IsInfinite (aLast) ? aCurve->Value (aLast) : gp::Origin();
-  gce_MakeDir aMakeDir (aFirstPoint, aSecondPoint);
-  if (!aMakeDir.IsDone())
-  {
-    return Standard_False;
-  }
-  theEdgeDir = aMakeDir.Value();
+  theEdgeDir = gp::DX();
 
-  // Find attachment points
+  // Find attachment points (closest distance between the edge and the face)
   BRepExtrema_DistShapeShape aDistAdaptor (theEdge, theFace, Extrema_ExtFlag_MIN);
-  if (!aDistAdaptor.IsDone())
+  if (!aDistAdaptor.IsDone() || aDistAdaptor.NbSolution() <1)
   {
     return Standard_False;
   }
   myFirstPoint = aDistAdaptor.PointOnShape1 (1);
   mySecondPoint = aDistAdaptor.PointOnShape2 (1);
+
+  // Take direction for dimension line (will be orthogonalized later) parallel to edge
+  BRepAdaptor_Curve aCurveAdaptor (theEdge);
+  Standard_Real aParam;
+  if (aDistAdaptor.SupportOnShape1 (1).ShapeType() == TopAbs_EDGE)
+  {
+    aDistAdaptor.ParOnEdgeS1 (1, aParam);
+  }
+  else
+  {
+    Standard_Real aD1 = aCurveAdaptor.Value(aCurveAdaptor.FirstParameter()).SquareDistance (myFirstPoint);
+    Standard_Real aD2 = aCurveAdaptor.Value(aCurveAdaptor.LastParameter()).SquareDistance (myFirstPoint);
+    aParam = (aD1 < aD2 ? aCurveAdaptor.FirstParameter() : aCurveAdaptor.LastParameter());
+  }
+  gp_Pnt aP;
+  gp_Vec aV;
+  aCurveAdaptor.D1 (aParam, aP, aV);
+  if (aV.SquareMagnitude() > gp::Resolution())
+  {
+    theEdgeDir = aV;
+  }
+
+  // reverse direction if parameter is close to the end of the curve,
+  // to reduce chances to have overlapping between dimension line and edge
+  if (Abs (aParam - aCurveAdaptor.FirstParameter()) < Abs (aParam - aCurveAdaptor.LastParameter()))
+  {
+    theEdgeDir.Reverse();
+  }
 
   return IsValidPoints (myFirstPoint, mySecondPoint);
 }

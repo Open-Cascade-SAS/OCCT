@@ -22,7 +22,7 @@ if { [expr abs( ${dist} - ${good_dist} )] > ${toler} } {
 # 2
 # Point 3D : 66.6, -11.8556887483839, 0.3
 
-regexp { +Point 3D : +([-0-9.+eE]+), +([-0-9.+eE]+), +([-0-9.+eE]+)} [ dump d ] full x1 y1 z1
+regexp { +Point 3D : +([-0-9.+eE]+), +([-0-9.+eE]+), +([-0-9.+eE]+)} [ dump d2 ] full x1 y1 z1
 set good_x1 66.6
 set good_y1 -11.8556887483839
 set good_z1 0.3
@@ -39,7 +39,7 @@ if { [expr abs( ${z1} - ${good_z1} )] > ${toler} } {
 # 3
 # Point 3D : 66.6, 11.8556887323157, 0.3
 
-regexp { +Point 3D : +([-0-9.+eE]+), +([-0-9.+eE]+), +([-0-9.+eE]+)} [ dump d2 ] full x2 y2 z2
+regexp { +Point 3D : +([-0-9.+eE]+), +([-0-9.+eE]+), +([-0-9.+eE]+)} [ dump d ] full x2 y2 z2
 set good_x2 66.6
 set good_y2 11.8556887323157
 set good_z2 0.3

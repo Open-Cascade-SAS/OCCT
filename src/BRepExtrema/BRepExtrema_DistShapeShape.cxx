@@ -36,10 +36,10 @@
 #include <BRep_Tool.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <NCollection_Comparator.hxx>
-#include <NCollection_QuickSort.hxx>
 #include <NCollection_Vector.hxx>
 #include <StdFail_NotDone.hxx>
 
+#include <algorithm>
 namespace
 {
 
@@ -91,38 +91,14 @@ namespace
       Index2   (theIndex2),
       Distance (theDistance) {}
   };
+
+  // Used by std::sort function
+  static Standard_Boolean BRepExtrema_CheckPair_Comparator (const BRepExtrema_CheckPair& theLeft,
+                                                            const BRepExtrema_CheckPair& theRight)
+  {
+    return (theLeft.Distance < theRight.Distance);
+  }
 }
-
-template<>
-class NCollection_Comparator<BRepExtrema_CheckPair>
-{
-public:
-
-  Standard_Boolean IsLower (const BRepExtrema_CheckPair& theLeft, const BRepExtrema_CheckPair& theRight) const
-  {
-    return theLeft.Distance < theRight.Distance;
-  }
-
-  Standard_Boolean IsGreater (const BRepExtrema_CheckPair& theLeft, const BRepExtrema_CheckPair& theRight) const
-  {
-    return theLeft.Distance > theRight.Distance;
-  }
-
-  Standard_Boolean IsEqual (const BRepExtrema_CheckPair& theLeft, const BRepExtrema_CheckPair& theRight) const
-  {
-    return theLeft.Distance == theRight.Distance;
-  }
-
-  Standard_Boolean IsLowerEqual (const BRepExtrema_CheckPair& theLeft, const BRepExtrema_CheckPair& theRight) const
-  {
-    return theLeft.Distance <= theRight.Distance;
-  }
-
-  Standard_Boolean IsGreaterEqual (const BRepExtrema_CheckPair& theLeft, const BRepExtrema_CheckPair& theRight) const
-  {
-    return theLeft.Distance >= theRight.Distance;
-  }
-};
 
 //=======================================================================
 //function : DistanceMapMap
@@ -149,8 +125,8 @@ void BRepExtrema_DistShapeShape::DistanceMapMap (const TopTools_IndexedMapOfShap
     }
   }
 
-  NCollection_QuickSort<NCollection_Vector<BRepExtrema_CheckPair>, BRepExtrema_CheckPair>::Perform (aPairList, NCollection_Comparator<BRepExtrema_CheckPair>(),
-                                                                                                    aPairList.Lower(), aPairList.Upper());
+  std::stable_sort(aPairList.begin(), aPairList.end(), BRepExtrema_CheckPair_Comparator);
+
   for (NCollection_Vector<BRepExtrema_CheckPair>::Iterator aPairIter (aPairList);
        aPairIter.More(); aPairIter.Next())
   {

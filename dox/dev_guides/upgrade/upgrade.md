@@ -1081,3 +1081,10 @@ The following obsolete features have been removed:
 @subsection upgrade_occt710_correction_of_TObj_Model Correction in TObj_Model class
 
 Methods *TObj_Model::SaveAs* and *TObj_Model::Load* receive *TCollection_ExtendedString* filename arguments instead of char*. This shows that the filename may be not-ASCII explicitly. Also it makes OCAF API related to this functionality more conform.
+
+
+@subsection upgrade_occt710_sorttools Removal of NCollection_QuickSort class
+
+Class *NCollection_QuickSort* has been removed.
+The code that used the tools provided by that class should be corrected manually.
+The recommended approach is to use sorting algorithms provided by STL.
