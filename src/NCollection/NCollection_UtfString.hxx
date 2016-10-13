@@ -96,7 +96,7 @@ public:
   NCollection_UtfString (const Standard_Utf32Char* theCopyUtf32,
                          const Standard_Integer    theLength = -1);
 
-#if !defined(_WIN32) || defined(_NATIVE_WCHAR_T_DEFINED) || (defined(_MSC_VER) && _MSC_VER >= 1900)
+#if !defined(_MSC_VER) || defined(_NATIVE_WCHAR_T_DEFINED) || (defined(_MSC_VER) && _MSC_VER >= 1900)
   //! Copy constructor from NULL-terminated wide UTF string.
   //! @param theCopyUtfWide NULL-terminated wide UTF string to copy
   //! @param theLength      the length limit in Unicode symbols (NOT bytes!)

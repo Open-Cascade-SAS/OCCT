@@ -99,7 +99,7 @@ public:
   //! Otherwise, creates UTF-8 unicode string.
   Standard_EXPORT TCollection_AsciiString(const TCollection_ExtendedString& astring, const Standard_Character replaceNonAscii = 0);
 
-#if !defined(_WIN32) || defined(_NATIVE_WCHAR_T_DEFINED)
+#if !defined(_MSC_VER) || defined(_NATIVE_WCHAR_T_DEFINED)
   //! Initialize UTF-8 Unicode string from wide-char string considering it as Unicode string
   //! (the size of wide char is a platform-dependent - e.g. on Windows wchar_t is UTF-16).
   //!

@@ -179,7 +179,7 @@ NCollection_UtfString<Type>::NCollection_UtfString (const Standard_Utf32Char* th
   FromUnicode (theCopyUtf32, theLength);
 }
 
-#if !defined(_WIN32) || defined(_NATIVE_WCHAR_T_DEFINED) || (defined(_MSC_VER) && _MSC_VER >= 1900)
+#if !defined(_MSC_VER) || defined(_NATIVE_WCHAR_T_DEFINED) || (defined(_MSC_VER) && _MSC_VER >= 1900)
 // =======================================================================
 // function : NCollection_UtfString
 // purpose  :
