@@ -39,6 +39,8 @@
 #include <TDF_Tool.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Tool.hxx>
+#include <TPrsStd_AISViewer.hxx>
+#include <AIS_InteractiveContext.hxx>
 // pour propagate
 #include <TDocStd_XLinkTool.hxx>
 
@@ -227,6 +229,11 @@ static Standard_Integer DDocStd_Undo (Draw_Interpretor& di,Standard_Integer n, c
       if (!D->Redo()) di << "Redo not done\n";
     }
   }
+
+  // Redraw the viewer.
+  Handle(AIS_InteractiveContext) IC;
+  if (TPrsStd_AISViewer::Find(D->Main(), IC))
+      IC->UpdateCurrentViewer();
   
   return 0;
 }
