@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdPrs_ToolQuadric.hxx>
+#include <Prs3d_ToolQuadric.hxx>
 
 #include <gp_Quaternion.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
@@ -24,7 +24,7 @@
 //function : fillArrays
 //purpose  :
 //=======================================================================
-void StdPrs_ToolQuadric::fillArrays (const gp_Trsf& theTrsf, TColgp_Array1OfPnt& theArray, NCollection_Array1<gp_Dir>& theNormals)
+void Prs3d_ToolQuadric::fillArrays (const gp_Trsf& theTrsf, TColgp_Array1OfPnt& theArray, NCollection_Array1<gp_Dir>& theNormals)
 {
   Standard_ShortReal aStepU = 1.0f / mySlicesNb;
   Standard_ShortReal aStepV = 1.0f / myStacksNb;
@@ -52,10 +52,13 @@ void StdPrs_ToolQuadric::fillArrays (const gp_Trsf& theTrsf, TColgp_Array1OfPnt&
 //function : FIllArray
 //purpose  :
 //=======================================================================
-void StdPrs_ToolQuadric::FillArray (Handle(Graphic3d_ArrayOfTriangles)& theArray, const gp_Trsf& theTrsf)
+void Prs3d_ToolQuadric::FillArray (Handle(Graphic3d_ArrayOfTriangles)& theArray, const gp_Trsf& theTrsf)
 {
   const Standard_Integer aTrianglesNb = TrianglesNb();
-  theArray = new Graphic3d_ArrayOfTriangles (aTrianglesNb * 3, 0, Standard_True);
+  if (theArray.IsNull())
+  {
+    theArray = new Graphic3d_ArrayOfTriangles (aTrianglesNb * 3, 0, Standard_True);
+  }
 
   Poly_Array1OfTriangle aPolyTriangles (1, aTrianglesNb);
   TColgp_Array1OfPnt anArray (1, aTrianglesNb * 3);
@@ -81,9 +84,9 @@ void StdPrs_ToolQuadric::FillArray (Handle(Graphic3d_ArrayOfTriangles)& theArray
 //function : FillTriangulation
 //purpose  :
 //=======================================================================
-void StdPrs_ToolQuadric::FillArray (Handle(Graphic3d_ArrayOfTriangles)& theArray,
-                                    Handle(Poly_Triangulation)& theTriangulation,
-                                    const gp_Trsf& theTrsf)
+void Prs3d_ToolQuadric::FillArray (Handle(Graphic3d_ArrayOfTriangles)& theArray,
+                                   Handle(Poly_Triangulation)& theTriangulation,
+                                   const gp_Trsf& theTrsf)
 {
   const Standard_Integer aTrianglesNb = TrianglesNb();
   theArray = new Graphic3d_ArrayOfTriangles(aTrianglesNb * 3, 0, Standard_True);

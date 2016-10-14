@@ -375,32 +375,6 @@ protected: //! @name Auxilliary classes to fill presentation with proper primiti
     Handle(Graphic3d_ArrayOfTriangles) myArray;
   };
 
-  class Cylinder : public Quadric
-  {
-  public:
-
-    Cylinder()
-    : Quadric(),
-      myBottomRad(1.0f),
-      myTopRad(1.0f),
-      myHeight(1.0f)
-    { }
-
-    virtual ~Cylinder() {}
-
-    void Init (const Standard_ShortReal theBotRad, const Standard_ShortReal theTopRad,
-               const Standard_ShortReal theHeight,
-               const Standard_Integer theSlicesNb, const Standard_Integer theStacksNb,
-               const gp_Ax1& thePosition);
-
-  protected:
-
-    gp_Ax1 myPosition;
-    Standard_ShortReal myBottomRad;
-    Standard_ShortReal myTopRad;
-    Standard_ShortReal myHeight;
-  };
-
   class Disk : public Quadric
   {
   public:
@@ -482,7 +456,7 @@ protected: //! @name Auxilliary classes to fill presentation with proper primiti
           const Quantity_Color& theColor     = Quantity_Color(),
           const Standard_ShortReal theLength = 10.0f);
 
-    void Compute (const Handle_PrsMgr_PresentationManager3d& thePrsMgr,
+    void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                   const Handle(Prs3d_Presentation)& thePrs,
                   const Handle(Prs3d_ShadingAspect)& theAspect);
 
@@ -560,6 +534,8 @@ protected: //! @name Auxilliary classes to fill presentation with proper primiti
 
     const Handle(Graphic3d_Group)& ScalerGroup() const { return myScalerGroup; }
 
+    const Handle(Graphic3d_ArrayOfTriangles)& TriangleArray() const { return myTriangleArray; }
+
     void SetIndent (const Standard_ShortReal theValue) { myIndent = theValue; }
 
     Standard_ShortReal Size() const { return myLength + myBoxSize + myDiskThickness + myIndent * 2.0f; }
@@ -590,10 +566,7 @@ protected: //! @name Auxilliary classes to fill presentation with proper primiti
 
   public:
 
-    const Cylinder& TranslatorCylinder() const { return myCylinder; }
-    const Cylinder& TranslatorArrow() const { return myArrow; }
     const gp_Pnt& TranslatorTipPosition() const { return myArrowTipPos; }
-    const Disk& TranslatorArrowBottom() const { return myArrowBottom; }
     const Disk& RotatorDisk() const { return myCircle; }
     float RotatorDiskRadius() const { return myCircleRadius; }
     const Cube& ScalerCube() const { return myCube; }
@@ -621,10 +594,7 @@ protected: //! @name Auxilliary classes to fill presentation with proper primiti
 
     Standard_Integer myFacettesNumber;
 
-    Cylinder myCylinder;
-    Cylinder myArrow;
     gp_Pnt   myArrowTipPos;
-    Disk     myArrowBottom;
     Disk     myCircle;
     float    myCircleRadius;
     Cube     myCube;
@@ -637,6 +607,9 @@ protected: //! @name Auxilliary classes to fill presentation with proper primiti
     Handle(Prs3d_Presentation) myHighlightTranslator;
     Handle(Prs3d_Presentation) myHighlightScaler;
     Handle(Prs3d_Presentation) myHighlightRotator;
+
+    Handle(Graphic3d_ArrayOfTriangles) myTriangleArray;
+
   };
 
 protected:

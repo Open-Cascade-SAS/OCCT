@@ -24,16 +24,17 @@
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_Transformation.hxx>
+#include <Prs3d_Arrow.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
+#include <Prs3d_ToolDisk.hxx>
+#include <Prs3d_ToolSphere.hxx>
 #include <Select3D_SensitiveCircle.hxx>
 #include <Select3D_SensitivePoint.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 #include <Select3D_SensitiveTriangulation.hxx>
+#include <Select3D_SensitivePrimitiveArray.hxx>
 #include <SelectMgr_SequenceOfOwner.hxx>
-#include <StdPrs_ToolDisk.hxx>
-#include <StdPrs_ToolCylinder.hxx>
-#include <StdPrs_ToolSphere.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <V3d_View.hxx>
 
@@ -925,7 +926,7 @@ void AIS_Manipulator::ComputeSelection (const Handle(SelectMgr_Selection)& theSe
   {
     anOwner = new SelectMgr_EntityOwner (this, 5);
   }
-  Handle(Select3D_SensitiveTriangulation) aTri;
+
   if (aMode == AIS_MM_Translation || aMode == AIS_MM_None)
   {
     for (Standard_Integer anIt = 0; anIt < 3; ++anIt)
@@ -939,12 +940,10 @@ void AIS_Manipulator::ComputeSelection (const Handle(SelectMgr_Selection)& theSe
       Handle(Select3D_SensitiveSegment) aLine = new Select3D_SensitiveSegment (anOwner, gp::Origin(), anAxis.TranslatorTipPosition());
       aLine->SetSensitivityFactor (15);
       theSelection->Add (aLine);
+
       // enlarge sensitivity by triangulation
-      aTri = new Select3D_SensitiveTriangulation (anOwner, anAxis.TranslatorCylinder().Triangulation(), TopLoc_Location(), Standard_True);
-      theSelection->Add (aTri);
-      aTri = new Select3D_SensitiveTriangulation (anOwner, anAxis.TranslatorArrow().Triangulation(), TopLoc_Location(), Standard_True);
-      theSelection->Add (aTri);
-      aTri = new Select3D_SensitiveTriangulation (anOwner, anAxis.TranslatorArrowBottom().Triangulation(), TopLoc_Location(), Standard_True);
+      Handle(Select3D_SensitivePrimitiveArray) aTri = new Select3D_SensitivePrimitiveArray (anOwner);
+      aTri->InitTriangulation (anAxis.TriangleArray()->Attributes(), anAxis.TriangleArray()->Indices(), TopLoc_Location());
       theSelection->Add (aTri);
     }
   }
@@ -964,7 +963,7 @@ void AIS_Manipulator::ComputeSelection (const Handle(SelectMgr_Selection)& theSe
       aCircle->SetSensitivityFactor (15);
       theSelection->Add (aCircle);
       // enlarge sensitivity by triangulation
-      aTri = new Select3D_SensitiveTriangulation (anOwner, myAxes[anIt].RotatorDisk().Triangulation(), TopLoc_Location(), Standard_True);
+      Handle(Select3D_SensitiveTriangulation) aTri = new Select3D_SensitiveTriangulation (anOwner, myAxes[anIt].RotatorDisk().Triangulation(), TopLoc_Location(), Standard_True);
       theSelection->Add (aTri);
     }
   }
@@ -982,33 +981,10 @@ void AIS_Manipulator::ComputeSelection (const Handle(SelectMgr_Selection)& theSe
       aPnt->SetSensitivityFactor (15);
       theSelection->Add (aPnt);
       // enlarge sensitivity by triangulation
-      aTri = new Select3D_SensitiveTriangulation (anOwner, myAxes[anIt].ScalerCube().Triangulation(), TopLoc_Location(), Standard_True);
+      Handle(Select3D_SensitiveTriangulation) aTri = new Select3D_SensitiveTriangulation (anOwner, myAxes[anIt].ScalerCube().Triangulation(), TopLoc_Location(), Standard_True);
       theSelection->Add (aTri);
     }
   }
-}
-
-//=======================================================================
-//class    : Cylinder
-//function : Init
-//purpose  : 
-//=======================================================================
-void AIS_Manipulator::Cylinder::Init (const Standard_ShortReal theBotRad, const Standard_ShortReal theTopRad,
-                                      const Standard_ShortReal theHeight,
-                                      const Standard_Integer theSlicesNb, const Standard_Integer theStacksNb,
-                                      const gp_Ax1& thePosition)
-{
-  myPosition = thePosition;
-  myBottomRad = theBotRad;
-  myTopRad = theTopRad;
-  myHeight = theHeight;
-
-  StdPrs_ToolCylinder aTool (myBottomRad, myTopRad, myHeight, theSlicesNb, theStacksNb);
-  gp_Ax3 aSystem (myPosition.Location(), myPosition.Direction());
-  gp_Trsf aTrsf;
-  aTrsf.SetTransformation (aSystem, gp_Ax3());
-
-  aTool.FillArray (myArray, myTriangulation, aTrsf);
 }
 
 //=======================================================================
@@ -1026,7 +1002,7 @@ void AIS_Manipulator::Disk::Init (const Standard_ShortReal theInnerRadius,
   myInnerRad = theInnerRadius;
   myOuterRad = theOuterRadius;
 
-  StdPrs_ToolDisk aTool (theInnerRadius, theOuterRadius, theSlicesNb, theStacksNb);
+  Prs3d_ToolDisk aTool (theInnerRadius, theOuterRadius, theSlicesNb, theStacksNb);
   gp_Ax3 aSystem (myPosition.Location(), myPosition.Direction());
   gp_Trsf aTrsf;
   aTrsf.SetTransformation (aSystem, gp_Ax3());
@@ -1046,7 +1022,7 @@ void AIS_Manipulator::Sphere::Init (const Standard_ShortReal theRadius,
   myPosition = thePosition;
   myRadius = theRadius;
 
-  StdPrs_ToolSphere aTool (theRadius, theSlicesNb, theStacksNb);
+  Prs3d_ToolSphere aTool (theRadius, theSlicesNb, theStacksNb);
   gp_Trsf aTrsf;
   aTrsf.SetTranslation (gp_Vec(gp::Origin(), thePosition));
   aTool.FillArray (myArray, myTriangulation, aTrsf);
@@ -1153,44 +1129,39 @@ AIS_Manipulator::Axis::Axis (const gp_Ax1& theAxis,
 //=======================================================================
 //class    : Axis
 //function : Compute
-//purpose  : 
+//purpose  :
 //=======================================================================
-void AIS_Manipulator::Axis::Compute (const Handle_PrsMgr_PresentationManager3d& thePrsMgr,
+
+void AIS_Manipulator::Axis::Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                      const Handle(Prs3d_Presentation)& thePrs,
                                      const Handle(Prs3d_ShadingAspect)& theAspect)
 {
-  Handle(Graphic3d_Group) aGroup;
-
   if (myHasTranslation)
   {
-    const Standard_ShortReal anArrowLength = 0.25f * myLength;
-    const Standard_ShortReal aCylinderLength = myLength - anArrowLength;
+    const Standard_Real anArrowLength   = 0.25 * myLength;
+    const Standard_Real aCylinderLength = myLength - anArrowLength;
+    myArrowTipPos = gp_Pnt (0.0, 0.0, 0.0).Translated (myReferenceAxis.Direction().XYZ() * aCylinderLength);
 
-    myCylinder.Init (myAxisRadius, myAxisRadius, aCylinderLength, myFacettesNumber, 2, gp_Ax1 (gp::Origin(), myReferenceAxis.Direction()));
-
-    gp_Pnt anArrowBottom (0.0, 0.0, 0.0);
-    anArrowBottom.Translate (myReferenceAxis.Direction().XYZ() * aCylinderLength);
-
-    myArrow.Init (myAxisRadius * 1.5f, 0.0f, anArrowLength, myFacettesNumber, 2, gp_Ax1 (anArrowBottom, myReferenceAxis.Direction()));
-    myArrowBottom.Init (myAxisRadius, myAxisRadius * 1.5f, gp_Ax1 (anArrowBottom, myReferenceAxis.Direction()), myFacettesNumber);
-    myArrowTipPos = anArrowBottom;
-
+    myTriangleArray = Prs3d_Arrow::DrawShaded (gp_Ax1(gp::Origin(), myReferenceAxis.Direction()),
+                                               myAxisRadius,
+                                               myLength,
+                                               myAxisRadius * 1.5,
+                                               anArrowLength,
+                                               myFacettesNumber);
     myTranslatorGroup = Prs3d_Root::NewGroup (thePrs);
     myTranslatorGroup->SetGroupPrimitivesAspect (theAspect->Aspect());
-    myTranslatorGroup->AddPrimitiveArray (myCylinder.Array());
-    myTranslatorGroup->AddPrimitiveArray (myArrow.Array());
-    myTranslatorGroup->AddPrimitiveArray (myArrowBottom.Array());
+    myTranslatorGroup->AddPrimitiveArray (myTriangleArray);
 
     if (myHighlightTranslator.IsNull())
     {
       myHighlightTranslator = new Prs3d_Presentation (thePrsMgr->StructureManager());
     }
-
-    myHighlightTranslator->Clear();
-    aGroup = Prs3d_Root::CurrentGroup (myHighlightTranslator);
-    aGroup->AddPrimitiveArray (myCylinder.Array());
-    aGroup->AddPrimitiveArray (myArrow.Array());
-    aGroup->AddPrimitiveArray (myArrowBottom.Array());
+    else
+    {
+      myHighlightTranslator->Clear();
+    }
+    Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (myHighlightTranslator);
+    aGroup->AddPrimitiveArray (myTriangleArray);
   }
 
   if (myHasScaling)
@@ -1206,9 +1177,11 @@ void AIS_Manipulator::Axis::Compute (const Handle_PrsMgr_PresentationManager3d& 
     {
       myHighlightScaler = new Prs3d_Presentation (thePrsMgr->StructureManager());
     }
-
-    myHighlightScaler->Clear();
-    aGroup = Prs3d_Root::CurrentGroup (myHighlightScaler);
+    else
+    {
+      myHighlightScaler->Clear();
+    }
+    Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (myHighlightScaler);
     aGroup->AddPrimitiveArray (myCube.Array());
   }
 
@@ -1224,9 +1197,11 @@ void AIS_Manipulator::Axis::Compute (const Handle_PrsMgr_PresentationManager3d& 
     {
       myHighlightRotator = new Prs3d_Presentation (thePrsMgr->StructureManager());
     }
-
-    myHighlightRotator->Clear();
-    aGroup = Prs3d_Root::CurrentGroup (myHighlightRotator);
+    else
+    {
+      myHighlightRotator->Clear();
+    }
+    Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (myHighlightRotator);
     Prs3d_Root::CurrentGroup (myHighlightRotator)->AddPrimitiveArray (myCircle.Array());
   }
 }

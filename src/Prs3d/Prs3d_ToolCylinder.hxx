@@ -13,32 +13,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _StdPrs_ToolDisk_HeaderFile
-#define _StdPrs_ToolDisk_HeaderFile
+#ifndef _Prs3d_ToolCylinder_HeaderFile
+#define _Prs3d_ToolCylinder_HeaderFile
 
 #include <Standard.hxx>
-#include <StdPrs_ToolQuadric.hxx>
+#include <Prs3d_ToolQuadric.hxx>
 
-//! Standard presentation algorithm that outputs graphical primitives for disk surface.
-class StdPrs_ToolDisk : public StdPrs_ToolQuadric
+//! Standard presentation algorithm that outputs graphical primitives for cylindrical surface.
+class Prs3d_ToolCylinder : public Prs3d_ToolQuadric
 {
 public:
 
   //! Generate primitives for 3D quadric surface and return a filled array.
-  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) Create (const Standard_Real    theInnerRadius,
-                                                                    const Standard_Real    theOuterRadius,
+  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) Create (const Standard_Real    theBottomRad,
+                                                                    const Standard_Real    theTopRad,
+                                                                    const Standard_Real    theHeight,
                                                                     const Standard_Integer theNbSlices,
                                                                     const Standard_Integer theNbStacks,
                                                                     const gp_Trsf&         theTrsf);
 public:
 
-  DEFINE_STANDARD_ALLOC
-
   //! Initializes the algorithm.
-  Standard_EXPORT StdPrs_ToolDisk (const Standard_Real    theInnerRadius,
-                                   const Standard_Real    theOuterRadius,
-                                   const Standard_Integer theNbSlices,
-                                   const Standard_Integer theNbStacks);
+  Standard_EXPORT Prs3d_ToolCylinder (const Standard_Real    theBottomRad,
+                                      const Standard_Real    theTopRad,
+                                      const Standard_Real    theHeight,
+                                      const Standard_Integer theNbSlices,
+                                      const Standard_Integer theNbStacks);
+
 protected:
 
   //! Computes vertex at given parameter location of the surface.
@@ -49,9 +50,10 @@ protected:
 
 protected:
 
-  Standard_Real myInnerRadius;
-  Standard_Real myOuterRadius;
+  Standard_Real myBottomRadius;
+  Standard_Real myTopRadius;
+  Standard_Real myHeight;
 
 };
 
-#endif
+#endif // _Prs3d_ToolCylinder_HeaderFile

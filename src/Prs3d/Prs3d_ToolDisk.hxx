@@ -13,38 +13,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _StdPrs_ToolSphere_HeaderFile
-#define _StdPrs_ToolSphere_HeaderFile
+#ifndef _Prs3d_ToolDisk_HeaderFile
+#define _Prs3d_ToolDisk_HeaderFile
 
-#include <Graphic3d_ArrayOfPrimitives.hxx>
-#include <Graphic3d_ArrayOfTriangles.hxx>
-#include <Poly_Triangulation.hxx>
-#include <Prs3d_Root.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <SelectMgr_Selection.hxx>
 #include <Standard.hxx>
-#include <Standard_Handle.hxx>
-#include <StdPrs_ToolQuadric.hxx>
+#include <Prs3d_ToolQuadric.hxx>
 
-//! Standard presentation algorithm that outputs graphical primitives for spherical surface.
-class StdPrs_ToolSphere : public StdPrs_ToolQuadric
+//! Standard presentation algorithm that outputs graphical primitives for disk surface.
+class Prs3d_ToolDisk : public Prs3d_ToolQuadric
 {
 public:
 
   //! Generate primitives for 3D quadric surface and return a filled array.
-  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) Create (const Standard_Real    theRadius,
+  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) Create (const Standard_Real    theInnerRadius,
+                                                                    const Standard_Real    theOuterRadius,
                                                                     const Standard_Integer theNbSlices,
                                                                     const Standard_Integer theNbStacks,
                                                                     const gp_Trsf&         theTrsf);
 public:
 
-  DEFINE_STANDARD_ALLOC
-
   //! Initializes the algorithm.
-  Standard_EXPORT StdPrs_ToolSphere (const Standard_Real    theRadius,
-                                     const Standard_Integer theNbSlices,
-                                     const Standard_Integer theNbStacks);
-
+  Standard_EXPORT Prs3d_ToolDisk (const Standard_Real    theInnerRadius,
+                                  const Standard_Real    theOuterRadius,
+                                  const Standard_Integer theNbSlices,
+                                  const Standard_Integer theNbStacks);
 protected:
 
   //! Computes vertex at given parameter location of the surface.
@@ -55,7 +47,8 @@ protected:
 
 protected:
 
-  Standard_Real myRadius;
+  Standard_Real myInnerRadius;
+  Standard_Real myOuterRadius;
 
 };
 

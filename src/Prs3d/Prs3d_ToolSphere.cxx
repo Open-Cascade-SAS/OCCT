@@ -13,22 +13,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdPrs_ToolDisk.hxx>
+#include <Prs3d_ToolSphere.hxx>
 
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Poly_Array1OfTriangle.hxx>
-#include <StdPrs_ToolQuadric.hxx>
+#include <Prs3d_ToolQuadric.hxx>
 
 //=======================================================================
 //function : Constructor
 //purpose  :
 //=======================================================================
-StdPrs_ToolDisk::StdPrs_ToolDisk (const Standard_Real    theInnerRadius,
-                                  const Standard_Real    theOuterRadius,
-                                  const Standard_Integer theNbSlices,
-                                  const Standard_Integer theNbStacks)
-: myInnerRadius (theInnerRadius),
-  myOuterRadius (theOuterRadius)
+Prs3d_ToolSphere::Prs3d_ToolSphere (const Standard_Real    theRadius,
+                                    const Standard_Integer theNbSlices,
+                                    const Standard_Integer theNbStacks)
+: myRadius (theRadius)
 {
   mySlicesNb = theNbSlices;
   myStacksNb = theNbStacks;
@@ -38,36 +36,39 @@ StdPrs_ToolDisk::StdPrs_ToolDisk (const Standard_Real    theInnerRadius,
 //function : Vertex
 //purpose  :
 //=======================================================================
-gp_Pnt StdPrs_ToolDisk::Vertex (const Standard_Real theU, const Standard_Real theV)
+gp_Pnt Prs3d_ToolSphere::Vertex (const Standard_Real theU, const Standard_Real theV)
 {
-  const Standard_Real aU      = theU * M_PI * 2.0;
-  const Standard_Real aRadius = myInnerRadius + (myOuterRadius - myInnerRadius) * theV;
-  return gp_Pnt (Cos (aU) * aRadius,
-                 Sin (aU) * aRadius,
-                 0.0);
+  const Standard_Real aU = theU * M_PI * 2.0;
+  const Standard_Real aV = theV * M_PI;
+  return gp_Pnt (myRadius * Cos (aU) * Sin (aV),
+                -myRadius * Sin (aU) * Sin (aV),
+                 myRadius * Cos (aV));
 }
 
 //=======================================================================
 //function : Add
 //purpose  :
 //=======================================================================
-gp_Dir StdPrs_ToolDisk::Normal (const Standard_Real /*theU*/, const Standard_Real /*theV*/)
+gp_Dir Prs3d_ToolSphere::Normal (const Standard_Real theU, const Standard_Real theV)
 {
-  return gp_Dir (0.0, 0.0, -1.0);
+  const Standard_Real aU = theU * M_PI * 2.0;
+  const Standard_Real aV = theV * M_PI;
+  return gp_Dir (Cos (aU) * Sin (aV),
+                -Sin (aU) * Sin (aV),
+                 Cos (aV));
 }
 
 //=======================================================================
 //function : Perform
 //purpose  :
 //=======================================================================
-Handle(Graphic3d_ArrayOfTriangles) StdPrs_ToolDisk::Create (const Standard_Real    theInnerRadius,
-                                                            const Standard_Real    theOuterRadius,
-                                                            const Standard_Integer theNbSlices,
-                                                            const Standard_Integer theNbStacks,
-                                                            const gp_Trsf&         theTrsf)
+Handle(Graphic3d_ArrayOfTriangles) Prs3d_ToolSphere::Create (const Standard_Real    theRadius,
+                                                             const Standard_Integer theNbSlices,
+                                                             const Standard_Integer theNbStacks,
+                                                             const gp_Trsf&         theTrsf)
 {
   Handle(Graphic3d_ArrayOfTriangles) anArray;
-  StdPrs_ToolDisk aTool (theInnerRadius, theOuterRadius, theNbSlices, theNbStacks);
+  Prs3d_ToolSphere aTool (theRadius, theNbSlices, theNbStacks);
   aTool.FillArray (anArray, theTrsf);
   return anArray;
 }

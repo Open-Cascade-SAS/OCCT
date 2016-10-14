@@ -14,12 +14,17 @@
 
 #include <Prs3d_Arrow.hxx>
 
+#include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Prs3d_Presentation.hxx>
+#include <Prs3d_ToolCylinder.hxx>
+#include <Prs3d_ToolDisk.hxx>
+#include <Prs3d_ToolSphere.hxx>
 
 //=======================================================================
 //function : Draw
@@ -84,4 +89,62 @@ void Prs3d_Arrow::Draw(const Handle(Graphic3d_Group)& theGroup,
 
   theGroup->AddPrimitiveArray (aPrims1);
   theGroup->AddPrimitiveArray (aPrims2);
+}
+
+// ============================================================================
+// function : DrawShaded
+// purpose  :
+// ============================================================================
+Handle(Graphic3d_ArrayOfTriangles) Prs3d_Arrow::DrawShaded (const gp_Ax1&          theAxis,
+                                                            const Standard_Real    theTubeRadius,
+                                                            const Standard_Real    theAxisLength,
+                                                            const Standard_Real    theConeRadius,
+                                                            const Standard_Real    theConeLength,
+                                                            const Standard_Integer theNbFacettes)
+{
+  const Standard_Real aTubeLength = Max (0.0, theAxisLength - theConeLength);
+  const Standard_Integer aNbTrisTube = (theTubeRadius > 0.0 && aTubeLength > 0.0)
+                                     ? Prs3d_ToolCylinder::TrianglesNb (theNbFacettes, 1)
+                                     : 0;
+  const Standard_Integer aNbTrisCone = (theConeRadius > 0.0 && theConeLength > 0.0)
+                                     ? (Prs3d_ToolDisk    ::TrianglesNb (theNbFacettes, 1)
+                                      + Prs3d_ToolCylinder::TrianglesNb (theNbFacettes, 1))
+                                     : 0;
+
+  const Standard_Integer aNbTris = aNbTrisTube + aNbTrisCone;
+  if (aNbTris == 0)
+  {
+    return Handle(Graphic3d_ArrayOfTriangles)();
+  }
+
+  Handle(Graphic3d_ArrayOfTriangles) anArray = new Graphic3d_ArrayOfTriangles (aNbTris * 3, 0, Standard_True);
+  if (aNbTrisTube != 0)
+  {
+    gp_Ax3  aSystem (theAxis.Location(), theAxis.Direction());
+    gp_Trsf aTrsf;
+    aTrsf.SetTransformation (aSystem, gp_Ax3());
+
+    Prs3d_ToolCylinder aTool (theTubeRadius, theTubeRadius, aTubeLength, theNbFacettes, 1);
+    aTool.FillArray (anArray, aTrsf);
+  }
+
+  if (aNbTrisCone != 0)
+  {
+    gp_Pnt aConeOrigin = theAxis.Location().Translated (gp_Vec (theAxis.Direction().X() * aTubeLength,
+                                                                theAxis.Direction().Y() * aTubeLength,
+                                                                theAxis.Direction().Z() * aTubeLength));
+    gp_Ax3  aSystem (aConeOrigin, theAxis.Direction());
+    gp_Trsf aTrsf;
+    aTrsf.SetTransformation (aSystem, gp_Ax3());
+    {
+      Prs3d_ToolDisk aTool (0.0, theConeRadius, theNbFacettes, 1);
+      aTool.FillArray (anArray, aTrsf);
+    }
+    {
+      Prs3d_ToolCylinder aTool (theConeRadius, 0.0, theConeLength, theNbFacettes, 1);
+      aTool.FillArray (anArray, aTrsf);
+    }
+  }
+
+  return anArray;
 }

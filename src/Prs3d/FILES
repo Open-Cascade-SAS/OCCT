@@ -46,6 +46,14 @@ Prs3d_Text.cxx
 Prs3d_Text.hxx
 Prs3d_TextAspect.cxx
 Prs3d_TextAspect.hxx
+Prs3d_ToolDisk.hxx
+Prs3d_ToolDisk.cxx
+Prs3d_ToolCylinder.hxx
+Prs3d_ToolCylinder.cxx
+Prs3d_ToolQuadric.hxx
+Prs3d_ToolQuadric.cxx
+Prs3d_ToolSphere.hxx
+Prs3d_ToolSphere.cxx
 Prs3d_TypeOfHLR.hxx
 Prs3d_TypeOfLinePicking.hxx
 Prs3d_VertexDrawMode.hxx

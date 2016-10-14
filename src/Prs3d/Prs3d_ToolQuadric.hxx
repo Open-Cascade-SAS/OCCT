@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _StdPrs_ToolQuadric_HeaderFile
-#define _StdPrs_ToolQuadric_HeaderFile
+#ifndef _Prs3d_ToolQuadric_HeaderFile
+#define _Prs3d_ToolQuadric_HeaderFile
 
 #include <gp_Ax1.hxx>
 #include <Graphic3d_ArrayOfPrimitives.hxx>
@@ -26,7 +26,7 @@
 #include <Standard.hxx>
 
 //! Base class to build 3D surfaces presentation of quadric surfaces.
-class StdPrs_ToolQuadric
+class Prs3d_ToolQuadric
 {
 public:
 
@@ -37,6 +37,13 @@ public:
 
   //! Generate primitives for 3D quadric surface presentation and fill the given array and poly triangulation structure. Optional transformation is applied.
   Standard_EXPORT void FillArray (Handle(Graphic3d_ArrayOfTriangles)& theArray, Handle(Poly_Triangulation)& theTriangulation, const gp_Trsf& theTrsf);
+
+  //! Number of triangles for presentation with the given params.
+  static Standard_Integer TrianglesNb (const Standard_Integer theSlicesNb,
+                                       const Standard_Integer theStacksNb)
+  {
+    return theSlicesNb * theStacksNb * 2;
+  }
 
 protected:
 
@@ -61,4 +68,4 @@ protected:
   Standard_Integer myStacksNb;
 };
 
-#endif // _StdPrs_ShadedSurface_HeaderFile
+#endif // _Prs3d_ToolQuadric_HeaderFile

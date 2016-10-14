@@ -18,9 +18,12 @@
 #define _Prs3d_Arrow_HeaderFile
 
 #include <Prs3d_Root.hxx>
+
+#include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Quantity_PlaneAngle.hxx>
 #include <Quantity_Length.hxx>
 
+class gp_Ax1;
 class gp_Pnt;
 class gp_Dir;
 
@@ -29,7 +32,19 @@ class Prs3d_Arrow : public Prs3d_Root
 {
 public:
 
-  DEFINE_STANDARD_ALLOC
+  //! Defines the representation of the arrow as shaded triangulation.
+  //! @param theAxis       axis definition (arrow origin and direction)
+  //! @param theTubeRadius tube (cylinder) radius
+  //! @param theAxisLength overall arrow length (cylinder + cone)
+  //! @param theConeRadius cone radius (arrow tip)
+  //! @param theConeLength cone length (arrow tip)
+  //! @param theNbFacettes tessellation quality for each part
+  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) DrawShaded (const gp_Ax1&          theAxis,
+                                                                        const Standard_Real    theTubeRadius,
+                                                                        const Standard_Real    theAxisLength,
+                                                                        const Standard_Real    theConeRadius,
+                                                                        const Standard_Real    theConeLength,
+                                                                        const Standard_Integer theNbFacettes);
 
   //! Defines the representation of the arrow.
   //! Note that this method does NOT assign any presentation aspects to the primitives group!

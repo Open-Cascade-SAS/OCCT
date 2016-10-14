@@ -21,16 +21,8 @@ StdPrs_ShadedShape.cxx
 StdPrs_ShadedShape.hxx
 StdPrs_ShadedSurface.cxx
 StdPrs_ShadedSurface.hxx
-StdPrs_ToolDisk.hxx
-StdPrs_ToolDisk.cxx
-StdPrs_ToolCylinder.hxx
-StdPrs_ToolCylinder.cxx
 StdPrs_ToolPoint.cxx
 StdPrs_ToolPoint.hxx
-StdPrs_ToolQuadric.hxx
-StdPrs_ToolQuadric.cxx
-StdPrs_ToolSphere.hxx
-StdPrs_ToolSphere.cxx
 StdPrs_ToolRFace.cxx
 StdPrs_ToolRFace.hxx
 StdPrs_ToolTriangulatedShape.cxx

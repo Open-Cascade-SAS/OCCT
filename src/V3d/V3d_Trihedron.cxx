@@ -22,13 +22,12 @@
 #include <Graphic3d_Camera.hxx>
 #include <Graphic3d_TransformPers.hxx>
 #include <Prs3d.hxx>
+#include <Prs3d_Arrow.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_Text.hxx>
 #include <Prs3d_TextAspect.hxx>
-#include <StdPrs_ToolCylinder.hxx>
-#include <StdPrs_ToolDisk.hxx>
-#include <StdPrs_ToolSphere.hxx>
+#include <Prs3d_ToolSphere.hxx>
 #include <V3d_View.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT (V3d_Trihedron, Standard_Transient)
@@ -255,13 +254,13 @@ void V3d_Trihedron::compute()
   myStructure->GraphicClear (Standard_False);
 
   // Create trihedron.
-  const Standard_Real aScale           = myScale * myRatio * THE_INTERNAL_SCALE_FACTOR;
-  const Standard_Real aCylinderLength  = aScale * THE_CYLINDER_LENGTH;
-  const Standard_Real aCylinderDiametr = aScale * myDiameter;
-  const Standard_Real aConeDiametr     = myIsWireframe ? aCylinderDiametr : (aCylinderDiametr * 2.0);
-  const Standard_Real aConeLength      = aScale * (1.0 - THE_CYLINDER_LENGTH);
-  const Standard_Real aSphereRadius    = aCylinderDiametr * 2.0;
-  const Standard_Real aRayon           = aScale / 30.0;
+  const Standard_Real aScale          = myScale * myRatio * THE_INTERNAL_SCALE_FACTOR;
+  const Standard_Real aCylinderLength = aScale * THE_CYLINDER_LENGTH;
+  const Standard_Real aCylinderRadius = aScale * myDiameter;
+  const Standard_Real aConeRadius     = myIsWireframe ? aCylinderRadius : (aCylinderRadius * 2.0);
+  const Standard_Real aConeLength     = aScale * (1.0 - THE_CYLINDER_LENGTH);
+  const Standard_Real aSphereRadius   = aCylinderRadius * 2.0;
+  const Standard_Real aRayon          = aScale / 30.0;
   {
     Handle(Graphic3d_Group) aSphereGroup = myStructure->NewGroup();
 
@@ -284,7 +283,7 @@ void V3d_Trihedron::compute()
     {
       gp_Trsf aSphereTransform;
       aSphereGroup->SetGroupPrimitivesAspect (mySphereShadingAspect->Aspect());
-      aSphereGroup->AddPrimitiveArray (StdPrs_ToolSphere::Create (aSphereRadius, myNbFacettes, myNbFacettes, aSphereTransform));
+      aSphereGroup->AddPrimitiveArray (Prs3d_ToolSphere::Create (aSphereRadius, myNbFacettes, myNbFacettes, aSphereTransform));
     }
   }
 
@@ -294,13 +293,9 @@ void V3d_Trihedron::compute()
     for (Standard_Integer anIter = 0; anIter < 3; ++anIter)
     {
       Handle(Graphic3d_Group) anAxisGroup = myStructure->NewGroup();
-      anAxisGroup->SetGroupPrimitivesAspect (myArrowShadingAspects[anIter]->Aspect());
-
-      gp_Ax1 aPosition (anAxes[anIter]);
-
-      // Create a tube.
       if (myIsWireframe)
       {
+        // create a tube
         Handle(Graphic3d_ArrayOfPrimitives) anArray = new Graphic3d_ArrayOfSegments (2);
         anArray->AddVertex (0.0f, 0.0f, 0.0f);
         anArray->AddVertex (anAxes[anIter].Direction().XYZ() * aCylinderLength);
@@ -308,35 +303,15 @@ void V3d_Trihedron::compute()
         anAxisGroup->SetGroupPrimitivesAspect (myArrowLineAspects[anIter]->Aspect());
         anAxisGroup->AddPrimitiveArray (anArray);
       }
-      else
-      {
-        gp_Ax3  aSystem (aPosition.Location(), aPosition.Direction());
-        gp_Trsf aTrsf;
-        aTrsf.SetTransformation (aSystem, gp_Ax3());
 
-        anAxisGroup->AddPrimitiveArray (StdPrs_ToolCylinder::Create (aCylinderDiametr, aCylinderDiametr, aCylinderLength, myNbFacettes, 1, aTrsf));
-      }
-
-      aPosition.Translate (gp_Vec (aPosition.Direction().X() * aCylinderLength,
-                                   aPosition.Direction().Y() * aCylinderLength,
-                                   aPosition.Direction().Z() * aCylinderLength));
-      // Create a disk.
-      {
-        gp_Ax3  aSystem (aPosition.Location(), aPosition.Direction());
-        gp_Trsf aTrsf;
-        aTrsf.SetTransformation (aSystem, gp_Ax3());
-
-        anAxisGroup->AddPrimitiveArray (StdPrs_ToolDisk::Create (0.0, aConeDiametr, myNbFacettes, 1, aTrsf));
-      }
-
-      // Create a cone.
-      {
-        gp_Ax3  aSystem (aPosition.Location(), aPosition.Direction());
-        gp_Trsf aTrsf;
-        aTrsf.SetTransformation (aSystem, gp_Ax3());
-
-        anAxisGroup->AddPrimitiveArray (StdPrs_ToolCylinder::Create (aConeDiametr, 0.0, aConeLength, myNbFacettes, 1, aTrsf));
-      }
+      Handle(Graphic3d_ArrayOfTriangles) aTriangles = Prs3d_Arrow::DrawShaded (anAxes[anIter],
+                                                                               myIsWireframe ? 0.0 : aCylinderRadius,
+                                                                               aCylinderLength + aConeLength,
+                                                                               aConeRadius,
+                                                                               aConeLength,
+                                                                               myNbFacettes);
+      anAxisGroup->SetGroupPrimitivesAspect (myArrowShadingAspects[anIter]->Aspect());
+      anAxisGroup->AddPrimitiveArray (aTriangles);
     }
   }
 

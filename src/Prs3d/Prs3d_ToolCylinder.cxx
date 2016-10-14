@@ -14,21 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdPrs_ToolCylinder.hxx>
+#include <Prs3d_ToolCylinder.hxx>
 
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Poly_Array1OfTriangle.hxx>
-#include <StdPrs_ToolQuadric.hxx>
+#include <Prs3d_ToolQuadric.hxx>
 
 //=======================================================================
 //function : Constructor
 //purpose  :
 //=======================================================================
-StdPrs_ToolCylinder::StdPrs_ToolCylinder (const Standard_Real    theBottomRad,
-                                          const Standard_Real    theTopRad,
-                                          const Standard_Real    theHeight,
-                                          const Standard_Integer theNbSlices,
-                                          const Standard_Integer theNbStacks)
+Prs3d_ToolCylinder::Prs3d_ToolCylinder (const Standard_Real    theBottomRad,
+                                        const Standard_Real    theTopRad,
+                                        const Standard_Real    theHeight,
+                                        const Standard_Integer theNbSlices,
+                                        const Standard_Integer theNbStacks)
 : myBottomRadius (theBottomRad),
   myTopRadius (theTopRad),
   myHeight (theHeight)
@@ -41,7 +41,7 @@ StdPrs_ToolCylinder::StdPrs_ToolCylinder (const Standard_Real    theBottomRad,
 //function : Vertex
 //purpose  :
 //=======================================================================
-gp_Pnt StdPrs_ToolCylinder::Vertex (const Standard_Real theU, const Standard_Real theV)
+gp_Pnt Prs3d_ToolCylinder::Vertex (const Standard_Real theU, const Standard_Real theV)
 {
   const Standard_Real aU      = theU * M_PI * 2.0;
   const Standard_Real aRadius = myBottomRadius + (myTopRadius - myBottomRadius) * theV;
@@ -54,7 +54,7 @@ gp_Pnt StdPrs_ToolCylinder::Vertex (const Standard_Real theU, const Standard_Rea
 //function : Add
 //purpose  :
 //=======================================================================
-gp_Dir StdPrs_ToolCylinder::Normal (const Standard_Real theU, const Standard_Real /*theV*/)
+gp_Dir Prs3d_ToolCylinder::Normal (const Standard_Real theU, const Standard_Real /*theV*/)
 {
   const Standard_Real aU = theU * M_PI * 2.0;
   return gp_Dir (Cos (aU) * myHeight,
@@ -66,15 +66,15 @@ gp_Dir StdPrs_ToolCylinder::Normal (const Standard_Real theU, const Standard_Rea
 //function : Perform
 //purpose  :
 //=======================================================================
-Handle(Graphic3d_ArrayOfTriangles) StdPrs_ToolCylinder::Create (const Standard_Real    theBottomRad,
-                                                                const Standard_Real    theTopRad,
-                                                                const Standard_Real    theHeight,
-                                                                const Standard_Integer theNbSlices,
-                                                                const Standard_Integer theNbStacks,
-                                                                const gp_Trsf&         theTrsf)
+Handle(Graphic3d_ArrayOfTriangles) Prs3d_ToolCylinder::Create (const Standard_Real    theBottomRad,
+                                                               const Standard_Real    theTopRad,
+                                                               const Standard_Real    theHeight,
+                                                               const Standard_Integer theNbSlices,
+                                                               const Standard_Integer theNbStacks,
+                                                               const gp_Trsf&         theTrsf)
 {
   Handle(Graphic3d_ArrayOfTriangles) anArray;
-  StdPrs_ToolCylinder aTool (theBottomRad, theTopRad, theHeight, theNbSlices, theNbStacks);
+  Prs3d_ToolCylinder aTool (theBottomRad, theTopRad, theHeight, theNbSlices, theNbStacks);
   aTool.FillArray (anArray, theTrsf);
   return anArray;
 }
