@@ -420,12 +420,6 @@ public:
   //! Sets camera used by the view.
   virtual void SetCamera (const Handle(Graphic3d_Camera)& theCamera) = 0;
 
-  //! Returns true if GL lighting is enabled.
-  virtual Standard_Boolean IsGLLightEnabled() const = 0;
-
-  //! Sets GL lighting enabled or disable state.
-  virtual void SetGLLightEnabled (const Standard_Boolean theIsEnabled) = 0;
-
   //! Returns list of lights of the view.
   virtual const Graphic3d_ListOfCLight& Lights() const = 0;
 

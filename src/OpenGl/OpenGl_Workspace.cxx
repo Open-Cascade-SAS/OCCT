@@ -135,7 +135,6 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
   myGlContext (!theWindow.IsNull() ? theWindow->GetGlContext() : NULL),
   myUseZBuffer    (Standard_True),
   myUseDepthWrite (Standard_True),
-  myUseGLLight (Standard_True),
   //
   myAspectLineSet (&myDefaultAspectLine),
   myAspectFaceSet (&myDefaultAspectFace),
@@ -961,15 +960,6 @@ Standard_Integer OpenGl_Workspace::Width()  const
 Standard_Integer OpenGl_Workspace::Height() const
 {
   return !myView->GlWindow().IsNull() ? myView->GlWindow()->Height() : 0;
-}
-
-// =======================================================================
-// function : UseGLLight
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_Workspace::UseGLLight() const
-{
-  return myView->IsGLLightEnabled();
 }
 
 // =======================================================================

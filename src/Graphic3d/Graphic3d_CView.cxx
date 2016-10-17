@@ -1123,7 +1123,6 @@ void Graphic3d_CView::CopySettings (const Handle(Graphic3d_CView)& theOther)
   SetShadingModel          (theOther->ShadingModel());
   SetBackfacingModel       (theOther->BackfacingModel());
   SetCamera                (new Graphic3d_Camera (theOther->Camera()));
-  SetGLLightEnabled        (theOther->IsGLLightEnabled());
   SetLights                (theOther->Lights());
   SetClipPlanes            (theOther->ClipPlanes());
 }

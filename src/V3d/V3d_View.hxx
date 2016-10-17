@@ -853,13 +853,6 @@ public:
   //! Returns current state of the back faces display
   Standard_EXPORT V3d_TypeOfBackfacingModel BackFacingModel() const;
 
-  //! turns on/off opengl lighting, currently used in triedron displaying
-  Standard_EXPORT void EnableGLLight (const Standard_Boolean theIsEnabled = Standard_True) const;
-
-  //! returns the current state of the gl lighting
-  //! currently used in triedron displaying
-  Standard_EXPORT Standard_Boolean IsGLLightEnabled() const;
-
   //! Adds clip plane to the view. The composition of clip planes truncates the
   //! rendering space to convex volume. Number of supported clip planes can be consulted
   //! by PlaneLimit method of associated Graphic3d_GraphicDriver.

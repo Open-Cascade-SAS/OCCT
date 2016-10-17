@@ -3334,3 +3334,21 @@ void V3d_View::DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theD
 {
   myView->DiagnosticInformation (theDict, theFlags);
 }
+
+//=============================================================================
+//function : RenderingParams
+//purpose  :
+//=============================================================================
+const Graphic3d_RenderingParams& V3d_View::RenderingParams() const
+{
+  return myView->RenderingParams();
+}
+
+//=============================================================================
+//function : ChangeRenderingParams
+//purpose  :
+//=============================================================================
+Graphic3d_RenderingParams& V3d_View::ChangeRenderingParams()
+{
+  return myView->ChangeRenderingParams();
+}

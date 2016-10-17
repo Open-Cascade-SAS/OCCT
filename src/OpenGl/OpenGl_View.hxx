@@ -271,12 +271,6 @@ public:
   //! Sets camera used by the view.
   virtual void SetCamera (const Handle(Graphic3d_Camera)& theCamera) Standard_OVERRIDE { myCamera = theCamera; }
 
-  //! Returns true if GL lighting is enabled.
-  virtual Standard_Boolean IsGLLightEnabled() const Standard_OVERRIDE { return myUseGLLight; }
-
-  //! Sets GL lighting enabled or disable state.
-  virtual void SetGLLightEnabled (const Standard_Boolean theIsEnabled) Standard_OVERRIDE { myUseGLLight = theIsEnabled; }
-
   //! Returns list of lights of the view.
   virtual const Graphic3d_ListOfCLight& Lights() const Standard_OVERRIDE { return myLights; }
 
@@ -460,7 +454,6 @@ protected:
   Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;
   Handle(Graphic3d_Camera)        myCamera;
   Handle(OpenGl_FrameBuffer)      myFBO;
-  Standard_Boolean                myUseGLLight;
   Standard_Boolean                myToShowGradTrihedron;
   TCollection_AsciiString         myBackgroundImagePath;
   Handle(Graphic3d_TextureEnv)    myTextureEnvData;

@@ -155,9 +155,6 @@ public:
   //! @return true if depth writing is enabled.
   Standard_Boolean& UseDepthWrite() { return myUseDepthWrite; }
 
-  //! @return true if usage of GL light is enabled.
-  Standard_EXPORT Standard_Boolean  UseGLLight() const;
-
   //! @return true if clipping algorithm enabled
   Standard_EXPORT Standard_Boolean IsCullingEnabled() const;
 
@@ -355,7 +352,6 @@ protected: //! @name protected fields
   Handle(OpenGl_Context)           myGlContext;
   Standard_Boolean                 myUseZBuffer;
   Standard_Boolean                 myUseDepthWrite;
-  Standard_Boolean                 myUseGLLight;
   Handle(OpenGl_CappingAlgoFilter) myDefaultCappingAlgoFilter;
   OpenGl_AspectFace                myNoneCulling;
   OpenGl_AspectFace                myFrontCulling;
