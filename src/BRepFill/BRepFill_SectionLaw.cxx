@@ -61,6 +61,15 @@ Standard_Integer BRepFill_SectionLaw::NbLaw() const
 }
 
 //=======================================================================
+//function : Indices
+//purpose  :
+//=======================================================================
+Standard_Integer BRepFill_SectionLaw::IndexOfEdge(const TopoDS_Shape& anEdge) const
+{
+  return myIndices(anEdge);
+}
+
+//=======================================================================
 //function : IsUClosed
 //purpose  : 
 //=======================================================================

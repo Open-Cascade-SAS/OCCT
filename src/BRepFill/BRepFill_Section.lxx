@@ -29,6 +29,11 @@ inline Standard_Boolean  BRepFill_Section::IsLaw() const
   return islaw;
 }
 
+inline Standard_Boolean  BRepFill_Section::IsPunctual() const
+{
+  return ispunctual;
+}
+
 inline Standard_Boolean  BRepFill_Section::WithContact() const
 {
   return contact;

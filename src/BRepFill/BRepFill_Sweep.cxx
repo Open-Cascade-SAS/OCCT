@@ -2733,6 +2733,14 @@ void BRepFill_Sweep::Build(TopTools_MapOfShape& ReversedEdges,
     myUEdges = new (TopTools_HArray2OfShape) (1, NbLaw+1, 1, NbPath);
     myVEdges = new (TopTools_HArray2OfShape) (1, NbLaw, 1, NbPath+1); 
     myFaces = new (TopTools_HArray2OfShape) (1, NbLaw, 1, NbPath);
+    myTapes = new (TopTools_HArray1OfShape) (1, NbLaw);
+    BRep_Builder BB;
+    for (Standard_Integer i = 1; i <= NbLaw; i++)
+    {
+      TopoDS_Shell aShell;
+      BB.MakeShell(aShell);
+      myTapes->ChangeValue(i) = aShell;
+    }
     Handle (TopTools_HArray2OfShape) Bounds =  
       new (TopTools_HArray2OfShape) (1, NbLaw, 1, 2);
  
@@ -2869,6 +2877,14 @@ void BRepFill_Sweep::Build(TopTools_MapOfShape& ReversedEdges,
       }
     }
 
+    for (ii = 1; ii <= NbLaw; ii++)
+      for (jj = 1; jj <= NbPath; jj++)
+      {
+        const TopoDS_Shape& aFace = myFaces->Value(ii,jj);
+        if (!aFace.IsNull() && aFace.ShapeType() == TopAbs_FACE)
+          BB.Add(myTapes->ChangeValue(ii), aFace);
+      }
+
     // Is it Closed ?
     if (myLoc->IsClosed() && mySec->IsUClosed()) {
       //Check
@@ -2942,6 +2958,15 @@ void BRepFill_Sweep::Build(TopTools_MapOfShape& ReversedEdges,
  Handle(TopTools_HArray2OfShape) BRepFill_Sweep::Sections() const
 {
   return myVEdges;
+}
+
+//=======================================================================
+//function : Tape
+//purpose  : returns the Tape corresponding to Index-th edge of section
+//=======================================================================
+TopoDS_Shape BRepFill_Sweep::Tape(const Standard_Integer Index) const
+{
+  return myTapes->Value(Index);
 }
 
 //=======================================================================
@@ -3152,6 +3177,8 @@ void BRepFill_Sweep::Build(TopTools_MapOfShape& ReversedEdges,
 	  if (B) {
 	    myAuxShape.Append(FF);
 	    myVEdges->ChangeValue(ii, I2) = FF;
+            BRep_Builder BB;
+            BB.Add(myTapes->ChangeValue(ii), FF);
 	    HasFilling = Standard_True;
 	  }
 	  if (ii==1) BordFirst = Bord1;

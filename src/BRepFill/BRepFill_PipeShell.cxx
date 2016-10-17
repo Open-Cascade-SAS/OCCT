@@ -68,6 +68,7 @@
 #include <StdFail_NotDone.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 #include <TopExp.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
@@ -92,11 +93,9 @@ static Standard_Boolean Affich = 0;
 
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfIntegerShape.hxx>
 #include <TopoDS_Compound.hxx>
 
-static Standard_Boolean UpdateMap(const TopoDS_Shape&                 theKey,
-				  const TopoDS_Shape&                 theValue,
-				  TopTools_DataMapOfShapeListOfShape& theMap);
 
 static Standard_Boolean BuildBoundaries(const BRepFill_Sweep&               theSweep,
 					const Handle(BRepFill_SectionLaw)&  theSection,
@@ -920,12 +919,13 @@ const TopoDS_Shape& BRepFill_PipeShell::LastShape() const
 void BRepFill_PipeShell::Generated(const TopoDS_Shape&   theShape,
 				   TopTools_ListOfShape& theList) 
 {
-  //   Standard_NotImplemented::Raise("Generated:Pas Fait"); 
+  //   Standard_NotImplemented::Raise("Generated:Pas Fait");
+  
   theList.Clear();
 
   if(myGenMap.IsBound(theShape)) {
     theList = myGenMap.Find(theShape);
-  } 
+  }
 }
 
 //=======================================================================
@@ -943,7 +943,7 @@ void BRepFill_PipeShell::Generated(const TopoDS_Shape&   theShape,
  
   //Check set of section for right configuration of punctual sections
   Standard_Integer i;
-  TopoDS_Iterator iter;;
+  TopoDS_Iterator iter;
   for (i = 2; i <= mySeq.Length()-1; i++)
     {
       Standard_Boolean wdeg = Standard_True;
@@ -1005,122 +1005,152 @@ void BRepFill_PipeShell::Generated(const TopoDS_Shape&   theShape,
     else 
       mySection = new BRepFill_ShapeLaw(aLocalShape);
 // mySection = new (BRepFill_ShapeLaw) (TopoDS::Wire(theSect));
-    }   
-  else 
+    
+    WSeq.Append(theSect);
+    //Simple case of single section
+    myIndOfSec.Append(1);
+    TopoDS_Iterator itw(theSect);
+    for (; itw.More(); itw.Next())
     {
-      TColStd_SequenceOfReal Param;
-      TopTools_SequenceOfShape WSeq;
-      GeomFill_SequenceOfTrsf Transformations;
-      //WSeq.Clear();
-      //Param.Clear();
-      Standard_Integer NbL = myLocation->NbLaw();
-      gp_Trsf aTrsf;
-      Standard_Real V1, V2, param;
-      myLocation->CurvilinearBounds(NbL, V1, V2);
-      V1 = 0.;
-      Standard_Integer ideb = 0, ifin = 0;
-//      for (Standard_Integer iseq=1;iseq<=mySeq.Length();iseq++) {
-      Standard_Integer iseq;
-      for (iseq=1;iseq<=mySeq.Length();iseq++) {
-	Place(mySeq(iseq), theSect, aTrsf, param);
-	Param.Append(param);
-	WSeq.Append(theSect);
-//	WSeq.Append(TopoDS::Wire(theSect));
-        Transformations.Append(aTrsf);
-        if (param==V1) ideb = iseq;
-        if (param==V2) ifin = iseq;
-      }
-      
-
-      // looping sections ?
-      if (myLocation->IsClosed()) {
-        if (ideb>0) {
-          // place the initial section at the final position 
-          Param.Append(V2);
-          WSeq.Append(WSeq(ideb));
-        }
-        else if (ifin>0) {
-          // place the final section at the initial position
-          Param.Append(V1);
-          WSeq.Append(WSeq(ifin));
-        }
-        else {
-          // it is necessary to find a medium section to impose by V1 and by V2
-          Standard_Real pmin = Param.Value(1), pmax = Param.Value(1);
-          TopoDS_Wire Wmin = TopoDS::Wire(WSeq.Value(1)), Wmax;
-          for (iseq=2;iseq<=WSeq.Length();iseq++) {
-            if (Param.Value(iseq)<pmin) {
-              pmin = Param.Value(iseq);
-              Wmin = TopoDS::Wire(WSeq.Value(iseq));
-            }
-            if (Param.Value(iseq)>pmax) {
-              pmax = Param.Value(iseq);
-              Wmax = TopoDS::Wire(WSeq.Value(iseq));
-            }
-          }
-          // medium section between Wmin and Wmax
-          TopoDS_Wire Wres;
-          Standard_Real dmin = Abs(pmin-V1);
-          Standard_Real dmax = Abs(pmax-V2);
-          if (ComputeSection(Wmin,Wmax,dmin,dmax,Wres)) {
-            // impose section Wres at the beginning and the end
-            Param.Append(V1);
-            WSeq.Append(Wres);
-            Param.Append(V2);
-            WSeq.Append(Wres);
-            
-          }
-          
-        }
-      }
-
-      // parse sections by increasing parameter
-      Standard_Boolean play_again = Standard_True;
-      while (play_again) {
-	play_again = Standard_False;
-	for (iseq=1;iseq<=WSeq.Length();iseq++) {
-	  for (Standard_Integer jseq=iseq+1;jseq<=WSeq.Length();jseq++) {
-	    if (Param.Value(iseq)>Param.Value(jseq)) {
-	      Param.Exchange(iseq,jseq);
-	      WSeq.Exchange(iseq,jseq);
-	      play_again = Standard_True;
-	    }
-	  }
-	}
-      }
-
-#ifdef DRAW
-  if ( Affich) {
-    char*  name = new char[100];
-    Standard_Integer NBSECT = 0;
-    for (Standard_Integer i=1;i<=WSeq.Length();i++) {
-      NBSECT++;
-      sprintf(name,"WSeq_%d",NBSECT);
-      DBRep::Set(name,TopoDS::Wire(WSeq.Value(i)));
+      const TopoDS_Shape& anEdge = itw.Value();
+      TopTools_ListOfShape Elist;
+      Elist.Append(anEdge);
+      myEdgeNewEdges.Bind(anEdge, Elist);
     }
-  }
-#endif
-      
-      
-
-      //  Calculate work sections 
-      TopTools_SequenceOfShape WorkingSections;
-      WorkingSections.Clear();
-      TopTools_DataMapOfShapeListOfShape WorkingMap;
-      WorkingMap.Clear();
-      BRepFill_CompatibleWires Georges(WSeq);
-      Georges.SetPercent(0.1);
-      Georges.Perform(Standard_False);
-      if (Georges.IsDone()) {
-	WorkingSections = Georges.Shape();
-	WorkingMap = Georges.Generated();
+    ///////////////////////////////
+  }   
+  else 
+  {
+    TColStd_SequenceOfReal Param;
+    TColStd_SequenceOfInteger IndSec;
+    GeomFill_SequenceOfTrsf Transformations;
+    Standard_Integer NbL = myLocation->NbLaw();
+    gp_Trsf aTrsf;
+    Standard_Real V1, V2, param;
+    myLocation->CurvilinearBounds(NbL, V1, V2);
+    V1 = 0.;
+    Standard_Integer ideb = 0, ifin = 0;
+    Standard_Integer iseq;
+    for (iseq = 1; iseq <= mySeq.Length(); iseq++) {
+      IndSec.Append(iseq);
+      Place(mySeq(iseq), theSect, aTrsf, param);
+      Param.Append(param);
+      WSeq.Append(theSect);
+      Transformations.Append(aTrsf);
+      if (param==V1) ideb = iseq;
+      if (param==V2) ifin = iseq;
+    }
+    
+    
+    // looping sections ?
+    if (myLocation->IsClosed()) {
+      if (ideb>0) {
+        // place the initial section at the final position 
+        Param.Append(V2);
+        WSeq.Append(WSeq(ideb));
+      }
+      else if (ifin>0) {
+        // place the final section at the initial position
+        Param.Append(V1);
+        WSeq.Append(WSeq(ifin));
       }
       else {
-	Standard_ConstructionError::Raise("PipeShell : uncompatible wires");
+        // it is necessary to find a medium section to impose by V1 and by V2
+        Standard_Real pmin = RealLast(), pmax = RealFirst();
+        TopoDS_Wire Wmin, Wmax;
+        for (iseq = 1; iseq <= WSeq.Length(); iseq++) {
+          if (Param.Value(iseq)<pmin) {
+            pmin = Param.Value(iseq);
+            Wmin = TopoDS::Wire(WSeq.Value(iseq));
+          }
+          if (Param.Value(iseq)>pmax) {
+            pmax = Param.Value(iseq);
+            Wmax = TopoDS::Wire(WSeq.Value(iseq));
+          }
+        }
+        // medium section between Wmin and Wmax
+        TopoDS_Wire Wres;
+        Standard_Real dmin = Abs(pmin-V1);
+        Standard_Real dmax = Abs(pmax-V2);
+        if (ComputeSection(Wmin,Wmax,dmin,dmax,Wres)) {
+          // impose section Wres at the beginning and the end
+          Param.Append(V1);
+          WSeq.Append(Wres);
+          IndSec.Append(WSeq.Length());
+          Param.Append(V2);
+          WSeq.Append(Wres);
+          IndSec.Append(WSeq.Length());
+        }
       }
-      mySection = new (BRepFill_NSections) (WorkingSections,Transformations,Param,V1,V2);
-      
-    }// else
+    }
+    
+    // parse sections by increasing parameter
+    Standard_Boolean play_again = Standard_True;
+    while (play_again) {
+      play_again = Standard_False;
+      for (iseq=1;iseq<=WSeq.Length();iseq++) {
+        for (Standard_Integer jseq=iseq+1;jseq<=WSeq.Length();jseq++) {
+          if (Param.Value(iseq) > Param.Value(jseq)) {
+            Param.Exchange(iseq,jseq);
+            WSeq.Exchange(iseq,jseq);
+            IndSec.Exchange(iseq,jseq);
+            play_again = Standard_True;
+          }
+        }
+      }
+    }
+    //Fill the array of real indices of sections
+    for (Standard_Integer ii = 1; ii <= mySeq.Length(); ii++)
+      for (Standard_Integer jj = 1; jj <= IndSec.Length(); jj++)
+        if (IndSec(jj) == ii)
+        {
+          myIndOfSec.Append(jj);
+          break;
+        }
+    
+#ifdef DRAW
+    if ( Affich) {
+      char*  name = new char[100];
+      Standard_Integer NBSECT = 0;
+      for (Standard_Integer i=1;i<=WSeq.Length();i++) {
+        NBSECT++;
+        sprintf(name,"WSeq_%d",NBSECT);
+        DBRep::Set(name,TopoDS::Wire(WSeq.Value(i)));
+      }
+    }
+#endif
+    
+    
+    
+    //  Calculate work sections 
+    TopTools_SequenceOfShape WorkingSections;
+    WorkingSections.Clear();
+    TopTools_DataMapOfShapeListOfShape WorkingMap;
+    BRepFill_CompatibleWires Georges(WSeq);
+    Georges.SetPercent(0.1);
+    Georges.Perform(Standard_False);
+    if (Georges.IsDone()) {
+      WorkingSections = Georges.Shape();
+      WorkingMap = Georges.Generated();
+      //For each sub-edge of each section
+      //we save its splits
+      for (Standard_Integer ii = 1; ii <= WSeq.Length(); ii++)
+      {
+        TopExp_Explorer Explo(WSeq(ii), TopAbs_EDGE);
+        for (; Explo.More(); Explo.Next())
+        {
+          const TopoDS_Edge& anEdge = TopoDS::Edge(Explo.Current());
+          TopTools_ListOfShape aNewEdges = Georges.GeneratedShapes(anEdge);
+          myEdgeNewEdges.Bind(anEdge, aNewEdges);
+        }
+      }
+    }
+    else {
+      Standard_ConstructionError::Raise("PipeShell : uncompatible wires");
+    }
+    mySection = new (BRepFill_NSections) (WorkingSections,Transformations,Param,V1,V2);
+    
+  }// else
 
   //  modify the law of location if contact
   if ( (myTrihedron == GeomFill_IsGuidePlanWithContact)
@@ -1192,187 +1222,211 @@ void BRepFill_PipeShell::Place(const BRepFill_Section& Sec,
 
 //=======================================================================
 //function : BuildHistory
-//purpose  : Builds history for edges of spine, 
-//           for built bottom shape of sweep,
-//           for boundary vertices of bottom shape of sweep,
-//           for boundary profiles
+//purpose  : Builds history for edges and vertices 
+//           of sections
 //=======================================================================
 void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep) 
 {
-  Handle(TopTools_HArray2OfShape) aFaces = theSweep.SubShape();
-  Handle(TopTools_HArray2OfShape) aVEdges = theSweep.Sections();
-  Handle(TopTools_HArray2OfShape) aUEdges = theSweep.InterFaces();
-  Standard_Integer i = 0, j = 0;
-  Standard_Boolean bPrevModified = Standard_False;
+  //Filling of <myGenMap>
+  const Handle(TopTools_HArray2OfShape)& anUEdges = theSweep.InterFaces();
+  BRep_Builder BB;
+  
+  TopTools_DataMapOfIntegerShape IndWireMap;
+  
+  Standard_Integer indw, inde;
+  TopoDS_Iterator itw;
+  for (indw = 1; indw <= mySeq.Length(); indw++)
+  {
+    const TopoDS_Wire& aSection = mySeq(indw).Wire();
+    Standard_Boolean IsPunctual = mySeq(indw).IsPunctual();
+    if (IsPunctual)
+    {
+      //for punctual sections (first or last)
+      //we take all the wires generated along the path
+      TopExp_Explorer Explo(aSection, TopAbs_VERTEX);
+      const TopoDS_Shape& VerSection = Explo.Current();
+      TopTools_ListOfShape Elist;
+      for (Standard_Integer i = 1; i <= anUEdges->UpperRow(); i++)
+        for (Standard_Integer j = 1; j <= anUEdges->UpperCol(); j++)
+          Elist.Append(anUEdges->Value(i,j));
+      myGenMap.Bind(VerSection, Elist);
+      continue;
+    }
+    //Take the real index of section on the path
+    Standard_Integer IndOfW = myIndOfSec(indw);
+    const TopoDS_Wire& theWire = TopoDS::Wire(WSeq(IndOfW));
+    BRepTools_WireExplorer wexp_sec(aSection);
+    for (inde = 1; wexp_sec.More(); wexp_sec.Next())
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge(wexp_sec.Current());
+      if (BRep_Tool::Degenerated(anEdge))
+        continue;
 
-  for(i = 1; i <= mySection->NbLaw(); i++) {
-    if((!aVEdges->Value(i, 1).IsNull()) && (aVEdges->Value(i, 1).ShapeType() == TopAbs_FACE)) {
-      bPrevModified = Standard_True;
-      break;
+      TopoDS_Shell aShell;
+      BB.MakeShell(aShell);
+      TopoDS_Vertex aVertex [2];
+      TopExp::Vertices(anEdge, aVertex[0], aVertex[1]);
+      Standard_Integer SignOfAnEdge =
+        (anEdge.Orientation() == TopAbs_FORWARD)? 1 : -1;
+      
+      //For each non-degenerated inde-th edge of <aSection>
+      //we find inde-th edge in <theWire>
+      TopoDS_Edge theEdge;
+      BRepTools_WireExplorer wexp(theWire);
+      for (Standard_Integer i = 1; wexp.More(); wexp.Next())
+      {
+        theEdge = TopoDS::Edge(wexp.Current());
+        if (BRep_Tool::Degenerated(anEdge))
+          continue;
+        if (i == inde)
+          break;
+        i++;
+      }
+
+      //Take the list of splits for <theEdge>
+      const TopTools_ListOfShape& NewEdges = myEdgeNewEdges(theEdge);
+      Standard_Integer SignOfANewEdge = 0, SignOfIndex = 0;
+      TopTools_ListIteratorOfListOfShape iter(NewEdges);
+      for (; iter.More(); iter.Next())
+      {
+        const TopoDS_Edge& aNewEdge = TopoDS::Edge(iter.Value());
+        SignOfANewEdge = (aNewEdge.Orientation() == TopAbs_FORWARD)? 1 : -1;
+        Standard_Integer anIndE = mySection->IndexOfEdge(aNewEdge);
+        SignOfIndex = (anIndE > 0)? 1 : -1;
+        anIndE = Abs(anIndE);
+        //For an edge generated shape is a "tape" -
+        //a shell usually containing this edge and
+        //passing from beginning of path to its end
+        TopoDS_Shape aTape = theSweep.Tape(anIndE);
+        TopoDS_Iterator itsh(aTape);
+        for (; itsh.More(); itsh.Next())
+          BB.Add(aShell, itsh.Value());
+      }
+
+      //Processing of vertices of <anEdge>
+      //We should choose right index in <anUEdges>
+      //for each vertex of edge 
+      Standard_Integer ToReverse = SignOfAnEdge * SignOfANewEdge * SignOfIndex;
+      Standard_Integer UIndex [2];
+      UIndex[0] = Abs(mySection->IndexOfEdge(NewEdges.First()));
+      UIndex[1] = Abs(mySection->IndexOfEdge(NewEdges.Last())) + ToReverse;
+      if (ToReverse == -1)
+      {
+        UIndex[0]++;
+        UIndex[1]++;
+      }
+      if (mySection->IsUClosed())
+      {
+        if (UIndex[0] > mySection->NbLaw())
+          UIndex[0] = 1;
+        if (UIndex[1] > mySection->NbLaw())
+          UIndex[1] = 1;
+      }
+      //if (SignOfAnEdge * SignOfANewEdge == -1)
+      if (SignOfAnEdge   == -1 ||
+          SignOfANewEdge == -1)
+      { Standard_Integer Tmp = UIndex[0]; UIndex[0] = UIndex[1]; UIndex[1] = Tmp; }
+
+      TopTools_IndexedDataMapOfShapeListOfShape VEmap;
+      TopExp::MapShapesAndAncestors(aShell, TopAbs_VERTEX, TopAbs_EDGE, VEmap);
+      for (Standard_Integer kk = 0; kk < 2; kk++)
+      {
+        if (myGenMap.IsBound(aVertex[kk]))
+          continue;
+        if (IndWireMap.IsBound(UIndex[kk]))
+        {
+          TopTools_ListOfShape Wlist;
+          Wlist.Append(IndWireMap(UIndex[kk]));
+          myGenMap.Bind(aVertex[kk], Wlist);
+          continue;
+        }
+        
+        //Collect u-edges
+        TopTools_SequenceOfShape SeqEdges;
+        Standard_Integer jj;
+        for (jj = 1; jj <= anUEdges->UpperCol(); jj++)
+          SeqEdges.Append(anUEdges->Value(UIndex[kk], jj));
+
+        //Assemble the wire ("rail" along the path)
+        //checking for possible holes
+        //(they appear with option "Round Corner")
+        //and filling them
+        //Missed edges are taken from <aShell>
+        TopoDS_Wire aWire;
+        BB.MakeWire(aWire);
+        const TopoDS_Edge& FirstEdge = TopoDS::Edge(SeqEdges(1));
+        if (FirstEdge.IsNull())
+          continue;
+        BB.Add(aWire, FirstEdge);
+        TopoDS_Vertex FirstVertex, CurVertex;
+        TopExp::Vertices(FirstEdge, FirstVertex, CurVertex);
+        TopoDS_Edge CurEdge;
+        for (jj = 2; jj <= SeqEdges.Length(); jj++)
+        {
+          CurEdge = TopoDS::Edge(SeqEdges(jj));
+          TopoDS_Vertex Vfirst, Vlast;
+          TopExp::Vertices(CurEdge, Vfirst, Vlast);
+          if (CurVertex.IsSame(Vfirst))
+            CurVertex = Vlast;
+          else //a hole
+          {
+            const TopTools_ListOfShape& Elist = VEmap.FindFromKey(Vfirst);
+            TopTools_ListIteratorOfListOfShape itl(Elist);
+            for (; itl.More(); itl.Next())
+            {
+              const TopoDS_Edge& Candidate = TopoDS::Edge(itl.Value());
+              if (Candidate.IsSame(CurEdge))
+                continue;
+              TopoDS_Vertex V1, V2;
+              TopExp::Vertices(Candidate, V1, V2);
+              if (V1.IsSame(CurVertex) || V2.IsSame(CurVertex))
+              {
+                BB.Add(aWire, Candidate);
+                break;
+              }
+            }
+          }
+          CurVertex = Vlast;
+          BB.Add(aWire, CurEdge);
+        } //for (jj = 2; jj <= SeqEdges.Length(); jj++)
+        //case of closed wire
+        if (mySection->IsVClosed() &&
+            !CurVertex.IsSame(FirstVertex))
+        {
+          const TopTools_ListOfShape& Elist = VEmap.FindFromKey(CurVertex);
+          TopTools_ListIteratorOfListOfShape itl(Elist);
+          for (; itl.More(); itl.Next())
+          {
+            const TopoDS_Edge& Candidate = TopoDS::Edge(itl.Value());
+            if (Candidate.IsSame(CurEdge))
+              continue;
+            TopoDS_Vertex V1, V2;
+            TopExp::Vertices(Candidate, V1, V2);
+            if (V1.IsSame(FirstVertex) || V2.IsSame(FirstVertex))
+            {
+              BB.Add(aWire, Candidate);
+              break;
+            }
+          }
+        }
+        TopTools_ListOfShape Wlist;
+        Wlist.Append(aWire);
+        myGenMap.Bind(aVertex[kk], Wlist);
+        //Save already built wire with its index
+        IndWireMap.Bind(UIndex[kk], aWire);
+      } //for (Standard_Integer kk = 0; kk < 2; kk++)
+      ////////////////////////////////////
+      
+      TopTools_ListOfShape ListShell;
+      ListShell.Append(aShell);
+      myGenMap.Bind(anEdge, ListShell);
+      ////////////////////////
+
+      inde++;
     }
   }
-
-  for(j = myLocation->NbLaw(); j >= 1; j--) {
-    TopTools_ListOfShape aListOfFace;
-
-    if(bPrevModified) {
-      for(i = 1; i <= mySection->NbLaw(); i++) {
-	Standard_Integer lessindex = j + 1;
-	lessindex = (lessindex > myLocation->NbLaw()) ? 1 : lessindex;
-
-	if((!aVEdges->Value(i, lessindex).IsNull()) && (aVEdges->Value(i, lessindex).ShapeType() == TopAbs_FACE)) {
-	  aListOfFace.Append(aVEdges->Value(i, lessindex));
-	  const TopoDS_Shape& aBottomEdge = aVEdges->Value(i, 1);
-
-	  if((!aBottomEdge.IsNull()) && (aBottomEdge.ShapeType() == TopAbs_EDGE)) {
-	    UpdateMap(aBottomEdge, aVEdges->Value(i, lessindex), myGenMap);
-	  }
-	}
-      }
-    }
-    bPrevModified = Standard_False;
-
-    for(i = 1; i <= mySection->NbLaw(); i++) {
-      if((!aVEdges->Value(i, j).IsNull()) && (aVEdges->Value(i, j).ShapeType() == TopAbs_FACE)) {
-	aListOfFace.Append(aVEdges->Value(i, j));
-	bPrevModified = Standard_True;
-
-	const TopoDS_Shape& aBottomEdge = aVEdges->Value(i, 1);
-
-	if((!aBottomEdge.IsNull()) && (aBottomEdge.ShapeType() == TopAbs_EDGE)) {
-	  UpdateMap(aBottomEdge, aVEdges->Value(i, j), myGenMap);
-	}
-      }
-
-      if(aFaces->Value(i, j).ShapeType() == TopAbs_FACE) {
-	aListOfFace.Append(aFaces->Value(i, j));
-	const TopoDS_Shape& aBottomEdge = aVEdges->Value(i, 1);
-
-	if((!aBottomEdge.IsNull()) && (aBottomEdge.ShapeType() == TopAbs_EDGE)) {
-	  UpdateMap(aBottomEdge, aFaces->Value(i, j), myGenMap);
-	}
-      }
-    }
-
-    if(!myGenMap.IsBound(myLocation->Edge(j)))
-      myGenMap.Bind(myLocation->Edge(j), aListOfFace);
-    else
-      myGenMap.ChangeFind(myLocation->Edge(j)).Append(aListOfFace);
-
-    // build history for free booundaries.begin
-    if(!mySection->IsUClosed()) {
-      TopoDS_Compound aFaceComp;
-      BRep_Builder aB;
-      aB.MakeCompound(aFaceComp);
-      TopTools_ListIteratorOfListOfShape anIt(aListOfFace);
-
-      for(; anIt.More(); anIt.Next()) {
-	aB.Add(aFaceComp, anIt.Value());
-      }
-      TopTools_IndexedDataMapOfShapeListOfShape aMapEF;
-      TopExp::MapShapesAndAncestors(aFaceComp, TopAbs_EDGE, TopAbs_FACE, aMapEF);
-      Standard_Integer eit = 0;
-
-      for(eit = aUEdges->LowerRow(); eit <= aUEdges->UpperRow(); eit++) {
-	const TopoDS_Shape& aShape = aUEdges->Value(eit, j);
-
-	if(aMapEF.Contains(aShape)) {
-	  const TopTools_ListOfShape& aList = aMapEF.FindFromKey(aShape);
-
-	  if(aList.Extent() < 2) {
-	    UpdateMap(myLocation->Edge(j), aShape, myGenMap);
-
-	    TopoDS_Shape aGenVertex;
-	    TopTools_IndexedDataMapOfShapeListOfShape aMapVE;
-	    
-	    for(i = 1; i <= mySection->NbLaw(); i++) {
-	      const TopoDS_Shape& aBottomEdge = aVEdges->Value(i, aVEdges->LowerCol());
-
-	      if((!aBottomEdge.IsNull()) && (aBottomEdge.ShapeType() == TopAbs_EDGE)) {
-		TopExp::MapShapesAndAncestors(aBottomEdge, TopAbs_VERTEX, TopAbs_EDGE, aMapVE);
-	      }
-	    }
-	    const TopoDS_Shape& aFreeEdge = aUEdges->Value(eit, aUEdges->LowerCol());
-	    TopExp::MapShapesAndAncestors(aFreeEdge, TopAbs_VERTEX, TopAbs_EDGE, aMapVE);
-	    TopExp_Explorer anExpV(aFreeEdge, TopAbs_VERTEX);
-
-	    for(; anExpV.More(); anExpV.Next()) {
-	      if(aMapVE.Contains(anExpV.Current())) {
-		const TopTools_ListOfShape& aListOfV = aMapVE.FindFromKey(anExpV.Current());
-
-		if(aListOfV.Extent() >= 2) {
-		  aGenVertex = anExpV.Current();
-		}
-	      }
-	    }
-
-	    if(!aGenVertex.IsNull()) {
-	      UpdateMap(aGenVertex, aShape, myGenMap);
-	    }
-	  }
-	}
-      }
-      // end for(eit = aUEdges->LowerRow...
-    }
-    // build history for free booundaries.end
-  }
-
-  // build history for boundary section wires. begin
-
-  if(!mySeq.IsEmpty()) {
-    Standard_Integer iseq;
-    TopoDS_Wire aSect;
-    gp_Trsf aTrsf;
-    Standard_Real param = 0., aparmin = RealLast(), aparmax = -RealLast();
-    Standard_Integer ideb = 1, ifin = mySeq.Length();
-
-    for (iseq = 1;iseq <= mySeq.Length(); iseq++) {
-      Place(mySeq(iseq), aSect, aTrsf, param);
-
-      if(param < aparmin) {
-	ideb = iseq;
-	aparmin = param;
-      }
-
-      if(param > aparmax) {
-	ifin = iseq;
-	aparmax = param;
-      }
-    }
-    
-    UpdateMap(mySeq(ideb).Wire(), myFirst, myGenMap);
-    UpdateMap(mySeq(ifin).Wire(), myLast, myGenMap);
-  }
-  // build history for boundary section wires. end
 }
 
-// ---------------------------------------------------------------------------------
-// static function: UpdateMap
-// purpose:
-// ---------------------------------------------------------------------------------
-Standard_Boolean UpdateMap(const TopoDS_Shape&                 theKey,
-			   const TopoDS_Shape&                 theValue,
-			   TopTools_DataMapOfShapeListOfShape& theMap) {
-
-  if(!theMap.IsBound(theKey)) {
-    TopTools_ListOfShape thelist;
-    theMap.Bind(theKey, thelist);
-  }
-  TopTools_ListOfShape& aList = theMap.ChangeFind(theKey);
-  TopTools_ListIteratorOfListOfShape anIt(aList);
-  Standard_Boolean found = Standard_False;
-
-  for(; anIt.More(); anIt.Next()) {
-    if(theValue.IsSame(anIt.Value())) {
-      found = Standard_True;
-      break;
-    }
-  }
-
-  if(!found)
-    aList.Append(theValue);
-  return !found;
-}
 
 // ---------------------------------------------------------------------------------
 // static function: BuildBoundaries

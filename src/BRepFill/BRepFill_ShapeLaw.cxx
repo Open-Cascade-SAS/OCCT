@@ -144,6 +144,7 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
       Handle(Geom_Curve) C = BRep_Tool::Curve(E,First,Last);
       if( !C.IsNull() ) {
 	myEdges->SetValue(ii, E);
+        myIndices.Bind(E, ii);
 	if(Build) {
 	  //Handle(Geom_Curve) C = BRep_Tool::Curve(E,First,Last);
 	  if (E.Orientation() == TopAbs_REVERSED) {

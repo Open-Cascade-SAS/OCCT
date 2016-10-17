@@ -758,6 +758,45 @@ static Standard_Integer buildsweep(Draw_Interpretor& di,
 }
 
 //=======================================================================
+//function : gensweep
+//purpose  : returns generated shape for subshape of a section of sweep
+//           Sweep must be done previously
+//=======================================================================
+static Standard_Integer gensweep(Draw_Interpretor&,
+                                 Standard_Integer n, const char** a)
+{
+  if (n != 3)
+  {
+    cout<<"Usage: gensweep res subshape_of_profile, sweep must be done"<<endl;
+    return 1;
+  }
+  if (!Sweep->IsDone())
+  {
+    cout<<"Sweep is not done"<<endl;
+    return 1;
+  }
+  TopoDS_Shape aShape = DBRep::Get(a[2]);
+  if (aShape.IsNull())
+  {
+    cout<<"Null subshape"<<endl;
+    return 1;
+  }
+  TopTools_ListOfShape Shells = Sweep->Generated(aShape);
+  TopoDS_Compound aCompound;
+  BRep_Builder BB;
+  BB.MakeCompound(aCompound);
+  TopTools_ListIteratorOfListOfShape itsh(Shells);
+  for (; itsh.More(); itsh.Next())
+  {
+    const TopoDS_Shape& aShell = itsh.Value();
+    BB.Add(aCompound, aShell);
+  }
+
+  DBRep::Set(a[1], aCompound);
+  return 0;
+}
+
+//=======================================================================
 //  simulsweep
 //=======================================================================
 static Standard_Integer simulsweep(Draw_Interpretor& di,
@@ -891,8 +930,11 @@ void  BRepTest::SweepCommands(Draw_Interpretor& theCommands)
 		  "deletesweep wire, To delete a section",
 		  __FILE__,deletesweep,g);
 
-  theCommands.Add("buildsweep", "builsweep [r] [option] [Tol] , no args to get help"
+ theCommands.Add("buildsweep", "builsweep [r] [option] [Tol] , no args to get help",
 		  __FILE__,buildsweep,g);
+
+ theCommands.Add("gensweep", "gensweep res subshape_of_profile",
+		  __FILE__,gensweep,g);
 
   theCommands.Add("simulsweep", "simulsweep r [n] [option]"
 		  __FILE__,simulsweep,g);

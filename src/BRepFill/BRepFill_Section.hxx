@@ -49,6 +49,8 @@ public:
   
     Standard_Boolean IsLaw() const;
   
+    Standard_Boolean IsPunctual() const;
+  
     Standard_Boolean WithContact() const;
   
     Standard_Boolean WithCorrection() const;
@@ -69,9 +71,9 @@ private:
   TopoDS_Wire wire;
   TopoDS_Vertex vertex;
   Standard_Boolean islaw;
+  Standard_Boolean ispunctual;
   Standard_Boolean contact;
   Standard_Boolean correction;
-
 
 };
 

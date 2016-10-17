@@ -23,7 +23,10 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
-BRepFill_Section::BRepFill_Section() :islaw(0), contact(0), correction(0)
+BRepFill_Section::BRepFill_Section() :islaw(0),
+                                      ispunctual(0),
+                                      contact(0),
+                                      correction(0)
 {
 }
 
@@ -33,13 +36,16 @@ BRepFill_Section::BRepFill_Section(const TopoDS_Shape& Profile,
 				   const Standard_Boolean WithContact,
 				   const Standard_Boolean WithCorrection) 
                                   : vertex(V),
-				    islaw(0),contact(WithContact),
+				    islaw(0),
+                                    ispunctual(0),
+                                    contact(WithContact),
 				    correction(WithCorrection)
 {
   if (Profile.ShapeType() == TopAbs_WIRE)
     wire = TopoDS::Wire(Profile);
   else if (Profile.ShapeType() == TopAbs_VERTEX)
     {
+      ispunctual = Standard_True;
       TopoDS_Vertex aVertex = TopoDS::Vertex(Profile);
       BRep_Builder BB;
       

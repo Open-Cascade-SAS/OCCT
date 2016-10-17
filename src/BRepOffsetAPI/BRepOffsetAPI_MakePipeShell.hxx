@@ -55,12 +55,9 @@ class Law_Function;
 //! - normal defined by a guiding contour.
 //! The two global approaches can also be combined.
 //! You can also close the surface later in order to form a solid.
-//! Warning: In this version some limitation exist
-//! -- We can add only 1 Section (else Standard_NotImplemented is raised
+//! Warning: some limitations exist
 //! -- Mode with auxilary spine is incompatible with hometetic laws
 //! -- Mode with auxilary spine and keep contact produce only CO surface.
-//! -- Transition treatement is implemented only with the option <BRepBuilderAPI_Transformed>
-//! Normaly all these limitations have to be deleted in mext version.
 class BRepOffsetAPI_MakePipeShell  : public BRepPrimAPI_MakeSweep
 {
 public:
@@ -259,28 +256,7 @@ public:
   //! Returns a list of new shapes generated from the shape
   //! S by the shell-generating algorithm.
   //! This function is redefined from BRepOffsetAPI_MakeShape::Generated.
-  //! S can be an edge of the given Spine (see Constructor),
-  //! it can be an edge or a boundary vertex of a shape
-  //! returned by the method FirstShape(), it can also be a
-  //! Profile (see method Add()) closest to the beginning or
-  //! the end of the Spine.
-  //! If S is an edge of the given Spine, then method
-  //! Generated() returns a list of generated faces and a list
-  //! of edges from a free boundary (if it exists) of the
-  //! resulting shell.
-  //! If S is an edge of the start shape (see FirstShape()),
-  //! method Generated() returns a list of faces generated
-  //! along the whole spine from the given edge.
-  //! If S is a boundary vertex of the start shape (see
-  //! FirstShape()), method Generated() returns a list of
-  //! edges from the free boundary of the resulting shell,
-  //! generated along the whole spine.
-  //! If S is a Profile closest to the beginning of the Spine,
-  //! method Generated() returns the start shape, that can
-  //! also be obtained by method FirstShape().
-  //! If S is a Profile closest to the end of the Spine, method
-  //! Generated() returns the end shape, that can also be
-  //! obtained by method LastShape().
+  //! S can be an edge or a vertex of a given Profile (see methods Add).
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated (const TopoDS_Shape& S) Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Real ErrorOnSurface() const;

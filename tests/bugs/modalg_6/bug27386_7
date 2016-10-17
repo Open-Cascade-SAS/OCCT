@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC27386"
+puts "============"
+puts ""
+#####################################################################
+# BRepOffsetAPI_MakePipeShell does not provide history of generations
+#####################################################################
+
+
+restore [locate_data_file OCC1477-1.brep] sp
+restore [locate_data_file OCC1477-2.brep] pr
+
+mksweep sp
+addsweep pr
+buildsweep q -R
+
+explode pr
+
+gensweep r1 pr_1
+gensweep r2 pr_2
+gensweep r3 pr_3
+gensweep r4 pr_4
+
+explode pr v
+
+gensweep r1 pr_1
+gensweep r2 pr_2
+gensweep r3 pr_3
+gensweep r4 pr_4

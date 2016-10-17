@@ -34,6 +34,8 @@
 #include <MMgt_TShared.hxx>
 #include <BRepFill_TypeOfContact.hxx>
 #include <TopTools_ListOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 class Law_Function;
 class BRepFill_LocationLaw;
 class BRepFill_SectionLaw;
@@ -213,6 +215,9 @@ private:
   TopoDS_Shape myLast;
   TopoDS_Shape myShape;
   BRepFill_SequenceOfSection mySeq;
+  TopTools_SequenceOfShape WSeq;
+  TColStd_SequenceOfInteger  myIndOfSec;
+  TopTools_DataMapOfShapeListOfShape myEdgeNewEdges;
   TopTools_DataMapOfShapeListOfShape myGenMap;
   Standard_Real myTol3d;
   Standard_Real myBoundTol;

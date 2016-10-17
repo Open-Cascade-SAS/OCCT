@@ -111,6 +111,8 @@ public:
   
   Standard_EXPORT Handle(TopTools_HArray2OfShape) Sections() const;
 
+  //! returns the Tape corresponding to Index-th edge of section
+  Standard_EXPORT TopoDS_Shape Tape(const Standard_Integer Index) const;
 
 
 
@@ -161,6 +163,7 @@ private:
   TopTools_DataMapOfShapeShape myVEdgesModified;
   Handle(TopTools_HArray2OfShape) myFaces;
   TopTools_ListOfShape myAuxShape;
+  Handle(TopTools_HArray1OfShape) myTapes;
   Standard_Real Error;
   TopoDS_Wire FirstShape;
   TopoDS_Wire LastShape;

@@ -58,6 +58,7 @@
 #include <TopoDS_Wire.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfShapeSequenceOfShape.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
@@ -116,6 +117,30 @@ static void EdgesFromVertex (const TopoDS_Wire&   W,
 }
 				      
 #endif
+
+//=======================================================================
+//function : AddNewEdge
+//purpose  : for <theEdge> find all newest edges
+//           in <theEdgeNewEdges> recursively
+//=======================================================================
+
+static void AddNewEdge(const TopoDS_Shape& theEdge,
+                       const TopTools_DataMapOfShapeSequenceOfShape& theEdgeNewEdges,
+                       TopTools_ListOfShape& ListNewEdges)
+{
+  if (theEdgeNewEdges.IsBound(theEdge))
+  {
+    const TopTools_SequenceOfShape& NewEdges = theEdgeNewEdges(theEdge);
+    for (Standard_Integer i = 1; i <= NewEdges.Length(); i++)
+    {
+      TopoDS_Shape anEdge = NewEdges(i);
+      AddNewEdge(anEdge, theEdgeNewEdges, ListNewEdges);
+    }
+  }
+  else
+    ListNewEdges.Append(theEdge);
+}
+
 static void SeqOfVertices (const TopoDS_Wire&   W,
 			   TopTools_SequenceOfShape& S)
 {
@@ -430,7 +455,8 @@ static Standard_Boolean EdgeIntersectOnWire (const gp_Pnt& P1,
 					     const TopTools_DataMapOfShapeListOfShape& Map,
 					     const TopoDS_Wire&   W,
 					     TopoDS_Vertex& Vsol,
-					     TopoDS_Wire&   newW)
+					     TopoDS_Wire&   newW,
+                                             TopTools_DataMapOfShapeSequenceOfShape& theEdgeNewEdges)
 {
 
   BRepTools_WireExplorer anExp;
@@ -479,9 +505,7 @@ static Standard_Boolean EdgeIntersectOnWire (const gp_Pnt& P1,
     // is the solution a new vertex ?
     NewVertex = (DSS.SupportTypeShape2(isol) != BRepExtrema_IsVertex);
     if (NewVertex) {
-      TopoDS_Shape aLocalShape = DSS.SupportOnShape2(isol);
-      TopoDS_Edge E = TopoDS::Edge(aLocalShape);
-//      TopoDS_Edge E = TopoDS::Edge(DSS.SupportOnShape2(isol));
+      TopoDS_Edge E = TopoDS::Edge(DSS.SupportOnShape2(isol));
       Standard_Real tol = Precision::PConfusion();
       Standard_Real first,last,param;
       BRep_Tool::Range(E,first,last);
@@ -512,6 +536,8 @@ static Standard_Boolean EdgeIntersectOnWire (const gp_Pnt& P1,
       TopoDS_Shape aLocalShape = DSS.SupportOnShape2(isol);
       TopoDS_Edge E = TopoDS::Edge(aLocalShape);
 //      TopoDS_Edge E = TopoDS::Edge(DSS.SupportOnShape2(isol));
+      TopTools_SequenceOfShape EmptySeq;
+      theEdgeNewEdges.Bind(E, EmptySeq);
       Standard_Real first,last,param;
       DSS.ParOnEdgeS2(isol,param);
       BRep_Tool::Range(E,first,last);
@@ -526,6 +552,7 @@ static Standard_Boolean EdgeIntersectOnWire (const gp_Pnt& P1,
 	  SR.Clear();
 	  SR.Append(param);
 	  TrimEdge(E,SR,first,last,SO,SE);
+          theEdgeNewEdges(E) = SE;
 	  TopoDS_Vertex VV1,VV2;
 	  TopExp::Vertices(TopoDS::Edge(SE.Value(1)),VV1,VV2);
 	  if (TopExp::FirstVertex(E).IsSame(VV1)
@@ -855,9 +882,11 @@ void BRepFill_CompatibleWires::
   // initialisation 
   Standard_Integer NbSects=myWork.Length();
   BRepTools_WireExplorer anExp;
-  
+  TopTools_DataMapOfShapeSequenceOfShape EdgeNewEdges;
+
   Standard_Boolean allClosed = Standard_True;
   Standard_Integer i,ii,ideb=1,ifin=NbSects;
+
   for (i=1; i<=NbSects; i++) {
     Handle(BRepCheck_Wire) Checker = new BRepCheck_Wire(TopoDS::Wire(myWork(i)));
     allClosed = (allClosed && (Checker->Closed() == BRepCheck_NoError));
@@ -974,8 +1003,8 @@ void BRepFill_CompatibleWires::
       if (Pnew.Distance(Pos->Value(i-1))>Precision::Confusion()) {
 	Standard_Real percent = myPercent;
 	NewVertex = EdgeIntersectOnWire(Pos->Value(i-1),Pnew,percent,
-				    RMap,TopoDS::Wire(myWork(i-1)),
-				    Vsol,newwire);
+                                        RMap,TopoDS::Wire(myWork(i-1)),
+                                        Vsol,newwire,EdgeNewEdges);
 	if (NewVertex) myWork(i-1) = newwire;
 	RMap(Vi).Append(Vsol);
       }
@@ -1058,8 +1087,8 @@ void BRepFill_CompatibleWires::
 	if (Pnew.Distance(Pos->Value(i+1))>Precision::Confusion()) {
 	  Standard_Real percent = myPercent;
 	  NewVertex = EdgeIntersectOnWire(Pos->Value(i+1),Pnew,percent,
-				      MapVLV,TopoDS::Wire(myWork(i+1)),
-				      Vsol,newwire);
+                                          MapVLV,TopoDS::Wire(myWork(i+1)),
+                                          Vsol,newwire,EdgeNewEdges);
 	  MapVLV(VRoot).Append(Vsol);
 	  if (NewVertex) myWork(i+1) = newwire;
 	}
@@ -1211,6 +1240,19 @@ void BRepFill_CompatibleWires::
     Standard_NoSuchObject::Raise("BRepFill_CompatibleWires::SameNumberByPolarMethod failed");
   }
 
+  //Fill <myMap>
+  TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itmap(myMap);
+  for (; itmap.More(); itmap.Next())
+  {
+    TopoDS_Shape anEdge = itmap.Key();
+    TopTools_ListOfShape ListOfNewEdges;
+
+    //for each edge of <myMap> find all newest edges
+    //in <EdgeNewEdges> recursively
+    AddNewEdge(anEdge, EdgeNewEdges, ListOfNewEdges);
+    
+    myMap(anEdge) = ListOfNewEdges;
+  }
 }
 
 //=======================================================================
