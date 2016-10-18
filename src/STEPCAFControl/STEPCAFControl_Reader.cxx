@@ -2224,6 +2224,31 @@ static Standard_Boolean ReadDatums(const Handle(XCAFDoc_ShapeTool) &STool,
   return Standard_True;
 }
 
+//=======================================================================
+//function : FindShapeIndexForDGT
+//purpose  : auxiliary find shape index in map og imported shapes
+//=======================================================================
+static Standard_Integer FindShapeIndexForDGT(const Handle(Standard_Transient)& theEnt,
+  const Handle(XSControl_WorkSession)& theWS)
+{
+  const Handle(Transfer_TransientProcess) &aTP = theWS->TransferReader()->TransientProcess();
+  // try to find index of given entity
+  Standard_Integer anIndex = aTP->MapIndex(theEnt);
+  if (anIndex > 0)
+    return anIndex;
+  // if theEnt is a geometry item try to find its topological item
+  const Interface_Graph& aGraph = aTP->Graph();
+  Interface_EntityIterator anIter = aGraph.Sharings(theEnt);
+  for (anIter.Start(); anIter.More(); anIter.Next()) {
+    if (anIter.Value()->IsKind(STANDARD_TYPE(StepShape_TopologicalRepresentationItem)))
+    {
+      anIndex = aTP->MapIndex(anIter.Value());
+      if (anIndex > 0)
+        return anIndex;
+    }
+  }
+  return 0;
+}
 
 //=======================================================================
 //function : setDatumToXCAF
@@ -2306,7 +2331,7 @@ static Standard_Boolean setDatumToXCAF(const Handle(StepDimTol_Datum)& theDat,
       aRI = aPGISU->IdentifiedItemValue(i);
     }
     if(aRI.IsNull()) continue;
-    Standard_Integer index = aTP->MapIndex(aRI);
+    Standard_Integer index = FindShapeIndexForDGT(aRI, theWS);
     TopoDS_Shape aSh;
     if(index >0) {
       Handle(Transfer_Binder) binder = aTP->MapItem(index);
@@ -2362,7 +2387,7 @@ static Standard_Boolean setDatumToXCAF(const Handle(StepDimTol_Datum)& theDat,
                   anItem = aPGISU->IdentifiedItemValue(1);
                 }
                 if(anItem.IsNull()) continue;
-                Standard_Integer anItemIndex = aTP->MapIndex(anItem);
+                Standard_Integer anItemIndex = FindShapeIndexForDGT(anItem, theWS);
                 if(anItemIndex >0) {
                   Handle(Transfer_Binder) binder = aTP->MapItem(anItemIndex);
                   TopoDS_Shape anItemShape = TransferBRep::ShapeResult(binder);
@@ -2657,6 +2682,7 @@ static void collectShapeAspect(const Handle(StepRepr_ShapeAspect)& theSA,
       theSAs.Append(theSA);
   }
 }
+
 
 //=======================================================================
 //function : createGeomTolObjectInXCAF
@@ -2991,7 +3017,7 @@ static TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
   // Collect shapes
   for(Standard_Integer i = aSeqRI1.Lower(); i <= aSeqRI1.Upper() ;i++)
   {
-    Standard_Integer anIndex = aTP->MapIndex(aSeqRI1.Value(i));
+    Standard_Integer anIndex = FindShapeIndexForDGT(aSeqRI1.Value(i), theWS);
     TopoDS_Shape aSh;
     if(anIndex >0) {
       Handle(Transfer_Binder) aBinder = aTP->MapItem(anIndex);
@@ -3009,7 +3035,7 @@ static TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
     //for dimensional location
     for(Standard_Integer i = aSeqRI2.Lower(); i <= aSeqRI2.Upper() ;i++)
     {
-      Standard_Integer anIndex = aTP->MapIndex(aSeqRI2.Value(i));
+      Standard_Integer anIndex = FindShapeIndexForDGT(aSeqRI2.Value(i), theWS);
       TopoDS_Shape aSh;
       if(anIndex >0) {
         Handle(Transfer_Binder) aBinder = aTP->MapItem(anIndex);
@@ -3412,7 +3438,7 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
         for(anIterGRI.Start(); anIterGRI.More() && aPGISU.IsNull(); anIterGRI.Next()) {
           aPRI = Handle(StepRepr_RepresentationItem)::DownCast(anIterGRI.Value());
         }
-        Standard_Integer anIndex = aTP->MapIndex(aPRI);
+        Standard_Integer anIndex = FindShapeIndexForDGT(aPRI, theWS);
         TopoDS_Edge aSh;
         if(anIndex >0) {
           Handle(Transfer_Binder) aBinder = aTP->MapItem(anIndex);

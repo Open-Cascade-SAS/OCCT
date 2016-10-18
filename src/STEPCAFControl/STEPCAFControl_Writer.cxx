@@ -2113,10 +2113,55 @@ static Standard_Boolean FindPDSforDGT(const Interface_Graph &aGraph,
 }
 
 //=======================================================================
+//function : FindPDS
+//purpose  : auxilary: find Product_definition_shape entity for given entity
+//=======================================================================
+static Handle(StepRepr_ProductDefinitionShape) FindPDS(const Interface_Graph &theGraph,
+                                                       const Handle(Standard_Transient) &theEnt,
+                                                       Handle(StepRepr_RepresentationContext) &theRC)
+{
+  if (theEnt.IsNull())
+    return NULL;
+  Handle(StepRepr_ProductDefinitionShape) aPDS;
+
+  // try to find shape_representation in sharings
+  Interface_EntityIterator anIter = theGraph.Sharings(theEnt);
+  for (anIter.Start(); anIter.More() && aPDS.IsNull(); anIter.Next()) {
+    Handle(StepShape_ShapeRepresentation) aSR = Handle(StepShape_ShapeRepresentation)::DownCast(anIter.Value());
+    if (aSR.IsNull())
+      continue;
+    theRC = aSR->ContextOfItems();
+    Interface_EntityIterator aSDRIt = theGraph.Sharings(aSR);
+    for (aSDRIt.Start(); aSDRIt.More() && aPDS.IsNull(); aSDRIt.Next()) {
+      Handle(StepShape_ShapeDefinitionRepresentation) aSDR =
+        Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(aSDRIt.Value());
+      if (aSDR.IsNull()) continue;
+      Handle(StepRepr_PropertyDefinition) aPropD = aSDR->Definition().PropertyDefinition();
+      if (aPropD.IsNull()) continue;
+      aPDS = Handle(StepRepr_ProductDefinitionShape)::DownCast(aPropD);
+    }
+  }
+  if (!aPDS.IsNull())
+    return aPDS;
+
+  anIter = theGraph.Sharings(theEnt);
+  for (anIter.Start(); anIter.More(); anIter.Next()) {
+    if (anIter.Value()->IsKind(STANDARD_TYPE(StepShape_TopologicalRepresentationItem)) ||
+      anIter.Value()->IsKind(STANDARD_TYPE(StepGeom_GeometricRepresentationItem)))
+    {
+      aPDS = FindPDS(theGraph, anIter.Value(), theRC);
+      if (!aPDS.IsNull())
+        return aPDS;
+    }
+  }
+
+  return aPDS;
+}
+
+//=======================================================================
 //function : GetUnit
 //purpose  : auxiliary
 //=======================================================================
-
 static StepBasic_Unit GetUnit(const Handle(StepRepr_RepresentationContext)& theRC,
                               const Standard_Boolean isAngle = Standard_False)
 {
@@ -2264,9 +2309,7 @@ static Handle(StepRepr_ShapeAspect) WriteShapeAspect (const Handle(XSControl_Wor
   Handle(StepRepr_ProductDefinitionShape) aPDS;
   Handle(StepRepr_RepresentationContext) aRC;
   Handle(Standard_Transient) anEnt = aSeqRI.Value(1);
-  Handle(StepShape_AdvancedFace) anAF;
-  Handle(StepShape_EdgeCurve) anEC;
-  FindPDSforDGT(aGraph, anEnt, aPDS, aRC, anAF, anEC);
+  aPDS = FindPDS(aGraph, anEnt, aRC);
   if(aPDS.IsNull()) 
     return NULL;
 
@@ -2335,7 +2378,8 @@ static void WritePresentation(const Handle(XSControl_WorkSession) &WS,
   Handle(StepVisual_HArray1OfDraughtingCalloutElement) aTAOs = new StepVisual_HArray1OfDraughtingCalloutElement(1, 1);
   aTAOs->SetValue(1, aDCElement);
   Handle(StepVisual_DraughtingCallout) aDCallout = new StepVisual_DraughtingCallout();
-  aDCallout->Init(thePrsName, aTAOs);
+  Handle(TCollection_HAsciiString) aPrsName = thePrsName.IsNull() ? new TCollection_HAsciiString() : thePrsName;
+  aDCallout->Init(aPrsName, aTAOs);
   Handle(StepRepr_HArray1OfRepresentationItem) aDCsForDMIA = new StepRepr_HArray1OfRepresentationItem(1, 1);
   aDCsForDMIA->SetValue(1, aDCallout);
   StepAP242_ItemIdentifiedRepresentationUsageDefinition aDimension;
@@ -2405,7 +2449,8 @@ static void WritePresentation(const Handle(XSControl_WorkSession) &WS,
   Handle(StepVisual_HArray1OfDraughtingCalloutElement) aTAOs = new StepVisual_HArray1OfDraughtingCalloutElement(1, 1);
   aTAOs->SetValue(1, aDCElement);
   Handle(StepVisual_DraughtingCallout) aDCallout = new StepVisual_DraughtingCallout();
-  aDCallout->Init(thePrsName, aTAOs);
+  Handle(TCollection_HAsciiString) aPrsName = thePrsName.IsNull() ? new TCollection_HAsciiString() : thePrsName;
+  aDCallout->Init(aPrsName, aTAOs);
   aModel->AddWithRefs(aDCallout);
 
   // Annotation plane
@@ -2464,8 +2509,6 @@ static Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSessi
   Handle(StepRepr_ProductDefinitionShape) aPDS;
   Handle(StepRepr_RepresentationContext) aRC;
   Handle(Standard_Transient) anEnt;
-  Handle(StepShape_AdvancedFace) anAF;
-  Handle(StepShape_EdgeCurve) anEC;
   TopoDS_Shape aShape;
   TopLoc_Location aLoc;
   TColStd_SequenceOfTransient aSeqRI;
@@ -2477,7 +2520,7 @@ static Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSessi
     return NULL;
   }
   anEnt = aSeqRI.Value(1);
-  FindPDSforDGT(aGraph, anEnt, aPDS, aRC, anAF, anEC);
+  aPDS = FindPDS(aGraph, anEnt, aRC);
   if (aPDS.IsNull()) 
     return NULL;
 
