@@ -29,6 +29,7 @@ class XCAFDoc_ColorTool;
 class XCAFDoc_LayerTool;
 class XCAFDoc_DimTolTool;
 class XCAFDoc_MaterialTool;
+class XCAFDoc_ViewTool;
 class TDF_Attribute;
 class TDF_RelocationTable;
 
@@ -76,6 +77,9 @@ public:
   
   //! Returns sub-label of DocLabel() with tag 5.
   Standard_EXPORT static TDF_Label MaterialsLabel (const TDF_Label& acces);
+
+  //! Returns sub-label of DocLabel() with tag 7.
+  Standard_EXPORT static TDF_Label ViewsLabel(const TDF_Label& acces);
   
   //! Creates (if it does not exist) ShapeTool attribute on ShapesLabel().
   Standard_EXPORT static Handle(XCAFDoc_ShapeTool) ShapeTool (const TDF_Label& acces);
@@ -91,6 +95,9 @@ public:
   
   //! Creates (if it does not exist) DimTolTool attribute on DGTsLabel().
   Standard_EXPORT static Handle(XCAFDoc_MaterialTool) MaterialTool (const TDF_Label& acces);
+
+  //! Creates (if it does not exist) ViewTool attribute on ViewsLabel().
+  Standard_EXPORT static Handle(XCAFDoc_ViewTool) ViewTool(const TDF_Label& acces);
   
   Standard_EXPORT XCAFDoc_DocumentTool();
   

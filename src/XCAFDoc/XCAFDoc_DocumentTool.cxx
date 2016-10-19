@@ -30,6 +30,7 @@
 #include <XCAFDoc_LayerTool.hxx>
 #include <XCAFDoc_MaterialTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
+#include <XCAFDoc_ViewTool.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_DocumentTool,TDF_Attribute)
 
@@ -81,6 +82,7 @@ Handle(XCAFDoc_DocumentTool) XCAFDoc_DocumentTool::Set(const TDF_Label& L,
     XCAFDoc_LayerTool::Set(LayersLabel(L));
     XCAFDoc_DimTolTool::Set(DGTsLabel(L));
     XCAFDoc_MaterialTool::Set(MaterialsLabel(L));
+    XCAFDoc_ViewTool::Set(ViewsLabel(L));
   }
   return A;
 }
@@ -184,6 +186,19 @@ TDF_Label XCAFDoc_DocumentTool::MaterialsLabel(const TDF_Label& acces)
 
 
 //=======================================================================
+//function : ViewsLabel
+//purpose  : 
+//=======================================================================
+
+TDF_Label XCAFDoc_DocumentTool::ViewsLabel(const TDF_Label& acces)
+{
+  TDF_Label L = DocLabel(acces).FindChild(7, Standard_True);
+  TDataStd_Name::Set(L, "Views");
+  return L;
+}
+
+
+//=======================================================================
 //function : ShapeTool
 //purpose  : 
 //=======================================================================
@@ -235,6 +250,16 @@ Handle(XCAFDoc_DimTolTool) XCAFDoc_DocumentTool::DimTolTool(const TDF_Label& acc
 Handle(XCAFDoc_MaterialTool) XCAFDoc_DocumentTool::MaterialTool(const TDF_Label& acces) 
 {
   return XCAFDoc_MaterialTool::Set(MaterialsLabel(acces));
+}
+
+//=======================================================================
+//function : ViewTool
+//purpose  : 
+//=======================================================================
+
+Handle(XCAFDoc_ViewTool) XCAFDoc_DocumentTool::ViewTool(const TDF_Label& acces)
+{
+  return XCAFDoc_ViewTool::Set(ViewsLabel(acces));
 }
 
 

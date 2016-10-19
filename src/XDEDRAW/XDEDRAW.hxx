@@ -27,6 +27,7 @@ class XDEDRAW_Colors;
 class XDEDRAW_Layers;
 class XDEDRAW_Props;
 class XDEDRAW_Common;
+class XDEDRAW_Views;
 
 
 //! Provides DRAW commands for work with DECAF data structures

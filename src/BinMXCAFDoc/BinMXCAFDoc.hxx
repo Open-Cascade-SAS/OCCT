@@ -39,6 +39,8 @@ class BinMXCAFDoc_LayerToolDriver;
 class BinMXCAFDoc_ShapeToolDriver;
 class BinMXCAFDoc_DimTolToolDriver;
 class BinMXCAFDoc_MaterialToolDriver;
+class BinMXCAFDoc_ViewDriver;
+class BinMXCAFDoc_ViewToolDriver;
 
 
 
@@ -83,6 +85,8 @@ friend class BinMXCAFDoc_LayerToolDriver;
 friend class BinMXCAFDoc_ShapeToolDriver;
 friend class BinMXCAFDoc_DimTolToolDriver;
 friend class BinMXCAFDoc_MaterialToolDriver;
+friend class BinMXCAFDoc_ViewDriver;
+friend class BinMXCAFDoc_ViewToolDriver;
 
 };
 

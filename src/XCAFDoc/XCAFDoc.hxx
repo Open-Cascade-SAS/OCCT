@@ -41,6 +41,7 @@ class XCAFDoc_LayerTool;
 class XCAFDoc_MaterialTool;
 class XCAFDoc_GraphNode;
 class XCAFDoc_Editor;
+class XCAFDoc_ViewTool;
 
 
 //! Definition of general structure of DECAF document
@@ -104,8 +105,14 @@ public:
   //! Returns GUID for UAttribute identifying specified higher usage occurrence
   Standard_EXPORT static Standard_GUID SHUORefGUID();
 
+  //! Return GUIDs for TreeNode representing specified types of View
+  Standard_EXPORT static Standard_GUID ViewRefGUID();
 
+  //! Return GUIDs for TreeNode representing specified types of View
+  Standard_EXPORT static Standard_GUID ViewRefShapeGUID();
 
+  //! Return GUIDs for TreeNode representing specified types of View
+  Standard_EXPORT static Standard_GUID ViewRefGDTGUID();
 
 protected:
 
@@ -135,6 +142,7 @@ friend class XCAFDoc_LayerTool;
 friend class XCAFDoc_MaterialTool;
 friend class XCAFDoc_GraphNode;
 friend class XCAFDoc_Editor;
+friend class XCAFDoc_ViewTool;
 
 };
 

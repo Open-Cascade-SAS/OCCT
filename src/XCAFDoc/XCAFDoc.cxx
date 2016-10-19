@@ -194,3 +194,36 @@ Standard_GUID XCAFDoc::SHUORefGUID ()
   static Standard_GUID ID ("efd212ea-6dfd-11d4-b9c8-0060b0ee281b");
   return ID;
 }
+
+//=======================================================================
+//function : ViewRefGUID
+//purpose  : 
+//=======================================================================
+
+Standard_GUID XCAFDoc::ViewRefGUID()
+{
+  static Standard_GUID ID("efd213e5-6dfd-11d4-b9c8-0060b0ee281b");
+  return ID;
+}
+
+//=======================================================================
+//function : ViewRefShapeGUID
+//purpose  : 
+//=======================================================================
+
+Standard_GUID XCAFDoc::ViewRefShapeGUID()
+{
+  static Standard_GUID ID("efd213e6-6dfd-11d4-b9c8-0060b0ee281b");
+  return ID;
+}
+
+//=======================================================================
+//function : ViewRefGDTGUID
+//purpose  : 
+//=======================================================================
+
+Standard_GUID XCAFDoc::ViewRefGDTGUID()
+{
+  static Standard_GUID ID("efd213e7-6dfd-11d4-b9c8-0060b0ee281b");
+  return ID;
+}

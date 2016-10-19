@@ -12,3 +12,5 @@ XDEDRAW_GDTs.cxx
 XDEDRAW_GDTs.hxx
 XDEDRAW_Shapes.cxx
 XDEDRAW_Shapes.hxx
+XDEDRAW_Views.cxx
+XDEDRAW_Views.hxx

@@ -29,5 +29,7 @@ XmlMXCAFDoc_MaterialToolDriver.cxx
 XmlMXCAFDoc_MaterialToolDriver.hxx
 XmlMXCAFDoc_ShapeToolDriver.cxx
 XmlMXCAFDoc_ShapeToolDriver.hxx
+XmlMXCAFDoc_ViewToolDriver.cxx
+XmlMXCAFDoc_ViewToolDriver.hxx
 XmlMXCAFDoc_VolumeDriver.cxx
 XmlMXCAFDoc_VolumeDriver.hxx

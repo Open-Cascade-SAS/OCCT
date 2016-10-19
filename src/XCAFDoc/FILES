@@ -42,5 +42,9 @@ XCAFDoc_ShapeMapTool.cxx
 XCAFDoc_ShapeMapTool.hxx
 XCAFDoc_ShapeTool.cxx
 XCAFDoc_ShapeTool.hxx
+XCAFDoc_View.cxx
+XCAFDoc_View.hxx
+XCAFDoc_ViewTool.cxx
+XCAFDoc_ViewTool.hxx
 XCAFDoc_Volume.cxx
 XCAFDoc_Volume.hxx

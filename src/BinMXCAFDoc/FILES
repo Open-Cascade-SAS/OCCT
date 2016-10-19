@@ -33,5 +33,9 @@ BinMXCAFDoc_MaterialToolDriver.cxx
 BinMXCAFDoc_MaterialToolDriver.hxx
 BinMXCAFDoc_ShapeToolDriver.cxx
 BinMXCAFDoc_ShapeToolDriver.hxx
+BinMXCAFDoc_ViewDriver.cxx
+BinMXCAFDoc_ViewDriver.hxx
+BinMXCAFDoc_ViewToolDriver.cxx
+BinMXCAFDoc_ViewToolDriver.hxx
 BinMXCAFDoc_VolumeDriver.cxx
 BinMXCAFDoc_VolumeDriver.hxx

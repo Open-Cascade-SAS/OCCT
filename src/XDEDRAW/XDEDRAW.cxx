@@ -86,6 +86,7 @@
 #include <XDEDRAW_Props.hxx>
 #include <XDEDRAW_Shapes.hxx>
 #include <XDEDRAW_GDTs.hxx>
+#include <XDEDRAW_Views.hxx>
 #include <XSDRAW.hxx>
 #include <XSDRAWIGES.hxx>
 #include <XSDRAWSTEP.hxx>
@@ -793,6 +794,12 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
     else if ( att->ID() == XCAFDoc::DatumRefGUID() ){
       type = "Datum Link";
     }
+    else if (att->ID() == XCAFDoc::ViewRefShapeGUID()){
+      type = "View Shape Link";
+    }
+    else if (att->ID() == XCAFDoc::ViewRefGDTGUID()){
+      type = "View GD&T Link";
+    }
     else return 0;
 
     Handle(XCAFDoc_GraphNode) DETGN = Handle(XCAFDoc_GraphNode)::DownCast(att);
@@ -1157,6 +1164,7 @@ void XDEDRAW::Init(Draw_Interpretor& di)
   XDEDRAW_Layers::InitCommands ( di );
   XDEDRAW_Props::InitCommands ( di );
   XDEDRAW_GDTs::InitCommands ( di );
+  XDEDRAW_Views::InitCommands(di);
   XDEDRAW_Common::InitCommands ( di );//moved from EXE
 
 }

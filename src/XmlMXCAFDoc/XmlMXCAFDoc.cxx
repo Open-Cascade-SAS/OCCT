@@ -33,6 +33,7 @@
 #include <XmlMXCAFDoc_MaterialDriver.hxx>
 #include <XmlMXCAFDoc_MaterialToolDriver.hxx>
 #include <XmlMXCAFDoc_ShapeToolDriver.hxx>
+#include <XmlMXCAFDoc_ViewToolDriver.hxx>
 #include <XmlMXCAFDoc_VolumeDriver.hxx>
 
 //=======================================================================
@@ -71,4 +72,5 @@ void XmlMXCAFDoc::AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable,
   aDriverTable -> AddDriver (new XmlMXCAFDoc_ShapeToolDriver    (anMsgDrv));
   aDriverTable -> AddDriver (new XmlMXCAFDoc_DimTolToolDriver   (anMsgDrv));
   aDriverTable -> AddDriver (new XmlMXCAFDoc_MaterialToolDriver (anMsgDrv));
+  aDriverTable -> AddDriver (new XmlMXCAFDoc_ViewToolDriver     (anMsgDrv));
 }
