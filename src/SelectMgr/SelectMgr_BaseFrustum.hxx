@@ -173,6 +173,14 @@ public:
   //! @return previous value of the flag
   virtual Standard_Boolean SetViewClippingEnabled (const Standard_Boolean /*theToEnable*/) { return Standard_False; }
 
+  //! Stores plane equation coefficients (in the following form:
+  //! Ax + By + Cz + D = 0) to the given vector
+  virtual void GetPlanes (NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const
+  {
+    thePlaneEquations.Clear();
+    return;
+  }
+
   DEFINE_STANDARD_RTTIEXT(SelectMgr_BaseFrustum,Standard_Transient)
 
 protected:

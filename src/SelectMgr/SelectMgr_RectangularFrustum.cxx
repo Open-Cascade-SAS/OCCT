@@ -746,3 +746,24 @@ Standard_Boolean SelectMgr_RectangularFrustum::isViewClippingOk (const Standard_
   return myViewClipRange.MaxDepth() > theDepth
     && myViewClipRange.MinDepth() < theDepth;
 }
+
+// =======================================================================
+// function : GetPlanes
+// purpose  :
+// =======================================================================
+void SelectMgr_RectangularFrustum::GetPlanes (NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const
+{
+  thePlaneEquations.Clear();
+
+  SelectMgr_Vec4 anEquation;
+  for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 6; ++aPlaneIdx)
+  {
+    const gp_Vec& aPlaneNorm = myIsOrthographic && aPlaneIdx % 2 == 1 ?
+      myPlanes[aPlaneIdx - 1].Reversed() : myPlanes[aPlaneIdx];
+    anEquation.x() = aPlaneNorm.X();
+    anEquation.y() = aPlaneNorm.Y();
+    anEquation.z() = aPlaneNorm.Z();
+    anEquation.w() = - (aPlaneNorm.XYZ().Dot (myVertices[aPlaneIdx % 2 == 0 ? aPlaneIdx : aPlaneIdx + 2].XYZ()));
+    thePlaneEquations.Append (anEquation);
+  }
+}

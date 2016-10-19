@@ -196,6 +196,29 @@ public:
   //! correspondingly) onto far view frustum plane
   Standard_EXPORT virtual gp_Pnt GetFarPickedPnt() const Standard_OVERRIDE;
 
+  //! Returns active selecting volume that was built during last
+  //! run of OCCT selection mechanism
+  Handle(SelectMgr_BaseFrustum) ActiveVolume() const
+  {
+    if (myActiveSelectionType == Unknown)
+      return Handle(SelectMgr_BaseFrustum)();
+
+    return mySelectingVolumes[myActiveSelectionType / 2];
+  }
+
+  //! Stores plane equation coefficients (in the following form:
+  //! Ax + By + Cz + D = 0) to the given vector
+  virtual void GetPlanes (NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const Standard_OVERRIDE
+  {
+    if (myActiveSelectionType == Unknown)
+    {
+      thePlaneEquations.Clear();
+      return;
+    }
+
+    return mySelectingVolumes[myActiveSelectionType / 2]->GetPlanes (thePlaneEquations);
+  }
+
 private:
   enum { Frustum, FrustumSet, VolumeTypesNb };       //!< Defines the amount of available selecting volumes
 

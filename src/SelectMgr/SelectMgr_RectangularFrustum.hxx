@@ -132,6 +132,11 @@ public:
   //! of center of 2d rectangle (for point and rectangular selection
   //! correspondingly) onto far view frustum plane
   inline const gp_Pnt& GetFarPnt() const { return myFarPickedPnt; }
+
+  //! Stores plane equation coefficients (in the following form:
+  //! Ax + By + Cz + D = 0) to the given vector
+  Standard_EXPORT virtual void GetPlanes (NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const Standard_OVERRIDE;
+
 protected:
 
   Standard_EXPORT void segmentSegmentDistance (const gp_Pnt& theSegPnt1,

@@ -279,3 +279,21 @@ void SelectMgr_TriangularFrustum::Clear()
 {
   myBuilder.Nullify();
 }
+
+// =======================================================================
+// function : GetPlanes
+// purpose  :
+// =======================================================================
+void SelectMgr_TriangularFrustum::GetPlanes (NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const
+{
+  SelectMgr_Vec4 aPlaneEquation;
+  for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 5; ++aPlaneIdx)
+  {
+    const gp_Vec& aNorm = myPlanes[aPlaneIdx];
+    aPlaneEquation.x() = aNorm.X();
+    aPlaneEquation.y() = aNorm.Y();
+    aPlaneEquation.z() = aNorm.Z();
+    aPlaneEquation.w() = - (aNorm.XYZ().Dot (myVertices[aPlaneIdx % 2 == 0 ? aPlaneIdx : 1].XYZ()));
+    thePlaneEquations.Append (aPlaneEquation);
+  }
+}

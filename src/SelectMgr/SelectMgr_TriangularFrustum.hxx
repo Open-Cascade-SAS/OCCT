@@ -84,6 +84,10 @@ public:
   //! Nullifies the handle to corresponding builder instance to prevent memory leaks
   Standard_EXPORT void Clear();
 
+  //! Stores plane equation coefficients (in the following form:
+  //! Ax + By + Cz + D = 0) to the given vector
+  Standard_EXPORT virtual void GetPlanes (NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const Standard_OVERRIDE;
+
 private:
 
   void cacheVertexProjections (SelectMgr_TriangularFrustum* theFrustum) const;

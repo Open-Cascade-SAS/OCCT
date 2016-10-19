@@ -75,6 +75,10 @@ public:
                                                      Select3D_TypeOfSensitivity theSensType,
                                                      Standard_Real& theDepth) Standard_OVERRIDE;
 
+  //! Stores plane equation coefficients (in the following form:
+  //! Ax + By + Cz + D = 0) to the given vector
+  Standard_EXPORT virtual void GetPlanes (NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const Standard_OVERRIDE;
+
 private:
 
     SelectMgr_TriangFrustums myFrustums;

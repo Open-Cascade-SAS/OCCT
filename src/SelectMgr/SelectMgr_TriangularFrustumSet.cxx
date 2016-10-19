@@ -224,4 +224,18 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt1
   return Standard_False;
 }
 
+// =======================================================================
+// function : GetPlanes
+// purpose  :
+// =======================================================================
+void SelectMgr_TriangularFrustumSet::GetPlanes (NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const
+{
+  thePlaneEquations.Clear();
+
+  for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
+  {
+    anIter.Value()->GetPlanes (thePlaneEquations);
+  }
+}
+
 #undef MEMORY_BLOCK_SIZE
