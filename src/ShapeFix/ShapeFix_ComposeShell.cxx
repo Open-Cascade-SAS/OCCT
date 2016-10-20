@@ -118,15 +118,22 @@ void ShapeFix_ComposeShell::Init (const Handle(ShapeExtend_CompositeSurface) &Gr
 //  DTK-CKY 100531 : protection against very thin face
 //  Test "isclosed" should be filtered on the overall (non trimmed) surface, must be closed
   Handle(Geom_Surface) theSurface = BRep_Tool::Surface(Face,myLoc);
-  Standard_Real U0,U1,V0,V1;
+  Standard_Real U0,U1,V0,V1,GU0 = 0.,GU1 = 0.,GV0 = 0.,GV1 = 0.;
   theSurface->Bounds(U0,U1,V0,V1);
+  if (::Precision::IsInfinite (U0) || ::Precision::IsInfinite (U1) ||
+      ::Precision::IsInfinite (V0) || ::Precision::IsInfinite (V1))
+    BRepTools::UVBounds(Face, GU0, GU1, GV0, GV1);
   if (myUClosed) {
+    if (::Precision::IsInfinite (V0)) V0 = GV0;
+    if (::Precision::IsInfinite (V1)) V1 = GV1;
     gp_Pnt P0 = theSurface->Value(U0,(V0+V1)/2.);
     gp_Pnt P1 = theSurface->Value(U1,(V0+V1)/2.);
     if (P0.Distance(P1) > Precision::Confusion()*10)
       myUClosed = Standard_False;
   }
   if (myVClosed) {
+    if (::Precision::IsInfinite (U0)) U0 = GU0;
+    if (::Precision::IsInfinite (U1)) U1 = GU1;
     gp_Pnt P0 = theSurface->Value((U0+U1)/2.,V0);
     gp_Pnt P1 = theSurface->Value((U0+U1)/2.,V1);
     if (P0.Distance(P1) > Precision::Confusion()*10)
