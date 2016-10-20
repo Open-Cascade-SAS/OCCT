@@ -47,6 +47,9 @@ public:
   Standard_EXPORT virtual void ReadShapeSection (BinLDrivers_DocumentSection& theSection, Standard_IStream& theIS, const Standard_Boolean isMess = Standard_False) Standard_OVERRIDE;
   
   Standard_EXPORT virtual void CheckShapeSection (const Storage_Position& thePos, Standard_IStream& theIS) Standard_OVERRIDE;
+
+  //! Clears the NamedShape driver
+  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
   
   Standard_EXPORT virtual void PropagateDocumentVersion (const Standard_Integer theVersion) Standard_OVERRIDE;
 

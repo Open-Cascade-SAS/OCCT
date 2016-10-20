@@ -91,6 +91,23 @@ void BinDrivers_DocumentRetrievalDriver::CheckShapeSection(
 {}
 
 //=======================================================================
+//function : Clear
+//purpose  : 
+//=======================================================================
+void BinDrivers_DocumentRetrievalDriver::Clear()
+{
+  // Clear NamedShape driver
+  Handle(BinMDF_ADriver) aDriver;
+  if (myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver))
+  {
+    Handle(BinMNaming_NamedShapeDriver) aNamedShapeDriver =
+      Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+    aNamedShapeDriver->Clear();
+  }
+  BinLDrivers_DocumentRetrievalDriver::Clear();
+}
+
+//=======================================================================
 //function : PropagateDocumentVersion
 //purpose  : 
 //=======================================================================

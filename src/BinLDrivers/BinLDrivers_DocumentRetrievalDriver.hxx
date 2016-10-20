@@ -83,10 +83,16 @@ protected:
   //! define the procedure of reading a section to file.
   Standard_EXPORT virtual void ReadSection (BinLDrivers_DocumentSection& theSection, const Handle(CDM_Document)& theDoc, Standard_IStream& theIS);
   
+  //! define the procedure of reading a shapes section to file.
   Standard_EXPORT virtual void ReadShapeSection (BinLDrivers_DocumentSection& theSection, Standard_IStream& theIS, const Standard_Boolean isMess = Standard_False);
   
+  //! checks the shapes section can be correctly retreived.
   Standard_EXPORT virtual void CheckShapeSection (const Storage_Position& thePos, Standard_IStream& theIS);
-  
+
+  //! clears the reading-cash data in drivers if any.
+  Standard_EXPORT virtual void Clear();
+
+  //! provides the version of document to all drivers
   Standard_EXPORT virtual void PropagateDocumentVersion (const Standard_Integer theVersion);
   
   //! Check a file version(in which file was written) with a current version.

@@ -297,9 +297,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
 
   // read sub-tree of the root label
   Standard_Integer nbRead = ReadSubTree (theIStream, aData->Root());
-  myPAtt.Destroy();    // free buffer
-  myRelocTable.Clear();
-  myMapUnsupported.Clear();
+  Clear();
     
   if (nbRead > 0) {
     // attach data to the document
@@ -489,6 +487,17 @@ void BinLDrivers_DocumentRetrievalDriver::CheckShapeSection(
       WriteMessage (aMethStr + "warning: Geometry is not supported by Lite schema. ");
     }
   }
+}
+
+//=======================================================================
+//function : Clear
+//purpose  : 
+//=======================================================================
+void BinLDrivers_DocumentRetrievalDriver::Clear()
+{
+  myPAtt.Destroy();    // free buffer
+  myRelocTable.Clear();
+  myMapUnsupported.Clear();
 }
 
 //=======================================================================
