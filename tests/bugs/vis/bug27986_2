@@ -1,0 +1,24 @@
+puts "==========="
+puts "OCC27986"
+puts "Visualization - AIS_InteractiveContext::SetLocation() does not update dynamic highlighting"
+puts "Test local selection"
+puts "==========="
+puts ""
+
+pload MODELING VISUALIZATION
+box b 1 2 3
+
+vclear
+vinit View1
+vaxo
+vdisplay -dispMode 0 -highMode 1 b
+vfit
+vzoom 0.5
+vselmode b 4 1
+vmoveto 250 250
+vsetlocation b 2 1 0
+set aColor1 [vreadpixel 220 200 rgb name]
+set aColor2 [vreadpixel 350 220 rgb name]
+if { "$aColor1" != "BLACK" || "$aColor2" != "DARKTURQUOISE" } { puts "Error: dynamic highlighting is not updated" }
+
+vdump $imagedir/${casename}.png

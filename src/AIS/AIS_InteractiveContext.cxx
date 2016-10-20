@@ -1331,9 +1331,10 @@ void AIS_InteractiveContext::SetLocation (const Handle(AIS_InteractiveObject)& t
   // to its highlight structure immediately
   if (!myLastPicked.IsNull() && myLastPicked->IsSameSelectable (theIObj))
   {
+    const Standard_Integer aHiMod = theIObj->HasHilightMode() ? theIObj->HilightMode() : 0;
     myLastPicked->UpdateHighlightTrsf (myMainVwr,
                                        myMainPM,
-                                       theIObj->HasDisplayMode() ? theIObj->DisplayMode() : 0);
+                                       aHiMod);
   }
 }
 

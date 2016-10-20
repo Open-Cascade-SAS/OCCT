@@ -641,12 +641,15 @@ void PrsMgr_PresentationManager::UpdateHighlightTrsf (const Handle(V3d_Viewer)& 
   if (theObj.IsNull())
     return;
 
-  const Handle(Prs3d_Presentation)& aBasePrs = Presentation (theObj, theMode, Standard_False)->Presentation();
-  const Handle(Prs3d_Presentation)& aParentPrs = theSelObj.IsNull() ?
-    aBasePrs : Presentation (theSelObj, theMode, Standard_False)->Presentation();
-  const Standard_Integer aParentId = aParentPrs->CStructure()->Id;
+  Handle(PrsMgr_Presentation) aPrs = Presentation (!theSelObj.IsNull() ? theSelObj : theObj, theMode, Standard_False);
+  if (aPrs.IsNull())
+  {
+    return;
+  }
 
-  updatePrsTransformation (myImmediateList, aParentId, aBasePrs->CStructure()->Transformation());
+  Handle(Geom_Transformation) aTrsf = theObj->LocalTransformationGeom();
+  const Standard_Integer aParentId = aPrs->Presentation()->CStructure()->Id;
+  updatePrsTransformation (myImmediateList, aParentId, aTrsf);
 
   if (!myViewDependentImmediateList.IsEmpty())
   {
@@ -658,7 +661,7 @@ void PrsMgr_PresentationManager::UpdateHighlightTrsf (const Handle(V3d_Viewer)& 
       {
         updatePrsTransformation (myViewDependentImmediateList,
                                  aViewDepParentPrs->CStructure()->Id,
-                                 aBasePrs->CStructure()->Transformation());
+                                 aTrsf);
       }
     }
   }
