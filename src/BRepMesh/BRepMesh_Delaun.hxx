@@ -320,6 +320,9 @@ private:
                           const Standard_Integer             theStartIndex,
                           const Standard_Integer             theEndIndex) const;
 
+  //! Performs insertion of internal edges into mesh.
+  void insertInternalEdges();
+
 private:
 
   Handle(BRepMesh_DataStructureOfDelaun) myMeshData;

@@ -1,0 +1,21 @@
+puts "=========="
+puts "OCC27959"
+puts "=========="
+puts ""
+#######################################################################
+# BRepMesh_Delaun produces mesh with gaps on internal edges
+#######################################################################
+# test for #27959: check that resulting mesh does not contain gaps.
+
+restore [locate_data_file bug27959_ms.brep] result
+
+tclean result
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Mesh contains gaps"
+} else {
+  puts "OK : Mesh produced without gaps"
+}
+

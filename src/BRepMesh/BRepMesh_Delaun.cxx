@@ -508,25 +508,56 @@ void BRepMesh_Delaun::createTrianglesOnNewVertices(
       createTriangles( aVertexIdx, aLoopEdges );
     }
   }
-  // Check that internal edges are not crossed by triangles
+
+  insertInternalEdges();
+
+  // Adjustment of meshes to boundary edges
+  frontierAdjust();
+}
+
+//=======================================================================
+//function : insertInternalEdges
+//purpose  : 
+//=======================================================================
+void BRepMesh_Delaun::insertInternalEdges()
+{
   BRepMesh::HMapOfInteger anInternalEdges = InternalEdges();
 
   // Destruction of triancles intersecting internal edges 
   // and their replacement by makeshift triangles
+  Standard_Integer e[3];
+  Standard_Boolean o[3];
   BRepMesh::MapOfInteger::Iterator anInernalEdgesIt( *anInternalEdges );
   for ( ; anInernalEdgesIt.More(); anInernalEdgesIt.Next() )
   {
-    Standard_Integer aNbC;
-    aNbC = myMeshData->ElementsConnectedTo( anInernalEdgesIt.Key() ).Extent();
-    if ( aNbC == 0 )
+    const Standard_Integer aLinkIndex = anInernalEdgesIt.Key();
+    const BRepMesh_PairOfIndex& aPair = myMeshData->ElementsConnectedTo(aLinkIndex);
+
+    // Check both sides of link for adjusted triangle.
+    Standard_Boolean isGo[2] = { Standard_True, Standard_True };
+    for (Standard_Integer aTriangleIt = 1; aTriangleIt <= aPair.Extent(); ++aTriangleIt)
     {
-      meshLeftPolygonOf( anInernalEdgesIt.Key(), Standard_True  ); 
-      meshLeftPolygonOf( anInernalEdgesIt.Key(), Standard_False ); 
+      GetTriangle(aPair.Index(aTriangleIt)).Edges(e, o);
+      for (Standard_Integer i = 0; i < 3; ++i)
+      {
+        if (e[i] == aLinkIndex)
+        {
+          isGo[o[i] ? 0 : 1] = Standard_False;
+          break;
+        }
+      }
+    }
+
+    if (isGo[0])
+    {
+      meshLeftPolygonOf(aLinkIndex, Standard_True);
+    }
+
+    if (isGo[1])
+    {
+      meshLeftPolygonOf(aLinkIndex, Standard_False);
     }
   }
-
-  // Adjustment of meshes to boundary edges
-  frontierAdjust();
 }
 
 //=======================================================================
