@@ -109,9 +109,9 @@ OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const BVH_Vec4f& theAmbient,
 // function : OpenGl_LightSource
 // purpose  : Creates new light source
 // =======================================================================
-OpenGl_RaytraceLight::OpenGl_RaytraceLight (const BVH_Vec4f& theDiffuse,
+OpenGl_RaytraceLight::OpenGl_RaytraceLight (const BVH_Vec4f& theEmission,
                                             const BVH_Vec4f& thePosition)
-: Diffuse (theDiffuse),
+: Emission (theEmission),
   Position (thePosition)
 {
   //
@@ -207,7 +207,7 @@ OpenGl_TriangleSet::OpenGl_TriangleSet (const Standard_Size theArrayID)
   myArrayID (theArrayID)
 {
   myBuilder = new BVH_BinnedBuilder<Standard_ShortReal, 3 /* dim */, 48 /* bins */>
-    (5 /* leaf size */, 32 /* max height */, Standard_False, OSD_Parallel::NbLogicalProcessors() + 1 /* threads */);
+    (4 /* leaf size */, 32 /* max height */, Standard_False, OSD_Parallel::NbLogicalProcessors() + 1 /* threads */);
 }
 
 // =======================================================================

@@ -82,6 +82,12 @@ public:
         && myFresnelData == theOther.myFresnelData;
   }
 
+  //! Returns type of Fresnel.
+  Graphic3d_FresnelModel FresnelType() const
+  {
+    return myFresnelType;
+  }
+
 protected:
 
   //! Creates new Fresnel reflectance factor.
@@ -164,9 +170,9 @@ public:
 public:
 
   //! Creates uninitialized BSDF.
-  Graphic3d_BSDF()
+  Graphic3d_BSDF() : Roughness (1.f), AbsorptionCoeff (0.f)
   {
-    Roughness = AbsorptionCoeff = 0.f;
+    Fresnel = Graphic3d_Fresnel::CreateConstant (1.f);
   }
 
   //! Normalizes BSDF components.

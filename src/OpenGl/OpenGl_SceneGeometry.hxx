@@ -136,7 +136,7 @@ class OpenGl_RaytraceLight
 public:
 
   //! Diffuse intensity (in terms of OpenGL).
-  BVH_Vec4f Diffuse;
+  BVH_Vec4f Emission;
 
   //! Position of light source (in terms of OpenGL).
   BVH_Vec4f Position;
@@ -144,7 +144,10 @@ public:
 public:
 
   //! Creates new light source.
-  OpenGl_RaytraceLight (const BVH_Vec4f& theDiffuse,
+  OpenGl_RaytraceLight() { }
+
+  //! Creates new light source.
+  OpenGl_RaytraceLight (const BVH_Vec4f& theEmission,
                         const BVH_Vec4f& thePosition);
 
   //! Returns packed (serialized) representation of light source.

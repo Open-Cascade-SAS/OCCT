@@ -43,6 +43,7 @@ Graphic3d_NOM_CHARCOAL,
 Graphic3d_NOM_WATER,
 Graphic3d_NOM_GLASS,
 Graphic3d_NOM_DIAMOND,
+Graphic3d_NOM_TRANSPARENT,
 Graphic3d_NOM_DEFAULT,
 Graphic3d_NOM_UserDefined
 };

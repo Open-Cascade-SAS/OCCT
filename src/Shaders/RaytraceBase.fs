@@ -143,7 +143,9 @@ struct SIntersect
 #define AXIS_Y vec3 (0.0f, 1.0f, 0.0f)
 #define AXIS_Z vec3 (0.0f, 0.0f, 1.0f)
 
-#define M_PI 3.14159265f
+#define M_PI   3.141592653f
+#define M_2_PI 6.283185307f
+#define M_PI_2 1.570796327f
 
 #define LUMA vec3 (0.2126f, 0.7152f, 0.0722f)
 
@@ -835,8 +837,8 @@ vec2 SmoothUV (in vec2 theUV, in ivec4 theTriangle)
 // =======================================================================
 vec4 FetchEnvironment (in vec2 theTexCoord)
 {
-  return mix (vec4 (0.0f, 0.0f, 0.0f, 1.0f),
-    textureLod (uEnvironmentMapTexture, theTexCoord, 0.0f), float (uSphereMapEnabled));
+  return uSphereMapEnabled == 0 ?
+    vec4 (0.f, 0.f, 0.f, 1.f) : textureLod (uEnvironmentMapTexture, theTexCoord, 0.f);
 }
 
 // =======================================================================
@@ -1020,8 +1022,8 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
 
         if (aVisibility > 0.0f)
         {
-          vec3 aIntensity = vec3 (texelFetch (
-            uRaytraceLightSrcTexture, LIGHT_PWR (aLightIdx)));
+          vec3 aIntensity = min (UNIT, vec3 (texelFetch (
+            uRaytraceLightSrcTexture, LIGHT_PWR (aLightIdx))));
 
           float aRdotV = dot (reflect (aLight.xyz, aSidedNormal), theRay.Direct);
 

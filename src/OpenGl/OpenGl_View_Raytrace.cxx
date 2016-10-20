@@ -42,6 +42,24 @@ namespace
 {
   static const OpenGl_Vec4 THE_WHITE_COLOR (1.0f, 1.0f, 1.0f, 1.0f);
   static const OpenGl_Vec4 THE_BLACK_COLOR (0.0f, 0.0f, 0.0f, 1.0f);
+
+  //! Operator returning TRUE for positional light sources.
+  struct IsLightPositional
+  {
+    bool operator() (const OpenGl_Light& theLight)
+    {
+      return theLight.Type != Graphic3d_TOLS_DIRECTIONAL;
+    }
+  };
+
+  //! Operator returning TRUE for any non-ambient light sources.
+  struct IsNotAmbient
+  {
+    bool operator() (const OpenGl_Light& theLight)
+    {
+      return theLight.Type != Graphic3d_TOLS_AMBIENT;
+    }
+  };
 }
 
 // =======================================================================
@@ -1402,10 +1420,20 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
         return safeFailBack ("Failed to load source into ray-tracing fragment shaders", theGlContext);
       }
 
+      TCollection_AsciiString aLog;
+
       if (!myRaytraceShader->Compile (theGlContext)
        || !myPostFSAAShader->Compile (theGlContext)
        || !myOutImageShader->Compile (theGlContext))
       {
+#ifdef RAY_TRACE_PRINT_INFO
+        myRaytraceShader->FetchInfoLog (theGlContext, aLog);
+
+        if (!aLog.IsEmpty())
+        {
+          std::cout << "Failed to compile ray-tracing shader: " << aLog << "\n";
+        }
+#endif
         return safeFailBack ("Failed to compile ray-tracing fragment shaders", theGlContext);
       }
 
@@ -1417,6 +1445,14 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
        || !myPostFSAAProgram->Link (theGlContext)
        || !myOutImageProgram->Link (theGlContext))
       {
+#ifdef RAY_TRACE_PRINT_INFO
+        myRaytraceProgram->FetchInfoLog (theGlContext, aLog);
+
+        if (!aLog.IsEmpty())
+        {
+          std::cout << "Failed to compile ray-tracing shader: " << aLog << "\n";
+        }
+#endif
         return safeFailBack ("Failed to initialize vertex attributes for ray-tracing program", theGlContext);
       }
     }
@@ -1424,7 +1460,7 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
 
   if (myRaytraceInitStatus == OpenGl_RT_NONE)
   {
-    myAccumFrames = 0; // reject accumulated frames
+    myAccumFrames = 0; // accumulation should be restarted
 
     if (!theGlContext->IsGlGreaterEqual (3, 1))
     {
@@ -2266,14 +2302,31 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
 // =======================================================================
 Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& theInvModelView, const Handle(OpenGl_Context)& theGlContext)
 {
-  myRaytraceGeometry.Sources.clear();
+  std::vector<OpenGl_Light> aLightSources;
 
-  myRaytraceGeometry.Ambient = BVH_Vec4f (0.0f, 0.0f, 0.0f, 0.0f);
-
-  OpenGl_ListOfLight::Iterator aLightIter (myShadingModel == Graphic3d_TOSM_NONE ? myNoShadingLight : myLights);
-  for (; aLightIter.More(); aLightIter.Next())
+  if (myShadingModel != Graphic3d_TOSM_NONE)
   {
-    const OpenGl_Light& aLight = aLightIter.Value();
+    aLightSources.assign (myLights.begin(), myLights.end());
+
+    // move positional light sources at the front of the list
+    std::partition (aLightSources.begin(), aLightSources.end(), IsLightPositional());
+  }
+
+  // get number of 'real' (not ambient) light sources
+  const size_t aNbLights = std::count_if (aLightSources.begin(), aLightSources.end(), IsNotAmbient());
+
+  Standard_Boolean wasUpdated = myRaytraceGeometry.Sources.size () != aNbLights;
+
+  if (wasUpdated)
+  {
+    myRaytraceGeometry.Sources.resize (aNbLights);
+  }
+
+  myRaytraceGeometry.Ambient = BVH_Vec4f (0.f, 0.f, 0.f, 0.f);
+
+  for (size_t aLightIdx = 0, aRealIdx = 0; aLightIdx < aLightSources.size(); ++aLightIdx)
+  {
+    const OpenGl_Light& aLight = aLightSources[aLightIdx];
 
     if (aLight.Type == Graphic3d_TOLS_AMBIENT)
     {
@@ -2284,10 +2337,10 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& the
       continue;
     }
 
-    BVH_Vec4f aDiffuse  (aLight.Color.r() * aLight.Intensity,
-                         aLight.Color.g() * aLight.Intensity,
-                         aLight.Color.b() * aLight.Intensity,
-                         1.0f);
+    BVH_Vec4f aEmission  (aLight.Color.r() * aLight.Intensity,
+                          aLight.Color.g() * aLight.Intensity,
+                          aLight.Color.b() * aLight.Intensity,
+                          1.0f);
 
     BVH_Vec4f aPosition (-aLight.Direction.x(),
                          -aLight.Direction.y(),
@@ -2301,13 +2354,13 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& the
                              static_cast<float>(aLight.Position.z()),
                              1.0f);
 
-      // store smoothing radius in w-component
-      aDiffuse.w() = Max (aLight.Smoothness, 0.f);
+      // store smoothing radius in W-component
+      aEmission.w() = Max (aLight.Smoothness, 0.f);
     }
     else
     {
-      // store cosine of smoothing angle in w-component
-      aDiffuse.w() = cosf (Min (Max (aLight.Smoothness, 0.f), static_cast<Standard_ShortReal> (M_PI / 2.0)));
+      // store cosine of smoothing angle in W-component
+      aEmission.w() = cosf (Min (Max (aLight.Smoothness, 0.f), static_cast<Standard_ShortReal> (M_PI / 2.0)));
     }
 
     if (aLight.IsHeadlight)
@@ -2315,23 +2368,26 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& the
       aPosition = theInvModelView * aPosition;
     }
 
-    myRaytraceGeometry.Sources.push_back (OpenGl_RaytraceLight (aDiffuse, aPosition));
+    for (int aK = 0; aK < 4; ++aK)
+    {
+      wasUpdated |= (aEmission[aK] != myRaytraceGeometry.Sources[aRealIdx].Emission[aK])
+                 || (aPosition[aK] != myRaytraceGeometry.Sources[aRealIdx].Position[aK]);
+    }
+
+    if (wasUpdated)
+    {
+      myRaytraceGeometry.Sources[aRealIdx] = OpenGl_RaytraceLight (aEmission, aPosition);
+    }
+
+    ++aRealIdx;
   }
 
-  if (myRaytraceLightSrcTexture.IsNull())  // create light source buffer
+  if (myRaytraceLightSrcTexture.IsNull()) // create light source buffer
   {
     myRaytraceLightSrcTexture = new OpenGl_TextureBufferArb;
-
-    if (!myRaytraceLightSrcTexture->Create (theGlContext))
-    {
-#ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "Error: Failed to create light source buffer" << std::endl;
-#endif
-      return Standard_False;
-    }
   }
 
-  if (myRaytraceGeometry.Sources.size() != 0)
+  if (myRaytraceGeometry.Sources.size() != 0 && wasUpdated)
   {
     const GLfloat* aDataPtr = myRaytraceGeometry.Sources.front().Packed();
     if (!myRaytraceLightSrcTexture->Init (theGlContext, 4, GLsizei (myRaytraceGeometry.Sources.size() * 2), aDataPtr))
@@ -2341,54 +2397,11 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& the
 #endif
       return Standard_False;
     }
+
+    myAccumFrames = 0; // accumulation should be restarted
   }
 
   return Standard_True;
-}
-
-// =======================================================================
-// function : updateRaytraceEnvironmentMap
-// purpose  : Updates environment map for ray-tracing
-// =======================================================================
-Standard_Boolean OpenGl_View::updateRaytraceEnvironmentMap (const Handle(OpenGl_Context)& theGlContext)
-{
-  Standard_Boolean aResult = Standard_True;
-
-  if (!myToUpdateEnvironmentMap)
-  {
-    return aResult;
-  }
-
-  Handle(OpenGl_ShaderProgram) aPrograms[] = { myRaytraceProgram,
-                                               myPostFSAAProgram };
-
-  for (Standard_Integer anIdx = 0; anIdx < 2; ++anIdx)
-  {
-    if (!aPrograms[anIdx].IsNull())
-    {
-      aResult &= theGlContext->BindProgram (aPrograms[anIdx]);
-
-      if (!myTextureEnv.IsNull())
-      {
-        myTextureEnv->Bind (theGlContext,
-          GL_TEXTURE0 + OpenGl_RT_EnvironmentMapTexture);
-
-        aResult &= aPrograms[anIdx]->SetUniform (theGlContext,
-          myUniformLocations[anIdx][OpenGl_RT_uSphereMapEnabled], 1);
-      }
-      else
-      {
-        aResult &= aPrograms[anIdx]->SetUniform (theGlContext,
-          myUniformLocations[anIdx][OpenGl_RT_uSphereMapEnabled], 0);
-      }
-    }
-  }
-
-  myToUpdateEnvironmentMap = Standard_False;
-
-  theGlContext->BindProgram (NULL);
-
-  return aResult;
 }
 
 // =======================================================================
@@ -2461,7 +2474,7 @@ Standard_Boolean OpenGl_View::setUniformState (const Standard_Integer        the
   theProgram->SetUniform (theGlContext,
     myUniformLocations[theProgramId][OpenGl_RT_uLightAmbnt], myRaytraceGeometry.Ambient);
 
-  // Enable/disable run time rendering effects
+  // Enable/disable run-time rendering effects
   theProgram->SetUniform (theGlContext,
     myUniformLocations[theProgramId][OpenGl_RT_uShadowsEnabled], myRenderParams.IsShadowEnabled ?  1 : 0);
   theProgram->SetUniform (theGlContext,
@@ -2506,6 +2519,11 @@ Standard_Boolean OpenGl_View::setUniformState (const Standard_Integer        the
       myUniformLocations[theProgramId][OpenGl_RT_uBackColorBot], aBackColor);
   }
 
+  const Standard_Boolean toDisableEnvironmentMap = myTextureEnv.IsNull() || !myTextureEnv->IsValid();
+  
+  theProgram->SetUniform (theGlContext,
+    myUniformLocations[theProgramId][OpenGl_RT_uSphereMapEnabled], toDisableEnvironmentMap ? 0 : 1);
+
   theProgram->SetUniform (theGlContext,
     myUniformLocations[theProgramId][OpenGl_RT_uSphereMapForBack], myRenderParams.UseEnvironmentMapBackground ?  1 : 0);
 
@@ -2531,6 +2549,11 @@ void OpenGl_View::bindRaytraceTextures (const Handle(OpenGl_Context)& theGlConte
     theGlContext->core42->glBindImageTexture (OpenGl_RT_TileOffsetsImage,
       myRaytraceTileOffsetsTexture->TextureId(), 0, GL_TRUE, 0, GL_READ_ONLY, GL_RG32I);
   #endif
+  }
+
+  if (!myTextureEnv.IsNull() && myTextureEnv->IsValid())
+  {
+    myTextureEnv->Bind (theGlContext, GL_TEXTURE0 + OpenGl_RT_EnvironmentMapTexture);
   }
 
   mySceneMinPointTexture->BindTexture    (theGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMinPointTexture);
@@ -2731,6 +2754,11 @@ Standard_Boolean OpenGl_View::runPathtrace (const Graphic3d_Camera::Projection  
 {
   Standard_Boolean aResult = Standard_True;
 
+  if (myToUpdateEnvironmentMap) // check whether the map was changed
+  {
+    myAccumFrames = myToUpdateEnvironmentMap = 0;
+  }
+
   if (myRaytraceParameters.AdaptiveScreenSampling)
   {
     if (myAccumFrames == 0)
@@ -2871,11 +2899,6 @@ Standard_Boolean OpenGl_View::raytrace (const Standard_Integer        theSizeX,
   }
 
   if (!updateRaytraceBuffers (theSizeX, theSizeY, theGlContext))
-  {
-    return Standard_False;
-  }
-
-  if (!updateRaytraceEnvironmentMap (theGlContext))
   {
     return Standard_False;
   }

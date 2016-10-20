@@ -70,6 +70,8 @@ V3d_DirectionalLight::V3d_DirectionalLight (const Handle(V3d_Viewer)& theViewer,
   SetHeadlight (theIsHeadlight);
   SetTarget (0., 0., 0.);
   SetPosition (-aV.X(), -aV.Y(), -aV.Z());
+  SetSmoothAngle (0.2);
+  SetIntensity (20.0);
 }
 
 // =======================================================================

@@ -66,7 +66,7 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
   mySpecularColor.SetValues (1.0, 1.0, 1.0, Quantity_TOC_RGB);
   myMaterialName     = theName;
 
-  myBSDF = Graphic3d_BSDF::CreateDiffuse (Graphic3d_Vec3 (0.2f, 0.2f, 0.2f));
+  myBSDF = Graphic3d_BSDF::CreateDiffuse (Graphic3d_Vec3 (0.0f));
 
   Standard_Integer index = Standard_Integer (theName);
   if (index < NumberOfMaterials())
@@ -87,7 +87,7 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
                                   static_cast<Standard_ShortReal> (myDiffuseColor.Blue()));
       myBSDF.Ks = Graphic3d_Vec3 (0.00784314f, 0.00784314f, 0.00784314f);
       myBSDF.Normalize();
-      myBSDF.Roughness = 32;
+      myBSDF.Roughness = 0.25f;
       break;
     case Graphic3d_NOM_SHINY_PLASTIC:
       myShininess    = Standard_ShortReal (1.0);
@@ -98,9 +98,9 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       myBSDF.Kd = Graphic3d_Vec3 (static_cast<Standard_ShortReal> (myDiffuseColor.Red()),
                                   static_cast<Standard_ShortReal> (myDiffuseColor.Green()),
                                   static_cast<Standard_ShortReal> (myDiffuseColor.Blue()));
-      myBSDF.Ks = Graphic3d_Vec3 (0.0156863f, 0.0156863f, 0.0156863f);
+      myBSDF.Ks = Graphic3d_Vec3 (0.145f, 0.145f, 0.145f);
       myBSDF.Normalize();
-      myBSDF.Roughness = 64.f;
+      myBSDF.Roughness = 0.17f;
       break;
     case Graphic3d_NOM_SATIN :
       myShininess    = Standard_ShortReal (0.09375);
@@ -108,12 +108,10 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       myDiffuseCoef  = Standard_ShortReal (0.4);
       mySpecularCoef = Standard_ShortReal (0.44);
 
-      myBSDF.Kd = Graphic3d_Vec3 (static_cast<Standard_ShortReal> (myDiffuseColor.Red()),
-                                  static_cast<Standard_ShortReal> (myDiffuseColor.Green()),
-                                  static_cast<Standard_ShortReal> (myDiffuseColor.Blue()));
-      myBSDF.Ks = Graphic3d_Vec3 (0.0313726f, 0.0313726f, 0.0313726f);
-      myBSDF.Roughness = 16.f;
-      myBSDF.Normalize();
+      myBSDF.Kd = Graphic3d_Vec3 (0.2f);
+      myBSDF.Ks = Graphic3d_Vec3 (0.6f);
+      myBSDF.Roughness = 0.6f;
+
       break;
     case Graphic3d_NOM_NEON_GNC:
       myShininess    = Standard_ShortReal (0.05);
@@ -124,11 +122,12 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       myEmissiveActivity = Standard_True;
       myAmbientActivity  = Standard_False;
 
-      myBSDF.Kr = Graphic3d_Vec3 (0.207843f, 0.207843f, 0.207843f);
+      myBSDF.Kd = Graphic3d_Vec3 (0.0f);
+      myBSDF.Kr = Graphic3d_Vec3 (0.5f);
       myBSDF.Le = Graphic3d_Vec3 (static_cast<Standard_ShortReal> (myDiffuseColor.Red()),
                                   static_cast<Standard_ShortReal> (myDiffuseColor.Green()),
                                   static_cast<Standard_ShortReal> (myDiffuseColor.Blue()));
-      myBSDF.Fresnel = Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.3f, 0.3f, 0.3f));
+      myBSDF.Fresnel = Graphic3d_Fresnel::CreateDielectric (1.5f);
       break;
     case Graphic3d_NOM_METALIZED:
       myShininess    = Standard_ShortReal (0.13);
@@ -143,7 +142,7 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
                                static_cast<Standard_ShortReal> (myDiffuseColor.Blue()));
 
         myBSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
-          Graphic3d_Fresnel::CreateSchlick (aColor), 1024.f);
+          Graphic3d_Fresnel::CreateSchlick (aColor), 0.045f);
       }
       break;
     // Ascending Compatibility physical materials. The same definition is taken as in the next constructor.
@@ -156,7 +155,7 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       mySpecularCoef = 1.00f;
 
       myBSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
-        Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.58f, 0.42f, 0.20f)), 1024.f);
+        Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.58f, 0.42f, 0.20f)), 0.045f);
 
       // Color resulting from ambient
       myAmbientColor .SetValues (0.329f, 0.224f, 0.027f, Quantity_TOC_RGB);
@@ -174,7 +173,7 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       mySpecularCoef = 1.00f;
 
       myBSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
-        Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.65f, 0.35f, 0.15f)), 1024.f);
+        Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.65f, 0.35f, 0.15f)), 0.045f);
 
       // Color resulting from ambient
       myAmbientColor .SetValues (0.213f, 0.128f, 0.054f, Quantity_TOC_RGB);
@@ -192,7 +191,7 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       mySpecularCoef = 1.00f;
 
       myBSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
-        Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.955008f, 0.637427f, 0.538163f)), 1024.f);
+        Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.955008f, 0.637427f, 0.538163f)), 0.045f);
 
       // Color resulting from ambient
       myAmbientColor .SetValues (0.191f, 0.074f, 0.023f, Quantity_TOC_RGB);
@@ -210,7 +209,7 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       mySpecularCoef = 1.00f;
 
       myBSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
-        Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (1.000000f, 0.765557f, 0.336057f)), 1024.f);
+        Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (1.000000f, 0.765557f, 0.336057f)), 0.045f);
 
       // Color resulting from ambient
       myAmbientColor .SetValues (0.300f, 0.230f, 0.095f, Quantity_TOC_RGB);
@@ -228,7 +227,7 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       mySpecularCoef = 1.00f;
 
       myBSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
-        Graphic3d_Fresnel::CreateConductor (1.8800f, 3.4900f), 1024.f);
+        Graphic3d_Fresnel::CreateConductor (1.8800f, 3.4900f), 0.045f);
 
       // Color resulting from ambient
       myAmbientColor .SetValues (0.106f, 0.059f, 0.114f, Quantity_TOC_RGB);
@@ -262,7 +261,7 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       mySpecularCoef = 1.00f;
 
       myBSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
-        Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.971519f, 0.959915f, 0.915324f)), 1024.f);
+        Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.971519f, 0.959915f, 0.915324f)), 0.045f);
 
       // Color resulting from ambient
       myAmbientColor .SetValues (0.275f, 0.275f, 0.250f, Quantity_TOC_RGB);
@@ -280,7 +279,7 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       mySpecularCoef = 1.00f;
 
       myBSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
-        Graphic3d_Fresnel::CreateConductor (Graphic3d_Vec3 (2.90f, 2.80f, 2.53f), Graphic3d_Vec3 (3.08f, 2.90f, 2.74f)), 1024.f);
+        Graphic3d_Fresnel::CreateConductor (Graphic3d_Vec3 (2.90f, 2.80f, 2.53f), Graphic3d_Vec3 (3.08f, 2.90f, 2.74f)), 0.045f);
 
       // Color resulting from ambient
       myAmbientColor .SetValues (0.150f, 0.150f, 0.180f, Quantity_TOC_RGB);
@@ -318,7 +317,7 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       mySpecularCoef = 1.00f;
 
       myBSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
-        Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.549585f, 0.556114f, 0.554256f)), 1024.f);
+        Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.549585f, 0.556114f, 0.554256f)), 0.045f);
 
       // Color resulting from ambient
       myAmbientColor .SetValues (0.200f, 0.200f, 0.225f, Quantity_TOC_RGB);
@@ -336,7 +335,7 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       mySpecularCoef = 1.00f;
 
       myBSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
-        Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.913183f, 0.921494f, 0.924524f)), 1024.f);
+        Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.913183f, 0.921494f, 0.924524f)), 0.045f);
 
       // Color resulting from ambient
       myAmbientColor .SetValues (0.300f, 0.300f, 0.300f, Quantity_TOC_RGB);
@@ -366,9 +365,10 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       // Color resulting from specular
       myEmissiveColor.SetValues (0.0, 1.0, 0.46, Quantity_TOC_RGB);
 
-      myBSDF.Kr = Graphic3d_Vec3 (0.207843f, 0.207843f, 0.207843f);
+      myBSDF.Kd = Graphic3d_Vec3 (0.0f);
+      myBSDF.Kr = Graphic3d_Vec3 (0.5f);
       myBSDF.Le = Graphic3d_Vec3 (0.0f, 1.0f, 0.46f);
-      myBSDF.Fresnel = Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.3f, 0.3f, 0.3f));
+      myBSDF.Fresnel = Graphic3d_Fresnel::CreateDielectric (1.5f);
       break;
     case Graphic3d_NOM_OBSIDIAN:
       myMaterialType = Graphic3d_MATERIAL_PHYSIC;
@@ -385,9 +385,9 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       // Color resulting from specular
       mySpecularColor.SetValues (0.333f, 0.329f, 0.346f, Quantity_TOC_RGB);
 
-      myBSDF.Kd = Graphic3d_Vec3 (0.0156863f, 0.f, 0.0155017f);
+      myBSDF.Kd = Graphic3d_Vec3 (0.023f, 0.f, 0.023f);
       myBSDF.Ks = Graphic3d_Vec3 (0.0156863f, 0.0156863f, 0.0156863f);
-      myBSDF.Roughness = 1024.f;
+      myBSDF.Roughness = 0.1f;
       break;
     case Graphic3d_NOM_JADE:
       myMaterialType = Graphic3d_MATERIAL_PHYSIC;
@@ -407,7 +407,7 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       myBSDF.Fresnel = Graphic3d_Fresnel::CreateDielectric (1.5f);
       myBSDF.Kd = Graphic3d_Vec3 (0.208658f, 0.415686f, 0.218401f);
       myBSDF.Ks = Graphic3d_Vec3 (0.611765f, 0.611765f, 0.611765f);
-      myBSDF.Roughness = 512.f;
+      myBSDF.Roughness = 0.06f;
       break;
     case Graphic3d_NOM_CHARCOAL:
       myMaterialType = Graphic3d_MATERIAL_PHYSIC;
@@ -424,9 +424,9 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       // Color resulting from specular
       mySpecularColor.SetValues (0.000f, 0.000f, 0.000f, Quantity_TOC_RGB);
 
-      myBSDF.Kd = Graphic3d_Vec3 (0.0196078f, 0.0196078f, 0.0196078f);
-      myBSDF.Ks = Graphic3d_Vec3 (0.0196078f, 0.0196078f, 0.0196078f);
-      myBSDF.Roughness = 8;
+      myBSDF.Kd = Graphic3d_Vec3 (0.02f, 0.02f, 0.02f);
+      myBSDF.Ks = Graphic3d_Vec3 (0.1f, 0.1f, 0.1f);
+      myBSDF.Roughness = 0.3f;
       break;
     case Graphic3d_NOM_WATER:
       myMaterialType = Graphic3d_MATERIAL_PHYSIC;
@@ -491,6 +491,29 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       // Color resulting from specular
       mySpecularColor.SetValues (0.970f, 0.970f, 0.970f, Quantity_TOC_RGB);
       break;
+
+    case Graphic3d_NOM_TRANSPARENT:
+      myMaterialType = Graphic3d_MATERIAL_PHYSIC;
+
+      myShininess    = 0.90f;
+      myAmbientCoef  = 1.00f;
+      myDiffuseCoef  = 1.00f;
+      mySpecularCoef = 1.00f;
+      myRefractionIndex  = 1.0f;
+
+      myBSDF.Kd = Graphic3d_Vec3 (0.1f);
+      myBSDF.Kt = Graphic3d_Vec3 (0.9f);
+      myBSDF.Fresnel = Graphic3d_Fresnel::CreateConstant (0.0f);
+      myTransparencyCoef = 0.80f;
+
+      // Color resulting from ambient
+      myAmbientColor.SetValues (0.550f, 0.550f, 0.550f, Quantity_TOC_RGB);
+      // Color resulting from dispersed
+      myDiffuseColor.SetValues (0.100f, 0.100f, 0.100f, Quantity_TOC_RGB);
+      // Color resulting from specular
+      mySpecularColor.SetValues (0.970f, 0.970f, 0.970f, Quantity_TOC_RGB);
+      break;
+
     case Graphic3d_NOM_UserDefined:
       myStringName = "UserDefined";
       break;
@@ -1035,7 +1058,8 @@ namespace
     {"Charcoal",         Graphic3d_MATERIAL_PHYSIC},
     {"Water",            Graphic3d_MATERIAL_PHYSIC},
     {"Glass",            Graphic3d_MATERIAL_PHYSIC},
-    {"Diamond",          Graphic3d_MATERIAL_PHYSIC}
+    {"Diamond",          Graphic3d_MATERIAL_PHYSIC},
+    {"Transparent",      Graphic3d_MATERIAL_PHYSIC}
 
   };
 }

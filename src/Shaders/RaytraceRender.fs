@@ -18,7 +18,7 @@ uniform int uBlockedRngEnabled;
 
 //! Maximum radiance that can be added to the pixel. Decreases noise
 //! level, but introduces some bias.
-#define MAX_RADIANCE vec3 (25.f)
+#define MAX_RADIANCE vec3 (50.f)
 
 // =======================================================================
 // function : main

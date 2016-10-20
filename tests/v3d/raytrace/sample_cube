@@ -1,0 +1,6 @@
+puts "============"
+puts "Visualization - Path Tracing, Cube sample"
+puts "============"
+puts ""
+
+source $env(CSF_OCCTSamplesPath)/tcl/pathtrace_cube.tcl

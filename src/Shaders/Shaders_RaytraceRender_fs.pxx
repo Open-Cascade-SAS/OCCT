@@ -21,7 +21,7 @@ static const char Shaders_RaytraceRender_fs[] =
   "\n"
   "//! Maximum radiance that can be added to the pixel. Decreases noise\n"
   "//! level, but introduces some bias.\n"
-  "#define MAX_RADIANCE vec3 (25.f)\n"
+  "#define MAX_RADIANCE vec3 (50.f)\n"
   "\n"
   "// =======================================================================\n"
   "// function : main\n"

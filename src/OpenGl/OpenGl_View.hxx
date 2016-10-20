@@ -591,17 +591,17 @@ protected: //! @name data types related to ray-tracing
   //! Defines OpenGL texture samplers.
   enum ShaderSamplerNames
   {
-    OpenGl_RT_SceneNodeInfoTexture  = 0,
-    OpenGl_RT_SceneMinPointTexture  = 1,
-    OpenGl_RT_SceneMaxPointTexture  = 2,
-    OpenGl_RT_SceneTransformTexture = 3,
+    OpenGl_RT_EnvironmentMapTexture = 0,
 
-    OpenGl_RT_GeometryVertexTexture = 4,
-    OpenGl_RT_GeometryNormalTexture = 5,
-    OpenGl_RT_GeometryTexCrdTexture = 6,
-    OpenGl_RT_GeometryTriangTexture = 7,
+    OpenGl_RT_SceneNodeInfoTexture  = 1,
+    OpenGl_RT_SceneMinPointTexture  = 2,
+    OpenGl_RT_SceneMaxPointTexture  = 3,
+    OpenGl_RT_SceneTransformTexture = 4,
 
-    OpenGl_RT_EnvironmentMapTexture = 8,
+    OpenGl_RT_GeometryVertexTexture = 5,
+    OpenGl_RT_GeometryNormalTexture = 6,
+    OpenGl_RT_GeometryTexCrdTexture = 7,
+    OpenGl_RT_GeometryTriangTexture = 8,
 
     OpenGl_RT_RaytraceMaterialTexture = 9,
     OpenGl_RT_RaytraceLightSrcTexture = 10,
@@ -746,9 +746,6 @@ protected: //! @name methods related to ray-tracing
 
   //! Updates 3D scene light sources for ray-tracing.
   Standard_Boolean updateRaytraceLightSources (const OpenGl_Mat4& theInvModelView, const Handle(OpenGl_Context)& theGlContext);
-
-  //! Updates environment map for ray-tracing.
-  Standard_Boolean updateRaytraceEnvironmentMap (const Handle(OpenGl_Context)& theGlContext);
 
   //! Checks to see if the OpenGL structure is modified.
   Standard_Boolean toUpdateStructure (const OpenGl_Structure* theStructure);

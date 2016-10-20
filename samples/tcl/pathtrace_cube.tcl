@@ -2,11 +2,12 @@
 # path tracing rendering engine in 3d view
 
 #Category: Visualization
-#Title: Path tracing
+#Title: Path tracing - Cube
 
 pload MODELING VISUALIZATION
 
 # setup 3D viewer content
+vclear
 vinit name=View1 w=512 h=512
 vglinfo
 
@@ -24,18 +25,18 @@ vcamera -persp
 # setup outer box
 box b 1 1 1 
 explode b FACE 
-vdisplay b_1 b_2 b_3 b_5 b_6
-vsetlocation b_1  1  0  0
-vsetlocation b_2 -1  0  0
-vsetlocation b_3  0  1  0
-vsetlocation b_5  0  0  1
-vsetlocation b_6  0  0 -1
+vdisplay -noupdate b_1 b_2 b_3 b_5 b_6
+vlocation -noupdate b_1 -setLocation  1  0  0
+vlocation -noupdate b_2 -setLocation -1  0  0
+vlocation -noupdate b_3 -setLocation  0  1  0
+vlocation -noupdate b_5 -setLocation  0  0  1
+vlocation -noupdate b_6 -setLocation  0  0 -1
 
-vsetmaterial b_1 plastic
-vsetmaterial b_2 plastic
-vsetmaterial b_3 plastic
-vsetmaterial b_5 plastic
-vsetmaterial b_6 plastic
+vsetmaterial -noupdate b_1 plastic
+vsetmaterial -noupdate b_2 plastic
+vsetmaterial -noupdate b_3 plastic
+vsetmaterial -noupdate b_5 plastic
+vsetmaterial -noupdate b_6 plastic
 vbsdf b_1 -kd 1 0.3 0.3 -ks 0
 vbsdf b_2 -kd 0.3 0.5 1 -ks 0
 vbsdf b_3 -kd 1 -ks 0
@@ -47,36 +48,36 @@ vfit
 
 # setup first inner sphere
 psphere s 0.2
-vdisplay s
-vsetlocation s 0.21 0.3 0.2
-vsetmaterial s glass
+vdisplay     -noupdate s
+vlocation    -noupdate s -setLocation 0.21 0.3 0.2
+vsetmaterial -noupdate s glass
 vbsdf s -absorpcolor 0.8 0.8 1.0
 vbsdf s -absorpcoeff 6
 
 # setup first inner box
 box c 0.3 0.3 0.2
-vdisplay c
-vsetlocation c 0.55 0.3 0.0
-vlocrotate c 0 0 0 0 0 1 -30
-vsetmaterial c plastic
+vdisplay     -noupdate c
+vlocation    -noupdate c -setLocation 0.55 0.3 0.0
+vlocation    -noupdate c -rotate 0 0 0 0 0 1 -30
+vsetmaterial -noupdate c plastic
 vbsdf c -kd 1.0 0.8 0.2 -ks 0.3 -n
 
 # setup second inner box
 box g 0.15 0.15 0.3
-vdisplay g
-vsetlocation g 0.7 0.25 0.2
-vlocrotate g 0 0 0 0 0 1 10
-vsetmaterial g glass
+vdisplay     -noupdate g
+vlocation    -noupdate g -setLocation 0.7 0.25 0.2
+vlocation    -noupdate g -rotate 0 0 0 0 0 1 10
+vsetmaterial -noupdate g glass
 vbsdf g -absorpcolor 0.8 1.0 0.8
 vbsdf g -absorpcoeff 6
 
 # setup second inner sphere
 psphere r 0.1
-vdisplay r
-vsetmaterial r plastic
+vdisplay -noupdate r
+vsetmaterial -noupdate r plastic
 vbsdf r -kd 0.5 0.9 0.3 -ks 0.0 -kr 0.3 -n
 vbsdf r -fresnel Constant 1.0
-vsetlocation r 0.5 0.65 0.1
+vlocation r -setLocation 0.5 0.65 0.1
 
 puts "Trying path tracing mode..."
 vrenderparams -ray -gi -rayDepth 8
