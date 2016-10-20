@@ -432,6 +432,7 @@ void BOPAlgo_PaveFiller::MakeBlocks()
     aMPBOnIn.Clear();
     aDMBV.Clear();
     aMVTol.Clear();
+    aLSE.Clear();
     //
     myDS->VerticesOnIn(nF1, nF2, aMVOnIn, aMPBOnIn);
     myDS->SharedEdges(nF1, nF2, aLSE, aAllocator);

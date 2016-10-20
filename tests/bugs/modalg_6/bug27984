@@ -1,0 +1,12 @@
+puts "========"
+puts "OCC27984"
+puts "========"
+puts ""
+#################################################
+# Volume maker algorithm is unable to build all possible solids from the given faces
+#################################################
+
+restore [locate_data_file bug27984_faces.brep] lf
+mkvolume result lf -c
+checknbshapes result -solid 28
+checkprops result -s 5.93287e+006 -v 6.99508e+007
