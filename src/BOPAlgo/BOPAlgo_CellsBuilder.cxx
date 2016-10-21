@@ -203,27 +203,25 @@ void BOPAlgo_CellsBuilder::IndexParts()
     aExp.Init(aS, myType);
     for (; aExp.More(); aExp.Next()) {
       const TopoDS_Shape& aST = aExp.Current();
-      if (!myImages.IsBound(aST)) {
-        BOPCol_ListOfShape aLS;
-        aLS.Append(aS);
-        myIndex.Add(aST, aLS);
+      const BOPCol_ListOfShape* pLSIm = myImages.Seek(aST);
+      if (!pLSIm) {
+        BOPCol_ListOfShape* pLS = myIndex.ChangeSeek(aST);
+        if (!pLS) {
+          pLS = &myIndex(myIndex.Add(aST, BOPCol_ListOfShape()));
+        }
+        pLS ->Append(aS);
         continue;
       }
       //
-      const BOPCol_ListOfShape& aLSIm = myImages.Find(aST);
-      aItIm.Initialize(aLSIm);
+      aItIm.Initialize(*pLSIm);
       for (; aItIm.More(); aItIm.Next()) {
         const TopoDS_Shape& aSTIm = aItIm.Value();
         //
-        if (myIndex.Contains(aSTIm)) {
-          BOPCol_ListOfShape& aLS = myIndex.ChangeFromKey(aSTIm);
-          aLS.Append(aS);
+        BOPCol_ListOfShape* pLS = myIndex.ChangeSeek(aSTIm);
+        if (!pLS) {
+          pLS = &myIndex(myIndex.Add(aSTIm, BOPCol_ListOfShape()));
         }
-        else {
-          BOPCol_ListOfShape aLS;
-          aLS.Append(aS);
-          myIndex.Add(aSTIm, aLS);
-        }
+        pLS ->Append(aS);
       } // for (; aItIm.More(); aItIm.Next()) {
     } // for (; aExp.More(); aExp.Next()) {
   } // for (; aIt.More(); aIt.Next()) {
