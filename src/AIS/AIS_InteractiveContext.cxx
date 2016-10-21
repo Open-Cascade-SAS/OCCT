@@ -14,12 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_ConnectedInteractive.hxx>
+#include <AIS_InteractiveContext.hxx>
 
 #include <AIS_DataMapIteratorOfDataMapOfILC.hxx>
 #include <AIS_DataMapIteratorOfDataMapOfIOStatus.hxx>
+#include <AIS_ConnectedInteractive.hxx>
 #include <AIS_GlobalStatus.hxx>
-#include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_LocalContext.hxx>

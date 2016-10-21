@@ -156,7 +156,7 @@ static Standard_Integer  BUC60814(Draw_Interpretor& di, Standard_Integer argc, c
   Handle(AIS_InteractiveObject)   aCircle=new AIS_Circle(ahCircle);
   myAISContext->Display(aCircle);
     
-  Handle(Graphic3d_HighlightStyle)& aSelStyle = myAISContext->ChangeSelectionStyle();
+  const Handle(Graphic3d_HighlightStyle)& aSelStyle = myAISContext->SelectionStyle();
   aSelStyle->SetColor (Quantity_NOC_BLUE1);
   
   myAISContext->AddOrRemoveSelected(aTrihedron);

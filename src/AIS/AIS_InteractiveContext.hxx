@@ -638,15 +638,8 @@ public:
     return myHiStyle;
   }
 
-  //! Allows to manage the style of dynamic highlighting.
-  //! By default:
-  //!   - the color of dynamic highlight is Quantity_NOC_CYAN1;
-  //!   - the presentation for dynamic highlight is completely opaque;
-  //!   - the type of highlight is Aspect_TOHM_COLOR.
-  Handle(Graphic3d_HighlightStyle)& ChangeHighlightStyle()
-  {
-    return myHiStyle;
-  }
+  //! Setup the style of dynamic highlighting.
+  void SetHighlightStyle (const Handle(Graphic3d_HighlightStyle)& theStyle) { myHiStyle = theStyle; }
 
   //! Returns current selection style settings.
   //! By default:
@@ -658,15 +651,8 @@ public:
     return mySelStyle;
   }
 
-  //! Allows to manage the style of selection highlighting.
-  //! By default:
-  //!   - the color of selection is Quantity_NOC_GRAY80;
-  //!   - the presentation for selection is completely opaque;
-  //!   - the type of highlight is Aspect_TOHM_COLOR.
-  Handle(Graphic3d_HighlightStyle)& ChangeSelectionStyle()
-  {
-    return mySelStyle;
-  }
+  //! Setup the style of selection highlighting.
+  void SetSelectionStyle (const Handle(Graphic3d_HighlightStyle)& theStyle) { mySelStyle = theStyle; }
 
   //! Returns the name of the color used to show preselection.
   //! By default, this is Quantity_NOC_GREEN.

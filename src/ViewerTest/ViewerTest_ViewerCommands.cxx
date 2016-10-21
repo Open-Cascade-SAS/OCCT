@@ -9292,8 +9292,8 @@ static int VSelectionProperties (Draw_Interpretor& theDi,
     aCtx->SetPixelTolerance (aCmd.ArgInt ("pixTol"));
   }
 
-  Handle(Graphic3d_HighlightStyle)& aHiStyle = aCtx->ChangeHighlightStyle();
-  Handle(Graphic3d_HighlightStyle)& aSelStyle = aCtx->ChangeSelectionStyle();
+  const Handle(Graphic3d_HighlightStyle)& aHiStyle  = aCtx->HighlightStyle();
+  const Handle(Graphic3d_HighlightStyle)& aSelStyle = aCtx->SelectionStyle();
   Standard_Boolean toRedraw = Standard_False;
   if (aCmd.HasOption ("selColor"))
   {

@@ -1058,8 +1058,8 @@ Method AIS_InteractiveContext::Hilight is now deprecated and highlights interact
 Group of methods AIS_InteractiveContext::IsHilighted changed behavior - now they only check object's or owner's highlight flags in global status. If highlight color is required on application level, overloaded methods AIS_InteractiveContext::HighlightStyle for owner and object must be used instead.
 
 The following methods were replaced in AIS_InteractiveContext API:
-- *HilightColor*, *SetHilightColor* were replaced by *HighlightStyle*, *ChangeHighlightStyle*;
-- *SelectionColor* setter and getter were replaced by *SelectionStyle*, *ChangeSelectionStyle*.
+- *HilightColor*, *SetHilightColor* were replaced by *HighlightStyle*, *SetHighlightStyle*;
+- *SelectionColor* setter and getter were replaced by *SelectionStyle*, *SetSelectionStyle*.
 
 API of Prs3d_Drawer was extended to allow setting up styles for both dynamic selection and highlighting. Therefore, on application level changing highlight style for particular object must be implemented via SelectMgr_SelectableObject::HilightAttributes() and processed in entity owner.
 
