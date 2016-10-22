@@ -80,16 +80,15 @@ void BRepBndLib::Add(const TopoDS_Shape& S, Bnd_Box& B, Standard_Boolean useTria
 
   // Add the faces
   BRepAdaptor_Surface BS;
-  Handle(Geom_Surface) GS;
-  Handle(Poly_Triangulation) T;
-  TopLoc_Location l;
+  TopLoc_Location l, aDummyLoc;
   Standard_Integer i, nbNodes;
   BRepAdaptor_Curve BC;
 
   for (ex.Init(S,TopAbs_FACE); ex.More(); ex.Next()) {
     const TopoDS_Face& F = TopoDS::Face(ex.Current());
-    T = BRep_Tool::Triangulation(F, l);
-    if (useTriangulation && !T.IsNull())
+    const Handle(Poly_Triangulation)& T = BRep_Tool::Triangulation(F, l);
+    const Handle(Geom_Surface)& GS = BRep_Tool::Surface (F, aDummyLoc);
+    if ((useTriangulation || GS.IsNull()) && !T.IsNull())
     {
       nbNodes = T->NbNodes();
       const TColgp_Array1OfPnt& Nodes = T->Nodes();
@@ -101,7 +100,6 @@ void BRepBndLib::Add(const TopoDS_Shape& S, Bnd_Box& B, Standard_Boolean useTria
       B.Enlarge(T->Deflection() + BRep_Tool::Tolerance(F));
     } else
     {
-      GS = BRep_Tool::Surface(F, l);
       if (!GS.IsNull()) {
         BS.Initialize(F, Standard_False);
         if (BS.GetType() != GeomAbs_Plane) {
@@ -130,7 +128,7 @@ void BRepBndLib::Add(const TopoDS_Shape& S, Bnd_Box& B, Standard_Boolean useTria
   // Add the edges not in faces
   Handle(TColStd_HArray1OfInteger) HIndices;
   Handle(Poly_PolygonOnTriangulation) Poly;
-
+  Handle(Poly_Triangulation) T;
   for (ex.Init(S,TopAbs_EDGE,TopAbs_FACE); ex.More(); ex.Next())
   {
     const TopoDS_Edge& E = TopoDS::Edge(ex.Current());

@@ -7,6 +7,10 @@ pload MODELING VISUALIZATION
 restore [locate_data_file bug27821_nullsurf.brep] s
 explode s F
 
+# check that sprops does not crash on NULL surface
+sprops s
+
+# check that AIS_Shape does not crash on NULL surface
 vclear
 vinit View1
 vaxo

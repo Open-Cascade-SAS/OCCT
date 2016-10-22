@@ -91,6 +91,7 @@ static Standard_Real surfaceProperties(const TopoDS_Shape& S, GProp_GProps& Prop
   BRepGProp_Face   BF;
   BRepGProp_Domain BD;
   TopTools_MapOfShape aFMap;
+  TopLoc_Location aLocDummy;
 
   for (ex.Init(S,TopAbs_FACE), i = 1; ex.More(); ex.Next(), i++) {
     const TopoDS_Face& F = TopoDS::Face(ex.Current());
@@ -98,6 +99,16 @@ static Standard_Real surfaceProperties(const TopoDS_Shape& S, GProp_GProps& Prop
     {
       continue;
     }
+
+    {
+      const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface (F, aLocDummy);
+      if (aSurf.IsNull())
+      {
+        // skip faces without geometry
+        continue;
+      }
+    }
+
     BF.Load(F);
     TopoDS_Iterator aWIter(F);
     Standard_Boolean IsNatRestr = !aWIter.More();

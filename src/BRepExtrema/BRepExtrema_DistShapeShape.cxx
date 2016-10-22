@@ -117,7 +117,15 @@ void BRepExtrema_DistShapeShape::DistanceMapMap (const TopTools_IndexedMapOfShap
   {
     for (Standard_Integer anIdx2 = 1; anIdx2 <= aCount2; ++anIdx2)
     {
-      const Standard_Real aDist = theLBox1.Value (anIdx1).Distance (theLBox2.Value (anIdx2));
+      const Bnd_Box& aBox1 = theLBox1.Value (anIdx1);
+      const Bnd_Box& aBox2 = theLBox2.Value (anIdx2);
+      if (aBox1.IsVoid()
+       || aBox2.IsVoid())
+      {
+        continue;
+      }
+
+      const Standard_Real aDist = aBox1.Distance (aBox2);
       if (aDist < myDistRef - myEps || fabs (aDist - myDistRef) < myEps)
       {
         aPairList.Append (BRepExtrema_CheckPair (anIdx1, anIdx2, aDist));
