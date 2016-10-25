@@ -95,7 +95,14 @@ void main (void)
 
 #else
 
-  OutColor = mix (texture2D (uAccumTexture, vPixel), aColor, uSampleWeight);
+  if (uSampleWeight >= 1.f)
+  {
+    OutColor = aColor;
+  }
+  else
+  {
+    OutColor = mix (texture2D (uAccumTexture, vPixel), aColor, uSampleWeight);
+  }
 
 #endif // ADAPTIVE_SAMPLING
 

@@ -787,6 +787,31 @@ vec3 SmoothNormal (in vec2 theUV, in ivec4 theTriangle)
                     aNormal0 * (1.0f - theUV.x - theUV.y));
 }
 
+#define POLYGON_OFFSET_UNIT 0.f
+#define POLYGON_OFFSET_FACTOR 1.f
+#define POLYGON_OFFSET_SCALE 0.006f
+
+// =======================================================================
+// function : PolygonOffset
+// purpose  : Computes OpenGL polygon offset
+// =======================================================================
+float PolygonOffset (in vec3 theNormal, in vec3 thePoint)
+{
+  vec4 aProjectedNorm = vec4 (theNormal, -dot (theNormal, thePoint)) * uUnviewMat;
+
+  float aPolygonOffset = POLYGON_OFFSET_UNIT;
+
+  if (aProjectedNorm.z * aProjectedNorm.z > 1e-20f)
+  {
+    aProjectedNorm.xy *= 1.f / aProjectedNorm.z;
+
+    aPolygonOffset += POLYGON_OFFSET_FACTOR * max (abs (aProjectedNorm.x),
+                                                   abs (aProjectedNorm.y));
+  }
+
+  return aPolygonOffset;
+}
+
 // =======================================================================
 // function : SmoothUV
 // purpose  : Interpolates UV coordinates across the triangle
@@ -908,17 +933,10 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
     // Evaluate depth on first hit
     if (aDepth == 0)
     {
-      // For polygons that are parallel to the screen plane, the depth slope
-      // is equal to 1, resulting in small polygon offset. For polygons that
-      // that are at a large angle to the screen, the depth slope tends to 1,
-      // resulting in a larger polygon offset
-      float aPolygonOffset = uSceneEpsilon * EPS_SCALE /
-        max (abs (dot (theRay.Direct, aHit.Normal)), MIN_SLOPE);
+      vec4 aNDCPoint = uViewMat * vec4 (theRay.Origin, 1.f);
 
-      // Hit point in NDC-space [-1,1] (the polygon offset is applied in the world space)
-      vec4 aNDCPoint = uViewMat * vec4 (theRay.Origin + theRay.Direct * aPolygonOffset, 1.f);
-
-      aRaytraceDepth = (aNDCPoint.z / aNDCPoint.w) * 0.5f + 0.5f;
+      float aPolygonOffset = PolygonOffset (aHit.Normal, theRay.Origin);
+      aRaytraceDepth = (aNDCPoint.z / aNDCPoint.w + aPolygonOffset * POLYGON_OFFSET_SCALE) * 0.5f + 0.5f;
     }
 
     vec3 aNormal = SmoothNormal (aHit.UV, aTriIndex);
