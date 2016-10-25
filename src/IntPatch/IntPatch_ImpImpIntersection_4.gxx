@@ -2442,7 +2442,7 @@ void WorkWithBoundaries::BoundaryEstimation(const gp_Cylinder& theCy1,
   //one axis can be translated by parallel shifting till intersection).
 
   const Standard_Real aCosA = aD1.Dot(aD2);
-  const Standard_Real aSqSinA = 1.0 - aCosA * aCosA;
+  const Standard_Real aSqSinA = aD1.XYZ().CrossSquareMagnitude(aD2.XYZ());
 
   //If sine is small then it can be compared with angle.
   if (aSqSinA < Precision::Angular()*Precision::Angular())

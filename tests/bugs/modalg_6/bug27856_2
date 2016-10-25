@@ -1,0 +1,118 @@
+puts "========"
+puts "OCC27856"
+puts "========"
+puts ""
+#################################################
+# Regression vs 6.7.1: General Fuse operation fails to fuse the solids
+#################################################
+
+# Before the fix, EMPTY result (no points, no curves)
+# was returned in every considered case.
+
+restore [locate_data_file bug27856_int_solids.brep] b
+
+explode b so
+
+# first pair of solids
+explode b_1 f
+explode b_2 f
+
+# ----
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b_1_2 b_2_2 -2d] full Toler NbCurv
+if {${NbCurv} != 1} {
+  puts "Error: Number of curves is bad!"
+}
+checkreal TolReached $Toler 0.00026943844817627679 0.0 1.0e-3
+
+# ----
+
+set Toler 0.0
+set NbCurv 0
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b_1_4 b_2_4 -2d] full Toler NbCurv
+if {${NbCurv} != 1} {
+  puts "Error: Number of curves is bad!"
+}
+checkreal TolReached $Toler 6.5039065434503992e-005 0.0 1.0e-2
+
+# ----
+
+# second pair of solids
+
+explode b_3 f
+explode b_4 f
+
+# ----
+
+set Toler 0.0
+set NbCurv 0
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b_3_2 b_4_2 -2d] full Toler NbCurv
+if {${NbCurv} != 1} {
+  puts "Error: Number of curves is bad!"
+}
+checkreal TolReached $Toler 0.00030603795647549098 0.0 1.0e-3
+
+# ----
+
+set Toler 0.0
+set NbCurv 0
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b_3_4 b_4_4 -2d] full Toler NbCurv
+if {${NbCurv} != 1} {
+  puts "Error: Number of curves is bad!"
+}
+checkreal TolReached $Toler 0.00029242900088525842 0.0 1.0e-3
+
+# ----
+
+# third pair of solids
+
+explode b_5 f
+explode b_6 f
+
+# ----
+
+set Toler 0.0
+set NbCurv 0
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b_5_2 b_6_2 -2d] full Toler NbCurv
+if {${NbCurv} != 1} {
+  puts "Error: Number of curves is bad!"
+}
+checkreal TolReached $Toler 2.0312181042800029e-005 0.0 1.0e-2
+
+# ----
+
+set Toler 0.0
+set NbCurv 0
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b_5_4 b_6_4 -2d] full Toler NbCurv
+if {${NbCurv} != 1} {
+  puts "Error: Number of curves is bad!"
+}
+checkreal TolReached $Toler 0.00023415774730871651 0.0 1.0e-3
+
+# ----
+
+# fourth pair of solids
+
+explode b_7 f
+explode b_8 f
+
+# ----
+
+set Toler 0.0
+set NbCurv 0
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b_7_2 b_8_2 -2d] full Toler NbCurv
+if {${NbCurv} != 1} {
+  puts "Error: Number of curves is bad!"
+}
+checkreal TolReached $Toler 0.00028209392756607551 0.0 1.0e-3
+
+# ----
+
+set Toler 0.0
+set NbCurv 0
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b_7_4 b_8_4 -2d] full Toler NbCurv
+if {${NbCurv} != 1} {
+  puts "Error: Number of curves is bad!"
+}
+checkreal TolReached $Toler 2.497244318171703e-005 0.0 1.0e-2
+
