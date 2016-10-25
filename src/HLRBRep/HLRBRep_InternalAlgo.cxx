@@ -190,6 +190,8 @@ void HLRBRep_InternalAlgo::Update ()
 
     Standard_Integer ShapMin[16],ShapMax[16],MinMaxShap[16];
     Standard_Integer TheMin[16],TheMax[16];
+    HLRBRep_Array1OfEData& aEDataArray = myDS->EDataArray();
+    HLRBRep_Array1OfFData& aFDataArray = myDS->FDataArray();
 
     for (i = 1; i <= n; i++) {
       Standard_Boolean FirstTime = Standard_True;
@@ -197,13 +199,9 @@ void HLRBRep_InternalAlgo::Update ()
       Standard_Integer v1,v2,e1,e2,f1,f2;
       SB.Bounds(v1,v2,e1,e2,f1,f2);
 
-      HLRBRep_EdgeData* ed = &(myDS->EDataArray    (). ChangeValue(e1 - 1));
-      HLRBRep_FaceData* fd = &(myDS->FDataArray    (). ChangeValue(f1 - 1));
-      ed++;
-      fd++;
-
       for (Standard_Integer e = e1; e <= e2; e++) {
-	HLRAlgo::DecodeMinMax(ed->MinMax(),
+        HLRBRep_EdgeData ed = aEDataArray.ChangeValue(e);
+        HLRAlgo::DecodeMinMax(ed.MinMax(),
 			      (Standard_Address)TheMin,
 			      (Standard_Address)TheMax);
 	if (FirstTime) {
@@ -218,18 +216,17 @@ void HLRBRep_InternalAlgo::Update ()
 			     (Standard_Address)TheMax,
 			     (Standard_Address)ShapMin,
 			     (Standard_Address)ShapMax);
-	ed++;
       }
 
       for (Standard_Integer f = f1; f <= f2; f++) {
-	HLRAlgo::DecodeMinMax(fd->Wires()->MinMax(),
+        HLRBRep_FaceData& fd = aFDataArray.ChangeValue(f);
+        HLRAlgo::DecodeMinMax(fd.Wires()->MinMax(),
 			      (Standard_Address)TheMin,
 			      (Standard_Address)TheMax);
 	HLRAlgo::AddMinMax((Standard_Address)TheMin,
 			   (Standard_Address)TheMax,
 			   (Standard_Address)ShapMin,
 			   (Standard_Address)ShapMax);
-	fd++;
       }
       HLRAlgo::EncodeMinMax((Standard_Address)ShapMin,
 			    (Standard_Address)ShapMax,
@@ -354,40 +351,39 @@ void HLRBRep_InternalAlgo::InitEdgeStatus ()
   Standard_Boolean visible;
   HLRBRep_FaceIterator faceIt;
   
-  HLRBRep_EdgeData* ed = &(myDS->EDataArray().ChangeValue(1));
-  HLRBRep_FaceData* fd = &(myDS->FDataArray().ChangeValue(1));
+  HLRBRep_Array1OfEData& aEDataArray = myDS->EDataArray();
+  HLRBRep_Array1OfFData& aFDataArray = myDS->FDataArray();
   Standard_Integer ne = myDS->NbEdges();
   Standard_Integer nf = myDS->NbFaces();
 
   for (Standard_Integer e = 1; e <= ne; e++) {
-    if (ed->Selected()) ed->Status().ShowAll();
-    ed++;
+    HLRBRep_EdgeData ed = aEDataArray.ChangeValue(e);
+    if (ed.Selected()) ed.Status().ShowAll();
   }
 //  for (Standard_Integer f = 1; f <= nf; f++) {
   Standard_Integer f;
   for ( f = 1; f <= nf; f++) {
-    if (fd->Selected()) {
+    HLRBRep_FaceData& fd = aFDataArray.ChangeValue(f);
+    if (fd.Selected()) {
       
-      for (faceIt.InitEdge(*fd);
+      for (faceIt.InitEdge(fd);
 	   faceIt.MoreEdge();
 	   faceIt.NextEdge()) {
 	HLRBRep_EdgeData* edf = &(myDS->EDataArray().ChangeValue(faceIt.Edge()));
 	if (edf->Selected()) edf->Status().HideAll();
       }
     }
-    fd++;
   }
 
-  fd = &(myDS->FDataArray().ChangeValue(1));
-
   for (f = 1; f <= nf; f++) {
+    HLRBRep_FaceData& fd = aFDataArray.ChangeValue(f);
     visible = Standard_True;
-    if (fd->Selected() && fd->Closed()) {
-      if      ( fd->Side())      visible =  Standard_False;
-      else if ( !fd->WithOutL()) {
-	switch (fd->Orientation()) {
-	case TopAbs_REVERSED : visible =  fd->Back()   ; break;
-	case TopAbs_FORWARD  : visible = !fd->Back()   ; break;
+    if (fd.Selected() && fd.Closed()) {
+      if      ( fd.Side())      visible =  Standard_False;
+      else if ( !fd.WithOutL()) {
+	switch (fd.Orientation()) {
+	case TopAbs_REVERSED : visible =  fd.Back()   ; break;
+	case TopAbs_FORWARD  : visible = !fd.Back()   ; break;
 	case TopAbs_EXTERNAL :
 	case TopAbs_INTERNAL : visible =  Standard_True; break;
         }
@@ -395,7 +391,7 @@ void HLRBRep_InternalAlgo::InitEdgeStatus ()
     } 
     if (visible) {
       
-      for (faceIt.InitEdge(*fd);
+      for (faceIt.InitEdge(fd);
 	   faceIt.MoreEdge();
 	   faceIt.NextEdge()) {
 	Standard_Integer E = faceIt.Edge();
@@ -405,7 +401,6 @@ void HLRBRep_InternalAlgo::InitEdgeStatus ()
 	  edf->Status().ShowAll();
       }
     }
-    fd++;
   }
 }
 
@@ -417,19 +412,19 @@ void HLRBRep_InternalAlgo::InitEdgeStatus ()
 void HLRBRep_InternalAlgo::Select ()
 {
   if (!myDS.IsNull()) {
-    HLRBRep_EdgeData* ed = &(myDS->EDataArray().ChangeValue(1));
-    HLRBRep_FaceData* fd = &(myDS->FDataArray().ChangeValue(1));
+    HLRBRep_Array1OfEData& aEDataArray = myDS->EDataArray();
+    HLRBRep_Array1OfFData& aFDataArray = myDS->FDataArray();
     Standard_Integer ne = myDS->NbEdges();
     Standard_Integer nf = myDS->NbFaces();
     
     for (Standard_Integer e = 1; e <= ne; e++) {
-      ed->Selected(Standard_True);
-      ed++;
+      HLRBRep_EdgeData ed = aEDataArray.ChangeValue(e);
+      ed.Selected(Standard_True);
     }
     
     for (Standard_Integer f = 1; f <= nf; f++) {
-      fd->Selected(Standard_True);
-      fd++;
+      HLRBRep_FaceData& fd = aFDataArray.ChangeValue(f);
+      fd.Selected(Standard_True);
     }
   }
 }
@@ -449,19 +444,19 @@ void HLRBRep_InternalAlgo::Select (const Standard_Integer I)
     Standard_Integer v1,v2,e1,e2,f1,f2;
     myShapes(I).Bounds(v1,v2,e1,e2,f1,f2);
     
-    HLRBRep_EdgeData* ed = &(myDS->EDataArray().ChangeValue(1));
-    HLRBRep_FaceData* fd = &(myDS->FDataArray().ChangeValue(1));
+    HLRBRep_Array1OfEData& aEDataArray = myDS->EDataArray();
+    HLRBRep_Array1OfFData& aFDataArray = myDS->FDataArray();
     Standard_Integer ne = myDS->NbEdges();
     Standard_Integer nf = myDS->NbFaces();
     
     for (Standard_Integer e = 1; e <= ne; e++) {
-      ed->Selected(e >= e1 && e <= e2);
-      ed++;
+      HLRBRep_EdgeData& ed = aEDataArray.ChangeValue(e);
+      ed.Selected(e >= e1 && e <= e2);
     }
     
     for (Standard_Integer f = 1; f <= nf; f++) {
-      fd->Selected(f >= f1 && f <= f2);
-      fd++;
+      HLRBRep_FaceData& fd = aFDataArray.ChangeValue(f);
+      fd.Selected(f >= f1 && f <= f2);
     }
   }
 }
@@ -481,12 +476,12 @@ void HLRBRep_InternalAlgo::SelectEdge (const Standard_Integer I)
     Standard_Integer v1,v2,e1,e2,f1,f2;
     myShapes(I).Bounds(v1,v2,e1,e2,f1,f2);
     
-    HLRBRep_EdgeData* ed = &(myDS->EDataArray().ChangeValue(1));
+    HLRBRep_Array1OfEData& aEDataArray = myDS->EDataArray();
     Standard_Integer ne = myDS->NbEdges();
     
     for (Standard_Integer e = 1; e <= ne; e++) {
-      ed->Selected(e >= e1 && e <= e2);
-      ed++;
+      HLRBRep_EdgeData& ed = aEDataArray.ChangeValue(e);
+      ed.Selected(e >= e1 && e <= e2);
     }
   }
 }
@@ -506,12 +501,12 @@ void HLRBRep_InternalAlgo::SelectFace (const Standard_Integer I)
     Standard_Integer v1,v2,e1,e2,f1,f2;
     myShapes(I).Bounds(v1,v2,e1,e2,f1,f2);
     
-    HLRBRep_FaceData* fd = &(myDS->FDataArray().ChangeValue(1));
+    HLRBRep_Array1OfFData& aFDataArray = myDS->FDataArray();
     Standard_Integer nf = myDS->NbFaces();
     
     for (Standard_Integer f = 1; f <= nf; f++) {
-      fd->Selected(f >= f1 && f <= f2);
-      fd++;
+      HLRBRep_FaceData& fd = aFDataArray.ChangeValue(f);
+      fd.Selected(f >= f1 && f <= f2);
     }
   }
 }
@@ -524,12 +519,12 @@ void HLRBRep_InternalAlgo::SelectFace (const Standard_Integer I)
 void HLRBRep_InternalAlgo::ShowAll ()
 {
   if (!myDS.IsNull()) {
-    HLRBRep_EdgeData* ed = &(myDS->EDataArray().ChangeValue(1));
+    HLRBRep_Array1OfEData& aEDataArray = myDS->EDataArray();
     Standard_Integer ne = myDS->NbEdges();
 
     for (Standard_Integer ie = 1; ie <= ne; ie++) {
-      ed->Status().ShowAll();
-      ed++;
+      HLRBRep_EdgeData& ed = aEDataArray.ChangeValue(ie);
+      ed.Status().ShowAll();
     }
   }
 }
@@ -548,12 +543,12 @@ void HLRBRep_InternalAlgo::ShowAll (const Standard_Integer I)
     
     Select(I);
     
-    HLRBRep_EdgeData* ed = &(myDS->EDataArray().ChangeValue(1));
+    HLRBRep_Array1OfEData& aEDataArray = myDS->EDataArray();
     Standard_Integer ne = myDS->NbEdges();
     
     for (Standard_Integer e = 1; e <= ne; e++) {
-      if (ed->Selected()) ed->Status().ShowAll();
-      ed++;
+      HLRBRep_EdgeData& ed = aEDataArray.ChangeValue(e);
+      if (ed.Selected()) ed.Status().ShowAll();
     }
   }
 }
@@ -566,12 +561,12 @@ void HLRBRep_InternalAlgo::ShowAll (const Standard_Integer I)
 void HLRBRep_InternalAlgo::HideAll ()
 {
   if (!myDS.IsNull()) {
-    HLRBRep_EdgeData* ed = &(myDS->EDataArray().ChangeValue(1));
+    HLRBRep_Array1OfEData& aEDataArray = myDS->EDataArray();
     Standard_Integer ne = myDS->NbEdges();
     
     for (Standard_Integer ie = 1; ie <= ne; ie++) {
-      ed->Status().HideAll();
-      ed++;
+      HLRBRep_EdgeData& ed = aEDataArray.ChangeValue(ie);
+      ed.Status().HideAll();
     }
   }
 }
@@ -590,12 +585,12 @@ void HLRBRep_InternalAlgo::HideAll (const Standard_Integer I)
     
     Select(I);
     
-    HLRBRep_EdgeData* ed = &(myDS->EDataArray().ChangeValue(1));
+    HLRBRep_Array1OfEData& aEDataArray = myDS->EDataArray();
     Standard_Integer ne = myDS->NbEdges();
     
     for (Standard_Integer e = 1; e <= ne; e++) {
-      if (ed->Selected()) ed->Status().HideAll();
-      ed++;
+      HLRBRep_EdgeData& ed = aEDataArray.ChangeValue(e);
+      if (ed.Selected()) ed.Status().HideAll();
     }
   }
 }
@@ -741,8 +736,8 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
   if (e2 >= e1) {
     myDS->InitBoundSort(SB.MinMax(),e1,e2);
     HLRBRep_Hider Cache(myDS);
-    HLRBRep_EdgeData* ed = &(myDS->EDataArray().ChangeValue(1));
-    HLRBRep_FaceData* fd = &(myDS->FDataArray().ChangeValue(1));
+    HLRBRep_Array1OfEData& aEDataArray = myDS->EDataArray();
+    HLRBRep_Array1OfFData& aFDataArray = myDS->FDataArray();
     Standard_Integer ne = myDS->NbEdges();
     Standard_Integer nf = myDS->NbFaces();
     
@@ -755,21 +750,21 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
       nbFSimp = 0;
       
       for (e = 1; e <= ne; e++) {
-	if (ed->Selected()) {
+        HLRBRep_EdgeData& ed = aEDataArray.ChangeValue(e);
+        if (ed.Selected()) {
 	  nbSelEdges++;
-	  if (!ed->Status().AllHidden()) nbVisEdges++;
+	  if (!ed.Status().AllHidden()) nbVisEdges++;
 	}
-	ed++;
       }
       
       for (f = 1; f <= nf; f++) {
-	if (fd->Selected()) {
+        HLRBRep_FaceData& fd = aFDataArray.ChangeValue(f);
+        if (fd.Selected()) {
 	  nbSelFaces++;
-	  if (fd->Hiding()) nbCache++;
-	  if (fd->Side  ()) nbFSide++;
-	  if (fd->Simple()) nbFSimp++;
+	  if (fd.Hiding()) nbCache++;
+	  if (fd.Side  ()) nbFSide++;
+	  if (fd.Simple()) nbFSimp++;
 	}
-	fd++;
       }
       
       if (myDebug)
@@ -788,16 +783,19 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
       }
     }
 
+    if (nf == 0)
+      return;
+
     Standard_Integer QWE=0,QWEQWE;
     QWEQWE=nf/10;
 
     if (SideFace) {
       j = 0;
-      fd = &(myDS->FDataArray().ChangeValue(1));
       
       for (f = 1; f <= nf; f++) {
-	if (fd->Selected()) {
-	  if (fd->Side()) {
+        HLRBRep_FaceData& fd = aFDataArray.ChangeValue(f);
+        if (fd.Selected()) {
+	  if (fd.Side()) {
 	    if(TRACE10) { 
 	      if(++QWE>QWEQWE) { 
 		QWE=0; 
@@ -814,7 +812,6 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
 	    Cache.OwnHiding(f);
 	  }
 	}
-	fd++;
       }
     }
     
@@ -825,20 +822,19 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
     TColStd_Array1OfInteger Index(1, nf);
 
 
-    fd = &(myDS->FDataArray().ChangeValue(1));
     for (f = 1; f <= nf; f++) {
-      if(fd->Plane())          Val(f)=10;
-      else if(fd->Cylinder())  Val(f)=9;
-      else if(fd->Cone())      Val(f)=8;
-      else if(fd->Sphere())    Val(f)=7;
-      else if(fd->Torus())     Val(f)=6;
+      HLRBRep_FaceData& fd = aFDataArray.ChangeValue(f);
+      if (fd.Plane())          Val(f) = 10;
+      else if(fd.Cylinder())  Val(f)=9;
+      else if(fd.Cone())      Val(f)=8;
+      else if(fd.Sphere())    Val(f)=7;
+      else if(fd.Torus())     Val(f)=6;
       else Val(f)=0;
-      if(fd->Cut())            Val(f)-=10;
-      if(fd->Side())           Val(f)-=100;
-      if(fd->WithOutL())       Val(f)-=20;
+      if(fd.Cut())            Val(f)-=10;
+      if(fd.Side())           Val(f)-=100;
+      if(fd.WithOutL())       Val(f)-=20;
   
-      Size(f)=fd->Size();
-      fd++;
+      Size(f)=fd.Size();
     }
 
     for(Standard_Integer tt=1;tt<=nf;tt++) { 
@@ -913,14 +909,13 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
     }
 
     j = 0;
-    HLRBRep_Array1OfFData& FD = myDS->FDataArray();
     
     QWE=0;
     for (f = 1; f <= nf; f++) {
       Standard_Integer fi = Index(f);
-      fd=&(FD.ChangeValue(fi));
-      if (fd->Selected()) {
-	if (fd->Hiding()) {
+      HLRBRep_FaceData& fd = aFDataArray.ChangeValue(fi);
+      if (fd.Selected()) {
+	if (fd.Hiding()) {
 	  if(TRACE10 && TRACE==Standard_False) { 
 	    if(++QWE>QWEQWE) { 
 	      if (myDebug)
@@ -941,13 +936,12 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
     
 #ifdef OCCT_DEBUG
     if (myDebug) {
-      fd = &(myDS->FDataArray().ChangeValue(1));
       nbFSimp = 0;
       
       for (f = 1; f <= nf; f++) {
-	if (fd->Selected() && fd->Simple())
+        HLRBRep_FaceData& fd = aFDataArray.ChangeValue(f);
+        if (fd.Selected() && fd.Simple())
 	  nbFSimp++;
-	fd++;
       }
 
       cout << "\n";

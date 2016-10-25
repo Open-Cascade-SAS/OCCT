@@ -608,21 +608,18 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
   HLRAlgo::InitMinMax(Precision::Infinite(),
 		      (Standard_Address)TotMin,
 		      (Standard_Address)TotMax);
-  HLRBRep_EdgeData* ed;
-  HLRBRep_FaceData* fd;
-  ed = &(myEData.ChangeValue(1));
 
   // compute the global MinMax
   // *************************
 //  for (Standard_Integer edge = 1; edge <= myNbEdges; edge++) {
   Standard_Integer edge;
   for ( edge = 1; edge <= myNbEdges; edge++) {
-    HLRBRep_Curve& EC = ed->ChangeGeometry();
+    HLRBRep_EdgeData& ed = myEData.ChangeValue(edge);
+    HLRBRep_Curve& EC = ed.ChangeGeometry();
     EC.Projector(&myProj);
     Standard_Real enl =EC.Update((Standard_Address)TotMin,
 				 (Standard_Address)TotMax);
     if (enl > tolMinMax) tolMinMax = enl;
-    ed++;
   }
   HLRAlgo::EnlargeMinMax(tolMinMax,
 			 (Standard_Address)TotMin,
@@ -647,22 +644,20 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
   Standard_Real tol;
   Standard_Boolean ver1,ver2;
 
-  ed = &(myEData.ChangeValue(1));
-  fd = &(myFData.ChangeValue(1));
-
   // update the edges
   // ****************
   
   for (edge = 1; edge <= myNbEdges; edge++) {
 
-    HLRBRep_Curve& EC = ed->ChangeGeometry();
+    HLRBRep_EdgeData& ed = myEData.ChangeValue(edge);
+    HLRBRep_Curve& EC = ed.ChangeGeometry();
     HLRAlgo::InitMinMax(Precision::Infinite(),
 			(Standard_Address)TotMin,
 			(Standard_Address)TotMax);
     tolMinMax = EC.UpdateMinMax((Standard_Address)TotMin,
 				(Standard_Address)TotMax);
-    tol = (Standard_Real)(ed->Tolerance());
-    ed->Vertical(TotMax[0] - TotMin[0] < tol &&
+    tol = (Standard_Real)(ed.Tolerance());
+    ed.Vertical(TotMax[0] - TotMin[0] < tol &&
 		 TotMax[1] - TotMin[1] < tol &&
 		 TotMax[2] - TotMin[2] < tol &&
 		 TotMax[3] - TotMin[3] < tol &&
@@ -709,28 +704,27 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
     HLRAlgo::EncodeMinMax((Standard_Address)EdgeMin,
 			  (Standard_Address)EdgeMax,
 			  (Standard_Address)MinMaxEdge);
-    ed->UpdateMinMax((Standard_Address)MinMaxEdge);
-    if (ed->Vertical()) {
+    ed.UpdateMinMax((Standard_Address)MinMaxEdge);
+    if (ed.Vertical()) {
       ver1 = Standard_True;
       ver2 = Standard_True;
-      Standard_Integer vsta = ed->VSta();
-      Standard_Integer vend = ed->VEnd();
-      Standard_Boolean vout = ed->OutLVSta() || ed->OutLVEnd();
-      Standard_Boolean vcut = ed->CutAtSta() || ed->CutAtEnd();
-      HLRBRep_EdgeData* eb = &(myEData.ChangeValue(1));
+      Standard_Integer vsta = ed.VSta();
+      Standard_Integer vend = ed.VEnd();
+      Standard_Boolean vout = ed.OutLVSta() || ed.OutLVEnd();
+      Standard_Boolean vcut = ed.CutAtSta() || ed.CutAtEnd();
       
       for (Standard_Integer ebis = 1; ebis <= myNbEdges; ebis++) {
-	if      (vsta == eb->VSta()) {
-	  eb->VSta    (vend);
-	  eb->OutLVSta(vout);
-	  eb->CutAtSta(vcut);
+        HLRBRep_EdgeData& eb = myEData.ChangeValue(ebis);
+        if (vsta == eb.VSta()) {
+	  eb.VSta    (vend);
+	  eb.OutLVSta(vout);
+	  eb.CutAtSta(vcut);
 	}
-	else if (vsta == eb->VEnd()) {
-	  eb->VEnd    (vend);
-	  eb->OutLVEnd(vout);
-	  eb->CutAtEnd(vcut);
+	else if (vsta == eb.VEnd()) {
+	  eb.VEnd    (vend);
+	  eb.OutLVEnd(vout);
+	  eb.CutAtEnd(vcut);
 	}
-	eb++;
       }
     }
     else {
@@ -751,11 +745,10 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
 	ver2 = Abs(Dir2.X()) + Abs(Dir2.Y()) < myToler * 10;
       }
     }
-    ed->VerAtSta(ed->Vertical() || ver1);
-    ed->VerAtEnd(ed->Vertical() || ver2);
-    ed->AutoIntersectionDone(Standard_True);
-    ed->Simple(Standard_True);
-    ed++;
+    ed.VerAtSta(ed.Vertical() || ver1);
+    ed.VerAtEnd(ed.Vertical() || ver2);
+    ed.AutoIntersectionDone(Standard_True);
+    ed.Simple(Standard_True);
   }
   
   // update the faces
@@ -763,8 +756,9 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
   
   for (Standard_Integer face = 1; face <= myNbFaces; face++) {
 
-    HLRBRep_Surface& FS = fd->Geometry();
-    iFaceGeom = &(fd->Geometry());
+    HLRBRep_FaceData& fd = myFData.ChangeValue(face);
+    HLRBRep_Surface& FS = fd.Geometry();
+    iFaceGeom = &(fd.Geometry());
     mySLProps.SetSurface(iFaceGeom);
     FS.Projector(&myProj);
     iFaceType = FS.GetType();
@@ -774,7 +768,7 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
     Standard_Boolean cut      = Standard_False;
     Standard_Boolean withOutL = Standard_False;
     
-    for (myFaceItr1.InitEdge(*fd);
+    for (myFaceItr1.InitEdge(fd);
 	 myFaceItr1.MoreEdge();
 	 myFaceItr1.NextEdge()) {
       if (myFaceItr1.Internal()) {
@@ -786,8 +780,8 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
 	if (myFaceItr1.Double()) cut = Standard_True;
       }
     }
-    fd->Cut     (cut);
-    fd->WithOutL(withOutL);
+    fd.Cut     (cut);
+    fd.WithOutL(withOutL);
 
     // Is the face simple = no auto-hiding
     // not cut and simple surface
@@ -797,31 +791,31 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
 	 iFaceType == GeomAbs_Cylinder ||
 	 iFaceType == GeomAbs_Cone     ||
 	 iFaceType == GeomAbs_Sphere   ||
-	 iFaceType == GeomAbs_Torus )) fd->Simple(Standard_True );
-    else                               fd->Simple(Standard_False);
+	 iFaceType == GeomAbs_Torus )) fd.Simple(Standard_True );
+    else                               fd.Simple(Standard_False);
 
-    fd->Plane   (iFaceType == GeomAbs_Plane   );
-    fd->Cylinder(iFaceType == GeomAbs_Cylinder);
-    fd->Cone    (iFaceType == GeomAbs_Cone    );
-    fd->Sphere  (iFaceType == GeomAbs_Sphere  );
-    fd->Torus   (iFaceType == GeomAbs_Torus   );
-    tol = (Standard_Real)(fd->Tolerance());
-    fd->Side(FS.IsSide(tol,myToler*10));
+    fd.Plane   (iFaceType == GeomAbs_Plane   );
+    fd.Cylinder(iFaceType == GeomAbs_Cylinder);
+    fd.Cone    (iFaceType == GeomAbs_Cone    );
+    fd.Sphere  (iFaceType == GeomAbs_Sphere  );
+    fd.Torus   (iFaceType == GeomAbs_Torus   );
+    tol = (Standard_Real)(fd.Tolerance());
+    fd.Side(FS.IsSide(tol,myToler*10));
     Standard_Boolean inverted = Standard_False;
-    if (fd->WithOutL() && !fd->Side()) {
-      inverted = OrientOutLine(face,*fd);
-      OrientOthEdge(face,*fd);
+    if (fd.WithOutL() && !fd.Side()) {
+      inverted = OrientOutLine(face,fd);
+      OrientOthEdge(face,fd);
     }
-    if (fd->Side()) {
-      fd->Hiding(Standard_False);
-      fd->Back(Standard_False);
+    if (fd.Side()) {
+      fd.Hiding(Standard_False);
+      fd.Back(Standard_False);
     }
-    else if (!fd->WithOutL()) {
+    else if (!fd.WithOutL()) {
       Standard_Real p,pu,pv,r;
-      fd->Back(Standard_False);
+      fd.Back(Standard_False);
       Standard_Boolean found = Standard_False;
 
-      for (myFaceItr1.InitEdge(*fd);
+      for (myFaceItr1.InitEdge(fd);
 	   myFaceItr1.MoreEdge() && !found;
 	   myFaceItr1.NextEdge()) {
 	myFE         = myFaceItr1.Edge       ();
@@ -829,12 +823,12 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
 	myFEOutLine  = myFaceItr1.OutLine    ();
 	myFEInternal = myFaceItr1.Internal   ();
 	myFEDouble   = myFaceItr1.Double     ();
-	HLRBRep_EdgeData* EDataFE1 = &(myEData(myFE));
+	HLRBRep_EdgeData& EDataFE1 = myEData(myFE);
 	if (!myFEDouble &&
 	    (myFEOri == TopAbs_FORWARD ||
 	     myFEOri == TopAbs_REVERSED)) {
-	  myFEGeom = &(EDataFE1->ChangeGeometry());
-	  const HLRBRep_Curve& EC = EDataFE1->Geometry();
+	  myFEGeom = &(EDataFE1.ChangeGeometry());
+	  const HLRBRep_Curve& EC = EDataFE1.Geometry();
 	  p = EC.Parameter3d((EC.LastParameter () +
 			      EC.FirstParameter()) / 2);
 	  if (HLRBRep_EdgeFaceTool::UVPoint(p,myFEGeom,iFaceGeom,pu,pv)) {
@@ -852,7 +846,7 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
               }
               else r = Nm.Z();
               if (Abs(r) > myToler*10) {
-                fd->Back( r < 0 );
+                fd.Back( r < 0 );
                 found = Standard_True;
                 break;
               }
@@ -862,40 +856,40 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
       }
 
       if (!found) {
-	fd->Side(Standard_True);
-	fd->Hiding(Standard_False);
-	fd->Back(Standard_False);
+	fd.Side(Standard_True);
+	fd.Hiding(Standard_False);
+	fd.Back(Standard_False);
       }
-      else if (fd->Closed()) {
-	switch (fd->Orientation()) {
-	case TopAbs_REVERSED : fd->Hiding( fd->Back()   ); break;
-	case TopAbs_FORWARD  : fd->Hiding(!fd->Back()   ); break;
-	case TopAbs_EXTERNAL : fd->Hiding(Standard_True ); break;
-	case TopAbs_INTERNAL : fd->Hiding(Standard_False); break;
+      else if (fd.Closed()) {
+	switch (fd.Orientation()) {
+	case TopAbs_REVERSED : fd.Hiding( fd.Back()   ); break;
+	case TopAbs_FORWARD  : fd.Hiding(!fd.Back()   ); break;
+	case TopAbs_EXTERNAL : fd.Hiding(Standard_True ); break;
+	case TopAbs_INTERNAL : fd.Hiding(Standard_False); break;
 	}
       }
-      else fd->Hiding(Standard_True);
+      else fd.Hiding(Standard_True);
     }
     else {
       if (inverted) {
-	fd->Hiding(Standard_False);
-	fd->Back(Standard_True);
+	fd.Hiding(Standard_False);
+	fd.Back(Standard_True);
       }
       else {
-	fd->Hiding(Standard_True);
-	fd->Back(Standard_False);
+	fd.Hiding(Standard_True);
+	fd.Back(Standard_False);
       }
     }
 
     Standard_Boolean FirstTime = Standard_True;
 
-    for (myFaceItr1.InitEdge(*fd);
+    for (myFaceItr1.InitEdge(fd);
 	 myFaceItr1.MoreEdge();
 	 myFaceItr1.NextEdge()) {
       myFE = myFaceItr1.Edge();
-      HLRBRep_EdgeData* EDataFE2 = &(myEData(myFE));
-      if (!fd->Simple()) EDataFE2->AutoIntersectionDone(Standard_False);
-      HLRAlgo::DecodeMinMax(EDataFE2->MinMax(),
+      HLRBRep_EdgeData& EDataFE2 = myEData(myFE);
+      if (!fd.Simple()) EDataFE2.AutoIntersectionDone(Standard_False);
+      HLRAlgo::DecodeMinMax(EDataFE2.MinMax(),
 			    (Standard_Address)EdgeMin,
 			    (Standard_Address)EdgeMax);
       if (myFaceItr1.BeginningOfWire())
@@ -930,9 +924,8 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
     HLRAlgo::EncodeMinMax((Standard_Address)FaceMin,
 			  (Standard_Address)FaceMax,
 			  (Standard_Address)MinMaxFace);
-    fd->Wires()->UpdateMinMax((Standard_Address)MinMaxFace);  
-    fd->Size(HLRAlgo::SizeBox(FaceMin,FaceMax));
-    fd++;
+    fd.Wires()->UpdateMinMax((Standard_Address)MinMaxFace);  
+    fd.Size(HLRAlgo::SizeBox(FaceMin,FaceMax));
   }
 }
 
@@ -947,12 +940,12 @@ HLRBRep_Data::InitBoundSort (const Standard_Address MinMaxTot,
 			     const Standard_Integer e2)
 {
   myNbrSortEd = 0;
-  HLRBRep_EdgeData* ed = &(myEData(e1));
   Standard_Address MinMaxShap = MinMaxTot;
 
   for (Standard_Integer e = e1; e <= e2; e++) {
-    if (!ed->Status().AllHidden()) {
-      myLEMinMax = ed->MinMax();
+    HLRBRep_EdgeData& ed = myEData(e);
+    if (!ed.Status().AllHidden()) {
+      myLEMinMax = ed.MinMax();
       if (((MaxShap1 - MinLEdg1) & 0x80008000) == 0 &&
 	  ((MaxLEdg1 - MinShap1) & 0x80008000) == 0 &&
 	  ((MaxShap2 - MinLEdg2) & 0x80008000) == 0 &&
@@ -972,7 +965,6 @@ HLRBRep_Data::InitBoundSort (const Standard_Address MinMaxTot,
 	myEdgeIndices(myNbrSortEd) = e;
       }
     }
-    ed++;
   }
 }
 
@@ -1652,18 +1644,18 @@ Standard_Boolean HLRBRep_Data::OrientOutLine (const Standard_Integer I, HLRBRep_
     
     for (ie1 = 1; ie1 <= ne1; ie1++) {
       myFE = eb1->Edge(ie1);
-      HLRBRep_EdgeData* ed1 = &(myEData(myFE));
+      HLRBRep_EdgeData& ed1 = myEData(myFE);
       if (eb1->Double (ie1) ||
 	  eb1->IsoLine(ie1) ||
-          ed1->Vertical()) ed1->Used(Standard_True );
-      else                 ed1->Used(Standard_False);
+          ed1.Vertical()) ed1.Used(Standard_True );
+      else                 ed1.Used(Standard_False);
       if ((eb1->OutLine(ie1) || eb1->Internal(ie1)) &&
-	  !ed1->Vertical()) {
+	  !ed1.Vertical()) {
 	Standard_Real p,pu,pv,r;
-	myFEGeom = &(ed1->ChangeGeometry());
-	const HLRBRep_Curve& EC = ed1->Geometry();
-	Standard_Integer vsta = ed1->VSta();
-	Standard_Integer vend = ed1->VEnd();
+	myFEGeom = &(ed1.ChangeGeometry());
+	const HLRBRep_Curve& EC = ed1.Geometry();
+	Standard_Integer vsta = ed1.VSta();
+	Standard_Integer vend = ed1.VEnd();
 	if      (vsta == 0 &&
 		 vend == 0) p = 0;
 	else if (vsta == 0) p = EC.Parameter3d(EC.LastParameter ());
@@ -1730,7 +1722,7 @@ Standard_Boolean HLRBRep_Data::OrientOutLine (const Standard_Integer I, HLRBRep_
 	  cout << "UVPoint not found, OutLine not Oriented" << endl;
 #endif
 	}
-	ed1->Used(Standard_True);
+	ed1.Used(Standard_True);
       }
     }
   }
@@ -1758,12 +1750,12 @@ void HLRBRep_Data::OrientOthEdge (const Standard_Integer I,
     for (ie1 = 1; ie1 <= ne1; ie1++) {
       myFE    = eb1->Edge       (ie1);
       myFEOri = eb1->Orientation(ie1);
-      HLRBRep_EdgeData* ed1 = &(myEData(myFE));
+      HLRBRep_EdgeData& ed1 = myEData(myFE);
       
-      if (!ed1->Used()) {
-	ed1->Used(Standard_True);
-	myFEGeom = &(ed1->ChangeGeometry());
-	const HLRBRep_Curve& EC = ed1->Geometry();
+      if (!ed1.Used()) {
+	ed1.Used(Standard_True);
+	myFEGeom = &(ed1.ChangeGeometry());
+	const HLRBRep_Curve& EC = ed1.Geometry();
 	p = EC.Parameter3d((EC.LastParameter () +
 			    EC.FirstParameter()) / 2);
 	if (HLRBRep_EdgeFaceTool::UVPoint(p,myFEGeom,iFaceGeom,pu,pv)) {

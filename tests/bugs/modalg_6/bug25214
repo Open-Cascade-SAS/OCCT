@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC25214"
+puts "============"
+puts ""
+###############################
+## HLR fails to project edges
+###############################
+
+polyline Line 0 0 0 10 10 10
+
+hprj Shape2DView_proj 0 0 0 0 0 1 1 0 0
+houtl Shape2DView_outl Line
+hfill Shape2DView_outl Shape2DView_proj 0
+hload Shape2DView_outl
+hsetprj Shape2DView_proj
+hupdate
+hhide
+hres2d
+
+checknbshapes vl -edge 1 -m "HLRToShape"
