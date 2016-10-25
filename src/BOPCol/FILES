@@ -36,4 +36,3 @@ BOPCol_PListOfInteger.hxx
 BOPCol_SequenceOfPnt2d.hxx
 BOPCol_SequenceOfReal.hxx
 BOPCol_SequenceOfShape.hxx
-BOPCol_VectorOfInteger.hxx
