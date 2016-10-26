@@ -870,23 +870,44 @@ void BRepClass3d_SolidExplorer::InitShape(const TopoDS_Shape& S)
   BRepBndLib::Add(myShape,myBox);
 #endif
 
-  // Fill mapEV with vertices and edges from shape.
-  TopExp::MapShapes(myShape, TopAbs_EDGE, myMapEV);
-  TopExp::MapShapes(myShape, TopAbs_VERTEX, myMapEV);  
-
+  // since the internal/external parts should be avoided in tree filler,
+  // there is no need to add these parts in the EV map as well
+  TopExp_Explorer aExpF(myShape, TopAbs_FACE);
+  for (; aExpF.More(); aExpF.Next()) {
+    const TopoDS_Shape& aF = aExpF.Current();
+    //
+    TopAbs_Orientation anOrF = aF.Orientation();
+    if (anOrF == TopAbs_INTERNAL || anOrF == TopAbs_EXTERNAL) {
+      continue;
+    }
+    //
+    TopExp_Explorer aExpE(aF, TopAbs_EDGE);
+    for (; aExpE.More(); aExpE.Next()) {
+      const TopoDS_Shape& aE = aExpE.Current();
+      //
+      TopAbs_Orientation anOrE = aE.Orientation();
+      if (anOrE == TopAbs_INTERNAL || anOrE == TopAbs_EXTERNAL) {
+        continue;
+      }
+      //
+      if (BRep_Tool::Degenerated(TopoDS::Edge(aE))) {
+        continue;
+      }
+      //
+      TopExp::MapShapes(aE, myMapEV);
+    }
+  }
+  //
+  // Fill mapEV with vertices and edges from shape
   NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller (myTree);
-
-  for (Standard_Integer i = 1; i <= myMapEV.Extent(); i++)
-  {
-    Bnd_Box B;
-    const TopoDS_Shape& Sh = myMapEV(i);
-    TopAbs_Orientation ori = Sh.Orientation();
-    if (ori == TopAbs_EXTERNAL || ori == TopAbs_INTERNAL)
-      continue;
-    if (Sh.ShapeType() == TopAbs_EDGE && BRep_Tool::Degenerated(TopoDS::Edge(Sh)))
-      continue;
-    BRepBndLib::Add(Sh,B);
-    aTreeFiller.Add(i, B);
+  //
+  Standard_Integer i, aNbEV = myMapEV.Extent();
+  for (i = 1; i <= aNbEV; ++i) {
+    const TopoDS_Shape& aS = myMapEV(i);
+    //
+    Bnd_Box aBox;
+    BRepBndLib::Add(aS, aBox);
+    aTreeFiller.Add(i, aBox);
   }
   aTreeFiller.Fill();
 }

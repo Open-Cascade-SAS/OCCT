@@ -1,0 +1,30 @@
+puts "========"
+puts "OCC28002"
+puts "========"
+puts ""
+#################################################
+# Invalid result of Boolean Fuse operation
+#################################################
+
+binrestore [locate_data_file bug28002_shapes.bin] b
+
+explode b
+
+# perform intersection
+bclearobjects
+bcleartools
+baddobjects b_1
+baddtools b_2 b_3 b_4 b_5 b_6 b_7
+bfillds
+
+# build the result of General Fuse operation
+bbuild rgf
+checkshape rgf
+checknbshapes rgf -solid 82 
+
+# build the result of Boolean Fuse operation
+bbop result 1
+checkshape result
+checknbshapes result -solid 1 -face 404
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
