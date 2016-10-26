@@ -2459,7 +2459,12 @@ Standard_Boolean ShapeFix_Face::FixSplitFace(const TopTools_DataMapOfShapeListOf
     for(Standard_Integer i=1; i<=faces.Length(); i++ ) 
       B.Add(Comp,faces(i));
     myResult = Comp;
-    Context()->Replace ( myFace, myResult );
+
+    if(!Context().IsNull())
+    {
+      Context()->Replace ( myFace, myResult );
+    }
+
     for (TopExp_Explorer exp ( myResult, TopAbs_FACE ); exp.More(); exp.Next() ) {
       myFace = TopoDS::Face ( exp.Current() );
       BRepTools::Update(myFace);
