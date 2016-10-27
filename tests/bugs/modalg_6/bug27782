@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC27782"
+puts "============"
+puts ""
+######################################################
+# Hidden Line Removal algorithm fails to handle filleted edges
+######################################################
+
+restore [locate_data_file bug27782_hlr.brep] result
+
+vinit
+vdisplay result
+vback
+vfit
+vhlr on
+vhlrtype algo result
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
