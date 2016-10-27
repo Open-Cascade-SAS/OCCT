@@ -836,13 +836,21 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
 	if (error <= Tol) {
 	  SError = error;
 	  error += Radius + Abs(RotRadius - C.Radius())/2;
-	  if (error <= Tol) {
+          if (error <= Tol || Radius <= Tol) {
 	    // (2.1.a) Sphere
-	    Standard_Real f = UFirst , l =  ULast;
+	    Standard_Real f = UFirst , l =  ULast, aRadius = 0.0;
 	    SError = error;
 	    Centre.BaryCenter(1.0, C.Location(), 1.0); 
 	    gp_Ax3 AxisOfSphere(Centre, DN, DS);
-            gp_Sphere theSphere( AxisOfSphere, (RotRadius + C.Radius())/2 );
+            if (Radius <= Tol)
+            {
+              aRadius = C.Radius();
+            }
+            else
+            {
+              aRadius = (RotRadius + C.Radius()) / 2;
+            }
+            gp_Sphere theSphere( AxisOfSphere, aRadius );
 	    S = new Geom_SphericalSurface(theSphere);
 	    // Pour les spheres on ne peut pas controler le parametre
             // V (donc U car  myExchUV = Standard_True)

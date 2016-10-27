@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC27769"
+puts "========"
+puts ""
+#################################################
+# BRepOffsetAPI_MakePipeShell produces a face 
+# based on degenerated toroidal surfaces
+#################################################
+
+restore [locate_data_file bug27769_W5_slot.brep] w
+restore [locate_data_file bug27769_A4_slot.brep] e
+
+wire p e
+mksweep p
+addsweep w
+buildsweep r
+explode r f
+mksurface s1 r_1
+set info [dump s1]
+
+set check [regexp "SphericalSurface" $info]
+
+if { ${check} == 1 } {
+   puts "OK: The basic surface is spherical surface."
+} else {
+   puts "Faulty: The basic surface is not spherical surface."
+}
