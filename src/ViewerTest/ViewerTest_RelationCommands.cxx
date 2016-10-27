@@ -193,7 +193,9 @@ static Standard_Boolean Get3DPointAtMousePosition (const gp_Pnt& theFirstPoint,
 //           -arrowangle ArrowAngle(degrees)
 //           -plane xoy|yoz|zox
 //           -flyout FloatValue -extension FloatValue
-//           -value CustomNumberValue
+//           -autovalue
+//           -value CustomRealValue
+//           -textvalue CustomTextValue
 //           -dispunits DisplayUnitsString
 //           -modelunits ModelUnitsString
 //           -showunits
@@ -229,6 +231,12 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
     }
 
     // Boolean flags
+    if (aParam.IsEqual ("-autovalue"))
+    {
+      theRealParams.Bind ("autovalue", 1);
+      continue;
+    }
+
     if (aParam.IsEqual ("-showunits"))
     {
       theAspect->MakeUnitsDisplayed (Standard_True);
@@ -440,6 +448,12 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
 
       theRealParams.Bind ("value", Draw::Atof (aLocalParam.ToCString()));
     }
+    else if (aParam.IsEqual ("-textvalue"))
+    {
+      TCollection_AsciiString aLocalParam(theArgVec[++anIt]);
+
+      theStringParams.Bind ("textvalue", aLocalParam);
+    }
     else if (aParam.IsEqual ("-modelunits"))
     {
       TCollection_AsciiString aLocalParam(theArgVec[++anIt]);
@@ -475,9 +489,19 @@ static void SetDimensionParams (const Handle(AIS_Dimension)& theDim,
     theDim->SetFlyout (theRealParams.Find ("flyout"));
   }
 
+  if (theRealParams.IsBound ("autovalue"))
+  {
+    theDim->SetComputedValue();
+  }
+
   if (theRealParams.IsBound ("value"))
   {
     theDim->SetCustomValue (theRealParams.Find ("value"));
+  }
+
+  if (theStringParams.IsBound ("textvalue"))
+  {
+    theDim->SetCustomValue (theStringParams.Find ("textvalue"));
   }
 
   if (theStringParams.IsBound ("modelunits"))
@@ -2744,7 +2768,9 @@ void ViewerTest::RelationCommands(Draw_Interpretor& theCommands)
       "[{-arrowangle|-arangle} ArrowAngle(degrees)]\n"
       "[-plane xoy|yoz|zox]\n"
       "[-flyout FloatValue -extension FloatValue]\n"
-      "[-value CustomNumberValue]\n"
+      "[-autovalue]\n"
+      "[-value CustomRealValue]\n"
+      "[-textvalue CustomTextValue]\n"
       "[-dispunits DisplayUnitsString]\n"
       "[-modelunits ModelUnitsString]\n"
       "[-showunits | -hideunits]\n"
@@ -2763,6 +2789,7 @@ void ViewerTest::RelationCommands(Draw_Interpretor& theCommands)
     "[-plane xoy|yoz|zox]\n"
     "[-flyout FloatValue -extension FloatValue]\n"
     "[-value CustomNumberValue]\n"
+    "[-textvalue CustomTextValue]\n"
     "[-dispunits DisplayUnitsString]\n"
     "[-modelunits ModelUnitsString]\n"
     "[-showunits | -hideunits]\n"

@@ -2306,7 +2306,7 @@ Creates *AIS_ConnectedInteractive* object from the input object and location and
 
 **Example:** 
 ~~~~~
-Vinitvinit 
+vinit 
 vpoint p1 0 0 0 
 vpoint p2 50 0 0 
 vsegment segment p1 p2 
@@ -2425,9 +2425,10 @@ vdimension name {-angle|-length|-radius|-diameter} -shapes shape1 [shape2 [shape
                 [-label left|right|hcenter|hfit top|bottom|vcenter|vfit]
                 [-arrow external|internal|fit] [{-arrowlength|-arlen} RealArrowLength]
                 [{-arrowangle|-arangle} ArrowAngle(degrees)] [-plane xoy|yoz|zox]
-                [-flyout FloatValue -extension FloatValue] [-value CustomNumberValue]
-                [-dispunits DisplayUnitsString] [-modelunits ModelUnitsString]
-                [-showunits | -hideunits]
+                [-flyout FloatValue -extension FloatValue]
+                [-autovalue] [-value CustomRealValue] [-textvalue CustomTextValue]
+                [-dispunits DisplayUnitsString]
+                [-modelunits ModelUnitsString] [-showunits | -hideunits]
 ~~~~~
 
 Builds angle, length, radius or diameter dimension interactive object **name**.
@@ -2436,6 +2437,7 @@ Builds angle, length, radius or diameter dimension interactive object **name**.
 
 **Example:** 
 ~~~~~
+vinit
 vpoint p1 0 0 0
 vpoint p2 50 50 0
 vdimension dim1 -length -plane xoy -shapes p1 p2
@@ -2459,7 +2461,9 @@ vdimparam name [-text 3d|2d wf|sh|wireframe|shading IntegerSize]
                [{-arrowangle|-arangle} ArrowAngle(degrees)]
                [-plane xoy|yoz|zox]
                [-flyout FloatValue -extension FloatValue]
-               [-value CustomNumberValue]
+               [-autovalue]
+               [-value CustomRealValue]
+               [-textvalue CustomTextValue]
                [-dispunits DisplayUnitsString]
                [-modelunits ModelUnitsString]
                [-showunits | -hideunits]
@@ -2469,10 +2473,14 @@ Sets parameters for angle, length, radius and diameter dimension **name**.
 
 **Example:** 
 ~~~~~
+vinit
 vpoint p1 0 0 0
 vpoint p2 50 50 0
 vdimension dim1 -length -plane xoy -shapes p1 p2
 vdimparam dim1 -flyout -15 -arrowlength 4 -showunits -value 10
+vfit
+vdimparam dim1 -textvalue "w_1"
+vdimparam dim1 -autovalue
 ~~~~~
 
 @subsubsection occt_draw_4_4_22 vmovedim
@@ -2489,6 +2497,7 @@ are adjusted.
 
 **Example:** 
 ~~~~~
+vinit
 vpoint p1 0 0 0
 vpoint p2 50 50 0
 vdimension dim1 -length -plane xoy -shapes p1 p2

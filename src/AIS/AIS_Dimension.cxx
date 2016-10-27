@@ -99,8 +99,9 @@ namespace
 AIS_Dimension::AIS_Dimension (const AIS_KindOfDimension theType)
 : AIS_InteractiveObject  (),
   mySelToleranceForText2d(0.0),
+  myValueType            (ValueType_Computed),
   myCustomValue          (0.0),
-  myIsValueCustom        (Standard_False),
+  myCustomStringValue    (),
   myIsTextPositionFixed  (Standard_False), 
   mySpecialSymbol        (' '),
   myDisplaySpecialSymbol (AIS_DSS_No),
@@ -118,16 +119,41 @@ AIS_Dimension::AIS_Dimension (const AIS_KindOfDimension theType)
 //=======================================================================
 void AIS_Dimension::SetCustomValue (const Standard_Real theValue)
 {
-  if (myIsValueCustom && myCustomValue == theValue)
+  if (myValueType == ValueType_CustomReal && myCustomValue == theValue)
   {
     return;
   }
 
-  myIsValueCustom = Standard_True;
-
+  myValueType = ValueType_CustomReal;
   myCustomValue = theValue;
 
   SetToUpdate();
+}
+
+//=======================================================================
+//function : SetCustomValue
+//purpose  : 
+//=======================================================================
+void AIS_Dimension::SetCustomValue (const TCollection_ExtendedString& theValue)
+{
+  if (myValueType == ValueType_CustomText && myCustomStringValue == theValue)
+  {
+    return;
+  }
+
+  myValueType = ValueType_CustomText;
+  myCustomStringValue = theValue;
+
+  SetToUpdate();
+}
+
+//=======================================================================
+//function : GetCustomValue
+//purpose  : 
+//=======================================================================
+const TCollection_ExtendedString& AIS_Dimension::GetCustomValue () const
+{
+  return myCustomStringValue;
 }
 
 //=======================================================================
@@ -271,12 +297,20 @@ Standard_Real AIS_Dimension::ValueToDisplayUnits() const
 //=======================================================================
 TCollection_ExtendedString AIS_Dimension::GetValueString (Standard_Real& theWidth) const
 {
-  // format value string using "sprintf"
-  TCollection_AsciiString aFormatStr = myDrawer->DimensionAspect()->ValueStringFormat();
+  TCollection_ExtendedString aValueStr;
+  if (myValueType == ValueType_CustomText)
+  {
+    aValueStr = myCustomStringValue;
+  }
+  else
+  {
+    // format value string using "sprintf"
+    TCollection_AsciiString aFormatStr = myDrawer->DimensionAspect()->ValueStringFormat();
 
-  char aFmtBuffer[256];
-  sprintf (aFmtBuffer, aFormatStr.ToCString(), ValueToDisplayUnits());
-  TCollection_ExtendedString aValueStr = TCollection_ExtendedString (aFmtBuffer);
+    char aFmtBuffer[256];
+    sprintf (aFmtBuffer, aFormatStr.ToCString(), ValueToDisplayUnits());
+    aValueStr = TCollection_ExtendedString (aFmtBuffer);
+  }
 
   // add units to values string
   if (myDrawer->DimensionAspect()->IsUnitsDisplayed())

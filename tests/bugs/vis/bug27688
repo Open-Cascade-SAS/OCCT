@@ -1,0 +1,34 @@
+puts "========"
+puts "Visualization, AIS_Dimension - add possibility to set custom text value"
+puts "========"
+
+# Test case creates three lenght dimensions where value is set as real,
+# as text and is reset to auto value state.
+
+pload MODELING VISUALIZATION
+
+vinit
+vpoint p1 0 0 0
+vpoint p2 50 50 0
+
+vdimension dim1 -length -plane xoy -shapes p1 p2
+vdimparam dim1 -flyout -15 -arrowlength 4 -showunits -value 10
+
+
+vpoint p3 100 100 0
+vpoint p4 150 150 0
+
+vdimension dim2 -length -plane xoy -shapes p3 p4
+vdimparam dim2 -flyout -15 -arrowlength 4 -hideunits -textvalue "w_1"
+vfit
+
+
+vpoint p5 200 200 0
+vpoint p6 250 250 0
+
+vdimension dim3 -length -plane xoy -shapes p5 p6
+vdimparam dim3 -flyout -15 -arrowlength 4 -showunits -textvalue "w_1"
+vdimparam dim3 -autovalue
+
+vfit
+vdump $imagedir/${casename}.png

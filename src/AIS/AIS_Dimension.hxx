@@ -202,6 +202,13 @@ protected:
     LabelPosition_VMask   = LabelPosition_Above | LabelPosition_Below | LabelPosition_VCenter
   };
 
+  enum ValueType
+  {
+    ValueType_Computed,
+    ValueType_CustomReal,
+    ValueType_CustomText
+  };
+
 public:
 
   //! Specifies supported presentation compute modes.
@@ -227,7 +234,13 @@ public:
   //! during display of the presentation.
   Standard_Real GetValue() const
   {
-    return myIsValueCustom ? myCustomValue : ComputeValue();
+    return myValueType == ValueType_CustomReal ? myCustomValue : ComputeValue();
+  }
+
+  //! Sets computed dimension value. Resets custom value mode if it was set.
+  void SetComputedValue ()
+  {
+    myValueType = ValueType_Computed;
   }
 
   //! Sets user-defined dimension value.
@@ -235,6 +248,15 @@ public:
   //! and affect by unit conversion during the display.
   //! @param theValue [in] the user-defined value to display.
   Standard_EXPORT void SetCustomValue (const Standard_Real theValue);
+
+  //! Sets user-defined dimension value.
+  //! Unit conversion during the display is not applyed.
+  //! @param theValue [in] the user-defined value to display.
+  Standard_EXPORT void SetCustomValue (const TCollection_ExtendedString& theValue);
+
+  //! Gets user-defined dimension value.
+  //! @return dimension value string.
+  Standard_EXPORT const TCollection_ExtendedString& GetCustomValue () const;
 
   //! Get the dimension plane in which the 2D dimension presentation is computed.
   //! By default, if plane is not defined by user, it is computed automatically
@@ -649,8 +671,10 @@ protected: //! @name Selection geometry
 
 protected: //! @name Value properties
 
+  ValueType        myValueType; //! type of value (computed or user-defined)
   Standard_Real    myCustomValue;   //!< Value of the dimension (computed or user-defined).
-  Standard_Boolean myIsValueCustom; //!< Is user-defined value.
+
+  TCollection_ExtendedString myCustomStringValue; //!< Value of the dimension (computed or user-defined).
 
 protected: //! @name Fixed text position properties
 
