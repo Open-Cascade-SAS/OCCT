@@ -92,11 +92,22 @@ file (APPEND ${OCCT_CONFIG_FOR_DOXYGEN} "\nMATHJAX_RELPATH        = ${3RDPARTY_M
 # Copy index file to provide fast access to HTML documentation
 file(COPY "${OCCT_OVERVIEW_RESOURCE_DIR}/index.html" DESTINATION "${OCCT_GENERATED_OVERVIEW_DIR}")
 
-add_custom_target (${PROJECT_NAME}
-                   COMMAND ${3RDPARTY_DOXYGEN_EXECUTABLE} ${OCCT_CONFIG_FOR_DOXYGEN}
-                   WORKING_DIRECTORY ${OCCT_GENERATED_DOC_DIR}
-                   COMMENT "Generating OCCT overview documentation with Doxygen"
-                   SOURCES ${OCCT_ARTICLES_ABSPATH}
-                   VERBATIM)
+# get relative paths to documentation source files
+file (GLOB_RECURSE OCCT_OVERVIEW_FILES "${OCCT_OVERVIEW_DIR}/*")
 
+add_custom_command(OUTPUT "${OCCT_GENERATED_DOC_DIR}/overview/html/occt_logo.png"
+  COMMAND ${3RDPARTY_DOXYGEN_EXECUTABLE} ${OCCT_CONFIG_FOR_DOXYGEN}
+  DEPENDS ${OCCT_OVERVIEW_FILES}
+  WORKING_DIRECTORY ${OCCT_GENERATED_DOC_DIR}
+  COMMENT "Generating OCCT overview documentation with Doxygen"
+  VERBATIM
+)
+
+add_custom_target(${PROJECT_NAME} ALL
+  DEPENDS "${OCCT_GENERATED_DOC_DIR}/overview/html/occt_logo.png" ${OCCT_OVERVIEW_FILES}
+  SOURCES ${OCCT_ARTICLES_ABSPATH}
+  VERBATIM
+)
+
+# Create Documentation folder in solution view
 set_property (TARGET ${PROJECT_NAME} PROPERTY FOLDER "Documentation")
