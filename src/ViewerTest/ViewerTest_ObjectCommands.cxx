@@ -4688,7 +4688,7 @@ static Standard_Integer VSelectionNext(Draw_Interpretor& /*theDI*/,
     return 1;
   }
 
-  anAISContext->HilightNextDetected(aView);
+  anAISContext->HilightNextDetected (aView);
   return 0;
 }
 
@@ -4710,7 +4710,7 @@ static Standard_Integer VSelectionPrevious(Draw_Interpretor& /*theDI*/,
     return 1;
   }
 
-  anAISContext->HilightPreviousDetected(aView);
+  anAISContext->HilightPreviousDetected (aView);
   return 0;
 }
 

@@ -29,7 +29,6 @@
 #include <Quantity_NameOfColor.hxx>
 #include <Standard_Integer.hxx>
 #include <AIS_DataMapOfILC.hxx>
-#include <AIS_SequenceOfInteractive.hxx>
 #include <AIS_DisplayStatus.hxx>
 #include <AIS_KindOfInteractive.hxx>
 #include <Standard_Real.hxx>
@@ -1716,8 +1715,9 @@ protected:
   AIS_DataMapOfILC myLocalContexts;
   Standard_Integer myCurLocalIndex;
   Handle(V3d_View) mylastmoveview;
-  AIS_SequenceOfInteractive myAISDetectedSeq;
-  Standard_Integer myAISCurDetected;
+  TColStd_SequenceOfInteger myDetectedSeq;
+  Standard_Integer myCurDetected;
+  Standard_Integer myCurHighlighted;
   Standard_Boolean myZDetectionFlag;
   Standard_Boolean myIsAutoActivateSelMode;
 

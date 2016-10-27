@@ -92,7 +92,8 @@ myPreselectionColor(Quantity_NOC_GREEN),
 mySubintStyle(new Graphic3d_HighlightStyle (Aspect_TOHM_COLOR, Quantity_NOC_GRAY40)),
 myDisplayMode(0),
 myCurLocalIndex(0),
-myAISCurDetected(0),
+myCurDetected(0),
+myCurHighlighted(0),
 myZDetectionFlag(0),
 myIsAutoActivateSelMode(Standard_True)
 { 
@@ -2354,13 +2355,13 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
   myMainPM->Erase (theIObj, -1);
 
   // Object removes from Detected sequence
-  for(Standard_Integer aDetIter = 1; aDetIter < myAISDetectedSeq.Length(); ++aDetIter)
+  for (Standard_Integer aDetIter = myDetectedSeq.Lower(); aDetIter <= myDetectedSeq.Upper(); ++aDetIter)
   {
     Handle(AIS_InteractiveObject) anObj = DetectedCurrentObject();
     if (!anObj.IsNull()
       && anObj != theIObj)
     {
-      myAISDetectedSeq.Remove (aDetIter);
+      myDetectedSeq.Remove (aDetIter);
     }
   }
 

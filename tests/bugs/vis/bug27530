@@ -1,0 +1,79 @@
+puts "==========="
+puts "OCC27530"
+puts "==========="
+puts ""
+##########################################################################
+# Visualization - AIS_InteractiveContext::HilightNextDetected() doesn't work in Neutral Point
+##########################################################################
+
+proc check_highlighting { theHiBoxIdx theCoords } {
+  set aNext [expr ($theHiBoxIdx + 1) % 3]
+  set aNextNext [expr ($theHiBoxIdx + 2) % 3]
+  set hiColor [vreadpixel [lindex $theCoords [expr $theHiBoxIdx * 2] ] [lindex $theCoords [expr $theHiBoxIdx * 2 + 1] ] name]
+  set nextColor [vreadpixel [lindex $theCoords [expr $aNext * 2] ] [lindex $theCoords [expr $aNext * 2 + 1] ] name]
+  set nextNextColor [vreadpixel [lindex $theCoords [expr $aNextNext * 2] ] [lindex $theCoords [expr $aNextNext * 2 + 1] ] name]
+
+  if {$hiColor == "CYAN1 1" && $nextColor == "YELLOW 1" && $nextNextColor == "YELLOW 1"} {
+    return true
+  } else {
+    return false
+  }
+}
+
+pload VISUALIZATION MODELING
+
+box b0 3 3 3
+box b1 1 1 1 3 2 1
+box b2 1.5 1.5 1.5 4 4 4
+
+set coords { }
+# b0_x, b0_y
+lappend coords 355
+lappend coords 186
+# b1_x, b1_y
+lappend coords 266
+lappend coords 333
+# b2_x, b2_y
+lappend coords 177
+lappend coords 2
+
+vinit
+vclear
+vdisplay b0 b1 b2
+vleft
+vfit
+
+# MoveTo in area that is common for all boxes
+vmoveto 210 280
+
+if { ![check_highlighting 0 $coords] } {
+  puts "ERROR: incorrect highlighting of box b0"
+}
+
+# check vselnext
+vselnext
+if { ![check_highlighting 1 $coords] } {
+  puts "ERROR: incorrect highlighting of box b1 after vselnext call"
+}
+vselnext
+if { ![check_highlighting 2 $coords] } {
+  puts "ERROR: incorrect highlighting of box b2 after vselnext call"
+}
+vselnext
+if { ![check_highlighting 0 $coords] } {
+  puts "ERROR: incorrect highlighting of box b0 after vselnext call"
+}
+
+# check vselprev
+vselprev
+if { ![check_highlighting 2 $coords] } {
+  puts "ERROR: incorrect highlighting of box b2 after vselprev call"
+}
+vselprev
+if { ![check_highlighting 1 $coords] } {
+  puts "ERROR: incorrect highlighting of box b1 after vselprev call"
+}
+vselprev
+if { ![check_highlighting 0 $coords] } {
+  puts "ERROR: incorrect highlighting of box b0 after vselprev call"
+}

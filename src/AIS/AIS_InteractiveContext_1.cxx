@@ -307,8 +307,9 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     return myLocalContexts (myCurLocalIndex)->MoveTo (theXPix, theYPix, theView, theToRedrawOnUpdate);
   }
 
-  myAISCurDetected = 0;
-  myAISDetectedSeq.Clear();
+  myCurDetected = 0;
+  myCurHighlighted = 0;
+  myDetectedSeq.Clear();
 
   if (theView->Viewer() != myMainVwr)
   {
@@ -341,15 +342,14 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     {
       aNewDetected = aDetIter;
     }
-    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
-    if (!anObj.IsNull())
-    {
-      myAISDetectedSeq.Append (anObj);
-    }
+
+    myDetectedSeq.Append (aDetIter);
   }
 
   if (aNewDetected >= 1)
   {
+    myCurHighlighted = myDetectedSeq.Lower();
+
     // Does nothing if previously detected object is equal to the current one.
     // However in advanced selection modes the owners comparison
     // is not effective because in that case only one owner manage the
@@ -1518,14 +1518,18 @@ Handle(AIS_InteractiveObject) AIS_InteractiveContext::DetectedInteractive() cons
   return Handle(AIS_InteractiveObject)::DownCast (myLastPicked->Selectable());
 }
 
-
+//=======================================================================
+//function : HasNextDetected
+//purpose  :
+//=======================================================================
 Standard_Boolean AIS_InteractiveContext::HasNextDetected() const 
 {
-  if(!HasOpenedContext())
-    return Standard_False; // temporaire
-  else
+  if (HasOpenedContext())
+  {
     return myLocalContexts(myCurLocalIndex)->HasNextDetected();
-  
+  }
+
+  return !myDetectedSeq.IsEmpty() && myCurHighlighted <= myDetectedSeq.Upper();
 }
 
 
@@ -1548,23 +1552,79 @@ Handle(SelectMgr_EntityOwner) AIS_InteractiveContext::DetectedOwner() const
 Standard_Integer AIS_InteractiveContext::HilightNextDetected (const Handle(V3d_View)& theView,
                                                               const Standard_Boolean  theToRedrawImmediate)
 {
-  return HasOpenedContext()
-       ? myLocalContexts (myCurLocalIndex)->HilightNextDetected (theView, theToRedrawImmediate)
-       : 0;
-    
+  if (HasOpenedContext())
+  {
+    return myLocalContexts (myCurLocalIndex)->HilightNextDetected (theView, theToRedrawImmediate);
+  }
+
+  myMainPM->ClearImmediateDraw();
+  if (myDetectedSeq.IsEmpty())
+  {
+    return 0;
+  }
+
+  if (++myCurHighlighted > myDetectedSeq.Upper())
+  {
+    myCurHighlighted = myDetectedSeq.Lower();
+  }
+  const Handle(SelectMgr_EntityOwner)& anOwner = myMainSel->Picked (myDetectedSeq (myCurHighlighted));
+  if (anOwner.IsNull())
+  {
+    return 0;
+  }
+
+  highlightWithColor (anOwner, theView->Viewer());
+  myLastPicked = anOwner;
+  myLastinMain = myLastPicked;
+
+  if (theToRedrawImmediate)
+  {
+    myMainPM->RedrawImmediate (theView->Viewer());
+    myMainVwr->RedrawImmediate();
+  }
+
+  return myCurHighlighted;
 }
 
 //=======================================================================
-//function : HilightNextDetected
+//function : HilightPreviousDetected
 //purpose  :
 //=======================================================================
 Standard_Integer AIS_InteractiveContext::HilightPreviousDetected (const Handle(V3d_View)& theView,
                                                                   const Standard_Boolean  theToRedrawImmediate)
 {
-  return HasOpenedContext()
-       ? myLocalContexts (myCurLocalIndex)->HilightPreviousDetected (theView, theToRedrawImmediate)
-       : 0;
-    
+  if (HasOpenedContext())
+  {
+    return myLocalContexts (myCurLocalIndex)->HilightPreviousDetected (theView, theToRedrawImmediate);
+  }
+
+  myMainPM->ClearImmediateDraw();
+  if (myDetectedSeq.IsEmpty())
+  {
+    return 0;
+  }
+
+  if (--myCurHighlighted < myDetectedSeq.Lower())
+  {
+    myCurHighlighted = myDetectedSeq.Upper();
+  }
+  const Handle(SelectMgr_EntityOwner)& anOwner = myMainSel->Picked (myDetectedSeq (myCurHighlighted));
+  if (anOwner.IsNull())
+  {
+    return 0;
+  }
+
+  highlightWithColor (anOwner, theView->Viewer());
+  myLastPicked = anOwner;
+  myLastinMain = myLastPicked;
+
+  if (theToRedrawImmediate)
+  {
+    myMainPM->RedrawImmediate (theView->Viewer());
+    myMainVwr->RedrawImmediate();
+  }
+
+  return myCurHighlighted;
 }
 
 //=======================================================================
@@ -1575,13 +1635,13 @@ void AIS_InteractiveContext::InitDetected()
 {
   if (HasOpenedContext())
   {
-    myLocalContexts(myCurLocalIndex)->InitDetected();
+    myLocalContexts (myCurLocalIndex)->InitDetected();
     return;
   }
 
-  if(myAISDetectedSeq.Length() != 0)
+  if (!myDetectedSeq.IsEmpty())
   {
-    myAISCurDetected = 1;
+    myCurDetected = myDetectedSeq.Lower();
   }
 }
 
@@ -1593,11 +1653,10 @@ Standard_Boolean AIS_InteractiveContext::MoreDetected() const
 {
   if (HasOpenedContext())
   {
-    return myLocalContexts(myCurLocalIndex)->MoreDetected();
+    return myLocalContexts (myCurLocalIndex)->MoreDetected();
   }
 
-  return (myAISCurDetected > 0 && myAISCurDetected <= myAISDetectedSeq.Length()) ?
-          Standard_True : Standard_False;
+  return myCurDetected >= myDetectedSeq.Lower() && myCurDetected <= myDetectedSeq.Upper();
 }
 
 //=======================================================================
@@ -1606,13 +1665,13 @@ Standard_Boolean AIS_InteractiveContext::MoreDetected() const
 //=======================================================================
 void AIS_InteractiveContext::NextDetected()
 {
-  if(HasOpenedContext())
+  if (HasOpenedContext())
   {
-    myLocalContexts(myCurLocalIndex)->NextDetected();
+    myLocalContexts (myCurLocalIndex)->NextDetected();
     return;
   }
 
-  myAISCurDetected++;
+  myCurDetected++;
 }
 
 //=======================================================================
@@ -1647,7 +1706,9 @@ Handle(AIS_InteractiveObject) AIS_InteractiveContext::DetectedCurrentObject() co
     return myLocalContexts(myCurLocalIndex)->DetectedCurrentObject();
   }
 
-  return MoreDetected() ? myAISDetectedSeq(myAISCurDetected) : NULL;
+  return MoreDetected()
+    ? Handle(AIS_InteractiveObject)::DownCast (myMainSel->Picked (myDetectedSeq (myCurDetected))->Selectable())
+    : NULL;
 }
 
 //=======================================================================
