@@ -1,0 +1,20 @@
+puts "=========="
+puts "OCC27260"
+puts "=========="
+puts ""
+#################################################
+# Incorrect result of General Fuse operation
+#################################################
+
+restore [locate_data_file bug27260_input1.brep] b1
+restore [locate_data_file bug27260_input2.brep] b2
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbuild result
+
+checkshape result
+checknbshapes result -solid 3
+checkview -display result -2d -path ${imagedir}/${test_image}.png
