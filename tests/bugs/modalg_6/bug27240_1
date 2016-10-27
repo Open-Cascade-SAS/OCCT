@@ -1,0 +1,30 @@
+puts "========"
+puts "OCC27240"
+puts "========"
+puts ""
+###########################################################################
+# Boolean operation fails for a case with edge tangential to axis of revolution
+###########################################################################
+
+restore [locate_data_file bug27240_vent2-trim.brep] b
+explode b
+
+# workaround - increate the tolerance value of the vertex to fill the gap between section curves
+explode b_1 v
+settolerance b_1_1 0.005
+
+bclearobjects
+bcleartools
+
+baddobjects b_1
+baddtools b_2
+
+bfillds
+bbop result 0
+
+checkshape result
+checknbshapes result -solid 1
+checkprops result -s 622894
+checkprops result -v 2.24142e+007
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
