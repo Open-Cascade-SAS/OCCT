@@ -271,14 +271,17 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
                 Handle(StepShape_ShapeRepresentation)::DownCast(RR->Rep1());
               if(SR==SR2)
                 SR2 = Handle(StepShape_ShapeRepresentation)::DownCast(RR->Rep2());
-              Interface_EntityIterator subs2 = graph.Sharings(SR2);
-              for(subs2.Start(); subs2.More(); subs2.Next()) {
-                Handle(StepShape_ShapeDefinitionRepresentation) SDR2 = 
-                  Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(subs2.Value());
-                if(!SDR2.IsNull()) IsRoot = Standard_False;
-                //else {
-                //  if(SR==SRR->Rep2()) IsRoot = Standard_False;
-                //}
+              if(!SR2.IsNull())
+              {
+                Interface_EntityIterator subs2 = graph.Sharings(SR2);
+                for(subs2.Start(); subs2.More(); subs2.Next()) {
+                  Handle(StepShape_ShapeDefinitionRepresentation) SDR2 = 
+                    Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(subs2.Value());
+                  if(!SDR2.IsNull()) IsRoot = Standard_False;
+                  //else {
+                  //  if(SR==SRR->Rep2()) IsRoot = Standard_False;
+                  //}
+                }
               }
             }
           }

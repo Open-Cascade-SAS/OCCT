@@ -1,0 +1,14 @@
+puts "============"
+puts "OCC27404"
+puts "============"
+puts ""
+#######################################################################
+# Data Exchange - access violation when reading STEP file
+#######################################################################
+
+param read.step.product.mode 0
+newmodel
+
+XNewDoc D
+
+ReadStep D [locate_data_file bug27404_pmi.stp]
