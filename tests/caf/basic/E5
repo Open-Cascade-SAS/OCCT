@@ -1,0 +1,52 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: User defined (additional GUID) TDataStd_Name
+#
+# Testing command:   SetName
+# Testing command:   GetName
+#
+
+puts "caf001-E5"
+
+# Add an attribute to a data framework
+set aSetAttr1 "New Attribute_1"
+set aSetAttr2 "New Attribute_2"
+set aGuid1 "12e94561-6dbc-11d4-b9c8-0060b0ee281b"
+set aGuid2 "12e94562-6dbc-11d4-b9c8-0060b0ee281b"
+set aLabel 0:2
+SetName D ${aLabel} ${aSetAttr1} ${aGuid1}
+SetName D ${aLabel} ${aSetAttr2} ${aGuid2}
+
+# Close/Open the transaction
+NewCommand D
+
+# Set a new value of the attributes
+set aSetAttr12 "Modified Attribute_1"
+SetName D ${aLabel} ${aSetAttr12} ${aGuid1}
+
+set aSetAttr22 "Modified Attribute_2"
+SetName D ${aLabel} ${aSetAttr12} ${aGuid2}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+
+# Get a value of the attribute
+set aGetAttr1 [GetName D ${aLabel} ${aGuid1}]
+if { ${aSetAttr1}!=${aGetAttr1} } {
+	puts "aSetAttr1=${aSetAttr1} aGetAttr1=${aGetAttr1}"
+	puts "Add user defined TDataStd_Name attribute: Error"
+	return
+}
+
+set aGetAttr2 [GetName D ${aLabel} ${aGuid2}]
+if { ${aSetAttr2}!=${aGetAttr2} } {
+	puts "aSetAttr2=${aSetAttr2} aGetAttr2=${aGetAttr2}"
+	puts "Add user defined TDataStd_Name attribute: Error"
+	return
+}
+
+puts "Add user defined TDataStd_Name attributes: OK"

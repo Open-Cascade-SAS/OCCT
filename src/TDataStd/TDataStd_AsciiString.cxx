@@ -51,7 +51,7 @@ const Standard_GUID& TDataStd_AsciiString::GetID()
 
 const Standard_GUID& TDataStd_AsciiString::ID() const
 {
-  return GetID();
+  return myID;
 }
 
 //=======================================================================
@@ -67,6 +67,7 @@ Handle(TDataStd_AsciiString) TDataStd_AsciiString::Set (
   if (!theLabel.FindAttribute(TDataStd_AsciiString::GetID(), A))
   {
     A = new TDataStd_AsciiString;
+    A->SetID(GetID());
     theLabel.AddAttribute(A);
   }
   A->Set(theAsciiString);
@@ -75,11 +76,29 @@ Handle(TDataStd_AsciiString) TDataStd_AsciiString::Set (
 
 //=======================================================================
 //function : Set
+//purpose  : Set user defined attribute
+//=======================================================================
+
+Handle(TDataStd_AsciiString) TDataStd_AsciiString::Set (const TDF_Label&    L, const Standard_GUID& theGuid,
+                                          const TCollection_AsciiString& theAsciiString) 
+{
+  Handle(TDataStd_AsciiString) A;
+  if (!L.FindAttribute(theGuid, A)) {
+    A = new TDataStd_AsciiString ();
+    A->SetID(theGuid);
+    L.AddAttribute(A);
+  }
+  A->Set (theAsciiString); 
+  return A;
+}
+//=======================================================================
+//function : Set
 //purpose  : 
 //=======================================================================
 
 void TDataStd_AsciiString::Set (const TCollection_AsciiString& theAsciiString)
 {
+  if(myString == theAsciiString) return;
   Backup();
   myString = theAsciiString;
 }
@@ -95,13 +114,28 @@ const TCollection_AsciiString& TDataStd_AsciiString::Get () const
 }
 
 //=======================================================================
+//function : SetID
+//purpose  :
+//=======================================================================
+
+void TDataStd_AsciiString::SetID( const Standard_GUID&  theGuid)
+{  
+  if(myID == theGuid) return;
+
+  Backup();
+  myID = theGuid;
+}
+
+//=======================================================================
 //function : NewEmpty
 //purpose  : 
 //=======================================================================
 
 Handle(TDF_Attribute) TDataStd_AsciiString::NewEmpty () const
 {
-  return new TDataStd_AsciiString();
+  Handle(TDataStd_AsciiString) Att = new TDataStd_AsciiString();
+  Att->SetID(myID);
+  return Att; 
 }
 
 //=======================================================================
@@ -113,6 +147,7 @@ void TDataStd_AsciiString::Restore (const Handle(TDF_Attribute)& theWith)
 {
   Handle(TDataStd_AsciiString) R = Handle(TDataStd_AsciiString)::DownCast(theWith);
   myString = R->Get();
+  myID     = R->ID();
 }
 
 //=======================================================================
@@ -125,6 +160,7 @@ void TDataStd_AsciiString::Paste (const Handle(TDF_Attribute)& theInto,
 { 
   Handle(TDataStd_AsciiString) R = Handle(TDataStd_AsciiString)::DownCast (theInto);
   R->Set(myString);
+  R->SetID(myID);
 }
 
 //=======================================================================
@@ -144,5 +180,9 @@ Standard_OStream& TDataStd_AsciiString::Dump(Standard_OStream& theOS) const
 {
   Standard_OStream& anOS = TDF_Attribute::Dump( theOS );
   anOS << myString;
+  anOS << " Name=|"<<myString<<"|";
+  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  myID.ToCString(sguid);
+  anOS << sguid << "|" <<endl;
   return anOS;
 }

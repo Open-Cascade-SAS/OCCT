@@ -1,0 +1,52 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: User defined (additional GUID) TDataStd_Integer
+#
+# Testing command:   SetInteger
+# Testing command:   GetInteger
+#
+
+puts "caf001-A5"
+
+# Add an attribute to a data framework
+set aSetAttr1 100
+set aSetAttr2 200
+set aGuid1 "12e94541-6dbc-11d4-b9c8-0060b0ee281b"
+set aGuid2 "12e94542-6dbc-11d4-b9c8-0060b0ee281b"
+set aLabel 0:2
+SetInteger D ${aLabel} ${aSetAttr1} ${aGuid1}
+SetInteger D ${aLabel} ${aSetAttr2} ${aGuid2}
+
+# Close/Open the transaction
+NewCommand D
+
+# Set a new value of the attributes
+set aSetAttr12 199
+SetInteger D ${aLabel} ${aSetAttr12} ${aGuid1}
+
+set aSetAttr22 299
+SetInteger D ${aLabel} ${aSetAttr12} ${aGuid2}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+
+# Get a value of the attribute
+set aGetAttr1 [GetInteger D ${aLabel} ${aGuid1}]
+if { ${aSetAttr1}!=${aGetAttr1} } {
+	puts "aSetAttr1=${aSetAttr1} aGetAttr1=${aGetAttr1}"
+	puts "Add TDataStd_Integer attribute: Error"
+	return
+}
+
+set aGetAttr2 [GetInteger D ${aLabel} ${aGuid2}]
+if { ${aSetAttr2}!=${aGetAttr2} } {
+	puts "aSetAttr2=${aSetAttr2} aGetAttr2=${aGetAttr2}"
+	puts "Add TDataStd_Integer attribute: Error"
+	return
+}
+
+puts "Add user defined TDataStd_Integer attributes: OK"

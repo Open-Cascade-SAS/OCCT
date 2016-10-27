@@ -42,57 +42,69 @@
 
 //=======================================================================
 //function : DDataStd_SetName
-//purpose  : SetName (DF, entry, name)
+//purpose  : SetName (DF, entry, name [,guid])
 //=======================================================================
 
 static Standard_Integer DDataStd_SetName (Draw_Interpretor& di,
 					  Standard_Integer nb, 
 					  const char** arg) 
 {
-//   if (nb == 3) {    
-//     Handle(TDF_Data) DF;
-//     if (!DDF::GetDF(arg[1],DF)) return 1;
-//     TDF_Label L;
-//     DDF::FindLabel(DF, arg[2], L);
-//     if(L.IsNull()) cout << "Label is not found"   << endl;
-//     Handle(TDataStd_Name) N = TDataStd_Name::Set(L);
-//     return 0;
-//  }
-  // else if (nb == 4) {  
-  if (nb == 4) {     
+
+  if (nb == 4 || nb == 5) {     
     Handle(TDF_Data) DF;
     if (!DDF::GetDF(arg[1],DF)) return 1;
     TDF_Label L;
-    DDF::FindLabel(DF, arg[2], L);
+    DDF::AddLabel(DF, arg[2], L);
     if(L.IsNull()) di << "Label is not found"   << "\n";
-    Handle(TDataStd_Name) N;
-    //if( !L.FindAttribute(TDataStd_Name::GetID(), N) ) N = TDataStd_Name::Set(L);
-    //N->Set(arg[3]); 
-    N = TDataStd_Name::Set(L,arg[3]); 
+	if(nb == 4) 
+      TDataStd_Name::Set(L,TCollection_ExtendedString(arg[3],Standard_True)); 
+	else {	
+	  if (!Standard_GUID::CheckGUIDFormat(arg[4])) {
+        di<<"DDataStd_SetReal: The format of GUID is invalid\n";
+        return 1;
+	  }
+	  Standard_GUID guid(arg[4]);
+	  TDataStd_Name::Set(L, guid, TCollection_ExtendedString(arg[3],Standard_True)); 
+     }
     return 0;
   }
   di << "DDataStd_SetName : Error\n";
   return 1;
 }
 
-
+//#define DEB_DDataStd
 //=======================================================================
 //function : DDataStd_GetName
-//purpose  : GetName (DF, entry)
+//purpose  : GetName (DF, entry [,guid])
 //=======================================================================
 
 static Standard_Integer DDataStd_GetName (Draw_Interpretor& di,
 					  Standard_Integer nb, 
 					  const char** arg) 
 {   
-  if (nb == 3) {    
+  if (nb == 3 || nb == 4) {    
     Handle(TDF_Data) DF;
     if (!DDF::GetDF(arg[1],DF)) return 1; 
     TDF_Label L;
     DDF::FindLabel(DF, arg[2], L);
     if(L.IsNull()) di << "Label is not found"   << "\n";
-    Handle(TDataStd_Name) N;
-    if( !L.FindAttribute(TDataStd_Name::GetID(), N) ) return 1;
+	Standard_GUID aGuid (TDataStd_Name::GetID());
+	if(nb == 4) {
+      if (!Standard_GUID::CheckGUIDFormat(arg[3])) {
+        di<<"DDataStd_GetAsciiString: The format of GUID is invalid\n";
+        return 1;
+	  }
+	  aGuid = Standard_GUID(arg[3]);
+	}
+	Handle(TDataStd_Name) N;	  
+	if( !L.FindAttribute(aGuid, N) ) {
+      cout << "Name attribute is not found or not set"  << endl;
+	  return 1;
+	}
+#ifdef DEB_DDataStd
+	if(!N.IsNull()) 
+      cout << "String = " << TCollection_AsciiString(N->Get(), '?').ToCString()  << endl;
+#endif
     TCollection_AsciiString s(N->Get(),'?');
     di << s.ToCString();
     return 0;
@@ -103,82 +115,7 @@ static Standard_Integer DDataStd_GetName (Draw_Interpretor& di,
 
 
 
-//=======================================================================
-//function : LabelName (DF, [entry], path)
-//=======================================================================
-// static Standard_Integer DDataStd_LabelName (Draw_Interpretor& di,
-// 					    Standard_Integer nb, 
-// 					    const char** arg) 
-// {
-//   Handle(TDF_Data) DF;
-//   TDF_Label label;
-//   Handle(TDataStd_Name) result;
-//   TDataStd_ListOfExtendedString myList;
-//   Standard_Integer i = 2;
-//   Standard_Boolean Found = Standard_False;
 
-//   if (!DDF::GetDF(arg[1],DF))  return 1;
-//   if( nb == 4 ) {
-//     if( !DDF::FindLabel(DF, arg[2], label) ) {   
-//       cout << "No label for entry"  << endl;
-//       return 1;   
-//     }
-//     i = 3;
-//   }
-  
-//   if( !TDataStd_Name::MakePath(arg[i], myList) ) return 1;
-
-//   if( nb == 4 ) {
-//     Handle(TDataStd_Name) current;
-//     if (TDataStd_Name::Find(label,current)) {
-//       if (current->Find(myList ,result)) Found = Standard_True;
-//     }
-//   }
-//   else {
-//     if(TDataStd_Name::Find(DF, myList ,result)) Found = Standard_True;
-//   }
-  
-//   if(Found) {
-//     DDF::ReturnLabel(di,  result->Label());
-//     return 0;
-//   }
-
-//   cout << "Label wasn't found"  << endl;
-//   return 1;
-// }
-
-
-// //=======================================================================
-// //function : FullPath (DF, entry)
-// //=======================================================================
-// static Standard_Integer DDataStd_FullPath (Draw_Interpretor& di,
-// 					   Standard_Integer nb, 
-// 					   const char** arg) 
-// {
-//   Handle(TDF_Data) DF;
-//   if (!DDF::GetDF(arg[1],DF))  return 1; 
-//   TDF_Label label;
-//   if( !DDF::FindLabel(DF, arg[2], label) ) {   
-//     cout << "No label for entry"  << endl;
-//     return 1;   
-//   } 
-//   Handle(TDataStd_Name) current;
-//   if (TDataStd_Name::Find(label,current)) {
-//     TDF_AttributeList myList;
-//     if (!current->FullPath(myList)) return 1;
-//     TDF_ListIteratorOfAttributeList itr(myList);
-//     TCollection_AsciiString str;
-//     for(;itr.More(); itr.Next() ) { 
-//       str+=Handle(TDataStd_Name)::DownCast(itr.Value())->Get();
-//       str+=":";
-//     }
-//     str.Remove(str.Length());       //remove last ":"
-//     di << str.ToCString(); 
-//   }  
-// #ifndef OCCT_DEBUG
-//   return 0 ;
-// #endif
-// }
 //=======================================================================
 //function : SetCommands
 //purpose  : 
@@ -194,20 +131,13 @@ void DDataStd::NameCommands (Draw_Interpretor& theCommands)
   const char* g = "DDataStd : Name attribute commands";
 
   theCommands.Add ("SetName", 
-                   "SetName (DF, entry, name)",
+                   "SetName (DF, entry, name [,guid])",
 		   __FILE__, DDataStd_SetName, g);   
 
   theCommands.Add ("GetName", 
-                   "GetNmae (DF, entry)",
+                   "GetNmae (DF, entry [,guid])",
                     __FILE__, DDataStd_GetName, g);  
 
-//   theCommands.Add ("LabelName", 
-//                    "GetLabel (DF, [entry], path(name1:name2:...nameN)",
-// 		   __FILE__, DDataStd_LabelName, g);
-
-//   theCommands.Add ("FullPath", 
-//                    "FullPath (DF, entry)",
-// 		   __FILE__, DDataStd_FullPath, g);
 
 }
 

@@ -32,6 +32,7 @@ public:
   {
     theAttribute->Set          (myValue);
     theAttribute->SetDimension (static_cast<TDataStd_RealEnum> (myDimension));
+	theAttribute->SetID(TDataStd_Real::GetID());
   }
 
 private:

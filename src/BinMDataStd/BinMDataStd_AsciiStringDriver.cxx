@@ -23,6 +23,7 @@
 #include <Standard_Type.hxx>
 #include <TDataStd_AsciiString.hxx>
 #include <TDF_Attribute.hxx>
+#include <BinMDataStd.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_AsciiStringDriver,BinMDF_ADriver)
 
@@ -61,6 +62,19 @@ Standard_Boolean BinMDataStd_AsciiStringDriver::Paste
   Standard_Boolean ok = Source >> aString;
   if (ok)
     aStrAtt->Set( aString );
+  if(BinMDataStd::DocumentVersion() > 8) { // process user defined guid
+	const Standard_Integer& aPos = Source.Position();
+	Standard_GUID aGuid;
+	ok = Source >> aGuid;	
+	if (!ok) {
+	  Source.SetPosition(aPos);	  
+	  aStrAtt->SetID(TDataStd_AsciiString::GetID());
+	  ok = Standard_True;
+	} else {	  
+	  aStrAtt->SetID(aGuid);
+	}
+  } else
+	aStrAtt->SetID(TDataStd_AsciiString::GetID());
   return ok;
 }
 
@@ -76,4 +90,8 @@ void BinMDataStd_AsciiStringDriver::Paste
 {
   Handle(TDataStd_AsciiString) anAtt = Handle(TDataStd_AsciiString)::DownCast(Source);
   Target << anAtt->Get();
+ // process user defined guid
+  if(anAtt->ID() != TDataStd_AsciiString::GetID()) 
+	Target << anAtt->ID();
+
 }

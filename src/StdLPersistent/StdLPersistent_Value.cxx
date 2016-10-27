@@ -86,6 +86,44 @@ Handle(TDF_Attribute) StdLPersistent_Value::UAttribute::CreateAttribute()
   return this->myTransient;
 }
 
+//=======================================================================
+Handle(TDF_Attribute) StdLPersistent_Value::Integer::CreateAttribute()
+{
+  integer<TDataStd_Integer>::CreateAttribute();
+
+  if (this->myData)
+  {
+    this->myTransient->SetID (TDataStd_Integer::GetID());
+  }
+
+  return this->myTransient;
+}
+
+//=======================================================================
+Handle(TDF_Attribute) StdLPersistent_Value::Name::CreateAttribute()
+{
+  string<TDataStd_Name>::CreateAttribute();
+
+  if (this->myData)
+  {
+    this->myTransient->SetID (TDataStd_Name::GetID());
+  }
+
+  return this->myTransient;
+}
+
+//=======================================================================
+Handle(TDF_Attribute) StdLPersistent_Value::AsciiString::CreateAttribute()
+{
+  string<TDataStd_AsciiString, StdLPersistent_HString::Ascii>::CreateAttribute();
+
+  if (this->myData)
+  {
+    this->myTransient->SetID (TDataStd_AsciiString::GetID());
+  }
+
+  return this->myTransient;
+}
 
 template class StdLPersistent_Value::integer <TDataStd_Integer>;
 template class StdLPersistent_Value::integer <TDF_TagSource>;

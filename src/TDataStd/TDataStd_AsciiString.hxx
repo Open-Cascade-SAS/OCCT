@@ -23,7 +23,8 @@
 #include <TDF_Attribute.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
-class Standard_GUID;
+#include <Standard_GUID.hxx>
+
 class TDF_Label;
 class TCollection_AsciiString;
 class TDF_Attribute;
@@ -50,11 +51,19 @@ public:
   //! AsciiString methods
   //! ===================
   Standard_EXPORT static Handle(TDataStd_AsciiString) Set (const TDF_Label& label, const TCollection_AsciiString& string);
-  
+ 
+  //! Finds, or creates, an AsciiString attribute with explicit user defined <guid> and sets <string>.
+  //! The Name attribute  is  returned. 
+  Standard_EXPORT static Handle(TDataStd_AsciiString) Set (const TDF_Label& label, const Standard_GUID& guid,
+	                            const TCollection_AsciiString& string);
+
   Standard_EXPORT TDataStd_AsciiString();
   
   Standard_EXPORT void Set (const TCollection_AsciiString& S);
   
+  //! Sets the explicit user defined GUID  to the attribute.
+  Standard_EXPORT void SetID (const Standard_GUID& guid);
+
   Standard_EXPORT const TCollection_AsciiString& Get() const;
   
   Standard_EXPORT Standard_Boolean IsEmpty() const;
@@ -83,7 +92,7 @@ private:
 
 
   TCollection_AsciiString myString;
-
+  Standard_GUID myID;
 
 };
 

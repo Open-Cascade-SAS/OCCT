@@ -23,8 +23,9 @@
 #include <TCollection_ExtendedString.hxx>
 #include <TDF_Attribute.hxx>
 #include <Standard_OStream.hxx>
+#include <Standard_GUID.hxx>
+
 class Standard_DomainError;
-class Standard_GUID;
 class TDF_Label;
 class TCollection_ExtendedString;
 class TDF_Attribute;
@@ -69,12 +70,18 @@ public:
   //! Name methods
   //! ============
   Standard_EXPORT static Handle(TDataStd_Name) Set (const TDF_Label& label, const TCollection_ExtendedString& string);
-  
+
+  //! Finds, or creates, a Name attribute with explicit user defined <guid> and sets <string>.
+  //! The Name attribute  is  returned. 
+  Standard_EXPORT static Handle(TDataStd_Name) Set (const TDF_Label& label, const Standard_GUID& guid,
+	                            const TCollection_ExtendedString& string);
   Standard_EXPORT TDataStd_Name();
   
   //! Sets <S> as name. Raises if <S> is not a valid name.
   Standard_EXPORT void Set (const TCollection_ExtendedString& S);
   
+  //! Sets the explicit user defined GUID  to the attribute.
+  Standard_EXPORT void SetID (const Standard_GUID& guid);
 
   //! Returns the name contained in this name attribute.
   Standard_EXPORT const TCollection_ExtendedString& Get() const;
@@ -103,7 +110,7 @@ private:
 
 
   TCollection_ExtendedString myString;
-
+  Standard_GUID myID;
 
 };
 

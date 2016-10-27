@@ -24,6 +24,8 @@
 #include <TDF_Attribute.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
+#include <Standard_GUID.hxx>
+
 class Standard_GUID;
 class TDF_Label;
 class TDF_Attribute;
@@ -47,12 +49,20 @@ public:
   
   //! Finds, or creates, an Integer attribute and sets <value>
   //! the Integer  attribute is returned.
-  //! Integer methods
-  //! ===============
   Standard_EXPORT static Handle(TDataStd_Integer) Set (const TDF_Label& label, const Standard_Integer value);
   
+  //! Finds, or creates, an Integer attribute with explicit user defined <guid> and sets <value>.
+  //! The Integer attribute  is  returned. 
+  Standard_EXPORT static Handle(TDataStd_Integer) Set (const TDF_Label& label, const Standard_GUID& guid,
+	                            const Standard_Integer value);
+
+  //! Integer methods
+  //! ===============
   Standard_EXPORT void Set (const Standard_Integer V);
-  
+ 
+  //! Sets the explicit GUID (user defined) for the attribute.
+  Standard_EXPORT void SetID (const Standard_GUID& guid);
+
   //! Returns the integer value contained in the attribute.
   Standard_EXPORT Standard_Integer Get() const;
   
@@ -85,7 +95,7 @@ private:
 
 
   Standard_Integer myValue;
-
+  Standard_GUID myID;
 
 };
 

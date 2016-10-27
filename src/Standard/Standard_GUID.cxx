@@ -18,8 +18,6 @@
 #include <Standard_RangeError.hxx>
 
 #include <stdio.h>
-#define Standard_GUID_SIZE 36
-#define Standard_GUID_SIZE_ALLOC Standard_GUID_SIZE+1
 
 //Fixes incorrect treatment of GUID given as a string with invalid format
 

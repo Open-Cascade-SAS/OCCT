@@ -23,7 +23,7 @@
 #include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_IntegerDriver,XmlMDF_ADriver)
-
+IMPLEMENT_DOMSTRING (AttributeIDString, "intattguid")
 //=======================================================================
 //function : XmlMDataStd_IntegerDriver
 //purpose  : Constructor
@@ -65,6 +65,17 @@ Standard_Boolean XmlMDataStd_IntegerDriver::Paste
   Handle(TDataStd_Integer) anInt= Handle(TDataStd_Integer)::DownCast(theTarget);
   anInt->Set(aValue);
 
+  // attribute id
+  Standard_GUID aGUID;
+  const XmlObjMgt_Element& anElement = theSource;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_Integer::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+
+  Handle(TDataStd_Integer)::DownCast(theTarget)->SetID(aGUID);
+
   return Standard_True;
 }
 
@@ -78,4 +89,11 @@ void XmlMDataStd_IntegerDriver::Paste (const Handle(TDF_Attribute)& theSource,
 {
   Handle(TDataStd_Integer) anInt= Handle(TDataStd_Integer)::DownCast(theSource);
   XmlObjMgt::SetStringValue (theTarget, anInt->Get());
+  if(anInt->ID() != TDataStd_Integer::GetID()) {
+    //convert GUID
+    Standard_Character aGuidStr [Standard_GUID_SIZE_ALLOC];
+    Standard_PCharacter pGuidStr = aGuidStr;
+    anInt->ID().ToCString (pGuidStr);
+    theTarget.Element().setAttribute (::AttributeIDString(), aGuidStr);
+  }
 }

@@ -25,7 +25,7 @@
 #include <XmlObjMgt_SRelocationTable.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_AsciiStringDriver,XmlMDF_ADriver)
-
+IMPLEMENT_DOMSTRING (AttributeIDString, "asciiguid")
 //=======================================================================
 //function : XmlMDataStd_AsciiStringDriver
 //purpose  : Constructor
@@ -54,9 +54,19 @@ Standard_Boolean XmlMDataStd_AsciiStringDriver::Paste
                                 XmlObjMgt_RRelocationTable&  ) const
 {
   if(!theTarget.IsNull()) {
-    const TCollection_AsciiString aString = XmlObjMgt::GetStringValue (theSource);
-    Handle(TDataStd_AsciiString)::DownCast(theTarget) -> Set (aString);
-    return Standard_True;
+  const TCollection_AsciiString aString = XmlObjMgt::GetStringValue (theSource);
+  Handle(TDataStd_AsciiString)::DownCast(theTarget) -> Set (aString);
+  // attribute id
+  Standard_GUID aGUID;
+  const XmlObjMgt_Element& anElement = theSource;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_AsciiString::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+
+  Handle(TDataStd_AsciiString)::DownCast(theTarget)->SetID(aGUID);
+  return Standard_True;
   }
   WriteMessage("error retrieving AsciiString for type TDataStd_AsciiString");
   return Standard_False;
@@ -74,4 +84,11 @@ void XmlMDataStd_AsciiStringDriver::Paste (const Handle(TDF_Attribute)& theSourc
   if (aS.IsNull()) return;
   XmlObjMgt_DOMString aString = aS->Get().ToCString();
   XmlObjMgt::SetStringValue (theTarget, aString);
+  if(aS->ID() != TDataStd_AsciiString::GetID()) {
+    //convert GUID
+    Standard_Character aGuidStr [Standard_GUID_SIZE_ALLOC];
+    Standard_PCharacter pGuidStr = aGuidStr;
+    aS->ID().ToCString (pGuidStr);
+    theTarget.Element().setAttribute (::AttributeIDString(), aGuidStr);
+  }
 }

@@ -106,9 +106,7 @@ void XCAFDoc_Dimension::SetObject (const Handle(XCAFDimTolObjects_DimensionObjec
   {
     anIter.Value().ForgetAllAttributes();
   }
-  Handle(TDataStd_Integer) aType = new TDataStd_Integer();
-  Label().FindChild(ChildLab_Type).AddAttribute(aType);
-  aType->Set(theObject->GetType());
+  Handle(TDataStd_Integer) aType = TDataStd_Integer::Set(Label().FindChild(ChildLab_Type), theObject->GetType());
 
   if(!theObject->GetValues().IsNull())
   {
@@ -117,9 +115,7 @@ void XCAFDoc_Dimension::SetObject (const Handle(XCAFDimTolObjects_DimensionObjec
     aVal->ChangeArray(theObject->GetValues());
   }
 
-  Handle(TDataStd_Integer) aQualifier = new TDataStd_Integer();
-  Label().FindChild(ChildLab_Qualifier).AddAttribute(aQualifier);
-  aQualifier->Set(theObject->GetQualifier());
+  Handle(TDataStd_Integer) aQualifier = TDataStd_Integer::Set(Label().FindChild(ChildLab_Qualifier), theObject->GetQualifier());
  
   Standard_Boolean aH;
   XCAFDimTolObjects_DimensionFormVariance aF;

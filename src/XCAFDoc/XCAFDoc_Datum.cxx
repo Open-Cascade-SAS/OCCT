@@ -178,19 +178,11 @@ void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theOb
     anIter.Value().ForgetAllAttributes();
   }
   if (!theObject->GetName().IsNull() && !theObject->GetName()->IsEmpty())
-  {
-    Handle(TDataStd_AsciiString) anAttName;
-    if(!Label().FindChild(ChildLab_Name).FindAttribute(TDataStd_AsciiString::GetID(), anAttName))
-    {
-      anAttName = new TDataStd_AsciiString();
-      Label().FindChild(ChildLab_Name).AddAttribute(anAttName);
-    }
-    anAttName->Set(theObject->GetName()->String());
-  }
+	Handle(TDataStd_AsciiString) anAttName = TDataStd_AsciiString::Set(Label().FindChild(ChildLab_Name),
+		                                     theObject->GetName()->String());
 
-  Handle(TDataStd_Integer) aPosition = new TDataStd_Integer();
-  aPosition->Set(theObject->GetPosition());
-  Label().FindChild(ChildLab_Position).AddAttribute(aPosition);
+  Handle(TDataStd_Integer) aPosition = TDataStd_Integer::Set(Label().FindChild(ChildLab_Position),
+	                                   theObject->GetPosition());
 
   if(theObject->GetModifiers().Length() > 0)
   {
@@ -211,31 +203,20 @@ void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theOb
   theObject->GetModifierWithValue(aM, aV);
   if(aM != XCAFDimTolObjects_DatumModifWithValue_None)
   {
-    Handle(TDataStd_Integer) aModifierWithValueM;
-    if(!Label().FindChild(ChildLab_ModifierWithValue).FindAttribute(TDataStd_Integer::GetID(), aModifierWithValueM))
-    {
-      aModifierWithValueM = new TDataStd_Integer();
-      Label().FindChild(ChildLab_ModifierWithValue).AddAttribute(aModifierWithValueM);
-    }
-    Handle(TDataStd_Real) aModifierWithValueV;
-    if(!Label().FindChild(ChildLab_ModifierWithValue).FindAttribute(TDataStd_Real::GetID(), aModifierWithValueV))
-    {
-      aModifierWithValueV = new TDataStd_Real();
-      Label().FindChild(ChildLab_ModifierWithValue).AddAttribute(aModifierWithValueV);
-    }
-    aModifierWithValueM->Set(aM);
-    aModifierWithValueV->Set(aV);
+    Handle(TDataStd_Integer) aModifierWithValueM = 
+		                                TDataStd_Integer::Set(Label().FindChild(ChildLab_ModifierWithValue), aM);
+
+    Handle(TDataStd_Real) aModifierWithValueV = 
+		                                   TDataStd_Real::Set(Label().FindChild(ChildLab_ModifierWithValue), aV);
   }
 
-  Handle(TDataStd_Integer) aIsTarget = new TDataStd_Integer();
-  aIsTarget->Set(theObject->IsDatumTarget());
-  Label().FindChild(ChildLab_IsDTarget).AddAttribute(aIsTarget);
+  Handle(TDataStd_Integer) aIsTarget = TDataStd_Integer::Set(Label().FindChild(ChildLab_IsDTarget), 
+	                                   theObject->IsDatumTarget());
 
   if(theObject->IsDatumTarget())
   {
-    Handle(TDataStd_Integer) aType = new TDataStd_Integer();
-    aType->Set(theObject->GetDatumTargetType());
-    Label().FindChild(ChildLab_DTargetType).AddAttribute(aType);
+    Handle(TDataStd_Integer) aType = TDataStd_Integer::Set(Label().FindChild(ChildLab_DTargetType), 
+		                             theObject->GetDatumTargetType());
 
     if(theObject->GetDatumTargetType() == XCAFDimTolObjects_DatumTargetType_Area)
     {
@@ -273,20 +254,15 @@ void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theOb
 
       if(theObject->GetDatumTargetType() != XCAFDimTolObjects_DatumTargetType_Point)
       {
-        Handle(TDataStd_Real) aLen = new TDataStd_Real();
-        aLen->Set(theObject->GetDatumTargetLength());
-        Label().FindChild(ChildLab_DTargetLength).AddAttribute(aLen);
+        Handle(TDataStd_Real) aLen = TDataStd_Real::Set(Label().FindChild(ChildLab_DTargetLength),
+			                         theObject->GetDatumTargetLength());
         if(theObject->GetDatumTargetType() == XCAFDimTolObjects_DatumTargetType_Rectangle)
-        {
-          Handle(TDataStd_Real) aWidth = new TDataStd_Real();
-          aWidth->Set(theObject->GetDatumTargetWidth());
-          Label().FindChild(ChildLab_DTargetWidth).AddAttribute(aWidth);
-        }
+          Handle(TDataStd_Real) aWidth = TDataStd_Real::Set(Label().FindChild(ChildLab_DTargetWidth),
+			                             theObject->GetDatumTargetWidth());
       }
     }
-    Handle(TDataStd_Integer) aNum = new TDataStd_Integer();
-    aNum->Set(theObject->GetDatumTargetNumber());
-    Label().FindChild(ChildLab_DTargetNumber).AddAttribute(aNum);
+    Handle(TDataStd_Integer) aNum = TDataStd_Integer::Set(Label().FindChild(ChildLab_DTargetNumber), 
+		                            theObject->GetDatumTargetNumber());
   }
 
   if (theObject->HasPlane())

@@ -104,43 +104,26 @@ void XCAFDoc_GeomTolerance::SetObject (const Handle(XCAFDimTolObjects_GeomTolera
     anIter.Value().ForgetAllAttributes();
   }
 
-  Handle(TDataStd_Integer) aType = new TDataStd_Integer();
-  aType->Set(theObject->GetType());
-  Label().FindChild(ChildLab_Type).AddAttribute(aType);
+  Handle(TDataStd_Integer) aType = TDataStd_Integer::Set(Label().FindChild(ChildLab_Type), theObject->GetType());
 
   if(theObject->GetTypeOfValue() != XCAFDimTolObjects_GeomToleranceTypeValue_None)
-  {
-    Handle(TDataStd_Integer) aTypeOfValue = new TDataStd_Integer();
-    aTypeOfValue->Set(theObject->GetTypeOfValue());
-    Label().FindChild(ChildLab_TypeOfValue).AddAttribute(aTypeOfValue);
-  }
+    Handle(TDataStd_Integer) aTypeOfValue = TDataStd_Integer::Set(Label().FindChild(ChildLab_TypeOfValue), 
+	                                        theObject->GetTypeOfValue());
 
-  Handle(TDataStd_Real) aValue = new TDataStd_Real();
-  aValue->Set(theObject->GetValue());
-  Label().FindChild(ChildLab_Value).AddAttribute(aValue);
+  Handle(TDataStd_Real) aValue = TDataStd_Real::Set(Label().FindChild(ChildLab_Value), theObject->GetValue());
 
   Handle(TDataStd_Integer) aMatReqModif;
   if(theObject->GetMaterialRequirementModifier() != XCAFDimTolObjects_GeomToleranceMatReqModif_None)
-  {
-    Label().FindChild(ChildLab_MatReqModif).FindAttribute(TDataStd_Integer::GetID(), aMatReqModif);
-    aMatReqModif = new TDataStd_Integer();
-    Label().FindChild(ChildLab_MatReqModif).AddAttribute(aMatReqModif);
-    aMatReqModif->Set(theObject->GetMaterialRequirementModifier());
-  }
+	aMatReqModif = TDataStd_Integer::Set(Label().FindChild(ChildLab_MatReqModif), 
+	               theObject->GetMaterialRequirementModifier());
 
   if(theObject->GetZoneModifier() != XCAFDimTolObjects_GeomToleranceZoneModif_None)
-  {
-    Handle(TDataStd_Integer) aZoneModif = new TDataStd_Integer();
-    aZoneModif->Set(theObject->GetZoneModifier());
-    Label().FindChild(ChildLab_ZoneModif).AddAttribute(aZoneModif);
-  }
+    Handle(TDataStd_Integer) aZoneModif = TDataStd_Integer::Set(Label().FindChild(ChildLab_ZoneModif), 
+	                                      theObject->GetZoneModifier());
   
   if(theObject->GetValueOfZoneModifier() > 0)
-  {
-    Handle(TDataStd_Real) aValueOfZoneModif = new TDataStd_Real();
-    aValueOfZoneModif->Set(theObject->GetValueOfZoneModifier());
-    Label().FindChild(ChildLab_ValueOfZoneModif).AddAttribute(aValueOfZoneModif);
-  }
+    Handle(TDataStd_Real) aValueOfZoneModif = TDataStd_Real::Set(Label().FindChild(ChildLab_ValueOfZoneModif),
+		                                      theObject->GetValueOfZoneModifier());
 
   if(theObject->GetModifiers().Length() > 0)
   {
@@ -153,11 +136,8 @@ void XCAFDoc_GeomTolerance::SetObject (const Handle(XCAFDimTolObjects_GeomTolera
   }
 
   if(theObject->GetMaxValueModifier() > 0)
-  {
-    Handle(TDataStd_Real) aMaxValueModif = new TDataStd_Real();
-    aMaxValueModif->Set(theObject->GetMaxValueModifier());
-    Label().FindChild(ChildLab_aMaxValueModif).AddAttribute(aMaxValueModif);
-  }
+    Handle(TDataStd_Real) aMaxValueModif = TDataStd_Real::Set(Label().FindChild(ChildLab_aMaxValueModif),
+		                                   theObject->GetMaxValueModifier());
 
   if(theObject->HasAxis())
   {

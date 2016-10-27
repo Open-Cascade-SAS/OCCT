@@ -48,12 +48,30 @@ Handle(TDataStd_Real) TDataStd_Real::Set (const TDF_Label&    L,
   Handle(TDataStd_Real) A;
   if (!L.FindAttribute(TDataStd_Real::GetID(), A)) {
     A = new TDataStd_Real ();
+   A->SetID(GetID());
     L.AddAttribute(A);
   }
   A->Set (V); 
   return A;
 }
 
+//=======================================================================
+//function : Set
+//purpose  : User defined attribute
+//=======================================================================
+
+Handle(TDataStd_Real) TDataStd_Real::Set (const TDF_Label&    L, const Standard_GUID& theGuid,
+                                          const Standard_Real V) 
+{
+  Handle(TDataStd_Real) A;
+  if (!L.FindAttribute(theGuid, A)) {
+    A = new TDataStd_Real ();
+    A->SetID(theGuid);
+    L.AddAttribute(A);
+  }
+  A->Set (V); 
+  return A;
+}
 
 //=======================================================================
 //function : TDataStd_Real
@@ -78,8 +96,9 @@ Standard_Boolean TDataStd_Real::IsCaptured() const
   // pour test
 
   if (Label().FindAttribute(TDF_Reference::GetID(),reference)) {
-    const TDF_Label& label = reference->Get();
-    return label.IsAttribute (TDataStd_Real::GetID());
+    const TDF_Label& aLabel = reference->Get();	
+    return aLabel.IsAttribute (myID);
+
   }
   return Standard_False;
 }
@@ -138,9 +157,20 @@ TDataStd_RealEnum TDataStd_Real::GetDimension () const
 //purpose  : 
 //=======================================================================
 
-const Standard_GUID& TDataStd_Real::ID() const { return GetID(); }
+const Standard_GUID& TDataStd_Real::ID() const { return myID; }
 
+//=======================================================================
+//function : SetID
+//purpose  :
+//=======================================================================
 
+void TDataStd_Real::SetID( const Standard_GUID&  theGuid)
+{  
+  if(myID == theGuid) return;
+
+  Backup();
+  myID = theGuid;
+}
 //=======================================================================
 //function : NewEmpty
 //purpose  : 
@@ -148,7 +178,9 @@ const Standard_GUID& TDataStd_Real::ID() const { return GetID(); }
 
 Handle(TDF_Attribute) TDataStd_Real::NewEmpty () const
 {  
-  return new TDataStd_Real(); 
+  Handle(TDataStd_Real) Att = new TDataStd_Real();
+  Att->SetID(myID);
+  return Att; 
 }
 
 //=======================================================================
@@ -161,6 +193,7 @@ void TDataStd_Real::Restore(const Handle(TDF_Attribute)& With)
   Handle(TDataStd_Real) R = Handle(TDataStd_Real)::DownCast (With);
   myValue = R->Get();
   myDimension = R->GetDimension();
+  myID = R->ID();
 }
 
 
@@ -176,6 +209,7 @@ void TDataStd_Real::Paste (const Handle(TDF_Attribute)& Into,
   Handle(TDataStd_Real) R = Handle(TDataStd_Real)::DownCast (Into);
   R->Set(myValue);
   R->SetDimension(myDimension);
+  R->SetID(myID);
 }
 
 //=======================================================================
@@ -187,6 +221,10 @@ Standard_OStream& TDataStd_Real::Dump (Standard_OStream& anOS) const
 {  
   anOS << "Real "; 
   TDataStd::Print(GetDimension(),anOS);
+  anOS << myValue; 
+  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  myID.ToCString(sguid);
+  anOS << sguid;
   return anOS;
 }
  

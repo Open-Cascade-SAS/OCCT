@@ -20,6 +20,7 @@
 #include <Standard_Type.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDF_Attribute.hxx>
+#include <BinMDataStd.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_NameDriver,BinMDF_ADriver)
 
@@ -58,6 +59,19 @@ Standard_Boolean BinMDataStd_NameDriver::Paste
   Standard_Boolean ok = Source >> aStr;
   if (ok)
     aName->Set( aStr );
+  if(BinMDataStd::DocumentVersion() > 8) { // process user defined guid
+	const Standard_Integer& aPos = Source.Position();
+	Standard_GUID aGuid;
+	ok = Source >> aGuid;	
+	if (!ok) {
+	  Source.SetPosition(aPos);	  
+	  aName->SetID(TDataStd_Name::GetID());
+	  ok = Standard_True;
+	} else {	  
+	  aName->SetID(aGuid);
+	}
+  } else
+	aName->SetID(TDataStd_Name::GetID());
   return ok;
 }
 
@@ -73,4 +87,7 @@ void BinMDataStd_NameDriver::Paste
 {
   Handle(TDataStd_Name) aName = Handle(TDataStd_Name)::DownCast(Source);
   Target << aName->Get();
+  // process user defined guid
+  if(aName->ID() != TDataStd_Name::GetID()) 
+	Target << aName->ID();
 }

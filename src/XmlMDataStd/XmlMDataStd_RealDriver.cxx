@@ -25,7 +25,7 @@
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_RealDriver,XmlMDF_ADriver)
-
+IMPLEMENT_DOMSTRING (AttributeIDString, "realattguid")
 //=======================================================================
 //function : XmlMDataStd_RealDriver
 //purpose  : Constructor
@@ -64,8 +64,19 @@ Standard_Boolean XmlMDataStd_RealDriver::Paste
     return Standard_False;
   }
 
-  Handle(TDataStd_Real) anInt = Handle(TDataStd_Real)::DownCast(theTarget);
-  anInt->Set(aValue);
+  Handle(TDataStd_Real) anAtt = Handle(TDataStd_Real)::DownCast(theTarget);
+  anAtt->Set(aValue);
+
+  // attribute id
+  Standard_GUID aGUID;
+  const XmlObjMgt_Element& anElement = theSource;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_Real::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+
+  Handle(TDataStd_Real)::DownCast(theTarget)->SetID(aGUID);
 
   return Standard_True;
 }
@@ -78,10 +89,17 @@ void XmlMDataStd_RealDriver::Paste (const Handle(TDF_Attribute)& theSource,
                                     XmlObjMgt_Persistent&        theTarget,
                                     XmlObjMgt_SRelocationTable&  ) const
 {
-  Handle(TDataStd_Real) anInt = Handle(TDataStd_Real)::DownCast(theSource);
+  Handle(TDataStd_Real) anAtt = Handle(TDataStd_Real)::DownCast(theSource);
   char aValueChar[32];
-  Sprintf(aValueChar, "%.17g", anInt->Get());
+  Sprintf(aValueChar, "%.17g", anAtt->Get());
   TCollection_AsciiString aValueStr(aValueChar);
   // No occurrence of '&', '<' and other irregular XML characters
   XmlObjMgt::SetStringValue (theTarget, aValueStr.ToCString(), Standard_True);
+  if(anAtt->ID() != TDataStd_Real::GetID()) {
+    //convert GUID
+    Standard_Character aGuidStr [Standard_GUID_SIZE_ALLOC];
+    Standard_PCharacter pGuidStr = aGuidStr;
+    anAtt->ID().ToCString (pGuidStr);
+    theTarget.Element().setAttribute (::AttributeIDString(), aGuidStr);
+  }
 }

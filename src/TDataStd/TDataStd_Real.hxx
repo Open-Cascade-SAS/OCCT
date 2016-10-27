@@ -25,7 +25,8 @@
 #include <TDF_Attribute.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
-class Standard_GUID;
+#include <Standard_GUID.hxx>
+
 class TDF_Label;
 class TDF_Attribute;
 class TDF_RelocationTable;
@@ -43,16 +44,23 @@ public:
   
   //! class methods
   //! =============
-  //! Returns the GUID for real numbers.
+  //! Returns the default GUID for real numbers.
   Standard_EXPORT static const Standard_GUID& GetID();
   
-  //! Finds, or creates, an Real attribute and sets <value> the
-  //! Real attribute  is  returned. the  Real  dimension is
-  //! Scalar by default. use SetDimension to overwrite.
+  //! Finds, or creates, a Real attribute with default GUID and sets <value>.
+  //! The Real attribute  is  returned. The  Real  dimension is Scalar by default.
+  //! Use SetDimension to overwrite.
   //! Real methods
   //! ============
   Standard_EXPORT static Handle(TDataStd_Real) Set (const TDF_Label& label, const Standard_Real value);
   
+  //! Finds, or creates, a Real attribute with explicit GUID and sets <value>.
+  //! The Real attribute  is  returned. 
+  //! Real methods
+  //! ============
+  Standard_EXPORT static Handle(TDataStd_Real) Set (const TDF_Label& label, const Standard_GUID& guid,
+	                            const Standard_Real value);
+
   Standard_EXPORT TDataStd_Real();
   
   Standard_EXPORT void SetDimension (const TDataStd_RealEnum DIM);
@@ -60,9 +68,11 @@ public:
   Standard_EXPORT TDataStd_RealEnum GetDimension() const;
   
 
-  //! Finds or creates the real number V.
+  //! Sets the real number V.
   Standard_EXPORT void Set (const Standard_Real V);
   
+  //! Sets the explicit GUID for the attribute.
+  Standard_EXPORT void SetID (const Standard_GUID& guid);
 
   //! Returns the real number value contained in the attribute.
   Standard_EXPORT Standard_Real Get() const;
@@ -95,7 +105,7 @@ private:
 
   Standard_Real myValue;
   TDataStd_RealEnum myDimension;
-
+  Standard_GUID myID;
 
 };
 
