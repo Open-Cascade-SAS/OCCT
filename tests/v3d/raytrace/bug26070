@@ -66,5 +66,5 @@ vsetdispmode 1
 vfit
 
 vrenderparams -rayTrace -reflections
-vlocrotate res 0 0 0 0 0 1 180
+vlocation res -rotate 0 0 0 0 0 1 180
 vfit

@@ -21,6 +21,7 @@
 #include <Graphic3d_Mat4.hxx>
 #include <Graphic3d_Vec3.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>
+#include <NCollection_Lerp.hxx>
 
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
@@ -664,5 +665,27 @@ public:
 };
 
 DEFINE_STANDARD_HANDLE (Graphic3d_Camera, Standard_Transient)
+
+//! Linear interpolation tool for camera orientation and position.
+//! This tool interpolates camera parameters scale, eye, center, rotation (up and direction vectors) independently.
+//!
+//! Eye/Center interpolation is performed through defining an anchor point in-between Center and Eye.
+//! The anchor position is defined as point near to the camera point which has smaller translation part.
+//! The main idea is to keep the distance between Center and Eye
+//! (which will change if Center and Eye translation will be interpolated independently).
+//! E.g.:
+//!  - When both Center and Eye are moved at the same vector -> both will be just translated by straight line
+//!  - When Center is not moved -> camera Eye    will move around Center through arc
+//!  - When Eye    is not moved -> camera Center will move around Eye    through arc
+//!  - When both Center and Eye are move by different vectors -> transformation will be something in between,
+//!    and will try interpolate linearly the distance between Center and Eye.
+//!
+//! This transformation might be not in line with user expectations.
+//! In this case, application might define intermediate camera positions for interpolation
+//! or implement own interpolation logic.
+template<>
+Standard_EXPORT void NCollection_Lerp<Handle(Graphic3d_Camera)>::Interpolate (const double theT,
+                                                                              Handle(Graphic3d_Camera)& theResult) const;
+typedef NCollection_Lerp<Handle(Graphic3d_Camera)> Graphic3d_CameraLerp;
 
 #endif

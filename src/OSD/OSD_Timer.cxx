@@ -104,6 +104,18 @@ static void Compute (Standard_Real     Time,
 
 //=======================================================================
 //function : Reset
+//purpose  :
+//=======================================================================
+
+void OSD_Timer::Reset (const Standard_Real theTimeElapsedSec)
+{
+  TimeStart = 0.0;
+  TimeCumul = theTimeElapsedSec;
+  OSD_Chronometer::Reset();
+}
+
+//=======================================================================
+//function : Reset
 //purpose  : 
 //=======================================================================
 

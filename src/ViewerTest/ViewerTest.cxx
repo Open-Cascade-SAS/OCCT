@@ -303,7 +303,7 @@ Standard_Boolean ViewerTest::Display (const TCollection_AsciiString&       theNa
     Handle(AIS_InteractiveObject) anOldObj = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (theName));
     if (!anOldObj.IsNull())
     {
-      aCtx->Remove (anOldObj, Standard_True);
+      aCtx->Remove (anOldObj, theObject.IsNull() && theToUpdate);
     }
     aMap.UnBind2 (theName);
   }
@@ -3973,125 +3973,6 @@ static int VPerf(Draw_Interpretor& di, Standard_Integer , const char** argv) {
   return 0;
 }
 
-
-//==================================================================================
-// Function : VAnimation
-//==================================================================================
-static int VAnimation (Draw_Interpretor& di, Standard_Integer argc, const char** argv) {
-  if (argc != 5) {
-    di<<"Use: "<<argv[0]<<" CrankArmFile CylinderHeadFile PropellerFile EngineBlockFile\n";
-    return 1;
-  }
-
-  Standard_Real thread = 4;
-  Standard_Real angleA=0;
-  Standard_Real angleB;
-  Standard_Real X;
-  gp_Ax1 Ax1(gp_Pnt(0,0,0),gp_Vec(0,0,1));
-
-  BRep_Builder B;
-  TopoDS_Shape CrankArm;
-  TopoDS_Shape CylinderHead;
-  TopoDS_Shape Propeller;
-  TopoDS_Shape EngineBlock;
-
-  //BRepTools::Read(CrankArm,"/dp_26/Indus/ege/assemblage/CrankArm.rle",B);
-  //BRepTools::Read(CylinderHead,"/dp_26/Indus/ege/assemblage/CylinderHead.rle",B);
-  //BRepTools::Read(Propeller,"/dp_26/Indus/ege/assemblage/Propeller.rle",B);
-  //BRepTools::Read(EngineBlock,"/dp_26/Indus/ege/assemblage/EngineBlock.rle",B);
-  BRepTools::Read(CrankArm,argv[1],B);
-  BRepTools::Read(CylinderHead,argv[2],B);
-  BRepTools::Read(Propeller,argv[3],B);
-  BRepTools::Read(EngineBlock,argv[4],B);
-
-  if (CrankArm.IsNull() || CylinderHead.IsNull() || Propeller.IsNull() || EngineBlock.IsNull()) {di<<" Syntaxe error:loading failure.\n";}
-
-
-  OSD_Timer myTimer;
-  myTimer.Start();
-
-  Handle(AIS_Shape) myAisCylinderHead = new AIS_Shape (CylinderHead);
-  Handle(AIS_Shape) myAisEngineBlock  = new AIS_Shape (EngineBlock);
-  Handle(AIS_Shape) myAisCrankArm     = new AIS_Shape (CrankArm);
-  Handle(AIS_Shape) myAisPropeller    = new AIS_Shape (Propeller);
-
-  GetMapOfAIS().Bind(myAisCylinderHead,"a");
-  GetMapOfAIS().Bind(myAisEngineBlock,"b");
-  GetMapOfAIS().Bind(myAisCrankArm,"c");
-  GetMapOfAIS().Bind(myAisPropeller,"d");
-
-  myAisCylinderHead->SetMutable (Standard_True);
-  myAisEngineBlock ->SetMutable (Standard_True);
-  myAisCrankArm    ->SetMutable (Standard_True);
-  myAisPropeller   ->SetMutable (Standard_True);
-
-  TheAISContext()->SetColor (myAisCylinderHead, Quantity_NOC_INDIANRED);
-  TheAISContext()->SetColor (myAisEngineBlock,  Quantity_NOC_RED);
-  TheAISContext()->SetColor (myAisPropeller,    Quantity_NOC_GREEN);
-
-  TheAISContext()->Display (myAisCylinderHead, Standard_False);
-  TheAISContext()->Display (myAisEngineBlock,  Standard_False);
-  TheAISContext()->Display (myAisCrankArm,     Standard_False);
-  TheAISContext()->Display (myAisPropeller,    Standard_False);
-
-  TheAISContext()->Deactivate(myAisCylinderHead);
-  TheAISContext()->Deactivate(myAisEngineBlock );
-  TheAISContext()->Deactivate(myAisCrankArm    );
-  TheAISContext()->Deactivate(myAisPropeller   );
-
-  // Boucle de mouvement
-  for (Standard_Real myAngle = 0;angleA<2*M_PI*10.175 ;myAngle++) {
-
-    angleA = thread*myAngle*M_PI/180;
-    X = Sin(angleA)*3/8;
-    angleB = atan(X / Sqrt(-X * X + 1));
-    Standard_Real decal(25*0.6);
-
-
-    //Build a transformation on the display
-    gp_Trsf aPropellerTrsf;
-    aPropellerTrsf.SetRotation(Ax1,angleA);
-    TheAISContext()->SetLocation(myAisPropeller,aPropellerTrsf);
-
-    gp_Ax3 base(gp_Pnt(3*decal*(1-Cos(angleA)),-3*decal*Sin(angleA),0),gp_Vec(0,0,1),gp_Vec(1,0,0));
-    gp_Trsf aCrankArmTrsf;
-    aCrankArmTrsf.SetTransformation(   base.Rotated(gp_Ax1(gp_Pnt(3*decal,0,0),gp_Dir(0,0,1)),angleB));
-    TheAISContext()->SetLocation(myAisCrankArm,aCrankArmTrsf);
-
-    TheAISContext()->UpdateCurrentViewer();
-  }
-
-  TopoDS_Shape myNewCrankArm  =myAisCrankArm ->Shape().Located( myAisCrankArm ->Transformation() );
-  TopoDS_Shape myNewPropeller =myAisPropeller->Shape().Located( myAisPropeller->Transformation() );
-
-  myAisCrankArm ->ResetTransformation();
-  myAisPropeller->ResetTransformation();
-
-  myAisCrankArm  -> Set(myNewCrankArm );
-  myAisPropeller -> Set(myNewPropeller);
-
-  TheAISContext()->Activate(myAisCylinderHead,0);
-  TheAISContext()->Activate(myAisEngineBlock,0 );
-  TheAISContext()->Activate(myAisCrankArm ,0   );
-  TheAISContext()->Activate(myAisPropeller ,0  );
-
-  myTimer.Stop();
-  myTimer.Show();
-  myTimer.Start();
-
-  TheAISContext()->Redisplay(myAisCrankArm ,Standard_False);
-  TheAISContext()->Redisplay(myAisPropeller,Standard_False);
-
-  TheAISContext()->UpdateCurrentViewer();
-  a3DView()->Redraw();
-
-  myTimer.Stop();
-  myTimer.Show();
-
-  return 0;
-
-}
-
 //==============================================================================
 //function : VShading
 //purpose  : Sharpen or roughten the quality of the shading
@@ -5762,10 +5643,6 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "vperf: vperf  ShapeName 1/0(Transfo/Location) 1/0(Primitives sensibles ON/OFF)"
       "\n\t\t: Tests the animation of an object along a predefined trajectory.",
       __FILE__,VPerf,group);
-
-  theCommands.Add("vanimation",
-		  "vanimation CrankArmFile CylinderHeadFile PropellerFile EngineBlockFile",
-		  __FILE__,VAnimation,group);
 
   theCommands.Add("vsetshading",
       "vsetshading  : vsetshading name Quality(default=0.0008) "

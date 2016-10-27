@@ -2376,11 +2376,15 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
     aDefViewIter.Value()->View()->ChangeHiddenObjects()->Remove (theIObj.get());
   }
 
-  if (!myLastinMain.IsNull() && myLastinMain->IsSameSelectable (theIObj))
-    myLastinMain.Nullify();
-  if (!myLastPicked.IsNull() && myLastPicked->IsSameSelectable (theIObj))
-    myLastPicked.Nullify();
-  myMainPM->ClearImmediateDraw();
+  if (!myLastinMain.IsNull())
+  {
+    if (myLastinMain->IsSameSelectable (theIObj)
+     || myLastPicked->IsSameSelectable(theIObj))
+    {
+      myLastinMain.Nullify();
+      myMainPM->ClearImmediateDraw();
+    }
+  }
 
   if (theToUpdateviewer && aStatus->GraphicStatus() == AIS_DS_Displayed)
   {

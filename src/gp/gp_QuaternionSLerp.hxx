@@ -16,27 +16,45 @@
 
 #include <gp_Quaternion.hxx>
 
-/**
- * Perform Spherical Linear Interpolation of the quaternions,
- * return unit length quaternion.
- */
+//! Perform Spherical Linear Interpolation of the quaternions,
+//! return unit length quaternion.
 class gp_QuaternionSLerp
 {
+public:
+
+  //! Compute interpolated quaternion between two quaternions.
+  //! @param theStart first  quaternion
+  //! @param theEnd   second quaternion
+  //! @param theT normalized interpolation coefficient within 0..1 range,
+  //!             with 0 pointing to theStart and 1 to theEnd.
+  static gp_Quaternion Interpolate (const gp_Quaternion& theQStart,
+                                    const gp_Quaternion& theQEnd,
+                                    Standard_Real theT)
+  {
+    gp_Quaternion aResult;
+    gp_QuaternionSLerp aLerp (theQStart, theQEnd);
+    aLerp.Interpolate (theT, aResult);
+    return aResult;
+  }
 
 public:
 
+  //! Empty constructor,
   gp_QuaternionSLerp() {}
 
+  //! Constructor with initialization.
   gp_QuaternionSLerp (const gp_Quaternion& theQStart, const gp_Quaternion& theQEnd)
   {
     Init (theQStart, theQEnd);
   }
 
+  //! Initialize the tool with Start and End values.
   void Init (const gp_Quaternion& theQStart, const gp_Quaternion& theQEnd)
   {
     InitFromUnit (theQStart.Normalized(), theQEnd.Normalized());
   }
 
+  //! Initialize the tool with Start and End unit quaternions.
   void InitFromUnit (const gp_Quaternion& theQStart, const gp_Quaternion& theQEnd)
   {
     myQStart = theQStart;

@@ -1,0 +1,34 @@
+puts "=================================="
+puts "Viewer animation - animate object moving"
+puts "=================================="
+
+pload MODELING VISUALIZATION
+
+vclear
+vinit View1
+vaxo
+
+psphere s 50
+box b1 -50 -50 0 100 100 100
+vdisplay -dispMode 1 b1 s
+
+vviewparams -scale 2.499 -proj 0.546611 -0.600024 -0.584114 -up -0.411832 0.414728 -0.811415 -at -5.3425 -2.983 49.216
+
+vanimation anim -clear
+vanimation anim/obj1 -objectTrsf b1 -loc1 0 0 0 -loc2 -100 0 -100 -start 0 -duration 2
+vanimation anim/obj2 -objectTrsf s  -loc1 0 0 0 -loc2  100 0  100 -start 1 -duration 2
+
+vanimation anim -play 0.0 0.0
+vdump $imagedir/${casename}_0.png
+
+vanimation anim -play 1.0 0.0
+vdump $imagedir/${casename}_1.png
+
+vanimation anim -play 2.0 0.0
+vdump $imagedir/${casename}_2.png
+
+if {[vreadpixel 270  20 rgb name] != "DARKGOLDENROD3"} { puts "Error: Box moving result is wrong!" }
+if {[vreadpixel 120 255 rgb name] != "DARKGOLDENROD4"} { puts "Error: Sphere moving result is wrong!" }
+
+puts "Put the following command to start interactive animation:"
+puts "    vanimation anim -play"

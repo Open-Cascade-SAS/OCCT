@@ -895,6 +895,9 @@ public:
   //! the camera approach.
   Standard_EXPORT const Handle(Graphic3d_Camera)& Camera() const;
 
+  //! Return default camera.
+  const Handle(Graphic3d_Camera)& DefaultCamera() const { return myDefaultCamera; }
+
   //! Returns current rendering parameters and effect settings.
   //! By default it returns default parameters of current viewer.
   //! To define view-specific settings use method V3d_View::ChangeRenderingParams().

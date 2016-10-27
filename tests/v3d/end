@@ -1,4 +1,6 @@
-catch { vfit }
+if { [info exists subgroup] && $subgroup != "motion" && $subgroup != "ivtk" } {
+  catch { vfit }
+}
 if { [info exists subgroup] && $subgroup == "raytrace" } {
 
   # dump final image for raytraced visualization tests

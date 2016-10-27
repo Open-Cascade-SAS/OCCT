@@ -19,7 +19,7 @@ vdisplay b
 
 vfit
 
-vlocrotate b 0 0 0 0 0 1 50
+vlocation b -rotate 0 0 0 0 0 1 50
 
 vmoveto 380 50
 checkcolor 380 50 0.87450981140136719 0 0.12156862765550613

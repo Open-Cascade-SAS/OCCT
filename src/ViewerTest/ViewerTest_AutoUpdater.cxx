@@ -70,8 +70,9 @@ Standard_Boolean ViewerTest_AutoUpdater::parseRedrawMode (const TCollection_Asci
 //=======================================================================
 void ViewerTest_AutoUpdater::Invalidate()
 {
-  myContext.Nullify();
-  if (myWasAutoUpdate)
+  myToUpdate = ViewerTest_AutoUpdater::RedrawMode_Suppressed;
+  if (myWasAutoUpdate
+  && !myView.IsNull())
   {
     myView->SetImmediateUpdate (myWasAutoUpdate);
   }
@@ -83,16 +84,34 @@ void ViewerTest_AutoUpdater::Invalidate()
 //=======================================================================
 void ViewerTest_AutoUpdater::Update()
 {
-  if (myContext.IsNull())
+  if (!myView.IsNull())
   {
-    return;
+    myView->SetImmediateUpdate (myWasAutoUpdate);
   }
 
-  // update the screen and redraw the view
-  myView->SetImmediateUpdate (myWasAutoUpdate);
-  if ((myWasAutoUpdate && myToUpdate != ViewerTest_AutoUpdater::RedrawMode_Suppressed)
-    || myToUpdate == ViewerTest_AutoUpdater::RedrawMode_Forced)
+  switch (myToUpdate)
   {
-    myContext->UpdateCurrentViewer();
+    case ViewerTest_AutoUpdater::RedrawMode_Suppressed:
+    {
+      return;
+    }
+    case ViewerTest_AutoUpdater::RedrawMode_Auto:
+    {
+      if (!myWasAutoUpdate)
+      {
+        return;
+      }
+    }
+    case ViewerTest_AutoUpdater::RedrawMode_Forced:
+    {
+      if (!myContext.IsNull())
+      {
+        myContext->UpdateCurrentViewer();
+      }
+      else if (!myView.IsNull())
+      {
+        myView->Redraw();
+      }
+    }
   }
 }

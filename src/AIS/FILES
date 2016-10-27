@@ -1,5 +1,13 @@
 AIS.cxx
 AIS.hxx
+AIS_Animation.cxx
+AIS_Animation.hxx
+AIS_AnimationTimer.cxx
+AIS_AnimationTimer.hxx
+AIS_AnimationCamera.cxx
+AIS_AnimationCamera.hxx
+AIS_AnimationObject.cxx
+AIS_AnimationObject.hxx
 AIS_AngleDimension.cxx
 AIS_AngleDimension.hxx
 AIS_AttributeFilter.cxx

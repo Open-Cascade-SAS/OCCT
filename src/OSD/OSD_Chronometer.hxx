@@ -48,7 +48,10 @@ public:
   //! process (all threads, and completed children) is measured.
   Standard_EXPORT OSD_Chronometer(const Standard_Boolean ThisThreadOnly = Standard_False);
   Standard_EXPORT virtual ~OSD_Chronometer();
-  
+
+  //! Return true if timer has been started.
+  Standard_Boolean IsStarted() const { return !Stopped; }
+
   //! Stops and Reinitializes the Chronometer.
   Standard_EXPORT virtual void Reset();
   

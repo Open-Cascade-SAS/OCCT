@@ -98,6 +98,7 @@ gp_Trsf2d.cxx
 gp_Trsf2d.hxx
 gp_Trsf2d.lxx
 gp_TrsfForm.hxx
+gp_TrsfNLerp.hxx
 gp_Vec.cxx
 gp_Vec.hxx
 gp_Vec.lxx

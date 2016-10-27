@@ -44,11 +44,13 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Builds a Chronometer initialized and stopped.
   Standard_EXPORT OSD_Timer();
-  
-  //! Stops and reinitializes the timer.
+
+  //! Stops and reinitializes the timer with specified elapsed time.
+  Standard_EXPORT void Reset (const Standard_Real theTimeElapsedSec);
+
+  //! Stops and reinitializes the timer with zero elapsed time.
   Standard_EXPORT virtual void Reset() Standard_OVERRIDE;
   
   //! Shows both the elapsed time and CPU time on the standard output
@@ -74,29 +76,11 @@ public:
   //! Returns elapsed time in seconds.
   Standard_EXPORT Standard_Real ElapsedTime() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Standard_Real TimeStart;
   Standard_Real TimeCumul;
 
-
 };
-
-
-
-
-
-
 
 #endif // _OSD_Timer_HeaderFile

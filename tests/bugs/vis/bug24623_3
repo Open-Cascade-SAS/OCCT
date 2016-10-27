@@ -23,7 +23,7 @@ set aNb 1000
 # display as copies
 eval compound [lrepeat $aNb s] ss
 explode ss
-for {set i 1} {$i <= $aNb} {incr i} { vloadselection ss_${i}; vsetlocation -noupdate ss_${i} 0 0 s }
+for {set i 1} {$i <= $aNb} {incr i} { vloadselection ss_${i}; vsetlocation -noupdate ss_${i} ${i} 0 0 }
 vfit
 set aMemSel1  [meminfo h]
 vclear

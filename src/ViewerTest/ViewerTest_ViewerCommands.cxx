@@ -15,6 +15,10 @@
 // commercial license or contractual agreement.
 
 #include <OpenGl_GlCore20.hxx>
+
+#include <AIS_Animation.hxx>
+#include <AIS_AnimationCamera.hxx>
+#include <AIS_AnimationObject.hxx>
 #include <AIS_ColorScale.hxx>
 #include <AIS_Manipulator.hxx>
 #include <AIS_RubberBand.hxx>
@@ -187,6 +191,7 @@ int X_ButtonPress = 0; // Last ButtonPress position
 int Y_ButtonPress = 0;
 Standard_Boolean IsDragged = Standard_False;
 Standard_Boolean DragFirst = Standard_False;
+Standard_Boolean TheIsAnimating = Standard_False;
 
 
 Standard_EXPORT const Handle(AIS_RubberBand)& GetRubberBand()
@@ -1569,6 +1574,12 @@ Standard_Boolean VT_ProcessButton1Press (Standard_Integer ,
                                          Standard_Boolean theToPick,
                                          Standard_Boolean theIsShift)
 {
+  if (TheIsAnimating)
+  {
+    TheIsAnimating = Standard_False;
+    return Standard_False;
+  }
+
   if (theToPick)
   {
     Standard_Real X, Y, Z;
@@ -2497,33 +2508,42 @@ static void OSWindowSetup()
 
 //==============================================================================
 //function : VFit
-
-//purpose  : Fitall, no DRAW arguments
-//Draw arg : No args
+//purpose  :
 //==============================================================================
 
-static int VFit (Draw_Interpretor& /*theDi*/, Standard_Integer theArgc, const char** theArgv)
+static int VFit (Draw_Interpretor& /*theDi*/, Standard_Integer theArgNb, const char** theArgv)
 {
-  if (theArgc > 2)
+  const Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
   {
-    std::cout << "Wrong number of arguments! Use: vfit [-selected]" << std::endl;
+    std::cout << "Error: no active viewer!\n";
+    return 1;
   }
 
-  const Handle(V3d_View) aView = ViewerTest::CurrentView();
-
-  if (theArgc == 2)
+  Standard_Boolean toFit = Standard_True;
+  ViewerTest_AutoUpdater anUpdateTool (Handle(AIS_InteractiveContext)(), aView);
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
-    TCollection_AsciiString anArg (theArgv[1]);
+    TCollection_AsciiString anArg (theArgv[anArgIter]);
     anArg.LowerCase();
-    if (anArg == "-selected")
+    if (anUpdateTool.parseRedrawMode (anArg))
     {
-      ViewerTest::GetAISContext()->FitSelected (aView);
-      return 0;
+      continue;
+    }
+    else if (anArg == "-selected")
+    {
+      ViewerTest::GetAISContext()->FitSelected (aView, 0.01, Standard_False);
+      toFit = Standard_False;
+    }
+    else
+    {
+      std::cout << "Syntax error at '" << anArg << "'\n";
     }
   }
-  if (aView.IsNull() == Standard_False) {
 
-    aView->FitAll();
+  if (toFit)
+  {
+    aView->FitAll (0.01, Standard_False);
   }
   return 0;
 }
@@ -5981,205 +6001,907 @@ static Standard_Integer VMoveTo (Draw_Interpretor& di,
   return 0;
 }
 
+namespace
+{
+  //! Global map storing all animations registered in ViewerTest.
+  static NCollection_DataMap<TCollection_AsciiString, Handle(AIS_Animation)> ViewerTest_AnimationTimelineMap;
+
+  //! The animation calling the Draw Harness command.
+  class ViewerTest_AnimationProc : public AIS_Animation
+  {
+  public:
+
+    //! Main constructor.
+    ViewerTest_AnimationProc (const TCollection_AsciiString& theAnimationName,
+                              Draw_Interpretor* theDI,
+                              const TCollection_AsciiString& theCommand)
+    : AIS_Animation (theAnimationName),
+      myDrawInter(theDI),
+      myCommand  (theCommand)
+    {
+      //
+    }
+
+  protected:
+
+    //! Evaluate the command.
+    virtual void update (const AIS_AnimationProgress& theProgress) Standard_OVERRIDE
+    {
+      TCollection_AsciiString aCmd = myCommand;
+      replace (aCmd, "%pts",             TCollection_AsciiString(theProgress.Pts));
+      replace (aCmd, "%localpts",        TCollection_AsciiString(theProgress.LocalPts));
+      replace (aCmd, "%ptslocal",        TCollection_AsciiString(theProgress.LocalPts));
+      replace (aCmd, "%normalized",      TCollection_AsciiString(theProgress.LocalNormalized));
+      replace (aCmd, "%localnormalized", TCollection_AsciiString(theProgress.LocalNormalized));
+      myDrawInter->Eval (aCmd.ToCString());
+    }
+
+    //! Find the keyword in the command and replace it with value.
+    //! @return the position of the keyword to pass value
+    void replace (TCollection_AsciiString&       theCmd,
+                  const TCollection_AsciiString& theKey,
+                  const TCollection_AsciiString& theVal)
+    {
+      TCollection_AsciiString aCmd (theCmd);
+      aCmd.LowerCase();
+      const Standard_Integer aPos = aCmd.Search (theKey);
+      if (aPos == -1)
+      {
+        return;
+      }
+
+      TCollection_AsciiString aPart1, aPart2;
+      Standard_Integer aPart1To = aPos - 1;
+      if (aPart1To >= 1
+       && aPart1To <= theCmd.Length())
+      {
+        aPart1 = theCmd.SubString (1, aPart1To);
+      }
+
+      Standard_Integer aPart2From = aPos + theKey.Length();
+      if (aPart2From >= 1
+       && aPart2From <= theCmd.Length())
+      {
+        aPart2 = theCmd.SubString (aPart2From, theCmd.Length());
+      }
+
+      theCmd = aPart1 + theVal + aPart2;
+    }
+
+  protected:
+
+    Draw_Interpretor*       myDrawInter;
+    TCollection_AsciiString myCommand;
+
+  };
+
+  //! Replace the animation with the new one.
+  static void replaceAnimation (const Handle(AIS_Animation)& theParentAnimation,
+                                Handle(AIS_Animation)&       theAnimation,
+                                const Handle(AIS_Animation)& theAnimationNew)
+  {
+    theAnimationNew->CopyFrom (theAnimation);
+    if (!theParentAnimation.IsNull())
+    {
+      theParentAnimation->Replace (theAnimation, theAnimationNew);
+    }
+    else
+    {
+      ViewerTest_AnimationTimelineMap.UnBind (theAnimationNew->Name());
+      ViewerTest_AnimationTimelineMap.Bind   (theAnimationNew->Name(), theAnimationNew);
+    }
+    theAnimation = theAnimationNew;
+  }
+
+  //! Parse the point.
+  static Standard_Boolean parseXYZ (const char** theArgVec, gp_XYZ& thePnt)
+  {
+    const TCollection_AsciiString anXYZ[3] = { theArgVec[0], theArgVec[1], theArgVec[2] };
+    if (!anXYZ[0].IsRealValue()
+     || !anXYZ[1].IsRealValue()
+     || !anXYZ[2].IsRealValue())
+    {
+      return Standard_False;
+    }
+
+    thePnt.SetCoord (anXYZ[0].RealValue(), anXYZ[1].RealValue(), anXYZ[2].RealValue());
+    return Standard_True;
+  }
+
+  //! Parse the quaternion.
+  static Standard_Boolean parseQuaternion (const char** theArgVec, gp_Quaternion& theQRot)
+  {
+    const TCollection_AsciiString anXYZW[4] = {theArgVec[0], theArgVec[1], theArgVec[2], theArgVec[3]};
+    if (!anXYZW[0].IsRealValue()
+     || !anXYZW[1].IsRealValue()
+     || !anXYZW[2].IsRealValue()
+     || !anXYZW[3].IsRealValue())
+    {
+      return Standard_False;
+    }
+
+    theQRot.Set (anXYZW[0].RealValue(), anXYZW[1].RealValue(), anXYZW[2].RealValue(), anXYZW[3].RealValue());
+    return Standard_True;
+  }
+
+}
+
 //=================================================================================================
 //function : VViewParams
 //purpose  : Gets or sets AIS View characteristics
 //=================================================================================================
 static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
 {
-  Handle(V3d_View) anAISView = ViewerTest::CurrentView();
-  if (anAISView.IsNull())
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
   {
     std::cout << theArgVec[0] << ": please initialize or activate view.\n";
     return 1;
   }
 
+  Standard_Boolean toSetProj     = Standard_False;
+  Standard_Boolean toSetUp       = Standard_False;
+  Standard_Boolean toSetAt       = Standard_False;
+  Standard_Boolean toSetEye      = Standard_False;
+  Standard_Boolean toSetScale    = Standard_False;
+  Standard_Boolean toSetSize     = Standard_False;
+  Standard_Boolean toSetCenter2d = Standard_False;
+  Quantity_Factor  aViewScale = aView->Scale();
+  Quantity_Length  aViewSize  = 1.0;
+  Graphic3d_Vec2i  aCenter2d;
+  gp_XYZ aViewProj, aViewUp, aViewAt, aViewEye;
+  aView->Proj (aViewProj.ChangeCoord (1), aViewProj.ChangeCoord (2), aViewProj.ChangeCoord (3));
+  aView->Up   (aViewUp  .ChangeCoord (1), aViewUp  .ChangeCoord (2), aViewUp  .ChangeCoord (3));
+  aView->At   (aViewAt  .ChangeCoord (1), aViewAt  .ChangeCoord (2), aViewAt  .ChangeCoord (3));
+  aView->Eye  (aViewEye .ChangeCoord (1), aViewEye .ChangeCoord (2), aViewEye .ChangeCoord (3));
   if (theArgsNb == 1)
   {
     // print all of the available view parameters
-    Quantity_Factor anAISViewScale = anAISView->Scale();
-
-    Standard_Real anAISViewProjX = 0.0;
-    Standard_Real anAISViewProjY = 0.0;
-    Standard_Real anAISViewProjZ = 0.0;
-    anAISView->Proj (anAISViewProjX, anAISViewProjY, anAISViewProjZ);
-
-    Standard_Real anAISViewUpX = 0.0;
-    Standard_Real anAISViewUpY = 0.0;
-    Standard_Real anAISViewUpZ = 0.0;
-    anAISView->Up (anAISViewUpX, anAISViewUpY, anAISViewUpZ);
-
-    Standard_Real anAISViewAtX = 0.0;
-    Standard_Real anAISViewAtY = 0.0;
-    Standard_Real anAISViewAtZ = 0.0;
-    anAISView->At (anAISViewAtX, anAISViewAtY, anAISViewAtZ);
-
-    Standard_Real anAISViewEyeX = 0.0;
-    Standard_Real anAISViewEyeY = 0.0;
-    Standard_Real anAISViewEyeZ = 0.0;
-    anAISView->Eye (anAISViewEyeX, anAISViewEyeY, anAISViewEyeZ);
-
-    theDi << "Scale of current view: " << anAISViewScale << "\n";
-    theDi << "Proj on X : " << anAISViewProjX << "; on Y: " << anAISViewProjY << "; on Z: " << anAISViewProjZ << "\n";
-    theDi << "Up on X : " << anAISViewUpX << "; on Y: " << anAISViewUpY << "; on Z: " << anAISViewUpZ << "\n";
-    theDi << "At on X : " << anAISViewAtX << "; on Y: " << anAISViewAtY << "; on Z: " << anAISViewAtZ << "\n";
-    theDi << "Eye on X : " << anAISViewEyeX << "; on Y: " << anAISViewEyeY << "; on Z: " << anAISViewEyeZ << "\n";
+    char aText[4096];
+    Sprintf (aText,
+             "Scale: %g\n"
+             "Proj:  %12g %12g %12g\n"
+             "Up:    %12g %12g %12g\n"
+             "At:    %12g %12g %12g\n"
+             "Eye:   %12g %12g %12g\n",
+              aViewScale,
+              aViewProj.X(), aViewProj.Y(), aViewProj.Z(),
+              aViewUp.X(),   aViewUp.Y(),   aViewUp.Z(),
+              aViewAt.X(),   aViewAt.Y(),   aViewAt.Z(),
+              aViewEye.X(),  aViewEye.Y(),  aViewEye.Z());
+    theDi << aText;
     return 0;
   }
 
-  // -------------------------
-  //  Parse options and values
-  // -------------------------
-
-  NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfAsciiString)> aMapOfKeysByValues;
-  TCollection_AsciiString aParseKey;
-  for (Standard_Integer anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
+  ViewerTest_AutoUpdater anUpdateTool (ViewerTest::GetAISContext(), aView);
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
   {
-    TCollection_AsciiString anArg (theArgVec [anArgIt]);
-
-    if (anArg.Value (1) == '-' && !anArg.IsRealValue())
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anUpdateTool.parseRedrawMode (anArg))
     {
-      aParseKey = anArg;
-      aParseKey.Remove (1);
-      aParseKey.UpperCase();
-      aMapOfKeysByValues.Bind (aParseKey, new TColStd_HSequenceOfAsciiString);
       continue;
     }
-
-    if (aParseKey.IsEmpty())
+    else if (anArg == "-cmd"
+          || anArg == "-command"
+          || anArg == "-args")
     {
-      std::cout << theArgVec[0] << ": values should be passed with key.\n";
-      std::cout << "Type help for more information.\n";
+      char aText[4096];
+      Sprintf (aText,
+               "-scale %g "
+               "-proj %g %g %g "
+               "-up %g %g %g "
+               "-at %g %g %g\n",
+                aViewScale,
+                aViewProj.X(), aViewProj.Y(), aViewProj.Z(),
+                aViewUp.X(),   aViewUp.Y(),   aViewUp.Z(),
+                aViewAt.X(),   aViewAt.Y(),   aViewAt.Z());
+      theDi << aText;
+    }
+    else if (anArg == "-scale"
+          || anArg == "-size")
+    {
+      if (anArgIter + 1 < theArgsNb
+       && *theArgVec[anArgIter + 1] != '-')
+      {
+        const TCollection_AsciiString aValueArg (theArgVec[anArgIter + 1]);
+        if (aValueArg.IsRealValue())
+        {
+          ++anArgIter;
+          if (anArg == "-scale")
+          {
+            toSetScale = Standard_True;
+            aViewScale = aValueArg.RealValue();
+          }
+          else if (anArg == "-size")
+          {
+            toSetSize = Standard_True;
+            aViewSize = aValueArg.RealValue();
+          }
+          continue;
+        }
+      }
+      if (anArg == "-scale")
+      {
+        theDi << "Scale: " << aView->Scale() << "\n";
+      }
+      else if (anArg == "-size")
+      {
+        Graphic3d_Vec2d aSizeXY;
+        aView->Size (aSizeXY.x(), aSizeXY.y());
+        theDi << "Size: " << aSizeXY.x() << " " << aSizeXY.y() << "\n";
+      }
+    }
+    else if (anArg == "-eye"
+          || anArg == "-at"
+          || anArg == "-up"
+          || anArg == "-proj")
+    {
+      if (anArgIter + 3 < theArgsNb)
+      {
+        gp_XYZ anXYZ;
+        if (parseXYZ (theArgVec + anArgIter + 1, anXYZ))
+        {
+          anArgIter += 3;
+          if (anArg == "-eye")
+          {
+            toSetEye = Standard_True;
+            aViewEye = anXYZ;
+          }
+          else if (anArg == "-at")
+          {
+            toSetAt = Standard_True;
+            aViewAt = anXYZ;
+          }
+          else if (anArg == "-up")
+          {
+            toSetUp = Standard_True;
+            aViewUp = anXYZ;
+          }
+          else if (anArg == "-proj")
+          {
+            toSetProj = Standard_True;
+            aViewProj = anXYZ;
+          }
+          continue;
+        }
+      }
+
+      if (anArg == "-eye")
+      {
+        theDi << "Eye:  " << aViewEye.X() << " " << aViewEye.Y() << " " << aViewEye.Z() << "\n";
+      }
+      else if (anArg == "-at")
+      {
+        theDi << "At:   " << aViewAt.X() << " " << aViewAt.Y() << " " << aViewAt.Z() << "\n";
+      }
+      else if (anArg == "-up")
+      {
+        theDi << "Up:   " << aViewUp.X() << " " << aViewUp.Y() << " " << aViewUp.Z() << "\n";
+      }
+      else if (anArg == "-proj")
+      {
+        theDi << "Proj: " << aViewProj.X() << " " << aViewProj.Y() << " " << aViewProj.Z() << "\n";
+      }
+    }
+    else if (anArg == "-center")
+    {
+      if (anArgIter + 2 < theArgsNb)
+      {
+        const TCollection_AsciiString anX (theArgVec[anArgIter + 1]);
+        const TCollection_AsciiString anY (theArgVec[anArgIter + 2]);
+        if (anX.IsIntegerValue()
+         && anY.IsIntegerValue())
+        {
+          toSetCenter2d = Standard_True;
+          aCenter2d = Graphic3d_Vec2i (anX.IntegerValue(), anY.IntegerValue());
+        }
+      }
+    }
+    else
+    {
+      std::cout << "Syntax error at '" << anArg << "'\n";
       return 1;
     }
-
-    aMapOfKeysByValues(aParseKey)->Append (anArg);
   }
 
-  // ---------------------------------------------
-  //  Change or print parameters, order plays role
-  // ---------------------------------------------
-
-  // Check arguments for validity
-  NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfAsciiString)>::Iterator aMapIt (aMapOfKeysByValues);
-  for (; aMapIt.More(); aMapIt.Next())
+  // change view parameters in proper order
+  if (toSetScale)
   {
-    const TCollection_AsciiString& aKey = aMapIt.Key();
-    const Handle(TColStd_HSequenceOfAsciiString)& aValues = aMapIt.Value();
-
-    if (!(aKey.IsEqual ("SCALE")  && (aValues->Length() == 1 || aValues->IsEmpty()))
-     && !(aKey.IsEqual ("SIZE")   && (aValues->Length() == 1 || aValues->IsEmpty()))
-     && !(aKey.IsEqual ("EYE")    && (aValues->Length() == 3 || aValues->IsEmpty()))
-     && !(aKey.IsEqual ("AT")     && (aValues->Length() == 3 || aValues->IsEmpty()))
-     && !(aKey.IsEqual ("UP")     && (aValues->Length() == 3 || aValues->IsEmpty()))
-     && !(aKey.IsEqual ("PROJ")   && (aValues->Length() == 3 || aValues->IsEmpty()))
-     && !(aKey.IsEqual ("CENTER") &&  aValues->Length() == 2))
-    {
-      TCollection_AsciiString aLowerKey;
-      aLowerKey  = "-";
-      aLowerKey += aKey;
-      aLowerKey.LowerCase();
-      std::cout << theArgVec[0] << ": " << aLowerKey << " is unknown option, or number of arguments is invalid.\n";
-      std::cout << "Type help for more information.\n";
-      return 1;
-    }
+    aView->SetScale (aViewScale);
   }
-
-  Handle(TColStd_HSequenceOfAsciiString) aValues;
-
-  // Change view parameters in proper order
-  if (aMapOfKeysByValues.Find ("SCALE", aValues))
+  if (toSetSize)
   {
-    if (aValues->IsEmpty())
-    {
-      theDi << "Scale: " << anAISView->Scale() << "\n";
-    }
-    else
-    {
-      anAISView->SetScale (aValues->Value(1).RealValue());
-    }
+    aView->SetSize (aViewSize);
   }
-  if (aMapOfKeysByValues.Find ("SIZE", aValues))
+  if (toSetEye)
   {
-    if (aValues->IsEmpty())
-    {
-      Standard_Real aSizeX = 0.0;
-      Standard_Real aSizeY = 0.0;
-      anAISView->Size (aSizeX, aSizeY);
-      theDi << "Size X: " << aSizeX << " Y: " << aSizeY << "\n";
-    }
-    else
-    {
-      anAISView->SetSize (aValues->Value(1).RealValue());
-    }
+    aView->SetEye (aViewEye.X(), aViewEye.Y(), aViewEye.Z());
   }
-  if (aMapOfKeysByValues.Find ("EYE", aValues))
+  if (toSetAt)
   {
-    if (aValues->IsEmpty())
-    {
-      Standard_Real anEyeX = 0.0;
-      Standard_Real anEyeY = 0.0;
-      Standard_Real anEyeZ = 0.0;
-      anAISView->Eye (anEyeX, anEyeY, anEyeZ);
-      theDi << "Eye X: " << anEyeX << " Y: " << anEyeY << " Z: " << anEyeZ << "\n";
-    }
-    else
-    {
-      anAISView->SetEye (aValues->Value(1).RealValue(), aValues->Value(2).RealValue(), aValues->Value(3).RealValue());
-    }
+    aView->SetAt (aViewAt.X(), aViewAt.Y(), aViewAt.Z());
   }
-  if (aMapOfKeysByValues.Find ("AT", aValues))
+  if (toSetProj)
   {
-    if (aValues->IsEmpty())
-    {
-      Standard_Real anAtX = 0.0;
-      Standard_Real anAtY = 0.0;
-      Standard_Real anAtZ = 0.0;
-      anAISView->At (anAtX, anAtY, anAtZ);
-      theDi << "At X: " << anAtX << " Y: " << anAtY << " Z: " << anAtZ << "\n";
-    }
-    else
-    {
-      anAISView->SetAt (aValues->Value(1).RealValue(), aValues->Value(2).RealValue(), aValues->Value(3).RealValue());
-    }
+    aView->SetProj (aViewProj.X(), aViewProj.Y(), aViewProj.Z());
   }
-  if (aMapOfKeysByValues.Find ("PROJ", aValues))
+  if (toSetUp)
   {
-    if (aValues->IsEmpty())
-    {
-      Standard_Real aProjX = 0.0;
-      Standard_Real aProjY = 0.0;
-      Standard_Real aProjZ = 0.0;
-      anAISView->Proj (aProjX, aProjY, aProjZ);
-      theDi << "Proj X: " << aProjX << " Y: " << aProjY << " Z: " << aProjZ << "\n";
-    }
-    else
-    {
-      anAISView->SetProj (aValues->Value(1).RealValue(), aValues->Value(2).RealValue(), aValues->Value(3).RealValue());
-    }
+    aView->SetUp (aViewUp.X(), aViewUp.Y(), aViewUp.Z());
   }
-  if (aMapOfKeysByValues.Find ("UP", aValues))
+  if (toSetCenter2d)
   {
-    if (aValues->IsEmpty())
-    {
-      Standard_Real anUpX = 0.0;
-      Standard_Real anUpY = 0.0;
-      Standard_Real anUpZ = 0.0;
-      anAISView->Up (anUpX, anUpY, anUpZ);
-      theDi << "Up X: " << anUpX << " Y: " << anUpY << " Z: " << anUpZ << "\n";
-    }
-    else
-    {
-      anAISView->SetUp (aValues->Value(1).RealValue(), aValues->Value(2).RealValue(), aValues->Value(3).RealValue());
-    }
-  }
-  if (aMapOfKeysByValues.Find ("CENTER", aValues))
-  {
-    anAISView->SetCenter (aValues->Value(1).IntegerValue(), aValues->Value(2).IntegerValue());
+    aView->SetCenter (aCenter2d.x(), aCenter2d.y());
   }
 
   return 0;
 }
+
+//==============================================================================
+//function : VAnimation
+//purpose  :
+//==============================================================================
+static Standard_Integer VAnimation (Draw_Interpretor& theDI,
+                                    Standard_Integer  theArgNb,
+                                    const char**      theArgVec)
+{
+  Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  if (theArgNb < 2)
+  {
+    for (NCollection_DataMap<TCollection_AsciiString, Handle(AIS_Animation)>::Iterator
+         anAnimIter (ViewerTest_AnimationTimelineMap); anAnimIter.More(); anAnimIter.Next())
+    {
+      theDI << anAnimIter.Key() << " " << anAnimIter.Value()->Duration() << " sec\n";
+    }
+    return 0;
+  }
+  if (aCtx.IsNull())
+  {
+    std::cout << "Error: no active view\n";
+    return 1;
+  }
+
+  Standard_Integer anArgIter = 1;
+  TCollection_AsciiString aNameArg (theArgVec[anArgIter++]);
+  if (aNameArg.IsEmpty())
+  {
+    std::cout << "Syntax error: animation name is not defined.\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aNameArgLower = aNameArg;
+  aNameArgLower.LowerCase();
+  if (aNameArgLower == "-reset"
+   || aNameArgLower == "-clear")
+  {
+    ViewerTest_AnimationTimelineMap.Clear();
+    return 0;
+  }
+  else if (aNameArg.Value (1) == '-')
+  {
+    std::cout << "Syntax error: invalid animation name '" << aNameArg  << "'.\n";
+    return 1;
+  }
+
+  const char* aNameSplitter = "/";
+  Standard_Integer aSplitPos = aNameArg.Search (aNameSplitter);
+  if (aSplitPos == -1)
+  {
+    aNameSplitter = ".";
+    aSplitPos = aNameArg.Search (aNameSplitter);
+  }
+
+  // find existing or create a new animation by specified name within syntax "parent.child".
+  Handle(AIS_Animation) aRootAnimation, aParentAnimation, anAnimation;
+  for (; !aNameArg.IsEmpty();)
+  {
+    TCollection_AsciiString aNameParent;
+    if (aSplitPos != -1)
+    {
+      if (aSplitPos == aNameArg.Length())
+      {
+        std::cout << "Syntax error: animation name is not defined.\n";
+        return 1;
+      }
+
+      aNameParent = aNameArg.SubString (            1, aSplitPos - 1);
+      aNameArg    = aNameArg.SubString (aSplitPos + 1, aNameArg.Length());
+
+      aSplitPos = aNameArg.Search (aNameSplitter);
+    }
+    else
+    {
+      aNameParent = aNameArg;
+      aNameArg.Clear();
+    }
+
+    if (anAnimation.IsNull())
+    {
+      if (!ViewerTest_AnimationTimelineMap.Find (aNameParent, anAnimation))
+      {
+        anAnimation = new AIS_Animation (aNameParent);
+        ViewerTest_AnimationTimelineMap.Bind (aNameParent, anAnimation);
+      }
+      aRootAnimation = anAnimation;
+    }
+    else
+    {
+      aParentAnimation = anAnimation;
+      anAnimation = aParentAnimation->Find (aNameParent);
+      if (anAnimation.IsNull())
+      {
+        anAnimation = new AIS_Animation (aNameParent);
+        aParentAnimation->Add (anAnimation);
+      }
+    }
+  }
+
+  if (anArgIter >= theArgNb)
+  {
+    // just print the list of children
+    for (NCollection_Sequence<Handle(AIS_Animation)>::Iterator anAnimIter (anAnimation->Children()); anAnimIter.More(); anAnimIter.Next())
+    {
+      theDI << anAnimIter.Value()->Name() << " " << anAnimIter.Value()->Duration() << " sec\n";
+    }
+    return 0;
+  }
+
+  Standard_Boolean toPlay = Standard_False;
+  Standard_Real aPlaySpeed     = 1.0;
+  Standard_Real aPlayStartTime = anAnimation->StartPts();
+  Standard_Real aPlayDuration  = anAnimation->Duration();
+  Standard_Real aPlayFrameRate = 0.0;
+  Standard_Boolean isFreeCamera = Standard_False;
+  Standard_Boolean isLockLoop   = Standard_False;
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  for (; anArgIter < theArgNb; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "-reset"
+     || anArg == "-clear")
+    {
+      anAnimation->Clear();
+    }
+    else if (anArg == "-remove"
+          || anArg == "-del"
+          || anArg == "-delete")
+    {
+      if (!aParentAnimation.IsNull())
+      {
+        ViewerTest_AnimationTimelineMap.UnBind (anAnimation->Name());
+      }
+      else
+      {
+        aParentAnimation->Remove (anAnimation);
+      }
+    }
+    else if (anArg == "-play")
+    {
+      toPlay = Standard_True;
+      if (++anArgIter < theArgNb)
+      {
+        if (*theArgVec[anArgIter] == '-')
+        {
+          --anArgIter;
+          continue;
+        }
+        aPlayStartTime = Draw::Atof (theArgVec[anArgIter]);
+
+        if (++anArgIter < theArgNb)
+        {
+          if (*theArgVec[anArgIter] == '-')
+          {
+            --anArgIter;
+            continue;
+          }
+          aPlayDuration = Draw::Atof (theArgVec[anArgIter]);
+        }
+      }
+    }
+    else if (anArg == "-resume")
+    {
+      toPlay = Standard_True;
+      aPlayStartTime = anAnimation->ElapsedTime();
+      if (++anArgIter < theArgNb)
+      {
+        if (*theArgVec[anArgIter] == '-')
+        {
+          --anArgIter;
+          continue;
+        }
+
+        aPlayDuration = Draw::Atof (theArgVec[anArgIter]);
+      }
+    }
+    else if (anArg == "-playspeed"
+          || anArg == "-speed")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Syntax error at " << anArg << ".\n";
+        return 1;
+      }
+      aPlaySpeed = Draw::Atof (theArgVec[anArgIter]);
+    }
+    else if (anArg == "-lock"
+          || anArg == "-lockloop"
+          || anArg == "-playlockloop")
+    {
+      isLockLoop = Standard_True;
+    }
+    else if (anArg == "-freecamera"
+          || anArg == "-playfreecamera"
+          || anArg == "-freelook")
+    {
+      isFreeCamera = Standard_True;
+    }
+    else if (anArg == "-fps")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Syntax error at " << anArg << ".\n";
+        return 1;
+      }
+      aPlayFrameRate = Draw::Atof (theArgVec[anArgIter]);
+    }
+    else if (anArg == "-start"
+          || anArg == "-starttime"
+          || anArg == "-startpts")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Syntax error at " << anArg << ".\n";
+        return 1;
+      }
+
+      anAnimation->SetStartPts (Draw::Atof (theArgVec[anArgIter]));
+      aRootAnimation->UpdateTotalDuration();
+    }
+    else if (anArg == "-end"
+          || anArg == "-endtime"
+          || anArg == "-endpts")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Syntax error at " << anArg << ".\n";
+        return 1;
+      }
+
+      anAnimation->SetOwnDuration (Draw::Atof (theArgVec[anArgIter]) - anAnimation->StartPts());
+      aRootAnimation->UpdateTotalDuration();
+    }
+    else if (anArg == "-dur"
+          || anArg == "-duration")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Syntax error at " << anArg << ".\n";
+        return 1;
+      }
+
+      anAnimation->SetOwnDuration (Draw::Atof (theArgVec[anArgIter]));
+      aRootAnimation->UpdateTotalDuration();
+    }
+    else if (anArg == "-command"
+          || anArg == "-cmd"
+          || anArg == "-invoke"
+          || anArg == "-eval"
+          || anArg == "-proc")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Syntax error at " << anArg << ".\n";
+        return 1;
+      }
+
+      Handle(ViewerTest_AnimationProc) aCmdAnimation = new ViewerTest_AnimationProc (anAnimation->Name(), &theDI, theArgVec[anArgIter]);
+      replaceAnimation (aParentAnimation, anAnimation, aCmdAnimation);
+    }
+    else if (anArg == "-objecttrsf"
+          || anArg == "-objectransformation"
+          || anArg == "-objtransformation"
+          || anArg == "-objtrsf"
+          || anArg == "-object"
+          || anArg == "-obj")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Syntax error at " << anArg << ".\n";
+        return 1;
+      }
+
+      TCollection_AsciiString anObjName (theArgVec[anArgIter]);
+      const ViewerTest_DoubleMapOfInteractiveAndName& aMapOfAIS = GetMapOfAIS();
+      if (!aMapOfAIS.IsBound2 (anObjName))
+      {
+        std::cout << "Syntax error: wrong object name at " << anArg << "\n";
+        return 1;
+      }
+
+      Handle(AIS_InteractiveObject) anObject = Handle(AIS_InteractiveObject)::DownCast (aMapOfAIS.Find2 (anObjName));
+      gp_Trsf       aTrsfs   [2] = { anObject->LocalTransformation(), anObject->LocalTransformation() };
+      gp_Quaternion aRotQuats[2] = { aTrsfs[0].GetRotation(),         aTrsfs[1].GetRotation() };
+      gp_XYZ        aLocPnts [2] = { aTrsfs[0].TranslationPart(),     aTrsfs[1].TranslationPart() };
+      Standard_Real aScales  [2] = { aTrsfs[0].ScaleFactor(),         aTrsfs[1].ScaleFactor() };
+      Standard_Boolean isTrsfSet = Standard_False;
+      Standard_Integer aTrsfArgIter = anArgIter + 1;
+      for (; aTrsfArgIter < theArgNb; ++aTrsfArgIter)
+      {
+        TCollection_AsciiString aTrsfArg (theArgVec[aTrsfArgIter]);
+        aTrsfArg.LowerCase();
+        const Standard_Integer anIndex = aTrsfArg.EndsWith ("1") ? 0 : 1;
+        if (aTrsfArg.StartsWith ("-rotation")
+         || aTrsfArg.StartsWith ("-rot"))
+        {
+          isTrsfSet = Standard_True;
+          if (aTrsfArgIter + 4 >= theArgNb
+          || !parseQuaternion (theArgVec + aTrsfArgIter + 1, aRotQuats[anIndex]))
+          {
+            std::cout << "Syntax error at " << aTrsfArg << ".\n";
+            return 1;
+          }
+          aTrsfArgIter += 4;
+        }
+        else if (aTrsfArg.StartsWith ("-location")
+              || aTrsfArg.StartsWith ("-loc"))
+        {
+          isTrsfSet = Standard_True;
+          if (aTrsfArgIter + 3 >= theArgNb
+          || !parseXYZ (theArgVec + aTrsfArgIter + 1, aLocPnts[anIndex]))
+          {
+            std::cout << "Syntax error at " << aTrsfArg << ".\n";
+            return 1;
+          }
+          aTrsfArgIter += 3;
+        }
+        else if (aTrsfArg.StartsWith ("-scale"))
+        {
+          isTrsfSet = Standard_True;
+          if (++aTrsfArgIter >= theArgNb)
+          {
+            std::cout << "Syntax error at " << aTrsfArg << ".\n";
+            return 1;
+          }
+
+          const TCollection_AsciiString aScaleStr (theArgVec[aTrsfArgIter]);
+          if (!aScaleStr.IsRealValue())
+          {
+            std::cout << "Syntax error at " << aTrsfArg << ".\n";
+            return 1;
+          }
+          aScales[anIndex] = aScaleStr.RealValue();
+        }
+        else
+        {
+          anArgIter = aTrsfArgIter - 1;
+          break;
+        }
+      }
+      if (!isTrsfSet)
+      {
+        std::cout << "Syntax error at " << anArg << ".\n";
+        return 1;
+      }
+      else if (aTrsfArgIter >= theArgNb)
+      {
+        anArgIter = theArgNb;
+      }
+
+      aTrsfs[0].SetRotation        (aRotQuats[0]);
+      aTrsfs[1].SetRotation        (aRotQuats[1]);
+      aTrsfs[0].SetTranslationPart (aLocPnts[0]);
+      aTrsfs[1].SetTranslationPart (aLocPnts[1]);
+      aTrsfs[0].SetScaleFactor     (aScales[0]);
+      aTrsfs[1].SetScaleFactor     (aScales[1]);
+
+      Handle(AIS_AnimationObject) anObjAnimation = new AIS_AnimationObject (anAnimation->Name(), aCtx, anObject, aTrsfs[0], aTrsfs[1]);
+      replaceAnimation (aParentAnimation, anAnimation, anObjAnimation);
+    }
+    else if (anArg == "-viewtrsf"
+          || anArg == "-view")
+    {
+      Handle(AIS_AnimationCamera) aCamAnimation = Handle(AIS_AnimationCamera)::DownCast (anAnimation);
+      if (aCamAnimation.IsNull())
+      {
+        aCamAnimation = new AIS_AnimationCamera (anAnimation->Name(), aView);
+        replaceAnimation (aParentAnimation, anAnimation, aCamAnimation);
+      }
+
+      Handle(Graphic3d_Camera) aCams[2] =
+      {
+        new Graphic3d_Camera (aCamAnimation->View()->Camera()),
+        new Graphic3d_Camera (aCamAnimation->View()->Camera())
+      };
+
+      Standard_Boolean isTrsfSet = Standard_False;
+      Standard_Integer aViewArgIter = anArgIter + 1;
+      for (; aViewArgIter < theArgNb; ++aViewArgIter)
+      {
+        TCollection_AsciiString aViewArg (theArgVec[aViewArgIter]);
+        aViewArg.LowerCase();
+        const Standard_Integer anIndex = aViewArg.EndsWith("1") ? 0 : 1;
+        if (aViewArg.StartsWith ("-scale"))
+        {
+          isTrsfSet = Standard_True;
+          if (++aViewArgIter >= theArgNb)
+          {
+            std::cout << "Syntax error at " << anArg << ".\n";
+            return 1;
+          }
+
+          const TCollection_AsciiString aScaleStr (theArgVec[aViewArgIter]);
+          if (!aScaleStr.IsRealValue())
+          {
+            std::cout << "Syntax error at " << aViewArg << ".\n";
+            return 1;
+          }
+          Standard_Real aScale = aScaleStr.RealValue();
+          aScale = aCamAnimation->View()->DefaultCamera()->Scale() / aScale;
+          aCams[anIndex]->SetScale (aScale);
+        }
+        else if (aViewArg.StartsWith ("-eye")
+              || aViewArg.StartsWith ("-center")
+              || aViewArg.StartsWith ("-at")
+              || aViewArg.StartsWith ("-up"))
+        {
+          isTrsfSet = Standard_True;
+          gp_XYZ anXYZ;
+          if (aViewArgIter + 3 >= theArgNb
+          || !parseXYZ (theArgVec + aViewArgIter + 1, anXYZ))
+          {
+            std::cout << "Syntax error at " << aViewArg << ".\n";
+            return 1;
+          }
+          aViewArgIter += 3;
+
+          if (aViewArg.StartsWith ("-eye"))
+          {
+            aCams[anIndex]->SetEye (anXYZ);
+          }
+          else if (aViewArg.StartsWith ("-center")
+                || aViewArg.StartsWith ("-at"))
+          {
+            aCams[anIndex]->SetCenter (anXYZ);
+          }
+          else if (aViewArg.StartsWith ("-up"))
+          {
+            aCams[anIndex]->SetUp (anXYZ);
+          }
+        }
+        else
+        {
+          anArgIter = aViewArgIter - 1;
+          break;
+        }
+      }
+      if (!isTrsfSet)
+      {
+        std::cout << "Syntax error at " << anArg << ".\n";
+        return 1;
+      }
+      else if (aViewArgIter >= theArgNb)
+      {
+        anArgIter = theArgNb;
+      }
+
+      aCamAnimation->SetCameraStart(aCams[0]);
+      aCamAnimation->SetCameraEnd  (aCams[1]);
+    }
+    else
+    {
+      std::cout << "Syntax error at " << anArg << ".\n";
+      return 1;
+    }
+  }
+
+  if (!toPlay)
+  {
+    return 0;
+  }
+
+  // Start animation timeline and process frame updating.
+  TheIsAnimating = Standard_True;
+  const Standard_Boolean wasImmediateUpdate = aView->SetImmediateUpdate (Standard_False);
+  Handle(Graphic3d_Camera) aCameraBack = new Graphic3d_Camera (aView->Camera());
+  anAnimation->StartTimer (aPlayStartTime, aPlaySpeed, Standard_True);
+  if (isFreeCamera)
+  {
+    aView->Camera()->Copy (aCameraBack);
+  }
+
+  const Standard_Real anUpperPts = aPlayStartTime + aPlayDuration;
+  if (aPlayFrameRate < Precision::Confusion())
+  {
+    while (!anAnimation->IsStopped())
+    {
+      aCameraBack->Copy (aView->Camera());
+      const Standard_Real aPts = anAnimation->UpdateTimer();
+      if (isFreeCamera)
+      {
+        aView->Camera()->Copy (aCameraBack);
+      }
+
+      if (aPts >= anUpperPts)
+      {
+        anAnimation->Pause();
+        break;
+      }
+
+      if (aView->IsInvalidated())
+      {
+        aView->Redraw();
+      }
+      else
+      {
+        aView->RedrawImmediate();
+      }
+
+      if (!isLockLoop)
+      {
+        // handle user events
+        theDI.Eval ("after 1 set waiter 1");
+        theDI.Eval ("vwait waiter");
+      }
+      if (!TheIsAnimating)
+      {
+        anAnimation->Pause();
+        theDI << aPts;
+        break;
+      }
+    }
+
+    if (aView->IsInvalidated())
+    {
+      aView->Redraw();
+    }
+    else
+    {
+      aView->RedrawImmediate();
+    }
+  }
+  else
+  {
+    Standard_Real aMaxFPS = 0.0;
+
+    // Manage frame-rated animation here
+    Standard_Real aPts = aPlayStartTime;
+    while (aPts <= anUpperPts)
+    {
+      if (!anAnimation->Update (aPts))
+      {
+        break;
+      }
+
+      Standard_Real aProgress = anAnimation->ElapsedTime();
+      Standard_Real aNextRatedPts = aPts + 1.0 / aPlayFrameRate;
+      Standard_Real aPrevPts = aPts;
+      aPts = aNextRatedPts <  aProgress ? aNextRatedPts : aProgress;
+      Standard_Real aCurrentFPS = 1.0 / (aPts - aPrevPts);
+      if (aMaxFPS < aCurrentFPS)
+      {
+        aMaxFPS = aCurrentFPS;
+      }
+    }
+
+    if (aView->IsInvalidated())
+    {
+      aView->Redraw();
+    }
+    else
+    {
+      aView->RedrawImmediate();
+    }
+    anAnimation->Stop();
+    theDI << aMaxFPS;
+  }
+
+  aView->SetImmediateUpdate (wasImmediateUpdate);
+  TheIsAnimating = Standard_False;
+  return 0;
+}
+
 
 //=======================================================================
 //function : VChangeSelected
@@ -9411,8 +10133,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vpick" ,
     "vpick           : vpick X Y Z [shape subshape] ( all variables as string )",
     VPick,group);
-  theCommands.Add("vfit"    ,
-    "vfit or <F> [-selected]"
+  theCommands.Add("vfit",
+    "vfit or <F> [-selected] [-noupdate]"
     "\n\t\t: [-selected] fits the scene according to bounding box of currently selected objects",
     __FILE__,VFit,group);
   theCommands.Add ("vfitarea",
@@ -9662,22 +10384,73 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vmoveto x y"
     "- emulates cursor movement to pixel postion (x,y)",
     __FILE__, VMoveTo, group);
-  theCommands.Add ("vviewparams", "vviewparams usage:\n"
-    "- vviewparams\n"
-    "- vviewparams [-scale [s]] [-eye [x y z]] [-at [x y z]] [-up [x y z]]\n"
-    "              [-proj [x y z]] [-center x y] [-size sx]\n"
-    "-   Gets or sets current view parameters.\n"
-    "-   If called without arguments, all view parameters are printed.\n"
-    "-   The options are:\n"
-    "      -scale [s]    : prints or sets viewport relative scale.\n"
-    "      -eye [x y z]  : prints or sets eye location.\n"
-    "      -at [x y z]   : prints or sets center of look.\n"
-    "      -up [x y z]   : prints or sets direction of up vector.\n"
-    "      -proj [x y z] : prints or sets direction of look.\n"
-    "      -center x y   : sets location of center of the screen in pixels.\n"
-    "      -size [sx]    : prints viewport projection width and height sizes\n"
-    "                    : or changes the size of its maximum dimension.\n",
+  theCommands.Add ("vviewparams",
+              "vviewparams [-args] [-scale [s]]"
+      "\n\t\t:             [-eye [x y z]] [-at [x y z]] [-up [x y z]]"
+      "\n\t\t:             [-proj [x y z]] [-center x y] [-size sx]"
+      "\n\t\t: Manage current view parameters or prints all"
+      "\n\t\t: current values when called without argument."
+      "\n\t\t:   -scale [s]    prints or sets viewport relative scale"
+      "\n\t\t:   -eye  [x y z] prints or sets eye location"
+      "\n\t\t:   -at   [x y z] prints or sets center of look"
+      "\n\t\t:   -up   [x y z] prints or sets direction of up vector"
+      "\n\t\t:   -proj [x y z] prints or sets direction of look"
+      "\n\t\t:   -center x y   sets location of center of the screen in pixels"
+      "\n\t\t:   -size [sx]    prints viewport projection width and height sizes"
+      "\n\t\t:                 or changes the size of its maximum dimension"
+      "\n\t\t:   -args         prints vviewparams arguments for restoring current view",
     __FILE__, VViewParams, group);
+
+  theCommands.Add("vanimation", "Alias for vanim",
+    __FILE__, VAnimation, group);
+
+  theCommands.Add("vanim",
+            "List existing animations:"
+    "\n\t\t:  vanim"
+    "\n\t\t: Animation playback:"
+    "\n\t\t:  vanim name -play|-resume [playFrom [playDuration]]"
+    "\n\t\t:            [-speed Coeff] [-freeLook] [-lockLoop]"
+    "\n\t\t:   -speed    playback speed (1.0 is normal speed)"
+    "\n\t\t:   -freeLook skip camera animations"
+    "\n\t\t:   -lockLoop disable any interactions"
+    "\n\t\t:"
+    "\n\t\t: Animation definition:"
+    "\n\t\t:  vanim Name/sub/name [-clear] [-delete]"
+    "\n\t\t:        [start TimeSec] [duration TimeSec]"
+    "\n\t\t:"
+    "\n\t\t: Animation name defined in path-style (anim/name or anim.name)"
+    "\n\t\t: specifies nested animations."
+    "\n\t\t: There is no syntax to explicitly add new animation,"
+    "\n\t\t: and all non-existing animations within the name will be"
+    "\n\t\t: implicitly created on first use (including parents)."
+    "\n\t\t:"
+    "\n\t\t: Each animation might define the SINGLE action (see below),"
+    "\n\t\t: like camera transition, object transformation or custom callback."
+    "\n\t\t: Child animations can be used for defining concurrent actions."
+    "\n\t\t:"
+    "\n\t\t: Camera animation:"
+    "\n\t\t:  vanim name -view [-eye1 X Y Z] [-eye2 X Y Z]"
+    "\n\t\t:                   [-at1  X Y Z] [-at2  X Y Z]"
+    "\n\t\t:                   [-up1  X Y Z] [-up2  X Y Z]"
+    "\n\t\t:                   [-scale1 Scale] [-scale2 Scale]"
+    "\n\t\t:   -eyeX   camera Eye positions pair (start and end)"
+    "\n\t\t:   -atX    camera Center positions pair"
+    "\n\t\t:   -upX    camera Up directions pair"
+    "\n\t\t:   -scaleX camera Scale factors pair"
+    "\n\t\t: Object animation:"
+    "\n\t\t:  vanim name -object [-loc1 X Y Z] [-loc2 X Y Z]"
+    "\n\t\t:                     [-rot1 QX QY QZ QW] [-rot2 QX QY QZ QW]"
+    "\n\t\t:                     [-scale1 Scale] [-scale2 Scale]"
+    "\n\t\t:   -locX   object Location points pair (translation)"
+    "\n\t\t:   -rotX   object Orientations pair (quaternions)"
+    "\n\t\t:   -scaleX object Scale factors pair (quaternions)"
+    "\n\t\t: Custom callback:"
+    "\n\t\t:  vanim name -invoke \"Command Arg1 Arg2 %Pts %LocalPts %Normalized ArgN\""
+    "\n\t\t:   %Pts        overall animation presentation timestamp"
+    "\n\t\t:   %LocalPts   local animation timestamp"
+    "\n\t\t:   %Normalized local animation normalized value in range 0..1"
+    __FILE__, VAnimation, group);
+
   theCommands.Add("vchangeselected",
     "vchangeselected shape"
     "- adds to shape to selection or remove one from it",

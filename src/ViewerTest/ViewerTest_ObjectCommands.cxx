@@ -78,6 +78,7 @@
 #include <AIS_Trihedron.hxx>
 #include <AIS_Axis.hxx>
 #include <gp_Trsf.hxx>
+#include <gp_Quaternion.hxx>
 #include <TopLoc_Location.hxx>
 
 #include <HLRAlgo_Projector.hxx>
@@ -2491,12 +2492,15 @@ static int VDrawText (Draw_Interpretor& theDI,
   Handle(AIS_TextLabel)      aTextPrs;
   ViewerTest_AutoUpdater     anAutoUpdater (aContext, ViewerTest::CurrentView());
 
+  Standard_Boolean isNewPrs = Standard_False;
   if (GetMapOfAIS().IsBound2 (aName))
   {
-    aTextPrs  = Handle(AIS_TextLabel)::DownCast (GetMapOfAIS().Find2 (aName));
+    aTextPrs = Handle(AIS_TextLabel)::DownCast (GetMapOfAIS().Find2 (aName));
   }
-  else
+
+  if (aTextPrs.IsNull())
   {
+    isNewPrs = Standard_True;
     aTextPrs = new AIS_TextLabel();
     aTextPrs->SetFont ("Courier");
   }
@@ -2851,7 +2855,15 @@ static int VDrawText (Draw_Interpretor& theDI,
   {
     aContext->SetTransformPersistence (aTextPrs, Handle(Graphic3d_TransformPers)());
   }
-  ViewerTest::Display (aName, aTextPrs, Standard_False);
+
+  if (isNewPrs)
+  {
+    ViewerTest::Display (aName, aTextPrs, Standard_False);
+  }
+  else
+  {
+    aContext->Redisplay (aTextPrs, Standard_False, Standard_True);
+  }
   return 0;
 }
 
@@ -3699,12 +3711,47 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
   return 0;
 }
 
+namespace
+{
+  //! Auxiliary function for parsing translation vector - either 2D or 3D.
+  static Standard_Integer parseTranslationVec (Standard_Integer theArgNb,
+                                               const char**     theArgVec,
+                                               gp_Vec&          theVec)
+  {
+    if (theArgNb < 2)
+    {
+      return 0;
+    }
+
+    TCollection_AsciiString anX (theArgVec[0]);
+    TCollection_AsciiString anY (theArgVec[1]);
+    if (!anX.IsRealValue()
+     || !anY.IsRealValue())
+    {
+      return 0;
+    }
+
+    theVec.SetX (anX.RealValue());
+    theVec.SetY (anY.RealValue());
+    if (theArgNb >= 3)
+    {
+      TCollection_AsciiString anZ (theArgVec[2]);
+      if (anZ.IsRealValue())
+      {
+        theVec.SetZ (anZ.RealValue());
+        return 3;
+      }
+    }
+    return 2;
+  }
+}
+
 //=======================================================================
 //function : VSetLocation
 //purpose  : Change location of AIS interactive object
 //=======================================================================
 
-static Standard_Integer VSetLocation (Draw_Interpretor& /*di*/,
+static Standard_Integer VSetLocation (Draw_Interpretor& theDI,
                                       Standard_Integer  theArgNb,
                                       const char**      theArgVec)
 {
@@ -3716,36 +3763,301 @@ static Standard_Integer VSetLocation (Draw_Interpretor& /*di*/,
     return 1;
   }
 
-  TCollection_AsciiString aName;
-  gp_Vec aLocVec;
-  Standard_Boolean isSetLoc = Standard_False;
-
-  Standard_Integer anArgIter = 1;
-  for (; anArgIter < theArgNb; ++anArgIter)
+  Standard_Boolean toPrintInfo = Standard_True;
+  Handle(AIS_InteractiveObject) anObj;
+  TCollection_AsciiString aCmdName (theArgVec[0]);
+  aCmdName.LowerCase();
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
-    Standard_CString anArg = theArgVec[anArgIter];
-    if (anUpdateTool.parseRedrawMode (theArgVec[anArgIter]))
+    TCollection_AsciiString anArg = theArgVec[anArgIter];
+    anArg.LowerCase();
+    if (anUpdateTool.parseRedrawMode (anArg))
     {
       continue;
     }
-    else if (aName.IsEmpty())
+    else if (anObj.IsNull())
     {
-      aName = anArg;
-    }
-    else if (!isSetLoc)
-    {
-      isSetLoc = Standard_True;
-      if (anArgIter + 1 >= theArgNb)
+      const TCollection_AsciiString aName (theArgVec[anArgIter]);
+      const ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
+      if (aMap.IsBound2 (aName))
       {
-        std::cout << "Error: syntax error at '" << anArg << "'\n";
+        anObj = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (aName));
+      }
+      if (anObj.IsNull())
+      {
+        std::cout << "Error: object '" << aName << "' is not displayed!\n";
         return 1;
       }
-      aLocVec.SetX (Draw::Atof (theArgVec[anArgIter++]));
-      aLocVec.SetY (Draw::Atof (theArgVec[anArgIter]));
-      if (anArgIter + 1 < theArgNb)
+    }
+    else if (anArg == "-reset")
+    {
+      toPrintInfo = Standard_False;
+      aContext->SetLocation (anObj, gp_Trsf());
+    }
+    else if (anArg == "-copyfrom"
+          || anArg == "-copy")
+    {
+      if (anArgIter + 1 >= theArgNb)
       {
-        aLocVec.SetZ (Draw::Atof (theArgVec[++anArgIter]));
+        std::cout << "Syntax error at '" << anArg << "'\n";
+        return 1;
       }
+
+      const TCollection_AsciiString aName2 (theArgVec[anArgIter + 1]);
+      const ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
+      Handle(AIS_InteractiveObject) anObj2;
+      if (aMap.IsBound2 (aName2))
+      {
+        anObj2 = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (aName2));
+      }
+      if (anObj2.IsNull())
+      {
+        std::cout << "Error: object '" << aName2 << "' is not displayed!\n";
+        return 1;
+      }
+
+      ++anArgIter;
+      aContext->SetLocation (anObj, anObj2->LocalTransformation());
+    }
+    else if (anArg == "-rotate")
+    {
+      toPrintInfo = Standard_False;
+      if (anArgIter + 7 >= theArgNb)
+      {
+        std::cout << "Syntax error at '" << anArg << "'\n";
+        return 1;
+      }
+
+      gp_Trsf aTrsf;
+      aTrsf.SetRotation (gp_Ax1 (gp_Pnt (Draw::Atof (theArgVec[anArgIter + 1]),
+                                         Draw::Atof (theArgVec[anArgIter + 2]),
+                                         Draw::Atof (theArgVec[anArgIter + 3])),
+                                 gp_Vec (Draw::Atof (theArgVec[anArgIter + 4]),
+                                         Draw::Atof (theArgVec[anArgIter + 5]),
+                                         Draw::Atof (theArgVec[anArgIter + 6]))),
+                                         Draw::Atof (theArgVec[anArgIter + 7]) * (M_PI / 180.0));
+      anArgIter += 7;
+
+      aTrsf = anObj->LocalTransformation() * aTrsf;
+      aContext->SetLocation (anObj, aTrsf);
+    }
+    else if (anArg == "-translate")
+    {
+      toPrintInfo = Standard_False;
+      gp_Vec aLocVec;
+      Standard_Integer aNbParsed = parseTranslationVec (theArgNb - anArgIter - 1, theArgVec + anArgIter + 1, aLocVec);
+      anArgIter += aNbParsed;
+      if (aNbParsed == 0)
+      {
+        std::cout << "Syntax error at '" << anArg << "'\n";
+        return 1;
+      }
+
+      gp_Trsf aTrsf;
+      aTrsf.SetTranslationPart (aLocVec);
+      aTrsf = anObj->LocalTransformation() * aTrsf;
+      aContext->SetLocation (anObj, aTrsf);
+    }
+    else if (anArg == "-scale"
+          || anArg == "-setscale")
+    {
+      toPrintInfo = Standard_False;
+      gp_XYZ aScaleLoc;
+      Standard_Real aScale = 1.0;
+      Standard_Boolean toPrintScale = Standard_True;
+      Standard_Boolean hasScaleLoc  = Standard_False;
+      if (anArgIter + 4 < theArgNb)
+      {
+        TCollection_AsciiString aScaleArgs[4] =
+        {
+          TCollection_AsciiString (theArgVec[anArgIter + 1]),
+          TCollection_AsciiString (theArgVec[anArgIter + 2]),
+          TCollection_AsciiString (theArgVec[anArgIter + 3]),
+          TCollection_AsciiString (theArgVec[anArgIter + 4])
+        };
+        Standard_Integer aScaleArgIter = 0;
+        for (; aScaleArgIter < 4; ++aScaleArgIter)
+        {
+          if (!aScaleArgs[aScaleArgIter].IsRealValue())
+          {
+            break;
+          }
+        }
+        if (aScaleArgIter == 4)
+        {
+          aScaleLoc.SetCoord (aScaleArgs[0].RealValue(), aScaleArgs[1].RealValue(), aScaleArgs[2].RealValue());
+          aScale = aScaleArgs[3].RealValue();
+          anArgIter += 4;
+          toPrintScale = Standard_False;
+          hasScaleLoc  = Standard_True;
+        }
+        else if (aScaleArgIter >= 1)
+        {
+          aScale = aScaleArgs[0].RealValue();
+          ++anArgIter;
+          toPrintScale = Standard_False;
+        }
+      }
+      else if (anArgIter + 1 < theArgNb)
+      {
+        TCollection_AsciiString aScaleArg (theArgVec[anArgIter + 1]);
+        if (aScaleArg.IsRealValue())
+        {
+          aScale = aScaleArg.RealValue();
+          ++anArgIter;
+          toPrintScale = Standard_False;
+        }
+      }
+
+      if (toPrintScale)
+      {
+        if (anArg == "-setscale")
+        {
+          std::cout << "Syntax error at '" << anArg << "'\n";
+          return 1;
+        }
+
+        char aText[1024];
+        Sprintf (aText, "%g ", anObj->LocalTransformation().ScaleFactor());
+        theDI << aText;
+        continue;
+      }
+
+      if (anArg == "-setscale")
+      {
+        gp_Trsf aTrsf = anObj->LocalTransformation();
+        if (hasScaleLoc)
+        {
+          aTrsf.SetScale (aScaleLoc, aScale);
+        }
+        else
+        {
+          aTrsf.SetScaleFactor (aScale);
+        }
+        aContext->SetLocation (anObj, aTrsf);
+      }
+      else
+      {
+        gp_Trsf aTrsf;
+        if (hasScaleLoc)
+        {
+          aTrsf.SetScale (aScaleLoc, aScale);
+          aTrsf = anObj->LocalTransformation() * aTrsf;
+        }
+        else
+        {
+          aTrsf = anObj->LocalTransformation();
+          aTrsf.SetScaleFactor (aTrsf.ScaleFactor() * aScale);
+        }
+        aContext->SetLocation (anObj, aTrsf);
+      }
+    }
+    else if (anArg == "-mirror")
+    {
+      toPrintInfo = Standard_False;
+      if (anArgIter + 6 >= theArgNb)
+      {
+        std::cout << "Syntax error at '" << anArg << "'\n";
+        return 1;
+      }
+
+      gp_Trsf aTrsf;
+      aTrsf.SetMirror (gp_Ax2 (gp_Pnt (Draw::Atof(theArgVec[theArgNb - 6]),
+                                       Draw::Atof(theArgVec[theArgNb - 5]),
+                                       Draw::Atof(theArgVec[theArgNb - 4])),
+                               gp_Vec (Draw::Atof(theArgVec[theArgNb - 3]),
+                                       Draw::Atof(theArgVec[theArgNb - 2]),
+                                       Draw::Atof(theArgVec[theArgNb - 1]))));
+      anArgIter += 6;
+      aTrsf = anObj->LocalTransformation() * aTrsf;
+      aContext->SetLocation (anObj, aTrsf);
+    }
+    else if (anArg == "-setrotation"
+          || anArg == "-rotation")
+    {
+      toPrintInfo = Standard_False;
+      if (anArgIter + 4 < theArgNb)
+      {
+        TCollection_AsciiString aQuatArgs[4] =
+        {
+          TCollection_AsciiString (theArgVec[anArgIter + 1]),
+          TCollection_AsciiString (theArgVec[anArgIter + 2]),
+          TCollection_AsciiString (theArgVec[anArgIter + 3]),
+          TCollection_AsciiString (theArgVec[anArgIter + 4])
+        };
+        Standard_Integer aQuatArgIter = 0;
+        for (; aQuatArgIter < 4; ++aQuatArgIter)
+        {
+          if (!aQuatArgs[aQuatArgIter].IsRealValue())
+          {
+            break;
+          }
+        }
+
+        if (aQuatArgIter == 4)
+        {
+          anArgIter += 4;
+          const gp_Quaternion aQuat (aQuatArgs[0].RealValue(),
+                                     aQuatArgs[1].RealValue(),
+                                     aQuatArgs[2].RealValue(),
+                                     aQuatArgs[3].RealValue());
+          gp_Trsf aTrsf = anObj->LocalTransformation();
+          aTrsf.SetRotation (aQuat);
+          aContext->SetLocation (anObj, aTrsf);
+          continue;
+        }
+        else if (anArg == "-setrotation")
+        {
+          std::cout << "Syntax error at '" << anArg << "'\n";
+          return 1;
+        }
+      }
+
+      char aText[1024];
+      const gp_Quaternion aQuat = anObj->LocalTransformation().GetRotation();
+      Sprintf (aText, "%g %g %g %g ", aQuat.X(), aQuat.Y(), aQuat.Z(), aQuat.W());
+      theDI << aText;
+    }
+    else if (anArg == "-setlocation"
+          || anArg == "-location")
+    {
+      toPrintInfo = Standard_False;
+      gp_Vec aLocVec;
+      Standard_Integer aNbParsed = parseTranslationVec (theArgNb - anArgIter - 1, theArgVec + anArgIter + 1, aLocVec);
+      anArgIter += aNbParsed;
+      if (aNbParsed != 0)
+      {
+        gp_Trsf aTrsf = anObj->LocalTransformation();
+        aTrsf.SetTranslationPart (aLocVec);
+        aContext->SetLocation (anObj, aTrsf);
+      }
+      else if (anArg == "-setlocation")
+      {
+        std::cout << "Syntax error at '" << anArg << "'\n";
+        return 1;
+      }
+
+      char aText[1024];
+      const gp_XYZ aLoc = anObj->LocalTransformation().TranslationPart();
+      Sprintf (aText, "%g %g %g ", aLoc.X(), aLoc.Y(), aLoc.Z());
+      theDI << aText;
+    }
+    else if (aCmdName == "vsetlocation")
+    {
+      // compatibility with old syntax
+      gp_Vec aLocVec;
+      Standard_Integer aNbParsed = parseTranslationVec (theArgNb - anArgIter, theArgVec + anArgIter, aLocVec);
+      if (aNbParsed == 0)
+      {
+        std::cout << "Syntax error at '" << anArg << "'\n";
+        return 1;
+      }
+      anArgIter = anArgIter + aNbParsed - 1;
+
+      gp_Trsf aTrsf;
+      aTrsf.SetTranslationPart (aLocVec);
+      aContext->SetLocation (anObj, aTrsf);
+      toPrintInfo = Standard_False;
     }
     else
     {
@@ -3754,183 +4066,27 @@ static Standard_Integer VSetLocation (Draw_Interpretor& /*di*/,
     }
   }
 
-  // find object
-  const ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
-  Handle(AIS_InteractiveObject) anIObj;
-  if (aMap.IsBound2 (aName))
+  if (anObj.IsNull())
   {
-    anIObj = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (aName));
-  }
-  if (anIObj.IsNull())
-  {
-    std::cout << "Error: object '" << aName << "' is not displayed!\n";
+    std::cout << "Syntax error - wrong number of arguments\n";
     return 1;
   }
-
-  gp_Trsf aTrsf;
-  aTrsf.SetTranslation (aLocVec);
-  TopLoc_Location aLocation (aTrsf);
-  aContext->SetLocation (anIObj, aLocation);
-  return 0;
-}
-
-//=======================================================================
-//function : TransformPresentation
-//purpose  : Change transformation of AIS interactive object
-//=======================================================================
-static Standard_Integer LocalTransformPresentation (Draw_Interpretor& /*theDi*/,
-                                                    Standard_Integer theArgNb,
-                                                    const char** theArgVec)
-{
-  if (theArgNb <= 1)
+  else if (!toPrintInfo)
   {
-    std::cout << "Error: too few arguments.\n";
-    return 1;
+    return 0;
   }
 
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  ViewerTest_AutoUpdater anUpdateTool(aContext, ViewerTest::CurrentView());
-  if (aContext.IsNull())
-  {
-    std::cout << "Error: no active view!\n";
-    return 1;
-  }
-
-  gp_Trsf aTrsf;
-  Standard_Integer aLast = theArgNb;
-  const char* aName = theArgVec[0];
-
-  Standard_Boolean isReset = Standard_False;
-  Standard_Boolean isMove = Standard_False;
-
-  // Prefix 'vloc'
-  aName += 4;
-
-  if (!strcmp (aName, "reset"))
-  {
-    isReset = Standard_True;
-  }
-  else if (!strcmp (aName, "move"))
-  {
-    if (theArgNb < 3)
-    {
-      std::cout << "Error: too few arguments.\n";
-      return 1;
-    }
-
-    const ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
-
-    Handle(AIS_InteractiveObject) anIObj;
-    if (aMap.IsBound2 (theArgVec[theArgNb - 1]))
-    {
-      anIObj = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (theArgVec[theArgNb - 1]));
-    }
-
-    if (anIObj.IsNull())
-    {
-      std::cout << "Error: object '" << theArgVec[theArgNb - 1] << "' is not displayed!\n";
-      return 1;
-    }
-
-    isMove = Standard_True;
-
-    aTrsf = anIObj->Transformation();
-    aLast = theArgNb - 1;
-  }
-  else if (!strcmp (aName, "translate"))
-  {
-    if (theArgNb < 5)
-    {
-      std::cout << "Error: too few arguments.\n";
-      return 1;
-    }
-    aTrsf.SetTranslation (gp_Vec (Draw::Atof (theArgVec[theArgNb - 3]),
-                                  Draw::Atof (theArgVec[theArgNb - 2]),
-                                  Draw::Atof (theArgVec[theArgNb - 1])));
-    aLast = theArgNb - 3;
-  }
-  else if (!strcmp (aName, "rotate"))
-  {
-    if (theArgNb < 9)
-    {
-      std::cout << "Error: too few arguments.\n";
-      return 1;
-    }
-
-    aTrsf.SetRotation (
-      gp_Ax1 (gp_Pnt (Draw::Atof (theArgVec[theArgNb - 7]),
-                      Draw::Atof (theArgVec[theArgNb - 6]),
-                      Draw::Atof (theArgVec[theArgNb - 5])),
-              gp_Vec (Draw::Atof (theArgVec[theArgNb - 4]),
-                      Draw::Atof (theArgVec[theArgNb - 3]),
-                      Draw::Atof (theArgVec[theArgNb - 2]))),
-      Draw::Atof (theArgVec[theArgNb - 1]) * (M_PI / 180.0));
-
-    aLast = theArgNb - 7;
-  }
-  else if (!strcmp (aName, "mirror"))
-  {
-    if (theArgNb < 8)
-    {
-      std::cout << "Error: too few arguments.\n";
-      return 1;
-    }
-
-    aTrsf.SetMirror (gp_Ax2 (gp_Pnt (Draw::Atof(theArgVec[theArgNb - 6]),
-                                     Draw::Atof(theArgVec[theArgNb - 5]),
-                                     Draw::Atof(theArgVec[theArgNb - 4])),
-                             gp_Vec (Draw::Atof(theArgVec[theArgNb - 3]),
-                                     Draw::Atof(theArgVec[theArgNb - 2]),
-                                     Draw::Atof(theArgVec[theArgNb - 1]))));
-    aLast = theArgNb - 6;
-  }
-  else if (!strcmp (aName, "scale"))
-  {
-    if (theArgNb < 6)
-    {
-      std::cout << "Error: too few arguments.\n";
-      return 1;
-    }
-
-    aTrsf.SetScale (gp_Pnt (Draw::Atof(theArgVec[theArgNb - 4]),
-                            Draw::Atof(theArgVec[theArgNb - 3]),
-                            Draw::Atof(theArgVec[theArgNb - 2])),
-                    Draw::Atof(theArgVec[theArgNb - 1]));
-    aLast = theArgNb - 4;
-  }
-
-  for (Standard_Integer anIdx = 1; anIdx < aLast; anIdx++)
-  {
-    // find object
-    const ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
-    Handle(AIS_InteractiveObject) anIObj;
-    if (aMap.IsBound2 (theArgVec[anIdx]))
-    {
-      anIObj = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (theArgVec[anIdx]));
-    }
-    if (anIObj.IsNull())
-    {
-      std::cout << "Error: object '" << theArgVec[anIdx] << "' is not displayed!\n";
-      return 1;
-    }
-    
-    if (isReset)
-    {
-      // aTrsf already identity
-    }
-    else if (isMove)
-    {
-      aTrsf = anIObj->LocalTransformation() * anIObj->Transformation().Inverted() * aTrsf;
-    }
-    else
-    {
-      aTrsf = anIObj->LocalTransformation() * aTrsf;
-    }
-
-    TopLoc_Location aLocation (aTrsf);
-    aContext->SetLocation (anIObj, aLocation);
-  }
-
+  const gp_Trsf       aTrsf = anObj->LocalTransformation();
+  const gp_XYZ        aLoc  = aTrsf.TranslationPart();
+  const gp_Quaternion aRot  = aTrsf.GetRotation();
+  char aText[4096];
+  Sprintf (aText, "Location: %g %g %g\n"
+                  "Rotation: %g %g %g %g\n"
+                  "Scale:    %g\n",
+                  aLoc.X(), aLoc.Y(), aLoc.Z(),
+                  aRot.X(), aRot.Y(), aRot.Z(), aRot.W(),
+                  aTrsf.ScaleFactor());
+  theDI << aText;
   return 0;
 }
 
@@ -6411,9 +6567,29 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     "vdrawsphere: vdrawsphere shapeName Fineness [X=0.0 Y=0.0 Z=0.0] [Radius=100.0] [ToShowEdges=0] [ToPrintInfo=1]\n",
     __FILE__,VDrawSphere,group);
 
+  theCommands.Add ("vlocation",
+                "vlocation name"
+      "\n\t\t:   [-reset]"
+      "\n\t\t:   [-copyFrom otherName]"
+      "\n\t\t:   [-translate X Y [Z]]"
+      "\n\t\t:   [-rotate x y z dx dy dz angle]"
+      "\n\t\t:   [-scale [X Y Z] scale]"
+      "\n\t\t:   [-mirror x y z dx dy dz]"
+      "\n\t\t:   [-setLocation X Y [Z]]"
+      "\n\t\t:   [-setRotation QX QY QZ QW]"
+      "\n\t\t:   [-setScale [X Y Z] scale]"
+      "\n\t\t: Object local transformation management:"
+      "\n\t\t:   -reset       reset transformation to identity"
+      "\n\t\t:   -translate   translate object"
+      "\n\t\t:   -rotate      applies rotation to local transformation"
+      "\n\t\t:   -scale       applies scale    to local transformation"
+      "\n\t\t:   -mirror      applies mirror   to local transformation"
+      "\n\t\t:   -setLocation assign object location"
+      "\n\t\t:   -setRotation assign object rotation (quaternion)"
+      "\n\t\t:   -setScale    assign object scale factor",
+        __FILE__, VSetLocation, group);
   theCommands.Add ("vsetlocation",
-                   "vsetlocation [-noupdate|-update] name x y z"
-                   "\n\t\t: Set new location for an interactive object.",
+                   "alias for vlocation",
         __FILE__, VSetLocation, group);
 
   theCommands.Add (
@@ -6561,36 +6737,6 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t:  -noNormals - do not generate normal per point"
                    "\n",
                    __FILE__, VPointCloud, group);
-
-  theCommands.Add("vlocreset",
-    "vlocreset name1 name2 ...\n\t\t  remove object local transformation",
-    __FILE__,
-    LocalTransformPresentation, group);
-
-  theCommands.Add("vlocmove",
-    "vlocmove name1 name2 ... name\n\t\t  set local transform to match transform of 'name'",
-    __FILE__,
-    LocalTransformPresentation, group);
-
-  theCommands.Add("vloctranslate",
-    "vloctranslate name1 name2 ... dx dy dz\n\t\t  applies translation to local transformation",
-    __FILE__,
-    LocalTransformPresentation, group);
-
-  theCommands.Add("vlocrotate",
-    "vlocrotate name1 name2 ... x y z dx dy dz angle\n\t\t  applies rotation to local transformation",
-    __FILE__,
-    LocalTransformPresentation, group);
-
-  theCommands.Add("vlocmirror",
-    "vlocmirror name x y z dx dy dz\n\t\t  applies mirror to local transformation",
-    __FILE__,
-    LocalTransformPresentation, group);
-
-  theCommands.Add("vlocscale",
-    "vlocscale name x y z scale\n\t\t  applies scale to local transformation",
-    __FILE__,
-    LocalTransformPresentation, group);
 
   theCommands.Add("vpriority",
     "vpriority [-noupdate|-update] name [value]\n\t\t  prints or sets the display priority for an object",

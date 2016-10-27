@@ -46,6 +46,7 @@ NCollection_IncAllocator.cxx
 NCollection_IncAllocator.hxx
 NCollection_IndexedDataMap.hxx
 NCollection_IndexedMap.hxx
+NCollection_Lerp.hxx
 NCollection_List.hxx
 NCollection_ListNode.hxx
 NCollection_LocalArray.hxx
