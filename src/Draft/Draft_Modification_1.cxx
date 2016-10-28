@@ -1574,10 +1574,22 @@ void Draft_Modification::Perform ()
         anIntCurv->D1(aParF, aPf, aDirNF);
         anIntCurv->D1(aParL, aPl, aDirNL);
 
-        aDirNF.Normalize();
-        aDirNL.Normalize();
-        aDirOF.Normalize();
-        aDirOL.Normalize();
+        Standard_Real aSqMagn = aDirNF.SquareMagnitude();
+
+        if (aSqMagn > Precision::SquareConfusion())
+          aDirNF.Divide(sqrt(aSqMagn));
+
+        aSqMagn = aDirNL.SquareMagnitude();
+        if (aSqMagn > Precision::SquareConfusion())
+          aDirNL.Divide(sqrt(aSqMagn));
+
+        aSqMagn = aDirOF.SquareMagnitude();
+        if (aSqMagn > Precision::SquareConfusion())
+          aDirOF.Divide(sqrt(aSqMagn));
+
+        aSqMagn = aDirOL.SquareMagnitude();
+        if (aSqMagn > Precision::SquareConfusion())
+          aDirOL.Divide(sqrt(aSqMagn));
 
         const Standard_Real aCosF = aDirNF.Dot(aDirOF), aCosL = aDirNL.Dot(aDirOL);
         const Standard_Real aCosMax = Abs(aCosF) > Abs(aCosL) ? aCosF : aCosL;

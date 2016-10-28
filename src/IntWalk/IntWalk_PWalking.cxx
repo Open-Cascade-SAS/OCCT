@@ -2298,25 +2298,131 @@ SeekPointOnBoundary(const Handle(Adaptor3d_HSurface)& theASurf1,
   if (aSingularStatus)
     aPnt = aSingularPnt;
 
-  if(aStatus || aSingularStatus)
+  if (!aStatus && !aSingularStatus)
   {
-    gp_Pnt  aP1 = theASurf1->Value(aPnt(1), aPnt(2)),
-            aP2 = theASurf2->Value(aPnt(3), aPnt(4));
-    gp_Pnt aPInt(0.5*(aP1.XYZ() + aP2.XYZ()));
+    return isOK;
+  }
 
-    const Standard_Real aSQDist = aPInt.SquareDistance(aP1);
-    if (aSQDist < aTol * aTol)
+  const gp_Pnt  aP1 = theASurf1->Value(aPnt(1), aPnt(2)),
+                aP2 = theASurf2->Value(aPnt(3), aPnt(4));
+  const gp_Pnt aPInt(0.5*(aP1.XYZ() + aP2.XYZ()));
+
+  const Standard_Real aSQDist = aPInt.SquareDistance(aP1);
+  if (aSQDist > aTol * aTol)
+  {
+    return isOK;
+  }
+
+  //Found point is true intersection point
+  IntSurf_PntOn2S anIP;
+  anIP.SetValue(aPInt, aPnt(1), aPnt(2), aPnt(3), aPnt(4));
+
+  //The main idea of checks below is to define if insertion of
+  //addition point (on the boundary) does not lead to invalid
+  //intersection curve (e.g. having a loop).
+  //
+  //Loops are detected with rotation angle of the Walking-line (WL).
+  //If there is hairpin bend then insertion is forbidden.
+
+  //There are at least two possible problems:
+  //  1. There are some cases when two neighbor points of the WL
+  //      are almost coincident (the distance between them is less
+  //      than Precision::Confusion). It is impossible to define
+  //      rotation angle in these cases. Therefore, points with
+  //      "good" distances should be selected.
+
+  //  2. Intersection point on the surface boundary has highest
+  //      priority in compare with other "middle" points. Therefore,
+  //      if insertion of new point will result in a bend then some
+  //      "middle" points should be deleted in order to provide
+  //      correct insertion.
+
+  //Problem test cases:
+  //  test bugs modalg_5 bug24585_1
+  //  test boolean bcut_complex G7
+  //  test bugs moddata_2 bug469
+
+  if (isTheFirst)
+  {
+    while (line->NbPoints() > 1)
     {
-      IntSurf_PntOn2S anIP;
-      anIP.SetValue(aPInt, aPnt(1), aPnt(2), aPnt(3), aPnt(4));
+      const Standard_Integer aNbPnts = line->NbPoints();
 
-      if(isTheFirst)
-        line->InsertBefore(1,anIP);
-      else
-        line->Add(anIP);
+      gp_Pnt aP1, aP2;
+      Standard_Integer aPInd = 1;
+      for (; aPInd <= aNbPnts; aPInd++)
+      {
+        aP1.SetXYZ(line->Value(aPInd).Value().XYZ());
+        if (aP1.SquareDistance(aPInt) > Precision::SquareConfusion())
+          break;
+      }
 
-      isOK = Standard_True;
+      for (++aPInd; aPInd <= aNbPnts; aPInd++)
+      {
+        aP2.SetXYZ(line->Value(aPInd).Value().XYZ());
+        if (aP1.SquareDistance(aP2) > Precision::SquareConfusion())
+          break;
+      }
+
+      if (aPInd > aNbPnts)
+      {
+        return isOK;
+      }
+
+      const gp_XYZ aDir01(aP1.XYZ() - aPInt.XYZ());
+      const gp_XYZ aDir12(aP2.XYZ() - aP1.XYZ());
+
+      if (aDir01.Dot(aDir12) > 0.0)
+      {
+        break;
+      }
+
+      line->RemovePoint(1);
     }
+
+    line->InsertBefore(1, anIP);
+    isOK = Standard_True;
+  }
+  else
+  {
+    while (line->NbPoints() > 1)
+    {
+      const Standard_Integer aNbPnts = line->NbPoints();
+
+      gp_Pnt aPPrev, aPCurr;
+      Standard_Integer aPInd = aNbPnts;
+      for (; aPInd > 0; aPInd--)
+      {
+        aPCurr.SetXYZ(line->Value(aPInd).Value().XYZ());
+        if (aPCurr.SquareDistance(aPInt) > Precision::SquareConfusion())
+          break;
+      }
+
+      for (--aPInd; aPInd > 0; aPInd--)
+      {
+        aPPrev.SetXYZ(line->Value(aPInd).Value().XYZ());
+        if (aPCurr.SquareDistance(aPPrev) > Precision::SquareConfusion())
+          break;
+      }
+
+      if (aPInd < 1)
+      {
+        return isOK;
+      }
+
+      const gp_XYZ aDirPC(aPCurr.XYZ() - aPPrev.XYZ());
+      const gp_XYZ aDirCN(aPInt.XYZ() - aPCurr.XYZ());
+
+      if (aDirPC.Dot(aDirCN) > 0.0)
+      {
+        break;
+      }
+
+      line->RemovePoint(aNbPnts);
+    }
+
+    line->Add(anIP);
+    isOK = Standard_True;
   }
 
   return isOK;

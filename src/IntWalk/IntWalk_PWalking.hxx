@@ -177,6 +177,12 @@ protected:
   //! theU1, theV1, theU2 and theV2 parameters are initial parameters in
   //! for used numeric algorithms. If isTheFirst == TRUE then
   //! a point on theASurf1 is searched. Otherwise, the point on theASurf2 is searched.
+  //!
+  //! ATTENTION!!!
+  //!   This method can delete some points from the curve if it is necessary
+  //!   (in order to obtain correct result after insertion).
+  //!   Returns TRUE in case of success adding (i.e. can return FALSE even after
+  //!   removing some points).
   Standard_EXPORT Standard_Boolean SeekPointOnBoundary (const Handle(Adaptor3d_HSurface)& theASurf1,
                                                         const Handle(Adaptor3d_HSurface)& theASurf2,
                                                         const Standard_Real theU1,

@@ -1404,12 +1404,27 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 
   for (Standard_Integer i=1, aNbLin = slin.Length(); i<=aNbLin; i++)
   {
-    Handle(IntPatch_Line)& aL = slin(i);
+    Handle(IntPatch_PointLine) aL = Handle(IntPatch_PointLine)::DownCast(slin(i));
     
     if (!reversed)
       IntPatch_RstInt::PutVertexOnLine(aL,Surf1,D1,Surf2,Standard_True,TolTang);
     else
       IntPatch_RstInt::PutVertexOnLine(aL,Surf2,D2,Surf1,Standard_False,TolTang);
+
+    if (aL->NbPnts() <= 2)
+    {
+      Standard_Boolean aCond = aL->NbPnts() < 2;
+      if (!aCond)
+        aCond = (aL->Point(1).IsSame(aL->Point(2), Precision::Confusion()));
+
+      if (aCond)
+      {
+        slin.Remove(i);
+        i--;
+        aNbLin--;
+        continue;
+      }
+    }
 
     if(aL->ArcType() == IntPatch_Walking)
     {
