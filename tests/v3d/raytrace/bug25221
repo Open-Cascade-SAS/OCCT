@@ -43,14 +43,14 @@ vmoveto 200 200
 vdump $imagedir/${casename}_faces_closeup.png
 
 # apply transformation
-vlocrotate s 0 0 0 0 0 1 10
-vloctranslate s -30 0 0
+vlocation s -rotate 0 0 0 0 0 1 10
+vlocation s -translate -30 0 0
 vmoveto 0 0
 vmoveto 200 200
 
 vdump $imagedir/${casename}_faces_closeup_rotated.png
 
-vlocreset s
+vlocation s -reset
 vmoveto 0 0
 vmoveto 200 200
 
