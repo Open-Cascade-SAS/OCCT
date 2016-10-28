@@ -110,9 +110,6 @@ OcctJni_Viewer::OcctJni_Viewer()
   // prepare necessary environment
   TCollection_AsciiString aResRoot = "/data/data/com.opencascade.jnisample/files";
 
-  setResourceEnv ("CSF_TObjMessage",      aResRoot + "/TObj",      "TObj.msg",          Standard_False);
-  setResourceEnv ("CSF_UnitsLexicon",     aResRoot + "/UnitsAPI",  "Lexi_Expr.dat",     Standard_True);
-  setResourceEnv ("CSF_UnitsDefinition",  aResRoot + "/UnitsAPI",  "Units.dat",         Standard_True);
   setResourceEnv ("CSF_ShadersDirectory", aResRoot + "/Shaders",   "Declarations.glsl", Standard_False);
   setResourceEnv ("CSF_XSMessage",        aResRoot + "/XSMessage", "XSTEP.us",          Standard_False);
   setResourceEnv ("CSF_SHMessage",        aResRoot + "/XSMessage", "SHAPE.us",          Standard_False);
@@ -120,9 +117,6 @@ OcctJni_Viewer::OcctJni_Viewer()
 
   // make sure OCCT loads the dictionary
   //UnitsAPI::SetLocalSystem (UnitsAPI_SI);
-
-  // load messages for TObj
-  Message_MsgFile::LoadFromEnv ("CSF_TObjMessage", "TObj", "msg");
 }
 
 // =======================================================================

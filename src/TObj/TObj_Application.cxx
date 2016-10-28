@@ -23,9 +23,12 @@
 #include <TColStd_SequenceOfExtendedString.hxx>
 #include <CDM_COutMessageDriver.hxx>
 #include <Message_Msg.hxx>
+#include <Message_MsgFile.hxx>
 #include <Resource_Manager.hxx>
 
 #include <stdio.h>
+
+#include "TObj_TObj_msg.pxx"
 
 IMPLEMENT_STANDARD_RTTIEXT(TObj_Application,TDocStd_Application)
 
@@ -47,6 +50,16 @@ Handle(TObj_Application) TObj_Application::GetInstance()
 
 TObj_Application::TObj_Application () : myIsError(Standard_False)
 {
+  if (!Message_MsgFile::HasMsg ("TObj_Appl_SUnknownFailure"))
+  {
+    // load messages into global map on first instantiation
+    Message_MsgFile::LoadFromString (TObj_TObj_msg, sizeof(TObj_TObj_msg) - 1);
+    if (!Message_MsgFile::HasMsg ("TObj_Appl_SUnknownFailure"))
+    {
+      Standard_ProgramError::Raise ("Critical Error - message resources for TObj_Application are invalid or undefined!");
+    }
+  }
+
   myMessenger = new Message_Messenger;
   myIsVerbose = Standard_False;
 }

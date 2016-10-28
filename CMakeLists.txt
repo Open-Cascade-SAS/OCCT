@@ -52,6 +52,9 @@ set_property (GLOBAL PROPERTY OCC_VERSION_MAINTENANCE ${OCC_VERSION_MAINTENANCE}
 
 set (INSTALL_TEST_CASES OFF CACHE BOOL "${INSTALL_TEST_CASES_DESCR}")
 
+# Regeneration of OCCT resource files
+set (BUILD_RESOURCES OFF CACHE BOOL "${BUILD_RESOURCES_DESCR}")
+
 # single-configuration generator
 set (SINGLE_GENERATOR OFF)
 if (CMAKE_BUILD_TYPE)
@@ -284,6 +287,9 @@ if (NOT DEFINED INSTALL_DIR_CMAKE)
     set (INSTALL_DIR_CMAKE "cmake" CACHE PATH "${INSTALL_DIR_CMAKE_DESCR}")
   endif()
 endif()
+
+# include occt macros
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_resources")
 
 # install LICENSE_LGPL_21.txt and OCCT_LGPL_EXCEPTION.txt files
 if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Unix")

@@ -25,7 +25,6 @@
 class TCollection_AsciiString;
 class TCollection_ExtendedString;
 
-
 //! A tool providing facility to load definitions of message strings from
 //! resource file(s).
 //!
@@ -67,14 +66,25 @@ public:
   //! are replaced with the new ones.
   Standard_EXPORT static Standard_Boolean LoadFile (const Standard_CString theFName);
   
-  //! Loads the messages from the file with name (without extension)
-  //! given by environment variable.
-  //! Extension of the file name is given separately. If its not
-  //! defined, it is taken:
+  //! Loads the messages from the file with name (without extension) given by environment variable.
+  //! Extension of the file name is given separately. If its not defined, it is taken:
   //! - by default from environment CSF_LANGUAGE,
   //! - if not defined either, as "us".
-  Standard_EXPORT static void LoadFromEnv (const Standard_CString envname, const Standard_CString filename, const Standard_CString ext = "");
-  
+  //! @name theEnvName  environment variable name
+  //! @name theFileName file name without language suffix
+  //! @name theLangExt  language file name extension
+  //! @return TRUE on success
+  Standard_EXPORT static Standard_Boolean LoadFromEnv (const Standard_CString theEnvName,
+                                                       const Standard_CString theFileName,
+                                                       const Standard_CString theLangExt = "");
+
+  //! Loads the messages from the given text buffer.
+  //! @param theContent string containing the messages
+  //! @param theLength  length of the buffer;
+  //!                   when -1 specified - theContent will be considered as NULL-terminated string
+  Standard_EXPORT static Standard_Boolean LoadFromString (const Standard_CString theContent,
+                                                          const Standard_Integer theLength = -1);
+
   //! Adds new message to the map. Parameter <key> gives
   //! the key of the message, <text> defines the message itself.
   //! If there already was defined the message identified by the

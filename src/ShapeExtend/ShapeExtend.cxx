@@ -14,9 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <ShapeExtend.hxx>
 
 #include <Message_MsgFile.hxx>
-#include <ShapeExtend.hxx>
+#include <Standard_ProgramError.hxx>
+#include <TCollection_AsciiString.hxx>
+
+#include "../SHMessage/SHMessage_SHAPE_us.pxx"
 
 //=======================================================================
 //function : Init
@@ -30,7 +34,17 @@ void ShapeExtend::Init()
   init = Standard_True;
   
   // load Message File for Shape Healing
-  Message_MsgFile::LoadFromEnv ("CSF_SHMessage", "SHAPE");
+  if (!Message_MsgFile::HasMsg ("ShapeFix.FixSmallSolid.MSG0"))
+  {
+    if (!Message_MsgFile::LoadFromEnv ("CSF_SHMessage", "SHAPE"))
+    {
+      Message_MsgFile::LoadFromString (SHMessage_SHAPE_us, sizeof(SHMessage_SHAPE_us) - 1);
+    }
+    if (!Message_MsgFile::HasMsg ("ShapeFix.FixSmallSolid.MSG0"))
+    {
+      Standard_ProgramError::Raise ("Critical Error - message resources for ShapeExtend are invalid or undefined!");
+    }
+  }
 }
 
 //=======================================================================

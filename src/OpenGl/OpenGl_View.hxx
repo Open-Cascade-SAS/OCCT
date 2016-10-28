@@ -659,7 +659,10 @@ protected: //! @name data types related to ray-tracing
     TCollection_AsciiString Source() const;
 
     //! Loads shader source from specified files.
-    Standard_Boolean Load (const TCollection_AsciiString* theFileNames, const TCollection_AsciiString& thePrefix = EMPTY_PREFIX);
+    Standard_Boolean LoadFromFiles (const TCollection_AsciiString* theFileNames, const TCollection_AsciiString& thePrefix = EMPTY_PREFIX);
+
+    //! Loads shader source from specified strings.
+    Standard_Boolean LoadFromStrings (const TCollection_AsciiString* theStrings, const TCollection_AsciiString& thePrefix = EMPTY_PREFIX);
 
   private:
 

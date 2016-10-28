@@ -37,27 +37,11 @@ class Graphic3d_ShaderProgram : public Standard_Transient
 
 public:
 
-  //! The list of built-in GLSL programs
-  enum ShaderName
-  {
-    ShaderName_UNKNOWN, //!< undefined program
-    ShaderName_Phong    //!< per-pixel lighting (Phong shading)
-  };
-
-public:
-
   //! Creates new empty program object.
   Standard_EXPORT Graphic3d_ShaderProgram();
 
-  //! Creates program object from pre-defined shaders.
-  //! Raises Standard_Failure exception if shader resources are unavailable.
-  Standard_EXPORT Graphic3d_ShaderProgram (const Graphic3d_ShaderProgram::ShaderName theName);
-
   //! Releases resources of program object.
   Standard_EXPORT virtual ~Graphic3d_ShaderProgram();
-
-  //! Releases resources of program object.
-  Standard_EXPORT void Destroy() const;
 
   //! Checks if the program object is valid or not.
   Standard_EXPORT virtual Standard_Boolean IsDone() const;

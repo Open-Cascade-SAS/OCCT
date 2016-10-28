@@ -13,16 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_Atomic.hxx>
-#include <Standard_Assert.hxx>
+#include <Graphic3d_ShaderProgram.hxx>
 
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_ShaderObject.hxx>
-#include <Graphic3d_ShaderProgram.hxx>
 #include <OSD_Directory.hxx>
 #include <OSD_Environment.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Path.hxx>
+#include <Standard_Atomic.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ShaderProgram,Standard_Transient)
 
@@ -30,7 +29,6 @@ namespace
 {
   static volatile Standard_Integer THE_PROGRAM_OBJECT_COUNTER = 0;
 }
-
 
 // =======================================================================
 // function : ShadersFolder
@@ -57,9 +55,6 @@ const TCollection_AsciiString& Graphic3d_ShaderProgram::ShadersFolder()
 
     if (THE_SHADERS_FOLDER.IsEmpty())
     {
-      std::cerr << "Both environment variables CSF_ShadersDirectory and CASROOT are undefined!\n"
-                << "At least one should be defined to use standard GLSL programs.\n";
-      Standard_Failure::Raise ("CSF_ShadersDirectory and CASROOT are undefined");
       return THE_SHADERS_FOLDER;
     }
 
@@ -89,61 +84,13 @@ Graphic3d_ShaderProgram::Graphic3d_ShaderProgram()
 }
 
 // =======================================================================
-// function : Graphic3d_ShaderProgram
-// purpose  :
-// =======================================================================
-Graphic3d_ShaderProgram::Graphic3d_ShaderProgram (const Graphic3d_ShaderProgram::ShaderName theName)
-{
-  const TCollection_AsciiString& aShadersRoot = Graphic3d_ShaderProgram::ShadersFolder();
-  switch (theName)
-  {
-    case ShaderName_Phong:
-    {
-      myID = TCollection_AsciiString ("Graphic3d_ShaderProgram_Phong");
-      const TCollection_AsciiString aSrcVert = aShadersRoot + "/PhongShading.vs";
-      const TCollection_AsciiString aSrcFrag = aShadersRoot + "/PhongShading.fs";
-
-      if (!aSrcVert.IsEmpty()
-       && !OSD_File (aSrcVert).Exists())
-      {
-        Standard_Failure::Raise ("Graphic3d_ShaderProgram, PhongShading.vs is not found");
-        return;
-      }
-      if (!aSrcFrag.IsEmpty()
-       && !OSD_File (aSrcFrag).Exists())
-      {
-        Standard_Failure::Raise ("Graphic3d_ShaderProgram, PhongShading.fs is not found");
-        return;
-      }
-
-      AttachShader (Graphic3d_ShaderObject::CreateFromFile (Graphic3d_TOS_VERTEX,   aSrcVert));
-      AttachShader (Graphic3d_ShaderObject::CreateFromFile (Graphic3d_TOS_FRAGMENT, aSrcFrag));
-      break;
-    }
-    case ShaderName_UNKNOWN:
-    default:
-    {
-      Standard_Failure::Raise ("Graphic3d_ShaderProgram, unknown program name");
-      break;
-    }
-  }
-}
-
-// =======================================================================
 // function : ~Graphic3d_ShaderProgram
 // purpose  : Releases resources of program object
 // =======================================================================
 Graphic3d_ShaderProgram::~Graphic3d_ShaderProgram()
 {
-  Destroy();
+  //
 }
-
-// =======================================================================
-// function : Destroy
-// purpose  : Releases resources of program object
-// =======================================================================
-void Graphic3d_ShaderProgram::Destroy() const
-{ }
 
 // =======================================================================
 // function : IsDone

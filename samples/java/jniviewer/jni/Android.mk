@@ -32,17 +32,7 @@ $(ASSETDIR)/XSMessage: $(ASSETDIR)
 	-mkdir -p $(ASSETDIR)/XSMessage
 	cp -f -r $(OCCT_ROOT)/src/XSMessage/*.* $(ASSETDIR)/XSMessage
 
-$(ASSETDIR)/TObj: $(ASSETDIR)
-	-mkdir -p $(ASSETDIR)
-	-mkdir -p $(ASSETDIR)/TObj
-	cp -f -r $(OCCT_ROOT)/src/TObj/*.msg $(ASSETDIR)/TObj
-
-$(ASSETDIR)/UnitsAPI: $(ASSETDIR)
-	-mkdir -p $(ASSETDIR)
-	-mkdir -p $(ASSETDIR)/UnitsAPI
-	cp -f -r $(OCCT_ROOT)/src/UnitsAPI/*.dat $(ASSETDIR)/UnitsAPI
-
-pre_all: $(ASSETDIR)/Shaders $(ASSETDIR)/SHMessage $(ASSETDIR)/XSMessage $(ASSETDIR)/TObj $(ASSETDIR)/UnitsAPI
+pre_all: $(ASSETDIR)/Shaders $(ASSETDIR)/SHMessage $(ASSETDIR)/XSMessage
 
 jniall: pre_all all
 

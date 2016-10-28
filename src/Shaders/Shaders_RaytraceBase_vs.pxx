@@ -1,0 +1,15 @@
+// This file has been automatically generated from resource file src/Shaders/RaytraceBase.vs
+
+static const char Shaders_RaytraceBase_vs[] =
+  "in vec4 occVertex;\n"
+  "\n"
+  "//! Normalized pixel coordinates.\n"
+  "out vec2 vPixel;\n"
+  "\n"
+  "void main (void)\n"
+  "{\n"
+  "  vPixel = vec2 ((occVertex.x + 1.f) * 0.5f,\n"
+  "                 (occVertex.y + 1.f) * 0.5f);\n"
+  "\n"
+  "  gl_Position = occVertex;\n"
+  "}\n";

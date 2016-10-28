@@ -22,6 +22,13 @@
 #include <OSD_Protection.hxx>
 #include <OSD_File.hxx>
 
+#include "../Shaders/Shaders_RaytraceBase_vs.pxx"
+#include "../Shaders/Shaders_RaytraceBase_fs.pxx"
+#include "../Shaders/Shaders_PathtraceBase_fs.pxx"
+#include "../Shaders/Shaders_RaytraceRender_fs.pxx"
+#include "../Shaders/Shaders_RaytraceSmooth_fs.pxx"
+#include "../Shaders/Shaders_Display_fs.pxx"
+
 using namespace OpenGl_Raytrace;
 
 //! Use this macro to output ray-tracing debug info
@@ -1011,14 +1018,16 @@ TCollection_AsciiString OpenGl_View::ShaderSource::Source() const
 }
 
 // =======================================================================
-// function : Load
+// function : LoadFromFiles
 // purpose  : Loads shader source from specified files
 // =======================================================================
-Standard_Boolean OpenGl_View::ShaderSource::Load (const TCollection_AsciiString* theFileNames,
-                                                  const TCollection_AsciiString& thePrefix)
+Standard_Boolean OpenGl_View::ShaderSource::LoadFromFiles (const TCollection_AsciiString* theFileNames,
+                                                           const TCollection_AsciiString& thePrefix)
 {
   myError.Clear();
   mySource.Clear();
+  myPrefix = thePrefix;
+
   TCollection_AsciiString aMissingFiles;
   for (Standard_Integer anIndex = 0; !theFileNames[anIndex].IsEmpty(); ++anIndex)
   {
@@ -1051,11 +1060,32 @@ Standard_Boolean OpenGl_View::ShaderSource::Load (const TCollection_AsciiString*
     aFile.Close();
   }
 
-  myPrefix = thePrefix;
   if (!aMissingFiles.IsEmpty())
   {
     myError = TCollection_AsciiString("Shader files ") + aMissingFiles + " are missing or inaccessible";
     return Standard_False;
+  }
+  return Standard_True;
+}
+
+// =======================================================================
+// function : LoadFromStrings
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_View::ShaderSource::LoadFromStrings (const TCollection_AsciiString* theStrings,
+                                                             const TCollection_AsciiString& thePrefix)
+{
+  myError.Clear();
+  mySource.Clear();
+  myPrefix = thePrefix;
+
+  for (Standard_Integer anIndex = 0; !theStrings[anIndex].IsEmpty(); ++anIndex)
+  {
+    TCollection_AsciiString aSource = theStrings[anIndex];
+    if (!aSource.IsEmpty())
+    {
+      mySource += TCollection_AsciiString ("\n") + aSource;
+    }
   }
   return Standard_True;
 }
@@ -1411,13 +1441,7 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
 
     myRaytraceParameters.NbBounces = myRenderParams.RaytracingDepth;
 
-    const TCollection_AsciiString aFolder = Graphic3d_ShaderProgram::ShadersFolder();
-
-    if (aFolder.IsEmpty())
-    {
-      return safeFailBack ("Failed to locate shaders directory", theGlContext);
-    }
-
+    const TCollection_AsciiString aShaderFolder = Graphic3d_ShaderProgram::ShadersFolder();
     if (myIsRaytraceDataValid)
     {
       myRaytraceParameters.StackSize = Max (THE_DEFAULT_STACK_SIZE,
@@ -1432,21 +1456,40 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
 
     ShaderSource aBasicVertShaderSrc;
     {
-      TCollection_AsciiString aFiles[] = { aFolder + "/RaytraceBase.vs", "" };
-      if (!aBasicVertShaderSrc.Load (aFiles))
+      if (!aShaderFolder.IsEmpty())
       {
-        return safeFailBack (aBasicVertShaderSrc.ErrorDescription(), theGlContext);
+        const TCollection_AsciiString aFiles[] = { aShaderFolder + "/RaytraceBase.vs", "" };
+        if (!aBasicVertShaderSrc.LoadFromFiles (aFiles))
+        {
+          return safeFailBack (aBasicVertShaderSrc.ErrorDescription(), theGlContext);
+        }
+      }
+      else
+      {
+        const TCollection_AsciiString aSrcShaders[] = { Shaders_RaytraceBase_vs, "" };
+        aBasicVertShaderSrc.LoadFromStrings (aSrcShaders);
       }
     }
 
     {
-      TCollection_AsciiString aFiles[] = { aFolder + "/RaytraceBase.fs",
-                                           aFolder + "/PathtraceBase.fs",
-                                           aFolder + "/RaytraceRender.fs",
-                                           "" };
-      if (!myRaytraceShaderSource.Load (aFiles, aPrefixString))
+      if (!aShaderFolder.IsEmpty())
       {
-        return safeFailBack (myRaytraceShaderSource.ErrorDescription(), theGlContext);
+        const TCollection_AsciiString aFiles[] = { aShaderFolder + "/RaytraceBase.fs",
+                                                   aShaderFolder + "/PathtraceBase.fs",
+                                                   aShaderFolder + "/RaytraceRender.fs",
+                                                   "" };
+        if (!myRaytraceShaderSource.LoadFromFiles (aFiles, aPrefixString))
+        {
+          return safeFailBack (myRaytraceShaderSource.ErrorDescription(), theGlContext);
+        }
+      }
+      else
+      {
+        const TCollection_AsciiString aSrcShaders[] = { Shaders_RaytraceBase_fs,
+                                                        Shaders_PathtraceBase_fs,
+                                                        Shaders_RaytraceRender_fs,
+                                                        "" };
+        myRaytraceShaderSource.LoadFromStrings (aSrcShaders, aPrefixString);
       }
 
       Handle(OpenGl_ShaderObject) aBasicVertShader = initShader (GL_VERTEX_SHADER, aBasicVertShaderSrc, theGlContext);
@@ -1470,12 +1513,18 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
     }
 
     {
-      TCollection_AsciiString aFiles[] = { aFolder + "/RaytraceBase.fs",
-                                           aFolder + "/RaytraceSmooth.fs",
-                                           "" };
-      if (!myPostFSAAShaderSource.Load (aFiles, aPrefixString))
+      if (!aShaderFolder.IsEmpty())
       {
-        return safeFailBack (myPostFSAAShaderSource.ErrorDescription(), theGlContext);
+        const TCollection_AsciiString aFiles[] = { aShaderFolder + "/RaytraceBase.fs", aShaderFolder + "/RaytraceSmooth.fs", "" };
+        if (!myPostFSAAShaderSource.LoadFromFiles (aFiles, aPrefixString))
+        {
+          return safeFailBack (myPostFSAAShaderSource.ErrorDescription(), theGlContext);
+        }
+      }
+      else
+      {
+        const TCollection_AsciiString aSrcShaders[] = { Shaders_RaytraceBase_fs, Shaders_RaytraceSmooth_fs, "" };
+        myPostFSAAShaderSource.LoadFromStrings (aSrcShaders, aPrefixString);
       }
 
       Handle(OpenGl_ShaderObject) aBasicVertShader = initShader (GL_VERTEX_SHADER, aBasicVertShaderSrc, theGlContext);
@@ -1499,10 +1548,18 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
     }
 
     {
-      TCollection_AsciiString aFiles[] = { aFolder + "/Display.fs", "" };
-      if (!myOutImageShaderSource.Load (aFiles, aPrefixString))
+      if (!aShaderFolder.IsEmpty())
       {
-        return safeFailBack (myOutImageShaderSource.ErrorDescription(), theGlContext);
+        const TCollection_AsciiString aFiles[] = { aShaderFolder + "/Display.fs", "" };
+        if (!myOutImageShaderSource.LoadFromFiles (aFiles, aPrefixString))
+        {
+          return safeFailBack (myOutImageShaderSource.ErrorDescription(), theGlContext);
+        }
+      }
+      else
+      {
+        const TCollection_AsciiString aSrcShaders[] = { Shaders_Display_fs, "" };
+        myOutImageShaderSource.LoadFromStrings (aSrcShaders, aPrefixString);
       }
 
       Handle(OpenGl_ShaderObject) aBasicVertShader = initShader (GL_VERTEX_SHADER, aBasicVertShaderSrc, theGlContext);

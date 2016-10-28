@@ -552,14 +552,40 @@ static Standard_Integer VShaderProg (Draw_Interpretor& /*theDI*/,
   }
 
   TCollection_AsciiString aLastArg (theArgVec[theArgNb - 1]);
-  aLastArg.UpperCase();
-  const Standard_Boolean toTurnOff = aLastArg == "OFF";
+  aLastArg.LowerCase();
+  const Standard_Boolean toTurnOff = aLastArg == "off";
   Standard_Integer       anArgsNb  = theArgNb - 1;
   Handle(Graphic3d_ShaderProgram) aProgram;
   if (!toTurnOff
-   && aLastArg == "PHONG")
+   && aLastArg == "phong")
   {
-    aProgram = new Graphic3d_ShaderProgram (Graphic3d_ShaderProgram::ShaderName_Phong);
+    const TCollection_AsciiString& aShadersRoot = Graphic3d_ShaderProgram::ShadersFolder();
+    if (aShadersRoot.IsEmpty())
+    {
+      std::cerr << "Both environment variables CSF_ShadersDirectory and CASROOT are undefined!\n"
+                << "At least one should be defined to load Phong program.\n";
+      return 1;
+    }
+
+    const TCollection_AsciiString aSrcVert = aShadersRoot + "/PhongShading.vs";
+    const TCollection_AsciiString aSrcFrag = aShadersRoot + "/PhongShading.fs";
+
+    if (!aSrcVert.IsEmpty()
+     && !OSD_File (aSrcVert).Exists())
+    {
+      std::cerr << "Error: PhongShading.vs is not found\n";
+      return 1;
+    }
+    if (!aSrcFrag.IsEmpty()
+      && !OSD_File (aSrcFrag).Exists())
+    {
+      std::cerr << "Error: PhongShading.fs is not found\n";
+      return 1;
+    }
+
+    aProgram = new Graphic3d_ShaderProgram();
+    aProgram->AttachShader (Graphic3d_ShaderObject::CreateFromFile (Graphic3d_TOS_VERTEX,   aSrcVert));
+    aProgram->AttachShader (Graphic3d_ShaderObject::CreateFromFile (Graphic3d_TOS_FRAGMENT, aSrcFrag));
   }
   if (!toTurnOff
    && aProgram.IsNull())

@@ -18,6 +18,8 @@ set (BUILD_YACCLEX_DESCR
 ExprIntrp functionality are generated automatically with Flex/Bison. Checking this options
 leads to automatic search of Flex/Bison binaries and regeneration of the mentioned files")
 
+set (BUILD_RESOURCES_DESCR "Enables regeneration of OCCT resource files")
+
 set (BUILD_WITH_DEBUG_DESCR
 "Enables extended messages of many OCCT algorithms, usually printed to cout.
 These include messages on internal errors and special cases encountered, timing etc.

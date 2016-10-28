@@ -28,6 +28,9 @@
 
 #include <OpenGl_GlCore32.hxx>
 
+#include "../Shaders/Shaders_DeclarationsImpl_glsl.pxx"
+#include "../Shaders/Shaders_Declarations_glsl.pxx"
+
 #ifdef _WIN32
   #include <malloc.h> // for alloca()
 #endif
@@ -146,33 +149,13 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     return Standard_False;
   }
 
-  OSD_File aDeclFile     (Graphic3d_ShaderProgram::ShadersFolder() + "/Declarations.glsl");
-  OSD_File aDeclImplFile (Graphic3d_ShaderProgram::ShadersFolder() + "/DeclarationsImpl.glsl");
-  if (!aDeclFile.Exists()
-   || !aDeclImplFile.Exists())
-  {
-    const TCollection_ExtendedString aMsg = "Error! Failed to load OCCT shader declarations file";
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-                         GL_DEBUG_TYPE_ERROR,
-                         0,
-                         GL_DEBUG_SEVERITY_HIGH,
-                         aMsg);
-    return Standard_False;
-  }
-
   TCollection_AsciiString aHeader = !myProxy.IsNull() && !myProxy->Header().IsEmpty()
                                   ? (myProxy->Header() + "\n")
                                   : TCollection_AsciiString();
 
-  TCollection_AsciiString aDeclarations;
-  aDeclFile.Open (OSD_ReadOnly, OSD_Protection());
-  aDeclFile.Read (aDeclarations, (int)aDeclFile.Size());
-  aDeclFile.Close();
+  TCollection_AsciiString aDeclarations = Shaders_Declarations_glsl;
+  TCollection_AsciiString aDeclImpl = Shaders_DeclarationsImpl_glsl;
 
-  TCollection_AsciiString aDeclImpl;
-  aDeclImplFile.Open (OSD_ReadOnly, OSD_Protection());
-  aDeclImplFile.Read (aDeclImpl, (int)aDeclImplFile.Size());
-  aDeclImplFile.Close();
   aDeclarations += aDeclImpl;
 
   for (Graphic3d_ShaderObjectList::Iterator anIter (theShaders);

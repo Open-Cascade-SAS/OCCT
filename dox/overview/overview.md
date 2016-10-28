@@ -346,10 +346,9 @@ The scripts are located in the OCCT root folder.
   * **CSF_DEBUG** (optional, Windows only): if defined then a diagnostic message is displayed in case of an exception;
   * **CSF_DEBUG_BOP** (optional): if defined then it should specify directory where diagnostic data on problems occured in Boolean operations will be saved;
   * **CSF_MDTVTexturesDirectory** defines the directory for available textures when using texture mapping;
-  * **CSF_ShadersDirectory** defines the directory for GLSL programs (required for 3D viewer to work);
-  * **CSF_UnitsDefinition** and **CSF_UnitsLexicon** should define paths to resource files Lexi_Expr.dat and Units.dat, respectively (required for support of measurement units);
-  * **CSF_SHMessage** defines the path to the messages file for *ShapeHealing*;
-  * **CSF_XSMessage** defines the path to the messages file for **STEP** and **IGES** translators;
+  * **CSF_ShadersDirectory** (optional) defines the directory for GLSL programs for Ray Tracing renderer (embedded resources are used when variable is undefined);
+  * **CSF_SHMessage** (optional) defines the path to the messages file for *ShapeHealing*;
+  * **CSF_XSMessage** (optional) defines the path to the messages file for **STEP** and **IGES** translators;
   * **CSF_StandardDefaults**, **CSF_StandardLiteDefaults*, **CSF_XCAFDefaults**, and **CSF_PluginDefaults** define paths to directory where configuration files for OCAF persistence are located (required for open/save operations with OCAF documents);
   * **CSF_IGESDefaults** and **CSF_STEPDefaults** (optional) define paths to directory where resource files of **IGES** and **STEP** translators are located;
   * **CSF_XmlOcafResource** is required in order to set the path to **XSD** resources, which defines XML grammar.

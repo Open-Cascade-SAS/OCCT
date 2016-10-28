@@ -48,19 +48,11 @@ public:
   
   //! Reads the file <afilename> to create a sequence  of tokens
   //! stored in <thesequenceoftokens>.
-  Standard_EXPORT void Creates (const Standard_CString afilename);
+  Standard_EXPORT void Creates ();
   
   //! Returns the first item of the sequence of tokens.
     Handle(Units_TokensSequence) Sequence() const;
-  
-  //! Returns in a AsciiString from TCollection the name of the file.
-  Standard_EXPORT TCollection_AsciiString FileName() const;
-  
-  //! Returns true if  the  file has not  changed  since the
-  //! creation   of   the  Lexicon   object.   Returns false
-  //! otherwise.
-  Standard_EXPORT virtual Standard_Boolean UpToDate() const;
-  
+
   //! Adds to the lexicon a new token with <aword>, <amean>,
   //! <avalue>  as  arguments.  If there is  already a token
   //! with   the  field  <theword>  equal    to <aword>, the
@@ -82,9 +74,6 @@ protected:
 
 private:
 
-
-  Handle(TCollection_HAsciiString) thefilename;
-  Standard_Time thetime;
   Handle(Units_TokensSequence) thesequenceoftokens;
 
 

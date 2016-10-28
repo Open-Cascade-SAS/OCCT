@@ -67,7 +67,7 @@ Number of ignored Null Entities : %d.
  Unknown entity %s.
 !
 .XSTEP_23
- Recovered entity.
+ Recovered entity %s.
 !
 .XSTEP_24
 Report : %d unknown entities.

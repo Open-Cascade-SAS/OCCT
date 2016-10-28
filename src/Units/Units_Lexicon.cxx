@@ -16,8 +16,6 @@
 
 #include <Units_Lexicon.hxx>
 
-#include <OSD.hxx>
-#include <OSD_OpenFile.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -25,11 +23,75 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Units_Lexicon,MMgt_TShared)
 
-#ifdef _MSC_VER
-# include <stdio.h>
-#else
-#include <Standard_Stream.hxx>
-#endif  // _MSC_VER
+namespace
+{
+
+  //! Lexicon item
+  struct LexiconItem
+  {
+    char   Prefix[10];   //!< prefix or symbol (e.g. "k" for kilo)
+    char   Operation[2]; //!< operation
+    double Value;        //!< numeric parameter (e.g. multiplier)
+  };
+
+  //! Lexicon table.
+  //!
+  //! Original table (UnitsAPI/Lexi_Expr.dat) used symbols from extended ASCII,
+  //! which should not be used within UTF-8 text.
+  //!
+  //! This table preserves these codes for compatibility.
+  //! UTF-8 items might be uncommented after updating UnitsAPI/Units.dat
+  //! and analysis of further consequences.
+  static const LexiconItem THE_LEXICON[] =
+  {
+    // scope
+    {         "(", "S", 0.0 },
+    {         ")", "S", 0.0 },
+    // operators
+    {         "+", "O", 0.0 },
+    {         "-", "O", 0.0 },
+    {         "*", "O", 0.0 },
+    {         ".", "O", 0.0 },
+    {         "/", "O", 0.0 },
+    {        "**", "O", 0.0 },
+    // ^2, power of two
+    {      "\xB2", "P", 2.0 }, // ISO 8859-1/ISO Latin-1 (extended ASCII)
+    //{  "\xC2\xB2", "P", 2.0 }, // UTF-8
+    {        "p2", "P", 2.0 },
+    {       "sq.", "P", 2.0 },
+    // ^3, power of three
+    {      "\xB3", "P", 3.0 }, // ISO 8859-1/ISO Latin-1 (extended ASCII)
+    //{  "\xC2\xB3", "P", 3.0 }, // UTF-8
+    {       "cu.", "P", 3.0 },
+    // multipliers
+    {         "y", "M", 1.E-24 }, // yocto
+    {         "z", "M", 1.E-21 }, // zepto
+    {         "a", "M", 1.E-18 }, // atto
+    {         "f", "M", 1.E-15 }, // femto
+    {         "p", "M", 1.E-12 }, // pico
+    {         "n", "M", 1.E-09 }, // nano
+    {      "\xB5", "M", 1.E-06 }, // micro, ISO 8859-1/ISO Latin-1 (extended ASCII)
+    //{  "\xC2\xB5", "M", 1.E-06 }, // micro, UTF-8
+    {         "m", "M", 1.E-03 }, // milli
+    {         "c", "M", 1.E-02 }, // centi
+    {         "d", "M", 1.E-01 }, // deci
+    {        "da", "M", 1.E+01 }, // deca
+    {         "h", "M", 1.E+02 }, // hecto
+    {         "k", "M", 1.E+03 }, // kilo
+    {         "M", "M", 1.E+06 }, // mega
+    {         "G", "M", 1.E+09 }, // giga
+    {         "T", "M", 1.E+12 }, // tera
+    {         "P", "M", 1.E+15 }, // peta
+    {         "E", "M", 1.E+18 }, // exa
+    {         "Z", "M", 1.E+21 }, // zetta
+    {         "Y", "M", 1.E+24 }, // yotta
+    // Pi constant
+    {       "\xB6", "",  M_PI }, // Pilcrow sign, ISO 8859-1/ISO Latin-1 (extended ASCII)
+    //{   "\xCF\x80", "",  M_PI }, // UTF-8
+    {         "Pi", "",  M_PI },
+  };
+
+}
 
 //=======================================================================
 //function : Units_Lexicon
@@ -46,97 +108,25 @@ Units_Lexicon::Units_Lexicon()
 //purpose  : 
 //=======================================================================
 
-static inline bool strrightadjust (char *str)
+void Units_Lexicon::Creates()
 {
-  for (size_t len = strlen(str); len > 0 && IsSpace (str[len-1]); len--)
-    str[len-1] = '\0';
-  return str[0] != '\0';
-}
-
-void Units_Lexicon::Creates(const Standard_CString afilename)
-{
-  std::ifstream file;
-  OSD_OpenStream (file, afilename, std::ios::in);
-  if(!file) {
-#ifdef OCCT_DEBUG
-    cout<<"unable to open "<<afilename<<" for input"<<endl;
-#endif
-    return;
-  }
-
-  thefilename = new TCollection_HAsciiString(afilename);
   thesequenceoftokens = new Units_TokensSequence();
-  thetime = OSD_FileStatCTime (afilename);
 
-  // read file line-by-line; each line has fixed format:
-  // first 30 symbols for prefix or symbol (e.g. "k" for kilo)
-  // then 10 symbols for operation
-  // then 30 symbols for numeric parameter (e.g. multiplier)
-  // line can be shorter if last fields are empty
-  Handle(Units_Token) token;
-  for (int nline = 0; ; nline++) {
-    char line[256];
-    memset (line, 0, sizeof(line));
-    if (! file.getline (line, 255))
-      break;
-
-    // trim trailing white space
-    if (! strrightadjust (line)) // empty line
-      continue;
-
-    // split line to parts
-    char chain[31], oper[11], coeff[31];
-    memset(chain,0x00,sizeof(chain));
-    memset(oper,0x00,sizeof(oper));
-    memset(coeff,0x00,sizeof(coeff));
-
-    sscanf (line, "%30c%10c%30c", chain, oper, coeff);
-
-    // remove trailing spaces and check values
-    if (! strrightadjust (chain))
-      continue;
-    strrightadjust (oper);
-    double value = 0;
-    if (strrightadjust (coeff))
-      OSD::CStringToReal (coeff, value);
-
-    // add token
-    if(thesequenceoftokens->IsEmpty()) {
-      token = new Units_Token(chain,oper,value);
-      thesequenceoftokens->Prepend(token);
+  const Standard_Integer aNbLexiItems = sizeof(THE_LEXICON) / sizeof(LexiconItem);
+  for (Standard_Integer anItemIter = 0; anItemIter < aNbLexiItems; ++anItemIter)
+  {
+    const LexiconItem& anItem = THE_LEXICON[anItemIter];
+    if (thesequenceoftokens->IsEmpty())
+    {
+      Handle(Units_Token) aToken = new Units_Token (anItem.Prefix, anItem.Operation, anItem.Value);
+      thesequenceoftokens->Prepend (aToken);
     }
-    else {
-      AddToken(chain,oper,value);
+    else
+    {
+      AddToken (anItem.Prefix, anItem.Operation, anItem.Value);
     }
   }
-  file.close();
 }
-
-
-//=======================================================================
-//function : UpToDate
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Units_Lexicon::UpToDate() const
-{
-  TCollection_AsciiString aPath = FileName();
-  Standard_Time aTime = OSD_FileStatCTime (aPath.ToCString());
-  return aTime != 0
-      && aTime <= thetime;
-}
-
-
-//=======================================================================
-//function : FileName
-//purpose  : 
-//=======================================================================
-
-TCollection_AsciiString Units_Lexicon::FileName() const
-{
-  return thefilename->String();
-}
-
 
 //=======================================================================
 //function : AddToken

@@ -271,35 +271,67 @@ Standard_Boolean Message_MsgFile::LoadFile (const Standard_CString theFileName)
 
 //=======================================================================
 //function : LoadFromEnv
-//purpose  : 
+//purpose  :
 //=======================================================================
-void  Message_MsgFile::LoadFromEnv
-  (const Standard_CString envname,
-   const Standard_CString filename,
-   const Standard_CString ext)
+Standard_Boolean Message_MsgFile::LoadFromEnv (const Standard_CString theEnvName,
+                                               const Standard_CString theFileName,
+                                               const Standard_CString theLangExt)
 {
-  Standard_CString extname = ext;
-  TCollection_AsciiString extstr;
-  if (!extname || extname[0] == '\0') {
-    OSD_Environment extenv("CSF_LANGUAGE");
-    extstr  = extenv.Value();
-    extname = extstr.ToCString();
-  }
-  if (!extname || extname[0] == '\0') extname = "us";
-
-  TCollection_AsciiString filestr(filename);
-  if (envname && envname[0] != '\0') {
-    OSD_Environment envenv(envname);
-    TCollection_AsciiString envstr  = envenv.Value();
-    if (envstr.Length() > 0) {
-      if (envstr.Value(envstr.Length()) != '/') filestr.Insert (1,'/');
-      filestr.Insert (1,envstr.ToCString());
+  TCollection_AsciiString aLangExt (theLangExt != NULL ? theLangExt : "");
+  if (aLangExt.IsEmpty())
+  {
+    OSD_Environment aLangEnv ("CSF_LANGUAGE");
+    aLangExt = aLangEnv.Value();
+    if (aLangExt.IsEmpty())
+    {
+      aLangExt = "us";
     }
   }
-  if (extname[0] != '.') filestr.AssignCat ('.');
-  filestr.AssignCat (extname);
 
-  Message_MsgFile::LoadFile (filestr.ToCString());
+  TCollection_AsciiString aFilePath (theFileName);
+  if (theEnvName != NULL
+   && theEnvName[0] != '\0')
+  {
+    OSD_Environment aNameEnv (theEnvName);
+    TCollection_AsciiString aNameEnvStr = aNameEnv.Value();
+    if (!aNameEnvStr.IsEmpty())
+    {
+      if (aNameEnvStr.Value (aNameEnvStr.Length()) != '/')
+      {
+        aFilePath.Insert (1, '/');
+      }
+      aFilePath.Insert (1, aNameEnvStr);
+    }
+  }
+
+  if (aLangExt.Value (1) != '.')
+  {
+    aFilePath.AssignCat ('.');
+  }
+  aFilePath.AssignCat (aLangExt);
+
+  return Message_MsgFile::LoadFile (aFilePath.ToCString());
+}
+
+//=======================================================================
+//function : LoadFromString
+//purpose  :
+//=======================================================================
+Standard_Boolean Message_MsgFile::LoadFromString (const Standard_CString theContent,
+                                                  const Standard_Integer theLength)
+{
+  Standard_Integer aStringSize = theLength >= 0 ? theLength : (Standard_Integer )strlen (theContent);
+  NCollection_Buffer aBuffer (NCollection_BaseAllocator::CommonBaseAllocator());
+  if (aStringSize <= 0 || !aBuffer.Allocate (aStringSize + 2))
+  {
+    return Standard_False;
+  }
+
+  memcpy (aBuffer.ChangeData(), theContent, aStringSize);
+  aBuffer.ChangeData()[aStringSize + 0] = '\0';
+  aBuffer.ChangeData()[aStringSize + 1] = '\0';
+  char* anMsgBuffer = reinterpret_cast<char*>(aBuffer.ChangeData());
+  return ::loadFile (anMsgBuffer);
 }
 
 //=======================================================================

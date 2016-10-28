@@ -38,36 +38,6 @@ static UnitsAPI_SystemUnits currentSystem = UnitsAPI_DEFAULT;
 void UnitsAPI::CheckLoading (const UnitsAPI_SystemUnits aSystemUnits)
 {
   if( currentSystem != aSystemUnits || CurrentUnits.IsNull()) {
-    OSD_Environment env1("CSF_UnitsLexicon");
-    TCollection_AsciiString slexiconfile(env1.Value());
-    if( slexiconfile.Length() > 0 )
-      Units::LexiconFile(slexiconfile.ToCString());
-    else {
-      OSD_Environment CasRootEnv("CASROOT");
-      TCollection_AsciiString CasRootString(CasRootEnv.Value());
-      if (CasRootString.Length() > 0 )  {
-	CasRootString += "/src/UnitsAPI/Lexi_Expr.dat" ;
-	Units::LexiconFile(CasRootString.ToCString());
-      }
-      else {
-	Standard_NoSuchObject::Raise("environment variable CSF_UnitsLexicon undefined");
-      }
-    }
-    OSD_Environment env2("CSF_UnitsDefinition");
-    TCollection_AsciiString sunitsfile(env2.Value());
-    if( sunitsfile.Length() > 0 )
-      Units::UnitsFile(sunitsfile.ToCString());
-    else {
-      OSD_Environment CasRootEnv("CASROOT");
-      TCollection_AsciiString CasRootString(CasRootEnv.Value());
-      if (CasRootString.Length() > 0 ) {
-	CasRootString += "/src/UnitsAPI/Units.dat";
-	Units::UnitsFile(CasRootString.ToCString());
-      }
-      else {
-	Standard_NoSuchObject::Raise("environment variable CSF_UnitsDefinition undefined");
-      }
-    }  
     switch (aSystemUnits) {
       case UnitsAPI_DEFAULT :
         if( !CurrentUnits.IsNull() ) break;

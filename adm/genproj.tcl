@@ -108,6 +108,152 @@ proc osutils:findSrcSubPath {theSubPath} {
   return "$::THE_CASROOT/src/$theSubPath"
 }
 
+# Auxiliary tool comparing content of two files line-by-line.
+proc osutils:isEqualContent { theContent1 theContent2 } {
+  set aLen1 [llength $theContent1]
+  set aLen2 [llength $theContent2]
+  if { $aLen1 != $aLen2 } {
+    return false
+  }
+
+  for {set aLineIter 0} {$aLineIter < $aLen1} {incr aLineIter} {
+    set aLine1 [lindex $theContent1 $aLineIter]
+    set aLine2 [lindex $theContent2 $aLineIter]
+    if { $aLine1 != $aLine2 } {
+      return false
+    }
+  }
+  return true
+}
+
+# Auxiliary function for writing new file content only if it has been actually changed
+# (e.g. to preserve file timestamp on no change).
+# Useful for automatically (re)generated files.
+proc osutils:writeTextFile { theFile theContent {theEol lf} } {
+  if {[file exists "${theFile}"]} {
+    set aFileOld [open "${theFile}" rb]
+    fconfigure $aFileOld -translation crlf
+    set aLineListOld [split [read $aFileOld] "\n"]
+    close $aFileOld
+
+    # append empty line for proper comparison (which will be implicitly added by last puts below)
+    set aContent $theContent
+    lappend aContent ""
+    if { [osutils:isEqualContent $aLineListOld $aContent] == true } {
+      return false
+    }
+
+    file delete -force "${theFile}"
+  }
+
+  set anOutFile [open "$theFile" "w"]
+  fconfigure $anOutFile -translation $theEol
+  foreach aLine ${theContent} {
+    puts $anOutFile "${aLine}"
+  }
+  close $anOutFile
+  return true
+}
+
+# Function re-generating header files for specified text resource
+proc genResources { theResource } {
+  global path
+
+  set aResFileList {}
+  set aResourceAbsPath [file normalize "${path}/src/${theResource}"]
+  set aResourceDirectory ""
+  set isResDirectory false
+
+  if {[file isdirectory "${aResourceAbsPath}"]} {
+    if {[file exists "${aResourceAbsPath}/FILES"]} {
+      set aFilesFile [open "${aResourceAbsPath}/FILES" rb]
+      set aResFileList [split [read $aFilesFile] "\n"]
+      close $aFilesFile
+    }
+    set aResFileList [lsearch -inline -all -not -exact $aResFileList ""]
+    set aResourceDirectory "${theResource}"
+    set isResDirectory true
+  } else {
+    set aResourceName [file tail "${theResource}"]
+    lappend aResFileList "res:::${aResourceName}"
+    set aResourceDirectory [file dirname "${theResource}"]
+  }
+
+  foreach aResFileIter ${aResFileList} {
+    if {![regexp {^[^:]+:::(.+)} "${aResFileIter}" dump aResFileIter]} {
+	  continue
+	}
+
+    set aResFileName [file tail "${aResFileIter}"]
+    regsub -all {\.} "${aResFileName}" {_} aResFileName
+    set aHeaderFileName "${aResourceDirectory}_${aResFileName}.pxx"
+    if { $isResDirectory == true && [lsearch $aResFileList $aHeaderFileName] == -1 } {
+      continue
+    }
+
+    # generate
+    set aContent {}
+    lappend aContent "// This file has been automatically generated from resource file src/${aResourceDirectory}/${aResFileIter}"
+	lappend aContent ""
+
+    # generate necessary structures
+    set aLineList {}
+    if {[file exists "${path}/src/${aResourceDirectory}/${aResFileIter}"]} {
+      set anInputFile [open "${path}/src/${aResourceDirectory}/${aResFileIter}" rb]
+      fconfigure $anInputFile -translation crlf
+      set aLineList [split [read $anInputFile] "\n"]
+      close $anInputFile
+    }
+
+    # drop empty trailing line
+    set anEndOfFile ""
+    if { [lindex $aLineList end] == "" } {
+      set aLineList [lreplace $aLineList end end]
+      set anEndOfFile "\\n"
+    }
+
+    lappend aContent "static const char ${aResourceDirectory}_${aResFileName}\[\] ="
+    set aNbLines  [llength $aLineList]
+    set aLastLine [expr $aNbLines - 1]
+    for {set aLineIter 0} {$aLineIter < $aNbLines} {incr aLineIter} {
+      set aLine [lindex $aLineList $aLineIter]
+      regsub -all {\"} "${aLine}" {\\"} aLine
+      if { $aLineIter == $aLastLine } {
+        lappend aContent "  \"${aLine}${anEndOfFile}\";"
+      } else {
+        lappend aContent "  \"${aLine}\\n\""
+      }
+    }
+
+    # Save generated content to header file
+    set aHeaderFilePath "${path}/src/${aResourceDirectory}/${aHeaderFileName}"
+    if { [osutils:writeTextFile $aHeaderFilePath $aContent] == true } {
+      puts "Generating header file from resource file: ${path}/src/${aResourceDirectory}/${aResFileIter}"
+    } else {
+	  #puts "Header file from resource ${path}/src/${aResourceDirectory}/${aResFileIter} is up-to-date"
+    }
+  }
+}
+
+# Function re-generating header files for all text resources
+proc genAllResources {} {
+  global path
+  set aCasRoot [file normalize $path]
+  if {![file exists "$aCasRoot/adm/RESOURCES"]} {
+    puts "OCCT directory is not defined correctly: $aCasRoot"
+    return
+  }
+
+  set aFileResources [open "$aCasRoot/adm/RESOURCES" rb]
+  set anAdmResources [split [read $aFileResources] "\r\n"]
+  close $aFileResources
+  set anAdmResources [lsearch -inline -all -not -exact $anAdmResources ""]
+
+  foreach line $anAdmResources {
+    genResources "${line}"
+  }
+}
+
 # Wrapper-function to generate VS project files
 proc genproj {theIDE args} {
   set aSupportedIDEs { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "cbp" "xcd" }
@@ -193,6 +339,7 @@ proc genproj {theIDE args} {
   OS:MKPRC "$anAdmPath" "$theIDE" "$aLibType" "$aPlatform" "$aCmpl"
 
   genprojbat "$theIDE" $aPlatform
+  genAllResources
 }
 
 proc genprojbat {theIDE thePlatform} {
@@ -676,7 +823,7 @@ proc osutils:collectinc {theModules theIncPath} {
       foreach aHeaderFile [concat [glob -nocomplain -dir $aCasRoot/src/$anUnit "*.\[hgl\]xx"] $aHFiles] {
         set aHeaderFileName [file tail $aHeaderFile]
 
-        regsub -all -- {@OCCT_HEADER_FILE@} $aHeaderTmpl "$aFromBuildIncToSrcPath/$anUnit/$aHeaderFileName" aShortCutHeaderFileContent
+        regsub -all -- {@OCCT_HEADER_FILE_CONTENT@} $aHeaderTmpl "#include \"$aFromBuildIncToSrcPath/$anUnit/$aHeaderFileName\"" aShortCutHeaderFileContent
 
         if {[file exists "$theIncPath/$aHeaderFileName"] && [file readable "$theIncPath/$aHeaderFileName"]} {
           set fp [open "$theIncPath/$aHeaderFileName" r]

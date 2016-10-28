@@ -11,12 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Integration to ensure SCCS base integrity
-//#58 rln 28.12.98 changing default values for Global Section
-//pdn 11.01.99 including <stdio.h> for compilation on NT
-//gka 19.01.99 changing date parameters and  number of IGES version, adding parameter(ApllicationProtocol)
-//#65 rln 12.02.99 S4151 (explicitly force YYMMDD.HHMMSS before Y2000 and YYYYMMDD.HHMMSS after Y2000)
-
 #include <IGESData.hxx>
 #include <IGESData_DefaultGeneral.hxx>
 #include <IGESData_DefaultSpecific.hxx>
@@ -131,10 +125,6 @@ static Handle(IGESData_DefaultSpecific)   speci;
   Interface_Static::Init ("XSTEP","write.iges.offset.mode",'&',"eval On");
   Interface_Static::Init ("XSTEP","write.iges.offset.mode",'&',"eval Off");
   Interface_Static::SetIVal ("write.iges.offset.mode",0);
-  // Message File for IGES
-  // -----------------
-
-  Message_MsgFile::LoadFromEnv ("CSF_XSMessage","IGES");
 
   // Creating the Global Section
   //----------------------------

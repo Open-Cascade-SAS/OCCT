@@ -38,49 +38,12 @@ Units_UnitsLexicon::Units_UnitsLexicon() : Units_Lexicon()
 //purpose  : 
 //=======================================================================
 
-void Units_UnitsLexicon::Creates(const Standard_CString afilename1,
-				 const Standard_CString afilename2,
-				 const Standard_Boolean amode)
+void Units_UnitsLexicon::Creates(const Standard_Boolean amode)
 {
   Handle(Units_UnitsDictionary) unitsdictionary;
 
-  thefilename = new TCollection_HAsciiString(afilename2);
-  Standard_Time aTime2 = OSD_FileStatCTime (afilename2);
-  if (aTime2 != 0)
-  {
-    thetime = aTime2;
-  }
-
-  Units_Lexicon::Creates(afilename1);
+  Units_Lexicon::Creates();
 
   if(amode)unitsdictionary = Units::DictionaryOfUnits(amode);
 
-}
-
-//=======================================================================
-//function : UpToDate
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Units_UnitsLexicon::UpToDate() const
-{
-  TCollection_AsciiString aPath = FileName2();
-  if (!Units_Lexicon::UpToDate())
-  {
-    return Standard_False;
-  }
-
-  Standard_Time aTime = OSD_FileStatCTime (aPath.ToCString());
-  return aTime != 0
-      && aTime <= thetime;
-}
-
-//=======================================================================
-//function : FileName2
-//purpose  : 
-//=======================================================================
-
-TCollection_AsciiString Units_UnitsLexicon::FileName2() const
-{
-  return thefilename->String();
 }

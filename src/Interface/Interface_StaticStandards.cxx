@@ -11,16 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//#74 rln 10.03.99 S4135: new parameters, values and default values
-//    gka 10.04.99 S4136: eliminate parameter 'lastpreci'
-//S4181 pdn 23.04.99: adding new parameter handling writing of elementary surfaces
 #include <Interface_Static.hxx>
+
 #include <Message_MsgFile.hxx>
 #include <TCollection_ExtendedString.hxx>
-//tatouage de la librairie
 #include <Precision.hxx>
+
 #include <stdio.h>
 
+#include "../XSMessage/XSMessage_XSTEP_us.pxx"
 
 static int deja = 0;
 
@@ -88,33 +87,16 @@ void  Interface_Static::Standards ()
 //    (0 pour dire : pas codee)
 //:S4136  Interface_Static::Init("std"    ,"lastpreci", 'r',"0.");
 
-
-//  ****  MESSAGERIE DE BASE  ****
-
-//  Chargement "manuel" au cas ou les fichiers, env, etc sont KO
-
-  Message_MsgFile::AddMsg ("XSTEP_1","Beginning of IGES file memory loading.");
-  Message_MsgFile::AddMsg ("XSTEP_2","File opening error");
-  Message_MsgFile::AddMsg ("XSTEP_3","Reason : No such file or directory");
-  Message_MsgFile::AddMsg ("XSTEP_4","Reason : Not enough space");
-  Message_MsgFile::AddMsg ("XSTEP_5","Reason : Permission denied");
-  Message_MsgFile::AddMsg ("XSTEP_6","Reason : Too many open files");
-  Message_MsgFile::AddMsg ("XSTEP_7","Reason : Undetermined");
-  Message_MsgFile::AddMsg ("XSTEP_8","End of loading IGES file to memory (Elapsed time : %s).");
-
-  Message_MsgFile::AddMsg ("XSTEP_11","Internal error during the file header reading. The process continues");
-  Message_MsgFile::AddMsg ("XSTEP_13","Internal error during the reading of the entity %d");
-  Message_MsgFile::AddMsg ("XSTEP_14","Internal error during the reading of the entity %d (parameter %d)");
-  Message_MsgFile::AddMsg ("XSTEP_15","Total number of loaded entities : %d.");
-  Message_MsgFile::AddMsg ("XSTEP_16","Beginning of the model loading");
-  Message_MsgFile::AddMsg ("XSTEP_17","End of the model loading");
-  Message_MsgFile::AddMsg ("XSTEP_21","Number of ignored Null Entities : %d");
-  Message_MsgFile::AddMsg ("XSTEP_22","Entity %s : unknown");
-  Message_MsgFile::AddMsg ("XSTEP_23","Entity %s, Type %s : recovered");
-  Message_MsgFile::AddMsg ("XSTEP_24","Report : %d unknown entities");
-  Message_MsgFile::AddMsg ("XSTEP_25","Number of fail in memory loading : %d.");
-  Message_MsgFile::AddMsg ("XSTEP_26","Number of warning in memory loading : %d.");
-
-//  Chargement du vrai fichier langue
-  Message_MsgFile::LoadFromEnv ("CSF_XSMessage","XSTEP");
+  // load messages if needed
+  if (!Message_MsgFile::HasMsg ("XSTEP_1"))
+  {
+    if (!Message_MsgFile::LoadFromEnv ("CSF_XSMessage", "XSTEP"))
+    {
+      Message_MsgFile::LoadFromString (XSMessage_XSTEP_us, sizeof(XSMessage_XSTEP_us) - 1);
+    }
+    if (!Message_MsgFile::HasMsg ("XSTEP_1"))
+    {
+      Standard_ProgramError::Raise ("Critical Error - message resources for Interface_Static are invalid or undefined!");
+    }
+  }
 }

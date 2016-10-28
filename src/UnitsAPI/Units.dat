@@ -10,7 +10,7 @@ percent                                            %                            
 MASS                                             1         0         0         0         0         0         0         0         0
 ....................................................................................................................................
 gram                                               g                                    .001
-carat métrique                                     ct                                   .2               g
+metric carat                                       ct                                   .2               g
 quintal                                            q                                 100                 kg
 tonne                                              t                                1000                 kg
 
@@ -21,7 +21,6 @@ apothecaries'ounce                                 oz_apoth(U.K.)               
 ounce                                              oz                                437.5               gr
 pound                                              lb                                 16                 oz
 cental                                             cental                            100                 lb
-benne à charbon                                    benne_à_charbon                   100                 lb
 short hundredweight                                sh.cwt                            100                 lb
 hundredweight                                      cwt                               112                 lb
 short ton                                          sh.ton                           2000                 lb
@@ -31,11 +30,11 @@ ton                                                ton                          
 LENGTH                                           0         1         0         0         0         0         0         0         0
 ....................................................................................................................................
 meter                                              m
-angström                                           Å                                   1.E-10            m
+angstrom                                           \xC5                                   1.E-10            m
                                                    angstrom
 brasse                                             brasse                              1.8288            m
 arpent (Quebec)                                    arpent_longueur                    58.47131           m
-micron                                             µ                               10000                 Å
+micron                                             \xB5                               10000                 \xC5
                                                    micron
 
 mille                                              mille                            1852                 m
@@ -63,29 +62,29 @@ minute of time                                     min                          
 hour                                               h                                  60                 min
 day                                                j                                  24                 h
 year                                               y                                 365.25              j
-année sidérale                                     année_sidérale                      3.155815E+07      s
-année tropique                                     a_trop                              3.155693E+07      s
+sidereal year                                      a_side                              3.155815E+07      s
+tropical year                                      a_trop                              3.155693E+07      s
 ....................................................................................................................................
                                                  M         L         T         I         K         N         J         P         S
 ELECTRIC CURRENT                                 0         0         0         1         0         0         0         0         0
 ....................................................................................................................................
 ampere                                             A                                                                                
 biot                                               Bi                                 10                 A                          
-gilbert                                            gilbert                    (10/4*¶)                   A
+gilbert                                            gilbert                    (10/4*\xB6)                   A
 ....................................................................................................................................
                                                  M         L         T         I         K         N         J         P         S
 THERMODYNAMIC TEMPERATURE                        0         0         0         0         1         0         0         0         0
 ....................................................................................................................................
-Kelvin degree of temperature                       °K
+Kelvin degree of temperature                       \260K
                                                    deg.K
 
-Celsius degree of temperature                      °C                         [273.15]                   °K
+Celsius degree of temperature                      \260C                         [273.15]                   \260K
                                                    deg.C
 
-Rankine degree of temperature                      °R                         (5/9)                      °K
+Rankine degree of temperature                      \260R                         (5/9)                      \260K
                                                    deg.R
 
-Fahrenheit degree of temperature                   °F                         [(1379/3)]                 °R
+Fahrenheit degree of temperature                   \260F                         [(1379/3)]                 \260R
                                                    deg.F
 ....................................................................................................................................
                                                  M         L         T         I         K         N         J         P         S
@@ -106,44 +105,44 @@ radian                                             rad
 second of angle                                    "
 minute of angle                                    '                                  60                 "
 
-degre of angle                                     °                                  60                 '
+degre of angle                                     \xB0                                  60                 '
                                                    deg
 
-right angle                                        L                                  90                 °
-revolution                                         tr                                360                 °
-                                                                              (2*¶)                      rad
+right angle                                        L                                  90                 \xB0
+revolution                                         tr                                360                 \xB0
+                                                                              (2*\xB6)                      rad
 grade                                              gra                                54                 '
 ....................................................................................................................................
                                                  M         L         T         I         K         N         J         P         S
 SOLID ANGLE                                      0         0         0         0         0         0         0         0         1
 ....................................................................................................................................
 steradian                                          sr
-spat                                               sp                         (4*¶)                      sr
+spat                                               sp                         (4*\xB6)                      sr
 ....................................................................................................................................
                                                  M         L         T         I         K         N         J         P         S
 AREA                                             0         2         0         0         0         0         0         0         0
 ....................................................................................................................................
-barn                                               b                                   1.E-28            m²
-are                                                a                                 100                 m²
-arpent (Quebec)                                    arpent_superficie                3418.894             m²
+barn                                               b                                   1.E-28            m\xB2
+are                                                a                                 100                 m\xB2
+arpent (Quebec)                                    arpent_superficie                3418.894             m\xB2
 acre                                               acre                             4840                 sq.yd.                    
 ....................................................................................................................................
                                                  M         L         T         I         K         N         J         P         S
 VOLUME                                           0         3         0         0         0         0         0         0         0
 ....................................................................................................................................
-liter                                              l                                    .001             m³
-stere of wood                                      st                                  1                 m³
+liter                                              l                                    .001             m\xB3
+stere of wood                                      st                                  1                 m\xB3
 
 liquid pint (U.S.)                                 liq.pt.                            28.87429           cu.in.
 liquid quart (U.S.)                                liq.quart(U.S.)                     2                 liq.pt.
 dry quart (U.S.)                                   dry_quart(U.S.)                    67.1989            cu.in.
 gallon (U.S.)                                      gal(U.S.)                           4                 liq.quart(U.S.)  
 bushel (U.S.)                                      bu(U.S.)                            1.244430          cu.ft.
-fluid ounce (U.S.)                                 fl.oz(U.S.)                        29.5729            cm³
+fluid ounce (U.S.)                                 fl.oz(U.S.)                        29.5729            cm\xB3
 baril (U.S.)                                       baril(U.S.)                        42                 gal(U.S.)
-barrel (U.S.)                                      barrel(U.S.)                         .158987          m³
+barrel (U.S.)                                      barrel(U.S.)                         .158987          m\xB3
 
-baril (mesure sèche) (U.S.)                        bbl                                  .115627          m³
+dry barrel (U.S.)                                  bbl                                  .115627          m\xB3
 
 pint (U.K.)                                        pt.                                34.67636           cu.in.
                                                    pt
@@ -151,10 +150,10 @@ pint (U.K.)                                        pt.                          
 quart (U.K.)                                       quart(U.K.)                         2                 pt.
 gallon (U.K.)                                      gal(U.K.)                           4                 quart(U.K.)
 bushel (U.K.)                                      bu(U.K.)                            1.284315          cu.ft.
-fluid ounce (U.K.)                                 fl.oz(U.K.)                        28.4122            cm³
+fluid ounce (U.K.)                                 fl.oz(U.K.)                        28.4122            cm\xB3
 baril (U.K.)                                       baril(U.K.)                        36                 gal(U.K.)
 
-board foot                                         board_foot                          2.36E-03          m³
+board foot                                         board_foot                          2.36E-03          m\xB3
 registered ton                                     regis.ton                         100                 cu.ft.
 shipping ton                                       shipp.ton                          40                 cu.ft.
 tonneau                                            tonneau                             1                 regis.ton
@@ -180,7 +179,7 @@ noeud                                              noeud                        
                                                  M         L         T         I         K         N         J         P         S
 ACCELERATION                                     0         1        -2         0         0         0         0         0         0
 ....................................................................................................................................
-gal                                                Gal                                  .01              m/s²
+gal                                                Gal                                  .01              m/s\xB2
 ....................................................................................................................................
                                                  M         L         T         I         K         N         J         P         S
 FREQUENCY                                        0         0        -1         0         0         0         0         0         0
@@ -253,21 +252,21 @@ barye                                              barye                        
 millimeter of water                                mm_CE                               9.80665           Pa
 millimeter of mercury                              mm_Hg                             133.322             Pa
 pieze                                              pz                               1000                 Pa
-inch of water                                      in.H²O                            249.089             Pa
-foot of water                                      ft.H²O                           2989                 Pa
+inch of water                                      in.H\xB2O                            249.089             Pa
+foot of water                                      ft.H\xB2O                           2989                 Pa
 inch of mercury                                    in.Hg                            3386.39              Pa
 pound force per square inch                        psi                                 0.0689476         bar
 ....................................................................................................................................
                                                  M         L         T         I         K         N         J         P         S
 DYNAMIC VISCOSITY                                1        -1        -1         0         0         0         0         0         0
 ....................................................................................................................................
-poise                                              Po                                  1                 gf/cm².s
+poise                                              Po                                  1                 gf/cm\xB2.s
 poiseuille                                         Pl                                 10                 Po
 ....................................................................................................................................
                                                  M         L         T         I         K         N         J         P         S
 KINETIC VISCOSITY                                0         2        -1         0         0         0         0         0         0
 ....................................................................................................................................
-stoke                                              St                                   .00001           m²/s
+stoke                                              St                                   .00001           m\xB2/s
 ....................................................................................................................................
                                                  M         L         T         I         K         N         J         P         S
 TENSION SUPERFICIELLE                            1         0        -2         0         0         0         0         0         0
@@ -284,9 +283,8 @@ ENERGY                                           1         2        -2         0
 joule                                              J
 electron-volt                                      eV                                  1.59E-19          J
 erg                                                erg                                 1.E-07            J
-calorie (diététique)                               cal_di                              4.1855            J
-calorie (internationale) ou calorie IT             cal                                 4.1868            J
-calorie 15 °C                                      cal_15                              4.1855            J
+calorie (International) IT                         cal                                 4.1868            J
+calorie (15 celsius degrees)                       cal_15                              4.1855            J
 calorie (thermochimie)                             calorie(thermochimie)               4.184             J
 thermie                                            th                            1000000                 cal
 
@@ -294,8 +292,8 @@ horse-power-hour                                   HP-h                         
 british thermal unit (International Table)         Btu                              1055.056             J
 british thermal unit (moyenne)                     Btu_a                            1055.87              J
 british thermal unit (thermochimie)                Btu_c                            1054.35              J
-british thermal unit (à 39°F)                      Btu_39                           1059.67              J
-british thermal unit (à 60°F)                      Btu_60                           1054.68              J
+british thermal unit (Btu-39F)                     Btu_39                           1059.67              J
+british thermal unit (Btu-60F)                     Btu_60                           1054.68              J
 ....................................................................................................................................
                                                  M         L         T         I         K         N         J         P         S
 POWER                                            1         2        -3         0         0         0         0         0         0
@@ -353,8 +351,8 @@ lumen                                              Lu
                                                  M         L         T         I         K         N         J         P         S
 LUMINANCE                                        0        -2         0         0         0         0         1         0         0
 ....................................................................................................................................
-stilb                                              sb                                  1.E+04            cd/m²
-apostilb                                           asb                                 0.318             cd/m²
+stilb                                              sb                                  1.E+04            cd/m\xB2
+apostilb                                           asb                                 0.318             cd/m\xB2
 ....................................................................................................................................
                                                  M         L         T         I         K         N         J         P         S
 EXITANCE                                         0        -2         0         0         0         0         1         0         1
@@ -374,7 +372,7 @@ LUMINOUS EFFICACITY                             -1        -2         3         0
 ELECTRIC CHARGE                                  0         0         1         1         0         0         0         0         0
 ....................................................................................................................................
 coulomb                                            C
-ampère-heure                                       Ah                                  3.6E+03           C
+ampere-hour                                        Ah                                  3.6E+03           C
 franklin                                           Fr                                333.563E-12         C
 ....................................................................................................................................
                                                  M         L         T         I         K         N         J         P         S
@@ -389,7 +387,7 @@ farad                                              F
                                                  M         L         T         I         K         N         J         P         S
 MAGNETIC FIELD                                   0        -1         0         1         0         0         0         0         0
 ....................................................................................................................................
-oersted                                            oersted                    (1000/4*¶)                 A/m
+oersted                                            oersted                    (1000/4*\xB6)                 A/m
 ....................................................................................................................................
                                                  M         L         T         I         K         N         J         P         S
 MAGNETIC FLUX                                    1         2        -2        -1         0         0         0         0         0

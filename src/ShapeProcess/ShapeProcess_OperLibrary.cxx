@@ -872,9 +872,6 @@ void ShapeProcess_OperLibrary::Init ()
   done = Standard_True;
 
   ShapeExtend::Init();
-  
-  // load message file for Shape Processing
-  Message_MsgFile::LoadFromEnv ("CSF_SHMessage", "SHAPE");
 
   ShapeProcess::RegisterOperator ( "DirectFaces",           new ShapeProcess_UOperator ( directfaces ) );
   ShapeProcess::RegisterOperator ( "SameParameter",         new ShapeProcess_UOperator ( sameparam ) );

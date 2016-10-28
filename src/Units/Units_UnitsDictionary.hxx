@@ -48,17 +48,12 @@ public:
   //! Returns a  UnitsDictionary object  which  contains the
   //! sequence  of all   the  units  you want to   consider,
   //! physical quantity by physical quantity.
-  Standard_EXPORT void Creates (const Standard_CString afilename);
+  Standard_EXPORT void Creates ();
   
   //! Returns   the  head   of   the  sequence  of  physical
   //! quantities.
-    Handle(Units_QuantitiesSequence) Sequence() const;
-  
-  //! Returns true if there has been no  modification of the
-  //! file Units.dat  since the   creation of the dictionary
-  //! object, false otherwise.
-  Standard_EXPORT Standard_Boolean UpToDate() const;
-  
+  Handle(Units_QuantitiesSequence) Sequence() const;
+
   //! Returns for <aquantity> the active unit.
   Standard_EXPORT TCollection_AsciiString ActiveUnit (const Standard_CString aquantity) const;
   
@@ -85,8 +80,6 @@ protected:
 private:
 
 
-  Handle(TCollection_HAsciiString) thefilename;
-  Standard_Time thetime;
   Handle(Units_QuantitiesSequence) thequantitiessequence;
 
 

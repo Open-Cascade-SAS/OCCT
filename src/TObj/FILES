@@ -44,3 +44,4 @@ TObj_TReference.cxx
 TObj_TReference.hxx
 TObj_TXYZ.cxx
 TObj_TXYZ.hxx
+TObj_TObj_msg.pxx

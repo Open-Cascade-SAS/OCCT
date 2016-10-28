@@ -462,9 +462,6 @@ void TObjDRAW::Init(Draw_Interpretor& di)
   static Standard_Boolean initactor = Standard_False;
   if (initactor) return;  initactor = Standard_True;
 
-  // load TObjOcaf base data model messages
-  Message_MsgFile::Load( ::getenv( "CSF_TObjResources" ), "TObj.msg" );
-  
   //=====================================
   // General commands
   //=====================================

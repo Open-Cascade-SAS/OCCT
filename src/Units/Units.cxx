@@ -83,17 +83,12 @@ Handle(Units_UnitsDictionary) Units::DictionaryOfUnits(const Standard_Boolean am
 //      cout<<"Allocation du dictionnaire"<<endl;
       unitsdictionary = new Units_UnitsDictionary();
 //      cout<<"Creation du dictionnaire"<<endl;
-      unitsdictionary->Creates(unitsfile.ToCString());
+      unitsdictionary->Creates();
     }
   else if(amode)
     {
 //      cout<<"Creation du dictionnaire"<<endl;
-      unitsdictionary->Creates(unitsfile.ToCString());
-    }
-  else if(!unitsdictionary->UpToDate())
-    {
-//      cout<<"Creation du dictionnaire"<<endl;
-      unitsdictionary->Creates(unitsfile.ToCString());
+      unitsdictionary->Creates();
     }
   return unitsdictionary;
 }
@@ -178,11 +173,7 @@ Handle(Units_Lexicon) Units::LexiconUnits(const Standard_Boolean amode)
 //      cout<<"Allocation du lexique d'unites"<<endl;
     lexiconunits = new Units_UnitsLexicon();
 //      cout<<"Creation du lexique d'unites"<<endl;
-    lexiconunits->Creates(lexiconfile.ToCString(),unitsfile.ToCString(),amode);
-  }
-  else if(!lexiconunits->UpToDate()) {
-//      cout<<"Creation du lexique d'unites"<<endl;
-    lexiconunits->Creates(lexiconfile.ToCString(),unitsfile.ToCString(),amode);
+    lexiconunits->Creates(amode);
   }
   return lexiconunits;
 }
@@ -199,11 +190,7 @@ Handle(Units_Lexicon) Units::LexiconFormula()
 //      cout<<"Allocation du lexique d'expression"<<endl;
     lexiconformula = new Units_Lexicon();
 //      cout<<"Creation du lexique d'expression"<<endl;
-    lexiconformula->Creates(lexiconfile.ToCString());
-  }
-  else if(!lexiconformula->UpToDate()) {
-//      cout<<"Creation du lexique d'expression"<<endl;
-    lexiconformula->Creates(lexiconfile.ToCString());
+    lexiconformula->Creates();
   }
   return lexiconformula;
 }

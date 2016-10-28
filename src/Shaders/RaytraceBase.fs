@@ -195,7 +195,7 @@ uint RandInt()
 
 // =======================================================================
 // function : RandFloat
-// purpose  : Generates a random float in [0, 1) range
+// purpose  : Generates a random float in 0 <= x < 1 range
 // =======================================================================
 float RandFloat()
 {

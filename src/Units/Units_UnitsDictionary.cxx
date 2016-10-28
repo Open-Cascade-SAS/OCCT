@@ -37,6 +37,8 @@
 #include <Units_UnitsLexicon.hxx>
 #include <Units_UnitsSequence.hxx>
 
+#include "../UnitsAPI/UnitsAPI_Units_dat.pxx"
+
 #include <stdio.h>
 
 IMPLEMENT_STANDARD_RTTIEXT(Units_UnitsDictionary,MMgt_TShared)
@@ -53,14 +55,51 @@ Units_UnitsDictionary::Units_UnitsDictionary()
 //purpose  : 
 //=======================================================================
 
-static inline bool strrightadjust (char *str)
+namespace
 {
-  for (size_t len = strlen(str); len > 0 && IsSpace (str[len-1]); len--)
-    str[len-1] = '\0';
-  return str[0] != '\0';
+
+  //! Auxiliary method removing trailing spaces.
+  static bool strrightadjust (char *str)
+  {
+    for (size_t len = strlen(str); len > 0 && IsSpace (str[len-1]); len--)
+    {
+      str[len-1] = '\0';
+    }
+    return str[0] != '\0';
+  }
+
+  //! Auxiliary method for iterating string line-by-line.
+  static const char* readLine (TCollection_AsciiString& theLine,
+                               const char* theString)
+  {
+    theLine.Clear();
+    if (theString == NULL)
+    {
+      return NULL;
+    }
+
+    for (const char* aCharIter = theString;; ++aCharIter)
+    {
+      if (*aCharIter == '\0')
+      {
+        return NULL;
+      }
+
+      if (*aCharIter == '\n')
+      {
+        const Standard_Integer aLineLen = Standard_Integer(aCharIter - theString);
+        if (aLineLen != 0)
+        {
+          theLine = TCollection_AsciiString (theString, aLineLen);
+        }
+        return aCharIter + 1;
+      }
+    }
+  }
+
 }
 
-void Units_UnitsDictionary::Creates(const Standard_CString afilename)
+void Units_UnitsDictionary::Creates()
 {
   Standard_Boolean ismove;
   Standard_Integer i, j, k, charnumber, unitscomputed;
@@ -71,36 +110,23 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
   Handle(Units_ShiftedUnit) shiftedunit;
   Handle(Units_Quantity) quantity;
 
-  std::ifstream file;
-  OSD_OpenStream (file, afilename, std::ios::in);
-  if(!file) {
-#ifdef OCCT_DEBUG
-    cout<<"unable to open "<<afilename<<" for input"<<endl;
-#endif
-    return;
-  }
-  
-  thefilename = new TCollection_HAsciiString(afilename);
-  thetime = OSD_FileStatCTime (afilename);
-
   thequantitiessequence = new Units_QuantitiesSequence();
-  
+
   // read file line by line
   Standard_Integer numberofunits = 0;
-  for(;;) {
-    char line[256];
-    memset (line, 0, sizeof(line));
-    file.getline (line,255);
-    if (!file)
-      break;
-
+  TCollection_AsciiString aLine;
+  for (const char* aLineIter = readLine (aLine, UnitsAPI_Units_dat); aLineIter != NULL; aLineIter = readLine (aLine, aLineIter))
+  {
     // trim trailing spaces
-    if (! strrightadjust (line))
-      continue; // empty line
+    aLine.RightAdjust();
+    if (aLine.IsEmpty())
+    {
+      continue;
+    }
 
     // lines starting with dot separate sections of the file
-    if(line[0]=='.') {
-
+    if (aLine.Value (1) == '.')
+    {
       // if some units are collected in previous section, store them
       if(numberofunits) {
         unitscomputed = 0;
@@ -141,8 +167,8 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
       }
 	  
       // skip help string and read header
-      file.getline(line,255);
-      file.getline(line,255);
+      aLineIter = readLine (aLine, aLineIter);
+      aLineIter = readLine (aLine, aLineIter);
 
       // header consists of dimension name (40 symbols) and factors
       // for basic SI dimensions (mass, length, time, ...)
@@ -159,7 +185,7 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
       memset(PP,0x00,sizeof(PP));
       memset(SS,0x00,sizeof(SS));
 
-      sscanf (line, "%40c%10c%10c%10c%10c%10c%10c%10c%10c%10c",
+      sscanf (aLine.ToCString(), "%40c%10c%10c%10c%10c%10c%10c%10c%10c%10c",
 		    name, MM, LL, TT, II, tt, NN, JJ, PP, SS);
       strrightadjust (name);
 
@@ -189,10 +215,10 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
       }
 
       // skip next line (dotted)
-      file.getline(line,255);
+      aLineIter = readLine (aLine, aLineIter);
     }
-
-    else {
+    else
+    {
       // normal line defining a unit should contain:
       // - unit name (51 symbol)
       // - unit notation (27 symbols)
@@ -204,7 +230,7 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
       memset(convert,0x00,sizeof(convert));
       memset(unit2,  0x00,sizeof(unit2));
 
-      sscanf (line, "%51c%27c%27c%27c", unite, symbol, convert, unit2);
+      sscanf (aLine.ToCString(), "%51c%27c%27c%27c", unite, symbol, convert, unit2);
 
       strrightadjust (unite);
       strrightadjust (symbol);
@@ -294,30 +320,8 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
       }
     }
   }
-  file.close();
-/*
-  Handle(Units_TokensSequence) tmpSeq = Units::LexiconUnits(Standard_False)->Sequence();
-  for(int ii=1; ii<=tmpSeq->Length(); ii++) {
-    token = tmpSeq->Value(ii);
-    cout<<"i="<<ii<<"  token:  "<<token->Word().ToCString()<<"   "
-      <<token->Mean().ToCString()<<"  "<<token->Value()<<endl;
-  }
-  cout<<endl;
-*/
 }
 
-
-//=======================================================================
-//function : UpToDate
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Units_UnitsDictionary::UpToDate() const
-{
-  Standard_Time aTime = OSD_FileStatCTime (thefilename->String().ToCString());
-  return aTime != 0
-      && aTime == thetime;
-}
 
 //=======================================================================
 //function : ActiveUnit
