@@ -1,0 +1,27 @@
+puts "==========="
+puts "OCC27008"
+puts "==========="
+puts ""
+##########################################################################
+# Visualization - polygonal selection algorithm does not work with MeshVS_Mesh
+##########################################################################
+
+pload VISUALIZATION XDE
+
+vclear
+vinit View1
+meshfromstl m [locate_data_file head.stl]
+vsetdispmode m 2
+
+vselmode m 8 1
+vselect 0 0 409 409 0 409
+if { [vnbselected] != "56748" } { puts "Error: the number of selected elements differs for mode 8" }
+vdump $imagedir/${casename}_mode_8.png
+
+vselect 0 0
+
+vselmode m 8 0
+vselmode m 1 1
+vselect 0 0 409 409 0 409
+if { [vnbselected] != "30830" } { puts "Error: the number of selected elements differs for mode 1" }
+vdump $imagedir/${casename}_mode_1.png

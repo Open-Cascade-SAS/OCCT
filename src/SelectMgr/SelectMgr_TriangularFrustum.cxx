@@ -27,13 +27,13 @@ namespace
   void computeFrustumNormals (const gp_Vec* theEdges, gp_Vec* theNormals)
   {
     // V0V1
-    theNormals[0] = theEdges[0].Crossed (theEdges[1]);
+    theNormals[0] = theEdges[0].Crossed (theEdges[3]);
     // V1V2
-    theNormals[1] = theEdges[1].Crossed (theEdges[2]);
+    theNormals[1] = theEdges[1].Crossed (theEdges[4]);
     // V0V2
-    theNormals[2] = theEdges[0].Crossed (theEdges[2]);
+    theNormals[2] = theEdges[0].Crossed (theEdges[5]);
     // Near
-    theNormals[3] = theEdges[3].Crossed (theEdges[5]);
+    theNormals[3] = theEdges[3].Crossed (theEdges[4]);
     // Far
     theNormals[4] = -theNormals[3];
   }
