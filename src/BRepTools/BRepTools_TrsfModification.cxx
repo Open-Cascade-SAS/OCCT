@@ -204,9 +204,10 @@ Standard_Boolean BRepTools_TrsfModification::NewCurve2d
   TopExp::Vertices(E,V1,V2);
   TopoDS_Shape initEFOR = E.Oriented(TopAbs_FORWARD); // skl
   TopoDS_Edge EFOR = TopoDS::Edge(initEFOR/*E.Oriented(TopAbs_FORWARD)*/); //skl
-  NewParameter(V1,EFOR,f,Tol);
-  NewParameter(V2,EFOR,l,Tol);
-  GeomLib::SameRange(Tol,NewC,newf,newl,f,l,C);
+  Standard_Real aTolV;
+  NewParameter(V1, EFOR, f, aTolV);
+  NewParameter(V2, EFOR, l, aTolV);
+  GeomLib::SameRange(Precision::PConfusion(), NewC, newf, newl, f, l, C);
   
   return Standard_True;
 }
