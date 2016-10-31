@@ -982,11 +982,6 @@ private:
   //! the associated window is defined or resized.
   Standard_EXPORT void SetRatio();
 
-  //! Change the scale factor and position of the view
-  //! such as the bounding box <Umin, Vmin, Umax, Vmax> is contains
-  //! in the view.
-  Standard_EXPORT void FitAll (const Handle(Aspect_Window)& aWindow, const V3d_Coordinate Umin, const V3d_Coordinate Vmin, const V3d_Coordinate Umax, const V3d_Coordinate Vmax);
-  
   //! Determines the screen axes in the reference
   //! framework of the view.
   Standard_EXPORT static Standard_Boolean ScreenAxis (const gp_Dir& Vpn, const gp_Dir& Vup, Graphic3d_Vector& Xaxe, Graphic3d_Vector& Yaxe, Graphic3d_Vector& Zaxe);

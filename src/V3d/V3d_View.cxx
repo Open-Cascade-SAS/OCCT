@@ -165,7 +165,7 @@ void V3d_View::SetMagnify (const Handle(Aspect_Window)& theWindow,
     thePreviousView->Convert (theX1, theY1, aU1, aV1);
     thePreviousView->Convert (theX2, theY2, aU2, aV2);
     myView->SetWindow (theWindow);
-    FitAll (theWindow, aU1, aV1, aU2, aV2);
+    FitAll (aU1, aV1, aU2, aV2);
     MyViewer->SetViewOn (this);
     MyWindow = theWindow;
     SetRatio();
@@ -1587,18 +1587,6 @@ void V3d_View::DepthFitAll(const Quantity_Coefficient Aspect,
 }
 
 //=============================================================================
-//function : FitAll
-//purpose  :
-//=============================================================================
-void V3d_View::FitAll(const Standard_Real theMinXv,
-                      const Standard_Real theMinYv,
-                      const Standard_Real theMaxXv,
-                      const Standard_Real theMaxYv)
-{
-  FitAll (MyWindow, theMinXv, theMinYv, theMaxXv, theMaxYv);
-}
-
-//=============================================================================
 //function : WindowFitAll
 //purpose  :
 //=============================================================================
@@ -2658,32 +2646,27 @@ void V3d_View::AxialScale (const Standard_Integer Dx,
 //function : FitAll
 //purpose  :
 //=============================================================================
-void V3d_View::FitAll(const Handle(Aspect_Window)& aWindow,
-                      const Standard_Real Xmin,
-                      const Standard_Real Ymin,
-                      const Standard_Real Xmax,
-                      const Standard_Real Ymax)
+void V3d_View::FitAll(const Standard_Real theXmin,
+                      const Standard_Real theYmin,
+                      const Standard_Real theXmax,
+                      const Standard_Real theYmax)
 {
-  Standard_Integer aWinWidth, aWinHeight;
-  aWindow->Size (aWinWidth, aWinHeight);
+  Handle(Graphic3d_Camera) aCamera = Camera();
+  Standard_Real anAspect = aCamera->Aspect();
 
-  Standard_Real aWinAspect = (Standard_Real)aWinWidth / aWinHeight;
-  Standard_Real aFitSizeU  = Abs (Xmax - Xmin);
-  Standard_Real aFitSizeV  = Abs (Ymax - Ymin);
+  Standard_Real aFitSizeU  = Abs (theXmax - theXmin);
+  Standard_Real aFitSizeV  = Abs (theYmax - theYmin);
   Standard_Real aFitAspect = aFitSizeU / aFitSizeV;
-  if (aFitAspect >= aWinAspect)
+  if (aFitAspect >= anAspect)
   {
-    aFitSizeV = aFitSizeU / aWinAspect;
+    aFitSizeV = aFitSizeU / anAspect;
   }
   else
   {
-    aFitSizeU = aFitSizeV * aWinAspect;
+    aFitSizeU = aFitSizeV * anAspect;
   }
 
-  Handle(Graphic3d_Camera) aCamera = Camera();
-
-  aCamera->SetAspect (aWinAspect);
-  Translate (aCamera, (Xmin + Xmax) * 0.5, (Ymin + Ymax) * 0.5);
+  Translate (aCamera, (theXmin + theXmax) * 0.5, (theYmin + theYmax) * 0.5);
   Scale (aCamera, aFitSizeU, aFitSizeV);
 
   AutoZFit();
