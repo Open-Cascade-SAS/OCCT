@@ -39,18 +39,17 @@ macro (OCCT_GENERATE_CONTENT_ONLY CurrentResource)
           message(STATUS "Info. Generating header file from resource file: ${CMAKE_SOURCE_DIR}/src/${CurrentResource_Directory}/${RESOURCE_FILE}")
 
           # generate content for header file
-          set (OCCT_HEADER_FILE_CONTENT)
-          string (APPEND OCCT_HEADER_FILE_CONTENT "// This file has been automatically generated from resource file src/${CurrentResource_Directory}/${RESOURCE_FILE}\n\n")
+          set (OCCT_HEADER_FILE_CONTENT "// This file has been automatically generated from resource file src/${CurrentResource_Directory}/${RESOURCE_FILE}\n\n")
 
           # read resource file
           file (STRINGS "${CMAKE_SOURCE_DIR}/src/${CurrentResource_Directory}/${RESOURCE_FILE}" RESOURCE_FILE_LINES_LIST)
 
-          string (APPEND OCCT_HEADER_FILE_CONTENT "static const char ${CurrentResource_Directory}_${CurrentResource_FileName}[] =")
+          set (OCCT_HEADER_FILE_CONTENT "${OCCT_HEADER_FILE_CONTENT}static const char ${CurrentResource_Directory}_${CurrentResource_FileName}[] =")
           foreach (line IN LISTS RESOURCE_FILE_LINES_LIST)
             string (REPLACE "\"" "\\\"" line "${line}")
-            string (APPEND OCCT_HEADER_FILE_CONTENT "\n  \"${line}\\n\"")
+            set (OCCT_HEADER_FILE_CONTENT "${OCCT_HEADER_FILE_CONTENT}\n  \"${line}\\n\"")
           endforeach()
-          string (APPEND OCCT_HEADER_FILE_CONTENT ";")
+          set (OCCT_HEADER_FILE_CONTENT "${OCCT_HEADER_FILE_CONTENT};")
 
           # Save generated content to header file
           set (HEADER_FILE "${CMAKE_SOURCE_DIR}/src/${CurrentResource_Directory}/${HEADER_FILE_NAME}")
