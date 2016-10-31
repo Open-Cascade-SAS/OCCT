@@ -2320,8 +2320,7 @@ void AIS_InteractiveContext::unhighlightOwners (const Handle(AIS_InteractiveObje
   SelectMgr_SequenceOfOwner aSeq;
   for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
   {
-    if (aSelIter.Value()->IsSameSelectable (theObject)
-     && aSelIter.Value()->IsSelected())
+    if (aSelIter.Value()->IsSameSelectable (theObject))
     {
       aSeq.Append (aSelIter.Value());
     }
