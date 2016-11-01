@@ -493,7 +493,8 @@ void OpenGl_View::InvalidateZLayerBoundingBox (const Graphic3d_ZLayerId theLayer
   }
   else
   {
-    for (Standard_Integer aLayerId = Graphic3d_ZLayerId_Default; aLayerId < ZLayerMax(); ++aLayerId)
+    const Standard_Integer aLayerMax = ZLayerMax();
+    for (Standard_Integer aLayerId = Graphic3d_ZLayerId_Default; aLayerId < aLayerMax; ++aLayerId)
     {
       if (myZLayers.LayerIDs().IsBound (aLayerId))
       {

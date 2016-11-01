@@ -40,6 +40,23 @@ namespace
   static const Standard_ShortReal THE_CYLINDER_LENGTH      = 0.75f;
   static const Standard_Integer   THE_CIRCLE_SERMENTS_NB   = 24;
   static const Standard_Real      THE_CIRCLE_SEGMENT_ANGLE = 2.0 * M_PI / THE_CIRCLE_SERMENTS_NB;
+
+  //! Create new or return existing group in the structure at specified position.
+  //! @param theStruct     [in]     structure holding graphic groups
+  //! @param theGroupIndex [in/out] group position, will be incremented as output
+  static Handle(Graphic3d_Group) addGroup (const Handle(Graphic3d_Structure)& theStruct,
+                                           Standard_Integer& theGroupIter)
+  {
+    const Graphic3d_SequenceOfGroup& aGroups = theStruct->Groups();
+    const Standard_Integer aGroupIndex = theGroupIter++;
+    if (!aGroups.IsEmpty()
+      && aGroupIndex <= aGroups.Upper())
+    {
+      return aGroups.Value (aGroupIndex);
+    }
+
+    return theStruct->NewGroup();
+  }
 }
 
 //! Dummy implementation of Graphic3d_Structure overriding ::Compute() method for handling Device Lost.
@@ -203,6 +220,7 @@ void V3d_Trihedron::Display (const V3d_View& theView)
     myStructure->CStructure()->ViewAffinity = new Graphic3d_ViewAffinity();
     myStructure->CStructure()->ViewAffinity->SetVisible (Standard_False);
     myStructure->CStructure()->ViewAffinity->SetVisible (theView.View()->Identification(), true);
+    myToCompute = Standard_True;
   }
   if (myToCompute)
   {
@@ -251,6 +269,7 @@ void V3d_Trihedron::SetPosition (const Aspect_TypeOfTriedronPosition thePosition
 // ============================================================================
 void V3d_Trihedron::compute()
 {
+  myToCompute = Standard_False;
   myStructure->GraphicClear (Standard_False);
 
   // Create trihedron.
@@ -261,8 +280,9 @@ void V3d_Trihedron::compute()
   const Standard_Real aConeLength     = aScale * (1.0 - THE_CYLINDER_LENGTH);
   const Standard_Real aSphereRadius   = aCylinderRadius * 2.0;
   const Standard_Real aRayon          = aScale / 30.0;
+  Standard_Integer aGroupIter = myStructure->Groups().Lower();
   {
-    Handle(Graphic3d_Group) aSphereGroup = myStructure->NewGroup();
+    Handle(Graphic3d_Group) aSphereGroup = addGroup (myStructure, aGroupIter);
 
     // Display origin.
     if (myIsWireframe)
@@ -292,7 +312,7 @@ void V3d_Trihedron::compute()
     const gp_Ax1 anAxes[3] = { gp::OX(), gp::OY(), gp::OZ() };
     for (Standard_Integer anIter = 0; anIter < 3; ++anIter)
     {
-      Handle(Graphic3d_Group) anAxisGroup = myStructure->NewGroup();
+      Handle(Graphic3d_Group) anAxisGroup = addGroup (myStructure, aGroupIter);
       if (myIsWireframe)
       {
         // create a tube
@@ -317,7 +337,7 @@ void V3d_Trihedron::compute()
 
   // Display labels.
   {
-    Handle(Graphic3d_Group) aLabelGroup = myStructure->NewGroup();
+    Handle(Graphic3d_Group) aLabelGroup = addGroup (myStructure, aGroupIter);
     const TCollection_ExtendedString aLabels[3] = { "X", "Y", "Z" };
     const gp_Pnt aPoints[3] = { gp_Pnt (aScale + 2.0 * aRayon,                   0.0,               -aRayon),
                                 gp_Pnt (               aRayon, aScale + 3.0 * aRayon,          2.0 * aRayon),
