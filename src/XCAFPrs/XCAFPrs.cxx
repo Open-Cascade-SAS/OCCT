@@ -85,134 +85,195 @@ static Standard_Boolean getShapesOfSHUO (TopLoc_IndexedMapOfLocation& theaPrevLo
 //purpose  : 
 //=======================================================================
 
-void XCAFPrs::CollectStyleSettings (const TDF_Label &L, 
-				    const TopLoc_Location &loc, 
-				    XCAFPrs_DataMapOfShapeStyle &settings)
+void XCAFPrs::CollectStyleSettings (const TDF_Label& theLabel,
+				                            const TopLoc_Location& theLoc,
+				                            XCAFPrs_DataMapOfShapeStyle& theSettings)
 {
-  Handle(XCAFDoc_ColorTool) CTool = XCAFDoc_DocumentTool::ColorTool( L );
-
   // for references, first collect colors of referred shape
-  TDF_Label Lref;
-  if ( XCAFDoc_ShapeTool::GetReferredShape ( L, Lref ) ) {
-    TopLoc_Location locSub = loc.Multiplied ( XCAFDoc_ShapeTool::GetLocation ( L ) );
-    CollectStyleSettings ( Lref, locSub, settings );
+  {
+    TDF_Label aLabelRef;
+    if (XCAFDoc_ShapeTool::GetReferredShape (theLabel, aLabelRef))
+    {
+      TopLoc_Location aLocSub = theLoc.Multiplied (XCAFDoc_ShapeTool::GetLocation (theLabel));
+      CollectStyleSettings (aLabelRef, aLocSub, theSettings);
+    }
   }
-  
+
   // for assemblies, first collect colors defined in components
-  TDF_LabelSequence seq;
-  if ( XCAFDoc_ShapeTool::GetComponents ( L, seq ) && seq.Length() >0 ) {
-    for ( Standard_Integer i = 1; i <= seq.Length(); i++ ) {
-      CollectStyleSettings ( seq.Value(i), loc, settings );
+  {
+    TDF_LabelSequence aComponentLabSeq;
+    if (XCAFDoc_ShapeTool::GetComponents (theLabel, aComponentLabSeq)
+    && !aComponentLabSeq.IsEmpty())
+    {
+      for (TDF_LabelSequence::Iterator aComponentIter (aComponentLabSeq); aComponentIter.More(); aComponentIter.Next())
+      {
+        const TDF_Label& aComponentLab = aComponentIter.Value();
+        CollectStyleSettings (aComponentLab, theLoc, theSettings);
+      }
     }
   }
 
-  // collect settings on subshapes and the shape itself
-  seq.Clear();
-  XCAFDoc_ShapeTool::GetSubShapes ( L, seq );
-  seq.Append ( L );
-  for ( Standard_Integer i = 1; i <= seq.Length(); i++ ) {
-    TDF_Label lab = seq.Value(i);
-    XCAFPrs_Style style;
-    Handle(XCAFDoc_LayerTool) LTool = XCAFDoc_DocumentTool::LayerTool( lab );
-    Handle(TColStd_HSequenceOfExtendedString) LayNames = new TColStd_HSequenceOfExtendedString;
+  // collect settings on subshapes
+  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool(theLabel);
+  TDF_LabelSequence aLabSeq;
+  XCAFDoc_ShapeTool::GetSubShapes (theLabel, aLabSeq);
+  // and add the shape itself
+  aLabSeq.Append (theLabel);
+  for (TDF_LabelSequence::Iterator aLabIter (aLabSeq); aLabIter.More(); aLabIter.Next())
+  {
+    const TDF_Label& aLabel = aLabIter.Value();
+    XCAFPrs_Style aStyle;
 
-    LTool->GetLayers(lab, LayNames);
-    Standard_Integer InVisCount = 0;
-    for ( Standard_Integer iL = 1; iL <= LayNames->Length(); iL++) {
-      if ( !LTool->IsVisible( LTool->FindLayer(LayNames->Value(iL)) ) ) InVisCount++;
-    }
-    if ( (InVisCount >0 && InVisCount == LayNames->Length()) ||
-         !CTool->IsVisible(lab) ) {
-      style.SetVisibility(Standard_False);
-    }
-    else {
-      Quantity_Color C;
-      if ( CTool->GetColor ( lab, XCAFDoc_ColorGen, C ) ) {
-	style.SetColorCurv ( C );
-	style.SetColorSurf ( C );
-      }
-      if ( CTool->GetColor ( lab, XCAFDoc_ColorSurf, C ) )
-	style.SetColorSurf ( C );
-      if ( CTool->GetColor ( lab, XCAFDoc_ColorCurv, C ) )
-	style.SetColorCurv ( C );
-    }
-    // PTV try to set color from SHUO structure
-    Handle(XCAFDoc_ShapeTool) STool = CTool->ShapeTool();
-    Handle(XCAFDoc_GraphNode) SHUO;
-    TDF_AttributeSequence theSHUOAttrs;
-    if (STool->IsComponent( lab ) ) {
-      STool->GetAllComponentSHUO( lab, theSHUOAttrs );
-      for (Standard_Integer shuoIndx = 1; shuoIndx <= theSHUOAttrs.Length(); shuoIndx++) {
-        SHUO = Handle(XCAFDoc_GraphNode)::DownCast(theSHUOAttrs.Value(shuoIndx));
-        if ( SHUO.IsNull() )
-          continue;
-        TDF_Label aSHUOlab = SHUO->Label();
-
-        TDF_LabelSequence aLabSeq;
-        STool->GetSHUONextUsage( aSHUOlab, aLabSeq );
-        if (aLabSeq.Length() < 1 )
-          continue;
-      
-        Quantity_Color C;
-        XCAFPrs_Style SHUOstyle;
-        if (!CTool->IsVisible( aSHUOlab ) )
-          SHUOstyle.SetVisibility(Standard_False);
-        else {
-          if ( CTool->GetColor ( aSHUOlab, XCAFDoc_ColorGen, C ) ) {
-            SHUOstyle.SetColorCurv ( C );
-            SHUOstyle.SetColorSurf ( C );
-          }
-          if ( CTool->GetColor ( aSHUOlab, XCAFDoc_ColorSurf, C ) )
-            SHUOstyle.SetColorSurf ( C );
-          if ( CTool->GetColor ( aSHUOlab, XCAFDoc_ColorCurv, C ) )
-            SHUOstyle.SetColorCurv ( C );
+    Standard_Boolean isVisible = aColorTool->IsVisible (aLabel);
+    if (isVisible)
+    {
+      Handle(XCAFDoc_LayerTool) aLayerTool = XCAFDoc_DocumentTool::LayerTool (aLabel);
+      Handle(TColStd_HSequenceOfExtendedString) aLayerNames = new TColStd_HSequenceOfExtendedString();
+      aLayerTool->GetLayers (aLabel, aLayerNames);
+      Standard_Integer aNbHidden = 0;
+      for (TColStd_HSequenceOfExtendedString::Iterator aLayerIter (*aLayerNames); aLayerIter.More(); aLayerIter.Next())
+      {
+        const TCollection_ExtendedString& aLayerName = aLayerIter.Value();
+        if (!aLayerTool->IsVisible (aLayerTool->FindLayer (aLayerName)))
+        {
+          ++aNbHidden;
         }
-        if ( !SHUOstyle.IsSetColorCurv() && 
-            !SHUOstyle.IsSetColorSurf() &&
-            SHUOstyle.IsVisible() )
+      }
+      isVisible = aNbHidden == 0
+               || aNbHidden != aLayerNames->Length();
+    }
+
+    if (!isVisible)
+    {
+      aStyle.SetVisibility (Standard_False);
+    }
+    else
+    {
+      Quantity_Color aColor;
+      if (aColorTool->GetColor (aLabel, XCAFDoc_ColorGen, aColor))
+      {
+        aStyle.SetColorCurv (aColor);
+        aStyle.SetColorSurf (aColor);
+      }
+      if (aColorTool->GetColor (aLabel, XCAFDoc_ColorSurf, aColor))
+      {
+        aStyle.SetColorSurf (aColor);
+      }
+      if (aColorTool->GetColor (aLabel, XCAFDoc_ColorCurv, aColor))
+      {
+        aStyle.SetColorCurv (aColor);
+      }
+    }
+
+    // PTV try to set color from SHUO structure
+    Handle(XCAFDoc_ShapeTool) aShapeTool = aColorTool->ShapeTool();
+    if (aShapeTool->IsComponent (aLabel))
+    {
+      TDF_AttributeSequence aShuoAttribSeq;
+      aShapeTool->GetAllComponentSHUO (aLabel, aShuoAttribSeq);
+      for (TDF_AttributeSequence::Iterator aShuoAttribIter (aShuoAttribSeq); aShuoAttribIter.More(); aShuoAttribIter.Next())
+      {
+        Handle(XCAFDoc_GraphNode) aShuoNode = Handle(XCAFDoc_GraphNode)::DownCast (aShuoAttribIter.Value());
+        if (aShuoNode.IsNull())
+        {
           continue;
-      
-      // set style for all component from Next Usage Occurrence.
-#ifdef OCCT_DEBUG
+        }
+
+        const TDF_Label aShuolab = aShuoNode->Label();
+        {
+          TDF_LabelSequence aShuoLabSeq;
+          aShapeTool->GetSHUONextUsage (aShuolab, aShuoLabSeq);
+          if (aShuoLabSeq.IsEmpty())
+          {
+            continue;
+          }
+        }
+
+        Quantity_Color aColor;
+        XCAFPrs_Style aShuoStyle;
+        if (!aColorTool->IsVisible (aShuolab))
+        {
+          aShuoStyle.SetVisibility (Standard_False);
+        }
+        else
+        {
+          if (aColorTool->GetColor (aShuolab, XCAFDoc_ColorGen, aColor))
+          {
+            aShuoStyle.SetColorCurv (aColor);
+            aShuoStyle.SetColorSurf (aColor);
+          }
+          if (aColorTool->GetColor (aShuolab, XCAFDoc_ColorSurf, aColor))
+          {
+            aShuoStyle.SetColorSurf (aColor);
+          }
+          if (aColorTool->GetColor (aShuolab, XCAFDoc_ColorCurv, aColor))
+          {
+            aShuoStyle.SetColorCurv (aColor);
+          }
+        }
+        if (!aShuoStyle.IsSetColorCurv()
+         && !aShuoStyle.IsSetColorSurf()
+         &&  aShuoStyle.IsVisible())
+        {
+          continue;
+        }
+
+        // set style for all component from Next Usage Occurrence.
+      #ifdef OCCT_DEBUG
         cout << "Set the style for SHUO next_usage-occurrance" << endl;
-#endif
+      #endif
         /* 
         // may be work, but static it returns excess shapes. It is more faster to use OLD version.
         // PTV 14.02.2003 NEW version using API of ShapeTool
-        TopTools_SequenceOfShape aSHUOShapeSeq;
-        STool->GetAllStyledComponents( SHUO, aSHUOShapeSeq );
-        for (Standard_Integer si= 1; si <= aSHUOShapeSeq.Length(); si++) {
-          TopoDS_Shape aSHUOSh = aSHUOShapeSeq.Value(si);
-          if (!aSHUOSh.IsNull())
-            settings.Bind ( aSHUOSh, SHUOstyle );
-        }
-        */
-        // OLD version that was written before ShapeTool API, and ti FASTER for presentation
+        TopTools_SequenceOfShape aShuoShapeSeq;
+        aShapeTool->GetAllStyledComponents (aShuoNode, aShuoShapeSeq);
+        for (TopTools_SequenceOfShape::Iterator aShuoShapeIter (aShuoShapeSeq); aShuoShapeIter.More(); aShuoShapeIter.Next())
+        {
+          const TopoDS_Shape& aShuoShape = aShuoShapeIter.Value();
+          if (!aShuoShape.IsNull())
+            theSettings.Bind (aShuoShape, aShuoStyle);
+        }*/
+        // OLD version that was written before ShapeTool API, and it FASTER for presentation
         // get TOP location of SHUO component
-        TopLoc_Location compLoc = XCAFDoc_ShapeTool::GetLocation ( lab );
+        TopLoc_Location compLoc = XCAFDoc_ShapeTool::GetLocation (aLabel);
         TopLoc_IndexedMapOfLocation aPrevLocMap;
-        // get previous setted location 
-        if ( !loc.IsIdentity() )
-          aPrevLocMap.Add( loc );
-      
-        aPrevLocMap.Add( compLoc );
-        TopTools_SequenceOfShape aSHUOShapeSeq;
+        // get previous set location
+        if (!theLoc.IsIdentity())
+        {
+          aPrevLocMap.Add (theLoc);
+        }
+        aPrevLocMap.Add (compLoc);
+
         // get shapes of SHUO Next_Usage components
-        getShapesOfSHUO( aPrevLocMap, STool, aSHUOlab, aSHUOShapeSeq );
-        for (Standard_Integer n = 1; n <= aSHUOShapeSeq.Length(); n++ ) {
-          TopoDS_Shape aSHUOSh = aSHUOShapeSeq.Value( n );
-          settings.Bind ( aSHUOSh, SHUOstyle );
+        TopTools_SequenceOfShape aShuoShapeSeq;
+        getShapesOfSHUO (aPrevLocMap, aShapeTool, aShuolab, aShuoShapeSeq);
+        for (TopTools_SequenceOfShape::Iterator aShuoShapeIter (aShuoShapeSeq); aShuoShapeIter.More(); aShuoShapeIter.Next())
+        {
+          const TopoDS_Shape& aShuoShape = aShuoShapeIter.Value();
+          theSettings.Bind (aShuoShape, aShuoStyle);
         }
         continue;
       }
     }
-    if ( !style.IsSetColorCurv() && 
-         !style.IsSetColorSurf() &&
-          style.IsVisible() )
+
+    if (!aStyle.IsSetColorCurv()
+     && !aStyle.IsSetColorSurf()
+     &&  aStyle.IsVisible())
+    {
       continue;
-    TopoDS_Shape sub = XCAFDoc_ShapeTool::GetShape ( lab );
-    sub.Move ( loc );
-    settings.Bind ( sub, style );
+    }
+
+    TopoDS_Shape aSubshape = XCAFDoc_ShapeTool::GetShape (aLabel);
+    if (aSubshape.ShapeType() == TopAbs_COMPOUND)
+    {
+      const TopoDS_Iterator aShapeIter (aSubshape);
+      if (!aShapeIter.More())
+      {
+        continue;
+      }
+    }
+    aSubshape.Move (theLoc);
+    theSettings.Bind (aSubshape, aStyle);
   }
 }
 

@@ -1,0 +1,28 @@
+puts "==========="
+puts "OCC28036"
+puts "Visualization, AIS_ColoredShape - handle correctly nested compounds within Shaded display mode"
+puts "==========="
+puts ""
+
+pload MODELING VISUALIZATION
+box b1 0 0 0 1 2 3
+box b2 0 3 0 2 1 3
+box b3 3 0 0 3 2 1
+compound b1 b2 c12
+compound c12 b3 c
+
+vclear
+vinit View1
+vaxo
+vdisplay -dispMode 1 c
+vfit
+
+vaspects c                -setColor BLUE1
+vaspects c -subshapes b1  -setColor RED
+vaspects c -subshapes c12 -setColor GREEN
+
+if { [vreadpixel 100 100 rgb name] != "RED3"   } { puts "Error: wrong subshape color" }
+if { [vreadpixel 200 100 rgb name] != "GREEN3" } { puts "Error: wrong subshape color" }
+if { [vreadpixel 200 300 rgb name] != "BLUE3"  } { puts "Error: wrong subshape color" }
+
+vdump $imagedir/${casename}.png

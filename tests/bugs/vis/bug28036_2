@@ -1,0 +1,72 @@
+puts "==========="
+puts "OCC28036"
+puts "Visualization, AIS_ColoredShape - handle correctly nested compounds within Shaded display mode"
+puts "==========="
+puts ""
+
+pload MODELING VISUALIZATION
+
+clear
+box b1   0  0 0 100 200 1
+box b2 150  0 0 100  50 1
+box b3 150 50 0 100 150 1
+
+for {set i 1} {$i <= 3} {incr i} { tcopy b${i} b1_${i}; ttranslate b1_${i} 0 -300 0 }
+for {set i 1} {$i <= 3} {incr i} { tcopy b${i} b2_${i}; ttranslate b2_${i} 0    0 0 }
+for {set i 1} {$i <= 3} {incr i} { tcopy b${i} b3_${i}; ttranslate b3_${i} 0  300 0 }
+
+# make a reference scene with per-object colors
+vclear
+vinit View1
+vsetdispmode 1
+vaxo
+
+vdisplay b1_1 b1_2 b1_3
+vsetcolor b1_1 RED
+vsetcolor b1_2 GREEN
+vsetcolor b1_3 BLUE1
+
+vdisplay b2_1 b2_2 b2_3
+vsetcolor b2_1 RED
+vsetcolor b2_2 GREEN
+vsetcolor b2_3 BLUE1
+
+vdisplay b3_1 b3_2 b3_3
+vsetcolor b3_1 RED
+vsetcolor b3_2 GREEN
+vsetcolor b3_3 BLUE1
+vfit
+vdump $imagedir/${casename}_ref.png
+
+# make a scene with sub-colors and nested compounds
+for {set j 1} {$j <= 3} {incr j} { compound b${j}_2 b${j}_3  b${j}_23  }
+for {set j 1} {$j <= 3} {incr j} { compound b${j}_1 b${j}_23 b${j}_123 }
+compound b1_123 b2_123 b3_123 b123_123
+
+vclear
+vdisplay b123_123
+
+compound b1_23 b2_23 b3_23 b123_23
+vaspects b123_123 -subshapes b123_23 -setColor GREEN
+
+vaspects b123_123 -subshapes b1_123  -setColor RED
+vaspects b123_123 -subshapes b2_123  -setColor RED
+vaspects b123_123 -subshapes b3_123  -setColor RED
+
+compound b2_3 b3_3 b23_3
+vaspects b123_123 -subshapes b1_3    -setColor BLUE1
+vaspects b123_123 -subshapes b23_3   -setColor BLUE1
+
+if { [vreadpixel  50 250 rgb name] != "RED3"  } { puts "Error: wrong color" }
+if { [vreadpixel 175 175 rgb name] != "RED3"  } { puts "Error: wrong color" }
+if { [vreadpixel 300 100 rgb name] != "RED3"  } { puts "Error: wrong color" }
+
+if { [vreadpixel 100 310 rgb name] != "GREEN3"} { puts "Error: wrong color" }
+if { [vreadpixel 200 230 rgb name] != "GREEN3"} { puts "Error: wrong color" }
+if { [vreadpixel 320 170 rgb name] != "GREEN3"} { puts "Error: wrong color" }
+
+if { [vreadpixel 130 280 rgb name] != "BLUE3" } { puts "Error: wrong color" }
+if { [vreadpixel 250 200 rgb name] != "BLUE3" } { puts "Error: wrong color" }
+if { [vreadpixel 350 150 rgb name] != "BLUE3" } { puts "Error: wrong color" }
+
+vdump $imagedir/${casename}.png

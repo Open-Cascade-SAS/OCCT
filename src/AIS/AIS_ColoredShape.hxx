@@ -21,6 +21,8 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <StdPrs_Volume.hxx>
 #include <TopoDS_Compound.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <TColStd_MapTransientHasher.hxx>
 
 //! Presentation of the shape with customizable sub-shapes properties.
 class AIS_ColoredShape : public AIS_Shape
@@ -84,57 +86,49 @@ protected: //! @name override presentation computation
 
 protected:
 
-  typedef NCollection_DataMap<TopoDS_Shape, TopoDS_Shape,           TopTools_ShapeMapHasher> DataMapOfShapeShape;
-  typedef NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Compound, TopTools_ShapeMapHasher> DataMapOfShapeCompd;
+  typedef NCollection_IndexedDataMap<Handle(AIS_ColoredDrawer), TopoDS_Compound, TColStd_MapTransientHasher> DataMapOfDrawerCompd;
 
 protected:
 
   //! Recursive function to map shapes.
-  //! @param theBaseKey                    the key to be used for undetailed shapes (default colors)
-  //! @param theSubshapeToParse            the subshape to be parsed
-  //! @param theSubshapeKeyshapeMap        shapes map Subshape (in the base shape) -> Keyshape (detailed shape)
-  //! @param theParentType                 the parent subshape type
-  //! @param theTypeKeyshapeDrawshapeArray the array of shape types to fill
-  Standard_EXPORT static Standard_Boolean dispatchColors (const TopoDS_Shape&        theBaseKey,
-                                                          const TopoDS_Shape&        theSubshapeToParse,
-                                                          const DataMapOfShapeShape& theSubshapeKeyshapeMap,
-                                                          const TopAbs_ShapeEnum     theParentType,
-                                                          DataMapOfShapeCompd*       theTypeKeyshapeDrawshapeArray);
-
-  Standard_EXPORT static void dispatchColors (const TopoDS_Shape&             theBaseShape,
-                                              const AIS_DataMapOfShapeDrawer& theKeyshapeColorMap,
-                                              DataMapOfShapeCompd*            theTypeKeyshapeDrawshapeArray);
-
+  //! @param theParentDrawer   the drawer to be used for undetailed shapes (default colors)
+  //! @param theShapeToParse   the subshape to be recursively parsed
+  //! @param theShapeDrawerMap shapes map Subshape (in the base shape) -> Drawer
+  //! @param theParentType     the parent subshape type
+  //! @param theIsParentClosed flag indicating that specified shape is part of closed Solid
+  //! @param theDrawerOpenedShapePerType the array of shape types to fill
+  //! @param theDrawerClosedFaces        the map for closed faces
+  Standard_EXPORT static Standard_Boolean dispatchColors (const Handle(AIS_ColoredDrawer)& theParentDrawer,
+                                                          const TopoDS_Shape& theShapeToParse,
+                                                          const AIS_DataMapOfShapeDrawer& theShapeDrawerMap,
+                                                          const TopAbs_ShapeEnum theParentType,
+                                                          const Standard_Boolean theIsParentClosed,
+                                                          DataMapOfDrawerCompd* theDrawerOpenedShapePerType,
+                                                          DataMapOfDrawerCompd& theDrawerClosedFaces);
 protected:
 
   //! Add shape to presentation
-  //! @param thePrs         the presentation
-  //! @param theDispatched  the shapes map with unique attributes
-  //! @param theMode        display mode
-  //! @param theVolume      how to interpret theDispatched shapes - as Closed volumes, as Open volumes
-  //!                       or to perform Autodetection
+  //! @param thePrs the presentation
+  //! @param theDrawerOpenedShapePerType the shapes map with unique attributes
+  //! @param theDrawerClosedFaces the map of attributes for closed faces
+  //! @param theMode display mode
   Standard_EXPORT void addShapesWithCustomProps (const Handle(Prs3d_Presentation)& thePrs,
-                                                 DataMapOfShapeCompd*              theDispatched,
-                                                 const Standard_Integer            theMode,
-                                                 const StdPrs_Volume               theVolume);
+                                                 const DataMapOfDrawerCompd* theDrawerOpenedShapePerType,
+                                                 const DataMapOfDrawerCompd& theDrawerClosedFaces,
+                                                 const Standard_Integer theMode);
 
   //! Check all shapes from myShapeColorsfor visibility
   Standard_EXPORT Standard_Boolean isShapeEntirelyVisible() const;
 
-  //! Check a shape with unique attributes for visibility of all 2d subshape
-  Standard_EXPORT Standard_Boolean isShapeEntirelyVisible (DataMapOfShapeCompd* theDispatched) const;
-
   //! Resolve (parse) theKeyShape into subshapes, search in they for theBaseShape,
-  //! bind all resolved subshapes with theOriginKeyShape and store all binds in theSubshapeKeyshapeMap
-  //! @param theSubshapeKeyshapeMap        shapes map: resolved and found theBaseShape subshape -> theOriginKeyShape 
-  //! @param theBaseShape                  a shape to be sought
-  //! @param theBaseKey                    a shape to be resolved (parse) into smaller (in topological sense)
-  //!                                      subshapes for new bind cycle
-  //! @param theOriginKeyShape             the key to be used for undetailed shapes (default colors)
-  Standard_EXPORT static void bindSubShapes (DataMapOfShapeShape& theSubshapeKeyshapeMap,
-                                             const TopoDS_Shape&  theBaseShape,
-                                             const TopoDS_Shape&  theKeyShape,
-                                             const TopoDS_Shape&  theOriginKeyShape);
+  //! bind all resolved subshapes with theOriginKeyShape and store all binds in theShapeDrawerMap
+  //! @param theShapeDrawerMap shapes map: resolved and found theBaseShape subshape -> theOriginKeyShape
+  //! @param theKeyShape       a shape to be resolved (parse) into smaller (in topological sense)
+  //!                          subshapes for new bind cycle
+  //! @param theDrawer         assigned drawer
+  Standard_EXPORT void bindSubShapes (AIS_DataMapOfShapeDrawer& theShapeDrawerMap,
+                                      const TopoDS_Shape& theKeyShape,
+                                      const Handle(AIS_ColoredDrawer)& theDrawer);
 
 protected:
 

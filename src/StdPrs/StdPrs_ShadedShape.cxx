@@ -296,13 +296,10 @@ namespace
   }
 
   //! Compute boundary presentation for faces of the shape.
-  static void computeFaceBoundaries (const TopoDS_Shape&               theShape,
-                                     const Handle(Prs3d_Presentation)& thePrs,
-                                     const Handle(Prs3d_Drawer)&       theDrawer)
+  static Handle(Graphic3d_ArrayOfSegments) fillFaceBoundaries (const TopoDS_Shape& theShape)
   {
     // collection of all triangulation nodes on edges
     // for computing boundaries presentation
-    NCollection_List<Handle(TColgp_HArray1OfPnt)> aNodeCollection;
     Standard_Integer aNodeNumber = 0;
     Standard_Integer aNbPolylines = 0;
 
@@ -338,7 +335,7 @@ namespace
     }
     if (aNodeNumber == 0)
     {
-      return;
+      return Handle(Graphic3d_ArrayOfSegments)();
     }
 
     // create indexed segments array to pack polylines from different edges into single array
@@ -391,13 +388,7 @@ namespace
         }
       }
     }
-
-    // set up aspect and add polyline data
-    Handle(Graphic3d_AspectLine3d) aBoundaryAspect = theDrawer->FaceBoundaryAspect()->Aspect();
-
-    Handle(Graphic3d_Group) aPrsGrp = Prs3d_Root::CurrentGroup (thePrs);
-    aPrsGrp->SetGroupPrimitivesAspect (aBoundaryAspect);
-    aPrsGrp->AddPrimitiveArray (aSegments);
+    return aSegments;
   }
 
 } // anonymous namespace
@@ -546,6 +537,57 @@ void StdPrs_ShadedShape::Add (const Handle (Prs3d_Presentation)& thePrs,
 
   if (theDrawer->FaceBoundaryDraw())
   {
-    computeFaceBoundaries (theShape, thePrs, theDrawer);
+    Handle(Graphic3d_ArrayOfSegments) aBndSegments = fillFaceBoundaries (theShape);
+    if (!aBndSegments.IsNull())
+    {
+      Handle(Graphic3d_AspectLine3d) aBoundaryAspect = theDrawer->FaceBoundaryAspect()->Aspect();
+      Handle(Graphic3d_Group) aPrsGrp = Prs3d_Root::CurrentGroup (thePrs);
+      aPrsGrp->SetGroupPrimitivesAspect (aBoundaryAspect);
+      aPrsGrp->AddPrimitiveArray (aBndSegments);
+    }
   }
+}
+
+// =======================================================================
+// function : FillTriangles
+// purpose  :
+// =======================================================================
+Handle(Graphic3d_ArrayOfTriangles) StdPrs_ShadedShape::FillTriangles (const TopoDS_Shape&    theShape,
+                                                                      const Standard_Boolean theHasTexels,
+                                                                      const gp_Pnt2d&        theUVOrigin,
+                                                                      const gp_Pnt2d&        theUVRepeat,
+                                                                      const gp_Pnt2d&        theUVScale)
+{
+  return fillTriangles (theShape, theHasTexels, theUVOrigin, theUVRepeat, theUVScale);
+}
+
+// =======================================================================
+// function : FillFaceBoundaries
+// purpose  :
+// =======================================================================
+Handle(Graphic3d_ArrayOfSegments) StdPrs_ShadedShape::FillFaceBoundaries (const TopoDS_Shape& theShape)
+{
+  return fillFaceBoundaries (theShape);
+}
+
+// =======================================================================
+// function : AddWireframeForFreeElements
+// purpose  :
+// =======================================================================
+void StdPrs_ShadedShape::AddWireframeForFreeElements (const Handle (Prs3d_Presentation)& thePrs,
+                                                      const TopoDS_Shape&                theShape,
+                                                      const Handle (Prs3d_Drawer)&       theDrawer)
+{
+  wireframeFromShape (thePrs, theShape, theDrawer);
+}
+
+// =======================================================================
+// function : AddWireframeForFacesWithoutTriangles
+// purpose  :
+// =======================================================================
+void StdPrs_ShadedShape::AddWireframeForFacesWithoutTriangles (const Handle(Prs3d_Presentation)& thePrs,
+                                                               const TopoDS_Shape&               theShape,
+                                                               const Handle(Prs3d_Drawer)&       theDrawer)
+{
+  wireframeNoTriangFacesFromShape (thePrs, theShape, theDrawer);
 }
