@@ -99,7 +99,14 @@ void * LDOM_MemManager::MemBlock::AllocateAndCheck
 LDOM_MemManager::MemBlock::~MemBlock ()
 {
   delete [] myBlock;
-  delete myNext;
+  MemBlock* aNext = myNext;
+  while (aNext) 
+  {
+    MemBlock* aNextNext = aNext->myNext;
+    aNext->myNext = 0;
+    delete aNext;
+    aNext = aNextNext;
+  }
 }
 
 //=======================================================================
