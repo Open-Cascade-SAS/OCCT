@@ -80,8 +80,8 @@ Standard_CString TObj_Application::ResourcesName()
 //=======================================================================
 
 Standard_Boolean TObj_Application::SaveDocument
-                        (const Handle(TDocStd_Document)&  theSourceDoc,
-                         const TCollection_ExtendedString theTargetFile)
+                        (const Handle(TDocStd_Document)&   theSourceDoc,
+                         const TCollection_ExtendedString& theTargetFile)
 {
   myIsError = Standard_False;
   PCDM_StoreStatus aStatus = SaveAs (theSourceDoc, theTargetFile);
@@ -125,8 +125,8 @@ Standard_Boolean TObj_Application::SaveDocument
 //=======================================================================
 
 Standard_Boolean TObj_Application::LoadDocument
-                        (const TCollection_ExtendedString theSourceFile,
-                         Handle(TDocStd_Document)&        theTargetDoc)
+                        (const TCollection_ExtendedString& theSourceFile,
+                         Handle(TDocStd_Document)&         theTargetDoc)
 {
   myIsError = Standard_False;
   PCDM_ReaderStatus aStatus = PCDM_RS_ReaderException;

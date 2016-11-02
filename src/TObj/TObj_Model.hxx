@@ -18,9 +18,10 @@
 #ifndef TObj_Model_HeaderFile
 #define TObj_Model_HeaderFile
 
+#include <Message_Messenger.hxx>
 #include <TDF_Label.hxx>
 #include <TObj_Partition.hxx>
-#include <Message_Messenger.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 class TObj_TNameContainer;
 class TObj_Partition;
@@ -64,8 +65,7 @@ class TObj_Model : public MMgt_TShared
   Standard_EXPORT ~TObj_Model ();
 
   //! Check whether the document contains the OCAF data.
-  Standard_EXPORT virtual Standard_Boolean 
-    checkDocumentEmpty(const TCollection_ExtendedString theFile);
+  Standard_EXPORT virtual Standard_Boolean checkDocumentEmpty(const TCollection_ExtendedString& theFile);
 
  public:
   /**
@@ -86,10 +86,10 @@ class TObj_Model : public MMgt_TShared
   
   //! Load the OCAF model from a file. If the filename is empty or file does
   //! not exists, it just initializes model by empty data.
-  virtual Standard_EXPORT Standard_Boolean Load (const TCollection_ExtendedString theFile);
+  Standard_EXPORT virtual Standard_Boolean Load (const TCollection_ExtendedString& theFile);
 
   //! Save the model to a file
-  virtual Standard_EXPORT Standard_Boolean SaveAs (const TCollection_ExtendedString theFile);
+  Standard_EXPORT virtual Standard_Boolean SaveAs (const TCollection_ExtendedString& theFile);
 
   //! Save the model to the same file
   Standard_EXPORT Standard_Boolean Save ();

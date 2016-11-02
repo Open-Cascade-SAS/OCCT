@@ -21,7 +21,6 @@
 #include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_GUID.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_Real.hxx>
@@ -108,7 +107,7 @@ void TObj_Model::CloseDocument (const Handle(TDocStd_Document)& theDoc)
 //purpose  : Loads the model from the file
 //=======================================================================
 
-Standard_Boolean TObj_Model::Load (const TCollection_ExtendedString theFile)
+Standard_Boolean TObj_Model::Load (const TCollection_ExtendedString& theFile)
 {
   // Return status
   Standard_Boolean aStatus = Standard_True;
@@ -257,7 +256,7 @@ Standard_Boolean TObj_Model::Save ()
 //purpose  : Save the model to a file
 //=======================================================================
 
-Standard_Boolean TObj_Model::SaveAs (const TCollection_ExtendedString theFile)
+Standard_Boolean TObj_Model::SaveAs (const TCollection_ExtendedString& theFile)
 {
   TObj_Assistant::ClearTypeMap();
   // OCAF document
@@ -744,7 +743,7 @@ void TObj_Model::SetModified (const Standard_Boolean theModified)
 //purpose  : Check whether the document contains the Ocaf data
 //=======================================================================
 
-Standard_Boolean TObj_Model::checkDocumentEmpty (const TCollection_ExtendedString theFile)
+Standard_Boolean TObj_Model::checkDocumentEmpty (const TCollection_ExtendedString& theFile)
 {
   if (theFile.IsEmpty())
     return Standard_True;

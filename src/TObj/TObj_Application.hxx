@@ -24,12 +24,10 @@
 #include <Message_Messenger.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 
-
 //!
 //! This is a base class for OCAF based TObj models
 //!  with declared virtual methods
 //!
-
 class TObj_Application : public TDocStd_Application
 {
 public:
@@ -45,14 +43,14 @@ public:
   */
 
   //! Saving the OCAF document to a file
-  virtual Standard_EXPORT Standard_Boolean SaveDocument
-                         (const Handle(TDocStd_Document)&  theSourceDoc,
-                          const TCollection_ExtendedString theTargetFile);
+  Standard_EXPORT virtual Standard_Boolean SaveDocument
+                         (const Handle(TDocStd_Document)&   theSourceDoc,
+                          const TCollection_ExtendedString& theTargetFile);
 
   //! Loading the OCAF document from a file
-  virtual Standard_EXPORT Standard_Boolean LoadDocument
-                         (const TCollection_ExtendedString theSourceFile,
-                          Handle(TDocStd_Document)&        theTargetDoc);
+  Standard_EXPORT virtual Standard_Boolean LoadDocument
+                         (const TCollection_ExtendedString& theSourceFile,
+                          Handle(TDocStd_Document)&         theTargetDoc);
 
   //! Create the OCAF document from scratch
   virtual Standard_EXPORT Standard_Boolean CreateNewDocument
@@ -116,8 +114,4 @@ public:
 //! Define handle class 
 DEFINE_STANDARD_HANDLE(TObj_Application,TDocStd_Application)
 
-#endif
-
-#ifdef _MSC_VER
-#pragma once
 #endif
