@@ -1,0 +1,38 @@
+puts "========"
+puts "OCC24932"
+puts "========"
+puts ""
+#######################################################################################
+# addsweep does not check if the supplied variable contains a shape
+#######################################################################################
+
+vertex v0 0 0 0
+vertex v1 1 0 0
+edge e1 v0 v1
+wire w1 e1
+mksweep w1
+shape solid1 So
+catch {addsweep solid1} msg
+if ![regexp "is not a wire" $msg] {
+  puts "Error: addsweep did not complaint about wrong argument - solid"
+} else {
+  puts "OK: addsweep noted wrong argument - solid"
+}
+
+mksweep w1
+shape emptyshape 
+catch {addsweep emptyshape} msg
+if ![regexp "is not a wire" $msg] {
+  puts "Error: addsweep did not complaint about wrong argument - empty shape"
+} else {
+  puts "OK: addsweep noted wrong argument - empty shape"
+}
+
+mksweep w1
+if [info exists undefined] {unset undefined}
+catch {addsweep undefined} msg
+if ![regexp "is not a wire" $msg] {
+  puts "Error: addsweep did not complaint about wrong argument - undefined variable"
+} else {
+  puts "OK: addsweep noted wrong argument - undefined variable"
+}

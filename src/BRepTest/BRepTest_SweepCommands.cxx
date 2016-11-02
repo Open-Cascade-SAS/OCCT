@@ -577,11 +577,12 @@ static Standard_Integer addsweep(Draw_Interpretor& di,
   Handle(Law_Interpol) thelaw;
 
   Section = DBRep::Get(a[1], TopAbs_SHAPE);
-  if (Section.ShapeType() != TopAbs_WIRE &&
-      Section.ShapeType() != TopAbs_VERTEX)
+  if (Section.IsNull() ||
+      (Section.ShapeType() != TopAbs_WIRE &&
+       Section.ShapeType() != TopAbs_VERTEX))
     {
       //cout << a[1] <<"is not a wire and is not a vertex!" << endl;
-      di << a[1] <<"is not a wire and is not a vertex!\n";
+      di << a[1] <<" is not a wire and is not a vertex!\n";
       return 1;
     }
 
