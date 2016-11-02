@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC28009"
+puts "================"
+puts ""
+#######################################################################
+# [Regression vs OCCT7.0.0] Cut produces not valid shape
+#######################################################################
+
+restore [locate_data_file bug28009_shape.brep] a
+
+explode a
+bcut result a_1 a_2
+
+# Check result validity.
+checkshape result
+
+# Check number of topological entities in the result.
+checknbshapes result -solid 1 -shell 1 -face 12 -wire 12 -edge 28 -vertex 17
+
+# Check result area.
+checkprops result -s 4347.99
+
+smallview
+don result
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

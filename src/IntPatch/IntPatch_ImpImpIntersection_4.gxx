@@ -2452,8 +2452,9 @@ void WorkWithBoundaries::BoundaryEstimation(const gp_Cylinder& theCy1,
   //projections of two opposite parallelogram vertices
   //(joined by the maximal diagonal) to the cylinder axis.
   const Standard_Real aSinA = sqrt(aSqSinA);
-  const Standard_Real aHDV1 = (aR1 * aCosA + aR2)/aSinA,
-                      aHDV2 = (aR2 * aCosA + aR1)/aSinA;
+  const Standard_Real anAbsCosA = Abs(aCosA);
+  const Standard_Real aHDV1 = (aR1 * anAbsCosA + aR2) / aSinA,
+                      aHDV2 = (aR2 * anAbsCosA + aR1) / aSinA;
 
 #ifdef INTPATCH_IMPIMPINTERSECTION_DEBUG
   //The code in this block is created for test only.It is stupidly to create
