@@ -1894,60 +1894,58 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_HSurface)&    S
 
     PW.Perform(StartParams);
     if(PW.IsDone()) {
+      if(PW.NbPoints()>2) {
+        Point3dDebut = PW.Value(1).Value();
+        Point3dFin   = PW.Value(PW.NbPoints()).Value();
 
-      Point3dDebut = PW.Value(1).Value();
-      Point3dFin   = PW.Value(PW.NbPoints()).Value();
+        IntSurf_TypeTrans trans1,trans2;
+        Standard_Real locu,locv;
+        gp_Vec norm1,norm2,d1u,d1v;
+        gp_Pnt ptbid;
+        Standard_Integer indextg;
+        gp_Vec tgline(PW.TangentAtLine(indextg));
+        PW.Line()->Value(indextg).ParametersOnS1(locu,locv);
+        Surf1->D1(locu,locv,ptbid,d1u,d1v);
+        norm1 = d1u.Crossed(d1v);
+        PW.Line()->Value(indextg).ParametersOnS2(locu,locv);
+        Surf2->D1(locu,locv,ptbid,d1u,d1v);
+        norm2 = d1u.Crossed(d1v);
+        if (tgline.DotCross(norm2,norm1)>0.) {
+          trans1 = IntSurf_Out;
+          trans2 = IntSurf_In;
+        }
+        else {
+          trans1 = IntSurf_In;
+          trans2 = IntSurf_Out;
+        }
 
-      IntSurf_TypeTrans trans1,trans2;
-      Standard_Real locu,locv;
-      gp_Vec norm1,norm2,d1u,d1v;
-      gp_Pnt ptbid;
-      Standard_Integer indextg;
-      gp_Vec tgline(PW.TangentAtLine(indextg));
-      PW.Line()->Value(indextg).ParametersOnS1(locu,locv);
-      Surf1->D1(locu,locv,ptbid,d1u,d1v);
-      norm1 = d1u.Crossed(d1v);
-      PW.Line()->Value(indextg).ParametersOnS2(locu,locv);
-      Surf2->D1(locu,locv,ptbid,d1u,d1v);
-      norm2 = d1u.Crossed(d1v);
-      if (tgline.DotCross(norm2,norm1)>0.) {
-        trans1 = IntSurf_Out;
-        trans2 = IntSurf_In;
+        Standard_Real TolTang = TolTangency;
+        Handle(IntPatch_WLine) wline = new IntPatch_WLine(PW.Line(),Standard_False,trans1,trans2);
+        IntPatch_RstInt::PutVertexOnLine(wline,Surf1,D1,Surf2,Standard_True,TolTang);
+        IntPatch_RstInt::PutVertexOnLine(wline,Surf2,D2,Surf1,Standard_False,TolTang);
+
+        //---------------
+        if(wline->NbVertex() == 0) {
+          IntPatch_Point vtx;
+          IntSurf_PntOn2S POn2S = PW.Line()->Value(1);
+          POn2S.Parameters(pu1,pv1,pu2,pv2);
+          vtx.SetValue(Point3dDebut,TolTang,Standard_False);
+          vtx.SetParameters(pu1,pv1,pu2,pv2);
+          vtx.SetParameter(1);
+          wline->AddVertex(vtx);
+
+          POn2S = PW.Line()->Value(wline->NbPnts());
+          POn2S.Parameters(pu1,pv1,pu2,pv2);
+          vtx.SetValue(Point3dFin,TolTang,Standard_False);
+          vtx.SetParameters(pu1,pv1,pu2,pv2);
+          vtx.SetParameter(wline->NbPnts());
+          wline->AddVertex(vtx);
+        }
+
+        //---------------
+        SLin.Append(wline);
+        empt = Standard_False;
       }
-      else {
-        trans1 = IntSurf_In;
-        trans2 = IntSurf_Out;
-      }
-
-
-
-      Standard_Real TolTang = TolTangency;
-      Handle(IntPatch_WLine) wline = new IntPatch_WLine(PW.Line(),Standard_False,trans1,trans2);
-      IntPatch_RstInt::PutVertexOnLine(wline,Surf1,D1,Surf2,Standard_True,TolTang);
-      IntPatch_RstInt::PutVertexOnLine(wline,Surf2,D2,Surf1,Standard_False,TolTang);
-
-      //---------------
-      if(wline->NbVertex() == 0) {
-        IntPatch_Point vtx;
-        IntSurf_PntOn2S POn2S = PW.Line()->Value(1);
-        POn2S.Parameters(pu1,pv1,pu2,pv2);
-        vtx.SetValue(Point3dDebut,TolTang,Standard_False);
-        vtx.SetParameters(pu1,pv1,pu2,pv2);
-        vtx.SetParameter(1);
-        wline->AddVertex(vtx);
-
-        POn2S = PW.Line()->Value(wline->NbPnts());
-        POn2S.Parameters(pu1,pv1,pu2,pv2);
-        vtx.SetValue(Point3dFin,TolTang,Standard_False);
-        vtx.SetParameters(pu1,pv1,pu2,pv2);
-        vtx.SetParameter(wline->NbPnts());
-        wline->AddVertex(vtx);
-      }
-
-      //---------------
-      SLin.Append(wline);
-      empt = Standard_False;
-
     }
   }
 }
