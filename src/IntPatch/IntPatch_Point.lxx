@@ -27,6 +27,14 @@ inline void IntPatch_Point::SetValue (const gp_Pnt& Pt)
   pt.SetValue(Pt);
 }
 
+//=======================================================================
+////function : SetValue
+//purpose  : 
+//=======================================================================
+inline void IntPatch_Point::SetValue(const IntSurf_PntOn2S& thePOn2S)
+{
+  pt = thePOn2S;
+}
 
 inline void IntPatch_Point::SetTolerance (const Standard_Real Tol)
 {

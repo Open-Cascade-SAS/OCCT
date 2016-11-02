@@ -54,6 +54,10 @@ public:
   Standard_EXPORT void SetValue (const gp_Pnt& Pt, const Standard_Real Tol, const Standard_Boolean Tangent);
   
     void SetValue (const gp_Pnt& Pt);
+
+  //! Sets the value of <pt> member
+  void SetValue (const IntSurf_PntOn2S& thePOn2S);
+
   
     void SetTolerance (const Standard_Real Tol);
   

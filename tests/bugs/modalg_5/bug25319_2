@@ -6,6 +6,8 @@ puts ""
 # Bop Common produces strange results with same shapes.
 ########################################################################
 
+puts "TODO #OCC27896 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
 restore [locate_data_file bug25319_S1.brep] b1
 restore [locate_data_file bug25319_S2.brep] b2
 

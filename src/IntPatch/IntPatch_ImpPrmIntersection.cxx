@@ -14,62 +14,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <IntPatch_ImpPrmIntersection.hxx>
 
-#include <Adaptor2d_HCurve2d.hxx>
 #include <Adaptor3d_HSurface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
+#include <ElCLib.hxx>
 #include <IntPatch_ArcFunction.hxx>
-#include <IntPatch_ImpPrmIntersection.hxx>
-#include <IntPatch_Line.hxx>
-#include <IntPatch_Point.hxx>
+#include <IntPatch_PointLine.hxx>
 #include <IntPatch_RLine.hxx>
 #include <IntPatch_RstInt.hxx>
-#include <IntPatch_SequenceOfLine.hxx>
-#include <IntPatch_TheIWalking.hxx>
+#include <IntPatch_SpecialPoints.hxx>
 #include <IntPatch_TheIWLineOfTheIWalking.hxx>
-#include <IntPatch_ThePathPointOfTheSOnBounds.hxx>
-#include <IntPatch_TheSegmentOfTheSOnBounds.hxx>
+#include <IntPatch_TheIWalking.hxx>
 #include <IntPatch_TheSurfFunction.hxx>
 #include <IntPatch_WLine.hxx>
 #include <IntSurf.hxx>
-#include <IntSurf_InteriorPoint.hxx>
-#include <IntSurf_LineOn2S.hxx>
-#include <IntSurf_PathPoint.hxx>
-#include <IntSurf_PntOn2S.hxx>
+#include <IntSurf_Quadric.hxx>
+#include <IntSurf_QuadricTool.hxx>
 #include <IntSurf_SequenceOfPathPoint.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_NumericError.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <Standard_TypeMismatch.hxx>
-#include <StdFail_NotDone.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopTrans_CurveTransition.hxx>
+#include <math_Matrix.hxx>
+#include <math_Vector.hxx>
 
 #ifndef OCCT_DEBUG
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #endif
-
-#include <math_Vector.hxx>
-#include <math_Matrix.hxx>
-#include <TopTrans_CurveTransition.hxx>
-#include <TopAbs_State.hxx>
-#include <TopAbs_Orientation.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-
-#include <IntSurf_SequenceOfInteriorPoint.hxx>
-#include <IntSurf_QuadricTool.hxx>
-#include <GeomAbs_SurfaceType.hxx>
-#include <IntAna2d_AnaIntersection.hxx>
-#include <gp_Lin2d.hxx>
-#include <ElCLib.hxx>
-
-#include <Bnd_Box2d.hxx>
-#include <IntPatch_PointLine.hxx>
-
-#include <Extrema_GenLocateExtPS.hxx>
-#include <math_FunctionSetRoot.hxx>
 
 static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLine,
                                         const Standard_Boolean       IsReversed,
@@ -108,24 +79,18 @@ static
                               const Standard_Real theToler2D,
                               const Standard_Real thePeriod);
 
-enum PrePoint_Type
-{
-  PrePoint_NONE,
-  PrePoint_SEAMU,
-  PrePoint_SEAMV,
-  PrePoint_SEAMUV,
-  PrePoint_POLESEAMU,
-  PrePoint_POLE
-};
-
-static PrePoint_Type IsSeamOrPole(const Handle(Adaptor3d_HSurface)& theQSurf,
-                                  const Handle(IntSurf_LineOn2S)& theLine,
-                                  const Standard_Boolean IsReversed,
-                                  const Standard_Integer theRefIndex,
-                                  const Standard_Real theDeltaMax)
+//=======================================================================
+//function : IsSeamOrPole
+//purpose  : 
+//=======================================================================
+static IntPatch_SpecPntType IsSeamOrPole(const Handle(Adaptor3d_HSurface)& theQSurf,
+                                         const Handle(IntSurf_LineOn2S)& theLine,
+                                         const Standard_Boolean IsReversed,
+                                         const Standard_Integer theRefIndex,
+                                         const Standard_Real theDeltaMax)
 {
   if((theRefIndex < 1) || (theRefIndex >= theLine->NbPoints()))
-    return PrePoint_NONE;
+    return IntPatch_SPntNone;
 
   //Parameters on Quadric and on parametric for reference point
   Standard_Real aUQRef, aVQRef, aUPRef, aVPRef;
@@ -147,150 +112,37 @@ static PrePoint_Type IsSeamOrPole(const Handle(Adaptor3d_HSurface)& theQSurf,
   const Standard_Real aDeltaU = Abs(aUQRef - aUQNext);
 
   if((aType != GeomAbs_Torus) && (aDeltaU < theDeltaMax))
-    return PrePoint_NONE;
+    return IntPatch_SPntNone;
 
   switch(aType)
   {
   case GeomAbs_Cylinder:
-    return PrePoint_SEAMU;
+    return IntPatch_SPntSeamU;
 
   case GeomAbs_Torus:
     {
       const Standard_Real aDeltaV = Abs(aVQRef - aVQNext);
 
       if((aDeltaU >= theDeltaMax) && (aDeltaV >= theDeltaMax))
-        return PrePoint_SEAMUV;
+        return IntPatch_SPntSeamUV;
 
       if(aDeltaU >= theDeltaMax)
-        return PrePoint_SEAMU;
+        return IntPatch_SPntSeamU;
 
       if(aDeltaV >= theDeltaMax)
-        return PrePoint_SEAMV;
+        return IntPatch_SPntSeamV;
     }
 
     break;
   case GeomAbs_Sphere:
   case GeomAbs_Cone:
-    return PrePoint_POLESEAMU;
+    return IntPatch_SPntPoleSeamU;
   default:
     break;
   }
 
-  return PrePoint_NONE;
+  return IntPatch_SPntNone;
 }
-
-// The function for searching intersection point, which 
-// lies in the seam-edge of the quadric definetely.
-class FuncPreciseSeam: public math_FunctionSetWithDerivatives
-{
-public:
-  FuncPreciseSeam(const Handle(Adaptor3d_HSurface)& theQSurf, const Handle(Adaptor3d_HSurface)& thePSurf, const Standard_Boolean isTheUSeam): myQSurf(theQSurf), myPSurf(thePSurf), myIsUSeam(isTheUSeam) {};
-  
-  Standard_EXPORT virtual Standard_Integer NbVariables() const
-  {
-    return 3;
-  };
-
-  Standard_EXPORT virtual Standard_Integer NbEquations() const
-  {
-    return 3;
-  }
-
-  Standard_EXPORT virtual Standard_Boolean Value (const math_Vector& theX, math_Vector& theF)
-  {
-    try
-    {
-      const Standard_Integer anIndX = theX.Lower(), anIndF = theF.Lower();
-      const gp_Pnt aP1(myPSurf->Value(theX(anIndX), theX(anIndX+1)));
-      const gp_Pnt aP2(myIsUSeam? myQSurf->Value(0.0, theX(anIndX+2)) : myQSurf->Value(theX(anIndX+2), 0.0));
-
-      (aP1.XYZ()-aP2.XYZ()).Coord(theF(anIndF), theF(anIndF+1), theF(anIndF+2));
-    }
-    catch(Standard_Failure)
-    {
-      return Standard_False;
-    }
-
-    return Standard_True;
-  };
-
-  Standard_EXPORT virtual Standard_Boolean Derivatives (const math_Vector& theX, math_Matrix& theD)
-  {
-    try
-    {
-      const Standard_Integer anIndX = theX.Lower(), anIndRD = theD.LowerRow(), anIndCD = theD.LowerCol();
-      gp_Pnt aPt;
-      gp_Vec aD1u, aD1v, aD2u, aD2v;
-      myPSurf->D1(theX(anIndX), theX(anIndX+1), aPt, aD1u, aD1v);
-      if(myIsUSeam)
-        myQSurf->D1(0.0, theX(anIndX+2), aPt, aD2u, aD2v);
-      else
-        myQSurf->D1(theX(anIndX+2), 0.0, aPt, aD2u, aD2v);
-
-      // d/dX1
-      aD1u.Coord(theD(anIndRD, anIndCD), theD(anIndRD+1, anIndCD), theD(anIndRD+2, anIndCD));
-
-      // d/dX1
-      aD1v.Coord(theD(anIndRD, anIndCD+1), theD(anIndRD+1, anIndCD+1), theD(anIndRD+2, anIndCD+1));
-
-      // d/dX3
-      if(myIsUSeam)
-        aD2v.Reversed().Coord(theD(anIndRD, anIndCD+2), theD(anIndRD+1, anIndCD+2), theD(anIndRD+2, anIndCD+2));
-      else
-        aD2u.Reversed().Coord(theD(anIndRD, anIndCD+2), theD(anIndRD+1, anIndCD+2), theD(anIndRD+2, anIndCD+2));
-    }
-    catch(Standard_Failure)
-    {
-      return Standard_False;
-    }
-
-    return Standard_True;
-  };
-
-  Standard_EXPORT virtual Standard_Boolean Values (const math_Vector& theX, math_Vector& theF, math_Matrix& theD)
-  {
-    try
-    {
-      const Standard_Integer anIndX = theX.Lower(), anIndF = theF.Lower(), anIndRD = theD.LowerRow(), anIndCD = theD.LowerCol();
-      gp_Pnt aP1, aP2;
-      gp_Vec aD1u, aD1v, aD2u, aD2v;
-      myPSurf->D1(theX(anIndX), theX(anIndX+1), aP1, aD1u, aD1v);
-      if(myIsUSeam)
-        myQSurf->D1(0.0, theX(anIndX+2), aP2, aD2u, aD2v);
-      else
-        myQSurf->D1(theX(anIndX+2), 0.0, aP2, aD2u, aD2v);
-
-      //Value
-      (aP1.XYZ()-aP2.XYZ()).Coord(theF(anIndF), theF(anIndF+1), theF(anIndF+2));
-
-      // d/dX1
-      aD1u.Coord(theD(anIndRD, anIndCD), theD(anIndRD+1, anIndCD), theD(anIndRD+2, anIndCD));
-
-      // d/dX1
-      aD1v.Coord(theD(anIndRD, anIndCD+1), theD(anIndRD+1, anIndCD+1), theD(anIndRD+2, anIndCD+1));
-
-      // d/dX3
-      if(myIsUSeam)
-        aD2v.Reversed().Coord(theD(anIndRD, anIndCD+2), theD(anIndRD+1, anIndCD+2), theD(anIndRD+2, anIndCD+2));
-      else
-        aD2u.Reversed().Coord(theD(anIndRD, anIndCD+2), theD(anIndRD+1, anIndCD+2), theD(anIndRD+2, anIndCD+2));
-    }
-    catch(Standard_Failure)
-    {
-      return Standard_False;
-    }
-
-    return Standard_True;
-  }
-
-protected:
-  FuncPreciseSeam operator=(FuncPreciseSeam&);
-
-private:
-  const Handle(Adaptor3d_HSurface)& myQSurf;
-  const Handle(Adaptor3d_HSurface)& myPSurf;
-  const Standard_Boolean myIsUSeam;
-};
 
 //=======================================================================
 //function : IntPatch_ImpPrmIntersection
@@ -2622,7 +2474,7 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
   // build WLine parts (if any)
   Standard_Boolean flNextLine = Standard_True;
   Standard_Boolean hasBeenDecomposed = Standard_False;
-  PrePoint_Type aPrePointExist = PrePoint_NONE;
+  IntPatch_SpecPntType aPrePointExist = IntPatch_SPntNone;
 
   IntSurf_PntOn2S PrePoint;
   while(flNextLine)
@@ -2643,81 +2495,19 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
 
     if(aPrePointExist)
     {
-      //The last point of the line is the pole of the quadric.
-      //Therefore, Walking-line has been broken in this point.
-      //However, new line must start from this point. Here we must
-      //find its 2D-coordinates.
-
-      //For sphere and cone, some intersection point is satisfied to the system
-      //  \cos(U_{q}) = S_{x}(U_{s},V_{s})/F(V_{q}) 
-      //  \sin(U_{q}) = S_{y}(U_{s},V_{s})/F(V_{q}) 
-
-      //where 
-      //  @S_{x}@, @S_{y}@ are X and Y-coordinates of thePSurf;
-      //  @U_{s}@ and @V_{s}@ are UV-parameters on thePSurf;
-      //  @U_{q}@ and @V_{q}@ are UV-parameters on theQSurf;
-      //  @F(V_{q}) @ is some function, which value independs on @U_{q}@
-      //              (form of this function depends on the type of the quadric).
-
-      //When we go through the pole, the function @F(V_{q}) @ changes sign.
-      //Therefore, some cases are possible, when only @\cos(U_{q}) @ or
-      //only @ \sin(U_{q}) @ change sign.
-
-      //Consequently, when the line goes throug the pole, @U_{q}@ can be
-      //changed on @\pi /2 @ (but not less).
-
-      //Here, we forbid "jumping" between two neighbor Walking-point
-      //with step greater than pi/4
-      const Standard_Real aPeriod = M_PI_2, aHalfPeriod = M_PI_4;
       const IntSurf_PntOn2S& aRefPt = aSSLine->Value(aFindex);
 
       const Standard_Real aURes = theQSurf->UResolution(theArcTol),
-                          aVRes = theQSurf->UResolution(theArcTol);
+                          aVRes = theQSurf->VResolution(theArcTol);
 
-      const Standard_Real aTol2d = (aPrePointExist == PrePoint_POLE) ? 0.0 : 
-              (aPrePointExist == PrePoint_SEAMV)? aVRes :
-              (aPrePointExist == PrePoint_SEAMUV)? Max(aURes, aVRes) : aURes;
+      const Standard_Real aTol2d = (aPrePointExist == IntPatch_SPntPole) ? -1.0 : 
+              (aPrePointExist == IntPatch_SPntSeamV)? aVRes :
+              (aPrePointExist == IntPatch_SPntSeamUV)? Max(aURes, aVRes) : aURes;
 
-      if(!PrePoint.IsSame(aRefPt, Precision::Confusion(), aTol2d))
+      if(IntPatch_SpecialPoints::ContinueAfterSpecialPoint(theQSurf, thePSurf, aRefPt,
+                                                              aPrePointExist, aTol2d,
+                                                              PrePoint, IsReversed))
       {
-        Standard_Real aURef = 0.0, aVRef = 0.0;
-        Standard_Real aUquad = 0.0, aVquad = 0.0;
-
-        //Take parameters on quadric
-        if(IsReversed)
-        {
-          PrePoint.ParametersOnS2(aUquad, aVquad);
-          aRefPt.ParametersOnS2(aURef, aVRef);
-        }
-        else
-        {
-          PrePoint.ParametersOnS1(aUquad, aVquad);
-          aRefPt.ParametersOnS1(aURef, aVRef);
-        }
-
-        if(theQSurf->IsUPeriodic())
-        {
-          Standard_Real aDeltaPar = aURef-aUquad;
-          const Standard_Real anIncr = Sign(aPeriod, aDeltaPar);
-          while((aDeltaPar > aHalfPeriod) || (aDeltaPar < -aHalfPeriod))
-          {
-            aUquad += anIncr;
-            aDeltaPar = aURef-aUquad;
-          }
-        }
-
-        if(theQSurf->IsVPeriodic())
-        {
-          Standard_Real aDeltaPar = aVRef-aVquad;
-          const Standard_Real anIncr = Sign(aPeriod, aDeltaPar);
-          while((aDeltaPar > aHalfPeriod) || (aDeltaPar < -aHalfPeriod))
-          {
-            aVquad += anIncr;
-            aDeltaPar = aVRef-aVquad;
-          }
-        }
-
-        PrePoint.SetValue(!IsReversed, aUquad, aVquad);
         sline->Add(PrePoint);
       }
       else
@@ -2727,7 +2517,7 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
       }
     }
 
-    aPrePointExist = PrePoint_NONE;
+    aPrePointExist = IntPatch_SPntNone;
 
     // analyze other points
     for(Standard_Integer k = aFindex; k <= aLindex; k++)
@@ -2750,90 +2540,49 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
 
       aPrePointExist = IsSeamOrPole(theQSurf, aSSLine, IsReversed, k-1, aDeltaUmax);
 
-      if(aPrePointExist != PrePoint_NONE)
+      if(aPrePointExist != IntPatch_SPntNone)
       {
         aBindex = k;
         isDecomposited = Standard_True;
         ////
-        const Standard_Real aPeriod = M_PI+M_PI, aHalfPeriod = M_PI;
         const IntSurf_PntOn2S& aRefPt = aSSLine->Value(aBindex-1);
 
-        //Not quadric point
-        Standard_Real aU0 = 0.0, aV0 = 0.0;
-        //Quadric point
-        Standard_Real aUQuadRef = 0.0, aVQuadRef = 0.0;
+        Standard_Real aCompareTol3D = Precision::Confusion();
+        Standard_Real aCompareTol2D = Precision::PConfusion();
 
-        if(IsReversed)
+        IntSurf_PntOn2S aNewPoint = aRefPt;
+        IntPatch_SpecPntType aLastType = IntPatch_SPntNone;
+
+        if(aPrePointExist == IntPatch_SPntSeamUV)
         {
-          aRefPt.Parameters(aU0, aV0, aUQuadRef, aVQuadRef);
+          aPrePointExist = IntPatch_SPntNone;
+          aLastType = IntPatch_SPntSeamUV;
+          IntPatch_SpecialPoints::AddCrossUVIsoPoint(theQSurf, thePSurf, 
+                                                        aRefPt, theTolTang,
+                                                        aNewPoint, IsReversed);
         }
-        else
-        {
-          aRefPt.Parameters(aUQuadRef, aVQuadRef, aU0, aV0);
-        }
-
-        if(aPrePointExist == PrePoint_SEAMUV)
-        {
-          aPrePointExist = PrePoint_NONE;
-
-          gp_Pnt aPQuad;
-          Standard_Real aUquad = 0.0;
-          Standard_Real aVquad = 0.0; 
-
-          theQSurf->D0(aUquad, aVquad, aPQuad);
-
-          Extrema_GenLocateExtPS anExtr(thePSurf->Surface());
-          anExtr.Perform(aPQuad, aU0, aV0);
-
-          if(!anExtr.IsDone())
-          {
-            break;
-          }
-
-          if(anExtr.SquareDistance() < theTolTang*theTolTang)
-          {
-            anExtr.Point().Parameter(aU0, aV0);
-            gp_Pnt aP0(anExtr.Point().Value());
-
-            IntSurf_PntOn2S aNewPoint;
-            aNewPoint.SetValue(0.5*(aP0.XYZ() + aPQuad.XYZ()), IsReversed, aU0, aV0);
-
-            if(!aNewPoint.IsSame(aRefPt, Precision::Confusion()))
-            {
-              //Adjust found U-paramter to previous point of the Walking-line
-              Standard_Real aDeltaPar = aUQuadRef-aUquad;
-              const Standard_Real anIncrU = Sign(aPeriod, aDeltaPar);
-              while((aDeltaPar > aHalfPeriod) || (aDeltaPar < -aHalfPeriod))
-              {
-                aUquad += anIncrU;
-                aDeltaPar = aUQuadRef-aUquad;
-              }
-
-              //Adjust found V-paramter to previous point of the Walking-line
-              aDeltaPar = aVQuadRef-aVquad;
-              const Standard_Real anIncrV = Sign(aPeriod, aDeltaPar);
-              while((aDeltaPar > aHalfPeriod) || (aDeltaPar < -aHalfPeriod))
-              {
-                aVquad += anIncrV;
-                aDeltaPar = aVQuadRef-aVquad;
-              }
-
-              aNewPoint.SetValue(!IsReversed, aUquad, aVquad);
-              
-              sline->Add(aNewPoint);
-              aPrePointExist = PrePoint_SEAMUV;
-              PrePoint = aNewPoint;
-            }
-          }
-        }
-        else if(aPrePointExist == PrePoint_SEAMV)
+        else if(aPrePointExist == IntPatch_SPntSeamV)
         {//WLine goes through seam
-          aPrePointExist = PrePoint_NONE;
+          aPrePointExist = IntPatch_SPntNone;
+          aLastType = IntPatch_SPntSeamV;
 
-          FuncPreciseSeam aF(theQSurf, thePSurf, Standard_False);
+          //Not quadric point
+          Standard_Real aU0 = 0.0, aV0 = 0.0;
+          //Quadric point
+          Standard_Real aUQuadRef = 0.0, aVQuadRef = 0.0;
+
+          if(IsReversed)
+          {
+            aRefPt.Parameters(aU0, aV0, aUQuadRef, aVQuadRef);
+          }
+          else
+          {
+            aRefPt.Parameters(aUQuadRef, aVQuadRef, aU0, aV0);
+          }
+
           math_Vector aTol(1, 3), aStartPoint(1,3),
-                      anInfBound(1, 3), aSupBound(1, 3);
-          
+            anInfBound(1, 3), aSupBound(1, 3);
+
           //Parameters on parametric surface
           Standard_Real aUp = 0.0, aVp = 0.0;
           if(IsReversed)
@@ -2858,358 +2607,51 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
           aSupBound(2) = thePSurf->LastVParameter();
           aSupBound(3) = theQSurf->LastUParameter();
 
-          math_FunctionSetRoot aSRF(aF, aTol);
-          aSRF.Perform(aF, aStartPoint, anInfBound, aSupBound);
-
-          if(!aSRF.IsDone())
-          {
-            break;
-          }
-
-          // Now aStartPoint is useless. Therefore, we use it for keeping
-          // new point.
-          aSRF.Root(aStartPoint);
-          
-          //On parametric
-          aU0 = aStartPoint(1);
-          aV0 = aStartPoint(2);
-
-          //On quadric
-          Standard_Real aUquad = aStartPoint(3);
-          Standard_Real aVquad = 0.0; 
-          const gp_Pnt aPQuad(theQSurf->Value(aUquad, aVquad));
-          const gp_Pnt aP0(thePSurf->Value(aU0, aV0));
-
-          {
-            //Adjust found U-paramter to previous point of the Walking-line
-            Standard_Real aDeltaPar = aVQuadRef-aVquad;
-            const Standard_Real anIncr = Sign(aPeriod, aDeltaPar);
-            while((aDeltaPar > aHalfPeriod) || (aDeltaPar < -aHalfPeriod))
-            {
-              aVquad += anIncr;
-              aDeltaPar = aVQuadRef-aVquad;
-            }
-          }
-
-          IntSurf_PntOn2S aNewPoint;
-          if(IsReversed)
-            aNewPoint.SetValue(0.5*(aP0.XYZ() + aPQuad.XYZ()), aU0, aV0, aUquad, aVquad);
-          else
-            aNewPoint.SetValue(0.5*(aP0.XYZ() + aPQuad.XYZ()), aUquad, aVquad, aU0, aV0);
-
-          if(!aNewPoint.IsSame(aRefPt, Precision::Confusion(), Precision::PConfusion()))
-          {
-            aNewPoint.SetValue(!IsReversed, aUquad, aVquad);
-            sline->Add(aNewPoint);
-            aPrePointExist = PrePoint_SEAMV;
-            PrePoint = aNewPoint;
-          }
-          else
-          {
-            if(sline->NbPoints() == 1)
-            {
-              //FIRST point of the sline is the pole of the quadric.
-              //Therefore, there is no point in decomposition.
-
-              PrePoint = aRefPt;
-              aPrePointExist = PrePoint_SEAMV;
-            }
-          }
+          IntPatch_SpecialPoints::
+                      AddPointOnUorVIso(theQSurf, thePSurf, aRefPt, Standard_False,
+                                        aTol, aStartPoint, anInfBound, aSupBound,
+                                        aNewPoint, IsReversed);
         }
-        else if(aPrePointExist == PrePoint_POLESEAMU)
-        {//Check if WLine goes through pole
-          
-          aPrePointExist = PrePoint_NONE;
+        else if(aPrePointExist == IntPatch_SPntPoleSeamU)
+        {
+          aPrePointExist = IntPatch_SPntNone;          
 
-          //aPQuad is Pole
-          gp_Pnt aPQuad;
-          Standard_Real aUquad = 0.0;
-          Standard_Real aVquad = 0.0; 
-          
-          if(theQuad.TypeQuadric() == GeomAbs_Sphere)
+          IntPatch_Point aVert;
+          aVert.SetValue(aRefPt);
+
+          if(IntPatch_SpecialPoints::
+                      AddSingularPole(theQSurf, thePSurf, aRefPt, theTolTang,
+                                      aVert, aNewPoint, IsReversed))
           {
-            aVquad = Sign(M_PI_2, aVQuadRef);
-          }
-          else if(theQuad.TypeQuadric() == GeomAbs_Cone)
-          {
-            const Standard_Real aRadius = theQuad.Cone().RefRadius();
-            const Standard_Real aSemiAngle = theQuad.Cone().SemiAngle();
-            aVquad = -aRadius/sin(aSemiAngle);
-          }
-          else
-          {
-            Standard_TypeMismatch::Raise( "IntPatch_ImpPrmIntersection.cxx,"
-                                          " DecomposeResult(...): "
-                                          "Unsupported quadric with Pole");
-          }
-          
-          theQSurf->D0(aUquad, aVquad, aPQuad);
-
-          Extrema_GenLocateExtPS anExtr(thePSurf->Surface());
-          anExtr.Perform(aPQuad, aU0, aV0);
-
-          if(!anExtr.IsDone())
-          {
-            break;
-          }
-
-          if(anExtr.SquareDistance() < theTolTang*theTolTang)
-          { //Pole is an intersection point
-            //(lies in the quadric and the parametric surface)
-
-            anExtr.Point().Parameter(aU0, aV0);
-            gp_Pnt aP0(anExtr.Point().Value());
-
-            IntSurf_PntOn2S aNewPoint;
-            aNewPoint.SetValue(0.5*(aP0.XYZ() + aPQuad.XYZ()), IsReversed, aU0, aV0);
-
-            if(!aNewPoint.IsSame(aRefPt, Precision::Confusion()))
-            {
-              //Found pole does not exist in the Walking-line
-              //It must be added there (with correct 2D-parameters)
-              
-              //2D-parameters of theparametric surface have already been found (aU0, aV0).
-              //Let find 2D-parameters on the quadric.
-
-              //The algorithm depends on the type of the quadric. Here we consider a Sphere only.
-              //Analogical result can be made for another types (e.g. cone, but formulas will
-              //be different) in case of need.
-              
-              //First of all, we need in adjusting thePSurf in the coordinate system of the Sphere
-              //(in order to make the equation of the sphere maximal simple). However, as it will be
-              //shown later, thePSurf is used in algorithm in order to get its derivatives. Therefore,
-              //for improving performance, transformation of these vectors is enough (there is no point
-              //in transformation of full surface).
-              
-              gp_Pnt aPtemp;
-              gp_Vec aVecDu, aVecDv;
-              thePSurf->D1(aU0, aV0, aPtemp, aVecDu, aVecDv);
-
-              //Transforms parametric surface in coordinate-system of the quadric
-              gp_Trsf aTr;
-              aTr.SetTransformation((theQuad.TypeQuadric() == GeomAbs_Sphere) ?
-                                      theQuad.Sphere().Position() :
-                                      theQuad.Cone().Position());
-
-              //Derivatives of transformed thePSurf
-              aVecDu.Transform(aTr);
-              aVecDv.Transform(aTr);
-
-              if(theQuad.TypeQuadric() == GeomAbs_Sphere)
-              {
-                //The intersection point (including the pole)
-                //must be satisfied to the following system:
-
-                //    \left\{\begin{matrix}
-                //    R*\cos (U_{q})*\cos (V_{q})=S_{x}(U_{s},V_{s})
-                //    R*\sin (U_{q})*\cos (V_{q})=S_{y}(U_{s},V_{s})
-                //    R*\sin (V_{q})=S_{z}(U_{s},V_{s})
-                //    \end{matrix}\right,
-                //where 
-                //  R is the radius of the sphere;
-                //  @S_{x}@, @S_{y}@ and @S_{z}@ are X, Y and Z-coordinates of thePSurf;
-                //  @U_{s}@ and @V_{s}@ are equal to aU0 and aV0 corespondingly;
-                //  @U_{q}@ and @V_{q}@ are equal to aUquad and aVquad corespondingly.
-
-                //Consequently (from first two equations), 
-                //  \left\{\begin{matrix}
-                //  \cos (U_{q}) = \frac{S_{x}(U_{s},V_{s})}{R*\cos (V_{q})}
-                //  \sin (U_{q}) = \frac{S_{y}(U_{s},V_{s})}{R*\cos (V_{q})}
-                //  \end{matrix}\right.
-
-                //For pole, 
-                //  V_{q}=\pm \pi /2 \Rightarrow \cos (V_{q}) = 0 (denominator is equal to 0).
-
-                //Therefore, computation U_{q} directly is impossibly.
-                //
-                //Let @V_{q}@ tends to @\pm \pi /2@.
-                //Then (indeterminate form is evaluated in accordance of L'Hospital rule),
-                //  \cos (U_{q}) = \lim_{V_{q} \to (\pi /2-0)} 
-                //  \frac{S_{x}(U_{s},V_{s})}{R*\cos (V_{q})}= 
-                //  -\lim_{V_{q} \to (\pi /2-0)}
-                //  \frac{\frac{\partial S_{x}}
-                //  {\partial U_{s}}*\frac{\mathrm{d} U_{s}} 
-                //  {\mathrm{d} V_{q}}+\frac{\partial S_{x}} 
-                //  {\partial V_{s}}*\frac{\mathrm{d} V_{s}} 
-                //  {\mathrm{d} V_{q}}}{R*\sin (V_{q})} =  
-                //  -\frac{1}{R}*\frac{\mathrm{d} U_{s}}
-                //  {\mathrm{d} V_{q}}*(\frac{\partial S_{x}} 
-                //  {\partial U_{s}}+\frac{\partial S_{x}}
-                //  {\partial V_{s}}*\frac{\mathrm{d} V_{s}}
-                //  {\mathrm{d} U_{s}}) =
-                //  -\frac{1}{R}*\frac{\mathrm{d} V_{s}}
-                //  {\mathrm{d} V_{q}}*(\frac{\partial S_{x}} 
-                //  {\partial U_{s}}*\frac{\mathrm{d} U_{s}}
-                //  {\mathrm{d} V_{s}}+\frac{\partial S_{x}}
-                //  {\partial V_{s}}).
-
-                //Analogicaly for @\sin (U_{q})@ (@S_{x}@ is substituted to @S_{y}@).
-
-                //Let mean, that
-                //  \cos (U_{q}) \left | _{V_{q} \to (-\pi /2+0)} = \cos (U_{q}) \left | _{V_{q} \to (\pi /2-0)}
-                //  \sin (U_{q}) \left | _{V_{q} \to (-\pi /2+0)} = \sin (U_{q}) \left | _{V_{q} \to (\pi /2-0)}
-
-                //From the 3rd equation of the system, we obtain
-                //  \frac{\mathrm{d} (R*\sin (V_{q}))}{\mathrm{d} V_{q}} =
-                //  \frac{\mathrm{d} S_{z}(U_{s},V_{s})}{\mathrm{d} V_{q}}
-                //or
-                //  R*\cos (V_{q}) = \frac{\partial S_{z}}{\partial U_{s}}*
-                //  \frac{\mathrm{d} U_{s}} {\mathrm{d} V_{q}}+\frac{\partial S_{z}}
-                //  {\partial V_{s}}*\frac{\mathrm{d} V_{s}}{\mathrm{d} V_{q}}.
-
-                //If @V_{q}=\pm \pi /2@, then
-                //  \frac{\partial S_{z}}{\partial U_{s}}*
-                //  \frac{\mathrm{d} U_{s}} {\mathrm{d} V_{q}}+\frac{\partial S_{z}}
-                //  {\partial V_{s}}*\frac{\mathrm{d} V_{s}}{\mathrm{d} V_{q}} = 0.
-
-                //Consequently, if @\frac{\partial S_{z}}{\partial U_{s}} \neq 0 @ then
-                //  \frac{\mathrm{d} U_{s}}{\mathrm{d} V_{s}} =
-                //  -\frac{\frac{\partial S_{z}}{\partial V_{s}}}
-                //  {\frac{\partial S_{z}}{\partial U_{s}}}.
-
-                //If @ \frac{\partial S_{z}}{\partial V_{s}} \neq 0 @ then
-                //  \frac{\mathrm{d} V_{s}}{\mathrm{d} U_{s}} =
-                //  -\frac{\frac{\partial S_{z}}{\partial U_{s}}}
-                //  {\frac{\partial S_{z}}{\partial V_{s}}}
-
-                //Cases, when @ \frac{\partial S_{z}}{\partial U_{s}} = 
-                //\frac{\partial S_{z}}{\partial V_{s}} = 0 @ are not consider here.
-                //The reason is written below.
-
-                //Vector with {@ \cos (U_{q}) @, @ \sin (U_{q}) @} coordinates.
-                //Ask to pay attention to the fact that this vector is always normalyzed.
-                gp_Vec2d aV1;
-
-                if( (Abs(aVecDu.Z()) < Precision::PConfusion()) &&
-                  (Abs(aVecDv.Z()) < Precision::PConfusion()))
-                {
-                  //Example of this exception is intersection a plane with a sphere
-                  //when the plane tangents the sphere in some pole (i.e. only one 
-                  //intersection point, not line). In this case, U-coordinate of the
-                  //sphere is undefined (can be realy anything).
-                  //Another reason is that we have tangent zone around the pole
-                  //(see bug #26576).
-                  //Computation correct value of aUquad is impossible. Therefore,
-                  //we should throw an exception in this case.
-                  //Also, any Walking line cannot be created in this case.
-                  //Hovewer, Restriction line is not created by intersection algorithm.
-                  //It is already exists (above we check simply, if this line is
-                  //intersection line).
-                  //Therefore, we can try to find the aUquad-parameter on (existing)
-                  //Restriction line. Here, we will do it with
-                  //extrapolation algorithm.
-                  //Use interpolation algorithm is wrong because aUquad parameter
-                  //jumps while the line going though the pole.
-
-                  if((theLine->ArcType() == IntPatch_Walking) ||
-                    (aBindex < 3))
-                  {
-                    //We must have at least two previous points
-                    //in order to do linear extrapolation.
-                    Standard_NumericError::
-                      Raise("IntPatch_ImpPrmIntersection.cxx, DecomposeResult(...): "
-                      "Cannot find UV-coordinate for quadric in the pole");
-                  }
-                  else
-                  {
-#ifdef INTPATCH_IMPPRMINTERSECTION_DEBUG
-                    cout << "Cannot find UV-coordinate for quadric in the pole."
-                      " See considered comment above. IntPatch_ImpPrmIntersection.cxx,"
-                      " DecomposeResult(...)" << endl;
-#endif
-
-                    //    *----------*------------x
-                    // QuadPrev   QuadRef     Quad (must be found)
-
-                    const IntSurf_PntOn2S& aPt2S = aSSLine->Value(aBindex-2);
-                    //Quadric point
-                    Standard_Real aUQuadPrev = 0.0, aVQuadPrev = 0.0;
-                    if(IsReversed)
-                    {
-                      aPt2S.ParametersOnS2(aUQuadPrev, aVQuadPrev);
-                    }
-                    else
-                    {
-                      aPt2S.ParametersOnS1(aUQuadPrev, aVQuadPrev);
-                    }
-
-                    Standard_NumericError_Raise_if(
-                      Abs(aVQuadPrev - aVQuadRef) < gp::Resolution(),
-                      "Division by zero");
-
-                    aUquad = 
-                      aUQuadPrev + (aUQuadRef - aUQuadPrev)*
-                      (aVquad - aVQuadPrev)/(aVQuadRef - aVQuadPrev);
-                  }
-                }
-                else
-                {
-                  if(Abs(aVecDu.Z()) > Abs(aVecDv.Z()))
-                  {
-                    const Standard_Real aDusDvs = aVecDv.Z()/aVecDu.Z();
-
-                    aV1.SetCoord( aVecDu.X()*aDusDvs - aVecDv.X(),
-                      aVecDu.Y()*aDusDvs - aVecDv.Y());
-                  }
-                  else
-                  {
-                    const Standard_Real aDvsDus = aVecDu.Z()/aVecDv.Z();
-                    aV1.SetCoord( aVecDv.X()*aDvsDus - aVecDu.X(),
-                      aVecDv.Y()*aDvsDus - aVecDu.Y());
-                  }
-
-                  aV1.Normalize();
-
-                  if(Abs(aV1.X()) > Abs(aV1.Y()))
-                    aUquad = Sign(asin(aV1.Y()), aVquad);
-                  else
-                    aUquad = Sign(acos(aV1.X()), aVquad);
-                }
-
-                {
-                  //Adjust found U-paramter to previous point of the Walking-line
-                  Standard_Real aDeltaPar = aUQuadRef-aUquad;
-                  const Standard_Real anIncr = Sign(aPeriod, aDeltaPar);
-                  while((aDeltaPar > aHalfPeriod) || (aDeltaPar < -aHalfPeriod))
-                  {
-                    aUquad += anIncr;
-                    aDeltaPar = aUQuadRef-aUquad;
-                  }
-                }
-              }
-
-              aNewPoint.SetValue(!IsReversed, aUquad, aVquad);
-              
-              sline->Add(aNewPoint);
-              aPrePointExist = PrePoint_POLE;
-              PrePoint = aNewPoint;
-            } // if(!aNewPoint.IsSame(aRefPt, Precision::Confusion()))
-            else
-            {
-              aPrePointExist = PrePoint_NONE;
-
-              if(sline->NbPoints() == 1)
-              {
-                //FIRST point of the sline is the pole of the quadric.
-                //Therefore, there is no point in decomposition.
-
-                PrePoint = aRefPt;
-                aPrePointExist = PrePoint_POLE;
-              }
-            }
-          } //if(anExtr.SquareDistance() < aTol*aTol)
+            aPrePointExist = IntPatch_SPntPole;
+            aLastType = IntPatch_SPntPole;
+            aCompareTol2D = -1.0;
+          } //if(IntPatch_AddSpecialPoints::AddSingularPole(...))
           else
           {//Pole is not an intersection point
-            aPrePointExist = PrePoint_SEAMU;
+            aPrePointExist = IntPatch_SPntSeamU;
           }
         }
 
-        if(aPrePointExist == PrePoint_SEAMU)
+        if(aPrePointExist == IntPatch_SPntSeamU)
         {//WLine goes through seam
+          aPrePointExist = IntPatch_SPntNone;
+          aLastType = IntPatch_SPntSeamU;
 
-          aPrePointExist = PrePoint_NONE;
+          //Not quadric point
+          Standard_Real aU0 = 0.0, aV0 = 0.0;
+          //Quadric point
+          Standard_Real aUQuadRef = 0.0, aVQuadRef = 0.0;
 
-          FuncPreciseSeam aF(theQSurf, thePSurf, Standard_True);
+          if(IsReversed)
+          {
+            aRefPt.Parameters(aU0, aV0, aUQuadRef, aVQuadRef);
+          }
+          else
+          {
+            aRefPt.Parameters(aUQuadRef, aVQuadRef, aU0, aV0);
+          }
+
           math_Vector aTol(1, 3), aStartPoint(1,3),
                       anInfBound(1, 3), aSupBound(1, 3);
           
@@ -3237,62 +2679,27 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
           aSupBound(2) = thePSurf->LastVParameter();
           aSupBound(3) = theQSurf->LastVParameter();
 
-          math_FunctionSetRoot aSRF(aF, aTol);
-          aSRF.Perform(aF, aStartPoint, anInfBound, aSupBound);
+          IntPatch_SpecialPoints::
+                AddPointOnUorVIso(theQSurf, thePSurf, aRefPt, Standard_True, aTol,
+                                  aStartPoint, anInfBound, aSupBound, aNewPoint,
+                                  IsReversed);
+        }
 
-          if(!aSRF.IsDone())
+        if(!aNewPoint.IsSame(aRefPt, aCompareTol3D, aCompareTol2D))
+        {
+          sline->Add(aNewPoint);
+          aPrePointExist = aLastType;
+          PrePoint = aNewPoint;
+        }
+        else
+        {
+          if(sline->NbPoints() == 1)
           {
-            break;
-          }
+            //FIRST point of the sline is the pole of the quadric.
+            //Therefore, there is no point in decomposition.
 
-          // Now aStartPoint is useless. Therefore, we use it for keeping
-          // new point.
-          aSRF.Root(aStartPoint);
-          
-          //On parametric
-          aU0 = aStartPoint(1);
-          aV0 = aStartPoint(2);
-
-          //On quadric
-          Standard_Real aUquad = 0.0;
-          Standard_Real aVquad = aStartPoint(3); 
-          const gp_Pnt aPQuad(theQSurf->Value(aUquad, aVquad));
-          const gp_Pnt aP0(thePSurf->Value(aU0, aV0));
-
-          {
-            //Adjust found U-paramter to previous point of the Walking-line
-            Standard_Real aDeltaPar = aUQuadRef-aUquad;
-            const Standard_Real anIncr = Sign(aPeriod, aDeltaPar);
-            while((aDeltaPar > aHalfPeriod) || (aDeltaPar < -aHalfPeriod))
-            {
-              aUquad += anIncr;
-              aDeltaPar = aUQuadRef-aUquad;
-            }
-          }
-
-          IntSurf_PntOn2S aNewPoint;
-          if(IsReversed)
-            aNewPoint.SetValue(0.5*(aP0.XYZ() + aPQuad.XYZ()), aU0, aV0, aUquad, aVquad);
-          else
-            aNewPoint.SetValue(0.5*(aP0.XYZ() + aPQuad.XYZ()), aUquad, aVquad, aU0, aV0);
-
-          if(!aNewPoint.IsSame(aRefPt, Precision::Confusion(), Precision::PConfusion()))
-          {
-            aNewPoint.SetValue(!IsReversed, aUquad, aVquad);
-            sline->Add(aNewPoint);
-            aPrePointExist = PrePoint_SEAMU;
-            PrePoint = aNewPoint;
-          }
-          else
-          {
-            if(sline->NbPoints() == 1)
-            {
-              //FIRST point of the sline is the pole of the quadric.
-              //Therefore, there is no point in decomposition.
-
-              PrePoint = aRefPt;
-              aPrePointExist = PrePoint_SEAMU;
-            }
+            PrePoint = aRefPt;
+            aPrePointExist = aLastType;
           }
         }
 

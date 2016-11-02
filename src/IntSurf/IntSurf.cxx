@@ -12,13 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <gp.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Vec.hxx>
 #include <IntSurf.hxx>
+
+#include <Adaptor3d_HSurface.hxx>
 #include <IntSurf_Transition.hxx>
 #include <Precision.hxx>
+#include <gp_Vec.hxx>
 
 //--------------------------------------------------------------
 //-- IntSurf::MakeTransition(Vtgint,Vtgrst,Normale,Transline,Transarc);
@@ -98,7 +97,18 @@ void IntSurf::MakeTransition (const gp_Vec& TgFirst,
   }
 }
 
-
-
+//=======================================================================
+//function : SetPeriod
+//purpose  : 
+//=======================================================================
+void IntSurf::SetPeriod(const Handle(Adaptor3d_HSurface)& theFirstSurf,
+                        const Handle(Adaptor3d_HSurface)& theSecondSurf,
+                        Standard_Real theArrOfPeriod[4])
+{
+  theArrOfPeriod[0] = theFirstSurf->IsUPeriodic()? theFirstSurf->UPeriod() : 0.0;
+  theArrOfPeriod[1] = theFirstSurf->IsVPeriodic()? theFirstSurf->VPeriod() : 0.0;
+  theArrOfPeriod[2] = theSecondSurf->IsUPeriodic()? theSecondSurf->UPeriod() : 0.0;
+  theArrOfPeriod[3] = theSecondSurf->IsVPeriodic()? theSecondSurf->VPeriod() : 0.0;
+}
 
 

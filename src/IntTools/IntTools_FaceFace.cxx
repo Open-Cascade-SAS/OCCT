@@ -15,100 +15,45 @@
 
 #include <IntTools_FaceFace.hxx>
 
-#include <Precision.hxx>
-
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_SequenceOfReal.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_Array1OfListOfInteger.hxx>
-
-#include <Bnd_Box.hxx>
-
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepTools.hxx>
+#include <BRep_Tool.hxx>
+#include <ElCLib.hxx>
+#include <ElSLib.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomInt_IntSS.hxx>
+#include <GeomInt_WLApprox.hxx>
+#include <GeomLib_Check2dBSplineCurve.hxx>
+#include <GeomLib_CheckBSplineCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <IntAna_QuadQuadGeo.hxx>
-
-#include <IntSurf_PntOn2S.hxx>
-#include <IntSurf_LineOn2S.hxx>
-#include <IntSurf_PntOn2S.hxx>
-#include <IntSurf_ListOfPntOn2S.hxx>
-#include <IntRes2d_Domain.hxx>
-#include <ProjLib_Plane.hxx>
-
 #include <IntPatch_GLine.hxx>
 #include <IntPatch_RLine.hxx>
 #include <IntPatch_WLine.hxx>
-#include <IntPatch_ALine.hxx>
-#include <IntPatch_ALineToWLine.hxx>
-
-#include <ElSLib.hxx>
-#include <ElCLib.hxx>
-
-#include <BndLib_AddSurface.hxx>
-
-#include <Adaptor3d_SurfacePtr.hxx>
-#include <Adaptor2d_HLine2d.hxx>
-
-#include <GeomAbs_SurfaceType.hxx>
-#include <GeomAbs_CurveType.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Parabola.hxx>
-#include <Geom_Hyperbola.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_OffsetSurface.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Conic.hxx>
-
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_Curve.hxx>
-
-#include <Geom2dInt_GInter.hxx>
-#include <Geom2dAdaptor.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <GeomLib_CheckBSplineCurve.hxx>
-#include <GeomLib_Check2dBSplineCurve.hxx>
-
-#include <GeomInt_WLApprox.hxx>
-#include <GeomProjLib.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <BRep_Tool.hxx>
-#include <BRepTools.hxx>
-#include <BRepAdaptor_Surface.hxx>
-
-#include <IntTools_Curve.hxx>
-#include <IntTools_Tools.hxx>
+#include <IntRes2d_Domain.hxx>
+#include <IntSurf_Quadric.hxx>
+#include <IntTools_Context.hxx>
 #include <IntTools_Tools.hxx>
 #include <IntTools_TopolTool.hxx>
-#include <IntTools_PntOnFace.hxx>
-#include <IntTools_PntOn2Faces.hxx>
-#include <IntTools_Context.hxx>
-#include <IntSurf_ListIteratorOfListOfPntOn2S.hxx>
-
-#include <Approx_CurveOnSurface.hxx>
-#include <GeomAdaptor.hxx>
-#include <GeomInt_IntSS.hxx>
 #include <IntTools_WLineTool.hxx>
-#include <IntPatch_WLineTool.hxx>
+#include <ProjLib_Plane.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <gp_Elips.hxx>
 
 static
   void TolR3d(const TopoDS_Face& ,
@@ -1333,183 +1278,8 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
     }// IntPatch_Circle: IntPatch_Ellipse:
     break;
     
-  case IntPatch_Analytic: {
-    IntSurf_Quadric quad1,quad2;
-    GeomAbs_SurfaceType typs = myHS1->Surface().GetType();
-    
-    switch (typs) {
-      case GeomAbs_Plane:
-        quad1.SetValue(myHS1->Surface().Plane());
-        break;
-      case GeomAbs_Cylinder:
-        quad1.SetValue(myHS1->Surface().Cylinder());
-        break;
-      case GeomAbs_Cone:
-        quad1.SetValue(myHS1->Surface().Cone());
-        break;
-      case GeomAbs_Sphere:
-        quad1.SetValue(myHS1->Surface().Sphere());
-        break;
-    case GeomAbs_Torus:
-      quad1.SetValue(myHS1->Surface().Torus());
-      break;
-      default:
-        Standard_ConstructionError::Raise("GeomInt_IntSS::MakeCurve 1");
-      }
-      
-    typs = myHS2->Surface().GetType();
-    
-    switch (typs) {
-      case GeomAbs_Plane:
-        quad2.SetValue(myHS2->Surface().Plane());
-        break;
-      case GeomAbs_Cylinder:
-        quad2.SetValue(myHS2->Surface().Cylinder());
-        break;
-      case GeomAbs_Cone:
-        quad2.SetValue(myHS2->Surface().Cone());
-        break;
-      case GeomAbs_Sphere:
-        quad2.SetValue(myHS2->Surface().Sphere());
-        break;
-    case GeomAbs_Torus:
-      quad2.SetValue(myHS2->Surface().Torus());
-      break;
-      default:
-        Standard_ConstructionError::Raise("GeomInt_IntSS::MakeCurve 2");
-      }
-    //
-    //=========
-    IntPatch_ALineToWLine convert (quad1, quad2);
-      
-    if (!myApprox) {
-      aNbParts=myLConstruct.NbParts();
-      for (i=1; i<=aNbParts; i++) {
-        myLConstruct.Part(i, fprm, lprm);
-        Handle(IntPatch_WLine) WL = 
-          convert.MakeWLine(Handle(IntPatch_ALine)::DownCast(L), fprm, lprm);
-        //
-        Handle(Geom2d_BSplineCurve) H1;
-        Handle(Geom2d_BSplineCurve) H2;
-
-        if(myApprox1) {
-          H1 = GeomInt_IntSS::MakeBSpline2d(WL, 1, WL->NbPnts(), Standard_True);
-        }
-        
-        if(myApprox2) {
-          H2 = GeomInt_IntSS::MakeBSpline2d(WL, 1, WL->NbPnts(), Standard_False);
-        }
-        //          
-        mySeqOfCurve.Append(IntTools_Curve(GeomInt_IntSS::MakeBSpline(WL,1,WL->NbPnts()), H1, H2));
-      }
-    } // if (!myApprox)
-
-    else { // myApprox=TRUE
-      GeomInt_WLApprox theapp3d;
-      // 
-      Standard_Real tol2d = myTolApprox;
-      //         
-      theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, 30, Standard_True);
-      
-      aNbParts=myLConstruct.NbParts();
-      for (i=1; i<=aNbParts; i++) {
-        myLConstruct.Part(i, fprm, lprm);
-        Handle(IntPatch_WLine) WL = 
-          convert.MakeWLine(Handle(IntPatch_ALine):: DownCast(L),fprm,lprm);
-
-        theapp3d.Perform(myHS1,myHS2,WL,Standard_True,myApprox1,myApprox2, 1, WL->NbPnts());
-
-        if (!theapp3d.IsDone()) {
-          //
-          Handle(Geom2d_BSplineCurve) H1;
-          Handle(Geom2d_BSplineCurve) H2;
-
-          if(myApprox1) {
-            H1 = GeomInt_IntSS::MakeBSpline2d(WL, 1, WL->NbPnts(), Standard_True);
-          }
-          
-          if(myApprox2) {
-            H2 = GeomInt_IntSS::MakeBSpline2d(WL, 1, WL->NbPnts(), Standard_False);
-          }
-          //          
-          mySeqOfCurve.Append(IntTools_Curve(GeomInt_IntSS::MakeBSpline(WL,1,WL->NbPnts()), H1, H2));
-        }
-
-        else {
-          if(myApprox1 || myApprox2) { 
-            if( theapp3d.TolReached2d()>myTolReached2d || myTolReached2d==0) { 
-              myTolReached2d = theapp3d.TolReached2d();
-            }
-          }
-          
-          if( theapp3d.TolReached3d()>myTolReached3d || myTolReached3d==0) { 
-            myTolReached3d = theapp3d.TolReached3d();
-          }
-
-          Standard_Integer aNbMultiCurves, nbpoles;
-          aNbMultiCurves=theapp3d.NbMultiCurves();
-          for (j=1; j<=aNbMultiCurves; j++) {
-            const AppParCurves_MultiBSpCurve& mbspc = theapp3d.Value(j);
-            nbpoles = mbspc.NbPoles();
-            
-            TColgp_Array1OfPnt tpoles(1, nbpoles);
-            mbspc.Curve(1, tpoles);
-            Handle(Geom_BSplineCurve) BS=new Geom_BSplineCurve(tpoles,
-                                                               mbspc.Knots(),
-                                                               mbspc.Multiplicities(),
-                                                               mbspc.Degree());
-            
-            GeomLib_CheckBSplineCurve Check(BS,TOLCHECK,TOLANGCHECK);
-            Check.FixTangent(Standard_True,Standard_True);
-            // 
-            IntTools_Curve aCurve;
-            aCurve.SetCurve(BS);
-            
-            if(myApprox1) { 
-              TColgp_Array1OfPnt2d tpoles2d(1,nbpoles);
-              mbspc.Curve(2,tpoles2d);
-              Handle(Geom2d_BSplineCurve) BS2=new Geom2d_BSplineCurve(tpoles2d,
-                                                                      mbspc.Knots(),
-                                                                      mbspc.Multiplicities(),
-                                                                      mbspc.Degree());
-
-              GeomLib_Check2dBSplineCurve newCheck(BS2,TOLCHECK,TOLANGCHECK);
-              newCheck.FixTangent(Standard_True,Standard_True);
-              //                 
-              aCurve.SetFirstCurve2d(BS2);
-            }
-            else {
-              Handle(Geom2d_BSplineCurve) H1;
-              aCurve.SetFirstCurve2d(H1);
-            }
-            
-            if(myApprox2) { 
-              TColgp_Array1OfPnt2d tpoles2d(1, nbpoles);
-              Standard_Integer TwoOrThree;
-              TwoOrThree=myApprox1 ? 3 : 2;
-              mbspc.Curve(TwoOrThree, tpoles2d);
-              Handle(Geom2d_BSplineCurve) BS2 =new Geom2d_BSplineCurve(tpoles2d,
-                                                                       mbspc.Knots(),
-                                                                       mbspc.Multiplicities(),
-                                                                       mbspc.Degree());
-                
-              GeomLib_Check2dBSplineCurve newCheck(BS2,TOLCHECK,TOLANGCHECK);
-              newCheck.FixTangent(Standard_True,Standard_True);
-              //         
-              aCurve.SetSecondCurve2d(BS2);
-            }
-            else { 
-              Handle(Geom2d_BSplineCurve) H2;
-              aCurve.SetSecondCurve2d(H2);
-            }
-            // 
-            mySeqOfCurve.Append(aCurve);
-
-          }// for (j=1; j<=aNbMultiCurves; j++) {
-        }// else from if (!theapp3d.IsDone())
-      }// for (i=1; i<=aNbParts; i++) {
-    }// else { // myApprox=TRUE
-  }// case IntPatch_Analytic:
+  case IntPatch_Analytic:
+    //This case was processed earlier (in IntPatch_Intersection)
     break;
 
   case IntPatch_Walking:{

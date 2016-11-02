@@ -267,12 +267,13 @@
 				     Standard_Real& sint,
 				     Standard_Real& SigneSqrtDis) const 
 {
+  const Standard_Real aRelTolp = 1.0+Epsilon(1.0), aRelTolm = 1.0-Epsilon(1.0);
   Standard_Real Theta=theta;
   Standard_Boolean SecondSolution=Standard_False; 
 
-  if((Theta<DomainInf)  ||  
-     ((Theta>DomainSup) && (!TwoCurves)) ||  
-     (Theta>(DomainSup+DomainSup-DomainInf+0.00000000000001))) {
+  if((Theta<DomainInf*aRelTolm)  ||  
+     ((Theta>DomainSup*aRelTolp) && (!TwoCurves)) ||  
+     (Theta>(DomainSup+DomainSup-DomainInf)*aRelTolp)) {
     SigneSqrtDis = 0.;
     Standard_DomainError::Raise("IntAna_Curve::Domain");
   }
@@ -302,11 +303,11 @@
     +Z0CosSin*costsint;
   
 
-  Standard_Real Discriminant = B*B-4.0*A*C;
+  const Standard_Real aDiscriminant = Max(B*B-4.0*A*C, 0.0);
   
-  if(Abs(A)<=0.000000001) {   
+  if(Abs(A)<=Precision::PConfusion()) {   
     //-- cout<<" IntAna_Curve:: Internal UV Value : A="<<A<<"  -> Abs(A)="<<Abs(A)<<endl;
-    if(Abs(B)<=0.0000000001) { 
+    if(Abs(B)<=Precision::PConfusion()) { 
       //-- cout<<" Probleme :  Pas de solutions "<<endl;
       Param2=0.0;
     }
@@ -335,10 +336,7 @@
     }
   }
   else {
-    if(Discriminant<=0.0000000001 || 
-       Abs(Discriminant/(4*A))<=0.0000000001) Discriminant=0.0;
-    SigneSqrtDis = (SecondSolution)? Sqrt(Discriminant) 
-      : -Sqrt(Discriminant);
+    SigneSqrtDis = (SecondSolution)? Sqrt(aDiscriminant) : -Sqrt(aDiscriminant);
     Param2=(-B+SigneSqrtDis)/(A+A);
   }
 }

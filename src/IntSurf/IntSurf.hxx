@@ -17,24 +17,13 @@
 #ifndef _IntSurf_HeaderFile
 #define _IntSurf_HeaderFile
 
-#include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-class gp_Vec;
+class Adaptor3d_HSurface;
+class IntSurf_Transition;
 class gp_Dir;
-class IntSurf_Transition;
-class IntSurf_PntOn2S;
-class IntSurf_Couple;
-class IntSurf_LineOn2S;
-class IntSurf_Quadric;
-class IntSurf_QuadricTool;
-class IntSurf_PathPoint;
-class IntSurf_PathPointTool;
-class IntSurf_InteriorPoint;
-class IntSurf_InteriorPointTool;
-class IntSurf_Transition;
-
+class gp_Vec;
 
 //! This package provides resources for
 //! all the packages concerning the intersection
@@ -56,6 +45,17 @@ public:
   //! TSecond is the transition of the point on the second line.
   Standard_EXPORT static void MakeTransition (const gp_Vec& TgFirst, const gp_Vec& TgSecond, const gp_Dir& Normal, IntSurf_Transition& TFirst, IntSurf_Transition& TSecond);
 
+  //! Fills theArrOfPeriod array by the period values of theFirstSurf and theSecondSurf.
+  //! [0] = U-period of theFirstSurf,
+  //! [1] = V-period of theFirstSurf,
+  //! [2] = U-period of theSecondSurf,
+  //! [3] = V-period of theSecondSurf.
+  //!
+  //! If surface is not periodic in correspond direction then
+  //! its period is considered to be equal to 0.
+  Standard_EXPORT static void SetPeriod(const Handle(Adaptor3d_HSurface)& theFirstSurf,
+                                        const Handle(Adaptor3d_HSurface)& theSecondSurf,
+                                        Standard_Real theArrOfPeriod[4]);
 
 
 

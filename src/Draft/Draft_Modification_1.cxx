@@ -1549,6 +1549,58 @@ void Draft_Modification::Perform ()
       Vf.Reverse();
       Vl.Reverse();
     }
+
+    if(myVMap.Contains(Vf) && myVMap.Contains(Vl))
+    {
+      //Here, we compare directions of the source edge (from input shape)
+      //and corresponding selected part of the intersection edge.
+      //If these directions are opposite then we reverse intersection edge
+      //and recompute corresponding vertex-parameters.
+
+      Standard_Real aParF = myVMap.ChangeFromKey(Vf).Parameter(edg);
+      Standard_Real aParL = myVMap.ChangeFromKey(Vl).Parameter(edg);
+
+      if(aParL < aParF)
+      {
+        Draft_EdgeInfo& aEinf = myEMap.ChangeFromKey(edg);
+        TopLoc_Location aLoc;
+        Standard_Real aF = 0.0, aL = 0.0;
+        const Handle(Geom_Curve) aSCurve = BRep_Tool::Curve(edg, aF, aL);
+        Handle(Geom_Curve) anIntCurv = aEinf.Geometry();
+        gp_Pnt aPf, aPl;
+        gp_Vec aDirNF, aDirNL, aDirOF, aDirOL;
+        aSCurve->D1(BRep_Tool::Parameter(Vf, edg), aPf, aDirOF);
+        aSCurve->D1(BRep_Tool::Parameter(Vl, edg), aPl, aDirOL);
+        anIntCurv->D1(aParF, aPf, aDirNF);
+        anIntCurv->D1(aParL, aPl, aDirNL);
+
+        aDirNF.Normalize();
+        aDirNL.Normalize();
+        aDirOF.Normalize();
+        aDirOL.Normalize();
+
+        const Standard_Real aCosF = aDirNF.Dot(aDirOF), aCosL = aDirNL.Dot(aDirOL);
+        const Standard_Real aCosMax = Abs(aCosF) > Abs(aCosL) ? aCosF : aCosL;
+
+        if(aCosMax < 0.0)
+        {
+          Standard_Integer anErr = 0;
+          anIntCurv->Reverse();
+          aEinf.ChangeGeometry() = anIntCurv;
+          Standard_Real aPar = Parameter(aEinf.Geometry(), aPf, anErr);
+          if(anErr == 0)
+          {
+            myVMap.ChangeFromKey(Vf).ChangeParameter(edg) = aPar;
+          }
+          aPar = Parameter(aEinf.Geometry(), aPl, anErr);
+          if(anErr == 0)
+          {
+            myVMap.ChangeFromKey(Vl).ChangeParameter(edg) = aPar;
+          }
+        }
+      }
+    }
+
     Standard_Real pf,pl,tolerance;
     if (!NewParameter(Vf,edg,pf,tolerance)) {
       pf = BRep_Tool::Parameter(Vf,edg);

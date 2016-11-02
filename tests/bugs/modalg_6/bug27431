@@ -1,0 +1,67 @@
+puts "============"
+puts "OCC27431"
+puts "============"
+puts ""
+###############################
+## [Regression to 6.9.1] Huge tolerance obtained during intersection of cylinder and sphere
+###############################
+
+pload ALL
+
+set MaxTol1 0.00042926432143107718
+set MaxTol2 0.00042926432143107718
+
+set GoodNbCurv 4
+
+restore [locate_data_file OCC13116_sh1.brep] b1
+restore [locate_data_file OCC13116_sh2.brep] b2
+
+explode b1 f
+explode b2 f
+
+set log1 [bopcurves b1_3 b2_1 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log1} full Toler NbCurv
+
+# Before fixing: Tolerance Reached=27.904993728420369
+checkreal ToleranceReached ${Toler} ${MaxTol1} 0.0 0.01
+
+smallview
+don b1_3 b2_1 c_*
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}_3d_1.png
+
+v2d
+don c2d*
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}_2d_1.png
+
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Number of curves is bad!"
+}
+
+# increasing tolerance values of the faces on Precision::Confusion()
+# dramatically increased (before fixing) the tolerance of 
+# the produced section curves
+
+settolerance b1_3 2.34623727264857e-007
+settolerance b2_1 2.e-7
+
+set log2 [bopcurves b1_3 b2_1 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log2} full Toler NbCurv
+
+# Before fixing: Tolerance Reached=40.000000093341022
+checkreal ToleranceReached ${Toler} ${MaxTol2} 0.0 0.01
+
+smallview
+don b1_3 b2_1 c_*
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}_3d_2.png
+
+v2d
+don c2d*
+2dfit
+checkview -screenshot -2d -path ${imagedir}/${test_image}_2d_2.png

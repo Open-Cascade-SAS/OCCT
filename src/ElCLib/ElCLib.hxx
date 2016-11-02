@@ -78,6 +78,8 @@ public:
   //! Return a value in   the  range <UFirst, ULast>  by
   //! adding or removing the period <ULast -  UFirst> to
   //! <U>.
+  //! ATTENTION!!!
+  //!   It is expected but not checked that (ULast > UFirst)
   Standard_EXPORT static Standard_Real InPeriod (const Standard_Real U, const Standard_Real UFirst, const Standard_Real ULast);
   
   //! Adjust U1 and  U2 in the  parametric range  UFirst

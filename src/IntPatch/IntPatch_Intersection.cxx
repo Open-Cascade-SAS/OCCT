@@ -12,6 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <stdio.h>
 #include <IntPatch_Intersection.hxx>
 
 #include <Adaptor3d_HSurface.hxx>
@@ -21,22 +22,9 @@
 #include <IntPatch_GLine.hxx>
 #include <IntPatch_ImpImpIntersection.hxx>
 #include <IntPatch_ImpPrmIntersection.hxx>
-#include <IntPatch_Line.hxx>
-#include <IntPatch_Point.hxx>
 #include <IntPatch_PrmPrmIntersection.hxx>
-#include <IntPatch_RLine.hxx>
 #include <IntPatch_WLine.hxx>
 #include <IntPatch_WLineTool.hxx>
-#include <IntSurf_Quadric.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
-#include <IntPatch_LineConstructor.hxx>
-
-#include <stdio.h>
-#define DEBUG 0 
-static const Standard_Integer aNbPointsInALine = 200;
 
 //======================================================================
 // function: SequenceOfLine
@@ -1332,165 +1320,105 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& the
 {
   IntPatch_ImpImpIntersection interii(theS1,theD1,theS2,theD2,
                                       myTolArc,myTolTang, theIsReqToKeepRLine);
-  if (interii.IsDone())
+
+  if (!interii.IsDone())
   {
-    done = (interii.GetStatus() == IntPatch_ImpImpIntersection::IntStatus_OK);
-    empt = interii.IsEmpty();
-    if (!empt)
-    {
-      tgte = interii.TangentFaces();
-      if (tgte)
-        oppo = interii.OppositeFaces();
-
-      Standard_Boolean isQuadSet = Standard_False;
-      IntSurf_Quadric Quad1,Quad2;
-
-      for (Standard_Integer i = 1; i <= interii.NbLines(); i++)
-      {
-        const Handle(IntPatch_Line)& line = interii.Line(i);
-        if (line->ArcType() == IntPatch_Analytic)
-        {
-          if(!isQuadSet)
-          {
-            isQuadSet = Standard_True;
-            
-            const GeomAbs_SurfaceType aTyps1 = theS1->GetType();
-            const GeomAbs_SurfaceType aTyps2 = theS2->GetType();
-
-            switch(aTyps1)
-            {
-            case GeomAbs_Plane:
-              Quad1.SetValue(theS1->Plane());
-              break;
-
-            case GeomAbs_Cylinder:
-              Quad1.SetValue(theS1->Cylinder());
-              break;
-
-            case GeomAbs_Sphere:
-              Quad1.SetValue(theS1->Sphere());
-              break;
-
-            case GeomAbs_Cone:
-              Quad1.SetValue(theS1->Cone());
-              break;
-
-            case GeomAbs_Torus:
-              Quad1.SetValue(theS1->Torus());
-              break;
-
-            default:
-              isQuadSet = Standard_False;
-              break;
-            }
-
-            switch(aTyps2)
-            {
-            case GeomAbs_Plane:
-              Quad2.SetValue(theS2->Plane());
-              break;
-            case GeomAbs_Cylinder:
-              Quad2.SetValue(theS2->Cylinder());
-              break;
-
-            case GeomAbs_Sphere:
-              Quad2.SetValue(theS2->Sphere());
-              break;
-
-            case GeomAbs_Cone:
-              Quad2.SetValue(theS2->Cone());
-              break;
-
-            case GeomAbs_Torus:
-              Quad2.SetValue(theS2->Torus());
-              break;
-
-            default:
-              isQuadSet = Standard_False;
-              break;
-            }
-
-            if(!isQuadSet)
-            {
-              break;
-            }
-          }
-
-          IntPatch_ALineToWLine AToW(Quad1,Quad2,0.01,0.05,aNbPointsInALine);
-          Handle(IntPatch_WLine) wlin = 
-                      AToW.MakeWLine(Handle(IntPatch_ALine)::DownCast(line));
-          wlin->EnablePurging(Standard_False);
-          slin.Append(wlin);
-        }
-        else
-        {
-          if(line->ArcType() == IntPatch_Walking)
-          {
-            Handle(IntPatch_WLine)::DownCast(line)->EnablePurging(Standard_False);
-          }
-
-          slin.Append(line);
-        }
-      }
-
-      for (Standard_Integer i = 1; i <= interii.NbPnts(); i++)
-      {
-        spnt.Append(interii.Point(i));
-      }
-
-      if((theTyps1 == GeomAbs_Cylinder) && (theTyps2 == GeomAbs_Cylinder))
-      {
-        IntPatch_WLineTool::JoinWLines( slin, spnt, TolTang,
-                                        theS1->IsUPeriodic()? theS1->UPeriod() : 0.0,
-                                        theS2->IsUPeriodic()? theS2->UPeriod() : 0.0,
-                                        theS1->IsVPeriodic()? theS1->VPeriod() : 0.0,
-                                        theS2->IsVPeriodic()? theS2->VPeriod() : 0.0,
-                                        theS1->FirstUParameter(),
-                                        theS1->LastUParameter(),
-                                        theS1->FirstVParameter(),
-                                        theS1->LastVParameter(),
-                                        theS2->FirstUParameter(),
-                                        theS2->LastUParameter(),
-                                        theS2->FirstVParameter(),
-                                        theS2->LastVParameter());
-      }
-
-      if(isQuadSet)
-      {
-        Bnd_Box2d aBx1, aBx2;
-        const Standard_Real aU1F = theS1->FirstUParameter(),
-                            aU1L = theS1->LastUParameter(),
-                            aV1F = theS1->FirstVParameter(),
-                            aV1L = theS1->LastVParameter(),
-                            aU2F = theS2->FirstUParameter(),
-                            aU2L = theS2->LastUParameter(),
-                            aV2F = theS2->FirstVParameter(),
-                            aV2L = theS2->LastVParameter();
-        aBx1.Add(gp_Pnt2d(aU1F, aV1F));
-        aBx1.Add(gp_Pnt2d(aU1L, aV1F));
-        aBx1.Add(gp_Pnt2d(aU1L, aV1L));
-        aBx1.Add(gp_Pnt2d(aU1F, aV1L));
-        aBx2.Add(gp_Pnt2d(aU2F, aV2F));
-        aBx2.Add(gp_Pnt2d(aU2L, aV2F));
-        aBx2.Add(gp_Pnt2d(aU2L, aV2L));
-        aBx2.Add(gp_Pnt2d(aU2F, aV2L));
-
-        aBx1.Enlarge(Precision::PConfusion());
-        aBx2.Enlarge(Precision::PConfusion());
-
-        IntPatch_WLineTool::
-          ExtendTwoWlinesToEachOther(slin, Quad1, Quad2, TolTang,
-                                     theS1->IsUPeriodic()? theS1->UPeriod() : 0.0,
-                                     theS2->IsUPeriodic()? theS2->UPeriod() : 0.0,
-                                     theS1->IsVPeriodic()? theS1->VPeriod() : 0.0,
-                                     theS2->IsVPeriodic()? theS2->VPeriod() : 0.0,
-                                     aBx1, aBx2);
-      }
-    }
-  }
-  else
+    done = Standard_False;
     ParamParamPerfom(theS1, theD1, theS2, theD2, 
                 TolArc, TolTang, ListOfPnts, RestrictLine, theTyps1, theTyps2);
+    return;
+  }
+
+  done = (interii.GetStatus() == IntPatch_ImpImpIntersection::IntStatus_OK);
+  empt = interii.IsEmpty();
+
+  if(empt)
+  {
+    return;
+  }
+
+  const Standard_Integer aNbPointsInALine = 200;
+
+  tgte = interii.TangentFaces();
+  if (tgte)
+    oppo = interii.OppositeFaces();
+
+  Standard_Boolean isWLExist = Standard_False;
+  IntPatch_ALineToWLine AToW(theS1, theS2, aNbPointsInALine);
+
+  for (Standard_Integer i = 1; i <= interii.NbLines(); i++)
+  {
+    const Handle(IntPatch_Line)& line = interii.Line(i);
+    if (line->ArcType() == IntPatch_Analytic)
+    {
+      isWLExist = Standard_True;
+      AToW.MakeWLine(Handle(IntPatch_ALine)::DownCast(line), slin);
+    }
+    else
+    {
+      if (line->ArcType() == IntPatch_Walking)
+      {
+        Handle(IntPatch_WLine)::DownCast(line)->EnablePurging(Standard_False);
+      }
+
+      if((line->ArcType() != IntPatch_Restriction) || theIsReqToKeepRLine)
+        slin.Append(line);
+    }
+  }
+
+  for (Standard_Integer i = 1; i <= interii.NbPnts(); i++)
+  {
+    spnt.Append(interii.Point(i));
+  }
+
+  if((theTyps1 == GeomAbs_Cylinder) && (theTyps2 == GeomAbs_Cylinder))
+  {
+    IntPatch_WLineTool::JoinWLines( slin, spnt, TolTang,
+                                    theS1->IsUPeriodic()? theS1->UPeriod() : 0.0,
+                                    theS2->IsUPeriodic()? theS2->UPeriod() : 0.0,
+                                    theS1->IsVPeriodic()? theS1->VPeriod() : 0.0,
+                                    theS2->IsVPeriodic()? theS2->VPeriod() : 0.0,
+                                    theS1->FirstUParameter(),
+                                    theS1->LastUParameter(),
+                                    theS1->FirstVParameter(),
+                                    theS1->LastVParameter(),
+                                    theS2->FirstUParameter(),
+                                    theS2->LastUParameter(),
+                                    theS2->FirstVParameter(),
+                                    theS2->LastVParameter());
+  }
+
+  if(isWLExist)
+  {
+    Bnd_Box2d aBx1, aBx2;
+    const Standard_Real aU1F = theS1->FirstUParameter(),
+                        aU1L = theS1->LastUParameter(),
+                        aV1F = theS1->FirstVParameter(),
+                        aV1L = theS1->LastVParameter(),
+                        aU2F = theS2->FirstUParameter(),
+                        aU2L = theS2->LastUParameter(),
+                        aV2F = theS2->FirstVParameter(),
+                        aV2L = theS2->LastVParameter();
+    aBx1.Add(gp_Pnt2d(aU1F, aV1F));
+    aBx1.Add(gp_Pnt2d(aU1L, aV1F));
+    aBx1.Add(gp_Pnt2d(aU1L, aV1L));
+    aBx1.Add(gp_Pnt2d(aU1F, aV1L));
+    aBx2.Add(gp_Pnt2d(aU2F, aV2F));
+    aBx2.Add(gp_Pnt2d(aU2L, aV2F));
+    aBx2.Add(gp_Pnt2d(aU2L, aV2L));
+    aBx2.Add(gp_Pnt2d(aU2F, aV2L));
+
+    aBx1.Enlarge(Precision::PConfusion());
+    aBx2.Enlarge(Precision::PConfusion());
+
+    const Standard_Real
+            anArrOfPeriod[4] = {theS1->IsUPeriodic()? theS1->UPeriod() : 0.0,
+                                theS1->IsVPeriodic()? theS1->VPeriod() : 0.0,
+                                theS2->IsUPeriodic()? theS2->UPeriod() : 0.0,
+                                theS2->IsVPeriodic()? theS2->VPeriod() : 0.0};
+    IntPatch_WLineTool::ExtendTwoWLines(slin, theS1, theS2, TolTang,
+                                        anArrOfPeriod, aBx1, aBx2);
+  }
 }
 
 //=======================================================================

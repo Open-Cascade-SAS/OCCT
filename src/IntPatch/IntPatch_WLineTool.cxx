@@ -16,13 +16,15 @@
 #include <Adaptor3d_HSurface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <ElCLib.hxx>
+#include <ElSLib.hxx>
+#include <IntPatch_SpecialPoints.hxx>
 
 // It is pure empirical value.
 const Standard_Real IntPatch_WLineTool::myMaxConcatAngle = M_PI/6;
 
 //Bit-mask is used for information about 
 //the operation made in
-//IntPatch_WLineTool::ExtendTwoWlinesToEachOther() method.
+//IntPatch_WLineTool::ExtendTwoWLines(...) method.
 enum
 {
   IntPatchWT_EnAll = 0x00,
@@ -30,6 +32,13 @@ enum
   IntPatchWT_DisLastFirst = 0x02,
   IntPatchWT_DisFirstLast = 0x04,
   IntPatchWT_DisFirstFirst = 0x08
+};
+
+enum IntPatchWT_WLsConnectionType
+{
+  IntPatchWT_NotConnected,
+  IntPatchWT_Singular,
+  IntPatchWT_EachOther
 };
 
 //=======================================================================
@@ -668,27 +677,6 @@ static Standard_Boolean IsSeamOrBound(const IntSurf_PntOn2S& thePtf,
 }
 
 //=======================================================================
-//function : AbjustPeriodicToPrevPoint
-//purpose  : Returns theCurrentParam in order to the distance betwen 
-//            theRefParam and theCurrentParam is less than 0.5*thePeriod.
-//=======================================================================
-static void AbjustPeriodicToPrevPoint(const Standard_Real theRefParam,
-                                      const Standard_Real thePeriod,
-                                      Standard_Real& theCurrentParam)
-{
-  if(thePeriod == 0.0)
-    return;
-
-  Standard_Real aDeltaPar = 2.0*(theRefParam - theCurrentParam);
-  const Standard_Real anIncr = Sign(thePeriod, aDeltaPar);
-  while(Abs(aDeltaPar) > thePeriod)
-  {
-    theCurrentParam += anIncr;
-    aDeltaPar = 2.0*(theRefParam-theCurrentParam);
-  }
-}
-
-//=======================================================================
 //function : IsIntersectionPoint
 //purpose  : Returns True if thePmid is intersection point
 //            between theS1 and theS2 with given tolerance.
@@ -696,31 +684,73 @@ static void AbjustPeriodicToPrevPoint(const Standard_Real theRefParam,
 //            will be recomputed and returned.
 //=======================================================================
 static Standard_Boolean IsIntersectionPoint(const gp_Pnt& thePmid,
-                                            const IntSurf_Quadric& theS1,
-                                            const IntSurf_Quadric& theS2,
+                                            const Handle(Adaptor3d_HSurface)& theS1,
+                                            const Handle(Adaptor3d_HSurface)& theS2,
                                             const IntSurf_PntOn2S& theRefPt,
                                             const Standard_Real theTol,
-                                            const Standard_Real theU1Period,
-                                            const Standard_Real theU2Period,
-                                            const Standard_Real theV1Period,
-                                            const Standard_Real theV2Period,
-                                            Standard_Real &theU1,
-                                            Standard_Real &theV1,
-                                            Standard_Real &theU2,
-                                            Standard_Real &theV2)
+                                            const Standard_Real* const theArrPeriods,
+                                            IntSurf_PntOn2S& theNewPt)
 {
-  Standard_Real aU1Ref = 0.0, aV1Ref = 0.0, aU2Ref = 0.0, aV2Ref = 0.0;
-  theRefPt.Parameters(aU1Ref, aV1Ref, aU2Ref, aV2Ref);
-  theS1.Parameters(thePmid, theU1, theV1);
-  theS2.Parameters(thePmid, theU2, theV2);
+  Standard_Real aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
+  
+  switch(theS1->GetType())
+  {
+  case GeomAbs_Plane:
+    ElSLib::Parameters(theS1->Plane(), thePmid, aU1, aV1);
+    break;
 
-  AbjustPeriodicToPrevPoint(aU1Ref, theU1Period, theU1);
-  AbjustPeriodicToPrevPoint(aV1Ref, theV1Period, theV1);
-  AbjustPeriodicToPrevPoint(aU2Ref, theU2Period, theU2);
-  AbjustPeriodicToPrevPoint(aV2Ref, theV2Period, theV2);
+  case GeomAbs_Cylinder:
+    ElSLib::Parameters(theS1->Cylinder(), thePmid, aU1, aV1);
+    break;
 
-  const gp_Pnt aP1(theS1.Value(theU1, theV1));
-  const gp_Pnt aP2(theS2.Value(theU2, theV2));
+  case GeomAbs_Sphere:
+    ElSLib::Parameters(theS1->Sphere(), thePmid, aU1, aV1);
+    break;
+
+  case GeomAbs_Cone:
+    ElSLib::Parameters(theS1->Cone(), thePmid, aU1, aV1);
+    break;
+
+  case GeomAbs_Torus:
+    ElSLib::Parameters(theS1->Torus(), thePmid, aU1, aV1);
+    break;
+
+  default:
+    return Standard_False;
+  }
+
+  switch(theS2->GetType())
+  {
+  case GeomAbs_Plane:
+    ElSLib::Parameters(theS2->Plane(), thePmid, aU2, aV2);
+    break;
+
+  case GeomAbs_Cylinder:
+    ElSLib::Parameters(theS2->Cylinder(), thePmid, aU2, aV2);
+    break;
+
+  case GeomAbs_Sphere:
+    ElSLib::Parameters(theS2->Sphere(), thePmid, aU2, aV2);
+    break;
+
+  case GeomAbs_Cone:
+    ElSLib::Parameters(theS2->Cone(), thePmid, aU2, aV2);
+    break;
+
+  case GeomAbs_Torus:
+    ElSLib::Parameters(theS2->Torus(), thePmid, aU2, aV2);
+    break;
+
+  default:
+    return Standard_False;
+  }
+
+  theNewPt.SetValue(thePmid, aU1, aV1, aU2, aV2);
+
+  IntPatch_SpecialPoints::AdjustPointAndVertex(theRefPt, theArrPeriods, theNewPt);
+
+  const gp_Pnt aP1(theS1->Value(aU1, aV1));
+  const gp_Pnt aP2(theS2->Value(aU2, aV2));
 
   return (aP1.SquareDistance(aP2) <= theTol*theTol);
 }
@@ -809,10 +839,7 @@ static void ExtendLast(const Handle(IntPatch_WLine)& theWline,
 static Standard_Boolean IsOutOfDomain(const Bnd_Box2d& theBoxS1,
                                       const Bnd_Box2d& theBoxS2,
                                       const IntSurf_PntOn2S &thePOn2S,
-                                      const Standard_Real theU1Period,
-                                      const Standard_Real theU2Period,
-                                      const Standard_Real theV1Period,
-                                      const Standard_Real theV2Period)
+                                      const Standard_Real* const theArrPeriods)
 {
   Standard_Real aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
   Standard_Real aU1min = 0.0, aU1max = 0.0, aV1min = 0.0, aV1max = 0.0;
@@ -823,10 +850,10 @@ static Standard_Boolean IsOutOfDomain(const Bnd_Box2d& theBoxS1,
   theBoxS1.Get(aU1min, aV1min, aU1max, aV1max);
   theBoxS2.Get(aU2min, aV2min, aU2max, aV2max);
 
-  aU1 = ElCLib::InPeriod(aU1, aU1min, aU1min + theU1Period);
-  aV1 = ElCLib::InPeriod(aV1, aV1min, aV1min + theV1Period);
-  aU2 = ElCLib::InPeriod(aU2, aU2min, aU2min + theU2Period);
-  aV2 = ElCLib::InPeriod(aV2, aV2min, aV2min + theV2Period);
+  aU1 = ElCLib::InPeriod(aU1, aU1min, aU1min + theArrPeriods[0]);
+  aV1 = ElCLib::InPeriod(aV1, aV1min, aV1min + theArrPeriods[1]);
+  aU2 = ElCLib::InPeriod(aU2, aU2min, aU2min + theArrPeriods[2]);
+  aV2 = ElCLib::InPeriod(aV2, aV2min, aV2min + theArrPeriods[3]);
 
   return (theBoxS1.IsOut(gp_Pnt2d(aU1, aV1)) ||
           theBoxS2.IsOut(gp_Pnt2d(aU2, aV2)));
@@ -835,84 +862,138 @@ static Standard_Boolean IsOutOfDomain(const Bnd_Box2d& theBoxS1,
 //=======================================================================
 //function : CheckArgumentsToExtend
 //purpose  : Check if extending is possible
-//            (see IntPatch_WLineTool::ExtendTwoWlinesToEachOther)
+//            (see IntPatch_WLineTool::ExtendTwoWLines)
 //=======================================================================
-Standard_Boolean CheckArgumentsToExtend(const IntSurf_Quadric& theS1,
-                                        const IntSurf_Quadric& theS2,
-                                        const IntSurf_PntOn2S& thePtWL1,
-                                        const IntSurf_PntOn2S& thePtWL2,
-                                        IntSurf_PntOn2S& theNewPoint,
-                                        const gp_Vec& theVec1,
-                                        const gp_Vec& theVec2,
-                                        const gp_Vec& theVec3,
-                                        const Bnd_Box2d& theBoxS1,
-                                        const Bnd_Box2d& theBoxS2,
-                                        const Standard_Real theToler3D,
-                                        const Standard_Real theU1Period,
-                                        const Standard_Real theU2Period,
-                                        const Standard_Real theV1Period,
-                                        const Standard_Real theV2Period)
+static IntPatchWT_WLsConnectionType
+                    CheckArgumentsToExtend(const Handle(Adaptor3d_HSurface)& theS1,
+                                           const Handle(Adaptor3d_HSurface)& theS2,
+                                           const IntSurf_PntOn2S& thePtWL1,
+                                           const IntSurf_PntOn2S& thePtWL2,
+                                           IntSurf_PntOn2S& theNewPoint,
+                                           const gp_Vec& theVec1,
+                                           const gp_Vec& theVec2,
+                                           const gp_Vec& theVec3,
+                                           const Bnd_Box2d& theBoxS1,
+                                           const Bnd_Box2d& theBoxS2,
+                                           const Standard_Real theToler3D,
+                                           const Standard_Real* const theArrPeriods)
 {
   const Standard_Real aSqToler = theToler3D*theToler3D;
 
   if(theVec3.SquareMagnitude() <= aSqToler)
   {
-    return Standard_False;
+    return IntPatchWT_NotConnected;
   }
 
   if((theVec1.Angle(theVec2) > IntPatch_WLineTool::myMaxConcatAngle) ||
      (theVec1.Angle(theVec3) > IntPatch_WLineTool::myMaxConcatAngle) ||
      (theVec2.Angle(theVec3) > IntPatch_WLineTool::myMaxConcatAngle))
   {
-    return Standard_False;
+    return IntPatchWT_NotConnected;
   }
 
   const gp_Pnt aPmid(0.5*(thePtWL1.Value().XYZ()+thePtWL2.Value().XYZ()));
 
-  Standard_Real aU1=0.0, aV1=0.0, aU2=0.0, aV2=0.0;
+  Standard_Real aNewPar[4] = {0.0, 0.0, 0.0, 0.0};
 
-  theBoxS1.Get(aU1, aV1, aU2, aV2);
-  const Standard_Real aU1f = aU1, aV1f = aV1;
-  theBoxS2.Get(aU1, aV1, aU2, aV2);
-  const Standard_Real aU2f = aU1, aV2f = aV1;
+  //Left-bottom corner
+  Standard_Real aParLBC[4] = {0.0, 0.0, 0.0, 0.0};
+  theBoxS1.Get(aParLBC[0], aParLBC[1], aNewPar[0], aNewPar[0]);  
+  theBoxS2.Get(aParLBC[2], aParLBC[3], aNewPar[0], aNewPar[0]);
 
   if(!IsIntersectionPoint(aPmid, theS1, theS2, thePtWL1, theToler3D,
-                          theU1Period, theU2Period, theV1Period, theV2Period,
-                          aU1, aV1, aU2, aV2))
+                          theArrPeriods, theNewPoint))
   {
-    return Standard_False;
+    return IntPatchWT_NotConnected;
   }
 
-  theNewPoint.SetValue(aPmid, aU1, aV1, aU2, aV2);
-
-  if(IsOutOfDomain(theBoxS1, theBoxS2, theNewPoint,
-                   theU1Period, theU2Period,
-                   theV1Period, theV2Period))
+  if(IsOutOfDomain(theBoxS1, theBoxS2, theNewPoint, theArrPeriods))
   {
-    return Standard_False;
+    return IntPatchWT_NotConnected;
   }
 
-  Standard_Real aU11 = 0.0, aV11 = 0.0, aU21 = 0.0, aV21 = 0.0,
-                aU12 = 0.0, aV12 = 0.0, aU22 = 0.0, aV22 = 0.0;
+  Standard_Real aParWL1[4] = {0.0, 0.0, 0.0, 0.0},
+                aParWL2[4] = {0.0, 0.0, 0.0, 0.0};
+  
+  thePtWL1.Parameters(aParWL1[0], aParWL1[1], aParWL1[2], aParWL1[3]);
+  thePtWL2.Parameters(aParWL2[0], aParWL2[1], aParWL2[2], aParWL2[3]);
+  theNewPoint.Parameters(aNewPar[0], aNewPar[1], aNewPar[2], aNewPar[3]);
 
-  thePtWL1.Parameters(aU11, aV11, aU21, aV21);
-  thePtWL2.Parameters(aU12, aV12, aU22, aV22);
-
-  if(IsOnPeriod(aU11 - aU1f, aU12 - aU1f, theU1Period) ||
-     IsOnPeriod(aV11 - aV1f, aV12 - aV1f, theV1Period) ||
-     IsOnPeriod(aU21 - aU2f, aU22 - aU2f, theU2Period) ||
-     IsOnPeriod(aV21 - aV2f, aV22 - aV2f, theV2Period))
+  Standard_Boolean isOnBoundary = Standard_False;
+  for(Standard_Integer i = 0; i < 4; i++)
   {
-    return Standard_False;
+    if(IsOnPeriod(aParWL1[i] - aParLBC[i], aParWL2[i] - aParLBC[i], theArrPeriods[i]))
+    {
+      //Check, if we intersect surface boundary when we will extend Wline1 or Wline2
+      //to theNewPoint
+      MinMax(aParWL1[i], aParWL2[i]);
+      if(theArrPeriods[i] > 0.0)
+      {
+        if(aNewPar[i] > aParWL2[i])
+        {
+          //Source situation:
+          //
+          //---*---------------*------------*-----
+          // aParWL1[i]   aParWL2[i]    aNewPar[i]
+          //
+          //After possible adjusting:
+          //
+          //---*---------------*------------*-----
+          // aParWL1[i]   aNewPar[i]    aParWL2[i]
+          //
+          //Now we will be able to extend every WLine to
+          //aNewPar[i] to make them close to each other.
+          //However, it is necessary to add check if we
+          //intersect boundary.
+          const Standard_Real aPar = aParWL1[i] +
+                theArrPeriods[0]*Ceiling((aNewPar[i]-aParWL1[i])/theArrPeriods[0]);
+          aParWL1[i] = aParWL2[i];
+          aParWL2[i] = aPar;
+        }
+        else if(aNewPar[i] < aParWL1[i])
+        {
+          //See comments to main "if".
+          //Source situation:
+          //
+          //---*---------------*------------*-----
+          // aNewPar[i]    aParWL1[i]   aParWL2[i]    
+          //
+          //After possible adjusting:
+          //
+          //---*---------------*------------*-----
+          // aParWL1[i]   aNewPar[i]    aParWL2[i]
+          
+          const Standard_Real aPar = aParWL2[i] - 
+                theArrPeriods[0]*Ceiling((aParWL2[i]-aNewPar[i])/theArrPeriods[0]);
+          aParWL2[i] = aParWL1[i];
+          aParWL1[i] = aPar;
+        }
+      }
+
+      if( IsOnPeriod(aParWL1[i] - aParLBC[i], aNewPar[i] - aParLBC[i], theArrPeriods[0]) ||
+          IsOnPeriod(aNewPar[i] - aParLBC[i], aParWL2[i] - aParLBC[i], theArrPeriods[0]))
+      {
+        return IntPatchWT_NotConnected;
+      }
+      else
+      {
+        isOnBoundary = Standard_True;
+      }
+    }
   }
 
-  return Standard_True;
+  if(isOnBoundary)
+  {
+    return IntPatchWT_Singular;
+  }
+
+  return IntPatchWT_EachOther;
 }
 
 //=======================================================================
 //function : CheckArgumentsToJoin
 //purpose  : Check if joining is possible
-//            (see IntPatch_WLineTool::JoinWLines)
+//            (see IntPatch_WLineTool::JoinWLines(...))
 //=======================================================================
 Standard_Boolean CheckArgumentsToJoin(const gp_Vec& theVec1,
                                       const gp_Vec& theVec2)
@@ -928,40 +1009,40 @@ Standard_Boolean CheckArgumentsToJoin(const gp_Vec& theVec1,
 //purpose  : Performs extending theWLine1 and theWLine2 through their
 //            respecting start point.
 //=======================================================================
-static void ExtendTwoWLFirstFirst(const IntSurf_Quadric& theS1,
-                                   const IntSurf_Quadric& theS2,
-                                   const Handle(IntPatch_WLine)& theWLine1,
-                                   const Handle(IntPatch_WLine)& theWLine2,
-                                   const IntSurf_PntOn2S& thePtWL1,
-                                   const IntSurf_PntOn2S& thePtWL2,
-                                   const gp_Vec& theVec1,
-                                   const gp_Vec& theVec2,
-                                   const gp_Vec& theVec3,
-                                   const Bnd_Box2d& theBoxS1,
-                                   const Bnd_Box2d& theBoxS2,
-                                   const Standard_Real theToler3D,
-                                   const Standard_Real theU1Period,
-                                   const Standard_Real theU2Period,
-                                   const Standard_Real theV1Period,
-                                   const Standard_Real theV2Period,
-                                   unsigned int &theCheckResult,
-                                   Standard_Boolean &theHasBeenJoined)
+static void ExtendTwoWLFirstFirst(const Handle(Adaptor3d_HSurface)& theS1,
+                                  const Handle(Adaptor3d_HSurface)& theS2,
+                                  const Handle(IntPatch_WLine)& theWLine1,
+                                  const Handle(IntPatch_WLine)& theWLine2,
+                                  const IntSurf_PntOn2S& thePtWL1,
+                                  const IntSurf_PntOn2S& thePtWL2,
+                                  const gp_Vec& theVec1,
+                                  const gp_Vec& theVec2,
+                                  const gp_Vec& theVec3,
+                                  const Bnd_Box2d& theBoxS1,
+                                  const Bnd_Box2d& theBoxS2,
+                                  const Standard_Real theToler3D,
+                                  const Standard_Real* const theArrPeriods,
+                                  unsigned int &theCheckResult,
+                                  Standard_Boolean &theHasBeenJoined)
 {
   IntSurf_PntOn2S aPOn2S;
-  if(!CheckArgumentsToExtend(theS1, theS2, thePtWL1, thePtWL2, aPOn2S,
-                             theVec1, theVec2, theVec3, 
-                             theBoxS1, theBoxS2, theToler3D,
-                             theU1Period, theU2Period, theV1Period, theV2Period))
-  {
+  const IntPatchWT_WLsConnectionType aCheckRes = 
+                      CheckArgumentsToExtend(theS1, theS2, thePtWL1, thePtWL2, aPOn2S,
+                                             theVec1, theVec2, theVec3,
+                                             theBoxS1, theBoxS2,
+                                             theToler3D, theArrPeriods);
+
+  if(aCheckRes != IntPatchWT_NotConnected)
+    theCheckResult |= (IntPatchWT_DisFirstLast | IntPatchWT_DisLastFirst);
+  else
     return;
-  }
 
-  theCheckResult |= (IntPatchWT_DisFirstLast | IntPatchWT_DisLastFirst);
-
+  IntPatch_SpecialPoints::AdjustPointAndVertex(thePtWL1, theArrPeriods, aPOn2S);
   ExtendFirst(theWLine1, aPOn2S);
+  IntPatch_SpecialPoints::AdjustPointAndVertex(thePtWL2, theArrPeriods, aPOn2S);
   ExtendFirst(theWLine2, aPOn2S);
 
-  if(theHasBeenJoined)
+  if(theHasBeenJoined || (aCheckRes == IntPatchWT_Singular))
     return;
 
   Standard_Real aPrm = theWLine1->Vertex(1).ParameterOnLine();
@@ -1002,8 +1083,8 @@ static void ExtendTwoWLFirstFirst(const IntSurf_Quadric& theS1,
 //purpose  : Performs extending theWLine1 through its start point and theWLine2
 //            through its end point.
 //=======================================================================
-static void ExtendTwoWLFirstLast(const IntSurf_Quadric& theS1,
-                                 const IntSurf_Quadric& theS2,
+static void ExtendTwoWLFirstLast(const Handle(Adaptor3d_HSurface)& theS1,
+                                 const Handle(Adaptor3d_HSurface)& theS2,
                                  const Handle(IntPatch_WLine)& theWLine1,
                                  const Handle(IntPatch_WLine)& theWLine2,
                                  const IntSurf_PntOn2S& thePtWL1,
@@ -1014,28 +1095,28 @@ static void ExtendTwoWLFirstLast(const IntSurf_Quadric& theS1,
                                  const Bnd_Box2d& theBoxS1,
                                  const Bnd_Box2d& theBoxS2,
                                  const Standard_Real theToler3D,
-                                 const Standard_Real theU1Period,
-                                 const Standard_Real theU2Period,
-                                 const Standard_Real theV1Period,
-                                 const Standard_Real theV2Period,
+                                 const Standard_Real* const theArrPeriods,
                                  unsigned int &theCheckResult,
                                  Standard_Boolean &theHasBeenJoined)
 {
   IntSurf_PntOn2S aPOn2S;
-  if(!CheckArgumentsToExtend(theS1, theS2, thePtWL1, thePtWL2, aPOn2S,
-                             theVec1, theVec2, theVec3, 
-                             theBoxS1, theBoxS2, theToler3D,
-                             theU1Period, theU2Period, theV1Period, theV2Period))
-  {
+  const IntPatchWT_WLsConnectionType aCheckRes = 
+                      CheckArgumentsToExtend(theS1, theS2, thePtWL1, thePtWL2, aPOn2S,
+                                             theVec1, theVec2, theVec3,
+                                             theBoxS1, theBoxS2,
+                                             theToler3D, theArrPeriods);
+
+  if(aCheckRes != IntPatchWT_NotConnected)
+    theCheckResult |= IntPatchWT_DisLastLast;
+  else
     return;
-  }
 
-  theCheckResult |= IntPatchWT_DisLastLast;
-
+  IntPatch_SpecialPoints::AdjustPointAndVertex(thePtWL1, theArrPeriods, aPOn2S);
   ExtendFirst(theWLine1, aPOn2S);
+  IntPatch_SpecialPoints::AdjustPointAndVertex(thePtWL2, theArrPeriods, aPOn2S);
   ExtendLast (theWLine2, aPOn2S);
 
-  if(theHasBeenJoined)
+  if(theHasBeenJoined || (aCheckRes == IntPatchWT_Singular))
     return;
 
   Standard_Real aPrm = theWLine1->Vertex(1).ParameterOnLine();
@@ -1074,8 +1155,8 @@ static void ExtendTwoWLFirstLast(const IntSurf_Quadric& theS1,
 //purpose  : Performs extending theWLine1 through its end point and theWLine2
 //            through its start point.
 //=======================================================================
-static void ExtendTwoWLLastFirst(const IntSurf_Quadric& theS1,
-                                 const IntSurf_Quadric& theS2,
+static void ExtendTwoWLLastFirst(const Handle(Adaptor3d_HSurface)& theS1,
+                                 const Handle(Adaptor3d_HSurface)& theS2,
                                  const Handle(IntPatch_WLine)& theWLine1,
                                  const Handle(IntPatch_WLine)& theWLine2,
                                  const IntSurf_PntOn2S& thePtWL1,
@@ -1086,28 +1167,28 @@ static void ExtendTwoWLLastFirst(const IntSurf_Quadric& theS1,
                                  const Bnd_Box2d& theBoxS1,
                                  const Bnd_Box2d& theBoxS2,
                                  const Standard_Real theToler3D,
-                                 const Standard_Real theU1Period,
-                                 const Standard_Real theU2Period,
-                                 const Standard_Real theV1Period,
-                                 const Standard_Real theV2Period,
+                                 const Standard_Real* const theArrPeriods,
                                  unsigned int &theCheckResult,
                                  Standard_Boolean &theHasBeenJoined)
 {
   IntSurf_PntOn2S aPOn2S;
-  if(!CheckArgumentsToExtend(theS1, theS2, thePtWL1, thePtWL2, aPOn2S,
-                             theVec1, theVec2, theVec3, 
-                             theBoxS1, theBoxS2, theToler3D,
-                             theU1Period, theU2Period, theV1Period, theV2Period))
-  {
+  const IntPatchWT_WLsConnectionType aCheckRes = 
+                      CheckArgumentsToExtend(theS1, theS2, thePtWL1, thePtWL2, aPOn2S,
+                                             theVec1, theVec2, theVec3,
+                                             theBoxS1, theBoxS2,
+                                             theToler3D, theArrPeriods);
+
+  if(aCheckRes != IntPatchWT_NotConnected)
+    theCheckResult |= IntPatchWT_DisLastLast;
+  else
     return;
-  }
 
-  theCheckResult |= IntPatchWT_DisLastLast;
-
+  IntPatch_SpecialPoints::AdjustPointAndVertex(thePtWL1, theArrPeriods, aPOn2S);
   ExtendLast (theWLine1, aPOn2S);
+  IntPatch_SpecialPoints::AdjustPointAndVertex(thePtWL2, theArrPeriods, aPOn2S);
   ExtendFirst(theWLine2, aPOn2S);
 
-  if(theHasBeenJoined)
+  if(theHasBeenJoined || (aCheckRes == IntPatchWT_Singular))
   {
     return;
   }
@@ -1142,8 +1223,8 @@ static void ExtendTwoWLLastFirst(const IntSurf_Quadric& theS1,
 //function : ExtendTwoWLLastLast
 //purpose  : 
 //=======================================================================
-static void ExtendTwoWLLastLast(const IntSurf_Quadric& theS1,
-                                const IntSurf_Quadric& theS2,
+static void ExtendTwoWLLastLast(const Handle(Adaptor3d_HSurface)& theS1,
+                                const Handle(Adaptor3d_HSurface)& theS2,
                                 const Handle(IntPatch_WLine)& theWLine1,
                                 const Handle(IntPatch_WLine)& theWLine2,
                                 const IntSurf_PntOn2S& thePtWL1,
@@ -1154,28 +1235,28 @@ static void ExtendTwoWLLastLast(const IntSurf_Quadric& theS1,
                                 const Bnd_Box2d& theBoxS1,
                                 const Bnd_Box2d& theBoxS2,
                                 const Standard_Real theToler3D,
-                                const Standard_Real theU1Period,
-                                const Standard_Real theU2Period,
-                                const Standard_Real theV1Period,
-                                const Standard_Real theV2Period,
-                                unsigned int &/*theCheckResult*/,
+                                const Standard_Real* const theArrPeriods,
+                                unsigned int &theCheckResult,
                                 Standard_Boolean &theHasBeenJoined)
 {
   IntSurf_PntOn2S aPOn2S;
-  if(!CheckArgumentsToExtend(theS1, theS2, thePtWL1, thePtWL2, aPOn2S,
-                             theVec1, theVec2, theVec3, 
-                             theBoxS1, theBoxS2, theToler3D,
-                             theU1Period, theU2Period, theV1Period, theV2Period))
-  {
-    return;
-  }
+  const IntPatchWT_WLsConnectionType aCheckRes = 
+                      CheckArgumentsToExtend(theS1, theS2, thePtWL1, thePtWL2, aPOn2S,
+                                             theVec1, theVec2, theVec3,
+                                             theBoxS1, theBoxS2,
+                                             theToler3D, theArrPeriods);
   
-  //theCheckResult |= IntPatchWT_DisLastLast;
+  if(aCheckRes != IntPatchWT_NotConnected)
+    theCheckResult |= IntPatchWT_DisLastLast;
+  else
+    return;
 
+  IntPatch_SpecialPoints::AdjustPointAndVertex(thePtWL1, theArrPeriods, aPOn2S);
   ExtendLast(theWLine1, aPOn2S);
+  IntPatch_SpecialPoints::AdjustPointAndVertex(thePtWL2, theArrPeriods, aPOn2S);
   ExtendLast(theWLine2, aPOn2S);
 
-  if(theHasBeenJoined)
+  if(theHasBeenJoined || (aCheckRes == IntPatchWT_Singular))
     return;
 
   Standard_Real aPrm = theWLine1->Vertex(theWLine1->NbVertex()).ParameterOnLine();
@@ -1403,6 +1484,7 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine& theSlin,
       {
         const IntSurf_PntOn2S& aPt1 = aWLine1->Point(2);
         const IntSurf_PntOn2S& aPt2 = aWLine2->Point(2);
+
         Standard_Boolean aCond = 
               CheckArgumentsToJoin(gp_Vec(aPntFWL1.Value(), aPt1.Value()),
                                    gp_Vec(aPt2.Value(), aPntFWL2.Value()));
@@ -1549,20 +1631,17 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine& theSlin,
 }
 
 //=======================================================================
-//function : ExtendTwoWlinesToEachOther
+//function : ExtendTwoWLines
 //purpose  : Performs extending theWLine1 and theWLine2 through their
 //            respecting end point.
 //=======================================================================
-void IntPatch_WLineTool::ExtendTwoWlinesToEachOther(IntPatch_SequenceOfLine& theSlin,
-                                                    const IntSurf_Quadric& theS1,
-                                                    const IntSurf_Quadric& theS2,
-                                                    const Standard_Real theToler3D,
-                                                    const Standard_Real theU1Period,
-                                                    const Standard_Real theU2Period,
-                                                    const Standard_Real theV1Period,
-                                                    const Standard_Real theV2Period,
-                                                    const Bnd_Box2d& theBoxS1,
-                                                    const Bnd_Box2d& theBoxS2)
+void IntPatch_WLineTool::ExtendTwoWLines(IntPatch_SequenceOfLine& theSlin,
+                                         const Handle(Adaptor3d_HSurface)& theS1,
+                                         const Handle(Adaptor3d_HSurface)& theS2,
+                                         const Standard_Real theToler3D,
+                                         const Standard_Real* const theArrPeriods,
+                                         const Bnd_Box2d& theBoxS1,
+                                         const Bnd_Box2d& theBoxS2)
 {
   if(theSlin.Length() < 2)
     return;
@@ -1587,6 +1666,49 @@ void IntPatch_WLineTool::ExtendTwoWlinesToEachOther(IntPatch_SequenceOfLine& the
     if(aWLine1->Vertex(aWLine1->NbVertex()).ParameterOnLine() != aWLine1->NbPnts())
       continue;
 
+    const IntSurf_PntOn2S& aPntFWL1 = aWLine1->Point(1);
+    const IntSurf_PntOn2S& aPntFp1WL1 = aWLine1->Point(2);
+
+    const IntSurf_PntOn2S& aPntLWL1 = aWLine1->Point(aNbPntsWL1);
+    const IntSurf_PntOn2S& aPntLm1WL1 = aWLine1->Point(aNbPntsWL1-1);
+
+    //Enable/Disable of some ckeck. Bit-mask is used for it.
+    //E.g. if 1st point of aWLine1 matches with
+    //1st point of aWLine2 then we do not need in check
+    //1st point of aWLine1 and last point of aWLine2 etc.
+    unsigned int aCheckResult = IntPatchWT_EnAll;
+
+    //If aWLine1 is already connected with another Wline then
+    //there is no point in extending.
+    for(Standard_Integer aNumOfLine2 = aNumOfLine1 + 1;
+        aNumOfLine2 <= theSlin.Length(); aNumOfLine2++)
+    {
+      Handle(IntPatch_WLine) aWLine2 (Handle(IntPatch_WLine)::
+                                    DownCast(theSlin.Value(aNumOfLine2)));
+
+      if(aWLine2.IsNull())
+        continue;
+
+      const IntSurf_PntOn2S& aPntFWL2 = aWLine2->Point(1);
+      const IntSurf_PntOn2S& aPntLWL2 = aWLine2->Point(aWLine2->NbPnts());
+
+      if( aPntFWL1.IsSame(aPntFWL2, theToler3D) ||
+          aPntFWL1.IsSame(aPntLWL2, theToler3D) )
+      {
+        aCheckResult |= IntPatchWT_DisFirstFirst | IntPatchWT_DisFirstLast;
+      }
+
+      if( aPntLWL1.IsSame(aPntFWL2, theToler3D) ||
+          aPntLWL1.IsSame(aPntFWL2, theToler3D))
+      {
+        aCheckResult |= IntPatchWT_DisLastFirst | IntPatchWT_DisLastLast;
+      }
+    }
+
+    if(aCheckResult == (IntPatchWT_DisFirstFirst | IntPatchWT_DisFirstLast |
+                        IntPatchWT_DisLastFirst | IntPatchWT_DisLastLast))
+      continue;
+
     for(Standard_Integer aNumOfLine2 = aNumOfLine1 + 1;
         aNumOfLine2 <= theSlin.Length(); aNumOfLine2++)
     {
@@ -1602,22 +1724,10 @@ void IntPatch_WLineTool::ExtendTwoWlinesToEachOther(IntPatch_SequenceOfLine& the
       if(aWLine2->Vertex(aWLine2->NbVertex()).ParameterOnLine() != aWLine2->NbPnts())
         continue;
 
-      //Enable/Disable of some ckeck. Bit-mask is used for it.
-      //E.g. if 1st point of aWLine1 matches with
-      //1st point of aWLine2 then we do not need in check
-      //1st point of aWLine1 and last point of aWLine2 etc.
-      unsigned int aCheckResult = IntPatchWT_EnAll;
-
       Standard_Boolean hasBeenJoined = Standard_False;
 
       const Standard_Integer aNbPntsWL2 = aWLine2->NbPnts();
 
-      const IntSurf_PntOn2S& aPntFWL1 = aWLine1->Point(1);
-      const IntSurf_PntOn2S& aPntFp1WL1 = aWLine1->Point(2);
-
-      const IntSurf_PntOn2S& aPntLWL1 = aWLine1->Point(aNbPntsWL1);
-      const IntSurf_PntOn2S& aPntLm1WL1 = aWLine1->Point(aNbPntsWL1-1);
-      
       const IntSurf_PntOn2S& aPntFWL2 = aWLine2->Point(1);
       const IntSurf_PntOn2S& aPntFp1WL2 = aWLine2->Point(2);
 
@@ -1632,8 +1742,7 @@ void IntPatch_WLineTool::ExtendTwoWlinesToEachOther(IntPatch_SequenceOfLine& the
 
         ExtendTwoWLFirstFirst(theS1, theS2, aWLine1, aWLine2, aPntFWL1, aPntFWL2,
                               aVec1, aVec2, aVec3, theBoxS1, theBoxS2, theToler3D,
-                              theU1Period, theU2Period, theV1Period, theV2Period,
-                              aCheckResult, hasBeenJoined);
+                              theArrPeriods, aCheckResult, hasBeenJoined);
       }
 
       if(!(aCheckResult & IntPatchWT_DisFirstLast))
@@ -1644,8 +1753,7 @@ void IntPatch_WLineTool::ExtendTwoWlinesToEachOther(IntPatch_SequenceOfLine& the
 
         ExtendTwoWLFirstLast(theS1, theS2, aWLine1, aWLine2, aPntFWL1, aPntLWL2,
                              aVec1, aVec2, aVec3, theBoxS1, theBoxS2, theToler3D,
-                             theU1Period, theU2Period, theV1Period, theV2Period,
-                             aCheckResult, hasBeenJoined);
+                             theArrPeriods, aCheckResult, hasBeenJoined);
       }
 
       if(!(aCheckResult & IntPatchWT_DisLastFirst))
@@ -1656,8 +1764,7 @@ void IntPatch_WLineTool::ExtendTwoWlinesToEachOther(IntPatch_SequenceOfLine& the
 
         ExtendTwoWLLastFirst(theS1, theS2, aWLine1, aWLine2, aPntLWL1, aPntFWL2,
                              aVec1, aVec2, aVec3, theBoxS1, theBoxS2, theToler3D,
-                             theU1Period, theU2Period, theV1Period, theV2Period,
-                             aCheckResult, hasBeenJoined);
+                             theArrPeriods, aCheckResult, hasBeenJoined);
       }
 
       if(!(aCheckResult & IntPatchWT_DisLastLast))
@@ -1668,8 +1775,7 @@ void IntPatch_WLineTool::ExtendTwoWlinesToEachOther(IntPatch_SequenceOfLine& the
 
         ExtendTwoWLLastLast(theS1, theS2, aWLine1, aWLine2, aPntLWL1, aPntLWL2,
                             aVec1, aVec2, aVec3, theBoxS1, theBoxS2, theToler3D,
-                            theU1Period, theU2Period, theV1Period, theV2Period,
-                            aCheckResult, hasBeenJoined);
+                            theArrPeriods, aCheckResult, hasBeenJoined);
       }
 
       if(hasBeenJoined)
