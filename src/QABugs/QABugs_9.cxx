@@ -128,21 +128,6 @@ static Standard_Integer OCC137 (Draw_Interpretor& di, Standard_Integer argc, con
   return 0;
 }
 
-static Standard_Integer OCC137_z (Draw_Interpretor& di, Standard_Integer argc, const char ** argv) 
-{
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if(aContext.IsNull()) {
-    di << argv[0] << "ERROR : use 'vinit' command before \n";
-    return 1;
-  }
-  if ( argc != 1 && argc != 2) {
-    di << "ERROR : Usage : " << argv[0] << " [ZDetection_mode]\n";
-    return 1;
-  }
-  aContext->SetZDetection(((argc == 1 || (argc == 2 && Draw::Atoi(argv[1]) == 1)) ? Standard_True : Standard_False));
-  return 0;
-}
-
 #include <GccEnt_Position.hxx>
 #include <Geom2dGcc_QualifiedCurve.hxx>
 #include <Geom2dGcc_Circ2d2TanRad.hxx>
@@ -221,7 +206,6 @@ void QABugs::Commands_9(Draw_Interpretor& theCommands) {
 
   theCommands.Add ("BUC60857", "BUC60857", __FILE__, BUC60857, group);
   theCommands.Add("OCC137","OCC137 mode [shape]",__FILE__,OCC137,group);
-  theCommands.Add("OCC137_z","OCC137_z [ZDetection_mode]",__FILE__,OCC137_z,group);
   theCommands.Add("OCC24303", "OCC24303 SolID ",	__FILE__,	OCC24303,group);
 
   return;

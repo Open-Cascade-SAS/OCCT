@@ -17,33 +17,29 @@
 #ifndef _AIS_LocalStatus_HeaderFile
 #define _AIS_LocalStatus_HeaderFile
 
-#include <Graphic3d_HighlightStyle.hxx>
-#include <MMgt_TShared.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_ListOfInteger.hxx>
-class Standard_Transient;
 
-
-class AIS_LocalStatus;
-DEFINE_STANDARD_HANDLE(AIS_LocalStatus, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(AIS_LocalStatus, Standard_Transient)
 
 //! Stored Info about temporary objects.
-class AIS_LocalStatus : public MMgt_TShared
+class AIS_LocalStatus : public Standard_Transient
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_LocalStatus, Standard_Transient)
 public:
 
-  
   Standard_EXPORT AIS_LocalStatus (const Standard_Boolean theIsTemporary = Standard_True,
                                    const Standard_Boolean theIsToDecompose = Standard_False,
                                    const Standard_Integer theDisplayMode = -1,
                                    const Standard_Integer theSelectionMode = -1,
                                    const Standard_Integer theHilightMode = 0,
                                    const Standard_Boolean theIsSubIntensity = 0,
-                                   const Handle(Graphic3d_HighlightStyle)& theStyle = NULL);
+                                   const Handle(Prs3d_Drawer)& theStyle = Handle(Prs3d_Drawer)());
   
     Standard_Boolean Decomposed() const;
   
@@ -59,7 +55,7 @@ public:
   
     Standard_Boolean IsSubIntensityOn() const;
   
-  const Handle(Graphic3d_HighlightStyle)& HilightStyle() const
+  const Handle(Prs3d_Drawer)& HilightStyle() const
   {
     return myHiStyle;
   }
@@ -84,7 +80,7 @@ public:
   
     void SetHilightMode (const Standard_Integer aMode);
   
-  void SetHilightStyle (const Handle(Graphic3d_HighlightStyle)& theStyle)
+  void SetHilightStyle (const Handle(Prs3d_Drawer)& theStyle)
   {
     myHiStyle = theStyle;
   }
@@ -97,11 +93,6 @@ public:
   
     const Handle(Standard_Transient)& PreviousState() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_LocalStatus,MMgt_TShared)
-
 private:
   Standard_Boolean myDecomposition;
   Standard_Boolean myIsTemporary;
@@ -111,14 +102,9 @@ private:
   TColStd_ListOfInteger mySModes;
   Standard_Boolean mySubIntensity;
   Handle(Standard_Transient) myPreviousState;
-  Handle(Graphic3d_HighlightStyle) myHiStyle;
+  Handle(Prs3d_Drawer) myHiStyle;
 };
 
-
 #include <AIS_LocalStatus.lxx>
-
-
-
-
 
 #endif // _AIS_LocalStatus_HeaderFile

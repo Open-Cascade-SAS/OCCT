@@ -162,8 +162,6 @@ public:
 
   //// RELATED TO STATUS ////
 
-  const OpenGl_Vec4* HighlightColor;
-
   //! Return true if active group might activate face culling (e.g. primitives are closed).
   bool ToAllowFaceCulling() const { return myToAllowFaceCulling; }
 
@@ -173,57 +171,60 @@ public:
   void SetAllowFaceCulling (bool theToAllow) { myToAllowFaceCulling = theToAllow; }
 
   //! Return true if following structures should apply highlight color.
-  bool ToHighlight() const { return myToHighlight; }
+  bool ToHighlight() const { return !myHighlightStyle.IsNull(); }
 
-  //! Set highlight.
-  void SetHighlight (bool theToHighlight) { myToHighlight = theToHighlight; }
+  //! Return highlight style.
+  const Handle(Graphic3d_PresentationAttributes)& HighlightStyle() const { return myHighlightStyle; }
+
+  //! Set highlight style.
+  void SetHighlightStyle (const Handle(Graphic3d_PresentationAttributes)& theStyle) {  myHighlightStyle = theStyle; }
 
   //! Return line color taking into account highlight flag.
   const OpenGl_Vec4& LineColor() const
   {
-    return myToHighlight
-         ? *HighlightColor
-         : myAspectLineSet->Aspect()->ColorRGBA();
+    return !myHighlightStyle.IsNull()
+         ?  myHighlightStyle->ColorRGBA()
+         :  myAspectLineSet->Aspect()->ColorRGBA();
   }
 
   //! Return edge color taking into account highlight flag.
   const OpenGl_Vec4& EdgeColor() const
   {
-    return myToHighlight
-         ? *HighlightColor
-         : myAspectFaceSet->AspectEdge()->Aspect()->ColorRGBA();
+    return !myHighlightStyle.IsNull()
+         ?  myHighlightStyle->ColorRGBA()
+         :  myAspectFaceSet->AspectEdge()->Aspect()->ColorRGBA();
   }
 
   //! Return marker color taking into account highlight flag.
   const OpenGl_Vec4& MarkerColor() const
   {
-    return myToHighlight
-         ? *HighlightColor
-         : myAspectMarkerSet->Aspect()->ColorRGBA();
+    return !myHighlightStyle.IsNull()
+         ?  myHighlightStyle->ColorRGBA()
+         :  myAspectMarkerSet->Aspect()->ColorRGBA();
   }
 
   //! Return Interior color taking into account highlight flag.
   const OpenGl_Vec4& InteriorColor() const
   {
-    return myToHighlight
-         ? *HighlightColor
-         : myAspectFaceSet->Aspect()->InteriorColorRGBA();
+    return !myHighlightStyle.IsNull()
+         ?  myHighlightStyle->ColorRGBA()
+         :  myAspectFaceSet->Aspect()->InteriorColorRGBA();
   }
 
   //! Return text color taking into account highlight flag.
   const OpenGl_Vec4& TextColor() const
   {
-    return myToHighlight
-         ? *HighlightColor
-         : myAspectTextSet->Aspect()->ColorRGBA();
+    return !myHighlightStyle.IsNull()
+         ?  myHighlightStyle->ColorRGBA()
+         :  myAspectTextSet->Aspect()->ColorRGBA();
   }
 
   //! Return text Subtitle color taking into account highlight flag.
   const OpenGl_Vec4& TextSubtitleColor() const
   {
-    return myToHighlight
-         ? *HighlightColor
-         : myAspectTextSet->Aspect()->ColorSubTitleRGBA();
+    return !myHighlightStyle.IsNull()
+         ?  myHighlightStyle->ColorRGBA()
+         :  myAspectTextSet->Aspect()->ColorSubTitleRGBA();
   }
 
   //! Currently set line aspect (can differ from applied).
@@ -375,7 +376,7 @@ protected: //! @name fields related to status
   OpenGl_Material myMatBack;     //!< current back  material state
   OpenGl_Material myMatTmp;      //!< temporary variable
   bool            myToAllowFaceCulling; //!< allow back face culling
-  bool            myToHighlight; //!< flag indicating highlighting mode
+  Handle(Graphic3d_PresentationAttributes) myHighlightStyle; //!< active highlight style
 
   OpenGl_Matrix myModelViewMatrix; //!< Model matrix with applied structure transformations
 

@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <StdSelect_BRepSelectionTool.hxx>
 
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
@@ -51,7 +52,6 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_NullObject.hxx>
 #include <StdSelect_BRepOwner.hxx>
-#include <StdSelect_BRepSelectionTool.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -101,16 +101,15 @@ void StdSelect_BRepSelectionTool::PreBuildBVH (const Handle(SelectMgr_Selection)
 // Function: Load
 // Purpose :
 //==================================================
-void StdSelect_BRepSelectionTool
-::Load (const Handle(SelectMgr_Selection)& theSelection,
-        const TopoDS_Shape& theShape,
-        const TopAbs_ShapeEnum theType,
-        const Standard_Real theDeflection,
-        const Standard_Real theDeviationAngle,
-        const Standard_Boolean isAutoTriangulation,
-        const Standard_Integer thePriority,
-        const Standard_Integer theNbPOnEdge,
-        const Standard_Real theMaxParam)
+void StdSelect_BRepSelectionTool::Load (const Handle(SelectMgr_Selection)& theSelection,
+                                        const TopoDS_Shape& theShape,
+                                        const TopAbs_ShapeEnum theType,
+                                        const Standard_Real theDeflection,
+                                        const Standard_Real theDeviationAngle,
+                                        const Standard_Boolean isAutoTriangulation,
+                                        const Standard_Integer thePriority,
+                                        const Standard_Integer theNbPOnEdge,
+                                        const Standard_Real theMaxParam)
 {
   Standard_Integer aPriority = (thePriority == -1) ? GetStandardPriority (theShape, theType) : thePriority;
 
@@ -166,17 +165,16 @@ void StdSelect_BRepSelectionTool
 // Function: Load
 // Purpose :
 //==================================================
-void StdSelect_BRepSelectionTool
-::Load (const Handle(SelectMgr_Selection)& theSelection,
-        const Handle(SelectMgr_SelectableObject)& theSelectableObj,
-        const TopoDS_Shape& theShape,
-        const TopAbs_ShapeEnum theType,
-        const Standard_Real theDeflection,
-        const Standard_Real theDeviationAngle,
-        const Standard_Boolean isAutoTriangulation,
-        const Standard_Integer thePriority,
-        const Standard_Integer theNbPOnEdge,
-        const Standard_Real theMaxParam)
+void StdSelect_BRepSelectionTool::Load (const Handle(SelectMgr_Selection)& theSelection,
+                                        const Handle(SelectMgr_SelectableObject)& theSelectableObj,
+                                        const TopoDS_Shape& theShape,
+                                        const TopAbs_ShapeEnum theType,
+                                        const Standard_Real theDeflection,
+                                        const Standard_Real theDeviationAngle,
+                                        const Standard_Boolean isAutoTriangulation,
+                                        const Standard_Integer thePriority,
+                                        const Standard_Integer theNbPOnEdge,
+                                        const Standard_Real theMaxParam)
 {
   Load (theSelection,
         theShape,
@@ -203,15 +201,14 @@ void StdSelect_BRepSelectionTool
 // Function: ComputeSensitive
 // Purpose :
 //==================================================
-void StdSelect_BRepSelectionTool
-::ComputeSensitive (const TopoDS_Shape& theShape,
-                    const Handle(StdSelect_BRepOwner)& theOwner,
-                    const Handle(SelectMgr_Selection)& theSelection,
-                    const Standard_Real theDeflection,
-                    const Standard_Real theDeviationAngle,
-                    const Standard_Integer theNbPOnEdge,
-                    const Standard_Real theMaxParam,
-                    const Standard_Boolean isAutoTriangulation)
+void StdSelect_BRepSelectionTool::ComputeSensitive (const TopoDS_Shape& theShape,
+                                                    const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                    const Handle(SelectMgr_Selection)& theSelection,
+                                                    const Standard_Real theDeflection,
+                                                    const Standard_Real theDeviationAngle,
+                                                    const Standard_Integer theNbPOnEdge,
+                                                    const Standard_Real theMaxParam,
+                                                    const Standard_Boolean isAutoTriangulation)
 {
   switch (theShape.ShapeType())
   {
@@ -434,21 +431,16 @@ static Standard_Boolean FindLimits (const Adaptor3d_Curve& theCurve,
 
 //=====================================================
 // Function : GetEdgeSensitive
-// Purpose  : create a sensitive edge to add it
-//            in computeselection to "aselection" (case of selection of an edge)
-//            or to "aSensitiveWire" (case of selection of a wire; in this case,
-//            the sensitive wire is added to "aselection" )
-//            odl - for selection by rectangle -
+// Purpose  :
 //=====================================================
-void StdSelect_BRepSelectionTool
-::GetEdgeSensitive (const TopoDS_Shape& theShape,
-                    const Handle(StdSelect_BRepOwner)& theOwner,
-                    const Handle(SelectMgr_Selection)& theSelection,
-                    const Standard_Real theDeflection,
-                    const Standard_Real theDeviationAngle,
-                    const Standard_Integer theNbPOnEdge,
-                    const Standard_Real theMaxParam,
-                    Handle(Select3D_SensitiveEntity)& theSensitive)
+void StdSelect_BRepSelectionTool::GetEdgeSensitive (const TopoDS_Shape& theShape,
+                                                    const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                    const Handle(SelectMgr_Selection)& theSelection,
+                                                    const Standard_Real theDeflection,
+                                                    const Standard_Real theDeviationAngle,
+                                                    const Standard_Integer theNbPOnEdge,
+                                                    const Standard_Real theMaxParam,
+                                                    Handle(Select3D_SensitiveEntity)& theSensitive)
 {
   const TopoDS_Edge& anEdge = TopoDS::Edge (theShape);
   BRepAdaptor_Curve cu3d;
@@ -560,50 +552,17 @@ void StdSelect_BRepSelectionTool
   }
 }
 
-//=====================================================
-// Function : GetStandardPriority
-// Purpose  :
-//=====================================================
-Standard_Integer StdSelect_BRepSelectionTool::GetStandardPriority (const TopoDS_Shape& theShape,
-                                                                   const TopAbs_ShapeEnum theType)
-{
-  switch (theType)
-  {
-    case TopAbs_VERTEX: return 8;
-    case TopAbs_EDGE:   return 7;
-    case TopAbs_WIRE:   return 6;
-    case TopAbs_FACE:   return 5;
-    case TopAbs_SHAPE:
-    default:
-      switch (theShape.ShapeType())
-      {
-        case TopAbs_VERTEX:    return 9;
-        case TopAbs_EDGE:      return 8;
-        case TopAbs_WIRE:      return 7;
-        case TopAbs_FACE:      return 6;
-        case TopAbs_SHELL:     return 5;
-        case TopAbs_COMPOUND:
-        case TopAbs_COMPSOLID:
-        case TopAbs_SOLID:
-        case TopAbs_SHAPE:
-        default:
-          return 4;
-      }
-  }
-}
-
 //=======================================================================
 //function : GetSensitiveEntityForFace
 //purpose  :
 //=======================================================================
-Standard_Boolean StdSelect_BRepSelectionTool
-::GetSensitiveForFace (const TopoDS_Face& theFace,
-                       const Handle(StdSelect_BRepOwner)& theOwner,
-                       Select3D_EntitySequence& theSensitiveList,
-                       const Standard_Boolean /*theAutoTriangulation*/,
-                       const Standard_Integer NbPOnEdge,
-                       const Standard_Real    theMaxParam,
-                       const Standard_Boolean theInteriorFlag)
+Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace (const TopoDS_Face& theFace,
+                                                                   const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                                   Select3D_EntitySequence& theSensitiveList,
+                                                                   const Standard_Boolean /*theAutoTriangulation*/,
+                                                                   const Standard_Integer NbPOnEdge,
+                                                                   const Standard_Real    theMaxParam,
+                                                                   const Standard_Boolean theInteriorFlag)
 {
   // check if there is triangulation of the face...
   TopLoc_Location aLoc;

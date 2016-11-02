@@ -90,7 +90,6 @@ AIS_InteractiveObject(PrsMgr_TOP_ProjectorDependant),
 myInitAng(0.)
 {
   Set (shap);
-  SetHilightMode(0);
 }
 
 //=======================================================================
@@ -523,7 +522,7 @@ void AIS_Shape::setColor (const Handle(Prs3d_Drawer)& theDrawer,
 void AIS_Shape::SetColor (const Quantity_Color& theColor)
 {
   setColor (myDrawer, theColor);
-  myOwnColor  = theColor;
+  myDrawer->SetColor (theColor);
   hasOwnColor = Standard_True;
 
   // modify shading presentation without re-computation
@@ -903,8 +902,8 @@ void AIS_Shape::UnsetMaterial()
     }
     if (HasColor())
     {
-      myDrawer->ShadingAspect()->SetColor        (myOwnColor,     myCurrentFacingModel);
-      myDrawer->ShadingAspect()->SetTransparency (myTransparency, myCurrentFacingModel);
+      myDrawer->ShadingAspect()->SetColor        (myDrawer->Color(),        myCurrentFacingModel);
+      myDrawer->ShadingAspect()->SetTransparency (myDrawer->Transparency(), myCurrentFacingModel);
     }
   }
   else
@@ -968,7 +967,7 @@ void AIS_Shape::setTransparency (const Handle(Prs3d_Drawer)& theDrawer,
 void AIS_Shape::SetTransparency (const Standard_Real theValue)
 {
   setTransparency (myDrawer, theValue);
-  myTransparency = theValue;
+  myDrawer->SetTransparency ((Standard_ShortReal )theValue);
 
   // modify shading presentation without re-computation
   const PrsMgr_Presentations&        aPrsList  = Presentations();
@@ -1004,7 +1003,7 @@ void AIS_Shape::SetTransparency (const Standard_Real theValue)
 
 void AIS_Shape::UnsetTransparency()
 {
-  myTransparency = 0.0;
+  myDrawer->SetTransparency (0.0f);
   if (!myDrawer->HasOwnShadingAspect())
   {
     return;

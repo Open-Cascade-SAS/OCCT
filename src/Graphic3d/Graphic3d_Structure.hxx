@@ -106,7 +106,7 @@ public:
   //! @param theStyle [in] the style (type of highlighting: box/color, color and opacity)
   //! @param theToUpdateMgr [in] defines whether related computed structures will be
   //! highlighted via structure manager or not
-  Standard_EXPORT void Highlight (const Handle(Graphic3d_HighlightStyle)& theStyle, const Standard_Boolean theToUpdateMgr = Standard_True);
+  Standard_EXPORT void Highlight (const Handle(Graphic3d_PresentationAttributes)& theStyle, const Standard_Boolean theToUpdateMgr = Standard_True);
   
   //! Suppress the structure <me>.
   //! It will be erased at the next screen update.
@@ -232,7 +232,7 @@ public:
   
   //! Returns the highlight color for the Highlight method
   //! with the highlight method TOHM_COLOR or TOHM_BOUNDBOX.
-  Standard_EXPORT const Handle(Graphic3d_HighlightStyle)& HighlightStyle() const;
+  Standard_EXPORT const Handle(Graphic3d_PresentationAttributes)& HighlightStyle() const;
   
   //! Returns Standard_True if the structure <me> is deleted.
   //! <me> is deleted after the call Remove (me).

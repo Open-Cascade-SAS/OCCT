@@ -1,0 +1,22 @@
+puts "==========="
+puts "OCC25695"
+puts "Visualization, AIS_InteractiveContext - define default HilightMode"
+puts "==========="
+puts ""
+
+# display a sphere
+pload MODELING VISUALIZATION
+psphere s 1
+
+vclear
+vinit View1
+vdisplay -dispMode 1 s
+vfit
+
+# setup dynamic highlighting style
+vselprops dynHighlight -dispMode -1 -transp 0.5 -material PLASTIC
+vmoveto 250 250
+
+if { [vreadpixel 250 250 rgb name] != "PALEGREEN3" } { puts "Error: wrong highlighting color" }
+
+vdump $imagedir/${casename}.png

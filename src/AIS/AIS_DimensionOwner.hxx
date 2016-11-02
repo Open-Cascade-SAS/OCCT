@@ -26,11 +26,10 @@
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Standard_Boolean.hxx>
+
 class SelectMgr_SelectableObject;
 class PrsMgr_PresentationManager;
 
-
-class AIS_DimensionOwner;
 DEFINE_STANDARD_HANDLE(AIS_DimensionOwner, SelectMgr_EntityOwner)
 
 //! The owner is the entity which makes it possible to link
@@ -46,10 +45,8 @@ DEFINE_STANDARD_HANDLE(AIS_DimensionOwner, SelectMgr_EntityOwner)
 //! priority 4. The default priority is 5.
 class AIS_DimensionOwner : public SelectMgr_EntityOwner
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_DimensionOwner, SelectMgr_EntityOwner)
 public:
-
-  
 
   //! Initializes the dimension owner, theSO, and attributes it
   //! the priority, thePriority.
@@ -58,7 +55,7 @@ public:
   Standard_EXPORT AIS_DimensionSelectionMode SelectionMode() const;
   
   Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                                 const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                                 const Handle(Prs3d_Drawer)& theStyle,
                                                  const Standard_Integer theMode = 0) Standard_OVERRIDE;
   
   //! Returns true if an object with the selection mode
@@ -68,28 +65,10 @@ public:
   //! Removes highlighting from the selected part of dimension.
   Standard_EXPORT virtual void Unhilight (const Handle(PrsMgr_PresentationManager)& thePM, const Standard_Integer theMode = 0) Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_DimensionOwner,SelectMgr_EntityOwner)
-
-protected:
-
-
-
-
 private:
-
 
   AIS_DimensionSelectionMode mySelectionMode;
 
-
 };
-
-
-
-
-
-
 
 #endif // _AIS_DimensionOwner_HeaderFile

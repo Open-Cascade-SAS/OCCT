@@ -242,8 +242,8 @@ void OpenGl_Structure::highlightWithBndBox (const Handle(Graphic3d_Structure)& t
 // function : GraphicHighlight
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::GraphicHighlight (const Handle(Graphic3d_HighlightStyle)& theStyle,
-                                         const Handle(Graphic3d_Structure)&      theStruct)
+void OpenGl_Structure::GraphicHighlight (const Handle(Graphic3d_PresentationAttributes)& theStyle,
+                                         const Handle(Graphic3d_Structure)& theStruct)
 {
   if (!myHighlightStyle.IsNull()
     && myHighlightStyle->Method() == Aspect_TOHM_BOUNDBOX
@@ -485,7 +485,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   // Render named status
   if (highlight && myHighlightBox.IsNull())
   {
-    theWorkspace->SetHighlight (true);
+    theWorkspace->SetHighlightStyle (myHighlightStyle);
   }
 
   // Apply local transformation
@@ -542,11 +542,6 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   {
     aCtx->core11fwd->glFrontFace (GL_CW);
   }
-
-  // Apply highlight color
-  const OpenGl_Vec4* aHighlightColor = theWorkspace->HighlightColor;
-  if (!myHighlightStyle.IsNull())
-    theWorkspace->HighlightColor = myHighlightStyle->ColorFltPtr();
 
   // Collect clipping planes of structure scope
   aCtx->ChangeClipping().SetLocalPlanes (aCtx, myClipPlanes);
@@ -683,9 +678,6 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
     aCtx->WorldViewState.Pop();
   }
 
-  // Restore highlight color
-  theWorkspace->HighlightColor = aHighlightColor;
-
   // Restore aspects
   theWorkspace->SetAspectLine   (aPrevAspectLine);
   theWorkspace->SetAspectFace   (aPrevAspectFace);
@@ -695,11 +687,12 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   // Apply highlight box
   if (!myHighlightBox.IsNull())
   {
+    theWorkspace->SetHighlightStyle (myHighlightStyle);
     myHighlightBox->Render (theWorkspace);
   }
 
   // Restore named status
-  theWorkspace->SetHighlight (false);
+  theWorkspace->SetHighlightStyle (Handle(Graphic3d_PresentationAttributes)());
 }
 
 // =======================================================================

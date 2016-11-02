@@ -221,7 +221,7 @@ void AIS_Axis::SetColor(const Quantity_NameOfColor aCol)
 void AIS_Axis::SetColor(const Quantity_Color &aCol)
 {
   hasOwnColor=Standard_True;
-  myOwnColor=aCol;
+  myDrawer->SetColor (aCol);
   myDrawer->LineAspect()->SetColor(aCol);
   
   const Handle(Prs3d_DatumAspect)& DA = myDrawer->DatumAspect();

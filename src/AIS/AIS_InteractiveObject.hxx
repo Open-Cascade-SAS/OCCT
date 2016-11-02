@@ -127,7 +127,7 @@ public:
   //! wireaspect field of the drawer, but  for a vertex, only
   //! the point aspect field is affected by the color)
   //! WARNING : Do not forget to set the corresponding fields
-  //! here (hasOwnColor and myOwnColor)
+  //! here (hasOwnColor and myDrawer->SetColor())
   Standard_EXPORT virtual void SetColor (const Quantity_NameOfColor aColor);
   
   //! Removes color settings. Only the Interactive Object
@@ -215,7 +215,7 @@ public:
 
   //! Returns true if the Interactive Object has a display
   //! mode setting. Otherwise, it is displayed in Neutral Point.
-  Standard_Boolean HasDisplayMode() const { return myDisplayMode != -1; }
+  Standard_Boolean HasDisplayMode() const { return myDrawer->DisplayMode() != -1; }
 
   //! Sets the display mode aMode for the interactive object.
   //! An object can have its own temporary display mode,
@@ -227,7 +227,7 @@ public:
   Standard_EXPORT void SetDisplayMode (const Standard_Integer aMode);
 
   //! Removes display mode settings from the interactive object.
-  void UnsetDisplayMode() { myDisplayMode = -1; }
+  void UnsetDisplayMode() { myDrawer->SetDisplayMode (-1); }
 
   //! Returns the display mode setting of the Interactive Object.
   //! The range of possibilities is the following:
@@ -235,88 +235,59 @@ public:
   //! -   AIS_Shaded
   //! This range can, however, be extended through the
   //! creation of new display modes.
-  Standard_Integer DisplayMode() const { return myDisplayMode; }
-
-  //! Returns the selection priority setting. -1 indicates that there is none.
-  //! You can modify the selection priority of an owner to
-  //! make one entity more selectionable than another one.
-  //! The default selection priority for an owner is 5, for
-  //! example. To increase selection priority, choose a
-  //! setting between 5 and 10. An entity with priority 7 will
-  //! take priority over one with a setting of 6 if both
-  //! objects are selected at the same time.
-  //! You could give vertices priority 8, edges priority 7,
-  //! faces priority 6, and shapes priority 5. If a vertex, an
-  //! edge and a face are simultaneously detected during
-  //! selection, only the vertex will then be highlighted.
-  //! For trihedra, for example, the default priorities are the following four:
-  //! -   priority 1 - a trihedron
-  //! -   priority 5 - its origin
-  //! -   priority 3 - its axes
-  //! -   priority 2 - its planes
-  Standard_Integer SelectionPriority() const { return mySelPriority; }
-
-  //! Allows you to provide a setting thePriority for selection priority.
-  //! You can modify selection priority of an owner to make
-  //! one entity more selectionable than another one. The
-  //! default selection priority for an owner is 5, for
-  //! example. To increase selection priority, choose a
-  //! setting between 5 and 10. An entity with priority 7 will
-  //! take priority over one with a setting of 6.
-  void SetSelectionPriority (const Standard_Integer thePriority) { mySelPriority = thePriority; }
-
-  //! Removes the setting for selection priority. SelectionPriority then returns -1.
-  void UnsetSelectionPriority() { mySelPriority = -1; }
-
-  //! Returns true if there is a setting for selection priority.
-  //! You can modify selection priority of an owner to make
-  //! one entity more selectionable than another one. The
-  //! default selection priority for an owner is 5, for
-  //! example. To increase selection priority, choose a
-  //! setting between 5 and 10. An entity with priority 7 will
-  //! take priority over one with a setting of 6.
-  Standard_Boolean HasSelectionPriority() const { return mySelPriority != -1; }
+  Standard_Integer DisplayMode() const { return myDrawer->DisplayMode(); }
 
   //! Returns true if the Interactive Object is in highlight mode.
-  Standard_Boolean HasHilightMode() const { return myHilightMode != -1; }
+  Standard_Boolean HasHilightMode() const { return !myHilightDrawer.IsNull() && myHilightDrawer->DisplayMode() != -1; }
 
-  //! Returns the setting for highlight mode.
-  //! At dynamic detection, the presentation echoed by the
-  //! Interactive Context, is by default the presentation
-  //! already on the screen. You can specify a Highlight
-  //! presentation mode which is valid no matter what the
-  //! active representation of the object. It makes no
-  //! difference whether this choice is temporary or
-  //! definitive.   To do this, we use the following functions:
-  //! -   SetHilightMode
-  //! -   UnSetHilightMode
-  //! In the case of a shape, whether it is visualized in
-  //! wireframe presentation or with shading, we want to
-  //! systematically highlight the wireframe presentation.
-  //! Consequently, we set the highlight mode to 0.
-  Standard_Integer HilightMode() const { return myHilightMode; }
+  //! Returns highlight display mode.
+  //! This is obsolete method for backward compatibility - use ::HilightAttributes() and ::DynamicHilightAttributes() instead.
+  Standard_Integer HilightMode() const { return !myHilightDrawer.IsNull() ? myHilightDrawer->DisplayMode() : -1; }
 
-  //! Sets the highlight mode theMode for the interactive object.
-  //! If, for example, you want to systematically highlight
-  //! the wireframe presentation of a shape - whether
-  //! visualized in wireframe presentation or with shading -
-  //! you set the highlight mode to 0.
-  void SetHilightMode (const Standard_Integer theMode) { myHilightMode = theMode; }
+  //! Sets highlight display mode.
+  //! This is obsolete method for backward compatibility - use ::HilightAttributes() and ::DynamicHilightAttributes() instead.
+  void SetHilightMode (const Standard_Integer theMode)
+  {
+    if (myHilightDrawer.IsNull())
+    {
+      myHilightDrawer = new Prs3d_Drawer();
+      myHilightDrawer->Link (myDrawer);
+      myHilightDrawer->SetAutoTriangulation (Standard_False);
+      myHilightDrawer->SetColor (Quantity_NOC_GRAY80);
+      myHilightDrawer->SetZLayer(Graphic3d_ZLayerId_UNKNOWN);
+    }
+    if (myDynHilightDrawer.IsNull())
+    {
+      myDynHilightDrawer = new Prs3d_Drawer();
+      myDynHilightDrawer->Link (myDrawer);
+      myDynHilightDrawer->SetColor (Quantity_NOC_CYAN1);
+      myDynHilightDrawer->SetAutoTriangulation (Standard_False);
+      myDynHilightDrawer->SetZLayer(Graphic3d_ZLayerId_Top);
+    }
+    myHilightDrawer   ->SetDisplayMode (theMode);
+    myDynHilightDrawer->SetDisplayMode (theMode);
+  }
 
-  //! Allows the user to take a given Prs for hilight
-  //! ex : for a shape which would be displayed in shading mode
-  //! the hilight Prs is the wireframe mode.
-  //! if No specific hilight mode is defined, the displayed Prs
-  //! will be the hilighted one.
-  void UnsetHilightMode() { myHilightMode = -1; }
+  //! Unsets highlight display mode.
+  void UnsetHilightMode()
+  {
+    if (!myHilightDrawer.IsNull())
+    {
+      myHilightDrawer->SetDisplayMode (-1);
+    }
+    if (!myDynHilightDrawer.IsNull())
+    {
+      myDynHilightDrawer->SetDisplayMode (-1);
+    }
+  }
 
   //! Returns true if the Interactive Object has color.
   Standard_Boolean HasColor() const { return hasOwnColor; }
 
   //! Returns the color setting of the Interactive Object.
-  virtual Quantity_NameOfColor Color() const { return myOwnColor.Name(); }
+  virtual Quantity_NameOfColor Color() const { return myDrawer->Color().Name(); }
 
-  virtual void Color (Quantity_Color& theColor) const { theColor = myOwnColor; }
+  virtual void Color (Quantity_Color& theColor) const { theColor = myDrawer->Color(); }
 
   //! Returns true if the Interactive Object has width.
   Standard_Boolean HasWidth() const { return myOwnWidth != 0.0; }
@@ -359,7 +330,7 @@ public:
   Standard_EXPORT virtual void SetTransparency (const Standard_Real aValue = 0.6);
   
   //! Returns true if there is a transparency setting.
-  Standard_Boolean IsTransparent() const { return myTransparency > 0.005; }
+  Standard_Boolean IsTransparent() const { return myDrawer->Transparency() > 0.005f; }
 
   //! Returns the transparency setting.
   //! This will be between 0.0 and 1.0.
@@ -440,29 +411,25 @@ private:
 
 protected:
 
-  
   //! The TypeOfPresention3d means that the interactive object
   //! may have a presentation dependant of the view of Display.
   Standard_EXPORT AIS_InteractiveObject(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d = PrsMgr_TOP_AllView);
-
-  Standard_Real myTransparency;
-  Quantity_Color myOwnColor;
-  Graphic3d_NameOfMaterial myOwnMaterial;
-  Standard_Integer myHilightMode;
-  Standard_Real myOwnWidth;
-  Standard_Boolean myInfiniteState;
-  Standard_Boolean hasOwnColor;
-  Standard_Boolean hasOwnMaterial;
-  Aspect_TypeOfFacingModel myCurrentFacingModel;
-  Standard_Boolean myRecomputeEveryPrs;
-  TColStd_ListOfInteger myToRecomputeModes;
 
 private:
 
   AIS_InteractiveContext* myCTXPtr;
   Handle(Standard_Transient) myOwner;
-  Standard_Integer mySelPriority;
-  Standard_Integer myDisplayMode;
+
+protected:
+
+  TColStd_ListOfInteger myToRecomputeModes;
+  Standard_Real myOwnWidth;
+  Graphic3d_NameOfMaterial myOwnMaterial;
+  Aspect_TypeOfFacingModel myCurrentFacingModel;
+  Standard_Boolean myInfiniteState;
+  Standard_Boolean hasOwnColor;
+  Standard_Boolean hasOwnMaterial;
+  Standard_Boolean myRecomputeEveryPrs;
 
 };
 

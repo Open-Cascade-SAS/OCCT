@@ -88,8 +88,8 @@ public:
 
   //! Highlights structure according to the given style and updates corresponding class fields
   //! (highlight status and style)
-  Standard_EXPORT virtual void GraphicHighlight (const Handle(Graphic3d_HighlightStyle)& theStyle,
-                                                 const Handle(Graphic3d_Structure)&      theStruct) Standard_OVERRIDE;
+  Standard_EXPORT virtual void GraphicHighlight (const Handle(Graphic3d_PresentationAttributes)& theStyle,
+                                                 const Handle(Graphic3d_Structure)&  theStruct) Standard_OVERRIDE;
 
   //! Unighlights structure and updates corresponding class fields (highlight status and style)
   Standard_EXPORT virtual void GraphicUnhighlight() Standard_OVERRIDE;

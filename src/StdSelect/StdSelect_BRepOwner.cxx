@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <StdSelect_BRepOwner.hxx>
 
 #include <Graphic3d_StructureManager.hxx>
 #include <Prs3d_Drawer.hxx>
@@ -21,7 +22,6 @@
 #include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <Standard_Type.hxx>
-#include <StdSelect_BRepOwner.hxx>
 #include <StdSelect_Shape.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS_Shape.hxx>
@@ -29,35 +29,43 @@
 IMPLEMENT_STANDARD_RTTIEXT(StdSelect_BRepOwner,SelectMgr_EntityOwner)
 
 //==================================================
-// Function: 
+// Function: StdSelect_BRepOwner
 // Purpose :
 //==================================================
-StdSelect_BRepOwner::StdSelect_BRepOwner(const Standard_Integer aPriority):
-SelectMgr_EntityOwner(aPriority),
-myFromDecomposition(Standard_False),
-myCurMode(0)
+StdSelect_BRepOwner::StdSelect_BRepOwner (const Standard_Integer thePriority)
+: SelectMgr_EntityOwner (thePriority),
+  myCurMode (0)
 {
+  //
 }
 
-StdSelect_BRepOwner::StdSelect_BRepOwner(const TopoDS_Shape& aShape,
-					 const Standard_Integer aPriority,
-					 const Standard_Boolean ComesFromDecomposition):
-SelectMgr_EntityOwner(aPriority),
-myFromDecomposition(ComesFromDecomposition),
-myShape(aShape),
-myCurMode(0)
+//==================================================
+// Function: StdSelect_BRepOwner
+// Purpose :
+//==================================================
+StdSelect_BRepOwner::StdSelect_BRepOwner (const TopoDS_Shape& theShape,
+                                          const Standard_Integer thePriority,
+                                          const Standard_Boolean theComesFromDecomposition)
+: SelectMgr_EntityOwner (thePriority),
+  myShape (theShape),
+  myCurMode (0)
 {
+  myFromDecomposition = theComesFromDecomposition;
 }
 
-StdSelect_BRepOwner::StdSelect_BRepOwner(const TopoDS_Shape& aShape,
-					 const Handle (SelectMgr_SelectableObject)& theOrigin,
-					 const Standard_Integer aPriority,
-					 const Standard_Boolean ComesFromDecomposition):
-SelectMgr_EntityOwner(theOrigin,aPriority),
-myFromDecomposition(ComesFromDecomposition),
-myShape(aShape),
-myCurMode(0)
+//==================================================
+// Function: StdSelect_BRepOwner
+// Purpose :
+//==================================================
+StdSelect_BRepOwner::StdSelect_BRepOwner (const TopoDS_Shape& theShape,
+                                          const Handle (SelectMgr_SelectableObject)& theOrigin,
+                                          const Standard_Integer thePriority,
+                                          const Standard_Boolean theComesFromDecomposition)
+: SelectMgr_EntityOwner (theOrigin, thePriority),
+  myShape (theShape),
+  myCurMode (0)
 {
+  myFromDecomposition = theComesFromDecomposition;
 }
 
 //=======================================================================
@@ -79,78 +87,69 @@ IsHilighted(const Handle(PrsMgr_PresentationManager)& PM,
 //purpose  :
 //=======================================================================
 void StdSelect_BRepOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                            const Handle(Graphic3d_HighlightStyle)&     theStyle,
+                                            const Handle(Prs3d_Drawer)&                 theStyle,
                                             const Standard_Integer                      theMode)
 {
-  Standard_Integer M = (theMode < 0) ? myCurMode : theMode;
-  Graphic3d_ZLayerId aHiLayer = this == Selectable()->GlobalSelOwner().get() ?
-                                Graphic3d_ZLayerId_Top : Graphic3d_ZLayerId_Topmost;
+  if (!HasSelectable())
+  {
+    return;
+  }
+
+  const Standard_Integer aDispMode = (theMode < 0) ? myCurMode : theMode;
   Handle(SelectMgr_SelectableObject) aSel = Selectable();
-
-  if (myFromDecomposition)
+  const Graphic3d_ZLayerId aHiLayer = theStyle->ZLayer() != Graphic3d_ZLayerId_UNKNOWN ? theStyle->ZLayer() : aSel->ZLayer();
+  if (!myFromDecomposition)
   {
-    // do the update flag check
-    if (!myPrsSh.IsNull())
-    {
-      TColStd_ListOfInteger aModesList;
-      myPrsSh->ToBeUpdated (aModesList);
-      if (!aModesList.IsEmpty())
-        myPrsSh.Nullify();
-    }
+    thePM->Color (aSel, theStyle, aDispMode, NULL, aHiLayer);
+    return;
+  }
 
-    Handle(Prs3d_Drawer) aDrawer;
-    if (!aSel.IsNull())
+  // do the update flag check
+  if (!myPrsSh.IsNull())
+  {
+    TColStd_ListOfInteger aModesList;
+    myPrsSh->ToBeUpdated (aModesList);
+    if (!aModesList.IsEmpty())
+      myPrsSh.Nullify();
+  }
+
+  // generate new presentable shape
+  if (myPrsSh.IsNull())
+  {
+    if (HasLocation())
     {
-      aDrawer = aSel->HilightAttributes();
+      TopLoc_Location lbid = Location() * myShape.Location();
+      TopoDS_Shape ShBis = myShape.Located(lbid);
+      myPrsSh = new StdSelect_Shape (ShBis, theStyle);
     }
     else
     {
-      aDrawer = new Prs3d_Drawer();
-      SelectMgr_SelectableObject::InitDefaultHilightAttributes (aDrawer);
-    }
-
-    // generate new presentable shape
-    if(myPrsSh.IsNull())
-    {
-      if(HasLocation())
-      {
-        TopLoc_Location lbid = Location() * myShape.Location();
-        TopoDS_Shape ShBis = myShape.Located(lbid);
-        myPrsSh = new StdSelect_Shape(ShBis, aDrawer);
-      }
-      else
-        myPrsSh = new StdSelect_Shape(myShape, aDrawer);
-    }
-    if (!aSel.IsNull())
-    {
-      myPrsSh->SetZLayer (aSel->ZLayer());
-      myPrsSh->SetTransformPersistence (aSel->TransformPersistence());
-    }
-
-    // highlight with color and set layer
-    thePM->Color (myPrsSh, theStyle, M, aSel, aHiLayer);
-  }
-  else
-  {
-    if (!myPrsSh.IsNull())
-    {
-      thePM->Color (myPrsSh, theStyle, M, aSel, aHiLayer);
-    }
-    else
-    {
-      thePM->Color (aSel, theStyle, M, NULL, aHiLayer);
+      myPrsSh = new StdSelect_Shape (myShape, theStyle);
     }
   }
+
+  // initialize presentation attributes of child presentation
+  myPrsSh->SetZLayer               (aSel->ZLayer());
+  myPrsSh->SetTransformPersistence (aSel->TransformPersistence());
+  myPrsSh->Attributes()->SetLink                (theStyle);
+  myPrsSh->Attributes()->SetColor               (theStyle->Color());
+  myPrsSh->Attributes()->SetTransparency        (theStyle->Transparency());
+  myPrsSh->Attributes()->SetBasicFillAreaAspect (theStyle->BasicFillAreaAspect());
+
+  // highlight with color and set layer
+  thePM->Color (myPrsSh, theStyle, aDispMode, aSel, aHiLayer);
 }
 
-void StdSelect_BRepOwner::Unhilight(const Handle(PrsMgr_PresentationManager)& PM,
-				    const Standard_Integer aMode)
+void StdSelect_BRepOwner::Unhilight (const Handle(PrsMgr_PresentationManager)& thePrsMgr, const Standard_Integer )
 {
-  Standard_Integer M = (aMode < 0) ? myCurMode : aMode;
-  if(myPrsSh.IsNull() || !myFromDecomposition)
-    PM->Unhighlight(Selectable(),M);
+  if (myPrsSh.IsNull() || !myFromDecomposition)
+  {
+    thePrsMgr->Unhighlight (Selectable());
+  }
   else
-    PM->Unhighlight(myPrsSh,M);
+  {
+    thePrsMgr->Unhighlight (myPrsSh);
+  }
 }
 
 void StdSelect_BRepOwner::Clear(const Handle(PrsMgr_PresentationManager)& PM,
@@ -180,18 +179,6 @@ void StdSelect_BRepOwner::ResetLocation()
   // set the update flag and then recompute myPrsSh on hilighting
   if (!myPrsSh.IsNull())
     myPrsSh->SetToUpdate();
-}
-
-//=======================================================================
-//function : SetZLayer
-//purpose  :
-//=======================================================================
-void StdSelect_BRepOwner::SetZLayer (const Graphic3d_ZLayerId theLayerId)
-{
-  if (!myPrsSh.IsNull())
-  {
-    myPrsSh->SetZLayer (theLayerId);
-  }
 }
 
 //=======================================================================

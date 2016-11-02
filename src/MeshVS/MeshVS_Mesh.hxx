@@ -65,7 +65,7 @@ public:
   
   //! Draw hilighted owner presentation
   Standard_EXPORT virtual void HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                                      const Handle(Graphic3d_HighlightStyle)& theColor,
+                                                      const Handle(Prs3d_Drawer)& theColor,
                                                       const Handle(SelectMgr_EntityOwner)& theOwner) Standard_OVERRIDE;
   
   //! Clears internal selection presentation

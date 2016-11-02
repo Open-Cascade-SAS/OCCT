@@ -2843,16 +2843,19 @@ Handle(OpenGl_FrameBuffer) OpenGl_Context::SetDefaultFrameBuffer (const Handle(O
 // purpose  :
 // =======================================================================
 void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
-                                         const OpenGl_Vec4* theHighlightColor)
+                                         const Handle(Graphic3d_PresentationAttributes)& theHighlight)
 {
   if (!myActiveProgram.IsNull())
   {
+    const Handle(Graphic3d_AspectFillArea3d)& anAspect = (!theHighlight.IsNull() && !theHighlight->BasicFillAreaAspect().IsNull())
+                                                       ?  theHighlight->BasicFillAreaAspect()
+                                                       :  theAspect->Aspect();
     myActiveProgram->SetUniform (this,
                                  myActiveProgram->GetStateLocation (OpenGl_OCCT_TEXTURE_ENABLE),
-                                 theAspect->Aspect()->ToMapTexture() ? 1 : 0);
+                                 anAspect->ToMapTexture() ? 1 : 0);
     myActiveProgram->SetUniform (this,
                                  myActiveProgram->GetStateLocation (OpenGl_OCCT_DISTINGUISH_MODE),
-                                 theAspect->Aspect()->Distinguish() ? 1 : 0);
+                                 anAspect->Distinguish() ? 1 : 0);
 
     OpenGl_Material aParams;
     for (Standard_Integer anIndex = 0; anIndex < 2; ++anIndex)
@@ -2865,24 +2868,25 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
         continue;
       }
 
-      if (anIndex == 0 || !theAspect->Aspect()->Distinguish())
+      if (anIndex == 0 || !anAspect->Distinguish())
       {
-        const Graphic3d_MaterialAspect& aSrcMat      = theAspect->Aspect()->FrontMaterial();
-        const Quantity_Color&           aSrcIntColor = theAspect->Aspect()->InteriorColor();
+        const Graphic3d_MaterialAspect& aSrcMat      = anAspect->FrontMaterial();
+        const Quantity_Color&           aSrcIntColor = anAspect->InteriorColor();
         aParams.Init (aSrcMat, aSrcIntColor);
         aParams.Diffuse.a() = 1.0f - (float )aSrcMat.Transparency();
       }
       else
       {
-        const Graphic3d_MaterialAspect& aSrcMat      = theAspect->Aspect()->BackMaterial();
-        const Quantity_Color&           aSrcIntColor = theAspect->Aspect()->BackInteriorColor();
+        const Graphic3d_MaterialAspect& aSrcMat      = anAspect->BackMaterial();
+        const Quantity_Color&           aSrcIntColor = anAspect->BackInteriorColor();
         aParams.Init (aSrcMat, aSrcIntColor);
         aParams.Diffuse.a() = 1.0f - (float )aSrcMat.Transparency();
       }
-      if (theHighlightColor != NULL)
+      if (!theHighlight.IsNull()
+        && theHighlight->BasicFillAreaAspect().IsNull())
       {
-        aParams.SetColor (*theHighlightColor);
-        aParams.Diffuse.a() = theHighlightColor->a();
+        aParams.SetColor (theHighlight->ColorRGBA());
+        aParams.Diffuse.a() = theHighlight->ColorRGBA().Alpha();
       }
 
       myActiveProgram->SetUniform (this, aLoc, OpenGl_Material::NbOfVec4(),

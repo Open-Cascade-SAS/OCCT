@@ -5396,8 +5396,14 @@ static int VSetEdgeType (Draw_Interpretor& theDI,
   Handle(AIS_InteractiveObject) anObject = 
     Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(aName));
   
-  // Enable trianle edge mode
-  anObject->Attributes()->ShadingAspect()->Aspect()->SetEdgeOn();
+  // Enable triangle edge mode
+  if (!anObject->Attributes()->HasOwnShadingAspect())
+  {
+    anObject->Attributes()->SetShadingAspect (new Prs3d_ShadingAspect());
+    *anObject->Attributes()->ShadingAspect()->Aspect() = *anObject->Attributes()->Link()->ShadingAspect()->Aspect();
+  }
+  const Handle(Prs3d_ShadingAspect)& aFillAreaAspect = anObject->Attributes()->ShadingAspect();
+  aFillAreaAspect->Aspect()->SetEdgeOn();
 
   // Parse parameters
   for (Standard_Integer anIt = 2; anIt < theArgNum; ++anIt)
@@ -5440,7 +5446,7 @@ static int VSetEdgeType (Draw_Interpretor& theDI,
                                                 aB > 1 ? aB / 255.0 : aB,
                                                 Quantity_TOC_RGB);
 
-        anObject->Attributes()->ShadingAspect()->Aspect()->SetEdgeColor (aColor);
+        aFillAreaAspect->Aspect()->SetEdgeColor (aColor);
       }
       else if (aParam.IsEqual ("-force"))
       {
@@ -5462,7 +5468,7 @@ static int VSetEdgeType (Draw_Interpretor& theDI,
   }
   else
   {
-    anObject->SetAspect (anObject->Attributes()->ShadingAspect());
+    anObject->SetAspect (aFillAreaAspect);
   }
 
   //Update view

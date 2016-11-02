@@ -48,7 +48,14 @@ myComponent(aComponent),
 myHasTOM(Standard_False),
 myTOM(Aspect_TOM_PLUS)
 {
-  myHilightMode=-99;
+  myHilightDrawer = new Prs3d_Drawer();
+  myHilightDrawer->SetDisplayMode (-99);
+  myHilightDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_PLUS, Quantity_NOC_GRAY80, 3.0));
+  myHilightDrawer->SetColor (Quantity_NOC_GRAY80);
+  myDynHilightDrawer = new Prs3d_Drawer();
+  myDynHilightDrawer->SetDisplayMode (-99);
+  myDynHilightDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_PLUS, Quantity_NOC_CYAN1, 3.0));
+  myDynHilightDrawer->SetColor (Quantity_NOC_CYAN1);
 }
 
 //=======================================================================
@@ -85,11 +92,8 @@ void AIS_Point::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
     StdPrs_Point::Add(aPresentation,myComponent,myDrawer);
   else if (aMode== -99)
     {
-      Handle(Graphic3d_AspectMarker3d) PtA = new Graphic3d_AspectMarker3d ();
-      PtA->SetType(Aspect_TOM_PLUS);
-      PtA->SetScale(3.);
       Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
-      TheGroup->SetPrimitivesAspect(PtA);
+      TheGroup->SetPrimitivesAspect (myHilightDrawer->PointAspect()->Aspect());
       Handle(Graphic3d_ArrayOfPoints) aPoint = new Graphic3d_ArrayOfPoints (1);
       aPoint->AddVertex (myComponent->X(),myComponent->Y(),myComponent->Z());
       TheGroup->AddPrimitiveArray (aPoint);
@@ -134,10 +138,10 @@ void AIS_Point::SetColor(const Quantity_NameOfColor aCol)
   SetColor(Quantity_Color(aCol));
 }
 
-void AIS_Point::SetColor(const Quantity_Color &aCol)
+void AIS_Point::SetColor (const Quantity_Color& theCol)
 {
   hasOwnColor=Standard_True;
-  myOwnColor=aCol;
+  myDrawer->SetColor (theCol);
   UpdatePointValues();
 }
 
@@ -199,10 +203,11 @@ void AIS_Point::UnsetMarker()
 //purpose  : 
 //=======================================================================
 
- Standard_Boolean  AIS_Point::
-AcceptDisplayMode(const Standard_Integer aMode) const
-{return aMode == 0;}
-
+ Standard_Boolean AIS_Point::AcceptDisplayMode (const Standard_Integer theMode) const
+{
+  return theMode == 0
+      || theMode == -99;
+}
 
 //=======================================================================
 //function : UpdatePointValues
@@ -227,7 +232,7 @@ void AIS_Point::UpdatePointValues()
     aScale = myDrawer->Link()->PointAspect()->Aspect()->Scale();
   }
 
-  if(hasOwnColor) aCol = myOwnColor;
+  if(hasOwnColor) aCol = myDrawer->Color();
   if(myOwnWidth!=0.0) aScale = myOwnWidth;
   if(myHasTOM) aTOM = myTOM;
   

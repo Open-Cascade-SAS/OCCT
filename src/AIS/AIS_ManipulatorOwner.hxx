@@ -38,7 +38,7 @@ public:
   Standard_EXPORT virtual ~AIS_ManipulatorOwner() {}
 
   Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                                 const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                                 const Handle(Prs3d_Drawer)& theStyle,
                                                  const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT Standard_Boolean IsHilighted (const Handle(PrsMgr_PresentationManager)& thePM,

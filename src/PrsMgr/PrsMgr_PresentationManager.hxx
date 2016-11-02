@@ -20,7 +20,7 @@
 #include <Graphic3d_NameOfMaterial.hxx>
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_ZLayerId.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <PrsMgr_ListOfPresentations.hxx>
 #include <Quantity_Color.hxx>
 #include <Quantity_NameOfColor.hxx>
@@ -30,25 +30,23 @@
 #include <Standard_Type.hxx>
 
 class Geom_Transformation;
+class Prs3d_Drawer;
 class Prs3d_Presentation;
 class PrsMgr_PresentableObject;
 class PrsMgr_Presentation;
 class Standard_NoSuchObject;
 class V3d_Viewer;
 
-class PrsMgr_PresentationManager;
-DEFINE_STANDARD_HANDLE(PrsMgr_PresentationManager, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(PrsMgr_PresentationManager, Standard_Transient)
 
 //! A framework to manage 3D displays, graphic entities and their updates.
 //! Used in the AIS package (Application Interactive Services), to enable the advanced user to define the
 //! default display mode of a new interactive object which extends the list of signatures and types.
 //! Definition of new display types is handled by calling the presentation algorithms provided by the StdPrs package.
-class PrsMgr_PresentationManager : public MMgt_TShared
+class PrsMgr_PresentationManager : public Standard_Transient
 {
-
+  DEFINE_STANDARD_RTTIEXT(PrsMgr_PresentationManager, Standard_Transient)
 public:
-
-  
 
   //! Creates a framework to manage displays and graphic entities with the 3D view theStructureManager.
   Standard_EXPORT PrsMgr_PresentationManager(const Handle(Graphic3d_StructureManager)& theStructureManager);
@@ -69,10 +67,11 @@ public:
   //! Sets the visibility of presentable object.
   Standard_EXPORT void SetVisibility (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode, const Standard_Boolean theValue);
 
-  //! Removes highlighting from the presentation of the
-  //! presentable object thePrsObject in this framework with the display mode theMode.
-  Standard_EXPORT void Unhighlight (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode = 0);
-  
+  //! Removes highlighting from the presentation of the presentable object.
+  Standard_EXPORT void Unhighlight (const Handle(PrsMgr_PresentableObject)& thePrsObject);
+
+  Standard_DEPRECATED("Deprecated method Unhighlight() - argument theMode will be ignored")
+  void Unhighlight (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode) { Unhighlight (thePrsObject); (void )theMode; }
 
   //! Sets the display priority theNewPrior of the
   //! presentable object thePrsObject in this framework with the display mode theMode.
@@ -119,13 +118,13 @@ public:
   Standard_EXPORT void RedrawImmediate (const Handle(V3d_Viewer)& theViewer);
 
   //! Returns true if Presentation Manager is accumulating transient list of presentations to be displayed in immediate mode.
-  Standard_Boolean IsImmediateModeOn() const;
+  Standard_Boolean IsImmediateModeOn() const { return myImmediateModeOn > 0; }
 
   //! Highlights the graphic object thePrsObject in the color theColor.
   //! thePrsObject has the display mode theMode;
   //! this has the default value of 0, that is, the wireframe display mode.
   Standard_EXPORT void Color (const Handle(PrsMgr_PresentableObject)& thePrsObject,
-                              const Handle(Graphic3d_HighlightStyle)& theStyle,
+                              const Handle(Prs3d_Drawer)& theStyle,
                               const Standard_Integer theMode = 0,
                               const Handle(PrsMgr_PresentableObject)& theSelObj = NULL,
                               const Graphic3d_ZLayerId theImmediateStructLayerId = Graphic3d_ZLayerId_Topmost);
@@ -138,7 +137,7 @@ public:
   Standard_EXPORT void Transform (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Handle(Geom_Transformation)& theTransformation, const Standard_Integer theMode = 0);
   
   //! Returns the structure manager.
-  const Handle(Graphic3d_StructureManager)& StructureManager() const;
+  const Handle(Graphic3d_StructureManager)& StructureManager() const { return myStructureManager; }
 
   //! Returns true if there is a presentation of the
   //! presentable object thePrsObject in this framework, thePrsObject having the display mode theMode.
@@ -158,34 +157,24 @@ public:
                                             const Standard_Integer theMode = 0,
                                             const Handle(PrsMgr_PresentableObject)& theSelObj = NULL);
 
-
-
-  DEFINE_STANDARD_RTTIEXT(PrsMgr_PresentationManager,MMgt_TShared)
-
 protected:
 
-  
   //! Removes a presentation of the presentable object thePrsObject to this framework. thePrsObject has the display mode theMode.
   Standard_EXPORT Standard_Boolean RemovePresentation (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode = 0);
-
-  Handle(Graphic3d_StructureManager) myStructureManager;
-  Standard_Integer myImmediateModeOn;
-  PrsMgr_ListOfPresentations myImmediateList;
-  PrsMgr_ListOfPresentations myViewDependentImmediateList;
-
 
 private:
 
   //! Handles the structures from <myImmediateList> and displays it separating view-dependent structures and taking into account
   //! structure visibility by setting proper affinity.
   void displayImmediate (const Handle(V3d_Viewer)& theViewer);
+
+protected:
+
+  Handle(Graphic3d_StructureManager) myStructureManager;
+  Standard_Integer myImmediateModeOn;
+  PrsMgr_ListOfPresentations myImmediateList;
+  PrsMgr_ListOfPresentations myViewDependentImmediateList;
+
 };
-
-
-#include <PrsMgr_PresentationManager.lxx>
-
-
-
-
 
 #endif // _PrsMgr_PresentationManager_HeaderFile

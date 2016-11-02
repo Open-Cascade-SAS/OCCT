@@ -873,7 +873,7 @@ void AIS_Manipulator::ClearSelected()
 //purpose  : 
 //=======================================================================
 void AIS_Manipulator::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                             const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                             const Handle(Prs3d_Drawer)& theStyle,
                                              const Handle(SelectMgr_EntityOwner)& theOwner)
 {
   Handle(AIS_ManipulatorOwner) anOwner = Handle(AIS_ManipulatorOwner)::DownCast (theOwner);

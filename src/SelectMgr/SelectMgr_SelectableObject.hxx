@@ -53,7 +53,8 @@ DEFINE_STANDARD_HANDLE(SelectMgr_SelectableObject, PrsMgr_PresentableObject)
 //! in AIS. This is particularly true in the creation of new interactive objects.
 class SelectMgr_SelectableObject : public PrsMgr_PresentableObject
 {
-
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_SelectableObject, PrsMgr_PresentableObject)
+  friend class SelectMgr_SelectionManager;
 public:
 
   //! Clears all selections of the object
@@ -143,7 +144,7 @@ public:
   //! Method which hilight an owner belonging to
   //! this selectable object  ( for fast presentation draw )
   Standard_EXPORT virtual void HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                                      const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                                      const Handle(Prs3d_Drawer)& theStyle,
                                                       const Handle(SelectMgr_EntityOwner)& theOwner);
   
   //! If returns True, the old mechanism for highlighting
@@ -176,34 +177,7 @@ public:
   //! by storing its minimum and maximum 3d coordinates
   //! to output parameters
   Standard_EXPORT virtual void BoundingBox (Bnd_Box& theBndBox) = 0;
-  
-  //! Initializes the drawing tool theDrawer.
-  Standard_EXPORT virtual void SetAttributes (const Handle(Prs3d_Drawer)& theDrawer);
-  
-  //! Returns the attributes settings.
-  const Handle(Prs3d_Drawer)& Attributes() const
-  {
-    return myDrawer;
-  }
 
-  //! Clears settings provided by the drawing tool theDrawer.
-  Standard_EXPORT virtual void UnsetAttributes();
-  
-  //! Initializes the hilight drawing tool theDrawer.
-  Standard_EXPORT virtual void SetHilightAttributes (const Handle(Prs3d_Drawer)& theDrawer);
-  
-  //! Returns the hilight attributes settings.
-  const Handle(Prs3d_Drawer)& HilightAttributes() const
-  {
-    return myHilightDrawer;
-  }
-
-  //! Clears settings provided by the hilight drawing tool theDrawer.
-  Standard_EXPORT virtual void UnsetHilightAttributes();
-  
-  //! Initializes theDrawer by default hilight settings.
-  Standard_EXPORT static void InitDefaultHilightAttributes (const Handle(Prs3d_Drawer)& theDrawer);
-  
   //! Sets common entity owner for assembly sensitive object entities
   Standard_EXPORT void SetAssemblyOwner (const Handle(SelectMgr_EntityOwner)& theOwner, const Standard_Integer theMode = -1);
   
@@ -223,12 +197,6 @@ public:
   //! Returns the owner of mode for selection of object as a whole
   Standard_EXPORT virtual Handle(SelectMgr_EntityOwner) GlobalSelOwner() const;
 
-
-friend class SelectMgr_SelectionManager;
-
-
-  DEFINE_STANDARD_RTTIEXT(SelectMgr_SelectableObject,PrsMgr_PresentableObject)
-
 protected:
 
   Standard_EXPORT SelectMgr_SelectableObject(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d = PrsMgr_TOP_AllView);
@@ -243,8 +211,6 @@ protected:
 protected:
 
   SelectMgr_SequenceOfSelection myselections;
-  Handle(Prs3d_Drawer) myDrawer;
-  Handle(Prs3d_Drawer) myHilightDrawer;
   Handle(SelectMgr_EntityOwner) myAssemblyOwner;
   Standard_Boolean myAutoHilight;
 

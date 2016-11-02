@@ -23,7 +23,7 @@
 #include <Quantity_Length.hxx>
 #include <Aspect_TypeOfDeflection.hxx>
 #include <Graphic3d_GroupAspect.hxx>
-#include <Graphic3d_HighlightStyle.hxx>
+#include <Graphic3d_PresentationAttributes.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
 #include <Standard_Real.hxx>
 #include <Prs3d_VertexDrawMode.hxx>
@@ -42,15 +42,14 @@ class Prs3d_DatumAspect;
 class Prs3d_DimensionAspect;
 class TCollection_AsciiString;
 
-class Prs3d_Drawer;
-DEFINE_STANDARD_HANDLE(Prs3d_Drawer, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Prs3d_Drawer, Graphic3d_PresentationAttributes)
 
 //! A graphic attribute manager which governs how
 //! objects such as color, width, line thickness and deflection are displayed.
 //! A drawer includes an instance of the Aspect classes with particular default values.
-class Prs3d_Drawer : public MMgt_TShared
+class Prs3d_Drawer : public Graphic3d_PresentationAttributes
 {
-
+  DEFINE_STANDARD_RTTIEXT(Prs3d_Drawer, Graphic3d_PresentationAttributes)
 public:
 
   //! Default constructor.
@@ -824,36 +823,6 @@ public:
   //! that overrides the one in the link.
   Standard_Boolean HasOwnDimAngleDisplayUnits() const { return myHasOwnDimAngleDisplayUnits; }
 
-  //! Returns true if the drawer has its own style of dynamic highlighting
-  //! that overrides the one in the link
-  Standard_Boolean HasOwnHighlightStyle() const { return myHasOwnHighlightStyle; }
-
-  //! Returns own dynamic highlight style or corresponding style of the link. If no one of
-  //! them is defined, invalid handle will be returned.
-  const Handle(Graphic3d_HighlightStyle)& HighlightStyle() const
-  {
-    return HasOwnHighlightStyle() || myLink.IsNull()
-      ? myHighlightStyle : myLink->HighlightStyle();
-  }
-
-  //! Allows to set own dynamic highlight style.
-  Standard_EXPORT void SetHighlightStyle (const Handle(Graphic3d_HighlightStyle)& theStyle);
-
-  //! Returns true if the drawer has its own style of selection highlighting
-  //! that overrides the one in the link
-  Standard_Boolean HasOwnSelectionStyle() const { return myHasOwnSelectionStyle; }
-
-  //! Returns own selection highlight style or corresponding style of the link. If no one of
-  //! them is defined, invalid handle will be returned.
-  const Handle(Graphic3d_HighlightStyle)& SelectionStyle() const
-  {
-    return HasOwnSelectionStyle() || myLink.IsNull()
-      ? mySelectionStyle : myLink->SelectionStyle();
-  }
-
-  //! Allows to set own selection highlight style.
-  Standard_EXPORT void SetSelectionStyle (const Handle(Graphic3d_HighlightStyle)& theStyle);
-
   //! Returns the drawer to which the current object references.
   const Handle(Prs3d_Drawer)& Link() { return myLink; }
 
@@ -861,10 +830,10 @@ public:
   Standard_Boolean HasLink() const { return !myLink.IsNull(); }
 
   //! Sets theDrawer as a link to which the current object references.
-  void Link (const Handle(Prs3d_Drawer)& theDrawer)
-  {
-    myLink = theDrawer;
-  }
+  void Link (const Handle(Prs3d_Drawer)& theDrawer) { SetLink (theDrawer); }
+
+  //! Sets theDrawer as a link to which the current object references.
+  void SetLink (const Handle(Prs3d_Drawer)& theDrawer) { myLink = theDrawer; }
 
   //! Removes local attributes. 
   Standard_EXPORT void ClearLocalAttributes();
@@ -968,15 +937,9 @@ protected:
   Standard_Boolean              myHasOwnDimLengthDisplayUnits;
   Standard_Boolean              myHasOwnDimAngleDisplayUnits;
 
-  Handle(Graphic3d_HighlightStyle) myHighlightStyle;
-  Standard_Boolean                 myHasOwnHighlightStyle;
-  Handle(Graphic3d_HighlightStyle) mySelectionStyle;
-  Standard_Boolean                 myHasOwnSelectionStyle;
-
-public:
-
-  DEFINE_STANDARD_RTTIEXT(Prs3d_Drawer,MMgt_TShared)
-
 };
+
+Standard_DEPRECATED("Class name is deprecated - use Prs3d_Drawer instead")
+typedef Prs3d_Drawer Graphic3d_HighlightStyle;
 
 #endif // _Prs3d_Drawer_HeaderFile

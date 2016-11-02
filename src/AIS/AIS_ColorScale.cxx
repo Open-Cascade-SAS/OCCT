@@ -576,7 +576,7 @@ void AIS_ColorScale::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePr
   Standard_Boolean toDrawLabel = GetLabelPosition() != Aspect_TOCSP_NONE;
   TCollection_ExtendedString aTitle = GetTitle();
   Standard_Integer aTitleHeight = aSpacer;
-  Quantity_Color aFgColor (hasOwnColor ? myOwnColor : Quantity_NOC_WHITE);
+  Quantity_Color aFgColor (hasOwnColor ? myDrawer->Color() : Quantity_NOC_WHITE);
 
   // Draw title
   if (aTitle.Length())

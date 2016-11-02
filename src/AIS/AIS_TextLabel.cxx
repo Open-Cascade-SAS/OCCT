@@ -56,7 +56,7 @@ AIS_TextLabel::AIS_TextLabel()
 void AIS_TextLabel::SetColor (const Quantity_Color& theColor)
 {
   hasOwnColor = Standard_True;
-  myOwnColor  = theColor;
+  myDrawer->SetColor (theColor);
   myDrawer->TextAspect()->SetColor (theColor);
 }
 

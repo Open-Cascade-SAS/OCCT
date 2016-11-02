@@ -16,6 +16,7 @@
 
 #include <PrsMgr_PresentableObject.hxx>
 
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Projector.hxx>
 #include <PrsMgr_ModedPresentation.hxx>
@@ -23,7 +24,7 @@
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_MapOfInteger.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_PresentableObject,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_PresentableObject, Standard_Transient)
 
 namespace
 {
@@ -44,13 +45,13 @@ const gp_Trsf& PrsMgr_PresentableObject::getIdentityTrsf()
 //purpose  :
 //=======================================================================
 PrsMgr_PresentableObject::PrsMgr_PresentableObject (const PrsMgr_TypeOfPresentation3d theType)
-: myTypeOfPresentation3d (theType),
+: myDrawer (new Prs3d_Drawer()),
+  myTypeOfPresentation3d (theType),
   myIsMutable (Standard_False),
-  myZLayer (Graphic3d_ZLayerId_Default),
   myHasOwnPresentations (Standard_True),
   myParent (NULL)
 {
-  //
+  myDrawer->SetDisplayMode (-1);
 }
 
 //=======================================================================
@@ -407,12 +408,12 @@ void PrsMgr_PresentableObject::RemoveChild (const Handle(PrsMgr_PresentableObjec
 //=======================================================================
 void PrsMgr_PresentableObject::SetZLayer (const Graphic3d_ZLayerId theLayerId)
 {
-  if (myZLayer == theLayerId)
+  if (myDrawer->ZLayer() == theLayerId)
   {
     return;
   }
 
-  myZLayer = theLayerId;
+  myDrawer->SetZLayer (theLayerId);
   for (Standard_Integer aPrsIter = 1; aPrsIter <= myPresentations.Length(); ++aPrsIter)
   {
     const PrsMgr_ModedPresentation& aModedPrs = myPresentations (aPrsIter);
@@ -432,7 +433,7 @@ void PrsMgr_PresentableObject::SetZLayer (const Graphic3d_ZLayerId theLayerId)
 //=======================================================================
 Graphic3d_ZLayerId PrsMgr_PresentableObject::ZLayer() const
 {
-  return myZLayer;
+  return myDrawer->ZLayer();
 }
 
 // =======================================================================
@@ -531,4 +532,27 @@ void PrsMgr_PresentableObject::SetMutable (const Standard_Boolean theIsMutable)
 
     aModedPrs.Presentation()->Presentation()->SetMutable (theIsMutable);
   }
+}
+
+// =======================================================================
+// function : SetAttributes
+// purpose  :
+// =======================================================================
+void PrsMgr_PresentableObject::SetAttributes (const Handle(Prs3d_Drawer)& theDrawer)
+{
+  myDrawer = theDrawer;
+}
+
+// =======================================================================
+// function : UnsetAttributes
+// purpose  :
+// =======================================================================
+void PrsMgr_PresentableObject::UnsetAttributes()
+{
+  Handle(Prs3d_Drawer) aDrawer = new Prs3d_Drawer();
+  if (myDrawer->HasLink())
+  {
+    aDrawer->Link(myDrawer->Link());
+  }
+  myDrawer = aDrawer;
 }

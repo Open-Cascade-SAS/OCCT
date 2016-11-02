@@ -38,6 +38,7 @@
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PlaneAspect.hxx>
+#include <Prs3d_PointAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <PrsMgr_ModedPresentation.hxx>
 #include <PrsMgr_PresentableObject.hxx>
@@ -66,6 +67,38 @@ namespace
 {
   typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), Handle(SelectMgr_IndexedMapOfOwner)> AIS_MapOfObjectOwners;
   typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), Handle(SelectMgr_IndexedMapOfOwner)>::Iterator AIS_MapIteratorOfMapOfObjectOwners;
+
+  //! Initialize default highlighting attributes.
+  static void initDefaultHilightAttributes (const Handle(Prs3d_Drawer)& theDrawer)
+  {
+    theDrawer->SetMethod (Aspect_TOHM_COLOR);
+    theDrawer->SetDisplayMode (0);
+
+    theDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_POINT, Quantity_NOC_BLACK, 1.0));
+    *theDrawer->PointAspect()->Aspect() = *theDrawer->Link()->PointAspect()->Aspect();
+    theDrawer->SetLineAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    *theDrawer->LineAspect()->Aspect() = *theDrawer->Link()->LineAspect()->Aspect();
+    theDrawer->SetWireAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    *theDrawer->WireAspect()->Aspect() = *theDrawer->Link()->WireAspect()->Aspect();
+    theDrawer->SetPlaneAspect (new Prs3d_PlaneAspect());
+    *theDrawer->PlaneAspect()->EdgesAspect() = *theDrawer->Link()->PlaneAspect()->EdgesAspect();
+    theDrawer->SetFreeBoundaryAspect   (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    *theDrawer->FreeBoundaryAspect()->Aspect() = *theDrawer->Link()->FreeBoundaryAspect()->Aspect();
+    theDrawer->SetUnFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    *theDrawer->UnFreeBoundaryAspect()->Aspect() = *theDrawer->Link()->UnFreeBoundaryAspect()->Aspect();
+
+    theDrawer->WireAspect()->SetWidth (2.0);
+    theDrawer->LineAspect()->SetWidth (2.0);
+    theDrawer->PlaneAspect()->EdgesAspect()->SetWidth (2.0);
+    theDrawer->FreeBoundaryAspect()  ->SetWidth (2.0);
+    theDrawer->UnFreeBoundaryAspect()->SetWidth (2.0);
+    theDrawer->PointAspect()->SetTypeOfMarker (Aspect_TOM_O_POINT);
+    theDrawer->PointAspect()->SetScale (2.0);
+
+    // the triangulation should be computed using main presentation attributes,
+    // and should not be overridden by highlighting
+    theDrawer->SetAutoTriangulation (Standard_False);
+  }
 }
 
 //=======================================================================
@@ -79,24 +112,59 @@ myMainPM(new PrsMgr_PresentationManager3d(MainViewer->StructureManager())),
 myMainVwr(MainViewer),
 myMainSel(new StdSelect_ViewerSelector3d()),
 myWasLastMain(Standard_False),
-myCurrentTouched(Standard_False),
-mySelectedTouched(Standard_False),
 myToHilightSelected(Standard_True),
+mySelection(new AIS_Selection()),
 myFilters(new SelectMgr_OrFilter()),
 myDefaultDrawer(new Prs3d_Drawer()),
-mySelection(new AIS_Selection()),
-myDefaultColor(Quantity_NOC_GOLDENROD),
-myHiStyle(new Graphic3d_HighlightStyle (Aspect_TOHM_COLOR, Quantity_NOC_CYAN1)),
-mySelStyle(new Graphic3d_HighlightStyle (Aspect_TOHM_COLOR, Quantity_NOC_GRAY80)),
-myPreselectionColor(Quantity_NOC_GREEN),
-mySubintStyle(new Graphic3d_HighlightStyle (Aspect_TOHM_COLOR, Quantity_NOC_GRAY40)),
-myDisplayMode(0),
 myCurLocalIndex(0),
 myCurDetected(0),
 myCurHighlighted(0),
-myZDetectionFlag(0),
 myIsAutoActivateSelMode(Standard_True)
-{ 
+{
+  myStyles[Prs3d_TypeOfHighlight_None]          = myDefaultDrawer;
+  myStyles[Prs3d_TypeOfHighlight_Selected]      = new Prs3d_Drawer();
+  myStyles[Prs3d_TypeOfHighlight_Dynamic]       = new Prs3d_Drawer();
+  myStyles[Prs3d_TypeOfHighlight_LocalSelected] = new Prs3d_Drawer();
+  myStyles[Prs3d_TypeOfHighlight_LocalDynamic]  = new Prs3d_Drawer();
+  myStyles[Prs3d_TypeOfHighlight_SubIntensity]  = new Prs3d_Drawer();
+
+  myDefaultDrawer->SetZLayer(Graphic3d_ZLayerId_Default);
+  myDefaultDrawer->SetDisplayMode(0);
+  {
+    const Handle(Prs3d_Drawer)& aStyle = myStyles[Prs3d_TypeOfHighlight_Dynamic];
+    aStyle->Link (myDefaultDrawer);
+    initDefaultHilightAttributes (aStyle);
+    aStyle->SetZLayer(Graphic3d_ZLayerId_Top);
+    aStyle->SetColor (Quantity_NOC_CYAN1);
+  }
+  {
+    const Handle(Prs3d_Drawer)& aStyle = myStyles[Prs3d_TypeOfHighlight_LocalDynamic];
+    aStyle->Link (myDefaultDrawer);
+    initDefaultHilightAttributes (aStyle);
+    aStyle->SetZLayer(Graphic3d_ZLayerId_Topmost);
+    aStyle->SetColor (Quantity_NOC_CYAN1);
+  }
+  {
+    const Handle(Prs3d_Drawer)& aStyle = myStyles[Prs3d_TypeOfHighlight_Selected];
+    aStyle->Link (myDefaultDrawer);
+    initDefaultHilightAttributes (aStyle);
+    aStyle->SetZLayer(Graphic3d_ZLayerId_UNKNOWN);
+    aStyle->SetColor (Quantity_NOC_GRAY80);
+  }
+  {
+    const Handle(Prs3d_Drawer)& aStyle = myStyles[Prs3d_TypeOfHighlight_LocalSelected];
+    aStyle->Link (myDefaultDrawer);
+    initDefaultHilightAttributes (aStyle);
+    aStyle->SetZLayer(Graphic3d_ZLayerId_UNKNOWN);
+    aStyle->SetColor (Quantity_NOC_GRAY80);
+  }
+  {
+    const Handle(Prs3d_Drawer)& aStyle = myStyles[Prs3d_TypeOfHighlight_SubIntensity];
+    aStyle->SetZLayer(Graphic3d_ZLayerId_UNKNOWN);
+    aStyle->SetMethod(Aspect_TOHM_COLOR);
+    aStyle->SetColor (Quantity_NOC_GRAY40);
+  }
+
   InitAttributes();
 }
 
@@ -443,7 +511,7 @@ void AIS_InteractiveContext::Display (const Handle(AIS_InteractiveObject)& theIO
     {
       if(myMainPM->IsHighlighted (theIObj, anOldMode))
       {
-        unhighlightGlobal (theIObj, anOldMode);
+        unhighlightGlobal (theIObj);
       }
       myMainPM->SetVisibility (theIObj, anOldMode, Standard_False);
     }
@@ -454,8 +522,7 @@ void AIS_InteractiveContext::Display (const Handle(AIS_InteractiveObject)& theIO
     aStatus->SetGraphicStatus (AIS_DS_Displayed);
     if (aStatus->IsHilighted())
     {
-      const Standard_Integer aHiMod = theIObj->HasHilightMode() ? theIObj->HilightMode() : theDispMode;
-      highlightGlobal (theIObj, aStatus->HilightStyle(), aHiMod);
+      highlightGlobal (theIObj, aStatus->HilightStyle(), theDispMode);
     }
     if (theSelectionMode != -1)
     {
@@ -854,7 +921,7 @@ void AIS_InteractiveContext::ClearPrs (const Handle(AIS_InteractiveObject)& theI
 //purpose  : 
 //=======================================================================
 void AIS_InteractiveContext::HilightWithColor(const Handle(AIS_InteractiveObject)& theObj,
-                                              const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                              const Handle(Prs3d_Drawer)& theStyle,
                                               const Standard_Boolean theIsToUpdate)
 {
   if (theObj.IsNull())
@@ -871,8 +938,7 @@ void AIS_InteractiveContext::HilightWithColor(const Handle(AIS_InteractiveObject
 
     if (aStatus->GraphicStatus() == AIS_DS_Displayed)
     {
-      const Standard_Integer aHilightMode = theObj->HasHilightMode() ? theObj->HilightMode() : 0;
-      highlightGlobal (theObj, theStyle, aHilightMode);
+      highlightGlobal (theObj, theStyle, aStatus->DisplayMode());
       aStatus->SetHilightStyle (theStyle);
     }
   }
@@ -899,12 +965,11 @@ void AIS_InteractiveContext::Unhilight(const Handle(AIS_InteractiveObject)& anIO
 
     const Handle(AIS_GlobalStatus)& aStatus = myObjects(anIObj);
     aStatus->SetHilightStatus (Standard_False);
-    aStatus->SetHilightStyle (new Graphic3d_HighlightStyle());
+    aStatus->SetHilightStyle (Handle(Prs3d_Drawer)());
 
     if (aStatus->GraphicStatus() == AIS_DS_Displayed)
     {
-      Standard_Integer aHilightMode = anIObj->HasHilightMode() ? anIObj->HilightMode() : 0;
-      unhighlightGlobal (anIObj, aHilightMode);
+      unhighlightGlobal (anIObj);
     }
   }
   else
@@ -971,7 +1036,7 @@ Standard_Boolean AIS_InteractiveContext::IsHilighted (const Handle(SelectMgr_Ent
 //purpose  :
 //=======================================================================
 Standard_Boolean AIS_InteractiveContext::HighlightStyle (const Handle(AIS_InteractiveObject)& theObj,
-                                                         Handle(Graphic3d_HighlightStyle)& theStyle) const
+                                                         Handle(Prs3d_Drawer)& theStyle) const
 {
   if (HasOpenedContext())
     myLocalContexts (myCurLocalIndex)->HighlightStyle (theObj, theStyle);
@@ -993,7 +1058,7 @@ Standard_Boolean AIS_InteractiveContext::HighlightStyle (const Handle(AIS_Intera
 //purpose  :
 //=======================================================================
 Standard_Boolean AIS_InteractiveContext::HighlightStyle (const Handle(SelectMgr_EntityOwner)& theOwner,
-                                                         Handle(Graphic3d_HighlightStyle)& theStyle) const
+                                                         Handle(Prs3d_Drawer)& theStyle) const
 {
   if (theOwner.IsNull() || !theOwner->HasSelectable())
     return Standard_False;
@@ -1012,7 +1077,7 @@ Standard_Boolean AIS_InteractiveContext::HighlightStyle (const Handle(SelectMgr_
       // check if the object has own selection style. If not, it can
       // only be highlighted with default selection style (because
       // sub-intensity does not modify any selection states)
-      theStyle = getSelStyle (anObj);
+      theStyle = getSelStyle (anObj, theOwner);
     }
     return Standard_True;
   }
@@ -1099,8 +1164,8 @@ Standard_Integer AIS_InteractiveContext::DisplayPriority (const Handle(AIS_Inter
   {
     Standard_Integer aDispMode = theIObj->HasDisplayMode()
                                ? theIObj->DisplayMode()
-                               : (theIObj->AcceptDisplayMode (myDisplayMode)
-                                ? myDisplayMode
+                               : (theIObj->AcceptDisplayMode (myDefaultDrawer->DisplayMode())
+                                ? myDefaultDrawer->DisplayMode()
                                 : 0);
     return myMainPM->DisplayPriority (theIObj, aDispMode);
   }
@@ -1128,8 +1193,8 @@ void AIS_InteractiveContext::SetDisplayPriority (const Handle(AIS_InteractiveObj
     {
       Standard_Integer aDisplayMode = theIObj->HasDisplayMode()
                                     ? theIObj->DisplayMode()
-                                    : (theIObj->AcceptDisplayMode (myDisplayMode)
-                                     ? myDisplayMode
+                                    : (theIObj->AcceptDisplayMode (myDefaultDrawer->DisplayMode())
+                                     ? myDefaultDrawer->DisplayMode()
                                      : 0);
       myMainPM->SetDisplayPriority (theIObj, aDisplayMode, thePriority);
     }
@@ -1470,7 +1535,7 @@ Standard_Real AIS_InteractiveContext::HLRAngle() const
 void AIS_InteractiveContext::SetDisplayMode(const Standard_Integer theMode,
                                             const Standard_Boolean theToUpdateViewer)
 {
-  if (theMode == myDisplayMode)
+  if (theMode == myDefaultDrawer->DisplayMode())
   {
     return;
   }
@@ -1498,18 +1563,18 @@ void AIS_InteractiveContext::SetDisplayMode(const Standard_Integer theMode,
       if (!myLastPicked.IsNull() && myLastPicked->IsSameSelectable (anObj))
       {
         myMainPM->BeginImmediateDraw();
-        unhighlightGlobal (anObj, myDisplayMode);
+        unhighlightGlobal (anObj);
         myMainPM->EndImmediateDraw (myMainVwr);
       }
       if (aStatus->IsSubIntensityOn())
       {
         highlightWithSubintensity (anObj, theMode);
       }
-      myMainPM->SetVisibility (anObj, myDisplayMode, Standard_False);
+      myMainPM->SetVisibility (anObj, myDefaultDrawer->DisplayMode(), Standard_False);
     }
   }
 
-  myDisplayMode = theMode;
+  myDefaultDrawer->SetDisplayMode (theMode);
   if (theToUpdateViewer)
   {
     myMainVwr->Update();
@@ -1549,7 +1614,7 @@ void AIS_InteractiveContext::SetDisplayMode (const Handle(AIS_InteractiveObject)
   {
     if (myMainPM->IsHighlighted (theIObj, anOldMode))
     {
-      unhighlightGlobal (theIObj, anOldMode);
+      unhighlightGlobal (theIObj);
     }
     myMainPM->SetVisibility (theIObj, anOldMode, Standard_False);
   }
@@ -1557,11 +1622,9 @@ void AIS_InteractiveContext::SetDisplayMode (const Handle(AIS_InteractiveObject)
   aStatus->SetDisplayMode (theMode);
 
   myMainPM->Display (theIObj, theMode);
-  Standard_Integer aDispMode, aHiMode, aSelMode;
-  GetDefModes (theIObj, aDispMode, aHiMode, aSelMode);
   if (aStatus->IsHilighted())
   {
-    highlightGlobal (theIObj, getSelStyle (theIObj), aHiMode);
+    highlightGlobal (theIObj, getSelStyle (theIObj, theIObj->GlobalSelOwner()), theMode);
   }
   if (aStatus->IsSubIntensityOn())
   {
@@ -1595,32 +1658,29 @@ void AIS_InteractiveContext::UnsetDisplayMode (const Handle(AIS_InteractiveObjec
   }
 
   const Standard_Integer anOldMode = theIObj->DisplayMode();
-  if (myDisplayMode == anOldMode)
+  if (myDefaultDrawer->DisplayMode() == anOldMode)
   {
     return;
   }
 
   const Handle(AIS_GlobalStatus)& aStatus = myObjects (theIObj);
-  aStatus->SetDisplayMode (myDisplayMode);
+  aStatus->SetDisplayMode (myDefaultDrawer->DisplayMode());
 
   if (aStatus->GraphicStatus() == AIS_DS_Displayed)
   {
     if (myMainPM->IsHighlighted (theIObj, anOldMode))
     {
-      unhighlightGlobal (theIObj, anOldMode);
+      unhighlightGlobal (theIObj);
     }
     myMainPM->SetVisibility (theIObj, anOldMode, Standard_False);
-    myMainPM->Display (theIObj, myDisplayMode);
-
-    Standard_Integer aDispMode, aHiMode, aSelMode;
-    GetDefModes (theIObj, aDispMode, aHiMode, aSelMode);
+    myMainPM->Display (theIObj, myDefaultDrawer->DisplayMode());
     if (aStatus->IsHilighted())
     {
       highlightSelected (theIObj->GlobalSelOwner());
     }
     if (aStatus->IsSubIntensityOn())
     {
-      highlightWithSubintensity (theIObj, myDisplayMode);
+      highlightWithSubintensity (theIObj, myDefaultDrawer->DisplayMode());
     }
 
     if (theToUpdateViewer)
@@ -2002,16 +2062,15 @@ void AIS_InteractiveContext::SetWidth (const Handle(AIS_InteractiveObject)& theI
   {
     if (myLastinMain->IsAutoHilight())
     {
-      const Standard_Integer aHiMode =
-        theIObj->HasHilightMode() ? theIObj->HilightMode() : 0;
+      const Standard_Integer aHiMode = theIObj->HasHilightMode() ? theIObj->HilightMode() : 0;
       myLastinMain->HilightWithColor (myMainPM,
-                                      myLastinMain->IsSelected() ? getSelStyle (theIObj) : getHiStyle (theIObj),
+                                      myLastinMain->IsSelected() ? getSelStyle (theIObj, myLastinMain) : getHiStyle (theIObj, myLastinMain),
                                       aHiMode);
     }
     else
     {
       theIObj->HilightOwnerWithColor (myMainPM,
-                                      myLastinMain->IsSelected() ? getSelStyle (theIObj) : getHiStyle (theIObj),
+                                      myLastinMain->IsSelected() ? getSelStyle (theIObj, myLastinMain) : getHiStyle (theIObj, myLastinMain),
                                       myLastinMain);
     }
   }
@@ -2081,12 +2140,12 @@ void AIS_InteractiveContext::SetTransparency (const Handle(AIS_InteractiveObject
 
   setContextToObject (theIObj);
   if (!theIObj->IsTransparent()
-    && theValue <= 0.05)
+    && theValue <= 0.005)
   {
     return;
   }
 
-  if (theValue <= 0.05)
+  if (theValue <= 0.005)
   {
     UnsetTransparency (theIObj, theToUpdateViewer);
     return;
@@ -2240,8 +2299,8 @@ void AIS_InteractiveContext::GetDefModes (const Handle(AIS_InteractiveObject)& t
 
   theDispMode = theIObj->HasDisplayMode()
               ? theIObj->DisplayMode()
-              : (theIObj->AcceptDisplayMode (myDisplayMode)
-               ? myDisplayMode
+              : (theIObj->AcceptDisplayMode (myDefaultDrawer->DisplayMode())
+               ? myDefaultDrawer->DisplayMode()
                : 0);
   theHiMode  = theIObj->HasHilightMode()   ? theIObj->HilightMode()   : theDispMode;
   theSelMode = theIObj->GlobalSelectionMode();
@@ -2278,7 +2337,7 @@ void AIS_InteractiveContext::EraseGlobal (const Handle(AIS_InteractiveObject)& t
     }
     else if (myMainPM->IsHighlighted (theIObj, aStatus->DisplayMode()))
     {
-      unhighlightGlobal (theIObj, aStatus->DisplayMode());
+      unhighlightGlobal (theIObj);
     }
     Standard_ENABLE_DEPRECATION_WARNINGS
   }
@@ -2288,7 +2347,7 @@ void AIS_InteractiveContext::EraseGlobal (const Handle(AIS_InteractiveObject)& t
   if (aStatus->IsHilighted()
    && theIObj->HasHilightMode())
   {
-    unhighlightGlobal (theIObj, aDispMode);
+    unhighlightGlobal (theIObj);
   }
 
   if (!myLastPicked.IsNull()
@@ -2420,7 +2479,7 @@ void AIS_InteractiveContext::ClearGlobalPrs (const Handle(AIS_InteractiveObject)
     if (aDispMode == theMode
      && myMainPM->IsHighlighted (theIObj, theMode))
     {
-      unhighlightGlobal (theIObj, theMode);
+      unhighlightGlobal (theIObj);
     }
 
     myMainPM->Erase (theIObj, theMode);

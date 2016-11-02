@@ -14,18 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <SelectBasics_EntityOwner.hxx>
-#include <Standard_Type.hxx>
-#include <TopLoc_Location.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(SelectBasics_EntityOwner,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(SelectBasics_EntityOwner, Standard_Transient)
 
 //========================================
-// Function : Create
-// Purpose  : 
+// Function : SelectBasics_EntityOwner
+// Purpose  :
 //========================================
-SelectBasics_EntityOwner
-::SelectBasics_EntityOwner (const Standard_Integer aPriority):
-mypriority(aPriority)
-{}
+SelectBasics_EntityOwner::SelectBasics_EntityOwner (const Standard_Integer thePriority)
+: mypriority (thePriority)
+{
+  //
+}

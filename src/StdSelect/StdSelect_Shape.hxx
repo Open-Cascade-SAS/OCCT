@@ -25,23 +25,19 @@
 #include <PrsMgr_PresentableObject.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Standard_Integer.hxx>
+
 class TopoDS_Shape;
 class Prs3d_Presentation;
 class Prs3d_Projector;
 class Geom_Transformation;
 
-
-class StdSelect_Shape;
-DEFINE_STANDARD_HANDLE(StdSelect_Shape, PrsMgr_PresentableObject)
-
 //! Presentable shape only for purpose of display for BRepOwner...
 class StdSelect_Shape : public PrsMgr_PresentableObject
 {
-
+  DEFINE_STANDARD_RTTIEXT(StdSelect_Shape, PrsMgr_PresentableObject)
 public:
 
-  
-  Standard_EXPORT StdSelect_Shape(const TopoDS_Shape& theShape, const Handle(Prs3d_Drawer)& theDrawer);
+  Standard_EXPORT StdSelect_Shape(const TopoDS_Shape& theShape, const Handle(Prs3d_Drawer)& theDrawer = Handle(Prs3d_Drawer)());
   
   Standard_EXPORT void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
   
@@ -53,37 +49,21 @@ public:
   //! WARNING :<aTrsf> must be applied
   //! to the object to display before computation  !!!
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
-  
-    const TopoDS_Shape& Shape() const;
-  
-    void Shape (const TopoDS_Shape& sh);
 
+  const TopoDS_Shape& Shape() const { return mysh; }
 
-
-
-  DEFINE_STANDARD_RTTIEXT(StdSelect_Shape,PrsMgr_PresentableObject)
-
-protected:
-
-
-
+  void Shape (const TopoDS_Shape& theShape) { mysh = theShape; }
 
 private:
 
-  
   Standard_EXPORT void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
 
-  TopoDS_Shape mysh;
-  Handle(Prs3d_Drawer) myDrawer;
+private:
 
+  TopoDS_Shape mysh;
 
 };
 
-
-#include <StdSelect_Shape.lxx>
-
-
-
-
+DEFINE_STANDARD_HANDLE(StdSelect_Shape, PrsMgr_PresentableObject)
 
 #endif // _StdSelect_Shape_HeaderFile

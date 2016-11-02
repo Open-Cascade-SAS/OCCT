@@ -14,13 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <AIS_DimensionOwner.hxx>
 
 #include <AIS_Dimension.hxx>
-#include <AIS_DimensionOwner.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <Standard_Type.hxx>
-#include <StdSelect_Shape.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Vertex.hxx>
 
@@ -92,7 +91,7 @@ void AIS_DimensionOwner::Unhilight (const Handle(PrsMgr_PresentationManager)& th
     return;
   }
 
-  thePM->Unhighlight (Selectable(), HighlightMode (mySelectionMode));
+  thePM->Unhighlight (Selectable());
 }
 
 //=======================================================================
@@ -100,7 +99,7 @@ void AIS_DimensionOwner::Unhilight (const Handle(PrsMgr_PresentationManager)& th
 //purpose  : 
 //=======================================================================
 void AIS_DimensionOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                           const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                           const Handle(Prs3d_Drawer)& theStyle,
                                            const Standard_Integer /*theMode*/)
 {
   thePM->Color (Selectable(), theStyle, HighlightMode (mySelectionMode));

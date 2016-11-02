@@ -62,7 +62,7 @@ public:
   
   //! Hilights owner with the certain color
   Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                                 const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                                 const Handle(Prs3d_Drawer)& theStyle,
                                                  const Standard_Integer theMode = 0) Standard_OVERRIDE;
   
   //! Strip hilight of owner

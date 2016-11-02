@@ -68,7 +68,7 @@ public:
   Standard_EXPORT void SetDetectedEntities (const Handle(TColStd_HPackedMapOfInteger)& Nodes, const Handle(TColStd_HPackedMapOfInteger)& Elems);
   
   Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                                 const Handle(Graphic3d_HighlightStyle)& theColor,
+                                                 const Handle(Prs3d_Drawer)& theColor,
                                                  const Standard_Integer theMode = 0) Standard_OVERRIDE;
   
   Standard_EXPORT virtual void Unhilight (const Handle(PrsMgr_PresentationManager)& PM, const Standard_Integer Mode = 0) Standard_OVERRIDE;

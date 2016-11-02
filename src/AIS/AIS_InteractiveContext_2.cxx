@@ -57,10 +57,8 @@ OpenLocalContext(const Standard_Boolean UseDisplayedObjects,
   // the entities eventually detected just before the context was opened are unhighlighted...
   if(!IsSelected(myLastPicked)){
     if(!myLastPicked.IsNull()){
-      const Handle(AIS_InteractiveObject) aLastPickedAIS =
-        Handle(AIS_InteractiveObject)::DownCast (myLastPicked->Selectable());
-      Standard_Integer HiMod = aLastPickedAIS->HasHilightMode()?aLastPickedAIS->HilightMode():0;
-      unhighlightGlobal (aLastPickedAIS, HiMod);
+      const Handle(AIS_InteractiveObject) aLastPickedAIS = Handle(AIS_InteractiveObject)::DownCast (myLastPicked->Selectable());
+      unhighlightGlobal (aLastPickedAIS);
     }}
   
   if(!mylastmoveview.IsNull()){
@@ -441,12 +439,10 @@ SubIntensityOff(const Handle(AIS_InteractiveObject)& anIObj,
     
     if(GB->GraphicStatus() == AIS_DS_Displayed)
     {
-      myMainPM->Unhighlight (anIObj, GB->DisplayMode());
+      myMainPM->Unhighlight (anIObj);
       UpdMain = Standard_True;
     }
     
-    Standard_Integer DM,HM,SM;
-    GetDefModes(anIObj,DM,HM,SM);
     if(IsSelected(anIObj))
       highlightSelected (anIObj->GlobalSelOwner());
     
@@ -456,12 +452,11 @@ SubIntensityOff(const Handle(AIS_InteractiveObject)& anIObj,
     }
   }
   else {
-    const Handle(Graphic3d_HighlightStyle)& anObjSelStyle =
-      getSelStyle (anIObj);
+    const Handle(Prs3d_Drawer)& anObjSelStyle = getSelStyle (anIObj, anIObj->GlobalSelOwner());
     if(myObjects.IsBound(anIObj)){
       const Handle(AIS_GlobalStatus)& STAT = myObjects(anIObj);
       STAT->SubIntensityOff();
-      myMainPM->Unhighlight (anIObj, STAT->DisplayMode());
+      myMainPM->Unhighlight (anIObj);
       if (STAT->IsHilighted())
         HilightWithColor (anIObj, anObjSelStyle, Standard_False);
     }
@@ -814,8 +809,8 @@ void AIS_InteractiveContext::ResetOriginalState(const Standard_Boolean updatevie
       myMainPM->Display (iobj, STAT->DisplayMode());
       if(STAT->IsHilighted())
       {
-        const Handle(Graphic3d_HighlightStyle)& aStyle = STAT->HilightStyle();
-        if (!aStyle.IsNull() && getSelStyle (iobj) != aStyle)
+        const Handle(Prs3d_Drawer)& aStyle = STAT->HilightStyle();
+        if (!aStyle.IsNull() && getSelStyle (iobj, iobj->GlobalSelOwner()) != aStyle)
           HilightWithColor(iobj,aStyle,Standard_False);
       }
       //part selection
@@ -837,22 +832,4 @@ void AIS_InteractiveContext::ResetOriginalState(const Standard_Boolean updatevie
     if(upd_main) 
       myMainVwr->Update();
   }
-}
-
-//=======================================================================
-//function : SetZDetection
-//purpose  : 
-//=======================================================================
-void  AIS_InteractiveContext::SetZDetection(const Standard_Boolean aStatus)
-{
-  myZDetectionFlag = aStatus;
-}
-
-//=======================================================================
-//function : ZDetection 
-//purpose  : 
-//=======================================================================
-Standard_Boolean AIS_InteractiveContext::ZDetection() const 
-{
-  return myZDetectionFlag;
 }

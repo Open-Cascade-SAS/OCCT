@@ -252,7 +252,7 @@ void AIS_PlaneTrihedron::SetColor(const Quantity_NameOfColor aCol)
 void AIS_PlaneTrihedron::SetColor(const Quantity_Color &aCol)
 {
   hasOwnColor=Standard_True;
-  myOwnColor = aCol;
+  myDrawer->SetColor (aCol);
   myDrawer->DatumAspect()->FirstAxisAspect()->SetColor(aCol);
   myDrawer->DatumAspect()->SecondAxisAspect()->SetColor(aCol);
 }

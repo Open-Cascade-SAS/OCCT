@@ -111,7 +111,6 @@ myIsXYZPlane(Standard_False),
 myTypeOfSensitivity (Select3D_TOS_BOUNDARY)
 {
   InitDrawerAttributes();
-  SetHilightMode(0);
 }
 
 //=======================================================================
@@ -130,8 +129,6 @@ myTypeOfSensitivity (Select3D_TOS_BOUNDARY)
 {
   InitDrawerAttributes();
   ComputeFields();
-  SetHilightMode(0);
-
 }
 
 
@@ -482,7 +479,7 @@ void AIS_Plane::SetColor(const Quantity_Color &aCol)
   myDrawer->ShadingAspect()->SetColor(aCol);
   
   hasOwnColor=Standard_True;
-  myOwnColor = aCol;
+  myDrawer->SetColor (aCol);
 }
 //=======================================================================
 //function : SetColor

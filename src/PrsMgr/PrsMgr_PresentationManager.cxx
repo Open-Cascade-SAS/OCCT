@@ -12,22 +12,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <PrsMgr_PresentationManager.hxx>
 
 #include <Geom_Transformation.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_PresentationShadow.hxx>
 #include <PrsMgr_ModedPresentation.hxx>
 #include <PrsMgr_PresentableObject.hxx>
 #include <PrsMgr_Presentation.hxx>
-#include <PrsMgr_PresentationManager.hxx>
 #include <PrsMgr_Presentations.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfTransient.hxx>
 #include <V3d_View.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_PresentationManager,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_PresentationManager, Standard_Transient)
 
 // =======================================================================
 // function : PrsMgr_PresentationManager
@@ -164,18 +165,24 @@ void PrsMgr_PresentationManager::SetVisibility (const Handle(PrsMgr_PresentableO
 // function : Unhighlight
 // purpose  :
 // =======================================================================
-void PrsMgr_PresentationManager::Unhighlight (const Handle(PrsMgr_PresentableObject)& thePrsObj,
-                                              const Standard_Integer                  theMode)
+void PrsMgr_PresentationManager::Unhighlight (const Handle(PrsMgr_PresentableObject)& thePrsObj)
 {
   for (PrsMgr_ListOfPresentableObjectsIter anIter (thePrsObj->Children()); anIter.More(); anIter.Next())
   {
-    Unhighlight (anIter.Value(), theMode);
+    Unhighlight (anIter.Value());
   }
 
-  const Handle(PrsMgr_Presentation) aPrs = Presentation (thePrsObj, theMode);
-  if (!aPrs.IsNull())
+  const PrsMgr_Presentations& aPrsList = thePrsObj->Presentations();
+  for (Standard_Integer aPrsIter = 1; aPrsIter <= aPrsList.Length(); ++aPrsIter)
   {
-    aPrs->Unhighlight();
+    const PrsMgr_ModedPresentation&           aModedPrs = aPrsList.Value (aPrsIter);
+    const Handle(PrsMgr_Presentation)&        aPrs      = aModedPrs.Presentation();
+    const Handle(PrsMgr_PresentationManager)& aPrsMgr   = aPrs->PresentationManager();
+    if (this == aPrsMgr
+    &&  aPrs->IsHighlighted())
+    {
+      aPrs->Unhighlight();
+    }
   }
 }
 
@@ -565,13 +572,12 @@ void PrsMgr_PresentationManager::Transform (const Handle(PrsMgr_PresentableObjec
   Presentation (thePrsObj, theMode)->SetTransformation (theTransformation);
 }
 
-
 // =======================================================================
 // function : Color
 // purpose  :
 // =======================================================================
 void PrsMgr_PresentationManager::Color (const Handle(PrsMgr_PresentableObject)& thePrsObj,
-                                        const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                        const Handle(Prs3d_Drawer)& theStyle,
                                         const Standard_Integer                  theMode,
                                         const Handle(PrsMgr_PresentableObject)& theSelObj,
                                         const Standard_Integer theImmediateStructLayerId)

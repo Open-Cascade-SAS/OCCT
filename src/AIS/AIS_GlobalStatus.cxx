@@ -14,13 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <AIS_GlobalStatus.hxx>
 
 #include <AIS_DisplayMode.hxx>
-#include <AIS_GlobalStatus.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(AIS_GlobalStatus,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(AIS_GlobalStatus, Standard_Transient)
 
 AIS_GlobalStatus::AIS_GlobalStatus():
 myStatus(AIS_DS_None),

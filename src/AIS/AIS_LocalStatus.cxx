@@ -12,13 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <AIS_LocalStatus.hxx>
-#include <Standard_Transient.hxx>
+
 #include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(AIS_LocalStatus,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(AIS_LocalStatus, Standard_Transient)
 
 AIS_LocalStatus::AIS_LocalStatus (const Standard_Boolean theIsTemporary,
                                   const Standard_Boolean theIsToDecompose,
@@ -26,7 +25,7 @@ AIS_LocalStatus::AIS_LocalStatus (const Standard_Boolean theIsTemporary,
                                   const Standard_Integer theSelectionMode,
                                   const Standard_Integer theHilightMode,
                                   const Standard_Boolean theIsSubIntensity,
-                                  const Handle(Graphic3d_HighlightStyle)& theStyle)
+                                  const Handle(Prs3d_Drawer)& theStyle)
 : myDecomposition (theIsToDecompose),
   myIsTemporary   (theIsTemporary),
   myDMode         (theDisplayMode),

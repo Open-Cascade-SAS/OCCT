@@ -17,7 +17,7 @@
 
 #include <Graphic3d_BndBox3d.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_HighlightStyle.hxx>
+#include <Graphic3d_PresentationAttributes.hxx>
 #include <Graphic3d_SequenceOfGroup.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_TypeOfComposition.hxx>
@@ -101,7 +101,7 @@ public:
 
   //! Returns valid handle to highlight style of the structure in case if
   //! highlight flag is set to true
-  const Handle(Graphic3d_HighlightStyle)& HighlightStyle() const { return myHighlightStyle; }
+  const Handle(Graphic3d_PresentationAttributes)& HighlightStyle() const { return myHighlightStyle; }
 
 public:
 
@@ -118,8 +118,8 @@ public:
   virtual void Disconnect (Graphic3d_CStructure& theStructure) = 0;
 
   //! Highlights structure with the given style
-  virtual void GraphicHighlight (const Handle(Graphic3d_HighlightStyle)& theStyle,
-                                 const Handle(Graphic3d_Structure)&      theStruct) = 0;
+  virtual void GraphicHighlight (const Handle(Graphic3d_PresentationAttributes)& theStyle,
+                                 const Handle(Graphic3d_Structure)& theStruct) = 0;
 
   //! Unhighlights the structure and invalidates pointer to structure's highlight
   //! style
@@ -167,7 +167,7 @@ protected:
   Handle(Geom_Transformation)     myTrsf;
   Handle(Graphic3d_TransformPers) myTrsfPers;
   Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;
-  Handle(Graphic3d_HighlightStyle)       myHighlightStyle; //! Current highlight style; is set only if highlight flag is true
+  Handle(Graphic3d_PresentationAttributes) myHighlightStyle; //! Current highlight style; is set only if highlight flag is true
 
 public:
 

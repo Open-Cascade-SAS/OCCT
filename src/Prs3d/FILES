@@ -54,6 +54,7 @@ Prs3d_ToolQuadric.hxx
 Prs3d_ToolQuadric.cxx
 Prs3d_ToolSphere.hxx
 Prs3d_ToolSphere.cxx
+Prs3d_TypeOfHighlight.hxx
 Prs3d_TypeOfHLR.hxx
 Prs3d_TypeOfLinePicking.hxx
 Prs3d_VertexDrawMode.hxx

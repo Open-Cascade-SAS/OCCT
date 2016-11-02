@@ -33,7 +33,6 @@
 #include <AIS_KindOfInteractive.hxx>
 #include <Standard_Real.hxx>
 #include <Aspect_TypeOfFacingModel.hxx>
-#include <Graphic3d_HighlightStyle.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
 #include <Standard_ShortReal.hxx>
 #include <TColStd_ListOfInteger.hxx>
@@ -49,6 +48,7 @@
 #include <AIS_ListOfInteractive.hxx>
 #include <Standard_CString.hxx>
 #include <AIS_Selection.hxx>
+#include <Prs3d_TypeOfHighlight.hxx>
 class SelectMgr_SelectionManager;
 class V3d_Viewer;
 class AIS_InteractiveObject;
@@ -262,7 +262,6 @@ public:
   //! Removes all the objects from all opened Local Contexts
   //! and from the Neutral Point
   Standard_EXPORT void RemoveAll (const Standard_Boolean updateviewer = Standard_True);
-  
 
   //! Updates the display in the viewer to take dynamic
   //! detection into account. On dynamic detection by the
@@ -276,7 +275,7 @@ public:
   Standard_DEPRECATED("Deprecated method Hilight()")
   void Hilight (const Handle(AIS_InteractiveObject)& theObj, const Standard_Boolean theIsToUpdateViewer = Standard_True)
   {
-    return HilightWithColor (theObj, mySelStyle, theIsToUpdateViewer);
+    return HilightWithColor (theObj, myStyles[Prs3d_TypeOfHighlight_Dynamic], theIsToUpdateViewer);
   }
 
   //! Changes the color of all the lines of the object in view,
@@ -287,7 +286,7 @@ public:
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
   Standard_EXPORT void HilightWithColor (const Handle(AIS_InteractiveObject)& theObj,
-                                         const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                         const Handle(Prs3d_Drawer)& theStyle,
                                          const Standard_Boolean theIsToUpdate = Standard_True);
   
 
@@ -573,12 +572,12 @@ public:
   //! Returns highlight style of the object if it is marked as highlighted via global status
   //! @param theObj [in] the object to check
   Standard_EXPORT Standard_Boolean HighlightStyle (const Handle(AIS_InteractiveObject)& theObj,
-                                                   Handle(Graphic3d_HighlightStyle)& theStyle) const;
+                                                   Handle(Prs3d_Drawer)& theStyle) const;
 
   //! Returns highlight style of the owner if it is selected
   //! @param theOwner [in] the owner to check
   Standard_EXPORT Standard_Boolean HighlightStyle (const Handle(SelectMgr_EntityOwner)& theOwner,
-                                                   Handle(Graphic3d_HighlightStyle)& theStyle) const;
+                                                   Handle(Prs3d_Drawer)& theStyle) const;
 
   //! Returns the display priority of the entity anIobj. This
   //! will be display   mode of anIobj if it is in the main
@@ -625,44 +624,40 @@ public:
   
   //! Returns the display mode setting.
   //! Note that mode 3 is only used.
-    Standard_Integer DisplayMode() const;
-  
+  Standard_Integer DisplayMode() const { return myDefaultDrawer->DisplayMode(); }
+
+  //! Returns highlight style settings.
+  const Handle(Prs3d_Drawer)& HighlightStyle (const Prs3d_TypeOfHighlight theStyleType) const { return myStyles[theStyleType]; }
+
+  //! Setup highlight style settings.
+  void SetHighlightStyle (const Prs3d_TypeOfHighlight theStyleType,
+                          const Handle(Prs3d_Drawer)& theStyle) { myStyles[theStyleType] = theStyle; }
 
   //! Returns current dynamic highlight style settings.
   //! By default:
   //!   - the color of dynamic highlight is Quantity_NOC_CYAN1;
   //!   - the presentation for dynamic highlight is completely opaque;
   //!   - the type of highlight is Aspect_TOHM_COLOR.
-  const Handle(Graphic3d_HighlightStyle)& HighlightStyle() const
+  const Handle(Prs3d_Drawer)& HighlightStyle() const
   {
-    return myHiStyle;
+    return myStyles[Prs3d_TypeOfHighlight_Dynamic];
   }
 
   //! Setup the style of dynamic highlighting.
-  void SetHighlightStyle (const Handle(Graphic3d_HighlightStyle)& theStyle) { myHiStyle = theStyle; }
+  void SetHighlightStyle (const Handle(Prs3d_Drawer)& theStyle) { myStyles[Prs3d_TypeOfHighlight_Dynamic] = theStyle; }
 
   //! Returns current selection style settings.
   //! By default:
   //!   - the color of selection is Quantity_NOC_GRAY80;
   //!   - the presentation for selection is completely opaque;
   //!   - the type of highlight is Aspect_TOHM_COLOR.
-  const Handle(Graphic3d_HighlightStyle)& SelectionStyle() const
+  const Handle(Prs3d_Drawer)& SelectionStyle() const
   {
-    return mySelStyle;
+    return myStyles[Prs3d_TypeOfHighlight_Selected];
   }
 
   //! Setup the style of selection highlighting.
-  void SetSelectionStyle (const Handle(Graphic3d_HighlightStyle)& theStyle) { mySelStyle = theStyle; }
-
-  //! Returns the name of the color used to show preselection.
-  //! By default, this is Quantity_NOC_GREEN.
-    Quantity_NameOfColor PreSelectionColor() const;
-  
-
-  //! Returns the name of the color used by default.
-  //! By default, this is Quantity_NOC_GOLDENROD.
-    Quantity_NameOfColor DefaultColor() const;
-  
+  void SetSelectionStyle (const Handle(Prs3d_Drawer)& theStyle) { myStyles[Prs3d_TypeOfHighlight_Selected] = theStyle; }
 
   //! Sub-intensity allows temporary highlighting of particular
   //! objects with specified color in a manner of selection highlight,
@@ -672,7 +667,7 @@ public:
   //! By default, it is Quantity_NOC_GRAY40.
   const Quantity_Color& SubIntensityColor() const
   {
-    return mySubintStyle->Color();
+    return myStyles[Prs3d_TypeOfHighlight_SubIntensity]->Color();
   }
 
   //! Sub-intensity allows temporary highlighting of particular
@@ -683,14 +678,8 @@ public:
   //! By default, this is Quantity_NOC_GRAY40.
   void SetSubIntensityColor (const Quantity_Color& theColor)
   {
-    mySubintStyle->SetColor (theColor);
+    myStyles[Prs3d_TypeOfHighlight_SubIntensity]->SetColor (theColor);
   }
-
-  //! Allows you to set the color used to show preselection.
-  //! By default, this is Quantity_NOC_GREEN.
-  //! A preselected entity is one which has been selected
-  //! as the domain of application of a function such as a fillet.
-    void SetPreselectionColor (const Quantity_NameOfColor aCol);
 
   //! Sets the display mode of seen Interactive Objects.
   //! aMode provides the display mode index of the entity aniobj.
@@ -950,12 +939,11 @@ public:
   //! Specify whether selected object must be hilighted when mouse cursor
   //! is moved above it (in MoveTo method). By default this value is false and
   //! selected object is not hilighted in this case.
-    void SetToHilightSelected (const Standard_Boolean toHilight);
-  
+  void SetToHilightSelected (const Standard_Boolean toHilight) { myToHilightSelected = toHilight; }
+
   //! Return value specified whether selected object must be hilighted
   //! when mouse cursor is moved above it
-    Standard_Boolean ToHilightSelected() const;
-
+  Standard_Boolean ToHilightSelected() const { return myToHilightSelected; }
 
   //! @name OBSOLETE METHODS THAT ARE VALID FOR LOCAL CONTEXT ONLY
 
@@ -986,18 +974,6 @@ public:
   //! local context, selected objects.
   Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void UpdateCurrent();
-  
-
-  //! Returns the current selection touched by the cursor.
-  //! Objects selected when there is no open local context
-  //! are called current objects; those selected in open
-  //! local context, selected objects.
-  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
-  Standard_Boolean WasCurrentTouched() const;
-  
-  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
-  void SetOkCurrent();
-  
 
   //! Returns true if there is a non-null interactive object in Neutral Point.
   //! Objects selected when there is no open local context are called current objects;
@@ -1366,15 +1342,7 @@ public:
   //! Returns true if the automatic highlight mode is active
   //! in an open context.
   Standard_EXPORT Standard_Boolean AutomaticHilight() const;
-  
-  //! Enables/Disables the Z detection.
-  //! If TRUE the detection echo can be partially hidden by the
-  //! detected object.
-  Standard_EXPORT void SetZDetection (const Standard_Boolean aStatus = Standard_False);
-  
-  //! Retrieves the Z detection state.
-  Standard_EXPORT Standard_Boolean ZDetection() const;
-  
+
   //! Activates the selection mode aMode whose index is
   //! given, for the given interactive entity anIobj.
   Standard_EXPORT void Activate (const Handle(AIS_InteractiveObject)& anIobj, const Standard_Integer aMode = 0, const Standard_Boolean theIsForce = Standard_False);
@@ -1502,17 +1470,16 @@ public:
 
   //! Returns the list of filters active in a local context.
   Standard_EXPORT const SelectMgr_ListOfFilter& Filters() const;
-  
 
   //! Returns the default attribute manager.
   //! This contains all the color and line attributes which
   //! can be used by interactive objects which do not have
   //! their own attributes.
-    const Handle(Prs3d_Drawer)& DefaultDrawer() const;
-  
+  const Handle(Prs3d_Drawer)& DefaultDrawer() const { return myDefaultDrawer; }
+
   //! Returns the current viewer.
-    const Handle(V3d_Viewer)& CurrentViewer() const;
-  
+  const Handle(V3d_Viewer)& CurrentViewer() const { return myMainVwr; }
+
   //! Returns the list of displayed objects of a particular
   //! Type WhichKind and Signature WhichSignature. By
   //! Default, WhichSignature equals -1. This means that
@@ -1560,7 +1527,7 @@ public:
   Standard_EXPORT void ObjectsInside (AIS_ListOfInteractive& aListOfIO, const AIS_KindOfInteractive WhichKind = AIS_KOI_None, const Standard_Integer WhichSignature = -1) const;
   
   //! Returns true if there is an open context.
-    Standard_Boolean HasOpenedContext() const;
+  Standard_Boolean HasOpenedContext() const { return myCurLocalIndex != 0; }
 
   //! This method is only intended for advanced operation, particularly with
   //! the aim to improve performance when many objects have to be selected
@@ -1568,14 +1535,14 @@ public:
   //! class AIS_InteractiveContext without trying to obtain an instance of
   //! AIS_LocalContext.
   Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
-  Handle(AIS_LocalContext) LocalContext() const;
+  Handle(AIS_LocalContext) LocalContext() const { return myCurLocalIndex > 0 ? myLocalContexts (myCurLocalIndex) : Handle(AIS_LocalContext)(); }
+
+  const Handle(SelectMgr_SelectionManager)& SelectionManager() const { return mgrSelector; }
   
-    const Handle(SelectMgr_SelectionManager)& SelectionManager() const;
-  
-    const Handle(PrsMgr_PresentationManager3d)& MainPrsMgr() const;
-  
-    const Handle(StdSelect_ViewerSelector3d)& MainSelector() const;
-  
+  const Handle(PrsMgr_PresentationManager3d)& MainPrsMgr() const { return myMainPM; }
+
+  const Handle(StdSelect_ViewerSelector3d)& MainSelector() const { return myMainSel; }
+
   Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT Handle(StdSelect_ViewerSelector3d) LocalSelector() const;
   
@@ -1656,8 +1623,8 @@ protected:
   //! for AutoHighlight, e.g. is used for selection.
   //! If global owner is null, it simply highlights the whole object
   Standard_EXPORT void highlightGlobal (const Handle(AIS_InteractiveObject)& theObj,
-                                        const Handle(Graphic3d_HighlightStyle)& theStyle,
-                                        const Standard_Integer theMode) const;
+                                        const Handle(Prs3d_Drawer)& theStyle,
+                                        const Standard_Integer theDispMode) const;
 
   //! Helper function that unhighlights all owners that are stored in current AIS_Selection.
   //! The function updates global status and selection state of owner and interactive object.
@@ -1667,7 +1634,7 @@ protected:
 
   //! Helper function that unhighlights global selection owner of given interactive.
   //! The function does not perform any updates of global or owner status
-  Standard_EXPORT void unhighlightGlobal (const Handle(AIS_InteractiveObject)& theObj, const Standard_Integer theMode) const;
+  Standard_EXPORT void unhighlightGlobal (const Handle(AIS_InteractiveObject)& theObj) const;
 
   //! Helper function that turns on sub-intensity in global status and highlights
   //! given objects with sub-intensity color
@@ -1697,22 +1664,32 @@ protected:
   //! if custom style is defined via object's highlight drawer, it will be used. Otherwise,
   //! dynamic highlight style of interactive context will be returned.
   //! @param theObj [in] the object to check
-  const Handle(Graphic3d_HighlightStyle)& getHiStyle (const Handle(AIS_InteractiveObject)& theObj) const
+  const Handle(Prs3d_Drawer)& getHiStyle (const Handle(AIS_InteractiveObject)& theObj,
+                                          const Handle(SelectMgr_EntityOwner)& theOwner) const
   {
-    const Handle(Prs3d_Drawer)& aHiDrawer = theObj->HilightAttributes();
-    return !aHiDrawer.IsNull() && aHiDrawer->HasOwnHighlightStyle()
-      ? aHiDrawer->HighlightStyle() : myHiStyle;
+    const Handle(Prs3d_Drawer)& aHiDrawer = theObj->DynamicHilightAttributes();
+    if (!aHiDrawer.IsNull())
+    {
+      return aHiDrawer;
+    }
+
+    return myStyles[!theOwner.IsNull() && theOwner->ComesFromDecomposition() ? Prs3d_TypeOfHighlight_LocalDynamic : Prs3d_TypeOfHighlight_Dynamic];
   }
 
   //! Helper function that returns correct selection style for the object:
   //! if custom style is defined via object's highlight drawer, it will be used. Otherwise,
   //! selection style of interactive context will be returned.
   //! @param theObj [in] the object to check
-  const Handle(Graphic3d_HighlightStyle)& getSelStyle (const Handle(AIS_InteractiveObject)& theObj) const
+  const Handle(Prs3d_Drawer)& getSelStyle (const Handle(AIS_InteractiveObject)& theObj,
+                                           const Handle(SelectMgr_EntityOwner)& theOwner) const
   {
     const Handle(Prs3d_Drawer)& aHiDrawer = theObj->HilightAttributes();
-    return !aHiDrawer.IsNull() && aHiDrawer->HasOwnSelectionStyle()
-      ? aHiDrawer->SelectionStyle() : mySelStyle;
+    if (!aHiDrawer.IsNull())
+    {
+      return aHiDrawer;
+    }
+
+    return myStyles[!theOwner.IsNull() && theOwner->ComesFromDecomposition() ? Prs3d_TypeOfHighlight_LocalSelected : Prs3d_TypeOfHighlight_Selected];
   }
 
   //! Assign the context to the object or throw exception if object was already assigned to another context.
@@ -1731,6 +1708,28 @@ protected:
     }
   }
 
+  //! Return display mode for highlighting.
+  Standard_Integer getHilightMode (const Handle(AIS_InteractiveObject)& theObj,
+                                   const Handle(Prs3d_Drawer)& theStyle,
+                                   const Standard_Integer theDispMode) const
+  {
+    if (!theStyle.IsNull()
+     &&  theStyle->DisplayMode() != -1
+     &&  theObj->AcceptDisplayMode (theStyle->DisplayMode()))
+    {
+      return theStyle->DisplayMode();
+    }
+    else if (theDispMode != -1)
+    {
+      return theDispMode;
+    }
+    else if (theObj->HasDisplayMode())
+    {
+      return theObj->DisplayMode();
+    }
+    return myDefaultDrawer->DisplayMode();
+  }
+
 protected:
 
   AIS_DataMapOfIOStatus myObjects;
@@ -1741,31 +1740,21 @@ protected:
   Handle(SelectMgr_EntityOwner) myLastPicked;
   Handle(SelectMgr_EntityOwner) myLastinMain;
   Standard_Boolean myWasLastMain;
-  Standard_Boolean myCurrentTouched;
-  Standard_Boolean mySelectedTouched;
   Standard_Boolean myToHilightSelected;
+  Handle(AIS_Selection) mySelection;
   Handle(SelectMgr_OrFilter) myFilters;
   Handle(Prs3d_Drawer) myDefaultDrawer;
-  Handle(AIS_Selection) mySelection;
-  Quantity_NameOfColor myDefaultColor;
-  Handle(Graphic3d_HighlightStyle) myHiStyle;
-  Handle(Graphic3d_HighlightStyle) mySelStyle;
-  Quantity_NameOfColor myPreselectionColor;
-  Handle(Graphic3d_HighlightStyle) mySubintStyle;
-  Standard_Integer myDisplayMode;
+  Handle(Prs3d_Drawer) myStyles[Prs3d_TypeOfHighlight_NB];
   AIS_DataMapOfILC myLocalContexts;
   Standard_Integer myCurLocalIndex;
   Handle(V3d_View) mylastmoveview;
   TColStd_SequenceOfInteger myDetectedSeq;
   Standard_Integer myCurDetected;
   Standard_Integer myCurHighlighted;
-  Standard_Boolean myZDetectionFlag;
   Standard_Boolean myIsAutoActivateSelMode;
 
 };
 
 DEFINE_STANDARD_HANDLE(AIS_InteractiveContext, Standard_Transient)
-
-#include <AIS_InteractiveContext.lxx>
 
 #endif // _AIS_InteractiveContext_HeaderFile

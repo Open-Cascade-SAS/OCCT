@@ -135,9 +135,6 @@ MeshVS_Mesh::MeshVS_Mesh (const Standard_Boolean theIsAllowOverlapped )
   myHilightDrawer->SetInteger ( MeshVS_DA_MarkerType,  Aspect_TOM_STAR );
   myHilightDrawer->SetColor   ( MeshVS_DA_MarkerColor, Quantity_NOC_GRAY80 );
   myHilightDrawer->SetDouble  ( MeshVS_DA_MarkerScale, 2.0 );
-
-  HilightAttributes()->SetSelectionStyle
-    (new Graphic3d_HighlightStyle (Aspect_TOHM_COLOR, Quantity_NOC_GRAY80, 0.0));
 }
 
 //================================================================
@@ -954,8 +951,7 @@ void MeshVS_Mesh::HilightSelected ( const Handle(PrsMgr_PresentationManager3d)& 
     if (theOwners.Value (i) == GlobalSelOwner())
     {
       const Standard_Integer aHiMode = HasHilightMode() ? HilightMode() : 0;
-      const Handle(Graphic3d_HighlightStyle)& aSelStyle = GetContext().IsNull()
-        ? HilightAttributes()->SelectionStyle() : GetContext()->SelectionStyle();
+      const Handle(Prs3d_Drawer)& aSelStyle = !HilightAttributes().IsNull() ? HilightAttributes() : GetContext()->SelectionStyle();
       thePM->Color (this, aSelStyle, aHiMode);
       continue;
     }
@@ -1064,7 +1060,7 @@ void MeshVS_Mesh::HilightSelected ( const Handle(PrsMgr_PresentationManager3d)& 
 // Purpose  :
 //================================================================
 void MeshVS_Mesh::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                          const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                          const Handle(Prs3d_Drawer)& theStyle,
                                           const Handle(SelectMgr_EntityOwner)& theOwner)
 {
   if (theOwner.IsNull())

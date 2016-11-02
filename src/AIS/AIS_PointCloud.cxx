@@ -320,9 +320,9 @@ void AIS_PointCloud::SetMaterial (const Graphic3d_MaterialAspect& theMat)
   myDrawer->ShadingAspect()->SetMaterial (theMat, myCurrentFacingModel);
   if (HasColor())
   {
-    myDrawer->ShadingAspect()->SetColor (myOwnColor, myCurrentFacingModel);
+    myDrawer->ShadingAspect()->SetColor (myDrawer->Color(), myCurrentFacingModel);
   }
-  myDrawer->ShadingAspect()->SetTransparency (myTransparency, myCurrentFacingModel);
+  myDrawer->ShadingAspect()->SetTransparency (myDrawer->Transparency(), myCurrentFacingModel);
 
   // modify shading presentation without re-computation
   const PrsMgr_Presentations&        aPrsList  = Presentations();
@@ -368,8 +368,8 @@ void AIS_PointCloud::UnsetMaterial()
                                             myCurrentFacingModel);
     if (HasColor())
     {
-      myDrawer->ShadingAspect()->SetColor        (myOwnColor,     myCurrentFacingModel);
-      myDrawer->ShadingAspect()->SetTransparency (myTransparency, myCurrentFacingModel);
+      myDrawer->ShadingAspect()->SetColor        (myDrawer->Color(),        myCurrentFacingModel);
+      myDrawer->ShadingAspect()->SetTransparency (myDrawer->Transparency(), myCurrentFacingModel);
     }
   }
   else

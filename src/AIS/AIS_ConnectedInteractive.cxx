@@ -48,7 +48,7 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_ConnectedInteractive,AIS_InteractiveObject)
 AIS_ConnectedInteractive::AIS_ConnectedInteractive(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d):
 AIS_InteractiveObject(aTypeOfPresentation3d)
 {
-  SetHilightMode(0);
+  //
 }
 
 //=======================================================================

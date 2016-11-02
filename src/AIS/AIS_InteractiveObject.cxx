@@ -14,11 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modified :   22/03/04 ; SAN : OCC4895 High-level interface for controlling polygon offsets 
+#include <AIS_InteractiveObject.hxx>
 
 #include <AIS_GraphicTool.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_InteractiveObject.hxx>
 #include <Aspect_PolygonOffsetMode.hxx>
 #include <Bnd_Box.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
@@ -50,22 +49,16 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_InteractiveObject,SelectMgr_SelectableObject)
 //function : AIS_InteractiveObject
 //purpose  : 
 //=======================================================================
-AIS_InteractiveObject::
-AIS_InteractiveObject(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d):
-SelectMgr_SelectableObject(aTypeOfPresentation3d),
-myTransparency(0.),
-myOwnColor(Quantity_NOC_WHITE),
-myOwnMaterial(Graphic3d_NOM_DEFAULT),
-myHilightMode(-1),
-myOwnWidth(0.0),
-myInfiniteState(Standard_False),
-hasOwnColor(Standard_False),
-hasOwnMaterial(Standard_False),
-myCurrentFacingModel(Aspect_TOFM_BOTH_SIDE),
-myRecomputeEveryPrs(Standard_True),
-myCTXPtr(NULL),
-mySelPriority(-1),
-myDisplayMode (-1)
+AIS_InteractiveObject::AIS_InteractiveObject (const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d)
+: SelectMgr_SelectableObject (aTypeOfPresentation3d),
+  myCTXPtr (NULL),
+  myOwnWidth (0.0),
+  myOwnMaterial (Graphic3d_NOM_DEFAULT),
+  myCurrentFacingModel (Aspect_TOFM_BOTH_SIDE),
+  myInfiniteState (Standard_False),
+  hasOwnColor (Standard_False),
+  hasOwnMaterial (Standard_False),
+  myRecomputeEveryPrs (Standard_True)
 {
   SetCurrentFacingModel();
 }
@@ -154,13 +147,15 @@ void AIS_InteractiveObject::ClearOwner()
 }
 
 //=======================================================================
-//function : 
-//purpose  : 
+//function : SetDisplayMode
+//purpose  :
 //=======================================================================
-void AIS_InteractiveObject::SetDisplayMode(const Standard_Integer aMode)
+void AIS_InteractiveObject::SetDisplayMode (const Standard_Integer theMode)
 {
-  if( AcceptDisplayMode(aMode) )
-    myDisplayMode = aMode;
+  if (AcceptDisplayMode (theMode))
+  {
+    myDrawer->SetDisplayMode (theMode);
+  }
 }
 
 //=======================================================================
@@ -195,9 +190,9 @@ void AIS_InteractiveObject::SetColor(const Quantity_NameOfColor aColor)
 //purpose  : 
 //=======================================================================
 
-void AIS_InteractiveObject::SetColor(const Quantity_Color &aColor)
+void AIS_InteractiveObject::SetColor(const Quantity_Color& theColor)
 {
-  myOwnColor = aColor;
+  myDrawer->SetColor (theColor);
   hasOwnColor = Standard_True;
 }
 
@@ -286,12 +281,12 @@ void AIS_InteractiveObject::UnsetMaterial()
 
     if (HasColor())
     {
-      SetColor (myOwnColor);
+      SetColor (myDrawer->Color());
     }
 
     if (IsTransparent())
     {
-      SetTransparency (myTransparency);
+      SetTransparency (myDrawer->Transparency());
     }
   }
   else
@@ -320,7 +315,7 @@ void AIS_InteractiveObject::SetTransparency(const Standard_Real aValue)
   FMat.SetTransparency(aValue); BMat.SetTransparency(aValue);
   myDrawer->ShadingAspect()->Aspect()->SetFrontMaterial(FMat);
   myDrawer->ShadingAspect()->Aspect()->SetBackMaterial(BMat);
-  myTransparency = aValue;
+  myDrawer->SetTransparency ((Standard_ShortReal )aValue);
 }
 
 //=======================================================================
@@ -341,7 +336,7 @@ void AIS_InteractiveObject::UnsetTransparency()
     Handle (Prs3d_ShadingAspect) SA;
     myDrawer->SetShadingAspect(SA);
   }
-  myTransparency =0.0;
+  myDrawer->SetTransparency (0.0f);
 }
 //=======================================================================
 //function : Transparency
@@ -349,7 +344,7 @@ void AIS_InteractiveObject::UnsetTransparency()
 //=======================================================================
 Standard_Real AIS_InteractiveObject::Transparency() const 
 {
-  return (myTransparency<=0.05 ? 0 : myTransparency);
+  return (myDrawer->Transparency() <= 0.005f ? 0.0 : myDrawer->Transparency());
 // Graphic3d_MaterialAspect Mat = myDrawer->ShadingAspect()->Aspect()->FrontMaterial();
 // return Mat.Transparency();
 }
@@ -365,7 +360,7 @@ void AIS_InteractiveObject::UnsetAttributes()
   hasOwnColor    = Standard_False;
   hasOwnMaterial = Standard_False;
   myOwnWidth     = 0.0;
-  myTransparency = 0.0;
+  myDrawer->SetTransparency (0.0f);
 }
 
 //=======================================================================
@@ -430,8 +425,8 @@ void AIS_InteractiveObject::SetInfiniteState(const Standard_Boolean aFlag)
 //=======================================================================
 Standard_Boolean AIS_InteractiveObject::HasPresentation() const
 {
-  return !GetContext().IsNull()
-       && GetContext()->MainPrsMgr()->HasPresentation (this, myDisplayMode);
+  return HasInteractiveContext()
+      && myCTXPtr->MainPrsMgr()->HasPresentation (this, myDrawer->DisplayMode());
 }
 
 //=======================================================================
@@ -440,8 +435,14 @@ Standard_Boolean AIS_InteractiveObject::HasPresentation() const
 //=======================================================================
 Handle(Prs3d_Presentation) AIS_InteractiveObject::Presentation() const
 {
-  return HasPresentation()
-       ? GetContext()->MainPrsMgr()->Presentation (this, myDisplayMode)->Presentation()
+  if (!HasInteractiveContext())
+  {
+    return Handle(Prs3d_Presentation)();
+  }
+
+  Handle(PrsMgr_Presentation) aPrs = myCTXPtr->MainPrsMgr()->Presentation (this, myDrawer->DisplayMode(), false);
+  return !aPrs.IsNull()
+       ? aPrs->Presentation()
        : Handle(Prs3d_Presentation)();
 }
 
@@ -517,12 +518,7 @@ void AIS_InteractiveObject::SetPolygonOffsets(const Standard_Integer    aMode,
             continue;
           }
 
-          Handle(Graphic3d_AspectFillArea3d) aFaceAsp = new Graphic3d_AspectFillArea3d();
-          Handle(Graphic3d_AspectLine3d)     aLineAsp = new Graphic3d_AspectLine3d();
-          Handle(Graphic3d_AspectMarker3d)   aPntAsp  = new Graphic3d_AspectMarker3d();
-          Handle(Graphic3d_AspectText3d)     aTextAsp = new Graphic3d_AspectText3d();
-          // TODO: Add methods for retrieving individual aspects from Graphic3d_Group
-          aGrp->GroupPrimitivesAspect(aLineAsp, aTextAsp, aPntAsp, aFaceAsp);
+          Handle(Graphic3d_AspectFillArea3d) aFaceAsp = aGrp->FillAreaAspect();
           aFaceAsp->SetPolygonOffsets(aMode, aFactor, aUnits);
           aGrp->SetGroupPrimitivesAspect(aFaceAsp);
         }
@@ -561,7 +557,7 @@ void AIS_InteractiveObject::PolygonOffsets(Standard_Integer&    aMode,
 //=======================================================================
 void AIS_InteractiveObject::BoundingBox (Bnd_Box& theBndBox)
 {
-  if (myDisplayMode == -1)
+  if (myDrawer->DisplayMode() == -1)
   {
     if (!myPresentations.IsEmpty())
     {
@@ -599,7 +595,7 @@ void AIS_InteractiveObject::BoundingBox (Bnd_Box& theBndBox)
   {
     for (Standard_Integer aPrsIter = 1; aPrsIter <= myPresentations.Length(); ++aPrsIter)
     {
-      if (myPresentations (aPrsIter).Mode() == myDisplayMode)
+      if (myPresentations (aPrsIter).Mode() == myDrawer->DisplayMode())
       {
         const Handle(PrsMgr_Presentation)& aPrs3d = myPresentations (aPrsIter).Presentation();
         const Handle(Graphic3d_Structure)& aStruct = aPrs3d->Presentation();

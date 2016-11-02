@@ -18,16 +18,11 @@
 #define _SelectBasics_EntityOwner_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Boolean.hxx>
-class TopLoc_Location;
-
-
-class SelectBasics_EntityOwner;
-DEFINE_STANDARD_HANDLE(SelectBasics_EntityOwner, MMgt_TShared)
+#include <TopLoc_Location.hxx>
 
 //! defines an abstract owner of sensitive primitives.
 //! Owners are typically used to establish a connection
@@ -44,50 +39,39 @@ DEFINE_STANDARD_HANDLE(SelectBasics_EntityOwner, MMgt_TShared)
 //! a user can give vertex priority [3], edges [2] faces [1] shape [0],
 //! so that if during selection one vertex one edge and one face are
 //! simultaneously detected, the vertex will only be hilighted.
-class SelectBasics_EntityOwner : public MMgt_TShared
+class SelectBasics_EntityOwner : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(SelectBasics_EntityOwner, Standard_Transient)
+public:
+
+  //! sets the selectable priority of the owner
+  void SetPriority (const Standard_Integer thePriority) { mypriority = thePriority; }
+
+  Standard_Integer Priority() const { return mypriority; }
+
+  Standard_EXPORT virtual Standard_Boolean HasLocation() const = 0;
+
+  Standard_EXPORT virtual void SetLocation (const TopLoc_Location& aLoc) = 0;
+
+  Standard_EXPORT virtual void ResetLocation() = 0;
+
+  Standard_EXPORT virtual TopLoc_Location Location() const = 0;
 
 public:
 
-  
   //! sets the selectable priority of the owner
-    void Set (const Standard_Integer aPriority);
-  
-    Standard_Integer Priority() const;
-  
-  Standard_EXPORT virtual Standard_Boolean HasLocation() const = 0;
-  
-  Standard_EXPORT virtual void SetLocation (const TopLoc_Location& aLoc) = 0;
-  
-  Standard_EXPORT virtual void ResetLocation() = 0;
-  
-  Standard_EXPORT virtual TopLoc_Location Location() const = 0;
-
-
-
-
-  DEFINE_STANDARD_RTTIEXT(SelectBasics_EntityOwner,MMgt_TShared)
+  void Set (const Standard_Integer thePriority) { SetPriority (thePriority); }
 
 protected:
 
-  
-  Standard_EXPORT SelectBasics_EntityOwner(const Standard_Integer aPriority = 0);
+  Standard_EXPORT SelectBasics_EntityOwner (const Standard_Integer thePriority = 0);
+
+protected:
 
   Standard_Integer mypriority;
 
-
-private:
-
-
-
-
 };
 
-
-#include <SelectBasics_EntityOwner.lxx>
-
-
-
-
+DEFINE_STANDARD_HANDLE(SelectBasics_EntityOwner, Standard_Transient)
 
 #endif // _SelectBasics_EntityOwner_HeaderFile

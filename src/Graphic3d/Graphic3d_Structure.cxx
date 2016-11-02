@@ -254,8 +254,8 @@ void Graphic3d_Structure::Erase()
 //function : Highlight
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::Highlight (const Handle(Graphic3d_HighlightStyle)& theStyle,
-                                     const Standard_Boolean                  theToUpdateMgr)
+void Graphic3d_Structure::Highlight (const Handle(Graphic3d_PresentationAttributes)& theStyle,
+                                     const Standard_Boolean theToUpdateMgr)
 {
   if (IsDeleted())
   {
@@ -322,7 +322,7 @@ void Graphic3d_Structure::UnHighlight()
 //function : HighlightStyle
 //purpose  :
 //=============================================================================
-const Handle(Graphic3d_HighlightStyle)& Graphic3d_Structure::HighlightStyle() const
+const Handle(Graphic3d_PresentationAttributes)& Graphic3d_Structure::HighlightStyle() const
 {
   return myCStructure->HighlightStyle();
 }

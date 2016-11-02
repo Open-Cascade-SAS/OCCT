@@ -136,7 +136,7 @@ void MeshVS_MeshOwner::SetDetectedEntities (const Handle(TColStd_HPackedMapOfInt
 // Purpose  :
 //================================================================
 void MeshVS_MeshOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                         const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                         const Handle(Prs3d_Drawer)& theStyle,
                                          const Standard_Integer /*theMode*/)
 {
   Handle( SelectMgr_SelectableObject ) aSelObj;
@@ -171,10 +171,9 @@ void MeshVS_MeshOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager
   }
 }
 
-void MeshVS_MeshOwner::Unhilight(const Handle(PrsMgr_PresentationManager)& thePM,
-				 const Standard_Integer theMode)
+void MeshVS_MeshOwner::Unhilight (const Handle(PrsMgr_PresentationManager)& thePM, const Standard_Integer )
 {
-  SelectMgr_EntityOwner::Unhilight( thePM, theMode );
+  SelectMgr_EntityOwner::Unhilight (thePM);
 
   Handle(TColStd_HPackedMapOfInteger) aNodes = GetDetectedNodes();
   Handle(TColStd_HPackedMapOfInteger) aElems = GetDetectedElements();  

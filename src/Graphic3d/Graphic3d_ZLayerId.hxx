@@ -16,6 +16,8 @@
 #ifndef _Graphic3d_ZLayerId_HeaderFile
 #define _Graphic3d_ZLayerId_HeaderFile
 
+#include <Standard_Integer.hxx>
+
 typedef Standard_Integer Graphic3d_ZLayerId;
 
 //! This enumeration defines the list of predefined layers, which can not be removed (but settings can be overridden).

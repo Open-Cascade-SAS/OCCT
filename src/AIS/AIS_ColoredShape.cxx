@@ -208,7 +208,7 @@ void AIS_ColoredShape::SetCustomWidth (const TopoDS_Shape& theShape,
 void AIS_ColoredShape::SetColor (const Quantity_Color&  theColor)
 {
   setColor (myDrawer, theColor);
-  myOwnColor  = theColor;
+  myDrawer->SetColor (theColor);
   hasOwnColor = Standard_True;
   LoadRecomputable (AIS_WireFrame);
   LoadRecomputable (AIS_Shaded);
@@ -273,7 +273,7 @@ void AIS_ColoredShape::SetWidth (const Standard_Real    theLineWidth)
 void AIS_ColoredShape::SetTransparency (const Standard_Real theValue)
 {
   setTransparency (myDrawer, theValue);
-  myTransparency = theValue;
+  myDrawer->SetTransparency ((Standard_ShortReal )theValue);
   LoadRecomputable (AIS_WireFrame);
   LoadRecomputable (AIS_Shaded);
   for (AIS_DataMapOfShapeDrawer::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())

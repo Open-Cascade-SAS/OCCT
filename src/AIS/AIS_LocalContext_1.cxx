@@ -57,33 +57,6 @@ namespace
   TopoDS_Shape AIS_myDummyShape;
 }
 
-static Standard_Integer GetHiMod(const Handle(AIS_InteractiveObject)& IO)
-{
-  return IO->HasHilightMode() ? IO->HilightMode():0;
-}
-
-//=======================================================================
-//function : getHiStyle
-//purpose  :
-//=======================================================================
-const Handle(Graphic3d_HighlightStyle)& AIS_LocalContext::getHiStyle (const Handle(SelectMgr_SelectableObject)& theObj) const
-{
-  const Handle(Prs3d_Drawer)& aHiDrawer = theObj->HilightAttributes();
-  return !aHiDrawer.IsNull() && aHiDrawer->HasOwnHighlightStyle()
-    ? aHiDrawer->HighlightStyle() : myCTX->HighlightStyle();
-}
-
-//=======================================================================
-//function : getSelStyle
-//purpose  :
-//=======================================================================
-const Handle(Graphic3d_HighlightStyle)& AIS_LocalContext::getSelStyle (const Handle(AIS_InteractiveObject)& theObj) const
-{
-  const Handle(Prs3d_Drawer)& aHiDrawer = theObj->HilightAttributes();
-  return !aHiDrawer.IsNull() && aHiDrawer->HasOwnSelectionStyle()
-    ? aHiDrawer->SelectionStyle() : myCTX->SelectionStyle();
-}
-
 //==================================================
 // Function: MoveTo
 // Purpose :
@@ -502,9 +475,11 @@ void AIS_LocalContext::Hilight (const Handle(SelectMgr_EntityOwner)& theOwner,
     return;
   }
 
-  const Standard_Integer aHilightMode = GetHiMod (Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable()));
+  const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast(theOwner->Selectable());
+  const Handle(Prs3d_Drawer)& aHiStyle = myCTX->getHiStyle (anObj, theOwner);
+  const Standard_Integer aHiMode = myCTX->getHilightMode (anObj, aHiStyle, -1);
   myMainPM->BeginImmediateDraw();
-  theOwner->HilightWithColor (myMainPM, getHiStyle (theOwner->Selectable()), aHilightMode);
+  theOwner->HilightWithColor (myMainPM, aHiStyle, aHiMode);
   myMainPM->EndImmediateDraw (theView->Viewer());
 }
 
@@ -520,18 +495,19 @@ void AIS_LocalContext::Unhilight (const Handle(SelectMgr_EntityOwner)& theOwner,
     return;
   }
 
-  const Handle(AIS_InteractiveObject)& anObj = Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable());
-  const Standard_Integer aHilightMode = GetHiMod (anObj);
+  const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable());
   if (IsSelected (theOwner))
   {
     if (theOwner->IsAutoHilight())
     {
-      theOwner->HilightWithColor (myMainPM, getSelStyle (anObj), aHilightMode);
+      const Handle(Prs3d_Drawer)& aSelStyle = myCTX->getSelStyle (anObj, theOwner);
+      const Standard_Integer aHiMode = myCTX->getHilightMode (anObj, aSelStyle, -1);
+      theOwner->HilightWithColor (myMainPM, aSelStyle, aHiMode);
     }
   }
   else
   {
-    theOwner->Unhilight (myMainPM, aHilightMode);
+    theOwner->Unhilight (myMainPM);
   }
 }
 
@@ -558,8 +534,9 @@ void AIS_LocalContext::HilightPicked (const Standard_Boolean theToUpdateviewer)
     if (anOwner->IsAutoHilight())
     {
       Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast(aSelObj);
-      const Standard_Integer aHighMode = GetHiMod (anIO);
-      anOwner->HilightWithColor (myMainPM, getSelStyle (anIO), aHighMode);
+      const Handle(Prs3d_Drawer)& aSelStyle = myCTX->getSelStyle (anIO, anOwner);
+      const Standard_Integer aHiMode = myCTX->getHilightMode (anIO, aSelStyle, -1);
+      anOwner->HilightWithColor (myMainPM, aSelStyle, aHiMode);
       continue;
     }
 
@@ -606,8 +583,7 @@ void AIS_LocalContext::UnhilightPicked (const Standard_Boolean theToUpdateViewer
     Handle(SelectMgr_SelectableObject) aSelObj = anOwner->Selectable();
     Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (aSelObj);
     anObjMap.Add (aSelObj);
-    Standard_Integer aHighMode = GetHiMod (anIO);
-    anOwner->Unhilight (myMainPM, aHighMode);
+    anOwner->Unhilight (myMainPM);
   }
 
   for (NCollection_Map<Handle(SelectMgr_SelectableObject)>::Iterator aMapIter (anObjMap);
@@ -1394,11 +1370,7 @@ Standard_Boolean AIS_LocalContext::UnhilightLastDetected (const Handle(V3d_View)
 
   myMainPM->BeginImmediateDraw();
   const Handle(SelectMgr_EntityOwner)& anOwner = myMapOfOwner->FindKey (mylastindex);
-  const Standard_Integer aHilightMode = anOwner->HasSelectable()
-                                      ? GetHiMod (Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable()))
-                                      : 0;
-
-  myMapOfOwner->FindKey (mylastindex)->Unhilight (myMainPM, aHilightMode);
+  anOwner->Unhilight (myMainPM);
   myMainPM->EndImmediateDraw (theView->Viewer());
   mylastindex = 0;
   return Standard_True;

@@ -216,11 +216,11 @@ void AIS_Relation::SetColor(const Quantity_NameOfColor aCol)
 
 void AIS_Relation::SetColor(const Quantity_Color &aCol)
 {
-  if(hasOwnColor && myOwnColor==aCol) return;
+  if(hasOwnColor && myDrawer->Color() == aCol) return;
 
   if (!myDrawer->HasOwnTextAspect()) myDrawer->SetTextAspect(new Prs3d_TextAspect());
   hasOwnColor=Standard_True;
-  myOwnColor=aCol;
+  myDrawer->SetColor (aCol);
   myDrawer->TextAspect()->SetColor(aCol);
 
   Standard_Real WW = HasWidth()? Width(): myDrawer->HasLink() ?

@@ -1117,6 +1117,14 @@ The following classes have been changed:
 
 @section upgrade_occt720 Upgrade to OCCT 7.2.0
 
+@subsection upgrade_720_removed Removed features
+
+The following obsolete features have been removed:
+* *AIS_InteractiveContext::PreSelectionColor()*, *::DefaultColor()*, *::WasCurrentTouched()*, *::ZDetection()*.
+  These properties were unused, and therefore application should remove occurrences of these methods.
+* *AIS_InteractiveObject::SelectionPriority()*.
+  These property was not implemented.
+
 @subsection upgrade_occt720_correction_of_Offset_API Corrections in BRepOffset API
 
 Class *BRepOffsetAPI_MakeOffsetShape*:
@@ -1140,3 +1148,32 @@ The code below shows new calling procedure:
     BodyMaker.MakeThickSolidByJoin(myBody, facesToRemove, -myThickness / 50, 1.e-3);
     myBody = BodyMaker.Shape();
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+@subsection upgrade_720_highlight Highlight style
+
+Management of highlight attributes has been revised and might require modifications from application side:
+* New class *Graphic3d_PresentationAttributes* defining basic presentation attributes has been introduced.
+  It's definition includes properties previously defined by class Graphic3d_HighlightStyle (*Color*, *Transparency*),
+  and new properties (*Display mode*, *ZLayer*, optional *FillArea aspect*).
+* Class *Prs3d_Drawer* now inherits class *Graphic3d_PresentationAttributes*.
+  So that overall presentation attributes are now split into two parts - Basic attributes and Detailed attributes.
+* Class *Graphic3d_HighlightStyle* has been dropped.
+  It is now defined as a typedef to *Prs3d_Drawer*.
+  Therefore, highlight style now also includes not only Basic presentation attributes, but also Detailed attributes
+  which can be used by custom presentation builders.
+* Highlighting style defined by class *Graphic3d_PresentationAttributes* now provides more options:
+  - *Graphic3d_PresentationAttributes::BasicFillAreaAspect()* property providing complete Material definition.
+    This option, when defined, can be used instead of the pair Object Material + Highlight Color.
+  - *Graphic3d_PresentationAttributes::ZLayer()* property specifying the Layer where highlighted presentation should be shown.
+    This property can be set to Graphic3d_ZLayerId_UNKNOWN, which means that ZLayer of main presentation should be used instead.
+  - *Graphic3d_PresentationAttributes::DisplayMode()* property specifying Display Mode for highlight presentation.
+* Since Highlight and Selection styles within *AIS_InteractiveContext* are now defined by *Prs3d_Drawer* inheriting from *Graphic3d_PresentationAttributes*,
+  it is now possible to customize default highlight attributes like *Display Mode* and *ZLayer*, which previously could be defined only on Object level.
+* Properties *Prs3d_Drawer::HighlightStyle()* and *Prs3d_Drawer::SelectionStyle()* have been removed.
+  Instead, *AIS_InteractiveObject* now defines *::DynamicHilightAttributes()* for dynamic highlighting in addition to *::HilightAttributes()* used for highlighting in selected state.
+* The following protected fields have been removed from class *AIS_InteractiveObject*:
+  - *myOwnColor*, replaced by *myDrawer->Color()*
+  - *myTransparency*, replaced by *myDrawer->Transparency()*
+  - *myZLayer*, replaced by *myDrawer->ZLayer()*
+* The method *PrsMgr_PresentationManager::Unhighlight()* taking Display Mode as an argument has been marked deprecated.
+  Implementation now performs unhighlighting of all highlighted presentation mode.

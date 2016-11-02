@@ -132,8 +132,8 @@ class OpenGl_ShaderManager;
 class OpenGl_Sampler;
 class OpenGl_FrameBuffer;
 class OpenGl_AspectFace;
+class Graphic3d_PresentationAttributes;
 
-class OpenGl_Context;
 DEFINE_STANDARD_HANDLE(OpenGl_Context, Standard_Transient)
 
 //! This class generalize access to the GL context and available extensions.
@@ -624,7 +624,7 @@ public: //! @name methods to alter or retrieve current state
 
   //! Setup current shading material.
   Standard_EXPORT void SetShadingMaterial (const OpenGl_AspectFace* theAspect,
-                                           const OpenGl_Vec4* theHighlightColor = NULL);
+                                           const Handle(Graphic3d_PresentationAttributes)& theHighlight = Handle(Graphic3d_PresentationAttributes)());
 
   //! Setup current color.
   Standard_EXPORT void SetColor4fv (const OpenGl_Vec4& theColor);

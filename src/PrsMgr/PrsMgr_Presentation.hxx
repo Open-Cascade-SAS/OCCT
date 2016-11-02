@@ -17,64 +17,50 @@
 #ifndef _PrsMgr_Presentation_HeaderFile
 #define _PrsMgr_Presentation_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <PrsMgr_PresentableObjectPointer.hxx>
+#include <Standard.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 #include <Aspect_TypeOfHighlightMethod.hxx>
 #include <Quantity_Length.hxx>
+
 class PrsMgr_PresentationManager;
 class PrsMgr_Prs;
 class PrsMgr_PresentableObject;
 class Quantity_Color;
 class Geom_Transformation;
 class Prs3d_Presentation;
-class Graphic3d_HighlightStyle;
+class Prs3d_Drawer;
 class Graphic3d_Structure;
 class Graphic3d_DataStructureManager;
 class Prs3d_Projector;
 
+DEFINE_STANDARD_HANDLE(PrsMgr_Presentation, Standard_Transient)
 
-class PrsMgr_Presentation;
-DEFINE_STANDARD_HANDLE(PrsMgr_Presentation, MMgt_TShared)
-
-
-class PrsMgr_Presentation : public MMgt_TShared
+class PrsMgr_Presentation : public Standard_Transient
 {
-
+  DEFINE_STANDARD_RTTIEXT(PrsMgr_Presentation, Standard_Transient)
+  friend class PrsMgr_PresentationManager;
+  friend class PrsMgr_PresentableObject;
+  friend class PrsMgr_Prs;
 public:
 
-  
   //! Destructor
   Standard_EXPORT ~PrsMgr_Presentation();
-  
-    const Handle(Prs3d_Presentation)& Presentation() const;
-  
+
+  const Handle(Prs3d_Presentation)& Presentation() const { return myStructure; }
+
   //! returns the PresentationManager in which the presentation has been created.
-    const Handle(PrsMgr_PresentationManager)& PresentationManager() const;
-  
-    void SetUpdateStatus (const Standard_Boolean theStat);
-  
-    Standard_Boolean MustBeUpdated() const;
+  const Handle(PrsMgr_PresentationManager)& PresentationManager() const { return myPresentationManager; }
 
-friend class PrsMgr_PresentationManager;
-friend class PrsMgr_PresentableObject;
-friend class PrsMgr_Prs;
+  void SetUpdateStatus (const Standard_Boolean theUpdateStatus) { myMustBeUpdated = theUpdateStatus; }
 
-
-  DEFINE_STANDARD_RTTIEXT(PrsMgr_Presentation,MMgt_TShared)
-
-protected:
-
-
-
+  Standard_Boolean MustBeUpdated() const { return myMustBeUpdated; }
 
 private:
 
-  
   Standard_EXPORT PrsMgr_Presentation(const Handle(PrsMgr_PresentationManager)& thePresentationManager, const Handle(PrsMgr_PresentableObject)& thePresentableObject);
   
   Standard_EXPORT void Display();
@@ -86,7 +72,7 @@ private:
   
   Standard_EXPORT void SetVisible (const Standard_Boolean theValue);
   
-  Standard_EXPORT void Highlight (const Handle(Graphic3d_HighlightStyle)& theStyle);
+  Standard_EXPORT void Highlight (const Handle(Prs3d_Drawer)& theStyle);
   
   Standard_EXPORT void Unhighlight() const;
   
@@ -132,14 +118,6 @@ protected:
   Standard_Boolean myMustBeUpdated;
   Standard_Integer myBeforeHighlightState;
 
-
 };
-
-
-#include <PrsMgr_Presentation.lxx>
-
-
-
-
 
 #endif // _PrsMgr_Presentation_HeaderFile

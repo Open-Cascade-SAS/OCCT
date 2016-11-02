@@ -15,10 +15,10 @@
 #include <PrsMgr_Presentation.hxx>
 
 #include <Geom_Transformation.hxx>
-#include <Graphic3d_HighlightStyle.hxx>
 #include <Graphic3d_DataStructureManager.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Precision.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Projector.hxx>
 #include <PrsMgr_ModedPresentation.hxx>
@@ -29,7 +29,7 @@
 #include <Standard_Type.hxx>
 #include <Graphic3d_CView.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_Presentation,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_Presentation, Standard_Transient)
 
 namespace
 {
@@ -126,7 +126,7 @@ void PrsMgr_Presentation::SetVisible (const Standard_Boolean theValue)
 //function : Highlight
 //purpose  :
 //=======================================================================
-void PrsMgr_Presentation::Highlight (const Handle(Graphic3d_HighlightStyle)& theStyle)
+void PrsMgr_Presentation::Highlight (const Handle(Prs3d_Drawer)& theStyle)
 {
   if (!IsHighlighted())
   {

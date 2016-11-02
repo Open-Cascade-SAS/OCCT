@@ -811,7 +811,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     // All primitives should gather material properties from the AspectFace in shading mode
     if (isLightOn)
     {
-      aCtx->SetShadingMaterial (anAspectFace, theWorkspace->ToHighlight() ? theWorkspace->HighlightColor : NULL);
+      aCtx->SetShadingMaterial (anAspectFace, theWorkspace->HighlightStyle());
     }
 
     if (!theWorkspace->ActiveTexture().IsNull()

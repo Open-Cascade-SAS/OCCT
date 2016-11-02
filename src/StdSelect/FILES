@@ -17,7 +17,6 @@ StdSelect_Prs.lxx
 StdSelect_SensitivityMode.hxx
 StdSelect_Shape.cxx
 StdSelect_Shape.hxx
-StdSelect_Shape.lxx
 StdSelect_ShapeTypeFilter.cxx
 StdSelect_ShapeTypeFilter.hxx
 StdSelect_ShapeTypeFilter.lxx

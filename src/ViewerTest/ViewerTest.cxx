@@ -3038,13 +3038,13 @@ inline void bndPresentation (Draw_Interpretor&                         theDI,
                              const Standard_Integer                    theDispMode,
                              const TCollection_AsciiString&            theName,
                              const ViewerTest_BndAction                theAction,
-                             const Handle(Graphic3d_HighlightStyle)&   theStyle)
+                             const Handle(Prs3d_Drawer)&               theStyle)
 {
   switch (theAction)
   {
     case BndAction_Hide:
     {
-      theMgr->Unhighlight (theObj, theDispMode);
+      theMgr->Unhighlight (theObj);
       break;
     }
     case BndAction_Show:
@@ -3091,7 +3091,7 @@ int VBounding (Draw_Interpretor& theDI,
   ViewerTest_BndAction anAction = BndAction_Show;
   Standard_Integer     aMode    = -1;
 
-  Handle(Graphic3d_HighlightStyle) aStyle;
+  Handle(Prs3d_Drawer) aStyle;
 
   Standard_Integer anArgIter = 1;
   for (; anArgIter < theArgNb; ++anArgIter)
@@ -3126,7 +3126,11 @@ int VBounding (Draw_Interpretor& theDI,
   }
 
   if (anAction == BndAction_Show)
-    aStyle = new Graphic3d_HighlightStyle (Aspect_TOHM_BOUNDBOX, Quantity_NOC_GRAY99, 0.0);
+  {
+    aStyle = new Prs3d_Drawer();
+    aStyle->SetMethod (Aspect_TOHM_BOUNDBOX);
+    aStyle->SetColor  (Quantity_NOC_GRAY99);
+  }
 
   Standard_Integer aHighlightedMode = -1;
   if (anArgIter < theArgNb)

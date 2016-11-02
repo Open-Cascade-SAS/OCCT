@@ -33,8 +33,6 @@ class SelectMgr_SelectableObject;
 class PrsMgr_PresentationManager;
 class TopLoc_Location;
 
-
-class StdSelect_BRepOwner;
 DEFINE_STANDARD_HANDLE(StdSelect_BRepOwner, SelectMgr_EntityOwner)
 
 //! Defines Specific Owners for Sensitive Primitives
@@ -46,10 +44,9 @@ DEFINE_STANDARD_HANDLE(StdSelect_BRepOwner, SelectMgr_EntityOwner)
 //! must be redefined by each User.
 class StdSelect_BRepOwner : public SelectMgr_EntityOwner
 {
-
+  DEFINE_STANDARD_RTTIEXT(StdSelect_BRepOwner, SelectMgr_EntityOwner)
 public:
 
-  
   //! Constructs an owner specification framework defined
   //! by the priority aPriority.
   Standard_EXPORT StdSelect_BRepOwner(const Standard_Integer aPriority);
@@ -71,44 +68,41 @@ public:
   Standard_EXPORT StdSelect_BRepOwner(const TopoDS_Shape& aShape, const Handle(SelectMgr_SelectableObject)& theOrigin, const Standard_Integer aPriority = 0, const Standard_Boolean FromDecomposition = Standard_False);
   
   //! returns False if no shape was set
-    Standard_Boolean HasShape() const;
-  
+  Standard_Boolean HasShape() const { return !myShape.IsNull(); }
+
   //! <FromDecomposition> indicates whether <aShape>
   //! comes from decomposition of a bigger shape.
   Standard_EXPORT void Set (const TopoDS_Shape& aShape, const Standard_Boolean FromDecomposition = Standard_False);
-  
-    Standard_Boolean ComesFromDecomposition() const;
-  
-    const TopoDS_Shape& Shape() const;
-  
+
+  const TopoDS_Shape& Shape() const { return myShape; }
 
   //! Returns true if this framework has a highlight mode defined for it.
-    Standard_Boolean HasHilightMode() const;
+  Standard_Boolean HasHilightMode() const { return myCurMode == -1; }
   
   //! Sets the highlight mode for this framework.
   //! This defines the type of display used to highlight the
   //! owner of the shape when it is detected by the selector.
   //! The default type of display is wireframe, defined by the index 0.
-    void SetHilightMode (const Standard_Integer aMode);
-  
+  void SetHilightMode (const Standard_Integer theMode) { myCurMode = theMode; }
+
   //! Resets the higlight mode for this framework.
   //! This defines the type of display used to highlight the
   //! owner of the shape when it is detected by the selector.
   //! The default type of display is wireframe, defined by the index 0.
-    void ResetHilightMode();
-  
+  void ResetHilightMode() { myCurMode = -1; }
+
   //! Returns the highlight mode for this framework.
   //! This defines the type of display used to highlight the
   //! owner of the shape when it is detected by the selector.
   //! The default type of display is wireframe, defined by the index 0.
-    Standard_Integer HilightMode() const;
-  
+  Standard_Integer HilightMode() const { return myCurMode; }
+
   //! Returns true if an object with the selection mode
   //! aMode is highlighted in the presentation manager aPM.
   Standard_EXPORT virtual Standard_Boolean IsHilighted (const Handle(PrsMgr_PresentationManager)& aPM, const Standard_Integer aMode = 0) const Standard_OVERRIDE;
   
   Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                                 const Handle(Graphic3d_HighlightStyle)&     theStyle,
+                                                 const Handle(Prs3d_Drawer)&                 theStyle,
                                                  const Standard_Integer                      theMode = 0) Standard_OVERRIDE;
   
   //! Removes highlighting from the type of shape
@@ -122,38 +116,18 @@ public:
   Standard_EXPORT virtual void SetLocation (const TopLoc_Location& aLoc) Standard_OVERRIDE;
   
   Standard_EXPORT virtual void ResetLocation() Standard_OVERRIDE;
-  
-  //! Set Z layer ID and update all presentations.
-  Standard_EXPORT virtual void SetZLayer (const Graphic3d_ZLayerId theLayerId) Standard_OVERRIDE;
 
   //! Implements immediate application of location transformation of parent object to dynamic highlight structure
   Standard_EXPORT virtual void UpdateHighlightTrsf (const Handle(V3d_Viewer)& theViewer,
                                                     const Handle(PrsMgr_PresentationManager3d)& theManager,
                                                     const Standard_Integer theDispMode) Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(StdSelect_BRepOwner,SelectMgr_EntityOwner)
-
 protected:
 
-
-  Standard_Boolean myFromDecomposition;
   TopoDS_Shape myShape;
-
-
-private:
-
-
   Handle(StdSelect_Shape) myPrsSh;
   Standard_Integer myCurMode;
 
-
 };
-
-
-#include <StdSelect_BRepOwner.lxx>
-
-
-
-
 
 #endif // _StdSelect_BRepOwner_HeaderFile

@@ -56,7 +56,7 @@ void AIS_Triangulation::SetTransparency (const Standard_Real theValue)
 
   // override transparency
   myDrawer->ShadingAspect()->SetTransparency (theValue, myCurrentFacingModel);
-  myTransparency = theValue;
+  myDrawer->SetTransparency ((Standard_ShortReal )theValue);
 
   updatePresentation();
 }
@@ -67,7 +67,7 @@ void AIS_Triangulation::SetTransparency (const Standard_Real theValue)
 //=======================================================================
 void AIS_Triangulation::UnsetTransparency()
 {
-  myTransparency = 0.0;
+  myDrawer->SetTransparency (0.0f);
   if (!myDrawer->HasOwnShadingAspect())
   {
     return;

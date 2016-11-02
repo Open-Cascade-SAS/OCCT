@@ -13,6 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Graphic3d_HighlightStyle.hxx>
+#include <Graphic3d_PresentationAttributes.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT (Graphic3d_HighlightStyle, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT (Graphic3d_PresentationAttributes, Standard_Transient)

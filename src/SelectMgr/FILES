@@ -9,7 +9,6 @@ SelectMgr_DataMapIteratorOfDataMapOfObjectSelectors.hxx
 SelectMgr_DataMapOfObjectSelectors.hxx
 SelectMgr_EntityOwner.cxx
 SelectMgr_EntityOwner.hxx
-SelectMgr_EntityOwner.lxx
 SelectMgr_Filter.cxx
 SelectMgr_Filter.hxx
 SelectMgr_Frustum.hxx

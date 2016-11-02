@@ -74,7 +74,6 @@ AIS_FixRelation.hxx
 AIS_FixRelation.lxx
 AIS_GlobalStatus.cxx
 AIS_GlobalStatus.hxx
-AIS_GlobalStatus.lxx
 AIS_GraphicTool.cxx
 AIS_GraphicTool.hxx
 AIS_IdenticRelation.cxx
@@ -83,13 +82,11 @@ AIS_IdenticRelation.lxx
 AIS_IndexedDataMapOfOwnerPrs.hxx
 AIS_InteractiveContext.cxx
 AIS_InteractiveContext.hxx
-AIS_InteractiveContext.lxx
 AIS_InteractiveContext_1.cxx
 AIS_InteractiveContext_2.cxx
 AIS_InteractiveContext_3.cxx
 AIS_InteractiveObject.cxx
 AIS_InteractiveObject.hxx
-AIS_InteractiveObject.lxx
 AIS_KindOfDimension.hxx
 AIS_KindOfInteractive.hxx
 AIS_KindOfRelation.hxx

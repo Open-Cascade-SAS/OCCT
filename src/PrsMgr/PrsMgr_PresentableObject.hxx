@@ -46,9 +46,11 @@
 //! the relevant daughter classes and their member
 //! functions in AIS. This is particularly true in the
 //! creation of new interactive objects.
-class PrsMgr_PresentableObject : public MMgt_TShared
+class PrsMgr_PresentableObject : public Standard_Transient
 {
-  DEFINE_STANDARD_RTTIEXT(PrsMgr_PresentableObject, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(PrsMgr_PresentableObject, Standard_Transient)
+  friend class PrsMgr_Presentation;
+  friend class PrsMgr_PresentationManager;
 public:
 
   PrsMgr_Presentations& Presentations() { return myPresentations; }
@@ -208,17 +210,32 @@ public:
   //! Returns parent of current object in scene hierarchy.
   PrsMgr_PresentableObjectPointer Parent() const { return myParent; }
 
+  //! Initializes the drawing tool theDrawer.
+  Standard_EXPORT virtual void SetAttributes(const Handle(Prs3d_Drawer)& theDrawer);
 
-friend class PrsMgr_Presentation;
-friend class PrsMgr_PresentationManager;
-friend   
-  Standard_EXPORT Handle(Graphic3d_Structure) PrsMgr_Presentation::Compute (const Handle(Graphic3d_DataStructureManager)& theProjector);
-friend   
-  Standard_EXPORT void PrsMgr_Presentation::Compute (const Handle(Graphic3d_DataStructureManager)& theProjector, const Handle(Graphic3d_Structure)& theGivenStruct);
-friend   
-  Standard_EXPORT Handle(Graphic3d_Structure) PrsMgr_Presentation::Compute (const Handle(Graphic3d_DataStructureManager)& theProjector, const Handle(Geom_Transformation)& theTrsf);
-friend   
-  Standard_EXPORT void PrsMgr_Presentation::Compute (const Handle(Graphic3d_DataStructureManager)& theProjector, const Handle(Geom_Transformation)& theTrsf, const Handle(Graphic3d_Structure)& theGivenStruct);
+  //! Returns the attributes settings.
+  const Handle(Prs3d_Drawer)& Attributes() const
+  {
+    return myDrawer;
+  }
+
+  //! Clears settings provided by the drawing tool theDrawer.
+  Standard_EXPORT virtual void UnsetAttributes();
+
+  //! Returns the hilight attributes settings.
+  const Handle(Prs3d_Drawer)& HilightAttributes() const { return myHilightDrawer; }
+
+  //! Initializes the hilight drawing tool theDrawer.
+  virtual void SetHilightAttributes(const Handle(Prs3d_Drawer)& theDrawer) { myHilightDrawer = theDrawer; }
+
+  //! Returns the hilight attributes settings.
+  const Handle(Prs3d_Drawer)& DynamicHilightAttributes() const { return myDynHilightDrawer; }
+
+  //! Initializes the dynamic hilight drawing tool.
+  virtual void SetDynamicHilightAttributes (const Handle(Prs3d_Drawer)& theDrawer) { myDynHilightDrawer = theDrawer; }
+
+  //! Clears settings provided by the hilight drawing tool theDrawer.
+  virtual void UnsetHilightAttributes() { myHilightDrawer.Nullify(); }
 
 protected:
 
@@ -290,10 +307,12 @@ private:
 protected:
 
   PrsMgr_Presentations myPresentations;
-  PrsMgr_TypeOfPresentation3d myTypeOfPresentation3d;
   Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;
+  Handle(Prs3d_Drawer) myDrawer;
+  Handle(Prs3d_Drawer) myHilightDrawer;
+  Handle(Prs3d_Drawer) myDynHilightDrawer;
+  PrsMgr_TypeOfPresentation3d myTypeOfPresentation3d;
   Standard_Boolean myIsMutable;
-  Graphic3d_ZLayerId myZLayer;
   Standard_Boolean myHasOwnPresentations;
 
 private:
@@ -308,6 +327,6 @@ private:
 
 };
 
-DEFINE_STANDARD_HANDLE(PrsMgr_PresentableObject, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(PrsMgr_PresentableObject, Standard_Transient)
 
 #endif // _PrsMgr_PresentableObject_HeaderFile

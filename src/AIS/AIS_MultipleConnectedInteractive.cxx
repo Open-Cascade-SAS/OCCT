@@ -48,15 +48,18 @@ namespace
     }
 
     //! Selectable() method modified to return myAssembly.
-    virtual Handle(SelectMgr_SelectableObject) Selectable() const;
+    virtual Handle(SelectMgr_SelectableObject) Selectable() const Standard_OVERRIDE
+    {
+      return myAssembly;
+    }
 
-    Standard_Boolean IsHilighted (const Handle(PrsMgr_PresentationManager)& PM,const Standard_Integer aMode) const;
+    virtual Standard_Boolean IsHilighted (const Handle(PrsMgr_PresentationManager)& PM,const Standard_Integer aMode) const Standard_OVERRIDE;
 
-    void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                           const Handle(Graphic3d_HighlightStyle)& theStyle,
-                           const Standard_Integer theMode);
+    virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+                                   const Handle(Prs3d_Drawer)& theStyle,
+                                   const Standard_Integer theMode) Standard_OVERRIDE;
 
-    void Unhilight (const Handle(PrsMgr_PresentationManager)& PM, const Standard_Integer aMode);
+    virtual void Unhilight (const Handle(PrsMgr_PresentationManager)& PM, const Standard_Integer aMode) Standard_OVERRIDE;
 
   private:
 
@@ -75,15 +78,6 @@ SelectMgr_AssemblyEntityOwner::SelectMgr_AssemblyEntityOwner (const Handle(Selec
   SelectMgr_EntityOwner (theOwner),
   myAssembly (theAssembly)
 {
-}
-
-//=======================================================================
-//function : Selectable
-//purpose  : 
-//=======================================================================
-Handle(SelectMgr_SelectableObject) SelectMgr_AssemblyEntityOwner::Selectable() const
-{  
-  return myAssembly;
 }
 
 //=======================================================================
@@ -106,7 +100,7 @@ Standard_Boolean SelectMgr_AssemblyEntityOwner::IsHilighted (const Handle(PrsMgr
 //purpose  : 
 //=======================================================================
 void SelectMgr_AssemblyEntityOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                                      const Handle(Graphic3d_HighlightStyle)& theStyle,
+                                                      const Handle(Prs3d_Drawer)& theStyle,
                                                       const Standard_Integer theMode)
 {
   if (HasSelectable())
@@ -126,12 +120,12 @@ void SelectMgr_AssemblyEntityOwner::HilightWithColor (const Handle(PrsMgr_Presen
 //function : Unhilight
 //purpose  : 
 //=======================================================================
-void SelectMgr_AssemblyEntityOwner::Unhilight (const Handle(PrsMgr_PresentationManager)& PM,
-                                               const Standard_Integer aMode)
+void SelectMgr_AssemblyEntityOwner::Unhilight (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                               const Standard_Integer )
 {
   if (HasSelectable())
   {
-    PM->Unhighlight (myAssembly, aMode);
+    thePrsMgr->Unhighlight (myAssembly);
   }
 }
 
@@ -146,7 +140,6 @@ AIS_MultipleConnectedInteractive::AIS_MultipleConnectedInteractive()
 {
   myHasOwnPresentations = Standard_False;
   myAssemblyOwner = NULL;
-  SetHilightMode (0);
 }
 
 //=======================================================================

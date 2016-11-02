@@ -130,7 +130,6 @@ void OpenGl_Material::Init (const Graphic3d_MaterialAspect& theMat,
 // =======================================================================
 OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Window)& theWindow)
 : NamedStatus (0),
-  HighlightColor (&THE_WHITE_COLOR),
   myView (theView),
   myWindow (theWindow),
   myGlContext (!theWindow.IsNull() ? theWindow->GetGlContext() : NULL),
@@ -146,7 +145,6 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
   ViewMatrix_applied (&myDefaultMatrix),
   StructureMatrix_applied (&myDefaultMatrix),
   myToAllowFaceCulling (false),
-  myToHighlight (false),
   myModelViewMatrix (myDefaultMatrix)
 {
   if (!myGlContext.IsNull() && myGlContext->MakeCurrent())
@@ -207,7 +205,7 @@ void OpenGl_Workspace::ResetAppliedAspect()
   myGlContext->BindDefaultVao();
 
   NamedStatus           = !myTextureBound.IsNull() ? OPENGL_NS_TEXTURE : 0;
-  HighlightColor        = &THE_WHITE_COLOR;
+  myHighlightStyle.Nullify();
   myToAllowFaceCulling  = false;
   myAspectLineSet       = &myDefaultAspectLine;
   myAspectFaceSet       = &myDefaultAspectFace;
@@ -599,9 +597,9 @@ void OpenGl_Workspace::updateMaterial (const int theFlag)
   }
 
   myMatTmp.Init (*aSrcMat, *aSrcIntColor);
-  if (myToHighlight)
+  if (!myHighlightStyle.IsNull())
   {
-    myMatTmp.SetColor (*HighlightColor);
+    myMatTmp.SetColor (myHighlightStyle->ColorRGBA());
   }
 
   // handling transparency
@@ -798,11 +796,11 @@ const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
   }
 
   if (myAspectFaceSet->Aspect() == myAspectFaceApplied
-   && myToHighlight == myAspectFaceAppliedWithHL)
+  && !myHighlightStyle.IsNull() == myAspectFaceAppliedWithHL)
   {
     return myAspectFaceSet;
   }
-  myAspectFaceAppliedWithHL = myToHighlight;
+  myAspectFaceAppliedWithHL = !myHighlightStyle.IsNull();
 
 #if !defined(GL_ES_VERSION_2_0)
   const Aspect_InteriorStyle anIntstyle = myAspectFaceSet->Aspect()->InteriorStyle();

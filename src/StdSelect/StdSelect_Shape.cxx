@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <StdSelect_Shape.hxx>
 
 #include <Geom_Transformation.hxx>
 #include <Prs3d_Drawer.hxx>
@@ -22,16 +23,20 @@
 #include <Standard_Type.hxx>
 #include <StdPrs_WFShape.hxx>
 #include <StdPrs_ShadedShape.hxx>
-#include <StdSelect_Shape.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_Shape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StdSelect_Shape,PrsMgr_PresentableObject)
 
-StdSelect_Shape::StdSelect_Shape (const TopoDS_Shape& theShape, const Handle(Prs3d_Drawer)& theDrawer):
-  mysh     (theShape),
-  myDrawer (theDrawer)
-{}
+StdSelect_Shape::StdSelect_Shape (const TopoDS_Shape& theShape,
+                                  const Handle(Prs3d_Drawer)& theDrawer)
+: mysh (theShape)
+{
+  if (!theDrawer.IsNull())
+  {
+    myDrawer->SetLink (theDrawer);
+  }
+}
 
 void StdSelect_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*PM*/,
 			      const Handle(Prs3d_Presentation)& P,

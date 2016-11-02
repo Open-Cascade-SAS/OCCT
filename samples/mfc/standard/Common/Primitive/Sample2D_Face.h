@@ -53,7 +53,7 @@ private:
                         const SelectMgr_SequenceOfOwner& theOwners);
 
   void HilightOwnerWithColor( const Handle(PrsMgr_PresentationManager3d)& thePM,
-                              const Handle(Graphic3d_HighlightStyle)& theStyle,
+                              const Handle(Prs3d_Drawer)& theStyle,
                               const Handle(SelectMgr_EntityOwner)& theOwner);
 
   void Compute (  const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,

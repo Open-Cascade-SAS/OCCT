@@ -78,9 +78,13 @@ mylastindex(0),
 mylastgood(0),
 myCurDetected(0),
 myAISCurDetected(0),
-mySubintStyle (new Graphic3d_HighlightStyle (aCtx->SelectionStyle()))
-
+mySubintStyle (new Prs3d_Drawer())
 {
+  mySubintStyle->Link (aCtx->SelectionStyle());
+  mySubintStyle->SetColor        (aCtx->SelectionStyle()->Color());
+  mySubintStyle->SetTransparency (aCtx->SelectionStyle()->Transparency());
+  mySubintStyle->SetMethod       (aCtx->SelectionStyle()->Method());
+
   // bind self to AIS_InteractiveContext::myLocalContexts. Further, the
   // constructor executes logic that implies that the context is already
   // created and mapped.
@@ -262,7 +266,7 @@ ClearPrs(const Handle(AIS_InteractiveObject)& anInteractive,
   if(STAT->IsSubIntensityOn()) {
     STAT->SubIntensityOff();
     if(STAT->HilightMode()==aMode)
-      myMainPM->Unhighlight(anInteractive,STAT->HilightMode());
+      myMainPM->Unhighlight(anInteractive);
   }
   myMainPM->Clear(anInteractive,aMode); // correction connexions 23/09/97
   jobdone = Standard_True;
@@ -285,7 +289,7 @@ Erase(const Handle(AIS_InteractiveObject)& anInteractive)
   //Display step
   if(STAT->IsSubIntensityOn()) {
     STAT->SubIntensityOff();
-    myMainPM->Unhighlight(anInteractive,STAT->HilightMode());
+    myMainPM->Unhighlight (anInteractive);
   }
 
   Standard_Boolean status(Standard_False);
@@ -294,7 +298,9 @@ Erase(const Handle(AIS_InteractiveObject)& anInteractive)
     if(IsSelected(anInteractive))
       AddOrRemoveSelected(anInteractive);
     if(myMainPM->IsHighlighted(anInteractive,STAT->HilightMode()))
-      myMainPM->Unhighlight(anInteractive,STAT->HilightMode());
+    {
+      myMainPM->Unhighlight (anInteractive);
+    }
     myMainPM->SetVisibility (anInteractive, STAT->DisplayMode(), Standard_False);
     STAT->SetDisplayMode(-1);
     status = Standard_True;
@@ -450,7 +456,7 @@ Standard_Boolean AIS_LocalContext::Remove(const Handle(AIS_InteractiveObject)& a
   {
     if (Att->IsSubIntensityOn())
     {
-      myMainPM->Unhighlight (aSelectable, Att->HilightMode());
+      myMainPM->Unhighlight (aSelectable);
     }
 
     myMainPM->Erase (aSelectable, Att->DisplayMode());
@@ -681,7 +687,7 @@ void AIS_LocalContext::Hilight(const  Handle(AIS_InteractiveObject)& anObject)
     
   }
   const Handle(AIS_LocalStatus)& Att = myActiveObjects(anObject);
-  myMainPM->Color(anObject, getHiStyle (anObject), Att->HilightMode());
+  myMainPM->Color(anObject, myCTX->getHiStyle (anObject, anObject->GlobalSelOwner()), Att->HilightMode());
   Att->SubIntensityOn();
 }
 //=======================================================================
@@ -690,7 +696,7 @@ void AIS_LocalContext::Hilight(const  Handle(AIS_InteractiveObject)& anObject)
 //=======================================================================
 
 void AIS_LocalContext::Hilight (const Handle(AIS_InteractiveObject)& theObj,
-                                const Handle(Graphic3d_HighlightStyle)& theStyle)
+                                const Handle(Prs3d_Drawer)& theStyle)
 {
   if (!myActiveObjects.IsBound (theObj))
   {
@@ -721,13 +727,13 @@ void AIS_LocalContext::Unhilight(const Handle(AIS_InteractiveObject)& anObject)
   Standard_ENABLE_DEPRECATION_WARNINGS
   
   const Handle(AIS_LocalStatus)& Att = myActiveObjects(anObject);
-  myMainPM->Unhighlight(anObject,Att->HilightMode());
+  myMainPM->Unhighlight (anObject);
   if(Att->IsTemporary() && Att->DisplayMode()==-1)
     if(!IsSomeWhereElse)
       myMainPM->SetVisibility (anObject, Att->HilightMode(), Standard_False);
 
   Att->SubIntensityOff();
-  Att->SetHilightStyle (new Graphic3d_HighlightStyle());
+  Att->SetHilightStyle (Handle(Prs3d_Drawer)());
 }
 
 
@@ -754,7 +760,7 @@ Standard_Boolean AIS_LocalContext::IsHilighted(const Handle(AIS_InteractiveObjec
 }
 
 Standard_Boolean AIS_LocalContext::HighlightStyle (const Handle(AIS_InteractiveObject)& theObject,
-                                                   Handle(Graphic3d_HighlightStyle)& theStyle) const
+                                                   Handle(Prs3d_Drawer)& theStyle) const
 {
   if (!myActiveObjects.IsBound (theObject))
     return Standard_False;
@@ -975,17 +981,22 @@ void AIS_LocalContext::ClearObjects()
       // if object is temporary the presentations managed by myMainPM are removed
       AIS_DisplayStatus TheDS = myCTX->DisplayStatus(SO);
       
-      if(TheDS != AIS_DS_Displayed){
-	if(myMainPM->IsDisplayed(SO,CurAtt->DisplayMode())){
-	  if(CurAtt->IsSubIntensityOn()&&
-	     myMainPM->IsHighlighted(SO,CurAtt->HilightMode()))
-	    myMainPM->Unhighlight(SO,CurAtt->HilightMode());
-	  myMainPM->Erase(SO,CurAtt->DisplayMode());
-	}
-	
-	if(CurAtt->IsTemporary()){
-	  myMainPM->Erase(SO,CurAtt->DisplayMode());}
-//	  myMainPM->Clear(SO,CurAtt->DisplayMode());}
+      if(TheDS != AIS_DS_Displayed)
+      {
+        if (myMainPM->IsDisplayed(SO,CurAtt->DisplayMode()))
+        {
+          if (CurAtt->IsSubIntensityOn() && myMainPM->IsHighlighted (SO, CurAtt->HilightMode()))
+          {
+            myMainPM->Unhighlight (SO);
+          }
+          myMainPM->Erase (SO, CurAtt->DisplayMode());
+        }
+
+        if (CurAtt->IsTemporary())
+        {
+          myMainPM->Erase (SO, CurAtt->DisplayMode());
+          //myMainPM->Clear(SO,CurAtt->DisplayMode());
+        }
       }
       else {
 	if (CurAtt->IsSubIntensityOn())

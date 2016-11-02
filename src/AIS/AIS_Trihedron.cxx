@@ -436,7 +436,7 @@ void AIS_Trihedron::SetColor(const Quantity_NameOfColor aCol)
 void AIS_Trihedron::SetColor(const Quantity_Color &aCol)
 {
   hasOwnColor=Standard_True;
-  myOwnColor = aCol;
+  myDrawer->SetColor (aCol);
   
   if(!myDrawer->HasOwnDatumAspect()){
     Handle (Prs3d_DatumAspect) DA = new Prs3d_DatumAspect();
@@ -587,16 +587,16 @@ AcceptDisplayMode(const Standard_Integer aMode) const
 void AIS_Trihedron::UnsetColor()
 {
   hasOwnColor=Standard_False;
-  myOwnColor = Quantity_NOC_LIGHTSTEELBLUE4;
-  myDrawer->DatumAspect()->FirstAxisAspect()->SetColor(myOwnColor);
-  myDrawer->DatumAspect()->SecondAxisAspect()->SetColor(myOwnColor);
-  myDrawer->DatumAspect()->ThirdAxisAspect()->SetColor(myOwnColor);
+  myDrawer->SetColor (Quantity_NOC_LIGHTSTEELBLUE4);
+  myDrawer->DatumAspect()->FirstAxisAspect() ->SetColor (myDrawer->Color());
+  myDrawer->DatumAspect()->SecondAxisAspect()->SetColor (myDrawer->Color());
+  myDrawer->DatumAspect()->ThirdAxisAspect() ->SetColor (myDrawer->Color());
   if( HasTextColor() ) {
-    SetTextColor(myOwnColor.Name());
+    SetTextColor(myDrawer->Color().Name());
     myHasOwnTextColor = Standard_False;
   }
   if( HasArrowColor() ) {
-    SetArrowColor(myOwnColor.Name());
+    SetArrowColor(myDrawer->Color().Name());
     myHasOwnArrowColor = Standard_False;
   }
   

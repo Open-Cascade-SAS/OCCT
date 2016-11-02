@@ -66,10 +66,8 @@ class TopoDS_Face;
 class StdSelect_BRepSelectionTool 
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Decomposition of <aShape> into sensitive entities following
   //! a mode of decomposition <aType>. These entities are stored in <aSelection>.
   //! BrepOwners are created to store the identity of the picked shapes
@@ -99,50 +97,90 @@ public:
   //! You can use the function Load to modify the
   //! selection priority of an owner to make one entity
   //! more selectable than another one.
-  Standard_EXPORT static Standard_Integer GetStandardPriority (const TopoDS_Shape& aShap, const TopAbs_ShapeEnum aType);
-  
-  //! Computes the sensitive primitives corresponding to
-  //! the subshape aShape with the owner anOwner.
-  //! Stores them in the SelectMgr_Selection object, and returns this object.
-  //! The number NbPOnEdge is used to define edges and wires.
-  //! In the case of infinite objects, the value
-  //! MaximalParameter serves to limit computation time
-  //! by limiting the sensitive area. The default value is 500.
-  //! If AutoTriangulation is true, triangulation will be
-  //! computed for the faces which have none. If it is false,
-  //! sensitive entities on these faces will be calculated.
-  Standard_EXPORT static void ComputeSensitive (const TopoDS_Shape& aShape, const Handle(StdSelect_BRepOwner)& anOwner, const Handle(SelectMgr_Selection)& aSelection, const Standard_Real theDeflection, const Standard_Real theDeviationAngle, const Standard_Integer NbPOnEdge, const Standard_Real MaximalParameter, const Standard_Boolean AutoTriangulation = Standard_True);
-  
-  //! appends   to <OutList>   the  3D
-  //! sensitive entities  created  for  selection of <aFace>
-  //! if<InteriorFlag> =  False  the face  will  be sensitive only on its boundary
-  Standard_EXPORT static Standard_Boolean GetSensitiveForFace (const TopoDS_Face& aFace, const Handle(StdSelect_BRepOwner)& anOwner, Select3D_EntitySequence& OutList, const Standard_Boolean AutoTriangulation = Standard_True, const Standard_Integer NbPOnEdge = 9, const Standard_Real MaxiParam = 500, const Standard_Boolean InteriorFlag = Standard_True);
+  static Standard_Integer GetStandardPriority (const TopoDS_Shape&    theShape,
+                                               const TopAbs_ShapeEnum theType)
+  {
+    switch (theType)
+    {
+      case TopAbs_VERTEX: return 8;
+      case TopAbs_EDGE:   return 7;
+      case TopAbs_WIRE:   return 6;
+      case TopAbs_FACE:   return 5;
+      case TopAbs_SHAPE:
+      default: break;
+    }
+
+    switch (theShape.ShapeType())
+    {
+      case TopAbs_VERTEX:    return 9;
+      case TopAbs_EDGE:      return 8;
+      case TopAbs_WIRE:      return 7;
+      case TopAbs_FACE:      return 6;
+      case TopAbs_SHELL:     return 5;
+      case TopAbs_COMPOUND:
+      case TopAbs_COMPSOLID:
+      case TopAbs_SOLID:
+      case TopAbs_SHAPE:
+      default:
+        return 4;
+    }
+  }
+
+  //! Computes the sensitive primitives, stores them in the SelectMgr_Selection object, and returns this object.
+  //! @param theShape        shape to compute sensitive entities
+  //! @param theOwner        selectable owner object
+  //! @param theSelection    selection to append new sensitive entities
+  //! @param theDeflection   linear deflection
+  //! @param theDeflAngle    angular deflection
+  //! @param theNbPOnEdge    sensitivity parameters for edges and wires
+  //! @param theMaxiParam    sensitivity parameters for infinite objects (the default value is 500)
+  //! @param theAutoTriang   flag to compute triangulation for the faces which have none
+  Standard_EXPORT static void ComputeSensitive (const TopoDS_Shape& theShape,
+                                                const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                const Handle(SelectMgr_Selection)& theSelection,
+                                                const Standard_Real theDeflection,
+                                                const Standard_Real theDeflAngle,
+                                                const Standard_Integer theNbPOnEdge,
+                                                const Standard_Real theMaxiParam,
+                                                const Standard_Boolean theAutoTriang = Standard_True);
+
+  //! Creates the 3D sensitive entities for Face selection.
+  //! @param theFace         face to compute sensitive entities
+  //! @param theOwner        selectable owner object
+  //! @param theOutList      output result list to append created entities
+  //! @param theAutoTriang   obsolete flag (has no effect)
+  //! @param theNbPOnEdge    sensitivity parameters
+  //! @param theMaxiParam    sensitivity parameters
+  //! @param theInteriorFlag flag indicating that face interior (TRUE) or face boundary (FALSE) should be selectable
+  Standard_EXPORT static Standard_Boolean GetSensitiveForFace (const TopoDS_Face& theFace,
+                                                               const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                               Select3D_EntitySequence& theOutList,
+                                                               const Standard_Boolean theAutoTriang = Standard_True,
+                                                               const Standard_Integer theNbPOnEdge = 9,
+                                                               const Standard_Real theMaxiParam = 500,
+                                                               const Standard_Boolean theInteriorFlag = Standard_True);
+
+  //! Create a sensitive edge or sensitive wire.
+  //! @param theShape          either TopoDS_Edge or TopoDS_Wire to compute sensitive entities
+  //! @param theOwner          selectable owner object
+  //! @param theSelection      selection to append new sensitive entities
+  //! @param theDeflection     linear deflection
+  //! @param theDeviationAngle angular deflection
+  //! @param theNbPOnEdge      sensitivity parameters
+  //! @param theMaxiParam      sensitivity parameters
+  Standard_EXPORT static void GetEdgeSensitive (const TopoDS_Shape& theShape,
+                                                const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                const Handle(SelectMgr_Selection)& theSelection,
+                                                const Standard_Real theDeflection,
+                                                const Standard_Real theDeviationAngle,
+                                                const Standard_Integer theNbPOnEdge,
+                                                const Standard_Real theMaxiParam,
+                                                Handle(Select3D_SensitiveEntity)& theSensitive);
 
   //! Traverses the selection given and pre-builds BVH trees for heavyweight
-  //! sensitive entities containing more than BVH_PRIMITIVE_LIMIT (defined in .cxx file)
-  //! sub-elements
+  //! sensitive entities containing more than BVH_PRIMITIVE_LIMIT (defined in .cxx file) sub-elements.
   Standard_EXPORT static void PreBuildBVH (const Handle(SelectMgr_Selection)& theSelection);
 
-
-protected:
-
-
-
-
-
-private:
-
-  Standard_EXPORT static void GetEdgeSensitive (const TopoDS_Shape& aShape, const Handle(StdSelect_BRepOwner)& anOwner, const Handle(SelectMgr_Selection)& aSelection, const Standard_Real theDeflection, const Standard_Real theDeflectionAngle, const Standard_Integer NbPOnEdge, const Standard_Real MaximalParameter, Handle(Select3D_SensitiveEntity)& aSensitive);
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StdSelect_BRepSelectionTool_HeaderFile

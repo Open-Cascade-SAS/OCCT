@@ -21,15 +21,13 @@
 #include <Standard_Type.hxx>
 
 #include <AIS_DisplayStatus.hxx>
-#include <Graphic3d_HighlightStyle.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
-
-class AIS_GlobalStatus;
-DEFINE_STANDARD_HANDLE(AIS_GlobalStatus, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(AIS_GlobalStatus, Standard_Transient)
 
 //! Stores  information  about objects in graphic context:
 //! - Status Of Display : in the main viewer
@@ -38,59 +36,52 @@ DEFINE_STANDARD_HANDLE(AIS_GlobalStatus, MMgt_TShared)
 //! - Active Selection Modes
 //! - is the Interactive Object Current ?
 //! - Layer Index
-class AIS_GlobalStatus : public MMgt_TShared
+class AIS_GlobalStatus : public Standard_Transient
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_GlobalStatus, Standard_Transient)
 public:
 
-  
   Standard_EXPORT AIS_GlobalStatus();
   
   Standard_EXPORT AIS_GlobalStatus(const AIS_DisplayStatus aStat, const Standard_Integer aDispMode, const Standard_Integer aSelMode, const Standard_Boolean ishilighted = Standard_False, const Standard_Integer aLayerIndex = 0);
-  
-    void SetGraphicStatus (const AIS_DisplayStatus aStat);
-  
-    void AddSelectionMode (const Standard_Integer aMode);
 
-    //! Sets display mode.
-    void SetDisplayMode (const Standard_Integer theMode);
+  void SetGraphicStatus (const AIS_DisplayStatus theStatus) { myStatus = theStatus; }
 
-    //! Returns the display mode.
-    Standard_Integer DisplayMode() const;
-  
-    void SetLayerIndex (const Standard_Integer AnIndex);
-  
-    void SetHilightStatus (const Standard_Boolean aStat);
+  void AddSelectionMode (const Standard_Integer theMode) { if (!IsSModeIn (theMode)) mySelModes.Append (theMode); }
 
-    //! Changes applied highlight style for a particular object
-    void SetHilightStyle (const Handle(Graphic3d_HighlightStyle)& theStyle)
-    {
-      myHiStyle = theStyle;
-    }
+  //! Sets display mode.
+  void SetDisplayMode (const Standard_Integer theMode) { myDispMode = theMode; }
 
-    //! Returns applied highlight style for a particular object
-    const Handle(Graphic3d_HighlightStyle)& HilightStyle() const
-    {
-      return myHiStyle;
-    }
+  //! Returns the display mode.
+  Standard_Integer DisplayMode() const { return myDispMode; }
 
-    Standard_Boolean IsSubIntensityOn() const;
-  
-    void SubIntensityOn();
-  
-    void SubIntensityOff();
+  void SetLayerIndex (const Standard_Integer theIndex) { myLayerIndex = theIndex; }
+
+  void SetHilightStatus (const Standard_Boolean theStatus) { myIsHilit = theStatus; }
+
+  //! Changes applied highlight style for a particular object
+  void SetHilightStyle (const Handle(Prs3d_Drawer)& theStyle) { myHiStyle = theStyle; }
+
+  //! Returns applied highlight style for a particular object
+  const Handle(Prs3d_Drawer)& HilightStyle() const { return myHiStyle; }
+
+  Standard_Boolean IsSubIntensityOn() const { return mySubInt; }
+
+  void SubIntensityOn() { mySubInt = Standard_True; }
+
+  void SubIntensityOff() { mySubInt = Standard_False; }
   
   Standard_EXPORT void RemoveSelectionMode (const Standard_Integer aMode);
   
   Standard_EXPORT void ClearSelectionModes();
   
-    AIS_DisplayStatus GraphicStatus() const;
+  AIS_DisplayStatus GraphicStatus() const { return myStatus; }
   
   //! keeps the active selection modes of the object
   //! in the main viewer.
-    const TColStd_ListOfInteger& SelectionModes() const;
+  const TColStd_ListOfInteger& SelectionModes() const { return mySelModes; }
   
-    Standard_Boolean IsHilighted() const;
+  Standard_Boolean IsHilighted() const { return myIsHilit; }
 
   Standard_EXPORT Standard_Boolean IsSModeIn (const Standard_Integer aMode) const;
 
@@ -100,34 +91,16 @@ public:
     return myLayerIndex;
   }
 
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_GlobalStatus,MMgt_TShared)
-
-protected:
-
-
-
-
 private:
 
-
+  TColStd_ListOfInteger mySelModes;
+  Handle(Prs3d_Drawer) myHiStyle;
   AIS_DisplayStatus myStatus;
   Standard_Integer myDispMode;
-  TColStd_ListOfInteger mySelModes;
   Standard_Integer myLayerIndex;
   Standard_Boolean myIsHilit;
-  Handle(Graphic3d_HighlightStyle) myHiStyle;
   Standard_Boolean mySubInt;
 
-
 };
-
-
-#include <AIS_GlobalStatus.lxx>
-
-
-
-
 
 #endif // _AIS_GlobalStatus_HeaderFile

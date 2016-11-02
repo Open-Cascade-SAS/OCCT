@@ -9953,43 +9953,6 @@ static int VManipulator (Draw_Interpretor& theDi,
 }
 
 //===============================================================================================
-//function : parseColor
-//purpose  :
-//===============================================================================================
-static Standard_Boolean parseColor (ViewerTest_CmdParser& theParser,
-                                    const std::string&    theOptionName,
-                                    Quantity_Color&       theColor)
-{
-  std::string aColorArg = theParser.Arg (theOptionName, 0);
-  if (std::isdigit (aColorArg[0]))
-  {
-    Graphic3d_Vec3d aColor = theParser.ArgVec3d (theOptionName);
-    if (aColor.x() < 0.0 || aColor.x() > 1.0
-      || aColor.y() < 0.0 || aColor.y() > 1.0
-      || aColor.z() < 0.0 || aColor.z() > 1.0)
-    {
-      std::cerr << "Error: RGB color values should be within range 0..1!\n";
-      return Standard_False;
-    }
-    theColor.SetValues (aColor.x(), aColor.y(), aColor.z(), Quantity_TOC_RGB);
-  }
-  else
-  {
-    Quantity_NameOfColor aName = Quantity_NOC_BLACK;
-    if (!Quantity_Color::ColorFromName (aColorArg.c_str(), aName))
-    {
-      std::cerr << "Name: " << theParser.Arg (theOptionName, 0)
-                << " does not correspond to any color in Quantity_NameOfColor!"
-                << std::endl;
-      return Standard_False;
-    }
-    theColor.SetValues (aName);
-  }
-
-  return Standard_True;
-}
-
-//===============================================================================================
 //function : VSelectionProperties
 //purpose  :
 //===============================================================================================
@@ -10004,71 +9967,226 @@ static int VSelectionProperties (Draw_Interpretor& theDi,
     return 1;
   }
 
-  ViewerTest_CmdParser aCmd;
-
-  aCmd.AddOption ("autoActivate");
-  aCmd.AddOption ("pixTol");
-
-  aCmd.AddOption ("selColor");
-  aCmd.AddOption ("hiColor");
-  aCmd.AddOption ("selTransp");
-  aCmd.AddOption ("hiTransp");
-
-  aCmd.AddOption ("print");
-
-  aCmd.Parse (theArgsNb, theArgVec);
-
-  if (aCmd.HasOption ("help"))
-  {
-    theDi.PrintHelp (theArgVec[0]);
-    return 0;
-  }
-
-  if (aCmd.HasOption ("autoActivate", 1, Standard_False))
-  {
-    aCtx->SetAutoActivateSelection (aCmd.ArgBool ("autoActivate"));
-  }
-  if (aCmd.HasOption ("pixTol", 1, Standard_False))
-  {
-    aCtx->SetPixelTolerance (aCmd.ArgInt ("pixTol"));
-  }
-
-  const Handle(Graphic3d_HighlightStyle)& aHiStyle  = aCtx->HighlightStyle();
-  const Handle(Graphic3d_HighlightStyle)& aSelStyle = aCtx->SelectionStyle();
+  Standard_Boolean toPrint  = theArgsNb == 1;
   Standard_Boolean toRedraw = Standard_False;
-  if (aCmd.HasOption ("selColor"))
+  Standard_Integer anArgIter = 1;
+  Prs3d_TypeOfHighlight aType = Prs3d_TypeOfHighlight_None;
+  if (anArgIter < theArgsNb)
   {
-    Quantity_Color aNewColor;
-    if (!parseColor (aCmd, "selColor", aNewColor))
-      return 1;
-    aSelStyle->SetColor (aNewColor);
-    toRedraw = Standard_True;
+    TCollection_AsciiString anArgFirst (theArgVec[anArgIter]);
+    anArgFirst.LowerCase();
+    ++anArgIter;
+    if (anArgFirst == "dynhighlight"
+     || anArgFirst == "dynhilight"
+     || anArgFirst == "dynamichighlight"
+     || anArgFirst == "dynamichilight")
+    {
+      aType = Prs3d_TypeOfHighlight_Dynamic;
+    }
+    else if (anArgFirst == "localdynhighlight"
+          || anArgFirst == "localdynhilight"
+          || anArgFirst == "localdynamichighlight"
+          || anArgFirst == "localdynamichilight")
+    {
+      aType = Prs3d_TypeOfHighlight_LocalDynamic;
+    }
+    else if (anArgFirst == "selhighlight"
+          || anArgFirst == "selhilight"
+          || anArgFirst == "selectedhighlight"
+          || anArgFirst == "selectedhilight")
+    {
+      aType = Prs3d_TypeOfHighlight_Selected;
+    }
+    else if (anArgFirst == "localselhighlight"
+          || anArgFirst == "localselhilight"
+          || anArgFirst == "localselectedhighlight"
+          || anArgFirst == "localselectedhilight")
+    {
+      aType = Prs3d_TypeOfHighlight_LocalSelected;
+    }
+    else
+    {
+      --anArgIter;
+    }
   }
-  if (aCmd.HasOption ("hiColor"))
+  for (; anArgIter < theArgsNb; ++anArgIter)
   {
-    Quantity_Color aNewColor;
-    if (!parseColor (aCmd, "hiColor", aNewColor))
-      return 1;
-    aHiStyle->SetColor (aNewColor);
-  }
-  if (aCmd.HasOption ("selTransp"))
-  {
-    aSelStyle->SetTransparency (aCmd.ArgFloat ("selTransp"));
-    toRedraw = Standard_True;
-  }
-  if (aCmd.HasOption ("hiTransp"))
-  {
-    aHiStyle->SetTransparency (aCmd.ArgFloat ("hiTransp"));
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "-help")
+    {
+      theDi.PrintHelp (theArgVec[0]);
+      return 0;
+    }
+    else if (anArg == "-print")
+    {
+      toPrint = Standard_True;
+    }
+    else if (anArg == "-autoactivate")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (anArgIter + 1 < theArgsNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+      {
+        ++anArgIter;
+      }
+      aCtx->SetAutoActivateSelection (toEnable);
+    }
+    else if (anArg == "-pixtol"
+          && anArgIter + 1 < theArgsNb)
+    {
+      aCtx->SetPixelTolerance (Draw::Atoi (theArgVec[++anArgIter]));
+    }
+    else if ((anArg == "-mode"
+           || anArg == "-dispmode")
+          && anArgIter + 1 < theArgsNb)
+    {
+      if (aType == Prs3d_TypeOfHighlight_None)
+      {
+        std::cout << "Syntax error: type of highlighting is undefined\n";
+        return 1;
+      }
+
+      const Standard_Integer aDispMode = Draw::Atoi (theArgVec[++anArgIter]);
+      const Handle(Prs3d_Drawer)& aStyle = aCtx->HighlightStyle (aType);
+      aStyle->SetDisplayMode (aDispMode);
+      toRedraw = Standard_True;
+    }
+    else if (anArg == "-layer"
+          && anArgIter + 1 < theArgsNb)
+    {
+      if (aType == Prs3d_TypeOfHighlight_None)
+      {
+        std::cout << "Syntax error: type of highlighting is undefined\n";
+        return 1;
+      }
+
+      const Standard_Integer aNewLayer = Draw::Atoi (theArgVec[++anArgIter]);
+      if (aNewLayer != Graphic3d_ZLayerId_UNKNOWN)
+      {
+        TColStd_SequenceOfInteger aLayers;
+        aCtx->CurrentViewer()->GetAllZLayers (aLayers);
+        if (std::find (aLayers.begin(), aLayers.end(), aNewLayer) == aLayers.end())
+        {
+          std::cout << "Syntax error: Layer " << aNewLayer << " is undefined\n";
+          return 1;
+        }
+      }
+
+      const Handle(Prs3d_Drawer)& aStyle = aCtx->HighlightStyle (aType);
+      aStyle->SetZLayer (aNewLayer);
+      toRedraw = Standard_True;
+    }
+    else if (anArg == "-hicolor"
+          || anArg == "-selcolor"
+          || anArg == "-color")
+    {
+      if (anArg.StartsWith ("-hi"))
+      {
+        aType = Prs3d_TypeOfHighlight_Dynamic;
+      }
+      else if (anArg.StartsWith ("-sel"))
+      {
+        aType = Prs3d_TypeOfHighlight_Selected;
+      }
+      else if (aType == Prs3d_TypeOfHighlight_None)
+      {
+        std::cout << "Syntax error: type of highlighting is undefined\n";
+        return 1;
+      }
+
+      Quantity_Color aColor;
+      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgsNb - anArgIter - 1,
+                                                           theArgVec + anArgIter + 1,
+                                                           aColor);
+      if (aNbParsed == 0)
+      {
+        std::cout << "Syntax error: need more arguments.\n";
+        return 1;
+      }
+      anArgIter += aNbParsed;
+
+      const Handle(Prs3d_Drawer)& aStyle = aCtx->HighlightStyle (aType);
+      aStyle->SetColor (aColor);
+      toRedraw = Standard_True;
+    }
+    else if ((anArg == "-transp"
+           || anArg == "-transparency"
+           || anArg == "-hitransp"
+           || anArg == "-seltransp"
+           || anArg == "-hitransplocal"
+           || anArg == "-seltransplocal")
+          && anArgIter + 1 < theArgsNb)
+    {
+      if (anArg.StartsWith ("-hi"))
+      {
+        aType = Prs3d_TypeOfHighlight_Dynamic;
+      }
+      else if (anArg.StartsWith ("-sel"))
+      {
+        aType = Prs3d_TypeOfHighlight_Selected;
+      }
+      else if (aType == Prs3d_TypeOfHighlight_None)
+      {
+        std::cout << "Syntax error: type of highlighting is undefined\n";
+        return 1;
+      }
+
+      const Standard_Real aTransp = Draw::Atof (theArgVec[++anArgIter]);
+      const Handle(Prs3d_Drawer)& aStyle = aCtx->HighlightStyle (aType);
+      aStyle->SetTransparency ((Standard_ShortReal )aTransp);
+      toRedraw = Standard_True;
+    }
+    else if ((anArg == "-mat"
+           || anArg == "-material")
+          && anArgIter + 1 < theArgsNb)
+    {
+      if (aType == Prs3d_TypeOfHighlight_None)
+      {
+        std::cout << "Syntax error: type of highlighting is undefined\n";
+        return 1;
+      }
+
+      const Handle(Prs3d_Drawer)& aStyle = aCtx->HighlightStyle (aType);
+      Graphic3d_NameOfMaterial aMatName = Graphic3d_MaterialAspect::MaterialFromName (theArgVec[anArgIter + 1]);
+      if (aMatName != Graphic3d_NOM_DEFAULT)
+      {
+        ++anArgIter;
+        Handle(Graphic3d_AspectFillArea3d) anAspect = new Graphic3d_AspectFillArea3d();
+        *anAspect = *aCtx->DefaultDrawer()->ShadingAspect()->Aspect();
+        Graphic3d_MaterialAspect aMat (aMatName);
+        aMat.SetColor (aStyle->Color());
+        aMat.SetTransparency (aStyle->Transparency());
+        anAspect->SetFrontMaterial (aMat);
+        anAspect->SetInteriorColor (aStyle->Color());
+        aStyle->SetBasicFillAreaAspect (anAspect);
+      }
+      else
+      {
+        aStyle->SetBasicFillAreaAspect (Handle(Graphic3d_AspectFillArea3d)());
+      }
+      toRedraw = Standard_True;
+    }
+    else
+    {
+      std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+    }
   }
 
-  if (aCmd.HasOption ("print") || theArgsNb == 1)
+  if (toPrint)
   {
+    const Handle(Prs3d_Drawer)& aHiStyle  = aCtx->HighlightStyle();
+    const Handle(Prs3d_Drawer)& aSelStyle = aCtx->SelectionStyle();
     theDi << "Auto-activation                : " << (aCtx->GetAutoActivateSelection() ? "On" : "Off") << "\n";
     theDi << "Selection pixel tolerance      : " << aCtx->MainSelector()->PixelTolerance() << "\n";
-    theDi << "Selection color                : " << Quantity_Color::StringName (aCtx->SelectionStyle()->Color().Name()) << "\n";
-    theDi << "Dynamic highlight color        : " << Quantity_Color::StringName (aCtx->HighlightStyle()->Color().Name()) << "\n";
-    theDi << "Selection transparency         : " << aCtx->SelectionStyle()->Transparency() << "\n";
-    theDi << "Dynamic highlight transparency : " << aCtx->HighlightStyle()->Transparency() << "\n";
+    theDi << "Selection color                : " << Quantity_Color::StringName (aSelStyle->Color().Name()) << "\n";
+    theDi << "Dynamic highlight color        : " << Quantity_Color::StringName (aHiStyle->Color().Name()) << "\n";
+    theDi << "Selection transparency         : " << aSelStyle->Transparency() << "\n";
+    theDi << "Dynamic highlight transparency : " << aHiStyle->Transparency() << "\n";
+    theDi << "Selection mode                 : " << aSelStyle->DisplayMode() << "\n";
+    theDi << "Dynamic highlight mode         : " << aHiStyle->DisplayMode() << "\n";
+    theDi << "Selection layer                : " << aSelStyle->ZLayer() << "\n";
+    theDi << "Dynamic layer                  : " << aHiStyle->ZLayer() << "\n";
   }
 
   if (aCtx->NbSelected() != 0 && toRedraw)
@@ -10686,14 +10804,15 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     __FILE__, VManipulator, group);
 
   theCommands.Add("vselprops",
-    "\n    vselprops [options]"
+    "\n    vselprops [dynHighlight|localDynHighlight|selHighlight|localSelHighlight] [options]"
     "\n    Customizes selection and dynamic highlight parameters for the whole interactive context:"
     "\n    -autoActivate {0|1}     : disables|enables default computation and activation of global selection mode"
     "\n    -pixTol    value        : sets up pixel tolerance"
-    "\n    -selColor  {name|r g b} : sets selection color"
-    "\n    -hiColor   {name|r g b} : sets dynamic highlight color"
-    "\n    -selTransp value        : sets transparency coefficient for selection"
-    "\n    -hiTransp  value        : sets transparency coefficient for dynamic highlight"
+    "\n    -dispMode  dispMode     : sets display mode for highlighting"
+    "\n    -layer     ZLayer       : sets ZLayer for highlighting"
+    "\n    -color     {name|r g b} : sets highlight color"
+    "\n    -transp    value        : sets transparency coefficient for highlight"
+    "\n    -material  material     : sets highlight material"
     "\n    -print                  : prints current state of all mentioned parameters",
     __FILE__, VSelectionProperties, group);
 

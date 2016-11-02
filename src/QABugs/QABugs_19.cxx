@@ -5309,10 +5309,21 @@ static Standard_Integer OCC27818 (Draw_Interpretor& /*theDI*/, Standard_Integer 
     aBoxObjs[aBoxIdx]->SetHilightMode (AIS_Shaded);
   }
 
-  aBoxObjs[1]->HilightAttributes()->SetHighlightStyle (new Graphic3d_HighlightStyle (
-    Aspect_TOHM_COLOR, Quantity_NOC_RED, 0.8f));
-  aBoxObjs[2]->HilightAttributes()->SetSelectionStyle (new Graphic3d_HighlightStyle (
-    Aspect_TOHM_COLOR, Quantity_NOC_RED, 0.0f));
+  {
+    Handle(Prs3d_Drawer) aHiStyle = new Prs3d_Drawer();
+    aBoxObjs[1]->SetDynamicHilightAttributes (aHiStyle);
+    aHiStyle->SetDisplayMode (AIS_Shaded);
+    aHiStyle->SetColor (Quantity_NOC_RED);
+    aHiStyle->SetTransparency (0.8f);
+  }
+  {
+    Handle(Prs3d_Drawer) aSelStyle = new Prs3d_Drawer();
+    aBoxObjs[2]->SetHilightAttributes (aSelStyle);
+    aSelStyle->SetDisplayMode (AIS_Shaded);
+    aSelStyle->SetColor (Quantity_NOC_RED);
+    aSelStyle->SetTransparency (0.0f);
+    aSelStyle->SetZLayer (Graphic3d_ZLayerId_Topmost);
+  }
 
   for (Standard_Integer aBoxIdx = 0; aBoxIdx < 3; ++aBoxIdx)
   {

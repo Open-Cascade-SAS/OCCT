@@ -56,7 +56,7 @@ void ISession_Curve::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresen
 {
   GeomAdaptor_Curve anAdaptorCurve(myCurve);
   if (hasOwnColor)
-    myDrawer->LineAspect()->SetColor(myOwnColor);
+    myDrawer->LineAspect()->SetColor (myDrawer->Color());
   myDrawer->Link()->SetDiscretisation(100);
   myDrawer->Link()->SetMaximalParameterValue(500);
 
