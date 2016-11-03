@@ -1,0 +1,14 @@
+restore [locate_data_file bug26917_rm-104_input_3_trim1_with_faces.brep] c
+
+#get the shape
+explode c
+copy c_1 s
+
+OFFSETSHAPE 5 {} $calcul $type
+
+checkprops result -v 4.14439e+007 -s 3.99357e+006
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 1067 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

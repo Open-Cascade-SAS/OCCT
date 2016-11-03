@@ -446,8 +446,8 @@ void BRepOffset_Inter3d::ConnexIntByInt
     TopExp::MapShapesAndAncestors(SI, TopAbs_VERTEX, TopAbs_FACE, aMVF);
   }
   //
-  TopTools_DataMapOfShapeListOfShape aDMVLF1, aDMVLF2;
-  TopTools_IndexedDataMapOfShapeListOfShape aDMIntE, aDMIntFF;
+  TopTools_DataMapOfShapeListOfShape aDMVLF1, aDMVLF2, aDMIntFF;
+  TopTools_IndexedDataMapOfShapeListOfShape aDMIntE;
   //
   if (bIsPlanar) {
     aNb = VEmap.Extent();
@@ -463,6 +463,7 @@ void BRepOffset_Inter3d::ConnexIntByInt
         continue;
       }
       //
+      // find pairs in which the vertex is alone (not connected to shared edges)
       TopTools_ListOfShape aLF1, aLF2;
       Standard_Boolean bVertexOnly = Standard_False;
       TopTools_MapOfShape aMFence;
@@ -477,7 +478,14 @@ void BRepOffset_Inter3d::ConnexIntByInt
         TopTools_MapOfShape aME;
         TopExp_Explorer aExp(aFV1, TopAbs_EDGE);
         for (; aExp.More(); aExp.Next()) {
-          aME.Add(aExp.Current());
+          const TopoDS_Shape& aE = aExp.Current();
+          TopoDS_Iterator aItV(aE);
+          for (; aItV.More(); aItV.Next()) {
+            if (aS.IsSame(aItV.Value())) {
+              aME.Add(aE);
+              break;
+            }
+          }
         }
         //
         it1.Initialize(aLF);
@@ -621,24 +629,14 @@ void BRepOffset_Inter3d::ConnexIntByInt
           for (; it.More(); it.Next()) {
             const TopoDS_Shape& aNE = it.Value();
             B.Add(C, aNE);
-            if (bEdge) {
-              TopoDS_Vertex aVO1, aVO2;
-              TopExp::Vertices(TopoDS::Edge(aS), aVO1, aVO2);
-              if (!aDMVLF1.IsBound(aVO1) && !aDMVLF1.IsBound(aVO2)) {
-                TopTools_ListOfShape *pListS = aDMIntE.ChangeSeek(aNE);
-                if (!pListS) {
-                  pListS = &aDMIntE.ChangeFromIndex(aDMIntE.Add(aNE, TopTools_ListOfShape()));
-                }
-                pListS->Append(aS);
-                //
-                if (!aDMIntFF.Contains(aNE)) {
-                  TopTools_ListOfShape aLFF;
-                  aLFF.Append(NF1);
-                  aLFF.Append(NF2);
-                  aDMIntFF.Add(aNE, aLFF);
-                }
-              }
-            }
+            //
+            // keep connection from new edge to shape from which it was created
+            TopTools_ListOfShape *pLS = &aDMIntE(aDMIntE.Add(aNE, TopTools_ListOfShape()));
+            pLS->Append(aS);
+            // keep connection to faces created the edge as well
+            TopTools_ListOfShape* pLFF = aDMIntFF.Bound(aNE, TopTools_ListOfShape());
+            pLFF->Append(F1);
+            pLFF->Append(F2);
           }
           //
           Build.Bind(aS,C);
@@ -664,7 +662,6 @@ void BRepOffset_Inter3d::ConnexIntByInt
             }
           }
           //
-          TopTools_ListOfShape aLENew;
           for (it.Initialize(aLInt1) ; it.More(); it.Next()) {
             const TopoDS_Shape &anE1 = it.Value();
             //
@@ -672,23 +669,10 @@ void BRepOffset_Inter3d::ConnexIntByInt
               const TopoDS_Shape &anE2 = it1.Value();
               if (anE1.IsSame(anE2)) {
                 B.Add(C, anE1);
-                if (bEdge) {
-                  TopoDS_Vertex aVO1, aVO2;
-                  TopExp::Vertices(TopoDS::Edge(aS), aVO1, aVO2);
-                  if (!aDMVLF1.IsBound(aVO1) && !aDMVLF1.IsBound(aVO2)) {
-                    TopTools_ListOfShape *pListS = aDMIntE.ChangeSeek(anE1);
-                    if (!pListS) {
-                      pListS = &aDMIntE.ChangeFromIndex(aDMIntE.Add(anE1, TopTools_ListOfShape()));
-                    }
-                    pListS->Append(aS);
-                    //
-                    if (!aDMIntFF.Contains(anE1)) {
-                      TopTools_ListOfShape aLFF;
-                      aLFF.Append(NF1);
-                      aLFF.Append(NF2);
-                      aDMIntFF.Add(anE1, aLFF);
-                    }
-                  }
+                //
+                TopTools_ListOfShape *pLS = aDMIntE.ChangeSeek(anE1);
+                if (pLS) {
+                  pLS->Append(aS);
                 }
               }
             }
@@ -703,36 +687,129 @@ void BRepOffset_Inter3d::ConnexIntByInt
     //  Modified by skv - Fri Dec 26 12:20:14 2003 OCC4455 End
   }
   //
+  // create unique intersection for each localized shared part
   aNb = aDMIntE.Extent();
   for (i = 1; i <= aNb; ++i) {
-    const TopTools_ListOfShape& aLE = aDMIntE(i);
-    if (aLE.Extent() == 1) {
+    const TopTools_ListOfShape& aLS = aDMIntE(i);
+    if (aLS.Extent() < 2) {
       continue;
     }
     //
-    // make connexity blocks of edges
+    // intersection edge
+    const TopoDS_Edge& aE = TopoDS::Edge(aDMIntE.FindKey(i));
+    // faces created the edge
+    const TopTools_ListOfShape& aLFF = aDMIntFF.Find(aE);
+    const TopoDS_Shape& aF1 = aLFF.First();
+    const TopoDS_Shape& aF2 = aLFF.Last();
+
+    // Build really localized blocks from the original shapes in <aLS>:
+    // 1. Find edges from original faces connected to two or more shapes in <aLS>;
+    // 2. Make connexity blocks from edges in <aLS> and found connection edges;
+    // 3. Check if the vertices from <aLS> are not connected by these connection edges:
+    //    a. If so - add these vertices to Connexity Block containing the corresponding
+    //       connexity edge;
+    //    b. If not - add this vertex to list of connexity blocks
+    // 4. Create unique intersection edge for each connexity block
+
+    // list of vertices
+    TopTools_ListOfShape aLV;
+    // compound of edges to build connexity blocks
     TopoDS_Compound aCE;
     B.MakeCompound(aCE);
+    TopTools_MapOfShape aMS;
+    TopTools_ListIteratorOfListOfShape aItLS(aLS);
+    for (; aItLS.More(); aItLS.Next()) {
+      const TopoDS_Shape& aS = aItLS.Value();
+      aMS.Add(aS);
+      if (aS.ShapeType() == TopAbs_EDGE) {
+        B.Add(aCE, aS);
+      }
+      else {
+        aLV.Append(aS);
+      }
+    }
     //
-    TopTools_ListIteratorOfListOfShape aItLE(aLE);
-    for (; aItLE.More(); aItLE.Next()) {
-      const TopoDS_Shape& aE = aItLE.Value();
-      B.Add(aCE, aE);
+    // look for additional edges to connect the shared parts
+    TopTools_MapOfShape aMEConnection;
+    for (Standard_Integer j = 0; j < 2; ++j) {
+      const TopoDS_Shape& aF = !j ? aF1 : aF2;
+      //
+      TopExp_Explorer aExp(aF, TopAbs_EDGE);
+      for (; aExp.More(); aExp.Next()) {
+        const TopoDS_Shape& aEF = aExp.Current();
+        if (aMS.Contains(aEF) || aMEConnection.Contains(aEF)) {
+          continue;
+        }
+        //
+        TopoDS_Vertex aV1, aV2;
+        TopExp::Vertices(TopoDS::Edge(aEF), aV1, aV2);
+        //
+        // find parts to which the edge is connected
+        Standard_Integer iCounter = 0;
+        aItLS.Initialize(aLS);
+        for (; aItLS.More(); aItLS.Next()) {
+          const TopoDS_Shape& aS = aItLS.Value();
+          // iterator is not suitable here, because aS may be a vertex
+          TopExp_Explorer aExpV(aS, TopAbs_VERTEX);
+          for (; aExpV.More(); aExpV.Next()) {
+            const TopoDS_Shape& aV = aExpV.Current();
+            if (aV.IsSame(aV1) || aV.IsSame(aV2)) {
+              ++iCounter;
+              break;
+            }
+          }
+        }
+        //
+        if (iCounter >= 2) {
+          B.Add(aCE, aEF);
+          aMEConnection.Add(aEF);
+        }
+      }
     }
     //
     TopTools_ListOfShape aLCBE;
     BOPTools_AlgoTools::MakeConnexityBlocks(aCE, TopAbs_VERTEX, TopAbs_EDGE, aLCBE);
+    //
+    // create connexity blocks for alone vertices
+    TopTools_ListOfShape aLCBV;
+    TopTools_ListIteratorOfListOfShape aItLV(aLV);
+    for (; aItLV.More(); aItLV.Next()) {
+      const TopoDS_Shape& aV = aItLV.Value();
+      // check if this vertex is contained in some connexity block of edges
+      TopTools_ListIteratorOfListOfShape aItLCB(aLCBE);
+      for (; aItLCB.More(); aItLCB.Next()) {
+        TopoDS_Shape& aCB = aItLCB.ChangeValue();
+        TopExp_Explorer aExpV(aCB, TopAbs_VERTEX);
+        for (; aExpV.More(); aExpV.Next()) {
+          if (aV.IsSame(aExpV.Current())) {
+            B.Add(aCB, aV);
+            break;
+          }
+        }
+        if (aExpV.More()) {
+          break;
+        }
+      }
+      //
+      if (!aItLCB.More()) {
+        TopoDS_Compound aCV;
+        B.MakeCompound(aCV);
+        B.Add(aCV, aV);
+        aLCBV.Append(aCV);
+      }
+    }
+    //
+    aLCBE.Append(aLCBV);
+    //
     if (aLCBE.Extent() == 1) {
       continue;
     }
     //
-    const TopoDS_Edge& aE = TopoDS::Edge(aDMIntE.FindKey(i));
-    const TopTools_ListOfShape& aLFF = aDMIntFF.FindFromKey(aE);
-    const TopoDS_Shape& aF1 = aLFF.First();
-    const TopoDS_Shape& aF2 = aLFF.Last();
+    const TopoDS_Shape& aNF1 = MES(MapSF(aF1).Face());
+    const TopoDS_Shape& aNF2 = MES(MapSF(aF2).Face());
     //
-    aItLE.Initialize(aLCBE);
-    for (aItLE.Next(); aItLE.More(); aItLE.Next()) {
+    TopTools_ListIteratorOfListOfShape aItLCB(aLCBE);
+    for (aItLCB.Next(); aItLCB.More(); aItLCB.Next()) {
       // make new edge with different tedge instance
       TopoDS_Edge aNewEdge;
       TopoDS_Vertex aV1, aV2;
@@ -743,13 +820,16 @@ void BRepOffset_Inter3d::ConnexIntByInt
       //
       BOPTools_AlgoTools::MakeSplitEdge(aE, aV1, aT1, aV2, aT2, aNewEdge);
       //
-      myAsDes->Add(aF1, aNewEdge);
-      myAsDes->Add(aF2, aNewEdge);
+      myAsDes->Add(aNF1, aNewEdge);
+      myAsDes->Add(aNF2, aNewEdge);
       //
-      const TopoDS_Shape& aCB = aItLE.Value();
+      const TopoDS_Shape& aCB = aItLCB.Value();
       TopoDS_Iterator aItCB(aCB);
       for (; aItCB.More(); aItCB.Next()) {
         const TopoDS_Shape& aS = aItCB.Value();
+        if (aMEConnection.Contains(aS)) {
+          continue;
+        }
         TopoDS_Shape& aCI = Build.ChangeFind(aS);
         //
         TopoDS_Compound aNewCI;

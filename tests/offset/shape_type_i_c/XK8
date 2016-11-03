@@ -1,0 +1,21 @@
+restore [locate_data_file bug26917_rm-104_input_3_trim2_with_faces.brep] c
+
+#get the shape
+explode c
+copy c_1 s
+
+offsetparameter 1e-7 c i
+offsetload s 5
+
+foreach f [explode c_2 f] {
+  offsetonface $f 2
+}
+
+offsetperform result
+
+checkprops result -v 3.413e+007 -s 3.55307e+006
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 941 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png
