@@ -487,11 +487,11 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
           
           if(aP1.SquareDistance(aP2) < aSqTol)
           {
-            IntPatch_Point aVtx = theALine->Vertex(i);
-            aVtx.SetValue(aVertP2S);
-            aVtx.SetTolerance(aVertToler);
-            aVtx.SetParameter(aNewVertexParam);
-            aSeqVertex(++aNewVertID) = aVtx;
+            IntPatch_Point aLVtx = theALine->Vertex(i);
+            aLVtx.SetValue(aVertP2S);
+            aLVtx.SetTolerance(aVertToler);
+            aLVtx.SetParameter(aNewVertexParam);
+            aSeqVertex(++aNewVertID) = aLVtx;
             hasVertexBeenChecked(i) = Standard_True;
             isFound = Standard_True;
           }
