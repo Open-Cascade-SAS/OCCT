@@ -203,18 +203,18 @@ Braces *quoting* prevents all substitutions. Braces are also nested. The main us
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 set x 0 
 # this will loop for ever 
-# because while argument is ;0  3; 
-while ;$x  3; {set x [expr $x+1]} 
+# because while argument is ;0 < 3; 
+while ;$x < 3; {set x [expr $x+1]} 
 # this will terminate as expected because 
-# while argument is {$x  3} 
-while {$x  3} {set x [expr $x+1]} 
+# while argument is {$x < 3} 
+while {$x < 3} {set x [expr $x+1]} 
 # this can be written also 
-while {$x  3} { 
+while {$x < 3} { 
 set x [expr $x+1] 
 } 
 # the following cannot be written 
 # because while requires two arguments 
-while {$x  3} 
+while {$x < 3} 
 { 
 set x [expr $x+1] 
 } 
@@ -365,7 +365,7 @@ if condition script [elseif script .... else script]
 
 **Example:** 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-if {$x  0} { 
+if {$x > 0} { 
 puts ;positive; 
 } elseif {$x == 0} { 
 puts ;null; 
@@ -391,13 +391,13 @@ The three loop structures are similar to their C or csh equivalent. It is import
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 # while example 
 dset x 1.1 
-while {[dval x]  100} { 
+while {[dval x] < 100} { 
   circle c 0 0 x 
   dset x x*x 
 } 
 # for example 
 # incr var d, increments a variable of d (default 1) 
-for {set i 0} {$i  10} {incr i} { 
+for {set i 0} {$i < 10} {incr i} { 
   dset angle $i*pi/10 
   point p$i cos(angle0 sin(angle) 0 
 } 
@@ -421,7 +421,7 @@ Within loops, the **break** and **continue** commands have the same effect as in
 **Example:** 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 # search the index for which t$i has value ;secret; 
-for {set i 1} {$i = 100} {incr i} { 
+for {set i 1} {$i <= 100} {incr i} { 
   if {[set t$i] == ;secret;} break; 
 } 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1164,7 +1164,7 @@ point . x y z
 
 #Not OK. display points on a curve c 
 # with dot no variables are created 
-for {set i 0} {$i = 10} {incr i} { 
+for {set i 0} {$i <= 10} {incr i} { 
 cvalue c $i/10 x y z 
 point . x y z 
 } 
@@ -2426,7 +2426,7 @@ vdimension name {-angle|-length|-radius|-diameter} -shapes shape1 [shape2 [shape
                 [-arrow external|internal|fit] [{-arrowlength|-arlen} RealArrowLength]
                 [{-arrowangle|-arangle} ArrowAngle(degrees)] [-plane xoy|yoz|zox]
                 [-flyout FloatValue -extension FloatValue]
-                [-autovalue] [-value CustomRealValue] [-textvalue CustomTextValue]
+				[-autovalue] [-value CustomRealValue] [-textvalue CustomTextValue]
                 [-dispunits DisplayUnitsString]
                 [-modelunits ModelUnitsString] [-showunits | -hideunits]
 ~~~~~
@@ -4051,7 +4051,7 @@ Initializes the iteration on the tree of *TreeNode* attributes with tree *ID* (o
 ~~~~~
 InitChildNodeIterate D 0:5 1 
 set aChildNumber 0 
-for {set i 1} {$i  100} {incr i} { 
+for {set i 1} {$i < 100} {incr i} { 
     if {[ChildNodeMore] == *TRUE*} { 
         puts *Tree node = [ChildNodeValue]* 
         incr aChildNumber 
@@ -5271,10 +5271,10 @@ For a 2d rotation, you need only give the center point and the angle. In 2d or 3
 
 **Example:** 
 ~~~~~
-# make a helix of circles. create a scripte file with 
+# make a helix of circles. create a script file with 
 this code and execute it using **source**. 
 circle c0 10 0 0 3 
-for {set i 1} {$i = 10} {incr i} { 
+for {set i 1} {$i <= 10} {incr i} { 
 copy c[expr $i-1] c$i 
 translate c$i 0 0 3 
 rotate c$i 0 0 0 0 0 1 36 
@@ -5396,7 +5396,7 @@ Computes points and derivatives on a surface for a pair of parameter values. The
 ~~~~~
 # display points on a sphere 
 sphere s 10 
-for {dset t 0} {[dval t] = 1} {dset t t+0.01} { 
+for {dset t 0} {[dval t] <= 1} {dset t t+0.01} { 
 svalue s t*2*pi t*pi-pi/2 x y z 
 point . x y z 
 } 
@@ -6664,7 +6664,7 @@ Locations are very economic in the data structure because multiple occurences of
 # make rotated copies of a sphere in between two cylinders 
 # create a file source toto.tcl 
 # toto.tcl code: 
-for {set i 0} {$i  360} {incr i 20} { 
+for {set i 0} {$i < 360} {incr i 20} { 
 copy s s$i 
 trotate s$i 0 0 0 0 0 1 $i 
 } 
