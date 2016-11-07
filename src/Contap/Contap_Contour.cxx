@@ -308,9 +308,14 @@ static void LineConstructor(Contap_TheSequenceOfLine& slin,
                                       //-- cout<<"ContapWLine      : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<endl;
                                       Handle(IntSurf_LineOn2S) LineOn2S = new IntSurf_LineOn2S();
                                       Contap_Line Line;
+                                      Standard_Real aLen = 0.;
                                       for(Standard_Integer j=firstp; j<=lastp; j++) { 
                                         LineOn2S->Add(L.Point(j));
+                                        if (j > firstp)
+                                          aLen += L.Point(j).Value().Distance(L.Point(j - 1).Value());
                                       }
+                                      if (aLen < Precision::Confusion())
+                                        continue;
                                       Line.SetLineOn2S(LineOn2S);
                                       Contap_Point pvtx = L.Vertex(i);
                                       pvtx.SetParameter(1);
