@@ -1118,8 +1118,35 @@ void TObj_Object::setArray (const Handle(TColStd_HArray1OfExtendedString)& theAr
 }
 
 //=======================================================================
+//function : copyTagSources
+//purpose  : copy TagSource attributes on label and its sublabels
+//=======================================================================
+
+static void copyTagSources (const TDF_Label& theSourceLabel, const TDF_Label& theTargetLabel)
+{
+  // copy tag source on current label
+  Handle(TDF_Attribute) anAttr;
+  if(theSourceLabel.FindAttribute(TDF_TagSource::GetID(), anAttr))
+  {
+    Handle(TDF_TagSource) aTagSource = Handle(TDF_TagSource)::DownCast(anAttr);
+    Handle(TDF_TagSource) aTargetTagSource = TDF_TagSource::Set(theTargetLabel);
+    aTargetTagSource->Set(aTagSource->Get());
+  }
+
+  // copy recursively to sub-labels; note that iteration is made by target label,
+  // to avoid copying tag sources where data are not copied
+  TDF_ChildIterator aLI(theTargetLabel);
+  for(; aLI.More(); aLI.Next())
+  {
+    TDF_Label aSourceLabel = theSourceLabel.FindChild(aLI.Value().Tag(), Standard_False);
+    if (! aSourceLabel.IsNull())
+      copyTagSources (aSourceLabel, aLI.Value());
+  }
+}
+
+//=======================================================================
 //function : Clone
-//purpose  : method.
+//purpose  :
 //=======================================================================
 
 Handle(TObj_Object) TObj_Object::Clone
@@ -1160,23 +1187,14 @@ Handle(TObj_Object) TObj_Object::Clone
     // copy the data
     copyData (aNewObj);
 
-    // copy the references
-    // changed by van // copyReferences (aNewObj);
-    // references have to be coped after coping all objects and models
-
+    // copy children
     TDF_Label aTargetLabel = aNewObj->GetChildLabel();
     CopyChildren(aTargetLabel, aRelocTable);
 
     // copy TagSource for the children
-    TDF_Label aChildLabel = GetChildLabel();
-    Handle(TDF_Attribute) anAttr;
-    if(aChildLabel.FindAttribute(TDF_TagSource::GetID(), anAttr))
-    {
-      Handle(TDF_TagSource) aTagSource = Handle(TDF_TagSource)::DownCast(anAttr);
-      Handle(TDF_TagSource) aTargetTagSource = TDF_TagSource::Set(aTargetLabel);
-      aTargetTagSource->Set(aTagSource->Get());
-    }
+    copyTagSources (GetChildLabel(), aTargetLabel);
 
+    // copy the references
     if(theRelocTable.IsNull())
       CopyReferences(aNewObj, aRelocTable);
   }
@@ -1221,21 +1239,14 @@ void TObj_Object::CopyChildren
                 (TDF_Label&                         theTargetLabel,
                  const Handle(TDF_RelocationTable)& theRelocTable)
 {
-  Handle(TObj_ObjectIterator) aChildren = /*TObj_Object::*/GetChildren();
-  // to support childs on sublabels of sublabel of child label
-  //new TObj_ObjectIterator(GetChildLabel(), NULL, Standard_True);
   TDF_Label aSourceChildLabel = GetChildLabel();
+  Handle(TObj_ObjectIterator) aChildren = // GetChildren();
+    new TObj_OcafObjectIterator (aSourceChildLabel, NULL, Standard_True); // to support children on sublabels of child label
   for(;aChildren->More(); aChildren->Next())
   {
     Handle(TObj_Object) aChild = aChildren->Value();
     if(!aChild.IsNull())
     {
-      /* only for one sub level of children 
-      TDF_Label aChildLabel =
-       theTargetLabel.FindChild(aChild->GetLabel().Tag(), Standard_True);
-      aChild->Clone(aChildLabel, theRelocTable);
-      // to support childs on sublabels of sublabel of child label
-      */
       // to support childs on sublabels of sublabel of child label
       TColStd_SequenceOfInteger aTags;
       TDF_Label aCurChildLab = aChild->GetLabel();
