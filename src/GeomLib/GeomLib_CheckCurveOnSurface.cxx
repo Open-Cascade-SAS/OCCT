@@ -33,6 +33,7 @@
 #include <OSD_Parallel.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 class GeomLib_CheckCurveOnSurface_TargetFunc;
 
@@ -461,12 +462,14 @@ Standard_Integer FillSubIntervals(const Handle(Geom_Curve)& theCurve3d,
                                   Standard_Integer &theNbParticles,
                                   TColStd_Array1OfReal* const theSubIntervals)
 {
+  const Standard_Integer aMaxKnots = 101;
   const Standard_Real anArrTempC[2] = {theFirst, theLast};
   const TColStd_Array1OfReal anArrTemp(anArrTempC[0], 1, 2);
 
   theNbParticles = 3;
   Handle(Geom2d_BSplineCurve) aBS2DCurv;
   Handle(Geom_BSplineCurve) aBS3DCurv;
+  Standard_Boolean isTrimmed3D = Standard_False, isTrimmed2D = Standard_False;
 
   //
   if (theCurve3d->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
@@ -474,6 +477,7 @@ Standard_Integer FillSubIntervals(const Handle(Geom_Curve)& theCurve3d,
     aBS3DCurv = Handle(Geom_BSplineCurve)::
                       DownCast(Handle(Geom_TrimmedCurve)::
                       DownCast(theCurve3d)->BasisCurve());
+    isTrimmed3D = Standard_True;
   }
   else
   {
@@ -485,37 +489,135 @@ Standard_Integer FillSubIntervals(const Handle(Geom_Curve)& theCurve3d,
     aBS2DCurv = Handle(Geom2d_BSplineCurve)::
                       DownCast(Handle(Geom2d_TrimmedCurve)::
                       DownCast(theCurve2d)->BasisCurve());
+    isTrimmed2D = Standard_True;
   }
   else
   {
     aBS2DCurv = Handle(Geom2d_BSplineCurve)::DownCast(theCurve2d);
   }
 
-  const TColStd_Array1OfReal &anArrKnots3D = !aBS3DCurv.IsNull() ? 
-                                              aBS3DCurv->Knots() :
-                                              anArrTemp;
-  const TColStd_Array1OfReal &anArrKnots2D = !aBS2DCurv.IsNull() ?
-                                              aBS2DCurv->Knots() :
-                                              anArrTemp;
+  Handle(TColStd_HArray1OfReal) anArrKnots3D,  anArrKnots2D; 
+ 
+  if(!aBS3DCurv.IsNull())
+  {
+    if(aBS3DCurv->NbKnots() <= aMaxKnots)
+    {
+      anArrKnots3D = new TColStd_HArray1OfReal(aBS3DCurv->Knots());
+    }
+    else
+    {
+      Standard_Integer KnotCount;
+      if(isTrimmed3D)
+      {
+        Standard_Integer i;
+        KnotCount = 0;
+        const TColStd_Array1OfReal& aKnots = aBS3DCurv->Knots();
+        for(i = aBS3DCurv->FirstUKnotIndex(); i <= aBS3DCurv->LastUKnotIndex(); ++i)
+        {
+          if(aKnots(i) > theFirst && aKnots(i) < theLast)
+          {
+            ++KnotCount;
+          }
+        }
+        KnotCount += 2;
+      }
+      else
+      {
+        KnotCount = aBS3DCurv->LastUKnotIndex() - aBS3DCurv->FirstUKnotIndex() + 1;
+      }
+      if(KnotCount <= aMaxKnots)
+      {
+        anArrKnots3D = new TColStd_HArray1OfReal(aBS3DCurv->Knots());
+      }   
+      else
+      {
+        anArrKnots3D = new TColStd_HArray1OfReal(1, aMaxKnots);
+        anArrKnots3D->SetValue(1, theFirst);
+        anArrKnots3D->SetValue(aMaxKnots, theLast);
+        Standard_Integer i;
+        Standard_Real dt = (theLast - theFirst) / (aMaxKnots - 1);
+        Standard_Real t = theFirst + dt;
+        for(i = 2; i < aMaxKnots; ++i, t += dt)
+        {
+          anArrKnots3D->SetValue(i, t);
+        }
+      }
+    }
+  }
+  else
+  {
+    anArrKnots3D = new TColStd_HArray1OfReal(anArrTemp);
+  }
+  if(!aBS2DCurv.IsNull())
+  {
+    if(aBS2DCurv->NbKnots() <= aMaxKnots)
+    {
+      anArrKnots2D = new TColStd_HArray1OfReal(aBS2DCurv->Knots());
+    }
+    else
+    {
+      Standard_Integer KnotCount;
+      if(isTrimmed2D)
+      {
+        Standard_Integer i;
+        KnotCount = 0;
+        const TColStd_Array1OfReal& aKnots = aBS2DCurv->Knots();
+        for(i = aBS2DCurv->FirstUKnotIndex(); i <= aBS2DCurv->LastUKnotIndex(); ++i)
+        {
+          if(aKnots(i) > theFirst && aKnots(i) < theLast)
+          {
+            ++KnotCount;
+          }
+        }
+        KnotCount += 2;
+      }
+      else
+      {
+        KnotCount = aBS2DCurv->LastUKnotIndex() - aBS2DCurv->FirstUKnotIndex() + 1;
+      }
+      if(KnotCount <= aMaxKnots)
+      {
+        anArrKnots2D = new TColStd_HArray1OfReal(aBS2DCurv->Knots());
+      }   
+      else
+      {
+        anArrKnots2D = new TColStd_HArray1OfReal(1, aMaxKnots);
+        anArrKnots2D->SetValue(1, theFirst);
+        anArrKnots2D->SetValue(aMaxKnots, theLast);
+        Standard_Integer i;
+        Standard_Real dt = (theLast - theFirst) / (aMaxKnots - 1);
+        Standard_Real t = theFirst + dt;
+        for(i = 2; i < aMaxKnots; ++i, t += dt)
+        {
+          anArrKnots2D->SetValue(i, t);
+        }
+      }
+    }
+  }
+  else
+  {
+    anArrKnots2D = new TColStd_HArray1OfReal(anArrTemp);
+  }
+
 
   Standard_Integer aNbSubIntervals = 1;
 
   try
   {
     OCC_CATCH_SIGNALS
-    const Standard_Integer  anIndMax3D = anArrKnots3D.Upper(),
-                            anIndMax2D = anArrKnots2D.Upper();
+    const Standard_Integer  anIndMax3D = anArrKnots3D->Upper(),
+                            anIndMax2D = anArrKnots2D->Upper();
 
-    Standard_Integer  anIndex3D = anArrKnots3D.Lower(),
-                      anIndex2D = anArrKnots2D.Lower();
+    Standard_Integer  anIndex3D = anArrKnots3D->Lower(),
+                      anIndex2D = anArrKnots2D->Lower();
 
     if(theSubIntervals)
       theSubIntervals->ChangeValue(aNbSubIntervals) = theFirst;
 
     while((anIndex3D <= anIndMax3D) && (anIndex2D <= anIndMax2D))
     {
-      const Standard_Real aVal3D = anArrKnots3D.Value(anIndex3D),
-                          aVal2D = anArrKnots2D.Value(anIndex2D);
+      const Standard_Real aVal3D = anArrKnots3D->Value(anIndex3D),
+                          aVal2D = anArrKnots2D->Value(anIndex2D);
       const Standard_Real aDelta = aVal3D - aVal2D;
 
       if(aDelta < Precision::PConfusion())

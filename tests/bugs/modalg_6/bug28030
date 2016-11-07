@@ -1,0 +1,44 @@
+puts "========"
+puts "OCC28030"
+puts "========"
+puts ""
+########################################################################################################
+# Algorith GeomLib_CheckCurveOnSurface takes too much time for Bspline curves with big number of knots
+########################################################################################################
+
+beziercurve c 4 0 0 0 1 1 0 2 1 0 3 0 0
+
+convert c1 c
+set i 1
+repeat 98 {insertknot c1 0.01*$i 1; incr i 1}
+mkedge e1 c1
+prism p1 e1 0 0 1
+explode p1 e
+dchrono cpu reset
+dchrono cpu start
+xdistef p1_3 p1
+dchrono cpu stop
+puts [dchrono cpu show]
+set q1 [dchrono cpu show]
+regexp {CPU user time: ([-0-9.+eE]+) seconds} ${q1} full t1
+
+convert c2 c
+set i 1
+repeat 1000 {insertknot c2 0.00098*$i 1; incr i 1}
+mkedge e2 c2
+prism p2 e2 0 0 1
+explode p2 e
+dchrono cpu reset
+dchrono cpu start
+xdistef p2_3 p2
+dchrono cpu stop
+puts [dchrono cpu show]
+set q2 [dchrono cpu show]
+regexp {CPU user time: ([-0-9.+eE]+) seconds} ${q2} full t2
+
+set max_ratio 5
+if { ${t2} > ${max_ratio}*${t1} } {
+  puts "Elapsed time is too much - Faulty"
+} else {
+  puts "Elapsed time is OK"
+}
