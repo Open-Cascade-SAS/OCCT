@@ -1,0 +1,33 @@
+puts "========"
+puts "OCC28054"
+puts "========"
+puts ""
+#################################################
+# Regression: Class BRepProj_Projection gives invalid result after projection edge based on the line on the conical surface
+#################################################
+
+set Tol 1.0e-7
+
+dsetsignal 1
+
+restore [locate_data_file bug28054_FaceProj.brep] f1
+restore [locate_data_file bug28054_EdgeProj.brep] e1
+
+set ProjList [prj r e1 f1 0 0 1]
+
+if { [llength $ProjList] < 1 } {
+  puts "Error: no projections are found"
+}
+
+foreach wir $ProjList {
+  set EdgeList [explode $wir e]
+  foreach ed $EdgeList {
+    set dist 1.0e+100
+    regexp {Max Distance = +([-0-9.+eE]+)} [xdistef $ed f1] full dist
+    if { $dist > $Tol } {
+      puts "Error in projection. 3D and 2D curves of edge $ed are not same-parameter"
+    } else {
+      puts "OK: Max Distance is less than $Tol"
+    }
+  }
+}

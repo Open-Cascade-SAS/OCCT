@@ -113,11 +113,9 @@ Standard_Real ATan2 (const Standard_Real Value, const Standard_Real Other)
 
 //-------------------------------------------------------------------
 // Sign : Returns |a| if B >= 0; -|a| if b < 0.
-//             from x in the direction y
 //-------------------------------------------------------------------
 Standard_Real Sign(const Standard_Real a, const Standard_Real b)
 {
-  //==== We use the function "nextafter()" fom library "math.h" ==============
   if (b >= 0.0) {
     return Abs(a);
   } else {

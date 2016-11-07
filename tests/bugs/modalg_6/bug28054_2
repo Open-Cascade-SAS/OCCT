@@ -1,0 +1,60 @@
+puts "========"
+puts "OCC28054"
+puts "========"
+puts ""
+#################################################
+# Regression: Class BRepProj_Projection gives invalid result after
+# projection edge based on the line on the conical surface
+#################################################
+
+set Tol 1.0e-7
+
+dsetsignal 1
+
+cone c 0 0 0 45 0
+trimv c1 c 5 10
+trimv c2 c -10 -5
+mkface f1 c1
+mkface f2 c2
+line l1 0 0 0 1 0 1
+line l2 0 0 0 0 -1 -1
+trim l1 l1 -100 100
+trim l2 l2 -100 100
+mkedge e1 l1
+mkedge e2 l2
+
+# Rotate f1 around e1 by the angle 32 degree
+copy f1 f3
+rotate f3 7 0 7 1 0 1 32
+
+# Rotate f2 around e2 by the angle 81 degree
+copy f2 f4
+rotate f4 0 -6 -6 0 -1 -1 81
+
+for { set i 1 } { $i <= 2 } { incr i } {
+  for { set j 1 } { $j <= 4 } { incr j } {
+    if { $i == 1 && $j == 4 } continue;
+    if { $i == 2 && $j == 3 } continue;
+    
+    puts ""
+    puts "Check e${i} and f${j}"
+
+    set ProjList [prj r e${i} f${j} 0 0 1]
+    if { [llength $ProjList] < 1 } {
+      puts "Error: no projections are found"
+    }
+    
+    foreach wir $ProjList {
+      set EdgeList [explode $wir e]
+      foreach ed $EdgeList {
+        set dist 1.0e+100
+        regexp {Max Distance = +([-0-9.+eE]+)} [xdistef $ed f${j}] full dist
+        if { $dist > $Tol } {
+          puts "Error in projection. 3D and 2D curves of edge $ed are not same-parameter"
+        } else {
+          puts "OK: Max Distance is less than $Tol"
+        }
+      }
+    }    
+  }
+}
