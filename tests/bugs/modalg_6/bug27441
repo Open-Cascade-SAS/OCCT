@@ -14,3 +14,9 @@ puts $bcheck
 if {![regexp {This shape seems to be OK.} $bcheck]} {
     puts "Error: bopcheck failed"
 }
+
+checkshape result
+checkprops result -l 0.00535319
+checknbshapes result -vertex 2 -edge 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
