@@ -13,6 +13,9 @@
 #include "direct.h"
 #include <OSD_Environment.hxx>
 
+#include <BinDrivers.hxx>
+#include <XmlDrivers.hxx>
+
 /////////////////////////////////////////////////////////////////////////////
 // COcafApp
 
@@ -38,6 +41,10 @@ COcafApp::COcafApp() : OCC_App()
   myApp = new TOcaf_Application();
   SampleName = "OCAF"; //for about dialog
   SetSamplePath (L"..\\..\\06_Ocaf");
+
+  // load persistence
+  BinDrivers::DefineFormat (myApp);
+  XmlDrivers::DefineFormat (myApp);
 
   try
   {

@@ -18,8 +18,6 @@
 #include <Standard_TypeMismatch.hxx>
 #endif
 
-TOcaf_Application::~TOcaf_Application() {}
-
 // DownCast method
 //   allow safe downcasting
 //

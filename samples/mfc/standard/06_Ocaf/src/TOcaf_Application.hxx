@@ -33,12 +33,6 @@ public:
  // Methods PUBLIC
  // 
 Standard_EXPORT TOcaf_Application();
-Standard_EXPORT virtual  void Formats(TColStd_SequenceOfExtendedString& Formats) ;
-Standard_EXPORT   Standard_CString ResourcesName() ;
-Standard_EXPORT ~TOcaf_Application();
-
-
-
 
  // Type management
  //
