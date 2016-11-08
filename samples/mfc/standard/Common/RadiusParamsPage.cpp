@@ -59,7 +59,8 @@ void CRadiusParamsPage::OnBnClickedObjectBtn()
 {
   //Build dimension here
   myAISContext->LocalContext()->InitSelected();
-  if (!myAISContext->LocalContext()->MoreSelected())
+  if (!myAISContext->LocalContext()->MoreSelected() ||
+       myAISContext->SelectedShape().ShapeType() != TopAbs_EDGE)
   {
     AfxMessageBox (_T ("Choose the edge and press the button again"), MB_ICONINFORMATION | MB_OK);
     return;

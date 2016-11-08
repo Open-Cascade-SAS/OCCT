@@ -76,7 +76,8 @@ void CAngleParamsVerticesPage::OnBnClickedVertex1Btn()
   // Now it's ok, local context is opened and edge selection mode is activated
   // Check if some vertex is selected
   myAISContext->LocalContext()->InitSelected();
-  if (!myAISContext->LocalContext()->MoreSelected())
+  if (!myAISContext->LocalContext()->MoreSelected() ||
+       myAISContext->SelectedShape().ShapeType() != TopAbs_VERTEX)
   {
     AfxMessageBox (_T ("Choose the vertex and press the button again"),
                        MB_ICONINFORMATION | MB_OK);
@@ -95,7 +96,8 @@ void CAngleParamsVerticesPage::OnBnClickedVertex1Btn()
 void CAngleParamsVerticesPage::OnBnClickedVertex2Btn()
 {
   myAISContext->LocalContext()->InitSelected();
-  if (!myAISContext->LocalContext()->MoreSelected())
+  if (!myAISContext->LocalContext()->MoreSelected() ||
+       myAISContext->SelectedShape().ShapeType() != TopAbs_VERTEX)
   {
     AfxMessageBox ( _T("Choose the vertex and press the button again"), MB_ICONINFORMATION | MB_OK);
     return;

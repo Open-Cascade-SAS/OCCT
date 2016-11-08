@@ -44,7 +44,8 @@ void CParamsFacesPage::OnBnClickedFacesbtn1()
 {
   // Check if face is selected
   myAISContext->LocalContext()->InitSelected();
-  if (!myAISContext->LocalContext()->MoreSelected())
+  if (!myAISContext->LocalContext()->MoreSelected() ||
+       myAISContext->SelectedShape().ShapeType() != TopAbs_FACE)
   {
     AfxMessageBox(_T("Choose the face and press the button again"),
                     MB_ICONINFORMATION | MB_OK);
@@ -60,7 +61,8 @@ void CParamsFacesPage::OnBnClickedFacesbtn2()
 {
   // Check if face is selected
   myAISContext->LocalContext()->InitSelected();
-  if (!myAISContext->LocalContext()->MoreSelected())
+  if (!myAISContext->LocalContext()->MoreSelected() ||
+       myAISContext->SelectedShape().ShapeType() != TopAbs_FACE)
   {
     AfxMessageBox(_T("Choose the face and press the button again"),
                     MB_ICONINFORMATION | MB_OK);
