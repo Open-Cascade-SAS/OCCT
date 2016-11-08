@@ -5,7 +5,6 @@
 #include "Viewer2dDoc.h"
 #include "OCC_App.h"
 #include "Primitive\Sample2D_Markers.h"
-#include "Primitive\Sample2D_Text.h"
 #include "Primitive\Sample2D_Face.h"
 #include "Primitive\Sample2D_Image.h"
 
@@ -64,75 +63,69 @@ void CViewer2dDoc::OnBUTTONErase()
 
 void CViewer2dDoc::OnBUTTONTestText() 
 {
- int aColor= 1;
- Standard_Real j;
- for (j=15;j<=20;j++)
+  int aColor = Quantity_NOC_MATRABLUE;
+  for (Standard_Real j = 15; j <= 20; j++)
   {
-    TCollection_AsciiString Text("font 0 scale ");Text+=j/20.0;
-    Handle (Sample2D_Text) aText  = 
-        new Sample2D_Text(Text,
-                       gp_Pnt(0.0,15.0*(j-15.0),0.0),    //  thePosition
-                       10.0*M_PI,                        //  theAngle    
-                       (Quantity_NameOfColor)(aColor++), //  theColor  
-                       Font_FA_Regular,                  //  theFontAspect  
-                       "Courier",                        //  theFont
-                       j,                                // theScale
-                       Graphic3d_HTA_LEFT,
-                       Graphic3d_VTA_BOTTOM,
-                       Standard_False);                  // aIsZoomable
-
+    Handle(AIS_TextLabel) aText = new AIS_TextLabel();
+    aText->SetText (TCollection_AsciiString ("font 0 scale ") + (j / 20.0));
+    aText->SetPosition (gp_Pnt (0.0, 15.0 * (j - 15.0), 0.0));
+    aText->SetAngle (30.0 * M_PI / 180.0);
+    aText->SetColor (Quantity_NameOfColor(aColor++));
+    aText->SetFontAspect (Font_FA_Regular);
+    aText->SetFont ("Courier");
+    aText->SetHeight (j);
+    aText->SetHJustification (Graphic3d_HTA_LEFT);
+    aText->SetVJustification (Graphic3d_VTA_BOTTOM);
+    aText->SetZoomable (Standard_False);
     myAISContext->Display(aText, Standard_False);
   }
 
-  for (j=10;j<=15;j++)
+  for (Standard_Real j = 10; j <= 15; j++)
   {
-    TCollection_AsciiString Text("font 1 scale ");Text+=j/10.0;
-    Handle (Sample2D_Text) aText  = 
-        new Sample2D_Text(Text,
-                       gp_Pnt(80.,15.0*(j-10.0),0.0),     //  thePosition
-                       0.0,                               //  theAngle    
-                       (Quantity_NameOfColor)(aColor++),  //  theColor  
-                       Font_FA_BoldItalic,                //  theFontAspect  
-                       "Cambria",                         //  theFont
-                       j*2,                               // theScale
-                       Graphic3d_HTA_LEFT,
-                       Graphic3d_VTA_BOTTOM,
-                       Standard_False);                   // aIsZoomable
-
+    Handle(AIS_TextLabel) aText = new AIS_TextLabel();
+    aText->SetText (TCollection_AsciiString ("font 1 scale ") + (j / 10.0));
+    aText->SetPosition (gp_Pnt (80.0, 15.0 * (j - 10.0), 0.0));
+    aText->SetAngle (0.0);
+    aText->SetColor (Quantity_NameOfColor(aColor++));
+    aText->SetFontAspect (Font_FA_BoldItalic);
+    aText->SetFont ("Cambria");
+    aText->SetHeight (j * 2);
+    aText->SetHJustification (Graphic3d_HTA_LEFT);
+    aText->SetVJustification (Graphic3d_VTA_BOTTOM);
+    aText->SetZoomable (Standard_False);
     myAISContext->Display(aText, Standard_False);
   }
-  aColor = 1;
-  for (j=5;j<=10;j++)
+
+  aColor = Quantity_NOC_MATRABLUE;
+  for (Standard_Real j = 5; j <= 10; j++)
   {
-    TCollection_AsciiString Text("font 2 scale ");Text+=j/10.0; 
-    Handle (Sample2D_Text) aText  = 
-        new Sample2D_Text(Text,
-                       gp_Pnt(140.0,15.0*(j-5.0),0.0),   //  thePosition
-                       0.0,                              //  theAngle    
-                       (Quantity_NameOfColor)(aColor++), //  theColor  
-                       Font_FA_Bold,                     //  theFontAspect  
-                       "Arial",                          //  theFont
-                       j*2,                              // theScale
-                       Graphic3d_HTA_LEFT,
-                       Graphic3d_VTA_BOTTOM,
-                       Standard_False);                  // aIsZoomable
-    myAISContext->Display(aText,Standard_False);
+    Handle(AIS_TextLabel) aText = new AIS_TextLabel();
+    aText->SetText (TCollection_AsciiString ("font 2 scale ") + (j / 10.0));
+    aText->SetPosition (gp_Pnt (140.0, 15.0 * (j - 5.0), 0.0));
+    aText->SetAngle (0.0);
+    aText->SetColor (Quantity_NameOfColor(aColor++));
+    aText->SetFontAspect (Font_FA_Bold);
+    aText->SetFont ("Arial");
+    aText->SetHeight (j * 2);
+    aText->SetHJustification (Graphic3d_HTA_LEFT);
+    aText->SetVJustification (Graphic3d_VTA_BOTTOM);
+    aText->SetZoomable (Standard_False);
+    myAISContext->Display(aText, Standard_False);
   }
-for (j=10;j<=15;j++)
+  for (Standard_Real j = 10; j <= 15; j++)
   {
-    TCollection_AsciiString Text("font 3 scale ");Text+=j/10.0;
-        Handle (Sample2D_Text) aText  = 
-        new Sample2D_Text(Text,
-                       gp_Pnt(200.0,15.0*(j-10.0),0.0), //  thePosition
-                       0.0,                             //  theAngle    
-                       (Quantity_NameOfColor)(aColor++),//  theColor  
-                       Font_FA_Italic,                  //  theFontAspect  
-                       "Georgia",                       //  theFont
-                       j*2,                             // theScale
-                       Graphic3d_HTA_LEFT,
-                       Graphic3d_VTA_BOTTOM,
-                       Standard_False);                 // aIsZoomable
-        myAISContext->Display(aText,Standard_False);
+    Handle(AIS_TextLabel) aText = new AIS_TextLabel();
+    aText->SetText (TCollection_AsciiString ("font 3 scale ") + (j / 10.0));
+    aText->SetPosition (gp_Pnt (200.0, 15.0 * (j - 10.0), 0.0));
+    aText->SetAngle (0.0);
+    aText->SetColor (Quantity_NameOfColor(aColor++));
+    aText->SetFontAspect (Font_FA_Italic);
+    aText->SetFont ("Georgia");
+    aText->SetHeight (j * 2);
+    aText->SetHJustification (Graphic3d_HTA_LEFT);
+    aText->SetVJustification (Graphic3d_VTA_BOTTOM);
+    aText->SetZoomable (Standard_False);
+    myAISContext->Display(aText, Standard_False);
   }
 
   FitAll2DViews(Standard_True); // Update Viewer

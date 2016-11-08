@@ -111,9 +111,6 @@
     <ClCompile Include="..\..\..\..\Common\Primitive\Sample2D_Markers.cpp">
       <Filter>Source Files\Primitive-src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Common\Primitive\Sample2D_Text.cpp">
-      <Filter>Source Files\Primitive-src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Common\ISession2D\ISession2D_Shape.cpp">
       <Filter>Source Files\ISession2D-src</Filter>
     </ClCompile>
@@ -221,9 +218,6 @@
       <Filter>Header Files\Primitive-headers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\Primitive\Sample2D_Markers.h">
-      <Filter>Header Files\Primitive-headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Common\Primitive\Sample2D_Text.h">
       <Filter>Header Files\Primitive-headers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\ISession2D\ISession2D_Shape.h">

@@ -18,50 +18,30 @@ static char THIS_FILE[]=__FILE__;
 
 IMPLEMENT_STANDARD_RTTIEXT(ISession_Surface,AIS_InteractiveObject)
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-ISession_Surface::ISession_Surface(const Handle(Geom_Surface)& aSurface)
-:AIS_InteractiveObject(),mySurface(aSurface)
+void ISession_Surface::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
+                                const Handle(Prs3d_Presentation)& thePrs,
+                                const Standard_Integer theMode)
 {
-}
+  GeomAdaptor_Surface anAdaptorSurface (mySurface);
+  Handle(GeomAdaptor_HSurface) anAdaptorHSurface = new GeomAdaptor_HSurface (mySurface);
 
-ISession_Surface::~ISession_Surface()
-{
-
-}
-void ISession_Surface::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
-                             const Handle(Prs3d_Presentation)& aPresentation,
-                             const Standard_Integer aMode)
-{
-
-    GeomAdaptor_Surface anAdaptorSurface(mySurface);
-    Handle(GeomAdaptor_HSurface) anAdaptorHSurface = new GeomAdaptor_HSurface(mySurface);
-
-    Handle(Prs3d_Drawer) aDrawer = new Prs3d_Drawer();
-    aDrawer->LineAspect()->SetColor(Quantity_NOC_YELLOW3);
-
-    switch (aMode)
+  Handle(Prs3d_Drawer) aPoleDrawer = new Prs3d_Drawer();
+  aPoleDrawer->SetLineAspect (new Prs3d_LineAspect (Quantity_NOC_YELLOW3, Aspect_TOL_SOLID, 1.0));
+  switch (theMode)
+  {
+    case 2:
     {
-        case 2:
-	      StdPrs_ShadedSurface::Add(aPresentation,anAdaptorSurface,myDrawer);
-        break;
-        case 1 :
-          StdPrs_WFPoleSurface::Add(aPresentation,anAdaptorSurface,aDrawer);
-        case 0 :
-          StdPrs_WFSurface::Add(aPresentation,anAdaptorHSurface,myDrawer);
-        break;
+	    StdPrs_ShadedSurface::Add (thePrs, anAdaptorSurface, myDrawer);
+      break;
     }
-
-}
-
-void ISession_Surface::Compute(const Handle(Prs3d_Projector)& /*aProjector*/,
-                               const Handle(Prs3d_Presentation)& /*aPresentation*/) 
-{
-}
-
-void ISession_Surface::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
-				        const Standard_Integer /*aMode*/) 
-{ 
+    case 1:
+    {
+      StdPrs_WFPoleSurface::Add (thePrs, anAdaptorSurface, aPoleDrawer);
+    }
+    case 0:
+    {
+      StdPrs_WFSurface::Add (thePrs, anAdaptorHSurface, myDrawer);
+      break;
+    }
+  }
 }

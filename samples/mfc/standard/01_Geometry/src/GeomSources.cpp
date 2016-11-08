@@ -8,6 +8,7 @@
 #include "MainFrm.h"
 #include <Geom_Curve.hxx>
 #include <Geom2d_Curve.hxx>
+
 GeomSources::GeomSources()
 {
 }
@@ -104,35 +105,43 @@ void GeomSources::AddSeparator(CGeometryDoc* /*aDoc*/,TCollection_AsciiString& a
 {
   aMessage+= "------------------------------------------------------------------------\n";
 }
-void GeomSources::DisplayPoint(CGeometryDoc* aDoc,
-                          const gp_Pnt2d& aPoint,
-                          const char* aText,
-                          Standard_Boolean UpdateViewer,
-                          Standard_Real anXoffset,
-                          Standard_Real anYoffset,
-                          Standard_Real TextScale)
+void GeomSources::DisplayPoint (CGeometryDoc* theDoc,
+                                const gp_Pnt2d& thePoint,
+                                const char* theText,
+                                Standard_Boolean theToUpdateViewer,
+                                Standard_Real theXoffset,
+                                Standard_Real theYoffset,
+                                Standard_Real theTextScale)
 {
-  Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint);
-  aDoc->GetISessionContext()->Display(aGraphicPoint,UpdateViewer);
-  Handle(ISession_Text)  aGraphicText = new ISession_Text(aText,aPoint.X()+anXoffset,aPoint.Y()+anYoffset);
-  aGraphicText->SetScale  (TextScale);
-  aDoc->GetISessionContext()->Display(aGraphicText,UpdateViewer);
+  Handle(ISession_Point) aGraphicPoint = new ISession_Point (thePoint);
+  theDoc->GetISessionContext()->Display (aGraphicPoint, Standard_False);
+
+  Handle(AIS_TextLabel) aLabel = new AIS_TextLabel();
+  aLabel->SetText (theText);
+  aLabel->SetPosition (gp_Pnt (thePoint.X() + theXoffset, thePoint.Y() + theYoffset, 0.0));
+  //aLabel->SetHeight (theTextScale);
+  (void )theTextScale;
+  theDoc->GetISessionContext()->Display (aLabel, theToUpdateViewer);
 }
 
-void GeomSources::DisplayPoint(CGeometryDoc* aDoc,
-                          const gp_Pnt& aPoint,
-                          const char* aText,
-                          Standard_Boolean UpdateViewer,
-                          Standard_Real anXoffset,
-                          Standard_Real anYoffset,
-                          Standard_Real aZoffset,
-                          Standard_Real TextScale)
+void GeomSources::DisplayPoint (CGeometryDoc* theDoc,
+                                const gp_Pnt& thePoint,
+                                const char* theText,
+                                Standard_Boolean theToUpdateViewer,
+                                Standard_Real theXoffset,
+                                Standard_Real theYoffset,
+                                Standard_Real theZoffset,
+                                Standard_Real theTextScale)
 {
-  Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint);
-  aDoc->GetAISContext()->Display(aGraphicPoint,UpdateViewer);
-  Handle(ISession_Text)  aGraphicText = new ISession_Text(aText,aPoint.X()+anXoffset,aPoint.Y()+anYoffset,aPoint.Z()+aZoffset);
-  aGraphicText->SetScale  (TextScale);
-  aDoc->GetAISContext()->Display(aGraphicText,UpdateViewer);
+  Handle(ISession_Point) aGraphicPoint = new ISession_Point (thePoint);
+  theDoc->GetAISContext()->Display (aGraphicPoint, Standard_False);
+
+  Handle(AIS_TextLabel) aLabel = new AIS_TextLabel();
+  aLabel->SetText (theText);
+  aLabel->SetPosition (gp_Pnt (thePoint.X() + theXoffset, thePoint.Y() + theYoffset, thePoint.Z() + theZoffset));
+  //aLabel->SetHeight (theTextScale);
+  (void )theTextScale;
+  theDoc->GetAISContext()->Display (aLabel, theToUpdateViewer);
 }
 
 void GeomSources::DisplayCurve(CGeometryDoc* aDoc,
@@ -157,15 +166,14 @@ void GeomSources::DisplayCurveAndCurvature(CGeometryDoc* aDoc,
   aDoc->GetISessionContext()->Display(aGraphicCurve,UpdateViewer);
 }
 
-void GeomSources::DisplayCurve(CGeometryDoc* aDoc,
-                          Handle(Geom_Curve) aCurve,
-                          Quantity_NameOfColor aNameOfColor, 
-                          Standard_Boolean UpdateViewer)
+void GeomSources::DisplayCurve (CGeometryDoc* theDoc,
+                                Handle(Geom_Curve) theCurve,
+                                Quantity_NameOfColor theNameOfColor,
+                                Standard_Boolean theToUpdateViewer)
 {
-  Handle(ISession_Curve) aGraphicCurve = new ISession_Curve(aCurve);
-  aDoc->GetAISContext()->SetColor(aGraphicCurve,aNameOfColor, Standard_False);
-  aGraphicCurve->Attributes()->LineAspect()->SetColor(aNameOfColor);
-  aDoc->GetAISContext()->Display(aGraphicCurve,UpdateViewer);
+  Handle(ISession_Curve) aGraphicCurve = new ISession_Curve (theCurve);
+  aGraphicCurve->Attributes()->SetLineAspect (new Prs3d_LineAspect (theNameOfColor, Aspect_TOL_SOLID, 1.0));
+  theDoc->GetAISContext()->Display (aGraphicCurve, theToUpdateViewer);
 }
 
 void GeomSources::DisplayCurve(CGeometryDoc* aDoc,
@@ -176,20 +184,26 @@ void GeomSources::DisplayCurve(CGeometryDoc* aDoc,
     aDoc->GetAISContext()->Display(aGraphicCurve,UpdateViewer);
 }
 
-
-
-
-void GeomSources::DisplaySurface(CGeometryDoc* aDoc,
-                          Handle(Geom_Surface) aSurface,
-                          Quantity_NameOfColor aNameOfColor, 
-                          Standard_Boolean UpdateViewer)
+void GeomSources::DisplaySurface (CGeometryDoc* theDoc,
+                                  Handle(Geom_Surface) theSurface,
+                                  Quantity_NameOfColor theNameOfColor,
+                                  Standard_Boolean theToUpdateViewer)
 {
-  Handle(ISession_Surface) aGraphicalSurface = new ISession_Surface(aSurface);
-  aDoc->GetAISContext()->SetColor(aGraphicalSurface,aNameOfColor, Standard_False);
-  aGraphicalSurface->Attributes()->FreeBoundaryAspect()->SetColor(aNameOfColor);
-  aGraphicalSurface->Attributes()->UIsoAspect()->SetColor(aNameOfColor);
-  aGraphicalSurface->Attributes()->VIsoAspect()->SetColor(aNameOfColor);
-  aDoc->GetAISContext()->Display(aGraphicalSurface,UpdateViewer);
+  const Handle(AIS_InteractiveContext)& aCtx = theDoc->GetAISContext();
+  Handle(Prs3d_ShadingAspect) aShadeAspect = new Prs3d_ShadingAspect();
+  Handle(Prs3d_LineAspect)    aLineAspect  = new Prs3d_LineAspect (theNameOfColor, Aspect_TOL_SOLID, 1.0);
+  Handle(Prs3d_IsoAspect)     anIsoAspect  = new Prs3d_IsoAspect  (theNameOfColor, Aspect_TOL_SOLID, 1.0,
+                                                                   aCtx->DefaultDrawer()->UIsoAspect()->Number());
+  aShadeAspect->SetColor (theNameOfColor);
+
+  Handle(ISession_Surface) aGraphicalSurface = new ISession_Surface (theSurface);
+  const Handle(Prs3d_Drawer)& aDrawer      = aGraphicalSurface->Attributes();
+  aDrawer->SetShadingAspect      (aShadeAspect);
+  aDrawer->SetLineAspect         (aLineAspect);
+  aDrawer->SetFreeBoundaryAspect (aLineAspect);
+  aDrawer->SetUIsoAspect         (anIsoAspect);
+  aDrawer->SetVIsoAspect         (anIsoAspect);
+  aCtx->Display (aGraphicalSurface, theToUpdateViewer);
 }
 
 void GeomSources::DisplaySurface(CGeometryDoc* aDoc,

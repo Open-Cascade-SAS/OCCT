@@ -74,6 +74,7 @@
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_LocalContext.hxx>
+#include <AIS_TextLabel.hxx>
 #include <AIS_TexturedShape.hxx>
 
 #include <Aspect_TypeOfline.hxx>

@@ -66,9 +66,6 @@
     <ClCompile Include="..\..\..\src\ISession2D\ISession_Surface.cpp">
       <Filter>Source Files\ISession2d</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\ISession2D\ISession_Text.cpp">
-      <Filter>Source Files\ISession2d</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\res\Geometry.rc">
@@ -113,9 +110,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\ISession2D\ISession_Surface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\ISession2D\ISession_Text.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\MainFrm.h">

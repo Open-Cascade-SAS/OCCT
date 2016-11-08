@@ -52,12 +52,10 @@ set (COMMON_ISESSION2D_SOURCE_FILES ${COMMON_ISESSION2D_DIR}/ISession2D_Shape.cp
 set (COMMON_PRIMITIVE_DIR          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/Primitive)
 set (COMMON_PRIMITIVE_HEADER_FILES ${COMMON_PRIMITIVE_DIR}/Sample2D_Face.h
                                    ${COMMON_PRIMITIVE_DIR}/Sample2D_Image.h
-                                   ${COMMON_PRIMITIVE_DIR}/Sample2D_Markers.h
-                                   ${COMMON_PRIMITIVE_DIR}/Sample2D_Text.h )
+                                   ${COMMON_PRIMITIVE_DIR}/Sample2D_Markers.h )
 set (COMMON_PRIMITIVE_SOURCE_FILES ${COMMON_PRIMITIVE_DIR}/Sample2D_Face.cpp
                                    ${COMMON_PRIMITIVE_DIR}/Sample2D_Image.cpp
-                                   ${COMMON_PRIMITIVE_DIR}/Sample2D_Markers.cpp
-                                   ${COMMON_PRIMITIVE_DIR}/Sample2D_Text.cpp )
+                                   ${COMMON_PRIMITIVE_DIR}/Sample2D_Markers.cpp )
 
 # Common Resource2D
 set (COMMON_RESOURCE2D_DIR          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/Resource2D)

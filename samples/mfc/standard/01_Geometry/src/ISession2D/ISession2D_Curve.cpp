@@ -10,12 +10,10 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(ISession2D_Curve,AIS_InteractiveObject)
 
-
 ISession2D_Curve::ISession2D_Curve(const Handle(Geom2d_Curve) aGeom2dCurve,
                                    const Aspect_TypeOfLine aTypeOfLine,
                                    const Aspect_WidthOfLine aWidthOfLine,
                                    const Standard_Integer aColorIndex)
-                                   :AIS_InteractiveObject()
 {
   myGeom2dCurve = aGeom2dCurve;
   myTypeOfLine  = aTypeOfLine ;
@@ -28,10 +26,13 @@ ISession2D_Curve::ISession2D_Curve(const Handle(Geom2d_Curve) aGeom2dCurve,
   myradiusratio = 1;
 }
 
-void ISession2D_Curve::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
-                               const Handle(Prs3d_Presentation)& aPresentation,
-                               const Standard_Integer /*aMode*/) 
+void ISession2D_Curve::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
+                               const Handle(Prs3d_Presentation)& thePrs,
+                               const Standard_Integer )
 {
+  Handle(Graphic3d_Group) aPrsGroup = Prs3d_Root::CurrentGroup (thePrs);
+  aPrsGroup->SetGroupPrimitivesAspect (myDrawer->LineAspect()->Aspect());
+  aPrsGroup->SetGroupPrimitivesAspect (myDrawer->PointAspect()->Aspect());
 
   Geom2dAdaptor_Curve anAdaptor(myGeom2dCurve);
   GCPnts_QuasiUniformDeflection anEdgeDistrib(anAdaptor,1.e-2);
@@ -42,7 +43,7 @@ void ISession2D_Curve::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPr
     for(Standard_Integer i=1;i<=anEdgeDistrib.NbPoints();++i)
       aCurve->AddVertex(anEdgeDistrib.Value(i));
 
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aCurve);
+    aPrsGroup->AddPrimitiveArray (aCurve);
   }
 
   if (myDisplayPole) 
@@ -56,7 +57,7 @@ void ISession2D_Curve::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPr
         gp_Pnt2d CurrentPoint = aBezier->Pole(i);
         anArrayOfVertex->AddVertex(CurrentPoint.X(),CurrentPoint.Y(),0.);
       }
-      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(anArrayOfVertex);
+      aPrsGroup->AddPrimitiveArray (anArrayOfVertex);
     }
 
     if (anAdaptor.GetType() == GeomAbs_BSplineCurve  )
@@ -71,7 +72,7 @@ void ISession2D_Curve::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPr
         gp_Pnt2d CurrentPoint = aBSpline->Pole(i);
         anArrayOfVertex->AddVertex(CurrentPoint.X(),CurrentPoint.Y(),0.);
       }
-      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(anArrayOfVertex);
+      aPrsGroup->AddPrimitiveArray (anArrayOfVertex);
     }
   }
 
@@ -108,7 +109,7 @@ void ISession2D_Curve::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPr
             Handle(Graphic3d_ArrayOfPolylines) aSegment = new Graphic3d_ArrayOfPolylines(2);
             aSegment->AddVertex(P1.X(),P1.Y(),0.);
             aSegment->AddVertex(P3.X(),P3.Y(),0.);
-            Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aSegment);
+            aPrsGroup->AddPrimitiveArray (aSegment);
           }
         }
         t += step;
@@ -116,10 +117,3 @@ void ISession2D_Curve::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPr
     }
   }
 }
-
-void ISession2D_Curve::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
-                                        const Standard_Integer /*aMode*/) 
-{ 
-}
-
-

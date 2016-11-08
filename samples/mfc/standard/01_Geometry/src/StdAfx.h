@@ -80,6 +80,7 @@
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_Point.hxx>
+#include <AIS_TextLabel.hxx>
 #include <Aspect_Grid.hxx>
 #include <Aspect_Window.hxx>
 #include <Aspect_Background.hxx>
@@ -270,7 +271,6 @@
 #include "ISession_Direction.h"
 #include "ISession_Curve.h"
 #include "ISession_Surface.h"
-#include "ISession_Text.h"
 #include "ISession_Point.h"
 
 #include <UnitsAPI.hxx>
