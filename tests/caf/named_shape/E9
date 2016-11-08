@@ -15,7 +15,6 @@
 # 8. Recompute selections
 # ===============================================
 
-#pload FULL
 erase 
 Close D 
 

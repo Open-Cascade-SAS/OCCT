@@ -6,7 +6,7 @@
 # Testing command:   standard set of commands
 #
 # The test checks compatibility with old format files. Old files: bug26290_oldformat1.cbf & bug26290_oldformat2.cbf
-pload FULL
+pload OCAF VISUALIZATION
 set Lab1 0:1:1
 set Lab2 0:1:2
 

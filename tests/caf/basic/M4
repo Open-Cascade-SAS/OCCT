@@ -6,7 +6,6 @@ puts ""
 # Improvement of storage of Ocaf document in XML file format
 ######################################################
 
-#pload FULL
 NewDocument M4 XmlOcaf
 
 # Simple array with many separators inside.

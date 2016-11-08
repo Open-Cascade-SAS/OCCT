@@ -7,7 +7,7 @@
 #
 # The test checks joint work of these attributes (including Undo/Redo) and keeps result in 'bug26290_new_1.cbf' file
 
-pload FULL
+pload OCAF VISUALIZATION
 
 box b 100 200 300
 NewDocument D BinOcaf

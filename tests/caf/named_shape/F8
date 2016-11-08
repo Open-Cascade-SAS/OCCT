@@ -14,7 +14,6 @@
 # 6. Recompute
 # ===============================================
 
-pload FULL
 set doc d16
 NewDocument $doc BinOcaf
 AddDriver $doc Box Fuse Attach
