@@ -9,9 +9,7 @@ const CString OCC_BaseDoc::SupportedImageFormats() const
 {
   return ("BMP Files (*.BMP)|*.bmp|GIF Files (*.GIF)|*.gif|TIFF Files (*.TIFF)|*.tiff|"
           "PPM Files (*.PPM)|*.ppm|JPEG Files(*.JPEG)|*.jpeg|PNG Files (*.PNG)|*.png|"
-          "EXR Files (*.EXR)|*.exr|TGA Files (*.TGA)|*.tga|PS Files (*.PS)|*.ps|"
-          "EPS Files (*.EPS)|*.eps|TEX Files (*.TEX)|*.tex|PDF Files (*.PDF)|*.pdf"
-          "|SVG Files (*.SVG)|*.svg|PGF Files (*.PGF)|*.pgf");
+          "EXR Files (*.EXR)|*.exr|TGA Files (*.TGA)|*.tga");
 }
 
 void OCC_BaseDoc::ExportView (const Handle(V3d_View)& theView) const
@@ -27,27 +25,8 @@ void OCC_BaseDoc::ExportView (const Handle(V3d_View)& theView) const
     CString aFileExt = anExportDlg.GetFileExt();
     TCollection_AsciiString aFileName ((const wchar_t* )anExportDlg.GetPathName());
 
-    // For vector formats use V3d_View::Export() method
-    if (!(aFileExt.CompareNoCase (L"ps"))  || !(aFileExt.CompareNoCase (L"pdf"))
-     || !(aFileExt.CompareNoCase (L"eps")) || !(aFileExt.CompareNoCase (L"tex"))
-     || !(aFileExt.CompareNoCase (L"svg")) || !(aFileExt.CompareNoCase (L"pgf")))
-    {
-      Graphic3d_ExportFormat anExportFormat;
-
-      if      (!(aFileExt.CompareNoCase (L"ps")))  anExportFormat = Graphic3d_EF_PostScript;
-      else if (!(aFileExt.CompareNoCase (L"eps"))) anExportFormat = Graphic3d_EF_EnhPostScript;
-      else if (!(aFileExt.CompareNoCase (L"pdf"))) anExportFormat = Graphic3d_EF_PDF;
-      else if (!(aFileExt.CompareNoCase (L"tex"))) anExportFormat = Graphic3d_EF_TEX;
-      else if (!(aFileExt.CompareNoCase (L"svg"))) anExportFormat = Graphic3d_EF_SVG;
-      else anExportFormat = Graphic3d_EF_PGF;
-
-      theView->Export (aFileName.ToCString(), anExportFormat);
-    }
-    else
-    {
-      // For pixel formats use V3d_View:Dump() method
-      theView->Dump (aFileName.ToCString());
-    }
+    // For pixel formats use V3d_View:Dump() method
+    theView->Dump (aFileName.ToCString());
 
     // Restore cursor
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
