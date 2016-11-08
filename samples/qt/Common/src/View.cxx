@@ -517,7 +517,7 @@ void View::initRaytraceActions()
   a->setStatusTip( QObject::tr("TBR_TOOL_RAYTRACING") );
   a->setCheckable( true );
   a->setChecked( false );
-  connect( a, SIGNAL( activated() ) , this, SLOT( onRaytraceAction() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( onRaytraceAction() ) );
   myRaytraceActions->insert( ToolRaytracingId, a );
 
   a = new QAction( QPixmap( dir+QObject::tr("ICON_TOOL_SHADOWS") ), QObject::tr("MNU_TOOL_SHADOWS"), this );
@@ -525,7 +525,7 @@ void View::initRaytraceActions()
   a->setStatusTip( QObject::tr("TBR_TOOL_SHADOWS") );
   a->setCheckable( true );
   a->setChecked( true );
-  connect( a, SIGNAL( activated() ) , this, SLOT( onRaytraceAction() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( onRaytraceAction() ) );
   myRaytraceActions->insert( ToolShadowsId, a );
 
   a = new QAction( QPixmap( dir+QObject::tr("ICON_TOOL_REFLECTIONS") ), QObject::tr("MNU_TOOL_REFLECTIONS"), this );
@@ -533,7 +533,7 @@ void View::initRaytraceActions()
   a->setStatusTip( QObject::tr("TBR_TOOL_REFLECTIONS") );
   a->setCheckable( true );
   a->setChecked( false );
-  connect( a, SIGNAL( activated() ) , this, SLOT( onRaytraceAction() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( onRaytraceAction() ) );
   myRaytraceActions->insert( ToolReflectionsId, a );
 
   a = new QAction( QPixmap( dir+QObject::tr("ICON_TOOL_ANTIALIASING") ), QObject::tr("MNU_TOOL_ANTIALIASING"), this );
@@ -541,7 +541,7 @@ void View::initRaytraceActions()
   a->setStatusTip( QObject::tr("TBR_TOOL_ANTIALIASING") );
   a->setCheckable( true );
   a->setChecked( false );
-  connect( a, SIGNAL( activated() ) , this, SLOT( onRaytraceAction() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( onRaytraceAction() ) );
   myRaytraceActions->insert( ToolAntialiasingId, a );
 }
 
@@ -900,13 +900,13 @@ void View::Popup( const int /*x*/, const int /*y*/ )
 
       QAction* a = new QAction( QObject::tr("MNU_CH_BACK"), this );
       a->setToolTip( QObject::tr("TBR_CH_BACK") );
-      connect( a, SIGNAL( activated() ), this, SLOT( onBackground() ) );
+      connect( a, SIGNAL( triggered() ), this, SLOT( onBackground() ) );
       myBackMenu->addAction( a );  
       addItemInPopup(myBackMenu);
 
       a = new QAction( QObject::tr("MNU_CH_ENV_MAP"), this );
       a->setToolTip( QObject::tr("TBR_CH_ENV_MAP") );
-      connect( a, SIGNAL( activated() ), this, SLOT( onEnvironmentMap() ) );
+      connect( a, SIGNAL( triggered() ), this, SLOT( onEnvironmentMap() ) );
       a->setCheckable( true );
       a->setChecked( false );
       myBackMenu->addAction( a );  

@@ -86,7 +86,7 @@ void ApplicationCommonWindow::createStandardOperations()
   filePrefUseVBOAction->setStatusTip( QObject::tr("TBR_USE_VBO") );
   filePrefUseVBOAction->setCheckable( true );
   filePrefUseVBOAction->setChecked( true );
-  connect( filePrefUseVBOAction, SIGNAL( activated() ) , this, SLOT( onUseVBO() ) );
+  connect( filePrefUseVBOAction, SIGNAL( triggered() ) , this, SLOT( onUseVBO() ) );
   myStdActions.insert( FilePrefUseVBOId, filePrefUseVBOAction );
 
   fileQuitAction = new QAction( QObject::tr("MNU_QUIT"), this );
