@@ -1,0 +1,11 @@
+puts "TODO CR27414 ALL: Error : The area of result shape is"
+puts "TODO CR27414 ALL: Error : The volume of result shape is"
+
+restore [locate_data_file bug26917_t114_c2.recipe_art2.brep] s
+
+OFFSETSHAPE 2 {} $calcul $type
+
+checkprops result -v 484.855
+checkprops result -s 458.883
+
+checknbshapes result -shell 1

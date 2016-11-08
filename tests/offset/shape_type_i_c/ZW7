@@ -1,0 +1,12 @@
+restore [locate_data_file bug26917_dom8036.input_art4.brep] s
+
+offsetparameter 1e-7 c i
+offsetload s 5
+explode s f
+offsetonface s_6 7
+offsetperform result
+
+checkprops result -v 5530.7
+checkprops result -s 1919.49
+
+checknbshapes result -shell 1

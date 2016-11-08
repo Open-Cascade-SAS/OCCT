@@ -1,0 +1,9 @@
+polyline p 4 0 0 10 0 0 10 0 10 8 0 10 8 0 4 6 0 4 6 0 6 4 0 6 4 0 0
+mkplane f p
+prism s f 0 5 0
+
+OFFSETSHAPE 2 {} $calcul $type
+
+checkprops result -v 1116
+
+checknbshapes result -shell 1

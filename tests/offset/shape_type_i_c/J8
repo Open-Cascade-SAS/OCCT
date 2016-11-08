@@ -14,3 +14,5 @@ offsetonface s_26 0
 offsetperform result
 
 checkprops result -v 7.8625e+007
+
+checknbshapes result -shell 1

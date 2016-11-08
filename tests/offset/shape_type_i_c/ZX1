@@ -1,0 +1,8 @@
+restore [locate_data_file bug26917_t104_c1.recipe.brep] s
+
+OFFSETSHAPE 43 {} $calcul $type
+
+checkprops result -v 7.05903e+008
+checkprops result -s 5.59084e+006
+
+checknbshapes result -shell 1

@@ -9,3 +9,5 @@ offsetonface s_3 20
 offsetperform result
 
 checkprops result -v 250644
+
+checknbshapes result -shell 1

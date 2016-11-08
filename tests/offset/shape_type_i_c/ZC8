@@ -1,0 +1,11 @@
+puts "TODO OCC27414 ALL: Error: The command cannot be built"
+puts "TODO OCC27414 ALL: gives an empty result"
+puts "TODO OCC27414 ALL: TEST INCOMPLETE"
+
+restore [locate_data_file bug26917_M2_trim35.brep] s
+
+OFFSETSHAPE 8 {} $calcul $type
+
+checkprops result -v 0
+
+checknbshapes result -shell 1

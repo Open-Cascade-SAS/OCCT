@@ -228,7 +228,6 @@ void BOPAlgo_PaveFiller::PerformFF()
       //
       bToIntersect = CheckPlanes(nF1, nF2);
       if (!bToIntersect) {
-        myDS->AddInterf(nF1, nF2);
         BOPDS_InterfFF& aFF=aFFs.Append1();
         aFF.SetIndices(nF1, nF2);
         aFF.Init(0, 0);

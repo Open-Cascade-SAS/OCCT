@@ -5,4 +5,9 @@ offsetparameter 1.e-7 $calcul $type
 offsetload s $distance
 offsetperform result
 
-checkprops result -v 1.14694e+006
+checkprops result -v 1.14221e+006 -s 66668.3
+
+unifysamedom result_unif result
+checknbshapes result_unif -shell 1 -face 10
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

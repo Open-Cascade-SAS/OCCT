@@ -1,0 +1,10 @@
+restore [locate_data_file bug26917_M2_trim10.brep] s
+
+OFFSETSHAPE 15  {} $calcul $type
+
+checkprops result -v 2.86758e+006 -s 132343
+
+unifysamedom result_unif result
+checknbshapes result_unif -shell 1 -face 16
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

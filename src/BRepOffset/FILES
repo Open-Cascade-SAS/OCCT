@@ -21,6 +21,7 @@ BRepOffset_ListOfInterval.hxx
 BRepOffset_MakeLoops.cxx
 BRepOffset_MakeLoops.hxx
 BRepOffset_MakeOffset.cxx
+BRepOffset_MakeOffset_1.cxx
 BRepOffset_MakeOffset.hxx
 BRepOffset_Mode.hxx
 BRepOffset_Offset.cxx

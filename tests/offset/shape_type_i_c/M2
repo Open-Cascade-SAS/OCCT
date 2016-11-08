@@ -6,3 +6,5 @@ offsetload s $distance
 offsetperform result
 
 checkprops result -v 4.1141e+006
+
+checknbshapes result -shell 1

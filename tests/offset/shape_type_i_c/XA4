@@ -1,0 +1,24 @@
+restore [locate_data_file bug26917_rm083_dom-8757.brep] s
+
+offsetparameter 1e-7 c i
+offsetload s 1
+
+set faces [explode s f]
+foreach f $faces {
+  mksurface surf $f
+  set found [regexp {Axis   :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump surf] full x y z]
+  if {$found && abs($z - 1) < 1.e-7} {
+    offsetonface $f 32.5
+  } else {
+    offsetonface $f 38
+  }
+}
+offsetperform result
+
+checkprops result -v 3.67874e+008
+checkprops result -s 4.52001e+006
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 41 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

@@ -1003,13 +1003,12 @@ static Standard_Real         TheTolerance = Precision::Confusion();
 static Standard_Boolean      TheInter     = Standard_False;
 static GeomAbs_JoinType      TheJoin      = GeomAbs_Arc;
 static Standard_Boolean      RemoveIntEdges = Standard_False;
-static Standard_Boolean      RemoveInvalidFaces = Standard_False;
 
 Standard_Integer offsetparameter(Draw_Interpretor& di,
                                  Standard_Integer n, const char** a)
 {
   if ( n == 1 ) { 
-    di << " offsetparameter Tol Inter(c/p) JoinType(a/i/t) [RemoveInternalEdges(r/k) RemoveInvalidFaces(r/k)]\n";
+    di << " offsetparameter Tol Inter(c/p) JoinType(a/i/t) [RemoveInternalEdges(r/k)]\n";
     di << " Current Values\n";
     di << "   --> Tolerance : " << TheTolerance << "\n";
     di << "   --> TheInter  : ";
@@ -1034,14 +1033,6 @@ Standard_Integer offsetparameter(Draw_Interpretor& di,
     else {
       di << "Keep";
     }
-    //
-    di << "\n   --> Invalid Faces : ";
-    if (RemoveInvalidFaces) {
-      di << "Remove";
-    }
-    else {
-      di << "Keep";
-    }
     di << "\n";
     //
     return 0;
@@ -1057,7 +1048,6 @@ Standard_Integer offsetparameter(Draw_Interpretor& di,
   else if ( !strcmp(a[3],"t")) TheJoin = GeomAbs_Tangent;
   //
   RemoveIntEdges = (n >= 5) ? !strcmp(a[4], "r") : Standard_False;
-  RemoveInvalidFaces = (n == 6) ? !strcmp(a[5], "r") : Standard_False;
   //
   return 0;
 }
@@ -1079,7 +1069,7 @@ Standard_Integer offsetload(Draw_Interpretor& ,
 //  Standard_Boolean Inter = Standard_True;
   
   TheOffset.Initialize(S,Of,TheTolerance,BRepOffset_Skin,TheInter,0,TheJoin,
-                       Standard_False, RemoveIntEdges, RemoveInvalidFaces);
+                       Standard_False, RemoveIntEdges);
   //------------------------------------------
   // recuperation et chargement des bouchons.
   //----------------------------------------
@@ -2327,7 +2317,7 @@ void BRepTest::FeatureCommands (Draw_Interpretor& theCommands)
 		  __FILE__,offsetshape,g);
 
   theCommands.Add("offsetparameter",
-		  "offsetparameter Tol Inter(c/p) JoinType(a/i/t) [RemoveInternalEdges(r/k) RemoveInvalidFaces(r/k)]",
+		  "offsetparameter Tol Inter(c/p) JoinType(a/i/t) [RemoveInternalEdges(r/k)]",
 		  __FILE__,offsetparameter);
 
   theCommands.Add("offsetload",

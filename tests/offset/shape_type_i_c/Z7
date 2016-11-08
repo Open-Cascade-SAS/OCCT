@@ -1,0 +1,12 @@
+puts "TODO CR27414 ALL: Error :  is WRONG because number of FACE entities in shape"
+
+restore [locate_data_file bug26917_M2_trim7.brep] s
+
+OFFSETSHAPE 8 {} $calcul $type
+
+checkprops result -v 2.08264e+006 -s 129633
+
+unifysamedom result_unif result
+checknbshapes result_unif -shell 1 -face 30
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

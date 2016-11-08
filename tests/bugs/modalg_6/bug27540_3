@@ -24,7 +24,7 @@ foreach f $faces {
 offsetperform result1
 checkprops result1 -s 464088
 checkprops result1 -v 1.29909e+007
-checknbshapes result1 -vertex 48 -edge 74 -wire 32 -face 30 -shell 1 -solid 1
+checknbshapes result1 -vertex 48 -edge 72 -wire 30 -face 28 -shell 1 -solid 1
 
 
 # second shape
@@ -42,7 +42,7 @@ foreach f $faces {
 offsetperform result2
 checkprops result2 -s 464088
 checkprops result2 -v 1.29909e+007
-checknbshapes result2 -vertex 48 -edge 74 -wire 32 -face 30 -shell 1 -solid 1
+checknbshapes result2 -vertex 48 -edge 72 -wire 30 -face 28 -shell 1 -solid 1
 
 
 # compare the results

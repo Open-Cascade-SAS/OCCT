@@ -1,0 +1,7 @@
+restore [locate_data_file bug26917_M2_trim5.brep] s
+
+OFFSETSHAPE 5 {} $calcul $type
+
+checkprops result -v 3.10872e+006
+
+checknbshapes result -shell 1

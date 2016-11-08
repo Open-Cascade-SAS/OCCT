@@ -111,7 +111,11 @@ if { [isdraw result] && $mist == 0} {
         }
     }
     if { $m > 0 } {
-       checkview -display result -2d -path ${imagedir}/${test_image}.png
+      if {[info exists result_unif]} {
+        checkview -display result_unif -2d -path ${imagedir}/${test_image}.png
+      } else {
+        checkview -display result -2d -path ${imagedir}/${test_image}.png
+      }
     }
 } else {
     puts "Error : The offset cannot be built."

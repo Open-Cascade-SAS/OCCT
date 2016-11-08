@@ -5,3 +5,5 @@ prism s f 0 5 0
 OFFSETSHAPE 1.2 {} $calcul $type
 
 checkprops result -v 394.982
+
+checknbshapes result -shell 1

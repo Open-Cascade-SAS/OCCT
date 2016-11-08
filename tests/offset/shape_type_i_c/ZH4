@@ -1,0 +1,8 @@
+restore [locate_data_file bug26917_fills_center.input.brep] s
+
+OFFSETSHAPE 1 {} $calcul $type
+
+checkprops result -v 3.00178e+007
+checkprops result -s 1.65736e+006
+
+checknbshapes result -shell 1

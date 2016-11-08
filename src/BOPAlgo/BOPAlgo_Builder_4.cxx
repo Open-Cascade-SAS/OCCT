@@ -176,7 +176,11 @@ void BOPAlgo_Builder::PrepareHistory()
   aItM.Initialize(aMS);
   for (; aItM.More(); aItM.Next()) {
     const TopoDS_Shape& aSx=aItM.Key();
-    aType=aSx.ShapeType();
+    aType = aSx.ShapeType();
+    if (!(aType == TopAbs_VERTEX || aType == TopAbs_EDGE || 
+          aType == TopAbs_FACE   || aType == TopAbs_SOLID)) {
+      continue;
+    }
     //
     // 4.1 .myImagesResult
     bHasImage=myImages.IsBound(aSx); 

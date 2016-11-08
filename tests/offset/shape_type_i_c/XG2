@@ -1,0 +1,23 @@
+puts "TODO CR27414 ALL: Error :  is WRONG because number of FACE entities in shape"
+
+restore [locate_data_file bug26917_dom-7724_trim1.brep] s
+
+offsetparameter 1e-7 c i
+offsetload s 15
+
+set faces [explode s f]
+foreach f $faces {
+  mksurface surf $f
+  set found [regexp {Axis   :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump surf] full x y z]
+  if {$found && abs($z - 1) < 1.e-7} {
+    offsetonface $f 0
+  }
+}
+offsetperform result
+
+checkprops result -v  9.24815e+006 -s 523194
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 27 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,10 @@
+restore [locate_data_file bug26917_dom-6827_1.recipe_trim2.brep] s
+
+OFFSETSHAPE 5 {} $calcul $type
+
+checkprops result -v 7.21325e+006 -s 324219
+
+unifysamedom result_unif result
+checknbshapes result_unif -shell 1 -face 37
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

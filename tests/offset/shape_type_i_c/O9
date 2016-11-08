@@ -1,5 +1,3 @@
-puts "TODO CR25926 ALL: Error : The volume of result shape is"
-
 polyline p 0 0 0 10 0 0 10 0 7 6 0 7 6 0 3 5 0 5 0 0 5 0 0 0
 mkplane f p
 prism s f 0 10 0
@@ -9,4 +7,6 @@ offsetparameter 1.e-7 $calcul $type
 offsetload s $distance
 offsetperform result
 
-checkprops result -v 0
+checkprops result -v 1152
+
+checknbshapes result -shell 1

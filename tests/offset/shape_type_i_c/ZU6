@@ -1,0 +1,8 @@
+restore [locate_data_file bug26917_input-step17_trim2.brep] s
+
+OFFSETSHAPE 10 {} $calcul $type
+
+checkprops result -v 3.78029e+007
+checkprops result -s 1.50768e+006
+
+checknbshapes result -shell 1

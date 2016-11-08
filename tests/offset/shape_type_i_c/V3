@@ -1,0 +1,16 @@
+polyline p 4 0 0 10 0 0 10 0 10 8 0 10 8 0 4 6 0 4 6 0 6 4 0 6 4 0 0
+mkplane f p
+prism s1 f 0 5 0
+polyline p 6 0 4 6 5 4 6 2.5 3 6 0 4
+mkplane f p
+prism s2 f 2 0 0
+bcut s s1 s2
+explode s so; copy s_1 s
+unifysamedom s s
+donly s
+
+OFFSETSHAPE 2 {} $calcul $type
+
+checkprops result -v 1116
+
+checknbshapes result -shell 1

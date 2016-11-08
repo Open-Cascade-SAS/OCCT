@@ -1,0 +1,13 @@
+box b1 10 10 4
+polyline p 0 0.5 4 0 2.5 4 10 9.5 4 10 7.5 4 0 0.5 4
+mkplane f p
+prism b2 f 0 0 4
+bfuse s b1 b2
+unifysamedom s s
+donly s
+
+OFFSETSHAPE 3 {} $calcul $type
+
+checkprops result -v 3229.82
+
+checknbshapes result -shell 1

@@ -3,3 +3,5 @@ restore [locate_data_file bug25926_three_chimneys.brep] s
 OFFSETSHAPE 10 {} $calcul $type
 
 checkprops result -v 2.5576e+007
+
+checknbshapes result -shell 1

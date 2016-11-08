@@ -1,0 +1,17 @@
+restore [locate_data_file bug25926_input_slanted.brep] s
+
+set distance 1
+offsetparameter 1.e-7 $calcul $type
+offsetload s $distance
+explode s f
+# s_15 s_22
+offsetonface s_15 6
+offsetonface s_22 6
+offsetperform result
+
+checkprops result -v 1.87868e+007 -s 627294
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 24 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png
