@@ -985,14 +985,6 @@ Draw command *VSetTextureMode* has been deleted.
 
 @section upgrade_occt710 Upgrade to OCCT 7.1.0
 
-@subsection upgrade_occt710_correction_of_Parab2d Correction in *gp_Parab2d, gce_MakeParab2d* and *GCE2d_MakeParabola* classes:
-
-1. Constructors *GCE2d_MakeParabola(const gp_Ax22d& D, const gp_Pnt2d& F)*, *gce_MakeParab2d(const gp_Ax22d& D, const gp_Pnt2d& F)* and *gp_Parab2d(const gp_Ax22d& D, const gp_Pnt2d& F)* have been deleted. 
-
-2. Objects created with some constructors of *gp_Parab2d* class may differ from the previous version. Please see the updated documentation for *gp_Parab2d* class (file *gp_Parab2d.hxx*).
-
-3. Result returned by gp_Parab2d::Directrix() method has another direction in compare with previous OCCT-version.
-
 @subsection upgrade_710_aspects Presentation attributes
 
 This section should be considered if application defines custom presentations (inherited from AIS_InteractiveObject).
@@ -1021,7 +1013,7 @@ The following type definitions in OCCT has been modified to use C++11 types:
 - *Standard_Utf16Char* is now *char16_t* (previously *uint16_t* for compatibility with old compilers).
 - *Standard_Utf32Char* is now *char32_t* (previously *uint32_t* for compatibility with old compilers).
 
-For most applications this change should be transparent, since the size of types have not been changed.
+For most applications this change should be transparent on the level of source code. Binary compatibility is not maintained, as *bool* has different size in comparison with *unsigned int*.
 
 @subsection upgrade_710_ffp Programmable Pipeline
 
@@ -1080,28 +1072,39 @@ The following obsolete features have been removed:
   Corresponding method in custom implementations of SelectMgr_EntityOwner can be removed safely. PrsMgr_PresentationManager::Color with corresponding style must be used instead of removed presentation manager's methods.
 * Class *NCollection_QuickSort* has been removed.
   The code that used the tools provided by that class should be corrected manually.
-  The recommended approach is to use sorting algorithms provided by STL.
+  The recommended approach is to use sorting algorithms provided by STL. See also @ref upgrade_occt700_sorttools above.
+* The obsolete class *BOPCol_VectorOfInteger* has been removed.
 * Package *Dico* has been removed.
   The code that used the tools provided by that package should be corrected manually.
   The recommended approach is to use NCollection_DataMap and NCollection_IndexedDataMap classes.
 
+@subsection upgrade_710_changed_methods Other changes
+
+The following classes have been changed:
+
+* *BVH_Sorter*. This class has become abstract. The list of arguments of both methods *Perform* has been changed and the methods became pure virtual.
+* *Extrema_FuncExtPS* has been renamed to *Extrema_FuncPSNorm*.
+* *Extrema_GenLocateExtPS*. Default constructor and constructor taking point and surface have been removed. Now the only constructor takes the surface and optional tolerances in U and V directions. The new method *Perform* takes the point with start solution and does the job. The class has become non-assignable nor copy-constructable.
+* *GCE2d_MakeParabola*, *gce_MakeParab2d*, *gp_Parab2d*. Constructors with arguments *(const gp_Ax22d& D, const gp_Pnt2d& F)* have been removed. Objects created with some constructors of *gp_Parab2d* class may differ from the previous version(see comments in *gp_Parab2d.hxx*). Result returned by gp_Parab2d::Directrix() method has opposite direction in comparison with previous OCCT versions.
+* *BRepTools_Modifier*. This class now has two modes of work. They are defined by the boolean parameter *MutableInput*, which is turned off by default. This means that the algorithm always makes a copy of a sub-shape (e.g. vertex) if its tolerance is to be increased in the output shape. The old mode corresponds to *MutableInput* turned on. This change may impact an application if it implements a class derived from *BRepTools_Modifier*.
+* *ShapeAnalysis_Wire*. The second parameter *theIsOuterWire* of the method *CheckSmallArea* has been removed.
+* *GeomPlate_CurveConstraint*. Two constructors taking boundary curve of different type have been replaced with one constructor taking curve of abstract type.
+* *BRepOffset_MakeOffset*. The last optional argument *RemoveInvalidFaces* has been removed from the constructor and the method *Initialize*.
+* The public method BOPDS_DS::VerticesOnIn has been renamed to SubShapesOnIn, and the new output parameter theCommonPB has been added.
+
 @subsection upgrade_occt710_correction_of_TObj_Model Correction in TObj_Model class
 
-Methods *TObj_Model::SaveAs* and *TObj_Model::Load* receive *TCollection_ExtendedString* filename arguments instead of char*. This shows that the filename may be not-ASCII explicitly. Also it makes OCAF API related to this functionality more conform.
+Methods *TObj_Model::SaveAs* and *TObj_Model::Load* receive *TCollection_ExtendedString* filename arguments instead of char*. UTF-16 encoding can be used to pass file names containing Unicode symbols.
 
 @subsection upgrade_710_env Removed environment variables
 
-The following environment variables are now either become optional or have been removed:
+The following environment variables now either become optional or have been removed:
 
 * *CSF_UnitsLexicon* and *CSF_UnitsDefinition* are no more used.
   Units definition (UnitsAPI/*Lexi_Expr.dat* and UnitsAPI/*Units.dat*) is now embedded into source code.
 * *CSF_XSMessage* and *CSF_XHMessage* are now optional.
   English messages (XSMessage/*XSTEP.us* and SHMessage/*SHAPE.us*) are now embedded into source code
   and automatically loaded when environment variables are not set.
-* *CSF_ShadersDirectory*.
+* *CSF_ShadersDirectory* is not required any more, though it still can be used to load custom shaders.
   Mandatory GLSL resources are now embedded into source code.
-
-Internally, embedded resource files are represented by .pxx (private) header files,
-automatically (re)generated by *genproj* tool or by CMake with *BUILD_RESOURCES* option turned ON.
-Since embedded resources are stored in OCCT git repository, they should be regenerated after modification of original text file before pushing patch for integration.
-But since this option modifies source code, *BUILD_RESOURCES* option is disabled by default to avoid conflict with out-of-source build concept.
+* *CSF_PluginDefaults* and other variables pointing to OCAF plugin resources (*CSF_StandardDefaults*, *CSF_XCAFDefaults*, *CSF_StandardLiteDefaults*, *CSF_XmlOcafResource*) are not necessary if method TDocStd_Application::DefineFormat() is used to enable persistence of OCAF documents.
