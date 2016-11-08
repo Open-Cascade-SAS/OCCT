@@ -61,22 +61,6 @@ inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::CurveOnSurfaceMode()
 {
   return myCurveOnSurfaceMode;
 }
-//=======================================================================
-//function : SetFuzzyValue
-//purpose  : 
-//=======================================================================
-inline void BOPAlgo_ArgumentAnalyzer::SetFuzzyValue(const Standard_Real theFuzz)
-{
-  myFuzzyValue = (theFuzz < 0.) ? 0. : theFuzz;
-}
-//=======================================================================
-//function : FuzzyValue
-//purpose  : 
-//=======================================================================
-inline Standard_Real BOPAlgo_ArgumentAnalyzer::FuzzyValue() const
-{
-  return myFuzzyValue;
-}
 // inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::MergeFaceMode() 
 // {
 //   return myMergeFaceMode;

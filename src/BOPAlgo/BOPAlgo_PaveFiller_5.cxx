@@ -103,6 +103,10 @@ class BOPAlgo_EdgeFace :
     return myPB;
   }
   //
+  void SetFuzzyValue(const Standard_Real theFuzz) {
+    IntTools_EdgeFace::SetFuzzyValue(theFuzz);
+  }
+  //
   virtual void Perform() {
     BOPAlgo_Algo::UserBreak();
     IntTools_EdgeFace::Perform();
@@ -227,8 +231,7 @@ void BOPAlgo_PaveFiller::PerformEF()
       //
       aEdgeFace.SetEdge (aE);
       aEdgeFace.SetFace (aF);
-      aEdgeFace.SetTolE (aTolE);
-      aEdgeFace.SetTolF (aTolF);
+      aEdgeFace.SetFuzzyValue(myFuzzyValue);
       aEdgeFace.SetDiscretize (aDiscretize);
       aEdgeFace.SetDeflection (aDeflection);
       aEdgeFace.UseQuickCoincidenceCheck(bExpressCompute);
@@ -263,8 +266,8 @@ void BOPAlgo_PaveFiller::PerformEF()
     const TopoDS_Edge& aE=aEdgeFace.Edge();
     const TopoDS_Face& aF=aEdgeFace.Face();
     //
-    aTolE=aEdgeFace.TolE();
-    aTolF=aEdgeFace.TolF();
+    aTolE=BRep_Tool::Tolerance(aE);
+    aTolF=BRep_Tool::Tolerance(aF);
     const IntTools_Range& anewSR=aEdgeFace.NewSR();
     Handle(BOPDS_PaveBlock)& aPB=aEdgeFace.PaveBlock();
     //
@@ -607,7 +610,7 @@ Standard_Integer BOPAlgo_PaveFiller::PerformVerticesEF
       nVx=aItLI.Value();
       const TopoDS_Vertex& aVx=(*(TopoDS_Vertex *)(&myDS->Shape(nVx)));
       //
-      iFlag=myContext->ComputeVE (aVx, aE, aT, dummy);
+      iFlag=myContext->ComputeVE (aVx, aE, aT, dummy, myFuzzyValue);
       if (!iFlag) {
         aPave.SetIndex(nVx);
         aPave.SetParameter(aT);
@@ -625,7 +628,7 @@ Standard_Integer BOPAlgo_PaveFiller::PerformVerticesEF
     }
     else {
       const Handle(BOPDS_CommonBlock)& aCB=myDS->CommonBlock(aPB);
-      myDS->UpdateCommonBlock(aCB);
+      myDS->UpdateCommonBlock(aCB, myFuzzyValue);
     }    
   }//for (; aItMPBLI.More(); aItMPBLI.Next()) {
   // 
@@ -707,7 +710,7 @@ Standard_Boolean BOPAlgo_PaveFiller::ForceInterfVF
   const TopoDS_Vertex& aV = *(TopoDS_Vertex*)&myDS->Shape(nV);
   const TopoDS_Face&   aF = *(TopoDS_Face*)  &myDS->Shape(nF);
   //
-  iFlag = myContext->ComputeVF(aV, aF, U, V, aTolVNew);
+  iFlag = myContext->ComputeVF(aV, aF, U, V, aTolVNew, myFuzzyValue);
   if (iFlag == 0 || iFlag == -2) {
     bRet=!bRet;
   //

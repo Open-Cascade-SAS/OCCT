@@ -57,13 +57,6 @@
 #include <TopoDS_Vertex.hxx>
 
 //
-//
-//
-//
-//
-//
-//
-//
 static
   Standard_Boolean HasPaveBlocksOnIn(const BOPDS_FaceInfo& aFI1,
                                      const BOPDS_FaceInfo& aFI2);
@@ -128,7 +121,7 @@ class BOPAlgo_PairOfShapeBoolean : public BOPAlgo_Algo {
     //  
     const TopoDS_Face& aFj=*((TopoDS_Face*)&myShape1);
     const TopoDS_Face& aFk=*((TopoDS_Face*)&myShape2);
-    myFlag=BOPTools_AlgoTools::AreFacesSameDomain(aFj, aFk, myContext);
+    myFlag=BOPTools_AlgoTools::AreFacesSameDomain(aFj, aFk, myContext, myFuzzyValue);
   }
   //
  protected: 
@@ -214,7 +207,7 @@ class BOPAlgo_VFI : public BOPAlgo_Algo {
     Standard_Real aT1, aT2, dummy;
     //
     BOPAlgo_Algo::UserBreak();
-    myFlag = myContext->ComputeVF(myV, myF, aT1, aT2, dummy);
+    myFlag = myContext->ComputeVF(myV, myF, aT1, aT2, dummy, myFuzzyValue);
   }
   //
  protected:
@@ -625,6 +618,7 @@ void BOPAlgo_Builder::FillSameDomainFaces()
         BOPAlgo_PairOfShapeBoolean& aPSB=aVPSB.Append1();
         aPSB.Shape1()=aFj;
         aPSB.Shape2()=aFk;
+        aPSB.SetFuzzyValue(myFuzzyValue);
         aPSB.SetProgressIndicator(myProgressIndicator);
       }
     }
@@ -754,6 +748,7 @@ void BOPAlgo_Builder::FillImagesFaces1()
         BOPAlgo_VFI& aVFI=aVVFI.Append1();
         aVFI.SetVertex(aVx);
         aVFI.SetFace(aFy);
+        aVFI.SetFuzzyValue(myFuzzyValue);
         aVFI.SetProgressIndicator(myProgressIndicator);
       }
     }

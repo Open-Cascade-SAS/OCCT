@@ -92,6 +92,9 @@ void BOPAlgo_PaveFiller::ProcessDE()
             //
             // 2.
             BOPDS_ListOfPaveBlock& aLPBD = myDS->ChangePaveBlocks(nE);
+            Standard_ASSERT_VOID(!aLPBD.IsEmpty(), "ListOfPaveBlock is unexpectedly empty");
+            if (aLPBD.IsEmpty())
+              continue;
             aPBD = aLPBD.First();
             //
             FillPaves(nV, nE, nF, aLPBOut, aPBD);

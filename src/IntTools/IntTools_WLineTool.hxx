@@ -46,6 +46,7 @@ public:
                                         const TopoDS_Face&                             theFace2,
                                         const GeomInt_LineConstructor&                 theLConstructor,
                                         const Standard_Boolean                         theAvoidLConstructor,
+                                        const Standard_Real                            theTol,
                                         IntPatch_SequenceOfLine&                       theNewLines,
                                         Standard_Real&                                 theReachedTol3d,
                                         const Handle(IntTools_Context)& );

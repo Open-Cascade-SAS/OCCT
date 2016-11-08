@@ -19,6 +19,7 @@
 #include <BOPAlgo_Algo.hxx>
 #include <Message_ProgressIndicator.hxx>
 #include <NCollection_BaseAllocator.hxx>
+#include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_ProgramError.hxx>
 
@@ -55,7 +56,8 @@ BOPAlgo_Algo::BOPAlgo_Algo()
   myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
   myErrorStatus(1),
   myWarningStatus(0),
-  myRunParallel(myGlobalRunParallel)
+  myRunParallel(myGlobalRunParallel),
+  myFuzzyValue(Precision::Confusion())
 {}
 //=======================================================================
 // function: 
@@ -67,7 +69,8 @@ BOPAlgo_Algo::BOPAlgo_Algo
   myAllocator(theAllocator),
   myErrorStatus(1),
   myWarningStatus(0),
-  myRunParallel(myGlobalRunParallel)
+  myRunParallel(myGlobalRunParallel),
+  myFuzzyValue(Precision::Confusion())
 {}
 
 //=======================================================================
@@ -132,6 +135,22 @@ void BOPAlgo_Algo::SetRunParallel(const Standard_Boolean theFlag)
 Standard_Boolean BOPAlgo_Algo::RunParallel()const
 {
   return myRunParallel;
+}
+//=======================================================================
+//function : SetFuzzyValue
+//purpose  : 
+//=======================================================================
+void BOPAlgo_Algo::SetFuzzyValue(const Standard_Real theFuzz)
+{
+  myFuzzyValue = Max(theFuzz, Precision::Confusion());
+}
+//=======================================================================
+//function : FuzzyValue
+//purpose  : 
+//=======================================================================
+Standard_Real BOPAlgo_Algo::FuzzyValue() const
+{
+  return myFuzzyValue;
 }
 //=======================================================================
 //function : SetProgressIndicator

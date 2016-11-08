@@ -106,14 +106,6 @@ Standard_EXPORT virtual ~BOPAlgo_ArgumentAnalyzer();
   //! returns a result of test
   Standard_EXPORT const BOPAlgo_ListOfCheckResult& GetCheckResult() const;
   
-  //! Sets the additional tolerance
-    void SetFuzzyValue (const Standard_Real theFuzz);
-  
-  //! Returns the additional tolerance
-    Standard_Real FuzzyValue() const;
-
-
-
 
 protected:
 
@@ -141,17 +133,8 @@ protected:
   
   Standard_EXPORT void TestCurveOnSurface();
   
-  //! Updates the shapes tolerance values.
-  Standard_EXPORT void UpdateTolerances();
-  
-  //! Reverts the tolerance values for all entities to default values.
-  Standard_EXPORT void SetDefaultTolerances();
-
-
-
 
 private:
-
 
 
   TopoDS_Shape myShape1;
@@ -170,17 +153,11 @@ private:
   Standard_Boolean myEmpty1;
   Standard_Boolean myEmpty2;
   BOPAlgo_ListOfCheckResult myResult;
-  Standard_Real myFuzzyValue;
-  BOPCol_DataMapOfShapeReal myToleranceMap;
-
 
 };
 
 
 #include <BOPAlgo_ArgumentAnalyzer.lxx>
-
-
-
 
 
 #endif // _BOPAlgo_ArgumentAnalyzer_HeaderFile

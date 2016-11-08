@@ -56,7 +56,7 @@ class BOPAlgo_ShrunkRange : public IntTools_ShrunkRange {
   //
   virtual void Perform() {
     IntTools_ShrunkRange::Perform();
-  }
+    }
   //
  protected:
   Handle(BOPDS_PaveBlock) myPB;
@@ -153,6 +153,7 @@ void BOPAlgo_PaveFiller::FillShrunkData(const TopAbs_ShapeEnum aType1,
   BOPAlgo_ShrunkRangeCnt::Perform(myRunParallel, aVSD, myContext);
   //=============================================================
   //
+  Standard_Real aFuzz = myFuzzyValue / 2.;
   for (k=0; k < aNbVSD; ++k) {
     BOPAlgo_ShrunkRange& aSD=aVSD(k);
     if (!aSD.IsDone()) {
@@ -161,7 +162,8 @@ void BOPAlgo_PaveFiller::FillShrunkData(const TopAbs_ShapeEnum aType1,
     //
     Handle(BOPDS_PaveBlock)& aPB=aSD.PaveBlock();
     aSD.ShrunkRange(aTS1, aTS2);
-    const Bnd_Box& aBox=aSD.BndBox();
+    Bnd_Box aBox=aSD.BndBox();
+    aBox.SetGap(aBox.GetGap() + aFuzz);
     Standard_Boolean bIsSplittable = aSD.IsSplittable();
     //
     aPB->SetShrunkData(aTS1, aTS2, aBox, bIsSplittable);

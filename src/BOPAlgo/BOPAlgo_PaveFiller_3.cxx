@@ -45,7 +45,6 @@
 #include <BRepBndLib.hxx>
 #include <BRepTools.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <IntTools_CommonPrt.hxx>
 #include <IntTools_Context.hxx>
@@ -99,6 +98,10 @@ class BOPAlgo_EdgeEdge :
     return myPB2;
   }
   // 
+  void SetFuzzyValue(const Standard_Real theFuzz) {
+    IntTools_EdgeEdge::SetFuzzyValue(theFuzz);
+  }
+  //
   virtual void Perform() {
     BOPAlgo_Algo::UserBreak();
     IntTools_EdgeEdge::Perform();
@@ -126,10 +129,23 @@ typedef BOPCol_Cnt
 //class    : BOPAlgo_TNV
 //purpose  : 
 //=======================================================================
+class BOPAlgo_TNV;
+typedef BOPCol_NCVector
+  <BOPAlgo_TNV> BOPAlgo_VectorOfTNV;
+//
+typedef BOPCol_Functor
+  <BOPAlgo_TNV,
+  BOPAlgo_VectorOfTNV> BOPAlgo_TNVFunctor;
+//
+typedef BOPCol_Cnt
+  <BOPAlgo_TNVFunctor,
+  BOPAlgo_VectorOfTNV> BOPAlgo_TNVCnt;
+//=======================================================================
 class BOPAlgo_TNV : public BOPCol_BoxBndTreeSelector{
  public:
   BOPAlgo_TNV() 
-    : BOPCol_BoxBndTreeSelector(), myTree(NULL) {
+    : BOPCol_BoxBndTreeSelector(),
+      myTol (0.), myFuzzyValue(0.), myTree(NULL), myVecTNV(NULL) {
   };
   //
   ~BOPAlgo_TNV(){
@@ -137,6 +153,7 @@ class BOPAlgo_TNV : public BOPCol_BoxBndTreeSelector{
   //
   void SetVertex(const TopoDS_Vertex& aV) {
     myV=aV;
+    myPnt = BRep_Tool::Pnt(myV);
   }
   //
   const TopoDS_Vertex& Vertex()const {
@@ -147,26 +164,50 @@ class BOPAlgo_TNV : public BOPCol_BoxBndTreeSelector{
     myTree=&aTree;
   }
   //
+  void SetTolerance(const Standard_Real theTol) {
+    myTol = theTol;
+  }
+  //
+  Standard_Real Tolerance() const {
+    return myTol;
+  }
+  //
+  const gp_Pnt& Pnt() const {
+    return myPnt;
+  }
+  //
+  void SetFuzzyValue(const Standard_Real theFuzzyValue) {
+    myFuzzyValue = theFuzzyValue;
+  }
+  //
+  void SetVectorOfTNV(const BOPAlgo_VectorOfTNV& theVec) {
+    myVecTNV = &theVec;
+  }
+  //
+  virtual Standard_Boolean Accept(const Standard_Integer& theIndex)
+  {
+    const BOPAlgo_TNV& aTNV = myVecTNV->Value(theIndex - 1);
+    Standard_Real aTolSum2 = myTol + aTNV.Tolerance() + myFuzzyValue;
+    aTolSum2 *= aTolSum2;
+    Standard_Real aD2 = myPnt.SquareDistance(aTNV.Pnt());
+    if (aD2 < aTolSum2)
+      return BOPCol_BoxBndTreeSelector::Accept(theIndex);
+    return Standard_False;
+  }
+  //
   void Perform() {
     myTree->Select(*this);
   }
   //
  protected:
+  Standard_Real myTol;
+  Standard_Real myFuzzyValue;
+  gp_Pnt        myPnt;
   TopoDS_Vertex myV;
   BOPCol_BoxBndTree *myTree;
+  const BOPAlgo_VectorOfTNV *myVecTNV;
 };
 //
-//=======================================================================
-typedef BOPCol_NCVector
-  <BOPAlgo_TNV> BOPAlgo_VectorOfTNV; 
-//
-typedef BOPCol_Functor 
-  <BOPAlgo_TNV,
-  BOPAlgo_VectorOfTNV> BOPAlgo_TNVFunctor;
-//
-typedef BOPCol_Cnt 
-  <BOPAlgo_TNVFunctor,
-  BOPAlgo_VectorOfTNV> BOPAlgo_TNVCnt;
 /////////////////////////////////////////////////////////////////////////
 //=======================================================================
 //class    : BOPAlgo_PVE
@@ -233,9 +274,13 @@ class BOPAlgo_PVE {
     return myContext;
   }
   //
+  void SetFuzzyValue(const Standard_Real theValue) {
+    myFuzzyValue = theValue;
+  }
+  //
   void Perform() {
     Standard_Real dummy;
-    myFlag = myContext->ComputeVE(myV, myE, myT, dummy);
+    myFlag = myContext->ComputeVE(myV, myE, myT, dummy, myFuzzyValue);
   };
   //
  protected:
@@ -243,6 +288,7 @@ class BOPAlgo_PVE {
   Standard_Integer myIE;
   Standard_Integer myFlag;
   Standard_Real myT;
+  Standard_Real myFuzzyValue;
   TopoDS_Vertex myV;
   TopoDS_Edge myE;
   Handle(BOPDS_PaveBlock) myPB;
@@ -362,6 +408,7 @@ void BOPAlgo_PaveFiller::PerformEE()
         //
         anEdgeEdge.SetEdge1(aE1, aT11, aT12);
         anEdgeEdge.SetEdge2(aE2, aT21, aT22);
+        anEdgeEdge.SetFuzzyValue(myFuzzyValue);
         anEdgeEdge.SetProgressIndicator(myProgressIndicator);
       }//for (; aIt2.More(); aIt2.Next()) {
     }//for (; aIt1.More(); aIt1.Next()) {
@@ -610,7 +657,7 @@ void BOPAlgo_PaveFiller::PerformEE()
     }
     else {
       const Handle(BOPDS_CommonBlock)& aCB=myDS->CommonBlock(aPB);
-      myDS->UpdateCommonBlock(aCB);
+      myDS->UpdateCommonBlock(aCB, myFuzzyValue);
     }
   }
   //
@@ -728,6 +775,7 @@ Standard_Integer BOPAlgo_PaveFiller::PerformVerticesEE
       aPVE.SetIndices(nVx, nE);
       aPVE.SetVertex(aVx);
       aPVE.SetEdge(aE);
+      aPVE.SetFuzzyValue(myFuzzyValue);
       aPVE.SetPaveBlock(aPB);
     }
   }
@@ -761,7 +809,7 @@ Standard_Integer BOPAlgo_PaveFiller::PerformVerticesEE
     }
     else {
       const Handle(BOPDS_CommonBlock)& aCB=myDS->CommonBlock(aPB);
-      myDS->UpdateCommonBlock(aCB);
+      myDS->UpdateCommonBlock(aCB, myFuzzyValue);
     }    
   }//for (; aItMPBLI.More(); aItMPBLI.Next()) {
   //
@@ -788,7 +836,7 @@ void BOPAlgo_PaveFiller::TreatNewVertices
                             Bnd_Box> aTreeFiller(aBBTree);
   BOPAlgo_VectorOfTNV aVTNV;
   //
-  Standard_Real aTolAdd = Precision::Confusion() / 2.;
+  Standard_Real aTolAdd = myFuzzyValue / 2.;
   aNbV = theMVCPB.Extent();
   for (i=1; i<=aNbV; ++i) {
     const TopoDS_Vertex& aV = *((TopoDS_Vertex*)&theMVCPB.FindKey(i));
@@ -804,6 +852,9 @@ void BOPAlgo_PaveFiller::TreatNewVertices
     aTNV.SetTree(aBBTree);
     aTNV.SetBox(aBox);
     aTNV.SetVertex(aV);
+    aTNV.SetTolerance(aTol);
+    aTNV.SetFuzzyValue(myFuzzyValue);
+    aTNV.SetVectorOfTNV(aVTNV);
   }
   //
   aTreeFiller.Fill();
@@ -948,7 +999,7 @@ void BOPAlgo_PaveFiller::ForceInterfVE(const Standard_Integer nV,
   const TopoDS_Vertex& aV = *(TopoDS_Vertex*)&myDS->Shape(nVx);
   const TopoDS_Edge&   aE = *(TopoDS_Edge*)  &myDS->Shape(nE);
   //
-  iFlag = myContext->ComputeVE(aV, aE, aT, aTolVNew);
+  iFlag = myContext->ComputeVE(aV, aE, aT, aTolVNew, myFuzzyValue);
   if (iFlag == 0 || iFlag == -4) {
     BOPDS_Pave aPave;
     //

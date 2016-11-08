@@ -52,6 +52,7 @@
 #include <gp_Pnt2d.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
 #include <IntTools_Context.hxx>
 #include <IntTools_Curve.hxx>
 #include <IntTools_Range.hxx>
@@ -74,22 +75,7 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
 static 
   void CheckEdge (const TopoDS_Edge& E,
                   const Standard_Real aMaxTol,
@@ -126,13 +112,11 @@ static
                    const BOPCol_IndexedMapOfShape& aMapToAvoid);
 
 static 
-  Standard_Real IntersectCurves2d(const gp_Pnt& aPV,
-                                  const TopoDS_Face& aF,
-                                  const GeomAdaptor_Surface& aS,
-                                  const TopoDS_Edge& aE1,
-                                  const TopoDS_Edge& aE2);
-
-
+  Standard_Real IntersectCurves2d(const TopoDS_Vertex& theV,
+                                  const TopoDS_Face& theF,
+                                  const Handle(Geom_Surface)& theS,
+                                  const TopoDS_Edge& theE1,
+                                  const TopoDS_Edge& theE2);
 
 //=======================================================================
 //class    : BOPTools_CPC
@@ -578,22 +562,17 @@ void CheckEdge (const TopoDS_Edge& Ed,
 void CorrectWires(const TopoDS_Face& aFx,
                   const BOPCol_IndexedMapOfShape& aMapToAvoid)
 {
-  Standard_Boolean bIsPeriodic; 
   Standard_Integer i, aNbV;
   Standard_Real aTol, aTol2, aD2, aD2max, aT1, aT2, aT;
   gp_Pnt aP, aPV;
   gp_Pnt2d aP2D;
   TopoDS_Face aF;
-  TopoDS_Vertex aV11, aV12, aV21, aV22;;
   TopTools_IndexedDataMapOfShapeListOfShape aMVE;
   TopTools_ListIteratorOfListOfShape aIt, aIt1;
   //
   aF=aFx;
   aF.Orientation(TopAbs_FORWARD);
   const Handle(Geom_Surface)& aS=BRep_Tool::Surface(aFx);
-  GeomAdaptor_Surface aGAS (aS);
-  //
-  bIsPeriodic=(aGAS.IsUPeriodic() || aGAS.IsVPeriodic()); 
   //
   TopExp::MapShapesAndAncestors(aF, 
                                 TopAbs_VERTEX, 
@@ -616,69 +595,60 @@ void CorrectWires(const TopoDS_Face& aFx,
       aT=BRep_Tool::Parameter(aV, aE);
       //
       aC2D->D0(aT, aP2D);
-      aGAS.D0(aP2D.X(), aP2D.Y(), aP);
+      aS->D0(aP2D.X(), aP2D.Y(), aP);
       aD2=aPV.SquareDistance(aP);
       if (aD2>aD2max) {
         aD2max=aD2;
       }
-      //check self interference
-      if (aNbV==2) {
-        continue;
-      }
-      //
-      if (bIsPeriodic) {
-        continue;
-      }
-      //
-      TopExp::Vertices(aE, aV11, aV12);
+    }
+    //
+    //check wires on self interference by intersecting 2d curves of the edges
+    aIt.Initialize(aLE);
+    for (; aIt.More(); aIt.Next()) {
+      const TopoDS_Edge& aE1 = *(TopoDS_Edge*)&aIt.Value();
       //
       aIt1 = aIt;
-      aIt1.Next();
-      for (; aIt1.More(); aIt1.Next()) {
-        const TopoDS_Edge& aE1=*(TopoDS_Edge*)(&aIt1.Value());
+      for (aIt1.Next(); aIt1.More(); aIt1.Next()) {
+        const TopoDS_Edge& aE2 = *(TopoDS_Edge*)&aIt1.Value();
         //
-        //do not perform check for edges that have two common vertices
-        TopExp::Vertices(aE1, aV21, aV22);
-        if ((aV11.IsSame(aV21) && aV12.IsSame(aV22)) ||
-            (aV12.IsSame(aV21) && aV11.IsSame(aV22))) {
+        if (aE1.IsSame(aE2)) {
           continue;
         }
         //
-        aD2=IntersectCurves2d(aPV, aF, aGAS, aE, aE1);
-        if (aD2>aD2max) {
-          aD2max=aD2;
+        aD2 = IntersectCurves2d(aV, aF, aS, aE1, aE2);
+        if (aD2 > aD2max) {
+          aD2max = aD2;
         }
-      }// for (; aIt1.More(); aIt1.Next()) {
-    }// for (; aIt.More(); aIt.Next()) {
+      }
+    }
+    //
     if (aD2max>aTol2) {
-      aTol=sqrt(aD2max);
+      aTol = 1.01 * sqrt(aD2max);
       UpdateShape(aV, aTol, aMapToAvoid);
     }
   }// for (i=1; i<=aNbV; ++i) {
 }
+
 //=======================================================================
 // Function : IntersectCurves2d
 // purpose  : Intersect 2d curves of edges
 //=======================================================================
-Standard_Real IntersectCurves2d(const gp_Pnt& aPV,
-                                const TopoDS_Face& aF,
-                                const GeomAdaptor_Surface& aGAS,
-                                const TopoDS_Edge& aE1,
-                                const TopoDS_Edge& aE2)
+Standard_Real IntersectCurves2d(const TopoDS_Vertex& theV,
+                                const TopoDS_Face& theF,
+                                const Handle(Geom_Surface)& theS,
+                                const TopoDS_Edge& theE1,
+                                const TopoDS_Edge& theE2)
 {
-  Standard_Real aDist, aD, aT11, aT12, aT21, aT22, aTol2d, aT1, aT2;
-  Standard_Integer j, aNbPnt;
-  Geom2dInt_GInter aInter;
-  gp_Pnt aP;
-  gp_Pnt2d aP2D;
+  Standard_Real aT11, aT12, aT21, aT22, aTol2d, aMaxDist;
+  Geom2dInt_GInter anInter;
   //
-  aDist = 0.;
-  aTol2d = 1.e-10;//Precision::Confusion();
+  aMaxDist = 0.;
+  aTol2d = 1.e-10;
   //
   const Handle(Geom2d_Curve)& aC2D1=
-    BRep_Tool::CurveOnSurface(aE1, aF, aT11, aT12);
+    BRep_Tool::CurveOnSurface(theE1, theF, aT11, aT12);
   const Handle(Geom2d_Curve)& aC2D2=
-    BRep_Tool::CurveOnSurface(aE2, aF, aT21, aT22);
+    BRep_Tool::CurveOnSurface(theE2, theF, aT21, aT22);
   //
   Geom2dAdaptor_Curve aGAC1(aC2D1), aGAC2(aC2D2);
   IntRes2d_Domain aDom1(aC2D1->Value(aT11), aT11, aTol2d, 
@@ -686,35 +656,68 @@ Standard_Real IntersectCurves2d(const gp_Pnt& aPV,
   IntRes2d_Domain aDom2(aC2D2->Value(aT21), aT21, aTol2d, 
                         aC2D2->Value(aT22), aT22, aTol2d);
   //
-  aInter.Perform(aGAC1, aDom1, aGAC2, aDom2, aTol2d, aTol2d);
-  if (aInter.IsDone()) {
-    if (aInter.NbSegments()) {
-      return aDist;
+  anInter.Perform(aGAC1, aDom1, aGAC2, aDom2, aTol2d, aTol2d);
+  if (!anInter.IsDone()) {
+    return aMaxDist;
+  }
+  //
+  Standard_Real aT1, aT2, aTint1, aTint2, aHalfR1, aHalfR2, aDist;
+  Standard_Integer i, aNb;
+  gp_Pnt aP, aPV;
+  gp_Pnt2d aP2d;
+  NCollection_List<IntRes2d_IntersectionPoint> aLP;
+  NCollection_List<IntRes2d_IntersectionPoint>::Iterator aItLP;
+  //
+  aPV = BRep_Tool::Pnt(theV);
+  aT1 = BRep_Tool::Parameter(theV, theE1);
+  aT2 = BRep_Tool::Parameter(theV, theE2);
+  //
+  aHalfR1 = (aT12 - aT11) / 2.;
+  aHalfR2 = (aT22 - aT21) / 2.;
+  //
+  aDist = 0.;
+  //
+  aNb = anInter.NbSegments();
+  for (i = 1; i <= aNb; ++i) {
+    const IntRes2d_IntersectionSegment& aSeg = anInter.Segment(i);
+    aLP.Append(aSeg.FirstPoint());
+    aLP.Append(aSeg.LastPoint());
+  }
+  //
+  aNb = anInter.NbPoints();
+  for (i = 1; i <= aNb; ++i) {
+    const IntRes2d_IntersectionPoint& aPnt = anInter.Point(i);
+    aLP.Append(aPnt);
+  }
+  //
+  aItLP.Initialize(aLP);
+  for (; aItLP.More(); aItLP.Next()) {
+    const IntRes2d_IntersectionPoint& aPnt = aItLP.Value();
+    //
+    aTint1 = aPnt.ParamOnFirst();
+    aTint2 = aPnt.ParamOnSecond();
+    //
+    if ((aTint1 < aT11 || aTint1 > aT12) ||
+        (aTint2 < aT21 || aTint2 > aT22)) {
+      // out of range;
+      continue;
     }
-    aNbPnt = aInter.NbPoints();
-    if (aNbPnt) {
-      aDist = -Precision::Infinite();
-      for (j = 1; j <= aNbPnt; ++j) {
-        const IntRes2d_IntersectionPoint& aPoint = aInter.Point(j);
-        //
-        aT1 = aPoint.ParamOnFirst();
-        aT2 = aPoint.ParamOnSecond();
-        //
-        if ((aT1 < aT11 || aT1 > aT12) ||
-            (aT2 < aT21 || aT2 > aT22)) {
-          continue;
-        }          
-        //
-        aP2D = aPoint.Value();
-        aGAS.D0(aP2D.X(), aP2D.Y(), aP);
-        aD=aPV.SquareDistance(aP);
-        if (aD > aDist) {
-          aDist = 1.01 * aD;
-        }
-      }
+    //
+    if (Abs(aTint1 - aT1) > aHalfR1 ||
+        Abs(aTint2 - aT2) > aHalfR2) {
+      // intersection on the other end of the closed edge
+      continue;
+    }
+    //
+    aP2d = aPnt.Value();
+    theS->D0(aP2d.X(), aP2d.Y(), aP);
+    aDist = aPV.SquareDistance(aP);
+    if (aDist > aMaxDist) {
+      aMaxDist = aDist;
     }
   }
-  return aDist;
+  //
+  return aMaxDist;
 }
 //=======================================================================
 // Function : CorrectEdgeTolerance

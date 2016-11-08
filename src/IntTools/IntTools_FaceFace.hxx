@@ -110,7 +110,13 @@ public:
 
   //! Sets the intersecton context
   Standard_EXPORT void SetContext (const Handle(IntTools_Context)& aContext);
+
+  //! Sets the Fuzzy value
+  void SetFuzzyValue (const Standard_Real theFuzz);
+
   
+  //! Returns Fuzzy value
+  Standard_Real FuzzyValue() const;
 
   //! Gets the intersecton context
   Standard_EXPORT const Handle(IntTools_Context)& Context() const;
@@ -150,6 +156,10 @@ private:
   Standard_Boolean myApprox1;
   Standard_Boolean myApprox2;
   Standard_Real myTolApprox;
+  Standard_Real myTolF1;
+  Standard_Real myTolF2;
+  Standard_Real myTol;
+  Standard_Real myFuzzyValue;
   IntTools_SequenceOfCurves mySeqOfCurve;
   Standard_Boolean myTangentFaces;
   TopoDS_Face myFace1;

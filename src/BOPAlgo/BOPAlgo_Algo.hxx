@@ -55,6 +55,12 @@ public:
   
   //! Returns the flag of parallel processing
   Standard_EXPORT Standard_Boolean RunParallel() const;
+
+  //! Sets the additional tolerance
+  Standard_EXPORT void SetFuzzyValue (const Standard_Real theFuzz);
+  
+  //! Returns the additional tolerance
+  Standard_EXPORT Standard_Real FuzzyValue() const;
   
   //! Set the Progress Indicator object.
   Standard_EXPORT void SetProgressIndicator (const Handle(Message_ProgressIndicator)& theObj);
@@ -83,6 +89,7 @@ Standard_EXPORT virtual ~BOPAlgo_Algo();
   Standard_Integer myErrorStatus;
   Standard_Integer myWarningStatus;
   Standard_Boolean myRunParallel;
+  Standard_Real myFuzzyValue;
   Handle(Message_ProgressIndicator) myProgressIndicator;
 
 

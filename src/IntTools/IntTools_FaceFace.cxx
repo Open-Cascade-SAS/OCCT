@@ -56,9 +56,9 @@
 #include <gp_Elips.hxx>
 
 static
-  void TolR3d(const TopoDS_Face& ,
-              const TopoDS_Face& ,
-              Standard_Real& );
+  void TolR3d(const Standard_Real aTolF1,
+              const Standard_Real aTolF2,
+              Standard_Real& myTolReached3d);
 
 static 
   void Parameters(const Handle(GeomAdaptor_HSurface)&,
@@ -84,6 +84,7 @@ static
                                           const TopoDS_Face&        theFace2,
                                           const Standard_Real       theOtherParameter,
                                           const Standard_Boolean    bIncreasePar,
+                                          const Standard_Real       theTol,
                                           Standard_Real&            theNewParameter,
                                           const Handle(IntTools_Context)& );
 
@@ -174,8 +175,11 @@ IntTools_FaceFace::IntTools_FaceFace()
   myTolReached2d=0.; 
   myTolReached3d=0.;
   myTolReal = 0.;
+  myTolF1 = 0.;
+  myTolF2 = 0.;
+  myTol = 0.;
+  myFuzzyValue = Precision::Confusion();
   SetParameters(Standard_True, Standard_True, Standard_True, 1.e-07);
-  
 }
 //=======================================================================
 //function : SetContext
@@ -283,6 +287,23 @@ void IntTools_FaceFace::SetParameters(const Standard_Boolean ToApproxC3d,
   myTolApprox = ApproximationTolerance;
 }
 //=======================================================================
+//function : SetFuzzyValue
+//purpose  : 
+//=======================================================================
+void IntTools_FaceFace::SetFuzzyValue(const Standard_Real theFuzz)
+{
+  myFuzzyValue = Max(theFuzz, Precision::Confusion());
+}
+//=======================================================================
+//function : FuzzyValue
+//purpose  : 
+//=======================================================================
+Standard_Real IntTools_FaceFace::FuzzyValue() const
+{
+  return myFuzzyValue;
+}
+
+//=======================================================================
 //function : SetList
 //purpose  : 
 //=======================================================================
@@ -293,12 +314,10 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 
 
 static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
-                                        const TopoDS_Face& theF2)
+                                        const TopoDS_Face& theF2,
+                                        const Standard_Real theTol)
 {
   const Standard_Real Tolang = 1.e-8;
-  const Standard_Real aTolF1=BRep_Tool::Tolerance(theF1);
-  const Standard_Real aTolF2=BRep_Tool::Tolerance(theF2);
-  const Standard_Real aTolSum = aTolF1 + aTolF2 + Precision::Confusion();
   Standard_Real aHigh = 0.0;
 
   const BRepAdaptor_Surface aBAS1(theF1), aBAS2(theF2);
@@ -351,7 +370,7 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
   }
 
   IntAna_QuadQuadGeo inter;
-  inter.Perform(aS1,aS2,Tolang,aTolSum, aHigh);
+  inter.Perform(aS1,aS2,Tolang,theTol, aHigh);
   if(inter.TypeInter() == IntAna_Ellipse)
   {
     const gp_Elips anEl = inter.Ellipse(1);
@@ -424,10 +443,12 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
   const Handle(Geom_Surface) S1=BRep_Tool::Surface(myFace1);
   const Handle(Geom_Surface) S2=BRep_Tool::Surface(myFace2);
 
-  const Standard_Real aTolF1=BRep_Tool::Tolerance(myFace1);
-  const Standard_Real aTolF2=BRep_Tool::Tolerance(myFace2);
+  Standard_Real aFuzz = myFuzzyValue / 2.;
+  myTolF1 = BRep_Tool::Tolerance(myFace1) + aFuzz;
+  myTolF2 = BRep_Tool::Tolerance(myFace2) + aFuzz;
+  myTol = myTolF1 + myTolF2;
 
-  Standard_Real TolArc = aTolF1 + aTolF2 + Precision::Confusion();
+  Standard_Real TolArc = myTol;
   Standard_Real TolTang = TolArc;
 
   const Standard_Boolean isFace1Quad = (aType1 == GeomAbs_Cylinder ||
@@ -452,7 +473,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     Standard_Real TolAng = 1.e-8;
     //
     PerformPlanes(myHS1, myHS2, 
-                  aTolF1, aTolF2, TolAng, TolTang, 
+                  myTolF1, myTolF2, TolAng, TolTang, 
                   myApprox1, myApprox2, 
                   mySeqOfCurve, myTangentFaces, myTolReached3d);
     //
@@ -462,7 +483,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
       const Standard_Integer NbLinPP = mySeqOfCurve.Length();
       if(NbLinPP) {
         Standard_Real aTolFMax;
-        aTolFMax=Max(aTolF1, aTolF2);
+        aTolFMax=Max(myTolF1, myTolF2);
         myTolReal = Precision::Confusion();
         if (aTolFMax > myTolReal) {
           myTolReal = aTolFMax;
@@ -498,7 +519,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     myHS1->ChangeSurface().Load(S1, umin, umax, vmin, vmax);
     // F2
     BRepTools::UVBounds(myFace2, umin, umax, vmin, vmax);
-    CorrectSurfaceBoundaries(myFace2, (aTolF1 + aTolF2) * 2., umin, umax, vmin, vmax);
+    CorrectSurfaceBoundaries(myFace2, myTol * 2., umin, umax, vmin, vmax);
     myHS2->ChangeSurface().Load(S2, umin, umax, vmin, vmax);
   }
   else if ((aType2==GeomAbs_Plane) && isFace1Quad)
@@ -506,7 +527,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     Standard_Real umin, umax, vmin, vmax;
     //F1
     BRepTools::UVBounds(myFace1, umin, umax, vmin, vmax);
-    CorrectSurfaceBoundaries(myFace1, (aTolF1 + aTolF2) * 2., umin, umax, vmin, vmax);
+    CorrectSurfaceBoundaries(myFace1, myTol * 2., umin, umax, vmin, vmax);
     myHS1->ChangeSurface().Load(S1, umin, umax, vmin, vmax);
     // F2
     BRepTools::UVBounds(myFace2, umin, umax, vmin, vmax);
@@ -517,10 +538,10 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
   {
     Standard_Real umin, umax, vmin, vmax;
     BRepTools::UVBounds(myFace1, umin, umax, vmin, vmax);
-    CorrectSurfaceBoundaries(myFace1, (aTolF1 + aTolF2) * 2., umin, umax, vmin, vmax);
+    CorrectSurfaceBoundaries(myFace1, myTol * 2., umin, umax, vmin, vmax);
     myHS1->ChangeSurface().Load(S1, umin, umax, vmin, vmax);
     BRepTools::UVBounds(myFace2, umin, umax, vmin, vmax);
-    CorrectSurfaceBoundaries(myFace2, (aTolF1 + aTolF2) * 2., umin, umax, vmin, vmax);
+    CorrectSurfaceBoundaries(myFace2, myTol * 2., umin, umax, vmin, vmax);
     myHS2->ChangeSurface().Load(S2, umin, umax, vmin, vmax);
   }
 
@@ -605,7 +626,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     }
 #endif
 
-  const Standard_Boolean isGeomInt = isTreatAnalityc(aF1, aF2);
+  const Standard_Boolean isGeomInt = isTreatAnalityc(aF1, aF2, myTol);
   myIntersector.Perform(myHS1, dom1, myHS2, dom2, TolArc, TolTang, 
                                   myListOfPnts, RestrictLine, isGeomInt);
 
@@ -909,7 +930,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
     //
     // myTolReached3d
     if (typl == IntPatch_Lin) {
-      TolR3d (myFace1, myFace2, myTolReached3d);
+      TolR3d (myTolF1, myTolF2, myTolReached3d);
     }
     //
     aNbParts=myLConstruct.NbParts();
@@ -928,12 +949,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
         Handle(Geom_TrimmedCurve) aCT3D=new Geom_TrimmedCurve(newc, fprm, lprm);
         aCurve.SetCurve(aCT3D);
         if (typl == IntPatch_Parabola) {
-          Standard_Real aTolF1, aTolF2, aTolBase;
-          
-          aTolF1 = BRep_Tool::Tolerance(myFace1);
-          aTolF2 = BRep_Tool::Tolerance(myFace2);
-          aTolBase=aTolF1+aTolF2;
-          myTolReached3d=IntTools_Tools::CurveTolerance(aCT3D, aTolBase);
+          myTolReached3d=IntTools_Tools::CurveTolerance(aCT3D, myTol);
         }
         //
         aCurve.SetCurve(new Geom_TrimmedCurve(newc, fprm, lprm));
@@ -1035,7 +1051,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
     }
     //
     // myTolReached3d
-    TolR3d (myFace1, myFace2, myTolReached3d);
+    TolR3d (myTolF1, myTolF2, myTolReached3d);
     //
     aNbParts=myLConstruct.NbParts();
     //
@@ -1060,14 +1076,14 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
         else {
           gp_Pnt P1 = newc->Value(fprm);
           gp_Pnt P2 = newc->Value(aPeriod);
-          Standard_Real aTolDist = BRep_Tool::Tolerance(myFace1) + BRep_Tool::Tolerance(myFace2);
+          Standard_Real aTolDist = myTol;
           aTolDist = (myTolReached3d > aTolDist) ? myTolReached3d : aTolDist;
 
           if(P1.Distance(P2) > aTolDist) {
             Standard_Real anewpar = fprm;
 
             if(ParameterOutOfBoundary(fprm, newc, myFace1, myFace2, 
-                                      lprm, Standard_False, anewpar, myContext)) {
+                                      lprm, Standard_False, myTol, anewpar, myContext)) {
               fprm = anewpar;
             }
             aSeqFprm.Append(fprm);
@@ -1083,14 +1099,14 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
         else {
           gp_Pnt P1 = newc->Value(aNul);
           gp_Pnt P2 = newc->Value(lprm);
-          Standard_Real aTolDist = BRep_Tool::Tolerance(myFace1) + BRep_Tool::Tolerance(myFace2);
+          Standard_Real aTolDist = myTol;
           aTolDist = (myTolReached3d > aTolDist) ? myTolReached3d : aTolDist;
 
           if(P1.Distance(P2) > aTolDist) {
             Standard_Real anewpar = lprm;
 
             if(ParameterOutOfBoundary(lprm, newc, myFace1, myFace2, 
-                                      fprm, Standard_True, anewpar, myContext)) {
+                                      fprm, Standard_True, myTol, anewpar, myContext)) {
               lprm = anewpar;
             }
             aSeqFprm.Append(aNul);
@@ -1387,6 +1403,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                              myFace2, 
                              myLConstruct, 
                              bAvoidLineConstructor, 
+                             myTol,
                              aSeqOfL, 
                              aReachedTol,
                              myContext);
@@ -2225,15 +2242,13 @@ Handle(Geom_Curve) MakeBSpline  (const Handle(IntPatch_WLine)& WL,
 //function : TolR3d
 //purpose  : 
 //=======================================================================
-void TolR3d(const TopoDS_Face& aF1,
-            const TopoDS_Face& aF2,
+void TolR3d(const Standard_Real aTolF1,
+            const Standard_Real aTolF2,
             Standard_Real& myTolReached3d)
 {
-  Standard_Real aTolF1, aTolF2, aTolFMax, aTolTresh;
+  Standard_Real aTolFMax, aTolTresh;
       
   aTolTresh=2.999999e-3;
-  aTolF1 = BRep_Tool::Tolerance(aF1);
-  aTolF2 = BRep_Tool::Tolerance(aF2);
   aTolFMax=Max(aTolF1, aTolF2);
   
   if (aTolFMax>aTolTresh) {
@@ -2252,6 +2267,7 @@ Standard_Boolean ParameterOutOfBoundary(const Standard_Real       theParameter,
                                         const TopoDS_Face&        theFace2,
                                         const Standard_Real       theOtherParameter,
                                         const Standard_Boolean    bIncreasePar,
+                                        const Standard_Real       theTol,
                                         Standard_Real&            theNewParameter,
                                         const Handle(IntTools_Context)& aContext)
 {
@@ -2261,7 +2277,7 @@ Standard_Boolean ParameterOutOfBoundary(const Standard_Real       theParameter,
   Standard_Real acurpar = theParameter;
   TopAbs_State aState = TopAbs_ON;
   Standard_Integer iter = 0;
-  Standard_Real asumtol = BRep_Tool::Tolerance(theFace1) + BRep_Tool::Tolerance(theFace2);
+  Standard_Real asumtol = theTol;
   Standard_Real adelta = asumtol * 0.1;
   adelta = (adelta < Precision::Confusion()) ? Precision::Confusion() : adelta;
   Handle(Geom_Surface) aSurf1 = BRep_Tool::Surface(theFace1);

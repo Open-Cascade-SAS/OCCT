@@ -805,7 +805,7 @@ Standard_Boolean IntTools_Tools::ComputeTolerance
   //e.g. after trimming) we will be able to come
   //to the more precise minimum point. As result, this curve with the
   //tolerance computed earlier will become invalid.
-  const Standard_Real anEps = (1.0+1.0e-7);
+  const Standard_Real anEps = (1.0+1.0e-5);
   theMaxDist = anEps*aCS.MaxDistance();
   theMaxPar  = aCS.MaxParameter();
   //

@@ -93,12 +93,7 @@ Standard_EXPORT virtual ~BOPAlgo_Builder();
   //! Returns mySplits.
   Standard_EXPORT const BOPCol_DataMapOfShapeListOfShape& Splits() const;
   
-  //! Sets the additional tolerance
-  Standard_EXPORT void SetFuzzyValue (const Standard_Real theFuzz);
   
-  //! Returns the additional tolerance
-  Standard_EXPORT Standard_Real FuzzyValue() const;
-
   //! Sets the flag that defines the mode of treatment.
   //! In non-destructive mode the argument shapes are not modified. Instead
   //! a copy of a sub-shape is created in the result if it is needed to be updated.
@@ -115,7 +110,6 @@ Standard_EXPORT virtual ~BOPAlgo_Builder();
 
 protected:
 
-  
   //! Prepare information for history support
   Standard_EXPORT virtual void PrepareHistory() Standard_OVERRIDE;
   
@@ -172,21 +166,11 @@ protected:
   BOPCol_DataMapOfShapeShape myShapesSD;
   BOPCol_DataMapOfShapeListOfShape mySplits;
   BOPCol_DataMapOfShapeShape myOrigins;
-  Standard_Real myFuzzyValue;
   Standard_Boolean myNonDestructive;
 
 private:
 
-
-
-
-
 };
-
-
-
-
-
 
 
 #endif // _BOPAlgo_Builder_HeaderFile

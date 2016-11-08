@@ -51,26 +51,22 @@ class BOPAlgo_VertexEdge : public BOPAlgo_Algo {
 
   BOPAlgo_VertexEdge() : 
     BOPAlgo_Algo(),
-    myIV(-1), myIE(-1), myIVx(-1), myFlag(-1), myT(-1.), myTolVNew(-1.) {
+    myIV(-1), myIE(-1), myFlag(-1), myT(-1.), myTolVNew(-1.) {
   };
   //
   virtual ~BOPAlgo_VertexEdge(){
   };
   //
   void SetIndices(const Standard_Integer nV,
-                  const Standard_Integer nE,
-                  const Standard_Integer nVx) {
+                  const Standard_Integer nE) {
     myIV=nV;
     myIE=nE;
-    myIVx=nVx;
   }
   //
   void Indices(Standard_Integer& nV,
-               Standard_Integer& nE,
-               Standard_Integer& nVx) const {
+               Standard_Integer& nE) const {
     nV=myIV;
     nE=myIE;
-    nVx=myIVx;
   }
   //
   void SetVertex(const TopoDS_Vertex& aV) {
@@ -111,13 +107,12 @@ class BOPAlgo_VertexEdge : public BOPAlgo_Algo {
   //
   virtual void Perform() {
     BOPAlgo_Algo::UserBreak();
-    myFlag=myContext->ComputeVE (myV, myE, myT, myTolVNew);
+    myFlag=myContext->ComputeVE (myV, myE, myT, myTolVNew, myFuzzyValue);
   };
   //
  protected:
   Standard_Integer myIV;
   Standard_Integer myIE;
-  Standard_Integer myIVx;
   Standard_Integer myFlag;
   Standard_Real myT;
   Standard_Real myTolVNew;
@@ -213,9 +208,10 @@ void BOPAlgo_PaveFiller::PerformVE()
     //
     BOPAlgo_VertexEdge& aVESolver=aVVE.Append1();
     //
-    aVESolver.SetIndices(nV, nE, nVx);
+    aVESolver.SetIndices(nV, nE);
     aVESolver.SetVertex(aV);
     aVESolver.SetEdge(aE);
+    aVESolver.SetFuzzyValue(myFuzzyValue);
     aVESolver.SetProgressIndicator(myProgressIndicator);
     //
   }// for (; myIterator->More(); myIterator->Next()) {
@@ -229,7 +225,7 @@ void BOPAlgo_PaveFiller::PerformVE()
     const BOPAlgo_VertexEdge& aVESolver=aVVE(k);
     iFlag=aVESolver.Flag();
     if (!iFlag) {
-      aVESolver.Indices(nV, nE, nVx);
+      aVESolver.Indices(nV, nE);
       aT=aVESolver.Parameter();
       // 
       // check if vertex hits beyond shrunk range, in such case create V-V interf

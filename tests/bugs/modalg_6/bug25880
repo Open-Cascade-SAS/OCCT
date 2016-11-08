@@ -20,19 +20,19 @@ pcylinder Cylinder006 1.600000023842 3.200000047684 180
 ttranslate Cylinder006 -15 50.1 2.35
 
 #Object Label: LeftHalfCyl
-bfuse to-Fusion-002-t to-Fusion-001-t Cylinder006
+#bfuse to-Fusion-002-t to-Fusion-001-t Cylinder006
 psphere Sphere001 1.600000023842 0 90 180
 trotate Sphere001 0 0 0 1 0 0 90
 ttranslate Sphere001 -15 -0.1 5.5
 
 #Object Label: RightSph
-bfuse to-Fusion-003-t to-Fusion-002-t Sphere001
+#bfuse to-Fusion-003-t to-Fusion-002-t Sphere001
 pcylinder Cylinder005 1.600000023842 3.200000047684 180
 trotate Cylinder005 0 0 0 0 0 1 180
 ttranslate Cylinder005 -15 -0.1 2.35
 
 #Object Label: RightHalfCyl
-bfuse to-Fusion-004-t to-Fusion-003-t Cylinder005
+#bfuse to-Fusion-004-t to-Fusion-003-t Cylinder005
 pcylinder Cylinder004 1.600000023842 50.200000762939 180
 trotate Cylinder004 0 0 0 0 0.7071067811865475 0.7071067811865475 180
 ttranslate Cylinder004 -15.000003814697 -0.100001335144 5.500000953674

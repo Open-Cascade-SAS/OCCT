@@ -51,7 +51,6 @@ BOPAlgo_Builder::BOPAlgo_Builder()
   myShapesSD(100, myAllocator),
   mySplits(100, myAllocator),
   myOrigins(100, myAllocator),
-  myFuzzyValue(0.),
   myNonDestructive(Standard_False)
 {
 }
@@ -72,7 +71,6 @@ BOPAlgo_Builder::BOPAlgo_Builder
   myShapesSD(100, myAllocator),
   mySplits(100, myAllocator),
   myOrigins(100, myAllocator),
-  myFuzzyValue(0.),
   myNonDestructive(Standard_False)
 {
 }
@@ -184,22 +182,6 @@ BOPAlgo_PPaveFiller BOPAlgo_Builder::PPaveFiller()
 BOPDS_PDS BOPAlgo_Builder::PDS()
 {
   return myDS;
-}
-//=======================================================================
-//function : SetFuzzyValue
-//purpose  : 
-//=======================================================================
-void BOPAlgo_Builder::SetFuzzyValue(const Standard_Real theFuzz)
-{
-  myFuzzyValue = (theFuzz < 0.) ? 0. : theFuzz;
-}
-//=======================================================================
-//function : FuzzyValue
-//purpose  : 
-//=======================================================================
-Standard_Real BOPAlgo_Builder::FuzzyValue() const
-{
-  return myFuzzyValue;
 }
 //=======================================================================
 //function : SetNonDestructive
@@ -329,6 +311,8 @@ void BOPAlgo_Builder::PerformInternal1(const BOPAlgo_PaveFiller& theFiller)
   myPaveFiller=(BOPAlgo_PaveFiller*)&theFiller;
   myDS=myPaveFiller->PDS();
   myContext=myPaveFiller->Context();
+  myFuzzyValue = myPaveFiller->FuzzyValue();
+  myNonDestructive = myPaveFiller->NonDestructive();
   //
   // 1. CheckData
   CheckData();

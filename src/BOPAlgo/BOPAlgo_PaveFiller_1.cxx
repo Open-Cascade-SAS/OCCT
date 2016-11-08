@@ -76,7 +76,7 @@ void BOPAlgo_PaveFiller::PerformVV()
     const TopoDS_Vertex& aV1=(*(TopoDS_Vertex *)(&myDS->Shape(n1))); 
     const TopoDS_Vertex& aV2=(*(TopoDS_Vertex *)(&myDS->Shape(n2))); 
     //
-    iFlag=BOPTools_AlgoTools::ComputeVV(aV1, aV2);
+    iFlag=BOPTools_AlgoTools::ComputeVV(aV1, aV2, myFuzzyValue);
     if (!iFlag) {
       BOPAlgo_Tools::FillMap(n1, n2, aMILI, aAllocator);
     }
@@ -111,59 +111,75 @@ void BOPAlgo_PaveFiller::PerformVV()
 // function: PerformVV
 // purpose: 
 //=======================================================================
-void BOPAlgo_PaveFiller::MakeSDVertices(const BOPCol_ListOfInteger& theVertIndices)
+Standard_Integer BOPAlgo_PaveFiller::MakeSDVertices
+   (const BOPCol_ListOfInteger& theVertIndices,
+    const Standard_Boolean theAddInterfs)
 {
   TopoDS_Vertex aVSD, aVn;
+  Standard_Integer nSD = -1;
   BOPCol_ListIteratorOfListOfInteger aItLI(theVertIndices);
   BOPCol_ListOfShape aLV;
   for (; aItLI.More(); aItLI.Next()) {
-    Standard_Integer nX = aItLI.Value();
-    Standard_Integer nSD;
-    if (myDS->HasShapeSD(nX, nSD)) {
-      aVSD = TopoDS::Vertex(myDS->Shape(nSD));
+    Standard_Integer nX = aItLI.Value(), nSD1;
+    if (myDS->HasShapeSD(nX, nSD1)) {
+      const TopoDS_Shape& aVSD1 = myDS->Shape(nSD1);
+      if (nSD == -1) {
+        aVSD = TopoDS::Vertex(aVSD1);
+        nSD = nSD1;
+      }
+      else {
+        aLV.Append(aVSD1);
+      }
     }
     const TopoDS_Shape& aV = myDS->Shape(nX);
     aLV.Append(aV);
   }
   BOPTools_AlgoTools::MakeVertex(aLV, aVn);
-  if (!aVSD.IsNull()) {
+  Standard_Integer nV;
+  if (nSD != -1) {
     // update old SD vertex with new value
     Handle(BRep_TVertex)& aTVertex =
       reinterpret_cast<Handle(BRep_TVertex)&>(const_cast<Handle(TopoDS_TShape)&>(aVSD.TShape()));
     aTVertex->Pnt(BRep_Tool::Pnt(aVn));
     aTVertex->Tolerance(BRep_Tool::Tolerance(aVn));
+    aVn = aVSD;
+    nV = nSD;
   }
-  //
-  // Append new vertex to the DS
-  BOPDS_ShapeInfo aSIn;
-  aSIn.SetShapeType(TopAbs_VERTEX);
-  aSIn.SetShape(aVn);
-  Standard_Integer n = myDS->Append(aSIn);
-  //
-  BOPDS_ShapeInfo& aSIDS = myDS->ChangeShapeInfo(n);
+  else {
+    // Append new vertex to the DS
+    BOPDS_ShapeInfo aSIn;
+    aSIn.SetShapeType(TopAbs_VERTEX);
+    aSIn.SetShape(aVn);
+    nV = myDS->Append(aSIn);
+  }
+  BOPDS_ShapeInfo& aSIDS = myDS->ChangeShapeInfo(nV);
   Bnd_Box& aBox = aSIDS.ChangeBox();
   BRepBndLib::Add(aVn, aBox);
   aBox.SetGap(aBox.GetGap() + Precision::Confusion());
   //
   // Fill ShapesSD
   BOPDS_VectorOfInterfVV& aVVs = myDS->InterfVV();
-  aVVs.SetIncrement(theVertIndices.Extent());
+  if (theAddInterfs)
+    aVVs.SetIncrement(theVertIndices.Extent());
   //
   aItLI.Initialize(theVertIndices);
   for (; aItLI.More(); aItLI.Next()) {
     Standard_Integer n1 = aItLI.Value();
-    myDS->AddShapeSD(n1, n);
+    myDS->AddShapeSD(n1, nV);
     //
-    BOPCol_ListIteratorOfListOfInteger aItLI2 = aItLI;
-    aItLI2.Next();
-    for (; aItLI2.More(); aItLI2.Next()) {
-      Standard_Integer n2 = aItLI2.Value();
-      //
-      myDS->AddInterf(n1, n2);
-      BOPDS_InterfVV& aVV = aVVs.Append1();
-      //
-      aVV.SetIndices(n1, n2);
-      aVV.SetIndexNew(n);
+    if (theAddInterfs) {
+      BOPCol_ListIteratorOfListOfInteger aItLI2 = aItLI;
+      aItLI2.Next();
+      for (; aItLI2.More(); aItLI2.Next()) {
+        Standard_Integer n2 = aItLI2.Value();
+        //
+        myDS->AddInterf(n1, n2);
+        BOPDS_InterfVV& aVV = aVVs.Append1();
+        //
+        aVV.SetIndices(n1, n2);
+        aVV.SetIndexNew(nV);
+      }
     }
   }
+  return nV;
 }

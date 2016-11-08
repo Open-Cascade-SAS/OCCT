@@ -212,6 +212,25 @@ IMPLEMENT_STANDARD_RTTIEXT(BOPDS_PaveBlock,MMgt_TShared)
   myExtPaves.Append(thePave);
 }
 //=======================================================================
+//function : RemoveExtPave
+//purpose  : 
+//=======================================================================
+void BOPDS_PaveBlock::RemoveExtPave(const Standard_Integer theVertNum)
+{
+  if (myMFence.Contains(theVertNum))
+  {
+    BOPDS_ListOfPave::Iterator itPaves(myExtPaves);
+    while (itPaves.More())
+    {
+      if (itPaves.Value().Index() == theVertNum)
+        myExtPaves.Remove(itPaves);
+      else
+        itPaves.Next();
+    }
+    myMFence.Remove(theVertNum);
+  }
+}
+//=======================================================================
 //function : ExtPaves
 //purpose  : 
 //=======================================================================

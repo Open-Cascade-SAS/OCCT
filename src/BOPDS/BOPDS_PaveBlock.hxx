@@ -139,14 +139,17 @@ public:
   
 
   //! Modifier
-  //! Appends extra paves <theLP>
-  Standard_EXPORT void AppendExtPave (const BOPDS_Pave& theLP);
+  //! Appends extra paves <thePave>
+  Standard_EXPORT void AppendExtPave(const BOPDS_Pave& thePave);
   
 
   //! Modifier
   //! Appends extra pave <thePave>
   Standard_EXPORT void AppendExtPave1 (const BOPDS_Pave& thePave);
   
+  //! Modifier
+  //! Removes a pave with the given vertex number from extra paves
+  Standard_EXPORT void RemoveExtPave(const Standard_Integer theVertNum);
 
   //! Selector
   //! Returns the  extra paves

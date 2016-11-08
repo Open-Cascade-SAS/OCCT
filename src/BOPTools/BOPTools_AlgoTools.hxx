@@ -32,6 +32,7 @@
 #include <TopAbs_State.hxx>
 #include <BOPCol_IndexedMapOfShape.hxx>
 #include <BOPCol_BaseAllocator.hxx>
+#include <Precision.hxx>
 class TopoDS_Vertex;
 class gp_Pnt;
 class IntTools_Curve;
@@ -44,7 +45,6 @@ class IntTools_Range;
 class TopoDS_Shell;
 
 
-
 class BOPTools_AlgoTools 
 {
 public:
@@ -54,7 +54,9 @@ public:
   
   Standard_EXPORT static Standard_Integer ComputeVV (const TopoDS_Vertex& aV1, const gp_Pnt& aP2, const Standard_Real aTolP2);
   
-  Standard_EXPORT static Standard_Integer ComputeVV (const TopoDS_Vertex& aV1, const TopoDS_Vertex& aV2);
+  Standard_EXPORT static Standard_Integer ComputeVV (const TopoDS_Vertex& aV1, 
+                                                     const TopoDS_Vertex& aV2, 
+                                                     const Standard_Real theFuzz = Precision::Confusion());
   
   Standard_EXPORT static void MakeVertex (const BOPCol_ListOfShape& aLV, TopoDS_Vertex& aV);
   
@@ -79,7 +81,10 @@ public:
   
   Standard_EXPORT static Standard_Boolean IsSplitToReverse (const TopoDS_Edge& aE1, const TopoDS_Edge& aE2, Handle(IntTools_Context)& aContext);
   
-  Standard_EXPORT static Standard_Boolean AreFacesSameDomain (const TopoDS_Face& theF1, const TopoDS_Face& theF2, Handle(IntTools_Context)& theContext);
+  Standard_EXPORT static Standard_Boolean AreFacesSameDomain (const TopoDS_Face& theF1,
+                                         const TopoDS_Face& theF2, 
+                                         Handle(IntTools_Context)& theContext,
+                                         const Standard_Real theFuzz = Precision::Confusion());
   
   Standard_EXPORT static Standard_Boolean CheckSameGeom (const TopoDS_Face& theF1, const TopoDS_Face& theF2, Handle(IntTools_Context)& theContext);
   
@@ -299,26 +304,11 @@ public:
   Standard_EXPORT static Standard_Boolean ComputeTolerance (const TopoDS_Face& theFace, const TopoDS_Edge& theEdge, Standard_Real& theMaxDist, Standard_Real& theMaxPar);
 
 
-
-
 protected:
-
-
-
 
 
 private:
 
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BOPTools_AlgoTools_HeaderFile

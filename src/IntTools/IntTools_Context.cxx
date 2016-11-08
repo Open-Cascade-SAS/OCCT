@@ -514,24 +514,25 @@ Standard_Integer IntTools_Context::ComputePE
 //purpose  : 
 //=======================================================================
 Standard_Integer IntTools_Context::ComputeVE
-  (const TopoDS_Vertex& aV1, 
-   const TopoDS_Edge&   aE2,
-   Standard_Real& aParam,
-   Standard_Real& aTolVnew)
+  (const TopoDS_Vertex& theV, 
+   const TopoDS_Edge&   theE,
+   Standard_Real& theT,
+   Standard_Real& theTol,
+   const Standard_Real theFuzz)
 {
-  if (BRep_Tool::Degenerated(aE2)) {
+  if (BRep_Tool::Degenerated(theE)) {
     return -1;
   }
-  if (!BRep_Tool::IsGeometric(aE2)) { 
+  if (!BRep_Tool::IsGeometric(theE)) { 
     return -2;
   }
-  Standard_Real aDist, aTolV1, aTolE2, aTolSum;
+  Standard_Real aDist, aTolV, aTolE, aTolSum;
   Standard_Integer aNbProj;
   gp_Pnt aP;
   //
-  aP=BRep_Tool::Pnt(aV1);
+  aP=BRep_Tool::Pnt(theV);
   //
-  GeomAPI_ProjectPointOnCurve& aProjector=ProjPC(aE2);
+  GeomAPI_ProjectPointOnCurve& aProjector=ProjPC(theE);
   aProjector.Perform(aP);
 
   aNbProj=aProjector.NbPoints();
@@ -541,13 +542,12 @@ Standard_Integer IntTools_Context::ComputeVE
   //
   aDist=aProjector.LowerDistance();
   //
-  aTolV1=BRep_Tool::Tolerance(aV1);
-  aTolE2=BRep_Tool::Tolerance(aE2);
-  aTolSum = aTolV1 + aTolE2 + Precision::Confusion();
+  aTolV=BRep_Tool::Tolerance(theV);
+  aTolE=BRep_Tool::Tolerance(theE);
+  aTolSum = aTolV + aTolE + Max(theFuzz, Precision::Confusion());
   //
-  aTolVnew=aDist+aTolE2;
-  //
-  aParam=aProjector.LowerDistanceParameter();
+  theTol = aDist + aTolE;
+  theT = aProjector.LowerDistanceParameter();
   if (aDist > aTolSum) {
     return -4;
   }
@@ -558,19 +558,20 @@ Standard_Integer IntTools_Context::ComputeVE
 //purpose  : 
 //=======================================================================
 Standard_Integer IntTools_Context::ComputeVF
-  (const TopoDS_Vertex& aV1, 
-   const TopoDS_Face&   aF2,
-   Standard_Real& U,
-   Standard_Real& V,
-   Standard_Real& aTolVnew)
+  (const TopoDS_Vertex& theVertex, 
+   const TopoDS_Face&   theFace,
+   Standard_Real& theU,
+   Standard_Real& theV,
+   Standard_Real& theTol,
+   const Standard_Real theFuzz)
 {
-  Standard_Real aTolV1, aTolF2, aTolSum, aDist;
+  Standard_Real aTolV, aTolF, aTolSum, aDist;
   gp_Pnt aP;
 
-  aP=BRep_Tool::Pnt(aV1);
+  aP = BRep_Tool::Pnt(theVertex);
   //
   // 1. Check if the point is projectable on the surface
-  GeomAPI_ProjectPointOnSurf& aProjector=ProjPS(aF2);
+  GeomAPI_ProjectPointOnSurf& aProjector=ProjPS(theFace);
   aProjector.Perform(aP);
   //
   if (!aProjector.IsDone()) { // the point is not  projectable on the surface
@@ -579,22 +580,22 @@ Standard_Integer IntTools_Context::ComputeVF
   //
   // 2. Check the distance between the projection point and 
   //    the original point
-  aDist=aProjector.LowerDistance();
+  aDist = aProjector.LowerDistance();
   //
-  aTolV1=BRep_Tool::Tolerance(aV1);
-  aTolF2=BRep_Tool::Tolerance(aF2);
+  aTolV = BRep_Tool::Tolerance(theVertex);
+  aTolF = BRep_Tool::Tolerance(theFace);
   //
-  aTolSum = aTolV1 + aTolF2 + Precision::Confusion();
-  aTolVnew = aDist + aTolF2;
+  aTolSum = aTolV + aTolF + Max(theFuzz, Precision::Confusion());
+  theTol = aDist + aTolF;
+  aProjector.LowerDistanceParameters(theU, theV);
   //
   if (aDist > aTolSum) {
     // the distance is too large
     return -2;
   }
-  aProjector.LowerDistanceParameters(U, V);
   //
-  gp_Pnt2d aP2d(U, V);
-  Standard_Boolean pri=IsPointInFace (aF2, aP2d);
+  gp_Pnt2d aP2d(theU, theV);
+  Standard_Boolean pri = IsPointInFace (theFace, aP2d);
   if (!pri) {//  the point lays on the surface but out of the face 
     return -3;
   }

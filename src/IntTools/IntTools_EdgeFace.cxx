@@ -72,9 +72,8 @@ static
 //=======================================================================
   IntTools_EdgeFace::IntTools_EdgeFace()
 {
-  myTolE=1.e-7;
-  myTolF=1.e-7;
-  myDiscret=30;
+  myFuzzyValue = Precision::Confusion();
+  myDiscret = 30;
   myEpsT   =1e-12;
   myDeflection=0.01;
   myIsDone=Standard_False;
@@ -115,22 +114,6 @@ void IntTools_EdgeFace::SetFace(const TopoDS_Face& aFace)
   myFace=aFace;
 }
 //=======================================================================
-//function : SetTolE
-//purpose  : 
-//=======================================================================
-void IntTools_EdgeFace::SetTolE(const Standard_Real aTol) 
-{
-  myTolE=aTol;
-} 
-//=======================================================================
-//function : SetTolF
-//purpose  : 
-//=======================================================================
-void IntTools_EdgeFace::SetTolF(const Standard_Real aTol) 
-{
-  myTolF=aTol;
-} 
-//=======================================================================
 //function : Edge
 //purpose  : 
 //=======================================================================
@@ -147,21 +130,13 @@ const TopoDS_Face& IntTools_EdgeFace::Face()const
   return myFace;
 }
 //=======================================================================
-//function : TolE
+//function : SetFuzzyValue
 //purpose  : 
 //=======================================================================
-Standard_Real IntTools_EdgeFace::TolE()const 
+void IntTools_EdgeFace::SetFuzzyValue(const Standard_Real theFuzz)
 {
-  return myTolE;
+  myFuzzyValue = Max(theFuzz, Precision::Confusion());
 }
- //=======================================================================
-//function : TolF
-//purpose  : 
-//=======================================================================
-Standard_Real IntTools_EdgeFace::TolF()const 
-{
-  return myTolF;
-} 
 //=======================================================================
 //function : SetDiscretize
 //purpose  : 
@@ -345,12 +320,15 @@ void IntTools_EdgeFace::Prepare()
   aCurveType=myC.GetType();
   //
   // 2.Prepare myCriteria
-  if (aCurveType==GeomAbs_BSplineCurve||
-    aCurveType==GeomAbs_BezierCurve) {
-    myCriteria=1.5*myTolE+myTolF;
+  Standard_Real aFuzz = myFuzzyValue / 2.;
+  Standard_Real aTolF = BRep_Tool::Tolerance(myFace) + aFuzz;
+  Standard_Real aTolE = BRep_Tool::Tolerance(myEdge) + aFuzz;
+  if (aCurveType == GeomAbs_BSplineCurve ||
+      aCurveType == GeomAbs_BezierCurve) {
+    myCriteria = 1.5*aTolE + aTolF;
   }
   else {
-    myCriteria = myTolE + myTolF + Precision::Confusion();
+    myCriteria = aTolE + aTolF;
   }
   // 2.a myTmin, myTmax
   aTmin=myRange.First();
@@ -820,19 +798,22 @@ void IntTools_EdgeFace::Perform()
   aCurveType=myC.GetType();
   //
   // Prepare myCriteria
-  if (aCurveType==GeomAbs_BSplineCurve||
+  Standard_Real aFuzz = myFuzzyValue / 2.;
+  Standard_Real aTolF = BRep_Tool::Tolerance(myFace) + aFuzz;
+  Standard_Real aTolE = BRep_Tool::Tolerance(myEdge) + aFuzz;
+  if (aCurveType == GeomAbs_BSplineCurve ||
       aCurveType==GeomAbs_BezierCurve) {
     //--- 5112
-    Standard_Real diff1 = (myTolE/myTolF);
-    Standard_Real diff2 = (myTolF/myTolE);
+    Standard_Real diff1 = (aTolE/aTolF);
+    Standard_Real diff2 = (aTolF/aTolE);
     if( diff1 > 100 || diff2 > 100 ) {
-      myCriteria = Max(myTolE,myTolF);
+      myCriteria = Max(aTolE,aTolF);
     }
     else //--- 5112
-      myCriteria=1.5*myTolE+myTolF;
+      myCriteria = 1.5*aTolE + aTolF;
   }
   else {
-    myCriteria = myTolE + myTolF + Precision::Confusion();
+    myCriteria = aTolE + aTolF;
   }
   
   myS.Initialize (myFace,Standard_True);
@@ -852,7 +833,7 @@ void IntTools_EdgeFace::Perform()
     }
   }
   //
-  IntTools_BeanFaceIntersector anIntersector(myC, myS, myTolE, myTolF);
+  IntTools_BeanFaceIntersector anIntersector(myC, myS, aTolE, aTolF);
   anIntersector.SetBeanParameters(myRange.First(), myRange.Last());
   //
   anIntersector.SetContext(myContext);

@@ -1,6 +1,3 @@
-puts "TODO OCC12345 ALL: Faulty : TEST FAILED"
-#puts "TODO OCC12345 ALL: Error : The length of result shape is"
-
 puts "============"
 puts "PRO19653"
 puts "BREPALGO_BOOLEANOPERATION does not return result."
@@ -12,6 +9,14 @@ restore [locate_data_file pro19653a.brep] a
 checkshape a
 restore [locate_data_file pro19653b.brep] b
 checkshape b
+
+# There is a gap between shapes around the edge a_4. The tolerance
+# of the edge is 1e-7. The max gap width is about 2e-6. So, in order to 
+# get the whole edge as a section we need to set its tolerance to that value.
+# Otherwise, this test case will be unstable from version to version.
+explode a e
+settolerance a_4 2e-6
+
 bsection result a b
 
 explode result e

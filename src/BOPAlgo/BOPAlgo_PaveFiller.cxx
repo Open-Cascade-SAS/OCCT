@@ -37,8 +37,7 @@
 //=======================================================================
 BOPAlgo_PaveFiller::BOPAlgo_PaveFiller()
 :
-  BOPAlgo_Algo(),
-  myFuzzyValue(0.)
+  BOPAlgo_Algo()
 {
   myDS=NULL;
   myIterator=NULL;
@@ -52,8 +51,7 @@ BOPAlgo_PaveFiller::BOPAlgo_PaveFiller()
 BOPAlgo_PaveFiller::BOPAlgo_PaveFiller
   (const Handle(NCollection_BaseAllocator)& theAllocator)
 :
-  BOPAlgo_Algo(theAllocator),
-  myFuzzyValue(0.)
+  BOPAlgo_Algo(theAllocator)
 {
   myDS=NULL;
   myIterator=NULL;
@@ -165,22 +163,6 @@ const BOPCol_ListOfShape& BOPAlgo_PaveFiller::Arguments()const
   return myArguments;
 }
 //=======================================================================
-//function : SetFuzzyValue
-//purpose  : 
-//=======================================================================
-void BOPAlgo_PaveFiller::SetFuzzyValue(const Standard_Real theFuzz)
-{
-  myFuzzyValue = (theFuzz < 0.) ? 0. : theFuzz;
-}
-//=======================================================================
-//function : FuzzyValue
-//purpose  : 
-//=======================================================================
-Standard_Real BOPAlgo_PaveFiller::FuzzyValue() const
-{
-  return myFuzzyValue;
-}
-//=======================================================================
 // function: Init
 // purpose: 
 //=======================================================================
@@ -199,8 +181,7 @@ void BOPAlgo_PaveFiller::Init()
   // 1.myDS 
   myDS=new BOPDS_DS(myAllocator);
   myDS->SetArguments(myArguments);
-  myDS->SetFuzzyValue(myFuzzyValue);
-  myDS->Init();
+  myDS->Init(myFuzzyValue);
   //
   // 2.myIterator 
   myIterator=new BOPDS_Iterator(myAllocator);
@@ -232,8 +213,6 @@ void BOPAlgo_PaveFiller::Perform()
   catch (Standard_Failure) {
     myErrorStatus=11;
   } 
-  //
-  myDS->SetDefaultTolerances();
 }
 //=======================================================================
 // function: PerformInternal

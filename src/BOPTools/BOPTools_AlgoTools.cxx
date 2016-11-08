@@ -922,7 +922,8 @@ Standard_Boolean BOPTools_AlgoTools::GetEdgeOff(const TopoDS_Edge& theE1,
 Standard_Boolean BOPTools_AlgoTools::AreFacesSameDomain
   (const TopoDS_Face& theF1,
    const TopoDS_Face& theF2,
-   Handle(IntTools_Context)& theContext)
+   Handle(IntTools_Context)& theContext,
+   const Standard_Real theFuzz)
 {
   Standard_Boolean bFlag;
   Standard_Integer iErr;
@@ -932,6 +933,7 @@ Standard_Boolean BOPTools_AlgoTools::AreFacesSameDomain
   TopoDS_Face aF1, aF2;
   TopoDS_Edge aE1;
   TopExp_Explorer aExp;
+  Standard_Real aFuzz1 = (theFuzz > Precision::Confusion() ? theFuzz : Precision::Confusion());
   //
   bFlag=Standard_False;
   //
@@ -947,12 +949,14 @@ Standard_Boolean BOPTools_AlgoTools::AreFacesSameDomain
     aE1=(*(TopoDS_Edge*)(&aExp.Current()));
     if (!BRep_Tool::Degenerated(aE1)) {
       Standard_Real aTolE = BRep_Tool::Tolerance(aE1);
-      aTolF1 = (aTolE > aTolF1) ? aTolE : aTolF1;
+      if (aTolE > aTolF1) {
+        aTolF1 = aTolE;
+      }
     }
   }
   // 2
   aTolF2=BRep_Tool::Tolerance(aF2);
-  aTol = aTolF1 + aTolF2 + Precision::Confusion();
+  aTol = aTolF1 + aTolF2 + aFuzz1;
   //
   iErr = BOPTools_AlgoTools3D::PointInFace(aF1, aP, aP2D,
                                            theContext);
@@ -1420,23 +1424,16 @@ void BOPTools_AlgoTools::MakeEdge(const IntTools_Curve& theIC,
                                   const Standard_Real theTolR3D,
                                   TopoDS_Edge& theE)
 {
-  Standard_Real aTolV;
   BRep_Builder aBB;
+  Standard_Real aNeedTol = theTolR3D + 1e-12;
+  //
+  aBB.UpdateVertex(theV1, aNeedTol);
+  aBB.UpdateVertex(theV2, aNeedTol);
   //
   BOPTools_AlgoTools::MakeSectEdge (theIC, theV1, theT1, theV2, theT2, 
                                     theE);
   //
   aBB.UpdateEdge(theE, theTolR3D);
-  //
-  aTolV=BRep_Tool::Tolerance(theV1);
-  if (aTolV<theTolR3D) {
-    aBB.UpdateVertex(theV1, theTolR3D);
-  }
-  //
-  aTolV=BRep_Tool::Tolerance(theV2);
-  if (aTolV<theTolR3D) {
-    aBB.UpdateVertex(theV2, theTolR3D);
-  }
 }
 //=======================================================================
 // function: ComputeVV
@@ -1467,14 +1464,16 @@ Standard_Integer BOPTools_AlgoTools::ComputeVV(const TopoDS_Vertex& aV1,
 // purpose: 
 //=======================================================================
 Standard_Integer BOPTools_AlgoTools::ComputeVV(const TopoDS_Vertex& aV1, 
-                                               const TopoDS_Vertex& aV2)
+                                               const TopoDS_Vertex& aV2,
+                                               const Standard_Real aFuzz)
 {
   Standard_Real aTolV1, aTolV2, aTolSum, aTolSum2, aD2;
   gp_Pnt aP1, aP2;
+  Standard_Real aFuzz1 = (aFuzz > Precision::Confusion() ? aFuzz : Precision::Confusion());
   //
   aTolV1=BRep_Tool::Tolerance(aV1);
   aTolV2=BRep_Tool::Tolerance(aV2);
-  aTolSum = aTolV1 + aTolV2 + Precision::Confusion();
+  aTolSum=aTolV1+aTolV2+aFuzz1;
   aTolSum2=aTolSum*aTolSum;
   //
   aP1=BRep_Tool::Pnt(aV1);

@@ -160,7 +160,7 @@ void IntTools_EdgeEdge::Prepare()
     mySwap = Standard_True;
   }
   //
-  Standard_Real aTolAdd = Precision::Confusion() / 2.;
+  Standard_Real aTolAdd = myFuzzyValue / 2.;
   myTol1 = myCurve1.Tolerance() + aTolAdd;
   myTol2 = myCurve2.Tolerance() + aTolAdd;
   myTol = myTol1 + myTol2;

@@ -730,6 +730,7 @@ Standard_Boolean IntTools_WLineTool::
                        const TopoDS_Face&                             theFace2,
                        const GeomInt_LineConstructor&                 theLConstructor,
                        const Standard_Boolean                         theAvoidLConstructor,
+                       const Standard_Real                            theTol,
                        IntPatch_SequenceOfLine&                       theNewLines,
                        Standard_Real&                                 theReachedTol3d,
                        const Handle(IntTools_Context)& aContext) 
@@ -1206,7 +1207,7 @@ Standard_Boolean IntTools_WLineTool::
 
           if(found) {
             // check point
-            Standard_Real aCriteria = BRep_Tool::Tolerance(theFace1) + BRep_Tool::Tolerance(theFace2);
+            Standard_Real aCriteria = theTol;
             GeomAPI_ProjectPointOnSurf& aProjector = 
               (surfit == 0) ? aContext->ProjPS(theFace2) : aContext->ProjPS(theFace1);
             Handle(GeomAdaptor_HSurface) aSurface = (surfit == 0) ? theSurface1 : theSurface2;

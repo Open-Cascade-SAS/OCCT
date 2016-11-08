@@ -200,7 +200,7 @@ IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const BRepAdaptor_Cur
 {
   myCurve = theCurve;
   
-  myCriteria = myBeanTolerance + myFaceTolerance + Precision::Confusion();
+  myCriteria = myBeanTolerance + myFaceTolerance;
   myCurveResolution = myCurve.Resolution(myCriteria);
 
   mySurface = theSurface;
@@ -243,7 +243,7 @@ void IntTools_BeanFaceIntersector::Init(const BRepAdaptor_Curve&   theCurve,
   myBeanTolerance = theBeanTolerance;
   myFaceTolerance = theFaceTolerance;
   
-  myCriteria = myBeanTolerance + myFaceTolerance + Precision::Confusion();
+  myCriteria = myBeanTolerance + myFaceTolerance;
   myCurveResolution = myCurve.Resolution(myCriteria);
   
   SetSurfaceParameters(mySurface.FirstUParameter(), mySurface.LastUParameter(), 

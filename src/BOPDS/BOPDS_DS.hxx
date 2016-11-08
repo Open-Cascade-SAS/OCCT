@@ -42,13 +42,14 @@
 #include <BOPDS_VectorOfInterfFZ.hxx>
 #include <BOPDS_VectorOfInterfZZ.hxx>
 #include <Standard_Real.hxx>
-#include <BOPCol_DataMapOfIntegerReal.hxx>
 #include <Standard_Boolean.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
 #include <BOPDS_IndexedMapOfPaveBlock.hxx>
+#include <BOPDS_MapOfPaveBlock.hxx>
 #include <BOPCol_MapOfInteger.hxx>
 #include <BOPCol_ListOfInteger.hxx>
 #include <BOPDS_ListOfPave.hxx>
+#include <Precision.hxx>
 class BOPDS_IndexRange;
 class BOPDS_ShapeInfo;
 class TopoDS_Shape;
@@ -113,7 +114,7 @@ Standard_EXPORT virtual ~BOPDS_DS();
 
   //! Initializes the data structure for
   //! the arguments
-  Standard_EXPORT void Init();
+  Standard_EXPORT void Init(const Standard_Real theFuzz = Precision::Confusion());
   
 
   //! Selector
@@ -218,7 +219,8 @@ Standard_EXPORT virtual ~BOPDS_DS();
   
 
   //! Update the common block theCB
-  Standard_EXPORT void UpdateCommonBlock (const Handle(BOPDS_CommonBlock)& theCB);
+  Standard_EXPORT void UpdateCommonBlock (const Handle(BOPDS_CommonBlock)& theCB,
+                                          const Standard_Real theFuzz);
   
 
   //! Query
@@ -300,9 +302,15 @@ Standard_EXPORT virtual ~BOPDS_DS();
   Standard_EXPORT void RefineFaceInfoOn();
   
 
-  //! Returns the indices of vertices and pave blocks
-  //! that  are On/In for the faces with indices theF1, theF2
-  Standard_EXPORT void VerticesOnIn (const Standard_Integer theF1, const Standard_Integer theF2, BOPCol_MapOfInteger& theMI, BOPDS_IndexedMapOfPaveBlock& aMPB) const;
+  //! Returns information about ON/IN subshapes of the given faces.
+  //! @param theMVOnIn  the indices of ON/IN vertices from both faces
+  //! @param thePBOnIn  all On/In pave blocks from both faces
+  //! @param theCommonPB  the common pave blocks (that are shared by both faces).
+  Standard_EXPORT void SubShapesOnIn (const Standard_Integer theF1,
+                                      const Standard_Integer theF2,
+                                      BOPCol_MapOfInteger& theMVOnIn,
+                                      BOPDS_IndexedMapOfPaveBlock& thePBOnIn,
+                                      BOPDS_MapOfPaveBlock& theCommonPB) const;
   
 
   //! Returns the indices of edges that are  shared
@@ -439,25 +447,17 @@ Standard_EXPORT virtual ~BOPDS_DS();
   
 
   //! Updates tolerance of the sub-shapes of the shape with index <theIndex>.
-  Standard_EXPORT void UpdateEdgeTolerance (const Standard_Integer theIndex, const Standard_Real theTolerance);
+  Standard_EXPORT void UpdateEdgeTolerance (const Standard_Integer theIndex,
+                                            const Standard_Real theTolerance,
+                                            const Standard_Real theFuzz = Precision::Confusion());
 
+  //! Update the pave blocks for all shapes in data structure
   Standard_EXPORT void UpdatePaveBlocksWithSDVertices();
 
+  //! Update the pave block of the common block for all shapes in data structure
   Standard_EXPORT void UpdateCommonBlockWithSDVertices(const Handle(BOPDS_CommonBlock)& theCB);
 
   Standard_EXPORT void InitPaveBlocksForVertex(const Standard_Integer theNV);
-
-  //! Sets the extended tolerance
-    void SetFuzzyValue (const Standard_Real theFuzz);
-  
-  //! Returns the extended tolerance
-    Standard_Real FuzzyValue() const;
-  
-  //! Reverts the tolerance values of unchanged entities to default values.
-  Standard_EXPORT void SetDefaultTolerances();
-
-
-
 
 protected:
 
@@ -466,6 +466,7 @@ protected:
   //! Initializes the pave blocks for the shape with index theIndex
   Standard_EXPORT void InitPaveBlocks (const Standard_Integer theIndex);
 
+  //! Update the pave block for all shapes in data structure
   Standard_EXPORT void UpdatePaveBlockWithSDVertices(const Handle(BOPDS_PaveBlock)& thePB);
 
   //! Initializes the state of face with index theIndex
@@ -473,7 +474,9 @@ protected:
   
   Standard_EXPORT void InitShape (const Standard_Integer theIndex, const TopoDS_Shape& theS, const BOPCol_BaseAllocator& theAllocator, BOPCol_DataMapOfShapeInteger& theMSI);
   
-  Standard_EXPORT Standard_Boolean CheckCoincidence (const Handle(BOPDS_PaveBlock)& thePB1, const Handle(BOPDS_PaveBlock)& thePB2);
+  Standard_EXPORT Standard_Boolean CheckCoincidence (const Handle(BOPDS_PaveBlock)& thePB1,
+                                                     const Handle(BOPDS_PaveBlock)& thePB2,
+                                                     const Standard_Real theFuzz);
   
 
   //! Computes bouding box <theBox> for the solid with DS-index <theIndex>
@@ -503,8 +506,6 @@ protected:
   BOPDS_VectorOfInterfEZ myInterfEZ;
   BOPDS_VectorOfInterfFZ myInterfFZ;
   BOPDS_VectorOfInterfZZ myInterfZZ;
-  Standard_Real myFuzzyValue;
-  BOPCol_DataMapOfIntegerReal myToleranceMap;
 
 
 private:

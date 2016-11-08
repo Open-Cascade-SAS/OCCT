@@ -61,16 +61,8 @@ public:
   Standard_EXPORT void SetEdge (const TopoDS_Edge& anEdge);
   
 
-  //! Initializes algorithm by edge tolerance
-  Standard_EXPORT void SetTolE (const Standard_Real aTolEdge1);
-  
-
   //! Initializes algorithm by the face aFace
   Standard_EXPORT void SetFace (const TopoDS_Face& aFace);
-  
-
-  //! Initializes algorithm by face tolerance
-  Standard_EXPORT void SetTolF (const Standard_Real aTolFace);
   
 
   //! Returns edge
@@ -79,14 +71,6 @@ public:
 
   //! Returns face
   Standard_EXPORT const TopoDS_Face& Face() const;
-  
-
-  //! Returns  tolerance of the edge
-  Standard_EXPORT Standard_Real TolE() const;
-  
-
-  //! Returns  tolerance of the face
-  Standard_EXPORT Standard_Real TolF() const;
   
 
   //! Initializes algorithm by discretization value
@@ -117,6 +101,14 @@ public:
   //! Gets the intersecton context
   Standard_EXPORT const Handle(IntTools_Context)& Context() const;
   
+  //! Sets the Fuzzy value
+  Standard_EXPORT void SetFuzzyValue(const Standard_Real theFuzz);
+
+  //! Returns Fuzzy value
+  Standard_Real FuzzyValue() const
+  {
+    return myFuzzyValue;
+  }
 
   //! Launches the process
   Standard_EXPORT void Perform();
@@ -184,8 +176,7 @@ private:
 
   TopoDS_Edge myEdge;
   TopoDS_Face myFace;
-  Standard_Real myTolE;
-  Standard_Real myTolF;
+  Standard_Real myFuzzyValue;
   Standard_Integer myDiscret;
   Standard_Real myEpsT;
   Standard_Real myDeflection;

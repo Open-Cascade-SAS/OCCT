@@ -24,6 +24,7 @@ inline IntTools_EdgeEdge::IntTools_EdgeEdge()
   myTol1(0.),
   myTol2(0.),
   myTol(0.),
+  myFuzzyValue(Precision::Confusion()),
   myRes1(0.),
   myRes2(0.),
   myResCoeff1(0.),
@@ -49,6 +50,7 @@ inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge&  theEdge1,
   myTol1(0.),
   myTol2(0.),
   myTol(0.),
+  myFuzzyValue(Precision::Confusion()),
   myRes1(0.),
   myRes2(0.),
   myResCoeff1(0.),
@@ -78,6 +80,7 @@ inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge&  theEdge1,
   myTol1(0.),
   myTol2(0.),
   myTol(0.),
+  myFuzzyValue(Precision::Confusion()),
   myRes1(0.),
   myRes2(0.),
   myResCoeff1(0.),
@@ -172,6 +175,23 @@ inline void IntTools_EdgeEdge::SetEdge2(const TopoDS_Edge&  theEdge,
   SetEdge2(theEdge);
   SetRange2(aT1, aT2);
 }
+//=======================================================================
+//function : SetFuzzyValue
+//purpose  : 
+//=======================================================================
+inline void IntTools_EdgeEdge::SetFuzzyValue(const Standard_Real theFuzz)
+{
+  myFuzzyValue = Max(theFuzz, Precision::Confusion());
+}
+//=======================================================================
+//function : FuzzyValue
+//purpose  : 
+//=======================================================================
+inline Standard_Real IntTools_EdgeEdge::FuzzyValue() const
+{
+  return myFuzzyValue;
+}
+
 //=======================================================================
 //function : CommonParts
 //purpose  : 

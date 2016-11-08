@@ -394,6 +394,8 @@ void BOPAlgo_BOP::PerformInternal1(const BOPAlgo_PaveFiller& theFiller)
   myPaveFiller=(BOPAlgo_PaveFiller*)&theFiller;
   myDS=myPaveFiller->PDS();
   myContext=myPaveFiller->Context();
+  myFuzzyValue = myPaveFiller->FuzzyValue();
+  myNonDestructive = myPaveFiller->NonDestructive();
   //
   // 1. CheckData
   CheckData();
