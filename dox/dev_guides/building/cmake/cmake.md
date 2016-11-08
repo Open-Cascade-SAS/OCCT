@@ -105,6 +105,7 @@ The following table enumerates the full list of environment variables used at co
 | INSTALL_DIR_LIB | Path | Relative path to the libraries installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_LIB}) |
 | INSTALL_DIR_INCLUDE | Path | Relative path to the includes installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_INCLUDE}) |
 | INSTALL_DIR_RESOURCE | Path | Relative path to the resources installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_RESOURCE}) |
+| INSTALL_DIR_LAYOUT | String | Defines structure of OCCT files (binaries, resources, headers, etc) for the install directory. Two variants are predefined: for Windows (standard OCCT layout) and for Unix operating systems (standard Linux layout). If needed, layout can be customized with INSTALL_DIR_* variables |
 | INSTALL_DIR_DATA | Path | Relative path to the data files installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_DATA}) |
 | INSTALL_DIR_SAMPLES | Path | Relative path to the samples installation directory. Note that only "samples/tcl" folder will be installed. (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_SAMPLES}) |
 | INSTALL_DIR_TESTS | Path | Relative path to the tests installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_TESTS}) |
