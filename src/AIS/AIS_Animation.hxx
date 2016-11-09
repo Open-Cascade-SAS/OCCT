@@ -101,9 +101,14 @@ public:
 
   //! Start animation with internally defined timer instance.
   //! Calls ::Start() internally.
+  //! @param theStartPts    starting timer position (presentation timestamp)
+  //! @param thePlaySpeed   playback speed (1.0 means normal speed)
+  //! @param theToUpdate    flag to update defined animations to specified start position
+  //! @param theToStopTimer flag to pause timer at the starting position
   Standard_EXPORT virtual void StartTimer (const Standard_Real    theStartPts,
                                            const Standard_Real    thePlaySpeed,
-                                           const Standard_Boolean theToUpdate);
+                                           const Standard_Boolean theToUpdate,
+                                           const Standard_Boolean theToStopTimer = Standard_False);
 
   //! Update single frame of animation, update timer state
   //! @return current time of timeline progress.

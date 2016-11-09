@@ -6447,11 +6447,13 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
     return 0;
   }
 
+  // animation parameters
   Standard_Boolean toPlay = Standard_False;
   Standard_Real aPlaySpeed     = 1.0;
   Standard_Real aPlayStartTime = anAnimation->StartPts();
   Standard_Real aPlayDuration  = anAnimation->Duration();
-  Standard_Real aPlayFrameRate = 0.0;
+  Standard_Integer aFpsNum     = 0;
+  Standard_Integer aFpsDen     = 1;
   Standard_Boolean isFreeCamera = Standard_False;
   Standard_Boolean isLockLoop   = Standard_False;
   Handle(V3d_View) aView = ViewerTest::CurrentView();
@@ -6459,6 +6461,7 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
   {
     TCollection_AsciiString anArg (theArgVec[anArgIter]);
     anArg.LowerCase();
+    // general options
     if (anArg == "-reset"
      || anArg == "-clear")
     {
@@ -6477,6 +6480,7 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
         aParentAnimation->Remove (anAnimation);
       }
     }
+    // playback options
     else if (anArg == "-play")
     {
       toPlay = Standard_True;
@@ -6544,8 +6548,28 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
         std::cout << "Syntax error at " << anArg << ".\n";
         return 1;
       }
-      aPlayFrameRate = Draw::Atof (theArgVec[anArgIter]);
+
+      TCollection_AsciiString aFpsArg (theArgVec[anArgIter]);
+      Standard_Integer aSplitIndex = aFpsArg.FirstLocationInSet ("/", 1, aFpsArg.Length());
+      if (aSplitIndex == 0)
+      {
+        aFpsNum = aFpsArg.IntegerValue();
+      }
+      else
+      {
+        const TCollection_AsciiString aDenStr = aFpsArg.Split (aSplitIndex);
+        aFpsArg.Split (aFpsArg.Length() - 1);
+        const TCollection_AsciiString aNumStr = aFpsArg;
+        aFpsNum = aNumStr.IntegerValue();
+        aFpsDen = aDenStr.IntegerValue();
+        if (aFpsDen < 1)
+        {
+          std::cout << "Syntax error at " << anArg << ".\n";
+          return 1;
+        }
+      }
     }
+    // animation definition options
     else if (anArg == "-start"
           || anArg == "-starttime"
           || anArg == "-startpts")
@@ -6805,14 +6829,14 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
   TheIsAnimating = Standard_True;
   const Standard_Boolean wasImmediateUpdate = aView->SetImmediateUpdate (Standard_False);
   Handle(Graphic3d_Camera) aCameraBack = new Graphic3d_Camera (aView->Camera());
-  anAnimation->StartTimer (aPlayStartTime, aPlaySpeed, Standard_True);
+  anAnimation->StartTimer (aPlayStartTime, aPlaySpeed, Standard_True, aPlayDuration <= 0.0);
   if (isFreeCamera)
   {
     aView->Camera()->Copy (aCameraBack);
   }
 
   const Standard_Real anUpperPts = aPlayStartTime + aPlayDuration;
-  if (aPlayFrameRate < Precision::Confusion())
+  if (aFpsNum <= 0)
   {
     while (!anAnimation->IsStopped())
     {
@@ -6863,38 +6887,32 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
   }
   else
   {
-    Standard_Real aMaxFPS = 0.0;
+    OSD_Timer aPerfTimer;
+    aPerfTimer.Start();
 
     // Manage frame-rated animation here
     Standard_Real aPts = aPlayStartTime;
-    while (aPts <= anUpperPts)
+    int64_t aNbFrames = 0;
+    for (; aPts <= anUpperPts;)
     {
+      const Standard_Real aRecPts = aPlaySpeed * ((Standard_Real(aFpsDen) / Standard_Real(aFpsNum)) * Standard_Real(aNbFrames));
+      aPts = aPlayStartTime + aRecPts;
+      ++aNbFrames;
       if (!anAnimation->Update (aPts))
       {
         break;
       }
 
-      Standard_Real aProgress = anAnimation->ElapsedTime();
-      Standard_Real aNextRatedPts = aPts + 1.0 / aPlayFrameRate;
-      Standard_Real aPrevPts = aPts;
-      aPts = aNextRatedPts <  aProgress ? aNextRatedPts : aProgress;
-      Standard_Real aCurrentFPS = 1.0 / (aPts - aPrevPts);
-      if (aMaxFPS < aCurrentFPS)
-      {
-        aMaxFPS = aCurrentFPS;
-      }
-    }
-
-    if (aView->IsInvalidated())
-    {
       aView->Redraw();
     }
-    else
-    {
-      aView->RedrawImmediate();
-    }
+
+    aPerfTimer.Stop();
     anAnimation->Stop();
-    theDI << aMaxFPS;
+    const Standard_Real aRecFps = Standard_Real(aNbFrames) / aPerfTimer.ElapsedTime();
+    theDI << "Average FPS: " << aRecFps << "\n"
+          << "Nb. Frames: "  << Standard_Real(aNbFrames);
+
+    aView->Redraw();
   }
 
   aView->SetImmediateUpdate (wasImmediateUpdate);

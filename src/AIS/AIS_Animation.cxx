@@ -163,7 +163,8 @@ void AIS_Animation::UpdateTotalDuration()
 //=============================================================================
 void AIS_Animation::StartTimer (const Standard_Real    theStartPts,
                                 const Standard_Real    thePlaySpeed,
-                                const Standard_Boolean theToUpdate)
+                                const Standard_Boolean theToUpdate,
+                                const Standard_Boolean theToStopTimer)
 {
   if (myTimer.IsNull())
   {
@@ -173,6 +174,11 @@ void AIS_Animation::StartTimer (const Standard_Real    theStartPts,
   myTimer->Seek (theStartPts);
   myTimer->SetPlaybackSpeed (thePlaySpeed);
   Start (theToUpdate);
+  if (theToStopTimer)
+  {
+    myTimer->Stop();
+    myTimer->Seek (theStartPts);
+  }
 }
 
 //=============================================================================
