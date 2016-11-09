@@ -1,0 +1,19 @@
+puts "==========="
+puts "OCC28061 - Highlighting of any object with HLR option leads to crash"
+puts "==========="
+puts ""
+
+pload MODELING VISUALIZATION
+box b 1 2 3
+
+vclear
+vinit View1
+vdisplay -dispMode 0 b
+vsetwidth -noupdate b 4
+vfit
+vhlr on
+
+vmoveto 250 250
+if { [vreadpixel 321 150 rgb name] != "CYAN1" } { puts "Error: the box is not highlighted" }
+
+vdump $imagedir/${casename}.png

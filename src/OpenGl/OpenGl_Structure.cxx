@@ -245,6 +245,14 @@ void OpenGl_Structure::highlightWithBndBox (const Handle(Graphic3d_Structure)& t
 void OpenGl_Structure::GraphicHighlight (const Handle(Graphic3d_HighlightStyle)& theStyle,
                                          const Handle(Graphic3d_Structure)&      theStruct)
 {
+  if (!myHighlightStyle.IsNull()
+    && myHighlightStyle->Method() == Aspect_TOHM_BOUNDBOX
+    && theStyle->Method() != Aspect_TOHM_BOUNDBOX)
+  {
+    const Handle(OpenGl_Context)& aContext = GlDriver()->GetSharedContext();
+    clearHighlightBox (aContext);
+  }
+
   myHighlightStyle = theStyle;
 
   highlight = 1;

@@ -262,24 +262,6 @@ void Graphic3d_Structure::Highlight (const Handle(Graphic3d_HighlightStyle)& the
     return;
   }
 
-  // Highlight on already Highlighted structure.
-  if (myCStructure->highlight)
-  {
-    Aspect_TypeOfUpdate anUpdateMode = myStructureManager->UpdateMode();
-    if (anUpdateMode == Aspect_TOU_WAIT)
-    {
-      UnHighlight();
-    }
-    else
-    {
-      // To avoid call of method : Update()
-      // Not useful and can be costly.
-      myStructureManager->SetUpdateMode (Aspect_TOU_WAIT);
-      UnHighlight();
-      myStructureManager->SetUpdateMode (anUpdateMode);
-    }
-  }
-
   SetDisplayPriority (Structure_MAX_PRIORITY - 1);
 
   myCStructure->GraphicHighlight (theStyle, this);
