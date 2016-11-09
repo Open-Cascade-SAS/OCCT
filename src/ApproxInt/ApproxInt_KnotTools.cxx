@@ -57,17 +57,33 @@ static Standard_Real EvalCurv(const Standard_Real dim,
       mp += p*p;
     }
   }
-  //mp *= 2.; //P(j,i) = -P(i,j);
-  mp = Sqrt(mp);
   //
   Standard_Real q = 0.;
   for(i = 0; i < dim; ++i)
   {
     q += V1[i]*V1[i];
   }
-  q = Sqrt(q);
+
+  if (q < 1 / Precision::Infinite())
+  {
+    // Indeed, if q is small then we can
+    // obtain equivocation of "0/0" type.
+    // In this case, local curvature can be
+    // not equal to 0 or Infinity.
+    // However, it is good solution to insert
+    // knot in the place with such singularity.
+    // Therefore, we need imitation of curvature
+    // jumping. Return of Precision::Infinite() is
+    // enough for it.
+
+    return Precision::Infinite();
+  }
+
+  q = Min(q, Precision::Infinite());
+  q *= q*q;
+
   //
-  Standard_Real curv = mp / (q*q*q);
+  Standard_Real curv = Sqrt(mp / q);
 
   return curv;
 }
