@@ -307,22 +307,23 @@ static void LineConstructor(Contap_TheSequenceOfLine& slin,
                                     else { 
                                       //-- cout<<"ContapWLine      : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<endl;
                                       Handle(IntSurf_LineOn2S) LineOn2S = new IntSurf_LineOn2S();
-                                      Contap_Line Line;
-                                      Standard_Real aLen = 0.;
-                                      for(Standard_Integer j=firstp; j<=lastp; j++) { 
-                                        LineOn2S->Add(L.Point(j));
-                                        if (j > firstp)
-                                          aLen += L.Point(j).Value().Distance(L.Point(j - 1).Value());
+                                      LineOn2S->Add(L.Point(firstp));
+                                      for (Standard_Integer j = firstp + 1; j <= lastp; j++) {
+                                        Standard_Real aSqDist = L.Point(j).Value().
+                                          SquareDistance(L.Point(j - 1).Value());
+                                        if (aSqDist > gp::Resolution())
+                                          LineOn2S->Add(L.Point(j));
                                       }
-                                      if (aLen < Precision::Confusion())
+                                      if (LineOn2S->NbPoints() < 2)
                                         continue;
+                                      Contap_Line Line;
                                       Line.SetLineOn2S(LineOn2S);
                                       Contap_Point pvtx = L.Vertex(i);
                                       pvtx.SetParameter(1);
                                       Line.Add(pvtx);
 
                                       pvtx = L.Vertex(i+1);
-                                      pvtx.SetParameter(lastp-firstp+1);
+                                      pvtx.SetParameter(LineOn2S->NbPoints());
                                       Line.Add(pvtx);
                                       Line.SetTransitionOnS(L.TransitionOnS());
                                       slin.Append(Line);
