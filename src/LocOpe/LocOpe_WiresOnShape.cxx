@@ -71,6 +71,7 @@
 
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <ShapeConstruct_ProjectCurveOnSurface.hxx>
+#include <ShapeAnalysis.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(LocOpe_WiresOnShape,MMgt_TShared)
 
@@ -613,19 +614,77 @@ Standard_Boolean Project(const TopoDS_Vertex& V,
 
       //distance in 2D space recomputed in the 3D space in order to tolerance of vertex
       //cover gap in 2D space. For consistency with check of the validity in the  BRepCheck_Wire
-      Standard_Real aDist3d = p2d.Distance(aPBound2d) / Min(anUResolution, aVResolution);
+      Standard_Real dumax = 0.01 * (adSurf.LastUParameter() - adSurf.FirstUParameter());
+      Standard_Real dvmax = 0.01 * (adSurf.LastVParameter() - adSurf.FirstVParameter());
+      
+      gp_Pnt2d aPcur = p2d;
+      Standard_Real dumin = Abs(aPcur.X() - aPBound2d.X());
+      Standard_Real dvmin = Abs(aPcur.Y() - aPBound2d.Y());
+      if (dumin > dumax && adSurf.IsUPeriodic())
+      {
+        Standard_Real aX1 = aPBound2d.X();
+        Standard_Real aShift = ShapeAnalysis::AdjustToPeriod(aX1, adSurf.FirstUParameter(), adSurf.LastUParameter());
+        aX1 += aShift;
+        aPBound2d.SetX(aX1);
+        Standard_Real aX2 = p2d.X();
+        aShift = ShapeAnalysis::AdjustToPeriod(aX2, adSurf.FirstUParameter(), adSurf.LastUParameter());
+        aX2 += aShift;
+        dumin = Abs(aX2 - aX1);
+        if (dumin > dumax &&  (Abs(dumin - adSurf.UPeriod()) < Precision::PConfusion()) )
+        {
+          aX2 = aX1;
+          dumin = 0.;
+        }
+        aPcur.SetX(aX2);
 
+      }
+
+      if (dvmin > dvmax && adSurf.IsVPeriodic())
+      {
+        Standard_Real aY1 = aPBound2d.Y();
+        Standard_Real aShift = ShapeAnalysis::AdjustToPeriod(aY1, adSurf.FirstVParameter(), adSurf.LastVParameter());
+        aY1 += aShift;
+        aPBound2d.SetY(aY1);
+        Standard_Real aY2 = p2d.Y();
+        aShift = ShapeAnalysis::AdjustToPeriod(aY2, adSurf.FirstVParameter(), adSurf.LastVParameter());
+        aY2 += aShift;
+        dvmin = Abs(aY1 - aY2);
+        if (dvmin > dvmax && ( Abs(dvmin - adSurf.VPeriod()) < Precision::Confusion()) )
+        {
+          aY2 = aY1;
+          dvmin = 0.;
+        }
+        aPcur.SetY(aY2);
+      }
+      Standard_Real aDist3d = aTolV;
+      if ((dumin > dumax) || (dvmin > dvmax))
+      {
+
+        dumax = adSurf.UResolution(aTolV);
+        dvmax = adSurf.VResolution(aTolV);
+        Standard_Real aTol2d = 2. * Max(dumax, dvmax);
+        Standard_Real aDist2d =  Max(dumin, dvmin);
+
+        if (aDist2d > aTol2d)
+        {
+          Standard_Real aDist3d1 = aDist2d / Max(anUResolution, aVResolution);
+          if( aDist3d1 > aDist3d)
+            aDist3d =  aDist3d1;
+        }
+      }
+
+      //added check by 3D the same as in the BRepCheck_Wire::SelfIntersect
       gp_Pnt aPBound;
       aSurf->D0(aPBound2d.X(), aPBound2d.Y(), aPBound);
       gp_Pnt aPV2d;
       aSurf->D0(p2d.X(), p2d.Y(), aPV2d);
       Standard_Real aDistPoints_3D = aPV2d.SquareDistance(aPBound);
-      Standard_Real aDist2d = Max(aDistPoints_3D, aDist3d * aDist3d);
-
+	    Standard_Real aMaxDist = Max(aDistPoints_3D, aDist3d * aDist3d);
+ 
       BRep_Builder B;
-      if (aTolV * aTolV < aDist2d)
+      if (aTolV * aTolV < aMaxDist)
       {
-        Standard_Real aNewTol = sqrt(aDist2d) + Precision::Confusion();
+        Standard_Real aNewTol = sqrt(aMaxDist);
         B.UpdateVertex(V, aNewTol);
       }
     }
