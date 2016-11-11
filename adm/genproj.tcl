@@ -256,7 +256,7 @@ proc genAllResources {} {
 
 # Wrapper-function to generate VS project files
 proc genproj {theIDE args} {
-  set aSupportedIDEs { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "cbp" "xcd" }
+  set aSupportedIDEs { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "vc14-uwp" "cbp" "xcd"}
   set aSupportedPlatforms { "wnt" "lin" "mac" "ios" "qnx" }
   set isHelpRequire false
 
@@ -305,14 +305,15 @@ proc genproj {theIDE args} {
     puts "usage: genproj IDE \[Platform\] \[-static\] \[-h|-help|--help\]
 
     IDE must be one of:
-      vc8   -  Visual Studio 2005
-      vc9   -  Visual Studio 2008
-      vc10  -  Visual Studio 2010
-      vc11  -  Visual Studio 2012
-      vc12  -  Visual Studio 2013
-      vc14  -  Visual Studio 2015
-      cbp   -  CodeBlocks
-      xcd   -  XCode
+      vc8      -  Visual Studio 2005
+      vc9      -  Visual Studio 2008
+      vc10     -  Visual Studio 2010
+      vc11     -  Visual Studio 2012
+      vc12     -  Visual Studio 2013
+      vc14     -  Visual Studio 2015
+      vc14-uwp -  Visual Studio 2015 for Universal Windows Platform project
+      cbp      -  CodeBlocks
+      xcd      -  XCode
 
     Platform (optional, only for CodeBlocks and XCode):
       wnt   -  Windows
@@ -370,7 +371,7 @@ proc genprojbat {theIDE thePlatform} {
     file copy -force -- "$::THE_CASROOT/adm/templates/draw.${aTargetPlatformExt}" "$::path/draw.${aTargetPlatformExt}"
   }
 
-  if {[regexp {(vc)[0-9]*$} $theIDE] == 1} {
+  if {[regexp {(vc)[0-9]*$} $theIDE] == 1 || [regexp {(vc)[0-9]*-uwp$} $theIDE] == 1} {
     file copy -force -- "$::THE_CASROOT/adm/templates/msvc.bat" "$::path/msvc.bat"
   } else {
     switch -exact -- "$theIDE" {
@@ -413,7 +414,7 @@ proc OS:MKPRC { theOutDir theIDE theLibType thePlatform theCmpl } {
 
   # Create output directory
   set aWokStation "$thePlatform"
-  if { [lsearch -exact {vc7 vc8 vc9 vc10 vc11 vc12 vc14} $theIDE] != -1 } {
+  if { [lsearch -exact {vc7 vc8 vc9 vc10 vc11 vc12 vc14 vc14-uwp} $theIDE] != -1 } {
     set aWokStation "msvc"
   }
 
@@ -441,6 +442,14 @@ proc OS:MKPRC { theOutDir theIDE theLibType thePlatform theCmpl } {
     set aModules [osutils:juststation $goaway $aModules]
   }
 
+  # Draw module is turned off due to it is not supported on UWP
+  if { [regexp {(vc)[0-9]*-uwp$} $theIDE] == 1 } {
+    set aDrawIndex [lsearch -exact ${aModules} "Draw"]
+    if { ${aDrawIndex} != -1 } {
+      set aModules [lreplace ${aModules} ${aDrawIndex} ${aDrawIndex}]
+    }
+  }
+
   # generate one solution for all projects if complete OS or VAS is processed
   set anAllSolution "OCCT"
 
@@ -465,12 +474,13 @@ proc OS:MKPRC { theOutDir theIDE theLibType thePlatform theCmpl } {
     "vc7"   -
     "vc8"   -
     "vc9"   -
-    "vc10"   -
-    "vc11"   -
-    "vc12"   -
-    "vc14"  { OS:MKVC  $anOutDir $aModules $anAllSolution $theIDE }
-    "cbp"   { OS:MKCBP $anOutDir $aModules $anAllSolution $thePlatform $theCmpl }
-    "xcd"   {
+    "vc10"  -
+    "vc11"  -
+    "vc12"  -
+    "vc14"  -
+    "vc14-uwp" { OS:MKVC  $anOutDir $aModules $anAllSolution $theIDE }
+    "cbp"      { OS:MKCBP $anOutDir $aModules $anAllSolution $thePlatform $theCmpl }
+    "xcd"      {
       set ::THE_GUIDS_LIST($::aTKNullKey) "000000000000000000000000"
       OS:MKXCD $anOutDir $aModules $anAllSolution $theLibType $thePlatform
     }
@@ -907,7 +917,7 @@ proc osutils:vcsolution:header { vcversion } {
     append var \
       "Microsoft Visual Studio Solution File, Format Version 13.00\n" \
       "# Visual Studio 2013\n"
-  } elseif { "$vcversion" == "vc14" } {
+  } elseif { "$vcversion" == "vc14"  || "$vcversion" == "vc14-uwp"} {
     append var \
       "Microsoft Visual Studio Solution File, Format Version 12.00\n" \
       "# Visual Studio 14\n"
@@ -1144,19 +1154,41 @@ proc osutils:vcproj:readtemplate {theVcVer isexec} {
   set aVerExt "v${aVerExt}0"
   set aCmpl32 ""
   set aCmpl64 ""
+  set aCharSet "MultiByte"
   if { $isexec } {
     set anExt "${anExt}x"
     set what "$what executable"
   }
   if { "$theVcVer" == "vc10" } {
     # SSE2 is enabled by default in vc11+, but not in vc10 for 32-bit target
-    set aCmpl32 "\n      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>"
+    set aCmpl32 "<EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>"
   }
   set aTmpl [osutils:readtemplate $anExt "MS VC++ project ($what)"]
-  regsub -all -- {__VCVER__}    $aTmpl $theVcVer aTmpl
-  regsub -all -- {__VCVEREXT__} $aTmpl $aVerExt  aTmpl
-  regsub -all -- {__VCMPL32__}  $aTmpl $aCmpl32  aTmpl
-  regsub -all -- {__VCMPL64__}  $aTmpl $aCmpl64  aTmpl
+
+  if { $theVcVer == "vc14-uwp" } {
+    set aVerExt "v140"
+    set UwpWinRt "<CompileAsWinRT>false</CompileAsWinRT>"
+    foreach bitness {32 64} {
+      set indent ""
+      if {"[set aCmpl${bitness}]" != ""} {
+        set indent "\n      "
+      }
+      set aCmpl${bitness} "[set aCmpl${bitness}]${indent}${UwpWinRt}"
+    }
+    set aCharSet "Unicode"
+  }
+
+  foreach bitness {32 64} {
+    set format_template ""
+    if {"[set aCmpl${bitness}]" == ""} {
+      set format_template "\[\\r\\n\\s\]*"
+    }
+    regsub -all -- "${format_template}__VCMPL${bitness}__" $aTmpl "[set aCmpl${bitness}]" aTmpl
+  }
+
+  regsub -all -- {__VCVER__}     $aTmpl $theVcVer aTmpl
+  regsub -all -- {__VCVEREXT__}  $aTmpl $aVerExt  aTmpl
+  regsub -all -- {__VCCHARSET__} $aTmpl $aCharSet aTmpl
   return $aTmpl
 }
 
@@ -1600,7 +1632,14 @@ proc osutils:vcproj { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {} 
   }
   regsub -all -- {__PROJECT_GUID__} $theProjTmpl $aGuidsMap($theToolKit) theProjTmpl
 
+  set theProjTmpl [osutils:uwp:proj ${theVcVer} ${theProjTmpl}]
+
   set aUsedLibs [list]
+
+  if { "$theVcVer" == "vc14-uwp" } {
+    lappend aUsedLibs "WindowsApp.lib"
+  }
+
   foreach tkx [osutils:commonUsedTK  $theToolKit] {
     lappend aUsedLibs "${tkx}.lib"
   }
@@ -3226,4 +3265,62 @@ proc osutils:xcdx { theOutDir theExecutable theGuidsMap } {
   set aPlistFile [open "$aSchemesDir/xcschememanagement.plist"  "w"]
   puts $aPlistFile $aPlistTmpl
   close $aPlistFile
+}
+
+# Returns available Windows SDKs versions
+proc osutils:sdk { theSdkMajorVer {isQuietMode false} {theSdkDirectories {}} } {
+  if { ![llength ${theSdkDirectories}] } {
+    foreach anEnvVar { "ProgramFiles" "ProgramFiles\(x86\)" "ProgramW6432" } {
+      if {[ info exists ::env(${anEnvVar}) ]} {
+        lappend theSdkDirectories "$::env(${anEnvVar})/Windows Kits/${theSdkMajorVer}/Include"
+      }
+    }
+  }
+
+  set sdk_versions {}
+  foreach sdk_dir ${theSdkDirectories} {
+    if { [file isdirectory ${sdk_dir}] } {
+      lappend sdk_versions [glob -tails -directory "${sdk_dir}" -type d *]
+    }
+  }
+
+  if {![llength ${sdk_versions}] && !${isQuietMode}} {
+    error "Error : Could not find Windows SDK ${theSdkMajorVer}"
+  }
+
+  return [join [lsort -unique ${sdk_versions}] " "]
+}
+
+# Generate global properties to Visual Studio project file for UWP solution
+proc osutils:uwp:proj { theVcVer theProjTmpl } {
+
+  set uwp_properties ""
+  set uwp_generate_metadata ""
+  set uwp_app_container ""
+
+  set format_template ""
+
+  if { ${theVcVer} == "vc14-uwp" } {
+    set sdk_versions [osutils:sdk 10]
+    set sdk_max_ver [lindex ${sdk_versions} end]
+
+    set uwp_properties "<DefaultLanguage>en-US</DefaultLanguage>\n   \
+<ApplicationType>Windows Store</ApplicationType>\n   \
+<ApplicationTypeRevision>10.0</ApplicationTypeRevision>\n   \
+<MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>\n   \
+<AppContainerApplication>true</AppContainerApplication>\n   \
+<WindowsTargetPlatformVersion>${sdk_max_ver}</WindowsTargetPlatformVersion>\n   \
+<WindowsTargetPlatformMinVersion>${sdk_max_ver}</WindowsTargetPlatformMinVersion>"
+
+    set uwp_generate_metadata        "<GenerateWindowsMetadata>false</GenerateWindowsMetadata>"
+
+    regsub -all -- {[\r\n\s]*<BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>} ${theProjTmpl} "" theProjTmpl
+  } else {
+    set format_template "\[\\r\\n\\s\]*"
+  }
+
+  regsub -all -- "${format_template}__UWP_PROPERTIES__"        ${theProjTmpl} "${uwp_properties}" theProjTmpl
+  regsub -all -- "${format_template}__UWP_GENERATE_METADATA__" ${theProjTmpl} "${uwp_generate_metadata}" theProjTmpl
+
+  return ${theProjTmpl}
 }

@@ -28,6 +28,8 @@ if /I "%VCVER%" == "vc8" (
   set "VisualStudioExpressName=WDExpress"
 ) else if /I "%VCVER%" == "vc14" (
   set "DevEnvDir=%VS140COMNTOOLS%..\IDE"
+) else if /I "%VCVER%" == "vc14-uwp" (
+  set "DevEnvDir=%VS140COMNTOOLS%..\IDE"
 ) else (
   echo Error: wrong VS identifier
   exit /B
