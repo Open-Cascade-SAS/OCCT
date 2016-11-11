@@ -108,20 +108,24 @@ bool OpenGl_Layer::Remove (const OpenGl_Structure* theStruct,
 
       if (!isForChangePriority)
       {
-        if (theStruct->IsAlwaysRendered())
+        Standard_Boolean isAlwaysRend = theStruct->IsAlwaysRendered();
+        if (!isAlwaysRend)
+        {
+          if (!myBVHPrimitives.Remove (theStruct))
+          {
+            if (!myBVHPrimitivesTrsfPers.Remove (theStruct))
+            {
+              isAlwaysRend = Standard_True;
+            }
+          }
+        }
+        if (isAlwaysRend)
         {
           const Standard_Integer anIndex2 = myAlwaysRenderedMap.FindIndex (theStruct);
           if (anIndex2 != 0)
           {
             myAlwaysRenderedMap.Swap (myAlwaysRenderedMap.Size(), anIndex2);
             myAlwaysRenderedMap.RemoveLast();
-          }
-        }
-        else
-        {
-          if (!myBVHPrimitives.Remove (theStruct))
-          {
-            myBVHPrimitivesTrsfPers.Remove (theStruct);
           }
         }
       }

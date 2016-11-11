@@ -1,0 +1,18 @@
+puts "==========="
+puts "OCC28093"
+puts "Visualization - access violation on removal of dynamic highlighting after device loss"
+puts "==========="
+puts ""
+
+pload MODELING VISUALIZATION
+box b 1 2 3
+vclear
+vinit View1
+vdisplay -dispMode 1 -highMode 1 b
+vfit
+
+vmoveto 250 250
+vraytrace 1
+vmoveto 400 400
+
+vdump $imagedir/${casename}.png
