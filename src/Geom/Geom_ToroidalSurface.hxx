@@ -147,7 +147,7 @@ public:
   Standard_EXPORT Standard_Real Area() const;
   
   //! Returns the parametric bounds U1, U2, V1 and V2 of this torus.
-  //! For a torus: U1 = V1 = 0 and V1 = V2 = 2*PI .
+  //! For a torus: U1 = V1 = 0 and U2 = V2 = 2*PI .
   Standard_EXPORT void Bounds (Standard_Real& U1, Standard_Real& U2, Standard_Real& V1, Standard_Real& V2) const Standard_OVERRIDE;
   
 
