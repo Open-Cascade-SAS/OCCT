@@ -20,3 +20,5 @@ XmlMDataXtd_PositionDriver.hxx
 XmlMDataXtd_PositionDriver.cxx
 XmlMDataXtd_PresentationDriver.hxx
 XmlMDataXtd_PresentationDriver.cxx
+XmlMDataXtd_TriangulationDriver.cxx
+XmlMDataXtd_TriangulationDriver.hxx

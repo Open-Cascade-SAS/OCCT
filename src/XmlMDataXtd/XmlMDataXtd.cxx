@@ -25,6 +25,7 @@
 #include <XmlMDataXtd_PlaneDriver.hxx>
 #include <XmlMDataXtd_PointDriver.hxx>
 #include <XmlMDataXtd_ShapeDriver.hxx>
+#include <XmlMDataXtd_TriangulationDriver.hxx>
 #include <XmlMDF_ADriverTable.hxx>
 
 #include <XmlMDataXtd_PresentationDriver.hxx>
@@ -46,6 +47,7 @@ void XmlMDataXtd::AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable,
   aDriverTable->AddDriver(new XmlMDataXtd_ConstraintDriver    (anMsgDrv));
   aDriverTable->AddDriver(new XmlMDataXtd_PlacementDriver     (anMsgDrv));
   aDriverTable->AddDriver(new XmlMDataXtd_PatternStdDriver    (anMsgDrv));
+  aDriverTable->AddDriver(new XmlMDataXtd_TriangulationDriver (anMsgDrv));
 
   aDriverTable->AddDriver(new XmlMDataXtd_PresentationDriver  (anMsgDrv));
   aDriverTable->AddDriver(new XmlMDataXtd_PositionDriver      (anMsgDrv));

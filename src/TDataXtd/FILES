@@ -27,3 +27,5 @@ TDataXtd_Presentation.hxx
 TDataXtd_Presentation.cxx
 TDataXtd_Shape.cxx
 TDataXtd_Shape.hxx
+TDataXtd_Triangulation.cxx
+TDataXtd_Triangulation.hxx

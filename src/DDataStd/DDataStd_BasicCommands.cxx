@@ -32,6 +32,7 @@
 #include <TDF_AttributeList.hxx>
 #include <TDF_ListIteratorOfAttributeList.hxx>
 
+#include <BRep_Tool.hxx>
 #include <DBRep.hxx>
 #include <TopAbs.hxx>
 #include <TopoDS.hxx>
@@ -52,6 +53,7 @@
 
 // LES ATTRIBUTES
 #include <TDataStd.hxx>
+#include <TDataXtd_Triangulation.hxx>
 #include <TDataStd_Comment.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_Integer.hxx>
@@ -3814,6 +3816,94 @@ static Standard_Integer DDataStd_GetRefArrayValue (Draw_Interpretor& di,
 } 
 
 //=======================================================================
+//function : DDataStd_SetTriangulation
+//purpose  : SetTriangulation (DF, entry, face)
+//=======================================================================
+
+static Standard_Integer DDataStd_SetTriangulation (Draw_Interpretor& di,
+                                                   Standard_Integer nb,
+                                                   const char** arg)
+{
+  if (nb == 4)
+  {
+    Handle(TDF_Data) DF;
+    if (!DDF::GetDF(arg[1],DF))
+      return 1;
+
+    TDF_Label L;
+    if (!DDF::AddLabel(DF, arg[2], L))
+      return 1;
+
+    // Get face.
+    TopoDS_Shape face = DBRep::Get(arg[3]);
+    if (face.IsNull() ||
+        face.ShapeType() != TopAbs_FACE)
+    {
+      di << "The face is null or not a face.\n";
+      return 1;
+    }
+
+    // Get triangulation of the face.
+    TopLoc_Location loc;
+    Handle(Poly_Triangulation) tris = BRep_Tool::Triangulation(TopoDS::Face(face), loc);
+    if (tris.IsNull())
+    {
+      di << "No triangulation in the face.\n";
+      return 1;
+    }
+
+    // Set the attribute.
+    TDataXtd_Triangulation::Set(L, tris);
+    return 0;
+  }
+  di << "DDataStd_SetTriangulation : Error\n";
+  return 1;
+}
+
+//=======================================================================
+//function : DDataStd_DumpTriangulation
+//purpose  : DumpTriangulation (DF, entry)
+//=======================================================================
+
+static Standard_Integer DDataStd_DumpMesh (Draw_Interpretor& di,
+                                           Standard_Integer nb,
+                                           const char** arg)
+{
+  if (nb == 3)
+  {
+    Handle(TDF_Data) DF;
+    if (!DDF::GetDF(arg[1],DF))
+      return 1;
+
+    Handle(TDataXtd_Triangulation) PT;
+    if (!DDF::Find(DF,arg[2], TDataXtd_Triangulation::GetID(), PT))
+    {
+      di << "The attribute doesn't exist at the label.\n";
+      return 1;
+    }
+
+    // Dump of the triangulation.
+    if (PT->Get().IsNull())
+    {
+      di << "No triangulation in the attribute.\n";
+      return 1;
+    }
+
+    di << "Deflection            " << PT->Deflection() <<"\n";
+    di << "Number of nodes       " << PT->NbNodes() << "\n";
+    di << "Number of triangles   " << PT->NbTriangles() << "\n";
+    if (PT->HasUVNodes())
+        di << "It has 2d-nodes\n";
+    if (PT->HasNormals())
+        di << "It has normals\n";
+
+    return 0;
+  }
+  di << "DDataStd_DumpTriangulation : Error\n";
+  return 1;
+}
+
+//=======================================================================
 //function : BasicCommands
 //purpose  : 
 //=======================================================================
@@ -3929,6 +4019,13 @@ void DDataStd::BasicCommands (Draw_Interpretor& theCommands)
    theCommands.Add ("SetReferenceList", 
                    "SetReferenceList (DF, entry, elmt1, elmt2, ...  )",
                    __FILE__, DDataStd_SetReferenceList, g);
+
+  theCommands.Add ("SetTriangulation", 
+                   "SetTriangulation (DF, entry, face) - adds label with passed entry to \
+                    DF and put an attribute with the triangulation from passed face",
+                   __FILE__, DDataStd_SetTriangulation, g);
+
+   // Insert before and after (for lists)
 
    theCommands.Add ("InsertBeforeExtStringList", 
                    "InsertBeforeExtStringList (DF, entry, index, value )",
@@ -4236,6 +4333,10 @@ void DDataStd::BasicCommands (Draw_Interpretor& theCommands)
 
 //=========================================================
 
+   theCommands.Add ("DumpTriangulation", 
+                   "DumpTriangulations (DF, entry) - dumps info about triangulation that \
+                    stored in DF in triangulation attribute of a label with the passed entry",
+                    __FILE__, DDataStd_DumpMesh, g);
 
 //======================================================================
 //======= for internal use

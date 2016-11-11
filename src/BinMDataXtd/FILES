@@ -20,3 +20,5 @@ BinMDataXtd_PresentationDriver.hxx
 BinMDataXtd_PresentationDriver.cxx
 BinMDataXtd_PositionDriver.hxx
 BinMDataXtd_PositionDriver.cxx
+BinMDataXtd_TriangulationDriver.cxx
+BinMDataXtd_TriangulationDriver.hxx

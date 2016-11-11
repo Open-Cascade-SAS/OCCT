@@ -1,0 +1,70 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDataStd_Triangulation
+#
+# Testing command:   SetTriangulation
+# Testing command:   DumpTriangulation
+#
+
+puts "caf001-N1"
+set FileName_1 $imagedir/caf001-N1_1.cbf
+set FileName_2 $imagedir/caf001-N1_2.cbf
+
+# Make a box and produce triangulation
+psphere s 10
+explode s f
+incmesh s_1 10 -a 90
+
+# Set triangulation from the box's face
+Format D BinOcaf
+SetTriangulation D 0:1 s_1
+CommitCommand D
+
+# Save document on disk.
+# First transaction before Undo/Redo
+SaveAs D $FileName_1
+
+incmesh s_1 1 -a 15
+
+OpenCommand D
+SetTriangulation D 0:1 s_1
+CommitCommand D
+
+# Save document on disk.
+# Second transaction before Undo/Redo
+SaveAs D $FileName_2
+
+# Test Undo/Redo.
+Undo D
+
+# Print the mesh data after first transaction
+set dump1_bfr [DumpTriangulation D 0:1]
+
+Redo D
+
+# Print the mesh data after second transaction
+set dump2_bfr [DumpTriangulation D 0:1]
+
+Close D
+
+# Restore data after first and second transactions
+Open $FileName_1 D_1
+Open $FileName_2 D_2
+
+set dump1_aft [DumpTriangulation D_1 0:1]
+set dump2_aft [DumpTriangulation D_2 0:1]
+
+Close D_1
+Close D_2
+
+# Check data
+if { ${dump1_bfr}!=${dump1_aft} } {
+  puts "TDataStd_Triangulation attribute: Error"
+  return
+}
+if { ${dump2_bfr}!=${dump2_aft} } {
+  puts "TDataStd_Triangulation attribute: Error"
+  return
+}
+puts "TDataStd_Triangulation attribute: OK"

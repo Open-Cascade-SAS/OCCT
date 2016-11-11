@@ -34,7 +34,7 @@ class TDataXtd_Plane;
 class TDataXtd_Pattern;
 class TDataXtd_PatternStd;
 class TDataXtd_Shape;
-
+class TDataXtd_Triangulation;
 
 //! This  package  defines  extension of standard attributes for
 //! modelling  (mainly for work with geometry).
@@ -84,6 +84,7 @@ friend class TDataXtd_Plane;
 friend class TDataXtd_Pattern;
 friend class TDataXtd_PatternStd;
 friend class TDataXtd_Shape;
+friend class TDataXtd_Triangulation;
 
 };
 

@@ -31,7 +31,7 @@ class BinMDataXtd_ConstraintDriver;
 class BinMDataXtd_PlacementDriver;
 class BinMDataXtd_PatternStdDriver;
 class BinMDataXtd_ShapeDriver;
-
+class BinMDataXtd_TriangulationDriver;
 
 //! Storage and Retrieval drivers for modelling attributes.
 class BinMDataXtd 
@@ -70,6 +70,7 @@ friend class BinMDataXtd_ConstraintDriver;
 friend class BinMDataXtd_PlacementDriver;
 friend class BinMDataXtd_PatternStdDriver;
 friend class BinMDataXtd_ShapeDriver;
+friend class BinMDataXtd_TriangulationDriver;
 
 };
 
