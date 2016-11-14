@@ -16,12 +16,11 @@
 #ifndef _IVtkDraw_HeaderFile
 #define _IVtkDraw_HeaderFile
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
 
 class Draw_Interpretor;
-class MMgt_TShared;
 
 class IVtkDraw
 {
@@ -38,7 +37,7 @@ public:
   Standard_EXPORT   static  void Commands (Draw_Interpretor& theCommands);
 
 private:
-  Standard_EXPORT   static const Handle(MMgt_TShared)& WClass();
+  Standard_EXPORT   static const Handle(Standard_Transient)& WClass();
 };
 
 #endif

@@ -17,12 +17,12 @@
 #ifdef _WIN32
 
 
-#define COMMANDCLASS "COMMANDWINDOW"
-#define COMMANDTITLE "Command Window"
+#define COMMANDCLASS L"COMMANDWINDOW"
+#define COMMANDTITLE L"Command Window"
 
 
 HWND CreateCommandWindow(HWND, int);
-LONG APIENTRY CommandProc(HWND, UINT, WPARAM, LONG);
+LRESULT APIENTRY CommandProc(HWND, UINT, WPARAM, LPARAM);
 BOOL CommandCreateProc(HWND);
 VOID CommandDestroyProc(HWND);
 BOOL CommandHandler(HWND, WPARAM, LPARAM);

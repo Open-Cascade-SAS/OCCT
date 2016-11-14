@@ -1154,7 +1154,7 @@ proc osutils:vcproj:readtemplate {theVcVer isexec} {
   set aVerExt "v${aVerExt}0"
   set aCmpl32 ""
   set aCmpl64 ""
-  set aCharSet "MultiByte"
+  set aCharSet "Unicode"
   if { $isexec } {
     set anExt "${anExt}x"
     set what "$what executable"
@@ -1175,7 +1175,6 @@ proc osutils:vcproj:readtemplate {theVcVer isexec} {
       }
       set aCmpl${bitness} "[set aCmpl${bitness}]${indent}${UwpWinRt}"
     }
-    set aCharSet "Unicode"
   }
 
   foreach bitness {32 64} {

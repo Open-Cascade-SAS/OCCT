@@ -14,7 +14,6 @@
 
 #ifndef _WIN32
 
-
 #include <OSD_Environment.hxx>
 #include <OSD_OSDError.hxx>
 #include <OSD_WhoAmI.hxx>
@@ -234,19 +233,15 @@ Standard_Integer OSD_Environment::Error() const
 //------------------------------------------------------------------------
 
 #define STRICT
+#include <windows.h>
+
 #include <OSD_Environment.hxx>
 
 #include <OSD_WNT.hxx>
 
-#include <windows.h>
-
 #include <NCollection_DataMap.hxx>
 #include <NCollection_UtfString.hxx>
 #include <Standard_Mutex.hxx>
-
-#if defined(_MSC_VER)
-  #pragma warning( disable : 4700 )
-#endif
 
 #ifdef OCCT_UWP
 namespace
@@ -381,28 +376,22 @@ Standard_Integer OSD_Environment :: Error () const {
 }  // end OSD_Environment :: Error
 
 #ifndef OCCT_UWP
-static void __fastcall _set_error ( OSD_Error& err, DWORD code ) {
-
- DWORD              errCode;
- Standard_Character buffer[ 2048 ];
-
- errCode = code ? code : GetLastError ();
-
- if (  !FormatMessage (
-         FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ARGUMENT_ARRAY,
-         0, errCode, MAKELANGID( LANG_NEUTRAL, SUBLANG_NEUTRAL ),
-         buffer, 2048, NULL
-        )
- ) {
- 
-  sprintf ( buffer, "error code %d", (Standard_Integer)errCode );
-  SetLastError ( errCode );
-
- }  // end if
-
- err.SetValue ( errCode, OSD_WEnvironment, buffer );
-
-}  // end _set_error
+static void __fastcall _set_error (OSD_Error& theErr, DWORD theCode)
+{
+  wchar_t aBuffer[2048];
+  const DWORD anErrCode = theCode != 0 ? theCode : GetLastError();
+  if (!FormatMessageW (FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ARGUMENT_ARRAY,
+                       0, anErrCode, MAKELANGID( LANG_NEUTRAL, SUBLANG_NEUTRAL ),
+                       aBuffer, 2048, NULL))
+  {
+    theErr.SetValue (anErrCode, OSD_WEnvironment, TCollection_AsciiString ("error code ") + (Standard_Integer)anErrCode);
+    SetLastError (anErrCode);
+  }
+  else
+  {
+    theErr.SetValue (anErrCode, OSD_WEnvironment, TCollection_AsciiString (aBuffer));
+  }
+}
 #endif
 
 #endif

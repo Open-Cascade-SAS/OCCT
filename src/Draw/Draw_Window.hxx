@@ -19,6 +19,7 @@
 
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
 
@@ -116,8 +117,8 @@ class Draw_Window
     Standard_Integer HeightWin() const;
     Standard_Integer WidthWin() const;
 
-    void SetTitle(const char* title);
-    char* GetTitle();
+    void SetTitle (const TCollection_AsciiString& theTitle);
+    TCollection_AsciiString GetTitle() const;
 
     void DisplayWindow();
     void Hide();
@@ -281,8 +282,8 @@ class Draw_Window
   Standard_Integer HeightWin() const;
   Standard_Integer WidthWin()  const;
 
-  void  SetTitle (Standard_CString theTitle);
-  Standard_CString GetTitle ();
+  void  SetTitle (const TCollection_AsciiString& theTitle);
+  TCollection_AsciiString GetTitle() const;
 
   void DisplayWindow();
   void Hide();
@@ -353,8 +354,8 @@ void GetNextEvent (Standard_Boolean  theWait,
 
 #include <windows.h>
 
-#define DRAWCLASS "DRAWWINDOW"
-#define DRAWTITLE "Draw View"
+#define DRAWCLASS L"DRAWWINDOW"
+#define DRAWTITLE L"Draw View"
 #define MAXCOLOR  15
 
 #if !defined(__Draw_API) && !defined(HAVE_NO_DLL)
@@ -443,8 +444,8 @@ public:
   __Draw_API Standard_Integer WidthWin()  const;
 
   //Title
-  __Draw_API void SetTitle(const char*);
-  __Draw_API char* GetTitle();
+  __Draw_API void SetTitle (const TCollection_AsciiString& );
+  __Draw_API TCollection_AsciiString GetTitle() const;
 
   //Affichage
   __Draw_API void DisplayWindow();

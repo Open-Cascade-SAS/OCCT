@@ -78,21 +78,27 @@ Standard_EXPORT Standard_Boolean Draw_Interprete(const char* command);
 // *******************************************************************
 #ifdef _WIN32
 extern console_semaphore_value volatile console_semaphore;
-extern char console_command[1000];
+extern wchar_t console_command[1000];
 #endif
 
 static void ReadInitFile (const TCollection_AsciiString& theFileName)
 {
   TCollection_AsciiString aPath = theFileName;
 #ifdef _WIN32
-  if (!Draw_Batch) {
-    try {
+  if (!Draw_Batch)
+  {
+    try
+    {
       aPath.ChangeAll ('\\', '/');
-
-      Sprintf(console_command, "source \"%.980s\"", aPath.ToCString());
+      {
+        const TCollection_ExtendedString aCmdWide = TCollection_ExtendedString ("source -encoding utf-8 \"") + TCollection_ExtendedString (aPath) + "\"";
+        memcpy (console_command, aCmdWide.ToWideString(), Min (aCmdWide.Length() + 1, 980) * sizeof(wchar_t));
+      }
       console_semaphore = HAS_CONSOLE_COMMAND;
       while (console_semaphore == HAS_CONSOLE_COMMAND)
+      {
         Sleep(10);
+      }
     }
     catch(...) {
       cout << "Error while reading a script file." << endl;
@@ -100,8 +106,8 @@ static void ReadInitFile (const TCollection_AsciiString& theFileName)
     }
   } else {
 #endif
-    char* com = new char [aPath.Length() + strlen ("source ") + 2];
-    Sprintf (com, "source %s", aPath.ToCString());
+    char* com = new char [aPath.Length() + strlen ("source -encoding utf-8 ") + 2];
+    Sprintf (com, "source -encoding utf-8 %s", aPath.ToCString());
     Draw_Interprete (com);
     delete [] com;
 #ifdef _WIN32
@@ -140,32 +146,31 @@ void exitProc(ClientData /*dc*/)
 // main
 // *******************************************************************
 #ifdef _WIN32
-//Standard_EXPORT void Draw_Appli(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lps
-Standard_EXPORT void Draw_Appli(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszLine, int nShow,const FDraw_InitAppli Draw_InitAppli)
+Standard_EXPORT void Draw_Appli(HINSTANCE hInst, HINSTANCE hPrevInst, int nShow, int argc, wchar_t** argv, const FDraw_InitAppli Draw_InitAppli)
 #else
-void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_InitAppli)
+void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
 #endif
 {
 
 // prepend extra DLL search path to override system libraries like opengl32.dll
 #ifdef _WIN32
   OSD_Environment aUserDllEnv ("CSF_UserDllPath");
-  TCollection_AsciiString aUserDllPath = aUserDllEnv.Value();
+  const TCollection_ExtendedString aUserDllPath (aUserDllEnv.Value());
   if (!aUserDllPath.IsEmpty())
   {
     // This function available since Win XP SP1 #if (_WIN32_WINNT >= 0x0502).
     // We retrieve dynamically here (kernel32 should be always preloaded).
-    typedef BOOL (WINAPI *SetDllDirectoryA_t)(const char* thePathName);
-    HMODULE aKern32Module = GetModuleHandleA ("kernel32");
-    SetDllDirectoryA_t aFunc = (aKern32Module != NULL)
-                             ? (SetDllDirectoryA_t )GetProcAddress (aKern32Module, "SetDllDirectoryA") : NULL;
+    typedef BOOL (WINAPI *SetDllDirectoryW_t)(const wchar_t* thePathName);
+    HMODULE aKern32Module = GetModuleHandleW (L"kernel32");
+    SetDllDirectoryW_t aFunc = (aKern32Module != NULL)
+                             ? (SetDllDirectoryW_t )GetProcAddress (aKern32Module, "SetDllDirectoryW") : NULL;
     if (aFunc != NULL)
     {
-      aFunc (aUserDllPath.ToCString());
+      aFunc (aUserDllPath.ToWideString());
     }
     else
     {
-      //std::cerr << "SetDllDirectoryA() is not available on this system!\n";
+      //std::cerr << "SetDllDirectoryW() is not available on this system!\n";
     }
     if (aKern32Module != NULL)
     {
@@ -179,64 +184,71 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
   // *****************************************************************
   Draw_Batch = Standard_False;
   TCollection_AsciiString aRunFile, aCommand;
-  Standard_Integer i;
   Standard_Boolean isInteractiveForced = Standard_False;
 
-#ifdef _WIN32
-  // On NT command line arguments are in the lpzline and not in argv
-  int argc = 0;
-  const int MAXARGS = 1024;
-  const char* argv[MAXARGS];
-  for (const char* p = strtok(lpszLine, " \t"); p != NULL; p = strtok(NULL, " \t")) {
-    argv[argc++] = p;
-  }
-#endif
-
   // parse command line
-  for (i = 1; i < argc; i++) {
-    if (strcasecmp (argv[i], "-h") == 0 || strcasecmp (argv[i], "--help") == 0)
+  for (int anArgIter = 1; anArgIter < argc; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (argv[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "-h"
+     || anArg == "--help")
     {
-      cout << "Open CASCADE " << OCC_VERSION_STRING_EXT << " DRAW Test Harness" << endl << endl;
-      cout << "Options: " << endl;
-      cout << "  -b: batch mode (no GUI, no viewers)" << endl;
-      cout << "  -v: no GUI, use virtual (off-screen) windows for viewers" << endl;
-      cout << "  -i: interactive mode" << endl;
-      cout << "  -f file: execute script from file" << endl;
-      cout << "  -c command args...: execute command (with optional arguments)" << endl << endl;
-      cout << "Options -b, -v, and -i are mutually exclusive." << endl;
-      cout << "If -c or -f are given, -v is default; otherwise default is -i." << endl;
-      cout << "Options -c and -f are alternatives and should be at the end " << endl;
-      cout << "of the command line. " << endl;
-      cout << "Option -c can accept set of commands separated by ';'." << endl;
+      std::cout << "Open CASCADE " << OCC_VERSION_STRING_EXT << " DRAW Test Harness\n\n";
+      std::cout << "Options:\n";
+      std::cout << "  -b: batch mode (no GUI, no viewers)\n";
+      std::cout << "  -v: no GUI, use virtual (off-screen) windows for viewers\n";
+      std::cout << "  -i: interactive mode\n";
+      std::cout << "  -f file: execute script from file\n";
+      std::cout << "  -c command args...: execute command (with optional arguments)\n\n";
+      std::cout << "Options -b, -v, and -i are mutually exclusive.\n";
+      std::cout << "If -c or -f are given, -v is default; otherwise default is -i.\n";
+      std::cout << "Options -c and -f are alternatives and should be at the end \n";
+      std::cout << "of the command line.\n";
+      std::cout << "Option -c can accept set of commands separated by ';'.\n";
       return;
     }
-    else if (strcasecmp (argv[i], "-b") == 0)
+    else if (anArg == "-b")
+    {
       Draw_Batch = Standard_True;
-    else if (strcasecmp (argv[i], "-v") == 0) {
+    }
+    else if (anArg == "-v")
+    {
       // force virtual windows
       Draw_VirtualWindows = Standard_True;
-    } else if (strcasecmp (argv[i], "-i") == 0) {
+    }
+    else if (anArg == "-i")
+    {
       // force interactive
       Draw_VirtualWindows = Standard_False;
       isInteractiveForced = Standard_True;
-    } else if (strcasecmp (argv[i], "-f") == 0) { // -f option should be LAST!
+    }
+    else if (anArg == "-f") // -f option should be LAST!
+    {
       Draw_VirtualWindows = !isInteractiveForced;
-      if (++i < argc) {
-        aRunFile = TCollection_AsciiString (argv[i]);
+      if (++anArgIter < argc)
+      {
+        aRunFile = TCollection_AsciiString (argv[anArgIter]);
       }
       break;
-    } else if (strcasecmp (argv[i], "-c") == 0) { // -c option should be LAST!
+    }
+    else if (anArg == "-c") // -c option should be LAST!
+    {
       Draw_VirtualWindows = !isInteractiveForced;
-      if (++i < argc) {
-        aCommand = TCollection_AsciiString (argv[i]);
+      if (++anArgIter < argc)
+      {
+        aCommand = TCollection_AsciiString (argv[anArgIter]);
       }
-      while (++i < argc) {
+      while (++anArgIter < argc)
+      {
         aCommand.AssignCat (" ");
-        aCommand.AssignCat (argv[i]);
+        aCommand.AssignCat (argv[anArgIter]);
       }
       break;
-    } else {
-      cout << "Error: unsupported option " << argv[i] << endl;
+    }
+    else
+    {
+      std::cout << "Error: unsupported option " << TCollection_AsciiString (argv[anArgIter]) << "\n";
     }
   }
 
@@ -268,11 +280,15 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
     cout << "DRAW is running in batch mode" << endl;
 
   XLoop = !Draw_Batch;
-  if (XLoop) {
+  if (XLoop)
+  {
     // Default colors
-    for (i=0;i<MAXCOLOR;i++) {
-      if (!dout.DefineColor(i,ColorNames[i]))
-	cout <<"Could not allocate default color "<<ColorNames[i]<<endl;
+    for (int i = 0; i < MAXCOLOR; ++i)
+    {
+      if (!dout.DefineColor (i, ColorNames[i]))
+      {
+        std::cout <<"Could not allocate default color " << ColorNames[i] << std::endl;
+      }
     }
   }
 
@@ -366,7 +382,7 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
     for (;;)
     {
       cout << "Viewer>";
-      i = -1;
+      int i = -1;
       do {
         cin.get(cmd[++i]);
       } while ((cmd[i] != '\n') && (!cin.fail()));
@@ -396,7 +412,10 @@ Standard_Boolean Draw_Interprete(const char* com)
     Tcl_DStringInit(&command);
   }
 
-#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 1)))
+#ifdef _WIN32
+  // string is already converted into UTF-8
+  Tcl_DStringAppend(&command, com, -1);
+#elif ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 1)))
   // OCC63: Since Tcl 8.1 it uses UTF-8 encoding for internal representation of strings
   Tcl_ExternalToUtfDString ( NULL, com, -1, &command );
 #else
@@ -435,7 +454,14 @@ Standard_Boolean Draw_Interprete(const char* com)
   dout.Flush();
 
   if (*theCommands.Result())
-    cout << theCommands.Result() << endl;
+  {
+  #ifdef _WIN32
+    const TCollection_ExtendedString aResWide (theCommands.Result());
+    std::wcout << aResWide.ToWideString() << std::endl;
+  #else
+    std::cout << theCommands.Result() << std::endl;
+  #endif
+  }
 
   if (Draw_Chrono && hadchrono) {
     tictac.Stop();

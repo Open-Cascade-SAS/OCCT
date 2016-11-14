@@ -251,15 +251,15 @@ Standard_Integer GenerateId()
 // Function : WClass
 // Purpose  :
 //=========================================================
-const Handle(MMgt_TShared)& IVtkDraw::WClass()
+const Handle(Standard_Transient)& IVtkDraw::WClass()
 {
-  static Handle(MMgt_TShared) aWindowClass;
+  static Handle(Standard_Transient) aWindowClass;
 #ifdef _WIN32
   if (aWindowClass.IsNull())
   {
     aWindowClass = new WNT_WClass ("GWVTK_Class", DefWindowProc,
                                    CS_VREDRAW | CS_HREDRAW, 0, 0,
-                                   ::LoadCursor (NULL, IDC_ARROW));
+                                   ::LoadCursorW (NULL, IDC_ARROW));
   }
 #endif
   return aWindowClass;

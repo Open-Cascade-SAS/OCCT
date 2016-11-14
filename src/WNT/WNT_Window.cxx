@@ -22,13 +22,11 @@
 #include <Aspect_Convert.hxx>
 #include <Aspect_WindowDefinitionError.hxx>
 #include <Aspect_WindowError.hxx>
-#include <Image_AlienPixMap.hxx>
 #include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <WNT_WClass.hxx>
 
-#include <stdio.h>
-
-IMPLEMENT_STANDARD_RTTIEXT(WNT_Window,Aspect_Window)
+IMPLEMENT_STANDARD_RTTIEXT(WNT_Window, Aspect_Window)
 
 // =======================================================================
 // function : WNT_Window
@@ -53,45 +51,43 @@ WNT_Window::WNT_Window (const Standard_CString           theTitle,
   myWClass (theClass),
   myIsForeign (Standard_False)
 {
-  DWORD dwStyle = theStyle;
-
   if (thePxWidth <= 0 || thePxHeight <= 0)
   {
     Aspect_WindowDefinitionError::Raise ("Coordinate(s) out of range");
   }
 
+  DWORD aStyle = theStyle;
   if (theParent && !(theStyle & WS_CHILD))
   {
-    dwStyle |= WS_CHILD | WS_CLIPSIBLINGS;
+    aStyle |= WS_CHILD | WS_CLIPSIBLINGS;
   }
   else if (!theParent && !(theStyle & WS_CLIPCHILDREN))
   {
-    dwStyle |= WS_CLIPCHILDREN;
+    aStyle |= WS_CLIPCHILDREN;
   }
 
-  // include decorations in the window dimensions
-  // to reproduce same behaviour of Xw_Window.
+  // include decorations in the window dimensions to reproduce same behavior of Xw_Window
   RECT aRect;
   aRect.top    = aYTop;
   aRect.bottom = aYBottom;
   aRect.left   = aXLeft;
   aRect.right  = aXRight;
-  AdjustWindowRect (&aRect, dwStyle, theMenu != NULL ? TRUE : FALSE);
+  AdjustWindowRect (&aRect, aStyle, theMenu != NULL ? TRUE : FALSE);
   aXLeft   = aRect.left;
   aYTop    = aRect.top;
   aXRight  = aRect.right;
   aYBottom = aRect.bottom;
 
-  myHWindow = CreateWindow (
-              myWClass->Name(),                 // window's class name
-              theTitle,                         // window's name
-              dwStyle,                          // window's style
-              aXLeft, aYTop,                    // window's coordinates
-              (aXRight - aXLeft), (aYBottom - aYTop),
-              (HWND )theParent,                 // window's parent
-              (HMENU )theMenu,                  // window's menu
-              (HINSTANCE )myWClass->Instance(), // application's instance
-              theClientStruct);                 // pointer to CLIENTCREATESTRUCT
+  const TCollection_ExtendedString aTitleW (theTitle);
+  const TCollection_ExtendedString aClassNameW (myWClass->Name());
+  myHWindow = CreateWindowW (aClassNameW.ToWideString(), aTitleW.ToWideString(),
+                             aStyle,
+                             aXLeft, aYTop,
+                             (aXRight - aXLeft), (aYBottom - aYTop),
+                             (HWND )theParent,
+                             (HMENU )theMenu,
+                             (HINSTANCE )myWClass->Instance(),
+                             theClientStruct);
   if (!myHWindow)
   {
     Aspect_WindowDefinitionError::Raise ("Unable to create window");
@@ -146,7 +142,7 @@ WNT_Window::~WNT_Window()
 // =======================================================================
 void WNT_Window::SetCursor (const Aspect_Handle theCursor) const
 {
-  ::SetClassLongPtr ((HWND )myHWindow, GCLP_HCURSOR, (LONG_PTR )theCursor);
+  ::SetClassLongPtrW ((HWND )myHWindow, GCLP_HCURSOR, (LONG_PTR )theCursor);
 }
 
 // =======================================================================

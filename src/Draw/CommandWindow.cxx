@@ -17,50 +17,36 @@
 #ifdef _WIN32
 #include <windows.h>
 
-#define COMMANDCLASS "COMMANDWINDOW"
-#define COMMANDTITLE "Command Window"
-
 #include <CommandWindow.h>
 #include <Draw_Window.hxx>
 #include <MainWindow.h>
 #include <Draw_Appli.hxx>
-
-
-
-/****************************************************\
-*  CommandWindow.cxx :
-*
-\****************************************************/
-
-
+#include <TCollection_AsciiString.hxx>
 
 #define CLIENTWND 0
 
-#define PROMPT "Command >> "
+#define THE_PROMPT L"Command >> "
 #define COMMANDSIZE 1000 // Max nb of characters for a command
 
+Standard_Boolean Draw_Interprete (const char* command);
 
-// Definition of global variables
-#ifdef STRICT
-  WNDPROC OldEditProc;  // Save the standard procedure of the edition (sub-class)
-#else
-  FARPROC OldEditProc;
-#endif
+namespace
+{
+  // Definition of global variables
+  static WNDPROC OldEditProc;  // Save the standard procedure of the edition (sub-class)
+}
 
 /*--------------------------------------------------------*\
 |  CREATE COMMAND WINDOW PROCEDURE
 \*--------------------------------------------------------*/
 HWND CreateCommandWindow(HWND hWnd, int /*nitem*/)
 {
-  HINSTANCE       hInstance;
-  hInstance = (HINSTANCE)GetWindowLongPtr(hWnd,GWLP_HINSTANCE);
+  HINSTANCE hInstance = (HINSTANCE )GetWindowLongPtrW (hWnd, GWLP_HINSTANCE);
 
-	HWND hWndCommand = (CreateWindow(COMMANDCLASS, COMMANDTITLE,
-			    												WS_CLIPCHILDREN | WS_OVERLAPPED |
-			    												WS_THICKFRAME | WS_CAPTION	,
-			    												0, 0,
-			    												400, 100,
-			    												hWnd, NULL, hInstance, NULL));
+	HWND hWndCommand = CreateWindowW (COMMANDCLASS, COMMANDTITLE,
+                                    WS_CLIPCHILDREN | WS_OVERLAPPED | WS_THICKFRAME | WS_CAPTION,
+                                    0, 0, 400, 100,
+                                    hWnd, NULL, hInstance, NULL);
 
 	ShowWindow(hWndCommand, SW_SHOW);	
 	return hWndCommand;
@@ -72,46 +58,41 @@ HWND CreateCommandWindow(HWND hWnd, int /*nitem*/)
 \*--------------------------------------------------------*/
 LRESULT APIENTRY CommandProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam )
 {
-  HWND hWndEdit;
-  MINMAXINFO* lpmmi;
-
-  switch(wMsg)
+  switch (wMsg)
   {
-    case WM_CREATE :
-					CommandCreateProc(hWnd);
-					hWndEdit = (HWND)GetWindowLongPtr(hWnd, CLIENTWND);
-					SendMessage(hWndEdit,EM_REPLACESEL, 0,(LPARAM)PROMPT);
-					break;
-
-    case WM_GETMINMAXINFO :
-          lpmmi = (LPMINMAXINFO)lParam;
-          lpmmi->ptMinTrackSize.x = 200;
-          lpmmi->ptMinTrackSize.y = 50;           
-          break;
-
-    case WM_SIZE :
+    case WM_CREATE:
     {
-    			hWndEdit = (HWND)GetWindowLongPtr(hWnd, CLIENTWND);          
-    			MoveWindow(hWndEdit, 0, 0, LOWORD(lParam), HIWORD(lParam), TRUE);
-          // Place the cursor at the end of the buffer
-          // Nb of characters in the buffer of hWndEdit
-          LRESULT index = SendMessage(hWnd, WM_GETTEXTLENGTH, 0l, 0l);
-          SendMessage(hWnd, EM_SETSEL, index, index); 
-    			break;
+      CommandCreateProc (hWnd);
+      HWND hWndEdit = (HWND )GetWindowLongPtrW (hWnd, CLIENTWND);
+      SendMessageW (hWndEdit, EM_REPLACESEL, 0, (LPARAM )THE_PROMPT);
+      return 0;
     }
-
-    case WM_SETFOCUS :
-    			hWndEdit = (HWND)GetWindowLongPtr(hWnd, CLIENTWND);
-          SetFocus(hWndEdit);
-          break;
-
-    default :
-					return(DefWindowProc(hWnd, wMsg, wParam, lParam));
+    case WM_GETMINMAXINFO:
+    {
+      MINMAXINFO* lpmmi = (MINMAXINFO* )lParam;
+      lpmmi->ptMinTrackSize.x = 200;
+      lpmmi->ptMinTrackSize.y = 50;
+      return 0;
+    }
+    case WM_SIZE:
+    {
+      HWND hWndEdit = (HWND )GetWindowLongPtrW(hWnd, CLIENTWND);
+      MoveWindow (hWndEdit, 0, 0, LOWORD(lParam), HIWORD(lParam), TRUE);
+      // Place the cursor at the end of the buffer
+      // Nb of characters in the buffer of hWndEdit
+      LRESULT index = SendMessageW (hWnd, WM_GETTEXTLENGTH, 0l, 0l);
+      SendMessageW (hWnd, EM_SETSEL, index, index);
+      return 0;
+    }
+    case WM_SETFOCUS:
+    {
+      HWND hWndEdit = (HWND )GetWindowLongPtrW (hWnd, CLIENTWND);
+      SetFocus (hWndEdit);
+      return 0;
+    }
   }
-  return(0l);
+  return DefWindowProcW(hWnd, wMsg, wParam, lParam);
 }
-
-
 
 LRESULT APIENTRY EditProc(HWND, UINT, WPARAM, LPARAM);
 /*--------------------------------------------------------*\
@@ -119,138 +100,138 @@ LRESULT APIENTRY EditProc(HWND, UINT, WPARAM, LPARAM);
 \*--------------------------------------------------------*/
 BOOL CommandCreateProc(HWND hWnd)
 {
+  HINSTANCE hInstance = (HINSTANCE)GetWindowLongPtrW(hWnd, GWLP_HINSTANCE);
+  HWND hWndEdit = CreateWindowW (L"EDIT", NULL,
+                                 WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
+                                 0, 0, 0, 0,
+                                 hWnd, 0,
+                                 hInstance, NULL);
 
-  HINSTANCE hInstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
+  // Save hWndEdit in the extra memory in 0 of CommandWindow
+  if (hWndEdit != NULL)
+  {
+    SetWindowLongPtrW  (hWnd, CLIENTWND, (LONG_PTR )hWndEdit);
+  }
 
-  HWND hWndEdit = CreateWindow("EDIT",NULL,
-  			  WS_CHILD | WS_VISIBLE | WS_VSCROLL |
-  			  ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
-  			  0, 0, 0, 0,
-  			  hWnd, 0,
-  			  hInstance, NULL);
-
-    // Save hWndEdit in the extra memory in 0 of CommandWindow
-  if (hWndEdit)
-    SetWindowLongPtr(hWnd, CLIENTWND, (LONG_PTR)hWndEdit);
-
-    // Sub-Class of the window
-    //-------
-    // Save the pointer on the existing procedure
-  #ifdef STRICT
-    OldEditProc = (WNDPROC)GetWindowLongPtr(hWndEdit, GWLP_WNDPROC);
-  #else
-    OldEditProc = (FARPROC)GetWindowLongPtr(hWndEdit, GWLP_WNDPROC);
-  #endif
-    // Implement the new function
-  SetWindowLongPtr(hWndEdit, GWLP_WNDPROC, (LONG_PTR) EditProc);
-
-  return(TRUE);
+  // Sub-Class of the window
+  //-------
+  // Save the pointer on the existing procedure
+  OldEditProc = (WNDPROC )GetWindowLongPtrW (hWndEdit, GWLP_WNDPROC);
+  // Implement the new function
+  SetWindowLongPtrW (hWndEdit, GWLP_WNDPROC, (LONG_PTR) EditProc);
+  return TRUE;
 }
-
 
 /*--------------------------------------------------------*\
 |  GET COMMAND
 |    
 \*--------------------------------------------------------*/
-int GetCommand(HWND hWnd, char* buffer)
+int GetCommand (HWND hWnd, wchar_t* theBuffer)
 {
-  int again = 1;
-  char temp[COMMANDSIZE]="";
+  bool isAgain = true;
+  wchar_t aTempBuff[COMMANDSIZE] = L"";
 
-  int nbLine = (int )SendMessage(hWnd, EM_GETLINECOUNT, 0l, 0l);
-  
-  int nbChar = 0;
-  buffer[0]='\0';
-  while ( again && nbLine > -1 && nbChar < COMMANDSIZE-1)
-    {
-      strcat(buffer, strrev(temp));
-      // Initialization of the 1st WORD to the nb of characters to read 
-      WORD* nbMaxChar = (WORD*)temp;
-      *nbMaxChar = COMMANDSIZE-1;
+  int aNbLine = (int )SendMessageW (hWnd, EM_GETLINECOUNT, 0l, 0l);
+  int aNbChar = 0;
+  theBuffer[0] = L'\0';
+  while (isAgain && aNbLine > -1 && aNbChar < COMMANDSIZE - 1)
+  {
+    wcscat (theBuffer, _wcsrev (aTempBuff));
+    // Initialization of the 1st WORD to the nb of characters to read
+    WORD* aNbMaxChar = (WORD* )aTempBuff;
+    *aNbMaxChar = COMMANDSIZE - 1;
       
-      int nbCharRead = (int )SendMessage(hWnd, EM_GETLINE, nbLine-1, (LPARAM)temp);
-      nbChar += nbCharRead ;
-      int cmp = strncmp(temp, PROMPT, 10);
-      temp[nbCharRead]='\0';
-      if( cmp == 0 )
-	{
-	  strcat(buffer, strrev(temp));
-	  again = 0;
-	}
-      nbLine -= 1;
-    }	
-  strrev(buffer);
-  return nbChar;
+    const int aNbCharRead = (int )SendMessageW (hWnd, EM_GETLINE, aNbLine - 1, (LPARAM )aTempBuff);
+    aNbChar += aNbCharRead;
+    const bool isPromp = wcsncmp (aTempBuff, THE_PROMPT, 10) == 0;
+    aTempBuff[aNbCharRead]='\0';
+    if (isPromp)
+    {
+      wcscat (theBuffer, _wcsrev (aTempBuff));
+      isAgain = false;
+    }
+    aNbLine -= 1;
+  }
+  _wcsrev (theBuffer);
+  return aNbChar;
 }
 
 extern console_semaphore_value volatile console_semaphore;
-extern char console_command[1000];
+extern wchar_t console_command[1000];
 
 /*--------------------------------------------------------*\
 |  EDIT WINDOW PROCEDURE
 \*--------------------------------------------------------*/
 LRESULT APIENTRY EditProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam )
 {
-  char buffer[COMMANDSIZE];	
-	POINT pos;
-	BOOL rep = 0;
 	static LRESULT nbline; // Process the buffer of the edit window 
-  LRESULT index;
-
-  switch(wMsg)
+  switch (wMsg)
   {
-  case WM_CHAR :
-    if (console_semaphore != WAIT_CONSOLE_COMMAND)
-      return 0l;
-    			switch(LOWORD(wParam))
-    			{
-              // Overload of character \n
-    	  		case 0x0d :    	      
-									GetCommand(hWnd, buffer);									
-    	      			  // Standard processing
-			    	      CallWindowProc(OldEditProc, hWnd, wMsg, wParam, lParam);
-    				        // Display of PROMPT
-									rep = GetCaretPos(&pos);
-    	      			SendMessage(hWnd, EM_REPLACESEL, 0, (LPARAM)PROMPT);							
-                    // Display the command in the console
-                  cout << buffer << endl; 
-									/*if (Draw_Interprete(buffer+strlen(PROMPT))== -2)
-									    DestroyProc(hWnd); */ 
-									strcpy(console_command, buffer+strlen(PROMPT));
-									console_semaphore = HAS_CONSOLE_COMMAND;
-									  // Purge the buffer
-                  nbline = SendMessage(hWnd, EM_GETLINECOUNT, 0l, 0l);
-									if(nbline > 200)
-									{
-                      nbline = 0;
-											GetCommand(hWnd, buffer);
-                      index = SendMessage(hWnd, EM_LINEINDEX, 100, 0);
-											SendMessage(hWnd, EM_SETSEL, 0, index);			
-											SendMessage(hWnd, WM_CUT, 0, 0);
-                        // Place the cursor at the end of text
-                      index =  SendMessage(hWnd, WM_GETTEXTLENGTH, 0l, 0l);
-                      SendMessage(hWnd, EM_SETSEL, index, index);                      
-									}
-    				      return(0l);
-    	      			break;
-                default :
-                  if (IsAlphanumeric((Standard_Character)LOWORD(wParam)))
-                  {
-                      // Place the cursor at the end of text before display
-                    index =  SendMessage(hWnd, WM_GETTEXTLENGTH, 0l, 0l);
-                    SendMessage(hWnd, EM_SETSEL, index, index);
-                    CallWindowProc(OldEditProc, hWnd, wMsg, wParam, lParam);                    
-                    return 0l;
-                  }                  
-                  break;
-    			}       
-    			break;
-  case WM_KEYDOWN:
-    if (console_semaphore != WAIT_CONSOLE_COMMAND) 
-      return 0l;									
+    case WM_CHAR:
+    {
+      if (console_semaphore != WAIT_CONSOLE_COMMAND)
+      {
+        return 0;
+      }
+      switch (LOWORD(wParam))
+      {
+        // Overload of character \n
+        case 0x0d:
+        {
+          wchar_t aCmdBuffer[COMMANDSIZE];
+          GetCommand (hWnd, aCmdBuffer);
+          // Standard processing
+          CallWindowProcW (OldEditProc, hWnd, wMsg, wParam, lParam);
+          // Display of PROMPT
+          POINT pos;
+          GetCaretPos (&pos);
+          SendMessageW (hWnd, EM_REPLACESEL, 0, (LPARAM )THE_PROMPT);
+          // Display the command in the console
+          std::wcout << aCmdBuffer << std::endl;
+          //TCollection_AsciiString aCmdUtf8 (aCmdBuffer + sizeof(THE_PROMPT) / sizeof(wchar_t) - 1);
+          //Draw_Interprete (aCmdUtf8.ToCString());
+          //if (toExit) { DestroyProc (hWnd); }
+          wcscpy (console_command, aCmdBuffer + sizeof(THE_PROMPT) / sizeof(wchar_t) - 1);
+          console_semaphore = HAS_CONSOLE_COMMAND;
+          // Purge the buffer
+          nbline = SendMessageW (hWnd, EM_GETLINECOUNT, 0l, 0l);
+          if (nbline > 200)
+          {
+            nbline = 0;
+            GetCommand (hWnd, aCmdBuffer);
+            LRESULT index = SendMessageW (hWnd, EM_LINEINDEX, 100, 0);
+            SendMessageW (hWnd, EM_SETSEL, 0, index);
+            SendMessageW (hWnd, WM_CUT, 0, 0);
+            // Place the cursor at the end of text
+            index =  SendMessageW (hWnd, WM_GETTEXTLENGTH, 0l, 0l);
+            SendMessageW (hWnd, EM_SETSEL, index, index);
+          }
+          return 0;
+        }
+        default:
+        {
+          if (IsAlphanumeric ((Standard_Character)LOWORD(wParam)))
+          {
+            // Place the cursor at the end of text before display
+            LRESULT index =  SendMessageW (hWnd, WM_GETTEXTLENGTH, 0l, 0l);
+            SendMessageW (hWnd, EM_SETSEL, index, index);
+            CallWindowProcW (OldEditProc, hWnd, wMsg, wParam, lParam);
+            return 0;
+          }
+          break;
+        }
+      }
+      break;
+    }
+    case WM_KEYDOWN:
+    {
+      if (console_semaphore != WAIT_CONSOLE_COMMAND)
+      {
+        return 0;
+      }
+      break;
+    }
   }
-  return CallWindowProc(OldEditProc, hWnd, wMsg, wParam, lParam);
+  return CallWindowProcW (OldEditProc, hWnd, wMsg, wParam, lParam);
 }
 #endif
-
-

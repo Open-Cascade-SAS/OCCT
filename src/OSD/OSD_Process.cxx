@@ -14,7 +14,6 @@
 
 #ifndef _WIN32
 
-
 #include <OSD_Environment.hxx>
 #include <OSD_OSDError.hxx>
 #include <OSD_Path.hxx>
@@ -195,65 +194,60 @@ Standard_Integer OSD_Process::Error()const{
 #include <TCollection_ExtendedString.hxx>
 
 #include <OSD_WNT_1.hxx>
-#include <LMCONS.H> /// pour UNLEN  ( see MSDN about GetUserName() )
-
-#if defined(_MSC_VER)
-  #pragma warning( disable : 4700 )
-#endif
+#include <LMCONS.H> // for UNLEN - maximum user name length GetUserName()
 
 void _osd_wnt_set_error ( OSD_Error&, OSD_WhoAmI, ... );
 
-OSD_Process :: OSD_Process () {
+// =======================================================================
+// function : OSD_Process
+// purpose  :
+// =======================================================================
+OSD_Process::OSD_Process()
+{
+  //
+}
 
-}  // end constructor
-
-
-Standard_Integer OSD_Process::Spawn (const TCollection_AsciiString& cmd,
-			    const Standard_Boolean ShowWindow /* = Standard_True */) {
+// =======================================================================
+// function : Spawn
+// purpose  :
+// =======================================================================
+Standard_Integer OSD_Process::Spawn (const TCollection_AsciiString& theCmd,
+			                               const Standard_Boolean theToShowWindow)
+{
 #ifndef OCCT_UWP
- STARTUPINFO         si;
- PROCESS_INFORMATION pi;
- DWORD aRes = 0;
+  STARTUPINFOW aStartupInfo;
+  ZeroMemory (&aStartupInfo, sizeof(STARTUPINFO));
+  aStartupInfo.cb = sizeof(STARTUPINFO);
+  if (!theToShowWindow)
+  {
+    aStartupInfo.dwFlags     = STARTF_USESHOWWINDOW;
+    aStartupInfo.wShowWindow = SW_HIDE;
+  }
 
- ZeroMemory (  &si, sizeof ( STARTUPINFO )  );
+  DWORD aRes = 0;
+  TCollection_ExtendedString aCmdWide (theCmd);
+  wchar_t* aCmdWidePtr = const_cast<wchar_t*>(aCmdWide.ToWideString()); // CreateProcessW() can modify content of this string
+  PROCESS_INFORMATION aProcessInfo;
+  if (!CreateProcessW (NULL, aCmdWidePtr, NULL, NULL, TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &aStartupInfo, &aProcessInfo))
+  {
+    _osd_wnt_set_error (myError, OSD_WProcess);
+    aRes = myError.Error();
+  }
+  else
+  {
+    CloseHandle (aProcessInfo.hThread);
+    WaitForSingleObject (aProcessInfo.hProcess, INFINITE);
+    GetExitCodeProcess  (aProcessInfo.hProcess, &aRes);
+    CloseHandle (aProcessInfo.hProcess);
+  }
 
- si.cb = sizeof ( STARTUPINFO );
- //============================================
- //---> Added by Stephane Routelous ( stephane.routelous@altavista.net )	[16.03.01]
- //---> Reason : to allow to hide the window
- if ( !ShowWindow )
- {
-	 si.dwFlags		= STARTF_USESHOWWINDOW;
-	 si.wShowWindow	= SW_HIDE;	
- }
- //<--- End Added by Stephane Routelous ( stephane.routelous@altavista.net )	[16.03.01]
- //============================================
-
- if (!CreateProcess (
-      NULL, (char *)cmd.ToCString (), NULL, NULL, TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi
-                    )
- ) {
-
-  _osd_wnt_set_error ( myError, OSD_WProcess );
-  aRes = myError.Error();
- }
- else {
- 
-  CloseHandle ( pi.hThread );
-
-  WaitForSingleObject ( pi.hProcess, INFINITE );
-  GetExitCodeProcess (pi.hProcess, &aRes);
-  CloseHandle ( pi.hProcess );
- 
- }  // end else
-
- return aRes;
+  return aRes;
 #else
-  (void)cmd;
-  (void)ShowWindow;
+  (void )theCmd;
+  (void )theToShowWindow;
   return 0;
 #endif
-}  // end OSD_Process :: Spawn
+}
 
 void OSD_Process :: TerminalType ( TCollection_AsciiString& Name ) {
 
@@ -276,27 +270,26 @@ Quantity_Date OSD_Process :: SystemDate () {
 
 }  // end OSD_Process :: SystemDate
 
-TCollection_AsciiString OSD_Process :: UserName () 
+// =======================================================================
+// function : UserName
+// purpose  :
+// =======================================================================
+TCollection_AsciiString OSD_Process::UserName()
 {
 #ifndef OCCT_UWP
-	Standard_PCharacter pBuff = new char[UNLEN + 1];
-	DWORD                   dwSize = UNLEN + 1;
-	TCollection_AsciiString retVal;
-	if (  !GetUserName ( pBuff, &dwSize )  )
-	{
-		_osd_wnt_set_error ( myError, OSD_WProcess );
-	}
-	else
-	{
-		TCollection_AsciiString theTmpUserName(pBuff,(int)dwSize -1 );
-		retVal = theTmpUserName;
-	}
-	delete [] pBuff;
-	return retVal;
+  wchar_t aUserName[UNLEN + 1];
+  DWORD aNameSize = UNLEN + 1;
+  TCollection_AsciiString retVal;
+  if (!GetUserNameW (aUserName, &aNameSize))
+  {
+    _osd_wnt_set_error(myError, OSD_WProcess);
+    return TCollection_AsciiString();
+  }
+  return TCollection_AsciiString (aUserName);
 #else
-  return "";
+  return TCollection_AsciiString();
 #endif
-}  // end OSD_Process :: UserName
+}
 
 Standard_Boolean OSD_Process :: IsSuperUser () {
 #ifndef OCCT_UWP
@@ -341,31 +334,41 @@ Standard_Boolean OSD_Process :: IsSuperUser () {
 #endif
 }  // end OSD_Process :: IsSuperUser
 
-Standard_Integer OSD_Process :: ProcessId () {
+// =======================================================================
+// function : ProcessId
+// purpose  :
+// =======================================================================
+Standard_Integer OSD_Process::ProcessId()
+{
+  return (Standard_Integer )GetCurrentProcessId();
+}
 
- return ( Standard_Integer )GetCurrentProcessId ();
-
-}  // end OSD_Process :: ProcessId
-
-OSD_Path OSD_Process :: CurrentDirectory () {
+// =======================================================================
+// function : CurrentDirectory
+// purpose  :
+// =======================================================================
+OSD_Path OSD_Process::CurrentDirectory()
+{
   OSD_Path anCurrentDirectory;
 #ifndef OCCT_UWP
-  DWORD dwSize = PATHLEN + 1;
-  Standard_WideChar* pBuff = new wchar_t[dwSize];
-
-  if (GetCurrentDirectoryW (dwSize, pBuff) > 0)
+  const DWORD aBuffLen = GetCurrentDirectoryW (0, NULL);
+  if (aBuffLen > 0)
   {
-    // conversion to UTF-8 is performed inside
-    TCollection_AsciiString aPath (pBuff);
-    anCurrentDirectory = OSD_Path ( aPath );
+    wchar_t* aBuff = new wchar_t[aBuffLen + 1];
+    GetCurrentDirectoryW (aBuffLen, aBuff);
+    aBuff[aBuffLen] = L'\0';
+    const TCollection_AsciiString aPath (aBuff);
+    delete[] aBuff;
+
+    anCurrentDirectory = OSD_Path (aPath);
   }
   else
-    _osd_wnt_set_error ( myError, OSD_WProcess );
- 
-  delete[] pBuff;
+  {
+    _osd_wnt_set_error (myError, OSD_WProcess);
+  }
 #endif
   return anCurrentDirectory;
-}  // end OSD_Process :: CurrentDirectory
+}
 
 void OSD_Process :: SetCurrentDirectory ( const OSD_Path& where ) {
 

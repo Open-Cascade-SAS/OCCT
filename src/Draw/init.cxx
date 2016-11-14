@@ -37,55 +37,55 @@ d\*--------------------------------------------------------*/
 
 BOOL RegisterAppClass(HINSTANCE hInstance)
 {
-  WNDCLASS wndClass;
+  WNDCLASSW wndClass;
 
   // Parametres communs aux classes
   //-----
   wndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_CLASSDC;
   wndClass.cbClsExtra    = 0;  
-  wndClass.hCursor       = LoadCursor(NULL,IDC_ARROW);
+  wndClass.hCursor       = LoadCursorW (NULL, IDC_ARROW);
   wndClass.hInstance     = hInstance;
 
   // Enregistrement de la fenetre principale
   //-----
-	wndClass.cbWndExtra    = sizeof(LONG);
+  wndClass.cbWndExtra    = sizeof(void*);
   wndClass.lpfnWndProc   = (WNDPROC)WndProc;
-  wndClass.hIcon         = (HICON)LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
+  wndClass.hIcon         = (HICON )LoadIconW (hInstance, MAKEINTRESOURCE(IDI_ICON1));
   wndClass.hbrBackground = (HBRUSH) GetStockObject(WHITE_BRUSH);
-  wndClass.lpszMenuName  = MAKEINTRESOURCE(APPMENU);
+  wndClass.lpszMenuName  = MAKEINTRESOURCEW(APPMENU);
   wndClass.lpszClassName = APPCLASS;
 
-  if(!RegisterClass(&wndClass))
+  if(!RegisterClassW(&wndClass))
     return(FALSE);
 
   // Enregistrement de la fenetre DrawWindow
   //------
-	wndClass.cbWndExtra    = sizeof(LONG); // Extra Memory
+  wndClass.cbWndExtra    = sizeof(void*); // Extra Memory
   wndClass.lpfnWndProc   = (WNDPROC)DrawWindow::DrawProc;
   wndClass.hIcon         = 0;
   wndClass.hbrBackground = (HBRUSH) GetStockObject(BLACK_BRUSH);
   wndClass.lpszMenuName  = NULL;
   wndClass.lpszClassName = DRAWCLASS;
 
-  if(!RegisterClass(&wndClass))
+  if(!RegisterClassW(&wndClass))
   {
-    UnregisterClass(APPCLASS, hInstance);
+    UnregisterClassW(APPCLASS, hInstance);
     return(FALSE);
   }
 
 
   // Enregistrement de la fenetre CommandWindow
   //------
-  wndClass.lpfnWndProc   = (WNDPROC)CmdProc;
+  wndClass.lpfnWndProc   = (WNDPROC)CommandProc;
   wndClass.hIcon         = 0;
   wndClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
   wndClass.lpszMenuName  = NULL;
   wndClass.lpszClassName = COMMANDCLASS;
 
-  if(!RegisterClass(&wndClass))
+  if(!RegisterClassW(&wndClass))
   {
-    UnregisterClass(APPCLASS, hInstance);
-    UnregisterClass(DRAWCLASS, hInstance);
+    UnregisterClassW(APPCLASS, hInstance);
+    UnregisterClassW(DRAWCLASS, hInstance);
     return(FALSE);
   }
 
@@ -100,8 +100,8 @@ BOOL RegisterAppClass(HINSTANCE hInstance)
 \*--------------------------------------------------------*/
 VOID UnregisterAppClass(HINSTANCE hInstance)
 {
-  UnregisterClass(APPCLASS, hInstance);
-  UnregisterClass(DRAWCLASS, hInstance);
+  UnregisterClassW(APPCLASS, hInstance);
+  UnregisterClassW(DRAWCLASS, hInstance);
 }
 
 
@@ -112,7 +112,7 @@ VOID UnregisterAppClass(HINSTANCE hInstance)
 \*--------------------------------------------------------*/
 HWND CreateAppWindow(HINSTANCE hInstance)
 {
-  return(CreateWindow(APPCLASS, APPTITLE,
+  return(CreateWindowW(APPCLASS, APPTITLE,
 			    WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
 			    400,0,
 			    623,767,
@@ -135,9 +135,9 @@ HWND CreateMDIClientWindow(HWND hWndFrame)
   ccs.hWindowMenu = NULL;
   ccs.idFirstChild = 0;
 
-  hInstance = (HANDLE)GetWindowLongPtr(hWndFrame, GWLP_HINSTANCE);
+  hInstance = (HANDLE)GetWindowLongPtrW(hWndFrame, GWLP_HINSTANCE);
 
-  hWndClient = CreateWindow("MDICLIENT",NULL,
+  hWndClient = CreateWindowW(L"MDICLIENT",NULL,
 			     									WS_CHILD | WS_CLIPSIBLINGS | 
 			     									WS_VISIBLE | MDIS_ALLCHILDSTYLES, 
 			     									0, 0, 1, 1,

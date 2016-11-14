@@ -37,6 +37,11 @@ endif()
 # the name of the project
 project (OCCT)
 
+if (WIN32)
+  add_definitions(-DUNICODE)
+  add_definitions(-D_UNICODE)
+endif()
+
 # include occt macros
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
 

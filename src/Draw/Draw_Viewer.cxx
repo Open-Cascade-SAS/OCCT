@@ -14,11 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Updated by GG Tue Oct 22 16:22:10 1996
-//              reason : Try to compress the pixel image
-//                       in PseudoColor 8 planes format
-//              see : SaveView(filename)
-
 #include <Draw_Viewer.hxx>
 #include <Draw_View.hxx>
 
@@ -26,7 +21,7 @@
 #include <gp_Pnt2d.hxx>
 #include <Draw_Window.hxx>
 #include <Draw_Display.hxx>
-
+#include <TCollection_AsciiString.hxx>
 
 #define precpers 0.95
 #define ButtonPress 4
@@ -179,7 +174,7 @@ void Draw_Viewer::MakeView    (const Standard_Integer id,
 void Draw_Viewer::SetTitle (const Standard_Integer id, const char* name)
 {
   if (Draw_Batch) return;
-  if(myViews[id]) myViews[id]->SetTitle((char*)name);
+  if(myViews[id]) myViews[id]->SetTitle (name);
 }
 
 //=======================================================================

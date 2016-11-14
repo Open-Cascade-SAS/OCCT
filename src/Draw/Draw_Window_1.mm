@@ -301,9 +301,9 @@ Standard_Integer Draw_Window::WidthWin() const
 //function : SetTitle
 //purpose  :
 //=======================================================================
-void Draw_Window::SetTitle (Standard_CString theTitle)
+void Draw_Window::SetTitle (const TCollection_AsciiString& theTitle)
 {
-  NSString* aTitleNs = [[NSString alloc] initWithUTF8String: theTitle];
+  NSString* aTitleNs = [[NSString alloc] initWithUTF8String: theTitle.ToCString()];
   [myWindow setTitle: aTitleNs];
   [aTitleNs release];
 }
@@ -312,10 +312,10 @@ void Draw_Window::SetTitle (Standard_CString theTitle)
 //function : GetTitle
 //purpose  :
 //=======================================================================
-Standard_CString Draw_Window::GetTitle()
+TCollection_AsciiString Draw_Window::GetTitle() const
 {
   Standard_CString aTitle = [[myWindow title] UTF8String];
-  return aTitle;
+  return TCollection_AsciiString (aTitle);
 }
 
 //=======================================================================

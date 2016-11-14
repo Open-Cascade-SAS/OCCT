@@ -26,6 +26,7 @@
 #include <Draw_Window.hxx>
 #include <Draw_Appli.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <NCollection_List.hxx>
 
@@ -526,20 +527,20 @@ Standard_Integer Draw_Window::WidthWin() const
 //function : SetTitle
 //purpose  :
 //=======================================================================
-void Draw_Window::SetTitle(const char* title)
+void Draw_Window::SetTitle(const TCollection_AsciiString& theTitle)
 {
-  XStoreName(Draw_WindowDisplay, win, title);
+  XStoreName (Draw_WindowDisplay, win, theTitle.ToCString());
 }
 
 //=======================================================================
 //function : GetTitle
 //purpose  :
 //=======================================================================
-char* Draw_Window::GetTitle()
+TCollection_AsciiString Draw_Window::GetTitle() const
 {
-  char* title;
-  XFetchName(Draw_WindowDisplay, win, &title);
-  return title;
+  char* aTitle = NULL;
+  XFetchName (Draw_WindowDisplay, win, &aTitle);
+  return TCollection_AsciiString (aTitle);
 }
 
 //=======================================================================
@@ -1332,7 +1333,7 @@ int modeTab[16] = {R2_BLACK, R2_MASKPEN, R2_MASKPENNOT, R2_COPYPEN,
 HWND DrawWindow::CreateDrawWindow(HWND hWndClient, int nitem)
 {
   if (Draw_IsConsoleSubsystem) {
-    HWND aWin = CreateWindow (DRAWCLASS, DRAWTITLE,
+    HWND aWin = CreateWindowW (DRAWCLASS, DRAWTITLE,
                               WS_OVERLAPPEDWINDOW,
                               1,1,1,1,
                               NULL, NULL,::GetModuleHandle(NULL), NULL);
@@ -1344,10 +1345,9 @@ HWND DrawWindow::CreateDrawWindow(HWND hWndClient, int nitem)
     return aWin;
   }
   else {
-    HANDLE hInstance;
-    hInstance = (HANDLE)GetWindowLongPtr(hWndClient,GWLP_HINSTANCE);
+    HANDLE hInstance = (HANDLE )GetWindowLongPtrW (hWndClient, GWLP_HINSTANCE);
 
-    return CreateMDIWindow(DRAWCLASS, DRAWTITLE,
+    return CreateMDIWindowW(DRAWCLASS, DRAWTITLE,
                            WS_CAPTION | WS_CHILD | WS_THICKFRAME,
                            1,1,0,0,
                            hWndClient, (HINSTANCE)hInstance, nitem);
@@ -1360,43 +1360,46 @@ HWND DrawWindow::CreateDrawWindow(HWND hWndClient, int nitem)
 \*--------------------------------------------------------*/
 LRESULT APIENTRY DrawWindow::DrawProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam )
 {
-  DrawWindow* localObjet = (DrawWindow*)GetWindowLongPtr(hWnd, CLIENTWND);
+  DrawWindow* localObjet = (DrawWindow* )GetWindowLongPtrW (hWnd, CLIENTWND);
   if (!localObjet)
-    {
-      if (Draw_IsConsoleSubsystem)
-        return (DefWindowProc(hWnd, wMsg, wParam, lParam));
-      else
-        return(DefMDIChildProc(hWnd, wMsg, wParam, lParam));
-    }
-
-  PAINTSTRUCT ps;
-
-  switch(wMsg)
   {
-  case WM_PAINT :
-    BeginPaint(hWnd, &ps);
-    if (localObjet->GetUseBuffer())
-      localObjet->Redraw();
-    else
-      localObjet->WExpose();
-    EndPaint(hWnd, &ps);
-    return 0l;
-    break;
-
-  case WM_SIZE:
-    if (localObjet->GetUseBuffer()) {
-      localObjet->InitBuffer();
-      localObjet->WExpose();
-      localObjet->Redraw();
-      return 0l;
-    }
-
-  default:
-    if (Draw_IsConsoleSubsystem)
-      return (DefWindowProc(hWnd, wMsg, wParam, lParam));
-    else
-      return(DefMDIChildProc(hWnd, wMsg, wParam, lParam));
+    return Draw_IsConsoleSubsystem
+         ? DefWindowProcW   (hWnd, wMsg, wParam, lParam)
+         : DefMDIChildProcW (hWnd, wMsg, wParam, lParam);
   }
+
+  switch (wMsg)
+  {
+    case WM_PAINT:
+    {
+      PAINTSTRUCT ps;
+      BeginPaint (hWnd, &ps);
+      if (localObjet->GetUseBuffer())
+      {
+        localObjet->Redraw();
+      }
+      else
+      {
+        localObjet->WExpose();
+      }
+      EndPaint (hWnd, &ps);
+      return 0;
+    }
+    case WM_SIZE:
+    {
+      if (localObjet->GetUseBuffer())
+      {
+        localObjet->InitBuffer();
+        localObjet->WExpose();
+        localObjet->Redraw();
+        return 0;
+      }
+      break;
+    }
+  }
+  return Draw_IsConsoleSubsystem
+       ? DefWindowProcW   (hWnd, wMsg, wParam, lParam)
+       : DefMDIChildProcW (hWnd, wMsg, wParam, lParam);
 }
 
 
@@ -1488,8 +1491,8 @@ void DrawWindow::Init(Standard_Integer theXLeft, Standard_Integer theYTop,
 
   // include decorations in the window dimensions
   // to reproduce same behaviour of Xlib window.
-  DWORD aWinStyle   = GetWindowLong (win, GWL_STYLE);
-  DWORD aWinStyleEx = GetWindowLong (win, GWL_EXSTYLE);
+  DWORD aWinStyle   = GetWindowLongW (win, GWL_STYLE);
+  DWORD aWinStyleEx = GetWindowLongW (win, GWL_EXSTYLE);
   HMENU aMenu       = GetMenu (win);
 
   RECT aRect;
@@ -1502,7 +1505,7 @@ void DrawWindow::Init(Standard_Integer theXLeft, Standard_Integer theYTop,
   SetPosition  (aRect.left, aRect.top);
   SetDimension (aRect.right - aRect.left, aRect.bottom - aRect.top);
   // Save the pointer at the instance associated to the window
-  SetWindowLongPtr(win, CLIENTWND, (LONG_PTR)this);
+  SetWindowLongPtrW (win, CLIENTWND, (LONG_PTR)this);
   HDC hDC = GetDC(win);
   SetBkColor(hDC, RGB(0, 0, 0));
   myCurrPen  = 3;
@@ -1657,21 +1660,21 @@ Standard_Integer DrawWindow::WidthWin() const
 /*--------------------------------------------------------*\
 |  SetTitle
 \*--------------------------------------------------------*/
-void DrawWindow::SetTitle(const char* title)
+void DrawWindow::SetTitle (const TCollection_AsciiString& theTitle)
 {
-  SetWindowText(win, title);
+  const TCollection_ExtendedString aTitleW (theTitle);
+  SetWindowTextW (win, aTitleW.ToWideString());
 }
 
 
 /*--------------------------------------------------------*\
 |  GetTitle
-|    Attention do not forget to unallocate the memory
 \*--------------------------------------------------------*/
-char* DrawWindow::GetTitle()
+TCollection_AsciiString DrawWindow::GetTitle() const
 {
-  char* title=new char[31];
-  GetWindowText(win, title, 30);
-  return title;
+  wchar_t aTitleW[32];
+  GetWindowTextW (win, aTitleW, 30);
+  return TCollection_AsciiString (aTitleW);
 }
 
 
@@ -1810,7 +1813,8 @@ void DrawWindow::DrawString(int x,int y, char* text)
   HDC hDC = GetDC(win);
   HDC aWorkDC = myUseBuffer ? GetMemDC(hDC) : hDC;
 
-  TextOut(aWorkDC, x, y, text, (int )strlen(text));
+  TCollection_ExtendedString textW (text);
+  TextOutW(aWorkDC, x, y, (const wchar_t*)textW.ToExtString(), (int )strlen(text));
 
   if (myUseBuffer) ReleaseMemDC(aWorkDC);
   ReleaseDC(win,hDC);
@@ -1960,9 +1964,8 @@ static Tk_Window mainWindow;
 //* threads sinchronization *//
 DWORD  dwMainThreadId;
 console_semaphore_value volatile console_semaphore = WAIT_CONSOLE_COMMAND;
-//char console_command[1000];
-#define COMMAND_SIZE 1000     /* Console Command size */
-char console_command[COMMAND_SIZE];
+#define THE_COMMAND_SIZE 1000     /* Console Command size */
+wchar_t console_command[THE_COMMAND_SIZE];
 bool volatile isTkLoopStarted = false;
 
 /*--------------------------------------------------------*\
@@ -2031,16 +2034,41 @@ Standard_Boolean Draw_Interprete (const char*);
 /*--------------------------------------------------------*\
 |  readStdinThreadFunc
 \*--------------------------------------------------------*/
-static DWORD WINAPI readStdinThreadFunc(VOID)
+static DWORD WINAPI readStdinThreadFunc()
 {
-  if (!Draw_IsConsoleSubsystem) return 1;
-  for(;;) {
+  if (!Draw_IsConsoleSubsystem)
+  {
+    return 1;
+  }
+
+  // set console locale
+  //setlocale (LC_ALL, ".OCP");
+  for (;;)
+  {
     while (console_semaphore != WAIT_CONSOLE_COMMAND)
-      Sleep(100);
-      if (fgets(console_command,COMMAND_SIZE,stdin))
+    {
+      Sleep (100);
+    }
+
+    DWORD aNbRead = 0;
+    if (ReadConsoleW (GetStdHandle(STD_INPUT_HANDLE), console_command, THE_COMMAND_SIZE, &aNbRead, NULL))
+    //if (fgetws (console_command, THE_COMMAND_SIZE, stdin)) // fgetws() works only for characters within active locale (see setlocale())
+    {
+      console_command[aNbRead] = L'\0';
+      // tcl will skip newline symbols - no need to strip them here
+      /*--aNbRead;
+      for (; aNbRead >= 0; --aNbRead)
       {
-        console_semaphore = HAS_CONSOLE_COMMAND;
-      }
+        if (console_command[aNbRead] == L'\r'
+         || console_command[aNbRead] == L'\n')
+        {
+          console_command[aNbRead] = '\0';
+          continue;
+        }
+        break;
+      }*/
+      console_semaphore = HAS_CONSOLE_COMMAND;
+    }
   }
 }
 
@@ -2065,9 +2093,23 @@ static DWORD WINAPI tkLoop(VOID)
 {
   Tcl_CreateExitHandler(exitProc, 0);
 #if (TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 5))
-  Tcl_RegisterChannel(theCommands.Interp(),  Tcl_GetStdChannel(TCL_STDIN));
-  Tcl_RegisterChannel(theCommands.Interp(),  Tcl_GetStdChannel(TCL_STDOUT));
-  Tcl_RegisterChannel(theCommands.Interp(),  Tcl_GetStdChannel(TCL_STDERR));
+  {
+    Tcl_Channel aChannelIn  = Tcl_GetStdChannel (TCL_STDIN);
+    Tcl_Channel aChannelOut = Tcl_GetStdChannel (TCL_STDOUT);
+    Tcl_Channel aChannelErr = Tcl_GetStdChannel (TCL_STDERR);
+    if (aChannelIn != NULL)
+    {
+      Tcl_RegisterChannel (theCommands.Interp(), aChannelIn);
+    }
+    if (aChannelOut != NULL)
+    {
+      Tcl_RegisterChannel (theCommands.Interp(), aChannelOut);
+    }
+    if (aChannelErr != NULL)
+    {
+      Tcl_RegisterChannel (theCommands.Interp(), aChannelErr);
+    }
+  }
 #endif
 
 #ifdef _TK
@@ -2128,7 +2170,8 @@ static DWORD WINAPI tkLoop(VOID)
     while(Tcl_DoOneEvent(TCL_ALL_EVENTS | TCL_DONT_WAIT));
     if (console_semaphore == HAS_CONSOLE_COMMAND)
     {
-      if (Draw_Interprete (console_command))
+      TCollection_AsciiString aCmdUtf8 (console_command);
+      if (Draw_Interprete (aCmdUtf8.ToCString()))
       {
         if (Draw_IsConsoleSubsystem) Prompt (interp, 0);
       }
@@ -2176,9 +2219,9 @@ void Run_Appli(HWND hWnd)
     if (!hThread) {
       cout << "pb in creation of the thread reading stdin" << endl;
       Draw_IsConsoleSubsystem = Standard_False;
-      Init_Appli(GetModuleHandle(NULL),
-                 GetModuleHandle(NULL),
-                 1, hWnd); // reinit => create MDI client wnd
+      Init_Appli (GetModuleHandleW (NULL),
+                  GetModuleHandleW (NULL),
+                  1, hWnd); // reinit => create MDI client wnd
     }
   }
 
@@ -2187,12 +2230,12 @@ void Run_Appli(HWND hWnd)
     console_semaphore = WAIT_CONSOLE_COMMAND;
 
   //simple Win32 message loop
-  while (GetMessage(&msg, NULL, 0, 0) > 0)
+  while (GetMessageW (&msg, NULL, 0, 0) > 0)
   {
-    if (!TranslateAccelerator(hWnd, hAccel, &msg))
+    if (!TranslateAcceleratorW (hWnd, hAccel, &msg))
     {
-      TranslateMessage(&msg);
-      DispatchMessage(&msg);
+      TranslateMessage (&msg);
+      DispatchMessageW (&msg);
     }
   }
   ExitProcess(0);
@@ -2218,10 +2261,12 @@ void DrawWindow::SelectWait(HANDLE& hWnd, int& x, int& y, int& button)
 
   msg.wParam = 1;
 
-  GetMessage(&msg,NULL,0,0);
+  GetMessageW (&msg, NULL, 0, 0);
   while((msg.message != WM_RBUTTONDOWN && msg.message != WM_LBUTTONDOWN) ||
         ! ( Draw_IsConsoleSubsystem || IsChild(DrawWindow::hWndClientMDI,msg.hwnd)) )
-    GetMessage(&msg,NULL,0,0);
+  {
+    GetMessageW (&msg, NULL, 0, 0);
+  }
 
   hWnd = msg.hwnd;
   x = LOWORD(msg.lParam);
@@ -2241,11 +2286,13 @@ void DrawWindow::SelectNoWait(HANDLE& hWnd, int& x, int& y, int& button)
 
   msg.wParam = 1;
 
-  GetMessage(&msg,NULL,0,0);
+  GetMessageW (&msg,NULL,0,0);
   while((msg.message != WM_RBUTTONDOWN && msg.message != WM_LBUTTONDOWN &&
         msg.message != WM_MOUSEMOVE) ||
         ! ( Draw_IsConsoleSubsystem || IsChild(DrawWindow::hWndClientMDI,msg.hwnd) ) )
-    GetMessage(&msg,NULL,0,0);
+  {
+    GetMessageW(&msg,NULL,0,0);
+  }
   hWnd = msg.hwnd;
   x = LOWORD(msg.lParam);
   y = HIWORD(msg.lParam);

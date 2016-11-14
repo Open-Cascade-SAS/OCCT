@@ -247,15 +247,15 @@ static LRESULT WINAPI AdvViewerWindowProc(
 //purpose  :
 //==============================================================================
 
-const Handle(MMgt_TShared)& ViewerTest::WClass()
+const Handle(Standard_Transient)& ViewerTest::WClass()
 {
-  static Handle(MMgt_TShared) theWClass;
+  static Handle(Standard_Transient) theWClass;
 #if defined(_WIN32)
   if (theWClass.IsNull())
   {
     theWClass = new WNT_WClass ("GW3D_Class", (Standard_Address )AdvViewerWindowProc,
-      CS_VREDRAW | CS_HREDRAW, 0, 0,
-      ::LoadCursor (NULL, IDC_ARROW));
+                                CS_VREDRAW | CS_HREDRAW, 0, 0,
+                                ::LoadCursorW (NULL, IDC_ARROW));
   }
 #endif
   return theWClass;
@@ -451,8 +451,8 @@ void SetWindowTitle (const Handle(Aspect_Window)& theWindow,
                      Standard_CString theTitle)
 {
 #if defined(_WIN32)
-  SetWindowText ((HWND)Handle(WNT_Window)::DownCast(theWindow)->HWindow(),
-    theTitle);
+  const TCollection_ExtendedString theTitleW (theTitle);
+  SetWindowTextW ((HWND )Handle(WNT_Window)::DownCast(theWindow)->HWindow(), theTitleW.ToWideString());
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   SetCocoaWindowTitle (Handle(Cocoa_Window)::DownCast(theWindow), theTitle);
 #else
@@ -2007,7 +2007,7 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
   const Handle(V3d_View)& aView = ViewerTest::CurrentView();
   if (aView.IsNull())
   {
-    return DefWindowProc( hwnd, Msg, wParam, lParam );
+    return DefWindowProcW (hwnd, Msg, wParam, lParam);
   }
 
     PAINTSTRUCT    ps;
@@ -2175,13 +2175,10 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
       break;
 
     default:
-      return( DefWindowProc( hwnd, Msg, wParam, lParam ));
+      return DefWindowProcW (hwnd, Msg, wParam, lParam);
     }
     return 0L;
 }
-
-
-
 
 //==============================================================================
 //function : ViewerMainLoop
@@ -2203,9 +2200,10 @@ int ViewerMainLoop(Standard_Integer argc, const char** argv)
 
     while ( Ppick == 1 ) {
       // Wait for a VT_ProcessButton1Press() to toggle pick to 1 or 0
-      if (GetMessage(&msg, NULL, 0, 0) ) {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+      if (GetMessageW (&msg, NULL, 0, 0))
+      {
+        TranslateMessage (&msg);
+        DispatchMessageW (&msg);
       }
     }
 
@@ -9489,7 +9487,7 @@ static Standard_Integer VProgressiveMode (Draw_Interpretor& /*theDI*/,
     Standard_Boolean toExit = Standard_False;
 
     MSG aMsg;
-    while (PeekMessage (&aMsg, NULL, 0, 0, PM_REMOVE))
+    while (PeekMessageW (&aMsg, NULL, 0, 0, PM_REMOVE))
     {
       if (aMsg.message == WM_KEYDOWN && (aMsg.wParam == 0x0d || aMsg.wParam == 0x1b))
       {
@@ -9497,7 +9495,7 @@ static Standard_Integer VProgressiveMode (Draw_Interpretor& /*theDI*/,
       }
 
       TranslateMessage (&aMsg);
-      DispatchMessage  (&aMsg);
+      DispatchMessageW (&aMsg);
     }
 
     if (toExit)

@@ -1430,7 +1430,7 @@ OSD_KindFile OSD_File :: KindOfFile () const {
 typedef struct _osd_wnt_key {
 
                 HKEY   hKey;
-                const char* keyPath;
+                wchar_t* keyPath;
 
                } OSD_WNT_KEY;
 
@@ -1448,17 +1448,17 @@ typedef struct _osd_wnt_key {
  OSD_WNT_KEY    regKey[ 2 ] = {
  
                  { HKEY_LOCAL_MACHINE,
-                   "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
+                   L"SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
                  },
                  { HKEY_USERS,
-                   ".DEFAULT\\Environment"
+                   L".DEFAULT\\Environment"
                  }
  
                 };
  
  for ( int i = 0; i < 2; ++i ) {
 
-  if (  RegOpenKeyEx (
+  if (  RegOpenKeyExW (
          regKey[ i ].hKey, regKey[ i ].keyPath, 0, KEY_QUERY_VALUE, &hKey
        ) == ERROR_SUCCESS
   ) {

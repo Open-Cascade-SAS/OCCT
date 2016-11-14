@@ -208,7 +208,7 @@ private:
   //! Ctrl+MB2 for pan, etc) and keyboard shortcuts.
   //! This method is relevant for MS Windows only and respectively
   //! returns WNT_WClass handle.
-  Standard_EXPORT static const Handle(MMgt_TShared)& WClass();
+  static const Handle(Standard_Transient)& WClass();
 };
 
 #endif // _ViewerTest_HeaderFile
