@@ -128,6 +128,11 @@ private:
   void drawText (const Handle(OpenGl_Context)& theCtx,
                  const OpenGl_AspectText&      theTextAspect) const;
 
+  //! Draw rectangle from bounding text box.
+  void drawRect (const Handle(OpenGl_Context)& theCtx,
+                 const OpenGl_AspectText&      theTextAspect,
+                 const OpenGl_Vec4&            theColorSubs) const;
+
   //! Main rendering code
   void render (const Handle(OpenGl_Context)& theCtx,
                const OpenGl_AspectText&      theTextAspect,
@@ -141,6 +146,7 @@ protected:
   mutable NCollection_Vector<GLuint>                      myTextures;   //!< textures' IDs
   mutable NCollection_Vector<Handle(OpenGl_VertexBuffer)> myVertsVbo;   //!< VBOs of vertices
   mutable NCollection_Vector<Handle(OpenGl_VertexBuffer)> myTCrdsVbo;   //!< VBOs of texture coordinates
+  mutable Handle(OpenGl_VertexBuffer)                     myBndVertsVbo;//!< VBOs of vertices for bounding box
   mutable Font_Rect                                       myBndBox;
 
 protected:

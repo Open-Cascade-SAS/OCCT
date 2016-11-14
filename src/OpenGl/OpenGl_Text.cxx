@@ -309,7 +309,7 @@ void OpenGl_Text::releaseVbos (OpenGl_Context* theCtx)
     Handle(OpenGl_VertexBuffer)& aVerts = myVertsVbo.ChangeValue (anIter);
     Handle(OpenGl_VertexBuffer)& aTCrds = myTCrdsVbo.ChangeValue (anIter);
 
-    if (theCtx)
+    if (theCtx != NULL)
     {
       theCtx->DelayedRelease (aVerts);
       theCtx->DelayedRelease (aTCrds);
@@ -317,9 +317,16 @@ void OpenGl_Text::releaseVbos (OpenGl_Context* theCtx)
     aVerts.Nullify();
     aTCrds.Nullify();
   }
+  if (theCtx != NULL
+  && !myBndVertsVbo.IsNull())
+  {
+    theCtx->DelayedRelease (myBndVertsVbo);
+  }
+
   myTextures.Clear();
   myVertsVbo.Clear();
   myTCrdsVbo.Clear();
+  myBndVertsVbo.Nullify();
 }
 
 // =======================================================================
@@ -331,11 +338,12 @@ void OpenGl_Text::Release (OpenGl_Context* theCtx)
   releaseVbos (theCtx);
   if (!myFont.IsNull())
   {
-    Handle(OpenGl_Context) aCtx = theCtx;
     const TCollection_AsciiString aKey = myFont->ResourceKey();
     myFont.Nullify();
-    if (! aCtx.IsNull())
-      aCtx->ReleaseResource (aKey, Standard_True);
+    if (theCtx != NULL)
+    {
+      theCtx->ReleaseResource (aKey, Standard_True);
+    }
   }
 }
 
@@ -698,6 +706,50 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
 }
 
 // =======================================================================
+// function : drawRect
+// purpose  :
+// =======================================================================
+void OpenGl_Text::drawRect (const Handle(OpenGl_Context)& theCtx,
+                            const OpenGl_AspectText&      theTextAspect,
+                            const OpenGl_Vec4&            theColorSubs) const
+{
+  Handle(OpenGl_ShaderProgram) aPrevProgram = theCtx->ActiveProgram();
+  if (myBndVertsVbo.IsNull())
+  {
+    OpenGl_Vec2 aQuad[4] =
+    {
+      OpenGl_Vec2(myBndBox.Right, myBndBox.Bottom),
+      OpenGl_Vec2(myBndBox.Right, myBndBox.Top),
+      OpenGl_Vec2(myBndBox.Left,  myBndBox.Bottom),
+      OpenGl_Vec2(myBndBox.Left,  myBndBox.Top)
+    };
+    myBndVertsVbo = new OpenGl_VertexBuffer();
+    myBndVertsVbo->Init (theCtx, 2, 4, aQuad[0].GetData());
+  }
+
+  if (theCtx->core20fwd != NULL)
+  {
+    // bind flat program
+    theCtx->ShaderManager()->BindFaceProgram (Handle(OpenGl_Texture)(), Standard_False, Standard_False, Standard_False, Handle(OpenGl_ShaderProgram)());
+  }
+#if !defined(GL_ES_VERSION_2_0)
+  if (theCtx->core11 != NULL
+   && theCtx->ActiveProgram().IsNull())
+  {
+    glBindTexture (GL_TEXTURE_2D, 0);
+  }
+#endif
+  theCtx->SetColor4fv (theColorSubs);
+  setupMatrix (theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.00001f));
+  myBndVertsVbo->BindAttribute (theCtx, Graphic3d_TOA_POS);
+
+  theCtx->core20fwd->glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
+
+  myBndVertsVbo->UnbindAttribute (theCtx, Graphic3d_TOA_POS);
+  theCtx->BindProgram (aPrevProgram);
+}
+
+// =======================================================================
 // function : render
 // purpose  :
 // =======================================================================
@@ -749,6 +801,11 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
                       myTCrdsVbo);
 
     aFormatter.BndBox (myBndBox);
+    if (!myBndVertsVbo.IsNull())
+    {
+      myBndVertsVbo->Release (theCtx.get());
+      myBndVertsVbo.Nullify();
+    }
   }
 
   if (myTextures.IsEmpty())
@@ -872,21 +929,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
     }
     case Aspect_TODT_SUBTITLE:
     {
-    #if !defined(GL_ES_VERSION_2_0)
-      if (theCtx->core11 != NULL)
-      {
-        theCtx->SetColor4fv (theColorSubs);
-        setupMatrix (theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.00001f));
-
-        glBindTexture (GL_TEXTURE_2D, 0);
-        glBegin (GL_QUADS);
-        glVertex2f (myBndBox.Left,  myBndBox.Top);
-        glVertex2f (myBndBox.Right, myBndBox.Top);
-        glVertex2f (myBndBox.Right, myBndBox.Bottom);
-        glVertex2f (myBndBox.Left,  myBndBox.Bottom);
-        glEnd();
-      }
-    #endif
+      drawRect (theCtx, theTextAspect, theColorSubs);
       break;
     }
     case Aspect_TODT_DEKALE:
@@ -929,8 +972,6 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
 
   if (theTextAspect.Aspect()->DisplayType() == Aspect_TODT_DIMENSION)
   {
-    setupMatrix (theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.00001f));
-
     glDisable (GL_BLEND);
     if (!myIs2d)
     {
@@ -950,17 +991,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
     glStencilFunc (GL_ALWAYS, 1, 0xFF);
     glStencilOp (GL_KEEP, GL_KEEP, GL_REPLACE);
 
-  #if !defined(GL_ES_VERSION_2_0)
-    if (theCtx->core11 != NULL)
-    {
-      glBegin (GL_QUADS);
-      glVertex2f (myBndBox.Left,  myBndBox.Top);
-      glVertex2f (myBndBox.Right, myBndBox.Top);
-      glVertex2f (myBndBox.Right, myBndBox.Bottom);
-      glVertex2f (myBndBox.Left,  myBndBox.Bottom);
-      glEnd();
-    }
-  #endif
+    drawRect (theCtx, theTextAspect, OpenGl_Vec4 (1.0f, 1.0f, 1.0f, 1.0f));
 
     glStencilFunc (GL_ALWAYS, 0, 0xFF);
 

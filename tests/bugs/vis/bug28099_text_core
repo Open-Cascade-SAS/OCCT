@@ -1,0 +1,33 @@
+puts "============"
+puts "OCC28099: handle DIMENSION and SUBTITLE styles within Core Profile"
+puts "Test case prints overlay labels with different subtitle styles"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+vclear
+vcaps -core 1
+vinit View1
+vaxo
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vdrawtext t1 "Overlay Test Blend"    -2d -perspos -1 1 -pos 100  -50 0 -height 16 -font SansFont -color 1 1 0 -disptype blend    -subcolor 0 0 1
+vdrawtext t2 "Overlay Test Decal"    -2d -perspos -1 1 -pos 100 -100 0 -height 16 -font SansFont -color 1 1 0 -disptype decal    -subcolor 0 0 1
+vdrawtext t3 "Overlay Test Subtitle" -2d -perspos -1 1 -pos 100 -150 0 -height 16 -font SansFont -color 1 1 0 -disptype subtitle -subcolor 0 0 1
+vdrawtext t4 "Overlay Test Normal"   -2d -perspos -1 1 -pos 100 -200 0 -height 16 -font SansFont -color 0 1 1 -disptype normal   -subcolor 0 0 1
+
+vdrawtext t5 "    Overlay Test Normal  \n    Second line" -2d -perspos -1 1 -pos 100 -250 0 -height 16 -font SansFont -color 0 1 1 -disptype normal   -subcolor 0 0 1
+vdrawtext t6 "    Overlay Test Subtitle\n    Second line" -2d -perspos -1 1 -pos 100 -300 0 -height 16 -font SansFont -color 1 1 0 -disptype subtitle -subcolor 0 0 1
+vdrawtext t7 "    Overlay Test Decal   \n    Second line" -2d -perspos -1 1 -pos 100 -350 0 -height 16 -font SansFont -color 1 1 0 -disptype decal    -subcolor 0 0 1
+vdrawtext t8 "    Overlay Test Blend   \n    Second line" -2d -perspos -1 1 -pos 100 -400 0 -height 16 -font SansFont -color 1 1 0 -disptype blend    -subcolor 0 0 1
+
+box b 50 50 50
+vdisplay -dispMode 1 b
+
+vpoint lengthP1 0  50 50
+vpoint lengthP2 50 50 50
+vdimension dim1 -length -plane xoy -shapes lengthP1 lengthP2 -font SansFont
+vfit
+
+vdump $::imagedir/${::casename}.png
