@@ -1,9 +1,10 @@
-puts "TODO CR27414 ALL: Error : The command is not valid. The volume is 0."
+puts "TODO CR27414 ALL: Error : The area of result shape is"
+puts "TODO CR27414 ALL: Error : The volume of result shape is"
 
 restore [locate_data_file bug26917_M2_trim9.brep] s
 
 OFFSETSHAPE 15  {} $calcul $type
 
-checkprops result -v 0
+checkprops result -s 0 -v 0
 
 checknbshapes result -shell 1

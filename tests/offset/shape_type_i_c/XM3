@@ -1,0 +1,14 @@
+restore [locate_data_file bug28046_rm-106_simple.brep] s
+
+offsetparameter 1e-7 c i
+offsetload s 1
+explode s f
+offsetonface s_6 6
+offsetperform result
+
+checkprops result -v 1302.49 -s 857.327
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 10 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,19 @@
+restore [locate_data_file bug28046_rm-106_merged_input.brep] s
+
+offsetparameter 1e-7 c i
+offsetload s 10
+foreach f [explode s f] {
+  mksurface surf $f
+  set found [regexp {Axis   :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump surf] full x y z]
+  if {$found && abs(abs($z) - 1) < 1.e-7} {
+    offsetonface $f 0
+  }
+}
+offsetperform result
+
+checkprops result -v 3.76417e+007 -s 2.03956e+006
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 95 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png
