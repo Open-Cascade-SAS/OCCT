@@ -1,0 +1,3 @@
+puts "Check NCollection_Map functionality"
+
+QANColTestMap

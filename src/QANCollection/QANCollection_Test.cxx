@@ -299,47 +299,71 @@ static void TestSequence (QANCollection_SequenceFunc& theS)
 
 // ===================== Test methods of Map type =============================
 ////////////////////////////////void TestMap  (QANCollection_Map& theM)
-static void TestMap  (QANCollection_MapFunc& theM)
+static void TestMap(QANCollection_MapFunc& theM, Draw_Interpretor& theDI)
 {
-  // Extent
-  Standard_Integer iExt=theM.Extent();
-  Standard_Integer i;
+  {
+    // Extent
+    Standard_Integer iExt=theM.Extent();
+    Standard_Integer i;
 
-  printf ("Info: testing Map(l=%d)\n", iExt);
-  theM.Statistics(cout);
-  // Resize
-  theM.ReSize(8);
-  theM.Statistics(cout);
-  cout.flush();
-  // Constructor
-  ////////////////////////////////QANCollection_Map aM;
-  QANCollection_MapFunc aM;
-  // Add
-  Key1Type aKey;
-  for (i=0; i<8; i++)
-  {
-    Random (aKey);
-    aM.Add (aKey);
-  }
-  // Contains, Remove
-  if (!aM.Contains(aKey))
-  {
-    printf("Error   : map says that it does not contain its key ");
-    PrintItem(aKey);
-  }
-  else
-  {
-    aM.Remove(aKey);
-    printf("      successfully removed item, l=%d\n", aM.Size());
-  }
-  // Copy constructor (including operator=)
-  ////////////////////////////////QANCollection_Map aM2 = QANCollection_Map(aM);
-  QANCollection_MapFunc aM2 = QANCollection_MapFunc(aM);
-  // Assign
-  AssignCollection (aM2,theM);
+    printf ("Info: testing Map(l=%d)\n", iExt);
+    theM.Statistics(cout);
+    // Resize
+    theM.ReSize(8);
+    theM.Statistics(cout);
+    cout.flush();
+    // Constructor
+    ////////////////////////////////QANCollection_Map aM;
+    QANCollection_MapFunc aM;
+    // Add
+    Key1Type aKey;
+    for (i=0; i<8; i++)
+    {
+      Random (aKey);
+      aM.Add (aKey);
+    }
+    // Contains, Remove
+    if (!aM.Contains(aKey))
+    {
+      theDI << "Error: map says that it does not contain its key " << aKey;
+    }
+    else
+    {
+      aM.Remove(aKey);
+      cout << "      successfully removed item, l=%d\n" << aM.Size() << "\n";
+    }
+    // Copy constructor (including operator=)
+    ////////////////////////////////QANCollection_Map aM2 = QANCollection_Map(aM);
+    QANCollection_MapFunc aM2 = QANCollection_MapFunc(aM);
+    // Assign
+    AssignCollection (aM2,theM);
 
-  // Clear
-  aM.Clear();
+    // Clear
+    aM.Clear();
+  }
+
+  // Check method 'HasIntersection'.
+  {
+    QANCollection_MapFunc aM1, aM2, aM3;
+
+    aM1.Add(6);
+    aM1.Add(8);
+    aM1.Add(10);
+
+    aM2.Add(4);
+    aM2.Add(8);
+    aM2.Add(16);
+
+    aM3.Add(1);
+    aM3.Add(2);
+    aM3.Add(3);
+
+    if (!aM1.HasIntersection(aM2) || !aM2.HasIntersection(aM1) ||
+         aM1.HasIntersection(aM3) ||  aM3.HasIntersection(aM1))
+    {
+      theDI << "Error: method 'HasIntersection' failed.";
+    }
+  }
 }
 
 // ===================== Test methods of DataMap type =========================
@@ -671,7 +695,7 @@ static Standard_Integer QANColTestMap(Draw_Interpretor& di, Standard_Integer arg
     return 1;
   }
   QANCollection_MapFunc aMap;
-  TestMap(aMap);
+  TestMap(aMap, di);
   return 0;
 }
 
