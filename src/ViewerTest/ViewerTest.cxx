@@ -1478,6 +1478,10 @@ struct ViewerTest_AspectsChangeSet
   Standard_Integer         SelectionMode;
   Standard_Integer         Sensitivity;
 
+  Standard_Integer         ToSetHatch;
+  Standard_Integer         StdHatchStyle;
+  TCollection_AsciiString  PathToHatchPattern;
+
   //! Empty constructor
   ViewerTest_AspectsChangeSet()
   : ToSetVisibility   (0),
@@ -1502,7 +1506,10 @@ struct ViewerTest_AspectsChangeSet
     MaxParamValue (500000),
     ToSetSensitivity (0),
     SelectionMode (-1),
-    Sensitivity (-1) {}
+    Sensitivity (-1),
+    ToSetHatch (0),
+    StdHatchStyle (-1)
+    {}
 
   //! @return true if no changes have been requested
   Standard_Boolean IsEmpty() const
@@ -1516,7 +1523,8 @@ struct ViewerTest_AspectsChangeSet
         && ToSetFreeBoundaryColor == 0
         && ToSetFreeBoundaryWidth == 0
         && ToSetMaxParamValue     == 0
-        && ToSetSensitivity       == 0;
+        && ToSetSensitivity       == 0
+        && ToSetHatch             == 0;
   }
 
   //! @return true if properties are valid
@@ -1566,6 +1574,11 @@ struct ViewerTest_AspectsChangeSet
     if (Sensitivity <= 0 && ToSetSensitivity)
     {
       std::cout << "Error: sensitivity parameter value should be positive (specified " << Sensitivity << ")\n";
+      isOk = Standard_False;
+    }
+    if (ToSetHatch == 1 && StdHatchStyle < 0 && PathToHatchPattern == "")
+    {
+      std::cout << "Error: hatch style must be specified\n";
       isOk = Standard_False;
     }
     return isOk;
@@ -2096,6 +2109,9 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->FreeBoundaryColor = DEFAULT_FREEBOUNDARY_COLOR;
       aChangeSet->ToSetFreeBoundaryWidth = -1;
       aChangeSet->FreeBoundaryWidth = 1.0;
+      aChangeSet->ToSetHatch = -1;
+      aChangeSet->StdHatchStyle = -1;
+      aChangeSet->PathToHatchPattern.Clear();
     }
     else if (anArg == "-isoontriangulation"
           || anArg == "-isoontriang")
@@ -2155,6 +2171,31 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->ToSetSensitivity = 1;
       aChangeSet->SelectionMode = Draw::Atoi (theArgVec[++anArgIter]);
       aChangeSet->Sensitivity = Draw::Atoi (theArgVec[++anArgIter]);
+    }
+    else if (anArg == "-sethatch")
+    {
+      if (isDefaults)
+      {
+        std::cout << "Error: wrong syntax. -setHatch can not be used together with -defaults call!\n";
+        return 1;
+      }
+
+      if (aNames.IsEmpty())
+      {
+        std::cout << "Error: object should be specified explicitly when -setHatch is used!\n";
+        return 1;
+      }
+
+      aChangeSet->ToSetHatch = 1;
+      TCollection_AsciiString anArg (theArgVec[++anArgIter]);
+      if (anArg.Length() <= 2)
+      {
+        aChangeSet->StdHatchStyle = Draw::Atoi (anArg.ToCString());
+      }
+      else
+      {
+        aChangeSet->PathToHatchPattern = anArg;
+      }
     }
     else
     {
@@ -2380,6 +2421,42 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
         if (aChangeSet->ToSetMaxParamValue != 0)
         {
           aDrawer->SetMaximalParameterValue (aChangeSet->MaxParamValue);
+        }
+        if (aChangeSet->ToSetHatch != 0)
+        {
+          if (!aDrawer->HasOwnShadingAspect())
+          {
+            aDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
+            *aDrawer->ShadingAspect()->Aspect() = *aCtx->DefaultDrawer()->ShadingAspect()->Aspect();
+          }
+
+          Handle(Graphic3d_AspectFillArea3d) anAsp = aDrawer->ShadingAspect()->Aspect();
+          if (aChangeSet->ToSetHatch == -1)
+          {
+            anAsp->SetInteriorStyle (Aspect_IS_SOLID);
+          }
+          else
+          {
+            anAsp->SetInteriorStyle (Aspect_IS_HATCH);
+            if (!aChangeSet->PathToHatchPattern.IsEmpty())
+            {
+              Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap();
+              if (anImage->Load (TCollection_AsciiString (aChangeSet->PathToHatchPattern.ToCString())))
+              {
+                anAsp->SetHatchStyle (new Graphic3d_HatchStyle (anImage));
+              }
+              else
+              {
+                std::cout << "Error: cannot load the following image: " << aChangeSet->PathToHatchPattern << std::endl;
+                return 1;
+              }
+            }
+            else if (aChangeSet->StdHatchStyle != -1)
+            {
+              anAsp->SetHatchStyle (new Graphic3d_HatchStyle ((Aspect_HatchStyle)aChangeSet->StdHatchStyle));
+            }
+          }
+          toRedisplay = Standard_True;
         }
       }
 

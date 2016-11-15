@@ -59,6 +59,8 @@ Graphic3d_Group.cxx
 Graphic3d_Group.hxx
 Graphic3d_GroupAspect.hxx
 Graphic3d_GroupDefinitionError.hxx
+Graphic3d_HatchStyle.hxx
+Graphic3d_HatchStyle.cxx
 Graphic3d_HighlightStyle.hxx
 Graphic3d_HighlightStyle.cxx
 Graphic3d_HorizontalTextAlignment.hxx

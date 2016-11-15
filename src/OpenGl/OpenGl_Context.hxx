@@ -512,7 +512,7 @@ public:
   //! OpenGl_LineAttributes (Aspect_HatchStyle) or the type supported by custom
   //! implementation derived from OpenGl_LineAttributes class.
   //! @return old type of hatch.
-  Standard_EXPORT Standard_Integer SetPolygonHatchStyle (const Standard_Integer theStyle);
+  Standard_EXPORT Standard_Integer SetPolygonHatchStyle (const Handle(Graphic3d_HatchStyle)& theStyle);
 
   //! Applies matrix stored in ModelWorldState to OpenGl.
   Standard_EXPORT void ApplyModelWorldMatrix();

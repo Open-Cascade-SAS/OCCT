@@ -21,7 +21,7 @@
 #include <Aspect_PolygonOffsetMode.hxx>
 #include <Aspect_InteriorStyle.hxx>
 #include <Aspect_TypeOfLine.hxx>
-#include <Aspect_HatchStyle.hxx>
+#include <Graphic3d_HatchStyle.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
 #include <Graphic3d_PolygonOffset.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
@@ -247,10 +247,23 @@ public:
 public:
 
   //! Returns the hatch type used when InteriorStyle is IS_HATCH
-  Aspect_HatchStyle HatchStyle() const { return myHatchStyle; }
+  const Handle(Graphic3d_HatchStyle)& HatchStyle() const { return myHatchStyle; }
 
   //! Modifies the hatch type used when InteriorStyle is IS_HATCH
-  void SetHatchStyle (const Aspect_HatchStyle theStyle) { myHatchStyle = theStyle; }
+  void SetHatchStyle (const Handle(Graphic3d_HatchStyle)& theStyle) { myHatchStyle = theStyle; }
+
+  //! Modifies the hatch type used when InteriorStyle is IS_HATCH
+  //! @warning This method always creates a new handle for a given hatch style
+  void SetHatchStyle (const Aspect_HatchStyle theStyle)
+  {
+    if (theStyle == Aspect_HS_SOLID)
+    {
+      myHatchStyle.Nullify();
+      return;
+    }
+
+    myHatchStyle = new Graphic3d_HatchStyle (theStyle);
+  }
 
   //! Returns the current values.
   Standard_DEPRECATED("Deprecated method Values() should be replaced by individual property getters")
@@ -291,13 +304,13 @@ protected:
   Graphic3d_MaterialAspect        myFrontMaterial;
   Graphic3d_MaterialAspect        myBackMaterial;
 
-  Quantity_ColorRGBA      myInteriorColor;
-  Quantity_ColorRGBA      myBackInteriorColor;
-  Quantity_ColorRGBA      myEdgeColor;
-  Aspect_InteriorStyle    myInteriorStyle;
-  Aspect_TypeOfLine       myEdgeType;
-  Standard_ShortReal      myEdgeWidth;
-  Aspect_HatchStyle       myHatchStyle;
+  Quantity_ColorRGBA           myInteriorColor;
+  Quantity_ColorRGBA           myBackInteriorColor;
+  Quantity_ColorRGBA           myEdgeColor;
+  Aspect_InteriorStyle         myInteriorStyle;
+  Aspect_TypeOfLine            myEdgeType;
+  Standard_ShortReal           myEdgeWidth;
+  Handle(Graphic3d_HatchStyle) myHatchStyle;
 
   Graphic3d_PolygonOffset myPolygonOffset;
   bool                    myToDistinguishMaterials;

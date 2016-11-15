@@ -144,7 +144,14 @@ public: // @name user-defined graphical attributes
   Standard_EXPORT void SetCappingHatch (const Aspect_HatchStyle theStyle);
 
   //! @return hatching style.
-  Aspect_HatchStyle CappingHatch() const { return myAspect->HatchStyle(); }
+  Aspect_HatchStyle CappingHatch() const { return (Aspect_HatchStyle)myAspect->HatchStyle()->HatchType(); }
+
+  //! Set custom hatch style (stipple) and turn hatching on.
+  //! @param theStyle [in] the hatch pattern.
+  Standard_EXPORT void SetCappingCustomHatch (const Handle(Graphic3d_HatchStyle)& theStyle);
+
+  //! @return hatching style.
+  const Handle(Graphic3d_HatchStyle)& CappingCustomHatch() const { return myAspect->HatchStyle(); }
 
   //! Turn on hatching.
   Standard_EXPORT void SetCappingHatchOn();

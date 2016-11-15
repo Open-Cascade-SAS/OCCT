@@ -3176,7 +3176,7 @@ bool OpenGl_Context::SetPolygonHatchEnabled (const bool theIsEnabled)
 // function : SetPolygonHatchStyle
 // purpose  :
 // =======================================================================
-Standard_Integer OpenGl_Context::SetPolygonHatchStyle (const Standard_Integer theType)
+Standard_Integer OpenGl_Context::SetPolygonHatchStyle (const Handle(Graphic3d_HatchStyle)& theStyle)
 {
   if (myHatchStyles.IsNull())
   {
@@ -3185,15 +3185,14 @@ Standard_Integer OpenGl_Context::SetPolygonHatchStyle (const Standard_Integer th
       // share and register for release once the resource is no longer used
       myHatchStyles = new OpenGl_LineAttributes();
       ShareResource ("OpenGl_LineAttributes", myHatchStyles);
-      myHatchStyles->Init (this);
     }
   }
-  if (myHatchStyles->TypeOfHatch() == theType)
+  if (myHatchStyles->TypeOfHatch() == theStyle->HatchType())
   {
-    return theType;
+    return theStyle->HatchType();
   }
 
-  return myHatchStyles->SetTypeOfHatch (this, theType);
+  return myHatchStyles->SetTypeOfHatch (this, theStyle);
 }
 
 // =======================================================================

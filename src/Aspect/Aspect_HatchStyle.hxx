@@ -32,6 +32,7 @@ enum Aspect_HatchStyle
   Aspect_HS_GRID_WIDE          = 4,  // TEL_HS_GRID_SPARSE
   Aspect_HS_GRID_DIAGONAL      = 1,  // TEL_HS_CROSS
   Aspect_HS_GRID_DIAGONAL_WIDE = 2,  // TEL_HS_CROSS_SPARSE
+  Aspect_HS_NB                 = 13,
 };
 
 #endif // _Aspect_HatchStyle_HeaderFile

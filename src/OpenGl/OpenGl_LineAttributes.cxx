@@ -20,472 +20,12 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_LineAttributes,OpenGl_Resource)
 
-static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
-{
-  // Aspect_HS_SOLID
-  {
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF
-  },
-  // Aspect_HS_GRID_DIAGONAL
-  {
-    0xFFFFFFFF,
-    0xBBBBBBBB,
-    0xEEEEEEEE,
-    0xBBBBBBBB,
-    0xEEEEEEEE,
-    0xBBBBBBBB,
-    0xEEEEEEEE,
-    0xBBBBBBBB,
-    0xEEEEEEEE,
-    0xBBBBBBBB,
-    0xEEEEEEEE,
-    0xBBBBBBBB,
-    0xEEEEEEEE,
-    0xBBBBBBBB,
-    0xEEEEEEEE,
-    0xBBBBBBBB,
-    0xEEEEEEEE,
-    0xBBBBBBBB,
-    0xEEEEEEEE,
-    0xBBBBBBBB,
-    0xEEEEEEEE,
-    0xBBBBBBBB,
-    0xEEEEEEEE,
-    0xBBBBBBBB,
-    0xEEEEEEEE,
-    0xBBBBBBBB,
-    0xEEEEEEEE,
-    0xBBBBBBBB,
-    0xEEEEEEEE,
-    0xBBBBBBBB,
-    0xEEEEEEEE,
-    0xBBBBBBBB
-  },
-  // Aspect_HS_GRID_DIAGONAL_WIDE
-  {
-    0x81818181,
-    0x24242424,
-    0x18181818,
-    0x42424242,
-    0x81818181,
-    0x24242424,
-    0x18181818,
-    0x42424242,
-    0x81818181,
-    0x24242424,
-    0x18181818,
-    0x42424242,
-    0x81818181,
-    0x24242424,
-    0x18181818,
-    0x42424242,
-    0x81818181,
-    0x24242424,
-    0x18181818,
-    0x42424242,
-    0x81818181,
-    0x24242424,
-    0x18181818,
-    0x42424242,
-    0x81818181,
-    0x24242424,
-    0x18181818,
-    0x42424242,
-    0x81818181,
-    0x24242424,
-    0x18181818,
-    0x42424242
-  },
-  // Aspect_HS_GRID
-  {
-    0xFFFFFFFF,
-    0x88888888,
-    0xFFFFFFFF,
-    0x88888888,
-    0xFFFFFFFF,
-    0x88888888,
-    0xFFFFFFFF,
-    0x88888888,
-    0xFFFFFFFF,
-    0x88888888,
-    0xFFFFFFFF,
-    0x88888888,
-    0xFFFFFFFF,
-    0x88888888,
-    0xFFFFFFFF,
-    0x88888888,
-    0xFFFFFFFF,
-    0x88888888,
-    0xFFFFFFFF,
-    0x88888888,
-    0xFFFFFFFF,
-    0x88888888,
-    0xFFFFFFFF,
-    0x88888888,
-    0xFFFFFFFF,
-    0x88888888,
-    0xFFFFFFFF,
-    0x88888888,
-    0xFFFFFFFF,
-    0x88888888,
-    0xFFFFFFFF,
-    0x88888888
-  },
-  // Aspect_HS_GRID_WIDE
-  {
-    0xFFFFFFFF,
-    0x80808080,
-    0x80808080,
-    0x80808080,
-    0xFFFFFFFF,
-    0x80808080,
-    0x80808080,
-    0x80808080,
-    0xFFFFFFFF,
-    0x80808080,
-    0x80808080,
-    0x80808080,
-    0xFFFFFFFF,
-    0x80808080,
-    0x80808080,
-    0x80808080,
-    0xFFFFFFFF,
-    0x80808080,
-    0x80808080,
-    0x80808080,
-    0xFFFFFFFF,
-    0x80808080,
-    0x80808080,
-    0x80808080,
-    0xFFFFFFFF,
-    0x80808080,
-    0x80808080,
-    0x80808080,
-    0xFFFFFFFF,
-    0x80808080,
-    0x80808080,
-    0x80808080
-  },
-  // Aspect_HS_DIAGONAL_45
-  {
-    0x88888888,
-    0x22222222,
-    0x88888888,
-    0x22222222,
-    0x88888888,
-    0x22222222,
-    0x88888888,
-    0x22222222,
-    0x88888888,
-    0x22222222,
-    0x88888888,
-    0x22222222,
-    0x88888888,
-    0x22222222,
-    0x88888888,
-    0x22222222,
-    0x88888888,
-    0x22222222,
-    0x88888888,
-    0x22222222,
-    0x88888888,
-    0x22222222,
-    0x88888888,
-    0x22222222,
-    0x88888888,
-    0x22222222,
-    0x88888888,
-    0x22222222,
-    0x88888888,
-    0x22222222,
-    0x88888888,
-    0x22222222
-  },
-  // Aspect_HS_DIAGONAL_135
-  {
-    0x11111111,
-    0x44444444,
-    0x11111111,
-    0x44444444,
-    0x11111111,
-    0x44444444,
-    0x11111111,
-    0x44444444,
-    0x11111111,
-    0x44444444,
-    0x11111111,
-    0x44444444,
-    0x11111111,
-    0x44444444,
-    0x11111111,
-    0x44444444,
-    0x11111111,
-    0x44444444,
-    0x11111111,
-    0x44444444,
-    0x11111111,
-    0x44444444,
-    0x11111111,
-    0x44444444,
-    0x11111111,
-    0x44444444,
-    0x11111111,
-    0x44444444,
-    0x11111111,
-    0x44444444,
-    0x11111111,
-    0x44444444
-  },
-  // Aspect_HS_HORIZONTAL
-  {
-    0xFFFFFFFF,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000
-  },
-  // Aspect_HS_VERTICAL
-  {
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111,
-    0x11111111
-  },
-  // Aspect_HS_DIAGONAL_45_WIDE
-  {
-    0x80808080,
-    0x20202020,
-    0x08080808,
-    0x02020202,
-    0x80808080,
-    0x20202020,
-    0x08080808,
-    0x02020202,
-    0x80808080,
-    0x20202020,
-    0x08080808,
-    0x02020202,
-    0x80808080,
-    0x20202020,
-    0x08080808,
-    0x02020202,
-    0x80808080,
-    0x20202020,
-    0x08080808,
-    0x02020202,
-    0x80808080,
-    0x20202020,
-    0x08080808,
-    0x02020202,
-    0x80808080,
-    0x20202020,
-    0x08080808,
-    0x02020202,
-    0x80808080,
-    0x20202020,
-    0x08080808,
-    0x02020202
-  },
-  // Aspect_HS_DIAGONAL_135_WIDE
-  {
-    0x01010101,
-    0x04040404,
-    0x10101010,
-    0x40404040,
-    0x01010101,
-    0x04040404,
-    0x10101010,
-    0x40404040,
-    0x01010101,
-    0x04040404,
-    0x10101010,
-    0x40404040,
-    0x01010101,
-    0x04040404,
-    0x10101010,
-    0x40404040,
-    0x01010101,
-    0x04040404,
-    0x10101010,
-    0x40404040,
-    0x01010101,
-    0x04040404,
-    0x10101010,
-    0x40404040,
-    0x01010101,
-    0x04040404,
-    0x10101010,
-    0x40404040,
-    0x01010101,
-    0x04040404,
-    0x10101010,
-    0x40404040
-  },
-  // Aspect_HS_HORIZONTAL_WIDE
-  {
-    0xFFFFFFFF,
-    0x00000000,
-    0x00000000,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0x00000000,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0x00000000,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0x00000000,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0x00000000,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0x00000000,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0x00000000,
-    0x00000000,
-    0xFFFFFFFF,
-    0x00000000,
-    0x00000000,
-    0x00000000
-  },
-  // Aspect_HS_VERTICAL_WIDE
-  {
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010,
-    0x10101010
-  }
-};
-
 // =======================================================================
 // function : OpenGl_LineAttributes
 // purpose  :
 // =======================================================================
 OpenGl_LineAttributes::OpenGl_LineAttributes()
-: myPatternBase (0),
-  myTypeOfHatch (0),
+: myTypeOfHatch (0),
   myIsEnabled (true)
 {
   //
@@ -507,49 +47,42 @@ OpenGl_LineAttributes::~OpenGl_LineAttributes()
 void OpenGl_LineAttributes::Release (OpenGl_Context* theGlCtx)
 {
   // Delete surface patterns
-  if (myPatternBase != 0)
-  {
 #if !defined(GL_ES_VERSION_2_0)
-    if (theGlCtx->IsValid())
+  if (theGlCtx != NULL && theGlCtx->IsValid())
+  {
+    for (OpenGl_MapOfHatchStylesAndIds::Iterator anIter (myStyles); anIter.More(); anIter.Next())
     {
-      theGlCtx->core11->glDeleteLists ((GLuint )myPatternBase, TEL_HS_USER_DEF_START);
+      theGlCtx->core11->glDeleteLists ((GLuint)anIter.Value(), 1);
     }
+  }
 #else
     (void )theGlCtx;
 #endif
-    myPatternBase = 0;
-  }
+    myStyles.Clear();
 }
 
 // =======================================================================
-// function : Init
+// function : init
 // purpose  :
 // =======================================================================
-void OpenGl_LineAttributes::Init (const OpenGl_Context* theGlCtx)
+unsigned int OpenGl_LineAttributes::init (const OpenGl_Context* theGlCtx,
+                                          const Handle(Graphic3d_HatchStyle)& theStyle)
 {
-  // Return if already initialized
-  if (myPatternBase != 0)
-  {
-    return;
-  }
-
 #if !defined(GL_ES_VERSION_2_0)
   if (theGlCtx->core11 == NULL)
   {
-    return;
+    return 0;
   }
 
-  // GL_POLYGON_STIPPLE need 32x32 stipple patterns
-  const int nbi = sizeof(myInteriors) / (32 * sizeof(unsigned int));
-  myPatternBase = glGenLists(TEL_HS_USER_DEF_START);
-  for (int i = 1; i < TEL_HS_USER_DEF_START; i++)
-  {
-    theGlCtx->core11->glNewList ((GLuint )myPatternBase + i, GL_COMPILE);
-    theGlCtx->core11->glPolygonStipple ((const GLubyte* )myInteriors[i < nbi ? i : 0]);
-    theGlCtx->core11->glEndList();
-  }
+  const unsigned int aListId = glGenLists(1);
+  theGlCtx->core11->glNewList ((GLuint)aListId, GL_COMPILE);
+  theGlCtx->core11->glPolygonStipple ((const GLubyte*)theStyle->Pattern());
+  theGlCtx->core11->glEndList();
+  return aListId;
 #else
   (void )theGlCtx;
+  (void )theStyle;
+  return 0;
 #endif
 }
 
@@ -557,20 +90,28 @@ void OpenGl_LineAttributes::Init (const OpenGl_Context* theGlCtx)
 // function : SetTypeOfHatch
 // purpose  :
 // =======================================================================
-int OpenGl_LineAttributes::SetTypeOfHatch (const OpenGl_Context* theGlCtx, const int theType)
+int OpenGl_LineAttributes::SetTypeOfHatch (const OpenGl_Context*               theGlCtx,
+                                           const Handle(Graphic3d_HatchStyle)& theStyle)
 {
   // Return if not initialized
-  if (myPatternBase == 0)
+  if (theStyle.IsNull())
   {
     return 0;
   }
 
   const int anOldType = myTypeOfHatch;
 
-#if !defined(GL_ES_VERSION_2_0)
-  if (theType != 0)
+  unsigned int aGpuListId = 0;
+  if (!myStyles.Find (theStyle, aGpuListId))
   {
-    theGlCtx->core11->glCallList ((GLuint )myPatternBase + (GLuint )theType);
+    aGpuListId = init (theGlCtx, theStyle);
+    myStyles.Bind (theStyle, aGpuListId);
+  }
+
+#if !defined(GL_ES_VERSION_2_0)
+  if (theStyle->HatchType() != 0)
+  {
+    theGlCtx->core11->glCallList ((GLuint)aGpuListId);
 
     if (myIsEnabled)
     {
@@ -584,7 +125,7 @@ int OpenGl_LineAttributes::SetTypeOfHatch (const OpenGl_Context* theGlCtx, const
 #else
   (void )theGlCtx;
 #endif
-  myTypeOfHatch = theType;
+  myTypeOfHatch = theStyle->HatchType();
 
   return anOldType;
 }
@@ -597,7 +138,7 @@ bool OpenGl_LineAttributes::SetEnabled (const OpenGl_Context* theGlCtx,
                                         const bool theToEnable)
 {
   // Return if not initialized
-  if (myPatternBase == 0)
+  if (myStyles.IsEmpty())
   {
     return false;
   }

@@ -201,6 +201,16 @@ void Graphic3d_ClipPlane::SetCappingHatch (const Aspect_HatchStyle theStyle)
 }
 
 // =======================================================================
+// function : SetCappingCustomHatch
+// purpose  :
+// =======================================================================
+void Graphic3d_ClipPlane::SetCappingCustomHatch (const Handle(Graphic3d_HatchStyle)& theStyle)
+{
+  myAspect->SetHatchStyle (theStyle);
+  ++myAspectMod;
+}
+
+// =======================================================================
 // function : SetCappingHatchOn
 // purpose  :
 // =======================================================================

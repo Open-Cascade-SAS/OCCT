@@ -65,7 +65,7 @@ OpenGl_AspectFace::OpenGl_AspectFace()
                                             THE_DEFAULT_MATERIAL, THE_DEFAULT_MATERIAL)),
   myIsNoLighting (false)
 {
-  myAspect->SetHatchStyle (Aspect_HS_SOLID);
+  myAspect->SetHatchStyle (Handle(Graphic3d_HatchStyle)());
 }
 
 // =======================================================================

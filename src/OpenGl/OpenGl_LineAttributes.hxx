@@ -21,10 +21,12 @@
 #include <Aspect_TypeOfLine.hxx>
 #include <Aspect_TypeOfMarker.hxx>
 #include <Font_FontAspect.hxx>
+#include <Graphic3d_HatchStyle.hxx>
+#include <NCollection_DataMap.hxx>
+
+typedef NCollection_DataMap<Handle(Graphic3d_HatchStyle), unsigned int> OpenGl_MapOfHatchStylesAndIds;
 
 class OpenGl_Context;
-
-#define TEL_HS_USER_DEF_START 15
 
 //! Utility class to manage OpenGL state of polygon hatching rasterization
 //! and keeping its cached state. The hatching rasterization is implemented
@@ -51,10 +53,6 @@ public:
   //! Default destructor.
   virtual ~OpenGl_LineAttributes();
 
-  //! Initialize hatch patterns as GL resources.
-  //! Call this method before using hatching.
-  void Init (const OpenGl_Context* theGlCtx);
-
   //! Release GL resources.
   virtual void Release (OpenGl_Context* theGlCtx) Standard_OVERRIDE;
 
@@ -62,7 +60,8 @@ public:
   int TypeOfHatch() const { return myTypeOfHatch; }
 
   //! Sets type of the hatch.
-  int SetTypeOfHatch (const OpenGl_Context* theGlCtx, const int theType);
+  int SetTypeOfHatch (const OpenGl_Context*               theGlCtx,
+                      const Handle(Graphic3d_HatchStyle)& theStyle);
 
   //! Current enabled state of the hatching rasterization.
   bool IsEnabled() const { return myIsEnabled; }
@@ -72,9 +71,14 @@ public:
 
 protected:
 
-  unsigned int myPatternBase; //!< Base index for predefined hatch patterns
+  unsigned int init (const OpenGl_Context* theGlCtx,
+                     const Handle(Graphic3d_HatchStyle)& theStyle);
+
+protected:
+
   int myTypeOfHatch; //!< Currently activated type of hatch
   bool myIsEnabled; //!< Current enabled state of hatching rasterization.
+  OpenGl_MapOfHatchStylesAndIds myStyles; //!< Hatch patterns
 
 public:
 
