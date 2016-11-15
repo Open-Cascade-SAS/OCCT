@@ -71,6 +71,7 @@
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <Standard_Real.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
@@ -1656,144 +1657,316 @@ Standard_Boolean BRepLib::OrientClosedSolid(TopoDS_Solid& solid)
 
   return Standard_True;
 }
+
+// Structure for calculation of properties, necessary for decision about continuity
+class SurfaceProperties
+{
+public:
+  SurfaceProperties(const Handle(Geom_Surface)& theSurface,
+                    const gp_Trsf&              theSurfaceTrsf,
+                    const Handle(Geom2d_Curve)& theCurve2D,
+                    const Standard_Boolean      theReversed)
+    : mySurfaceProps(theSurface, 2, Precision::Confusion()),
+      mySurfaceTrsf(theSurfaceTrsf),
+      myCurve2d(theCurve2D),
+      myIsReversed(theReversed)
+  {}
+
+  // Calculate derivatives on surface related to the point on curve
+  void Calculate(const Standard_Real theParamOnCurve)
+  {
+    gp_Pnt2d aUV;
+    myCurve2d->D1(theParamOnCurve, aUV, myCurveTangent);
+    mySurfaceProps.SetParameters(aUV.X(), aUV.Y());
+  }
+
+  // Returns point just calculated
+  gp_Pnt Value() 
+  { return mySurfaceProps.Value().Transformed(mySurfaceTrsf); }
+
+  // Calculate a derivative orthogonal to curve's tangent vector
+  gp_Vec Derivative()
+  {
+    gp_Vec aDeriv;
+    // direction orthogonal to tangent vector of the curve
+    gp_Vec2d anOrtho(-myCurveTangent.Y(), myCurveTangent.X());
+    Standard_Real aLen = anOrtho.Magnitude();
+    if (aLen < Precision::Confusion())
+      return aDeriv;
+    anOrtho /= aLen;
+    if (myIsReversed)
+      anOrtho.Reverse();
+
+    aDeriv.SetLinearForm(anOrtho.X(), mySurfaceProps.D1U(),
+                         anOrtho.Y(), mySurfaceProps.D1V());
+    return aDeriv.Transformed(mySurfaceTrsf);
+  }
+
+  // Calculate principal curvatures, which consist of minimal and maximal normal curvatures and
+  // the directions on the tangent plane (principal direction) where the extremums are reached
+  void Curvature(gp_Dir& thePrincipalDir1, Standard_Real& theCurvature1,
+                 gp_Dir& thePrincipalDir2, Standard_Real& theCurvature2)
+  {
+    mySurfaceProps.CurvatureDirections(thePrincipalDir1, thePrincipalDir2);
+    theCurvature1 = mySurfaceProps.MaxCurvature();
+    theCurvature2 = mySurfaceProps.MinCurvature();
+    if (myIsReversed)
+    {
+      theCurvature1 = -theCurvature1;
+      theCurvature2 = -theCurvature2;
+    }
+    thePrincipalDir1.Transform(mySurfaceTrsf);
+    thePrincipalDir2.Transform(mySurfaceTrsf);
+  }
+
+private:
+  GeomLProp_SLProps    mySurfaceProps; // properties calculator
+  gp_Trsf              mySurfaceTrsf;
+  Handle(Geom2d_Curve) myCurve2d;
+  Standard_Boolean     myIsReversed; // the face based on the surface is reversed
+
+  // tangent vector to Pcurve in UV
+  gp_Vec2d myCurveTangent;
+};
+
 //=======================================================================
 //function : tgtfaces
 //purpose  : check the angle at the border between two squares.
 //           Two shares should have a shared front edge.
 //=======================================================================
 static GeomAbs_Shape tgtfaces(const TopoDS_Edge& Ed,
-  const TopoDS_Face& F1,
-  const TopoDS_Face& F2,
-  const Standard_Real theAngleTol,
-  const Standard_Boolean couture)
+                              const TopoDS_Face& F1,
+                              const TopoDS_Face& F2,
+                              const Standard_Real theAngleTol)
 {
+  Standard_Boolean isSeam = F1.IsEqual(F2);
+
+  TopoDS_Edge E = Ed;
+
   // Check if pcurves exist on both faces of edge
   Standard_Real aFirst,aLast;
-  Handle(Geom2d_Curve) aCurve;
-  aCurve = BRep_Tool::CurveOnSurface(Ed,F1,aFirst,aLast);
-  if(aCurve.IsNull())
+  E.Orientation(TopAbs_FORWARD);
+  Handle(Geom2d_Curve) aCurve1 = BRep_Tool::CurveOnSurface(E, F1, aFirst, aLast);
+  if(aCurve1.IsNull())
     return GeomAbs_C0;
-  aCurve = BRep_Tool::CurveOnSurface(Ed,F2,aFirst,aLast);
-  if(aCurve.IsNull())
+
+  if (isSeam)
+    E.Orientation(TopAbs_REVERSED);
+  Handle(Geom2d_Curve) aCurve2 = BRep_Tool::CurveOnSurface(E, F2, aFirst, aLast);
+  if(aCurve2.IsNull())
     return GeomAbs_C0;
-  
-  Standard_Real u;
-  TopoDS_Edge E = Ed;
-  BRepAdaptor_Surface aBAS1(F1,Standard_False);
-  BRepAdaptor_Surface aBAS2(F2,Standard_False);
-  
+
+  TopLoc_Location aLoc1, aLoc2;
+  Handle(Geom_Surface) aSurface1 = BRep_Tool::Surface(F1, aLoc1);
+  const gp_Trsf& aSurf1Trsf = aLoc1.Transformation();
+  Handle(Geom_Surface) aSurface2 = BRep_Tool::Surface(F2, aLoc2);
+  const gp_Trsf& aSurf2Trsf = aLoc2.Transformation();
+
+  if (aSurface1->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+    aSurface1 = Handle(Geom_RectangularTrimmedSurface)::DownCast(aSurface1)->BasisSurface();
+  if (aSurface2->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+    aSurface2 = Handle(Geom_RectangularTrimmedSurface)::DownCast(aSurface2)->BasisSurface();
+
   // seam edge on elementary surface is always CN
   Standard_Boolean isElementary =
-    (aBAS1.Surface().Surface()->IsKind(STANDARD_TYPE(Geom_ElementarySurface)) &&
-     aBAS1.Surface().Surface()->IsKind(STANDARD_TYPE(Geom_ElementarySurface)));
-  if (couture && isElementary)
+    (aSurface1->IsKind(STANDARD_TYPE(Geom_ElementarySurface)) &&
+     aSurface2->IsKind(STANDARD_TYPE(Geom_ElementarySurface)));
+  if (isSeam && isElementary)
   {
     return GeomAbs_CN;
   }
-  
-  Handle(BRepAdaptor_HSurface) HS1 = new BRepAdaptor_HSurface (aBAS1);
-  Handle(BRepAdaptor_HSurface) HS2;
-  if(couture) HS2 = HS1;
-  else HS2 = new BRepAdaptor_HSurface(aBAS2);
-  //case when edge lies on the one face
-  
-  E.Orientation(TopAbs_FORWARD);
-  Handle(BRepAdaptor_HCurve2d) HC2d1 = new BRepAdaptor_HCurve2d();
-  HC2d1->ChangeCurve2d().Initialize(E,F1);
-  if(couture) E.Orientation(TopAbs_REVERSED);
-  Handle(BRepAdaptor_HCurve2d) HC2d2 = new BRepAdaptor_HCurve2d();
-  HC2d2->ChangeCurve2d().Initialize(E,F2);
-  Adaptor3d_CurveOnSurface C1(HC2d1,HS1);
-  Adaptor3d_CurveOnSurface C2(HC2d2,HS2);
 
-  Standard_Boolean rev1 = (F1.Orientation() == TopAbs_REVERSED);
-  Standard_Boolean rev2 = (F2.Orientation() == TopAbs_REVERSED);
-  Standard_Real f,l,eps;
+  SurfaceProperties aSP1(aSurface1, aSurf1Trsf, aCurve1, F1.Orientation() == TopAbs_REVERSED);
+  SurfaceProperties aSP2(aSurface2, aSurf2Trsf, aCurve2, F2.Orientation() == TopAbs_REVERSED);
+
+  Standard_Real f, l, eps;
   BRep_Tool::Range(E,f,l);
   Extrema_LocateExtPC ext;
-  Standard_Boolean IsInitialized = Standard_False;
+  Handle(BRepAdaptor_HCurve) aHC2;
 
   eps = (l - f)/100.;
   f += eps; // to avoid calculations on  
   l -= eps; // points of pointed squares.
-  gp_Pnt2d p;
-  gp_Pnt pp1,pp2;//,PP;
-  gp_Vec du1, dv1, d2u1, d2v1, d2uv1;
-  gp_Vec du2, dv2, d2u2, d2v2, d2uv2;
-  gp_Vec d1,d2;
-  Standard_Real uu, vv, norm;
 
-  Standard_Integer i;
+  const Standard_Real anAngleTol2 = theAngleTol * theAngleTol;
+
+  gp_Vec aDer1, aDer2;
+  gp_Vec aNorm1;
+  Standard_Real aSqLen1, aSqLen2;
+  gp_Dir aCrvDir1[2], aCrvDir2[2];
+  Standard_Real aCrvLen1[2], aCrvLen2[2];
+
   GeomAbs_Shape aCont = (isElementary ? GeomAbs_CN : GeomAbs_C2);
-  for(i = 0; i<= 20 && aCont > GeomAbs_C0; i++)
+  GeomAbs_Shape aCurCont;
+  Standard_Real u;
+  for (Standard_Integer i = 0; i <= 20 && aCont > GeomAbs_C0; i++)
   {
     // First suppose that this is sameParameter
     u = f + (l-f)*i/20;
 
-    // take derivatives of surfaces at the same u, and compute normals
-    HC2d1->D0(u,p);
-    HS1->D2 (p.X(), p.Y(), pp1, du1, dv1, d2u1, d2v1, d2uv1);
-    d1 = (du1.Crossed(dv1));
-    norm = d1.Magnitude(); 
-    if (norm > 1.e-12) d1 /= norm;
-    else continue; // skip degenerated point
-    if(rev1) d1.Reverse();
+    // Check conditions for G1 and C1 continuity:
+    // * calculate a derivative in tangent plane of each surface
+    //   orthogonal to curve's tangent vector
+    // * continuity is C1 if the vectors are equal
+    // * continuity is G1 if the vectors are just parallel
+    aCurCont = GeomAbs_C0;
 
-    HC2d2->D0(u,p);
-    HS2->D2 (p.X(), p.Y(), pp2, du2, dv2, d2u2, d2v2, d2uv2);
-    d2 = (du2.Crossed(dv2));
-    norm = d2.Magnitude();
-    if (norm > 1.e-12) d2 /= norm;
-    else continue; // skip degenerated point
-    if(rev2) d2.Reverse();
+    aSP1.Calculate(u);
+    aSP2.Calculate(u);
 
-    // check 
-    Standard_Real ang = d1.Angle(d2);
-
-    // check special case of precise equality of derivatives,
-    // occurring when edge connects two faces built on equally 
-    // defined surfaces (e.g. seam-like edges on periodic surfaces, 
-    // or planar faces on the same plane)
-    if (aCont >= GeomAbs_C2 && ang < Precision::Angular() &&
-        d2u1 .IsEqual (d2u2,  Precision::PConfusion(), Precision::Angular()) &&
-        d2v1 .IsEqual (d2v2,  Precision::PConfusion(), Precision::Angular()) &&
-        d2uv1.IsEqual (d2uv2, Precision::PConfusion(), Precision::Angular()))
+    aDer1 = aSP1.Derivative();
+    aSqLen1 = aDer1.SquareMagnitude();
+    aDer2 = aSP2.Derivative();
+    aSqLen2 = aDer2.SquareMagnitude();
+    Standard_Boolean isSmoothSuspect = (aDer1.CrossSquareMagnitude(aDer2) <= anAngleTol2 * aSqLen1 * aSqLen2);
+    if (!isSmoothSuspect)
     {
-      continue;
-    }
-
-    aCont = GeomAbs_G1;
-
-    // Refine by projection
-    if (ang > theAngleTol)
-    {
-      if (! IsInitialized ) {
-        ext.Initialize(C2,f,l,Precision::PConfusion());
-        IsInitialized = Standard_True;
-      }      
-      ext.Perform(pp1,u);
-      if(ext.IsDone() && ext.IsMin()){
-        Extrema_POnCurv poc = ext.Point();
-        Standard_Real v = poc.Parameter();
-
-        HC2d2->D0(v,p);
-        p.Coord(uu,vv);
-        HS2->D1(p.X(), p.Y(), pp2, du2, dv2);
-        d2 = (du2.Crossed(dv2));
-        norm = d2.Magnitude();
-        if (norm> 1.e-12) d2 /= norm;
-        else continue; // degenerated point
-        if(rev2) d2.Reverse();
-        ang = d1.Angle(d2);
+      // Refine by projection
+      if (aHC2.IsNull())
+      {
+        // adaptor for pcurve on the second surface
+        aHC2 = new BRepAdaptor_HCurve(BRepAdaptor_Curve(E, F2));
+        ext.Initialize(aHC2->Curve(), f, l, Precision::PConfusion());
       }
-      if (ang > theAngleTol)
-        return GeomAbs_C0;
+      ext.Perform(aSP1.Value(), u);
+      if (ext.IsDone() && ext.IsMin())
+      {
+        const Extrema_POnCurv& poc = ext.Point();
+        aSP2.Calculate(poc.Parameter());
+        aDer2 = aSP2.Derivative();
+        aSqLen2 = aDer2.SquareMagnitude();
+      }
+      isSmoothSuspect = (aDer1.CrossSquareMagnitude(aDer2) <= anAngleTol2 * aSqLen1 * aSqLen2);
     }
-  }     
+    if (isSmoothSuspect)
+    {
+      aCurCont = GeomAbs_G1;
+      if (Abs(Sqrt(aSqLen1) - Sqrt(aSqLen2)) < Precision::Confusion() &&
+          aDer1.Dot(aDer2) > Precision::SquareConfusion()) // <= check vectors are codirectional
+        aCurCont = GeomAbs_C1;
+    }
+    else
+      return GeomAbs_C0;
 
+    if (aCont < GeomAbs_G2)
+      continue; // no need further processing, because maximal continuity is less than G2
+
+    // Check conditions for G2 and C2 continuity:
+    // * calculate principal curvatures on each surface
+    // * continuity is C2 if directions of principal curvatures are equal on differenct surfaces
+    // * continuity is G2 if directions of principal curvatures are just parallel
+    //   and values of curvatures are the same
+    aSP1.Curvature(aCrvDir1[0], aCrvLen1[0], aCrvDir1[1], aCrvLen1[1]);
+    aSP2.Curvature(aCrvDir2[0], aCrvLen2[0], aCrvDir2[1], aCrvLen2[1]);
+    for (Standard_Integer aStep = 0; aStep <= 1; ++aStep)
+    {
+      if (aCrvDir1[0].XYZ().CrossSquareMagnitude(aCrvDir2[aStep].XYZ()) <= Precision::SquareConfusion() &&
+          Abs(aCrvLen1[0] - aCrvLen2[aStep]) < Precision::Confusion() &&
+          aCrvDir1[1].XYZ().CrossSquareMagnitude(aCrvDir2[1 - aStep].XYZ()) <= Precision::SquareConfusion() &&
+          Abs(aCrvLen1[1] - aCrvLen2[1 - aStep]) < Precision::Confusion())
+      {
+        if (aCurCont == GeomAbs_C1 &&
+            aCrvDir1[0].Dot(aCrvDir2[aStep]) > Precision::Confusion() &&
+            aCrvDir1[1].Dot(aCrvDir2[1 - aStep]) > Precision::Confusion())
+          aCurCont = GeomAbs_C2;
+        else
+          aCurCont = GeomAbs_G2;
+        break;
+      }
+    }
+
+    if (aCurCont < aCont)
+      aCont = aCurCont;
+  }
+
+  // according to the list of supported elementary surfaces,
+  // if the continuity is C2, than it is totally CN
+  if (isElementary && aCont == GeomAbs_C2)
+    aCont = GeomAbs_CN;
   return aCont;
 }
 
+//=======================================================================
+// function : EncodeRegularity
+// purpose  : Code the regularities on all edges of the shape, boundary of 
+//            two faces that do not have it.
+//            Takes into account that compound may consists of same solid
+//            placed with different transformations
+//=======================================================================
+static void EncodeRegularity(const TopoDS_Shape&        theShape,
+                             const Standard_Real        theTolAng,
+                             TopTools_MapOfShape&       theMap,
+                             const TopTools_MapOfShape& theEdgesToEncode = TopTools_MapOfShape())
+{
+  TopoDS_Shape aShape = theShape;
+  TopLoc_Location aNullLoc;
+  aShape.Location(aNullLoc); // nullify location
+  if (!theMap.Add(aShape))
+    return; // do not need to process shape twice
+
+  if (aShape.ShapeType() == TopAbs_COMPOUND ||
+      aShape.ShapeType() == TopAbs_COMPSOLID)
+  {
+    for (TopoDS_Iterator it(aShape); it.More(); it.Next())
+      EncodeRegularity(it.Value(), theTolAng, theMap, theEdgesToEncode);
+    return;
+  }
+
+  try {
+    OCC_CATCH_SIGNALS
+
+    TopTools_IndexedDataMapOfShapeListOfShape M;
+    TopExp::MapShapesAndAncestors(aShape, TopAbs_EDGE, TopAbs_FACE, M);
+    TopTools_ListIteratorOfListOfShape It;
+    TopExp_Explorer Ex;
+    TopoDS_Face F1,F2;
+    Standard_Boolean found;
+    for (Standard_Integer i = 1; i <= M.Extent(); i++){
+      TopoDS_Edge E = TopoDS::Edge(M.FindKey(i));
+      if (!theEdgesToEncode.IsEmpty())
+      {
+        // process only the edges from the list to update their regularity
+        TopoDS_Shape aPureEdge = E.Located(aNullLoc);
+        aPureEdge.Orientation(TopAbs_FORWARD);
+        if (!theEdgesToEncode.Contains(aPureEdge))
+          continue;
+      }
+
+      found = Standard_False;                                     
+      F1.Nullify();
+      for (It.Initialize(M.FindFromIndex(i)); It.More() && !found; It.Next()){
+        if (F1.IsNull()) { F1 = TopoDS::Face(It.Value()); }
+        else {
+          const TopoDS_Face& aTmpF2 = TopoDS::Face(It.Value());
+          if (!F1.IsSame(aTmpF2)){
+            found = Standard_True;
+            F2 = aTmpF2;
+          }
+        }
+      }
+      if (!found && !F1.IsNull()){//is it a sewing edge?
+        TopAbs_Orientation orE = E.Orientation();
+        TopoDS_Edge curE;
+        for (Ex.Init(F1, TopAbs_EDGE); Ex.More() && !found; Ex.Next()){
+          curE = TopoDS::Edge(Ex.Current());
+          if (E.IsSame(curE) && orE != curE.Orientation()) {
+            found = Standard_True;
+            F2 = F1;
+          }
+        }
+      }
+      if (found)
+        BRepLib::EncodeRegularity(E, F1, F2, theTolAng);
+    }
+  }
+  catch (Standard_Failure) {
+#ifdef OCCT_DEBUG
+    cout << "Warning: Exception in BRepLib::EncodeRegularity(): ";
+    Standard_Failure::Caught()->Print(cout);
+    cout << endl;
+#endif
+  }
+}
 
 //=======================================================================
 // function : EncodeRegularity
@@ -1804,56 +1977,39 @@ static GeomAbs_Shape tgtfaces(const TopoDS_Edge& Ed,
 void BRepLib::EncodeRegularity(const TopoDS_Shape& S,
   const Standard_Real TolAng)
 {
-  BRep_Builder B;
-  TopTools_IndexedDataMapOfShapeListOfShape M;
-  TopExp::MapShapesAndAncestors(S,TopAbs_EDGE,TopAbs_FACE,M);
-  TopTools_ListIteratorOfListOfShape It;
-  TopExp_Explorer Ex;
-  TopoDS_Face F1,F2;
-  Standard_Boolean found, couture;
-  for(Standard_Integer i = 1; i <= M.Extent(); i++){
-    TopoDS_Edge E = TopoDS::Edge(M.FindKey(i));
-    found = Standard_False; couture = Standard_False;
-    F1.Nullify();
-    for(It.Initialize(M.FindFromIndex(i));It.More() && !found;It.Next()){
-      if(F1.IsNull()) { F1 = TopoDS::Face(It.Value()); }
-      else {
-        if(!F1.IsSame(TopoDS::Face(It.Value()))){
-          found = Standard_True;
-          F2 = TopoDS::Face(It.Value());
-        }
-      }
-    }
-    if (!found && !F1.IsNull()){//is it a sewing edge?
-      TopAbs_Orientation orE = E.Orientation();
-      TopoDS_Edge curE;
-      for(Ex.Init(F1,TopAbs_EDGE);Ex.More() && !found;Ex.Next()){
-        curE= TopoDS::Edge(Ex.Current());
-        if(E.IsSame(curE) && orE != curE.Orientation()) {
-          found = Standard_True;
-          couture = Standard_True;
-          F2 = F1;
-        }
-      }
-    }
-    if(found){
-      if(BRep_Tool::Continuity(E,F1,F2)<=GeomAbs_C0){
-
-        try {
-          GeomAbs_Shape aCont = tgtfaces(E, F1, F2, TolAng, couture);
-          B.Continuity(E,F1,F2,aCont);
-        }
-        catch(Standard_Failure)
-        {
-        }
-      }
-    }
-  }
+  TopTools_MapOfShape aMap;
+  ::EncodeRegularity(S, TolAng, aMap);
 }
 
 //=======================================================================
 // function : EncodeRegularity
-// purpose  : code the regularity between 2 faces on an edge 
+// purpose  : code the regularities on all edges in the list that do not 
+//            have it, and which are boundary of two faces on the shape.
+//=======================================================================
+
+void BRepLib::EncodeRegularity(const TopoDS_Shape& S,
+  const TopTools_ListOfShape& LE,
+  const Standard_Real TolAng)
+{
+  // Collect edges without location and orientation
+  TopTools_MapOfShape aPureEdges;
+  TopLoc_Location aNullLoc;
+  TopTools_ListIteratorOfListOfShape anEdgeIt(LE);
+  for (; anEdgeIt.More(); anEdgeIt.Next())
+  {
+    TopoDS_Shape anEdge = anEdgeIt.Value();
+    anEdge.Location(aNullLoc);
+    anEdge.Orientation(TopAbs_FORWARD);
+    aPureEdges.Add(anEdge);
+  }
+
+  TopTools_MapOfShape aMap;
+  ::EncodeRegularity(S, TolAng, aMap, aPureEdges);
+}
+
+//=======================================================================
+// function : EncodeRegularity
+// purpose  : code the regularity between 2 faces connected by edge 
 //=======================================================================
 
 void BRepLib::EncodeRegularity(TopoDS_Edge& E,
@@ -1864,12 +2020,15 @@ void BRepLib::EncodeRegularity(TopoDS_Edge& E,
   BRep_Builder B;
   if(BRep_Tool::Continuity(E,F1,F2)<=GeomAbs_C0){
     try {
-      GeomAbs_Shape aCont = tgtfaces(E, F1, F2, TolAng, F1.IsEqual(F2));
+      GeomAbs_Shape aCont = tgtfaces(E, F1, F2, TolAng);
       B.Continuity(E,F1,F2,aCont);
       
     }
     catch(Standard_Failure)
     {
+#ifdef OCCT_DEBUG
+      cout << "Failure: Exception in BRepLib::EncodeRegularity" << endl;
+#endif
     }
   }
 }

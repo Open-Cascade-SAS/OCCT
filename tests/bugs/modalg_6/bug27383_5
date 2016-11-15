@@ -3,21 +3,21 @@ puts "0027383: Modeling - improve handling of regularity on edges"
 puts "========"
 puts ""
 #################################################################
-# Check regularity setting on edges between same-domain faces after fuse
+# Check regularity setting on generatrix shared by two cylinders
 #################################################################
 
-# fuse of two boxes
 pload MODELING
-box b1 10 10 10
-box b2 5 5 0 10 10 10
-bfuse r b1 b2
-explode r f
-explode r_7 e
-getedgeregularity r_7_3 r_3 r_7 ;# returns C0: regularity is not set at all
+pcylinder cyl 2 10 90
+explode cyl F
+tcopy cyl_1 c2
+trotate c2 0 2 0 0 0 1 180
+sewing r cyl_1 c2
 encoderegularity r
 
-if { ! [regexp "CN" [getedgeregularity r_7_3 r_3 r_7]] } {
-  puts "Error: Invalid regularity of the edge, expected CN"
+explode r F
+explode r_1 E
+if { ! [regexp "C1" [getedgeregularity r_1_2 r_1 r_2]] } {
+  puts "Error: Invalid regularity of the edge, expected C1"
 }
 
 # make image in HLR mode as illustration

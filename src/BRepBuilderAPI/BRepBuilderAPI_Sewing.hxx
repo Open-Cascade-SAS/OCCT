@@ -263,6 +263,9 @@ protected:
   Standard_EXPORT Standard_Boolean MergedNearestEdges (const TopoDS_Shape& edge, TopTools_SequenceOfShape& SeqMergedEdge, TColStd_SequenceOfBoolean& SeqMergedOri);
   
   Standard_EXPORT void EdgeProcessing (const Handle(Message_ProgressIndicator)& thePI = 0);
+
+  //! Recompute regularity on merged edges
+  Standard_EXPORT void EdgeRegularity (const Handle(Message_ProgressIndicator)& thePI = 0);
   
   Standard_EXPORT void CreateOutputInformations();
   

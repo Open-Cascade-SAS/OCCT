@@ -162,12 +162,18 @@ public:
   //! Warning: If the edges's regularity are coded before, nothing
   //! is done.
   Standard_EXPORT static void EncodeRegularity (const TopoDS_Shape& S, const Standard_Real TolAng = 1.0e-10);
+
+  //! Encodes the Regularity of edges in list <LE> on the shape <S>
+  //! Warning: <TolAng> is an angular tolerance, expressed in Rad.
+  //! Warning: If the edges's regularity are coded before, nothing
+  //! is done.
+  Standard_EXPORT static void EncodeRegularity(const TopoDS_Shape& S, const TopTools_ListOfShape& LE, const Standard_Real TolAng = 1.0e-10);
   
   //! Encodes the Regularity beetween <F1> and <F2> by <E>
   //! Warning: <TolAng> is an angular tolerance, expressed in Rad.
   //! Warning: If the edge's regularity is coded before, nothing
   //! is done.
-  Standard_EXPORT static void EncodeRegularity (TopoDS_Edge& S, const TopoDS_Face& F1, const TopoDS_Face& F2, const Standard_Real TolAng = 1.0e-10);
+  Standard_EXPORT static void EncodeRegularity (TopoDS_Edge& E, const TopoDS_Face& F1, const TopoDS_Face& F2, const Standard_Real TolAng = 1.0e-10);
   
   //! Sorts in  LF the Faces of   S on the  complexity of
   //! their                  surfaces

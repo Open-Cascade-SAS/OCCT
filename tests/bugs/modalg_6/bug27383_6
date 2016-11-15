@@ -1,0 +1,40 @@
+puts "========"
+puts "0027383: Modeling - improve handling of regularity on edges"
+puts "========"
+puts ""
+#################################################################
+# Check regularity setting on edges between cylinder and a plane
+#################################################################
+
+pload MODELING
+plane p 0 2 0 0 1 0
+mkface pln p 0 10 -2 0
+pcylinder cyl 2 10 90
+explode cyl F
+sewing r cyl_1 pln
+encoderegularity r
+
+set cont "G1"
+
+explode r F
+explode r_1 E
+if { ! [regexp "${cont}" [getedgeregularity r_1_2 r_1 r_2]] } {
+  puts "Error: Invalid regularity of the edge, expected ${cont}"
+}
+
+nurbsconvert ncyl cyl_1
+sewing r ncyl pln
+encoderegularity r
+
+explode r F
+explode r_1 E
+if { ! [regexp "${cont}" [getedgeregularity r_1_2 r_1 r_2]] } {
+  puts "Error: Invalid regularity of the edge, expected ${cont}"
+}
+
+# make image in HLR mode as illustration
+pload VISUALIZATION
+vdisplay r
+vfit
+vhlr on
+vdump ${imagedir}/${test_image}.png

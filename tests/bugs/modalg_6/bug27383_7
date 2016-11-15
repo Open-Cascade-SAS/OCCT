@@ -1,0 +1,68 @@
+puts "========"
+puts "0027383: Modeling - improve handling of regularity on edges"
+puts "========"
+puts ""
+#################################################################
+# Check regularity setting on edges between parts of cylinder and spheres
+#################################################################
+
+pload MODELING
+pcylinder p1 2 10 180
+pcylinder p2 2 10 180
+tmirror p2 0 0 0 0 1 0
+nurbsconvert q p2
+
+psphere s1 2
+ttranslate s1 0 0 10
+psphere s2 2
+trotate s2 0 0 0 0 1 0 -90
+
+bclearobjects
+bcleartools
+baddobjects p1 p2
+baddtools s1 s2
+bfillds
+# fuse all solids
+bbop r 1
+
+encoderegularity r
+
+# check that minimal continuity is G1
+set rfaces [explode r F]
+set len [llength $rfaces]
+set nbshared 0
+set nbexpected 6
+for {set i 0} {$i < [expr $len-1]} {incr i} {
+  set f1 [lindex $rfaces $i]
+  set redges1 [explode $f1 E]
+
+  for {set j [expr $i+1]} {$j < $len} {incr j} {
+    set f2 [lindex $rfaces $j]
+    if {$f1 == $f2} continue
+
+    set redges2 [explode $f2 E]
+    foreach e1 $redges1 {
+      foreach e2 $redges2 {
+        if {[regexp "not" [compare $e1 $e2]]} continue
+
+        incr nbshared
+        if { [regexp "C0" [getedgeregularity $e1 $f1 $f2]] } {
+          puts "Error: Invalid regularity of the edge, expected at least G1"
+        }
+      }
+    }
+  }
+}
+
+if {${nbshared} == ${nbexpected} } {
+  puts "OK: Number of processed edges: ${nbshared}"
+} else {
+  puts "Error: incorrect number of processed edges (${nbshared} instead of ${nbexpected})"
+}
+
+# make image in HLR mode as illustration
+pload VISUALIZATION
+vdisplay r
+vfit
+vhlr on
+vdump ${imagedir}/${test_image}.png

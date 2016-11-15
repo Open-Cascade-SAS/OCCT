@@ -1,0 +1,44 @@
+puts "========"
+puts "0027383: Modeling - improve handling of regularity on edges"
+puts "========"
+puts ""
+#################################################################
+# Check regularity setting on edges between rotated or mirrored half spheres
+#################################################################
+
+pload MODELING
+psphere s1 10 180
+psphere s2 10 180
+explode s1 f
+explode s2 f
+tmirror s2_1 0 0 0 0 1 0
+trotate s2_1 0 0 0 0 1 0 45
+sewing r s1_1 s2_1
+encoderegularity r
+
+explode r F
+set edges [explode r_1 E]
+set len 0
+foreach e ${edges} {
+  # check for degenerated edge
+  set e_props [lprops $e 1.e-4]
+  regexp {Mass : +([0-9.+-eE]+)} $e_props full len
+
+  if { [expr abs($len) > 1.e-7] } {
+    set cont "G2"
+  } else {
+    # degenerated edges have always C0 continuity
+    set cont "C0"
+  }
+
+  if { ! [regexp "${cont}" [getedgeregularity $e r_1 r_2]] } {
+    puts "Error: Invalid regularity of the edge, expected ${cont}"
+  }
+}
+
+# make image in HLR mode as illustration
+pload VISUALIZATION
+vdisplay r
+vfit
+vhlr on
+vdump ${imagedir}/${test_image}.png

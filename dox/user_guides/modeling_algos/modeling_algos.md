@@ -2937,7 +2937,7 @@ The algorithm of shape triangulation is provided by the functionality of *BRepMe
 ~~~~~
 const Standard_Real aRadius = 10.0; 
 const Standard_Real aHeight = 25.0; 
-BRepBuilderAPI_MakeCylinder aCylinder(aRadius, aHeight); 
+BRepPrimAPI_MakeCylinder aCylinder(aRadius, aHeight); 
 TopoDS_Shape aShape = aCylinder.Shape();
  
 const Standard_Real aLinearDeflection   = 0.01;

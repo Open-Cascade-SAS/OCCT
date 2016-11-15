@@ -890,7 +890,6 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
       else {
         aBuilder.UpdateEdge(edge, c2d2, surf2, loc2, Precision::Confusion());
       }
-
     }
   }
   Standard_Real tolReached = Precision::Infinite();
@@ -976,7 +975,6 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
     }
   }
 
-  BRepLib::EncodeRegularity(edge,0.01);
   Standard_Real tolEdge1 = BRep_Tool::Tolerance(edge);
   if (tolEdge1 > MaxTolerance()) edge.Nullify();
   return edge;
@@ -1923,6 +1921,9 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
         mySewedShape.Nullify();
         return;
       }
+
+      EdgeRegularity (thePI);
+
       if (mySameParameterMode && myFaceMode)
         SameParameterShape();
       if (!aPS.More())
@@ -4030,6 +4031,28 @@ void BRepBuilderAPI_Sewing::EdgeProcessing(const Handle(Message_ProgressIndicato
       }
     }
   }
+}
+
+//=======================================================================
+//function : EdgeRegularity
+//purpose  : update Continuity flag on newly created edges
+//=======================================================================
+
+void BRepBuilderAPI_Sewing::EdgeRegularity(const Handle(Message_ProgressIndicator)& thePI)
+{
+  TopTools_IndexedDataMapOfShapeListOfShape aMapEF;
+  TopExp::MapShapesAndAncestors(mySewedShape, TopAbs_EDGE, TopAbs_FACE, aMapEF);
+
+  Message_ProgressSentry aPS(thePI, "Encode edge regularity", 0, myMergedEdges.Extent(), 1);
+  for (TopTools_MapIteratorOfMapOfShape aMEIt(myMergedEdges); aMEIt.More() && aPS.More(); aMEIt.Next(), aPS.Next())
+  {
+    TopoDS_Edge anEdge = TopoDS::Edge(myReShape->Apply(aMEIt.Value()));
+    const TopTools_ListOfShape* aFaces = aMapEF.Seek(anEdge);
+    // encode regularity if and only if edges is shared by two faces
+    if (aFaces && aFaces->Extent() == 2)
+      BRepLib::EncodeRegularity(anEdge, TopoDS::Face(aFaces->First()), TopoDS::Face(aFaces->Last()));
+  }
+
   myMergedEdges.Clear();
 }
 

@@ -602,6 +602,50 @@ To check the concavity of a surface, proceed as follows:
   1. Sample the surface and compute at each point the Gaussian curvature.
   2. If the value of the curvature changes of sign, the surface is concave or convex depending on the point of view.
   3. To compute a Gaussian curvature, use the class <i> SLprops</i> from <i> GeomLProp</i>, which instantiates the generic class <i> SLProps </i>from <i> LProp</i> and use the method <i> GaussianCurvature</i>.
+
+@subsection occt_modat_4_2a Continuity of Curves and Surfaces
+
+Types of supported continuities for curves and surfaces are described in *GeomAbs_Shape* enumeration.
+
+In respect of curves, the following types of continuity are supported (see the figure below):
+  * C0 (*GeomAbs_C0*) - parametric continuity. It is the same as G0 (geometric continuity), so the last one is not represented by separate variable.
+  * G1 (*GeomAbs_G1*) - tangent vectors on left and on right are parallel.
+  * C1 (*GeomAbs_C1*) - indicates the continuity of the first derivative.
+  * G2 (*GeomAbs_G2*) - in addition to G1 continuity, the centers of curvature on left and on right are the same.
+  * C2 (*GeomAbs_C2*) - continuity of all derivatives till the second order.
+  * C3 (*GeomAbs_C3*) - continuity of all derivatives till the third order.
+  * CN (*GeomAbs_CN*) - continuity of all derivatives till the N-th order (infinite order of continuity).
+
+*Note:* Geometric continuity (G1, G2) means that the curve can be reparametrized to have parametric (C1, C2) continuity.
+
+@image html /user_guides/modeling_data/images/modeling_data_continuity_curves.svg "Continuity of Curves"
+@image latex /user_guides/modeling_data/images/modeling_data_continuity_curves.svg "Continuity of Curves" width=\\textwidth
+
+The following types of surface continuity are supported:
+  * C0 (*GeomAbs_C0*) - parametric continuity (the surface has no points or curves of discontinuity).
+  * G1 (*GeomAbs_G1*) - surface has single tangent plane in each point.
+  * C1 (*GeomAbs_C1*) - indicates the continuity of the first derivatives.
+  * G2 (*GeomAbs_G2*) - in addition to G1 continuity, principal curvatures and directions are continuous.
+  * C2 (*GeomAbs_C2*) - continuity of all derivatives till the second order.
+  * C3 (*GeomAbs_C3*) - continuity of all derivatives till the third order.
+  * CN (*GeomAbs_CN*) - continuity of all derivatives till the N-th order (infinite order of continuity).
+
+@image html /user_guides/modeling_data/images/modeling_data_continuity_surfaces.svg "Continuity of Surfaces"
+@image latex /user_guides/modeling_data/images/modeling_data_continuity_surfaces.svg "Continuity of Surfaces" width=\\textwidth
+
+Against single surface, the connection of two surfaces (see the figure above) defines its continuity in each intersection point only. Smoothness of connection is a minimal value of continuities on the intersection curve.
+
+
+@subsection occt_modat_4_2b Regularity of Shared Edges
+
+Regularity of an edge is a smoothness of connection of two faces sharing this edge. In other words, regularity is a minimal continuity between connected faces in each point on edge.
+
+Edge's regularity can be set by *BRep_Builder::Continuity* method. To get the regularity use *BRep_Tool::Continuity* method.
+
+Some algorithms like @ref occt_modalg_6 "Fillet" set regularity of produced edges by their own algorithms. On the other hand, some other algorithms (like @ref occt_user_guides__boolean_operations "Boolean Operations", @ref occt_user_guides__shape_healing "Shape Healing", etc.) do not set regularity. If the regularity is needed to be set correctly on a shape, the method *BRepLib::EncodeRegularity* can be used. It calculates and sets correct values for all edges of the shape.
+
+The regularity flag is extensively used by the following high level algorithms: @ref occt_modalg_6_1_2 "Chamfer", @ref occt_modalg_7_3 "Draft Angle", @ref occt_modalg_10 "Hidden Line Removal", @ref occt_modalg_9_2_3 "Gluer".
+
   
 @subsection occt_modat_4_3 Global Properties of Shapes
 
@@ -1233,7 +1277,7 @@ Below is the auxiliary function, which copies the element of rank *i* from the m
 For example, in the wire in the image we want to recuperate the edges in the order {e1, e2, e3,e4, e5} :
 
 @image html /user_guides/modeling_data/images/modeling_data_image014.png "A wire composed of 6 edges."
-@image latex /user_guides/modeling_data/images/modeling_data_image014.png "A wire composed of 6 edges.
+@image latex /user_guides/modeling_data/images/modeling_data_image014.png "A wire composed of 6 edges."
 
 *TopExp_Explorer*, however, recuperates the lines in any order.
  

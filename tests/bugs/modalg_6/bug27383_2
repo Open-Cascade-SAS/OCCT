@@ -2,7 +2,9 @@ puts "========"
 puts "0027383: Modeling - improve handling of regularity on edges"
 puts "========"
 puts ""
-puts "Check regularity setting on edges of cylinder split by angle"
+#################################################################
+# Check regularity setting on edges of cylinder split by angle
+#################################################################
 
 # split of cylinder
 pload MODELING

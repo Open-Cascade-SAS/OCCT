@@ -1,0 +1,30 @@
+puts "========"
+puts "0027383: Modeling - improve handling of regularity on edges"
+puts "========"
+puts ""
+#################################################################
+# Check regularity setting on edges between patches of B-Spline surface obtained by conversion of cylinder
+#################################################################
+
+pload MODELING
+pcylinder p 2 10
+explode p f
+nurbsconvert q p_1
+DT_ClosedSplit r q
+encoderegularity r
+
+explode r F
+explode r_1 E
+if { ! [regexp "G2" [getedgeregularity r_1_2 r_1 r_2]] } {
+  puts "Error: Invalid regularity of the edge, expected G2"
+}
+if { ! [regexp "G2" [getedgeregularity r_1_4 r_1 r_2]] } {
+  puts "Error: Invalid regularity of the edge, expected G2"
+}
+
+# make image in HLR mode as illustration
+pload VISUALIZATION
+vdisplay r
+vfit
+vhlr on
+vdump ${imagedir}/${test_image}.png
