@@ -1274,7 +1274,7 @@ when you activate one of modes: 1 2 3 4, you pick AIS  objects of type:
   * mode 1 : selection of the origin of the trihedron; 
   * mode 2 : selection of the axes -- same remarks as for the Trihedron.
 
-For the presentation of planes and trihedra, the default  unit of length is millimeter, and the default value for the representation of  axes is 100. If you modify these dimensions, you must temporarily recover the  object **Drawer**. From it, take the *Aspects* in which the values for length  are stored (*PlaneAspect* for the plane, *FirstAxisAspect* for trihedra), and  change these values inside these Aspects. Finally, recalculate the  presentation.  
+For the presentation of planes and trihedra, the default length unit is millimeter and the default value for the representation of axes is 10. To modify these dimensions, you must temporarily recover the  object **Drawer**. From it, take the *DatumAspect()* and  change the value *FirstAxisLength*. Finally, recalculate the  presentation.  
 
 @subsubsection occt_visu_3_5_2 Object
 

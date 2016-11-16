@@ -47,19 +47,19 @@ DEFINE_STANDARD_HANDLE(AIS_Trihedron, AIS_InteractiveObject)
 
 //! Create a selectable trihedron
 //! there are 4 modes of selection :
-//! mode = 0 to select triedron    ,priority = 1
-//! mode = 1 to select its origine ,priority = 5
+//! mode = 0 to select trihedron   ,priority = 1
+//! mode = 1 to select its origin  ,priority = 5
 //! mode = 2 to select its axis    ,priority = 3
 //! mode = 3 to select its planes  ,priority = 2
-//! a trihedron has 1 origine,3 axes,3 planes.
+//! a trihedron has 1 origin, 3 axes and 3 planes.
 //! Warning
 //! For the presentation of trihedra, the default unit of
-//! length is the millimetre, and the default value for the
-//! representation of the axes is 100. If you modify these
+//! length is the millimeter, and the default value for the
+//! representation of axes is 10. To modify these
 //! dimensions, you must temporarily recover the Drawer.
 //! From inside it, you take the aspect in which the values
-//! for length are stocked. For trihedra, this is
-//! Prs3d_Drawer_FirstAxisAspect. You change the
+//! for length are stocked. For trihedra, this is FirstAxisLength from 
+//! Prs3d_DatumAspect(). Change the
 //! values inside this Aspect and recalculate the presentation.
 //! If you want to use extended selection modes, different than 0,
 //! you should take care of removing of the shapes from the interactive
@@ -82,11 +82,11 @@ public:
   Standard_EXPORT void SetComponent (const Handle(Geom_Axis2Placement)& aComponent);
   
   //! Returns true if the trihedron object has a size other
-  //! than the default size of 100 mm. along each axis.
+  //! than the default size of 10 mm. along each axis.
     Standard_Boolean HasOwnSize() const;
   
   //! Sets the size aValue for the trihedron object.
-  //! The default value is 100 mm.
+  //! The default value is 10 mm.
   Standard_EXPORT void SetSize (const Standard_Real aValue);
   
   //! Removes any non-default settings for size of this
