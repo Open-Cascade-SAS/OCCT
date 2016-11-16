@@ -12,6 +12,9 @@
 
 #ifdef PATH_TRACING
 
+//! Number of previously rendered frames.
+uniform int uAccumSamples;
+
 ///////////////////////////////////////////////////////////////////////////////////////
 // Specific data types
 
@@ -677,6 +680,9 @@ vec3 IntersectLight (in SRay theRay, in int theDepth, in float theHitDistance, o
 // Enables expiremental russian roulette sampling
 #define RUSSIAN_ROULETTE
 
+//! Frame step to increase number of bounces
+#define FRAME_STEP 5
+
 //=======================================================================
 // function : PathTrace
 // purpose  : Calculates radiance along the given ray
@@ -832,7 +838,7 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
     aSurvive = aDepth < 3 ? 1.f : min (dot (LUMA, aThroughput), 0.95f);
 #endif
 
-    if (RandFloat() > aSurvive || all (lessThanEqual (aThroughput, MIN_THROUGHPUT)))
+    if (RandFloat() > aSurvive || all (lessThan (aThroughput, MIN_THROUGHPUT)) || aDepth >= uAccumSamples / FRAME_STEP + step (1.f / M_PI, aImpPDF))
     {
       aDepth = INVALID_BOUNCES; // terminate path
     }

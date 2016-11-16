@@ -1721,8 +1721,8 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
       myUniformLocations[anIndex][OpenGl_RT_uWinSizeY] =
         aShaderProgram->GetUniformLocation (theGlContext, "uWinSizeY");
 
-      myUniformLocations[anIndex][OpenGl_RT_uSampleWeight] =
-        aShaderProgram->GetUniformLocation (theGlContext, "uSampleWeight");
+      myUniformLocations[anIndex][OpenGl_RT_uAccumSamples] =
+        aShaderProgram->GetUniformLocation (theGlContext, "uAccumSamples");
       myUniformLocations[anIndex][OpenGl_RT_uFrameRndSeed] =
         aShaderProgram->GetUniformLocation (theGlContext, "uFrameRndSeed");
 
@@ -2778,10 +2778,10 @@ Standard_Boolean OpenGl_View::runPathtrace (const Graphic3d_Camera::Projection  
 
     // We upload tile offset texture each 4 frames in order
     // to minimize overhead of additional memory bandwidth.
-    // Adaptive sampling is starting after first 10 frames.
+    // Adaptive sampling is starting after first 30 frames.
     if (myAccumFrames % 4 == 0)
     {
-      myTileSampler.Upload (theGlContext, myRaytraceTileOffsetsTexture, myAccumFrames > 10);
+      myTileSampler.Upload (theGlContext, myRaytraceTileOffsetsTexture, myAccumFrames > 30);
     }
   }
 
@@ -2828,7 +2828,7 @@ Standard_Boolean OpenGl_View::runPathtrace (const Graphic3d_Camera::Projection  
 
   // Set frame accumulation weight
   myRaytraceProgram->SetUniform (theGlContext,
-    myUniformLocations[0][OpenGl_RT_uSampleWeight], 1.f / (myAccumFrames + 1));
+    myUniformLocations[0][OpenGl_RT_uAccumSamples], myAccumFrames);
 
   // Set random number generator seed
   myRaytraceProgram->SetUniform (theGlContext,

@@ -9,10 +9,7 @@ uniform int uFrameRndSeed;
 uniform int uBlockedRngEnabled;
 
 #ifndef ADAPTIVE_SAMPLING
-  //! Weight of current frame related to accumulated samples.
-  uniform float uSampleWeight;
-
-  //! Input accumulated image.
+  //! Input image with previously accumulated samples.
   uniform sampler2D uAccumTexture;
 #endif
 
@@ -95,13 +92,13 @@ void main (void)
 
 #else
 
-  if (uSampleWeight >= 1.f)
+  if (uAccumSamples == 0)
   {
     OutColor = aColor;
   }
   else
   {
-    OutColor = mix (texture2D (uAccumTexture, vPixel), aColor, uSampleWeight);
+    OutColor = mix (texture2D (uAccumTexture, vPixel), aColor, 1.f / (uAccumSamples + 1));
   }
 
 #endif // ADAPTIVE_SAMPLING

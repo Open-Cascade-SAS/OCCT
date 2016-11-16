@@ -573,7 +573,7 @@ protected: //! @name data types related to ray-tracing
     OpenGl_RT_uWinSizeY,
 
     // sampled frame params
-    OpenGl_RT_uSampleWeight,
+    OpenGl_RT_uAccumSamples,
     OpenGl_RT_uFrameRndSeed,
 
     // adaptive FSAA params
