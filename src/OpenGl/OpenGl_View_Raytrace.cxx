@@ -1838,7 +1838,7 @@ Standard_Boolean OpenGl_View::updateRaytraceBuffers (const Standard_Integer     
                                                      const Standard_Integer        theSizeY,
                                                      const Handle(OpenGl_Context)& theGlContext)
 {
-  // Auxiliary buffers are not used.
+  // Auxiliary buffers are not used
   if (!myRaytraceParameters.GlobalIllumination && !myRenderParams.IsAntialiasingEnabled)
   {
     myRaytraceFBO1[0]->Release (theGlContext.operator->());
@@ -1847,6 +1847,12 @@ Standard_Boolean OpenGl_View::updateRaytraceBuffers (const Standard_Integer     
     myRaytraceFBO2[1]->Release (theGlContext.operator->());
 
     return Standard_True;
+  }
+
+  if (myRaytraceFBO1[0]->GetSizeX() != theSizeX
+   || myRaytraceFBO1[0]->GetSizeY() != theSizeY)
+  {
+    myAccumFrames = 0;
   }
 
   myRaytraceFBO1[0]->InitLazy (theGlContext, theSizeX, theSizeY, GL_RGBA32F, myFboDepthFormat);
@@ -1889,6 +1895,10 @@ Standard_Boolean OpenGl_View::updateRaytraceBuffers (const Standard_Integer     
     // 4 - luminance accumulated for odd samples only
     myRaytraceOutputTexture[0]->InitRectangle (theGlContext,
       theSizeX * 3, theSizeY * 2, OpenGl_TextureFormat::Create<GLfloat, 1>());
+
+    // workaround for some NVIDIA drivers
+    myRaytraceVisualErrorTexture->Release (theGlContext.operator->());
+    myRaytraceTileOffsetsTexture->Release (theGlContext.operator->());
 
     myRaytraceVisualErrorTexture->Init (theGlContext,
       GL_R32I, GL_RED_INTEGER, GL_INT, myTileSampler.NbTilesX(), myTileSampler.NbTilesY(), Graphic3d_TOT_2D);
