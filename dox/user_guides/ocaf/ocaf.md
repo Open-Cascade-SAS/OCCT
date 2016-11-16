@@ -625,7 +625,7 @@ app->NewDocument("NewDocumentFormat", doc);
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Here "NewDocumentFormat" is identifier of the format of your document.
-OCCT defines several standard formats, distinguishing by a set of OCAF attributes supported, and method of encoding (e.g. binary data or XML), described below.
+OCCT defines several standard formats, distinguishing by a set of supported OCAF attributes, and method of encoding (e.g. binary data or XML), described below.
 If your application defines specific OCAF attributes, you need to define your own format for it.
 
 @subsubsection occt_ocaf_4_2_3 Retrieving the application to which the document belongs
@@ -655,7 +655,7 @@ doc = TDocStd_Document::Get(label);
 
 @subsubsection occt_ocaf_4_3_format Defining storage format
 
-OCAF uses customizable mechanism for storage of the documents.
+OCAF uses a customizable mechanism for storage of the documents.
 In order to use OCAF persistence to save and read your documents to / from the file, you need to define one or several formats in your application.
 
 For that, use method TDocStd_Application::DefineFormat(), for instance:
@@ -665,8 +665,8 @@ app->DefineFormat ("NewDocumentFormat", "New format for OCAF documents", "ndf",
                    new NewDocumentFormat_StorageDriver());
 ~~~~~
 
-Here format "NewDocumentFormat" is defined, with default file extension "ndf", and drivers for reading and storing documents from and to that format are instantiated.
-Either of the drivers can be null, in this case corresponding action will not be supported for that format.
+This example defines format "NewDocumentFormat" with a default file extension "ndf", and instantiates drivers for reading and storing documents from and to that format.
+Either of the drivers can be null, in this case the corresponding action will not be supported for that format.
 
 OCAF provides several standard formats, each covering some set of OCAF attributes:
 
@@ -687,28 +687,29 @@ OCAF provides several standard formats, each covering some set of OCAF attribute
 <tr><td>TObjXml        </td><td> TKXmlTObj          </td><td> TKLCAF + TKTObj </td></tr>
 </table>
 
-For convenience, these toolkits provide static methods DefineFormat() accepting handle to application.
+For convenience, these toolkits provide static methods *DefineFormat()* accepting handle to application.
 These methods allow defining corresponding formats easily, e.g.:
 
 ~~~~~
 BinDrivers::DefineFormat (app); // define format "BinOcaf"
 ~~~~~
 
-Use these toolkits as example for implementation of persistence drivers for custom attributes, or new persistence formats.
+Use these toolkits as an example for implementation of persistence drivers for custom attributes, or new persistence formats.
 
 The application can define several storage formats.
-On save, the format specified in the document (see TDocStd_Document::StorageFormat()) will be used (it will fail if that format is not defined in the application).
-On reading, format identifier stored in the file is used, and recorded in the document.
+On save, the format specified in the document (see *TDocStd_Document::StorageFormat()*) will be used (save will fail if that format is not defined in the application).
+On reading, the format identifier stored in the file is used and recorded in the document.
 
 @subsubsection occt_ocaf_4_3_plugins Defining storage format by resource files 
 
-Alternative (legacy, used in earlier versions of OCCT) method to define formats is via usage of resource files.
+The alternative  method to define formats is via usage of resource files. 
+This  method was  used in earlier versions of OCCT and is considered as deprecated since version 7.1.0.
 This method allows loading persistence drivers on demand, using plugin mechanism.
 
-To use this method, create your own application class inheriting from *TDocStd_Application*, and override method ResourcesName().
-That method should return a string with a name of resource file, e.g. "NewDocumentFormat", which will contain description of the format.
+To use this method, create your own application class inheriting from *TDocStd_Application*, and override method *ResourcesName()*.
+That method should return a string with a name of resource file, e.g. "NewDocumentFormat", which will contain a description of the format.
 
-Then create that resource file and define parameters of your format:
+Then create that resource file and define the parameters of your format:
 
 ~~~~~
 ndf.FileFormat: NewDocumentFormat
@@ -718,10 +719,10 @@ NewDocumentFormat.StoragePlugin: bb5aa176-c65c-4c84-862e-6b7c1fe16921
 NewDocumentFormat.RetrievalPlugin: 76fb4c04-ea9a-46aa-88a2-25f6a228d902 
 ~~~~~
 
-Here GUIDs should be unique and correspond to the GUIDs supported by relevant plugin.
-You can use either one of existing plugins (see the table above) or create your own.
+The GUIDs should be unique and correspond to the GUIDs supported by relevant plugin.
+You can use an existing plugins (see the table above) or create your own.
 
-Finally, make a copy of the resource file "Plugin" from $CASROOT/src/StdResource, and, if necessary, add definition of your plugin in it, for instance:
+Finally, make a copy of the resource file "Plugin" from *$CASROOT/src/StdResource* and, if necessary, add the definition of your plugin in it, for instance:
 
 ~~~~~
 bb5aa176-c65c-4c84-862e-6b7c1fe16921.Location: TKNewFormat
@@ -738,7 +739,7 @@ setenv CSF_NewFormatDefaults MyApplicationPath/MyResources
 
 @subsubsection occt_ocaf_4_3_3 Saving a document
 
-To save the document, make sure that its parameter StorageFormat() corresponds to one of formats defined in the application, and use method *TDocStd_Application::SaveAs*, for instance: 
+To save the document, make sure that its parameter *StorageFormat()* corresponds to one of the formats defined in the application, and use method *TDocStd_Application::SaveAs*, for instance: 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 app->SaveAs(doc, "/tmp/example.caf"); 

@@ -415,18 +415,18 @@ These classes use the "Projection" criteria for optimization.
 ### Extrema between Curves
 
 The *Geom2dAPI_ExtremaCurveCurve* class allows calculation of all minimal distances between two 2D geometric curves.
-The *GeomAPI_ExtremaCurveCurve* class allows calculation of all minimal distances two 3D geometric curves.
+The *GeomAPI_ExtremaCurveCurve* class allows calculation of all minimal distances between two 3D geometric curves.
 These classes use Euclidean distance as the criteria for optimization.
 
 ### Extrema between Curve and Surface
 
 The *GeomAPI_ExtremaCurveSurface* class allows calculation of one extrema between a 3D curve and a surface. Extrema are the lengths of the segments orthogonal to the curve and the surface.
-This class use the "Projection" criteria for optimization.
+This class uses the "Projection" criteria for optimization.
 
 ### Extrema between Surfaces
 
 The *GeomAPI_ExtremaSurfaceSurface* class allows calculation of one minimal and one maximal distance between two surfaces.
-This class use Euclidean distance to compute minimum and "Projection" criteria to compute maximum.
+This class uses Euclidean distance to compute the minimum, and "Projection" criteria to compute the maximum.
 
 @section occt_modat_2 2D Geometry
 
@@ -1249,8 +1249,8 @@ For example, in the wire in the image we want to recuperate the edges in the ord
 
 @subsection occt_modat_5_6 Storage of shapes
 
-**BRepTools** and **BinTools** packages contain methods *Read* and *Write* allowing to read and write a Shape to/from a stream or a file.
-The methods provided by **BRepTools** package use ASCII storage format; **BinTools** package use binary format.
+*BRepTools* and *BinTools* packages contain methods *Read* and *Write* allowing to read and write a Shape to/from a stream or a file.
+The methods provided by *BRepTools* package use ASCII storage format; *BinTools* package uses binary format.
 Each of these methods has two arguments:
 - a *TopoDS_Shape* object to be read/written;
 - a stream object or a file name to read from/write to.

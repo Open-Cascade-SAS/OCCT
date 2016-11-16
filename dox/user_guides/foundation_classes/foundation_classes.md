@@ -810,7 +810,7 @@ The *Load* method looks for the library name in the resource file or registry  t
 a148e300-5740-11d1-a904-080036aaa103.Location: libFWOSPlugin.so
 ~~~~~
 
-Then the *Load* method loads the library according to the rules of the operating system  of the host machine (for example, by using environment variables such as  *LD_LIBRARY_PATH* with Unix and *PATH* with Windows). After that it invokes the *PLUGINFACTORY*  method to return the object which supports the required service.
+Then the *Load* method loads the library according to the rules of the operating system  of the host machine (for example, by using environment variables such as  *LD_LIBRARY_PATH* with Unix and *PATH* with Windows). After that it invokes the *PLUGINFACTORY*  method to return the object, which supports the required service.
 The client may then call the functions supported by this  object. 
 
 #### C++ Client Plug-In  Implementation
@@ -885,7 +885,7 @@ Handle(Standard_Transient) FAFactory::Factory (const Standard_GUID& theGUID)
 PLUGIN(FAFactory)
 ~~~~~
 
-Application might also instantiate a factory by linking to the library and calling FAFactory::Factory() directly.
+Application might also instantiate a factory by linking to the library and calling *FAFactory::Factory()* directly.
 
 @section occt_fcug_3 Collections,  Strings, Quantities and Unit Conversion
 

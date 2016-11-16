@@ -5,26 +5,26 @@ Building with CMake {#occt_dev_guides__building_cmake}
 
 @section build_cmake_intro General
 
-This article describes the **CMake**-based build process which is now suggested as a standard way to produce the binaries of Open CASCADE Technology from sources. *OCCT requires CMake version 2.8.12 or later*.
+This article describes the **CMake**-based build process, which is now suggested as a standard way to produce the binaries of Open CASCADE Technology from sources. *OCCT requires CMake version 2.8.12 or later*.
 
-@note Comparing to the previous (6.x) releases of Open CASCADE Technology, OCCT 7.0 comes with a complete set of CMake scripts and projects, so that there is no need to use WOK anymore. Moreover, CMake gives you a powerful configuration tool which allows to control many aspects of OCCT deployment. At the same time this tool is quite intuitive which is a significant advantage over the legacy WOK utilities.
+@note Compared to the previous (6.x) releases of Open CASCADE Technology, OCCT 7.x has a complete set of CMake scripts and projects, so that there is no need to use WOK anymore. Moreover, CMake gives you a powerful configuration tool, which allows to control many aspects of OCCT deployment. At the same time this tool is quite intuitive, which is a significant advantage over the legacy WOK utilities.
 
-Here we describe the build procedure on example of Windows platform with Visual Studio 2010. 
+Here we describe the build procedure on the example of Windows platform with Visual Studio 2010. 
 However, CMake is cross-platform and can be used to build OCCT on Linux and OS X in essentially the same way.
 
-@note Before you start, make sure to have installed all the 3-rd party products that you are going to use with OCCT; see @ref occt_dev_guides__building.
+@note Before you start, make sure to have installed all 3-rd party products that you are going to use with OCCT; see @ref occt_dev_guides__building.
 
 @section build_cmake_start Start CMake
 
 CMake is a tool that generates the actual project files for the selected target build system (e.g. Unix makefiles) or IDE (e.g. Visual Studio 2010).
 
-For unexpericnced users we recommend to start with *cmake-gui* -- cross-platform GUI tool provided by CMake on Windows, Mac and Linux.
-A command-line alternative, *ccmake* also can be used.
+For unexperienced users we recommend to start with *cmake-gui* -- a cross-platform GUI tool provided by CMake on Windows, Mac and Linux.
+A command-line alternative, *ccmake*  can also be used.
 
-CMake deals with three directories: source, build or binary and install.
+CMake deals with three directories: source, build or binary and installation.
 
-* The source directory is where the sources of OCCT are located in your filesystem
-* The build or binary directory is where all the files created during CMake configuration and generation process will be located. The mentioned process will be described below.
+* The source directory is where the sources of OCCT are located in your file system;
+* The build or binary directory is where all files created during CMake configuration and generation process will be located. The mentioned process will be described below.
 * The installation directory is where binaries will be installed after building the *INSTALL* project that is created by CMake generation process, along with header files and resources required for OCCT use in applications. 
 
 The good practice is not to use the source directory as a build one.
@@ -48,9 +48,9 @@ If the command-line tool is used, run the tool from the build directory with a s
 
 Press *c* to configure.
 
-All required actions in the configuration process will be described with using the GUI tool below.
+All actions required in the configuration process with the GUI tool will be described below.
 
-If the gui-tool is used, run the tool without additional arguments and after that specify the source directory by clicking **Browse Source** and the build (binary) one by clicking **Browse Build**.
+If the GUI tool is used, run this tool without additional arguments and after that specify the source directory by clicking **Browse Source** and the build (binary) one by clicking **Browse Build**.
 
 @figure{/dev_guides/building/cmake/images/cmake_image001.png}
 
@@ -60,29 +60,29 @@ Once the source and build directories are selected, "Configure" button should be
 
 @figure{/dev_guides/building/cmake/images/cmake_image002.png}
 
-To build OCCT with using Universal Windows Platform (UWP) specify path to toolchain file for cross-compiling <i>d:/occt/adm/templates/uwp.toolchain.config.cmake</i>.
+To build OCCT for Universal Windows Platform (UWP) specify the path to toolchain file for cross-compiling <i>d:/occt/adm/templates/uwp.toolchain.config.cmake</i>.
 
-**Note**: Universal Windows Platform (UWP) is supported only on "Visual Studio 14 2015". File <i>d:/occt/samples/xaml/ReadMe.md</i> desribes building procedure of XAML (UWP) sample.
+**Note**: Universal Windows Platform (UWP) is supported only on "Visual Studio 14 2015". File <i>d:/occt/samples/xaml/ReadMe.md</i> describes the building procedure of XAML (UWP) sample.
 
-Once "Finish" button is pressed, the first pass of the configuration process is executed. At the end of the process, CMake outputs the list of environment variables which have to be properly specified for successful configuration. 
+Once "Finish" button is pressed, the first pass of the configuration process is executed. At the end of the process, CMake outputs the list of environment variables, which have to be properly specified for successful configuration. 
 
 @figure{/dev_guides/building/cmake/images/cmake_image003.png}
 
-The error message provides an information about these variables. This message will appear after each pass of the process until all required variables are specified correctly.
+The error message provides some information about these variables. This message will appear after each pass of the process until all required variables are specified correctly.
 
-The change of the state of some variables can lead to the appearance of new variables. The new variables appeared after the pass of the configuration process is notified with red color by CMake GUI tool.
+The change of the state of some variables can lead to the appearance of new variables. The new variables appeared after the pass of the configuration process are highlighted with red color by CMake GUI tool.
 
-Note: There is "grouped" option which groups variables with a common prefix.
+Note: There is "grouped" option, which groups variables with a common prefix.
 
-The following table enumerates the full list of environment variables used at configuration stage:
+The following table gives the full list of environment variables used at the configuration stage:
 
 | Variable | Type | Purpose |
 |----------|------|---------|
-| CMAKE_BUILD_TYPE | String | Specifies the build type on single-configuration generators (sush as make).  Possible values are Debug, Release and RelWithDebInfo |
-| USE_FREEIMAGE | Boolean flag | Indicates whether Freeimage product should be used in OCCT visualization module for support of popular graphics image formats (PNG, BMP etc) |
-| USE_GL2PS | Boolean flag | Indicates whether GL2PS product should be used in OCCT visualization module for support of vector image formats (PS, EPS etc) |
+| CMAKE_BUILD_TYPE | String | Specifies the build type on single-configuration generators (such as make).  Possible values are Debug, Release and RelWithDebInfo |
+| USE_FREEIMAGE | Boolean flag | Indicates whether FreeImage product should be used in OCCT visualization module for support of popular graphics image formats (PNG, BMP, etc.) |
+| USE_GL2PS | Boolean flag | Indicates whether GL2PS product should be used in OCCT visualization module for support of vector image formats (PS, EPS, etc.) |
 | USE_TBB | Boolean flag | Indicates whether TBB 3rd party is used or not. TBB stands for Threading Building Blocks, the technology of Intel Corp, which comes with different mechanisms and patterns for injecting parallelism into your application. OCCT remains parallel even without TBB product |
-| USE_VTK | Boolean flag | Indicates whether VTK 3rd party is used or not. VTK stands for Visualization ToolKit, the technology of Kitware Inc intended for general-purpose scientific visualization. OCCT comes with a bridge between CAD data representation and VTK by means of its dedicated VIS component (VTK Integration Services). You may skip this 3rd party unless you are planning to use VTK visualization for OCCT geometry. The official documentation @ref occt_user_guides__vis for the details on VIS |
+| USE_VTK | Boolean flag | Indicates whether VTK 3rd party is used or not. VTK stands for Visualization ToolKit, the technology of Kitware Inc intended for general-purpose scientific visualization. OCCT comes with a bridge between CAD data representation and VTK by means of its dedicated VIS component (VTK Integration Services). You may skip this 3rd party unless you are planning to use VTK visualization for OCCT geometry. See the official documentation @ref occt_user_guides__vis for the details on VIS |
 | 3RDPARTY_DIR | Path | Defines the root directory where all required 3rd party products will be searched. Once you define this path it is very convenient to click "Configure" button in order to let CMake automatically detect all necessary products|
 | 3RDPARTY_FREETYPE_* | Path | Path to Freetype binaries |
 | 3RDPARTY_TCL_* 3RDPARTY_TK_* | Path | Path to Tcl/Tk binaries |
@@ -91,21 +91,21 @@ The following table enumerates the full list of environment variables used at co
 | 3RDPARTY_TBB* | Path | Path to TBB binaries |
 | 3RDPARTY_VTK_* | Path | Path to VTK binaries |
 | BUILD_MODULE_<MODULE>| Boolean flag | Indicates whether the corresponding OCCT module should be built or not. It should be noted that some toolkits of a module can be built even if this module is not checked (this happens if some other modules depend on these toolkits). The main modules and their descriptions can be found in @ref user_guides |
-| BUILD_LIBRARY_TYPE | String |  Specifies the type of library to be created. "Shared" libraries are linked dynamically and loaded at runtime. "Static" libraries are archives of object files for use when linking other targets |
+| BUILD_LIBRARY_TYPE | String |  Specifies the type of library to be created. "Shared" libraries are linked dynamically and loaded at runtime. "Static" libraries are archives of object files used when linking other targets |
 | BUILD_ADDITIONAL_TOOLKITS | String | Semicolon-separated individual toolkits to include into build process. If you want to build some particular libraries (toolkits) only, then you may uncheck all modules in the corresponding *BUILD_MODUE_\<MODULE\>* options and provide the list of necessary libraries here. Of course, all dependencies will be resolved automatically |
-| BUILD_YACCLEX | Boolean flag | Enables Flex/Bison lexical analyzers. OCCT source files relating to STEP reader and ExprIntrp functionality are generated automatically with Flex/Bison. Checking this options leads to automatic search of Flex/Bison binaries and regeneration of the mentioned files |
+| BUILD_YACCLEX | Boolean flag | Enables Flex/Bison lexical analyzers. OCCT source files relating to STEP reader and ExprIntrp functionality are generated automatically with Flex/Bison. Checking this option leads to automatic search of Flex/Bison binaries and regeneration of the mentioned files |
 | BUILD_MODULE_MfcSamples | Boolean flag | Indicates whether MFC samples should be built together with OCCT. This option is only relevant to Windows platforms |
-| BUILD_DOC_Overview | Boolean flag | Indicates whether OCCT overview documentation project should be created together with OCCT. It is not built together with OCCT. Checking this options leads to automatic search of Doxygen binaries. Building of it will be call Doxygen command to generate the documentation in HTML format |
+| BUILD_DOC_Overview | Boolean flag | Indicates whether OCCT overview documentation project should be created together with OCCT. It is not built together with OCCT. Checking this option leads to automatic search of Doxygen binaries. Its building calls Doxygen command to generate the documentation in HTML format |
 | BUILD_PATCH | Path | Points to the directory recognized as a "patch" for OCCT. If specified, the files from this directory take precedence over the corresponding native OCCT sources. This way you are able to introduce patches to Open CASCADE Technology not affecting the original source distribution |
-| BUILD_WITH_DEBUG | Boolean flag | Enables extended messages of many OCCT algorithms, usually printed to cout. These include messages on internal errors and special cases encountered, timing etc |
+| BUILD_WITH_DEBUG | Boolean flag | Enables extended messages of many OCCT algorithms, usually printed to cout. These include messages on internal errors and special cases encountered, timing, etc. |
 | CMAKE_CONFIGURATION_TYPES | String | Semicolon-separated CMake configurations |
-| INSTALL_DIR | Path | Points to the installation directory. INSTALL_DIR is synonym of CMAKE_INSTALL_PREFIX . User can specify both INSTALL_DIR or CMAKE_INSTALL_PREFIX |
+| INSTALL_DIR | Path | Points to the installation directory. *INSTALL_DIR* is a synonym of *CMAKE_INSTALL_PREFIX*. The user can specify both *INSTALL_DIR* or *CMAKE_INSTALL_PREFIX* |
 | INSTALL_DIR_BIN | Path | Relative path to the binaries installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_BIN}) |
 | INSTALL_DIR_SCRIPT | Path | Relative path to the scripts installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_SCRIPT}) |
 | INSTALL_DIR_LIB | Path | Relative path to the libraries installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_LIB}) |
 | INSTALL_DIR_INCLUDE | Path | Relative path to the includes installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_INCLUDE}) |
 | INSTALL_DIR_RESOURCE | Path | Relative path to the resources installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_RESOURCE}) |
-| INSTALL_DIR_LAYOUT | String | Defines structure of OCCT files (binaries, resources, headers, etc) for the install directory. Two variants are predefined: for Windows (standard OCCT layout) and for Unix operating systems (standard Linux layout). If needed, layout can be customized with INSTALL_DIR_* variables |
+| INSTALL_DIR_LAYOUT | String | Defines the structure of OCCT files (binaries, resources, headers, etc.) for the install directory. Two variants are predefined: for Windows (standard OCCT layout) and for Unix operating systems (standard Linux layout). If needed, the layout can be customized with INSTALL_DIR_* variables |
 | INSTALL_DIR_DATA | Path | Relative path to the data files installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_DATA}) |
 | INSTALL_DIR_SAMPLES | Path | Relative path to the samples installation directory. Note that only "samples/tcl" folder will be installed. (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_SAMPLES}) |
 | INSTALL_DIR_TESTS | Path | Relative path to the tests installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_TESTS}) |
@@ -119,7 +119,7 @@ The following table enumerates the full list of environment variables used at co
 | INSTALL_TEST_CASES | Boolean flag | Indicates whether non-regression OCCT test scripts should be installed into the installation directory |
 | INSTALL_DOC_Overview | Boolean flag | Indicates whether OCCT overview documentation should be installed into the installation directory |
 
-**Note:** In those CMake options defining paths only the forward slashes ("/") are acceptable.
+**Note:** Only the forward slashes ("/") are acceptable in the CMake options defining paths.
 
 @section build_cmake_3rdparty 3rd party search mechanism
 
@@ -127,7 +127,7 @@ If *3RDPARTY_DIR* directory is defined, then required 3rd party binaries are sou
 
 The procedure expects to find binary and header files of each 3rd party product in its own sub-directory: *bin*, *lib* and *include*.
 
-The results of the search (achived on the next pass of the configuration process) are recorded in the corresponding variables:
+The results of the search (achieved on the next pass of the configuration process) are recorded in the corresponding variables:
 
 * *3RDPARTY_\<PRODUCT\>_DIR* -- path to the 3rdparty directory (with directory name) (e.g. <i>D:/3rdparty/tcltk-86-32</i>)
 * *3RDPARTY_\<PRODUCT\>_LIBRARY_DIR* -- path to the directory containing a library (e.g. <i>D:/3rdparty/tcltk-86-32/lib</i>). 
