@@ -16,17 +16,12 @@
 #ifndef _Select3D_SensitiveSet_Header
 #define _Select3D_SensitiveSet_Header
 
+#include <BVH_PrimitiveSet.hxx>
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
-#include <Standard_Type.hxx>
-
-#include <NCollection_Handle.hxx>
-
 #include <Select3D_BndBox3d.hxx>
-#include <SelectBasics_EntityOwner.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-
-class Select3D_BVHPrimitiveContent;
+#include <SelectBasics_EntityOwner.hxx>
 
 //! This class is base class for handling overlap detection of complex sensitive
 //! entities. It provides an interface for building BVH tree for some set of entities.
@@ -38,12 +33,14 @@ class Select3D_BVHPrimitiveContent;
 //! For example of usage see Select3D_SensitiveTriangulation.
 class Select3D_SensitiveSet : public Select3D_SensitiveEntity
 {
+  static const Standard_Integer myLeafNodeSize = 8; //!< Number of sub-elements in the leaf
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveSet, Select3D_SensitiveEntity)
 public:
 
   //! Creates new empty sensitive set and its content
   Standard_EXPORT Select3D_SensitiveSet (const Handle(SelectBasics_EntityOwner)& theOwnerId);
 
-  ~Select3D_SensitiveSet() {};
+  ~Select3D_SensitiveSet() {}
 
 public:
 
@@ -70,11 +67,11 @@ public:
   //! Must be called manually to build BVH tree for any sensitive set
   //! in case if its content was initialized not in a constructor,
   //! but element by element
-  Standard_EXPORT void BVH() Standard_OVERRIDE;
+  Standard_EXPORT virtual void BVH() Standard_OVERRIDE;
 
   //! Marks BVH tree of the set as outdated. It will be rebuild
   //! at the next call of BVH()
-  Standard_EXPORT void MarkDirty();
+  void MarkDirty() { myContent.MarkDirty(); }
 
   //! Returns bounding box of the whole set.
   //! This method should be redefined in Select3D_SensitiveSet descendants
@@ -88,10 +85,7 @@ public:
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
   //! Returns a number of nodes in 1 BVH leaf
-  Standard_EXPORT Standard_Integer GetLeafNodeSize() const;
-
-public:
-  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveSet,Select3D_SensitiveEntity)
+  Standard_Integer GetLeafNodeSize() const { return myLeafNodeSize; }
 
 protected:
 
@@ -109,12 +103,55 @@ protected:
   virtual Standard_Real distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr) = 0;
 
 protected:
-  Standard_Integer myDetectedIdx;     //!< Index of detected primitive in BVH sorted primitive array
 
-private:
+  //! The purpose of this class is to provide a link between BVH_PrimitiveSet
+  //! and Select3D_SensitiveSet instance to build BVH tree for set of sensitives.
+  class BvhPrimitiveSet : public BVH_PrimitiveSet<Standard_Real, 3>
+  {
+  public:
 
-  Standard_Boolean                                 myIsLeftChildQueuedFirst;     //!< Flag for slight randomization of BVH traverse
-  NCollection_Handle<Select3D_BVHPrimitiveContent> myContent;                    //!< A link between sensitive entity and BVH_PrimitiveSet
+    //! Empty constructor.
+    BvhPrimitiveSet() {}
+
+    //! Destructor.
+    ~BvhPrimitiveSet() {}
+
+    //! Setup sensitivity set.
+    void SetSensitiveSet (Select3D_SensitiveSet* theSensitiveSet)
+    {
+      mySensitiveSet = theSensitiveSet;
+      MarkDirty();
+    }
+
+    //! Returns the length of set of sensitives
+    virtual Standard_Integer Size() const Standard_OVERRIDE { return mySensitiveSet->Size(); }
+
+    //! Returns bounding box of sensitive with index theIdx
+    virtual Select3D_BndBox3d Box (const Standard_Integer theIdx) const Standard_OVERRIDE { return mySensitiveSet->Box (theIdx); }
+
+    //! Make inherited method Box() visible to avoid CLang warning
+    using BVH_PrimitiveSet<Standard_Real, 3>::Box;
+
+    //! Returns center of sensitive with index theIdx in the set along the given axis theAxis
+    virtual Standard_Real Center (const Standard_Integer theIdx,
+                                  const Standard_Integer theAxis) const Standard_OVERRIDE { return mySensitiveSet->Center (theIdx, theAxis); }
+
+    //! Swaps items with indexes theIdx1 and theIdx2 in the set
+    virtual void Swap (const Standard_Integer theIdx1,
+                       const Standard_Integer theIdx2) Standard_OVERRIDE { mySensitiveSet->Swap (theIdx1, theIdx2); }
+
+    //! Returns the tree built for set of sensitives
+    const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& GetBVH() { return BVH(); }
+
+  protected:
+    Select3D_SensitiveSet* mySensitiveSet; //!< Set of sensitive entities
+  };
+
+protected:
+
+  BvhPrimitiveSet  myContent;     //!< A link between sensitive entity and BVH_PrimitiveSet
+  Standard_Integer myDetectedIdx; //!< Index of detected primitive in BVH sorted primitive array
+
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitiveSet, Select3D_SensitiveEntity)

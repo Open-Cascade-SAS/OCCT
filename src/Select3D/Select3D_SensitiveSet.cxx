@@ -14,8 +14,8 @@
 // commercial license or contractual agreement.
 
 #include <Select3D_SensitiveSet.hxx>
-#include <Select3D_BVHPrimitiveContent.hxx>
 
+#include <BVH_LinearBuilder.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveSet,Select3D_SensitiveEntity)
 
@@ -24,11 +24,13 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveSet,Select3D_SensitiveEntity)
 // purpose  : Creates new empty sensitive set and its content
 //=======================================================================
 Select3D_SensitiveSet::Select3D_SensitiveSet (const Handle(SelectBasics_EntityOwner)& theOwnerId)
-: Select3D_SensitiveEntity (theOwnerId)
+: Select3D_SensitiveEntity (theOwnerId),
+  myDetectedIdx (-1)
 {
-  myDetectedIdx = -1;
-  myIsLeftChildQueuedFirst = Standard_False;
-  myContent = new Select3D_BVHPrimitiveContent (this);
+  NCollection_Handle< BVH_Builder<Standard_Real, 3> > aBuilder = new BVH_LinearBuilder<Standard_Real, 3> (myLeafNodeSize, 32);
+  myContent.SetSensitiveSet (this);
+  myContent.SetBuilder (aBuilder);
+  myContent.MarkDirty();
 }
 
 //=======================================================================
@@ -37,7 +39,7 @@ Select3D_SensitiveSet::Select3D_SensitiveSet (const Handle(SelectBasics_EntityOw
 //=======================================================================
 void Select3D_SensitiveSet::BVH()
 {
-  myContent->GetBVH();
+  myContent.GetBVH();
 }
 
 //=======================================================================
@@ -49,12 +51,12 @@ void Select3D_SensitiveSet::BVH()
 Standard_Boolean Select3D_SensitiveSet::Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                  SelectBasics_PickResult& thePickResult)
 {
-  const BVH_Tree<Standard_Real, 3, BVH_BinaryTree>* aBVH = myContent->GetBVH().get();
+  const BVH_Tree<Standard_Real, 3, BVH_BinaryTree>* aBVH = myContent.GetBVH().get();
 
   thePickResult = SelectBasics_PickResult (RealLast(), RealLast());
 
-  if (myContent->Size() < 1 || !theMgr.Overlaps (aBVH->MinPoint (0),
-                                                 aBVH->MaxPoint (0)))
+  if (myContent.Size() < 1 || !theMgr.Overlaps (aBVH->MinPoint (0),
+                                                aBVH->MaxPoint (0)))
   {
     return Standard_False;
   }
@@ -181,29 +183,10 @@ gp_Pnt Select3D_SensitiveSet::CenterOfGeometry() const
 }
 
 //=======================================================================
-// function : MarkDirty
-// purpose  : Marks BVH tree of the set as outdated. It will be rebuild
-//            at the next call of BVH()
-//=======================================================================
-void Select3D_SensitiveSet::MarkDirty()
-{
-  myContent->MarkDirty();
-}
-
-//=======================================================================
 // function : Clear
 // purpose  : Destroys cross-reference to avoid memory leak
 //=======================================================================
 void Select3D_SensitiveSet::Clear()
 {
-  myContent.Nullify();
-}
-
-//=======================================================================
-// function : GetLeafNodeSize
-// purpose  : Returns a number of nodes in 1 BVH leaf
-//=======================================================================
-Standard_Integer Select3D_SensitiveSet::GetLeafNodeSize() const
-{
-  return myContent->GetLeafNodeSize();
+  //
 }
