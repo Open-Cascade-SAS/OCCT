@@ -76,13 +76,18 @@ void RWStepGeom_RWBSplineCurveWithKnots::ReadStep
 	Standard_Integer nsub3;
 	if (data->ReadSubList (num,3,"control_points_list",ach,nsub3)) {
 	  Standard_Integer nb3 = data->NbParams(nsub3);
-	  aControlPointsList = new StepGeom_HArray1OfCartesianPoint (1, nb3);
-	  for (Standard_Integer i3 = 1; i3 <= nb3; i3 ++) {
-	    //szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
-	    if (data->ReadEntity (nsub3, i3,"cartesian_point", ach,
-				  STANDARD_TYPE(StepGeom_CartesianPoint), anent3))
-	      aControlPointsList->SetValue(i3, anent3);
-	  }
+    if(nb3 <1)
+      ach->AddFail("Number of control points of the b_spline_curve_form is equal to 0");
+    else
+    {
+      aControlPointsList = new StepGeom_HArray1OfCartesianPoint (1, nb3);
+      for (Standard_Integer i3 = 1; i3 <= nb3; i3 ++) {
+        //szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+        if (data->ReadEntity (nsub3, i3,"cartesian_point", ach,
+          STANDARD_TYPE(StepGeom_CartesianPoint), anent3))
+          aControlPointsList->SetValue(i3, anent3);
+      }
+    }
 	}
 
 	// --- inherited field : curveForm ---

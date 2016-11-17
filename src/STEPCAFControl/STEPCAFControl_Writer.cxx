@@ -889,8 +889,9 @@ static Standard_Integer FindEntities (const Handle(Transfer_FinderProcess) &FP,
       seqRI.Append (aLocalItem);
     }
   }
-  else
+  else if(!TransientListBinder.IsNull())
   {
+
     const Standard_Integer nb = TransientListBinder->NbTransients();
     for (Standard_Integer i=1; i<=nb; i++) {
       Handle(Standard_Transient) t = TransientListBinder->Transient(i);
