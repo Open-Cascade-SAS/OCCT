@@ -49,6 +49,10 @@ void BRepExtrema_ExtPF::Initialize(const TopoDS_Face& TheFace,
   // cette surface doit etre en champ. Extrema ne fait
   // pas de copie et prend seulement un pointeur dessus.
   mySurf.Initialize(TheFace, Standard_False); 
+
+  if (mySurf.GetType() == GeomAbs_OtherSurface)
+    return;  // protect against non-geometric type (e.g. triangulation)
+
   Standard_Real Tol = Min(BRep_Tool::Tolerance(TheFace), Precision::Confusion());
   Standard_Real aTolU, aTolV;
   aTolU = Max(mySurf.UResolution(Tol), Precision::PConfusion());
@@ -71,6 +75,9 @@ void BRepExtrema_ExtPF::Perform(const TopoDS_Vertex& TheVertex, const TopoDS_Fac
   myPoints.Clear();
 
   const gp_Pnt P = BRep_Tool::Pnt(TheVertex);
+  if (mySurf.GetType() == GeomAbs_OtherSurface)
+    return;  // protect against non-geometric type (e.g. triangulation)
+  
   myExtPS.Perform(P);
 
   // Exploration of points and classification

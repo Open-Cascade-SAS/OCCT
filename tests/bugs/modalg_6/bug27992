@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC27992"
+puts "========"
+puts ""
+#################################################
+# Extrema_ExtPS crashes on face without geometric surface
+#################################################
+
+restore [locate_data_file bug27821_nullsurf.brep] a
+
+# check for exceptions for vertex-face
+vertex v 0 0 0
+distmini d v a
+
+# check for exceptions for face-face
+tcopy a b
+distmini d a b

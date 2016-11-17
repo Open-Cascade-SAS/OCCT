@@ -41,7 +41,9 @@ BRepExtrema_ExtPC::BRepExtrema_ExtPC(const TopoDS_Vertex& V, const TopoDS_Edge& 
 
 void BRepExtrema_ExtPC::Initialize(const TopoDS_Edge& E)
 {
-  Standard_Real U1,U2;
+  if (!BRep_Tool::IsGeometric(E))
+    return;  // protect against non-geometric type (e.g. polygon)
+  Standard_Real U1, U2;
   BRepAdaptor_Curve Curv(E);
   myHC = new BRepAdaptor_HCurve(Curv);
   Standard_Real Tol = Min(BRep_Tool::Tolerance(E), Precision::Confusion());
@@ -57,6 +59,9 @@ void BRepExtrema_ExtPC::Initialize(const TopoDS_Edge& E)
 
 void BRepExtrema_ExtPC::Perform(const TopoDS_Vertex& V)
 {
-  gp_Pnt P = BRep_Tool::Pnt(V);
-  myExtPC.Perform(P);
+  if (!myHC.IsNull())
+  {
+    gp_Pnt P = BRep_Tool::Pnt(V);
+    myExtPC.Perform(P);
+  }
 }

@@ -138,8 +138,7 @@ static Standard_Integer distmini(Draw_Interpretor& di, Standard_Integer n, const
 
   }
   
-  else di << "probleme\n";
-  //else cout << "probleme"<< endl;
+  else di << "problem: no distance is found\n";
   return 0;
 }
 

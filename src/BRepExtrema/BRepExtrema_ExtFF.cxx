@@ -46,6 +46,9 @@ BRepExtrema_ExtFF::BRepExtrema_ExtFF(const TopoDS_Face& F1, const TopoDS_Face& F
 void BRepExtrema_ExtFF::Initialize(const TopoDS_Face& F2)
 {
   BRepAdaptor_Surface Surf(F2);
+  if (Surf.GetType() == GeomAbs_OtherSurface)
+    return; // protect against non-geometric type (e.g. triangulation)
+
   myHS = new BRepAdaptor_HSurface(Surf);
   Standard_Real Tol = Min(BRep_Tool::Tolerance(F2), Precision::Confusion());
   Tol = Min(Surf.UResolution(Tol), Surf.VResolution(Tol));
@@ -67,6 +70,9 @@ void BRepExtrema_ExtFF::Perform(const TopoDS_Face& F1, const TopoDS_Face& F2)
   myPointsOnS2.Clear();
 
   BRepAdaptor_Surface Surf1(F1);
+  if (myHS.IsNull() || Surf1.GetType() == GeomAbs_OtherSurface)
+    return; // protect against non-geometric type (e.g. triangulation)
+
   Handle(BRepAdaptor_HSurface) HS1 = new BRepAdaptor_HSurface(Surf1);
   Standard_Real Tol1 = Min(BRep_Tool::Tolerance(F1), Precision::Confusion());
   Tol1 = Min(Surf1.UResolution(Tol1), Surf1.VResolution(Tol1));

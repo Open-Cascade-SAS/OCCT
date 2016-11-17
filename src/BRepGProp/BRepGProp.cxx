@@ -170,6 +170,7 @@ static Standard_Real volumeProperties(const TopoDS_Shape& S, GProp_GProps& Props
   BRepGProp_Domain BD;
   TopTools_MapOfShape aFwdFMap;
   TopTools_MapOfShape aRvsFMap;
+  TopLoc_Location aLocDummy;
 
   for (ex.Init(S,TopAbs_FACE), i = 1; ex.More(); ex.Next(), i++) {
     const TopoDS_Face& F = TopoDS::Face(ex.Current());
@@ -187,6 +188,15 @@ static Standard_Real volumeProperties(const TopoDS_Shape& S, GProp_GProps& Props
         continue;
       }
     }
+    {
+      const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface (F, aLocDummy);
+      if (aSurf.IsNull())
+      {
+        // skip faces without geometry
+        continue;
+      }
+    }
+
     if (isFwd || isRvs){
       BF.Load(F);
       TopoDS_Iterator aWIter(F);
@@ -306,6 +316,7 @@ static Standard_Real volumePropertiesGK(const TopoDS_Shape     &theShape,
   Standard_Real    anError = 0.;
   TopTools_MapOfShape aFwdFMap;
   TopTools_MapOfShape aRvsFMap;
+  TopLoc_Location aLocDummy;
 
   aVProps.SetLocation(aLoc);
 
@@ -325,6 +336,15 @@ static Standard_Real volumePropertiesGK(const TopoDS_Shape     &theShape,
         continue;
       }
     }
+    {
+      const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface (aFace, aLocDummy);
+      if (aSurf.IsNull())
+      {
+        // skip faces without geometry
+        continue;
+      }
+    }
+
     if (isFwd || isRvs){
         aPropFace.Load(aFace);
 
@@ -444,6 +464,7 @@ static Standard_Real volumePropertiesGK(const TopoDS_Shape     &theShape,
   Standard_Real    anError = 0.;
   TopTools_MapOfShape aFwdFMap;
   TopTools_MapOfShape aRvsFMap;
+  TopLoc_Location aLocDummy;
 
   aVProps.SetLocation(aLoc);
 
@@ -463,6 +484,15 @@ static Standard_Real volumePropertiesGK(const TopoDS_Shape     &theShape,
         continue;
       }
     }
+    {
+      const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface (aFace, aLocDummy);
+      if (aSurf.IsNull())
+      {
+        // skip faces without geometry
+        continue;
+      }
+    }
+
     if (isFwd || isRvs){
         aPropFace.Load(aFace);
 
