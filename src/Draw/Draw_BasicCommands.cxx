@@ -293,10 +293,10 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
 #else
   di << "FreeImage disabled\n";
 #endif
-#ifdef HAVE_OPENCL
-  di << "OpenCL enabled (HAVE_OPENCL)\n";
+#ifdef HAVE_GLES2
+  di << "OpenGL: ES2\n";
 #else
-  di << "OpenCL disabled\n";
+  di << "OpenGL: desktop\n";
 #endif
 #ifdef HAVE_VTK
   di << "VTK enabled (HAVE_VTK)\n";
@@ -323,7 +323,11 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
 #elif defined(__SUNPRO_C)
   di << "Compiler: Sun Studio (__SUNPRO_C = " << __SUNPROC_C << ")\n";
 #elif defined(_MSC_VER)
-  di << "Compiler: MS Visual C++ " << (int)(_MSC_VER/100-6) << "." << (int)((_MSC_VER/10)-60-10*(int)(_MSC_VER/100-6)) << " (_MSC_FULL_VER = " << _MSC_FULL_VER << ")\n";
+  #if _MSC_VER < 1900
+    di << "Compiler: MS Visual C++ " << (int)(_MSC_VER/100-6) << "." << (int)((_MSC_VER/10)-60-10*(int)(_MSC_VER/100-6)) << " (_MSC_FULL_VER = " << _MSC_FULL_VER << ")\n";
+  #else
+    di << "Compiler: MS Visual C++ " << (int)(_MSC_VER/100-5) << "." << (int)((_MSC_VER/10)-50-10*(int)(_MSC_VER/100-5)) << " (_MSC_FULL_VER = " << _MSC_FULL_VER << ")\n";
+  #endif
 #elif defined(__GNUC__)
   di << "Compiler: GCC " << __GNUC__ << "." << __GNUC_MINOR__ << "." << __GNUC_PATCHLEVEL__ << "\n";
 #else

@@ -77,4 +77,4 @@ vmoveto ${x_tol} ${y_tol}
 checkcolor ${x_on_edge} ${y_on_edge} 1 1 0
 checkcolor $x_on_vert $y_on_vert 0 1 1
 
-vdump ${imagedir}/${casename}
+vdump ${imagedir}/${casename}.png

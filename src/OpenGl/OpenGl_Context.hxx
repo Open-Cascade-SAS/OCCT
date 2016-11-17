@@ -318,7 +318,8 @@ public:
   const OpenGl_GlFunctions* Functions() const { return myFuncs.operator->(); }
 
   //! Clean up errors stack for this GL context (glGetError() in loop).
-  Standard_EXPORT void ResetErrors (const bool theToPrintErrors = false);
+  //! @return true if some error has been cleared
+  Standard_EXPORT bool ResetErrors (const bool theToPrintErrors = false);
 
   //! This method uses system-dependent API to retrieve information
   //! about GL context bound to the current thread.

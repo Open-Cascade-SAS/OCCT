@@ -43,4 +43,4 @@ if {$aNbSelected != 14} {
   puts "ERROR: Vertex was not selected!"
 }
 
-vdump ${imagedir}/${casename}
+vdump ${imagedir}/${casename}.png

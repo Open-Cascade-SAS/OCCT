@@ -33,6 +33,7 @@
 
 #include <Graphic3d_TextureParams.hxx>
 #include <Graphic3d_TransformUtils.hxx>
+#include <NCollection_AlignedAllocator.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Workspace,Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_RaytraceFilter,OpenGl_RenderFilter)
@@ -1012,76 +1013,6 @@ void OpenGl_Workspace::FBORelease (Handle(OpenGl_FrameBuffer)& theFbo)
   theFbo.Nullify();
 }
 
-inline bool getDataFormat (const Image_PixMap& theData,
-                           GLenum&             thePixelFormat,
-                           GLenum&             theDataType)
-{
-  thePixelFormat = GL_RGB;
-  theDataType    = GL_UNSIGNED_BYTE;
-  switch (theData.Format())
-  {
-  #if !defined(GL_ES_VERSION_2_0)
-    case Image_PixMap::ImgGray:
-      thePixelFormat = GL_DEPTH_COMPONENT;
-      theDataType    = GL_UNSIGNED_BYTE;
-      return true;
-    case Image_PixMap::ImgGrayF:
-      thePixelFormat = GL_DEPTH_COMPONENT;
-      theDataType    = GL_FLOAT;
-      return true;
-    case Image_PixMap::ImgBGR:
-      thePixelFormat = GL_BGR;
-      theDataType    = GL_UNSIGNED_BYTE;
-      return true;
-    case Image_PixMap::ImgBGRA:
-    case Image_PixMap::ImgBGR32:
-      thePixelFormat = GL_BGRA;
-      theDataType    = GL_UNSIGNED_BYTE;
-      return true;
-    case Image_PixMap::ImgBGRF:
-      thePixelFormat = GL_BGR;
-      theDataType    = GL_FLOAT;
-      return true;
-    case Image_PixMap::ImgBGRAF:
-      thePixelFormat = GL_BGRA;
-      theDataType    = GL_FLOAT;
-      return true;
-  #else
-    case Image_PixMap::ImgGray:
-    case Image_PixMap::ImgGrayF:
-    case Image_PixMap::ImgBGR:
-    case Image_PixMap::ImgBGRA:
-    case Image_PixMap::ImgBGR32:
-    case Image_PixMap::ImgBGRF:
-    case Image_PixMap::ImgBGRAF:
-      return false;
-  #endif
-    case Image_PixMap::ImgRGB:
-      thePixelFormat = GL_RGB;
-      theDataType    = GL_UNSIGNED_BYTE;
-      return true;
-    case Image_PixMap::ImgRGBA:
-    case Image_PixMap::ImgRGB32:
-      thePixelFormat = GL_RGBA;
-      theDataType    = GL_UNSIGNED_BYTE;
-      return true;
-    case Image_PixMap::ImgRGBF:
-      thePixelFormat = GL_RGB;
-      theDataType    = GL_FLOAT;
-      return true;
-    case Image_PixMap::ImgRGBAF:
-      thePixelFormat = GL_RGBA;
-      theDataType    = GL_FLOAT;
-      return true;
-    case Image_PixMap::ImgAlpha:
-    case Image_PixMap::ImgAlphaF:
-      return false; // GL_ALPHA is no more supported in core context
-    case Image_PixMap::ImgUNKNOWN:
-      return false;
-  }
-  return false;
-}
-
 // =======================================================================
 // function : getAligned
 // purpose  :
@@ -1092,6 +1023,21 @@ inline Standard_Size getAligned (const Standard_Size theNumber,
   return theNumber + theAlignment - 1 - (theNumber - 1) % theAlignment;
 }
 
+template<typename T>
+inline void convertRowFromRgba (T* theRgbRow,
+                                const Image_ColorRGBA* theRgbaRow,
+                                const Standard_Size theWidth)
+{
+  for (Standard_Size aCol = 0; aCol < theWidth; ++aCol)
+  {
+    const Image_ColorRGBA& anRgba = theRgbaRow[aCol];
+    T& anRgb = theRgbRow[aCol];
+    anRgb.r() = anRgba.r();
+    anRgb.g() = anRgba.g();
+    anRgb.b() = anRgba.b();
+  }
+}
+
 // =======================================================================
 // function : BufferDump
 // purpose  :
@@ -1100,13 +1046,92 @@ Standard_Boolean OpenGl_Workspace::BufferDump (const Handle(OpenGl_FrameBuffer)&
                                                Image_PixMap&                     theImage,
                                                const Graphic3d_BufferType&       theBufferType)
 {
-  GLenum aFormat, aType;
   if (theImage.IsEmpty()
-   || !getDataFormat (theImage, aFormat, aType)
-   || !Activate())
+  || !Activate())
   {
     return Standard_False;
   }
+
+  GLenum aFormat = 0;
+  GLenum aType   = 0;
+  bool toSwapRgbaBgra = false;
+  bool toConvRgba2Rgb = false;
+  switch (theImage.Format())
+  {
+  #if !defined(GL_ES_VERSION_2_0)
+    case Image_PixMap::ImgGray:
+      aFormat = GL_DEPTH_COMPONENT;
+      aType   = GL_UNSIGNED_BYTE;
+      break;
+    case Image_PixMap::ImgGrayF:
+      aFormat = GL_DEPTH_COMPONENT;
+      aType   = GL_FLOAT;
+      break;
+    case Image_PixMap::ImgRGB:
+      aFormat = GL_RGB;
+      aType   = GL_UNSIGNED_BYTE;
+      break;
+    case Image_PixMap::ImgBGR:
+      aFormat = GL_BGR;
+      aType   = GL_UNSIGNED_BYTE;
+      break;
+    case Image_PixMap::ImgBGRA:
+    case Image_PixMap::ImgBGR32:
+      aFormat = GL_BGRA;
+      aType   = GL_UNSIGNED_BYTE;
+      break;
+    case Image_PixMap::ImgBGRF:
+      aFormat = GL_BGR;
+      aType   = GL_FLOAT;
+      break;
+    case Image_PixMap::ImgBGRAF:
+      aFormat = GL_BGRA;
+      aType   = GL_FLOAT;
+      break;
+  #else
+    case Image_PixMap::ImgGray:
+    case Image_PixMap::ImgGrayF:
+    case Image_PixMap::ImgBGRF:
+    case Image_PixMap::ImgBGRAF:
+      return Standard_False;
+    case Image_PixMap::ImgBGRA:
+    case Image_PixMap::ImgBGR32:
+      aFormat = GL_RGBA;
+      aType   = GL_UNSIGNED_BYTE;
+      toSwapRgbaBgra = true;
+      break;
+    case Image_PixMap::ImgBGR:
+    case Image_PixMap::ImgRGB:
+      aFormat = GL_RGBA;
+      aType   = GL_UNSIGNED_BYTE;
+      toConvRgba2Rgb = true;
+      break;
+  #endif
+    case Image_PixMap::ImgRGBA:
+    case Image_PixMap::ImgRGB32:
+      aFormat = GL_RGBA;
+      aType   = GL_UNSIGNED_BYTE;
+      break;
+    case Image_PixMap::ImgRGBF:
+      aFormat = GL_RGB;
+      aType   = GL_FLOAT;
+      break;
+    case Image_PixMap::ImgRGBAF:
+      aFormat = GL_RGBA;
+      aType   = GL_FLOAT;
+      break;
+    case Image_PixMap::ImgAlpha:
+    case Image_PixMap::ImgAlphaF:
+      return Standard_False; // GL_ALPHA is no more supported in core context
+    case Image_PixMap::ImgUNKNOWN:
+      return Standard_False;
+  }
+
+  if (aFormat == 0)
+  {
+    return Standard_False;
+  }
+
 #if !defined(GL_ES_VERSION_2_0)
   GLint aReadBufferPrev = GL_BACK;
   if (theBufferType == Graphic3d_BT_Depth
@@ -1158,8 +1183,33 @@ Standard_Boolean OpenGl_Workspace::BufferDump (const Handle(OpenGl_FrameBuffer)&
     isBatchCopy = false;
   }
 #endif
+  if (toConvRgba2Rgb)
+  {
+    Handle(NCollection_BaseAllocator) anAlloc = new NCollection_AlignedAllocator (16);
+    const Standard_Size aRowSize = theImage.SizeX() * 4;
+    NCollection_Buffer aRowBuffer (anAlloc);
+    if (!aRowBuffer.Allocate (aRowSize))
+    {
+      return Standard_False;
+    }
 
-  if (!isBatchCopy)
+    for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
+    {
+      // Image_PixMap rows indexation always starts from the upper corner
+      // while order in memory depends on the flag and processed by ChangeRow() method
+      glReadPixels (0, GLint(theImage.SizeY() - aRow - 1), GLsizei (theImage.SizeX()), 1, aFormat, aType, aRowBuffer.ChangeData());
+      const Image_ColorRGBA* aRowDataRgba = (const Image_ColorRGBA* )aRowBuffer.Data();
+      if (theImage.Format() == Image_PixMap::ImgBGR)
+      {
+        convertRowFromRgba ((Image_ColorBGR* )theImage.ChangeRow (aRow), aRowDataRgba, theImage.SizeX());
+      }
+      else
+      {
+        convertRowFromRgba ((Image_ColorRGB* )theImage.ChangeRow (aRow), aRowDataRgba, theImage.SizeX());
+      }
+    }
+  }
+  else if (!isBatchCopy)
   {
     // copy row by row
     for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
@@ -1173,6 +1223,7 @@ Standard_Boolean OpenGl_Workspace::BufferDump (const Handle(OpenGl_FrameBuffer)&
   {
     glReadPixels (0, 0, GLsizei (theImage.SizeX()), GLsizei (theImage.SizeY()), aFormat, aType, theImage.ChangeData());
   }
+  const bool hasErrors = myGlContext->ResetErrors (true);
 
   glPixelStorei (GL_PACK_ALIGNMENT,  1);
 #if !defined(GL_ES_VERSION_2_0)
@@ -1189,7 +1240,13 @@ Standard_Boolean OpenGl_Workspace::BufferDump (const Handle(OpenGl_FrameBuffer)&
     glReadBuffer (aReadBufferPrev);
   #endif
   }
-  return Standard_True;
+
+  if (toSwapRgbaBgra)
+  {
+    Image_PixMap::SwapRgbaBgra (theImage);
+  }
+
+  return !hasErrors;
 }
 
 // =======================================================================

@@ -812,17 +812,18 @@ Standard_Boolean OpenGl_Context::Init (const Aspect_Drawable         theWindow,
 // function : ResetErrors
 // purpose  :
 // =======================================================================
-void OpenGl_Context::ResetErrors (const bool theToPrintErrors)
+bool OpenGl_Context::ResetErrors (const bool theToPrintErrors)
 {
   int aPrevErr = 0;
   int anErr    = ::glGetError();
+  const bool hasError = anErr != GL_NO_ERROR;
   if (!theToPrintErrors)
   {
     for (; anErr != GL_NO_ERROR && aPrevErr != anErr; aPrevErr = anErr, anErr = ::glGetError())
     {
       //
     }
-    return;
+    return hasError;
   }
 
   for (; anErr != GL_NO_ERROR && aPrevErr != anErr; aPrevErr = anErr, anErr = ::glGetError())
@@ -849,6 +850,7 @@ void OpenGl_Context::ResetErrors (const bool theToPrintErrors)
     const TCollection_ExtendedString aMsg = TCollection_ExtendedString ("Unhandled GL error: ") + anErrId;
     PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, 0, GL_DEBUG_SEVERITY_LOW, aMsg);
   }
+  return hasError;
 }
 
 // =======================================================================

@@ -115,6 +115,7 @@ namespace
     char aPsFont[64];
     getGL2PSFontName (theAspect.Aspect()->Font().ToCString(), aPsFont);
 
+    (void)theIs2d;
   #if !defined(GL_ES_VERSION_2_0)
     if (theIs2d)
     {

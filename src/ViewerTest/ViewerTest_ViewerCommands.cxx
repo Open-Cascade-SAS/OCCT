@@ -5736,7 +5736,7 @@ static int VReadPixel (Draw_Interpretor& theDI,
     return 1;
   }
 
-  Image_PixMap::ImgFormat aFormat     = Image_PixMap::IsBigEndianHost() ? Image_PixMap::ImgRGBA : Image_PixMap::ImgBGRA;
+  Image_PixMap::ImgFormat aFormat     = Image_PixMap::ImgRGBA;
   Graphic3d_BufferType    aBufferType = Graphic3d_BT_RGBA;
 
   Standard_Integer aWidth, aHeight;
@@ -5756,12 +5756,12 @@ static int VReadPixel (Draw_Interpretor& theDI,
     const char* aParam = theArgVec[anIter];
     if ( strcasecmp( aParam, "rgb" ) == 0 )
     {
-      aFormat     = Image_PixMap::IsBigEndianHost() ? Image_PixMap::ImgRGB : Image_PixMap::ImgBGR;
+      aFormat     = Image_PixMap::ImgRGB;
       aBufferType = Graphic3d_BT_RGB;
     }
     else if ( strcasecmp( aParam, "hls" ) == 0 )
     {
-      aFormat     = Image_PixMap::IsBigEndianHost() ? Image_PixMap::ImgRGB : Image_PixMap::ImgBGR;
+      aFormat     = Image_PixMap::ImgRGB;
       aBufferType = Graphic3d_BT_RGB;
       toShowHls   = Standard_True;
     }
@@ -5772,7 +5772,7 @@ static int VReadPixel (Draw_Interpretor& theDI,
     }
     else if ( strcasecmp( aParam, "rgba" ) == 0 )
     {
-      aFormat     = Image_PixMap::IsBigEndianHost() ? Image_PixMap::ImgRGBA : Image_PixMap::ImgBGRA;
+      aFormat     = Image_PixMap::ImgRGBA;
       aBufferType = Graphic3d_BT_RGBA;
     }
     else if ( strcasecmp( aParam, "rgbaf" ) == 0 )

@@ -338,3 +338,73 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
   theAlpha = 0.0; // transparent
   return Quantity_Color (0.0, 0.0, 0.0, Quantity_TOC_RGB);
 }
+
+// =======================================================================
+// function : SwapRgbaBgra
+// purpose  :
+// =======================================================================
+bool Image_PixMap::SwapRgbaBgra (Image_PixMap& theImage)
+{
+  switch (theImage.Format())
+  {
+    case Image_PixMap::ImgBGR32:
+    case Image_PixMap::ImgRGB32:
+    case Image_PixMap::ImgBGRA:
+    case Image_PixMap::ImgRGBA:
+    {
+      const bool toResetAlpha = theImage.Format() == Image_PixMap::ImgBGR32
+                             || theImage.Format() == Image_PixMap::ImgRGB32;
+      for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
+      {
+        for (Standard_Size aCol = 0; aCol < theImage.SizeX(); ++aCol)
+        {
+          Image_ColorRGBA& aPixel     = theImage.ChangeValue<Image_ColorRGBA> (aRow, aCol);
+          Image_ColorBGRA  aPixelCopy = theImage.Value      <Image_ColorBGRA> (aRow, aCol);
+          aPixel.r() = aPixelCopy.r();
+          aPixel.g() = aPixelCopy.g();
+          aPixel.b() = aPixelCopy.b();
+          if (toResetAlpha)
+          {
+            aPixel.a() = 255;
+          }
+        }
+      }
+      return true;
+    }
+    case Image_PixMap::ImgBGR:
+    case Image_PixMap::ImgRGB:
+    {
+      for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
+      {
+        for (Standard_Size aCol = 0; aCol < theImage.SizeX(); ++aCol)
+        {
+          Image_ColorRGB& aPixel     = theImage.ChangeValue<Image_ColorRGB> (aRow, aCol);
+          Image_ColorBGR  aPixelCopy = theImage.Value      <Image_ColorBGR> (aRow, aCol);
+          aPixel.r() = aPixelCopy.r();
+          aPixel.g() = aPixelCopy.g();
+          aPixel.b() = aPixelCopy.b();
+        }
+      }
+      return true;
+    }
+    case Image_PixMap::ImgBGRF:
+    case Image_PixMap::ImgRGBF:
+    case Image_PixMap::ImgBGRAF:
+    case Image_PixMap::ImgRGBAF:
+    {
+      for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
+      {
+        for (Standard_Size aCol = 0; aCol < theImage.SizeX(); ++aCol)
+        {
+          Image_ColorRGBF& aPixel     = theImage.ChangeValue<Image_ColorRGBF> (aRow, aCol);
+          Image_ColorBGRF  aPixelCopy = theImage.Value      <Image_ColorBGRF> (aRow, aCol);
+          aPixel.r() = aPixelCopy.r();
+          aPixel.g() = aPixelCopy.g();
+          aPixel.b() = aPixelCopy.b();
+        }
+      }
+      return true;
+    }
+    default: return false;
+  }
+}

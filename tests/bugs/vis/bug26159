@@ -20,4 +20,4 @@ checkcolor 58 324 0 1 1
 
 # to print tolerance in case of failure:
 puts [vselprops -print]
-vdump $imagedir/${casename}
+vdump $imagedir/${casename}.png

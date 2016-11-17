@@ -2826,12 +2826,11 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
      || theImage.SizeX() != Standard_Size(aTargetSize.x())
      || theImage.SizeY() != Standard_Size(aTargetSize.y()))
     {
-      const bool isBigEndian = Image_PixMap::IsBigEndianHost();
       Image_PixMap::ImgFormat aFormat = Image_PixMap::ImgUNKNOWN;
       switch (theParams.BufferType)
       {
-        case Graphic3d_BT_RGB:   aFormat = isBigEndian ? Image_PixMap::ImgRGB  : Image_PixMap::ImgBGR;  break;
-        case Graphic3d_BT_RGBA:  aFormat = isBigEndian ? Image_PixMap::ImgRGBA : Image_PixMap::ImgBGRA; break;
+        case Graphic3d_BT_RGB:   aFormat = Image_PixMap::ImgRGB;   break;
+        case Graphic3d_BT_RGBA:  aFormat = Image_PixMap::ImgRGBA;  break;
         case Graphic3d_BT_Depth: aFormat = Image_PixMap::ImgGrayF; break;
       }
 

@@ -924,13 +924,11 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
   }
 
   Image_AlienPixMap aPixMap;
-
-  bool isBigEndian = Image_PixMap::IsBigEndianHost();
   Image_PixMap::ImgFormat aFormat = Image_PixMap::ImgUNKNOWN;
   switch (aParams.BufferType)
   {
-    case Graphic3d_BT_RGB:   aFormat = isBigEndian ? Image_PixMap::ImgRGB  : Image_PixMap::ImgBGR;  break;
-    case Graphic3d_BT_RGBA:  aFormat = isBigEndian ? Image_PixMap::ImgRGBA : Image_PixMap::ImgBGRA; break;
+    case Graphic3d_BT_RGB:   aFormat = Image_PixMap::ImgRGB;   break;
+    case Graphic3d_BT_RGBA:  aFormat = Image_PixMap::ImgRGBA;  break;
     case Graphic3d_BT_Depth: aFormat = Image_PixMap::ImgGrayF; break;
   }
 
@@ -985,9 +983,9 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
       }
 
       Image_PixMap aPixMapL, aPixMapR;
-      aPixMapL.InitWrapper (aFormat, aPixMap.ChangeData(),
+      aPixMapL.InitWrapper (aPixMap.Format(), aPixMap.ChangeData(),
                             aParams.Width, aParams.Height, aPixMap.SizeRowBytes());
-      aPixMapR.InitWrapper (aFormat, aPixMap.ChangeData() + aPixMap.SizeRowBytes() * aParams.Height,
+      aPixMapR.InitWrapper (aPixMap.Format(), aPixMap.ChangeData() + aPixMap.SizeRowBytes() * aParams.Height,
                             aParams.Width, aParams.Height, aPixMap.SizeRowBytes());
 
       aParams.StereoOptions = V3d_SDO_LEFT_EYE;

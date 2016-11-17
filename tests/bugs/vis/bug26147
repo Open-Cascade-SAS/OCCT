@@ -57,4 +57,4 @@ if {$aNbSelected4 != 13} {
   puts "ERROR: Wrong number of entities in vertice-edge-face shift selection with overlap allowed!"
 }
 
-vdump $imagedir/${casename}
+vdump $imagedir/${casename}.png

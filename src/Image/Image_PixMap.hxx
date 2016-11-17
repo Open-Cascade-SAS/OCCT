@@ -53,6 +53,16 @@ public:
     return !aUnion.myChar[0];
   }
 
+  //! Auxiliary method for swapping bytes between RGB and BGR formats.
+  //! This method modifies the image data but does not change pixel format!
+  //! Method will fail if pixel format is not one of the following:
+  //!  - ImgRGB32 / ImgBGR32
+  //!  - ImgRGBA  / ImgBGRA
+  //!  - ImgRGB   / ImgBGR
+  //!  - ImgRGBF  / ImgBGRF
+  //!  - ImgRGBAF / ImgBGRAF
+  Standard_EXPORT static bool SwapRgbaBgra (Image_PixMap& theImage);
+
 public: // high-level API
 
   inline ImgFormat Format() const
