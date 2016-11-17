@@ -41,6 +41,7 @@ Graphic3d_NOT_2D_MAPLE,
 Graphic3d_NOT_2D_MARBLE,
 Graphic3d_NOT_2D_MOTTLED,
 Graphic3d_NOT_2D_RAIN,
+Graphic3d_NOT_2D_CHESS,
 Graphic3d_NOT_2D_UNKNOWN
 };
 

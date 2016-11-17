@@ -1,0 +1,13 @@
+puts "============"
+puts "Visualization - Path Tracing, Ball sample"
+puts "============"
+puts ""
+
+source $env(CSF_OCCTSamplesPath)/tcl/pathtrace_ball.tcl
+
+vtexture ball 21 -scale 0.1 0.1
+vsetmaterial ball plaster
+vbsdf ball -fresnel Constant 0.0
+
+vfps 100
+vdump $imagedir/${casename}_zoom.png

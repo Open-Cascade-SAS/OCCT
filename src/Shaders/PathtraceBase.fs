@@ -759,10 +759,16 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
       aTexCoord.st = vec2 (dot (aTrsfRow1, aTexCoord),
                            dot (aTrsfRow2, aTexCoord));
 
-      vec3 aTexColor = textureLod (
-        sampler2D (uTextureSamplers[int (aMaterial.Kd.w)]), aTexCoord.st, 0.f).rgb;
+      vec4 aTexColor = textureLod (
+        sampler2D (uTextureSamplers[int (aMaterial.Kd.w)]), aTexCoord.st, 0.f);
 
-      aMaterial.Kd.rgb *= aTexColor * aTexColor; // de-gamma correction (for gamma = 2)
+      aMaterial.Kd.rgb *= (aTexColor.rgb, aTexColor.rgb) * aTexColor.w; // de-gamma correction (for gamma = 2)
+
+      if (aTexColor.w != 1.0f)
+      {
+        // mix transparency BTDF with texture alpha-channel
+        aMaterial.Kt = (UNIT - aTexColor.www) + aTexColor.w * aMaterial.Kt;
+      }
     }
 #endif
 

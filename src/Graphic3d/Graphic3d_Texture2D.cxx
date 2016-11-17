@@ -42,7 +42,8 @@ static const char *NameOfTexture_to_FileName[] =
   "2d_maple.rgb",
   "2d_marble.rgb",
   "2d_mottled.rgb",
-  "2d_rain.rgb"
+  "2d_rain.rgb",
+  "2d_chess.rgba"
 };
 
 // =======================================================================

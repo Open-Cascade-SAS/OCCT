@@ -969,11 +969,14 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
       aTexCoord.st = vec2 (dot (aTrsfRow1, aTexCoord),
                            dot (aTrsfRow2, aTexCoord));
 
-      vec3 aTexColor = textureLod (
-        sampler2D (uTextureSamplers[int(aDiffuse.w)]), aTexCoord.st, 0.f).rgb;
+      vec4 aTexColor = textureLod (
+        sampler2D (uTextureSamplers[int(aDiffuse.w)]), aTexCoord.st, 0.f);
 
-      aDiffuse.rgb *= aTexColor;
-      aAmbient.rgb *= aTexColor;
+      aDiffuse.rgb *= aTexColor.rgb;
+      aAmbient.rgb *= aTexColor.rgb;
+
+      // keep refractive index untouched (Z component)
+      aOpacity.xy = vec2 (aTexColor.w * aOpacity.x, 1.0f - aTexColor.w * aOpacity.x);
     }
 #endif
 
