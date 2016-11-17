@@ -2303,8 +2303,8 @@ SeekPointOnBoundary(const Handle(Adaptor3d_HSurface)& theASurf1,
     return isOK;
   }
 
-  const gp_Pnt  aP1 = theASurf1->Value(aPnt(1), aPnt(2)),
-                aP2 = theASurf2->Value(aPnt(3), aPnt(4));
+  gp_Pnt aP1 = theASurf1->Value(aPnt(1), aPnt(2));
+  gp_Pnt aP2 = theASurf2->Value(aPnt(3), aPnt(4));
   const gp_Pnt aPInt(0.5*(aP1.XYZ() + aP2.XYZ()));
 
   const Standard_Real aSQDist = aPInt.SquareDistance(aP1);
@@ -2348,7 +2348,6 @@ SeekPointOnBoundary(const Handle(Adaptor3d_HSurface)& theASurf1,
     {
       const Standard_Integer aNbPnts = line->NbPoints();
 
-      gp_Pnt aP1, aP2;
       Standard_Integer aPInd = 1;
       for (; aPInd <= aNbPnts; aPInd++)
       {

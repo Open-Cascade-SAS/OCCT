@@ -64,7 +64,7 @@ public:
   Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
 
-  Bnd_Box Box() const;
+  Standard_EXPORT Bnd_Box Box() const;
 
   //! Returns center of the box. If location
   //! transformation is set, it will be applied

@@ -777,8 +777,8 @@ void BuildSplitsOfFaces(const TopTools_ListOfShape& theLF,
       //
       // additionally check if newly created faces are not the same
       Standard_Boolean bAllInv = Standard_True;
-      TopTools_ListIteratorOfListOfShape aItLFIm(aLFImages1);
-      for (; aItLFIm.More();) {
+      for (TopTools_ListIteratorOfListOfShape aItLFIm(aLFImages1); aItLFIm.More();)
+      {
         const TopoDS_Shape& aFIm = aItLFIm.Value();
         TopExp_Explorer aExpE(aFIm, TopAbs_EDGE);
         for (; aExpE.More(); aExpE.Next()) {
@@ -1677,15 +1677,15 @@ void FindInvalidFaces(TopTools_ListOfShape& theLFImages,
   //
   // neutral edges
   TopTools_MapOfShape aMEN;
-  TopTools_ListIteratorOfListOfShape aItLE(theLENeutral);
-  for (; aItLE.More(); aItLE.Next()) {
+  for (TopTools_ListIteratorOfListOfShape aItLE(theLENeutral); aItLE.More(); aItLE.Next())
+  {
     aMEN.Add(aItLE.Value());
   }
   //
   // valid inverted edges
   TopTools_MapOfShape aMEValInverted;
-  aItLE.Initialize(theLEValInverted);
-  for (; aItLE.More(); aItLE.Next()) {
+  for (TopTools_ListIteratorOfListOfShape aItLE(theLEValInverted); aItLE.More(); aItLE.Next())
+  {
     aMEValInverted.Add(aItLE.Value());
   }
   //
@@ -2511,8 +2511,8 @@ void RemoveInsideFaces(TopTools_IndexedDataMapOfShapeListOfShape& theFImages,
     //
     Standard_Boolean bAllInv(Standard_True), bAllRemoved(Standard_True);
 
-    TopExp_Explorer aExpF(aSol, TopAbs_FACE);
-    for (; aExpF.More(); aExpF.Next()) {
+    for (TopExp_Explorer aExpF(aSol, TopAbs_FACE); aExpF.More(); aExpF.Next())
+    {
       const TopoDS_Shape& aFS = aExpF.Current();
       //
       if (aFS.Orientation() == TopAbs_INTERNAL) {
@@ -2561,8 +2561,8 @@ void ShapesConnections(const TopTools_IndexedDataMapOfShapeListOfShape& theInvFa
 {
   // update invalid edges with images and keep connection to original edge
   TopTools_DataMapOfShapeListOfShape aDMEOr;
-  Standard_Integer i, aNb = theInvEdges.Extent();
-  for (i = 1; i <= aNb; ++i) {
+  Standard_Integer aNb = theInvEdges.Extent();
+  for (Standard_Integer i = 1; i <= aNb; ++i) {
     const TopoDS_Shape& aEInv = theInvEdges(i);
     const TopTools_ListOfShape& aLEIm = theBuilder.Modified(aEInv);
     if (aLEIm.IsEmpty()) {
@@ -3269,7 +3269,6 @@ void IntersectFaces(const TopTools_IndexedDataMapOfShapeListOfShape& theFToRebui
   //
   Standard_Integer i, j, k, aNbInv;
   TopTools_ListIteratorOfListOfShape aItLF, aItLE;
-  TopExp_Explorer aExp;
   //
   // get vertices from invalid edges
   TopTools_MapOfShape aMVInv, aMVInvAll;
@@ -3277,8 +3276,7 @@ void IntersectFaces(const TopTools_IndexedDataMapOfShapeListOfShape& theFToRebui
   for (i = 1; i <= aNbInv; ++i) {
     const TopoDS_Shape& aEInv = theInvEdges(i);
     Standard_Boolean bValid = theValidEdges.Contains(aEInv);
-    aExp.Init(aEInv, TopAbs_VERTEX);
-    for (; aExp.More(); aExp.Next()) {
+    for (TopExp_Explorer aExp (aEInv, TopAbs_VERTEX); aExp.More(); aExp.Next()) {
       const TopoDS_Shape& aV = aExp.Current();
       aMVInvAll.Add(aV);
       if (!bValid) {
@@ -3324,8 +3322,8 @@ void IntersectFaces(const TopTools_IndexedDataMapOfShapeListOfShape& theFToRebui
     aItLF.Initialize(aLFInv);
     for (; aItLF.More(); aItLF.Next()) {
       const TopoDS_Shape& aFInv = aItLF.Value();
-      aExp.Init(aFInv, TopAbs_EDGE);
-      for (; aExp.More(); aExp.Next()) {
+      for (TopExp_Explorer aExp(aFInv, TopAbs_EDGE); aExp.More(); aExp.Next())
+      {
         const TopoDS_Shape& aE = aExp.Current();
         if (!theInvEdges.Contains(aE) && aMFence.Add(aE)) {
           TopExp::MapShapesAndAncestors(aE, TopAbs_VERTEX, TopAbs_EDGE, aDMVEVal);
@@ -4957,8 +4955,8 @@ void GetInvalidEdgesByBounds(const TopoDS_Shape& theSplits,
   TopExp::MapShapes(aSecR, aMSSec);
   //
   const BOPCol_DataMapOfShapeListOfShape& anIm = aSec.Images();
-  TopExp_Explorer aExp(theSplits, TopAbs_EDGE);
-  for (; aExp.More(); aExp.Next()) {
+  for (TopExp_Explorer aExp(theSplits, TopAbs_EDGE); aExp.More(); aExp.Next())
+  {
     const TopoDS_Shape& aE = aExp.Current();
     if (aSec.IsDeleted(aE)) {
       // no common blocks for this edge
