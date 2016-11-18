@@ -244,12 +244,12 @@ void transmitted (in float theIndex, in vec3 theIncident, out vec3 theTransmit)
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 //=======================================================================
-// function : HandleLambertianReflection
-// purpose  : Handles Lambertian BRDF, with cos(N, PSI)
+// function : EvalLambertianReflection
+// purpose  : Evaluates Lambertian BRDF, with cos(N, PSI)
 //=======================================================================
-float HandleLambertianReflection (in vec3 theInput, in vec3 theOutput)
+float EvalLambertianReflection (in vec3 theWi, in vec3 theWo)
 {
-  return (theInput.z <= 0.f || theOutput.z <= 0.f) ? 0.f : theInput.z * (1.f / M_PI);
+  return (theWi.z <= 0.f || theWo.z <= 0.f) ? 0.f : theWi.z * (1.f / M_PI);
 }
 
 //=======================================================================
@@ -285,13 +285,13 @@ float SmithG1 (in vec3 theDirection, in vec3 theM, in float theRoughness)
 }
 
 //=======================================================================
-// function : HandleBlinnReflection
-// purpose  : Handles Blinn glossy BRDF, with cos(N, PSI)
+// function : EvalBlinnReflection
+// purpose  : Evaluates Blinn glossy BRDF, with cos(N, PSI)
 //=======================================================================
-vec3 HandleBlinnReflection (in vec3 theInput, in vec3 theOutput, in vec3 theFresnel, in float theRoughness)
+vec3 EvalBlinnReflection (in vec3 theWi, in vec3 theWo, in vec3 theFresnel, in float theRoughness)
 {
   // calculate the reflection half-vec
-  vec3 aH = normalize (theInput + theOutput);
+  vec3 aH = normalize (theWi + theWo);
 
   // roughness value -> Blinn exponent
   float aPower = max (2.f / (theRoughness * theRoughness) - 2.f, 0.f);
@@ -300,41 +300,55 @@ vec3 HandleBlinnReflection (in vec3 theInput, in vec3 theOutput, in vec3 theFres
   float aD = (aPower + 2.f) * (1.f / M_2_PI) * pow (aH.z, aPower);
 
   // calculate shadow-masking function
-  float aG = SmithG1 (theOutput, aH, theRoughness) * SmithG1 (theInput, aH, theRoughness);
+  float aG = SmithG1 (theWo, aH, theRoughness) *
+             SmithG1 (theWi, aH, theRoughness);
 
   // return total amount of reflection
-  return (theInput.z <= 0.f || theOutput.z <= 0.f) ? ZERO :
-    aD * aG / (4.f * theOutput.z) * fresnelMedia (dot (theOutput, aH), theFresnel);
+  return (theWi.z <= 0.f || theWo.z <= 0.f) ? ZERO :
+    aD * aG / (4.f * theWo.z) * fresnelMedia (dot (theWo, aH), theFresnel);
 }
 
 //=======================================================================
-// function : HandleMaterial
-// purpose  : Returns BSDF value for specified material, with cos(N, PSI)
+// function : EvalMaterial
+// purpose  : Evaluates BSDF for specified material, with cos(N, PSI)
 //=======================================================================
-vec3 HandleMaterial (in SMaterial theBSDF, in vec3 theInput, in vec3 theOutput)
+vec3 EvalMaterial (in SMaterial theBSDF, in vec3 theWi, in vec3 theWo)
 {
-  return theBSDF.Kd.rgb * HandleLambertianReflection (theInput, theOutput) +
-    theBSDF.Ks.rgb * HandleBlinnReflection (theInput, theOutput, theBSDF.Fresnel, theBSDF.Ks.w);
+#ifdef TWO_SIDED_BXDF
+  theWi.z *= sign (theWi.z);
+  theWo.z *= sign (theWo.z);
+#endif
+
+  return theBSDF.Kd.rgb * EvalLambertianReflection (theWi, theWo) +
+    theBSDF.Ks.rgb * EvalBlinnReflection (theWi, theWo, theBSDF.Fresnel, theBSDF.Ks.w);
 }
 
 //=======================================================================
 // function : SampleLambertianReflection
 // purpose  : Samples Lambertian BRDF, W = BRDF * cos(N, PSI) / PDF(PSI)
 //=======================================================================
-vec3 SampleLambertianReflection (in vec3 theOutput, out vec3 theInput, inout float thePDF)
+vec3 SampleLambertianReflection (in vec3 theWo, out vec3 theWi, inout float thePDF)
 {
   float aKsi1 = RandFloat();
   float aKsi2 = RandFloat();
 
-  float aTemp = sqrt (aKsi2);
+  theWi = vec3 (cos (M_2_PI * aKsi1),
+                sin (M_2_PI * aKsi1),
+                sqrt (1.f - aKsi2));
 
-  theInput = vec3 (aTemp * cos (M_2_PI * aKsi1),
-                   aTemp * sin (M_2_PI * aKsi1),
-                   sqrt (1.f - aKsi2));
+  theWi.xy *= sqrt (aKsi2);
 
-  thePDF *= abs (theInput.z) * (1.f / M_PI);
+#ifdef TWO_SIDED_BXDF
+  theWi.z *= sign (theWo.z);
+#endif
 
-  return (theInput.z <= 0.f || theOutput.z <= 0.f) ? ZERO : UNIT;
+  thePDF *= theWi.z * (1.f / M_PI);
+
+#ifdef TWO_SIDED_BXDF
+  return UNIT;
+#else
+  return mix (UNIT, ZERO, theWo.z <= 0.f);
+#endif
 }
 
 //=======================================================================
@@ -347,7 +361,7 @@ vec3 SampleLambertianReflection (in vec3 theOutput, out vec3 theInput, inout flo
 //            terms would be complex, and it is the D term that accounts
 //            for most of the variation.
 //=======================================================================
-vec3 SampleBlinnReflection (in vec3 theOutput, out vec3 theInput, in vec3 theFresnel, in float theRoughness, inout float thePDF)
+vec3 SampleBlinnReflection (in vec3 theWo, out vec3 theWi, in vec3 theFresnel, in float theRoughness, inout float thePDF)
 {
   float aKsi1 = RandFloat();
   float aKsi2 = RandFloat();
@@ -367,56 +381,72 @@ vec3 SampleBlinnReflection (in vec3 theOutput, out vec3 theInput, in vec3 theFre
   // calculate PDF of sampled direction
   thePDF *= (aPower + 2.f) * (1.f / M_2_PI) * pow (aCosThetaM, aPower + 1.f);
 
-  float aCosDelta = dot (theOutput, aM);
+#ifdef TWO_SIDED_BXDF
+  bool toFlip = theWo.z < 0.f;
+
+  if (toFlip)
+    theWo.z = -theWo.z;
+#endif
+
+  float aCosDelta = dot (theWo, aM);
 
   // pick input based on half direction
-  theInput = -theOutput + 2.f * aCosDelta * aM;
+  theWi = -theWo + 2.f * aCosDelta * aM;
 
-  if (theInput.z <= 0.f || theOutput.z <= 0.f)
+  if (theWi.z <= 0.f || theWo.z <= 0.f)
   {
     return ZERO;
   }
 
   // Jacobian of half-direction mapping
-  thePDF /= 4.f * dot (theInput, aM);
+  thePDF /= 4.f * dot (theWi, aM);
 
   // compute shadow-masking coefficient
-  float aG = SmithG1 (theOutput, aM, theRoughness) * SmithG1 (theInput, aM, theRoughness);
+  float aG = SmithG1 (theWo, aM, theRoughness) *
+             SmithG1 (theWi, aM, theRoughness);
 
-  return aG * aCosDelta / (theOutput.z * aM.z) * fresnelMedia (aCosDelta, theFresnel);
+#ifdef TWO_SIDED_BXDF
+  if (toFlip)
+    theWi.z = -theWi.z;
+#endif
+
+  return (aG * aCosDelta) / (theWo.z * aM.z) * fresnelMedia (aCosDelta, theFresnel);
 }
 
 //=======================================================================
 // function : SampleSpecularReflection
 // purpose  : Samples specular BRDF, W = BRDF * cos(N, PSI) / PDF(PSI)
 //=======================================================================
-vec3 SampleSpecularReflection (in vec3 theOutput, out vec3 theInput, in vec3 theFresnel)
+vec3 SampleSpecularReflection (in vec3 theWo, out vec3 theWi, in vec3 theFresnel)
 {
   // Sample input direction
-  theInput = vec3 (-theOutput.x,
-                   -theOutput.y,
-                    theOutput.z);
+  theWi = vec3 (-theWo.x,
+                -theWo.y,
+                 theWo.z);
 
-  return fresnelMedia (theOutput.z, theFresnel);
+#ifdef TWO_SIDED_BXDF
+  return fresnelMedia (theWo.z, theFresnel);
+#else
+  return fresnelMedia (theWo.z, theFresnel) * step (0.f, theWo.z);
+#endif
 }
 
 //=======================================================================
 // function : SampleSpecularTransmission
 // purpose  : Samples specular BTDF, W = BRDF * cos(N, PSI) / PDF(PSI)
 //=======================================================================
-vec3 SampleSpecularTransmission (in vec3 theOutput,
-  out vec3 theInput, in vec3 theWeight, in vec3 theFresnel, inout bool theInside)
+vec3 SampleSpecularTransmission (in vec3 theWo, out vec3 theWi, in vec3 theWeight, in vec3 theFresnel, inout bool theInside)
 {
-  vec3 aFactor = fresnelMedia (theOutput.z, theFresnel);
+  vec3 aFactor = fresnelMedia (theWo.z, theFresnel);
 
   float aReflection = convolve (aFactor, theWeight);
 
   // sample specular BRDF/BTDF
   if (RandFloat() <= aReflection)
   {
-    theInput = vec3 (-theOutput.x,
-                     -theOutput.y,
-                      theOutput.z);
+    theWi = vec3 (-theWo.x,
+                  -theWo.y,
+                   theWo.z);
 
     theWeight = aFactor * (1.f / aReflection);
   }
@@ -424,7 +454,7 @@ vec3 SampleSpecularTransmission (in vec3 theOutput,
   {
     theInside = !theInside;
 
-    transmitted (theFresnel.y, theOutput, theInput);
+    transmitted (theFresnel.y, theWo, theWi);
 
     theWeight = (UNIT - aFactor) * (1.f / (1.f - aReflection));
   }
@@ -438,10 +468,7 @@ vec3 SampleSpecularTransmission (in vec3 theOutput,
 // function : BsdfPdf
 // purpose  : Calculates BSDF of sampling input knowing output
 //=======================================================================
-float BsdfPdf (in SMaterial theBSDF,
-               in vec3      theOutput,
-               in vec3      theInput,
-               in vec3      theWeight)
+float BsdfPdf (in SMaterial theBSDF, in vec3 theWo, in vec3 theWi, in vec3 theWeight)
 {
   float aPd = convolve (theBSDF.Kd.rgb, theWeight);
   float aPs = convolve (theBSDF.Ks.rgb, theWeight);
@@ -452,15 +479,15 @@ float BsdfPdf (in SMaterial theBSDF,
 
   float aPDF = 0.f; // PDF of sampling input direction
 
-  if (theInput.z * theOutput.z > 0.f)
+  if (theWi.z * theWo.z > 0.f)
   {
-    vec3 aHalf = normalize (theInput + theOutput);
+    vec3 aH = normalize (theWi + theWo);
 
     // roughness value --> Blinn exponent
     float aPower = max (2.f / (theBSDF.Ks.w * theBSDF.Ks.w) - 2.f, 0.f);
 
-    aPDF = aPd * abs (theInput.z / M_PI) +
-      aPs * (aPower + 2.f) * (1.f / M_2_PI) * pow (aHalf.z, aPower + 1.f) / (4.f * dot (theInput, aHalf));
+    aPDF = aPd * abs (theWi.z / M_PI) +
+      aPs * (aPower + 2.f) * (1.f / M_2_PI) * pow (abs (aH.z), aPower + 1.f) / (4.f * dot (theWi, aH));
   }
 
   return aPDF / aReflection;
@@ -473,11 +500,7 @@ float BsdfPdf (in SMaterial theBSDF,
 // function : SampleBsdf
 // purpose  : Samples specified composite material (BSDF)
 //=======================================================================
-float SampleBsdf (in SMaterial theBSDF,
-                  in vec3      theOutput,
-                  out vec3     theInput,
-                  inout vec3   theWeight,
-                  inout bool   theInside)
+float SampleBsdf (in SMaterial theBSDF, in vec3 theWo, out vec3 theWi, inout vec3 theWeight, inout bool theInside)
 {
   // compute probability of each reflection type (BxDF)
   float aPd = convolve (theBSDF.Kd.rgb, theWeight);
@@ -497,13 +520,13 @@ float SampleBsdf (in SMaterial theBSDF,
   {
     PICK_BXDF (aPd, theBSDF.Kd.rgb);
 
-    theWeight *= SampleLambertianReflection (theOutput, theInput, aPDF);
+    theWeight *= SampleLambertianReflection (theWo, theWi, aPDF);
   }
   else if (aKsi < aPd + aPs) // glossy reflection
   {
     PICK_BXDF (aPs, theBSDF.Ks.rgb);
 
-    theWeight *= SampleBlinnReflection (theOutput, theInput, theBSDF.Fresnel, theBSDF.Ks.w, aPDF);
+    theWeight *= SampleBlinnReflection (theWo, theWi, theBSDF.Fresnel, theBSDF.Ks.w, aPDF);
   }
   else if (aKsi < aPd + aPs + aPr) // specular reflection
   {
@@ -511,7 +534,7 @@ float SampleBsdf (in SMaterial theBSDF,
 
     aPDF = MAXFLOAT;
 
-    theWeight *= SampleSpecularReflection (theOutput, theInput, theBSDF.Fresnel);
+    theWeight *= SampleSpecularReflection (theWo, theWi, theBSDF.Fresnel);
   }
   else if (aKsi < aReflection) // specular transmission
   {
@@ -519,7 +542,7 @@ float SampleBsdf (in SMaterial theBSDF,
 
     aPDF = MAXFLOAT;
 
-    theWeight *= SampleSpecularTransmission (theOutput, theInput, theWeight, theBSDF.Fresnel, theInside);
+    theWeight *= SampleSpecularTransmission (theWo, theWi, theWeight, theBSDF.Fresnel, theInside);
   }
 
   // path termination for extra small weights
@@ -810,7 +833,7 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
       // MIS weight including division by explicit PDF
       float aMIS = (aExpPDF == MAXFLOAT) ? 1.f : aExpPDF / (aExpPDF * aExpPDF + aImpPDF * aImpPDF);
 
-      vec3 aContrib = aMIS * aParam.rgb /* Le */ * HandleMaterial (
+      vec3 aContrib = aMIS * aParam.rgb /* Le */ * EvalMaterial (
           aMaterial, toLocalSpace (aLight.xyz, aSpace), toLocalSpace (-theRay.Direct, aSpace));
 
       if (any (greaterThan (aContrib, MIN_CONTRIBUTION))) // check if light source is important

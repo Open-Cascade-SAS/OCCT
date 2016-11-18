@@ -9077,16 +9077,17 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       case Graphic3d_RM_RAYTRACING:    theDI << "raytrace ";      break;
     }
     theDI << "\n";
-    theDI << "msaa:         " <<  aParams.NbMsaaSamples                               << "\n";
-    theDI << "rayDepth:     " <<  aParams.RaytracingDepth                             << "\n";
-    theDI << "fsaa:         " << (aParams.IsAntialiasingEnabled       ? "on" : "off") << "\n";
-    theDI << "shadows:      " << (aParams.IsShadowEnabled             ? "on" : "off") << "\n";
-    theDI << "reflections:  " << (aParams.IsReflectionEnabled         ? "on" : "off") << "\n";
-    theDI << "gleam:        " << (aParams.IsTransparentShadowEnabled  ? "on" : "off") << "\n";
-    theDI << "GI:           " << (aParams.IsGlobalIlluminationEnabled ? "on" : "off") << "\n";
-    theDI << "blocked RNG:  " << (aParams.CoherentPathTracingMode     ? "on" : "off") << "\n";
-    theDI << "iss:          " << (aParams.AdaptiveScreenSampling      ? "on" : "off") << "\n";
-    theDI << "iss debug:    " << (aParams.ShowSamplingTiles           ? "on" : "off") << "\n";
+    theDI << "msaa:           " <<  aParams.NbMsaaSamples                               << "\n";
+    theDI << "rayDepth:       " <<  aParams.RaytracingDepth                             << "\n";
+    theDI << "fsaa:           " << (aParams.IsAntialiasingEnabled       ? "on" : "off") << "\n";
+    theDI << "shadows:        " << (aParams.IsShadowEnabled             ? "on" : "off") << "\n";
+    theDI << "reflections:    " << (aParams.IsReflectionEnabled         ? "on" : "off") << "\n";
+    theDI << "gleam:          " << (aParams.IsTransparentShadowEnabled  ? "on" : "off") << "\n";
+    theDI << "GI:             " << (aParams.IsGlobalIlluminationEnabled ? "on" : "off") << "\n";
+    theDI << "blocked RNG:    " << (aParams.CoherentPathTracingMode     ? "on" : "off") << "\n";
+    theDI << "iss:            " << (aParams.AdaptiveScreenSampling      ? "on" : "off") << "\n";
+    theDI << "iss debug:      " << (aParams.ShowSamplingTiles           ? "on" : "off") << "\n";
+    theDI << "two-sided BSDF: " << (aParams.TwoSidedBsdfModels          ? "on" : "off") << "\n";
     theDI << "shadingModel: ";
     switch (aView->ShadingModel())
     {
@@ -9359,6 +9360,22 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
         --anArgIter;
       }
       aParams.UseEnvironmentMapBackground = toEnable;
+    }
+    else if (aFlag == "-twoside")
+    {
+      if (toPrint)
+      {
+        theDI << (aParams.TwoSidedBsdfModels ? "on" : "off") << " ";
+        continue;
+      }
+
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+        && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aParams.TwoSidedBsdfModels = toEnable;
     }
     else if (aFlag == "-shademodel"
           || aFlag == "-shadingmodel"
@@ -10633,6 +10650,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-gi           on|off'  Enables/disables global illumination effects"
     "\n      '-brng         on|off'  Enables/disables blocked RNG (fast coherent PT)"
     "\n      '-env          on|off'  Enables/disables environment map background"
+    "\n      '-twoside      on|off'  Enables/disables two-sided BSDF models (PT mode)"
     "\n      '-iss          on|off'  Enables/disables adaptive screen sampling (PT mode)"
     "\n      '-issd         on|off'  Shows screen sampling distribution in ISS mode"
     "\n      '-rebuildGlsl  on|off'  Rebuild Ray-Tracing GLSL programs (for debugging)"

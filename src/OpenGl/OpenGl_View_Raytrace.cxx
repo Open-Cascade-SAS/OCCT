@@ -1144,6 +1144,11 @@ TCollection_AsciiString OpenGl_View::generateShaderPrefix (const Handle(OpenGl_C
           TCollection_AsciiString ("\n#define BLOCK_SIZE ") + TCollection_AsciiString (OpenGl_TileSampler::TileSize());
       }
     }
+
+    if (myRaytraceParameters.TwoSidedBsdfModels) // two-sided BSDFs requested
+    {
+      aPrefixString += TCollection_AsciiString ("\n#define TWO_SIDED_BXDF");
+    }
   }
 
   return aPrefixString;
@@ -1354,27 +1359,18 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
       }
     }
 
-    if (myRenderParams.RaytracingDepth != myRaytraceParameters.NbBounces)
+    if (myRenderParams.RaytracingDepth             != myRaytraceParameters.NbBounces
+     || myRenderParams.IsTransparentShadowEnabled  != myRaytraceParameters.TransparentShadows
+     || myRenderParams.IsGlobalIlluminationEnabled != myRaytraceParameters.GlobalIllumination
+     || myRenderParams.TwoSidedBsdfModels          != myRaytraceParameters.TwoSidedBsdfModels
+     || myRaytraceGeometry.HasTextures()           != myRaytraceParameters.UseBindlessTextures)
     {
-      myRaytraceParameters.NbBounces = myRenderParams.RaytracingDepth;
-      aToRebuildShaders = Standard_True;
-    }
-
-    if (myRaytraceGeometry.HasTextures() != myRaytraceParameters.UseBindlessTextures)
-    {
+      myRaytraceParameters.NbBounces           = myRenderParams.RaytracingDepth;
+      myRaytraceParameters.TransparentShadows  = myRenderParams.IsTransparentShadowEnabled;
+      myRaytraceParameters.GlobalIllumination  = myRenderParams.IsGlobalIlluminationEnabled;
+      myRaytraceParameters.TwoSidedBsdfModels  = myRenderParams.TwoSidedBsdfModels;
       myRaytraceParameters.UseBindlessTextures = myRaytraceGeometry.HasTextures();
-      aToRebuildShaders = Standard_True;
-    }
 
-    if (myRenderParams.IsTransparentShadowEnabled != myRaytraceParameters.TransparentShadows)
-    {
-      myRaytraceParameters.TransparentShadows = myRenderParams.IsTransparentShadowEnabled;
-      aToRebuildShaders = Standard_True;
-    }
-
-    if (myRenderParams.IsGlobalIlluminationEnabled != myRaytraceParameters.GlobalIllumination)
-    {
-      myRaytraceParameters.GlobalIllumination = myRenderParams.IsGlobalIlluminationEnabled;
       aToRebuildShaders = Standard_True;
     }
 

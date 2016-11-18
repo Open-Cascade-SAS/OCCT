@@ -1,0 +1,19 @@
+puts "============"
+puts "Visualization - Path Tracing, Cube sample"
+puts "============"
+puts ""
+
+source $env(CSF_OCCTSamplesPath)/tcl/pathtrace_cube.tcl
+
+vaxo
+vfit
+vfps 100
+
+# Dump image produced with one-sided BSDFs
+vdump $imagedir/${casename}_onesided.png
+
+vrenderparams -twoside
+vfps 100
+
+# Dump image produced with two-sided BSDFs
+vdump $imagedir/${casename}_twosided.png

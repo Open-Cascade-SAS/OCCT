@@ -28,9 +28,6 @@ public:
   //! Default pixels density.
   static const unsigned int THE_DEFAULT_RESOLUTION = 72u;
 
-  //! Default number of samples per pixel.
-  static const Standard_Integer THE_DEFAULT_SPP = 1;
-
   //! Default ray-tracing depth.
   static const Standard_Integer THE_DEFAULT_DEPTH = 3;
 
@@ -53,7 +50,6 @@ public:
     NbMsaaSamples               (0),
     // ray tracing parameters
     IsGlobalIlluminationEnabled (Standard_False),
-    SamplesPerPixel             (THE_DEFAULT_SPP),
     RaytracingDepth             (THE_DEFAULT_DEPTH),
     IsShadowEnabled             (Standard_True),
     IsReflectionEnabled         (Standard_False),
@@ -63,6 +59,7 @@ public:
     CoherentPathTracingMode     (Standard_False),
     AdaptiveScreenSampling      (Standard_False),
     ShowSamplingTiles           (Standard_False),
+    TwoSidedBsdfModels          (Standard_False),
     RebuildRayTracingShaders    (Standard_False),
     // stereoscopic parameters
     StereoMode (Graphic3d_StereoMode_QuadBuffer),
@@ -104,6 +101,7 @@ public:
   Standard_Boolean        CoherentPathTracingMode;     //!< enables/disables 'coherent' tracing mode (single RNG seed within 16x16 image blocks)
   Standard_Boolean        AdaptiveScreenSampling;      //!< enables/disables adaptive screen sampling mode for path tracing, FALSE by default
   Standard_Boolean        ShowSamplingTiles;           //!< enables/disables debug mode for adaptive screen sampling, FALSE by default
+  Standard_Boolean        TwoSidedBsdfModels;          //!< forces path tracing to use two-sided versions of original one-sided scattering models
   Standard_Boolean        RebuildRayTracingShaders;    //!< forces rebuilding ray tracing shaders at the next frame
 
   Graphic3d_StereoMode    StereoMode;                  //!< stereoscopic output mode, Graphic3d_StereoMode_QuadBuffer by default

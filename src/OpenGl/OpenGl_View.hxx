@@ -696,6 +696,9 @@ protected: //! @name data types related to ray-tracing
     //! Enables/disables the use of OpenGL bindless textures.
     Standard_Boolean UseBindlessTextures;
 
+    //! Enables/disables two-sided BSDF models instead of one-sided.
+    Standard_Boolean TwoSidedBsdfModels;
+
     //! Enables/disables adaptive screen sampling for path tracing.
     Standard_Boolean AdaptiveScreenSampling;
 
@@ -703,13 +706,11 @@ protected: //! @name data types related to ray-tracing
     RaytracingParams()
     : StackSize (THE_DEFAULT_STACK_SIZE),
       NbBounces (THE_DEFAULT_NB_BOUNCES),
-      TransparentShadows (Standard_False),
-      GlobalIllumination  (Standard_False),
-      UseBindlessTextures (Standard_False),
-      AdaptiveScreenSampling (Standard_False)
-    {
-      //
-    }
+      TransparentShadows     (Standard_False),
+      GlobalIllumination     (Standard_False),
+      UseBindlessTextures    (Standard_False),
+      TwoSidedBsdfModels     (Standard_False),
+      AdaptiveScreenSampling (Standard_False) { }
   };
 
   //! Describes state of OpenGL structure.
