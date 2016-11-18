@@ -387,6 +387,7 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
   aCtx->core11fwd->glGetBooleanv (GL_DEPTH_WRITEMASK, &aDefaultSettings.DepthMask);
 
   Standard_Integer aSeqId = myLayers.Lower();
+  bool toClearDepth = false;
   for (OpenGl_SequenceOfLayers::Iterator anIts (myLayers); anIts.More(); anIts.Next(), ++aSeqId)
   {
     if (theLayersToProcess == OpenGl_LF_Bottom)
@@ -403,27 +404,33 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
     }
 
     const OpenGl_Layer& aLayer = anIts.Value();
-    if (aLayer.NbStructures() < 1)
+    if (aLayer.IsImmediate() != theToDrawImmediate)
     {
       continue;
     }
-    else if (theToDrawImmediate)
+    else if (aLayer.NbStructures() < 1)
     {
-      if (!aLayer.IsImmediate())
-      {
-        continue;
-      }
-    }
-    else
-    {
-      if (aLayer.IsImmediate())
-      {
-        continue;
-      }
+      // make sure to clear depth of previous layers even if layer has no structures
+      toClearDepth = toClearDepth || aLayer.LayerSettings().ToClearDepth();
+      continue;
     }
 
-    // render layer
+    // depth buffers
+    if (toClearDepth
+     || aLayer.LayerSettings().ToClearDepth())
+    {
+      toClearDepth = false;
+      glDepthMask (GL_TRUE);
+      glClear (GL_DEPTH_BUFFER_BIT);
+    }
+
     aLayer.Render (theWorkspace, aDefaultSettings);
+  }
+
+  if (toClearDepth)
+  {
+    glDepthMask (GL_TRUE);
+    glClear (GL_DEPTH_BUFFER_BIT);
   }
 
   aCtx->core11fwd->glDepthMask (aDefaultSettings.DepthMask);

@@ -663,12 +663,7 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
                            const OpenGl_GlobalLayerSettings& theDefaultSettings) const
 {
   const Graphic3d_PolygonOffset anAppliedOffsetParams = theWorkspace->AppliedPolygonOffset();
-
-  // separate depth buffers
-  if (myLayerSettings.ToClearDepth())
-  {
-    glClear (GL_DEPTH_BUFFER_BIT);
-  }
+  // myLayerSettings.ToClearDepth() is handled outside
 
   // handle depth test
   if (myLayerSettings.ToEnableDepthTest())

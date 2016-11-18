@@ -1,0 +1,29 @@
+puts "==========="
+puts "OCC28127"
+puts "Visualization - transparent object breaks Z-Layer depth buffer clear"
+puts "==========="
+puts ""
+
+pload MODELING VISUALIZATION
+box r 0 0   0 1 0.1 1
+box g 0 0.2 0 1 0.1 1
+box b 0 0.4 0 1 0.1 1
+
+vclear
+vinit View1
+vaxo
+vdisplay -noupdate -dispMode 1 -top r g b
+vsetcolor -noupdate r RED
+vsetcolor -noupdate g GREEN
+vsetcolor -noupdate b BLUE1
+vfit
+
+vdisplay -topmost g
+vzbufftrihedron -on -position left_upper
+
+vsettransparency b 0.5
+
+if { [vreadpixel 150 150 rgb name] != "GREEN3" } { puts "Error: wrong color - GREEN box should overlap RED one" }
+if { [vreadpixel  84  64 rgb name] == "RED3"   } { puts "Error: wrong color - Trihedron should overlap RED box" }
+
+vdump $imagedir/${casename}.png
