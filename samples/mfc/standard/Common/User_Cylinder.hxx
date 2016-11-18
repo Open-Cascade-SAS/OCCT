@@ -22,8 +22,6 @@ public:
 	~User_Cylinder(){};
 	
 	Standard_Boolean AcceptShapeDecomposition() const;
-	void Standard_EXPORT SetCylindricalFaceColor(const Quantity_Color acolor);
-	void Standard_EXPORT SetPlanarFaceColor(const Quantity_Color);
 	Standard_Integer NbPossibleSelection() const;
 	void SetColor(const Quantity_Color &aColor);
 
@@ -41,10 +39,7 @@ private:
 //
 DEFINE_STANDARD_RTTIEXT(User_Cylinder,AIS_InteractiveObject)
 private:
-//	Quantity_NameOfColor myCylindricalFaceColor;
-//	Quantity_NameOfColor myPlanarFaceColor;
-	Quantity_Color myCylindricalFaceColor;
-	Quantity_Color myPlanarFaceColor;
+	Quantity_Color myColor;
 	TopoDS_Shape myShape;
 
 	Handle(Graphic3d_AspectFillArea3d) myAspect;

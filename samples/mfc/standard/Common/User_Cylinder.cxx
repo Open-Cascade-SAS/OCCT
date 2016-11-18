@@ -34,8 +34,7 @@ AIS_InteractiveObject(PrsMgr_TOP_ProjectorDependant)
   myShape = S.Shape();
   SetHilightMode(0);
   myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
-  myPlanarFaceColor = Quantity_NOC_FIREBRICK3;
-  myCylindricalFaceColor = Quantity_NOC_GRAY;
+  myColor = Quantity_NOC_GRAY;
 }
 
 User_Cylinder::User_Cylinder(const gp_Ax2 CylAx2, const Standard_Real R, const Standard_Real H) :
@@ -47,8 +46,7 @@ AIS_InteractiveObject(PrsMgr_TOP_ProjectorDependant)
   myShape = aNurbsConvert.Shape();
   SetHilightMode(0);
   myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
-  myPlanarFaceColor = Quantity_NOC_FIREBRICK3;
-  myCylindricalFaceColor = Quantity_NOC_KHAKI4;
+  myColor = Quantity_NOC_KHAKI4;
 }
 
 void User_Cylinder::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
@@ -56,33 +54,20 @@ void User_Cylinder::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPrese
                             const Standard_Integer aMode ) 
 {
   switch (aMode) {
-case 0:
-  StdPrs_WFShape::Add(aPresentation,myShape, myDrawer );
-  break;
-case 1:
+case AIS_WireFrame:
   {
-
+    StdPrs_WFShape::Add(aPresentation,myShape, myDrawer );
+    break;
+  }
+case AIS_Shaded:
+  {
     Standard_Real aTransparency = Transparency();
     Graphic3d_NameOfMaterial aMaterial = Material();
-    TopExp_Explorer Ex;
-    Handle(Geom_Surface) Surface;
-
-    for (Ex.Init(myShape,TopAbs_FACE); Ex.More(); Ex.Next())
-    {
-
-      Surface = BRep_Tool::Surface(TopoDS::Face(Ex.Current()));
-      myDrawer->ShadingAspect()->SetMaterial(aMaterial);
-      if (Surface->IsKind(STANDARD_TYPE(Geom_Plane)))
-        myDrawer->ShadingAspect()->SetColor(myPlanarFaceColor);
-      else
-        myDrawer->ShadingAspect()->SetColor(myCylindricalFaceColor);
-
-
-      myDrawer->ShadingAspect()->SetTransparency (aTransparency);
-      StdPrs_ShadedShape::Add(aPresentation,Ex.Current(), myDrawer);
-    }
+    myDrawer->ShadingAspect()->SetMaterial(aMaterial);
+    myDrawer->ShadingAspect()->SetColor(myColor);
+    myDrawer->ShadingAspect()->SetTransparency (aTransparency);
+    StdPrs_ShadedShape::Add(aPresentation,myShape, myDrawer);
     break;
-
   }
 case 6: //color
   {
@@ -309,7 +294,11 @@ case 6: //color
 void User_Cylinder::Compute(const Handle(Prs3d_Projector)& aProjector,
                             const Handle(Prs3d_Presentation)& aPresentation)
 {
-  myDrawer->EnableDrawHiddenLine();
+  Handle (Prs3d_Drawer) aDefDrawer = GetContext()->DefaultDrawer();
+  if (aDefDrawer->DrawHiddenLine())
+    myDrawer->EnableDrawHiddenLine();
+  else
+    myDrawer->DisableDrawHiddenLine();
   StdPrs_HLRPolyShape::Add(aPresentation,myShape,myDrawer,aProjector);
 }
 
@@ -335,16 +324,6 @@ Standard_Integer User_Cylinder::NbPossibleSelection() const
 Standard_Boolean User_Cylinder::AcceptShapeDecomposition() const
 {
   return Standard_True;
-}
-
-void User_Cylinder::SetPlanarFaceColor(const Quantity_Color acolor)
-{
-  myPlanarFaceColor = acolor;
-}
-
-void User_Cylinder::SetCylindricalFaceColor(const Quantity_Color acolor)
-{
-  myCylindricalFaceColor = acolor;
 }
 
 Standard_Boolean User_Cylinder::TriangleIsValid(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3) const
@@ -496,6 +475,5 @@ Quantity_Color User_Cylinder::Color(gp_Pnt& thePoint,Standard_Real AltMin,Standa
 void User_Cylinder::SetColor(const Quantity_Color &aColor)
 {
   AIS_InteractiveObject::SetColor(aColor);
-  SetPlanarFaceColor(aColor);
-  SetCylindricalFaceColor(aColor);
+  myColor = aColor;
 }

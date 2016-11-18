@@ -527,20 +527,10 @@ void CViewer3dDoc::InputEvent(const Standard_Integer /*x*/,
                                    GetBValue (MSColor)/255.0,
                                    Quantity_TOC_RGB);
 
-        TopoDS_Shape S = myAISContext->SelectedShape();
-        Handle(Geom_Surface) Surface = BRep_Tool::Surface (TopoDS::Face(S));
-        if (Surface->IsKind (STANDARD_TYPE (Geom_Plane)))
-        {
-          Handle(User_Cylinder)::DownCast (myAISContext->SelectedInteractive())
-            ->SetPlanarFaceColor (CSFColor.Name());
-        }
-        else
-        {
-          Handle(User_Cylinder)::DownCast (myAISContext->SelectedInteractive())
-            ->SetCylindricalFaceColor (CSFColor.Name());
-        }
+        Handle(AIS_InteractiveObject) aSelectedObject = myAISContext->SelectedInteractive();
+        Handle(User_Cylinder)::DownCast (aSelectedObject)->SetColor (CSFColor.Name());
 
-        myAISContext->Redisplay (myAISContext->SelectedInteractive());
+        myAISContext->Redisplay (aSelectedObject);
         myState = -1;
         myAISContext->CloseLocalContext();
       }
