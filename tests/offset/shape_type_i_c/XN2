@@ -1,9 +1,8 @@
-restore [locate_data_file bug26917_dom8036.input_art1.brep] s
+restore [locate_data_file bug28163_merged_input_trim5.brep] s
 
 OFFSETSHAPE 4 {} $calcul $type
 
-checkprops result -v 3771.44
-checkprops result -s 1506.76
+checkprops result -v 220952 -s 26863.2
 
 unifysamedom result_unif result
 checknbshapes result_unif -face 12 -shell 1

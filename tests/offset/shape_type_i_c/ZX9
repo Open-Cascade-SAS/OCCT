@@ -5,4 +5,7 @@ OFFSETSHAPE 43 {} $calcul $type
 checkprops result -v 5.23391e+008
 checkprops result -s 4.7898e+006
 
-checknbshapes result -shell 1
+unifysamedom result_unif result
+checknbshapes result_unif -face 22 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png
