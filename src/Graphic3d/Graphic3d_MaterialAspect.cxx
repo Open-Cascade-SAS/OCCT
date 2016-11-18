@@ -104,10 +104,9 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       ColorCoef[Graphic3d_TOR_DIFFUSE]  = 0.24f;
       ColorCoef[Graphic3d_TOR_SPECULAR] = 0.06f;
 
-      BSDF.Kd = (Graphic3d_Vec3 )Colors[Graphic3d_TOR_DIFFUSE];
-      BSDF.Ks = Graphic3d_Vec3 (0.00784314f, 0.00784314f, 0.00784314f);
+      BSDF.Kd = static_cast<Graphic3d_Vec3> (Colors[Graphic3d_TOR_DIFFUSE]);
+      BSDF.Ks = Graphic3d_Vec4 (0.00784314f, 0.00784314f, 0.00784314f, 0.25f);
       BSDF.Normalize();
-      BSDF.Roughness = 0.25f;
       break;
     case Graphic3d_NOM_SHINY_PLASTIC:
       Shininess                         = 1.00f;
@@ -115,10 +114,9 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       ColorCoef[Graphic3d_TOR_DIFFUSE]  = 0.50f;
       ColorCoef[Graphic3d_TOR_SPECULAR] = 1.00f;
 
-      BSDF.Kd = (Graphic3d_Vec3 )Colors[Graphic3d_TOR_DIFFUSE];
-      BSDF.Ks = Graphic3d_Vec3 (0.145f, 0.145f, 0.145f);
+      BSDF.Kd = static_cast<Graphic3d_Vec3> (Colors[Graphic3d_TOR_DIFFUSE]);
+      BSDF.Ks = Graphic3d_Vec4 (0.145f, 0.145f, 0.145f, 0.17f);
       BSDF.Normalize();
-      BSDF.Roughness = 0.17f;
       break;
     case Graphic3d_NOM_SATIN:
       Shininess                         = 0.09375f;
@@ -127,8 +125,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       ColorCoef[Graphic3d_TOR_SPECULAR] = 0.44f;
 
       BSDF.Kd = Graphic3d_Vec3 (0.2f);
-      BSDF.Ks = Graphic3d_Vec3 (0.6f);
-      BSDF.Roughness = 0.6f;
+      BSDF.Ks = Graphic3d_Vec4 (0.6f);
 
       break;
     case Graphic3d_NOM_NEON_GNC:
@@ -141,9 +138,9 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       ReflActivity[Graphic3d_TOR_EMISSION] = Standard_True;
 
       BSDF.Kd = Graphic3d_Vec3 (0.0f);
-      BSDF.Kr = Graphic3d_Vec3 (0.5f);
-      BSDF.Le = (Graphic3d_Vec3 )Colors[Graphic3d_TOR_DIFFUSE];
-      BSDF.Fresnel = Graphic3d_Fresnel::CreateDielectric (1.5f);
+      BSDF.Ks = Graphic3d_Vec4 (0.5f, 0.5f, 0.5f, 0.f);
+      BSDF.Le = static_cast<Graphic3d_Vec3> (Colors[Graphic3d_TOR_DIFFUSE]);
+      BSDF.FresnelBase = Graphic3d_Fresnel::CreateDielectric (1.5f);
       break;
     case Graphic3d_NOM_METALIZED:
       Shininess                         = 0.13f;
@@ -289,7 +286,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.98f, 1.0f, 0.60f));
 
       BSDF.Kd = Graphic3d_Vec3 (0.243137f, 0.243137f, 0.243137f);
-      BSDF.Ks = Graphic3d_Vec3 (0.00392157f, 0.00392157f, 0.00392157f);
+      BSDF.Ks = Graphic3d_Vec4 (0.00392157f, 0.00392157f, 0.00392157f, 0.5f);
 
       break;
     // Ascending Compatibility of physical materials. Takes the same definition as in the next constructor. New materials
@@ -341,9 +338,9 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f, 1.0f, 0.46f));
 
       BSDF.Kd = Graphic3d_Vec3 (0.0f);
-      BSDF.Kr = Graphic3d_Vec3 (0.5f);
+      BSDF.Ks = Graphic3d_Vec4 (0.5f, 0.5f, 0.5f, 0.f);
       BSDF.Le = Graphic3d_Vec3 (0.0f, 1.0f, 0.46f);
-      BSDF.Fresnel = Graphic3d_Fresnel::CreateDielectric (1.5f);
+      BSDF.FresnelBase = Graphic3d_Fresnel::CreateDielectric (1.5f);
       break;
     case Graphic3d_NOM_OBSIDIAN:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
@@ -358,8 +355,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.333f, 0.329f, 0.346f));
 
       BSDF.Kd = Graphic3d_Vec3 (0.023f, 0.f, 0.023f);
-      BSDF.Ks = Graphic3d_Vec3 (0.0156863f, 0.0156863f, 0.0156863f);
-      BSDF.Roughness = 0.1f;
+      BSDF.Ks = Graphic3d_Vec4 (0.0156863f, 0.0156863f, 0.0156863f, 0.1f);
       break;
     case Graphic3d_NOM_JADE:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
@@ -373,10 +369,9 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_DIFFUSE]  = Quantity_Color (Graphic3d_Vec3 (0.540f, 0.890f, 0.630f));
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.316f, 0.316f, 0.316f));
 
-      BSDF.Fresnel = Graphic3d_Fresnel::CreateDielectric (1.5f);
+      BSDF.FresnelBase = Graphic3d_Fresnel::CreateDielectric (1.5f);
       BSDF.Kd = Graphic3d_Vec3 (0.208658f, 0.415686f, 0.218401f);
-      BSDF.Ks = Graphic3d_Vec3 (0.611765f, 0.611765f, 0.611765f);
-      BSDF.Roughness = 0.06f;
+      BSDF.Ks = Graphic3d_Vec4 (0.611765f, 0.611765f, 0.611765f, 0.06f);
       break;
     case Graphic3d_NOM_CHARCOAL:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
@@ -391,8 +386,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.000f, 0.000f, 0.000f));
 
       BSDF.Kd = Graphic3d_Vec3 (0.02f, 0.02f, 0.02f);
-      BSDF.Ks = Graphic3d_Vec3 (0.1f, 0.1f, 0.1f);
-      BSDF.Roughness = 0.3f;
+      BSDF.Ks = Graphic3d_Vec4 (0.1f, 0.1f, 0.1f, 0.3f);
       break;
     case Graphic3d_NOM_WATER:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
@@ -460,7 +454,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
 
       BSDF.Kd = Graphic3d_Vec3 (0.1f);
       BSDF.Kt = Graphic3d_Vec3 (0.9f);
-      BSDF.Fresnel = Graphic3d_Fresnel::CreateConstant (0.0f);
+      BSDF.FresnelBase = Graphic3d_Fresnel::CreateConstant (0.0f);
       TransparencyCoef = 0.80f;
 
       Colors[Graphic3d_TOR_AMBIENT]  = Quantity_Color (Graphic3d_Vec3 (0.550f, 0.550f, 0.550f));

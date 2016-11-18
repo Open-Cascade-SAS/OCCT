@@ -27,7 +27,7 @@ Graphic3d_Vec4 Graphic3d_Fresnel::Serialize() const
 
   if (myFresnelType != Graphic3d_FM_SCHLICK)
   {
-    aData.x() = -static_cast<Standard_ShortReal> (myFresnelType);
+    aData.x() = -static_cast<float> (myFresnelType);
   }
 
   return aData;
@@ -37,8 +37,8 @@ Graphic3d_Vec4 Graphic3d_Fresnel::Serialize() const
 // function : fresnelNormal
 // purpose  :
 // =======================================================================
-inline Standard_ShortReal fresnelNormal (Standard_ShortReal theN,
-                                         Standard_ShortReal theK)
+inline float fresnelNormal (float theN,
+                            float theK)
 {
   return ((theN - 1.f) * (theN - 1.f) + theK * theK) /
          ((theN + 1.f) * (theN + 1.f) + theK * theK);
@@ -51,10 +51,37 @@ inline Standard_ShortReal fresnelNormal (Standard_ShortReal theN,
 Graphic3d_Fresnel Graphic3d_Fresnel::CreateConductor (const Graphic3d_Vec3& theRefractionIndex,
                                                       const Graphic3d_Vec3& theAbsorptionIndex)
 {
-  return Graphic3d_Fresnel (Graphic3d_FM_SCHLICK,
-    Graphic3d_Vec3 (fresnelNormal (theRefractionIndex.x(), theAbsorptionIndex.x()),
-                    fresnelNormal (theRefractionIndex.y(), theAbsorptionIndex.y()),
-                    fresnelNormal (theRefractionIndex.z(), theAbsorptionIndex.z())));
+  const Graphic3d_Vec3 aFresnel (fresnelNormal (theRefractionIndex.x(), theAbsorptionIndex.x()),
+                                 fresnelNormal (theRefractionIndex.y(), theAbsorptionIndex.y()),
+                                 fresnelNormal (theRefractionIndex.z(), theAbsorptionIndex.z()));
+
+  return Graphic3d_Fresnel (Graphic3d_FM_SCHLICK, aFresnel);
+}
+
+// =======================================================================
+// function : Graphic3d_BSDF
+// purpose  :
+// =======================================================================
+Graphic3d_BSDF::Graphic3d_BSDF()
+{
+  FresnelCoat = Graphic3d_Fresnel::CreateConstant (0.f);
+  FresnelBase = Graphic3d_Fresnel::CreateConstant (1.f);
+}
+
+// =======================================================================
+// function : operator==
+// purpose  :
+// =======================================================================
+bool Graphic3d_BSDF::operator== (const Graphic3d_BSDF& theOther) const
+{
+  return Kc          == theOther.Kc
+      && Kd          == theOther.Kd
+      && Kt          == theOther.Kt
+      && Ks          == theOther.Ks
+      && Le          == theOther.Le
+      && Absorption  == theOther.Absorption
+      && FresnelCoat == theOther.FresnelCoat
+      && FresnelBase == theOther.FresnelBase;
 }
 
 // =======================================================================
@@ -63,16 +90,21 @@ Graphic3d_Fresnel Graphic3d_Fresnel::CreateConductor (const Graphic3d_Vec3& theR
 // =======================================================================
 void Graphic3d_BSDF::Normalize()
 {
-  Standard_ShortReal aMax = std::max (Kd.x() + Ks.x() + Kr.x() + Kt.x(),
-                            std::max (Kd.y() + Ks.y() + Kr.y() + Kt.y(),
-                                      Kd.z() + Ks.z() + Kr.z() + Kt.z()));
+  float aMax = 0.f;
+
+  for (int aChannelID = 0; aChannelID < 3; ++aChannelID)
+  {
+    aMax = std::max (aMax, Kd[aChannelID] + Ks[aChannelID] + Kt[aChannelID]);
+  }
 
   if (aMax > 1.f)
   {
-    Kd /= aMax;
-    Ks /= aMax;
-    Kr /= aMax;
-    Ks /= aMax;
+    for (int aChannelID = 0; aChannelID < 3; ++aChannelID)
+    {
+      Kd[aChannelID] /= aMax;
+      Ks[aChannelID] /= aMax;
+      Kt[aChannelID] /= aMax;
+    }
   }
 }
 
@@ -93,26 +125,15 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateDiffuse (const Graphic3d_Vec3& theWeight)
 // function : CreateMetallic
 // purpose  :
 // =======================================================================
-Graphic3d_BSDF Graphic3d_BSDF::CreateMetallic (const Graphic3d_Vec3&    theWeight,
-                                               const Graphic3d_Fresnel& theFresnel,
-                                               const Standard_ShortReal theRoughness)
+Graphic3d_BSDF Graphic3d_BSDF::CreateMetallic (const Graphic3d_Vec3& theWeight, const Graphic3d_Fresnel& theFresnel, const float theRoughness)
 {
   Graphic3d_BSDF aBSDF;
 
-  aBSDF.Roughness = theRoughness;
+  aBSDF.FresnelBase = theFresnel;
 
   // Selecting between specular and glossy
   // BRDF depending on the given roughness
-  if (aBSDF.Roughness > 0.f)
-  {
-    aBSDF.Ks = theWeight;
-  }
-  else
-  {
-    aBSDF.Kr = theWeight;
-  }
-
-  aBSDF.Fresnel = theFresnel;
+  aBSDF.Ks = Graphic3d_Vec4 (theWeight, theRoughness);
 
   return aBSDF;
 }
@@ -121,18 +142,25 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateMetallic (const Graphic3d_Vec3&    theWeigh
 // function : CreateTransparent
 // purpose  :
 // =======================================================================
-Graphic3d_BSDF Graphic3d_BSDF::CreateTransparent (const Graphic3d_Vec3&    theWeight,
-                                                  const Graphic3d_Vec3&    theAbsorptionColor,
-                                                  const Standard_ShortReal theAbsorptionCoeff)
+Graphic3d_BSDF Graphic3d_BSDF::CreateTransparent (const Graphic3d_Vec3& theWeight,
+                                                  const Graphic3d_Vec3& theAbsorptionColor,
+                                                  const float           theAbsorptionCoeff)
 {
   Graphic3d_BSDF aBSDF;
 
+  // Create Fresnel parameters for the coat layer;
+  // set it to 0 value to simulate ideal refractor
+  aBSDF.FresnelCoat = Graphic3d_Fresnel::CreateConstant (0.f);
+
   aBSDF.Kt = theWeight;
 
-  aBSDF.AbsorptionColor = theAbsorptionColor;
-  aBSDF.AbsorptionCoeff = theAbsorptionCoeff;
+  // Link reflection and transmission coefficients
+  aBSDF.Kc.r() = aBSDF.Kt.r();
+  aBSDF.Kc.g() = aBSDF.Kt.g();
+  aBSDF.Kc.b() = aBSDF.Kt.b();
 
-  aBSDF.Fresnel = Graphic3d_Fresnel::CreateConstant (0.f);
+  aBSDF.Absorption = Graphic3d_Vec4 (theAbsorptionColor,
+                                     theAbsorptionCoeff);
 
   return aBSDF;
 }
@@ -141,19 +169,24 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateTransparent (const Graphic3d_Vec3&    theWe
 // function : CreateGlass
 // purpose  :
 // =======================================================================
-Graphic3d_BSDF Graphic3d_BSDF::CreateGlass (const Graphic3d_Vec3&    theWeight,
-                                            const Graphic3d_Vec3&    theAbsorptionColor,
-                                            const Standard_ShortReal theAbsorptionCoeff,
-                                            const Standard_ShortReal theRefractionIndex)
+Graphic3d_BSDF Graphic3d_BSDF::CreateGlass (const Graphic3d_Vec3& theWeight,
+                                            const Graphic3d_Vec3& theAbsorptionColor,
+                                            const float           theAbsorptionCoeff,
+                                            const float           theRefractionIndex)
 {
   Graphic3d_BSDF aBSDF;
 
+  // Create Fresnel parameters for the coat layer
+  aBSDF.FresnelCoat = Graphic3d_Fresnel::CreateDielectric (theRefractionIndex);
+
   aBSDF.Kt = theWeight;
 
-  aBSDF.AbsorptionColor = theAbsorptionColor;
-  aBSDF.AbsorptionCoeff = theAbsorptionCoeff;
+  aBSDF.Kc.r() = aBSDF.Kt.r();
+  aBSDF.Kc.g() = aBSDF.Kt.g();
+  aBSDF.Kc.b() = aBSDF.Kt.b();
 
-  aBSDF.Fresnel = Graphic3d_Fresnel::CreateDielectric (theRefractionIndex);
+  aBSDF.Absorption = Graphic3d_Vec4 (theAbsorptionColor,
+                                     theAbsorptionCoeff);
 
   return aBSDF;
 }

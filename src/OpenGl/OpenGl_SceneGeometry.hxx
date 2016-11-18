@@ -74,25 +74,28 @@ public:
   //! Physically-based material properties (used in path tracing engine).
   struct Physical
   {
-    //! Weight of the diffuse BRDF.
+    //! Weight of coat specular/glossy BRDF.
+    BVH_Vec4f Kc;
+
+    //! Weight of base diffuse BRDF.
     BVH_Vec4f Kd;
 
-    //! Weight of the reflection BRDF.
-    BVH_Vec4f Kr;
-
-    //! Weight of the transmission BTDF.
-    BVH_Vec4f Kt;
-
-    //! Weight of the Blinn's glossy BRDF.
+    //! Weight of base specular/glossy BRDF.
     BVH_Vec4f Ks;
 
-    //! Self-emitted radiance.
+    //! Weight of base specular/glossy BTDF.
+    BVH_Vec4f Kt;
+
+    //! Radiance emitted by the surface.
     BVH_Vec4f Le;
 
-    //! Fresnel coefficients.
-    BVH_Vec4f Fresnel;
+    //! Fresnel coefficients of coat layer.
+    BVH_Vec4f FresnelCoat;
 
-    //! Absorption color for the transmission BSDF.
+    //! Fresnel coefficients of base layer.
+    BVH_Vec4f FresnelBase;
+
+    //! Absorption color/intensity.
     BVH_Vec4f Absorption;
 
   } BSDF;

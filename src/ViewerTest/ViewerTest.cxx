@@ -5247,7 +5247,7 @@ static Standard_Integer vr(Draw_Interpretor& , Standard_Integer , const char** a
 //function : VBsdf
 //purpose  :
 //===============================================================================================
-static int VBsdf (Draw_Interpretor& theDi,
+static int VBsdf (Draw_Interpretor& theDI,
                   Standard_Integer  theArgsNb,
                   const char**      theArgVec)
 {
@@ -5263,28 +5263,45 @@ static int VBsdf (Draw_Interpretor& theDi,
   ViewerTest_CmdParser aCmd;
 
   aCmd.AddDescription ("Adjusts parameters of material BSDF:");
-  aCmd.AddOption ("print|echo|p", "Print BSDF");
 
-  aCmd.AddOption ("kd", "Weight of the Lambertian BRDF");
-  aCmd.AddOption ("kr", "Weight of the reflection BRDF");
-  aCmd.AddOption ("kt", "Weight of the transmission BTDF");
-  aCmd.AddOption ("ks", "Weight of the glossy Blinn BRDF");
-  aCmd.AddOption ("le", "Self-emitted radiance");
+  aCmd.AddOption ("print|echo|p", "Prints BSDF");
 
-  aCmd.AddOption ("fresnel|f", "Fresnel coefficients; Allowed fresnel formats are: Constant x, Schlick x y z, Dielectric x, Conductor x y");
+  aCmd.AddOption ("noupdate|update", "Suppresses viewer redraw call");
 
-  aCmd.AddOption ("roughness|r",    "Roughness of material (Blinn's exponent)");
-  aCmd.AddOption ("absorpCoeff|af", "Absorption coeff (only for transparent material)");
-  aCmd.AddOption ("absorpColor|ac", "Absorption color (only for transparent material)");
+  aCmd.AddOption ("kc", "Weight of coat specular/glossy BRDF");
+  aCmd.AddOption ("kd", "Weight of base diffuse BRDF");
+  aCmd.AddOption ("ks", "Weight of base specular/glossy BRDF");
+  aCmd.AddOption ("kt", "Weight of base specular/glossy BTDF");
+  aCmd.AddOption ("le", "Radiance emitted by surface");
 
-  aCmd.AddOption ("normalize|n", "Normalize BSDF coefficients");
+  aCmd.AddOption ("coatFresnel|cf", "Fresnel reflectance of coat layer. Allowed formats: Constant R, Schlick R G B, Dielectric N, Conductor N K");
+  aCmd.AddOption ("baseFresnel|bf", "Fresnel reflectance of base layer. Allowed formats: Constant R, Schlick R G B, Dielectric N, Conductor N K");
+
+  aCmd.AddOption ("coatRoughness|cr", "Roughness of coat glossy BRDF");
+  aCmd.AddOption ("baseRoughness|br", "Roughness of base glossy BRDF");
+
+  aCmd.AddOption ("absorpCoeff|af", "Absorption coeff of base transmission BTDF");
+  aCmd.AddOption ("absorpColor|ac", "Absorption color of base transmission BTDF");
+
+  aCmd.AddOption ("normalize|n", "Normalizes BSDF to ensure energy conservation");
 
   aCmd.Parse (theArgsNb, theArgVec);
 
   if (aCmd.HasOption ("help"))
   {
-    theDi.PrintHelp (theArgVec[0]);
+    theDI.PrintHelp (theArgVec[0]);
     return 0;
+  }
+
+  // check viewer update mode
+  ViewerTest_AutoUpdater anUpdateTool (ViewerTest::GetAISContext(), ViewerTest::CurrentView());
+
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
+  {
+    if (anUpdateTool.parseRedrawMode (theArgVec[anArgIter]))
+    {
+      break;
+    }
   }
 
   TCollection_AsciiString aName (aCmd.Arg ("", 0).c_str());
@@ -5303,62 +5320,92 @@ static int VBsdf (Draw_Interpretor& theDi,
 
   if (aCmd.HasOption ("print"))
   {
-    Graphic3d_Vec4 aFresnel = aBSDF.Fresnel.Serialize();
-
-    std::cout << "\n"
+    theDI << "\n"
+      << "Kc:               " << aBSDF.Kc.r() << ", " << aBSDF.Kc.g() << ", " << aBSDF.Kc.b() << "\n"
       << "Kd:               " << aBSDF.Kd.r() << ", " << aBSDF.Kd.g() << ", " << aBSDF.Kd.b() << "\n"
-      << "Kr:               " << aBSDF.Kr.r() << ", " << aBSDF.Kr.g() << ", " << aBSDF.Kr.b() << "\n"
-      << "Kt:               " << aBSDF.Kt.r() << ", " << aBSDF.Kt.g() << ", " << aBSDF.Kt.b() << "\n"
       << "Ks:               " << aBSDF.Ks.r() << ", " << aBSDF.Ks.g() << ", " << aBSDF.Ks.b() << "\n"
-      << "Le:               " << aBSDF.Le.r() << ", " << aBSDF.Le.g() << ", " << aBSDF.Le.b() << "\n"
-      << "Fresnel:          ";
+      << "Kt:               " << aBSDF.Kt.r() << ", " << aBSDF.Kt.g() << ", " << aBSDF.Kt.b() << "\n"
+      << "Le:               " << aBSDF.Le.r() << ", " << aBSDF.Le.g() << ", " << aBSDF.Le.b() << "\n";
 
-    if (aFresnel.x() >= 0.f)
+    for (int aLayerID = 0; aLayerID < 2; ++aLayerID)
     {
-      std::cout
-        << "|Schlick| " << aFresnel.x() << ", " << aFresnel.y() << ", " << aFresnel.z() << "\n";
-    }
-    else if (aFresnel.x() >= -1.5f)
-    {
-      std::cout
-        << "|Constant| " << aFresnel.z() << "\n";
-    }
-    else if (aFresnel.x() >= -2.5f)
-    {
-      std::cout
-        << "|Conductor| " << aFresnel.y() << ", " << aFresnel.z() << "\n";
-    }
-    else
-    {
-      std::cout
-        << "|Dielectric| " << aFresnel.y() << "\n";
+      const Graphic3d_Vec4 aFresnel = aLayerID < 1 ? aBSDF.FresnelCoat.Serialize()
+                                                   : aBSDF.FresnelBase.Serialize();
+
+      theDI << (aLayerID < 1 ? "Coat Fresnel:     "
+                             : "Base Fresnel:     ");
+
+      if (aFresnel.x() >= 0.f)
+      {
+        theDI << "Schlick " << "R = " << aFresnel.r() << ", "
+                            << "G = " << aFresnel.g() << ", "
+                            << "B = " << aFresnel.b() << "\n";
+      }
+      else if (aFresnel.x() >= -1.5f)
+      {
+        theDI << "Constant " << aFresnel.z() << "\n";
+      }
+      else if (aFresnel.x() >= -2.5f)
+      {
+        theDI << "Conductor " << "N = " << aFresnel.y() << ", "
+                              << "K = " << aFresnel.z() << "\n";
+      }
+      else
+      {
+        theDI << "Dielectric " << "N = " << aFresnel.y() << "\n";
+      }
     }
 
-
-    std::cout 
-      << "Roughness:        " << aBSDF.Roughness           << "\n"
-      << "Absorption coeff: " << aBSDF.AbsorptionCoeff     << "\n"
-      << "Absorption color: " << aBSDF.AbsorptionColor.r() << ", "
-                              << aBSDF.AbsorptionColor.g() << ", "
-                              << aBSDF.AbsorptionColor.b() << "\n";
+    theDI << "Coat roughness:   " << aBSDF.Kc.w() << "\n"
+          << "Base roughness:   " << aBSDF.Ks.w() << "\n"
+          << "Absorption coeff: " << aBSDF.Absorption.w() << "\n"
+          << "Absorption color: " << aBSDF.Absorption.r() << ", "
+                                  << aBSDF.Absorption.g() << ", "
+                                  << aBSDF.Absorption.b() << "\n";
 
     return 0;
   }
 
-  if (aCmd.HasOption ("roughness", 1, Standard_True))
+  if (aCmd.HasOption ("coatRoughness", 1, Standard_True))
   {
-    aCmd.Arg ("roughness", 0);
-    aBSDF.Roughness = aCmd.ArgFloat ("roughness");
+    aBSDF.Kc.w() = aCmd.ArgFloat ("coatRoughness");
+  }
+
+  if (aCmd.HasOption ("baseRoughness", 1, Standard_True))
+  {
+    aBSDF.Ks.w () = aCmd.ArgFloat ("baseRoughness");
   }
 
   if (aCmd.HasOption ("absorpCoeff", 1, Standard_True))
   {
-    aBSDF.AbsorptionCoeff = aCmd.ArgFloat ("absorpCoeff");
+    aBSDF.Absorption.w() = aCmd.ArgFloat ("absorpCoeff");
   }
 
   if (aCmd.HasOption ("absorpColor", 3, Standard_True))
   {
-    aBSDF.AbsorptionColor = aCmd.ArgVec3f ("absorpColor");
+    const Graphic3d_Vec3 aRGB = aCmd.ArgVec3f ("absorpColor");
+
+    aBSDF.Absorption.r() = aRGB.r();
+    aBSDF.Absorption.g() = aRGB.g();
+    aBSDF.Absorption.b() = aRGB.b();
+  }
+
+  if (aCmd.HasOption ("kc", 3) || aCmd.HasOption ("kc", 1, Standard_True))
+  {
+    Graphic3d_Vec3 aKc;
+
+    if (aCmd.HasOption ("kc", 3))
+    {
+      aKc = aCmd.ArgVec3f ("kc");
+    }
+    else
+    {
+      aKc = Graphic3d_Vec3 (aCmd.ArgFloat ("kc"));
+    }
+
+    aBSDF.Kc.r() = aKc.r();
+    aBSDF.Kc.g() = aKc.g();
+    aBSDF.Kc.b() = aKc.b();
   }
 
   if (aCmd.HasOption ("kd", 3))
@@ -5370,13 +5417,22 @@ static int VBsdf (Draw_Interpretor& theDi,
     aBSDF.Kd = Graphic3d_Vec3 (aCmd.ArgFloat ("kd"));
   }
 
-  if (aCmd.HasOption ("kr", 3))
+  if (aCmd.HasOption ("ks", 3) || aCmd.HasOption ("ks", 1, Standard_True))
   {
-    aBSDF.Kr = aCmd.ArgVec3f ("kr");
-  }
-  else if (aCmd.HasOption ("kr", 1, Standard_True))
-  {
-    aBSDF.Kr = Graphic3d_Vec3 (aCmd.ArgFloat ("kr"));
+    Graphic3d_Vec3 aKs;
+
+    if (aCmd.HasOption ("ks", 3))
+    {
+      aKs = aCmd.ArgVec3f ("ks");
+    }
+    else
+    {
+      aKs = Graphic3d_Vec3 (aCmd.ArgFloat ("ks"));
+    }
+
+    aBSDF.Ks.r() = aKs.r();
+    aBSDF.Ks.g() = aKs.g();
+    aBSDF.Ks.b() = aKs.b();
   }
 
   if (aCmd.HasOption ("kt", 3))
@@ -5386,15 +5442,6 @@ static int VBsdf (Draw_Interpretor& theDi,
   else if (aCmd.HasOption ("kt", 1, Standard_True))
   {
     aBSDF.Kt = Graphic3d_Vec3 (aCmd.ArgFloat ("kt"));
-  }
-
-  if (aCmd.HasOption ("ks", 3))
-  {
-    aBSDF.Ks = aCmd.ArgVec3f ("ks");
-  }
-  else if (aCmd.HasOption ("ks", 1, Standard_True))
-  {
-    aBSDF.Ks = Graphic3d_Vec3 (aCmd.ArgFloat ("ks"));
   }
 
   if (aCmd.HasOption ("le", 3))
@@ -5407,59 +5454,73 @@ static int VBsdf (Draw_Interpretor& theDi,
   }
 
   const std::string aFresnelErrorMessage =
-    "Error! Wrong Fresnel type. Allowed types are: Constant x, Schlick x y z, Dielectric x, Conductor x y.\n";
+    "Error! Wrong Fresnel type. Allowed types are: Constant F, Schlick R G B, Dielectric N, Conductor N K\n";
 
-  if (aCmd.HasOption ("fresnel", 4)) // Schlick: type, x, y ,z
+  for (int aLayerID = 0; aLayerID < 2; ++aLayerID)
   {
-    std::string aFresnelType = aCmd.Arg ("fresnel", 0);
-    std::transform (aFresnelType.begin(), aFresnelType.end(), aFresnelType.begin(), ::tolower);
+    const std::string aFresnel = aLayerID < 1 ? "baseFresnel"
+                                              : "coatFresnel";
 
-    if (aFresnelType == "schlick")
+    if (aCmd.HasOption (aFresnel, 4)) // Schlick: type R G B
     {
-      aBSDF.Fresnel = Graphic3d_Fresnel::CreateSchlick (
-        Graphic3d_Vec3 (static_cast<Standard_ShortReal> (Draw::Atof (aCmd.Arg ("fresnel", 1).c_str())),
-                        static_cast<Standard_ShortReal> (Draw::Atof (aCmd.Arg ("fresnel", 2).c_str())),
-                        static_cast<Standard_ShortReal> (Draw::Atof (aCmd.Arg ("fresnel", 3).c_str()))));
-    }
-    else
-    {
-      std::cout << aFresnelErrorMessage;
-    }
-  }
-  else if (aCmd.HasOption ("fresnel", 3)) // Conductor: type, x, y
-  {
-    std::string aFresnelType = aCmd.Arg ("fresnel", 0);
-    std::transform (aFresnelType.begin(), aFresnelType.end(), aFresnelType.begin(), ::tolower);
+      std::string aFresnelType = aCmd.Arg (aFresnel, 0);
+      std::transform (aFresnelType.begin (), aFresnelType.end (), aFresnelType.begin (), ::tolower);
 
-    if (aFresnelType == "conductor")
-    {
-      aBSDF.Fresnel = Graphic3d_Fresnel::CreateConductor (
-        static_cast<Standard_ShortReal> (Draw::Atof (aCmd.Arg ("fresnel", 1).c_str())),
-        static_cast<Standard_ShortReal> (Draw::Atof (aCmd.Arg ("fresnel", 2).c_str())));
-    }
-    else
-    {
-      std::cout << aFresnelErrorMessage;
-    }
-  }
-  else if (aCmd.HasOption ("fresnel", 2)) // Dielectric, Constant: type, x
-  {
-    std::string aFresnelType = aCmd.Arg ("fresnel", 0);
-    std::transform (aFresnelType.begin(), aFresnelType.end(), aFresnelType.begin(), ::tolower);
+      if (aFresnelType == "schlick")
+      {
+        Graphic3d_Vec3 aRGB (static_cast<float> (Draw::Atof (aCmd.Arg (aFresnel, 1).c_str())),
+                             static_cast<float> (Draw::Atof (aCmd.Arg (aFresnel, 2).c_str())),
+                             static_cast<float> (Draw::Atof (aCmd.Arg (aFresnel, 3).c_str())));
 
-    if (aFresnelType == "dielectric")
-    {
-      aBSDF.Fresnel = Graphic3d_Fresnel::CreateDielectric (
-        static_cast<Standard_ShortReal> (Draw::Atof (aCmd.Arg ("fresnel", 1).c_str())));
+        aRGB.r() = std::min (std::max (aRGB.r(), 0.f), 1.f);
+        aRGB.g() = std::min (std::max (aRGB.g(), 0.f), 1.f);
+        aRGB.b() = std::min (std::max (aRGB.b(), 0.f), 1.f);
+
+        (aLayerID < 1 ? aBSDF.FresnelBase : aBSDF.FresnelCoat) = Graphic3d_Fresnel::CreateSchlick (aRGB);
+      }
+      else
+      {
+        theDI << aFresnelErrorMessage.c_str() << "\n";
+      }
     }
-    else if (aFresnelType == "constant")
+    else if (aCmd.HasOption (aFresnel, 3)) // Conductor: type N K
     {
-      aBSDF.Fresnel = Graphic3d_Fresnel::CreateConstant (
-        static_cast<Standard_ShortReal> (Draw::Atof (aCmd.Arg ("fresnel", 1).c_str())));
+      std::string aFresnelType = aCmd.Arg (aFresnel, 0);
+      std::transform (aFresnelType.begin (), aFresnelType.end (), aFresnelType.begin (), ::tolower);
+
+      if (aFresnelType == "conductor")
+      {
+        const float aN = static_cast<float> (Draw::Atof (aCmd.Arg (aFresnel, 1).c_str()));
+        const float aK = static_cast<float> (Draw::Atof (aCmd.Arg (aFresnel, 2).c_str()));
+
+        (aLayerID < 1 ? aBSDF.FresnelBase : aBSDF.FresnelCoat) = Graphic3d_Fresnel::CreateConductor (aN, aK);
+      }
+      else
+      {
+        theDI << aFresnelErrorMessage.c_str() << "\n";
+      }
     }
-    else
+    else if (aCmd.HasOption (aFresnel, 2)) // Dielectric or Constant: type N|C
     {
-      std::cout << aFresnelErrorMessage;
+      std::string aFresnelType = aCmd.Arg (aFresnel, 0);
+      std::transform (aFresnelType.begin (), aFresnelType.end (), aFresnelType.begin (), ::tolower);
+
+      if (aFresnelType == "constant")
+      {
+        const float aR = static_cast<float> (Draw::Atof (aCmd.Arg (aFresnel, 1).c_str()));
+
+        (aLayerID < 1 ? aBSDF.FresnelBase : aBSDF.FresnelCoat) = Graphic3d_Fresnel::CreateConstant (aR);
+      }
+      else if (aFresnelType == "dielectric")
+      {
+        const float aN = static_cast<float> (Draw::Atof (aCmd.Arg (aFresnel, 1).c_str()));
+
+        (aLayerID < 1 ? aBSDF.FresnelBase : aBSDF.FresnelCoat) = Graphic3d_Fresnel::CreateDielectric (aN);
+      }
+      else
+      {
+        theDI << aFresnelErrorMessage.c_str() << "\n";
+      }
     }
   }
 
@@ -5470,8 +5531,6 @@ static int VBsdf (Draw_Interpretor& theDi,
 
   aMaterial.SetBSDF (aBSDF);
   anIObj->SetMaterial (aMaterial);
-
-  aView->Redraw();
 
   return 0;
 }

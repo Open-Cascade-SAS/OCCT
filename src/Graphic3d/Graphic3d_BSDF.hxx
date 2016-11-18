@@ -34,8 +34,7 @@ class Graphic3d_Fresnel
 public:
 
   //! Creates uninitialized Fresnel factor.
-  Graphic3d_Fresnel()
-  : myFresnelType (Graphic3d_FM_CONSTANT)
+  Graphic3d_Fresnel() : myFresnelType (Graphic3d_FM_CONSTANT)
   {
     // ideal specular reflector
     myFresnelData = Graphic3d_Vec3 (0.f, 1.f, 0.f);
@@ -111,36 +110,39 @@ private:
 //! for physically-based rendering (in path tracing engine). BSDF is represented as
 //! weighted mixture of basic BRDFs/BTDFs (Bidirectional Reflectance (Transmittance)
 //! Distribution Functions).
+//!
+//! NOTE: OCCT uses two-layer material model. We have base diffuse, glossy, or transmissive
+//! layer, covered by one glossy/specular coat. In the current model, the layers themselves
+//! have no thickness; they can simply reflect light or transmits it to the layer under it.
+//! We use actual BRDF model only for direct reflection by the coat layer. For transmission
+//! through this layer, we approximate it as a flat specular surface.
 class Graphic3d_BSDF
 {
 public:
 
-  //! Weight of the Lambertian BRDF.
+  //! Weight of coat specular/glossy BRDF.
+  Graphic3d_Vec4 Kc;
+
+  //! Weight of base diffuse BRDF.
   Graphic3d_Vec3 Kd;
 
-  //! Weight of the reflection BRDF.
-  Graphic3d_Vec3 Kr;
+  //! Weight of base specular/glossy BRDF.
+  Graphic3d_Vec4 Ks;
 
-  //! Weight of the transmission BTDF.
+  //! Weight of base specular/glossy BTDF.
   Graphic3d_Vec3 Kt;
 
-  //! Weight of the Blinn's glossy BRDF.
-  Graphic3d_Vec3 Ks;
-
-  //! Self-emitted radiance.
+  //! Radiance emitted by the surface.
   Graphic3d_Vec3 Le;
 
-  //! Parameters of Fresnel reflectance.
-  Graphic3d_Fresnel Fresnel;
+  //! Volume scattering color/density.
+  Graphic3d_Vec4 Absorption;
 
-  //! Roughness (exponent) of Blinn's BRDF.
-  Standard_ShortReal Roughness;
+  //! Parameters of Fresnel reflectance of coat layer.
+  Graphic3d_Fresnel FresnelCoat;
 
-  //! Absorption color of transparent media.
-  Graphic3d_Vec3 AbsorptionColor;
-
-  //! Absorption intensity of transparent media.
-  Standard_ShortReal AbsorptionCoeff;
+  //! Parameters of Fresnel reflectance of base layer.
+  Graphic3d_Fresnel FresnelBase;
 
 public:
 
@@ -170,39 +172,13 @@ public:
 public:
 
   //! Creates uninitialized BSDF.
-  Graphic3d_BSDF() : Roughness (1.f), AbsorptionCoeff (0.f)
-  {
-    Fresnel = Graphic3d_Fresnel::CreateConstant (1.f);
-  }
+  Standard_EXPORT Graphic3d_BSDF();
 
   //! Normalizes BSDF components.
   Standard_EXPORT void Normalize();
 
-  //! Performs mixing of two BSDFs.
-  Graphic3d_BSDF& operator+ (const Graphic3d_BSDF& theOther)
-  {
-    Kd += theOther.Kd;
-    Kr += theOther.Kr;
-    Kt += theOther.Kt;
-    Ks += theOther.Ks;
-    Le += theOther.Le;
-
-    return *this;
-  }
-
   //! Performs comparison of two BSDFs.
-  bool operator== (const Graphic3d_BSDF& theOther) const
-  {
-    return Kd              == theOther.Kd
-        && Kr              == theOther.Kr
-        && Kt              == theOther.Kt
-        && Ks              == theOther.Ks
-        && Le              == theOther.Le
-        && Fresnel         == theOther.Fresnel
-        && Roughness       == theOther.Roughness
-        && AbsorptionCoeff == theOther.AbsorptionCoeff
-        && AbsorptionColor == theOther.AbsorptionColor;
-  }
+  Standard_EXPORT bool operator== (const Graphic3d_BSDF& theOther) const;
 
 };
 

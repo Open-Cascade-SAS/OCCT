@@ -353,16 +353,16 @@ struct SSubTree
   ivec4 SubData;
 };
 
-#define MATERIAL_AMBN(index) (18 * index + 0)
-#define MATERIAL_DIFF(index) (18 * index + 1)
-#define MATERIAL_SPEC(index) (18 * index + 2)
-#define MATERIAL_EMIS(index) (18 * index + 3)
-#define MATERIAL_REFL(index) (18 * index + 4)
-#define MATERIAL_REFR(index) (18 * index + 5)
-#define MATERIAL_TRAN(index) (18 * index + 6)
-#define MATERIAL_TRS1(index) (18 * index + 7)
-#define MATERIAL_TRS2(index) (18 * index + 8)
-#define MATERIAL_TRS3(index) (18 * index + 9)
+#define MATERIAL_AMBN(index) (19 * index + 0)
+#define MATERIAL_DIFF(index) (19 * index + 1)
+#define MATERIAL_SPEC(index) (19 * index + 2)
+#define MATERIAL_EMIS(index) (19 * index + 3)
+#define MATERIAL_REFL(index) (19 * index + 4)
+#define MATERIAL_REFR(index) (19 * index + 5)
+#define MATERIAL_TRAN(index) (19 * index + 6)
+#define MATERIAL_TRS1(index) (19 * index + 7)
+#define MATERIAL_TRS2(index) (19 * index + 8)
+#define MATERIAL_TRS3(index) (19 * index + 9)
 
 #define TRS_OFFSET(treelet) treelet.SubData.x
 #define BVH_OFFSET(treelet) treelet.SubData.y

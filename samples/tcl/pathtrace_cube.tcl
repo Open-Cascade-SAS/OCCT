@@ -51,8 +51,8 @@ psphere s 0.2
 vdisplay     -noupdate s
 vlocation    -noupdate s -setLocation 0.21 0.3 0.2
 vsetmaterial -noupdate s glass
-vbsdf s -absorpcolor 0.8 0.8 1.0
-vbsdf s -absorpcoeff 6
+vbsdf s -absorpColor 0.8 0.8 1.0
+vbsdf s -absorpCoeff 6
 
 # setup first inner box
 box c 0.3 0.3 0.2
@@ -68,15 +68,15 @@ vdisplay     -noupdate g
 vlocation    -noupdate g -setLocation 0.7 0.25 0.2
 vlocation    -noupdate g -rotate 0 0 0 0 0 1 10
 vsetmaterial -noupdate g glass
-vbsdf g -absorpcolor 0.8 1.0 0.8
-vbsdf g -absorpcoeff 6
+vbsdf g -absorpColor 0.8 1.0 0.8
+vbsdf g -absorpCoeff 6
 
 # setup second inner sphere
 psphere r 0.1
 vdisplay -noupdate r
 vsetmaterial -noupdate r plastic
-vbsdf r -kd 0.5 0.9 0.3 -ks 0.0 -kr 0.3 -n
-vbsdf r -fresnel Constant 1.0
+vbsdf r -kd 0.5 0.9 0.3 -ks 0.3 -baseRoughness 0.0 -n
+vbsdf r -baseFresnel Constant 1.0
 vlocation r -setLocation 0.5 0.65 0.1
 
 puts "Trying path tracing mode..."

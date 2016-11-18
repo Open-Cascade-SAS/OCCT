@@ -407,16 +407,16 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial (const OpenGl_AspectFace*  
   // Serialize physically-based material properties
   const Graphic3d_BSDF& aBSDF = aSrcMat.BSDF();
 
-  theMaterial.BSDF.Le = BVH_Vec4f (aBSDF.Le,               0.f);
-  theMaterial.BSDF.Kd = BVH_Vec4f (aBSDF.Kd, -1.f /* no tex */);
-  theMaterial.BSDF.Kr = BVH_Vec4f (aBSDF.Kr,               0.f);
-  theMaterial.BSDF.Kt = BVH_Vec4f (aBSDF.Kt,               0.f);
-  theMaterial.BSDF.Ks = BVH_Vec4f (aBSDF.Ks,   aBSDF.Roughness);
+  theMaterial.BSDF.Kc = aBSDF.Kc;
+  theMaterial.BSDF.Ks = aBSDF.Ks;
+  theMaterial.BSDF.Kd = BVH_Vec4f (aBSDF.Kd, -1.f); // no texture
+  theMaterial.BSDF.Kt = BVH_Vec4f (aBSDF.Kt,  0.f);
+  theMaterial.BSDF.Le = BVH_Vec4f (aBSDF.Le,  0.f);
 
-  theMaterial.BSDF.Fresnel = aBSDF.Fresnel.Serialize();
+  theMaterial.BSDF.Absorption = aBSDF.Absorption;
 
-  theMaterial.BSDF.Absorption = BVH_Vec4f (aBSDF.AbsorptionColor,
-                                           aBSDF.AbsorptionCoeff);
+  theMaterial.BSDF.FresnelCoat = aBSDF.FresnelCoat.Serialize ();
+  theMaterial.BSDF.FresnelBase = aBSDF.FresnelBase.Serialize ();
 
   // Handle material textures
   if (theAspect->Aspect()->ToMapTexture())
@@ -2291,7 +2291,7 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
   if (myRaytraceGeometry.Materials.size() != 0)
   {
     aResult &= myRaytraceMaterialTexture->Init (theGlContext, 4,
-      GLsizei (myRaytraceGeometry.Materials.size() * 18), myRaytraceGeometry.Materials.front().Packed());
+      GLsizei (myRaytraceGeometry.Materials.size() * 19), myRaytraceGeometry.Materials.front().Packed());
 
     if (!aResult)
     {

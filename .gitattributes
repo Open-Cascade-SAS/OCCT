@@ -37,6 +37,9 @@
 *.vrml      eol=lf
 *.md        eol=lf
 *.natvis    eol=lf
+*.fs        eol=lf
+*.vs        eol=lf
+*.glsl      eol=lf
 FILES       eol=lf
 PACKAGES    eol=lf
 EXTERNLIB   eol=lf
