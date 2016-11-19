@@ -1038,7 +1038,7 @@ Flags *Graphic3d_TMF_PanPers* and *Graphic3d_TMF_FullPers* have been removed.
 Several transformation persistence methods in *PrsMgr_PresentableObject* have been marked deprecated.
 Transformation persistence should be defined using  *Graphic3d_TransformPers* constructor directly and passed by a handle, not value.
 
-@subsection_upgrade_710_selprops Dynamic highlight and selection properties
+@subsection upgrade_710_selprops Dynamic highlight and selection properties
 
 Release 7.1.0 introduces *Graphic3d_HighlightStyle* - an entity that allows flexible customization of highlighting parameters (such as highlighting method, color, and transparency). Therefore, the signatures of the following methods related to highlighting:
 - *AIS_InteractiveContext::Hilight()*;

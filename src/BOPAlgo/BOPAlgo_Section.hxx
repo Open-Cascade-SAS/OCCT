@@ -27,7 +27,7 @@ class TopoDS_Shape;
 
 
 
-//! The algorithm to build a Secton between the arguments.
+//! The algorithm to build a Section between the arguments.
 //! The Section consists of vertices and edges.
 //! The Section contains:
 //! 1. new vertices that are subjects of V/V, E/E, E/F, F/F interferences
