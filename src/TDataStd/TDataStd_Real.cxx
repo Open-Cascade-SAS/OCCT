@@ -80,7 +80,8 @@ Handle(TDataStd_Real) TDataStd_Real::Set (const TDF_Label&    L, const Standard_
 
 TDataStd_Real::TDataStd_Real ()
      : myValue     (RealFirst()),
-       myDimension (TDataStd_SCALAR)
+       myDimension (TDataStd_SCALAR), 
+       myID (GetID())
 {}
 
 
