@@ -127,7 +127,7 @@ static Standard_Integer OCC426 (Draw_Interpretor& di, Standard_Integer argc, con
     di << "fuse32 = BRepAlgo_Fuse(rs3, rs2)\n";
     di << "fuse321 = BRepAlgo_Fuse(fuse32, rs1)\n";
     fuse32 = BRepAlgo_Fuse(rs3, rs2);
-    fuse321 = BRepAlgo_Fuse(fuse32, rs1);
+    fuse321 = BRepAlgo_Fuse(rs1, fuse32);
   }
 
   //Give the mass claculation of the shpae "fuse321"
