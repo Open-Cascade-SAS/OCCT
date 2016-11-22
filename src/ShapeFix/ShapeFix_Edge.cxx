@@ -153,7 +153,13 @@ Standard_Boolean ShapeFix_Edge::FixAddPCurve (const TopoDS_Edge& edge,
 					      const Standard_Boolean isSeam,
 					      const Standard_Real prec)
 {
-  Handle(ShapeAnalysis_Surface) sas = new ShapeAnalysis_Surface (surface);
+  Handle(Geom_Surface) aTransSurf = surface;
+  if( !location.IsIdentity())
+  {
+    gp_Trsf aTrsf(location);
+    aTransSurf = Handle(Geom_Surface)::DownCast(surface->Transformed(aTrsf));
+  }
+  Handle(ShapeAnalysis_Surface) sas = new ShapeAnalysis_Surface (aTransSurf);
   return FixAddPCurve (edge, surface, location, isSeam, sas, prec);
 }
 
