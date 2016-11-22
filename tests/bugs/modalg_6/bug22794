@@ -6,7 +6,7 @@ puts ""
 # Boolean cut operation hangs computer
 ######################################################
 
-restore [locate_data_file bug22794a.brep] p
+restore [locate_data_file bug22793_Positive.brep] p
 restore [locate_data_file bug22794b.brep] v
 
 checkshape p

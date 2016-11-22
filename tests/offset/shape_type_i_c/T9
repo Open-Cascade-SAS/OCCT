@@ -1,4 +1,4 @@
-restore [locate_data_file bug26917_M2_trim27.brep] s
+restore [locate_data_file bug26917_M2_trim17.brep] s
 
 OFFSETSHAPE 5 {} $calcul $type
 
