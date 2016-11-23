@@ -614,7 +614,7 @@ The set of sensitive primitives, which correspond to a given mode, is stocked in
 
 Each selection mode is identified by an index. By convention, the default selection mode that allows us to grasp the interactive object in its entirety is mode *0*. However, it can be modified in the custom interactive objects using method <i>SelectMgr_SelectableObject::setGlobalSelMode()</i>.
 
-The calculation of selection primitives (or sensitive entities) is done by the intermediary of a virtual function, *ComputeSelection*. It should be implemented for each type of interactive object that is assumed to have different selection modes using the function *AIS_ConnectedInteractive::ComputeSelection*.  
+The calculation of selection primitives (or sensitive entities) is done in a virtual function *ComputeSelection*. It should be implemented for each type of interactive object that is assumed to have different selection modes using the function *AIS_InteractiveObject::ComputeSelection*.
 
 A detailed explanation of the mechanism and the manner of implementing this function has been given in @ref occt_visu_2_2 "Selection" chapter.
 
@@ -745,6 +745,95 @@ void  AIS_InteractiveContext::PolygonOffsets
 Standard_Boolean      AIS_InteractiveContext::HasPolygonOffsets
 	(const Handle(AIS_InteractiveObject) &anObj) 
 ~~~~~
+
+
+@subsubsection occt_visu_3_2_7 Object hierarchy
+
+Each *PrsMgr_PresentableObject* has a list of objects called *myChildren*.
+Any transformation of *PrsMgr_PresentableObject* is also applied to its children. This hierarchy does not propagate to *Graphic3d* level and below.
+
+*PrsMgr_PresentableObject* sends its combined (according to the hierarchy) transformation down to *Graphic3d_Structure*.
+
+The materials of structures are not affected by the hierarchy.
+
+Object hierarchy can be controlled by the following API calls:
+*	*PrsMgr_PresentableObject::AddChild*;
+*	*PrsMgr_PresentableObject::RemoveChild*.
+
+@subsubsection occt_visu_3_2_8 Instancing
+
+The conception of instancing operates the object hierarchy as follows:
+*	Instances are represented by separated *AIS* objects.
+*	Instances do not compute any presentations.
+
+Classes *AIS_ConnectedInteractive* and *AIS_MultipleConnectedInteractive* are used to implement this conception.
+
+*AIS_ConnectedInteractive* is an object instance, which reuses the geometry of the connected object but has its own transformation, material, visibility flag, etc. This connection is propagated down to *OpenGl* level, namely to *OpenGl_Structure*. *OpenGl_Structure* can be connected only to a single other structure.
+
+*AIS_ConnectedInteractive* can be referenced to any *AIS_Interactive* object in general. When it is referenced to another *AIS_ConnectedInteractive*, it just copies the reference.
+
+*AIS_MultipleConnectedInteractive* represents an assembly, which does not have its own presentation. The assemblies are able to participate in the object hierarchy and are intended to handle a grouped set of instanced objects. It behaves as a single object in terms of selection. It applies high level transformation to all sub-elements since it is located above in the hierarchy.
+
+All *AIS_MultipleConnectedInteractive* are able to have child assemblies. Deep copy of object instances tree is performed if one assembly is attached to another.
+
+Note that *AIS_ConnectedInteractive* cannot reference *AIS_MultipleConnectedInteractive*. *AIS_ConnectedInteractive* copies sensitive entities of the origin object for selection, unlike *AIS_MultipleConnectedInteractive* that re-uses the entities of the origin object.
+
+Instances can be controlled by the following DRAW commands:
+*	*vconnect* : Creates and displays *AIS_MultipleConnectedInteractive* object from input objects and location.
+*	*vconnectto* : Makes an instance of object with the given position.
+*	*vdisconnect* : Disconnects all objects from an assembly or disconnects an object by name or number.
+*	*vaddconnected* : Adds an object to the assembly.
+*	*vlistconnected* : Lists objects in the assembly.
+
+Have a look at the examples below:
+~~~~~
+pload ALL
+vinit
+psphere s 1
+vdisplay s
+vconnectto s2 3 0 0 s  # make instance
+vfit
+~~~~~
+
+See how proxy *OpenGl_Structure* is used to represent instance:
+
+@figure{/user_guides/visualization/images/visualization_image029.png}
+
+The original object does not have to be displayed in order to make instance. Also selection handles transformations of instances correctly:
+
+~~~~~
+pload ALL
+vinit
+psphere s 1
+psphere p 0.5
+vdisplay s             # p is not displayed
+vsetloc s -2 0 0
+vconnect x 3 0 0 s p   # make assembly
+vfit
+~~~~~
+
+@figure{/user_guides/visualization/images/visualization_image030.png}
+
+Here is the example of a more complex hierarchy involving sub-assemblies:
+
+~~~~~
+pload ALL
+vinit
+box b 1 1 1
+psphere s 0.5
+vdisplay b s
+vsetlocation s 0 2.5 0
+box d 0.5 0.5 3
+box d2 0.5 3 0.5
+vdisplay d d2
+
+vconnectto b1 -2 0 0 b
+vconnect z 2 0 0 b s
+vconnect z2 4 0 0 d d2
+vconnect z3 6 0 0 z z2
+vfit
+~~~~~
+
 
 @subsection occt_visu_3_3 Interactive Context 
 
@@ -1296,9 +1385,7 @@ And at maximum seven selection modes, depending on the shape complexity:
 
   * *AIS_Triangulation* is a simple interactive object for displaying  triangular mesh contained in *Poly_Triangulation* container. 
   * *AIS_ConnectedInteractive* is an Interactive Object connecting to  another interactive object reference, and located elsewhere in the viewer makes  it possible not to calculate presentation and selection, but to deduce them  from your object reference.  
-  * *AIS_ConnectedShape* is an object connected to interactive objects  having a shape; this class has the same decompositions as *AIS_Shape*. Furthermore, it allows a presentation of hidden parts, which are calculated  automatically from the shape of its reference.  
   * *AIS_MultipleConnectedInteractive* is an object connected to a list  of interactive objects (which can also be Connected objects. It does not  require memory hungry calculations of presentation) 
-  * *AIS_MultipleConnectedShape* is an interactive Object connected to  a list of interactive objects having a Shape <i>(AIS_Shape, AIS_ConnectedShape,  AIS_MultipleConnectedShape)</i>. The presentation of hidden parts is calculated  automatically.  
   * *AIS_TexturedShape* is an Interactive Object that supports texture  mapping. It is constructed as a usual AIS_Shape, but has additional methods  that allow to map a texture on it. 
   * *MeshVS_Mesh* is an Interactive Object that represents meshes, it  has a data source that provides geometrical information (nodes, elements) and  can be built up from the source data with a custom presentation builder. 
 
@@ -2419,40 +2506,43 @@ aViewer->SetZLayerSettings (anId, aSettings);
 
 Another application for Z-Layer feature is treating visual precision issues when displaying objects far from the World Center.
 The key problem with such objects is that visualization data is stored and manipulated with single precision floating-point numbers (32-bit).
-Single precision 32-bit floating-point number gives only 6-9 significant decimal digits precision,
-while double precision 64-bit number gives 15–17 significant decimal digits precision - sufficient enough for most applications.
+Single precision 32-bit floating-point numbers give only 6-9 significant decimal digits precision,
+while double precision 64-bit numbers give 15-17 significant decimal digits precision, which is sufficient enough for most applications.
 
-When moving Object far from the World Center, float number steadily eats precision.
-The camera Eye position adds leading decimal digits to overall Object transformation which discards smaller digits due to floating point number nature.
+When moving an Object far from the World Center, float number steadily eats precision.
+The camera Eye position adds leading decimal digits to the overall Object transformation, which discards smaller digits due to floating point number nature.
 For example, the object of size 0.0000123 moved to position 1000 has result transformation 1000.0000123,
 which overflows single precision floating point - considering the most optimistic scenario of 9 significant digits (but it is really not this case), the result number will be 1000.00001.
 
-The result of this imprecision are visual artifacts in 3D Viewer of two kinds:
+This imprecision results in visual artifacts of two kinds in the 3D Viewer:
 
 * Overall per-vertex Object distortion.
-  This happens when each vertex position have been defined within World Coordinate system.
-* Object is not distorted itself, but its position in the World is unstable and imprecise - object jumps during camera manipulations.
+  This happens when each vertex position has been defined within World Coordinate system.
+* The object itself is not distorted, but its position in the World is unstable and imprecise - the object jumps during camera manipulations.
   This happens when vertices have been defined within Local Coordinate system at the distance small enough to keep precision within single precision float,
   however Local Transformation applied to the Object is corrupted due to single precision float.
 
-The first issue can not be handled without switching entire presentation into double precision (for each vertex position).
+The first issue cannot be handled without switching the entire presentation into double precision (for each vertex position).
 However, visualization hardware is much faster using single precision float number rather than double precision - so this is not an option in most cases.
 The second issue, however, can be negated by applying special rendering tricks.
 
-So, to apply this feature in OCCT, application needs:
+So, to apply this feature in OCCT, the application :
 
-* Define Local Transformation for each object so that presentation data will fit into single precision float without distortion.
-* Spatially split the world into smaller areas/cells where single precision float will be sufficient.
+* Defines Local Transformation for each object to fit the presentation data into single precision float without distortion.
+* Spatially splits the world into smaller areas/cells where single precision float will be sufficient.
   The size of such cell might vary and depends on the precision required by application (e.g. how much user is able to zoom in camera within application).
-* Define more Z-Layer for each spatial cell containing any object.
-  Define the *Local Origin* property of the Z-Layer according to the center of the cell.
+* Defines a Z-Layer for each spatial cell containing any object.
+* Defines the Local Origin property of the Z-Layer according to the center of the cell.
+  
+~~~~~  
     Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (anId);
     aSettings.SetLocalOrigin (400.0, 0.0, 0.0);
-* Assign presentable object to the nearest Z-Layer.
+~~~~~	
+* Assigns a presentable object to the nearest Z-Layer.
 
-Note that *Local Origin* of the Layer is a rendering-only thing - everything outside will be still defined in the World Coordinate System,
+Note that Local Origin of the Layer is used only for rendering - everything outside will be still defined in the World Coordinate System,
 including Local Transformation of the Object and Detection results.
-E.g., while moving presentation between Z-layers with different Local Origin, the Object will be still left at the same place - only visualization quality will vary.
+E.g., while moving the presentation between Z-layers with different Local Origins, the Object will stay at the same place - only visualization quality will vary.
 
 @subsubsection occt_visu_4_4_16 Clipping planes
 
