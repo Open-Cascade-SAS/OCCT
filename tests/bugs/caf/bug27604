@@ -11,16 +11,18 @@ pload OCAF MODELING
 # just a big shape to fit in memory
 restore [locate_data_file $aBigShape] s
 
+file delete ${imagedir}/test.cbf
+
 # store it in the document
 NewDocument D BinOcaf
 SetShape D "0:2" s
-SaveAs D test.cbf
+SaveAs D ${imagedir}/test.cbf
 Close D
 
 # store the memory used before opening a document
 set aBefore [meminfo h]
 
-Open test.cbf DD
+Open ${imagedir}/test.cbf DD
 set aDocLoaded [meminfo h]
 set aBigDelta [expr $aDocLoaded - $aBefore]
 Close DD

@@ -23,11 +23,12 @@ vrotate 3 0 0
 vsetdispmode 1
 vdump $anImgDoc1
 
+file delete ${imagedir}/test.xbf
 StoreTriangulation 1
-SaveAs D test.xbf
+SaveAs D ${imagedir}/test.xbf
 Close D
 
-XOpen test.xbf D
+XOpen ${imagedir}/test.xbf D
 XShow D
 vsetdispmode 1
 vaxo
