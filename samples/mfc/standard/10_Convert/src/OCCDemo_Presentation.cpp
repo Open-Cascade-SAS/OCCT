@@ -39,7 +39,9 @@ Standard_Boolean OCCDemo_Presentation::WaitForInput (unsigned long aMilliSeconds
     MSG msg;
     if (::PeekMessage (&msg, NULL, 0, 0, PM_NOREMOVE))
     {
-      if (msg.message == WM_KEYUP)
+      if ( msg.message == WM_KEYUP ||
+           msg.message == WM_MOUSEFIRST ||
+           msg.message == WM_PAINT )
       {
         ::PeekMessage (&msg, NULL, 0, 0, PM_REMOVE);
         return WaitForInput (aMilliSeconds);
