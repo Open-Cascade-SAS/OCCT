@@ -1,0 +1,14 @@
+puts "========="
+puts "OCC26450"
+puts "========="
+puts ""
+###########################################
+# Boolean operation is running endless
+###########################################
+
+cpulimit 300
+
+restore [locate_data_file bug26450_a.brep] a
+restore [locate_data_file bug26450_b.brep] b
+
+bop a b
