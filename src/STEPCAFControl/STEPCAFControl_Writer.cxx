@@ -2050,12 +2050,14 @@ static Standard_Boolean FindPDSforDGT(const Interface_Graph &aGraph,
                                       Handle(StepShape_AdvancedFace) &AF,
                                       Handle(StepShape_EdgeCurve) &EC)
 {
+  if (ent.IsNull())
+    return Standard_False;
   if( !ent->IsKind(STANDARD_TYPE(StepShape_EdgeCurve)) && 
       !ent->IsKind(STANDARD_TYPE(StepShape_AdvancedFace)) ) 
     return Standard_False;
 
   AF = Handle(StepShape_AdvancedFace)::DownCast(ent);
-  if( ent->IsKind(STANDARD_TYPE(StepShape_EdgeCurve)) ) {
+  if( AF.IsNull() ) {
     EC = Handle(StepShape_EdgeCurve)::DownCast(ent);
     Interface_EntityIterator subs = aGraph.Sharings(EC);
     for(subs.Start(); subs.More() && AF.IsNull(); subs.Next()) {
@@ -3969,7 +3971,8 @@ static Standard_Boolean FindPDSforRI(const Interface_Graph &aGraph,
                                      Handle(StepRepr_ProductDefinitionShape) &PDS,
                                      Handle(StepRepr_RepresentationContext) &RC)
 {
-  if(!ent->IsKind(STANDARD_TYPE(StepRepr_RepresentationItem))) return Standard_False;
+  if(ent.IsNull() || !ent->IsKind(STANDARD_TYPE(StepRepr_RepresentationItem)))
+    return Standard_False;
   Interface_EntityIterator subs = aGraph.Sharings(ent);
   for(subs.Start(); subs.More() && PDS.IsNull(); subs.Next()) {
     Handle(StepShape_ShapeRepresentation) SR = 

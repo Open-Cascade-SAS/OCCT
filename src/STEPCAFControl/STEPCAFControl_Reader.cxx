@@ -955,6 +955,8 @@ Standard_Boolean STEPCAFControl_Reader::ReadColors (const Handle(XSControl_WorkS
           
           Handle(StepRepr_AssemblyComponentUsage) ACU = 
             Handle(StepRepr_AssemblyComponentUsage)::DownCast(aCharDef.ProductDefinitionRelationship());
+          if (ACU.IsNull())
+            continue;
           // PTV 10.02.2003 skip styled item that refer to SHUO
           if (ACU->IsKind(STANDARD_TYPE(StepRepr_SpecifiedHigherUsageOccurrence))) {
             isSkipSHUOstyle = Standard_True;
@@ -1775,6 +1777,8 @@ Standard_Boolean readPMIPresentation(const Handle(Standard_Transient)& thePresen
                                      Handle(TCollection_HAsciiString)& thePresentName, 
                                      Bnd_Box& theBox)
 {
+  if (thePresentEntity.IsNull())
+    return Standard_False;
   Handle(Transfer_TransientProcess) aTP = theTR->TransientProcess();
   Handle(StepVisual_AnnotationCurveOccurrence) anACO;
   NCollection_Vector<Handle(StepVisual_StyledItem)> anAnnotations;
@@ -1914,6 +1918,8 @@ Standard_Boolean readAnnotationPlane(const Handle(StepVisual_AnnotationPlane) th
     return Standard_False;
   gp_Ax2 aPlaneAxes;
   Handle(StepRepr_RepresentationItem) aPlaneItem = theAnnotationPlane->Item();
+  if (aPlaneItem.IsNull())
+    return Standard_False;
   Handle(StepGeom_Axis2Placement3d) aA2P3D;
   //retrieve axes from AnnotationPlane
   if (aPlaneItem->IsKind(STANDARD_TYPE(StepGeom_Plane))) {
@@ -1958,6 +1964,8 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
   const Handle(Standard_Transient) theGDT,
   const Handle(Standard_Transient)& theDimObject)
 {
+  if (theGDT.IsNull() || theDimObject.IsNull())
+    return;
   Handle(TCollection_HAsciiString) aPresentName;
   TopoDS_Compound aResAnnotation;
   Handle(Transfer_TransientProcess) aTP = theTR->TransientProcess();
@@ -2069,6 +2077,8 @@ void readConnectionPoints(const Handle(XSControl_TransferReader)& theTR,
   const Handle(Standard_Transient) theGDT,
   const Handle(XCAFDimTolObjects_DimensionObject)& theDimObject)
 {
+  if (theGDT.IsNull() || theDimObject.IsNull())
+    return;
   Handle(Transfer_TransientProcess) aTP = theTR->TransientProcess();
   const Interface_Graph& aGraph = aTP->Graph();
 
@@ -2643,6 +2653,8 @@ static void collectShapeAspect(const Handle(StepRepr_ShapeAspect)& theSA,
                                const Handle(XSControl_WorkSession)& theWS,
                                NCollection_Sequence<Handle(StepRepr_ShapeAspect)>& theSAs)
 {
+  if (theSA.IsNull())
+    return;
   Handle(XSControl_TransferReader) aTR = theWS->TransferReader();
   Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
   const Interface_Graph& aGraph = aTP->Graph();
@@ -3490,7 +3502,7 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
 static Standard_Boolean getTolType(const Handle(Standard_Transient)& theEnt,
                        XCAFDimTolObjects_GeomToleranceType& theType)
 {
-  if(!theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance))) 
+  if(theEnt.IsNull() || !theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance))) 
     return Standard_False;
   theType = XCAFDimTolObjects_GeomToleranceType_None;
   if (theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRef)))

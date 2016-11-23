@@ -67,10 +67,7 @@ void StepVisual_StyledItem::SetItem(const StepVisual_StyledItemTarget& theItem)
 
 Handle(StepRepr_RepresentationItem) StepVisual_StyledItem::Item() const
 {
-  if (myItem->IsKind(STANDARD_TYPE(StepRepr_RepresentationItem)))
-    return Handle(StepRepr_RepresentationItem)::DownCast(myItem);
-  else
-    return NULL;
+  return Handle(StepRepr_RepresentationItem)::DownCast(myItem);
 }
 
 StepVisual_StyledItemTarget StepVisual_StyledItem::ItemAP242() const
