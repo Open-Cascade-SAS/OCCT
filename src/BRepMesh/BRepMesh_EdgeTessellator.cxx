@@ -79,7 +79,7 @@ BRepMesh_EdgeTessellator::BRepMesh_EdgeTessellator(
   {
     // bug24220
     const Standard_Integer aNbInt = myCOnS.NbIntervals(GeomAbs_C1);
-    if ( aNbInt > 0 )
+    if ( aNbInt > 1 )
     {
       TColStd_Array1OfReal anIntervals( 1, aNbInt + 1 );
       myCOnS.Intervals(anIntervals, GeomAbs_C1);
