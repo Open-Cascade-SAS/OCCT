@@ -774,9 +774,57 @@ Standard_Boolean gp_Trsf::GetRotation (gp_XYZ&        theAxis,
 //=======================================================================
 //function : Orthogonalize
 //purpose  : 
+//ATTENTION!!!
+//      Orthogonalization is not equivalent transformation. Therefore, 
+//        transformation with source matrix and with orthogonalized matrix can
+//        lead to different results for one shape. Consequently, source matrix must
+//        be close to orthogonalized matrix for reducing these differences.
 //=======================================================================
 void gp_Trsf::Orthogonalize()
 {
+  //Matrix M is called orthogonal if and only if
+  //    M*Transpose(M) == E
+  //where E is identity matrix.
+
+  //Set of all rows (as of all columns) of matrix M (for gp_Trsf class) is
+  //orthonormal basis. If this condition is not satisfied then the basis can be
+  //orthonormalized in accordance with below described algorithm.
+
+  //In 3D-space, we have the linear span of three basis vectors: V1, V2 and V3.
+  //Correspond orthonormalized basis is formed by vectors Vn1, Vn2 and Vn3.
+
+  //In this case,
+  //    Vn_{i}*Vn_{j} = (i == j)? 1 : 0.
+
+  //The algorithm includes following steps:
+
+  //1. Normalize V1 vector:
+  //    V1n=V1/|V1|;
+  //
+  //2. Let
+  //    V2n=V2-m*V1n.
+  //    
+  //After multiplication two parts of this equation by V1n,
+  //we will have following equation:
+  //    0=V2*V1n-m <==> m=V2*V1n.
+  //    
+  //Consequently,
+  //    V2n=V2-(V2*V1n)*V1n.
+
+  //3. Let
+  //    V3n=V3-m1*V1n-m2*V2n.
+  //    
+  //After multiplication two parts of this equation by V1n,
+  //we will have following equation:
+  //    0=V3*V1n-m1 <==> m1=V3*V1n.
+  //    
+  //After multiplication two parts of main equation by V2n,
+  //we will have following equation:
+  //    0=V3*V2n-m2 <==> m2=V3*V2n.
+  //    
+  //In conclusion,
+  //    V3n=V3-(V3*V1n)*V1n-(V3*V2n)*V2n.
+
   gp_Mat aTM(matrix);
 
   gp_XYZ aV1 = aTM.Column(1);

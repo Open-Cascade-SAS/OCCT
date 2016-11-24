@@ -549,9 +549,17 @@ void gp_Trsf2d::SetValues(const Standard_Real a11,
 //=======================================================================
 //function : Orthogonalize
 //purpose  : 
+//ATTENTION!!!
+//      Orthogonalization is not equivalent transformation.Therefore, transformation with
+//        source matrix and with orthogonalized matrix can lead to different results for
+//        one shape. Consequently, source matrix must be close to orthogonalized 
+//        matrix for reducing these differences.
 //=======================================================================
 void gp_Trsf2d::Orthogonalize()
 {
+  //See correspond comment in gp_Trsf::Orthogonalize() method in order to make this
+  //algorithm clear.
+
   gp_Mat2d aTM(matrix);
 
   gp_XY aV1 = aTM.Column(1);

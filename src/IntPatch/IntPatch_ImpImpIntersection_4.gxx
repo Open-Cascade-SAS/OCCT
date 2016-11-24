@@ -47,6 +47,44 @@ static Standard_Boolean InscribePoint(const Standard_Real theUfTarget,
 
 class ComputationMethods
 {
+  //Every cylinder can be represented by the following equation in parametric form:
+  //    S(U,V) = L + R*cos(U)*Xd+R*sin(U)*Yd+V*Zd,
+  //where location L, directions Xd, Yd and Zd have type gp_XYZ.
+
+  //Intersection points between two cylinders can be found from the following system:
+  //    S1(U1, V1) = S2(U2, V2)
+  //or
+  //    {X01 + R1*cos(U1)*Xx1 + R1*sin(U1)*Yx1 + V1*Zx1 = X02 + R2*cos(U2)*Xx2 + R2*sin(U2)*Yx2 + V2*Zx2
+  //    {Y01 + R1*cos(U1)*Xy1 + R1*sin(U1)*Yy1 + V1*Zy1 = Y02 + R2*cos(U2)*Xy2 + R2*sin(U2)*Yy2 + V2*Zy2   (1)
+  //    {Z01 + R1*cos(U1)*Xz1 + R1*sin(U1)*Yz1 + V1*Zz1 = Z02 + R2*cos(U2)*Xz2 + R2*sin(U2)*Yz2 + V2*Zz2
+
+  //The formula (1) can be rewritten as follows
+  //    {C11*V1+C21*V2=A11*cos(U1)+B11*sin(U1)+A21*cos(U2)+B21*sin(U2)+D1
+  //    {C12*V1+C22*V2=A12*cos(U1)+B12*sin(U1)+A22*cos(U2)+B22*sin(U2)+D2                                   (2)
+  //    {C13*V1+C23*V2=A13*cos(U1)+B13*sin(U1)+A23*cos(U2)+B23*sin(U2)+D3
+
+  //Hereafter we consider that in system
+  //    {C11*V1+C21*V2=A11*cos(U1)+B11*sin(U1)+A21*cos(U2)+B21*sin(U2)+D1                                   (3)
+  //    {C12*V1+C22*V2=A12*cos(U1)+B12*sin(U1)+A22*cos(U2)+B22*sin(U2)+D2
+  //variables V1 and V2 can be found unambiguously, i.e. determinant
+  //            |C11 C21|
+  //            |       | != 0
+  //            |C12 C22|
+  //            
+  //In this case, variables V1 and V2 can be found as follows:
+  //    {V1 = K11*sin(U1)+K21*sin(U2)+L11*cos(U1)+L21*cos(U2)+M1 = K1*cos(U1-FIV1)+L1*cos(U2-PSIV1)+M1      (4)
+  //    {V2 = K12*sin(U1)+K22*sin(U2)+L12*cos(U1)+L22*cos(U2)+M2 = K2*cos(U2-FIV2)+L2*cos(U2-PSIV2)+M2
+
+  //Having substituted result of (4) to the 3rd equation of (2), we will obtain equation
+  //    cos(U2-FI2) = B*cos(U1-FI1)+C.                                                                      (5)
+
+  //I.e. when U1 is taken different given values (from domain), correspond U2 value can be computed
+  //from equation (5). After that, V1 and V2 can be computed from the system (4) (see
+  //CylCylComputeParameters(...) methods).
+
+  //It is important to remark that equation (5) (in general) has two solutions: U2=FI2 +/- f(U1).
+  //Therefore, we are getting here two intersection lines.
+
 public:
   //Stores equations coefficients
   struct stCoeffsValue
@@ -397,6 +435,10 @@ public:
 
 protected:
 
+  //Solves equation (2) (see declaration of ComputationMethods class) in case,
+  //when V1 or V2 (is set by theSBType argument) is known (corresponds to the boundary
+  //and equal to theVzad) but U1 is unknown. Computation is made by numeric methods and
+  //requires initial values (theVInit, theInitU2 and theInitMainVar).
   Standard_Boolean
               SearchOnVBounds(const SearchBoundType theSBType,
                               const Standard_Real theVzad,
@@ -459,7 +501,7 @@ static inline void MinMax(Standard_Real& theParMIN, Standard_Real& theParMAX)
 //=======================================================================
 //function : ExtremaLineLine
 //purpose  : Computes extrema between the given lines. Returns parameters
-//          on correspond curve. 
+//          on correspond curve (see correspond method for Extrema_ExtElC class). 
 //=======================================================================
 static inline void ExtremaLineLine(const gp_Ax1& theC1,
                                    const gp_Ax1& theC2,
@@ -481,8 +523,8 @@ static inline void ExtremaLineLine(const gp_Ax1& theC1,
 
 //=======================================================================
 //function : VBoundaryPrecise
-//purpose  : By default, we shall consider, that V1 and V2 will increase
-//            if U1 increases. But if it is not, new V1set and/or V2set
+//purpose  : By default, we shall consider, that V1 and V2 will be increased
+//            if U1 is increased. But if it is not, new V1set and/or V2set
 //            must be computed as [V1current - DeltaV1] (analogically
 //            for V2). This function processes this case.
 //=======================================================================
@@ -501,6 +543,11 @@ static void VBoundaryPrecise( const math_Matrix& theMatr,
   aSyst.SetCol(2, theMatr.Col(2));
   aSyst.SetCol(3, theMatr.Col(4));
 
+  //We have the system (see comment to StepComputing(...) function)
+  //    {a11*dV1 + a12*dV2 + a14*dU2 = -a13*dU1
+  //    {a21*dV1 + a22*dV2 + a24*dU2 = -a23*dU1
+  //    {a31*dV1 + a32*dV2 + a34*dU2 = -a33*dU1
+
   const Standard_Real aDet = aSyst.Determinant();
 
   aSyst.SetCol(1, theMatr.Col(3));
@@ -510,6 +557,16 @@ static void VBoundaryPrecise( const math_Matrix& theMatr,
   aSyst.SetCol(2, theMatr.Col(3));
 
   const Standard_Real aDet2 = aSyst.Determinant();
+
+  //Now,
+  //    dV1 = -dU1*aDet1/aDet
+  //    dV2 = -dU1*aDet2/aDet
+
+  //If U1 is increased then dU1 > 0.
+  //If (aDet1/aDet > 0) then dV1 < 0 and 
+  //V1 will be decreased after increasing U1.
+
+  //We have analogical situation with V2-parameter. 
 
   if(aDet*aDet1 > 0.0)
   {
@@ -834,7 +891,8 @@ void ProcessBounds(const Handle(IntPatch_ALine)& alig,          //-- ligne coura
 
 //=======================================================================
 //function : CyCyAnalyticalIntersect
-//purpose  : 
+//purpose  : Checks if intersection curve is analytical (line, circle, ellipse)
+//            and returns these curves.
 //=======================================================================
 Standard_Boolean CyCyAnalyticalIntersect( const IntSurf_Quadric& Quad1,
                                           const IntSurf_Quadric& Quad2,
@@ -1670,7 +1728,7 @@ Standard_Boolean InscribePoint( const Standard_Real theUfTarget,
 
 //=======================================================================
 //function : InscribeInterval
-//purpose  : Adjusts theUfGiven and after that fits theUlGiven to result
+//purpose  : Adjusts theUfGiven and (after that) adjusts theUlGiven to the result
 //=======================================================================
 static Standard_Boolean InscribeInterval(const Standard_Real theUfTarget,
                                       const Standard_Real theUlTarget,
@@ -1777,6 +1835,8 @@ static Standard_Boolean AddPointIntoWL( const IntSurf_Quadric& theQuad1,
                                         const Standard_Boolean theFlForce,
                                         const Standard_Boolean theFlBefore = Standard_False)
 {
+  //Check if the point is in the domain or can be inscribed in the domain after adjusting.
+  
   gp_Pnt  aPt1(theQuad1.Value(thePntOnSurf1.X(), thePntOnSurf1.Y())),
           aPt2(theQuad2.Value(thePntOnSurf2.X(), thePntOnSurf2.Y()));
 
@@ -1798,6 +1858,7 @@ static Standard_Boolean AddPointIntoWL( const IntSurf_Quadric& theQuad1,
   if((aV2par -  theVlSurf2 > theTol2D) || (theVfSurf2 - aV2par > theTol2D))
     return Standard_False;
   
+  //Get intersection point and add it in the WL
   IntSurf_PntOn2S aPnt;
   
   if(isTheReverse)
@@ -1882,6 +1943,7 @@ static Standard_Boolean AddPointIntoWL( const IntSurf_Quadric& theQuad1,
 
     if((1 < aDeltaStep) && (aDeltaStep < 2000))
     {
+      //Add new points in case of non-uniform distribution of existing points
       SeekAdditionalPoints( theQuad1, theQuad2, theLine, 
                             theCoeffs, theWLIndex, aDeltaStep, aNbPnts-2,
                             aNbPnts-1, theTol2D, thePeriodOfSurf1, isTheReverse);
@@ -1893,7 +1955,7 @@ static Standard_Boolean AddPointIntoWL( const IntSurf_Quadric& theQuad1,
 
 //=======================================================================
 //function : AddBoundaryPoint
-//purpose  : 
+//purpose  : Find intersection point on V-boundary.
 //=======================================================================
 void WorkWithBoundaries::AddBoundaryPoint(const Handle(IntPatch_WLine)& theWL,
                                           const Standard_Real theU1,
@@ -1944,6 +2006,10 @@ void WorkWithBoundaries::AddBoundaryPoint(const Handle(IntPatch_WLine)& theWL,
         continue;
       }
 
+      //Segment [aVf, aVl] intersects at least one V-boundary (first or last)
+      // (in general, case is possible, when aVf > aVl).
+
+      // Precise intersection point
       const Standard_Boolean aRes = SearchOnVBounds(aTS, anArrVzad[anIndex],
                                                     (anIDSurf == 0) ? theV2 : theV1,
                                                     theU2, theU1,
@@ -1951,11 +2017,14 @@ void WorkWithBoundaries::AddBoundaryPoint(const Handle(IntPatch_WLine)& theWL,
 
       if(!aRes || aUVPoint[anIndex].myU1 >= theU1)
       {
+        //Intersection point is not found or out of the domain
         aUVPoint[anIndex].myU1 = RealLast();
         continue;
       }
       else
       {
+        //intersection point is found
+
         Standard_Real &aU1 = aUVPoint[anIndex].myU1,
                       &aU2 = aUVPoint[anIndex].myU2,
                       &aV1 = aUVPoint[anIndex].myV1,
@@ -1967,10 +2036,12 @@ void WorkWithBoundaries::AddBoundaryPoint(const Handle(IntPatch_WLine)& theWL,
         if(!ComputationMethods::
                   CylCylComputeParameters(aU1, theWLIndex, myCoeffs, aU2, aV1, aV2))
         {
+          // Found point is wrong
           aU1 = RealLast();
           continue;
         }
 
+        //Point on true V-boundary.
         if(aTS == SearchV1)
           aV1 = anArrVzad[anIndex];
         else //if(aTS[anIndex] == SearchV2)
@@ -1979,10 +2050,12 @@ void WorkWithBoundaries::AddBoundaryPoint(const Handle(IntPatch_WLine)& theWL,
     }
   }
 
+  // Sort with acceding U1-parameter.
   std::sort(aUVPoint, aUVPoint+aSize);
     
   isTheFound1 = isTheFound2 = Standard_False;
 
+  //Adding found points on boundary in the WLine.
   for(Standard_Integer i = 0; i < aSize; i++)
   {
     if(aUVPoint[i].myU1 == RealLast())
@@ -2011,7 +2084,10 @@ void WorkWithBoundaries::AddBoundaryPoint(const Handle(IntPatch_WLine)& theWL,
 
 //=======================================================================
 //function : SeekAdditionalPoints
-//purpose  : 
+//purpose  : Inserts additional intersection points between neighbor points.
+//            This action is bone with several iterations. During every iteration,
+//          new point is inserted in middle of every interval.
+//            The process will be finished if NbPoints >= theMinNbPoints.
 //=======================================================================
 static void SeekAdditionalPoints( const IntSurf_Quadric& theQuad1,
                                   const IntSurf_Quadric& theQuad2,
@@ -2145,20 +2221,38 @@ static void SeekAdditionalPoints( const IntSurf_Quadric& theQuad1,
 Standard_Boolean WorkWithBoundaries::BoundariesComputing(Standard_Real theU1f[],
                                                          Standard_Real theU1l[]) const
 {
+  //All comments to this method is related to the comment
+  //to ComputationMethods class
+  
+  //So, we have the equation
+  //    cos(U2-FI2)=B*cos(U1-FI1)+C
+  //Evidently,
+  //    -1 <= B*cos(U1-FI1)+C <= 1
+
   if(myCoeffs.mB > 0.0)
   {
+    // -(1+C)/B <= cos(U1-FI1) <= (1-C)/B
+
     if(myCoeffs.mB + Abs(myCoeffs.mC) < -1.0)
-    {//There is NOT intersection
+    {
+      //(1-C)/B < -1 or -(1+C)/B > 1  ==> No solution
+      
       return Standard_False;
     }
     else if(myCoeffs.mB + Abs(myCoeffs.mC) <= 1.0)
-    {//U=[0;2*PI]+aFI1
+    {
+      //(1-C)/B >= 1 and -(1+C)/B <= -1 ==> U=[0;2*PI]+aFI1
+
       theU1f[0] = myCoeffs.mFI1;
       theU1l[0] = myPeriod + myCoeffs.mFI1;
     }
     else if((1 + myCoeffs.mC <= myCoeffs.mB) &&
             (myCoeffs.mB <= 1 - myCoeffs.mC))
     {
+      //(1-C)/B >= 1 and -(1+C)/B >= -1 ==> 
+      //(U=[0;aDAngle]+aFI1) || (U=[2*PI-aDAngle;2*PI]+aFI1),
+      //where aDAngle = acos(-(myCoeffs.mC + 1) / myCoeffs.mB)
+
       Standard_Real anArg = -(myCoeffs.mC + 1) / myCoeffs.mB;
       if(anArg > 1.0)
         anArg = 1.0;
@@ -2166,7 +2260,6 @@ Standard_Boolean WorkWithBoundaries::BoundariesComputing(Standard_Real theU1f[],
         anArg = -1.0;
 
       const Standard_Real aDAngle = acos(anArg);
-      //(U=[0;aDAngle]+aFI1) || (U=[2*PI-aDAngle;2*PI]+aFI1)
       theU1f[0] = myCoeffs.mFI1;
       theU1l[0] = aDAngle + myCoeffs.mFI1;
       theU1f[1] = myPeriod - aDAngle + myCoeffs.mFI1;
@@ -2175,6 +2268,9 @@ Standard_Boolean WorkWithBoundaries::BoundariesComputing(Standard_Real theU1f[],
     else if((1 - myCoeffs.mC <= myCoeffs.mB) &&
             (myCoeffs.mB <= 1 + myCoeffs.mC))
     {
+      //(1-C)/B <= 1 and -(1+C)/B <= -1 ==> U=[aDAngle;2*PI-aDAngle]+aFI1
+      //where aDAngle = acos((1 - myCoeffs.mC) / myCoeffs.mB)
+
       Standard_Real anArg = (1 - myCoeffs.mC) / myCoeffs.mB;
       if(anArg > 1.0)
         anArg = 1.0;
@@ -2182,13 +2278,17 @@ Standard_Boolean WorkWithBoundaries::BoundariesComputing(Standard_Real theU1f[],
         anArg = -1.0;
 
       const Standard_Real aDAngle = acos(anArg);
-      //U=[aDAngle;2*PI-aDAngle]+aFI1
-
       theU1f[0] = aDAngle + myCoeffs.mFI1;
       theU1l[0] = myPeriod - aDAngle + myCoeffs.mFI1;
     }
     else if(myCoeffs.mB - Abs(myCoeffs.mC) >= 1.0)
     {
+      //(1-C)/B <= 1 and -(1+C)/B >= -1 ==>
+      //(U=[aDAngle1;aDAngle2]+aFI1) ||
+      //(U=[2*PI-aDAngle2;2*PI-aDAngle1]+aFI1)
+      //where aDAngle1 = acos((1 - myCoeffs.mC) / myCoeffs.mB),
+      //      aDAngle2 = acos(-(myCoeffs.mC + 1) / myCoeffs.mB).
+
       Standard_Real anArg1 = (1 - myCoeffs.mC) / myCoeffs.mB,
                     anArg2 = -(myCoeffs.mC + 1) / myCoeffs.mB;
       if(anArg1 > 1.0)
@@ -2217,18 +2317,27 @@ Standard_Boolean WorkWithBoundaries::BoundariesComputing(Standard_Real theU1f[],
   }
   else if(myCoeffs.mB < 0.0)
   {
+    // (1-C)/B <= cos(U1-FI1) <= -(1+C)/B
+
     if(myCoeffs.mB + Abs(myCoeffs.mC) > 1.0)
-    {//There is NOT intersection
+    {
+      // -(1+C)/B < -1 or (1-C)/B > 1 ==> No solutions
       return Standard_False;
     }
     else if(-myCoeffs.mB + Abs(myCoeffs.mC) <= 1.0)
-    {//U=[0;2*PI]+aFI1
+    {
+      //  -(1+C)/B >= 1 and (1-C)/B <= -1 ==> U=[0;2*PI]+aFI1
+      
       theU1f[0] = myCoeffs.mFI1;
       theU1l[0] = myPeriod + myCoeffs.mFI1;
     }
     else if((-myCoeffs.mC - 1 <= myCoeffs.mB) &&
             ( myCoeffs.mB <= myCoeffs.mC - 1))
     {
+      //  -(1+C)/B >= 1 and (1-C)/B >= -1 ==> 
+      //(U=[0;aDAngle]+aFI1) || (U=[2*PI-aDAngle;2*PI]+aFI1),
+      //where aDAngle = acos((1 - myCoeffs.mC) / myCoeffs.mB)
+
       Standard_Real anArg = (1 - myCoeffs.mC) / myCoeffs.mB;
       if(anArg > 1.0)
         anArg = 1.0;
@@ -2236,8 +2345,6 @@ Standard_Boolean WorkWithBoundaries::BoundariesComputing(Standard_Real theU1f[],
         anArg = -1.0;
 
       const Standard_Real aDAngle = acos(anArg);
-      //(U=[0;aDAngle]+aFI1) || (U=[2*PI-aDAngle;2*PI]+aFI1)
-
       theU1f[0] = myCoeffs.mFI1;
       theU1l[0] = aDAngle + myCoeffs.mFI1;
       theU1f[1] = myPeriod - aDAngle + myCoeffs.mFI1;
@@ -2246,6 +2353,9 @@ Standard_Boolean WorkWithBoundaries::BoundariesComputing(Standard_Real theU1f[],
     else if((myCoeffs.mC - 1 <= myCoeffs.mB) &&
             (myCoeffs.mB <= -myCoeffs.mB - 1))
     {
+      //  -(1+C)/B <= 1 and (1-C)/B <= -1 ==> U=[aDAngle;2*PI-aDAngle]+aFI1,
+      //where aDAngle = acos(-(myCoeffs.mC + 1) / myCoeffs.mB).
+
       Standard_Real anArg = -(myCoeffs.mC + 1) / myCoeffs.mB;
       if(anArg > 1.0)
         anArg = 1.0;
@@ -2253,13 +2363,16 @@ Standard_Boolean WorkWithBoundaries::BoundariesComputing(Standard_Real theU1f[],
         anArg = -1.0;
 
       const Standard_Real aDAngle = acos(anArg);
-      //U=[aDAngle;2*PI-aDAngle]+aFI1
-
       theU1f[0] = aDAngle + myCoeffs.mFI1;
       theU1l[0] = myPeriod - aDAngle + myCoeffs.mFI1;
     }
     else if(-myCoeffs.mB - Abs(myCoeffs.mC) >= 1.0)
     {
+      //  -(1+C)/B <= 1 and (1-C)/B >= -1 ==>
+      //(U=[aDAngle1;aDAngle2]+aFI1) || (U=[2*PI-aDAngle2;2*PI-aDAngle1]+aFI1),
+      //where aDAngle1 = acos(-(myCoeffs.mC + 1) / myCoeffs.mB),
+      //      aDAngle2 = acos((1 - myCoeffs.mC) / myCoeffs.mB)
+
       Standard_Real anArg1 = -(myCoeffs.mC + 1) / myCoeffs.mB,
                     anArg2 = (1 - myCoeffs.mC) / myCoeffs.mB;
       if(anArg1 > 1.0)
@@ -2273,9 +2386,6 @@ Standard_Boolean WorkWithBoundaries::BoundariesComputing(Standard_Real theU1f[],
         anArg2 = -1.0;
 
       const Standard_Real aDAngle1 = acos(anArg1), aDAngle2 = acos(anArg2);
-      //(U=[aDAngle1;aDAngle2]+aFI1) ||
-      //(U=[2*PI-aDAngle2;2*PI-aDAngle1]+aFI1)
-
       theU1f[0] = aDAngle1 + myCoeffs.mFI1;
       theU1l[0] = aDAngle2 + myCoeffs.mFI1;
       theU1f[1] = myPeriod - aDAngle2 + myCoeffs.mFI1;
@@ -2528,6 +2638,8 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
     }
   }
   
+  //Here, intersection line is not an analytical curve(line, circle, ellipsis etc.)
+
   Standard_Real aUSurf1f = 0.0, //const
                 aUSurf1l = 0.0,
                 aVSurf1f = 0.0,
@@ -2576,13 +2688,19 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
       return IntPatch_ImpImpIntersection::IntStatus_InfiniteSectionCurve;
   }
 
-  //Boundaries
+  //Boundaries (it is good idea to use Bnd_Range in the future, instead of aU1f and aU1l)
+  //Intersection result can include two non-connected regions
+  //(see WorkWithBoundaries::BoundariesComputing(...) method).
   const Standard_Integer aNbOfBoundaries = 2;
   Standard_Real aU1f[aNbOfBoundaries] = {-Precision::Infinite(), -Precision::Infinite()};
   Standard_Real aU1l[aNbOfBoundaries] = {Precision::Infinite(), Precision::Infinite()};
 
   if(!aBoundWork.BoundariesComputing(aU1f, aU1l))
     return IntPatch_ImpImpIntersection::IntStatus_OK;
+
+  //The main idea of the algorithm is to change U1-parameter
+  //(U-parameter of aCyl1) from aU1f to aU1l with some step
+  //(step is adaptive) and to obtain set of intersection points.
 
   for(Standard_Integer i = 0; i < aNbOfBoundaries; i++)
   {
@@ -2606,7 +2724,14 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
     }
   }
 
-  //Critical points
+  //Critical points are the value of U1-parameter in the points
+  //where WL must be decomposed.
+
+  //When U1 goes through critical points its value is set up to this
+  //parameter forcefully and the intersection point is added in the line.
+  //After that, the WL is broken (next U1 value will be correspond to the new WL).
+
+  //See CriticalPointsComputing(...) function to get detail information about this array.
   const Standard_Integer aNbCritPointsMax = 12;
   Standard_Real anU1crit[aNbCritPointsMax] = {Precision::Infinite(),
                                               Precision::Infinite(),
@@ -2621,6 +2746,11 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
                                               Precision::Infinite(),
                                               Precision::Infinite()};
 
+  //This list of critical points is not full because it does not contain any points
+  //which intersection line goes through V-bounds of cylinders in.
+  //They are computed by numerical methods on - line (during algorithm working).
+  //The moment is caught, when intersection line goes through V-bounds of any cylinder.
+
   Standard_Integer aNbCritPoints = aNbCritPointsMax;
   CriticalPointsComputing(anEquationCoeffs, aUSurf1f, aUSurf1l, aUSurf2f, aUSurf2l,
                                       aPeriod, theTol2D, aNbCritPoints, anU1crit);
@@ -2629,13 +2759,19 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
 
   enum WLFStatus
   {
+    // No points have been added in WL
     WLFStatus_Absent = 0,
+    // WL contains at least one point
     WLFStatus_Exist  = 1,
+    // WL has been finished in some critical point
+    // We should start new line
     WLFStatus_Broken = 2
   };
 
   for(Standard_Integer aCurInterval = 0; aCurInterval < aNbOfBoundaries; aCurInterval++)
   {
+    //Process every continuous region
+
     if(Precision::IsInfinite(aU1f[aCurInterval]) && Precision::IsInfinite(aU1l[aCurInterval]))
       continue;
 
@@ -2656,6 +2792,10 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
 
     while(anUf < anUl)
     {
+      //Change value of U-parameter on the 1st surface from anUf to anUl
+      //(anUf will be modified in the cycle body).
+      //Step is computed adaptively (see comments below).
+
       Standard_Real aU2[aNbWLines], aV1[aNbWLines], aV2[aNbWLines];
       WLFStatus aWLFindStatus[aNbWLines];
       Standard_Real aV1Prev[aNbWLines], aV2Prev[aNbWLines];
@@ -2675,9 +2815,9 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
         anUexpect[i] = anUf;
       }
       
-      Standard_Real aCriticalDelta[aNbCritPointsMax] = {0};
+      Standard_Real aCriticalDelta[aNbCritPointsMax];
       for(Standard_Integer aCritPID = 0; aCritPID < aNbCritPoints; aCritPID++)
-      { //We are not intersted in elements of aCriticalDelta array
+      { //We are not interested in elements of aCriticalDelta array
         //if their index is greater than or equal to aNbCritPoints
 
         aCriticalDelta[aCritPID] = anUf - anU1crit[aCritPID];
@@ -2685,13 +2825,19 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
 
       Standard_Real anU1 = anUf;
       Standard_Boolean isFirst = Standard_True;
-
+      
       while(anU1 <= anUl)
       {
+        //Change value of U-parameter on the 1st surface from anUf to anUl
+        //(anUf will be modified in the cycle body). However, this cycle
+        //can be broken if WL goes though some critical point.
+        //Step is computed adaptively (see comments below).
+
         for(Standard_Integer i = 0; i < aNbCritPoints; i++)
         {
           if((anU1 - anU1crit[i])*aCriticalDelta[i] < 0.0)
           {
+            //WL has gone through i-th critical point
             anU1 = anU1crit[i];
 
             for(Standard_Integer j = 0; j < aNbWLines; j++)
@@ -2875,6 +3021,7 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
             }
           }
 
+          // True if the current point already in the domain
           const Standard_Boolean isInscribe = 
               ((aUSurf2f-aU2[i]) <= theTol2D) && ((aU2[i]-aUSurf2l) <= theTol2D) &&
               ((aVSurf1f - aV1[i]) <= theTol2D) && ((aV1[i] - aVSurf1l) <= theTol2D) &&
@@ -3048,6 +3195,11 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
 
           if(!isAdded)
           {
+            //Before breaking WL, we must complete it correctly
+            //(e.g. to prolong to the surface boundary).
+            //Therefore, we take the point last added in some WL
+            //(have maximal U1-parameter) and try to add it in
+            //the current WL.
             Standard_Real anUmaxAdded = RealFirst();
             
             {
@@ -3099,6 +3251,12 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
         //Step computing
 
         {
+          //Step of aU1-parameter is computed adaptively. The algorithm 
+          //aims to provide given aDeltaV1 and aDeltaV2 values (if it is 
+          //possible because the intersection line can go along V-isoline)
+          //in every iteration. It allows avoiding "flying" intersection
+          //points too far each from other (see issue #24915).
+
           const Standard_Real aDeltaV1 = aRangeS1.Delta()/IntToReal(aNbPoints),
                               aDeltaV2 = aRangeS2.Delta()/IntToReal(aNbPoints);
         
@@ -3134,6 +3292,22 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
             aMatr.SetCol(5, anEquationCoeffs.mVecA1*aCosU1 + anEquationCoeffs.mVecB1*aSinU1 +
                             anEquationCoeffs.mVecA2*aCosU2 + anEquationCoeffs.mVecB2*aSinU2 +
                             anEquationCoeffs.mVecD);
+
+            //The main idea is in solving of linearized system (2)
+            //(see description to ComputationMethods class) in order to find new U1-value
+            //to provide new value V1 or V2, which differs from current one by aDeltaV1 or
+            //aDeltaV2 respectively. 
+
+            //While linearizing, following Taylor formulas are used:
+            //    cos(x0+dx) = cos(x0) - sin(x0)*dx
+            //    sin(x0+dx) = sin(x0) + cos(x0)*dx
+
+            //Consequently cos(U1), cos(U2), sin(U1) and sin(U2) in the system (2)
+            //must be substituted by corresponding values.
+
+            //ATTENTION!!!
+            //The solution is approximate. More over, all requirements to the
+            //linearization must be satisfied in order to obtain quality result.
 
             if(!StepComputing(aMatr, aV1[i], aV2[i], aDeltaV1, aDeltaV2, aStepTmp))
             {
