@@ -3372,8 +3372,8 @@ void IntersectFaces(const TopTools_IndexedDataMapOfShapeListOfShape& theFToRebui
     // check also its vertices
     TopoDS_Iterator aItE(aE);
     for (; aItE.More(); aItE.Next()) {
-      const TopoDS_Shape& aV = aItE.Value();
-      if (aDMSF.Find(aV).Extent() > 2) {
+      const TopoDS_Shape& aVE = aItE.Value();
+      if (aDMSF.Find(aVE).Extent() > 2) {
         break;
       }
     }
