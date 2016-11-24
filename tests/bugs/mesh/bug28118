@@ -6,6 +6,8 @@ puts ""
 # Mesh generation hangs then crashes
 ###########################################
 
+pload DATAEXCHANGEKERNEL
+
 testreadstep [locate_data_file bug28118_18547.stp] result
 vclear
 vinit View1
@@ -23,5 +25,6 @@ if { $tri > 0 && $nod > 0 } {
   puts "OK: mesh was created correctly"
 } else {
   puts "Error: mesh was not built"
+}
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png
