@@ -470,7 +470,7 @@ void BRepGProp_Face::LKnots(TColStd_Array1OfReal& Knots) const
     break;
   case GeomAbs_Circle:
   case GeomAbs_Ellipse:
-    Knots(1) = 0.0;  Knots(2) = M_PI*2.0/3.0;  Knots(3) = M_PI*4.0/3.0;  Knots(2) = M_PI*6.0/3.0;
+    Knots(1) = 0.0;  Knots(2) = M_PI*2.0/3.0;  Knots(3) = M_PI*4.0/3.0;  Knots(4) = M_PI*6.0/3.0;
     break;
   case GeomAbs_Parabola:
   case GeomAbs_Hyperbola:

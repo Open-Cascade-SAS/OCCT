@@ -1,0 +1,16 @@
+puts "========="
+puts "OCC27033"
+puts "========="
+puts ""
+#############################################################
+# Modeling -- ensure stable result of area calculation
+#############################################################
+
+pload XDE
+stepread [locate_data_file OCC11856.stp] a *
+
+for {set i 1} {$i < 100} {incr i} {
+  checkprops a_1 -s 647779 -eps 0.1
+}
+
+checkview -display a_1 -2d -path ${imagedir}/${test_image}.png
