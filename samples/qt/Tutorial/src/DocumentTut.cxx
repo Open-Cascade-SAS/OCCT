@@ -27,7 +27,8 @@ void DocumentTut::onMakeBottle()
     getContext()->SetMaterial(AISBottle,Graphic3d_NOM_GOLD);
     getContext()->SetDisplayMode(AISBottle,1,Standard_False);
     getContext()->Display(AISBottle, Standard_False);	
-    getContext()->SetCurrentObject(AISBottle,Standard_False);
+    const Handle(AIS_InteractiveObject)& anIOAISBottle = AISBottle;
+    getContext()->SetSelected(anIOAISBottle,Standard_False);
     emit selectionChanged();
     fitAll();
     QApplication::restoreOverrideCursor();

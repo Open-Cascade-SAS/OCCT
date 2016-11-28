@@ -1,0 +1,18 @@
+puts "===================================================================="
+puts "OCC28162: Draw Harness - eliminate usage of deprecated Local Context"
+puts "Select 1 edge"
+puts "===================================================================="
+
+vclear
+vinit
+
+box b 10 20 30
+vdisplay b
+vfit
+
+vselmode b 2 1
+vselect 10 10 100 380
+
+vrelation r -fix
+
+vdump $imagedir/${casename}.png

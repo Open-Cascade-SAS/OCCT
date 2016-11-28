@@ -1,0 +1,23 @@
+puts "===================================================================="
+puts "OCC28162: Draw Harness - eliminate usage of deprecated Local Context"
+puts "Select 2 edges"
+puts "===================================================================="
+
+vclear
+vinit
+
+box b -5 -10 -15 10 20 30
+vdisplay b
+vfit
+
+set shift 1
+
+# Create a parallel relation from 2 edges.
+vselmode b 2 1
+vselect 87 170
+vselect 165 170 $shift
+
+vrelation r -parallel
+vzoom 0.5
+
+vdump $imagedir/${casename}_edges.png

@@ -316,8 +316,8 @@ D->CommitCommand(); \n\
 void COcafDoc::OnModify() 
 {
 	// Get the selected interactive object
-	myAISContext->InitCurrent();
-	Handle(AIS_InteractiveObject) curAISObject = myAISContext->Current();
+	myAISContext->InitSelected();
+	Handle(AIS_InteractiveObject) curAISObject = myAISContext->SelectedInteractive();
 
 
 	// Get the main label of the selected object
@@ -678,17 +678,17 @@ D->CommitCommand(); \n\
 void COcafDoc::OnUpdateModify(CCmdUI* pCmdUI) 
 {
 	// Disable the "modify" button if there is no selected object or several selected objects 
-	myAISContext->InitCurrent();
-	if(myAISContext->NbCurrents()!=1)
+	myAISContext->InitSelected();
+	if(myAISContext->NbSelected()!=1)
 	{
 		pCmdUI->Enable(Standard_False);
 		return;
 	}
 
 	// Get the root label of the selected object using its TPrsStd_AISPresentation
-	myAISContext->InitCurrent();
+	myAISContext->InitSelected();
 	Handle(TPrsStd_AISPresentation) ObjectPrs = 
-		Handle(TPrsStd_AISPresentation)::DownCast(myAISContext->Current()->GetOwner());
+		Handle(TPrsStd_AISPresentation)::DownCast(myAISContext->SelectedInteractive()->GetOwner());
 	if (!ObjectPrs.IsNull()){
 		TDF_Label LabObject = ObjectPrs->Label();
 
@@ -815,10 +815,10 @@ void COcafDoc::OnObjectDelete()
 	D->NewCommand();
 
 	AIS_SequenceOfInteractive aSequence;
-	for(myAISContext->InitCurrent();
-      myAISContext->MoreCurrent();
-      myAISContext->NextCurrent())
-        aSequence.Append(myAISContext->Current());
+	for(myAISContext->InitSelected();
+      myAISContext->MoreSelected();
+      myAISContext->NextSelected())
+        aSequence.Append(myAISContext->SelectedInteractive());
 	
 	for(int iter=1;iter <=aSequence.Length();iter++)
 	{
@@ -860,8 +860,8 @@ void COcafDoc::OnObjectDelete()
  
  void COcafDoc::OnUpdateObjectDelete(CCmdUI* pCmdUI) 
  {
-     myAISContext->InitCurrent();
- 	pCmdUI->Enable (myAISContext->MoreCurrent());		
+     myAISContext->InitSelected();
+	pCmdUI->Enable (myAISContext->MoreSelected());
  }
  
  void COcafDoc::DisplayPrs()
@@ -1172,8 +1172,8 @@ void  COcafDoc::Popup(const Standard_Integer  x,
                                const Handle(V3d_View)& aView   ) 
 {
   Standard_Integer PopupMenuNumber=0;
- myAISContext->InitCurrent();
-  if (myAISContext->MoreCurrent())
+ myAISContext->InitSelected();
+  if (myAISContext->MoreSelected())
     PopupMenuNumber=1;
 
   CMenu menu;
@@ -1184,8 +1184,8 @@ void  COcafDoc::Popup(const Standard_Integer  x,
    if (PopupMenuNumber == 1) // more than 1 object.
   {
     bool OneOrMoreInShading = false;
-	for (myAISContext->InitCurrent();myAISContext->MoreCurrent ();myAISContext->NextCurrent ())
-    if (myAISContext->IsDisplayed(myAISContext->Current(),1)) OneOrMoreInShading=true;
+	for (myAISContext->InitSelected();myAISContext->MoreSelected ();myAISContext->NextSelected ())
+    if (myAISContext->IsDisplayed(myAISContext->SelectedInteractive(),1)) OneOrMoreInShading=true;
 	if(!OneOrMoreInShading)
    	pPopup->EnableMenuItem(5, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
    }

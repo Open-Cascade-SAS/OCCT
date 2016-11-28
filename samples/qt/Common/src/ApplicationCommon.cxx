@@ -544,11 +544,11 @@ void ApplicationCommonWindow::onSelectionChanged()
   int numSel = context->NbSelected();
   if ( numSel )
   {
-    for ( context->InitCurrent(); context->MoreCurrent(); context->NextCurrent() )
+    for ( context->InitSelected(); context->MoreSelected(); context->NextSelected() )
     {
-      if ( context->IsDisplayed( context->Current(), 1 ) )
+      if ( context->IsDisplayed( context->SelectedInteractive(), 1 ) )
         OneOrMoreInShading = true;
-      if ( context->IsDisplayed( context->Current(), 0 ) )
+      if ( context->IsDisplayed( context->SelectedInteractive(), 0 ) )
         OneOrMoreInWireframe = true;
     }
     myToolActions.at( ToolWireframeId )->setEnabled( OneOrMoreInShading );

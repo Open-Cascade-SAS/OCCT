@@ -86,8 +86,12 @@ static int BUC60569(Draw_Interpretor& di, Standard_Integer argc, const char ** a
 
   Handle(AIS_Shape) anAISShape = new AIS_Shape( theShape ); 
   myAISContext->Display( anAISShape, Standard_True );
+
+  Standard_DISABLE_DEPRECATION_WARNINGS
   myAISContext->OpenLocalContext(); 
   myAISContext->ActivateStandardMode(TopAbs_FACE);
+  Standard_ENABLE_DEPRECATION_WARNINGS
+
   return 0;
 }
 
@@ -111,8 +115,11 @@ static int BUC60614(Draw_Interpretor& di, Standard_Integer argc, const char ** a
   }
   Handle(AIS_Shape) anAISShape = new AIS_Shape( theShape ); 
   myAISContext->Display( anAISShape, Standard_True );
+
+  Standard_DISABLE_DEPRECATION_WARNINGS
   myAISContext->OpenLocalContext(); 
   myAISContext->ActivateStandardMode(TopAbs_COMPOUND);
+  Standard_ENABLE_DEPRECATION_WARNINGS
 //  myAISContext->ActivateStandardMode(TopAbs_SOLID);
 //  di.Eval("vfit");
 //  cout << "vfini" << endl;
@@ -340,8 +347,11 @@ static Standard_Integer BUC60574(Draw_Interpretor& di, Standard_Integer /*n*/, c
   TopLoc_Location aLoc(aTrsf); 
   myAISContext->SetLocation(atri,aLoc); 
   myAISContext->Display(atri,0,-1,Standard_True, Standard_True);
-  myAISContext->OpenLocalContext(Standard_False, 
-				 Standard_True,Standard_False,Standard_False); 
+
+  Standard_DISABLE_DEPRECATION_WARNINGS
+  myAISContext->OpenLocalContext(Standard_False, Standard_True, Standard_False, Standard_False);
+  Standard_ENABLE_DEPRECATION_WARNINGS
+
   myAISContext->Load(atri,3,Standard_True);
 
   return 0;
@@ -356,39 +366,6 @@ static Standard_Integer BUC60574(Draw_Interpretor& di, Standard_Integer /*n*/, c
 
 #include <V3d_View.hxx>
 #include <gce_MakePln.hxx>
-
-static Standard_Integer BUC60699(Draw_Interpretor& di, Standard_Integer /*n*/, const char ** a)
-{
-  
-  Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
-  if(myAISContext.IsNull()) {
-    di << "use 'vinit' command before " << a[0] << "\n";
-    return -1;
-  }
-  TopoDS_Solid B1 = BRepPrimAPI_MakeBox (1,1,1).Solid();
-  TopAbs_ShapeEnum theType = B1.ShapeType();
-  if ( theType == TopAbs_SOLID ) {
-    di << "It is a solid."   << "\n";
-  } else {
-    di << "It is not solid."   << "\n";
-  }
-  myAISContext->Display(new AIS_Shape(B1)); 
-  myAISContext->OpenLocalContext();
-  TopAbs_ShapeEnum amode = TopAbs_SOLID;
-  myAISContext->ActivateStandardMode(amode);
-  di.Eval("vfit");
-  di.Eval("QAMoveTo 200 200");
-  di.Eval("QASelect 200 200");
-  myAISContext->InitSelected() ;
-  if ( myAISContext->MoreSelected() ) {
-    if (myAISContext->HasSelectedShape() ) {
-      di << "has selected shape : OK"   << "\n";
-    } else {
-      di << "has selected shape : bugged - Faulty "   << "\n";
-    }
-  }
-  return 0;
-}
 
 #define DEFAULT_COLOR    Quantity_NOC_GOLDENROD
 
@@ -492,39 +469,6 @@ switch (argc){
    }
  }
 return 0;
-}
-
-static Standard_Integer BUC60726 (Draw_Interpretor& di,Standard_Integer argc, const char ** argv )
-{
-  Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
-  if(myAISContext.IsNull()) { 
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  
-  if(argc != 2) {
-    di << "Usage : " << argv[0] << " 0/1\n";
-  }
-
-  if(Draw::Atoi(argv[1]) == 0) {
-    myAISContext->CloseAllContexts();
-    BRepPrimAPI_MakeBox B(gp_Pnt(-400.,-400.,-100.),200.,150.,100.);
-    Handle(AIS_Shape) aBox = new AIS_Shape(B.Shape());
-    myAISContext->Display(aBox);
-  } else if(Draw::Atoi(argv[1]) == 1) {
-    myAISContext->CloseAllContexts();
-    myAISContext->OpenLocalContext();
-    myAISContext->ActivateStandardMode(TopAbs_EDGE);
-  } else if(Draw::Atoi(argv[1]) == 2) {
-    myAISContext->CloseAllContexts();
-    myAISContext->OpenLocalContext();
-    myAISContext->ActivateStandardMode(TopAbs_FACE);
-  } else {
-    di << "Usage : " << argv[0] << " 0/1\n";
-    return -1;
-  }
-  
-  return 0;
 }
 
 #include <BRepBndLib.hxx>
@@ -1780,11 +1724,9 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands) {
   theCommands.Add("PRO19626","ksection resultat shell1 shell2 NbPntMax Toler3d Toler2d",__FILE__,ksection,group);  
   theCommands.Add("BUC60574","BUC60574 ",__FILE__,BUC60574,group);
 
-  theCommands.Add("BUC60699","BUC60699 ",__FILE__,BUC60699,group);
   theCommands.Add("GER61351","GER61351 name/object name/r g b/object r g b",__FILE__,setcolor,group);
   theCommands.Add("setcolor","setcolor name/object name/r g b/object r g b",__FILE__,setcolor,group);
 
-  theCommands.Add("BUC60726","BUC60726 0/1",__FILE__,BUC60726,group);
   theCommands.Add("BUC60729","BUC60729",__FILE__,BUC60729,group);
   theCommands.Add("BUC60724","BUC60724",__FILE__,BUC60724,group);
   theCommands.Add("BUC60727","BUC60727",__FILE__,BUC60727,group);

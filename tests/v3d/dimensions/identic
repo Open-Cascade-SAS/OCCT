@@ -1,0 +1,37 @@
+puts "===================================================================="
+puts "OCC28162: Draw Harness - eliminate usage of deprecated Local Context"
+puts "Select 2 edges or vertices"
+puts "===================================================================="
+
+vclear
+vinit
+
+box b 10 20 30
+vdisplay b
+vfit
+
+set shift 1
+
+# Create an identic relation from 2 edges.
+#vremove rfaces
+vselmode b 4 0
+vselmode b 2 1
+
+vselect 87 170
+vselect 165 170 $shift
+
+vrelation redgess -identic
+
+vdump $imagedir/${casename}_edges.png
+
+# Create an identic relation from 2 vertices.
+vremove redges
+vselmode b 2 0
+vselmode b 1 1
+
+vselect 160 130 170 140
+vselect 240 0 250 10 $shift
+
+vrelation rvertices -identic
+
+vdump $imagedir/${casename}_vertices.png

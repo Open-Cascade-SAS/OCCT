@@ -1,0 +1,38 @@
+puts "===================================================================="
+puts "OCC28162: Draw Harness - eliminate usage of deprecated Local Context"
+puts "Select 4 edges or vertices"
+puts "===================================================================="
+
+vclear
+vinit
+
+box b 10 20 30
+vdisplay b
+vfit
+set shift 1
+
+# Create an equaldistance relation from 4 edges.
+vselmode b 2 1
+vselect 123 112
+vselect 280 23 $shift
+vselect 123 382 $shift
+vselect 280 293 $shift
+
+vrelation r4edges -equaldistance
+vzoom 0.5
+
+vdump $imagedir/${casename}_edges.png
+
+# Create an equaldistance relation from 4 vertices.
+vremove r4edges
+vfit
+
+vselect 0 0
+vselmode b 2 0
+vselmode b 1 1
+
+vselect 75 0 335 140
+vrelation r4vertices -equaldistance
+vzoom 0.5
+
+vdump $imagedir/${casename}_vertices.png

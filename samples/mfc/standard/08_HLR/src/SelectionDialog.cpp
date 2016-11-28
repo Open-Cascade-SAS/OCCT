@@ -174,11 +174,11 @@ void CSelectionDialog::UpdateViews()
 
   // Display chosen shapes in the HLR dialog view.
   Standard_Boolean OneOrMoreFound = Standard_False;
-  for (myDoc->GetAISContext()->InitCurrent();
-       myDoc->GetAISContext()->MoreCurrent();
-       myDoc->GetAISContext()->NextCurrent())
+  for (myDoc->GetAISContext()->InitSelected();
+       myDoc->GetAISContext()->MoreSelected();
+       myDoc->GetAISContext()->NextSelected())
   {
-    Handle(AIS_Shape) anAISShape = Handle(AIS_Shape)::DownCast (myDoc->GetAISContext()->Current());
+    Handle(AIS_Shape) anAISShape = Handle(AIS_Shape)::DownCast (myDoc->GetAISContext()->SelectedInteractive());
     if (!anAISShape.IsNull())
     {
       OneOrMoreFound = Standard_True;
@@ -207,11 +207,11 @@ void CSelectionDialog::OnGetSelectedShapes()
   myInteractiveContext->Display (myTrihedron);
 
   Standard_Boolean OneOrMoreFound = Standard_False;
-  for (myDoc->GetAISContext()->InitCurrent();
-       myDoc->GetAISContext()->MoreCurrent();
-       myDoc->GetAISContext()->NextCurrent())
+  for (myDoc->GetAISContext()->InitSelected();
+       myDoc->GetAISContext()->MoreSelected();
+       myDoc->GetAISContext()->NextSelected())
   {
-    Handle(AIS_Shape) anAISShape = Handle(AIS_Shape)::DownCast (myDoc->GetAISContext()->Current());
+    Handle(AIS_Shape) anAISShape = Handle(AIS_Shape)::DownCast (myDoc->GetAISContext()->SelectedInteractive());
 
     if (!anAISShape.IsNull())
     {

@@ -275,9 +275,9 @@ Handle(TopTools_HSequenceOfShape) Translate::getShapes( const Handle(AIS_Interac
 {
     Handle(TopTools_HSequenceOfShape) aSequence;
     Handle(AIS_InteractiveObject) picked;
-    for ( ic->InitCurrent(); ic->MoreCurrent(); ic->NextCurrent() )
+    for ( ic->InitSelected(); ic->MoreSelected(); ic->NextSelected() )
     {
-        Handle(AIS_InteractiveObject) obj = ic->Current();
+        Handle(AIS_InteractiveObject) obj = ic->SelectedInteractive();
         if ( obj->IsKind( STANDARD_TYPE( AIS_Shape ) ) )
         {
             TopoDS_Shape shape = Handle(AIS_Shape)::DownCast(obj)->Shape();

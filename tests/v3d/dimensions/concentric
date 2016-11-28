@@ -1,0 +1,21 @@
+puts "===================================================================="
+puts "OCC28162: Draw Harness - eliminate usage of deprecated Local Context"
+puts "Select two circled edges"
+puts "===================================================================="
+
+vclear
+vinit
+
+pcylinder c 15 30
+vdisplay c
+vfit
+
+vselmode c 2 1
+vselect 205 174
+
+set shift 1
+vselect 205 377 $shift
+
+vrelation r -concentric
+
+vdump $imagedir/${casename}.png

@@ -403,27 +403,34 @@ void CViewer3dDoc::OnUpdateOverlappedBox(CCmdUI* pCmdUI)
 
 void CViewer3dDoc::OnObjectRemove()
 {
-  if(myAISContext->IsCurrent(myBox))
+  // A small trick to avoid complier error (C2668).
+  const Handle(AIS_InteractiveObject)& aBox = myBox;
+  if(myAISContext->IsSelected (aBox))
     myBox.Nullify();
 
-  if(myAISContext->IsCurrent(myCylinder))
+  const Handle(AIS_InteractiveObject)& aCylinder = myCylinder;
+  if(myAISContext->IsSelected (aCylinder))
     myCylinder.Nullify();
 
-  if(myAISContext->IsCurrent(mySphere))
+  const Handle(AIS_InteractiveObject)& aSphere = mySphere;
+  if(myAISContext->IsSelected (aSphere))
     mySphere.Nullify();
 
-  if(myAISContext->IsCurrent(myOverlappedBox))
+  const Handle(AIS_InteractiveObject)& anOverlappedBox = myOverlappedBox;
+  if(myAISContext->IsSelected (anOverlappedBox))
     myOverlappedBox.Nullify();
 
-  if(myAISContext->IsCurrent(myOverlappedCylinder))
+  const Handle(AIS_InteractiveObject)& anOverlappedCylinder = myOverlappedCylinder;
+  if(myAISContext->IsSelected (anOverlappedCylinder))
     myOverlappedCylinder.Nullify();
 
-  if(myAISContext->IsCurrent(myOverlappedSphere))
+  const Handle(AIS_InteractiveObject)& anOverlappedSphere = myOverlappedSphere;
+  if(myAISContext->IsSelected (anOverlappedSphere))
     myOverlappedSphere.Nullify();
 
 
-  for(myAISContext->InitCurrent();myAISContext->MoreCurrent();myAISContext->InitCurrent())
-    myAISContext->Remove(myAISContext->Current(),Standard_True);
+  for(myAISContext->InitSelected();myAISContext->MoreSelected();myAISContext->InitSelected())
+    myAISContext->Remove(myAISContext->SelectedInteractive(),Standard_True);
 
   if(myOffsetDlg && myOffsetDlg->IsWindowVisible())
     myOffsetDlg->UpdateValues();
@@ -532,7 +539,6 @@ void CViewer3dDoc::InputEvent(const Standard_Integer /*x*/,
 
         myAISContext->Redisplay (aSelectedObject);
         myState = -1;
-        myAISContext->CloseLocalContext();
       }
     }
 
@@ -588,20 +594,20 @@ void CViewer3dDoc::ShiftInputEvent (const Standard_Integer theX,
 
 void CViewer3dDoc::OnObjectColoredMesh()
 {
-  for(myAISContext->InitCurrent();myAISContext->MoreCurrent();myAISContext->NextCurrent())
-    if (myAISContext->Current()->IsKind(STANDARD_TYPE(User_Cylinder)))
+  for(myAISContext->InitSelected();myAISContext->MoreSelected();myAISContext->NextSelected())
+    if (myAISContext->SelectedInteractive()->IsKind(STANDARD_TYPE(User_Cylinder)))
     {
-      myAISContext->ClearPrs(myAISContext->Current(),6,Standard_False);
-      myAISContext->RecomputePrsOnly(myAISContext->Current(),Standard_False);
-      myAISContext->SetDisplayMode(myAISContext->Current(),6);
+      myAISContext->ClearPrs(myAISContext->SelectedInteractive(),6,Standard_False);
+      myAISContext->RecomputePrsOnly(myAISContext->SelectedInteractive(), Standard_False);
+      myAISContext->SetDisplayMode(myAISContext->SelectedInteractive(), 6);
     }
 }
 
 void CViewer3dDoc::OnUpdateObjectColoredMesh(CCmdUI* pCmdUI)
 {
   bool CylinderIsCurrentAndDisplayed = false;
-  for (myAISContext->InitCurrent();myAISContext->MoreCurrent ();myAISContext->NextCurrent ())
-    if(myAISContext->Current()->IsKind(STANDARD_TYPE(User_Cylinder)))
+  for (myAISContext->InitSelected();myAISContext->MoreSelected ();myAISContext->NextSelected ())
+    if(myAISContext->SelectedInteractive()->IsKind(STANDARD_TYPE(User_Cylinder)))
       CylinderIsCurrentAndDisplayed=true;
   pCmdUI->Enable (CylinderIsCurrentAndDisplayed);
 }
@@ -609,8 +615,8 @@ void CViewer3dDoc::OnUpdateObjectColoredMesh(CCmdUI* pCmdUI)
 void CViewer3dDoc::OnUpdateObjectWireframe(CCmdUI* pCmdUI)
 {
   bool OneOrMoreInShadingOrColoredMesh = false;
-  for (myAISContext->InitCurrent();myAISContext->MoreCurrent ();myAISContext->NextCurrent ())
-    if (myAISContext->IsDisplayed(myAISContext->Current(),1) || myAISContext->IsDisplayed(myAISContext->Current(),6)) 
+  for (myAISContext->InitSelected();myAISContext->MoreSelected ();myAISContext->NextSelected ())
+    if (myAISContext->IsDisplayed(myAISContext->SelectedInteractive(), 1) || myAISContext->IsDisplayed(myAISContext->SelectedInteractive(), 6))
       OneOrMoreInShadingOrColoredMesh=true;
   pCmdUI->Enable (OneOrMoreInShadingOrColoredMesh);
 }
@@ -619,8 +625,8 @@ void CViewer3dDoc::OnUpdateObjectWireframe(CCmdUI* pCmdUI)
 void CViewer3dDoc::OnUpdateObjectShading(CCmdUI* pCmdUI)
 {
   bool OneOrMoreInWireframeOrColoredMesh = false;
-  for (myAISContext->InitCurrent();myAISContext->MoreCurrent ();myAISContext->NextCurrent ())
-    if (myAISContext->IsDisplayed(myAISContext->Current(),0) || myAISContext->IsDisplayed(myAISContext->Current(),6))
+  for (myAISContext->InitSelected();myAISContext->MoreSelected ();myAISContext->NextSelected ())
+    if (myAISContext->IsDisplayed(myAISContext->SelectedInteractive(),0) || myAISContext->IsDisplayed(myAISContext->SelectedInteractive(),6))
       OneOrMoreInWireframeOrColoredMesh=true;
   pCmdUI->Enable (OneOrMoreInWireframeOrColoredMesh);
 }
@@ -668,10 +674,10 @@ void  CViewer3dDoc::Popup (const Standard_Integer  x,
 {
   myPopupMenuNumber=0;
   // Specified check for context menu number to call
-  myAISContext->InitCurrent();
-  if (myAISContext->MoreCurrent())
+  myAISContext->InitSelected();
+  if (myAISContext->MoreSelected())
   {
-    if (myAISContext->Current()->IsKind(STANDARD_TYPE(User_Cylinder)))
+    if (myAISContext->SelectedInteractive()->IsKind(STANDARD_TYPE(User_Cylinder)))
     {
       myPopupMenuNumber = 2;
       //return;
@@ -683,9 +689,7 @@ void  CViewer3dDoc::Popup (const Standard_Integer  x,
 //Set faces selection mode
 void CViewer3dDoc::OnFaces() 
 {
-  myAISContext->CloseAllContexts();
-  myAISContext->OpenLocalContext();
-  myAISContext->ActivateStandardMode (TopAbs_FACE);
+  myAISContext->Activate (AIS_Shape::SelectionMode (TopAbs_FACE));
 
   myCResultDialog.SetTitle("Standard mode: TopAbs_FACE");
   myCResultDialog.SetText("  myAISContext->OpenLocalContext(); \n"
@@ -698,9 +702,7 @@ void CViewer3dDoc::OnFaces()
 //Set edges selection mode
 void CViewer3dDoc::OnEdges() 
 {
-  myAISContext->CloseAllContexts();
-  myAISContext->OpenLocalContext();
-  myAISContext->ActivateStandardMode(TopAbs_EDGE);
+  myAISContext->Activate (AIS_Shape::SelectionMode (TopAbs_EDGE));
 
   myCResultDialog.SetTitle("Standard mode: TopAbs_EDGE");
   myCResultDialog.SetText("  myAISContext->OpenLocalContext(); \n"
@@ -713,9 +715,7 @@ void CViewer3dDoc::OnEdges()
 // Set vertices selection mode
 void CViewer3dDoc::OnVertices() 
 {
-  myAISContext->CloseAllContexts();
-  myAISContext->OpenLocalContext();
-  myAISContext->ActivateStandardMode (TopAbs_VERTEX);
+  myAISContext->Activate (AIS_Shape::SelectionMode (TopAbs_VERTEX));
 
   myCResultDialog.SetTitle("Standard mode: TopAbs_VERTEX");
   myCResultDialog.SetText("  myAISContext->OpenLocalContext(); \n"
@@ -728,8 +728,6 @@ void CViewer3dDoc::OnVertices()
 //Neutral selection mode
 void CViewer3dDoc::OnNeutral() 
 {
-  myAISContext->CloseAllContexts();
-
   myCResultDialog.SetTitle("Standard mode: Neutral");
   myCResultDialog.SetText("  myAISContext->CloseAllContexts(); \n"
                                     "  \n");
@@ -739,8 +737,7 @@ void CViewer3dDoc::OnNeutral()
 // Change the color of faces on a user cylinder
 void CViewer3dDoc::OnUsercylinderChangefacecolor() 
 {
-  myAISContext->OpenLocalContext();
-  myAISContext->Activate(myAISContext->Current(),4);
+  myAISContext->Activate(myAISContext->SelectedInteractive(), 4);
   myState = FACE_COLOR;
   // see the following of treatment in inputevent
 }
@@ -750,13 +747,6 @@ void CViewer3dDoc::OnUsercylinderChangefacecolor()
 // before running this function
 void CViewer3dDoc::OnFillet3d() 
 {
-  if (!myAISContext->HasOpenedContext())
-  {
-    AfxMessageBox (L"It is necessary to activate the edges selection mode\n"
-                   L"and select edges on an object before \nrunning this function");
-    return;
-  }
-
   myAISContext->InitSelected();
   if (myAISContext->MoreSelected()) 
   {

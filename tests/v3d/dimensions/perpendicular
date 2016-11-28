@@ -1,0 +1,22 @@
+puts "===================================================================="
+puts "OCC28162: Draw Harness - eliminate usage of deprecated Local Context"
+puts "Select 2 edges"
+puts "===================================================================="
+
+vclear
+vinit
+
+box b -5 -10 -15 10 20 30
+vdisplay b
+vfit
+
+set shift 1
+
+# Create a perpendicular relation from 2 edges.
+vselmode b 2 1
+
+vselect 87 145
+vselect 135 119 $shift
+vrelation r -perpendicular
+
+vdump $imagedir/${casename}_edges.png

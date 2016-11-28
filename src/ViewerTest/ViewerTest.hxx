@@ -25,6 +25,7 @@
 #include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopTools_HArray1OfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 #include <AIS_KindOfInteractive.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
@@ -189,6 +190,10 @@ public:
   //! Handles either flag specified by 0|1 or on|off.
   Standard_EXPORT static Standard_Boolean ParseOnOff (Standard_CString  theArg,
                                                       Standard_Boolean& theIsOn);
+
+  //! Returns list of selected shapes.
+  Standard_EXPORT static void GetSelectedShapes (TopTools_ListOfShape& theShapes);
+
 
   //! Parses line type argument.
   //! Handles either enumeration (integer) value or string constant.

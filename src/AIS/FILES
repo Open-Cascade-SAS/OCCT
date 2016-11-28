@@ -92,6 +92,7 @@ AIS_InteractiveObject.hxx
 AIS_InteractiveObject.lxx
 AIS_KindOfDimension.hxx
 AIS_KindOfInteractive.hxx
+AIS_KindOfRelation.hxx
 AIS_KindOfSurface.hxx
 AIS_KindOfUnit.hxx
 AIS_LengthDimension.cxx

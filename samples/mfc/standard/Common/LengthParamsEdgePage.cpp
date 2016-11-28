@@ -67,9 +67,9 @@ CButton* CLengthParamsEdgePage::GetButton()
 
 void CLengthParamsEdgePage::OnBnClickedChooseEdgeBtn()
 {
-  myAISContext->LocalContext()->InitSelected();
+  myAISContext->InitSelected();
 
-  if (!myAISContext->LocalContext()->MoreSelected() ||
+  if (!myAISContext->MoreSelected() ||
        myAISContext->SelectedShape().ShapeType() != TopAbs_EDGE)
   {
     AfxMessageBox ( _T("Choose the edge and press the button again"), MB_ICONINFORMATION | MB_OK);
@@ -79,7 +79,7 @@ void CLengthParamsEdgePage::OnBnClickedChooseEdgeBtn()
   TopoDS_Shape aSelShape = myAISContext->SelectedShape();
   const TopoDS_Edge& anEdge = TopoDS::Edge (aSelShape);
 
-  myAISContext->LocalContext()->ClearSelected();
+  myAISContext->ClearSelected();
   TopoDS_Vertex aFirstVertex, aSecondVertex;
   TopExp::Vertices (TopoDS::Edge (anEdge), aFirstVertex, aSecondVertex);
 
@@ -108,8 +108,6 @@ void CLengthParamsEdgePage::OnBnClickedChooseEdgeBtn()
   aLenDim->SetDimensionAspect (anAspect);
   aLenDim->SetFlyout (aDimDlg->GetFlyout());
 
-  myAISContext->CloseAllContexts();
   myAISContext->Display (aLenDim);
-  myAISContext->OpenLocalContext();
-  myAISContext->ActivateStandardMode(TopAbs_EDGE);
+  myAISContext->Activate (AIS_Shape::SelectionMode (TopAbs_EDGE));
 }

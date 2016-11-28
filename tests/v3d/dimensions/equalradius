@@ -1,0 +1,31 @@
+puts "===================================================================="
+puts "OCC28162: Draw Harness - eliminate usage of deprecated Local Context"
+puts "Select 1 or 2 circled edges"
+puts "===================================================================="
+
+vclear
+vinit
+
+pcylinder c 15 30
+vdisplay c
+vfit
+
+# Create relation from 1 selected circled edge.
+vselmode c 2 1
+vselect 205 174
+
+vrelation r1 -equalradius
+
+vdump $imagedir/${casename}_1.png
+
+# Create relation from 2 selected circled edges.
+vremove r1
+
+vselect 205 377
+
+set shift 1
+vselect 205 174 $shift
+
+vrelation r2 -equalradius
+
+vdump $imagedir/${casename}_2.png

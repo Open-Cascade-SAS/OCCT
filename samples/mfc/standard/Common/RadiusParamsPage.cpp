@@ -58,8 +58,8 @@ END_MESSAGE_MAP()
 void CRadiusParamsPage::OnBnClickedObjectBtn()
 {
   //Build dimension here
-  myAISContext->LocalContext()->InitSelected();
-  if (!myAISContext->LocalContext()->MoreSelected() ||
+  myAISContext->InitSelected();
+  if (!myAISContext->MoreSelected() ||
        myAISContext->SelectedShape().ShapeType() != TopAbs_EDGE)
   {
     AfxMessageBox (_T ("Choose the edge and press the button again"), MB_ICONINFORMATION | MB_OK);
@@ -94,7 +94,7 @@ void CRadiusParamsPage::OnBnClickedObjectBtn()
     }
   }
 
-  myAISContext->LocalContext()->ClearSelected();
+  myAISContext->ClearSelected();
   CDimensionDlg *aDimDlg = (CDimensionDlg*)(this->GetParentOwner());
   // Try to create dimension if it is possible
   Handle(AIS_Dimension) aDim;
@@ -124,10 +124,7 @@ void CRadiusParamsPage::OnBnClickedObjectBtn()
   aDim->SetDimensionAspect (anAspect);
 
   // Display dimension in the neutral point
-  myAISContext->CloseAllContexts();
 
   myAISContext->Display (aDim);
-
-  myAISContext->OpenLocalContext();
-  myAISContext->ActivateStandardMode (TopAbs_EDGE);
+  myAISContext->Activate (AIS_Shape::SelectionMode (TopAbs_EDGE));
 }

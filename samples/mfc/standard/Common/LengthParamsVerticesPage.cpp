@@ -59,29 +59,21 @@ END_MESSAGE_MAP()
 
 void CLengthParamsVerticesPage::OnBnClickedVertex1Btn()
 {
-   // Open local context and choose the edge for length dimensions
-  if (!myAISContext->HasOpenedContext())
-  {
-    myAISContext->OpenLocalContext();
-    myAISContext->ActivateStandardMode(TopAbs_VERTEX);
-    AfxMessageBox(_T("Local context was not opened. Choose the vertices and press the button again"),
-                    MB_ICONINFORMATION | MB_OK);
-    return;
-  }
+  myAISContext->Activate (AIS_Shape::SelectionMode (TopAbs_VERTEX));
 
-  // Now it's ok, local context is opened and edge selection mode is activated
+  // Now it's ok, edge selection mode is activated
   // Check if some edge is selected
-  myAISContext->LocalContext()->InitSelected();
-  if (!myAISContext->LocalContext()->MoreSelected() ||
+  myAISContext->InitSelected();
+  if (!myAISContext->MoreSelected() ||
        myAISContext->SelectedShape().ShapeType() != TopAbs_VERTEX)
   {
     AfxMessageBox (_T ("Choose the vertex and press the button again"), MB_ICONINFORMATION | MB_OK);
     return;
   }
 
-  myFirstVertex = TopoDS::Vertex (myAISContext->LocalContext()->SelectedShape());
+  myFirstVertex = TopoDS::Vertex (myAISContext->SelectedShape());
 
-  myAISContext->LocalContext()->ClearSelected();
+  myAISContext->ClearSelected();
 }
 
 //=======================================================================
@@ -91,16 +83,16 @@ void CLengthParamsVerticesPage::OnBnClickedVertex1Btn()
 
 void CLengthParamsVerticesPage::OnBnClickedVertex2Btn()
 {
-  myAISContext->LocalContext()->InitSelected();
-  if (!myAISContext->LocalContext()->MoreSelected() ||
+  myAISContext->InitSelected();
+  if (!myAISContext->MoreSelected() ||
        myAISContext->SelectedShape().ShapeType() != TopAbs_VERTEX)
   {
     AfxMessageBox (_T ("Choose the vertex and press the button again"), MB_ICONINFORMATION | MB_OK);
     return;
   }
 
-  mySecondVertex = TopoDS::Vertex (myAISContext->LocalContext()->SelectedShape());
-  myAISContext->LocalContext()->ClearSelected();
+  mySecondVertex = TopoDS::Vertex (myAISContext->SelectedShape());
+  myAISContext->ClearSelected();
 
   //Build dimension here
   gp_Pnt aP1=BRep_Tool::Pnt (myFirstVertex);
@@ -128,10 +120,8 @@ void CLengthParamsVerticesPage::OnBnClickedVertex2Btn()
   aLenDim->SetDimensionAspect (anAspect);
   aLenDim->SetFlyout (aDimDlg->GetFlyout());
 
-  myAISContext->CloseAllContexts();
   myAISContext->Display (aLenDim);
-  myAISContext->OpenLocalContext();
-  myAISContext->ActivateStandardMode (TopAbs_VERTEX);
+  myAISContext->Activate (AIS_Shape::SelectionMode (TopAbs_VERTEX));
 }
 
 //=======================================================================

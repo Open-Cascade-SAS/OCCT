@@ -159,8 +159,8 @@ void DocumentCommon::fitAll()
 void DocumentCommon::onWireframe()
 {
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    for( myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent() )
-        myContext->SetDisplayMode( myContext->Current(), 0, false );
+    for( myContext->InitSelected(); myContext->MoreSelected(); myContext->NextSelected() )
+        myContext->SetDisplayMode( myContext->SelectedInteractive(), 0, false );
     myContext->UpdateCurrentViewer();
     getApplication()->onSelectionChanged();
     QApplication::restoreOverrideCursor();
@@ -169,8 +169,8 @@ void DocumentCommon::onWireframe()
 void DocumentCommon::onShading()
 {
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    for( myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent() )
-        myContext->SetDisplayMode( myContext->Current(), 1, false );
+    for( myContext->InitSelected(); myContext->MoreSelected(); myContext->NextSelected() )
+        myContext->SetDisplayMode( myContext->SelectedInteractive(), 1, false );
     myContext->UpdateCurrentViewer();
     getApplication()->onSelectionChanged();
     QApplication::restoreOverrideCursor();
@@ -180,8 +180,8 @@ void DocumentCommon::onColor()
 {
     QColor aColor ;
     Quantity_Color aShapeColor;
-    myContext->InitCurrent();
-    Handle(AIS_InteractiveObject) Current = myContext->Current() ;
+    myContext->InitSelected();
+    Handle(AIS_InteractiveObject) Current = myContext->SelectedInteractive() ;
     if ( Current->HasColor () )
     {
         aShapeColor = myContext->Color( Current );
@@ -195,15 +195,15 @@ void DocumentCommon::onColor()
     {
         Quantity_Color color( aRetColor.red() / 255., aRetColor.green() / 255.,
                         aRetColor.blue() / 255., Quantity_TOC_RGB );
-        for (; myContext->MoreCurrent(); myContext->NextCurrent() )
-            myContext->SetColor( myContext->Current(), color.Name() );
+        for (; myContext->MoreSelected(); myContext->NextSelected() )
+            myContext->SetColor( myContext->SelectedInteractive(), color.Name() );
     }
 }
 
 void DocumentCommon::onMaterial( int theMaterial )
 {
-    for ( myContext->InitCurrent(); myContext->MoreCurrent (); myContext->NextCurrent () )
-        myContext->SetMaterial( myContext->Current(), (Graphic3d_NameOfMaterial)theMaterial );
+    for ( myContext->InitSelected(); myContext->MoreSelected (); myContext->NextSelected () )
+        myContext->SetMaterial( myContext->SelectedInteractive(), (Graphic3d_NameOfMaterial)theMaterial );
 }
 
 void DocumentCommon::onMaterial()
@@ -215,8 +215,8 @@ void DocumentCommon::onMaterial()
 
 void DocumentCommon::onTransparency( int theTrans )
 {
-    for( myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextSelected() )
-        myContext->SetTransparency( myContext->Current(), ((Standard_Real)theTrans) / 10.0 );
+    for( myContext->InitSelected(); myContext->MoreSelected(); myContext->NextSelected() )
+        myContext->SetTransparency( myContext->SelectedInteractive(), ((Standard_Real)theTrans) / 10.0 );
 }
 
 void DocumentCommon::onTransparency()

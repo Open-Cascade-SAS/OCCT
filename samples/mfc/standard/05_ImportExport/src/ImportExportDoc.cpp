@@ -190,8 +190,8 @@ void  CImportExportDoc::Popup(const Standard_Integer  x,
                                const Handle(V3d_View)& aView   ) 
 {
   Standard_Integer PopupMenuNumber=0;
- myAISContext->InitCurrent();
-  if (myAISContext->MoreCurrent())
+ myAISContext->InitSelected();
+  if (myAISContext->MoreSelected())
     PopupMenuNumber=1;
 
   CMenu menu;
@@ -202,8 +202,8 @@ void  CImportExportDoc::Popup(const Standard_Integer  x,
    if (PopupMenuNumber == 1) // more than 1 object.
   {
     bool OneOrMoreInShading = false;
-	for (myAISContext->InitCurrent();myAISContext->MoreCurrent ();myAISContext->NextCurrent ())
-    if (myAISContext->IsDisplayed(myAISContext->Current(),1)) OneOrMoreInShading=true;
+	for (myAISContext->InitSelected();myAISContext->MoreSelected ();myAISContext->NextSelected ())
+    if (myAISContext->IsDisplayed(myAISContext->SelectedInteractive(),1)) OneOrMoreInShading=true;
 	if(!OneOrMoreInShading)
    	pPopup->EnableMenuItem(5, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
    }
@@ -260,8 +260,8 @@ void CImportExportDoc::OnCylinder()
 void CImportExportDoc::OnObjectRemove() 
 
 {
-	for(GetAISContext()->InitCurrent();GetAISContext()->MoreCurrent();GetAISContext()->NextCurrent()) {
-		Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(GetAISContext()->Current());
+	for(GetAISContext()->InitSelected();GetAISContext()->MoreSelected();GetAISContext()->NextSelected()) {
+		Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(GetAISContext()->SelectedInteractive());
 		if(!aShape.IsNull()) {
 			m_pcoloredshapeList->Remove(aShape->Shape());
 		}
@@ -272,8 +272,8 @@ void CImportExportDoc::OnObjectRemove()
 void CImportExportDoc::OnObjectErase() 
 
 {
-	for(GetAISContext()->InitCurrent();GetAISContext()->MoreCurrent();GetAISContext()->NextCurrent()) {
-		Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(GetAISContext()->Current());
+	for(GetAISContext()->InitSelected();GetAISContext()->MoreSelected();GetAISContext()->NextSelected()) {
+		Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(GetAISContext()->SelectedInteractive());
 		if(!aShape.IsNull()) {
 			m_pcoloredshapeList->Remove(aShape->Shape());
 		}

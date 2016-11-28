@@ -56,8 +56,6 @@ void CViewer2dDoc::Dump(CDumpContext& dc) const
 
 void CViewer2dDoc::OnBUTTONErase() 
 {
-  if(myAISContext->HasOpenedContext())
-    myAISContext->CloseAllContexts(); 
   myAISContext->EraseAll();
 }
 
@@ -214,8 +212,6 @@ void CViewer2dDoc::OnBUTTONTestLine()
 void CViewer2dDoc::OnBUTTONTestFace()
 {
   //erase all
-  if(myAISContext->HasOpenedContext())
-    myAISContext->CloseAllContexts();
   myAISContext->EraseAll();
 
   CFileDialog dlg(TRUE,
@@ -255,7 +251,6 @@ void CViewer2dDoc::OnBUTTONTestFace()
     Handle(Sample2D_Face) anAISFace = new Sample2D_Face(aFaceShape);
     myAISContext->Display(anAISFace,Standard_True);
     //activate selection mode for edges selection
-    myAISContext->OpenLocalContext();
     myAISContext->Activate(anAISFace,2);
 
     FitAll2DViews(Standard_False);
@@ -328,8 +323,6 @@ void CViewer2dDoc::OnBUTTONTestImage()
     TCollection_AsciiString aFileName ((const wchar_t* )aFilePath);
 
     //erase viewer
-    if(myAISContext->HasOpenedContext())
-      myAISContext->CloseAllContexts();
     myAISContext->EraseAll();
 
     Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
@@ -362,8 +355,6 @@ void CViewer2dDoc::OnBUTTONMultipleImage()
     TCollection_AsciiString aFileName ((const wchar_t* )aFilePath);
 
     //erase viewer
-    if(myAISContext->HasOpenedContext())
-      myAISContext->CloseAllContexts();
     myAISContext->EraseAll();
 
     //create images

@@ -58,20 +58,12 @@ END_MESSAGE_MAP()
 
 void CLengthParamsEdgesPage::OnBnClickedEdge1Btn()
 {
-  // Open local context and choose the edge for length dimensions
-  if (!myAISContext->HasOpenedContext())
-  {
-    myAISContext->OpenLocalContext();
-    myAISContext->ActivateStandardMode (TopAbs_EDGE);
-    AfxMessageBox (_T("Local context was not opened. Choose the edge and press the button again"),
-                     MB_ICONINFORMATION | MB_OK);
-    return;
-  }
+  myAISContext->Activate (AIS_Shape::SelectionMode (TopAbs_EDGE));
 
-  // Now it's ok, local context is opened and edge selection mode is activated
+  // Now it's ok, edge selection mode is activated
   // Check if some edge is selected
-  myAISContext->LocalContext()->InitSelected();
-  if (!myAISContext->LocalContext()->MoreSelected() ||
+  myAISContext->InitSelected();
+  if (!myAISContext->MoreSelected() ||
        myAISContext->SelectedShape().ShapeType() != TopAbs_EDGE)
   {
     AfxMessageBox(_T("Choose the edge and press the button again"),
@@ -81,7 +73,7 @@ void CLengthParamsEdgesPage::OnBnClickedEdge1Btn()
 
   myFirstEdge = TopoDS::Edge (myAISContext->SelectedShape());
 
-  myAISContext->LocalContext()->ClearSelected();
+  myAISContext->ClearSelected();
 }
 
 //=======================================================================
@@ -91,8 +83,8 @@ void CLengthParamsEdgesPage::OnBnClickedEdge1Btn()
 
 void CLengthParamsEdgesPage::OnBnClickedEdge2Btn()
 {
-  myAISContext->LocalContext()->InitSelected();
-  if (!myAISContext->LocalContext()->MoreSelected() ||
+  myAISContext->InitSelected();
+  if (!myAISContext->MoreSelected() ||
        myAISContext->SelectedShape().ShapeType() != TopAbs_EDGE)
   {
     AfxMessageBox (_T("Choose the edge and press the button again"),
@@ -102,7 +94,7 @@ void CLengthParamsEdgesPage::OnBnClickedEdge2Btn()
 
   mySecondEdge = TopoDS::Edge (myAISContext->SelectedShape());
 
-  myAISContext->LocalContext()->ClearSelected();
+  myAISContext->ClearSelected();
 
   // Build plane through three points
   BRepAdaptor_Curve aCurve1 (myFirstEdge);
@@ -117,8 +109,6 @@ void CLengthParamsEdgesPage::OnBnClickedEdge2Btn()
   Handle(Geom_Plane) aPlane = aMkPlane.Value();
 
   CDimensionDlg *aDimDlg = (CDimensionDlg*)(GetParentOwner());
-
-  myAISContext->CloseAllContexts();
 
   Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect();
   anAspect->MakeArrows3d (Standard_False);
@@ -162,6 +152,5 @@ void CLengthParamsEdgesPage::OnBnClickedEdge2Btn()
     myAISContext->Display (aLenDim);
   }
 
-  myAISContext->OpenLocalContext();
-  myAISContext->ActivateStandardMode (TopAbs_EDGE);
+  myAISContext->Activate (AIS_Shape::SelectionMode (TopAbs_EDGE));
 }

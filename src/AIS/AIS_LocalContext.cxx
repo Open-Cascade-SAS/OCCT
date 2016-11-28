@@ -715,8 +715,10 @@ void AIS_LocalContext::Unhilight(const Handle(AIS_InteractiveObject)& anObject)
   
   // chieck if by hazard the object is somewhere else...
   Standard_Integer Indx;
+  Standard_DISABLE_DEPRECATION_WARNINGS
   Standard_Boolean IsSomeWhereElse  = 
     myCTX->IsInLocal(anObject,Indx) && Indx != myCTX->IndexOfCurrentLocal();
+  Standard_ENABLE_DEPRECATION_WARNINGS
   
   const Handle(AIS_LocalStatus)& Att = myActiveObjects(anObject);
   myMainPM->Unhighlight(anObject,Att->HilightMode());

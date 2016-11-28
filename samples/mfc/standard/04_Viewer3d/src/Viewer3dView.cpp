@@ -401,7 +401,6 @@ void CViewer3dView::OnLButtonDown(UINT nFlags, CPoint point)
 			{
 			p1 = ConvertClickToPoint(point.x,point.y,myView);
 			myCurrent_PositionalLight->SetPosition(p1.X(),p1.Y(),p1.Z()) ;
-			GetDocument()->GetAISContext()->CloseLocalContext();
 			((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Ready");
 			myCurrentMode = CurAction3d_Nothing;
 
@@ -449,7 +448,6 @@ GetDocument()->UpdateResultMessageDlg("SetAngle",Message);
 		break;
         case  CurAction3d_EndSpotLight :
 			GetDocument()->GetAISContext()->Erase(spotConeShape);
-			GetDocument()->GetAISContext()->CloseLocalContext();
 			((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Ready");
 			myCurrentMode = CurAction3d_Nothing;
         break;
@@ -477,7 +475,6 @@ GetDocument()->UpdateResultMessageDlg("SetDirection",Message);
 		break;
 		case CurAction3d_EndDirectionalLight:
 			GetDocument()->GetAISContext()->Erase(directionalEdgeShape);
-			GetDocument()->GetAISContext()->CloseLocalContext();
 			((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Ready");
 			myCurrentMode = CurAction3d_Nothing;
 		break;
@@ -888,7 +885,6 @@ void CViewer3dView::OnDirectionalLight()
 
 	UpdateData(TRUE);
 	((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Pick a first point");
-	GetDocument()->GetAISContext()->OpenLocalContext();
 	myCurrentMode = CurAction3d_BeginDirectionalLight;
 
 TCollection_AsciiString Message("\
@@ -914,7 +910,6 @@ void CViewer3dView::OnSpotLight()
 		return;
 	}
 
-	GetDocument()->GetAISContext()->OpenLocalContext();
 	((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Pick the light position");
 	myCurrentMode = CurAction3d_BeginSpotLight;
 
@@ -941,7 +936,6 @@ void CViewer3dView::OnPositionalLight()
 		return;
 	}
 
-	GetDocument()->GetAISContext()->OpenLocalContext();
 	myCurrent_PositionalLight=new V3d_PositionalLight(myView->Viewer(),0,0,0,Quantity_NOC_GREEN,1,0);
 	myView->SetLightOn(myCurrent_PositionalLight);
 	NbActiveLights++;
@@ -971,11 +965,9 @@ void CViewer3dView::OnAmbientLight()
 		return;
 	}
 
-	GetDocument()->GetAISContext()->OpenLocalContext();
 	myCurrent_AmbientLight=new V3d_AmbientLight(myView->Viewer(), Quantity_NOC_GRAY);
 	myView->SetLightOn(myCurrent_AmbientLight) ;	
 	NbActiveLights++;
-	GetDocument()->GetAISContext()->CloseLocalContext();
 
 	myView->UpdateLights();
 

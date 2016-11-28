@@ -215,7 +215,6 @@ static Standard_Integer OCC136 (Draw_Interpretor& di, Standard_Integer argc, con
     return 1;
   }
 
-  if(anAISCtx->HasOpenedContext()) anAISCtx->CloseAllContexts();
   anAISCtx->EraseAll();
 
   //load primitives to context
@@ -747,8 +746,7 @@ static Standard_Integer OCC166 (Draw_Interpretor& di, Standard_Integer /*argc*/,
   Handle(AIS_Shape) anAISBox = new AIS_Shape(aBox.Shape());
   myAISContext->SetAutoActivateSelection (Standard_False);
   myAISContext->Display(anAISBox, 1);
-  Standard_Integer myLocContInd = myAISContext->OpenLocalContext();
-  myAISContext->CloseLocalContext(myLocContInd);
+
   TColStd_ListOfInteger anActivatedModes;
   myAISContext->ActivatedModes (anAISBox, anActivatedModes);
   if(anActivatedModes.Extent() != 1 || anActivatedModes.First() != -1 )
@@ -1687,9 +1685,7 @@ static Standard_Integer OCC708 (Draw_Interpretor& di, Standard_Integer argc, con
       return 1;
     } 
     AISObj->ResetTransformation();
-    if (!aContext->HasOpenedContext()) {
-      aContext->OpenLocalContext();
-    }
+
     aContext->Erase(AISObj, updateviewer);
     aContext->UpdateCurrentViewer();
     aContext->Display(AISObj, updateviewer);
@@ -5254,61 +5250,6 @@ Standard_Integer CR23403 (Draw_Interpretor& di, Standard_Integer argc, const cha
   return 0;
 }
 
-#include <Quantity_NameOfColor.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <Geom_Curve.hxx>
-#include <AIS_InteractiveObject.hxx>
-Standard_Integer CR23234 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  // Check the command arguments
-  if (argc != 2)
-  {
-    di <<"Error: "<<argv[0]<<" - invalid number of arguments\n";
-    di << "Usage : " << argv[0] << " mode(0/1)\n";
-    return 1; //TCL_ERROR
-  }
-
-  const Standard_Integer aMode = Draw::Atoi(argv[1]);
-
-  //===================================================================
-
-  Handle(AIS_InteractiveContext) aisContext = ViewerTest::GetAISContext();
-  if (aisContext.IsNull())
-  {
-    di <<"Error: call 'vinit' first\n";
-    return 1; //TCL_ERROR
-  }
-
-  if (aisContext->HasOpenedContext())
-  {
-    aisContext->CloseAllContexts();
-    aisContext->RemoveAll(false);
-    aisContext->EraseSelected(false);
-  }
-  aisContext->EraseAll(false);
-  Handle(Geom_Axis2Placement) trihedronAxis = new Geom_Axis2Placement(gp::XOY());
-  Handle(AIS_Trihedron) trihedron = new AIS_Trihedron(trihedronAxis);
-  if (aMode)
-    aisContext->SetAutoActivateSelection (Standard_False); // if selection must not be activated
-  trihedron->SetSize(20);
-  trihedron->SetColor(Quantity_NOC_GRAY30);
-  trihedron->SetArrowColor(Quantity_NOC_GRAY30);
-  trihedron->SetTextColor(Quantity_NOC_DARKSLATEBLUE);
-
-  //trihedron->SetColor(Quantity_NameOfColor::Quantity_NOC_GRAY30);
-  //trihedron->SetArrowColor(Quantity_NameOfColor::Quantity_NOC_GRAY30);
-  //trihedron->SetTextColor(Quantity_NameOfColor::Quantity_NOC_DARKSLATEBLUE);
-
-
-  aisContext->Display(trihedron, true);
-  aisContext->OpenLocalContext();
-  //aisContext->ActivateStandardMode(TopAbs_ShapeEnum::TopAbs_EDGE);
-  aisContext->ActivateStandardMode(TopAbs_EDGE);
-  aisContext->SetPixelTolerance(8);
-
-  return 0; //TCL_OK
-}
-
 void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -5416,6 +5357,5 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC22558", "OCC22558 x_vec y_vec z_vec x_dir y_dir z_dit x_pnt y_pnt z_pnt", __FILE__, OCC22558, group);
   theCommands.Add("CR23403", "CR23403 string", __FILE__, CR23403, group);
   theCommands.Add("OCC23429", "OCC23429 res shape tool [appr]", __FILE__, OCC23429, group);
-  theCommands.Add("CR23234", "CR23234 mode(0/1)", __FILE__, CR23234, group);
   return;
 }

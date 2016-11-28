@@ -26,6 +26,7 @@
 #include <AIS_FixRelation.hxx>
 #include <AIS_IdenticRelation.hxx>
 #include <AIS_InteractiveContext.hxx>
+#include <AIS_KindOfRelation.hxx>
 #include <AIS_LengthDimension.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_ListOfInteractive.hxx>
@@ -245,6 +246,24 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
     else if (aParam.IsEqual ("-hideunits"))
     {
       theAspect->MakeUnitsDisplayed (Standard_False);
+      continue;
+    }
+    else if (aParam.IsEqual ("-selected"))
+    {
+      if (!theShapeList)
+      {
+        std::cerr << "Error: unknown parameter '" << aParam << "'\n";
+        return 1;
+      }
+
+      for (TheAISContext()->InitSelected(); TheAISContext()->MoreSelected(); TheAISContext()->NextSelected())
+      {
+        TopoDS_Shape aShape = TheAISContext()->SelectedShape();
+        if (!aShape.IsNull())
+        {
+          theShapeList->Append (new AIS_Shape (aShape));
+        }
+      }
       continue;
     }
 
@@ -920,1718 +939,602 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
   return 0;
 }
 
-//=======================================================================
-//function : VAngleDimBuilder
-//purpose  : 
-//=======================================================================
-
-static int VAngleDimBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
+namespace
 {
-  Standard_Integer aCurrentIndex;
-  if (argc!=2)
+  //! If the given shapes are edges then check whether they are parallel else return true.
+  Standard_Boolean IsParallel (const TopoDS_Shape& theShape1,
+                               const TopoDS_Shape& theShape2)
   {
-    di << argv[0] << " error : wrong number of parameters.\n";
-    return 1;
-  }
-
-  TheAISContext()->CloseAllContexts();
-  aCurrentIndex =  TheAISContext()->OpenLocalContext();
-  // Set selection mode for edges.
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2));
-  di << "Select two edges coplanar or not.\n";
-
-  Standard_Integer anArgsNum = 5;
-  const char *aBuffer[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **anArgsVec = (const char **) aBuffer;
-  while (ViewerMainLoop (anArgsNum, anArgsVec)) { }
-
-  TopoDS_Shape aFirstShape;
-  for (TheAISContext()->InitSelected(); TheAISContext()->MoreSelected(); TheAISContext()->NextSelected())
-  {
-    aFirstShape = TheAISContext()->SelectedShape();
-  }
-
-  if (aFirstShape.IsNull())
-  {
-    di << argv[0] << " error : no picked shape.\n";
-    return 1;
-  }
-
-  if (aFirstShape.ShapeType()== TopAbs_EDGE)
-  {
-    while (ViewerMainLoop (anArgsNum, anArgsVec)) { }
-
-    TopoDS_Shape aSecondShape;
-    for (TheAISContext()->InitSelected(); TheAISContext()->MoreSelected(); TheAISContext()->NextSelected())
+    if (theShape1.ShapeType() == TopAbs_EDGE
+     && theShape2.ShapeType() == TopAbs_EDGE)
     {
-      aSecondShape = TheAISContext()->SelectedShape();
+      BRepExtrema_ExtCC aDelta (TopoDS::Edge (theShape1),
+                                TopoDS::Edge (theShape2));
+      return aDelta.IsParallel();
     }
 
-    if (aSecondShape.IsNull())
+    return Standard_True;
+  }
+}
+//=======================================================================
+//function : VRelationBuilder
+//purpose  : Command for building realation presentation
+//=======================================================================
+static int VRelationBuilder (Draw_Interpretor& /*theDi*/,
+                             Standard_Integer  theArgsNb,
+                             const char**      theArgs)
+{
+  if (theArgsNb < 2)
+  {
+    std::cerr << "Error: wrong number of arguments.\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aName (theArgs[1]);
+  TCollection_AsciiString aType (theArgs[2]);
+
+  AIS_KindOfRelation aKindOfRelation = AIS_KOR_NONE;
+  if (aType == "-concentric")
+  {
+    aKindOfRelation = AIS_KOR_CONCENTRIC;
+  }
+  else if (aType == "-equaldistance")
+  {
+    aKindOfRelation = AIS_KOR_EQUALDISTANCE;
+  }
+  else if (aType == "-equalradius")
+  {
+    aKindOfRelation = AIS_KOR_EQUALRADIUS;
+  }
+  else if (aType == "-fix")
+  {
+    aKindOfRelation = AIS_KOR_FIX;
+  }
+  else if (aType == "-identic")
+  {
+    aKindOfRelation = AIS_KOR_IDENTIC;
+  }
+  else if (aType == "-offset")
+  {
+    aKindOfRelation = AIS_KOR_OFFSET;
+  }
+  else if (aType == "-parallel")
+  {
+    aKindOfRelation = AIS_KOR_PARALLEL;
+  }
+  else if (aType == "-perpendicular")
+  {
+    aKindOfRelation = AIS_KOR_PERPENDICULAR;
+  }
+  else if (aType == "-tangent")
+  {
+    aKindOfRelation = AIS_KOR_TANGENT;
+  }
+  else if (aType == "-symmetric")
+  {
+    aKindOfRelation = AIS_KOR_SYMMETRIC;
+  }
+
+  TopTools_ListOfShape aShapes;
+  ViewerTest::GetSelectedShapes (aShapes);
+
+  // Build relation.
+  Handle(AIS_Relation) aRelation;
+  switch (aKindOfRelation)
+  {
+    case AIS_KOR_CONCENTRIC:
     {
-      di << argv[0] << " error : no picked shape.\n";
+      if (aShapes.Extent() != 2)
+      {
+        std::cerr << "Error: Wrong number of selected shapes.\n";
+        return 1;
+      }
+
+      const TopoDS_Shape& aShape1 = aShapes.First();
+      const TopoDS_Shape& aShape2 = aShapes.Last();
+
+      if (!(aShape1.ShapeType() == TopAbs_EDGE
+         && aShape2.ShapeType() == TopAbs_EDGE))
+      {
+        std::cerr << "Syntax error: selected shapes are not edges.\n";
+        return 1;
+      }
+
+      BRepAdaptor_Curve aCurve1 (TopoDS::Edge (aShape1));
+      gp_Circ           aCircle1 = aCurve1.Circle();
+      gp_Pnt            aCenter1 = aCircle1.Location();
+      gp_Pnt            B = aCurve1.Value (0.25);
+      gp_Pnt            C = aCurve1.Value (0.75);
+      GC_MakePlane      aMkPlane (aCenter1, B, C);
+
+      aRelation = new AIS_ConcentricRelation (aShape1, aShape2, aMkPlane.Value());
+
+      break;
+    }
+
+    case AIS_KOR_EQUALDISTANCE:
+    {
+      if (aShapes.Extent() != 4)
+      {
+        std::cerr << "Error: Wrong number of selected shapes.\n";
+        return 1;
+      }
+
+      TopoDS_Shape aSelectedShapes[4];
+
+      Standard_Integer anIdx = 0;
+      TopTools_ListOfShape::Iterator anIter (aShapes);
+      for (; anIter.More(); anIter.Next(), ++anIdx)
+      {
+        aSelectedShapes[anIdx] = anIter.Value();
+      }
+
+      if (!IsParallel (aSelectedShapes[0], aSelectedShapes[1])
+       || !IsParallel (aSelectedShapes[2], aSelectedShapes[3]))
+      {
+        std::cerr << "Syntax error: non parallel edges.\n";
+        return 1;
+      }
+
+      gp_Pnt A, B, C;
+      if (aSelectedShapes[0].ShapeType() == TopAbs_EDGE)
+      {
+        TopoDS_Vertex Va, Vb;
+        TopExp::Vertices (TopoDS::Edge (aSelectedShapes[0]), Va, Vb);
+        A = BRep_Tool::Pnt (Va);
+        B = BRep_Tool::Pnt (Vb);
+
+        if (aSelectedShapes[1].ShapeType() == TopAbs_EDGE)
+        {
+          TopoDS_Vertex Vc, Vd;
+          TopExp::Vertices (TopoDS::Edge (aSelectedShapes[1]), Vc, Vd);
+          C = BRep_Tool::Pnt (Vc);
+        }
+        else
+        {
+          C = BRep_Tool::Pnt (TopoDS::Vertex (aSelectedShapes[1]));
+        }
+      }
+      else
+      {
+        A = BRep_Tool::Pnt (TopoDS::Vertex (aSelectedShapes[0]));
+
+        if (aSelectedShapes[1].ShapeType() == TopAbs_EDGE)
+        {
+          TopoDS_Vertex Vb, Vc;
+          TopExp::Vertices (TopoDS::Edge (aSelectedShapes[1]), Vb, Vc);
+          B = BRep_Tool::Pnt (Vb);
+          C = BRep_Tool::Pnt (Vc);
+
+        }
+        else
+        {
+          B = BRep_Tool::Pnt (TopoDS::Vertex (aSelectedShapes[1]));
+          C.SetX (B.X() + 5.0);
+          C.SetY (B.Y() + 5.0);
+          C.SetZ (B.Z() + 5.0);
+
+        }
+      }
+
+      GC_MakePlane aMkPlane (A, B, C);
+      aRelation = new AIS_EqualDistanceRelation (aSelectedShapes[0],
+                                                 aSelectedShapes[1],
+                                                 aSelectedShapes[2],
+                                                 aSelectedShapes[3],
+                                                 aMkPlane.Value());
+
+      break;
+    }
+
+    case AIS_KOR_EQUALRADIUS:
+    {
+      if (aShapes.Extent() != 2 && aShapes.Extent() != 1)
+      {
+        std::cerr << "Error: Wrong number of selected shapes.\n";
+        return 1;
+      }
+
+      const TopoDS_Shape& aShape1 = aShapes.First();
+      const TopoDS_Shape& aShape2 = (aShapes.Extent() == 2) ? aShapes.Last() : aShape1;
+      if (!(aShape1.ShapeType() == TopAbs_EDGE
+         && aShape2.ShapeType() == TopAbs_EDGE))
+      {
+        std::cerr << "Syntax error: selected shapes are not edges.\n";
+        return 1;
+      }
+
+      TopoDS_Edge       anEdge1 = TopoDS::Edge (aShape1);
+      TopoDS_Edge       anEdge2 = TopoDS::Edge (aShape2);
+      BRepAdaptor_Curve aCurve1 (anEdge1);
+      gp_Pnt            A = aCurve1.Value (0.1);
+      gp_Pnt            B = aCurve1.Value (0.5);
+      gp_Pnt            C = aCurve1.Value (0.9);
+      GC_MakePlane      aMkPlane (A, B, C);
+
+      aRelation = new AIS_EqualRadiusRelation (anEdge1, anEdge2, aMkPlane.Value());
+      break;
+    }
+
+    case AIS_KOR_FIX:
+    {
+      if (aShapes.Extent() != 1)
+      {
+        std::cerr << "Error: Wrong number of selected shapes.\n";
+        return 1;
+      }
+
+      const TopoDS_Shape& aShape = aShapes.First();
+      if (aShape.ShapeType() != TopAbs_EDGE)
+      {
+        std::cerr << "Syntax error: selected shapes are not edges.\n";
+        return 1;
+      }
+
+      TopoDS_Edge anEdge = TopoDS::Edge (aShape);
+      BRepAdaptor_Curve aCurve (anEdge);
+      gp_Pnt A = aCurve.Value(0.1);
+      gp_Pnt B = aCurve.Value(0.5);
+      gp_Pnt D = aCurve.Value(0.9);
+      gp_Pnt C (B.X() + 5.0, B.Y() + 5.0, B.Z() + 5.0);
+      GC_MakePlane aMkPlane (A, D, C);
+
+      aRelation = new AIS_FixRelation (anEdge, aMkPlane.Value());
+      break;
+    }
+
+    case AIS_KOR_IDENTIC:
+    {
+      if (aShapes.Extent() != 2)
+      {
+        std::cerr << "Error: Wrong number of selected shapes.\n";
+        return 1;
+      }
+
+      const TopoDS_Shape& aShapeA = aShapes.First();
+      const TopoDS_Shape& aShapeB = aShapes.Last();
+
+      gp_Pnt A,B,C;
+      if (aShapeA.ShapeType() == TopAbs_EDGE)
+      {
+        TopoDS_Edge anEdgeA = TopoDS::Edge (aShapeA);
+        BRepAdaptor_Curve aCurveA (anEdgeA);
+
+        A = aCurveA.Value (0.1);
+        B = aCurveA.Value (0.9);
+        C.SetX (B.X() + 5.0);
+        C.SetY (B.Y() + 5.0);
+        C.SetZ (B.Z() + 5.0);
+      }
+      else if (aShapeA.ShapeType() == TopAbs_VERTEX)
+      {
+        if (aShapeB.ShapeType() == TopAbs_EDGE)
+        {
+          TopoDS_Edge anEdgeB = TopoDS::Edge (aShapeB);
+          BRepAdaptor_Curve aCurveB (anEdgeB);
+
+          A = aCurveB.Value (0.1);
+          B = aCurveB.Value (0.9);
+          C.SetX (B.X() + 5.0);
+          C.SetY (B.Y() + 5.0);
+          C.SetZ (B.Z() + 5.0);
+        }
+        else if (aShapeB.ShapeType() == TopAbs_FACE)
+        {
+          TopoDS_Face aFaceB = TopoDS::Face (aShapeB);
+          TopExp_Explorer aFaceExp (aFaceB, TopAbs_EDGE);
+          TopoDS_Edge anEdgeFromB = TopoDS::Edge (aFaceExp.Current());
+          BRepAdaptor_Curve aCurveB (anEdgeFromB);
+          A = aCurveB.Value (0.1);
+          B = aCurveB.Value (0.5);
+          C = aCurveB.Value (0.9);
+        }
+        else
+        {
+          A = BRep_Tool::Pnt (TopoDS::Vertex (aShapeA));
+          B = BRep_Tool::Pnt (TopoDS::Vertex (aShapeB));
+          C.SetX (B.X() + 5.0);
+          C.SetY (B.Y() + 5.0);
+          C.SetZ (B.Z() + 5.0);
+        }
+      }
+      else
+      {
+        TopoDS_Face aFaceA = TopoDS::Face (aShapeA);
+        TopExp_Explorer aFaceExp (aFaceA, TopAbs_EDGE);
+        TopoDS_Edge anEdgeFromA = TopoDS::Edge (aFaceExp.Current());
+        BRepAdaptor_Curve aCurveA (anEdgeFromA);
+        A = aCurveA.Value (0.1);
+        B = aCurveA.Value (0.5);
+        C = aCurveA.Value (0.9);
+      }
+
+      GC_MakePlane aMkPlane (A ,B ,C);
+      aRelation = new AIS_IdenticRelation (aShapeA, aShapeB, aMkPlane.Value());
+      break;
+    }
+
+    case AIS_KOR_OFFSET:
+    {
+      if (aShapes.Extent() != 2)
+      {
+        std::cerr << "Error: Wrong number of selected shapes.\n";
+        return 1;
+      }
+
+      const TopoDS_Shape& aShape1 = aShapes.First();
+      const TopoDS_Shape& aShape2 = aShapes.Last();
+      if (!(aShape1.ShapeType() == TopAbs_FACE
+         && aShape2.ShapeType() == TopAbs_FACE))
+      {
+        std::cerr << "Syntax error: selected shapes are not faces.\n";
+        return 1;
+      }
+
+      TopoDS_Face aFace1 = TopoDS::Face (aShape1);
+      TopoDS_Face aFace2 = TopoDS::Face (aShape2);
+
+      BRepExtrema_ExtFF aDelta (aFace1, aFace2);
+      if (!aDelta.IsParallel())
+      {
+        std::cerr << "Syntax error: the faces are not parallel.\n";
+        return 1;
+      }
+
+      Standard_Real aDist = Round (sqrt (aDelta.SquareDistance (1)) * 10.0) / 10.0;
+      TCollection_ExtendedString aMessage (TCollection_ExtendedString ("offset=") + TCollection_ExtendedString (aDist));
+
+      aRelation = new AIS_OffsetDimension (aFace1, aFace2, aDist, aMessage);
+
+      break;
+    }
+
+    case AIS_KOR_PARALLEL:
+    {
+      if (aShapes.Extent() != 2)
+      {
+        std::cerr << "Error: wrong number of selected shapes.\n";
+        return 1;
+      }
+
+      const TopoDS_Shape& aShapeA = aShapes.First();
+      const TopoDS_Shape& aShapeB = aShapes.Last();
+      if (aShapeA.ShapeType() == TopAbs_EDGE)
+      {
+        TopoDS_Edge anEdgeA = TopoDS::Edge (aShapeA);
+        TopoDS_Edge anEdgeB = TopoDS::Edge (aShapeB);
+        BRepExtrema_ExtCC aDeltaEdge (anEdgeA, anEdgeB);
+
+        if (!aDeltaEdge.IsParallel())
+        {
+          std::cerr << "Error: the edges are not parallel.\n";
+          return 1;
+        }
+
+        BRepAdaptor_Curve aCurveA (anEdgeA);
+        BRepAdaptor_Curve aCurveB (anEdgeB);
+
+        gp_Pnt A = aCurveA.Value (0.1);
+        gp_Pnt B = aCurveA.Value (0.9);
+        gp_Pnt C = aCurveB.Value (0.5);
+
+        GC_MakePlane aMkPlane (A, B, C);
+
+        aRelation = new AIS_ParallelRelation (anEdgeA, anEdgeB, aMkPlane.Value());
+      }
+      else
+      {
+        TopoDS_Face aFaceA = TopoDS::Face (aShapeA);
+        TopoDS_Face aFaceB = TopoDS::Face (aShapeB);
+
+        BRepExtrema_ExtFF aDeltaFace (aFaceA, aFaceB);
+        if (!aDeltaFace.IsParallel())
+        {
+          std::cerr << "Error: the faces are not parallel.\n";
+          return 1;
+        }
+
+        TopExp_Explorer aFaceExpA (aFaceA, TopAbs_EDGE);
+        TopExp_Explorer aFaceExpB (aFaceB, TopAbs_EDGE);
+
+        TopoDS_Edge anEdgeA = TopoDS::Edge (aFaceExpA.Current());
+        TopoDS_Edge anEdgeB = TopoDS::Edge (aFaceExpB.Current());
+
+        BRepAdaptor_Curve aCurveA (anEdgeA);
+        BRepAdaptor_Curve aCurveB (anEdgeB);
+        gp_Pnt A = aCurveA.Value (0.1);
+        gp_Pnt B = aCurveA.Value (0.9);
+        gp_Pnt C = aCurveB.Value (0.5);
+
+        GC_MakePlane aMkPlane (A, B, C);
+
+        aRelation = new AIS_ParallelRelation (aFaceA, aFaceB, aMkPlane.Value());
+      }
+      break;
+    }
+
+    case AIS_KOR_PERPENDICULAR:
+    {
+      if (aShapes.Extent() != 2)
+      {
+        std::cerr << "Error: Wrong number of selected shapes.\n";
+        return 1;
+      }
+
+      const TopoDS_Shape& aShapeA = aShapes.First();
+      const TopoDS_Shape& aShapeB = aShapes.Last();
+
+      if (aShapeA.ShapeType() == TopAbs_EDGE)
+      {
+        TopoDS_Edge anEdgeA = TopoDS::Edge (aShapeA);
+        TopoDS_Edge anEdgeB = TopoDS::Edge (aShapeB);
+
+        BRepAdaptor_Curve aCurveA (anEdgeA);
+        BRepAdaptor_Curve aCurveB (anEdgeB);
+
+        gp_Pnt A = aCurveA.Value (0.1);
+        gp_Pnt B = aCurveA.Value (0.9);
+        gp_Pnt C = aCurveB.Value (0.5);
+
+        GC_MakePlane aMkPlane (A, B, C);
+
+        aRelation = new AIS_PerpendicularRelation (anEdgeA, anEdgeB, aMkPlane.Value());
+      }
+      else
+      {
+        TopoDS_Face aFaceA = TopoDS::Face (aShapeA);
+        TopoDS_Face aFaceB = TopoDS::Face (aShapeB);
+
+        TopExp_Explorer aFaceExpA (aFaceA, TopAbs_EDGE);
+        TopExp_Explorer aFaceExpB (aFaceB, TopAbs_EDGE);
+
+        TopoDS_Edge anEdgeA = TopoDS::Edge (aFaceExpA.Current());
+        TopoDS_Edge anEdgeB = TopoDS::Edge (aFaceExpB.Current());
+
+        BRepAdaptor_Curve aCurveA (anEdgeA);
+        BRepAdaptor_Curve aCurveB (anEdgeB);
+
+        gp_Pnt A = aCurveA.Value (0.1);
+        gp_Pnt B = aCurveA.Value (0.9);
+        gp_Pnt C = aCurveB.Value (0.5);
+
+        GC_MakePlane aMkPlane (A, B, C);
+
+        aRelation = new AIS_PerpendicularRelation (aFaceA, aFaceB);
+      }
+
+      break;
+    }
+
+    case AIS_KOR_TANGENT:
+    {
+      if (aShapes.Extent() != 2)
+      {
+        std::cerr << "Error: Wrong number of selected shapes.\n";
+        return 1;
+      }
+
+      const TopoDS_Shape& aShapeA = aShapes.First();
+      const TopoDS_Shape& aShapeB = aShapes.Last();
+
+      if (aShapeA.ShapeType() == TopAbs_EDGE)
+      {
+        TopoDS_Edge anEdgeA = TopoDS::Edge (aShapeA);
+        TopoDS_Edge anEdgeB = TopoDS::Edge (aShapeB);
+
+        BRepAdaptor_Curve aCurveA (anEdgeA);
+        BRepAdaptor_Curve aCurveB (anEdgeB);
+    
+        gp_Pnt A = aCurveA.Value (0.1);
+        gp_Pnt B = aCurveA.Value (0.9);
+        gp_Pnt C = aCurveB.Value (0.5);
+
+        GC_MakePlane aMkPlane (A,B,C);
+
+        aRelation = new AIS_TangentRelation (anEdgeA, anEdgeB, aMkPlane.Value());
+      }
+      else
+      {
+        TopoDS_Face aFaceA = TopoDS::Face (aShapeA);
+        TopoDS_Face aFaceB = TopoDS::Face (aShapeB);
+
+        TopExp_Explorer aFaceExpA (aFaceA, TopAbs_EDGE);
+        TopExp_Explorer aFaceExpB (aFaceB, TopAbs_EDGE);
+    
+        TopoDS_Edge anEdgeA = TopoDS::Edge (aFaceExpA.Current());
+        TopoDS_Edge anEdgeB = TopoDS::Edge (aFaceExpB.Current());
+
+        BRepAdaptor_Curve aCurveA (anEdgeA);
+        BRepAdaptor_Curve aCurveB (anEdgeB);
+
+        gp_Pnt A = aCurveA.Value (0.1);
+        gp_Pnt B = aCurveA.Value (0.9);
+        gp_Pnt C = aCurveB.Value (0.5);
+
+        GC_MakePlane aMkPlane (A,B,C);
+
+        aRelation = new AIS_TangentRelation (aFaceA, aFaceB, aMkPlane.Value());
+      }
+      break;
+    }
+
+    case AIS_KOR_SYMMETRIC:
+    {
+      if (aShapes.Extent() != 3)
+      {
+        std::cerr << "Error: Wrong number of selected shapes.\n";
+        return 1;
+      }
+
+      TopoDS_Shape aSelectedShapes[3];
+      Standard_Integer anIdx = 0;
+      TopTools_ListOfShape::Iterator anIter (aShapes);
+      for (; anIter.More(); anIter.Next(), ++anIdx)
+      {
+        aSelectedShapes[anIdx] = anIter.Value();
+      }
+
+      TopoDS_Edge anEdgeA = TopoDS::Edge (aSelectedShapes[0]);
+      if (aSelectedShapes[1].ShapeType() == TopAbs_EDGE)
+      {
+        // 1 - edge,  2 - edge, 3 - edge.
+        TopoDS_Edge anEdgeB = TopoDS::Edge (aSelectedShapes[1]);
+        TopoDS_Edge anEdgeC = TopoDS::Edge (aSelectedShapes[2]);
+
+        BRepExtrema_ExtCC aDeltaEdgeAB (anEdgeA, anEdgeB);
+        BRepExtrema_ExtCC aDeltaEdgeAC (anEdgeA, anEdgeC);
+
+        if (!aDeltaEdgeAB.IsParallel())
+        {
+          std::cerr << "Syntax error: the edges are not parallel.\n";
+          return 1;
+        }
+        if (!aDeltaEdgeAC.IsParallel())
+        {
+          std::cerr << "Syntax error: the edges are not parallel.\n";
+          return 1;
+        }
+
+        TopoDS_Vertex Va, Vb, Vc, Vd;
+        TopExp::Vertices (anEdgeB, Va, Vb);
+        TopExp::Vertices (anEdgeC, Vc, Vd);
+        gp_Pnt A = BRep_Tool::Pnt (Va);
+        gp_Pnt B = BRep_Tool::Pnt (Vc);
+        gp_Pnt C = Get3DPointAtMousePosition();
+
+        GC_MakePlane aMkPlane (A, B, C);
+
+        aRelation = new AIS_SymmetricRelation (anEdgeA, anEdgeB, anEdgeC, aMkPlane.Value());
+      }
+      else
+      {
+        // 1 - edge, 2 - vertex, 3 - vertex
+        TopoDS_Vertex aVertexB = TopoDS::Vertex (aSelectedShapes[1]);
+        TopoDS_Vertex aVertexC = TopoDS::Vertex (aSelectedShapes[2]);
+
+        gp_Pnt B = BRep_Tool::Pnt (aVertexB);
+        gp_Pnt C = BRep_Tool::Pnt (aVertexC);
+
+        TopoDS_Vertex Va, Vb;
+        TopExp::Vertices (anEdgeA, Va, Vb);
+        gp_Pnt A = BRep_Tool::Pnt (Va);
+
+        GC_MakePlane aMkPlane(A, B, C);
+        aRelation = new AIS_SymmetricRelation (anEdgeA, aVertexB, aVertexC, aMkPlane.Value());
+      }
+
+      break;
+    }
+
+    case AIS_KOR_NONE:
+    {
+      std::cerr << "Error: Unknown type of relation!\n";
       return 1;
     }
-
-    if (aSecondShape.ShapeType() != TopAbs_EDGE)
-    {
-      di << argv[0] <<" error: you should have selected an edge.\n"; return 1;
-    }
-
-    // Close local context to draw dimension in the neutral point.
-    TheAISContext()->CloseLocalContext (aCurrentIndex);
-
-    // Construct the dimension.
-    Handle (AIS_AngleDimension) aDim= new AIS_AngleDimension (TopoDS::Edge(aFirstShape) ,TopoDS::Edge(aSecondShape));
-    VDisplayAISObject (argv[1], aDim);
-  }
-  else
-  {
-    di << argv[0] << " error: you must select 2 edges.\n";
-    return 1;
   }
 
+  VDisplayAISObject (aName, aRelation);
   return 0;
-}
-
-//==============================================================================
-//function : VDiameterDim
-//purpose  : Display the diameter dimension of a face or an edge.
-//Draw arg : vdiameterdim Name 
-//==============================================================================
-
-static int VDiameterDimBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
-{
-  // Declarations
-  Standard_Integer aCurrentIndex;
-
-  // Verification
-  if (argc != 2)
-  {
-    di<<" vdiameterdim error\n";
-    return 1;
-  }
-
-  // Close all local contexts
-  TheAISContext()->CloseAllContexts();
-  // Open local context and get its index for recovery
-  TheAISContext()->OpenLocalContext();
-  aCurrentIndex = TheAISContext()->IndexOfCurrentLocal();
-  
-  // Activate 'edge' selection mode
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2) );
-  di<<" Select an circled edge.\n";
-  
-  // Loop that will handle the picking.
-  Standard_Integer argcc = 5;
-  const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argvv = (const char **) buff;
-  while (ViewerMainLoop( argcc, argvv) ) { }
-  // end of the loop.
-  
-  TopoDS_Shape aShape;
-  for(TheAISContext()->InitSelected(); TheAISContext()->MoreSelected(); TheAISContext()->NextSelected())
-  {
-    aShape = TheAISContext()->SelectedShape();
-  }
-
-  if (aShape.IsNull())
-  {
-    di << argv[0] << ": no shape is selected.\n";
-    return 1;
-  }
-
-  if (aShape.ShapeType() != TopAbs_EDGE)
-  {
-    di << " vdiameterdim error: the selection of a face or an edge was expected.\n";
-    return 1;
-  }
-
-  // Compute the radius
-  BRepAdaptor_Curve aCurve (TopoDS::Edge (aShape));
-
-  if (aCurve.GetType() != GeomAbs_Circle)
-  {
-    di << "vdiameterdim error: the edge is not a circular one.\n";
-    return 1;
-  }
-
-  // Construction of the diameter dimension.
-  TheAISContext()->CloseLocalContext (aCurrentIndex);
-  Handle (AIS_DiameterDimension) aDiamDim= new AIS_DiameterDimension (aShape);
-  VDisplayAISObject (argv[1], aDiamDim);
-
-  return 0;
-}
-
-
-//==============================================================================
-// Fonction  vconcentric
-// -----------------  Uniquement par selection dans le viewer.
-//==============================================================================
-
-//==============================================================================
-//function : VConcentric
-//purpose  : Display the concentric relation between two surfaces.
-//Draw arg : vconcentric Name
-//==============================================================================
-static int VConcentricBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
-{
-  // Declarations
-  Standard_Integer myCurrentIndex;
-  
-  // Verification
-  if (argc!=2) {di<<"vconcentric  error.\n";return 1;}
-  // Fermeture des contextes locaux
-  TheAISContext()->CloseAllContexts();
-  // Ouverture d'un contexte local et recuperation de son index.
-  TheAISContext()->OpenLocalContext();
-  myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-  
-  // On active les modes de selections Edges et Faces.
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2) );
-  di<<" Select a circled edge.\n";
-  
-  // Boucle d'attente waitpick.
-  Standard_Integer argcc = 5;
-  const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argvv = (const char **) buff;
-  while (ViewerMainLoop( argcc, argvv) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeA;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeA = TheAISContext()->SelectedShape();
-  }
-  // ShapeA est un edge
-  // ==================
-  if (ShapeA.ShapeType()==TopAbs_EDGE  ) {
-    TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(4) );
-    di<<" Select an edge.\n";
-    
-    // Boucle d'attente waitpick.
-    Standard_Integer argccc = 5;
-    const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-    const char **argvvv = (const char **) bufff;
-    while (ViewerMainLoop( argccc, argvvv) ) { }
-    // fin de la boucle
-    
-    TopoDS_Shape ShapeB;
-    for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-      ShapeB = TheAISContext()->SelectedShape();
-    }
-    if (ShapeB.ShapeType()!=TopAbs_EDGE  ) {
-      di<<" vconcentric error: select an edge.\n";return 1;
-    }
-     
-    // Construction du plane.
-    // On recupere le centre du cercle A.
-    BRepAdaptor_Curve theCurveA(TopoDS::Edge(ShapeA) );
-    gp_Circ theCircleA=theCurveA.Circle();
-    gp_Pnt theCenterA=theCircleA.Location();
-    // On recupere deux points sur le cercle A
-    gp_Pnt B= theCurveA.Value(0.25);
-    gp_Pnt C= theCurveA.Value(0.75);
-    // Construction du plane.
-    GC_MakePlane MkPlane(theCenterA ,B ,C );
-    Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-    
-    // Fermeture du context local
-    TheAISContext()->CloseLocalContext(myCurrentIndex);
-    
-    Handle (AIS_ConcentricRelation) myConcentry= new AIS_ConcentricRelation(ShapeA, ShapeB, theGeomPlane );
-    TheAISContext()->Display(myConcentry );
-    GetMapOfAIS().Bind (myConcentry,argv[1]);
-  }
-  
-  
-  else {
-    di<<" vconcentric  error: the selection of a face or an edge was expected.\n";return 1;
-  }
-  
-  return 0;
-  
-  
-  
-  
-}
-
-//==============================================================================
-//function : VEqualDistRelation
-//purpose  : 
-//Draw arg : vdiameterdim Name DiameterValue
-//==============================================================================
-static int VEqualDistRelation(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
-{
-  // Declarations
-  Standard_Integer myCurrentIndex;
-  
-  // Verification
-  if (argc!=2) {di<<" vequaldistrelation error: no arguments allowed.\n";return 1;}
-  
-  // Fermeture des contextes locaux
-  TheAISContext()->CloseAllContexts();
-  
-  // Ouverture d'un contexte local et recuperation de son index.
-  TheAISContext()->OpenLocalContext();
-  myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-  
-  // On active les modes de selections Edges et Vertexes.
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2) );
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(1) );
-  di<<" Select an edge or a vertex\n";
-  
-  // Boucle d'attente waitpick.
-  Standard_Integer argc1 = 5;
-  const char *buf1[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argv1 = (const char **) buf1;
-  while (ViewerMainLoop( argc1, argv1) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeA;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeA = TheAISContext()->SelectedShape();
-  }
-  
-  di<<" Select an edge or a vertex\n";
-  // Boucle d'attente waitpick.
-  Standard_Integer argc2 = 5;
-  const char *buf2[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argv2 = (const char **) buf2;
-  while (ViewerMainLoop( argc2, argv2) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeB;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeB = TheAISContext()->SelectedShape();
-  }
-  
-  // Verification des resultats.
-  if (ShapeA.ShapeType()==TopAbs_EDGE && ShapeB.ShapeType()==TopAbs_EDGE  ) {
-    // A et B sont des edges ils doivent etre paralleles
-    BRepExtrema_ExtCC myDeltaEdge (TopoDS::Edge(ShapeA) ,TopoDS::Edge(ShapeB)  );
-    // on verifie qu'ils sont pas paralleles.
-    if (!myDeltaEdge.IsParallel() ) {di<<"vequaldist error: non parallel edges.\n";return 1; }
-    
-  }
-  
-  
-  di<<" Select an edge or a vertex\n";
-  // Boucle d'attente waitpick.
-  Standard_Integer argc3 = 5;
-  const char *buf3[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argv3 = (const char **) buf3;
-  while (ViewerMainLoop( argc3, argv3) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeC;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeC = TheAISContext()->SelectedShape();
-  }
-  
-  di<<" Select an edge or a vertex\n";
-  // Boucle d'attente waitpick.
-  Standard_Integer argc4 = 5;
-  const char *buf4[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argv4 = (const char **) buf4;
-  while (ViewerMainLoop( argc4, argv4) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeD;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeD = TheAISContext()->SelectedShape();
-  }
-  // Verification des resultats.
-  if (ShapeC.ShapeType()==TopAbs_EDGE && ShapeD.ShapeType()==TopAbs_EDGE  ) {
-    // C et D sont des edges ils doivent etre paralleles
-    BRepExtrema_ExtCC myDeltaEdge2 (TopoDS::Edge(ShapeC) ,TopoDS::Edge(ShapeD)  );
-    // on verifie qu'ils sont pas paralleles.
-    if (!myDeltaEdge2.IsParallel() ) {di<<"vequaldist error: non parallel edges.\n";return 1; }
-    
-  }
-  
-  // Creation du plan porteur de la contrainte.Methode lourde!
-  gp_Pnt A,B,C;
-  if (ShapeA.ShapeType()==TopAbs_EDGE) {
-    // A est un edge
-    TopoDS_Vertex Va,Vb;
-    TopExp::Vertices (TopoDS::Edge(ShapeA) ,Va ,Vb );
-    A=BRep_Tool::Pnt(Va);
-    B=BRep_Tool::Pnt(Vb);
-    
-    if (ShapeB.ShapeType()==TopAbs_EDGE) {
-      // B est un edge aussi
-      TopoDS_Vertex Vc,Vd;
-      TopExp::Vertices (TopoDS::Edge(ShapeB) ,Vc ,Vd );
-      // besoin que de 1 point.
-      C=BRep_Tool::Pnt(Vc);
-      
-    }
-    else {
-      // B est un vertex
-      C=BRep_Tool::Pnt(TopoDS::Vertex(ShapeB) );
-    }
-  }
-  else {
-    // A est un vertex
-    A=BRep_Tool::Pnt(TopoDS::Vertex(ShapeA) );
-    
-    if (ShapeB.ShapeType()==TopAbs_EDGE ) {
-      // B est un edge 
-      TopoDS_Vertex Vb,Vc;
-      TopExp::Vertices (TopoDS::Edge(ShapeB) ,Vb ,Vc );
-      // besoin que de 2 points.
-      B=BRep_Tool::Pnt(Vb);
-      C=BRep_Tool::Pnt(Vc);
-      
-    }
-    else {
-      // B est un vertex
-      B=BRep_Tool::Pnt(TopoDS::Vertex(ShapeB) );
-      C.SetX(B.X()+5.);
-      C.SetY(B.Y()+5.);
-      C.SetZ(B.Z()+5.);
-      
-    }
-  }
-  
-  // Fermeture du context local.
-  TheAISContext()->CloseLocalContext(myCurrentIndex);
-  
-  // construction du plane 
-  GC_MakePlane MkPlane(A ,B ,C );
-  Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-  
-  // Construction de l'AIS_EqualDistanceRelation
-  Handle (AIS_EqualDistanceRelation ) myRelation= new AIS_EqualDistanceRelation (ShapeA, ShapeB, ShapeC ,ShapeD , theGeomPlane );
-  TheAISContext()->Display(myRelation );
-  GetMapOfAIS().Bind (myRelation,argv[1]);
-  
-
-  
-  return 0;
-  
-}
-
-//==============================================================================
-//function : VEqualRadiusRelation
-//purpose  : 
-//Draw arg : vdiameterdim Name DiameterValue
-//==============================================================================
-static int VEqualRadiusRelation(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
-{
-  // Declarations
-  Standard_Integer myCurrentIndex;
-  
-  // Verification
-  if (argc!=2) {di<<" vequalrad error: no arguments allowed.\n";return 1;}
-  
-  // Fermeture des contextes locaux
-  TheAISContext()->CloseAllContexts();
-  
-  // Ouverture d'un contexte local et recuperation de son index.
-  TheAISContext()->OpenLocalContext();
-  myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-  
-  // On active les modes de selections Edges.
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2) );
-  di<<" Select an circled edge \n";
-  
-  // Boucle d'attente waitpick.
-  Standard_Integer argc1 = 5;
-  const char *buf1[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argv1 = (const char **) buf1;
-  while (ViewerMainLoop( argc1, argv1) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeA;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeA = TheAISContext()->SelectedShape();
-  }
-  
-  di<<" Select the last circled edge.\n";
-  // Boucle d'attente waitpick.
-  Standard_Integer argc2 = 5;
-  const char *buf2[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argv2 = (const char **) buf2;
-  while (ViewerMainLoop( argc2, argv2) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeB;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeB = TheAISContext()->SelectedShape();
-  }
-  // creation du plan qui contient la contrainte.
-  TopoDS_Edge EdgeA=TopoDS::Edge(ShapeA);
-  TopoDS_Edge EdgeB=TopoDS::Edge(ShapeB);
-  BRepAdaptor_Curve theCurveA(EdgeA);
-  // On recupere 3 points A,B,C de la curve.
-  gp_Pnt A=theCurveA.Value(0.1);
-  gp_Pnt B=theCurveA.Value(0.5);
-  gp_Pnt C=theCurveA.Value(0.9);
-  
-  // fermeture du contexte local.
-  TheAISContext()->CloseLocalContext(myCurrentIndex);
-  
-  // Creation du plane.
-  GC_MakePlane MkPlane (A ,B ,C );
-  Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-  // Construction de l'AIS_EqualRadiusRelation
-  Handle (AIS_EqualRadiusRelation ) myRelation= new AIS_EqualRadiusRelation (EdgeA,EdgeB, theGeomPlane );
-  TheAISContext()->Display(myRelation );
-  GetMapOfAIS().Bind (myRelation,argv[1]);
-  
-  return 0;
-  
-}
-
-
-//==============================================================================
-//function : VFixRelation
-//purpose  : 
-//Draw arg : vdiameterdim Name DiameterValue
-//==============================================================================
-static int VFixRelation(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
-{
-  // Declarations
-  Standard_Integer myCurrentIndex;
-  
-  // Verification
-  if (argc!=2) {di<<" vfix  error: no arguments allowed.\n";return 1;}
-  
-  // Fermeture des contextes locaux
-  TheAISContext()->CloseAllContexts();
-  
-  // Ouverture d'un contexte local et recuperation de son index.
-  TheAISContext()->OpenLocalContext();
-  myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-  
-  // On active les modes de selections edge.
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2) );
-  di<<" Select an edge. \n";
-  
-  // Boucle d'attente waitpick.
-  Standard_Integer argc1 = 5;
-  const char *buf1[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argv1 = (const char **) buf1;
-  while (ViewerMainLoop( argc1, argv1) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeA;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeA = TheAISContext()->SelectedShape();
-  }
-  
-  // creation du plan qui contient la contrainte.
-  TopoDS_Edge EdgeA=TopoDS::Edge(ShapeA);
-  BRepAdaptor_Curve theCurveA(EdgeA);
-  // On recupere 3 points A,B,C de la curve.
-  gp_Pnt A=theCurveA.Value(0.1);
-  gp_Pnt B=theCurveA.Value(0.5);
-  gp_Pnt D=theCurveA.Value(0.9);
-  gp_Pnt C(B.X()+5,B.Y()+5,B.Z()+5);
-  
-  // fermeture du contexte local.
-  TheAISContext()->CloseLocalContext(myCurrentIndex);
-  
-  // Creation du plane.
-  GC_MakePlane MkPlane (A ,D ,C );
-  Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-  // Construction de l'AIS_EqualRadiusRelation
-  Handle (AIS_FixRelation) myRelation= new AIS_FixRelation (EdgeA,theGeomPlane );
-  TheAISContext()->Display(myRelation );
-  GetMapOfAIS().Bind (myRelation,argv[1]);
-  
-  
-  return 0;
-  
-}
-
-//==============================================================================
-//function : VIdenticRelation
-//purpose  : 
-//Draw arg : vdiameterdim Name DiameterValue
-//==============================================================================
-static int VIdenticRelation(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
-{
-  // Declarations
-  Standard_Integer myCurrentIndex;
-  
-  // Verification
-  if (argc!=2) {di<<" videntity error: no arguments allowed.\n";return 1;}
-  
-  // Fermeture des contextes locaux
-  TheAISContext()->CloseAllContexts();
-  
-  // Ouverture d'un contexte local et recuperation de son index.
-  TheAISContext()->OpenLocalContext();
-  myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-  
-  // On active les modes de selections  vertex et face.
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2) );
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(1) );
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4) );
-  di<<" Select an edge, a face or a vertex. \n";
-  
-  // Boucle d'attente waitpick.
-  Standard_Integer argc1 = 5;
-  const char *buf1[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argv1 = (const char **) buf1;
-  while (ViewerMainLoop( argc1, argv1) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeA;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeA = TheAISContext()->SelectedShape();
-  }
-  
-  di<<" Select an edge, a face or a vertex. \n";
-  // Boucle d'attente waitpick.
-  Standard_Integer argc2 = 5;
-  const char *buf2[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argv2 = (const char **) buf2;
-  while (ViewerMainLoop( argc2, argv2) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeB;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeB = TheAISContext()->SelectedShape();
-  }
-  
-  // Recuperation de points pour construir le Geom_Plnae.
-  gp_Pnt A,B,C;
-  if (ShapeA.ShapeType()==TopAbs_EDGE) {
-    // A est un edge; on peut supposer qu'il sera element d'une face ou possesseur d'un vertex ou identic a un autre edge.
-    // on recupere deux points sur l'edge (il peut etre rectiligne)
-    TopoDS_Edge EdgeA=TopoDS::Edge(ShapeA);
-    BRepAdaptor_Curve theCurveA(EdgeA);
-    // Creation des 3 points.
-    A=theCurveA.Value(0.1);
-    B=theCurveA.Value(0.9);
-    C.SetX(B.X()+5.);
-    C.SetY(B.Y()+5.);
-    C.SetZ(B.Z()+5.);
-  }
-  else if (ShapeA.ShapeType()==TopAbs_VERTEX ) {
-    // SahpeA est un Vertex
-    // On va utiliser ShapeB
-    if (ShapeB.ShapeType()==TopAbs_EDGE) {
-      // B est un edge 
-      TopoDS_Edge EdgeB=TopoDS::Edge(ShapeB);
-      BRepAdaptor_Curve theCurveB(EdgeB);
-      // Creation des 3 points.
-      A=theCurveB.Value(0.1);
-      B=theCurveB.Value(0.9);
-      C.SetX(B.X()+5.);
-      C.SetY(B.Y()+5.);
-      C.SetZ(B.Z()+5.);
-      
-    }
-    else if (ShapeB.ShapeType()==TopAbs_FACE ) {
-      // Shape B est une face
-      TopoDS_Face  FaceB=TopoDS::Face(ShapeB);
-      // On recupere 1 edge de FaceB(la face n'a pas forcement de vertex) (l'element A est forcement dans B).
-      TopExp_Explorer FaceExp(FaceB,TopAbs_EDGE);
-      TopoDS_Edge EdgeFromB=TopoDS::Edge(FaceExp.Current() );
-      // On recupere les 3 points de l'edge de face B
-      BRepAdaptor_Curve theCurveB(EdgeFromB);
-      // On recupere 3 points A,B,C de la curve.
-      A=theCurveB.Value(0.1);
-      B=theCurveB.Value(0.5);
-      C=theCurveB.Value(0.9);
-      
-    }
-    else {
-      // B ets un vetex aussi
-      A=BRep_Tool::Pnt(TopoDS::Vertex(ShapeA) );
-      B=BRep_Tool::Pnt(TopoDS::Vertex(ShapeB) );
-      C.SetX(B.X()+5.);
-      C.SetY(B.Y()+5.);
-      C.SetZ(B.Z()+5.);
-      
-    }
-    
-  }
-  else {
-    // A est une face.
-    TopoDS_Face  FaceA=TopoDS::Face(ShapeA);
-    // On recupere 1 edge de FaceA
-    TopExp_Explorer FaceExp(FaceA,TopAbs_EDGE);
-    TopoDS_Edge EdgeFromA=TopoDS::Edge(FaceExp.Current() );
-    // On recupere les 3 points de l'edge
-    BRepAdaptor_Curve theCurveA(EdgeFromA);
-    // On recupere 3 points A,B,C de la curve.
-    A=theCurveA.Value(0.1);
-    B=theCurveA.Value(0.5);
-    C=theCurveA.Value(0.9);
-    
-  }
-  
-  // Fermeture du context local.
-  TheAISContext()->CloseLocalContext(myCurrentIndex);
-  // On construit le plane 
-  GC_MakePlane MkPlane (A ,B ,C );
-  Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-  
-  // Construction de l'AIS_IdenticRelation
-  Handle ( AIS_IdenticRelation ) myRelation= new AIS_IdenticRelation  (ShapeA ,ShapeB, theGeomPlane );
-  TheAISContext()->Display(myRelation );
-  GetMapOfAIS().Bind (myRelation,argv[1]);
-  
-
-  
-  return 0;
-  
-}
-//==============================================================================
-//function : VLengthDimension
-//purpose  : Display the diameter dimension of a face or an edge.
-//Draw arg : vdiameterdim Name DiameterValue
-//==============================================================================
-static int VLenghtDimension(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
-{
-  // Declarations
-  Standard_Integer aCurrentIndex;
-  // Verification
-  if (argc != 2)
-  {
-    di << argv[0] << " error: wrong number of arguments.\n";
-    return 1;
-  }
-
-  // Close all local contexts
-  TheAISContext()->CloseAllContexts();
-
-  // Open local context
-  aCurrentIndex = TheAISContext()->OpenLocalContext();
-  // Activate 'edge', 'face' and 'vertex' selection modes.
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2));
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(1));
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4));
-
-  // First shape picking
-  di << " Select an edge, a face or a vertex. \n";
-  // Loop that will handle the picking.
-  Standard_Integer argc1 = 5;
-  const char *buf1[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argv1 = (const char **) buf1;
-  while (ViewerMainLoop( argc1, argv1) ) { }
-  // end of the loop.
-
-  TopoDS_Shape aFirstShape;
-  for(TheAISContext()->InitSelected(); TheAISContext()->MoreSelected(); TheAISContext()->NextSelected())
-  {
-    aFirstShape = TheAISContext()->SelectedShape();
-  }
-
-  if (aFirstShape.IsNull())
-  {
-    di << argv[0] << "error: no first picked shape.\n";
-    return 1;
-  }
-
-  // Second shape picking
-  di << " Select an edge, a face or a vertex. \n";
-  // Loop that will handle the picking.
-  Standard_Integer argc2 = 5;
-  const char *buf2[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argv2 = (const char **) buf2;
-  while (ViewerMainLoop( argc2, argv2) ) { }
-
-  TopoDS_Shape aSecondShape;
-  for(TheAISContext()->InitSelected(); TheAISContext()->MoreSelected(); TheAISContext()->NextSelected())
-  {
-    aSecondShape = TheAISContext()->SelectedShape();
-  }
-
-  if (aSecondShape.IsNull())
-  {
-    di << argv[0] << "error: no second picked shape.\n";
-    return 1;
-  }
-
-  if (aFirstShape.ShapeType() == TopAbs_EDGE)
-  {
-    TopoDS_Edge EdgeA = TopoDS::Edge (aFirstShape);
-
-    if (aSecondShape.ShapeType() == TopAbs_EDGE)
-    {
-      TopoDS_Edge EdgeB = TopoDS::Edge (aSecondShape);
-      BRepExtrema_ExtCC myDeltaEdge (EdgeA ,EdgeB);
-
-      if (!myDeltaEdge.IsParallel())
-      {
-        di << argv[0] << " error: non parallel edges.\n";
-        return 1;
-      }
-
-      // 3 points of edges is recovered to build a plane
-      TopoDS_Vertex aVertex1, aVertex2, aVertex3, aVertex4;
-      TopExp::Vertices (EdgeA, aVertex1, aVertex2);
-      TopExp::Vertices (EdgeB, aVertex3, aVertex4);
-      gp_Pnt A = BRep_Tool::Pnt (aVertex1);
-      gp_Pnt B = BRep_Tool::Pnt (aVertex2);
-      gp_Pnt C = BRep_Tool::Pnt (aVertex3);
-
-      gce_MakePln aMakePlane (A,B,C);
-      gp_Pln aPlane= aMakePlane.Value();
-
-      // Close local context
-      TheAISContext()->CloseLocalContext (aCurrentIndex);
-
-      // Construct the dimension
-      Handle(AIS_LengthDimension ) aLenghtDim = new AIS_LengthDimension (EdgeA, EdgeB, aPlane);
-      TheAISContext()->Display (aLenghtDim);
-      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
-    }
-
-    else if (aSecondShape.ShapeType() == TopAbs_VERTEX)
-    {
-      TopoDS_Vertex aVertex = TopoDS::Vertex (aSecondShape);
-      BRepExtrema_ExtPC myDeltaEdgeVertex  (aVertex ,EdgeA);
-
-      TopoDS_Vertex aVertex1, aVertex2;
-      TopExp::Vertices (EdgeA, aVertex1, aVertex2);
-      gp_Pnt A=BRep_Tool::Pnt (aVertex1);
-      gp_Pnt B=BRep_Tool::Pnt (aVertex2);
-      gp_Pnt C=BRep_Tool::Pnt (aVertex);
-
-      gce_MakePln aMakePlane (A,B,C);
-      gp_Pln aPlane= aMakePlane.Value();
-
-      TheAISContext()->CloseLocalContext (aCurrentIndex);
-      Handle(AIS_LengthDimension) aLenghtDim=new AIS_LengthDimension (EdgeA, aVertex, aPlane);
-      TheAISContext()->Display (aLenghtDim);
-      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
-    }
-
-    // Second shape is a face
-    else
-    {
-      TopoDS_Face FaceB = TopoDS::Face (aSecondShape);
-      BRepExtrema_ExtCF aDeltaEdgeFace (EdgeA,FaceB);
-
-      if (!aDeltaEdgeFace.IsParallel())
-      {
-        di << argv[0] << "error: the edge isn't parallel to the face;can't compute the distance.\n";
-        return 1;
-      }
-
-      Handle(AIS_LengthDimension) aLenghtDim = new AIS_LengthDimension (FaceB, EdgeA);
-      TheAISContext()->Display (aLenghtDim);
-      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
-    }
-  }
-  else if (aFirstShape.ShapeType() == TopAbs_VERTEX)
-  {
-    TopoDS_Vertex  VertexA = TopoDS::Vertex (aFirstShape);
-    if (aSecondShape.ShapeType() == TopAbs_EDGE )
-    {
-      TopoDS_Edge  EdgeB=TopoDS::Edge (aSecondShape);
-      BRepExtrema_ExtPC aDeltaEdgeVertex (VertexA, EdgeB);
-
-      TopoDS_Vertex aVertex1, aVertex2;
-      TopExp::Vertices(EdgeB, aVertex1, aVertex2);
-      gp_Pnt A = BRep_Tool::Pnt (aVertex1);
-      gp_Pnt B = BRep_Tool::Pnt (aVertex2);
-      gp_Pnt C = BRep_Tool::Pnt (VertexA);
-
-      gce_MakePln aMakePlane (A,B,C);
-      gp_Pln aPlane = aMakePlane.Value();
-
-      // Close local contex by its index.
-      TheAISContext()->CloseLocalContext (aCurrentIndex);
-
-      // Construct the dimension.
-      Handle(AIS_LengthDimension) aLenghtDim = new AIS_LengthDimension (EdgeB,VertexA, aPlane);
-      TheAISContext()->Display (aLenghtDim);
-      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
-    }
-
-    else if (aSecondShape.ShapeType() == TopAbs_VERTEX)
-    {
-      TopoDS_Vertex  VertexB = TopoDS::Vertex (aSecondShape);
-
-      gp_Pnt A = BRep_Tool::Pnt (VertexA);
-      gp_Pnt B = BRep_Tool::Pnt (VertexB);
-      gp_Pnt C(B.X() + 10.0, B.Y() + 10.0, B.Z() + 10.0);
-
-      gce_MakePln aMakePlane (A,B,C);
-      gp_Pln aPlane= aMakePlane.Value();
-
-      TheAISContext()->CloseLocalContext (aCurrentIndex);
-
-      Handle(AIS_LengthDimension ) aLenghtDim = new AIS_LengthDimension (VertexA, VertexB, aPlane);
-      TheAISContext()->Display (aLenghtDim);
-      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
-    }
-    // The second shape is face
-    else
-    {
-      TopoDS_Face  FaceB = TopoDS::Face (aSecondShape);
-
-      BRepExtrema_ExtPF aDeltaVertexFace (VertexA, FaceB);
-
-      gp_Pnt A = BRep_Tool::Pnt (VertexA);
-
-      // Recover edge from face.
-      TopExp_Explorer aFaceExp (FaceB,TopAbs_EDGE);
-      TopoDS_Edge aSecondEdge = TopoDS::Edge (aFaceExp.Current());
-
-      TopoDS_Vertex aVertex1, aVertex2;
-      TopExp::Vertices (aSecondEdge, aVertex1, aVertex2);
-      gp_Pnt C = BRep_Tool::Pnt (aVertex2);
-
-      gp_Pnt aProjA = aDeltaVertexFace.Point(1);
-      BRepBuilderAPI_MakeVertex aVertexMaker (aProjA);
-      TopoDS_Vertex aVertexAProj = aVertexMaker.Vertex();
-
-      // Create working plane for the dimension.
-      gce_MakePln aMakePlane (A, aProjA, C);
-      gp_Pln aPlane = aMakePlane.Value();
-
-      TheAISContext()->CloseLocalContext (aCurrentIndex);
-
-      // Construct the dimension.
-      Handle(AIS_LengthDimension ) aLenghtDim = new AIS_LengthDimension (VertexA, aVertexAProj, aPlane);
-      TheAISContext()->Display (aLenghtDim);
-      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
-    }
-  }
-
-  // The first shape is a face.
-  else
-  {
-    TopoDS_Face FaceA = TopoDS::Face (aFirstShape);
-
-    if (aSecondShape.ShapeType() == TopAbs_EDGE)
-    {
-      TopoDS_Edge EdgeB = TopoDS::Edge (aSecondShape);
-      BRepExtrema_ExtCF aDeltaEdgeFace (EdgeB,FaceA );
-
-      if (!aDeltaEdgeFace.IsParallel())
-      {
-        di << argv[0] << " error: the edge isn't parallel to the face;can't compute the distance. \n";
-        return 1;
-      }
-
-      Handle(AIS_LengthDimension) aLenghtDim = new AIS_LengthDimension (FaceA, EdgeB);
-      TheAISContext()->Display (aLenghtDim);
-      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
-    }
-
-    else if (aSecondShape.ShapeType() == TopAbs_VERTEX)
-    {
-      TopoDS_Vertex  VertexB = TopoDS::Vertex (aSecondShape);
-      BRepExtrema_ExtPF aDeltaVertexFace (VertexB, FaceA);
-
-      gp_Pnt B = BRep_Tool::Pnt (VertexB);
-
-      TopExp_Explorer aFaceExp (FaceA, TopAbs_EDGE);
-      TopoDS_Edge anEdgeFromA = TopoDS::Edge (aFaceExp.Current());
-      TopoDS_Vertex  aVertex1, aVertex2;
-      TopExp::Vertices(anEdgeFromA, aVertex1, aVertex2);
-      gp_Pnt A=BRep_Tool::Pnt(aVertex1);
-
-#ifdef OCCT_DEBUG
-      gp_Pnt C = BRep_Tool::Pnt(aVertex2); (void)C;
-#endif
-
-      gp_Pnt aProjB = aDeltaVertexFace.Point(1);
-      BRepBuilderAPI_MakeVertex aVertexMaker (aProjB);
-      TopoDS_Vertex aVertexBProj = aVertexMaker.Vertex();
-      gce_MakePln aMakePlane (A, B, aProjB);
-      gp_Pln aPlane= aMakePlane.Value();
-
-      TheAISContext()->CloseLocalContext(aCurrentIndex);
-
-      Handle(AIS_LengthDimension) aLenghtDim  =new AIS_LengthDimension (VertexB, aVertexBProj, aPlane);
-      TheAISContext()->Display (aLenghtDim);
-      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
-    }
-    // the second shape is face.
-    else
-    {
-      TopoDS_Face FaceB = TopoDS::Face (aSecondShape);
-      BRepExtrema_ExtFF aDeltaFaceFace (FaceA, FaceB);
-
-      if (!aDeltaFaceFace.IsParallel())
-      {
-        di << argv[0] << " error: the faces are not parallel. \n";
-        return 1;
-      }
-
-      TheAISContext()->CloseLocalContext (aCurrentIndex);
-
-      Handle(AIS_LengthDimension) aLenghtDim = new AIS_LengthDimension (FaceA,FaceB);
-      TheAISContext()->Display (aLenghtDim);
-      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
-    }
-  }
-
-  return 0;
-}
-
-
-//==============================================================================
-//function : VRadiusDim
-//purpose  : Display the radius dimension of a face or an edge.
-//Draw arg : vradiusdim Name 
-//==============================================================================
-static int VRadiusDimBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
-{
-  // Declarations
-  Standard_Integer aCurrentIndex;
-  TopoDS_Edge anEdge;
-  // Verification
-  if (argc != 2)
-  {
-    di << argv[0] << " error: wrong number of parameters.\n";
-    return 1;
-  }
-
-  // Close all local contexts
-  TheAISContext()->CloseAllContexts();
-
-  // Open local context and get its index for recovery.
-  TheAISContext()->OpenLocalContext();
-  aCurrentIndex = TheAISContext()->IndexOfCurrentLocal();
-
-  // Current selection modes - faces and edges
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2));
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4));
-  di << " Select a circled edge or face.\n";
-
-  // Loop that will be handle picking.
-  Standard_Integer argcc = 5;
-  const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argvv = (const char **) buff;
-  while (ViewerMainLoop (argcc, argvv)) { }
-  // end of the loop
-
-  TopoDS_Shape aShape;
-
-  for (TheAISContext()->InitSelected(); TheAISContext()->MoreSelected(); TheAISContext()->NextSelected() )
-  {
-    aShape = TheAISContext()->SelectedShape();
-  }
-
-  if (aShape.IsNull())
-  {
-    di << argv[0] << ": no shape is selected.\n";
-    return 1;
-  }
-
-  if (aShape.ShapeType() != TopAbs_EDGE && aShape.ShapeType() != TopAbs_FACE)
-  {
-    di << argv[0] << " error: the selection of a face or an edge was expected.\n";
-    return 1;
-  }
-
-  if (aShape.ShapeType() == TopAbs_EDGE)
-  {
-    anEdge = TopoDS::Edge (aShape);
-  }
-  else // Face
-  {
-    // Recover an edge of the face.
-    TopoDS_Face aFace = TopoDS::Face (aShape);
-
-    TopExp_Explorer aFaceExp (aFace,TopAbs_EDGE);
-    anEdge = TopoDS::Edge (aFaceExp.Current());
-  }
-
-  // Compute the radius
-  BRepAdaptor_Curve aCurve (anEdge);
-  if (aCurve.GetType() != GeomAbs_Circle)
-  {
-    di << argv[0] << " error: the edge is not a circular one.\n";
-    return 1;
-  }
-  // Close the context
-  TheAISContext()->CloseLocalContext (aCurrentIndex);
-
-  // Construct radius dimension
-  Handle (AIS_RadiusDimension) aRadDim= new AIS_RadiusDimension (aShape);
-  VDisplayAISObject (argv[1], aRadDim);
-
-  return 0;
-}
-
-
-
-//==============================================================================
-//function : VOffsetDim
-//purpose  : Display the offset dimension
-//Draw arg : voffsetdim Name 
-//==============================================================================
-static int VOffsetDimBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
-{
-  // Declarations
-  Standard_Integer myCurrentIndex;
-  Standard_Real    theDist;
-  
-  // Verification
-  if (argc!=2) {di<<" voffsetdim error\n";return 1;}
-  
-  // Fermeture des contextes locaux
-  TheAISContext()->CloseAllContexts();
-  
-  // Ouverture d'un contexte local et recuperation de son index.
-  TheAISContext()->OpenLocalContext();
-  myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-  
-  // On active les modes de selections Faces.
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4) );
-  di<<" Select a face.\n";
-  
-  // Boucle d'attente waitpick.
-  Standard_Integer argcc = 5;
-  const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argvv = (const char **) buff;
-  while (ViewerMainLoop( argcc, argvv) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeA;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeA = TheAISContext()->SelectedShape();
-  }
-  
-  di<<" Select a face.\n";
-  // Boucle d'attente waitpick.
-  Standard_Integer argccc = 5;
-  const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argvvv = (const char **) bufff;
-  while (ViewerMainLoop( argccc, argvvv) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeB;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeB = TheAISContext()->SelectedShape();
-  }
-  
-  
-  // Shape A et B est une face
-  if (ShapeA.ShapeType()==TopAbs_FACE && ShapeB.ShapeType()==TopAbs_FACE ) {
-    
-    TopoDS_Face  FaceA=TopoDS::Face(ShapeA);
-    TopoDS_Face  FaceB=TopoDS::Face(ShapeB);
-    
-    BRepExtrema_ExtFF myDeltaFaceFace  (FaceA ,FaceB );
-    // On verifie que les deux faces sont bien parelles.
-    if (!myDeltaFaceFace.IsParallel() ) {di<<"vdistdim error: the faces are not parallel. \n";return 1; }
-    
-    // On saisit la distance et on l'arrondit!
-    theDist=Round (sqrt (myDeltaFaceFace.SquareDistance(1))*10. )/10.;
-    // Fermeture du contexte local.
-    TheAISContext()->CloseLocalContext(myCurrentIndex);
-    // Construction du texte.
-    TCollection_ExtendedString TheMessage_Str(TCollection_ExtendedString("offset=")+TCollection_ExtendedString(theDist ) );
-    
-    // on construit l'AIS_OffsetDimension
-    Handle(AIS_OffsetDimension) myOffsetDim=new AIS_OffsetDimension (FaceA,FaceB,theDist,TheMessage_Str );
-    TheAISContext()->Display(myOffsetDim );
-    GetMapOfAIS().Bind (myOffsetDim ,argv[1]);
-    
-    
-    
-  }
-  
-  else {
-    di<<" voffsetdim error: the selection of a face was expected.\n";return 1;
-  }
-  
-  return 0;
-  
-}
-
-
-
-
-//==============================================================================
-//function : VParallel
-//purpose  : Display the parallel relation 
-//Draw arg : vparallel Name 
-//==============================================================================
-static int VParallelBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
-{
-  // Declarations
-  Standard_Integer myCurrentIndex;
- 
-  // Verification
-  if (argc!=2) {di<<" vparallel error\n";return 1;}
-  
-  // Fermeture des contextes locaux
-  TheAISContext()->CloseAllContexts();
-  
-  // Ouverture d'un contexte local et recuperation de son index.
-  TheAISContext()->OpenLocalContext();
-  myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-  
-  // On active les modes de selections Edges.
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2) );
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4) );
-  di<<" Select an edge or a face \n";
-  
-  // Boucle d'attente waitpick.
-  Standard_Integer argcc = 5;
-  const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argvv = (const char **) buff;
-  while (ViewerMainLoop( argcc, argvv) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeA;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeA = TheAISContext()->SelectedShape();
-  }
-  
-  // SahpeA est un edge.
-  // ===================
-  if (ShapeA.ShapeType()==TopAbs_EDGE ) {
-    
-    // desactivation du mode face
-    TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(4) );
-    di<<" Select a second edge\n";
-    // Boucle d'attente waitpick.
-    Standard_Integer argccc = 5;
-    const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-    const char **argvvv = (const char **) bufff;
-    while (ViewerMainLoop( argccc, argvvv) ) { }
-    // fin de la boucle
-    
-    TopoDS_Shape ShapeB;
-    for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-      ShapeB = TheAISContext()->SelectedShape();
-    }
-    
-    // recuperation des edges.
-    TopoDS_Edge  EdgeA=TopoDS::Edge(ShapeA);
-    TopoDS_Edge  EdgeB=TopoDS::Edge(ShapeB);
-    BRepExtrema_ExtCC myDeltaEdge (EdgeA ,EdgeB );
-    // on verifie qu'ils ne sont pas paralleles.
-    if (!myDeltaEdge.IsParallel() ) {di<<"vparallel error: non parallel edges.\n";return 1; }
-    
-    
-    // On recupere les  vertexes extremites des edge A et B.
-    BRepAdaptor_Curve theCurveA(EdgeA);
-    BRepAdaptor_Curve theCurveB(EdgeB);
-    // On recupere 3 points A,B,C des  curves.
-    gp_Pnt A=theCurveA.Value(0.1);
-    gp_Pnt B=theCurveA.Value(0.9);
-    gp_Pnt C=theCurveB.Value(0.5);
-    
-    // Construction du Geom_Plane
-    GC_MakePlane MkPlane(A,B,C);
-    Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-    // Fermeture du contexte local.
-    TheAISContext()->CloseLocalContext(myCurrentIndex);
-    // Construction de l'AIS_ParallelRelation
-    Handle(AIS_ParallelRelation) myParaRelation= new AIS_ParallelRelation(EdgeA ,EdgeB ,theGeomPlane );
-    TheAISContext()->Display(myParaRelation );
-    GetMapOfAIS().Bind (myParaRelation ,argv[1]);
-    
-    
-  }
-  
-  // Shape A est une face
-  // ====================
-  else {
-    
-    // desactivation du mode edge
-    TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(2) );
-    di<<" Select a second edge\n";
-    // Boucle d'attente waitpick.
-    Standard_Integer argccc = 5;
-    const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-    const char **argvvv = (const char **) bufff;
-    while (ViewerMainLoop( argccc, argvvv) ) { }
-    // fin de la boucle
-    
-    TopoDS_Shape ShapeB;
-    for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-      ShapeB = TheAISContext()->SelectedShape();
-    }
-    
-    TopoDS_Face  FaceA=TopoDS::Face(ShapeA);
-    TopoDS_Face  FaceB=TopoDS::Face(ShapeB);
-    
-    BRepExtrema_ExtFF myDeltaFaceFace  (FaceA ,FaceB );
-    // On verifie que les deux faces sont bien parelles.
-    if (!myDeltaFaceFace.IsParallel() ) {di<<"vdistdim error: the faces are not parallel. \n";return 1; }
-    
-    // recuperation des edges des faces.
-    TopExp_Explorer FaceExpA(FaceA,TopAbs_EDGE);
-    TopExp_Explorer FaceExpB(FaceB,TopAbs_EDGE);
-    
-    TopoDS_Edge EdgeA=TopoDS::Edge(FaceExpA.Current() );
-    TopoDS_Edge EdgeB=TopoDS::Edge(FaceExpB.Current() );
-    
-    // On recupere les  vertexes extremites des edge A et B.
-    BRepAdaptor_Curve theCurveA(EdgeA);
-    BRepAdaptor_Curve theCurveB(EdgeB);
-    // On recupere 3 points A,B,C des  curves.
-    gp_Pnt A=theCurveA.Value(0.1);
-    gp_Pnt B=theCurveA.Value(0.9);
-    gp_Pnt C=theCurveB.Value(0.5);
-    
-    // Construction du Geom_Plane
-    GC_MakePlane MkPlane(A,B,C);
-    Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-    // Fermeture du contexte local.
-    TheAISContext()->CloseLocalContext(myCurrentIndex);
-    // Construction de l'AIS_ParallelRelation
-    Handle(AIS_ParallelRelation) myParaRelation= new AIS_ParallelRelation(FaceA ,FaceB ,theGeomPlane );
-    TheAISContext()->Display(myParaRelation );
-    GetMapOfAIS().Bind (myParaRelation ,argv[1]);
-    
-    
-    
-  }
-  
-  
-  return 0;
-  
-}
-
-
-
-
-//==============================================================================
-//function : VPerpendicularRelation
-//purpose  : Display the Perpendicular Relation
-//Draw arg : vperpendicular Name 
-//==============================================================================
-static int VPerpendicularBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
-{
-  // Declarations
-  Standard_Integer myCurrentIndex;
- 
-  // Verification
-  if (argc!=2) {di<<" vortho error\n";return 1;}
-  
-  // Fermeture des contextes locaux
-  TheAISContext()->CloseAllContexts();
-  
-  // Ouverture d'un contexte local et recuperation de son index.
-  TheAISContext()->OpenLocalContext();
-  myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-  
-  // On active les modes de selections Edges.
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2) );
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4) );
-  di<<" Select an edge or a face \n";
-  
-  // Boucle d'attente waitpick.
-  Standard_Integer argcc = 5;
-  const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argvv = (const char **) buff;
-  while (ViewerMainLoop( argcc, argvv) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeA;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeA = TheAISContext()->SelectedShape();
-  }
-  
-  // ShapeA est un edge.
-  // ===================
-  if (ShapeA.ShapeType()==TopAbs_EDGE ) {
-    
-    // desactivation du mode face
-    TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(4) );
-    di<<" Select a second edge\n";
-    // Boucle d'attente waitpick.
-    Standard_Integer argccc = 5;
-    const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-    const char **argvvv = (const char **) bufff;
-    while (ViewerMainLoop( argccc, argvvv) ) { }
-    // fin de la boucle
-    
-    TopoDS_Shape ShapeB;
-    for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-      ShapeB = TheAISContext()->SelectedShape();
-    }
-    
-    // recuperation des edges.
-    TopoDS_Edge  EdgeA=TopoDS::Edge(ShapeA);
-    TopoDS_Edge  EdgeB=TopoDS::Edge(ShapeB);
-    
-    // On recupere les  curves
-    BRepAdaptor_Curve theCurveA(EdgeA);
-    BRepAdaptor_Curve theCurveB(EdgeB);
-    // on verifie si les edges sont orthogonaux.
-    //gp_Lin theLineA=theCurveA.Line();
-    //gp_Lin theLineB=theCurveB.Line();
-    //if (abs(theLineA.Angle(theLineB) ) != M_PI/2 ) {cout<<"vperpendicular error: Edges are not  othogonals."<<endl;return 1;}
-    
-    // On recupere 3 points A,B,C des  curves.
-    gp_Pnt A=theCurveA.Value(0.1);
-    gp_Pnt B=theCurveA.Value(0.9);
-    gp_Pnt C=theCurveB.Value(0.5);
-    // Construction du Geom_Plane
-    GC_MakePlane MkPlane(A,B,C);
-    Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-    // Fermeture du contexte local.
-    TheAISContext()->CloseLocalContext(myCurrentIndex);
-    // Construction de l'AIS_ParallelRelation
-    Handle(AIS_PerpendicularRelation) myOrthoRelation= new AIS_PerpendicularRelation (EdgeA ,EdgeB ,theGeomPlane );
-    TheAISContext()->Display(myOrthoRelation );
-    GetMapOfAIS().Bind (myOrthoRelation ,argv[1]);
-    
-    
-  }
-  
-  // Shape A est une face
-  // ====================
-  else {
-    
-    // desactivation du mode edge
-    TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(2) );
-    di<<" Select a second edge\n";
-    // Boucle d'attente waitpick.
-    Standard_Integer argccc = 5;
-    const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-    const char **argvvv = (const char **) bufff;
-    while (ViewerMainLoop( argccc, argvvv) ) { }
-    // fin de la boucle
-    
-    TopoDS_Shape ShapeB;
-    for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-      ShapeB = TheAISContext()->SelectedShape();
-    }
-    
-    // pas de verification d'orthogonalite.
-    TopoDS_Face  FaceA=TopoDS::Face(ShapeA);
-    TopoDS_Face  FaceB=TopoDS::Face(ShapeB);
-    
-    // recuperation des edges des faces.
-    TopExp_Explorer FaceExpA(FaceA,TopAbs_EDGE);
-    TopExp_Explorer FaceExpB(FaceB,TopAbs_EDGE);
-    
-    TopoDS_Edge EdgeA=TopoDS::Edge(FaceExpA.Current() );
-    TopoDS_Edge EdgeB=TopoDS::Edge(FaceExpB.Current() );
-    
-    // On recupere les  vertexes extremites des edge A et B.
-    BRepAdaptor_Curve theCurveA(EdgeA);
-    BRepAdaptor_Curve theCurveB(EdgeB);
-    // On recupere 3 points A,B,C des  curves.
-    gp_Pnt A=theCurveA.Value(0.1);
-    gp_Pnt B=theCurveA.Value(0.9);
-    gp_Pnt C=theCurveB.Value(0.5);
-    // Construction du Geom_Plane
-    GC_MakePlane MkPlane(A,B,C);
-    Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-    // Fermeture du contexte local.
-    TheAISContext()->CloseLocalContext(myCurrentIndex);
-    // Construction de l'AIS_PerpendicularRelation
-    Handle(AIS_PerpendicularRelation) myOrthoRelation= new AIS_PerpendicularRelation(FaceA ,FaceB );
-    TheAISContext()->Display(myOrthoRelation );
-    GetMapOfAIS().Bind (myOrthoRelation  ,argv[1]);
-    
-    
-    
-  }
-  
-  
-  return 0;
-  
-}
-
-
-//==============================================================================
-//function : VTangentRelation
-//purpose  : Display the tangent Relation
-//Draw arg : vtangent Name 
-//==============================================================================
-static int VTangentBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
-{
-  // Declarations
-  Standard_Integer myCurrentIndex;
- 
-  // Verification
-  if (argc!=2) {di<<" vtangent error\n";return 1;}
-  
-  // Fermeture des contextes locaux
-  TheAISContext()->CloseAllContexts();
-  
-  // Ouverture d'un contexte local et recuperation de son index.
-  TheAISContext()->OpenLocalContext();
-  myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-  
-  // On active les modes de selections Edges.
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2) );
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4) );
-  di<<" Select two coplanar edges(First the circular edge then the tangent edge) or two faces \n";
-  
-  // Boucle d'attente waitpick.
-  Standard_Integer argcc = 5;
-  const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argvv = (const char **) buff;
-  while (ViewerMainLoop( argcc, argvv) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeA;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeA = TheAISContext()->SelectedShape();
-  }
-  
-  // ShapeA est un edge.
-  // ===================
-  if (ShapeA.ShapeType()==TopAbs_EDGE ) {
-    
-    // desactivation du mode face
-    TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(4) );
-    di<<" Select a second edge\n";
-    // Boucle d'attente waitpick.
-    Standard_Integer argccc = 5;
-    const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-    const char **argvvv = (const char **) bufff;
-    while (ViewerMainLoop( argccc, argvvv) ) { }
-    // fin de la boucle
-    
-    TopoDS_Shape ShapeB;
-    for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-      ShapeB = TheAISContext()->SelectedShape();
-    }
-    
-    // recuperation des edges.
-    TopoDS_Edge  EdgeA=TopoDS::Edge(ShapeA);
-    TopoDS_Edge  EdgeB=TopoDS::Edge(ShapeB);
-    
-    // On recupere les  curves
-    BRepAdaptor_Curve theCurveA(EdgeA);
-    BRepAdaptor_Curve theCurveB(EdgeB);
-    
-    // On recupere 3 points A,B,C des  curves.
-    gp_Pnt A=theCurveA.Value(0.1);
-    gp_Pnt B=theCurveA.Value(0.9);
-    gp_Pnt C=theCurveB.Value(0.5);
-
-    // Construction du Geom_Plane
-    GC_MakePlane MkPlane(A,B,C);
-    Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-    // Fermeture du contexte local.
-    TheAISContext()->CloseLocalContext(myCurrentIndex);
-    // Construction de l'AIS_TangentRelation
-    Handle(AIS_TangentRelation) myTanRelation= new AIS_TangentRelation  (EdgeA ,EdgeB ,theGeomPlane );
-    TheAISContext()->Display(myTanRelation );
-    GetMapOfAIS().Bind (myTanRelation ,argv[1]);
-    
-    
-  }
-  
-  // Shape A est une face
-  // ====================
-  else {
-    
-    // desactivation du mode edge
-    TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(2) );
-    di<<" Select a second edge\n";
-    // Boucle d'attente waitpick.
-    Standard_Integer argccc = 5;
-    const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-    const char **argvvv = (const char **) bufff;
-    while (ViewerMainLoop( argccc, argvvv) ) { }
-    // fin de la boucle
-    
-    TopoDS_Shape ShapeB;
-    for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-      ShapeB = TheAISContext()->SelectedShape();
-    }
-    
-    TopoDS_Face  FaceA=TopoDS::Face(ShapeA);
-    TopoDS_Face  FaceB=TopoDS::Face(ShapeB);
-    
-    // recuperation des edges des faces.
-    TopExp_Explorer FaceExpA(FaceA,TopAbs_EDGE);
-    TopExp_Explorer FaceExpB(FaceB,TopAbs_EDGE);
-    
-    TopoDS_Edge EdgeA=TopoDS::Edge(FaceExpA.Current() );
-    TopoDS_Edge EdgeB=TopoDS::Edge(FaceExpB.Current() );
-    
-    // On recupere les  vertexes extremites des edge A et B.
-    BRepAdaptor_Curve theCurveA(EdgeA);
-    BRepAdaptor_Curve theCurveB(EdgeB);
-    // On recupere 3 points A,B,C des  curves.
-    gp_Pnt A=theCurveA.Value(0.1);
-    gp_Pnt B=theCurveA.Value(0.9);
-    gp_Pnt C=theCurveB.Value(0.5);
-
-    // Construction du Geom_Plane
-    GC_MakePlane MkPlane(A,B,C);
-    Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-    // Fermeture du contexte local.
-    TheAISContext()->CloseLocalContext(myCurrentIndex);
-    // Construction de l'AIS_PerpendicularRelation
-    Handle(AIS_TangentRelation) myTanRelation= new AIS_TangentRelation(FaceA ,FaceB,theGeomPlane );
-    TheAISContext()->Display(myTanRelation );
-    GetMapOfAIS().Bind (myTanRelation  ,argv[1]);
-    
-    
-    
-  }
-  
-  
-  return 0;
-  
-}
-
-//==============================================================================
-//function : VSymetricalRelation
-//purpose  : Display the Symetrical Relation
-//Draw arg : vsymetric Name 
-//==============================================================================
-static int VSymmetricBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
-{
-  // Declarations
-  Standard_Integer myCurrentIndex;
- 
-  // Verification
-  if (argc!=2) {di<<" vSymmetric error\n";return 1;}
-  
-  // Fermeture des contextes locaux
-  TheAISContext()->CloseAllContexts();
-  
-  // Ouverture d'un contexte local et recuperation de son index.
-  TheAISContext()->OpenLocalContext();
-  myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-  
-  // On active les modes de selections
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2) );
-  di<<" Select an edge:the axis of symetry \n";
-  
-  // Boucle d'attente waitpick.
-  Standard_Integer argcc = 5;
-  const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argvv = (const char **) buff;
-  while (ViewerMainLoop( argcc, argvv) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeA;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeA = TheAISContext()->SelectedShape();
-  }
-  // recuperation des edges.
-  TopoDS_Edge  EdgeA=TopoDS::Edge(ShapeA);
-  
-  // On active les modes de selections
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2) );
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(1) );
-  di<<" Select two edges or two vertices. \n";
-  
-  // Boucle d'attente waitpick.
-  Standard_Integer argcc2 = 5;
-//  const char *buff2[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argvv2 = (const char **) buff;
-  while (ViewerMainLoop( argcc2, argvv2) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeB;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeB = TheAISContext()->SelectedShape();
-  }
-  
-  
-  
-  
-  
-  // ShapeB est un edge.
-  // ===================
-  if (ShapeB.ShapeType()==TopAbs_EDGE ) {
-    
-    // desactivation du mode vertex
-    TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(1) );
-    di<<" Select a second edge\n";
-    // Boucle d'attente waitpick.
-    Standard_Integer argccc = 5;
-    const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-    const char **argvvv = (const char **) bufff;
-    while (ViewerMainLoop( argccc, argvvv) ) { }
-    // fin de la boucle
-    
-    TopoDS_Shape ShapeC;
-    for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-      ShapeC = TheAISContext()->SelectedShape();
-    }
-    
-    // recuperation des edges.
-    TopoDS_Edge  EdgeB=TopoDS::Edge(ShapeB);
-    TopoDS_Edge  EdgeC=TopoDS::Edge(ShapeC);
-    // on verifie que les edges sont paralleles
-    BRepExtrema_ExtCC myDeltaEdgeAB (EdgeA ,EdgeB );
-    BRepExtrema_ExtCC myDeltaEdgeAC (EdgeA ,EdgeC );
-    // on verifie qu'ils  sont paralleles.
-    if (!myDeltaEdgeAB.IsParallel() ) {di<<"vsymetric error: non parallel edges.\n";return 1; }
-    if (!myDeltaEdgeAC.IsParallel() ) {di<<"vsymetric error: non parallel edges.\n";return 1; }
-    // on recupere les vertexs
-    TopoDS_Vertex  Va,Vb,Vc,Vd;
-    TopExp::Vertices(EdgeB,Va,Vb );
-    TopExp::Vertices(EdgeC,Vc,Vd );
-    gp_Pnt A=BRep_Tool::Pnt(Va);
-    gp_Pnt B=BRep_Tool::Pnt(Vc);
-    gp_Pnt C = Get3DPointAtMousePosition();
-    
-    //    gp_Pnt C=BRep_Tool::Pnt(Vc);
-    // Construction du Geom_Plane
-    GC_MakePlane MkPlane(A,B,C);
-    Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-    // Fermeture du contexte local.
-    TheAISContext()->CloseLocalContext(myCurrentIndex);
-    // Construction de l'AIS_SymmetricRelation
-    Handle(AIS_SymmetricRelation) mySymRelation= new AIS_SymmetricRelation (EdgeA ,EdgeB ,EdgeC, theGeomPlane );
-    TheAISContext()->Display(mySymRelation );
-    GetMapOfAIS().Bind (mySymRelation ,argv[1]);
-    
-    
-  }
-  
-  // Shape B est un vertex
-  // =====================
-  else {
-    
-    // desactivation du mode edge
-    TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(2) );
-    di<<" Select a second edge\n";
-    // Boucle d'attente waitpick.
-    Standard_Integer argccc = 5;
-    const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-    const char **argvvv = (const char **) bufff;
-    while (ViewerMainLoop( argccc, argvvv) ) { }
-    // fin de la boucle
-    
-    TopoDS_Shape ShapeC;
-    for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-      ShapeC = TheAISContext()->SelectedShape();
-    }
-    
-    // recuperation des Vertex
-    TopoDS_Vertex  VertexB=TopoDS::Vertex(ShapeB);
-    TopoDS_Vertex  VertexC=TopoDS::Vertex(ShapeC);
-    // transfo en gp_Pnt
-    gp_Pnt B=BRep_Tool::Pnt(VertexB);
-    gp_Pnt C=BRep_Tool::Pnt(VertexC);
-    
-    // on recupere les vertexes de l'axe de sym
-    TopoDS_Vertex  Va,Vb;
-    TopExp::Vertices(EdgeA,Va,Vb );
-    gp_Pnt A=BRep_Tool::Pnt(Va);
-    // Construction du Geom_Plane
-    GC_MakePlane MkPlane(A,B,C);
-    Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-    // Fermeture du contexte local.
-    TheAISContext()->CloseLocalContext(myCurrentIndex);
-    // Construction de l'AIS_SymmetricRelation
-    Handle(AIS_SymmetricRelation) mySymRelation= new AIS_SymmetricRelation (EdgeA ,VertexB ,VertexC, theGeomPlane );
-    TheAISContext()->Display(mySymRelation );
-    GetMapOfAIS().Bind (mySymRelation ,argv[1]);
-    
-    
-    
-  }
-  
-  
-  return 0;
-  
 }
 
 //=======================================================================
@@ -2804,12 +1707,6 @@ static int VMoveDim (Draw_Interpretor& theDi, Standard_Integer theArgNum, const 
   }
   else // Pick dimension or relation
   {
-    // Close all local contexts
-    TheAISContext()->CloseAllContexts();
-
-    // Open local context and get its index for recovery.
-    TheAISContext()->OpenLocalContext();
-
     // Loop that will be handle picking.
     Standard_Integer anArgNum = 5;
     const char *aBuffer[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
@@ -2931,7 +1828,9 @@ void ViewerTest::RelationCommands(Draw_Interpretor& theCommands)
   const char *group = "AISRelations";
 
   theCommands.Add("vdimension",
-      "vdimension name {-angle|-length|-radius|-diameter} -shapes shape1 [shape2 [shape3]]\n"
+      "vdimension name {-angle|-length|-radius|-diameter}"
+      "[-shapes shape1 [shape2 [shape3]]\n"
+      "[-selected]\n"
       "[-text 3d|2d wf|sh|wireframe|shading IntegerSize]\n"
       "[-font FontName]\n"
       "[-label left|right|hcenter|hfit top|bottom|vcenter|vfit]\n"
@@ -2949,6 +1848,21 @@ void ViewerTest::RelationCommands(Draw_Interpretor& theCommands)
       " -Builds angle, length, radius and diameter dimensions.\n"
       " -See also: vdimparam, vmovedim.\n",
       __FILE__,VDimBuilder,group);
+
+  theCommands.Add ("vrelation",
+      "vrelation name {-concentric|-equaldistance|-equalradius|-fix|-identic|-offset|-parallel|-perpendicular|-tangent|-symmetric}"
+      "\n\t\t: concentric - 2 circled edges."
+      "\n\t\t: equaldistance - 4 vertex/edges."
+      "\n\t\t: equalradius - 1 or 2 circled edges."
+      "\n\t\t: fix - 1 edge."
+      "\n\t\t: identic - 2 faces, edges or vertices."
+      "\n\t\t: offset - 2 faces."
+      "\n\t\t: parallel - 2 faces or 2 edges."
+      "\n\t\t: perpendicular - 2 faces or 2 edges."
+      "\n\t\t: tangent - two coplanar edges (first the circular edge then the tangent edge) or two faces."
+      "\n\t\t: symmetric - 3 edges or 1 edge and 2 vertices."
+      "-Builds specific relation from selected objects.",
+      __FILE__, VRelationBuilder, group);
 
   theCommands.Add("vdimparam",
     "vdimparam name"
@@ -2969,68 +1883,11 @@ void ViewerTest::RelationCommands(Draw_Interpretor& theCommands)
     " -See also: vmovedim, vdimension.\n",
     __FILE__,VDimParam,group);
 
-  theCommands.Add("vangledim",
-		  "vangledim Name:Selection in the viewer only ",
-		  __FILE__,VAngleDimBuilder,group);
-
   theCommands.Add("vangleparam",
     "vangleparam name"
     "[-type interior|exterior]\n"
     "[-showarrow first|second|both|none]\n",
     __FILE__,VAngleParam,group);
-  
-  theCommands.Add("vdiameterdim",
-		  "vdiameterdim Name : Selection in the viewer only ",
-		  __FILE__,VDiameterDimBuilder,group);
-  
-  theCommands.Add("vconcentric",
-		  "vconcentric Name : Selection in the viewer only ",
-		  __FILE__,VConcentricBuilder,group);
-
-  theCommands.Add("vequaldist",
-		  "vequaldist Name Selection in the viewer only ",
-		  __FILE__,VEqualDistRelation ,group);
-  
-  theCommands.Add("vequalrad",
-		  "vequalrad Name Selection in the viewer only ",
-		  __FILE__,VEqualRadiusRelation  ,group);
-  
-  theCommands.Add("vfix",  
-		  "vfix Name Selection in the viewer only ",
-		  __FILE__,VFixRelation  ,group);
-  
-  theCommands.Add("videntity",
-		  "videntity Name Selection in the viewer only ",
-		  __FILE__,VIdenticRelation  ,group);
-  
-  theCommands.Add("vdistdim",
-		  "vdistdim Name Selection in the viewer only ",
-		  __FILE__,VLenghtDimension ,group);
-  
-  theCommands.Add("vradiusdim",
-		  "vradiusdim Name Selection in the viewer only ",
-		  __FILE__,VRadiusDimBuilder ,group);
-  
-  theCommands.Add("voffsetdim",
-		  "voffsetdim Name Selection in the viewer only ",
-		  __FILE__,VOffsetDimBuilder ,group);
-  
-  theCommands.Add("vparallel",
-		  "vparallel Name Selection in the viewer only ",
-		  __FILE__,VParallelBuilder ,group);
-  
-  theCommands.Add("vortho",
-		  "vortho Name Selection in the viewer only ",
-		  __FILE__,VPerpendicularBuilder ,group);
-  
-  theCommands.Add("vtangent",  
-		  "vtangent Name Selection in the viewer only ",
-		  __FILE__,VTangentBuilder ,group);
-  
-  
-  theCommands.Add("vsymetric",
-		  "vsymetric Name Selection in the viewer only ",
-		  __FILE__,VSymmetricBuilder ,group);
 
   theCommands.Add("vmovedim",
       "vmovedim : vmovedim [name] [x y z]"

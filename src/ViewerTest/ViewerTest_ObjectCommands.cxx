@@ -147,85 +147,62 @@ extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theNam
 extern int ViewerMainLoop(Standard_Integer argc, const char** argv);
 extern Handle(AIS_InteractiveContext)& TheAISContext();
 
-
 //==============================================================================
 //function : Vtrihedron 2d
 //purpose  : Create a plane with a 2D  trihedron from a faceselection
 //Draw arg : vtri2d  name
 //==============================================================================
 #include <AIS_PlaneTrihedron.hxx>
-
-
-
-static int VTrihedron2D (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-
+static int VTrihedron2D (Draw_Interpretor& /*theDI*/,
+                         Standard_Integer  theArgsNum,
+                         const char**      theArgVec)
 {
-  // Verification des arguments
-  if ( argc!=2) {di<<argv[0]<<" error\n"; return 1;}
-
-  // Declarations
-  Standard_Integer myCurrentIndex;
-  // Fermeture des contextes
-  TheAISContext()->CloseAllContexts();
-  // Ouverture d'un contexte local et recuperation de son index.
-  TheAISContext()->OpenLocalContext();
-  myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-  // On active les modes de selections faces.
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4) );
-  di<<" Select a face .\n";
-
-  // Boucle d'attente waitpick.
-  Standard_Integer argccc = 5;
-  const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argvvv = (const char **) bufff;
-  while (ViewerMainLoop( argccc, argvvv) ) { }
-  // fin de la boucle
-
-  TopoDS_Shape ShapeB;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeB = TheAISContext()->SelectedShape();
+  if (theArgsNum != 2)
+  {
+    std::cerr << theArgVec[0]<< " error.\n";
+    return 1;
   }
 
-  TopoDS_Face  FaceB=TopoDS::Face(ShapeB);
+  TopTools_ListOfShape aShapes;
+  ViewerTest::GetSelectedShapes (aShapes);
 
-  // Construction du Plane
-  // recuperation des edges des faces.
-  TopExp_Explorer FaceExpB(FaceB,TopAbs_EDGE);
+  if (aShapes.Extent() != 1)
+  {
+    std::cerr << "Error: wrong number of selected shapes.\n";
+    return 1;
+  }
 
-  TopoDS_Edge EdgeB=TopoDS::Edge(FaceExpB.Current() );
-  // declarations
+  const TopoDS_Shape& aShape = aShapes.First();
+
+  TopoDS_Face     aFace = TopoDS::Face (aShape);
+  TopExp_Explorer aFaceExp (aFace, TopAbs_EDGE);
+  TopoDS_Edge     anEdge0 = TopoDS::Edge (aFaceExp.Current());
+
   gp_Pnt A,B,C;
-
-  // si il y a plusieurs edges
-  if (FaceExpB.More() ) {
-    FaceExpB.Next();
-    TopoDS_Edge EdgeC=TopoDS::Edge(FaceExpB.Current() );
-    BRepAdaptor_Curve theCurveB(EdgeB);
-    BRepAdaptor_Curve theCurveC(EdgeC);
-    A=theCurveC.Value(0.1);
-    B=theCurveC.Value(0.9);
-    C=theCurveB.Value(0.5);
+  if (aFaceExp.More())
+  {
+    aFaceExp.Next();
+    TopoDS_Edge anEdge1 = TopoDS::Edge (aFaceExp.Current() );
+    BRepAdaptor_Curve aCurve0 (anEdge0);
+    BRepAdaptor_Curve aCurve1 (anEdge1);
+    A = aCurve1.Value (0.1);
+    B = aCurve1.Value (0.9);
+    C = aCurve0.Value (0.5);
   }
-  else {
-    // FaceB a 1 unique edge courbe
-    BRepAdaptor_Curve theCurveB(EdgeB);
-    A=theCurveB.Value(0.1);
-    B=theCurveB.Value(0.9);
-    C=theCurveB.Value(0.5);
+  else
+  {
+    BRepAdaptor_Curve aCurve0 (anEdge0);
+    A = aCurve0.Value (0.1);
+    B = aCurve0.Value (0.9);
+    C = aCurve0.Value (0.5);
   }
-  // Construction du Geom_Plane
-  GC_MakePlane MkPlane(A,B,C);
-  Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
 
-  // Construction de l'AIS_PlaneTrihedron
-  Handle(AIS_PlaneTrihedron) theAISPlaneTri= new AIS_PlaneTrihedron(theGeomPlane );
+  GC_MakePlane aMkPlane (A,B,C);
 
-  // Fermeture du contexte local.
-  TheAISContext()->CloseLocalContext(myCurrentIndex);
+  Handle(AIS_PlaneTrihedron) anAISPlaneTri = new AIS_PlaneTrihedron (aMkPlane.Value());
+  TCollection_AsciiString aName (theArgVec[1]);
 
-  // on le display & bind
-  TheAISContext()->Display(theAISPlaneTri );
-  GetMapOfAIS().Bind ( theAISPlaneTri ,argv[1]);
+  VDisplayAISObject (aName, anAISPlaneTri);
 
   return 0;
 }
@@ -391,10 +368,6 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
   else if (argc==2) {ThereIsName=Standard_False;value=Draw::Atof(argv[1]);}
   else              {ThereIsName=Standard_True;value=Draw::Atof(argv[2]);}
 
-  // On ferme le contexte local pour travailler dans le contexte global
-  if(TheAISContext()->HasOpenedContext())
-    TheAISContext()->CloseLocalContext();
-
   // On set le booleen ThereIsCurrent
   if (TheAISContext() -> NbSelected() > 0) {ThereIsCurrent=Standard_True;}
   else {ThereIsCurrent=Standard_False;}
@@ -531,57 +504,22 @@ static int VPlaneTrihedron (Draw_Interpretor& di, Standard_Integer argc, const c
   // Verification des arguments
   if ( argc!=2) {di<<argv[0]<<" error\n"; return 1;}
 
-  // Declarations
-  Standard_Integer myCurrentIndex;
-  // Fermeture des contextes locaux
-  TheAISContext()->CloseAllContexts();
-
-  // On recupere tous les trihedrons de la GetMapOfAIS()
-  // et on active le mode de selection par face.
-  // =================================================
-
-  // Ouverture d'un contexte local et recuperation de son index.
-  TheAISContext()->OpenLocalContext(Standard_False);
-  myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-
-  ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName
-    it (GetMapOfAIS());
-  while(it.More()){
-    Handle(AIS_InteractiveObject) ShapeA =
-      Handle(AIS_InteractiveObject)::DownCast(it.Key1());
-    // On verifie que c'est bien un trihedron
-    if (!ShapeA.IsNull() &&
-      ShapeA->Type()==AIS_KOI_Datum  && ShapeA->Signature()==3  ) {
-        // on le downcast
-        Handle(AIS_Trihedron) TrihedronA =(Handle(AIS_Trihedron)::DownCast (ShapeA));
-        // on le charge dans le contexte et on active le mode Plane.
-        TheAISContext()->Load(TrihedronA,0,Standard_False);
-        TheAISContext()->Activate(TrihedronA,3);
-      }
-      it.Next();
+  if (TheAISContext()->NbSelected() != 1)
+  {
+    std::cerr << "Error: Wrong number of selected shapes.\n";
+    return 1;
   }
 
-  di<<" Select a plane.\n";
-  // Boucle d'attente waitpick.
-  Standard_Integer argccc = 5;
-  const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argvvv = (const char **) bufff;
-  while (ViewerMainLoop( argccc, argvvv) ) { }
-  // fin de la boucle
-
-  Handle(AIS_InteractiveObject) theIOB;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    theIOB = TheAISContext()->SelectedInteractive();
+  TheAISContext()->InitSelected();
+  Handle(AIS_InteractiveObject) aTest = TheAISContext()->SelectedInteractive();
+  Handle(AIS_Plane) aPlane = Handle(AIS_Plane)::DownCast (aTest);
+  if (aPlane.IsNull())
+  {
+    std::cerr << "Error: Selected shape is not a plane.\n";
+    return 1;
   }
-  // on le downcast
-  Handle(AIS_Plane) PlaneB =(Handle(AIS_Plane)::DownCast (theIOB));
 
-  // Fermeture du contexte local.
-  TheAISContext()->CloseLocalContext(myCurrentIndex);
-
-  // on le display & bind
-  TheAISContext()->Display(PlaneB );
-  GetMapOfAIS().Bind ( PlaneB ,argv[1]);
+  VDisplayAISObject (argv[1], aPlane);
 
   return 0;
 }
@@ -613,7 +551,6 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
   // Declarations
   Standard_Boolean HasArg;
   TCollection_AsciiString name;
-  Standard_Integer MyCurrentIndex;
 
   // Verification
   if (argc<2 || argc>8 ) {di<<" Syntaxe error\n";return 1;}
@@ -621,8 +558,9 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
   else HasArg=Standard_False;
 
   name=argv[1];
-  // Fermeture des contextes
-  TheAISContext()->CloseAllContexts();
+
+  TopTools_ListOfShape aShapes;
+  ViewerTest::GetSelectedShapes (aShapes);
 
   // Cas ou il y a des arguments
   // Purpose: Teste le constructeur AIS_Axis::AIS_Axis(x: Line from Geom)
@@ -645,70 +583,41 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
     // fonction vaxis
     // Purpose: Teste le constructeur AIS_Axis::AIS_Axis (x:Axis1Placement from Geom)
     if ( !strcasecmp(argv[0], "vaxis")) {
-      TheAISContext()->OpenLocalContext();
-      MyCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-
-      // Active le mode edge et le mode vertex
-      TheAISContext()->ActivateStandardMode(AIS_Shape::SelectionType(1) );
-      TheAISContext()->ActivateStandardMode(AIS_Shape::SelectionType(2) );
-      di<<" Select an edge or a vertex.\n";
-
-      // Boucle d'attente waitpick.
-      Standard_Integer argcc = 5;
-      const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-      const char **argvv = (const char **) buff;
-      while (ViewerMainLoop( argcc, argvv) ) { }
-      // fin de la boucle
-
-      // recuperation de la shape.
-      TopoDS_Shape ShapeA;
-      for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-        ShapeA = TheAISContext()->SelectedShape();
+      if (aShapes.Extent() != 2 && aShapes.Extent() != 1)
+      {
+        std::cerr << "Error: Wrong number of selected shapes.\n";
+        return 1;
       }
-      // recuperation de l'AIS_InteractiveObject
-      //Handle(AIS_InteractiveObject) myAISio=TheAISContext()->Current();
-      // down cast en AIS_Point si sig et type
-      // AIS_Point -> Geom_Pnt ....
 
-      if (ShapeA.ShapeType()==TopAbs_VERTEX) {
-        // on desactive le mode edge
-        TheAISContext()->DeactivateStandardMode(AIS_Shape::SelectionType(2) );
-        di<<" Select a different vertex.\n";
+      const TopoDS_Shape& aShapeA = aShapes.First();
+      if (aShapeA.ShapeType() == TopAbs_VERTEX)
+      {
+        if (aShapes.Extent() != 2)
+        {
+          std::cerr << "Error: Wron number of selected shapes.\n";
+          return 1;
+        }
 
-        TopoDS_Shape ShapeB;
-        do {
-          // Boucle d'attente waitpick.
-          Standard_Integer argccc = 5;
-          const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-          const char **argvvv = (const char **) bufff;
-          while (ViewerMainLoop( argccc, argvvv) ) { }
-          // fin de la boucle
-          for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-            ShapeB = TheAISContext()->SelectedShape();
-          }
-
-
-        } while(ShapeB.IsSame(ShapeA) );
-
-        // Fermeture du context local
-        TheAISContext()->CloseLocalContext(MyCurrentIndex);
+        const TopoDS_Shape& aShapeB = aShapes.Last();
+        if (aShapeB.ShapeType() != TopAbs_VERTEX)
+        {
+          std::cerr << "Syntax error: You should select two vertices or one edge.\n";
+          return 1;
+        }
 
         // Construction de l'axe
-        gp_Pnt   A=BRep_Tool::Pnt(TopoDS::Vertex(ShapeA)  );
-        gp_Pnt   B=BRep_Tool::Pnt(TopoDS::Vertex(ShapeB)  );
-        gp_Vec   V (A,B);
-        gp_Dir   D (V);
+        gp_Pnt A = BRep_Tool::Pnt (TopoDS::Vertex (aShapeA));
+        gp_Pnt B = BRep_Tool::Pnt (TopoDS::Vertex (aShapeB));
+        gp_Vec V (A,B);
+        gp_Dir D (V);
         Handle(Geom_Axis1Placement) OrigineAndVect=new Geom_Axis1Placement (A,D);
         Handle(AIS_Axis) TheAxis=new AIS_Axis (OrigineAndVect);
         GetMapOfAIS().Bind (TheAxis,name);
         TheAISContext()->Display(TheAxis);
       }
-      else {
-        // Un unique edge (ShapeA) a ete picke
-        // Fermeture du context local
-        TheAISContext()->CloseLocalContext(MyCurrentIndex);
-        // Constuction de l'axe
-        TopoDS_Edge    ed =TopoDS::Edge(ShapeA);
+      else
+      {
+        TopoDS_Edge    ed =TopoDS::Edge (aShapeA);
         TopoDS_Vertex  Va,Vb;
         TopExp::Vertices(ed,Va,Vb );
         gp_Pnt A=BRep_Tool::Pnt(Va);
@@ -725,49 +634,25 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
 
     // Fonction axispara
     // Purpose: Teste le constructeur AIS_Axis::AIS_Axis(x: Axis2Placement from Geom, y: TypeOfAxis from AIS)
-    else if ( !strcasecmp(argv[0], "vaxispara")) {
-
-      TheAISContext()->OpenLocalContext();
-      MyCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-
-      // Active le mode edge
-      TheAISContext()->ActivateStandardMode(AIS_Shape::SelectionType(2) );
-      di<<" Select an edge.\n";
-
-      // Boucle d'attente waitpick.
-      Standard_Integer argcc = 5;
-      const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-      const char **argvv = (const char **) buff;
-      while (ViewerMainLoop( argcc, argvv) ) { }
-      // fin de la boucle
-
-      TopoDS_Shape ShapeA;
-      for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-        ShapeA = TheAISContext()->SelectedShape();
+    else if ( !strcasecmp(argv[0], "vaxispara"))
+    {
+      if (aShapes.Extent() != 2)
+      {
+        std::cerr << "Error: Wrong number of selected shapes.\n";
+        return 1;
       }
-      // Active le mode vertex et deactive edges
-      TheAISContext()->DeactivateStandardMode(AIS_Shape::SelectionType(2) );
-      TheAISContext()->ActivateStandardMode(AIS_Shape::SelectionType(1) );
-      di<<" Select a vertex.\n";
 
-      // Boucle d'attente waitpick.
-      Standard_Integer argccc = 5;
-      const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-      const char **argvvv = (const char **) bufff;
-      while (ViewerMainLoop( argccc, argvvv) ) { }
-      // fin de la boucle
-
-      // On peut choisir un pnt sur l'edge
-      TopoDS_Shape ShapeB;
-      for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-        ShapeB = TheAISContext()->SelectedShape();
+      const TopoDS_Shape& aShapeA = aShapes.First();
+      const TopoDS_Shape& aShapeB = aShapes.Last();
+      if (!(aShapeA.ShapeType() == TopAbs_EDGE
+         && aShapeB.ShapeType() == TopAbs_VERTEX))
+      {
+        std::cerr << "Syntax error: You should select face and then vertex.\n";
+        return 1;
       }
-      // Fermeture du context local
-      TheAISContext()->CloseLocalContext(MyCurrentIndex);
 
-      // Construction de l'axe
-      TopoDS_Edge    ed=TopoDS::Edge(ShapeA) ;
-      gp_Pnt B=BRep_Tool::Pnt(TopoDS::Vertex(ShapeB) );
+      TopoDS_Edge    ed=TopoDS::Edge (aShapeA);
+      gp_Pnt B=BRep_Tool::Pnt(TopoDS::Vertex(aShapeB));
       TopoDS_Vertex  Va,Vc;
       TopExp::Vertices(ed,Va,Vc );
       gp_Pnt A=BRep_Tool::Pnt(Va);
@@ -782,48 +667,26 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
     }
 
     // Fonction axisortho
-    else  {
-      TheAISContext()->OpenLocalContext();
-      MyCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-
-      // Active le mode edge
-      TheAISContext()->ActivateStandardMode(AIS_Shape::SelectionType(2) );
-      di<<" Select an edge.\n";
-
-      // Boucle d'attente waitpick.
-      Standard_Integer argcc = 5;
-      const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-      const char **argvv = (const char **) buff;
-      while (ViewerMainLoop( argcc, argvv) ) { }
-      // fin de la boucle
-
-      TopoDS_Shape ShapeA;
-      for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-        ShapeA = TheAISContext()->SelectedShape();
+    else
+    {
+      if (aShapes.Extent() != 2)
+      {
+        std::cerr << "Error: Wrong number of selected shapes.\n";
+        return 1;
       }
-      // Active le mode vertex et deactive edges
-      TheAISContext()->DeactivateStandardMode(AIS_Shape::SelectionType(2) );
-      TheAISContext()->ActivateStandardMode(AIS_Shape::SelectionType(1) );
-      di<<" Slect a vertex.\n";
 
-      // Boucle d'attente waitpick.
-      Standard_Integer argccc = 5;
-      const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-      const char **argvvv = (const char **) bufff;
-      while (ViewerMainLoop( argccc, argvvv) ) { }
-      // fin de la boucle
-
-      // On peut choisir un pnt sur l'edge
-      TopoDS_Shape ShapeB;
-      for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-        ShapeB = TheAISContext()->SelectedShape();
+      const TopoDS_Shape& aShapeA = aShapes.First();
+      const TopoDS_Shape& aShapeB = aShapes.Last();
+      if (!(aShapeA.ShapeType() == TopAbs_EDGE
+         && aShapeB.ShapeType() == TopAbs_VERTEX))
+      {
+        std::cerr << "Syntax error: You should select face and then vertex.\n";
+        return 1;
       }
-      // Fermeture du context local
-      TheAISContext()->CloseLocalContext(MyCurrentIndex);
 
       // Construction de l'axe
-      TopoDS_Edge    ed=TopoDS::Edge(ShapeA) ;
-      gp_Pnt B=BRep_Tool::Pnt(TopoDS::Vertex(ShapeB) );
+      TopoDS_Edge    ed=TopoDS::Edge(aShapeA) ;
+      gp_Pnt B=BRep_Tool::Pnt(TopoDS::Vertex(aShapeB) );
       TopoDS_Vertex  Va,Vc;
       TopExp::Vertices(ed,Va,Vc );
       gp_Pnt A=BRep_Tool::Pnt(Va);
@@ -866,7 +729,6 @@ static int VPointBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
   // Declarations
   Standard_Boolean HasArg;
   TCollection_AsciiString name;
-  Standard_Integer myCurrentIndex;
 
   // Verification
   if (argc<2 || argc>5 ) {di<<" Syntaxe error\n";return 1;}
@@ -874,8 +736,6 @@ static int VPointBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
   else HasArg=Standard_False;
 
   name=argv[1];
-  // Fermeture des contextes
-  TheAISContext()->CloseAllContexts();
 
   // Il y a des arguments: teste l'unique constructeur AIS_Pnt::AIS_Pnt(Point from Geom)
   if (HasArg) {
@@ -889,46 +749,31 @@ static int VPointBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
   }
 
   // Il n'a pas d'arguments
-  else {
-    TheAISContext()->OpenLocalContext();
-    myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
+  else
+  {
+    TopTools_ListOfShape aShapes;
+    ViewerTest::GetSelectedShapes (aShapes);
 
-    // Active le mode Vertex et Edges
-    TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(1) );
-    TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2) );
-    di<<" Select a vertex or an edge(build the middle)\n";
-
-    // Boucle d'attente waitpick.
-    Standard_Integer argcc = 5;
-    const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-    const char **argvv = (const char **) buff;
-    while (ViewerMainLoop( argcc, argvv) ) { }
-    // fin de la boucle
-
-    TopoDS_Shape ShapeA;
-    for (TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-      ShapeA= TheAISContext()->SelectedShape();
+    if (aShapes.Extent() != 1)
+    {
+      std::cerr << "Error: Wrong number of selected shapes.\n";
+      std::cerr << "\tYou should select one edge or vertex.\n";
+      return 1;
     }
 
-    if (ShapeA.ShapeType()==TopAbs_VERTEX ) {
-      // Un vertex a ete selectionne
-      // Fermeture du context local
-      TheAISContext()->CloseLocalContext(myCurrentIndex);
+    const TopoDS_Shape& aShapeA = aShapes.First();
 
-      // Construction du point
-      gp_Pnt A=BRep_Tool::Pnt(TopoDS::Vertex(ShapeA ) );
+    if (aShapeA.ShapeType()==TopAbs_VERTEX )
+    {
+      gp_Pnt A=BRep_Tool::Pnt(TopoDS::Vertex(aShapeA ) );
       Handle(Geom_CartesianPoint) myGeomPoint= new Geom_CartesianPoint (A );
       Handle(AIS_Point)  myAISPoint = new AIS_Point  (myGeomPoint );
       GetMapOfAIS().Bind(myAISPoint,name);
       TheAISContext()->Display(myAISPoint);
     }
-    else {
-      // Un Edge a ete selectionne
-      // Fermeture du context local
-      TheAISContext()->CloseLocalContext(myCurrentIndex);
-
-      // Construction du point milieu de l'edge
-      TopoDS_Edge myEdge=TopoDS::Edge(ShapeA);
+    else
+    {
+      TopoDS_Edge myEdge=TopoDS::Edge(aShapeA);
       TopoDS_Vertex myVertexA,myVertexB;
       TopExp::Vertices (myEdge ,myVertexA ,myVertexB );
       gp_Pnt A=BRep_Tool::Pnt(myVertexA );
@@ -972,7 +817,6 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
   // Declarations
   Standard_Boolean hasArg;
   TCollection_AsciiString aName;
-  Standard_Integer aCurrentIndex;
 
   // Verification
   if (argc<2 || argc>6 )
@@ -986,8 +830,6 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
     hasArg=Standard_False;
 
   aName=argv[1];
-  // Close all contexts
-  TheAISContext()->CloseAllContexts();
 
   // There are some arguments
   if (hasArg)
@@ -1228,103 +1070,32 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
   // There are no arguments
   else 
   {
+    TopTools_ListOfShape aShapes;
+    ViewerTest::GetSelectedShapes (aShapes);
+
     // Function vplane
     // Test the constructor AIS_Plane::AIS_Plane(Geom_Plane, Standard_Boolean )
     if (!strcasecmp(argv[0], "vplane"))
     {
-      TheAISContext()->OpenLocalContext();
-      aCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-
-      // Active modes Vertex, Edge and Face
-      TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(1));
-      TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2));
-      TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4));
-      std::cout<<"Select a vertex, a face or an edge\n";
-
-      // Wait for picking
-      Standard_Integer argcc = 5;
-      const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-      const char **argvv = (const char **) buff;
-      while (ViewerMainLoop( argcc, argvv) ) { }
-      // end of the loop
-
-      TopoDS_Shape aShapeA;
-      for (TheAISContext()->InitSelected();
-           TheAISContext()->MoreSelected();
-           TheAISContext()->NextSelected())
+      if (aShapes.Extent() < 1 || aShapes.Extent() > 3)
       {
-        aShapeA = TheAISContext()->SelectedShape();
+        std::cerr << "Error: Wront number of selected shapes.\n";
+        std::cerr << "\tYou should one of variant: face, edge and vertex or three vertices.\n";
+        return 1;
       }
 
-      // aShapeA is a Vertex
-      if (aShapeA.ShapeType()==TopAbs_VERTEX )
+      const TopoDS_Shape& aShapeA = aShapes.First();
+      if (aShapeA.ShapeType() == TopAbs_VERTEX)
       {
-        TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(4));
-        std::cout<<" Select an edge or a different vertex\n";
-
-        // Wait for picking
-        Standard_Integer argccc = 5;
-        const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-        const char **argvvv = (const char **) bufff;
-        while (ViewerMainLoop( argccc, argvvv) ) { }
-        // end of the loop
-
-        TopoDS_Shape aShapeB;
-        for (TheAISContext()->InitSelected();
-          TheAISContext()->MoreSelected();
-          TheAISContext()->NextSelected())
+        if (aShapes.Extent() == 2)
         {
-          aShapeB = TheAISContext()->SelectedShape();
-        }
-        // aShapeB is a Vertex
-        if (aShapeB.ShapeType()==TopAbs_VERTEX)
-        {
-          // A and B are the same
-          if (aShapeB.IsSame(aShapeA))
+          const TopoDS_Shape& aShapeB = aShapes.Last();
+          if (aShapeB.ShapeType() != TopAbs_EDGE)
           {
-            std::cout<<" vplane: error, same points selected\n";
-            return 1;
-          }
-          TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(2));
-          std::cout<<" Select a different vertex\n";
-
-          // Wait for picking
-          Standard_Integer argcccc = 5;
-          const char *buffff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-          const char **argvvvv = (const char **) buffff;
-          while (ViewerMainLoop( argcccc, argvvvv) ) { }
-          // end of the loop
-
-          TopoDS_Shape aShapeC;
-          for (TheAISContext()->InitSelected();
-               TheAISContext()->MoreSelected();
-               TheAISContext()->NextSelected())
-          {
-            aShapeC = TheAISContext()->SelectedShape();
-          }
-          // aShapeC is the same as A or B
-          if (aShapeC.IsSame(aShapeA)||aShapeC.IsSame(aShapeB))
-          {
-            std::cout<<" vplane: error, same points selected\n";
+            std::cerr << "Syntax error: Together with vertex should be edge.\n";
             return 1;
           }
 
-          // Close the local context
-          TheAISContext()->CloseLocalContext(aCurrentIndex);
-
-          // Construction of plane
-          gp_Pnt A = BRep_Tool::Pnt(TopoDS::Vertex(aShapeA));
-          gp_Pnt B = BRep_Tool::Pnt(TopoDS::Vertex(aShapeB));
-          gp_Pnt C = BRep_Tool::Pnt(TopoDS::Vertex(aShapeC));
-          GC_MakePlane MkPlane(A, B, C);
-          Handle(Geom_Plane) aGeomPlane = MkPlane.Value();
-          Handle(AIS_Plane) anAISPlane = new AIS_Plane (aGeomPlane);
-          GetMapOfAIS().Bind (anAISPlane, aName);
-          TheAISContext()->Display(anAISPlane);
-        }
-        // ShapeB is an edge
-        else
-        {
           // Verify that the vertex is not on the edge ShapeB
           TopoDS_Edge anEdgeB = TopoDS::Edge(aShapeB);
           TopoDS_Vertex aVertA = TopoDS::Vertex(aShapeA);
@@ -1338,9 +1109,6 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
           }
           else
           {
-            // Close the local context
-            TheAISContext()->CloseLocalContext(aCurrentIndex);
-            // Construction of plane
             gp_Pnt A = BRep_Tool::Pnt(aVertA);
             TopoDS_Vertex aVBa, aVBb;
             TopExp::Vertices(anEdgeB ,aVBa ,aVBb);
@@ -1353,29 +1121,53 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
             TheAISContext()->Display(anAISPlane);
           }
         }
-      }
-      // aShapeA is an edge
-      else if (aShapeA.ShapeType()==TopAbs_EDGE)
-      {
-        TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(4));
-        TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(2));
-        std::cout<<" Select a vertex that don't belong to the edge\n";
-
-        // Wait for picking
-        Standard_Integer argccc = 5;
-        const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-        const char **argvvv = (const char **) bufff;
-        while (ViewerMainLoop( argccc, argvvv) ) { }
-        // end of the loop
-
-        TopoDS_Shape aShapeB;
-        for (TheAISContext()->InitSelected();
-             TheAISContext()->MoreSelected();
-             TheAISContext()->NextSelected())
+        else if (aShapes.Extent() == 3)
         {
-          aShapeB = TheAISContext()->SelectedShape();
+          TopTools_ListOfShape::Iterator anIter (aShapes);
+
+          anIter.Next();
+          const TopoDS_Shape& aShapeB = anIter.Value();
+
+          anIter.Next();
+          const TopoDS_Shape& aShapeC = anIter.Value();
+
+          if (!(aShapeB.ShapeType() == TopAbs_VERTEX
+             && aShapeC.ShapeType() == TopAbs_VERTEX))
+          {
+            std::cerr << "Syntax error: You should one of variant: face, edge and vertex or three vertices.\n";
+            return 1;
+          }
+
+          gp_Pnt A = BRep_Tool::Pnt(TopoDS::Vertex(aShapeA));
+          gp_Pnt B = BRep_Tool::Pnt(TopoDS::Vertex(aShapeB));
+          gp_Pnt C = BRep_Tool::Pnt(TopoDS::Vertex(aShapeC));
+          GC_MakePlane MkPlane(A, B, C);
+          Handle(Geom_Plane) aGeomPlane = MkPlane.Value();
+          Handle(AIS_Plane) anAISPlane = new AIS_Plane (aGeomPlane);
+          GetMapOfAIS().Bind (anAISPlane, aName);
+          TheAISContext()->Display(anAISPlane);
         }
-        // aShapeB should be a Vertex
+        else
+        {
+          std::cerr << "Syntax error: You should one of variant: face, edge and vertex or three vertices.\n";
+          return 1;
+        }
+      }
+      else if (aShapeA.ShapeType() == TopAbs_EDGE)
+      {
+        if (aShapes.Extent() != 2)
+        {
+          std::cerr << "Error: wrong number of selected shapes.\n";
+          return 1;
+        }
+
+        const TopoDS_Shape& aShapeB = aShapes.Last();
+        if (aShapeB.ShapeType() != TopAbs_VERTEX)
+        {
+          std::cerr << "Syntax error: Together with edge should be vertex.\n";
+          return 1;
+        }
+
         // Check that the vertex aShapeB is not on the edge
         TopoDS_Edge anEdgeA = TopoDS::Edge(aShapeA);
         TopoDS_Vertex aVertB = TopoDS::Vertex(aShapeB);
@@ -1387,29 +1179,20 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
           std::cout<<" vplane: error point is on the edge\n";
           return 1;
         }
-        else
-        {
-          // Close the local context
-          TheAISContext()->CloseLocalContext(aCurrentIndex);
-          // Construction of plane
-          gp_Pnt B = BRep_Tool::Pnt(aVertB);
-          TopoDS_Vertex aVAa, aVAb;
-          TopExp::Vertices(anEdgeA, aVAa, aVAb);
-          gp_Pnt Aa = BRep_Tool::Pnt(aVAa);
-          gp_Pnt Ab = BRep_Tool::Pnt(aVAb);
-          GC_MakePlane MkPlane (B,Aa,Ab);
-          Handle(Geom_Plane) aGeomPlane = MkPlane.Value();
-          Handle(AIS_Plane) anAISPlane = new AIS_Plane (aGeomPlane);
-          GetMapOfAIS().Bind (anAISPlane ,aName);
-          TheAISContext()->Display(anAISPlane);
-        }
+
+        gp_Pnt B = BRep_Tool::Pnt(aVertB);
+        TopoDS_Vertex aVAa, aVAb;
+        TopExp::Vertices(anEdgeA, aVAa, aVAb);
+        gp_Pnt Aa = BRep_Tool::Pnt(aVAa);
+        gp_Pnt Ab = BRep_Tool::Pnt(aVAb);
+        GC_MakePlane MkPlane (B,Aa,Ab);
+        Handle(Geom_Plane) aGeomPlane = MkPlane.Value();
+        Handle(AIS_Plane) anAISPlane = new AIS_Plane (aGeomPlane);
+        GetMapOfAIS().Bind (anAISPlane ,aName);
+        TheAISContext()->Display(anAISPlane);
       }
-      // aShapeA is a Face
-      else
+      else if (aShapeA.ShapeType() == TopAbs_FACE)
       {
-        // Close the local context: nothing to select
-        TheAISContext()->CloseLocalContext(aCurrentIndex);
-        // Construction of plane
         TopoDS_Face aFace = TopoDS::Face(aShapeA);
         BRepAdaptor_Surface aSurface (aFace, Standard_False);
         if (aSurface.GetType()==GeomAbs_Plane)
@@ -1426,6 +1209,11 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
           return 1;
         }
       }
+      else
+      {
+        std::cerr << "Syntax error: You should one of variant: face, edge and vertex or three vertices.\n";
+        return 1;
+      }
     }
 
     // Function vPlanePara
@@ -1433,120 +1221,44 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
     // test the constructor AIS_Plane::AIS_Plane(Geom_Plane,gp_Pnt)
     else if (!strcasecmp(argv[0], "vplanepara"))
     {
-      TheAISContext()->OpenLocalContext();
-      aCurrentIndex = TheAISContext()->IndexOfCurrentLocal();
-
-      // Activate modes Vertex and Face
-      TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(1));
-      TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4));
-      std::cout<<" Select a vertex or a face\n";
-
-      // Wait for picking
-      Standard_Integer argcc = 5;
-      const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-      const char **argvv = (const char **) buff;
-      while (ViewerMainLoop( argcc, argvv) ) { }
-      // end of the loop
-
-      TopoDS_Shape aShapeA;
-      for (TheAISContext()->InitSelected();
-           TheAISContext()->MoreSelected();
-           TheAISContext()->NextSelected())
+      if (aShapes.Extent() != 2)
       {
-        aShapeA = TheAISContext()->SelectedShape();
+        std::cerr << "Error: Wrong number of selected shapes.\n";
+        return 1;
       }
 
-      if (aShapeA.ShapeType()==TopAbs_VERTEX )
+      const TopoDS_Shape* aShapeA = &aShapes.First();
+      const TopoDS_Shape* aShapeB = &aShapes.Last();
+      if (aShapeA->ShapeType() != TopAbs_VERTEX)
       {
-        // aShapeA is a vertex
-        // Deactivate the mode Vertex
-        TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(1));
-        std::cout<<" Select a face\n";
+        std::swap (aShapeA, aShapeB);
+      }
 
-        // Wait for picking
-        Standard_Integer argccc = 5;
-        const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-        const char **argvvv = (const char **) bufff;
-        while (ViewerMainLoop( argccc, argvvv) ) { }
-        // end of the loop
+      if (!(aShapeA->ShapeType() == TopAbs_VERTEX
+         && aShapeB->ShapeType() == TopAbs_FACE))
+      {
+        std::cerr << "Syntax error: you should select face and vertex.\n";
+        return 1;
+      }
 
-        TopoDS_Shape aShapeB;
-        for (TheAISContext()->InitSelected();
-             TheAISContext()->MoreSelected();
-             TheAISContext()->NextSelected())
-        {
-          // A vertex ShapeA can be on Face ShapeB
-          aShapeB = TheAISContext()->SelectedShape();
-        }
+      gp_Pnt A = BRep_Tool::Pnt(TopoDS::Vertex(*aShapeA));
 
-        // Close the local context
-        TheAISContext()->CloseLocalContext(aCurrentIndex);
-
-        // Construction of plane
-        gp_Pnt A = BRep_Tool::Pnt(TopoDS::Vertex(aShapeA));
-
-        TopoDS_Face aFace = TopoDS::Face(aShapeB);
-        BRepAdaptor_Surface aSurface (aFace, Standard_False);
-        if (aSurface.GetType()==GeomAbs_Plane )
-        {
-          gp_Pln aPlane = aSurface.Plane();
-          // Construct a plane parallel to aGeomPlane through A
-          aPlane.SetLocation(A);
-          Handle(Geom_Plane) aGeomPlane = new Geom_Plane (aPlane);
-          Handle(AIS_Plane) aAISPlane = new AIS_Plane (aGeomPlane, A);
-          GetMapOfAIS().Bind (aAISPlane ,aName);
-          TheAISContext()->Display(aAISPlane);
-        }
-        else
-        {
-          std::cout<<" vplanepara: error\n";
-          return 1;
-        }
+      TopoDS_Face aFace = TopoDS::Face(*aShapeB);
+      BRepAdaptor_Surface aSurface (aFace, Standard_False);
+      if (aSurface.GetType() == GeomAbs_Plane)
+      {
+        gp_Pln aPlane = aSurface.Plane();
+        // Construct a plane parallel to aGeomPlane through A
+        aPlane.SetLocation(A);
+        Handle(Geom_Plane) aGeomPlane = new Geom_Plane (aPlane);
+        Handle(AIS_Plane) aAISPlane = new AIS_Plane (aGeomPlane, A);
+        GetMapOfAIS().Bind (aAISPlane ,aName);
+        TheAISContext()->Display(aAISPlane);
       }
       else
       {
-        // ShapeA is a Face
-        // Deactive the mode Face
-        TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(4));
-        std::cout<<" Select a vertex\n";
-
-        // Wait for picking
-        Standard_Integer argccc = 5;
-        const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-        const char **argvvv = (const char **) bufff;
-        while (ViewerMainLoop( argccc, argvvv) ) { }
-        // end of the loop
-
-        TopoDS_Shape aShapeB;
-        for (TheAISContext()->InitSelected();
-             TheAISContext()->MoreSelected();
-             TheAISContext()->NextSelected())
-        {
-          // A vertex ShapeB can be on Face ShapeA
-          aShapeB = TheAISContext()->SelectedShape();
-        }
-        // Close the local context
-        TheAISContext()->CloseLocalContext(aCurrentIndex);
-
-        // Construction of plane
-        gp_Pnt B = BRep_Tool::Pnt(TopoDS::Vertex(aShapeB));
-
-        TopoDS_Face aFace=TopoDS::Face(aShapeA);
-        BRepAdaptor_Surface aSurface (aFace, Standard_False);
-        if (aSurface.GetType()==GeomAbs_Plane )
-        {
-          gp_Pln aPlane = aSurface.Plane();
-          aPlane.SetLocation(B);
-          Handle(Geom_Plane) aGeomPlane = new Geom_Plane (aPlane);
-          // Construct a plane parallel to aGeomPlane through B
-          Handle(AIS_Plane) anAISPlane = new AIS_Plane (aGeomPlane, B);
-          GetMapOfAIS().Bind (anAISPlane, aName);
-          TheAISContext()->Display(anAISPlane);
-        }
-        else
-        {
-          std::cout<<" vplanepara: error\n";return 1;
-        }
+        std::cerr << "Error: Builded surface is not a plane.\n";
+        return 1;
       }
     }
 
@@ -1555,165 +1267,70 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
     // test the constructor AIS_Plane::AIS_Plane(Geom_Plane,gp_Pnt,gp_Pnt,gp_Pnt)
     else
     {
-      TheAISContext()->OpenLocalContext();
-      aCurrentIndex = TheAISContext()->IndexOfCurrentLocal();
-
-      // Activate the modes Edge and Face
-      TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2));
-      TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4));
-      std::cout<<" Select a face and an edge coplanar\n";
-
-      // Wait for picking
-      Standard_Integer argcc = 5;
-      const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-      const char **argvv = (const char **) buff;
-      while (ViewerMainLoop( argcc, argvv) ) { }
-      // end of the loop
-
-      TopoDS_Shape aShapeA;
-      for (TheAISContext()->InitSelected();
-           TheAISContext()->MoreSelected();
-           TheAISContext()->NextSelected())
+      if (aShapes.Extent() != 2)
       {
-        aShapeA = TheAISContext()->SelectedShape();
+        std::cerr << "Error: wrong number of selected shapes.\n";
+        return 1;
       }
 
-      if (aShapeA.ShapeType()==TopAbs_EDGE )
+      const TopoDS_Shape* aShapeA = &aShapes.First();
+      const TopoDS_Shape* aShapeB = &aShapes.Last();
+
+      if (aShapeA->ShapeType() != TopAbs_EDGE)
       {
-        // ShapeA is an edge, deactivate the mode Edge...
-        TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(2));
-        std::cout<<" Select a face\n";
+        std::swap (aShapeA, aShapeB);
+      }
 
-        // Wait for picking
-        Standard_Integer argccc = 5;
-        const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-        const char **argvvv = (const char **) bufff;
-        while (ViewerMainLoop( argccc, argvvv) ) { }
-        // end of the loop
+      if (!(aShapeA->ShapeType() == TopAbs_EDGE
+         && aShapeB->ShapeType() == TopAbs_FACE))
+      {
+        std::cerr << "Error: you should select edge and face.\n";
+        return 1;
+      }
 
-        TopoDS_Shape aShapeB;
-        for (TheAISContext()->InitSelected();
-             TheAISContext()->MoreSelected();
-             TheAISContext()->NextSelected())
-        {
-          // Edge ShapeA can be on Face ShapeB
-          aShapeB = TheAISContext()->SelectedShape();
-        }
+      // Construction of plane
+      TopoDS_Edge anEdgeA = TopoDS::Edge(*aShapeA);
+      TopoDS_Vertex aVAa, aVAb;
+      TopExp::Vertices(anEdgeA, aVAa, aVAb);
+      gp_Pnt Aa = BRep_Tool::Pnt(aVAa);
+      gp_Pnt Ab = BRep_Tool::Pnt(aVAb);
+      gp_Vec ab (Aa,Ab);
 
-        // Close the local context
-        TheAISContext()->CloseLocalContext(aCurrentIndex);
+      gp_Dir Dab (ab);
+      // Creation of rotation axis
+      gp_Ax1 aRotAxis (Aa,Dab);
 
-        // Construction of plane
-        TopoDS_Edge anEdgeA = TopoDS::Edge(aShapeA);
-        TopoDS_Vertex aVAa, aVAb;
-        TopExp::Vertices(anEdgeA, aVAa, aVAb);
-        gp_Pnt Aa = BRep_Tool::Pnt(aVAa);
-        gp_Pnt Ab = BRep_Tool::Pnt(aVAb);
-        gp_Vec ab (Aa,Ab);
+      TopoDS_Face aFace = TopoDS::Face(*aShapeB);
+      // The edge must be parallel to the face
+      BRepExtrema_ExtPF aHeightA (aVAa, aFace);
+      BRepExtrema_ExtPF aHeightB (aVAb, aFace);
+      // Compare to heights
+      if (fabs(sqrt(aHeightA.SquareDistance(1)) - sqrt(aHeightB.SquareDistance(1)))
+          >Precision::Confusion())
+      {
+        // the edge is not parallel to the face
+        std::cout<<" vplaneortho error: the edge is not parallel to the face\n";
+        return 1;
+      }
+      // the edge is OK
+      BRepAdaptor_Surface aSurface (aFace, Standard_False);
+      if (aSurface.GetType()==GeomAbs_Plane)
+      {
+        gp_Pln aPlane = aSurface.Plane();
+        // It rotates a half turn round the axis of rotation
+        aPlane.Rotate(aRotAxis , M_PI/2);
 
-        gp_Dir Dab (ab);
-        // Creation of rotation axis
-        gp_Ax1 aRotAxis (Aa,Dab);
-
-        TopoDS_Face aFace = TopoDS::Face(aShapeB);
-        // The edge must be parallel to the face
-        BRepExtrema_ExtPF aHeightA (aVAa, aFace);
-        BRepExtrema_ExtPF aHeightB (aVAb, aFace);
-        // Compare to heights
-        if (fabs(sqrt(aHeightA.SquareDistance(1)) - sqrt(aHeightB.SquareDistance(1)))
-            >Precision::Confusion())
-        {
-          // the edge is not parallel to the face
-          std::cout<<" vplaneortho error: the edge is not parallel to the face\n";
-          return 1;
-        }
-        // the edge is OK
-        BRepAdaptor_Surface aSurface (aFace, Standard_False);
-        if (aSurface.GetType()==GeomAbs_Plane)
-        {
-          gp_Pln aPlane = aSurface.Plane();
-          // It rotates a half turn round the axis of rotation
-          aPlane.Rotate(aRotAxis , M_PI/2);
-
-          Handle(Geom_Plane) aGeomPlane = new Geom_Plane (aPlane);
-          // constructed aGeomPlane parallel to a plane containing the edge (center mid-edge)
-          gp_Pnt aMiddle ((Aa.X()+Ab.X() )/2 ,(Aa.Y()+Ab.Y() )/2 ,(Aa.Z()+Ab.Z() )/2 );
-          Handle(AIS_Plane) anAISPlane = new AIS_Plane (aGeomPlane, aMiddle);
-          GetMapOfAIS().Bind (anAISPlane, aName);
-          TheAISContext()->Display(anAISPlane);
-        }
-        else
-        {
-          std::cout<<" vplaneortho: error\n";
-          return 1;
-        }
+        Handle(Geom_Plane) aGeomPlane = new Geom_Plane (aPlane);
+        // constructed aGeomPlane parallel to a plane containing the edge (center mid-edge)
+        gp_Pnt aMiddle ((Aa.X()+Ab.X() )/2 ,(Aa.Y()+Ab.Y() )/2 ,(Aa.Z()+Ab.Z() )/2 );
+        Handle(AIS_Plane) anAISPlane = new AIS_Plane (aGeomPlane, aMiddle);
+        GetMapOfAIS().Bind (anAISPlane, aName);
+        TheAISContext()->Display(anAISPlane);
       }
       else
       {
-        // ShapeA is a Face, deactive the mode Face.
-        TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(4));
-        std::cout<<" Select an edge\n";
-
-        // Wait for picking
-        Standard_Integer argccc = 5;
-        const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-        const char **argvvv = (const char **) bufff;
-        while (ViewerMainLoop( argccc, argvvv) ) { }
-        // end of the loop
-
-        TopoDS_Shape aShapeB;
-        for (TheAISContext()->InitSelected();
-             TheAISContext()->MoreSelected();
-             TheAISContext()->NextSelected())
-        {
-          // Edge ShapeB can be on Face ShapeA
-          aShapeB = TheAISContext()->SelectedShape();
-        }
-        // Close the local context
-        TheAISContext()->CloseLocalContext(aCurrentIndex);
-
-        // Construction of plane
-        TopoDS_Edge anEdgeB = TopoDS::Edge(aShapeB);
-        TopoDS_Vertex aVBa, aVBb;
-        TopExp::Vertices(anEdgeB, aVBa, aVBb);
-        gp_Pnt aBa = BRep_Tool::Pnt(aVBa);
-        gp_Pnt aBb = BRep_Tool::Pnt(aVBb);
-        gp_Vec ab (aBa,aBb);
-        gp_Dir Dab (ab);
-        // Creation of rotation axe
-        gp_Ax1 aRotAxis (aBa,Dab);
-
-        TopoDS_Face aFace = TopoDS::Face(aShapeA);
-        // The edge must be parallel to the face
-        BRepExtrema_ExtPF aHeightA (aVBa, aFace);
-        BRepExtrema_ExtPF aHeightB (aVBb, aFace);
-        // Comparing the two heights
-        if (fabs(sqrt(aHeightA.SquareDistance(1)) - sqrt(aHeightB.SquareDistance(1)))
-            >Precision::Confusion())
-        {
-          // the edge is not parallel to the face
-          std::cout<<" vplaneortho error: the edge is not parallel to the face\n";
-          return 1;
-        }
-        // The edge is OK
-        BRepAdaptor_Surface aSurface (aFace, Standard_False);
-        if (aSurface.GetType()==GeomAbs_Plane)
-        {
-          gp_Pln aPlane = aSurface.Plane();
-          // It rotates a half turn round the axis of rotation
-          aPlane.Rotate(aRotAxis , M_PI/2);
-          Handle(Geom_Plane) aGeomPlane = new Geom_Plane (aPlane);
-          // constructed aGeomPlane parallel to a plane containing the edge theGeomPlane (center mid-edge)
-          gp_Pnt aMiddle ((aBa.X()+aBb.X() )/2 , (aBa.Y()+aBb.Y() )/2 , (aBa.Z()+aBb.Z() )/2 );
-          Handle(AIS_Plane) anAISPlane = new AIS_Plane (aGeomPlane, aMiddle);
-          GetMapOfAIS().Bind (anAISPlane ,aName);
-          TheAISContext()->Display(anAISPlane);
-        }
-        else
-        {
-          std::cout<<" vplaneortho: error\n";
-          return 1;
-        }
+        std::cout<<" vplaneortho: error\n";
+        return 1;
       }
     }
   }
@@ -1844,11 +1461,8 @@ static int VChangePlane (Draw_Interpretor& /*theDi*/, Standard_Integer theArgsNb
 
 static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  Standard_Integer myCurrentIndex;
   // Verifications
   if (argc!=4 && argc!=8 && argc!=2 )  {di<<"vline error: number of arguments not correct \n";return 1; }
-  // Fermeture des contextes
-  TheAISContext()->CloseAllContexts();
 
   // On recupere les parametres
   Handle(AIS_InteractiveObject) theShapeA;
@@ -1920,67 +1534,36 @@ static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
   // Pas de parametres: Selection dans le viewer.
   // ============================================
 
-  else {
-    TheAISContext()->OpenLocalContext();
-    myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-
-    // Active le mode Vertex.
-    TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(1) );
-    di<<" Select a vertex \n";
-
-    // Boucle d'attente waitpick.
-    Standard_Integer argcc = 5;
-    const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-    const char **argvv = (const char **) buff;
-    while (ViewerMainLoop( argcc, argvv) ) { }
-    // fin de la boucle
-
-    TopoDS_Shape ShapeA;
-    for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-      ShapeA = TheAISContext()->SelectedShape();
+  else
+  {
+    TopTools_ListOfShape aShapes;
+    ViewerTest::GetSelectedShapes (aShapes);
+    if (aShapes.Extent() != 2)
+    {
+      std::cerr << "Error: wrong number of selected shapes.\n";
+      return 1;
     }
 
-    // ShapeA est un Vertex
-    if (ShapeA.ShapeType()==TopAbs_VERTEX ) {
+    const TopoDS_Shape& aShapeA = aShapes.First();
+    const TopoDS_Shape& aShapeB = aShapes.Last();
 
-      di<<" Select a different vertex.\n";
-
-      TopoDS_Shape ShapeB;
-      do {
-
-        // Boucle d'attente waitpick.
-        Standard_Integer argccc = 5;
-        const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-        const char **argvvv = (const char **) bufff;
-        while (ViewerMainLoop( argccc, argvvv) ) { }
-        // fin de la boucle
-
-        for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-          ShapeB = TheAISContext()->SelectedShape();
-        }
-
-
-      } while(ShapeB.IsSame(ShapeA) );
-
-      // Fermeture du context local
-      TheAISContext()->CloseLocalContext(myCurrentIndex);
-
-      // Construction de la line
-      gp_Pnt   A=BRep_Tool::Pnt(TopoDS::Vertex(ShapeA)  );
-      gp_Pnt   B=BRep_Tool::Pnt(TopoDS::Vertex(ShapeB)  );
-
-      Handle(Geom_CartesianPoint ) myCartPointA=new Geom_CartesianPoint(A);
-      Handle(Geom_CartesianPoint ) myCartPointB=new Geom_CartesianPoint(B);
-
-      Handle(AIS_Line) theAISLine= new AIS_Line(myCartPointA,myCartPointB );
-      GetMapOfAIS().Bind(theAISLine,argv[1] );
-      TheAISContext()->Display(theAISLine );
-
-    }
-    else  {
-      di<<"vline error.\n";
+    if (!(aShapeA.ShapeType() == TopAbs_VERTEX
+       && aShapeB.ShapeType() == TopAbs_VERTEX))
+    {
+      std::cerr << "Error: you should select two different vertex.\n";
+      return 1;
     }
 
+    // Construction de la line
+    gp_Pnt A = BRep_Tool::Pnt (TopoDS::Vertex (aShapeA));
+    gp_Pnt B = BRep_Tool::Pnt (TopoDS::Vertex (aShapeB));
+
+    Handle(Geom_CartesianPoint ) myCartPointA=new Geom_CartesianPoint(A);
+    Handle(Geom_CartesianPoint ) myCartPointB=new Geom_CartesianPoint(B);
+
+    Handle(AIS_Line) theAISLine= new AIS_Line(myCartPointA,myCartPointB );
+    GetMapOfAIS().Bind(theAISLine,argv[1] );
+    TheAISContext()->Display(theAISLine );
   }
 
   return 0;
@@ -2132,14 +1715,12 @@ void DisplayCircle (Handle (Geom_Circle) theGeomCircle,
 
 static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const char** argv)
 {
-  Standard_Integer myCurrentIndex;
   // Verification of the arguments
   if (argc>6 || argc<2) 
   { 
     std::cout << "vcircle error: expect 4 arguments.\n"; 
     return 1; // TCL_ERROR 
   }
-  TheAISContext()->CloseAllContexts();
 
   // There are all arguments
   if (argc == 6) 
@@ -2298,85 +1879,40 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
     // Get the name of the circle 
     TCollection_AsciiString aName(argv[1]);
 
-    TheAISContext()->OpenLocalContext();
-    myCurrentIndex = TheAISContext()->IndexOfCurrentLocal();
-
-    // Activate selection mode for vertices and faces
-    TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(1) );
-    TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4) );
-    std::cout << " Select a vertex or a face\n";
-
-    // Wait for picking
-    Standard_Integer argcc = 5;
-    const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-    const char **argvv = (const char **) buff;
-    while (ViewerMainLoop( argcc, argvv) ) { }
-    // end of the loop
-
-    TopoDS_Shape ShapeA;
-    for(TheAISContext()->InitSelected(); 
-      TheAISContext()->MoreSelected(); 
-      TheAISContext()->NextSelected() ) 
+    TopTools_ListOfShape aShapes;
+    ViewerTest::GetSelectedShapes (aShapes);
+    if (aShapes.Extent() != 3 && aShapes.Extent() != 2)
     {
-      ShapeA = TheAISContext()->SelectedShape();
+      std::cerr << "Error: Wrong number of selected shapes.\n";
+      return 1;
     }
 
-    // ShapeA is a Vertex
-    if (ShapeA.ShapeType() == TopAbs_VERTEX ) 
+    const TopoDS_Shape& aShapeA = aShapes.First();
+    if (aShapeA.ShapeType() == TopAbs_VERTEX ) 
     {
-      TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(4) );
-      std::cout << " Select a different vertex\n";
-
-      TopoDS_Shape ShapeB;
-      do 
+      if (aShapes.Extent() != 3)
       {
-        // Wait for picking
-        Standard_Integer argccc = 5;
-        const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-        const char **argvvv = (const char **) bufff;
-        while (ViewerMainLoop( argccc, argvvv) ) { }
-        // end of the loop
+        std::cerr << "Error: wrong number of selected shapes.\n";
+        return 1;
+      }
 
-        for(TheAISContext()->InitSelected(); 
-          TheAISContext()->MoreSelected(); 
-          TheAISContext()->NextSelected() ) 
-        {
-          ShapeB = TheAISContext()->SelectedShape();
-        }
-      } while(ShapeB.IsSame(ShapeA) );
+      TopTools_ListOfShape::Iterator anIter (aShapes);
 
-      // Selection of ShapeC
-      std::cout << " Select the last vertex\n";
-      TopoDS_Shape ShapeC;
-      do 
-      {
-        // Wait for picking
-        Standard_Integer argcccc = 5;
-        const char *buffff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-        const char **argvvvv = (const char **) buffff;
-        while (ViewerMainLoop( argcccc, argvvvv) ) { }
-        // end of the loop
+      anIter.Next();
+      const TopoDS_Shape& aShapeB = anIter.Value();
 
-        for(TheAISContext()->InitSelected(); 
-          TheAISContext()->MoreSelected(); 
-          TheAISContext()->NextSelected() ) 
-        {
-          ShapeC = TheAISContext()->SelectedShape();
-        }
-      } while(ShapeC.IsSame(ShapeA) || ShapeC.IsSame(ShapeB) );
+      anIter.Next();
+      const TopoDS_Shape& aShapeC = anIter.Value();
       
       // Get isFilled
       Standard_Boolean isFilled;
       std::cout << "Enter filled status (0 or 1)\n";
       cin >> isFilled;
 
-      // Close the local context
-      TheAISContext()->CloseLocalContext(myCurrentIndex);
-
       // Construction of the circle
-      gp_Pnt A = BRep_Tool::Pnt(TopoDS::Vertex(ShapeA));
-      gp_Pnt B = BRep_Tool::Pnt(TopoDS::Vertex(ShapeB));
-      gp_Pnt C = BRep_Tool::Pnt(TopoDS::Vertex(ShapeC));
+      gp_Pnt A = BRep_Tool::Pnt (TopoDS::Vertex (aShapeA));
+      gp_Pnt B = BRep_Tool::Pnt (TopoDS::Vertex (aShapeB));
+      gp_Pnt C = BRep_Tool::Pnt (TopoDS::Vertex (aShapeC));
 
       GC_MakeCircle Cir = GC_MakeCircle (A, B, C);
       Handle (Geom_Circle) theGeomCircle;
@@ -2393,26 +1929,9 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
       DisplayCircle(theGeomCircle, aName, isFilled);
 
     }
-    // Shape is a face
-    else
+    else if (aShapeA.ShapeType() == TopAbs_FACE)
     {
-      std::cout << " Select a vertex (in your face)\n";
-      TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(4) );
-
-      TopoDS_Shape ShapeB;
-      // Wait for picking
-      Standard_Integer argccc = 5;
-      const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-      const char **argvvv = (const char **) bufff;
-      while (ViewerMainLoop( argccc, argvvv) ) { }
-      // end of the loop
-
-      for(TheAISContext()->InitSelected(); 
-        TheAISContext()->MoreSelected(); 
-        TheAISContext()->NextSelected() ) 
-      {
-        ShapeB = TheAISContext()->SelectedShape();
-      }
+      const TopoDS_Shape& aShapeB = aShapes.Last();
 
       // Recover the radius 
       Standard_Real theRad;
@@ -2427,12 +1946,8 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
       std::cout << "Enter filled status (0 or 1)\n";
       cin >> isFilled;
 
-      // Close the local context
-      TheAISContext()->CloseLocalContext(myCurrentIndex);
-      // Construction of the circle
-
       // Recover the normal to the plane. tag
-      TopoDS_Face myFace = TopoDS::Face(ShapeA);
+      TopoDS_Face myFace = TopoDS::Face(aShapeA);
       BRepAdaptor_Surface mySurface (myFace, Standard_False);
       gp_Pln myPlane = mySurface.Plane();
       Handle(Geom_Plane) theGeomPlane = new Geom_Plane (myPlane);
@@ -2441,7 +1956,7 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
       gp_Dir theDir = thegpAxe.Direction();
 
       // Recover the center
-      gp_Pnt theCenter = BRep_Tool::Pnt(TopoDS::Vertex(ShapeB));
+      gp_Pnt theCenter = BRep_Tool::Pnt (TopoDS::Vertex (aShapeB));
 
       // Construct the circle
       GC_MakeCircle Cir = GC_MakeCircle (theCenter, theDir ,theRad);
@@ -2457,9 +1972,12 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
       }
 
       DisplayCircle(theGeomCircle, aName, isFilled);
-      
     }
-
+    else
+    {
+      std::cerr << "Error: You should select face and vertex or three vertices.\n";
+      return 1;
+    }
   }
 
   return 0;
@@ -3283,10 +2801,6 @@ static int VComputeHLR (Draw_Interpretor& di,
     di << "Presentable object with name " << argv[2] << " already exists\n";
     return 1;
   }
-
-  // close local context
-  if (aContextAIS->HasOpenedContext ())
-    aContextAIS->CloseLocalContext ();
 
   Handle(HLRBRep_PolyAlgo) aPolyAlgo = new HLRBRep_PolyAlgo();
   HLRBRep_PolyHLRToShape aHLRToShape;
@@ -4596,10 +4110,12 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
 
   const Standard_Integer aSelectionMode = Draw::Atoi (anArgNb == 3 ? theArgv[1] : theArgv[2]);
   const Standard_Boolean toTurnOn       = Draw::Atoi (anArgNb == 3 ? theArgv[2] : theArgv[3]) != 0;
+  Standard_DISABLE_DEPRECATION_WARNINGS
   if (aSelectionMode == 0 && anAISContext->HasOpenedContext())
   {
     anAISContext->CloseLocalContext();
   }
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   if (aSelectionMode == 0)
   {
@@ -4635,23 +4151,19 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
 
   if (aSelectionMode != 0 && toTurnOn) // Turn on specified mode
   {
+    Standard_DISABLE_DEPRECATION_WARNINGS
     if (!anAISContext->HasOpenedContext() && isToOpenLocalCtx)
     {
       anAISContext->OpenLocalContext (Standard_False);
     }
+    Standard_ENABLE_DEPRECATION_WARNINGS
 
     for (AIS_ListIteratorOfListOfInteractive aTargetIt (aTargetIOs); aTargetIt.More(); aTargetIt.Next())
     {
       const Handle(AIS_InteractiveObject)& anIO = aTargetIt.Value();
-      if (InList (anAISContext, anIO, 0))
-      {
-        anAISContext->Deactivate (anIO, 0);
-      }
-      if (!InList (anAISContext, anIO, aSelectionMode))
-      {
-        anAISContext->Load (anIO, -1, Standard_True);
-        anAISContext->Activate (anIO, aSelectionMode);
-      }
+      anAISContext->Deactivate (anIO, 0);
+      anAISContext->Load (anIO, -1, Standard_True);
+      anAISContext->Activate (anIO, aSelectionMode);
     }
   }
 
@@ -4659,11 +4171,7 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
   {
     for (AIS_ListIteratorOfListOfInteractive aTargetIt (aTargetIOs); aTargetIt.More(); aTargetIt.Next())
     {
-      const Handle(AIS_InteractiveObject)& anIO = aTargetIt.Value();
-      if (InList (anAISContext, anIO, aSelectionMode))
-      {
-        anAISContext->Deactivate (anIO, aSelectionMode);
-      }
+      anAISContext->Deactivate (aSelectionMode);
     }
   }
 
@@ -4839,8 +4347,6 @@ static Standard_Integer VTriangle (Draw_Interpretor& /*di*/,
     return 1; // TCL_ERROR
   }
 
-  TheAISContext()->CloseAllContexts();
-
   // Get and check values
   TCollection_AsciiString aName(argv[1]);
 
@@ -4980,8 +4486,6 @@ static Standard_Integer VSegment (Draw_Interpretor& /*di*/,
     std::cout<<"vsegment error: expects 3 arguments\n";
     return 1; // TCL_ERROR
   }
-
-  TheAISContext()->CloseAllContexts();
 
   // Get and check arguments
   TCollection_AsciiString aName(argv[1]);

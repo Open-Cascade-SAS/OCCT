@@ -325,8 +325,8 @@ void  CGeometryDoc::Popup (const Standard_Integer theMouseX,
                            const Handle(V3d_View)& theView) 
 { 
   Standard_Integer PopupMenuNumber=0;
-  GetAISContext()->InitCurrent();
-  if (GetAISContext()->MoreCurrent())
+  GetAISContext()->InitSelected();
+  if (GetAISContext()->MoreSelected())
   {
     PopupMenuNumber=1;
   }

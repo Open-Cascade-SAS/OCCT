@@ -928,7 +928,10 @@ Standard_Boolean AIS_InteractiveContext::IsHilighted (const Handle(AIS_Interacti
     return myObjects (theObj)->IsHilighted();
   }
 
-  for (Standard_Integer aCtxIdx = HighestIndex(); aCtxIdx >= 1; aCtxIdx--)
+  Standard_DISABLE_DEPRECATION_WARNINGS
+  Standard_Integer aCtxIdx = HighestIndex();
+  Standard_ENABLE_DEPRECATION_WARNINGS
+  for (; aCtxIdx >= 1; aCtxIdx--)
   {
     if (myLocalContexts.IsBound (aCtxIdx))
     {
@@ -2268,6 +2271,7 @@ void AIS_InteractiveContext::EraseGlobal (const Handle(AIS_InteractiveObject)& t
 
   if (aStatus->IsHilighted())
   {
+    Standard_DISABLE_DEPRECATION_WARNINGS
     if (IsCurrent (theIObj))
     {
       AddOrRemoveCurrentObject (theIObj, Standard_False);
@@ -2276,6 +2280,7 @@ void AIS_InteractiveContext::EraseGlobal (const Handle(AIS_InteractiveObject)& t
     {
       unhighlightGlobal (theIObj, aStatus->DisplayMode());
     }
+    Standard_ENABLE_DEPRECATION_WARNINGS
   }
 
   myMainPM->SetVisibility (theIObj, aStatus->DisplayMode(), Standard_False);
@@ -2354,6 +2359,7 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
   myMainPM->Erase (theIObj, -1);
 
   // Object removes from Detected sequence
+  Standard_DISABLE_DEPRECATION_WARNINGS
   for (Standard_Integer aDetIter = myDetectedSeq.Lower(); aDetIter <= myDetectedSeq.Upper(); ++aDetIter)
   {
     Handle(AIS_InteractiveObject) anObj = DetectedCurrentObject();
@@ -2363,6 +2369,7 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
       myDetectedSeq.Remove (aDetIter);
     }
   }
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   // remove IO from the selection manager to avoid memory leaks
   const Handle(SelectMgr_SelectableObject)& anObj = theIObj; // to avoid ambiguity

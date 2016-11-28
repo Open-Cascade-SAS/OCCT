@@ -175,6 +175,22 @@ Standard_Boolean ViewerTest::ParseOnOff (Standard_CString  theArg,
 }
 
 //=======================================================================
+//function : GetSelectedShapes
+//purpose  :
+//=======================================================================
+void ViewerTest::GetSelectedShapes (TopTools_ListOfShape& theSelectedShapes)
+{
+  for (GetAISContext()->InitSelected(); GetAISContext()->MoreSelected(); GetAISContext()->NextSelected())
+  {
+    TopoDS_Shape aShape = GetAISContext()->SelectedShape();
+    if (!aShape.IsNull())
+    {
+      theSelectedShapes.Append (aShape);
+    }
+  }
+}
+
+//=======================================================================
 //function : ParseLineType
 //purpose  :
 //=======================================================================
@@ -526,8 +542,6 @@ Handle(AIS_Shape) GetAISShapeFromName(const char* name)
 void ViewerTest::Clear()
 {
   if ( !a3DView().IsNull() ) {
-    if (TheAISContext()->HasOpenedContext())
-      TheAISContext()->CloseLocalContext();
     ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName it(GetMapOfAIS());
     while ( it.More() ) {
       cout << "Remove " << it.Key2() << endl;
@@ -546,12 +560,15 @@ void ViewerTest::Clear()
 //purpose  : Activate a selection mode, vertex, edge, wire ..., in a local
 //           Context
 //==============================================================================
+Standard_DISABLE_DEPRECATION_WARNINGS
 void ViewerTest::StandardModeActivation(const Standard_Integer mode )
 {
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if(mode==0) {
     if (TheAISContext()->HasOpenedContext())
+    {
       aContext->CloseLocalContext();
+    }
   } else {
 
     if(!aContext->HasOpenedContext()) {
@@ -560,14 +577,16 @@ void ViewerTest::StandardModeActivation(const Standard_Integer mode )
       // Open a local Context in order to be able to select subshape from
       // the selected shape if any or for all if there is no selection
       if (!aContext->FirstSelectedObject().IsNull()){
-	aContext->OpenLocalContext(Standard_False);
+        aContext->OpenLocalContext(Standard_False);
 
 	for(aContext->InitSelected();aContext->MoreSelected();aContext->NextSelected()){
 	  aContext->Load(	aContext->SelectedInteractive(),-1,Standard_True);
 	}
       }
       else
-	aContext->OpenLocalContext();
+      {
+        aContext->OpenLocalContext();
+      }
     }
 
     const char *cmode="???";
@@ -585,19 +604,20 @@ void ViewerTest::StandardModeActivation(const Standard_Integer mode )
     }
 
     if(theactivatedmodes.Contains(mode))
-      { // Desactivate
-	aContext->DeactivateStandardMode(AIS_Shape::SelectionType(mode));
-	theactivatedmodes.Remove(mode);
-	cout<<"Mode "<< cmode <<" OFF"<<endl;
-      }
+    { // Desactivate
+      aContext->DeactivateStandardMode(AIS_Shape::SelectionType(mode));
+      theactivatedmodes.Remove(mode);
+      cout<<"Mode "<< cmode <<" OFF"<<endl;
+    }
     else
-      { // Activate
-	aContext->ActivateStandardMode(AIS_Shape::SelectionType(mode));
-	theactivatedmodes.Add(mode);
-	cout<<"Mode "<< cmode << " ON" << endl;
-      }
+    { // Activate
+      aContext->ActivateStandardMode(AIS_Shape::SelectionType(mode));
+      theactivatedmodes.Add(mode);
+      cout<<"Mode "<< cmode << " ON" << endl;
+    }
   }
 }
+Standard_ENABLE_DEPRECATION_WARNINGS
 
 //==============================================================================
 //function : CopyIsoAspect
@@ -1462,10 +1482,6 @@ static int VSetInteriorStyle (Draw_Interpretor& theDI,
     return 1;
   }
 
-  if (aCtx->HasOpenedContext())
-  {
-    aCtx->CloseLocalContext();
-  }
   for (ViewTest_PrsIter anIter (aName); anIter.More(); anIter.Next())
   {
     const Handle(AIS_InteractiveObject)& anIO = anIter.Current();
@@ -2237,11 +2253,6 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
     isFirst = Standard_False;
   }
 
-  if (aCtx->HasOpenedContext())
-  {
-    aCtx->CloseLocalContext();
-  }
-
   // special case for -defaults parameter.
   // all changed values will be set to DefaultDrawer.
   if (isDefaults)
@@ -2553,10 +2564,12 @@ static int VDonly2 (Draw_Interpretor& ,
     return 1;
   }
 
+  Standard_DISABLE_DEPRECATION_WARNINGS
   if (aCtx->HasOpenedContext())
   {
     aCtx->CloseLocalContext();
   }
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   Standard_Integer anArgIter = 1;
   for (; anArgIter < theArgNb; ++anArgIter)
@@ -2678,6 +2691,7 @@ int VRemove (Draw_Interpretor& theDI,
     return 1;
   }
 
+  Standard_DISABLE_DEPRECATION_WARNINGS
   if (toRemoveLocal && !aCtx->HasOpenedContext())
   {
     std::cerr << "Error: local selection context is not open.\n";
@@ -2687,6 +2701,7 @@ int VRemove (Draw_Interpretor& theDI,
   {
     aCtx->CloseAllContexts (Standard_False);
   }
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   NCollection_List<TCollection_AsciiString> anIONameList;
   if (toRemoveAll)
@@ -2754,11 +2769,13 @@ int VRemove (Draw_Interpretor& theDI,
 
   // Close local context if it is empty
   TColStd_MapOfTransient aLocalIO;
+  Standard_DISABLE_DEPRECATION_WARNINGS
   if (aCtx->HasOpenedContext()
    && !aCtx->LocalContext()->DisplayedObjects (aLocalIO))
   {
     aCtx->CloseAllContexts (Standard_False);
   }
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   return 0;
 }
@@ -2816,6 +2833,7 @@ int VErase (Draw_Interpretor& theDI,
     return 1;
   }
 
+  Standard_DISABLE_DEPRECATION_WARNINGS
   if (toEraseLocal && !aCtx->HasOpenedContext())
   {
     std::cerr << "Error: local selection context is not open.\n";
@@ -2825,6 +2843,7 @@ int VErase (Draw_Interpretor& theDI,
   {
     aCtx->CloseAllContexts (Standard_False);
   }
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   if (!aNamesOfEraseIO.IsEmpty())
   {
@@ -2948,6 +2967,7 @@ static int VDisplayAll (Draw_Interpretor& ,
     return 1;
   }
 
+  Standard_DISABLE_DEPRECATION_WARNINGS
   if (toDisplayLocal && !aCtx->HasOpenedContext())
   {
     std::cerr << "Error: local selection context is not open.\n";
@@ -2957,6 +2977,7 @@ static int VDisplayAll (Draw_Interpretor& ,
   {
     aCtx->CloseLocalContext (Standard_False);
   }
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
        anIter.More(); anIter.Next())
@@ -3799,6 +3820,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
   }
 
   // Prepare context for display
+  Standard_DISABLE_DEPRECATION_WARNINGS
   if (toDisplayLocal && !aCtx->HasOpenedContext())
   {
     aCtx->OpenLocalContext (Standard_False);
@@ -3807,6 +3829,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
   {
     aCtx->CloseAllContexts (Standard_False);
   }
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   // Display interactive objects
   for (Standard_Integer anIter = 1; anIter <= aNamesOfDisplayIO.Length(); ++anIter)
@@ -4008,9 +4031,6 @@ static int VUpdate (Draw_Interpretor& /*theDi*/, Standard_Integer theArgsNb, con
 static int VPerf(Draw_Interpretor& di, Standard_Integer , const char** argv) {
 
   OSD_Timer myTimer;
-  if (TheAISContext()->HasOpenedContext())
-    TheAISContext()->CloseLocalContext();
-
   Standard_Real Step=4*M_PI/180;
   Standard_Real Angle=0;
 
@@ -4082,10 +4102,6 @@ static int VShading(Draw_Interpretor& ,Standard_Integer argc, const char** argv)
 
   // Verifications
   const Standard_Boolean HaveToSet = (strcasecmp(argv[0],"vsetshading") == 0);
-
-  if (TheAISContext()->HasOpenedContext())
-    TheAISContext()->CloseLocalContext();
-
   if (argc < 3) {
     myDevCoef  = 0.0008;
   } else {
@@ -4151,15 +4167,20 @@ static int VActivatedMode (Draw_Interpretor& di, Standard_Integer argc, const ch
       if (argc<2||argc>3) { di<<" Syntaxe error\n";return 1;}
       ThereIsName = (argc == 3);
     }
-    else {
+    else
+    {
+      Standard_DISABLE_DEPRECATION_WARNINGS
       // vunsetam
       if (argc>1) {di<<" Syntaxe error\n";return 1;}
       else {
         di<<" R.A.Z de tous les modes de selecion\n";
         di<<" Fermeture du Context local\n";
         if (TheAISContext()->HasOpenedContext())
+        {
           TheAISContext()->CloseLocalContext();
+        }
       }
+      Standard_ENABLE_DEPRECATION_WARNINGS
     }
 
     // IL n'y a aps de nom de shape passe en argument
@@ -4192,7 +4213,9 @@ static int VActivatedMode (Draw_Interpretor& di, Standard_Integer argc, const ch
 	  }
 	}
 
+  Standard_DISABLE_DEPRECATION_WARNINGS
 	TheAISContext()->OpenLocalContext(Standard_False);
+  Standard_ENABLE_DEPRECATION_WARNINGS
 	ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName
           it (GetMapOfAIS());
 	while(it.More()){
@@ -4295,7 +4318,9 @@ static int VActivatedMode (Draw_Interpretor& di, Standard_Integer argc, const ch
         }
 
         if( !TheAISContext()->HasOpenedContext() ) {
+          Standard_DISABLE_DEPRECATION_WARNINGS
           TheAISContext()->OpenLocalContext(Standard_False);
+          Standard_ENABLE_DEPRECATION_WARNINGS
           // On charge tous les objets de la map
           ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName it (GetMapOfAIS());
           while(it.More()){
@@ -4496,7 +4521,9 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
   if (toPrintEntities)
   {
     theDI << "Detected entities:\n";
+    Standard_DISABLE_DEPRECATION_WARNINGS
     Handle(StdSelect_ViewerSelector3d) aSelector = aCtx->HasOpenedContext() ? aCtx->LocalSelector() : aCtx->MainSelector();
+    Standard_ENABLE_DEPRECATION_WARNINGS
     SelectMgr_SelectingVolumeManager aMgr = aSelector->GetManager();
     for (Standard_Integer aPickIter = 1; aPickIter <= aSelector->NbPicked(); ++aPickIter)
     {
@@ -4546,10 +4573,12 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
   }
 
   NCollection_Map<Handle(AIS_InteractiveObject)> aDetected;
+  Standard_DISABLE_DEPRECATION_WARNINGS
   for (aCtx->InitDetected(); aCtx->MoreDetected(); aCtx->NextDetected())
   {
     aDetected.Add (aCtx->DetectedCurrentObject());
   }
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   const Standard_Boolean toShowAll = (theArgNb >= 2 && *theArgVec[1] == '*');
   if (theArgNb >= 2
@@ -4615,8 +4644,10 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
     theDI << "\n";
   }
   printLocalSelectionInfo (aCtx, theDI);
+  Standard_DISABLE_DEPRECATION_WARNINGS
   if (aCtx->HasOpenedContext())
     printLocalSelectionInfo (aCtx->LocalContext(), theDI);
+  Standard_ENABLE_DEPRECATION_WARNINGS
   return 0;
 }
 
@@ -4630,7 +4661,9 @@ Standard_Boolean  ViewerTest::PickObjects(Handle(TColStd_HArray1OfTransient)& ar
 					  const Standard_Integer MaxPick)
 {
   Handle(AIS_InteractiveObject) IO;
+  Standard_DISABLE_DEPRECATION_WARNINGS
   Standard_Integer curindex = (TheType == AIS_KOI_None) ? 0 : TheAISContext()->OpenLocalContext();
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   // step 1: prepare the data
   if(curindex !=0){
@@ -4670,9 +4703,12 @@ Standard_Boolean  ViewerTest::PickObjects(Handle(TColStd_HArray1OfTransient)& ar
     arr->SetValue(i,IO2);
   }
 
-
-  if(curindex>0)
+  Standard_DISABLE_DEPRECATION_WARNINGS
+  if (curindex > 0)
+  {
     TheAISContext()->CloseLocalContext(curindex);
+  }
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   return Standard_True;
 }
@@ -4687,7 +4723,9 @@ Handle(AIS_InteractiveObject) ViewerTest::PickObject(const AIS_KindOfInteractive
 						     const Standard_Integer MaxPick)
 {
   Handle(AIS_InteractiveObject) IO;
+  Standard_DISABLE_DEPRECATION_WARNINGS
   Standard_Integer curindex = (TheType == AIS_KOI_None) ? 0 : TheAISContext()->OpenLocalContext();
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   // step 1: prepare the data
 
@@ -4718,8 +4756,12 @@ Handle(AIS_InteractiveObject) ViewerTest::PickObject(const AIS_KindOfInteractive
     IO = TheAISContext()->SelectedInteractive();
   }
 
-  if(curindex!=0)
+  Standard_DISABLE_DEPRECATION_WARNINGS
+  if (curindex != 0)
+  {
     TheAISContext()->CloseLocalContext(curindex);
+  }
+  Standard_ENABLE_DEPRECATION_WARNINGS
   return IO;
 }
 
@@ -4734,8 +4776,9 @@ TopoDS_Shape ViewerTest::PickShape(const TopAbs_ShapeEnum TheType,
 {
 
   // step 1: prepare the data
-
+  Standard_DISABLE_DEPRECATION_WARNINGS
   Standard_Integer curindex = TheAISContext()->OpenLocalContext();
+  Standard_ENABLE_DEPRECATION_WARNINGS
   TopoDS_Shape result;
 
   if(TheType==TopAbs_SHAPE){
@@ -4745,8 +4788,9 @@ TopoDS_Shape ViewerTest::PickShape(const TopAbs_ShapeEnum TheType,
   else{
     Handle(StdSelect_ShapeTypeFilter) TF = new StdSelect_ShapeTypeFilter(TheType);
     TheAISContext()->AddFilter(TF);
+    Standard_DISABLE_DEPRECATION_WARNINGS
     TheAISContext()->ActivateStandardMode(TheType);
-
+    Standard_ENABLE_DEPRECATION_WARNINGS
   }
 
 
@@ -4778,8 +4822,12 @@ TopoDS_Shape ViewerTest::PickShape(const TopAbs_ShapeEnum TheType,
     }
   }
 
-  if(curindex>0)
+  Standard_DISABLE_DEPRECATION_WARNINGS
+  if (curindex > 0)
+  {
     TheAISContext()->CloseLocalContext(curindex);
+  }
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   return result;
 }
@@ -4799,7 +4847,9 @@ Standard_Boolean ViewerTest::PickShapes (const TopAbs_ShapeEnum TheType,
     cout<<" WARNING : Pick with Shift+ MB1 for Selection of more than 1 object\n";
 
   // step 1: prepare the data
+  Standard_DISABLE_DEPRECATION_WARNINGS
   Standard_Integer curindex = TheAISContext()->OpenLocalContext();
+  Standard_ENABLE_DEPRECATION_WARNINGS
   if(TheType==TopAbs_SHAPE){
     Handle(AIS_TypeFilter) F1 = new AIS_TypeFilter(AIS_KOI_Shape);
     TheAISContext()->AddFilter(F1);
@@ -4807,8 +4857,9 @@ Standard_Boolean ViewerTest::PickShapes (const TopAbs_ShapeEnum TheType,
   else{
     Handle(StdSelect_ShapeTypeFilter) TF = new StdSelect_ShapeTypeFilter(TheType);
     TheAISContext()->AddFilter(TF);
+    Standard_DISABLE_DEPRECATION_WARNINGS
     TheAISContext()->ActivateStandardMode(TheType);
-
+    Standard_ENABLE_DEPRECATION_WARNINGS
   }
 
   // step 2 : wait for the selection...
@@ -4845,7 +4896,9 @@ Standard_Boolean ViewerTest::PickShapes (const TopAbs_ShapeEnum TheType,
     }
   }
 
+  Standard_DISABLE_DEPRECATION_WARNINGS
   TheAISContext()->CloseLocalContext(curindex);
+  Standard_ENABLE_DEPRECATION_WARNINGS
   return Standard_True;
 }
 
@@ -5458,6 +5511,7 @@ static Standard_Integer VLoadSelection (Draw_Interpretor& /*theDi*/,
   }
 
   // Prepare context
+  Standard_DISABLE_DEPRECATION_WARNINGS
   if (isLocal && !aCtx->HasOpenedContext())
   {
     aCtx->OpenLocalContext (Standard_False);
@@ -5466,6 +5520,7 @@ static Standard_Integer VLoadSelection (Draw_Interpretor& /*theDi*/,
   {
     aCtx->CloseAllContexts (Standard_False);
   }
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   // Load selection of interactive objects
   for (Standard_Integer anIter = 1; anIter <= aNamesOfIO.Length(); ++anIter)

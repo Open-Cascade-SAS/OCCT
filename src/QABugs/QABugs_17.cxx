@@ -262,7 +262,9 @@ static Standard_Integer  BUC60818(Draw_Interpretor& di, Standard_Integer argc, c
   aTrihedron=new AIS_Trihedron(aTrihedronAxis);
   myAISContext->Display(aTrihedron);
 
+  Standard_DISABLE_DEPRECATION_WARNINGS
   myAISContext->OpenLocalContext(); 
+  Standard_ENABLE_DEPRECATION_WARNINGS
   myAISContext->Load(aTrihedron,0); 
 
   myAISContext->SetAutomaticHilight(  Standard_False );
@@ -586,10 +588,11 @@ static Standard_Integer  OCC232 (Draw_Interpretor& di, Standard_Integer /*argc*/
 
   Handle (StdSelect_ShapeTypeFilter) filt = new StdSelect_ShapeTypeFilter(TopAbs_COMPSOLID);
   aContext->AddFilter(filt);
+  Standard_DISABLE_DEPRECATION_WARNINGS
   aContext->CloseAllContexts();
   aContext->OpenLocalContext(); 
   aContext->ActivateStandardMode(TopAbs_SOLID);
-
+  Standard_ENABLE_DEPRECATION_WARNINGS
   return 0; 
 }
 
@@ -629,84 +632,6 @@ static Standard_Integer  OCC138LC (Draw_Interpretor& di, Standard_Integer /*argc
     aContext->AddOrRemoveSelected(ais);
     aContext->InitSelected();
   }
-
-  return 0; 
-}
-
-static Standard_Integer  OCC189 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** argv)
-{
-  Handle(AIS_InteractiveContext) aContext1 = ViewerTest::GetAISContext();
-  if(aContext1.IsNull()) { 
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-  Handle(AIS_InteractiveContext) aContext2 = ViewerTest::GetAISContext();
-  if(aContext2.IsNull()) { 
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-
-  BRepPrimAPI_MakeBox box1(gp_Pnt(0, 0, 0),  gp_Pnt(100, 100, 100));
-  BRepPrimAPI_MakeBox box2(gp_Pnt(120, 120, 120),  gp_Pnt(300, 300, 300));
-  BRepPrimAPI_MakeBox box3(gp_Pnt(320, 320, 320),  gp_Pnt(500, 500, 500));
-
-  Handle(AIS_InteractiveObject) ais1 = new AIS_Shape(box1.Shape());
-  Handle(AIS_InteractiveObject) ais2 = new AIS_Shape(box2.Shape());
-  Handle(AIS_InteractiveObject) ais3 = new AIS_Shape(box3.Shape());
-
-  aContext1->Display(ais1);
-  aContext1->Display(ais2);
-  aContext1->Display(ais3);
-
-  aContext2->Display(ais1);
-  aContext2->Display(ais2);
-  aContext2->Display(ais3);
-
-  aContext1->AddOrRemoveSelected(ais1);
-  aContext1->AddOrRemoveSelected(ais2);
-  aContext1->AddOrRemoveSelected(ais3);
-
-  di << "\n Stage : 1";
-  di << "\n \t No of currents on aContext1 = " << aContext1->NbSelected();
-  di << "\n \t No of currents on aContext2 = " << aContext2->NbSelected() << "\n\n";
-
-  di << "\n aContext1->IsSelected = " << (Standard_Integer) aContext1->IsCurrent(ais1) << ", aContext2->IsCurrent = " << (Standard_Integer) aContext2->IsCurrent(ais1) << " ";
-
-  aContext2->AddOrRemoveSelected(ais1);
-  aContext2->AddOrRemoveSelected(ais2);
-  aContext2->AddOrRemoveSelected(ais3);
-
-  di << "\n Stage : 2";
-  di << "\n \t No of currents on aContext1 = " << aContext1->NbSelected();
-  di << "\n \t No of currents on aContext2 = " << aContext2->NbSelected() << "\n\n";
-
-  aContext1->InitSelected();
-  int count1 = 1;
-  while(aContext1->MoreSelected())
-  {
-    di << "\n count1 is = " << count1++;
-    Handle(AIS_InteractiveObject) ais = aContext1->SelectedInteractive();
-    aContext1->AddOrRemoveSelected(ais);
-    aContext1->InitSelected();
-  }
-
-  di << "\n Stage : 3";
-  di << "\n \t No of currents on aContext1 = " << aContext1->NbSelected();
-  di << "\n \t No of currents on aContext2 = " << aContext2->NbSelected() << "\n\n";
-
-  aContext2->InitSelected();
-  int count2 = 1;
-  while(aContext2->MoreSelected())
-  {
-    di << "\n count2 is = " << count2++;
-    Handle(AIS_InteractiveObject) ais = aContext2->SelectedInteractive();
-    aContext2->AddOrRemoveSelected(ais);
-    aContext2->InitSelected();
-  }
-
-  di << "\n\n Stage : 4";
-  di << "\n \t No of currents on aContext1 = " << aContext1->NbSelected();
-  di << "\n \t No of currents on aContext2 = " << aContext2->NbSelected();
 
   return 0; 
 }
@@ -1755,7 +1680,6 @@ void QABugs::Commands_17(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC280","OCC280 hlr=0/1 setsurfecedetail=0/1; set perspecrive view",__FILE__,OCC280,group);
   theCommands.Add ("OCC232", "OCC232", __FILE__, OCC232 , group);
   theCommands.Add ("OCC138LC", "OCC138LC", __FILE__, OCC138LC, group);
-  theCommands.Add ("OCC189", "OCC189", __FILE__, OCC189, group);
   theCommands.Add ("OCC566", "OCC566 shape [ xmin ymin zmin xmax ymax zmax] ; print bounding box", __FILE__, OCC566, group);
   theCommands.Add ("OCC570", "OCC570 result", __FILE__, OCC570, group);
 

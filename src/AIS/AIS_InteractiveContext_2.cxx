@@ -74,7 +74,9 @@ OpenLocalContext(const Standard_Boolean UseDisplayedObjects,
   myLastPicked.Nullify();
   myWasLastMain = Standard_True;
 
+  Standard_DISABLE_DEPRECATION_WARNINGS
   myCurLocalIndex = HighestIndex() + 1;
+  Standard_ENABLE_DEPRECATION_WARNINGS
   
   Handle(AIS_LocalContext) NewLocal= new AIS_LocalContext(this,myCurLocalIndex,
                                                           UseDisplayedObjects,
@@ -144,7 +146,9 @@ void AIS_InteractiveContext::CloseLocalContext(const Standard_Integer Index,
    myLocalContexts.UnBind(GoodIndex);
    // the current is closed...
    if(GoodIndex==myCurLocalIndex){
+     Standard_DISABLE_DEPRECATION_WARNINGS
      myCurLocalIndex = HighestIndex();
+     Standard_ENABLE_DEPRECATION_WARNINGS
    }
    else if(debugmode)
      cout<<"a No Current Local Context WasClosed"<<endl;
@@ -164,18 +168,18 @@ void AIS_InteractiveContext::CloseLocalContext(const Standard_Integer Index,
 //function : CloseAllContexts
 //purpose  : 
 //=======================================================================
-
+Standard_DISABLE_DEPRECATION_WARNINGS
 void AIS_InteractiveContext::CloseAllContexts(const Standard_Boolean updateviewer)
 {
-  
   while(!myLocalContexts.IsEmpty()){
     CloseLocalContext(myCurLocalIndex,Standard_False);
   }
-  
+
   ResetOriginalState(Standard_False);
 
   if(updateviewer) myMainVwr->Update();
 }
+Standard_ENABLE_DEPRECATION_WARNINGS
 
 //=======================================================================
 //function : IndexOfCurrentLocal
@@ -237,6 +241,24 @@ Activate(const Handle(AIS_InteractiveObject)& anIObj,
   }
 }
 
+// ============================================================================
+// function : Activate
+// purpose  :
+// ============================================================================
+void AIS_InteractiveContext::Activate (const Standard_Integer theMode,
+                                       const Standard_Boolean theIsForce)
+{
+  AIS_ListOfInteractive aDisplayedObjects;
+  DisplayedObjects (aDisplayedObjects);
+
+  for (AIS_ListIteratorOfListOfInteractive anIter (aDisplayedObjects); anIter.More(); anIter.Next())
+  {
+    Load (anIter.Value(), -1, Standard_True);
+    Activate (anIter.Value(), theMode, theIsForce);
+  }
+
+}
+
 //=======================================================================
 //function : LocalSelector
 //purpose  : 
@@ -292,6 +314,36 @@ void AIS_InteractiveContext::Deactivate(const Handle(AIS_InteractiveObject)& anI
   }
   else{
    myLocalContexts(myCurLocalIndex)->DeactivateMode(anIObj,aMode);
+  }
+}
+
+// ============================================================================
+// function : Deactivate
+// purpose  :
+// ============================================================================
+void AIS_InteractiveContext::Deactivate (const Standard_Integer theMode)
+{
+  AIS_ListOfInteractive aDisplayedObjects;
+  DisplayedObjects (aDisplayedObjects);
+
+  for (AIS_ListIteratorOfListOfInteractive anIter (aDisplayedObjects); anIter.More(); anIter.Next())
+  {
+    Deactivate (anIter.Value(), theMode);
+  }
+}
+
+// ============================================================================
+// function : Deactivate
+// purpose  :
+// ============================================================================
+void AIS_InteractiveContext::Deactivate()
+{
+  AIS_ListOfInteractive aDisplayedObjects;
+  DisplayedObjects (aDisplayedObjects);
+
+  for (AIS_ListIteratorOfListOfInteractive anIter (aDisplayedObjects); anIter.More(); anIter.Next())
+  {
+    Deactivate (anIter.Value());
   }
 }
 

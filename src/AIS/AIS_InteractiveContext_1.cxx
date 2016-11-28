@@ -1685,7 +1685,9 @@ const TopoDS_Shape& AIS_InteractiveContext::DetectedCurrentShape() const
     return myLocalContexts(myCurLocalIndex)->DetectedCurrentShape();
   }
 
+  Standard_DISABLE_DEPRECATION_WARNINGS
   Handle(AIS_Shape) aCurrentShape = Handle(AIS_Shape)::DownCast (DetectedCurrentObject());
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   if (aCurrentShape.IsNull())
   {

@@ -66,6 +66,7 @@ static TColStd_MapOfInteger theactivatedmodes(8);
 #include <BRepAdaptor_Curve.hxx>
 #include <GC_MakePlane.hxx>
 
+Standard_DISABLE_DEPRECATION_WARNINGS
 static Standard_Integer OCC328bug (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
@@ -178,6 +179,7 @@ static Standard_Integer OCC328bug (Draw_Interpretor& di, Standard_Integer argc, 
 
   return 0;
 }
+Standard_ENABLE_DEPRECATION_WARNINGS
 
 static Standard_Integer OCC159bug (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
@@ -415,9 +417,6 @@ static Standard_Integer OCC74bug_set (Draw_Interpretor& di, Standard_Integer arg
     if(AISObj.IsNull()){
       di << argv[1] << " : No interactive object\n";
       return 1;
-    } 
-    if (!aContext->HasOpenedContext()) {
-      aContext->OpenLocalContext();
     }
     aContext->Erase(AISObj, updateviewer);
     aContext->UpdateCurrentViewer();

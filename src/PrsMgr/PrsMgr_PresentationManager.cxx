@@ -153,7 +153,11 @@ void PrsMgr_PresentationManager::SetVisibility (const Handle(PrsMgr_PresentableO
     return;
   }
 
-  Presentation (thePrsObj, theMode)->SetVisible (theValue);
+  Handle(PrsMgr_Presentation) aPrs = Presentation (thePrsObj, theMode);
+  if (!aPrs.IsNull())
+  {
+    aPrs->SetVisible (theValue);
+  }
 }
 
 // =======================================================================

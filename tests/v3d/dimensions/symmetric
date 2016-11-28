@@ -1,0 +1,41 @@
+puts "===================================================================="
+puts "OCC28162: Draw Harness - eliminate usage of deprecated Local Context"
+puts "Select 3 edges or 1 edge and 2 vertices"
+puts "===================================================================="
+
+vclear
+vinit
+
+box b 10 20 30
+vdisplay b
+vfit
+
+set shift 1
+
+# Create a symmetric relation from 3 edges.
+vselmode b 2 1
+
+vselect 280 23
+vselect 123 112 $shift
+vselect 123 382 $shift
+
+vrelation r3edges -symmetric
+
+vdump $imagedir/${casename}_3edges.png
+
+# Create a symmetric relation from edge and 2 vertices.
+vremove r3edges
+
+vselect 0 0
+# Select an edge.
+vselect 123 112
+
+vselmode b 2 0
+vselmode b 1 1
+
+# Select 2 vertices.
+vselect 230 0 325 55 $shift
+
+vrelation redge2vertices -symmetric
+
+vdump $imagedir/${casename}_edge_2vertices.png

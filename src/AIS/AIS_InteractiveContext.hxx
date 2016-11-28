@@ -237,6 +237,7 @@ public:
   //! inWhichLocal gives the local context in which anIObj
   //! is displayed. By default, the index -1 refers to the last
   //! Local Context opened.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT Standard_Boolean KeepTemporary (const Handle(AIS_InteractiveObject)& anIObj, const Standard_Integer InWhichLocal = -1);
   
   //! Empties the graphic presentation of the mode
@@ -966,6 +967,7 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void SetCurrentObject (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Boolean updateviewer = Standard_True);
   
 
@@ -973,6 +975,7 @@ public:
   //! correspondingly. Is valid for global context only; for local context use method AddOrRemoveSelected.
   //! Since this method makes sence only for neutral point selection of a whole object, if 0 selection
   //! of the object is empty this method simply does nothing.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void AddOrRemoveCurrentObject (const Handle(AIS_InteractiveObject)& theObj,
                                                  const Standard_Boolean theIsToUpdateViewer = Standard_True);
   
@@ -981,6 +984,7 @@ public:
   //! Objects selected when there is no open local context
   //! are called current objects; those selected in open
   //! local context, selected objects.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void UpdateCurrent();
   
 
@@ -988,14 +992,17 @@ public:
   //! Objects selected when there is no open local context
   //! are called current objects; those selected in open
   //! local context, selected objects.
-    Standard_Boolean WasCurrentTouched() const;
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
+  Standard_Boolean WasCurrentTouched() const;
   
-    void SetOkCurrent();
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
+  void SetOkCurrent();
   
 
   //! Returns true if there is a non-null interactive object in Neutral Point.
   //! Objects selected when there is no open local context are called current objects;
   //! those selected in open local context, selected objects.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT Standard_Boolean IsCurrent (const Handle(AIS_InteractiveObject)& theObject) const;
   
 
@@ -1004,6 +1011,7 @@ public:
   //! Objects selected when there is no open local context
   //! are called current objects; those selected in open
   //! local context, selected objects.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void InitCurrent();
   
 
@@ -1012,6 +1020,7 @@ public:
   //! Objects selected when there is no open local context
   //! are called current objects; those selected in open
   //! local context, selected objects.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT Standard_Boolean MoreCurrent() const;
   
 
@@ -1020,6 +1029,7 @@ public:
   //! Objects selected when there is no open local context
   //! are called current objects; those selected in open
   //! local context, selected objects.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void NextCurrent();
   
 
@@ -1027,8 +1037,10 @@ public:
   //! Objects selected when there is no open local context
   //! are called current objects; those selected in open
   //! local context, selected objects.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT Handle(AIS_InteractiveObject) Current() const;
-  
+
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT Standard_Integer NbCurrents();
 
   //! Highlights current objects.
@@ -1039,6 +1051,7 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void HilightCurrents (const Standard_Boolean theToUpdateViewer = Standard_True);
 
   //! Removes highlighting from current objects.
@@ -1049,6 +1062,7 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void UnhilightCurrents (const Standard_Boolean updateviewer = Standard_True);
 
   //! Empties previous current objects in order to get the
@@ -1061,14 +1075,16 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void ClearCurrents (const Standard_Boolean theToUpdateViewer = Standard_True);
 
   //! @return current mouse-detected shape or empty (null) shape, if current interactive object
   //! is not a shape (AIS_Shape) or there is no current mouse-detected interactive object at all.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT const TopoDS_Shape& DetectedCurrentShape() const;
   
-  //! @return current mouse-detected interactive object or null object, if there is no
-  //! currently detected interactives
+  //! @return current mouse-detected interactive object or null object, if there is no currently detected interactives
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT Handle(AIS_InteractiveObject) DetectedCurrentObject() const;
 
   //! @name COMMON SELECTION METHODS VALID FOR BOTH GLOBAL AND LOCAL CONTEXT
@@ -1123,6 +1139,7 @@ public:
   //! No right to Add a selected Shape (Internal Management
   //! of shape Selection).
   //! A Previous selected shape may only be removed.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void AddOrRemoveSelected (const TopoDS_Shape& aShape, const Standard_Boolean updateviewer = Standard_True);
 
   //! Allows to highlight or unhighlight the owner given depending on its selection status
@@ -1268,6 +1285,7 @@ public:
   //! selections which will disappear once the local context is closed.
   //! You can open several local contexts, but only the last
   //! one will be active.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT Standard_Integer OpenLocalContext (const Standard_Boolean UseDisplayedObjects = Standard_True, const Standard_Boolean AllowShapeDecomposition = Standard_True, const Standard_Boolean AcceptEraseOfObjects = Standard_False, const Standard_Boolean BothViewers = Standard_False);
   
   //! Allows you to close local contexts. For greater
@@ -1285,9 +1303,11 @@ public:
   //! is closed. This option can be dangerous, as other
   //! Interactive Functions can open local contexts
   //! without necessarily warning the user.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void CloseLocalContext (const Standard_Integer Index = -1, const Standard_Boolean updateviewer = Standard_True);
   
   //! returns -1 if no opened local context.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT Standard_Integer IndexOfCurrentLocal() const;
   
 
@@ -1297,6 +1317,7 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void CloseAllContexts (const Standard_Boolean updateviewer = Standard_True);
   
   //! to   be  used only with no  opened
@@ -1304,15 +1325,17 @@ public:
   //! original state before local contexts were opened...
   Standard_EXPORT void ResetOriginalState (const Standard_Boolean updateviewer = Standard_True);
   
-  //! clears Objects/Filters/Activated Modes list in the current opened
-  //! local context.
+  //! clears Objects/Filters/Activated Modes list in the current opened local context.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void ClearLocalContext (const AIS_ClearMode TheMode = AIS_CM_All);
-  
+
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void UseDisplayedObjects();
   
   //! when a local Context is opened, one is able to
   //! use/not use the displayed objects at neutral point
   //! at anytime.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void NotUseDisplayedObjects();
   
   //! initializes the list of presentations to be displayed
@@ -1355,6 +1378,10 @@ public:
   //! Activates the selection mode aMode whose index is
   //! given, for the given interactive entity anIobj.
   Standard_EXPORT void Activate (const Handle(AIS_InteractiveObject)& anIobj, const Standard_Integer aMode = 0, const Standard_Boolean theIsForce = Standard_False);
+
+  //! Activates the given selection mode for the all displayed objects.
+  Standard_EXPORT void Activate (const Standard_Integer theMode,
+                                 const Standard_Boolean theIsForce = Standard_False);
   
   //! Deactivates all the activated selection modes
   //! of an object.
@@ -1364,7 +1391,12 @@ public:
   //! Deactivates all the activated selection modes of the
   //! interactive object anIobj with a given selection mode aMode.
   Standard_EXPORT void Deactivate (const Handle(AIS_InteractiveObject)& anIobj, const Standard_Integer aMode);
-  
+
+  //! Deactivates the given selection mode for all displayed objects.
+  Standard_EXPORT void Deactivate (const Standard_Integer theMode);
+
+  //! Deactivates all the activated selection mode at all displayed objects.
+  Standard_EXPORT void Deactivate();
 
   //! Returns the list of activated selection modes in an open context.
   Standard_EXPORT void ActivatedModes (const Handle(AIS_InteractiveObject)& anIobj, TColStd_ListOfInteger& theList) const;
@@ -1375,6 +1407,7 @@ public:
   //! shape selection modes activation.
   //! = False, <anIobj> will not be senstive
   //! any more.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void SetShapeDecomposition (const Handle(AIS_InteractiveObject)& anIobj, const Standard_Boolean aStatus);
   
 
@@ -1385,6 +1418,7 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void SetTemporaryAttributes (const Handle(AIS_InteractiveObject)& anObj, const Handle(Prs3d_Drawer)& aDrawer, const Standard_Boolean updateviewer = Standard_True);
   
 
@@ -1447,6 +1481,7 @@ public:
   //! objects of the "Shape" type are also activated with
   //! the same modes. You can act on the state of these
   //! "Standard" objects by using SetShapeDecomposition(Status).
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void ActivateStandardMode (const TopAbs_ShapeEnum aStandardActivation);
   
 
@@ -1455,11 +1490,13 @@ public:
   //! effect of deactivating the corresponding selection
   //! mode aStandardActivation for all objects in Local
   //! Context which accept decomposition into sub-shapes.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void DeactivateStandardMode (const TopAbs_ShapeEnum aStandardActivation);
   
 
   //! Returns the list of activated standard selection modes
   //! available in a local context.
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT const TColStd_ListOfInteger& ActivatedStandardModes() const;
   
 
@@ -1530,7 +1567,8 @@ public:
   //! together. Otherwise, you should use other (non-internal) methods of
   //! class AIS_InteractiveContext without trying to obtain an instance of
   //! AIS_LocalContext.
-    Handle(AIS_LocalContext) LocalContext() const;
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
+  Handle(AIS_LocalContext) LocalContext() const;
   
     const Handle(SelectMgr_SelectionManager)& SelectionManager() const;
   
@@ -1538,6 +1576,7 @@ public:
   
     const Handle(StdSelect_ViewerSelector3d)& MainSelector() const;
   
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT Handle(StdSelect_ViewerSelector3d) LocalSelector() const;
   
   //! Clears all the structures which don't
@@ -1546,6 +1585,7 @@ public:
   //! returns the number of removed  structures from the viewers.
   Standard_EXPORT Standard_Integer PurgeDisplay();
   
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT Standard_Integer HighestIndex() const;
   
   Standard_EXPORT void DisplayActiveSensitive (const Handle(V3d_View)& aView);
@@ -1561,6 +1601,7 @@ public:
   
   //! returns if possible,
   //! the first local context where the object is seen
+  Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT Standard_Boolean IsInLocal (const Handle(AIS_InteractiveObject)& anObject, Standard_Integer& TheIndex) const;
   
   //! Rebuilds 1st level of BVH selection forcibly

@@ -1093,7 +1093,8 @@ myAISContext->SetDisplayMode(ais1,1,Standard_False);
 myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False);
 myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);
 myAISContext->Display(ais1,Standard_False);
-myAISContext->SetCurrentObject(ais1,Standard_False);
+const Handle(AIS_InteractiveObject)& anIO1 = ais1;
+myAISContext->SetSelected (anIO1, Standard_False);
 Fit();
 Sleep(1000);
 
@@ -1104,7 +1105,8 @@ myAISContext->SetDisplayMode(ais2,1,Standard_False);
 myAISContext->SetColor(ais2,Quantity_NOC_YELLOW,Standard_False);
 myAISContext->SetMaterial(ais2,Graphic3d_NOM_PLASTIC,Standard_False);
 myAISContext->Display(ais2,Standard_False);
-myAISContext->SetCurrentObject(ais2,Standard_False);
+const Handle(AIS_InteractiveObject)& anIO2 = ais2;
+myAISContext->SetSelected (anIO2, Standard_False);
 Fit();
 Sleep(1000);
 
@@ -1118,7 +1120,8 @@ myAISContext->SetDisplayMode(aSection,1,Standard_False);
 myAISContext->SetColor(aSection,Quantity_NOC_RED,Standard_False);
 myAISContext->SetMaterial(aSection,Graphic3d_NOM_PLASTIC,Standard_False);
 myAISContext->Display(aSection,Standard_False);
-myAISContext->SetCurrentObject(aSection,Standard_False);
+const Handle(AIS_InteractiveObject)& anIOSection = aSection;
+myAISContext->SetSelected (anIOSection, Standard_False);
 Fit();
 
     TCollection_AsciiString Message ("\
@@ -1158,7 +1161,8 @@ Handle (AIS_Shape)	ais1 = new AIS_Shape(theBox1);
 myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False);
 myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);
 myAISContext->Display(ais1,Standard_False);
-myAISContext->SetCurrentObject(ais1,Standard_False);
+const Handle(AIS_InteractiveObject)& anIO1 = ais1;
+myAISContext->SetSelected (anIO1, Standard_False);
 Fit();
 Sleep(1000);
 
@@ -1167,7 +1171,8 @@ Handle (AIS_Shape)	ais2 = new AIS_Shape(theBox2);
 myAISContext->SetColor(ais2,Quantity_NOC_YELLOW,Standard_False);
 myAISContext->SetMaterial(ais2,Graphic3d_NOM_PLASTIC,Standard_False);
 myAISContext->Display(ais2,Standard_False);
-myAISContext->SetCurrentObject(ais2,Standard_False);
+const Handle(AIS_InteractiveObject)& anIO2 = ais2;
+myAISContext->SetSelected (anIO2, Standard_False);
 Fit();
 Sleep(1000);
 
@@ -1181,7 +1186,8 @@ myAISContext->SetDisplayMode(aFusion,1,Standard_False);
 myAISContext->SetColor(aFusion,Quantity_NOC_RED,Standard_False);
 myAISContext->SetMaterial(aFusion,Graphic3d_NOM_PLASTIC,Standard_False);
 myAISContext->Display(aFusion,Standard_False);
-myAISContext->SetCurrentObject(aFusion,Standard_False);
+const Handle(AIS_InteractiveObject)& anIOFusion = aFusion;
+myAISContext->SetSelected (anIOFusion, Standard_False);
 Fit();
 
     TCollection_AsciiString Message ("\
@@ -1213,7 +1219,8 @@ myAISContext->SetMaterial(aboxshape,Graphic3d_NOM_PLASTIC,Standard_False);
 myAISContext->SetDisplayMode(aboxshape,1,Standard_False);
 myAISContext->SetTransparency(aboxshape,0.2,Standard_False);
 myAISContext->Display(aboxshape,Standard_False);
-myAISContext->SetCurrentObject(aboxshape,Standard_False);
+const Handle(AIS_InteractiveObject)& anIOBoxShape = aboxshape;
+myAISContext->SetSelected (anIOBoxShape, Standard_False);
 Fit();
 Sleep(500);
 
@@ -1224,7 +1231,8 @@ myAISContext->SetColor(awedge,Quantity_NOC_RED,Standard_False);
 myAISContext->SetMaterial(awedge,Graphic3d_NOM_PLASTIC,Standard_False);    
 myAISContext->SetTransparency(awedge,0.0,Standard_False);
 myAISContext->Display(awedge,Standard_False);
-myAISContext->SetCurrentObject(awedge,Standard_False);
+const Handle(AIS_InteractiveObject)& anIOWedge = awedge;
+myAISContext->SetSelected (anIOWedge, Standard_False);
 Fit();
 Sleep(500);
 
@@ -1237,7 +1245,8 @@ Handle(AIS_Shape) acommon = new AIS_Shape(theCommonSurface);
 myAISContext->SetColor(acommon,Quantity_NOC_GREEN,Standard_False); 
 myAISContext->SetMaterial(acommon,Graphic3d_NOM_PLASTIC,Standard_False);    
 myAISContext->Display(acommon,Standard_False);
-myAISContext->SetCurrentObject(acommon);
+const Handle(AIS_InteractiveObject)& anIOCommon = acommon;
+myAISContext->SetSelected (anIOCommon, Standard_False);
 
    TCollection_AsciiString Message ("\
 		\n\
@@ -1336,7 +1345,8 @@ myAISContext->SetColor(atorus,Quantity_NOC_YELLOW,Standard_False);
 myAISContext->SetMaterial(atorus,Graphic3d_NOM_PLASTIC,Standard_False);
 myAISContext->SetTransparency(atorus,0.1,Standard_False);
 myAISContext->Display(atorus,Standard_False);
-myAISContext->SetCurrentObject(atorus,Standard_False);
+const Handle(AIS_InteractiveObject)& anIOTorus = atorus;
+myAISContext->SetSelected (anIOTorus, Standard_False);
 Fit();
 Sleep(500);
 
@@ -1344,7 +1354,8 @@ gp_Pln aplane(1,0.25,3,4);
 Handle (Geom_Plane) thePlane = new Geom_Plane(aplane);
 Handle (AIS_Plane) ais1 = new AIS_Plane(thePlane);
 myAISContext->Display(ais1,Standard_False);
-myAISContext->SetCurrentObject(ais1,Standard_False);
+const Handle(AIS_InteractiveObject)& anIO1 = ais1;
+myAISContext->SetSelected (anIO1, Standard_False);
 Fit();
 Sleep(300);
 
@@ -1386,7 +1397,8 @@ Handle(AIS_Shape) ais1 = new AIS_Shape(Box);
 myAISContext->SetColor(ais1,Quantity_NOC_YELLOW,Standard_False); 
 myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False); 
 myAISContext->Display(ais1,Standard_False);
-myAISContext->SetCurrentObject(ais1,Standard_False);
+const Handle(AIS_InteractiveObject)& anIO1 = ais1;
+myAISContext->SetSelected (anIO1, Standard_False);
 Fit();
 Sleep(500);
 
@@ -1404,7 +1416,8 @@ Handle(AIS_Shape) aBlendbox = new AIS_Shape(blendedBox);
 myAISContext->SetColor(aBlendbox,Quantity_NOC_YELLOW,Standard_False); 
 myAISContext->SetMaterial(aBlendbox,Graphic3d_NOM_PLASTIC,Standard_False); 
 myAISContext->Display(aBlendbox,Standard_False);
-myAISContext->SetCurrentObject(aBlendbox,Standard_False);
+const Handle(AIS_InteractiveObject)& anIOBlendBox = aBlendbox;
+myAISContext->SetSelected (anIOBlendBox, Standard_False);
 Fit();
 Sleep(500);
 
@@ -1418,7 +1431,8 @@ Handle(AIS_Shape) ais2 = new AIS_Shape(fusedShape);
 myAISContext->SetColor(ais2,Quantity_NOC_RED,Standard_False); 
 myAISContext->SetMaterial(ais2,Graphic3d_NOM_PLASTIC,Standard_False);  
 myAISContext->Display(ais2,Standard_False);
-myAISContext->SetCurrentObject(ais2,Standard_False);
+const Handle(AIS_InteractiveObject)& anIO2 = ais2;
+myAISContext->SetSelected (anIO2, Standard_False);
 Fit();
 
 BRepFilletAPI_MakeFillet fill(fusedShape);
@@ -1503,7 +1517,8 @@ Handle(AIS_Shape) ais1 = new AIS_Shape(theBox);
 myAISContext->SetColor(ais1,Quantity_NOC_BROWN,Standard_False); 
 myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False); 
 myAISContext->Display(ais1,Standard_False);
-myAISContext->SetCurrentObject(ais1,Standard_False);
+const Handle(AIS_InteractiveObject)& anIO1 = ais1;
+myAISContext->SetSelected (anIO1, Standard_False);
 Fit();
 Sleep(500);
 
@@ -1520,7 +1535,7 @@ if (Rake.IsDone() ){
 	TopoDS_Shape evolvedBox = Rake.Shape();
 	ais1->Set(evolvedBox);
 	myAISContext->Redisplay(ais1,Standard_False);
-	myAISContext->SetCurrentObject(ais1,Standard_False);
+	myAISContext->SetSelected(anIO1, Standard_False);
 	Fit();
 	Sleep(500);
 
@@ -1531,7 +1546,8 @@ Handle(AIS_Shape) ais3 = new AIS_Shape(theCylinder);
 myAISContext->SetColor(ais3,Quantity_NOC_GREEN,Standard_False); 
 myAISContext->SetMaterial(ais3,Graphic3d_NOM_PLASTIC,Standard_False);    
 myAISContext->Display(ais3,Standard_False);
-myAISContext->SetCurrentObject(ais3,Standard_False);
+const Handle(AIS_InteractiveObject)& anIO3 = ais3;
+myAISContext->SetSelected (anIO3, Standard_False);
 Fit();
 Sleep(500);
 
@@ -1551,7 +1567,7 @@ if (fillet.IsDone() ){
 	TopoDS_Shape LawEvolvedCylinder = fillet.Shape();
 	ais3->Set(LawEvolvedCylinder);
 	myAISContext->Redisplay(ais3,Standard_False);
-	myAISContext->SetCurrentObject(ais3,Standard_False);
+	myAISContext->SetSelected(anIO3,Standard_False);
 	Fit();
 	Sleep(500);
 }
@@ -1562,7 +1578,8 @@ Handle(AIS_Shape) ais2 = new AIS_Shape(theBox2);
 myAISContext->SetColor(ais2,Quantity_NOC_RED,Standard_False); 
 myAISContext->SetMaterial(ais2,Graphic3d_NOM_PLASTIC,Standard_False);    
 myAISContext->Display(ais2,Standard_False);
-myAISContext->SetCurrentObject(ais2,Standard_False);
+const Handle(AIS_InteractiveObject)& anIO2 = ais2;
+myAISContext->SetSelected (anIO2, Standard_False);
 Fit();
 Sleep(500);
 
@@ -1597,7 +1614,7 @@ if (afillet.IsDone() ){
 	TopoDS_Shape LawevolvedBox = afillet.Shape();
 	ais2->Set(LawevolvedBox);
 	myAISContext->Redisplay(ais2,Standard_False);
-	myAISContext->SetCurrentObject(ais2,Standard_False);
+	myAISContext->SetSelected(anIO2,Standard_False);
 	Fit();
 	
 }
@@ -1698,7 +1715,8 @@ Handle(AIS_Shape) ais1 = new AIS_Shape(theBox);
 myAISContext->SetColor(ais1,Quantity_NOC_YELLOW,Standard_False); 
 myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);    
 myAISContext->Display(ais1,Standard_False);
-myAISContext->SetCurrentObject(ais1,Standard_False);
+const Handle(AIS_InteractiveObject)& anIO1 = ais1;
+myAISContext->SetSelected (anIO1, Standard_False);
 Fit();
 Sleep(500);
 
@@ -1717,7 +1735,8 @@ Handle(AIS_Shape) aBlendedBox = new AIS_Shape(ChanfrenedBox);
 myAISContext->SetColor(aBlendedBox,Quantity_NOC_YELLOW,Standard_False); 
 myAISContext->SetMaterial(aBlendedBox,Graphic3d_NOM_PLASTIC,Standard_False);    
 myAISContext->Display(aBlendedBox,Standard_False);
-myAISContext->SetCurrentObject(aBlendedBox,Standard_False);
+const Handle(AIS_InteractiveObject)& anIOBlendedBox = aBlendedBox;
+myAISContext->SetSelected (anIOBlendedBox, Standard_False);
 Fit();
 Sleep(500);
 
@@ -1757,7 +1776,8 @@ void CModelingDoc::OnPrismLocal()
 	myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);   
 	myAISContext->Display(ais1,Standard_False);
-	myAISContext->SetCurrentObject(ais1,Standard_False);
+	const Handle(AIS_InteractiveObject)& anIO1 = ais1;
+	myAISContext->SetSelected (anIO1, Standard_False);
 	Fit();
 	Sleep(500);
 
@@ -1800,7 +1820,7 @@ void CModelingDoc::OnPrismLocal()
 	ais1->Set(res1);
 
 	myAISContext->Redisplay(ais1,Standard_False);
-	myAISContext->SetCurrentObject(ais1,Standard_False);
+	myAISContext->SetSelected(anIO1,Standard_False);
 	Fit();
 	Sleep(500);
 
@@ -1834,7 +1854,7 @@ void CModelingDoc::OnPrismLocal()
 	ais1->Set(res2);
 
 	myAISContext->Redisplay(ais1);
-	myAISContext->SetCurrentObject(ais1,Standard_False);
+	myAISContext->SetSelected(anIO1,Standard_False);
 	Fit();
 
 	TCollection_AsciiString Message ("\
@@ -1954,14 +1974,15 @@ void CModelingDoc::OnDprismLocal()
 	TopoDS_Shape res1 = MKDP.Shape();
 
 	myAISContext->Display(ais1,Standard_False);
-	myAISContext->SetCurrentObject(ais1,Standard_False);
+	const Handle(AIS_InteractiveObject)& anIO1 = ais1;
+	myAISContext->SetSelected (anIO1, Standard_False);
 	Fit();
 	Sleep(500);
 
 	ais1->Set(res1);
 	
 	myAISContext->Redisplay(ais1,Standard_False);
-	myAISContext->SetCurrentObject(ais1,Standard_False);
+	myAISContext->SetSelected(anIO1,Standard_False);
 
 	Fit();
 
@@ -2011,7 +2032,8 @@ void CModelingDoc::OnRevolLocal()
 	myAISContext->SetColor(ais1,Quantity_NOC_CORAL,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);   
 	myAISContext->Display(ais1,Standard_False);
-	myAISContext->SetCurrentObject(ais1,Standard_False);
+	const Handle(AIS_InteractiveObject)& anIO1 = ais1;
+	myAISContext->SetSelected (anIO1, Standard_False);
 	Fit();
 	Sleep(500);
 
@@ -2053,7 +2075,8 @@ void CModelingDoc::OnRevolLocal()
 	myAISContext->Remove(ais1);
 	Handle(AIS_Shape) ais2 = new AIS_Shape(res1);
 	myAISContext->Display(ais2,Standard_False);
-	myAISContext->SetCurrentObject(ais2,Standard_False);
+	const Handle(AIS_InteractiveObject)& anIO2 = ais2;
+	myAISContext->SetSelected (anIO2, Standard_False);
 	Fit();
 
 	TCollection_AsciiString Message ("\
@@ -2109,7 +2132,8 @@ void CModelingDoc::OnGlueLocal()
 	myAISContext->SetColor(ais1,Quantity_NOC_ORANGE,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);   
 	myAISContext->Display(ais1,Standard_False);
-	myAISContext->SetCurrentObject(ais1,Standard_False);
+	const Handle(AIS_InteractiveObject)& anIO1 = ais1;
+	myAISContext->SetSelected (anIO1, Standard_False);
 	Fit();
 	Sleep(1000);
 	
@@ -2127,7 +2151,8 @@ void CModelingDoc::OnGlueLocal()
 	myAISContext->SetColor(ais2,Quantity_NOC_AZURE,Standard_False); 
 	myAISContext->SetMaterial(ais2,Graphic3d_NOM_PLASTIC,Standard_False);   
 	myAISContext->Display(ais2,Standard_False);
-	myAISContext->SetCurrentObject(ais2,Standard_False);
+	const Handle(AIS_InteractiveObject)& anIO2 = ais2;
+	myAISContext->SetSelected (anIO2, Standard_False);
 	Fit();
 	Sleep(1000);
 
@@ -2146,7 +2171,7 @@ void CModelingDoc::OnGlueLocal()
 	ais1->Set(res1);
 
 	myAISContext->Redisplay(ais1);	
-	myAISContext->SetCurrentObject(ais1,Standard_False);
+	myAISContext->SetSelected(anIO1,Standard_False);
 	Fit();
 	Sleep(1000);
 
@@ -2156,7 +2181,8 @@ void CModelingDoc::OnGlueLocal()
 	myAISContext->SetColor(ais3,Quantity_NOC_ORANGE,Standard_False); 
 	myAISContext->SetMaterial(ais3,Graphic3d_NOM_PLASTIC,Standard_False);   
 	myAISContext->Display(ais3,Standard_False);
-	myAISContext->SetCurrentObject(ais3,Standard_False);
+	const Handle(AIS_InteractiveObject)& anIO3 = ais3;
+	myAISContext->SetSelected (anIO3, Standard_False);
 	Fit();
 	Sleep(1000);
 
@@ -2174,7 +2200,8 @@ void CModelingDoc::OnGlueLocal()
 	myAISContext->SetColor(ais4,Quantity_NOC_AZURE,Standard_False); 
 	myAISContext->SetMaterial(ais4,Graphic3d_NOM_PLASTIC,Standard_False);   
 	myAISContext->Display(ais4,Standard_False);
-	myAISContext->SetCurrentObject(ais4,Standard_False);
+	const Handle(AIS_InteractiveObject)& anIO4 = ais4;
+	myAISContext->SetSelected (anIO4, Standard_False);
 	Fit();
 	Sleep(1000);
 
@@ -2196,7 +2223,7 @@ void CModelingDoc::OnGlueLocal()
 	ais4->Set(res2);
 
 	myAISContext->Redisplay(ais4,Standard_False);
-	myAISContext->SetCurrentObject(ais4,Standard_False);
+	myAISContext->SetSelected(anIO4,Standard_False);
 	Fit();
 	Sleep(1000);
 
@@ -2269,7 +2296,8 @@ void CModelingDoc::OnPipeLocal()
 	myAISContext->SetColor(ais1,Quantity_NOC_CORAL,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);   
 	myAISContext->Display(ais1,Standard_False);
-	myAISContext->SetCurrentObject(ais1,Standard_False);
+	const Handle(AIS_InteractiveObject)& anIO1 = ais1;
+	myAISContext->SetSelected (anIO1, Standard_False);
 	Fit();
 	Sleep(500);
 
@@ -2314,7 +2342,7 @@ void CModelingDoc::OnPipeLocal()
 	ais1->Set(res1);
 
 	myAISContext->Redisplay(ais1,Standard_False); 
-	myAISContext->SetCurrentObject(ais1,Standard_False);
+	myAISContext->SetSelected(anIO1,Standard_False);
 	Fit();
 	
 	TCollection_AsciiString Message ("\
@@ -2396,7 +2424,8 @@ void CModelingDoc::OnLinearLocal()
 	myAISContext->SetColor(ais1,Quantity_NOC_CYAN2,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);   
 	myAISContext->Display(ais1,Standard_False);
-	myAISContext->SetCurrentObject(ais1,Standard_False);
+	const Handle(AIS_InteractiveObject)& anIO1 = ais1;
+	myAISContext->SetSelected (anIO1, Standard_False);
 	Fit();
 	Sleep(500);
 
@@ -2410,7 +2439,7 @@ void CModelingDoc::OnLinearLocal()
 	TopoDS_Shape res = aform.Shape();
 	ais1->Set(res);
 	myAISContext->Redisplay(ais1,Standard_False);
-	myAISContext->SetCurrentObject(ais1);
+	myAISContext->SetSelected(anIO1);
 	Fit();
 
 	TCollection_AsciiString Message ("\
@@ -2462,7 +2491,8 @@ void CModelingDoc::OnSplitLocal()
 	myAISContext->SetColor(ais1,Quantity_NOC_RED,Standard_False);
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);
 	myAISContext->Display(ais1,Standard_False);
-	myAISContext->SetCurrentObject(ais1,Standard_False);
+	const Handle(AIS_InteractiveObject)& anIO1 = ais1;
+	myAISContext->SetSelected (anIO1, Standard_False);
 	Fit();
 	Sleep(500);
 
@@ -2499,7 +2529,8 @@ void CModelingDoc::OnSplitLocal()
 	myAISContext->SetMaterial(ais2,Graphic3d_NOM_PLASTIC,Standard_False);
 	myAISContext->SetDisplayMode(ais2,1,Standard_False);
 	myAISContext->Display(ais2,Standard_False);
-	myAISContext->SetCurrentObject(ais2,Standard_False);
+	const Handle(AIS_InteractiveObject)& anIO2 = ais2;
+	myAISContext->SetSelected (anIO2, Standard_False);
 	Fit();
 		TCollection_AsciiString Message ("\
 	\n\
@@ -2549,7 +2580,8 @@ void CModelingDoc::OnThickLocal()
 	myAISContext->SetColor(abox1,Quantity_NOC_WHITE);
 	myAISContext->SetMaterial(abox1,Graphic3d_NOM_PLASTIC,Standard_False);
 	myAISContext->Display(abox1,Standard_False);
-	myAISContext->SetCurrentObject(abox1,Standard_False);
+	const Handle(AIS_InteractiveObject)& anIOBox1 = abox1;
+	myAISContext->SetSelected (anIOBox1, Standard_False);
 	Fit();
 	Sleep(1000);
 
@@ -2567,7 +2599,8 @@ void CModelingDoc::OnThickLocal()
 	myAISContext->SetColor(ais1,Quantity_NOC_RED,Standard_False);
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);
 	myAISContext->Display(ais1,Standard_False);
-	myAISContext->SetCurrentObject(ais1,Standard_False);
+	const Handle(AIS_InteractiveObject)& anIO1 = ais1;
+	myAISContext->SetSelected (anIO1, Standard_False);
 	Fit();
 	Sleep(1000);
 	
@@ -3286,7 +3319,7 @@ void CModelingDoc::OnShell()
 	Handle(AIS_Shape) anAISShell = new AIS_Shape(aShell);
 	myAISContext->SetDisplayMode(anAISShell,0);
 	myAISContext->Display(anAISShell,Standard_False);
-	//myAISContext->SetCurrentObject(anAISShell);
+	//myAISContext->SetSelected(anAISShell);
 
 	Fit();
   
@@ -4598,10 +4631,9 @@ gp_Mat I = System.MatrixOfInertia();\n\
 void CModelingDoc::OnButtonFill() 
 {
 	// TODO: Add your command handler code here
-	myAISContext->InitCurrent();
-	if (myAISContext->MoreCurrent()) {
-		AIS1 = Handle(AIS_Shape)::DownCast(myAISContext->Current());
-		myAISContext->OpenLocalContext();
+	myAISContext->InitSelected();
+	if (myAISContext->MoreSelected()) {
+		AIS1 = Handle(AIS_Shape)::DownCast(myAISContext->SelectedInteractive());
 		myAISContext->Unhilight(AIS1);
 		myAISContext->Activate(AIS1,2);
 		myState = SELECT_EDGE_PLATE;
@@ -4613,7 +4645,7 @@ void CModelingDoc::OnButtonFill()
 			if(OnFileImportBrep_WithInitDir (L"HoleFilling") == 1)
 				return;
 		myAISContext->DisplayedObjects(LI);
-		myAISContext->SetCurrentObject(LI.First());	
+		myAISContext->SetSelected(LI.First());
 			OnButtonFill();
 			return;
 		}
@@ -4725,7 +4757,6 @@ void CModelingDoc::OnStopStop()
 		}
 		if (!BRepAlgo::IsValid(aface))
 			MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Error : The plate face is not valid!", L"CasCade Error", MB_ICONERROR);
-		myAISContext->CloseLocalContext();
 		myState = -1;
 		Handle(AIS_Shape) anAISShape = new AIS_Shape(aface);
 		myAISContext->SetColor(anAISShape,Quantity_NOC_AZURE); 
@@ -4741,9 +4772,9 @@ void CModelingDoc::OnFillwithtang()
 	if (flag == 1){
 		flag = 0;
 		Handle(AIS_InteractiveObject) aObject;
-		myAISContext ->InitCurrent();
-		if(myAISContext->MoreCurrent())
-			aObject = myAISContext->Current();
+		myAISContext ->InitSelected();
+		if(myAISContext->MoreSelected())
+			aObject = myAISContext->SelectedInteractive();
 		((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Select a file with second face");
 		if(OnFileImportBrep_WithInitDir (L"TangentSurface") == 1){
 			((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("");
@@ -4755,12 +4786,12 @@ void CModelingDoc::OnFillwithtang()
 				}
 				return;
 			}
-		myAISContext->SetCurrentObject(aObject);
+		myAISContext->SetSelected(aObject);
 	}
 
-	myAISContext->InitCurrent();
-	if (myAISContext->MoreCurrent()) {
-		Handle(AIS_Shape) ashape = Handle(AIS_Shape)::DownCast(myAISContext->Current());
+	myAISContext->InitSelected();
+	if (myAISContext->MoreSelected()) {
+		Handle(AIS_Shape) ashape = Handle(AIS_Shape)::DownCast(myAISContext->SelectedInteractive());
 		try {
                   THE_F1 = TopoDS::Face(ashape->Shape());
 		}
@@ -4771,7 +4802,6 @@ void CModelingDoc::OnFillwithtang()
 Please, select a face to continue\nthe creation of a tangent surface.");
                     return;
                 }
-		myAISContext->OpenLocalContext();
 		myAISContext->Activate(ashape,2);
 		myState = SELECT_EDGE_PLATE_TGTES_1;
 		
@@ -4795,7 +4825,7 @@ Please, select a face to continue\nthe creation of a tangent surface.");
 			}
 			((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("");
 			myAISContext->DisplayedObjects(LI);
-			myAISContext->SetCurrentObject(LI.First());	
+			myAISContext->SetSelected(LI.First());
 			Sleep(700);
 			flag = 1;
 			OnFillwithtang();
@@ -4814,21 +4844,19 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 		myAISContext->InitSelected();
  		if (myAISContext->MoreSelected()) {
  			THE_E1 = TopoDS::Edge(myAISContext->SelectedShape());
- 			myAISContext->CloseLocalContext();
  			myState = SELECT_EDGE_PLATE_TGTES_2;
  			
 			AIS_ListOfInteractive aLI;
 			myAISContext->DisplayedObjects(aLI);
 			if(aLI.Extent() == 2){
 				myState = SELECT_EDGE_PLATE_TGTES_2;
-				if (myAISContext->IsCurrent(aLI.First()))
-					myAISContext->SetCurrentObject(aLI.Last());
+				if (myAISContext->IsSelected(aLI.First()))
+					myAISContext->SetSelected(aLI.Last());
 				else
-					myAISContext->SetCurrentObject(aLI.First());
-				myAISContext->InitCurrent();
-				Handle(AIS_Shape) ashape = Handle(AIS_Shape)::DownCast(myAISContext->Current());
+					myAISContext->SetSelected(aLI.First());
+				myAISContext->InitSelected();
+				Handle(AIS_Shape) ashape = Handle(AIS_Shape)::DownCast(myAISContext->SelectedInteractive());
  				THE_F2 = TopoDS::Face(ashape->Shape());
-				myAISContext->OpenLocalContext();
 				myAISContext->Activate(ashape,2);
 				myState = SELECT_EDGE_PLATE_TGTES_3;
 				((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Select an edge on the second face");
@@ -4848,11 +4876,10 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
  
  	}
  	else if (myState == SELECT_EDGE_PLATE_TGTES_2) {
- 		myAISContext->InitCurrent();
- 		if (myAISContext->MoreCurrent()) {
- 			Handle(AIS_Shape) ashape = Handle(AIS_Shape)::DownCast(myAISContext->Current());
- 			THE_F2 = TopoDS::Face(ashape->Shape());
-			myAISContext->OpenLocalContext();
+		myAISContext->InitSelected();
+		if (myAISContext->MoreSelected()) {
+			Handle(AIS_Shape) ashape = Handle(AIS_Shape)::DownCast(myAISContext->SelectedInteractive());
+			THE_F2 = TopoDS::Face(ashape->Shape());
 			myAISContext->Activate(ashape,2);
 			myState = SELECT_EDGE_PLATE_TGTES_3;
 			((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Select an edge on the second face");
@@ -4864,7 +4891,6 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 		myAISContext->InitSelected();
 		if (myAISContext->MoreSelected()) {
 			THE_E2 = TopoDS::Edge(myAISContext->SelectedShape());
-			myAISContext->CloseLocalContext();
 
 			Standard_Integer i, nbPntsOnFaces=10;
 			Standard_Real u,First, Last, Delta, Tol=0.001, TolProj;
@@ -5042,10 +5068,10 @@ void CModelingDoc::Popup(const Standard_Integer  x,
                          const Handle(V3d_View)& aView)
 {
   Standard_Integer PopupMenuNumber=0;
-  myAISContext->InitCurrent();
+  myAISContext->InitSelected();
   if (myState == SELECT_EDGE_PLATE) 
     PopupMenuNumber=2;
-  else if (myAISContext->MoreCurrent())
+  else if (myAISContext->MoreSelected())
     PopupMenuNumber=1;
 
   CMenu menu;
@@ -5056,8 +5082,8 @@ void CModelingDoc::Popup(const Standard_Integer  x,
   if (PopupMenuNumber == 1) // more than 1 object.
   {
     bool OneOrMoreInShading = false;
-	for (myAISContext->InitCurrent();myAISContext->MoreCurrent ();myAISContext->NextCurrent ())
-    if (myAISContext->IsDisplayed(myAISContext->Current(),1)) OneOrMoreInShading=true;
+	for (myAISContext->InitSelected();myAISContext->MoreSelected ();myAISContext->NextSelected ())
+    if (myAISContext->IsDisplayed(myAISContext->SelectedInteractive(),1)) OneOrMoreInShading=true;
 	if(!OneOrMoreInShading)
    	pPopup->EnableMenuItem(5, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
    }

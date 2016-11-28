@@ -3311,7 +3311,9 @@ static Standard_Integer OCC26172 (Draw_Interpretor& theDI, Standard_Integer theA
   aModes.Append (AIS_Shape::SelectionMode ((TopAbs_ShapeEnum) TopAbs_VERTEX));
   aModes.Append (AIS_Shape::SelectionMode ((TopAbs_ShapeEnum) TopAbs_EDGE));
 
+  Standard_DISABLE_DEPRECATION_WARNINGS
   anAISContext->OpenLocalContext();
+  Standard_ENABLE_DEPRECATION_WARNINGS
   anAISContext->Deactivate (aTestAISShape);
   anAISContext->Load (aTestAISShape, -1, true);
   for (Standard_Integer anIt = 1; anIt <= aModes.Length(); ++anIt)
@@ -3321,6 +3323,7 @@ static Standard_Integer OCC26172 (Draw_Interpretor& theDI, Standard_Integer theA
 
   // select entities in vertex selection mode
   Handle(SelectMgr_Selection) aSelection = aTestAISShape->Selection (aModes (1));
+  Standard_DISABLE_DEPRECATION_WARNINGS
   for (aSelection->Init(); aSelection->More(); aSelection->Next())
   {
     Handle(SelectBasics_SensitiveEntity) anEntity = aSelection->Sensitive()->BaseSensitive();
@@ -3339,9 +3342,11 @@ static Standard_Integer OCC26172 (Draw_Interpretor& theDI, Standard_Integer theA
 
     anAISContext->LocalContext()->AddOrRemoveSelected (anOwner);
   }
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   // select entities in edge selection mode
   aSelection = aTestAISShape->Selection (aModes (2));
+  Standard_DISABLE_DEPRECATION_WARNINGS
   for (aSelection->Init(); aSelection->More(); aSelection->Next())
   {
     Handle(SelectBasics_SensitiveEntity) anEntity = aSelection->Sensitive()->BaseSensitive();
@@ -3360,10 +3365,13 @@ static Standard_Integer OCC26172 (Draw_Interpretor& theDI, Standard_Integer theA
 
     anAISContext->LocalContext()->AddOrRemoveSelected (anOwner);
   }
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   // deactivate vertex mode and check clearing of outdated selection
   anAISContext->Deactivate (aTestAISShape, aModes (1));
+  Standard_DISABLE_DEPRECATION_WARNINGS
   anAISContext->LocalContext()->ClearOutdatedSelection (aTestAISShape, true);
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   return 0;
 }
@@ -4162,7 +4170,6 @@ static Standard_Integer OCC26462 (Draw_Interpretor& theDI, Standard_Integer /*th
   Handle(AIS_InteractiveObject) aBox2 = new AIS_Shape (aBuilder2.Shape());
 
   const Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
-  aCtx->OpenLocalContext();
   aCtx->Display (aBox1, 0, 2);
   aCtx->Display (aBox2, 0, 2);
   ViewerTest::CurrentView()->FitAll();
@@ -4857,7 +4864,9 @@ static Standard_Integer BUC26658 (Draw_Interpretor& theDI,
 
   // visualization of the box in the local mode with possibility to
   // select box vertices
+  Standard_DISABLE_DEPRECATION_WARNINGS
   aContext->OpenLocalContext();
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   int aDispMode = 0;// wireframe
   anAISIO->SetDisplayMode(aDispMode);
@@ -4898,7 +4907,9 @@ static Standard_Integer BUC26658 (Draw_Interpretor& theDI,
   aContext->AddFilter(aFilter);
 
   // update previous selection by hand
+  Standard_DISABLE_DEPRECATION_WARNINGS
   aContext->LocalContext()->ClearOutdatedSelection(anAISIO, true);
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   // check that there are no selected vertices
   aContext->Select();
@@ -4941,8 +4952,10 @@ static Standard_Integer OCC26945_open (Draw_Interpretor& theDI, Standard_Integer
   }
 
   const TopAbs_ShapeEnum aSelType = AIS_Shape::SelectionType (Draw::Atoi (theArgv[1]));
+  Standard_DISABLE_DEPRECATION_WARNINGS
   Standard_Integer aLocalCtxIdx = aCtx->OpenLocalContext();
   aCtx->ActivateStandardMode (aSelType);
+  Standard_ENABLE_DEPRECATION_WARNINGS
   theDI << aLocalCtxIdx;
 
   return 0;
@@ -4969,7 +4982,9 @@ static Standard_Integer OCC26945_close (Draw_Interpretor& theDI, Standard_Intege
   }
 
   const Standard_Integer aCtxToClose = Draw::Atoi (theArgv[1]);
+  Standard_DISABLE_DEPRECATION_WARNINGS
   aCtx->CloseLocalContext (aCtxToClose);
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   return 0;
 }
@@ -5140,7 +5155,6 @@ static Standard_Integer OCC27523 (Draw_Interpretor& theDI, Standard_Integer theA
   TColStd_SequenceOfInteger aModes;
   aModes.Append (AIS_Shape::SelectionMode ((TopAbs_ShapeEnum) TopAbs_VERTEX));
 
-  anAISContext->OpenLocalContext();
   anAISContext->Deactivate (aTestAISShape);
   anAISContext->Load (aTestAISShape, -1, true);
   anAISContext->Activate (aTestAISShape, 0);

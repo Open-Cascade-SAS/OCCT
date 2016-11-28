@@ -5,7 +5,6 @@
 #include "ParamsFacesPage.h"
 #include "DimensionDlg.h"
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_LocalContext.hxx>
 #include <AIS_LengthDimension.hxx>
 #include <AIS_AngleDimension.hxx>
 
@@ -43,8 +42,8 @@ END_MESSAGE_MAP()
 void CParamsFacesPage::OnBnClickedFacesbtn1()
 {
   // Check if face is selected
-  myAISContext->LocalContext()->InitSelected();
-  if (!myAISContext->LocalContext()->MoreSelected() ||
+  myAISContext->InitSelected();
+  if (!myAISContext->MoreSelected() ||
        myAISContext->SelectedShape().ShapeType() != TopAbs_FACE)
   {
     AfxMessageBox(_T("Choose the face and press the button again"),
@@ -54,14 +53,16 @@ void CParamsFacesPage::OnBnClickedFacesbtn1()
 
   myFirstFace = TopoDS::Face (myAISContext->SelectedShape());
 
-  myAISContext->LocalContext()->ClearSelected();
+  myAISContext->ClearSelected();
 }
 
 void CParamsFacesPage::OnBnClickedFacesbtn2()
 {
+  const Standard_Integer aSelectionMode = AIS_Shape::SelectionMode (TopAbs_FACE);
+
   // Check if face is selected
-  myAISContext->LocalContext()->InitSelected();
-  if (!myAISContext->LocalContext()->MoreSelected() ||
+  myAISContext->InitSelected();
+  if (!myAISContext->MoreSelected() ||
        myAISContext->SelectedShape().ShapeType() != TopAbs_FACE)
   {
     AfxMessageBox(_T("Choose the face and press the button again"),
@@ -70,12 +71,11 @@ void CParamsFacesPage::OnBnClickedFacesbtn2()
   }
 
   mySecondFace = TopoDS::Face (myAISContext->SelectedShape());
-
-  myAISContext->LocalContext()->ClearSelected();
+  myAISContext->ClearSelected();
 
   CDimensionDlg *aDimDlg = (CDimensionDlg*)(GetParentOwner());
 
-  myAISContext->CloseAllContexts();
+  myAISContext->Deactivate (aSelectionMode);
 
   Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect();
   anAspect->MakeArrows3d (Standard_False);
@@ -120,6 +120,5 @@ void CParamsFacesPage::OnBnClickedFacesbtn2()
     myAISContext->Display (aLenDim);
   }
 
-  myAISContext->OpenLocalContext();
-  myAISContext->ActivateStandardMode (TopAbs_FACE);
+  myAISContext->Activate (aSelectionMode);
 }

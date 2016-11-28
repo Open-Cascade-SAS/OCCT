@@ -3411,11 +3411,10 @@ static int VExport(Draw_Interpretor& di, Standard_Integer argc, const char** arg
     return 1;
   }
 
+  Standard_DISABLE_DEPRECATION_WARNINGS
   try
   {
-  Standard_DISABLE_DEPRECATION_WARNINGS
     if (!V3dView->Export (argv[1], anExpFormat))
-  Standard_ENABLE_DEPRECATION_WARNINGS
     {
       di << "Error: export of image to " << aFormatStr << " failed!\n";
     }
@@ -3425,6 +3424,7 @@ static int VExport(Draw_Interpretor& di, Standard_Integer argc, const char** arg
     di << "Error: export of image to " << aFormatStr << " failed";
     di << " (exception: " << Standard_Failure::Caught()->GetMessageString() << ")";
   }
+  Standard_ENABLE_DEPRECATION_WARNINGS
   return 0;
 }
 
@@ -6984,7 +6984,7 @@ static Standard_Integer VPurgeDisplay (Draw_Interpretor& di,
     di << "use 'vinit' command before " << argv[0] << "\n";
     return 1;
   }
-  aContext->CloseAllContexts(Standard_False);
+
   di << aContext->PurgeDisplay() << "\n";
   return 0;
 }

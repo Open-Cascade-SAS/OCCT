@@ -56,7 +56,7 @@ Handle(TopTools_HSequenceOfShape) CImportExport::BuildSequenceFromContext(const 
                                                                           Handle(TColStd_HArray1OfReal)&        anArrayOfTransparencies) 
 {
     Handle(TopTools_HSequenceOfShape) aSequence;
-    Standard_Integer nb = anInteractiveContext->NbCurrents(), i = 1;
+    Standard_Integer nb = anInteractiveContext->NbSelected(), i = 1;
     if (!nb)
         return aSequence;
 
@@ -65,10 +65,10 @@ Handle(TopTools_HSequenceOfShape) CImportExport::BuildSequenceFromContext(const 
     anArrayOfTransparencies = new TColStd_HArray1OfReal  (1, nb);
 
     Handle(AIS_InteractiveObject) picked;
-    for(anInteractiveContext->InitCurrent();anInteractiveContext->MoreCurrent();anInteractiveContext->NextCurrent())
+    for (anInteractiveContext->InitSelected(); anInteractiveContext->MoreSelected(); anInteractiveContext->NextSelected())
       {
-        picked = anInteractiveContext->Current();
-        if (anInteractiveContext->Current()->IsKind(STANDARD_TYPE(AIS_Shape)))
+        picked = anInteractiveContext->SelectedInteractive();
+        if (picked->IsKind (STANDARD_TYPE (AIS_Shape)))
 	     {
             Handle(AIS_Shape) aisShape = Handle(AIS_Shape)::DownCast(picked);
 	        TopoDS_Shape aShape = aisShape->Shape();
@@ -103,7 +103,8 @@ int CImportExport::ReadBREP (const Handle(AIS_InteractiveContext)& anInteractive
 		aShape = new AIS_Shape(aSequence->Value(i));
 		anInteractiveContext->SetDisplayMode(aShape, 1, Standard_False);
 		anInteractiveContext->Display(aShape, Standard_False);
-		anInteractiveContext->SetCurrentObject(aShape, Standard_False);
+		const Handle(AIS_InteractiveObject)& aPrs = aShape; // A small trick to avoid compiler error (C2668).
+		anInteractiveContext->SetSelected (aPrs, Standard_False);
 	} 
 	return 0;
 }
@@ -167,8 +168,8 @@ Standard_Boolean CImportExport::ReadBREP(CString      aFileName,
 
 void CImportExport::SaveBREP(const Handle(AIS_InteractiveContext)& anInteractiveContext)
 {
-	anInteractiveContext->InitCurrent();
-	if (anInteractiveContext->NbCurrents() == 0){
+	anInteractiveContext->InitSelected();
+	if (anInteractiveContext->NbSelected() == 0){
 		AfxMessageBox (L"No shape selected for export!");
 		return;
 	}
@@ -305,8 +306,8 @@ Standard_Integer CImportExport::ReadIGES(const Standard_CString& aFileName,
 
 void CImportExport::SaveIGES(const Handle(AIS_InteractiveContext)& anInteractiveContext)
 {
-	anInteractiveContext->InitCurrent();
-	if (anInteractiveContext->NbCurrents() == 0){
+	anInteractiveContext->InitSelected();
+	if (anInteractiveContext->NbSelected() == 0){
 		AfxMessageBox (L"No shape selected for export!");
 		return;
 	}
@@ -456,8 +457,8 @@ IFSelect_ReturnStatus CImportExport::ReadSTEP(const Standard_CString& aFileName,
 //----------------------------------------------------------------------
 void CImportExport::SaveSTEP(const Handle(AIS_InteractiveContext)& anInteractiveContext)
 {
-	anInteractiveContext->InitCurrent();
-	if (anInteractiveContext->NbCurrents() == 0){
+	anInteractiveContext->InitSelected();
+	if (anInteractiveContext->NbSelected() == 0){
 		AfxMessageBox (L"No shape selected for export!");
 		return;
 	}
@@ -576,8 +577,8 @@ const STEPControl_StepModelType aValue /* =TopoDSToCc1Act_ManifoldSolidBrep */ )
 
 void CImportExport::SaveSTL(const Handle(AIS_InteractiveContext)& anInteractiveContext)
 {
-    anInteractiveContext->InitCurrent();
-	if (anInteractiveContext->NbCurrents() == 0){
+  anInteractiveContext->InitSelected();
+	if (anInteractiveContext->NbSelected() == 0){
 		AfxMessageBox (L"No shape selected for export!");
 		return;
 	}
@@ -663,8 +664,8 @@ Standard_Boolean CImportExport::SaveSTL(const Standard_CString& aFileName,
 
 void CImportExport::SaveVRML(const Handle(AIS_InteractiveContext)& anInteractiveContext)
 {
-   anInteractiveContext->InitCurrent();
-	if (anInteractiveContext->NbCurrents() == 0){
+  anInteractiveContext->InitSelected();
+	if (anInteractiveContext->NbSelected() == 0){
 		AfxMessageBox (L"No shape selected for export!");
 		return;
 	}

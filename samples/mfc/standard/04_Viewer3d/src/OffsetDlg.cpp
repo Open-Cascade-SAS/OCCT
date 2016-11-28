@@ -135,25 +135,34 @@ void COffsetDlg::SetOffsets(Standard_Real theFactor, Standard_Real theUnits)
         Standard_ShortReal aFactor = (Standard_ShortReal)theFactor;
         Standard_ShortReal aUnits = (Standard_ShortReal)theUnits;
 	
-	for (aAISContext->InitCurrent();aAISContext->MoreCurrent ();aAISContext->NextCurrent ())
-		if (aAISContext->IsDisplayed(aAISContext->Current())) OneOrMoreCurrentIsDisplayed=true;
+	for (aAISContext->InitSelected(); aAISContext->MoreSelected(); aAISContext->NextSelected())
+		if (aAISContext->IsDisplayed(aAISContext->SelectedInteractive())) OneOrMoreCurrentIsDisplayed=true;
 
 	if(OneOrMoreCurrentIsDisplayed){
-		if((aAISContext->IsCurrent(aOverlappedBox) || aAISContext->IsCurrent(aBox))
+		// A small trick to avoid complier error (C2668).
+		const Handle(AIS_InteractiveObject)& anIOOverlappedBox = aOverlappedBox;
+		const Handle(AIS_InteractiveObject)& anIOBox = aBox;
+		if((aAISContext->IsSelected(anIOOverlappedBox) || aAISContext->IsSelected(anIOBox))
 				&& aAISContext->IsDisplayed(aOverlappedBox)){
 			aOverlappedBox->SetPolygonOffsets(Aspect_POM_Fill,aFactor,aUnits);
 			Message = "Box2 -> SetPolygonOffsets(Aspect_POM_Fill, Factor, Units);\n";
 			//myDoc -> AddTextInDialog(Message);
 		}
 
-		if((aAISContext->IsCurrent(aOverlappedCylinder) || aAISContext->IsCurrent(aCylinder)) 
+		// A small trick to avoid complier error (C2668).
+		const Handle(AIS_InteractiveObject)& anIOOverlappedCylinder = aOverlappedCylinder;
+		const Handle(AIS_InteractiveObject)& anIOCylinder = aCylinder;
+		if((aAISContext->IsSelected(anIOOverlappedCylinder) || aAISContext->IsSelected(anIOCylinder))
 				&& aAISContext->IsDisplayed(aOverlappedCylinder)){
 			aOverlappedCylinder->SetPolygonOffsets(Aspect_POM_Fill,aFactor,aUnits);
 			Message = Message + "Cylinder2 -> SetPolygonOffsets(Aspect_POM_Fill, Factor, Units);\n";
 			//myDoc -> AddTextInDialog(Message);
 		}
 
-		if((aAISContext->IsCurrent(aOverlappedSphere) || aAISContext->IsCurrent(aSphere))
+		// A small trick to avoid complier error (C2668).
+		const Handle(AIS_InteractiveObject)& anIOOverlappedSphere = aOverlappedSphere;
+		const Handle(AIS_InteractiveObject)& anIOSphere = aSphere;
+		if((aAISContext->IsSelected(anIOOverlappedSphere) || aAISContext->IsSelected(anIOSphere))
 				&& aAISContext->IsDisplayed(aOverlappedSphere)){
 			aOverlappedSphere->SetPolygonOffsets(Aspect_POM_Fill,aFactor,aUnits);
 			Message = Message + "Sphere2 -> SetPolygonOffsets(Aspect_POM_Fill, Factor, Units);\n";
@@ -209,18 +218,23 @@ void COffsetDlg::UpdateValues()
 	BOOL IsOverlappedSphereDisplayed = aAISContext->IsDisplayed(aOverlappedSphere);
 	BOOL IsOverlappedBoxDisplayed = aAISContext->IsDisplayed(aOverlappedBox);
 
-	BOOL IsOverlappedCylinderCurrent = aAISContext->IsCurrent(aOverlappedCylinder);
-	BOOL IsOverlappedSphereCurrent = aAISContext->IsCurrent(aOverlappedSphere);
-	BOOL IsOverlappedBoxCurrent = aAISContext->IsCurrent(aOverlappedBox);
+	const Handle(AIS_InteractiveObject)& anIOOverlappedCylinder = aOverlappedCylinder;
+	const Handle(AIS_InteractiveObject)& anIOOverlappedSphere = aOverlappedSphere;
+	const Handle(AIS_InteractiveObject)& anIOOverlappedBox = aOverlappedBox;
+	BOOL IsOverlappedCylinderCurrent = aAISContext->IsSelected(anIOOverlappedCylinder);
+	BOOL IsOverlappedSphereCurrent = aAISContext->IsSelected(anIOOverlappedSphere);
+	BOOL IsOverlappedBoxCurrent = aAISContext->IsSelected(anIOOverlappedBox);
 
 
 	/*BOOL IsAnyOverlappedObjectCurrent = 
 		IsOverlappedCylinderCurrent || IsOverlappedSphereCurrent || IsOverlappedBoxCurrent;*/
 
-
-	BOOL IsCylinderCurrent = aAISContext->IsCurrent(aCylinder);
-	BOOL IsSphereCurrent = aAISContext->IsCurrent(aSphere);
-	BOOL IsBoxCurrent = aAISContext->IsCurrent(aBox);
+	const Handle(AIS_InteractiveObject)& anIOCylinder = aCylinder;
+	const Handle(AIS_InteractiveObject)& anIOSphere = aSphere;
+	const Handle(AIS_InteractiveObject)& anIOBox = aBox;
+	BOOL IsCylinderCurrent = aAISContext->IsSelected(anIOCylinder);
+	BOOL IsSphereCurrent = aAISContext->IsSelected(anIOSphere);
+	BOOL IsBoxCurrent = aAISContext->IsSelected(anIOBox);
 
 	BOOL IsAnyObjectCurrent = 
 		IsOverlappedCylinderCurrent || IsOverlappedSphereCurrent || IsOverlappedBoxCurrent
@@ -230,8 +244,8 @@ void COffsetDlg::UpdateValues()
 		IsOverlappedCylinderDisplayed || IsOverlappedSphereDisplayed || IsOverlappedBoxDisplayed;
 
 	Standard_Boolean OneOrMoreCurrentIsDisplayed=false;
-	for (aAISContext->InitCurrent();aAISContext->MoreCurrent ();aAISContext->NextCurrent ())
-		if (aAISContext->IsDisplayed(aAISContext->Current())) OneOrMoreCurrentIsDisplayed=true;
+	for (aAISContext->InitSelected();aAISContext->MoreSelected ();aAISContext->NextSelected ())
+		if (aAISContext->IsDisplayed(aAISContext->SelectedInteractive())) OneOrMoreCurrentIsDisplayed=true;
 
 	if(OneOrMoreCurrentIsDisplayed){
 		if(IsOverlappedBoxDisplayed && (IsBoxCurrent || IsOverlappedBoxCurrent)){
