@@ -189,7 +189,6 @@ void BOPAlgo_PaveFiller::PerformFF()
   Standard_Integer nF1, nF2, aNbCurves, aNbPoints, i, aNbLP;
   Standard_Integer aNbFaceFace, k;
   Standard_Real aApproxTol, aTolR3D, aTolR2D, aTolFF, aTolReal;
-  BRepAdaptor_Surface aBAS1, aBAS2;
   BOPCol_MapOfInteger aMI;
   BOPAlgo_VectorOfFaceFace aVFaceFace;
   //
@@ -220,8 +219,8 @@ void BOPAlgo_PaveFiller::PerformFF()
       myDS->UpdateFaceInfoIn(nF2);
     }
     //
-    aBAS1.Initialize(aF1, Standard_False);
-    aBAS2.Initialize(aF2, Standard_False);
+    const BRepAdaptor_Surface& aBAS1 = myContext->SurfaceAdaptor(aF1);
+    const BRepAdaptor_Surface& aBAS2 = myContext->SurfaceAdaptor(aF2);
     if (aBAS1.GetType() == GeomAbs_Plane && 
         aBAS2.GetType() == GeomAbs_Plane) {
       Standard_Boolean bToIntersect;
@@ -235,7 +234,7 @@ void BOPAlgo_PaveFiller::PerformFF()
       }
     }
     //
-    ToleranceFF(aBAS1, aBAS2, aTolFF); 
+    ToleranceFF(aBAS1, aBAS2, aTolFF);
     //
     BOPAlgo_FaceFace& aFaceFace=aVFaceFace.Append1();
     //
@@ -597,7 +596,8 @@ void BOPAlgo_PaveFiller::MakeBlocks()
         // Make p-curves
         BOPTools_AlgoTools::MakePCurve(aES, aF1, aF2, aIC, 
                                        mySectionAttribute.PCurveOnS1(),
-                                       mySectionAttribute.PCurveOnS2());
+                                       mySectionAttribute.PCurveOnS2(),
+                                       myContext);
         //
         // Append the Pave Block to the Curve j
         aLPBC.Append(aPB);

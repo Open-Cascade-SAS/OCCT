@@ -133,7 +133,7 @@ BOPDS_PDS BOPAlgo_PaveFiller::PDS()
 //function : Context
 //purpose  : 
 //=======================================================================
-Handle(IntTools_Context) BOPAlgo_PaveFiller::Context()
+const Handle(IntTools_Context)& BOPAlgo_PaveFiller::Context()
 {
   return myContext;
 }

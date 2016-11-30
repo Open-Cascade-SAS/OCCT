@@ -28,8 +28,6 @@
 #include <BRepAdaptor_Surface.hxx>
 #include <Standard_Boolean.hxx>
 #include <IntTools_SequenceOfRanges.hxx>
-#include <IntTools_FClass2d.hxx>
-#include <IntTools_CArray1OfReal.hxx>
 #include <IntTools_SequenceOfCommonPrts.hxx>
 #include <IntTools_Range.hxx>
 class IntTools_Context;
@@ -38,7 +36,6 @@ class TopoDS_Face;
 class IntTools_Range;
 class gp_Pnt;
 class BRepAdaptor_Surface;
-class IntTools_CArray1OfReal;
 class IntTools_CommonPrt;
 
 
@@ -151,11 +148,7 @@ protected:
   Standard_EXPORT static Standard_Boolean IsEqDistance (const gp_Pnt& aP, const BRepAdaptor_Surface& aS, const Standard_Real aT, Standard_Real& aD);
   Standard_EXPORT void CheckData();
   
-  Standard_EXPORT void Prepare();
-  
   Standard_EXPORT Standard_Boolean IsProjectable (const Standard_Real t) const;
-  
-  Standard_EXPORT void FindProjectableRoot (const Standard_Real t1, const Standard_Real t2, const Standard_Integer f1, const Standard_Integer f2, Standard_Real& tRoot);
   
   Standard_EXPORT Standard_Real DistanceFunction (const Standard_Real t);
   
@@ -186,8 +179,6 @@ private:
   Standard_Boolean myIsDone;
   Standard_Integer myErrorStatus;
   Handle(IntTools_Context) myContext;
-  IntTools_SequenceOfRanges myProjectableRanges;
-  IntTools_FClass2d myFClass2d;
   IntTools_SequenceOfCommonPrts mySeqOfCommonPrts;
   IntTools_Range myRange;
 

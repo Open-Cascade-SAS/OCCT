@@ -27,6 +27,7 @@
 #include <MMgt_TShared.hxx>
 #include <TopAbs_State.hxx>
 #include <Standard_Boolean.hxx>
+#include <BRepAdaptor_Surface.hxx>
 class IntTools_FClass2d;
 class TopoDS_Face;
 class GeomAPI_ProjectPointOnSurf;
@@ -45,17 +46,12 @@ class Bnd_Box;
 class TopoDS_Shape;
 
 
-class IntTools_Context;
-DEFINE_STANDARD_HANDLE(IntTools_Context, MMgt_TShared)
-
-
 //! The intersection Context contains geometrical
 //! and topological toolkit (classifiers, projectors, etc).
 //! The intersection Context is for caching the tools
 //! to increase the performance.
-class IntTools_Context : public MMgt_TShared
+class IntTools_Context : public Standard_Transient
 {
-
 public:
 
   
@@ -99,6 +95,15 @@ Standard_EXPORT virtual  ~IntTools_Context();
   //! for given face
   Standard_EXPORT Geom2dHatch_Hatcher& Hatcher (const TopoDS_Face& aF);
   
+  //! Returns a reference to surface adaptor for given face
+  Standard_EXPORT BRepAdaptor_Surface& SurfaceAdaptor (const TopoDS_Face& theFace);
+
+  //! Computes the boundaries of the face using surface adaptor
+  Standard_EXPORT void UVBounds (const TopoDS_Face& theFace,
+                                 Standard_Real& UMin,
+                                 Standard_Real& UMax,
+                                 Standard_Real& VMin,
+                                 Standard_Real& VMax);
 
   //! Computes parameter of the Point theP on
   //! the edge aE.
@@ -230,7 +235,7 @@ Standard_EXPORT virtual  ~IntTools_Context();
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IntTools_Context,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IntTools_Context,Standard_Transient)
 
 protected:
 
@@ -244,6 +249,7 @@ protected:
   BOPCol_DataMapOfShapeAddress myHatcherMap;
   BOPCol_DataMapOfShapeAddress myProjSDataMap;
   BOPCol_DataMapOfShapeAddress myBndBoxDataMap;
+  BOPCol_DataMapOfShapeAddress mySurfAdaptorMap;
   Standard_Integer myCreateFlag;
   Standard_Real myPOnSTolerance;
 
@@ -255,5 +261,7 @@ private:
   Standard_EXPORT void clearCachedPOnSProjectors();
 
 };
+
+DEFINE_STANDARD_HANDLE(IntTools_Context, Standard_Transient)
 
 #endif // _IntTools_Context_HeaderFile

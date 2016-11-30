@@ -258,7 +258,7 @@ class BOPAlgo_MPC : public BOPAlgo_Algo  {
     }
     //
     if (iErr) { 
-      BOPTools_AlgoTools2D::BuildPCurveForEdgeOnFace(myE, myF);
+      BOPTools_AlgoTools2D::BuildPCurveForEdgeOnFace(myE, myF, myContext);
     }
     // 
     if (myFlag) {

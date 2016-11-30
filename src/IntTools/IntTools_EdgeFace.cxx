@@ -39,13 +39,12 @@
 #include <IntCurveSurface_HInter.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <IntTools.hxx>
-#include <IntTools_Array1OfRange.hxx>
 #include <IntTools_BeanFaceIntersector.hxx>
 #include <IntTools_CArray1OfInteger.hxx>
-#include <IntTools_CArray1OfReal.hxx>
 #include <IntTools_CommonPrt.hxx>
 #include <IntTools_Context.hxx>
 #include <IntTools_EdgeFace.hxx>
+#include <IntTools_FClass2d.hxx>
 #include <IntTools_Range.hxx>
 #include <IntTools_Root.hxx>
 #include <IntTools_Tools.hxx>
@@ -61,10 +60,6 @@ static
   Standard_Boolean IsRadius (const BRepAdaptor_Curve& aCurve ,
                              const BRepAdaptor_Surface& aSurface,
                              const Standard_Real aCriteria);
-static
-  Standard_Integer AdaptiveDiscret (const Standard_Integer iDiscret,
-                                    const BRepAdaptor_Curve& aCurve ,
-                                    const BRepAdaptor_Surface& aSurface);
 
 //=======================================================================
 //function : IntTools_EdgeFace::IntTools_EdgeFace
@@ -303,170 +298,7 @@ void IntTools_EdgeFace::CheckData()
      myErrorStatus=3;
   }
 }
-//=======================================================================
-//function : Prepare
-//purpose  : 
-//=======================================================================
-void IntTools_EdgeFace::Prepare() 
-{
-  Standard_Integer pri;
-  Standard_Real aTmin, aTmax;
-  IntTools_CArray1OfReal aPars;
- 
-  //
-  // 1.Prepare Curve's data and Surface's data
-  myC.Initialize(myEdge);
-  GeomAbs_CurveType aCurveType;
-  aCurveType=myC.GetType();
-  //
-  // 2.Prepare myCriteria
-  Standard_Real aFuzz = myFuzzyValue / 2.;
-  Standard_Real aTolF = BRep_Tool::Tolerance(myFace) + aFuzz;
-  Standard_Real aTolE = BRep_Tool::Tolerance(myEdge) + aFuzz;
-  if (aCurveType == GeomAbs_BSplineCurve ||
-      aCurveType == GeomAbs_BezierCurve) {
-    myCriteria = 1.5*aTolE + aTolF;
-  }
-  else {
-    myCriteria = aTolE + aTolF;
-  }
-  // 2.a myTmin, myTmax
-  aTmin=myRange.First();
-  aTmax=myRange.Last();
-  // 2.b myFClass2d
-  myS.Initialize (myFace,Standard_True);
-  myFClass2d.Init(myFace, 1.e-6);
-  //
-  // 2.c Prepare adaptive myDiscret
-  myDiscret=AdaptiveDiscret(myDiscret, myC, myS);
-  //
-  //
-  // 3.Prepare myPars 
-  pri = IntTools::PrepareArgs(myC, aTmax, aTmin, 
-                              myDiscret, myDeflection, aPars);
-  if (pri) {
-    myErrorStatus=6;
-    return;
-  }
-  // 4.
-  //ProjectableRanges
-  Standard_Integer i, iProj, aNb, aNbProj, ind0, ind1;
-  Standard_Real t0, t1, tRoot;
-  
-  //
-  // Table of Projection's function values
-  aNb=aPars.Length();
-  IntTools_CArray1OfInteger anArrProjectability;
-  anArrProjectability.Resize(aNb);
-  
-  for (iProj=0, i=0; i<aNb; i++) {
-    t0=aPars(i);
-    aNbProj=IsProjectable (t0); 
-    
-    anArrProjectability(i)=0;
-    if (aNbProj) {
-      anArrProjectability(i)=1;
-      iProj++;
-    }
-  }
-  //
-  // Checking
-  if (!iProj ) {
-    myErrorStatus=7;
-    return;
-  }
-  
-  //
-  // Projectable Ranges
-  IntTools_Range aRange;
-  
-  ind0=anArrProjectability(0);
-  if (ind0) {
-    t0=aPars(0);
-    aRange.SetFirst(t0);
-  }
-  
-  for(i=1; i<aNb; i++) {
-    ind1=anArrProjectability(i);
-    t0=aPars(i-1);
-    t1=aPars(i);
 
-    if (i==(aNb-1)) {
-      if (ind1 && ind0) {
- aRange.SetLast(t1);
- myProjectableRanges.Append(aRange);
-      }
-      if (ind1 && !ind0) {
- FindProjectableRoot(t0, t1, ind0, ind1, tRoot);
- aRange.SetFirst(tRoot);
- aRange.SetLast(t1);
- myProjectableRanges.Append(aRange);
-      }
-      //
-      if (ind0 && !ind1) {
- FindProjectableRoot(t0, t1, ind0, ind1, tRoot);
- aRange.SetLast(tRoot);
- myProjectableRanges.Append(aRange);
-      }
-      //
-      break;
-    }
-    
-    if (ind0 != ind1) {
-      FindProjectableRoot(t0, t1, ind0, ind1, tRoot);
-      
-      if (ind0 && !ind1) {
- aRange.SetLast(tRoot);
- myProjectableRanges.Append(aRange);
-      }
-      else {
- aRange.SetFirst(tRoot);
-      }
-    } // if (ind0 != ind1)
-    ind0=ind1;
-  } // for(i=1; i<aNb; i++) {
-}
-
-//=======================================================================
-//function : FindProjectableRoot
-//purpose  : 
-//=======================================================================
-  void IntTools_EdgeFace::FindProjectableRoot (const Standard_Real tt1,
-                                               const Standard_Real tt2,
-                                               const Standard_Integer ff1,
-                                               const Standard_Integer /*ff2*/,
-                                               Standard_Real& tRoot)
-{
-  Standard_Real tm, t1, t2, aEpsT;
-  Standard_Integer anIsProj1, anIsProjm;
-  aEpsT = 0.5 * myEpsT;
-
-  // Root is inside [tt1, tt2]
-  t1 = tt1;
-  t2 = tt2;
-  anIsProj1 =  ff1;
-
-  for(;;)
-  {
-    if (fabs(t1 - t2) < aEpsT)
-    {
-      tRoot = (anIsProj1) ? t1 : t2;
-      return;
-    }
-    tm = 0.5 * (t1 + t2);
-    anIsProjm = IsProjectable(tm);
-
-    if (anIsProjm != anIsProj1)
-    {
-      t2 = tm;
-    }
-    else
-    {
-      t1 = tm;
-      anIsProj1 = anIsProjm;
-    }
-  } // for(;;)
-}
 //=======================================================================
 //function : IsProjectable
 //purpose  : 
@@ -651,6 +483,11 @@ Standard_Boolean IntTools_EdgeFace::CheckTouch
   (const IntTools_CommonPrt& aCP,
    Standard_Real&            aTx) 
 {
+  if (myC.GetType() == GeomAbs_Line &&
+      myS.GetType() == GeomAbs_Plane) {
+    return Standard_False;
+  }
+  //
   Standard_Real aTF, aTL, Tol, U1f, U1l, V1f, V1l, af, al,aDist2, aMinDist2;
   Standard_Boolean theflag=Standard_False;
   Standard_Integer aNbExt, iLower;
@@ -816,12 +653,8 @@ void IntTools_EdgeFace::Perform()
     myCriteria = aTolE + aTolF;
   }
   
-  myS.Initialize (myFace,Standard_True);
+  myS = myContext->SurfaceAdaptor(myFace);
   
-  if(myContext.IsNull()) {
-    myFClass2d.Init(myFace, 1.e-6);
-  }
-  //
   if (myQuickCoincidenceCheck) {
     if (IsCoincident()) {
       aCommonPrt.SetType(TopAbs_EDGE);

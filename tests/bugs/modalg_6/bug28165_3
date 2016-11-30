@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC28165"
+puts "========"
+puts ""
+#################################################
+# Improve performance of Boolean Operations
+#################################################
+
+restore [locate_data_file bug28165_shapes2.brep] c
+
+# fuse the boxes
+bclearobjects
+bcleartools
+baddobjects {*}[explode c so]
+bfillds
+
+# remove all internal faces to make only one solid
+bcbuild rx
+bcaddall result -m 1 -u
+
+checkshape result
+checknbshapes result -edge 816 -face 378 -solid 1
+checkprops result -v 343
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

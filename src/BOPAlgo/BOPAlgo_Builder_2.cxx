@@ -715,7 +715,7 @@ void BOPAlgo_Builder::FillImagesFaces1()
       }
       else {
         aFSD=(*(TopoDS_Face*)(&myShapesSD.Find(aFSp)));
-        iSense=BOPTools_AlgoTools::Sense(aFSp, aFSD);
+        iSense=BOPTools_AlgoTools::Sense(aFSp, aFSD, myContext);
         if (iSense<0) {
           aFSD.Reverse();
         }

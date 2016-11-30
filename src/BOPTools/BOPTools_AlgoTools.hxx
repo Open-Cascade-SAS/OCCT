@@ -62,7 +62,15 @@ public:
   
   Standard_EXPORT static void MakeEdge (const IntTools_Curve& theCurve, const TopoDS_Vertex& theV1, const Standard_Real theT1, const TopoDS_Vertex& theV2, const Standard_Real theT2, const Standard_Real theTolR3D, TopoDS_Edge& theE);
   
-  Standard_EXPORT static void MakePCurve (const TopoDS_Edge& theE, const TopoDS_Face& theF1, const TopoDS_Face& theF2, const IntTools_Curve& theCurve, const Standard_Boolean thePC1, const Standard_Boolean thePC2);
+  //! Makes 2d curve of the edge <theE> on the faces <theF1> and <theF2>.<br>
+  //! <theContext> - storage for caching the geometrical tools
+  Standard_EXPORT static void MakePCurve (const TopoDS_Edge& theE,
+                                          const TopoDS_Face& theF1,
+                                          const TopoDS_Face& theF2,
+                                          const IntTools_Curve& theCurve,
+                                          const Standard_Boolean thePC1,
+                                          const Standard_Boolean thePC2,
+                                          const Handle(IntTools_Context)& theContext = Handle(IntTools_Context)());
   
   Standard_EXPORT static void MakeContainer (const TopAbs_ShapeEnum theType, TopoDS_Shape& theShape);
   
@@ -88,7 +96,12 @@ public:
   
   Standard_EXPORT static Standard_Boolean CheckSameGeom (const TopoDS_Face& theF1, const TopoDS_Face& theF2, Handle(IntTools_Context)& theContext);
   
-  Standard_EXPORT static Standard_Integer Sense (const TopoDS_Face& theF1, const TopoDS_Face& theF2);
+  //! Basing on the normals directions of the faces the method
+  //! Defines whether to reverse the second face or not.<br>
+  //! <theContext> - storage for caching the geometrical tools
+  Standard_EXPORT static Standard_Integer Sense (const TopoDS_Face& theF1,
+                                                 const TopoDS_Face& theF2,
+                                                 const Handle(IntTools_Context)& theContext = Handle(IntTools_Context)());
   
   //! Returns True if the face theFace contains
   //! the edge theEdge but with opposite orientation.

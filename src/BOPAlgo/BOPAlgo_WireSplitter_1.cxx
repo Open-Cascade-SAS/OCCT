@@ -62,7 +62,8 @@ static
                          const TopoDS_Edge& anEdge,
                          const TopoDS_Face& myFace,
                          const GeomAdaptor_Surface& aGAS,
-                         const Standard_Boolean aFlag);
+                         const Standard_Boolean aFlag,
+                         const Handle(IntTools_Context)& theContext);
 
 static
   void GetNextVertex(const TopoDS_Vertex& aV,
@@ -121,14 +122,16 @@ static
 static
   void RefineAngles(const TopoDS_Face& myFace,
                     const BOPCol_ListOfShape&,
-                    BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo&);
+                    BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo&,
+                    const Handle(IntTools_Context)&);
 
 
 static
   void RefineAngles(const TopoDS_Vertex& ,
                   const TopoDS_Face& ,
                   const BOPCol_MapOfShape& ,
-                  BOPAlgo_ListOfEdgeInfo& );
+                  BOPAlgo_ListOfEdgeInfo&,
+                  const Handle(IntTools_Context)&);
 
 static
   Standard_Boolean RefineAngle2D(const TopoDS_Vertex& ,
@@ -136,14 +139,16 @@ static
                                  const TopoDS_Face& ,
                                  const Standard_Real ,
                                  const Standard_Real ,
-                                 Standard_Real& );
+                                 Standard_Real& ,
+                                 const Handle(IntTools_Context)& );
 
 //=======================================================================
 //function : SplitBlock
 //purpose  : 
 //=======================================================================
 void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face& myFace,
-                                      BOPTools_ConnexityBlock& aCB)
+                                      BOPTools_ConnexityBlock& aCB,
+                                      const Handle(IntTools_Context)& theContext)
 {
   Standard_Boolean bNothingToDo, bIsClosed, bIsIN;
   Standard_Integer aIx, aNb, i, aCntIn, aCntOut;
@@ -287,7 +292,7 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face& myFace,
   }
   //
   // 3. Angles in mySmartMap
-  BRepAdaptor_Surface aBAS(myFace);
+  const BRepAdaptor_Surface& aBAS = theContext->SurfaceAdaptor(myFace);
   const GeomAdaptor_Surface& aGAS=aBAS.Surface();
   //
   for (i=1; i<=aNb; i++) {
@@ -302,15 +307,15 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face& myFace,
       bIsIN = aEI.IsIn();
       aOr = bIsIN ? TopAbs_REVERSED : TopAbs_FORWARD;
       aVV.Orientation(aOr);
-      aAngle = Angle2D(aVV, aE, myFace, aGAS, bIsIN);
+      aAngle = Angle2D(aVV, aE, myFace, aGAS, bIsIN, theContext);
       aEI.SetAngle(aAngle);
     }
   }// for (i=1; i<=aNb; i++) {
   //
   //Theme: The treatment p-curves convergent in node.
   //The refining the angles of p-curves taking into account 
-  //bounging curves if exist. 
-  RefineAngles(myFace, myEdges, mySmartMap);
+  //bounding curves if exist. 
+  RefineAngles(myFace, myEdges, mySmartMap, theContext);
   //
   // 4. Do
   //
@@ -712,7 +717,8 @@ Standard_Integer NbWaysOut(const BOPAlgo_ListOfEdgeInfo& aLEInfo)
                          const TopoDS_Edge& anEdge,
                          const TopoDS_Face& myFace,
                          const GeomAdaptor_Surface& aGAS,
-                         const Standard_Boolean bIsIN)
+                         const Standard_Boolean bIsIN,
+                         const Handle(IntTools_Context)& theContext)
 {
   Standard_Real aFirst, aLast, aToler, dt, aTV, aTV1, anAngle, aTX;
   gp_Pnt2d aPV, aPV1;
@@ -725,7 +731,7 @@ Standard_Integer NbWaysOut(const BOPAlgo_ListOfEdgeInfo& aLEInfo)
   }
   //
   BOPTools_AlgoTools2D::CurveOnSurface (anEdge, myFace, aC2D, 
-                                        aFirst, aLast, aToler);
+                                        aFirst, aLast, aToler, theContext);
   Standard_Real tol2d =2.*Tolerance2D(aV, aGAS);
   //
   GeomAbs_CurveType aType;
@@ -849,7 +855,8 @@ Standard_Real VTolerance2D (const TopoDS_Vertex& aV,
 //=======================================================================
 void RefineAngles(const TopoDS_Face& myFace,
                   const BOPCol_ListOfShape& myEdges,
-                  BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo& mySmartMap)
+                  BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo& mySmartMap,
+                  const Handle(IntTools_Context)& theContext)
 {
   Standard_Integer aNb, i;
   BOPCol_IndexedDataMapOfShapeInteger aMSI;
@@ -886,7 +893,7 @@ void RefineAngles(const TopoDS_Face& myFace,
     const TopoDS_Vertex& aV=*((TopoDS_Vertex*)&mySmartMap.FindKey(i)); 
     BOPAlgo_ListOfEdgeInfo& aLEI=mySmartMap(i);
     //
-    RefineAngles(aV, myFace, aMBE, aLEI);
+    RefineAngles(aV, myFace, aMBE, aLEI, theContext);
   }
 }
 //=======================================================================
@@ -903,7 +910,8 @@ typedef BOPCol_DataMapOfShapeReal::Iterator \
 void RefineAngles(const TopoDS_Vertex& aV,
                   const TopoDS_Face& myFace,
                   const BOPCol_MapOfShape& aMBE,
-                  BOPAlgo_ListOfEdgeInfo& aLEI)
+                  BOPAlgo_ListOfEdgeInfo& aLEI,
+                  const Handle(IntTools_Context)& theContext)
 {
   Standard_Boolean bIsIn, bIsBoundary, bRefined; 
   Standard_Integer iCntBnd, iCntInt;
@@ -956,7 +964,7 @@ void RefineAngles(const TopoDS_Vertex& aV,
       continue;
     }
     //
-    bRefined=RefineAngle2D(aV, aE, myFace, aA1, aA2, aA);
+    bRefined=RefineAngle2D(aV, aE, myFace, aA1, aA2, aA, theContext);
     if (bRefined) {
       aDMSR.Bind(aE, aA);
     }
@@ -999,7 +1007,8 @@ Standard_Boolean RefineAngle2D(const TopoDS_Vertex& aV,
                                const TopoDS_Face& myFace,
                                const Standard_Real aA1,
                                const Standard_Real aA2,
-                               Standard_Real& aA)
+                               Standard_Real& aA,
+                               const Handle(IntTools_Context)& theContext)
 {
   Standard_Boolean bRet;
   Standard_Integer i, j, aNbP;
@@ -1016,7 +1025,7 @@ Standard_Boolean RefineAngle2D(const TopoDS_Vertex& aV,
   aCf=0.01;
   aTolInt=1.e-10;  
   //
-  BOPTools_AlgoTools2D::CurveOnSurface(aE, myFace, aC2D, aT1, aT2, aTol);
+  BOPTools_AlgoTools2D::CurveOnSurface(aE, myFace, aC2D, aT1, aT2, aTol, theContext);
   aGAC1.Load(aC2D, aT1, aT2);
   //
   aTV=BRep_Tool::Parameter (aV, aE, myFace);

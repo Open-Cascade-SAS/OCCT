@@ -44,7 +44,7 @@
 #include <IntTools_Context.hxx>
 #include <IntTools_CurveRangeLocalizeData.hxx>
 #include <IntTools_CurveRangeSample.hxx>
-#include <IntTools_EdgeFace.hxx>
+#include <IntTools_CArray1OfReal.hxx>
 #include <IntTools_ListIteratorOfListOfBox.hxx>
 #include <IntTools_ListIteratorOfListOfCurveRangeSample.hxx>
 #include <IntTools_ListIteratorOfListOfSurfaceRangeSample.hxx>
@@ -214,8 +214,12 @@ IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const BRepAdaptor_Cur
 void IntTools_BeanFaceIntersector::Init(const TopoDS_Edge& theEdge,
                                         const TopoDS_Face& theFace) 
 {
+  if (myContext.IsNull()) {
+    myContext = new IntTools_Context;
+  }
+  //
   myCurve.Initialize(theEdge);
-  mySurface.Initialize(theFace);
+  mySurface = myContext->SurfaceAdaptor(theFace);
   myTrsfSurface = Handle(Geom_Surface)::DownCast(mySurface.Surface().Surface()->Transformed(mySurface.Trsf()));
   myBeanTolerance = BRep_Tool::Tolerance(theEdge);
   myFaceTolerance = BRep_Tool::Tolerance(theFace);

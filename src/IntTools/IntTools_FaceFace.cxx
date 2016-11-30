@@ -134,7 +134,8 @@ static
 //
 static
   Standard_Boolean CheckPCurve(const Handle(Geom2d_Curve)& aPC, 
-                               const TopoDS_Face& aFace);
+                               const TopoDS_Face& aFace,
+                               const Handle(IntTools_Context)& theCtx);
 
 static
   Standard_Real MaxDistance(const Handle(Geom_Curve)& theC,
@@ -313,26 +314,25 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 }
 
 
-static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
-                                        const TopoDS_Face& theF2,
+static Standard_Boolean isTreatAnalityc(const BRepAdaptor_Surface& theBAS1,
+                                        const BRepAdaptor_Surface& theBAS2,
                                         const Standard_Real theTol)
 {
   const Standard_Real Tolang = 1.e-8;
   Standard_Real aHigh = 0.0;
 
-  const BRepAdaptor_Surface aBAS1(theF1), aBAS2(theF2);
-  const GeomAbs_SurfaceType aType1=aBAS1.GetType();
-  const GeomAbs_SurfaceType aType2=aBAS2.GetType();
+  const GeomAbs_SurfaceType aType1=theBAS1.GetType();
+  const GeomAbs_SurfaceType aType2=theBAS2.GetType();
   
   gp_Pln aS1;
   gp_Cylinder aS2;
   if(aType1 == GeomAbs_Plane)
   {
-    aS1=aBAS1.Plane();
+    aS1=theBAS1.Plane();
   }
   else if(aType2 == GeomAbs_Plane)
   {
-    aS1=aBAS2.Plane();
+    aS1=theBAS2.Plane();
   }
   else
   {
@@ -341,9 +341,9 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
 
   if(aType1 == GeomAbs_Cylinder)
   {
-    aS2=aBAS1.Cylinder();
-    const Standard_Real VMin = aBAS1.FirstVParameter();
-    const Standard_Real VMax = aBAS1.LastVParameter();
+    aS2=theBAS1.Cylinder();
+    const Standard_Real VMin = theBAS1.FirstVParameter();
+    const Standard_Real VMax = theBAS1.LastVParameter();
 
     if( Precision::IsNegativeInfinite(VMin) ||
         Precision::IsPositiveInfinite(VMax))
@@ -353,10 +353,10 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
   }
   else if(aType2 == GeomAbs_Cylinder)
   {
-    aS2=aBAS2.Cylinder();
+    aS2=theBAS2.Cylinder();
 
-    const Standard_Real VMin = aBAS2.FirstVParameter();
-    const Standard_Real VMax = aBAS2.LastVParameter();
+    const Standard_Real VMin = theBAS2.FirstVParameter();
+    const Standard_Real VMax = theBAS2.LastVParameter();
 
     if( Precision::IsNegativeInfinite(VMin) ||
         Precision::IsPositiveInfinite(VMax))
@@ -407,8 +407,8 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
   myFace1=aF1;
   myFace2=aF2;
 
-  const BRepAdaptor_Surface aBAS1(myFace1, Standard_False);
-  const BRepAdaptor_Surface aBAS2(myFace2, Standard_False);
+  const BRepAdaptor_Surface& aBAS1 = myContext->SurfaceAdaptor(myFace1);
+  const BRepAdaptor_Surface& aBAS2 = myContext->SurfaceAdaptor(myFace2);
   GeomAbs_SurfaceType aType1=aBAS1.GetType();
   GeomAbs_SurfaceType aType2=aBAS2.GetType();
 
@@ -462,11 +462,11 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
   if(aType1==GeomAbs_Plane && aType2==GeomAbs_Plane)  {
     Standard_Real umin, umax, vmin, vmax;
     //
-    BRepTools::UVBounds(myFace1, umin, umax, vmin, vmax);
+    myContext->UVBounds(myFace1, umin, umax, vmin, vmax);
     CorrectPlaneBoundaries(umin, umax, vmin, vmax);
     myHS1->ChangeSurface().Load(S1, umin, umax, vmin, vmax);
     //
-    BRepTools::UVBounds(myFace2, umin, umax, vmin, vmax);
+    myContext->UVBounds(myFace2, umin, umax, vmin, vmax);
     CorrectPlaneBoundaries(umin, umax, vmin, vmax);
     myHS2->ChangeSurface().Load(S2, umin, umax, vmin, vmax);
     //
@@ -514,11 +514,11 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
   {
     Standard_Real umin, umax, vmin, vmax;
     // F1
-    BRepTools::UVBounds(myFace1, umin, umax, vmin, vmax); 
+    myContext->UVBounds(myFace1, umin, umax, vmin, vmax); 
     CorrectPlaneBoundaries(umin, umax, vmin, vmax);
     myHS1->ChangeSurface().Load(S1, umin, umax, vmin, vmax);
     // F2
-    BRepTools::UVBounds(myFace2, umin, umax, vmin, vmax);
+    myContext->UVBounds(myFace2, umin, umax, vmin, vmax);
     CorrectSurfaceBoundaries(myFace2, myTol * 2., umin, umax, vmin, vmax);
     myHS2->ChangeSurface().Load(S2, umin, umax, vmin, vmax);
   }
@@ -526,21 +526,21 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
   {
     Standard_Real umin, umax, vmin, vmax;
     //F1
-    BRepTools::UVBounds(myFace1, umin, umax, vmin, vmax);
+    myContext->UVBounds(myFace1, umin, umax, vmin, vmax);
     CorrectSurfaceBoundaries(myFace1, myTol * 2., umin, umax, vmin, vmax);
     myHS1->ChangeSurface().Load(S1, umin, umax, vmin, vmax);
     // F2
-    BRepTools::UVBounds(myFace2, umin, umax, vmin, vmax);
+    myContext->UVBounds(myFace2, umin, umax, vmin, vmax);
     CorrectPlaneBoundaries(umin, umax, vmin, vmax);
     myHS2->ChangeSurface().Load(S2, umin, umax, vmin, vmax);
   }
   else
   {
     Standard_Real umin, umax, vmin, vmax;
-    BRepTools::UVBounds(myFace1, umin, umax, vmin, vmax);
+    myContext->UVBounds(myFace1, umin, umax, vmin, vmax);
     CorrectSurfaceBoundaries(myFace1, myTol * 2., umin, umax, vmin, vmax);
     myHS1->ChangeSurface().Load(S1, umin, umax, vmin, vmax);
-    BRepTools::UVBounds(myFace2, umin, umax, vmin, vmax);
+    myContext->UVBounds(myFace2, umin, umax, vmin, vmax);
     CorrectSurfaceBoundaries(myFace2, myTol * 2., umin, umax, vmin, vmax);
     myHS2->ChangeSurface().Load(S2, umin, umax, vmin, vmax);
   }
@@ -626,7 +626,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     }
 #endif
 
-  const Standard_Boolean isGeomInt = isTreatAnalityc(aF1, aF2, myTol);
+  const Standard_Boolean isGeomInt = isTreatAnalityc(aBAS1, aBAS2, myTol);
   myIntersector.Perform(myHS1, dom1, myHS2, dom2, TolArc, TolTang, 
                                   myListOfPnts, RestrictLine, isGeomInt);
 
@@ -1648,7 +1648,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                   }
                 }
                 // ###########################################
-                bPCurvesOk = CheckPCurve(BS1, myFace2);
+                bPCurvesOk = CheckPCurve(BS1, myFace2, myContext);
                 aCurve.SetSecondCurve2d(BS1);
               }
               else {
@@ -1674,7 +1674,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                   }
                 }
                 // ###########################################
-                bPCurvesOk = bPCurvesOk && CheckPCurve(BS2, myFace1);
+                bPCurvesOk = bPCurvesOk && CheckPCurve(BS2, myFace1, myContext);
                 aCurve.SetFirstCurve2d(BS2);
               }
               else { 
@@ -1693,12 +1693,12 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                 
                 if(myApprox1) {
                   H1 = GeomInt_IntSS::MakeBSpline2d(WL, ifprm, ilprm, Standard_True);
-                  bPCurvesOk = CheckPCurve(H1, myFace1);
+                  bPCurvesOk = CheckPCurve(H1, myFace1, myContext);
                 }
                 
                 if(myApprox2) {
                   H2 = GeomInt_IntSS::MakeBSpline2d(WL, ifprm, ilprm, Standard_False);
-                  bPCurvesOk = bPCurvesOk && CheckPCurve(H2, myFace2);
+                  bPCurvesOk = bPCurvesOk && CheckPCurve(H2, myFace2, myContext);
                 }
                 //
                 //if pcurves created without approximation are out of the 
@@ -1753,7 +1753,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                   newCheck.FixTangent(Standard_True,Standard_True);
                   //         
                   if (!reApprox) {
-                    bIsValid1=CheckPCurve(BS1, myFace1);
+                    bIsValid1=CheckPCurve(BS1, myFace1, myContext);
                   }
                   //
                   aCurve.SetFirstCurve2d(BS1);
@@ -1785,7 +1785,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                   newCheck.FixTangent(Standard_True,Standard_True);
                 //                 
                   if (!reApprox) {
-                    bIsValid2=CheckPCurve(BS2, myFace2);        
+                    bIsValid2=CheckPCurve(BS2, myFace2, myContext);
                   }
                   aCurve.SetSecondCurve2d(BS2);
                 }
@@ -2961,14 +2961,15 @@ Standard_Real MaxDistance(const Handle(Geom_Curve)& theC,
 //function : CheckPCurve
 //purpose  : Checks if points of the pcurve are out of the face bounds.
 //=======================================================================
-  Standard_Boolean CheckPCurve(const Handle(Geom2d_Curve)& aPC, 
-                               const TopoDS_Face& aFace) 
+  Standard_Boolean CheckPCurve(const Handle(Geom2d_Curve)& aPC,
+                               const TopoDS_Face& aFace,
+                               const Handle(IntTools_Context)& theCtx)
 {
   const Standard_Integer NPoints = 23;
   Standard_Integer i;
   Standard_Real umin,umax,vmin,vmax;
 
-  BRepTools::UVBounds(aFace, umin, umax, vmin, vmax);
+  theCtx->UVBounds(aFace, umin, umax, vmin, vmax);
   Standard_Real tolU = Max ((umax-umin)*0.01, Precision::Confusion());
   Standard_Real tolV = Max ((vmax-vmin)*0.01, Precision::Confusion());
   Standard_Real fp = aPC->FirstParameter();

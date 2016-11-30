@@ -554,6 +554,8 @@ Standard_Boolean QANewModTopOpe_Tools::BoolOpe(const TopoDS_Shape& theFace1,
       return Standard_True;
     }
 
+    const Handle(IntTools_Context)& aContext = aDSFiller.Context();
+    //
     IsCommonFound = Standard_True;
     TopExp::MapShapes(aCommon.Shape(), TopAbs_VERTEX, aMapV);
     // fill edge history.begin
@@ -586,8 +588,8 @@ Standard_Boolean QANewModTopOpe_Tools::BoolOpe(const TopoDS_Shape& theFace1,
       Standard_Integer nE = aLSE.First();
       const TopoDS_Edge& aSpE = *(TopoDS_Edge*)(&pDS->Shape(nE));
     
-      BOPTools_AlgoTools3D::GetNormalToFaceOnEdge (aSpE, aF1, aDNF1); 
-      BOPTools_AlgoTools3D::GetNormalToFaceOnEdge (aSpE, aF2, aDNF2);
+      BOPTools_AlgoTools3D::GetNormalToFaceOnEdge (aSpE, aF1, aDNF1, aContext);
+      BOPTools_AlgoTools3D::GetNormalToFaceOnEdge (aSpE, aF2, aDNF2, aContext);
       iSenseFlag=BOPTools_AlgoTools3D::SenseFlag (aDNF1, aDNF2);
 
       if(iSenseFlag == 1) {

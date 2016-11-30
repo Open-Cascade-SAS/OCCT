@@ -49,13 +49,22 @@ public:
   
 
   //! Computes normal to the face <aF> for the point on the edge <aE>
-  //! at parameter <aT>
-  Standard_EXPORT static void GetNormalToFaceOnEdge (const TopoDS_Edge& aE, const TopoDS_Face& aF, const Standard_Real aT, gp_Dir& aD);
+  //! at parameter <aT>.<br>
+  //! <theContext> - storage for caching the geometrical tools
+  Standard_EXPORT static void GetNormalToFaceOnEdge (const TopoDS_Edge& aE,
+                                                     const TopoDS_Face& aF,
+                                                     const Standard_Real aT,
+                                                     gp_Dir& aD,
+                                                     const Handle(IntTools_Context)& theContext = Handle(IntTools_Context)());
   
 
   //! Computes normal to the face <aF> for the point on the edge <aE>
-  //! at arbitrary intermediate parameter
-  Standard_EXPORT static void GetNormalToFaceOnEdge (const TopoDS_Edge& aE, const TopoDS_Face& aF, gp_Dir& aD);
+  //! at arbitrary intermediate parameter.<br>
+  //! <theContext> - storage for caching the geometrical tools
+  Standard_EXPORT static void GetNormalToFaceOnEdge (const TopoDS_Edge& aE,
+                                                     const TopoDS_Face& aF,
+                                                     gp_Dir& aD,
+                                                     const Handle(IntTools_Context)& theContext = Handle(IntTools_Context)());
   
 
   //! Returns 1  if scalar product aNF1* aNF2>0.

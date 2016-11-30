@@ -83,7 +83,7 @@ public:
   
   Standard_EXPORT const BOPCol_ListOfShape& Arguments() const;
   
-  Standard_EXPORT Handle(IntTools_Context) Context();
+  Standard_EXPORT const Handle(IntTools_Context)& Context();
   
   Standard_EXPORT void SetSectionAttribute (const BOPAlgo_SectionAttribute& theSecAttr);
   

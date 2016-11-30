@@ -260,7 +260,13 @@ void BOPAlgo_PaveFiller::PerformEF()
     if (!aEdgeFace.IsDone()) {
       continue;
     }
-    //~~~
+    //
+    const IntTools_SequenceOfCommonPrts& aCPrts=aEdgeFace.CommonParts();
+    aNbCPrts = aCPrts.Length();
+    if (!aNbCPrts) {
+      continue;
+    }
+    //
     aEdgeFace.Indices(nE, nF);
     //
     const TopoDS_Edge& aE=aEdgeFace.Edge();
@@ -277,29 +283,27 @@ void BOPAlgo_PaveFiller::PerformEF()
     //
     anewSR.Range(aTS1, aTS2);
     //
-    // extend vertices ranges using Edge/Edge intersections
-    // between the edge aE and the edges of the face aF.
-    // thereby the edge's intersection range is reduced
-    ReduceIntersectionRange(nV[0], nV[1], nE, nF, aTS1, aTS2);
+    if (aCPrts(1).Type() == TopAbs_VERTEX) {
+      // for the intersection type VERTEX
+      // extend vertices ranges using Edge/Edge intersections
+      // between the edge aE and the edges of the face aF.
+      // thereby the edge's intersection range is reduced
+      ReduceIntersectionRange(nV[0], nV[1], nE, nF, aTS1, aTS2);
+    }
     //
     IntTools_Range aR1(aT1, aTS1), aR2(aTS2, aT2);
     //
     BOPDS_FaceInfo& aFI=myDS->ChangeFaceInfo(nF);
     const BOPCol_MapOfInteger& aMIFOn=aFI.VerticesOn();
     const BOPCol_MapOfInteger& aMIFIn=aFI.VerticesIn();
-    //~~~
-    const IntTools_SequenceOfCommonPrts& aCPrts=aEdgeFace.CommonParts();
-    aNbCPrts = aCPrts.Length();
     //
     Standard_Boolean bLinePlane = Standard_False;
     if (aNbCPrts) {
       BRepAdaptor_Curve aBAC(aE);
-      BRepAdaptor_Surface aBAS(aF, Standard_False);
-      //
       bLinePlane = (aBAC.GetType() == GeomAbs_Line &&
-                    aBAS.GetType() == GeomAbs_Plane);
+                    myContext->SurfaceAdaptor(aF).GetType() == GeomAbs_Plane);
     }
-
+    //
     for (i=1; i<=aNbCPrts; ++i) {
       const IntTools_CommonPrt& aCPart=aCPrts(i);
       aType=aCPart.Type();
@@ -750,6 +754,10 @@ void BOPAlgo_PaveFiller::ReduceIntersectionRange(const Standard_Integer theV1,
 {
   if (!myDS->IsNewShape(theV1) &&
       !myDS->IsNewShape(theV2)) {
+    return;
+  }
+  //
+  if (!myDS->HasInterfShapeSubShapes(theE, theF)) {
     return;
   }
   //

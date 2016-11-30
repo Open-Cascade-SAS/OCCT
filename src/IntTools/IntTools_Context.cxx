@@ -46,7 +46,7 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IntTools_Context,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IntTools_Context,Standard_Transient)
 
 // 
 //=======================================================================
@@ -64,6 +64,7 @@ IntTools_Context::IntTools_Context()
   myHatcherMap(100, myAllocator),
   myProjSDataMap(100, myAllocator),
   myBndBoxDataMap(100, myAllocator),
+  mySurfAdaptorMap(100, myAllocator),
   myCreateFlag(0),
   myPOnSTolerance(1.e-12)
 {
@@ -84,6 +85,7 @@ IntTools_Context::IntTools_Context
   myHatcherMap(100, myAllocator),
   myProjSDataMap(100, myAllocator),
   myBndBoxDataMap(100, myAllocator),
+  mySurfAdaptorMap(100, myAllocator),
   myCreateFlag(1),
   myPOnSTolerance(1.e-12)
 {
@@ -171,6 +173,16 @@ IntTools_Context::~IntTools_Context()
     myAllocator->Free(anAdr); 
   }
   myBndBoxDataMap.Clear();
+  //
+  BRepAdaptor_Surface* pSurfAdaptor;
+  aIt.Initialize(mySurfAdaptorMap);
+  for (; aIt.More(); aIt.Next()) {
+    anAdr=aIt.Value();
+    pSurfAdaptor=(BRepAdaptor_Surface*)anAdr;
+    (*pSurfAdaptor).~BRepAdaptor_Surface();
+    myAllocator->Free(anAdr);
+  }
+  mySurfAdaptorMap.Clear();
 }
 //=======================================================================
 //function : BndBox
@@ -265,15 +277,8 @@ GeomAPI_ProjectPointOnSurf& IntTools_Context::ProjPS(const TopoDS_Face& aF)
  
   if (!myProjPSMap.IsBound(aF)) {
     Standard_Real Umin, Usup, Vmin, Vsup;
-    BRepAdaptor_Surface aBAS;
-    //
+    UVBounds(aF, Umin, Usup, Vmin, Vsup);
     const Handle(Geom_Surface)& aS=BRep_Tool::Surface(aF);
-    aBAS.Initialize (aF, Standard_True);
-    //
-    Umin=aBAS.FirstUParameter();
-    Usup=aBAS.LastUParameter ();
-    Vmin=aBAS.FirstVParameter();
-    Vsup=aBAS.LastVParameter ();
     //
     pProjPS=(GeomAPI_ProjectPointOnSurf*)myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnSurf));
     new (pProjPS) GeomAPI_ProjectPointOnSurf();
@@ -374,6 +379,32 @@ BRepClass3d_SolidClassifier& IntTools_Context::SolidClassifier
     pSC =(BRepClass3d_SolidClassifier*)anAdr;
   }
   return *pSC;
+}
+
+//=======================================================================
+//function : SurfaceAdaptor
+//purpose  : 
+//=======================================================================
+BRepAdaptor_Surface& IntTools_Context::SurfaceAdaptor
+  (const TopoDS_Face& theFace)
+{
+  Standard_Address anAdr;
+  BRepAdaptor_Surface* pBAS;
+ 
+  if (!mySurfAdaptorMap.IsBound(theFace)) {
+    //
+    pBAS=(BRepAdaptor_Surface*)myAllocator->Allocate(sizeof(BRepAdaptor_Surface));
+    new (pBAS) BRepAdaptor_Surface(theFace, Standard_True);
+    //
+    anAdr=(Standard_Address)pBAS;
+    mySurfAdaptorMap.Bind(theFace, anAdr);
+  }
+  
+  else {
+    anAdr=mySurfAdaptorMap.Find(theFace);
+    pBAS =(BRepAdaptor_Surface*)anAdr;
+  }
+  return *pBAS;
 }
 
 //=======================================================================
@@ -1041,4 +1072,21 @@ void IntTools_Context::clearCachedPOnSProjectors()
     myAllocator->Free(anAdr); 
   }
   myProjPSMap.Clear();
+}
+
+//=======================================================================
+//function : UVBounds
+//purpose  : 
+//=======================================================================
+void IntTools_Context::UVBounds(const TopoDS_Face& theFace,
+                                Standard_Real& UMin,
+                                Standard_Real& UMax,
+                                Standard_Real& VMin,
+                                Standard_Real& VMax)
+{
+  const BRepAdaptor_Surface& aBAS = SurfaceAdaptor(theFace);
+  UMin = aBAS.FirstUParameter();
+  UMax = aBAS.LastUParameter ();
+  VMin = aBAS.FirstVParameter();
+  VMax = aBAS.LastVParameter ();
 }

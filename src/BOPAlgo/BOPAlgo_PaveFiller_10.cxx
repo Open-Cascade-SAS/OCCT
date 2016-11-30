@@ -243,6 +243,7 @@ void BOPAlgo_PaveFiller::PerformVZ()
   Standard_Boolean bJustAdd;
   Standard_Integer iSize, nV, nZ, k, aNbVVS;
   TopAbs_State aState;
+  BOPDS_MapOfPassKey aMPK;
   //
   myErrorStatus=0;
   //
@@ -263,11 +264,21 @@ void BOPAlgo_PaveFiller::PerformVZ()
       continue;
     }
     //
-    const BOPDS_ShapeInfo& aSIV=myDS->ShapeInfo(nV);
-    const BOPDS_ShapeInfo& aSIZ=myDS->ShapeInfo(nZ);
+    if (myDS->HasInterfShapeSubShapes(nV, nZ)) {
+      continue;
+    }
     //
-    const TopoDS_Vertex& aV=*((TopoDS_Vertex*)&aSIV.Shape()); 
-    const TopoDS_Solid& aZ=*((TopoDS_Solid*)&aSIZ.Shape()); 
+    Standard_Integer nVSD = nV;
+    myDS->HasShapeSD(nV, nVSD);
+    //
+    BOPDS_PassKey aPK;
+    aPK.SetIds(nVSD, nZ);
+    if (!aMPK.Add(aPK)) {
+      continue;
+    }
+    //
+    const TopoDS_Vertex& aV=*((TopoDS_Vertex*)&myDS->Shape(nVSD));
+    const TopoDS_Solid& aZ=*((TopoDS_Solid*)&myDS->Shape(nZ));
     //
     BOPAlgo_VertexSolid& aVertexSolid=aVVS.Append1();
     aVertexSolid.SetIndices(nV, nZ);
