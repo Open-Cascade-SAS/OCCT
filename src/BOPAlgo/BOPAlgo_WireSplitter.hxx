@@ -25,10 +25,10 @@
 #include <BOPCol_BaseAllocator.hxx>
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPTools_ConnexityBlock.hxx>
+#include <IntTools_Context.hxx>
 class BOPAlgo_WireEdgeSet;
 class TopoDS_Wire;
 class TopoDS_Face;
-
 
 
 class BOPAlgo_WireSplitter  : public BOPAlgo_Algo
@@ -39,50 +39,44 @@ public:
 
   
   Standard_EXPORT BOPAlgo_WireSplitter();
-Standard_EXPORT virtual ~BOPAlgo_WireSplitter();
+  Standard_EXPORT virtual ~BOPAlgo_WireSplitter();
   
   Standard_EXPORT BOPAlgo_WireSplitter(const BOPCol_BaseAllocator& theAllocator);
   
   Standard_EXPORT void SetWES (const BOPAlgo_WireEdgeSet& theWES);
   
   Standard_EXPORT BOPAlgo_WireEdgeSet& WES();
-  
+
+  //! Sets the context for the algorithm
+  Standard_EXPORT void SetContext(const Handle(IntTools_Context)& theContext);
+
+  //! Returns the context
+  Standard_EXPORT const Handle(IntTools_Context)& Context();
+
   Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
   
-    static void MakeWire (BOPCol_ListOfShape& theLE, TopoDS_Wire& theW);
+  static void MakeWire(BOPCol_ListOfShape& theLE, TopoDS_Wire& theW);
   
-  Standard_EXPORT static void SplitBlock (const TopoDS_Face& theF, BOPTools_ConnexityBlock& theCB);
-
-
-
+  Standard_EXPORT static void SplitBlock (const TopoDS_Face& theF,
+                                          BOPTools_ConnexityBlock& theCB,
+                                          const Handle(IntTools_Context)& theContext);
 
 protected:
 
-  
   Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
   
   Standard_EXPORT void MakeConnexityBlocks();
   
   Standard_EXPORT void MakeWires();
 
-
   BOPAlgo_PWireEdgeSet myWES;
   BOPTools_ListOfConnexityBlock myLCB;
-
+  Handle(IntTools_Context) myContext;
 
 private:
 
-
-
-
-
 };
 
-
 #include <BOPAlgo_WireSplitter.lxx>
-
-
-
-
 
 #endif // _BOPAlgo_WireSplitter_HeaderFile

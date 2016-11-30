@@ -348,6 +348,7 @@ void BOPAlgo_BuilderFace::PerformLoops()
   //
   aWSp.SetWES(aWES);
   aWSp.SetRunParallel(myRunParallel);
+  aWSp.SetContext(myContext);
   aWSp.Perform();
   iErr=aWSp.ErrorStatus();
   if (iErr) {
@@ -839,7 +840,7 @@ Standard_Boolean IsInside(const TopoDS_Shape& theHole,
     if (!BRep_Tool::Degenerated(aE)) {
       //
       aT=BOPTools_AlgoTools2D::IntermediatePoint(aE);
-      BOPTools_AlgoTools2D::PointOnSurface(aE, aF2, aT, aU, aV);
+      BOPTools_AlgoTools2D::PointOnSurface(aE, aF2, aT, aU, aV, theContext);
       aP2D.SetCoord(aU, aV);
       //
       IntTools_FClass2d& aClsf=theContext->FClass2d(aF2);

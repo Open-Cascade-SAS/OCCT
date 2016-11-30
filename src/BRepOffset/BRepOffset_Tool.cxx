@@ -1608,7 +1608,9 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face& F1,
   // Store Result
   L1.Clear(); L2.Clear();
   TopAbs_Orientation O1,O2;
-  
+  //
+  const Handle(IntTools_Context)& aContext = pPF->Context();
+  //
   for (i = 0; i < aNb; i++) {
     BOPDS_InterfFF& aFFi=aFFs(i);
     const BOPDS_VectorOfCurve& aBCurves=aFFi.Curves();
@@ -1645,10 +1647,10 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face& F1,
 		Handle(Geom2d_Curve) aC2dNew;
 		
 		if(aC3DE->IsPeriodic()) {
-                  BOPTools_AlgoTools2D::AdjustPCurveOnFace(cpF1, f, l,  aC2d, aC2dNew);
+                  BOPTools_AlgoTools2D::AdjustPCurveOnFace(cpF1, f, l,  aC2d, aC2dNew, aContext);
 		  }
 		else {
-                  BOPTools_AlgoTools2D::AdjustPCurveOnFace(cpF1, aC3DETrim, aC2d, aC2dNew); 
+                  BOPTools_AlgoTools2D::AdjustPCurveOnFace(cpF1, aC3DETrim, aC2d, aC2dNew, aContext); 
 		  }
 		aC2d = aC2dNew;
 	      }
@@ -1661,10 +1663,10 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face& F1,
 		Handle(Geom2d_Curve) aC2dNew;
 		
 		if(aC3DE->IsPeriodic()) {
-                  BOPTools_AlgoTools2D::AdjustPCurveOnFace(cpF2, f, l,  aC2d, aC2dNew);
+                  BOPTools_AlgoTools2D::AdjustPCurveOnFace(cpF2, f, l,  aC2d, aC2dNew, aContext);
 		  }
 		else {
-                  BOPTools_AlgoTools2D::AdjustPCurveOnFace(cpF2, aC3DETrim, aC2d, aC2dNew); 
+                  BOPTools_AlgoTools2D::AdjustPCurveOnFace(cpF2, aC3DETrim, aC2d, aC2dNew, aContext); 
 		  }
 		aC2d = aC2dNew;
 	      }

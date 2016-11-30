@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC28165"
+puts "========"
+puts ""
+#################################################
+# Improve performance of Boolean Operations
+#################################################
+
+restore [locate_data_file bug28165_shapes1.brep] c
+
+explode c
+# c_1 is a face
+# c_2 is a set of edges
+
+# rotate the shapes to make no intersections at all
+ttranslate c_2 0 0 0.1
+trotate c_1 c_2 0 0 0 1 1 0 45
+
+bclearobjects
+bcleartools
+baddobjects c_1
+baddctools c_2
+bfillds
+bbuild result
+
+checknbshapes result -edge 5074 -face 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -231,14 +231,15 @@ void BOPTools_AlgoTools3D::DoSplitSEAMOnFace (const TopoDS_Edge& aSplit,
 //=======================================================================
 void BOPTools_AlgoTools3D::GetNormalToFaceOnEdge (const TopoDS_Edge& aE,
                                                   const TopoDS_Face& aF,
-                                                  gp_Dir& aDNF)
+                                                  gp_Dir& aDNF,
+                                                  const Handle(IntTools_Context)& theContext)
 {
   Standard_Real aT, aT1, aT2;
   
   BRep_Tool::CurveOnSurface(aE, aF, aT1, aT2);
   aT=BOPTools_AlgoTools2D::IntermediatePoint(aT1, aT2);
 
-  BOPTools_AlgoTools3D::GetNormalToFaceOnEdge (aE, aF, aT, aDNF);
+  BOPTools_AlgoTools3D::GetNormalToFaceOnEdge (aE, aF, aT, aDNF, theContext);
 
   if (aF.Orientation()==TopAbs_REVERSED){
     aDNF.Reverse();
@@ -251,7 +252,8 @@ void BOPTools_AlgoTools3D::GetNormalToFaceOnEdge (const TopoDS_Edge& aE,
 void BOPTools_AlgoTools3D::GetNormalToFaceOnEdge (const TopoDS_Edge& aE,
                                                   const TopoDS_Face& aF1,
                                                   const Standard_Real aT, 
-                                                  gp_Dir& aDNF1)
+                                                  gp_Dir& aDNF1,
+                                                  const Handle(IntTools_Context)& theContext)
 {
   Standard_Real U, V, aTolPC;
   gp_Pnt2d aP2D;
@@ -261,7 +263,7 @@ void BOPTools_AlgoTools3D::GetNormalToFaceOnEdge (const TopoDS_Edge& aE,
   Handle(Geom_Surface) aS1=BRep_Tool::Surface(aF1);
   
   Handle(Geom2d_Curve)aC2D1;
-  BOPTools_AlgoTools2D::CurveOnSurface(aE, aF1, aC2D1, aTolPC);
+  BOPTools_AlgoTools2D::CurveOnSurface(aE, aF1, aC2D1, aTolPC, theContext);
 
   aC2D1->D0(aT, aP2D);
   U=aP2D.X();
@@ -511,7 +513,12 @@ void BOPTools_AlgoTools3D::PointNearEdge
     gp_Pnt aP;
     gp_Pnt2d aP2d;
     //
-    BRepTools::UVBounds(aF, aU1, aU2, aV1, aV2);
+    if (theContext.IsNull()) {
+      BRepTools::UVBounds(aF, aU1, aU2, aV1, aV2);
+    }
+    else {
+      theContext->UVBounds(aF, aU1, aU2, aV1, aV2);
+    }
     // 
     dU=aU2-aU1;
     dV=aV2-aV1;
@@ -750,7 +757,12 @@ Standard_Integer BOPTools_AlgoTools3D::PointInFace
   aFF.Orientation (TopAbs_FORWARD);
   //
   aS=BRep_Tool::Surface(aFF);
-  BRepTools::UVBounds(aFF, aUMin, aUMax, aVMin, aVMax);
+  if (theContext.IsNull()) {
+    BRepTools::UVBounds(aFF, aUMin, aUMax, aVMin, aVMax);
+  }
+  else {
+    theContext->UVBounds(aFF, aUMin, aUMax, aVMin, aVMax);
+  }
   //
   aUx=IntTools_Tools::IntermediatePoint(aUMin, aUMax);
   Standard_Integer i;

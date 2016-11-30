@@ -1002,7 +1002,8 @@ Standard_Boolean BOPTools_AlgoTools::CheckSameGeom
 // purpose: 
 //=======================================================================
 Standard_Integer BOPTools_AlgoTools::Sense (const TopoDS_Face& theF1,
-                                            const TopoDS_Face& theF2)
+                                            const TopoDS_Face& theF2,
+                                            const Handle(IntTools_Context)& theContext)
 {
   Standard_Integer iSense=0;
   gp_Dir aDNF1, aDNF2;
@@ -1036,8 +1037,8 @@ Standard_Integer BOPTools_AlgoTools::Sense (const TopoDS_Face& theF1,
     return iSense;
   }
   //
-  BOPTools_AlgoTools3D::GetNormalToFaceOnEdge(aE1, theF1, aDNF1);
-  BOPTools_AlgoTools3D::GetNormalToFaceOnEdge(aE2, theF2, aDNF2);
+  BOPTools_AlgoTools3D::GetNormalToFaceOnEdge(aE1, theF1, aDNF1, theContext);
+  BOPTools_AlgoTools3D::GetNormalToFaceOnEdge(aE2, theF2, aDNF2, theContext);
   //
   iSense=BOPTools_AlgoTools3D::SenseFlag(aDNF1, aDNF2);
   //
@@ -1357,7 +1358,8 @@ void BOPTools_AlgoTools::MakePCurve(const TopoDS_Edge& aE,
                                     const TopoDS_Face& aF2,
                                     const IntTools_Curve& aIC,
                                     const Standard_Boolean bPC1,
-                                    const Standard_Boolean bPC2)
+                                    const Standard_Boolean bPC2,
+                                    const Handle(IntTools_Context)& theContext)
 
 {
   Standard_Integer i;
@@ -1392,19 +1394,19 @@ void BOPTools_AlgoTools::MakePCurve(const TopoDS_Edge& aE,
     //
     aC2D=aC2Dx1;
     if (aC2D.IsNull()) { 
-      BOPTools_AlgoTools2D::BuildPCurveForEdgeOnFace(aE, aFFWD);
+      BOPTools_AlgoTools2D::BuildPCurveForEdgeOnFace(aE, aFFWD, theContext);
       BOPTools_AlgoTools2D::CurveOnSurface(aE, aFFWD, aC2D, 
                                        aOutFirst, aOutLast, 
-                                       aOutTol);
+                                       aOutTol, theContext);
       }
     //
     if (aC3DE->IsPeriodic()) {
       BOPTools_AlgoTools2D::AdjustPCurveOnFace(aFFWD, aT1, aT2,  aC2D, 
-                                               aC2DA); 
+                                               aC2DA, theContext);
     }
     else {
       BOPTools_AlgoTools2D::AdjustPCurveOnFace(aFFWD, aC3DETrim, aC2D, 
-                                               aC2DA); 
+                                               aC2DA, theContext);
     }
     //
     aBB.UpdateEdge(aE, aC2DA, aFFWD, aTolE);
@@ -1809,7 +1811,7 @@ void GetFaceDir(const TopoDS_Edge& aE,
   Standard_Real aTolE;
   gp_Pnt aPx;
   //
-  BOPTools_AlgoTools3D::GetNormalToFaceOnEdge(aE, aF, aT, aDN);
+  BOPTools_AlgoTools3D::GetNormalToFaceOnEdge(aE, aF, aT, aDN, theContext);
   if (aF.Orientation()==TopAbs_REVERSED){
     aDN.Reverse();
   }

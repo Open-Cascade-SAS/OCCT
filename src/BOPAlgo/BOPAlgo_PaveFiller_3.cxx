@@ -427,6 +427,11 @@ void BOPAlgo_PaveFiller::PerformEE()
       continue;
     }
     //
+    const IntTools_SequenceOfCommonPrts& aCPrts = anEdgeEdge.CommonParts();
+    aNbCPrts = aCPrts.Length();
+    if (!aNbCPrts) {
+      continue;
+    }
     //--------------------------------------------
     Handle(BOPDS_PaveBlock)& aPB1=anEdgeEdge.PaveBlock1();
     nE1=aPB1->OriginalEdge();
@@ -456,11 +461,8 @@ void BOPAlgo_PaveFiller::PerformEE()
     IntTools_Range aR11(aT11, aTS11), aR12(aTS12, aT12),
                    aR21(aT21, aTS21), aR22(aTS22, aT22);
     //
-    const IntTools_SequenceOfCommonPrts& aCPrts = anEdgeEdge.CommonParts();
-    aNbCPrts = aCPrts.Length();
-    //
     Standard_Boolean bAnalytical = Standard_False;
-    if (aNbCPrts) {
+    {
       const TopoDS_Edge& aOE1 = *(TopoDS_Edge*)&myDS->Shape(nE1);
       const TopoDS_Edge& aOE2 = *(TopoDS_Edge*)&myDS->Shape(nE2);
       //

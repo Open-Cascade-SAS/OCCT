@@ -641,8 +641,8 @@
     aV2=(*(TopoDS_Vertex *)(&myDS->Shape(nV2)));
     aV2.Orientation(TopAbs_REVERSED); 
     //
-    BOPTools_AlgoTools::MakeSplitEdge(aE, aV1, aT1, aV2, aT2, aSp);  
-    BOPTools_AlgoTools2D::BuildPCurveForEdgeOnFace(aSp, theF);
+    BOPTools_AlgoTools::MakeSplitEdge(aE, aV1, aT1, aV2, aT2, aSp);
+    BOPTools_AlgoTools2D::BuildPCurveForEdgeOnFace(aSp, theF, myContext);
     //
     aSI.SetShape(aSp);
     //
