@@ -950,6 +950,11 @@ The related classes, e.g. *AIS_LocalContext*, and methods ( <i>AIS_InteractiveCo
 
 The main functionality provided by Local Context - selection of object subparts - can be now used within Neutral Point without opening any Local Context.
 
+The property *::SelectionMode()* has been removed from the class *AIS_InteractiveObject*.
+This property contradicts to selection logic, since it is allowed to activate several Selection modes at once.
+Therefore keeping one selection mode as object field makes no sense.
+Applications that used this method should implement selection mode caching at application level, if it is necessary for some reason.
+
 @subsection upgrade_occt700_separate_caf_visualisation Separation of visualization part from TKCAF
 
 Visualization CAF attributes have been moved into a new toolkit *TKVCAF*. 
@@ -982,6 +987,13 @@ Textured objects now have the priority over the environment mapping.
 
 Redundant enumerations *V3d_TypeOfSurface* and *Graphic3d_TypeOfSurface*, class *OpenGl_SurfaceDetailState*, the corresponding methods from *Graphic3d_CView, OpenGl_ShaderManager, OpenGl_View, V3d_View* and *V3d_Viewer* have been deleted.
 Draw command *VSetTextureMode* has been deleted.
+
+@subsection upgrade_occt700_wfshape Shape presentation builders
+
+Presentation tools for building Wireframe presentation have been refactored to eliminate duplicated code and interfaces.
+Therefore, the following classes have been modified:
+* *StdPrs_WFDeflectionShape* and *Prs3d_WFShape* have been removed. *StdPrs_WFShape* should be used instead.
+* *StdPrs_ToolShadedShape* has been renamed to *StdPrs_ToolTriangulatedShape*.
 
 @section upgrade_occt710 Upgrade to OCCT 7.1.0
 
