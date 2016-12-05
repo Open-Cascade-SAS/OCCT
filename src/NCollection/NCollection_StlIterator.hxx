@@ -101,6 +101,12 @@ public:
     return myIterator;
   }
 
+  //! Access to NCollection iterator instance
+  BaseIterator& ChangeIterator()
+  {
+    return myIterator;
+  }
+
 protected: //! @name methods related to forward STL iterator
 
   // Note: Here we use SFINAE (Substitution failure is not an error) to choose

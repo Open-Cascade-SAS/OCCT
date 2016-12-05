@@ -200,7 +200,8 @@ public:
   }
 
   //! Remove the first occurrence of the object.
-  Standard_Boolean Remove (const TheItemType& theObject)
+  template<typename TheValueType> // instantiate this method on first call only for types defining equality operator
+  Standard_Boolean Remove (const TheValueType& theObject)
   {
     for (Iterator anIter (*this); anIter.More(); anIter.Next())
     {
@@ -285,7 +286,8 @@ public:
   { PReverse(); }
 
   //! Return true if object is stored in the list.
-  Standard_Boolean Contains (const TheItemType& theObject) const
+  template<typename TheValueType> // instantiate this method on first call only for types defining equality operator
+  Standard_Boolean Contains (const TheValueType& theObject) const
   {
     for (Iterator anIter (*this); anIter.More(); anIter.Next())
     {
