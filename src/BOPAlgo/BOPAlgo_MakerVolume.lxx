@@ -19,7 +19,8 @@
 inline BOPAlgo_MakerVolume::BOPAlgo_MakerVolume()
 :
   BOPAlgo_Builder(),
-  myIntersect(Standard_True)
+  myIntersect(Standard_True),
+  myAvoidInternalShapes(Standard_False)
 {
 }
 
@@ -31,7 +32,8 @@ inline BOPAlgo_MakerVolume::BOPAlgo_MakerVolume
   (const Handle(NCollection_BaseAllocator)& theAllocator)
 :
   BOPAlgo_Builder(theAllocator),
-  myIntersect(Standard_True)
+  myIntersect(Standard_True),
+  myAvoidInternalShapes(Standard_False)
 {
 }
 
@@ -55,6 +57,7 @@ inline void BOPAlgo_MakerVolume::Clear()
   myBBox = Bnd_Box();
   mySBox.Nullify();
   myFaces.Clear();
+  myAvoidInternalShapes = Standard_False;
 }
 
 //=======================================================================

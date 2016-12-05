@@ -37,24 +37,46 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT void SetContext (const Handle(IntTools_Context)& theContext);
-  
-  Standard_EXPORT const BOPCol_ListOfShape& Shapes() const;
-Standard_EXPORT void SetShapes(const BOPCol_ListOfShape& theLS);
-  
-  Standard_EXPORT const BOPCol_ListOfShape& Loops() const;
-  
-  Standard_EXPORT const BOPCol_ListOfShape& Areas() const;
+  //! Sets the context for the algorithms
+  Standard_EXPORT void SetContext (const Handle(IntTools_Context)& theContext) {
+    myContext = theContext;
+  }
 
+  //! Returns the input shapes
+  Standard_EXPORT const BOPCol_ListOfShape& Shapes() const {
+    return myShapes;
+  }
 
+  //! Sets the shapes for building areas
+  Standard_EXPORT void SetShapes(const BOPCol_ListOfShape& theLS) {
+    myShapes = theLS;
+  }
 
+  //! Returns the found loops
+  Standard_EXPORT const BOPCol_ListOfShape& Loops() const {
+    return myLoops;
+  }
+
+  //! Returns the found areas
+  Standard_EXPORT const BOPCol_ListOfShape& Areas() const {
+    return myAreas;
+  }
+
+  //! Defines the preventing of addition of internal parts into result.
+  //! The default value is FALSE, i.e. the internal parts are added into result.
+  Standard_EXPORT void SetAvoidInternalShapes(const Standard_Boolean theAvoidInternal) {
+    myAvoidInternalShapes = theAvoidInternal;
+  }
+
+  //! Returns the AvoidInternalShapes flag
+  Standard_EXPORT Standard_Boolean IsAvoidInternalShapes() const {
+    return myAvoidInternalShapes;
+  }
 
 protected:
 
-  
   Standard_EXPORT BOPAlgo_BuilderArea();
-Standard_EXPORT virtual ~BOPAlgo_BuilderArea();
+  Standard_EXPORT virtual ~BOPAlgo_BuilderArea();
   
   Standard_EXPORT BOPAlgo_BuilderArea(const BOPCol_BaseAllocator& theAllocator);
   
@@ -73,20 +95,10 @@ Standard_EXPORT virtual ~BOPAlgo_BuilderArea();
   BOPCol_ListOfShape myLoopsInternal;
   BOPCol_ListOfShape myAreas;
   BOPCol_IndexedMapOfOrientedShape myShapesToAvoid;
-
+  Standard_Boolean myAvoidInternalShapes;
 
 private:
 
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BOPAlgo_BuilderArea_HeaderFile

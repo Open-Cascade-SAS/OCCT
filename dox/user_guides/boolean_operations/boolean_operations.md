@@ -1862,7 +1862,81 @@ Some aspects of building the result are described in the next paragraph
 | :---- | :---- | :------ |
 | 1 | Build the result of the operation using all information contained in *FaceInfo*, Common Block, Shared entities of the arguments, etc. | *BOPAlgo_Section:: BuildSection()* |
 
+@section occt_algorithms_10b Volume Maker Algorithm
 
+The Volume Maker algorithm has been designed for building the elementary volumes (solids) from a set of connected, intersecting, or nested shapes. The algorithm can also be useful for splitting solids into parts, or constructing new solid(s) from set of intersecting or connected faces or shells.
+The algorithm creates only closed solids. In general case the result solids are non-manifold: fragments of the input shapes (wires, faces) located inside the solids are added as internal sub-shapes to these solids.
+But the algorithm allows preventing the addition of the internal for solids parts into result. In this case the result solids will be manifold and not contain any internal parts. However, this option does not prevent from the occurrence of the internal edges or vertices in the faces.<br>
+Non-closed faces, free wires etc. located outside of any solid are always excluded from the result.
+
+The Volume Maker algorithm is implemented in the class BOPAlgo_MakerVolume. It is based on the General Fuse (GF) algorithm. All the options of the GF algorithm such as possibility to run algorithm in parallel mode, fuzzy option, safe mode, glue options and history support are also available in this algorithm.
+
+The requirements for the arguments are the same as for the arguments of GF algorithm - they could be of any type, but each argument should be valid and not self-interfered.
+
+The algorithm allows disabling the calculation of intersections among the arguments. In this case the algorithm will run much faster, but the user should guarantee that the arguments do not interfere with each other, otherwise the result will be invalid (e.g. contain unexpected parts) or empty.
+This option is useful e.g. for building a solid from the faces of one shell or from the shapes that have already been intersected.
+
+@subsection occt_algorithms_10b_1 Usage
+
+#### C++ Level
+The usage of the algorithm on the API level:
+~~~~
+BOPAlgo_MakerVolume aMV;
+BOPCol_ListOfShape aLS = …; // arguments
+Standard_Boolean bRunParallel = Standard_False; /* parallel or single mode (the default value is FALSE)*/
+Standard_Boolean bIntersect = Standard_True; /* intersect or not the arguments (the default value is TRUE)*/
+Standard_Real aTol = 0.0; /* fuzzy option (default value is 0)*/
+Standard_Boolean bSafeMode = Standard_False; /* protect or not the arguments from modification*/
+BOPAlgo_Glue aGlue = BOPAlgo_GlueOff; /* Glue option to speed up intersection of the arguments*/
+Standard_Boolean bAvoidInternalShapes = Standard_False; /* Avoid or not the internal for solids shapes in the result*/
+//
+aMV.SetArguments(aLS);
+aMV.SetRunParallel(bRunParallel);
+aMV.SetIntersect(bIntersect);
+aMV.SetFuzzyValue(aTol);
+aMV.SetNonDestructive(bSafeMode);
+aMV.SetGlue(aGlue);
+aMV.SetAvoidInternalShapes(bAvoidInternalShapes);
+//
+aMV.Perform(); //perform the operation
+if (aMV.ErrorStatus()) { //check error status
+  return;
+}
+//
+const TopoDS_Shape& aResult = aMV.Shape(); // result of the operation
+~~~~
+
+#### Tcl Level
+To use the algorithm in Draw the command mkvolume has been implemented. The usage of this command is following:
+~~~~
+Usage: mkvolume r b1 b2 ... [-c] [-ni] [-ai]
+Options:
+-c - use this option to have input compounds considered as set of separate arguments (allows passing multiple arguments as one compound);
+-ni - use this option to disable the intersection of the arguments;
+-ai - use this option to avoid internal for solids shapes in the result.
+~~~~
+
+@subsection occt_algorithms_10b_2 Examples
+
+#### Example 1
+Creation of 9832 solids from sphere and set of 63 planes:
+
+<table align="center">
+<tr>
+  <td>@figure{/user_guides/boolean_operations/images/mkvolume_image001.png, "Arguments"}</td>
+  <td>@figure{/user_guides/boolean_operations/images/mkvolume_image002.png, "Results"}</td>
+</tr>
+</table>
+
+#### Example 2
+Creating compartments on a ship defined by hull shell and a set of planes. The ship is divided on compartments by five transverse bulkheads and a deck – six compartments are created:
+
+<table align="center">
+<tr>
+  <td>@figure{/user_guides/boolean_operations/images/mkvolume_image003.png, "Arguments"}</td>
+  <td>@figure{/user_guides/boolean_operations/images/mkvolume_image004.png, "Results"}</td>
+</tr>
+</table>
 
 @section occt_algorithms_10	Algorithm Limitations 
 

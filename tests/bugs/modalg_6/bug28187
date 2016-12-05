@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC28187"
+puts "========"
+puts ""
+#################################################
+# Add possibility to avoid creation of Internal parts in the result of Volume maker algorithm
+#################################################
+
+restore [locate_data_file bug28187_faces.brep] cf
+vertex v1 1 1 1
+vertex v2 1 9 1
+edge e v1 v2
+compound v1 v2 e int_sh
+
+mkvolume result cf int_sh -c -ai
+
+checkshape result
+checknbshapes result -vertex 16 -edge 22 -wire 10 -face 8 -shell 1 -solid 1
+checkprops result -v 750 -s 550
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

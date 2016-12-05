@@ -118,97 +118,79 @@ public:
   
 
   //! Empty contructor.
-    BOPAlgo_MakerVolume();
-virtual ~BOPAlgo_MakerVolume();
-  
+  BOPAlgo_MakerVolume();
+  virtual ~BOPAlgo_MakerVolume();
 
   //! Empty contructor.
-    BOPAlgo_MakerVolume(const BOPCol_BaseAllocator& theAllocator);
-  
+  BOPAlgo_MakerVolume(const BOPCol_BaseAllocator& theAllocator);
 
   //! Clears the data.
-    virtual void Clear() Standard_OVERRIDE;
-  
+  virtual void Clear() Standard_OVERRIDE;
 
   //! Sets the flag myIntersect:
   //! if <bIntersect> is TRUE the shapes from <myArguments> will be intersected.
   //! if <bIntersect> is FALSE no intersection will be done.
-    void SetIntersect (const Standard_Boolean bIntersect);
-  
+  void SetIntersect(const Standard_Boolean bIntersect);
 
   //! Returns the flag <myIntersect>.
-    Standard_Boolean IsIntersect() const;
-  
+  Standard_Boolean IsIntersect() const;
 
   //! Returns the solid box <mySBox>.
-    const TopoDS_Solid& Box() const;
-  
+  const TopoDS_Solid& Box() const;
 
   //! Returns the processed faces <myFaces>.
-    const BOPCol_ListOfShape& Faces() const;
-  
+  const BOPCol_ListOfShape& Faces() const;
+
+  //! Defines the preventing of addition of internal for solid parts into the result.
+  //! By default the internal parts are added into result.
+  Standard_EXPORT void SetAvoidInternalShapes(const Standard_Boolean theAvoidInternal) {
+    myAvoidInternalShapes = theAvoidInternal;
+  }
+
+  //! Returns the AvoidInternalShapes flag
+  Standard_EXPORT Standard_Boolean IsAvoidInternalShapes() const {
+    return myAvoidInternalShapes;
+  }
 
   //! Performs the operation.
   Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
 
-
-
-
 protected:
-
-  
 
   //! Checks the data.
   Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
-  
 
   //! Performs the operation.
   Standard_EXPORT virtual void PerformInternal1 (const BOPAlgo_PaveFiller& thePF) Standard_OVERRIDE;
-  
 
   //! Collects all faces.
   Standard_EXPORT void CollectFaces();
-  
 
   //! Makes solid box.
   Standard_EXPORT void MakeBox (BOPCol_MapOfShape& theBoxFaces);
-  
 
   //! Builds solids.
   Standard_EXPORT void BuildSolids (BOPCol_ListOfShape& theLSR);
-  
 
   //! Removes the covering box.
   Standard_EXPORT void RemoveBox (BOPCol_ListOfShape& theLSR, const BOPCol_MapOfShape& theBoxFaces);
-  
 
   //! Fills the solids with internal shapes.
   Standard_EXPORT void FillInternalShapes (const BOPCol_ListOfShape& theLSR);
-  
 
   //! Builds the result.
   Standard_EXPORT void BuildShape (const BOPCol_ListOfShape& theLSR);
-
 
   Standard_Boolean myIntersect;
   Bnd_Box myBBox;
   TopoDS_Solid mySBox;
   BOPCol_ListOfShape myFaces;
-
+  Standard_Boolean myAvoidInternalShapes;
 
 private:
 
-
-
-
-
 };
 
-
 #include <BOPAlgo_MakerVolume.lxx>
-
-
-
-
 
 #endif // _BOPAlgo_MakerVolume_HeaderFile

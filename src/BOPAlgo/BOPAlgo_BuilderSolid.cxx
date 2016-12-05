@@ -751,6 +751,9 @@ void BOPAlgo_BuilderSolid::PerformAreas()
 void BOPAlgo_BuilderSolid::PerformInternalShapes()
 {
   myErrorStatus=0;
+  if (myAvoidInternalShapes) {
+    return;
+  }
   //
   Standard_Integer aNbFI=myLoopsInternal.Extent();
   if (!aNbFI) {// nothing to do

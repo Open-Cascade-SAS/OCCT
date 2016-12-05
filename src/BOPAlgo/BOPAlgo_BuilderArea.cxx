@@ -17,10 +17,6 @@
 
 
 #include <BOPAlgo_BuilderArea.hxx>
-#include <BOPCol_ListOfShape.hxx>
-#include <IntTools_Context.hxx>
-#include <NCollection_BaseAllocator.hxx>
-#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : 
@@ -33,7 +29,8 @@ BOPAlgo_BuilderArea::BOPAlgo_BuilderArea()
   myLoops(myAllocator),
   myLoopsInternal(myAllocator),
   myAreas(myAllocator),
-  myShapesToAvoid(100, myAllocator) 
+  myShapesToAvoid(100, myAllocator),
+  myAvoidInternalShapes(Standard_False)
 {
 }
 //=======================================================================
@@ -48,7 +45,8 @@ BOPAlgo_BuilderArea::BOPAlgo_BuilderArea
   myLoops(myAllocator),
   myLoopsInternal(myAllocator),
   myAreas(myAllocator),
-  myShapesToAvoid(100, myAllocator) 
+  myShapesToAvoid(100, myAllocator),
+  myAvoidInternalShapes(Standard_False)
 {
 }
 //=======================================================================
@@ -57,52 +55,4 @@ BOPAlgo_BuilderArea::BOPAlgo_BuilderArea
 //=======================================================================
 BOPAlgo_BuilderArea::~BOPAlgo_BuilderArea()
 {
-}
-//=======================================================================
-//function : SetContext
-//purpose  : 
-//=======================================================================
-void BOPAlgo_BuilderArea::SetContext
-  (const Handle(IntTools_Context)& theContext)
-{
-  myContext=theContext;
-}
-//=======================================================================
-//function : SetShapes
-//purpose  : 
-//=======================================================================
-  void BOPAlgo_BuilderArea::SetShapes(const BOPCol_ListOfShape& theLF)
-{
-  BOPCol_ListIteratorOfListOfShape aIt;
-  //
-  myShapes.Clear();
-  aIt.Initialize(theLF);
-  for(; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aF=aIt.Value();
-    myShapes.Append(aF);
-  }
-}
-//=======================================================================
-//function : Shapes
-//purpose  : 
-//=======================================================================
-const BOPCol_ListOfShape& BOPAlgo_BuilderArea::Shapes()const
-{
-  return myShapes;
-}
-//=======================================================================
-//function : Loops
-//purpose  : 
-//=======================================================================
-const BOPCol_ListOfShape& BOPAlgo_BuilderArea::Loops()const
-{
-  return myLoops;
-}
-//=======================================================================
-//function : Areas
-//purpose  : 
-//=======================================================================
-  const BOPCol_ListOfShape& BOPAlgo_BuilderArea::Areas()const
-{
-  return myAreas;
 }

@@ -4049,6 +4049,7 @@ Standard_Boolean BuildShellsCompleteInter(const BOPCol_ListOfShape& theLF,
   aMV1.SetArguments(theLF);
   // we need to intersect the faces to process the tangential faces
   aMV1.SetIntersect(Standard_True);
+  aMV1.SetAvoidInternalShapes(Standard_True);
   aMV1.Perform();
   //
   Standard_Boolean bDone = (aMV1.ErrorStatus() == 0);
@@ -4092,6 +4093,7 @@ Standard_Boolean BuildShellsCompleteInter(const BOPCol_ListOfShape& theLF,
   aMV2.SetArguments(aLF2);
   // no need to intersect this time
   aMV2.SetIntersect(Standard_False);
+  aMV2.SetAvoidInternalShapes(Standard_True);
   aMV2.Perform();
   bDone = (aMV2.ErrorStatus() == 0);
   if (!bDone) {
@@ -4136,6 +4138,7 @@ Standard_Boolean BuildShellsCompleteInter(const BOPCol_ListOfShape& theLF,
   BOPAlgo_MakerVolume aMV3;
   aMV3.SetArguments(aLF3);
   aMV3.SetIntersect(Standard_False);
+  aMV3.SetAvoidInternalShapes(Standard_True);
   aMV3.Perform();
   bDone = (aMV3.ErrorStatus() == 0);
   if (!bDone) {

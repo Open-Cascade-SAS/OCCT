@@ -106,7 +106,7 @@ static Standard_Integer mkvolume   (Draw_Interpretor&, Standard_Integer, const c
   //
   theCommands.Add("bopcurves", "use bopcurves F1 F2 [-2d/-2d1/-2d2] [-p u1 v1 u2 v2]",
                                                       __FILE__, bopcurves, g);
-  theCommands.Add("mkvolume", "make solids from set of shapes.\nmkvolume r b1 b2 ... [-c] [-ni]", 
+  theCommands.Add("mkvolume", "make solids from set of shapes.\nmkvolume r b1 b2 ... [-c] [-ni] [-ai]",
                   __FILE__, mkvolume , g);
 }
 
@@ -726,17 +726,19 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
 Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char** a) 
 {
   if (n < 3) {
-    di << "Usage: mkvolume r b1 b2 ... [-c] [-ni]\n";
+    di << "Usage: mkvolume r b1 b2 ... [-c] [-ni] [-ai]\n";
     di << "Options:\n";
     di << " -c  - use this option if the arguments are compounds\n";
     di << "       containing shapes that should be interfered;\n";
     di << " -ni - use this option if the arguments should not be interfered;\n";
+    di << " -ai - use this option to avoid internal for solids shapes in the result.\n";
     return 1;
   }
   //
   const char* usage = "Type mkvolume without arguments for the usage of the command.\n";
   //
-  Standard_Boolean bToIntersect, bRunParallel, bNonDestructive, bCompounds;
+  Standard_Boolean bToIntersect, bRunParallel, bNonDestructive;
+  Standard_Boolean bCompounds, bAvoidInternal;
   Standard_Integer i;
   Standard_Real aTol;
   TopoDS_Shape aS;
@@ -749,6 +751,7 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
   //
   bToIntersect = Standard_True;
   bCompounds = Standard_False;
+  bAvoidInternal = Standard_False;
   //
   for (i = 2; i < n; ++i) {
     aS = DBRep::Get(a[i]);
@@ -761,6 +764,9 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
       }
       else if (!strcmp(a[i], "-ni")) {
         bToIntersect = Standard_False;
+      }
+      else if (!strcmp(a[i], "-ai")) {
+        bAvoidInternal = Standard_True;
       }
     }
   }
@@ -796,6 +802,7 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
   aMV.SetRunParallel(bRunParallel);
   aMV.SetFuzzyValue(aTol);
   aMV.SetNonDestructive(bNonDestructive);
+  aMV.SetAvoidInternalShapes(bAvoidInternal);
   aMV.SetGlue(aGlue);
   //
   aMV.Perform();

@@ -57,11 +57,6 @@
 #include <TopoDS_Wire.hxx>
 
 //
-//
-//
-//
-//
-//
 static
   Standard_Boolean IsGrowthWire(const TopoDS_Shape& ,
                                 const BOPCol_IndexedMapOfShape& );
@@ -688,6 +683,9 @@ void GetWire(const TopoDS_Shape& aF, TopoDS_Shape& aW)
 void BOPAlgo_BuilderFace::PerformInternalShapes()
 {
   myErrorStatus=0;
+  if (myAvoidInternalShapes) {
+    return;
+  }
   //
   Standard_Integer aNbWI=myLoopsInternal.Extent();
   if (!aNbWI) {// nothing to do

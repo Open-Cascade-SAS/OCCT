@@ -270,6 +270,7 @@ void BOPAlgo_MakerVolume::BuildSolids(BOPCol_ListOfShape& theLSR)
   aBS.SetSolid(mySBox);
   aBS.SetShapes(myFaces);
   aBS.SetRunParallel(myRunParallel);
+  aBS.SetAvoidInternalShapes(myAvoidInternalShapes);
   aBS.Perform();
   if (aBS.ErrorStatus()) {
     myErrorStatus = 103;
@@ -339,6 +340,10 @@ void BOPAlgo_MakerVolume::BuildShape(const BOPCol_ListOfShape& theLSR)
 //=======================================================================
 void BOPAlgo_MakerVolume::FillInternalShapes(const BOPCol_ListOfShape& theLSR)
 {
+  if (myAvoidInternalShapes) {
+    return;
+  }
+  //
   UserBreak();
   //
   Standard_Integer aNbSI;
