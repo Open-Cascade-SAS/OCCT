@@ -112,11 +112,11 @@ public:
   Standard_EXPORT void SetContext (const Handle(IntTools_Context)& aContext);
 
   //! Sets the Fuzzy value
-  void SetFuzzyValue (const Standard_Real theFuzz);
+  Standard_EXPORT void SetFuzzyValue (const Standard_Real theFuzz);
 
   
   //! Returns Fuzzy value
-  Standard_Real FuzzyValue() const;
+  Standard_EXPORT Standard_Real FuzzyValue() const;
 
   //! Gets the intersecton context
   Standard_EXPORT const Handle(IntTools_Context)& Context() const;
