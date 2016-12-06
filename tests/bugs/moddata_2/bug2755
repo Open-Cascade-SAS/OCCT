@@ -13,6 +13,7 @@ checkshape a
 explode a f
 mksurface gs a_1
 set list [proj gs 0 10 50]
+set list [lmatch $list ext_*]
 set ll 4
 
 set good_Parameter1List [list 0 0 0 0]

@@ -7,7 +7,7 @@ puts ""
 
 torus s 0 10
 set out [proj s 1 0 0]
-if {[llength $out] != 4} {
+if {[llength [lmatch $out ext_*]] != 4} {
   puts "Error: projection failed"
 } else {
   puts "OK : projection passed"

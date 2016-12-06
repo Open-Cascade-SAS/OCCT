@@ -1,0 +1,35 @@
+puts "============"
+puts "CR28196"
+puts "==========="
+puts ""
+###############################################################################
+# Algorithm 'Extrema_GenLocateExtPS' failed to find the extremum in a case
+###############################################################################
+
+puts "TODO OCC28196 ALL: Error: projection with starting point is worse"
+
+pload MODELING
+
+restore [locate_data_file bug28196.brep] f
+
+mksurface s f
+dset x 5.97447220497284
+dset y 0.0187851531995338
+dset z 0.433545417254429
+dset u 13140.3030987283
+dset v 28.5494495724281
+set max_error 1e-5
+
+proj s x y z
+set dist_proj [lindex [length ext_1] end]
+proj s x y z u v
+set dist_proj_uv [lindex [length ext_1] end]
+
+puts "Distance of standard projection $dist_proj"
+puts "Distance of projection with starting point $dist_proj_uv"
+
+if {[expr $dist_proj_uv - $dist_proj] > $max_error} {
+  puts "Error: projection with starting point is worse than standard projection"
+} else {
+  puts "OK: well projection with starting point"
+}

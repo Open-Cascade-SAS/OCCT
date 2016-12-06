@@ -23,6 +23,7 @@
 #include <GeometryTest.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <Extrema_GenLocateExtPS.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
 #include <GeomAPI_ExtremaCurveSurface.hxx>
 #include <GeomAPI_ExtremaSurfaceSurface.hxx>
@@ -39,9 +40,46 @@
 #include <TColStd_Array2OfReal.hxx>
 #include <Precision.hxx>
 #include <stdio.h>
+
 #ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
 #endif
+
+//=======================================================================
+//function : proj
+//purpose  : 
+//=======================================================================
+
+static void showProjSolution(Draw_Interpretor& di,
+                             const Standard_Integer i,
+                             const gp_Pnt& P, const gp_Pnt& P1,
+                             const Standard_Real U, const Standard_Real V,
+                             const Standard_Boolean isSurface)
+{
+  char name[100];
+  Sprintf(name, "%s%d", "ext_", i);
+  di << name << " ";
+  char* temp = name; // portage WNT
+  if (P.Distance(P1) > Precision::Confusion())
+  {
+    Handle(Geom_Line) L = new Geom_Line(P, gp_Vec(P, P1));
+    Handle(Geom_TrimmedCurve) CT =
+      new Geom_TrimmedCurve(L, 0., P.Distance(P1));
+    DrawTrSurf::Set(temp, CT);
+  }
+  else
+  {
+    DrawTrSurf::Set(temp, P1);
+    if (isSurface)
+      di << " Point on surface ";
+    else
+      di << " Point on curve ";
+  }
+  if (isSurface)
+    di << " Parameters: " << U << " " << V << "\n";
+  else
+    di << " parameter " << i << " = " << U << "\n";
+}
 
 //=======================================================================
 //function : proj
@@ -52,13 +90,11 @@ static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const ch
 {
   if ( n < 5)
   {
-    cout << " Use proj curve/surf x y z [extrema algo: g(grad)/t(tree)]" << endl;
+    cout << " Use proj curve/surf x y z [{extrema algo: g(grad)/t(tree)}|{u v}]" << endl;
     return 1;
   }
 
   gp_Pnt P(Draw::Atof(a[2]),Draw::Atof(a[3]),Draw::Atof(a[4]));
-
-  char name[100];
 
   Handle(Geom_Curve) GC = DrawTrSurf::GetCurve(a[1]);
   Handle(Geom_Surface) GS;
@@ -74,36 +110,42 @@ static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const ch
     if (GS.IsNull())
       return 1;
 
-    Standard_Real U1, U2, V1, V2;
-    GS->Bounds(U1,U2,V1,V2);
-
-    GeomAPI_ProjectPointOnSurf proj(P,GS,U1,U2,V1,V2,aProjAlgo);
-
-    Standard_Real UU,VV;
-    for ( Standard_Integer i = 1; i <= proj.NbPoints(); i++)
+    if (n <= 6)
     {
-      gp_Pnt P1 = proj.Point(i);
-      if ( P.Distance(P1) > Precision::Confusion())
+      Standard_Real U1, U2, V1, V2;
+      GS->Bounds(U1,U2,V1,V2);
+
+      GeomAPI_ProjectPointOnSurf proj(P,GS,U1,U2,V1,V2,aProjAlgo);
+      if (!proj.IsDone())
       {
-        Handle(Geom_Line) L = new Geom_Line(P,gp_Vec(P,P1));
-        Handle(Geom_TrimmedCurve) CT = 
-          new Geom_TrimmedCurve(L, 0., P.Distance(P1));
-        Sprintf(name,"%s%d","ext_",i);
-        char* temp = name; // portage WNT
-        DrawTrSurf::Set(temp, CT);
-        di << name << " ";
+        di << "projection failed.";
+        return 0;
       }
-      else
+
+      Standard_Real UU,VV;
+      for ( Standard_Integer i = 1; i <= proj.NbPoints(); i++)
       {
-        Sprintf(name,"%s%d","ext_",i);
-        di << name << " ";
-        char* temp = name; // portage WNT
-        DrawTrSurf::Set(temp, P1);
-        proj.Parameters(i,UU,VV);
-        di << " Le point est sur la surface.\n";
-        di << " Ses parametres sont:  UU = " << UU << "\n";
-        di << "                       VV = " << VV << "\n";
+        gp_Pnt P1 = proj.Point(i);
+        proj.Parameters(i, UU, VV);
+        showProjSolution(di, i, P, P1, UU, VV, Standard_True);
       }
+    }
+    else if (n == 7)
+    {
+      const gp_XY aP2d(Draw::Atof(a[5]), Draw::Atof(a[6]));
+      GeomAdaptor_Surface aGAS(GS);
+      Extrema_GenLocateExtPS aProjector(aGAS, Precision::PConfusion(), Precision::PConfusion());
+      aProjector.Perform(P, aP2d.X(), aP2d.Y());
+      if (!aProjector.IsDone())
+      {
+        di << "projection failed.";
+        return 0;
+      }
+
+      const Extrema_POnSurf& aP = aProjector.Point();
+      Standard_Real UU, VV;
+      aP.Parameter(UU, VV);
+      showProjSolution(di, 1, P, aP.Value(), UU, VV, Standard_True);
     }
   }
   else
@@ -121,27 +163,7 @@ static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const ch
     {
       gp_Pnt P1 = proj.Point(i);
       Standard_Real UU = proj.Parameter(i);
-      di << " parameter " << i << " = " << UU << "\n";
-      if ( P.Distance(P1) > Precision::Confusion())
-      {
-        Handle(Geom_Line) L = new Geom_Line(P,gp_Vec(P,P1));
-        Handle(Geom_TrimmedCurve) CT = 
-          new Geom_TrimmedCurve(L, 0., P.Distance(P1));
-        Sprintf(name,"%s%d","ext_",i);
-        char* temp = name; // portage WNT
-        DrawTrSurf::Set(temp, CT);
-        di << name << " ";
-      }
-      else
-      {
-        Sprintf(name,"%s%d","ext_",i);
-        char* temp = name; // portage WNT
-        DrawTrSurf::Set(temp, P1);
-        di << name << " ";
-        UU = proj.Parameter(i);
-        di << " Le point est sur la courbe.\n";
-        di << " Son parametre est U = " << UU << "\n";
-      }
+      showProjSolution(di, i, P, P1, UU, UU, Standard_False);
     }
   }
 
@@ -579,7 +601,9 @@ void GeometryTest::APICommands(Draw_Interpretor& theCommands)
 
   done = Standard_True;
 
-  theCommands.Add("proj", "proj curve/surf x y z [extrema algo: g(grad)/t(tree)]",__FILE__, proj);
+  theCommands.Add("proj", "proj curve/surf x y z [{extrema algo: g(grad)/t(tree)}|{u v}]\n"
+                  "\t\tOptional parameters are relevant to surf only.\n"
+                  "\t\tIf initial {u v} are given then local extrema is called",__FILE__, proj);
 
   theCommands.Add("appro", "appro result nbpoint [curve]",__FILE__, appro);
   theCommands.Add("surfapp","surfapp result nbupoint nbvpoint x y z ....",
