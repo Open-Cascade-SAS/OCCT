@@ -1,0 +1,565 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0A24B9FA1EB0A7CC00A5F490 /* linkrods.step in Resources */ = {isa = PBXBuildFile; fileRef = 0A24B9F91EB0A7CC00A5F490 /* linkrods.step */; };
+		0A7DEDD61E2D1D0F00267B9B /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEDD41E2D1D0900267B9B /* libfreetype.a */; };
+		0A7DEDE71E2D28E300267B9B /* libTKBRep.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEDDE1E2D28C500267B9B /* libTKBRep.a */; };
+		0A7DEDE81E2D28E300267B9B /* libTKernel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEDDF1E2D28C800267B9B /* libTKernel.a */; };
+		0A7DEDE91E2D28E300267B9B /* libTKG2d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEDE01E2D28CB00267B9B /* libTKG2d.a */; };
+		0A7DEDEA1E2D28E300267B9B /* libTKG3d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEDE11E2D28CE00267B9B /* libTKG3d.a */; };
+		0A7DEDEB1E2D28E300267B9B /* libTKGeomAlgo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEDE21E2D28D200267B9B /* libTKGeomAlgo.a */; };
+		0A7DEDEC1E2D28E300267B9B /* libTKGeomBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEDE31E2D28D500267B9B /* libTKGeomBase.a */; };
+		0A7DEDED1E2D28E300267B9B /* libTKMath.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEDE41E2D28D800267B9B /* libTKMath.a */; };
+		0A7DEDEE1E2D28E300267B9B /* libTKShHealing.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEDE51E2D28DC00267B9B /* libTKShHealing.a */; };
+		0A7DEDEF1E2D28E300267B9B /* libTKTopAlgo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEDE61E2D28DF00267B9B /* libTKTopAlgo.a */; };
+		0A7DEDF21E2D297000267B9B /* libTKHLR.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEDF01E2D296900267B9B /* libTKHLR.a */; };
+		0A7DEDF31E2D297000267B9B /* libTKMesh.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEDF11E2D296C00267B9B /* libTKMesh.a */; };
+		0A7DEDF91E2D29FF00267B9B /* libTKCAF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEDF41E2D29EF00267B9B /* libTKCAF.a */; };
+		0A7DEDFA1E2D29FF00267B9B /* libTKCDF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEDF51E2D29F200267B9B /* libTKCDF.a */; };
+		0A7DEDFB1E2D29FF00267B9B /* libTKLCAF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEDF61E2D29F500267B9B /* libTKLCAF.a */; };
+		0A7DEDFC1E2D29FF00267B9B /* libTKV3d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEDF71E2D29F800267B9B /* libTKV3d.a */; };
+		0A7DEDFD1E2D29FF00267B9B /* libTKVCAF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEDF81E2D29FB00267B9B /* libTKVCAF.a */; };
+		0A7DEE2B1E2D2AE000267B9B /* libTKService.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEE0B1E2D2A9D00267B9B /* libTKService.a */; };
+		0A7DEE2E1E2D2AE000267B9B /* libTKSTEP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEE0E1E2D2AA800267B9B /* libTKSTEP.a */; };
+		0A7DEE301E2D2AE000267B9B /* libTKSTEPAttr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEE101E2D2AAE00267B9B /* libTKSTEPAttr.a */; };
+		0A7DEE311E2D2AE000267B9B /* libTKSTEPBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEE111E2D2AB200267B9B /* libTKSTEPBase.a */; };
+		0A7DEE351E2D2AE000267B9B /* libTKXCAF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEE151E2D2AC000267B9B /* libTKXCAF.a */; };
+		0A7DEE371E2D2AE000267B9B /* libTKXDESTEP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEE171E2D2AC700267B9B /* libTKXDESTEP.a */; };
+		0A7DEE3E1E2D2B8100267B9B /* libTKBO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEE021E2D2A7F00267B9B /* libTKBO.a */; };
+		0A7DEE3F1E2D2BB000267B9B /* libTKOpenGl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEE091E2D2A9700267B9B /* libTKOpenGl.a */; };
+		0A7DEE401E2D2BEA00267B9B /* libTKSTEP209.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEE0F1E2D2AAB00267B9B /* libTKSTEP209.a */; };
+		0A7DEE411E2D2C1500267B9B /* libTKXSBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEE1D1E2D2ADC00267B9B /* libTKXSBase.a */; };
+		0AAE0DE61EAF816E00C1F65B /* screw.step in Resources */ = {isa = PBXBuildFile; fileRef = 0AAE0DE51EAF816D00C1F65B /* screw.step */; };
+		0AE286641EB0D29B00A9D719 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AE286631EB0D29A00A9D719 /* libz.tbd */; };
+		3405C9E01DE2F04E008BADB9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3405C9DF1DE2F04E008BADB9 /* main.mm */; };
+		3405C9E31DE2F04E008BADB9 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3405C9E21DE2F04E008BADB9 /* AppDelegate.mm */; };
+		3405C9EB1DE2F04E008BADB9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3405C9EA1DE2F04E008BADB9 /* Assets.xcassets */; };
+		3405C9EE1DE2F04E008BADB9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3405C9EC1DE2F04E008BADB9 /* LaunchScreen.storyboard */; };
+		3405CA781DE303DC008BADB9 /* OcctViewer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3405CA771DE303DC008BADB9 /* OcctViewer.mm */; };
+		3405CA7B1DE31566008BADB9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3405CA7A1DE31566008BADB9 /* QuartzCore.framework */; };
+		3405CA7D1DE3156D008BADB9 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3405CA7C1DE3156D008BADB9 /* OpenGLES.framework */; };
+		3405CA821DE332AB008BADB9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3405CA811DE332AB008BADB9 /* UIKit.framework */; };
+		3405CA851DE3331D008BADB9 /* GLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3405CA841DE3331D008BADB9 /* GLView.mm */; };
+		343FDCA61DE42F37009AEE51 /* GLViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 343FDCA51DE42F37009AEE51 /* GLViewController.mm */; };
+		34424E031DE70100008B56DA /* OcctDocument.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34424E021DE70100008B56DA /* OcctDocument.mm */; };
+		34424E061DE72D2E008B56DA /* CafShapePrs.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34424E051DE72D2E008B56DA /* CafShapePrs.mm */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0A24B9F91EB0A7CC00A5F490 /* linkrods.step */ = {isa = PBXFileReference; lastKnownFileType = text; name = linkrods.step; path = ../occt/data/step/linkrods.step; sourceTree = "<group>"; };
+		0A7DED6E1E2D15B800267B9B /* dev */ = {isa = PBXFileReference; lastKnownFileType = folder; name = dev; path = ..; sourceTree = "<group>"; };
+		0A7DEDD41E2D1D0900267B9B /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../3rdparty/lib/libfreetype.a; sourceTree = "<group>"; };
+		0A7DEDDE1E2D28C500267B9B /* libTKBRep.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKBRep.a; path = ../occt/lib/libTKBRep.a; sourceTree = "<group>"; };
+		0A7DEDDF1E2D28C800267B9B /* libTKernel.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKernel.a; path = ../occt/lib/libTKernel.a; sourceTree = "<group>"; };
+		0A7DEDE01E2D28CB00267B9B /* libTKG2d.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKG2d.a; path = ../occt/lib/libTKG2d.a; sourceTree = "<group>"; };
+		0A7DEDE11E2D28CE00267B9B /* libTKG3d.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKG3d.a; path = ../occt/lib/libTKG3d.a; sourceTree = "<group>"; };
+		0A7DEDE21E2D28D200267B9B /* libTKGeomAlgo.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKGeomAlgo.a; path = ../occt/lib/libTKGeomAlgo.a; sourceTree = "<group>"; };
+		0A7DEDE31E2D28D500267B9B /* libTKGeomBase.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKGeomBase.a; path = ../occt/lib/libTKGeomBase.a; sourceTree = "<group>"; };
+		0A7DEDE41E2D28D800267B9B /* libTKMath.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKMath.a; path = ../occt/lib/libTKMath.a; sourceTree = "<group>"; };
+		0A7DEDE51E2D28DC00267B9B /* libTKShHealing.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKShHealing.a; path = ../occt/lib/libTKShHealing.a; sourceTree = "<group>"; };
+		0A7DEDE61E2D28DF00267B9B /* libTKTopAlgo.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKTopAlgo.a; path = ../occt/lib/libTKTopAlgo.a; sourceTree = "<group>"; };
+		0A7DEDF01E2D296900267B9B /* libTKHLR.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKHLR.a; path = ../occt/lib/libTKHLR.a; sourceTree = "<group>"; };
+		0A7DEDF11E2D296C00267B9B /* libTKMesh.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKMesh.a; path = ../occt/lib/libTKMesh.a; sourceTree = "<group>"; };
+		0A7DEDF41E2D29EF00267B9B /* libTKCAF.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKCAF.a; path = ../occt/lib/libTKCAF.a; sourceTree = "<group>"; };
+		0A7DEDF51E2D29F200267B9B /* libTKCDF.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKCDF.a; path = ../occt/lib/libTKCDF.a; sourceTree = "<group>"; };
+		0A7DEDF61E2D29F500267B9B /* libTKLCAF.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKLCAF.a; path = ../occt/lib/libTKLCAF.a; sourceTree = "<group>"; };
+		0A7DEDF71E2D29F800267B9B /* libTKV3d.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKV3d.a; path = ../occt/lib/libTKV3d.a; sourceTree = "<group>"; };
+		0A7DEDF81E2D29FB00267B9B /* libTKVCAF.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKVCAF.a; path = ../occt/lib/libTKVCAF.a; sourceTree = "<group>"; };
+		0A7DEDFE1E2D2A7200267B9B /* libTKBin.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKBin.a; path = ../occt/lib/libTKBin.a; sourceTree = "<group>"; };
+		0A7DEDFF1E2D2A7600267B9B /* libTKBinL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKBinL.a; path = ../occt/lib/libTKBinL.a; sourceTree = "<group>"; };
+		0A7DEE001E2D2A7900267B9B /* libTKBinTObj.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKBinTObj.a; path = ../occt/lib/libTKBinTObj.a; sourceTree = "<group>"; };
+		0A7DEE011E2D2A7C00267B9B /* libTKBinXCAF.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKBinXCAF.a; path = ../occt/lib/libTKBinXCAF.a; sourceTree = "<group>"; };
+		0A7DEE021E2D2A7F00267B9B /* libTKBO.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKBO.a; path = ../occt/lib/libTKBO.a; sourceTree = "<group>"; };
+		0A7DEE031E2D2A8200267B9B /* libTKBool.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKBool.a; path = ../occt/lib/libTKBool.a; sourceTree = "<group>"; };
+		0A7DEE041E2D2A8500267B9B /* libTKFeat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKFeat.a; path = ../occt/lib/libTKFeat.a; sourceTree = "<group>"; };
+		0A7DEE051E2D2A8900267B9B /* libTKFillet.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKFillet.a; path = ../occt/lib/libTKFillet.a; sourceTree = "<group>"; };
+		0A7DEE061E2D2A8C00267B9B /* libTKIGES.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKIGES.a; path = ../occt/lib/libTKIGES.a; sourceTree = "<group>"; };
+		0A7DEE071E2D2A8F00267B9B /* libTKMeshVS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKMeshVS.a; path = ../occt/lib/libTKMeshVS.a; sourceTree = "<group>"; };
+		0A7DEE081E2D2A9300267B9B /* libTKOffset.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKOffset.a; path = ../occt/lib/libTKOffset.a; sourceTree = "<group>"; };
+		0A7DEE091E2D2A9700267B9B /* libTKOpenGl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKOpenGl.a; path = ../occt/lib/libTKOpenGl.a; sourceTree = "<group>"; };
+		0A7DEE0A1E2D2A9A00267B9B /* libTKPrim.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKPrim.a; path = ../occt/lib/libTKPrim.a; sourceTree = "<group>"; };
+		0A7DEE0B1E2D2A9D00267B9B /* libTKService.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKService.a; path = ../occt/lib/libTKService.a; sourceTree = "<group>"; };
+		0A7DEE0C1E2D2AA100267B9B /* libTKStd.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKStd.a; path = ../occt/lib/libTKStd.a; sourceTree = "<group>"; };
+		0A7DEE0D1E2D2AA400267B9B /* libTKStdL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKStdL.a; path = ../occt/lib/libTKStdL.a; sourceTree = "<group>"; };
+		0A7DEE0E1E2D2AA800267B9B /* libTKSTEP.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKSTEP.a; path = ../occt/lib/libTKSTEP.a; sourceTree = "<group>"; };
+		0A7DEE0F1E2D2AAB00267B9B /* libTKSTEP209.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKSTEP209.a; path = ../occt/lib/libTKSTEP209.a; sourceTree = "<group>"; };
+		0A7DEE101E2D2AAE00267B9B /* libTKSTEPAttr.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKSTEPAttr.a; path = ../occt/lib/libTKSTEPAttr.a; sourceTree = "<group>"; };
+		0A7DEE111E2D2AB200267B9B /* libTKSTEPBase.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKSTEPBase.a; path = ../occt/lib/libTKSTEPBase.a; sourceTree = "<group>"; };
+		0A7DEE121E2D2AB500267B9B /* libTKSTL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKSTL.a; path = ../occt/lib/libTKSTL.a; sourceTree = "<group>"; };
+		0A7DEE131E2D2AB900267B9B /* libTKTObj.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKTObj.a; path = ../occt/lib/libTKTObj.a; sourceTree = "<group>"; };
+		0A7DEE141E2D2ABC00267B9B /* libTKVRML.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKVRML.a; path = ../occt/lib/libTKVRML.a; sourceTree = "<group>"; };
+		0A7DEE151E2D2AC000267B9B /* libTKXCAF.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKXCAF.a; path = ../occt/lib/libTKXCAF.a; sourceTree = "<group>"; };
+		0A7DEE161E2D2AC300267B9B /* libTKXDEIGES.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKXDEIGES.a; path = ../occt/lib/libTKXDEIGES.a; sourceTree = "<group>"; };
+		0A7DEE171E2D2AC700267B9B /* libTKXDESTEP.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKXDESTEP.a; path = ../occt/lib/libTKXDESTEP.a; sourceTree = "<group>"; };
+		0A7DEE181E2D2ACA00267B9B /* libTKXMesh.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKXMesh.a; path = ../occt/lib/libTKXMesh.a; sourceTree = "<group>"; };
+		0A7DEE191E2D2ACE00267B9B /* libTKXml.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKXml.a; path = ../occt/lib/libTKXml.a; sourceTree = "<group>"; };
+		0A7DEE1A1E2D2AD100267B9B /* libTKXmlL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKXmlL.a; path = ../occt/lib/libTKXmlL.a; sourceTree = "<group>"; };
+		0A7DEE1B1E2D2AD500267B9B /* libTKXmlTObj.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKXmlTObj.a; path = ../occt/lib/libTKXmlTObj.a; sourceTree = "<group>"; };
+		0A7DEE1C1E2D2AD900267B9B /* libTKXmlXCAF.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKXmlXCAF.a; path = ../occt/lib/libTKXmlXCAF.a; sourceTree = "<group>"; };
+		0A7DEE1D1E2D2ADC00267B9B /* libTKXSBase.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKXSBase.a; path = ../occt/lib/libTKXSBase.a; sourceTree = "<group>"; };
+		0AAE0DE51EAF816D00C1F65B /* screw.step */ = {isa = PBXFileReference; lastKnownFileType = text; name = screw.step; path = ../occt/data/step/screw.step; sourceTree = "<group>"; };
+		0AE286631EB0D29A00A9D719 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		3405C9DB1DE2F04E008BADB9 /* UIKitSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UIKitSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3405C9DF1DE2F04E008BADB9 /* main.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
+		3405C9E11DE2F04E008BADB9 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		3405C9E21DE2F04E008BADB9 /* AppDelegate.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
+		3405C9EA1DE2F04E008BADB9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3405C9ED1DE2F04E008BADB9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		3405C9EF1DE2F04E008BADB9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3405CA761DE30380008BADB9 /* OcctViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OcctViewer.h; sourceTree = "<group>"; };
+		3405CA771DE303DC008BADB9 /* OcctViewer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OcctViewer.mm; sourceTree = "<group>"; };
+		3405CA7A1DE31566008BADB9 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		3405CA7C1DE3156D008BADB9 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		3405CA811DE332AB008BADB9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		3405CA831DE3331D008BADB9 /* GLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLView.h; sourceTree = "<group>"; };
+		3405CA841DE3331D008BADB9 /* GLView.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = GLView.mm; sourceTree = "<group>"; };
+		343FDCA41DE42D12009AEE51 /* GLViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLViewController.h; sourceTree = "<group>"; };
+		343FDCA51DE42F37009AEE51 /* GLViewController.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = GLViewController.mm; sourceTree = "<group>"; };
+		34424E011DE6FF05008B56DA /* OcctDocument.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OcctDocument.h; sourceTree = "<group>"; };
+		34424E021DE70100008B56DA /* OcctDocument.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = OcctDocument.mm; sourceTree = "<group>"; };
+		34424E041DE72C23008B56DA /* CafShapePrs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CafShapePrs.h; sourceTree = "<group>"; };
+		34424E051DE72D2E008B56DA /* CafShapePrs.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = CafShapePrs.mm; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3405C9D81DE2F04E008BADB9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0AE286641EB0D29B00A9D719 /* libz.tbd in Frameworks */,
+				0A7DEE411E2D2C1500267B9B /* libTKXSBase.a in Frameworks */,
+				0A7DEE401E2D2BEA00267B9B /* libTKSTEP209.a in Frameworks */,
+				0A7DEE3F1E2D2BB000267B9B /* libTKOpenGl.a in Frameworks */,
+				0A7DEE3E1E2D2B8100267B9B /* libTKBO.a in Frameworks */,
+				0A7DEE2B1E2D2AE000267B9B /* libTKService.a in Frameworks */,
+				0A7DEE2E1E2D2AE000267B9B /* libTKSTEP.a in Frameworks */,
+				0A7DEE301E2D2AE000267B9B /* libTKSTEPAttr.a in Frameworks */,
+				0A7DEE311E2D2AE000267B9B /* libTKSTEPBase.a in Frameworks */,
+				0A7DEE351E2D2AE000267B9B /* libTKXCAF.a in Frameworks */,
+				0A7DEE371E2D2AE000267B9B /* libTKXDESTEP.a in Frameworks */,
+				0A7DEDE71E2D28E300267B9B /* libTKBRep.a in Frameworks */,
+				0A7DEDF91E2D29FF00267B9B /* libTKCAF.a in Frameworks */,
+				0A7DEDFA1E2D29FF00267B9B /* libTKCDF.a in Frameworks */,
+				0A7DEDE81E2D28E300267B9B /* libTKernel.a in Frameworks */,
+				0A7DEDE91E2D28E300267B9B /* libTKG2d.a in Frameworks */,
+				0A7DEDEA1E2D28E300267B9B /* libTKG3d.a in Frameworks */,
+				0A7DEDEB1E2D28E300267B9B /* libTKGeomAlgo.a in Frameworks */,
+				0A7DEDEC1E2D28E300267B9B /* libTKGeomBase.a in Frameworks */,
+				0A7DEDF21E2D297000267B9B /* libTKHLR.a in Frameworks */,
+				0A7DEDFB1E2D29FF00267B9B /* libTKLCAF.a in Frameworks */,
+				0A7DEDED1E2D28E300267B9B /* libTKMath.a in Frameworks */,
+				0A7DEDF31E2D297000267B9B /* libTKMesh.a in Frameworks */,
+				0A7DEDEE1E2D28E300267B9B /* libTKShHealing.a in Frameworks */,
+				0A7DEDEF1E2D28E300267B9B /* libTKTopAlgo.a in Frameworks */,
+				0A7DEDFC1E2D29FF00267B9B /* libTKV3d.a in Frameworks */,
+				0A7DEDFD1E2D29FF00267B9B /* libTKVCAF.a in Frameworks */,
+				0A7DEDD61E2D1D0F00267B9B /* libfreetype.a in Frameworks */,
+				3405CA821DE332AB008BADB9 /* UIKit.framework in Frameworks */,
+				3405CA7D1DE3156D008BADB9 /* OpenGLES.framework in Frameworks */,
+				3405CA7B1DE31566008BADB9 /* QuartzCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3405C9D21DE2F04E008BADB9 = {
+			isa = PBXGroup;
+			children = (
+				0A24B9F91EB0A7CC00A5F490 /* linkrods.step */,
+				0AAE0DE51EAF816D00C1F65B /* screw.step */,
+				3405C9DD1DE2F04E008BADB9 /* UIKitSample */,
+				3405C9DC1DE2F04E008BADB9 /* Products */,
+				3405CA791DE31565008BADB9 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		3405C9DC1DE2F04E008BADB9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3405C9DB1DE2F04E008BADB9 /* UIKitSample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3405C9DD1DE2F04E008BADB9 /* UIKitSample */ = {
+			isa = PBXGroup;
+			children = (
+				34424E051DE72D2E008B56DA /* CafShapePrs.mm */,
+				34424E041DE72C23008B56DA /* CafShapePrs.h */,
+				34424E011DE6FF05008B56DA /* OcctDocument.h */,
+				34424E021DE70100008B56DA /* OcctDocument.mm */,
+				3405CA841DE3331D008BADB9 /* GLView.mm */,
+				3405CA831DE3331D008BADB9 /* GLView.h */,
+				343FDCA51DE42F37009AEE51 /* GLViewController.mm */,
+				343FDCA41DE42D12009AEE51 /* GLViewController.h */,
+				3405CA761DE30380008BADB9 /* OcctViewer.h */,
+				3405CA771DE303DC008BADB9 /* OcctViewer.mm */,
+				3405C9E11DE2F04E008BADB9 /* AppDelegate.h */,
+				3405C9E21DE2F04E008BADB9 /* AppDelegate.mm */,
+				3405C9EA1DE2F04E008BADB9 /* Assets.xcassets */,
+				3405C9EC1DE2F04E008BADB9 /* LaunchScreen.storyboard */,
+				3405C9EF1DE2F04E008BADB9 /* Info.plist */,
+				3405C9DE1DE2F04E008BADB9 /* Supporting Files */,
+			);
+			path = UIKitSample;
+			sourceTree = "<group>";
+		};
+		3405C9DE1DE2F04E008BADB9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				3405C9DF1DE2F04E008BADB9 /* main.mm */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		3405CA791DE31565008BADB9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0AE286631EB0D29A00A9D719 /* libz.tbd */,
+				0A7DEDFE1E2D2A7200267B9B /* libTKBin.a */,
+				0A7DEDFF1E2D2A7600267B9B /* libTKBinL.a */,
+				0A7DEE001E2D2A7900267B9B /* libTKBinTObj.a */,
+				0A7DEE011E2D2A7C00267B9B /* libTKBinXCAF.a */,
+				0A7DEE021E2D2A7F00267B9B /* libTKBO.a */,
+				0A7DEE031E2D2A8200267B9B /* libTKBool.a */,
+				0A7DEE041E2D2A8500267B9B /* libTKFeat.a */,
+				0A7DEE051E2D2A8900267B9B /* libTKFillet.a */,
+				0A7DEE061E2D2A8C00267B9B /* libTKIGES.a */,
+				0A7DEE071E2D2A8F00267B9B /* libTKMeshVS.a */,
+				0A7DEE081E2D2A9300267B9B /* libTKOffset.a */,
+				0A7DEE091E2D2A9700267B9B /* libTKOpenGl.a */,
+				0A7DEE0A1E2D2A9A00267B9B /* libTKPrim.a */,
+				0A7DEE0B1E2D2A9D00267B9B /* libTKService.a */,
+				0A7DEE0C1E2D2AA100267B9B /* libTKStd.a */,
+				0A7DEE0D1E2D2AA400267B9B /* libTKStdL.a */,
+				0A7DEE0E1E2D2AA800267B9B /* libTKSTEP.a */,
+				0A7DEE0F1E2D2AAB00267B9B /* libTKSTEP209.a */,
+				0A7DEE101E2D2AAE00267B9B /* libTKSTEPAttr.a */,
+				0A7DEE111E2D2AB200267B9B /* libTKSTEPBase.a */,
+				0A7DEE121E2D2AB500267B9B /* libTKSTL.a */,
+				0A7DEE131E2D2AB900267B9B /* libTKTObj.a */,
+				0A7DEE141E2D2ABC00267B9B /* libTKVRML.a */,
+				0A7DEE151E2D2AC000267B9B /* libTKXCAF.a */,
+				0A7DEE161E2D2AC300267B9B /* libTKXDEIGES.a */,
+				0A7DEE171E2D2AC700267B9B /* libTKXDESTEP.a */,
+				0A7DEE181E2D2ACA00267B9B /* libTKXMesh.a */,
+				0A7DEE191E2D2ACE00267B9B /* libTKXml.a */,
+				0A7DEE1A1E2D2AD100267B9B /* libTKXmlL.a */,
+				0A7DEE1B1E2D2AD500267B9B /* libTKXmlTObj.a */,
+				0A7DEE1C1E2D2AD900267B9B /* libTKXmlXCAF.a */,
+				0A7DEE1D1E2D2ADC00267B9B /* libTKXSBase.a */,
+				0A7DEDF41E2D29EF00267B9B /* libTKCAF.a */,
+				0A7DEDF51E2D29F200267B9B /* libTKCDF.a */,
+				0A7DEDF61E2D29F500267B9B /* libTKLCAF.a */,
+				0A7DEDF71E2D29F800267B9B /* libTKV3d.a */,
+				0A7DEDF81E2D29FB00267B9B /* libTKVCAF.a */,
+				0A7DEDF01E2D296900267B9B /* libTKHLR.a */,
+				0A7DEDF11E2D296C00267B9B /* libTKMesh.a */,
+				0A7DEDDE1E2D28C500267B9B /* libTKBRep.a */,
+				0A7DEDDF1E2D28C800267B9B /* libTKernel.a */,
+				0A7DEDE01E2D28CB00267B9B /* libTKG2d.a */,
+				0A7DEDE11E2D28CE00267B9B /* libTKG3d.a */,
+				0A7DEDE21E2D28D200267B9B /* libTKGeomAlgo.a */,
+				0A7DEDE31E2D28D500267B9B /* libTKGeomBase.a */,
+				0A7DEDE41E2D28D800267B9B /* libTKMath.a */,
+				0A7DEDE51E2D28DC00267B9B /* libTKShHealing.a */,
+				0A7DEDE61E2D28DF00267B9B /* libTKTopAlgo.a */,
+				0A7DEDD41E2D1D0900267B9B /* libfreetype.a */,
+				0A7DED6E1E2D15B800267B9B /* dev */,
+				3405CA811DE332AB008BADB9 /* UIKit.framework */,
+				3405CA7C1DE3156D008BADB9 /* OpenGLES.framework */,
+				3405CA7A1DE31566008BADB9 /* QuartzCore.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3405C9DA1DE2F04E008BADB9 /* UIKitSample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3405CA081DE2F04E008BADB9 /* Build configuration list for PBXNativeTarget "UIKitSample" */;
+			buildPhases = (
+				3405C9D71DE2F04E008BADB9 /* Sources */,
+				3405C9D81DE2F04E008BADB9 /* Frameworks */,
+				3405C9D91DE2F04E008BADB9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UIKitSample;
+			productName = UIKitSample;
+			productReference = 3405C9DB1DE2F04E008BADB9 /* UIKitSample.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3405C9D31DE2F04E008BADB9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = "";
+				LastUpgradeCheck = 0810;
+				ORGANIZATIONNAME = "OPEN CASCADE";
+				TargetAttributes = {
+					3405C9DA1DE2F04E008BADB9 = {
+						CreatedOnToolsVersion = 8.1;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 3405C9D61DE2F04E008BADB9 /* Build configuration list for PBXProject "UIKitSample" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 3405C9D21DE2F04E008BADB9;
+			productRefGroup = 3405C9DC1DE2F04E008BADB9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3405C9DA1DE2F04E008BADB9 /* UIKitSample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3405C9D91DE2F04E008BADB9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0A24B9FA1EB0A7CC00A5F490 /* linkrods.step in Resources */,
+				0AAE0DE61EAF816E00C1F65B /* screw.step in Resources */,
+				3405C9EE1DE2F04E008BADB9 /* LaunchScreen.storyboard in Resources */,
+				3405C9EB1DE2F04E008BADB9 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3405C9D71DE2F04E008BADB9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3405C9E31DE2F04E008BADB9 /* AppDelegate.mm in Sources */,
+				3405CA851DE3331D008BADB9 /* GLView.mm in Sources */,
+				343FDCA61DE42F37009AEE51 /* GLViewController.mm in Sources */,
+				34424E031DE70100008B56DA /* OcctDocument.mm in Sources */,
+				3405CA781DE303DC008BADB9 /* OcctViewer.mm in Sources */,
+				3405C9E01DE2F04E008BADB9 /* main.mm in Sources */,
+				34424E061DE72D2E008B56DA /* CafShapePrs.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		3405C9EC1DE2F04E008BADB9 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3405C9ED1DE2F04E008BADB9 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		3405CA061DE2F04E008BADB9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				LIBRARY_SEARCH_PATHS = "";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "";
+				USE_HEADERMAP = YES;
+				VALID_ARCHS = "$(ARCHS_STANDARD)";
+			};
+			name = Debug;
+		};
+		3405CA071DE2F04E008BADB9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				LIBRARY_SEARCH_PATHS = "";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "";
+				USE_HEADERMAP = YES;
+				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "$(ARCHS_STANDARD)";
+			};
+			name = Release;
+		};
+		3405CA091DE2F04E008BADB9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LIBRARY = "libc++";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
+				HEADER_SEARCH_PATHS = ../occt/inc;
+				INFOPLIST_FILE = UIKitSample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					../occt/lib,
+					../3rdparty/lib,
+				);
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = org.opencascade.ios.sample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "$(ARCHS_STANDARD)";
+			};
+			name = Debug;
+		};
+		3405CA0A1DE2F04E008BADB9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LIBRARY = "libc++";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
+				HEADER_SEARCH_PATHS = ../occt/inc;
+				INFOPLIST_FILE = UIKitSample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					../occt/lib,
+					../3rdparty/lib,
+				);
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = org.opencascade.ios.sample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "$(ARCHS_STANDARD)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3405C9D61DE2F04E008BADB9 /* Build configuration list for PBXProject "UIKitSample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3405CA061DE2F04E008BADB9 /* Debug */,
+				3405CA071DE2F04E008BADB9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3405CA081DE2F04E008BADB9 /* Build configuration list for PBXNativeTarget "UIKitSample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3405CA091DE2F04E008BADB9 /* Debug */,
+				3405CA0A1DE2F04E008BADB9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3405C9D31DE2F04E008BADB9 /* Project object */;
+}
