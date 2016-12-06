@@ -3313,11 +3313,9 @@ void BRepOffset_MakeOffset::EncodeRegularity ()
     else if ( Type1 == TopAbs_FACE && Type2 == TopAbs_FACE) {
     //  if two root faces are tangent in 
     //  the initial shape, they will be tangent in the offset shape
-      TopTools_ListOfShape LE,LV;
-      BRepOffset_Tool::HasCommonShapes(TopoDS::Face(Root1),
-                                       TopoDS::Face(Root2),
-                                       LE,LV);
-      if ( LE.Extent() == 1) { 
+      TopTools_ListOfShape LE;
+      BRepOffset_Tool::FindCommonShapes(Root1, Root2, TopAbs_EDGE, LE);
+      if ( LE.Extent() == 1) {
         const TopoDS_Edge& Ed = TopoDS::Edge(LE.First());
         if ( myAnalyse.HasAncestor(Ed)) {
           const BRepOffset_ListOfInterval& LI = myAnalyse.Type(Ed);
@@ -3330,15 +3328,7 @@ void BRepOffset_MakeOffset::EncodeRegularity ()
     }
     else if ( Type1 == TopAbs_EDGE && Type2 == TopAbs_EDGE) {
       TopTools_ListOfShape LV;
-      TopExp_Explorer exp1;
-      for (exp1.Init(Root1,TopAbs_VERTEX); exp1.More(); exp1.Next()) {
-        TopExp_Explorer exp2(F2,TopAbs_EDGE);
-        for (exp2.Init(Root2,TopAbs_VERTEX); exp2.More(); exp2.Next()) {
-          if (exp1.Current().IsSame(exp2.Current())) {
-            LV.Append(exp1.Current());
-          }
-        }
-      }
+      BRepOffset_Tool::FindCommonShapes(Root1, Root2, TopAbs_VERTEX, LV);
       if ( LV.Extent() == 1) {
         TopTools_ListOfShape LEdTg;
         myAnalyse.TangentEdges(TopoDS::Edge(Root1),

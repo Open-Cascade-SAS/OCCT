@@ -62,11 +62,23 @@ public:
   //! idem for <O2>.
   Standard_EXPORT static void OrientSection (const TopoDS_Edge& E, const TopoDS_Face& F1, const TopoDS_Face& F2, TopAbs_Orientation& O1, TopAbs_Orientation& O2);
   
-  //! Returns True if  <F1> and <F2> has common Vertices
-  //! or edges , <LE> contains the common edges. <LV> the
-  //! common vertices.
-  Standard_EXPORT static Standard_Boolean HasCommonShapes (const TopoDS_Face& F1, const TopoDS_Face& F2, TopTools_ListOfShape& LE, TopTools_ListOfShape& LV);
-  
+  //! Looks for the common Vertices and Edges between faces <theF1> and <theF2>.<br>
+  //! Returns TRUE if common shapes have been found.<br>
+  //! <theLE> will contain the found common edges;<br>
+  //! <theLV> will contain the found common vertices.
+  Standard_EXPORT static Standard_Boolean FindCommonShapes(const TopoDS_Face& theF1,
+                                                           const TopoDS_Face& theF2,
+                                                           TopTools_ListOfShape& theLE,
+                                                           TopTools_ListOfShape& theLV);
+
+  //! Looks for the common shapes of type <theType> between shapes <theS1> and <theS2>.<br>
+  //! Returns TRUE if common shapes have been found.<br>
+  //! <theLSC> will contain the found common shapes.
+  Standard_EXPORT static Standard_Boolean FindCommonShapes(const TopoDS_Shape& theS1,
+                                                           const TopoDS_Shape& theS2,
+                                                           const TopAbs_ShapeEnum theType,
+                                                           TopTools_ListOfShape& theLSC);
+
   //! Computes the   Section betwwen  <F1> and  <F2> the
   //! edges solution   are  stored in <LInt1>  with  the
   //! orientation on <F1>, the sames edges are stored in

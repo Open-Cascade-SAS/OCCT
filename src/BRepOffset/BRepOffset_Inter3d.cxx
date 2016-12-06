@@ -213,7 +213,7 @@ void BRepOffset_Inter3d::FaceInter(const TopoDS_Face& F1,
                                  InitF2.ShapeType() == TopAbs_FACE);
   TopTools_ListOfShape LE,LV;
   LInt1.Clear(); LInt2.Clear(); 
-  if (BRepOffset_Tool::HasCommonShapes(F1,F2,LE,LV) ||
+  if (BRepOffset_Tool::FindCommonShapes(F1,F2,LE,LV) ||
       myAsDes->HasCommonDescendant(F1,F2,LE)) {
     //-------------------------------------------------
     // F1 and F2 share shapes.
@@ -248,8 +248,8 @@ void BRepOffset_Inter3d::FaceInter(const TopoDS_Face& F1,
         // many sections.
         //--------------------------------------------------------
         if (InterFaces) {
-          if (BRepOffset_Tool::HasCommonShapes(TopoDS::Face(InitF1),
-                                               TopoDS::Face(InitF2),LE,LV)) {
+          if (BRepOffset_Tool::FindCommonShapes(TopoDS::Face(InitF1),
+                                                TopoDS::Face(InitF2),LE,LV)) {
             if (!LE.IsEmpty()) {
               BRepOffset_Tool::Inter3D (F1,F2,LInt1,LInt2,mySide,NullEdge);
             }
