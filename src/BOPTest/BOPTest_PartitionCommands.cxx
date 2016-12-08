@@ -83,12 +83,13 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   bRunParallel=BOPTest_Objects::RunParallel();
   bNonDestructive = BOPTest_Objects::NonDestructive();
   aTol = BOPTest_Objects::FuzzyValue();
+  BOPAlgo_GlueEnum aGlue = BOPTest_Objects::Glue();
   //
   for (i=1; i<n; ++i) {
     if (!strcmp(a[i], "-t")) {
       bShowTime=Standard_True;
     }
-    }
+  }
   //
   BOPCol_ListOfShape& aLT=BOPTest_Objects::Tools();
   //
@@ -110,6 +111,7 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   aPF.SetRunParallel(bRunParallel);
   aPF.SetNonDestructive(bNonDestructive);
   aPF.SetFuzzyValue(aTol);
+  aPF.SetGlue(aGlue);
   //
   OSD_Timer aTimer;
   aTimer.Start();

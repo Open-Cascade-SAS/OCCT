@@ -308,6 +308,7 @@ void BRepAlgoAPI_BooleanOperation::Build()
     myDSFiller->SetProgressIndicator(myProgressIndicator);
     myDSFiller->SetFuzzyValue(myFuzzyValue);
     myDSFiller->SetNonDestructive(myNonDestructive);
+    myDSFiller->SetGlue(myGlue);
     //
     SetAttributes();
     //

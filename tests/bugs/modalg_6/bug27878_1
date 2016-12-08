@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC27878"
+puts "========"
+puts ""
+#################################################
+# Development of the Gluing operations based on the new Boolean component
+#################################################
+
+# planar boxes
+
+restore [locate_data_file bug27878_shapes1.brep] c
+
+# fusing the solids using the glue option
+bglue 2
+bclearobjects
+bcleartools
+baddobjects {*}[explode c so]
+bfillds -t
+bbuild result
+
+checknbshapes result -face 1176 -solid 343
+checkprops result -s 2058 -v 343
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

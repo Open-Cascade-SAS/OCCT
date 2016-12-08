@@ -141,6 +141,7 @@ Standard_Integer bop(Draw_Interpretor& di,
   aTol=BOPTest_Objects::FuzzyValue();
   bRunParallel=BOPTest_Objects::RunParallel();
   bNonDestructive = BOPTest_Objects::NonDestructive();
+  BOPAlgo_GlueEnum aGlue = BOPTest_Objects::Glue();
   //
   aLC.Append(aS1);
   aLC.Append(aS2);
@@ -157,6 +158,7 @@ Standard_Integer bop(Draw_Interpretor& di,
   pPF->SetFuzzyValue(aTol);
   pPF->SetRunParallel(bRunParallel);
   pPF->SetNonDestructive(bNonDestructive);
+  pPF->SetGlue(aGlue);
   //
   pPF->Perform();
   iErr=pPF->ErrorStatus();
@@ -407,6 +409,7 @@ Standard_Integer  bsection(Draw_Interpretor& di,
   aTol = BOPTest_Objects::FuzzyValue(); 
   bRunParallel = BOPTest_Objects::RunParallel();
   bNonDestructive = BOPTest_Objects::NonDestructive();
+  BOPAlgo_GlueEnum aGlue = BOPTest_Objects::Glue();
   //
   for (i = 4; i < n; ++i) {
     if (!strcmp(a[i], "-n2d")) {
@@ -433,6 +436,7 @@ Standard_Integer  bsection(Draw_Interpretor& di,
   aSec.SetFuzzyValue(aTol);
   aSec.SetRunParallel(bRunParallel);
   aSec.SetNonDestructive(bNonDestructive);
+  aSec.SetGlue(aGlue);
   //
   aSec.Build();
   iErr=aSec.ErrorStatus();
@@ -484,6 +488,7 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   aTol=BOPTest_Objects::FuzzyValue();
   bRunParallel = BOPTest_Objects::RunParallel();
   bNonDestructive = BOPTest_Objects::NonDestructive();
+  BOPAlgo_GlueEnum aGlue = BOPTest_Objects::Glue();
   //
   Handle(NCollection_BaseAllocator)aAL=
     NCollection_BaseAllocator::CommonBaseAllocator();
@@ -495,6 +500,7 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   aPF.SetFuzzyValue(aTol); 
   aPF.SetRunParallel(bRunParallel);
   aPF.SetNonDestructive(bNonDestructive);
+  aPF.SetGlue(aGlue);
   //
   aPF.Perform();
   iErr=aPF.ErrorStatus();
@@ -739,6 +745,7 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
   aTol = BOPTest_Objects::FuzzyValue();
   bRunParallel = BOPTest_Objects::RunParallel();
   bNonDestructive = BOPTest_Objects::NonDestructive();
+  BOPAlgo_GlueEnum aGlue = BOPTest_Objects::Glue();
   //
   bToIntersect = Standard_True;
   bCompounds = Standard_False;
@@ -789,6 +796,7 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
   aMV.SetRunParallel(bRunParallel);
   aMV.SetFuzzyValue(aTol);
   aMV.SetNonDestructive(bNonDestructive);
+  aMV.SetGlue(aGlue);
   //
   aMV.Perform();
   if (aMV.ErrorStatus()) {

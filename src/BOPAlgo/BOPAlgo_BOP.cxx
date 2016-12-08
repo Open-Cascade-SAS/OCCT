@@ -376,6 +376,7 @@ void BOPAlgo_BOP::Perform()
   pPF->SetProgressIndicator(myProgressIndicator);
   pPF->SetFuzzyValue(myFuzzyValue);
   pPF->SetNonDestructive(myNonDestructive);
+  pPF->SetGlue(myGlue);
   //
   pPF->Perform();
   //

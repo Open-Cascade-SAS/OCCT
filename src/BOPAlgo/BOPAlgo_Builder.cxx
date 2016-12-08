@@ -51,7 +51,8 @@ BOPAlgo_Builder::BOPAlgo_Builder()
   myShapesSD(100, myAllocator),
   mySplits(100, myAllocator),
   myOrigins(100, myAllocator),
-  myNonDestructive(Standard_False)
+  myNonDestructive(Standard_False),
+  myGlue(BOPAlgo_GlueOff)
 {
 }
 //=======================================================================
@@ -71,7 +72,8 @@ BOPAlgo_Builder::BOPAlgo_Builder
   myShapesSD(100, myAllocator),
   mySplits(100, myAllocator),
   myOrigins(100, myAllocator),
-  myNonDestructive(Standard_False)
+  myNonDestructive(Standard_False),
+  myGlue(BOPAlgo_GlueOff)
 {
 }
 //=======================================================================
@@ -200,6 +202,22 @@ Standard_Boolean BOPAlgo_Builder::NonDestructive() const
   return myNonDestructive;
 }
 //=======================================================================
+//function : SetGlue
+//purpose  : 
+//=======================================================================
+void BOPAlgo_Builder::SetGlue(const BOPAlgo_GlueEnum theGlue)
+{
+  myGlue=theGlue;
+}
+//=======================================================================
+//function : Glue
+//purpose  : 
+//=======================================================================
+BOPAlgo_GlueEnum BOPAlgo_Builder::Glue() const 
+{
+  return myGlue;
+}
+//=======================================================================
 // function: CheckData
 // purpose: 
 //=======================================================================
@@ -268,6 +286,7 @@ void BOPAlgo_Builder::Perform()
   pPF->SetProgressIndicator(myProgressIndicator);
   pPF->SetFuzzyValue(myFuzzyValue);
   pPF->SetNonDestructive(myNonDestructive);
+  pPF->SetGlue(myGlue);
   //
   pPF->Perform();
   //
@@ -283,6 +302,7 @@ void BOPAlgo_Builder::PerformWithFiller(const BOPAlgo_PaveFiller& theFiller)
   myEntryPoint=0;
   myNonDestructive = theFiller.NonDestructive();
   myFuzzyValue = theFiller.FuzzyValue();
+  myGlue = theFiller.Glue();
   PerformInternal(theFiller);
 }
 //=======================================================================

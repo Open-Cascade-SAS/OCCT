@@ -80,7 +80,6 @@ Standard_Integer bcbuild(Draw_Interpretor& di,
     return 1;
   }
   //
-  Standard_Boolean bRunParallel;
   Standard_Integer iErr;
   BOPCol_ListIteratorOfListOfShape aIt;
   //
@@ -103,8 +102,16 @@ Standard_Integer bcbuild(Draw_Interpretor& di,
     aCBuilder.AddArgument(aS);
   }
   //
-  bRunParallel = BOPTest_Objects::RunParallel();
+  // set the options to the algorithm
+  Standard_Boolean bRunParallel = BOPTest_Objects::RunParallel();
+  Standard_Real aTol = BOPTest_Objects::FuzzyValue();
+  Standard_Boolean bNonDestructive = BOPTest_Objects::NonDestructive();
+  BOPAlgo_GlueEnum aGlue = BOPTest_Objects::Glue();
+  //
   aCBuilder.SetRunParallel(bRunParallel);
+  aCBuilder.SetFuzzyValue(aTol);
+  aCBuilder.SetNonDestructive(bNonDestructive);
+  aCBuilder.SetGlue(aGlue);
   //
   aCBuilder.PerformWithFiller(aPF); 
   iErr = aCBuilder.ErrorStatus();

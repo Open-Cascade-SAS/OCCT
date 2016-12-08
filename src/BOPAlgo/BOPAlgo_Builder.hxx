@@ -25,6 +25,7 @@
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
 #include <BOPAlgo_PPaveFiller.hxx>
+#include <BOPAlgo_GlueEnum.hxx>
 #include <BOPDS_PDS.hxx>
 #include <Standard_Integer.hxx>
 #include <BOPCol_DataMapOfShapeListOfShape.hxx>
@@ -107,6 +108,11 @@ Standard_EXPORT virtual ~BOPAlgo_Builder();
   //! a copy of a sub-shape is created in the result if it is needed to be updated.
   Standard_EXPORT Standard_Boolean NonDestructive() const;
 
+  //! Sets the glue option for the algorithm
+  Standard_EXPORT void SetGlue(const BOPAlgo_GlueEnum theGlue);
+  
+  //! Returns the glue option of the algorithm
+  Standard_EXPORT BOPAlgo_GlueEnum Glue() const;
 
 protected:
 
@@ -167,6 +173,7 @@ protected:
   BOPCol_DataMapOfShapeListOfShape mySplits;
   BOPCol_DataMapOfShapeShape myOrigins;
   Standard_Boolean myNonDestructive;
+  BOPAlgo_GlueEnum myGlue;
 
 private:
 
