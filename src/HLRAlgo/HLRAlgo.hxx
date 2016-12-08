@@ -19,31 +19,6 @@
 
 #include <HLRAlgo_WiresBlock.hxx>
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
-
-class HLRAlgo_BiPoint;
-class HLRAlgo_PolyShellData;
-class HLRAlgo_PolyInternalData;
-class HLRAlgo_PolyInternalSegment;
-class HLRAlgo_PolyInternalNode;
-class HLRAlgo_PolyData;
-class HLRAlgo_PolyHidingData;
-class HLRAlgo_TriangleData;
-class HLRAlgo_PolyAlgo;
-class HLRAlgo_EdgeStatus;
-class HLRAlgo_Projector;
-class HLRAlgo_Intersection;
-class HLRAlgo_Coincidence;
-class HLRAlgo_Interference;
-class HLRAlgo_EdgesBlock;
-class HLRAlgo_WiresBlock;
-class HLRAlgo_EdgeIterator;
-
-
 //! In order to have the precision required in
 //! industrial design, drawings need to offer the
 //! possibility of removing lines, which are hidden
@@ -72,7 +47,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Iterator  on the  visible or  hidden  parts of  an
   //! EdgeStatus.
   Standard_EXPORT static void UpdateMinMax (const Standard_Real x, const Standard_Real y, const Standard_Real z, Standard_Real Min[16], Standard_Real Max[16]);
@@ -95,44 +69,6 @@ public:
   
   Standard_EXPORT static void AddMinMax (HLRAlgo_EdgesBlock::MinMaxIndices& IMin, HLRAlgo_EdgesBlock::MinMaxIndices& IMax, HLRAlgo_EdgesBlock::MinMaxIndices& OMin, HLRAlgo_EdgesBlock::MinMaxIndices& OMax);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class HLRAlgo_BiPoint;
-friend class HLRAlgo_PolyShellData;
-friend class HLRAlgo_PolyInternalData;
-friend class HLRAlgo_PolyInternalSegment;
-friend class HLRAlgo_PolyInternalNode;
-friend class HLRAlgo_PolyData;
-friend class HLRAlgo_PolyHidingData;
-friend class HLRAlgo_TriangleData;
-friend class HLRAlgo_PolyAlgo;
-friend class HLRAlgo_EdgeStatus;
-friend class HLRAlgo_Projector;
-friend class HLRAlgo_Intersection;
-friend class HLRAlgo_Coincidence;
-friend class HLRAlgo_Interference;
-friend class HLRAlgo_EdgesBlock;
-friend class HLRAlgo_WiresBlock;
-friend class HLRAlgo_EdgeIterator;
-
 };
-
-
-
-
-
-
 
 #endif // _HLRAlgo_HeaderFile
