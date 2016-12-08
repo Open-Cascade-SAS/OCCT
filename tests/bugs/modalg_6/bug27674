@@ -1,0 +1,47 @@
+puts "============"
+puts "OCC27674"
+puts "============"
+puts ""
+############################################################################
+# BRepOffsetAPI_ThruSections make invalid
+# shape if sections are connected at ends
+############################################################################
+
+restore [locate_data_file bug27674_CircleLineWires.brep] a
+
+explode a
+wire w a_1 a_2
+explode w
+wire a1 w_1
+wire a2 w_2
+thrusections r 0 0 a1 a2
+checkshape r
+
+checknbshapes r -vertex 2 -edge 4
+
+puts "Check that edges degenerated and has no 3d curve..."
+explode r E
+if [regexp {degenerated} [dump r_2]] {
+   puts "OK: r_2 is a degenerated edge."
+   if [catch {mkcurve c1 r_2} catch_result] {
+      puts "OK: r_2 has no 3d curve."
+   } else {
+      puts "Faulty: r_2 has 3d curve"
+   }
+} else {
+   puts "Faulty: r_2 is not degenerated edge."
+}
+
+if [regexp {degenerated} [dump r_4]] {
+   puts "OK: r_4 is a degenerated edge."
+   if [catch {mkcurve c1 r_4} catch_result] {
+      puts "OK: r_4 has no 3d curve."
+   } else {
+      puts "Faulty: r_4 has 3d curve"
+   }
+} else {
+   puts "Faulty: r_4 is not degenerated edge."
+}
+
+checkview -display r -2d -path ${imagedir}/${test_image}.png
+
