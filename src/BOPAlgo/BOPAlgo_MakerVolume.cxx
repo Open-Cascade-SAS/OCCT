@@ -101,6 +101,7 @@ void BOPAlgo_MakerVolume::Perform()
   pPF->SetProgressIndicator(myProgressIndicator);
   pPF->SetFuzzyValue(myFuzzyValue);
   pPF->SetNonDestructive(myNonDestructive);
+  pPF->SetGlue(myGlue);
   pPF->Perform();
   //
   myEntryPoint = 1;

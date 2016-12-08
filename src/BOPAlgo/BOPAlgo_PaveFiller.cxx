@@ -43,6 +43,7 @@ BOPAlgo_PaveFiller::BOPAlgo_PaveFiller()
   myIterator=NULL;
   myNonDestructive=Standard_False;
   myIsPrimary=Standard_True;
+  myGlue=BOPAlgo_GlueOff;
 }
 //=======================================================================
 //function : 
@@ -57,6 +58,7 @@ BOPAlgo_PaveFiller::BOPAlgo_PaveFiller
   myIterator=NULL;
   myNonDestructive=Standard_False;
   myIsPrimary=Standard_True;
+  myGlue=BOPAlgo_GlueOff;
 }
 //=======================================================================
 //function : ~
@@ -81,6 +83,22 @@ void BOPAlgo_PaveFiller::SetNonDestructive(const Standard_Boolean bFlag)
 Standard_Boolean BOPAlgo_PaveFiller::NonDestructive()const 
 {
   return myNonDestructive;
+}
+//=======================================================================
+//function : SetGlue
+//purpose  : 
+//=======================================================================
+void BOPAlgo_PaveFiller::SetGlue(const BOPAlgo_GlueEnum theGlue)
+{
+  myGlue=theGlue;
+}
+//=======================================================================
+//function : Glue
+//purpose  : 
+//=======================================================================
+BOPAlgo_GlueEnum BOPAlgo_PaveFiller::Glue() const 
+{
+  return myGlue;
 }
 //=======================================================================
 //function : SetIsPrimary
@@ -293,6 +311,10 @@ void BOPAlgo_PaveFiller::PerformInternal()
   ProcessDE();
   if (myErrorStatus) {
     return; 
+  }
+  //
+  if (myGlue != BOPAlgo_GlueOff) {
+    return;
   }
   // 03
   PerformVZ();

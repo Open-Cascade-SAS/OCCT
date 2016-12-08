@@ -48,6 +48,7 @@
 #include <BOPDS_VectorOfCurve.hxx>
 #include <BOPCol_IndexedDataMapOfShapeInteger.hxx>
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
+#include <BOPAlgo_GlueEnum.hxx>
 class IntTools_Context;
 class BOPDS_DS;
 class BOPAlgo_SectionAttribute;
@@ -100,6 +101,14 @@ public:
   Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
   
   
+
+  //! Sets the glue option for the algorithm
+  Standard_EXPORT void SetGlue(const BOPAlgo_GlueEnum theGlue);
+  
+  //! Returns the glue option of the algorithm
+  Standard_EXPORT BOPAlgo_GlueEnum Glue() const;
+
+
 
 protected:
 
@@ -395,6 +404,7 @@ protected:
   BOPAlgo_SectionAttribute mySectionAttribute;
   Standard_Boolean myNonDestructive;
   Standard_Boolean myIsPrimary;
+  BOPAlgo_GlueEnum myGlue;
 
 
 private:

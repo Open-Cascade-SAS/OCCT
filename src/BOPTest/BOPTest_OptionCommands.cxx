@@ -17,6 +17,7 @@
 #include <BOPTest_Objects.hxx>
 #include <DBRep.hxx>
 #include <Draw.hxx>
+#include <BOPAlgo_GlueEnum.hxx>
 
 #include <stdio.h>
 #include <string.h>
@@ -24,6 +25,7 @@ static Standard_Integer boptions (Draw_Interpretor&, Standard_Integer, const cha
 static Standard_Integer brunparallel (Draw_Interpretor&, Standard_Integer, const char**); 
 static Standard_Integer bnondestructive(Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bfuzzyvalue(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bGlue(Draw_Interpretor&, Standard_Integer, const char**);
 
 //=======================================================================
 //function : OptionCommands
@@ -41,6 +43,7 @@ void BOPTest::OptionCommands(Draw_Interpretor& theCommands)
   theCommands.Add("brunparallel", "use brunparallel [0/1]" , __FILE__, brunparallel, g);
   theCommands.Add("bnondestructive", "use bnondestructive [0/1]", __FILE__, bnondestructive, g);
   theCommands.Add("bfuzzyvalue", "use bfuzzyvalue value", __FILE__, bfuzzyvalue, g);
+  theCommands.Add("bglue", "use bglue [0 (off) / 1 (shift) / 2 (full)]", __FILE__, bGlue, g);
 }
 //=======================================================================
 //function : boptions
@@ -58,16 +61,21 @@ Standard_Integer boptions(Draw_Interpretor& di,
   char buf[128];
   Standard_Boolean bRunParallel, bNonDestructive;
   Standard_Real aFuzzyValue;
+  BOPAlgo_GlueEnum aGlue;
   //
   bRunParallel=BOPTest_Objects::RunParallel();
   bNonDestructive = BOPTest_Objects::NonDestructive();
   aFuzzyValue = BOPTest_Objects::FuzzyValue();
-  
+  aGlue = BOPTest_Objects::Glue();
+  //
   Sprintf(buf, " RunParallel: %d\n",  bRunParallel);
   di << buf;
   Sprintf(buf, " NonDestructive: %d\n", bNonDestructive);
   di << buf;
-  Sprintf(buf, " FuzzyValue : %lf\n", aFuzzyValue);
+  Sprintf(buf, " FuzzyValue: %lf\n", aFuzzyValue);
+  di << buf;
+  Sprintf(buf, " GlueOption: %s\n", ((aGlue == BOPAlgo_GlueOff) ? "Off" :
+    ((aGlue == BOPAlgo_GlueFull) ? "Full" : "Shift")));
   di << buf;
   //
   return 0;
@@ -148,6 +156,31 @@ Standard_Integer bnondestructive(Draw_Interpretor& di,
   //
   bNonDestructive = (iX != 0);
   BOPTest_Objects::SetNonDestructive(bNonDestructive);
+  //
+  return 0;
+}
+
+//=======================================================================
+//function : bglue
+//purpose  : 
+//=======================================================================
+Standard_Integer bGlue(Draw_Interpretor& di,
+                             Standard_Integer n,
+                             const char** a)
+{
+  if (n != 2) {
+    di << " use bglue [0 (off) / 1 (shift) / 2 (full)]\n";
+    return 1;
+  }
+  //
+  Standard_Integer iGlue = Draw::Atoi(a[1]);
+  if (iGlue < 0 || iGlue > 2) {
+    di << " Wrong value. Use bglue [0 (off) / 1 (shift) / 2 (full)]\n";
+    return 1;
+  }
+  //
+  BOPAlgo_GlueEnum aGlue = BOPAlgo_GlueEnum(iGlue);
+  BOPTest_Objects::SetGlue(aGlue);
   //
   return 0;
 }

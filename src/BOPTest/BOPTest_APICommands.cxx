@@ -116,6 +116,7 @@ Standard_Integer bapibop(Draw_Interpretor& di,
   bRunParallel=BOPTest_Objects::RunParallel();
   aFuzzyValue=BOPTest_Objects::FuzzyValue();
   bNonDestructive = BOPTest_Objects::NonDestructive();
+  BOPAlgo_GlueEnum aGlue = BOPTest_Objects::Glue();
   //
   if (aOp!=BOPAlgo_CUT21) {
     pBuilder->SetArguments(aLS);
@@ -129,6 +130,7 @@ Standard_Integer bapibop(Draw_Interpretor& di,
   pBuilder->SetRunParallel(bRunParallel);
   pBuilder->SetFuzzyValue(aFuzzyValue);
   pBuilder->SetNonDestructive(bNonDestructive);
+  pBuilder->SetGlue(aGlue);
   //
   pBuilder->Build(); 
   iErr=pBuilder->ErrorStatus();
@@ -176,11 +178,13 @@ Standard_Integer bapibuild(Draw_Interpretor& di,
   bRunParallel=BOPTest_Objects::RunParallel();
   aFuzzyValue=BOPTest_Objects::FuzzyValue();
   bNonDestructive = BOPTest_Objects::NonDestructive();
+  BOPAlgo_GlueEnum aGlue = BOPTest_Objects::Glue();
   //
   aBuilder.SetArguments(aLS);
   aBuilder.SetRunParallel(bRunParallel);
   aBuilder.SetFuzzyValue(aFuzzyValue);
   aBuilder.SetNonDestructive(bNonDestructive);
+  aBuilder.SetGlue(aGlue);
   //
   aBuilder.Build(); 
   iErr=aBuilder.ErrorStatus();

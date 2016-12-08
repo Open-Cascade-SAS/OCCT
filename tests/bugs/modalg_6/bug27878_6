@@ -1,0 +1,46 @@
+puts "========"
+puts "OCC27878"
+puts "========"
+puts ""
+#################################################
+# Development of the Gluing operations based on the new Boolean component
+#################################################
+
+compound sh
+for {set i 0} {$i < 4} {incr i} {
+  for {set j 0} {$j < 4} {incr j} {
+    box b 1 1 1;
+    ttranslate b $i $j 0;
+    add b sh
+  }
+}
+
+nurbsconvert b1 sh
+
+#fuse boxes using glue full option
+bglue 2
+
+bclearobjects
+bcleartools
+baddobjects {*}[explode b1 so]
+bfillds -t
+bcbuild rx
+bcaddall res1 -m 1 -u
+
+copy res1 b2
+ttranslate b2 0.5 0.5 1
+
+# fuse two solids using glue shift
+bglue 1
+
+chrono t reset; chrono t start
+bop res1 b2
+chrono t stop; chrono t show
+
+bopfuse result
+
+checkshape result
+checknbshapes result -face 78 -solid 1
+checkprops result -s 71.5 -v 32
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

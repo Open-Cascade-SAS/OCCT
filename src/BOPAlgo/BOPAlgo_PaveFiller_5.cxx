@@ -139,22 +139,35 @@ typedef BOPCol_ContextCnt
 //=======================================================================
 void BOPAlgo_PaveFiller::PerformEF()
 {
-  Standard_Integer iSize;
-  //
   myErrorStatus=0;
   //
   FillShrunkData(TopAbs_EDGE, TopAbs_FACE);
   //
   myIterator->Initialize(TopAbs_EDGE, TopAbs_FACE);
-  iSize=myIterator->ExpectedLength();
+  Standard_Integer iSize = myIterator->ExpectedLength();
   if (!iSize) {
     return; 
   }
   //
-  Standard_Boolean bJustAdd, bV[2], bIsPBSplittable;
+  Standard_Boolean bJustAdd;
+  Standard_Integer nE, nF;
+  //
+  if (myGlue == BOPAlgo_GlueFull) {
+    // there is no need to intersect edges with faces in this mode
+    // just initialize FaceInfo for faces
+    for (; myIterator->More(); myIterator->Next()) {
+      myIterator->Value(nE, nF, bJustAdd);
+      if (!bJustAdd && !myDS->ShapeInfo(nE).HasFlag()) {
+        myDS->ChangeFaceInfo(nF);
+      }
+    }
+    return;
+  }
+  //
+  Standard_Boolean bV[2], bIsPBSplittable;
   Standard_Boolean bV1, bV2, bExpressCompute;
   Standard_Integer nV1, nV2;
-  Standard_Integer nE, nF, aDiscretize, i, aNbCPrts, iX, nV[2];
+  Standard_Integer aDiscretize, i, aNbCPrts, iX, nV[2];
   Standard_Integer aNbEdgeFace, k;
   Standard_Real aTolE, aTolF, aTS1, aTS2, aT1, aT2, aDeflection;
   Handle(NCollection_BaseAllocator) aAllocator;

@@ -29,7 +29,8 @@ BRepAlgoAPI_BuilderAlgo::BRepAlgoAPI_BuilderAlgo()
   myDSFiller(NULL),
   myBuilder(NULL),
   myFuzzyValue(0.),
-  myNonDestructive(Standard_False)
+  myNonDestructive(Standard_False),
+  myGlue(BOPAlgo_GlueOff)
 {}
 //=======================================================================
 // function: 
@@ -42,7 +43,8 @@ BRepAlgoAPI_BuilderAlgo::BRepAlgoAPI_BuilderAlgo
   myEntryType(0),
   myBuilder(NULL),
   myFuzzyValue(0.),
-  myNonDestructive(Standard_False)
+  myNonDestructive(Standard_False),
+  myGlue(BOPAlgo_GlueOff)
 {
   BOPAlgo_PaveFiller* pPF=(BOPAlgo_PaveFiller*)&aPF;
   myDSFiller=pPF;
@@ -86,6 +88,22 @@ void BRepAlgoAPI_BuilderAlgo::SetNonDestructive(const Standard_Boolean theFlag)
 Standard_Boolean BRepAlgoAPI_BuilderAlgo::NonDestructive() const
 {
   return myNonDestructive;
+}
+//=======================================================================
+//function : SetGlue
+//purpose  : 
+//=======================================================================
+void BRepAlgoAPI_BuilderAlgo::SetGlue(const BOPAlgo_GlueEnum theGlue)
+{
+  myGlue=theGlue;
+}
+//=======================================================================
+//function : Glue
+//purpose  : 
+//=======================================================================
+BOPAlgo_GlueEnum BRepAlgoAPI_BuilderAlgo::Glue() const 
+{
+  return myGlue;
 }
 //=======================================================================
 //function : Clear
@@ -144,6 +162,7 @@ void BRepAlgoAPI_BuilderAlgo::Build()
     myDSFiller->SetProgressIndicator(myProgressIndicator);
     myDSFiller->SetFuzzyValue(myFuzzyValue);
     myDSFiller->SetNonDestructive(myNonDestructive);
+    myDSFiller->SetGlue(myGlue);
     //
     myDSFiller->Perform();
     iErr=myDSFiller->ErrorStatus();

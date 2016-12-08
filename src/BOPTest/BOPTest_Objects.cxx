@@ -52,6 +52,7 @@ class BOPTest_Session {
     myRunParallel=Standard_False;
     myNonDestructive = Standard_False;
     myFuzzyValue = 0.;
+    myGlue = BOPAlgo_GlueOff;
   };
   //
   // Clear
@@ -123,6 +124,14 @@ class BOPTest_Session {
     return myNonDestructive;
   };
   //
+  void SetGlue(const BOPAlgo_GlueEnum theGlue) {
+    myGlue = theGlue;
+  };
+  //
+  BOPAlgo_GlueEnum Glue() const {
+    return myGlue;
+  };
+  //
 protected:
   //
   BOPTest_Session(const BOPTest_Session&);
@@ -139,6 +148,7 @@ protected:
   Standard_Boolean myRunParallel;
   Standard_Boolean myNonDestructive;
   Standard_Real myFuzzyValue;
+  BOPAlgo_GlueEnum myGlue;
 };
 //
 //=======================================================================
@@ -306,6 +316,22 @@ void BOPTest_Objects::SetNonDestructive(const Standard_Boolean theFlag)
 Standard_Boolean BOPTest_Objects::NonDestructive()
 {
   return GetSession().NonDestructive();
+}
+//=======================================================================
+//function : SetGlue
+//purpose  : 
+//=======================================================================
+void BOPTest_Objects::SetGlue(const BOPAlgo_GlueEnum theGlue)
+{
+  GetSession().SetGlue(theGlue);
+}
+//=======================================================================
+//function : Glue
+//purpose  : 
+//=======================================================================
+BOPAlgo_GlueEnum BOPTest_Objects::Glue()
+{
+  return GetSession().Glue();
 }
 //=======================================================================
 //function : Allocator1

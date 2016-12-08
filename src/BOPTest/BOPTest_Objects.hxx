@@ -25,6 +25,8 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <BOPAlgo_CellsBuilder.hxx>
+#include <BOPAlgo_GlueEnum.hxx>
+//
 class BOPAlgo_PaveFiller;
 class BOPAlgo_Builder;
 class BOPAlgo_BOP;
@@ -75,7 +77,9 @@ public:
 
   Standard_EXPORT static Standard_Boolean NonDestructive();
 
+  Standard_EXPORT static void SetGlue(const BOPAlgo_GlueEnum aGlue);
 
+  Standard_EXPORT static BOPAlgo_GlueEnum Glue();
 
 
 protected:

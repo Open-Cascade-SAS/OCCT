@@ -237,22 +237,34 @@ void BOPAlgo_PaveFiller::PerformFF()
     //
     ToleranceFF(aBAS1, aBAS2, aTolFF); 
     //
-    BOPAlgo_FaceFace& aFaceFace=aVFaceFace.Append1();
-    //
-    aFaceFace.SetIndices(nF1, nF2);
-    aFaceFace.SetFaces(aF1, aF2);
-    aFaceFace.SetTolFF(aTolFF);
-    //
-    IntSurf_ListOfPntOn2S aListOfPnts;
-    GetEFPnts(nF1, nF2, aListOfPnts);
-    aNbLP = aListOfPnts.Extent();
-    if (aNbLP) {
-      aFaceFace.SetList(aListOfPnts);
+    if (myGlue == BOPAlgo_GlueOff) {
+      BOPAlgo_FaceFace& aFaceFace=aVFaceFace.Append1();
+      //
+      aFaceFace.SetIndices(nF1, nF2);
+      aFaceFace.SetFaces(aF1, aF2);
+      aFaceFace.SetTolFF(aTolFF);
+      //
+      IntSurf_ListOfPntOn2S aListOfPnts;
+      GetEFPnts(nF1, nF2, aListOfPnts);
+      aNbLP = aListOfPnts.Extent();
+      if (aNbLP) {
+        aFaceFace.SetList(aListOfPnts);
+      }
+      //
+      aFaceFace.SetParameters(bApp, bCompC2D1, bCompC2D2, aApproxTol);
+      aFaceFace.SetFuzzyValue(myFuzzyValue);
+      aFaceFace.SetProgressIndicator(myProgressIndicator);
     }
-    //
-    aFaceFace.SetParameters(bApp, bCompC2D1, bCompC2D2, aApproxTol);
-    aFaceFace.SetFuzzyValue(myFuzzyValue);
-    aFaceFace.SetProgressIndicator(myProgressIndicator);
+    else {
+      // for the Glue mode just add all interferences of that type
+      BOPDS_InterfFF& aFF = aFFs.Append1();
+      aFF.SetIndices(nF1, nF2);
+      aFF.SetTolR3D(Precision::Confusion());
+      aFF.SetTolR2D(Precision::PConfusion());
+      aFF.SetTolReal(Precision::Confusion());
+      aFF.SetTangentFaces(Standard_False);
+      aFF.Init(0, 0);
+    }
   }//for (; myIterator->More(); myIterator->Next()) {
   //
   aNbFaceFace=aVFaceFace.Extent();
@@ -359,6 +371,10 @@ void BOPAlgo_PaveFiller::PerformFF()
 //=======================================================================
 void BOPAlgo_PaveFiller::MakeBlocks()
 {
+  if (myGlue != BOPAlgo_GlueOff) {
+    return;
+  }
+  //
   Standard_Integer aNbFF;
   //
   myErrorStatus=0;
