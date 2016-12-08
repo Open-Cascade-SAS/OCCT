@@ -22,6 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <BRepOffset_MakeOffset.hxx>
+#include <BRepOffset_MakeSimpleOffset.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <Standard_Real.hxx>
 #include <BRepOffset_Mode.hxx>
@@ -44,9 +45,24 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
+  //! Constructor does nothing.
   Standard_EXPORT BRepOffsetAPI_MakeOffsetShape();
-  
+
+  //! Deprecated constructor. Please avoid usage of this constructor.
+  Standard_DEPRECATED("Deprecated constructor. Please use constructor without parameters and one of perform methods.")
+  Standard_EXPORT BRepOffsetAPI_MakeOffsetShape(const TopoDS_Shape& S, 
+                                                const Standard_Real Offset, 
+                                                const Standard_Real Tol, 
+                                                const BRepOffset_Mode Mode = BRepOffset_Skin, 
+                                                const Standard_Boolean Intersection = Standard_False, 
+                                                const Standard_Boolean SelfInter = Standard_False, 
+                                                const GeomAbs_JoinType Join = GeomAbs_Arc,
+                                                const Standard_Boolean RemoveIntEdges = Standard_False);
+
+  //! Constructs offset shape for the given one using simple algorithm without intersections computation.
+  Standard_EXPORT void PerformBySimple(const TopoDS_Shape& theS,
+                                       const Standard_Real theOffsetValue);
+
   //! Constructs a shape parallel to the shape S, where
   //! - S may be a face, a shell, a solid or a compound of these shape kinds;
   //! - Offset is the offset value. The offset shape is constructed:
@@ -102,22 +118,22 @@ public:
   //! Exceptions
   //! Geom_UndefinedDerivative if the underlying
   //! geometry of S is BSpline with continuity C0.
-  Standard_EXPORT BRepOffsetAPI_MakeOffsetShape(const TopoDS_Shape& S, 
-                                                const Standard_Real Offset, 
-                                                const Standard_Real Tol, 
-                                                const BRepOffset_Mode Mode = BRepOffset_Skin, 
-                                                const Standard_Boolean Intersection = Standard_False, 
-                                                const Standard_Boolean SelfInter = Standard_False, 
-                                                const GeomAbs_JoinType Join = GeomAbs_Arc,
-                                                const Standard_Boolean RemoveIntEdges = Standard_False);
+  Standard_EXPORT void PerformByJoin(const TopoDS_Shape& S,
+                                     const Standard_Real Offset,
+                                     const Standard_Real Tol,
+                                     const BRepOffset_Mode Mode = BRepOffset_Skin,
+                                     const Standard_Boolean Intersection = Standard_False,
+                                     const Standard_Boolean SelfInter = Standard_False,
+                                     const GeomAbs_JoinType Join = GeomAbs_Arc,
+                                     const Standard_Boolean RemoveIntEdges = Standard_False);
 
+  //! Returns instance of the unrelying intersection / arc algorithm.
   Standard_EXPORT virtual const BRepOffset_MakeOffset& MakeOffset() const;
-  
-  //! Builds the resulting shape (redefined from MakeShape).
+
+  //! Does nothing.
   Standard_EXPORT virtual void Build() Standard_OVERRIDE;
   
-  //! Returns the  list   of shapes generated   from the
-  //! shape <S>.
+  //! Returns the  list   of shapes generated from the shape <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated (const TopoDS_Shape& S) Standard_OVERRIDE;
   
   //! Returns the list of edges generated from the shape <S>.
@@ -126,28 +142,19 @@ public:
   //! Returns offset join type.
   Standard_EXPORT GeomAbs_JoinType GetJoinType() const;
 
-
-
-
 protected:
 
+  enum OffsetAlgo_Type
+  {
+    OffsetAlgo_NONE,
+    OffsetAlgo_JOIN,
+    OffsetAlgo_SIMPLE
+  };
 
+  OffsetAlgo_Type myLastUsedAlgo;
 
   BRepOffset_MakeOffset myOffsetShape;
-
-
-private:
-
-
-
-
-
+  BRepOffset_MakeSimpleOffset mySimpleOffsetShape;
 };
-
-
-
-
-
-
 
 #endif // _BRepOffsetAPI_MakeOffsetShape_HeaderFile

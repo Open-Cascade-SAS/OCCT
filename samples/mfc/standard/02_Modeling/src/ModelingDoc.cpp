@@ -2558,8 +2558,10 @@ void CModelingDoc::OnThickLocal()
 	Ex.Next();	//this is the front face
 	TopoDS_Shape aFace = Ex.Current();
 	aList.Append(aFace);
-		
-	TopoDS_Shape aThickSolid = BRepOffsetAPI_MakeThickSolid(S1,aList,10,0.01);
+	
+    BRepOffsetAPI_MakeThickSolid aSolidMaker;
+    aSolidMaker.MakeThickSolidByJoin(S1,aList,10,0.01);
+	TopoDS_Shape aThickSolid = aSolidMaker.Shape();
 
 	Handle(AIS_Shape) ais1 = new AIS_Shape(aThickSolid);
 	myAISContext->SetColor(ais1,Quantity_NOC_RED,Standard_False);
@@ -2607,7 +2609,9 @@ void CModelingDoc::OnOffsetLocal()
 	Fit();
 	Sleep(500);
 
-	TopoDS_Shape anOffsetShape1 = BRepOffsetAPI_MakeOffsetShape(S1,60,0.01);
+    BRepOffsetAPI_MakeOffsetShape aShapeMaker1;
+    aShapeMaker1.PerformByJoin(S1,60,0.01);
+	TopoDS_Shape anOffsetShape1 = aShapeMaker1.Shape();
 
 	Handle(AIS_Shape) ais1 = new AIS_Shape(anOffsetShape1);
 	myAISContext->SetColor(ais1,Quantity_NOC_MATRABLUE,Standard_False);
@@ -2627,8 +2631,10 @@ void CModelingDoc::OnOffsetLocal()
 	Fit();
 	Sleep(500);
 
-	TopoDS_Shape anOffsetShape2 = BRepOffsetAPI_MakeOffsetShape(S2,-40,0.01,
-		BRepOffset_Skin,Standard_False,Standard_False,GeomAbs_Arc);
+    BRepOffsetAPI_MakeOffsetShape aShapeMaker2;
+    aShapeMaker2.PerformByJoin(S2,-40,0.01,
+      BRepOffset_Skin,Standard_False,Standard_False,GeomAbs_Arc);
+	TopoDS_Shape anOffsetShape2 = aShapeMaker2.Shape();
 
 	Handle(AIS_Shape) ais2 = new AIS_Shape(anOffsetShape2);
 	myAISContext->SetColor(ais2,Quantity_NOC_MATRABLUE);

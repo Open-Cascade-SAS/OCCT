@@ -2100,11 +2100,44 @@ These classes provide the following services:
   * Creation of tapered shapes using draft angles;
   * Creation of sweeps.
   
-@subsection occt_modalg_7_1 Shelling 
+@subsection occt_modalg_7_1 Offset computation
+
+Offset computation can be performed using *BRepOffsetAPI_MakeOffsetShape*. This class provides API to the two different offset algorithms:
+
+Offset algorithm based on computation of the analytical continuation. Meaning of the  parameters can be found in *BRepOffsetAPI_MakeOffsetShape::PerformByJoin* method description. The list below demonstrates principal scheme of this algorithm:
+
+* At the first step, the offsets are computed.
+* After this, the analytical continuations are computed for each offset.
+* Pairwise intersection is computed according to the original topological information (sharing, number of neighbors, etc.).
+* The offset shape is assembled.
+
+The second algorithm is based on the fact that the offset computation for a single face without continuation can always be built. The list below shows simple offset algorithm:
+* Each surface is mapped to its geometric offset surface.
+* For each edge, pcurves are mapped to the same pcurves on offset surfaces.
+* For each edge, 3d curve is constructed by re-approximation of pcurve on the first offset face.
+* Position of each vertex in a result shell is computed as average point of all ends of edges sharing that vertex.
+* Tolerances are updated according to the resulting geometry.
+The possible drawback of the simple algorithm is that it leads, in general case, to tolerance increasing. The tolerances have to grow in order to cover the gaps between the neighbor faces in the output. It should be noted that the actual tolerance growth depends on the offset distance and the quality of joints between the input faces. Anyway the good input shell (smooth connections between adjacent faces) will lead to good result.
+
+The snippets below show usage examples:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+    BRepOffsetAPI_MakeOffsetShape OffsetMaker1;
+    // Computes offset shape using analytical continuation mechanism.
+    OffsetMaker1.PerformByJoin(Shape, OffsetValue, Tolerance);
+    if (OffsetMaker1.IsDone())
+      NewShape = OffsetMaker1.Shape();
+    
+    BRepOffsetAPI_MakeOffsetShape OffsetMaker2;
+    // Computes offset shape using simple algorithm.
+    OffsetMaker2.PerformBySimple(Shape, OffsetValue);
+    if (OffsetMaker2.IsDone())
+      NewShape = OffsetMaker2.Shape();
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+@subsection occt_modalg_7_2 Shelling 
 
 Shelling is used to offset given faces of a solid by a specific value. It rounds or intersects adjacent faces along its edges depending on the convexity of the edge. 
-
-The constructor *BRepOffsetAPI_MakeThickSolid* shelling operator takes the solid, the list of faces to remove and an offset value as input.
+The MakeThickSolidByJoin method of the *BRepOffsetAPI_MakeThickSolid* takes the solid, the list of faces to remove and an offset value as input.
 
 ~~~~~
 TopoDS_Solid SolidInitial = ...;
@@ -2119,17 +2152,28 @@ for (Standard_Integer i = 1 ;i <= n; i++) {
 	LCF.Append(SF);
 }
 
-Result = BRepOffsetAPI_MakeThickSolid 	(SolidInitial,
-										LCF,
-										Of,
-										Tol);
+BRepOffsetAPI_MakeThickSolid SolidMaker;
+SolidMaker.MakeThickSolidByJoin(SolidInitial,
+                                LCF,
+                                Of,
+                                Tol);
+if (SolidMaker.IsDone())
+  Result = SolidMaker.Shape();
 ~~~~~
 
 @image html /user_guides/modeling_algos/images/modeling_algos_image042.png	"Shelling"
 @image latex /user_guides/modeling_algos/images/modeling_algos_image042.png	"Shelling"
 
+Also it is possible to create solid between shell, offset shell. This functionality can be called using *BRepOffsetAPI_MakeThickSolid::MakeThickSolidBySimple* method. The code below shows usage example:
 
-@subsection occt_modalg_7_2  Draft Angle
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+    BRepOffsetAPI_MakeThickSolid SolidMaker;
+    SolidMaker.MakeThickSolidBySimple(Shell, OffsetValue);
+    if (myDone.IsDone())
+      Solid = SolidMaker.Shape();
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+@subsection occt_modalg_7_3  Draft Angle
 
 *BRepOffsetAPI_DraftAngle* class allows modifying a shape by applying draft angles to its planar, cylindrical and conical faces. 
 
@@ -2182,7 +2226,7 @@ else {
 @image html /user_guides/modeling_algos/images/modeling_algos_image043.png  "DraftAngle"
 @image latex /user_guides/modeling_algos/images/modeling_algos_image043.png  "DraftAngle"
 
-@subsection occt_modalg_7_3 Pipe  Constructor
+@subsection occt_modalg_7_4 Pipe  Constructor
 
 *BRepOffsetAPI_MakePipe* class allows creating a pipe from a Spine,  which is a Wire and a Profile which is a Shape. This implementation is limited  to spines with smooth transitions, sharp transitions are precessed by  *BRepOffsetAPI_MakePipeShell*. To be more precise the continuity must be G1,  which means that the tangent must have the same direction, though not necessarily the same magnitude, at neighboring edges. 
 
@@ -2197,7 +2241,7 @@ TopoDS_Shape Pipe =  BRepOffsetAPI_MakePipe(Spine,Profile);
 @image html /user_guides/modeling_algos/images/modeling_algos_image044.png "Example of a Pipe"
 @image latex /user_guides/modeling_algos/images/modeling_algos_image044.png "Example of a Pipe"
 
-@subsection occt_modalg_7_4 Evolved Solid
+@subsection occt_modalg_7_5 Evolved Solid
 
 *BRepOffsetAPI_MakeEvolved* class allows creating an evolved solid from a Spine (planar face or wire) and a profile (wire). 
 

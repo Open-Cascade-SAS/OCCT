@@ -51,9 +51,29 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
+  //! Constructor does nothing.
   Standard_EXPORT BRepOffsetAPI_MakeThickSolid();
-  
+
+  //! Deprecated constructor. Please avoid usage of this constructor.
+  Standard_DEPRECATED("Deprecated constructor. Please use constructor without parameters and one of make methods.")
+  Standard_EXPORT BRepOffsetAPI_MakeThickSolid(const TopoDS_Shape& S,
+                                               const TopTools_ListOfShape& ClosingFaces,
+                                               const Standard_Real Offset,
+                                               const Standard_Real Tol,
+                                               const BRepOffset_Mode Mode = BRepOffset_Skin,
+                                               const Standard_Boolean Intersection = Standard_False,
+                                               const Standard_Boolean SelfInter = Standard_False,
+                                               const GeomAbs_JoinType Join = GeomAbs_Arc,
+                                               const Standard_Boolean RemoveIntEdges = Standard_False);
+
+  //! Constructs solid using simple algorithm. 
+  //! According to its nature it is not possible to set list of the closing faces.
+  //! This algorithm does not support faces removing. It is caused by fact that 
+  //! intersections are not computed during offset creation.
+  //! Non-closed shell or face is expected as input.
+  Standard_EXPORT void MakeThickSolidBySimple(const TopoDS_Shape& theS,
+                                              const Standard_Real theOffsetValue);
+
   //! Constructs a hollowed solid from
   //! the solid S by removing the set of faces ClosingFaces from S, where:
   //! Offset defines the thickness of the walls. Its sign indicates
@@ -94,44 +114,22 @@ public:
   //! Since the algorithm of MakeThickSolid is based on
   //! MakeOffsetShape algorithm, the warnings are the same as for
   //! MakeOffsetShape.
-  Standard_EXPORT BRepOffsetAPI_MakeThickSolid(const TopoDS_Shape& S, 
-                                               const TopTools_ListOfShape& ClosingFaces, 
-                                               const Standard_Real Offset, 
-                                               const Standard_Real Tol, 
-                                               const BRepOffset_Mode Mode = BRepOffset_Skin, 
-                                               const Standard_Boolean Intersection = Standard_False,
-                                               const Standard_Boolean SelfInter = Standard_False, 
-                                               const GeomAbs_JoinType Join = GeomAbs_Arc,
-                                               const Standard_Boolean RemoveIntEdges = Standard_False);
-  
-  //! Builds the resulting shape (redefined from MakeOffsetShape).
+  Standard_EXPORT void MakeThickSolidByJoin(const TopoDS_Shape& S,
+                                            const TopTools_ListOfShape& ClosingFaces,
+                                            const Standard_Real Offset,
+                                            const Standard_Real Tol,
+                                            const BRepOffset_Mode Mode = BRepOffset_Skin,
+                                            const Standard_Boolean Intersection = Standard_False,
+                                            const Standard_Boolean SelfInter = Standard_False,
+                                            const GeomAbs_JoinType Join = GeomAbs_Arc,
+                                            const Standard_Boolean RemoveIntEdges = Standard_False);
+
+  // Does nothing.
   Standard_EXPORT virtual void Build() Standard_OVERRIDE;
   
   //! Returns the list  of shapes modified from the shape
   //! <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Modified (const TopoDS_Shape& S) Standard_OVERRIDE;
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepOffsetAPI_MakeThickSolid_HeaderFile

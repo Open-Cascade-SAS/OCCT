@@ -140,7 +140,9 @@ MakeBottle(const Standard_Real myWidth, const Standard_Real myHeight,
 
   TopTools_ListOfShape facesToRemove;
   facesToRemove.Append(faceToRemove);
-  myBody = BRepOffsetAPI_MakeThickSolid(myBody, facesToRemove, -myThickness / 50, 1.e-3);
+  BRepOffsetAPI_MakeThickSolid aSolidMaker;
+  aSolidMaker.MakeThickSolidByJoin(myBody, facesToRemove, -myThickness / 50, 1.e-3);
+  myBody = aSolidMaker.Shape();
   // Threading : Create Surfaces
   Handle(Geom_CylindricalSurface) aCyl1 = new Geom_CylindricalSurface(neckAx2, myNeckRadius * 0.99);
   Handle(Geom_CylindricalSurface) aCyl2 = new Geom_CylindricalSurface(neckAx2, myNeckRadius * 1.05);

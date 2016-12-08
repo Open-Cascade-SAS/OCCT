@@ -54,8 +54,8 @@
 #include <LocOpe_FindEdges.hxx>
 #include <LocOpe_FindEdgesInFace.hxx>
 
-#include <BRepOffsetAPI_MakeOffsetShape.hxx>
-#include <BRepOffsetAPI_MakeThickSolid.hxx>
+#include <BRepOffset_MakeOffset.hxx>
+#include <BRepOffset_MakeSimpleOffset.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
 #include <DBRep.hxx>
@@ -2239,6 +2239,52 @@ static Standard_Integer BOSS(Draw_Interpretor& theCommands,
   return 1;
 }
 
+//=============================================================================
+//function : ComputeSimpleOffset
+//purpose  : Computes simple offset.
+//=============================================================================
+static Standard_Integer ComputeSimpleOffset(Draw_Interpretor& theCommands,
+                                            Standard_Integer narg, 
+                                            const char** a)
+{
+  if (narg != 4 && narg != 5)
+  {
+    theCommands << "offsetshapesimple result shape offsetvalue [solid]\n";
+    return 1;
+  }
+
+  // Input data.
+  TopoDS_Shape aShape = DBRep::Get(a[2]);
+  if (aShape.IsNull())
+  {
+    theCommands << "Input shape is null";
+    return 0;
+  }
+  const Standard_Real anOffsetValue = Draw::Atof(a[3]);
+  if (Abs(anOffsetValue) < gp::Resolution())
+  {
+    theCommands << "Null offset value";
+    return 0;
+  }
+
+  BRepOffset_MakeSimpleOffset aMaker(aShape, anOffsetValue);
+  if (narg == 5 && !strcasecmp(a[4],"solid") )
+  {
+    aMaker.SetBuildSolidFlag(Standard_True);
+  }
+
+  aMaker.Perform();
+
+  if (!aMaker.IsDone())
+  {
+    theCommands << "ERROR:" << aMaker.GetErrorMessage() << "\n";
+    return 0;
+  }
+
+  DBRep::Set(a[1], aMaker.GetResultShape());
+
+  return 0;
+}
 
 //=======================================================================
 //function : FeatureCommands
@@ -2385,4 +2431,7 @@ void BRepTest::FeatureCommands (Draw_Interpretor& theCommands)
 		  " Perform fillet on top and bottom edges of dprism :bossage dprism result radtop radbottom First/LastShape (1/2)",
 		  __FILE__,BOSS);
 
+  theCommands.Add("offsetshapesimple", 
+                  "offsetshapesimple result shape offsetvalue [solid]",
+                  __FILE__, ComputeSimpleOffset);
 }

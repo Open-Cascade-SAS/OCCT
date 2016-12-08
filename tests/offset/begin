@@ -1,4 +1,4 @@
-# To prevent loops limit to 10 minutes
+# To prevent loops limit to 15 minutes
 cpulimit 900
 if { [array get Draw_Groups "TOPOLOGY Feature commands"] == "" } {
     pload TOPTEST

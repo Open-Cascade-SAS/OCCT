@@ -1103,3 +1103,28 @@ The following classes have been changed:
 *  The last optional argument *RemoveInvalidFaces* has been removed from the constructor of class  *BRepOffset_MakeOffset* and method *Initialize*.
 * The public method *BOPDS_DS::VerticesOnIn* has been renamed into *SubShapesOnIn* and the new output parameter *theCommonPB* has been added.
 
+@section upgrade_occt720 Upgrade to OCCT 7.2.0
+
+@subsection upgrade_occt720_correction_of_Offset_API Corrections in BRepOffset API
+
+Class *BRepOffsetAPI_MakeOffsetShape*:
+* *BRepOffsetAPI_MakeOffsetShape::BRepOffsetAPI_MakeOffsetShape()* - constructor with parameters has been deleted.
+* *BRepOffsetAPI_MakeOffsetShape::PerformByJoin()* - method has been added. This method is old algorithm behaviour. 
+
+The code below shows new calling procedure:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+    BRepOffsetAPI_MakeOffsetShape OffsetMaker;
+    OffsetMaker.PerformByJoin(Shape, OffsetValue, Tolerance);
+    NewShape = OffsetMaker.Shape();
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Class *BRepOffsetAPI_MakeThickSolid*:
+* *BRepOffsetAPI_MakeThickSolid::BRepOffsetAPI_MakeThickSolid()* - constructor with parameters has been deleted.
+* *BRepOffsetAPI_MakeThickSolid::MakeThickSolidByJoin()* - method has been added. This method is old algorithm behaviour. 
+
+The code below shows new calling procedure:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+    BRepOffsetAPI_MakeThickSolid BodyMaker;
+    BodyMaker.MakeThickSolidByJoin(myBody, facesToRemove, -myThickness / 50, 1.e-3);
+    myBody = BodyMaker.Shape();
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

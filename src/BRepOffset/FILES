@@ -23,9 +23,13 @@ BRepOffset_MakeLoops.hxx
 BRepOffset_MakeOffset.cxx
 BRepOffset_MakeOffset_1.cxx
 BRepOffset_MakeOffset.hxx
+BRepOffset_MakeSimpleOffset.cxx
+BRepOffset_MakeSimpleOffset.hxx
 BRepOffset_Mode.hxx
 BRepOffset_Offset.cxx
 BRepOffset_Offset.hxx
+BRepOffset_SimpleOffset.cxx
+BRepOffset_SimpleOffset.hxx
 BRepOffset_Offset.lxx
 BRepOffset_Status.hxx
 BRepOffset_Tool.cxx

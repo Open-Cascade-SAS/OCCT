@@ -1,0 +1,9 @@
+# Test data:
+puts "USER GUID: A01DD63B-C1FD-439D-9BF5-11905AF9C009"
+restore [locate_data_file bug27954_E03.brep] s
+
+set OffsetValue 10.0
+
+# Reference data.
+set ExpectedMass 1.89284e+006
+set ExpectedMaxTol 0.052422

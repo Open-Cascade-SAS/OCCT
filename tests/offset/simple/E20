@@ -1,0 +1,9 @@
+# Test data:
+puts "USER GUID: HA-2502"
+restore [locate_data_file bug27954_E20.brep] s
+
+set OffsetValue 15.0
+
+# Reference data.
+set ExpectedMass 7.35034e+006
+set ExpectedMaxTol 35.6647
