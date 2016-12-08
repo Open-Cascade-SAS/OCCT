@@ -535,9 +535,13 @@ void AppBlend_AppSurf::InternalPerform(const Handle(TheLine)& Lin,
     for (k=1; k<=NbVPoles; k++) {
       // pour les courbes rationnelles il faut maintenant diviser
       // les poles par leurs poids respectifs
-      tabPoles->ChangeValue(j,k).
-	SetXYZ(newtabP(k).XYZ()/newtabP2d->Value(k).X());
-      tabWeights->SetValue(j,k,newtabP2d->Value(k).X());
+      tabPoles->ChangeValue(j,k).SetXYZ(newtabP(k).XYZ()/newtabP2d->Value(k).X());
+      Standard_Real aWeight = newtabP2d->Value(k).X();
+      if (aWeight < gp::Resolution()) {
+        done = Standard_False;
+        return;
+      }
+      tabWeights->SetValue(j,k,aWeight);
     }
   }
 
@@ -870,9 +874,13 @@ void AppBlend_AppSurf::Perform(const Handle(TheLine)& Lin,
     for (k=1; k<=NbVPoles; k++) {
       // pour les courbes rationnelles il faut maintenant diviser
       // les poles par leurs poids respectifs
-      tabPoles->ChangeValue(j,k).
-	SetXYZ(newtabP(k).XYZ()/newtabP2d->Value(k).X());
-      tabWeights->SetValue(j,k,newtabP2d->Value(k).X());
+      tabPoles->ChangeValue(j,k).SetXYZ(newtabP(k).XYZ()/newtabP2d->Value(k).X());
+      Standard_Real aWeight = newtabP2d->Value(k).X();
+      if (aWeight < gp::Resolution()) {
+        done = Standard_False;
+        return;
+      }
+      tabWeights->SetValue(j,k,aWeight);
     }
   }
   

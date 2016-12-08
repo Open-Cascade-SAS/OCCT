@@ -254,6 +254,8 @@ public:
   //! is plane, cylinder ... this error can be 0.
     Standard_Real ErrorOnSurf() const;
 
+  //! Returns whether approximation was done.
+    Standard_Boolean IsDone() const;
 
 
 
@@ -278,6 +280,7 @@ private:
   Standard_EXPORT Standard_Boolean KPartT4();
 
 
+  Standard_Boolean myIsDone;
   Standard_Real myRadius;
   Standard_Real myError;
   Handle(Adaptor3d_HCurve) myAdpPath;

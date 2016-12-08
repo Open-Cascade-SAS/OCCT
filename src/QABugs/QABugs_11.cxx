@@ -402,6 +402,11 @@ static int pipe_OCC9 (Draw_Interpretor& di,
     aPipe.Perform(Standard_True/*, Standard_True*/);
   }
 
+  if (!aPipe.IsDone()) {
+    di << "GeomFill_Pipe cannot make a surface\n";
+    return 1;
+  }
+
   Handle(Geom_Surface) aSurf = aPipe.Surface();
 
   DrawTrSurf::Set(a[1], aSurf);

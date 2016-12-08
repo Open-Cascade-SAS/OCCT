@@ -200,6 +200,11 @@ static Standard_Integer geompipe(Draw_Interpretor& ,
     rotate = (Draw::Atoi(a[k++])==1);
   GeomFill_Pipe aPipe(ProfileCurve,aAdaptCurve,cStart,ByACR,rotate);
   aPipe.Perform(Standard_True);
+  if (!aPipe.IsDone())
+  {
+    cout << "GeomFill_Pipe cannot make a surface" << endl;
+    return 1;
+  }
   Handle(Geom_Surface) Sur=aPipe.Surface();
   TopoDS_Face F;
   if(!Sur.IsNull())

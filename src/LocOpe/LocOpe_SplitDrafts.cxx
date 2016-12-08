@@ -203,6 +203,8 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
     thePipe.GenerateParticularCase(Standard_True);
     thePipe.Init(theLinePipe,i2s.Line(1));
     thePipe.Perform(Standard_True);
+    if (!thePipe.IsDone())
+      Standard_ConstructionError::Raise ("GeomFill_Pipe : Cannot make a surface");
 
     Handle(Geom_Surface) Spl = thePipe.Surface();
     AS.Load(Spl);
@@ -415,6 +417,8 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
 	thePipe.GenerateParticularCase(Standard_True);
 	thePipe.Init(theLinePipe,C);
 	thePipe.Perform(Standard_True);
+        if (!thePipe.IsDone())
+          Standard_ConstructionError::Raise ("GeomFill_Pipe : Cannot make a surface");
 
 	Handle(Geom_Surface) thePS = thePipe.Surface();
 	if (thePS->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {

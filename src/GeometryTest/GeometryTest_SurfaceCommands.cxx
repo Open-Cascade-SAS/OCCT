@@ -78,7 +78,7 @@ Standard_IMPORT Draw_Viewer dout;
 //purpose  : 
 //=======================================================================
 
-static Standard_Integer sweep (Draw_Interpretor&,
+static Standard_Integer sweep (Draw_Interpretor& di,
 			       Standard_Integer n, const char** a)
 {
   GeomFill_Trihedron Option = GeomFill_IsCorrectedFrenet;
@@ -148,6 +148,11 @@ static Standard_Integer sweep (Draw_Interpretor&,
     
   Pipe.Perform(Tol, Standard_False,  GeomAbs_C2, MaxDegree, NbSeg);
 
+  if (!Pipe.IsDone()) {
+    di << "GeomFill_Pipe cannot make a surface\n";
+    return 1;
+  }
+
   DrawTrSurf::Set(a[1], Pipe.Surface());
   return 0;
   
@@ -157,7 +162,7 @@ static Standard_Integer sweep (Draw_Interpretor&,
 //purpose  : 
 //=======================================================================
 
-static Standard_Integer tuyau (Draw_Interpretor&,
+static Standard_Integer tuyau (Draw_Interpretor& di,
                                Standard_Integer n, const char** a)
 {
   if ( n < 4) return 1;
@@ -214,6 +219,10 @@ static Standard_Integer tuyau (Draw_Interpretor&,
   }
 
   Pipe.Perform(1.e-4, Standard_False,  Cont);
+  if (!Pipe.IsDone()) {
+    di << "GeomFill_Pipe cannot make a surface\n";
+    return 1;
+  }
   DrawTrSurf::Set(a[indice_path-1], Pipe.Surface());
 
   return 0;

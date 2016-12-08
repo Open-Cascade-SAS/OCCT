@@ -206,7 +206,7 @@ static Standard_Boolean CheckSense(const TColGeom_SequenceOfCurve& Seq1,
 //purpose  : constructor with no parameters. 
 //=======================================================================
 
-GeomFill_Pipe::GeomFill_Pipe() : myExchUV(Standard_False),myKPart(Standard_False)
+GeomFill_Pipe::GeomFill_Pipe() : myIsDone(Standard_False),myExchUV(Standard_False),myKPart(Standard_False)
 {
   Init();
 }
@@ -219,7 +219,7 @@ GeomFill_Pipe::GeomFill_Pipe() : myExchUV(Standard_False),myKPart(Standard_False
 
 GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path, 
                              const Standard_Real Radius) 
-     : myExchUV(Standard_False),myKPart(Standard_False)
+     : myIsDone(Standard_False),myExchUV(Standard_False),myKPart(Standard_False)
 {
   Init();
   Init(Path, Radius);
@@ -233,7 +233,7 @@ GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path,
 GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path,
                              const Handle(Geom_Curve)& FirstSect,
                              const GeomFill_Trihedron Option) 
-     : myExchUV(Standard_False),myKPart(Standard_False)
+     : myIsDone(Standard_False),myExchUV(Standard_False),myKPart(Standard_False)
 {
   Init();
   Init(Path, FirstSect, Option);
@@ -247,7 +247,7 @@ GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path,
 GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom2d_Curve)& Path,
                              const Handle(Geom_Surface)& Support,
                              const Handle(Geom_Curve)& FirstSect) 
-     : myExchUV(Standard_False),myKPart(Standard_False)
+     : myIsDone(Standard_False),myExchUV(Standard_False),myKPart(Standard_False)
 {
   Init();
   Init(Path, Support, FirstSect);
@@ -261,7 +261,7 @@ GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom2d_Curve)& Path,
 GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path,
                              const Handle(Geom_Curve)& FirstSect,
                              const Handle(Geom_Curve)& LastSect)
-     : myExchUV(Standard_False),myKPart(Standard_False)
+     : myIsDone(Standard_False),myExchUV(Standard_False),myKPart(Standard_False)
 {
   Init();
   Init(Path, FirstSect, LastSect);
@@ -275,7 +275,7 @@ GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path,
 
 GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path,
                              const TColGeom_SequenceOfCurve& NSections)
-     : myExchUV(Standard_False),myKPart(Standard_False)
+     : myIsDone(Standard_False),myExchUV(Standard_False),myKPart(Standard_False)
 {
   Init();
   Init(Path, NSections);
@@ -289,7 +289,7 @@ GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path,
 GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path,
                              const Handle(Geom_Curve)& Curve1,
                              const gp_Dir& Direction)
-     : myExchUV(Standard_False), myKPart(Standard_False)
+     : myIsDone(Standard_False),myExchUV(Standard_False), myKPart(Standard_False)
 {
  Init(Path, Curve1, Direction); 
 }
@@ -302,7 +302,7 @@ GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path,
                              const Handle(Geom_Curve)& Curve1,
                              const Handle(Geom_Curve)& Curve2,
                              const Standard_Real       Radius)
-     : myExchUV(Standard_False),myKPart(Standard_False)
+     : myIsDone(Standard_False),myExchUV(Standard_False),myKPart(Standard_False)
 {
   Init();
   Handle(GeomAdaptor_HCurve) AdpPath = 
@@ -325,7 +325,7 @@ GeomFill_Pipe::GeomFill_Pipe(const Handle(Adaptor3d_HCurve)& Path,
                              const Handle(Adaptor3d_HCurve)& Curve1,
                              const Handle(Adaptor3d_HCurve)& Curve2,
                              const Standard_Real Radius)
-     : myExchUV(Standard_False),myKPart(Standard_False)
+     : myIsDone(Standard_False),myExchUV(Standard_False),myKPart(Standard_False)
 {
   Init();
   Init(Path,Curve1,Curve2,Radius);
@@ -345,7 +345,7 @@ GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path,
 			     const Handle(Geom_Curve)& FirstSect,
 			     const Standard_Boolean byACR,
 			     const Standard_Boolean rotat)
-     : myExchUV(Standard_False),myKPart(Standard_False)
+     : myIsDone(Standard_False),myExchUV(Standard_False),myKPart(Standard_False)
 // Path : trajectoire
 // Guide : courbe guide
 // FirstSect : section
@@ -887,11 +887,11 @@ void GeomFill_Pipe::Perform(const Standard_Real Tol,
 					   App.UDegree(),
 					   App.VDegree());
        myError = App.MaxErrorOnSurf();
+       myIsDone = Standard_True;
      }
-     else {
-       Standard_ConstructionError::Raise
-	 ("GeomFill_Pipe::Perform : Cannot make a surface");     
-     }
+     //else {
+     //  Standard_ConstructionError::Raise ("GeomFill_Pipe::Perform : Cannot make a surface");
+     //}
    }
  }
  else if ( (! myLoc.IsNull()) && (! mySec.IsNull()) ) {
@@ -901,11 +901,11 @@ void GeomFill_Pipe::Perform(const Standard_Real Tol,
    if (Sweep.IsDone()) {
       mySurface = Sweep.Surface();
       myError = Sweep.ErrorOnSurface();
+      myIsDone = Standard_True;
    }
-   else {
-     Standard_ConstructionError::Raise
-	 ("GeomFill_Pipe::Perform : Cannot make a surface");     
-     }     
+   //else {
+   //  Standard_ConstructionError::Raise ("GeomFill_Pipe::Perform : Cannot make a surface");
+   //}
    }
  else {
    Perform(Standard_True, Polynomial);
@@ -978,6 +978,7 @@ Standard_Boolean GeomFill_Pipe::KPartT4()
 					  myAdpPath->FirstParameter(),
 					  myAdpPath->LastParameter());
      Ok = Standard_True; //C'est bien un cylindre
+     myIsDone = Standard_True;
    }
  // -----------    Cas du tore  ----------------------------------
  else if (myAdpPath->GetType()      == GeomAbs_Circle &&
@@ -1040,6 +1041,7 @@ Standard_Boolean GeomFill_Pipe::KPartT4()
       myAdpPath->FirstParameter(),myAdpPath->LastParameter(),VV1,VV2);
    myExchUV = Standard_True;
    Ok = Standard_True;
+   myIsDone = Standard_True;
  }
 
  return Ok;
@@ -1121,7 +1123,7 @@ void GeomFill_Pipe::ApproxSurf(const Standard_Boolean WithParameters) {
 #endif
     }
 #endif
-    StdFail_NotDone::Raise("Pipe : App not done");
+    //StdFail_NotDone::Raise("Pipe : App not done");
   }
   else {
     Standard_Integer UDegree, VDegree, NbUPoles, NbVPoles, NbUKnots, 
@@ -1138,5 +1140,6 @@ void GeomFill_Pipe::ApproxSurf(const Standard_Boolean WithParameters) {
 					App.VDegree());
     Standard_Real t2d;
     App.TolReached(myError, t2d);
+    myIsDone = Standard_True;
   }
 }
