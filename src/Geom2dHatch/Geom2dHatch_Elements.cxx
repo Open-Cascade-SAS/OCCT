@@ -74,6 +74,16 @@ Geom2dHatch_Element& Geom2dHatch_Elements::ChangeFind(const Standard_Integer K)
 }
 
 //=======================================================================
+//function : CheckPoint
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean  Geom2dHatch_Elements::CheckPoint(gp_Pnt2d&)
+{
+  return Standard_True;
+}
+
+//=======================================================================
 //function : Reject
 //purpose  : 
 //=======================================================================

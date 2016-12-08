@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC27434"
+puts "============"
+puts ""
+###############################
+## Wrong result of classification of the point in "infinity".
+###############################
+
+set BugNumber OCC27434
+
+restore [locate_data_file bug27434_ff.brep] ff
+point pp 3.5104958975622309 1.4497931574922160e+031
+
+set info [b2dclassify ff pp]
+set check [regexp "OUT" $info]
+
+if { ${check} == 1 } {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}

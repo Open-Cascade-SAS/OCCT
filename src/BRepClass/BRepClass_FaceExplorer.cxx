@@ -20,6 +20,7 @@
 #include <BRep_Tool.hxx>
 #include <BRepClass_Edge.hxx>
 #include <BRepClass_FaceExplorer.hxx>
+#include <BRepTools.hxx>
 #include <Geom2d_Curve.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Pnt2d.hxx>
@@ -42,6 +43,51 @@ BRepClass_FaceExplorer::BRepClass_FaceExplorer(const TopoDS_Face& F) :
        myCurEdgePar(Probing_Start)
 {
   myFace.Orientation(TopAbs_FORWARD);
+}
+
+//=======================================================================
+//function : CheckPoint
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean  BRepClass_FaceExplorer::CheckPoint(gp_Pnt2d& thePoint)
+{
+  Standard_Real anUMin = 0.0, anUMax = 0.0, aVMin = 0.0, aVMax = 0.0;
+  TopLoc_Location aLocation;
+  const Handle(Geom_Surface)& aSurface = BRep_Tool::Surface(myFace, aLocation);
+  aSurface->Bounds(anUMin, anUMax, aVMin, aVMax);
+  if (Precision::IsInfinite(anUMin) || Precision::IsInfinite(anUMax) ||
+      Precision::IsInfinite(aVMin) || Precision::IsInfinite(aVMax))
+  {
+    BRepTools::UVBounds(myFace, anUMin, anUMax, aVMin, aVMax);
+    if (Precision::IsInfinite(anUMin) || Precision::IsInfinite(anUMax) ||
+        Precision::IsInfinite(aVMin) || Precision::IsInfinite(aVMax))
+    {
+      return Standard_True;
+    }
+  }
+
+  gp_Pnt2d aCenterPnt(( anUMin + anUMax ) / 2, ( aVMin + aVMax ) / 2);
+  Standard_Real aDistance = aCenterPnt.Distance(thePoint);
+  if (Precision::IsInfinite(aDistance))
+  {
+    thePoint.SetCoord(anUMin - ( anUMax - anUMin ),
+                       aVMin - ( aVMax - aVMin ));
+    return Standard_False;
+  }
+  else
+  {
+    Standard_Real anEpsilon = Epsilon(aDistance);
+    if (anEpsilon > Max(anUMax - anUMin, aVMax - aVMin))
+    {
+      gp_Vec2d aLinVec(aCenterPnt, thePoint);
+      gp_Dir2d aLinDir(aLinVec);
+      thePoint = aCenterPnt.XY() + aLinDir.XY() * ( 2. * anEpsilon );
+      return Standard_False;
+    }
+  }
+
+  return Standard_True;
 }
 
 //=======================================================================

@@ -43,6 +43,12 @@ public:
 
   
   Standard_EXPORT BRepClass_FaceExplorer(const TopoDS_Face& F);
+
+  //! Checks the point and change its coords if it is located too far
+  //! from the bounding box of the face. New Coordinates of the point 
+  //! will be on the line between the point and the center of the 
+  //! bounding box. Returns True if point was not changed.
+  Standard_EXPORT Standard_Boolean CheckPoint (gp_Pnt2d& thePoint);
   
   //! Should  return  True  if the  point  is  outside a
   //! bounding volume of the face.

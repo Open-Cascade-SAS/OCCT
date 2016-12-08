@@ -25,7 +25,10 @@
 //purpose  : 
 //=======================================================================
 
-TopClass_FaceClassifier::TopClass_FaceClassifier()
+TopClass_FaceClassifier::TopClass_FaceClassifier() :
+myEdgeParameter(0.0),
+rejected(Standard_False),
+nowires(Standard_True)
 {
 }
 
@@ -36,7 +39,10 @@ TopClass_FaceClassifier::TopClass_FaceClassifier()
 
 TopClass_FaceClassifier::TopClass_FaceClassifier(TheFaceExplorer& FExp,
 						 const gp_Pnt2d& P,
-						 const Standard_Real Tol)
+						 const Standard_Real Tol) :
+myEdgeParameter(0.0),
+rejected(Standard_False),
+nowires(Standard_True)
 {
   Perform(FExp,P,Tol);
 }
@@ -50,15 +56,22 @@ void TopClass_FaceClassifier::Perform(TheFaceExplorer& Fexp,
 				      const gp_Pnt2d& P,
 				      const Standard_Real Tol)
 {
+  gp_Pnt2d aPoint(P);
+  Standard_Boolean aResOfPointCheck = Standard_False;
+  while (aResOfPointCheck == Standard_False)
+  {
+    aResOfPointCheck = Fexp.CheckPoint(aPoint);
+  }
+
   // Test for rejection.
-  rejected = Fexp.Reject(P);
+  rejected = Fexp.Reject(aPoint);
 
   if (rejected)
     return;
 
   gp_Lin2d                   aLine;
   Standard_Real              aParam;
-  Standard_Boolean           IsValidSegment = Fexp.Segment(P, aLine, aParam);
+  Standard_Boolean           IsValidSegment = Fexp.Segment(aPoint, aLine, aParam);
   TheEdge                    anEdge;
   TopAbs_Orientation         anEdgeOri;
   Standard_Integer           aClosestInd;
@@ -135,7 +148,7 @@ void TopClass_FaceClassifier::Perform(TheFaceExplorer& Fexp,
       break;
 
     // Bad case for classification. Trying to get another segment.
-    IsValidSegment = Fexp.OtherSegment(P, aLine, aParam);
+    IsValidSegment = Fexp.OtherSegment(aPoint, aLine, aParam);
   }
 }
 

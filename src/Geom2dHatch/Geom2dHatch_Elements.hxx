@@ -70,7 +70,8 @@ Geom2dHatch_Element& operator() (const Standard_Integer K)
 {
   return ChangeFind(K);
 }
-  
+  Standard_EXPORT Standard_Boolean CheckPoint (gp_Pnt2d& P);
+
   Standard_EXPORT Standard_Boolean Reject (const gp_Pnt2d& P) const;
   
   Standard_EXPORT Standard_Boolean Segment (const gp_Pnt2d& P, gp_Lin2d& L, Standard_Real& Par);
