@@ -260,6 +260,10 @@ public:
   //! tolerance to your own algorithm.
   static Standard_Real PConfusion (const Standard_Real T) { return Parametric (Confusion(), T); }
 
+  //! Returns square of PConfusion.
+  //! Created for speed and convenience.
+  static Standard_Real SquarePConfusion() { return PConfusion() * PConfusion(); }
+
   //! Returns a precision value in parametric space, which
   //! may be used by intersection algorithms, to decide that
   //! a solution is reached. The purpose of this function is to
