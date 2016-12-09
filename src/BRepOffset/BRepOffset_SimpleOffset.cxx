@@ -285,9 +285,8 @@ void BRepOffset_SimpleOffset::FillEdgeData(const TopoDS_Edge& theEdge,
       continue;
 
     // Create offset curve on surface.
-    Standard_Real aF, aL;
-    const Handle(Geom2d_Curve) aC2d = BRep_Tool::CurveOnSurface(theEdge, aCurFace, aF, aL);
-    const Handle(Adaptor2d_HCurve2d) aHCurve2d = new Geom2dAdaptor_HCurve(aC2d, aF, aL);
+    const Handle(Geom2d_Curve) aC2dNew = BRep_Tool::CurveOnSurface(theEdge, aCurFace, aF, aL);
+    const Handle(Adaptor2d_HCurve2d) aHCurve2d = new Geom2dAdaptor_HCurve(aC2dNew, aF, aL);
     const Handle(Adaptor3d_HSurface) aHSurface = new GeomAdaptor_HSurface(myFaceInfo.Find(aCurFace).myOffsetS);
     Adaptor3d_CurveOnSurface aCurveOnSurf(aHCurve2d, aHSurface);
 
@@ -372,8 +371,8 @@ void BRepOffset_SimpleOffset::FillVertexData(const TopoDS_Vertex& theVertex,
     TopExp::Vertices(aCurrEdge, aV1, aV2);
     if (aV1.IsSame(aV2))
     {
-      const gp_Pnt anOffsetPoint = anOffsetCurve->Value(aMaxParam);
-      anOffsetPointVec.Append(anOffsetPoint);
+      const gp_Pnt anOffsetPointLast = anOffsetCurve->Value(aMaxParam);
+      anOffsetPointVec.Append(anOffsetPointLast);
     }
 
     aMaxEdgeTol = Max(aMaxEdgeTol, aNED.myTol);
