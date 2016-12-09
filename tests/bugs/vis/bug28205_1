@@ -1,0 +1,21 @@
+puts "================================================================================================="
+puts "0028205: Visualization - add functionality for dumping results of detection algorithms into image"
+puts "Selection image from normalized depth"
+puts "================================================================================================="
+
+box b0 1 2 3
+box b1 3 2 1 1 2 3
+
+vdisplay -noupdate -dispMode 1 b0 b1
+vsetcolor -noupdate b0 green
+vsetcolor -noupdate b1 red
+vfit
+
+vrotate -mouseStart 300 200 -mouseMove 100 200
+
+vseldump $imagedir/${casename}_depth.png    -type depth
+vseldump $imagedir/${casename}_depthinv.png -type depthInverted
+vseldump $imagedir/${casename}_object.png   -type objectColor
+vseldump $imagedir/${casename}_owner.png    -type ownerColor
+vseldump $imagedir/${casename}_entity.png   -type entityColor
+vdump $imagedir/${casename}.png

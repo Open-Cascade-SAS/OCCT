@@ -25,7 +25,9 @@
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <SelectMgr_ViewerSelector.hxx>
 #include <SelectMgr_Selection.hxx>
+#include <StdSelect_TypeOfSelectionImage.hxx>
 #include <NCollection_Handle.hxx>
+#include <V3d_ImageDumpOptions.hxx>
 
 class Graphic3d_Group;
 class Graphic3d_Structure;
@@ -68,6 +70,18 @@ public:
   //! pick action - input pixel values for polyline selection for selection.
   Standard_EXPORT void Pick (const TColgp_Array1OfPnt2d& thePolyline,
                              const Handle(V3d_View)& theView);
+
+  //! Dump of detection results into image.
+  //! This method performs axis picking for each pixel in the image
+  //! and generates a color depending on picking results and selection image type.
+  //! @param theImage       result image, should be initialized
+  //! @param theView        3D view defining camera position
+  //! @param theType        type of image to define
+  //! @param thePickedIndex index of picked entity (1 means topmost)
+  Standard_EXPORT Standard_Boolean ToPixMap (Image_PixMap&                        theImage,
+                                             const Handle(V3d_View)&              theView,
+                                             const StdSelect_TypeOfSelectionImage theType,
+                                             const Standard_Integer               thePickedIndex = 1);
 
   //! Displays sensitives in view <theView>.
   Standard_EXPORT void DisplaySensitive (const Handle(V3d_View)& theView);

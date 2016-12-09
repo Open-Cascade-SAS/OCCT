@@ -10202,6 +10202,141 @@ static int VSelectionProperties (Draw_Interpretor& theDi,
   return 0;
 }
 
+//===============================================================================================
+//function : VDumpSelectionImage
+//purpose  :
+//===============================================================================================
+static int VDumpSelectionImage (Draw_Interpretor& /*theDi*/,
+                                Standard_Integer  theArgsNb,
+                                const char**      theArgVec)
+{
+  if (theArgsNb < 2)
+  {
+    std::cout << "Syntax error: wrong number arguments for '" << theArgVec[0] << "'\n";
+    return 1;
+  }
+
+  const Handle(AIS_InteractiveContext)& aContext = ViewerTest::GetAISContext();
+  if (aContext.IsNull())
+  {
+    std::cout << "Error: no active view.\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aFile;
+  StdSelect_TypeOfSelectionImage aType = StdSelect_TypeOfSelectionImage_NormalizedDepth;
+  Image_PixMap::ImgFormat anImgFormat = Image_PixMap::ImgBGR;
+  Standard_Integer aPickedIndex = 1;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
+  {
+    TCollection_AsciiString aParam (theArgVec[anArgIter]);
+    aParam.LowerCase();
+    if (aParam == "-type")
+    {
+      if (++anArgIter >= theArgsNb)
+      {
+        std::cout << "Syntax error: wrong number parameters of flag '-depth'.\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aValue (theArgVec[anArgIter]);
+      aValue.LowerCase();
+      if (aValue == "depth"
+       || aValue == "normdepth"
+       || aValue == "normalizeddepth")
+      {
+        aType       = StdSelect_TypeOfSelectionImage_NormalizedDepth;
+        anImgFormat = Image_PixMap::ImgGrayF;
+      }
+      if (aValue == "depthinverted"
+       || aValue == "normdepthinverted"
+       || aValue == "normalizeddepthinverted"
+       || aValue == "inverted")
+      {
+        aType       = StdSelect_TypeOfSelectionImage_NormalizedDepthInverted;
+        anImgFormat = Image_PixMap::ImgGrayF;
+      }
+      else if (aValue == "unnormdepth"
+            || aValue == "unnormalizeddepth")
+      {
+        aType       = StdSelect_TypeOfSelectionImage_UnnormalizedDepth;
+        anImgFormat = Image_PixMap::ImgGrayF;
+      }
+      else if (aValue == "objectcolor"
+            || aValue == "object"
+            || aValue == "color")
+      {
+        aType = StdSelect_TypeOfSelectionImage_ColoredDetectedObject;
+      }
+      else if (aValue == "entitycolor"
+            || aValue == "entity")
+      {
+        aType = StdSelect_TypeOfSelectionImage_ColoredEntity;
+      }
+      else if (aValue == "ownercolor"
+            || aValue == "owner")
+      {
+        aType = StdSelect_TypeOfSelectionImage_ColoredOwner;
+      }
+      else if (aValue == "selectionmodecolor"
+            || aValue == "selectionmode"
+            || aValue == "selmodecolor"
+            || aValue == "selmode")
+      {
+        aType = StdSelect_TypeOfSelectionImage_ColoredSelectionMode;
+      }
+    }
+    else if (aParam == "-picked"
+          || aParam == "-pickeddepth"
+          || aParam == "-pickedindex")
+    {
+      if (++anArgIter >= theArgsNb)
+      {
+        std::cout << "Syntax error: wrong number parameters at '" << aParam << "'.\n";
+        return 1;
+      }
+
+      aPickedIndex = Draw::Atoi (theArgVec[anArgIter]);
+    }
+    else if (aFile.IsEmpty())
+    {
+      aFile = theArgVec[anArgIter];
+    }
+    else
+    {
+      std::cout << "Syntax error: unknown argument '" << theArgVec[anArgIter] << "'.\n";
+      return 1;
+    }
+  }
+  if (aFile.IsEmpty())
+  {
+    std::cout << "Syntax error: image file name is missing.\n";
+    return 1;
+  }
+
+  const Handle(V3d_View)& aView = ViewerTest::CurrentView();
+  Standard_Integer aWidth = 0, aHeight = 0;
+  aView->Window()->Size (aWidth, aHeight);
+
+  Image_AlienPixMap aPixMap;
+  if (!aPixMap.InitZero (anImgFormat, aWidth, aHeight))
+  {
+    std::cout << "Error: can't allocate image.\n";
+    return 1;
+  }
+  if (!aContext->MainSelector()->ToPixMap (aPixMap, aView, aType, aPickedIndex))
+  {
+    std::cout << "Error: can't generate selection image.\n";
+    return 1;
+  }
+  if (!aPixMap.Save (aFile))
+  {
+    std::cout << "Error: can't save selection image.\n";
+    return 0;
+  }
+  return 0;
+}
+
 //=======================================================================
 //function : ViewerCommands
 //purpose  :
@@ -10833,6 +10968,17 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n    -material  material     : sets highlight material"
     "\n    -print                  : prints current state of all mentioned parameters",
     __FILE__, VSelectionProperties, group);
+
+  theCommands.Add ("vseldump",
+                   "vseldump file -type {depth|unnormDepth|object|owner|selMode|entity}=depth -pickedIndex Index=1"
+                   "\n\t\t: Generate an image based on detection results:"
+                   "\n\t\t:   depth       normalized depth values"
+                   "\n\t\t:   unnormDepth unnormalized depth values"
+                   "\n\t\t:   object      color of detected object"
+                   "\n\t\t:   owner       color of detected owner"
+                   "\n\t\t:   selMode     color of selection mode"
+                   "\n\t\t:   entity      color of etected entity",
+                   __FILE__, VDumpSelectionImage, group);
 
 #if defined(_WIN32)
   theCommands.Add("vprogressive",

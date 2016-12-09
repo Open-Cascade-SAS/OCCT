@@ -19,9 +19,6 @@
 
 #include <algorithm>
 
-
-
-
 IMPLEMENT_STANDARD_RTTIEXT(Image_PixMap,Standard_Transient)
 
 // =======================================================================
@@ -337,6 +334,136 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
   // unsupported image type
   theAlpha = 0.0; // transparent
   return Quantity_Color (0.0, 0.0, 0.0, Quantity_TOC_RGB);
+}
+
+// =======================================================================
+// function : SetPixelColor
+// purpose  :
+// =======================================================================
+void Image_PixMap::SetPixelColor (const Standard_Integer theX,
+                                  const Standard_Integer theY,
+                                  const NCollection_Vec4<float>& theColor)
+{
+  if (IsEmpty()
+   || theX < 0 || Standard_Size(theX) >= SizeX()
+   || theY < 0 || Standard_Size(theY) >= SizeY())
+  {
+    return;
+  }
+
+  switch (myImgFormat)
+  {
+    case ImgGrayF:
+    {
+      ChangeValue<Standard_ShortReal> (theY, theX) = theColor.r();
+      return;
+    }
+    case ImgAlphaF:
+    {
+      ChangeValue<Standard_ShortReal> (theY, theX) = theColor.a();
+      return;
+    }
+    case ImgRGBAF:
+    {
+      Image_ColorRGBAF& aPixel = ChangeValue<Image_ColorRGBAF> (theY, theX);
+      aPixel.r() = theColor.r();
+      aPixel.g() = theColor.g();
+      aPixel.b() = theColor.b();
+      aPixel.a() = theColor.a();
+      return;
+    }
+    case ImgBGRAF:
+    {
+      Image_ColorBGRAF& aPixel = ChangeValue<Image_ColorBGRAF> (theY, theX);
+      aPixel.r() = theColor.r();
+      aPixel.g() = theColor.g();
+      aPixel.b() = theColor.b();
+      aPixel.a() = theColor.a();
+      return;
+    }
+    case ImgRGBF:
+    {
+      Image_ColorRGBF& aPixel = ChangeValue<Image_ColorRGBF> (theY, theX);
+      aPixel.r() = theColor.r();
+      aPixel.g() = theColor.g();
+      aPixel.b() = theColor.b();
+      return;
+    }
+    case ImgBGRF:
+    {
+      Image_ColorBGRF& aPixel = ChangeValue<Image_ColorBGRF> (theY, theX);
+      aPixel.r() = theColor.r();
+      aPixel.g() = theColor.g();
+      aPixel.b() = theColor.b();
+      return;
+    }
+    case ImgRGBA:
+    {
+      Image_ColorRGBA& aPixel = ChangeValue<Image_ColorRGBA> (theY, theX);
+      aPixel.r() = Standard_Byte(theColor.r() * 255.0f);
+      aPixel.g() = Standard_Byte(theColor.g() * 255.0f);
+      aPixel.b() = Standard_Byte(theColor.b() * 255.0f);
+      aPixel.a() = Standard_Byte(theColor.a() * 255.0f);
+      return;
+    }
+    case ImgBGRA:
+    {
+      Image_ColorBGRA& aPixel = ChangeValue<Image_ColorBGRA> (theY, theX);
+      aPixel.r() = Standard_Byte(theColor.r() * 255.0f);
+      aPixel.g() = Standard_Byte(theColor.g() * 255.0f);
+      aPixel.b() = Standard_Byte(theColor.b() * 255.0f);
+      aPixel.a() = Standard_Byte(theColor.a() * 255.0f);
+      return;
+    }
+    case ImgRGB32:
+    {
+      Image_ColorRGB32& aPixel = ChangeValue<Image_ColorRGB32> (theY, theX);
+      aPixel.r()  = Standard_Byte(theColor.r() * 255.0f);
+      aPixel.g()  = Standard_Byte(theColor.g() * 255.0f);
+      aPixel.b()  = Standard_Byte(theColor.b() * 255.0f);
+      aPixel.a_() = 255;
+      return;
+    }
+    case ImgBGR32:
+    {
+      Image_ColorBGR32& aPixel = ChangeValue<Image_ColorBGR32> (theY, theX);
+      aPixel.r()  = Standard_Byte(theColor.r() * 255.0f);
+      aPixel.g()  = Standard_Byte(theColor.g() * 255.0f);
+      aPixel.b()  = Standard_Byte(theColor.b() * 255.0f);
+      aPixel.a_() = 255;
+      return;
+    }
+    case ImgRGB:
+    {
+      Image_ColorRGB& aPixel = ChangeValue<Image_ColorRGB> (theY, theX);
+      aPixel.r() = Standard_Byte(theColor.r() * 255.0f);
+      aPixel.g() = Standard_Byte(theColor.g() * 255.0f);
+      aPixel.b() = Standard_Byte(theColor.b() * 255.0f);
+      return;
+    }
+    case ImgBGR:
+    {
+      Image_ColorBGR& aPixel = ChangeValue<Image_ColorBGR> (theY, theX);
+      aPixel.r() = Standard_Byte(theColor.r() * 255.0f);
+      aPixel.g() = Standard_Byte(theColor.g() * 255.0f);
+      aPixel.b() = Standard_Byte(theColor.b() * 255.0f);
+      return;
+    }
+    case ImgGray:
+    {
+      ChangeValue<Standard_Byte> (theY, theX) = Standard_Byte(theColor.r() * 255.0f);
+      return;
+    }
+    case ImgAlpha:
+    {
+      ChangeValue<Standard_Byte> (theY, theX) = Standard_Byte(theColor.a() * 255.0f);
+      return;
+    }
+    case ImgUNKNOWN:
+    {
+      return;
+    }
+  }
 }
 
 // =======================================================================

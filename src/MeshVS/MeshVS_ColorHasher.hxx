@@ -16,48 +16,9 @@
 #ifndef _MeshVS_ColorHasher_HeaderFile
 #define _MeshVS_ColorHasher_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
+#include <Quantity_ColorHasher.hxx>
 
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-class Quantity_Color;
-
-
-//! Hasher for using in ColorToIdsMap from MeshVS
-class MeshVS_ColorHasher 
-{
-public:
-
-  DEFINE_STANDARD_ALLOC
-
-  
-  Standard_EXPORT static Standard_Integer HashCode (const Quantity_Color& K, const Standard_Integer Upper);
-  
-  Standard_EXPORT static Standard_Boolean IsEqual (const Quantity_Color& K1, const Quantity_Color& K2);
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
-};
-
-
-
-
-
-
+Standard_DEPRECATED("This type name is deprecated - Quantity_ColorHasher should be used instead")
+typedef Quantity_ColorHasher MeshVS_ColorHasher;
 
 #endif // _MeshVS_ColorHasher_HeaderFile

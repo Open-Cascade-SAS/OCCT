@@ -23,6 +23,7 @@ StdSelect_ShapeTypeFilter.lxx
 StdSelect_TypeOfEdge.hxx
 StdSelect_TypeOfFace.hxx
 StdSelect_TypeOfResult.hxx
+StdSelect_TypeOfSelectionImage.hxx
 StdSelect_ViewerSelector3d.cxx
 StdSelect_ViewerSelector3d.hxx
 StdSelect_ViewerSelector3d.lxx
