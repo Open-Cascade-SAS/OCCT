@@ -136,11 +136,12 @@ Handle(AIS_TexturedShape) TexturesExt_Presentation::Texturize(const TopoDS_Shape
   TCollection_AsciiString TFileName;
   // load texture from file if it is not an integer value
   // integer value indicates a number of texture in predefined TexturesExt enumeration
-  CString initfile(((OCC_App*) AfxGetApp())->GetInitDataDir());
-  initfile += "..\\..\\..\\04_Viewer3d\\Data\\";
+  CString anOCCTDataPathValue;
+  anOCCTDataPathValue.GetEnvironmentVariable(L"CSF_OCCTDataPath");
+  CString initfile = (anOCCTDataPathValue + L"\\images\\");
   if (!aTFileName.IsIntegerValue())
   {
-	initfile += aTFileName.ToCString();
+    initfile += aTFileName.ToCString();
   }
 
   aTShape->SetTextureFileName (TCollection_AsciiString ((const wchar_t* )initfile));
@@ -165,9 +166,9 @@ Standard_Boolean TexturesExt_Presentation::loadShape(TopoDS_Shape& aShape,
                                          TCollection_AsciiString aFileName)
 {
   // create a TopoDS_Shape -> read from a brep file
-  CString initfile(((OCC_App*) AfxGetApp())->GetInitDataDir());
-  initfile += "..\\..\\..\\04_Viewer3d\\Data\\";
-  initfile += aFileName.ToCString();
+  CString anOCCTDataPathValue;
+  anOCCTDataPathValue.GetEnvironmentVariable(L"CSF_OCCTDataPath");
+  CString initfile = (anOCCTDataPathValue + L"\\occ\\" + aFileName.ToCString());
 
   std::filebuf aFileBuf;
   std::istream aStream (&aFileBuf);
@@ -331,7 +332,7 @@ void TexturesExt_Presentation::sampleKitchen()
 {
   TopoDS_Shape aShape;
 
-  if (!loadShape(aShape, "Kitchen\\Room.brep"))
+  if (!loadShape(aShape, "Room.brep"))
     return;
 
   gp_Trsf aTrsf;
@@ -361,17 +362,17 @@ void TexturesExt_Presentation::sampleKitchen()
 //  DISP(drawShape(aFaces(4), Quantity_NOC_LIGHTPINK, Standard_False));
 
   // texturize furniture items with "wooden" texture
-  if (loadShape(aShape, "Kitchen\\MODERN_Table_1.brep"))
+  if (loadShape(aShape, "MODERN_Table_1.brep"))
   {
     moveScale(aShape);
     DISP(Texturize(aShape, "chataignier.gif"));
   }
-  if (loadShape(aShape, "Kitchen\\MODERN_Chair_1.brep"))
+  if (loadShape(aShape, "MODERN_Chair_1.brep"))
   {
     moveScale(aShape);
     DISP(Texturize(aShape, "chataignier.gif"));
   }
-  if (loadShape(aShape, "Kitchen\\MODERN_Cooker_1.brep"))
+  if (loadShape(aShape, "MODERN_Cooker_1.brep"))
   {
     moveScale(aShape);
 
@@ -391,27 +392,27 @@ void TexturesExt_Presentation::sampleKitchen()
         DISP(Texturize(aFaces(i), "chataignier.gif"));
     }
   }
-  if (loadShape(aShape, "Kitchen\\MODERN_Cooker_1_opened.brep"))
+  if (loadShape(aShape, "MODERN_Cooker_1_opened.brep"))
   {
     moveScale(aShape);
     DISP(Texturize(aShape, "chataignier.gif"));
   }
-  if (loadShape(aShape, "Kitchen\\MODERN_Exhaust_1.brep"))
+  if (loadShape(aShape, "MODERN_Exhaust_1.brep"))
   {
     moveScale(aShape);
     DISP(drawShape(aShape, Graphic3d_NOM_STONE, Standard_False));
   }
-  if (loadShape(aShape, "Kitchen\\MODERN_MVCooker_1.brep"))
+  if (loadShape(aShape, "MODERN_MVCooker_1.brep"))
   {
     moveScale(aShape);
     DISP(drawShape(aShape, Graphic3d_NOM_SILVER, Standard_False));
   }
-  if (loadShape(aShape, "Kitchen\\MODERN_MVCooker_1_opened.brep"))
+  if (loadShape(aShape, "MODERN_MVCooker_1_opened.brep"))
   {
     moveScale(aShape);
     DISP(drawShape(aShape, Graphic3d_NOM_SILVER, Standard_False));
   }
-  if (loadShape(aShape, "Kitchen\\MODERN_Sink_1.brep"))
+  if (loadShape(aShape, "MODERN_Sink_1.brep"))
   {
     moveScale(aShape);
 
@@ -429,17 +430,17 @@ void TexturesExt_Presentation::sampleKitchen()
         DISP(Texturize(aFaces(i), "chataignier.gif"));
     }
   }
-  if (loadShape(aShape, "Kitchen\\MODERN_Sink_1_opened.brep"))
+  if (loadShape(aShape, "MODERN_Sink_1_opened.brep"))
   {
     moveScale(aShape);
     DISP(Texturize(aShape, "chataignier.gif"));
   }
-  if (loadShape(aShape, "Kitchen\\MODERN_Refrigerator_1.brep"))
+  if (loadShape(aShape, "MODERN_Refrigerator_1.brep"))
   {
     moveScale(aShape);
     DISP(drawShape(aShape, Graphic3d_NOM_CHROME, Standard_False));
   }
-  if (loadShape(aShape, "Kitchen\\MODERN_Refrigerator_1_opened.brep"))
+  if (loadShape(aShape, "MODERN_Refrigerator_1_opened.brep"))
   {
     moveScale(aShape);
     DISP(drawShape(aShape, Graphic3d_NOM_CHROME, Standard_False));

@@ -1155,9 +1155,9 @@ static Standard_Boolean fixParam(Standard_Real& theParam)
 
 void CGeometryDoc::OnSimplify() 
 {
-  CString initfile(((OCC_App*) AfxGetApp())->GetInitDataDir());
-  initfile += L"\\..\\..\\..\\samples\\mfc\\standard\\01_Geometry\\Data\\";
-  initfile += L"shell1.brep";
+  CString anOCCTDataPathValue;
+  anOCCTDataPathValue.GetEnvironmentVariable(L"CSF_OCCTDataPath");
+  CString initfile = (anOCCTDataPathValue + L"\\occ\\shell1.brep");
 
   std::filebuf aFileBuf;
   std::istream aStream (&aFileBuf);

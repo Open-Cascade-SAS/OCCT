@@ -395,9 +395,9 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
 
 void Tesselate_Presentation::sample(const Standard_CString aFileName)
 {
-  CString initfile(((OCC_App*) AfxGetApp())->GetInitDataDir());
-  initfile += "..\\..\\..\\Data\\";
-  initfile += aFileName;
+  CString anOCCTDataPathValue;
+  anOCCTDataPathValue.GetEnvironmentVariable(L"CSF_OCCTDataPath");
+  CString initfile = (anOCCTDataPathValue + L"\\occ\\" + aFileName);
 
 /*  
   ResetView();
