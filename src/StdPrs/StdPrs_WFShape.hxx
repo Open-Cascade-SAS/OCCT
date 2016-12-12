@@ -37,6 +37,20 @@ public:
                                    const TopoDS_Shape&                theShape,
                                    const Handle (Prs3d_Drawer)&       theDrawer);
 
+  //! Compute free and boundary edges on a triangulation of each face in the given shape.
+  //! @param theShape              [in] the list of triangulated faces
+  //! @param theToExcludeGeometric [in] flag indicating that Faces with defined Surface should be skipped
+  Standard_EXPORT static Handle(Graphic3d_ArrayOfPrimitives) AddEdgesOnTriangulation (const TopoDS_Shape&    theShape,
+                                                                                      const Standard_Boolean theToExcludeGeometric = Standard_True);
+
+  //! Compute free and boundary edges on a triangulation of each face in the given shape.
+  //! @param theSegments           [in] the sequence of points defining segments
+  //! @param theShape              [in] the list of triangulated faces
+  //! @param theToExcludeGeometric [in] flag indicating that Faces with defined Surface should be skipped
+  Standard_EXPORT static void AddEdgesOnTriangulation (TColgp_SequenceOfPnt&  theSegments,
+                                                       const TopoDS_Shape&    theShape,
+                                                       const Standard_Boolean theToExcludeGeometric = Standard_True);
+
 private:
 
   //! Compute edge presentations for a shape.
@@ -47,15 +61,6 @@ private:
                         const Handle(Prs3d_Drawer)& theDrawer,
                         const Standard_Real         theShapeDeflection,
                         Prs3d_NListOfSequenceOfPnt& thePolylines);
-
-  //! Compute free and boundary edges on a triangulation of a face.
-  //! @param thePresentation [in] the presentation.
-  //! @param theFaces [in] the list of triangulated faces.
-  //! @param theAspect [in] the edge drawing aspect.
-  //! @param theDrawer [in] the drawer settings.
-  static void addEdgesOnTriangulation (const Handle(Prs3d_Presentation)& thePresentation,
-                                       const TopTools_ListOfShape& theFaces,
-                                       const Handle (Prs3d_LineAspect)& theAspect);
 
   //! Compute vertex presentation for a shape.
   //! @param thePresentation [in] the presentation.

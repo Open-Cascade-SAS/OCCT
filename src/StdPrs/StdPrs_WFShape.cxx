@@ -73,15 +73,13 @@ void StdPrs_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
 
   // Draw shape elements
   {
-    TopTools_ListOfShape aDiscreteFaces;
-    for (aTool.InitFace(); aTool.MoreFace(); aTool.NextFace())
+    Handle(Graphic3d_ArrayOfPrimitives) aTriFreeEdges = AddEdgesOnTriangulation (theShape, Standard_True);
+    if (!aTriFreeEdges.IsNull())
     {
-      if (!aTool.HasSurface())
-      {
-        aDiscreteFaces.Append (aTool.GetFace());
-      }
+      Handle(Graphic3d_Group) aGroup = Prs3d_Root::NewGroup (thePresentation);
+      aGroup->SetPrimitivesAspect (theDrawer->FreeBoundaryAspect()->Aspect());
+      aGroup->AddPrimitiveArray (aTriFreeEdges);
     }
-    addEdgesOnTriangulation (thePresentation, aDiscreteFaces, theDrawer->FreeBoundaryAspect());
   }
 
   Prs3d_NListOfSequenceOfPnt aCommonPolylines;
@@ -263,19 +261,47 @@ void StdPrs_WFShape::addEdges (const TopTools_ListOfShape&  theEdges,
 // function : AddEdgesOnTriangulation
 // purpose  :
 // =========================================================================
-void StdPrs_WFShape::addEdgesOnTriangulation (const Handle(Prs3d_Presentation)& thePresentation,
-                                              const TopTools_ListOfShape&       theFaces,
-                                              const Handle (Prs3d_LineAspect)&  theAspect)
+Handle(Graphic3d_ArrayOfPrimitives) StdPrs_WFShape::AddEdgesOnTriangulation (const TopoDS_Shape& theShape,
+                                                                             const Standard_Boolean theToExcludeGeometric)
 {
-  TColgp_SequenceOfPnt aSurfPoints;
-
-  TopLoc_Location aLocation;
-  TopTools_ListIteratorOfListOfShape aFaceIter;
-  for (aFaceIter.Initialize (theFaces); aFaceIter.More(); aFaceIter.Next())
+  TColgp_SequenceOfPnt aSeqPnts;
+  AddEdgesOnTriangulation (aSeqPnts, theShape, theToExcludeGeometric);
+  if (aSeqPnts.Size() < 2)
   {
-    const TopoDS_Face& aFace = TopoDS::Face (aFaceIter.Value());
+    return Handle(Graphic3d_ArrayOfSegments)();
+  }
 
-    Handle(Poly_Triangulation) T = BRep_Tool::Triangulation (aFace, aLocation);
+  Standard_Integer aNbVertices = aSeqPnts.Size();
+  Handle(Graphic3d_ArrayOfSegments) aSurfArray = new Graphic3d_ArrayOfSegments (aNbVertices);
+  for (Standard_Integer anI = 1; anI <= aNbVertices; anI += 2)
+  {
+    aSurfArray->AddVertex (aSeqPnts.Value (anI));
+    aSurfArray->AddVertex (aSeqPnts.Value (anI + 1));
+  }
+  return aSurfArray;
+}
+
+// =========================================================================
+// function : AddEdgesOnTriangulation
+// purpose  :
+// =========================================================================
+void StdPrs_WFShape::AddEdgesOnTriangulation (TColgp_SequenceOfPnt& theSegments,
+                                              const TopoDS_Shape& theShape,
+                                              const Standard_Boolean theToExcludeGeometric)
+{
+  TopLoc_Location aLocation, aDummyLoc;
+  for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face (aFaceIter.Current());
+    if (theToExcludeGeometric)
+    {
+      const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface (aFace, aDummyLoc);
+      if (!aSurf.IsNull())
+      {
+        continue;
+      }
+    }
+    const Handle(Poly_Triangulation)& T = BRep_Tool::Triangulation (aFace, aLocation);
     if (T.IsNull())
     {
       continue;
@@ -345,26 +371,10 @@ void StdPrs_WFShape::addEdgesOnTriangulation (const Handle(Prs3d_Presentation)& 
     {
       gp_Pnt aPoint1 = aNodes (aFree (2 * anI - 1)).Transformed (aLocation);
       gp_Pnt aPoint2 = aNodes (aFree (2 * anI    )).Transformed (aLocation);
-      aSurfPoints.Append (aPoint1);
-      aSurfPoints.Append (aPoint2);
+      theSegments.Append (aPoint1);
+      theSegments.Append (aPoint2);
     }
   }
-
-  if (aSurfPoints.Length() < 2)
-  {
-    return;
-  }
-
-  Standard_Integer aNbVertices = aSurfPoints.Length();
-  Handle(Graphic3d_ArrayOfSegments) aSurfArray = new Graphic3d_ArrayOfSegments (aNbVertices);
-  for (Standard_Integer anI = 1; anI <= aNbVertices; anI += 2)
-  {
-    aSurfArray->AddVertex (aSurfPoints.Value (anI));
-    aSurfArray->AddVertex (aSurfPoints.Value (anI + 1));
-  }
-  Handle(Graphic3d_Group) aGroup = Prs3d_Root::NewGroup (thePresentation);
-  aGroup->SetPrimitivesAspect (theAspect->Aspect());
-  aGroup->AddPrimitiveArray (aSurfArray);
 }
 
 // =========================================================================

@@ -304,6 +304,17 @@ namespace
     Standard_Integer aNbPolylines = 0;
 
     TopLoc_Location aTrsf;
+    TColgp_SequenceOfPnt aSeqPntsExtra;
+    for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+    {
+      const TopoDS_Face& aFace = TopoDS::Face (aFaceIter.Current());
+      TopoDS_Iterator aSubShapeIter (aFace);
+      if (!aSubShapeIter.More())
+      {
+        // handle specifically faces without boundary definition (triangulation-only)
+        StdPrs_WFShape::AddEdgesOnTriangulation (aSeqPntsExtra, aFace, Standard_False);
+      }
+    }
 
     // explore all boundary edges
     TopTools_IndexedDataMapOfShapeListOfShape anEdgesMap;
@@ -335,12 +346,24 @@ namespace
     }
     if (aNodeNumber == 0)
     {
-      return Handle(Graphic3d_ArrayOfSegments)();
+      if (aSeqPntsExtra.Size() < 2)
+      {
+        return Handle(Graphic3d_ArrayOfSegments)();
+      }
+
+      Standard_Integer aNbVertices = aSeqPntsExtra.Size();
+      Handle(Graphic3d_ArrayOfSegments) aSegments = new Graphic3d_ArrayOfSegments (aNbVertices);
+      for (Standard_Integer aPntIter = 1; aPntIter <= aNbVertices; aPntIter += 2)
+      {
+        aSegments->AddVertex (aSeqPntsExtra.Value (aPntIter));
+        aSegments->AddVertex (aSeqPntsExtra.Value (aPntIter + 1));
+      }
+      return aSegments;
     }
 
     // create indexed segments array to pack polylines from different edges into single array
     const Standard_Integer aSegmentEdgeNb = (aNodeNumber - aNbPolylines) * 2;
-    Handle(Graphic3d_ArrayOfSegments) aSegments = new Graphic3d_ArrayOfSegments (aNodeNumber, aSegmentEdgeNb);
+    Handle(Graphic3d_ArrayOfSegments) aSegments = new Graphic3d_ArrayOfSegments (aNodeNumber + aSeqPntsExtra.Size(), aSegmentEdgeNb + aSeqPntsExtra.Size());
     for (TopTools_IndexedDataMapOfShapeListOfShape::Iterator anEdgeIter (anEdgesMap); anEdgeIter.More(); anEdgeIter.Next())
     {
       if (anEdgeIter.Value().Extent() == 0)
@@ -388,6 +411,19 @@ namespace
         }
       }
     }
+
+    {
+      Standard_Integer aSegmentEdge = aSegments->VertexNumber();
+      const Standard_Integer aNbVertices = aSeqPntsExtra.Size();
+      for (Standard_Integer aPntIter = 1; aPntIter <= aNbVertices; aPntIter += 2)
+      {
+        aSegments->AddVertex (aSeqPntsExtra.Value (aPntIter));
+        aSegments->AddEdge (++aSegmentEdge);
+        aSegments->AddVertex (aSeqPntsExtra.Value (aPntIter + 1));
+        aSegments->AddEdge (++aSegmentEdge);
+      }
+    }
+
     return aSegments;
   }
 
