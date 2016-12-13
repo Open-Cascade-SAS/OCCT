@@ -26,8 +26,10 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopTools_HArray1OfShape.hxx>
 #include <AIS_KindOfInteractive.hxx>
+#include <Aspect_TypeOfLine.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
 #include <Quantity_NameOfColor.hxx>
+
 
 class TCollection_AsciiString;
 class V3d_View;
@@ -187,6 +189,12 @@ public:
   //! Handles either flag specified by 0|1 or on|off.
   Standard_EXPORT static Standard_Boolean ParseOnOff (Standard_CString  theArg,
                                                       Standard_Boolean& theIsOn);
+
+  //! Parses line type argument.
+  //! Handles either enumeration (integer) value or string constant.
+  Standard_EXPORT static Standard_Boolean ParseLineType (Standard_CString   theArg,
+                                                         Aspect_TypeOfLine& theType);
+
 private:
 
   //! Returns a window class that implements standard behavior of

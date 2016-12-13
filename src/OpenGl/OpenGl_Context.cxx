@@ -2934,6 +2934,7 @@ void OpenGl_Context::SetTypeOfLine (const Aspect_TypeOfLine  theType,
       aPattern = 0xFF18;
       break;
     }
+    case Aspect_TOL_EMPTY:
     case Aspect_TOL_SOLID:
     {
       aPattern = 0xFFFF;
@@ -2954,7 +2955,7 @@ void OpenGl_Context::SetTypeOfLine (const Aspect_TypeOfLine  theType,
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  if (theType != Aspect_TOL_SOLID)
+  if (aPattern != 0xFFFF)
   {
   #ifdef HAVE_GL2PS
     if (IsFeedback())

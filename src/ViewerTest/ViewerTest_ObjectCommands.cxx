@@ -5270,13 +5270,10 @@ static Standard_Integer VShowFaceBoundary (Draw_Interpretor& /*di*/,
   // select appropriate line type
   if (argc == 8)
   {
-    switch (Draw::Atoi (argv[7]))
+    if (!ViewerTest::ParseLineType (argv[7], aLineType))
     {
-      case 1: aLineType = Aspect_TOL_DASH;    break;
-      case 2: aLineType = Aspect_TOL_DOT;     break;
-      case 3: aLineType = Aspect_TOL_DOTDASH; break;
-      default:
-        aLineType = Aspect_TOL_SOLID;
+      std::cout << "Syntax error: unknown line type '" << argv[7] << "'\n";
+      return 1;
     }
   }
 
@@ -5913,31 +5910,14 @@ static int VSetEdgeType (Draw_Interpretor& theDI,
           return 1;
         }
 
-        TCollection_AsciiString aType = theArgs[++anIt];
-        aType.UpperCase();
-
-        if (aType.IsEqual ("SOLID"))
+        ++anIt;
+        Aspect_TypeOfLine aTypeEnum = Aspect_TOL_SOLID;
+        if (!ViewerTest::ParseLineType (theArgs[anIt], aTypeEnum))
         {
-          anObject->Attributes()->ShadingAspect()->Aspect()->SetEdgeLineType(Aspect_TOL_SOLID);
-        }
-        else if (aType.IsEqual ("DASH"))
-        {
-          anObject->Attributes()->ShadingAspect()->Aspect()->SetEdgeLineType(Aspect_TOL_DASH);
-        }
-        else if (aType.IsEqual ("DOT"))
-        {
-          anObject->Attributes()->ShadingAspect()->Aspect()->SetEdgeLineType(Aspect_TOL_DOT);
-        }
-        else if (aType.IsEqual ("DOTDASH"))
-        {
-          anObject->Attributes()->ShadingAspect()->Aspect()->SetEdgeLineType(Aspect_TOL_DOTDASH);
-        }
-        else
-        {
-          theDI <<  theArgs[0] << " error: wrong line type: '" << aType.ToCString() << "'.\n";
+          std::cout << "Syntax error: wrong line type: '" << theArgs[anIt] << "'.\n";
           return 1;
         }
-        
+        anObject->Attributes()->ShadingAspect()->Aspect()->SetEdgeLineType (aTypeEnum);
       }
       else if (aParam.IsEqual ("-color"))
       {

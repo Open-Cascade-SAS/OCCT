@@ -1606,6 +1606,7 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Context)&
     SpriteAKey = aNewKeyA;
   }
   if (theType == Aspect_TOM_POINT
+   || theType == Aspect_TOM_EMPTY
    || !aNewResource
    || (theType == Aspect_TOM_USERDEFINED && theMarkerImage.IsNull()))
   {
@@ -1948,7 +1949,8 @@ void OpenGl_AspectMarker::Resources::SpriteKeys (const Handle(Graphic3d_MarkerIm
       theKeyA = theMarkerImage->GetImageAlphaId();
     }
   }
-  else if (theType != Aspect_TOM_POINT)
+  else if (theType != Aspect_TOM_POINT
+        && theType != Aspect_TOM_EMPTY)
   {
     // predefined markers are defined with 0.5 step
     const Standard_Integer aScale = Standard_Integer(theScale * 10.0f + 0.5f);

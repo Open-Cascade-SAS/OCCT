@@ -737,13 +737,25 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
 #endif
   // Temporarily disable environment mapping
   Handle(OpenGl_Texture) aTextureBack;
-  if (myDrawMode <= GL_LINE_STRIP)
+  bool toDrawArray = true;
+  if (myDrawMode > GL_LINE_STRIP)
+  {
+    toDrawArray = anAspectFace->Aspect()->InteriorStyle() != Aspect_IS_EMPTY;
+  }
+  else if (myDrawMode <= GL_LINE_STRIP)
   {
     aTextureBack = theWorkspace->DisableTexture();
+    if (myDrawMode == GL_POINTS)
+    {
+      toDrawArray = anAspectMarker->Aspect()->Type() != Aspect_TOM_EMPTY;
+    }
+    else
+    {
+      toDrawArray = anAspectLine->Aspect()->Type() != Aspect_TOL_EMPTY;
+    }
   }
 
-  if ((myDrawMode >  GL_LINE_STRIP && anAspectFace->Aspect()->InteriorStyle() != Aspect_IS_EMPTY) ||
-      (myDrawMode <= GL_LINE_STRIP))
+  if (toDrawArray)
   {
     const bool             toHilight    = theWorkspace->ToHighlight();
     const Standard_Boolean hasVertColor = hasColorAttrib && !toHilight;

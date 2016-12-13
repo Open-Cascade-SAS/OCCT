@@ -976,13 +976,9 @@ static Standard_Integer XShowFaceBoundary (Draw_Interpretor& di,
   // select appropriate line type
   if (argc == 9)
   {
-    switch (Draw::Atoi (argv[8]))
+    if (!ViewerTest::ParseLineType (argv[8], aLineType))
     {
-      case 1: aLineType = Aspect_TOL_DASH;    break;
-      case 2: aLineType = Aspect_TOL_DOT;     break;
-      case 3: aLineType = Aspect_TOL_DOTDASH; break;
-      default:
-        aLineType = Aspect_TOL_SOLID;
+      std::cout << "Syntax error: unknown line type '" << argv[8] << "'\n";
     }
   }
 

@@ -4886,17 +4886,21 @@ static int VLayerLine(Draw_Interpretor& di, Standard_Integer argc, const char** 
   Standard_Real X2 = Draw::Atof(argv[3]);
   Standard_Real Y2 = Draw::Atof(argv[4]);
 
-  Standard_Real    aWidth = 0.5;
-  Standard_Integer aType  = 0;
-  Standard_Real    aTransparency = 1.0;
+  Standard_Real aWidth = 0.5;
+  Standard_Real aTransparency = 1.0;
 
   // has width
   if (argc > 5)
     aWidth = Draw::Atof(argv[5]);
 
-  // has type
-  if (argc > 6)
-     aType = (Standard_Integer) Draw::Atoi(argv[6]);
+  // select appropriate line type
+  Aspect_TypeOfLine aLineType = Aspect_TOL_SOLID;
+  if (argc > 6
+  && !ViewerTest::ParseLineType (argv[6], aLineType))
+  {
+    std::cout << "Syntax error: unknown line type '" << argv[6] << "'\n";
+    return 1;
+  }
 
   // has transparency
   if (argc > 7)
@@ -4904,26 +4908,6 @@ static int VLayerLine(Draw_Interpretor& di, Standard_Integer argc, const char** 
     aTransparency = Draw::Atof(argv[7]);
     if (aTransparency < 0 || aTransparency > 1.0)
       aTransparency = 1.0;
-  }
-
-  // select appropriate line type
-  Aspect_TypeOfLine aLineType;
-  switch (aType)
-  {
-    case 1:
-      aLineType = Aspect_TOL_DASH;
-    break;
-
-    case 2:
-      aLineType = Aspect_TOL_DOT;
-    break;
-
-    case 3:
-      aLineType = Aspect_TOL_DOTDASH;
-    break;
-
-    default:
-      aLineType = Aspect_TOL_SOLID;
   }
 
   static Handle (V3d_LineItem) aLine;

@@ -27,6 +27,7 @@
 #include <ViewerTest.hxx>
 #include <ViewerTest_CmdParser.hxx>
 
+#include <Draw.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopTools_HArray1OfShape.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
@@ -171,6 +172,47 @@ Standard_Boolean ViewerTest::ParseOnOff (Standard_CString  theArg,
     return Standard_True;
   }
   return Standard_False;
+}
+
+//=======================================================================
+//function : ParseLineType
+//purpose  :
+//=======================================================================
+Standard_Boolean ViewerTest::ParseLineType (Standard_CString   theArg,
+                                            Aspect_TypeOfLine& theType)
+{
+  TCollection_AsciiString aTypeStr (theArg);
+  aTypeStr.LowerCase();
+  if (aTypeStr == "empty")
+  {
+    theType = Aspect_TOL_EMPTY;
+  }
+  else if (aTypeStr == "solid")
+  {
+    theType = Aspect_TOL_SOLID;
+  }
+  else if (aTypeStr == "dot")
+  {
+    theType = Aspect_TOL_DOT;
+  }
+  else if (aTypeStr == "dash")
+  {
+    theType = Aspect_TOL_DASH;
+  }
+  else if (aTypeStr == "dotdash")
+  {
+    theType = Aspect_TOL_DOTDASH;
+  }
+  else
+  {
+    const int aTypeInt = Draw::Atoi (theArg);
+    if (aTypeInt < -1 || aTypeInt >= Aspect_TOL_USERDEFINED)
+    {
+      return Standard_False;
+    }
+    theType = (Aspect_TypeOfLine )aTypeInt;
+  }
+  return Standard_True;
 }
 
 //=======================================================================
@@ -1893,27 +1935,7 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
         std::cout << "Error: wrong syntax at " << anArg << "\n";
         return 1;
       }
-
-      TCollection_AsciiString aValue (theArgVec[anArgIter]);
-      aValue.LowerCase();
-
-      if (aValue.IsEqual ("solid"))
-      {
-        aChangeSet->TypeOfLine = Aspect_TOL_SOLID;
-      }
-      else if (aValue.IsEqual ("dot"))
-      {
-        aChangeSet->TypeOfLine = Aspect_TOL_DOT;
-      }
-      else if (aValue.IsEqual ("dash"))
-      {
-        aChangeSet->TypeOfLine = Aspect_TOL_DASH;
-      }
-      else if (aValue.IsEqual ("dotdash"))
-      {
-        aChangeSet->TypeOfLine = Aspect_TOL_DOTDASH;
-      }
-      else
+      if (!ViewerTest::ParseLineType (theArgVec[anArgIter], aChangeSet->TypeOfLine))
       {
         std::cout << "Error: wrong syntax at " << anArg << "\n";
         return 1;
