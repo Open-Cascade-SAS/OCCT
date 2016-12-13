@@ -2,6 +2,9 @@
 
 if [ "$1" == "@BIN_LETTER@" ]; then
   if [ "$2" == "@COMPILER_BITNESS@" ]; then
+    # set environment variables used by OCCT
+    export CSF_FPE=@BUILD_ENABLE_FPE_SIGNAL_HANDLER@
+
     export TCL_DIR="@USED_3RDPARTY_TCL_DIR@"
     export TK_DIR="@USED_3RDPARTY_TK_DIR@"
     export FREETYPE_DIR="@USED_3RDPARTY_FREETYPE_DIR@"

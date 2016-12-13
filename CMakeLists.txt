@@ -338,6 +338,17 @@ if (WIN32)
   set (USE_D3D OFF CACHE BOOL "${USE_D3D_DESCR}")
 endif()
 
+# Enable/Disable the floating point exceptions (FPE) during runtime.
+if (NOT BUILD_ENABLE_FPE_SIGNAL_HANDLER)
+  set (BUILD_ENABLE_FPE_SIGNAL_HANDLER OFF CACHE BOOL "${BUILD_ENABLE_FPE_SIGNAL_HANDLER_DESCR}" FORCE)
+endif()
+
+if (BUILD_ENABLE_FPE_SIGNAL_HANDLER)
+  set (BUILD_ENABLE_FPE_SIGNAL_HANDLER 1)
+else()
+  set (BUILD_ENABLE_FPE_SIGNAL_HANDLER 0)
+endif()
+
 # include the patched or original list of modules
 # list <MODULENAME>_TOOLKITS is created foreach module and contains its toolkits
 # list <OCCT_MODULES> will contain all modules

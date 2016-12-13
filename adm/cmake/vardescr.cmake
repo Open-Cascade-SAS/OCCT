@@ -28,6 +28,11 @@ Applies only for Debug configuration.")
 set (BUILD_SHARED_LIBRARY_NAME_POSTFIX_DESCR
 "Append the postfix to names of output libraries")
 
+set (BUILD_ENABLE_FPE_SIGNAL_HANDLER_DESCR
+"Enable/Disable the floating point exceptions (FPE) during DRAW execution only.
+Corresponding environment variable (CSF_FPE) can be changed manually
+in custom.bat/sh scripts without regeneration by CMake.")
+
 # install variables
 set (INSTALL_DIR_DESCR 
 "The place where built OCCT libraries, headers, test cases (INSTALL_TEST_CASES variable),
