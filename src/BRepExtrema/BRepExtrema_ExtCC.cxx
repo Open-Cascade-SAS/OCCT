@@ -69,7 +69,9 @@ void BRepExtrema_ExtCC::Perform(const TopoDS_Edge& E1)
   BRep_Tool::Range(E1,U1,U2);
   myExtCC.SetCurve (1, HC->Curve(), U1, U2);
   myExtCC.SetTolerance(1, Tol);
-  myExtCC.SetSingleSolutionFlag(Standard_True);
+  // If we enable SetSingleSolutionFlag Extrema will run much quicker on almost parallel curves
+  // (e.g. bug 27665), however some solutions will be lost, e.g. see bug 28183.
+  //myExtCC.SetSingleSolutionFlag(Standard_True);
   myExtCC.Perform();
 }
 

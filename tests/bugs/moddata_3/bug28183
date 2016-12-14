@@ -6,8 +6,6 @@ puts ""
 # BRepExtrema_DistShapeShape does not find all solutions
 ###############################################################################
 
-puts "TODO #28183 ALL: Error: .* solutions expected"
-
 pload MODELING
 
 restore [locate_data_file bug28175_borders2.brep] b
