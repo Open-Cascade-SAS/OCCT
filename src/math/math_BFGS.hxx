@@ -36,6 +36,11 @@ class math_MultipleVarFunctionWithGradient;
 //! This class implements the Broyden-Fletcher-Goldfarb-Shanno variant of
 //! Davidson-Fletcher-Powell minimization algorithm of a function of
 //! multiple variables.Knowledge of the function's gradient is required.
+//!
+//! It is possible to solve conditional optimization problem on hyperparallelepiped.
+//! Method SetBoundary is used to define hyperparallelepiped borders. With boundaries
+//! defined, the algorithm will not make evaluations of the function outside of the
+//! borders.
 class math_BFGS 
 {
 public:
@@ -51,8 +56,13 @@ public:
   //! initialization to effectively compute the minimum of the
   //! function F.
   Standard_EXPORT math_BFGS(const Standard_Integer NbVariables, const Standard_Real Tolerance = 1.0e-8, const Standard_Integer NbIterations = 200, const Standard_Real ZEPS = 1.0e-12);
-Standard_EXPORT virtual ~math_BFGS();
-  
+
+  Standard_EXPORT virtual ~math_BFGS();
+
+  //! Set boundaries for conditional optimization.
+  //! The expected indices range of vectors is [1, NbVariables].
+  Standard_EXPORT void SetBoundary(const math_Vector& theLeftBorder, const math_Vector& theRightBorder);
+
   //! Given the starting point StartingPoint,
   //! minimization is done on the function F.
   //! The solution F = Fi is found when :
@@ -120,6 +130,9 @@ protected:
   Standard_Real XTol;
   Standard_Real EPSZ;
   Standard_Integer nbiter;
+  Standard_Boolean myIsBoundsDefined;
+  math_Vector myLeft;
+  math_Vector myRight;
 
 
 private:

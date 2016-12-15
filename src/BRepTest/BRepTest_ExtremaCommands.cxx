@@ -75,7 +75,7 @@ static Standard_Integer distmini(Draw_Interpretor& di, Standard_Integer n, const
 
   Standard_Real aDeflection = Precision::Confusion();
   if (n == 5)
-    aDeflection = Draw::Atoi(a[4]);
+    aDeflection = Draw::Atof(a[4]);
 
   BRepExtrema_DistShapeShape dst(S1 ,S2, aDeflection);
 

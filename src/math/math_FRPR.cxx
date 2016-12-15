@@ -73,9 +73,9 @@ public :
 
         *P = *Dir;
         P->Multiply(x);
-        P->Add(*P0);        
-        F->Value(*P, fval);
-        return Standard_True;
+        P->Add(*P0);
+        fval = 0.;
+        return F->Value(*P, fval);
      }
 
 static Standard_Boolean MinimizeDirection(math_Vector& P,

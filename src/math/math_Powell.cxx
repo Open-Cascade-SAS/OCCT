@@ -75,8 +75,9 @@ Standard_Boolean DirFunctionBis::Value(const Standard_Real x, Standard_Real& fva
   *P = *Dir;
   P->Multiply(x);
   P->Add(*P0);
-  F->Value(*P, fval);
-  return Standard_True;
+
+  fval = 0.0;
+  return F->Value(*P, fval);
 }
 
 

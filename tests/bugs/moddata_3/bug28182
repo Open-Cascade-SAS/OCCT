@@ -1,0 +1,39 @@
+puts "============"
+puts "CR28182"
+puts "==========="
+puts ""
+###############################################################################
+# BRepExtrema_DistShapeShape returns bad result of non-default deflection is used
+###############################################################################
+
+pload MODELING
+
+restore [locate_data_file bug28175_borders2.brep] b
+restore [locate_data_file bug28175_segments2_diff.brep] s
+explode s
+donly s_198 b
+
+set ref_nbsol 4
+set defl 0.0001
+
+set res [distmini r s_198 b $defl]
+
+set redges [lrange [lindex [split $res \n] 1] 1 end]
+set nbsol [llength $redges]
+set dist [dval r_val]
+
+don b s_198
+foreach q $redges { display $q; foreach v [explode $q] { display $v } }
+fit
+
+if { $dist > $defl } {
+  puts "Error: too big distance is reported: $dist"
+} else {
+  puts "OK: reported distance $dist is below $defl"
+}
+
+if {$nbsol != $ref_nbsol} {
+  puts "Error: $ref_nbsol solutions expected, but $nbsol found"
+} else {
+  puts "OK: $ref_nbsol solutions are found"
+}

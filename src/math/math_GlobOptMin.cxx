@@ -288,9 +288,11 @@ Standard_Boolean math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt
     {
       newtonMinimum.Location(theOutPnt);
       theVal = newtonMinimum.Minimum();
+
+      if (isInside(theOutPnt))
+        return Standard_True;
     }
-    else return Standard_False;
-  } else
+  }
 
   // BFGS method used.
   if (myCont >= 1 &&
@@ -299,14 +301,18 @@ Standard_Boolean math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt
     math_MultipleVarFunctionWithGradient* aTmp =
       dynamic_cast<math_MultipleVarFunctionWithGradient*> (myFunc);
     math_BFGS bfgs(aTmp->NbVariables());
+    bfgs.SetBoundary(myGlobA, myGlobB);
     bfgs.Perform(*aTmp, thePnt);
+
     if (bfgs.IsDone())
     {
       bfgs.Location(theOutPnt);
       theVal = bfgs.Minimum();
+
+      if (isInside(theOutPnt))
+        return Standard_True;
     }
-    else return Standard_False;
-  } else
+  }
 
   // Powell method used.
   if (dynamic_cast<math_MultipleVarFunction*>(myFunc))
@@ -322,14 +328,13 @@ Standard_Boolean math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt
     {
       powell.Location(theOutPnt);
       theVal = powell.Minimum();
+
+      if (isInside(theOutPnt))
+        return Standard_True;
     }
-    else return Standard_False;
   }
 
-  if (isInside(theOutPnt))
-    return Standard_True;
-  else
-    return Standard_False;
+  return Standard_False;
 }
 
 //=======================================================================

@@ -21,6 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
+#include <Precision.hxx>
 #include <Standard_Boolean.hxx>
 #include <math_Status.hxx>
 #include <math_Vector.hxx>
@@ -47,7 +48,11 @@ public:
   //! positive (if the smaller eigenvalue of H < Convexity)
   //! or IsConverged() returns True for 2 successives Iterations.
   //! Warning: This constructor does not perform computation.
-  Standard_EXPORT math_NewtonMinimum(const math_MultipleVarFunctionWithHessian& theFunction, const Standard_Real theTolerance = 1.0e-7, const Standard_Integer theNbIterations = 40, const Standard_Real theConvexity = 1.0e-6, const Standard_Boolean theWithSingularity = Standard_True);
+  Standard_EXPORT math_NewtonMinimum(const math_MultipleVarFunctionWithHessian& theFunction,
+                                     const Standard_Real theTolerance = Precision::Confusion(),
+                                     const Standard_Integer theNbIterations = 40,
+                                     const Standard_Real theConvexity = 1.0e-6,
+                                     const Standard_Boolean theWithSingularity = Standard_True);
   
   //! Search the solution.
   Standard_EXPORT void Perform (math_MultipleVarFunctionWithHessian& theFunction, const math_Vector& theStartingPoint);

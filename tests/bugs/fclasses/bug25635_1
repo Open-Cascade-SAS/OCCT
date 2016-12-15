@@ -14,33 +14,8 @@ set info [2dextrema c1 c2]
 set tol_abs 7.e-5
 set tol_rel 0.01
 
-#-1
+# Check result distance.
 regexp "dist 1: +(\[-0-9.+eE\]+)" ${info} full dist_1
 
 set expected_dist_1 0.
 checkreal "Distance" ${dist_1} ${expected_dist_1} ${tol_abs} ${tol_rel}
-
-#-2
-set dump_list [dump ext_1]
-
-regexp { *Parameters *: *([-0-9.+eE]+) *([-0-9.+eE]+)} ${dump_list} full Parameter1 Parameter2
-regexp { *Origin *:([-0-9.+eE]+), *([-0-9.+eE]+) } ${dump_list} full OriginX OriginY
-regexp { *Axis *:([-0-9.+eE]+), *([-0-9.+eE]+) } ${dump_list} full AxisX AxisY
-
-set expected_Parameter1 0.
-checkreal "Parameter1" ${Parameter1} ${expected_Parameter1} ${tol_abs} ${tol_rel}
-
-set expected_Parameter2 0.
-checkreal "Parameter2" ${Parameter2} ${expected_Parameter2} ${tol_abs} ${tol_rel}
-
-set expected_OriginX 2.
-checkreal "OriginX" ${OriginX} ${expected_OriginX} ${tol_abs} ${tol_rel}
-
-set expected_OriginY 0.0
-checkreal "OriginY" ${OriginY} ${expected_OriginY} ${tol_abs} ${tol_rel}
-
-set expected_AxisX 1.
-checkreal "AxisX" ${AxisX} ${expected_AxisX} ${tol_abs} ${tol_rel}
-
-set expected_AxisY 0.
-checkreal "AxisY" ${AxisY} ${expected_AxisY} ${tol_abs} ${tol_rel}

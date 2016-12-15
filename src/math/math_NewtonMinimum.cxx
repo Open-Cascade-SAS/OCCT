@@ -128,23 +128,24 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
        return;
     }
 
-        
-    
     MinEigenValue = CalculVP.Values() ( CalculVP.Values().Min());
-    if ( MinEigenValue < CTol) {
-       Convex = Standard_False;
-       if (NoConvexTreatement) {
-           Standard_Real Delta = CTol+0.1*Abs(MinEigenValue) -MinEigenValue ;
-           for (ii=1; ii<=TheGradient.Length(); ii++) {
-               TheHessian(ii, ii) += Delta;
-	     }
-	 }
-       else {
-         Done = Standard_False;
-         TheStatus = math_FunctionError;
-         return;
-       }
-     }
+    if ( MinEigenValue < CTol) 
+    {
+      Convex = Standard_False;
+      if (NoConvexTreatement && // Treatment is allowed.
+          Abs (MinEigenValue) > CTol) // Treatment will have effect.
+      {
+        Standard_Real Delta = CTol + 0.1 * Abs(MinEigenValue) - MinEigenValue;
+        for (ii=1; ii<=TheGradient.Length(); ii++)
+          TheHessian(ii, ii) += Delta;
+      }
+      else
+      {
+        Done = Standard_False;
+        TheStatus = math_FunctionError;
+        return;
+      }
+    }
 
     // Schemas de Newton
 
