@@ -588,6 +588,25 @@ else()
   OCCT_CHECK_AND_UNSET ("INSTALL_TBB")
 endif()
 
+# EIGEN
+# search for CSF_EIGEN variable in EXTERNLIB of each being used toolkit
+OCCT_IS_PRODUCT_REQUIRED (CSF_EIGEN CAN_USE_EIGEN)
+
+if (CAN_USE_EIGEN)
+  set (USE_EIGEN OFF CACHE BOOL "${USE_EIGEN_DESCR}")
+
+  if (USE_EIGEN)
+    add_definitions (-DHAVE_EIGEN)
+    OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/eigen")
+  else()
+    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_EIGEN")
+  endif()
+else()
+  OCCT_CHECK_AND_UNSET ("USE_EIGEN")
+
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_EIGEN")
+endif()
+
 # Doxygen
 if (BUILD_DOC_Overview)
   if (NOT DEFINED INSTALL_DOC_Overview)
