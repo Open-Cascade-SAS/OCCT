@@ -9,10 +9,21 @@ puts ""
 restore [locate_data_file OCC26310-b1.brep] b1 
 restore [locate_data_file OCC26310-b2.brep] b2 
 
-bop b1 b2
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
 
-bopcut res1
-boptuc res2
+
+# SECTION
+bbop rr 4
+
+# CUT 1-2
+bbop res1 2
+
+# CUT 2-1
+bbop res2 3
 
 checkshape res1
 checkshape res2
@@ -28,9 +39,13 @@ if { [string compare -nocase $log2 "Shape(s) seem(s) to be valid for BOP.\n"] } 
   puts "ERROR. res2 is not valid for BOP"
 }
 
+checknbshapes res1 -wire 6 -face 6 -shell 1 -solid 1 -t
+checknbshapes res2 -wire 6 -face 6 -shell 1 -solid 1 -t
+
 smallview
-donly res1
+donly rr
 fit
+donly res1
 xwd ${imagedir}/${casename}_1.png
 donly res2
 fit

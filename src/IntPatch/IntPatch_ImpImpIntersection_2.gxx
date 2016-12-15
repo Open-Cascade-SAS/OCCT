@@ -172,33 +172,13 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
         aBox2.Add(gp_Pnt2d(aU2l, S2->LastVParameter()));
 
         // Resolution is too big if the cylinder radius is
-        // too small. Therefore, we shall bounde its value above. 
+        // too small. Therefore, we shall bind its value above. 
         // Here, we use simple constant.
         const Standard_Real a2DTol = Min(1.0e-4, Min( S1->UResolution(TolTang),
                                             S2->UResolution(TolTang)));
 
-        //The bigger range the bigger nunber of points in Walking-line (WLine)
-        //we will be able to add and, consequently, we will obtain more
-        //precise intersection line.
-        //Every point of WLine is determined as function from U1-parameter,
-        //where U1 is U-parameter on 1st quadric.
-        //Therefore, we should use quadric with bigger range as 1st parameter
-        //in IntCyCy() function.
-        //On the other hand, there is no point in reversing in case of
-        //analytical intersection (when result is line, ellipse, point...).
-        //This result is independent of the arguments order.
-        Standard_Boolean isReversed = ((aU2l - aU2f) < (aU1l - aU1f));
-
-        if(isReversed)
-        {
-          myDone = IntCyCy(quad2, quad1, TolTang, a2DTol, aBox2, aBox1,
-                                    Standard_True, empt, SameSurf, multpoint, slin, spnt);
-        }
-        else
-        {
-          myDone = IntCyCy(quad1, quad2, TolTang, a2DTol, aBox1, aBox2,
-                                    Standard_False, empt, SameSurf, multpoint, slin, spnt);
-        }
+        myDone = IntCyCy(quad1, quad2, TolTang, a2DTol, aBox1, aBox2,
+                                    empt, SameSurf, multpoint, slin, spnt);
 
         if (myDone == IntPatch_ImpImpIntersection::IntStatus_Fail)
         {

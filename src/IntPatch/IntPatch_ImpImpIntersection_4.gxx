@@ -16,11 +16,10 @@
 
 #include <algorithm>
 #include <Bnd_Range.hxx>
-#include <IntAna_ListIteratorOfListOfCurve.hxx>
 #include <IntAna_ListOfCurve.hxx>
-#include <IntPatch_WLine.hxx>
-#include <Standard_DivideByZero.hxx>
 #include <math_Matrix.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <Standard_DivideByZero.hxx>
 
 //If Abs(a) <= aNulValue then it is considered that a = 0.
 static const Standard_Real aNulValue = 1.0e-11;
@@ -372,7 +371,7 @@ public:
       myV2 = RealLast();
     }
 
-    //Equal to 0 for 1st surface non-zerro for 2nd one.
+    //Equal to 0 for 1st surface non-zero for 2nd one.
     Standard_Integer mySurfID;
 
     Standard_Real myU1;
@@ -413,8 +412,55 @@ public:
   {
   };
 
+  // Returns parameters of system solved while finding
+  // intersection line
+  const ComputationMethods::stCoeffsValue &SICoeffs() const
+  {
+    return myCoeffs;
+  }
+
+  // Returns quadric correspond to the index theIdx.
+  const IntSurf_Quadric& GetQSurface(const Standard_Integer theIdx) const
+  {
+    if (theIdx <= 1)
+      return myQuad1;
+
+    return myQuad2;
+  }
+
+  // Returns TRUE in case of reverting surfaces
+  Standard_Boolean IsReversed() const
+  {
+    return myIsReverse;
+  }
+
+  // Returns 2D-tolerance
+  Standard_Real Get2dTolerance() const
+  {
+    return myTol2D;
+  }
+
+  // Returns 3D-tolerance
+  Standard_Real Get3dTolerance() const
+  {
+    return myTol3D;
+  }
+
+  // Returns UV-bounds of 1st surface
+  const Bnd_Box2d& UVS1() const
+  {
+    return myUVSurf1;
+  }
+
+  // Returns UV-bounds of 2nd surface
+  const Bnd_Box2d& UVS2() const
+  {
+    return myUVSurf2;
+  }
+
   void AddBoundaryPoint(const Handle(IntPatch_WLine)& theWL,
                         const Standard_Real theU1,
+                        const Standard_Real theU1Min,
                         const Standard_Real theU2,
                         const Standard_Real theV1,
                         const Standard_Real theV1Prev,
@@ -425,8 +471,9 @@ public:
                         Standard_Boolean& isTheFound1,
                         Standard_Boolean& isTheFound2) const;
   
-  Standard_Boolean BoundariesComputing(Standard_Real theU1f[],
-                                       Standard_Real theU1l[]) const;
+  static Standard_Boolean BoundariesComputing(const ComputationMethods::stCoeffsValue &theCoeffs,
+                                              const Standard_Real thePeriod,
+                                              Bnd_Range theURange[]);
   
   void BoundaryEstimation(const gp_Cylinder& theCy1,
                           const gp_Cylinder& theCy2,
@@ -898,7 +945,6 @@ Standard_Boolean CyCyAnalyticalIntersect( const IntSurf_Quadric& Quad1,
                                           const IntSurf_Quadric& Quad2,
                                           const IntAna_QuadQuadGeo& theInter,
                                           const Standard_Real Tol,
-                                          const Standard_Boolean isTheReverse,
                                           Standard_Boolean& Empty,
                                           Standard_Boolean& Same,
                                           Standard_Boolean& Multpoint,
@@ -943,17 +989,8 @@ Standard_Boolean CyCyAnalyticalIntersect( const IntSurf_Quadric& Quad1,
       ptsol.SetValue(psol,Tol,Standard_True);
 
       Standard_Real U1,V1,U2,V2;
-
-      if(isTheReverse)
-      {
-        Quad2.Parameters(psol, U1, V1);
-        Quad1.Parameters(psol, U2, V2);
-      }
-      else
-      {
-        Quad1.Parameters(psol, U1, V1);
-        Quad2.Parameters(psol, U2, V2);
-      }
+      Quad1.Parameters(psol, U1, V1);
+      Quad2.Parameters(psol, U2, V2);
 
       ptsol.SetParameters(U1,V1,U2,V2);
       spnt.Append(ptsol);
@@ -1100,30 +1137,12 @@ Standard_Boolean CyCyAnalyticalIntersect( const IntSurf_Quadric& Quad1,
       pmult2.SetMultiple(Standard_True);
 
       Standard_Real oU1,oV1,oU2,oV2;
-
-      if(isTheReverse)
-      {
-        Quad2.Parameters(pttang1,oU1,oV1);
-        Quad1.Parameters(pttang1,oU2,oV2);
-      }
-      else
-      {
-        Quad1.Parameters(pttang1,oU1,oV1);
-        Quad2.Parameters(pttang1,oU2,oV2);
-      }
+      Quad1.Parameters(pttang1, oU1, oV1);
+      Quad2.Parameters(pttang1, oU2, oV2);
 
       pmult1.SetParameters(oU1,oV1,oU2,oV2);
-
-      if(isTheReverse)
-      {
-        Quad2.Parameters(pttang2,oU1,oV1); 
-        Quad1.Parameters(pttang2,oU2,oV2);        
-      }
-      else
-      {
-        Quad1.Parameters(pttang2,oU1,oV1); 
-        Quad2.Parameters(pttang2,oU2,oV2);
-      }
+      Quad1.Parameters(pttang2,oU1,oV1); 
+      Quad2.Parameters(pttang2,oU2,oV2);
 
       pmult2.SetParameters(oU1,oV1,oU2,oV2);
 
@@ -1161,17 +1180,8 @@ Standard_Boolean CyCyAnalyticalIntersect( const IntSurf_Quadric& Quad1,
         aIP.SetValue(aP,Tol,Standard_False);
         aIP.SetMultiple(Standard_False);
         //
-
-        if(isTheReverse)
-        {
-          Quad2.Parameters(aP, aU1, aV1); 
-          Quad1.Parameters(aP, aU2, aV2);          
-        }
-        else
-        {
-          Quad1.Parameters(aP, aU1, aV1); 
-          Quad2.Parameters(aP, aU2, aV2);
-        }
+        Quad1.Parameters(aP, aU1, aV1); 
+        Quad2.Parameters(aP, aU2, aV2);
 
         aIP.SetParameters(aU1, aV1, aU2, aV2);
         //
@@ -1245,16 +1255,8 @@ Standard_Boolean CyCyAnalyticalIntersect( const IntSurf_Quadric& Quad1,
         aIP.SetMultiple(Standard_False);
         //
 
-        if(isTheReverse)
-        {
-          Quad2.Parameters(aP, aU1, aV1); 
-          Quad1.Parameters(aP, aU2, aV2);          
-        }
-        else
-        {
-          Quad1.Parameters(aP, aU1, aV1); 
-          Quad2.Parameters(aP, aU2, aV2);
-        }
+        Quad1.Parameters(aP, aU1, aV1);
+        Quad2.Parameters(aP, aU2, aV2);
 
         aIP.SetParameters(aU1, aV1, aU2, aV2);
         //
@@ -1418,7 +1420,7 @@ Standard_Boolean ComputationMethods::CylCylMonotonicity(const Standard_Real theU
 //=======================================================================
 //function : CylCylComputeParameters
 //purpose  : Computes U2 (U-parameter of the 2nd cylinder) and, if theDelta != 0,
-//            esimates the tolerance of U2-computing (estimation result is
+//            estimates the tolerance of U2-computing (estimation result is
 //            assigned to *theDelta value).
 //=======================================================================
 Standard_Boolean ComputationMethods::CylCylComputeParameters(const Standard_Real theU1par,
@@ -1439,14 +1441,14 @@ Standard_Boolean ComputationMethods::CylCylComputeParameters(const Standard_Real
   Standard_Real anArg = cos(theU1par - theCoeffs.mFI1);
   anArg = theCoeffs.mB*anArg + theCoeffs.mC;
 
-  if(anArg > aTol)
+  if(anArg >= aTol)
   {
     if(theDelta)
       *theDelta = 0.0;
 
     anArg = 1.0;
   }
-  else if(anArg < -aTol)
+  else if(anArg <= -aTol)
   {
     if(theDelta)
       *theDelta = 0.0;
@@ -1494,6 +1496,10 @@ Standard_Boolean ComputationMethods::CylCylComputeParameters(const Standard_Real
   return Standard_True;
 }
 
+//=======================================================================
+//function : CylCylComputeParameters
+//purpose  : Computes V1 and V2 (V-parameters of the 1st and 2nd cylinder respectively).
+//=======================================================================
 Standard_Boolean ComputationMethods::CylCylComputeParameters(const Standard_Real theU1,
                                                 const Standard_Real theU2,
                                                 const stCoeffsValue& theCoeffs,
@@ -1513,7 +1519,11 @@ Standard_Boolean ComputationMethods::CylCylComputeParameters(const Standard_Real
   return Standard_True;
 }
 
-
+//=======================================================================
+//function : CylCylComputeParameters
+//purpose  : Computes U2 (U-parameter of the 2nd cylinder),
+//            V1 and V2 (V-parameters of the 1st and 2nd cylinder respectively).
+//=======================================================================
 Standard_Boolean ComputationMethods::CylCylComputeParameters(const Standard_Real theU1par,
                                                 const Standard_Integer theWLIndex,
                                                 const stCoeffsValue& theCoeffs,
@@ -1728,31 +1738,42 @@ Standard_Boolean InscribePoint( const Standard_Real theUfTarget,
 
 //=======================================================================
 //function : InscribeInterval
-//purpose  : Adjusts theUfGiven and (after that) adjusts theUlGiven to the result
+//purpose  : Shifts theRange in order to make at least one of its 
+//            boundary in the range [theUfTarget, theUlTarget]
 //=======================================================================
 static Standard_Boolean InscribeInterval(const Standard_Real theUfTarget,
-                                      const Standard_Real theUlTarget,
-                                      Standard_Real& theUfGiven,
-                                      Standard_Real& theUlGiven,
-                                      const Standard_Real theTol2D,
-                                      const Standard_Real thePeriod)
+                                         const Standard_Real theUlTarget,
+                                         Bnd_Range &theRange,
+                                         const Standard_Real theTol2D,
+                                         const Standard_Real thePeriod)
 {
-  Standard_Real anUpar = theUfGiven;
-  const Standard_Real aDelta = theUlGiven - theUfGiven;
-  if(InscribePoint(theUfTarget, theUlTarget, anUpar,
-                        theTol2D, thePeriod, Standard_False))
+  Standard_Real anUpar = 0.0;
+  if (!theRange.GetMin(anUpar))
   {
-    theUfGiven = anUpar;
-    theUlGiven = theUfGiven + aDelta;
+    return Standard_False;
+  }
+
+  const Standard_Real aDelta = theRange.Delta();
+  if(InscribePoint(theUfTarget, theUlTarget, anUpar, 
+          theTol2D, thePeriod, (Abs(theUlTarget-anUpar) < theTol2D)))
+  {
+    theRange.SetVoid();
+    theRange.Add(anUpar);
+    theRange.Add(anUpar + aDelta);
   }
   else 
   {
-    anUpar = theUlGiven;
-    if(InscribePoint(theUfTarget, theUlTarget, anUpar,
-                        theTol2D, thePeriod, Standard_False))
+    if (!theRange.GetMAX(anUpar))
     {
-      theUlGiven = anUpar;
-      theUfGiven = theUlGiven - aDelta;
+      return Standard_False;
+    }
+
+    if(InscribePoint(theUfTarget, theUlTarget, anUpar,
+          theTol2D, thePeriod, (Abs(theUfTarget-anUpar) < theTol2D)))
+    {
+      theRange.SetVoid();
+      theRange.Add(anUpar);
+      theRange.Add(anUpar - aDelta);
     }
     else
     {
@@ -1811,6 +1832,11 @@ static Standard_Boolean ExcludeNearElements(Standard_Real theArr[],
 //=======================================================================
 //function : AddPointIntoWL
 //purpose  : Surf1 is a surface, whose U-par is variable.
+//           If theFlBefore == TRUE then we enable the U1-parameter
+//            of the added point to be less than U1-parameter of
+//           previously added point (in general U1-parameter is
+//           always increased; therefore, this situation is abnormal).
+//           If theOnlyCheck==TRUE then no point will be added to theLine.
 //=======================================================================
 static Standard_Boolean AddPointIntoWL( const IntSurf_Quadric& theQuad1,
                                         const IntSurf_Quadric& theQuad2,
@@ -1832,8 +1858,8 @@ static Standard_Boolean AddPointIntoWL( const IntSurf_Quadric& theQuad1,
                                         const Standard_Integer theWLIndex,
                                         const Standard_Real theTol3D,
                                         const Standard_Real theTol2D,
-                                        const Standard_Boolean theFlForce,
-                                        const Standard_Boolean theFlBefore = Standard_False)
+                                        const Standard_Boolean theFlBefore = Standard_False,
+                                        const Standard_Boolean theOnlyCheck = Standard_False)
 {
   //Check if the point is in the domain or can be inscribed in the domain after adjusting.
   
@@ -1841,9 +1867,38 @@ static Standard_Boolean AddPointIntoWL( const IntSurf_Quadric& theQuad1,
           aPt2(theQuad2.Value(thePntOnSurf2.X(), thePntOnSurf2.Y()));
 
   Standard_Real aU1par = thePntOnSurf1.X();
+
+  // aU1par always increases. Therefore, we must reduce its
+  // value in order to continue creation of WLine.
   if(!InscribePoint(theUfSurf1, theUlSurf1, aU1par, theTol2D,
-                                    thePeriodOfSurf1, theFlForce))
+                  thePeriodOfSurf1, aU1par > 0.5*(theUfSurf1+theUlSurf1)))
     return Standard_False;
+
+  if ((theLine->NbPoints() > 0) &&
+      ((theUlSurf1 - theUfSurf1) >= thePeriodOfSurf1) &&      
+      (((aU1par + thePeriodOfSurf1 - theUlSurf1) <= theTol2D) ||
+       ((aU1par - thePeriodOfSurf1 - theUfSurf1) >= theTol2D)))
+  {
+    // aU1par can be adjusted to both theUlSurf1 and theUfSurf1
+    // with equal possibilities. This code fragment allows choosing
+    // correct parameter from these two variants.
+
+    Standard_Real aU1 = 0.0, aV1 = 0.0;
+    if (isTheReverse)
+    {
+      theLine->Value(theLine->NbPoints()).ParametersOnS2(aU1, aV1);
+    }
+    else
+    {
+      theLine->Value(theLine->NbPoints()).ParametersOnS1(aU1, aV1);
+    }
+
+    const Standard_Real aDelta = aU1 - aU1par;
+    if (2.0*Abs(aDelta) > thePeriodOfSurf1)
+    {
+      aU1par += Sign(thePeriodOfSurf1, aDelta);
+    }
+  }
 
   Standard_Real aU2par = thePntOnSurf2.X();
   if(!InscribePoint(theUfSurf2, theUlSurf2, aU2par, theTol2D,
@@ -1887,7 +1942,7 @@ static Standard_Boolean AddPointIntoWL( const IntSurf_Quadric& theQuad1,
     if(!theFlBefore && (aU1par <= aUl))
     {
       //Parameter value must be increased if theFlBefore == FALSE.
-      
+
       aU1par += thePeriodOfSurf1;
 
       //The condition is as same as in
@@ -1902,6 +1957,9 @@ static Standard_Boolean AddPointIntoWL( const IntSurf_Quadric& theQuad1,
       }
     }
 
+    if (theOnlyCheck)
+      return Standard_True;
+
     //theTol2D is minimal step along parameter changed. 
     //Therefore, if we apply this minimal step two 
     //neighbour points will be always "same". Consequently,
@@ -1912,6 +1970,9 @@ static Standard_Boolean AddPointIntoWL( const IntSurf_Quadric& theQuad1,
       theLine->RemovePoint(aNbPnts);
     }
   }
+
+  if (theOnlyCheck)
+    return Standard_True;
 
   theLine->Add(aPnt);
 
@@ -1959,6 +2020,7 @@ static Standard_Boolean AddPointIntoWL( const IntSurf_Quadric& theQuad1,
 //=======================================================================
 void WorkWithBoundaries::AddBoundaryPoint(const Handle(IntPatch_WLine)& theWL,
                                           const Standard_Real theU1,
+                                          const Standard_Real theU1Min,
                                           const Standard_Real theU2,
                                           const Standard_Real theV1,
                                           const Standard_Real theV1Prev,
@@ -1995,7 +2057,6 @@ void WorkWithBoundaries::AddBoundaryPoint(const Handle(IntPatch_WLine)& theWL,
 
     for(Standard_Integer anIDBound = 0; anIDBound < 2; anIDBound++)
     {
-
       const Standard_Integer anIndex = anIDSurf+anIDBound;
 
       aUVPoint[anIndex].mySurfID = anIDSurf;
@@ -2015,7 +2076,10 @@ void WorkWithBoundaries::AddBoundaryPoint(const Handle(IntPatch_WLine)& theWL,
                                                     theU2, theU1,
                                                     aUVPoint[anIndex].myU1);
 
-      if(!aRes || aUVPoint[anIndex].myU1 >= theU1)
+      // aUVPoint[anIndex].myU1 is considered to be nearer to theU1 than
+      // to theU1+/-Period
+      if (!aRes || (aUVPoint[anIndex].myU1 >= theU1) ||
+                              (aUVPoint[anIndex].myU1 < theU1Min))
       {
         //Intersection point is not found or out of the domain
         aUVPoint[anIndex].myU1 = RealLast();
@@ -2218,8 +2282,10 @@ static void SeekAdditionalPoints( const IntSurf_Quadric& theQuad1,
 //purpose  : Computes true domain of future intersection curve (allows
 //            avoiding excess iterations)
 //=======================================================================
-Standard_Boolean WorkWithBoundaries::BoundariesComputing(Standard_Real theU1f[],
-                                                         Standard_Real theU1l[]) const
+Standard_Boolean WorkWithBoundaries::
+            BoundariesComputing(const ComputationMethods::stCoeffsValue &theCoeffs,
+                                const Standard_Real thePeriod,
+                                Bnd_Range theURange[])
 {
   //All comments to this method is related to the comment
   //to ComputationMethods class
@@ -2229,59 +2295,58 @@ Standard_Boolean WorkWithBoundaries::BoundariesComputing(Standard_Real theU1f[],
   //Evidently,
   //    -1 <= B*cos(U1-FI1)+C <= 1
 
-  if(myCoeffs.mB > 0.0)
+  if (theCoeffs.mB > 0.0)
   {
     // -(1+C)/B <= cos(U1-FI1) <= (1-C)/B
 
-    if(myCoeffs.mB + Abs(myCoeffs.mC) < -1.0)
+    if (theCoeffs.mB + Abs(theCoeffs.mC) < -1.0)
     {
       //(1-C)/B < -1 or -(1+C)/B > 1  ==> No solution
       
       return Standard_False;
     }
-    else if(myCoeffs.mB + Abs(myCoeffs.mC) <= 1.0)
+    else if (theCoeffs.mB + Abs(theCoeffs.mC) <= 1.0)
     {
       //(1-C)/B >= 1 and -(1+C)/B <= -1 ==> U=[0;2*PI]+aFI1
-
-      theU1f[0] = myCoeffs.mFI1;
-      theU1l[0] = myPeriod + myCoeffs.mFI1;
+      theURange[0].Add(theCoeffs.mFI1);
+      theURange[0].Add(thePeriod + theCoeffs.mFI1);
     }
-    else if((1 + myCoeffs.mC <= myCoeffs.mB) &&
-            (myCoeffs.mB <= 1 - myCoeffs.mC))
+    else if ((1 + theCoeffs.mC <= theCoeffs.mB) &&
+             (theCoeffs.mB <= 1 - theCoeffs.mC))
     {
       //(1-C)/B >= 1 and -(1+C)/B >= -1 ==> 
       //(U=[0;aDAngle]+aFI1) || (U=[2*PI-aDAngle;2*PI]+aFI1),
       //where aDAngle = acos(-(myCoeffs.mC + 1) / myCoeffs.mB)
 
-      Standard_Real anArg = -(myCoeffs.mC + 1) / myCoeffs.mB;
+      Standard_Real anArg = -(theCoeffs.mC + 1) / theCoeffs.mB;
       if(anArg > 1.0)
         anArg = 1.0;
       if(anArg < -1.0)
         anArg = -1.0;
 
       const Standard_Real aDAngle = acos(anArg);
-      theU1f[0] = myCoeffs.mFI1;
-      theU1l[0] = aDAngle + myCoeffs.mFI1;
-      theU1f[1] = myPeriod - aDAngle + myCoeffs.mFI1;
-      theU1l[1] = myPeriod + myCoeffs.mFI1;
+      theURange[0].Add(theCoeffs.mFI1);
+      theURange[0].Add(aDAngle + theCoeffs.mFI1);
+      theURange[1].Add(thePeriod - aDAngle + theCoeffs.mFI1);
+      theURange[1].Add(thePeriod + theCoeffs.mFI1);
     }
-    else if((1 - myCoeffs.mC <= myCoeffs.mB) &&
-            (myCoeffs.mB <= 1 + myCoeffs.mC))
+    else if ((1 - theCoeffs.mC <= theCoeffs.mB) &&
+             (theCoeffs.mB <= 1 + theCoeffs.mC))
     {
       //(1-C)/B <= 1 and -(1+C)/B <= -1 ==> U=[aDAngle;2*PI-aDAngle]+aFI1
       //where aDAngle = acos((1 - myCoeffs.mC) / myCoeffs.mB)
 
-      Standard_Real anArg = (1 - myCoeffs.mC) / myCoeffs.mB;
+      Standard_Real anArg = (1 - theCoeffs.mC) / theCoeffs.mB;
       if(anArg > 1.0)
         anArg = 1.0;
       if(anArg < -1.0)
         anArg = -1.0;
 
       const Standard_Real aDAngle = acos(anArg);
-      theU1f[0] = aDAngle + myCoeffs.mFI1;
-      theU1l[0] = myPeriod - aDAngle + myCoeffs.mFI1;
+      theURange[0].Add(aDAngle + theCoeffs.mFI1);
+      theURange[0].Add(thePeriod - aDAngle + theCoeffs.mFI1);
     }
-    else if(myCoeffs.mB - Abs(myCoeffs.mC) >= 1.0)
+    else if (theCoeffs.mB - Abs(theCoeffs.mC) >= 1.0)
     {
       //(1-C)/B <= 1 and -(1+C)/B >= -1 ==>
       //(U=[aDAngle1;aDAngle2]+aFI1) ||
@@ -2289,8 +2354,8 @@ Standard_Boolean WorkWithBoundaries::BoundariesComputing(Standard_Real theU1f[],
       //where aDAngle1 = acos((1 - myCoeffs.mC) / myCoeffs.mB),
       //      aDAngle2 = acos(-(myCoeffs.mC + 1) / myCoeffs.mB).
 
-      Standard_Real anArg1 = (1 - myCoeffs.mC) / myCoeffs.mB,
-                    anArg2 = -(myCoeffs.mC + 1) / myCoeffs.mB;
+      Standard_Real anArg1 = (1 - theCoeffs.mC) / theCoeffs.mB,
+                    anArg2 = -(theCoeffs.mC + 1) / theCoeffs.mB;
       if(anArg1 > 1.0)
         anArg1 = 1.0;
       if(anArg1 < -1.0)
@@ -2304,77 +2369,75 @@ Standard_Boolean WorkWithBoundaries::BoundariesComputing(Standard_Real theU1f[],
       const Standard_Real aDAngle1 = acos(anArg1), aDAngle2 = acos(anArg2);
       //(U=[aDAngle1;aDAngle2]+aFI1) ||
       //(U=[2*PI-aDAngle2;2*PI-aDAngle1]+aFI1)
-
-      theU1f[0] = aDAngle1 + myCoeffs.mFI1;
-      theU1l[0] = aDAngle2 + myCoeffs.mFI1;
-      theU1f[1] = myPeriod - aDAngle2 + myCoeffs.mFI1;
-      theU1l[1] = myPeriod - aDAngle1 + myCoeffs.mFI1;
+      theURange[0].Add(aDAngle1 + theCoeffs.mFI1);
+      theURange[0].Add(aDAngle2 + theCoeffs.mFI1);
+      theURange[1].Add(thePeriod - aDAngle2 + theCoeffs.mFI1);
+      theURange[1].Add(thePeriod - aDAngle1 + theCoeffs.mFI1);
     }
     else
     {
       return Standard_False;
     }
   }
-  else if(myCoeffs.mB < 0.0)
+  else if (theCoeffs.mB < 0.0)
   {
     // (1-C)/B <= cos(U1-FI1) <= -(1+C)/B
 
-    if(myCoeffs.mB + Abs(myCoeffs.mC) > 1.0)
+    if (theCoeffs.mB + Abs(theCoeffs.mC) > 1.0)
     {
       // -(1+C)/B < -1 or (1-C)/B > 1 ==> No solutions
       return Standard_False;
     }
-    else if(-myCoeffs.mB + Abs(myCoeffs.mC) <= 1.0)
+    else if (-theCoeffs.mB + Abs(theCoeffs.mC) <= 1.0)
     {
       //  -(1+C)/B >= 1 and (1-C)/B <= -1 ==> U=[0;2*PI]+aFI1
-      
-      theU1f[0] = myCoeffs.mFI1;
-      theU1l[0] = myPeriod + myCoeffs.mFI1;
+      theURange[0].Add(theCoeffs.mFI1);
+      theURange[0].Add(thePeriod + theCoeffs.mFI1);
     }
-    else if((-myCoeffs.mC - 1 <= myCoeffs.mB) &&
-            ( myCoeffs.mB <= myCoeffs.mC - 1))
+    else if ((-theCoeffs.mC - 1 <= theCoeffs.mB) &&
+             (theCoeffs.mB <= theCoeffs.mC - 1))
     {
       //  -(1+C)/B >= 1 and (1-C)/B >= -1 ==> 
       //(U=[0;aDAngle]+aFI1) || (U=[2*PI-aDAngle;2*PI]+aFI1),
       //where aDAngle = acos((1 - myCoeffs.mC) / myCoeffs.mB)
 
-      Standard_Real anArg = (1 - myCoeffs.mC) / myCoeffs.mB;
+      Standard_Real anArg = (1 - theCoeffs.mC) / theCoeffs.mB;
       if(anArg > 1.0)
         anArg = 1.0;
       if(anArg < -1.0)
         anArg = -1.0;
 
       const Standard_Real aDAngle = acos(anArg);
-      theU1f[0] = myCoeffs.mFI1;
-      theU1l[0] = aDAngle + myCoeffs.mFI1;
-      theU1f[1] = myPeriod - aDAngle + myCoeffs.mFI1;
-      theU1l[1] = myPeriod + myCoeffs.mFI1;
+      theURange[0].Add(theCoeffs.mFI1);
+      theURange[0].Add(aDAngle + theCoeffs.mFI1);
+      theURange[1].Add(thePeriod - aDAngle + theCoeffs.mFI1);
+      theURange[1].Add(thePeriod + theCoeffs.mFI1);
     }
-    else if((myCoeffs.mC - 1 <= myCoeffs.mB) &&
-            (myCoeffs.mB <= -myCoeffs.mB - 1))
+    else if ((theCoeffs.mC - 1 <= theCoeffs.mB) &&
+             (theCoeffs.mB <= -theCoeffs.mB - 1))
     {
       //  -(1+C)/B <= 1 and (1-C)/B <= -1 ==> U=[aDAngle;2*PI-aDAngle]+aFI1,
       //where aDAngle = acos(-(myCoeffs.mC + 1) / myCoeffs.mB).
 
-      Standard_Real anArg = -(myCoeffs.mC + 1) / myCoeffs.mB;
+      Standard_Real anArg = -(theCoeffs.mC + 1) / theCoeffs.mB;
       if(anArg > 1.0)
         anArg = 1.0;
       if(anArg < -1.0)
         anArg = -1.0;
 
       const Standard_Real aDAngle = acos(anArg);
-      theU1f[0] = aDAngle + myCoeffs.mFI1;
-      theU1l[0] = myPeriod - aDAngle + myCoeffs.mFI1;
+      theURange[0].Add(aDAngle + theCoeffs.mFI1);
+      theURange[0].Add(thePeriod - aDAngle + theCoeffs.mFI1);
     }
-    else if(-myCoeffs.mB - Abs(myCoeffs.mC) >= 1.0)
+    else if (-theCoeffs.mB - Abs(theCoeffs.mC) >= 1.0)
     {
       //  -(1+C)/B <= 1 and (1-C)/B >= -1 ==>
       //(U=[aDAngle1;aDAngle2]+aFI1) || (U=[2*PI-aDAngle2;2*PI-aDAngle1]+aFI1),
       //where aDAngle1 = acos(-(myCoeffs.mC + 1) / myCoeffs.mB),
       //      aDAngle2 = acos((1 - myCoeffs.mC) / myCoeffs.mB)
 
-      Standard_Real anArg1 = -(myCoeffs.mC + 1) / myCoeffs.mB,
-                    anArg2 = (1 - myCoeffs.mC) / myCoeffs.mB;
+      Standard_Real anArg1 = -(theCoeffs.mC + 1) / theCoeffs.mB,
+                    anArg2 = (1 - theCoeffs.mC) / theCoeffs.mB;
       if(anArg1 > 1.0)
         anArg1 = 1.0;
       if(anArg1 < -1.0)
@@ -2386,10 +2449,10 @@ Standard_Boolean WorkWithBoundaries::BoundariesComputing(Standard_Real theU1f[],
         anArg2 = -1.0;
 
       const Standard_Real aDAngle1 = acos(anArg1), aDAngle2 = acos(anArg2);
-      theU1f[0] = aDAngle1 + myCoeffs.mFI1;
-      theU1l[0] = aDAngle2 + myCoeffs.mFI1;
-      theU1f[1] = myPeriod - aDAngle2 + myCoeffs.mFI1;
-      theU1l[1] = myPeriod - aDAngle1 + myCoeffs.mFI1;
+      theURange[0].Add(aDAngle1 + theCoeffs.mFI1);
+      theURange[0].Add(aDAngle2 + theCoeffs.mFI1);
+      theURange[1].Add(thePeriod - aDAngle2 + theCoeffs.mFI1);
+      theURange[1].Add(thePeriod - aDAngle1 + theCoeffs.mFI1);
     }
     else
     {
@@ -2595,133 +2658,77 @@ void WorkWithBoundaries::BoundaryEstimation(const gp_Cylinder& theCy1,
 }
 
 //=======================================================================
-//function : IntCyCy
+//function : CyCyNoGeometric
 //purpose  : 
 //=======================================================================
-IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
-                                               const IntSurf_Quadric& theQuad2,
-                                               const Standard_Real theTol3D,
-                                               const Standard_Real theTol2D,
-                                               const Bnd_Box2d& theUVSurf1,
-                                               const Bnd_Box2d& theUVSurf2,
-                                               const Standard_Boolean isTheReverse,
-                                               Standard_Boolean& isTheEmpty,
-                                               Standard_Boolean& isTheSameSurface,
-                                               Standard_Boolean& isTheMultiplePoint,
-                                               IntPatch_SequenceOfLine& theSlin,
-                                               IntPatch_SequenceOfPoint& theSPnt)
+static IntPatch_ImpImpIntersection::IntStatus
+                    CyCyNoGeometric(const gp_Cylinder &theCyl1,
+                                    const gp_Cylinder &theCyl2,
+                                    const WorkWithBoundaries &theBW,
+                                    Bnd_Range theRange[],
+                                    const Standard_Integer theNbOfRanges /*=2*/,
+                                    Standard_Boolean& isTheEmpty,
+                                    IntPatch_SequenceOfLine& theSlin,
+                                    IntPatch_SequenceOfPoint& theSPnt)
 {
-  isTheEmpty = Standard_True;
-  isTheSameSurface = Standard_False;
-  isTheMultiplePoint = Standard_False;
-  theSlin.Clear();
-  theSPnt.Clear();
+  Standard_Real aUSurf1f = 0.0, aUSurf1l = 0.0,
+                aUSurf2f = 0.0, aUSurf2l = 0.0,
+                aVSurf1f = 0.0, aVSurf1l = 0.0,
+                aVSurf2f = 0.0, aVSurf2l = 0.0;
 
-  const gp_Cylinder &aCyl1 = theQuad1.Cylinder(),
-                    &aCyl2 = theQuad2.Cylinder();
-
-  IntAna_QuadQuadGeo anInter(aCyl1,aCyl2,theTol3D);
-
-  if (!anInter.IsDone())
-  {
-    return IntPatch_ImpImpIntersection::IntStatus_Fail;
-  }
-
-  if(anInter.TypeInter() != IntAna_NoGeometricSolution)
-  {
-    if (CyCyAnalyticalIntersect(theQuad1, theQuad2, anInter,
-                                theTol3D, isTheReverse, isTheEmpty,
-                                isTheSameSurface, isTheMultiplePoint,
-                                theSlin, theSPnt))
-    {
-      return IntPatch_ImpImpIntersection::IntStatus_OK;
-    }
-  }
-  
-  //Here, intersection line is not an analytical curve(line, circle, ellipsis etc.)
-
-  Standard_Real aUSurf1f = 0.0, //const
-                aUSurf1l = 0.0,
-                aVSurf1f = 0.0,
-                aVSurf1l = 0.0;
-  Standard_Real aUSurf2f = 0.0, //const
-                aUSurf2l = 0.0,
-                aVSurf2f = 0.0,
-                aVSurf2l = 0.0;
-
-  theUVSurf1.Get(aUSurf1f, aVSurf1f, aUSurf1l, aVSurf1l);
-  theUVSurf2.Get(aUSurf2f, aVSurf2f, aUSurf2l, aVSurf2l);
-
-  const Standard_Integer aNbMaxPoints = 2000;
-  const Standard_Integer aNbMinPoints = 200;
-  const Standard_Integer aNbPoints = Min(Max(aNbMinPoints, 
-                      RealToInt(20.0*aCyl1.Radius())), aNbMaxPoints);
-  const Standard_Real aPeriod = 2.0*M_PI;
-  const Standard_Real aStepMin = theTol2D, 
-                      aStepMax =  (aUSurf1l-aUSurf1f > M_PI/100.0) ?
-                                  (aUSurf1l-aUSurf1f)/IntToReal(aNbPoints) :
-                                  aUSurf1l-aUSurf1f;
-
-  const Standard_Integer aNbWLines = 2;
-
-  const ComputationMethods::stCoeffsValue anEquationCoeffs(aCyl1, aCyl2);
-
-  const WorkWithBoundaries aBoundWork(theQuad1, theQuad2, anEquationCoeffs,
-                                      theUVSurf1, theUVSurf2, aNbWLines,
-                                      aPeriod, theTol3D, theTol2D, isTheReverse);
+  theBW.UVS1().Get(aUSurf1f, aVSurf1f, aUSurf1l, aVSurf1l);
+  theBW.UVS2().Get(aUSurf2f, aVSurf2f, aUSurf2l, aVSurf2l);
 
   Bnd_Range aRangeS1, aRangeS2;
-  aBoundWork.BoundaryEstimation(aCyl1, aCyl2, aRangeS1, aRangeS2);
+  theBW.BoundaryEstimation(theCyl1, theCyl2, aRangeS1, aRangeS2);
   if (aRangeS1.IsVoid() || aRangeS2.IsVoid())
     return IntPatch_ImpImpIntersection::IntStatus_OK;
 
   {
-  //Quotation of the message from issue #26894 (author MSV):
-  //"We should return fail status from intersector if the result should be an
-  //infinite curve of non-analytical type... I propose to define the limit for the
-  //extent as the radius divided by 1e+2 and multiplied by 1e+7.
-  //Thus, taking into account the number of valuable digits (15), we provide reliable
-  //computations with an error not exceeding R/100."
+    //Quotation of the message from issue #26894 (author MSV):
+    //"We should return fail status from intersector if the result should be an
+    //infinite curve of non-analytical type... I propose to define the limit for the
+    //extent as the radius divided by 1e+2 and multiplied by 1e+7.
+    //Thus, taking into account the number of valuable digits (15), we provide reliable
+    //computations with an error not exceeding R/100."
     const Standard_Real aF = 1.0e+5;
-    const Standard_Real aMaxV1Range = aF*aCyl1.Radius(), aMaxV2Range = aF*aCyl2.Radius();
+    const Standard_Real aMaxV1Range = aF*theCyl1.Radius(), aMaxV2Range = aF*theCyl2.Radius();
     if ((aRangeS1.Delta() > aMaxV1Range) || (aRangeS2.Delta() > aMaxV2Range))
       return IntPatch_ImpImpIntersection::IntStatus_InfiniteSectionCurve;
   }
 
-  //Boundaries (it is good idea to use Bnd_Range in the future, instead of aU1f and aU1l)
-  //Intersection result can include two non-connected regions
-  //(see WorkWithBoundaries::BoundariesComputing(...) method).
-  const Standard_Integer aNbOfBoundaries = 2;
-  Standard_Real aU1f[aNbOfBoundaries] = {-Precision::Infinite(), -Precision::Infinite()};
-  Standard_Real aU1l[aNbOfBoundaries] = {Precision::Infinite(), Precision::Infinite()};
-
-  if(!aBoundWork.BoundariesComputing(aU1f, aU1l))
-    return IntPatch_ImpImpIntersection::IntStatus_OK;
+  const ComputationMethods::stCoeffsValue &anEquationCoeffs = theBW.SICoeffs();
+  const IntSurf_Quadric& aQuad1 = theBW.GetQSurface(1);
+  const IntSurf_Quadric& aQuad2 = theBW.GetQSurface(2);
+  const Standard_Boolean isReversed = theBW.IsReversed();
+  const Standard_Real aTol2D = theBW.Get2dTolerance();
+  const Standard_Real aTol3D = theBW.Get3dTolerance();
+  const Standard_Real aPeriod = 2.0*M_PI;
+  const Standard_Integer aNbMaxPoints = 2000;
+  const Standard_Integer aNbMinPoints = 200;
+  const Standard_Integer aNbPoints = Min(Max(aNbMinPoints,
+                                  RealToInt(20.0*theCyl1.Radius())), aNbMaxPoints);
+  const Standard_Real aStepMin = aTol2D,
+                                  aStepMax = (aUSurf1l - aUSurf1f > M_PI / 100.0) ?
+                                  (aUSurf1l - aUSurf1f) / IntToReal(aNbPoints) :
+                                  aUSurf1l - aUSurf1f;
 
   //The main idea of the algorithm is to change U1-parameter
-  //(U-parameter of aCyl1) from aU1f to aU1l with some step
+  //(U-parameter of theCyl1) from aU1f to aU1l with some step
   //(step is adaptive) and to obtain set of intersection points.
 
-  for(Standard_Integer i = 0; i < aNbOfBoundaries; i++)
+  for (Standard_Integer i = 0; i < theNbOfRanges; i++)
   {
-    if(Precision::IsInfinite(aU1f[i]) && Precision::IsInfinite(aU1l[i]))
+    if (theRange[i].IsVoid())
       continue;
 
-    InscribeInterval(aUSurf1f, aUSurf1l, aU1f[i], aU1l[i], theTol2D, aPeriod);
+    InscribeInterval(aUSurf1f, aUSurf1l, theRange[i], aTol2D, aPeriod);
   }
 
-  if( !Precision::IsInfinite(aU1f[0]) && !Precision::IsInfinite(aU1f[1]) &&
-      !Precision::IsInfinite(aU1l[0]) && !Precision::IsInfinite(aU1l[1]))
+  if (theRange[0].Union(theRange[1]))
   {
-    if( ((aU1f[1] <= aU1l[0]) || (aU1l[1] <= aU1l[0])) && 
-        ((aU1f[0] <= aU1l[1]) || (aU1l[0] <= aU1l[1])))
-    {//Join all intervals to one
-      aU1f[0] = Min(aU1f[0], aU1f[1]);
-      aU1l[0] = Max(aU1l[0], aU1l[1]);
-
-      aU1f[1] = -Precision::Infinite();
-      aU1l[1] = Precision::Infinite();
-    }
+    // Works only if (theNbOfRanges == 2).
+    theRange[1].SetVoid();
   }
 
   //Critical points are the value of U1-parameter in the points
@@ -2733,18 +2740,18 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
 
   //See CriticalPointsComputing(...) function to get detail information about this array.
   const Standard_Integer aNbCritPointsMax = 12;
-  Standard_Real anU1crit[aNbCritPointsMax] = {Precision::Infinite(),
-                                              Precision::Infinite(),
-                                              Precision::Infinite(),
-                                              Precision::Infinite(),
-                                              Precision::Infinite(),
-                                              Precision::Infinite(),
-                                              Precision::Infinite(),
-                                              Precision::Infinite(),
-                                              Precision::Infinite(),
-                                              Precision::Infinite(),
-                                              Precision::Infinite(),
-                                              Precision::Infinite()};
+  Standard_Real anU1crit[aNbCritPointsMax] = { Precision::Infinite(),
+                                               Precision::Infinite(),
+                                               Precision::Infinite(),
+                                               Precision::Infinite(),
+                                               Precision::Infinite(),
+                                               Precision::Infinite(),
+                                               Precision::Infinite(),
+                                               Precision::Infinite(),
+                                               Precision::Infinite(),
+                                               Precision::Infinite(),
+                                               Precision::Infinite(),
+                                               Precision::Infinite() };
 
   //This list of critical points is not full because it does not contain any points
   //which intersection line goes through V-bounds of cylinders in.
@@ -2753,7 +2760,7 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
 
   Standard_Integer aNbCritPoints = aNbCritPointsMax;
   CriticalPointsComputing(anEquationCoeffs, aUSurf1f, aUSurf1l, aUSurf2f, aUSurf2l,
-                                      aPeriod, theTol2D, aNbCritPoints, anU1crit);
+                          aPeriod, aTol2D, aNbCritPoints, anU1crit);
 
   //Getting Walking-line
 
@@ -2762,35 +2769,35 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
     // No points have been added in WL
     WLFStatus_Absent = 0,
     // WL contains at least one point
-    WLFStatus_Exist  = 1,
+    WLFStatus_Exist = 1,
     // WL has been finished in some critical point
     // We should start new line
     WLFStatus_Broken = 2
   };
 
-  for(Standard_Integer aCurInterval = 0; aCurInterval < aNbOfBoundaries; aCurInterval++)
+  const Standard_Integer aNbWLines = 2;
+  for (Standard_Integer aCurInterval = 0; aCurInterval < theNbOfRanges; aCurInterval++)
   {
     //Process every continuous region
-
-    if(Precision::IsInfinite(aU1f[aCurInterval]) && Precision::IsInfinite(aU1l[aCurInterval]))
-      continue;
-
     Standard_Boolean isAddedIntoWL[aNbWLines];
-    for(Standard_Integer i = 0; i < aNbWLines; i++)
+    for (Standard_Integer i = 0; i < aNbWLines; i++)
       isAddedIntoWL[i] = Standard_False;
 
-    Standard_Real anUf = aU1f[aCurInterval], anUl = aU1l[aCurInterval];
-    const Standard_Boolean isDeltaPeriod  = IsEqual(anUl-anUf, aPeriod);
+    Standard_Real anUf = 1.0, anUl = 0.0;
+    if (!theRange[aCurInterval].GetBounds(anUf, anUl))
+      continue;
+
+    const Standard_Boolean isDeltaPeriod = IsEqual(anUl - anUf, aPeriod);
 
     //Inscribe and sort critical points
-    for(Standard_Integer i = 0; i < aNbCritPoints; i++)
+    for (Standard_Integer i = 0; i < aNbCritPoints; i++)
     {
-      InscribePoint(anUf, anUl, anU1crit[i], theTol2D, aPeriod, Standard_False);
+      InscribePoint(anUf, anUl, anU1crit[i], 0.0, aPeriod, Standard_False);
     }
 
     std::sort(anU1crit, anU1crit + aNbCritPoints);
 
-    while(anUf < anUl)
+    while (anUf < anUl)
     {
       //Change value of U-parameter on the 1st surface from anUf to anUl
       //(anUf will be modified in the cycle body).
@@ -2804,7 +2811,7 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
 
       Handle(IntSurf_LineOn2S) aL2S[aNbWLines];
       Handle(IntPatch_WLine) aWLine[aNbWLines];
-      for(Standard_Integer i = 0; i < aNbWLines; i++)
+      for (Standard_Integer i = 0; i < aNbWLines; i++)
       {
         aL2S[i] = new IntSurf_LineOn2S();
         aWLine[i] = new IntPatch_WLine(aL2S[i], Standard_False);
@@ -2814,33 +2821,33 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
         aV1Prev[i] = aV2Prev[i] = 0.0;
         anUexpect[i] = anUf;
       }
-      
-      Standard_Real aCriticalDelta[aNbCritPointsMax] = {0};
-      for(Standard_Integer aCritPID = 0; aCritPID < aNbCritPoints; aCritPID++)
+
+      Standard_Real aCriticalDelta[aNbCritPointsMax] = { 0 };
+      for (Standard_Integer aCritPID = 0; aCritPID < aNbCritPoints; aCritPID++)
       { //We are not interested in elements of aCriticalDelta array
         //if their index is greater than or equal to aNbCritPoints
 
         aCriticalDelta[aCritPID] = anUf - anU1crit[aCritPID];
       }
 
-      Standard_Real anU1 = anUf;
+      Standard_Real anU1 = anUf, aMinCriticalParam = anUf;
       Standard_Boolean isFirst = Standard_True;
-      
-      while(anU1 <= anUl)
+
+      while (anU1 <= anUl)
       {
         //Change value of U-parameter on the 1st surface from anUf to anUl
         //(anUf will be modified in the cycle body). However, this cycle
         //can be broken if WL goes though some critical point.
         //Step is computed adaptively (see comments below).
 
-        for(Standard_Integer i = 0; i < aNbCritPoints; i++)
+        for (Standard_Integer i = 0; i < aNbCritPoints; i++)
         {
-          if((anU1 - anU1crit[i])*aCriticalDelta[i] < 0.0)
+          if ((anU1 - anU1crit[i])*aCriticalDelta[i] < 0.0)
           {
             //WL has gone through i-th critical point
             anU1 = anU1crit[i];
 
-            for(Standard_Integer j = 0; j < aNbWLines; j++)
+            for (Standard_Integer j = 0; j < aNbWLines; j++)
             {
               aWLFindStatus[j] = WLFStatus_Broken;
               anUexpect[j] = anU1;
@@ -2850,14 +2857,14 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
           }
         }
 
-        if(IsEqual(anU1, anUl))
+        if (IsEqual(anU1, anUl))
         {
-          for(Standard_Integer i = 0; i < aNbWLines; i++)
+          for (Standard_Integer i = 0; i < aNbWLines; i++)
           {
             aWLFindStatus[i] = WLFStatus_Broken;
             anUexpect[i] = anU1;
 
-            if(isDeltaPeriod)
+            if (isDeltaPeriod)
             {
               //if isAddedIntoWL[i] == TRUE WLine contains only one point
               //(which was end point of previous WLine). If we will
@@ -2871,57 +2878,57 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
             }
             else
             {
-              isAddingWLEnabled[i] = ((theTol2D >= (anUexpect[i] - anU1)) ||
+              isAddingWLEnabled[i] = ((aTol2D >= (anUexpect[i] - anU1)) ||
                                       (aWLFindStatus[i] == WLFStatus_Absent));
             }
           }//for(Standard_Integer i = 0; i < aNbWLines; i++)
         }
         else
         {
-          for(Standard_Integer i = 0; i < aNbWLines; i++)
+          for (Standard_Integer i = 0; i < aNbWLines; i++)
           {
-            isAddingWLEnabled[i] = ((theTol2D >= (anUexpect[i] - anU1)) ||
+            isAddingWLEnabled[i] = ((aTol2D >= (anUexpect[i] - anU1)) ||
                                     (aWLFindStatus[i] == WLFStatus_Absent));
           }//for(Standard_Integer i = 0; i < aNbWLines; i++)
         }
 
-        for(Standard_Integer i = 0; i < aNbWLines; i++)
+        for (Standard_Integer i = 0; i < aNbWLines; i++)
         {
-          const Standard_Integer aNbPntsWL =  aWLine[i].IsNull() ? 0 :
-                                              aWLine[i]->Curve()->NbPoints();
-          
-          if( (aWLFindStatus[i] == WLFStatus_Broken) ||
-              (aWLFindStatus[i] == WLFStatus_Absent))
+          const Standard_Integer aNbPntsWL = aWLine[i].IsNull() ? 0 :
+            aWLine[i]->Curve()->NbPoints();
+
+          if ((aWLFindStatus[i] == WLFStatus_Broken) ||
+            (aWLFindStatus[i] == WLFStatus_Absent))
           {//Begin and end of WLine must be on boundary point
            //or on seam-edge strictly (if it is possible).
 
-            Standard_Real aTol = theTol2D;
+            Standard_Real aTol = aTol2D;
             ComputationMethods::CylCylComputeParameters(anU1, i, anEquationCoeffs,
                                                         aU2[i], &aTol);
-            InscribePoint(aUSurf2f, aUSurf2l, aU2[i], theTol2D, aPeriod, Standard_False);
+            InscribePoint(aUSurf2f, aUSurf2l, aU2[i], aTol2D, aPeriod, Standard_False);
 
-            aTol = Max(aTol, theTol2D);
+            aTol = Max(aTol, aTol2D);
 
-            if(Abs(aU2[i]) <= aTol)
+            if (Abs(aU2[i]) <= aTol)
               aU2[i] = 0.0;
-            else if(Abs(aU2[i] - aPeriod) <= aTol)
+            else if (Abs(aU2[i] - aPeriod) <= aTol)
               aU2[i] = aPeriod;
-            else if(Abs(aU2[i] - aUSurf2f) <= aTol)
+            else if (Abs(aU2[i] - aUSurf2f) <= aTol)
               aU2[i] = aUSurf2f;
-            else if(Abs(aU2[i] - aUSurf2l) <= aTol)
+            else if (Abs(aU2[i] - aUSurf2l) <= aTol)
               aU2[i] = aUSurf2l;
           }
           else
           {
             ComputationMethods::CylCylComputeParameters(anU1, i, anEquationCoeffs, aU2[i]);
-            InscribePoint(aUSurf2f, aUSurf2l, aU2[i], theTol2D, aPeriod, Standard_False);
+            InscribePoint(aUSurf2f, aUSurf2l, aU2[i], aTol2D, aPeriod, Standard_False);
           }
-          
-          if(aNbPntsWL == 0)
+
+          if (aNbPntsWL == 0)
           {//the line has not contained any points yet
-            if(((aUSurf2f + aPeriod - aUSurf2l) <= 2.0*theTol2D) && 
-                ((Abs(aU2[i] - aUSurf2f) < theTol2D) ||
-                  (Abs(aU2[i]-aUSurf2l) < theTol2D)))
+            if (((aUSurf2f + aPeriod - aUSurf2l) <= 2.0*aTol2D) &&
+                ((Abs(aU2[i] - aUSurf2f) < aTol2D) ||
+                  (Abs(aU2[i] - aUSurf2l) < aTol2D)))
             {
               //In this case aU2[i] can have two values: current aU2[i] or
               //aU2[i]+aPeriod (aU2[i]-aPeriod). It is necessary to choose
@@ -2936,7 +2943,7 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
               //increased too. And we will go out of surface boundary.
               //Therefore, If U2(U1) is increasing then U2 must be equal aUSurf2f.
               //Analogically, if U2(U1) is decreasing.
-              if(isIncreasing)
+              if (isIncreasing)
               {
                 aU2[i] = aUSurf2f;
               }
@@ -2948,19 +2955,19 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
           }
           else
           {//aNbPntsWL > 0
-            if(((aUSurf2l - aUSurf2f) >= aPeriod) && 
-                ((Abs(aU2[i] - aUSurf2f) < theTol2D) ||
-                  (Abs(aU2[i]-aUSurf2l) < theTol2D)))
+            if (((aUSurf2l - aUSurf2f) >= aPeriod) &&
+                ((Abs(aU2[i] - aUSurf2f) < aTol2D) ||
+                  (Abs(aU2[i] - aUSurf2l) < aTol2D)))
             {//end of the line
               Standard_Real aU2prev = 0.0, aV2prev = 0.0;
-              if(isTheReverse)
+              if (isReversed)
                 aWLine[i]->Curve()->Value(aNbPntsWL).ParametersOnS1(aU2prev, aV2prev);
               else
                 aWLine[i]->Curve()->Value(aNbPntsWL).ParametersOnS2(aU2prev, aV2prev);
 
-              if(2.0*Abs(aU2prev - aU2[i]) > aPeriod)
+              if (2.0*Abs(aU2prev - aU2[i]) > aPeriod)
               {
-                if(aU2prev > aU2[i])
+                if (aU2prev > aU2[i])
                   aU2[i] += aPeriod;
                 else
                   aU2[i] -= aPeriod;
@@ -2971,7 +2978,7 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
           ComputationMethods::CylCylComputeParameters(anU1, aU2[i], anEquationCoeffs,
                                                               aV1[i], aV2[i]);
 
-          if(isFirst)
+          if (isFirst)
           {
             aV1Prev[i] = aV1[i];
             aV2Prev[i] = aV2[i];
@@ -2982,36 +2989,36 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
 
         //Looking for points into WLine
         Standard_Boolean isBroken = Standard_False;
-        for(Standard_Integer i = 0; i < aNbWLines; i++)
+        for (Standard_Integer i = 0; i < aNbWLines; i++)
         {
-          if(!isAddingWLEnabled[i])
+          if (!isAddingWLEnabled[i])
           {
             Standard_Boolean isBoundIntersect = Standard_False;
-            if( (Abs(aV1[i] - aVSurf1f) <= theTol2D) ||
-                ((aV1[i]-aVSurf1f)*(aV1Prev[i]-aVSurf1f) < 0.0))
+            if ((Abs(aV1[i] - aVSurf1f) <= aTol2D) ||
+                ((aV1[i] - aVSurf1f)*(aV1Prev[i] - aVSurf1f) < 0.0))
             {
               isBoundIntersect = Standard_True;
             }
-            else if(  (Abs(aV1[i] - aVSurf1l) <= theTol2D) ||
-                    ( (aV1[i]-aVSurf1l)*(aV1Prev[i]-aVSurf1l) < 0.0))
+            else if ((Abs(aV1[i] - aVSurf1l) <= aTol2D) ||
+                    ((aV1[i] - aVSurf1l)*(aV1Prev[i] - aVSurf1l) < 0.0))
             {
               isBoundIntersect = Standard_True;
             }
-            else if(  (Abs(aV2[i] - aVSurf2f) <= theTol2D) ||
-                    ( (aV2[i]-aVSurf2f)*(aV2Prev[i]-aVSurf2f) < 0.0))
+            else if ((Abs(aV2[i] - aVSurf2f) <= aTol2D) ||
+                    ((aV2[i] - aVSurf2f)*(aV2Prev[i] - aVSurf2f) < 0.0))
             {
               isBoundIntersect = Standard_True;
             }
-            else if(  (Abs(aV2[i] - aVSurf2l) <= theTol2D) ||
-                    ( (aV2[i]-aVSurf2l)*(aV2Prev[i]-aVSurf2l) < 0.0))
+            else if ((Abs(aV2[i] - aVSurf2l) <= aTol2D) ||
+                    ((aV2[i] - aVSurf2l)*(aV2Prev[i] - aVSurf2l) < 0.0))
             {
               isBoundIntersect = Standard_True;
             }
 
-            if(aWLFindStatus[i] == WLFStatus_Broken)
+            if (aWLFindStatus[i] == WLFStatus_Broken)
               isBroken = Standard_True;
 
-            if(!isBoundIntersect)
+            if (!isBoundIntersect)
             {
               continue;
             }
@@ -3022,19 +3029,18 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
           }
 
           // True if the current point already in the domain
-          const Standard_Boolean isInscribe = 
-              ((aUSurf2f-aU2[i]) <= theTol2D) && ((aU2[i]-aUSurf2l) <= theTol2D) &&
-              ((aVSurf1f - aV1[i]) <= theTol2D) && ((aV1[i] - aVSurf1l) <= theTol2D) &&
-              ((aVSurf2f - aV2[i]) <= theTol2D) && ((aV2[i] - aVSurf2l) <= theTol2D);
+          const Standard_Boolean isInscribe =
+              ((aUSurf2f - aU2[i]) <= aTol2D) && ((aU2[i] - aUSurf2l) <= aTol2D) &&
+              ((aVSurf1f - aV1[i]) <= aTol2D) && ((aV1[i] - aVSurf1l) <= aTol2D) &&
+              ((aVSurf2f - aV2[i]) <= aTol2D) && ((aV2[i] - aVSurf2l) <= aTol2D);
 
           //isVIntersect == TRUE if intersection line intersects two (!)
           //V-bounds of cylinder (1st or 2nd - no matter)
           const Standard_Boolean isVIntersect =
-              ( ((aVSurf1f-aV1[i])*(aVSurf1f-aV1Prev[i]) < RealSmall()) &&
-                ((aVSurf1l-aV1[i])*(aVSurf1l-aV1Prev[i]) < RealSmall())) ||
-              ( ((aVSurf2f-aV2[i])*(aVSurf2f-aV2Prev[i]) < RealSmall()) &&
-                ((aVSurf2l-aV2[i])*(aVSurf2l-aV2Prev[i]) < RealSmall()));
-
+              (((aVSurf1f - aV1[i])*(aVSurf1f - aV1Prev[i]) < RealSmall()) &&
+                ((aVSurf1l - aV1[i])*(aVSurf1l - aV1Prev[i]) < RealSmall())) ||
+              (((aVSurf2f - aV2[i])*(aVSurf2f - aV2Prev[i]) < RealSmall()) &&
+                ((aVSurf2l - aV2[i])*(aVSurf2l - aV2Prev[i]) < RealSmall()));
 
           //isFound1 == TRUE if intersection line intersects V-bounds
           //  (First or Last - no matter) of the 1st cylynder
@@ -3045,52 +3051,52 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
 
           if (aWLFindStatus[i] == WLFStatus_Absent)
           {
-            if(((aUSurf2l - aUSurf2f) >= aPeriod) && (Abs(anU1-aUSurf1l) < theTol2D))
+            if (((aUSurf2l - aUSurf2f) >= aPeriod) && (Abs(anU1 - aUSurf1l) < aTol2D))
             {
               isForce = Standard_True;
             }
           }
 
-          aBoundWork.AddBoundaryPoint(aWLine[i], anU1, aU2[i], aV1[i], aV1Prev[i],
-                                      aV2[i], aV2Prev[i], i, isForce,
-                                      isFound1, isFound2);
+          theBW.AddBoundaryPoint(aWLine[i], anU1, aMinCriticalParam, aU2[i],
+                                 aV1[i], aV1Prev[i], aV2[i], aV2Prev[i], i, isForce,
+                                 isFound1, isFound2);
 
           const Standard_Boolean isPrevVBound = !isVIntersect &&
-                                                ((Abs(aV1Prev[i] - aVSurf1f) <= theTol2D) ||
-                                                 (Abs(aV1Prev[i] - aVSurf1l) <= theTol2D) ||
-                                                 (Abs(aV2Prev[i] - aVSurf2f) <= theTol2D) ||
-                                                 (Abs(aV2Prev[i] - aVSurf2l) <= theTol2D));
+                                                ((Abs(aV1Prev[i] - aVSurf1f) <= aTol2D) ||
+                                                 (Abs(aV1Prev[i] - aVSurf1l) <= aTol2D) ||
+                                                 (Abs(aV2Prev[i] - aVSurf2f) <= aTol2D) ||
+                                                 (Abs(aV2Prev[i] - aVSurf2l) <= aTol2D));
 
           aV1Prev[i] = aV1[i];
           aV2Prev[i] = aV2[i];
 
-          if((aWLFindStatus[i] == WLFStatus_Exist) && (isFound1 || isFound2) && !isPrevVBound)
+          if ((aWLFindStatus[i] == WLFStatus_Exist) && (isFound1 || isFound2) && !isPrevVBound)
           {
             aWLFindStatus[i] = WLFStatus_Broken; //start a new line
           }
-          else if(isInscribe)
+          else if (isInscribe)
           {
-            if((aWLFindStatus[i] == WLFStatus_Absent) && (isFound1 || isFound2))
+            if ((aWLFindStatus[i] == WLFStatus_Absent) && (isFound1 || isFound2))
             {
               aWLFindStatus[i] = WLFStatus_Exist;
             }
 
-            if( (aWLFindStatus[i] != WLFStatus_Broken) ||
-                (aWLine[i]->NbPnts() >= 1) || IsEqual(anU1, anUl))
+            if ((aWLFindStatus[i] != WLFStatus_Broken) ||
+              (aWLine[i]->NbPnts() >= 1) || IsEqual(anU1, anUl))
             {
-              if(aWLine[i]->NbPnts() > 0)
+              if (aWLine[i]->NbPnts() > 0)
               {
                 Standard_Real aU2p = 0.0, aV2p = 0.0;
-                if(isTheReverse)
+                if (isReversed)
                   aWLine[i]->Point(aWLine[i]->NbPnts()).ParametersOnS1(aU2p, aV2p);
                 else
                   aWLine[i]->Point(aWLine[i]->NbPnts()).ParametersOnS2(aU2p, aV2p);
 
                 const Standard_Real aDelta = aU2[i] - aU2p;
 
-                if(2*Abs(aDelta) > aPeriod)
+                if (2.0 * Abs(aDelta) > aPeriod)
                 {
-                  if(aDelta > 0.0)
+                  if (aDelta > 0.0)
                   {
                     aU2[i] -= aPeriod;
                   }
@@ -3101,47 +3107,47 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
                 }
               }
 
-              if(AddPointIntoWL(theQuad1, theQuad2, anEquationCoeffs, isTheReverse, Standard_True,
+              if(AddPointIntoWL(aQuad1, aQuad2, anEquationCoeffs, isReversed, Standard_True,
                                 gp_Pnt2d(anU1, aV1[i]), gp_Pnt2d(aU2[i], aV2[i]),
                                 aUSurf1f, aUSurf1l, aUSurf2f, aUSurf2l,
                                 aVSurf1f, aVSurf1l, aVSurf2f, aVSurf2l, aPeriod,
-                                aWLine[i]->Curve(), i, theTol3D, theTol2D, isForce))
+                                aWLine[i]->Curve(), i, aTol3D, aTol2D, isForce))
               {
-                if(aWLFindStatus[i] == WLFStatus_Absent)
+                if (aWLFindStatus[i] == WLFStatus_Absent)
                 {
                   aWLFindStatus[i] = WLFStatus_Exist;
                 }
               }
-              else if(!isFound1 && !isFound2)
+              else if (!isFound1 && !isFound2)
               {//We do not add any point while doing this iteration
-                if(aWLFindStatus[i] == WLFStatus_Exist)
+                if (aWLFindStatus[i] == WLFStatus_Exist)
                 {
                   aWLFindStatus[i] = WLFStatus_Broken;
-                } 
+                }
               }
             }
           }
           else
           {//We do not add any point while doing this iteration
-            if(aWLFindStatus[i] == WLFStatus_Exist)
+            if (aWLFindStatus[i] == WLFStatus_Exist)
             {
               aWLFindStatus[i] = WLFStatus_Broken;
             }
           }
-          
-          if(aWLFindStatus[i] == WLFStatus_Broken)
+
+          if (aWLFindStatus[i] == WLFStatus_Broken)
             isBroken = Standard_True;
         }//for(Standard_Integer i = 0; i < aNbWLines; i++)
 
-        if(isBroken)
+        if (isBroken)
         {//current lines are filled. Go to the next lines
           anUf = anU1;
 
           Standard_Boolean isAdded = Standard_True;
 
-          for(Standard_Integer i = 0; i < aNbWLines; i++)
+          for (Standard_Integer i = 0; i < aNbWLines; i++)
           {
-            if(isAddingWLEnabled[i])
+            if (isAddingWLEnabled[i])
             {
               continue;
             }
@@ -3150,28 +3156,28 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
 
             Standard_Boolean isFound1 = Standard_False, isFound2 = Standard_False;
 
-            aBoundWork.AddBoundaryPoint(aWLine[i], anU1, aU2[i], aV1[i], aV1Prev[i],
-                                        aV2[i], aV2Prev[i], i,
-                                        Standard_False, isFound1, isFound2);
+            theBW.AddBoundaryPoint(aWLine[i], anU1, aMinCriticalParam, aU2[i],
+                                   aV1[i], aV1Prev[i], aV2[i], aV2Prev[i], i,
+                                   Standard_False, isFound1, isFound2);
 
-            if(isFound1 || isFound2)
+            if (isFound1 || isFound2)
             {
               isAdded = Standard_True;
             }
 
-            if(aWLine[i]->NbPnts() > 0)
+            if (aWLine[i]->NbPnts() > 0)
             {
               Standard_Real aU2p = 0.0, aV2p = 0.0;
-              if(isTheReverse)
+              if (isReversed)
                 aWLine[i]->Point(aWLine[i]->NbPnts()).ParametersOnS1(aU2p, aV2p);
               else
                 aWLine[i]->Point(aWLine[i]->NbPnts()).ParametersOnS2(aU2p, aV2p);
 
               const Standard_Real aDelta = aU2[i] - aU2p;
 
-              if(2*Abs(aDelta) > aPeriod)
+              if (2 * Abs(aDelta) > aPeriod)
               {
-                if(aDelta > 0.0)
+                if (aDelta > 0.0)
                 {
                   aU2[i] -= aPeriod;
                 }
@@ -3182,18 +3188,18 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
               }
             }
 
-            if(AddPointIntoWL(theQuad1, theQuad2, anEquationCoeffs, isTheReverse,
+            if(AddPointIntoWL(aQuad1, aQuad2, anEquationCoeffs, isReversed,
                               Standard_True, gp_Pnt2d(anU1, aV1[i]),
                               gp_Pnt2d(aU2[i], aV2[i]), aUSurf1f, aUSurf1l,
                               aUSurf2f, aUSurf2l, aVSurf1f, aVSurf1l,
                               aVSurf2f, aVSurf2l, aPeriod, aWLine[i]->Curve(),
-                              i, theTol3D, theTol2D, Standard_False))
+                              i, aTol3D, aTol2D, Standard_False))
             {
               isAdded = Standard_True;
             }
           }
 
-          if(!isAdded)
+          if (!isAdded)
           {
             //Before breaking WL, we must complete it correctly
             //(e.g. to prolong to the surface boundary).
@@ -3201,16 +3207,16 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
             //(have maximal U1-parameter) and try to add it in
             //the current WL.
             Standard_Real anUmaxAdded = RealFirst();
-            
+
             {
               Standard_Boolean isChanged = Standard_False;
-              for(Standard_Integer i = 0; i < aNbWLines; i++)
+              for (Standard_Integer i = 0; i < aNbWLines; i++)
               {
-                if(aWLFindStatus[i] == WLFStatus_Absent)
+                if (aWLFindStatus[i] == WLFStatus_Absent)
                   continue;
 
                 Standard_Real aU1c = 0.0, aV1c = 0.0;
-                if(isTheReverse)
+                if (isReversed)
                   aWLine[i]->Curve()->Value(aWLine[i]->NbPnts()).ParametersOnS2(aU1c, aV1c);
                 else
                   aWLine[i]->Curve()->Value(aWLine[i]->NbPnts()).ParametersOnS1(aU1c, aV1c);
@@ -3219,29 +3225,29 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
                 isChanged = Standard_True;
               }
 
-              if(!isChanged)
+              if (!isChanged)
               { //If anUmaxAdded were not changed in previous cycle then
                 //we would break existing WLines.
                 break;
               }
             }
 
-            for(Standard_Integer i = 0; i < aNbWLines; i++)
+            for (Standard_Integer i = 0; i < aNbWLines; i++)
             {
-              if(isAddingWLEnabled[i])
+              if (isAddingWLEnabled[i])
               {
                 continue;
               }
 
               ComputationMethods::CylCylComputeParameters(anUmaxAdded, i, anEquationCoeffs,
-                                                                aU2[i], aV1[i], aV2[i]);
+                aU2[i], aV1[i], aV2[i]);
 
-              AddPointIntoWL( theQuad1, theQuad2, anEquationCoeffs, isTheReverse,
-                              Standard_True, gp_Pnt2d(anUmaxAdded, aV1[i]),
-                              gp_Pnt2d(aU2[i], aV2[i]), aUSurf1f, aUSurf1l,
-                              aUSurf2f, aUSurf2l, aVSurf1f, aVSurf1l,
-                              aVSurf2f, aVSurf2l, aPeriod, aWLine[i]->Curve(),
-                              i, theTol3D, theTol2D, Standard_False);
+              AddPointIntoWL(aQuad1, aQuad2, anEquationCoeffs, isReversed,
+                             Standard_True, gp_Pnt2d(anUmaxAdded, aV1[i]),
+                             gp_Pnt2d(aU2[i], aV2[i]), aUSurf1f, aUSurf1l,
+                             aUSurf2f, aUSurf2l, aVSurf1f, aVSurf1l,
+                             aVSurf2f, aVSurf2l, aPeriod, aWLine[i]->Curve(),
+                             i, aTol3D, aTol2D, Standard_False);
             }
           }
 
@@ -3257,21 +3263,21 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
           //in every iteration. It allows avoiding "flying" intersection
           //points too far each from other (see issue #24915).
 
-          const Standard_Real aDeltaV1 = aRangeS1.Delta()/IntToReal(aNbPoints),
-                              aDeltaV2 = aRangeS2.Delta()/IntToReal(aNbPoints);
-        
+          const Standard_Real aDeltaV1 = aRangeS1.Delta() / IntToReal(aNbPoints),
+                              aDeltaV2 = aRangeS2.Delta() / IntToReal(aNbPoints);
+
           math_Matrix aMatr(1, 3, 1, 5);
 
           Standard_Real aMinUexp = RealLast();
-        
-          for(Standard_Integer i = 0; i < aNbWLines; i++)
+
+          for (Standard_Integer i = 0; i < aNbWLines; i++)
           {
-            if(theTol2D < (anUexpect[i] - anU1))
+            if (aTol2D < (anUexpect[i] - anU1))
             {
               continue;
             }
 
-            if(aWLFindStatus[i] == WLFStatus_Absent)
+            if (aWLFindStatus[i] == WLFStatus_Absent)
             {
               anUexpect[i] += aStepMax;
               aMinUexp = Min(aMinUexp, anUexpect[i]);
@@ -3309,7 +3315,7 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
             //The solution is approximate. More over, all requirements to the
             //linearization must be satisfied in order to obtain quality result.
 
-            if(!StepComputing(aMatr, aV1[i], aV2[i], aDeltaV1, aDeltaV2, aStepTmp))
+            if (!StepComputing(aMatr, aV1[i], aV2[i], aDeltaV1, aDeltaV2, aStepTmp))
             {
               //To avoid cycling-up
               anUexpect[i] += aStepMax;
@@ -3318,10 +3324,10 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
               continue;
             }
 
-            if(aStepTmp < aStepMin)
+            if (aStepTmp < aStepMin)
               aStepTmp = aStepMin;
-      
-            if(aStepTmp > aStepMax)
+
+            if (aStepTmp > aStepMax)
               aStepTmp = aStepMax;
 
             anUexpect[i] = anU1 + aStepTmp;
@@ -3331,26 +3337,26 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
           anU1 = aMinUexp;
         }
 
-        if(Precision::PConfusion() >= (anUl - anU1))
+        if (Precision::PConfusion() >= (anUl - anU1))
           anU1 = anUl;
 
         anUf = anU1;
 
-        for(Standard_Integer i = 0; i < aNbWLines; i++)
+        for (Standard_Integer i = 0; i < aNbWLines; i++)
         {
-          if(aWLine[i]->NbPnts() != 1)
+          if (aWLine[i]->NbPnts() != 1)
             isAddedIntoWL[i] = Standard_False;
 
-          if(anU1 == anUl)
+          if (anU1 == anUl)
           {//strictly equal. Tolerance is considered above.
             anUexpect[i] = anUl;
           }
         }
       }
 
-      for(Standard_Integer i = 0; i < aNbWLines; i++)
+      for (Standard_Integer i = 0; i < aNbWLines; i++)
       {
-        if((aWLine[i]->NbPnts() == 1) && (!isAddedIntoWL[i]))
+        if ((aWLine[i]->NbPnts() == 1) && (!isAddedIntoWL[i]))
         {
           isTheEmpty = Standard_False;
           Standard_Real u1, v1, u2, v2;
@@ -3358,34 +3364,34 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
           IntPatch_Point aP;
           aP.SetParameter(u1);
           aP.SetParameters(u1, v1, u2, v2);
-          aP.SetTolerance(theTol3D);
+          aP.SetTolerance(aTol3D);
           aP.SetValue(aWLine[i]->Point(1).Value());
 
           theSPnt.Append(aP);
         }
-        else if(aWLine[i]->NbPnts() > 1)
+        else if (aWLine[i]->NbPnts() > 1)
         {
           Standard_Boolean isGood = Standard_True;
 
-          if(aWLine[i]->NbPnts() == 2)
+          if (aWLine[i]->NbPnts() == 2)
           {
             const IntSurf_PntOn2S& aPf = aWLine[i]->Point(1);
             const IntSurf_PntOn2S& aPl = aWLine[i]->Point(2);
-            
-            if(aPf.IsSame(aPl, Precision::Confusion()))
+
+            if (aPf.IsSame(aPl, Precision::Confusion()))
               isGood = Standard_False;
           }
 
-          if(isGood)
+          if (isGood)
           {
             isTheEmpty = Standard_False;
             isAddedIntoWL[i] = Standard_True;
-            SeekAdditionalPoints( theQuad1, theQuad2, aWLine[i]->Curve(), 
-                                  anEquationCoeffs, i, aNbPoints, 1,
-                                  aWLine[i]->NbPnts(), theTol2D, aPeriod,
-                                  isTheReverse);
+            SeekAdditionalPoints(aQuad1, aQuad2, aWLine[i]->Curve(),
+                                 anEquationCoeffs, i, aNbPoints, 1,
+              aWLine[i]->NbPnts(), aTol2D, aPeriod,
+              isReversed);
 
-            aWLine[i]->ComputeVertexParameters(theTol3D);
+            aWLine[i]->ComputeVertexParameters(aTol3D);
             theSlin.Append(aWLine[i]);
           }
         }
@@ -3404,19 +3410,19 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
 
   //Delete the points in theSPnt, which
   //lie at least in one of the line in theSlin.
-  for(Standard_Integer aNbPnt = 1; aNbPnt <= theSPnt.Length(); aNbPnt++)
+  for (Standard_Integer aNbPnt = 1; aNbPnt <= theSPnt.Length(); aNbPnt++)
   {
-    for(Standard_Integer aNbLin = 1; aNbLin <= theSlin.Length(); aNbLin++)
+    for (Standard_Integer aNbLin = 1; aNbLin <= theSlin.Length(); aNbLin++)
     {
-      Handle(IntPatch_WLine) aWLine1 (Handle(IntPatch_WLine)::
-                                            DownCast(theSlin.Value(aNbLin)));
+      Handle(IntPatch_WLine) aWLine1(Handle(IntPatch_WLine)::
+        DownCast(theSlin.Value(aNbLin)));
 
       const IntSurf_PntOn2S& aPntFWL1 = aWLine1->Point(1);
       const IntSurf_PntOn2S& aPntLWL1 = aWLine1->Point(aWLine1->NbPnts());
 
       const IntSurf_PntOn2S aPntCur = theSPnt.Value(aNbPnt).PntOn2S();
-      if( aPntCur.IsSame(aPntFWL1, Precision::Confusion()) ||
-          aPntCur.IsSame(aPntLWL1, Precision::Confusion()))
+      if (aPntCur.IsSame(aPntFWL1, Precision::Confusion()) ||
+        aPntCur.IsSame(aPntLWL1, Precision::Confusion()))
       {
         theSPnt.Remove(aNbPnt);
         aNbPnt--;
@@ -3425,10 +3431,20 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
     }
   }
 
-  const Standard_Real aDU = aStepMin + Epsilon(aStepMin);
-  //Try to add new points in the neighbourhood of existing point
-  for(Standard_Integer aNbPnt = 1; aNbPnt <= theSPnt.Length(); aNbPnt++)
+  //Try to add new points in the neighborhood of existing point
+  for (Standard_Integer aNbPnt = 1; aNbPnt <= theSPnt.Length(); aNbPnt++)
   {
+    // Standard algorithm (implemented above) could not find any
+    // continuous curve in neighborhood of aPnt2S (e.g. because
+    // this curve is too small; see tests\bugs\modalg_5\bug25292_35 and _36).
+    // Here, we will try to find several new points nearer to aPnt2S.
+
+    // The algorithm below tries to find two points in every
+    // intervals [u1 - aStepMax, u1] and [u1, u1 + aStepMax]
+    // and every new point will be in maximal distance from
+    // u1. If these two points exist they will be joined
+    // by the intersection curve.
+
     const IntPatch_Point& aPnt2S = theSPnt.Value(aNbPnt);
 
     Standard_Real u1, v1, u2, v2;
@@ -3436,79 +3452,329 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
 
     Handle(IntSurf_LineOn2S) aL2S = new IntSurf_LineOn2S();
     Handle(IntPatch_WLine) aWLine = new IntPatch_WLine(aL2S, Standard_False);
-    aWLine->Curve()->Add(aPnt2S.PntOn2S());
 
     //Define the index of WLine, which lies the point aPnt2S in.
-    Standard_Real anUf = 0.0, anUl = 0.0, aCurU2 = 0.0;
     Standard_Integer anIndex = 0;
-    if(isTheReverse)
+
+    Standard_Real anUf = 0.0, anUl = 0.0, aCurU2 = 0.0;
+    if (isReversed)
     {
       anUf = Max(u2 - aStepMax, aUSurf1f);
-      anUl = u2;
+      anUl = Min(u2 + aStepMax, aUSurf1l);
       aCurU2 = u1;
     }
     else
     {
       anUf = Max(u1 - aStepMax, aUSurf1f);
-      anUl = u1;
+      anUl = Min(u1 + aStepMax, aUSurf1l);
       aCurU2 = u2;
     }
-    Standard_Real aDelta = RealLast();
-    for (Standard_Integer i = 0; i < aNbWLines; i++)
-    {
-      Standard_Real anU2t = 0.0;
-      if(!ComputationMethods::CylCylComputeParameters(anUl, i, anEquationCoeffs, anU2t))
-        continue;
 
-      const Standard_Real aDU2 = Abs(anU2t - aCurU2);
-      if(aDU2 < aDelta)
+    const Standard_Real anUinf = anUf, anUsup = anUl, anUmid = 0.5*(anUf + anUl);
+
+    {
+      //Find the value of anIndex variable.
+      Standard_Real aDelta = RealLast();
+      for (Standard_Integer i = 0; i < aNbWLines; i++)
       {
-        aDelta = aDU2; 
-        anIndex = i;
+        Standard_Real anU2t = 0.0;
+        if (!ComputationMethods::CylCylComputeParameters(anUmid, i, anEquationCoeffs, anU2t))
+          continue;
+
+        Standard_Real aDU2 = fmod(Abs(anU2t - aCurU2), aPeriod);
+        aDU2 = Min(aDU2, Abs(aDU2 - aPeriod));
+        if (aDU2 < aDelta)
+        {
+          aDelta = aDU2;
+          anIndex = i;
+        }
       }
     }
 
-    //Try to fill aWLine by additional points
-    while(anUl - anUf > RealSmall())
-    {
-      Standard_Real anU2 = 0.0, anV1 = 0.0, anV2 = 0.0;
-      Standard_Boolean isDone = 
-            ComputationMethods::CylCylComputeParameters(anUf, anIndex, anEquationCoeffs,
-                                    anU2, anV1, anV2);
-      anUf += aDU;
+    // Bisection method is used in order to find every new point.
+    // I.e. if we need to find intersection point in the interval [anUinf, anUmid]
+    // we check the point anUC = 0.5*(anUinf+anUmid). If it is an intersection point
+    // we try to find another point in the interval [anUinf, anUC] (because we find the point in
+    // maximal distance from anUmid). If it is not then we try to find another point in the
+    // interval [anUC, anUmid]. Next iterations will be made analogically.
+    // When we find intersection point in the interval [anUmid, anUsup] we try to find
+    // another point in the interval [anUC, anUsup] if anUC is intersection point and
+    // in the interval [anUmid, anUC], otherwise.
 
-      if(!isDone)
+    Standard_Real anAddedPar[2] = { anUmid, anUmid };
+
+    for (Standard_Integer aParID = 0; aParID < 2; aParID++)
+    {
+      if (aParID == 0)
       {
-        continue;
+        anUf = anUinf;
+        anUl = anUmid;
+      }
+      else // if(aParID == 1)
+      {
+        anUf = anUmid;
+        anUl = anUsup;
       }
 
-      if(AddPointIntoWL(theQuad1, theQuad2, anEquationCoeffs, isTheReverse,
-                        Standard_True, gp_Pnt2d(anUf, anV1), gp_Pnt2d(anU2, anV2),
+      Standard_Real &aPar1 = (aParID == 0) ? anUf : anUl,
+                    &aPar2 = (aParID == 0) ? anUl : anUf;
+
+      while (Abs(aPar2 - aPar1) > aStepMin)
+      {
+        Standard_Real anUC = 0.5*(anUf + anUl);
+        Standard_Real aU2 = 0.0, aV1 = 0.0, aV2 = 0.0;
+        Standard_Boolean isDone = ComputationMethods::
+                CylCylComputeParameters(anUC, anIndex, anEquationCoeffs, aU2, aV1, aV2);
+
+        if (isDone)
+        {
+          if (Abs(aV1 - aVSurf1f) <= aTol2D)
+            aV1 = aVSurf1f;
+
+          if (Abs(aV1 - aVSurf1l) <= aTol2D)
+            aV1 = aVSurf1l;
+
+          if (Abs(aV2 - aVSurf2f) <= aTol2D)
+            aV2 = aVSurf2f;
+
+          if (Abs(aV2 - aVSurf2l) <= aTol2D)
+            aV2 = aVSurf2l;
+
+          isDone = AddPointIntoWL(aQuad1, aQuad2, anEquationCoeffs, isReversed,
+                                  Standard_True, gp_Pnt2d(anUC, aV1), gp_Pnt2d(aU2, aV2),
+                                  aUSurf1f, aUSurf1l, aUSurf2f, aUSurf2l,
+                                  aVSurf1f, aVSurf1l, aVSurf2f, aVSurf2l,
+                                  aPeriod, aWLine->Curve(), anIndex, aTol3D,
+                                  aTol2D, Standard_False, Standard_True);
+        }
+
+        if (isDone)
+        {
+          anAddedPar[0] = Min(anAddedPar[0], anUC);
+          anAddedPar[1] = Max(anAddedPar[1], anUC);
+          aPar2 = anUC;
+        }
+        else
+        {
+          aPar1 = anUC;
+        }
+      }
+    }
+
+    //Fill aWLine by additional points
+    if (anAddedPar[1] - anAddedPar[0] > aStepMin)
+    {
+      for (Standard_Integer aParID = 0; aParID < 2; aParID++)
+      {
+        Standard_Real aU2 = 0.0, aV1 = 0.0, aV2 = 0.0;
+        ComputationMethods::CylCylComputeParameters(anAddedPar[aParID], anIndex,
+                                                  anEquationCoeffs, aU2, aV1, aV2);
+
+        AddPointIntoWL(aQuad1, aQuad2, anEquationCoeffs, isReversed, Standard_True,
+                        gp_Pnt2d(anAddedPar[aParID], aV1), gp_Pnt2d(aU2, aV2),
                         aUSurf1f, aUSurf1l, aUSurf2f, aUSurf2l,
-                        aVSurf1f, aVSurf1l, aVSurf2f, aVSurf2l,
-                        aPeriod, aWLine->Curve(), anIndex, theTol3D,
-                        theTol2D, Standard_False, Standard_True))
-      {
-        break;
+                        aVSurf1f, aVSurf1l, aVSurf2f, aVSurf2l, aPeriod, aWLine->Curve(),
+                        anIndex, aTol3D, aTol2D, Standard_False, Standard_False);
       }
-    }
 
-    if(aWLine->NbPnts() > 1)
-    {
-      SeekAdditionalPoints( theQuad1, theQuad2, aWLine->Curve(), 
+      SeekAdditionalPoints(aQuad1, aQuad2, aWLine->Curve(),
                             anEquationCoeffs, anIndex, aNbMinPoints,
-                            1, aWLine->NbPnts(), theTol2D, aPeriod,
-                            isTheReverse);
+                            1, aWLine->NbPnts(), aTol2D, aPeriod,
+                            isReversed);
 
-      aWLine->ComputeVertexParameters(theTol3D);
+      aWLine->ComputeVertexParameters(aTol3D);
       theSlin.Append(aWLine);
-  
+
       theSPnt.Remove(aNbPnt);
       aNbPnt--;
     }
   }
-  
+
   return IntPatch_ImpImpIntersection::IntStatus_OK;
+}
+
+//=======================================================================
+//function : IntCyCy
+//purpose  : 
+//=======================================================================
+IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
+                                               const IntSurf_Quadric& theQuad2,
+                                               const Standard_Real theTol3D,
+                                               const Standard_Real theTol2D,
+                                               const Bnd_Box2d& theUVSurf1,
+                                               const Bnd_Box2d& theUVSurf2,
+                                               Standard_Boolean& isTheEmpty,
+                                               Standard_Boolean& isTheSameSurface,
+                                               Standard_Boolean& isTheMultiplePoint,
+                                               IntPatch_SequenceOfLine& theSlin,
+                                               IntPatch_SequenceOfPoint& theSPnt)
+{
+  isTheEmpty = Standard_True;
+  isTheSameSurface = Standard_False;
+  isTheMultiplePoint = Standard_False;
+  theSlin.Clear();
+  theSPnt.Clear();
+
+  const gp_Cylinder aCyl1 = theQuad1.Cylinder(),
+                    aCyl2 = theQuad2.Cylinder();
+
+  IntAna_QuadQuadGeo anInter(aCyl1,aCyl2,theTol3D);
+
+  if (!anInter.IsDone())
+  {
+    return IntPatch_ImpImpIntersection::IntStatus_Fail;
+  }
+
+  if(anInter.TypeInter() != IntAna_NoGeometricSolution)
+  {
+    if (CyCyAnalyticalIntersect(theQuad1, theQuad2, anInter,
+                                theTol3D, isTheEmpty,
+                                isTheSameSurface, isTheMultiplePoint,
+                                theSlin, theSPnt))
+    {
+      return IntPatch_ImpImpIntersection::IntStatus_OK;
+    }
+  }
+  
+  //Here, intersection line is not an analytical curve(line, circle, ellipsis etc.)
+
+  Standard_Real aUSBou[2][2], aVSBou[2][2]; //const
+
+  theUVSurf1.Get(aUSBou[0][0], aVSBou[0][0], aUSBou[0][1], aVSBou[0][1]);
+  theUVSurf2.Get(aUSBou[1][0], aVSBou[1][0], aUSBou[1][1], aVSBou[1][1]);
+
+  const Standard_Real aPeriod = 2.0*M_PI;
+  const Standard_Integer aNbWLines = 2;
+
+  const ComputationMethods::stCoeffsValue anEquationCoeffs1(aCyl1, aCyl2);
+  const ComputationMethods::stCoeffsValue anEquationCoeffs2(aCyl2, aCyl1);
+
+  //Boundaries. 
+  //Intersection result can include two non-connected regions
+  //(see WorkWithBoundaries::BoundariesComputing(...) method).
+  const Standard_Integer aNbOfBoundaries = 2;
+  Bnd_Range anURange[2][aNbOfBoundaries];   //const
+
+  if (!WorkWithBoundaries::BoundariesComputing(anEquationCoeffs1, aPeriod, anURange[0]))
+    return IntPatch_ImpImpIntersection::IntStatus_OK;
+
+  if (!WorkWithBoundaries::BoundariesComputing(anEquationCoeffs2, aPeriod, anURange[1]))
+    return IntPatch_ImpImpIntersection::IntStatus_OK;
+
+  //anURange[*] can be in different periodic regions in
+  //compare with First-Last surface. E.g. the surface
+  //is full cylinder [0, 2*PI] but anURange is [5, 7].
+  //Trivial common range computation returns [5, 2*PI] and
+  //its summary length is 2*PI-5 == 1.28... only. That is wrong.
+  //This problem can be solved by the following
+  //algorithm:
+  // 1. split anURange[*] by the surface boundary;
+  // 2. shift every new range in order to inscribe it
+  //      in [Ufirst, Ulast] of cylinder;
+  // 3. consider only common ranges between [Ufirst, Ulast]
+  //    and new ranges.
+  //
+  // In above example, we obtain following:
+  // 1. two ranges: [5, 2*PI] and [2*PI, 7];
+  // 2. after shifting: [5, 2*PI] and [0, 7-2*PI];
+  // 3. Common ranges: ([5, 2*PI] and [0, 2*PI]) == [5, 2*PI],
+  //                   ([0, 7-2*PI] and [0, 2*PI]) == [0, 7-2*PI];
+  // 4. Their summary length is (2*PI-5)+(7-2*PI-0)==7-5==2 ==> GOOD.
+
+  Standard_Real aSumRange[2] = { 0.0, 0.0 };
+  Handle(NCollection_IncAllocator) anAlloc = new NCollection_IncAllocator;
+  for (Standard_Integer aCID = 0; aCID < 2; aCID++)
+  {
+    anAlloc->Reset();
+    NCollection_List<Bnd_Range> aListOfRng(anAlloc);
+    
+    aListOfRng.Append(anURange[aCID][0]);
+    aListOfRng.Append(anURange[aCID][1]);
+
+    const Standard_Real aSplitArr[3] = {aUSBou[aCID][0], aUSBou[aCID][1], 0.0};
+
+    NCollection_List<Bnd_Range>::Iterator anITrRng;
+    for (Standard_Integer aSInd = 0; aSInd < 3; aSInd++)
+    {
+      NCollection_List<Bnd_Range> aLstTemp(aListOfRng);
+      aListOfRng.Clear();
+      for (anITrRng.Init(aLstTemp); anITrRng.More(); anITrRng.Next())
+      {
+        Bnd_Range& aRng = anITrRng.Value();
+        aRng.Split(aSplitArr[aSInd], aListOfRng, aPeriod);
+      }
+    }
+
+    anITrRng.Init(aListOfRng);
+    for (; anITrRng.More(); anITrRng.Next())
+    {
+      Bnd_Range& aCurrRange = anITrRng.Value();
+
+      Bnd_Range aBoundR;
+      aBoundR.Add(aUSBou[aCID][0]);
+      aBoundR.Add(aUSBou[aCID][1]);
+
+      if (!InscribeInterval(aUSBou[aCID][0], aUSBou[aCID][1],
+                                          aCurrRange, theTol2D, aPeriod))
+      {
+        //If aCurrRange does not have common block with
+        //[Ufirst, Ulast] of cylinder then we will try
+        //to inscribe [Ufirst, Ulast] in the boundaries of aCurrRange.
+        Standard_Real aF = 1.0, aL = 0.0;
+        if (!aCurrRange.GetBounds(aF, aL))
+          continue;
+
+        if ((aL < aUSBou[aCID][0]))
+        {
+          aCurrRange.Shift(aPeriod);
+        }
+        else if (aF > aUSBou[aCID][1])
+        {
+          aCurrRange.Shift(-aPeriod);
+        }
+      }
+
+      aBoundR.Common(aCurrRange);
+
+      const Standard_Real aDelta = aBoundR.Delta();
+
+      if (aDelta > 0.0)
+      {
+        aSumRange[aCID] += aDelta;
+      }
+    }
+  }
+
+  //The bigger range the bigger number of points in Walking-line (WLine)
+  //we will be able to add and consequently we will obtain more
+  //precise intersection line.
+  //Every point of WLine is determined as function from U1-parameter,
+  //where U1 is U-parameter on 1st quadric.
+  //Therefore, we should use quadric with bigger range as 1st parameter
+  //in IntCyCy() function.
+  //On the other hand, there is no point in reversing in case of
+  //analytical intersection (when result is line, ellipse, point...).
+  //This result is independent of the arguments order.
+  const Standard_Boolean isToReverse = (aSumRange[1] > aSumRange[0]);
+
+  if (isToReverse)
+  {
+    const WorkWithBoundaries aBoundWork(theQuad2, theQuad1, anEquationCoeffs2,
+                                        theUVSurf2, theUVSurf1, aNbWLines,
+                                        aPeriod, theTol3D, theTol2D, Standard_True);
+
+    return CyCyNoGeometric(aCyl2, aCyl1, aBoundWork, anURange[1], aNbOfBoundaries,
+                              isTheEmpty, theSlin, theSPnt);
+  }
+  else
+  {
+    const WorkWithBoundaries aBoundWork(theQuad1, theQuad2, anEquationCoeffs1,
+                                        theUVSurf1, theUVSurf2, aNbWLines,
+                                        aPeriod, theTol3D, theTol2D, Standard_False);
+
+    return CyCyNoGeometric(aCyl1, aCyl2, aBoundWork, anURange[0], aNbOfBoundaries,
+                              isTheEmpty, theSlin, theSPnt);
+  }
 }
 
 //=======================================================================

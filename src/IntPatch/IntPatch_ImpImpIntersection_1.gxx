@@ -77,7 +77,6 @@ static
                                                  const Standard_Real theTol2D,
                                                  const Bnd_Box2d& theUVSurf1,
                                                  const Bnd_Box2d& theUVSurf2,
-                                                 const Standard_Boolean isTheReverse,
                                                  Standard_Boolean& isTheEmpty,
                                                  Standard_Boolean& isTheSameSurface,
                                                  Standard_Boolean& isTheMultiplePoint,

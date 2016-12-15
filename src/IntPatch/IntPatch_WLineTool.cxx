@@ -15,9 +15,12 @@
 
 #include <Adaptor3d_HSurface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
+#include <Bnd_Range.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
 #include <IntPatch_SpecialPoints.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <TopAbs_State.hxx>
 
 // It is pure empirical value.
 const Standard_Real IntPatch_WLineTool::myMaxConcatAngle = M_PI/6;
@@ -484,64 +487,6 @@ static Handle(IntPatch_WLine)
 }
 
 //=======================================================================
-//function : IsOnPeriod
-//purpose  : Checks, if [theU1, theU2] intersects the period-value
-//            (k*thePeriod, where k is an integer number (k = 0, +/-1, +/-2, ...).
-//
-//           Returns:
-//            0 - if interval [theU1, theU2] does not intersect the "period-value"
-//                or if thePeriod == 0.0;
-//            1 - if interval (theU1, theU2) intersect the "period-value".
-//            2 - if theU1 or/and theU2 lie ON the "period-value"
-//
-//ATTENTION!!!
-//  If (theU1 == theU2) then this function will return only both 0 or 2.
-//=======================================================================
-static Standard_Integer IsOnPeriod(const Standard_Real theU1,
-                                   const Standard_Real theU2,
-                                   const Standard_Real thePeriod)
-{
-  if(thePeriod < RealSmall())
-    return 0;
-
-  //If interval [theU1, theU2] intersect seam-edge then there exists an integer
-  //number N such as 
-  //    (theU1 <= T*N <= theU2) <=> (theU1/T <= N <= theU2/T),
-  //where T is the period.
-  //I.e. the inerval [theU1/T, theU2/T] must contain at least one
-  //integer number. In this case, Floor(theU1/T) and Floor(theU2/T)
-  //return different values or theU1/T is strictly integer number.
-  //Examples:
-  //  1. theU1/T==2.8, theU2/T==3.5 => Floor(theU1/T) == 2, Floor(theU2/T) == 3.
-  //  2. theU1/T==2.0, theU2/T==2.6 => Floor(theU1/T) == Floor(theU2/T) == 2.
-
-  const Standard_Real aVal1 = theU1/thePeriod,
-                      aVal2 = theU2/thePeriod;
-  const Standard_Integer aPar1 = static_cast<Standard_Integer>(Floor(aVal1));
-  const Standard_Integer aPar2 = static_cast<Standard_Integer>(Floor(aVal2));
-  if(aPar1 != aPar2)
-  {//Interval (theU1, theU2] intersects seam-edge
-    if(IsEqual(aVal2, static_cast<Standard_Real>(aPar2)))
-    {//aVal2 is an integer number => theU2 lies ON the "seam-edge"
-      return 2;
-    }
-
-    return 1;
-  }
-
-  //Here, aPar1 == aPar2. 
-
-  if(IsEqual(aVal1, static_cast<Standard_Real>(aPar1)))
-  {//aVal1 is an integer number => theU1 lies ON the "seam-edge"
-    return 2;
-  }
-
-  //If aVal2 is a true integer number then always (aPar1 != aPar2).
-
-  return 0;
-}
-
-//=======================================================================
 //function : IsSeamOrBound
 //purpose  : Returns TRUE if segment [thePtf, thePtl] intersects "seam-edge"
 //            (if it exist) or surface boundaries and both thePtf and thePtl do
@@ -550,128 +495,89 @@ static Standard_Integer IsOnPeriod(const Standard_Real theU1,
 //           If thePtmid match "seam-edge" or boundaries strictly 
 //            (without any tolerance) then the function will return TRUE.
 //            See comments in function body for detail information.
+//
+//          Arrays theArrPeriods, theFBound and theLBound must be filled
+//            as follows:
+//          [0] - U-parameter of 1st surface;
+//          [1] - V-parameter of 1st surface;
+//          [2] - U-parameter of 2nd surface;
+//          [3] - V-parameter of 2nd surface.
 //=======================================================================
 static Standard_Boolean IsSeamOrBound(const IntSurf_PntOn2S& thePtf,
                                       const IntSurf_PntOn2S& thePtl,
                                       const IntSurf_PntOn2S& thePtmid,
-                                      const Standard_Real theU1Period,
-                                      const Standard_Real theU2Period,
-                                      const Standard_Real theV1Period,
-                                      const Standard_Real theV2Period,
-                                      const Standard_Real theUfSurf1,
-                                      const Standard_Real theUlSurf1,
-                                      const Standard_Real theVfSurf1,
-                                      const Standard_Real theVlSurf1,
-                                      const Standard_Real theUfSurf2,
-                                      const Standard_Real theUlSurf2,
-                                      const Standard_Real theVfSurf2,
-                                      const Standard_Real theVlSurf2)
+                                      const Standard_Real theArrPeriods[4],
+                                      const Standard_Real theFBound[4],
+                                      const Standard_Real theLBound[4])
 {
-  Standard_Real aU11 = 0.0, aU12 = 0.0, aV11 = 0.0, aV12 = 0.0;
-  Standard_Real aU21 = 0.0, aU22 = 0.0, aV21 = 0.0, aV22 = 0.0;
-  thePtf.Parameters(aU11, aV11, aU12, aV12);
-  thePtl.Parameters(aU21, aV21, aU22, aV22);
+  Standard_Real aParF[4] = { 0.0, 0.0, 0.0, 0.0 };
+  Standard_Real aParL[4] = { 0.0, 0.0, 0.0, 0.0 };
+  thePtf.Parameters(aParF[0], aParF[1], aParF[2], aParF[3]);
+  thePtl.Parameters(aParL[0], aParL[1], aParL[2], aParL[3]);
 
-  MinMax(aU11, aU21);
-  MinMax(aV11, aV21);
-  MinMax(aU12, aU22);
-  MinMax(aV12, aV22);
+  Bnd_Range aBndR[4];
 
-  if((aU11 - theUfSurf1)*(aU21 - theUfSurf1) < 0.0)
-  {//Interval [aU11, aU21] intersects theUfSurf1
-    return Standard_True;
+  for (Standard_Integer i = 0; i < 4; i++)
+  {
+    aBndR[i].Add(aParF[i]);
+    aBndR[i].Add(aParL[i]);
+
+    if (aBndR[i].IsIntersected(theFBound[i], theArrPeriods[i]) == 1)
+      return Standard_True;
+
+    if (aBndR[i].IsIntersected(theLBound[i], theArrPeriods[i]) == 1)
+      return Standard_True;
   }
 
-  if((aU11 - theUlSurf1)*(aU21 - theUlSurf1) < 0.0)
-  {//Interval [aU11, aU21] intersects theUlSurf1
-    return Standard_True;
+  for (Standard_Integer i = 0; i < 4; i++)
+  {
+    if (theArrPeriods[i] == 0.0)
+    {
+      //Strictly equal
+      continue;
+    }
+
+    const Standard_Real aDelta = Abs(aParL[i] - aParF[i]);
+    if (2.0*aDelta > theArrPeriods[i])
+    {
+      //Most likely, seam is intersected.
+      return Standard_True;
+    }
+
+    if (aBndR[i].IsIntersected(0.0, theArrPeriods[i]) == 1)
+      return Standard_True;
   }
 
-  if((aV11 - theVfSurf1)*(aV21 - theVfSurf1) < 0.0)
-  {//Interval [aV11, aV21] intersects theVfSurf1
-    return Standard_True;
+  //The segment [thePtf, thePtl] does not intersect the boundaries and
+  //the seam-edge of the surfaces.
+  //Nevertheless, following situation is possible:
+
+  //              seam or
+  //               bound
+  //                 |
+  //    thePtf  *    |
+  //                 |
+  //                 * thePtmid
+  //      thePtl  *  |
+  //                 |
+
+  //This case must be processed, too.
+
+  Standard_Real aMPar[4] = { 0.0, 0.0, 0.0, 0.0 };
+  thePtmid.Parameters(aMPar[0], aMPar[1], aMPar[2], aMPar[3]);
+
+  for (Standard_Integer i = 0; i < 4; i++)
+  {
+    const Bnd_Range aBR(aMPar[i], aMPar[i]);
+    if (aBR.IsIntersected(theFBound[i], theArrPeriods[i]))
+      return Standard_True;
+
+    if (aBR.IsIntersected(theLBound[i], theArrPeriods[i]))
+      return Standard_True;
+
+    if (aBR.IsIntersected(0.0, theArrPeriods[i]))
+      return Standard_True;
   }
-
-  if((aV11 - theVlSurf1)*(aV21 - theVlSurf1) < 0.0)
-  {//Interval [aV11, aV21] intersects theVlSurf1
-    return Standard_True;
-  }
-
-  if((aU12 - theUfSurf2)*(aU22 - theUfSurf2) < 0.0)
-  {//Interval [aU12, aU22] intersects theUfSurf2
-    return Standard_True;
-  }
-
-  if((aU12 - theUlSurf2)*(aU22 - theUlSurf2) < 0.0)
-  {//Interval [aU12, aU22] intersects theUlSurf2
-    return Standard_True;
-  }
-
-  if((aV12 - theVfSurf2)*(aV22 - theVfSurf2) < 0.0)
-  {//Interval [aV12, aV22] intersects theVfSurf2
-    return Standard_True;
-  }
-
-  if((aV12 - theVlSurf2)*(aV22 - theVlSurf2) < 0.0)
-  {//Interval [aV12, aV22] intersects theVlSurf2
-    return Standard_True;
-  }
-
-  if(IsOnPeriod(aU11, aU21, theU1Period))
-    return Standard_True;
-
-  if(IsOnPeriod(aV11, aV21, theV1Period))
-    return Standard_True;
-
-  if(IsOnPeriod(aU12, aU22, theU2Period))
-    return Standard_True;
-
-  if(IsOnPeriod(aV12, aV22, theV2Period))
-    return Standard_True;
-
-  /*
-    The segment [thePtf, thePtl] does not intersect the boundaries and
-    the seam-edge of the surfaces.
-    Nevertheless, following situation is possible:
-
-                  seam or
-                   bound
-                     |
-        thePtf  *    |
-                     |
-                     * thePtmid
-          thePtl  *  |
-                     |
-
-    This case must be processed, too.
-  */
-
-  Standard_Real aU1 = 0.0, aU2 = 0.0, aV1 = 0.0, aV2 = 0.0;
-  thePtmid.Parameters(aU1, aV1, aU2, aV2);
-
-  if(IsEqual(aU1, theUfSurf1) || IsEqual(aU1, theUlSurf1))
-    return Standard_True;
-
-  if(IsEqual(aU2, theUfSurf2) || IsEqual(aU2, theUlSurf2))
-    return Standard_True;
-
-  if(IsEqual(aV1, theVfSurf1) || IsEqual(aV1, theVlSurf1))
-    return Standard_True;
-
-  if(IsEqual(aV2, theVfSurf2) || IsEqual(aV2, theVlSurf2))
-    return Standard_True;
-
-  if(IsOnPeriod(aU1, aU1, theU1Period))
-    return Standard_True;
-
-  if(IsOnPeriod(aU2, aU2, theU2Period))
-    return Standard_True;
-
-  if(IsOnPeriod(aV1, aV1, theV1Period))
-    return Standard_True;
-
-  if(IsOnPeriod(aV2, aV2, theV2Period))
-    return Standard_True;
 
   return Standard_False;
 }
@@ -919,59 +825,75 @@ static IntPatchWT_WLsConnectionType
   thePtWL2.Parameters(aParWL2[0], aParWL2[1], aParWL2[2], aParWL2[3]);
   theNewPoint.Parameters(aNewPar[0], aNewPar[1], aNewPar[2], aNewPar[3]);
 
+  Bnd_Range aR1, aR2;
+
   Standard_Boolean isOnBoundary = Standard_False;
   for(Standard_Integer i = 0; i < 4; i++)
   {
-    if(IsOnPeriod(aParWL1[i] - aParLBC[i], aParWL2[i] - aParLBC[i], theArrPeriods[i]))
+    if (theArrPeriods[i] == 0.0)
+    {
+      //Strictly equal
+      continue;
+    }
+
+    aR1.SetVoid();
+    aR1.Add(aParWL1[i]);
+    aR1.Add(aParWL2[i]);
+
+    if (aR1.IsIntersected(aParLBC[i],theArrPeriods[i]))
     {
       //Check, if we intersect surface boundary when we will extend Wline1 or Wline2
       //to theNewPoint
       MinMax(aParWL1[i], aParWL2[i]);
-      if(theArrPeriods[i] > 0.0)
+      if(aNewPar[i] > aParWL2[i])
       {
-        if(aNewPar[i] > aParWL2[i])
-        {
-          //Source situation:
-          //
-          //---*---------------*------------*-----
-          // aParWL1[i]   aParWL2[i]    aNewPar[i]
-          //
-          //After possible adjusting:
-          //
-          //---*---------------*------------*-----
-          // aParWL1[i]   aNewPar[i]    aParWL2[i]
-          //
-          //Now we will be able to extend every WLine to
-          //aNewPar[i] to make them close to each other.
-          //However, it is necessary to add check if we
-          //intersect boundary.
-          const Standard_Real aPar = aParWL1[i] +
+        //Source situation:
+        //
+        //---*---------------*------------*-----
+        // aParWL1[i]   aParWL2[i]    aNewPar[i]
+        //
+        //After possible adjusting:
+        //
+        //---*---------------*------------*-----
+        // aParWL1[i]   aNewPar[i]    aParWL2[i]
+        //
+        //Now we will be able to extend every WLine to
+        //aNewPar[i] to make them close to each other.
+        //However, it is necessary to add check if we
+        //intersect boundary.
+        const Standard_Real aPar = aParWL1[i] +
                 theArrPeriods[i]*Ceiling((aNewPar[i]-aParWL1[i])/theArrPeriods[i]);
-          aParWL1[i] = aParWL2[i];
-          aParWL2[i] = aPar;
-        }
-        else if(aNewPar[i] < aParWL1[i])
-        {
-          //See comments to main "if".
-          //Source situation:
-          //
-          //---*---------------*------------*-----
-          // aNewPar[i]    aParWL1[i]   aParWL2[i]    
-          //
-          //After possible adjusting:
-          //
-          //---*---------------*------------*-----
-          // aParWL1[i]   aNewPar[i]    aParWL2[i]
+        aParWL1[i] = aParWL2[i];
+        aParWL2[i] = aPar;
+      }
+      else if(aNewPar[i] < aParWL1[i])
+      {
+        //See comments to main "if".
+        //Source situation:
+        //
+        //---*---------------*------------*-----
+        // aNewPar[i]    aParWL1[i]   aParWL2[i]    
+        //
+        //After possible adjusting:
+        //
+        //---*---------------*------------*-----
+        // aParWL1[i]   aNewPar[i]    aParWL2[i]
           
-          const Standard_Real aPar = aParWL2[i] - 
+        const Standard_Real aPar = aParWL2[i] - 
                 theArrPeriods[i]*Ceiling((aParWL2[i]-aNewPar[i])/theArrPeriods[i]);
-          aParWL2[i] = aParWL1[i];
-          aParWL1[i] = aPar;
-        }
+        aParWL2[i] = aParWL1[i];
+        aParWL1[i] = aPar;
       }
 
-      if( IsOnPeriod(aParWL1[i] - aParLBC[i], aNewPar[i] - aParLBC[i], theArrPeriods[i]) ||
-          IsOnPeriod(aNewPar[i] - aParLBC[i], aParWL2[i] - aParLBC[i], theArrPeriods[i]))
+      aR1.SetVoid();
+      aR2.SetVoid();
+      aR1.Add(aParWL1[i]);
+      aR1.Add(aNewPar[i]);
+      aR2.Add(aNewPar[i]);
+      aR2.Add(aParWL2[i]);
+
+      if (aR1.IsIntersected(aParLBC[i], theArrPeriods[i]) ||
+          aR2.IsIntersected(aParLBC[i], theArrPeriods[i]))
       {
         return IntPatchWT_NotConnected;
       }
@@ -995,13 +917,15 @@ static IntPatchWT_WLsConnectionType
 //purpose  : Check if joining is possible
 //            (see IntPatch_WLineTool::JoinWLines(...))
 //=======================================================================
-Standard_Boolean CheckArgumentsToJoin(const gp_Vec& theVec1,
-                                      const gp_Vec& theVec2)
+Standard_Boolean CheckArgumentsToJoin(const Handle(Adaptor3d_HSurface)& theS1,
+                                      const Handle(Adaptor3d_HSurface)& theS2,
+                                      const IntSurf_PntOn2S& thePnt,
+                                      const Standard_Real theMinRad)
 {
-  // [0, PI] - range
-  const Standard_Real anAngle = theVec1.Angle(theVec2);
+  const Standard_Real aRad = 
+        IntPatch_PointLine::CurvatureRadiusOfIntersLine(theS1, theS2, thePnt);
 
-  return (anAngle < IntPatch_WLineTool::myMaxConcatAngle);
+  return (aRad > theMinRad);
 }
 
 //=======================================================================
@@ -1415,33 +1339,38 @@ Handle(IntPatch_WLine) IntPatch_WLineTool::
   return aResult;
 }
 
-
 //=======================================================================
 //function : JoinWLines
 //purpose  :
 //=======================================================================
 void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine& theSlin,
                                     IntPatch_SequenceOfPoint& theSPnt,
-                                    const Standard_Real theTol3D,
-                                    const Standard_Real theU1Period,
-                                    const Standard_Real theU2Period,
-                                    const Standard_Real theV1Period,
-                                    const Standard_Real theV2Period,
-                                    const Standard_Real theUfSurf1,
-                                    const Standard_Real theUlSurf1,
-                                    const Standard_Real theVfSurf1,
-                                    const Standard_Real theVlSurf1,
-                                    const Standard_Real theUfSurf2,
-                                    const Standard_Real theUlSurf2,
-                                    const Standard_Real theVfSurf2,
-                                    const Standard_Real theVlSurf2)
+                                    Handle(Adaptor3d_HSurface) theS1,
+                                    Handle(Adaptor3d_HSurface) theS2,
+                                    const Standard_Real theTol3D)
 {
   if(theSlin.Length() == 0)
     return;
 
-  for(Standard_Integer aNumOfLine1 = 1; aNumOfLine1 <= theSlin.Length(); aNumOfLine1++)
+  // For two cylindrical surfaces only
+  const Standard_Real aMinRad = 1.0e-3*Min(theS1->Cylinder().Radius(),
+                                              theS2->Cylinder().Radius());
+
+  const Standard_Real anArrPeriods[4] = {theS1->IsUPeriodic() ? theS1->UPeriod() : 0.0,
+                                         theS1->IsVPeriodic() ? theS1->VPeriod() : 0.0,
+                                         theS2->IsUPeriodic() ? theS2->UPeriod() : 0.0,
+                                         theS2->IsVPeriodic() ? theS2->VPeriod() : 0.0};
+
+  const Standard_Real anArrFBonds[4] = {theS1->FirstUParameter(), theS1->FirstVParameter(),
+                                        theS2->FirstUParameter(), theS2->FirstVParameter()};
+  const Standard_Real anArrLBonds[4] = {theS1->LastUParameter(), theS1->LastVParameter(),
+                                        theS2->LastUParameter(), theS2->LastVParameter()};
+
+  Handle(NCollection_IncAllocator) anAlloc = new NCollection_IncAllocator();
+
+  for(Standard_Integer aN1 = 1; aN1 <= theSlin.Length(); aN1++)
   {
-    Handle(IntPatch_WLine) aWLine1 (Handle(IntPatch_WLine)::DownCast(theSlin.Value(aNumOfLine1)));
+    Handle(IntPatch_WLine) aWLine1(Handle(IntPatch_WLine)::DownCast(theSlin.Value(aN1)));
 
     if(aWLine1.IsNull())
     {//We must have failed to join not-point-lines
@@ -1449,184 +1378,169 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine& theSlin,
     }
 
     const Standard_Integer aNbPntsWL1 = aWLine1->NbPnts();
-    const IntSurf_PntOn2S& aPntFW1 = aWLine1->Point(1);
-    const IntSurf_PntOn2S& aPntLW1 = aWLine1->Point(aNbPntsWL1);
+    const IntSurf_PntOn2S& aPntFWL1 = aWLine1->Point(1);
+    const IntSurf_PntOn2S& aPntLWL1 = aWLine1->Point(aNbPntsWL1);
 
     for(Standard_Integer aNPt = 1; aNPt <= theSPnt.Length(); aNPt++)
     {
       const IntSurf_PntOn2S aPntCur = theSPnt.Value(aNPt).PntOn2S();
 
-      if( aPntCur.IsSame(aPntFW1, Precision::Confusion()) ||
-        aPntCur.IsSame(aPntLW1, Precision::Confusion()))
+      if( aPntCur.IsSame(aPntFWL1, Precision::Confusion()) ||
+        aPntCur.IsSame(aPntLWL1, Precision::Confusion()))
       {
         theSPnt.Remove(aNPt);
         aNPt--;
       }
     }
 
-    Standard_Boolean hasBeenRemoved = Standard_False;
-    for(Standard_Integer aNumOfLine2 = aNumOfLine1 + 1; aNumOfLine2 <= theSlin.Length(); aNumOfLine2++)
-    {
-      Handle(IntPatch_WLine) aWLine2 (Handle(IntPatch_WLine)::DownCast(theSlin.Value(aNumOfLine2)));
+    anAlloc->Reset();
+    NCollection_List<Standard_Integer> aListFC(anAlloc),
+                                       aListLC(anAlloc);
+    
+    Standard_Boolean isFirstConnected = Standard_False, isLastConnected = Standard_False;
 
-      if(aWLine2.IsNull())
+    for (Standard_Integer aN2 = 1; aN2 <= theSlin.Length(); aN2++)
+    {
+      if (aN2 == aN1)
         continue;
 
-      const Standard_Integer aNbPntsWL2 = aWLine2->NbPnts();
+      Handle(IntPatch_WLine) aWLine2(Handle(IntPatch_WLine)::DownCast(theSlin.Value(aN2)));
 
-      const IntSurf_PntOn2S& aPntFWL1 = aWLine1->Point(1);
-      const IntSurf_PntOn2S& aPntLWL1 = aWLine1->Point(aNbPntsWL1);
+      if (aWLine2.IsNull())
+        continue;
+
+      isFirstConnected = isLastConnected = Standard_False;
+
+      const Standard_Integer aNbPntsWL2 = aWLine2->NbPnts();
 
       const IntSurf_PntOn2S& aPntFWL2 = aWLine2->Point(1);
       const IntSurf_PntOn2S& aPntLWL2 = aWLine2->Point(aNbPntsWL2);
 
-      if(aPntFWL1.IsSame(aPntFWL2, Precision::Confusion()))
+      Standard_Real aSqDistF = aPntFWL1.Value().SquareDistance(aPntFWL2.Value());
+      Standard_Real aSqDistL = aPntFWL1.Value().SquareDistance(aPntLWL2.Value());
+
+      const Standard_Real aSqMinFDist = Min(aSqDistF, aSqDistL);
+      if (aSqMinFDist < Precision::SquareConfusion())
       {
-        const IntSurf_PntOn2S& aPt1 = aWLine1->Point(2);
-        const IntSurf_PntOn2S& aPt2 = aWLine2->Point(2);
-
-        Standard_Boolean aCond = 
-              CheckArgumentsToJoin(gp_Vec(aPntFWL1.Value(), aPt1.Value()),
-                                   gp_Vec(aPt2.Value(), aPntFWL2.Value()));
-
-        aCond = aCond && !IsSeamOrBound(aPt1, aPt2, aPntFWL1,
-                                        theU1Period, theU2Period,
-                                        theV1Period, theV2Period,
-                                        theUfSurf1, theUlSurf1,
-                                        theVfSurf1, theVlSurf1,
-                                        theUfSurf2, theUlSurf2,
-                                        theVfSurf2, theVlSurf2);
-          
-        if(aCond)
+        if (CheckArgumentsToJoin(theS1, theS2, aPntFWL1, aMinRad))
         {
-          aWLine1->ClearVertexes();
-          for(Standard_Integer aNPt = 1; aNPt <= aNbPntsWL2; aNPt++)
+          const Standard_Boolean isFM = (aSqDistF < aSqDistL);
+          const IntSurf_PntOn2S& aPt1 = aWLine1->Point(2);
+          const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) :
+                                                      aWLine2->Point(aNbPntsWL2 - 1);
+
+          if (!IsSeamOrBound(aPt1, aPt2, aPntFWL1,
+                              anArrPeriods, anArrFBonds, anArrLBonds))
           {
-            const IntSurf_PntOn2S& aPt = aWLine2->Point(aNPt);
-            aWLine1->Curve()->InsertBefore(1, aPt);
+            isFirstConnected = Standard_True;
           }
-
-          aWLine1->ComputeVertexParameters(theTol3D);
-
-          theSlin.Remove(aNumOfLine2);
-          aNumOfLine2--;
-          hasBeenRemoved = Standard_True;
-
-          continue;
         }
       }
 
-      if(aPntFWL1.IsSame(aPntLWL2, Precision::Confusion()))
+      aSqDistF = aPntLWL1.Value().SquareDistance(aPntFWL2.Value());
+      aSqDistL = aPntLWL1.Value().SquareDistance(aPntLWL2.Value());
+
+      const Standard_Real aSqMinLDist = Min(aSqDistF, aSqDistL);
+      if (aSqMinLDist < Precision::SquareConfusion())
       {
-        const IntSurf_PntOn2S& aPt1 = aWLine1->Point(2);
-        const IntSurf_PntOn2S& aPt2 = aWLine2->Point(aNbPntsWL2-1);
-
-        Standard_Boolean aCond = 
-              CheckArgumentsToJoin(gp_Vec(aPntFWL1.Value(), aPt1.Value()),
-                                   gp_Vec(aPt2.Value(), aPntLWL2.Value()));
-
-        aCond = aCond && !IsSeamOrBound(aPt1, aPt2, aPntFWL1,
-                                        theU1Period, theU2Period,
-                                        theV1Period, theV2Period,
-                                        theUfSurf1, theUlSurf1,
-                                        theVfSurf1, theVlSurf1,
-                                        theUfSurf2, theUlSurf2,
-                                        theVfSurf2, theVlSurf2);
-
-        if(aCond)
+        if (CheckArgumentsToJoin(theS1, theS2, aPntLWL1, aMinRad))
         {
-          aWLine1->ClearVertexes();
-          for(Standard_Integer aNPt = aNbPntsWL2; aNPt >= 1; aNPt--)
+          const Standard_Boolean isFM = (aSqDistF < aSqDistL);
+          const IntSurf_PntOn2S& aPt1 = aWLine1->Point(aNbPntsWL1 - 1);
+          const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) :
+                                               aWLine2->Point(aNbPntsWL2 - 1);
+
+          if (!IsSeamOrBound(aPt1, aPt2, aPntLWL1,
+                              anArrPeriods, anArrFBonds, anArrLBonds))
           {
-            const IntSurf_PntOn2S& aPt = aWLine2->Point(aNPt);
-            aWLine1->Curve()->InsertBefore(1, aPt);
+            isLastConnected = Standard_True;
           }
-
-          aWLine1->ComputeVertexParameters(theTol3D);
-
-          theSlin.Remove(aNumOfLine2);
-          aNumOfLine2--;
-          hasBeenRemoved = Standard_True;
-
-          continue;
         }
       }
 
-      if(aPntLWL1.IsSame(aPntFWL2, Precision::Confusion()))
+      if (isFirstConnected && isLastConnected)
       {
-        const IntSurf_PntOn2S& aPt1 = aWLine1->Point(aNbPntsWL1-1);
-        const IntSurf_PntOn2S& aPt2 = aWLine2->Point(2);
-
-        Standard_Boolean aCond = 
-              CheckArgumentsToJoin(gp_Vec(aPt1.Value(), aPntLWL1.Value()),
-                                   gp_Vec(aPntFWL2.Value(), aPt2.Value()));
-
-        aCond = aCond && !IsSeamOrBound(aPt1, aPt2, aPntLWL1,
-                                        theU1Period, theU2Period,
-                                        theV1Period, theV2Period,
-                                        theUfSurf1, theUlSurf1,
-                                        theVfSurf1, theVlSurf1,
-                                        theUfSurf2, theUlSurf2,
-                                        theVfSurf2, theVlSurf2);
-
-        if(aCond)
+        if (aSqMinFDist < aSqMinLDist)
         {
-          aWLine1->ClearVertexes();
-          for(Standard_Integer aNPt = 1; aNPt <= aNbPntsWL2; aNPt++)
-          {
-            const IntSurf_PntOn2S& aPt = aWLine2->Point(aNPt);
-            aWLine1->Curve()->Add(aPt);
-          }
-
-          aWLine1->ComputeVertexParameters(theTol3D);
-
-          theSlin.Remove(aNumOfLine2);
-          aNumOfLine2--;
-          hasBeenRemoved = Standard_True;
-
-          continue;
+          aListFC.Append(aN2);
+        }
+        else
+        {
+          aListLC.Append(aN2);
         }
       }
-
-      if(aPntLWL1.IsSame(aPntLWL2, Precision::Confusion()))
+      else if (isFirstConnected)
       {
-        const IntSurf_PntOn2S& aPt1 = aWLine1->Point(aNbPntsWL1-1);
-        const IntSurf_PntOn2S& aPt2 = aWLine2->Point(aNbPntsWL2-1);
+        aListFC.Append(aN2);
+      }
+      else if (isLastConnected)
+      {
+        aListLC.Append(aN2);
+      }
+    }
 
-        Standard_Boolean aCond = 
-              CheckArgumentsToJoin(gp_Vec(aPt1.Value(), aPntLWL1.Value()),
-                                   gp_Vec(aPntLWL2.Value(), aPt2.Value()));
+    isFirstConnected = (aListFC.Extent() == 1);
+    isLastConnected = (aListLC.Extent() == 1);
 
-        aCond = aCond && !IsSeamOrBound(aPt1, aPt2, aPntLWL1, 
-                                        theU1Period, theU2Period,
-                                        theV1Period, theV2Period,
-                                        theUfSurf1, theUlSurf1,
-                                        theVfSurf1, theVlSurf1,
-                                        theUfSurf2, theUlSurf2,
-                                        theVfSurf2, theVlSurf2);
+    if (!(isFirstConnected || isLastConnected))
+    {
+      continue;
+    }
 
-        if(aCond)
+    const Standard_Integer anIndexWL2 = isFirstConnected ? aListFC.First() : aListLC.First();
+    Handle(IntPatch_WLine) aWLine2(Handle(IntPatch_WLine)::DownCast(theSlin.Value(anIndexWL2)));
+    
+    const Standard_Integer aNbPntsWL2 = aWLine2->NbPnts();
+    const IntSurf_PntOn2S& aPntFWL2 = aWLine2->Point(1);
+
+    aWLine1->ClearVertexes();
+
+    if (isFirstConnected)
+    {
+      if (aPntFWL1.IsSame(aPntFWL2, Precision::Confusion()))
+      {
+        //First-First-connection
+        for (Standard_Integer aNPt = 1; aNPt <= aNbPntsWL2; aNPt++)
         {
-          aWLine1->ClearVertexes();
-          for(Standard_Integer aNPt = aNbPntsWL2; aNPt >= 1; aNPt--)
-          {
-            const IntSurf_PntOn2S& aPt = aWLine2->Point(aNPt);
-            aWLine1->Curve()->Add(aPt);
-          }
-
-          aWLine1->ComputeVertexParameters(theTol3D);
-
-          theSlin.Remove(aNumOfLine2);
-          aNumOfLine2--;
-          hasBeenRemoved = Standard_True;
-
-          continue;
+          const IntSurf_PntOn2S& aPt = aWLine2->Point(aNPt);
+          aWLine1->Curve()->InsertBefore(1, aPt);
+        }
+      }
+      else
+      {
+        //First-Last-connection
+        for (Standard_Integer aNPt = aNbPntsWL2; aNPt >= 1; aNPt--)
+        {
+          const IntSurf_PntOn2S& aPt = aWLine2->Point(aNPt);
+          aWLine1->Curve()->InsertBefore(1, aPt);
+        }
+      }
+    }
+    else //if (isLastConnected)
+    {
+      if (aPntLWL1.IsSame(aPntFWL2, Precision::Confusion()))
+      {
+        //Last-First connection
+        for(Standard_Integer aNPt = 1; aNPt <= aNbPntsWL2; aNPt++)
+        {
+          const IntSurf_PntOn2S& aPt = aWLine2->Point(aNPt);
+          aWLine1->Curve()->Add(aPt);
+        }
+      }
+      else
+      {
+        //Last-Last connection
+        for (Standard_Integer aNPt = aNbPntsWL2; aNPt >= 1; aNPt--)
+        {
+          const IntSurf_PntOn2S& aPt = aWLine2->Point(aNPt);
+          aWLine1->Curve()->Add(aPt);
         }
       }
     }
 
-    if(hasBeenRemoved)
-      aNumOfLine1--;
+    aWLine1->ComputeVertexParameters(theTol3D);
+    theSlin.Remove(anIndexWL2);
+    aN1--;
   }
 }
 

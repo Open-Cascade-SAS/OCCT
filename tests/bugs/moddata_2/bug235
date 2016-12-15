@@ -36,6 +36,9 @@ if { $nb_result != 2 } {
     }
 }
 
-checkview -display result -2d -path ${imagedir}/${test_image}.png
+smallview
+don result*
+fit
 
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
 

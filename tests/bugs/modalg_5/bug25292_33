@@ -28,37 +28,39 @@ intersect res s1 s2
 
 set che [whatis res]
 set ind [string first "3d curve" $che]
-
-set AllowRepeate 1
-set ic 1
-
 if {${ind} >= 0} {
   #Only variable "res" exists
   renamevar res res_1
 }
 
+set ic 1
+set AllowRepeate 1
 while { $AllowRepeate != 0 } {
   set che [whatis res_$ic]
   set ind [string first "3d curve" $che]
   if {${ind} < 0} {
     set AllowRepeate 0
-    break
+  } else {
+    display res_$ic
+    
+    bounds res_$ic U1 U2
+    
+    dval U1
+    dval U2
+    
+    if {[dval U2-U1] < 1.0e-20} {
+      puts "Error: Wrong curve's range!"
+    }
+    
+    xdistcs res_$ic s1 U1 U2 10 1.0e-7
+    xdistcs res_$ic s2 U1 U2 10 1.0e-7
+    
+    incr ic
   }
-  
-  bounds res_$ic U1 U2
-  
-  if {[dval (U2-U1)] < 1.0e-20} {
-    puts "Error: Wrong curve's range!"
-  }
-  
-  xdistcs res_$ic s1 U1 U2 10 1e-6 1e-7
-  xdistcs res_$ic s2 U1 U2 10 1e-6 1e-7
-  
-  incr ic
 }
-  
+
 if {[expr {$ic - 1}] == $GoodNbCurv} {
-  puts "OK: Good number of intersection curve(s) obtained by Surface/Surface Intersection Algorithm"
+  puts "OK: Curve Number is good!"
 } else {
-  puts "Error: $GoodNbCurv intersection curve(s) expected but [expr {$ic - 1}] found"
+  puts "Error: Curve Number is bad!"
 }

@@ -6,27 +6,6 @@ puts ""
 # Face/Face intersection algorithm gives different results for different order of the arguments
 #######################################################################
 
-proc GetRange { curve } {
-  global U1
-  global U2
-  
-  set log [uplevel dump $curve]
-  
-  regexp {Degree +([-0-9.+eE]+), +([-0-9.+eE]+) Poles, +([-0-9.+eE]+)} ${log} full Degree Poles KnotsPoles
-  puts "Degree=${Degree}"
-  puts "Poles=${Poles}"
-  puts "KnotsPoles=${KnotsPoles}"
-  puts ""
-
-  set Knot 1
-  set exp_string "Knots :\n\n +${Knot} :  +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+)"
-  regexp ${exp_string} ${log} full U1 Mult1
-
-  set Knot ${KnotsPoles}
-  set exp_string " +${Knot} :  +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+)"
-  regexp ${exp_string} ${log} full U2 Mult2
-}
-
 puts "##############################"
 puts "#!!!Search \"Attention\" keyword on this web-page for additional checking!!!"
 puts "##############################"
@@ -56,58 +35,37 @@ set che [whatis res]
 set ind [string first "3d curve" $che]
 if {${ind} >= 0} {
   #Only variable "res" exists
-  
-  if { $GoodNbCurv == 1 } {
-    puts "OK: Curve Number is good!"
+  renamevar res res_1
+}
+
+set ic 1
+set AllowRepeate 1
+while { $AllowRepeate != 0 } {
+  set che [whatis res_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeate 0
   } else {
-    puts "Error: Curve Number is bad!"
-  }
-  
-  set U1 0.0
-  set U2 0.0
-  
-  GetRange res
-
-  puts "U1 = ${U1}"
-  puts "U2 = ${U2}"
-
-  if {[expr {$U2 - $U1}] < 1.0e-20} {
-    puts "Error: Wrong curve's range!"
-  }
-  
-  xdistcs res s1 ${U1} ${U2} 10 1e-7
-  xdistcs res s2 ${U1} ${U2} 10 1e-7
-} else {
-  set ic 1
-  set AllowRepeate 1
-  while { $AllowRepeate != 0 } {
-    set che [whatis res_$ic]
-    set ind [string first "3d curve" $che]
-    if {${ind} < 0} {
-      set AllowRepeate 0
-    } else {
-      set U1 0.0
-      set U2 0.0
-      
-      GetRange res_$ic
-      
-      puts "U1 = ${U1}"
-      puts "U2 = ${U2}"
-      
-      if {[expr {$U2 - $U1}] < 1.0e-20} {
-        puts "Error: Wrong curve's range!"
-      }
-      
-      xdistcs res_$ic s1 ${U1} ${U2} 10 1e-7
-      xdistcs res_$ic s2 0 1 10 1e-7
-      
-      incr ic
+    display res_$ic
+    
+    bounds res_$ic U1 U2
+    
+    dval U1
+    dval U2
+    
+    if {[dval U2-U1] < 1.0e-20} {
+      puts "Error: Wrong curve's range!"
     }
+    
+    xdistcs res_$ic s1 U1 U2 10 1.0e-7
+    xdistcs res_$ic s2 U1 U2 10 1.0e-7
+    
+    incr ic
   }
-  
-  if {[expr {$ic - 1}] == $GoodNbCurv} {
-    puts "OK: Curve Number is good!"
-  } else {
-    puts "Error: Curve Number is bad!"
-  }
+}
+
+if {[expr {$ic - 1}] == $GoodNbCurv} {
+  puts "OK: Curve Number is good!"
+} else {
+  puts "Error: Curve Number is bad!"
 }

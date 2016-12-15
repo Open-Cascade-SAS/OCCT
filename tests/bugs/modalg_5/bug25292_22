@@ -44,35 +44,23 @@ if {${NbCurv} != ${GoodNbCurv}} {
 
 #-------------
 
+puts ""
+
 mksurface s1 f1
 mksurface s2 f2
 
 for {set i 1} {$i <= ${NbCurv}} {incr i} {
-  set log [dump c_$i]
+  bounds c_$i U1 U2
+
+  puts "U2=[dval U1]"
+  puts "U2=[dval U2]"
   
-  regexp {Degree +([-0-9.+eE]+), +([-0-9.+eE]+) Poles, +([-0-9.+eE]+)} ${log} full Degree Poles KnotsPoles
-  puts "Degree=${Degree}"
-  puts "Poles=${Poles}"
-  puts "KnotsPoles=${KnotsPoles}"
-  puts ""
-
-  set Knot 1
-  set exp_string "Knots :\n\n +${Knot} :  +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+)"
-  regexp ${exp_string} ${log} full U1 Mult1
-
-  set Knot ${KnotsPoles}
-  set exp_string " +${Knot} :  +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+)"
-  regexp ${exp_string} ${log} full U2 Mult2
-
-  puts "U1=${U1}"
-  puts "U2=${U2}"
-  
-  if {[expr {$U2 - $U1}] < 1.0e-20} {
+  if {[dval U2-U1] < 1.0e-20} {
     puts "Error: Wrong curve's range!"
   }
 
-  xdistcs c_$i s1 ${U1} ${U2} 10 1e-7
-  xdistcs c_$i s2 ${U1} ${U2} 10 1e-7
+  xdistcs c_$i s1 U1 U2 10 ${Toler}
+  xdistcs c_$i s2 U1 U2 10 ${Toler}
 }
 
 smallview

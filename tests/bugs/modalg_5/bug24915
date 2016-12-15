@@ -25,10 +25,16 @@ checkshape r
 
 # 2. geometry
 set MaxTol 1.0e-7
+set GoodNBCurv 3
+
 set log [bopcurves b1 b2 -2d]
 
 if { ! [regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv] } {
   puts "Error: Cannot find tolerance value in output of bopcurve command"
+}
+
+if { $NbCurv != $GoodNBCurv } {
+  puts "Error: Number of curves is wrong!"  
 }
 
 if {${Toler} > ${MaxTol}} {
@@ -36,6 +42,9 @@ if {${Toler} > ${MaxTol}} {
 }
 
 smallview
-donly b2 c_2
-fit
-checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+for {set i 1} {$i <= $GoodNBCurv} {incr i} {
+  donly b2 c_$i
+  fit
+  checkview -screenshot -2d -path ${imagedir}/${test_image}_$i.png
+}

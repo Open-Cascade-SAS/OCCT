@@ -1405,19 +1405,7 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& the
 
   if((theTyps1 == GeomAbs_Cylinder) && (theTyps2 == GeomAbs_Cylinder))
   {
-    IntPatch_WLineTool::JoinWLines( slin, spnt, TolTang,
-                                    theS1->IsUPeriodic()? theS1->UPeriod() : 0.0,
-                                    theS2->IsUPeriodic()? theS2->UPeriod() : 0.0,
-                                    theS1->IsVPeriodic()? theS1->VPeriod() : 0.0,
-                                    theS2->IsVPeriodic()? theS2->VPeriod() : 0.0,
-                                    theS1->FirstUParameter(),
-                                    theS1->LastUParameter(),
-                                    theS1->FirstVParameter(),
-                                    theS1->LastVParameter(),
-                                    theS2->FirstUParameter(),
-                                    theS2->LastUParameter(),
-                                    theS2->FirstVParameter(),
-                                    theS2->LastVParameter());
+    IntPatch_WLineTool::JoinWLines(slin, spnt, theS1, theS2, TolTang);
   }
 
   if(isWLExist)

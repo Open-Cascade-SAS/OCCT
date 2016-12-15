@@ -23,7 +23,7 @@ regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b_1_2 b_2_2
 if {${NbCurv} != 1} {
   puts "Error: Number of curves is bad!"
 }
-checkreal TolReached $Toler 0.00026943844817627679 0.0 1.0e-3
+checkreal TolReached $Toler 0.00026207823091004516 0.0 1.0e-3
 
 # ----
 
@@ -33,7 +33,7 @@ regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b_1_4 b_2_4
 if {${NbCurv} != 1} {
   puts "Error: Number of curves is bad!"
 }
-checkreal TolReached $Toler 6.5039065434503992e-005 0.0 1.0e-2
+checkreal TolReached $Toler 6.5053102894636701e-005 0.0 1.0e-2
 
 # ----
 
@@ -50,7 +50,7 @@ regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b_3_2 b_4_2
 if {${NbCurv} != 1} {
   puts "Error: Number of curves is bad!"
 }
-checkreal TolReached $Toler 0.00030603795647549098 0.0 1.0e-3
+checkreal TolReached $Toler 0.00029706239430643614 0.0 1.0e-3
 
 # ----
 
@@ -60,7 +60,7 @@ regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b_3_4 b_4_4
 if {${NbCurv} != 1} {
   puts "Error: Number of curves is bad!"
 }
-checkreal TolReached $Toler 0.00029242900088525842 0.0 1.0e-3
+checkreal TolReached $Toler 0.00029242389138280588 0.0 1.0e-3
 
 # ----
 
@@ -77,7 +77,7 @@ regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b_5_2 b_6_2
 if {${NbCurv} != 1} {
   puts "Error: Number of curves is bad!"
 }
-checkreal TolReached $Toler 2.0312181042800029e-005 0.0 1.0e-2
+checkreal TolReached $Toler 1.4980089259007279e-005 0.0 1.0e-2
 
 # ----
 
@@ -87,7 +87,7 @@ regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b_5_4 b_6_4
 if {${NbCurv} != 1} {
   puts "Error: Number of curves is bad!"
 }
-checkreal TolReached $Toler 0.00023415774730871651 0.0 1.0e-3
+checkreal TolReached $Toler 0.00023417493528435788 0.0 1.0e-3
 
 # ----
 
@@ -104,7 +104,7 @@ regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b_7_2 b_8_2
 if {${NbCurv} != 1} {
   puts "Error: Number of curves is bad!"
 }
-checkreal TolReached $Toler 0.00028209392756607551 0.0 1.0e-3
+checkreal TolReached $Toler 0.00027445924390073518 0.0 1.0e-3
 
 # ----
 
@@ -114,5 +114,5 @@ regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b_7_4 b_8_4
 if {${NbCurv} != 1} {
   puts "Error: Number of curves is bad!"
 }
-checkreal TolReached $Toler 2.497244318171703e-005 0.0 1.0e-2
+checkreal TolReached $Toler 1.867918118939262e-005 0.0 1.0e-2
 

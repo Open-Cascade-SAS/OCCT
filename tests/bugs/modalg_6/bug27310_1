@@ -6,8 +6,11 @@ puts ""
 # Huge tolerance obtained in the result of intersection of two cylindrical faces
 #################################################
 
+# Number of intersection curves cannot be subject to anything (indeed, output result can be empty).
+# The main reason of the bug #27310 was a HUGE TOLERANCE VALUE (TolReached > 10).
+# See test "bugs moddata_2 bug496" in case of doubt.
+
 set ExpTol 1.0e-7
-set GoodNbCurv 2
 
 restore [locate_data_file OCC496a.brep] a 
 restore [locate_data_file OCC496b.brep] b
@@ -19,15 +22,4 @@ set log [bopcurves a_8 b_2 -2d]
 
 regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
 
-if {${NbCurv} != ${GoodNbCurv}} {
-  puts "Error: Number of curves is bad!"
-}
-
 checkreal TolReached $Toler $ExpTol 0.0 0.1
-
-smallview
-don c_*
-fit
-disp a_8 b_2
-
-checkview -screenshot -2d -path ${imagedir}/${test_image}.png
