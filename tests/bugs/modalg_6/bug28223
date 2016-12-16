@@ -1,0 +1,14 @@
+puts "========"
+puts "OCC28223"
+puts "========"
+puts ""
+#################################################
+# Projection of closed curve onto cylinder is wrong
+#################################################
+
+restore [locate_data_file bug28223_face.brep] ff
+explode ff e
+mkcurve cc ff_1
+mksurface ss ff
+project pc cc ss
+checklength pc -l 7.7546866164306829

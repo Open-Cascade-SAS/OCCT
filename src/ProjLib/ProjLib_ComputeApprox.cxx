@@ -42,6 +42,7 @@
 #include <Geom_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
 
 //#define DRAW
 #ifdef DRAW
@@ -195,7 +196,33 @@ static Standard_Boolean Function_D1( const Standard_Real U,
   
   return Standard_True;
 }
+//=======================================================================
+//function : Function_ComputeStep
+//purpose  : 
+//=======================================================================
+static Standard_Real Function_ComputeStep(
+  const Handle(Adaptor3d_HCurve)&   myCurve,
+  const Standard_Real R)
+{
+  Standard_Real Step0 = .1;
+  Standard_Real W1, W2;
+  W1 = myCurve->FirstParameter();
+  W2 = myCurve->LastParameter();
+  Standard_Real L = GCPnts_AbscissaPoint::Length(myCurve->Curve());
+  Standard_Integer nbp = RealToInt(L / (R*M_PI_4)) + 1;
+  nbp = Max(nbp, 3);
+  Standard_Real Step = (W2 - W1) / (nbp - 1);
+  if (Step > Step0)
+  {
+    Step = Step0;
+    nbp = RealToInt((W2 - W1) / Step) + 1;
+    nbp = Max(nbp, 3);
+    Step = (W2 - W1) / (nbp - 1);
+  }
 
+  return Step;
+
+}
 //=======================================================================
 //function : Function_SetUVBounds
 //purpose  : 
@@ -272,15 +299,21 @@ static void Function_SetUVBounds(Standard_Real& myU1,
         Standard_Real U1, V1, U , V, Delta = 0., d = 0., pmin = W1, pmax = W1, dmax = 0., Uf, Ul;
         ElSLib::Parameters( Cone, P1, U1, V1);
         ElSLib::Parameters( Cone, P2, Ul, V1);
-        myU1 = U1; myU2 = U1; Uf = U1; 
-        Standard_Real Step = .1;
-        Standard_Integer nbp = (Standard_Integer)((W2 - W1) / Step + 1);
-        if(myCurve->GetType() == GeomAbs_Line)
+        const gp_Ax1& anAx1 = Cone.Axis();
+        gp_Lin aLin(anAx1);
+        Standard_Real R = (aLin.Distance(P1) + aLin.Distance(P2) + aLin.Distance(P)) / 3.;
+        Standard_Real Step;
+        myU1 = U1; myU2 = U1; Uf = U1;
+        if (myCurve->GetType() == GeomAbs_Line)
         {
-          nbp = 3;
+          Standard_Integer nbp = 3;
+          Step = (W2 - W1) / (nbp - 1);
         }
-        nbp = Max(nbp, 3);
-        Step = (W2 - W1) / (nbp - 1);
+        else
+        {
+          Step = Function_ComputeStep(myCurve, R);
+        }
+        //
         Standard_Boolean isclandper = (!(myCurve->IsClosed()) && !(myCurve->IsPeriodic()));
         Standard_Boolean isFirst = Standard_True;
         for(Standard_Real par = W1 + Step; par <= W2; par += Step)
@@ -402,11 +435,10 @@ static void Function_SetUVBounds(Standard_Real& myU1,
     else {
       Standard_Real U1, V1, U , V;
       ElSLib::Parameters( Cylinder, P1, U1, V1);
-      Standard_Real Step = .1, Delta = 0.;
+      Standard_Real R = Cylinder.Radius();
+      Standard_Real Delta = 0., Step;
       Standard_Real eps = M_PI, dmax = 0., d = 0.;
-      Standard_Integer nbp = (Standard_Integer)((W2 - W1) / Step + 1);
-      nbp = Max(nbp, 3);
-      Step = (W2 - W1) / (nbp - 1);
+      Step = Function_ComputeStep(myCurve, R);
       myU1 = U1; myU2 = U1;
       Standard_Real pmin = W1, pmax = W1, plim = W2+.1*Step;
       for(Standard_Real par = W1 + Step; par <= plim; par += Step) {
@@ -655,11 +687,10 @@ static void Function_SetUVBounds(Standard_Real& myU1,
     else {
       Standard_Real U1, V1, U , V;
       ElSLib::Parameters( SP, P1, U1, V1);
-      Standard_Real Step = .1, Delta = 0.;
+      Standard_Real R = SP.Radius();
+      Standard_Real Delta = 0., Step;
       Standard_Real eps = M_PI, dmax = 0., d = 0.;
-      Standard_Integer nbp = (Standard_Integer)((W2 - W1) / Step + 1);
-      nbp = Max(nbp, 3);
-      Step = (W2 - W1) / (nbp - 1);
+      Step = Function_ComputeStep(myCurve, R);
       myU1 = U1; myU2 = U1;
       Standard_Real pmin = W1, pmax = W1, plim = W2+.1*Step;
       for(Standard_Real par = W1 + Step; par <= plim; par += Step) {
@@ -710,13 +741,12 @@ static void Function_SetUVBounds(Standard_Real& myU1,
   //     
   case GeomAbs_Torus:{
     gp_Torus TR = mySurface->Torus();
-    Standard_Real U1, V1, U , V;
+    Standard_Real U1, V1, U , V, dU, dV;
     ElSLib::Parameters( TR, P1, U1, V1);
-    Standard_Real Step = .1, DeltaU = 0., DeltaV = 0.;
-    Standard_Real eps = M_PI, dmaxU = 0., dU = 0., dmaxV = 0., dV = 0.;
-    Standard_Integer nbp = (Standard_Integer)((W2 - W1) / Step + 1);
-    nbp = Max(nbp, 3);
-    Step = (W2 - W1) / (nbp - 1);
+    Standard_Real R = TR.MinorRadius();
+    Standard_Real DeltaU = 0., DeltaV = 0., Step;
+    Standard_Real eps = M_PI, dmaxU = 0., dmaxV = 0.;
+    Step = Function_ComputeStep(myCurve, R);
     myU1 = U1; myU2 = U1;
     myV1 = V1; myV2 = V1;
     Standard_Real pminU = W1, pmaxU = W1, pminV = W1, pmaxV = W1,
