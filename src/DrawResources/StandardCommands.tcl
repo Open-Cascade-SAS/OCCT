@@ -369,3 +369,28 @@ proc don { args } {
     uplevel #0 eval donly $res
     return $res
 }
+
+# The following commands (definitions are surrounded by if) are
+# available in extended Tcl (Tclx).
+# These procedures are added just to make full-working simulations of them.
+
+if {[info commands lmatch] == ""} {
+    proc lmatch args {
+	set mode [switch -- [lindex $args 0] {
+	    -exact {format 0}
+	    -glob {format 1}
+	    -regexp {format 2}}]
+	if {$mode == ""} {set mode 1} else {lvarpop args}
+	if {[llength $args] < 2} {puts "usage: lmatch ?mode? list pattern";return}
+	set list [lindex $args 0]
+	set pattern [lindex $args 1]
+	set res {}
+	foreach a $list {
+	    if [switch $mode {
+		0 {expr [string compare $a $pattern] == 0}
+		1 {string match $pattern $a}
+		2 {regexp $pattern $a}}] {lappend res $a}
+	}
+	return $res
+    }
+}
