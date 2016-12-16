@@ -525,18 +525,43 @@ Standard_Integer IntTools_Context::ComputePE
   aProjector.Perform(aP1);
 
   aNbProj=aProjector.NbPoints();
-  if (!aNbProj) {
-    return -3;
+  if (aNbProj)
+  {
+    // point falls on the curve
+    aDist = aProjector.LowerDistance();
+    //
+    aTolE2 = BRep_Tool::Tolerance(aE2);
+    aTolSum = aTolP1 + aTolE2 + Precision::Confusion();
+    //
+    aT = aProjector.LowerDistanceParameter();
+    if (aDist > aTolSum) {
+      return -4;
+    }
   }
-  //
-  aDist=aProjector.LowerDistance();
-  //
-  aTolE2=BRep_Tool::Tolerance(aE2);
-  aTolSum = aTolP1 + aTolE2 + Precision::Confusion();
-  //
-  aT=aProjector.LowerDistanceParameter();
-  if (aDist > aTolSum) {
-    return -4;
+  else
+  {
+    // point falls out of the curve, check distance to vertices
+    TopoDS_Edge aEFwd = TopoDS::Edge(aE2.Oriented(TopAbs_FORWARD));
+    TopoDS_Iterator itV(aEFwd);
+    aDist = RealLast();
+    for (; itV.More(); itV.Next())
+    {
+      const TopoDS_Vertex& aV = TopoDS::Vertex(itV.Value());
+      if (aV.Orientation() == TopAbs_FORWARD || aV.Orientation() == TopAbs_REVERSED)
+      {
+        gp_Pnt aPV = BRep_Tool::Pnt(aV);
+        aTolSum = aTolP1 + BRep_Tool::Tolerance(aV) + Precision::Confusion();
+        Standard_Real aDist1 = aP1.SquareDistance(aPV);
+        if (aDist1 < aDist && aDist1 < Square(aTolSum))
+        {
+          aDist = aDist1;
+          aT = BRep_Tool::Parameter(aV, aEFwd);
+        }
+      }
+    }
+    if (Precision::IsInfinite(aDist)) {
+      return -3;
+    }
   }
   return 0;
 }

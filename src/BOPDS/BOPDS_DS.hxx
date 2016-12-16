@@ -472,7 +472,7 @@ protected:
   //! Initializes the state of face with index theIndex
   Standard_EXPORT void InitFaceInfo (const Standard_Integer theIndex);
   
-  Standard_EXPORT void InitShape (const Standard_Integer theIndex, const TopoDS_Shape& theS, const BOPCol_BaseAllocator& theAllocator, BOPCol_DataMapOfShapeInteger& theMSI);
+  Standard_EXPORT void InitShape (const Standard_Integer theIndex, const TopoDS_Shape& theS);
   
   Standard_EXPORT Standard_Boolean CheckCoincidence (const Handle(BOPDS_PaveBlock)& thePB1,
                                                      const Handle(BOPDS_PaveBlock)& thePB2,

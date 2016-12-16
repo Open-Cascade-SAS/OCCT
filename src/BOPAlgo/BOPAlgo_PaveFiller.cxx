@@ -283,6 +283,7 @@ void BOPAlgo_PaveFiller::PerformInternal()
     return; 
   }
   //
+  UpdateInterfsWithSDVertices();
   RefineFaceInfoOn();
   //
   MakePCurves();

@@ -534,6 +534,9 @@ void BOPAlgo_PaveFiller::PerformEE()
             }
           }
           if (bFlag) {
+            BOPDS_InterfEE& aEE = aEEs.Append1();
+            aEE.SetIndices(nE1, nE2);
+            aEE.SetCommonPart(aCPart);
             continue;
           }
           //
