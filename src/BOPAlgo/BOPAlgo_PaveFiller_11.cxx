@@ -230,3 +230,41 @@ void BOPAlgo_PaveFiller::UpdateCommonBlocksWithSDVertices()
   }
   UpdatePaveBlocksWithSDVertices();
 }
+
+namespace
+{
+  //=======================================================================
+  //function : UpdateInterfsWithSDVertices
+  //purpose  : 
+  //=======================================================================
+  template <class InterfType>
+  void UpdateIntfsWithSDVertices(BOPDS_PDS theDS, BOPCol_NCVector<InterfType>& theInterfs)
+  {
+    for (Standard_Integer i = 0; i < theInterfs.Length(); i++)
+    {
+      InterfType& anIntf = theInterfs(i);
+      Standard_Integer anInd;
+      if (anIntf.HasIndexNew(anInd))
+      {
+        Standard_Integer anIndSD;
+        if (theDS->HasShapeSD(anInd, anIndSD))
+        {
+          anIntf.SetIndexNew(anIndSD);
+        }
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : UpdateInterfsWithSDVertices
+//purpose  : 
+//=======================================================================
+void BOPAlgo_PaveFiller::UpdateInterfsWithSDVertices()
+{
+  UpdateIntfsWithSDVertices(myDS, myDS->InterfVV());
+  UpdateIntfsWithSDVertices(myDS, myDS->InterfVE());
+  UpdateIntfsWithSDVertices(myDS, myDS->InterfVF());
+  UpdateIntfsWithSDVertices(myDS, myDS->InterfEE());
+  UpdateIntfsWithSDVertices(myDS, myDS->InterfEF());
+}

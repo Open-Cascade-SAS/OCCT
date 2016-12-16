@@ -139,6 +139,7 @@ static
                                  const TopoDS_Face& ,
                                  const Standard_Real ,
                                  const Standard_Real ,
+                                 const Standard_Real, 
                                  Standard_Real& ,
                                  const Handle(IntTools_Context)& );
 
@@ -409,13 +410,11 @@ void Path (const GeomAdaptor_Surface& aGAS,
     aTol2D2 = aTol2D * aTol2D;
     //
     bIsClosed = aVertMap.Find(aVb);
-    //
-    aNb=aLS.Length();
-    if (aNb>0) {
-      //
+    {
       BOPCol_ListOfShape aBuf;
       //
-      for (i=aNb; i>0; --i) {
+      aNb = aLS.Length();
+      for (i = aNb; i>0; --i) {
         const TopoDS_Shape& aVPrev=aVertVa(i);
         const gp_Pnt2d& aPaPrev=aCoordVa(i);
         const TopoDS_Shape& aEPrev=aLS(i);
@@ -495,6 +494,7 @@ void Path (const GeomAdaptor_Surface& aGAS,
     anAngleIn = AngleIn(aEOuta, aLEInfo);
     aMinAngle = 100.;
     anIsFound = Standard_False;
+    Standard_Integer iCnt = NbWaysOut(aLEInfo);
     Standard_Integer aCurIndexE = 0;
     anIt.Initialize(aLEInfo);
     for (; anIt.More(); anIt.Next()) {
@@ -508,8 +508,6 @@ void Path (const GeomAdaptor_Surface& aGAS,
         //
         // Is there one way to go out of the vertex 
         // we have to use it only.
-        Standard_Integer iCnt;
-        iCnt=NbWaysOut (aLEInfo);
         //
         if (!iCnt) {
           // no way to go . (Error)
@@ -919,8 +917,8 @@ void RefineAngles(const TopoDS_Vertex& aV,
   BOPCol_DataMapOfShapeReal aDMSR;
   BOPAlgo_ListIteratorOfListOfEdgeInfo aItLEI;
   //
-  aA1=0.;
-  aA2=0.;
+  aA1=0.;  // angle of outgoing edge
+  aA2=0.;  // angle of incoming edge
   iCntBnd=0;
   iCntInt=0;
   aItLEI.Initialize(aLEI);
@@ -936,7 +934,7 @@ void RefineAngles(const TopoDS_Vertex& aV,
         aA1=aA;
       }
       else {
-        aA2=aA+M_PI;
+        aA2=aA;
       }
     }
     else {
@@ -948,6 +946,7 @@ void RefineAngles(const TopoDS_Vertex& aV,
     return;
   }
   //
+  Standard_Real aDelta = ClockWiseAngle(aA2, aA1);
   aItLEI.Initialize(aLEI);
   for (; aItLEI.More(); aItLEI.Next()) {
     BOPAlgo_EdgeInfo& aEI=aItLEI.ChangeValue();
@@ -960,11 +959,12 @@ void RefineAngles(const TopoDS_Vertex& aV,
     }
     //
     aA=aEI.Angle();
-    if (aA>aA1 && aA<aA2) {
-      continue;
+    Standard_Real aDA = ClockWiseAngle(aA2, aA);
+    if (aDA < aDelta) {
+      continue;  // already inside
     }
     //
-    bRefined=RefineAngle2D(aV, aE, myFace, aA1, aA2, aA, theContext);
+    bRefined=RefineAngle2D(aV, aE, myFace, aA1, aA2, aDelta, aA, theContext);
     if (bRefined) {
       aDMSR.Bind(aE, aA);
     }
@@ -1007,6 +1007,7 @@ Standard_Boolean RefineAngle2D(const TopoDS_Vertex& aV,
                                const TopoDS_Face& myFace,
                                const Standard_Real aA1,
                                const Standard_Real aA2,
+                               const Standard_Real aDelta,
                                Standard_Real& aA,
                                const Handle(IntTools_Context)& theContext)
 {
@@ -1033,12 +1034,13 @@ Standard_Boolean RefineAngle2D(const TopoDS_Vertex& aV,
   //
   aTOp = (fabs(aTV-aT1) < fabs(aTV-aT2)) ? aT2 : aT1;
   //
+  const Standard_Real MaxDT = 0.3 * (aT2 - aT1);
   aGAC1.D0(aT1, aP1);
   aGAC1.D0(aT2, aP2);
   aDomain1.SetValues(aP1, aT1, aTolInt, aP2, aT2, aTolInt);
   //
   for (i=0; i<2; ++i) {
-    aAi=(!i) ? aA1 : aA2;
+    aAi=(!i) ? aA1 : (aA2 + M_PI);
     aXi=cos(aAi);
     aYi=sin(aAi);
     gp_Dir2d aDiri(aXi, aYi);
@@ -1051,38 +1053,37 @@ Standard_Boolean RefineAngle2D(const TopoDS_Vertex& aV,
       continue;
     }
     //
-    aNbP=aGInter.NbPoints();
-    if (aNbP<2) {
-      continue;
-    }
-    //
-    aT1max=aTV;
-    aT2max=-1.;
-    for (j=1; j<=aNbP; ++j) {
-      const IntRes2d_IntersectionPoint& aIPj=aGInter.Point(j);
-      aT1j=aIPj.ParamOnFirst();
-      aT2j=aIPj.ParamOnSecond();
+    aNbP = aGInter.NbPoints();
+    aT1max = aTV;
+    aT2max = -1.;
+    for (j = 1; j <= aNbP; ++j) {
+      const IntRes2d_IntersectionPoint& aIPj = aGInter.Point(j);
+      aT1j = aIPj.ParamOnFirst();
+      aT2j = aIPj.ParamOnSecond();
       //
-      if (aT2j > aT2max) {
-        aT2max=aT2j;
-        aT1max=aT1j;
+      if (aT2j > aT2max && Abs(aT1j - aTV) < MaxDT) {
+        aT2max = aT2j;
+        aT1max = aT1j;
       }
     }
     //
-    dT = aTOp - aT1max;
-    if (Abs(dT) < aTolInt) {
-      continue;
-    }
-    //
-    aT=aT1max + aCf*dT;
-    aGAC1.D0(aT, aP);
-    gp_Vec2d aV2D(aPV, aP);
-    gp_Dir2d aDir2D(aV2D);
-    //
-    aAngle=Angle(aDir2D);
-    if (aAngle>aA1 && aAngle<aA2) {
-      aA=aAngle;
-      return bRet;
+    if (aT2max > 0) {
+      dT = aTOp - aT1max;
+      if (Abs(dT) < aTolInt) {
+        continue;
+      }
+      //
+      aT = aT1max + aCf*dT;
+      aGAC1.D0(aT, aP);
+      gp_Vec2d aV2D(aPV, aP);
+      gp_Dir2d aDir2D(aV2D);
+      //
+      aAngle = Angle(aDir2D);
+      Standard_Real aDA = ClockWiseAngle(aA2, aAngle);
+      if (aDA < aDelta) {
+        aA = aAngle;
+        return bRet;
+      }
     }
   }// for (i=0; i<2; ++i) {
   return !bRet;

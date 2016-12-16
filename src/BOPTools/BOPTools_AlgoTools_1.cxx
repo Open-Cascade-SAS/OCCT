@@ -30,6 +30,7 @@
 #include <BRep_Tool.hxx>
 #include <BRep_TVertex.hxx>
 #include <BRepAdaptor_Surface.hxx>
+#include <BRepAdaptor_Curve.hxx>
 #include <BRepLib_CheckCurveOnSurface.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <Extrema_LocateExtPC.hxx>
@@ -48,6 +49,7 @@
 #include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomProjLib.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <IntRes2d_Domain.hxx>
@@ -116,7 +118,8 @@ static
                                   const TopoDS_Face& theF,
                                   const Handle(Geom_Surface)& theS,
                                   const TopoDS_Edge& theE1,
-                                  const TopoDS_Edge& theE2);
+                                  const TopoDS_Edge& theE2,
+                   NCollection_DataMap<TopoDS_Shape, Standard_Real>& theMapEdgeLen);
 
 //=======================================================================
 //class    : BOPTools_CPC
@@ -578,6 +581,7 @@ void CorrectWires(const TopoDS_Face& aFx,
                                 TopAbs_VERTEX, 
                                 TopAbs_EDGE, 
                                 aMVE);
+  NCollection_DataMap<TopoDS_Shape, Standard_Real> aMapEdgeLen;
   aNbV=aMVE.Extent();
   for (i=1; i<=aNbV; ++i) {
     const TopoDS_Vertex& aV=*((TopoDS_Vertex*)&aMVE.FindKey(i));
@@ -615,7 +619,7 @@ void CorrectWires(const TopoDS_Face& aFx,
           continue;
         }
         //
-        aD2 = IntersectCurves2d(aV, aF, aS, aE1, aE2);
+        aD2 = IntersectCurves2d(aV, aF, aS, aE1, aE2, aMapEdgeLen);
         if (aD2 > aD2max) {
           aD2max = aD2;
         }
@@ -630,6 +634,26 @@ void CorrectWires(const TopoDS_Face& aFx,
 }
 
 //=======================================================================
+// Function : MapEdgeLength
+// purpose  : Compute edge length and cache it in the map
+//=======================================================================
+static Standard_Real MapEdgeLength(const TopoDS_Edge& theEdge,
+                                   NCollection_DataMap<TopoDS_Shape, Standard_Real>& theMapEdgeLen)
+{
+  const Standard_Real* pLen = theMapEdgeLen.Seek(theEdge);
+  if (!pLen)
+  {
+    Standard_Real aLen = 0.;
+    if (!BRep_Tool::Degenerated(theEdge))
+    {
+      BRepAdaptor_Curve aCurve(theEdge);
+      aLen = GCPnts_AbscissaPoint::Length(aCurve);
+    }
+    pLen = theMapEdgeLen.Bound(theEdge, aLen);
+  }
+  return *pLen;
+}
+//=======================================================================
 // Function : IntersectCurves2d
 // purpose  : Intersect 2d curves of edges
 //=======================================================================
@@ -637,7 +661,8 @@ Standard_Real IntersectCurves2d(const TopoDS_Vertex& theV,
                                 const TopoDS_Face& theF,
                                 const Handle(Geom_Surface)& theS,
                                 const TopoDS_Edge& theE1,
-                                const TopoDS_Edge& theE2)
+                                const TopoDS_Edge& theE2,
+                                NCollection_DataMap<TopoDS_Shape, Standard_Real>& theMapEdgeLen)
 {
   Standard_Real aT11, aT12, aT21, aT22, aTol2d, aMaxDist;
   Geom2dInt_GInter anInter;
@@ -657,7 +682,7 @@ Standard_Real IntersectCurves2d(const TopoDS_Vertex& theV,
                         aC2D2->Value(aT22), aT22, aTol2d);
   //
   anInter.Perform(aGAC1, aDom1, aGAC2, aDom2, aTol2d, aTol2d);
-  if (!anInter.IsDone()) {
+  if (!anInter.IsDone() || (!anInter.NbSegments() && !anInter.NbPoints())) {
     return aMaxDist;
   }
   //
@@ -690,6 +715,12 @@ Standard_Real IntersectCurves2d(const TopoDS_Vertex& theV,
     aLP.Append(aPnt);
   }
   //
+  // evaluate the length of the smallest edge, so that not to return too large distance
+  Standard_Real aLen1 = MapEdgeLength(theE1, theMapEdgeLen);
+  Standard_Real aLen2 = MapEdgeLength(theE2, theMapEdgeLen);
+  const Standard_Real MaxEdgePartCoveredByVertex = 0.3;
+  Standard_Real aMaxThresDist = Min(aLen1, aLen2) * MaxEdgePartCoveredByVertex;
+  aMaxThresDist *= aMaxThresDist;
   aItLP.Initialize(aLP);
   for (; aItLP.More(); aItLP.Next()) {
     const IntRes2d_IntersectionPoint& aPnt = aItLP.Value();
@@ -712,7 +743,7 @@ Standard_Real IntersectCurves2d(const TopoDS_Vertex& theV,
     aP2d = aPnt.Value();
     theS->D0(aP2d.X(), aP2d.Y(), aP);
     aDist = aPV.SquareDistance(aP);
-    if (aDist > aMaxDist) {
+    if (aDist > aMaxDist && aDist < aMaxThresDist) {
       aMaxDist = aDist;
     }
   }

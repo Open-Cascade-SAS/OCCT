@@ -1,0 +1,29 @@
+puts "========"
+puts "OCC28017"
+puts "========"
+puts ""
+#################################################
+# Unexpected result of General Fuse operation
+#################################################
+
+restore [locate_data_file bug28017_shape.brep] a
+
+explode a
+bclearobjects
+bcleartools
+baddobjects a_1
+baddtools a_2
+bfillds
+bbuild r
+
+checkmaxtol r -min_tol 0.51
+explode r So
+checknbshapes r -solid 2
+checkshape r_1
+checkshape r_2
+bopcheck r_1
+bopcheck r_2
+don r_1 r_2
+smallview; fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

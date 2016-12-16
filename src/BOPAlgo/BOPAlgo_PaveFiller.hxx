@@ -224,7 +224,6 @@ protected:
 
   //! Treatment of section edges.
   Standard_EXPORT Standard_Integer PostTreatFF (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMSCPB,
-                                                BOPCol_DataMapOfShapeInteger& theMVI,
                                                 BOPDS_DataMapOfPaveBlockListOfPaveBlock& theDMExEdges,
                                                 BOPCol_DataMapOfIntegerInteger& theDMNewSD,
                                                 const BOPCol_IndexedMapOfShape& theMicroEdges,
@@ -357,7 +356,9 @@ protected:
   Standard_EXPORT void UpdateCommonBlocksWithSDVertices();
    
   Standard_EXPORT void UpdateBlocksWithSharedVertices();
-   
+
+  Standard_EXPORT void UpdateInterfsWithSDVertices();
+
   Standard_EXPORT Standard_Boolean EstimatePaveOnCurve(const Standard_Integer nV,
                                                        const BOPDS_Curve& theNC,
                                                        const Standard_Real theTolR3D);

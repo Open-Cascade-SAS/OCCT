@@ -256,6 +256,7 @@ Standard_Integer BOPDS_DS::Append(const BOPDS_ShapeInfo& theSI)
   //
   myLines.Append1()=theSI;
   iX=myLines.Extent()-1;
+  myMapShapeIndex.Bind(theSI.Shape(), iX);
   //
   return iX;
 }
@@ -269,6 +270,7 @@ Standard_Integer BOPDS_DS::Append(const TopoDS_Shape& theS)
   //
   myLines.Append1().SetShape(theS);
   iX=myLines.Extent()-1;
+  myMapShapeIndex.Bind(theS, iX);
   return iX;
 }
 //=======================================================================
@@ -358,20 +360,18 @@ void BOPDS_DS::Init(const Standard_Real theFuzz)
   aAllocator=
     NCollection_BaseAllocator::CommonBaseAllocator();
   //
-  BOPCol_DataMapOfShapeInteger& aMSI=myMapShapeIndex;
   //
   i1=0; 
   i2=0;
   aIt.Initialize(myArguments);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aS=aIt.Value();
-    if (aMSI.IsBound(aS)) {
+    if (myMapShapeIndex.IsBound(aS)) {
       continue;
     }
     aI=Append(aS);
-    aMSI.Bind(aS, aI);
     //
-    InitShape(aI, aS, aAllocator, aMSI);
+    InitShape(aI, aS);
     //
     i2=NbShapes()-1;
     aR.SetIndices(i1, i2);
@@ -658,9 +658,7 @@ void BOPDS_DS::Init(const Standard_Real theFuzz)
 //=======================================================================
 void BOPDS_DS::InitShape
   (const Standard_Integer aI,
-   const TopoDS_Shape& aS,
-   const Handle(NCollection_BaseAllocator)& theAllocator,
-   BOPCol_DataMapOfShapeInteger& aMSI)
+   const TopoDS_Shape& aS)
 {
   Standard_Integer aIx;
   TopoDS_Iterator aIt;
@@ -670,7 +668,7 @@ void BOPDS_DS::InitShape
   aSI.SetShapeType(aS.ShapeType());
   BOPCol_ListOfInteger& aLI=aSI.ChangeSubShapes();
   //
-  BOPCol_MapOfInteger aM(100, theAllocator);
+  BOPCol_MapOfInteger aM;
   //
   aIt1.Initialize(aLI);
   for (; aIt1.More(); aIt1.Next()) {
@@ -680,15 +678,10 @@ void BOPDS_DS::InitShape
   aIt.Initialize(aS);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aSx=aIt.Value();
-    if (aMSI.IsBound(aSx)) {
-      aIx=aMSI.Find(aSx);
-    }
-    else {
-      aIx=Append(aSx);
-      aMSI.Bind(aSx, aIx);
-    }
+    const Standard_Integer* pIx = myMapShapeIndex.Seek(aSx);
+    aIx = (pIx ? *pIx : Append(aSx));
     //
-    InitShape(aIx, aSx, theAllocator, aMSI);
+    InitShape(aIx, aSx);
     //
     if (aM.Add(aIx)) {
       aLI.Append(aIx);

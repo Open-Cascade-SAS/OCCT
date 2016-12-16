@@ -576,21 +576,6 @@ Standard_Integer bopindex (Draw_Interpretor& di,
     di << " Index: " << ind << "\n";
   }
   else {
-    Standard_Integer i1, i2;
-    //
-    i1 = pDS->NbSourceShapes();
-    i2 = pDS->NbShapes();
-    for (ind = i1; ind < i2; ++ind) {
-      const TopoDS_Shape& aSx = pDS->Shape(ind);
-      if (aSx.IsSame(aS)) {
-        di << " Index: " << ind << "\n";
-        bFound = Standard_True;
-        break;
-      }
-    }
-  }
-  //
-  if (!bFound) {
     di << " DS does not contain the shape\n";
   }
   //
