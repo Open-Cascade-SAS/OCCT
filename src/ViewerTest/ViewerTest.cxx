@@ -2225,14 +2225,14 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       }
 
       aChangeSet->ToSetHatch = 1;
-      TCollection_AsciiString anArg (theArgVec[++anArgIter]);
-      if (anArg.Length() <= 2)
+      TCollection_AsciiString anArgHatch (theArgVec[++anArgIter]);
+      if (anArgHatch.Length() <= 2)
       {
-        aChangeSet->StdHatchStyle = Draw::Atoi (anArg.ToCString());
+        aChangeSet->StdHatchStyle = Draw::Atoi (anArgHatch.ToCString());
       }
       else
       {
-        aChangeSet->PathToHatchPattern = anArg;
+        aChangeSet->PathToHatchPattern = anArgHatch;
       }
     }
     else
