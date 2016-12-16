@@ -374,6 +374,35 @@ proc don { args } {
 # available in extended Tcl (Tclx).
 # These procedures are added just to make full-working simulations of them.
 
+if {[info commands lvarpop] == ""} {
+    proc lvarpop args {
+	upvar [lindex $args 0] lvar
+	set index 0
+	set len [llength $lvar]
+	if {[llength $args] > 1} {
+	    set ind [lindex $args 1]
+	    if [regexp "^end" $ind] {
+		set index [expr $len-1]
+	    } elseif [regexp "^len" $ind] {
+		set index $len
+	    } else {set index $ind}
+	}
+	set el [lindex $lvar $index]
+	set newlvar {}
+	for {set i 0} {$i < $index} {incr i} {
+	    lappend newlvar [lindex $lvar $i]
+	}
+	if {[llength $args] > 2} {
+	    lappend newlvar [lindex $args 2]
+	}
+	for {set i [expr $index+1]} {$i < $len} {incr i} {
+	    lappend newlvar [lindex $lvar $i]
+	}
+	set lvar $newlvar
+	return $el
+    }
+}
+
 if {[info commands lmatch] == ""} {
     proc lmatch args {
 	set mode [switch -- [lindex $args 0] {
