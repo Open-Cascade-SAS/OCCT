@@ -60,18 +60,16 @@ namespace
                            const TopoDS_Shape&                theShape,
                            const Handle (Prs3d_Drawer)&       theDrawer)
   {
-    Standard_Boolean aDrawAllVerticesFlag = (theDrawer->VertexDrawMode() == Prs3d_VDM_All);
-
-    if (!aDrawAllVerticesFlag && theShape.ShapeType() != TopAbs_COMPOUND)
-    {
-      return;
-    }
-
     TopExp_Explorer aShapeIter (theShape, TopAbs_FACE);
     if (!aShapeIter.More())
     {
-      // compound contains no shaded elements at all
       StdPrs_WFShape::Add (thePrs, theShape, theDrawer);
+      return;
+    }
+
+    const Standard_Boolean aDrawAllVerticesFlag = (theDrawer->VertexDrawMode() == Prs3d_VDM_All);
+    if (!aDrawAllVerticesFlag && theShape.ShapeType() != TopAbs_COMPOUND)
+    {
       return;
     }
 
