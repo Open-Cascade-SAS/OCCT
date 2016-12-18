@@ -1090,10 +1090,6 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
   Standard_Real tol = Max(0.01*aDefl2, 1.e-9);
   Standard_Integer l;
 
-  // Calculations of B-spline values will be made using adaptor,
-  // because it caches the data for performance
-  GeomAdaptor_Surface aBSplAdaptor(aBS);
-
   anUFlg(1) = Standard_True;
   anUFlg(nbsu) = Standard_True;
   //myNbSamplesU = 2; 
@@ -1109,12 +1105,10 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
       }
 
       t2 = anUPars(j);
-//      gp_Pnt p1 = aBS->Value(t2, t1);
-      gp_Pnt p1 = aBSplAdaptor.Value(t2, t1);
+      gp_Pnt p1 = myS->Value(t2, t1);
       for(k = j+2; k <= nbsu; ++k) {
 	t2 = anUPars(k);
-//	gp_Pnt p2 = aBS->Value(t2, t1);
-	gp_Pnt p2 = aBSplAdaptor.Value(t2, t1);
+	gp_Pnt p2 = myS->Value(t2, t1);
 	//gce_MakeLin MkLin(p1, p2);
 	//const gp_Lin& lin = MkLin.Value();
 
@@ -1129,8 +1123,7 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
 	    break;
 	  }
 
-//	  gp_Pnt pp =  aBS->Value(anUPars(l), t1);
-	  gp_Pnt pp =  aBSplAdaptor.Value(anUPars(l), t1);
+	  gp_Pnt pp =  myS->Value(anUPars(l), t1);
 	  Standard_Real d = lin.SquareDistance(pp);
 	  
 	  if(d <= aDefl2) continue;
@@ -1197,12 +1190,10 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
       }
 
       t2 = aVPars(j);
-//      gp_Pnt p1 = aBS->Value(t1, t2);
-      gp_Pnt p1 = aBSplAdaptor.Value(t1, t2);
+      gp_Pnt p1 = myS->Value(t1, t2);
       for(k = j+2; k <= nbsv; ++k) {
 	t2 = aVPars(k);
-//	gp_Pnt p2 = aBS->Value(t1, t2);
-	gp_Pnt p2 = aBSplAdaptor.Value(t1, t2);
+	gp_Pnt p2 = myS->Value(t1, t2);
 
 	if(p1.SquareDistance(p2) <= tol) continue;
 	//gce_MakeLin MkLin(p1, p2);
@@ -1216,8 +1207,7 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
 	    break;
 	  }
 
-//	  gp_Pnt pp =  aBS->Value(t1, aVPars(l));
-	  gp_Pnt pp =  aBSplAdaptor.Value(t1, aVPars(l));
+	  gp_Pnt pp =  myS->Value(t1, aVPars(l));
 	  Standard_Real d = lin.SquareDistance(pp);
 	  
 	  if(d <= aDefl2) continue;

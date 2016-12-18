@@ -1195,12 +1195,12 @@ public:
   //! Perform the evaluation of the Taylor expansion
   //! of the Bspline normalized between 0 and 1.
   //! Structure of result optimized for BSplCLib_Cache.
-  Standard_EXPORT static void BuildCache (const Standard_Real theParameter, const Standard_Real theSpanDomain, const Standard_Boolean thePeriodicFlag, const Standard_Integer theDegree, const TColStd_Array1OfReal& theFlatKnots, const TColgp_Array1OfPnt& thePoles, const TColStd_Array1OfReal* theWeights, TColStd_Array2OfReal& theCacheArray);
+  Standard_EXPORT static void BuildCache (const Standard_Real theParameter, const Standard_Real theSpanDomain, const Standard_Boolean thePeriodicFlag, const Standard_Integer theDegree, const Standard_Integer theSpanIndex, const TColStd_Array1OfReal& theFlatKnots, const TColgp_Array1OfPnt& thePoles, const TColStd_Array1OfReal* theWeights, TColStd_Array2OfReal& theCacheArray);
   
   //! Perform the evaluation of the Taylor expansion
   //! of the Bspline normalized between 0 and 1.
   //! Structure of result optimized for BSplCLib_Cache.
-  Standard_EXPORT static void BuildCache (const Standard_Real theParameter, const Standard_Real theSpanDomain, const Standard_Boolean thePeriodicFlag, const Standard_Integer theDegree, const TColStd_Array1OfReal& theFlatKnots, const TColgp_Array1OfPnt2d& thePoles, const TColStd_Array1OfReal* theWeights, TColStd_Array2OfReal& theCacheArray);
+  Standard_EXPORT static void BuildCache (const Standard_Real theParameter, const Standard_Real theSpanDomain, const Standard_Boolean thePeriodicFlag, const Standard_Integer theDegree, const Standard_Integer theSpanIndex, const TColStd_Array1OfReal& theFlatKnots, const TColgp_Array1OfPnt2d& thePoles, const TColStd_Array1OfReal* theWeights, TColStd_Array2OfReal& theCacheArray);
   
     static void PolesCoefficients (const TColgp_Array1OfPnt2d& Poles, TColgp_Array1OfPnt2d& CachePoles);
   

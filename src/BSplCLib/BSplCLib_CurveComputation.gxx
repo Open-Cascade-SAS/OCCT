@@ -1098,13 +1098,14 @@ void BSplCLib::BuildCache(const Standard_Real          theParameter,
                           const Standard_Real          theSpanDomain,
                           const Standard_Boolean       thePeriodicFlag,
                           const Standard_Integer       theDegree,
+                          const Standard_Integer       theSpanIndex,
                           const TColStd_Array1OfReal&  theFlatKnots,
                           const Array1OfPoints&        thePoles,
                           const TColStd_Array1OfReal*  theWeights,
                                 TColStd_Array2OfReal&  theCacheArray)
 {
   Standard_Real    aParam = theParameter;
-  Standard_Integer anIndex = 0;
+  Standard_Integer anIndex = theSpanIndex;
   Standard_Integer aDimension;
   Standard_Boolean isRational;
   

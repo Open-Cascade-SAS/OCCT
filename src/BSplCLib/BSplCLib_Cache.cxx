@@ -132,7 +132,7 @@ void BSplCLib_Cache::BuildCache(const Standard_Real&           theParameter,
 
   // Calculate new cache data
   BSplCLib::BuildCache(mySpanStart, mySpanLength, thePeriodic, theDegree, 
-                       theFlatKnots, thePoles2d, theWeights, 
+                       mySpanIndex, theFlatKnots, thePoles2d, theWeights, 
                        myPolesWeights->ChangeArray2());
 }
 
@@ -171,7 +171,7 @@ void BSplCLib_Cache::BuildCache(const Standard_Real&           theParameter,
 
   // Calculate new cache data
   BSplCLib::BuildCache(mySpanStart, mySpanLength, thePeriodic, theDegree, 
-                       theFlatKnots, thePoles, theWeights, 
+                       mySpanIndex, theFlatKnots, thePoles, theWeights, 
                        myPolesWeights->ChangeArray2());
 }
 

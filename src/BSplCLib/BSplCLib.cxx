@@ -28,6 +28,7 @@
 //                   in TangExtendToConstraint; Continuity can be equal to 0
 
 #include <BSplCLib.hxx>
+#include <ElCLib.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
@@ -257,15 +258,8 @@ void BSplCLib::LocateParameter
   }
   Standard_Integer Last1 = Last - 1;
   NewU = U;
-  if (IsPeriodic) {
-    Standard_Real Period = ULast - UFirst;
-
-    while (NewU > ULast )
-      NewU  -= Period;
-
-    while (NewU < UFirst)
-      NewU  += Period;
-  }
+  if (IsPeriodic && (NewU < UFirst || NewU > ULast))
+    NewU = ElCLib::InPeriod(NewU, UFirst, ULast);
   
   BSplCLib::Hunt (Knots, NewU, KnotIndex);
   
