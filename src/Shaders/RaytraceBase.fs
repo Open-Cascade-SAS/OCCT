@@ -446,8 +446,7 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
       float aTimeLeave = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
       float aTimeEnter = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
 
-      aHitTimes.x = mix (MAXFLOAT, aTimeEnter,
-        aTimeEnter <= aTimeLeave && aTimeEnter <= theHit.Time && aTimeLeave >= 0.f);
+      aHitTimes.x = (aTimeEnter <= aTimeLeave && aTimeEnter <= theHit.Time && aTimeLeave >= 0.f) ? aTimeEnter : MAXFLOAT;
 
       aTimeMax = max (aNodeMin1, aNodeMax1);
       aTimeMin = min (aNodeMin1, aNodeMax1);
@@ -455,8 +454,7 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
       aTimeLeave = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
       aTimeEnter = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
 
-      aHitTimes.y = mix (MAXFLOAT, aTimeEnter,
-        aTimeEnter <= aTimeLeave && aTimeEnter <= theHit.Time && aTimeLeave >= 0.f);
+      aHitTimes.y = (aTimeEnter <= aTimeLeave && aTimeEnter <= theHit.Time && aTimeLeave >= 0.f) ? aTimeEnter : MAXFLOAT;
 
       aTimeMax = max (aNodeMin2, aNodeMax2);
       aTimeMin = min (aNodeMin2, aNodeMax2);
@@ -464,8 +462,7 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
       aTimeLeave = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
       aTimeEnter = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
 
-      aHitTimes.z = mix (MAXFLOAT, aTimeEnter,
-        aTimeEnter <= aTimeLeave && aTimeEnter <= theHit.Time && aTimeLeave >= 0.f && aData.z > 1);
+      aHitTimes.z = (aTimeEnter <= aTimeLeave && aTimeEnter <= theHit.Time && aTimeLeave >= 0.f && aData.z > 1) ? aTimeEnter : MAXFLOAT;
 
       aTimeMax = max (aNodeMin3, aNodeMax3);
       aTimeMin = min (aNodeMin3, aNodeMax3);
@@ -473,8 +470,7 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
       aTimeLeave = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
       aTimeEnter = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
 
-      aHitTimes.w = mix (MAXFLOAT, aTimeEnter,
-        aTimeEnter <= aTimeLeave && aTimeEnter <= theHit.Time && aTimeLeave >= 0.f && aData.z > 2);
+      aHitTimes.w = (aTimeEnter <= aTimeLeave && aTimeEnter <= theHit.Time && aTimeLeave >= 0.f && aData.z > 2) ? aTimeEnter : MAXFLOAT;
 
       ivec4 aChildren = ivec4 (0, 1, 2, 3);
 
@@ -623,8 +619,7 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
       float aTimeLeave = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
       float aTimeEnter = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
 
-      aHitTimes.x = mix (MAXFLOAT, aTimeEnter,
-        aTimeEnter <= aTimeLeave && aTimeEnter <= theDistance && aTimeLeave >= 0.f);
+      aHitTimes.x = (aTimeEnter <= aTimeLeave && aTimeEnter <= theDistance && aTimeLeave >= 0.f) ? aTimeEnter : MAXFLOAT;
 
       aTimeMax = max (aNodeMin1, aNodeMax1);
       aTimeMin = min (aNodeMin1, aNodeMax1);
@@ -632,8 +627,7 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
       aTimeLeave = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
       aTimeEnter = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
 
-      aHitTimes.y = mix (MAXFLOAT, aTimeEnter,
-        aTimeEnter <= aTimeLeave && aTimeEnter <= theDistance && aTimeLeave >= 0.f);
+      aHitTimes.y = (aTimeEnter <= aTimeLeave && aTimeEnter <= theDistance && aTimeLeave >= 0.f) ? aTimeEnter : MAXFLOAT;
 
       aTimeMax = max (aNodeMin2, aNodeMax2);
       aTimeMin = min (aNodeMin2, aNodeMax2);
@@ -641,8 +635,7 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
       aTimeLeave = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
       aTimeEnter = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
 
-      aHitTimes.z = mix (MAXFLOAT, aTimeEnter,
-        aTimeEnter <= aTimeLeave && aTimeEnter <= theDistance && aTimeLeave >= 0.f && aData.z > 1);
+      aHitTimes.z = (aTimeEnter <= aTimeLeave && aTimeEnter <= theDistance && aTimeLeave >= 0.f && aData.z > 1) ? aTimeEnter : MAXFLOAT;
 
       aTimeMax = max (aNodeMin3, aNodeMax3);
       aTimeMin = min (aNodeMin3, aNodeMax3);
@@ -650,8 +643,7 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
       aTimeLeave = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
       aTimeEnter = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
 
-      aHitTimes.w = mix (MAXFLOAT, aTimeEnter,
-        aTimeEnter <= aTimeLeave && aTimeEnter <= theDistance && aTimeLeave >= 0.f && aData.z > 2);
+      aHitTimes.w = (aTimeEnter <= aTimeLeave && aTimeEnter <= theDistance && aTimeLeave >= 0.f && aData.z > 2) ? aTimeEnter : MAXFLOAT;
 
       ivec4 aChildren = ivec4 (0, 1, 2, 3);
 

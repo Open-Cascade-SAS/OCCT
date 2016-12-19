@@ -347,7 +347,7 @@ vec3 SampleLambertianReflection (in vec3 theWo, out vec3 theWi, inout float theP
 #ifdef TWO_SIDED_BXDF
   return UNIT;
 #else
-  return mix (UNIT, ZERO, theWo.z <= 0.f);
+  return UNIT * step (0.f, theWo.z);
 #endif
 }
 

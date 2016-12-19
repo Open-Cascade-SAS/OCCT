@@ -350,7 +350,7 @@ static const char Shaders_PathtraceBase_fs[] =
   "#ifdef TWO_SIDED_BXDF\n"
   "  return UNIT;\n"
   "#else\n"
-  "  return mix (UNIT, ZERO, theWo.z <= 0.f);\n"
+  "  return UNIT * step (0.f, theWo.z);\n"
   "#endif\n"
   "}\n"
   "\n"
