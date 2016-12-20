@@ -10,7 +10,7 @@ set ref_data {
   NbOfWithPath           : 0
   NbOfCommonLabels       : 0
  NbOfTolerances          : 31
-  NbOfGTWithModifiers    : 8
+  NbOfGTWithModifiers    : 6
   NbOfGTWithMaxTolerance : 0
   NbOfGTWithDatums       : 30
  NbOfDatumFeature        : 6

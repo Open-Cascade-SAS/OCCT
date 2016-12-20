@@ -428,9 +428,19 @@ static Standard_Integer DumpNbDGTs (Draw_Interpretor& di, Standard_Integer argc,
       Handle(XCAFDimTolObjects_GeomToleranceObject) anObject = aGTAttr->GetObject();
       if (anObject.IsNull())
         continue;
-      if (anObject->GetModifiers().Length() > 0 ||
-          anObject->GetMaterialRequirementModifier() != XCAFDimTolObjects_GeomToleranceMatReqModif_None) {
+      if (anObject->GetMaterialRequirementModifier() != XCAFDimTolObjects_GeomToleranceMatReqModif_None) {
         nbWithModif++;
+      }
+      else if (anObject->GetModifiers().Length() > 0) {
+        Standard_Boolean isHasModif = Standard_False;
+        for (Standard_Integer i = 1; i <= anObject->GetModifiers().Length(); i++)
+          if (anObject->GetModifiers().Value(i) != XCAFDimTolObjects_GeomToleranceModif_All_Around &&
+            anObject->GetModifiers().Value(i) != XCAFDimTolObjects_GeomToleranceModif_All_Over) {
+            isHasModif = Standard_True;
+            break;
+          }
+        if (isHasModif)
+          nbWithModif++;
       }
       if (anObject->GetMaxValueModifier() != 0) {
         nbWithMaxTol++;

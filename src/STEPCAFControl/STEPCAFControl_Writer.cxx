@@ -3237,7 +3237,7 @@ static void WriteGeomTolerance (const Handle(XSControl_WorkSession) &WS,
   Standard_Integer aModifNb = aModifiers.Length();
   if (anObject->GetMaterialRequirementModifier() != XCAFDimTolObjects_GeomToleranceMatReqModif_None)
       aModifNb++;
-  for (Standard_Integer i = 1; i < aModifiers.Length(); i++)
+  for (Standard_Integer i = 1; i <= aModifiers.Length(); i++)
     if (aModifiers.Value(i) == XCAFDimTolObjects_GeomToleranceModif_All_Around ||
         aModifiers.Value(i) == XCAFDimTolObjects_GeomToleranceModif_All_Over)
         aModifNb--;
