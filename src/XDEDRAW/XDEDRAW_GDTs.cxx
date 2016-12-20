@@ -589,7 +589,7 @@ static Standard_Integer addGTol (Draw_Interpretor& di, Standard_Integer argc, co
 static Standard_Integer addDatum (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 3) {
-    di<<"Use: XAddDatum Doc shape/label\n";
+    di<<"Use: XAddDatum Doc shape1/label1 ... shapeN/labelN\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
@@ -598,24 +598,22 @@ static Standard_Integer addDatum (Draw_Interpretor& di, Standard_Integer argc, c
   Handle(XCAFDoc_DimTolTool) aDimTolTool = XCAFDoc_DocumentTool::DimTolTool(Doc->Main());
   Handle(XCAFDoc_ShapeTool) aShapeTool= XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
 
-  TDF_Label aLabel;
-  TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
-  if ( aLabel.IsNull() ) 
-  {
-    TopoDS_Shape aShape= DBRep::Get(argv[2]);
-    if ( !aShape.IsNull() )
-    {
-      aShapeTool->Search(aShape, aLabel);
-      if ( aLabel.IsNull() )
-      {
-        di<<"Shape "<<argv[2]<<" is absent in "<<argv[1]<<"\n";
-        return 1;
-      }
+  TDF_LabelSequence aLabelSeq;
+  for (Standard_Integer i = 2; i < argc; i++) {
+    TDF_Label aLabel;
+    TDF_Tool::Label(Doc->GetData(), argv[i], aLabel);
+    if (aLabel.IsNull()) {
+      TopoDS_Shape aShape = DBRep::Get(argv[i]);
+      if (!aShape.IsNull())
+        aShapeTool->Search(aShape, aLabel);
+      if (aLabel.IsNull())
+        continue;
     }
+    aLabelSeq.Append(aLabel);
   }
 
   TDF_Label aDatumL = aDimTolTool->AddDatum();
-  aDimTolTool->SetDatum(aLabel, aDatumL);
+  aDimTolTool->SetDatum(aLabelSeq, aDatumL);
   TCollection_AsciiString Entry;
   TDF_Tool::Entry(aDatumL, Entry);
   di << Entry;
@@ -2534,7 +2532,7 @@ void XDEDRAW_GDTs::InitCommands(Draw_Interpretor& di)
   di.Add ("XAddGeomTolerance","XAddGeomTolerance Doc shape/label",
     __FILE__, addGTol, g);
 
-  di.Add ("XAddDatum","XAddDatum Doc shape/label",
+  di.Add ("XAddDatum","XAddDatum Doc shape1/label1 ... shapeN/labelN",
     __FILE__, addDatum, g);
 
   di.Add ("XSetDatum","XSetDatum Doc Datum_Label GeomTol_Label",

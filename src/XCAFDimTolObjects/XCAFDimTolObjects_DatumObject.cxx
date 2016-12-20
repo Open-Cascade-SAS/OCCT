@@ -24,6 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFDimTolObjects_DatumObject,Standard_Transient)
 XCAFDimTolObjects_DatumObject::XCAFDimTolObjects_DatumObject()
 {
   myIsDTarget = Standard_False;
+  myIsValidDT = Standard_False;
   myHasPlane = Standard_False;
   myHasPnt = Standard_False;
   myHasPntText = Standard_False;
@@ -42,6 +43,7 @@ XCAFDimTolObjects_DatumObject::XCAFDimTolObjects_DatumObject(const Handle(XCAFDi
   myValueOfModifier = theObj->myValueOfModifier;
   myDatumTarget = theObj->myDatumTarget;
   myIsDTarget = theObj->myIsDTarget;
+  myIsValidDT = theObj->myIsValidDT;
   myAxis = theObj->myAxis;
   myDTargetType = theObj->myDTargetType;
   myPlane = theObj->myPlane;
@@ -224,6 +226,7 @@ gp_Ax2 XCAFDimTolObjects_DatumObject::GetDatumTargetAxis() const
 void XCAFDimTolObjects_DatumObject::SetDatumTargetAxis(const gp_Ax2& theAxis)
 {
   myAxis = theAxis;
+  myIsValidDT = Standard_True;
 }
 
 //=======================================================================
@@ -244,6 +247,7 @@ Standard_Real XCAFDimTolObjects_DatumObject::GetDatumTargetLength() const
 void XCAFDimTolObjects_DatumObject::SetDatumTargetLength(const Standard_Real theLength)
 {
   myLength = theLength;
+  myIsValidDT = Standard_True;
 }
 
 
@@ -265,6 +269,7 @@ Standard_Real XCAFDimTolObjects_DatumObject::GetDatumTargetWidth() const
 void XCAFDimTolObjects_DatumObject::SetDatumTargetWidth(const Standard_Real theWidth)
 {
   myWidth = theWidth;
+  myIsValidDT = Standard_True;
 }
 
 //=======================================================================

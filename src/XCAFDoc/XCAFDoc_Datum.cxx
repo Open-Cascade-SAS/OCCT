@@ -226,7 +226,7 @@ void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theOb
         tnBuild.Generated(theObject->GetDatumTarget());
       }
     }
-    else
+    else if (theObject->HasDatumTargetParams())
     {
       Handle(TDataStd_RealArray) aLoc = new TDataStd_RealArray();
       Handle(TDataStd_RealArray) aN = new TDataStd_RealArray();

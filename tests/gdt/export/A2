@@ -12,8 +12,8 @@ set ref_data {
  NbOfTolerances          : 22
   NbOfGTWithModifiers    : 4
   NbOfGTWithMaxTolerance : 0
-  NbOfGTWithDatums       : 13
- NbOfDatumFeature        : 5
- NbOfAttachedDatum       : 24
- NbOfDatumTarget         : 9
+  NbOfGTWithDatums       : 20
+ NbOfDatumFeature        : 15
+ NbOfAttachedDatum       : 70
+ NbOfDatumTarget         : 57
 }

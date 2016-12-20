@@ -5,8 +5,8 @@ set ref_data {
 
  NbOfDimensions          : 6
  NbOfTolerances          : 10
- NbOfDatumFeature        : 2
- NbOfAttachedDatum       : 9
+ NbOfDatumFeature        : 6
+ NbOfAttachedDatum       : 26
  NbOfDatumTarget         : 2
 
  0:1:1:2:2 Shape.5
@@ -30,9 +30,9 @@ set ref_data {
  	 0:1:4:16 GeomTolerance.92.1 ( T 4 TV 1, V 0.76200000000000001 )
  	 	 0:1:4:17 Datum.92.1.1 ( )
  0:1:1:2:118 Shape.121
- 	 0:1:4:27 Datum target.121.1 ( T 3, A ( L (000), XD (10-0), RD (-010)), L 0 )
+ 	 0:1:4:27 Datum target.121.1 ( T 3, A ( L (000), XD (100), RD (010)), L 0 )
  0:1:1:2:123 Shape.126
- 	 0:1:4:25 Datum target.126.1 ( T 3, A ( L (000), XD (10-0), RD (-010)), L 0 )
+ 	 0:1:4:25 Datum target.126.1 ( T 3, A ( L (000), XD (100), RD (010)), L 0 )
  0:1:1:2:125 Shape.128
  	 0:1:4:18 GeomTolerance.128.1 ( T 2 TV 0, V 0.63500000000000001 )
  	 	 0:1:4:19 Datum.128.1.1 ( )

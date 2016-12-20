@@ -151,7 +151,11 @@ public:
     return myPresentationName;
   }
 
-  
+  //! Returns true if datum has valid parameters for datum target (width, length, circle radius etc)
+  Standard_EXPORT Standard_Boolean HasDatumTargetParams()
+  {
+    return myIsValidDT;
+  }
 
   DEFINE_STANDARD_RTTIEXT(XCAFDimTolObjects_DatumObject,Standard_Transient)
 
@@ -164,6 +168,7 @@ private:
   TopoDS_Shape myDatumTarget;
   Standard_Integer myPosition;
   Standard_Boolean myIsDTarget;
+  Standard_Boolean myIsValidDT;
   XCAFDimTolObjects_DatumTargetType myDTargetType;
   gp_Ax2 myAxis;
   Standard_Real myLength;

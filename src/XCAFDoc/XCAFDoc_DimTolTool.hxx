@@ -161,7 +161,7 @@ public:
   Standard_EXPORT TDF_Label AddDatum() ;
   
   //! Sets a link with GUID
-  Standard_EXPORT void SetDatum (const TDF_Label& L, const TDF_Label& DatumL) const;
+  Standard_EXPORT void SetDatum (const TDF_LabelSequence& theShapeLabels, const TDF_Label& theDatumL) const;
 
   //! Sets a link with GUID for Datum
   //! Sets connection between Datum and Tolerance

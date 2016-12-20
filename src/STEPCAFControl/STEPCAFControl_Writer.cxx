@@ -241,6 +241,7 @@
 static NCollection_Vector<Handle(StepVisual_AnnotationPlane)> gdtAnnotationPlanes;
 static Handle(StepVisual_DraughtingModel) gdtPresentationDM;
 static Handle(StepVisual_HArray1OfPresentationStyleAssignment) gdtPrsCurveStyle;
+static Handle(StepRepr_ProductDefinitionShape) gdtCommonPDS;
 
 // added by skl 15.01.2004 for D&GT writing
 //#include <StepRepr_CompoundItemDefinition.hxx>
@@ -2490,7 +2491,7 @@ static void WritePresentation(const Handle(XSControl_WorkSession) &WS,
 //           in case of multiple features association)
 //=======================================================================
 static Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSession) &WS,
-                                                const TDF_Label theShapeL,
+                                                const TDF_LabelSequence theShapeL,
                                                 const TDF_Label theDatumL,
                                                 const Standard_Boolean isFirstDTarget,
                                                 const Handle(StepDimTol_Datum) theWrittenDatum)
@@ -2505,31 +2506,51 @@ static Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSessi
   Interface_Graph aGraph = aHGraph->Graph();
 
   Handle(StepRepr_ShapeAspect) aSA;
-  Handle(StepAP242_GeometricItemSpecificUsage) aGISU;
-  // Link with datum feature
-  Handle(StepRepr_ProductDefinitionShape) aPDS;
   Handle(StepRepr_RepresentationContext) aRC;
-  Handle(Standard_Transient) anEnt;
-  TopoDS_Shape aShape;
-  TopLoc_Location aLoc;
-  TColStd_SequenceOfTransient aSeqRI;
+  Handle(StepRepr_ProductDefinitionShape) aPDS;
+  NCollection_Sequence<Handle(StepRepr_ShapeAspect)> aSASeq;
+  Handle(StepAP242_GeometricItemSpecificUsage) aGISU;
+  Standard_Integer aSANum = 0, aGISUNum = 0;
+  // Link with datum feature
+  for (Standard_Integer i = 1; i <= theShapeL.Length(); i++) {
+    Handle(Standard_Transient) anEnt;
+    TopoDS_Shape aShape;
+    TopLoc_Location aLoc;
+    TColStd_SequenceOfTransient aSeqRI;
 
-  aShape = XCAFDoc_ShapeTool::GetShape(theShapeL);
-  FindEntities( FP, aShape, aLoc, aSeqRI );
-  if ( aSeqRI.Length() <= 0 ) {
-    FP->Messenger() << "Warning: Cannot find RI for "<<aShape.TShape()->DynamicType()->Name()<<endl;
-    return NULL;
+    aShape = XCAFDoc_ShapeTool::GetShape(theShapeL.Value(i));
+    FindEntities(FP, aShape, aLoc, aSeqRI);
+    if (aSeqRI.Length() <= 0) {
+      FP->Messenger() << "Warning: Cannot find RI for " << aShape.TShape()->DynamicType()->Name() << endl;
+      continue;
+    }
+    anEnt = aSeqRI.Value(1);
+    aPDS = FindPDS(aGraph, anEnt, aRC);
+    if (aPDS.IsNull())
+      continue;
+
+    Handle(StepRepr_ShapeAspect) aCurrentSA = WriteShapeAspect(WS, theDatumL, aShape, aRC, aGISU);
+    if (aCurrentSA.IsNull())
+      continue;
+    aSASeq.Append(aCurrentSA);
+    aSANum = Model->Number(aCurrentSA);
+    aGISUNum = Model->Number(aGISU);
   }
-  anEnt = aSeqRI.Value(1);
-  aPDS = FindPDS(aGraph, anEnt, aRC);
-  if (aPDS.IsNull()) 
-    return NULL;
+  if (aPDS.IsNull()) {
+    // Workaround for datums without shape
+    aPDS = gdtCommonPDS;
+    Interface_EntityIterator aSDRIt = aGraph.Sharings(aPDS);
+    Handle(StepShape_ShapeDefinitionRepresentation) aSDR;
+    for (aSDRIt.Start(); aSDRIt.More() && aSDR.IsNull(); aSDRIt.Next())
+      aSDR = Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(aSDRIt.Value());
+    if (!aSDR.IsNull()) {
+      Handle(StepRepr_Representation) aRepr = aSDR->UsedRepresentation();
+      if (!aRepr.IsNull())
+        aRC = aRepr->ContextOfItems();
+    }
+  }
 
-  aSA = WriteShapeAspect(WS, theDatumL, aShape, aRC, aGISU);
-  if (aSA.IsNull())
-    return NULL;
-  Standard_Integer aSANum = Model->Number(aSA);
-  Standard_Integer aGISUNum = Model->Number(aGISU);
+
   // Find if datum has datum targets and get common datum attributes
   Handle(XCAFDoc_Datum) aDatumAttr;
   if (!theDatumL.FindAttribute(XCAFDoc_Datum::GetID(), aDatumAttr)) 
@@ -2549,14 +2570,34 @@ static Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSessi
 
   // Simple datum
   if (isSimpleDatum) {
-    Handle(StepDimTol_DatumFeature) aDF = new StepDimTol_DatumFeature();
-    aDF->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), aSA->OfShape(), aSA->ProductDefinitional());
-    Model->ReplaceEntity(aSANum, aDF);
-    aSA = aDF;
-    StepAP242_ItemIdentifiedRepresentationUsageDefinition aDefinition;
-    aDefinition.SetValue(aDF);
-    aGISU->SetDefinition(aDefinition);
-    Model->ReplaceEntity(aGISUNum, aGISU);
+    if (aSASeq.Length() == 0) {
+      // Create empty datum with name and presentation only
+      Handle(StepDimTol_DatumFeature) aDF = new StepDimTol_DatumFeature();
+      aDF->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), aPDS, StepData_LTrue);
+      aSA = aDF;
+      Model->AddWithRefs(aDF);
+    }
+    else if (aSASeq.Length() == 1) {
+      Handle(StepDimTol_DatumFeature) aDF = new StepDimTol_DatumFeature();
+      aDF->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), aPDS, StepData_LTrue);
+      Model->ReplaceEntity(aSANum, aDF);
+      aSA = aDF;
+      StepAP242_ItemIdentifiedRepresentationUsageDefinition aDefinition;
+      aDefinition.SetValue(aDF);
+      aGISU->SetDefinition(aDefinition);
+      Model->ReplaceEntity(aGISUNum, aGISU);
+    }
+    else if (aSASeq.Length() > 1) {
+      Handle(StepRepr_CompShAspAndDatumFeatAndShAsp) aDF = new StepRepr_CompShAspAndDatumFeatAndShAsp();
+      aDF->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), aPDS, StepData_LTrue);
+      for (Standard_Integer i = 1; i <= aSASeq.Length(); i++) {
+        Handle(StepRepr_ShapeAspectRelationship) aSAR = new StepRepr_ShapeAspectRelationship();
+        aSAR->Init(new TCollection_HAsciiString(), Standard_False, new TCollection_HAsciiString(), aDF, aSASeq.Value(i));
+        Model->AddWithRefs(aSAR);
+      }
+      aSA = aDF;
+      Model->AddWithRefs(aDF);
+    }
   }
   // Datum with datum targets
   else {
@@ -2571,13 +2612,13 @@ static Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSessi
       aGISUNum = Model->Number(anAreaGISU);
       Handle(StepDimTol_DatumTarget) aDT = new StepDimTol_DatumTarget();
       aDT->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString("area"), anAreaSA->OfShape(),
-        anAreaSA->ProductDefinitional(), aTargetId);
+        StepData_LTrue, aTargetId);
       Model->ReplaceEntity(aSANum, aDT);
       StepAP242_ItemIdentifiedRepresentationUsageDefinition aDefinition;
       aDefinition.SetValue(aDT);
       anAreaGISU->SetDefinition(aDefinition);
       Model->ReplaceEntity(aGISUNum, anAreaGISU);
-  }
+    }
     else {
       Handle(StepDimTol_PlacedDatumTargetFeature) aPDTF = new StepDimTol_PlacedDatumTargetFeature();
       aPDTF->Init(new TCollection_HAsciiString(), STEPCAFControl_GDTProperty::GetDatumTargetName(aDatumType),
@@ -2589,59 +2630,76 @@ static Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSessi
       StepRepr_CharacterizedDefinition aCDefinition;
       aCDefinition.SetValue(aPDTF);
       aPD->Init(new TCollection_HAsciiString(), Standard_False, NULL, aCDefinition);
-      Handle(StepShape_ShapeRepresentationWithParameters) aSRWP = new StepShape_ShapeRepresentationWithParameters();
-      // Common for all datum targets
-      StepBasic_Unit aUnit = GetUnit(aRC);
-      gp_Ax2 aDTAxis = anObject->GetDatumTargetAxis();
-      Handle(StepGeom_Axis2Placement3d) anA2P3D = 
-        STEPCAFControl_GDTProperty::GetAxis2Placement3D(aDTAxis);
-      anA2P3D->SetName(new TCollection_HAsciiString("orientation"));
-      Handle(StepRepr_HArray1OfRepresentationItem) anItems;
-      // Process each datum target type
-      if (aDatumType == XCAFDimTolObjects_DatumTargetType_Point) {
-        anItems = new StepRepr_HArray1OfRepresentationItem(1, 1);
-      }
-      else  {
-        Handle(TCollection_HAsciiString) aTargetValueName;
-        if (aDatumType == XCAFDimTolObjects_DatumTargetType_Line) {
-          anItems = new StepRepr_HArray1OfRepresentationItem(1, 2);
-          aTargetValueName = new TCollection_HAsciiString("target length");
+      if (anObject->HasDatumTargetParams()) {
+        // write all parameters of datum target
+        Handle(StepShape_ShapeRepresentationWithParameters) aSRWP = new StepShape_ShapeRepresentationWithParameters();
+        // Common for all datum targets
+        StepBasic_Unit aUnit = GetUnit(aRC);
+        gp_Ax2 aDTAxis = anObject->GetDatumTargetAxis();
+        Handle(StepGeom_Axis2Placement3d) anA2P3D =
+          STEPCAFControl_GDTProperty::GetAxis2Placement3D(aDTAxis);
+        anA2P3D->SetName(new TCollection_HAsciiString("orientation"));
+        Handle(StepRepr_HArray1OfRepresentationItem) anItems;
+        // Process each datum target type
+        if (aDatumType == XCAFDimTolObjects_DatumTargetType_Point) {
+          anItems = new StepRepr_HArray1OfRepresentationItem(1, 1);
         }
-        else if (aDatumType == XCAFDimTolObjects_DatumTargetType_Rectangle) {
-          anItems = new StepRepr_HArray1OfRepresentationItem(1, 3);
-          aTargetValueName = new TCollection_HAsciiString("target length");
-          // Additional value
-          Handle(StepRepr_ReprItemAndMeasureWithUnit) aTargetValue = CreateDimValue(anObject->GetDatumTargetWidth(),
-            aUnit, new TCollection_HAsciiString("target width"), "POSITIVE_LENGTH_MEASURE", Standard_False);
-          anItems->SetValue(2, aTargetValue);
+        else  {
+          Handle(TCollection_HAsciiString) aTargetValueName;
+          if (aDatumType == XCAFDimTolObjects_DatumTargetType_Line) {
+            anItems = new StepRepr_HArray1OfRepresentationItem(1, 2);
+            aTargetValueName = new TCollection_HAsciiString("target length");
+          }
+          else if (aDatumType == XCAFDimTolObjects_DatumTargetType_Rectangle) {
+            anItems = new StepRepr_HArray1OfRepresentationItem(1, 3);
+            aTargetValueName = new TCollection_HAsciiString("target length");
+            // Additional value
+            Handle(StepRepr_ReprItemAndMeasureWithUnit) aTargetValue = CreateDimValue(anObject->GetDatumTargetWidth(),
+              aUnit, new TCollection_HAsciiString("target width"), "POSITIVE_LENGTH_MEASURE", Standard_False);
+            anItems->SetValue(2, aTargetValue);
+            Model->AddWithRefs(aTargetValue);
+          }
+          else if (aDatumType == XCAFDimTolObjects_DatumTargetType_Circle) {
+            anItems = new StepRepr_HArray1OfRepresentationItem(1, 2);
+            aTargetValueName = new TCollection_HAsciiString("target diameter");
+          }
+          // Value
+          Handle(StepRepr_ReprItemAndMeasureWithUnit) aTargetValue = CreateDimValue(anObject->GetDatumTargetLength(),
+            aUnit, aTargetValueName, "POSITIVE_LENGTH_MEASURE", Standard_False);
+          anItems->SetValue(1, aTargetValue);
           Model->AddWithRefs(aTargetValue);
         }
-        else if (aDatumType == XCAFDimTolObjects_DatumTargetType_Circle) {
-          anItems = new StepRepr_HArray1OfRepresentationItem(1, 2);
-          aTargetValueName = new TCollection_HAsciiString("target diameter");
-        }
-        // Value
-        Handle(StepRepr_ReprItemAndMeasureWithUnit) aTargetValue= CreateDimValue(anObject->GetDatumTargetLength(),
-          aUnit, aTargetValueName, "POSITIVE_LENGTH_MEASURE", Standard_False);
-        anItems->SetValue(1, aTargetValue);
-        Model->AddWithRefs(aTargetValue);
+        anItems->SetValue(anItems->Length(), anA2P3D);
+        aSRWP->Init(new TCollection_HAsciiString(), anItems, aRC);
+        // Create and write auxiliary entities
+        Handle(StepShape_ShapeDefinitionRepresentation) aSDR = new StepShape_ShapeDefinitionRepresentation();
+        StepRepr_RepresentedDefinition aRDefinition;
+        aRDefinition.SetValue(aPD);
+        aSDR->Init(aRDefinition, aSRWP);
+        Model->AddWithRefs(aPD);
+        Model->AddWithRefs(aSRWP);
+        Model->AddWithRefs(aSDR);
       }
-      anItems->SetValue(anItems->Length(), anA2P3D);
-      aSRWP->Init(new TCollection_HAsciiString(), anItems, aRC);
-  
-      // Create and write auxiliary entities
-      Handle (StepShape_ShapeDefinitionRepresentation) aSDR = new StepShape_ShapeDefinitionRepresentation();
-      StepRepr_RepresentedDefinition aRDefinition;
-      aRDefinition.SetValue(aPD);
-      aSDR->Init(aRDefinition, aSRWP);
-      Model->AddWithRefs(aPD);
-      Model->AddWithRefs(aSRWP);
-      Model->AddWithRefs(aSDR);
     }
     // Link datum target to datum feature
-    Handle(StepRepr_FeatureForDatumTargetRelationship) aFFDTR = new StepRepr_FeatureForDatumTargetRelationship();
-    aFFDTR->Init(new TCollection_HAsciiString(), Standard_False, NULL, aDatumTarget, aSA);
-    Model->AddWithRefs(aFFDTR);
+    // if aSASeq.Length() == 0 nothing to do
+    if (aSASeq.Length() == 1) {
+      Handle(StepRepr_FeatureForDatumTargetRelationship) aFFDTR = new StepRepr_FeatureForDatumTargetRelationship();
+      aFFDTR->Init(new TCollection_HAsciiString(), Standard_False, NULL, aSASeq.Value(1), aDatumTarget);
+      Model->AddWithRefs(aFFDTR);
+    }
+    else if (aSASeq.Length() > 1) {
+      Handle(StepRepr_CompositeShapeAspect) aCompSA = new StepRepr_CompositeShapeAspect();
+      aCompSA->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), aPDS, aSASeq.Value(1)->ProductDefinitional());
+      for (Standard_Integer i = 1; i <= aSASeq.Length(); i++) {
+        Handle(StepRepr_ShapeAspectRelationship) aSAR = new StepRepr_ShapeAspectRelationship();
+        aSAR->Init(new TCollection_HAsciiString(), Standard_False, new TCollection_HAsciiString(), aCompSA, aSASeq.Value(i));
+        Model->AddWithRefs(aSAR);
+      }
+      Handle(StepRepr_FeatureForDatumTargetRelationship) aFFDTR = new StepRepr_FeatureForDatumTargetRelationship();
+      aFFDTR->Init(new TCollection_HAsciiString(), Standard_False, NULL, aCompSA, aDatumTarget);
+      Model->AddWithRefs(aFFDTR);
+    }
     aSA = aDatumTarget;
   }
 
@@ -2649,34 +2707,16 @@ static Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSessi
   Handle(StepDimTol_Datum) aDatum = theWrittenDatum;
   if (isFirstDTarget) {
     aDatum = new StepDimTol_Datum();
-    aDatum->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), aPDS, StepData_LTrue, anIdentifier);
+    aDatum->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), aPDS, StepData_LFalse, anIdentifier);
     Model->AddWithRefs(aDatum);
   }
 
   // Shape_Aspect_Relationship
-  Handle(StepRepr_ShapeAspectRelationship) aSAR = new StepRepr_ShapeAspectRelationship();
-  aSAR->Init(new TCollection_HAsciiString(), Standard_False, NULL, aSA, aDatum);
-  Model->AddWithRefs(aSAR);
-
-  // Auxiliary entities
-  // Property_Definition
-  Handle(StepRepr_PropertyDefinition) aPD = new StepRepr_PropertyDefinition();
-  Handle(TCollection_HAsciiString) aPDName = new TCollection_HAsciiString("Datum Feature Symbol ");
-  aPDName = aPDName->Cat(anIdentifier)->Cat(aTargetId);
-  StepRepr_CharacterizedDefinition aCD;
-  aCD.SetValue(aSA);
-  aPD->Init(aPDName, Standard_False, NULL, aCD);
-  Model->AddWithRefs(aPD);
-  // Shape_Representation
-  Handle(StepShape_ShapeRepresentation) aShapeRepr = new StepShape_ShapeRepresentation();
-  aShapeRepr->Init(aPDName, aGISU->IdentifiedItem(), aRC);
-  Model->AddWithRefs(aShapeRepr);
-  // Shape_Definition_Representation
-  Handle (StepShape_ShapeDefinitionRepresentation) aSDR = new StepShape_ShapeDefinitionRepresentation();
-  StepRepr_RepresentedDefinition aRDefinition;
-  aRDefinition.SetValue(aPD);
-  aSDR->Init(aRDefinition, aShapeRepr);
-  Model->AddWithRefs(aSDR);
+  if (!aSA.IsNull()) {
+    Handle(StepRepr_ShapeAspectRelationship) aSAR = new StepRepr_ShapeAspectRelationship();
+    aSAR->Init(new TCollection_HAsciiString(), Standard_False, NULL, aSA, aDatum);
+    Model->AddWithRefs(aSAR);
+  }
 
   //Annotation plane and Presentation
   WritePresentation(WS, anObject->GetPresentation(), anObject->GetPresentationName(), anObject->GetPlane(), anObject->GetPointTextAttach(), aSA);
@@ -3733,6 +3773,9 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
   Handle(StepRepr_RepresentationItem) anItem = NULL;
   gdtPrsCurveStyle = new StepVisual_HArray1OfPresentationStyleAssignment(1, 1);
   gdtPrsCurveStyle->SetValue(1, aStyles.MakeColorPSA(anItem, aCurvColor, aCurvColor));
+  Interface_EntityIterator aModelIter = aModel->Entities();
+  for (; aModelIter.More() && gdtCommonPDS.IsNull(); aModelIter.Next())
+    gdtCommonPDS = Handle(StepRepr_ProductDefinitionShape)::DownCast(aModelIter.Value());
 
   TDF_LabelSequence aDGTLabels;
   STEPConstruct_DataMapOfAsciiStringTransient aDatumMap;
@@ -3746,10 +3789,8 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
   TColStd_MapOfAsciiString aNameIdMap;
   for(Standard_Integer i = 1; i <= aDGTLabels.Length(); i++) {
     TDF_Label aDatumL = aDGTLabels.Value(i);
-    TDF_LabelSequence aShapeL;
-    TDF_LabelSequence aNullSeq;
-    if(!DGTTool->GetRefShapeLabel(aDatumL, aShapeL, aNullSeq))
-      continue;
+    TDF_LabelSequence aShapeL, aNullSeq;
+    DGTTool->GetRefShapeLabel(aDatumL, aShapeL, aNullSeq);
     Handle(XCAFDoc_Datum) aDatumAttr;
     aDatumL.FindAttribute(XCAFDoc_Datum::GetID(), aDatumAttr);
     Handle(XCAFDimTolObjects_DatumObject) anObject = aDatumAttr->GetObject();
@@ -3759,7 +3800,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
       continue;
     Handle(Standard_Transient) aWrittenDatum;
     Standard_Boolean isFirstDT = !aDatumMap.Find(aDatumName, aWrittenDatum);
-    Handle(StepDimTol_Datum) aDatum = WriteDatumAP242(WS, aShapeL.First(), aDatumL, isFirstDT, 
+    Handle(StepDimTol_Datum) aDatum = WriteDatumAP242(WS, aShapeL, aDatumL, isFirstDT, 
                                                       Handle(StepDimTol_Datum)::DownCast (aWrittenDatum));
     // Add created Datum into Map
     aDatumMap.Bind(aDatumName, aDatum);

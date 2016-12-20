@@ -760,6 +760,9 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
     else if ( att->ID() == XCAFDoc::GeomToleranceRefGUID() ){
       type = "GeomTolerance Link";
     }
+    else if ( att->ID() == XCAFDoc::DatumRefGUID() ){
+      type = "Datum Link";
+    }
     else return 0;
 
     Handle(XCAFDoc_GraphNode) DETGN = Handle(XCAFDoc_GraphNode)::DownCast(att);

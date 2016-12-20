@@ -15,6 +15,7 @@
 
 
 #include <BRep_Builder.hxx>
+#include <Geom_Axis2Placement.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <StepData_StepModel.hxx>
@@ -172,6 +173,7 @@
 #include <StepShape_ToleranceValue.hxx>
 #include <StepShape_ValueFormatTypeQualifier.hxx>
 #include <StepShape_Vertex.hxx>
+#include <StepToGeom.hxx>
 #include <StepVisual_AnnotationCurveOccurrence.hxx>
 #include <StepVisual_AnnotationPlane.hxx>
 #include <StepVisual_DraughtingCallout.hxx>
@@ -1961,7 +1963,7 @@ Standard_Boolean readAnnotationPlane(const Handle(StepVisual_AnnotationPlane) th
 // (Dimension, Geometric_Tolerance, Datum_Feature or Placed_Datum_Target_Feature)
 //=======================================================================
 void readAnnotation(const Handle(XSControl_TransferReader)& theTR, 
-  const Handle(Standard_Transient) theGDT,
+  const Handle(Standard_Transient)& theGDT,
   const Handle(Standard_Transient)& theDimObject)
 {
   if (theGDT.IsNull() || theDimObject.IsNull())
@@ -2259,239 +2261,306 @@ static Standard_Integer FindShapeIndexForDGT(const Handle(Standard_Transient)& t
 }
 
 //=======================================================================
+//function : collectShapeAspect
+//purpose  : 
+//=======================================================================
+static void collectShapeAspect(const Handle(StepRepr_ShapeAspect)& theSA,
+                               const Handle(XSControl_WorkSession)& theWS,
+                               NCollection_Sequence<Handle(StepRepr_ShapeAspect)>& theSAs)
+{
+  if (theSA.IsNull())
+    return;
+  Handle(XSControl_TransferReader) aTR = theWS->TransferReader();
+  Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
+  const Interface_Graph& aGraph = aTP->Graph();
+  // Retrieve Shape_Aspect, connected to Representation_Item from Derived_Shape_Aspect
+  if (theSA->IsKind(STANDARD_TYPE(StepRepr_DerivedShapeAspect))) {
+    Interface_EntityIterator anIter = aGraph.Sharings(theSA);
+    Handle(StepRepr_ShapeAspectDerivingRelationship) aSADR = NULL;
+    for (; aSADR.IsNull() && anIter.More(); anIter.Next()) {
+      aSADR = Handle(StepRepr_ShapeAspectDerivingRelationship)::DownCast(anIter.Value());
+    }
+    if (!aSADR.IsNull())
+      collectShapeAspect(aSADR->RelatedShapeAspect(), theWS, theSAs);
+  }
+  else if (theSA->IsKind(STANDARD_TYPE(StepDimTol_DatumFeature)) ||
+    theSA->IsKind(STANDARD_TYPE(StepDimTol_DatumTarget))) {
+    theSAs.Append(theSA);
+    return;
+  }
+  else {
+    // Find all children Shape_Aspect
+    Standard_Boolean isSimple = Standard_True;
+    Interface_EntityIterator anIter = aGraph.Sharings(theSA);
+    for (; anIter.More(); anIter.Next()) {
+      if (anIter.Value()->IsKind(STANDARD_TYPE(StepRepr_ShapeAspectRelationship)) &&
+          !anIter.Value()->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation))) {
+        Handle(StepRepr_ShapeAspectRelationship) aSAR =
+          Handle(StepRepr_ShapeAspectRelationship)::DownCast(anIter.Value());
+        if (aSAR->RelatingShapeAspect() == theSA && !aSAR->RelatedShapeAspect().IsNull()
+            && !aSAR->RelatedShapeAspect()->IsKind(STANDARD_TYPE(StepDimTol_Datum))) {
+          collectShapeAspect(aSAR->RelatedShapeAspect(), theWS, theSAs);
+          isSimple = Standard_False;
+        }
+      }
+    }
+    // If not Composite_Shape_Aspect (or subtype) append to sequence.
+    if (isSimple)
+      theSAs.Append(theSA);
+  }
+}
+
+//=======================================================================
+//function : getShapeLabel
+//purpose  : 
+//=======================================================================
+
+static TDF_Label getShapeLabel(const Handle(StepRepr_RepresentationItem)& theItem,
+                               const Handle(XSControl_WorkSession)& theWS,
+                               const Handle(XCAFDoc_ShapeTool)& theShapeTool)
+{
+  TDF_Label aShapeL;
+  const Handle(Transfer_TransientProcess) &aTP = theWS->TransferReader()->TransientProcess();
+  Standard_Integer index = FindShapeIndexForDGT(theItem, theWS);
+  TopoDS_Shape aShape;
+  if (index > 0) {
+    Handle(Transfer_Binder) aBinder = aTP->MapItem(index);
+    aShape = TransferBRep::ShapeResult(aBinder);
+  }
+  if (aShape.IsNull())
+    return aShapeL;
+  theShapeTool->Search(aShape, aShapeL, Standard_True, Standard_True, Standard_True);
+  return aShapeL;
+}
+
+//=======================================================================
 //function : setDatumToXCAF
 //purpose  : 
 //=======================================================================
+
 static Standard_Boolean setDatumToXCAF(const Handle(StepDimTol_Datum)& theDat,
-                                        const TDF_Label theGDTL,
-                                        const Standard_Integer thePositionCounter,
-                                        const XCAFDimTolObjects_DatumModifiersSequence& aXCAFModifiers,
-                                        const XCAFDimTolObjects_DatumModifWithValue aXCAFModifWithVal,
-                                        const Standard_Real aModifValue,
-                                        const Handle(TDocStd_Document)& theDoc,
-                                        const Handle(XSControl_WorkSession)& theWS)
+                                       const TDF_Label theGDTL,
+                                       const Standard_Integer thePositionCounter,
+                                       const XCAFDimTolObjects_DatumModifiersSequence& theXCAFModifiers,
+                                       const XCAFDimTolObjects_DatumModifWithValue theXCAFModifWithVal,
+                                       const Standard_Real theModifValue,
+                                       const Handle(TDocStd_Document)& theDoc,
+                                       const Handle(XSControl_WorkSession)& theWS)
 {
-  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool( theDoc->Main() );
-  Handle(XCAFDoc_DimTolTool) aDGTTool = XCAFDoc_DocumentTool::DimTolTool( theDoc->Main() );
+  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool(theDoc->Main());
+  Handle(XCAFDoc_DimTolTool) aDGTTool = XCAFDoc_DocumentTool::DimTolTool(theDoc->Main());
   const Handle(XSControl_TransferReader) &aTR = theWS->TransferReader();
   const Handle(Transfer_TransientProcess) &aTP = aTR->TransientProcess();
   const Interface_Graph& aGraph = aTP->Graph();
   Handle(XCAFDoc_Datum) aDat;
-  TDF_Label aShL;
-  Standard_Boolean aRefShapeIsFound = Standard_False;
-  Standard_Boolean aFirstStep = Standard_True;
-  Interface_EntityIterator anIterD = aGraph.Sharings(theDat);
-  for(anIterD.Start(); anIterD.More(); anIterD.Next()) {
-    Handle(StepRepr_ShapeAspectRelationship) aSAR = 
-      Handle(StepRepr_ShapeAspectRelationship)::DownCast(anIterD.Value());
-    if(aSAR.IsNull()) continue;
+  TDF_LabelSequence aShapeLabels;
+  Handle(XCAFDimTolObjects_DatumObject) aDatObj = new XCAFDimTolObjects_DatumObject();
 
-    Handle(StepRepr_ShapeAspect) aSA = aSAR->RelatingShapeAspect();
-    if (aSA.IsNull()) continue;
-    Handle(StepAP242_GeometricItemSpecificUsage) aPGISU;
-    if(aSA->IsKind(STANDARD_TYPE(StepRepr_CompShAspAndDatumFeatAndShAsp)))
-    {
-      //processing for complex entity
-      Interface_EntityIterator anIterC = aGraph.Sharings(aSA);
-      for(anIterC.Start(); anIterC.More(); anIterC.Next()) {
-        Handle(StepRepr_ShapeAspectRelationship) SAR = 
-          Handle(StepRepr_ShapeAspectRelationship)::DownCast(anIterC.Value());
-        if(SAR.IsNull()) continue;
-        Handle(StepRepr_ShapeAspect) aS = SAR->RelatedShapeAspect();
-        if(aS.IsNull()) continue;
-        Interface_EntityIterator anIterSA = aGraph.Sharings(aS);
-        for(anIterSA.Start(); anIterSA.More() && aPGISU.IsNull(); anIterSA.Next()) {
-          aPGISU = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIterSA.Value());
-        }
-        if(!aPGISU.IsNull()){
-          aSA = aS;
-          break;
-        }
-      }
-    }
-    else if(aSA->IsKind(STANDARD_TYPE(StepDimTol_PlacedDatumTargetFeature)))
-    {
-      //processing for datum target
-      Interface_EntityIterator anIterDTF = aGraph.Sharings(aSA);
-      for(anIterDTF.Start(); anIterDTF.More(); anIterDTF.Next()) {
-        if(anIterDTF.Value()->IsKind(STANDARD_TYPE(StepRepr_FeatureForDatumTargetRelationship)))
-        {
-          Handle(StepRepr_FeatureForDatumTargetRelationship) aFFDTR =
-            Handle(StepRepr_FeatureForDatumTargetRelationship)::DownCast(anIterDTF.Value());
-          Handle(StepRepr_ShapeAspect) aTmpSA = aFFDTR->RelatedShapeAspect();
-          Interface_EntityIterator anIterDSWP = aGraph.Sharings(aTmpSA);
-          for(anIterDSWP.Start(); anIterDSWP.More() && aPGISU.IsNull(); anIterDSWP.Next()) {
-            aPGISU = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIterDSWP.Value());
-    }
-        }
-      }
-    }
-    if (aSA.IsNull()) continue;
-    Interface_EntityIterator anIterDSWP = aGraph.Sharings(aSA);
-    for(anIterDSWP.Start(); anIterDSWP.More() && aPGISU.IsNull(); anIterDSWP.Next()) {
-      aPGISU = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIterDSWP.Value());
-    }
-    if(aPGISU.IsNull()) continue;
-    // get representation item
-    Handle(StepRepr_RepresentationItem) aRI;
-    for(Standard_Integer i = 1 ; i <= aPGISU->NbIdentifiedItem() && aRI.IsNull(); i++)
-    {
-      aRI = aPGISU->IdentifiedItemValue(i);
-    }
-    if(aRI.IsNull()) continue;
-    Standard_Integer index = FindShapeIndexForDGT(aRI, theWS);
-    TopoDS_Shape aSh;
-    if(index >0) {
-      Handle(Transfer_Binder) binder = aTP->MapItem(index);
-      aSh = TransferBRep::ShapeResult(binder);
-    }
-    if(aSh.IsNull()) continue; 
-    if( !aSTool->Search(aSh, aShL, Standard_True, Standard_True, Standard_True) ) continue;
-    Handle(TDataStd_TreeNode) aNode;
-    if(aFirstStep && aShL.FindAttribute(XCAFDoc::DatumRefGUID(),aNode) && aNode->HasFirst() &&
-       aNode->First()->Label().FindAttribute(XCAFDoc_Datum::GetID(),aDat))
-    {
-      //if datums already attached, not need add datum target
-      aRefShapeIsFound = Standard_True;
-    }
-    aFirstStep = Standard_False;
-    Handle(XCAFDimTolObjects_DatumObject) aDatObj;
-    if(aSA->IsKind(STANDARD_TYPE(StepDimTol_PlacedDatumTargetFeature)))
-    {
-      if(!aRefShapeIsFound)
-      {
-        //if datum targers not yet added
-        TDF_Label aDatL = aDGTTool->AddDatum();
-        aDat = XCAFDoc_Datum::Set(aDatL);
-        aDGTTool->SetDatum(aShL, aDatL);
-        aDatObj = aDat->GetObject();
-        aDatObj->SetName(theDat->Identification());
-        aDatObj->SetPosition (thePositionCounter);
-        if(!aXCAFModifiers.IsEmpty())
-          aDatObj->SetModifiers(aXCAFModifiers);
-        if (aXCAFModifWithVal != XCAFDimTolObjects_DatumModifWithValue_None) 
-          aDatObj->SetModifierWithValue(aXCAFModifWithVal, aModifValue);
-        aDGTTool->SetDatumToGeomTol(aDatL, theGDTL);
-        Handle(StepDimTol_PlacedDatumTargetFeature) aPDTF = Handle(StepDimTol_PlacedDatumTargetFeature)::DownCast(aSA);
-        if (aPDTF->TargetId()->IsIntegerValue())
-          aDatObj->SetDatumTargetNumber(aPDTF->TargetId()->IntegerValue());
-        else
-          aDatObj->SetDatumTargetNumber(0);
-        aDatObj->IsDatumTarget(Standard_True);
-        XCAFDimTolObjects_DatumTargetType aType;
-        if(STEPCAFControl_GDTProperty::GetDatumTargetType(aSA->Description(),aType))
-        {
-          aDatObj->SetDatumTargetType(aType);
-          if(aType == XCAFDimTolObjects_DatumTargetType_Area)
-          {
-            Interface_EntityIterator anIterDTF = aGraph.Shareds(aSA);
-            for(anIterDTF.Start(); anIterDTF.More(); anIterDTF.Next()) {
-              if(anIterDTF.Value()->IsKind(STANDARD_TYPE(StepAP242_GeometricItemSpecificUsage)))
-              {
-                Handle(StepAP242_GeometricItemSpecificUsage) aGISU
-                  = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIterDSWP.Value());
-                Handle(StepRepr_RepresentationItem) anItem;
-                if(aPGISU->NbIdentifiedItem() > 0) {
-                  anItem = aPGISU->IdentifiedItemValue(1);
-                }
-                if(anItem.IsNull()) continue;
-                Standard_Integer anItemIndex = FindShapeIndexForDGT(anItem, theWS);
-                if(anItemIndex >0) {
-                  Handle(Transfer_Binder) binder = aTP->MapItem(anItemIndex);
-                  TopoDS_Shape anItemShape = TransferBRep::ShapeResult(binder);
-                  aDatObj->SetDatumTarget(anItemShape);
-                }
-              }
-            }
-          }
-          else
-          {
-            Interface_EntityIterator anIterDTF = aGraph.Shareds(aSA);
-            for(anIterDTF.Start(); anIterDTF.More(); anIterDTF.Next()) {
-              if(anIterDTF.Value()->IsKind(STANDARD_TYPE(StepRepr_PropertyDefinition)))
-              {
-                Interface_EntityIterator anIterPD = aGraph.Shareds(anIterDTF.Value());
-                for(anIterPD.Start(); anIterPD.More(); anIterPD.Next()) {
-                  if(anIterPD.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
-                  {
-                    Interface_EntityIterator anIterSDR = aGraph.Sharings(anIterPD.Value());
-                    for(anIterSDR.Start(); anIterSDR.More(); anIterSDR.Next()) {
-                      if(anIterSDR.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentationWithParameters)))
-                      {
-                        Handle(StepShape_ShapeRepresentationWithParameters) aSRWP
-                          = Handle(StepShape_ShapeRepresentationWithParameters)::DownCast(anIterSDR.Value());
-                        for(Standard_Integer r = aSRWP->Items()->Lower(); r <= aSRWP->Items()->Upper(); r++)
-                        {
-                          if(aSRWP->ItemsValue(r)->IsKind(STANDARD_TYPE(StepGeom_Axis2Placement3d)))
-                          {
-                            Handle(StepGeom_Axis2Placement3d) anAx
-                              = Handle(StepGeom_Axis2Placement3d)::DownCast(aSRWP->ItemsValue(r));
-                            Handle(TColStd_HArray1OfReal) aDirArr = anAx->Axis()->DirectionRatios();
-                            Handle(TColStd_HArray1OfReal) aDirRArr = anAx->RefDirection()->DirectionRatios();
-                            Handle(TColStd_HArray1OfReal) aLocArr = anAx->Location()->Coordinates();
-                            gp_Dir aDir;
-                            gp_Dir aDirR;
-                            gp_Pnt aPnt;
-                            if(!aDirArr.IsNull() && aDirArr->Length() > 2 &&
-                              !aDirRArr.IsNull() && aDirRArr->Length() > 2 && 
-                              !aLocArr.IsNull() && aLocArr->Length() > 2)
-                            {
-                              aDir.SetCoord(aDirArr->Lower(), aDirArr->Lower()+1, aDirArr->Lower()+2);
-                              aDirR.SetCoord(aDirRArr->Lower(), aDirRArr->Lower()+1, aDirRArr->Lower()+2);
-                              aPnt.SetCoord(aLocArr->Lower(), aLocArr->Lower()+1, aLocArr->Lower()+2);
-                              gp_Ax2 anA(aPnt, aDir, aDirR);
-                              aDatObj->SetDatumTargetAxis(anA);
-                            }
-                          }
-                          else if(aSRWP->ItemsValue(r)->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnit)))
-                          {
-                            Handle(StepRepr_ReprItemAndLengthMeasureWithUnit) aM =
-                              Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)::DownCast(aSRWP->ItemsValue(r)); 
-                            Standard_Real aVal = aM->GetMeasureWithUnit()->ValueComponent();
-                            StepBasic_Unit anUnit = aM->GetMeasureWithUnit()->UnitComponent();
-                            Standard_Real aFact=1.;
-                            if(anUnit.IsNull()) continue;
-                            if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
-                            Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-                            if(GetLengthConversionFactor(NU,aFact)) aVal=aVal*aFact;
-                            if(aM->Name()->String().IsEqual("target length") ||
-                              aM->Name()->String().IsEqual("target diameter"))
-                              aDatObj->SetDatumTargetLength(aVal);
-                            else
-                              aDatObj->SetDatumTargetWidth(aVal);
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    else
-    {
-      //processing for darum feature
-      TDF_Label aDatL = aDGTTool->AddDatum();
-      aDat = XCAFDoc_Datum::Set(aDatL);
-      aDGTTool->SetDatum(aShL, aDatL);
-      aDatObj = aDat->GetObject();
-      aDatObj->SetName(theDat->Identification());
-      aDatObj->SetPosition (thePositionCounter);
-      if(!aXCAFModifiers.IsEmpty())
-        aDatObj->SetModifiers(aXCAFModifiers);
-      if (aXCAFModifWithVal != XCAFDimTolObjects_DatumModifWithValue_None) 
-        aDatObj->SetModifierWithValue(aXCAFModifWithVal, aModifValue);
-      aDGTTool->SetDatumToGeomTol(aDatL, theGDTL);
-    }
-    if(!aDatObj.IsNull()) {
+  // Collect all links to shapes
+  NCollection_Sequence<Handle(StepRepr_ShapeAspect)> aSAs;
+  Interface_EntityIterator anIterD = aGraph.Sharings(theDat);
+  for (anIterD.Start(); anIterD.More(); anIterD.Next()) {
+    Handle(StepRepr_ShapeAspectRelationship) aSAR = Handle(StepRepr_ShapeAspectRelationship)::DownCast(anIterD.Value());
+    if (aSAR.IsNull() || aSAR->RelatingShapeAspect().IsNull())
+      continue;
+    collectShapeAspect(aSAR->RelatingShapeAspect(), theWS, aSAs);
+    Handle(StepDimTol_DatumFeature) aDF = Handle(StepDimTol_DatumFeature)::DownCast(aSAR->RelatingShapeAspect());
+    if (!aSAR->RelatingShapeAspect()->IsKind(STANDARD_TYPE(StepDimTol_DatumTarget)))
       readAnnotation(aTR, aSAR->RelatingShapeAspect(), aDatObj);
-      aDat->SetObject(aDatObj);
+  }
+
+  // Collect shape labels
+  for (Standard_Integer i = 1; i <= aSAs.Length(); i++) {
+    Handle(StepRepr_ShapeAspect) aSA = aSAs.Value(i);
+    if (aSA.IsNull())
+      continue;
+    // Skip datum targets
+    if (aSA->IsKind(STANDARD_TYPE(StepDimTol_DatumTarget)))
+      continue;
+
+    // Process all connected GISU
+    Interface_EntityIterator anIter = aGraph.Sharings(aSA);
+    for (; anIter.More(); anIter.Next()) {
+      Handle(StepAP242_GeometricItemSpecificUsage) aGISU = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIter.Value());
+      if (aGISU.IsNull())
+        continue;
+      for (Standard_Integer i = 1; i <= aGISU->NbIdentifiedItem(); i++) {
+        TDF_Label aShapeL = getShapeLabel(aGISU->IdentifiedItemValue(i), theWS, aSTool);
+        if (!aShapeL.IsNull())
+          aShapeLabels.Append(aShapeL);
+      }
     }
   }
-  return !aDat.IsNull();
+
+  // Process datum targets and create objects for them
+  Standard_Boolean isExistDatumTarget = Standard_False;
+  for (Standard_Integer i = 1; i <= aSAs.Length(); i++) {
+    Handle(StepDimTol_PlacedDatumTargetFeature) aDT = Handle(StepDimTol_PlacedDatumTargetFeature)::DownCast(aSAs.Value(i));
+    if (aDT.IsNull())
+      continue;
+    Handle(XCAFDimTolObjects_DatumObject) aDatObj = new XCAFDimTolObjects_DatumObject();
+    XCAFDimTolObjects_DatumTargetType aType;
+    if (!STEPCAFControl_GDTProperty::GetDatumTargetType(aDT->Description(), aType))
+      continue;
+    aDatObj->SetDatumTargetType(aType);
+    Standard_Boolean isValidDT = Standard_False;
+
+    // Feature for datum target
+    TDF_LabelSequence aDTShapeLabels;
+    Interface_EntityIterator anIter = aGraph.Sharings(aDT);
+    Handle(StepRepr_FeatureForDatumTargetRelationship) aRelationship;
+    for (; anIter.More() && aRelationship.IsNull(); anIter.Next()) {
+      aRelationship = Handle(StepRepr_FeatureForDatumTargetRelationship)::DownCast(anIter.Value());
+    }
+    if (!aRelationship.IsNull()) {
+      Handle(StepRepr_ShapeAspect) aSA = aRelationship->RelatingShapeAspect();
+      Interface_EntityIterator aSAIter = aGraph.Sharings(aSA);
+      for (; aSAIter.More(); aSAIter.Next()) {
+        Handle(StepAP242_GeometricItemSpecificUsage) aGISU = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(aSAIter.Value());
+        if (aGISU.IsNull())
+          continue;
+        for (Standard_Integer i = 1; i <= aGISU->NbIdentifiedItem(); i++) {
+          TDF_Label aShapeL = getShapeLabel(aGISU->IdentifiedItemValue(i), theWS, aSTool);
+          if (!aShapeL.IsNull()) {
+            aDTShapeLabels.Append(aShapeL);
+            isValidDT = Standard_True;
+          }
+        }
+      }
+    }
+
+    if (aType != XCAFDimTolObjects_DatumTargetType_Area && !isValidDT) {
+      // Try another way of feature connection
+      for (anIter.Start(); anIter.More(); anIter.Next()) {
+        Handle(StepAP242_GeometricItemSpecificUsage) aGISU = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIter.Value());
+        if (aGISU.IsNull())
+          continue;
+        for (Standard_Integer i = 1; i <= aGISU->NbIdentifiedItem(); i++) {
+          TDF_Label aShapeL = getShapeLabel(aGISU->IdentifiedItemValue(i), theWS, aSTool);
+          if (!aShapeL.IsNull()) {
+            aDTShapeLabels.Append(aShapeL);
+            isValidDT = Standard_True;
+          }
+        }
+      }
+    }
+
+    if (aType == XCAFDimTolObjects_DatumTargetType_Area) {
+      // Area datum target
+      Interface_EntityIterator anIterDTF = aGraph.Shareds(aDT);
+      Handle(StepAP242_GeometricItemSpecificUsage) aGISU;
+      for (; anIterDTF.More() && aGISU.IsNull(); anIterDTF.Next()) {
+        aGISU = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIterDTF.Value());
+      }
+      Handle(StepRepr_RepresentationItem) anItem;
+      if (aGISU->NbIdentifiedItem() > 0)
+        anItem = aGISU->IdentifiedItemValue(1);
+      if (anItem.IsNull())
+        continue;
+      Standard_Integer anItemIndex = FindShapeIndexForDGT(anItem, theWS);
+      if (anItemIndex > 0) {
+        Handle(Transfer_Binder) aBinder = aTP->MapItem(anItemIndex);
+        TopoDS_Shape anItemShape = TransferBRep::ShapeResult(aBinder);
+        aDatObj->SetDatumTarget(anItemShape);
+        isValidDT = Standard_True;
+      }
+    }
+    else {
+      // Point/line/rectangle/circle datum targets 
+      Interface_EntityIterator anIter = aGraph.Sharings(aDT);
+      Handle(StepRepr_PropertyDefinition) aPD;
+      for (; anIter.More() && aPD.IsNull(); anIter.Next()) {
+        aPD = Handle(StepRepr_PropertyDefinition)::DownCast(anIter.Value());
+      }
+      if (!aPD.IsNull()) {
+        anIter = aGraph.Sharings(aPD);
+        Handle(StepShape_ShapeDefinitionRepresentation) aSDR;
+        for (; anIter.More() && aSDR.IsNull(); anIter.Next()) {
+          aSDR = Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(anIter.Value());
+        }
+        if (!aSDR.IsNull()) {
+          Handle(StepShape_ShapeRepresentationWithParameters) aSRWP
+            = Handle(StepShape_ShapeRepresentationWithParameters)::DownCast(aSDR->UsedRepresentation());
+          if (!aSRWP.IsNull()) {
+            isValidDT = Standard_True;
+            // Collect parameters of datum target
+            for (Standard_Integer i = aSRWP->Items()->Lower(); i <= aSRWP->Items()->Upper(); i++)
+            {
+              if (aSRWP->ItemsValue(i).IsNull())
+                continue;
+              if (aSRWP->ItemsValue(i)->IsKind(STANDARD_TYPE(StepGeom_Axis2Placement3d)))
+              {
+                Handle(StepGeom_Axis2Placement3d) anAx
+                  = Handle(StepGeom_Axis2Placement3d)::DownCast(aSRWP->ItemsValue(i));
+                Handle(Geom_Axis2Placement) anAxis = StepToGeom::MakeAxis2Placement(anAx);
+                aDatObj->SetDatumTargetAxis(anAxis->Ax2());
+              }
+              else if (aSRWP->ItemsValue(i)->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnit)))
+              {
+                Handle(StepRepr_ReprItemAndLengthMeasureWithUnit) aM =
+                  Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)::DownCast(aSRWP->ItemsValue(i));
+                Standard_Real aVal = aM->GetMeasureWithUnit()->ValueComponent();
+                StepBasic_Unit anUnit = aM->GetMeasureWithUnit()->UnitComponent();
+                Standard_Real aFact = 1.;
+                if (anUnit.IsNull())
+                  continue;
+                Handle(StepBasic_NamedUnit) aNU = anUnit.NamedUnit();
+                if (aNU.IsNull())
+                  continue;
+                if (GetLengthConversionFactor(aNU, aFact))
+                  aVal = aVal * aFact;
+                if (aM->Name()->String().IsEqual("target length") ||
+                  aM->Name()->String().IsEqual("target diameter"))
+                  aDatObj->SetDatumTargetLength(aVal);
+                else
+                  aDatObj->SetDatumTargetWidth(aVal);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Create datum target object
+    if (isValidDT) {
+      TDF_Label aDatL = aDGTTool->AddDatum();
+      aDat = XCAFDoc_Datum::Set(aDatL);
+      aDGTTool->SetDatum(aDTShapeLabels, aDatL);
+      aDatObj->SetName(theDat->Identification());
+      aDatObj->SetPosition(thePositionCounter);
+      if (!theXCAFModifiers.IsEmpty())
+        aDatObj->SetModifiers(theXCAFModifiers);
+      if (theXCAFModifWithVal != XCAFDimTolObjects_DatumModifWithValue_None)
+        aDatObj->SetModifierWithValue(theXCAFModifWithVal, theModifValue);
+      aDGTTool->SetDatumToGeomTol(aDatL, theGDTL);
+      aDatObj->IsDatumTarget(Standard_True);
+      aDatObj->SetDatumTargetNumber(aDT->TargetId()->IntegerValue());
+      readAnnotation(aTR, aDT, aDatObj);
+      aDat->SetObject(aDatObj);
+      isExistDatumTarget = Standard_True;
+    }
+  }
+
+  if (aShapeLabels.Length() > 0 || !isExistDatumTarget) {
+    // Create object for datum
+    TDF_Label aDatL = aDGTTool->AddDatum();
+    aDat = XCAFDoc_Datum::Set(aDatL);
+    aDGTTool->SetDatum(aShapeLabels, aDatL);
+    aDatObj->SetName(theDat->Identification());
+    aDatObj->SetPosition(thePositionCounter);
+    if (!theXCAFModifiers.IsEmpty())
+      aDatObj->SetModifiers(theXCAFModifiers);
+    if (theXCAFModifWithVal != XCAFDimTolObjects_DatumModifWithValue_None)
+      aDatObj->SetModifierWithValue(theXCAFModifWithVal, theModifValue);
+    aDGTTool->SetDatumToGeomTol(aDatL, theGDTL);
+    if (aDatObj->GetPresentation().IsNull()) {
+      // Try find annotation connected to datum entity (not right case, according recommended practices)
+      readAnnotation(aTR, theDat, aDatObj);
+    }
+    aDat->SetObject(aDatObj);
+  }
+
+  return Standard_True;
 }
 
 
@@ -2504,8 +2573,6 @@ static Standard_Boolean readDatumsAP242(const Handle(Standard_Transient)& theEnt
                                         const Handle(TDocStd_Document)& theDoc,
                                         const Handle(XSControl_WorkSession)& theWS)
 {
-  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool( theDoc->Main() );
-  Handle(XCAFDoc_DimTolTool) aDGTTool = XCAFDoc_DocumentTool::DimTolTool( theDoc->Main() );
   const Handle(XSControl_TransferReader) &aTR = theWS->TransferReader();
   const Handle(Transfer_TransientProcess) &aTP = aTR->TransientProcess();
   const Interface_Graph& aGraph = aTP->Graph();
@@ -2644,55 +2711,6 @@ static Standard_Boolean readDatumsAP242(const Handle(Standard_Transient)& theEnt
   }
   return Standard_True;
 }
-
-//=======================================================================
-//function : collectShapeAspect
-//purpose  : 
-//=======================================================================
-static void collectShapeAspect(const Handle(StepRepr_ShapeAspect)& theSA,
-                               const Handle(XSControl_WorkSession)& theWS,
-                               NCollection_Sequence<Handle(StepRepr_ShapeAspect)>& theSAs)
-{
-  if (theSA.IsNull())
-    return;
-  Handle(XSControl_TransferReader) aTR = theWS->TransferReader();
-  Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
-  const Interface_Graph& aGraph = aTP->Graph();
-  // Retrieve Shape_Aspect, connected to Representation_Item from Derived_Shape_Aspect
-  if (theSA->IsKind(STANDARD_TYPE(StepRepr_DerivedShapeAspect))) {
-    Interface_EntityIterator anIter = aGraph.Sharings(theSA);
-    Handle(StepRepr_ShapeAspectDerivingRelationship) aSADR = NULL;
-    for (; aSADR.IsNull() && anIter.More(); anIter.Next()) {
-      aSADR = Handle(StepRepr_ShapeAspectDerivingRelationship)::DownCast(anIter.Value());
-    }
-    if (!aSADR.IsNull())
-      collectShapeAspect(aSADR->RelatedShapeAspect(), theWS, theSAs);
-  }
-  else if (theSA->IsKind(STANDARD_TYPE(StepDimTol_DatumFeature))) {
-    theSAs.Append(theSA);
-    return;
-  }
-  else {
-    // Find all children Shape_Aspect
-    Standard_Boolean isSimple = Standard_True;
-    Interface_EntityIterator anIter = aGraph.Sharings(theSA);
-    for (; anIter.More(); anIter.Next()) {
-      if (anIter.Value()->IsKind(STANDARD_TYPE(StepRepr_ShapeAspectRelationship)) &&
-          !anIter.Value()->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation))) {
-        Handle(StepRepr_ShapeAspectRelationship) aSAR =
-          Handle(StepRepr_ShapeAspectRelationship)::DownCast(anIter.Value());
-        if (aSAR->RelatingShapeAspect() == theSA) {
-          collectShapeAspect(aSAR->RelatedShapeAspect(), theWS, theSAs);
-          isSimple = Standard_False;
-        }
-      }
-    }
-    // If not Composite_Shape_Aspect (or subtype) append to sequence.
-    if (isSimple)
-      theSAs.Append(theSA);
-  }
-}
-
 
 //=======================================================================
 //function : createGeomTolObjectInXCAF

@@ -5,8 +5,8 @@ set ref_data {
 
  NbOfDimensions          : 10
  NbOfTolerances          : 13
- NbOfDatumFeature        : 5
- NbOfAttachedDatum       : 26
+ NbOfDatumFeature        : 8
+ NbOfAttachedDatum       : 47
  NbOfDatumTarget         : 0
 
  0:1:1:2:2 Shape.5

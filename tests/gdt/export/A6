@@ -1,7 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename bug27645_nist_ftc_06_asme1_cr3000_rd.prt.stp
-puts "TODO CR26859 ALL:Error : 1 differences with reference data found :"
-puts "TODO CR26859 ALL:Error on writing file"
 
 set ref_data {
 
@@ -14,8 +12,8 @@ set ref_data {
  NbOfTolerances          : 27
   NbOfGTWithModifiers    : 4
   NbOfGTWithMaxTolerance : 0
-  NbOfGTWithDatums       : 3
- NbOfDatumFeature        : 3
- NbOfAttachedDatum       : 3
+  NbOfGTWithDatums       : 24
+ NbOfDatumFeature        : 5
+ NbOfAttachedDatum       : 5
  NbOfDatumTarget         : 0
 }

@@ -20,6 +20,7 @@
 #include <TDataStd_Name.hxx>
 #include <TDataStd_TreeNode.hxx>
 #include <TDF_Attribute.hxx>
+#include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIDIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
@@ -517,6 +518,13 @@ Standard_Boolean XCAFDoc_DimTolTool::GetRefShapeLabel(const TDF_Label& theL,
         }
         return Standard_True;
       }
+      else if (theL.FindAttribute(XCAFDoc::DatumRefGUID(), aGNode) && aGNode->NbFathers() > 0) {
+        for (Standard_Integer i = 1; i <= aGNode->NbFathers(); i++)
+        {
+          theShapeLFirst.Append(aGNode->GetFather(i)->Label());
+        }
+        return Standard_True;
+      }
       else if( theL.FindAttribute(XCAFDoc::DimensionRefFirstGUID(),aGNode) && aGNode->NbFathers() > 0 ) {
         for(Standard_Integer i = 1; i <= aGNode->NbFathers(); i++)
         {
@@ -596,17 +604,12 @@ Standard_Boolean XCAFDoc_DimTolTool::GetRefGeomToleranceLabels(const TDF_Label& 
 Standard_Boolean XCAFDoc_DimTolTool::GetRefDatumLabel(const TDF_Label& theShapeL,
                                                      TDF_LabelSequence& theDatum) const
 {
-  Handle(TDataStd_TreeNode) aNode;
-  if( !theShapeL.FindAttribute(XCAFDoc::DatumRefGUID(),aNode) ||
-       !aNode->HasFirst() ) {
+  Handle(XCAFDoc_GraphNode) aGNode;
+  if (!theShapeL.FindAttribute(XCAFDoc::DatumRefGUID(), aGNode)) {
     return Standard_False;
   }
-  Handle(TDataStd_TreeNode) aFirst = aNode->First();
-  theDatum.Append(aFirst->Label());
-  for(Standard_Integer i = 1; i < aNode->NbChildren(); i++)
-  {
-    aFirst = aFirst->Next();
-    theDatum.Append(aFirst->Label());
+  for (Standard_Integer i = 1; i <= aGNode->NbChildren(); i++) {
+    theDatum.Append(aGNode->GetChild(i)->Label());
   }
   return Standard_True;
 }
@@ -728,15 +731,42 @@ TDF_Label XCAFDoc_DimTolTool::AddDatum()
 //purpose  : 
 //=======================================================================
 
-void XCAFDoc_DimTolTool::SetDatum(const TDF_Label& theL,
+void XCAFDoc_DimTolTool::SetDatum(const TDF_LabelSequence& theL,
                                   const TDF_Label& theDatumL) const
 {
-  // set reference
-  Handle(TDataStd_TreeNode) refNode, mainNode;
-  refNode = TDataStd_TreeNode::Set ( theDatumL, XCAFDoc::DatumRefGUID() );
-  mainNode  = TDataStd_TreeNode::Set ( theL, XCAFDoc::DatumRefGUID() );
-  refNode->Remove();
-  mainNode->Append(refNode);
+  if (!IsDatum(theDatumL))
+  {
+    return;
+  }
+
+  Handle(XCAFDoc_GraphNode) aChGNode;
+  Handle(XCAFDoc_GraphNode) aFGNode;
+
+  if (theDatumL.FindAttribute(XCAFDoc::DatumRefGUID(), aChGNode)) {
+    while (aChGNode->NbFathers() > 0) {
+      aFGNode = aChGNode->GetFather(1);
+      aFGNode->UnSetChild(aChGNode);
+      if (aFGNode->NbChildren() == 0)
+        aFGNode->ForgetAttribute(XCAFDoc::DatumRefGUID());
+    }
+    theDatumL.ForgetAttribute(XCAFDoc::DatumRefGUID());
+  }
+
+  if (!theDatumL.FindAttribute(XCAFDoc::DatumRefGUID(), aChGNode)) {
+    aChGNode = new XCAFDoc_GraphNode;
+    aChGNode = XCAFDoc_GraphNode::Set(theDatumL);
+    aChGNode->SetGraphID(XCAFDoc::DatumRefGUID());
+  }
+  for (Standard_Integer i = theL.Lower(); i <= theL.Upper(); i++)
+  {
+    if (!theL.Value(i).FindAttribute(XCAFDoc::DatumRefGUID(), aFGNode)) {
+      aFGNode = new XCAFDoc_GraphNode;
+      aFGNode = XCAFDoc_GraphNode::Set(theL.Value(i));
+    }
+    aFGNode->SetGraphID(XCAFDoc::DatumRefGUID());
+    aFGNode->SetChild(aChGNode);
+    aChGNode->SetFather(aFGNode);
+  }
 }
 
 //=======================================================================
@@ -753,7 +783,9 @@ void XCAFDoc_DimTolTool::SetDatum(const TDF_Label& L,
   TDF_Label DatumL;
   if(!FindDatum(aName,aDescription,anIdentification,DatumL))
     DatumL = AddDatum(aName,aDescription,anIdentification);
-  SetDatum(L,DatumL);
+  TDF_LabelSequence aLabels;
+  aLabels.Append(L);
+  SetDatum(aLabels,DatumL);
   // set reference
   Handle(XCAFDoc_GraphNode) FGNode;
   Handle(XCAFDoc_GraphNode) ChGNode;
