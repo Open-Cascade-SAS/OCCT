@@ -219,7 +219,7 @@ foreach (USED_ITEM ${USED_EXTERNLIB_AND_TOOLKITS})
         message (STATUS "Info: ${USED_ITEM} from ${PROJECT_NAME} skipped due to it is empty")
       else() # get CSF_ value
         set (CURRENT_CSF ${${USED_ITEM}})
-        if (NOT "${CURRENT_CSF}" STREQUAL "")
+        if (NOT "x${CURRENT_CSF}" STREQUAL "x")
           # prepare a list from a string with whitespaces
           separate_arguments (CURRENT_CSF)
           list (APPEND USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT ${CURRENT_CSF})

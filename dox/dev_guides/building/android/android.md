@@ -10,32 +10,40 @@ The steps on Windows and Ubuntu are similar. There is the only one difference: m
 on Windows and native GNU make on Ubuntu.
 
 Required tools (download and install if it is required):
-  - CMake v3.0+ http://www.cmake.org/cmake/resources/software.html
-  - Cross-compilation toolchain for CMake https://github.com/taka-no-me/android-cmake
+  - CMake v3.7+ http://www.cmake.org/cmake/resources/software.html
   - Android NDK rev.10+ https://developer.android.com/tools/sdk/ndk/index.html
   - GNU Make: MinGW v4.82+ for Windows (http://sourceforge.net/projects/mingw/files/), GNU Make 4.0 for Ubuntu. 
-  
-## Generation of makefiles
+
+## Prerequisites
+
+In toolchain file <i>$CASROOT/adm/templates/android.toolchain.config.cmake</i>:
+
+  - Set CMAKE_ANDROID_NDK variable equal to your Android NDK path.
+  - Set CMAKE_ANDROID_STL_TYPE variable to specify which C++ standard library to use.
+
+The default value of CMAKE_ANDROID_STL_TYPE is <i>gnustl_shared</i> (GNU libstdc++ Shared)
+
+@figure{/dev_guides/building/android/images/android_image001.png}
+
+## Generation of makefiles using CMake GUI tool
 Run GUI tool provided by CMake: cmake-gui
 
 ### Tools configuration
   - Specify the root folder of OCCT (<i>$CASROOT</i>, which contains *CMakelists.txt* file) by clicking **Browse Source**.
   - Specify the location (build folder) for Cmake generated project files by clicking **Browse Build**.
 
-@figure{/dev_guides/building/android/images/android_image001.png}
+@figure{/dev_guides/building/android/images/android_image002.png}
 
 Click **Configure** button. It opens the window with a drop-down list of generators supported by CMake project.
 
-Select "MinGW MakeFiles" item from the list
+Select "MinGW Makefiles" item from the list
   - Choose "Specify toolchain file for cross-compiling"
   - Click "Next"
-@figure{/dev_guides/building/android/images/android_image002.png}
 
-  - Specify a toolchain file at the next dialog by android.toolchain.cmake . It is contained by cross-compilation toolchain for CMake
-  - Click "Finish"
 @figure{/dev_guides/building/android/images/android_image003.png}
 
-If ANDROID_NDK environment variable is not defined in current OS, add cache entry ANDROID_NDK (entry type is PATH) -- path to the NDK folder ("Add Entry" button)
+  - Specify a toolchain file at the next dialog by <i>android.toolchain.config.cmake</i> . It is contained by cross-compilation toolchain for CMake
+  - Click "Finish"
 @figure{/dev_guides/building/android/images/android_image004.png}
 
 If on Windows the message is appeared: "CMake Error: CMake was unable to find a build program corresponding to "MinGW Makefiles"
@@ -46,18 +54,19 @@ specify **CMAKE_MAKE_PROGRAM** to mingw32-make executable.
 ### OCCT Configuration
 
 How to configure OCCT, see "OCCT Configuration" section of @ref occt_dev_guides__building_cmake "Building with CMake"
-taking into account the specific configuration variables for android:
-  - ANDROID_ABI = armeabi-v7a
-  - ANDROID_NATIVE_API_LEVEL = 15
-  - ANDROID_NDK_LAYOUT is equal to CMAKE_BUILD_TYPE variable
-  - **BUILD_MODULE_Draw = OFF**
-
-@figure{/dev_guides/building/android/images/android_image006.png}
 
 ### Generation of makefiles
 
 Click **Generate** button and wait until the generation process is finished. 
-Then makefiles will appear in the build folder (e.g. <i> D:/tmp/occt-android </i>).
+Then makefiles will appear in the build folder (e.g. <i> D:/occt/build-android </i>).
+
+## Generation of makefiles using CMake from the command line
+
+Alternatively one may specify the values without a toolchain file:
+
+> cmake -G "MinGW Makefiles" -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=D:/DevTools/android-ndk-r13b -DCMAKE_ANDROID_STL_TYPE=gnustl_shared -DCMAKE_SYSTEM_VERSION=15 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_MAKE_PROGRAM=D:/DevTools/MinGW/bin/mingw32-make.exe -D3RDPARTY_DIR=D:/occt-3rdparty D:/occt
+
+@figure{/dev_guides/building/android/images/android_image006.png}
 
 ## Building makefiles of OCCT
 

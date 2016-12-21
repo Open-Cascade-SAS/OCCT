@@ -60,7 +60,9 @@ Once the source and build directories are selected, "Configure" button should be
 
 @figure{/dev_guides/building/cmake/images/cmake_image002.png}
 
-To build OCCT for Universal Windows Platform (UWP) specify the path to toolchain file for cross-compiling <i>d:/occt/adm/templates/uwp.toolchain.config.cmake</i>.
+To build OCCT for **Universal Windows Platform (UWP)** specify the path to toolchain file for cross-compiling <i>d:/occt/adm/templates/uwp.toolchain.config.cmake</i>.
+
+Alternatively, if you are using CMake from the command line add options -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 .
 
 **Note**: Universal Windows Platform (UWP) is supported only on "Visual Studio 14 2015". File <i>d:/occt/samples/xaml/ReadMe.md</i> describes the building procedure of XAML (UWP) sample.
 
