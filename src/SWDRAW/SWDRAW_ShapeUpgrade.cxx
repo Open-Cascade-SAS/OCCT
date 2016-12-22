@@ -1288,8 +1288,9 @@ static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, c
 {
   if (n < 3)
   {
-    di << "Use unifysamedom result shape [-f] [-e] [+b] [-i] [-t val] [-a val]\n";
+    di << "Use unifysamedom result shape [s1 s2 ...] [-f] [-e] [+b] [+i] [-t val] [-a val]\n";
     di << "options:\n";
+    di << "s1 s2 ... to keep the given edges during unification of faces\n";
     di << "-f to switch off 'unify-faces' mode \n";
     di << "-e to switch off 'unify-edges' mode\n";
     di << "+b to switch on 'concat bspline' mode\n";
@@ -1311,33 +1312,42 @@ static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, c
   Standard_Boolean isAllowInternal = Standard_False;
   Standard_Real aLinTol = Precision::Confusion();
   Standard_Real aAngTol = Precision::Angular();
+  TopoDS_Shape aKeepShape;
+  TopTools_MapOfShape aMapOfShapes;
 
   if (n > 3)
     for ( int i = 3; i < n; i++ ) 
     {
-      if ( !strcmp(a[i], "-f")) 
-        anUFaces = Standard_False;
-      else if (!strcmp(a[i], "-e"))
-        anUEdges = Standard_False;
-      else if (!strcmp(a[i], "+b"))
-        anConBS = Standard_True;
-      else if (!strcmp(a[i], "+i"))
-        isAllowInternal = Standard_True;
-      else if (!strcmp(a[i], "-t") || !strcmp(a[i], "-a"))
-      {
-        if (++i < n)
+      aKeepShape = DBRep::Get(a[i]);
+      if (!aKeepShape.IsNull()) {
+        aMapOfShapes.Add(aKeepShape);
+      }
+      else {
+        if ( !strcmp(a[i], "-f")) 
+          anUFaces = Standard_False;
+        else if (!strcmp(a[i], "-e"))
+          anUEdges = Standard_False;
+        else if (!strcmp(a[i], "+b"))
+          anConBS = Standard_True;
+        else if (!strcmp(a[i], "+i"))
+          isAllowInternal = Standard_True;
+        else if (!strcmp(a[i], "-t") || !strcmp(a[i], "-a"))
         {
-          (a[i-1][1] == 't' ? aLinTol : aAngTol) = Draw::Atof(a[i]);
-        }
-        else
-        {
-          di << "value expected after " << a[i-1];
-          return 1;
+          if (++i < n)
+          {
+            (a[i-1][1] == 't' ? aLinTol : aAngTol) = Draw::Atof(a[i]);
+          }
+          else
+          {
+            di << "value expected after " << a[i-1];
+            return 1;
+          }
         }
       }
     }
 
   Unifier().Initialize(aShape, anUEdges, anUFaces, anConBS);
+  Unifier().KeepShapes(aMapOfShapes);
   Unifier().AllowInternalEdges(isAllowInternal);
   Unifier().SetLinearTolerance(aLinTol);
   Unifier().SetAngularTolerance(aAngTol);
@@ -1576,7 +1586,7 @@ Standard_Integer reshape(Draw_Interpretor& di,
   theCommands.Add ("removeloc","result shape [remove_level(see ShapeEnum)]",__FILE__,removeloc,g);
   
   theCommands.Add ("unifysamedom",
-                   "unifysamedom result shape [-f] [-e] [+b] [-i] [-t val] [-a val]", __FILE__,unifysamedom,g);
+                   "unifysamedom result shape [s1 s2 ...] [-f] [-e] [+b] [+i] [-t val] [-a val]", __FILE__,unifysamedom,g);
   
   theCommands.Add ("unifysamedomgen",
                    "unifysamedomgen newshape oldshape : get new shape generated "

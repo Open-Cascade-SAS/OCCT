@@ -25,6 +25,7 @@
 #include <MMgt_TShared.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 class ShapeBuild_ReShape;
 class TopoDS_Shape;
 
@@ -62,6 +63,18 @@ public:
   //! topology. Without this flag merging through multi connected edge
   //! is forbidden. Default value is false.
   Standard_EXPORT void AllowInternalEdges (const Standard_Boolean theValue);
+
+  //! Sets the shape for avoid merging of the faces in given places.
+  //! This shape can be vertex or edge.
+  //! If shape is vertex it forbids merging of connected edges.
+  //! If shape is edge it forbids merging of connected faces.
+  Standard_EXPORT void KeepShape(const TopoDS_Shape& theShape);
+
+  //! Sets the map of shapes for avoid merging of the faces in given places
+  //! These shapes can be vertexes or edges.
+  //! If shape is vertex it forbids merging of connected edges.
+  //! If shape is edge it forbids merging of connected faces.
+  Standard_EXPORT void KeepShapes(const TopTools_MapOfShape& theShapes);
 
   //! Sets the linear tolerance. Default value is Precision::Confusion().
   void SetLinearTolerance(const Standard_Real theValue)
@@ -120,7 +133,8 @@ private:
   Standard_Boolean myAllowInternal;
   TopoDS_Shape myShape;
   Handle(ShapeBuild_ReShape) myContext;
-  TopTools_DataMapOfShapeShape myOldShapes; 
+  TopTools_DataMapOfShapeShape myOldShapes;
+  TopTools_MapOfShape myKeepShapes;
 
 
 };
