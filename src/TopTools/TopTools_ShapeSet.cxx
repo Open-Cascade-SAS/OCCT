@@ -380,7 +380,7 @@ void  TopTools_ShapeSet::Dump(Standard_OStream& OS)const
   OS << "\nDump of " << nbShapes << " TShapes";
   OS << "\n\n-----------------\n\n";
 
-  OS << "Flags : Free, Modified, Checked, Orientable, Closed, Infinite, Convex";
+  OS << "Flags : Free, Modified, Checked, Orientable, Closed, Infinite, Convex, Locked";
   OS << "\n\n";
   
   for (i = nbShapes; i >= 1; i--) {
@@ -399,6 +399,7 @@ void  TopTools_ShapeSet::Dump(Standard_OStream& OS)const
     OS << (S.Closed()     ? 1 : 0);
     OS << (S.Infinite()   ? 1 : 0);
     OS << (S.Convex()     ? 1 : 0);
+    OS << (S.Locked()     ? 1 : 0);
     OS << " " << (void*) &(*S.TShape()) <<"\n";
 
     // sub-shapes
