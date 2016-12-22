@@ -3428,38 +3428,6 @@ static int VExport(Draw_Interpretor& di, Standard_Integer argc, const char** arg
   return 0;
 }
 
-//==============================================================================
-//function : VColorScale
-//purpose  : representation color scale
-//==============================================================================
-
-static Standard_Boolean checkColor (const TCollection_AsciiString& theRed,
-                                    const TCollection_AsciiString& theGreen,
-                                    const TCollection_AsciiString& theBlue,
-                                                    Standard_Real& theRedValue,
-                                                    Standard_Real& theGreenValue,
-                                                    Standard_Real& theBlueValue)
-{
-  if (!theRed.IsRealValue()
-   || !theGreen.IsRealValue()
-   || !theBlue.IsRealValue())
-  {
-    std::cout << "Error: RGB color values should be real!\n";
-    return Standard_True;
-  }
-  theRedValue = theRed    .RealValue();
-  theGreenValue = theGreen.RealValue();
-  theBlueValue = theBlue  .RealValue();
-  if (theRedValue < 0.0 || theRedValue > 1.0
-   || theGreenValue < 0.0 || theGreenValue > 1.0
-   || theBlueValue < 0.0 || theBlueValue > 1.0)
-  {
-    std::cout << "Error: RGB color values should be within range 0..1!\n";
-    return Standard_True;
-  }
-  return Standard_False;
-}
-
 static int VColorScale (Draw_Interpretor& theDI,
                         Standard_Integer  theArgNb,
                         const char**      theArgVec)
@@ -3477,57 +3445,35 @@ static int VColorScale (Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(AIS_ColorScale) aCS;
-  // find object
-  Handle(AIS_InteractiveObject) anIObj;
+  Handle(AIS_ColorScale) aColorScale;
   if (GetMapOfAIS().IsBound2 (theArgVec[1]))
   {
-    aCS = Handle(AIS_ColorScale)::DownCast (GetMapOfAIS().Find2 (theArgVec[1]));
-    if (aCS.IsNull())
+    // find existing object
+    aColorScale = Handle(AIS_ColorScale)::DownCast (GetMapOfAIS().Find2 (theArgVec[1]));
+    if (aColorScale.IsNull())
     {
       std::cout << "Error: object '" << theArgVec[1] << "'is already defined and is not a color scale!\n";
       return 1;
     }
   }
-  else
-  {
-    aCS = new AIS_ColorScale();
-    GetMapOfAIS().Bind (aCS,theArgVec[1]);
-  }
-
-  if (aCS->ZLayer() != Graphic3d_ZLayerId_TopOSD)
-  {
-    aCS->SetZLayer (Graphic3d_ZLayerId_TopOSD);
-  }
-  if (aCS->TransformPersistence().IsNull()
-   || aCS->TransformPersistence()->Mode() != Graphic3d_TMF_2d)
-  {
-    aContext->SetTransformPersistence (aCS, new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_LOWER));
-  }
-
-  Standard_Real                   aMinRange    = aCS->GetMin();
-  Standard_Real                   aMaxRange    = aCS->GetMax();
-  Standard_Integer                aBreadth     = aCS->GetBreadth();
-  Standard_Integer                aHeight      = aCS->GetHeight();
-  Standard_Integer                aNbIntervals = aCS->GetNumberOfIntervals();
-  Standard_Integer                aTextHeight  = aCS->GetTextHeight();
-  Aspect_TypeOfColorScalePosition aLabPosition = aCS->GetLabelPosition();
-  Standard_Integer                aPosX = aCS->GetXPosition();
-  Standard_Integer                aPosY = aCS->GetYPosition();
-
-  ViewerTest_AutoUpdater anUpdateTool (aContext, aView);
 
   if (theArgNb <= 2)
   {
+    if (aColorScale.IsNull())
+    {
+      std::cout << "Syntax error: colorscale with a given name does not exist.\n";
+      return 1;
+    }
+
     theDI << "Color scale parameters for '"<< theArgVec[1] << "':\n"
-          << "Min range: " << aMinRange << "\n"
-          << "Max range: " << aMaxRange << "\n"
-          << "Number of intervals: " << aNbIntervals << "\n"
-          << "Text height: " << aTextHeight << "\n"
-          << "Color scale position: " << aPosX <<" "<< aPosY<< "\n"
-          << "Color scale title: " << aCS->GetTitle() << "\n"
+          << "Min range: "            << aColorScale->GetMin() << "\n"
+          << "Max range: "            << aColorScale->GetMax() << "\n"
+          << "Number of intervals: "  << aColorScale->GetNumberOfIntervals() << "\n"
+          << "Text height: "          << aColorScale->GetTextHeight() << "\n"
+          << "Color scale position: " << aColorScale->GetXPosition() << " " << aColorScale->GetYPosition() << "\n"
+          << "Color scale title: "    << aColorScale->GetTitle() << "\n"
           << "Label position: ";
-    switch (aLabPosition)
+    switch (aColorScale->GetLabelPosition())
     {
       case Aspect_TOCSP_NONE:
         theDI << "None\n";
@@ -3545,6 +3491,14 @@ static int VColorScale (Draw_Interpretor& theDI,
     return 0;
   }
 
+  if (aColorScale.IsNull())
+  {
+    aColorScale = new AIS_ColorScale();
+    aColorScale->SetZLayer (Graphic3d_ZLayerId_TopOSD);
+    aContext->SetTransformPersistence (aColorScale, new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_LOWER));
+  }
+
+  ViewerTest_AutoUpdater anUpdateTool (aContext, aView);
   for (Standard_Integer anArgIter = 2; anArgIter < theArgNb; ++anArgIter)
   {
     Standard_CString        anArg = theArgVec[anArgIter];
@@ -3562,28 +3516,23 @@ static int VColorScale (Draw_Interpretor& theDI,
         return 1;
       }
 
-      TCollection_AsciiString anArg1 (theArgVec[++anArgIter]);
-      TCollection_AsciiString anArg2 (theArgVec[++anArgIter]);
-      TCollection_AsciiString anArg3 (theArgVec[++anArgIter]);
-      if (!anArg1.IsRealValue())
+      const TCollection_AsciiString aRangeMin    (theArgVec[++anArgIter]);
+      const TCollection_AsciiString aRangeMax    (theArgVec[++anArgIter]);
+      const TCollection_AsciiString aNbIntervals (theArgVec[++anArgIter]);
+      if (!aRangeMin.IsRealValue()
+       || !aRangeMax.IsRealValue())
       {
-        std::cout << "Error: the minRange value should be real!\n";
+        std::cout << "Error: the range values should be real!\n";
         return 1;
       }
-      else if (!anArg2.IsRealValue())
-      {
-        std::cout << "Error: the maxRange value should be real!\n";
-        return 1;
-      }
-      else if (!anArg3.IsIntegerValue())
+      else if (!aNbIntervals.IsIntegerValue())
       {
         std::cout << "Error: the number of intervals should be integer!\n";
         return 1;
       }
 
-      aMinRange    = anArg1.RealValue();
-      aMaxRange    = anArg2.RealValue();
-      aNbIntervals = anArg3.IntegerValue();
+      aColorScale->SetRange (aRangeMin.RealValue(), aRangeMax.RealValue());
+      aColorScale->SetNumberOfIntervals (aNbIntervals.IntegerValue());
     }
     else if (aFlag == "-font")
     {
@@ -3599,7 +3548,7 @@ static int VColorScale (Draw_Interpretor& theDI,
         return 1;
       }
 
-      aTextHeight = aFontArg.IntegerValue();
+      aColorScale->SetTextHeight (aFontArg.IntegerValue());
       anArgIter += 1;
     }
     else if (aFlag == "-textpos")
@@ -3609,8 +3558,10 @@ static int VColorScale (Draw_Interpretor& theDI,
         std::cout << "Error: wrong syntax at argument '" << anArg << "'!\n";
         return 1;
       }
+
       TCollection_AsciiString aTextPosArg(theArgVec[++anArgIter]);
       aTextPosArg.LowerCase();
+      Aspect_TypeOfColorScalePosition aLabPosition = Aspect_TOCSP_NONE;
       if (aTextPosArg == "none")
       {
         aLabPosition = Aspect_TOCSP_NONE;
@@ -3632,6 +3583,7 @@ static int VColorScale (Draw_Interpretor& theDI,
         std::cout << "Error: unknown position '" << aTextPosArg << "'!\n";
         return 1;
       }
+      aColorScale->SetLabelPosition (aLabPosition);
     }
     else if (aFlag == "-logarithmic"
           || aFlag == "-log")
@@ -3641,13 +3593,71 @@ static int VColorScale (Draw_Interpretor& theDI,
         std::cout << "Error: wrong syntax at argument '" << anArg << "'!\n";
         return 1;
       }
+
       Standard_Boolean IsLog;
       if (!ViewerTest::ParseOnOff(theArgVec[++anArgIter], IsLog))
       {
         std::cout << "Error: wrong syntax at argument '" << anArg << "'!\n";
         return 1;
       }
-      aCS->SetLogarithmic (IsLog);
+      aColorScale->SetLogarithmic (IsLog);
+    }
+    else if (aFlag == "-huerange"
+          || aFlag == "-hue")
+    {
+      if (anArgIter + 2 >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      const Standard_Real aHueMin = Draw::Atof (theArgVec[++anArgIter]);
+      const Standard_Real aHueMax = Draw::Atof (theArgVec[++anArgIter]);
+      aColorScale->SetHueRange (aHueMin, aHueMax);
+    }
+    else if (aFlag == "-colorrange")
+    {
+      Quantity_Color aColorMin, aColorMax;
+      Standard_Integer aNbParsed1 = ViewerTest::ParseColor (theArgNb  - (anArgIter + 1),
+                                                            theArgVec + (anArgIter + 1),
+                                                            aColorMin);
+      anArgIter += aNbParsed1;
+      Standard_Integer aNbParsed2 = ViewerTest::ParseColor (theArgNb  - (anArgIter + 1),
+                                                            theArgVec + (anArgIter + 1),
+                                                            aColorMax);
+      anArgIter += aNbParsed2;
+      if (aNbParsed1 == 0
+       || aNbParsed2 == 0)
+      {
+        std::cerr << "Error: wrong syntax at '" << anArg << "'\n";
+        return 1;
+      }
+
+      aColorScale->SetColorRange (aColorMin, aColorMax);
+    }
+    else if (aFlag == "-reversed"
+          || aFlag == "-inverted"
+          || aFlag == "-topdown"
+          || aFlag == "-bottomup")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff(theArgVec[anArgIter + 1], toEnable))
+      {
+        ++anArgIter;
+      }
+      aColorScale->SetReversed ((aFlag == "-topdown") ? !toEnable : toEnable);
+    }
+    else if (aFlag == "-smooth"
+          || aFlag == "-smoothtransition")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+      {
+        ++anArgIter;
+      }
+      aColorScale->SetSmoothTransition (toEnable);
     }
     else if (aFlag == "-xy")
     {
@@ -3657,20 +3667,20 @@ static int VColorScale (Draw_Interpretor& theDI,
         return 1;
       }
 
-      TCollection_AsciiString aX (theArgVec[++anArgIter]);
-      TCollection_AsciiString aY (theArgVec[++anArgIter]);
-      if (!aX.IsIntegerValue()
-       || !aY.IsIntegerValue())
+      const TCollection_AsciiString anX (theArgVec[++anArgIter]);
+      const TCollection_AsciiString anY (theArgVec[++anArgIter]);
+      if (!anX.IsIntegerValue()
+       || !anY.IsIntegerValue())
       {
         std::cout << "Error: coordinates should be integer values!\n";
         return 1;
       }
 
-      aPosX = aX.IntegerValue();
-      aPosY = aY.IntegerValue();
+      aColorScale->SetPosition (anX.IntegerValue(), anY.IntegerValue());
     }
     else if (aFlag == "-width"
-          || aFlag == "-w")
+          || aFlag == "-w"
+          || aFlag == "-breadth")
     {
       if (anArgIter + 1 >= theArgNb)
       {
@@ -3678,14 +3688,13 @@ static int VColorScale (Draw_Interpretor& theDI,
         return 1;
       }
 
-      TCollection_AsciiString aW (theArgVec[++anArgIter]);
-      if (!aW.IsIntegerValue())
+      const TCollection_AsciiString aBreadth (theArgVec[++anArgIter]);
+      if (!aBreadth.IsIntegerValue())
       {
         std::cout << "Error: a width should be an integer value!\n";
         return 1;
       }
-
-      aBreadth = aW.IntegerValue();
+      aColorScale->SetBreadth (aBreadth.IntegerValue());
     }
     else if (aFlag == "-height"
           || aFlag == "-h")
@@ -3696,75 +3705,56 @@ static int VColorScale (Draw_Interpretor& theDI,
         return 1;
       }
 
-      TCollection_AsciiString aH (theArgVec[++anArgIter]);
-      if (!aH.IsIntegerValue())
+      const TCollection_AsciiString aHeight (theArgVec[++anArgIter]);
+      if (!aHeight.IsIntegerValue())
       {
         std::cout << "Error: a width should be an integer value!\n";
         return 1;
       }
-
-      aHeight = aH.IntegerValue();
+      aColorScale->SetHeight (aHeight.IntegerValue());
     }
     else if (aFlag == "-color")
     {
-      if (aCS->GetColorType() != Aspect_TOCSD_USER)
+      if (aColorScale->GetColorType() != Aspect_TOCSD_USER)
       {
         std::cout << "Error: wrong color type! Call -colors before to set user-specified colors!\n";
         return 1;
       }
-
-      Quantity_NameOfColor aColorName;
-      if (anArgIter + 4 >= theArgNb)
+      else if (anArgIter + 2 >= theArgNb)
       {
-        if (anArgIter + 2 >= theArgNb)
-        {
-          std::cout << "Error: wrong syntax at argument '" << anArg << "'!\n";
-          return 1;
-        }
-        else if (!Quantity_Color::ColorFromName (theArgVec[anArgIter + 2], aColorName))
-        {
-          std::cout << "Error: wrong color name: '" << theArgVec[anArgIter + 2] << "' !\n";
-          return 1;
-        }
+        std::cout << "Error: wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
       }
 
-      TCollection_AsciiString anInd (theArgVec[anArgIter + 1]);
+      const TCollection_AsciiString anInd (theArgVec[++anArgIter]);
       if (!anInd.IsIntegerValue())
       {
         std::cout << "Error: Index value should be integer!\n";
         return 1;
       }
-
-      Standard_Integer anIndex = anInd.IntegerValue();
-      if (anIndex <= 0 || anIndex > aNbIntervals)
+      const Standard_Integer anIndex = anInd.IntegerValue();
+      if (anIndex <= 0 || anIndex > aColorScale->GetNumberOfIntervals())
       {
-        std::cout << "Error: Index value should be within range 1.." << aNbIntervals <<"!\n";
+        std::cout << "Error: Index value should be within range 1.." << aColorScale->GetNumberOfIntervals() <<"!\n";
         return 1;
       }
 
-      if (Quantity_Color::ColorFromName (theArgVec[anArgIter + 2], aColorName))
+      Quantity_Color aColor;
+      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - (anArgIter + 1),
+                                                           theArgVec + (anArgIter + 1),
+                                                           aColor);
+      if (aNbParsed == 0)
       {
-        aCS->SetIntervalColor (Quantity_Color (aColorName), anIndex);
-        aCS->SetColorType (Aspect_TOCSD_USER);
-        anArgIter += 2;
-        continue;
-      }
-
-      TCollection_AsciiString aRed   (theArgVec[anArgIter + 2]);
-      TCollection_AsciiString aGreen (theArgVec[anArgIter + 3]);
-      TCollection_AsciiString aBlue  (theArgVec[anArgIter + 4]);
-      Standard_Real aRedValue,aGreenValue, aBlueValue;
-      if(checkColor (aRed, aGreen, aBlue, aRedValue, aGreenValue, aBlueValue))
-      {
+        std::cerr << "Error: wrong syntax at '" << anArg << "'\n";
         return 1;
       }
-      aCS->SetIntervalColor (Quantity_Color (aRedValue, aGreenValue, aBlueValue, Quantity_TOC_RGB), anIndex);
-      aCS->SetColorType (Aspect_TOCSD_USER);
-      anArgIter += 4;
+      aColorScale->SetIntervalColor (aColor, anIndex);
+      aColorScale->SetColorType (Aspect_TOCSD_USER);
+      anArgIter += aNbParsed;
     }
     else if (aFlag == "-label")
     {
-      if (aCS->GetColorType() != Aspect_TOCSD_USER)
+      if (aColorScale->GetColorType() != Aspect_TOCSD_USER)
       {
         std::cout << "Error: wrong label type! Call -labels before to set user-specified labels!\n";
         return 1;
@@ -3776,90 +3766,115 @@ static int VColorScale (Draw_Interpretor& theDI,
       }
 
       Standard_Integer anIndex = Draw::Atoi (theArgVec[anArgIter + 1]);
-      if (anIndex <= 0 || anIndex > aNbIntervals+1)
+      if (anIndex <= 0 || anIndex > aColorScale->GetNumberOfIntervals() + 1)
       {
-        std::cout << "Error: Index value should be within range 1.." << aNbIntervals+1 <<"!\n";
+        std::cout << "Error: Index value should be within range 1.." << aColorScale->GetNumberOfIntervals() + 1 <<"!\n";
         return 1;
       }
 
       TCollection_ExtendedString aText (theArgVec[anArgIter + 2]);
-      aCS->SetLabel     (aText, anIndex);
-      aCS->SetLabelType (Aspect_TOCSD_USER);
+      aColorScale->SetLabel     (aText, anIndex);
+      aColorScale->SetLabelType (Aspect_TOCSD_USER);
       anArgIter += 2;
+    }
+    else if (aFlag == "-labelat"
+          || aFlag == "-labat"
+          || aFlag == "-labelatborder"
+          || aFlag == "-labatborder"
+          || aFlag == "-labelatcenter"
+          || aFlag == "-labatcenter")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (aFlag == "-labelat"
+       || aFlag == "-labat")
+      {
+        Standard_Integer aLabAtBorder = -1;
+        if (++anArgIter >= theArgNb)
+        {
+          TCollection_AsciiString anAtBorder (theArgVec[anArgIter]);
+          anAtBorder.LowerCase();
+          if (anAtBorder == "border")
+          {
+            aLabAtBorder = 1;
+          }
+          else if (anAtBorder == "center")
+          {
+            aLabAtBorder = 0;
+          }
+        }
+        if (aLabAtBorder == -1)
+        {
+          std::cout << "Syntax error at argument '" << anArg << "'!\n";
+          return 1;
+        }
+        toEnable = (aLabAtBorder == 1);
+      }
+      else if (anArgIter + 1 < theArgNb
+            && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+      {
+        ++anArgIter;
+      }
+      aColorScale->SetLabelAtBorder (aFlag == "-labelatcenter"
+                                  || aFlag == "-labatcenter"
+                                   ? !toEnable
+                                   :  toEnable);
     }
     else if (aFlag == "-colors")
     {
       Aspect_SequenceOfColor aSeq;
-      if (anArgIter + aNbIntervals + 1 > theArgNb)
+      for (;;)
       {
-        std::cout << "Error: not enough arguments! You should provide color names or RGB color values for every interval of the "
-                  << aNbIntervals << " intervals\n";
-        return 1;
-      }
-
-      Standard_Integer aColorIter = anArgIter + 1;
-      while (aColorIter < theArgNb)
-      {
-        if (theArgVec[aColorIter][0] == '-')
+        Quantity_Color aColor;
+        Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - (anArgIter + 1),
+                                                             theArgVec + (anArgIter + 1),
+                                                             aColor);
+        if (aNbParsed == 0)
         {
           break;
         }
-
-        else if (theArgVec[aColorIter][0] >= 97
-              && theArgVec[aColorIter][0] <= 122)
-        {
-          Quantity_NameOfColor aColorName;
-          if (!Quantity_Color::ColorFromName (theArgVec[aColorIter], aColorName))
-          {
-            std::cout << "Error: wrong color name: " << theArgVec[aColorIter] << " !\n";
-            return 1;
-          }
-          aSeq.Append (Quantity_Color (aColorName));
-          aColorIter++;
-          anArgIter++;
-        }
-        else
-        {
-          TCollection_AsciiString aRed   (theArgVec[aColorIter]);
-          TCollection_AsciiString aGreen (theArgVec[aColorIter + 1]);
-          TCollection_AsciiString aBlue  (theArgVec[aColorIter + 2]);
-          Standard_Real aRedValue,aGreenValue, aBlueValue;
-          if (checkColor (aRed, aGreen, aBlue, aRedValue, aGreenValue, aBlueValue))
-          {
-            return 1;
-          }
-          aSeq.Append (Quantity_Color (aRedValue, aGreenValue, aBlueValue, Quantity_TOC_RGB));
-          aColorIter += 3;
-          anArgIter += 3;
-        }
+        anArgIter += aNbParsed;
+        aSeq.Append (aColor);
       }
-      if (aSeq.Length() < aNbIntervals)
+      if (aSeq.Length() != aColorScale->GetNumberOfIntervals())
       {
         std::cout << "Error: not enough arguments! You should provide color names or RGB color values for every interval of the "
-                  << aNbIntervals << " intervals\n";
+                  << aColorScale->GetNumberOfIntervals() << " intervals\n";
         return 1;
       }
 
-      aCS->SetColors    (aSeq);
-      aCS->SetColorType (Aspect_TOCSD_USER);
+      aColorScale->SetColors    (aSeq);
+      aColorScale->SetColorType (Aspect_TOCSD_USER);
     }
-    else if (aFlag == "-labels")
+    else if (aFlag == "-labels"
+          || aFlag == "-freelabels")
     {
-      if (anArgIter + aNbIntervals + 1 >= theArgNb)
+      if (anArgIter + 1 >= theArgNb)
       {
-        std::cout << "Error: not enough arguments! You should provide " << (aNbIntervals + 1)
-                  << " text labels for " << aNbIntervals << " intervals.\n";
+        std::cout << "Syntax error at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      Standard_Integer aNbLabels = aColorScale->IsLabelAtBorder()
+                                 ? aColorScale->GetNumberOfIntervals() + 1
+                                 : aColorScale->GetNumberOfIntervals();
+      if (aFlag == "-freelabels")
+      {
+        ++anArgIter;
+        aNbLabels = Draw::Atoi (theArgVec[anArgIter]);
+      }
+      if (anArgIter + aNbLabels >= theArgNb)
+      {
+        std::cout << "Error: not enough arguments! " << aNbLabels << " text labels are expected.\n";
         return 1;
       }
 
       TColStd_SequenceOfExtendedString aSeq;
-      for (int aLabelIter = anArgIter + 1; aLabelIter <= anArgIter + aNbIntervals + 1; aLabelIter += 1)
+      for (Standard_Integer aLabelIter = 0; aLabelIter < aNbLabels; ++aLabelIter)
       {
-        aSeq.Append (TCollection_ExtendedString (theArgVec[aLabelIter]));
+        aSeq.Append (TCollection_ExtendedString (theArgVec[++anArgIter]));
       }
-      aCS->SetLabels (aSeq);
-      aCS->SetLabelType (Aspect_TOCSD_USER);
-      anArgIter += aSeq.Length();
+      aColorScale->SetLabels (aSeq);
+      aColorScale->SetLabelType (Aspect_TOCSD_USER);
     }
     else if (aFlag == "-title")
     {
@@ -3874,29 +3889,31 @@ static int VColorScale (Draw_Interpretor& theDI,
       {
         TCollection_AsciiString aSecondArg (theArgVec[anArgIter + 2]);
         aSecondArg.LowerCase();
+      Standard_DISABLE_DEPRECATION_WARNINGS
         if (aSecondArg == "none")
         {
-          aCS->SetTitlePosition (Aspect_TOCSP_NONE);
+          aColorScale->SetTitlePosition (Aspect_TOCSP_NONE);
           isTwoArgs = Standard_True;
         }
         else if (aSecondArg == "left")
         {
-          aCS->SetTitlePosition (Aspect_TOCSP_LEFT);
+          aColorScale->SetTitlePosition (Aspect_TOCSP_LEFT);
           isTwoArgs = Standard_True;
         }
         else if (aSecondArg == "right")
         {
-          aCS->SetTitlePosition (Aspect_TOCSP_RIGHT);
+          aColorScale->SetTitlePosition (Aspect_TOCSP_RIGHT);
           isTwoArgs = Standard_True;
         }
         else if (aSecondArg == "center")
         {
-          aCS->SetTitlePosition (Aspect_TOCSP_CENTER);
+          aColorScale->SetTitlePosition (Aspect_TOCSP_CENTER);
           isTwoArgs = Standard_True;
         }
+      Standard_ENABLE_DEPRECATION_WARNINGS
       }
 
-      aCS->SetTitle (theArgVec[anArgIter + 1]);
+      aColorScale->SetTitle (theArgVec[anArgIter + 1]);
       if (isTwoArgs)
       {
         anArgIter += 1;
@@ -3906,17 +3923,15 @@ static int VColorScale (Draw_Interpretor& theDI,
     else if (aFlag == "-demoversion"
           || aFlag == "-demo")
     {
-      aPosX        = 0;
-      aPosY        = 0;
-      aTextHeight  = 16;
-      aMinRange    = 0.0;
-      aMaxRange    = 100;
-      aNbIntervals = 10;
-      aBreadth     = 0;
-      aHeight      = 0;
-      aLabPosition = Aspect_TOCSP_RIGHT;
-      aCS->SetColorType (Aspect_TOCSD_AUTO);
-      aCS->SetLabelType (Aspect_TOCSD_AUTO);
+      aColorScale->SetPosition (0, 0);
+      aColorScale->SetTextHeight (16);
+      aColorScale->SetRange (0.0, 100.0);
+      aColorScale->SetNumberOfIntervals (10);
+      aColorScale->SetBreadth (0);
+      aColorScale->SetHeight  (0);
+      aColorScale->SetLabelPosition (Aspect_TOCSP_RIGHT);
+      aColorScale->SetColorType (Aspect_TOCSD_AUTO);
+      aColorScale->SetLabelType (Aspect_TOCSD_AUTO);
     }
     else if (aFlag == "-findcolor")
     {
@@ -3935,7 +3950,7 @@ static int VColorScale (Draw_Interpretor& theDI,
       }
 
       Quantity_Color aColor;
-      aCS->FindColor (anArg1.RealValue(), aColor);
+      aColorScale->FindColor (anArg1.RealValue(), aColor);
       theDI << Quantity_Color::StringName (aColor.Name());
       return 0;
     }
@@ -3945,29 +3960,19 @@ static int VColorScale (Draw_Interpretor& theDI,
       return 1;
     }
   }
-  if (!aBreadth || !aHeight)
-  {
-    Standard_Integer aWinWidth, aWinHeight;
-    aView->Window()->Size (aWinWidth, aWinHeight);
-    if (!aBreadth)
-    {
-      aBreadth = aWinWidth;
-    }
-    if (!aHeight)
-    {
-      aHeight = aWinHeight;
-    }
-  }
-  aCS->SetSize              (aBreadth, aHeight);
-  aCS->SetPosition          (aPosX, aPosY);
-  aCS->SetTextHeight        (aTextHeight);
-  aCS->SetRange             (aMinRange, aMaxRange);
-  aCS->SetNumberOfIntervals (aNbIntervals);
-  aCS->SetLabelPosition     (aLabPosition);
-//  aCS->SetColor             (aView->BackgroundColor().Invert());
-  aCS->SetToUpdate();
-  aContext->Display (aCS);
 
+  Standard_Integer aWinWidth = 0, aWinHeight = 0;
+  aView->Window()->Size (aWinWidth, aWinHeight);
+  if (aColorScale->GetBreadth() == 0)
+  {
+    aColorScale->SetBreadth (aWinWidth);
+  }
+  if (aColorScale->GetHeight() == 0)
+  {
+    aColorScale->SetHeight (aWinHeight);
+  }
+  aColorScale->SetToUpdate();
+  ViewerTest::Display (theArgVec[1], aColorScale, Standard_False, Standard_True);
   return 0;
 }
 
@@ -10341,22 +10346,35 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     " : notice that EMF format requires patched gl2ps",
     __FILE__,VExport,group);
   theCommands.Add("vcolorscale",
-    "vcolorscale     : vcolorscale name [-range RangeMin = 0 RangeMax = 100 Intervals = 10 -font HeightFont = 16  -textpos "
-    "Position = left -xy X = 0 Y = 0] [-noupdate|-update]: draw color scale\n"
-    "-demo/-demoversion draw a demoversion of color scale.\n"
-    "-show/display display color scale.\n"
-    "-hide/erase erase color scale.\n"
-    "Please note that -show/-hide option must be the first argument!\n"
-    "-color Index R G B: set color for indexed interval\n"
-    "-color Index ColorName: set color for indexed interval\n"
-    "-colors R G B R G B ...: set colors for all intervals\n"
-    "-colors ColorName1 ColorName2 ...: set colors for all intervals\n"
-    "-colors supports both color names and rgb values in one call\n"
-    "-label Index Text: set label for indexed interval\n"
-    "-labels Text Text Text ...: set labels for all intervals\n"
-    "-title Title [Position]: set the title for color scale with certain position. Default position = center;\n"
-    "Available text positions: left, right, center, none;\n",
-    __FILE__,VColorScale,group);
+    "vcolorscale name [-noupdate|-update] [-demo]"
+    "\n\t\t:       [-range RangeMin=0 RangeMax=1 NbIntervals=10]"
+    "\n\t\t:       [-font HeightFont=20]"
+    "\n\t\t:       [-logarithmic {on|off}=off] [-reversed {on|off}=off]"
+    "\n\t\t:       [-smoothTransition {on|off}=off]"
+    "\n\t\t:       [-hueRange MinAngle=230 MaxAngle=0]"
+    "\n\t\t:       [-colorRange MinColor=BLUE1 MaxColor=RED]"
+    "\n\t\t:       [-textpos {left|right|center|none}=right]"
+    "\n\t\t:       [-labelAtBorder {on|off}=on]"
+    "\n\t\t:       [-colors Color1 Color2 ...] [-color Index Color]"
+    "\n\t\t:       [-labels Label1 Label2 ...] [-label Index Label]"
+    "\n\t\t:       [-freeLabels NbOfLabels Label1 Label2 ...]"
+    "\n\t\t:       [-xy Left=0 Bottom=0]"
+    "\n\t\t:  -demo     - displays a color scale with demonstratio values"
+    "\n\t\t:  -colors   - set colors for all intervals"
+    "\n\t\t:  -color    - set color for specific interval"
+    "\n\t\t:  -textpos  - horizontal label position relative to color scale bar"
+    "\n\t\t:  -labelAtBorder - vertical label position relative to color interval;"
+    "\n\t\t:              at border means the value inbetween neighbor intervals,"
+    "\n\t\t:              at center means the center value within current interval"
+    "\n\t\t:  -labels   - set labels for all intervals"
+    "\n\t\t:  -freeLabels - same as -labels but does not require"
+    "\n\t\t:              matching the number of intervals"
+    "\n\t\t:  -label    - set label for specific interval"
+    "\n\t\t:  -title    - set title"
+    "\n\t\t:  -reversed - setup smooth color transition between intervals"
+    "\n\t\t:  -smoothTransition - swap colorscale direction"
+    "\n\t\t:  -hueRange - set hue angles corresponding to minimum and maximum values"
+    __FILE__, VColorScale, group);
   theCommands.Add("vgraduatedtrihedron",
     "vgraduatedtrihedron : -on/-off [-xname Name] [-yname Name] [-zname Name] [-arrowlength Value]\n"
     "\t[-namefont Name] [-valuesfont Name]\n"

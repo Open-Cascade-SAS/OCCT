@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC28004"
+puts "Visualization, AIS_ColorScale - allow defining labels list not equal to intervals list"
+puts "============"
+puts ""
+
+vclear
+vinit View1
+vaxo
+
+# create default color scale
+vcolorscale cs1 -demo -smooth 0 -xy  0 0
+vcolorscale cs2 -demo -smooth 1 -xy 60 0
+foreach {y aColor} {20 RED 60 DARKORANGE1 100 GOLD 140 GREENYELLOW 180 CHARTREUSE2 220 GREEN 250 MEDIUMSPRINGGREEN 290 CYAN1 330 DODGERBLUE1 370 BLUE1} { if { [vreadpixel 15 $y rgb name] != "$aColor" } { puts "Error: wrong color at $y" } }
+foreach {y aColor} {20 RED 60 DARKORANGE1 100 GOLD 140 GREENYELLOW 180 CHARTREUSE2 220 GREEN 250 MEDIUMSPRINGGREEN 290 CYAN1 330 DODGERBLUE1 370 BLUE1} { if { [vreadpixel 15 $y rgb name] != "$aColor" } { puts "Error: wrong color at $y" } }
+
+# reduce color scale range and number of intervals
+vcolorscale cs3 -range 0 20 5 -font 16 -colors white 0 0 1 green 1 0 0 1 1 1 -labels start 1 2 3 4 end -smooth 0 -xy 120 0
+vcolorscale cs4 -range 0 20 5 -font 16 -colors white 0 0 1 green 1 0 0 1 1 1 -labels start 1 2 3 4 end -smooth 1 -xy 180 0
+foreach {y aColor} {40 WHITE 120 RED 200 GREEN 280 BLUE1 350 WHITE} { if { [vreadpixel 135 $y rgb name] != "$aColor" } { puts "Error: wrong color at $y" } }
+
+# color scale with overridden hue range
+vcolorscale cs5 -demo -smooth 0 -hueRange 300 130 -xy 240 0
+vcolorscale cs6 -demo -smooth 1 -hueRange 300 130 -xy 300 0
+foreach {y aColor} {20 GREEN 60 SPRINGGREEN 100 CYAN2 140 TURQUOISE2 180 DODGERBLUE1 220 BLUE1       250 BLUE1 290 BLUEVIOLET 330 PURPLE 370 MAGENTA1} { if { [vreadpixel 245 $y rgb name] != "$aColor" } { puts "Error: wrong color at $y" } }
+foreach {y aColor} {20 GREEN 60 SPRINGGREEN 100 CYAN2 140 TURQUOISE2 180 DODGERBLUE1 220 DODGERBLUE2 250 BLUE1 290 BLUE1      330 PURPLE 370 MAGENTA2} { if { [vreadpixel 315 $y rgb name] != "$aColor" } { puts "Error: wrong color at $y" } }
+
+# free labels
+vcolorscale cs7 -demo -smooth 0 -colorRange BLACK WHITE -xy 360 0 -freeLabels 3 l1 l2 l3
+
+vdump ${imagedir}/${casename}.png
