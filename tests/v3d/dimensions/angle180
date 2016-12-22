@@ -1,0 +1,16 @@
+#puts "============================================================================"
+#puts "OCC28244: Visualization - AIS_AngleDimension throws exception for 180 degree"
+#puts "============================================================================"
+
+vclear
+vclose all
+
+vinit
+
+vpoint p0 -100 0 0
+vpoint p1 0 0 0
+vpoint p2 100 0 0
+vdimension angle -angle -shapes p0 p1 p2
+vfit
+
+vdump $imagedir/${casename}.png

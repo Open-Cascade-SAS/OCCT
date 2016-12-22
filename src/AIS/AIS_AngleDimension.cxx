@@ -61,6 +61,17 @@ namespace
   static const Standard_Real              THE_EMPTY_LABEL_WIDTH = 0.0;
   static const Standard_ExtCharacter      THE_DEGREE_SYMBOL (0x00B0);
   static const Standard_Real              THE_3D_TEXT_MARGIN = 0.1;
+
+  //! Returns true if the given points lie on a same line.
+  static Standard_Boolean isSameLine (const gp_Pnt& theFirstPoint,
+                                      const gp_Pnt& theCenterPoint,
+                                      const gp_Pnt& theSecondPoint)
+  {
+    gp_Vec aVec1 (theFirstPoint, theCenterPoint);
+    gp_Vec aVec2 (theCenterPoint, theSecondPoint);
+
+    return aVec1.IsParallel (aVec2, Precision::Angular());
+  }
 }
 
 //=======================================================================
@@ -177,7 +188,8 @@ void AIS_AngleDimension::SetMeasuredGeometry (const gp_Pnt& theFirstPoint,
   myGeometryType  = GeometryType_Points;
   myIsGeometryValid       = IsValidPoints (myFirstPoint, myCenterPoint, mySecondPoint);
 
-  if (myIsGeometryValid && !myIsPlaneCustom)
+  Standard_Boolean anIsSameLine = isSameLine (myFirstPoint, myCenterPoint, mySecondPoint);
+  if (myIsGeometryValid && !myIsPlaneCustom && !anIsSameLine)
   {
     ComputePlane();
   }
@@ -202,7 +214,8 @@ void AIS_AngleDimension::SetMeasuredGeometry (const TopoDS_Vertex& theFirstVerte
   myGeometryType    = GeometryType_Points;
   myIsGeometryValid = IsValidPoints (myFirstPoint, myCenterPoint, mySecondPoint);
 
-  if (myIsGeometryValid && !myIsPlaneCustom)
+  Standard_Boolean anIsSameLine = isSameLine (myFirstPoint, myCenterPoint, mySecondPoint);
+  if (myIsGeometryValid && !myIsPlaneCustom && !anIsSameLine)
   {
     ComputePlane();
   }
