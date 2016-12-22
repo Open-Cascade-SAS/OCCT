@@ -429,10 +429,7 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 #endif
 
   // Bind custom shader program or generate default version
-  if (aCtx->core20fwd != NULL)
-  {
-    aCtx->ShaderManager()->BindFontProgram (aTextAspect->ShaderProgramRes (aCtx));
-  }
+  aCtx->ShaderManager()->BindFontProgram (aTextAspect->ShaderProgramRes (aCtx));
 
   myOrientationMatrix = theWorkspace->View()->Camera()->OrientationMatrix();
   myProjMatrix.Convert (aCtx->ProjectionState.Current());
@@ -443,8 +440,6 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
           theWorkspace->TextColor(),
           theWorkspace->TextSubtitleColor(),
           theWorkspace->View()->RenderingParams().Resolution);
-
-  aCtx->BindProgram (NULL);
 
   // restore aspects
   if (!aPrevTexture.IsNull())
@@ -569,11 +564,8 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_Context)& theCtx,
     theCtx->ApplyProjectionMatrix();
   }
 
-  if (!theCtx->ActiveProgram().IsNull())
-  {
-    // Upload updated state to shader program
-    theCtx->ShaderManager()->PushState (theCtx->ActiveProgram());
-  }
+  // Upload updated state to shader program
+  theCtx->ShaderManager()->PushState (theCtx->ActiveProgram());
 }
 
 // =======================================================================
@@ -728,11 +720,9 @@ void OpenGl_Text::drawRect (const Handle(OpenGl_Context)& theCtx,
     myBndVertsVbo->Init (theCtx, 2, 4, aQuad[0].GetData());
   }
 
-  if (theCtx->core20fwd != NULL)
-  {
-    // bind flat program
-    theCtx->ShaderManager()->BindFaceProgram (Handle(OpenGl_Texture)(), Standard_False, Standard_False, Standard_False, Handle(OpenGl_ShaderProgram)());
-  }
+  // bind flat program
+  theCtx->ShaderManager()->BindFaceProgram (Handle(OpenGl_Texture)(), Standard_False, Standard_False, Standard_False, Handle(OpenGl_ShaderProgram)());
+
 #if !defined(GL_ES_VERSION_2_0)
   if (theCtx->core11 != NULL
    && theCtx->ActiveProgram().IsNull())

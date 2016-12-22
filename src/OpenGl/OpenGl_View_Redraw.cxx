@@ -38,115 +38,6 @@
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_ArbFBO.hxx>
 
-#define EPSI 0.0001
-
-namespace
-{
-  static const GLfloat THE_DEFAULT_AMBIENT[4]    = { 0.0f, 0.0f, 0.0f, 1.0f };
-  static const GLfloat THE_DEFAULT_SPOT_DIR[3]   = { 0.0f, 0.0f, -1.0f };
-  static const GLfloat THE_DEFAULT_SPOT_EXPONENT = 0.0f;
-  static const GLfloat THE_DEFAULT_SPOT_CUTOFF   = 180.0f;
-}
-
-extern void InitLayerProp (const int theListId); //szvgl: defined in OpenGl_GraphicDriver_Layer.cxx
-
-#if !defined(GL_ES_VERSION_2_0)
-
-//=======================================================================
-//function : bindLight
-//purpose  :
-//=======================================================================
-static void bindLight (const OpenGl_Light&             theLight,
-                       GLenum&                         theLightGlId,
-                       Graphic3d_Vec4&                 theAmbientColor,
-                       const Handle(OpenGl_Workspace)& theWorkspace)
-{
-  // Only 8 lights in OpenGL...
-  if (theLightGlId > GL_LIGHT7)
-  {
-    return;
-  }
-
-  if (theLight.Type == Graphic3d_TOLS_AMBIENT)
-  {
-    // add RGBA intensity of the ambient light
-    theAmbientColor += theLight.Color;
-    return;
-  }
-
-  const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
-
-  // the light is a headlight?
-  if (theLight.IsHeadlight)
-  {
-    aContext->WorldViewState.Push();
-    aContext->WorldViewState.SetIdentity();
-
-    aContext->ApplyWorldViewMatrix();
-  }
-
-  // setup light type
-  switch (theLight.Type)
-  {
-    case Graphic3d_TOLS_AMBIENT    : break; // handled by separate if-clause at beginning of method
-    case Graphic3d_TOLS_DIRECTIONAL:
-    {
-      // if the last parameter of GL_POSITION, is zero, the corresponding light source is a Directional one
-      const OpenGl_Vec4 anInfDir = -theLight.Direction;
-
-      // to create a realistic effect,  set the GL_SPECULAR parameter to the same value as the GL_DIFFUSE.
-      glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
-      glLightfv (theLightGlId, GL_DIFFUSE,               theLight.Color.GetData());
-      glLightfv (theLightGlId, GL_SPECULAR,              theLight.Color.GetData());
-      glLightfv (theLightGlId, GL_POSITION,              anInfDir.GetData());
-      glLightfv (theLightGlId, GL_SPOT_DIRECTION,        THE_DEFAULT_SPOT_DIR);
-      glLightf  (theLightGlId, GL_SPOT_EXPONENT,         THE_DEFAULT_SPOT_EXPONENT);
-      glLightf  (theLightGlId, GL_SPOT_CUTOFF,           THE_DEFAULT_SPOT_CUTOFF);
-      break;
-    }
-    case Graphic3d_TOLS_POSITIONAL:
-    {
-      // to create a realistic effect, set the GL_SPECULAR parameter to the same value as the GL_DIFFUSE
-      const OpenGl_Vec4 aPosition (static_cast<float>(theLight.Position.x()), static_cast<float>(theLight.Position.y()), static_cast<float>(theLight.Position.z()), 1.0f);
-      glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
-      glLightfv (theLightGlId, GL_DIFFUSE,               theLight.Color.GetData());
-      glLightfv (theLightGlId, GL_SPECULAR,              theLight.Color.GetData());
-      glLightfv (theLightGlId, GL_POSITION,              aPosition.GetData());
-      glLightfv (theLightGlId, GL_SPOT_DIRECTION,        THE_DEFAULT_SPOT_DIR);
-      glLightf  (theLightGlId, GL_SPOT_EXPONENT,         THE_DEFAULT_SPOT_EXPONENT);
-      glLightf  (theLightGlId, GL_SPOT_CUTOFF,           THE_DEFAULT_SPOT_CUTOFF);
-      glLightf  (theLightGlId, GL_CONSTANT_ATTENUATION,  theLight.ConstAttenuation());
-      glLightf  (theLightGlId, GL_LINEAR_ATTENUATION,    theLight.LinearAttenuation());
-      glLightf  (theLightGlId, GL_QUADRATIC_ATTENUATION, 0.0);
-      break;
-    }
-    case Graphic3d_TOLS_SPOT:
-    {
-      const OpenGl_Vec4 aPosition (static_cast<float>(theLight.Position.x()), static_cast<float>(theLight.Position.y()), static_cast<float>(theLight.Position.z()), 1.0f);
-      glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
-      glLightfv (theLightGlId, GL_DIFFUSE,               theLight.Color.GetData());
-      glLightfv (theLightGlId, GL_SPECULAR,              theLight.Color.GetData());
-      glLightfv (theLightGlId, GL_POSITION,              aPosition.GetData());
-      glLightfv (theLightGlId, GL_SPOT_DIRECTION,        theLight.Direction.GetData());
-      glLightf  (theLightGlId, GL_SPOT_EXPONENT,         theLight.Concentration() * 128.0f);
-      glLightf  (theLightGlId, GL_SPOT_CUTOFF,          (theLight.Angle() * 180.0f) / GLfloat(M_PI));
-      glLightf  (theLightGlId, GL_CONSTANT_ATTENUATION,  theLight.ConstAttenuation());
-      glLightf  (theLightGlId, GL_LINEAR_ATTENUATION,    theLight.LinearAttenuation());
-      glLightf  (theLightGlId, GL_QUADRATIC_ATTENUATION, 0.0f);
-      break;
-    }
-  }
-
-  // restore matrix in case of headlight
-  if (theLight.IsHeadlight)
-  {
-    aContext->WorldViewState.Pop();
-  }
-
-  glEnable (theLightGlId++);
-}
-#endif
-
 //=======================================================================
 //function : drawBackground
 //purpose  :
@@ -155,9 +46,8 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
 {
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
 
-  if ((theWorkspace->NamedStatus & OPENGL_NS_WHITEBACK) != 0 // no background
-    || (!myBgTextureArray->IsDefined()                       // no texture
-     && !myBgGradientArray->IsDefined()))                    // no gradient
+  if (!myBgTextureArray->IsDefined()   // no texture
+   && !myBgGradientArray->IsDefined()) // no gradient
   {
     return;
   }
@@ -457,6 +347,10 @@ void OpenGl_View::Redraw()
     Redraw();
   }
 
+  // reset state for safety
+  aCtx->BindProgram (Handle(OpenGl_ShaderProgram)());
+  aCtx->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
+
   // Swap the buffers
   if (toSwap)
   {
@@ -603,6 +497,10 @@ void OpenGl_View::RedrawImmediate()
   // bind default FBO
   bindDefaultFbo();
 
+  // reset state for safety
+  aCtx->BindProgram (Handle(OpenGl_ShaderProgram)());
+  aCtx->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
+
   if (toSwap && !aCtx->caps->buffersNoSwap)
   {
     aCtx->SwapBuffers();
@@ -634,7 +532,8 @@ void OpenGl_View::redraw (const Graphic3d_Camera::Projection theProjection, Open
   }
 
   // request reset of material
-  myWorkspace->NamedStatus    |= OPENGL_NS_RESMAT;
+  aCtx->ShaderManager()->UpdateMaterialState();
+
   myWorkspace->UseZBuffer()    = Standard_True;
   myWorkspace->UseDepthWrite() = Standard_True;
   GLbitfield toClear = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
@@ -648,16 +547,8 @@ void OpenGl_View::redraw (const Graphic3d_Camera::Projection theProjection, Open
   glClearDepthf (1.0f);
 #endif
 
-  if (myWorkspace->NamedStatus & OPENGL_NS_WHITEBACK)
-  {
-    // set background to white
-    glClearColor (1.0f, 1.0f, 1.0f, 1.0f);
-  }
-  else
-  {
-    const OpenGl_Vec4& aBgColor = myBgColor;
-    glClearColor (aBgColor.r(), aBgColor.g(), aBgColor.b(), 0.0f);
-  }
+  const OpenGl_Vec4& aBgColor = myBgColor;
+  glClearColor (aBgColor.r(), aBgColor.g(), aBgColor.b(), 0.0f);
 
   glClear (toClear);
 
@@ -874,12 +765,6 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   // before drawing auxiliary stuff (trihedrons, overlayer)
   myWorkspace->ResetAppliedAspect();
 
-
-  // We need to disable (unbind) all shaders programs to ensure
-  // that all objects without specified aspect will be drawn
-  // correctly (such as background)
-  aContext->BindProgram (NULL);
-
   // Render trihedron
   if (!theToDrawImmediate)
   {
@@ -897,6 +782,10 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
         glDisable (GL_CULL_FACE);
     }
   }
+
+  // reset FFP state for safety
+  aContext->BindProgram (Handle(OpenGl_ShaderProgram)());
+  aContext->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
 
   // ==============================================================
   //      Step 6: Keep shader manager informed about last View
@@ -1048,39 +937,6 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
   {
     aContext->ShaderManager()->UpdateClippingState();
   }
-
-#if !defined(GL_ES_VERSION_2_0)
-  // Apply Lights
-  if (aContext->core11 != NULL)
-  {
-    // setup lights
-    Graphic3d_Vec4 anAmbientColor (THE_DEFAULT_AMBIENT[0],
-                                   THE_DEFAULT_AMBIENT[1],
-                                   THE_DEFAULT_AMBIENT[2],
-                                   THE_DEFAULT_AMBIENT[3]);
-    GLenum aLightGlId = GL_LIGHT0;
-
-    OpenGl_ListOfLight::Iterator aLightIt (myShadingModel == Graphic3d_TOSM_NONE ? myNoShadingLight : myLights);
-    for (; aLightIt.More(); aLightIt.Next())
-    {
-      bindLight (aLightIt.Value(), aLightGlId, anAmbientColor, myWorkspace);
-    }
-
-    // apply accumulated ambient color
-    anAmbientColor.a() = 1.0f;
-    glLightModelfv (GL_LIGHT_MODEL_AMBIENT, anAmbientColor.GetData());
-
-    if (aLightGlId != GL_LIGHT0)
-    {
-      glEnable (GL_LIGHTING);
-    }
-    // switch off unused lights
-    for (; aLightGlId <= GL_LIGHT7; ++aLightGlId)
-    {
-      glDisable (aLightGlId);
-    }
-  }
-#endif
 
   // Clear status bitfields
   myWorkspace->NamedStatus &= ~(OPENGL_NS_2NDPASSNEED | OPENGL_NS_2NDPASSDO);
@@ -1565,9 +1421,11 @@ void OpenGl_View::copyBackToFront()
 
   OpenGl_Mat4 aProjectMat;
   Graphic3d_TransformUtils::Ortho2D (aProjectMat,
-    0.f, static_cast<GLfloat> (myWindow->Width()), 0.f, static_cast<GLfloat> (myWindow->Height()));
+                                     0.0f, static_cast<GLfloat> (myWindow->Width()),
+                                     0.0f, static_cast<GLfloat> (myWindow->Height()));
 
-  Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
+  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+
   aCtx->WorldViewState.Push();
   aCtx->ProjectionState.Push();
 
@@ -1577,6 +1435,9 @@ void OpenGl_View::copyBackToFront()
   aCtx->ApplyProjectionMatrix();
   aCtx->ApplyWorldViewMatrix();
 
+  // synchronize FFP state before copying pixels
+  aCtx->BindProgram (Handle(OpenGl_ShaderProgram)());
+  aCtx->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
   aCtx->DisableFeatures();
 
   switch (aCtx->DrawBuffer())

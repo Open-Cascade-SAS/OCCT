@@ -478,32 +478,6 @@ Standard_Boolean OpenGl_ShaderProgram::ApplyVariables(const Handle(OpenGl_Contex
 }
 
 // =======================================================================
-// function : ActiveState
-// purpose  : Returns index of last modification for specified state type
-// =======================================================================
-Standard_Size OpenGl_ShaderProgram::ActiveState (const OpenGl_UniformStateType theType) const
-{
-  if (theType < MaxStateTypes)
-  {
-    return myCurrentState[theType];
-  }
-  return 0;
-}
-
-// =======================================================================
-// function : UpdateState
-// purpose  : Updates index of last modification for specified state type
-// =======================================================================
-void OpenGl_ShaderProgram::UpdateState (const OpenGl_UniformStateType theType,
-                                        const Standard_Size           theIndex)
-{
-  if (theType < MaxStateTypes)
-  {
-    myCurrentState[theType] = theIndex;
-  }
-}
-
-// =======================================================================
 // function : GetUniformLocation
 // purpose  : Returns location (index) of the specific uniform variable
 // =======================================================================

@@ -15,8 +15,6 @@
 
 #include <OpenGl_ShaderStates.hxx>
 
-#include <NCollection_Mat4.hxx>
-
 // =======================================================================
 // function : OpenGl_StateInterface
 // purpose  :
@@ -188,34 +186,6 @@ void OpenGl_LightSourceState::Set (const OpenGl_ListOfLight* theLightSources)
 const OpenGl_ListOfLight* OpenGl_LightSourceState::LightSources() const
 {
   return myLightSources;
-}
-
-// =======================================================================
-// function : OpenGl_MaterialState
-// purpose  : Creates uninitialized material state
-// =======================================================================
-OpenGl_MaterialState::OpenGl_MaterialState (const OpenGl_Element* theAspect)
-: myAspect (theAspect)
-{
-  //
-}
-
-// =======================================================================
-// function : Set
-// purpose  : Sets new material aspect
-// =======================================================================
-void OpenGl_MaterialState::Set (const OpenGl_Element* theAspect)
-{
-  myAspect = theAspect;
-}
-
-// =======================================================================
-// function : Aspect
-// purpose  : Returns material aspect
-// =======================================================================
-const OpenGl_Element* OpenGl_MaterialState::Aspect() const
-{
-  return myAspect;
 }
 
 // =======================================================================

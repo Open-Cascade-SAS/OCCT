@@ -360,9 +360,6 @@ void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorksp
                                        const Graphic3d_Vec4*           theFaceColors,
                                        const Standard_Boolean          theHasVertColor) const
 {
-  const Handle(OpenGl_Context)& aGlContext  = theWorkspace->GetGlContext();
-  const bool                    toHilight   = theWorkspace->ToHighlight();
-  bool                          hasVColors  = theHasVertColor && !toHilight;
   if (myVboAttribs.IsNull())
   {
   #if !defined(GL_ES_VERSION_2_0)
@@ -375,6 +372,8 @@ void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorksp
     return;
   }
 
+  const Handle(OpenGl_Context)& aGlContext  = theWorkspace->GetGlContext();
+  const bool                    toHilight   = theWorkspace->ToHighlight();
   myVboAttribs->BindAllAttributes (aGlContext);
   if (theHasVertColor && toHilight)
   {
@@ -429,11 +428,6 @@ void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorksp
 
   // bind with 0
   myVboAttribs->UnbindAllAttributes (aGlContext);
-
-  if (hasVColors)
-  {
-    theWorkspace->NamedStatus |= OPENGL_NS_RESMAT;
-  }
 }
 
 // =======================================================================
@@ -721,20 +715,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   const Standard_Boolean isLightOn = !anAspectFace->IsNoLighting()
                                   && !myVboAttribs.IsNull()
                                   &&  myVboAttribs->HasNormalAttribute();
-#if !defined(GL_ES_VERSION_2_0)
-  // manage FFP lighting
-  if (aCtx->core11 != NULL)
-  {
-    if (!isLightOn)
-    {
-      glDisable (GL_LIGHTING);
-    }
-    else
-    {
-      glEnable (GL_LIGHTING);
-    }
-  }
-#endif
+
   // Temporarily disable environment mapping
   Handle(OpenGl_Texture) aTextureBack;
   bool toDrawArray = true;
@@ -759,60 +740,67 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   {
     const bool             toHilight    = theWorkspace->ToHighlight();
     const Standard_Boolean hasVertColor = hasColorAttrib && !toHilight;
-    if (aCtx->core20fwd != NULL)
+    switch (myDrawMode)
     {
-      switch (myDrawMode)
+      case GL_POINTS:
       {
-        case GL_POINTS:
+        const Handle(OpenGl_PointSprite)& aSpriteNorm = anAspectMarker->SpriteRes (aCtx);
+        if (!aSpriteNorm.IsNull()
+         && !aSpriteNorm->IsDisplayList())
         {
-          const Handle(OpenGl_PointSprite)& aSpriteNorm = anAspectMarker->SpriteRes (aCtx);
-          if (!aSpriteNorm.IsNull()
-           && !aSpriteNorm->IsDisplayList())
-          {
-            const Handle(OpenGl_PointSprite)& aSprite = (toHilight && anAspectMarker->SpriteHighlightRes (aCtx)->IsValid())
-                                                      ? anAspectMarker->SpriteHighlightRes (aCtx)
-                                                      : aSpriteNorm;
-            theWorkspace->EnableTexture (aSprite);
-            aCtx->ShaderManager()->BindMarkerProgram (aSprite, isLightOn, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
-          }
-          else
-          {
-            aCtx->ShaderManager()->BindMarkerProgram (NULL, isLightOn, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
-          }
-          break;
+          const Handle(OpenGl_PointSprite)& aSprite = (toHilight && anAspectMarker->SpriteHighlightRes (aCtx)->IsValid())
+                                                    ? anAspectMarker->SpriteHighlightRes (aCtx)
+                                                    : aSpriteNorm;
+          theWorkspace->EnableTexture (aSprite);
+          aCtx->ShaderManager()->BindMarkerProgram (aSprite, isLightOn, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
         }
-        case GL_LINES:
-        case GL_LINE_STRIP:
+        else
         {
-          aCtx->ShaderManager()->BindLineProgram (NULL,
-                                                  anAspectLine->Aspect()->Type() != Aspect_TOL_SOLID,
-                                                  isLightOn,
-                                                  hasVertColor,
-                                                  anAspectLine->ShaderProgramRes (aCtx));
-          break;
+          aCtx->ShaderManager()->BindMarkerProgram (NULL, isLightOn, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
         }
-        default:
-        {
-          const Handle(OpenGl_Texture)& aTexture = theWorkspace->ActiveTexture();
-          const Standard_Boolean isLightOnFace = isLightOn
-                                              && (aTexture.IsNull()
-                                               || aTexture->GetParams()->IsModulate());
-          const Standard_Boolean toEnableEnvMap = (!aTexture.IsNull() && (aTexture == theWorkspace->EnvironmentTexture()));
-          aCtx->ShaderManager()->BindFaceProgram (aTexture,
-                                                  isLightOnFace,
-                                                  hasVertColor,
-                                                  toEnableEnvMap,
-                                                  anAspectFace->ShaderProgramRes (aCtx));
-          break;
-        }
+        break;
+      }
+      case GL_LINES:
+      case GL_LINE_STRIP:
+      {
+        aCtx->ShaderManager()->BindLineProgram (NULL,
+                                                anAspectLine->Aspect()->Type() != Aspect_TOL_SOLID,
+                                                isLightOn,
+                                                hasVertColor,
+                                                anAspectLine->ShaderProgramRes (aCtx));
+        break;
+      }
+      default:
+      {
+        const Handle(OpenGl_Texture)& aTexture = theWorkspace->ActiveTexture();
+        const Standard_Boolean isLightOnFace = isLightOn
+                                            && (aTexture.IsNull()
+                                             || aTexture->GetParams()->IsModulate());
+        const Standard_Boolean toEnableEnvMap = (!aTexture.IsNull() && (aTexture == theWorkspace->EnvironmentTexture()));
+        aCtx->ShaderManager()->BindFaceProgram (aTexture,
+                                                isLightOnFace,
+                                                hasVertColor,
+                                                toEnableEnvMap,
+                                                anAspectFace->ShaderProgramRes (aCtx));
+        break;
       }
     }
 
-    // All primitives should gather material properties from the AspectFace in shading mode
-    if (isLightOn)
+  #if !defined(GL_ES_VERSION_2_0)
+    // manage FFP lighting
+    if (aCtx->ActiveProgram().IsNull()
+     && aCtx->core11 != NULL)
     {
-      aCtx->SetShadingMaterial (anAspectFace, theWorkspace->HighlightStyle());
+      if (!isLightOn)
+      {
+        glDisable (GL_LIGHTING);
+      }
+      else
+      {
+        glEnable (GL_LIGHTING);
+      }
     }
+  #endif
 
     if (!theWorkspace->ActiveTexture().IsNull()
      && myDrawMode != GL_POINTS) // transformation is not supported within point sprites
@@ -894,8 +882,6 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     #endif
     }
   }
-
-  aCtx->BindProgram (NULL);
 }
 
 // =======================================================================

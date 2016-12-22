@@ -70,6 +70,9 @@ public:
     // Apply line aspect
     const Handle(OpenGl_Texture) aPrevTexture = theWorkspace->DisableTexture();
 
+    theWorkspace->GetGlContext()->BindProgram (Handle(OpenGl_ShaderProgram)());
+    theWorkspace->GetGlContext()->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
+
     glDisable (GL_LIGHTING);
 
     // Use highlight colors

@@ -36,6 +36,8 @@ OpenGl_Light.hxx
 OpenGl_GraduatedTrihedron.hxx
 OpenGl_GraduatedTrihedron.cxx
 OpenGl_MapOfZLayerSettings.hxx
+OpenGl_Material.hxx
+OpenGl_MaterialState.hxx
 OpenGl_Matrix.hxx
 OpenGl_MatrixState.hxx
 OpenGl_NamedStatus.hxx

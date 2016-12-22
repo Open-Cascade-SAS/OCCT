@@ -136,26 +136,6 @@ private:
 
 };
 
-//! Defines generic state of OCCT material properties.
-class OpenGl_MaterialState : public OpenGl_StateInterface
-{
-public:
-
-  //! Creates new material state.
-  OpenGl_MaterialState (const OpenGl_Element* theAspect = NULL);
-
-  //! Sets new material aspect.
-  void Set (const OpenGl_Element* theAspect);
-
-  //! Returns material aspect.
-  const OpenGl_Element* Aspect() const;
-
-private:
-
-  const OpenGl_Element* myAspect; //!< OCCT material aspect
-
-};
-
 //! Defines generic state of OCCT clipping state.
 class OpenGl_ClippingState
 {

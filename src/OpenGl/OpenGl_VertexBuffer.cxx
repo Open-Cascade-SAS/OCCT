@@ -15,8 +15,8 @@
 #include <OpenGl_VertexBuffer.hxx>
 
 #include <OpenGl_Context.hxx>
+#include <OpenGl_ShaderManager.hxx>
 #include <Standard_Assert.hxx>
-
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_VertexBuffer,OpenGl_Resource)
 
@@ -235,3 +235,18 @@ bool OpenGl_VertexBuffer::HasNormalAttribute() const
 {
   return false;
 }
+
+#if !defined(GL_ES_VERSION_2_0)
+// =======================================================================
+// function : unbindFixedColor
+// purpose  :
+// =======================================================================
+void OpenGl_VertexBuffer::unbindFixedColor (const Handle(OpenGl_Context)& theCtx)
+{
+  theCtx->core11->glDisableClientState (GL_COLOR_ARRAY);
+  theCtx->core11fwd->glDisable (GL_COLOR_MATERIAL);
+
+  // invalidate FFP material state after GL_COLOR_MATERIAL has modified it (took values from the vertex color)
+  theCtx->ShaderManager()->UpdateMaterialState();
+}
+#endif

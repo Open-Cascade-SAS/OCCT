@@ -29,22 +29,19 @@
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_AspectText.hxx>
 #include <OpenGl_AspectMarker.hxx>
+#include <OpenGl_MaterialState.hxx>
 #include <OpenGl_Texture.hxx>
-
 
 class OpenGl_View;
 
 //! List of shader programs.
 typedef NCollection_Sequence<Handle(OpenGl_ShaderProgram)> OpenGl_ShaderProgramList;
 
-class OpenGl_ShaderManager;
-DEFINE_STANDARD_HANDLE(OpenGl_ShaderManager, Standard_Transient)
-
 //! This class is responsible for managing shader programs.
 class OpenGl_ShaderManager : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(OpenGl_ShaderManager, Standard_Transient)
   friend class OpenGl_ShaderProgram;
-
 public:
 
   //! Creates new empty shader manager.
@@ -191,7 +188,7 @@ public:
 public:
 
   //! Returns current state of OCCT light sources.
-  Standard_EXPORT const OpenGl_LightSourceState& LightSourceState() const;
+  const OpenGl_LightSourceState& LightSourceState() const { return myLightSourceState; }
 
   //! Updates state of OCCT light sources.
   Standard_EXPORT void UpdateLightSourceStateTo (const OpenGl_ListOfLight* theLights);
@@ -205,7 +202,7 @@ public:
 public:
 
   //! Returns current state of OCCT projection transform.
-  Standard_EXPORT const OpenGl_ProjectionState& ProjectionState() const;
+  const OpenGl_ProjectionState& ProjectionState() const { return myProjectionState; }
 
   //! Updates state of OCCT projection transform.
   Standard_EXPORT void UpdateProjectionStateTo (const OpenGl_Mat4& theProjectionMatrix);
@@ -216,7 +213,7 @@ public:
 public:
 
   //! Returns current state of OCCT model-world transform.
-  Standard_EXPORT const OpenGl_ModelWorldState& ModelWorldState() const;
+  const OpenGl_ModelWorldState& ModelWorldState() const { return myModelWorldState; }
 
   //! Updates state of OCCT model-world transform.
   Standard_EXPORT void UpdateModelWorldStateTo (const OpenGl_Mat4& theModelWorldMatrix);
@@ -227,7 +224,7 @@ public:
 public:
 
   //! Returns current state of OCCT world-view transform.
-  Standard_EXPORT const OpenGl_WorldViewState& WorldViewState() const;
+  const OpenGl_WorldViewState& WorldViewState() const { return myWorldViewState; }
 
   //! Updates state of OCCT world-view transform.
   Standard_EXPORT void UpdateWorldViewStateTo (const OpenGl_Mat4& theWorldViewMatrix);
@@ -245,6 +242,30 @@ public:
 
   //! Pushes current state of OCCT clipping planes to specified program.
   Standard_EXPORT void PushClippingState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
+
+public:
+
+  //! Returns current state of material.
+  const OpenGl_MaterialState& MaterialState() const { return myMaterialState; }
+
+  //! Updates state of material.
+  void UpdateMaterialStateTo (const OpenGl_Material& theFrontMat,
+                              const OpenGl_Material& theBackMat,
+                              const bool theToDistinguish,
+                              const bool theToMapTexture)
+  {
+    myMaterialState.Set (theFrontMat, theBackMat, theToDistinguish, theToMapTexture);
+    myMaterialState.Update();
+  }
+
+  //! Updates state of material.
+  void UpdateMaterialState()
+  {
+    myMaterialState.Update();
+  }
+
+  //! Pushes current state of material to specified program.
+  void PushMaterialState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
 
 public:
 
@@ -418,7 +439,18 @@ protected:
     static Standard_Integer NbOfVec2i() { return 1; }
   };
 
+  //! Fake OpenGL program for tracking FFP state in the way consistent to programmable pipeline.
+  class OpenGl_ShaderProgramFFP : public OpenGl_ShaderProgram
+  {
+    DEFINE_STANDARD_RTTI_INLINE(OpenGl_ShaderProgramFFP, OpenGl_ShaderProgram)
+    friend class OpenGl_ShaderManager;
+  protected:
+    OpenGl_ShaderProgramFFP() {}
+  };
+
 protected:
+
+  Handle(OpenGl_ShaderProgramFFP)    myFfpProgram;
 
   Graphic3d_TypeOfShadingModel       myShadingModel;       //!< lighting shading model
   OpenGl_ShaderProgramList           myProgramList;        //!< The list of shader programs
@@ -439,6 +471,8 @@ protected:
   OpenGl_WorldViewState              myWorldViewState;     //!< State of OCCT world-view  transformation
   OpenGl_ClippingState               myClippingState;      //!< State of OCCT clipping planes
   OpenGl_LightSourceState            myLightSourceState;   //!< State of OCCT light sources
+  OpenGl_MaterialState               myMaterialState;      //!< State of Front and Back materials
+
   gp_XYZ                             myLocalOrigin;        //!< local camera transformation
   Standard_Boolean                   myHasLocalOrigin;     //!< flag indicating that local camera transformation has been set
 
@@ -449,9 +483,8 @@ private:
 
   const OpenGl_View*                 myLastView;           //!< Pointer to the last view shader manager used with
 
-public:
-
-  DEFINE_STANDARD_RTTIEXT(OpenGl_ShaderManager,Standard_Transient)
 };
+
+DEFINE_STANDARD_HANDLE(OpenGl_ShaderManager, Standard_Transient)
 
 #endif // _OpenGl_ShaderManager_HeaderFile

@@ -2793,6 +2793,10 @@ Standard_Boolean OpenGl_Context::BindProgram (const Handle(OpenGl_ShaderProgram)
   {
     return Standard_False;
   }
+  else if (myActiveProgram == theProgram)
+  {
+    return Standard_True;
+  }
 
   if (theProgram.IsNull()
   || !theProgram->IsValid())
@@ -2843,56 +2847,100 @@ Handle(OpenGl_FrameBuffer) OpenGl_Context::SetDefaultFrameBuffer (const Handle(O
 // purpose  :
 // =======================================================================
 void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
-                                         const Handle(Graphic3d_PresentationAttributes)& theHighlight)
+                                         const Handle(Graphic3d_PresentationAttributes)& theHighlight,
+                                         const Standard_Boolean theUseDepthWrite,
+                                         Standard_Integer& theRenderingPassFlags)
 {
-  if (!myActiveProgram.IsNull())
+  const Handle(Graphic3d_AspectFillArea3d)& anAspect = (!theHighlight.IsNull() && !theHighlight->BasicFillAreaAspect().IsNull())
+                                                      ?  theHighlight->BasicFillAreaAspect()
+                                                      :  theAspect->Aspect();
+
+  const bool toDistinguish = anAspect->Distinguish();
+  const bool toMapTexture  = anAspect->ToMapTexture();
+  const Graphic3d_MaterialAspect& aMatFrontSrc = anAspect->FrontMaterial();
+  const Graphic3d_MaterialAspect& aMatBackSrc  = toDistinguish
+                                               ? anAspect->BackMaterial()
+                                               : aMatFrontSrc;
+  const Quantity_Color& aFrontIntColor = anAspect->InteriorColor();
+  const Quantity_Color& aBackIntColor  = toDistinguish
+                                       ? anAspect->BackInteriorColor()
+                                       : aFrontIntColor;
+
+  myMatFront.Init (aMatFrontSrc, aFrontIntColor);
+  if (toDistinguish)
   {
-    const Handle(Graphic3d_AspectFillArea3d)& anAspect = (!theHighlight.IsNull() && !theHighlight->BasicFillAreaAspect().IsNull())
-                                                       ?  theHighlight->BasicFillAreaAspect()
-                                                       :  theAspect->Aspect();
-    myActiveProgram->SetUniform (this,
-                                 myActiveProgram->GetStateLocation (OpenGl_OCCT_TEXTURE_ENABLE),
-                                 anAspect->ToMapTexture() ? 1 : 0);
-    myActiveProgram->SetUniform (this,
-                                 myActiveProgram->GetStateLocation (OpenGl_OCCT_DISTINGUISH_MODE),
-                                 anAspect->Distinguish() ? 1 : 0);
+    myMatBack.Init (aMatBackSrc, aBackIntColor);
+  }
+  else
+  {
+    myMatBack = myMatFront;
+  }
 
-    OpenGl_Material aParams;
-    for (Standard_Integer anIndex = 0; anIndex < 2; ++anIndex)
+  // handling transparency
+  float aTranspFront = (float )aMatFrontSrc.Transparency();
+  float aTranspBack  = (float )aMatBackSrc .Transparency();
+  if (!theHighlight.IsNull()
+    && theHighlight->BasicFillAreaAspect().IsNull())
+  {
+    myMatFront.SetColor (theHighlight->ColorRGBA());
+    myMatBack .SetColor (theHighlight->ColorRGBA());
+    aTranspFront = theHighlight->Transparency();
+    aTranspBack  = theHighlight->Transparency();
+  }
+  if ((theRenderingPassFlags & OPENGL_NS_2NDPASSDO) != 0)
+  {
+    // second pass
+    myMatFront.Diffuse.a() = aMatFrontSrc.EnvReflexion();
+    myMatBack .Diffuse.a() = aMatBackSrc .EnvReflexion();
+  }
+  else
+  {
+    if (aMatFrontSrc.EnvReflexion() != 0.0f
+     || aMatBackSrc .EnvReflexion() != 0.0f)
     {
-      const GLint aLoc = myActiveProgram->GetStateLocation (anIndex == 0
-                                                          ? OpenGl_OCCT_FRONT_MATERIAL
-                                                          : OpenGl_OCCT_BACK_MATERIAL);
-      if (aLoc == OpenGl_ShaderProgram::INVALID_LOCATION)
-      {
-        continue;
-      }
+      // if the material reflects the environment scene, the second pass is needed
+      theRenderingPassFlags |= OPENGL_NS_2NDPASSNEED;
+    }
 
-      if (anIndex == 0 || !anAspect->Distinguish())
-      {
-        const Graphic3d_MaterialAspect& aSrcMat      = anAspect->FrontMaterial();
-        const Quantity_Color&           aSrcIntColor = anAspect->InteriorColor();
-        aParams.Init (aSrcMat, aSrcIntColor);
-        aParams.Diffuse.a() = 1.0f - (float )aSrcMat.Transparency();
-      }
-      else
-      {
-        const Graphic3d_MaterialAspect& aSrcMat      = anAspect->BackMaterial();
-        const Quantity_Color&           aSrcIntColor = anAspect->BackInteriorColor();
-        aParams.Init (aSrcMat, aSrcIntColor);
-        aParams.Diffuse.a() = 1.0f - (float )aSrcMat.Transparency();
-      }
-      if (!theHighlight.IsNull()
-        && theHighlight->BasicFillAreaAspect().IsNull())
-      {
-        aParams.SetColor (theHighlight->ColorRGBA());
-        aParams.Diffuse.a() = theHighlight->ColorRGBA().Alpha();
-      }
-
-      myActiveProgram->SetUniform (this, aLoc, OpenGl_Material::NbOfVec4(),
-                                   aParams.Packed());
+    GLboolean aDepthMask = GL_TRUE;
+    if (aTranspFront != 0.0f
+     || aTranspBack  != 0.0f)
+    {
+      // render transparent
+      myMatFront.Diffuse.a() = 1.0f - aTranspFront;
+      myMatBack .Diffuse.a() = 1.0f - aTranspBack;
+      glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      glEnable (GL_BLEND);
+      aDepthMask = GL_FALSE;
+    }
+    else
+    {
+      // render opaque
+      glBlendFunc (GL_ONE, GL_ZERO);
+      glDisable (GL_BLEND);
+    }
+    if (theUseDepthWrite)
+    {
+      glDepthMask (aDepthMask);
     }
   }
+
+  // do not update material properties in case of zero reflection mode,
+  // because GL lighting will be disabled by OpenGl_PrimitiveArray::DrawArray() anyway.
+  if (theAspect->IsNoLighting())
+  {
+    return;
+  }
+
+  if (myMatFront    == myShaderManager->MaterialState().FrontMaterial()
+   && myMatBack     == myShaderManager->MaterialState().BackMaterial()
+   && toDistinguish == myShaderManager->MaterialState().ToDistinguish()
+   && toMapTexture  == myShaderManager->MaterialState().ToMapTexture())
+  {
+    return;
+  }
+
+  myShaderManager->UpdateMaterialStateTo (myMatFront, myMatBack, toDistinguish, toMapTexture);
 }
 
 // =======================================================================
@@ -3206,15 +3254,7 @@ Standard_Integer OpenGl_Context::SetPolygonHatchStyle (const Handle(Graphic3d_Ha
 // =======================================================================
 void OpenGl_Context::ApplyModelWorldMatrix()
 {
-#if !defined(GL_ES_VERSION_2_0)
-  if (core11 != NULL)
-  {
-    core11->glMatrixMode (GL_MODELVIEW);
-    core11->glLoadMatrixf (ModelWorldState.Current());
-  }
-#endif
-
-  if (!myShaderManager->IsEmpty())
+  if (myShaderManager->ModelWorldState().ModelWorldMatrix() != ModelWorldState.Current())
   {
     myShaderManager->UpdateModelWorldStateTo (ModelWorldState.Current());
   }
@@ -3226,17 +3266,12 @@ void OpenGl_Context::ApplyModelWorldMatrix()
 // =======================================================================
 void OpenGl_Context::ApplyWorldViewMatrix()
 {
-#if !defined(GL_ES_VERSION_2_0)
-  if (core11 != NULL)
-  {
-    core11->glMatrixMode (GL_MODELVIEW);
-    core11->glLoadMatrixf (WorldViewState.Current());
-  }
-#endif
-
-  if (!myShaderManager->IsEmpty())
+  if (myShaderManager->ModelWorldState().ModelWorldMatrix() != THE_IDENTITY_MATRIX)
   {
     myShaderManager->UpdateModelWorldStateTo (THE_IDENTITY_MATRIX);
+  }
+  if (myShaderManager->WorldViewState().WorldViewMatrix() != WorldViewState.Current())
+  {
     myShaderManager->UpdateWorldViewStateTo (WorldViewState.Current());
   }
 }
@@ -3247,19 +3282,13 @@ void OpenGl_Context::ApplyWorldViewMatrix()
 // =======================================================================
 void OpenGl_Context::ApplyModelViewMatrix()
 {
-#if !defined(GL_ES_VERSION_2_0)
-  if (core11 != NULL)
-  {
-    OpenGl_Mat4 aModelView = WorldViewState.Current() * ModelWorldState.Current();
-    core11->glMatrixMode (GL_MODELVIEW);
-    core11->glLoadMatrixf (aModelView.GetData());
-  }
-#endif
-
-  if (!myShaderManager->IsEmpty())
+  if (myShaderManager->ModelWorldState().ModelWorldMatrix() != ModelWorldState.Current())
   {
     myShaderManager->UpdateModelWorldStateTo (ModelWorldState.Current());
-    myShaderManager->UpdateWorldViewStateTo (WorldViewState.Current());
+  }
+  if (myShaderManager->WorldViewState().WorldViewMatrix() != WorldViewState.Current())
+  {
+    myShaderManager->UpdateWorldViewStateTo  (WorldViewState.Current());
   }
 }
 
@@ -3269,20 +3298,11 @@ void OpenGl_Context::ApplyModelViewMatrix()
 // =======================================================================
 void OpenGl_Context::ApplyProjectionMatrix()
 {
-#if !defined(GL_ES_VERSION_2_0)
-  if (core11 != NULL)
-  {
-    core11->glMatrixMode (GL_PROJECTION);
-    core11->glLoadMatrixf (ProjectionState.Current().GetData());
-  }
-#endif
-
-  if (!myShaderManager->IsEmpty())
+  if (myShaderManager->ProjectionState().ProjectionMatrix() != ProjectionState.Current())
   {
     myShaderManager->UpdateProjectionStateTo (ProjectionState.Current());
   }
 }
-
 
 // =======================================================================
 // function : EnableFeatures

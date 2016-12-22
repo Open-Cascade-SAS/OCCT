@@ -42,8 +42,7 @@ OpenGl_ClippingIterator::OpenGl_ClippingIterator (const OpenGl_Clipping& theClip
 // purpose  :
 // =======================================================================
 OpenGl_Clipping::OpenGl_Clipping ()
-: myEmptyPlaneIds (new NCollection_Shared<Aspect_GenId> (1, 6)),
-  myNbClipping (0),
+: myNbClipping (0),
   myNbCapping  (0),
   myNbDisabled (0)
 {}
@@ -52,7 +51,7 @@ OpenGl_Clipping::OpenGl_Clipping ()
 // function : Init
 // purpose  :
 // =======================================================================
-void OpenGl_Clipping::Init (const Standard_Integer theMaxPlanes)
+void OpenGl_Clipping::Init (const Standard_Integer )
 {
   myPlanesGlobal.Nullify();
   myPlanesLocal.Nullify();
@@ -60,7 +59,6 @@ void OpenGl_Clipping::Init (const Standard_Integer theMaxPlanes)
   myNbClipping = 0;
   myNbCapping  = 0;
   myNbDisabled = 0;
-  myEmptyPlaneIds = new NCollection_Shared<Aspect_GenId> (1, theMaxPlanes);
 }
 
 // =======================================================================
@@ -105,7 +103,7 @@ void OpenGl_Clipping::SetLocalPlanes (const Handle(OpenGl_Context)& theGlCtx,
 // function : add
 // purpose  :
 // =======================================================================
-void OpenGl_Clipping::add (const Handle(OpenGl_Context)& theGlCtx,
+void OpenGl_Clipping::add (const Handle(OpenGl_Context)& ,
                            const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes,
                            const Standard_Integer theStartIndex)
 {
@@ -113,18 +111,6 @@ void OpenGl_Clipping::add (const Handle(OpenGl_Context)& theGlCtx,
   {
     return;
   }
-
-#if !defined(GL_ES_VERSION_2_0)
-  const bool toUseFfp = theGlCtx->core11 != NULL
-                     && theGlCtx->caps->ffpEnable;
-  if (toUseFfp)
-  {
-    // Set either identity or pure view matrix.
-    theGlCtx->ApplyWorldViewMatrix();
-  }
-#else
-  (void )theGlCtx;
-#endif
 
   Standard_Integer aPlaneId = theStartIndex;
   for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (*thePlanes); aPlaneIt.More(); aPlaneIt.Next(), ++aPlaneId)
@@ -136,14 +122,6 @@ void OpenGl_Clipping::add (const Handle(OpenGl_Context)& theGlCtx,
       continue;
     }
 
-  #if !defined(GL_ES_VERSION_2_0)
-    if (toUseFfp && myEmptyPlaneIds->HasFree())
-    {
-      const Standard_Integer anFfpPlaneID = GL_CLIP_PLANE0 + myEmptyPlaneIds->Next();
-      ::glEnable ((GLenum )anFfpPlaneID);
-      theGlCtx->core11->glClipPlane ((GLenum )anFfpPlaneID, aPlane->GetEquation());
-    }
-  #endif
     if (aPlane->IsCapping())
     {
       ++myNbCapping;
@@ -153,21 +131,13 @@ void OpenGl_Clipping::add (const Handle(OpenGl_Context)& theGlCtx,
       ++myNbClipping;
     }
   }
-
-#if !defined(GL_ES_VERSION_2_0)
-  // Restore combined model-view matrix.
-  if (toUseFfp)
-  {
-    theGlCtx->ApplyModelViewMatrix();
-  }
-#endif
 }
 
 // =======================================================================
 // function : remove
 // purpose  :
 // =======================================================================
-void OpenGl_Clipping::remove (const Handle(OpenGl_Context)& theGlCtx,
+void OpenGl_Clipping::remove (const Handle(OpenGl_Context)& ,
                               const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes,
                               const Standard_Integer theStartIndex)
 {
@@ -175,13 +145,6 @@ void OpenGl_Clipping::remove (const Handle(OpenGl_Context)& theGlCtx,
   {
     return;
   }
-
-#if !defined(GL_ES_VERSION_2_0)
-  const bool toUseFfp = theGlCtx->core11 != NULL
-                     && theGlCtx->caps->ffpEnable;
-#else
-  (void )theGlCtx;
-#endif
 
   Standard_Integer aPlaneIndex = theStartIndex;
   for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (*thePlanes); aPlaneIt.More(); aPlaneIt.Next(), ++aPlaneIndex)
@@ -192,18 +155,6 @@ void OpenGl_Clipping::remove (const Handle(OpenGl_Context)& theGlCtx,
     {
       continue;
     }
-
-  #if !defined(GL_ES_VERSION_2_0)
-    const Standard_Integer anFfpPlaneID = myEmptyPlaneIds->Lower() + aPlaneIndex - 1;
-    if (anFfpPlaneID <= myEmptyPlaneIds->Upper())
-    {
-      if (toUseFfp)
-      {
-        ::glDisable (GLenum(GL_CLIP_PLANE0 + anFfpPlaneID));
-      }
-      myEmptyPlaneIds->Free (anFfpPlaneID);
-    }
-  #endif
 
     if (aPlane->IsCapping())
     {
@@ -220,7 +171,7 @@ void OpenGl_Clipping::remove (const Handle(OpenGl_Context)& theGlCtx,
 // function : SetEnabled
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_Clipping::SetEnabled (const Handle(OpenGl_Context)&  theGlCtx,
+Standard_Boolean OpenGl_Clipping::SetEnabled (const Handle(OpenGl_Context)&  ,
                                               const OpenGl_ClippingIterator& thePlane,
                                               const Standard_Boolean         theIsEnabled)
 {
@@ -232,29 +183,6 @@ Standard_Boolean OpenGl_Clipping::SetEnabled (const Handle(OpenGl_Context)&  the
   }
 
   isDisabled = !theIsEnabled;
-
-#if !defined(GL_ES_VERSION_2_0)
-  const bool toUseFfp = theGlCtx->core11 != NULL
-                     && theGlCtx->caps->ffpEnable;
-  if (toUseFfp)
-  {
-    const Standard_Integer anFfpPlaneID = myEmptyPlaneIds->Lower() + aPlaneIndex - 1;
-    if (anFfpPlaneID <= myEmptyPlaneIds->Upper())
-    {
-      if (theIsEnabled)
-      {
-        ::glEnable (GLenum(GL_CLIP_PLANE0 + anFfpPlaneID));
-      }
-      else
-      {
-        ::glDisable (GLenum(GL_CLIP_PLANE0 + anFfpPlaneID));
-      }
-    }
-  }
-#else
-  (void )theGlCtx;
-#endif
-
   if (thePlane.Value()->IsCapping())
   {
     myNbCapping += (theIsEnabled ? 1 : -1);
@@ -271,7 +199,7 @@ Standard_Boolean OpenGl_Clipping::SetEnabled (const Handle(OpenGl_Context)&  the
 // function : RestoreDisabled
 // purpose  :
 // =======================================================================
-void OpenGl_Clipping::RestoreDisabled (const Handle(OpenGl_Context)& theGlCtx)
+void OpenGl_Clipping::RestoreDisabled (const Handle(OpenGl_Context)& )
 {
   if (myNbDisabled == 0)
   {
@@ -279,12 +207,6 @@ void OpenGl_Clipping::RestoreDisabled (const Handle(OpenGl_Context)& theGlCtx)
   }
 
   myNbDisabled = 0;
-#if !defined(GL_ES_VERSION_2_0)
-  const bool toUseFfp = theGlCtx->core11 != NULL
-                     && theGlCtx->caps->ffpEnable;
-#else
-  (void )theGlCtx;
-#endif
   for (OpenGl_ClippingIterator aPlaneIter (*this); aPlaneIter.More(); aPlaneIter.Next())
   {
     Standard_Boolean& isDisabled = myDisabledPlanes.ChangeValue (aPlaneIter.PlaneIndex());
@@ -294,17 +216,6 @@ void OpenGl_Clipping::RestoreDisabled (const Handle(OpenGl_Context)& theGlCtx)
     }
 
     isDisabled = Standard_False;
-  #if !defined(GL_ES_VERSION_2_0)
-    if (toUseFfp)
-    {
-      const Standard_Integer anFfpPlaneID = myEmptyPlaneIds->Lower() + aPlaneIter.PlaneIndex() - 1;
-      if (anFfpPlaneID <= myEmptyPlaneIds->Upper())
-      {
-        ::glEnable (GLenum(GL_CLIP_PLANE0 + anFfpPlaneID));
-      }
-    }
-  #endif
-
     const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIter.Value();
     if (aPlane->IsCapping())
     {

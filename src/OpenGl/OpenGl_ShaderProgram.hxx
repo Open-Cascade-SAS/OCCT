@@ -122,12 +122,10 @@ enum OpenGl_UniformStateType
   OpenGl_MODEL_WORLD_STATE,
   OpenGl_WORLD_VIEW_STATE,
   OpenGl_PROJECTION_STATE,
-  OpenGl_MATERIALS_STATE,
-  OpenGl_SURF_DETAIL_STATE
+  OpenGl_MATERIAL_STATE,
+  OpenGl_SURF_DETAIL_STATE,
+  OpenGl_UniformStateType_NB
 };
-
-//! Total number of state types.
-const int MaxStateTypes = 6;
 
 //! Wrapper for OpenGL program object.
 class OpenGl_ShaderProgram : public OpenGl_Resource
@@ -210,11 +208,22 @@ public:
 private:
 
   //! Returns index of last modification of variables of specified state type.
-  Standard_EXPORT Standard_Size ActiveState (const OpenGl_UniformStateType theType) const;
+  Standard_Size ActiveState (const OpenGl_UniformStateType theType) const
+  {
+    return theType < OpenGl_UniformStateType_NB
+         ? myCurrentState[theType]
+         : 0;
+  }
 
   //! Updates index of last modification of variables of specified state type.
-  Standard_EXPORT void UpdateState (const OpenGl_UniformStateType theType,
-                                    const Standard_Size           theIndex);
+  void UpdateState (const OpenGl_UniformStateType theType,
+                    const Standard_Size           theIndex)
+  {
+    if (theType < OpenGl_UniformStateType_NB)
+    {
+      myCurrentState[theType] = theIndex;
+    }
+  }
 
 public:
 
@@ -540,7 +549,7 @@ protected:
 
 protected:
 
-  Standard_Size myCurrentState[MaxStateTypes];  //!< defines last modification for variables of each state type
+  Standard_Size myCurrentState[OpenGl_UniformStateType_NB]; //!< defines last modification for variables of each state type
 
   //! Stores locations of OCCT state uniform variables.
   GLint myStateLocations[OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES];

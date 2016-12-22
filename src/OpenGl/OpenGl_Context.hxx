@@ -30,6 +30,7 @@
 #include <Message.hxx>
 #include <OpenGl_Caps.hxx>
 #include <OpenGl_LineAttributes.hxx>
+#include <OpenGl_Material.hxx>
 #include <OpenGl_MatrixState.hxx>
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_Resource.hxx>
@@ -184,6 +185,8 @@ DEFINE_STANDARD_HANDLE(OpenGl_Context, Standard_Transient)
 //! For this reason OpenGl_Context should be initialized and used for each GL context independently.
 class OpenGl_Context : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(OpenGl_Context, Standard_Transient)
+  friend class OpenGl_Window;
 public:
 
   //! Function for getting power of to number larger or equal to input number.
@@ -624,7 +627,9 @@ public: //! @name methods to alter or retrieve current state
 
   //! Setup current shading material.
   Standard_EXPORT void SetShadingMaterial (const OpenGl_AspectFace* theAspect,
-                                           const Handle(Graphic3d_PresentationAttributes)& theHighlight = Handle(Graphic3d_PresentationAttributes)());
+                                           const Handle(Graphic3d_PresentationAttributes)& theHighlight,
+                                           const Standard_Boolean theUseDepthWrite,
+                                           Standard_Integer& theRenderingPassFlags);
 
   //! Setup current color.
   Standard_EXPORT void SetColor4fv (const OpenGl_Vec4& theColor);
@@ -739,6 +744,12 @@ public: //! @name extensions
   Standard_Boolean       atiMem;         //!< GL_ATI_meminfo
   Standard_Boolean       nvxMem;         //!< GL_NVX_gpu_memory_info
 
+public: //! @name public properties tracking current state
+
+  OpenGl_MatrixState<Standard_ShortReal> ModelWorldState; //!< state of orientation matrix
+  OpenGl_MatrixState<Standard_ShortReal> WorldViewState;  //!< state of orientation matrix
+  OpenGl_MatrixState<Standard_ShortReal> ProjectionState; //!< state of projection  matrix
+
 private: // system-dependent fields
 
 #if defined(HAVE_EGL)
@@ -812,25 +823,15 @@ private: //! @name fields tracking current state
   TCollection_AsciiString       myVendor;          //!< Graphics Driver's vendor
   TColStd_PackedMapOfInteger    myFilters[6];      //!< messages suppressing filter (for sources from GL_DEBUG_SOURCE_API_ARB to GL_DEBUG_SOURCE_OTHER_ARB)
   Standard_ShortReal            myResolutionRatio; //!< scaling factor for parameters like text size
-                                                  //!< to be properly displayed on device (screen / printer)
-
-public:
-
-  OpenGl_MatrixState<Standard_ShortReal> ModelWorldState; //!< state of orientation matrix
-  OpenGl_MatrixState<Standard_ShortReal> WorldViewState;  //!< state of orientation matrix
-  OpenGl_MatrixState<Standard_ShortReal> ProjectionState; //!< state of projection  matrix
+                                                   //!< to be properly displayed on device (screen / printer)
+  OpenGl_Material               myMatFront;        //!< current front material state (cached to reduce GL context updates)
+  OpenGl_Material               myMatBack;         //!< current back  material state
 
 private:
 
   //! Copying allowed only within Handles
   OpenGl_Context            (const OpenGl_Context& );
   OpenGl_Context& operator= (const OpenGl_Context& );
-
-public:
-
-  DEFINE_STANDARD_RTTIEXT(OpenGl_Context,Standard_Transient) // Type definition
-
-  friend class OpenGl_Window;
 
 };
 

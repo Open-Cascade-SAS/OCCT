@@ -21,6 +21,7 @@
 #include <OpenGl_AspectFace.hxx>
 #include <OpenGl_CappingAlgo.hxx>
 #include <OpenGl_FrameBuffer.hxx>
+#include <OpenGl_Material.hxx>
 #include <OpenGl_Matrix.hxx>
 #include <OpenGl_NamedStatus.hxx>
 #include <OpenGl_RenderFilter.hxx>
@@ -33,40 +34,6 @@
 
 class OpenGl_View;
 class Image_PixMap;
-
-//! OpenGL material definition
-struct OpenGl_Material
-{
-
-  OpenGl_Vec4 Ambient;  //!< ambient reflection coefficient
-  OpenGl_Vec4 Diffuse;  //!< diffuse reflection coefficient
-  OpenGl_Vec4 Specular; //!< glossy  reflection coefficient
-  OpenGl_Vec4 Emission; //!< material emission
-  OpenGl_Vec4 Params;   //!< extra packed parameters
-
-  Standard_ShortReal  Shine()              const { return Params.x(); }
-  Standard_ShortReal& ChangeShine()              { return Params.x(); }
-
-  Standard_ShortReal  Transparency()       const { return Params.y(); }
-  Standard_ShortReal& ChangeTransparency()       { return Params.y(); }
-
-  //! Set material color.
-  void SetColor (const OpenGl_Vec4& theColor)
-  {
-    // apply the same formula as in Graphic3d_MaterialAspect::SetColor()
-    Ambient.xyz() = theColor.rgb() * 0.25f;
-    Diffuse.xyz() = theColor.rgb();
-  }
-
-  //! Initialize material
-  void Init (const Graphic3d_MaterialAspect& theProp,
-             const Quantity_Color&           theInteriorColor);
-
-  //! Returns packed (serialized) representation of material properties
-  const OpenGl_Vec4* Packed() const { return reinterpret_cast<const OpenGl_Vec4*> (this); }
-  static Standard_Integer NbOfVec4() { return 5; }
-
-};
 
 class OpenGl_RaytraceFilter;
 DEFINE_STANDARD_HANDLE (OpenGl_RaytraceFilter, OpenGl_RenderFilter)
@@ -335,14 +302,6 @@ public:
 
 protected:
 
-  enum
-  {
-    TEL_FRONT_MATERIAL = 1,
-    TEL_BACK_MATERIAL  = 2
-  };
-
-  void updateMaterial (const int theFlag);
-
   void setTextureParams (Handle(OpenGl_Texture)&                theTexture,
                          const Handle(Graphic3d_TextureParams)& theParams);
 
@@ -367,14 +326,11 @@ protected: //! @name fields related to status
   const OpenGl_AspectMarker* myAspectMarkerSet;
   Handle(Graphic3d_AspectMarker3d) myAspectMarkerApplied;
   const OpenGl_AspectText*   myAspectTextSet;
-  bool                       myAspectFaceAppliedWithHL;
+  Handle(Graphic3d_PresentationAttributes) myAspectFaceAppliedWithHL;
 
   const OpenGl_Matrix* ViewMatrix_applied;
   const OpenGl_Matrix* StructureMatrix_applied;
 
-  OpenGl_Material myMatFront;    //!< current front material state (cached to reduce GL context updates)
-  OpenGl_Material myMatBack;     //!< current back  material state
-  OpenGl_Material myMatTmp;      //!< temporary variable
   bool            myToAllowFaceCulling; //!< allow back face culling
   Handle(Graphic3d_PresentationAttributes) myHighlightStyle; //!< active highlight style
 

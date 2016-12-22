@@ -30,6 +30,7 @@
 #include <OpenGl_Element.hxx>
 #include <OpenGl_GlCore20.hxx>
 #include <OpenGl_GraphicDriver.hxx>
+#include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OSD_Environment.hxx>
 #include <OSD_File.hxx>
@@ -156,7 +157,8 @@ void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   // this sample does not use GLSL programs - make sure it is disabled
   Handle(OpenGl_Context) aCtx = theWorkspace->GetGlContext();
-  aCtx->BindProgram (NULL);
+  aCtx->BindProgram (Handle(OpenGl_ShaderProgram)());
+  aCtx->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
 
   // To test linking against OpenGl_Workspace and all aspect classes
   const OpenGl_AspectMarker* aMA = theWorkspace->AspectMarker();

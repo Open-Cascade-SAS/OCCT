@@ -120,12 +120,7 @@ inline void OpenGl_VertexBuffer::unbindFixed (const Handle(OpenGl_Context)&   th
     case Graphic3d_TOA_POS:   theCtx->core11->glDisableClientState (GL_VERTEX_ARRAY);        return;
     case Graphic3d_TOA_NORM:  theCtx->core11->glDisableClientState (GL_NORMAL_ARRAY);        return;
     case Graphic3d_TOA_UV:    theCtx->core11->glDisableClientState (GL_TEXTURE_COORD_ARRAY); return;
-    case Graphic3d_TOA_COLOR:
-    {
-      theCtx->core11->glDisableClientState (GL_COLOR_ARRAY);
-      theCtx->core11fwd->glDisable (GL_COLOR_MATERIAL);
-      return;
-    }
+    case Graphic3d_TOA_COLOR: unbindFixedColor (theCtx); return;
     case Graphic3d_TOA_CUSTOM:
     {
       return;

@@ -249,6 +249,88 @@ const char THE_FRAG_CLIP_PLANES_2[] =
   EOL"    discard;"
   EOL"  }";
 
+#if !defined(GL_ES_VERSION_2_0)
+
+  static const GLfloat THE_DEFAULT_AMBIENT[4]    = { 0.0f, 0.0f, 0.0f, 1.0f };
+  static const GLfloat THE_DEFAULT_SPOT_DIR[3]   = { 0.0f, 0.0f, -1.0f };
+  static const GLfloat THE_DEFAULT_SPOT_EXPONENT = 0.0f;
+  static const GLfloat THE_DEFAULT_SPOT_CUTOFF   = 180.0f;
+
+  //! Bind FFP light source.
+  static void bindLight (const OpenGl_Light& theLight,
+                         const GLenum        theLightGlId,
+                         const OpenGl_Mat4&  theModelView,
+                         OpenGl_Context*     theCtx)
+  {
+    // the light is a headlight?
+    if (theLight.IsHeadlight)
+    {
+      theCtx->core11->glMatrixMode (GL_MODELVIEW);
+      theCtx->core11->glLoadIdentity();
+    }
+
+    // setup light type
+    switch (theLight.Type)
+    {
+      case Graphic3d_TOLS_AMBIENT    : break; // handled by separate if-clause at beginning of method
+      case Graphic3d_TOLS_DIRECTIONAL:
+      {
+        // if the last parameter of GL_POSITION, is zero, the corresponding light source is a Directional one
+        const OpenGl_Vec4 anInfDir = -theLight.Direction;
+
+        // to create a realistic effect,  set the GL_SPECULAR parameter to the same value as the GL_DIFFUSE.
+        theCtx->core11->glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
+        theCtx->core11->glLightfv (theLightGlId, GL_DIFFUSE,               theLight.Color.GetData());
+        theCtx->core11->glLightfv (theLightGlId, GL_SPECULAR,              theLight.Color.GetData());
+        theCtx->core11->glLightfv (theLightGlId, GL_POSITION,              anInfDir.GetData());
+        theCtx->core11->glLightfv (theLightGlId, GL_SPOT_DIRECTION,        THE_DEFAULT_SPOT_DIR);
+        theCtx->core11->glLightf  (theLightGlId, GL_SPOT_EXPONENT,         THE_DEFAULT_SPOT_EXPONENT);
+        theCtx->core11->glLightf  (theLightGlId, GL_SPOT_CUTOFF,           THE_DEFAULT_SPOT_CUTOFF);
+        break;
+      }
+      case Graphic3d_TOLS_POSITIONAL:
+      {
+        // to create a realistic effect, set the GL_SPECULAR parameter to the same value as the GL_DIFFUSE
+        const OpenGl_Vec4 aPosition (static_cast<float>(theLight.Position.x()), static_cast<float>(theLight.Position.y()), static_cast<float>(theLight.Position.z()), 1.0f);
+        theCtx->core11->glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
+        theCtx->core11->glLightfv (theLightGlId, GL_DIFFUSE,               theLight.Color.GetData());
+        theCtx->core11->glLightfv (theLightGlId, GL_SPECULAR,              theLight.Color.GetData());
+        theCtx->core11->glLightfv (theLightGlId, GL_POSITION,              aPosition.GetData());
+        theCtx->core11->glLightfv (theLightGlId, GL_SPOT_DIRECTION,        THE_DEFAULT_SPOT_DIR);
+        theCtx->core11->glLightf  (theLightGlId, GL_SPOT_EXPONENT,         THE_DEFAULT_SPOT_EXPONENT);
+        theCtx->core11->glLightf  (theLightGlId, GL_SPOT_CUTOFF,           THE_DEFAULT_SPOT_CUTOFF);
+        theCtx->core11->glLightf  (theLightGlId, GL_CONSTANT_ATTENUATION,  theLight.ConstAttenuation());
+        theCtx->core11->glLightf  (theLightGlId, GL_LINEAR_ATTENUATION,    theLight.LinearAttenuation());
+        theCtx->core11->glLightf  (theLightGlId, GL_QUADRATIC_ATTENUATION, 0.0);
+        break;
+      }
+      case Graphic3d_TOLS_SPOT:
+      {
+        const OpenGl_Vec4 aPosition (static_cast<float>(theLight.Position.x()), static_cast<float>(theLight.Position.y()), static_cast<float>(theLight.Position.z()), 1.0f);
+        theCtx->core11->glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
+        theCtx->core11->glLightfv (theLightGlId, GL_DIFFUSE,               theLight.Color.GetData());
+        theCtx->core11->glLightfv (theLightGlId, GL_SPECULAR,              theLight.Color.GetData());
+        theCtx->core11->glLightfv (theLightGlId, GL_POSITION,              aPosition.GetData());
+        theCtx->core11->glLightfv (theLightGlId, GL_SPOT_DIRECTION,        theLight.Direction.GetData());
+        theCtx->core11->glLightf  (theLightGlId, GL_SPOT_EXPONENT,         theLight.Concentration() * 128.0f);
+        theCtx->core11->glLightf  (theLightGlId, GL_SPOT_CUTOFF,          (theLight.Angle() * 180.0f) / GLfloat(M_PI));
+        theCtx->core11->glLightf  (theLightGlId, GL_CONSTANT_ATTENUATION,  theLight.ConstAttenuation());
+        theCtx->core11->glLightf  (theLightGlId, GL_LINEAR_ATTENUATION,    theLight.LinearAttenuation());
+        theCtx->core11->glLightf  (theLightGlId, GL_QUADRATIC_ATTENUATION, 0.0f);
+        break;
+      }
+    }
+
+    // restore matrix in case of headlight
+    if (theLight.IsHeadlight)
+    {
+      theCtx->core11->glLoadMatrixf (theModelView.GetData());
+    }
+
+    glEnable (theLightGlId);
+  }
+#endif
+
 }
 
 // =======================================================================
@@ -256,7 +338,8 @@ const char THE_FRAG_CLIP_PLANES_2[] =
 // purpose  : Creates new empty shader manager
 // =======================================================================
 OpenGl_ShaderManager::OpenGl_ShaderManager (OpenGl_Context* theContext)
-: myShadingModel (Graphic3d_TOSM_VERTEX),
+: myFfpProgram (new OpenGl_ShaderProgramFFP()),
+  myShadingModel (Graphic3d_TOSM_VERTEX),
   myContext  (theContext),
   myHasLocalOrigin (Standard_False),
   myLastView (NULL)
@@ -481,50 +564,68 @@ void OpenGl_ShaderManager::UpdateWorldViewStateTo (const OpenGl_Mat4& theWorldVi
 }
 
 // =======================================================================
-// function : LightSourceState
-// purpose  : Returns current state of OCCT light sources
-// =======================================================================
-const OpenGl_LightSourceState& OpenGl_ShaderManager::LightSourceState() const
-{
-  return myLightSourceState;
-}
-
-// =======================================================================
-// function : ProjectionState
-// purpose  : Returns current state of OCCT projection transform
-// =======================================================================
-const OpenGl_ProjectionState& OpenGl_ShaderManager::ProjectionState() const
-{
-  return myProjectionState;
-}
-
-// =======================================================================
-// function : ModelWorldState
-// purpose  : Returns current state of OCCT model-world transform
-// =======================================================================
-const OpenGl_ModelWorldState& OpenGl_ShaderManager::ModelWorldState() const
-{
-  return myModelWorldState;
-}
-
-// =======================================================================
-// function : WorldViewState
-// purpose  : Returns current state of OCCT world-view transform
-// =======================================================================
-const OpenGl_WorldViewState& OpenGl_ShaderManager::WorldViewState() const
-{
-  return myWorldViewState;
-}
-
-// =======================================================================
 // function : PushLightSourceState
 // purpose  : Pushes state of OCCT light sources to the program
 // =======================================================================
 void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
-  if (myLightSourceState.Index() == theProgram->ActiveState (OpenGl_LIGHT_SOURCES_STATE)
-   || !theProgram->IsValid())
+  if (myLightSourceState.Index() == theProgram->ActiveState (OpenGl_LIGHT_SOURCES_STATE))
   {
+    return;
+  }
+
+  theProgram->UpdateState (OpenGl_LIGHT_SOURCES_STATE, myLightSourceState.Index());
+  if (theProgram == myFfpProgram)
+  {
+  #if !defined(GL_ES_VERSION_2_0)
+    if (myContext->core11 == NULL)
+    {
+      return;
+    }
+
+    if (myContext->core11 != NULL)
+    {
+      GLenum aLightGlId = GL_LIGHT0;
+      OpenGl_Vec4 anAmbient (0.0f, 0.0f, 0.0f, 0.0f);
+      const OpenGl_Mat4 aModelView = myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
+      for (OpenGl_ListOfLight::Iterator aLightIt (*myLightSourceState.LightSources()); aLightIt.More(); aLightIt.Next())
+      {
+        const OpenGl_Light& aLight = aLightIt.Value();
+        if (aLight.Type == Graphic3d_TOLS_AMBIENT)
+        {
+          anAmbient += aLight.Color;
+          continue;
+        }
+        else if (aLightGlId > GL_LIGHT7) // OpenGLMaxLights - only 8 lights in OpenGL...
+        {
+          continue;
+        }
+
+        bindLight (aLightIt.Value(), aLightGlId, aModelView, myContext);
+        ++aLightGlId;
+      }
+
+      // apply accumulated ambient color
+      anAmbient.a() = 1.0f;
+      myContext->core11->glLightModelfv (GL_LIGHT_MODEL_AMBIENT, anAmbient.GetData());
+
+      // GL_LIGHTING is managed by drawers to switch between shaded / no lighting output,
+      // therefore managing the state here does not have any effect - do it just for consistency.
+      if (aLightGlId != GL_LIGHT0)
+      {
+        ::glEnable (GL_LIGHTING);
+      }
+      else
+      {
+        ::glDisable (GL_LIGHTING);
+      }
+      // switch off unused lights
+      for (; aLightGlId <= GL_LIGHT7; ++aLightGlId)
+      {
+        ::glDisable (aLightGlId);
+      }
+    }
+  #endif
     return;
   }
 
@@ -546,7 +647,6 @@ void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgr
                             theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_TYPES),
                             OpenGLMaxLights * OpenGl_ShaderLightType::NbOfVec2i(),
                             myLightTypeArray[0].Packed());
-    theProgram->UpdateState (OpenGl_LIGHT_SOURCES_STATE, myLightSourceState.Index());
     return;
   }
 
@@ -615,8 +715,6 @@ void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgr
                             aLightsNb * OpenGl_ShaderLightParameters::NbOfVec4(),
                             myLightParamsArray[0].Packed());
   }
-
-  theProgram->UpdateState (OpenGl_LIGHT_SOURCES_STATE, myLightSourceState.Index());
 }
 
 // =======================================================================
@@ -627,6 +725,19 @@ void OpenGl_ShaderManager::PushProjectionState (const Handle(OpenGl_ShaderProgra
 {
   if (myProjectionState.Index() == theProgram->ActiveState (OpenGl_PROJECTION_STATE))
   {
+    return;
+  }
+
+  theProgram->UpdateState (OpenGl_PROJECTION_STATE, myProjectionState.Index());
+  if (theProgram == myFfpProgram)
+  {
+  #if !defined(GL_ES_VERSION_2_0)
+    if (myContext->core11 != NULL)
+    {
+      myContext->core11->glMatrixMode (GL_PROJECTION);
+      myContext->core11->glLoadMatrixf (myProjectionState.ProjectionMatrix());
+    }
+  #endif
     return;
   }
 
@@ -649,8 +760,6 @@ void OpenGl_ShaderManager::PushProjectionState (const Handle(OpenGl_ShaderProgra
   {
     theProgram->SetUniform (myContext, aLocation, myProjectionState.ProjectionMatrixInverse(), true);
   }
-
-  theProgram->UpdateState (OpenGl_PROJECTION_STATE, myProjectionState.Index());
 }
 
 // =======================================================================
@@ -661,6 +770,21 @@ void OpenGl_ShaderManager::PushModelWorldState (const Handle(OpenGl_ShaderProgra
 {
   if (myModelWorldState.Index() == theProgram->ActiveState (OpenGl_MODEL_WORLD_STATE))
   {
+    return;
+  }
+
+  theProgram->UpdateState (OpenGl_MODEL_WORLD_STATE, myModelWorldState.Index());
+  if (theProgram == myFfpProgram)
+  {
+  #if !defined(GL_ES_VERSION_2_0)
+    if (myContext->core11 != NULL)
+    {
+      const OpenGl_Mat4 aModelView = myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
+      myContext->core11->glMatrixMode (GL_MODELVIEW);
+      myContext->core11->glLoadMatrixf (aModelView.GetData());
+      theProgram->UpdateState (OpenGl_WORLD_VIEW_STATE, myWorldViewState.Index());
+    }
+  #endif
     return;
   }
 
@@ -683,8 +807,6 @@ void OpenGl_ShaderManager::PushModelWorldState (const Handle(OpenGl_ShaderProgra
   {
     theProgram->SetUniform (myContext, aLocation, myModelWorldState.ModelWorldMatrixInverse(), true);
   }
-
-  theProgram->UpdateState (OpenGl_MODEL_WORLD_STATE, myModelWorldState.Index());
 }
 
 // =======================================================================
@@ -695,6 +817,21 @@ void OpenGl_ShaderManager::PushWorldViewState (const Handle(OpenGl_ShaderProgram
 {
   if (myWorldViewState.Index() == theProgram->ActiveState (OpenGl_WORLD_VIEW_STATE))
   {
+    return;
+  }
+
+  theProgram->UpdateState (OpenGl_WORLD_VIEW_STATE, myWorldViewState.Index());
+  if (theProgram == myFfpProgram)
+  {
+  #if !defined(GL_ES_VERSION_2_0)
+    if (myContext->core11 != NULL)
+    {
+      const OpenGl_Mat4 aModelView = myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
+      myContext->core11->glMatrixMode (GL_MODELVIEW);
+      myContext->core11->glLoadMatrixf (aModelView.GetData());
+      theProgram->UpdateState (OpenGl_MODEL_WORLD_STATE, myModelWorldState.Index());
+    }
+  #endif
     return;
   }
 
@@ -717,8 +854,6 @@ void OpenGl_ShaderManager::PushWorldViewState (const Handle(OpenGl_ShaderProgram
   {
     theProgram->SetUniform (myContext, aLocation, myWorldViewState.WorldViewMatrixInverse(), true);
   }
-
-  theProgram->UpdateState (OpenGl_WORLD_VIEW_STATE, myWorldViewState.Index());
 }
 
 // =======================================================================
@@ -751,6 +886,77 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
   }
 
   theProgram->UpdateState (OpenGl_CLIP_PLANES_STATE, myClippingState.Index());
+  if (theProgram == myFfpProgram)
+  {
+  #if !defined(GL_ES_VERSION_2_0)
+    if (myContext->core11 == NULL)
+    {
+      return;
+    }
+
+    const Standard_Integer aNbMaxPlanes = Min (myContext->MaxClipPlanes(), THE_MAX_CLIP_PLANES);
+    OpenGl_Vec4d anEquations[THE_MAX_CLIP_PLANES];
+    Standard_Integer aPlaneId = 0;
+    Standard_Boolean toRestoreModelView = Standard_False;
+    for (OpenGl_ClippingIterator aPlaneIter (myContext->Clipping()); aPlaneIter.More(); aPlaneIter.Next())
+    {
+      const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIter.Value();
+      if (aPlaneIter.IsDisabled())
+      {
+        continue;
+      }
+      else if (aPlaneId >= aNbMaxPlanes)
+      {
+        myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+                                GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_MEDIUM,
+                                TCollection_ExtendedString("Warning: clipping planes limit (") + aNbMaxPlanes + ") has been exceeded.");
+        break;
+      }
+
+      const Graphic3d_ClipPlane::Equation& anEquation = aPlane->GetEquation();
+      OpenGl_Vec4d& aPlaneEq = anEquations[aPlaneId];
+      aPlaneEq.x() = anEquation.x();
+      aPlaneEq.y() = anEquation.y();
+      aPlaneEq.z() = anEquation.z();
+      aPlaneEq.w() = anEquation.w();
+      if (myHasLocalOrigin)
+      {
+        const gp_XYZ        aPos = aPlane->ToPlane().Position().Location().XYZ() - myLocalOrigin;
+        const Standard_Real aD   = -(anEquation.x() * aPos.X() + anEquation.y() * aPos.Y() + anEquation.z() * aPos.Z());
+        aPlaneEq.w() = aD;
+      }
+
+      const GLenum anFfpPlaneID = GL_CLIP_PLANE0 + aPlaneId;
+      if (anFfpPlaneID == GL_CLIP_PLANE0)
+      {
+        // set either identity or pure view matrix
+        toRestoreModelView = Standard_True;
+        myContext->core11->glMatrixMode (GL_MODELVIEW);
+        myContext->core11->glLoadMatrixf (myWorldViewState.WorldViewMatrix().GetData());
+      }
+
+      ::glEnable (anFfpPlaneID);
+      myContext->core11->glClipPlane (anFfpPlaneID, aPlaneEq);
+
+      ++aPlaneId;
+    }
+
+    // switch off unused lights
+    for (; aPlaneId < aNbMaxPlanes; ++aPlaneId)
+    {
+      ::glDisable (GL_CLIP_PLANE0 + aPlaneId);
+    }
+
+    // restore combined model-view matrix
+    if (toRestoreModelView)
+    {
+      const OpenGl_Mat4 aModelView = myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
+      myContext->core11->glLoadMatrixf (aModelView.GetData());
+    }
+  #endif
+    return;
+  }
+
   const GLint aLocEquations = theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_EQUATIONS);
   if (aLocEquations == OpenGl_ShaderProgram::INVALID_LOCATION)
   {
@@ -802,16 +1008,80 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
 }
 
 // =======================================================================
+// function : PushMaterialState
+// purpose  :
+// =======================================================================
+void OpenGl_ShaderManager::PushMaterialState (const Handle(OpenGl_ShaderProgram)& theProgram) const
+{
+  if (myMaterialState.Index() == theProgram->ActiveState (OpenGl_MATERIAL_STATE))
+  {
+    return;
+  }
+
+  const OpenGl_Material& aFrontMat = myMaterialState.FrontMaterial();
+  const OpenGl_Material& aBackMat  = myMaterialState.BackMaterial();
+  theProgram->UpdateState (OpenGl_MATERIAL_STATE, myMaterialState.Index());
+  if (theProgram == myFfpProgram)
+  {
+  #if !defined(GL_ES_VERSION_2_0)
+    if (myContext->core11 == NULL)
+    {
+      return;
+    }
+
+    const GLenum aFrontFace = myMaterialState.ToDistinguish() ? GL_FRONT : GL_FRONT_AND_BACK;
+    myContext->core11->glMaterialfv(aFrontFace, GL_AMBIENT,   aFrontMat.Ambient.GetData());
+    myContext->core11->glMaterialfv(aFrontFace, GL_DIFFUSE,   aFrontMat.Diffuse.GetData());
+    myContext->core11->glMaterialfv(aFrontFace, GL_SPECULAR,  aFrontMat.Specular.GetData());
+    myContext->core11->glMaterialfv(aFrontFace, GL_EMISSION,  aFrontMat.Emission.GetData());
+    myContext->core11->glMaterialf (aFrontFace, GL_SHININESS, aFrontMat.Shine());
+    if (myMaterialState.ToDistinguish())
+    {
+      myContext->core11->glMaterialfv(GL_BACK, GL_AMBIENT,   aBackMat.Ambient.GetData());
+      myContext->core11->glMaterialfv(GL_BACK, GL_DIFFUSE,   aBackMat.Diffuse.GetData());
+      myContext->core11->glMaterialfv(GL_BACK, GL_SPECULAR,  aBackMat.Specular.GetData());
+      myContext->core11->glMaterialfv(GL_BACK, GL_EMISSION,  aBackMat.Emission.GetData());
+      myContext->core11->glMaterialf (GL_BACK, GL_SHININESS, aBackMat.Shine());
+    }
+  #endif
+    return;
+  }
+
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCCT_TEXTURE_ENABLE),
+                          myMaterialState.ToMapTexture()  ? 1 : 0);
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCCT_DISTINGUISH_MODE),
+                          myMaterialState.ToDistinguish() ? 1 : 0);
+
+  const GLint aLocFront = theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL);
+  if (aLocFront != OpenGl_ShaderProgram::INVALID_LOCATION)
+  {
+    theProgram->SetUniform (myContext, aLocFront, OpenGl_Material::NbOfVec4(),
+                            aFrontMat.Packed());
+  }
+
+  const GLint aLocBack = theProgram->GetStateLocation (OpenGl_OCCT_BACK_MATERIAL);
+  if (aLocBack != OpenGl_ShaderProgram::INVALID_LOCATION)
+  {
+    theProgram->SetUniform (myContext, aLocBack,  OpenGl_Material::NbOfVec4(),
+                            aBackMat.Packed());
+  }
+}
+
+// =======================================================================
 // function : PushState
 // purpose  : Pushes state of OCCT graphics parameters to the program
 // =======================================================================
 void OpenGl_ShaderManager::PushState (const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
-  PushClippingState    (theProgram);
-  PushWorldViewState   (theProgram);
-  PushModelWorldState  (theProgram);
-  PushProjectionState  (theProgram);
-  PushLightSourceState (theProgram);
+  const Handle(OpenGl_ShaderProgram)& aProgram = !theProgram.IsNull() ? theProgram : myFfpProgram;
+  PushClippingState    (aProgram);
+  PushWorldViewState   (aProgram);
+  PushModelWorldState  (aProgram);
+  PushProjectionState  (aProgram);
+  PushLightSourceState (aProgram);
+  PushMaterialState    (aProgram);
 }
 
 // =======================================================================
@@ -1776,12 +2046,12 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
 // =======================================================================
 Standard_Boolean OpenGl_ShaderManager::bindProgramWithState (const Handle(OpenGl_ShaderProgram)& theProgram)
 {
-  if (!myContext->BindProgram (theProgram))
+  const Standard_Boolean isBound = myContext->BindProgram (theProgram);
+  if (isBound
+  && !theProgram.IsNull())
   {
-    return Standard_False;
+    theProgram->ApplyVariables (myContext);
   }
-  theProgram->ApplyVariables (myContext);
-
   PushState (theProgram);
-  return Standard_True;
+  return isBound;
 }

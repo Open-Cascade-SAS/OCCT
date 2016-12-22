@@ -72,6 +72,21 @@ public:
   //! Alias to 2nd component as Y coordinate in XY.
   Element_t& y() { return v[1]; }
 
+  //! Check this vector with another vector for equality (without tolerance!).
+  bool IsEqual (const NCollection_Vec2& theOther) const
+  {
+    return v[0] == theOther.v[0]
+        && v[1] == theOther.v[1];
+  }
+
+  //! Check this vector with another vector for equality (without tolerance!).
+  bool operator== (const NCollection_Vec2& theOther)       { return IsEqual (theOther); }
+  bool operator== (const NCollection_Vec2& theOther) const { return IsEqual (theOther); }
+
+  //! Check this vector with another vector for non-equality (without tolerance!).
+  bool operator!= (const NCollection_Vec2& theOther)       { return !IsEqual (theOther); }
+  bool operator!= (const NCollection_Vec2& theOther) const { return !IsEqual (theOther); }
+
   //! Raw access to the data (for OpenGL exchange).
   const Element_t* GetData()    const { return v; }
         Element_t* ChangeData()       { return v; }

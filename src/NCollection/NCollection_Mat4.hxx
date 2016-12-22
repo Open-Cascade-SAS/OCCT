@@ -185,6 +185,20 @@ public:
     return std::memcmp (this, myIdentityArray, sizeof (NCollection_Mat4)) == 0;
   }
 
+  //! Check this matrix for equality with another matrix (without tolerance!).
+  bool IsEqual (const NCollection_Mat4& theOther) const
+  {
+    return std::memcmp (this, &theOther, sizeof(NCollection_Mat4)) == 0;
+  }
+
+  //! Check this matrix for equality with another matrix (without tolerance!).
+  bool operator== (const NCollection_Mat4& theOther)       { return IsEqual (theOther); }
+  bool operator== (const NCollection_Mat4& theOther) const { return IsEqual (theOther); }
+
+  //! Check this matrix for non-equality with another matrix (without tolerance!).
+  bool operator!= (const NCollection_Mat4& theOther)       { return !IsEqual (theOther); }
+  bool operator!= (const NCollection_Mat4& theOther) const { return !IsEqual (theOther); }
+
   //! Raw access to the data (for OpenGL exchange).
   const Element_t* GetData()    const { return myMat; }
   Element_t*       ChangeData()       { return myMat; }
@@ -455,5 +469,12 @@ Element_t NCollection_Mat4<Element_t>::myIdentityArray[] =
    0, 1, 0, 0,
    0, 0, 1, 0,
    0, 0, 0, 1};
+
+#if defined(_MSC_VER) && (_MSC_VER >= 1900)
+  #include <type_traits>
+
+  static_assert(std::is_trivially_copyable<NCollection_Mat4<float>>::value, "NCollection_Mat4 is not is_trivially_copyable() structure!");
+  static_assert(std::is_standard_layout   <NCollection_Mat4<float>>::value, "NCollection_Mat4 is not is_standard_layout() structure!");
+#endif
 
 #endif // _NCollection_Mat4_HeaderFile

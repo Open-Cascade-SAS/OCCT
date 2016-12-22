@@ -16,7 +16,6 @@
 #ifndef _OpenGl_Clipping_H__
 #define _OpenGl_Clipping_H__
 
-#include <Aspect_GenId.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_TypeDef.hxx>
@@ -119,7 +118,6 @@ private:
   Handle(Graphic3d_SequenceOfHClipPlane)   myPlanesLocal;    //!< object clipping planes
   NCollection_Vector<Standard_Boolean>     myDisabledPlanes; //!< ids of disabled planes
   NCollection_Vector<Standard_Boolean>     mySkipFilter;     //!< ids of planes that were disabled before calling ::DisableAllExcept()
-  Handle(NCollection_Shared<Aspect_GenId>) myEmptyPlaneIds;  //!< generator of empty ids for FFP clipping planes
   Standard_Integer                         myNbClipping;     //!< number of enabled clipping-only planes (NOT capping)
   Standard_Integer                         myNbCapping;      //!< number of enabled capping  planes
   Standard_Integer                         myNbDisabled;     //!< number of defined but disabled planes

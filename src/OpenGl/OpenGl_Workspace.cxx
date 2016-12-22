@@ -27,6 +27,7 @@
 #include <OpenGl_SceneGeometry.hxx>
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_Sampler.hxx>
+#include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Window.hxx>
@@ -140,7 +141,6 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
   myAspectFaceSet (&myDefaultAspectFace),
   myAspectMarkerSet (&myDefaultAspectMarker),
   myAspectTextSet (&myDefaultAspectText),
-  myAspectFaceAppliedWithHL (false),
   //
   ViewMatrix_applied (&myDefaultMatrix),
   StructureMatrix_applied (&myDefaultMatrix),
@@ -193,6 +193,13 @@ Standard_Boolean OpenGl_Workspace::Activate()
 
   ResetAppliedAspect();
 
+  // reset state for safety
+  myGlContext->BindProgram (Handle(OpenGl_ShaderProgram)());
+  if (myGlContext->core20fwd != NULL)
+  {
+    myGlContext->core20fwd->glUseProgram (OpenGl_ShaderProgram::NO_PROGRAM);
+  }
+  myGlContext->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
   return Standard_True;
 }
 
@@ -204,7 +211,7 @@ void OpenGl_Workspace::ResetAppliedAspect()
 {
   myGlContext->BindDefaultVao();
 
-  NamedStatus           = !myTextureBound.IsNull() ? OPENGL_NS_TEXTURE : 0;
+  NamedStatus           = 0;
   myHighlightStyle.Nullify();
   myToAllowFaceCulling  = false;
   myAspectLineSet       = &myDefaultAspectLine;
@@ -564,163 +571,6 @@ Handle(OpenGl_Texture) OpenGl_Workspace::EnableTexture (const Handle(OpenGl_Text
 }
 
 // =======================================================================
-// function : updateMaterial
-// purpose  :
-// =======================================================================
-void OpenGl_Workspace::updateMaterial (const int theFlag)
-{
-  // Case of hidden line
-  if (myAspectFaceSet->Aspect()->InteriorStyle() == Aspect_IS_HIDDENLINE)
-  {
-    // copy all values including line edge aspect
-    *myAspectFaceHl.Aspect().operator->() = *myAspectFaceSet->Aspect();
-    myAspectFaceHl.SetAspectEdge (myAspectFaceSet->AspectEdge());
-    myAspectFaceHl.Aspect()->SetInteriorColor (myView->BackgroundColor().GetRGB());
-    myAspectFaceHl.SetNoLighting (true);
-    myAspectFaceSet = &myAspectFaceHl;
-    return;
-  }
-
-  const Graphic3d_MaterialAspect* aSrcMat      = &myAspectFaceSet->Aspect()->FrontMaterial();
-  const Quantity_Color*           aSrcIntColor = &myAspectFaceSet->Aspect()->InteriorColor();
-  GLenum aFace = GL_FRONT_AND_BACK;
-  if (theFlag == TEL_BACK_MATERIAL)
-  {
-    aFace        = GL_BACK;
-    aSrcMat      = &myAspectFaceSet->Aspect()->BackMaterial();
-    aSrcIntColor = &myAspectFaceSet->Aspect()->BackInteriorColor();
-  }
-  else if (myAspectFaceSet->Aspect()->Distinguish()
-        && !(NamedStatus & OPENGL_NS_RESMAT))
-  {
-    aFace = GL_FRONT;
-  }
-
-  myMatTmp.Init (*aSrcMat, *aSrcIntColor);
-  if (!myHighlightStyle.IsNull())
-  {
-    myMatTmp.SetColor (myHighlightStyle->ColorRGBA());
-  }
-
-  // handling transparency
-  if (NamedStatus & OPENGL_NS_2NDPASSDO)
-  {
-    // second pass
-    myMatTmp.Diffuse.a() = aSrcMat->EnvReflexion();
-  }
-  else
-  {
-    if (aSrcMat->EnvReflexion() != 0.0f)
-    {
-      // if the material reflects the environment scene, the second pass is needed
-      NamedStatus |= OPENGL_NS_2NDPASSNEED;
-    }
-
-    const float aTransp = (float )aSrcMat->Transparency();
-    if (aTransp != 0.0f)
-    {
-      // render transparent
-      myMatTmp.Diffuse.a() = 1.0f - aTransp;
-      glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      glEnable    (GL_BLEND);
-      if (myUseDepthWrite)
-      {
-        glDepthMask (GL_FALSE);
-      }
-    }
-    else
-    {
-      // render opaque
-      glBlendFunc (GL_ONE, GL_ZERO);
-      glDisable   (GL_BLEND);
-      if (myUseDepthWrite)
-      {
-        glDepthMask (GL_TRUE);
-      }
-    }
-  }
-
-  // do not update material properties in case of zero reflection mode,
-  // because GL lighting will be disabled by OpenGl_PrimitiveArray::DrawArray() anyway.
-  if (myAspectFaceSet->IsNoLighting())
-  {
-    return;
-  }
-
-  // reset material
-  if (NamedStatus & OPENGL_NS_RESMAT)
-  {
-  #if !defined(GL_ES_VERSION_2_0)
-    if (myGlContext->core11 != NULL)
-    {
-      myGlContext->core11->glMaterialfv (aFace, GL_AMBIENT,   myMatTmp.Ambient.GetData());
-      myGlContext->core11->glMaterialfv (aFace, GL_DIFFUSE,   myMatTmp.Diffuse.GetData());
-      myGlContext->core11->glMaterialfv (aFace, GL_SPECULAR,  myMatTmp.Specular.GetData());
-      myGlContext->core11->glMaterialfv (aFace, GL_EMISSION,  myMatTmp.Emission.GetData());
-      myGlContext->core11->glMaterialf  (aFace, GL_SHININESS, myMatTmp.Shine());
-    }
-  #endif
-
-    if (theFlag == TEL_FRONT_MATERIAL)
-    {
-      myMatFront = myMatTmp;
-      myMatBack  = myMatTmp;
-    }
-    else
-    {
-      myMatBack = myMatTmp;
-    }
-
-    NamedStatus &= ~OPENGL_NS_RESMAT;
-    return;
-  }
-
-  // reduce updates
-  OpenGl_Material& anOld = (theFlag == TEL_FRONT_MATERIAL)
-                         ? myMatFront
-                         : myMatBack;
-#if !defined(GL_ES_VERSION_2_0)
-  if (myGlContext->core11 != NULL)
-  {
-    if (myMatTmp.Ambient.r() != anOld.Ambient.r()
-     || myMatTmp.Ambient.g() != anOld.Ambient.g()
-     || myMatTmp.Ambient.b() != anOld.Ambient.b())
-    {
-      myGlContext->core11->glMaterialfv (aFace, GL_AMBIENT, myMatTmp.Ambient.GetData());
-    }
-    if (myMatTmp.Diffuse.r() != anOld.Diffuse.r()
-     || myMatTmp.Diffuse.g() != anOld.Diffuse.g()
-     || myMatTmp.Diffuse.b() != anOld.Diffuse.b()
-     || fabs (myMatTmp.Diffuse.a() - anOld.Diffuse.a()) > 0.01f)
-    {
-      myGlContext->core11->glMaterialfv (aFace, GL_DIFFUSE, myMatTmp.Diffuse.GetData());
-    }
-    if (myMatTmp.Specular.r() != anOld.Specular.r()
-     || myMatTmp.Specular.g() != anOld.Specular.g()
-     || myMatTmp.Specular.b() != anOld.Specular.b())
-    {
-      myGlContext->core11->glMaterialfv (aFace, GL_SPECULAR, myMatTmp.Specular.GetData());
-    }
-    if (myMatTmp.Emission.r() != anOld.Emission.r()
-     || myMatTmp.Emission.g() != anOld.Emission.g()
-     || myMatTmp.Emission.b() != anOld.Emission.b())
-    {
-      myGlContext->core11->glMaterialfv (aFace, GL_EMISSION, myMatTmp.Emission.GetData());
-    }
-    if (myMatTmp.Shine() != anOld.Shine())
-    {
-      myGlContext->core11->glMaterialf (aFace, GL_SHININESS, myMatTmp.Shine());
-    }
-  }
-#endif
-  anOld = myMatTmp;
-  if (aFace == GL_FRONT_AND_BACK)
-  {
-    myMatBack = myMatTmp;
-  }
-}
-
-// =======================================================================
 // function : SetAspectLine
 // purpose  :
 // =======================================================================
@@ -796,11 +646,11 @@ const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
   }
 
   if (myAspectFaceSet->Aspect() == myAspectFaceApplied
-  && !myHighlightStyle.IsNull() == myAspectFaceAppliedWithHL)
+   && myHighlightStyle == myAspectFaceAppliedWithHL)
   {
     return myAspectFaceSet;
   }
-  myAspectFaceAppliedWithHL = !myHighlightStyle.IsNull();
+  myAspectFaceAppliedWithHL = myHighlightStyle;
 
 #if !defined(GL_ES_VERSION_2_0)
   const Aspect_InteriorStyle anIntstyle = myAspectFaceSet->Aspect()->InteriorStyle();
@@ -853,10 +703,19 @@ const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
     }
   }
 
-  updateMaterial (TEL_FRONT_MATERIAL);
-  if (myAspectFaceSet->Aspect()->Distinguish())
+  // Case of hidden line
+  if (myAspectFaceSet->Aspect()->InteriorStyle() == Aspect_IS_HIDDENLINE)
   {
-    updateMaterial (TEL_BACK_MATERIAL);
+    // copy all values including line edge aspect
+    *myAspectFaceHl.Aspect().operator->() = *myAspectFaceSet->Aspect();
+    myAspectFaceHl.SetAspectEdge (myAspectFaceSet->AspectEdge());
+    myAspectFaceHl.Aspect()->SetInteriorColor (myView->BackgroundColor().GetRGB());
+    myAspectFaceHl.SetNoLighting (true);
+    myAspectFaceSet = &myAspectFaceHl;
+  }
+  else
+  {
+    myGlContext->SetShadingMaterial (myAspectFaceSet, myHighlightStyle, myUseDepthWrite, NamedStatus);
   }
 
   if (myAspectFaceSet->Aspect()->ToMapTexture())
