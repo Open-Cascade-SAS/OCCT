@@ -816,6 +816,7 @@ proc osutils:collectinc {theModules theIncPath} {
     }
   }
 
+  set allHeaderFiles {}
   if { $aCopyType == "shortcut" } {
     # template preparation
     if { ![file exists $::THE_CASROOT/adm/templates/header.in] } {
@@ -829,9 +830,12 @@ proc osutils:collectinc {theModules theIncPath} {
 
     # create and copy short-cut header files
     foreach anUnit $anUnits {
-      set aHFiles [glob -nocomplain -dir $aCasRoot/src/$anUnit "*.h"]
-      foreach aHeaderFile [concat [glob -nocomplain -dir $aCasRoot/src/$anUnit "*.\[hgl\]xx"] $aHFiles] {
-        set aHeaderFileName [file tail $aHeaderFile]
+      osutils:checksrcfiles ${anUnit}
+
+      set aHFiles [_get_used_files ${anUnit} true false]
+      foreach aHeaderFile ${aHFiles} {
+        set aHeaderFileName [lindex ${aHeaderFile} 1]
+        lappend allHeaderFiles "${aHeaderFileName}"
 
         regsub -all -- {@OCCT_HEADER_FILE_CONTENT@} $aHeaderTmpl "#include \"$aFromBuildIncToSrcPath/$anUnit/$aHeaderFileName\"" aShortCutHeaderFileContent
 
@@ -863,9 +867,12 @@ proc osutils:collectinc {theModules theIncPath} {
   } else {
     set nbcopied 0
     foreach anUnit $anUnits {
-      set aHFiles [glob -nocomplain -dir $aCasRoot/src/$anUnit "*.h"]
-      foreach aHeaderFile [concat [glob -nocomplain -dir $aCasRoot/src/$anUnit "*.\[hgl\]xx"] $aHFiles] {
-        set aHeaderFileName [file tail $aHeaderFile]
+      osutils:checksrcfiles ${anUnit}
+
+      set aHFiles [_get_used_files ${anUnit} true false]
+      foreach aHeaderFile ${aHFiles} {
+        set aHeaderFileName [lindex ${aHeaderFile} 1]
+        lappend allHeaderFiles "${aHeaderFileName}"
 
         # copy file only if target does not exist or is older than original
         set torig [file mtime $aHeaderFile]
@@ -889,6 +896,15 @@ proc osutils:collectinc {theModules theIncPath} {
       }
     }
     puts "Info: $nbcopied files updated"
+  }
+
+  # remove header files not listed in FILES
+  set anIncFiles [glob -tails -nocomplain -dir ${anIncPath} "*"]
+  foreach anIncFile ${anIncFiles} {
+    if { [lsearch -exact ${allHeaderFiles} ${anIncFile}] == -1 } {
+      puts "Warning: file ${anIncPath}/${anIncFile} is not presented in the sources and will be removed from ${theIncPath}!"
+      file delete -force "${theIncPath}/${anIncFile}"
+    }
   }
 }
 
@@ -3322,4 +3338,36 @@ proc osutils:uwp:proj { theVcVer theProjTmpl } {
   regsub -all -- "${format_template}__UWP_GENERATE_METADATA__" ${theProjTmpl} "${uwp_generate_metadata}" theProjTmpl
 
   return ${theProjTmpl}
+}
+
+# Report all files found in package directory but not listed in FILES
+proc osutils:checksrcfiles { theUnit } {
+  global path
+  set aCasRoot [file normalize ${path}]
+
+  if {![file isdirectory ${aCasRoot}]} {
+    puts "OCCT directory is not defined correctly: ${aCasRoot}"
+    return
+  }
+
+  set anUnitAbsPath [file normalize "${aCasRoot}/src/${theUnit}"]
+
+  if {[file exists "${anUnitAbsPath}/FILES"]} {
+    set aFilesFile [open "${anUnitAbsPath}/FILES" rb]
+    set aFilesFileList [split [read ${aFilesFile}] "\n"]
+    close ${aFilesFile}
+
+    set aFilesFileList [lsearch -inline -all -not -exact ${aFilesFileList} ""]
+
+    # report all files not listed in FILES
+    set anAllFiles [glob -tails -nocomplain -dir ${anUnitAbsPath} "*"]
+    foreach aFile ${anAllFiles} {
+      if { "${aFile}" == "FILES" } {
+        continue
+      }
+      if { [lsearch -exact ${aFilesFileList} ${aFile}] == -1 } {
+        puts "Warning: file ${anUnitAbsPath}/${aFile} is not listed in ${anUnitAbsPath}/FILES!"
+      }
+    }
+  }
 }
