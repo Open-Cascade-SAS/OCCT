@@ -433,9 +433,9 @@ static Standard_Integer DumpNbDGTs (Draw_Interpretor& di, Standard_Integer argc,
       }
       else if (anObject->GetModifiers().Length() > 0) {
         Standard_Boolean isHasModif = Standard_False;
-        for (Standard_Integer i = 1; i <= anObject->GetModifiers().Length(); i++)
-          if (anObject->GetModifiers().Value(i) != XCAFDimTolObjects_GeomToleranceModif_All_Around &&
-            anObject->GetModifiers().Value(i) != XCAFDimTolObjects_GeomToleranceModif_All_Over) {
+        for (Standard_Integer j = 1; j <= anObject->GetModifiers().Length(); j++)
+          if (anObject->GetModifiers().Value(j) != XCAFDimTolObjects_GeomToleranceModif_All_Around &&
+            anObject->GetModifiers().Value(j) != XCAFDimTolObjects_GeomToleranceModif_All_Over) {
             isHasModif = Standard_True;
             break;
           }
