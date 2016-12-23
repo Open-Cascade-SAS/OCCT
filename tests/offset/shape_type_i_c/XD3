@@ -1,14 +1,15 @@
-puts "TODO OCC27414 ALL: Error: The command cannot be built"
-puts "TODO OCC27414 ALL: Tcl Exception"
-puts "TODO OCC27414 ALL: TEST INCOMPLETE"
+puts "TODO CR27414 ALL: Error : The area of result shape is"
+puts "TODO CR27414 ALL: Error : The volume of result shape is"
+puts "TODO CR27414 ALL: Error :  is WRONG because number of FACE entities in shape"
+puts "TODO CR27414 ALL: Error: bsection of the result and s is not equal to zero."
 
 restore [locate_data_file bug26917_25926_offset_shape_trim4.brep] s
 
 OFFSETSHAPE 12 {} $calcul $type
 
-checkprops result -v 0 -s 0
+checkprops result -v 643336 -s 45602.9
 
 unifysamedom result_unif result
-checknbshapes result_unif -shell 1 -face 1
+checknbshapes result_unif -shell 1 -face 8
 
 checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

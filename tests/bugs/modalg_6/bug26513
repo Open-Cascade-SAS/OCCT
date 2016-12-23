@@ -12,21 +12,16 @@ smallview
 
 restore [locate_data_file bug26513-offset_input.brep] a
 
+unifysamedom s a -a 1.e-8
 offsetparameter 1.e-7 c i
-offsetload a 5
-
-dchrono cr reset
-dchrono cr start
+offsetload s 5
 offsetperform result
-dchrono cr stop
 
-set chrono_info [dchrono cr show]
-regexp {CPU user time: ([-0-9.+eE]+) seconds} $chrono_info full CPU_time
-if { $CPU_time > ${max_time} } {
-  puts "ERROR: OCC26513 is reproduced. Offset operation is too long (> $max_time sec)"
-}
+checkshape result
 
-donly result
-fit
+checkprops result -s 3.28125e+008 -v 3.07334e+010
 
-checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+unifysamedom result_unif result
+checknbshapes result_unif -face 114 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png
