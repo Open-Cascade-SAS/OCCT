@@ -943,12 +943,13 @@ void OpenGl_PrimitiveArray::setDrawMode (const Graphic3d_TypeOfPrimitiveArray th
 Standard_Boolean OpenGl_PrimitiveArray::processIndices (const Handle(OpenGl_Context)& theContext) const
 {
   if (myIndices.IsNull()
+   || myAttribs.IsNull()
    || theContext->hasUintIndex)
   {
     return Standard_True;
   }
 
-  if (myIndices->NbElements > std::numeric_limits<GLushort>::max())
+  if (myAttribs->NbElements > std::numeric_limits<GLushort>::max())
   {
     Handle(Graphic3d_Buffer) anAttribs = new Graphic3d_Buffer (new NCollection_AlignedAllocator (16));
     if (!anAttribs->Init (myIndices->NbElements, myAttribs->AttributesArray(), myAttribs->NbAttributes))

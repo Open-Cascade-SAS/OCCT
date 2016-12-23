@@ -56,7 +56,7 @@ Graphic3d_ArrayOfPrimitives::Graphic3d_ArrayOfPrimitives (const Graphic3d_TypeOf
   if (theMaxEdges > 0)
   {
     myIndices = new Graphic3d_IndexBuffer (anAlloc);
-    if (theMaxEdges < Standard_Integer(USHRT_MAX))
+    if (theMaxVertexs < Standard_Integer(USHRT_MAX))
     {
       if (!myIndices->Init<unsigned short> (theMaxEdges))
       {
