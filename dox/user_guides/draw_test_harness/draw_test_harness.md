@@ -1964,26 +1964,6 @@ vsensera
 
 Erases active entities. 
 
-@subsubsection occt_draw_4_3_22 vperf
-
-Syntax:                  
-~~~~~
-vperf shapename 1/0 (Transformation/Loacation) 1/0 (Primitives sensibles ON/OFF)
-~~~~~ 
-
-Tests the animation of an object along a predefined trajectory. 
-
-**Example:** 
-~~~~~
-vinit 
-box b 10 10 10 
-psphere s 20 
-vdisplay b s 
-vfit 
-vsetdispmode 0 
-vperf b 1 1
-~~~~~
- 
 @subsubsection occt_draw_4_3_23 vr
 
 Syntax:                  

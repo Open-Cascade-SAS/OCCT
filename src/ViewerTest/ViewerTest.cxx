@@ -4026,75 +4026,6 @@ static int VUpdate (Draw_Interpretor& /*theDi*/, Standard_Integer theArgsNb, con
 }
 
 //==============================================================================
-//function : VPerf
-//purpose  : Test the annimation of an object along a
-//           predifined trajectory
-//Draw arg : vperf ShapeName 1/0(Transfo/Location) 1/0(Primitives sensibles ON/OFF)
-//==============================================================================
-
-static int VPerf(Draw_Interpretor& di, Standard_Integer , const char** argv) {
-
-  OSD_Timer myTimer;
-  Standard_Real Step=4*M_PI/180;
-  Standard_Real Angle=0;
-
-  Handle(AIS_InteractiveObject) aIO;
-  if (GetMapOfAIS().IsBound2(argv[1]))
-    aIO = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(argv[1]));
-  if (aIO.IsNull())
-    return 1;
-
-  Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(aIO);
-
-  myTimer.Start();
-
-  if (Draw::Atoi(argv[3])==1 ) {
-    di<<" Primitives sensibles OFF\n";
-    TheAISContext()->Deactivate(aIO);
-  }
-  else {
-    di<<" Primitives sensibles ON\n";
-  }
-  // Movement par transformation
-  if(Draw::Atoi(argv[2]) ==1) {
-    di<<" Calcul par Transformation\n";
-    for (Standard_Real myAngle=0;Angle<10*2*M_PI; myAngle++) {
-
-      Angle=Step*myAngle;
-      gp_Trsf myTransfo;
-      myTransfo.SetRotation(gp_Ax1(gp_Pnt(0,0,0),gp_Dir(0,0,1) ) ,Angle );
-      TheAISContext()->SetLocation(aShape,myTransfo);
-      TheAISContext() ->UpdateCurrentViewer();
-
-    }
-  }
-  else {
-    di<<" Calcul par Locations\n";
-    gp_Trsf myAngleTrsf;
-    myAngleTrsf.SetRotation(gp_Ax1(gp_Pnt(0,0,0),gp_Dir(0,0,1) ), Step  );
-    TopLoc_Location myDeltaAngle (myAngleTrsf);
-    TopLoc_Location myTrueLoc;
-
-    for (Standard_Real myAngle=0;Angle<10*2*M_PI; myAngle++) {
-
-      Angle=Step*myAngle;
-      myTrueLoc=myTrueLoc*myDeltaAngle;
-      TheAISContext()->SetLocation(aShape,myTrueLoc );
-      TheAISContext() ->UpdateCurrentViewer();
-    }
-  }
-  if (Draw::Atoi(argv[3])==1 ){
-    // On reactive la selection des primitives sensibles
-    TheAISContext()->Activate(aIO,0);
-  }
-  a3DView() -> Redraw();
-  myTimer.Stop();
-  di<<" Temps ecoule \n";
-  myTimer.Show();
-  return 0;
-}
-
-//==============================================================================
 //function : VShading
 //purpose  : Sharpen or roughten the quality of the shading
 //Draw arg : vshading ShapeName 0.1->0.00001  1 deg-> 30 deg
@@ -5794,11 +5725,6 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
   theCommands.Add("vsensera",
       "vsensera : erase active entities",
       __FILE__,VClearSensi,group);
-
-  theCommands.Add("vperf",
-      "vperf: vperf  ShapeName 1/0(Transfo/Location) 1/0(Primitives sensibles ON/OFF)"
-      "\n\t\t: Tests the animation of an object along a predefined trajectory.",
-      __FILE__,VPerf,group);
 
   theCommands.Add("vsetshading",
       "vsetshading  : vsetshading name Quality(default=0.0008) "
