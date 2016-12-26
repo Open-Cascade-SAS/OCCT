@@ -39,11 +39,12 @@ BOPAlgo_PaveFiller::BOPAlgo_PaveFiller()
 :
   BOPAlgo_Algo()
 {
-  myDS=NULL;
-  myIterator=NULL;
-  myNonDestructive=Standard_False;
-  myIsPrimary=Standard_True;
-  myGlue=BOPAlgo_GlueOff;
+  myDS = NULL;
+  myIterator = NULL;
+  myNonDestructive = Standard_False;
+  myIsPrimary = Standard_True;
+  myAvoidBuildPCurve = Standard_False;
+  myGlue = BOPAlgo_GlueOff;
 }
 //=======================================================================
 //function : 
@@ -54,11 +55,12 @@ BOPAlgo_PaveFiller::BOPAlgo_PaveFiller
 :
   BOPAlgo_Algo(theAllocator)
 {
-  myDS=NULL;
-  myIterator=NULL;
-  myNonDestructive=Standard_False;
-  myIsPrimary=Standard_True;
-  myGlue=BOPAlgo_GlueOff;
+  myDS = NULL;
+  myIterator = NULL;
+  myNonDestructive = Standard_False;
+  myIsPrimary = Standard_True;
+  myAvoidBuildPCurve = Standard_False;
+  myGlue = BOPAlgo_GlueOff;
 }
 //=======================================================================
 //function : ~

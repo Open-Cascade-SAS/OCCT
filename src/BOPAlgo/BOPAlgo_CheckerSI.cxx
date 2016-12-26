@@ -48,6 +48,7 @@ BOPAlgo_CheckerSI::BOPAlgo_CheckerSI()
 {
   myLevelOfCheck=BOPDS_DS::NbInterfTypes()-1;
   myNonDestructive=Standard_True;
+  SetAvoidBuildPCurve(Standard_True);
 }
 //=======================================================================
 //function : ~

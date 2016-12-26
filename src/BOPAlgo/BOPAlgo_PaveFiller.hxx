@@ -108,7 +108,17 @@ public:
   //! Returns the glue option of the algorithm
   Standard_EXPORT BOPAlgo_GlueEnum Glue() const;
 
+  //! Sets the flag to avoid building of p-curves of edges on faces
+  void SetAvoidBuildPCurve(const Standard_Boolean theValue)
+  {
+    myAvoidBuildPCurve = theValue;
+  }
 
+  //! Returns the flag to avoid building of p-curves of edges on faces
+  Standard_Boolean IsAvoidBuildPCurve() const
+  {
+    return myAvoidBuildPCurve;
+  }
 
 protected:
 
@@ -405,6 +415,7 @@ protected:
   BOPAlgo_SectionAttribute mySectionAttribute;
   Standard_Boolean myNonDestructive;
   Standard_Boolean myIsPrimary;
+  Standard_Boolean myAvoidBuildPCurve;
   BOPAlgo_GlueEnum myGlue;
 
 

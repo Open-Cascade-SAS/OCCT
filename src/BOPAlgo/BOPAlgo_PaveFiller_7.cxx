@@ -525,6 +525,9 @@ Standard_Integer BOPAlgo_PaveFiller::SplitEdge(const Standard_Integer nE,
 //=======================================================================
 void BOPAlgo_PaveFiller::MakePCurves()
 {
+  if (myAvoidBuildPCurve ||
+      (!mySectionAttribute.PCurveOnS1() && !mySectionAttribute.PCurveOnS2()))
+    return;
   Standard_Boolean bHasPC;
   Standard_Integer i, nF1, nF2, aNbC, k, nE, aNbFF, aNbFI, nEx;
   Standard_Integer j, aNbPBIn, aNbPBOn;
