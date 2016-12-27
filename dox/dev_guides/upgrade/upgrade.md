@@ -1178,6 +1178,28 @@ Management of highlight attributes has been revised and might require modificati
 * The method *PrsMgr_PresentationManager::Unhighlight()* taking Display Mode as an argument has been marked deprecated.
   Implementation now performs unhighlighting of all highlighted presentation mode.
 
+@subsection upgrade_720_implicit_viewer_update Elimination of implicit 3D Viewer updates
+
+Most AIS_InteractiveContext methods are defined with a flag to update viewer immediatly or not.
+Within previous version of OCCT, this argument had default value TRUE.
+While immediate viewer updates are useful for beginners (the result is displayed as soon as possible),
+this approach is inefficent for batch viewer updates, and having default value as TRUE
+leaded to non-intended accidential updates which are difficult to find.
+
+To avoid such issues, the interface has been modified and default value has been removed.
+Therefore, old application code should be updated to set the flag theToUpdateViewer explicitly
+to desired value (TRUE to preserve old previous behavior), if it was not already set.
+
+The follow AIS_InteractiveContext methods have been changed:
+  Display, Erase, EraseAll, DisplayAll, EraseSelected, DisplaySelected, ClearPrs, Remove, RemoveAll, Hilight,
+  HilightWithColor, Unhilight, Redisplay, RecomputePrsOnly, Update, SetDisplayMode, UnsetDisplayMode, SetColor,
+  UnsetColor, SetWidth, UnsetWidth, SetMaterial, UnsetMaterial, SetTransparency, UnsetTransparency,
+  SetLocalAttributes, UnsetLocalAttributes, SetPolygonOffsets, SetTrihedronSize, SetPlaneSize, SetPlaneSize,
+  SetDeviationCoefficient, SetDeviationAngle, SetAngleAndDeviation, SetHLRDeviationCoefficient,
+  SetHLRDeviationAngle, SetHLRAngleAndDeviation, SetSelectedAspect, MoveTo, Select, ShiftSelect, SetSelected,
+  UpdateSelected, AddOrRemoveSelected, HilightSelected, UnhilightSelected, ClearSelected, ResetOriginalState,
+  SubIntensityOn, SubIntensityOff, FitSelected, EraseGlobal, ClearGlobal, ClearGlobalPrs.
+
 @subsection upgrade_720_Result_Of_BOP_On_Containers Result of Boolean operations on containers
 
 * The result of Boolean operations on arguments of collection types (WIRE/SHELL/COMPSOLID) is now filtered from duplicating containers.

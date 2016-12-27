@@ -122,7 +122,7 @@ static Standard_Integer  OCC128 (Draw_Interpretor& di, Standard_Integer /*argc*/
   Graphic3d_MaterialAspect mat(Graphic3d_NOM_PLASTIC);
   AS->SetMaterial(mat);
   AS->SetColor(Quantity_NOC_RED);
-  myAISContext->Display(AS);
+  myAISContext->Display (AS, Standard_False);
 
   gp_Trsf TouchTrsf;
   TouchTrsf.SetTranslation(gp_Vec(20, 20, 0));
@@ -215,33 +215,35 @@ static Standard_Integer OCC136 (Draw_Interpretor& di, Standard_Integer argc, con
     return 1;
   }
 
-  anAISCtx->EraseAll();
+  anAISCtx->EraseAll (Standard_False);
 
   //load primitives to context
   Handle(AIS_InteractiveObject) aSh1 = new AIS_Shape(aBox);
-  anAISCtx->Display(aSh1);
+  anAISCtx->Display (aSh1, Standard_False);
 
   Handle(AIS_InteractiveObject) aSh2 = new AIS_Shape(aSphere);
-  anAISCtx->Display(aSh2);
+  anAISCtx->Display (aSh2, Standard_False);
 
   Handle(AIS_InteractiveObject) aSh3 = new AIS_Shape(aCone);
-  anAISCtx->Display(aSh3);
+  anAISCtx->Display (aSh3, Standard_False);
 
   Handle(AIS_InteractiveObject) aSh4 = new AIS_Shape(aCyl);
-  anAISCtx->Display(aSh4);
+  anAISCtx->Display (aSh4, Standard_False);
 
   //set selected
   anAISCtx->InitSelected();
-  anAISCtx->AddOrRemoveSelected(aSh1);
-  anAISCtx->AddOrRemoveSelected(aSh2);
-  anAISCtx->AddOrRemoveSelected(aSh3);
-  anAISCtx->AddOrRemoveSelected(aSh4);
+  anAISCtx->AddOrRemoveSelected (aSh1, Standard_False);
+  anAISCtx->AddOrRemoveSelected (aSh2, Standard_False);
+  anAISCtx->AddOrRemoveSelected (aSh3, Standard_False);
+  anAISCtx->AddOrRemoveSelected (aSh4, Standard_False);
 
   //remove all this objects from context
   anAISCtx->Remove (aSh1, Standard_False);
   anAISCtx->Remove (aSh2, Standard_False);
   anAISCtx->Remove (aSh3, Standard_False);
   anAISCtx->Remove (aSh4, Standard_False);
+
+  anAISCtx->UpdateCurrentViewer();
   return 0;
 }
 
@@ -639,7 +641,7 @@ static Standard_Integer OCC297 (Draw_Interpretor& di,Standard_Integer /*argc*/, 
     myAISContext->EraseAll(Standard_False);
         Handle(Geom_CartesianPoint) GEOMPoint = new Geom_CartesianPoint(g_pnt);
         Handle(AIS_Point) AISPoint = new AIS_Point(GEOMPoint);
-    myAISContext->Display(AISPoint);
+    myAISContext->Display (AISPoint, Standard_True);
 
     BRepPrimAPI_MakeHalfSpace half_(sh_, g_pnt);
     TopoDS_Solid sol1_ = half_.Solid();
@@ -4564,10 +4566,10 @@ static Standard_Integer OCC12584 (Draw_Interpretor& di, Standard_Integer argc, c
   aCS->SetSize (aWinWidth, aWinHeight);
   if ( !V.IsNull() ) {
     if (mode == 0) {
-      aContext->Display (aCS);
+      aContext->Display (aCS, Standard_True);
     }
     if (mode == 1) {
-      aContext->Erase (aCS);
+      aContext->Erase (aCS, Standard_False);
       V->UpdateLights();
       V->Update();
     }

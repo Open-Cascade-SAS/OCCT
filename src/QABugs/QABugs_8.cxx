@@ -66,9 +66,9 @@ static Standard_Integer  OCC172 (Draw_Interpretor& di, Standard_Integer /*argc*/
   AIS_ListIteratorOfListOfInteractive It;
   for (It.Initialize(aListOfIO);It.More();It.Next())
     {
-      aContext->AddOrRemoveSelected(It.Value());
+      aContext->AddOrRemoveSelected (It.Value(), Standard_False);
     }
-  
+  aContext->UpdateCurrentViewer();
   return 0;	
 }
 
@@ -99,13 +99,15 @@ static Standard_Integer  OCC204 (Draw_Interpretor& di, Standard_Integer argc, co
   Handle(AIS_InteractiveObject) ais2 = new AIS_Shape(box2.Shape());
   Handle(AIS_InteractiveObject) ais3 = new AIS_Shape(box3.Shape());
 
-  aContext->Display(ais1);
-  aContext->Display(ais2);
-  aContext->Display(ais3);
+  aContext->Display (ais1, Standard_False);
+  aContext->Display (ais2, Standard_False);
+  aContext->Display (ais3, Standard_False);
 
-  aContext->AddOrRemoveSelected(ais1);
-  aContext->AddOrRemoveSelected(ais2);
-  aContext->AddOrRemoveSelected(ais3);
+  aContext->AddOrRemoveSelected (ais1, Standard_False);
+  aContext->AddOrRemoveSelected (ais2, Standard_False);
+  aContext->AddOrRemoveSelected (ais3, Standard_False);
+
+  aContext->UpdateCurrentViewer();
 
   //printf("\n No of currents = %d", aContext->NbCurrents());
 

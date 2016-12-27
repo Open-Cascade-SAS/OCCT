@@ -20,13 +20,13 @@ void GeomSources::PreProcess(CGeometryDoc* aDoc,DisplayType aDisplayType)
 {
   if (aDisplayType == No2D3D )
   {   
-    aDoc->GetAISContext()->EraseAll();
+    aDoc->GetAISContext()->EraseAll (Standard_True);
     aDoc->Put3DOnTop(); 
   }
 
   if (aDisplayType == a2DNo3D)
   { 
-    aDoc->GetISessionContext()->EraseAll();
+    aDoc->GetISessionContext()->EraseAll (Standard_True);
     aDoc->Put2DOnTop();
   }
 
@@ -42,8 +42,8 @@ void GeomSources::PreProcess(CGeometryDoc* aDoc,DisplayType aDisplayType)
 
   if (aDisplayType == a2D3D)
   {
-    aDoc->GetAISContext()->EraseAll();
-    aDoc->GetISessionContext()->EraseAll();
+    aDoc->GetAISContext()->EraseAll (Standard_True);
+    aDoc->GetISessionContext()->EraseAll (Standard_True);
     aDoc->Put3DOnTop(false); 
     aDoc->Put2DOnTop(false);
 
@@ -986,7 +986,7 @@ if(NbResults>0){                                          \n\
  Handle(Prs3d_Drawer) CurDrawer = aSurface->Attributes();
  CurDrawer->UIsoAspect()->SetNumber(10);
  CurDrawer->VIsoAspect()->SetNumber(10);
- aDoc->GetAISContext()->SetLocalAttributes(aSurface, CurDrawer);
+ aDoc->GetAISContext()->SetLocalAttributes(aSurface, CurDrawer, Standard_False);
  aDoc->GetAISContext()->Display(aSurface, Standard_False);
 
  if(NbResults>0)
@@ -2495,13 +2495,13 @@ else                                                                            
   }
 
   Handle(ISession_Curve) aCurve = new ISession_Curve(SPL1);
-  aDoc->GetAISContext()->SetDisplayMode(aCurve,1);
+  aDoc->GetAISContext()->SetDisplayMode(aCurve,1, Standard_False);
   aDoc->GetAISContext()->Display(aCurve, Standard_False);
 
   if (anInterpolation.IsDone())
   {
     Handle(ISession_Curve) aCurve2 = new ISession_Curve(SPL2);
-    aDoc->GetAISContext()->SetDisplayMode(aCurve2,1);
+    aDoc->GetAISContext()->SetDisplayMode(aCurve2,1, Standard_False);
     aDoc->GetAISContext()->Display(aCurve2, Standard_False);
   }
 
@@ -4140,12 +4140,12 @@ aBox.Get(  aXmin, aYmin,aZmin, aXmax,aYmax,aZmax);             \n\
 
   Quantity_NameOfColor aNameOfColor= Quantity_NOC_GREEN;
   Handle(ISession_Surface) aGraphicalSurface = new ISession_Surface(aSurf);
-  aDoc->GetAISContext()->SetColor(aGraphicalSurface,aNameOfColor);
+  aDoc->GetAISContext()->SetColor (aGraphicalSurface, aNameOfColor, Standard_False);
   aGraphicalSurface->Attributes()->FreeBoundaryAspect()->SetColor(aNameOfColor);
   aGraphicalSurface->Attributes()->UIsoAspect()->SetColor(aNameOfColor);
   aGraphicalSurface->Attributes()->VIsoAspect()->SetColor(aNameOfColor);
 
-  aDoc->GetAISContext()->SetDisplayMode(aGraphicalSurface,1);
+  aDoc->GetAISContext()->SetDisplayMode (aGraphicalSurface, 1, Standard_False);
   aDoc->GetAISContext()->Display(aGraphicalSurface,false);
   //   DisplaySurface(aDoc,aSurf,Quantity_NOC_GREEN);
 

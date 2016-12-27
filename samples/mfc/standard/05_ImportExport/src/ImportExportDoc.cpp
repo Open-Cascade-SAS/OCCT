@@ -224,7 +224,7 @@ void CImportExportDoc::OnBox()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 	BRepPrimAPI_MakeBox B(200.,150.,100.);
@@ -244,7 +244,7 @@ void CImportExportDoc::OnCylinder()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 	BRepPrimAPI_MakeCylinder C(50.,200.);

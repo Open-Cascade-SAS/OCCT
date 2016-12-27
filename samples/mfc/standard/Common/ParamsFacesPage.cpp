@@ -53,7 +53,7 @@ void CParamsFacesPage::OnBnClickedFacesbtn1()
 
   myFirstFace = TopoDS::Face (myAISContext->SelectedShape());
 
-  myAISContext->ClearSelected();
+  myAISContext->ClearSelected (Standard_True);
 }
 
 void CParamsFacesPage::OnBnClickedFacesbtn2()
@@ -71,7 +71,7 @@ void CParamsFacesPage::OnBnClickedFacesbtn2()
   }
 
   mySecondFace = TopoDS::Face (myAISContext->SelectedShape());
-  myAISContext->ClearSelected();
+  myAISContext->ClearSelected (Standard_False);
 
   CDimensionDlg *aDimDlg = (CDimensionDlg*)(GetParentOwner());
 
@@ -104,7 +104,7 @@ void CParamsFacesPage::OnBnClickedFacesbtn2()
     }
 
     anAngleDim->SetFlyout (aDimDlg->GetFlyout());
-    myAISContext->Display (anAngleDim);
+    myAISContext->Display (anAngleDim, Standard_True);
   }
   else
   {
@@ -117,7 +117,7 @@ void CParamsFacesPage::OnBnClickedFacesbtn2()
       aLenDim->SetDisplayUnits (aDimDlg->GetUnits());
     }
 
-    myAISContext->Display (aLenDim);
+    myAISContext->Display (aLenDim, Standard_True);
   }
 
   myAISContext->Activate (aSelectionMode);

@@ -81,7 +81,7 @@ void CModelClippingDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBa
   if (m_ModelClippingONOFF)
   {
     myDoc->GetAISContext()->SetLocation (myShape, TopLoc_Location (myTrsf));
-    myDoc->GetAISContext()->Redisplay (myShape);
+    myDoc->GetAISContext()->Redisplay (myShape, Standard_True);
     myView->Update();
   }
   else
@@ -141,7 +141,7 @@ BOOL CModelClippingDlg::OnInitDialog()
 
     myClippingPlane->SetOn (Standard_True);
 
-    myDoc->GetAISContext()->Display (myShape);
+    myDoc->GetAISContext()->Display (myShape, Standard_True);
   }
 
   UpdateData (FALSE);
@@ -172,7 +172,7 @@ void CModelClippingDlg::OnChangeEditModelclippingZ()
   if (m_ModelClippingONOFF)
   {
     myDoc->GetAISContext()->SetLocation (myShape, TopLoc_Location (myTrsf));
-    myDoc->GetAISContext()->Redisplay (myShape);
+    myDoc->GetAISContext()->Redisplay (myShape, Standard_False);
     myView->Update();
   }
   else
@@ -223,14 +223,14 @@ void CModelClippingDlg::OnCheckModelclippingonoff()
 
     myClippingPlane->SetOn (Standard_True);
 
-    myDoc->GetAISContext()->Display (myShape);
+    myDoc->GetAISContext()->Display (myShape, Standard_False);
   }
   else
   {
     // deactivate clipping plane
     myClippingPlane->SetOn (Standard_False);
 
-    myDoc->GetAISContext()->Remove (myShape);
+    myDoc->GetAISContext()->Remove (myShape, Standard_False);
   }
 
   myView->Update();
@@ -275,7 +275,7 @@ void CModelClippingDlg::OnCancel()
 
   if (!myShape.IsNull())
   {
-    myDoc->GetAISContext()->Remove (myShape);
+    myDoc->GetAISContext()->Remove (myShape, Standard_False);
   }
 
   myView->Update();
@@ -291,7 +291,7 @@ void CModelClippingDlg::OnOK()
 {
   if (!myShape.IsNull())
   {
-    myDoc->GetAISContext()->Remove (myShape);
+    myDoc->GetAISContext()->Remove (myShape, Standard_True);
   }
 
   CDialog::OnOK();

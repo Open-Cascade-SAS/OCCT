@@ -74,7 +74,7 @@ COcafDoc::~COcafDoc()
  
  	Handle(AIS_InteractiveContext) CTX;
  	TPrsStd_AISViewer::Find(myOcafDoc->Main(), CTX);
- 	CTX->SetDisplayMode(AIS_Shaded);
+ 	CTX->SetDisplayMode (AIS_Shaded, Standard_True);
  	myAISContext=CTX;
  
  	// Set the maximum number of available "undo" actions
@@ -1107,7 +1107,7 @@ BOOL COcafDoc::OnOpenDocument(LPCTSTR lpszPathName)
 
   Handle(AIS_InteractiveContext) aContext;
   TPrsStd_AISViewer::Find (myOcafDoc->Main(), aContext);
-  aContext->SetDisplayMode (AIS_Shaded);
+  aContext->SetDisplayMode (AIS_Shaded, Standard_True);
   myAISContext = aContext;
 
   // Display the presentations (which was not stored in the document)

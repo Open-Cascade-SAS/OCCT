@@ -77,7 +77,7 @@ void CAngleParamsVerticesPage::OnBnClickedVertex1Btn()
   }
 
   myFirstVertex = TopoDS::Vertex (myAISContext->SelectedShape());
-  myAISContext->ClearSelected();
+  myAISContext->ClearSelected (Standard_True);
 }
 
 //=======================================================================
@@ -97,7 +97,7 @@ void CAngleParamsVerticesPage::OnBnClickedVertex2Btn()
 
   mySecondVertex = TopoDS::Vertex (myAISContext->SelectedShape());
 
-  myAISContext->ClearSelected();
+  myAISContext->ClearSelected (Standard_True);
 }
 
 //=======================================================================
@@ -115,7 +115,7 @@ void CAngleParamsVerticesPage::OnBnClickedVertex3Btn()
   }
 
   myThirdVertex = TopoDS::Vertex (myAISContext->SelectedShape());
-  myAISContext->ClearSelected();
+  myAISContext->ClearSelected (Standard_False);
 
   //Build dimension here
   TopoDS_Edge anEdge12 = BRepBuilderAPI_MakeEdge (myFirstVertex, mySecondVertex);
@@ -151,6 +151,6 @@ void CAngleParamsVerticesPage::OnBnClickedVertex3Btn()
     }
   }
   anAngleDim->SetDimensionAspect (anAspect);
-  myAISContext->Display (anAngleDim);
+  myAISContext->Display (anAngleDim, Standard_True);
   myAISContext->Activate (AIS_Shape::SelectionMode (TopAbs_VERTEX));
 }

@@ -371,7 +371,7 @@ static Standard_Integer OCC10bug (Draw_Interpretor& di, Standard_Integer argc, c
     theAISPlaneTri->SetLength(Length);
     
     GetMapOfAIS().Bind ( theAISPlaneTri, name);
-    aContext->Display(theAISPlaneTri );
+    aContext->Display (theAISPlaneTri, Standard_True);
   }
 
   Standard_Real getLength = theAISPlaneTri->GetLength();

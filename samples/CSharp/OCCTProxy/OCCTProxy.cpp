@@ -222,7 +222,7 @@ public:
   {
     if (!myAISContext().IsNull())
     {
-      myAISContext()->Select(theX1, theY1, theX2, theY2, myView());
+      myAISContext()->Select (theX1, theY1, theX2, theY2, myView(), Standard_True);
     }
   }
 
@@ -233,7 +233,7 @@ public:
   {
     if (!myAISContext().IsNull())
     {
-      myAISContext()->Select();
+      myAISContext()->Select (Standard_True);
     }
   }
 
@@ -244,7 +244,7 @@ public:
   {
     if ((!myAISContext().IsNull()) && (!myView().IsNull()))
     {
-      myAISContext()->MoveTo(theX, theY, myView());
+      myAISContext()->MoveTo (theX, theY, myView(), Standard_True);
     }
   }
 
@@ -255,7 +255,7 @@ public:
   {
     if ((!myAISContext().IsNull()) && (!myView().IsNull()))
     {
-      myAISContext()->ShiftSelect(theX1, theY1, theX2, theY2, myView());
+      myAISContext()->ShiftSelect (theX1, theY1, theX2, theY2, myView(), Standard_True);
     }
   }
 
@@ -266,7 +266,7 @@ public:
   {
     if (!myAISContext().IsNull())
     {
-      myAISContext()->ShiftSelect();
+      myAISContext()->ShiftSelect (Standard_True);
     }
   }
 
@@ -463,15 +463,15 @@ public:
       aCurrentMode=AIS_Shaded;
     }
 
-    if(myAISContext()->NbCurrents()==0 || myAISContext()->NbSelected()==0)
+    if(myAISContext()->NbSelected()==0)
     {
-       myAISContext()->SetDisplayMode(aCurrentMode);
+       myAISContext()->SetDisplayMode (aCurrentMode, Standard_False);
     }
     else 
     {
-       for(myAISContext()->InitCurrent(); myAISContext()->MoreCurrent(); myAISContext()->NextCurrent())
+       for(myAISContext()->InitSelected(); myAISContext()->MoreSelected(); myAISContext()->NextSelected())
        {
-         myAISContext()->SetDisplayMode(myAISContext()->Current(), theMode, Standard_False);
+         myAISContext()->SetDisplayMode (myAISContext()->SelectedInteractive(), theMode, Standard_False);
        }
     }
     myAISContext()->UpdateCurrentViewer();
@@ -487,10 +487,11 @@ public:
       return;
     }
     Quantity_Color aCol =  Quantity_Color(theR/255.,theG/255.,theB/255.,Quantity_TOC_RGB);
-    for (;myAISContext()->MoreCurrent ();myAISContext()->NextCurrent ())
+    for (; myAISContext()->MoreSelected(); myAISContext()->NextSelected())
     {
-      myAISContext()->SetColor (myAISContext()->Current(),aCol.Name());
+      myAISContext()->SetColor (myAISContext()->SelectedInteractive(), aCol.Name(), Standard_False);
     }
+    myAISContext()->UpdateCurrentViewer();
   }
 
   /// <summary>
@@ -527,15 +528,15 @@ public:
     theBlue=255;
     Handle(AIS_InteractiveObject) aCurrent ;
     Quantity_Color anObjCol;
-    myAISContext()->InitCurrent();
-    if (!myAISContext()->MoreCurrent())
+    myAISContext()->InitSelected();
+    if (!myAISContext()->MoreSelected())
     {
       return;
     }
-    aCurrent = myAISContext()->Current();
+    aCurrent = myAISContext()->SelectedInteractive();
     if ( aCurrent->HasColor () ) 
     {
-      anObjCol = myAISContext()->Color(myAISContext()->Current());
+      anObjCol = myAISContext()->Color(aCurrent);
       Quantity_Parameter r1, r2, r3;
       anObjCol.Values(r1, r2, r3, Quantity_TOC_RGB);
       theRed=(int)r1*255;
@@ -575,8 +576,8 @@ public:
       return;
     }
 
-    myAISContext()->EraseSelected (Standard_True);
-    myAISContext()->ClearCurrents();
+    myAISContext()->EraseSelected (Standard_False);
+    myAISContext()->ClearSelected (Standard_True);
   }
 
   /// <summary>
@@ -596,9 +597,9 @@ public:
     {
       return;
     }
-    for ( myAISContext()->InitCurrent(); myAISContext()->MoreCurrent (); myAISContext()->NextCurrent () )
+    for (myAISContext()->InitSelected(); myAISContext()->MoreSelected(); myAISContext()->NextSelected())
     {
-      myAISContext()->SetMaterial( myAISContext()->Current(), (Graphic3d_NameOfMaterial)theMaterial );
+      myAISContext()->SetMaterial (myAISContext()->SelectedInteractive(), (Graphic3d_NameOfMaterial)theMaterial, Standard_False);
     }
     myAISContext()->UpdateCurrentViewer();
   }
@@ -612,10 +613,11 @@ public:
     {
       return;
     }
-    for( myAISContext()->InitCurrent(); myAISContext()->MoreCurrent(); myAISContext()->NextSelected() )
+    for( myAISContext()->InitSelected(); myAISContext()->MoreSelected(); myAISContext()->NextSelected() )
     {
-      myAISContext()->SetTransparency( myAISContext()->Current(), ((Standard_Real)theTrans) / 10.0 );
+      myAISContext()->SetTransparency (myAISContext()->SelectedInteractive(), ((Standard_Real)theTrans) / 10.0, Standard_False);
     }
+    myAISContext()->UpdateCurrentViewer();
   }
 
   /// <summary>
@@ -627,8 +629,8 @@ public:
     {
       return false;
     }
-    myAISContext()->InitCurrent();
-    return myAISContext()->MoreCurrent() != Standard_False;
+    myAISContext()->InitSelected();
+    return myAISContext()->MoreSelected() != Standard_False;
   }
 
   /// <summary>
@@ -643,13 +645,13 @@ public:
     int aMode = -1;
     bool OneOrMoreInShading = false;
     bool OneOrMoreInWireframe = false;
-    for (myAISContext()->InitCurrent(); myAISContext()->MoreCurrent(); myAISContext()->NextCurrent())
+    for (myAISContext()->InitSelected(); myAISContext()->MoreSelected(); myAISContext()->NextSelected())
     {
-      if ( myAISContext()->IsDisplayed( myAISContext()->Current(), 1 ) )
+      if ( myAISContext()->IsDisplayed( myAISContext()->SelectedInteractive(), 1 ) )
       {
         OneOrMoreInShading = true;
       }
-      if ( myAISContext()->IsDisplayed( myAISContext()->Current(), 0 ) )
+      if ( myAISContext()->IsDisplayed( myAISContext()->SelectedInteractive(), 0 ) )
       {
         OneOrMoreInWireframe = true;
       }
@@ -753,11 +755,8 @@ public:
     {
       return false;
     }
-    if(myAISContext()->HasOpenedContext())
-    {
-      myAISContext()->CloseLocalContext();
-    }
-    myAISContext()->Display(new AIS_Shape(aShape));
+
+    myAISContext()->Display (new AIS_Shape (aShape), Standard_True);
     return true;
   }
 
@@ -786,8 +785,9 @@ public:
           for ( int i = 1; i <= aNbShap; i++ )
           {
             TopoDS_Shape aShape = aReader.Shape( i );
-            myAISContext()->Display(new AIS_Shape(aShape));
+            myAISContext()->Display (new AIS_Shape (aShape), Standard_False);
           }
+          myAISContext()->UpdateCurrentViewer();
         }
       }
     }
@@ -813,7 +813,7 @@ public:
     {
       aReader.TransferRoots();
       TopoDS_Shape aShape = aReader.OneShape();
-      myAISContext()->Display(new AIS_Shape(aShape));
+      myAISContext()->Display (new AIS_Shape (aShape), Standard_False);
     }
     else
     {
@@ -830,13 +830,13 @@ public:
   /// <param name="theFileName">Name of export file</param>
   bool ExportBRep(char* theFileName)
   {
-    myAISContext()->InitCurrent();
-    if (!myAISContext()->MoreCurrent())
+    myAISContext()->InitSelected();
+    if (!myAISContext()->MoreSelected())
     {
       return false;
     }
 
-    Handle(AIS_InteractiveObject) anIO = myAISContext()->Current();
+    Handle(AIS_InteractiveObject) anIO = myAISContext()->SelectedInteractive();
     Handle(AIS_Shape) anIS = Handle(AIS_Shape)::DownCast(anIO);
     return BRepTools::Write (anIS->Shape(), (Standard_CString)theFileName) != Standard_False;
   }
@@ -850,9 +850,9 @@ public:
     STEPControl_StepModelType aType = STEPControl_AsIs;
     IFSelect_ReturnStatus aStatus;
     STEPControl_Writer aWriter;
-    for ( myAISContext()->InitCurrent(); myAISContext()->MoreCurrent(); myAISContext()->NextCurrent() )
+    for ( myAISContext()->InitSelected(); myAISContext()->MoreSelected(); myAISContext()->NextSelected() )
     {
-      Handle(AIS_InteractiveObject) anIO = myAISContext()->Current();
+      Handle(AIS_InteractiveObject) anIO = myAISContext()->SelectedInteractive();
       Handle(AIS_Shape) anIS=Handle(AIS_Shape)::DownCast(anIO);
       TopoDS_Shape aShape = anIS->Shape();
       aStatus = aWriter.Transfer( aShape , aType );
@@ -881,9 +881,9 @@ public:
     IGESControl_Writer aWriter( Interface_Static::CVal( "XSTEP.iges.unit" ),
       Interface_Static::IVal( "XSTEP.iges.writebrep.mode" ) );
 
-    for ( myAISContext()->InitCurrent(); myAISContext()->MoreCurrent(); myAISContext()->NextCurrent() )
+    for ( myAISContext()->InitSelected(); myAISContext()->MoreSelected(); myAISContext()->NextSelected() )
     {
-      Handle(AIS_InteractiveObject) anIO = myAISContext()->Current();
+      Handle(AIS_InteractiveObject) anIO = myAISContext()->SelectedInteractive();
       Handle(AIS_Shape) anIS=Handle(AIS_Shape)::DownCast(anIO);
       TopoDS_Shape aShape = anIS->Shape();
       aWriter.AddShape ( aShape );
@@ -903,9 +903,9 @@ public:
     BRep_Builder aBuilder;
     aBuilder.MakeCompound( aRes );
 
-    for ( myAISContext()->InitCurrent(); myAISContext()->MoreCurrent(); myAISContext()->NextCurrent() )
+    for ( myAISContext()->InitSelected(); myAISContext()->MoreSelected(); myAISContext()->NextSelected() )
     {
-      Handle(AIS_InteractiveObject) anIO = myAISContext()->Current();
+      Handle(AIS_InteractiveObject) anIO = myAISContext()->SelectedInteractive();
       Handle(AIS_Shape) anIS=Handle(AIS_Shape)::DownCast(anIO);
       TopoDS_Shape aShape = anIS->Shape();
       if ( aShape.IsNull() )
@@ -932,9 +932,9 @@ public:
     BRep_Builder aBuilder;
     aBuilder.MakeCompound( aComp );
 
-    for ( myAISContext()->InitCurrent(); myAISContext()->MoreCurrent(); myAISContext()->NextCurrent() )
+    for ( myAISContext()->InitSelected(); myAISContext()->MoreSelected(); myAISContext()->NextSelected() )
     {
-      Handle(AIS_InteractiveObject) anIO = myAISContext()->Current();
+      Handle(AIS_InteractiveObject) anIO = myAISContext()->SelectedInteractive();
       Handle(AIS_Shape) anIS=Handle(AIS_Shape)::DownCast(anIO);
       TopoDS_Shape aShape = anIS->Shape();
       if ( aShape.IsNull() ) 

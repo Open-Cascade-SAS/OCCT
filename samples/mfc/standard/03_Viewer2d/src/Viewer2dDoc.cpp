@@ -56,7 +56,7 @@ void CViewer2dDoc::Dump(CDumpContext& dc) const
 
 void CViewer2dDoc::OnBUTTONErase() 
 {
-  myAISContext->EraseAll();
+  myAISContext->EraseAll (Standard_True);
 }
 
 void CViewer2dDoc::OnBUTTONTestText() 
@@ -196,7 +196,7 @@ void CViewer2dDoc::OnBUTTONTestLine()
       aDrawer->SetFaceBoundaryDraw(Standard_True);
       aRect->SetAttributes(aDrawer);
       
-      myAISContext->SetDisplayMode(aRect,1);
+      myAISContext->SetDisplayMode (aRect, 1, Standard_False);
       myAISContext->SetColor(aRect,(Quantity_NameOfColor)(Quantity_NOC_CADETBLUE+2*i),Standard_False);
 	    myAISContext->SetMaterial(aRect,Graphic3d_NOM_PLASTIC,Standard_False);
       myAISContext->Display(aRect, Standard_False);
@@ -212,7 +212,7 @@ void CViewer2dDoc::OnBUTTONTestLine()
 void CViewer2dDoc::OnBUTTONTestFace()
 {
   //erase all
-  myAISContext->EraseAll();
+  myAISContext->EraseAll (Standard_True);
 
   CFileDialog dlg(TRUE,
     NULL,
@@ -269,8 +269,8 @@ void CViewer2dDoc::OnBUTTONTestRect()
   TopoDS_Edge E14 = BRepBuilderAPI_MakeEdge(gp_Pnt(0.,68.,0.), gp_Pnt(40.,0.,0.));
 	TopoDS_Wire W1 = BRepBuilderAPI_MakeWire(E11,E12,E13,E14);
   Handle(AIS_Shape) aRect1 = new AIS_Shape(W1); 
-  myAISContext->Display(aRect1);
-  myAISContext->SetColor(aRect1,Quantity_NOC_YELLOW);
+  myAISContext->Display (aRect1, Standard_False);
+  myAISContext->SetColor (aRect1, Quantity_NOC_YELLOW, Standard_False);
   
   //Second rectangle
   TopoDS_Edge E21 = BRepBuilderAPI_MakeEdge(gp_Pnt(110.,0.,0.), gp_Pnt(152.5,25.,0.));
@@ -279,8 +279,8 @@ void CViewer2dDoc::OnBUTTONTestRect()
   TopoDS_Edge E24 = BRepBuilderAPI_MakeEdge(gp_Pnt(70.,68.,0.), gp_Pnt(110.,0.,0.));
 	TopoDS_Wire W2 = BRepBuilderAPI_MakeWire(E21,E22,E23,E24);
   Handle(AIS_Shape) aRect2 = new AIS_Shape(W2); 
-  myAISContext->Display(aRect2);
-  myAISContext->SetColor(aRect2,Quantity_NOC_YELLOW);
+  myAISContext->Display (aRect2, Standard_False);
+  myAISContext->SetColor (aRect2, Quantity_NOC_YELLOW, Standard_False);
   myAISContext->Activate(aRect2,2);
 
   FitAll2DViews(Standard_True); // Update Viewer
@@ -323,7 +323,7 @@ void CViewer2dDoc::OnBUTTONTestImage()
     TCollection_AsciiString aFileName ((const wchar_t* )aFilePath);
 
     //erase viewer
-    myAISContext->EraseAll();
+    myAISContext->EraseAll (Standard_False);
 
     Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
     anImage->SetCoord (40,50) ;
@@ -355,7 +355,7 @@ void CViewer2dDoc::OnBUTTONMultipleImage()
     TCollection_AsciiString aFileName ((const wchar_t* )aFilePath);
 
     //erase viewer
-    myAISContext->EraseAll();
+    myAISContext->EraseAll (Standard_False);
 
     //create images
     {  // 1

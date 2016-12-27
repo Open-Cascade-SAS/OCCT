@@ -754,7 +754,7 @@ void AIS_InteractiveContext::AddOrRemoveCurrentObject (const Handle(AIS_Interact
 //=======================================================================
 void AIS_InteractiveContext::UpdateCurrent()
 {
-  UpdateSelected();
+  UpdateSelected (Standard_True);
 }
 
 //=======================================================================

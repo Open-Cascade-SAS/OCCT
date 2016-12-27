@@ -992,7 +992,7 @@ static Standard_Integer XShowFaceBoundary (Draw_Interpretor& di,
 
   aDrawer->SetFaceBoundaryAspect (aBoundaryAspect);
 
-  aContext->Redisplay (anInteractive);
+  aContext->Redisplay (anInteractive, Standard_True);
   
   return 0;
 }

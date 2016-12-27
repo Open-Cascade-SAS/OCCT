@@ -422,7 +422,7 @@ GetDocument()->UpdateResultMessageDlg("SetPosition",Message);
 			BRepPrimAPI_MakeCone MakeCone(gp_Ax2(p1, gp_Dir(gp_Vec(p1, p2))), 
 				0, (p1.Distance(p2))/tan(1.04), coneHeigth);
 			spotConeShape->Set(MakeCone.Solid());
-			GetDocument()->GetAISContext()->Display(spotConeShape,0,-1);
+			GetDocument()->GetAISContext()->Display (spotConeShape, 0, -1, Standard_True);
 			((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Pick the target point");
 			myCurrentMode = CurAction3d_TargetSpotLight;
 
@@ -447,7 +447,7 @@ GetDocument()->UpdateResultMessageDlg("SetAngle",Message);
 			}
 		break;
         case  CurAction3d_EndSpotLight :
-			GetDocument()->GetAISContext()->Erase(spotConeShape);
+			GetDocument()->GetAISContext()->Erase (spotConeShape, Standard_True);
 			((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Ready");
 			myCurrentMode = CurAction3d_Nothing;
         break;
@@ -457,7 +457,7 @@ GetDocument()->UpdateResultMessageDlg("SetAngle",Message);
 				p2 = gp_Pnt(p1.X(),p1.Y(),p1.Z()+1.);
 				BRepBuilderAPI_MakeEdge MakeEdge(p1, p2);
 				directionalEdgeShape->Set(MakeEdge.Edge());
-				GetDocument()->GetAISContext()->Display(directionalEdgeShape,0,-1);
+				GetDocument()->GetAISContext()->Display (directionalEdgeShape, 0, -1, Standard_True);
 			// Create a directional light
 				myCurrent_DirectionalLight = new V3d_DirectionalLight(myView->Viewer(), p1.X(),p1.Y(),p1.Z(),0.,0.,1.);
 				myView->SetLightOn(myCurrent_DirectionalLight);
@@ -474,7 +474,7 @@ GetDocument()->UpdateResultMessageDlg("SetDirection",Message);
 			}
 		break;
 		case CurAction3d_EndDirectionalLight:
-			GetDocument()->GetAISContext()->Erase(directionalEdgeShape);
+			GetDocument()->GetAISContext()->Erase (directionalEdgeShape, Standard_True);
 			((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Ready");
 			myCurrentMode = CurAction3d_Nothing;
 		break;
@@ -1175,18 +1175,18 @@ void CViewer3dView::RedrawVisMode()
   switch (myVisMode)
   {
   case VIS_WIREFRAME:
-    GetDocument()->GetAISContext()->SetDisplayMode(AIS_WireFrame);
+    GetDocument()->GetAISContext()->SetDisplayMode (AIS_WireFrame, Standard_True);
     myView->SetComputedMode (Standard_False);
     break;
   case VIS_SHADE:
-    GetDocument()->GetAISContext()->SetDisplayMode(AIS_Shaded);
+    GetDocument()->GetAISContext()->SetDisplayMode (AIS_Shaded, Standard_True);
     myView->SetComputedMode (Standard_False);
     break;
   case VIS_HLR:
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
     myView->SetComputedMode (Standard_True);
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
-    GetDocument()->GetAISContext()->SetDisplayMode(AIS_WireFrame);
+    GetDocument()->GetAISContext()->SetDisplayMode (AIS_WireFrame, Standard_True);
     break;
   }
 }

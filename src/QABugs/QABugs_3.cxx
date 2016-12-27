@@ -244,7 +244,7 @@ static Standard_Integer BUC60632(Draw_Interpretor& di, Standard_Integer /*n*/, c
     di << "use 'vinit' command before " << a[0] << "\n";
     return -1;
   }
-  myAIScontext->EraseAll();
+  myAIScontext->EraseAll (Standard_False);
   
   TopoDS_Vertex V1 = BRepBuilderAPI_MakeVertex(gp_Pnt(0,0,0)); 
   TopoDS_Vertex V2 = BRepBuilderAPI_MakeVertex(gp_Pnt(10,10,0)); 
@@ -252,8 +252,8 @@ static Standard_Integer BUC60632(Draw_Interpretor& di, Standard_Integer /*n*/, c
   Handle(AIS_Shape) Ve1 = new AIS_Shape(V1);
   Handle(AIS_Shape) Ve2 = new AIS_Shape(V2);
   
-  myAIScontext->Display(Ve1);
-  myAIScontext->Display(Ve2);
+  myAIScontext->Display (Ve1, Standard_False);
+  myAIScontext->Display (Ve2, Standard_False);
   
   Handle(Geom_Plane) Plane1 = new Geom_Plane(gp_Pnt(0,0,0),gp_Dir(0,0,1)); 
   TCollection_ExtendedString Ext1("Dim1"); 
@@ -268,8 +268,8 @@ static Standard_Integer BUC60632(Draw_Interpretor& di, Standard_Integer /*n*/, c
   anAspect->ArrowAspect()->SetLength (1.0);
   Dim1->SetDimensionAspect (anAspect);
 
-  myAIScontext->SetDisplayMode(Dim1, Draw::Atoi(a[1]));
-  myAIScontext->Display(Dim1);
+  myAIScontext->SetDisplayMode (Dim1, Draw::Atoi(a[1]), Standard_False);
+  myAIScontext->Display (Dim1, Standard_True);
   return 0;
 }
 
@@ -553,8 +553,8 @@ static Standard_Integer BUC60792(Draw_Interpretor& di, Standard_Integer /*argc*/
   Handle(Geom2d_Curve) gcir1 = GeomAPI::To2d(gcir, pln->Pln()); 
   TopoDS_Shape sh1 = BRepBuilderAPI_MakeEdge(gcir1, pln).Shape(); 
   Handle(AIS_Shape) ais1 = new AIS_Shape(sh1); 
-  aContext->SetColor(ais1, Quantity_NOC_INDIANRED); 
-  aContext->Display(ais1); 
+  aContext->SetColor (ais1, Quantity_NOC_INDIANRED, Standard_False);
+  aContext->Display (ais1, Standard_False);
   DBRep::Set("sh0",sh1);
   gp_Pnt2d thepoint; 
 //  local_get_2Dpointfrom3Dpoint(pt3d, pln->Pln(), thepoint); 
@@ -575,10 +575,10 @@ static Standard_Integer BUC60792(Draw_Interpretor& di, Standard_Integer /*argc*/
       DBRep::Set(aStr,sh);
       Handle(AIS_Shape) ais = new AIS_Shape(sh); 
       if( i ==1 ) 
-	aContext->SetColor(ais, Quantity_NOC_GREEN); 
+        aContext->SetColor (ais, Quantity_NOC_GREEN, Standard_False);
       if( i == 2) 
-	aContext->SetColor(ais, Quantity_NOC_HOTPINK); 
-      aContext->Display(ais); 
+        aContext->SetColor (ais, Quantity_NOC_HOTPINK, Standard_False);
+      aContext->Display (ais, Standard_False);
       Standard_Real ParSol1, ParSol2, ParArg1, ParArg2; 
       gp_Pnt2d PntSol1, PntSol2; 
       cirtanrad.Tangency1(i, ParSol1, ParArg1, PntSol1);
@@ -587,6 +587,7 @@ static Standard_Integer BUC60792(Draw_Interpretor& di, Standard_Integer /*argc*/
       printf("%f\t%f\t\t%f\t%f\n",ParSol2, ParArg2,PntSol2.X(),PntSol2.Y());
     }
   }
+  aContext->UpdateCurrentViewer();
   return 0;
 }
 
@@ -646,7 +647,7 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   ais1 = new AIS_Shape(F1);
   DBRep::Set("F1",F1);
   aContext->SetMaterial(ais1,Graphic3d_NOM_ALUMINIUM,Standard_False);
-  aContext->Display(ais1);
+  aContext->Display (ais1, Standard_False);
   BRep_Builder B;
   TopoDS_Shell shell;
   B.MakeShell(shell);
@@ -683,7 +684,7 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   FP = BRepBuilderAPI_MakeFace(mkw.Wire()); 
   ais2 = new AIS_Shape( FP ); 
   aContext->SetMaterial(ais2,Graphic3d_NOM_ALUMINIUM,Standard_False); 
-  aContext->Display( ais2 );
+  aContext->Display (ais2, Standard_False);
 
   DBRep::Set("FP",FP);
   
@@ -693,7 +694,7 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   BRepBuilderAPI_MakeFace bzf2( offsurf, Precision::Confusion() ); 
   TopoDS_Face F2= bzf2.Face(); 
   Handle(AIS_Shape) ais22 = new AIS_Shape(F2); 
-  aContext->Display(ais22); 
+  aContext->Display (ais22, Standard_False);
   DBRep::Set("F2",F2);
   
 //step 3. filleting the patch. 
@@ -714,7 +715,7 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   FP1 = fillet.Shape(); 
   ais2 = new AIS_Shape( FP1 ); 
   aContext->SetMaterial(ais2,Graphic3d_NOM_ALUMINIUM,Standard_False); 
-  aContext->Display( ais2 ); 
+  aContext->Display (ais2, Standard_False);
 
   DBRep::Set("FP1",FP1);
   
@@ -732,7 +733,7 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
       myWire->Add((BRepBuilderAPI_MakeEdge(projCurve)).Edge()); 
     } 
   Handle(AIS_Shape) ais33 = new AIS_Shape( myWire->Wire() ); 
-  aContext->Display(ais33);
+  aContext->Display (ais33, Standard_True);
 
   DBRep::Set("Wire",myWire->Wire());
   
@@ -859,14 +860,14 @@ static Standard_Integer BUC60856(Draw_Interpretor& di, Standard_Integer /*argc*/
   Handle(Geom_RectangularTrimmedSurface) S = GC_MakeTrimmedCone (P1, P2, R1, R2).Value();
   TopoDS_Shape myshape = BRepBuilderAPI_MakeFace(S, Precision::Confusion()).Shape();
   Handle(AIS_Shape) ais1 = new AIS_Shape(myshape);
-  aContext->Display(ais1);
-  aContext->SetColor(ais1, Quantity_NOC_BLUE1);
+  aContext->Display (ais1, Standard_False);
+  aContext->SetColor (ais1, Quantity_NOC_BLUE1, Standard_False);
   
   Handle(Geom_RectangularTrimmedSurface) S2 = GC_MakeTrimmedCone (P1, P2,R1, 0).Value();
   TopoDS_Shape myshape2 = BRepBuilderAPI_MakeFace(S2, Precision::Confusion()).Shape();
   Handle(AIS_Shape) ais2 = new AIS_Shape(myshape2);
-  aContext->Display(ais2);
-  aContext->SetColor(ais2, Quantity_NOC_RED);
+  aContext->Display (ais2, Standard_False);
+  aContext->SetColor (ais2, Quantity_NOC_RED, Standard_False);
   return 0;
 }
 
@@ -956,7 +957,7 @@ static Standard_Integer BUC60876_ (Draw_Interpretor& di,
   Handle(AIS_InteractiveObject) anIO = new AIS_Shape(aShape);
 //  Handle(AIS_InteractiveObject) anIOa = ViewerTest::GetAISShapeFromName(argv[1]);
   anIO->SetHilightMode((argc == 3) ? Draw::Atoi(argv[2]) : 1);
-  aContext->Display(anIO);
+  aContext->Display (anIO, Standard_True);
   return 0;
 }
 
@@ -1705,7 +1706,7 @@ static Standard_Integer BUC60951_(Draw_Interpretor& di, Standard_Integer argc, c
   }
 
   Handle(AIS_Shape) res = new AIS_Shape(sh);
-  myContext->Display( res );
+  myContext->Display (res, Standard_True);
   return 0;
 }
 

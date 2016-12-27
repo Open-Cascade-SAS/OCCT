@@ -196,14 +196,16 @@ void DocumentCommon::onColor()
         Quantity_Color color( aRetColor.red() / 255., aRetColor.green() / 255.,
                         aRetColor.blue() / 255., Quantity_TOC_RGB );
         for (; myContext->MoreSelected(); myContext->NextSelected() )
-            myContext->SetColor( myContext->SelectedInteractive(), color.Name() );
+            myContext->SetColor( myContext->SelectedInteractive(), color.Name(), Standard_False);
+        myContext->UpdateCurrentViewer();
     }
 }
 
 void DocumentCommon::onMaterial( int theMaterial )
 {
     for ( myContext->InitSelected(); myContext->MoreSelected (); myContext->NextSelected () )
-        myContext->SetMaterial( myContext->SelectedInteractive(), (Graphic3d_NameOfMaterial)theMaterial );
+        myContext->SetMaterial( myContext->SelectedInteractive(), (Graphic3d_NameOfMaterial)theMaterial, Standard_False);
+    myContext->UpdateCurrentViewer();
 }
 
 void DocumentCommon::onMaterial()
@@ -216,7 +218,8 @@ void DocumentCommon::onMaterial()
 void DocumentCommon::onTransparency( int theTrans )
 {
     for( myContext->InitSelected(); myContext->MoreSelected(); myContext->NextSelected() )
-        myContext->SetTransparency( myContext->SelectedInteractive(), ((Standard_Real)theTrans) / 10.0 );
+        myContext->SetTransparency (myContext->SelectedInteractive(), ((Standard_Real)theTrans) / 10.0, Standard_False);
+    myContext->UpdateCurrentViewer();
 }
 
 void DocumentCommon::onTransparency()
@@ -229,7 +232,7 @@ void DocumentCommon::onTransparency()
 void DocumentCommon::onDelete()
 {
     myContext->EraseSelected (Standard_False);
-    myContext->ClearSelected();
+    myContext->ClearSelected (Standard_False);
     myContext->UpdateCurrentViewer();
     getApplication()->onSelectionChanged();
 }

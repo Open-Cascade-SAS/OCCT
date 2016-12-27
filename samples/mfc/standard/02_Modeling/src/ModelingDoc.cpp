@@ -106,7 +106,7 @@ void CModelingDoc::OnMirror()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 	TopoDS_Shape S = BRepPrimAPI_MakeWedge (60.,100.,80.,20.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
@@ -143,7 +143,7 @@ void CModelingDoc::OnMirroraxis()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 	TopoDS_Shape S = BRepPrimAPI_MakeWedge(60.,100.,80.,20.).Shape(); 
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
@@ -184,7 +184,7 @@ void CModelingDoc::OnRotate()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 	TopoDS_Shape S = BRepPrimAPI_MakeWedge(60.,100.,80.,20.).Shape(); 
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
@@ -224,7 +224,7 @@ void CModelingDoc::OnScale()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 	TopoDS_Shape S = BRepPrimAPI_MakeWedge(60.,100.,80.,20.).Shape(); 
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
@@ -268,7 +268,7 @@ void CModelingDoc::OnTranslation()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 	TopoDS_Shape S = BRepPrimAPI_MakeWedge(6.,10.,8.,2.).Shape(); 
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
@@ -311,7 +311,7 @@ void CModelingDoc::OnDisplacement()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
   TopoDS_Shape S = BRepPrimAPI_MakeWedge(60., 100., 80., 20.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
@@ -353,7 +353,7 @@ void CModelingDoc::OnDeform()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
   TopoDS_Shape S = BRepPrimAPI_MakeWedge(60., 100., 80., 20.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
@@ -397,7 +397,7 @@ void CModelingDoc::OnBox()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
   TopoDS_Shape B1 = BRepPrimAPI_MakeBox(200., 150., 100.).Shape();
 	Handle(AIS_Shape) aBox1 = new AIS_Shape(B1);
@@ -428,7 +428,7 @@ void CModelingDoc::OnCylinder()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
   TopoDS_Shape C1 = BRepPrimAPI_MakeCylinder(50., 200.).Shape();
@@ -462,7 +462,7 @@ void CModelingDoc::OnCone()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
   TopoDS_Shape C1 = BRepPrimAPI_MakeCone(50., 25., 200.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(C1);
@@ -494,7 +494,7 @@ void CModelingDoc::OnSphere()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
   TopoDS_Shape S1 = BRepPrimAPI_MakeSphere(gp_Pnt(-200., -250., 0.), 80.).Shape();
@@ -539,7 +539,7 @@ void CModelingDoc::OnTorus()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
   TopoDS_Shape S1 = BRepPrimAPI_MakeTorus(60., 20.).Shape();
@@ -578,7 +578,7 @@ void CModelingDoc::OnWedge()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
   TopoDS_Shape S1 = BRepPrimAPI_MakeWedge(60., 100., 80., 20.).Shape();
@@ -609,7 +609,7 @@ void CModelingDoc::OnPrism()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 	TopoDS_Vertex V1 = BRepBuilderAPI_MakeVertex(gp_Pnt(-200.,-200.,0.));
@@ -690,7 +690,7 @@ void CModelingDoc::OnRevol()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 	TopoDS_Vertex V1 = BRepBuilderAPI_MakeVertex(gp_Pnt(-200.,-200.,0.));
@@ -789,7 +789,7 @@ void CModelingDoc::OnPipe()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 	TColgp_Array1OfPnt CurvePoles(1,4);
@@ -851,7 +851,7 @@ void CModelingDoc::OnThru()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 	gp_Circ c1 = gp_Circ(gp_Ax2(gp_Pnt(-100.,0.,-100.),gp_Dir(0.,0.,1.)),40.);
@@ -977,7 +977,7 @@ void CModelingDoc::OnEvolved()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 	BRepBuilderAPI_MakePolygon P;
@@ -1029,7 +1029,7 @@ void CModelingDoc::OnDraft()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
   TopoDS_Shape S = BRepPrimAPI_MakeBox(200., 300., 150.).Shape();
@@ -1083,7 +1083,7 @@ void CModelingDoc::OnCut()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
   TopoDS_Shape theBox = BRepPrimAPI_MakeBox(200, 60, 60).Shape();
@@ -1152,7 +1152,7 @@ void CModelingDoc::OnFuse()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 gp_Pnt P(-5,5,-5);
@@ -1207,7 +1207,7 @@ void CModelingDoc::OnCommon()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 gp_Ax2 axe(gp_Pnt(10,10,10),gp_Dir(1,2,1));
@@ -1270,7 +1270,7 @@ void CModelingDoc::OnSection()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
   TopoDS_Shape atorus = BRepPrimAPI_MakeTorus(120, 20).Shape();
@@ -1304,13 +1304,14 @@ for(i;i<=3;i++) {
     section.Build();
 
     Handle(AIS_Shape) asection=new AIS_Shape(section.Shape());
-    myAISContext->SetDisplayMode(asection,0);
-    myAISContext->SetColor(asection,Quantity_NOC_WHITE);
-    myAISContext->Display(asection);
+    myAISContext->SetDisplayMode (asection, 0, Standard_False);
+    myAISContext->SetColor (asection, Quantity_NOC_WHITE, Standard_False);
+    myAISContext->Display (asection, Standard_False);
     if(i<3) {
-    myAISContext->Remove(theShape);
+    myAISContext->Remove (theShape, Standard_False);
 	}
 }
+  myAISContext->UpdateCurrentViewer();
    TCollection_AsciiString Message ("\
 		\n\
 TopoDS_Shape atorus = BRepPrimAPI_MakeTorus(120,20); \n\
@@ -1336,7 +1337,7 @@ void CModelingDoc::OnPsection()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 TopoDS_Shape theTorus = BRepPrimAPI_MakeTorus(35, 8).Shape();
@@ -1389,7 +1390,7 @@ void CModelingDoc::OnBlend()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 TopoDS_Shape Box = BRepPrimAPI_MakeBox(gp_Pnt(-400,0,0),200,230,180).Shape();
@@ -1509,7 +1510,7 @@ void CModelingDoc::OnEvolvedblend()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 TopoDS_Shape theBox = BRepPrimAPI_MakeBox(200, 200, 200).Shape();
@@ -1707,7 +1708,7 @@ void CModelingDoc::OnChamf()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 TopoDS_Shape theBox = BRepPrimAPI_MakeBox(60,200,70).Shape();
@@ -1768,7 +1769,7 @@ void CModelingDoc::OnPrismLocal()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
   TopoDS_Shape S = BRepPrimAPI_MakeBox(400., 250., 300.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
@@ -1853,8 +1854,8 @@ void CModelingDoc::OnPrismLocal()
 	TopoDS_Shape res2 = MKP2.Shape();
 	ais1->Set(res2);
 
-	myAISContext->Redisplay(ais1);
-	myAISContext->SetSelected(anIO1,Standard_False);
+	myAISContext->Redisplay (ais1, Standard_False);
+	myAISContext->SetSelected (anIO1, Standard_False);
 	Fit();
 
 	TCollection_AsciiString Message ("\
@@ -1941,7 +1942,7 @@ void CModelingDoc::OnDprismLocal()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
   TopoDS_Shape S = BRepPrimAPI_MakeBox(400., 250., 300.).Shape();
@@ -2023,7 +2024,7 @@ void CModelingDoc::OnRevolLocal()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
   TopoDS_Shape S = BRepPrimAPI_MakeBox(400., 250., 300.).Shape();
 
@@ -2072,7 +2073,7 @@ void CModelingDoc::OnRevolLocal()
 	TopoDS_Shape res1 = MKrev.Shape();
 
 
-	myAISContext->Remove(ais1);
+	myAISContext->Remove (ais1, Standard_False);
 	Handle(AIS_Shape) ais2 = new AIS_Shape(res1);
 	myAISContext->Display(ais2,Standard_False);
 	const Handle(AIS_InteractiveObject)& anIO2 = ais2;
@@ -2124,7 +2125,7 @@ void CModelingDoc::OnGlueLocal()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
   TopoDS_Shape S1 = BRepPrimAPI_MakeBox(gp_Pnt(-500., -500., 0.), gp_Pnt(-100., -250., 300.)).Shape();
 
@@ -2170,7 +2171,7 @@ void CModelingDoc::OnGlueLocal()
 	
 	ais1->Set(res1);
 
-	myAISContext->Redisplay(ais1);	
+	myAISContext->Redisplay (ais1, Standard_False);
 	myAISContext->SetSelected(anIO1,Standard_False);
 	Fit();
 	Sleep(1000);
@@ -2288,7 +2289,7 @@ void CModelingDoc::OnPipeLocal()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
   TopoDS_Shape S = BRepPrimAPI_MakeBox(400., 250., 300.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
@@ -2396,7 +2397,7 @@ void CModelingDoc::OnLinearLocal()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 	BRepBuilderAPI_MakeWire mkw;
 	gp_Pnt p1 = gp_Pnt(0.,0.,0.);
@@ -2439,7 +2440,7 @@ void CModelingDoc::OnLinearLocal()
 	TopoDS_Shape res = aform.Shape();
 	ais1->Set(res);
 	myAISContext->Redisplay(ais1,Standard_False);
-	myAISContext->SetSelected(anIO1);
+	myAISContext->SetSelected (anIO1, Standard_False);
 	Fit();
 
 	TCollection_AsciiString Message ("\
@@ -2482,7 +2483,7 @@ void CModelingDoc::OnSplitLocal()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
   TopoDS_Shape S = BRepPrimAPI_MakeBox(gp_Pnt(-100, -60, -80), 150, 200, 170).Shape();
@@ -2571,13 +2572,13 @@ void CModelingDoc::OnThickLocal()
 	myAISContext->DisplayedObjects(L);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(L);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
   TopoDS_Shape S1 = BRepPrimAPI_MakeBox(150, 200, 110).Shape();
 	
 	Handle(AIS_Shape) abox1 = new AIS_Shape(S1);
-	myAISContext->SetColor(abox1,Quantity_NOC_WHITE);
+	myAISContext->SetColor (abox1, Quantity_NOC_WHITE, Standard_False);
 	myAISContext->SetMaterial(abox1,Graphic3d_NOM_PLASTIC,Standard_False);
 	myAISContext->Display(abox1,Standard_False);
 	const Handle(AIS_InteractiveObject)& anIOBox1 = abox1;
@@ -2630,7 +2631,7 @@ void CModelingDoc::OnOffsetLocal()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
   TopoDS_Shape S1 = BRepPrimAPI_MakeBox(150, 200, 110).Shape();
@@ -2670,9 +2671,9 @@ void CModelingDoc::OnOffsetLocal()
 	TopoDS_Shape anOffsetShape2 = aShapeMaker2.Shape();
 
 	Handle(AIS_Shape) ais2 = new AIS_Shape(anOffsetShape2);
-	myAISContext->SetColor(ais2,Quantity_NOC_MATRABLUE);
+	myAISContext->SetColor (ais2, Quantity_NOC_MATRABLUE, Standard_False);
 	myAISContext->SetMaterial(ais2,Graphic3d_NOM_GOLD,Standard_False);
-	myAISContext->Display(ais2);
+	myAISContext->Display (ais2, Standard_False);
 	Fit();
 	
 	TCollection_AsciiString Message ("\
@@ -2706,7 +2707,7 @@ void CModelingDoc::OnVertex()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 	TopoDS_Vertex V1,V2,V3;
@@ -2752,7 +2753,7 @@ void CModelingDoc::OnEdge()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 	
 	
@@ -2896,7 +2897,7 @@ void CModelingDoc::OnWire()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 	TopoDS_Wire RedWire,YellowWire,WhiteWire,
@@ -3050,7 +3051,7 @@ void CModelingDoc::OnFace()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 
@@ -3269,7 +3270,7 @@ void CModelingDoc::OnShell()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 	TColgp_Array2OfPnt Poles(1,2,1,4);
@@ -3309,15 +3310,15 @@ void CModelingDoc::OnShell()
 
 	
 	Handle(AIS_Shape) white = new AIS_Shape(WhiteFace);
-	myAISContext->SetColor(white,Quantity_NOC_WHITE);
+	myAISContext->SetColor (white, Quantity_NOC_WHITE, Standard_False);
 	myAISContext->SetMaterial(white,Graphic3d_NOM_PLASTIC,Standard_False);    
-	myAISContext->SetTransparency(white,0.7);
+	myAISContext->SetTransparency (white, 0.7, Standard_False);
 	myAISContext->Display(white,Standard_False);
 	
 
 	TopoDS_Shell aShell = BRepBuilderAPI_MakeShell(BSpline);
 	Handle(AIS_Shape) anAISShell = new AIS_Shape(aShell);
-	myAISContext->SetDisplayMode(anAISShell,0);
+	myAISContext->SetDisplayMode (anAISShell, 0, Standard_False);
 	myAISContext->Display(anAISShell,Standard_False);
 	//myAISContext->SetSelected(anAISShell);
 
@@ -3372,7 +3373,7 @@ void CModelingDoc::OnCompound()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 	BRep_Builder builder;
@@ -3394,7 +3395,7 @@ void CModelingDoc::OnCompound()
 	builder.Add(Comp,aBox);
 
 	Handle(AIS_Shape) white = new AIS_Shape(Comp);
-	myAISContext->SetDisplayMode(white,0);
+	myAISContext->SetDisplayMode (white, 0, Standard_False);
 	myAISContext->Display(white,Standard_False);
 
 	Fit();
@@ -3436,7 +3437,7 @@ void CModelingDoc::OnSewing()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 	gp_Pnt P(0,0,0);
@@ -3550,7 +3551,7 @@ void CModelingDoc::OnBuilder()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 	//The tolerance is the tolerance of confusion
@@ -3954,8 +3955,8 @@ void CModelingDoc::OnBuilder()
 
 	BRepTools::Write(Sol,"e://temp//solid");
 	Handle(AIS_Shape) borne = new AIS_Shape(Sol);
-	myAISContext->SetDisplayMode(borne,1);
-	myAISContext->SetColor(borne,Quantity_NOC_RED);
+	myAISContext->SetDisplayMode (borne, 1, Standard_False);
+	myAISContext->SetColor (borne, Quantity_NOC_RED, Standard_False);
 	myAISContext->SetMaterial(borne,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->Display(borne,Standard_False);
 
@@ -4088,7 +4089,7 @@ void CModelingDoc::OnGeometrie()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 	//geometrie of a vertex
@@ -4197,7 +4198,7 @@ void CModelingDoc::OnExplorer()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 	
   TopoDS_Shape aBox = BRepPrimAPI_MakeBox(100, 100, 100).Shape();
@@ -4272,7 +4273,7 @@ void CModelingDoc::OnExplorer()
 		j+=15;
 	}
 	//myAISContext->Erase(theBox,Standard_True,Standard_False);	
-	myAISContext->Remove(theBox);	
+	myAISContext->Remove(theBox, Standard_False);
 	Fit();
 	Sleep (500);
 
@@ -4304,7 +4305,7 @@ void CModelingDoc::OnValid()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
   TopoDS_Shape S = BRepPrimAPI_MakeBox(200., 300., 150.).Shape();
@@ -4340,7 +4341,7 @@ void CModelingDoc::OnLinear()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 
@@ -4436,7 +4437,7 @@ void CModelingDoc::OnSurface()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 	TColgp_Array1OfPnt Pnts1(1,3);
@@ -4552,7 +4553,7 @@ void CModelingDoc::OnVolume()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 	
 
@@ -4634,7 +4635,7 @@ void CModelingDoc::OnButtonFill()
 	myAISContext->InitSelected();
 	if (myAISContext->MoreSelected()) {
 		AIS1 = Handle(AIS_Shape)::DownCast(myAISContext->SelectedInteractive());
-		myAISContext->Unhilight(AIS1);
+		myAISContext->Unhilight (AIS1, Standard_True);
 		myAISContext->Activate(AIS1,2);
 		myState = SELECT_EDGE_PLATE;
 		((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Select hole contour edges and then press right mouse button");	}
@@ -4645,7 +4646,7 @@ void CModelingDoc::OnButtonFill()
 			if(OnFileImportBrep_WithInitDir (L"HoleFilling") == 1)
 				return;
 		myAISContext->DisplayedObjects(LI);
-		myAISContext->SetSelected(LI.First());
+		myAISContext->SetSelected(LI.First(), Standard_True);
 			OnButtonFill();
 			return;
 		}
@@ -4759,11 +4760,11 @@ void CModelingDoc::OnStopStop()
 			MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Error : The plate face is not valid!", L"CasCade Error", MB_ICONERROR);
 		myState = -1;
 		Handle(AIS_Shape) anAISShape = new AIS_Shape(aface);
-		myAISContext->SetColor(anAISShape,Quantity_NOC_AZURE); 
-		myAISContext->SetMaterial(anAISShape,Graphic3d_NOM_SILVER);                                  
-        myAISContext->SetDisplayMode(anAISShape,1);                                    
-		myAISContext->Display(anAISShape);		    
-	}                            	
+		myAISContext->SetColor (anAISShape,Quantity_NOC_AZURE, Standard_False);
+		myAISContext->SetMaterial (anAISShape, Graphic3d_NOM_SILVER, Standard_False);
+    myAISContext->SetDisplayMode (anAISShape, 1, Standard_False);
+		myAISContext->Display (anAISShape, Standard_True);
+	}
 }
 
 void CModelingDoc::OnFillwithtang() 
@@ -4782,11 +4783,12 @@ void CModelingDoc::OnFillwithtang()
 				myAISContext->DisplayedObjects(aList);
 				AIS_ListIteratorOfListOfInteractive aListIterator;
 				for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-					myAISContext->Remove(aListIterator.Value());
+					myAISContext->Remove (aListIterator.Value(), Standard_False);
 				}
+        myAISContext->UpdateCurrentViewer();
 				return;
 			}
-		myAISContext->SetSelected(aObject);
+		myAISContext->SetSelected(aObject, Standard_True);
 	}
 
 	myAISContext->InitSelected();
@@ -4818,14 +4820,14 @@ Please, select a face to continue\nthe creation of a tangent surface.");
 				myAISContext->DisplayedObjects(aList);
 				AIS_ListIteratorOfListOfInteractive aListIterator;
 				for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-					myAISContext->Remove(aListIterator.Value());
+					myAISContext->Remove(aListIterator.Value(), Standard_False);
 				}
-
+        myAISContext->UpdateCurrentViewer();
 				return;
 			}
 			((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("");
 			myAISContext->DisplayedObjects(LI);
-			myAISContext->SetSelected(LI.First());
+			myAISContext->SetSelected (LI.First(), Standard_True);
 			Sleep(700);
 			flag = 1;
 			OnFillwithtang();
@@ -4839,7 +4841,7 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
                               const Standard_Integer /*y*/,
                               const Handle(V3d_View)& /*aView*/)
 {
-    myAISContext->Select();
+    myAISContext->Select (Standard_True);
 	if (myState == SELECT_EDGE_PLATE_TGTES_1) {
 		myAISContext->InitSelected();
  		if (myAISContext->MoreSelected()) {
@@ -4851,9 +4853,9 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 			if(aLI.Extent() == 2){
 				myState = SELECT_EDGE_PLATE_TGTES_2;
 				if (myAISContext->IsSelected(aLI.First()))
-					myAISContext->SetSelected(aLI.Last());
+					myAISContext->SetSelected (aLI.Last(), Standard_True);
 				else
-					myAISContext->SetSelected(aLI.First());
+					myAISContext->SetSelected (aLI.First(), Standard_True);
 				myAISContext->InitSelected();
 				Handle(AIS_Shape) ashape = Handle(AIS_Shape)::DownCast(myAISContext->SelectedInteractive());
  				THE_F2 = TopoDS::Face(ashape->Shape());
@@ -5050,10 +5052,10 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 			}
 
 			Handle(AIS_Shape) anAISShape=new AIS_Shape(theFace);
-			myAISContext->SetColor(anAISShape,Quantity_NOC_BLUE1); 
-			myAISContext->SetMaterial(anAISShape,Graphic3d_NOM_SILVER);                                  
-			myAISContext->SetDisplayMode(anAISShape,1);                     
-			myAISContext->Display(anAISShape);	
+			myAISContext->SetColor (anAISShape, Quantity_NOC_BLUE1, Standard_False);
+			myAISContext->SetMaterial (anAISShape, Graphic3d_NOM_SILVER, Standard_False);
+			myAISContext->SetDisplayMode (anAISShape, 1, Standard_False);
+			myAISContext->Display (anAISShape, Standard_False);
 			myState = -1;
 		}
 		else

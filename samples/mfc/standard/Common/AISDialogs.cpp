@@ -313,10 +313,11 @@ void CDialogMaterial::SetMaterial(Graphic3d_NameOfMaterial Material)
 {
   Standard_Real aTransparency;
   for (myCurrentIC->InitSelected();myCurrentIC->MoreSelected ();myCurrentIC->NextSelected ()){
-	aTransparency = myCurrentIC->SelectedInteractive()->Transparency();
-	myCurrentIC->SetMaterial (myCurrentIC->SelectedInteractive(),(Graphic3d_NameOfMaterial)(Material));
-	myCurrentIC->SetTransparency (myCurrentIC->SelectedInteractive(),aTransparency);
+    aTransparency = myCurrentIC->SelectedInteractive()->Transparency();
+    myCurrentIC->SetMaterial (myCurrentIC->SelectedInteractive(), (Graphic3d_NameOfMaterial)(Material), Standard_False);
+    myCurrentIC->SetTransparency (myCurrentIC->SelectedInteractive(), aTransparency, Standard_False);
   }
+  myCurrentIC->UpdateCurrentViewer();
 }
 
 void CDialogMaterial::OnObjectMaterialAluminium     () { SetMaterial ( Graphic3d_NOM_ALUMINIUM     ) ; }
@@ -375,11 +376,11 @@ CDialogTransparency::CDialogTransparency(Handle(AIS_InteractiveContext) CurrentI
 	for (myCurrentIC->InitSelected();
 	     myCurrentIC->MoreSelected ();
 		 myCurrentIC->NextSelected ())
-	{	
-	    myCurrentIC->SetTransparency (myCurrentIC->SelectedInteractive(), temp);
-    }	
+	{
+	    myCurrentIC->SetTransparency (myCurrentIC->SelectedInteractive(), temp, Standard_False);
+    }
 
-
+  myCurrentIC->UpdateCurrentViewer();
 }
 
 
@@ -417,10 +418,10 @@ void CDialogTransparency::OnDeltaposSpinaistransp(NMHDR* pNMHDR, LRESULT* pResul
 	for (myCurrentIC->InitSelected();
 	     myCurrentIC->MoreSelected ();
 		 myCurrentIC->NextSelected())
-	{	
-	    myCurrentIC->SetTransparency (myCurrentIC->SelectedInteractive(), m_TransValue/10.0);
-    }	
-
+	{
+	    myCurrentIC->SetTransparency (myCurrentIC->SelectedInteractive(), m_TransValue/10.0, Standard_False);
+    }
+  myCurrentIC->UpdateCurrentViewer();
 	*pResult = 0;
 
 }
@@ -434,9 +435,10 @@ void CDialogTransparency::OnChangeEditaistransp()
 		for (myCurrentIC->InitSelected();
 			 myCurrentIC->MoreSelected ();
 			 myCurrentIC->NextSelected())
-		{	
-			myCurrentIC->SetTransparency (myCurrentIC->SelectedInteractive(), m_TransValue/10.0);
-		}	
+		{
+			myCurrentIC->SetTransparency (myCurrentIC->SelectedInteractive(), m_TransValue/10.0, Standard_False);
+		}
+    myCurrentIC->UpdateCurrentViewer();
 	}
 	else{
 		m_TransValue = temp;

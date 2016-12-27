@@ -73,7 +73,7 @@ void CLengthParamsEdgesPage::OnBnClickedEdge1Btn()
 
   myFirstEdge = TopoDS::Edge (myAISContext->SelectedShape());
 
-  myAISContext->ClearSelected();
+  myAISContext->ClearSelected (Standard_True);
 }
 
 //=======================================================================
@@ -94,7 +94,7 @@ void CLengthParamsEdgesPage::OnBnClickedEdge2Btn()
 
   mySecondEdge = TopoDS::Edge (myAISContext->SelectedShape());
 
-  myAISContext->ClearSelected();
+  myAISContext->ClearSelected (Standard_True);
 
   // Build plane through three points
   BRepAdaptor_Curve aCurve1 (myFirstEdge);
@@ -137,7 +137,7 @@ void CLengthParamsEdgesPage::OnBnClickedEdge2Btn()
     }
 
     anAngleDim->SetFlyout (aDimDlg->GetFlyout());
-    myAISContext->Display (anAngleDim);
+    myAISContext->Display (anAngleDim, Standard_True);
   }
   else
   {
@@ -149,7 +149,7 @@ void CLengthParamsEdgesPage::OnBnClickedEdge2Btn()
       aLenDim->SetDisplayUnits (aDimDlg->GetUnits());
     }
 
-    myAISContext->Display (aLenDim);
+    myAISContext->Display (aLenDim, Standard_True);
   }
 
   myAISContext->Activate (AIS_Shape::SelectionMode (TopAbs_EDGE));

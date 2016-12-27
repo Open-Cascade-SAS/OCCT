@@ -579,8 +579,8 @@ void OCC_2dView::DragEvent2D(const Standard_Integer  x,
 
   if (TheState == 0)
   {
-    ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->MoveTo(x,y,myV2dView);
-    ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->Select(theButtonDownX,theButtonDownY,x,y,myV2dView);
+    ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->MoveTo (x, y, myV2dView, Standard_False);
+    ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->Select (theButtonDownX, theButtonDownY, x, y, myV2dView, Standard_True);
   }
 
   if (TheState == 1)
@@ -612,7 +612,7 @@ void OCC_2dView::MoveEvent2D(const Standard_Integer  x,
     //View is not updated automatically in ConvertToGrid
     myV2dView->Update();
   }
-  ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->MoveTo(x,y,myV2dView);
+  ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->MoveTo (x, y, myV2dView, Standard_True);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -622,7 +622,7 @@ void OCC_2dView::MultiMoveEvent2D(const Standard_Integer  x,
                                   const Standard_Integer  y) 
 {
 // MultiMoveEvent2D means we move the mouse in a multi selection mode
-((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->MoveTo(x,y,myV2dView);
+((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->MoveTo (x, y, myV2dView, Standard_True);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -643,8 +643,8 @@ void OCC_2dView::MultiDragEvent2D(const Standard_Integer  x        ,
 
   if (TheState == 0)
   {
-    ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->MoveTo(x,y,myV2dView);
-    ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->ShiftSelect(theButtonDownX,theButtonDownY,x,y,myV2dView);;
+    ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->MoveTo (x, y, myV2dView, Standard_False);
+    ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->ShiftSelect (theButtonDownX, theButtonDownY, x, y, myV2dView, Standard_True);
   }
 
   if (TheState == 1)

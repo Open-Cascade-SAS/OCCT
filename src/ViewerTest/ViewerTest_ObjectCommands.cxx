@@ -575,7 +575,7 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
     Handle(Geom_Line) myLine=new Geom_Line (p1 ,myVect );
     Handle(AIS_Axis) TheAxis=new AIS_Axis (myLine );
     GetMapOfAIS().Bind (TheAxis,name);
-    TheAISContext()->Display(TheAxis);
+    TheAISContext()->Display(TheAxis, Standard_True);
   }
 
   // Pas d'arguments
@@ -613,7 +613,7 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
         Handle(Geom_Axis1Placement) OrigineAndVect=new Geom_Axis1Placement (A,D);
         Handle(AIS_Axis) TheAxis=new AIS_Axis (OrigineAndVect);
         GetMapOfAIS().Bind (TheAxis,name);
-        TheAISContext()->Display(TheAxis);
+        TheAISContext()->Display (TheAxis, Standard_True);
       }
       else
       {
@@ -627,7 +627,7 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
         Handle(Geom_Axis1Placement) OrigineAndVect=new Geom_Axis1Placement (A,D);
         Handle(AIS_Axis) TheAxis=new AIS_Axis (OrigineAndVect);
         GetMapOfAIS().Bind (TheAxis,name);
-        TheAISContext()->Display(TheAxis);
+        TheAISContext()->Display (TheAxis, Standard_True);
       }
 
     }
@@ -662,7 +662,7 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
       Handle(Geom_Axis1Placement) OrigineAndVect=new Geom_Axis1Placement (B,D);
       Handle(AIS_Axis) TheAxis=new AIS_Axis (OrigineAndVect);
       GetMapOfAIS().Bind (TheAxis,name);
-      TheAISContext()->Display(TheAxis);
+      TheAISContext()->Display (TheAxis, Standard_True);
 
     }
 
@@ -697,7 +697,7 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
       Handle(Geom_Axis1Placement) OrigineAndVect=new Geom_Axis1Placement (B,D);
       Handle(AIS_Axis) TheAxis=new AIS_Axis (OrigineAndVect);
       GetMapOfAIS().Bind (TheAxis,name);
-      TheAISContext()->Display(TheAxis);
+      TheAISContext()->Display (TheAxis, Standard_True);
 
     }
 
@@ -745,7 +745,7 @@ static int VPointBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
     Handle(Geom_CartesianPoint )  myGeomPoint= new Geom_CartesianPoint (thecoord[0],thecoord[1],thecoord[2]);
     Handle(AIS_Point)  myAISPoint=new AIS_Point(myGeomPoint );
     GetMapOfAIS().Bind (myAISPoint,name);
-    TheAISContext()->Display(myAISPoint);
+    TheAISContext()->Display (myAISPoint, Standard_True);
   }
 
   // Il n'a pas d'arguments
@@ -769,7 +769,7 @@ static int VPointBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
       Handle(Geom_CartesianPoint) myGeomPoint= new Geom_CartesianPoint (A );
       Handle(AIS_Point)  myAISPoint = new AIS_Point  (myGeomPoint );
       GetMapOfAIS().Bind(myAISPoint,name);
-      TheAISContext()->Display(myAISPoint);
+      TheAISContext()->Display (myAISPoint, Standard_True);
     }
     else
     {
@@ -782,7 +782,7 @@ static int VPointBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
       Handle(Geom_CartesianPoint) myGeomPointM= new Geom_CartesianPoint ( (A.X()+B.X())/2  , (A.Y()+B.Y())/2  , (A.Z()+B.Z())/2  );
       Handle(AIS_Point)  myAISPointM = new AIS_Point  (myGeomPointM );
       GetMapOfAIS().Bind(myAISPointM,name);
-      TheAISContext()->Display(myAISPointM);
+      TheAISContext()->Display (myAISPointM, Standard_True);
     }
 
   }
@@ -945,7 +945,7 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
             anAISPlane->SetTypeOfSensitivity (Select3D_TypeOfSensitivity (aType));
           }
         }
-        TheAISContext()->Display(anAISPlane);
+        TheAISContext()->Display (anAISPlane, Standard_True);
       }
 
       // The first argument is an AIS_Axis
@@ -1003,7 +1003,7 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
           anAISPlane->SetTypeOfSensitivity (Select3D_TypeOfSensitivity (aType));
         }
       }
-      TheAISContext()->Display(anAISPlane);
+      TheAISContext()->Display (anAISPlane, Standard_True);
 
     }
     // The first argumnet is an AIS_Plane
@@ -1058,7 +1058,7 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
           anAISPlane->SetTypeOfSensitivity (Select3D_TypeOfSensitivity (aType));
         }
       }
-      TheAISContext()->Display(anAISPlane);
+      TheAISContext()->Display (anAISPlane, Standard_True);
     }
     // Error
     else
@@ -1118,7 +1118,7 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
             Handle(Geom_Plane) aGeomPlane = MkPlane.Value();
             Handle(AIS_Plane) anAISPlane = new AIS_Plane (aGeomPlane);
             GetMapOfAIS().Bind (anAISPlane, aName);
-            TheAISContext()->Display(anAISPlane);
+            TheAISContext()->Display (anAISPlane, Standard_True);
           }
         }
         else if (aShapes.Extent() == 3)
@@ -1145,7 +1145,7 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
           Handle(Geom_Plane) aGeomPlane = MkPlane.Value();
           Handle(AIS_Plane) anAISPlane = new AIS_Plane (aGeomPlane);
           GetMapOfAIS().Bind (anAISPlane, aName);
-          TheAISContext()->Display(anAISPlane);
+          TheAISContext()->Display (anAISPlane, Standard_True);
         }
         else
         {
@@ -1189,7 +1189,7 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
         Handle(Geom_Plane) aGeomPlane = MkPlane.Value();
         Handle(AIS_Plane) anAISPlane = new AIS_Plane (aGeomPlane);
         GetMapOfAIS().Bind (anAISPlane ,aName);
-        TheAISContext()->Display(anAISPlane);
+        TheAISContext()->Display (anAISPlane, Standard_True);
       }
       else if (aShapeA.ShapeType() == TopAbs_FACE)
       {
@@ -1201,7 +1201,7 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
           Handle(Geom_Plane) aGeomPlane = new Geom_Plane(aPlane);
           Handle(AIS_Plane) anAISPlane = new AIS_Plane(aGeomPlane);
           GetMapOfAIS().Bind (anAISPlane, aName);
-          TheAISContext()->Display(anAISPlane);
+          TheAISContext()->Display (anAISPlane, Standard_True);
         }
         else
         {
@@ -1253,7 +1253,7 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
         Handle(Geom_Plane) aGeomPlane = new Geom_Plane (aPlane);
         Handle(AIS_Plane) aAISPlane = new AIS_Plane (aGeomPlane, A);
         GetMapOfAIS().Bind (aAISPlane ,aName);
-        TheAISContext()->Display(aAISPlane);
+        TheAISContext()->Display (aAISPlane, Standard_True);
       }
       else
       {
@@ -1325,7 +1325,7 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
         gp_Pnt aMiddle ((Aa.X()+Ab.X() )/2 ,(Aa.Y()+Ab.Y() )/2 ,(Aa.Z()+Ab.Z() )/2 );
         Handle(AIS_Plane) anAISPlane = new AIS_Plane (aGeomPlane, aMiddle);
         GetMapOfAIS().Bind (anAISPlane, aName);
-        TheAISContext()->Display(anAISPlane);
+        TheAISContext()->Display (anAISPlane, Standard_True);
       }
       else
       {
@@ -1506,7 +1506,7 @@ static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
     // Les deux points sont OK...Construction de l'AIS_Line (en faite, le segment AB)
     Handle(AIS_Line) theAISLine= new AIS_Line(myCartPointA,myCartPointB );
     GetMapOfAIS().Bind(theAISLine,argv[1] );
-    TheAISContext()->Display(theAISLine );
+    TheAISContext()->Display (theAISLine, Standard_True);
 
   }
 
@@ -1527,7 +1527,7 @@ static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
 
     Handle(AIS_Line) theAISLine= new AIS_Line(myCartPointA,myCartPointB );
     GetMapOfAIS().Bind(theAISLine,argv[1] );
-    TheAISContext()->Display(theAISLine );
+    TheAISContext()->Display (theAISLine, Standard_True);
 
   }
 
@@ -1563,7 +1563,7 @@ static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
 
     Handle(AIS_Line) theAISLine= new AIS_Line(myCartPointA,myCartPointB );
     GetMapOfAIS().Bind(theAISLine,argv[1] );
-    TheAISContext()->Display(theAISLine );
+    TheAISContext()->Display (theAISLine, Standard_True);
   }
 
   return 0;
@@ -1709,7 +1709,7 @@ void DisplayCircle (Handle (Geom_Circle) theGeomCircle,
    GetMapOfAIS().Bind(aCircle, theName);
 
    // Display the circle
-   TheAISContext()->Display(aCircle);
+   TheAISContext()->Display (aCircle, Standard_True);
   
 }
 
@@ -2874,7 +2874,7 @@ static int VComputeHLR (Draw_Interpretor& di,
   // create an AIS shape and display it
   Handle(AIS_Shape) anObject = new AIS_Shape (aHlrShape);
   GetMapOfAIS().Bind (anObject, aHlrName);
-  aContextAIS->Display (anObject);
+  aContextAIS->Display (anObject, Standard_False);
 
   aContextAIS->UpdateCurrentViewer ();
 
@@ -3718,7 +3718,7 @@ static Standard_Integer VConnect (Draw_Interpretor& /*di*/,
   GetMapOfAIS().Bind (anOriginObject, aName);
 
   // Display connected object
-  TheAISContext()->Display (anOriginObject);
+  TheAISContext()->Display (anOriginObject, Standard_True);
 
   return 0;
 }
@@ -3964,7 +3964,7 @@ static Standard_Integer VAddConnected (Draw_Interpretor& di,
   aTrsf.SetTranslation (gp_Vec (aX, aY, aZ));
  
   anAssembly->Connect (anIObj, aTrsf);
-  TheAISContext()->Display (anAssembly);
+  TheAISContext()->Display (anAssembly, Standard_False);
   TheAISContext()->RecomputeSelectionOnly (anAssembly);
   aContext->UpdateCurrentViewer();
 
@@ -4413,7 +4413,7 @@ static Standard_Integer VTriangle (Draw_Interpretor& /*di*/,
   GetMapOfAIS().Bind(aTriangle, aName);
 
   // Display triangle
-  TheAISContext()->Display(aTriangle);
+  TheAISContext()->Display (aTriangle, Standard_True);
   return 0;
 }
 
@@ -4528,7 +4528,7 @@ static Standard_Integer VSegment (Draw_Interpretor& /*di*/,
   GetMapOfAIS().Bind(aSegment, aName);
 
   // Display segment
-  TheAISContext()->Display(aSegment);
+  TheAISContext()->Display (aSegment, Standard_True);
   return 0;
 }
 
@@ -4788,7 +4788,7 @@ static Standard_Integer VShowFaceBoundary (Draw_Interpretor& /*di*/,
 
   aDrawer->SetFaceBoundaryAspect (aBoundaryAspect);
 
-  TheAISContext()->Redisplay (anInterObj);
+  TheAISContext()->Redisplay (anInterObj, Standard_True);
   
   return 0;
 }
@@ -5464,7 +5464,7 @@ static int VSetEdgeType (Draw_Interpretor& theDI,
   // Update shape presentation as aspect parameters were changed
   if (isForceRedisplay)
   {
-    ViewerTest::GetAISContext()->Redisplay (anObject);
+    ViewerTest::GetAISContext()->Redisplay (anObject, Standard_False);
   }
   else
   {
@@ -5528,7 +5528,7 @@ static int VUnsetEdgeType (Draw_Interpretor& theDI,
   // Update shape presentation as aspect parameters were changed
   if (isForceRedisplay)
   {
-    ViewerTest::GetAISContext()->Redisplay (anObject);
+    ViewerTest::GetAISContext()->Redisplay (anObject, Standard_False);
   }
   else
   {

@@ -114,7 +114,7 @@ void OCC_3dBaseDoc::DragEvent (const Standard_Integer theMouseX,
     {
       myAISContext->Select (aStartDragX, aStartDragY,
                             theMouseX, theMouseY,
-                            theView);
+                            theView, Standard_True);
       break;
     }
   };
@@ -127,8 +127,8 @@ void OCC_3dBaseDoc::InputEvent (const Standard_Integer theMouseX,
                                 const Standard_Integer theMouseY,
                                 const Handle(V3d_View)& theView)
 {
-  myAISContext->MoveTo (theMouseX, theMouseY, theView);
-  myAISContext->Select();
+  myAISContext->MoveTo (theMouseX, theMouseY, theView, Standard_False);
+  myAISContext->Select (Standard_True);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -138,7 +138,7 @@ void OCC_3dBaseDoc::MoveEvent (const Standard_Integer theMouseX,
                                const Standard_Integer theMouseY,
                                const Handle(V3d_View)& theView)
 {
-  myAISContext->MoveTo (theMouseX, theMouseY, theView);
+  myAISContext->MoveTo (theMouseX, theMouseY, theView, Standard_True);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ void OCC_3dBaseDoc::ShiftMoveEvent (const Standard_Integer theMouseX,
                                     const Standard_Integer theMouseY,
                                     const Handle(V3d_View)& theView)
 {
-  myAISContext->MoveTo (theMouseX, theMouseY, theView);
+  myAISContext->MoveTo (theMouseX, theMouseY, theView, Standard_True);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -178,7 +178,7 @@ void OCC_3dBaseDoc::ShiftDragEvent (const Standard_Integer theMouseX,
     // button up
     myAISContext->ShiftSelect (aStartDragX, aStartDragY,
                                theMouseX, theMouseY,
-                               theView);
+                               theView, Standard_True);
   }
 }
 
@@ -189,7 +189,7 @@ void OCC_3dBaseDoc::ShiftInputEvent (const Standard_Integer /*theMouseX*/,
                                      const Standard_Integer /*theMouseY*/,
                                      const Handle(V3d_View)& /*theView*/)
 {
-  myAISContext->ShiftSelect();
+  myAISContext->ShiftSelect (Standard_True);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -278,7 +278,8 @@ void OCC_3dBaseDoc::OnObjectColor()
 	  CSFColor = Quantity_Color (GetRValue(MSColor)/255.,GetGValue(MSColor)/255.,
 						         GetBValue(MSColor)/255.,Quantity_TOC_RGB); 
 	  for (;myAISContext->MoreSelected ();myAISContext->NextSelected ())
-	  myAISContext->SetColor (myAISContext->SelectedInteractive(),CSFColor.Name());
+      myAISContext->SetColor (myAISContext->SelectedInteractive(),CSFColor.Name(), Standard_False);
+    myAISContext->UpdateCurrentViewer();
 	}
 }
 void OCC_3dBaseDoc::OnUpdateObjectColor(CCmdUI* pCmdUI) 
@@ -293,8 +294,8 @@ void OCC_3dBaseDoc::OnUpdateObjectColor(CCmdUI* pCmdUI)
 
 void OCC_3dBaseDoc::OnObjectErase() 
 {
-  myAISContext->EraseSelected();
-  myAISContext->ClearSelected();
+  myAISContext->EraseSelected (Standard_False);
+  myAISContext->ClearSelected (Standard_True);
 }
 void OCC_3dBaseDoc::OnUpdateObjectErase(CCmdUI* pCmdUI) 
 {
@@ -310,7 +311,8 @@ void OCC_3dBaseDoc::OnUpdateObjectErase(CCmdUI* pCmdUI)
 void OCC_3dBaseDoc::OnObjectWireframe() 
 {
   for(myAISContext->InitSelected();myAISContext->MoreSelected();myAISContext->NextSelected())
-        myAISContext->SetDisplayMode(myAISContext->SelectedInteractive(),0);
+        myAISContext->SetDisplayMode (myAISContext->SelectedInteractive(), 0, Standard_False);
+  myAISContext->UpdateCurrentViewer();
 }
 void OCC_3dBaseDoc::OnUpdateObjectWireframe(CCmdUI* pCmdUI) 
 {
@@ -323,7 +325,8 @@ void OCC_3dBaseDoc::OnUpdateObjectWireframe(CCmdUI* pCmdUI)
 void OCC_3dBaseDoc::OnObjectShading() 
 {
   for(myAISContext->InitSelected();myAISContext->MoreSelected();myAISContext->NextSelected())
-      myAISContext->SetDisplayMode(myAISContext->SelectedInteractive(),1);
+      myAISContext->SetDisplayMode (myAISContext->SelectedInteractive(), 1, Standard_False);
+  myAISContext->UpdateCurrentViewer();
 }
 
 void OCC_3dBaseDoc::OnUpdateObjectShading(CCmdUI* pCmdUI) 
@@ -358,10 +361,11 @@ BOOL OCC_3dBaseDoc::OnObjectMaterialRange(UINT nID)
   Standard_Real aTransparency;
 
   for (myAISContext->InitSelected();myAISContext->MoreSelected ();myAISContext->NextSelected ()){
-	aTransparency = myAISContext->SelectedInteractive()->Transparency();
-	myAISContext->SetMaterial (myAISContext->SelectedInteractive(),(Graphic3d_NameOfMaterial)(nID-ID_OBJECT_MATERIAL_BRASS));
-	myAISContext->SetTransparency (myAISContext->SelectedInteractive(),aTransparency);
+    aTransparency = myAISContext->SelectedInteractive()->Transparency();
+    myAISContext->SetMaterial (myAISContext->SelectedInteractive(),(Graphic3d_NameOfMaterial)(nID-ID_OBJECT_MATERIAL_BRASS), Standard_False);
+    myAISContext->SetTransparency (myAISContext->SelectedInteractive(),aTransparency, Standard_False);
   }
+  myAISContext->UpdateCurrentViewer();
   return true;
 
 }
@@ -399,7 +403,7 @@ void OCC_3dBaseDoc::OnUpdateObjectTransparency(CCmdUI* pCmdUI)
 
 void OCC_3dBaseDoc::OnObjectDisplayall() 
 {
-	myAISContext->DisplayAll();
+	myAISContext->DisplayAll (Standard_True);
 }
 
 void OCC_3dBaseDoc::OnUpdateObjectDisplayall(CCmdUI* pCmdUI) 
@@ -435,7 +439,8 @@ void OCC_3dBaseDoc::SetMaterial(Graphic3d_NameOfMaterial Material)
 {
   for (myAISContext->InitSelected();myAISContext->MoreSelected ();myAISContext->NextSelected ())
     myAISContext->SetMaterial (myAISContext->SelectedInteractive(),
-    (Graphic3d_NameOfMaterial)(Material));
+    (Graphic3d_NameOfMaterial)(Material), Standard_False);
+  myAISContext->UpdateCurrentViewer();
 }
 
 

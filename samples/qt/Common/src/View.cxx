@@ -820,25 +820,25 @@ void View::DragEvent( const int x, const int y, const int TheState )
 
     if ( TheState == 1 )
     {
-        myContext->Select( theButtonDownX, theButtonDownY, x, y, myView );
+        myContext->Select( theButtonDownX, theButtonDownY, x, y, myView, Standard_True );
         emit selectionChanged();
     }
 }
 
 void View::InputEvent( const int /*x*/, const int /*y*/ )
 {
-  myContext->Select();
+  myContext->Select (Standard_True);
   emit selectionChanged();
 }
 
 void View::MoveEvent( const int x, const int y )
 {
-  myContext->MoveTo( x, y, myView );
+  myContext->MoveTo( x, y, myView, Standard_True );
 }
 
 void View::MultiMoveEvent( const int x, const int y )
 {
-  myContext->MoveTo( x, y, myView );
+  myContext->MoveTo( x, y, myView, Standard_True );
 }
 
 void View::MultiDragEvent( const int x, const int y, const int TheState )
@@ -853,14 +853,14 @@ void View::MultiDragEvent( const int x, const int y, const int TheState )
     }
     if ( TheState == 0 )
     {
-        myContext->ShiftSelect( theButtonDownX, theButtonDownY, x, y, myView );
+        myContext->ShiftSelect( theButtonDownX, theButtonDownY, x, y, myView, Standard_True );
         emit selectionChanged();
     }
 }
 
 void View::MultiInputEvent( const int /*x*/, const int /*y*/ )
 {
-  myContext->ShiftSelect();
+  myContext->ShiftSelect (Standard_True);
   emit selectionChanged();
 }
 

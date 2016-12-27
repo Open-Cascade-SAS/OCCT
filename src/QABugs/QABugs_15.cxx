@@ -46,14 +46,14 @@ static Standard_Integer BUC60720 (Draw_Interpretor& di,Standard_Integer argc,con
       {
 	theObject1 = new QABugs_PresentableObject();
 	theObject1->SetDisplayMode(0);
-	myAISContext->Display(theObject1);
+	myAISContext->Display (theObject1, Standard_True);
       }
   } else if(Draw::Atoi(argv[1]) == 1) {
     if ( theObject2.IsNull() )
       {
 	theObject2 = new QABugs_PresentableObject();
 	theObject2->SetDisplayMode(1);
-	myAISContext->Display(theObject2);
+	myAISContext->Display (theObject2, Standard_True);
       }
   } else {
     di << "Usage : " << argv[0] << " 0/1\n";

@@ -468,7 +468,7 @@ Standard_Boolean AIS_LocalContext::Remove(const Handle(AIS_InteractiveObject)& a
   // If subintensity used
   else if (Att->IsSubIntensityOn())
   {
-    myCTX->SubIntensityOff (aSelectable);
+    myCTX->SubIntensityOff (aSelectable, Standard_False);
   }
 
   // Deactivate stored selection modes
@@ -1001,7 +1001,7 @@ void AIS_LocalContext::ClearObjects()
       else {
 	if (CurAtt->IsSubIntensityOn())
         {
-          myCTX->SubIntensityOff(SO);
+          myCTX->SubIntensityOff(SO, Standard_False);
         }
 	Standard_Integer DiMo = SO->HasDisplayMode()?
 	  SO->DisplayMode():myCTX->DisplayMode();

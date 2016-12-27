@@ -73,7 +73,7 @@ void CLengthParamsVerticesPage::OnBnClickedVertex1Btn()
 
   myFirstVertex = TopoDS::Vertex (myAISContext->SelectedShape());
 
-  myAISContext->ClearSelected();
+  myAISContext->ClearSelected (Standard_True);
 }
 
 //=======================================================================
@@ -92,7 +92,7 @@ void CLengthParamsVerticesPage::OnBnClickedVertex2Btn()
   }
 
   mySecondVertex = TopoDS::Vertex (myAISContext->SelectedShape());
-  myAISContext->ClearSelected();
+  myAISContext->ClearSelected (Standard_False);
 
   //Build dimension here
   gp_Pnt aP1=BRep_Tool::Pnt (myFirstVertex);
@@ -120,7 +120,7 @@ void CLengthParamsVerticesPage::OnBnClickedVertex2Btn()
   aLenDim->SetDimensionAspect (anAspect);
   aLenDim->SetFlyout (aDimDlg->GetFlyout());
 
-  myAISContext->Display (aLenDim);
+  myAISContext->Display (aLenDim, Standard_True);
   myAISContext->Activate (AIS_Shape::SelectionMode (TopAbs_VERTEX));
 }
 

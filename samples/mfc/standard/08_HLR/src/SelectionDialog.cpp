@@ -145,7 +145,7 @@ void CSelectionDialog::OnDisplay (bool isFit)
     Handle(Geom_Axis2Placement) aTrihedronAxis = new Geom_Axis2Placement (gp::XOY());
     myTrihedron = new AIS_Trihedron (aTrihedronAxis);
 
-    myInteractiveContext->Display (myTrihedron);
+    myInteractiveContext->Display (myTrihedron, Standard_False);
     myIsDisplayed = Standard_True;
   }
   if(isFit)
@@ -167,8 +167,8 @@ void CSelectionDialog::SetTitle (const CString & aTitle)
 void CSelectionDialog::UpdateViews()
 {
   // Clear HLR dialog view
-  myInteractiveContext->RemoveAll();
-  myInteractiveContext->Display (myTrihedron);
+  myInteractiveContext->RemoveAll (Standard_False);
+  myInteractiveContext->Display (myTrihedron, Standard_False);
 
   UpdateProjector();
 
@@ -182,10 +182,10 @@ void CSelectionDialog::UpdateViews()
     if (!anAISShape.IsNull())
     {
       OneOrMoreFound = Standard_True;
-      myInteractiveContext->Display (anAISShape);
+      myInteractiveContext->Display (anAISShape, Standard_False);
     }
   }
-
+  myInteractiveContext->UpdateCurrentViewer();
   // Apply HLR to chosen shapes and display result into the 2d view.
   Apply();
   // Update viewer
@@ -203,8 +203,8 @@ void CSelectionDialog::OnGetSelectedShapes()
   myDisplayableShape->SetNbIsos (m_NbIsos);
 
   // Clear HLR dialog view
-  myInteractiveContext->RemoveAll();
-  myInteractiveContext->Display (myTrihedron);
+  myInteractiveContext->RemoveAll (Standard_False);
+  myInteractiveContext->Display (myTrihedron, Standard_False);
 
   Standard_Boolean OneOrMoreFound = Standard_False;
   for (myDoc->GetAISContext()->InitSelected();
@@ -219,10 +219,10 @@ void CSelectionDialog::OnGetSelectedShapes()
       TopoDS_Shape aShape = anAISShape->Shape();
       myDisplayableShape->Add (aShape);
       Handle(AIS_Shape) aSelectedShape = new AIS_Shape (aShape);
-      myInteractiveContext->Display (aSelectedShape);
+      myInteractiveContext->Display (aSelectedShape, Standard_False);
     }
   }
-
+  myInteractiveContext->UpdateCurrentViewer();
   // Apply HLR to chosen shapes and display result into the 2d view.
   Apply();
   // Update viewer
@@ -236,7 +236,7 @@ void CSelectionDialog::OnGetSelectedShapes()
 void CSelectionDialog::Apply()
 {
   SetCursor(AfxGetApp()->LoadStandardCursor (IDC_WAIT));
-  myDoc->GetInteractiveContext2D()->RemoveAll();
+  myDoc->GetInteractiveContext2D()->RemoveAll (Standard_False);
   UpdateData (true);
 
   Standard_Integer aDisplayMode = m_DisplayMode;

@@ -261,7 +261,7 @@ void CGeometryDoc::MoveEvent2D(const Standard_Integer x,
     //View is not updated automatically in ConvertToGrid
     aView->Update();
   }
-  this->myAISContext2D->MoveTo(x, y, aView);
+  this->myAISContext2D->MoveTo (x, y, aView, Standard_True);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -352,7 +352,7 @@ void CGeometryDoc::InputEvent (const Standard_Integer /*theMouseX*/,
                                 const Standard_Integer /*theMouseY*/,
                                 const Handle(V3d_View)& /*theView*/)
 {
-  myAISContext->Select();
+  myAISContext->Select (Standard_True);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -1177,7 +1177,7 @@ void CGeometryDoc::OnSimplify()
     myCResultDialog.SetText(initfile);
     return;
   }
-  myAISContext->SetDisplayMode(AIS_Shaded);
+  myAISContext->SetDisplayMode(AIS_Shaded, Standard_True);
   simplify(aShape);
 }
 
@@ -1541,7 +1541,7 @@ Handle(AIS_InteractiveObject) CGeometryDoc::drawSurface
       Fit();
     }
     else
-      myAISContext->Display (aGraphicSurface);
+      myAISContext->Display (aGraphicSurface, Standard_True);
   }
 
   return aGraphicSurface;
@@ -1578,7 +1578,7 @@ Handle(AIS_Point) CGeometryDoc::drawPoint
   myAISContext->SetColor (aGraphicPoint, theColor, toDisplay);
   if (toDisplay)
   {
-  myAISContext->Display (aGraphicPoint);
+  myAISContext->Display (aGraphicPoint, Standard_True);
     //COCCDemoDoc::Fit();
   }
 
@@ -1601,7 +1601,7 @@ Handle(AIS_Shape) CGeometryDoc::drawShape
       Fit();
     }
     else
-      myAISContext->Display (aGraphicShape);
+      myAISContext->Display (aGraphicShape, Standard_True);
   }
 
   return aGraphicShape;

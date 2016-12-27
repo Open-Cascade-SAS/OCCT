@@ -63,7 +63,7 @@ static Standard_Integer BUC60738 (Draw_Interpretor& di, Standard_Integer /*argc*
   theDrawer->SetShadingAspect(theShadingAspect);
   theAISShape->SetAttributes(theDrawer);
 
-  aContext->Display(theAISShape);  
+  aContext->Display (theAISShape, Standard_True);
   
   return 0;
 }

@@ -77,7 +77,7 @@ void Convert_Presentation::DoSample()
 {
 	((COCCDemoApp*) AfxGetApp())->SetSampleName (L"Convert");
   ((COCCDemoApp*) AfxGetApp())->SetSamplePath (L"..\\..\\10_Convert");
-	getAISContext()->EraseAll();
+	getAISContext()->EraseAll (Standard_True);
 	if (myIndex >=0 && myIndex < myNbFuncs)
     (this->*SampleFuncs[myIndex])();
 }
@@ -238,7 +238,7 @@ void Convert_Presentation::sampleBezier()
 //================================================================
 void Convert_Presentation::sampleBezierSurface()
 {
-  getAISContext()->EraseAll();
+  getAISContext()->EraseAll (Standard_True);
 
   Standard_CString aName = "BezierSurface";
   // Create a BezierSurface
@@ -292,7 +292,7 @@ void Convert_Presentation::sampleBezierSurface()
 //================================================================
 void Convert_Presentation::sampleCylindricalSurface()
 {
-  getAISContext()->EraseAll();
+  getAISContext()->EraseAll (Standard_True);
 
   Standard_CString aName = "Cylindrical Surface";
   TCollection_AsciiString aText (
@@ -332,7 +332,7 @@ void Convert_Presentation::sampleRevolSurface()
   TranslateView(-176.84682, -102.12892);
   SetViewScale(0.69326);
 
-  getAISContext()->EraseAll();
+  getAISContext()->EraseAll (Standard_True);
 
   Standard_CString aName = "Surface of revolution";
   TCollection_AsciiString aText (
@@ -384,7 +384,7 @@ void Convert_Presentation::sampleRevolSurface()
 //================================================================
 void Convert_Presentation::sampleToroidalSurface()
 {
-  getAISContext()->EraseAll();
+  getAISContext()->EraseAll (Standard_True);
 
   Standard_CString aName = "Toroidal surface";
   TCollection_AsciiString aText (
@@ -407,7 +407,7 @@ void Convert_Presentation::sampleToroidalSurface()
 //================================================================
 void Convert_Presentation::sampleConicalSurface()
 {
-  getAISContext()->EraseAll();
+  getAISContext()->EraseAll (Standard_True);
 
   Standard_CString aName = "Conical surface";
   TCollection_AsciiString aText (
@@ -440,7 +440,7 @@ void Convert_Presentation::sampleConicalSurface()
 //================================================================
 void Convert_Presentation::sampleSphericalSurface()
 {
-  getAISContext()->EraseAll();
+  getAISContext()->EraseAll (Standard_True);
 
   Standard_CString aName = "Spherical surface";
   TCollection_AsciiString aText (

@@ -305,7 +305,6 @@ void AIS_Manipulator::Attach (const Handle(AIS_ManipulatorObjectSequence)& theOb
     }
 
     aContext->Load (this);
-    aContext->CurrentViewer()->RedrawImmediate();
   }
 
   if (theOptions.EnableModes)

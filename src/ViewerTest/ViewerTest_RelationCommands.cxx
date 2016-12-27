@@ -1758,7 +1758,7 @@ static int VMoveDim (Draw_Interpretor& theDi, Standard_Integer theArgNum, const 
       Handle(AIS_Relation) aRelation = Handle(AIS_Relation)::DownCast (aPickedObj);
       aPoint = Get3DPointAtMousePosition();
       aRelation->SetPosition (aPoint);
-      TheAISContext()->Redisplay (aRelation);
+      TheAISContext()->Redisplay (aRelation, Standard_True);
     }
     else
     {
@@ -1795,7 +1795,7 @@ static int VMoveDim (Draw_Interpretor& theDi, Standard_Integer theArgNum, const 
       }
 
       aDim->SetTextPosition (aPoint);
-      TheAISContext()->Redisplay (aDim);
+      TheAISContext()->Redisplay (aDim, Standard_True);
     }
 
   }
@@ -1805,13 +1805,13 @@ static int VMoveDim (Draw_Interpretor& theDi, Standard_Integer theArgNum, const 
   {
     Handle(AIS_Relation) aRelation = Handle(AIS_Relation)::DownCast (aPickedObj);
     aRelation->SetPosition (aPoint);
-    TheAISContext()->Redisplay (aRelation);
+    TheAISContext()->Redisplay (aRelation, Standard_True);
   }
   else
   {
     Handle(AIS_Dimension) aDim = Handle(AIS_Dimension)::DownCast (aPickedObj);
     aDim->SetTextPosition (aPoint);
-    TheAISContext()->Redisplay (aDim);
+    TheAISContext()->Redisplay (aDim, Standard_True);
   }
 
   return 0;

@@ -135,9 +135,9 @@ static Standard_Integer VBLEND(Draw_Interpretor& di, Standard_Integer narg, cons
   Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
   Ctx->Erase(Start,Standard_False);
   if(Ctx->IsDisplayed(AS))
-    Ctx->Redisplay(AS);
+    Ctx->Redisplay (AS, Standard_True);
   else
-    Ctx->Display(AS);
+    Ctx->Display (AS, Standard_True);
   return 0;
 }
 

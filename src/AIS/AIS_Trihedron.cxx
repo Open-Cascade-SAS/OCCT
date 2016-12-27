@@ -656,7 +656,7 @@ void AIS_Trihedron::SetContext(const Handle(AIS_InteractiveContext)& Ctx)
       if (hasContext)
 	{
 	  if (anAISContext->IsSelected (myShapes[anIdx]))
-	    anAISContext->AddOrRemoveSelected (myShapes[anIdx]);
+	    anAISContext->AddOrRemoveSelected (myShapes[anIdx], Standard_False);
 	  
 	  anAISContext->Remove (myShapes[anIdx], Standard_False);
 	}

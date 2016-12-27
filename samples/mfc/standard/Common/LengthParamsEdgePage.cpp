@@ -79,7 +79,7 @@ void CLengthParamsEdgePage::OnBnClickedChooseEdgeBtn()
   TopoDS_Shape aSelShape = myAISContext->SelectedShape();
   const TopoDS_Edge& anEdge = TopoDS::Edge (aSelShape);
 
-  myAISContext->ClearSelected();
+  myAISContext->ClearSelected (Standard_False);
   TopoDS_Vertex aFirstVertex, aSecondVertex;
   TopExp::Vertices (TopoDS::Edge (anEdge), aFirstVertex, aSecondVertex);
 
@@ -108,6 +108,6 @@ void CLengthParamsEdgePage::OnBnClickedChooseEdgeBtn()
   aLenDim->SetDimensionAspect (anAspect);
   aLenDim->SetFlyout (aDimDlg->GetFlyout());
 
-  myAISContext->Display (aLenDim);
+  myAISContext->Display (aLenDim, Standard_True);
   myAISContext->Activate (AIS_Shape::SelectionMode (TopAbs_EDGE));
 }

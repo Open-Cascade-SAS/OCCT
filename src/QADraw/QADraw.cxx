@@ -107,9 +107,9 @@ static int VTrihedronOrigins(Draw_Interpretor& di,
   di<<argv[1]<<"_X  "<<argv[1]<<"_Y  "<<argv[1]<<"_Z\n";
 
   //try to draw them:
-  TheAISContext()->Display(XLine);
-  TheAISContext()->Display(YLine);
-  TheAISContext()->Display(ZLine);
+  TheAISContext()->Display (XLine, Standard_False);
+  TheAISContext()->Display (YLine, Standard_False);
+  TheAISContext()->Display (ZLine, Standard_True);
 
   return 0;
 }

@@ -1285,8 +1285,8 @@ static Standard_Integer OCC24012 (Draw_Interpretor& di, Standard_Integer argc, c
     {
         TopoDS_Shape rshape = anormpro.Projection();
 		Handle(AIS_InteractiveObject) myShape = new AIS_Shape (rshape);
-		myAISContext->SetColor(myShape, Quantity_Color(Quantity_NOC_YELLOW));
-		myAISContext->Display(myShape, Standard_True);
+		myAISContext->SetColor (myShape, Quantity_Color(Quantity_NOC_YELLOW), Standard_False);
+		myAISContext->Display (myShape, Standard_True);
     }
 
 	return 0;
@@ -1845,7 +1845,7 @@ static Standard_Integer OCC24622 (Draw_Interpretor& /*theDi*/, Standard_Integer 
 
   Handle(AIS_TexturedShape) aTexturedShape = new AIS_TexturedShape (aBlankShape);
   aTexturedShape->SetTexturePixMap (anImage);
-  anAISContext->Display (aTexturedShape, 3, 0);
+  anAISContext->Display (aTexturedShape, 3, 0, Standard_True);
 
   return 0;
 }
@@ -3304,7 +3304,7 @@ static Standard_Integer OCC26172 (Draw_Interpretor& theDI, Standard_Integer theA
   BRepBuilderAPI_MakeEdge anEdgeBuilder (aStart, anEnd);
   TopoDS_Edge anEdge = anEdgeBuilder.Edge();
   Handle(AIS_Shape) aTestAISShape = new AIS_Shape (anEdge);
-  anAISContext->Display (aTestAISShape);
+  anAISContext->Display (aTestAISShape, Standard_True);
 
   // 2. activate it in selection modes
   TColStd_SequenceOfInteger aModes;
@@ -3398,16 +3398,17 @@ static Standard_Integer OCC26284 (Draw_Interpretor& theDI, Standard_Integer theA
 
   BRepPrimAPI_MakeSphere aSphereBuilder (gp_Pnt (0.0, 0.0, 0.0), 1.0);
   Handle(AIS_Shape) aSphere = new AIS_Shape (aSphereBuilder.Shape());
-  anAISContext->Display (aSphere);
+  anAISContext->Display (aSphere, Standard_False);
   for (Standard_Integer aChildIdx = 0; aChildIdx < 5; ++aChildIdx)
   {
     BRepPrimAPI_MakeSphere aBuilder (gp_Pnt (1.0 + aChildIdx, 1.0 + aChildIdx, 1.0 + aChildIdx), 1.0);
     Handle(AIS_Shape) aChild = new AIS_Shape (aBuilder.Shape());
     aSphere->AddChild (aChild);
-    anAISContext->Display (aChild);
+    anAISContext->Display (aChild, Standard_False);
   }
 
   anAISContext->RecomputeSelectionOnly (aSphere);
+  anAISContext->UpdateCurrentViewer();
 
   return 0;
 }
@@ -4170,16 +4171,16 @@ static Standard_Integer OCC26462 (Draw_Interpretor& theDI, Standard_Integer /*th
   Handle(AIS_InteractiveObject) aBox2 = new AIS_Shape (aBuilder2.Shape());
 
   const Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
-  aCtx->Display (aBox1, 0, 2);
-  aCtx->Display (aBox2, 0, 2);
+  aCtx->Display (aBox1, 0, 2, Standard_False);
+  aCtx->Display (aBox2, 0, 2, Standard_False);
   ViewerTest::CurrentView()->FitAll();
-  aCtx->SetWidth (aBox1, 3);
-  aCtx->SetWidth (aBox2, 3);
+  aCtx->SetWidth (aBox1, 3, Standard_False);
+  aCtx->SetWidth (aBox2, 3, Standard_False);
 
-  aCtx->MoveTo (305, 322, ViewerTest::CurrentView());
-  aCtx->ShiftSelect();
-  aCtx->MoveTo (103, 322, ViewerTest::CurrentView());
-  aCtx->ShiftSelect();
+  aCtx->MoveTo (305, 322, ViewerTest::CurrentView(), Standard_False);
+  aCtx->ShiftSelect (Standard_False);
+  aCtx->MoveTo (103, 322, ViewerTest::CurrentView(), Standard_False);
+  aCtx->ShiftSelect (Standard_False);
   if (aCtx->NbSelected() != 0)
   {
     theDI << "ERROR: no boxes must be selected!\n";
@@ -4188,15 +4189,15 @@ static Standard_Integer OCC26462 (Draw_Interpretor& theDI, Standard_Integer /*th
 
   aCtx->SetSelectionSensitivity (aBox1, 2, 5);
 
-  aCtx->MoveTo (305, 322, ViewerTest::CurrentView());
-  aCtx->ShiftSelect();
+  aCtx->MoveTo (305, 322, ViewerTest::CurrentView(), Standard_False);
+  aCtx->ShiftSelect (Standard_False);
   if (aCtx->NbSelected() != 1)
   {
     theDI << "ERROR: b1 was not selected\n";
     return 1;
   }
-  aCtx->MoveTo (103, 322, ViewerTest::CurrentView());
-  aCtx->ShiftSelect();
+  aCtx->MoveTo (103, 322, ViewerTest::CurrentView(), Standard_False);
+  aCtx->ShiftSelect (Standard_True);
   if (aCtx->NbSelected() != 1)
   {
     theDI << "ERROR: b2 is selected after b1's tolerance increased\n";
@@ -4885,8 +4886,8 @@ static Standard_Integer BUC26658 (Draw_Interpretor& theDI,
   Standard_Integer Xp,Yp;
   myV3dView->Convert(Xv,Yv,Xp,Yp);
 
-  aContext->MoveTo(Xp,Yp, myV3dView);
-  aContext->Select();
+  aContext->MoveTo (Xp, Yp, myV3dView, Standard_False);
+  aContext->Select (Standard_False);
   bool aHasSelected = false;
   for (aContext->InitSelected(); aContext->MoreSelected() && !aHasSelected; aContext->NextSelected()) {
     Handle(AIS_InteractiveObject) anIO = aContext->SelectedInteractive();
@@ -4912,7 +4913,7 @@ static Standard_Integer BUC26658 (Draw_Interpretor& theDI,
   Standard_ENABLE_DEPRECATION_WARNINGS
 
   // check that there are no selected vertices
-  aContext->Select();
+  aContext->Select (Standard_True);
   aHasSelected = false;
   for (aContext->InitSelected(); aContext->MoreSelected() && !aHasSelected; aContext->NextSelected()) {
     Handle(AIS_InteractiveObject) anIO = aContext->SelectedInteractive();
@@ -5149,7 +5150,7 @@ static Standard_Integer OCC27523 (Draw_Interpretor& theDI, Standard_Integer theA
   BRepBuilderAPI_MakeEdge anEdgeBuilder (aStart, anEnd);
   TopoDS_Edge anEdge = anEdgeBuilder.Edge();
   Handle(AIS_InteractiveObject) aTestAISShape = new AIS_Shape (anEdge);
-  anAISContext->Display (aTestAISShape);
+  anAISContext->Display (aTestAISShape, Standard_False);
 
   // activate it in selection modes
   TColStd_SequenceOfInteger aModes;
@@ -5171,7 +5172,7 @@ static Standard_Integer OCC27523 (Draw_Interpretor& theDI, Standard_Integer theA
   Handle(AIS_Shape)::DownCast (aTestAISShape)->Set (aVertexShape);
   aTestAISShape->Redisplay();
 
-  anAISContext->AddOrRemoveSelected (aTestAISShape);
+  anAISContext->AddOrRemoveSelected (aTestAISShape, Standard_True);
 
   bool aValidShapeType = false;
   for (anAISContext->InitSelected(); anAISContext->MoreSelected(); anAISContext->NextSelected())
@@ -5252,7 +5253,7 @@ static Standard_Integer OCC27700 (Draw_Interpretor& /*theDI*/, Standard_Integer 
     return 1;
   }
   Handle(OCC27700_Text) aPresentation = new OCC27700_Text();
-  aContext->Display (aPresentation);
+  aContext->Display (aPresentation, Standard_True);
   return 0;
 }
 

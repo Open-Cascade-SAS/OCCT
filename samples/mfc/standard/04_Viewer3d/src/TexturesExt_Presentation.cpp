@@ -56,7 +56,7 @@ void TexturesExt_Presentation::DoSample()
 {
 	((CViewer3dApp*) AfxGetApp())->SetSampleName (L"Viewer3d");
 	((CViewer3dApp*) AfxGetApp())->SetSamplePath (L"..\\..\\04_Viewer3d");
-	getAISContext()->EraseAll();
+	getAISContext()->EraseAll (Standard_True);
 	if (myIndex >=0 && myIndex < myNbSamples)
 	{
 	  // turn lights on for terrain sample
@@ -299,7 +299,7 @@ void TexturesExt_Presentation::sampleTerrain()
   aTransform.Perform(aFaces(1));
   aShape = aTransform;
 
-  getAISContext()->Display(Texturize(aShape, "terrain.gif"));
+  getAISContext()->Display (Texturize (aShape, "terrain.gif"), Standard_True);
 }
 
 

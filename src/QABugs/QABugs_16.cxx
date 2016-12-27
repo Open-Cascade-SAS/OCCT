@@ -145,7 +145,7 @@ static Standard_Integer  BUC60814(Draw_Interpretor& di, Standard_Integer argc, c
   Handle(AIS_InteractiveObject) aTrihedron;
   Handle(Geom_Axis2Placement) aTrihedronAxis=new Geom_Axis2Placement(gp::XOY());
   aTrihedron=new AIS_Trihedron(aTrihedronAxis);
-  myAISContext->Display(aTrihedron);
+  myAISContext->Display (aTrihedron, Standard_False);
   
   //Circle
   gp_Pnt P(10,10,10);
@@ -154,13 +154,13 @@ static Standard_Integer  BUC60814(Draw_Interpretor& di, Standard_Integer argc, c
   
   Handle(Geom_Circle) ahCircle=new Geom_Circle(aAx2,20);
   Handle(AIS_InteractiveObject)   aCircle=new AIS_Circle(ahCircle);
-  myAISContext->Display(aCircle);
+  myAISContext->Display (aCircle, Standard_False);
     
   const Handle(Prs3d_Drawer)& aSelStyle = myAISContext->SelectionStyle();
   aSelStyle->SetColor (Quantity_NOC_BLUE1);
   
-  myAISContext->AddOrRemoveSelected(aTrihedron);
-  myAISContext->AddOrRemoveSelected(aCircle);
+  myAISContext->AddOrRemoveSelected (aTrihedron, Standard_False);
+  myAISContext->AddOrRemoveSelected (aCircle, Standard_True);
   
   return 0;
 }
@@ -197,7 +197,7 @@ static Standard_Integer BUC60774 (Draw_Interpretor& theDi,
   Standard_Integer aXPixMax = aWinWidth;
   Standard_Integer aYPixMax = aWinHeight;
 
-  AIS_StatusOfPick aPickStatus = anAISContext->Select (aXPixMin, aYPixMin, aXPixMax, aYPixMax, aV3dView);
+  AIS_StatusOfPick aPickStatus = anAISContext->Select (aXPixMin, aYPixMin, aXPixMax, aYPixMax, aV3dView, Standard_False);
   theDi << (aPickStatus == AIS_SOP_NothingSelected
     ? "status = AIS_SOP_NothingSelected : OK"
     : "status = AIS_SOP_NothingSelected : bugged - Faulty ");
@@ -206,7 +206,7 @@ static Standard_Integer BUC60774 (Draw_Interpretor& theDi,
   theDi.Eval ("box b 10 10 10");
   theDi.Eval (" vdisplay b");
 
-  aPickStatus = anAISContext->Select (aXPixMin, aYPixMin, aXPixMax, aYPixMax, aV3dView);
+  aPickStatus = anAISContext->Select (aXPixMin, aYPixMin, aXPixMax, aYPixMax, aV3dView, Standard_False);
   theDi << (aPickStatus == AIS_SOP_OneSelected
     ? "status = AIS_SOP_OneSelected : OK"
     : "status = AIS_SOP_OneSelected : bugged - Faulty ");
@@ -215,7 +215,7 @@ static Standard_Integer BUC60774 (Draw_Interpretor& theDi,
   theDi.Eval ("box w 20 20 20 20 20 20");
   theDi.Eval (" vdisplay w");
 
-  aPickStatus = anAISContext->Select (aXPixMin, aYPixMin, aXPixMax, aYPixMax, aV3dView);
+  aPickStatus = anAISContext->Select (aXPixMin, aYPixMin, aXPixMax, aYPixMax, aV3dView, Standard_True);
   theDi << (aPickStatus == AIS_SOP_SeveralSelected
     ? "status = AIS_SOP_SeveralSelected : OK"
     : "status = AIS_SOP_SeveralSelected : bugged - Faulty ");
@@ -251,7 +251,7 @@ static Standard_Integer BUC60972 (Draw_Interpretor& di, Standard_Integer argc, c
   di << argv[5] << " " << Draw::Atof(argv[4]) << "\n";
   
   Handle(AIS_AngleDimension) aDim = new AIS_AngleDimension(aFirst, aSecond);
-  aContext->Display(aDim);                                                         
+  aContext->Display (aDim, Standard_True);
   
   return 0;
 }
@@ -338,7 +338,7 @@ static Standard_Integer OCC218bug (Draw_Interpretor& di, Standard_Integer argc, 
     theAISPlaneTri->SetYLabel(Ylabel);
     
     GetMapOfAIS().Bind ( theAISPlaneTri, name);
-    aContext->Display(theAISPlaneTri );
+    aContext->Display (theAISPlaneTri, Standard_True);
   }
   return 0;
 }
@@ -692,8 +692,8 @@ static Standard_Integer OCC301 (Draw_Interpretor& di, Standard_Integer argc, con
   TopoDS_Edge E1 = BRepBuilderAPI_MakeEdge(p1, p2);
   TopoDS_Edge E2 = BRepBuilderAPI_MakeEdge(p2, p3);
 
-  context->Display(new AIS_Shape(E1)); 
-  context->Display(new AIS_Shape(E2)); 
+  context->Display (new AIS_Shape(E1), Standard_False);
+  context->Display (new AIS_Shape(E2), Standard_True);
 
   gp_Pnt plnpt(0, 0, 0);
   gp_Dir plndir(0, 0, 1);
@@ -788,7 +788,7 @@ static Standard_Integer OCC70 (Draw_Interpretor& di, Standard_Integer argc, cons
 
   Handle(V3d_View) V3dView = ViewerTest::CurrentView();
 
-  aContext->Select(Polyline,V3dView);
+  aContext->Select (Polyline, V3dView, Standard_False);
   aContext->UpdateCurrentViewer();
 
   return 0;

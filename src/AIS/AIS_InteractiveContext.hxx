@@ -158,7 +158,8 @@ public:
   //! open or closed. If you want to view the object in open
   //! local context without selection, use the syntax below,
   //! setting aSelectionMode to -1.
-  Standard_EXPORT void Display (const Handle(AIS_InteractiveObject)& anIobj, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void Display (const Handle(AIS_InteractiveObject)& theIObj,
+                                const Standard_Boolean               theToUpdateViewer);
   
   //! Controls the choice between the using the display
   //! and selection modes of open local context which you
@@ -183,7 +184,12 @@ public:
   //! -   vertices: 1
   //! -   edges: 2
   //! -   wires: 3.
-  Standard_EXPORT void Display (const Handle(AIS_InteractiveObject)& theIObj, const Standard_Integer theDispMode, const Standard_Integer theSelectionMode, const Standard_Boolean theToUpdateViewer = Standard_True, const Standard_Boolean theToAllowDecomposition = Standard_True, const AIS_DisplayStatus theDispStatus = AIS_DS_None);
+  Standard_EXPORT void Display (const Handle(AIS_InteractiveObject)& theIObj,
+                                const Standard_Integer               theDispMode,
+                                const Standard_Integer               theSelectionMode,
+                                const Standard_Boolean               theToUpdateViewer,
+                                const Standard_Boolean               theToAllowDecomposition = Standard_True,
+                                const AIS_DisplayStatus              theDispStatus = AIS_DS_None);
   
   //! Allows you to load the Interactive Object aniobj
   //! with a given selection mode SelectionMode, and/or
@@ -201,21 +207,22 @@ public:
   //! Hides the object. The object's presentations are simply
   //! flagged as invisible and therefore excluded from redrawing.
   //! To show hidden objects, use Display().
-  Standard_EXPORT void Erase (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void Erase (const Handle(AIS_InteractiveObject)& theIObj,
+                              const Standard_Boolean               theToUpdateViewer);
   
   //! Hides all objects. The object's presentations are simply
   //! flagged as invisible and therefore excluded from redrawing.
   //! To show all hidden objects, use DisplayAll().
-  Standard_EXPORT void EraseAll (const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void EraseAll (const Standard_Boolean theToUpdateViewer);
   
   //! Displays all hidden objects.
-  Standard_EXPORT void DisplayAll (const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void DisplayAll (const Standard_Boolean theToUpdateViewer);
   
 
   //! Hides selected objects. The object's presentations are simply
   //! flagged as invisible and therefore excluded from redrawing.
   //! To show hidden objects, use Display().
-  Standard_EXPORT void EraseSelected (const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void EraseSelected (const Standard_Boolean theToUpdateViewer);
   
   //! Displays selected objects if a local context is open.
   //! Displays current objects if there is no active local context.
@@ -226,7 +233,7 @@ public:
   //! Standard_False, the presentation   of the Interactive
   //! Object activates   the   selection   mode; the   object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void DisplaySelected (const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void DisplaySelected (const Standard_Boolean theToUpdateViewer);
   
   //! Changes the status of a temporary object. It will be
   //! kept at the neutral point, i.e. put in the list of
@@ -249,7 +256,9 @@ public:
   //! Warning
   //! Removes anIobj. anIobj is still active if it was
   //! previously activated.
-  Standard_EXPORT void ClearPrs (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Integer aMode = 0, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void ClearPrs (const Handle(AIS_InteractiveObject)& theIObj,
+                                 const Standard_Integer               theMode,
+                                 const Standard_Boolean               theToUpdateViewer);
   
   //! Removes aniobj from every viewer. aniobj is no
   //! longer referenced in the Context.
@@ -257,11 +266,12 @@ public:
   //! Standard_False, the presentation   of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void Remove (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void Remove (const Handle(AIS_InteractiveObject)& theIObj,
+                               const Standard_Boolean               theToUpdateViewer);
   
   //! Removes all the objects from all opened Local Contexts
   //! and from the Neutral Point
-  Standard_EXPORT void RemoveAll (const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void RemoveAll (const Standard_Boolean theToUpdateViewer);
 
   //! Updates the display in the viewer to take dynamic
   //! detection into account. On dynamic detection by the
@@ -273,7 +283,8 @@ public:
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
   Standard_DEPRECATED("Deprecated method Hilight()")
-  void Hilight (const Handle(AIS_InteractiveObject)& theObj, const Standard_Boolean theIsToUpdateViewer = Standard_True)
+  void Hilight (const Handle(AIS_InteractiveObject)& theObj,
+                const Standard_Boolean               theIsToUpdateViewer)
   {
     return HilightWithColor (theObj, myStyles[Prs3d_TypeOfHighlight_Dynamic], theIsToUpdateViewer);
   }
@@ -286,8 +297,8 @@ public:
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
   Standard_EXPORT void HilightWithColor (const Handle(AIS_InteractiveObject)& theObj,
-                                         const Handle(Prs3d_Drawer)& theStyle,
-                                         const Standard_Boolean theIsToUpdate = Standard_True);
+                                         const Handle(Prs3d_Drawer)&          theStyle,
+                                         const Standard_Boolean               theToUpdateViewer);
   
 
   //! Removes hilighting from the entity aniobj. Updates the viewer.
@@ -295,7 +306,8 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void Unhilight (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void Unhilight (const Handle(AIS_InteractiveObject)& theIObj,
+                                  const Standard_Boolean               theToUpdateViewer);
   
   //! Sets the display priority aPriority of the seen parts
   //! presentation of the entity anIobj.
@@ -316,16 +328,22 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void Redisplay (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Boolean updateviewer = Standard_True, const Standard_Boolean allmodes = Standard_False);
+  Standard_EXPORT void Redisplay (const Handle(AIS_InteractiveObject)& theIObj,
+                                  const Standard_Boolean               theToUpdateViewer,
+                                  const Standard_Boolean               theAllModes = Standard_False);
   
   //! Recomputes the Prs/Selection of displayed objects of
   //! a given type and a given signature.
   //! if signature = -1  doesnt take signature criterion.
-  Standard_EXPORT void Redisplay (const AIS_KindOfInteractive aTypeOfObject, const Standard_Integer Signature = -1, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void Redisplay (const AIS_KindOfInteractive theTypeOfObject,
+                                  const Standard_Integer      theSignature,
+                                  const Standard_Boolean      theToUpdateViewer);
   
   //! Recomputes the displayed presentations, flags the others
   //! Doesn't update presentations
-  Standard_EXPORT void RecomputePrsOnly (const Handle(AIS_InteractiveObject)& anIobj, const Standard_Boolean updateviewer = Standard_True, const Standard_Boolean allmodes = Standard_False);
+  Standard_EXPORT void RecomputePrsOnly (const Handle(AIS_InteractiveObject)& theIObj,
+                                         const Standard_Boolean               theToUpdateViewer,
+                                         const Standard_Boolean               theAllModes = Standard_False);
   
   //! Recomputes the active selections, flags the others
   //! Doesn't update presentations
@@ -336,7 +354,8 @@ public:
   //! and selection structures. This method does not force any
   //! recomputation on its own. The method recomputes selections
   //! even if they are loaded without activation in particular selector.
-  Standard_EXPORT void Update (const Handle(AIS_InteractiveObject)& theIObj, const Standard_Boolean theUpdateViewer = Standard_True);
+  Standard_EXPORT void Update (const Handle(AIS_InteractiveObject)& theIObj,
+                               const Standard_Boolean               theUpdateViewer);
   
 
   //! Sets the display mode of seen Interactive Objects.
@@ -349,7 +368,9 @@ public:
   //! object is displayed but no viewer will be updated.
   //! Note that display mode 3 is only used if you have an
   //! AIS_Textured Shape.
-  Standard_EXPORT void SetDisplayMode (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Integer aMode, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetDisplayMode (const Handle(AIS_InteractiveObject)& theIObj,
+                                       const Standard_Integer               theMode,
+                                       const Standard_Boolean               theToUpdateViewer);
   
 
   //! Unsets the display mode of seen Interactive Objects.
@@ -360,7 +381,8 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object returns to the default selection mode; the
   //! object is displayed but no viewer will be updated.
-  Standard_EXPORT void UnsetDisplayMode (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void UnsetDisplayMode (const Handle(AIS_InteractiveObject)& theIObj,
+                                         const Standard_Boolean               theToUpdateViewer);
 
   //! Disables the mechanism of adaptive tolerance calculation in SelectMgr_ViewerSelector and
   //! sets the given tolerance for ALL sensitive entities activated. For more information, see
@@ -404,7 +426,9 @@ public:
   //! applying both on the front and back face.
   Standard_EXPORT void SetCurrentFacingModel (const Handle(AIS_InteractiveObject)& aniobj, const Aspect_TypeOfFacingModel aModel = Aspect_TOFM_BOTH_SIDE);
   
-  Standard_EXPORT void SetColor (const Handle(AIS_InteractiveObject)& aniobj, const Quantity_NameOfColor aColor, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetColor (const Handle(AIS_InteractiveObject)& theIObj,
+                                 const Quantity_NameOfColor           theColor,
+                                 const Standard_Boolean               theToUpdateViewer);
   
 
   //! Sets the color of the selected entity.
@@ -412,14 +436,17 @@ public:
   //! Standard_False, the presentation   of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void SetColor (const Handle(AIS_InteractiveObject)& aniobj, const Quantity_Color& aColor, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetColor (const Handle(AIS_InteractiveObject)& theIObj,
+                                 const Quantity_Color&                theColor,
+                                 const Standard_Boolean               theToUpdateViewer);
   
   //! Removes the color selection for the selected entity.
   //! If a local context is open and if updateviewer equals
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void UnsetColor (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void UnsetColor (const Handle(AIS_InteractiveObject)& theIObj,
+                                   const Standard_Boolean               theToUpdateViewer);
   
 
   //! Sets the width of the entity aniobj.
@@ -427,7 +454,9 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT virtual void SetWidth (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Real aValue, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT virtual void SetWidth (const Handle(AIS_InteractiveObject)& theIObj,
+                                         const Standard_Real                  theValue,
+                                         const Standard_Boolean               theToUpdateViewer);
   
 
   //! Removes the width setting of the entity aniobj.
@@ -435,7 +464,8 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT virtual void UnsetWidth (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT virtual void UnsetWidth (const Handle(AIS_InteractiveObject)& theIObj,
+                                           const Standard_Boolean               theToUpdateViewer);
   
 
   //! Provides the type of material setting for the view of
@@ -446,7 +476,9 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void SetMaterial (const Handle(AIS_InteractiveObject)& aniobj, const Graphic3d_NameOfMaterial aName, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetMaterial (const Handle(AIS_InteractiveObject)& theIObj,
+                                    const Graphic3d_NameOfMaterial       theName,
+                                    const Standard_Boolean               theToUpdateViewer);
   
 
   //! Removes the type of material setting for viewing the
@@ -455,7 +487,8 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void UnsetMaterial (const Handle(AIS_InteractiveObject)& anObj, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void UnsetMaterial (const Handle(AIS_InteractiveObject)& theIObj,
+                                      const Standard_Boolean               theToUpdateViewer);
   
   //! Provides the transparency settings for viewing the
   //! entity aniobj. The transparency value aValue may be
@@ -464,7 +497,9 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void SetTransparency (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Real aValue = 0.6, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetTransparency (const Handle(AIS_InteractiveObject)& theIObj,
+                                        const Standard_Real                  theValue,
+                                        const Standard_Boolean               theToUpdateViewer);
   
 
   //! Removes   the transparency settings for viewing the
@@ -474,7 +509,8 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void UnsetTransparency (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void UnsetTransparency (const Handle(AIS_InteractiveObject)& theIObj,
+                                          const Standard_Boolean               theToUpdateViewer);
   
 
   //! Sets the attributes of the interactive object aniobj by
@@ -486,7 +522,9 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void SetLocalAttributes (const Handle(AIS_InteractiveObject)& aniobj, const Handle(Prs3d_Drawer)& aDrawer, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetLocalAttributes (const Handle(AIS_InteractiveObject)& theIObj,
+                                           const Handle(Prs3d_Drawer)&          theDrawer,
+                                           const Standard_Boolean               theToUpdateViewer);
   
 
   //! Removes the settings for local attributes of the entity
@@ -496,11 +534,16 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void UnsetLocalAttributes (const Handle(AIS_InteractiveObject)& anObj, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void UnsetLocalAttributes (const Handle(AIS_InteractiveObject)& theIObj,
+                                             const Standard_Boolean               theToUpdateViewer);
   
   //! Sets up polygon offsets for the given AIS_InteractiveObject.
   //! It simply calls anObj->SetPolygonOffsets()
-  Standard_EXPORT void SetPolygonOffsets (const Handle(AIS_InteractiveObject)& anObj, const Standard_Integer aMode, const Standard_ShortReal aFactor = 1.0, const Standard_ShortReal aUnits = 0.0, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetPolygonOffsets (const Handle(AIS_InteractiveObject)& theIObj,
+                                          const Standard_Integer               theMode,
+                                          const Standard_ShortReal             theFactor,
+                                          const Standard_ShortReal             theUnits,
+                                          const Standard_Boolean               theToUpdateViewer);
   
   //! simply calls anObj->HasPolygonOffsets()
   Standard_EXPORT Standard_Boolean HasPolygonOffsets (const Handle(AIS_InteractiveObject)& anObj) const;
@@ -519,7 +562,8 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void SetTrihedronSize (const Standard_Real aSize, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetTrihedronSize (const Standard_Real    theSize,
+                                         const Standard_Boolean theToUpdateViewer);
   
   //! returns the current value of trihedron size.
   Standard_EXPORT Standard_Real TrihedronSize() const;
@@ -531,7 +575,9 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void SetPlaneSize (const Standard_Real aSizeX, const Standard_Real aSizeY, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetPlaneSize (const Standard_Real    theSizeX,
+                                     const Standard_Real    theSizeY,
+                                     const Standard_Boolean theToUpdateViewer);
   
 
   //! Sets the plane size aSize.
@@ -540,7 +586,8 @@ public:
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
   //! May be used if PlaneSize returns true.
-  Standard_EXPORT void SetPlaneSize (const Standard_Real aSize, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetPlaneSize (const Standard_Real    theSize,
+                                     const Standard_Boolean theToUpdateViewer);
   
   //! Returns true if the length in the X direction XSize is
   //! the same as that in the Y direction YSize.
@@ -691,7 +738,8 @@ public:
   //! object is displayed but no viewer will be updated.
   //! Note that display mode 3 is only used if you have an
   //! AIS_Textured Shape.
-  Standard_EXPORT void SetDisplayMode (const Standard_Integer AMode, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetDisplayMode (const Standard_Integer theMode,
+                                       const Standard_Boolean theToUpdateViewer);
   
 
   //! Sets the deviation coefficient aCoefficient.
@@ -712,27 +760,39 @@ public:
   //! for a relative deviation. This deviation will be:
   //! SizeOfObject * DeviationCoefficient.
   //! default 0.001
-  Standard_EXPORT void SetDeviationCoefficient (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Real aCoefficient, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetDeviationCoefficient (const Handle(AIS_InteractiveObject)& theIObj,
+                                                const Standard_Real                  theCoefficient,
+                                                const Standard_Boolean               theToUpdateViewer);
   
-  Standard_EXPORT void SetDeviationAngle (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Real anAngle, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetDeviationAngle (const Handle(AIS_InteractiveObject)& theIObj,
+                                          const Standard_Real                  theAngle,
+                                          const Standard_Boolean               theToUpdateViewer);
   
   //! Calls the AIS_Shape SetAngleAndDeviation to set
   //! both Angle and Deviation coefficients
-  Standard_EXPORT void SetAngleAndDeviation (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Real anAngle, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetAngleAndDeviation (const Handle(AIS_InteractiveObject)& theIObj,
+                                             const Standard_Real                  theAngle,
+                                             const Standard_Boolean               theToUpdateViewer);
   
 
   //! Sets the deviation coefficient aCoefficient for
   //! removal of hidden lines created by different
   //! viewpoints in different presentations. The Default value is 0.02.
-  Standard_EXPORT void SetHLRDeviationCoefficient (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Real aCoefficient, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetHLRDeviationCoefficient (const Handle(AIS_InteractiveObject)& theIObj,
+                                                   const Standard_Real                  theCoefficient,
+                                                   const Standard_Boolean               theToUpdateViewer);
   
-  Standard_EXPORT void SetHLRDeviationAngle (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Real anAngle, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetHLRDeviationAngle (const Handle(AIS_InteractiveObject)& theIObj,
+                                             const Standard_Real                  theAngle,
+                                             const Standard_Boolean               theToUpdateViewer);
   
   //! Computes a HLRAngle and a
   //! HLRDeviationCoefficient by means of the angle
   //! anAngle and sets the corresponding methods in the
   //! default drawing tool with these values.
-  Standard_EXPORT void SetHLRAngleAndDeviation (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Real anAngle, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetHLRAngleAndDeviation (const Handle(AIS_InteractiveObject)& theIObj,
+                                                const Standard_Real                  theAngle,
+                                                const Standard_Boolean               theToUpdateViewer);
   
   //! Sets the deviation coefficient aCoefficient.
   //! Drawings of curves or patches are made with respect
@@ -872,13 +932,17 @@ public:
   //! ALL selected objects.
   //! Flag globalChange has no effect (left to simplify porting).
   //! Updates the viewer when <updateViewer> is TRUE
-  Standard_EXPORT void SetSelectedAspect (const Handle(Prs3d_BasicAspect)& anAspect, const Standard_Boolean globalChange = Standard_True, const Standard_Boolean updateViewer = Standard_True);
+  Standard_EXPORT void SetSelectedAspect (const Handle(Prs3d_BasicAspect)& theAspect,
+                                          const Standard_Boolean           theToUpdateViewer);
   
   //! Relays mouse position in pixels theXPix and theYPix to the interactive context selectors.
   //! This is done by the view theView passing this position to the main viewer and updating it.
   //! Functions in both Neutral Point and local contexts.
   //! If theToRedrawOnUpdate is set to false, callee should call RedrawImmediate() to highlight detected object.
-  Standard_EXPORT AIS_StatusOfDetection MoveTo (const Standard_Integer theXPix, const Standard_Integer theYPix, const Handle(V3d_View)& theView, const Standard_Boolean theToRedrawOnUpdate = Standard_True);
+  Standard_EXPORT AIS_StatusOfDetection MoveTo (const Standard_Integer  theXPix,
+                                                const Standard_Integer  theYPix,
+                                                const Handle(V3d_View)& theView,
+                                                const Standard_Boolean  theToRedrawOnUpdate);
   
   //! returns True  if other entities  were detected  in the
   //! last mouse detection
@@ -913,28 +977,42 @@ public:
   //! YPMin, XPMax, and YPMax in the view, aView
   //! The objects detected are passed to the main viewer,
   //! which is then updated.
-  Standard_EXPORT AIS_StatusOfPick Select (const Standard_Integer XPMin, const Standard_Integer YPMin, const Standard_Integer XPMax, const Standard_Integer YPMax, const Handle(V3d_View)& aView, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT AIS_StatusOfPick Select (const Standard_Integer  theXPMin,
+                                           const Standard_Integer  theYPMin,
+                                           const Standard_Integer  theXPMax,
+                                           const Standard_Integer  theYPMax,
+                                           const Handle(V3d_View)& theView,
+                                           const Standard_Boolean  theToUpdateViewer);
   
   //! polyline selection; clears the previous picked list
-  Standard_EXPORT AIS_StatusOfPick Select (const TColgp_Array1OfPnt2d& Polyline, const Handle(V3d_View)& aView, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT AIS_StatusOfPick Select (const TColgp_Array1OfPnt2d& thePolyline,
+                                           const Handle(V3d_View)&     theView,
+                                           const Standard_Boolean      theToUpdateViewer);
   
   //! Stores  and hilights the previous detected; Unhilights
   //! the previous picked.
-  Standard_EXPORT AIS_StatusOfPick Select (const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT AIS_StatusOfPick Select (const Standard_Boolean theToUpdateViewer);
   
   //! adds the last detected to the list of previous picked.
   //! if the last detected was already declared as picked,
   //! removes it from the Picked List.
-  Standard_EXPORT AIS_StatusOfPick ShiftSelect (const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT AIS_StatusOfPick ShiftSelect (const Standard_Boolean theToUpdateViewer);
   
   //! adds the last detected to the list of previous picked.
   //! if the last detected was already declared as picked,
   //! removes it from the Picked List.
-  Standard_EXPORT AIS_StatusOfPick ShiftSelect (const TColgp_Array1OfPnt2d& Polyline, const Handle(V3d_View)& aView, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT AIS_StatusOfPick ShiftSelect (const TColgp_Array1OfPnt2d& thePolyline,
+                                                const Handle(V3d_View)&     theView,
+                                                const Standard_Boolean      theToUpdateViewer);
   
   //! rectangle  of selection  ; adds new detected entities into the
   //! picked list, removes the detected entities that were already stored...
-  Standard_EXPORT AIS_StatusOfPick ShiftSelect (const Standard_Integer XPMin, const Standard_Integer YPMin, const Standard_Integer XPMax, const Standard_Integer YPMax, const Handle(V3d_View)& aView, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT AIS_StatusOfPick ShiftSelect (const Standard_Integer  theXPMin,
+                                                const Standard_Integer  theYPMin,
+                                                const Standard_Integer  theXPMax,
+                                                const Standard_Integer  theYPMax,
+                                                const Handle(V3d_View)& theView,
+                                                const Standard_Boolean  theToUpdateViewer);
   
   //! Specify whether selected object must be hilighted when mouse cursor
   //! is moved above it (in MoveTo method). By default this value is false and
@@ -956,7 +1034,8 @@ public:
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
   Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
-  Standard_EXPORT void SetCurrentObject (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetCurrentObject (const Handle(AIS_InteractiveObject)& theIObj,
+                                         const Standard_Boolean               theToUpdateViewer);
   
 
   //! Allows to add or remove the object given to the list of current and highlight/unhighlight it
@@ -965,7 +1044,7 @@ public:
   //! of the object is empty this method simply does nothing.
   Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   Standard_EXPORT void AddOrRemoveCurrentObject (const Handle(AIS_InteractiveObject)& theObj,
-                                                 const Standard_Boolean theIsToUpdateViewer = Standard_True);
+                                                 const Standard_Boolean               theIsToUpdateViewer);
   
   //! Updates the list of current objects, i.e. hilights new
   //! current objects, removes hilighting from former current objects.
@@ -1028,7 +1107,7 @@ public:
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
   Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
-  Standard_EXPORT void HilightCurrents (const Standard_Boolean theToUpdateViewer = Standard_True);
+  Standard_EXPORT void HilightCurrents (const Standard_Boolean theToUpdateViewer);
 
   //! Removes highlighting from current objects.
   //! Objects selected when there is no open local context
@@ -1039,7 +1118,7 @@ public:
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
   Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
-  Standard_EXPORT void UnhilightCurrents (const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void UnhilightCurrents (const Standard_Boolean theToUpdateViewer);
 
   //! Empties previous current objects in order to get the
   //! current objects detected by the selector using
@@ -1052,7 +1131,7 @@ public:
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
   Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
-  Standard_EXPORT void ClearCurrents (const Standard_Boolean theToUpdateViewer = Standard_True);
+  Standard_EXPORT void ClearCurrents (const Standard_Boolean theToUpdateViewer);
 
   //! @return current mouse-detected shape or empty (null) shape, if current interactive object
   //! is not a shape (AIS_Shape) or there is no current mouse-detected interactive object at all.
@@ -1069,7 +1148,7 @@ public:
   //! Marks owner given as selected and highlights it.
   //! Performs selection filters check.
   Standard_EXPORT void SetSelected (const Handle(SelectMgr_EntityOwner)& theOwners,
-                                    const Standard_Boolean theToUpdateViewer = Standard_True);
+                                    const Standard_Boolean               theToUpdateViewer);
 
   //! Puts the interactive object aniObj in the list of
   //! selected objects.
@@ -1079,29 +1158,29 @@ public:
   //! displayed but no viewer will be updated.
   //! Performs selection filters check.
   Standard_EXPORT void SetSelected (const Handle(AIS_InteractiveObject)& theObject,
-                                    const Standard_Boolean theToUpdateViewer = Standard_True);
+                                    const Standard_Boolean               theToUpdateViewer);
 
   //! Updates the list of selected objects:
   //! i.e. highlights the newely selected ones and unhighlights previously selected objects.
-  Standard_EXPORT void UpdateSelected (const Standard_Boolean theToUpdateViewer = Standard_True);
+  Standard_EXPORT void UpdateSelected (const Standard_Boolean theToUpdateViewer);
   
   //! Allows to highlight or unhighlight the owner given depending on its selection status
   Standard_EXPORT void AddOrRemoveSelected (const Handle(AIS_InteractiveObject)& theObject,
-                                            const Standard_Boolean theToUpdateViewer = Standard_True);
+                                            const Standard_Boolean               theToUpdateViewer);
 
   //! Highlights selected objects.
   //! If a local context is open and if updateviewer equals
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void HilightSelected (const Standard_Boolean theToUpdateViewer = Standard_True);
+  Standard_EXPORT void HilightSelected (const Standard_Boolean theToUpdateViewer);
 
   //! Removes highlighting from selected objects.
   //! If a local context is open and if updateviewer equals
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void UnhilightSelected (const Standard_Boolean theToUpdateViewer = Standard_True);
+  Standard_EXPORT void UnhilightSelected (const Standard_Boolean theToUpdateViewer);
 
   //! Empties previous selected objects in order to get the
   //! selected objects detected by the selector using
@@ -1110,17 +1189,18 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void ClearSelected (const Standard_Boolean theToUpdateViewer = Standard_True);
+  Standard_EXPORT void ClearSelected (const Standard_Boolean theToUpdateViewer);
   
   //! No right to Add a selected Shape (Internal Management
   //! of shape Selection).
   //! A Previous selected shape may only be removed.
   Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
-  Standard_EXPORT void AddOrRemoveSelected (const TopoDS_Shape& aShape, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void AddOrRemoveSelected (const TopoDS_Shape&    theShape,
+                                            const Standard_Boolean theToUpdateViewer);
 
   //! Allows to highlight or unhighlight the owner given depending on its selection status
   Standard_EXPORT void AddOrRemoveSelected (const Handle(SelectMgr_EntityOwner)& theOwner,
-                                            const Standard_Boolean theToUpdateViewer = Standard_True);
+                                            const Standard_Boolean               theToUpdateViewer);
 
   //! Returns true is the owner given is selected
   Standard_EXPORT Standard_Boolean IsSelected (const Handle(SelectMgr_EntityOwner)& theOwner) const;
@@ -1280,7 +1360,8 @@ public:
   //! Interactive Functions can open local contexts
   //! without necessarily warning the user.
   Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
-  Standard_EXPORT void CloseLocalContext (const Standard_Integer Index = -1, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void CloseLocalContext (const Standard_Integer theIndex = -1,
+                                          const Standard_Boolean theToUpdateViewer = Standard_True);
   
   //! returns -1 if no opened local context.
   Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
@@ -1294,12 +1375,12 @@ public:
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
   Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
-  Standard_EXPORT void CloseAllContexts (const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void CloseAllContexts (const Standard_Boolean theToUpdateViewer);
   
   //! to   be  used only with no  opened
   //! local context..  displays and activates objects in their
   //! original state before local contexts were opened...
-  Standard_EXPORT void ResetOriginalState (const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void ResetOriginalState (const Standard_Boolean theToUpdateViewer);
   
   //! clears Objects/Filters/Activated Modes list in the current opened local context.
   Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
@@ -1387,7 +1468,9 @@ public:
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
   Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
-  Standard_EXPORT void SetTemporaryAttributes (const Handle(AIS_InteractiveObject)& anObj, const Handle(Prs3d_Drawer)& aDrawer, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SetTemporaryAttributes (const Handle(AIS_InteractiveObject)& theIObj,
+                                               const Handle(Prs3d_Drawer)&          theDrawer,
+                                               const Standard_Boolean               theToUpdateViewer);
   
 
   //! Highlights, and removes highlights from, the displayed
@@ -1398,7 +1481,8 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void SubIntensityOn (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SubIntensityOn (const Handle(AIS_InteractiveObject)& theIObj,
+                                       const Standard_Boolean               theToUpdateViewer);
   
 
   //! Removes the subintensity option for the entity aniobj.
@@ -1406,16 +1490,17 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
-  Standard_EXPORT void SubIntensityOff (const Handle(AIS_InteractiveObject)& aniobj, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SubIntensityOff (const Handle(AIS_InteractiveObject)& theIObj,
+                                        const Standard_Boolean               theToUpdateViewer);
   
   //! hilights/unhilights displayed objects which are displayed at
   //! neutral state with subintensity color;
   //! available only for active local context.
   //! No effect if no local context.
-  Standard_EXPORT void SubIntensityOn (const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SubIntensityOn (const Standard_Boolean theToUpdateViewer);
   
   //! removes subintensity option for all objects.
-  Standard_EXPORT void SubIntensityOff (const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void SubIntensityOff (const Standard_Boolean theToUpdateViewer);
   
   //! Allows you to add the filter aFilter to Neutral Point or
   //! to a local context if one or more selection modes have been activated.
@@ -1562,7 +1647,13 @@ public:
   //! Fits the view correspondingly to the bounds of selected objects.
   //! Infinite objects are ignored if infinite state of AIS_InteractiveObject
   //! is set to true.
-  Standard_EXPORT void FitSelected (const Handle(V3d_View)& theView, const Standard_Real theMargin = 0.01, const Standard_Boolean theToUpdate = Standard_True);
+  Standard_EXPORT void FitSelected (const Handle(V3d_View)& theView,
+                                    const Standard_Real     theMargin,
+                                    const Standard_Boolean  theToUpdate);
+
+  //! Fits the view correspondingly to the bounds of selected objects.
+  //! Infinite objects are ignored if infinite state of AIS_InteractiveObject is set to true.
+  Standard_EXPORT void FitSelected (const Handle(V3d_View)& theView);
   
   Standard_EXPORT void DisplayActiveSensitive (const Handle(AIS_InteractiveObject)& anObject, const Handle(V3d_View)& aView);
   
@@ -1591,21 +1682,27 @@ protected:
 
   Standard_EXPORT void GetDefModes (const Handle(AIS_InteractiveObject)& anIobj, Standard_Integer& Dmode, Standard_Integer& HiMod, Standard_Integer& SelMode) const;
   
-  Standard_EXPORT void EraseGlobal (const Handle(AIS_InteractiveObject)& anObj, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void EraseGlobal (const Handle(AIS_InteractiveObject)& theIObj,
+                                    const Standard_Boolean               theToUpdateViewer);
   
-  Standard_EXPORT void ClearGlobal (const Handle(AIS_InteractiveObject)& anObj, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void ClearGlobal (const Handle(AIS_InteractiveObject)& theIObj,
+                                    const Standard_Boolean               theToUpdateViewer);
   
-  Standard_EXPORT void ClearGlobalPrs (const Handle(AIS_InteractiveObject)& anObj, const Standard_Integer aMode, const Standard_Boolean updateviewer = Standard_True);
+  Standard_EXPORT void ClearGlobalPrs (const Handle(AIS_InteractiveObject)& theObj,
+                                       const Standard_Integer               theMode,
+                                       const Standard_Boolean               theToUpdateViewer);
   
   Standard_EXPORT void InitAttributes();
   
   Standard_EXPORT Standard_Integer PurgeViewer (const Handle(V3d_Viewer)& Vwr);
   
   //! UNKNOWN
-  Standard_EXPORT void redisplayPrsModes (const Handle(AIS_InteractiveObject)& theIObj, const Standard_Boolean theToUpdateViewer = Standard_True);
+  Standard_EXPORT void redisplayPrsModes (const Handle(AIS_InteractiveObject)& theIObj,
+                                          const Standard_Boolean               theToUpdateViewer);
   
   //! UNKNOWN
-  Standard_EXPORT void redisplayPrsRecModes (const Handle(AIS_InteractiveObject)& theIObj, const Standard_Boolean theToUpdateViewer = Standard_True);
+  Standard_EXPORT void redisplayPrsRecModes (const Handle(AIS_InteractiveObject)& theIObj,
+                                             const Standard_Boolean               theToUpdateViewer);
 
   //! Helper function to unhighlight all entity owners currently highlighted with seleciton color.
   Standard_EXPORT void unhighlightOwners (const Handle(AIS_InteractiveObject)& theObject);

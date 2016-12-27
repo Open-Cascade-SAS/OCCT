@@ -153,10 +153,10 @@ void CViewer3dDoc::OnBox()
 
     myBox = new AIS_Shape(B.Shape());
 
-    myAISContext->SetMaterial(myBox,Graphic3d_NOM_PEWTER);
-    myAISContext->SetDisplayMode(myBox,1);
+    myAISContext->SetMaterial (myBox, Graphic3d_NOM_PEWTER, Standard_False);
+    myAISContext->SetDisplayMode (myBox, 1, Standard_False);
 
-    myAISContext->Display(myBox);
+    myAISContext->Display (myBox, Standard_True);
     TCollection_AsciiString Message("\
 BRepPrimAPI_MakeBox Box1(gp_Pnt(0,-400,-100), 200.,150.,100.);\n\
     ");
@@ -172,9 +172,9 @@ void CViewer3dDoc::OnCylinder()
     gp_Ax2 CylAx2(gp_Pnt(0,0,-100), gp_Dir(gp_Vec(gp_Pnt(0,0,-100),gp_Pnt(0,0,100))));
     myCylinder = new User_Cylinder(CylAx2, 80.,200.);
 
-    myAISContext->SetDisplayMode(myCylinder,1);
+    myAISContext->SetDisplayMode (myCylinder, 1, Standard_False);
 
-    myAISContext->Display(myCylinder);
+    myAISContext->Display (myCylinder, Standard_True);
 
     TCollection_AsciiString Message("\
 gp_Ax2 CylAx2(gp_Pnt(0,0,-100), gp_Dir(gp_Vec(gp_Pnt(0,0,-100),gp_Pnt(0,0,100))));\n\
@@ -193,10 +193,10 @@ void CViewer3dDoc::OnSphere()
 
     mySphere = new AIS_Shape(S.Shape());
 
-    myAISContext->SetMaterial(mySphere,Graphic3d_NOM_BRONZE);
-    myAISContext->SetDisplayMode(mySphere,1);
+    myAISContext->SetMaterial (mySphere, Graphic3d_NOM_BRONZE, Standard_False);
+    myAISContext->SetDisplayMode (mySphere, 1, Standard_False);
 
-    myAISContext->Display(mySphere);
+    myAISContext->Display (mySphere, Standard_False);
     TCollection_AsciiString Message("\
 BRepPrimAPI_MakeSphere S(gp_Pnt(0,300,0), 100.);\n\
     ");
@@ -212,10 +212,10 @@ void CViewer3dDoc::OnRemoveAll()
 
   AIS_ListIteratorOfListOfInteractive aListIterator;
   for(aListIterator.Initialize(aListOfObjects);aListIterator.More();aListIterator.Next()){
-    myAISContext->Remove(aListIterator.Value());
+    myAISContext->Remove (aListIterator.Value(), Standard_False);
   }
 
-  myAISContext->Remove(myCylinder);
+  myAISContext->Remove (myCylinder, Standard_True);
 
 
   myCylinder.Nullify();
@@ -240,10 +240,10 @@ void CViewer3dDoc::OnOverlappedBox()
 
     myOverlappedBox = new AIS_Shape(aBoxShape2);
 
-    myAISContext->SetMaterial(myOverlappedBox,Graphic3d_NOM_GOLD);
-    myAISContext->SetDisplayMode(myOverlappedBox,1);
+    myAISContext->SetMaterial (myOverlappedBox, Graphic3d_NOM_GOLD, Standard_False);
+    myAISContext->SetDisplayMode (myOverlappedBox, 1, Standard_False);
 
-    myAISContext->Display(myOverlappedBox);
+    myAISContext->Display (myOverlappedBox, Standard_True);
     TCollection_AsciiString Message("\
 BRepPrimAPI_MakeBox Box1(gp_Pnt(0,-400,-100), 200.,150.,100.);\n\
 \n\
@@ -270,10 +270,10 @@ void CViewer3dDoc::OnOverlappedCylinder()
     myOverlappedCylinder = new AIS_Shape(aCylShape2);
 
 
-    myAISContext->SetMaterial(myOverlappedCylinder,Graphic3d_NOM_GOLD);    
-    myAISContext->SetDisplayMode(myOverlappedCylinder,1);
+    myAISContext->SetMaterial (myOverlappedCylinder, Graphic3d_NOM_GOLD, Standard_False);
+    myAISContext->SetDisplayMode (myOverlappedCylinder, 1, Standard_False);
 
-    myAISContext->Display(myOverlappedCylinder);
+    myAISContext->Display (myOverlappedCylinder, Standard_True);
 
     TCollection_AsciiString Message("\
 gp_Ax2 CylAx2(gp_Pnt(0,0,-100), gp_Dir(gp_Vec(gp_Pnt(0,0,-100),gp_Pnt(0,0,100))));\n\
@@ -301,11 +301,11 @@ void CViewer3dDoc::OnOverlappedSphere()
 
     myOverlappedSphere = new AIS_Shape(aSphereShape2);
 
-    myAISContext->SetMaterial(myOverlappedSphere,Graphic3d_NOM_GOLD);    
+    myAISContext->SetMaterial (myOverlappedSphere, Graphic3d_NOM_GOLD, Standard_False);
 
-    myAISContext->SetDisplayMode(myOverlappedSphere,1);
+    myAISContext->SetDisplayMode (myOverlappedSphere, 1, Standard_False);
 
-    myAISContext->Display(myOverlappedSphere);
+    myAISContext->Display (myOverlappedSphere, Standard_True);
 
     TCollection_AsciiString Message("\
 BRepPrimAPI_MakeSphere Sphere1(gp_Pnt(0,300,0), 100.);\n\
@@ -506,7 +506,7 @@ void CViewer3dDoc::InputEvent(const Standard_Integer /*x*/,
 
   Quantity_Color CSFColor;
   COLORREF MSColor;
-  myAISContext->Select(); 
+  myAISContext->Select (Standard_True);
 
   // Change the color of a selected face in a user cylinder
   if (myState == FACE_COLOR)
@@ -537,7 +537,7 @@ void CViewer3dDoc::InputEvent(const Standard_Integer /*x*/,
         Handle(AIS_InteractiveObject) aSelectedObject = myAISContext->SelectedInteractive();
         Handle(User_Cylinder)::DownCast (aSelectedObject)->SetColor (CSFColor.Name());
 
-        myAISContext->Redisplay (aSelectedObject);
+        myAISContext->Redisplay (aSelectedObject, Standard_True);
         myState = -1;
       }
     }
@@ -599,8 +599,10 @@ void CViewer3dDoc::OnObjectColoredMesh()
     {
       myAISContext->ClearPrs(myAISContext->SelectedInteractive(),6,Standard_False);
       myAISContext->RecomputePrsOnly(myAISContext->SelectedInteractive(), Standard_False);
-      myAISContext->SetDisplayMode(myAISContext->SelectedInteractive(), 6);
+      myAISContext->SetDisplayMode(myAISContext->SelectedInteractive(), 6, Standard_False);
     }
+
+  myAISContext->UpdateCurrentViewer();
 }
 
 void CViewer3dDoc::OnUpdateObjectColoredMesh(CCmdUI* pCmdUI)
@@ -635,14 +637,14 @@ void CViewer3dDoc::OnOptionsTrihedronDynamicTrihedron()
 {
   if (myAISContext -> IsDisplayed(myTrihedron))
   {
-    myAISContext->Remove(myTrihedron);
+    myAISContext->Remove(myTrihedron, Standard_True);
   }
   else
   {
     Handle(Geom_Axis2Placement) myTrihedronAxis=new Geom_Axis2Placement(gp::XOY());
     myTrihedron=new AIS_Trihedron(myTrihedronAxis);
-    myAISContext->SetTrihedronSize(200, Standard_True);
-    myAISContext->Display(myTrihedron);
+    myAISContext->SetTrihedronSize(200, Standard_False);
+    myAISContext->Display(myTrihedron, Standard_True);
   }
 }
 
@@ -800,7 +802,7 @@ void CViewer3dDoc::OnFillet3d()
     }
 
     aSelInteractive ->Set (aNewShape);
-    myAISContext->Redisplay (aSelInteractive);
+    myAISContext->Redisplay (aSelInteractive, Standard_True);
   }
 
   myCResultDialog.SetTitle("Make a fillet");
@@ -832,7 +834,7 @@ void CViewer3dDoc::OnCircle()
   // Handle(AIS_Circle) anAISCirc = new AIS_Circle(C.Value());
 
   Handle(AIS_Circle) anAISCirc = new AIS_Circle(aGeomCircle);
-  myAISContext->Display (anAISCirc);
+  myAISContext->Display (anAISCirc, Standard_True);
 
   myCResultDialog.SetTitle("Create a circle");
   myCResultDialog.SetText("  GC_MakeCircle C(gp_Pnt(-100.,-300.,0.),gp_Pnt(-50.,-200.,0.),gp_Pnt(-10.,-250.,0.)); \n"
@@ -850,7 +852,7 @@ void CViewer3dDoc::OnLine()
   gp_Lin aGpLin (gp_Pnt (0., 0., 0.), gp_Dir(1., 0., 0.));
   Handle(Geom_Line) aGeomLin = new Geom_Line (aGpLin);
   Handle(AIS_Line) anAISLine = new AIS_Line (aGeomLin);
-  myAISContext->Display (anAISLine);
+  myAISContext->Display (anAISLine, Standard_True);
 
   myCResultDialog.SetTitle("Create a line");
   myCResultDialog.SetText("  gp_Lin L(gp_Pnt(0.,0.,0.),gp_Dir(1.,0.,0.)); \n"
@@ -894,8 +896,8 @@ BOOL CViewer3dDoc::OnNewDocument()
   // (SDI documents will reuse this document)
   SetTitle(myPresentation->GetName());
 
-  myAISContext->EraseAll();
-  myAISContext->SetDisplayMode(AIS_Shaded);
+  myAISContext->EraseAll (Standard_False);
+  myAISContext->SetDisplayMode(AIS_Shaded, Standard_True);
 
   POSITION pos = GetFirstViewPosition();
   while (pos != NULL)
@@ -954,14 +956,14 @@ void CViewer3dDoc::DoSample()
 
 void CViewer3dDoc::OnBUTTONStart() 
 {
-  myAISContext->EraseAll();
+  myAISContext->EraseAll (Standard_True);
   myPresentation->FirstSample();
   DoSample();
 }
 
 void CViewer3dDoc::OnBUTTONEnd()
 {
-  myAISContext->EraseAll();
+  myAISContext->EraseAll (Standard_True);
   myPresentation->LastSample();
   DoSample();
 }

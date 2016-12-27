@@ -389,7 +389,7 @@ static Standard_Integer setcolor
       if( aContext.IsNull() )
         di << "The context is null\n";
       else
-        aContext->Redisplay( aMesh );
+        aContext->Redisplay (aMesh, Standard_True);
     }
   }
   return 0;
@@ -435,7 +435,7 @@ static Standard_Integer meshmat
       if( aContext.IsNull() )
         di << "The context is null\n";
       else
-        aContext->Redisplay( aMesh );
+        aContext->Redisplay (aMesh, Standard_True);
     }
   }
   return 0;
@@ -459,7 +459,7 @@ static Standard_Integer shrink
       if( aContext.IsNull() )
         di << "The context is null\n";
       else
-        aContext->Redisplay( aMesh );
+        aContext->Redisplay (aMesh, Standard_True);
     }
   }
   return 0;
@@ -487,7 +487,7 @@ static Standard_Integer closed (Draw_Interpretor& theDI, Standard_Integer theArg
       }
       else
       {
-        aContext->Redisplay (aMesh);
+        aContext->Redisplay (aMesh, Standard_True);
       }
     }
   }
@@ -519,7 +519,7 @@ static Standard_Integer mdisplay
         }
         Standard_ENABLE_DEPRECATION_WARNINGS
 
-        aContext->Display( aMesh );
+        aContext->Display (aMesh, Standard_True);
       }
     }
   }
@@ -549,7 +549,7 @@ static Standard_Integer merase
         }
         Standard_ENABLE_DEPRECATION_WARNINGS
 
-        aContext->Erase( aMesh );
+        aContext->Erase (aMesh, Standard_True);
       }
     }
     else
@@ -606,10 +606,10 @@ static Standard_Integer hidesel
         }
       }
     }
-    aContext->ClearSelected();
+    aContext->ClearSelected (Standard_False);
     aMesh->SetHiddenNodes( aHiddenNodes );
     aMesh->SetHiddenElems( aHiddenElements );
-    aContext->Redisplay( aMesh );
+    aContext->Redisplay (aMesh, Standard_True);
   }
 
   return 0;
@@ -660,7 +660,7 @@ static Standard_Integer showonly
     }
     aMesh->SetHiddenNodes( aHiddenNodes );
     aMesh->SetHiddenElems( aHiddenElements );
-    aContext->Redisplay( aMesh );
+    aContext->Redisplay (aMesh, Standard_True);
   }
 
   return 0;
@@ -690,7 +690,7 @@ static Standard_Integer showall
   {
     aMesh->SetHiddenNodes( new TColStd_HPackedMapOfInteger() );
     aMesh->SetHiddenElems( new TColStd_HPackedMapOfInteger() );
-    aContext->Redisplay( aMesh );
+    aContext->Redisplay (aMesh, Standard_True);
   }
 
   return 0;
@@ -851,7 +851,7 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
 
           aMesh->GetDrawer()->SetBoolean (MeshVS_DA_ColorReflection, aReflection != 0);
 
-          anIC->Redisplay( aMesh );
+          anIC->Redisplay (aMesh, Standard_True);
         }
         else
         {
@@ -1000,7 +1000,7 @@ static Standard_Integer meshvectors( Draw_Interpretor& di,
     aMesh->GetDrawer()->SetDouble ( MeshVS_DA_VectorArrowPart, anArrowPart );
   }
 
-  anIC->Redisplay( aMesh );
+  anIC->Redisplay (aMesh, Standard_True);
 
   return 0;
 }
@@ -1123,7 +1123,7 @@ static Standard_Integer meshdeform( Draw_Interpretor& di,
 
   aMesh->SetDataSource(aDefDS);
 
-  anIC->Redisplay( aMesh );
+  anIC->Redisplay (aMesh, Standard_False);
 
   Handle( V3d_View ) aView = ViewerTest::CurrentView();
   if ( !aView.IsNull() )
@@ -1177,7 +1177,7 @@ static Standard_Integer mesh_edge_width( Draw_Interpretor& di,
       }
 
       aDrawer->SetDouble( MeshVS_DA_EdgeWidth, aWidth );
-      anIC->Redisplay( aMesh );
+      anIC->Redisplay (aMesh, Standard_True);
   }
   catch ( Standard_Failure )
   {

@@ -251,8 +251,8 @@ void CImportExport::ReadIGES(const Handle(AIS_InteractiveContext)& anInteractive
 {
     Handle(TopTools_HSequenceOfShape) aSequence = CImportExport::ReadIGES();
     for(int i=1;i<= aSequence->Length();i++)
-        anInteractiveContext->Display(new AIS_Shape(aSequence->Value(i)));
-
+        anInteractiveContext->Display (new AIS_Shape (aSequence->Value (i)), Standard_False);
+    anInteractiveContext->UpdateCurrentViewer();
 }
 
 Handle(TopTools_HSequenceOfShape) CImportExport::ReadIGES()// not by reference --> the sequence is created here !!

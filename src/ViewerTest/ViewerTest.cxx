@@ -714,7 +714,7 @@ static int visos (Draw_Interpretor& di, Standard_Integer argc, const char** argv
           CurDrawer->SetVIsoAspect(CopyIsoAspect(aVIso, aNbVIsos));
           TheAISContext()->SetLocalAttributes
                   (aShape, CurDrawer, Standard_False);
-          TheAISContext()->Redisplay(aShape);
+          TheAISContext()->Redisplay (aShape, Standard_False);
         } else {
           di << "Number of isos for " << argv[i] << " : "
              << aUIso->Number() << " " << aVIso->Number() << "\n";
@@ -1225,9 +1225,9 @@ static int VSubInt(Draw_Interpretor& di, Standard_Integer argc, const char** arg
       IO = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
       if (!IO.IsNull()) {
         if(On==1)
-          Ctx->SubIntensityOn(IO);
+          Ctx->SubIntensityOn(IO, Standard_True);
         else
-          Ctx->SubIntensityOff(IO);
+          Ctx->SubIntensityOff(IO, Standard_True);
       }
     }
     else return 1;
@@ -3373,7 +3373,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
       anAISContext->SetDisplayMode (aTexturedIO, AIS_Shaded, Standard_False);
       if (aPreviousMode == 3)
       {
-        anAISContext->RecomputePrsOnly (aTexturedIO);
+        anAISContext->RecomputePrsOnly (aTexturedIO, Standard_False);
       }
 
       anAISContext->Display (aTexturedIO, Standard_True);
@@ -3468,7 +3468,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
 
   if (aTexturedIO->DisplayMode() == 3 || aPreviousMode == 3)
   {
-    anAISContext->RecomputePrsOnly (aTexturedIO);
+    anAISContext->RecomputePrsOnly (aTexturedIO, Standard_True);
   }
   else
   {
@@ -3957,7 +3957,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
 
       if (aSelMode == -1)
       {
-        aCtx->Erase (aShape);
+        aCtx->Erase (aShape, Standard_False);
       }
       aCtx->Display (aShape, aDispMode, aSelMode,
                      Standard_False, aShape->AcceptShapeDecomposition(),
@@ -4054,7 +4054,7 @@ static int VShading(Draw_Interpretor& ,Standard_Integer argc, const char** argv)
   else
     TheAISContext()->SetDeviationCoefficient(TheAisIO,0.0008,Standard_True);
 
-  TheAISContext()->Redisplay(TheAisIO);
+  TheAISContext()->Redisplay (TheAisIO, Standard_True);
   return 0;
 }
 //==============================================================================
@@ -4891,7 +4891,7 @@ static int VPickShape( Draw_Interpretor& di, Standard_Integer argc, const char**
 
     Handle(AIS_Shape) newsh = new AIS_Shape(PickSh);
     GetMapOfAIS().Bind(newsh, name);
-    TheAISContext()->Display(newsh);
+    TheAISContext()->Display (newsh, Standard_True);
     di<<"Nom de la shape pickee : "<<name.ToCString()<<"\n";
   }
 
@@ -4921,9 +4921,10 @@ static int VPickShape( Draw_Interpretor& di, Standard_Integer argc, const char**
 	Handle(AIS_Shape) newsh = new AIS_Shape(PickSh);
 	GetMapOfAIS().Bind(newsh, name);
 	di<<"display of picke shape #"<<i<<" - nom : "<<name.ToCString()<<"\n";
-	TheAISContext()->Display(newsh);
+	TheAISContext()->Display (newsh, Standard_False);
 
       }
+      TheAISContext()->UpdateCurrentViewer();
     }
   }
   return 0;
@@ -4971,8 +4972,10 @@ static int VPickSelected (Draw_Interpretor& , Standard_Integer theArgNb, const c
 
     Handle(AIS_Shape) aNewShape = new AIS_Shape (aShape);
     GetMapOfAIS().Bind (aNewShape, aCurrentName);
-    TheAISContext()->Display (aNewShape);
+    TheAISContext()->Display (aNewShape, Standard_False);
   }
+
+  TheAISContext()->UpdateCurrentViewer();
 
   return 0;
 }
@@ -5163,7 +5166,7 @@ static Standard_Integer vr(Draw_Interpretor& , Standard_Integer , const char** a
   DBRep::Set(a[1], shape);
   Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
   Handle(AIS_Shape) ais = new AIS_Shape(shape);
-  Ctx->Display(ais);
+  Ctx->Display (ais, Standard_True);
   return 0;
 }
 

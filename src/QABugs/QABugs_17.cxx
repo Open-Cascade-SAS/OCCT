@@ -94,7 +94,7 @@ static Standard_Integer BUC60842 (Draw_Interpretor& di, Standard_Integer /*argc*
   if(!aContext.IsNull()) {
     Handle(AIS_Shape) aisp = 
       new AIS_Shape (BRepBuilderAPI_MakeEdge(GeomAPI::To3d(curve2d, pln)).Edge());
-    aContext->Display (aisp);
+    aContext->Display (aisp, Standard_False);
   }
 
   Handle(Geom2d_Curve) fromcurve2d = GeomAPI::To2d (cir, pln);
@@ -103,7 +103,7 @@ static Standard_Integer BUC60842 (Draw_Interpretor& di, Standard_Integer /*argc*
   if(!aContext.IsNull()) {
     Handle(AIS_Shape) aisp = 
       new AIS_Shape (BRepBuilderAPI_MakeEdge(GeomAPI::To3d(fromcurve2d, pln)).Edge());
-    aContext->Display (aisp);
+    aContext->Display (aisp, Standard_False);
   }
 
   Geom2dAdaptor_Curve acur (curve2d), afromcur (fromcurve2d);
@@ -117,9 +117,11 @@ static Standard_Integer BUC60842 (Draw_Interpretor& di, Standard_Integer /*argc*
     DrawTrSurf::Set(st,glin);
     if(!aContext.IsNull()) {
       Handle(AIS_Shape) aisp = 
-        new AIS_Shape (BRepBuilderAPI_MakeEdge(GeomAPI::To3d(glin, pln)).Edge());      aContext->Display (aisp);
+        new AIS_Shape (BRepBuilderAPI_MakeEdge(GeomAPI::To3d(glin, pln)).Edge());
+      aContext->Display (aisp, Standard_False);
     }
   }
+  aContext->UpdateCurrentViewer();
   di << " Is Done = \n" << (Standard_Integer) lintan.IsDone();
   return 0;
 }
@@ -210,7 +212,7 @@ static Standard_Integer BUC60970 (Draw_Interpretor& di, Standard_Integer argc, c
   di << "total no of wires are ............. " << i << "\n"; 
 
   TopoDS_Wire spineWire = bRepSpineWire.Wire(); 
-  aContext->Display(new AIS_Shape(spineWire)); 
+  aContext->Display (new AIS_Shape(spineWire), Standard_False);
 
   DBRep::Set("slineW",spineWire);
 
@@ -226,7 +228,7 @@ static Standard_Integer BUC60970 (Draw_Interpretor& di, Standard_Integer argc, c
   gp_Circ gpCirc(gpAx2, 2.5); 
   BRepBuilderAPI_MakeWire aMWire(BRepBuilderAPI_MakeEdge(new Geom_Circle(gpCirc)).Edge());
   TopoDS_Wire topoWire(aMWire); 
-  aContext->Display(new AIS_Shape(topoWire));
+  aContext->Display (new AIS_Shape(topoWire), Standard_False);
 
   DBRep::Set("topoW",topoWire);
 
@@ -234,7 +236,7 @@ static Standard_Integer BUC60970 (Draw_Interpretor& di, Standard_Integer argc, c
   bRepPipe.Add(topoWire); 
   bRepPipe.Build(); 
 
-  aContext->Display(new AIS_Shape(bRepPipe.Shape())); 
+  aContext->Display (new AIS_Shape(bRepPipe.Shape()), Standard_True);
 
   DBRep::Set(argv[2],bRepPipe.Shape());
 
@@ -260,7 +262,7 @@ static Standard_Integer  BUC60818(Draw_Interpretor& di, Standard_Integer argc, c
   Handle(AIS_Trihedron) aTrihedron;
   Handle(Geom_Axis2Placement) aTrihedronAxis=new Geom_Axis2Placement(gp::XOY());
   aTrihedron=new AIS_Trihedron(aTrihedronAxis);
-  myAISContext->Display(aTrihedron);
+  myAISContext->Display (aTrihedron, Standard_True);
 
   Standard_DISABLE_DEPRECATION_WARNINGS
   myAISContext->OpenLocalContext(); 
@@ -276,8 +278,8 @@ static Standard_Integer  BUC60818(Draw_Interpretor& di, Standard_Integer argc, c
   Standard_Integer Xp,Yp;
   myV3dView->Convert(Xv,Yv,Xp,Yp);
 
-  myAISContext->MoveTo( Xp,Yp, myV3dView  );
-  myAISContext->MoveTo( Xp,Yp, myV3dView  );
+  myAISContext->MoveTo (Xp,Yp, myV3dView, Standard_False);
+  myAISContext->MoveTo (Xp,Yp, myV3dView, Standard_True);
 
   if (myAISContext->HasDetected(  )) 
     di << "has detected shape : OK"   << "\n";
@@ -335,7 +337,7 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   Handle(AIS_LengthDimension) len = new AIS_LengthDimension(V2, V3, pln->Pln());
   anAspect->ArrowAspect()->SetLength (30.0);
   len->SetDimensionAspect (anAspect);
-  context->Display(len);
+  context->Display (len, Standard_False);
   /***************************************/
   //dimension "L 90"
   /***************************************/
@@ -343,13 +345,13 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   len1->SetDimensionAspect (anAspect);
   len1->SetFlyout (30.0);
   anAspect->ArrowAspect()->SetLength (100.0);
-  context->Display(len1);
+  context->Display (len1, Standard_False);
   /***************************************/
   //dimension "L 150"
   /***************************************/
   Handle(AIS_LengthDimension) len2 = new AIS_LengthDimension(V1, V2, pln->Pln());
   len2->SetDimensionAspect (anAspect);
-  context->Display(len2);
+  context->Display (len2, Standard_False);
   /***************************************/
   //dimension "R 88.58"
   /***************************************/
@@ -357,7 +359,7 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   TopoDS_Edge E1 = BRepBuilderAPI_MakeEdge(cir,gp_Pnt(191.09,0,0.),gp_Pnt(191.09,-177.16,0.) );
   Handle(AIS_RadiusDimension) dim1 = new AIS_RadiusDimension(E1);
   dim1->SetDimensionAspect (anAspect);
-  context->Display(dim1);
+  context->Display (dim1, Standard_False);
   /***************************************/
   //dimension "R 43.80"
   /***************************************/
@@ -366,7 +368,7 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   dim1 = new AIS_RadiusDimension(E_cir1);
   anAspect->ArrowAspect()->SetLength (60.0);
   dim1->SetDimensionAspect (anAspect);
-  context->Display(dim1);
+  context->Display (dim1, Standard_False);
   /***************************************/
   //dimension "R 17.86"
   /***************************************/
@@ -375,7 +377,7 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   dim1 = new AIS_RadiusDimension(E_cir2);
   anAspect->ArrowAspect()->SetLength (40.0);
   dim1->SetDimensionAspect (anAspect);
-  context->Display(dim1);
+  context->Display (dim1, Standard_True);
 
   return 0;
 }
@@ -396,13 +398,13 @@ static Standard_Integer  OCC138 (Draw_Interpretor& di, Standard_Integer /*argc*/
   Handle(AIS_InteractiveObject) ais2 = new AIS_Shape(box2.Shape());
   Handle(AIS_InteractiveObject) ais3 = new AIS_Shape(box3.Shape());
 
-  aContext->Display(ais1);
-  aContext->Display(ais2);
-  aContext->Display(ais3);
+  aContext->Display (ais1, Standard_False);
+  aContext->Display (ais2, Standard_False);
+  aContext->Display (ais3, Standard_False);
 
-  aContext->AddOrRemoveSelected(ais1);
-  aContext->AddOrRemoveSelected(ais2);
-  aContext->AddOrRemoveSelected(ais3);
+  aContext->AddOrRemoveSelected (ais1, Standard_False);
+  aContext->AddOrRemoveSelected (ais2, Standard_False);
+  aContext->AddOrRemoveSelected (ais3, Standard_False);
 
   di << "\n No of currents = " << aContext->NbSelected();
 
@@ -413,9 +415,11 @@ static Standard_Integer  OCC138 (Draw_Interpretor& di, Standard_Integer /*argc*/
   {
     di << "\n count is = " << count++;
     Handle(AIS_InteractiveObject) ais = aContext->SelectedInteractive();
-    aContext->AddOrRemoveSelected(ais);
+    aContext->AddOrRemoveSelected (ais, Standard_False);
     aContext->InitSelected();
   }
+
+  aContext->UpdateCurrentViewer();
 
   return 0; 
 }
@@ -576,7 +580,7 @@ static Standard_Integer  OCC232 (Draw_Interpretor& di, Standard_Integer /*argc*/
   builder.Add(comp, cs2);
 
   Handle(AIS_Shape) ais = new AIS_Shape(comp);
-  aContext->Display(ais);
+  aContext->Display (ais, Standard_False);
 
   TopExp_Explorer exp(comp,  TopAbs_COMPSOLID);
   while(exp.More())
@@ -589,10 +593,13 @@ static Standard_Integer  OCC232 (Draw_Interpretor& di, Standard_Integer /*argc*/
   Handle (StdSelect_ShapeTypeFilter) filt = new StdSelect_ShapeTypeFilter(TopAbs_COMPSOLID);
   aContext->AddFilter(filt);
   Standard_DISABLE_DEPRECATION_WARNINGS
-  aContext->CloseAllContexts();
+  aContext->CloseAllContexts (Standard_False);
   aContext->OpenLocalContext(); 
   aContext->ActivateStandardMode(TopAbs_SOLID);
   Standard_ENABLE_DEPRECATION_WARNINGS
+
+  aContext->UpdateCurrentViewer();
+
   return 0; 
 }
 
@@ -612,13 +619,13 @@ static Standard_Integer  OCC138LC (Draw_Interpretor& di, Standard_Integer /*argc
   Handle(AIS_InteractiveObject) ais2 = new AIS_Shape(box2.Shape());
   Handle(AIS_InteractiveObject) ais3 = new AIS_Shape(box3.Shape());
 
-  aContext->Display(ais1);
-  aContext->Display(ais2);
-  aContext->Display(ais3);
+  aContext->Display (ais1, Standard_False);
+  aContext->Display (ais2, Standard_False);
+  aContext->Display (ais3, Standard_False);
 
-  aContext->AddOrRemoveSelected(ais1);
-  aContext->AddOrRemoveSelected(ais2);
-  aContext->AddOrRemoveSelected(ais3);
+  aContext->AddOrRemoveSelected (ais1, Standard_False);
+  aContext->AddOrRemoveSelected (ais2, Standard_False);
+  aContext->AddOrRemoveSelected (ais3, Standard_False);
 
   di << "\n No of selected = " << aContext->NbSelected();
 
@@ -629,9 +636,11 @@ static Standard_Integer  OCC138LC (Draw_Interpretor& di, Standard_Integer /*argc
   {
     di << "\n count is = %d" << count++;
     Handle(AIS_InteractiveObject) ais = aContext->SelectedInteractive();
-    aContext->AddOrRemoveSelected(ais);
+    aContext->AddOrRemoveSelected (ais, Standard_False);
     aContext->InitSelected();
   }
+
+  aContext->UpdateCurrentViewer();
 
   return 0; 
 }
@@ -934,7 +943,7 @@ static Standard_Integer OCC813 (Draw_Interpretor& di, Standard_Integer argc,cons
   if(!aContext.IsNull()) {
     Handle(AIS_Shape) aisp = 
       new AIS_Shape (BRepBuilderAPI_MakeEdge(GeomAPI::To3d(curve2d, pln)).Edge());
-    aContext->Display (aisp);
+    aContext->Display (aisp, Standard_False);
   }
 
   //This does not give any solutions.
@@ -951,8 +960,14 @@ static Standard_Integer OCC813 (Draw_Interpretor& di, Standard_Integer argc,cons
     DrawTrSurf::Set(st,glin);
     if(!aContext.IsNull()) {
       Handle(AIS_Shape) aisp = 
-        new AIS_Shape (BRepBuilderAPI_MakeEdge(GeomAPI::To3d(glin, pln)).Edge());      aContext->Display (aisp);
+        new AIS_Shape (BRepBuilderAPI_MakeEdge(GeomAPI::To3d(glin, pln)).Edge());
+      aContext->Display (aisp, Standard_False);
     }
+  }
+
+  if (!aContext.IsNull())
+  {
+    aContext->UpdateCurrentViewer();
   }
 
   return 0;
@@ -995,12 +1010,12 @@ static Standard_Integer OCC814 (Draw_Interpretor& di, Standard_Integer argc,cons
   if(!aContext.IsNull()) {
     Handle(AIS_Shape) aisp = 
       new AIS_Shape (BRepBuilderAPI_MakeEdge(GeomAPI::To3d(curve2d, pln)).Edge());
-    aContext->Display (aisp);
+    aContext->Display (aisp, Standard_False);
   }
   if(!aContext.IsNull()) {
     Handle(AIS_Shape) aisp = 
       new AIS_Shape (BRepBuilderAPI_MakeEdge(GeomAPI::To3d(fromcurve2d, pln)).Edge());
-    aContext->Display (aisp);
+    aContext->Display (aisp, Standard_False);
   }
 
   Geom2dAdaptor_Curve acur(curve2d), afromcur(fromcurve2d);
@@ -1022,8 +1037,14 @@ static Standard_Integer OCC814 (Draw_Interpretor& di, Standard_Integer argc,cons
     DrawTrSurf::Set(st,glin);
     if(!aContext.IsNull()) {
       Handle(AIS_Shape) aisp = 
-        new AIS_Shape (BRepBuilderAPI_MakeEdge(GeomAPI::To3d(glin, pln)).Edge());      aContext->Display (aisp);
+        new AIS_Shape (BRepBuilderAPI_MakeEdge(GeomAPI::To3d(glin, pln)).Edge());
+      aContext->Display (aisp, Standard_False);
     }
+  }
+
+  if (!aContext.IsNull())
+  {
+    aContext->UpdateCurrentViewer();
   }
 
   return 0;
@@ -1254,7 +1275,7 @@ static Standard_Integer OCC1174_1 (Draw_Interpretor& di, Standard_Integer argc, 
 
   aDrawer->SetShadingAspect (aShadingAspect);
 
-  anAISContext->Display(anAisIO, 1, 0);
+  anAISContext->Display (anAisIO, 1, 0, Standard_True);
 
   Standard_Real r, g, b; 
   aShadingAspect->Color(Aspect_TOFM_FRONT_SIDE).Values(r,g,b, Quantity_TOC_RGB);
@@ -1287,8 +1308,8 @@ static Standard_Integer OCC1174_2 (Draw_Interpretor& di, Standard_Integer argc, 
   TopoDS_Shape sh = DBRep::Get(argv[1]);
 
   Handle(AIS_Shape) ais = new AIS_Shape(sh); 
-  AISContext->Display(ais,1,0); 
-  AISContext->SetMaterial(ais,Graphic3d_NOM_SHINY_PLASTIC); 
+  AISContext->Display (ais, 1, 0, Standard_False);
+  AISContext->SetMaterial (ais, Graphic3d_NOM_SHINY_PLASTIC, Standard_False);
 
   Quantity_Color colf(0.0, 0.4, 0.0, Quantity_TOC_RGB); 
   Quantity_Color colb(0.0, 0.0, 0.6, Quantity_TOC_RGB); 
@@ -1310,7 +1331,7 @@ static Standard_Integer OCC1174_2 (Draw_Interpretor& di, Standard_Integer argc, 
   back.SetTransparency(0.2); 
   sa->SetMaterial(back,Aspect_TOFM_BACK_SIDE); 
 
-  AISContext->Redisplay(ais,1,0);
+  AISContext->Redisplay (ais, 1, 0);
 
   return 0;
 }
@@ -1471,7 +1492,7 @@ static Standard_Integer OCC2569 (Draw_Interpretor& di, Standard_Integer argc, co
   }
   TopoDS_Edge sh = BRepBuilderAPI_MakeEdge(bez).Edge(); 
   Handle(AIS_Shape) ais = new AIS_Shape(sh); 
-  aContext->Display(ais); 
+  aContext->Display (ais, Standard_True);
   DrawTrSurf::Set(argv[2],bez);
   return 0;
 }

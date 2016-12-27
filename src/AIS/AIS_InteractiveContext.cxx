@@ -2176,7 +2176,6 @@ void AIS_InteractiveContext::UnsetTransparency (const Handle(AIS_InteractiveObje
 //purpose  :
 //=======================================================================
 void AIS_InteractiveContext::SetSelectedAspect (const Handle(Prs3d_BasicAspect)& theAspect,
-                                                const Standard_Boolean ,
                                                 const Standard_Boolean           theToUpdateViewer)
 {
   if (HasOpenedContext())
@@ -2754,10 +2753,10 @@ void AIS_InteractiveContext::SetTrihedronSize (const Standard_Real    theVal,
 //=======================================================================
 void AIS_InteractiveContext::SetPlaneSize(const Standard_Real    theValX,
                                           const Standard_Real    theValY,
-                                          const Standard_Boolean /*updateviewer*/)
+                                          const Standard_Boolean theToUpdateViewer)
 {
   myDefaultDrawer->PlaneAspect()->SetPlaneLength (theValX, theValY);
-  Redisplay (AIS_KOI_Datum, 7);
+  Redisplay (AIS_KOI_Datum, 7, theToUpdateViewer);
 }
 
 //=======================================================================
@@ -2856,6 +2855,15 @@ void AIS_InteractiveContext::Disconnect (const Handle(AIS_InteractiveObject)& th
   }
   else
     return;
+}
+
+//=======================================================================
+//function : FitSelected
+//purpose  : Fits the view corresponding to the bounds of selected objects
+//=======================================================================
+void AIS_InteractiveContext::FitSelected (const Handle(V3d_View)& theView)
+{
+  FitSelected (theView, 0.01, Standard_True);
 }
 
 //=======================================================================

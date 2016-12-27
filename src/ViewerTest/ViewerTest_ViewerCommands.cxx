@@ -1437,7 +1437,7 @@ void VT_ProcessKeyPress (const char* buf_ret)
 
     Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
     if(Ctx->NbSelected()==0)
-      Ctx->SetDisplayMode(AIS_Shaded);
+      Ctx->SetDisplayMode (AIS_Shaded, Standard_True);
     else{
       for(Ctx->InitSelected();Ctx->MoreSelected();Ctx->NextSelected())
         Ctx->SetDisplayMode(Ctx->SelectedInteractive(),1,Standard_False);
@@ -1451,7 +1451,7 @@ void VT_ProcessKeyPress (const char* buf_ret)
 
     Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
     if(Ctx->NbSelected()==0)
-      Ctx->SetDisplayMode(AIS_WireFrame);
+      Ctx->SetDisplayMode (AIS_WireFrame, Standard_True);
     else{
       for(Ctx->InitSelected();Ctx->MoreSelected();Ctx->NextSelected())
         Ctx->UnsetDisplayMode(Ctx->SelectedInteractive(),Standard_False);
@@ -1484,7 +1484,7 @@ void VT_ProcessKeyPress (const char* buf_ret)
     std::cout << "setup WireFrame display mode" << std::endl;
     Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
     if(Ctx->NbSelected()==0)
-      Ctx->SetDisplayMode(AIS_WireFrame);
+      Ctx->SetDisplayMode (AIS_WireFrame, Standard_True);
     else{
       for(Ctx->InitSelected();Ctx->MoreSelected();Ctx->NextSelected())
         Ctx->SetDisplayMode(Ctx->SelectedInteractive(),0,Standard_False);
@@ -1899,7 +1899,7 @@ static LRESULT WINAPI AdvViewerWindowProc( HWND hwnd,
         if (!GetActiveAISManipulator().IsNull())
         {
           GetActiveAISManipulator()->StopTransform();
-          ViewerTest::GetAISContext()->ClearSelected();
+          ViewerTest::GetAISContext()->ClearSelected (Standard_True);
         }
 
         if (ViewerTest::GetAISContext()->IsDisplayed (GetRubberBand()))
@@ -1919,7 +1919,7 @@ static LRESULT WINAPI AdvViewerWindowProc( HWND hwnd,
         if (!GetActiveAISManipulator().IsNull())
         {
           GetActiveAISManipulator()->StopTransform (Standard_False);
-          ViewerTest::GetAISContext()->ClearSelected();
+          ViewerTest::GetAISContext()->ClearSelected (Standard_True);
         }
         IsDragged = Standard_False;
       }
@@ -2340,24 +2340,24 @@ int ViewerMainLoop(Standard_Integer argc, const char** argv)
               if( DragFirst )
                 if( ShiftPressed )
                 {
-                  aContext->ShiftSelect();
+                  aContext->ShiftSelect (Standard_True);
                 }
                 else
                 {
-                  aContext->Select();
+                  aContext->Select (Standard_True);
                 }
               else
                 if( ShiftPressed )
                 {
-                  aContext->ShiftSelect( min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ),
-                    max( X_ButtonPress, X_Motion ), max( Y_ButtonPress, Y_Motion ),
-                    ViewerTest::CurrentView());
+                  aContext->ShiftSelect(Min(X_ButtonPress, X_Motion), Min(Y_ButtonPress, Y_Motion),
+                                        Max(X_ButtonPress, X_Motion), Max(Y_ButtonPress, Y_Motion),
+                                        ViewerTest::CurrentView(), Standard_True);
                 }
                 else
                 {
-                  aContext->Select( min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ),
-                    max( X_ButtonPress, X_Motion ), max( Y_ButtonPress, Y_Motion ),
-                    ViewerTest::CurrentView() );
+                  aContext->Select(Min(X_ButtonPress, X_Motion), Min(Y_ButtonPress, Y_Motion),
+                                   Max(X_ButtonPress, X_Motion), Max(Y_ButtonPress, Y_Motion),
+                                   ViewerTest::CurrentView(), Standard_True);
                 }
             else
               VT_ProcessButton3Release();
@@ -4916,7 +4916,7 @@ static int VLayerLine(Draw_Interpretor& di, Standard_Integer argc, const char** 
   static Handle (V3d_LineItem) aLine;
   if (!aLine.IsNull())
   {
-    aContext->Erase (aLine);
+    aContext->Erase (aLine, Standard_False);
   }
   aLine = new V3d_LineItem (X1, Y1, X2, Y2,
                             aLineType, aWidth,
@@ -6940,7 +6940,7 @@ static Standard_Integer VChangeSelected (Draw_Interpretor& di,
       return 1;
     }
 
-    aContext->AddOrRemoveSelected(anAISObject);
+    aContext->AddOrRemoveSelected(anAISObject, Standard_True);
   }
   return 0;
 }
@@ -9781,7 +9781,7 @@ static int VManipulator (Draw_Interpretor& theDi,
 
     aManipulator->Detach();
     aMapAIS.UnBind2 (aName);
-    ViewerTest::GetAISContext()->Remove (aManipulator);
+    ViewerTest::GetAISContext()->Remove (aManipulator, Standard_True);
 
     return 0;
   }
@@ -9950,7 +9950,7 @@ static int VManipulator (Draw_Interpretor& theDi,
     aManipulator->Transform (aT);
   }
 
-  ViewerTest::GetAISContext()->Redisplay (aManipulator);
+  ViewerTest::GetAISContext()->Redisplay (aManipulator, Standard_True);
 
   return 0;
 }

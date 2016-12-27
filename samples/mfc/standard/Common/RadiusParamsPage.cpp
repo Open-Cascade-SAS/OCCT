@@ -94,7 +94,7 @@ void CRadiusParamsPage::OnBnClickedObjectBtn()
     }
   }
 
-  myAISContext->ClearSelected();
+  myAISContext->ClearSelected (Standard_False);
   CDimensionDlg *aDimDlg = (CDimensionDlg*)(this->GetParentOwner());
   // Try to create dimension if it is possible
   Handle(AIS_Dimension) aDim;
@@ -125,6 +125,6 @@ void CRadiusParamsPage::OnBnClickedObjectBtn()
 
   // Display dimension in the neutral point
 
-  myAISContext->Display (aDim);
+  myAISContext->Display (aDim, Standard_True);
   myAISContext->Activate (AIS_Shape::SelectionMode (TopAbs_EDGE));
 }

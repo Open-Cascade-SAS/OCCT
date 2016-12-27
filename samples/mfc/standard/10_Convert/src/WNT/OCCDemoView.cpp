@@ -494,18 +494,18 @@ void COCCDemoView::RedrawVisMode()
   switch (myVisMode)
   {
   case VIS_WIREFRAME:
-    GetDocument()->GetAISContext()->SetDisplayMode(AIS_WireFrame);
+    GetDocument()->GetAISContext()->SetDisplayMode (AIS_WireFrame, Standard_True);
     myView->SetComputedMode (Standard_False);
     break;
   case VIS_SHADE:
-    GetDocument()->GetAISContext()->SetDisplayMode(AIS_Shaded);
+    GetDocument()->GetAISContext()->SetDisplayMode (AIS_Shaded, Standard_True);
     myView->SetComputedMode (Standard_False);
     break;
   case VIS_HLR:
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
     myView->SetComputedMode (Standard_True);
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
-    GetDocument()->GetAISContext()->SetDisplayMode(AIS_WireFrame);
+    GetDocument()->GetAISContext()->SetDisplayMode (AIS_WireFrame, Standard_True);
     break;
   }
 }

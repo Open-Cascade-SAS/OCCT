@@ -195,7 +195,7 @@ void CHLRDoc::OnObjectErase()
     myAISContext->InitSelected();
   }
 
-  myAISContext->ClearSelected();
+  myAISContext->ClearSelected (Standard_True);
 
   if (toUpdateDisplayable)
   {

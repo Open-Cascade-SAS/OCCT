@@ -614,8 +614,7 @@ static Standard_Integer  BUC60920(Draw_Interpretor& di, Standard_Integer /*argc*
   myV3dView->Convert(Xv,Yv,Xp,Yp);
 //  cout<<Xp<<"\t"<<Yp<<endl;
 
-  myAISContext->MoveTo( Xp,Yp, myV3dView  );
-  myAISContext->MoveTo( Xp,Yp, myV3dView  );
+  myAISContext->MoveTo (Xp,Yp, myV3dView, Standard_True);
 
 //   if (myAISContext->IsHilighted(anAISShape)) 
 //              cout << "has hilighted shape : OK"   << endl;

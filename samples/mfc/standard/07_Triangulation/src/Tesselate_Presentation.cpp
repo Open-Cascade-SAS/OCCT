@@ -66,7 +66,7 @@ void Tesselate_Presentation::DoSample()
 {
 	((CTriangulationApp*) AfxGetApp())->SetSampleName (L"Tesselate");
 	((CTriangulationApp*) AfxGetApp())->SetSamplePath (L"");
-	getAISContext()->EraseAll();
+	getAISContext()->EraseAll (Standard_True);
 	if (myIndex >=0 && myIndex < myNbSamples)
     sample (myFileNames[myIndex]);
 }
@@ -269,11 +269,11 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
               }
             }
       
-            getAISContext()->EraseAll();
+            getAISContext()->EraseAll (Standard_False);
             aShowShape = drawShape(aShape);
             if(WAIT_A_SECOND) return;
             aShowEdge = drawShape(aComp2,Quantity_NOC_GREEN);
-            getAISContext()->Erase(aShowShape);
+            getAISContext()->Erase (aShowShape, Standard_True);
             if(WAIT_A_SECOND) return;
           }
         }
@@ -368,7 +368,7 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
       if(aCount == aNumOfFace)
       {
         aShowFace = drawShape(aComp1,Quantity_NOC_GREEN);
-        getAISContext()->Erase(aShowEdge);
+        getAISContext()->Erase (aShowEdge, Standard_True);
       }
     }
     else
@@ -389,7 +389,7 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
 
   if(WAIT_A_SECOND) return;
   drawShape(aCompound,Quantity_NOC_GREEN);
-  getAISContext()->Erase(aShowFace);
+  getAISContext()->Erase (aShowFace, Standard_True);
   
 }
 

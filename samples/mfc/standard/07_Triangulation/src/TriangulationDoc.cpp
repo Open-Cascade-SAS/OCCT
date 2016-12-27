@@ -75,7 +75,7 @@ void CTriangulationDoc::OnTriangu()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 	TopoDS_Shape theBox = BRepPrimAPI_MakeBox(200,60,60);
@@ -84,10 +84,10 @@ void CTriangulationDoc::OnTriangu()
 	BRepMesh_IncrementalMesh(ShapeFused,1);
 
 	Handle (AIS_Shape)	aSection = new AIS_Shape(ShapeFused);
-	myAISContext->SetDisplayMode(aSection,1);
-	myAISContext->SetColor(aSection,Quantity_NOC_RED);
-	myAISContext->SetMaterial(aSection,Graphic3d_NOM_GOLD);
-	myAISContext->Display(aSection);
+	myAISContext->SetDisplayMode (aSection, 1, Standard_False);
+	myAISContext->SetColor (aSection, Quantity_NOC_RED, Standard_False);
+	myAISContext->SetMaterial (aSection, Graphic3d_NOM_GOLD, Standard_False);
+	myAISContext->Display (aSection, Standard_False);
 
 	Standard_Integer result(0);
 
@@ -133,7 +133,7 @@ void CTriangulationDoc::OnVisu()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 TopoDS_Shape theBox = BRepPrimAPI_MakeBox(200,60,60).Shape();
@@ -142,11 +142,11 @@ TopoDS_Shape ShapeFused = BRepAlgoAPI_Fuse(theSphere, theBox).Shape();
 BRepMesh_IncrementalMesh(ShapeFused,1);
 
 Handle (AIS_Shape)	aSection = new AIS_Shape(ShapeFused);
-myAISContext->SetDisplayMode(aSection,1);
-myAISContext->SetColor(aSection,Quantity_NOC_RED);
-myAISContext->SetMaterial(aSection,Graphic3d_NOM_GOLD);
-myAISContext->SetTransparency(aSection,0.1);
-myAISContext->Display(aSection);
+myAISContext->SetDisplayMode (aSection, 1, Standard_False);
+myAISContext->SetColor (aSection, Quantity_NOC_RED, Standard_False);
+myAISContext->SetMaterial (aSection, Graphic3d_NOM_GOLD, Standard_False);
+myAISContext->SetTransparency (aSection, 0.1, Standard_False);
+myAISContext->Display (aSection, Standard_False);
 
 BRep_Builder builder;
 TopoDS_Compound Comp;
@@ -188,9 +188,9 @@ for (TopExp_Explorer ex(ShapeFused,TopAbs_FACE) ; ex.More(); ex.Next()) {
 	}
 }
 Handle (AIS_Shape)	atriangulation = new AIS_Shape(Comp);
-myAISContext->SetDisplayMode(atriangulation,0);
-myAISContext->SetColor(atriangulation,Quantity_NOC_WHITE);
-myAISContext->Display(atriangulation);
+myAISContext->SetDisplayMode (atriangulation, 0, Standard_False);
+myAISContext->SetColor (atriangulation, Quantity_NOC_WHITE, Standard_False);
+myAISContext->Display (atriangulation, Standard_False);
 
 Fit();
 
@@ -258,7 +258,7 @@ void CTriangulationDoc::OnClear()
 	myAISContext->DisplayedObjects(aList);
 	AIS_ListIteratorOfListOfInteractive aListIterator;
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
-		myAISContext->Remove(aListIterator.Value());
+		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
 TopoDS_Shape theBox = BRepPrimAPI_MakeBox(200, 60, 60).Shape();
@@ -268,10 +268,10 @@ BRepMesh_IncrementalMesh(ShapeFused,1);
 
 
 Handle (AIS_Shape)	aSection = new AIS_Shape(ShapeFused);
-myAISContext->SetDisplayMode(aSection,1);
-myAISContext->SetColor(aSection,Quantity_NOC_RED);
-myAISContext->SetMaterial(aSection,Graphic3d_NOM_GOLD);
-myAISContext->Display(aSection);
+myAISContext->SetDisplayMode (aSection, 1, Standard_False);
+myAISContext->SetColor (aSection, Quantity_NOC_RED, Standard_False);
+myAISContext->SetMaterial (aSection, Graphic3d_NOM_GOLD, Standard_False);
+myAISContext->Display (aSection, Standard_False);
 
 BRepTools::Clean(ShapeFused);
 
@@ -360,14 +360,14 @@ void CTriangulationDoc::DoSample()
 
 void CTriangulationDoc::OnBUTTONStart() 
 {
-  myAISContext->EraseAll();
+  myAISContext->EraseAll (Standard_True);
   myPresentation->FirstSample();
   DoSample();
 }
 
 void CTriangulationDoc::OnBUTTONEnd()
 {
-  myAISContext->EraseAll();
+  myAISContext->EraseAll (Standard_True);
   myPresentation->LastSample();
   DoSample();
 }

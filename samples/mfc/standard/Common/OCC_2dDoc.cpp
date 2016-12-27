@@ -60,12 +60,12 @@ void OCC_2dDoc::MoveEvent(const Standard_Integer theMouseX,
                           const Standard_Integer theMouseY,
                           const Handle(V3d_View)& theView)
 {
-  myAISContext->MoveTo (theMouseX, theMouseY, theView);
+  myAISContext->MoveTo (theMouseX, theMouseY, theView, Standard_True);
 }
 
 void OCC_2dDoc::ShiftMoveEvent(const Standard_Integer theMouseX,
                                const Standard_Integer theMouseY,
                                const Handle(V3d_View)& theView)
 {
-  myAISContext->MoveTo (theMouseX, theMouseY, theView);
+  myAISContext->MoveTo (theMouseX, theMouseY, theView, Standard_True);
 }
