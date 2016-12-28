@@ -310,6 +310,15 @@ void SelectMgr_SelectableObject::ClearSelected ()
 }
 
 //=======================================================================
+//function : ClearDynamicHighlight
+//purpose  :
+//=======================================================================
+void SelectMgr_SelectableObject::ClearDynamicHighlight (const Handle(PrsMgr_PresentationManager3d)& theMgr)
+{
+  theMgr->ClearImmediateDraw();
+}
+
+//=======================================================================
 //function : HilightOwnerWithColor
 //purpose  : 
 //=======================================================================

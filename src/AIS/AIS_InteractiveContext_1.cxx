@@ -373,17 +373,8 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     // method call. As result it is necessary to rehighligt it with mySelectionColor.
     if (!myLastPicked.IsNull() && myLastPicked->HasSelectable())
     {
-      myMainPM->ClearImmediateDraw();
-      if (!myLastPicked->IsSelected())
-      {
-        myLastPicked->Unhilight (myMainPM);
-        toUpdateViewer = Standard_True;
-      }
-      else if (myToHilightSelected)
-      {
-        highlightSelected (aNewPickedOwner);
-        toUpdateViewer = Standard_True;
-      }
+      clearDynamicHighlight();
+      toUpdateViewer = Standard_True;
     }
 
     // initialize myLastPicked field with currently detected object
@@ -411,20 +402,8 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     aStatus = AIS_SOD_Nothing;
     if (!myLastPicked.IsNull() && myLastPicked->HasSelectable())
     {
-      myMainPM->ClearImmediateDraw();
-      if (!myLastPicked->IsSelected())
-      {
-        if (myLastPicked->IsAutoHilight())
-        {
-          myLastPicked->Unhilight (myMainPM);
-        }
-        toUpdateViewer = Standard_True;
-      }
-      else if (myToHilightSelected)
-      {
-        highlightSelected (myLastPicked);
-        toUpdateViewer = Standard_True;
-      }
+      clearDynamicHighlight();
+      toUpdateViewer = Standard_True;
     }
 
     myLastinMain.Nullify();
@@ -577,10 +556,10 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Boolean toUpdate
     }
   }
 
-  myMainPM->ClearImmediateDraw();
+  clearDynamicHighlight();
   if (myWasLastMain && !myLastinMain.IsNull())
   {
-    if(!myLastinMain->IsSelected())
+    if (!myLastinMain->IsSelected() || myLastinMain->IsForcedHilight())
     {
       SetSelected (myLastinMain, Standard_False);
       if(toUpdateViewer)
@@ -630,7 +609,7 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const Standard_Boolean toU
     }
   }
 
-  myMainPM->ClearImmediateDraw();
+  clearDynamicHighlight();
   if (myWasLastMain && !myLastinMain.IsNull())
   {
     AddOrRemoveSelected (myLastinMain, toUpdateViewer);
@@ -896,7 +875,7 @@ void AIS_InteractiveContext::HilightSelected (const Standard_Boolean theToUpdate
   }
 
   // In case of selection without using local context
-  myMainPM->ClearImmediateDraw();
+  clearDynamicHighlight();
   AIS_MapOfObjSelectedOwners anObjOwnerMap;
   for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
   {
@@ -988,7 +967,7 @@ void AIS_InteractiveContext::ClearSelected (const Standard_Boolean theToUpdateVi
   unhighlightSelected();
 
   mySelection->Clear();
-  myMainPM->ClearImmediateDraw();
+  clearDynamicHighlight();
 
   if (theToUpdateViewer)
     UpdateCurrentViewer();
@@ -1103,7 +1082,7 @@ void AIS_InteractiveContext::SetSelected (const Handle(SelectMgr_EntityOwner)& t
 
   const Handle(AIS_InteractiveObject) anObject = Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable());
   const Handle(Prs3d_Drawer)& anObjSelStyle = getSelStyle (anObject, theOwner);
-  if (NbSelected() == 1 && theOwner->IsSelected())
+  if (NbSelected() == 1 && theOwner->IsSelected() && !theOwner->IsForcedHilight())
   {
     Handle(Prs3d_Drawer) aCustomStyle;
     if (HighlightStyle (theOwner, aCustomStyle))

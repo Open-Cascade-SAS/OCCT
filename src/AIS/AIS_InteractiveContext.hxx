@@ -1730,6 +1730,22 @@ protected:
     return myDefaultDrawer->DisplayMode();
   }
 
+  //! Removes dynamic highlight draw
+  void clearDynamicHighlight() const
+  {
+    if (myLastinMain.IsNull())
+      return;
+
+    if (myLastinMain->IsAutoHilight())
+    {
+      myMainPM->ClearImmediateDraw();
+    }
+    else
+    {
+      myLastinMain->Selectable()->ClearDynamicHighlight (myMainPM);
+    }
+  }
+
 protected:
 
   AIS_DataMapOfIOStatus myObjects;

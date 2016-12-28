@@ -140,7 +140,14 @@ public:
   //! Method which clear all selected owners belonging
   //! to this selectable object ( for fast presentation draw )
   Standard_EXPORT virtual void ClearSelected();
-  
+
+  //! Method that needs to be implemented when the object
+  //! manages selection and dynamic highlighting on its own.
+  //! Clears or invalidates dynamic highlight presentation.
+  //! By default it clears immediate draw of given presentation
+  //! manager.
+  Standard_EXPORT virtual void ClearDynamicHighlight (const Handle(PrsMgr_PresentationManager3d)& theMgr);
+
   //! Method which hilight an owner belonging to
   //! this selectable object  ( for fast presentation draw )
   Standard_EXPORT virtual void HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,

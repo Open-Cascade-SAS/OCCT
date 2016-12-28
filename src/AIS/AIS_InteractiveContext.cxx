@@ -2353,7 +2353,7 @@ void AIS_InteractiveContext::EraseGlobal (const Handle(AIS_InteractiveObject)& t
   if (!myLastPicked.IsNull()
     && myLastPicked->IsSameSelectable (theIObj))
   {
-    myMainPM->ClearImmediateDraw();
+    clearDynamicHighlight();
   }
 
   if (IsSelected (theIObj)
@@ -2447,8 +2447,8 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
     if (myLastinMain->IsSameSelectable (theIObj)
      || myLastPicked->IsSameSelectable(theIObj))
     {
+      clearDynamicHighlight();
       myLastinMain.Nullify();
-      myMainPM->ClearImmediateDraw();
     }
   }
 
