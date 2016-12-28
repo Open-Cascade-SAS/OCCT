@@ -140,8 +140,11 @@ proc wokdep:gui:UpdateList {} {
   if { "$::HAVE_FREEIMAGE" == "true" } {
     wokdep:SearchFreeImage anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   }
+  if { "$::HAVE_FFMPEG" == "true" } {
+    wokdep:SearchFFmpeg  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
+  }
   if { "$::HAVE_GL2PS" == "true" } {
-    wokdep:SearchGL2PS   anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
+    wokdep:SearchStandardLibrary  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs "gl2ps" "gl2ps.h" "gl2ps" {"gl2ps"}
   }
   if { "$::HAVE_TBB" == "true" } {
     wokdep:SearchTBB     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
@@ -152,6 +155,18 @@ proc wokdep:gui:UpdateList {} {
   if { "$::HAVE_VTK" == "true" } {
     wokdep:SearchVTK  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   }
+
+  if { "$::HAVE_ZLIB" == "true" } {
+    wokdep:SearchStandardLibrary  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs "zlib" "zlib.h" "zlib" {"zlib"}
+  }
+  if { "$::HAVE_LIBLZMA" == "true" } {
+    set aCheckLib "lzma"
+    if { "$::tcl_platform(platform)" == "windows" } {
+      set aCheckLib "liblzma"
+    }
+    wokdep:SearchStandardLibrary  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs "liblzma" "lzma.h" "$aCheckLib" {"lzma" "xz"}
+  }
+
   if { "$::CHECK_QT4" == "true" } {
     wokdep:SearchQt4     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   }
@@ -402,12 +417,20 @@ if { "$::tcl_platform(platform)" == "windows" } {
   checkbutton .myFrame.myChecks.myD3dCheck      -offvalue "false" -onvalue "true" -variable HAVE_D3D       -command wokdep:gui:UpdateList
   ttk::label  .myFrame.myChecks.myD3dLbl        -text "Use Direct3D"
 }
+checkbutton   .myFrame.myChecks.myFFmpegCheck   -offvalue "false" -onvalue "true" -variable HAVE_FFMPEG    -command wokdep:gui:UpdateList
+ttk::label    .myFrame.myChecks.myFFmpegLbl     -text "Use FFmpeg"
 #checkbutton   .myFrame.myChecks.myOpenClCheck   -offvalue "false" -onvalue "true" -variable HAVE_OPENCL    -command wokdep:gui:UpdateList
 #ttk::label    .myFrame.myChecks.myOpenClLbl     -text "Use OpenCL"
 checkbutton   .myFrame.myChecks.myMacGLXCheck   -offvalue "false" -onvalue "true" -variable MACOSX_USE_GLX
 ttk::label    .myFrame.myChecks.myMacGLXLbl     -text "Use X11 for windows drawing"
 ttk::label    .myFrame.myChecks.myVtkLbl        -text "Use VTK"
 checkbutton   .myFrame.myChecks.myVtkCheck      -offvalue "false" -onvalue "true" -variable HAVE_VTK       -command wokdep:gui:UpdateList
+
+checkbutton   .myFrame.myChecks.myZLibCheck     -offvalue "false" -onvalue "true" -variable HAVE_ZLIB      -command wokdep:gui:UpdateList
+ttk::label    .myFrame.myChecks.myZLibLbl       -text "Use zlib"
+checkbutton   .myFrame.myChecks.myLzmaCheck     -offvalue "false" -onvalue "true" -variable HAVE_LIBLZMA   -command wokdep:gui:UpdateList
+ttk::label    .myFrame.myChecks.myLzmaLbl       -text "Use liblzma"
+
 checkbutton   .myFrame.myChecks.myQt4Check      -offvalue "false" -onvalue "true" -variable CHECK_QT4      -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myChecks.myQt4Lbl        -text "Search Qt4"
 checkbutton   .myFrame.myChecks.myJDKCheck      -offvalue "false" -onvalue "true" -variable CHECK_JDK      -command wokdep:gui:UpdateList
@@ -499,23 +522,33 @@ grid .myFrame.myChecks.myFImageCheck   -row $aCheckRowIter -column 0 -sticky e
 grid .myFrame.myChecks.myFImageLbl     -row $aCheckRowIter -column 1 -sticky w
 grid .myFrame.myChecks.myTbbCheck      -row $aCheckRowIter -column 2 -sticky e
 grid .myFrame.myChecks.myTbbLbl        -row $aCheckRowIter -column 3 -sticky w
-grid .myFrame.myChecks.myQt4Check      -row $aCheckRowIter -column 4 -sticky e
-grid .myFrame.myChecks.myQt4Lbl        -row $aCheckRowIter -column 5 -sticky w
-grid .myFrame.myChecks.myGlesCheck     -row $aCheckRowIter -column 6 -sticky e
-grid .myFrame.myChecks.myGlesLbl       -row $aCheckRowIter -column 7 -sticky w
+grid .myFrame.myChecks.myGlesCheck     -row $aCheckRowIter -column 4 -sticky e
+grid .myFrame.myChecks.myGlesLbl       -row $aCheckRowIter -column 5 -sticky w
 #grid .myFrame.myChecks.myOpenClCheck   -row $aCheckRowIter -column 6 -sticky e
 #grid .myFrame.myChecks.myOpenClLbl     -row $aCheckRowIter -column 7 -sticky w
+grid .myFrame.myChecks.myZLibCheck     -row $aCheckRowIter -column 6 -sticky e
+grid .myFrame.myChecks.myZLibLbl       -row $aCheckRowIter -column 7 -sticky w
+
+grid .myFrame.myChecks.myGl2psCheck    -row $aCheckRowIter -column 8 -sticky e
+grid .myFrame.myChecks.myGl2psLbl      -row $aCheckRowIter -column 9 -sticky w
+
+grid .myFrame.myChecks.myQt4Check      -row $aCheckRowIter -column 10 -sticky e
+grid .myFrame.myChecks.myQt4Lbl        -row $aCheckRowIter -column 11 -sticky w
+
 incr aCheckRowIter
-grid .myFrame.myChecks.myGl2psCheck    -row $aCheckRowIter -column 0 -sticky e
-grid .myFrame.myChecks.myGl2psLbl      -row $aCheckRowIter -column 1 -sticky w
+grid .myFrame.myChecks.myFFmpegCheck   -row $aCheckRowIter -column 0 -sticky e
+grid .myFrame.myChecks.myFFmpegLbl     -row $aCheckRowIter -column 1 -sticky w
 grid .myFrame.myChecks.myVtkCheck      -row $aCheckRowIter -column 2 -sticky e
 grid .myFrame.myChecks.myVtkLbl        -row $aCheckRowIter -column 3 -sticky w
-grid .myFrame.myChecks.myJDKCheck      -row $aCheckRowIter -column 4 -sticky e
-grid .myFrame.myChecks.myJDKLbl        -row $aCheckRowIter -column 5 -sticky w
 if { "$::tcl_platform(platform)" == "windows" } {
-  grid .myFrame.myChecks.myD3dCheck    -row $aCheckRowIter -column 6 -sticky e
-  grid .myFrame.myChecks.myD3dLbl      -row $aCheckRowIter -column 7 -sticky w
+  grid .myFrame.myChecks.myD3dCheck    -row $aCheckRowIter -column 4 -sticky e
+  grid .myFrame.myChecks.myD3dLbl      -row $aCheckRowIter -column 5 -sticky w
 }
+grid .myFrame.myChecks.myLzmaCheck     -row $aCheckRowIter -column 6 -sticky e
+grid .myFrame.myChecks.myLzmaLbl       -row $aCheckRowIter -column 7 -sticky w
+grid .myFrame.myChecks.myJDKCheck      -row $aCheckRowIter -column 10 -sticky e
+grid .myFrame.myChecks.myJDKLbl        -row $aCheckRowIter -column 11 -sticky w
+
 incr aCheckRowIter
 if { "$::tcl_platform(os)" == "Darwin" } {
   grid .myFrame.myChecks.myMacGLXCheck -row $aCheckRowIter -column 0 -sticky e

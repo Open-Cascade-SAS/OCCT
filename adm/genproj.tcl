@@ -1275,6 +1275,9 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
       set aLibsMap(CSF_FreeImagePlus) "freeimage"
     }
   }
+  if { "$::HAVE_FFMPEG" == "true" } {
+    set aLibsMap(CSF_FFmpeg) "avcodec avformat swscale avutil"
+  }
   if { "$::HAVE_GL2PS" == "true" } {
     set aLibsMap(CSF_GL2PS) "gl2ps"
   }
@@ -1288,6 +1291,12 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
       set aLibsMap(CSF_VTK) [osutils:vtkCsf "unix"]
     }
   }
+  if { "$::HAVE_ZLIB" == "true" } {
+    set aLibsMap(CSF_ZLIB) "zlib"
+  }
+  if { "$::HAVE_LIBLZMA" == "true" } {
+    set aLibsMap(CSF_LIBLZMA) "liblzma"
+  }
 
   if { "$theOS" == "wnt" } {
     #  WinAPI libraries
@@ -1298,7 +1307,6 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
     set aLibsMap(CSF_opengl32)     "opengl32"
     set aLibsMap(CSF_wsock32)      "wsock32"
     set aLibsMap(CSF_netapi32)     "netapi32"
-    set aLibsMap(CSF_AviLibs)      "ws2_32 vfw32"
     set aLibsMap(CSF_OpenGlLibs)   "opengl32"
     if { "$::HAVE_GLES2" == "true" } {
       set aLibsMap(CSF_OpenGlLibs) "libEGL libGLESv2"

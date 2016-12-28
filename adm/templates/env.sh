@@ -10,9 +10,12 @@ export TARGET="";
 export HAVE_TBB="false";
 export HAVE_OPENCL="false";
 export HAVE_FREEIMAGE="false";
+export HAVE_FFMPEG="false";
 export HAVE_GL2PS="false";
 export HAVE_VTK="false";
 export HAVE_GLES2="false";
+export HAVE_ZLIB="false";
+export HAVE_LIBLZMA="false";
 export MACOSX_USE_GLX="false";
 export CSF_OPT_INC=""
 export CSF_OPT_LIB32=""
@@ -91,28 +94,17 @@ fi
 export CSF_OPT_CMPL=""
 
 # Optiona 3rd-parties should be enabled by HAVE macros
-if [ "$HAVE_TBB" == "true" ]; then
-  export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_TBB"
-fi
-if [ "$HAVE_OPENCL" == "true" ]; then
-  export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_OPENCL"
-fi
-if [ "$HAVE_FREEIMAGE" == "true" ]; then
-  export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_FREEIMAGE"
-fi
-if [ "$HAVE_GL2PS" == "true" ]; then
-  export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_GL2PS"
-fi
-if [ "$HAVE_GLES2" == "true" ]; then
-  export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_GLES2"
-fi
-if [ "$HAVE_VTK" == "true" ]; then
-  export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_VTK"
-fi
+if [ "$HAVE_TBB"       == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_TBB"; fi
+if [ "$HAVE_OPENCL"    == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_OPENCL"; fi
+if [ "$HAVE_FREEIMAGE" == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_FREEIMAGE"; fi
+if [ "$HAVE_FFMPEG"    == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_FFMPEG"; fi
+if [ "$HAVE_GL2PS"     == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_GL2PS"; fi
+if [ "$HAVE_GLES2"     == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_GLES2"; fi
+if [ "$HAVE_VTK"       == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_VTK"; fi
+if [ "$HAVE_ZLIB"      == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_ZLIB"; fi
+if [ "$HAVE_LIBLZMA"   == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_LIBLZMA"; fi
 # Option to compile OCCT with X11 libs on Mac OS X
-if [ "$MACOSX_USE_GLX" == "true" ]; then
-  export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DMACOSX_USE_GLX"
-fi
+if [ "$MACOSX_USE_GLX" == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DMACOSX_USE_GLX"; fi
 
 # To split string into array
 aDelimBack=$IFS

@@ -79,7 +79,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="__TKDEP__ ws2_32.lib vfw32.lib"
+				AdditionalDependencies="__TKDEP__ ws2_32.lib"
 				OutputFile=".\..\..\..\win32\vc9\bin\__TKNAM__.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -178,7 +178,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="__TKDEP__ ws2_32.lib vfw32.lib"
+				AdditionalDependencies="__TKDEP__ ws2_32.lib"
 				OutputFile=".\..\..\..\win32\vc9\bind\__TKNAM__.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -272,7 +272,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="__TKDEP__ ws2_32.lib vfw32.lib"
+				AdditionalDependencies="__TKDEP__ ws2_32.lib"
 				OutputFile=".\..\..\..\win64\vc9\bin\__TKNAM__.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -368,7 +368,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="__TKDEP__ ws2_32.lib vfw32.lib"
+				AdditionalDependencies="__TKDEP__ ws2_32.lib"
 				OutputFile=".\..\..\..\win64\vc9\bind\__TKNAM__.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
