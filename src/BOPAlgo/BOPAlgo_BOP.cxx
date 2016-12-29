@@ -36,7 +36,6 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 typedef NCollection_IndexedDataMap
   <BOPTools_Set,
@@ -49,6 +48,17 @@ static
 static
   void CollectContainers(const TopoDS_Shape& theS,
                          BOPCol_ListOfShape& theLSC);
+//
+static
+  void RemoveDuplicates(BOPCol_ListOfShape& theContainers);
+//
+static
+  void RemoveDuplicates(BOPCol_ListOfShape& theContainers,
+                        const TopAbs_ShapeEnum theType);
+//
+static
+  Standard_Integer NbCommonItemsInMap(const BOPCol_MapOfShape& theM1,
+                                      const BOPCol_MapOfShape& theM2);
 
 
 //=======================================================================
@@ -733,14 +743,11 @@ void BOPAlgo_BOP::BuildShape()
   //
   Standard_Integer i;
   TopAbs_ShapeEnum aType, aT1, aT2;
-  TopTools_ListOfShape aLSC, aLCB;
+  BOPCol_ListOfShape aLSC, aLCB;
   BOPCol_ListIteratorOfListOfShape aItLS, aItLSIm, aItLCB;
   TopoDS_Iterator aIt;
   BRep_Builder aBB;
   TopoDS_Shape aRC, aRCB;
-  //
-  TopoDS_Compound aResult;
-  aBB.MakeCompound(aResult);
   //
   BOPCol_MapOfShape aMSRC;
   BOPTools::MapShapes(myRC, aMSRC);
@@ -757,6 +764,7 @@ void BOPAlgo_BOP::BuildShape()
     }
   }
   // make containers
+  BOPCol_ListOfShape aLCRes;
   aItLS.Initialize(aLSC);
   for (; aItLS.More(); aItLS.Next()) {
     const TopoDS_Shape& aSC = aItLS.Value();
@@ -767,7 +775,7 @@ void BOPAlgo_BOP::BuildShape()
     for (; aIt.More(); aIt.Next()) {
       const TopoDS_Shape& aS = aIt.Value();
       if (myImages.IsBound(aS)) {
-        const TopTools_ListOfShape& aLSIm = myImages.Find(aS);
+        const BOPCol_ListOfShape& aLSIm = myImages.Find(aS);
         //
         aItLSIm.Initialize(aLSIm);
         for (; aItLSIm.More(); aItLSIm.Next()) {
@@ -817,12 +825,29 @@ void BOPAlgo_BOP::BuildShape()
         aBB.Add(aRCB, aCBS);
       }
       //
-      if (aType == TopAbs_SHELL) {
+      if (aType == TopAbs_WIRE) {
+        // reorient wire
+        BOPTools_AlgoTools::OrientEdgesOnWire(aRCB);
+      }
+      else if (aType == TopAbs_SHELL) {
         BOPTools_AlgoTools::OrientFacesOnShell(aRCB);
       }
       //
-      aBB.Add(aResult, aRCB);
+      aRCB.Orientation(aSC.Orientation());
+      //
+      aLCRes.Append(aRCB);
     }
+  }
+  //
+  RemoveDuplicates(aLCRes);
+  //
+  // add containers to result
+  TopoDS_Compound aResult;
+  aBB.MakeCompound(aResult);
+  //
+  aItLS.Initialize(aLCRes);
+  for (; aItLS.More(); aItLS.Next()) {
+    aBB.Add(aResult, aItLS.Value());
   }
   //
   // add the rest of the shapes into result
@@ -832,7 +857,7 @@ void BOPAlgo_BOP::BuildShape()
   aIt.Initialize(myRC);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aS = aIt.Value();
-    if (!aMSResult.Contains(aS)) {
+    if (aMSResult.Add(aS)) {
       aBB.Add(aResult, aS);
     }
   }
@@ -859,6 +884,7 @@ void BOPAlgo_BOP::BuildSolid()
   BOPAlgo_BuilderSolid aSB; 
   BOPCol_MapOfShape aMSA, aMZ;
   BOPTools_IndexedDataMapOfSetShape aDMSTS;
+  BOPCol_ListOfShape aLSC;
   //
   myErrorStatus=0;
   //
@@ -868,6 +894,9 @@ void BOPAlgo_BOP::BuildSolid()
     aItLS.Initialize(aLSA);
     for (; aItLS.More(); aItLS.Next()) {
       const TopoDS_Shape& aSA=aItLS.Value();
+      //
+      CollectContainers(aSA, aLSC);
+      //
       aExp.Init(aSA, TopAbs_SOLID);
       for (; aExp.More(); aExp.Next()) {
         const TopoDS_Shape& aZA=aExp.Current();
@@ -1018,7 +1047,87 @@ void BOPAlgo_BOP::BuildSolid()
     aBB.Add(aRC, aSx);
   }
   //
-  myShape=aRC;
+  if (aLSC.IsEmpty()) {
+    // no Compsolids in arguments
+    myShape=aRC;
+    return;
+  }
+  //
+  // build new Compsolids from new solids containing splits
+  // of faces from arguments of type Compsolid
+  //
+  TopoDS_Shape aResult;
+  BOPTools_AlgoTools::MakeContainer(TopAbs_COMPOUND, aResult);
+  //
+  // optimization for one solid in the result
+  if (aLSR.Extent() == 1 && !aNbSx) {
+    TopoDS_Shape aCS;
+    BOPTools_AlgoTools::MakeContainer(TopAbs_COMPSOLID, aCS);
+    aBB.Add(aCS, aLSR.First());
+    //
+    aBB.Add(aResult, aCS);
+    myShape = aResult;
+    return;
+  }
+  //
+  // get splits of faces of the Compsolid arguments
+  BOPCol_MapOfShape aMFCs;
+  aItLS.Initialize(aLSC);
+  for (; aItLS.More(); aItLS.Next()) {
+    const TopoDS_Shape& aCs = aItLS.Value();
+    aExp.Init(aCs, TopAbs_FACE);
+    for (; aExp.More(); aExp.Next()) {
+      const TopoDS_Shape& aF = aExp.Current();
+      const BOPCol_ListOfShape* pLFIm = myImages.Seek(aF);
+      if (!pLFIm) {
+        aMFCs.Add(aF);
+      }
+      else {
+        BOPCol_ListIteratorOfListOfShape aItLFIm(*pLFIm);
+        for (; aItLFIm.More(); aItLFIm.Next()) {
+          aMFCs.Add(aItLFIm.Value());
+        }
+      }
+    }
+  }
+  //
+  // build connexity blocks from new solids
+  BOPCol_ListOfShape aLCBS;
+  BOPTools_AlgoTools::MakeConnexityBlocks(aRC, TopAbs_FACE, TopAbs_SOLID, aLCBS);
+  //
+  aItLS.Initialize(aLCBS);
+  for (; aItLS.More(); aItLS.Next()) {
+    const TopoDS_Shape& aCB = aItLS.Value();
+    //
+    // check if the Compsolid should be created
+    aExp.Init(aCB, TopAbs_FACE);
+    for (; aExp.More(); aExp.Next()) {
+      if (aMFCs.Contains(aExp.Current())) {
+        break;
+      }
+    }
+    //
+    if (!aExp.More()) {
+      // add solids directly into result as their origins are not Compsolids
+      for (aIt.Initialize(aCB); aIt.More(); aIt.Next()) {
+        aBB.Add(aResult, aIt.Value());
+      }
+      continue;
+    }
+    //
+    // make Compsolid
+    TopoDS_Shape aCS;
+    BOPTools_AlgoTools::MakeContainer(TopAbs_COMPSOLID, aCS);
+    //
+    aIt.Initialize(aCB);
+    for (; aIt.More(); aIt.Next()) {
+      aBB.Add(aCS, aIt.Value());
+    }
+    //
+    aBB.Add(aResult, aCS);
+  }
+  //
+  myShape = aResult;
 }
 //=======================================================================
 //function : IsBoundSplits
@@ -1121,3 +1230,123 @@ void CollectContainers(const TopoDS_Shape& theS,
   }
 }
 
+//=======================================================================
+//function : RemoveDuplicates
+//purpose  : Filters the containers with identical contents
+//=======================================================================
+void RemoveDuplicates(BOPCol_ListOfShape& theContainers)
+{
+  RemoveDuplicates(theContainers, TopAbs_WIRE);
+  RemoveDuplicates(theContainers, TopAbs_SHELL);
+  RemoveDuplicates(theContainers, TopAbs_COMPSOLID);
+}
+
+//=======================================================================
+//function : RemoveDuplicates
+//purpose  : Filters the containers of given type with identical contents
+//=======================================================================
+void RemoveDuplicates(BOPCol_ListOfShape& theContainers,
+                      const TopAbs_ShapeEnum theType)
+{
+  // get containers of given type
+  BOPCol_ListOfShape aLC;
+  BOPCol_ListIteratorOfListOfShape aItLC(theContainers);
+  for (; aItLC.More(); aItLC.Next()) {
+    const TopoDS_Shape& aC = aItLC.Value();
+    if (aC.ShapeType() == theType) {
+      aLC.Append(aC);
+    }
+  }
+  //
+  if (aLC.IsEmpty()) {
+    return;
+  }
+  //
+  // map containers to compare its contents
+  NCollection_IndexedDataMap<TopoDS_Shape, BOPCol_MapOfShape> aContents;
+  //
+  aItLC.Initialize(aLC);
+  for (; aItLC.More(); aItLC.Next()) {
+    const TopoDS_Shape& aC = aItLC.Value();
+    //
+    BOPCol_MapOfShape& aMC = aContents(aContents.Add(aC, BOPCol_MapOfShape()));
+    //
+    TopoDS_Iterator aIt(aC);
+    for (; aIt.More(); aIt.Next()) {
+      aMC.Add(aIt.Value());
+    }
+  }
+  //
+  // compare the contents of the containers and find duplicates
+  BOPCol_MapOfShape aDuplicates;
+  //
+  Standard_Integer i, j, aNb = aContents.Extent();
+  for (i = 1; i <= aNb; ++i) {
+    const TopoDS_Shape& aCi = aContents.FindKey(i);
+    if (aDuplicates.Contains(aCi)) {
+      continue;
+    }
+    const BOPCol_MapOfShape& aMi = aContents(i);
+    Standard_Integer aNbi = aMi.Extent();
+    //
+    for (j = i + 1; j <= aNb; ++j) {
+      const TopoDS_Shape& aCj = aContents.FindKey(j);
+      if (aDuplicates.Contains(aCj)) {
+        continue;
+      }
+      const BOPCol_MapOfShape& aMj = aContents(j);
+      Standard_Integer aNbj = aMj.Extent();
+      //
+      Standard_Integer aNbCommon = NbCommonItemsInMap(aMi, aMj);
+      //
+      if (aNbj == aNbCommon) {
+        aDuplicates.Add(aCj);
+        continue;
+      }
+      //
+      if (aNbi == aNbCommon) {
+        aDuplicates.Add(aCi);
+        break;
+      }
+    }
+  }
+  //
+  if (aDuplicates.IsEmpty()) {
+    return;
+  }
+  //
+  // remove duplicating containers
+  aItLC.Initialize(theContainers);
+  for (; aItLC.More(); ) {
+    const TopoDS_Shape& aC = aItLC.Value();
+    if (aDuplicates.Contains(aC)) {
+      theContainers.Remove(aItLC);
+      continue;
+    }
+    aItLC.Next();
+  }
+}
+
+//=======================================================================
+//function : NbCommonItemsInMap
+//purpose  : Counts the items contained in both maps
+//=======================================================================
+Standard_Integer NbCommonItemsInMap(const BOPCol_MapOfShape& theM1,
+                                    const BOPCol_MapOfShape& theM2)
+{
+  const BOPCol_MapOfShape* aMap1 = &theM1;
+  const BOPCol_MapOfShape* aMap2 = &theM2;
+  //
+  if (theM2.Extent() < theM1.Extent()) {
+    aMap1 = &theM2;
+    aMap2 = &theM1;
+  }
+  //
+  Standard_Integer iCommon = 0;
+  for (BOPCol_MapIteratorOfMapOfShape aIt(*aMap1); aIt.More(); aIt.Next()) {
+    if (aMap2->Contains(aIt.Value())) {
+      ++iCommon;
+    }
+  }
+  return iCommon;
+}

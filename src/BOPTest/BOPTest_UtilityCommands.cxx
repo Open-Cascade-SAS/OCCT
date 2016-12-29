@@ -15,6 +15,7 @@
 
 #include <BOPTest.hxx>
 
+#include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
 #include <DBRep.hxx>
 #include <IntTools_Context.hxx>
@@ -23,8 +24,8 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 
-static Standard_Integer attachpcurve   (Draw_Interpretor&, Standard_Integer, const char**);
-
+static Standard_Integer attachpcurve (Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer edgestowire  (Draw_Interpretor&, Standard_Integer, const char**);
 
 
 //=======================================================================
@@ -41,6 +42,7 @@ static Standard_Integer attachpcurve   (Draw_Interpretor&, Standard_Integer, con
   // Commands
   
   theCommands.Add("attachpcurve", "attachpcurve eold enew face", __FILE__, attachpcurve, group);
+  theCommands.Add("edgestowire" , "edgestowire wire edges"     , __FILE__, edgestowire , group);
 }
 
 //=======================================================================
@@ -100,5 +102,29 @@ static Standard_Integer attachpcurve(Draw_Interpretor& theDI,
     theDI << "PCurve is attached successfully\n";
   }
 
+  return 0;
+}
+
+//=======================================================================
+//function : edgestowire
+//purpose  : Orients the edges to make wire
+//=======================================================================
+static Standard_Integer edgestowire(Draw_Interpretor& theDI,
+                                    Standard_Integer  theNArg,
+                                    const char ** theArgVal)
+{
+  if (theNArg != 3) {
+    theDI << "Use: edgestowire wire edges\n";
+    return 1;
+  }
+  //
+  TopoDS_Shape anEdges = DBRep::Get(theArgVal[2]);
+  if (anEdges.IsNull()) {
+    theDI << "no edges\n";
+    return 1;
+  }
+  //
+  BOPTools_AlgoTools::OrientEdgesOnWire(anEdges);
+  DBRep::Set(theArgVal[1], anEdges);
   return 0;
 }

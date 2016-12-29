@@ -1177,3 +1177,7 @@ Management of highlight attributes has been revised and might require modificati
   - *myZLayer*, replaced by *myDrawer->ZLayer()*
 * The method *PrsMgr_PresentationManager::Unhighlight()* taking Display Mode as an argument has been marked deprecated.
   Implementation now performs unhighlighting of all highlighted presentation mode.
+
+@subsection upgrade_720_Result_Of_BOP_On_Containers Result of Boolean operations on containers
+
+* The result of Boolean operations on arguments of collection types (WIRE/SHELL/COMPSOLID) is now filtered from duplicating containers.

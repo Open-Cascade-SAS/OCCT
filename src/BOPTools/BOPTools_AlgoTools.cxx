@@ -18,6 +18,7 @@
 
 #include <BOPCol_IndexedMapOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
+#include <BOPCol_MapOfOrientedShape.hxx>
 #include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
@@ -54,6 +55,7 @@
 #include <TopAbs_Orientation.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_CompSolid.hxx>
 #include <TopoDS_Edge.hxx>
@@ -195,6 +197,94 @@ void BOPTools_AlgoTools::MakeConnexityBlocks
       theLCB.Append(aC);
     }
   }// for (; aIt.More(); aIt.Next()) 
+}
+//=======================================================================
+// function: OrientEdgesOnWire
+// purpose: Reorient edges on wire for correct ordering
+//=======================================================================
+void BOPTools_AlgoTools::OrientEdgesOnWire(TopoDS_Shape& theWire)
+{
+  // make vertex-edges connexity map
+  BOPCol_IndexedDataMapOfShapeListOfShape aVEMap;
+  BOPTools::MapShapesAndAncestors(theWire, TopAbs_VERTEX, TopAbs_EDGE, aVEMap);
+  //
+  if (aVEMap.IsEmpty()) {
+    return;
+  }
+  //
+  BRep_Builder aBB;
+  // new wire
+  TopoDS_Wire aWire;
+  aBB.MakeWire(aWire);
+  // fence map
+  BOPCol_MapOfOrientedShape aMFence;
+  //
+  TopoDS_Iterator aIt(theWire);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Edge& aEC = TopoDS::Edge(aIt.Value());
+    if (!aMFence.Add(aEC)) {
+      continue;
+    }
+    //
+    // add edge to a wire as it is
+    aBB.Add(aWire, aEC);
+    //
+    TopoDS_Vertex aV1, aV2;
+    TopExp::Vertices(aEC, aV1, aV2, Standard_True);
+    //
+    if (aV1.IsSame(aV2)) {
+      // closed edge, go to the next edge
+      continue;
+    }
+    //
+    // orient the adjacent edges
+    for (Standard_Integer i = 0; i < 2; ++i) {
+      TopoDS_Shape aVC = !i ? aV1 : aV2;
+      //
+      for (;;) {
+        const BOPCol_ListOfShape& aLE = aVEMap.FindFromKey(aVC);
+        if (aLE.Extent() != 2) {
+          // free vertex or multi-connexity, go to the next edge
+          break;
+        }
+        //
+        Standard_Boolean bStop = Standard_True;
+        //
+        BOPCol_ListIteratorOfListOfShape aItLE(aLE);
+        for (; aItLE.More(); aItLE.Next()) {
+          const TopoDS_Edge& aEN = TopoDS::Edge(aItLE.Value());
+          if (aMFence.Contains(aEN)) {
+            continue;
+          }
+          //
+          TopoDS_Vertex aVN1, aVN2;
+          TopExp::Vertices(aEN, aVN1, aVN2, Standard_True);
+          if (aVN1.IsSame(aVN2)) {
+            // closed edge, go to the next edge
+            break;
+          }
+          //
+          // change orientation if necessary and go to the next edges
+          if ((!i && aVC.IsSame(aVN2)) || (i && aVC.IsSame(aVN1))) {
+            aBB.Add(aWire, aEN);
+          }
+          else {
+            aBB.Add(aWire, aEN.Reversed());
+          }
+          aMFence.Add(aEN);
+          aVC = aVC.IsSame(aVN1) ? aVN2 : aVN1;
+          bStop = Standard_False;
+          break;
+        }
+        //
+        if (bStop) {
+          break;
+        }
+      }
+    }
+  }
+  //
+  theWire = aWire;
 }
 //=======================================================================
 // function: OrientFacesOnShell
