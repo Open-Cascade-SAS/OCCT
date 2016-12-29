@@ -233,7 +233,7 @@
 #include <XCAFDoc_Volume.hxx>
 #include <XCAFPrs.hxx>
 #include <XCAFPrs_DataMapIteratorOfDataMapOfStyleShape.hxx>
-#include <XCAFPrs_DataMapOfShapeStyle.hxx>
+#include <XCAFPrs_IndexedDataMapOfShapeStyle.hxx>
 #include <XCAFPrs_DataMapOfStyleShape.hxx>
 #include <XCAFPrs_Style.hxx>
 #include <XSControl_TransferWriter.hxx>
@@ -1031,7 +1031,7 @@ static Standard_Boolean setDefaultInstanceColor (const Handle(StepVisual_StyledI
 //=======================================================================
 static void MakeSTEPStyles (STEPConstruct_Styles &Styles,
 			    const TopoDS_Shape &S,
-			    const XCAFPrs_DataMapOfShapeStyle &settings,
+			    const XCAFPrs_IndexedDataMapOfShapeStyle &settings,
 			    Handle(StepVisual_StyledItem) &override,
 			    TopTools_MapOfShape &Map,
                             const MoniTool_DataMapOfShapeTransient& myMapCompMDGPR,
@@ -1047,8 +1047,8 @@ static void MakeSTEPStyles (STEPConstruct_Styles &Styles,
   // check if shape has its own style (r inherits from ancestor)
   XCAFPrs_Style style;
   if ( inherit ) style = *inherit;
-  if ( settings.IsBound(S) ) {
-    XCAFPrs_Style own = settings.Find(S);
+  if ( settings.Contains(S) ) {
+    XCAFPrs_Style own = settings.FindFromKey(S);
     if ( !own.IsVisible() ) style.SetVisibility ( Standard_False );
     if ( own.IsSetColorCurv() ) style.SetColorCurv ( own.GetColorCurv() );
     if ( own.IsSetColorSurf() ) style.SetColorSurf ( own.GetColorSurf() );
@@ -1199,7 +1199,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteColors (const Handle(XSControl_Work
         continue;
     
     // collect settings set on that label
-    XCAFPrs_DataMapOfShapeStyle settings;
+    XCAFPrs_IndexedDataMapOfShapeStyle settings;
     TDF_LabelSequence seq;
     seq.Append ( L );
     XCAFDoc_ShapeTool::GetSubShapes ( L, seq );
@@ -1232,7 +1232,11 @@ Standard_Boolean STEPCAFControl_Writer::WriteColors (const Handle(XSControl_Work
       if ( ! style.IsSetColorCurv() && ! style.IsSetColorSurf() && isVisible ) continue;
 
       TopoDS_Shape sub = XCAFDoc_ShapeTool::GetShape ( lab );
-      settings.Bind ( sub, style );
+      XCAFPrs_Style* aMapStyle = settings.ChangeSeek (sub);
+      if (aMapStyle == NULL)
+        settings.Add ( sub, style );
+      else
+        *aMapStyle = style;
     }
     
     if ( settings.Extent() <=0 ) continue;

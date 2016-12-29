@@ -12,9 +12,9 @@
 // commercial license or contractual agreement.
 
 
-#ifndef XCAFPrs_DataMapIteratorOfDataMapOfShapeStyle_HeaderFile
-#define XCAFPrs_DataMapIteratorOfDataMapOfShapeStyle_HeaderFile
+#ifndef XCAFPrs_DataMapIteratorOfIndexedDataMapOfShapeStyle_HeaderFile
+#define XCAFPrs_DataMapIteratorOfIndexedDataMapOfShapeStyle_HeaderFile
 
-#include <XCAFPrs_DataMapOfShapeStyle.hxx>
+#include <XCAFPrs_IndexedDataMapOfShapeStyle.hxx>
 
 #endif

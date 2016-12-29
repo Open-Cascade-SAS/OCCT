@@ -304,21 +304,49 @@ static void StatAssembly(const TDF_Label L,
     NbAreaProp++;
   }
   Handle(XCAFDoc_ColorTool) CTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
+  Handle(XCAFDoc_LayerTool) LTool = XCAFDoc_DocumentTool::LayerTool(aDoc->Main());
   Quantity_ColorRGBA col;
   Standard_Boolean IsColor = Standard_False;
+  Standard_Boolean IsByLayer = Standard_False;
   if(CTool->GetColor(L,XCAFDoc_ColorGen,col))
     IsColor = Standard_True;
   else if(CTool->GetColor(L,XCAFDoc_ColorSurf,col))
     IsColor = Standard_True;
   else if(CTool->GetColor(L,XCAFDoc_ColorCurv,col))
     IsColor = Standard_True;
-  if(IsColor) {
-    TCollection_AsciiString Entry1;
-    Entry1 = col.GetRGB().StringName(col.GetRGB().Name());
-    if(PrintStructMode) di<<"Color("<<Entry1.ToCString()<<" "<<col.Alpha()<<") ";
-    NbShapesWithColor++;
+  else if(CTool->IsColorByLayer(L))
+    IsByLayer = Standard_True;
+  if(IsColor || IsByLayer) {
+    if(IsByLayer)
+    {
+      Handle(TColStd_HSequenceOfExtendedString) aLayerS;
+      LTool->GetLayers(L, aLayerS);
+      // Currently for DXF pnly, thus
+      // only 1 Layer should be.
+      if(aLayerS->Length() == 1)
+      {
+        TDF_Label aLayer = LTool->FindLayer (aLayerS->First());
+        Quantity_ColorRGBA aColor;
+        if (CTool->GetColor (aLayer, XCAFDoc_ColorGen, aColor))
+        {
+          TCollection_AsciiString aColorName = aColor.GetRGB().StringName(aColor.GetRGB().Name());
+          di<<"Color(" << aColorName.ToCString() << ") ";
+        }
+        else
+        {
+          di<<"Color(ByLayer) ";
+        }
+      }
+      NbShapesWithColor++;
+    }
+    else
+    {
+      TCollection_AsciiString Entry1;
+      Entry1 = col.GetRGB().StringName(col.GetRGB().Name());
+      if(PrintStructMode) di<<"Color("<<Entry1.ToCString()<<" "<<col.Alpha()<<") ";
+      NbShapesWithColor++;
+    }
   }
-  Handle(XCAFDoc_LayerTool) LTool = XCAFDoc_DocumentTool::LayerTool(aDoc->Main());
   Handle(TColStd_HSequenceOfExtendedString) aLayerS;
   LTool->GetLayers(L, aLayerS);
   if(!aLayerS.IsNull() && aLayerS->Length()>0) {

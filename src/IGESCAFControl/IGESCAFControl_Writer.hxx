@@ -24,7 +24,7 @@
 #include <IGESControl_Writer.hxx>
 #include <Standard_CString.hxx>
 #include <TDF_LabelSequence.hxx>
-#include <XCAFPrs_DataMapOfShapeStyle.hxx>
+#include <XCAFPrs_IndexedDataMapOfShapeStyle.hxx>
 #include <XCAFPrs_DataMapOfStyleTransient.hxx>
 #include <TopTools_MapOfShape.hxx>
 class XSControl_WorkSession;
@@ -125,7 +125,7 @@ private:
   
   //! Recursively iterates on subshapes and assigns colors
   //! to faces and edges (if set)
-  Standard_EXPORT void MakeColors (const TopoDS_Shape& S, const XCAFPrs_DataMapOfShapeStyle& settings, XCAFPrs_DataMapOfStyleTransient& colors, TopTools_MapOfShape& Map, const XCAFPrs_Style& inherit);
+  Standard_EXPORT void MakeColors (const TopoDS_Shape& S, const XCAFPrs_IndexedDataMapOfShapeStyle& settings, XCAFPrs_DataMapOfStyleTransient& colors, TopTools_MapOfShape& Map, const XCAFPrs_Style& inherit);
 
 
   Standard_Boolean myColorMode;

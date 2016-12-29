@@ -33,8 +33,8 @@
 #include <TopoDS_Iterator.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFPrs.hxx>
-#include <XCAFPrs_DataMapOfShapeStyle.hxx>
-#include <XCAFPrs_DataMapIteratorOfDataMapOfShapeStyle.hxx>
+#include <XCAFPrs_IndexedDataMapOfShapeStyle.hxx>
+#include <XCAFPrs_DataMapIteratorOfIndexedDataMapOfShapeStyle.hxx>
 #include <XCAFPrs_Style.hxx>
 
 
@@ -133,7 +133,7 @@ void XCAFPrs_AISObject::DispatchStyles (const Standard_Boolean theToSyncStyles)
 
   // Collecting information on colored subshapes
   TopLoc_Location aLoc;
-  XCAFPrs_DataMapOfShapeStyle aSettings;
+  XCAFPrs_IndexedDataMapOfShapeStyle aSettings;
   XCAFPrs::CollectStyleSettings (myLabel, aLoc, aSettings);
 
   // Getting default colors
@@ -146,12 +146,12 @@ void XCAFPrs_AISObject::DispatchStyles (const Standard_Boolean theToSyncStyles)
 
   // collect sub-shapes with the same style into compounds
   BRep_Builder aBuilder;
-  NCollection_DataMap<XCAFPrs_Style, TopoDS_Compound, XCAFPrs_Style> aStyleGroups;
-  for (XCAFPrs_DataMapIteratorOfDataMapOfShapeStyle aStyledShapeIter (aSettings);
+  NCollection_IndexedDataMap<XCAFPrs_Style, TopoDS_Compound, XCAFPrs_Style> aStyleGroups;
+  for (XCAFPrs_DataMapIteratorOfIndexedDataMapOfShapeStyle aStyledShapeIter (aSettings);
        aStyledShapeIter.More(); aStyledShapeIter.Next())
   {
     TopoDS_Compound aComp;
-    if (aStyleGroups.Find (aStyledShapeIter.Value(), aComp))
+    if (aStyleGroups.FindFromKey (aStyledShapeIter.Value(), aComp))
     {
       aBuilder.Add (aComp, aStyledShapeIter.Key());
       continue;
@@ -159,12 +159,16 @@ void XCAFPrs_AISObject::DispatchStyles (const Standard_Boolean theToSyncStyles)
 
     aBuilder.MakeCompound (aComp);
     aBuilder.Add (aComp, aStyledShapeIter.Key());
-    aStyleGroups.Bind (aStyledShapeIter.Value(), aComp);
+    TopoDS_Compound* aMapShape = aStyleGroups.ChangeSeek (aStyledShapeIter.Value());
+    if (aMapShape == NULL)
+      aStyleGroups.Add (aStyledShapeIter.Value(), aComp);
+    else
+      *aMapShape = aComp;
   }
   aSettings.Clear();
 
   // assign custom aspects
-  for (NCollection_DataMap<XCAFPrs_Style, TopoDS_Compound, XCAFPrs_Style>::Iterator aStyleGroupIter (aStyleGroups);
+  for (NCollection_IndexedDataMap<XCAFPrs_Style, TopoDS_Compound, XCAFPrs_Style>::Iterator aStyleGroupIter (aStyleGroups);
        aStyleGroupIter.More(); aStyleGroupIter.Next())
   {
     const TopoDS_Compound& aComp = aStyleGroupIter.Value();

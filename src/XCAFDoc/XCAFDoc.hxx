@@ -102,6 +102,8 @@ public:
   Standard_EXPORT static Standard_GUID NoteRefGUID();
 
   Standard_EXPORT static Standard_GUID InvisibleGUID();
+
+  Standard_EXPORT static Standard_GUID ColorByLayerGUID();
   
   //! Returns GUID for UAttribute identifying external reference on no-step file
   Standard_EXPORT static Standard_GUID ExternRefGUID();

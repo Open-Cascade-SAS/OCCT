@@ -198,7 +198,14 @@ public:
   //! Set the visibility of object on label. Do nothing if there no any object.
   //! Set UAttribute with corresponding GUID.
   Standard_EXPORT void SetVisibility (const TDF_Label& shapeLabel, const Standard_Boolean isvisible = Standard_True);
-  
+
+  //! Return TRUE if object color defined by its Layer, FALSE if not.
+  Standard_EXPORT Standard_Boolean IsColorByLayer (const TDF_Label& L) const;
+
+  //! Set the Color defined by Layer flag on label. Do nothing if there no any object.
+  //! Set UAttribute with corresponding GUID.
+  Standard_EXPORT void SetColorByLayer (const TDF_Label& shapeLabel, const Standard_Boolean isColorByLayer = Standard_False);
+
   //! Sets the color of component that styled with SHUO structure
   //! Returns FALSE if no sush component found
   //! NOTE: create SHUO structeure if it is necessary and if <isCreateSHUO>

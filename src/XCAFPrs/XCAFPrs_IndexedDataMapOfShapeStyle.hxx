@@ -13,16 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef XCAFPrs_DataMapOfShapeStyle_HeaderFile
-#define XCAFPrs_DataMapOfShapeStyle_HeaderFile
+#ifndef XCAFPrs_IndexedDataMapOfShapeStyle_HeaderFile
+#define XCAFPrs_IndexedDataMapOfShapeStyle_HeaderFile
 
 #include <TopoDS_Shape.hxx>
 #include <XCAFPrs_Style.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_DataMap<TopoDS_Shape,XCAFPrs_Style,TopTools_ShapeMapHasher> XCAFPrs_DataMapOfShapeStyle;
-typedef NCollection_DataMap<TopoDS_Shape,XCAFPrs_Style,TopTools_ShapeMapHasher>::Iterator XCAFPrs_DataMapIteratorOfDataMapOfShapeStyle;
+typedef NCollection_IndexedDataMap<TopoDS_Shape,XCAFPrs_Style,TopTools_ShapeMapHasher> XCAFPrs_IndexedDataMapOfShapeStyle;
+typedef NCollection_IndexedDataMap<TopoDS_Shape,XCAFPrs_Style,TopTools_ShapeMapHasher>::Iterator XCAFPrs_DataMapIteratorOfIndexedDataMapOfShapeStyle;
 
 
 #endif

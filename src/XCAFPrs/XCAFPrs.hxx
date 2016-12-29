@@ -20,7 +20,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <XCAFPrs_DataMapOfShapeStyle.hxx>
+#include <XCAFPrs_IndexedDataMapOfShapeStyle.hxx>
 #include <Standard_Boolean.hxx>
 class TDF_Label;
 class TopLoc_Location;
@@ -42,7 +42,7 @@ public:
   //! shape - style correspondence
   //! The location <loc> is for internal use, it
   //! should be Null location for external call
-  Standard_EXPORT static void CollectStyleSettings (const TDF_Label& L, const TopLoc_Location& loc, XCAFPrs_DataMapOfShapeStyle& settings);
+  Standard_EXPORT static void CollectStyleSettings (const TDF_Label& L, const TopLoc_Location& loc, XCAFPrs_IndexedDataMapOfShapeStyle& settings, const Quantity_ColorRGBA& theLayerColor = Quantity_ColorRGBA(Quantity_NOC_WHITE));
   
   //! Set ViewNameMode for indicate display names or not.
   Standard_EXPORT static void SetViewNameMode (const Standard_Boolean viewNameMode);

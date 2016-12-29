@@ -236,7 +236,7 @@ Standard_Boolean IGESCAFControl_Writer::WriteAttributes (const TDF_LabelSequence
     TDF_Label L = labels.Value(i);
 
     // collect color settings
-    XCAFPrs_DataMapOfShapeStyle settings;
+    XCAFPrs_IndexedDataMapOfShapeStyle settings;
     TopLoc_Location loc;
     XCAFPrs::CollectStyleSettings ( L, loc, settings );
     if ( settings.Extent() <=0 ) continue;
@@ -262,7 +262,7 @@ Standard_Boolean IGESCAFControl_Writer::WriteAttributes (const TDF_LabelSequence
 //=======================================================================
 
 void IGESCAFControl_Writer::MakeColors (const TopoDS_Shape &S, 
-					const XCAFPrs_DataMapOfShapeStyle &settings,
+					const XCAFPrs_IndexedDataMapOfShapeStyle &settings,
 					XCAFPrs_DataMapOfStyleTransient &colors,
 					TopTools_MapOfShape &Map,
 					const XCAFPrs_Style &inherit) 
@@ -272,8 +272,8 @@ void IGESCAFControl_Writer::MakeColors (const TopoDS_Shape &S,
   
   // check if shape has its own style (or inherits from ancestor)
   XCAFPrs_Style style = inherit;
-  if ( settings.IsBound(S) ) {
-    XCAFPrs_Style own = settings.Find(S);
+  if ( settings.Contains(S) ) {
+    XCAFPrs_Style own = settings.FindFromKey(S);
     if ( own.IsSetColorCurv() ) style.SetColorCurv ( own.GetColorCurv() );
     if ( own.IsSetColorSurf() ) style.SetColorSurf ( own.GetColorSurf() );
   }

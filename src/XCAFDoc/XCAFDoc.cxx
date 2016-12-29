@@ -196,6 +196,18 @@ Standard_GUID XCAFDoc::InvisibleGUID ()
 
 
 //=======================================================================
+//function : ColorByLayerGUID
+//purpose  : 
+//=======================================================================
+
+Standard_GUID XCAFDoc::ColorByLayerGUID ()
+{
+  static Standard_GUID ID ("279e8c1e-70af-4130-b626-9cc52a537db8");
+  return ID;
+}
+
+
+//=======================================================================
 //function : SHUORefGUID
 //purpose  : 
 //=======================================================================
