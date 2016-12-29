@@ -875,7 +875,7 @@ proc osutils:collectinc {theModules theIncPath} {
         lappend allHeaderFiles "${aHeaderFileName}"
 
         # copy file only if target does not exist or is older than original
-        set torig [file mtime $aHeaderFile]
+        set torig [file mtime $aCasRoot/src/$anUnit/$aHeaderFileName]
         set tcopy 0
         if { [file isfile $anIncPath/$aHeaderFileName] } {
           set tcopy [file mtime $anIncPath/$aHeaderFileName]
@@ -886,12 +886,12 @@ proc osutils:collectinc {theModules theIncPath} {
             if { $tcopy != 0 } {
               file delete -force "$theIncPath/$aHeaderFileName"
             }
-            file link -hard  $anIncPath/$aHeaderFileName $aHeaderFile
+            file link -hard  $anIncPath/$aHeaderFileName $aCasRoot/src/$anUnit/$aHeaderFileName
           } else {
-            file copy -force $aHeaderFile $anIncPath/$aHeaderFileName
+            file copy -force $aCasRoot/src/$anUnit/$aHeaderFileName $anIncPath/$aHeaderFileName
           }
         } elseif { $tcopy != $torig } {
-          puts "Warning: file $anIncPath/$aHeaderFileName is newer than $aHeaderFile, not changed!"
+          puts "Warning: file $anIncPath/$aHeaderFileName is newer than $aCasRoot/src/$anUnit/$aHeaderFileName, not changed!"
         }
       }
     }
