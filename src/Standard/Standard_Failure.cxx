@@ -62,7 +62,7 @@ static void deallocate_message(Standard_CString aMessage)
 // where it is available.
 #if (defined(__INTEL_COMPILER) && __INTEL_COMPILER > 1400) || \
     (defined(__clang__)) /* assume standard CLang > 3.3 or XCode >= 8 */ || \
-    (defined(_MSC_VER) && _MSC_VER >= 1800) /* MSVC++ >= 14 */ || \
+    (defined(_MSC_VER) && _MSC_VER >= 1900) /* MSVC++ >= 14 */ || \
     (defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8))) /* GCC >= 4.8 */
   #define Standard_THREADLOCAL thread_local
 #else
