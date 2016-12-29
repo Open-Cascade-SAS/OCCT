@@ -18,43 +18,15 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
-
-#include <MMgt_TShared.hxx>
-
-
-class Prs3d_BasicAspect;
-DEFINE_STANDARD_HANDLE(Prs3d_BasicAspect, MMgt_TShared)
+#include <Standard_Transient.hxx>
 
 //! All basic Prs3d_xxxAspect must inherits from this class
-//! The aspect classes qualifies how to represent
-//! a given kind of object.
-class Prs3d_BasicAspect : public MMgt_TShared
+//! The aspect classes qualifies how to represent a given kind of object.
+class Prs3d_BasicAspect : public Standard_Transient
 {
-
-public:
-
-
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Prs3d_BasicAspect,MMgt_TShared)
-
-protected:
-
-
-
-
-private:
-
-
-
-
+  DEFINE_STANDARD_RTTIEXT(Prs3d_BasicAspect, Standard_Transient)
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(Prs3d_BasicAspect, Standard_Transient)
 
 #endif // _Prs3d_BasicAspect_HeaderFile

@@ -12,75 +12,43 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Graphic3d_AspectMarker3d.hxx>
 #include <Prs3d_PointAspect.hxx>
-#include <Quantity_Color.hxx>
-#include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Prs3d_PointAspect,Prs3d_BasicAspect)
+IMPLEMENT_STANDARD_RTTIEXT(Prs3d_PointAspect, Prs3d_BasicAspect)
 
-Prs3d_PointAspect::Prs3d_PointAspect (const Aspect_TypeOfMarker aType,
-				  const Quantity_Color &aColor,
-				  const Standard_Real aScale) {
-  myAspect = new Graphic3d_AspectMarker3d(aType,aColor,aScale);
-}
-
-Prs3d_PointAspect::Prs3d_PointAspect (const Aspect_TypeOfMarker aType,
-				  const Quantity_NameOfColor aColor,
-				  const Standard_Real aScale) {
-  myAspect = new Graphic3d_AspectMarker3d
-    (aType,Quantity_Color(aColor),aScale);
-}
-
-Prs3d_PointAspect::Prs3d_PointAspect (const Quantity_Color &aColor,
-                                      const Standard_Integer aWidth,
-                                      const Standard_Integer aHeight,
-				      const Handle(TColStd_HArray1OfByte)& aTexture
-                                      ) 
+// =======================================================================
+// function : Prs3d_PointAspect
+// purpose  :
+// =======================================================================
+Prs3d_PointAspect::Prs3d_PointAspect (const Aspect_TypeOfMarker theType,
+                                      const Quantity_Color& theColor,
+                                      const Standard_Real theScale)
+: myAspect (new Graphic3d_AspectMarker3d (theType, theColor, theScale))
 {
-  myAspect = new Graphic3d_AspectMarker3d
-    (aColor,aWidth,aHeight,aTexture);
+  //
 }
 
-Prs3d_PointAspect::Prs3d_PointAspect( const Handle( Graphic3d_AspectMarker3d )& theAspect ) 
+// =======================================================================
+// function : Prs3d_PointAspect
+// purpose  :
+// =======================================================================
+Prs3d_PointAspect::Prs3d_PointAspect (const Aspect_TypeOfMarker theType,
+                                      const Quantity_NameOfColor theColor,
+                                      const Standard_Real theScale)
+: myAspect (new Graphic3d_AspectMarker3d (theType, Quantity_Color(theColor), theScale))
 {
-  myAspect = theAspect;
+  //
 }
 
-
-void Prs3d_PointAspect::SetColor(const Quantity_Color &aColor) {
-  myAspect->SetColor(aColor);
-}
-
-
-void Prs3d_PointAspect::SetColor(const Quantity_NameOfColor aColor) {
-  myAspect->SetColor(Quantity_Color(aColor));
-}
-
-void Prs3d_PointAspect::SetTypeOfMarker(const Aspect_TypeOfMarker aType){
-  myAspect->SetType(aType);
-}
-
-void Prs3d_PointAspect::SetScale(const Standard_Real aScale){
-  myAspect->SetScale(aScale);
-}
-
-Handle (Graphic3d_AspectMarker3d) Prs3d_PointAspect::Aspect () const {
-  return myAspect;
-}
-
-void Prs3d_PointAspect::SetAspect( const Handle( Graphic3d_AspectMarker3d )& theAspect ) 
+// =======================================================================
+// function : Prs3d_PointAspect
+// purpose  :
+// =======================================================================
+Prs3d_PointAspect::Prs3d_PointAspect (const Quantity_Color& theColor,
+                                      const Standard_Integer theWidth,
+                                      const Standard_Integer theHeight,
+                                      const Handle(TColStd_HArray1OfByte)& theTexture) 
+: myAspect (new Graphic3d_AspectMarker3d (theColor, theWidth, theHeight, theTexture))
 {
-  myAspect = theAspect;
-}
-
-void Prs3d_PointAspect::GetTextureSize(Standard_Integer& AWidth, Standard_Integer& AHeight)
-{
-  myAspect->GetTextureSize( AWidth, AHeight);
-}
-
-const Handle(Graphic3d_MarkerImage)& Prs3d_PointAspect::GetTexture()
-{
-  return myAspect->GetMarkerImage();
+  //
 }

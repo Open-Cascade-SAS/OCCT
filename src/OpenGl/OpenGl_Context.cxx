@@ -2877,8 +2877,8 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
   }
 
   // handling transparency
-  float aTranspFront = (float )aMatFrontSrc.Transparency();
-  float aTranspBack  = (float )aMatBackSrc .Transparency();
+  float aTranspFront = aMatFrontSrc.Transparency();
+  float aTranspBack  = aMatBackSrc .Transparency();
   if (!theHighlight.IsNull()
     && theHighlight->BasicFillAreaAspect().IsNull())
   {

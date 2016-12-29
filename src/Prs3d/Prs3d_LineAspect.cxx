@@ -12,56 +12,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Graphic3d_AspectLine3d.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Quantity_Color.hxx>
-#include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Prs3d_LineAspect,Prs3d_BasicAspect)
+IMPLEMENT_STANDARD_RTTIEXT(Prs3d_LineAspect, Prs3d_BasicAspect)
 
-Prs3d_LineAspect::Prs3d_LineAspect (const Quantity_Color &aColor,
-				const Aspect_TypeOfLine aType,
-				const Standard_Real aWidth) {
-  myAspect = new Graphic3d_AspectLine3d(aColor,aType,aWidth);
-}
-
-Prs3d_LineAspect::Prs3d_LineAspect (const Quantity_NameOfColor aColor,
-				const Aspect_TypeOfLine aType,
-				const Standard_Real aWidth) {
-
-  myAspect = new Graphic3d_AspectLine3d
-    (Quantity_Color(aColor),aType,aWidth);
-}
-
-Prs3d_LineAspect::Prs3d_LineAspect( const Handle( Graphic3d_AspectLine3d )& theAspect )
+// =======================================================================
+// function : Prs3d_LineAspect
+// purpose  :
+// =======================================================================
+Prs3d_LineAspect::Prs3d_LineAspect (const Quantity_Color& theColor,
+                                    const Aspect_TypeOfLine theType,
+                                    const Standard_Real theWidth)
+: myAspect (new Graphic3d_AspectLine3d (theColor, theType, theWidth))
 {
-  myAspect = theAspect;
+  //
 }
 
-
-
-void Prs3d_LineAspect::SetColor(const Quantity_Color &aColor) {
- myAspect->SetColor(aColor);
-}
-
-void Prs3d_LineAspect::SetColor(const Quantity_NameOfColor aColor) {
-  myAspect->SetColor(Quantity_Color(aColor));
-}
-
-void Prs3d_LineAspect::SetTypeOfLine(const Aspect_TypeOfLine aType){
-  myAspect->SetType(aType);
-}
-
-void Prs3d_LineAspect::SetWidth(const Standard_Real aWidth){
-  myAspect->SetWidth(aWidth);
-}
-
-Handle (Graphic3d_AspectLine3d) Prs3d_LineAspect::Aspect () const {
-  return myAspect;
-}
-
-void Prs3d_LineAspect::SetAspect( const Handle( Graphic3d_AspectLine3d )& theAspect )
+// =======================================================================
+// function : Prs3d_LineAspect
+// purpose  :
+// =======================================================================
+Prs3d_LineAspect::Prs3d_LineAspect (const Quantity_NameOfColor theColor,
+                                    const Aspect_TypeOfLine theType,
+                                    const Standard_Real theWidth)
+: myAspect (new Graphic3d_AspectLine3d (Quantity_Color (theColor), theType, theWidth))
 {
-  myAspect = theAspect;
+  //
 }

@@ -17,71 +17,59 @@
 #ifndef _Prs3d_TextAspect_HeaderFile
 #define _Prs3d_TextAspect_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Quantity_PlaneAngle.hxx>
-#include <Standard_Real.hxx>
+#include <Graphic3d_AspectText3d.hxx>
+#include <Graphic3d_TextPath.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
-#include <Graphic3d_TextPath.hxx>
 #include <Prs3d_BasicAspect.hxx>
-#include <Quantity_NameOfColor.hxx>
-#include <Standard_CString.hxx>
 #include <Quantity_Length.hxx>
-class Graphic3d_AspectText3d;
-class Quantity_Color;
-
-
-class Prs3d_TextAspect;
-DEFINE_STANDARD_HANDLE(Prs3d_TextAspect, Prs3d_BasicAspect)
+#include <Quantity_PlaneAngle.hxx>
 
 //! Defines the attributes when displaying a text.
 class Prs3d_TextAspect : public Prs3d_BasicAspect
 {
-
+  DEFINE_STANDARD_RTTIEXT(Prs3d_TextAspect, Prs3d_BasicAspect)
 public:
 
-  
   //! Constructs an empty framework for defining display attributes of text.
   Standard_EXPORT Prs3d_TextAspect();
   
   Standard_EXPORT Prs3d_TextAspect(const Handle(Graphic3d_AspectText3d)& theAspect);
   
-  Standard_EXPORT void SetColor (const Quantity_Color& aColor);
+  void SetColor (const Quantity_Color& theColor) { myTextAspect->SetColor (theColor); }
   
   //! Sets the color of the type used in text display.
-  Standard_EXPORT void SetColor (const Quantity_NameOfColor aColor);
+  void SetColor (const Quantity_NameOfColor theColor) { myTextAspect->SetColor (Quantity_Color (theColor)); }
   
   //! Sets the font used in text display.
-  Standard_EXPORT void SetFont (const Standard_CString aFont);
+  void SetFont (const Standard_CString theFont) { myTextAspect->SetFont (theFont); }
   
   //! Returns the height-width ratio, also known as the expansion factor.
-  Standard_EXPORT void SetHeightWidthRatio (const Standard_Real aRatio);
-  
+  void SetHeightWidthRatio (const Standard_Real theRatio) { myTextAspect->SetExpansionFactor (theRatio); }
+
   //! Sets the length of the box which text will occupy.
-  Standard_EXPORT void SetSpace (const Quantity_Length aSpace);
+  void SetSpace (const Quantity_Length theSpace) { myTextAspect->SetSpace (theSpace); }
   
   //! Sets the height of the text.
-  Standard_EXPORT void SetHeight (const Standard_Real aHeight);
+  void SetHeight (const Standard_Real theHeight) { myHeight = theHeight; }
   
   //! Sets the angle
-  Standard_EXPORT void SetAngle (const Quantity_PlaneAngle anAngle);
+  void SetAngle (const Quantity_PlaneAngle theAngle) { myAngle = theAngle; }
   
   //! Returns the height of the text box.
-  Standard_EXPORT Standard_Real Height() const;
+  Standard_Real Height() const { return myHeight; }
   
   //! Returns the angle
-  Standard_EXPORT Quantity_PlaneAngle Angle() const;
+  Quantity_PlaneAngle Angle() const { return myAngle; }
   
   //! Sets horizontal alignment of text.
-  Standard_EXPORT void SetHorizontalJustification (const Graphic3d_HorizontalTextAlignment aJustification);
+  void SetHorizontalJustification (const Graphic3d_HorizontalTextAlignment theJustification) { myHorizontalJustification = theJustification; }
   
   //! Sets the vertical alignment of text.
-  Standard_EXPORT void SetVerticalJustification (const Graphic3d_VerticalTextAlignment aJustification);
+  void SetVerticalJustification (const Graphic3d_VerticalTextAlignment theJustification) { myVerticalJustification = theJustification; }
   
   //! Sets the orientation of text.
-  Standard_EXPORT void SetOrientation (const Graphic3d_TextPath anOrientation);
+  void SetOrientation (const Graphic3d_TextPath theOrientation) { myOrientation = theOrientation; }
   
   //! Returns the horizontal alignment of the text.
   //! The range of values includes:
@@ -89,7 +77,7 @@ public:
   //! -   center
   //! -   right, and
   //! -   normal (justified).
-  Standard_EXPORT Graphic3d_HorizontalTextAlignment HorizontalJustification() const;
+  Graphic3d_HorizontalTextAlignment HorizontalJustification() const { return myHorizontalJustification; }
   
   //! Returns the vertical alignment of the text.
   //! The range of values includes:
@@ -99,7 +87,7 @@ public:
   //! -   half
   //! -   base
   //! -   bottom
-  Standard_EXPORT Graphic3d_VerticalTextAlignment VerticalJustification() const;
+  Graphic3d_VerticalTextAlignment VerticalJustification() const { return myVerticalJustification; }
   
   //! Returns the orientation of the text.
   //! Text can be displayed in the following directions:
@@ -107,30 +95,19 @@ public:
   //! -   down
   //! -   left, or
   //! -   right
-  Standard_EXPORT Graphic3d_TextPath Orientation() const;
-  
+  Graphic3d_TextPath Orientation() const { return myOrientation; }
+
   //! Returns the purely textual attributes used in the display of text.
   //! These include:
   //! -   color
   //! -   font
   //! -   height/width ratio, that is, the expansion factor, and
   //! -   space between characters.
-  Standard_EXPORT Handle(Graphic3d_AspectText3d) Aspect() const;
-  
-  Standard_EXPORT void SetAspect (const Handle(Graphic3d_AspectText3d)& theAspect);
+  const Handle(Graphic3d_AspectText3d)& Aspect() const { return myTextAspect; }
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Prs3d_TextAspect,Prs3d_BasicAspect)
+  void SetAspect (const Handle(Graphic3d_AspectText3d)& theAspect) { myTextAspect = theAspect; }
 
 protected:
-
-
-
-
-private:
-
 
   Handle(Graphic3d_AspectText3d) myTextAspect;
   Quantity_PlaneAngle myAngle;
@@ -139,13 +116,8 @@ private:
   Graphic3d_VerticalTextAlignment myVerticalJustification;
   Graphic3d_TextPath myOrientation;
 
-
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(Prs3d_TextAspect, Prs3d_BasicAspect)
 
 #endif // _Prs3d_TextAspect_HeaderFile

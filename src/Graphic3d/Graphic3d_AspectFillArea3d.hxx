@@ -97,11 +97,17 @@ public:
   //! Returns the surface material of external faces
   const Graphic3d_MaterialAspect& FrontMaterial() const { return myFrontMaterial; }
 
+  //! Returns the surface material of external faces
+  Graphic3d_MaterialAspect& ChangeFrontMaterial() { return myFrontMaterial; }
+
   //! Modifies the surface material of external faces
   void SetFrontMaterial (const Graphic3d_MaterialAspect& theMaterial) { myFrontMaterial = theMaterial; }
 
   //! Returns the surface material of internal faces
   const Graphic3d_MaterialAspect& BackMaterial() const { return myBackMaterial; }
+
+  //! Returns the surface material of internal faces
+  Graphic3d_MaterialAspect& ChangeBackMaterial() { return myBackMaterial; }
 
   //! Modifies the surface material of internal faces
   void SetBackMaterial (const Graphic3d_MaterialAspect& theMaterial) { myBackMaterial = theMaterial; }

@@ -17,19 +17,10 @@
 #ifndef _Prs3d_LineAspect_HeaderFile
 #define _Prs3d_LineAspect_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Prs3d_BasicAspect.hxx>
-#include <Quantity_NameOfColor.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
-
-class Quantity_Color;
-
-
-class Prs3d_LineAspect;
-DEFINE_STANDARD_HANDLE(Prs3d_LineAspect, Prs3d_BasicAspect)
+#include <Prs3d_BasicAspect.hxx>
+#include <Quantity_Color.hxx>
 
 //! A framework for defining how a line will be displayed
 //! in a presentation. Aspects of line display include
@@ -41,64 +32,47 @@ DEFINE_STANDARD_HANDLE(Prs3d_LineAspect, Prs3d_BasicAspect)
 //! as a substitute argument in the form of a field such as myDrawer for example.
 class Prs3d_LineAspect : public Prs3d_BasicAspect
 {
-
+  DEFINE_STANDARD_RTTIEXT(Prs3d_LineAspect, Prs3d_BasicAspect)
 public:
-
   
   //! Constructs a framework for line aspect defined by
   //! -   the color aColor
   //! -   the type of line aType and
   //! -   the line thickness aWidth.
   //! Type of line refers to whether the line is solid or dotted, for example.
-  Standard_EXPORT Prs3d_LineAspect(const Quantity_NameOfColor aColor, const Aspect_TypeOfLine aType, const Standard_Real aWidth);
+  Standard_EXPORT Prs3d_LineAspect (const Quantity_NameOfColor theColor, const Aspect_TypeOfLine theType, const Standard_Real theWidth);
   
-  Standard_EXPORT Prs3d_LineAspect(const Quantity_Color& aColor, const Aspect_TypeOfLine aType, const Standard_Real aWidth);
+  Standard_EXPORT Prs3d_LineAspect (const Quantity_Color& theColor, const Aspect_TypeOfLine theType, const Standard_Real theWidth);
   
-  Standard_EXPORT Prs3d_LineAspect(const Handle(Graphic3d_AspectLine3d)& theAspect);
-  
-  Standard_EXPORT void SetColor (const Quantity_Color& aColor);
+  Prs3d_LineAspect(const Handle(Graphic3d_AspectLine3d)& theAspect) : myAspect (theAspect) {}
+
+  void SetColor (const Quantity_Color& theColor) { myAspect->SetColor (theColor); }
   
   //! Sets the line color defined at the time of construction.
   //! Default value: Quantity_NOC_YELLOW
-  Standard_EXPORT void SetColor (const Quantity_NameOfColor aColor);
+  void SetColor (const Quantity_NameOfColor theColor) { myAspect->SetColor (Quantity_Color (theColor)); }
   
   //! Sets the type of line defined at the time of construction.
   //! This could, for example, be solid, dotted or made up of dashes.
   //! Default value: Aspect_TOL_SOLID
-  Standard_EXPORT void SetTypeOfLine (const Aspect_TypeOfLine aType);
+  void SetTypeOfLine (const Aspect_TypeOfLine theType) { myAspect->SetType (theType); }
   
   //! Sets the line width defined at the time of construction.
   //! Default value: 1.
-  Standard_EXPORT void SetWidth (const Standard_Real aWidth);
-  
+  void SetWidth (const Standard_Real theWidth) { myAspect->SetWidth (theWidth); }
+
   //! Returns the line aspect. This is defined as the set of
   //! color, type and thickness attributes.
-  Standard_EXPORT Handle(Graphic3d_AspectLine3d) Aspect() const;
+  const Handle(Graphic3d_AspectLine3d)& Aspect() const { return myAspect; }
   
-  Standard_EXPORT void SetAspect (const Handle(Graphic3d_AspectLine3d)& theAspect);
-
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Prs3d_LineAspect,Prs3d_BasicAspect)
+  void SetAspect (const Handle(Graphic3d_AspectLine3d)& theAspect) { myAspect = theAspect; }
 
 protected:
 
-
-
-
-private:
-
-
   Handle(Graphic3d_AspectLine3d) myAspect;
-
 
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(Prs3d_LineAspect, Prs3d_BasicAspect)
 
 #endif // _Prs3d_LineAspect_HeaderFile

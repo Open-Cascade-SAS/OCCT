@@ -15,153 +15,124 @@
 #ifndef _Prs3d_DimensionAspect_HeaderFile
 #define _Prs3d_DimensionAspect_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Boolean.hxx>
+#include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_DimensionArrowOrientation.hxx>
 #include <Prs3d_DimensionTextHorizontalPosition.hxx>
 #include <Prs3d_DimensionTextVerticalPosition.hxx>
-#include <Standard_Real.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_TextAspect.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Prs3d_BasicAspect.hxx>
-class Prs3d_LineAspect;
-class Prs3d_TextAspect;
-class Prs3d_ArrowAspect;
-class Quantity_Color;
-class TCollection_AsciiString;
-
-
-class Prs3d_DimensionAspect;
-DEFINE_STANDARD_HANDLE(Prs3d_DimensionAspect, Prs3d_BasicAspect)
 
 //! defines the attributes when drawing a Length Presentation.
 class Prs3d_DimensionAspect : public Prs3d_BasicAspect
 {
-
+  DEFINE_STANDARD_RTTIEXT(Prs3d_DimensionAspect, Prs3d_BasicAspect)
 public:
 
-  
   //! Constructs an empty framework to define the display of dimensions.
   Standard_EXPORT Prs3d_DimensionAspect();
   
   //! Returns the settings for the display of lines used in presentation of dimensions.
-  Standard_EXPORT Handle(Prs3d_LineAspect) LineAspect() const;
-  
+  const Handle(Prs3d_LineAspect)& LineAspect() const { return myLineAspect; }
+
   //! Sets the display attributes of lines used in presentation of dimensions.
-  Standard_EXPORT void SetLineAspect (const Handle(Prs3d_LineAspect)& theAspect);
-  
+  void SetLineAspect (const Handle(Prs3d_LineAspect)& theAspect) { myLineAspect = theAspect; }
+
   //! Returns the settings for the display of text used in presentation of dimensions.
-  Standard_EXPORT Handle(Prs3d_TextAspect) TextAspect() const;
-  
+  const Handle(Prs3d_TextAspect)& TextAspect() const { return myTextAspect; }
+
   //! Sets the display attributes of text used in presentation of dimensions.
-  Standard_EXPORT void SetTextAspect (const Handle(Prs3d_TextAspect)& theAspect);
-  
+  void SetTextAspect (const Handle(Prs3d_TextAspect)& theAspect) { myTextAspect = theAspect; }
+
   //! Check if text for dimension label is 3d.
-  Standard_EXPORT Standard_Boolean IsText3d() const;
-  
+  Standard_Boolean IsText3d() const { return myIsText3d; }
+
   //! Sets type of text.
-  Standard_EXPORT void MakeText3d (const Standard_Boolean isText3d);
-  
+  void MakeText3d (const Standard_Boolean isText3d) { myIsText3d = isText3d; }
+
   //! Check if 3d text for dimension label is shaded.
-  Standard_EXPORT Standard_Boolean IsTextShaded() const;
-  
+  Standard_Boolean IsTextShaded() const { return myIsTextShaded; }
+
   //! Turns on/off text shading for 3d text.
-  Standard_EXPORT void MakeTextShaded (const Standard_Boolean isTextShaded);
-  
+  void MakeTextShaded (const Standard_Boolean theIsTextShaded) { myIsTextShaded = theIsTextShaded; }
+
   //! Gets type of arrows.
-  Standard_EXPORT Standard_Boolean IsArrows3d() const;
-  
+  Standard_Boolean IsArrows3d() const { return myIsArrows3d; }
+
   //! Sets type of arrows.
-  Standard_EXPORT void MakeArrows3d (const Standard_Boolean isArrows3d);
-  
+  void MakeArrows3d (const Standard_Boolean theIsArrows3d) { myIsArrows3d = theIsArrows3d; }
+
   //! Shows if Units are to be displayed along with dimension value.
-  Standard_EXPORT Standard_Boolean IsUnitsDisplayed() const;
+  Standard_Boolean IsUnitsDisplayed() const { return myToDisplayUnits; }
   
   //! Specifies whether the units string should be displayed
   //! along with value label or not.
-  Standard_EXPORT void MakeUnitsDisplayed (const Standard_Boolean theIsDisplayed);
+  void MakeUnitsDisplayed (const Standard_Boolean theIsDisplayed) { myToDisplayUnits = theIsDisplayed; }
   
   //! Sets orientation of arrows (external or internal).
   //! By default orientation is chosen automatically according to situation and text label size.
-  Standard_EXPORT void SetArrowOrientation (const Prs3d_DimensionArrowOrientation theArrowOrient);
-  
+  void SetArrowOrientation (const Prs3d_DimensionArrowOrientation theArrowOrient) { myArrowOrientation = theArrowOrient; }
+
   //! Gets orientation of arrows (external or internal).
-  Standard_EXPORT Prs3d_DimensionArrowOrientation ArrowOrientation() const;
-  
+  Prs3d_DimensionArrowOrientation ArrowOrientation() const { return myArrowOrientation; }
+
   //! Sets vertical text alignment for text label.
-  Standard_EXPORT void SetTextVerticalPosition (const Prs3d_DimensionTextVerticalPosition thePosition);
-  
+  void SetTextVerticalPosition (const Prs3d_DimensionTextVerticalPosition thePosition) { myTextVPosition = thePosition; }
+
   //! Gets vertical text alignment for text label.
-  Standard_EXPORT Prs3d_DimensionTextVerticalPosition TextVerticalPosition() const;
-  
+  Prs3d_DimensionTextVerticalPosition TextVerticalPosition() const { return myTextVPosition; }
+
   //! Sets horizontal text alignment for text label.
-  Standard_EXPORT void SetTextHorizontalPosition (const Prs3d_DimensionTextHorizontalPosition thePosition);
-  
+  void SetTextHorizontalPosition (const Prs3d_DimensionTextHorizontalPosition thePosition) { myTextHPosition = thePosition; }
+
   //! Gets horizontal text alignment for text label.
-  Standard_EXPORT Prs3d_DimensionTextHorizontalPosition TextHorizontalPosition() const;
-  
+  Prs3d_DimensionTextHorizontalPosition TextHorizontalPosition() const { return myTextHPosition; }
+
   //! Returns the settings for displaying arrows.
-  Standard_EXPORT Handle(Prs3d_ArrowAspect) ArrowAspect() const;
-  
+  const Handle(Prs3d_ArrowAspect)& ArrowAspect() const { return myArrowAspect; }
+
   //! Sets the display attributes of arrows used in presentation of dimensions.
-  Standard_EXPORT void SetArrowAspect (const Handle(Prs3d_ArrowAspect)& theAspect);
-  
+  void SetArrowAspect (const Handle(Prs3d_ArrowAspect)& theAspect) { myArrowAspect = theAspect; }
+
   //! Sets the same color for all parts of dimension: lines, arrows and text.
   Standard_EXPORT void SetCommonColor (const Quantity_Color& theColor);
   
   //! Sets extension size.
-  Standard_EXPORT void SetExtensionSize (const Standard_Real theSize);
-  
+  void SetExtensionSize (const Standard_Real theSize) { myExtensionSize = theSize; }
+
   //! Returns extension size.
-  Standard_EXPORT Standard_Real ExtensionSize() const;
-  
+  Standard_Real ExtensionSize() const { return myExtensionSize; }
+
   //! Set size for arrow tail (extension without text).
-  Standard_EXPORT void SetArrowTailSize (const Standard_Real theSize);
-  
+  void SetArrowTailSize (const Standard_Real theSize) { myArrowTailSize = theSize; }
+
   //! Returns arrow tail size.
-  Standard_EXPORT Standard_Real ArrowTailSize() const;
+  Standard_Real ArrowTailSize() const { return myArrowTailSize; }
   
   //! Sets "sprintf"-syntax format for formatting dimension value labels.
-  Standard_EXPORT void SetValueStringFormat (const TCollection_AsciiString& theFormat);
-  
+  void SetValueStringFormat (const TCollection_AsciiString& theFormat) { myValueStringFormat = theFormat; }
+
   //! Returns format.
-  Standard_EXPORT TCollection_AsciiString ValueStringFormat() const;
-
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Prs3d_DimensionAspect,Prs3d_BasicAspect)
+  const TCollection_AsciiString& ValueStringFormat() const { return myValueStringFormat; }
 
 protected:
 
-
-
-
-private:
-
-
-  Handle(Prs3d_LineAspect) myLineAspect;
-  Handle(Prs3d_TextAspect) myTextAspect;
+  Handle(Prs3d_LineAspect)  myLineAspect;
+  Handle(Prs3d_TextAspect)  myTextAspect;
   Handle(Prs3d_ArrowAspect) myArrowAspect;
+  TCollection_AsciiString   myValueStringFormat;
+  Standard_Real             myExtensionSize;
+  Standard_Real             myArrowTailSize;
+  Prs3d_DimensionArrowOrientation       myArrowOrientation;
+  Prs3d_DimensionTextHorizontalPosition myTextHPosition;
+  Prs3d_DimensionTextVerticalPosition   myTextVPosition;
+  Standard_Boolean myToDisplayUnits;
   Standard_Boolean myIsText3d;
   Standard_Boolean myIsTextShaded;
   Standard_Boolean myIsArrows3d;
-  Prs3d_DimensionArrowOrientation myArrowOrientation;
-  Prs3d_DimensionTextHorizontalPosition myTextHPosition;
-  Prs3d_DimensionTextVerticalPosition myTextVPosition;
-  Standard_Real myExtensionSize;
-  Standard_Real myArrowTailSize;
-  TCollection_AsciiString myValueStringFormat;
-  Standard_Boolean myToDisplayUnits;
-
 
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(Prs3d_DimensionAspect, Prs3d_BasicAspect)
 
 #endif // _Prs3d_DimensionAspect_HeaderFile

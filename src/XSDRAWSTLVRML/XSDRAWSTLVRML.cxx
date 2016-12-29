@@ -425,7 +425,7 @@ static Standard_Integer meshmat
       if (argc == 4)
       {
         Standard_Real aTransparency = Draw::Atof(argv[3]);
-        aMatAsp.SetTransparency(aTransparency);
+        aMatAsp.SetTransparency (Standard_ShortReal (aTransparency));
       }
       aMesh->GetDrawer()->SetMaterial( MeshVS_DA_FrontMaterial, aMatAsp );
       aMesh->GetDrawer()->SetMaterial( MeshVS_DA_BackMaterial, aMatAsp );

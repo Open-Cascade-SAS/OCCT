@@ -300,9 +300,9 @@ void AIS_InteractiveObject::UnsetMaterial()
 
 //=======================================================================
 //function : SetTransparency
-//purpose  : 
+//purpose  :
 //=======================================================================
-void AIS_InteractiveObject::SetTransparency(const Standard_Real aValue)
+void AIS_InteractiveObject::SetTransparency (const Standard_Real theValue)
 {
   if (!myDrawer->HasOwnShadingAspect())
   {
@@ -310,12 +310,10 @@ void AIS_InteractiveObject::SetTransparency(const Standard_Real aValue)
     if(myDrawer->HasLink())
       myDrawer->ShadingAspect()->SetMaterial(AIS_GraphicTool::GetMaterial(myDrawer->Link()));
   }
-  Graphic3d_MaterialAspect FMat = myDrawer->ShadingAspect()->Aspect()->FrontMaterial();
-  Graphic3d_MaterialAspect BMat = myDrawer->ShadingAspect()->Aspect()->BackMaterial();
-  FMat.SetTransparency(aValue); BMat.SetTransparency(aValue);
-  myDrawer->ShadingAspect()->Aspect()->SetFrontMaterial(FMat);
-  myDrawer->ShadingAspect()->Aspect()->SetBackMaterial(BMat);
-  myDrawer->SetTransparency ((Standard_ShortReal )aValue);
+
+  myDrawer->ShadingAspect()->Aspect()->ChangeFrontMaterial().SetTransparency (Standard_ShortReal(theValue));
+  myDrawer->ShadingAspect()->Aspect()->ChangeBackMaterial() .SetTransparency (Standard_ShortReal(theValue));
+  myDrawer->SetTransparency (Standard_ShortReal(theValue));
 }
 
 //=======================================================================
@@ -326,11 +324,8 @@ void AIS_InteractiveObject::UnsetTransparency()
 {
   if(HasColor() || HasMaterial() )
   {
-    Graphic3d_MaterialAspect FMat = myDrawer->ShadingAspect()->Aspect()->FrontMaterial();
-    Graphic3d_MaterialAspect BMat = myDrawer->ShadingAspect()->Aspect()->BackMaterial();
-    FMat.SetTransparency(0.); BMat.SetTransparency(0.);
-    myDrawer->ShadingAspect()->Aspect()->SetFrontMaterial(FMat);
-    myDrawer->ShadingAspect()->Aspect()->SetBackMaterial(BMat);
+    myDrawer->ShadingAspect()->Aspect()->ChangeFrontMaterial().SetTransparency (0.0f);
+    myDrawer->ShadingAspect()->Aspect()->ChangeBackMaterial() .SetTransparency (0.0f);
   }
   else{
     Handle (Prs3d_ShadingAspect) SA;

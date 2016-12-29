@@ -12,72 +12,56 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Graphic3d_AspectLine3d.hxx>
 #include <Prs3d_ArrowAspect.hxx>
+
 #include <Prs3d_InvalidAngle.hxx>
-#include <Quantity_Color.hxx>
-#include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Prs3d_ArrowAspect,Prs3d_BasicAspect)
+IMPLEMENT_STANDARD_RTTIEXT(Prs3d_ArrowAspect, Prs3d_BasicAspect)
 
-Prs3d_ArrowAspect::Prs3d_ArrowAspect () 
-     : myAngle(M_PI/180.*10), myLength(1.) {
-  myArrowAspect = 
-	new Graphic3d_AspectLine3d (
-		Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_SOLID, 1.0);
-}
-
-
-Prs3d_ArrowAspect::Prs3d_ArrowAspect (const Quantity_PlaneAngle anAngle,
-				      const Quantity_Length aLength) 
-     : myAngle(anAngle), myLength(aLength) {
-  myArrowAspect = 
-	new Graphic3d_AspectLine3d (
-		Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_SOLID, 1.0);
-}
-
-Prs3d_ArrowAspect::Prs3d_ArrowAspect( const Handle( Graphic3d_AspectLine3d )& theAspect )
-  : myAngle(M_PI/180.*10), myLength(1.)
+// =======================================================================
+// function : Prs3d_ArrowAspect
+// purpose  :
+// =======================================================================
+Prs3d_ArrowAspect::Prs3d_ArrowAspect()
+: myArrowAspect (new Graphic3d_AspectLine3d (Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_SOLID, 1.0)),
+  myAngle (M_PI / 180.0 * 10.0),
+  myLength(1.0)
 {
-  myArrowAspect = theAspect;
+  //
 }
 
-void Prs3d_ArrowAspect::SetAngle ( const Quantity_PlaneAngle anAngle) {
-  Prs3d_InvalidAngle_Raise_if ( anAngle <= 0.  ||
-                              anAngle >= M_PI /2. , "");
-  myAngle = anAngle;
-}
-Quantity_PlaneAngle Prs3d_ArrowAspect::Angle () const
+// =======================================================================
+// function : Prs3d_ArrowAspect
+// purpose  :
+// =======================================================================
+Prs3d_ArrowAspect::Prs3d_ArrowAspect (const Quantity_PlaneAngle theAngle,
+                                      const Quantity_Length theLength)
+: myArrowAspect (new Graphic3d_AspectLine3d (Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_SOLID, 1.0)),
+  myAngle (theAngle),
+  myLength(theLength)
 {
-return myAngle;
+  //
 }
 
-void Prs3d_ArrowAspect::SetLength ( const Quantity_Length aLength)
+// =======================================================================
+// function : Prs3d_ArrowAspect
+// purpose  :
+// =======================================================================
+Prs3d_ArrowAspect::Prs3d_ArrowAspect (const Handle(Graphic3d_AspectLine3d)& theAspect)
+: myArrowAspect (theAspect),
+  myAngle (M_PI / 180.0 * 10.0),
+  myLength(1.0)
 {
-  myLength = aLength;
+  //
 }
-Quantity_Length Prs3d_ArrowAspect::Length () const
+
+// =======================================================================
+// function : SetAngle
+// purpose  :
+// =======================================================================
+void Prs3d_ArrowAspect::SetAngle (const Quantity_PlaneAngle theAngle)
 {
-return myLength;
+  Prs3d_InvalidAngle_Raise_if (theAngle <= 0.0
+                            || theAngle >= M_PI / 2.0, "Prs3d_ArrowAspect::SetAngle() - angle out of range");
+  myAngle = theAngle;
 }
-
-
-void Prs3d_ArrowAspect::SetColor(const Quantity_Color &aColor) {
-  myArrowAspect->SetColor(aColor);
-}
-
-void Prs3d_ArrowAspect::SetColor(const Quantity_NameOfColor aColor) {
-  SetColor(Quantity_Color(aColor));
-}
-
-Handle(Graphic3d_AspectLine3d) Prs3d_ArrowAspect::Aspect() const {
-  return myArrowAspect;
-}
-
-
-void Prs3d_ArrowAspect::SetAspect( const Handle( Graphic3d_AspectLine3d )& theAspect )
-{
-  myArrowAspect = theAspect;
-}
-

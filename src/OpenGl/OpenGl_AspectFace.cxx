@@ -38,16 +38,16 @@ namespace
   {
     Graphic3d_MaterialAspect aMat;
     aMat.SetMaterialType (Graphic3d_MATERIAL_ASPECT);
-    aMat.SetAmbient  (0.2);
-    aMat.SetDiffuse  (0.8);
-    aMat.SetSpecular (0.1);
-    aMat.SetEmissive (0.0);
+    aMat.SetAmbient  (0.2f);
+    aMat.SetDiffuse  (0.8f);
+    aMat.SetSpecular (0.1f);
+    aMat.SetEmissive (0.0f);
     aMat.SetAmbientColor (Quantity_NOC_WHITE);
     aMat.SetDiffuseColor (Quantity_NOC_WHITE);
     aMat.SetEmissiveColor(Quantity_NOC_WHITE);
     aMat.SetSpecularColor(Quantity_NOC_WHITE);
-    aMat.SetShininess (10.0 / 128.0);
-    aMat.SetRefractionIndex (1.0);
+    aMat.SetShininess (10.0f / 128.0f);
+    aMat.SetRefractionIndex (1.0f);
     return aMat;
   }
 

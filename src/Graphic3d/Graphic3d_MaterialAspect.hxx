@@ -16,25 +16,12 @@
 #ifndef _Graphic3d_MaterialAspect_HeaderFile
 #define _Graphic3d_MaterialAspect_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_ShortReal.hxx>
-#include <Quantity_Color.hxx>
-#include <Standard_Boolean.hxx>
 #include <Graphic3d_BSDF.hxx>
-#include <Graphic3d_TypeOfMaterial.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <Standard_Real.hxx>
+#include <Graphic3d_TypeOfMaterial.hxx>
 #include <Graphic3d_TypeOfReflection.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Integer.hxx>
-class Graphic3d_MaterialDefinitionError;
-class Standard_OutOfRange;
-class Quantity_Color;
-
+#include <TCollection_AsciiString.hxx>
+#include <Quantity_Color.hxx>
 
 //! This class allows the definition of the type of a surface.
 //! Aspect attributes of a 3d face.
@@ -44,105 +31,161 @@ class Quantity_Color;
 class Graphic3d_MaterialAspect 
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
+  //! Returns the number of predefined textures.
+  static Standard_Integer NumberOfMaterials() { return Graphic3d_NOM_DEFAULT; }
+
+  //! Returns the name of the predefined material of specified rank within range [1, NumberOfMaterials()].
+  Standard_EXPORT static Standard_CString MaterialName (const Standard_Integer theRank);
+
+  //! Returns the type of the predefined material of specified rank within range [1, NumberOfMaterials()].
+  Standard_EXPORT static Graphic3d_TypeOfMaterial MaterialType (const Standard_Integer theRank);
+
+  //! Returns the material for specified name or Graphic3d_NOM_DEFAULT if name is unknown.
+  Standard_EXPORT static Graphic3d_NameOfMaterial MaterialFromName (const Standard_CString theName);
+
+public:
+
   //! Creates a material from default values.
   Standard_EXPORT Graphic3d_MaterialAspect();
-  
-  //! Creates a generic material calls <AName>
-  Standard_EXPORT Graphic3d_MaterialAspect(const Graphic3d_NameOfMaterial AName);
-  
-  //! Increases or decreases the luminosity of <me>.
-  //! <ADelta> is a signed percentage.
-  Standard_EXPORT void IncreaseShine (const Standard_Real ADelta);
-  
+
+  //! Creates a generic material.
+  Standard_EXPORT Graphic3d_MaterialAspect (const Graphic3d_NameOfMaterial theName);
+
+  //! Returns the material name (within predefined enumeration).
+  Graphic3d_NameOfMaterial Name() const { return myMaterialName; }
+
+  //! Returns the material name within predefined enumeration which has been requested (before modifications).
+  Graphic3d_NameOfMaterial RequestedName() const { return myRequestedMaterialName; }
+
+  //! Returns the given name of this material. This might be:
+  //! - given name set by method ::SetMaterialName()
+  //! - standard name for a material within enumeration
+  //! - "UserDefined" for non-standard material without name specified externally.
+  const TCollection_AsciiString& StringName() const { return myStringName; }
+
+  //! Returns the given name of this material. This might be:
+  Standard_CString MaterialName() const { return myStringName.ToCString(); }
+
+  //! The current material become a "UserDefined" material.
+  //! Set the name of the "UserDefined" material.
+  void SetMaterialName (const TCollection_AsciiString& theName)
+  {
+    // if a component of a "standard" material change, the
+    // result is no more standard (a blue gold is not a gold)
+    myMaterialName = Graphic3d_NOM_UserDefined;
+    myStringName   = theName;
+  }
+
+  //! Resets the material with the original values according to
+  //! the material name but leave the current color values untouched
+  //! for the material of type ASPECT.
+  void Reset()
+  {
+    init (myRequestedMaterialName);
+  }
+
+  //! Returns the diffuse color of the surface.
+  const Quantity_Color& Color() const { return myColors[Graphic3d_TOR_DIFFUSE]; }
+
+  //! Modifies the ambient and diffuse color of the surface.
+  Standard_EXPORT void SetColor (const Quantity_Color& theColor);
+
+  //! Returns the transparency coefficient of the surface.
+  Standard_ShortReal Transparency() const { return myTransparencyCoef; }
+
+  //! Modifies the transparency coefficient of the surface, where 0 is opaque and 1 is fully transparent.
+  //! Transparency is applicable to materials that have at least one of reflection modes (ambient, diffuse, specular or emissive) enabled.
+  //! See also SetReflectionModeOn() and SetReflectionModeOff() methods.
+  //!
+  //! Warning: Raises MaterialDefinitionError if given value is a negative value or greater than 1.0.
+  Standard_EXPORT void SetTransparency (const Standard_ShortReal theValue);
+
+  //! Returns the ambient color of the surface.
+  const Quantity_Color& AmbientColor() const { return myColors[Graphic3d_TOR_AMBIENT]; }
+
+  //! Modifies the ambient color of the surface.
+  Standard_EXPORT void SetAmbientColor (const Quantity_Color& theColor);
+
+  //! Returns the diffuse color of the surface.
+  const Quantity_Color& DiffuseColor() const { return myColors[Graphic3d_TOR_DIFFUSE]; }
+
+  //! Modifies the diffuse color of the surface.
+  Standard_EXPORT void SetDiffuseColor (const Quantity_Color& theColor);
+
+  //! Returns the specular color of the surface.
+  const Quantity_Color& SpecularColor() const { return myColors[Graphic3d_TOR_SPECULAR]; }
+
+  //! Modifies the specular color of the surface.
+  Standard_EXPORT void SetSpecularColor (const Quantity_Color& theColor);
+
+  //! Returns the emissive color of the surface.
+  const Quantity_Color& EmissiveColor() const { return myColors[Graphic3d_TOR_EMISSION]; }
+
+  //! Modifies the emissive color of the surface.
+  Standard_EXPORT void SetEmissiveColor (const Quantity_Color& theColor);
+
+  //! Returns the reflection properties of the surface.
+  Standard_ShortReal Ambient() const { return myColorCoef[Graphic3d_TOR_AMBIENT]; }
+
   //! Modifies the reflection properties of the surface.
-  //! Category: Methods to modify the class definition
-  //! Warning: Raises MaterialDefinitionError if <AValue> is
-  //! a negative value or greater than 1.0.
-  Standard_EXPORT void SetAmbient (const Standard_Real AValue);
-  
+  //! Warning: Raises MaterialDefinitionError if given value is a negative value or greater than 1.0.
+  Standard_EXPORT void SetAmbient (const Standard_ShortReal theValue);
+
+  //! Returns the reflection properties of the surface.
+  Standard_ShortReal Diffuse() const { return myColorCoef[Graphic3d_TOR_DIFFUSE]; }
+
   //! Modifies the reflection properties of the surface.
-  //! Category: Methods to modify the class definition
-  //! Warning: Raises MaterialDefinitionError if <AValue> is a
-  //! negative value or greater than 1.0.
-  Standard_EXPORT void SetDiffuse (const Standard_Real AValue);
-  
+  //! Warning: Raises MaterialDefinitionError if given value is a negative value or greater than 1.0.
+  Standard_EXPORT void SetDiffuse (const Standard_ShortReal theValue);
+
+  //! Returns the reflection properties of the surface.
+  Standard_ShortReal Specular() const { return myColorCoef[Graphic3d_TOR_SPECULAR]; }
+
   //! Modifies the reflection properties of the surface.
-  //! Category: Methods to modify the class definition
-  //! Warning: Raises MaterialDefinitionError if <AValue> is a
-  //! negative value or greater than 1.0.
-  Standard_EXPORT void SetEmissive (const Standard_Real AValue);
-  
+  //! Warning: Raises MaterialDefinitionError if given value is a negative value or greater than 1.0.
+  Standard_EXPORT void SetSpecular (const Standard_ShortReal theValue);
+
+  //! Returns the emissive coefficient of the surface.
+  Standard_ShortReal Emissive() const { return myColorCoef[Graphic3d_TOR_EMISSION]; }
+
+  //! Modifies the reflection properties of the surface.
+  //! Warning: Raises MaterialDefinitionError if given value is a negative value or greater than 1.0.
+  Standard_EXPORT void SetEmissive (const Standard_ShortReal theValue);
+
+  //! Returns the luminosity of the surface.
+  Standard_ShortReal Shininess() const { return myShininess; }
+
   //! Modifies the luminosity of the surface.
-  //! Category: Methods to modify the class definition
-  //! Warning: Raises MaterialDefinitionError if <AValue> is a
-  //! negative value or greater than 1.0.
-  Standard_EXPORT void SetShininess (const Standard_Real AValue);
-  
-  //! Modifies the reflection properties of the surface.
-  //! Category: Methods to modify the class definition
-  //! Warning: Raises MaterialDefinitionError if <AValue> is a
-  //! negative value or greater than 1.0.
-  Standard_EXPORT void SetSpecular (const Standard_Real AValue);
-  
-  //! Modifies the transparency coefficient of the surface.
-  //! <AValue> = 0. opaque. (default)
-  //! <AValue> = 1. transparent.
-  //! Transparency is applicable to materials that have at least
-  //! one of reflection modes (ambient, diffuse, specular or emissive)
-  //! enabled. See also SetReflectionModeOn() and SetReflectionModeOff() methods.
-  //!
-  //! Category: Methods to modify the class definition
-  //! Warning: Raises MaterialDefinitionError if <AValue> is a
-  //! negative value or greater than 1.0.
-  Standard_EXPORT void SetTransparency (const Standard_Real AValue);
-  
+  //! Warning: Raises MaterialDefinitionError if given value is a negative value or greater than 1.0.
+  Standard_EXPORT void SetShininess (const Standard_ShortReal theValue);
+
+  //! Increases or decreases the luminosity.
+  //! @param theDelta a signed percentage
+  Standard_EXPORT void IncreaseShine (const Standard_ShortReal theDelta);
+
+  //! Returns the refraction index of the material
+  Standard_ShortReal RefractionIndex() const { return myRefractionIndex; }
+
   //! Modifies the refraction index of the material.
-  //! Category: Methods to modify the class definition
-  //! Warning: Raises MaterialDefinitionError if <theValue> is a
-  //! lesser than 1.0.
-  Standard_EXPORT void SetRefractionIndex (const Standard_Real theValue);
-  
+  //! Warning: Raises MaterialDefinitionError if given value is a lesser than 1.0.
+  Standard_EXPORT void SetRefractionIndex (const Standard_ShortReal theValue);
+
+  //! Returns BSDF (bidirectional scattering distribution function).
+  const Graphic3d_BSDF& BSDF() const { return myBSDF; }
+
   //! Modifies the BSDF (bidirectional scattering distribution function).
-  //! Category: Methods to modify the class definition
-  Standard_EXPORT void SetBSDF (const Graphic3d_BSDF& theBSDF);
-  
-  //! Modifies the ambient and diffuse colour of the surface.
-  //! Category: Methods to modify the class definition
-  Standard_EXPORT void SetColor (const Quantity_Color& AColor);
-  
-  //! Modifies the ambient colour of the surface.
-  Standard_EXPORT void SetAmbientColor (const Quantity_Color& AColor);
-  
-  //! Modifies the difuse colour of the surface.
-  Standard_EXPORT void SetDiffuseColor (const Quantity_Color& AColor);
-  
-  //! Modifies the specular colour of the surface.
-  Standard_EXPORT void SetSpecularColor (const Quantity_Color& AColor);
-  
-  //! Modifies the emissive colour of the surface.
-  Standard_EXPORT void SetEmissiveColor (const Quantity_Color& AColor);
-  
-  //! Activates the reflective properties of the surface <AType>.
+  void SetBSDF (const Graphic3d_BSDF& theBSDF) { myBSDF = theBSDF; }
+
+  //! Returns TRUE if the reflection mode is active, FALSE otherwise.
+  Standard_Boolean ReflectionMode (const Graphic3d_TypeOfReflection theType) const
+  {
+    return myReflActivity[theType];
+  }
+
+  //! Activates or deactivates the reflective properties of the surface with specified reflection type.
   //!
-  //! TypeOfReflection : TOR_AMBIENT
-  //! TOR_DIFFUSE
-  //! TOR_SPECULAR
-  //! TOR_EMISSION
-  //! 1, 2, 3 or 4 types of reflection can be set for a given surface.
-  Standard_EXPORT void SetReflectionModeOn (const Graphic3d_TypeOfReflection AType);
-  
-  //! Deactivates the reflective properties of
-  //! the surface <AType>.
-  //!
-  //! TypeOfReflection : TOR_AMBIENT
-  //! TOR_DIFFUSE
-  //! TOR_SPECULAR
-  //! TOR_EMISSION
-  //! 1, 2, 3 or 4 types of reflection can be set off for a given surface.
   //! Disabling diffuse and specular reflectance is useful for efficient visualization
   //! of large amounts of data as definition of normals for graphic primitives is not needed
   //! when only "all-directional" reflectance is active.
@@ -150,159 +193,87 @@ public:
   //! NOTE: Disabling all four reflection modes also turns off the following effects:
   //! 1. Lighting. Colors of primitives are not affected by the material properties when lighting is off.
   //! 2. Transparency.
-  Standard_EXPORT void SetReflectionModeOff (const Graphic3d_TypeOfReflection AType);
-  
-  //! Set MyMaterialType to the value of parameter <AType>
-  //!
-  //! TypeOfMaterial :   MATERIAL_ASPECT
-  //! MATERIAL_PHYSIC
-  Standard_EXPORT void SetMaterialType (const Graphic3d_TypeOfMaterial AType);
-  
-  //! The current matarial become a "UserDefined" material.
-  //! Set the name of the "UserDefined" material.
-  Standard_EXPORT void SetMaterialName (const Standard_CString AName);
-  
-  Standard_EXPORT void SetEnvReflexion (const Standard_ShortReal AValue);
-  
-  //! Resets the material with the original values according to
-  //! the material name but leave the current color values untouched
-  //! for the material of type ASPECT.
-  Standard_EXPORT void Reset();
-  
-  //! Returns the diffuse colour of the surface.
-  Standard_EXPORT const Quantity_Color& Color() const;
-  
-  //! Returns the ambient colour of the surface.
-  Standard_EXPORT const Quantity_Color& AmbientColor() const;
-  
-  //! Returns the diffuse colour of the surface.
-  Standard_EXPORT const Quantity_Color& DiffuseColor() const;
-  
-  //! Returns the specular colour of the surface.
-  Standard_EXPORT const Quantity_Color& SpecularColor() const;
-  
-  //! Returns the emissive colour of the surface.
-  Standard_EXPORT const Quantity_Color& EmissiveColor() const;
-  
-  //! Returns the reflection properties of the surface.
-  Standard_EXPORT Standard_Real Ambient() const;
-  
-  //! Returns the reflection properties of the surface.
-  Standard_EXPORT Standard_Real Diffuse() const;
-  
-  //! Returns the reflection properties of the surface.
-  Standard_EXPORT Standard_Real Specular() const;
-  
-  //! Returns the transparency coefficient of the surface.
-  Standard_EXPORT Standard_Real Transparency() const;
-  
-  //! Returns the refraction index of the material
-  Standard_EXPORT Standard_Real RefractionIndex() const;
-  
-  //! Returns BSDF (bidirectional scattering distribution function).
-  Standard_EXPORT const Graphic3d_BSDF& BSDF() const;
-  
-  //! Returns the emissive coefficient of the surface.
-  Standard_EXPORT Standard_Real Emissive() const;
-  
-  //! Returns the luminosity of the surface.
-  Standard_EXPORT Standard_Real Shininess() const;
-  
-  //! Returns Standard_True if the reflection mode is active,
-  //! Standard_False otherwise.
-  Standard_EXPORT Standard_Boolean ReflectionMode (const Graphic3d_TypeOfReflection AType) const;
-  
-  //! Returns Standard_True if MyMaterialType equal the parameter AType,
-  //! Standard_False otherwise.
-  Standard_EXPORT Standard_Boolean MaterialType (const Graphic3d_TypeOfMaterial AType) const;
-  
-  Standard_EXPORT Standard_ShortReal EnvReflexion() const;
-  
-  //! Returns the material name.
-  Standard_EXPORT Graphic3d_NameOfMaterial Name() const;
-  
-  //! Returns Standard_True if the materials <me> and
-  //! <Other> are different.
-  Standard_EXPORT Standard_Boolean IsDifferent (const Graphic3d_MaterialAspect& Other) const;
-Standard_Boolean operator != (const Graphic3d_MaterialAspect& Other) const
-{
-  return IsDifferent(Other);
-}
-  
-  //! Returns Standard_True if the materials <me> and
-  //! <Other> are identical.
-  Standard_EXPORT Standard_Boolean IsEqual (const Graphic3d_MaterialAspect& Other) const;
-Standard_Boolean operator == (const Graphic3d_MaterialAspect& Other) const
-{
-  return IsEqual(Other);
-}
-  
+  Standard_EXPORT void SetReflectionMode (const Graphic3d_TypeOfReflection theType,
+                                          const Standard_Boolean theValue);
 
-  //! Returns the number of predefined textures.
-  Standard_EXPORT static Standard_Integer NumberOfMaterials();
+  //! Activates the reflective properties of the surface with specified reflection type.
+  void SetReflectionModeOn (const Graphic3d_TypeOfReflection theType) { SetReflectionMode (theType, Standard_True); }
   
+  //! Deactivates the reflective properties of the surface with specified reflection type.
+  void SetReflectionModeOff (const Graphic3d_TypeOfReflection theType) { SetReflectionMode (theType, Standard_False); }
 
-  //! Returns the name of the predefined material of rank <aRank>
-  //! Trigger: when <aRank> is < 1 or > NumberOfMaterials.
-  Standard_EXPORT static Standard_CString MaterialName (const Standard_Integer aRank);
+  //! Returns TRUE if type of this material is equal to specified type.
+  Standard_Boolean MaterialType (const Graphic3d_TypeOfMaterial theType) const { return myMaterialType == theType; }
+
+  //! Set material type.
+  Standard_EXPORT void SetMaterialType (const Graphic3d_TypeOfMaterial theType);
+
+  Standard_ShortReal EnvReflexion() const { return myEnvReflexion; }
+
+  void SetEnvReflexion (const Standard_ShortReal theValue) { myEnvReflexion = theValue; }
+
+  //! Returns TRUE if this material differs from specified one.
+  Standard_Boolean IsDifferent (const Graphic3d_MaterialAspect& theOther) const { return !IsEqual (theOther); }
+
+  //! Returns TRUE if this material differs from specified one.
+  Standard_Boolean operator!= (const Graphic3d_MaterialAspect& theOther) const { return IsDifferent (theOther); }
   
+  //! Returns TRUE if this material is identical to specified one.
+  Standard_Boolean IsEqual (const Graphic3d_MaterialAspect& theOther) const
+  {
+    return myColorCoef[Graphic3d_TOR_AMBIENT]  == theOther.myColorCoef[Graphic3d_TOR_AMBIENT]
+        && myColorCoef[Graphic3d_TOR_DIFFUSE]  == theOther.myColorCoef[Graphic3d_TOR_DIFFUSE]
+        && myColorCoef[Graphic3d_TOR_SPECULAR] == theOther.myColorCoef[Graphic3d_TOR_SPECULAR]
+        && myColorCoef[Graphic3d_TOR_EMISSION] == theOther.myColorCoef[Graphic3d_TOR_EMISSION]
+        && myTransparencyCoef == theOther.myTransparencyCoef
+        && myRefractionIndex  == theOther.myRefractionIndex
+        && myBSDF             == theOther.myBSDF
+        && myShininess        == theOther.myShininess
+        && myEnvReflexion     == theOther.myEnvReflexion
+        && myColors[Graphic3d_TOR_AMBIENT]    == theOther.myColors[Graphic3d_TOR_AMBIENT]
+        && myColors[Graphic3d_TOR_DIFFUSE]    == theOther.myColors[Graphic3d_TOR_DIFFUSE]
+        && myColors[Graphic3d_TOR_SPECULAR]   == theOther.myColors[Graphic3d_TOR_SPECULAR]
+        && myColors[Graphic3d_TOR_EMISSION]   == theOther.myColors[Graphic3d_TOR_EMISSION]
+        && myReflActivity[Graphic3d_TOR_AMBIENT]  == theOther.myReflActivity[Graphic3d_TOR_AMBIENT]
+        && myReflActivity[Graphic3d_TOR_DIFFUSE]  == theOther.myReflActivity[Graphic3d_TOR_DIFFUSE]
+        && myReflActivity[Graphic3d_TOR_SPECULAR] == theOther.myReflActivity[Graphic3d_TOR_SPECULAR]
+        && myReflActivity[Graphic3d_TOR_EMISSION] == theOther.myReflActivity[Graphic3d_TOR_EMISSION];
+  }
 
-  //! Returns the name of this material
-  Standard_EXPORT Standard_CString MaterialName() const;
-  
-
-  //! Returns the type of the predefined material of rank <aRank>
-  //! Trigger: when <aRank> is < 1 or > NumberOfMaterials.
-  Standard_EXPORT static Graphic3d_TypeOfMaterial MaterialType (const Standard_Integer aRank);
-  
-
-  //! Returns the material for specified name or Graphic3d_NOM_DEFAULT if name is unknown.
-  Standard_EXPORT static Graphic3d_NameOfMaterial MaterialFromName (const Standard_CString theName);
-
-
-
-
-protected:
-
-
-
-
+  //! Returns TRUE if this material is identical to specified one.
+  Standard_Boolean operator== (const Graphic3d_MaterialAspect& theOther) const { return IsEqual (theOther); }
 
 private:
 
-  
-  Standard_EXPORT void Init (const Graphic3d_NameOfMaterial AName);
+  //! Initialize the standard material.
+  Standard_EXPORT void init (const Graphic3d_NameOfMaterial theName);
 
+  //! Mark material as user defined.
+  void setUserMaterial()
+  {
+    // if a component of a "standard" material change, the
+    // result is no more standard (a blue gold is not a gold)
+    myMaterialName = Graphic3d_NOM_UserDefined;
+    myStringName   = "UserDefined";
+  }
 
-  Standard_ShortReal myDiffuseCoef;
-  Quantity_Color myDiffuseColor;
-  Standard_Boolean myDiffuseActivity;
-  Standard_ShortReal myAmbientCoef;
-  Quantity_Color myAmbientColor;
-  Standard_Boolean myAmbientActivity;
-  Standard_ShortReal mySpecularCoef;
-  Quantity_Color mySpecularColor;
-  Standard_Boolean mySpecularActivity;
-  Standard_ShortReal myEmissiveCoef;
-  Quantity_Color myEmissiveColor;
-  Standard_Boolean myEmissiveActivity;
-  Standard_ShortReal myTransparencyCoef;
-  Standard_ShortReal myRefractionIndex;
-  Graphic3d_BSDF myBSDF;
-  Standard_ShortReal myShininess;
-  Standard_ShortReal myEnvReflexion;
+private:
+
+  Graphic3d_BSDF           myBSDF;
+  TCollection_AsciiString  myStringName;
+  Quantity_Color           myColors   [Graphic3d_TypeOfReflection_NB];
+  Standard_ShortReal       myColorCoef[Graphic3d_TypeOfReflection_NB];
+  Standard_ShortReal       myTransparencyCoef;
+  Standard_ShortReal       myRefractionIndex;
+  Standard_ShortReal       myShininess;
+  Standard_ShortReal       myEnvReflexion;
+
   Graphic3d_TypeOfMaterial myMaterialType;
   Graphic3d_NameOfMaterial myMaterialName;
   Graphic3d_NameOfMaterial myRequestedMaterialName;
-  TCollection_AsciiString myStringName;
 
+  Standard_Boolean         myReflActivity[Graphic3d_TypeOfReflection_NB];
 
 };
-
-
-
-
-
-
 
 #endif // _Graphic3d_MaterialAspect_HeaderFile

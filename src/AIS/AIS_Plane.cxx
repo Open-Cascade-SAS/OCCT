@@ -611,18 +611,15 @@ void AIS_Plane::ComputeFields()
 
 void AIS_Plane::InitDrawerAttributes()
 {
-
   Handle(Prs3d_ShadingAspect) shasp = new Prs3d_ShadingAspect();
   shasp->SetMaterial(Graphic3d_NOM_PLASTIC);
   shasp->SetColor(Quantity_NOC_GRAY40);
   myDrawer->SetShadingAspect(shasp);
   Handle(Graphic3d_AspectFillArea3d) asf = shasp->Aspect();
   Graphic3d_MaterialAspect asp = asf->FrontMaterial();
-  asp.SetTransparency(0.8);
+  asp.SetTransparency (0.8f);
   asf->SetFrontMaterial(asp);
   asf->SetBackMaterial(asp);
-
-
 }
 
 //=======================================================================

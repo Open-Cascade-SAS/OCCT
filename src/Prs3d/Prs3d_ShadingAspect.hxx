@@ -17,21 +17,10 @@
 #ifndef _Prs3d_ShadingAspect_HeaderFile
 #define _Prs3d_ShadingAspect_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Prs3d_BasicAspect.hxx>
 #include <Aspect_TypeOfFacingModel.hxx>
-#include <Quantity_NameOfColor.hxx>
-#include <Graphic3d_NameOfMaterial.hxx>
-#include <Standard_Real.hxx>
-class Graphic3d_AspectFillArea3d;
-class Quantity_Color;
-class Graphic3d_MaterialAspect;
-
-
-class Prs3d_ShadingAspect;
-DEFINE_STANDARD_HANDLE(Prs3d_ShadingAspect, Prs3d_BasicAspect)
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
+#include <Prs3d_BasicAspect.hxx>
 
 //! A framework to define the display of shading.
 //! The attributes which make up this definition include:
@@ -40,25 +29,32 @@ DEFINE_STANDARD_HANDLE(Prs3d_ShadingAspect, Prs3d_BasicAspect)
 //! -   material
 class Prs3d_ShadingAspect : public Prs3d_BasicAspect
 {
-
+  DEFINE_STANDARD_RTTIEXT(Prs3d_ShadingAspect, Prs3d_BasicAspect)
 public:
 
-  
   //! Constructs an empty framework to display shading.
   Standard_EXPORT Prs3d_ShadingAspect();
-  
-  Standard_EXPORT Prs3d_ShadingAspect(const Handle(Graphic3d_AspectFillArea3d)& theAspect);
+
+  //! Constructor with initialization.
+  Prs3d_ShadingAspect (const Handle(Graphic3d_AspectFillArea3d)& theAspect) : myAspect (theAspect) {}
   
   //! Change the polygons interior color and material ambient color.
   Standard_EXPORT void SetColor (const Quantity_Color& aColor, const Aspect_TypeOfFacingModel aModel = Aspect_TOFM_BOTH_SIDE);
   
   //! Change the polygons interior color and material ambient color.
-  Standard_EXPORT void SetColor (const Quantity_NameOfColor aColor, const Aspect_TypeOfFacingModel aModel = Aspect_TOFM_BOTH_SIDE);
-  
+  void SetColor (const Quantity_NameOfColor theColor,
+                 const Aspect_TypeOfFacingModel theModel = Aspect_TOFM_BOTH_SIDE)
+  {
+    SetColor (Quantity_Color (theColor), theModel);
+  }
+
   //! Change the polygons material aspect.
   Standard_EXPORT void SetMaterial (const Graphic3d_MaterialAspect& aMaterial, const Aspect_TypeOfFacingModel aModel = Aspect_TOFM_BOTH_SIDE);
-  
-  Standard_EXPORT void SetMaterial (const Graphic3d_NameOfMaterial aMaterial, const Aspect_TypeOfFacingModel aModel = Aspect_TOFM_BOTH_SIDE);
+
+  void SetMaterial (const Graphic3d_NameOfMaterial theMaterial, const Aspect_TypeOfFacingModel theModel = Aspect_TOFM_BOTH_SIDE)
+  {
+    SetMaterial (Graphic3d_MaterialAspect (theMaterial), theModel);
+  }
   
   //! Change the polygons transparency value.
   //! Warning : aValue must be in the range 0,1. 0 is the default (NO transparent)
@@ -74,32 +70,16 @@ public:
   Standard_EXPORT Standard_Real Transparency (const Aspect_TypeOfFacingModel aModel = Aspect_TOFM_FRONT_SIDE) const;
   
   //! Returns the polygons aspect properties.
-  Standard_EXPORT Handle(Graphic3d_AspectFillArea3d) Aspect() const;
-  
-  Standard_EXPORT void SetAspect (const Handle(Graphic3d_AspectFillArea3d)& theAspect);
+  const Handle(Graphic3d_AspectFillArea3d)& Aspect() const { return myAspect; }
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Prs3d_ShadingAspect,Prs3d_BasicAspect)
+  void SetAspect (const Handle(Graphic3d_AspectFillArea3d)& theAspect) { myAspect = theAspect; }
 
 protected:
 
-
-
-
-private:
-
-
   Handle(Graphic3d_AspectFillArea3d) myAspect;
-
 
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(Prs3d_ShadingAspect, Prs3d_BasicAspect)
 
 #endif // _Prs3d_ShadingAspect_HeaderFile

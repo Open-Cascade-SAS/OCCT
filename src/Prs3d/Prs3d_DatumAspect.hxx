@@ -19,66 +19,64 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
-
 #include <Standard_Boolean.hxx>
 #include <Quantity_Length.hxx>
 #include <Prs3d_BasicAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
 #include <Standard_Real.hxx>
-class Prs3d_LineAspect;
-
-
-class Prs3d_DatumAspect;
-DEFINE_STANDARD_HANDLE(Prs3d_DatumAspect, Prs3d_BasicAspect)
 
 //! A framework to define the display of datums.
 class Prs3d_DatumAspect : public Prs3d_BasicAspect
 {
-
+  DEFINE_STANDARD_RTTIEXT(Prs3d_DatumAspect, Prs3d_BasicAspect)
 public:
 
   //! An empty framework to define the display of datums.
   Standard_EXPORT Prs3d_DatumAspect();
   
   //! Returns the attributes for display of the first axis.
-  Standard_EXPORT Handle(Prs3d_LineAspect) FirstAxisAspect() const;
+  const Handle(Prs3d_LineAspect)& FirstAxisAspect() const { return myFirstAxisAspect; }
   
   //! Returns the attributes for display of the second axis.
-  Standard_EXPORT Handle(Prs3d_LineAspect) SecondAxisAspect() const;
+  const Handle(Prs3d_LineAspect)& SecondAxisAspect() const { return mySecondAxisAspect; }
   
   //! Returns the attributes for display of the third axis.
-  Standard_EXPORT Handle(Prs3d_LineAspect) ThirdAxisAspect() const;
+  const Handle(Prs3d_LineAspect)& ThirdAxisAspect() const { return myThirdAxisAspect; }
   
   //! Sets the DrawFirstAndSecondAxis attributes to active.
-  Standard_EXPORT void SetDrawFirstAndSecondAxis (const Standard_Boolean draw);
+  void SetDrawFirstAndSecondAxis (const Standard_Boolean theToDraw) { myDrawFirstAndSecondAxis = theToDraw; }
   
   //! Returns true if the first and second axes can be drawn.
-  Standard_EXPORT Standard_Boolean DrawFirstAndSecondAxis() const;
-  
+  Standard_Boolean DrawFirstAndSecondAxis() const { return myDrawFirstAndSecondAxis; }
+
   //! Sets the DrawThirdAxis attributes to active.
-  Standard_EXPORT void SetDrawThirdAxis (const Standard_Boolean draw);
+  void SetDrawThirdAxis (const Standard_Boolean theToDraw) { myDrawThirdAxis = theToDraw; }
   
   //! Returns true if the third axis can be drawn.
-  Standard_EXPORT Standard_Boolean DrawThirdAxis() const;
-  
-  //! Sets the lengths L1, L2 and L3 of the three axes.
-  Standard_EXPORT void SetAxisLength (const Standard_Real L1, const Standard_Real L2, const Standard_Real L3);
-  
+  Standard_Boolean DrawThirdAxis() const { return myDrawThirdAxis; }
+
+  //! Sets the lengths of the three axes.
+  void SetAxisLength (const Standard_Real theL1, const Standard_Real theL2, const Standard_Real theL3)
+  {
+    myFirstAxisLength  = theL1;
+    mySecondAxisLength = theL2;
+    myThirdAxisLength  = theL3;
+  }
+
   //! Returns the length of the displayed first axis.
-  Standard_EXPORT Quantity_Length FirstAxisLength() const;
-  
+  Quantity_Length FirstAxisLength() const { return myFirstAxisLength; }
+
   //! Returns the length of the displayed second axis.
-  Standard_EXPORT Quantity_Length SecondAxisLength() const;
+  Quantity_Length SecondAxisLength() const { return mySecondAxisLength; }
   
   //! Returns the length of the displayed third axis.
-  Standard_EXPORT Quantity_Length ThirdAxisLength() const;
+  Quantity_Length ThirdAxisLength() const { return myThirdAxisLength; }
 
   //! Sets option to draw or not to draw text labels for axes
-  Standard_EXPORT void SetToDrawLabels (const Standard_Boolean theToDraw);
+  void SetToDrawLabels (const Standard_Boolean theToDraw) { myToDrawLabels = theToDraw; }
 
   //! @return true if axes labels are drawn
-  Standard_EXPORT Standard_Boolean ToDrawLabels() const;
-
-  DEFINE_STANDARD_RTTIEXT(Prs3d_DatumAspect,Prs3d_BasicAspect)
+  Standard_Boolean ToDrawLabels() const { return myToDrawLabels; }
 
 private:
 
@@ -94,10 +92,6 @@ private:
 
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(Prs3d_DatumAspect, Prs3d_BasicAspect)
 
 #endif // _Prs3d_DatumAspect_HeaderFile

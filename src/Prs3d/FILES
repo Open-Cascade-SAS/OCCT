@@ -13,7 +13,6 @@ Prs3d_DimensionAspect.cxx
 Prs3d_DimensionAspect.hxx
 Prs3d_DimensionTextHorizontalPosition.hxx
 Prs3d_DimensionTextVerticalPosition.hxx
-Prs3d_DimensionUnits.cxx
 Prs3d_DimensionUnits.hxx
 Prs3d_Drawer.cxx
 Prs3d_Drawer.hxx
@@ -26,8 +25,6 @@ Prs3d_NListIteratorOfListOfSequenceOfPnt.hxx
 Prs3d_NListOfSequenceOfPnt.hxx
 Prs3d_PlaneAspect.cxx
 Prs3d_PlaneAspect.hxx
-Prs3d_PlaneSet.cxx
-Prs3d_PlaneSet.hxx
 Prs3d_Point.hxx
 Prs3d_PointAspect.cxx
 Prs3d_PointAspect.hxx

@@ -642,7 +642,7 @@ void AIS_Shape::UnsetColor()
     if (IsTransparent())
     {
       Standard_Real aTransp = myDrawer->ShadingAspect()->Transparency (myCurrentFacingModel);
-      mat.SetTransparency (aTransp);
+      mat.SetTransparency (Standard_ShortReal(aTransp));
     }
     myDrawer->ShadingAspect()->SetMaterial (mat ,myCurrentFacingModel);
   }
