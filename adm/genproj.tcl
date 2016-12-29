@@ -3061,12 +3061,12 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap theIsStatic thePlatform {t
   if { "$thePlatform" == "ios" } {
     puts $aPbxprojFile "\t\t\t\t\"ARCHS\[sdk=iphoneos\*\]\" = \"\$(ARCHS_STANDARD)\";";
     puts $aPbxprojFile "\t\t\t\t\"ARCHS\[sdk=iphonesimulator\*\]\" = \"x86_64\";";
-    puts $aPbxprojFile "\t\t\t\tCLANG_CXX_LIBRARY = \"libc++\";"
     puts $aPbxprojFile "\t\t\t\tCLANG_ENABLE_MODULES = YES;"
     puts $aPbxprojFile "\t\t\t\tCLANG_ENABLE_OBJC_ARC = YES;"
   }
   puts $aPbxprojFile "\t\t\t\tARCHS = \"\$(ARCHS_STANDARD_64_BIT)\";"
-  puts $aPbxprojFile "\t\t\t\tCLANG_CXX_LANGUAGE_STANDARD = \"gnu++0x\";"
+  puts $aPbxprojFile "\t\t\t\tCLANG_CXX_LIBRARY = \"libc++\";"
+  puts $aPbxprojFile "\t\t\t\tCLANG_CXX_LANGUAGE_STANDARD = \"c++0x\";"
   puts $aPbxprojFile "\t\t\t\tCOPY_PHASE_STRIP = NO;"
   puts $aPbxprojFile "\t\t\t\tGCC_C_LANGUAGE_STANDARD = gnu99;"
   puts $aPbxprojFile "\t\t\t\tGCC_DYNAMIC_NO_PIC = NO;"
@@ -3104,12 +3104,12 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap theIsStatic thePlatform {t
   if { "$thePlatform" == "ios" } {
     puts $aPbxprojFile "\t\t\t\t\"ARCHS\[sdk=iphoneos\*\]\" = \"\$(ARCHS_STANDARD)\";";
     puts $aPbxprojFile "\t\t\t\t\"ARCHS\[sdk=iphonesimulator\*\]\" = \"x86_64\";";
-    puts $aPbxprojFile "\t\t\t\tCLANG_CXX_LIBRARY = \"libc++\";"
     puts $aPbxprojFile "\t\t\t\tCLANG_ENABLE_MODULES = YES;"
     puts $aPbxprojFile "\t\t\t\tCLANG_ENABLE_OBJC_ARC = YES;"
   }
   puts $aPbxprojFile "\t\t\t\tARCHS = \"\$(ARCHS_STANDARD_64_BIT)\";"
-  puts $aPbxprojFile "\t\t\t\tCLANG_CXX_LANGUAGE_STANDARD = \"gnu++0x\";"
+  puts $aPbxprojFile "\t\t\t\tCLANG_CXX_LIBRARY = \"libc++\";"
+  puts $aPbxprojFile "\t\t\t\tCLANG_CXX_LANGUAGE_STANDARD = \"c++0x\";"
   puts $aPbxprojFile "\t\t\t\tCOPY_PHASE_STRIP = YES;"
   puts $aPbxprojFile "\t\t\t\tGCC_C_LANGUAGE_STANDARD = gnu99;"
   puts $aPbxprojFile "\t\t\t\tGCC_ENABLE_OBJC_EXCEPTIONS = YES;"

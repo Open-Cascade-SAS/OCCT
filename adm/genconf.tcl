@@ -522,8 +522,10 @@ grid .myFrame.myChecks.myFImageCheck   -row $aCheckRowIter -column 0 -sticky e
 grid .myFrame.myChecks.myFImageLbl     -row $aCheckRowIter -column 1 -sticky w
 grid .myFrame.myChecks.myTbbCheck      -row $aCheckRowIter -column 2 -sticky e
 grid .myFrame.myChecks.myTbbLbl        -row $aCheckRowIter -column 3 -sticky w
-grid .myFrame.myChecks.myGlesCheck     -row $aCheckRowIter -column 4 -sticky e
-grid .myFrame.myChecks.myGlesLbl       -row $aCheckRowIter -column 5 -sticky w
+if { "$::tcl_platform(os)" != "Darwin" } {
+  grid .myFrame.myChecks.myGlesCheck     -row $aCheckRowIter -column 4 -sticky e
+  grid .myFrame.myChecks.myGlesLbl       -row $aCheckRowIter -column 5 -sticky w
+}
 #grid .myFrame.myChecks.myOpenClCheck   -row $aCheckRowIter -column 6 -sticky e
 #grid .myFrame.myChecks.myOpenClLbl     -row $aCheckRowIter -column 7 -sticky w
 grid .myFrame.myChecks.myZLibCheck     -row $aCheckRowIter -column 6 -sticky e
