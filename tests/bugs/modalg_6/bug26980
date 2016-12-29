@@ -6,7 +6,7 @@ puts ""
 # Intersection part of Boolean algorithm spends much system time and system memory
 #################################
 
-set max_time 120
+set max_time 130
 set mem_max_wsetpeak 500000000
 
 

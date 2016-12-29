@@ -74,7 +74,7 @@ Handle(BRepMesh_DiscretRoot) aMeshAlgo = BRepMesh_DiscretFactory::Get().Discret 
 @section upgrade_653 Upgrade to OCCT 6.5.3
 
 Porting of user applications from an earlier OCCT version to version 6.5.3 requires taking into account the following major changes:
-* As a result of code clean-up and redesign of *TKOpenGl* driver, some obsolete functions and rendering primitives <i>(TriangleMesh, TriangleSet, Bezier, Polyline, Polygon, PolygonHoles, QuadrangleMesh</i> and *QuadrangleSet*) have been removed. Instead, the application developers should use primitive arrays that provide the same functionality but are hardware-accelerated. The details can be found in OCCT Visualization User's Guide, “Primitive Arrays” chapter.
+* As a result of code clean-up and redesign of *TKOpenGl* driver, some obsolete functions and rendering primitives <i>(TriangleMesh, TriangleSet, Bezier, Polyline, Polygon, PolygonHoles, QuadrangleMesh</i> and *QuadrangleSet*) have been removed. Instead, the application developers should use primitive arrays that provide the same functionality but are hardware-accelerated. The details can be found in OCCT Visualization User's Guide, ???Primitive Arrays??? chapter.
 * Applications should not call *AIS_InteractiveObject::SetPolygonOffsets()* method for an instance of *AIS_TexturedShape* class after it has been added to *AIS_InteractiveContext*. More generally, modification of *Graphic3d_AspectFillArea3d* parameters for the computed groups of any *AIS_InteractiveObject* subclass that uses texture mapping should be avoided, because this results in broken texture mapping (see issue 23118). It is still possible to apply non-default polygon offsets to *AIS_TexturedShape* by calling *SetPolygonOffsets()* before displaying the shape.
 * The applications that might have used internal functions provided by *TKOpenGl* or removed primitives will need to be updated.
 * In connection with the implementation of Z-layers it might be necessary to revise the application code or revise the custom direct descendant classes of *Graphic3d_GraphicDriver* and *Graphic3d_StructureManager* to use the Z-layer feature.
@@ -169,7 +169,7 @@ Porting of user applications from an earlier OCCT version to version 6.7.0 requi
 @subsection upgrade_670_markers Redesign of markers presentation
 
 * Due to the redesign of *Graphic3d_AspectMarker3d* class the code of custom markers initialization should be updated. Notice that you can reuse old markers definition code as *TColStd_HArray1OfByte*; however, *Image_PixMap* is now the preferred way (and supports full-color images on modern hardware).
-* Logics and arguments of methods *AIS_InteractiveContext::Erase()* and *AIS_InteractiveContext::EraseAll()* have been changed. Now these methods do not remove resources from *Graphic3d_Structure*; they simply change the visibility flag in it. Therefore, the code that deletes and reсomputes resources should be revised.
+* Logics and arguments of methods *AIS_InteractiveContext::Erase()* and *AIS_InteractiveContext::EraseAll()* have been changed. Now these methods do not remove resources from *Graphic3d_Structure*; they simply change the visibility flag in it. Therefore, the code that deletes and re??omputes resources should be revised.
 * *Graphic3d_Group::MarkerSet()* has been removed. *Graphic3d_Group::AddPrimitiveArray()* should be used instead to specify marker(s) array.
 
 @subsection upgrade_670_views Default views are not created automatically 
@@ -304,10 +304,10 @@ SelectBasics_PickResult (aDepth, theMgr.DistToGeometryCenter (myCenter3d));
 ~~~~
 
 The interface of *SelectBasics_SensitiveEntity* now contains four new pure virtual functions that should be implemented by each custom sensitive:
-* <i>BoundingBox()</i> – returns a bounding box of the entity;
-* <i>Clear()</i> – clears up all the resources and memory allocated for complex sensitive entities;
-* <i>BVH()</i> – builds a BVH tree for complex sensitive entities, if it is needed;
-* <i>NbSubElements()</i> – returns atomic sub-entities of a complex sensitive entity, which will be used as primitives for BVH building. If the entity is simple and no BVH is required, this method returns 1.
+* <i>BoundingBox()</i> ??? returns a bounding box of the entity;
+* <i>Clear()</i> ??? clears up all the resources and memory allocated for complex sensitive entities;
+* <i>BVH()</i> ??? builds a BVH tree for complex sensitive entities, if it is needed;
+* <i>NbSubElements()</i> ??? returns atomic sub-entities of a complex sensitive entity, which will be used as primitives for BVH building. If the entity is simple and no BVH is required, this method returns 1.
 
 Each sensitive entity now has its own tolerance, which can be overridden by method *SelectBasics_SensitiveEntity::SetSensitivityFactor()* called from constructor.
 

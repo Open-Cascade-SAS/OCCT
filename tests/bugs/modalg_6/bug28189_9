@@ -1,0 +1,40 @@
+puts "========"
+puts "OCC28189"
+puts "========"
+puts ""
+#################################################
+# Result of Boolean operation is non-manifold wire
+#################################################
+
+box b1 10 10 10
+box b2 5 5 5 10 10 10
+box b3 20 0 0 10 10 10
+box b4 25 5 5 10 10 10
+shape c1 Cs
+shape c2 Cs
+add b1 c1
+add b2 c2
+
+bclearobjects
+bcleartools
+baddobjects c1 b3
+baddtools c2 b4
+bfillds
+bbop result 1
+
+checknbshapes result -solid 2 -compsolid 1
+
+explode result
+
+if {[regexp "COMPSOLID" [whatis result_1]]} {
+  if {![regexp "SOLID" [whatis result_2]]} {
+    puts "Error: Incorrect shape types in the result"
+  }
+} elseif {[regexp "SOLID" [whatis result_1]]} {
+  if {![regexp "COMPSOLID" [whatis result_2]]} {
+    puts "Error: Incorrect shape types in the result"
+  }
+} else {
+  puts "Error: Incorrect shape types in the result"
+}
+

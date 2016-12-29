@@ -1080,9 +1080,11 @@ The input data for this step is a *BOPAlgo_Builder* object after building result
 * The result of the operation *Cut12* for arguments *S1* and *S2* contains the parts of argument *S1* that have state **OUT** relative to the opposite argument *S2*.
 * The result of the operation *Cut21* for arguments *S1* and *S2* contains the parts of argument *S2* that have state **OUT** relative to the opposite argument *S1*.
 * For the arguments of collection type (WIRE, SHELL, COMPSOLID) the type will be passed in the result. For example, the result of Common operation between Shell and Wire will be a compound containing Wire.
-* For the arguments of collection type (WIRE, SHELL, COMPSOLID) containing overlapping parts the overlapping parts passed into result will be repeated for each container from the input shapes containing such parts.
-* The result of the operation Fuse for the arguments of collection type (WIRE, SHELL, COMPSOLID) will contain the same number of containers as the arguments. The overlapping parts (EDGES/FACES/SOLIDS) will be shared among them. For example, the result of Fuse operation between two wires will be two wires sharing coinciding edges if any.
-* The result of the operation Common for the arguments of collection type (WIRE, SHELL, COMPSOLID) will consist of the containers containing the same overlapping parts. For example, the result of Common operation between two fully/partially overlapping wires will be two wires containing the same edges.
+* For the arguments of collection type (WIRE, SHELL, COMPSOLID) containing overlapping parts the overlapping parts passed into result will be repeated for each container from the input shapes containing such parts. The containers completely included in other containers will be avoided in the result.
+* For the arguments of collection type (WIRE, SHELL, COMPSOLID) the containers included into result will have the same orientation as the original containers from arguments. In case of duplication its orientation will be defined by the orientation of the first container in arguments. Each container included into result will have coherent orientation of its sub-shapes.
+* The result of the operation Fuse for the arguments of collection type (WIRE, SHELL) will consist of the shapes of the same collection type. The overlapping parts (EDGES/FACES) will be shared among containers, but duplicating containers will be avoided in the result. For example, the result of Fuse operation between two fully coinciding wires will be one wire, but the result of Fuse operation between two partially coinciding wires will be two wires sharing coinciding edges.
+* The result of the operation Fuse for the arguments of type COMPSOLID will consist of the compound containing COMPSOLIDs created from connexity blocks of fused solids.
+* The result of the operation Common for the arguments of collection type (WIRE, SHELL, COMPSOLID) will consist of the unique containers containing the overlapping parts. For example, the result of Common operation between two fully overlapping wires will be one wire containing all splits of edges. The number of wires in the result of Common operation between two partially overlapping wires will be equal to the number of connexity blocks of overlapping edges.
 
 @subsection occt_algorithms_9_4 Examples
 
@@ -1555,7 +1557,7 @@ Let us consider two Wires that have overlapping edges, *W1* is the object and *W
 
 @figure{/user_guides/boolean_operations/images/boolean_image140.png}
  	
-* The result of *Common* operation is a compound containing two Wires both consisting of an overlapping edge. The new Wires are created from the objects:
+* The result of *Common* operation is a compound containing one Wire consisting of an overlapping edge. The new Wire is created from the objects:
 
 @figure{/user_guides/boolean_operations/images/boolean_image141.png}	
 

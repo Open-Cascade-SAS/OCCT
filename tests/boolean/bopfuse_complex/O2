@@ -4,5 +4,5 @@ restore [locate_data_file sf5] b2
 bop b1 b2
 bopfuse result
 
-checkprops result -s 64442.7
+checkprops result -s 62831.9
 checkview -display result -2d -otherwise { b1 b2 } -s -path ${imagedir}/${test_image}.png

@@ -193,8 +193,12 @@ public:
   //! theLCB (as list of compounds)
   //! in terms of connexity by the shapes of theType
   Standard_EXPORT static void MakeConnexityBlocks (const TopoDS_Shape& theS, const TopAbs_ShapeEnum theType1, const TopAbs_ShapeEnum theType2, BOPCol_ListOfShape& theLCB);
-  
-  Standard_EXPORT static void OrientFacesOnShell (TopoDS_Shape& theS);
+
+  //! Correctly orients edges on the wire
+  Standard_EXPORT static void OrientEdgesOnWire (TopoDS_Shape& theWire);
+
+  //! Correctly orients faces on the shell
+  Standard_EXPORT static void OrientFacesOnShell (TopoDS_Shape& theShell);
   
 
   //! Provides valid values of tolerances for the shape <theS>
