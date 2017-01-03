@@ -1440,39 +1440,44 @@ static int VSetInteriorStyle (Draw_Interpretor& theDI,
     theDI.PrintHelp (theArgVec[0]);
     return 1;
   }
-  Standard_Integer        anInterStyle = Aspect_IS_SOLID;
+  Aspect_InteriorStyle    anInterStyle = Aspect_IS_SOLID;
   TCollection_AsciiString aStyleArg (theArgVec[anArgIter++]);
   aStyleArg.LowerCase();
   if (aStyleArg == "empty")
   {
-    anInterStyle = 0;
+    anInterStyle = Aspect_IS_EMPTY;
   }
   else if (aStyleArg == "hollow")
   {
-    anInterStyle = 1;
+    anInterStyle = Aspect_IS_HOLLOW;
   }
   else if (aStyleArg == "hatch")
   {
-    anInterStyle = 2;
+    anInterStyle = Aspect_IS_HATCH;
   }
   else if (aStyleArg == "solid")
   {
-    anInterStyle = 3;
+    anInterStyle = Aspect_IS_SOLID;
   }
   else if (aStyleArg == "hiddenline")
   {
-    anInterStyle = 4;
+    anInterStyle = Aspect_IS_HIDDENLINE;
+  }
+  else if (aStyleArg == "point")
+  {
+    anInterStyle = Aspect_IS_POINT;
   }
   else
   {
-    anInterStyle = aStyleArg.IntegerValue();
-  }
-  if (anInterStyle < Aspect_IS_EMPTY
-   || anInterStyle > Aspect_IS_HIDDENLINE)
-  {
-    std::cout << "Error: style must be within a range [0 (Aspect_IS_EMPTY), "
-              << Aspect_IS_HIDDENLINE << " (Aspect_IS_HIDDENLINE)]\n";
-    return 1;
+    const Standard_Integer anIntStyle = aStyleArg.IntegerValue();
+    if (anIntStyle < Aspect_IS_EMPTY
+     || anIntStyle > Aspect_IS_POINT)
+    {
+      std::cout << "Error: style must be within a range [0 (Aspect_IS_EMPTY), "
+                << Aspect_IS_POINT << " (Aspect_IS_POINT)]\n";
+      return 1;
+    }
+    anInterStyle = (Aspect_InteriorStyle )anIntStyle;
   }
 
   if (!aName.IsEmpty()
@@ -1490,7 +1495,12 @@ static int VSetInteriorStyle (Draw_Interpretor& theDI,
       const Handle(Prs3d_Drawer)& aDrawer        = anIO->Attributes();
       Handle(Prs3d_ShadingAspect) aShadingAspect = aDrawer->ShadingAspect();
       Handle(Graphic3d_AspectFillArea3d) aFillAspect = aShadingAspect->Aspect();
-      aFillAspect->SetInteriorStyle ((Aspect_InteriorStyle )anInterStyle);
+      aFillAspect->SetInteriorStyle (anInterStyle);
+      if (anInterStyle == Aspect_IS_HATCH
+       && aFillAspect->HatchStyle().IsNull())
+      {
+        aFillAspect->SetHatchStyle (Aspect_HS_VERTICAL);
+      }
       aCtx->RecomputePrsOnly (anIO, Standard_False, Standard_True);
     }
   }
@@ -2228,7 +2238,14 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       TCollection_AsciiString anArgHatch (theArgVec[++anArgIter]);
       if (anArgHatch.Length() <= 2)
       {
-        aChangeSet->StdHatchStyle = Draw::Atoi (anArgHatch.ToCString());
+        const Standard_Integer anIntStyle = Draw::Atoi (anArgHatch.ToCString());
+        if (anIntStyle < 0
+         || anIntStyle >= Aspect_HS_NB)
+        {
+          std::cout << "Error: hatch style is out of range [0, " << (Aspect_HS_NB - 1) << "]!\n";
+          return 1;
+        }
+        aChangeSet->StdHatchStyle = anIntStyle;
       }
       else
       {
@@ -5652,6 +5669,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:          [-isoontriangulation 0|1]"
       "\n\t\t:          [-setMaxParamValue {value}]"
       "\n\t\t:          [-setSensitivity {selection_mode} {value}]"
+      "\n\t\t:          [-setHatch HatchStyle]"
       "\n\t\t: Manage presentation properties of all, selected or named objects."
       "\n\t\t: When -subshapes is specified than following properties will be"
       "\n\t\t: assigned to specified sub-shapes."

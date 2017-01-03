@@ -3231,6 +3231,11 @@ bool OpenGl_Context::SetPolygonHatchEnabled (const bool theIsEnabled)
 // =======================================================================
 Standard_Integer OpenGl_Context::SetPolygonHatchStyle (const Handle(Graphic3d_HatchStyle)& theStyle)
 {
+  if (theStyle.IsNull())
+  {
+    return 0;
+  }
+
   if (myHatchStyles.IsNull())
   {
     if (!GetResource ("OpenGl_LineAttributes", myHatchStyles))

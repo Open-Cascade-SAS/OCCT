@@ -49,7 +49,7 @@ public:
   //! EdgeWidth     : 1.0
   //! FrontMaterial : NOM_BRASS
   //! BackMaterial  : NOM_BRASS
-  //! HatchStyle    : Aspect_HS_VERTICAL
+  //! HatchStyle    : Aspect_HS_SOLID
   //!
   //! Display of back-facing filled polygons.
   //! No distinction between external and internal faces of FillAreas.

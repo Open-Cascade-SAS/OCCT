@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC28306 Visualization - viewer crashes if style for shaded display is set to HATCH"
+puts "============"
+puts ""
+
+vclear
+vinit View1
+pload MODELING VISUALIZATION
+box b 10 10 10
+vclear
+vinit View1
+vdisplay -dispMode 1 b
+vfit
+vsetinteriorstyle b 2
+
+vdump $imagedir/${casename}.png
