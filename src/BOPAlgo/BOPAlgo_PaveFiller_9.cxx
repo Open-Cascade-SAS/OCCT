@@ -95,7 +95,6 @@ void BOPAlgo_PaveFiller::FillShrunkData(const TopAbs_ShapeEnum aType1,
     return; 
   }
   //
-  Standard_Boolean bJustAdd;
   Standard_Integer i, nS[2], nE, nV1, nV2, aNbVSD, k;
   Standard_Real aT1, aT2, aTS1, aTS2;
   BOPDS_ListIteratorOfListOfPaveBlock aItLPB;
@@ -104,10 +103,7 @@ void BOPAlgo_PaveFiller::FillShrunkData(const TopAbs_ShapeEnum aType1,
   TopAbs_ShapeEnum aType[2] = { aType1, aType2 };
   //
   for (; myIterator->More(); myIterator->Next()) {
-    myIterator->Value(nS[0], nS[1], bJustAdd);
-    if(bJustAdd) {
-      continue;
-    }
+    myIterator->Value(nS[0], nS[1]);
     //
     for (i=0; i < 2; ++i) {
       nE=nS[i];

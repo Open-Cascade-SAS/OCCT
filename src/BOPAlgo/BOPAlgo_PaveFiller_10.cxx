@@ -16,422 +16,255 @@
 // commercial license or contractual agreement.
 
 #include <BOPAlgo_PaveFiller.hxx>
-#include <BOPAlgo_SectionAttribute.hxx>
-#include <BOPDS_Curve.hxx>
-#include <BOPDS_DS.hxx>
-#include <BOPDS_Interf.hxx>
-#include <BOPDS_IteratorSI.hxx>
-#include <BOPDS_PaveBlock.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepClass3d_SolidClassifier.hxx>
-#include <IntTools_Context.hxx>
-#include <TopoDS_Vertex.hxx>
+
+#include <Precision.hxx>
+
 #include <gp_Pnt.hxx>
-#include <BOPCol_NCVector.hxx>
-#include <TopAbs_State.hxx>
-#include <BOPCol_Parallel.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Solid.hxx>
-/////////////////////////////////////////////////////////////////////////
+#include <Bnd_Box.hxx>
+
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Edge.hxx>
+
+#include <BRep_Tool.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepBndLib.hxx>
+
+#include <BOPDS_ShapeInfo.hxx>
+#include <BOPDS_VectorOfListOfPaveBlock.hxx>
+#include <BOPDS_MapOfCommonBlock.hxx>
+#include <BOPDS_ListOfPaveBlock.hxx>
+#include <BOPDS_CommonBlock.hxx>
+#include <BOPDS_DS.hxx>
+
 //=======================================================================
-//class    : BOPAlgo_VertexSolid
+//function : SetNonDestructive
 //purpose  : 
 //=======================================================================
-class BOPAlgo_VertexSolid  {
- public:
-  DEFINE_STANDARD_ALLOC
+void BOPAlgo_PaveFiller::SetNonDestructive() 
+{
+  if (!myIsPrimary || myNonDestructive) {
+    return;
+  }
+  //
+  Standard_Boolean bFlag;
+  BOPCol_ListIteratorOfListOfShape aItLS;
+  //
+  bFlag=Standard_False;
+  aItLS.Initialize(myArguments);
+  for(; aItLS.More() && (!bFlag); aItLS.Next()) {
+    const TopoDS_Shape& aS=aItLS.Value();
+    bFlag=aS.Locked();
+  }
+  myNonDestructive=bFlag;
+}
+//=======================================================================
+//function : UpdateEdgeTolerance
+//purpose  : 
+//=======================================================================
+void BOPAlgo_PaveFiller::UpdateEdgeTolerance (const Standard_Integer nE,
+                                              const Standard_Real aTol)
+{
+  Standard_Boolean bIsNewShape, bHasShapeSD;
+  Standard_Integer nV, nVx;
+  Standard_Real aTolV;
+  BRep_Builder aBB;
+  BOPCol_ListIteratorOfListOfInteger aIt;
+  //
+  BOPDS_ShapeInfo& aSIE=myDS->ChangeShapeInfo(nE);
+  const BOPCol_ListOfInteger& aLI=aSIE.SubShapes();
+  //
+  if (myNonDestructive) {
+    bIsNewShape=myDS->IsNewShape(nE);
+    if (!bIsNewShape) {
+      return;
+    }
+    //
+    aIt.Initialize(aLI);
+    for (; aIt.More(); aIt.Next()) {
+      nV = aIt.Value();
+      bHasShapeSD=myDS->HasShapeSD(nV, nVx);
+      if (bHasShapeSD) {
+        continue;
+      }
+      bIsNewShape=myDS->IsNewShape(nV);
+      if (!bIsNewShape) {
+        return;
+      }
+    }
+  }
+  //
+  const TopoDS_Edge& aE = *(TopoDS_Edge*)&myDS->Shape(nE);
+  aBB.UpdateEdge(aE, aTol);
+  Bnd_Box& aBoxE=aSIE.ChangeBox();
+  BRepBndLib::Add(aE, aBoxE);
+  aBoxE.SetGap(aBoxE.GetGap() + Precision::Confusion());
+  //
+  aIt.Initialize(aLI);
+  for (; aIt.More(); aIt.Next()) {
+    nV = aIt.Value();
+    bHasShapeSD=myDS->HasShapeSD(nV, nVx);
+    if (bHasShapeSD) {
+      nV=nVx;
+    }
+    const TopoDS_Vertex& aV = *(TopoDS_Vertex*)&myDS->Shape(nV);
+    aTolV = BRep_Tool::Tolerance(aV);
+    if (aTolV < aTol) {
+      aBB.UpdateVertex(aV, aTol);
+      BOPDS_ShapeInfo& aSIV = myDS->ChangeShapeInfo(nV);
+      Bnd_Box& aBoxV = aSIV.ChangeBox();
+      BRepBndLib::Add(aV, aBoxV);
+      aBoxV.SetGap(aBoxV.GetGap() + Precision::Confusion());
+    }
+  }
+}
+//=======================================================================
+//function : UpdateVertex
+//purpose  : 
+//=======================================================================
+Standard_Integer BOPAlgo_PaveFiller::UpdateVertex
+  (const Standard_Integer nV,
+   const Standard_Real aTolNew)
+{
+  Standard_Integer nVNew;
+  Standard_Real aTolV;
+  BRep_Builder aBB;
   
-  BOPAlgo_VertexSolid()
-    : myIV(-1), myIZ(-1), myState(TopAbs_UNKNOWN) {
-  };
-  //
-  virtual ~BOPAlgo_VertexSolid(){
-  };
-  //
-  void SetIndices(const Standard_Integer nV,
-                  const Standard_Integer nZ){
-    myIV=nV;
-    myIZ=nZ;
-  }
-  //
-  void Indices(Standard_Integer& nV,
-               Standard_Integer& nZ) const {
-    nV=myIV;
-    nZ=myIZ;
-  }
-  //
-  void SetVertex(const TopoDS_Vertex& aV) {
-    myV=aV;
-  }
-  //
-  const TopoDS_Vertex& Vertex()const {
-    return myV;
-  }
-  //
-  void SetSolid(const TopoDS_Solid& aZ) {
-    myZ=aZ;
-  }
-  //
-  const TopoDS_Solid& Solid()const {
-    return myZ;
-  }
-  //
-  void SetContext(const Handle(IntTools_Context)& aContext) {
-    myContext=aContext;
-  }
-  //
-  const Handle(IntTools_Context)& Context()const {
-    return myContext;
-  }
-  //
-  TopAbs_State State() const{
-    return myState;
-  };
-  //
-  void Perform() {
-    Standard_Real aTol;
-    gp_Pnt aPV;
-    //
-    BRepClass3d_SolidClassifier& aSC=myContext->SolidClassifier(myZ);
-    //
-    aPV=BRep_Tool::Pnt(myV);
-    aTol=BRep_Tool::Tolerance(myV);
-    //
-    aSC.Perform(aPV, aTol);
-    //
-    myState=aSC.State();
-  };
-  //
- protected:
-  Standard_Integer myIV;
-  Standard_Integer myIZ;
-  TopAbs_State myState;
-  TopoDS_Vertex myV;
-  TopoDS_Solid myZ;
-  Handle(IntTools_Context) myContext;
-};
-//=======================================================================
-typedef BOPCol_NCVector
-  <BOPAlgo_VertexSolid> BOPAlgo_VectorOfVertexSolid; 
-//
-typedef BOPCol_ContextFunctor 
-  <BOPAlgo_VertexSolid,
-  BOPAlgo_VectorOfVertexSolid,
-  Handle(IntTools_Context), 
-  IntTools_Context> BOPAlgo_VertexSolidFunctor;
-//
-typedef BOPCol_ContextCnt 
-  <BOPAlgo_VertexSolidFunctor,
-  BOPAlgo_VectorOfVertexSolid,
-  Handle(IntTools_Context)> BOPAlgo_VertexSolidCnt;
-/////////////////////////////////////////////////////////////////////////
-//=======================================================================
-//class    : BOPAlgo_ShapeSolid
-//purpose  : 
-//=======================================================================
-class BOPAlgo_ShapeSolid  {
- public:
-  DEFINE_STANDARD_ALLOC
-
-  BOPAlgo_ShapeSolid() : 
-    myIE(-1), 
-    myIZ(-1), 
-    myHasInterf(Standard_False), 
-    myDS(NULL) {
-  };
-  //
-  virtual ~BOPAlgo_ShapeSolid(){
-  };
-  //
-  void SetIndices(const Standard_Integer nE,
-                  const Standard_Integer nZ){
-    myIE=nE;
-    myIZ=nZ;
-  }
-  //
-  void Indices(Standard_Integer& nE,
-               Standard_Integer& nZ) const {
-    nE=myIE;
-    nZ=myIZ;
-  }
-  //
-  void SetDS(BOPDS_DS* pDS) {
-    myDS=pDS;
-  }
-  //
-  Standard_Boolean HasInterf() const{
-    return myHasInterf;
-  };
-  //
-  virtual void Perform() {
-    Standard_Boolean bHasInterf;
-    //
-    myHasInterf=Standard_False;
-    //
-    bHasInterf=myDS->HasInterfShapeSubShapes(myIE, myIZ);
-    if (!bHasInterf) {
-      myHasInterf=myDS->HasInterfShapeSubShapes(myIZ, myIE);
+  nVNew = nV;
+  if (myDS->IsNewShape(nVNew) || 
+      myDS->HasShapeSD(nV, nVNew) ||
+      !myNonDestructive) {
+    // nV is a new vertex, it has SD or non-destructive mode is not in force
+    const TopoDS_Vertex& aVSD = *(TopoDS_Vertex*)&myDS->Shape(nVNew);
+    aTolV = BRep_Tool::Tolerance(aVSD);
+    if (aTolV < aTolNew) {
+      aBB.UpdateVertex(aVSD, aTolNew);
+      BOPDS_ShapeInfo& aSIV = myDS->ChangeShapeInfo(nVNew);
+      Bnd_Box& aBoxV = aSIV.ChangeBox();
+      BRepBndLib::Add(aVSD, aBoxV);
+      aBoxV.SetGap(aBoxV.GetGap() + Precision::Confusion());
     }
-  };
+    return nVNew;
+  }
   //
- protected:
-  Standard_Integer myIE;
-  Standard_Integer myIZ;
-  Standard_Boolean myHasInterf;
-  BOPDS_DS* myDS;
-};
+  // nV is old vertex
+  const TopoDS_Vertex& aV = *(TopoDS_Vertex*)&myDS->Shape(nV);
+  aTolV = BRep_Tool::Tolerance(aV);
+  //
+  // create new vertex
+  TopoDS_Vertex aVNew;
+  gp_Pnt aPV = BRep_Tool::Pnt(aV);
+  aBB.MakeVertex(aVNew, aPV, Max(aTolV, aTolNew));
+  //
+  // append new vertex to DS
+  BOPDS_ShapeInfo aSIV;
+  aSIV.SetShapeType(TopAbs_VERTEX);
+  aSIV.SetShape(aVNew);
+  nVNew = myDS->Append(aSIV);
+  //
+  // bounding box for the new vertex
+  BOPDS_ShapeInfo& aSIDS = myDS->ChangeShapeInfo(nVNew);
+  Bnd_Box& aBoxDS = aSIDS.ChangeBox();
+  BRepBndLib::Add(aVNew, aBoxDS);
+  aBoxDS.SetGap(aBoxDS.GetGap() + Precision::Confusion());
+  //
+  // add vertex to SD map
+  myDS->AddShapeSD(nV, nVNew);
+  //
+  myDS->InitPaveBlocksForVertex(nV);
+  //
+  return nVNew;
+}
 //=======================================================================
-typedef BOPCol_NCVector
-  <BOPAlgo_ShapeSolid> BOPAlgo_VectorOfShapeSolid; 
-//
-typedef BOPCol_Functor 
-  <BOPAlgo_ShapeSolid,
-  BOPAlgo_VectorOfShapeSolid> BOPAlgo_ShapeSolidFunctor;
-//
-typedef BOPCol_Cnt 
-  <BOPAlgo_ShapeSolidFunctor,
-  BOPAlgo_VectorOfShapeSolid> BOPAlgo_ShapeSolidCnt;
-//
-/////////////////////////////////////////////////////////////////////////
-//=======================================================================
-//class    : BOPAlgo_SolidSolid
+//function : UpdatePaveBlocksWithSDVertices
 //purpose  : 
 //=======================================================================
-class BOPAlgo_SolidSolid : public  BOPAlgo_ShapeSolid {
- public:
-  DEFINE_STANDARD_ALLOC
-
-  BOPAlgo_SolidSolid() : 
-    BOPAlgo_ShapeSolid() {
-  };
-  //
-  virtual ~BOPAlgo_SolidSolid(){
-  };
-  //
-  virtual void Perform() {
-    Standard_Boolean bFlag;
-    //
-    bFlag=Standard_False;
-    myHasInterf=Standard_False;
-    //
-    myHasInterf=myDS->HasInterfShapeSubShapes(myIZ, myIE, bFlag);
-    if (!myHasInterf) {
-      myHasInterf=myDS->HasInterfShapeSubShapes(myIE, myIZ, bFlag);
-    }
-  };
-};
-//=======================================================================
-typedef BOPCol_NCVector
-  <BOPAlgo_SolidSolid> BOPAlgo_VectorOfSolidSolid; 
-//
-typedef BOPCol_Functor 
-  <BOPAlgo_SolidSolid,
-  BOPAlgo_VectorOfSolidSolid> BOPAlgo_SolidSolidFunctor;
-//
-typedef BOPCol_Cnt 
-  <BOPAlgo_SolidSolidFunctor,
-  BOPAlgo_VectorOfSolidSolid> BOPAlgo_SolidSolidCnt;
-//
-/////////////////////////////////////////////////////////////////////////
-
-//=======================================================================
-//function : PerformVZ
-//purpose  : 
-//=======================================================================
-void BOPAlgo_PaveFiller::PerformVZ()
+void BOPAlgo_PaveFiller::UpdatePaveBlocksWithSDVertices()
 {
-  Standard_Boolean bJustAdd;
-  Standard_Integer iSize, nV, nZ, k, aNbVVS;
-  TopAbs_State aState;
-  BOPDS_MapOfPassKey aMPK;
-  //
-  myErrorStatus=0;
-  //
-  myIterator->Initialize(TopAbs_VERTEX, TopAbs_SOLID);
-  iSize=myIterator->ExpectedLength();
-  if (!iSize) {
-    return; 
-  }
-  //
-  BOPDS_VectorOfInterfVZ& aVZs=myDS->InterfVZ();
-  aVZs.SetIncrement(iSize);
-  //
-  BOPAlgo_VectorOfVertexSolid aVVS;
-  //
-  for (; myIterator->More(); myIterator->Next()) {
-    myIterator->Value(nV, nZ, bJustAdd);
-    if(bJustAdd) {
-      continue;
-    }
-    //
-    if (myDS->HasInterfShapeSubShapes(nV, nZ)) {
-      continue;
-    }
-    //
-    Standard_Integer nVSD = nV;
-    myDS->HasShapeSD(nV, nVSD);
-    //
-    BOPDS_PassKey aPK;
-    aPK.SetIds(nVSD, nZ);
-    if (!aMPK.Add(aPK)) {
-      continue;
-    }
-    //
-    const TopoDS_Vertex& aV=*((TopoDS_Vertex*)&myDS->Shape(nVSD));
-    const TopoDS_Solid& aZ=*((TopoDS_Solid*)&myDS->Shape(nZ));
-    //
-    BOPAlgo_VertexSolid& aVertexSolid=aVVS.Append1();
-    aVertexSolid.SetIndices(nV, nZ);
-    aVertexSolid.SetVertex(aV);
-    aVertexSolid.SetSolid(aZ);
-  }
-  //
-  aNbVVS=aVVS.Extent();
-  //=============================================================
-  BOPAlgo_VertexSolidCnt::Perform(myRunParallel, aVVS, myContext);
-  //=============================================================
-  for (k=0; k < aNbVVS; ++k) {
-    const BOPAlgo_VertexSolid& aVertexSolid=aVVS(k);
-    aState=aVertexSolid.State();
-    if (aState==TopAbs_IN)  {
-      aVertexSolid.Indices(nV, nZ);
-      //
-      BOPDS_InterfVZ& aVZ=aVZs.Append1();
-      aVZ.SetIndices(nV, nZ);
-      //
-      myDS->AddInterf(nV, nZ);
-    }
-  }
+  myDS->UpdatePaveBlocksWithSDVertices();
 }
 //=======================================================================
-//function : PerformEZ
+//function : UpdateCommonBlocksWithSDVertices
 //purpose  : 
 //=======================================================================
-void BOPAlgo_PaveFiller::PerformEZ()
-{ 
-  PerformSZ(TopAbs_EDGE);
-}
-//=======================================================================
-//function : PerformFZ
-//purpose  : 
-//=======================================================================
-void BOPAlgo_PaveFiller::PerformFZ()
-{ 
-  PerformSZ(TopAbs_FACE);
-}
-//=======================================================================
-//function : PerformZZ
-//purpose  : 
-//=======================================================================
-void BOPAlgo_PaveFiller::PerformZZ()
+void BOPAlgo_PaveFiller::UpdateCommonBlocksWithSDVertices()
 {
-  Standard_Boolean bJustAdd, bHasInterf;
-  Standard_Integer iSize, nZ1, nZ, k, aNbSolidSolid;
+  if (!myNonDestructive) {
+    UpdatePaveBlocksWithSDVertices();
+    return;
+  }
+  Standard_Integer aNbPBP;
   //
-  myErrorStatus=0;
-  //
-  myIterator->Initialize(TopAbs_SOLID, TopAbs_SOLID);
-  iSize=myIterator->ExpectedLength();
-  if (!iSize) {
-    return; 
+  BOPDS_VectorOfListOfPaveBlock& aPBP=myDS->ChangePaveBlocksPool();
+  aNbPBP=aPBP.Extent();
+  if(!aNbPBP) {
+    return;
   }
   //
-  BOPAlgo_VectorOfSolidSolid aVSolidSolid;
+  Standard_Integer i, nV1, nV2;
+  Standard_Real aTolV;
+  BOPDS_MapOfCommonBlock aMCB;
+  BOPDS_ListIteratorOfListOfPaveBlock aItPB;
+  Handle(BOPDS_PaveBlock) aPB;
+  // 
+  aTolV = Precision::Confusion();
   //
-  for (; myIterator->More(); myIterator->Next()) {
-    myIterator->Value(nZ1, nZ, bJustAdd);
-    if(bJustAdd) {
-      continue;
-    }
-    //
-    BOPAlgo_SolidSolid& aSolidSolid=aVSolidSolid.Append1();
-    aSolidSolid.SetIndices(nZ1, nZ);
-    aSolidSolid.SetDS(myDS);
-  }
-  //
-  aNbSolidSolid=aVSolidSolid.Extent();
-  //======================================================
-  BOPAlgo_SolidSolidCnt::Perform(myRunParallel, aVSolidSolid);
-  //======================================================
-  //
-  BOPDS_VectorOfInterfZZ& aZZs=myDS->InterfZZ();
-  //
-  aZZs.SetIncrement(iSize);
-  //
-  for (k=0; k < aNbSolidSolid; ++k) {
-    const BOPAlgo_SolidSolid& aSolidSolid=aVSolidSolid(k);
-    bHasInterf=aSolidSolid.HasInterf();
-    if (bHasInterf) {
-      aSolidSolid.Indices(nZ1, nZ);
-      //
-      BOPDS_InterfZZ& aZZ=aZZs.Append1();
-      aZZ.SetIndices(nZ1, nZ);
-      //
-      myDS->AddInterf(nZ1, nZ);
-    }
-  }
-}
-//=======================================================================
-//function : PerformSZ
-//purpose  : 
-//=======================================================================
-void BOPAlgo_PaveFiller::PerformSZ(const TopAbs_ShapeEnum aTS)
-{
-  Standard_Boolean bJustAdd, bHasInterf;
-  Standard_Integer iSize, nS, nZ, k, aNbShapeSolid;
-  //
-  myErrorStatus=0;
-  //
-  myIterator->Initialize(aTS, TopAbs_SOLID);
-  iSize=myIterator->ExpectedLength();
-  if (!iSize) {
-    return; 
-  }
-  //
-  BOPAlgo_VectorOfShapeSolid aVShapeSolid;
-  //
-  for (; myIterator->More(); myIterator->Next()) {
-    myIterator->Value(nS, nZ, bJustAdd);
-    if(bJustAdd) {
-      continue;
-    }
-    //
-    BOPAlgo_ShapeSolid& aShapeSolid=aVShapeSolid.Append1();
-    aShapeSolid.SetIndices(nS, nZ);
-    aShapeSolid.SetDS(myDS);
-  }
-  //
-  aNbShapeSolid=aVShapeSolid.Extent();
-  //======================================================
-  BOPAlgo_ShapeSolidCnt::Perform(myRunParallel, aVShapeSolid);
-  //======================================================
-  //
-  BOPDS_VectorOfInterfEZ& aEZs=myDS->InterfEZ();
-  BOPDS_VectorOfInterfFZ& aFZs=myDS->InterfFZ();
-  //
-  if (aTS==TopAbs_EDGE) {
-    aEZs.SetIncrement(iSize);
-  }
-  else {//if (aTS==TopAbs_FACE)
-    aFZs.SetIncrement(iSize);
-  }
-  //
-  for (k=0; k < aNbShapeSolid; ++k) {
-    const BOPAlgo_ShapeSolid& aShapeSolid=aVShapeSolid(k);
-    bHasInterf=aShapeSolid.HasInterf();
-    if (bHasInterf) {
-      aShapeSolid.Indices(nS, nZ);
-      //
-      if (aTS==TopAbs_EDGE) {
-        BOPDS_InterfEZ& aEZ=aEZs.Append1();
-        aEZ.SetIndices(nS, nZ);
-      }
-      else  {//if (aTS==TopAbs_FACE)
-        BOPDS_InterfFZ& aFZ=aFZs.Append1();
-        aFZ.SetIndices(nS, nZ);
+  for (i=0; i<aNbPBP; ++i) {
+    BOPDS_ListOfPaveBlock& aLPB=aPBP(i);
+    aItPB.Initialize(aLPB);
+    for (; aItPB.More(); aItPB.Next()) {
+      aPB=aItPB.Value();
+      const Handle(BOPDS_CommonBlock)& aCB=myDS->CommonBlock(aPB);
+      if (aCB.IsNull()) {
+        continue;
       }
       //
-      myDS->AddInterf(nS, nZ);
+      if (aMCB.Add(aCB)) {
+        myDS->SortPaveBlocks(aCB);
+        aPB->Indices(nV1, nV2);
+        UpdateVertex(nV1, aTolV);
+        UpdateVertex(nV2, aTolV);
+        myDS->UpdateCommonBlockWithSDVertices(aCB);
+      }
     }
   }
+  UpdatePaveBlocksWithSDVertices();
+}
+
+namespace
+{
+  //=======================================================================
+  //function : UpdateInterfsWithSDVertices
+  //purpose  : 
+  //=======================================================================
+  template <class InterfType>
+  void UpdateIntfsWithSDVertices(BOPDS_PDS theDS, BOPCol_NCVector<InterfType>& theInterfs)
+  {
+    for (Standard_Integer i = 0; i < theInterfs.Length(); i++)
+    {
+      InterfType& anIntf = theInterfs(i);
+      Standard_Integer anInd;
+      if (anIntf.HasIndexNew(anInd))
+      {
+        Standard_Integer anIndSD;
+        if (theDS->HasShapeSD(anInd, anIndSD))
+        {
+          anIntf.SetIndexNew(anIndSD);
+        }
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : UpdateInterfsWithSDVertices
+//purpose  : 
+//=======================================================================
+void BOPAlgo_PaveFiller::UpdateInterfsWithSDVertices()
+{
+  UpdateIntfsWithSDVertices(myDS, myDS->InterfVV());
+  UpdateIntfsWithSDVertices(myDS, myDS->InterfVE());
+  UpdateIntfsWithSDVertices(myDS, myDS->InterfVF());
+  UpdateIntfsWithSDVertices(myDS, myDS->InterfEE());
+  UpdateIntfsWithSDVertices(myDS, myDS->InterfEF());
 }

@@ -327,7 +327,7 @@ void BOPAlgo_PaveFiller::PerformEE()
     return; 
   }
   //
-  Standard_Boolean bJustAdd, bExpressCompute, bIsPBSplittable1, bIsPBSplittable2;
+  Standard_Boolean bExpressCompute, bIsPBSplittable1, bIsPBSplittable2;
   Standard_Integer i, iX, nE1, nE2, aNbCPrts, k, aNbEdgeEdge;
   Standard_Integer nV11, nV12, nV21, nV22;
   Standard_Real aTS11, aTS12, aTS21, aTS22, aT11, aT12, aT21, aT22;
@@ -348,10 +348,7 @@ void BOPAlgo_PaveFiller::PerformEE()
   aEEs.SetIncrement(iSize);
   //
   for (; myIterator->More(); myIterator->Next()) {
-    myIterator->Value(nE1, nE2, bJustAdd);
-    if(bJustAdd) {
-      continue;
-    }
+    myIterator->Value(nE1, nE2);
     //
     const BOPDS_ShapeInfo& aSIE1=myDS->ShapeInfo(nE1);
     if (aSIE1.HasFlag()){

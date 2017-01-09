@@ -79,3 +79,8 @@ BOPDS_VectorOfListOfPaveBlock.hxx
 BOPDS_VectorOfPave.hxx
 BOPDS_VectorOfPoint.hxx
 BOPDS_VectorOfShapeInfo.hxx
+BOPDS_Pair.hxx
+BOPDS_PairMapHasher.hxx
+BOPDS_MapOfPair.hxx
+BOPDS_VectorOfPair.hxx
+BOPDS_VectorOfVectorOfPair.hxx

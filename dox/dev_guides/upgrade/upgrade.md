@@ -1209,3 +1209,9 @@ The follow AIS_InteractiveContext methods have been changed:
 * Class GeomPlate_BuildPlateSurface accepts base class Adaptor3d_HCurve (instead of inherited Adaptor3d_HCurveOnSurface accepted earlier).
 
 * Types GeomPlate_Array1OfHCurveOnSurface and GeomPlate_HArray1OfHCurveOnSurface have been replaced with GeomPlate_Array1OfHCurve and GeomPlate_HArray1OfHCurve correspondingly (accept base class Adaptor3d_HCurve instead of Adaptor3d_HCurveOnSurface).
+
+@subsection upgrade_720_BOP_DataStructure BOP - Pairs of interfering indices
+
+* The classes *BOPDS_PassKey* and *BOPDS_PassKeyBoolean* are too excessive and not used any more in Boolean Operations. To replace them the new *BOPDS_Pair* class has been implemented. Thus:
+  - The method *BOPDS_DS::Interferences()* now returns the *BOPDS_MapOfPair*;
+  - The method *BOPDS_Iterator::Value()* takes now only two parameters - the indices of interfering sub-shapes.

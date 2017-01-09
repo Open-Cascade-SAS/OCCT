@@ -1,8 +1,6 @@
 # test script on make volume operation
 # cylinder plane unstable
 
-puts "TODO OCC26020 ALL: Error: bopcheck failed"
-
 # planar face 
 plane pln_f1 0 -232.5 3.8857805861880479e-015 0 -1 -1.1102230246251565e-016
 erase pln_f1

@@ -30,7 +30,7 @@
 #include <BOPDS_VectorOfFaceInfo.hxx>
 #include <BOPCol_DataMapOfIntegerInteger.hxx>
 #include <BOPCol_DataMapOfIntegerListOfInteger.hxx>
-#include <BOPDS_MapOfPassKey.hxx>
+#include <BOPDS_MapOfPair.hxx>
 #include <BOPDS_VectorOfInterfVV.hxx>
 #include <BOPDS_VectorOfInterfVE.hxx>
 #include <BOPDS_VectorOfInterfVF.hxx>
@@ -431,7 +431,7 @@ Standard_EXPORT virtual ~BOPDS_DS();
   //! Returns the table of interferences
   //!
   //! debug
-    const BOPDS_MapOfPassKey& Interferences() const;
+    const BOPDS_MapOfPair& Interferences() const;
   
   Standard_EXPORT void Dump() const;
   
@@ -495,7 +495,7 @@ protected:
   BOPDS_VectorOfFaceInfo myFaceInfoPool;
   BOPCol_DataMapOfIntegerInteger myShapesSD;
   BOPCol_DataMapOfIntegerListOfInteger myMapVE;
-  BOPDS_MapOfPassKey myInterfTB;
+  BOPDS_MapOfPair myInterfTB;
   BOPDS_VectorOfInterfVV myInterfVV;
   BOPDS_VectorOfInterfVE myInterfVE;
   BOPDS_VectorOfInterfVF myInterfVF;

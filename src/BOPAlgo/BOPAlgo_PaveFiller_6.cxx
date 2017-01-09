@@ -184,7 +184,7 @@ void BOPAlgo_PaveFiller::PerformFF()
     return; 
   }
   //
-  Standard_Boolean bJustAdd, bApp, bCompC2D1, bCompC2D2, bIsDone;
+  Standard_Boolean bApp, bCompC2D1, bCompC2D2, bIsDone;
   Standard_Boolean bToSplit, bTangentFaces;
   Standard_Integer nF1, nF2, aNbCurves, aNbPoints, i, aNbLP;
   Standard_Integer aNbFaceFace, k;
@@ -202,10 +202,7 @@ void BOPAlgo_PaveFiller::PerformFF()
   bToSplit = Standard_False;
   //
   for (; myIterator->More(); myIterator->Next()) {
-    myIterator->Value(nF1, nF2, bJustAdd);
-    if(bJustAdd) {
-      continue;
-    }
+    myIterator->Value(nF1, nF2);
     //
     const TopoDS_Face& aF1=(*(TopoDS_Face *)(&myDS->Shape(nF1)));
     const TopoDS_Face& aF2=(*(TopoDS_Face *)(&myDS->Shape(nF2)));
