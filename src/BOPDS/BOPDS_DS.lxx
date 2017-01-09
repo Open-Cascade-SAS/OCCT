@@ -12,7 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPDS_PassKey.hxx>
+#include <BOPDS_Pair.hxx>
 //=======================================================================
 //function : InterfVV
 //purpose  : 
@@ -107,9 +107,7 @@ inline Standard_Integer BOPDS_DS::NbInterfTypes()
 inline void BOPDS_DS::AddInterf(const Standard_Integer theI1,
                                 const Standard_Integer theI2)
 {
-  BOPDS_PassKey aPK;
-  //
-  aPK.SetIds(theI1, theI2);
+  BOPDS_Pair aPK(theI1, theI2);
   myInterfTB.Add(aPK);
 }
 //=======================================================================
@@ -120,16 +118,14 @@ inline Standard_Boolean BOPDS_DS::HasInterf
   (const Standard_Integer theI1,
    const Standard_Integer theI2)const
 {
-  BOPDS_PassKey aPK;
-  //
-  aPK.SetIds(theI1, theI2);
+  BOPDS_Pair aPK(theI1, theI2);
   return myInterfTB.Contains(aPK);
 }
 //=======================================================================
 //function : Interferences
 //purpose  : 
 //=======================================================================
-inline const BOPDS_MapOfPassKey& BOPDS_DS::Interferences()const
+inline const BOPDS_MapOfPair& BOPDS_DS::Interferences()const
 {
   return myInterfTB;
 }

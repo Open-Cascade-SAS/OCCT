@@ -24,8 +24,8 @@
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_Iterator.hxx>
-#include <BOPDS_MapOfPassKey.hxx>
-#include <BOPDS_PassKey.hxx>
+#include <BOPDS_MapOfPair.hxx>
+#include <BOPDS_Pair.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_VectorOfInterfVE.hxx>
 #include <BOPTools_AlgoTools.hxx>
@@ -141,12 +141,11 @@ typedef BOPCol_ContextCnt
 //=======================================================================
 void BOPAlgo_PaveFiller::PerformVE()
 {
-  Standard_Boolean bJustAdd;
   Standard_Integer iSize, nV, nE, nVSD, iFlag, nVx,  k, aNbVE;
   Standard_Real aT, aT1, aT2, aTS1, aTS2;
   BOPDS_Pave aPave;
-  BOPDS_PassKey aPK;
-  BOPDS_MapOfPassKey aMPK;
+  BOPDS_Pair aPK;
+  BOPDS_MapOfPair aMPK;
   BOPAlgo_VectorOfVertexEdge aVVE;
   //
   myErrorStatus=0;
@@ -163,10 +162,7 @@ void BOPAlgo_PaveFiller::PerformVE()
   aVEs.SetIncrement(iSize);
   //
   for (; myIterator->More(); myIterator->Next()) {
-    myIterator->Value(nV, nE, bJustAdd);
-    if(bJustAdd) {
-      continue;
-    }
+    myIterator->Value(nV, nE);
     //
     const BOPDS_ShapeInfo& aSIE=myDS->ShapeInfo(nE);
     if (aSIE.HasSubShape(nV)) {
@@ -187,7 +183,7 @@ void BOPAlgo_PaveFiller::PerformVE()
       nVx=nVSD;
     }
     //
-    aPK.SetIds(nVx, nE);
+    aPK.SetIndices(nVx, nE);
     if (!aMPK.Add(aPK)) {
       continue;
     }

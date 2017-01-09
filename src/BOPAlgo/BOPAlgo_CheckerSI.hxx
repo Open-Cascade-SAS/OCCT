@@ -24,63 +24,71 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <BOPCol_DataMapOfShapeShape.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 
 
-//! Checks shape on self-interference.
+//! Checks the shape on self-interference.<br>
+//! In case of error the algorithm may return the following ErrorStatus:<br>
+//! 10 - The number of the input arguments is not one;<br>
+//! 11 - The check has been aborted during intersection of sub-shapes.<br>
+//! In case the error has occurred during intersection of sub-shapes, i.e.
+//! in BOPAlgo_PaveFiller::PerformInternal() method, the ErrorStatus from this method
+//! directly will be returned.
+
 class BOPAlgo_CheckerSI  : public BOPAlgo_PaveFiller
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
+
   Standard_EXPORT BOPAlgo_CheckerSI();
-Standard_EXPORT virtual ~BOPAlgo_CheckerSI();
+  Standard_EXPORT virtual ~BOPAlgo_CheckerSI();
   
   Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
   
-  //! Sets the level of checking shape on self-interference.
-  //! It defines which interferferences will be checked:
-  //! 0 - only V/V;
-  //! 1 - V/V and V/E;
-  //! 2 - V/V, V/E and E/E;
-  //! 3 - V/V, V/E, E/E and V/F;
-  //! 4 - V/V, V/E, E/E, V/F and E/F;
-  //! 5 - all interferences, default value.
+  //! Sets the level of checking shape on self-interference.<br>
+  //! It defines which interferences will be checked:<br>
+  //! 0 - only V/V;<br>
+  //! 1 - V/V and V/E;<br>
+  //! 2 - V/V, V/E and E/E;<br>
+  //! 3 - V/V, V/E, E/E and V/F;<br>
+  //! 4 - V/V, V/E, E/E, V/F and E/F;<br>
+  //! 5 - V/V, V/E, E/E, V/F, E/F and F/F;<br>
+  //! 6 - V/V, V/E, E/E, V/F, E/F, F/F and V/S;<br>
+  //! 7 - V/V, V/E, E/E, V/F, E/F, F/F, V/S and E/S;<br>
+  //! 8 - V/V, V/E, E/E, V/F, E/F, F/F, V/S, E/S and F/S;<br>
+  //! 9 - V/V, V/E, E/E, V/F, E/F, F/F, V/S, E/S, F/S and S/S - all interferences (Default value)
   Standard_EXPORT void SetLevelOfCheck (const Standard_Integer theLevel);
 
 protected:
 
-  
   Standard_EXPORT virtual void Init() Standard_OVERRIDE;
-  
-  //! Provides post-treatment actions
-  Standard_EXPORT void PostTreat();
-  
-  Standard_EXPORT virtual void PrepareCopy();
-  
-  //! Provides post-treatment actions for the copy
-  Standard_EXPORT void PostTreatCopy();
 
+  //! Treats the intersection results
+  Standard_EXPORT void PostTreat();
+
+  //! Methods for intersection with solids
+
+  //! Vertex/Solid intersection
+  Standard_EXPORT virtual void PerformVZ();
+
+  //! Edge/Solid intersection
+  Standard_EXPORT virtual void PerformEZ();
+
+  //! Face/Solid intersection
+  Standard_EXPORT virtual void PerformFZ();
+
+  //! Solid/Solid intersection
+  Standard_EXPORT virtual void PerformZZ();
+
+  //! Used for intersection of edges and faces with solids
+  Standard_EXPORT virtual void PerformSZ(const TopAbs_ShapeEnum aTS);
 
   Standard_Integer myLevelOfCheck;
-  BOPCol_DataMapOfShapeShape myNewOldMap;
-
 
 private:
 
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BOPAlgo_CheckerSI_HeaderFile

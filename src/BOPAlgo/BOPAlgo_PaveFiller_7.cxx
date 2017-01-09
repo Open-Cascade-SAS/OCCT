@@ -777,7 +777,7 @@ void BOPAlgo_PaveFiller::Prepare()
     TopAbs_EDGE,
     TopAbs_FACE
   };
-  Standard_Boolean bJustAdd, bIsBasedOnPlane;
+  Standard_Boolean bIsBasedOnPlane;
   Standard_Integer i, aNb, n1, nF, aNbF;
   TopExp_Explorer aExp;
   BOPCol_IndexedMapOfShape aMF;
@@ -788,7 +788,7 @@ void BOPAlgo_PaveFiller::Prepare()
   for(i=0; i<aNb; ++i) {
     myIterator->Initialize(aType[i], aType[2]);
     for (; myIterator->More(); myIterator->Next()) {
-      myIterator->Value(n1, nF, bJustAdd);
+      myIterator->Value(n1, nF);
       const TopoDS_Face& aF=(*(TopoDS_Face *)(&myDS->Shape(nF))); 
       //
       bIsBasedOnPlane=IsBasedOnPlane(aF);

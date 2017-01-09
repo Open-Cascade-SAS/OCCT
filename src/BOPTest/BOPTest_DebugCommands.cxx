@@ -235,7 +235,6 @@ Standard_Integer bopiterator (Draw_Interpretor& di,
     return 1;
   }
   //
-  Standard_Boolean bFlag;
   Standard_Integer n1, n2;
   char buf[64], aST1[10], aST2[10];
   BOPDS_Iterator aIt;
@@ -252,12 +251,12 @@ Standard_Integer bopiterator (Draw_Interpretor& di,
     for (i = 0; i < 4; ++i) {
       GetNameByType(aT[i], aST1);
       //
-      for (j = 0; j < 4; ++j) {
+      for (j = i; j < 4; ++j) {
         GetNameByType(aT[j], aST2);
         //
         aIt.Initialize(aT[i], aT[j]);
         for (; aIt.More(); aIt.Next()) {
-          aIt.Value(n1, n2, bFlag);
+          aIt.Value(n1, n2);
           //
           Sprintf(buf, "%s/%s: (z%d z%d)\n", aST1, aST2, n1, n2);
           di << buf;
@@ -276,7 +275,7 @@ Standard_Integer bopiterator (Draw_Interpretor& di,
     //
     aIt.Initialize(aT1, aT2);
     for (; aIt.More(); aIt.Next()) {
-      aIt.Value(n1, n2, bFlag);
+      aIt.Value(n1, n2);
       //
       Sprintf(buf, "%s/%s: (z%d z%d)\n", aST1, aST2, n1, n2);
       di << buf;

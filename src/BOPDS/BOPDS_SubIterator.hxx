@@ -21,8 +21,8 @@
 
 #include <BOPCol_BaseAllocator.hxx>
 #include <BOPDS_PDS.hxx>
-#include <BOPDS_ListOfPassKeyBoolean.hxx>
-#include <BOPDS_ListIteratorOfListOfPassKeyBoolean.hxx>
+#include <BOPDS_Pair.hxx>
+#include <BOPDS_VectorOfPair.hxx>
 #include <BOPCol_PListOfInteger.hxx>
 #include <BOPCol_ListOfInteger.hxx>
 #include <Standard_Boolean.hxx>
@@ -30,114 +30,106 @@
 class BOPDS_DS;
 
 
+//! The class BOPDS_SubIterator is used to compute intersections between
+//! bounding boxes of two sub-sets of BRep sub-shapes of arguments
+//! of an operation (see the class BOPDS_DS).
+//! The class provides interface to iterate the pairs of intersected sub-shapes.
 
-//! The class BOPDS_SubIterator is
-//! 1.to compute intersections between two sub-sets of
-//! BRep sub-shapes
-//! of arguments of an operation (see the class BOPDS_DS)
-//! in terms of theirs bounding boxes
-//! 2.provides interface to iterare the pairs of
-//! intersected sub-shapes of given type
 class BOPDS_SubIterator 
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-
-  //! Empty contructor
+  //! Empty constructor
   Standard_EXPORT BOPDS_SubIterator();
-Standard_EXPORT virtual ~BOPDS_SubIterator();
-  
+  Standard_EXPORT virtual ~BOPDS_SubIterator();
 
-  //! Contructor
+  //! Constructor
   //! theAllocator - the allocator to manage the memory
   Standard_EXPORT BOPDS_SubIterator(const BOPCol_BaseAllocator& theAllocator);
-  
 
-  //! Modifier
-  //! Sets the data structure <pDS> to process
-  Standard_EXPORT void SetDS (const BOPDS_PDS& pDS);
-  
+  //! Sets the data structure <pDS> to process.
+  //! It is used to access the shapes and their bounding boxes.
+  void SetDS (const BOPDS_PDS& pDS)
+  {
+    myDS = pDS;
+  }
 
-  //! Selector
   //! Returns the data structure
-  Standard_EXPORT const BOPDS_DS& DS() const;
-  
+  const BOPDS_DS& DS() const
+  {
+    return *myDS;
+  }
 
-  //! Modifier
-  //! Sets the first set of indices  <theLI> to process
-  Standard_EXPORT void SetSubSet1 (const BOPCol_ListOfInteger& theLI);
-  
+  //! Sets the first set of indices <theLI> to process
+  void SetSubSet1 (const BOPCol_ListOfInteger& theLI)
+  {
+    mySubSet1 = (BOPCol_PListOfInteger)&theLI;
+  }
 
-  //! Selector
   //! Returns the first set of indices to process
-  Standard_EXPORT const BOPCol_ListOfInteger& SubSet1() const;
-  
+  const BOPCol_ListOfInteger& SubSet1() const
+  {
+    return *mySubSet1;
+  }
 
-  //! Modifier
-  //! Sets the second set of indices  <theLI> to process
-  Standard_EXPORT void SetSubSet2 (const BOPCol_ListOfInteger& theLI);
-  
+  //! Sets the second set of indices <theLI> to process
+  void SetSubSet2 (const BOPCol_ListOfInteger& theLI)
+  {
+    mySubSet2 = (BOPCol_PListOfInteger)&theLI;
+  }
 
-  //! Selector
   //! Returns the second set of indices to process
-  Standard_EXPORT const BOPCol_ListOfInteger& SubSet2() const;
-  
+  const BOPCol_ListOfInteger& SubSet2() const
+  {
+    return *mySubSet2;
+  }
 
-  //! Initializes the  iterator
+  //! Initializes the iterator
   Standard_EXPORT void Initialize();
-  
 
-  //! Returns  true if still there are pairs
-  //! of intersected shapes
-  Standard_EXPORT Standard_Boolean More() const;
-  
+  //! Returns true if there are more pairs of intersected shapes
+  Standard_Boolean More() const
+  {
+    return myIterator.More();
+  }
 
   //! Moves iterations ahead
-  Standard_EXPORT void Next();
-  
+  void Next()
+  {
+    myIterator.Next();
+  }
 
   //! Returns indices (DS) of intersected shapes
   //! theIndex1 - the index of the first shape
   //! theIndex2 - the index of the second shape
   Standard_EXPORT void Value (Standard_Integer& theIndex1, Standard_Integer& theIndex2) const;
-  
 
   //! Perform the intersection algorithm and prepare
   //! the results to be used
   Standard_EXPORT virtual void Prepare();
 
-
-
+  //! Returns the number of interfering pairs
+  Standard_Integer ExpectedLength() const
+  {
+    return myList.Extent();
+  }
 
 protected:
 
-  
+  //! Performs intersection of bounding boxes
   Standard_EXPORT virtual void Intersect();
-
 
   BOPCol_BaseAllocator myAllocator;
   BOPDS_PDS myDS;
-  BOPDS_ListOfPassKeyBoolean myList;
-  BOPDS_ListIteratorOfListOfPassKeyBoolean myIterator;
+  BOPDS_VectorOfPair myList;
+  BOPDS_VectorOfPair::Iterator myIterator;
   BOPCol_PListOfInteger mySubSet1;
   BOPCol_PListOfInteger mySubSet2;
 
-
 private:
 
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BOPDS_SubIterator_HeaderFile

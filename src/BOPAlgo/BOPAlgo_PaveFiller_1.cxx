@@ -48,7 +48,6 @@
 //=======================================================================
 void BOPAlgo_PaveFiller::PerformVV() 
 {
-  Standard_Boolean bWithSubShape;
   Standard_Integer n1, n2, iFlag, aSize, k, aNbBlocks;
   Handle(NCollection_BaseAllocator) aAllocator;
   //
@@ -71,7 +70,7 @@ void BOPAlgo_PaveFiller::PerformVV()
   //
   // 1. Map V/LV
   for (; myIterator->More(); myIterator->Next()) {
-    myIterator->Value(n1, n2, bWithSubShape);
+    myIterator->Value(n1, n2);
     //
     const TopoDS_Vertex& aV1=(*(TopoDS_Vertex *)(&myDS->Shape(n1))); 
     const TopoDS_Vertex& aV2=(*(TopoDS_Vertex *)(&myDS->Shape(n2))); 

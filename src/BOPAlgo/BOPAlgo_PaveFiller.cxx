@@ -313,28 +313,4 @@ void BOPAlgo_PaveFiller::PerformInternal()
   if (myErrorStatus) {
     return; 
   }
-  //
-  if (myGlue != BOPAlgo_GlueOff) {
-    return;
-  }
-  // 03
-  PerformVZ();
-  if (myErrorStatus) {
-    return;
-  }
-  // 13
-  PerformEZ();
-  if (myErrorStatus) {
-    return;
-  }
-  // 23
-  PerformFZ();
-  if (myErrorStatus) {
-    return;
-  }
-  // 33
-  PerformZZ();
-  if (myErrorStatus) {
-    return;
-  }
-} 
+}

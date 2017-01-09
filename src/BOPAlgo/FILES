@@ -21,6 +21,7 @@ BOPAlgo_BuilderSolid.cxx
 BOPAlgo_BuilderSolid.hxx
 BOPAlgo_CheckerSI.cxx
 BOPAlgo_CheckerSI.hxx
+BOPAlgo_CheckerSI_1.cxx
 BOPAlgo_CheckResult.cxx
 BOPAlgo_CheckResult.hxx
 BOPAlgo_CheckStatus.hxx
@@ -42,7 +43,6 @@ BOPAlgo_PaveFiller_7.cxx
 BOPAlgo_PaveFiller_8.cxx
 BOPAlgo_PaveFiller_9.cxx
 BOPAlgo_PaveFiller_10.cxx
-BOPAlgo_PaveFiller_11.cxx
 BOPAlgo_PBOP.hxx
 BOPAlgo_PBuilder.hxx
 BOPAlgo_PPaveFiller.hxx

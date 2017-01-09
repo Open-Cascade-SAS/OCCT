@@ -22,8 +22,8 @@
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_IteratorSI.hxx>
-#include <BOPDS_MapOfPassKey.hxx>
-#include <BOPDS_PassKey.hxx>
+#include <BOPDS_MapOfPair.hxx>
+#include <BOPDS_Pair.hxx>
 #include <BOPDS_PIteratorSI.hxx>
 #include <BOPDS_VectorOfInterfEF.hxx>
 #include <BOPDS_VectorOfInterfFF.hxx>
@@ -104,49 +104,36 @@ void BOPAlgo_CheckerSI::Init()
 void BOPAlgo_CheckerSI::Perform()
 {
   try {
-    Standard_Integer iErr;
-    //
     OCC_CATCH_SIGNALS
     //
-    myErrorStatus=0;
-    if (myArguments.Extent()!=1) {
-      myErrorStatus=10;
+    myErrorStatus = 0;
+    if (myArguments.Extent() != 1) {
+      myErrorStatus = 10;
       return;
     }
     //
-    if (myNonDestructive) {
-      PrepareCopy();
-      if (myErrorStatus) {
-        return; 
-      }
-    }
-    //
+    // Perform intersection of sub shapes
     BOPAlgo_PaveFiller::Perform();
-    iErr=myErrorStatus; 
     //
+    // Perform intersection with solids
+    if (!myErrorStatus)
+      PerformVZ();
+    //
+    if (!myErrorStatus)
+      PerformEZ();
+    //
+    if (!myErrorStatus)
+      PerformFZ();
+    //
+    if (!myErrorStatus)
+      PerformZZ();
+    //
+    // Treat the intersection results
     PostTreat();
-    if (myErrorStatus) {
-      iErr=myErrorStatus; 
-    }
-    //
-    if (myNonDestructive) {
-      PostTreatCopy();
-      if (myErrorStatus) {
-        iErr=myErrorStatus; 
-      }
-    }
-    //
-    if (iErr) {
-      myErrorStatus=iErr;
-    }
   }
   //
   catch (Standard_Failure) {
-    if (myNonDestructive) { 
-      PostTreatCopy();
-    }
-    //
-    myErrorStatus=11;
+    myErrorStatus = 11;
   }
 }
 //=======================================================================
@@ -156,12 +143,12 @@ void BOPAlgo_CheckerSI::Perform()
 void BOPAlgo_CheckerSI::PostTreat()
 {
   Standard_Integer i, aNb, n1, n2; 
-  BOPDS_PassKey aPK;
+  BOPDS_Pair aPK;
   //
   myErrorStatus=0;
   //
-  BOPDS_MapOfPassKey& aMPK=
-    *((BOPDS_MapOfPassKey*)&myDS->Interferences());
+  BOPDS_MapOfPair& aMPK=
+    *((BOPDS_MapOfPair*)&myDS->Interferences());
   aMPK.Clear();
   //
   // 0
@@ -173,7 +160,7 @@ void BOPAlgo_CheckerSI::PostTreat()
     if (myDS->IsNewShape(n1) || myDS->IsNewShape(n2)) {
       continue;
     }
-    aPK.SetIds(n1, n2);
+    aPK.SetIndices(n1, n2);
     aMPK.Add(aPK);
   }
   //
@@ -186,7 +173,7 @@ void BOPAlgo_CheckerSI::PostTreat()
     if (myDS->IsNewShape(n1) || myDS->IsNewShape(n2)) {
       continue;
     }
-    aPK.SetIds(n1, n2);
+    aPK.SetIndices(n1, n2);
     aMPK.Add(aPK);
   }
   //
@@ -199,7 +186,7 @@ void BOPAlgo_CheckerSI::PostTreat()
     if (myDS->IsNewShape(n1) || myDS->IsNewShape(n2)) {
       continue;
     }
-    aPK.SetIds(n1, n2);
+    aPK.SetIndices(n1, n2);
     aMPK.Add(aPK);
   }
   //
@@ -212,7 +199,7 @@ void BOPAlgo_CheckerSI::PostTreat()
     if (myDS->IsNewShape(n1) || myDS->IsNewShape(n2)) {
       continue;
     }
-    aPK.SetIds(n1, n2);
+    aPK.SetIndices(n1, n2);
     aMPK.Add(aPK);
   }
   //
@@ -228,7 +215,7 @@ void BOPAlgo_CheckerSI::PostTreat()
     if (myDS->IsNewShape(n1) || myDS->IsNewShape(n2)) {
       continue;
     }
-    aPK.SetIds(n1, n2);
+    aPK.SetIndices(n1, n2);
     aMPK.Add(aPK);
   }
   //
@@ -275,7 +262,7 @@ void BOPAlgo_CheckerSI::PostTreat()
       continue;
     }
     //
-    aPK.SetIds(n1, n2);
+    aPK.SetIndices(n1, n2);
     aMPK.Add(aPK);
   }
   //
@@ -290,7 +277,7 @@ void BOPAlgo_CheckerSI::PostTreat()
     if (myDS->IsNewShape(n1) || myDS->IsNewShape(n2)) {
       continue;
     }
-    aPK.SetIds(n1, n2);
+    aPK.SetIndices(n1, n2);
     aMPK.Add(aPK);
   }
   //
@@ -301,7 +288,7 @@ void BOPAlgo_CheckerSI::PostTreat()
     //
     const BOPDS_InterfEZ& aEZ=aEZs(i);
     aEZ.Indices(n1, n2);
-    aPK.SetIds(n1, n2);
+    aPK.SetIndices(n1, n2);
     aMPK.Add(aPK);
   }
   //
@@ -312,7 +299,7 @@ void BOPAlgo_CheckerSI::PostTreat()
     //
     const BOPDS_InterfFZ& aFZ=aFZs(i);
     aFZ.Indices(n1, n2);
-    aPK.SetIds(n1, n2);
+    aPK.SetIndices(n1, n2);
     aMPK.Add(aPK);
   }
   //
@@ -323,76 +310,7 @@ void BOPAlgo_CheckerSI::PostTreat()
     //
     const BOPDS_InterfZZ& aZZ=aZZs(i);
     aZZ.Indices(n1, n2);
-    aPK.SetIds(n1, n2);
+    aPK.SetIndices(n1, n2);
     aMPK.Add(aPK);
   }
 }
-//=======================================================================
-//function : PrepareCopy
-//purpose  : 
-//=======================================================================
-void BOPAlgo_CheckerSI::PrepareCopy()
-{
-  Standard_Boolean bIsDone;
-  BRepBuilderAPI_Copy aCopier;
-  BOPCol_MapOfShape aMSA;
-  BOPCol_MapIteratorOfMapOfShape aItMS;
-  //
-  myErrorStatus=0;
-  //
-  myNewOldMap.Clear();
-  //
-  const TopoDS_Shape& aSA=myArguments.First();
-  //
-  BOPTools::MapShapes(aSA, aMSA);
-  //
-  aCopier.Perform(aSA, Standard_False);
-  bIsDone=aCopier.IsDone();
-  if (!bIsDone) {
-    myErrorStatus=12; 
-    return;
-  }
-  //
-  const TopoDS_Shape& aSC=aCopier.Shape();
-  //
-  aItMS.Initialize(aMSA);
-  for(; aItMS.More(); aItMS.Next()) {
-    const TopoDS_Shape& aSAx=aItMS.Value();
-    const TopoDS_Shape& aSCx=aCopier.Modified(aSAx).First();
-    myNewOldMap.Bind(aSCx, aSAx);
-  }
-  //
-  myArguments.Clear();
-  myArguments.Append(aSC);
-}
-//=======================================================================
-//function : PostTreatCopy
-//purpose  : 
-//=======================================================================
-void BOPAlgo_CheckerSI::PostTreatCopy() 
-{
-  Standard_Integer i, aNb;
-  //
-  myErrorStatus=0;
-  //
-  aNb=myDS->NbSourceShapes();
-  for (i=0; i!=aNb; ++i) {
-    BOPDS_ShapeInfo& aSI=myDS->ChangeShapeInfo(i);
-    const TopoDS_Shape& aSCi=aSI.Shape();
-    if (!myNewOldMap.IsBound(aSCi)) {
-      myErrorStatus=13;
-      return;
-    }
-    //
-    const TopoDS_Shape& aSAi=myNewOldMap.Find(aSCi);
-    aSI.SetShape(aSAi);
-  }
-}
-//
-// myErrorStatus:
-//
-// 10 - The number of the arguments is not 1
-// 11 - Exception is caught
-// 12 - BRepBuilderAPI_Copy is not done
-// 13 - myNewOldMap doe not contain DS shape 
-

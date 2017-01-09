@@ -18,7 +18,7 @@
 #include <BOPAlgo_CheckResult.hxx>
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPDS_DS.hxx>
-#include <BOPDS_MapOfPassKey.hxx>
+#include <BOPDS_MapOfPair.hxx>
 #include <BOPTest.hxx>
 #include <BOPTest_Objects.hxx>
 #include <BOPTools_AlgoTools.hxx>
@@ -207,7 +207,7 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
   TopAbs_ShapeEnum aType1, aType2;
   BOPAlgo_CheckerSI aChecker;
   BOPCol_ListOfShape aLS;
-  BOPDS_MapIteratorMapOfPassKey aItMPK;
+  BOPDS_MapIteratorOfMapOfPair aItMPK;
   //
   if (aLevel < (aNbInterfTypes-1)) {
     di << "Info:\nThe level of check is set to " 
@@ -239,7 +239,7 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
   //
   const BOPDS_DS& aDS=*(aChecker.PDS());
   //
-  const BOPDS_MapOfPassKey& aMPK=aDS.Interferences();
+  const BOPDS_MapOfPair& aMPK=aDS.Interferences();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   using namespace std;
   vector <BOPTest_Interf> aVec;
@@ -248,8 +248,8 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
   //
   aItMPK.Initialize(aMPK);
   for (; aItMPK.More(); aItMPK.Next()) {
-    const BOPDS_PassKey& aPK=aItMPK.Value();
-    aPK.Ids(n1, n2);
+    const BOPDS_Pair& aPK=aItMPK.Value();
+    aPK.Indices(n1, n2);
     if(aDS.IsNewShape(n1) || aDS.IsNewShape(n2)) {
       continue;
     }

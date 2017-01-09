@@ -149,15 +149,14 @@ void BOPAlgo_PaveFiller::PerformEF()
     return; 
   }
   //
-  Standard_Boolean bJustAdd;
   Standard_Integer nE, nF;
   //
   if (myGlue == BOPAlgo_GlueFull) {
     // there is no need to intersect edges with faces in this mode
     // just initialize FaceInfo for faces
     for (; myIterator->More(); myIterator->Next()) {
-      myIterator->Value(nE, nF, bJustAdd);
-      if (!bJustAdd && !myDS->ShapeInfo(nE).HasFlag()) {
+      myIterator->Value(nE, nF);
+      if (!myDS->ShapeInfo(nE).HasFlag()) {
         myDS->ChangeFaceInfo(nF);
       }
     }
@@ -190,10 +189,7 @@ void BOPAlgo_PaveFiller::PerformEF()
   aEFs.SetIncrement(iSize);
   //
   for (; myIterator->More(); myIterator->Next()) {
-    myIterator->Value(nE, nF, bJustAdd);
-    if(bJustAdd) {
-      continue;
-    }
+    myIterator->Value(nE, nF);
     //
     const BOPDS_ShapeInfo& aSIE=myDS->ShapeInfo(nE);
     if (aSIE.HasFlag()){//degenerated 
