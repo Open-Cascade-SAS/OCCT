@@ -941,12 +941,29 @@ Draw_Display Draw_Viewer::MakeDisplay (const Standard_Integer id) const
 //function : Select
 //purpose  :
 //=======================================================================
+
 void Draw_Viewer::Select (Standard_Integer& id, Standard_Integer& X, Standard_Integer& Y,
 			  Standard_Integer& Button, Standard_Boolean wait)
 {
   if (Draw_Batch) return;
+  id = X = Y = Button = 0;
+  Standard_Boolean hasView = Standard_False;
+  for (int aViewIter = 0; aViewIter < MAXVIEW; ++aViewIter)
+  {
+    if (myViews[aViewIter] != NULL
+     && myViews[aViewIter]->IsMapped())
+    {
+      hasView = Standard_True;
+      break;
+    }
+  }
+  if (!hasView)
+  {
+    std::cerr << "No selection is possible with no open views\n";
+    return;
+  }
   Flush();
-#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   if (!wait) {
     if (id >=0 && id < MAXVIEW) {
       if (myViews[id]) myViews[id]->Wait(wait);

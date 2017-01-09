@@ -328,6 +328,21 @@ Standard_Boolean Draw_Window::DefineColor (const Standard_Integer&, Standard_CSt
 }
 
 //=======================================================================
+//function : IsMapped
+//purpose  :
+//=======================================================================
+bool Draw_Window::IsMapped() const
+{
+  if (Draw_VirtualWindows
+   || myWindow == NULL)
+  {
+    return false;
+  }
+
+  return [myWindow isVisible];
+}
+
+//=======================================================================
 //function : DisplayWindow
 //purpose  :
 //=======================================================================

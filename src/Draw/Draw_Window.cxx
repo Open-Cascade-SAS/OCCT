@@ -371,6 +371,9 @@ void Draw_Window::Init(Standard_Integer X, Standard_Integer Y,
     // advise to the window manager to place it where I need
     XSetWMNormalHints(Draw_WindowDisplay,win,&myHints);
 
+    Atom aDeleteWindowAtom = Draw_DisplayConnection->GetAtom (Aspect_XA_DELETE_WINDOW);
+    XSetWMProtocols (Draw_WindowDisplay, win, &aDeleteWindowAtom, 1);
+
     if (Draw_VirtualWindows)
     {
       myUseBuffer = Standard_True;
@@ -565,6 +568,25 @@ Standard_Boolean Draw_Window::DefineColor(const Standard_Integer i, const char* 
     return Standard_False;
   thePixels[i % MAXCOLOR] = color.pixel;
   return Standard_True;
+}
+
+//=======================================================================
+//function : IsMapped
+//purpose  :
+//=======================================================================
+bool Draw_Window::IsMapped() const
+{
+  if (Draw_VirtualWindows
+   || win == 0)
+  {
+    return false;
+  }
+
+  XFlush (Draw_WindowDisplay);
+  XWindowAttributes aWinAttr;
+  XGetWindowAttributes (Draw_WindowDisplay, win, &aWinAttr);
+  return aWinAttr.map_state == IsUnviewable
+      || aWinAttr.map_state == IsViewable;
 }
 
 //=======================================================================
@@ -793,9 +815,17 @@ void ProcessEvent(Draw_Window& win, XEvent& xev)
   XComposeStatus stat;
   char chainekey[10];
 
-
-  switch (xev.type) {
-
+  switch (xev.type)
+  {
+  case ClientMessage:
+  {
+    if (xev.xclient.data.l[0] == (int )Draw_DisplayConnection->GetAtom (Aspect_XA_DELETE_WINDOW))
+    {
+      // just hide the window
+      win.Hide();
+    }
+    return;
+  }
   case Expose :
     win.WExpose();
     break;
@@ -1372,6 +1402,11 @@ LRESULT APIENTRY DrawWindow::DrawProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARA
 
   switch (wMsg)
   {
+    case WM_CLOSE:
+    {
+      localObjet->Hide();
+      return 0; // do nothing - window destruction should be performed by application
+    }
     case WM_PAINT:
     {
       PAINTSTRUCT ps;
@@ -1679,6 +1714,22 @@ TCollection_AsciiString DrawWindow::GetTitle() const
   return TCollection_AsciiString (aTitleW);
 }
 
+//=======================================================================
+//function : IsMapped
+//purpose  :
+//=======================================================================
+bool Draw_Window::IsMapped() const
+{
+  if (Draw_VirtualWindows
+   || win == NULL)
+  {
+    return false;
+  }
+
+  LONG aWinStyle = GetWindowLongW (win, GWL_STYLE);
+  return (aWinStyle & WS_VISIBLE)  != 0
+      && (aWinStyle & WS_MINIMIZE) == 0;
+}
 
 /*--------------------------------------------------------*\
 |  DisplayWindow

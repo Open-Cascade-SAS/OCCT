@@ -120,6 +120,8 @@ class Draw_Window
     void SetTitle (const TCollection_AsciiString& theTitle);
     TCollection_AsciiString GetTitle() const;
 
+    //! Return true if window is displayed on the screen.
+    bool IsMapped() const;
     void DisplayWindow();
     void Hide();
     void Destroy();
@@ -285,6 +287,8 @@ class Draw_Window
   void  SetTitle (const TCollection_AsciiString& theTitle);
   TCollection_AsciiString GetTitle() const;
 
+  //! Return true if window is displayed on the screen.
+  bool IsMapped() const;
   void DisplayWindow();
   void Hide();
   void Destroy();
@@ -448,6 +452,8 @@ public:
   __Draw_API TCollection_AsciiString GetTitle() const;
 
   //Affichage
+    //! Return true if window is displayed on the screen.
+    bool IsMapped() const;
   __Draw_API void DisplayWindow();
   __Draw_API void Hide();
   __Draw_API void Destroy();
