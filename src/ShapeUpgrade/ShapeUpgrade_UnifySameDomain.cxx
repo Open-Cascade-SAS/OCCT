@@ -302,6 +302,49 @@ static Handle(Geom_Surface) ClearRts(const Handle(Geom_Surface)& aSurface)
 }
 
 //=======================================================================
+//function : GetNormalToSurface
+//purpose  : Gets the normal to surface by the given parameter on edge.
+//           Returns True if normal was computed.
+//=======================================================================
+static Standard_Boolean GetNormalToSurface(const TopoDS_Face& theFace,
+                                           const TopoDS_Edge& theEdge,
+                                           const Standard_Real theP,
+                                           gp_Dir& theNormal)
+{
+  Standard_Real f, l;
+  // get 2d curve to get point in 2d
+  const Handle(Geom2d_Curve)& aC2d = BRep_Tool::CurveOnSurface(theEdge, theFace, f, l);
+  if (aC2d.IsNull()) {
+    return Standard_False;
+  }
+  //
+  // 2d point
+  gp_Pnt2d aP2d;
+  aC2d->D0(theP, aP2d);
+  //
+  // get D1
+  gp_Vec aDU, aDV;
+  gp_Pnt aP3d;
+  TopLoc_Location aLoc;
+  const Handle(Geom_Surface)& aS = BRep_Tool::Surface(theFace, aLoc);
+  aS->D1(aP2d.X(), aP2d.Y(), aP3d, aDU, aDV);
+  //
+  // compute normal
+  gp_Vec aVNormal = aDU.Crossed(aDV);
+  if (aVNormal.Magnitude() < Precision::Confusion()) {
+    return Standard_False;
+  }
+  //
+  if (theFace.Orientation() == TopAbs_REVERSED) {
+    aVNormal.Reverse();
+  }
+  //
+  aVNormal.Transform(aLoc.Transformation());
+  theNormal = gp_Dir(aVNormal);
+  return Standard_True;
+}
+
+//=======================================================================
 //function : IsSameDomain
 //purpose  : 
 //=======================================================================
@@ -1259,7 +1302,8 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
   // processing each face
   mapF.Clear();
   for (exp.Init(theInpShape, TopAbs_FACE); exp.More(); exp.Next()) {
-    TopoDS_Face aFace = TopoDS::Face(exp.Current().Oriented(TopAbs_FORWARD));
+    const TopoDS_Face& aFaceOriginal = TopoDS::Face(exp.Current());
+    TopoDS_Face aFace = TopoDS::Face(aFaceOriginal.Oriented(TopAbs_FORWARD));
 
     if (aProcessed.Contains(aFace))
       continue;
@@ -1289,11 +1333,23 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
         // non mainfold case is not processed unless myAllowInternal
         continue;
       }
+      //
+      // get normal of the face to compare it with normals of other faces
+      gp_Dir aDN1;
+      //
+      // take intermediate point on edge to compute the normal
+      Standard_Real f, l;
+      BRep_Tool::Range(edge, f, l);
+      Standard_Real aTMid = (f + l) * .5;
+      //
+      Standard_Boolean bCheckNormals = GetNormalToSurface(aFaceOriginal, edge, aTMid, aDN1);
+      //
       // process faces connected through the edge in the current shape
       const TopTools_ListOfShape& aList = aMapEdgeFaces.FindFromKey(edge);
       TopTools_ListIteratorOfListOfShape anIter(aList);
       for (; anIter.More(); anIter.Next()) {
-        TopoDS_Face anCheckedFace = TopoDS::Face(anIter.Value().Oriented(TopAbs_FORWARD));
+        const TopoDS_Face& aCheckedFaceOriginal = TopoDS::Face(anIter.Value());
+        TopoDS_Face anCheckedFace = TopoDS::Face(aCheckedFaceOriginal.Oriented(TopAbs_FORWARD));
         if (anCheckedFace.IsSame(aFace))
           continue;
 
@@ -1303,6 +1359,18 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
         if (IsCheckSharedEdgeOri && !CheckSharedEdgeOri(aFace, anCheckedFace, edge) )
           continue;
 
+        if (bCheckNormals) {
+          // get normal of checked face using the same parameter on edge
+          gp_Dir aDN2;
+          if (GetNormalToSurface(aCheckedFaceOriginal, edge, aTMid, aDN2)) {
+            // and check if the adjacent faces are having approximately same normals
+            Standard_Real anAngle = aDN1.Angle(aDN2);
+            if (anAngle > myAngTol) {
+              continue;
+            }
+          }
+        }
+        //
         if (IsSameDomain(aFace,anCheckedFace, myLinTol, myAngTol)) {
 
           // hotfix for 27271: prevent merging along periodic direction.

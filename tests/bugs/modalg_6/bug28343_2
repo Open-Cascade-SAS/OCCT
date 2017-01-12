@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC28343"
+puts "========"
+puts ""
+#################################################
+# Modeling: ShapeUpgrade_UnifySameDomain algorithm produces invalid shape
+#################################################
+
+restore [locate_data_file bug28343_shape2.brep] s
+
+unifysamedom result s -a 1.e-4
+checkshape result
+bopargcheck result
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
