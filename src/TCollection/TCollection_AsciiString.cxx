@@ -219,9 +219,10 @@ TCollection_AsciiString::TCollection_AsciiString(
 //---------------------------------------------------------------------------
 TCollection_AsciiString::TCollection_AsciiString(const TCollection_ExtendedString& astring,
                                                  const Standard_Character replaceNonAscii) 
-     : mystring(0)
+: mystring (0)
 {
-  if (replaceNonAscii || astring.IsAscii()) {
+  if (replaceNonAscii)
+  {
     mylength = astring.Length(); 
     mystring = Allocate(mylength+1);
     for(int i = 0; i < mylength; i++) {
