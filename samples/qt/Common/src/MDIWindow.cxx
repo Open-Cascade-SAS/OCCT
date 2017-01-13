@@ -128,7 +128,9 @@ void MDIWindow::dump()
     if ( !QFileInfo( file ).completeSuffix().length() )
       file += QString( ".bmp" );
 
-    bool res = myView->dump( (Standard_CString)file.toLatin1().constData() );
+    const TCollection_AsciiString anUtf8Path (file.toUtf8().data());
+
+    bool res = myView->dump( anUtf8Path.ToCString() );
     QApplication::restoreOverrideCursor();                
     if ( !res )
     {

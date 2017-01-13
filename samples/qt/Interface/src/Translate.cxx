@@ -457,7 +457,10 @@ bool Translate::exportBREP( const QString& file, const Handle(TopTools_HSequence
         return false;
 
     TopoDS_Shape shape = shapes->Value( 1 );
-    return BRepTools::Write( shape, (Standard_CString)file.toLatin1().constData() ); 
+    
+    const TCollection_AsciiString anUtf8Path (file.toUtf8().data());
+    
+    return BRepTools::Write( shape, anUtf8Path.ToCString() ); 
 }
 
 bool Translate::exportIGES( const QString& file, const Handle(TopTools_HSequenceOfShape)& shapes )
@@ -472,7 +475,10 @@ bool Translate::exportIGES( const QString& file, const Handle(TopTools_HSequence
 	for ( int i = 1; i <= shapes->Length(); i++ )
 		writer.AddShape ( shapes->Value( i ) );
 	writer.ComputeModel();
-	return writer.Write( (Standard_CString)file.toLatin1().constData() );
+	
+	const TCollection_AsciiString anUtf8Path (file.toUtf8().data());
+	
+	return writer.Write( anUtf8Path.ToCString() );
 }
 
 bool Translate::exportSTEP( const QString& file, const Handle(TopTools_HSequenceOfShape)& shapes )
@@ -500,8 +506,10 @@ bool Translate::exportSTEP( const QString& file, const Handle(TopTools_HSequence
         if ( status != IFSelect_RetDone )
             return false;
     }
+    
+    const TCollection_AsciiString anUtf8Path (file.toUtf8().data());
 
-    status = writer.Write( (Standard_CString)file.toLatin1().constData() );
+    status = writer.Write( anUtf8Path.ToCString() );
 
     switch ( status )
     {
@@ -539,7 +547,10 @@ bool Translate::exportSTL( const QString& file, const Handle(TopTools_HSequenceO
 	}
 
 	StlAPI_Writer writer;
-	writer.Write( res, (Standard_CString)file.toLatin1().constData() );
+	
+	const TCollection_AsciiString anUtf8Path (file.toUtf8().data());
+	
+	writer.Write( res, anUtf8Path.ToCString() );
 
     return true;
 }
@@ -565,7 +576,10 @@ bool Translate::exportVRML( const QString& file, const Handle(TopTools_HSequence
 	}
 
 	VrmlAPI_Writer writer;
-	writer.Write( res, (Standard_CString)file.toLatin1().constData() );
+	
+	const TCollection_AsciiString anUtf8Path (file.toUtf8().data());
+	
+	writer.Write( res, anUtf8Path.ToCString() );
 
     return true;
 }

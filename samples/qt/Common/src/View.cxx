@@ -1011,8 +1011,10 @@ void View::onEnvironmentMap()
   {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "",
                            tr("All Image Files (*.bmp *.gif *.jpg *.jpeg *.png *.tga)"));
-
-    Handle(Graphic3d_TextureEnv) aTexture = new Graphic3d_TextureEnv( fileName.toLatin1().data() );
+    
+    const TCollection_AsciiString anUtf8Path (fileName.toUtf8().data());
+    
+    Handle(Graphic3d_TextureEnv) aTexture = new Graphic3d_TextureEnv( anUtf8Path );
 
     myView->SetTextureEnv (aTexture);
   }
