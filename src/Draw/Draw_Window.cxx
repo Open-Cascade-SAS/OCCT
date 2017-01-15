@@ -2041,8 +2041,18 @@ static DWORD WINAPI readStdinThreadFunc()
     return 1;
   }
 
-  // set console locale
+  // Console locale could be set to the system codepage .OCP (UTF-8 is not properly supported on Windows).
+  // However, to use it, we have to care using std::wcerr/fwprintf/WriteConsoleW for non-ascii strings everywhere (including Tcl itself),
+  // or otherwise we can have incomplete output issues
+  // (e.g. UNICODE string will be NOT just corrupted as in case when we don't set setlocale()
+  // but will break further normal output to console due to special characters being accidentally handled by console in the wrong way).
   //setlocale (LC_ALL, ".OCP");
+
+  // _O_U16TEXT can be used with fgetws() to get similar result as ReadConsoleW() without affecting setlocale(),
+  // however it would break pipe input
+  //_setmode (_fileno(stdin), _O_U16TEXT);
+
+  bool isConsoleInput = true;
   for (;;)
   {
     while (console_semaphore != WAIT_CONSOLE_COMMAND)
@@ -2050,23 +2060,38 @@ static DWORD WINAPI readStdinThreadFunc()
       Sleep (100);
     }
 
-    DWORD aNbRead = 0;
-    if (ReadConsoleW (GetStdHandle(STD_INPUT_HANDLE), console_command, THE_COMMAND_SIZE, &aNbRead, NULL))
-    //if (fgetws (console_command, THE_COMMAND_SIZE, stdin)) // fgetws() works only for characters within active locale (see setlocale())
+    const HANDLE anStdIn = ::GetStdHandle (STD_INPUT_HANDLE);
+    if (anStdIn != NULL
+     && anStdIn != INVALID_HANDLE_VALUE
+     && isConsoleInput)
     {
-      console_command[aNbRead] = L'\0';
-      // tcl will skip newline symbols - no need to strip them here
-      /*--aNbRead;
-      for (; aNbRead >= 0; --aNbRead)
+      DWORD aNbRead = 0;
+      if (ReadConsoleW (anStdIn, console_command, THE_COMMAND_SIZE, &aNbRead, NULL))
       {
-        if (console_command[aNbRead] == L'\r'
-         || console_command[aNbRead] == L'\n')
+        console_command[aNbRead] = L'\0';
+        console_semaphore = HAS_CONSOLE_COMMAND;
+        continue;
+      }
+      else
+      {
+        const DWORD anErr = GetLastError();
+        if (anErr == ERROR_INVALID_HANDLE)
         {
-          console_command[aNbRead] = '\0';
+          // fallback using fgetws() which would work with pipes
+          // but supports Unicode only through multi-byte encoding (which is not UTF-8)
+          isConsoleInput = false;
+        }
+        else
+        {
+          std::cerr << "Error #" << anErr << " occurred while reading console input\n";
           continue;
         }
-        break;
-      }*/
+      }
+    }
+
+    // fgetws() works only for characters within active locale (see setlocale())
+    if (fgetws (console_command, THE_COMMAND_SIZE, stdin))
+    {
       console_semaphore = HAS_CONSOLE_COMMAND;
     }
   }
