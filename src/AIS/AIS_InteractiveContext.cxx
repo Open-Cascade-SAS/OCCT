@@ -2354,13 +2354,32 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
   myMainPM->Erase (theIObj, -1);
 
   // Object removes from Detected sequence
-  for (Standard_Integer aDetIter = myDetectedSeq.Lower(); aDetIter <= myDetectedSeq.Upper(); ++aDetIter)
+  Standard_Integer aDetIter = myDetectedSeq.Lower();
+  while (aDetIter <= myDetectedSeq.Upper())
   {
-    Handle(AIS_InteractiveObject) anObj = DetectedCurrentObject();
+    Handle(SelectMgr_EntityOwner) aPicked = myMainSel->Picked (myDetectedSeq (aDetIter));
+    Handle(AIS_InteractiveObject) anObj;
+    if (!aPicked.IsNull())
+    {
+      anObj = Handle(AIS_InteractiveObject)::DownCast (aPicked->Selectable());
+    }
+
     if (!anObj.IsNull()
-      && anObj != theIObj)
+      && anObj == theIObj)
     {
       myDetectedSeq.Remove (aDetIter);
+      if (myCurDetected == aDetIter)
+      {
+        myCurDetected = Min (myDetectedSeq.Upper(), aDetIter);
+      }
+      if (myCurHighlighted == aDetIter)
+      {
+        myCurHighlighted = 0;
+      }
+    }
+    else
+    {
+      aDetIter++;
     }
   }
 
@@ -2382,6 +2401,7 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
      || myLastPicked->IsSameSelectable(theIObj))
     {
       myLastinMain.Nullify();
+      myLastPicked.Nullify();
       myMainPM->ClearImmediateDraw();
     }
   }
