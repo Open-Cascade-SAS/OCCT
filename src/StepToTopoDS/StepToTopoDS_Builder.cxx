@@ -89,8 +89,6 @@
 #include <TransferBRep.hxx>
 
 #include <stdio.h>
-//#include <StepShape_VertexShell.hxx>
-//:e0
 static void ResetPreci (const TopoDS_Shape& S, Standard_Real maxtol)
 {
   //:S4136
@@ -99,12 +97,6 @@ static void ResetPreci (const TopoDS_Shape& S, Standard_Real maxtol)
     ShapeFix_ShapeTolerance STU;
     STU.LimitTolerance (S,Precision::Confusion(),maxtol);
   }
-//  Standard_Real ratio = Interface_Static::RVal("XSTEP.readprecision.ratio");
-//  if (ratio >= 1) {
-//    Standard_Real lastpre = Interface_Static::RVal("lastpreci");
-//    ShapeFix_ShapeTolerance STU;
-//    STU.LimitTolerance (S,lastpre/ratio,lastpre*ratio);
-//  }
 }
 
 // ============================================================================
@@ -440,10 +432,10 @@ void StepToTopoDS_Builder::Init
       aCShell = aFBABWV->VoidsValue(i);
       myTranShell.Init(aCShell, myTool, dummyNMTool);
       if (myTranShell.IsDone()) {
-	Sh = myTranShell.Value();
-	Sh.Closed(Standard_True);
-	//BRepLib::SameParameter(Sh);
-	B.Add(S,Sh);
+        Sh = myTranShell.Value();
+        Sh.Closed(Standard_True);
+        //BRepLib::SameParameter(Sh);
+        B.Add(S, Sh);
       }
       else {
 	TP->AddWarning
@@ -498,48 +490,32 @@ void StepToTopoDS_Builder::Init
   myTranShell.SetMaxTol(MaxTol());
 
   Message_ProgressSentry PS ( TP->GetProgress(), "Shell", 0, Nb, 1 );
-  for (Standard_Integer i=1; i<=Nb && PS.More(); i++, PS.Next()) {
-  //for (Standard_Integer i=1; i<=Nb; i++) {
+  for (Standard_Integer i = 1; i <= Nb && PS.More(); i++, PS.Next()) {
     aShell = aSBSM->SbsmBoundaryValue(i);
-    //aVertexShell = aShell.VertexShell();
-    aOpenShell   = aShell.OpenShell();
+    aOpenShell = aShell.OpenShell();
     aClosedShell = aShell.ClosedShell();
-    //if (!aVertexShell.IsNull()) {
-    //TP->AddWarning
-    //(aVertexShell,
-    //" VertexShell from ShellBasedSurfaceModel not mapped to TopoDS");
-    //}
-    //else 
     if (!aOpenShell.IsNull()) {
       myTranShell.Init(aOpenShell, myTool, NMTool);
       if (myTranShell.IsDone()) {
-	//Sh = myTranShell.Value();
-	//Sh.Closed(Standard_False);
-	//BRepLib::SameParameter(Sh);
-	//B.Add(S,Sh);
-	Shl = TopoDS::Shell(myTranShell.Value());
-	Shl.Closed(Standard_False);
-	B.Add(S,Shl);
+        Shl = TopoDS::Shell(myTranShell.Value());
+        Shl.Closed(Standard_False);
+        B.Add(S, Shl);
       }
-      else { 
-	TP->AddWarning
-	  (aOpenShell," OpenShell from ShellBasedSurfaceModel not mapped to TopoDS");
+      else {
+        TP->AddWarning
+          (aOpenShell, " OpenShell from ShellBasedSurfaceModel not mapped to TopoDS");
       }
     }
     else if (!aClosedShell.IsNull()) {
       myTranShell.Init(aClosedShell, myTool, NMTool);
       if (myTranShell.IsDone()) {
-	//Sh = myTranShell.Value();
-	//Sh.Closed(Standard_True);
-	//BRepLib::SameParameter(Sh);
-	//B.Add(S,Sh);
-	Shl = TopoDS::Shell(myTranShell.Value());
-	Shl.Closed(Standard_True);
-	B.Add(S,Shl);
+        Shl = TopoDS::Shell(myTranShell.Value());
+        Shl.Closed(Standard_True);
+        B.Add(S, Shl);
       }
-      else { 
-	TP->AddWarning
-	  (aClosedShell," ClosedShell from ShellBasedSurfaceModel not mapped to TopoDS");
+      else {
+        TP->AddWarning
+          (aClosedShell, " ClosedShell from ShellBasedSurfaceModel not mapped to TopoDS");
       }
     }
   }
@@ -735,13 +711,6 @@ void StepToTopoDS_Builder::Init
  const Handle(Transfer_ActorOfTransientProcess)& RA,
  const Standard_Boolean isManifold)
 {
-  // Initialisation of the Tool
-
-//  StepToTopoDS_Tool         myTool;
-//  StepToTopoDS_DataMapOfTRI aMap;
-
-//  myTool.Init(aMap, TP);
-
   // Start Mapping
   TopoDS_Compound S;
   BRep_Builder B;
@@ -773,42 +742,42 @@ void StepToTopoDS_Builder::Init
 
       // try composite_curve
       Handle(StepGeom_CompositeCurve) CC = Handle(StepGeom_CompositeCurve)::DownCast(aCrv);
-      if ( ! CC.IsNull() ) {
-	StepToTopoDS_TranslateCompositeCurve TrCC;
-	TrCC.SetPrecision(preci);
-	TrCC.SetMaxTol(maxtol);
-	TrCC.Init( CC, TP );
-	if ( TrCC.IsDone() ) 
-	{
-	  if (TrCC.IsInfiniteSegment())
-	  {
-	    BRep_Builder aB;
-	    TopoDS_Compound aComp;
-	    aB.MakeCompound(aComp);
-	    TopExp_Explorer anExp;
-	    for (anExp.Init (TrCC.Value(), TopAbs_EDGE); anExp.More(); anExp.Next())
-	      aB.Add (aComp, anExp.Current());
-	    res = aComp;
-	  }
-	  else
-	    res = TrCC.Value();
-	}
+      if (!CC.IsNull()) {
+        StepToTopoDS_TranslateCompositeCurve TrCC;
+        TrCC.SetPrecision(preci);
+        TrCC.SetMaxTol(maxtol);
+        TrCC.Init(CC, TP);
+        if (TrCC.IsDone())
+        {
+          if (TrCC.IsInfiniteSegment())
+          {
+            BRep_Builder aB;
+            TopoDS_Compound aComp;
+            aB.MakeCompound(aComp);
+            TopExp_Explorer anExp;
+            for (anExp.Init(TrCC.Value(), TopAbs_EDGE); anExp.More(); anExp.Next())
+              aB.Add(aComp, anExp.Current());
+            res = aComp;
+          }
+          else
+            res = TrCC.Value();
+        }
       }
       else { // try other curves
-	Handle(Geom_Curve) aGeomCrv;
-	try {
-	  OCC_CATCH_SIGNALS
-          aGeomCrv = StepToGeom::MakeCurve (aCrv);
-	}
-	catch(Standard_Failure const& anException) {
-	  Handle(Message_Messenger) sout = TP->Messenger();
-	  sout<<"StepToTopoDS, GeometricSet, elem "<<i<<" of "<<nbElem<<": exception ";
-	  sout<<anException.GetMessageString() << endl;
-	}
-	if ( ! aGeomCrv.IsNull() ) {
-	  BRepBuilderAPI_MakeEdge anEdge(aGeomCrv, aGeomCrv->FirstParameter(), aGeomCrv->LastParameter());
-	  if ( anEdge.IsDone() ) res = anEdge.Edge();
-	}
+        Handle(Geom_Curve) aGeomCrv;
+        try {
+          OCC_CATCH_SIGNALS
+            aGeomCrv = StepToGeom::MakeCurve(aCrv);
+        }
+        catch (Standard_Failure const& anException) {
+          Handle(Message_Messenger) sout = TP->Messenger();
+          sout << "StepToTopoDS, GeometricSet, elem " << i << " of " << nbElem << ": exception ";
+          sout << anException.GetMessageString() << endl;
+        }
+        if (!aGeomCrv.IsNull()) {
+          BRepBuilderAPI_MakeEdge anEdge(aGeomCrv, aGeomCrv->FirstParameter(), aGeomCrv->LastParameter());
+          if (anEdge.IsDone()) res = anEdge.Edge();
+        }
       }
     }
     // try point
@@ -821,39 +790,39 @@ void StepToTopoDS_Builder::Init
       }
     }
     // Element should finally be a Surface
-    else if ( ent->IsKind(STANDARD_TYPE(StepGeom_Surface)) ) {
-      Handle(StepGeom_Surface) aSurf = 
-	Handle(StepGeom_Surface)::DownCast(ent);
-	
+    else if (ent->IsKind(STANDARD_TYPE(StepGeom_Surface))) {
+      Handle(StepGeom_Surface) aSurf =
+        Handle(StepGeom_Surface)::DownCast(ent);
+
       // try curve_bounded_surf
-      if ( ent->IsKind(STANDARD_TYPE(StepGeom_CurveBoundedSurface)) ) {
-	Handle(StepGeom_CurveBoundedSurface) CBS = 
-	  Handle(StepGeom_CurveBoundedSurface)::DownCast(aSurf);
-	StepToTopoDS_TranslateCurveBoundedSurface TrCBS;
-	TrCBS.SetPrecision(preci);
-	TrCBS.SetMaxTol(maxtol);
-	
-	TrCBS.Init( CBS, TP );
-	if ( TrCBS.IsDone() ) res = TrCBS.Value();
+      if (ent->IsKind(STANDARD_TYPE(StepGeom_CurveBoundedSurface))) {
+        Handle(StepGeom_CurveBoundedSurface) CBS =
+          Handle(StepGeom_CurveBoundedSurface)::DownCast(aSurf);
+        StepToTopoDS_TranslateCurveBoundedSurface TrCBS;
+        TrCBS.SetPrecision(preci);
+        TrCBS.SetMaxTol(maxtol);
+
+        TrCBS.Init(CBS, TP);
+        if (TrCBS.IsDone()) res = TrCBS.Value();
       }
       // try RectangularCompositeSurface
-      else if ( ent->IsKind(STANDARD_TYPE(StepGeom_RectangularCompositeSurface)) ) {
-	Handle(StepGeom_RectangularCompositeSurface) RCS = 
-	  Handle(StepGeom_RectangularCompositeSurface)::DownCast(aSurf);
-	Standard_Integer nbi = RCS->NbSegmentsI();
-	Standard_Integer nbj = RCS->NbSegmentsJ();
-	TopoDS_Compound C;
-	B.MakeCompound ( C );
-	for ( Standard_Integer ii=1; ii <= nbi; ii++ ) 
-	  for ( Standard_Integer j=1; j <= nbj; j++ ) {
-	    Handle(StepGeom_SurfacePatch) patch = RCS->SegmentsValue ( ii, j );
-	    TopoDS_Face f = TranslateBoundedSurf (patch->ParentSurface(), preci);
-	    if ( ! f.IsNull() ) B.Add ( C, f );
-	  }
-	res = C;
+      else if (ent->IsKind(STANDARD_TYPE(StepGeom_RectangularCompositeSurface))) {
+        Handle(StepGeom_RectangularCompositeSurface) RCS =
+          Handle(StepGeom_RectangularCompositeSurface)::DownCast(aSurf);
+        Standard_Integer nbi = RCS->NbSegmentsI();
+        Standard_Integer nbj = RCS->NbSegmentsJ();
+        TopoDS_Compound C;
+        B.MakeCompound(C);
+        for (Standard_Integer ii = 1; ii <= nbi; ii++)
+          for (Standard_Integer j = 1; j <= nbj; j++) {
+            Handle(StepGeom_SurfacePatch) patch = RCS->SegmentsValue(ii, j);
+            TopoDS_Face f = TranslateBoundedSurf(patch->ParentSurface(), preci);
+            if (!f.IsNull()) B.Add(C, f);
+          }
+        res = C;
       }
       // try other surfs
-      else res = TranslateBoundedSurf (aSurf, preci);
+      else res = TranslateBoundedSurf(aSurf, preci);
     }
     else if ( ent->IsKind(STANDARD_TYPE(StepGeom_GeometricRepresentationItem)) )
     {

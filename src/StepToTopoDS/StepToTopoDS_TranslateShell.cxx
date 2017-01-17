@@ -81,26 +81,26 @@ void StepToTopoDS_TranslateShell::Init
     myTranFace.SetMaxTol(MaxTol());
 
     Message_ProgressSentry PS ( TP->GetProgress(), "Face", 0, NbFc, 1 );
-    for (Standard_Integer i=1; i<=NbFc && PS.More(); i++, PS.Next()) {
+    for (Standard_Integer i = 1; i <= NbFc && PS.More(); i++, PS.Next()) {
 #ifdef OCCT_DEBUG
       cout << "Processing Face : " << i << endl;
 #endif
       StepFace = CFS->CfsFacesValue(i);
-      Handle(StepShape_FaceSurface) theFS = 
-	Handle(StepShape_FaceSurface)::DownCast(StepFace);
+      Handle(StepShape_FaceSurface) theFS =
+        Handle(StepShape_FaceSurface)::DownCast(StepFace);
       if (!theFS.IsNull()) {
-	myTranFace.Init(theFS, aTool, NMTool);
-	if (myTranFace.IsDone()) {
-	  S = myTranFace.Value();
-	  F = TopoDS::Face(S);
-	  B.Add(Sh, F);
-	}
-	else { // Warning only + add FaceSurface file Identifier
-	  TP->AddWarning(theFS," a Face from Shell not mapped to TopoDS");
-	}
+        myTranFace.Init(theFS, aTool, NMTool);
+        if (myTranFace.IsDone()) {
+          S = myTranFace.Value();
+          F = TopoDS::Face(S);
+          B.Add(Sh, F);
+        }
+        else { // Warning only + add FaceSurface file Identifier
+          TP->AddWarning(theFS, " a Face from Shell not mapped to TopoDS");
+        }
       }
-      else { // Warning : ajouter identifier
-	TP->AddWarning(StepFace," Face is not of FaceSurface Type; not mapped to TopoDS");
+      else { // Warning : add identifier
+        TP->AddWarning(StepFace, " Face is not of FaceSurface Type; not mapped to TopoDS");
       }
     }
     Sh.Closed (BRep_Tool::IsClosed (Sh));

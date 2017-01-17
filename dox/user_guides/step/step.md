@@ -48,7 +48,7 @@ This provides a natural way to deal with non-supported protocols when they share
 
 @subsection occt_step_1_2 STEP Interface
 
-The STEP interface reads STEP files produced in accordance with STEP Application Protocol 214 (Conformance Class 2 both CD and DIS versions of schema) and translates them to Open CASCADE Technology models. STEP Application Protocol 203 is also supported.
+The STEP interface reads STEP files produced in accordance with STEP Application Protocol 214 (Conformance Class 2 both CD and DIS versions of schema) and translates them to Open CASCADE Technology models. STEP Application Protocol 203 and some parts of AP242 are also supported.
 
 The STEP interface also translates OCCT models to STEP files. STEP files that are produced by this interface conform to STEP AP 203 or AP 214 (Conformance Class 2, either CD or DIS version of the schema) depending on the user's option.
 
@@ -56,7 +56,7 @@ Basic interface reads and writes geometrical, topological STEP data and assembly
 
 The interface is able to translate one entity, a group of entities or a whole file.
 
-Other kinds of data such as colors, validation properties, layers, names and the structure of assemblies can be read or written with the help of XDE tools: <i> STEPCAFControl_Reader</i> and <i> STEPCAFControl_Writer</i>. 
+Other kinds of data such as colors, validation properties, layers, GD&T, names and the structure of assemblies can be read or written with the help of XDE tools: <i> STEPCAFControl_Reader</i> and <i> STEPCAFControl_Writer</i>. 
 
 To choose a translation mode when exporting to a STEP format, use <i> STEPControl_STEPModelType</i>.
 
@@ -309,12 +309,12 @@ Note that the following parameters have effect only if *read.step.product.mode* 
 
 <h4>read.step.product.context:</h4>
 
-When reading AP 209 STEP files, allows selecting either only ‘design’ or ‘analysis’, or both types of products for translation 
+When reading AP 209 STEP files, allows selecting either only `design' or `analysis', or both types of products for translation 
 * 1 (all) --  translates all products;
-* 2 (design) -- translates only products that have *PRODUCT_DEFINITION_CONTEXT* with field *life_cycle_stage* set to ‘design’; 
-* 3 (analysis) --   translates only products associated with *PRODUCT_DEFINITION_CONTEXT* entity whose field *life_cycle_stage* set to ‘analysis’. 
+* 2 (design) -- translates only products that have *PRODUCT_DEFINITION_CONTEXT* with field *life_cycle_stage* set to `design'; 
+* 3 (analysis) --   translates only products associated with *PRODUCT_DEFINITION_CONTEXT* entity whose field *life_cycle_stage* set to `analysis'. 
 
-Note that in AP 203 and AP214 files all products should be marked as ‘design’, so if this mode is set to ‘analysis’, nothing will be read. 
+Note that in AP 203 and AP214 files all products should be marked as `design', so if this mode is set to `analysis', nothing will be read. 
 
 Read this parameter with: 
 ~~~~~
@@ -522,12 +522,12 @@ There is a number of predefined operators that can be used. They are:
 Cumulative lists can be used as well.
  
 <h5>Single entities</h5>
-You can select an entity either by its rank or by its handle (an entity’s handle can be obtained by invoking the *StepData_StepModel::Entity* function). 
+You can select an entity either by its rank or by its handle (an entity's handle can be obtained by invoking the *StepData_StepModel::Entity* function). 
 
 <h5>Selection by rank</h5>
 Use method *StepData_StepModel::NextNumberForLabel* to find its rank with the following: 
 ~~~~~
-Standard_CString label = ‘#...’; 
+Standard_CString label = `#...'; 
 StepData_StepModel model = reader.StepModel(); 
 rank = model->NextNumberForLabe(label, 0, Standard_False); 
 ~~~~~
@@ -546,7 +546,7 @@ Standard_Boolean ok = reader.TransferEntity (ent);
 Tables given in this paragraph show the mapping of STEP entities to OCCT objects. Only topological and geometrical STEP entities and entities defining assembly structures are described in this paragraph. For a full list of STEP entities please refer to Appendix A. 
 
 @subsubsection occt_step_2_4_1 Assembly structure representation entities
-Not all entities defining the assembly structure in the STEP file are translated to OCCT shapes, but they are used to identify the relationships between assemblies and their components. Since the graph of ‘natural’ dependencies of entities based on direct references between them does not include the references from assemblies to their components, these dependencies are introduced in addition to the former ones. This is made basing on the analysis of the following entities describing the structure of the assembly. 
+Not all entities defining the assembly structure in the STEP file are translated to OCCT shapes, but they are used to identify the relationships between assemblies and their components. Since the graph of `natural' dependencies of entities based on direct references between them does not include the references from assemblies to their components, these dependencies are introduced in addition to the former ones. This is made basing on the analysis of the following entities describing the structure of the assembly. 
 
 | STEP entity type | CASCADE shape | Comments |
 | :--------------- | :-------------- | :------ |
@@ -861,10 +861,11 @@ Default value is 0.
 
 <h4>write.step.schema</h4>
 defines the version of schema used for the output STEP file:  
-    * 1 or ;AP214CD; (default): AP214, CD version (dated 26 November 1996), 
-    *  2 or ;AP214DIS;: AP214, DIS version (dated 15 September 1998). 
-    *  3 or ;AP203;: AP203, possibly with modular extensions (depending on data written to a file). 
-    *  4 or *AP214IS*: AP214, IS version (dated 2002) 
+    * 1 or *AP214CD* (default): AP214, CD version (dated 26 November 1996), 
+    * 2 or *AP214DIS*: AP214, DIS version (dated 15 September 1998). 
+    * 3 or *AP203*: AP203, possibly with modular extensions (depending on data written to a file). 
+    * 4 or *AP214IS*: AP214, IS version (dated 2002) 
+    * 5 or *AP242DIS*: AP242, DIS version. 
 
 Read this parameter with: 
 ~~~~~
@@ -879,7 +880,7 @@ Default value is 1 (;CD;).
 For the parameter *write.step.schema* to take effect, method *STEPControl_Writer::Model(Standard_True)* should be called after changing this parameter (corresponding command in DRAW is *newmodel*).
  
 <h4>write.step.product.name</h4>
-Defines the text string that will be used for field ‘name’ of PRODUCT entities written to the STEP file. 
+Defines the text string that will be used for field `name' of PRODUCT entities written to the STEP file. 
 
 Default value: OCCT STEP translator (current OCCT version number). 
 
@@ -1148,6 +1149,8 @@ The following steps should be taken:
      * Repr 
      * AP214 
      * AP203 
+     * AP242
+     
 Each field of a STEP entity should be represented by a corresponding field of this class. The class should have methods for initializing, setting and obtaining fields and it should also have the default constructor. 
 * Create the *RWStepxxx_RWNewEntity* class with a default constructor and methods *ReadStep()*, *WriteStep()* and if the entity references other entities, then method *Share()*. 
 * Update file *StepAP214_Protocol.cxx*. In the constructor *StepAP214_Protocol::StepAP214_Protocol()* add the new type to the map of registered types and associate the unique integer identifier with this type. 
@@ -1387,14 +1390,15 @@ It is necessary to call command *newmodel* to perform a new translation of the n
 
 @section occt_step_7 Reading from and writing to STEP
 
-The *STEPCAFControl* package (TKXDESTEP toolkit) provides tools to read and write STEP files (see XDE User’s Guide). 
+The *STEPCAFControl* package (TKXDESTEP toolkit) provides tools to read and write STEP files (see XDE User's Guide). 
 
 In addition to the translation of shapes implemented in basic translator, it provides the following: 
   * STEP assemblies, read as OCCT compounds by basic translator, are translated to XDE assemblies;
   * Names of products are translated and assigned to assembly components and instances in XDE;
   * STEP external references are recognized and translated (if external documents are STEP files);
   * Colors, layers, materials and validation properties assigned to parts or subparts are translated;
-  * STEP dimensional tolerances are translated.
+  * STEP Geometric Dimensions and Tolerances are translated;
+  * STEP Saved Views are translated.
   
 @subsection occt_step_7_1 Reading from STEP
 
@@ -1433,7 +1437,115 @@ Standard_Boolean ok = reader.Transfer(doc);
 ~~~~~
 where *doc* is a variable which contains a handle to the output document and should have a type *Handle(TDocStd_Document)*. 
 
-@subsection occt_step_7_2 Writing to STEP
+
+@subsection occt_step_7_2 Attributes read from STEP 
+
+### Colors
+Colors are implemented in accordance with <a href="http://www.cax-if.org/documents/rec_prac_styling_org_v15.pdf">Recommended practices for model styling and organization</a> sections 4 and 5.
+
+The following attributes are imported from STEP file:
+* colors linked to assemblies, solids, shells, faces/surfaces, wireframes, edges/curves and vertices/points;
+* information about invisibility.
+
+The following attributes are mentioned in the Recommended Practices, but not handled by OCCT:
+* styling different sides of surfaces with different colors;
+* transparency and reflectance for surfaces;
+* curve styles;
+* point markers.
+
+### Layers
+Layers are implemented in accordance with <a href="http://www.cax-if.org/documents/rec_prac_styling_org_v15.pdf">Recommended practices  for model styling and organization</a> section 6.
+All layers are imported, but invisibility styles are skipped.
+
+### Materials
+Materials are implemented in accordance with <a href="http://www.cax-if.org/documents/RecPrac_MaterialDensity_v21.pdf">Recommended practices for material identification and density</a> section 4.
+OCCT translator processes materials attached to solids in shape representations. The name, description and density (name and value) are imported for each material. 
+
+### Validation properties
+Validation properties are implemented in accordance with <a href="http://www.cax-if.org/documents/rec_prac_gvp_v44.pdf">Recommended practices for geometric and assembly validation properties</a> section 4 for AP214.
+OCCT processes several types of geometric validation properties for solids, shells and geometric sets:
+* area;
+* volume;
+* centroid.
+
+### Geometric dimensions and tolerances
+General types of STEP entities imported by OCCT are listed in the table below:
+|STEP entity|OCCT attribute|
+| :------------ | :----- |
+|Dimensional_Size|XCAFDoc_Dimension|
+|Dimensional_Location|XCAFDoc_Dimension|
+|Dimensional_Size_With_Path|XCAFDoc_Dimension|
+|Dimensional_Location_With_Path|XCAFDoc_Dimension|
+|Angular_Size|XCAFDoc_Dimension|
+|Angular_Location|XCAFDoc_Dimension|
+|Geometric_Tolerance and subtypes|XCAFDoc_GeometricTolerance|
+|Datum|XCAFDoc_Datum|
+|Datum_Feature|XCAFDoc_Datum|
+|Datum_Target|XCAFDoc_Datum|
+
+Processing of GD&T is realized in accordance with <a href="http://www.cax-if.org/documents/rec_pracs_pmi_v40.pdf">Recommended practices for the Representation and Presentation of Product Manufacturing</a> for AP242.
+The general restriction is that OCCT STEP Reader imports GD&T assigned only to shapes (faces, edges, vertices, etc) or to shape groups from general shape model i.e. any constructive geometries are not translated as referenced shapes.
+
+#### Dimensions
+Dimensions are implemented according to section 5 of the latter document.
+Additionally to the reference shapes, the Reader imports from STEP file some auxiliary geometry for dimensional line building: connection points and line orientation, if exist.
+
+The following values and modifiers described in sections 5.2 and 5.3 can be imported from STEP file:
+- qualifiers (minimum, maximum and average);
+- plus/minus bounds;
+- value range;
+- class of tolerance;
+- text notes, attached to dimension value;
+- dimension modifiers type 2 (Table 8);
+- number of decimal places.
+
+#### Datums
+Datums are implemented in accordance with sections 6.5 and 6.6.1-6.6.2.
+Each datum can have one or several datum features (shapes from the model, to which the datum is linked) and datum targets (auxiliary geometry: point, line, rectangle, circle or area).
+
+#### Tolerances
+Tolerances are implemented in accordance with sections 6.7-6.9 with several restrictions.
+
+Types of imported tolerances:
+- simple tolerances (see Table 10);
+- tolerance with modifiers (section 6.9.3);
+- tolerance with maximum value (section 6.9.5);
+- tolerance with datums (section 6.9.7 (simple datums and datum with modifiers) and 6.9.8 (common datums));
+- superposition of the mentioned types.
+
+Not all tolerance zones can be imported by OCCT STEP Reader, only the Tolerance Zones with associated symbols from *Table 11, Projected tolerance zone* (section 6.9.2.2) and *Runout zone* definition.
+
+#### Presentations
+Each semantic representation of GD&T (Dimension, Tolerance, Datum Feature or Datum Target) can have a presentation; its processing by OCCT is implemented in accordance with sections 7.3, 8 and 9.1-9.2.
+Presentations have several types:
+- *Graphic Presentation* (polylines or tessellated wireframes) - partially implemented in OCCT;
+- *Minimal Presentation* (position and orientation) - implemented in OCCT as a part of Graphic presentation;
+- *Character-based Presentation* (3D Text with information about fonts, curve styles etc.) - not handled by OCCT.
+
+Note, that separate Minimal presentation and Character-based Presentation are not described in any Recommended Practices, so there is no agreement about how such information should be saved in STEP file.
+
+OCCT STEP Reader imports only Annotation Planes, outline/stroked Polylines and Tessellated wireframes, i.e. all styling information (color, curve style, etc.) and filled characters are missed. 
+
+OCCT STEP Reader also handles Annotations, linked directly to shapes (section 9.3.1), processing of these presentations is subject to the same restrictions as the processing of presentations, linked to GD&T semantic.
+
+#### Geometric dimensions and tolerances AP214
+Simple types of GD&T (Dimensions, Tolerances and Datums without presentations or any types of modifiers) are also handled in AP214. However, according to the Recommended Practices for the Representation and Presentation of Product Manufacturing, this implementation is obsolete.
+
+### Saved views
+Saved views are implemented in accordance with <a href="http://www.cax-if.org/documents/rec_pracs_pmi_v40.pdf">Recommended practices for the Representation and Presentation of Product Manufacturing</a> section 9.4.1-9.4.4.
+For each Saved View OCCT STEP Reader will retrieve the following attributes:
+- set of displayed shape representations;
+- set of displayed PMI presentations;
+- projection point;
+- view direction;
+- up direction of view window;
+- horizontal size of view window;
+- vertical size of view window;
+- zoom factor;
+- clipping planes (single plane of combination of planes);
+- front and back plane clipping.
+
+@subsection occt_step_7_3 Writing to STEP
 
 The translation from XDE to STEP can be initialized as follows: 
 ~~~~~
@@ -1474,5 +1586,40 @@ IFSelect_ReturnStatus statw = writer.WriteFile (S);
 ~~~~~
 where *S* is *OStream*. 
 
+@subsection occt_step_7_4 Attributes written to STEP 
+
+### Colors
+The following attributes are exported to STEP file:
+* colors linked to assemblies, solids, shells, faces/surfaces, wireframes, edges/curves;
+* information about visibility.
+
+Restrictions:
+* colors and visibility information for points is not exported by default, it is necessary to use *write.step.vertex.mode* parameter;
+* all colors are always applied to both sides of surfaces;
+* all curves are exported with 'continuous' curve style.
+
+### Layers
+All layers are exported, but invisibility styles can be connected only to shapes.
+
+### Materials
+For solids with materials, the material is exported to STEP file (name, description and density (name and value)).
+
+### Validation properties
+Geometric validation properties, such as volume, area and centroid, which are attached to shape, are exported to STEP file.
+
+### Geometric dimensions and tolerances
+All entities, which can be imported from STEP, can be exported too.
+Please see the same item in section @ref occt_step_7_1 "Reading from STEP" to find more information.
+
+Note: OCCT use AP214 by default, so for GD&T exporting AP242 should be set manually:
+~~~~~
+Interface_Static::SetCVal("write.step.schema", "AP242DIS"));  
+~~~~~
+or
+~~~~~
+Interface_Static::SetIVal("write.step.schema", 5));  
+~~~~~
+### Saved views
+Saved Views are not exported by OCCT.
 
 

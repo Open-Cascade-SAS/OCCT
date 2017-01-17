@@ -127,8 +127,6 @@ static void CheckPCurves (TopoDS_Wire& aWire, const TopoDS_Face& aFace,
   Handle(ShapeExtend_WireData) sbwd = new ShapeExtend_WireData ( aWire );
   for (Standard_Integer i = 1; i <= sbwd->NbEdges(); i++) {
     const TopoDS_Edge& myEdge = sbwd->Edge(i);
-//    B.SameRange( myEdge, Standard_True );
-//    B.SameParameter ( myEdge, Standard_True ); 
     
     // First Check : 2D Parameters on Edge :
     // Case 1 : w1 == w2 illegal => Drop the PCurve
@@ -234,19 +232,14 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
   TopoDS_Edge   E;
   TopoDS_Vertex V;
 
-//  Standard_Real U1,U2, U1a, U1b, U2a, U2b;
-  
   Standard_Boolean isSeam, isLikeSeam;
   
   Handle(StepShape_Edge)         StepEdge, StepEdge1;
   Handle(StepShape_OrientedEdge) OrEdge1, OrEdge2;
   Handle(StepGeom_Curve) StepCurve, StepCurve1, StepCurve2;
-//  Handle(StepGeom_Pcurve) StepPCurve, StepPCurve1, StepPCurve2;
   Handle(StepRepr_DefinitionalRepresentation) DRI, Dri1, Dri2;
   
   Handle(Geom2d_Curve) C2d, C2d1, C2d2, WhichC2d1, WhichC2d2;
-// unused  gp_Pnt Pdeb, Pmil, Pfin, pV1, pV2;
-  
   TopoDS_Edge   suspectE; //:f1, degEdge; 
   
   Standard_Integer j, NbEdge = EL->NbEdgeList();
@@ -275,8 +268,6 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
 
   B.MakeWire(W);
 
-//  Standard_Integer lastpcurve = 0;
-
   // -----------------------------------------------
   // Preparation : Make Vertices + Curves3d
   //  Hence, a closed curve limited by distinct vertices
@@ -298,20 +289,8 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
       if (C->IsKind(STANDARD_TYPE(StepGeom_SurfaceCurve))) {
         Handle(StepGeom_SurfaceCurve) Sc = Handle(StepGeom_SurfaceCurve)::DownCast(C);
         C = Sc->Curve3d();
-//      if (modepcurve != 3) {
-//	lastpcurve = StepToTopoDS_GeometricTool::PCurve (Sc,StepSurf,StepPCurve1);
-//	if (StepPCurve1 == StepPCurve) modepcurve = -1;
-//	StepPCurve = StepPCurve1;
-//      }
       }
     }
-////    else if (C->IsKind(STANDARD_TYPE(StepGeom_Polyline))) {  }
-//    else if (C->IsKind(STANDARD_TYPE(StepGeom_Pcurve))) {
-//      if (modepcurve != 3) {
-//	if (C == StepPCurve) modepcurve = -1;
-//	StepPCurve = Handle(StepGeom_Pcurve)::DownCast(C);
-//      }
-//    }
     Handle(Geom_Curve) C1;
     if (!C.IsNull()) {
       try
@@ -355,10 +334,6 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
     if (myTranVertex1.IsDone()) {
       V1 = TopoDS::Vertex(myTranVertex1.Value());
     }
-//    if (Vend == Vstart) {  cas normal deja assure par aTool
-//      aTool.Bind (Vend,V1);
-//    }
-//    else
     if (myTranVertex2.IsDone()) {
       V2 = TopoDS::Vertex(myTranVertex2.Value());
       gp_Pnt p1 = BRep_Tool::Pnt(V1);
@@ -368,24 +343,12 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
 	if(!iseV) aTool.Bind(Vend,V1); //gka 21.08.1998 bug PRO7656 
 	else if(!istV)  aTool.Bind (Vstart,V2);
 	else aTool.Bind (Vend,V1);
-        //Fixed = Standard_False;
-	//aTool.Bind (Vend,V1);
 	if (!C1.IsNull() && !C1->IsClosed() && Fixed)
 	  TP->AddWarning(EL->EdgeListValue(j),
 			 "Vertex of same coordinates, set confused");
       }
     }
   }
-//  if (NbEdge!=1 && theSame == NbEdge) {
-//    TP->AddWarning(EL,"Wire was ignored. All edges are the same.");
-//    done = Standard_False;
-//    return;
-//  }
-//  Fixed=Standard_True;
-//  if (modepcurve == -1) {
-//    modepcurve = 3;
-//    TP->AddWarning(EL,"Shared Pcurve not allowed, Pcurves are recomputed");
-//  }
 
   //:f6 abv 29 Apr 98: BUC50070 #3815: make sure that each two edges are
   // connected by the same vertex; else check that vertices confuse
@@ -408,7 +371,6 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
     Vs22 = ( OrEdge2->Orientation() ?  EC2->EdgeEnd() : EC2->EdgeStart() );
 
     if((Vs1 == Vs2) || (Vs1 == Vs22) || (Vs2 == Vs11) || (Vs22 == Vs11)) continue;
-    //??    if ( Vs1.IsSame(Vs2) ) continue; // OK
 
     StepToTopoDS_TranslateVertex myTranVertex1 (Vs1, aTool, NMTool);
     StepToTopoDS_TranslateVertex myTranVertex2 (Vs2, aTool, NMTool);
@@ -484,14 +446,14 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
       // --------------------------------------------
       if (C.IsNull())
       {
-	aTool.ComputePCurve(Standard_True);
-	hasPcurve = Standard_False;
+        aTool.ComputePCurve(Standard_True);
+        hasPcurve = Standard_False;
       }
       else if (C->IsKind(STANDARD_TYPE(StepGeom_Pcurve))) {
-	Handle(StepGeom_Pcurve) StepPCurve = Handle(StepGeom_Pcurve)::DownCast(C);
-	C2d = myTranEdge.MakePCurve (StepPCurve,ConvSurf);
-	// -- Statistics --
-	aTool.AddContinuity (C2d);
+        Handle(StepGeom_Pcurve) StepPCurve = Handle(StepGeom_Pcurve)::DownCast(C);
+        C2d = myTranEdge.MakePCurve(StepPCurve, ConvSurf);
+        // -- Statistics --
+        aTool.AddContinuity(C2d);
       }
 
       // -----------------------------------------
@@ -502,69 +464,69 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
       // -----------------------------------------
 
       else if (modepcurve == 3) {
-	aTool.ComputePCurve(Standard_True);
-	hasPcurve = Standard_False;
+        aTool.ComputePCurve(Standard_True);
+        hasPcurve = Standard_False;
       }
-      else if (C->IsKind(STANDARD_TYPE(StepGeom_SurfaceCurve)) ) {
-	// recouvre les cas SeamCurve et IntersectionCurve
-	
-	Handle(StepGeom_SurfaceCurve) SurfCurve =
-	  Handle(StepGeom_SurfaceCurve)::DownCast(C);
+      else if (C->IsKind(STANDARD_TYPE(StepGeom_SurfaceCurve))) {
+        // recouvre les cas SeamCurve et IntersectionCurve
 
-	Handle(StepGeom_Pcurve) StepPCurve, StepPCurve1, StepPCurve2;
-	Standard_Integer lastpcurve = StepToTopoDS_GeometricTool::PCurve(SurfCurve,StepSurf,StepPCurve,0);
-	hasPcurve = !StepPCurve.IsNull();
+        Handle(StepGeom_SurfaceCurve) SurfCurve =
+          Handle(StepGeom_SurfaceCurve)::DownCast(C);
 
-	// De toute facon, on recalcule
+        Handle(StepGeom_Pcurve) StepPCurve, StepPCurve1, StepPCurve2;
+        Standard_Integer lastpcurve = StepToTopoDS_GeometricTool::PCurve(SurfCurve, StepSurf, StepPCurve, 0);
+        hasPcurve = !StepPCurve.IsNull();
 
-	if (isPlane) hasPcurve = Standard_False;
+        // De toute facon, on recalcule
 
-	// -------------------------------------------
-	// ---        Special Mapping Cases :      ---
-	// ---   the SurfaceCurve is a SeamCurve   ---
-	// ---        or is like a seam curve      ---
-	// ---         (see CATIA cylinder)        ---
-	// -------------------------------------------
-	isLikeSeam = StepToTopoDS_GeometricTool::IsLikeSeam(SurfCurve,StepSurf,StepEdge,EL);
+        if (isPlane) hasPcurve = Standard_False;
 
-	isSeam = StepToTopoDS_GeometricTool::IsSeamCurve(SurfCurve, StepSurf,StepEdge, EL);
-	
-	if (isSeam || isLikeSeam) {
-	  // isLikeSeam = Two faces on the same Surface
-	  StepPCurve1 = SurfCurve->AssociatedGeometryValue(1).Pcurve();
-	  StepPCurve2 = SurfCurve->AssociatedGeometryValue(2).Pcurve();
-	  if (StepPCurve1.IsNull() || StepPCurve2.IsNull()) hasPcurve = Standard_False; //smh : BUC60810
-	  else {
-	    C2d1 = myTranEdge.MakePCurve (StepPCurve1,ConvSurf);
-	    C2d2 = myTranEdge.MakePCurve (StepPCurve2,ConvSurf);
-	    hasPcurve = (!C2d1.IsNull() && !C2d2.IsNull());
-	  }
+        // -------------------------------------------
+        // ---        Special Mapping Cases :      ---
+        // ---   the SurfaceCurve is a SeamCurve   ---
+        // ---        or is like a seam curve      ---
+        // ---         (see CATIA cylinder)        ---
+        // -------------------------------------------
+        isLikeSeam = StepToTopoDS_GeometricTool::IsLikeSeam(SurfCurve, StepSurf, StepEdge, EL);
 
-	  if (isLikeSeam) {
-	    suspectE = E;
-	    ThereIsLikeSeam = Standard_True;
-	    hasPcurve = Standard_True;
-	  }
-	}
-	else if (hasPcurve) {
-//  GeometricTool : Pcurve a retourne StepPCurve
-	  while (lastpcurve > 0) {
-	    C2d1 = myTranEdge.MakePCurve (StepPCurve,ConvSurf);
-	    if (C2d1.IsNull()) {
-         TP->AddWarning(EC,"Incorrect pcurve is not translated. Pcurve definition is not correct");
-	      hasPcurve = Standard_False;
-	      break;
-	    }
-	    else C2d = C2d1;
-	    lastpcurve = StepToTopoDS_GeometricTool::PCurve(SurfCurve,StepSurf,StepPCurve,lastpcurve);
-	    // -- Statistics --
-	    aTool.AddContinuity (C2d);
-	  }
-	}
-	if (!hasPcurve) {
-	  // The edge geometry has no 2D representation
-	  aTool.ComputePCurve(Standard_True);
-	}
+        isSeam = StepToTopoDS_GeometricTool::IsSeamCurve(SurfCurve, StepSurf, StepEdge, EL);
+
+        if (isSeam || isLikeSeam) {
+          // isLikeSeam = Two faces on the same Surface
+          StepPCurve1 = SurfCurve->AssociatedGeometryValue(1).Pcurve();
+          StepPCurve2 = SurfCurve->AssociatedGeometryValue(2).Pcurve();
+          if (StepPCurve1.IsNull() || StepPCurve2.IsNull()) hasPcurve = Standard_False; //smh : BUC60810
+          else {
+            C2d1 = myTranEdge.MakePCurve(StepPCurve1, ConvSurf);
+            C2d2 = myTranEdge.MakePCurve(StepPCurve2, ConvSurf);
+            hasPcurve = (!C2d1.IsNull() && !C2d2.IsNull());
+          }
+
+          if (isLikeSeam) {
+            suspectE = E;
+            ThereIsLikeSeam = Standard_True;
+            hasPcurve = Standard_True;
+          }
+        }
+        else if (hasPcurve) {
+          //  GeometricTool : Pcurve a retourne StepPCurve
+          while (lastpcurve > 0) {
+            C2d1 = myTranEdge.MakePCurve(StepPCurve, ConvSurf);
+            if (C2d1.IsNull()) {
+              TP->AddWarning(EC, "Incorrect pcurve is not translated. Pcurve definition is not correct");
+              hasPcurve = Standard_False;
+              break;
+            }
+            else C2d = C2d1;
+            lastpcurve = StepToTopoDS_GeometricTool::PCurve(SurfCurve, StepSurf, StepPCurve, lastpcurve);
+            // -- Statistics --
+            aTool.AddContinuity(C2d);
+          }
+        }
+        if (!hasPcurve) {
+          // The edge geometry has no 2D representation
+          aTool.ComputePCurve(Standard_True);
+        }
       }
       
       // ----------------------------------------------------------
@@ -573,8 +535,8 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
       // ----------------------------------------------------------
 
       else {
-	aTool.ComputePCurve(Standard_True);
-	hasPcurve = Standard_False;
+        aTool.ComputePCurve(Standard_True);
+        hasPcurve = Standard_False;
       }
       
       // ----------------------------------
@@ -583,101 +545,94 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
 
       if (hasPcurve && (isSeam || ThereIsLikeSeam)) {
 
-      // -----------------------------------------------------------
-      // The Edge is a Seam Edge : The pcurve wich is FORWARD has to
-      //                           be identified
-      // -----------------------------------------------------------
-      
-	if ((!C2d1.IsNull()) && (!C2d2.IsNull())) {
-	  TopAbs_Orientation CumulO, EdgeO, WireO, FaceO;
-	  EdgeO = E.Orientation();
-	  if (ForwardWire)  WireO = TopAbs_FORWARD;
-	  else  	    WireO = TopAbs_REVERSED;
-	  if (sameSense) FaceO = TopAbs_FORWARD;
-	  else           FaceO = TopAbs_REVERSED;
+        // -----------------------------------------------------------
+        // The Edge is a Seam Edge : The pcurve wich is FORWARD has to
+        //                           be identified
+        // -----------------------------------------------------------
 
-	  CumulO = TopAbs::Compose(EdgeO, WireO);
-	  CumulO = TopAbs::Compose(CumulO, FaceO);
+        if ((!C2d1.IsNull()) && (!C2d2.IsNull())) {
+          TopAbs_Orientation CumulO, EdgeO, WireO, FaceO;
+          EdgeO = E.Orientation();
+          if (ForwardWire)  WireO = TopAbs_FORWARD;
+          else  	    WireO = TopAbs_REVERSED;
+          if (sameSense) FaceO = TopAbs_FORWARD;
+          else           FaceO = TopAbs_REVERSED;
 
-	  Standard_Boolean ForwardEdge = (CumulO == TopAbs_FORWARD);
+          CumulO = TopAbs::Compose(EdgeO, WireO);
+          CumulO = TopAbs::Compose(CumulO, FaceO);
 
-	  // if(!ThereIsLikeSeam) ForwardEdge = Standard_True;
-	  Standard_Integer forwardPC =
-	    ShapeAnalysis_Curve().SelectForwardSeam (C2d1,C2d2);
-	  if (forwardPC == 0) {
-	    TP->AddFail(StepEdge," Seam curve not mapped");
-	    done = Standard_False;
-	    myError = StepToTopoDS_TranslateEdgeLoopOther;
-	    continue;
-	  }
-	  else if (!ForwardEdge) forwardPC = 3 - forwardPC;  // inverser 1-2
+          Standard_Boolean ForwardEdge = (CumulO == TopAbs_FORWARD);
 
-	  if (forwardPC == 1) {
-	    if(isSeam) {
-	      // When the edge is a Seam, it is better to find the topological
-	      // trimming right now. 
-	      // Remarque : pour bien faire, il faudrait, si necessaire, recalculer
-	      //            les trois courbes de maniere a ce qu`elles soient
-	      //            immediatement Same Range et Same Parameter.
-	      B.UpdateEdge(E, C2d1, C2d2, Face, 0.);
-//:S4136	      FindParameter(C2d1, C2d2, E, Face, preci);
-	    }
-	    else
-	      B.UpdateEdge(E, C2d1, Face, 0.); //preci
-	  }
-	  else {
-	    if(isSeam) {
-	      // When the edge is a Seam, it is better to find the topological
-	      // trimming right now. 
-	      B.UpdateEdge(E, C2d2, C2d1, Face, 0.);
-//:S4136	      FindParameter(C2d1, C2d2, E, Face, preci);
-	    }
-	    else
-	      B.UpdateEdge(E, C2d2, Face, 0.);
-	  }
-	}
-	else {
-	  TP->AddFail(StepEdge," Seam curve not mapped");
-	  done = Standard_False;
-	  myError = StepToTopoDS_TranslateEdgeLoopOther;
-	  continue;
-	}
+          Standard_Integer forwardPC =
+            ShapeAnalysis_Curve().SelectForwardSeam(C2d1, C2d2);
+          if (forwardPC == 0) {
+            TP->AddFail(StepEdge, " Seam curve not mapped");
+            done = Standard_False;
+            myError = StepToTopoDS_TranslateEdgeLoopOther;
+            continue;
+          }
+          else if (!ForwardEdge) forwardPC = 3 - forwardPC;  // inverser 1-2
+
+          if (forwardPC == 1) {
+            if (isSeam) {
+              // When the edge is a Seam, it is better to find the topological
+              // trimming right now. 
+              // Remarque : pour bien faire, il faudrait, si necessaire, recalculer
+              //            les trois courbes de maniere a ce qu`elles soient
+              //            immediatement Same Range et Same Parameter.
+              B.UpdateEdge(E, C2d1, C2d2, Face, 0.);
+              //:S4136	      FindParameter(C2d1, C2d2, E, Face, preci);
+            }
+            else
+              B.UpdateEdge(E, C2d1, Face, 0.); //preci
+          }
+          else {
+            if (isSeam) {
+              // When the edge is a Seam, it is better to find the topological
+              // trimming right now. 
+              B.UpdateEdge(E, C2d2, C2d1, Face, 0.);
+              //:S4136	      FindParameter(C2d1, C2d2, E, Face, preci);
+            }
+            else
+              B.UpdateEdge(E, C2d2, Face, 0.);
+          }
+        }
+        else {
+          TP->AddFail(StepEdge, " Seam curve not mapped");
+          done = Standard_False;
+          myError = StepToTopoDS_TranslateEdgeLoopOther;
+          continue;
+        }
       }
       else {
-	
-	// ---------------------------
-	// The Edge is a "normal" edge
-	// ---------------------------
-	
-	if (hasPcurve) {
-	  if ( !C2d.IsNull() && !isLikeSeam ) {
-	    B.UpdateEdge(E, C2d, Face, 0.);
-	  }
-	  else {
-	    TP->AddFail(StepEdge," Edge: Trimming of 2D curve failed");
-	    //	  cout << "2D curve type : " << C2d->DynamicType() << endl;
-	    done = Standard_False;
-	    myError = StepToTopoDS_TranslateEdgeLoopOther;
-	    continue;
-	  }
-	}
+
+        // ---------------------------
+        // The Edge is a "normal" edge
+        // ---------------------------
+
+        if (hasPcurve) {
+          if (!C2d.IsNull() && !isLikeSeam) {
+            B.UpdateEdge(E, C2d, Face, 0.);
+          }
+          else {
+            TP->AddFail(StepEdge, " Edge: Trimming of 2D curve failed");
+            done = Standard_False;
+            myError = StepToTopoDS_TranslateEdgeLoopOther;
+            continue;
+          }
+        }
       }
 
-      if (!E.IsNull()) {
-//	B.Add(W,E);   -- DABORD regarder degeneree manquante !!!
-      }
-      else {
-	TP->AddFail(StepEdge," an Edge not mapped");
-	done = Standard_False;
-	myError = StepToTopoDS_TranslateEdgeLoopOther;
-//	continue;
+      if (E.IsNull()) {
+        TP->AddFail(StepEdge, " an Edge not mapped");
+        done = Standard_False;
+        myError = StepToTopoDS_TranslateEdgeLoopOther;
       }
     }
     else { // The Edge is Not mapped => switch to next wire ?
       TP->AddFail(StepEdge," an Edge not mapped");
       done = Standard_False;
       myError = StepToTopoDS_TranslateEdgeLoopOther;
-//      continue;
     }
 
     if (done) B.Add (W,E);  // on le fait ici. Sauf si erreur rencontree ... !
@@ -704,7 +659,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
   // ----------------------------------------------
   // Computes the 2D parameter of Vertices on Edges
   // ----------------------------------------------
-  //pdn compute parameter of Vertices using progecting
+  //pdn compute parameter of Vertices using projecting
   if (!aTool.ComputePCurve()) 
     for (TopoDS_Iterator EdgeIt(W);EdgeIt.More();EdgeIt.Next()){
       TopoDS_Edge edge = TopoDS::Edge(EdgeIt.Value());
@@ -728,19 +683,8 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
   myError  = StepToTopoDS_TranslateEdgeLoopDone;
   done     = Standard_True;
   //  Check des PCurves SYSTEMATIQUE, s il n y en a que quelques unes
-//  if (isPlane) RemovePCurves (W, Face);
-// else         CheckPCurves  (W, Face);
   CheckPCurves  (W, Face,isPlane,preci);
 
-  // --------------------------------------------      
-  // Control the UVLoop (Closed and Head To Tail)
-  // --------------------------------------------
-  
-//  StepToTopoDS_GeometricToolError tError = 
-//    StepToTopoDS_GeometricTool::CloseUV(W, Face, aTool);
-//  if(tError != StepToTopoDS_GeometricToolDone) {
-//    TP->AddWarning(StepEdge,StepToTopoDS::DecodeGeometricToolError(tError));
-//  }
   return;
 }
 

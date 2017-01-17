@@ -56,6 +56,11 @@ StepToTopoDS_TranslateCurveBoundedSurface::StepToTopoDS_TranslateCurveBoundedSur
   Init ( CBS, TP );
 }
 
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
 Standard_Boolean StepToTopoDS_TranslateCurveBoundedSurface::Init (
 		 const Handle(StepGeom_CurveBoundedSurface) &CBS, 
 		 const Handle(Transfer_TransientProcess) &TP)
@@ -76,22 +81,10 @@ Standard_Boolean StepToTopoDS_TranslateCurveBoundedSurface::Init (
   // pdn to force bsplsurf to be periodic
   Handle(StepGeom_BSplineSurface) sgbss = Handle(StepGeom_BSplineSurface)::DownCast(S);
   if (!sgbss.IsNull()) {
-/*
-    StepGeom_BSplineSurfaceForm form = sgbss->SurfaceForm();
-    if ((form == StepGeom_bssfCylindricalSurf)||
-	(form == StepGeom_bssfConicalSurf)||
-	(form == StepGeom_bssfSphericalSurf)||
-	(form == StepGeom_bssfToroidalSurf)||
-	(form == StepGeom_bssfSurfOfRevolution)||
-	(form == StepGeom_bssfGeneralisedCone)||
-        (form == StepGeom_bssfUnspecified)) 
-*/
-    {
-      Handle(Geom_Surface) periodicSurf = ShapeAlgo::AlgoContainer()->ConvertToPeriodic (Surf);
-      if(!periodicSurf.IsNull()) {
-	TP->AddWarning(S,"Surface forced to be periodic");
-	Surf = periodicSurf;
-      }
+    Handle(Geom_Surface) periodicSurf = ShapeAlgo::AlgoContainer()->ConvertToPeriodic(Surf);
+    if (!periodicSurf.IsNull()) {
+      TP->AddWarning(S, "Surface forced to be periodic");
+      Surf = periodicSurf;
     }
   }
     

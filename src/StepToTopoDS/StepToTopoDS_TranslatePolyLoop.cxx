@@ -113,55 +113,50 @@ void StepToTopoDS_TranslatePolyLoop::Init(const Handle(StepShape_PolyLoop)& PL, 
       GP2 = StepToGeom::MakeCartesianPoint (P2);
       TopoDS_Shape aBoundEdge;
       Standard_Boolean isbound = aTool.IsEdgeBound(PP);
-      if ( !isbound) {
-	if (aTool.IsVertexBound(P2)) {
-	  V2 = aTool.FindVertex(P2);
-	}
-	else {
-	  B.MakeVertex(V2, GP2->Pnt(), Precision::Confusion()); //:S4136: preci
-	  aTool.BindVertex(P2,V2);
-	}
-	V = gp_Vec( GP1->Pnt(), GP2->Pnt());
-	L = new Geom_Line( GP1->Pnt() , gp_Dir(V) );
-	B.MakeEdge(E, L, Precision::Confusion()); //:S4136: preci
-	V1.Orientation(TopAbs_FORWARD);
-	V2.Orientation(TopAbs_REVERSED);
-	B.Add(E, V1);
-	B.Add(E, V2);
-	Magn = V.Magnitude();
-	B.UpdateVertex(V1, 0., E, 0. ); //:S4136: preci
-	B.UpdateVertex(V2, Magn, E, 0. ); //:S4136: preci
-      } 
+      if (!isbound) {
+        if (aTool.IsVertexBound(P2)) {
+          V2 = aTool.FindVertex(P2);
+        }
+        else {
+          B.MakeVertex(V2, GP2->Pnt(), Precision::Confusion()); //:S4136: preci
+          aTool.BindVertex(P2, V2);
+        }
+        V = gp_Vec(GP1->Pnt(), GP2->Pnt());
+        L = new Geom_Line(GP1->Pnt(), gp_Dir(V));
+        B.MakeEdge(E, L, Precision::Confusion()); //:S4136: preci
+        V1.Orientation(TopAbs_FORWARD);
+        V2.Orientation(TopAbs_REVERSED);
+        B.Add(E, V1);
+        B.Add(E, V2);
+        Magn = V.Magnitude();
+        B.UpdateVertex(V1, 0., E, 0.); //:S4136: preci
+        B.UpdateVertex(V2, Magn, E, 0.); //:S4136: preci
+      }
       else {
-	aBoundEdge = aTool.FindEdge(PP);
-	E = TopoDS::Edge(aBoundEdge);
-//  Il faut qu en finale l edge soit vue
-//  - via sa premiere face, orientation combinee = celle de cette premiere face
-//  - via sa deuxieme face, orientation combinee INVERSE de la precedente
-	if (TopoFace.Orientation() == TopAbs_FORWARD) E.Reverse();
-	V2 = aTool.FindVertex(P2); 
-//	Standard_Real u1,v1,u2,v2;
-//	ElSLib::Parameters(SP->Pln(), GP1->Pnt(), u1, v1);
-//	ElSLib::Parameters(SP->Pln(), GP2->Pnt(), u2, v2);
-//	V2d = gp_Vec2d( gp_Pnt2d(u1,v1), gp_Pnt2d(u2,v2) );
-//	L2d = new Geom2d_Line( gp_Pnt2d(u1,v1), gp_Dir2d(V2d) );
+        aBoundEdge = aTool.FindEdge(PP);
+        E = TopoDS::Edge(aBoundEdge);
+        //  Il faut qu en finale l edge soit vue
+        //  - via sa premiere face, orientation combinee = celle de cette premiere face
+        //  - via sa deuxieme face, orientation combinee INVERSE de la precedente
+        if (TopoFace.Orientation() == TopAbs_FORWARD) E.Reverse();
+        V2 = aTool.FindVertex(P2);
       }
       gp_Pnt2d V2p1 = STSU->ValueOfUV (GP1->Pnt(), Precision());
       gp_Pnt2d V2p2 = STSU->ValueOfUV (GP2->Pnt(), Precision());
       if (E.Orientation() == TopAbs_FORWARD) {
-	V2d = gp_Vec2d( V2p1, V2p2 );
-	L2d = new Geom2d_Line( V2p1, gp_Dir2d(V2d) );
-      } else {
-	V2d = gp_Vec2d( V2p2, V2p1 );
-	L2d = new Geom2d_Line( V2p2, gp_Dir2d(V2d) );
+        V2d = gp_Vec2d(V2p1, V2p2);
+        L2d = new Geom2d_Line(V2p1, gp_Dir2d(V2d));
+      }
+      else {
+        V2d = gp_Vec2d(V2p2, V2p1);
+        L2d = new Geom2d_Line(V2p2, gp_Dir2d(V2d));
       }
       B.UpdateEdge(E, L2d, TopoFace, 0.);
-//      E.Orientation(TopAbs_FORWARD);
       TopoDS_Edge EB = E;  // pour le binding : cumul des orientations !
       EB.Orientation (TopoFace.Orientation());
       if (!isbound) aTool.BindEdge(PP, EB);
-      if (!E.IsNull()) { 
-	B.Add(W,E);
+      if (!E.IsNull()) {
+        B.Add(W, E);
       }
       P1  = P2;
       GP1 = GP2;

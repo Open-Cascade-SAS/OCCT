@@ -127,6 +127,11 @@ static inline Standard_Boolean isReversed(const Handle(StepGeom_Surface)& theSte
   return (!aStepTorSur.IsNull() && aStepTorSur->MajorRadius() < 0 ? Standard_True : Standard_False);
 }
 
+// ============================================================================
+// Method  : Init
+// Purpose : Init with a FaceSurface and a Tool
+// ============================================================================
+
 void StepToTopoDS_TranslateFace::Init
 (const Handle(StepShape_FaceSurface)& FS, StepToTopoDS_Tool& aTool, StepToTopoDS_NMTool& NMTool)
 {
@@ -179,22 +184,10 @@ void StepToTopoDS_TranslateFace::Init
   // pdn to force bsplsurf to be periodic
   Handle(StepGeom_BSplineSurface) sgbss = Handle(StepGeom_BSplineSurface)::DownCast(StepSurf);
   if (!sgbss.IsNull()) {
-/*
-    StepGeom_BSplineSurfaceForm form = sgbss->SurfaceForm();
-    if ((form == StepGeom_bssfCylindricalSurf)||
-	(form == StepGeom_bssfConicalSurf)||
-	(form == StepGeom_bssfSphericalSurf)||
-	(form == StepGeom_bssfToroidalSurf)||
-	(form == StepGeom_bssfSurfOfRevolution)||
-	(form == StepGeom_bssfGeneralisedCone)||
-        (form == StepGeom_bssfUnspecified))
-*/
-    {
-      Handle(Geom_Surface) periodicSurf = ShapeAlgo::AlgoContainer()->ConvertToPeriodic (GeomSurf);
-      if(!periodicSurf.IsNull()) {
-	TP->AddWarning(StepSurf,"Surface forced to be periodic");
-	GeomSurf = periodicSurf;
-      }
+    Handle(Geom_Surface) periodicSurf = ShapeAlgo::AlgoContainer()->ConvertToPeriodic(GeomSurf);
+    if (!periodicSurf.IsNull()) {
+      TP->AddWarning(StepSurf, "Surface forced to be periodic");
+      GeomSurf = periodicSurf;
     }
   }
     
@@ -232,11 +225,6 @@ void StepToTopoDS_TranslateFace::Init
   // Alors on peut dire : face a deux bords dont la couture manque
   // La couture est entre les deux vertex
 
-//  TopoDS_Wire W1,W2;
-//  Standard_Boolean fautcoudre =
-//    ( (NbBnd == 2) && (GeomSurf->IsUClosed() || GeomSurf->IsVClosed()) );
-
-  
   for (Standard_Integer i = 1; i <= NbBnd; i ++) {
 
 #ifdef OCCT_DEBUG
@@ -264,29 +252,25 @@ void StepToTopoDS_TranslateFace::Init
           BRepBuilderAPI_MakeFace mf (GeomSurf, Precision());
           for (TopoDS_Iterator it(mf); it.More(); it.Next()) 
             B.Add (F, it.Value());
-        
-
-        continue;
+          continue;
         }
       }
       
-      if (//GeomSurf->IsKind(STANDARD_TYPE(Geom_SphericalSurface)) ||
-	  GeomSurf->IsKind(STANDARD_TYPE(Geom_ToroidalSurface)) ) {
-//	TP->AddWarning(VL," VertexLoop on Cone or Torus NOT YET IMPLEMENTED");
-	continue;
+      if (GeomSurf->IsKind(STANDARD_TYPE(Geom_ToroidalSurface))) {
+        continue;
       }
-      if (GeomSurf->IsKind(STANDARD_TYPE(Geom_Plane)) ) {
-	TP->AddWarning(VL,"VertexLoop on plane is ignored");
-	continue; //smh : BUC60809
+      if (GeomSurf->IsKind(STANDARD_TYPE(Geom_Plane))) {
+        TP->AddWarning(VL, "VertexLoop on plane is ignored");
+        continue; //smh : BUC60809
       }
       myTranVL.SetPrecision(Precision());//gka
       myTranVL.SetMaxTol(MaxTol());
       myTranVL.Init(VL, aTool, NMTool);
       if (myTranVL.IsDone()) {
-	B.Add ( F, myTranVL.Value() );
+        B.Add(F, myTranVL.Value());
       }
       else {
-	TP->AddWarning(VL," a VertexLoop not mapped to TopoDS");
+        TP->AddWarning(VL, " a VertexLoop not mapped to TopoDS");
       }
     }
     
@@ -302,12 +286,12 @@ void StepToTopoDS_TranslateFace::Init
       myTranPL.SetMaxTol(MaxTol());
       myTranPL.Init(PL, aTool, GeomSurf, F);
       if (myTranPL.IsDone()) {
-	TopoDS_Wire W = TopoDS::Wire(myTranPL.Value());
-	W.Orientation ( FaceBound->Orientation()  ? TopAbs_FORWARD : TopAbs_REVERSED);
-	B.Add ( F, W );
+        TopoDS_Wire W = TopoDS::Wire(myTranPL.Value());
+        W.Orientation(FaceBound->Orientation() ? TopAbs_FORWARD : TopAbs_REVERSED);
+        B.Add(F, W);
       }
-      else { 
-	TP->AddWarning(PL," a PolyLoop not mapped to TopoDS");
+      else {
+        TP->AddWarning(PL, " a PolyLoop not mapped to TopoDS");
       }
     }
     
@@ -316,11 +300,11 @@ void StepToTopoDS_TranslateFace::Init
     // -----------------------
     
     else if (Loop->IsKind(STANDARD_TYPE(StepShape_EdgeLoop))) {
-//:S4136      if (STF.Closed()) {
-//:S4136	Handle(StepShape_EdgeLoop) EL = 
-//:S4136	  Handle(StepShape_EdgeLoop)::DownCast(FaceBound->Bound());
-//:S4136	if (EL->NbEdgeList() != 1) STF.Closed() = Standard_False;
-//:S4136      }
+      //:S4136      if (STF.Closed()) {
+      //:S4136	Handle(StepShape_EdgeLoop) EL = 
+      //:S4136	  Handle(StepShape_EdgeLoop)::DownCast(FaceBound->Bound());
+      //:S4136	if (EL->NbEdgeList() != 1) STF.Closed() = Standard_False;
+      //:S4136      }
 
       TopoDS_Wire   W;
       myTranEdgeLoop.SetPrecision(Precision());  //gka
@@ -328,62 +312,42 @@ void StepToTopoDS_TranslateFace::Init
       myTranEdgeLoop.Init(FaceBound, F, GeomSurf, StepSurf, sameSense, aTool, NMTool);
 
       if (myTranEdgeLoop.IsDone()) {
+        W = TopoDS::Wire(myTranEdgeLoop.Value());
 
-	W = TopoDS::Wire(myTranEdgeLoop.Value());
+        // STEP Face_Surface orientation :
+        // if the topological orientation is opposite to the geometric
+        // orientation of the surface => the underlying topological 
+        // orientation are not implicitly reversed
+        // this is the case in CAS.CADE => If the face_surface is reversed,
+        // the wire orientation has to be explictly reversed
+        if (FaceBound->Orientation()) {
+          // *DTH*	  if (sameSense || GeomSurf->IsKind(STANDARD_TYPE(Geom_Plane)))
+          W.Orientation(sameSense ? TopAbs_FORWARD : TopAbs_REVERSED);
+        }
+        else {
+          // *DTH*	  if (sameSense || GeomSurf->IsKind(STANDARD_TYPE(Geom_Plane)))
+          W.Orientation(sameSense ? TopAbs_REVERSED : TopAbs_FORWARD);
+        }
+        // -----------------------------
+        // The Wire is added to the Face      
+        // -----------------------------
 
- 	// STEP Face_Surface orientation :
- 	// if the topological orientation is opposite to the geometric
- 	// orientation of the surface => the underlying topological 
- 	// orientation are not implicitly reversed
- 	// this is the case in CAS.CADE => If the face_surface is reversed,
- 	// the wire orientation has to be explictly reversed
-	if (FaceBound->Orientation()) {
-// *DTH*	  if (sameSense || GeomSurf->IsKind(STANDARD_TYPE(Geom_Plane)))
-	  W.Orientation (sameSense ? TopAbs_FORWARD : TopAbs_REVERSED);
-	}
-	else {
-// *DTH*	  if (sameSense || GeomSurf->IsKind(STANDARD_TYPE(Geom_Plane)))
-	  W.Orientation (sameSense ? TopAbs_REVERSED : TopAbs_FORWARD);
-	}
-	// -----------------------------
-	// The Wire is added to the Face      
-	// -----------------------------
-	
-	B.Add ( F, W );
+        B.Add(F, W);
       }
       else {
-	// Il y a eu un probleme dans le mapping : On perd la Face
-	// (facon de parler ...) Pas de moyen aujourd hui de recuperer
-	// au moins toutes les geometries (Points, Courbes 3D, Surface)
-	TP->AddFail(Loop," EdgeLoop not mapped to TopoDS");
-	//if(GeomSurf->IsKind(STANDARD_TYPE(Geom_BoundedSurface))) {
-	//Standard_Real su1, sv1, su2, sv2;
-	//GeomSurf->Bounds(su1, su2, sv1, sv2);
-	//if(sv1 == -Precision::Infinite()) sv1 = 0.;
-	//if(sv2 ==  Precision::Infinite()) sv2 = 1.;
-	//BRepBuilderAPI_MakeFace mkf(GeomSurf,su1,su2,sv1,sv2);
-	//if (mkf.IsDone()) {
-	// done shall be standard false but no recipient to
-	// to store uncompletally mapped topology
-	// see Improvment Resquest DPA/126/95
-	//myResult = mkf.Face();
-	//done = Standard_True;
-	//}
-	//}
+        // Il y a eu un probleme dans le mapping : On perd la Face
+        // (facon de parler ...) Pas de moyen aujourd hui de recuperer
+        // au moins toutes les geometries (Points, Courbes 3D, Surface)
+        TP->AddFail(Loop, " EdgeLoop not mapped to TopoDS");
 
-	// CKY JAN-97 : un Wire manque, eh bien on continue quand meme !!
-	//  sauf si OuterBound : la c est quand meme pas bien normal ...
-	if (FaceBound->IsKind(STANDARD_TYPE(StepShape_FaceOuterBound))) {
-	  TP->AddWarning(FS,"No Outer Bound : Face not done");
-//	return;
-	}
-	continue;
-//	myError = StepToTopoDS_TranslateFaceOther;
-//	done = Standard_False;
-//	return;
+        // CKY JAN-97 : un Wire manque, eh bien on continue quand meme !!
+        //  sauf si OuterBound : la c est quand meme pas bien normal ...
+        if (FaceBound->IsKind(STANDARD_TYPE(StepShape_FaceOuterBound))) {
+          TP->AddWarning(FS, "No Outer Bound : Face not done");
+        }
+        continue;
       }
-    }
-    
+    }    
     else { 
       // Type not yet implemented or non sens
       TP->AddFail(Loop," Type of loop not yet implemented");
@@ -391,9 +355,6 @@ void StepToTopoDS_TranslateFace::Init
       cout << Loop->DynamicType() << endl;
 #endif
       continue;
-//      done    = Standard_False;
-//      myError = StepToTopoDS_TranslateFaceOther;
-//      return;
     }
   }
 

@@ -37,9 +37,19 @@
 #include <TransferBRep_ShapeBinder.hxx>
 
 //  + pour CartesianOperator3d
+//=======================================================================
+//function : StepToTopoDS_MakeTransformed
+//purpose  : 
+//=======================================================================
+
 StepToTopoDS_MakeTransformed::StepToTopoDS_MakeTransformed ()
 {
 }
+
+//=======================================================================
+//function : Compute
+//purpose  : 
+//=======================================================================
 
 Standard_Boolean  StepToTopoDS_MakeTransformed::Compute
   (const Handle(StepGeom_Axis2Placement3d)& Origin,
@@ -64,16 +74,31 @@ Standard_Boolean  StepToTopoDS_MakeTransformed::Compute
   return Standard_True;
 }
 
+//=======================================================================
+//function : Compute
+//purpose  : 
+//=======================================================================
+
 Standard_Boolean  StepToTopoDS_MakeTransformed::Compute
   (const Handle(StepGeom_CartesianTransformationOperator3d)& Operator)
 {
   return StepToGeom::MakeTransformation3d (Operator, theTrsf);
 }
 
+//=======================================================================
+//function : Transformation
+//purpose  : 
+//=======================================================================
+
 const gp_Trsf&  StepToTopoDS_MakeTransformed::Transformation () const
 {
   return theTrsf;
 }
+
+//=======================================================================
+//function : Transform
+//purpose  : 
+//=======================================================================
 
 Standard_Boolean  StepToTopoDS_MakeTransformed::Transform
   (TopoDS_Shape& shape) const
@@ -81,9 +106,13 @@ Standard_Boolean  StepToTopoDS_MakeTransformed::Transform
   if (theTrsf.Form() == gp_Identity) return Standard_False;
   TopLoc_Location theLoc(theTrsf);
   shape.Move (theLoc);
-//  shape.Location(theLoc);
   return Standard_True;
 }
+
+//=======================================================================
+//function : TranslateMappedItem
+//purpose  : 
+//=======================================================================
 
 TopoDS_Shape  StepToTopoDS_MakeTransformed::TranslateMappedItem
 (const Handle(StepRepr_MappedItem)& mapit,
@@ -103,8 +132,6 @@ TopoDS_Shape  StepToTopoDS_MakeTransformed::TranslateMappedItem
 
   Handle(StepGeom_CartesianTransformationOperator3d) CartOp =
     Handle(StepGeom_CartesianTransformationOperator3d)::DownCast(mapit->MappingTarget());
-//  Handle(StepRepr_ItemDefinedTransformation) ItemDef =
-//    Handle(StepRepr_ItemDefinedTransformation)::DownCast(mapit->MappingTarget());
 
   Standard_Boolean ok = Standard_False;
   if (!Origin.IsNull() && !Target.IsNull()) ok = Compute (Origin,Target);

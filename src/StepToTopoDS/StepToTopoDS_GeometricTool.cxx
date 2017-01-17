@@ -67,8 +67,6 @@
 #include <TopoDS.hxx>
 #include <Transfer_TransientProcess.hxx>
 
-//#include <StepToTopoDS_ExtPCOnS.hxx>
-//#include <BRepAPI.hxx>
 // ----------------------------------------------------------------------------
 // Method  : HasPCurve
 // Purpose : returns true if the surface curve has at least one pcurve lying
@@ -171,45 +169,45 @@ Standard_Boolean  StepToTopoDS_GeometricTool::IsLikeSeam
       if (StepEdge == OrEdge->EdgeElement()) nbOE ++;
     }
     // the two oriented edges are not in the same wire
-    if (nbOE == 1) { 
+    if (nbOE == 1) {
       // check is the two pcurve are not indentical ?
       Handle(StepGeom_Line) line1 = Handle(StepGeom_Line)::DownCast
-	(StepPCurve1->ReferenceToCurve()->ItemsValue(1));
+        (StepPCurve1->ReferenceToCurve()->ItemsValue(1));
       Handle(StepGeom_Line) line2 = Handle(StepGeom_Line)::DownCast
-	(StepPCurve2->ReferenceToCurve()->ItemsValue(1));
+        (StepPCurve2->ReferenceToCurve()->ItemsValue(1));
       if (!line1.IsNull() && !line2.IsNull()) {
-	// Same Origin in X OR Y && Same Vector ??
-	// WITHIN A given tolerance !!!
-	Standard_Real DeltaX = Abs(line1->Pnt()->CoordinatesValue(1) -
-				   line2->Pnt()->CoordinatesValue(1));
-	Standard_Real DeltaY = Abs(line1->Pnt()->CoordinatesValue(2) -
-				   line2->Pnt()->CoordinatesValue(2));
+        // Same Origin in X OR Y && Same Vector ??
+        // WITHIN A given tolerance !!!
+        Standard_Real DeltaX = Abs(line1->Pnt()->CoordinatesValue(1) -
+          line2->Pnt()->CoordinatesValue(1));
+        Standard_Real DeltaY = Abs(line1->Pnt()->CoordinatesValue(2) -
+          line2->Pnt()->CoordinatesValue(2));
 
-	Standard_Real DeltaDirX = 
-	  Abs(line1->Dir()->Orientation()->DirectionRatiosValue(1) -
-	      line2->Dir()->Orientation()->DirectionRatiosValue(1));
-	Standard_Real DeltaDirY = 
-	  Abs(line1->Dir()->Orientation()->DirectionRatiosValue(2) -
-	      line2->Dir()->Orientation()->DirectionRatiosValue(2));
+        Standard_Real DeltaDirX =
+          Abs(line1->Dir()->Orientation()->DirectionRatiosValue(1) -
+          line2->Dir()->Orientation()->DirectionRatiosValue(1));
+        Standard_Real DeltaDirY =
+          Abs(line1->Dir()->Orientation()->DirectionRatiosValue(2) -
+          line2->Dir()->Orientation()->DirectionRatiosValue(2));
 
-	Standard_Real preci2d = Precision::PConfusion(); //:S4136: Parametric(BRepAPI::Precision(),10);
-	
-	if ((DeltaX < preci2d) || (DeltaY < preci2d))
-	  return ((DeltaDirX < preci2d) && (DeltaDirY < preci2d));
-	else return Standard_False;
+        Standard_Real preci2d = Precision::PConfusion(); //:S4136: Parametric(BRepAPI::Precision(),10);
 
-	// Warning : la manipulation de tolerances dans ce contexte est un
-	//           peu trop dangeureux.
-	//           il serait preferable de plus de ne pas restreindre au
-	//           cas de deux lignes.
-	//           un mode plus convenable de detection serait de se servir
-	//           des isos (ou bords naturels) de la surface de base
-	//           et de detecter que les deux courbes se trouvent sur le
-	//           bord de fermeture.
-	//           il faut toutefois prevoir le cas ou les deux courbes
-	//           sont confondues (ex : CATIA, "couture" de separation
-	//           en deux faces d un support periodique.
-	//  Ce travail reste evidement A FAIRE !!! ...
+        if ((DeltaX < preci2d) || (DeltaY < preci2d))
+          return ((DeltaDirX < preci2d) && (DeltaDirY < preci2d));
+        else return Standard_False;
+
+        // Warning : la manipulation de tolerances dans ce contexte est un
+        //           peu trop dangeureux.
+        //           il serait preferable de plus de ne pas restreindre au
+        //           cas de deux lignes.
+        //           un mode plus convenable de detection serait de se servir
+        //           des isos (ou bords naturels) de la surface de base
+        //           et de detecter que les deux courbes se trouvent sur le
+        //           bord de fermeture.
+        //           il faut toutefois prevoir le cas ou les deux courbes
+        //           sont confondues (ex : CATIA, "couture" de separation
+        //           en deux faces d un support periodique.
+        //  Ce travail reste evidement A FAIRE !!! ...
       }
       else return Standard_False;
     }
@@ -233,7 +231,6 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d
   
   Standard_Real cf = theCurve->FirstParameter();
   Standard_Real cl = theCurve->LastParameter();
-//  Standard_Real preci = BRepAPI::Precision();
 
   if (theCurve->IsKind(STANDARD_TYPE(Geom_BoundedCurve)) && !theCurve->IsClosed()) {
     if (w1 < cf) {
@@ -270,9 +267,9 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d
     // l'un des points projecte se trouve sur l'origine du parametrage
     // de la courbe 3D. L algo a donne cl +- preci au lieu de cf ou vice-versa
     // DANGER precision 3d applique a une espace 1d
-    
+
     // w2 = cf au lieu de w2 = cl
-    if      (Abs(w2 - cf) < Precision::PConfusion() /*preci*/)  w2 = cl ;
+    if (Abs(w2 - cf) < Precision::PConfusion() /*preci*/)  w2 = cl;
     // w1 = cl au lieu de w1 = cf
     else if (Abs(w1 - cl) < Precision::PConfusion() /*preci*/)  w1 = cf;
 
@@ -281,15 +278,15 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d
     // on inverse quand meme les parametres !!!!!!
     else {
       //:S4136 abv 20 Apr 99: r0701_ug.stp #6230: add check in 3d
-      if ( theCurve->Value(w1).Distance(theCurve->Value(cf)) < preci ) w1 = cf;
-      if ( theCurve->Value(w2).Distance(theCurve->Value(cl)) < preci ) w2 = cl;
-      if ( w1 > w2 ) {
+      if (theCurve->Value(w1).Distance(theCurve->Value(cf)) < preci) w1 = cf;
+      if (theCurve->Value(w2).Distance(theCurve->Value(cl)) < preci) w2 = cl;
+      if (w1 > w2) {
 #ifdef OCCT_DEBUG
-	cout << "Warning : parameter range of edge crossing non periodic curve origin" << endl;
+        cout << "Warning : parameter range of edge crossing non periodic curve origin" << endl;
 #endif
-	Standard_Real tmp = w1;
-	w1 = w2;
-	w2 = tmp;
+        Standard_Real tmp = w1;
+        w1 = w2;
+        w2 = tmp;
       }
     }
   }
@@ -304,9 +301,9 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d
       // DANGER precision 3d applique a une espace 1d
       
       // w2 = cf au lieu de w2 = cl
-      if      (Abs(w2 - cf) < Precision::PConfusion() /*preci*/) w2 = cl ;
+      if      (Abs(w2 - cf) < Precision::PConfusion()) w2 = cl ;
       // w1 = cl au lieu de w1 = cf
-      else if (Abs(w1 - cl) < Precision::PConfusion() /*preci*/) w1 =  cf;
+      else if (Abs(w1 - cl) < Precision::PConfusion()) w1 =  cf;
 
       // on se trouve dans un cas ou l origine est traversee
       // illegal sur une courbe fermee non periodique

@@ -127,20 +127,21 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init (const Handle(StepGe
 
     // if segment is itself a composite_curve, translate recursively
     if ( crv->IsKind(STANDARD_TYPE(StepGeom_CompositeCurve)) ) { 
-      if ( crv == CC ) { // cyclic reference protection
-	TP->AddFail (ccs, "Cyclic reference; segment dropped" );
-	continue;
+      if (crv == CC) { // cyclic reference protection
+        TP->AddFail(ccs, "Cyclic reference; segment dropped");
+        continue;
       }
       Handle(StepGeom_CompositeCurve) cc = Handle(StepGeom_CompositeCurve)::DownCast ( crv );
-      if ( ! Init ( cc, TP, S, Surf ) || myWire.IsNull() ) continue;
+      if ( ! Init ( cc, TP, S, Surf ) || myWire.IsNull() )
+        continue;
       Standard_Integer nb = sbwd->NbEdges() + 1;
-      for ( TopoDS_Iterator it ( myWire ); it.More(); it.Next() ) {
-	TopoDS_Edge edge = TopoDS::Edge ( it.Value() );
-	if ( ccs->SameSense() ) sbwd->Add ( edge );
-	else {
-	  edge.Reverse();
-	  sbwd->Add ( edge, nb > sbwd->NbEdges() ? 0 : nb );
-	}
+      for (TopoDS_Iterator it(myWire); it.More(); it.Next()) {
+        TopoDS_Edge edge = TopoDS::Edge(it.Value());
+        if (ccs->SameSense()) sbwd->Add(edge);
+        else {
+          edge.Reverse();
+          sbwd->Add(edge, nb > sbwd->NbEdges() ? 0 : nb);
+        }
       }
       myWire.Nullify();
       continue;
@@ -150,19 +151,21 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init (const Handle(StepGe
     
     // detect pcurve and 3d curve
     Handle(StepGeom_Pcurve) pcurve = Handle(StepGeom_Pcurve)::DownCast ( crv );
-    if ( pcurve.IsNull() ) {
-      Handle(StepGeom_SurfaceCurve) sc = Handle(StepGeom_SurfaceCurve)::DownCast ( crv );
-      if ( ! sc.IsNull() ) {
-	crv = sc->Curve3d();
-	if ( SurfMode ) { // find proper pcurve
-	  for ( Standard_Integer j=1; j <= sc->NbAssociatedGeometry(); j++ ) {
-	    StepGeom_PcurveOrSurface PCorS = sc->AssociatedGeometryValue ( j );
-	    Handle(StepGeom_Pcurve) pc = PCorS.Pcurve();
-	    if ( pc.IsNull() || pc->BasisSurface() != S ) continue;
-	    pcurve = pc;
-	    if ( ccs->SameSense() ) break;
-	  }
-	}
+    if (pcurve.IsNull()) {
+      Handle(StepGeom_SurfaceCurve) sc = Handle(StepGeom_SurfaceCurve)::DownCast(crv);
+      if (!sc.IsNull()) {
+        crv = sc->Curve3d();
+        if (SurfMode) { // find proper pcurve
+          for (Standard_Integer j = 1; j <= sc->NbAssociatedGeometry(); j++) {
+            StepGeom_PcurveOrSurface PCorS = sc->AssociatedGeometryValue(j);
+            Handle(StepGeom_Pcurve) pc = PCorS.Pcurve();
+            if (pc.IsNull() || pc->BasisSurface() != S)
+              continue;
+            pcurve = pc;
+            if (ccs->SameSense())
+              break;
+          }
+        }
       }
     }
     else {
@@ -204,30 +207,30 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init (const Handle(StepGe
     if ( ! pcurve.IsNull() ) {
       try {
         OCC_CATCH_SIGNALS
-	StepToTopoDS_TranslateEdge TrE;
-	Handle(Geom2d_Curve) c2d = TrE.MakePCurve ( pcurve, Surf );
-	if ( ! c2d.IsNull() ) {
-	  if ( edge.IsNull() ) {
-	    BRepBuilderAPI_MakeEdge MkEdge ( c2d, Surf, c2d->FirstParameter(), c2d->LastParameter() );
-	    if (MkEdge.IsDone())
-	    {
-	      if (Precision::IsNegativeInfinite (c2d->FirstParameter()) || Precision::IsPositiveInfinite (c2d->LastParameter()))
-	      {
-	        myInfiniteSegment = Standard_True;
-	        TP->AddWarning (CC, "Segment with infinite parameters");
-	      }
-	      edge = MkEdge.Edge();
-	    }
-	  }
-	  else {
-	    BRep_Builder B;
-	    TopLoc_Location L;
-	    B.UpdateEdge ( edge, c2d, Surf, L, 0. );
-	    B.Range ( edge, Surf, L, c2d->FirstParameter(), c2d->LastParameter() );
-	    B.SameRange ( edge, Standard_False );
-	    B.SameParameter ( edge, Standard_False );
-	  }
-	}
+        StepToTopoDS_TranslateEdge TrE;
+        Handle(Geom2d_Curve) c2d = TrE.MakePCurve(pcurve, Surf);
+        if (!c2d.IsNull()) {
+          if (edge.IsNull()) {
+            BRepBuilderAPI_MakeEdge MkEdge(c2d, Surf, c2d->FirstParameter(), c2d->LastParameter());
+            if (MkEdge.IsDone())
+            {
+              if (Precision::IsNegativeInfinite(c2d->FirstParameter()) || Precision::IsPositiveInfinite(c2d->LastParameter()))
+              {
+                myInfiniteSegment = Standard_True;
+                TP->AddWarning(CC, "Segment with infinite parameters");
+              }
+              edge = MkEdge.Edge();
+            }
+          }
+          else {
+            BRep_Builder B;
+            TopLoc_Location L;
+            B.UpdateEdge(edge, c2d, Surf, L, 0.);
+            B.Range(edge, Surf, L, c2d->FirstParameter(), c2d->LastParameter());
+            B.SameRange(edge, Standard_False);
+            B.SameParameter(edge, Standard_False);
+          }
+        }
       }
       catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
