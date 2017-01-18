@@ -1731,6 +1731,9 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
         aShaderProgram->GetUniformLocation (theGlContext, "uBackColorTop");
       myUniformLocations[anIndex][OpenGl_RT_uBackColorBot] =
         aShaderProgram->GetUniformLocation (theGlContext, "uBackColorBot");
+
+      myUniformLocations[anIndex][OpenGl_RT_uMaxRadiance] =
+        aShaderProgram->GetUniformLocation (theGlContext, "uMaxRadiance");
     }
 
     theGlContext->BindProgram (myOutImageProgram);
@@ -2465,38 +2468,24 @@ Standard_Boolean OpenGl_View::setUniformState (const Standard_Integer        the
   theProgram->SetUniform (theGlContext,
     myUniformLocations[theProgramId][OpenGl_RT_uUnviewMat], anUnviewMat);
 
-  // Set ray-tracing intersection parameters
-  theProgram->SetUniform (theGlContext,
-    myUniformLocations[theProgramId][OpenGl_RT_uSceneRad], myRaytraceSceneRadius);
-  theProgram->SetUniform (theGlContext,
-    myUniformLocations[theProgramId][OpenGl_RT_uSceneEps], myRaytraceSceneEpsilon);
-
-  const Standard_Integer aLightSourceBufferSize =
-    static_cast<Standard_Integer> (myRaytraceGeometry.Sources.size());
-
-  // Set ray-tracing light source parameters
-  theProgram->SetUniform (theGlContext,
-    myUniformLocations[theProgramId][OpenGl_RT_uLightCount], aLightSourceBufferSize);
-  theProgram->SetUniform (theGlContext,
-    myUniformLocations[theProgramId][OpenGl_RT_uLightAmbnt], myRaytraceGeometry.Ambient);
-
-  // Enable/disable run-time rendering effects
-  theProgram->SetUniform (theGlContext,
-    myUniformLocations[theProgramId][OpenGl_RT_uShadowsEnabled], myRenderParams.IsShadowEnabled ?  1 : 0);
-  theProgram->SetUniform (theGlContext,
-    myUniformLocations[theProgramId][OpenGl_RT_uReflectEnabled], myRenderParams.IsReflectionEnabled ?  1 : 0);
-
   // Set screen dimensions
   myRaytraceProgram->SetUniform (theGlContext,
     myUniformLocations[theProgramId][OpenGl_RT_uWinSizeX], theWinSizeX);
   myRaytraceProgram->SetUniform (theGlContext,
     myUniformLocations[theProgramId][OpenGl_RT_uWinSizeY], theWinSizeY);
 
-  if (myRenderParams.IsGlobalIlluminationEnabled) // if Monte-Carlo sampling enabled
-  {
-    theProgram->SetUniform (theGlContext,
-      myUniformLocations[theProgramId][OpenGl_RT_uBlockedRngEnabled], myRenderParams.CoherentPathTracingMode ?  1 : 0);
-  }
+  // Set 3D scene parameters
+  theProgram->SetUniform (theGlContext,
+    myUniformLocations[theProgramId][OpenGl_RT_uSceneRad], myRaytraceSceneRadius);
+  theProgram->SetUniform (theGlContext,
+    myUniformLocations[theProgramId][OpenGl_RT_uSceneEps], myRaytraceSceneEpsilon);
+
+  // Set light source parameters
+  const Standard_Integer aLightSourceBufferSize =
+    static_cast<Standard_Integer> (myRaytraceGeometry.Sources.size());
+  
+  theProgram->SetUniform (theGlContext,
+    myUniformLocations[theProgramId][OpenGl_RT_uLightCount], aLightSourceBufferSize);
 
   // Set array of 64-bit texture handles
   if (theGlContext->arbTexBindless != NULL && myRaytraceGeometry.HasTextures())
@@ -2525,6 +2514,7 @@ Standard_Boolean OpenGl_View::setUniformState (const Standard_Integer        the
       myUniformLocations[theProgramId][OpenGl_RT_uBackColorBot], aBackColor);
   }
 
+  // Set environment map parameters
   const Standard_Boolean toDisableEnvironmentMap = myTextureEnv.IsNull() || !myTextureEnv->IsValid();
   
   theProgram->SetUniform (theGlContext,
@@ -2532,6 +2522,37 @@ Standard_Boolean OpenGl_View::setUniformState (const Standard_Integer        the
 
   theProgram->SetUniform (theGlContext,
     myUniformLocations[theProgramId][OpenGl_RT_uSphereMapForBack], myRenderParams.UseEnvironmentMapBackground ?  1 : 0);
+
+  if (myRenderParams.IsGlobalIlluminationEnabled) // GI parameters
+  {
+    theProgram->SetUniform (theGlContext,
+      myUniformLocations[theProgramId][OpenGl_RT_uMaxRadiance], myRenderParams.RadianceClampingValue);
+
+    theProgram->SetUniform (theGlContext,
+      myUniformLocations[theProgramId][OpenGl_RT_uBlockedRngEnabled], myRenderParams.CoherentPathTracingMode ? 1 : 0);
+
+    // Check whether we should restart accumulation for run-time parameters
+    if (myRenderParams.RadianceClampingValue       != myRaytraceParameters.RadianceClampingValue
+     || myRenderParams.UseEnvironmentMapBackground != myRaytraceParameters.UseEnvMapForBackground)
+    {
+      myAccumFrames = 0; // accumulation should be restarted
+
+      myRaytraceParameters.RadianceClampingValue  = myRenderParams.RadianceClampingValue;
+      myRaytraceParameters.UseEnvMapForBackground = myRenderParams.UseEnvironmentMapBackground;
+    }
+  }
+  else // RT parameters
+  {
+    // Set ambient light source
+    theProgram->SetUniform (theGlContext,
+      myUniformLocations[theProgramId][OpenGl_RT_uLightAmbnt], myRaytraceGeometry.Ambient);
+
+    // Enable/disable run-time ray-tracing effects
+    theProgram->SetUniform (theGlContext,
+      myUniformLocations[theProgramId][OpenGl_RT_uShadowsEnabled], myRenderParams.IsShadowEnabled ?  1 : 0);
+    theProgram->SetUniform (theGlContext,
+      myUniformLocations[theProgramId][OpenGl_RT_uReflectEnabled], myRenderParams.IsReflectionEnabled ?  1 : 0);
+  }
 
   return Standard_True;
 }

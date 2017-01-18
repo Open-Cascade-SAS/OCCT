@@ -9075,6 +9075,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
     theDI << "iss:            " << (aParams.AdaptiveScreenSampling      ? "on" : "off") << "\n";
     theDI << "iss debug:      " << (aParams.ShowSamplingTiles           ? "on" : "off") << "\n";
     theDI << "two-sided BSDF: " << (aParams.TwoSidedBsdfModels          ? "on" : "off") << "\n";
+    theDI << "max radiance:   " <<  aParams.RadianceClampingValue                       << "\n";
     theDI << "shadingModel: ";
     switch (aView->ShadingModel())
     {
@@ -9299,6 +9300,37 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
         --anArgIter;
       }
       aParams.CoherentPathTracingMode = toEnable;
+    }
+    else if (aFlag == "-maxrad")
+    {
+      if (toPrint)
+      {
+        theDI << aParams.RadianceClampingValue << " ";
+        continue;
+      }
+      else if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      const TCollection_AsciiString aMaxRadStr = theArgVec[anArgIter];
+      if (!aMaxRadStr.IsRealValue())
+      {
+        std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      const Standard_Real aMaxRadiance = aMaxRadStr.RealValue();
+      if (aMaxRadiance <= 0.0)
+      {
+        std::cerr << "Error: invalid radiance clamping value " << aMaxRadiance << ".\n";
+        return 1;
+      }
+      else
+      {
+        aParams.RadianceClampingValue = static_cast<Standard_ShortReal> (aMaxRadiance);
+      }
     }
     else if (aFlag == "-iss")
     {
@@ -10906,6 +10938,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-twoside      on|off'  Enables/disables two-sided BSDF models (PT mode)"
     "\n      '-iss          on|off'  Enables/disables adaptive screen sampling (PT mode)"
     "\n      '-issd         on|off'  Shows screen sampling distribution in ISS mode"
+    "\n      '-maxrad       > 0.0'   Value used for clamping radiance estimation (PT mode)"
     "\n      '-rebuildGlsl  on|off'  Rebuild Ray-Tracing GLSL programs (for debugging)"
     "\n      '-shadingModel model'   Controls shading model from enumeration"
     "\n                              color, flat, gouraud, phong"

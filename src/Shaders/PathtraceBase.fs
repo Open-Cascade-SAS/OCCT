@@ -785,7 +785,7 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
       vec4 aTexColor = textureLod (
         sampler2D (uTextureSamplers[int (aMaterial.Kd.w)]), aTexCoord.st, 0.f);
 
-      aMaterial.Kd.rgb *= (aTexColor.rgb, aTexColor.rgb) * aTexColor.w; // de-gamma correction (for gamma = 2)
+      aMaterial.Kd.rgb *= (aTexColor.rgb * aTexColor.rgb) * aTexColor.w; // de-gamma correction (for gamma = 2)
 
       if (aTexColor.w != 1.0f)
       {

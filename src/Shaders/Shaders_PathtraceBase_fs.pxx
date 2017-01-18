@@ -788,7 +788,7 @@ static const char Shaders_PathtraceBase_fs[] =
   "      vec4 aTexColor = textureLod (\n"
   "        sampler2D (uTextureSamplers[int (aMaterial.Kd.w)]), aTexCoord.st, 0.f);\n"
   "\n"
-  "      aMaterial.Kd.rgb *= (aTexColor.rgb, aTexColor.rgb) * aTexColor.w; // de-gamma correction (for gamma = 2)\n"
+  "      aMaterial.Kd.rgb *= (aTexColor.rgb * aTexColor.rgb) * aTexColor.w; // de-gamma correction (for gamma = 2)\n"
   "\n"
   "      if (aTexColor.w != 1.0f)\n"
   "      {\n"

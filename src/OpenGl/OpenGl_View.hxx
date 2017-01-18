@@ -581,9 +581,12 @@ protected: //! @name data types related to ray-tracing
     OpenGl_RT_uOffsetY,
     OpenGl_RT_uSamples,
 
-    // adaptive path tracing images
+    // images used by ISS mode
     OpenGl_RT_uRenderImage,
     OpenGl_RT_uOffsetImage,
+
+    // maximum radiance value
+    OpenGl_RT_uMaxRadiance,
 
     OpenGl_RT_NbVariables // special field
   };
@@ -702,15 +705,23 @@ protected: //! @name data types related to ray-tracing
     //! Enables/disables adaptive screen sampling for path tracing.
     Standard_Boolean AdaptiveScreenSampling;
 
+    //! Enables/disables environment map for background.
+    Standard_Boolean UseEnvMapForBackground;
+
+    //! Maximum radiance value used for clamping radiance estimation.
+    Standard_ShortReal RadianceClampingValue;
+
     //! Creates default compile-time ray-tracing parameters.
     RaytracingParams()
-    : StackSize (THE_DEFAULT_STACK_SIZE),
-      NbBounces (THE_DEFAULT_NB_BOUNCES),
+    : StackSize              (THE_DEFAULT_STACK_SIZE),
+      NbBounces              (THE_DEFAULT_NB_BOUNCES),
       TransparentShadows     (Standard_False),
       GlobalIllumination     (Standard_False),
       UseBindlessTextures    (Standard_False),
       TwoSidedBsdfModels     (Standard_False),
-      AdaptiveScreenSampling (Standard_False) { }
+      AdaptiveScreenSampling (Standard_False),
+      UseEnvMapForBackground (Standard_False),
+      RadianceClampingValue  (30.0)            { }
   };
 
   //! Describes state of OpenGL structure.

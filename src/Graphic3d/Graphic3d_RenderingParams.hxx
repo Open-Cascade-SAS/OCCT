@@ -60,6 +60,7 @@ public:
     AdaptiveScreenSampling      (Standard_False),
     ShowSamplingTiles           (Standard_False),
     TwoSidedBsdfModels          (Standard_False),
+    RadianceClampingValue       (30.0),
     RebuildRayTracingShaders    (Standard_False),
     // stereoscopic parameters
     StereoMode (Graphic3d_StereoMode_QuadBuffer),
@@ -102,6 +103,7 @@ public:
   Standard_Boolean        AdaptiveScreenSampling;      //!< enables/disables adaptive screen sampling mode for path tracing, FALSE by default
   Standard_Boolean        ShowSamplingTiles;           //!< enables/disables debug mode for adaptive screen sampling, FALSE by default
   Standard_Boolean        TwoSidedBsdfModels;          //!< forces path tracing to use two-sided versions of original one-sided scattering models
+  Standard_ShortReal      RadianceClampingValue;       //!< maximum radiance value used for clamping radiance estimation.
   Standard_Boolean        RebuildRayTracingShaders;    //!< forces rebuilding ray tracing shaders at the next frame
 
   Graphic3d_StereoMode    StereoMode;                  //!< stereoscopic output mode, Graphic3d_StereoMode_QuadBuffer by default

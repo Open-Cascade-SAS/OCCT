@@ -13,9 +13,9 @@ uniform int uBlockedRngEnabled;
   uniform sampler2D uAccumTexture;
 #endif
 
-//! Maximum radiance that can be added to the pixel. Decreases noise
-//! level, but introduces some bias.
-#define MAX_RADIANCE vec3 (50.f)
+//! Maximum radiance that can be added to the pixel.
+//! Decreases noise level, but introduces some bias.
+uniform float uMaxRadiance = 50.f;
 
 // =======================================================================
 // function : main
@@ -64,7 +64,7 @@ void main (void)
     aColor.rgb = ZERO;
   }
 
-  aColor.rgb = min (aColor.rgb, MAX_RADIANCE);
+  aColor.rgb = min (aColor.rgb, vec3 (uMaxRadiance));
 
 #ifdef ADAPTIVE_SAMPLING
 
