@@ -2418,13 +2418,31 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
 
   // Object removes from Detected sequence
   Standard_DISABLE_DEPRECATION_WARNINGS
-  for (Standard_Integer aDetIter = myDetectedSeq.Lower(); aDetIter <= myDetectedSeq.Upper(); ++aDetIter)
+  for (Standard_Integer aDetIter = myDetectedSeq.Lower(); aDetIter <= myDetectedSeq.Upper();)
   {
-    Handle(AIS_InteractiveObject) anObj = DetectedCurrentObject();
+    Handle(SelectMgr_EntityOwner) aPicked = myMainSel->Picked (myDetectedSeq (aDetIter));
+    Handle(AIS_InteractiveObject) anObj;
+    if (!aPicked.IsNull())
+    {
+      anObj = Handle(AIS_InteractiveObject)::DownCast (aPicked->Selectable());
+    }
+
     if (!anObj.IsNull()
-      && anObj != theIObj)
+      && anObj == theIObj)
     {
       myDetectedSeq.Remove (aDetIter);
+      if (myCurDetected == aDetIter)
+      {
+        myCurDetected = Min (myDetectedSeq.Upper(), aDetIter);
+      }
+      if (myCurHighlighted == aDetIter)
+      {
+        myCurHighlighted = 0;
+      }
+    }
+    else
+    {
+      aDetIter++;
     }
   }
   Standard_ENABLE_DEPRECATION_WARNINGS
@@ -2448,6 +2466,7 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
     {
       clearDynamicHighlight();
       myLastinMain.Nullify();
+      myLastPicked.Nullify();
     }
   }
 

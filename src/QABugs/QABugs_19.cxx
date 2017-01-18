@@ -5359,6 +5359,41 @@ static Standard_Integer OCC27893 (Draw_Interpretor& /*theDI*/, Standard_Integer 
 }
 
 //========================================================================
+//function : OCC28310
+//purpose  : Tests validness of iterator in AIS_InteractiveContext after
+// an removing object from it
+//========================================================================
+static Standard_Integer OCC28310 (Draw_Interpretor& /*theDI*/, Standard_Integer /*theArgc*/, const char** theArgv)
+{
+  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    std::cout << "No interactive context. Use 'vinit' command before " << theArgv[0] << "\n";
+    return 1;
+  }
+
+  TopoDS_Shape aBox = BRepPrimAPI_MakeBox (10.0, 10.0, 10.0).Shape();
+  Handle(AIS_InteractiveObject) aBoxObj = new AIS_Shape (aBox);
+  aCtx->Display (aBoxObj, AIS_Shaded, 0, Standard_False);
+  ViewerTest::CurrentView()->FitAll();
+  aCtx->MoveTo (200, 200, ViewerTest::CurrentView());
+  aCtx->Select();
+
+  aCtx->Remove (aBoxObj, Standard_True);
+  // nullify the object explicitly to simulate situation in project,
+  // when ::Remove is called from another method and the object is destroyed
+  // before ::DetectedInteractive is called
+  aBoxObj.Nullify();
+
+  for (aCtx->InitDetected(); aCtx->MoreDetected(); aCtx->NextDetected())
+  {
+    Handle(AIS_InteractiveObject) anObj = aCtx->DetectedInteractive();
+  }
+
+  return 0;
+}
+
+//========================================================================
 //function : Commands_19
 //purpose  :
 //========================================================================
@@ -5494,5 +5529,8 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC27893",
                    "OCC27893: Creates a box and selects it via AIS_InteractiveContext API",
                    __FILE__, OCC27893, group);
+  theCommands.Add("OCC28310",
+                  "OCC28310: Tests validness of iterator in AIS_InteractiveContext after an removing object from it",
+                  __FILE__, OCC28310, group);
   return;
 }

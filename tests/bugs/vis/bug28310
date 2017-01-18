@@ -1,0 +1,14 @@
+puts "==========="
+puts "OCC28310"
+puts "==========="
+puts ""
+##########################################################################
+# Visualization - crash on iteration through detected interactive objects
+##########################################################################
+
+pload VISUALIZATION QAcommands
+
+vinit View1
+
+# Sequence of C++ commands crashes the application
+OCC28310
