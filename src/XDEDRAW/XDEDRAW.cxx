@@ -142,16 +142,46 @@ static Standard_Integer saveDoc (Draw_Interpretor& di, Standard_Integer argc, co
     if (!DDocStd::GetDocument(argv[1],D)) return 1;
   }
 
-  if (argc == 3 ) {
+  PCDM_StoreStatus aStatus = PCDM_SS_Doc_IsNull;
+  if (argc == 3)
+  {
     TCollection_ExtendedString path (argv[2]);
-    A->SaveAs(D,path);
-    return 0;
+    aStatus = A->SaveAs (D, path);
   }
-  if (!D->IsSaved()) {
-    di << "this document has never been saved\n";
+  else if (!D->IsSaved())
+  {
+    std::cout << "Storage error: this document has never been saved\n";
     return 1;
   }
-  A->Save(D);
+  else
+  {
+    aStatus = A->Save(D);
+  }
+
+  switch (aStatus)
+  {
+    case PCDM_SS_OK:
+      break;
+    case PCDM_SS_DriverFailure:
+      di << "Storage error: driver failure\n";
+      break;
+    case PCDM_SS_WriteFailure:
+      di << "Storage error: write failure\n";
+      break;
+    case PCDM_SS_Failure:
+      di << "Storage error: general failure\n";
+      break;
+    case PCDM_SS_Doc_IsNull:
+      di << "Storage error: document is NULL\n";
+      break;
+    case PCDM_SS_No_Obj:
+      di << "Storage error: no object\n";
+      break;
+    case PCDM_SS_Info_Section_Error:
+      di << "Storage error: section error\n";
+      break;
+  }
+
   return 0;
 }
 
