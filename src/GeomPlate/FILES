@@ -1,6 +1,6 @@
 GeomPlate_Aij.cxx
 GeomPlate_Aij.hxx
-GeomPlate_Array1OfHCurveOnSurface.hxx
+GeomPlate_Array1OfHCurve.hxx
 GeomPlate_Array1OfSequenceOfReal.hxx
 GeomPlate_BuildAveragePlane.cxx
 GeomPlate_BuildAveragePlane.hxx
@@ -8,7 +8,7 @@ GeomPlate_BuildPlateSurface.cxx
 GeomPlate_BuildPlateSurface.hxx
 GeomPlate_CurveConstraint.cxx
 GeomPlate_CurveConstraint.hxx
-GeomPlate_HArray1OfHCurveOnSurface.hxx
+GeomPlate_HArray1OfHCurve.hxx
 GeomPlate_HArray1OfSequenceOfReal.hxx
 GeomPlate_HSequenceOfCurveConstraint.hxx
 GeomPlate_HSequenceOfPointConstraint.hxx

@@ -93,7 +93,7 @@
 #include <GeomLib.hxx>
 #include <GeomPlate_BuildPlateSurface.hxx>
 #include <GeomPlate_CurveConstraint.hxx>
-#include <GeomPlate_HArray1OfHCurveOnSurface.hxx>
+#include <GeomPlate_HArray1OfHCurve.hxx>
 #include <GeomPlate_MakeApprox.hxx>
 #include <GeomPlate_PlateG0Criterion.hxx>
 #include <GeomPlate_Surface.hxx>

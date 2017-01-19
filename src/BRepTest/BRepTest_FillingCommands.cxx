@@ -55,7 +55,7 @@
 #include <GeomPlate_BuildAveragePlane.hxx>
 #include <GeomPlate_Surface.hxx>
 #include <GeomPlate_BuildAveragePlane.hxx>
-#include <GeomPlate_HArray1OfHCurveOnSurface.hxx>
+#include <GeomPlate_HArray1OfHCurve.hxx>
 
 #include <GeomPlate_MakeApprox.hxx>
 #include <GeomPlate_PlateG0Criterion.hxx>
@@ -137,7 +137,7 @@ static Standard_Integer plate (Draw_Interpretor & di,Standard_Integer n,const ch
 {
   if (n < 8 ) return 1;
   Standard_Integer NbCurFront=Draw::Atoi(a[3]);
-  Handle(GeomPlate_HArray1OfHCurveOnSurface) Fronts = new GeomPlate_HArray1OfHCurveOnSurface(1,NbCurFront);
+  Handle(GeomPlate_HArray1OfHCurve) Fronts = new GeomPlate_HArray1OfHCurve(1,NbCurFront);
   Handle(TColStd_HArray1OfInteger) Tang = new TColStd_HArray1OfInteger(1,NbCurFront);
   Handle(TColStd_HArray1OfInteger) NbPtsCur = new TColStd_HArray1OfInteger(1,NbCurFront);
   BRep_Builder B;
@@ -338,7 +338,7 @@ static Standard_Integer approxplate (Draw_Interpretor & di,Standard_Integer n,co
   if (n < 9 ) return 1;
   Standard_Integer NbMedium=Draw::Atoi(a[2]);
   Standard_Integer NbCurFront=Draw::Atoi(a[3]);
-  Handle(GeomPlate_HArray1OfHCurveOnSurface) Fronts = new GeomPlate_HArray1OfHCurveOnSurface(1,NbCurFront);
+  Handle(GeomPlate_HArray1OfHCurve) Fronts = new GeomPlate_HArray1OfHCurve(1,NbCurFront);
   Handle(TColStd_HArray1OfInteger) Tang = new TColStd_HArray1OfInteger(1,NbCurFront);
   Handle(TColStd_HArray1OfInteger) NbPtsCur = new TColStd_HArray1OfInteger(1,NbCurFront);
   

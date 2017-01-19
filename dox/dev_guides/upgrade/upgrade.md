@@ -1203,3 +1203,9 @@ The follow AIS_InteractiveContext methods have been changed:
 @subsection upgrade_720_Result_Of_BOP_On_Containers Result of Boolean operations on containers
 
 * The result of Boolean operations on arguments of collection types (WIRE/SHELL/COMPSOLID) is now filtered from duplicating containers.
+
+@subsection upgrade_720_changes_methods Other changes
+
+* Class GeomPlate_BuildPlateSurface accepts base class Adaptor3d_HCurve (instead of inherited Adaptor3d_HCurveOnSurface accepted earlier).
+
+* Types GeomPlate_Array1OfHCurveOnSurface and GeomPlate_HArray1OfHCurveOnSurface have been replaced with GeomPlate_Array1OfHCurve and GeomPlate_HArray1OfHCurve correspondingly (accept base class Adaptor3d_HCurve instead of Adaptor3d_HCurveOnSurface).

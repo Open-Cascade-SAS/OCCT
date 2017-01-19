@@ -12,6 +12,8 @@
 #include "ISession_Direction.h"
 #include "..\res\resource.h"
 
+#include <Adaptor3d_HCurveOnSurface.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <TColStd_Array2OfReal.hxx>
@@ -4665,8 +4667,8 @@ void CModelingDoc::OnStopStop()
 			nbedges++;
 			
 		}
-		Handle(GeomPlate_HArray1OfHCurveOnSurface) Fronts =
-			new GeomPlate_HArray1OfHCurveOnSurface(1,nbedges);
+                Handle(GeomPlate_HArray1OfHCurve) Fronts =
+                        new GeomPlate_HArray1OfHCurve(1, nbedges);
 		Handle(TColStd_HArray1OfInteger) Tang = 
 			new TColStd_HArray1OfInteger(1,nbedges);
 		Handle(TColStd_HArray1OfInteger) NbPtsCur = 

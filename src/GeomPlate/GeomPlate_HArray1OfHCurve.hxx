@@ -14,14 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef GeomPlate_HArray1OfHCurveOnSurface_HeaderFile
-#define GeomPlate_HArray1OfHCurveOnSurface_HeaderFile
+#ifndef GeomPlate_HArray1OfHCurve_HeaderFile
+#define GeomPlate_HArray1OfHCurve_HeaderFile
 
-#include <Adaptor3d_HCurveOnSurface.hxx>
-#include <GeomPlate_Array1OfHCurveOnSurface.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <GeomPlate_Array1OfHCurve.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(GeomPlate_HArray1OfHCurveOnSurface, GeomPlate_Array1OfHCurveOnSurface)
+DEFINE_HARRAY1(GeomPlate_HArray1OfHCurve, GeomPlate_Array1OfHCurve)
 
 
 #endif

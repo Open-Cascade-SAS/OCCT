@@ -22,6 +22,7 @@
 
 #include <Adaptor2d_HCurve2d.hxx>
 #include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <Approx_CurveOnSurface.hxx>
 #include <Extrema_ExtPS.hxx>
 #include <Extrema_POnSurf.hxx>
@@ -109,7 +110,7 @@ static Standard_Integer Affich=0;
 //---------------------------------------------------------
 GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface ( 
 		    const Handle(TColStd_HArray1OfInteger)& NPoints,
-		    const Handle(GeomPlate_HArray1OfHCurveOnSurface)& TabCurve,
+		    const Handle(GeomPlate_HArray1OfHCurve)& TabCurve,
 		    const Handle(TColStd_HArray1OfInteger)& Tang,
 		    const Standard_Integer Degree,
 		    const Standard_Integer NbIter,

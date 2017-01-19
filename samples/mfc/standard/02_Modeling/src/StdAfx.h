@@ -108,7 +108,7 @@
 #include <LocOpe_FindEdges.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Solid.hxx>
-#include <GeomPlate_HArray1OfHCurveOnSurface.hxx>
+#include <GeomPlate_HArray1OfHCurve.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <GeomAdaptor_HSurface.hxx>

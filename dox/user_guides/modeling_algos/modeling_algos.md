@@ -683,7 +683,7 @@ Handle (Geom_Surface) Surf (Mapp.Surface());
 // create a face corresponding to the approximated Plate 
 Surface 
 Standard_Real Umin, Umax, Vmin, Vmax; 
-PSurf-Bounds( Umin, Umax, Vmin, Vmax); 
+PSurf->Bounds( Umin, Umax, Vmin, Vmax); 
 BRepBuilderAPI_MakeFace MF(Surf,Umin, Umax, Vmin, Vmax); 
 ~~~~~
 

@@ -30,7 +30,7 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Extrema_ExtPS.hxx>
-#include <GeomPlate_HArray1OfHCurveOnSurface.hxx>
+#include <GeomPlate_HArray1OfHCurve.hxx>
 #include <TColgp_SequenceOfXY.hxx>
 #include <TColgp_SequenceOfXYZ.hxx>
 #include <TColGeom2d_HArray1OfCurve.hxx>
@@ -77,7 +77,7 @@ public:
   //! Tol3d is used to test if two identical points in the 2d space are identical in 3d space
   //! TolAng is used to compare the angle between normal of two identical points in the 2d space
   //! Raises  ConstructionError;
-  Standard_EXPORT GeomPlate_BuildPlateSurface(const Handle(TColStd_HArray1OfInteger)& NPoints, const Handle(GeomPlate_HArray1OfHCurveOnSurface)& TabCurve, const Handle(TColStd_HArray1OfInteger)& Tang, const Standard_Integer Degree, const Standard_Integer NbIter = 3, const Standard_Real Tol2d = 0.00001, const Standard_Real Tol3d = 0.0001, const Standard_Real TolAng = 0.01, const Standard_Real TolCurv = 0.1, const Standard_Boolean Anisotropie = Standard_False);
+  Standard_EXPORT GeomPlate_BuildPlateSurface(const Handle(TColStd_HArray1OfInteger)& NPoints, const Handle(GeomPlate_HArray1OfHCurve)& TabCurve, const Handle(TColStd_HArray1OfInteger)& Tang, const Standard_Integer Degree, const Standard_Integer NbIter = 3, const Standard_Real Tol2d = 0.00001, const Standard_Real Tol3d = 0.0001, const Standard_Real TolAng = 0.01, const Standard_Real TolCurv = 0.1, const Standard_Boolean Anisotropie = Standard_False);
   
   Standard_EXPORT GeomPlate_BuildPlateSurface(const Handle(Geom_Surface)& Surf, const Standard_Integer Degree = 3, const Standard_Integer NbPtsOnCur = 10, const Standard_Integer NbIter = 3, const Standard_Real Tol2d = 0.00001, const Standard_Real Tol3d = 0.0001, const Standard_Real TolAng = 0.01, const Standard_Real TolCurv = 0.1, const Standard_Boolean Anisotropie = Standard_False);
   
