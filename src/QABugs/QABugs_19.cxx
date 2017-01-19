@@ -5376,8 +5376,8 @@ static Standard_Integer OCC28310 (Draw_Interpretor& /*theDI*/, Standard_Integer 
   Handle(AIS_InteractiveObject) aBoxObj = new AIS_Shape (aBox);
   aCtx->Display (aBoxObj, AIS_Shaded, 0, Standard_False);
   ViewerTest::CurrentView()->FitAll();
-  aCtx->MoveTo (200, 200, ViewerTest::CurrentView());
-  aCtx->Select();
+  aCtx->MoveTo (200, 200, ViewerTest::CurrentView(), Standard_True);
+  aCtx->Select(Standard_True);
 
   aCtx->Remove (aBoxObj, Standard_True);
   // nullify the object explicitly to simulate situation in project,
