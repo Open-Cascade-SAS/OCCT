@@ -58,7 +58,7 @@ namespace
       if (aShape.ShapeType() == TopAbs_COMPOUND
        && theMap.Add (aShape))
       {
-        collectSubCompounds (theMap, theShape);
+        collectSubCompounds (theMap, aShape);
       }
     }
   }
