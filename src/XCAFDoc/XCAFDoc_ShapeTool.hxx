@@ -286,8 +286,8 @@ public:
   //! Removes a component from its assembly
   Standard_EXPORT void RemoveComponent (const TDF_Label& comp) const;
   
-  //! Update an assembly at label <L>
-  Standard_EXPORT void UpdateAssembly (const TDF_Label& L) const;
+  //! Top-down update for all assembly compounds stored in the document.
+  Standard_EXPORT void UpdateAssemblies();
   
   //! Finds a label for subshape <sub> of shape stored on
   //! label shapeL
@@ -421,7 +421,12 @@ protected:
 
 private:
 
-  
+  //! Checks recursively if the given assembly item is modified. If so, its
+  //! associated compound is updated. Returns true if the assembly item is
+  //! modified, false -- otherwise.
+  Standard_EXPORT Standard_Boolean updateComponent(const TDF_Label& theAssmLabel,
+                                                   TopoDS_Shape&    theUpdatedShape) const;
+
   //! Adds a new top-level (creates and returns a new label)
   //! For internal use. Used by public method AddShape.
   Standard_EXPORT TDF_Label addShape (const TopoDS_Shape& S, const Standard_Boolean makeAssembly = Standard_True);

@@ -156,14 +156,16 @@ You can then query or edit this Assembly node, the Main Item or another one (*my
 
 **Note** that for the examples in the rest of this guide, *myAssembly* is always presumed to be accessed this way, so this information will not be repeated.
 
-@subsubsection occt_xde_2_2_3 Updating the Assembly after Filling or Editing
+@subsubsection occt_xde_2_2_3 Updating the Assemblies after Filling or Editing
 Some actions in this chapter affect the content of the document, considered as an Assembly. As a result, you will sometimes need to update various representations (including the compounds). 
 
 To update the representations, use: 
 ~~~~~
-myAssembly->UpdateAssembly(aLabel); 
+myAssembly->UpdateAssemblies(); 
 ~~~~~
-Since this call is always used by the editing functions, you need not apply it for such functions. However, you will need this call if special edits, not using XCAF functions, are used on the document. 
+This call performs a top-down update of the Assembly compounds stored in the document.
+
+**Note** that you have to run this method manually to actualize your Assemblies after any low-level modifications on shapes.
 
 @subsubsection occt_xde_2_2_4 Adding or Setting Top Level Shapes
 

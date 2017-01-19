@@ -815,6 +815,31 @@ static Standard_Integer setStyledComponent (Draw_Interpretor& di, Standard_Integ
   
   return 0;
 }
+
+static Standard_Integer updateAssemblies(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc != 2)
+  {
+    di << "Use: " << argv[0] << " Doc\n";
+    return 1;
+  }
+
+  // Get XDE document
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument(argv[1], aDoc);
+  if ( aDoc.IsNull() )
+    return 1;
+
+  // Get XDE shape tool
+  Handle(XCAFDoc_ShapeTool)
+    aShapeTool = XCAFDoc_DocumentTool::ShapeTool( aDoc->Main() );
+
+  // Update assemblies
+  aShapeTool->UpdateAssemblies();
+
+  return 0;
+}
+
 //=======================================================================
 //function : InitCommands
 //purpose  : 
@@ -913,4 +938,6 @@ void XDEDRAW_Shapes::InitCommands(Draw_Interpretor& di)
   di.Add ("XSetInstanceSHUO","Doc shape \t: sets the SHUO structure for indicated component",
                    __FILE__, setStyledComponent, g);
   
+  di.Add ("XUpdateAssemblies","Doc \t: updates assembly compounds",
+                   __FILE__, updateAssemblies, g);
 }

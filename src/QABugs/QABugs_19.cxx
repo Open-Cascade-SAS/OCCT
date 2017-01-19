@@ -1774,6 +1774,7 @@ static Standard_Integer OCC23950 (Draw_Interpretor& di, Standard_Integer argc, c
   TDataStd_Name::Set(labelA0, "ASSEMBLY");
 
   TDF_Label component01 = XCAFDoc_DocumentTool::ShapeTool (aDoc->Main ())->AddComponent (labelA0, lab1, location0);
+  XCAFDoc_DocumentTool::ShapeTool (aDoc->Main ())->UpdateAssemblies();
 
   Quantity_Color yellow(1,1,0, Quantity_TOC_RGB);
   XCAFDoc_DocumentTool::ColorTool (labelA0)->SetColor (component01, yellow, XCAFDoc_ColorGen);

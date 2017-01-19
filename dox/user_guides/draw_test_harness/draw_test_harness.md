@@ -8910,6 +8910,19 @@ Sets a shape at the indicated label.
 XSetShape D 0:1:1:3 b 
 ~~~~~
 
+@subsubsection occt_draw_8_6_15  XUpdateAssemblies
+
+Syntax:      
+~~~~~
+XUpdateAssemblies <document>
+~~~~~
+
+Updates all assembly compounds in the XDE document.
+
+**Example:**
+~~~~~
+XUpdateAssemblies D
+~~~~~
 
 @subsection occt_draw_8_7_  XDE color commands 
 

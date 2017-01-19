@@ -319,6 +319,9 @@ Standard_Boolean IGESCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc)
 
   // end added by skl 13.10.2003
 
+  // Update assembly compounds
+  STool->UpdateAssemblies();
+
   return Standard_True;
 }
   

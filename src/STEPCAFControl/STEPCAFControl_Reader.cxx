@@ -689,6 +689,9 @@ Standard_Boolean STEPCAFControl_Reader::Transfer (STEPControl_Reader &reader,
   // names) if requested
   ExpandSubShapes(STool, map, ShapePDMap);
 
+  // Update assembly compounds
+  STool->UpdateAssemblies();
+
   return Standard_True;
 }
 

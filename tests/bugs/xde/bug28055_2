@@ -1,0 +1,60 @@
+pload QAcommands
+
+puts "============"
+puts "CR28055"
+puts "============"
+puts ""
+
+##########################################################################
+# Add UpdateAssemblies() method for top-down update of assembly compounds
+##########################################################################
+
+##########################################################################
+proc IsSame {s1 s2} {
+  global $s1 $s2
+  if {[IsSameShapes $s1 $s2] == 1} {return 1}
+  return 0
+}
+##########################################################################
+
+ReadStep d [locate_data_file trj3_as1-tc-214.stp]
+XShow d
+vfit
+vsetdispmode 1
+
+# Explode on solids for comparison
+XGetOneShape model1 d
+explode model1 So
+
+checkview -screenshot -3d -path ${imagedir}/${::casename}_1.png
+
+# Update part's geometry
+box box_nut -2 -2 0 22 18 8;
+XSetShape d 0:1:1:5 box_nut
+XUpdateAssemblies d
+XShow d
+
+# Explode on solids for comparison
+XGetOneShape model2 d
+explode model2 So
+
+# 0 means "different", 1 means "same"
+set same_mask {1 0 1 0 1 0 1 1 1 0 1 0 1 0 1 1 0 0}; list
+set n [llength $same_mask]
+
+# Compare subshapes (exploded compounds) with respect to the reference mask
+set i 1
+foreach same_flag $same_mask {
+  set same [IsSame model1_$i model2_$i]
+  puts "Comparison result for subshape $i: $same"
+  if {$same!=$same_flag} {
+    if {$same_flag==1} {
+      puts "Error: shapes are expected to be identical"
+    } else {
+      puts "Error: shapes are expected to be different"
+    }
+  }
+  incr i
+}
+
+checkview -screenshot -3d -path ${imagedir}/${::casename}_2.png
