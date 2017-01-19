@@ -30,7 +30,7 @@ public:
 	// Execution.
 	virtual Standard_Integer Execute(Handle(TFunction_Logbook)& log) const;
 
-	DEFINE_STANDARD_RTTIEXT(ShapeSaverDriver, TFunction_Driver)
+	DEFINE_STANDARD_RTTIEXT(ShapeSaverDriver, BaseDriver)
 };
 
 #endif // !defined(_SHAPESAVERDRIVER_H_)

@@ -32,7 +32,7 @@ public:
   
   Standard_EXPORT StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation();
 
-  DEFINE_STANDARD_RTTIEXT(CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation, StepVisual_DraughtingModel)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation, StepVisual_DraughtingModel)
 
 };
 #endif // _StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation_HeaderFile

@@ -30,7 +30,7 @@ public:
 	// Execution.
 	virtual Standard_Integer Execute(Handle(TFunction_Logbook)& log) const;
 
-	DEFINE_STANDARD_RTTIEXT(PointDriver, TFunction_Driver)
+	DEFINE_STANDARD_RTTIEXT(PointDriver, BaseDriver)
 };
 
 #endif // !defined(_PointDRIVER_H_)

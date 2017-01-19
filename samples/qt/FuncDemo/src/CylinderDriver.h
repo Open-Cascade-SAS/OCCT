@@ -30,7 +30,7 @@ public:
 	// Execution.
 	virtual Standard_Integer Execute(Handle(TFunction_Logbook)& log) const;
 
-	DEFINE_STANDARD_RTTIEXT(CylinderDriver, TFunction_Driver)
+	DEFINE_STANDARD_RTTIEXT(CylinderDriver, BaseDriver)
 };
 
 #endif // !defined(_CYLINDERDRIVER_H_)

@@ -30,7 +30,7 @@ public:
 	// Execution.
 	virtual Standard_Integer Execute(Handle(TFunction_Logbook)& log) const;
 
-	DEFINE_STANDARD_RTTIEXT(PrismDriver, TFunction_Driver)
+	DEFINE_STANDARD_RTTIEXT(PrismDriver, BaseDriver)
 };
 
 #endif // !defined(_PRISMDRIVER_H_)

@@ -4809,7 +4809,7 @@ public:
     myMarkerAspect = theMarkerAspect;
   }
 
-  DEFINE_STANDARD_RTTI_INLINE(MyPArrayObject,AIS_InteractiveObject);
+  DEFINE_STANDARD_RTTI_INLINE(ViewerTest_MarkersArrayObject,AIS_InteractiveObject);
 
 private:
 

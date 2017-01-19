@@ -30,7 +30,7 @@ public:
 	// Execution.
 	virtual Standard_Integer Execute(Handle(TFunction_Logbook)& log) const;
 
-	DEFINE_STANDARD_RTTIEXT(ConeDriver, TFunction_Driver)
+	DEFINE_STANDARD_RTTIEXT(ConeDriver, BaseDriver)
 };
 
 #endif // !defined(_CONEDRIVER_H_)

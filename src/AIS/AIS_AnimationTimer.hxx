@@ -22,7 +22,7 @@
 //! Auxiliary class defining the animation timer.
 class AIS_AnimationTimer : public Standard_Transient
 {
-  DEFINE_STANDARD_RTTIEXT(AIS_Animation, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(AIS_AnimationTimer, Standard_Transient)
 public:
 
   //! Empty constructor.

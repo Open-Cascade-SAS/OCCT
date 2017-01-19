@@ -92,7 +92,7 @@ private:
 
   void cacheVertexProjections (SelectMgr_TriangularFrustum* theFrustum) const;
 
-  DEFINE_STANDARD_RTTIEXT(SelectMgr_TriangularFrustum,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_TriangularFrustum,SelectMgr_Frustum<3>)
 };
 
 #endif // _SelectMgr_TriangularFrustum_HeaderFile
