@@ -54,7 +54,10 @@ public:
 
   //! Stops and Reinitializes the Chronometer.
   Standard_EXPORT virtual void Reset();
-  
+
+  //! Restarts the Chronometer.
+  Standard_EXPORT virtual void Restart();
+
   //! Stops the Chronometer.
   Standard_EXPORT virtual void Stop();
   

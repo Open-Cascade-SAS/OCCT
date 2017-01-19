@@ -1,0 +1,61 @@
+puts "============"
+puts "OCC25742"
+puts "============"
+puts ""
+###############################
+## A partition of 2 shapes stresses a performance issue
+###############################
+
+if { [regexp {Debug mode} [dversion]] } {
+  if { [regexp {Windows} [dversion]] } {
+    set max_time 10
+    set max_time2 10
+  } else {
+    set max_time 10
+    set max_time2 10
+  }
+} else {
+  if { [regexp {Windows} [dversion]] } {
+    set max_time 1
+    set max_time2 1
+  } else {
+    set max_time 1
+    set max_time2 1
+  }
+}
+
+restore [locate_data_file bug25742_pipeFiss.brep] b1
+restore [locate_data_file bug25742_shellFiss.brep] b2
+
+explode b1 f
+explode b2 f
+
+smallview
+donly b1_4
+fit
+display b2_1
+
+dchrono h restart
+bopcurves b1_4 b2_1 -2d
+dchrono h stop bopcurves counter bopcurves
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}_1.png
+
+mksurface s1 b1_4
+mksurface s2 b2_1
+
+dchrono h2 restart
+set CurveNumb [intersect resi s1 s2]
+dchrono h2 stop counter CurveNumb
+
+if { [llength ${CurveNumb}] < 1 } {
+    puts "Error : Bad intersection"
+} else {
+    puts "OK : Good intersection"
+}
+
+don resi*
+fit
+display s1 s2
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}_2.png

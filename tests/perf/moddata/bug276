@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC276"
+puts "========"
+puts ""
+#########################################################
+##Bad performance of checkshape on faces with multiple wires 
+#########################################################
+
+restore [locate_data_file OCC276.brep] result
+
+dchrono h2 restart
+
+checkshape result
+
+dchrono h2 stop counter checkshape
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+
+
+
+

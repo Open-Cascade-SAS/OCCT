@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC27570"
+puts "========"
+puts ""
+###########################################################
+# Unacceptable performance during reading large STEP files
+###########################################################
+
+set max_time 8
+
+dchrono cr restart
+ReadStep D [locate_data_file bug27570.stp]
+dchrono cr stop counter ReadStep
+
+# check number of shapes
+XGetOneShape result D
+checknbshapes result -solid 1000 -compound 1111

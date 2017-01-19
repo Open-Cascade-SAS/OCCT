@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC21858"
+puts "============"
+puts ""
+####################################
+# Visualization hangs on this face ( OCC21858.brep )
+####################################
+
+set BugNumber OCC21858
+cpulimit 40
+restore [locate_data_file OCC21858.brep] result
+
+checkprops result -l 6.48642 
+checksection result
+
+checknbshapes result -vertex 9 -edge 10 -wire 1 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 21
+
+vinit
+vsetdispmode 1
+dchrono TestTimer restart
+vdisplay result
+dchrono TestTimer stop counter vdisplay
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,75 @@
+puts "TODO OCC25919 ALL: Error: Offset is not done."
+puts "TODO OCC25919 ALL: Faulty OCC165"
+puts "TODO OCC25919 ALL: Error : The length of result shape is"
+
+cpulimit 600
+
+puts "========"
+puts "OCC165"
+puts "========"
+puts "Bug regression in BRepOffsetAPI_MakeOffset class (offsetting in OY direction)"
+
+restore [locate_data_file offset_wire_019.brep] a 
+checkshape a
+
+mkplane f a
+checkshape f
+
+set start_stepoffset -5.7
+set incr_stepoffset 0.1
+set finish_stepoffset -2.8
+
+set interval_numb [expr int ( ($finish_stepoffset - $start_stepoffset) / $incr_stepoffset ) + 1]
+
+set IsMade 0
+set IsBeginMade 0
+set IsGood 1
+set i 0
+set resume_string ""
+for {set stepoffset $start_stepoffset} {$stepoffset <= $finish_stepoffset} {set stepoffset [expr $stepoffset + $incr_stepoffset]} {
+    incr i
+    puts "i = $i"
+    if { [catch {mkoffset result f 1 $stepoffset } catch_result] } {
+        puts "Faulty OCC165 (stepoffset = $stepoffset) : function MKOFFSET works wrongly"
+        set IsGood 0
+        set IsMade 0
+    } else {
+        puts "OK OCC165 (stepoffset = $stepoffset)"
+        set IsMade 1
+    }
+    if {$IsBeginMade == 0 && $IsMade == 1} {
+        set IsBeginMade 1
+        set BeginStepOffset $stepoffset
+    }
+    if {$IsMade == 1} {
+        set FinishStepOffset $stepoffset
+    }
+
+    if {$IsBeginMade == 1 && ($IsMade == 0 || $i == $interval_numb) } {
+        set IsBeginMade 0
+        set resume_tmp "from [format "%0.2f" $BeginStepOffset] till [format "%0.2f" $FinishStepOffset]\n"
+        set resume_string "${resume_string}${resume_tmp}"
+    }
+}
+
+puts ""
+if {[string length $resume_string] == 0} {
+    puts "Offset is created wrongly on initial shape in following borders"
+    puts "from [format "%0.2f" $start_stepoffset] till [format "%0.2f" $finish_stepoffset]"
+} else {
+    puts "Offset is created correctly on initial shape in following borders"
+    puts "$resume_string"
+}
+
+if {$IsGood == 1} {
+    puts "OCC165 OK"
+} else {
+    puts "Faulty OCC165"
+}
+
+renamevar result_1 result
+
+checkprops result -l 0 
+checkshape result
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

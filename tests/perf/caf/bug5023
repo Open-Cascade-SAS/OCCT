@@ -1,0 +1,20 @@
+puts "================"
+puts "OCC5023"
+puts "================"
+puts ""
+######################################################
+# Performance regression in opening OCAF file
+######################################################
+
+set aFile [locate_data_file OCC5023.cbf]
+
+puts "Info: Restore the document"
+
+if [info exists DD] {
+    catch {Close DD}; unset DD
+}
+
+dchrono h restart
+
+Open ${aFile} DD
+dchrono h stop counter OpenDoc

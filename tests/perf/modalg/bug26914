@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC26914"
+puts "========"
+puts ""
+#################################
+# Hang in surface approximation
+#################################
+
+set max_time 2
+
+restore [locate_data_file bug23943_s.draw] s
+
+dchrono cr restart
+approxsurf rs s 5e-5 0 0 15 15 100 0
+dchrono cr stop counter approxsurf

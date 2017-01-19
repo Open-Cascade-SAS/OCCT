@@ -1,0 +1,8 @@
+# To prevent loops limit to 5 minutes
+cpulimit 300
+
+if { [array get Draw_Groups "TOPOLOGY Feature commands"] == "" } {
+     pload XSDRAW
+}
+
+set nbFreeEdges 0

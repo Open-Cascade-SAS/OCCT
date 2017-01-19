@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC25413"
+puts "========"
+puts ""
+#############################################################
+# Line-Shape intersection algorithm became 400 times slower
+#############################################################
+
+pload QAcommands
+
+restore [locate_data_file bug25413.brep] w
+
+dchrono perf_h restart
+OCC25413 w
+dchrono perf_h stop counter OCC25413

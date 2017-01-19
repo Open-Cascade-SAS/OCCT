@@ -1,0 +1,36 @@
+puts "========="
+puts "OCC25788"
+puts "========="
+puts ""
+###############################################
+# Parallelization of the BOP Builder algorithm on second level
+###############################################
+
+# box plate to cut the holes from
+box b1 100 100 1
+
+# N defines number of holes along each of X and Y, thus total N^2 holes
+# will be drilled; note that the algorithm iself is likely to be quadratic
+# for number of shapes, i.e. CPU 
+set N 40
+set holes {}
+for {set i 1} {$i < $N} {incr i} {
+ for {set j 1} {$j < $N} {incr j} {
+   pcylinder p_${i}_$j 0.5 1
+   ttranslate p_${i}_$j [expr $i * 100. / $N]  [expr $j * 100. / $N]  0.
+   lappend holes p_${i}_$j
+ }
+}
+
+eval compound $holes b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+
+brunparallel 1
+
+dchrono cpu restart
+bcut r b1 b2 
+dchrono cpu stop counter bcut

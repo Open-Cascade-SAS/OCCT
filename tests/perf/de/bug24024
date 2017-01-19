@@ -1,0 +1,17 @@
+puts "=========="
+puts "OCC24024"
+puts "=========="
+puts ""
+######################################
+# Slow import of specific STEP data
+######################################
+
+cpulimit 1700
+
+dchrono h restart
+stepread [locate_data_file bug24024_slow_import.stp] a *
+dchrono h stop counter stepread
+
+tpcompound result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

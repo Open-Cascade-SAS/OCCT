@@ -1,0 +1,53 @@
+puts "========"
+puts "OCC26980"
+puts "========"
+puts ""
+#################################
+# Intersection part of Boolean algorithm spends much system time and system memory
+#################################
+
+set max_time 130
+set mem_max_wsetpeak 500000000
+
+
+bclearobjects;
+bcleartools;
+
+restore [locate_data_file bug26980-cmp.brep] cmp
+
+puts [nbshapes cmp -t]
+
+eval baddobjects [explode cmp]
+
+dchrono cr restart
+
+bfillds
+bbuild result
+
+dchrono cr stop counter bbuild
+
+set mem_wsetpeak [meminfo wsetpeak]
+
+if { ${mem_wsetpeak} > ${mem_max_wsetpeak}} {
+    puts "Error : there is memory problem (${mem_wsetpeak} MBytes has been allocated)"
+}
+
+set nbshapes_expected "
+ VERTEX    : 365
+ EDGE      : 793
+ WIRE      : 531
+ FACE      : 531
+ SHELL     : 102
+ SOLID     : 101
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 2424
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t
+
+smallview
+donly result
+fit
+
+set 2dviewer 1

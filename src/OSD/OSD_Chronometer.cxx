@@ -199,6 +199,17 @@ void OSD_Chronometer::Reset ()
   Cumul_user = Cumul_sys = 0.;
 }
 
+
+//=======================================================================
+//function : Restart
+//purpose  :
+//=======================================================================
+void OSD_Chronometer::Restart ()
+{
+  Stopped = Standard_True;
+  Start();
+}
+
 //=======================================================================
 //function : Stop
 //purpose  :

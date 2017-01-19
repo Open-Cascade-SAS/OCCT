@@ -1,0 +1,23 @@
+restore [locate_data_file 5000-16.brep] a
+
+dchrono ch restart
+puts [fastsewing result -tol 2.0e-5 a]
+dchrono ch stop counter fastsewing
+
+donly result
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 5527
+ EDGE      : 11056
+ WIRE      : 5520
+ FACE      : 5520
+ SHELL     : 1
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 27625
+"
+
+checknbshapes result -ref "${nbshapes_expected}" -t -m "Partition of 2 shapes"

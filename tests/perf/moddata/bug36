@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC36"
+puts "========"
+
+pload XDE
+
+set filepath [locate_data_file OCC36.igs]
+if [catch { igesbrep $filepath a * } res] { 
+    puts "Error OCC36: here is reading problem"
+} else {
+    puts "Reading OCC36  OK"
+
+    tpcompound r
+    dchrono h2 restart
+    sewing result 1.e-7 r
+    dchrono h2 stop counter sewing
+
+    checkmaxtol result -ref 0.96087447225733291
+    checknbshapes result -shell 13
+    checkfreebounds result 1247
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

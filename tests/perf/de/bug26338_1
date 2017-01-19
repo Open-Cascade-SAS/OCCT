@@ -3,14 +3,12 @@ puts "0026338: STL export (especially binary) needs a lot of time if selected ex
 puts "========"
 puts ""
 
-pload MODELING XSDRAW
-
 # make sphere triangulated with 2M triangles
 sphere s 10
 tessellate result s 1000 1000
 trinfo result
 
 # write to binary STL
-chrono s reset; chrono s start
+chrono s restart
 writestl result $imagedir/${casename}-binary.stl 1
-chrono s stop; chrono s show
+chrono s stop counter writestl

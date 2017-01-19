@@ -1,0 +1,23 @@
+puts "================"
+puts "OCC26884"
+puts "================"
+puts ""
+##############################################################
+# Cylinder/Cylinder intersection algorithm throws an exception
+##############################################################
+
+set max_time 0.1
+
+restore [locate_data_file bug26884-f1.brep] f1
+restore [locate_data_file bug26884-f2.brep] f2
+
+dchrono cr restart
+
+set info [bopcurves f1 f2 -2d]
+
+dchrono cr stop counter bopcurves
+
+if {![regexp {has no 3d curves} $info] ||
+    ![regexp {has no 3d points} $info] } {
+  puts "Error: wrong output"
+}

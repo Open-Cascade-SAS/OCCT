@@ -1,0 +1,42 @@
+puts " BUC60068 "
+puts "If scales by 1000, time to compute is 10 times greater "
+##
+## mod pkv from
+restore [locate_data_file buc60068a.rle] a
+restore [locate_data_file buc60068b.rle] b
+restore [locate_data_file buc60068a.rle] c
+restore [locate_data_file buc60068b.rle] d
+restore [locate_data_file buc60068a.rle] e
+restore [locate_data_file buc60068b.rle] f
+restore [locate_data_file buc60068a.rle] g
+restore [locate_data_file buc60068b.rle] h
+## mod pkv from
+##
+
+## fuse
+dchrono j start
+bfuse resab a b
+dchrono j stop counter BFuseAB
+
+tscale  c 0 0 0 100
+tscale  d 0 0 0 100
+dchrono k start
+bfuse rescd c d
+dchrono k stop counter BFuseCD
+
+tscale  e 0 0 0 1000
+tscale  f 0 0 0 1000
+dchrono l start
+bfuse resef e f
+dchrono l stop counter BFuseEF
+
+tscale  g 0 0 0 10000
+tscale  h 0 0 0 10000
+dchrono m start
+bfuse resgh g h
+dchrono m stop counter BFuseGH
+
+compound resab rescd resef resgh result
+
+checkprops result -s 2.5e+13
+checkview -display result -2d -otherwise { a b c d e f g h } -s -path ${imagedir}/${test_image}.png

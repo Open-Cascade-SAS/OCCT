@@ -1,0 +1,27 @@
+puts "=========="
+puts "OCC24899"
+puts "=========="
+puts ""
+##################################################################################################
+# Time of computation of intersection points with help of class BRepIntCurveSurface_Inter is big
+##################################################################################################
+
+polyline l -10 1 1 80 1 1
+explode l e
+
+restore [locate_data_file bug24899_TheHull.brep] h1
+mkcurve c1 l_1
+BRepIntCS c1 h1 r
+distmini dd l_1 h1
+
+dchrono t1 restart
+for { set i 0} { $i <= 100 } {incr i} {
+  BRepIntCS c1 h1 r
+}
+dchrono t1 stop counter BRepIntCS
+
+dchrono t2 restart
+for { set j 0} { $j <= 100 } {incr j} {
+  distmini dd l_1 h1
+}
+dchrono t2 stop counter distmini

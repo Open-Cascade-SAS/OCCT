@@ -1,0 +1,19 @@
+puts "=========="
+puts "OCC23650"
+puts "=========="
+puts ""
+##################################################################
+# Slow mesher: one bspline surface, 80 seconds for 132 triangles
+##################################################################
+
+restore [locate_data_file bug23650_slowmesh.brep] result
+tclean result
+dchrono h restart
+incmesh result 0.2
+dchrono h stop counter incmesh
+
+vinit
+vdisplay result
+vfit
+vsetdispmode 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

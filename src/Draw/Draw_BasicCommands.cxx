@@ -100,20 +100,49 @@ static Standard_Integer chronom(Draw_Interpretor& di,
       C->Timer().Reset();
     }
     else {
-      if (!strcasecmp(a[2],"reset"))
-	C->Timer().Reset();
-      if (!strcasecmp(a[2],"start"))
-	C->Timer().Start();
-      if (!strcasecmp(a[2],"stop"))
-	C->Timer().Stop();
-      if (!strcasecmp(a[2],"show"))
-	C->Timer().Show();
+      for (Standard_Integer anIter = 2; anIter < n; ++anIter)
+      {
+        TCollection_AsciiString anArg (a[anIter]);
+        anArg.LowerCase();
+
+        if (anArg == "reset")
+        {
+          C->Timer().Reset();
+        }
+        else if (anArg == "restart")
+        {
+          C->Timer().Restart();
+        }
+        else if (anArg == "start")
+        {
+          C->Timer().Start();
+        }
+        else if (anArg == "stop")
+        {
+          C->Timer().Stop();
+        }
+        else if (anArg == "show")
+        {
+          C->Timer().Show();
+        }
+        else if (anArg == "counter")
+        {
+          Standard_Real aSeconds,aCPUtime;
+          Standard_Integer aMinutes, aHours;
+          C->Timer().Show(aSeconds,aMinutes,aHours,aCPUtime);
+          std::cout << "COUNTER " << a[++anIter] << ": " << aCPUtime << "\n";
+        }
+        else
+        {
+          std::cerr << "Unknown argument '" << a[anIter] << "'!\n";
+        }
+      }
     }
   }
   return 0;
 }
 
-static Standard_Integer dchronom(Draw_Interpretor& I,
+static Standard_Integer dchronom(Draw_Interpretor& theDI,
 				 Standard_Integer n,const char** a)
 {
   if ((n == 1) || (*a[1] == '0') || (*a[1] == '1')) {
@@ -122,8 +151,8 @@ static Standard_Integer dchronom(Draw_Interpretor& I,
     else
       Draw_Chrono = (*a[1] == '1');
 
-    if (Draw_Chrono) I << "Chronometers activated.\n";
-    else I << "Chronometers desactivated.\n";
+    if (Draw_Chrono) theDI << "Chronometers activated.\n";
+    else theDI << "Chronometers desactivated.\n";
   }
   else {
     Handle(Draw_Drawable3D) D = Draw::Get(a[1]);
@@ -133,22 +162,50 @@ static Standard_Integer dchronom(Draw_Interpretor& I,
     }
     if (C.IsNull()) {
       C = new Draw_Chronometer();
-    Draw::Set(a[1],C,Standard_False);
+      Draw::Set(a[1],C,Standard_False);
     }
     if (n <= 2) {
       C->Timer().Reset();
     }
     else {
-      if (!strcasecmp(a[2],"reset"))
-	C->Timer().Reset();
-      if (!strcasecmp(a[2],"start"))
-	C->Timer().Start();
-      if (!strcasecmp(a[2],"stop"))
-	C->Timer().Stop();
-      if (!strcasecmp(a[2],"show")) {
-	Standard_SStream ss;
-	C->Timer().Show(ss);
-	I << ss;
+      for (Standard_Integer anIter = 2; anIter < n; ++anIter)
+      {
+        TCollection_AsciiString anArg (a[anIter]);
+        anArg.LowerCase();
+
+        if (anArg == "reset")
+        {
+          C->Timer().Reset();
+        }
+        else if (anArg == "restart")
+        {
+          C->Timer().Restart();
+        }
+        else if (anArg == "start")
+        {
+          C->Timer().Start();
+        }
+        else if (anArg == "stop")
+        {
+          C->Timer().Stop();
+        }
+        else if (anArg == "show")
+        {
+          Standard_SStream ss;
+          C->Timer().Show(ss);
+          theDI << ss;
+        }
+        else if (anArg == "counter")
+        {
+          Standard_Real aSeconds,aCPUtime;
+          Standard_Integer aMinutes, aHours;
+          C->Timer().Show(aSeconds,aMinutes,aHours,aCPUtime);
+          theDI << "COUNTER " << a[++anIter] << ": " << aCPUtime << "\n";
+        }
+        else
+        {
+          theDI << "Unknown argument '" << a[anIter] << "'!\n";
+        }
       }
     }
   }

@@ -1876,6 +1876,50 @@ proc _diff_show_ratio {value1 value2} {
     return "$value1 / $value2 \[[format "%+5.2f%%" [expr 100 * ($value1 - $value2) / double($value2)]]\]"
 }
 
+# procedure to check cpu user time
+proc _check_time {regexp_msg} {
+    upvar log log
+    upvar log1 log1
+    upvar log2 log2
+    upvar log_cpu log_cpu
+    upvar cpu cpu
+    upvar basename basename
+    upvar casename casename
+    set time1_list [dict create]
+    set time2_list [dict create]
+    set cpu_find UNDEFINED
+
+    foreach line1 [split $log1 "\n"] {
+        if { [regexp "${regexp_msg}" $line1 dump chronometer_name cpu_find] } {
+            dict set time1_list "${chronometer_name}" "${cpu_find}"
+        }
+    }
+
+    foreach line2 [split $log2 "\n"] {
+        if { [regexp "${regexp_msg}" $line2 dump chronometer_name cpu_find] } {
+            dict set time2_list "${chronometer_name}" "${cpu_find}"
+        }
+    }
+
+    if { [llength [dict keys $time1_list]] != [llength [dict keys $time2_list]] } {
+        puts "Error: number of dchrono/chrono COUNTER are different in the same test cases"
+    } else {
+        foreach key [dict keys $time1_list] {
+            set time1 [dict get $time1_list $key]
+            set time2 [dict get $time2_list $key]
+
+            # compare CPU user time with 10% precision (but not less 0.5 sec)
+            if { [expr abs ($time1 - $time2) > 0.5 + 0.05 * abs ($time1 + $time2)] } {
+                if {$cpu != false} {
+                    _log_and_puts log_cpu "COUNTER $key: [split $basename /] $casename: [_diff_show_ratio $time1 $time2]"
+                } else {
+                    _log_and_puts log "COUNTER $key: [split $basename /] $casename: [_diff_show_ratio $time1 $time2]"
+                }
+            }
+        }
+    }
+}
+
 # Procedure to compare results of two runs of test cases
 proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _logimage _logcpu _logmemory {_statvar ""}} {
     upvar $_logvar log
@@ -1952,6 +1996,15 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
                 }
                 if { "$status" == "ok" && "$status1" != "OK" } { 
                     continue
+                }
+            }
+
+            if { ! $image } {
+                # check CPU user time in test cases
+                set checkCPURegexp "COUNTER (.+): (\[-0-9.+eE\]+)"
+                if { [regexp "${checkCPURegexp}" $log1] &&
+                     [regexp "${checkCPURegexp}" $log2] } {
+                  _check_time "${checkCPURegexp}"
                 }
             }
             

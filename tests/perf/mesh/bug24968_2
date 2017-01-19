@@ -1,0 +1,22 @@
+puts "=========="
+puts "OCC24968"
+puts "=========="
+puts ""
+#####################################
+# Impove BRepMesh_Classifier to cope with intersection of huge number of wires
+#####################################
+
+cpulimit 2500
+
+restore [locate_data_file bug24968_Shape_1.brep] result
+
+tclean result
+dchrono h restart
+incmesh result 0.1 -parallel
+dchrono h stop counter incmesh
+
+vinit
+vdisplay result
+vfit
+vsetdispmode 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

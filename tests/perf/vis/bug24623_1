@@ -1,0 +1,88 @@
+puts "============"
+puts "OCC24623_1"
+puts "============"
+puts ""
+#######################################################################
+puts "Visualization - improve selection mechanism"
+# tests performance of selection algorithm. Creates a grid of spheres with
+# size DISCRETISATION * DISCRETISATION. To get representative performance
+# test results, increase the size of grid in DISCRETISATION and check time
+# measurments in comparsion to previous OCCT versions. You may also check
+# the time of selection when all BVH trees are built via uncommenting
+# the code in "Start building all trees" section.
+#######################################################################
+
+set DISCRETISATION 10
+set RADIUS 100
+
+pload ALL
+
+set aStep [expr $RADIUS * 0.1]
+
+# unset aNames
+list aNames
+set aX 0
+set aY 0
+for {set i 0} {$i < $DISCRETISATION} {incr i} {
+	for {set j 0} {$j < $DISCRETISATION} {incr j} {
+    set aCurrName "sph"
+    append aCurrName [expr $i * $DISCRETISATION + $j]
+    lappend aNames $aCurrName
+    psphere $aCurrName $RADIUS
+    set aX [expr $i * ($aStep + $RADIUS)]
+    set aY [expr - $j * ($aStep + $RADIUS)]
+    ttranslate $aCurrName $aX $aY 0
+  }
+}
+
+set aSpheresNbInfo "Total spheres number:"
+append aSpheresNbInfo [expr $DISCRETISATION * $DISCRETISATION]
+puts $aSpheresNbInfo
+
+vinit
+set aMemInit [meminfo h]
+puts "Initial mem: [expr $aMemInit   / (1024 * 1024)] MiB ([expr $aMemInit])"
+vsetdispmode 1
+set aMemInit [meminfo h]
+vdisplay {*}$aNames
+vfit
+
+puts "Selection of spheres without BVH trees built:"
+vmoveto 224 269
+
+puts ""
+puts "Applying the transformations..."
+vtranslateview 1 0 0
+vrotate 100 100 100
+
+puts ""
+puts "Selection time with transformations applied without BVH built:"
+dchrono aTimer restart
+vmoveto 102 224
+dchrono aTimer stop counter vmoveto
+
+# puts ""
+# puts "Start building all trees..."
+# vtop
+# vfit
+# set aStartPt [expr round(400 / double($DISCRETISATION)) + 5]
+# set aPtStep [expr round(double(round(100*(400 / double($DISCRETISATION))))/100 * 2)]
+# for {set i 0} {$i < $DISCRETISATION / 2} {incr i} {
+#   for {set j 0} {$j < $DISCRETISATION / 2} {incr j} {
+#     set aX [expr $aStartPt + $i * $aPtStep]
+#     set aY [expr $aStartPt + $j * $aPtStep]
+#     vmoveto $aX $aY 1
+#   }
+# }
+
+# puts ""
+# puts "Selection time with all BVHs built:"
+# dchrono aTimer reset
+# dchrono aTimer start
+# vmoveto 200 200
+# dchrono aTimer stop
+
+set aMemSel [meminfo h]
+puts "Selection mem: [expr $aMemSel   / (1024 * 1024)] MiB ([expr $aMemSel])"
+
+checkcolor 115 221 0 1 1

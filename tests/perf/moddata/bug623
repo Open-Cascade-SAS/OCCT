@@ -1,0 +1,26 @@
+puts "================"
+puts "OCC623"
+puts "================"
+puts ""
+####################
+## InCorrect Data in PCurve
+####################
+
+##cpulimit 4000
+
+pload XDE
+
+stepread [locate_data_file OCC623.step] a *
+
+setflags a_1 locked
+dchrono h restart
+nurbsconvert result a_1
+dchrono h stop counter nurbsconvert
+
+fsameparameter result
+checkshape result
+
+checkprops result -s 32.1968
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+
+

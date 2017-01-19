@@ -1,0 +1,36 @@
+puts "========"
+puts "OCC27119"
+puts "========"
+puts ""
+###########################################
+## Regression: Draw command "incmesh" hangs on the attacheced face.
+###########################################
+
+set BugNumber OCC27119
+
+restore [locate_data_file bug27119_GrossPlatePart3Step2TransformedFace.brep] result
+
+dchrono t restart
+incmesh result 1.e-6
+dchrono t stop counter incmesh
+
+set tri 0
+set nod 0
+set def 0
+
+set tri_info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+regexp { deflection +([-0-9.+eE]+)} $tri_info full def
+
+set ref_tri 7855
+set ref_nod 7857
+set ref_def 9.3791641120333225e-013
+set tol_rel 0.01
+
+# Computes deviation of the value from specified one
+checkreal "Nb of triangles" $tri $ref_tri 0 $tol_rel
+checkreal "Nb of nodes" $nod $ref_nod 0 $tol_rel
+checkreal "Deflection" $def $ref_def 1.e-12 0
+
+set 3dviewer 1

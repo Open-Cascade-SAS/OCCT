@@ -1,0 +1,51 @@
+
+puts "========"
+puts "GER60239"
+puts "OCC452"
+puts "(case 2)"
+puts "========"
+puts ""
+
+restore [locate_data_file mds-part1.rle] a 
+set che [checkshape a]
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty OCC452 (shape 1): Source shape is invalid. It was detected by Checkshape command"
+} else {
+    puts "OCC452 OK (shape 1): Source shape is valid"
+}
+
+restore [locate_data_file mds-part2.rle] b
+set che [checkshape b]
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty OCC452 (shape 2): Source shape is invalid. It was detected by Checkshape command"
+} else {
+    puts "OCC452 OK (shape 2): Source shape is valid"
+}
+
+restore [locate_data_file CTO900_ger60239a.rle] c
+set che [checkshape c]
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty OCC452 (shape 3): Source shape is invalid. It was detected by Checkshape command"
+} else {
+    puts "OCC452 OK (shape 3): Source shape is valid"
+}
+
+restore [locate_data_file CTO900_ger60239b.rle] d
+set che [checkshape d]
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty OCC452 (shape 4): Source shape is invalid. It was detected by Checkshape command"
+} else {
+    puts "OCC452 OK (shape 4): Source shape is valid"
+}
+dchrono h2 restart
+
+bfuse r a b
+#checkshape r
+
+bfuse result c d
+
+dchrono h2 stop counter bfuse
+
+checkprops result -s 3468.6 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

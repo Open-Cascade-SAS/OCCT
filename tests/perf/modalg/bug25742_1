@@ -1,0 +1,38 @@
+puts "============"
+puts "OCC25742"
+puts "============"
+puts ""
+###############################
+## A partition of 2 shapes stresses a performance issue
+###############################
+
+restore [locate_data_file bug25742_pipeFiss.brep] b1
+restore [locate_data_file bug25742_shellFiss.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+ 
+dchrono h restart
+bfillds
+bbuild result
+dchrono h stop counter BBuild
+
+checkprops result -s 280627 
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 14
+ EDGE      : 24
+ WIRE      : 11
+ FACE      : 10
+ SHELL     : 1
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 61
+"
+checknbshapes result -ref "${nbshapes_expected}" -t -m "Partition of 2 shapes"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

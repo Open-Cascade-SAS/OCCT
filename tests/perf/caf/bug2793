@@ -1,0 +1,46 @@
+puts "=========="
+puts "OCC2793"
+puts "=========="
+puts ""
+########################################################################
+# BinOcaf: low performance saving documents with large attributes
+########################################################################
+
+NewDocument D BinOcaf
+
+# Loaded shapes for attributes
+restore [locate_data_file Radhaus.brep] shape1
+restore [locate_data_file shading_wrongshape_009.brep] shape2
+restore [locate_data_file FORM-11.brep] shape3
+restore [locate_data_file OCC22759-weldt6.brep] shape4
+restore [locate_data_file BPLSEITRE.brep] shape5
+restore [locate_data_file OCC22302.brep] shape6
+restore [locate_data_file ROVER.brep] shape7
+restore [locate_data_file bug24083_polyline.brep] shape8
+
+# Create a label
+set lab1 [Label D 0:2]
+set lab2 [Label D 0:3]
+set lab3 [Label D 0:4]
+set lab4 [Label D 0:5]
+set lab5 [Label D 0:6]
+set lab6 [Label D 0:7]
+set lab7 [Label D 0:8]
+set lab8 [Label D 0:9]
+
+# Load shapes on labels
+NewShape D ${lab1} shape1
+NewShape D ${lab2} shape2
+NewShape D ${lab3} shape3
+NewShape D ${lab4} shape4
+NewShape D ${lab5} shape5
+NewShape D ${lab6} shape6
+NewShape D ${lab7} shape7
+NewShape D ${lab8} shape8
+
+# Save document
+file delete -force ${imagedir}/2793.cbf
+dchrono h restart
+SaveAs D ${imagedir}/2793.cbf
+dchrono h stop counter SaveAs
+Close D

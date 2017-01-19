@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC26447"
+puts "============"
+puts ""
+##############################################################
+# Performance degradation intersecting cylindrical surfaces
+#############################################################
+
+cylinder c1 0 0 0 1 0 0 0 -1 0 100
+cylinder c2 0 0 0 0 1 0 1 0 0 100
+mkface f1 c1
+mkface f2 c2
+
+dchrono cr restart
+
+for {set i 1} {$i <= 1000} {incr i} {
+  bopcurves f1 f2
+}
+
+dchrono cr stop counter bopcurves

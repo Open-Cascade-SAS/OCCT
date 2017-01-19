@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC26184"
+puts "============"
+puts ""
+#######################################################################
+# GeomAPI_ExtremaCurveCurve hangs on parallel b-spline curves
+#######################################################################
+
+restore [locate_data_file bug26184_Curve_Extrema_1_12971.brep] a1
+restore [locate_data_file bug26184_Curve_Extrema_2_12971.brep] a2
+
+mkcurve c1 a1
+mkcurve c2 a2
+
+cpulimit 20
+
+dchrono h restart
+extrema c1 c2
+dchrono h stop counter extrema

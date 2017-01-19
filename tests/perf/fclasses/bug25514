@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC25514"
+puts "========"
+puts ""
+#########################################################################################
+# TKernel, OSD_Timer - do not accumulate error in timer within queries in running state
+#########################################################################################
+
+# Set number of cycle iteration
+set IterationCount 10000
+set iCounter 1
+
+# Set rank of timer's value
+set TimeRank 2
+
+# Start timers
+dchrono bug_info_1 restart
+dchrono bug_info_2 restart
+
+# Operation cycle
+while {$iCounter != $IterationCount} {
+  set iCounter [expr {$iCounter + 1}]
+}
+
+# Stop timers and show timer's values
+dchrono bug_info_1 stop counter bug_info_1
+dchrono bug_info_2 stop counter bug_info_2

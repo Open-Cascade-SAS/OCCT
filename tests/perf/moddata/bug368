@@ -1,0 +1,22 @@
+
+puts "========================"
+puts "BUC61027"
+puts " OCC368 "
+puts "========================"
+puts ""
+##############################################
+## Visualization is too slow.
+##############################################
+
+restore [locate_data_file OCC368.brep] result
+checkshape result
+
+tclean result
+isos result 0
+vinit
+dchrono h2 restart
+vdisplay result
+vsetdispmode result 1
+dchrono h2 stop counter vdisplay
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

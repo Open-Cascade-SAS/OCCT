@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC24005"
+puts "============"
+puts ""
+###############################
+## Intersecting a slightly off angle plane with a cylinder takes 7+ seconds
+###############################
+
+pload QAcommands
+
+dchrono h restart
+
+OCC24005 result
+
+dchrono h stop counter OCC24005
+
+if { [regexp {Ellipse} [dump result]] == 1 } {
+    puts "result is OK"
+} else {
+    puts "result is Faulty"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

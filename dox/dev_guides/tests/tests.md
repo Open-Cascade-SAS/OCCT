@@ -715,11 +715,24 @@ Possible options are:
 	* 1 -- outputs only differences;
 	* 2 -- additionally outputs the list of logs and directories present in one of directories only;
 	* 3 -- (by default) additionally outputs progress messages;
+* <i>-image [filename]</i> - compare images and save the resulting log in specified file (<i>$dir1/diffimage-$dir2.log</i> by default)
+* <i>-cpu [filename]</i> - compare overall CPU and save the resulting log in specified file (<i>$dir1/diffcpu-$dir2.log</i> by default)
+* <i>-memory [filename]</i> - compare memory delta and save the resulting log in specified file (<i>$dir1/diffmemory-$dir2.log</i> by default)
+* <i>-highlight_percent \<value\></i> - highlight considerable (>value in %) deviations of CPU and memory (default value is 5%)
 
 Example:
 
 ~~~~~
-Draw[]> testdiff results-CR12345-2012-10-10T08:00 results-master-2012-10-09T21:20 
+Draw[]> testdiff results/CR12345-2012-10-10T08:00 results/master-2012-10-09T21:20 
+~~~~~
+
+Particular tests can generate additional data that need to be compared by *testdiff* command.
+For that, for each parameter to be controlled, the test should produce the line containing keyword "COUNTER* followed by arbitrary name of the parameter, then colon and numeric value of the parameter.
+
+Example of test code:
+
+~~~~~
+puts "COUNTER Memory heap usage at step 5: [meminfo h]"
 ~~~~~
 
 @section testmanual_5 APPENDIX

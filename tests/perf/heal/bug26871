@@ -1,0 +1,20 @@
+puts "======="
+puts "OCC26871"
+puts "======="
+puts ""
+#########################################################
+## Projecting a curve hangs inside Approx_FitAndDivide2d
+#########################################################
+
+pload QAcommands
+
+set max_time 5
+
+restore [locate_data_file bug26871_curve3d] c3d
+restore [locate_data_file bug26871_surface] surf
+
+dchrono cr restart
+
+OCC24008 c3d surf
+
+dchrono cr stop counter OCC24008

@@ -52,7 +52,10 @@ public:
 
   //! Stops and reinitializes the timer with zero elapsed time.
   Standard_EXPORT virtual void Reset() Standard_OVERRIDE;
-  
+
+  //! Restarts the Timer.
+  Standard_EXPORT virtual void Restart() Standard_OVERRIDE;
+
   //! Shows both the elapsed time and CPU time on the standard output
   //! stream <cout>.The chronometer can be running (Lap Time) or
   //! stopped.

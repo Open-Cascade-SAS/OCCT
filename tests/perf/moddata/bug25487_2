@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC25487"
+puts "========"
+puts ""
+##########################################
+# Extrema_GenExtPS needs to be optimized
+##########################################
+
+cpulimit 1500
+
+pload DATAEXCHANGEKERNEL
+
+# Restore testing shape and get timing characteristics for operation stepread
+dchrono perf_h restart
+stepread [locate_data_file OCC25487_LP2.stp] a *
+dchrono perf_h stop counter stepread

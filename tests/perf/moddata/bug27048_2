@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC27048"
+puts "============"
+puts ""
+############################################################################
+#  Recalculation of BSpline cache causes a performance problems
+############################################################################
+
+pload XSDRAW
+
+dchrono t restart
+testreadstep [locate_data_file bug27048.stp] result
+dchrono t stop counter testreadstep
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

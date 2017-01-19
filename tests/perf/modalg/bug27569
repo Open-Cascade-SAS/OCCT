@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC27569"
+puts "============"
+puts ""
+######################################################
+# [Regression in 6.9.0] Projecting a curve hangs
+######################################################
+
+pload QAcommands
+
+restore [locate_data_file bug27569.brep] aS
+explode aS
+mkcurve c aS_1
+mksurface s aS_2
+
+# Performance check
+dchrono h restart
+OCC24008 c s
+dchrono h stop counter OCC24008

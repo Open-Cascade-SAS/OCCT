@@ -1,0 +1,31 @@
+puts "TODO ?OCC25918 Windows: Error : The area of result shape is"
+puts "TODO OCC24156 MacOS: Tcl Exception:"
+puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
+
+puts "========"
+puts "OCC453"
+puts "(case 2)"
+puts "========"
+puts ""
+
+dchrono h2 restart
+
+set make_print_out 0
+
+dset SCALE 1000.
+dset SCALE1 5
+tolblend 0.01 1e-04 1e-05 1e-03
+
+restore [locate_data_file shading_137.brep] s 
+tscale s 0 0 0 SCALE1
+explode s E
+
+blend result s  4.5*SCALE1 s_2  4.5*SCALE1 s_1  4.5*SCALE1 s_6 4.5*SCALE1 s_8  4.5*SCALE1 s_10 4.5*SCALE1 s_14  4.5*SCALE1 s_4 4.5*SCALE1 s_5 4.5*SCALE1 s_16 4.5*SCALE1 s_11 4.5*SCALE1 s_19 4.5*SCALE1 s_13
+explode result So
+tcopy result_1 result 
+
+dchrono h2 stop counter blend
+
+checkprops result -s 3.65777e+06 
+checkshape result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

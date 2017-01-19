@@ -610,7 +610,7 @@ wait
 Syntax:                  
 
 ~~~~~
-chrono [ name start/stop/reset/show] 
+chrono [ name start/stop/reset/show/restart/[counter text]]
 ~~~~~
 
 Without arguments, **chrono** activates Draw chronometers. The elapsed time ,cpu system and cpu user times for each command will be printed. 
@@ -619,7 +619,9 @@ With arguments, **chrono** is used to manage activated chronometers. You can per
   * run the chronometer (start).
   * stop the chronometer (stop).
   * reset the chronometer to 0 (reset).
+  * restart the chronometer (restart).
   * display the current time (show).
+  * display the current time with specified text (output example - *COUNTER text: N*), command <i>testdiff</i> will compare such outputs between two test runs (counter).
 
 **Example:** 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}

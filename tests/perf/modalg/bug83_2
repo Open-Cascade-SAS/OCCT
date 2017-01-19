@@ -1,0 +1,30 @@
+puts "============"
+puts "BUC60912"
+puts "OCC83"
+puts "============"
+puts ""
+###############################
+## Section of simple BSpline surfaces is performed too slow
+###############################
+
+puts "2 case: perform section with planar BSpline surface"
+restore [locate_data_file BUC60912_sec_slow.brep] c 
+explode c
+checkshape c_1
+checkshape c_2
+
+renamevar c_1 sh
+renamevar c_2 pr
+plane f 0 0 0 1 0 0
+mkface f f -11 11 -11 11
+
+puts "Info: perform section with planar BSpline surface"
+dchrono h2 restart
+bsection result sh pr
+dchrono h2 stop counter bsection
+
+checkprops result -l 42.879 
+checkshape result 
+checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

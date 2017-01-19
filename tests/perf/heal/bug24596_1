@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC24596"
+puts "============"
+puts ""
+###############################
+## Slow import of IGES data
+###############################
+
+pload QAcommands
+
+if { [regexp {Debug mode} [dversion]] } {
+  cpulimit 8500
+} else {
+  cpulimit 2600
+}
+
+# 1 - igesread
+dchrono h restart
+igesread [locate_data_file 100B_Nosecone_with_Triangular_FSS.igs] a 43479
+dchrono h stop counter igesread
+
+# 2 - checkshape
+dchrono h2 restart
+checkshape a_1
+dchrono h2 stop counter checkshape

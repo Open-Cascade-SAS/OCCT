@@ -1,0 +1,39 @@
+puts "TODO OCC24156 MacOS: Tcl Exception: tolerance ang"
+puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
+puts "TODO OCC27203 ALL: Error: Max tolerance" 
+puts "TODO OCC27203 All: Error : The area of result shape is"
+
+puts "========"
+puts "OCC453"
+puts "(case 3)"
+puts "========"
+puts ""
+
+dchrono h2 restart
+
+set make_print_out 0
+
+dset SCALE 1000.
+dset SCALE1 5
+tolblend 0.01 1e-04 1e-05 1e-03
+
+restore [locate_data_file shading_137.brep] s 
+tscale s 0 0 0 SCALE1
+explode s E
+
+blend result s  5.5*SCALE1 s_2  4*SCALE1 s_1  6*SCALE1 s_6 5*SCALE1 s_8  6*SCALE1 s_10 6.5*SCALE1 s_14  7*SCALE1 s_4 5.5*SCALE1 s_5 7*SCALE1 s_16 6*SCALE1 s_11 5*SCALE1 s_19 6.5*SCALE1 s_13
+explode result So
+tcopy result_1 result
+
+dchrono h2 stop counter blend
+
+# Note: The reference values of area and tolerance are wanted theoretical values
+# Properties check
+checkprops result -s 3.51e+006
+
+# Tolerance check
+checkmaxtol result -ref 1.
+
+# Visual check
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

@@ -1,0 +1,42 @@
+puts "TODO OCC11111 ALL: Error :  is WRONG because number of "
+
+puts "============"
+puts "OCC10160"
+puts "============"
+puts ""
+#######################################################################
+# BOP perfomance improvemen
+#######################################################################
+
+set BugNumber OCC10160
+
+restore [locate_data_file OCC10160-1.brep] b1 
+restore [locate_data_file OCC10160-2.brep] b2 
+
+set NbTests 3
+
+puts "Prepare boolean operation ..."
+dchrono h0 restart
+bop b1 b2
+dchrono h0 stop counter bop
+
+puts "Start boolean operation ..."
+dchrono h restart
+#
+# BOOLEAN OPERATION ----- START
+#
+for {set i 1} {$i <= ${NbTests}} {incr i} {
+   bopfuse result
+}
+#
+# BOOLEAN OPERATION ----- FINISH
+#
+dchrono h stop counter bopfuse
+
+checkprops result -s 4.75218e+07 
+checkshape result
+
+# Analysis of "nbshapes res"
+checknbshapes result -vertex 32 -edge 60 -wire 32 -face 29 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 156
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+

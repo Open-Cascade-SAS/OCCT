@@ -1,0 +1,14 @@
+puts "============"
+puts "OCC25058"
+puts "============"
+puts ""
+###############################
+## Regression of performance of BRepExtrema_ExtCC (1000 times slower)
+###############################
+
+restore [locate_data_file bug25058_e1.brep] e1
+restore [locate_data_file bug25058_e2.brep] e2
+
+dchrono h restart
+distmini r e1 e2
+dchrono h stop counter distmini

@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC25019"
+puts "============"
+puts ""
+###############################
+## Command "bsection" in Test Harness with flag build pcurve on second shape works slowly.
+###############################
+
+restore [locate_data_file bug25019_a_shape_1.brep] a1
+restore [locate_data_file bug25019_prism.brep] p1
+
+# 1.
+dchrono h1 restart
+bsection r a1 p1 -n2d2
+dchrono h1 stop counter BSectionN2D2
+
+# 2.
+dchrono h2 restart
+bsection r a1 p1
+dchrono h2 stop counter BSection
