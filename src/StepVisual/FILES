@@ -1,5 +1,9 @@
 StepVisual_AnnotationCurveOccurrence.cxx
 StepVisual_AnnotationCurveOccurrence.hxx
+StepVisual_AnnotationFillArea.cxx
+StepVisual_AnnotationFillArea.hxx
+StepVisual_AnnotationFillAreaOccurrence.cxx
+StepVisual_AnnotationFillAreaOccurrence.hxx
 StepVisual_AnnotationOccurrence.cxx
 StepVisual_AnnotationOccurrence.hxx
 StepVisual_AnnotationPlane.cxx

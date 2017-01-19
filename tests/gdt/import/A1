@@ -3,7 +3,7 @@ set filename bug26689_nist_ctc_01_asme1_ap242.stp
 
 set ref_data {
 
- NbOfDimensions          : 8
+ NbOfDimensions          : 12
  NbOfTolerances          : 6
  NbOfDatumFeature        : 5
  NbOfAttachedDatum       : 17
@@ -94,4 +94,8 @@ set ref_data {
  	 0:1:4:25 Dimension.30.1 ( T 15, V 25, VL 0.14999999999999999, VU 0.14999999999999999, P 0 )
  0:1:1:1:30 Shape.31
  	 0:1:4:25 Dimension.31.1 ( T 15, V 25, VL 0.14999999999999999, VU 0.14999999999999999, P 0 )
+ 0:1:1:1:31 Shape.32
+ 	 0:1:4:28 Dimension.32.1 ( T 31, V 0, P 0 )
+ 0:1:1:1:32 Shape.33
+ 	 0:1:4:29 Dimension.33.1 ( T 31, V 0, P 0 )
 }

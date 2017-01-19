@@ -1359,6 +1359,10 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_GeneralModule,StepData_GeneralModule)
 #include <RWStepRepr_RWCharacterizedRepresentation.hxx>
 #include <StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation.hxx>
 #include <RWStepVisual_RWCharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation.hxx>
+#include <StepVisual_AnnotationFillArea.hxx>
+#include <StepVisual_AnnotationFillAreaOccurrence.hxx>
+#include <RWStepVisual_RWAnnotationFillArea.hxx>
+#include <RWStepVisual_RWAnnotationFillAreaOccurrence.hxx>
 
 static Standard_Integer catsh,catdr,catstr,catdsc,cataux;
 
@@ -1442,6 +1446,20 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer CN,
 	tool.Share(anent,iter);
       }
       break;
+    case 5:
+    {
+      DeclareAndCast(StepVisual_AnnotationFillArea, anent, ent);
+      RWStepVisual_RWAnnotationFillArea tool;
+      tool.Share(anent, iter);
+    }
+    break;
+    case 6:
+    {
+      DeclareAndCast(StepVisual_AnnotationFillAreaOccurrence, anent, ent);
+      RWStepVisual_RWAnnotationFillAreaOccurrence tool;
+      tool.Share(anent, iter);
+    }
+    break;
     case 7:
       {
 	DeclareAndCast(StepVisual_AnnotationOccurrence,anent,ent);
@@ -5274,6 +5292,12 @@ Standard_Boolean RWStepAP214_GeneralModule::NewVoid
   case 4 : 
     ent = new StepVisual_AnnotationCurveOccurrence;
     break;
+  case 5:
+    ent = new StepVisual_AnnotationFillArea;
+  break;
+  case 6:
+    ent = new StepVisual_AnnotationFillAreaOccurrence;
+  break;
   case 7 : 
     ent = new StepVisual_AnnotationOccurrence;
     break;

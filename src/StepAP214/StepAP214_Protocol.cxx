@@ -743,6 +743,8 @@ static Standard_CString schemaAP242DIS = "AP242_MANAGED_MODEL_BASED_3D_ENGINEERI
 #include <StepRepr_ConstructiveGeometryRepresentation.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
 #include <StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation.hxx>
+#include <StepVisual_AnnotationFillArea.hxx>
+#include <StepVisual_AnnotationFillAreaOccurrence.hxx>
 
 static int init = 0;
 static Interface_DataMapOfTransientInteger types(800);
@@ -761,8 +763,8 @@ StepAP214_Protocol::StepAP214_Protocol ()
   types.Bind (STANDARD_TYPE(StepShape_AdvancedBrepShapeRepresentation), 2);
   types.Bind (STANDARD_TYPE(StepShape_AdvancedFace), 3);
   types.Bind (STANDARD_TYPE(StepVisual_AnnotationCurveOccurrence), 4);
-//  types.Bind (STANDARD_TYPE(StepVisual_AnnotationFillArea), 5);
-//  types.Bind (STANDARD_TYPE(StepVisual_AnnotationFillAreaOccurrence), 6);
+  types.Bind (STANDARD_TYPE(StepVisual_AnnotationFillArea), 5);
+  types.Bind (STANDARD_TYPE(StepVisual_AnnotationFillAreaOccurrence), 6);
   types.Bind (STANDARD_TYPE(StepVisual_AnnotationOccurrence), 7);
 //  types.Bind (STANDARD_TYPE(StepVisual_AnnotationSubfigureOccurrence), 8);
 //  types.Bind (STANDARD_TYPE(StepVisual_AnnotationSymbol), 9);

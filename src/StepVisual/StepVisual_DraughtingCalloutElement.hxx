@@ -24,6 +24,7 @@
 #include <Standard_Integer.hxx>
 class Standard_Transient;
 class StepVisual_AnnotationCurveOccurrence;
+class StepVisual_AnnotationFillAreaOccurrence;
 class StepVisual_AnnotationTextOccurrence;
 class StepVisual_TessellatedAnnotationOccurrence;
 
@@ -40,6 +41,7 @@ public:
   //! 1 -> AnnotationCurveOccurrence
   //! 2 -> AnnotationTextOccurrence
   //! 3 -> TessellatedAnnotationOccurrence
+  //! 4 -> AnnotationFillAreaOccurrence
   //! 0 else
   Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent)  const;
   
@@ -51,5 +53,8 @@ public:
 
   //! returns Value as a TessellatedAnnotationOccurrence
   Standard_EXPORT Handle(StepVisual_TessellatedAnnotationOccurrence) TessellatedAnnotationOccurrence()  const;
+
+  //! returns Value as a AnnotationFillAreaOccurrence
+  Standard_EXPORT Handle(StepVisual_AnnotationFillAreaOccurrence) AnnotationFillAreaOccurrence()  const;
 };
 #endif // StepVisual_DraughtingCalloutElement

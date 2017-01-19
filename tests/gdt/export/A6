@@ -3,12 +3,12 @@ set filename bug27645_nist_ftc_06_asme1_cr3000_rd.prt.stp
 
 set ref_data {
 
- NbOfDimensions          : 21
+ NbOfDimensions          : 24
   NbOfDimensionalSize    : 19
   NbOfDimensionalLocation: 2
   NbOfAngular            : 0
   NbOfWithPath           : 0
-  NbOfCommonLabels       : 0
+  NbOfCommonLabels       : 2
  NbOfTolerances          : 27
   NbOfGTWithModifiers    : 4
   NbOfGTWithMaxTolerance : 0

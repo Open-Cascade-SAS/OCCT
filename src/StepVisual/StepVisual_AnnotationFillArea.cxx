@@ -1,6 +1,6 @@
-// Created on: 2015-10-29
+// Created on: 2016-12-28
 // Created by: Irina KRYLOVA
-// Copyright (c) 2015 OPEN CASCADE SAS
+// Copyright (c) 2016 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,9 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
 #include <Standard_Type.hxx>
-#include <StepVisual_AnnotationCurveOccurrence.hxx>
+#include <StepVisual_AnnotationFillArea.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AnnotationCurveOccurrence,StepVisual_AnnotationOccurrence)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AnnotationFillArea, StepShape_GeometricCurveSet)
 
-StepVisual_AnnotationCurveOccurrence::StepVisual_AnnotationCurveOccurrence ()  {}
+//=======================================================================
+//function : StepVisual_AnnotationFillArea
+//purpose  : 
+//=======================================================================
+StepVisual_AnnotationFillArea::StepVisual_AnnotationFillArea ()  {}

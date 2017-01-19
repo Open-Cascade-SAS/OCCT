@@ -19,18 +19,18 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepVisual_StyledItem.hxx>
+#include <StepVisual_AnnotationOccurrence.hxx>
 
 class StepVisual_AnnotationCurveOccurrence;
-DEFINE_STANDARD_HANDLE(StepVisual_AnnotationCurveOccurrence, StepVisual_StyledItem)
+DEFINE_STANDARD_HANDLE(StepVisual_AnnotationCurveOccurrence, StepVisual_AnnotationOccurrence)
 
-class StepVisual_AnnotationCurveOccurrence : public StepVisual_StyledItem
+class StepVisual_AnnotationCurveOccurrence : public StepVisual_AnnotationOccurrence
 {
 public:
 
   //! Returns a AnnotationCurveOccurrence
   Standard_EXPORT StepVisual_AnnotationCurveOccurrence();
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_AnnotationCurveOccurrence,StepVisual_StyledItem)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_AnnotationCurveOccurrence,StepVisual_AnnotationOccurrence)
 };
 #endif // _StepVisual_AnnotationCurveOccurrence_HeaderFile

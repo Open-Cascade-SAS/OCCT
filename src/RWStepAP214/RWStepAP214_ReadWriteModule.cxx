@@ -1394,6 +1394,10 @@ Handle(atype) result = Handle(atype)::DownCast (start)
 #include <RWStepRepr_RWConstructiveGeometryRepresentationRelationship.hxx>
 #include <StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation.hxx>
 #include <RWStepVisual_RWCharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation.hxx>
+#include <StepVisual_AnnotationFillArea.hxx>
+#include <StepVisual_AnnotationFillAreaOccurrence.hxx>
+#include <RWStepVisual_RWAnnotationFillArea.hxx>
+#include <RWStepVisual_RWAnnotationFillAreaOccurrence.hxx>
 
 
 // -- General Declarations (Recognize, StepType) ---
@@ -4879,6 +4883,20 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
       RWStepVisual_RWAnnotationCurveOccurrence tool;
       tool.ReadStep (data,num,ach,anent);
     }
+    break;
+  case 5:
+  {
+    DeclareAndCast(StepVisual_AnnotationFillArea, anent, ent);
+    RWStepVisual_RWAnnotationFillArea tool;
+    tool.ReadStep(data, num, ach, anent);
+  }
+    break;
+  case 6:
+  {
+    DeclareAndCast(StepVisual_AnnotationFillAreaOccurrence, anent, ent);
+    RWStepVisual_RWAnnotationFillAreaOccurrence tool;
+    tool.ReadStep(data, num, ach, anent);
+  }
     break;
   case 7 : 
     {
@@ -9417,6 +9435,20 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
       RWStepVisual_RWAnnotationCurveOccurrence tool;
       tool.WriteStep (SW,anent);
     }
+    break;
+  case 5:
+  {
+    DeclareAndCast(StepVisual_AnnotationFillArea, anent, ent);
+    RWStepVisual_RWAnnotationFillArea tool;
+    tool.WriteStep(SW, anent);
+  }
+    break;
+  case 6:
+  {
+    DeclareAndCast(StepVisual_AnnotationFillAreaOccurrence, anent, ent);
+    RWStepVisual_RWAnnotationFillAreaOccurrence tool;
+    tool.WriteStep(SW, anent);
+  }
     break;
   case 7 : 
     {

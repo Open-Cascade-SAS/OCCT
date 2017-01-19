@@ -29,6 +29,15 @@
 #include <Standard_CString.hxx>
 #include <STEPControl_StepModelType.hxx>
 #include <TDF_LabelSequence.hxx>
+#include <StepAP242_GeometricItemSpecificUsage.hxx>
+#include <StepDimTol_Datum.hxx>
+#include <StepDimTol_GeometricTolerance.hxx>
+#include <StepDimTol_HArray1OfDatumSystemOrReference.hxx>
+#include <StepRepr_ProductDefinitionShape.hxx>
+#include <StepVisual_DraughtingModel.hxx>
+#include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>
+#include <XCAFDimTolObjects_GeomToleranceObject.hxx>
+
 class XSControl_WorkSession;
 class TDocStd_Document;
 class TDF_Label;
@@ -174,7 +183,7 @@ protected:
   Standard_EXPORT Standard_Boolean WriteDGTs (const Handle(XSControl_WorkSession)& WS, const TDF_LabelSequence& labels) const;
   
    //! Write D&GTs assigned to specified labels, to STEP model, according AP242
-  Standard_EXPORT Standard_Boolean WriteDGTsAP242 (const Handle(XSControl_WorkSession)& WS, const TDF_LabelSequence& labels) const;
+  Standard_EXPORT Standard_Boolean WriteDGTsAP242 (const Handle(XSControl_WorkSession)& WS, const TDF_LabelSequence& labels);
 
   //! Write materials assigned to specified labels, to STEP model
   Standard_EXPORT Standard_Boolean WriteMaterials (const Handle(XSControl_WorkSession)& WS, const TDF_LabelSequence& labels) const;
@@ -192,6 +201,23 @@ protected:
   
 
 private:
+  Standard_EXPORT Handle(StepRepr_ShapeAspect) WriteShapeAspect(const Handle(XSControl_WorkSession) &WS,
+    const TDF_Label theLabel, const TopoDS_Shape theShape, Handle(StepRepr_RepresentationContext)& theRC,
+    Handle(StepAP242_GeometricItemSpecificUsage)& theGISU);
+
+  Standard_EXPORT void WritePresentation(const Handle(XSControl_WorkSession) &WS, const TopoDS_Shape thePresentation,
+    const Handle(TCollection_HAsciiString)& thePrsName, const Standard_Boolean hasSemantic, const Standard_Boolean hasPlane,
+    const gp_Ax2 theAnnotationPlane, const gp_Pnt theTextPosition, const Handle(Standard_Transient) theDimension);
+
+  Standard_EXPORT Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSession) &WS, const TDF_LabelSequence theShapeL,
+    const TDF_Label theDatumL, const Standard_Boolean isFirstDTarget, const Handle(StepDimTol_Datum) theWrittenDatum);
+
+  Standard_EXPORT void WriteToleranceZone(const Handle(XSControl_WorkSession) &WS, const Handle(XCAFDimTolObjects_GeomToleranceObject)& theObject,
+    const Handle(StepDimTol_GeometricTolerance)& theEntity, const Handle(StepRepr_RepresentationContext)& theRC);
+
+  Standard_EXPORT void WriteGeomTolerance(const Handle(XSControl_WorkSession) &WS, const TDF_LabelSequence theShapeSeqL,
+    const TDF_Label theGeomTolL, const Handle(StepDimTol_HArray1OfDatumSystemOrReference)& theDatumSystem,
+    const Handle(StepRepr_RepresentationContext)& theRC);
 
 
 
@@ -207,7 +233,10 @@ private:
   MoniTool_DataMapOfShapeTransient myMapCompMDGPR;
   Standard_Boolean myDGTMode;
   Standard_Boolean myMatMode;
-
+  NCollection_Vector<Handle(StepRepr_RepresentationItem)> myGDTAnnotations;
+  Handle(StepVisual_DraughtingModel) myGDTPresentationDM;
+  Handle(StepVisual_HArray1OfPresentationStyleAssignment) myGDTPrsCurveStyle;
+  Handle(StepRepr_ProductDefinitionShape) myGDTCommonPDS;
 
 };
 

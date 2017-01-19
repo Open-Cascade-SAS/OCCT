@@ -3,12 +3,12 @@ set filename bug27645_nist_ftc_06_asme1_ct5240_rd-1.stp
 
 set ref_data {
 
- NbOfDimensions          : 22
+ NbOfDimensions          : 24
   NbOfDimensionalSize    : 14
   NbOfDimensionalLocation: 8
   NbOfAngular            : 0
   NbOfWithPath           : 0
-  NbOfCommonLabels       : 0
+  NbOfCommonLabels       : 1
  NbOfTolerances          : 27
   NbOfGTWithModifiers    : 4
   NbOfGTWithMaxTolerance : 0
