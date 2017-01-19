@@ -1202,7 +1202,10 @@ void AIS_InteractiveContext::AddOrRemoveSelected (const Handle(SelectMgr_EntityO
   if (HasOpenedContext())
     return myLocalContexts(myCurLocalIndex)->AddOrRemoveSelected (theOwner, theToUpdateViewer);
 
-  if (theOwner.IsNull() || !theOwner->HasSelectable() || !myFilters->IsOk(theOwner))
+  if (theOwner.IsNull() || !theOwner->HasSelectable())
+    return;
+
+  if (!myFilters->IsOk(theOwner) && !theOwner->IsSelected())
     return;
 
   AIS_SelectStatus aSelStat = mySelection->Select (theOwner);
