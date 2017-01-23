@@ -2075,15 +2075,11 @@ static DWORD WINAPI readStdinThreadFunc()
       else
       {
         const DWORD anErr = GetLastError();
-        if (anErr == ERROR_INVALID_HANDLE)
+        if (anErr != ERROR_SUCCESS)
         {
           // fallback using fgetws() which would work with pipes
           // but supports Unicode only through multi-byte encoding (which is not UTF-8)
           isConsoleInput = false;
-        }
-        else
-        {
-          std::cerr << "Error #" << anErr << " occurred while reading console input\n";
           continue;
         }
       }
