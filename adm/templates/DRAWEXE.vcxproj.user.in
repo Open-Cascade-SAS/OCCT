@@ -2,6 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|@X_COMPILER_BITNESS@'">
   <LocalDebuggerEnvironment>CASROOT=@CMAKE_SOURCE_DIR@
+CSF_FPE=@BUILD_ENABLE_FPE_SIGNAL_HANDLER@
 CSF_OCCTResourcePath=@CMAKE_SOURCE_DIR@/src
 CSF_OCCTDataPath=@CMAKE_SOURCE_DIR@/data
 CSF_OCCTSamplesPath=@CMAKE_SOURCE_DIR@/samples
@@ -14,6 +15,7 @@ PATH=@3RDPARTY_DLL_DIRS_FOR_PATH@;%PATH%
  </PropertyGroup>
  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|@X_COMPILER_BITNESS@'">
   <LocalDebuggerEnvironment>CASROOT=@CMAKE_SOURCE_DIR@
+CSF_FPE=@BUILD_ENABLE_FPE_SIGNAL_HANDLER@
 CSF_OCCTResourcePath=@CMAKE_SOURCE_DIR@/src
 CSF_OCCTDataPath=@CMAKE_SOURCE_DIR@/data
 CSF_OCCTSamplesPath=@CMAKE_SOURCE_DIR@/samples
@@ -26,6 +28,7 @@ PATH=@3RDPARTY_DLL_DIRS_FOR_PATH@;%PATH%
  </PropertyGroup>
  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|@X_COMPILER_BITNESS@'">
   <LocalDebuggerEnvironment>CASROOT=@CMAKE_SOURCE_DIR@
+CSF_FPE=@BUILD_ENABLE_FPE_SIGNAL_HANDLER@
 CSF_OCCTResourcePath=@CMAKE_SOURCE_DIR@/src
 CSF_OCCTDataPath=@CMAKE_SOURCE_DIR@/data
 CSF_OCCTSamplesPath=@CMAKE_SOURCE_DIR@/samples
