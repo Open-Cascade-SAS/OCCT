@@ -43,6 +43,7 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 
 static BRepOffsetAPI_MakePipeShell* Sweep= 0;
+static BRepOffsetAPI_ThruSections* Generator = 0;
 
 #include <stdio.h>
 #include <Geom_Curve.hxx>
@@ -323,19 +324,19 @@ Standard_Integer gener(Draw_Interpretor&, Standard_Integer n, const char** a)
 
   TopoDS_Shape Shape; 
 
-  BRepFill_Generator Generator;
+  BRepFill_Generator aGenerator;
   
   for ( Standard_Integer i = 2; i<= n-1 ; i++) {
     Shape = DBRep::Get(a[i],TopAbs_WIRE);
     if ( Shape.IsNull()) 
       return 1;
 
-    Generator.AddWire(TopoDS::Wire(Shape));
+    aGenerator.AddWire(TopoDS::Wire(Shape));
   }
 
-  Generator.Perform();
+  aGenerator.Perform();
 
-  TopoDS_Shell Shell = Generator.Shell();
+  TopoDS_Shell Shell = aGenerator.Shell();
   
   DBRep::Set(a[1], Shell);
 
@@ -368,7 +369,12 @@ Standard_Integer thrusections(Draw_Interpretor&, Standard_Integer n, const char*
   Standard_Boolean issolid = ( Draw::Atoi(a[index]) == 1 );
   Standard_Boolean isruled = ( Draw::Atoi(a[index+1]) == 1 );
 
-  BRepOffsetAPI_ThruSections Generator(issolid,isruled);
+  if (Generator != 0)
+  {
+    delete Generator; 
+    Generator = 0;
+  }
+  Generator = new BRepOffsetAPI_ThruSections(issolid,isruled);
   
   Standard_Integer NbEdges = 0;
   Standard_Boolean IsFirstWire = Standard_False;
@@ -377,7 +383,7 @@ Standard_Integer thrusections(Draw_Interpretor&, Standard_Integer n, const char*
     Shape = DBRep::Get(a[i], TopAbs_WIRE);
     if (!Shape.IsNull())
       {
-	Generator.AddWire(TopoDS::Wire(Shape));
+	Generator->AddWire(TopoDS::Wire(Shape));
 	if (!IsFirstWire)
 	  IsFirstWire = Standard_True;
 	else
@@ -388,7 +394,7 @@ Standard_Integer thrusections(Draw_Interpretor&, Standard_Integer n, const char*
 	Shape = DBRep::Get(a[i], TopAbs_VERTEX);
 	IsWire = Standard_False;
 	if (!Shape.IsNull())
-	  Generator.AddVertex(TopoDS::Vertex(Shape));
+	  Generator->AddVertex(TopoDS::Vertex(Shape));
 	else
 	  return 1;
       }
@@ -407,17 +413,66 @@ Standard_Integer thrusections(Draw_Interpretor&, Standard_Integer n, const char*
   }
 
   check = (check || !samenumber);
-  Generator.CheckCompatibility(check);
+  Generator->CheckCompatibility(check);
 
-  Generator.Build();
+  Generator->Build();
 
-  if (Generator.IsDone()) {
-    TopoDS_Shape Shell = Generator.Shape();
+  if (Generator->IsDone()) {
+    TopoDS_Shape Shell = Generator->Shape();
     DBRep::Set(a[index-1], Shell);
   }
   else {
     cout << "Algorithm is not done" << endl;
   }
+  return 0;
+}
+
+//============================================================================
+//function : genthrus
+//purpose  : returns generated shape for subshape of a section of thrusections
+//           Thrusections must be done previously
+//============================================================================
+static Standard_Integer genthrus(Draw_Interpretor& di,
+                                 Standard_Integer n, const char** a)
+{
+  if (n != 3)
+  {
+    di << "genthrus: it is called after thrusections command\n";
+    di << "returns:\n";
+    di << "- chain of generated faces for sub-edge of a profile;\n";
+    di << "- chain of generated edges for sub-vertex of a profile;\n";
+    di << "- bunch of chains of generated edges for start or end vertex if it is degenerated section.\n";
+    di << "Usage: genthrus res subshape_of_profile, thrusections must be done\n";
+    return 1;
+  }
+  if (Generator == 0)
+  {
+    di << "You have forgotten the <<thrusections>> command !\n";
+    return 1;
+  }
+  if (!Generator->IsDone())
+  {
+    di << "Thrusections is not done\n";
+    return 1;
+  }
+  TopoDS_Shape aShape = DBRep::Get(a[2]);
+  if (aShape.IsNull())
+  {
+    cout<<"Null subshape"<<endl;
+    return 1;
+  }
+  const TopTools_ListOfShape& Edges = Generator->Generated(aShape);
+  TopoDS_Compound aCompound;
+  BRep_Builder BB;
+  BB.MakeCompound(aCompound);
+  TopTools_ListIteratorOfListOfShape iter(Edges);
+  for (; iter.More(); iter.Next())
+  {
+    const TopoDS_Shape& anEdge = iter.Value();
+    BB.Add(aCompound, anEdge);
+  }
+
+  DBRep::Set(a[1], aCompound);
   return 0;
 }
 
@@ -920,6 +975,8 @@ void  BRepTest::SweepCommands(Draw_Interpretor& theCommands)
   theCommands.Add("thrusections", "thrusections [-N] result issolid isruled shape1 shape2 [..shape..], the option -N means no check on wires, shapes must be wires or vertices (only first or last)",
 		  __FILE__,thrusections,g);
 
+  theCommands.Add("genthrus", "genthrus res subshape_of_profile",
+		  __FILE__,genthrus,g);
   
   theCommands.Add("mksweep", "mksweep wire",
 		  __FILE__,mksweep,g);

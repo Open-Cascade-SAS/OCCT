@@ -1,0 +1,75 @@
+puts "============"
+puts "OCC26150"
+puts "============"
+puts ""
+#########################################################################
+# BRepOffsetAPI_ThruSections doesn't implement history method Generated()
+#########################################################################
+
+polyline w1 -10 -10 0  10 -10 0  10 10 0  -10 10 0  -10 -10 0
+polyline w2 0 -10 20  -10 7 20  10 8 20  0 -10 20
+circle w3 0 0 40  10
+mkedge w3 w3
+wire w3 w3
+
+explode w1
+explode w2
+explode w3
+
+thrusections r 1 0 w1 w2 w3
+
+genthrus r1 w1_1
+genthrus r2 w1_2
+genthrus r3 w1_3
+genthrus r4 w1_4
+genthrus r5 w2_1
+genthrus r6 w2_2
+genthrus r7 w2_3
+genthrus r8 w3_1
+
+checknbshapes r1 -face 2
+checkprops r1 -s 679.305
+checknbshapes r2 -face 3
+checkprops r2 -s 649.975
+checknbshapes r3 -face 1
+checkprops r3 -s 554.732
+checknbshapes r4 -face 2
+checkprops r4 -s 648.481
+checknbshapes r5 -face 2
+checkprops r5 -s 828.494
+checknbshapes r6 -face 3
+checkprops r6 -s 837.872
+checknbshapes r7 -face 3
+checkprops r7 -s 866.128
+checknbshapes r8 -face 8
+checkprops r8 -s 2532.49
+
+explode w1 v
+explode w2 v
+explode w3 v
+
+genthrus r9 w1_1
+genthrus r10 w1_2
+genthrus r11 w1_3
+genthrus r12 w1_4
+genthrus r13 w2_1
+genthrus r14 w2_2
+genthrus r15 w2_3
+genthrus r16 w3_1
+
+checknbshapes r9 -edge 1
+checkprops r9 -l 43.4094
+checknbshapes r10 -edge 1
+checkprops r10 -l 43.6285
+checknbshapes r11 -edge 1
+checkprops r11 -l 40.596
+checknbshapes r12 -edge 1
+checkprops r12 -l 40.9228
+checknbshapes r13 -edge 1
+checkprops r13 -l 40.0003
+checknbshapes r14 -edge 1
+checkprops r14 -l 40.3103
+checknbshapes r15 -edge 1
+checkprops r15 -l 40.3794
+checknbshapes r16 -edge 1
+checkprops r16 -l 40.9892

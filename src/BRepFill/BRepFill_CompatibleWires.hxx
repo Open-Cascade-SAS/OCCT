@@ -64,6 +64,9 @@ public:
   
   Standard_EXPORT const TopTools_DataMapOfShapeListOfShape& Generated() const;
 
+  Standard_EXPORT Standard_Boolean IsDegeneratedFirstSection() const;
+
+  Standard_EXPORT Standard_Boolean IsDegeneratedLastSection() const;
 
 
 

@@ -745,6 +745,24 @@ const TopTools_ListOfShape& BRepFill_CompatibleWires::GeneratedShapes
   }
 }
 
+//==========================================================================
+//function : IsDegeneratedFirstSection
+//purpose  : 
+//==========================================================================
+Standard_Boolean BRepFill_CompatibleWires::IsDegeneratedFirstSection() const
+{
+  return myDegen1;
+}
+
+//=========================================================================
+//function : IsDegeneratedLastSection
+//purpose  : 
+//=========================================================================
+Standard_Boolean BRepFill_CompatibleWires::IsDegeneratedLastSection() const
+{
+  return myDegen2;
+}
+
 
 //=======================================================================
 //function : Perform
@@ -1223,7 +1241,22 @@ void BRepFill_CompatibleWires::
   }
   
   // blocking sections?
-  if (vClosed) myWork(myWork.Length()) = myWork(1);
+  if (vClosed)
+  {
+    TopoDS_Iterator iter1(myWork(myWork.Length())), iter2(myWork(1));
+    for (; iter1.More(); iter1.Next(), iter2.Next())
+    {
+      const TopoDS_Shape& anEdge = iter1.Value();
+      const TopoDS_Shape& aNewEdge = iter2.Value();
+      if (!anEdge.IsSame(aNewEdge))
+      {
+        TopTools_SequenceOfShape aSeq;
+        aSeq.Append(aNewEdge);
+        EdgeNewEdges.Bind(anEdge, aSeq);
+      }
+    }
+    myWork(myWork.Length()) = myWork(1);
+  }
 
   // check the number of edges for debug
   Standard_Integer nbmax=0, nbmin=0;
@@ -1442,7 +1475,8 @@ void BRepFill_CompatibleWires::SameNumberByACR(const  Standard_Boolean  report)
   }
   
   // blocking sections ?
-  if (vClosed) myWork(myWork.Length()) = myWork(1);
+  if (vClosed)
+    myWork(myWork.Length()) = myWork(1);
 
   // check the number of edges for debug
   nbmax = 0;
@@ -2028,7 +2062,8 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean /*polar*/ )
 #endif
   
   // blocking sections ?
-  if (vClosed) myWork(myWork.Length()) = myWork(1);
+  if (vClosed)
+    myWork(myWork.Length()) = myWork(1);
 }
 
 //=======================================================================
@@ -2190,5 +2225,6 @@ void BRepFill_CompatibleWires::SearchOrigin()
   }
   
   // blocking sections ?
-  if (vClosed) myWork(myWork.Length()) = myWork(1);
+  if (vClosed)
+    myWork(myWork.Length()) = myWork(1);
 }

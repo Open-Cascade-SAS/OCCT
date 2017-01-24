@@ -1,0 +1,41 @@
+puts "============"
+puts "OCC26150"
+puts "============"
+puts ""
+#########################################################################
+# BRepOffsetAPI_ThruSections doesn't implement history method Generated()
+#########################################################################
+
+polyline w1 -10 -10 0  10 -10 0  10 10 0  -10 10 0  -10 -10 0
+polyline w2 0 -10 20  -10 7 20  10 8 20  0 -10 20
+circle w3 0 0 40  10
+mkedge w3 w3
+wire w3 w3
+vertex v1 0 0 -30
+vertex v2 0 0 70
+
+explode w1
+
+thrusections r 1 1 v1 w1 w2 w3 v2
+
+genthrus r1 w1_1
+genthrus r2 w1_2
+genthrus r3 w1_3
+genthrus r4 w1_4
+
+checknbshapes r1 -face 8
+checkprops r1 -s 1232.78
+checknbshapes r2 -face 12
+checkprops r2 -s 1215.55
+checknbshapes r3 -face 4
+checkprops r3 -s 1155.34
+checknbshapes r4 -face 8
+checkprops r4 -s 1214.91
+
+genthrus r5 v1
+genthrus r6 v2
+
+checknbshapes r5 -edge 32
+checkprops r5 -l 841.334
+checknbshapes r6 -edge 32
+checkprops r6 -l 841.334

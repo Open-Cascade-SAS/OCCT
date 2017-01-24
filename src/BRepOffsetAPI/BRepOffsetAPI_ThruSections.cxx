@@ -89,6 +89,7 @@
 #include <TopTools_Array1OfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <BRepAdaptor_Surface.hxx>
 
 //=======================================================================
 //function : PreciseUpar
@@ -243,9 +244,13 @@ static TopoDS_Solid MakeSolid(TopoDS_Shell& shell, const TopoDS_Wire& wire1,
 //purpose  : 
 //=======================================================================
 
-BRepOffsetAPI_ThruSections::BRepOffsetAPI_ThruSections(const Standard_Boolean isSolid, const Standard_Boolean ruled,
-  const Standard_Real pres3d):
-myIsSolid(isSolid), myIsRuled(ruled), myPres3d(pres3d)
+BRepOffsetAPI_ThruSections::BRepOffsetAPI_ThruSections(const Standard_Boolean isSolid,
+                                                       const Standard_Boolean ruled,
+                                                       const Standard_Real pres3d):
+  myNbEdgesInSection(0),
+  myIsSolid(isSolid), myIsRuled(ruled),
+  myPres3d(pres3d),
+  myDegen1(Standard_False), myDegen2(Standard_False)
 {
   myWCheck = Standard_True;
   //----------------------------
@@ -361,6 +366,8 @@ void BRepOffsetAPI_ThruSections::Build()
         throw Standard_Failure("Wrong usage of punctual sections");
   }
 
+  myNbEdgesInSection = 0;
+  
   if (myWCheck) {
     // compute origin and orientation on wires to avoid twisted results
     // and update wires to have same number of edges
@@ -377,8 +384,94 @@ void BRepOffsetAPI_ThruSections::Build()
     if (Georges.IsDone()) {
       WorkingSections = Georges.Shape();
       WorkingMap = Georges.Generated();
+      myDegen1 = Georges.IsDegeneratedFirstSection();
+      myDegen2 = Georges.IsDegeneratedLastSection();
+      //For each sub-edge of each section
+      //we save its splits
+      Standard_Integer IndFirstSec = 1;
+      if (Georges.IsDegeneratedFirstSection())
+        IndFirstSec = 2;
+      TopoDS_Shape aWorkingSection = WorkingSections(IndFirstSec);
+      TopoDS_Iterator itw(aWorkingSection);
+      for (; itw.More(); itw.Next())
+        myNbEdgesInSection++;
+      for (Standard_Integer ii = 1; ii <= myWires.Length(); ii++)
+      {
+        TopExp_Explorer Explo(myWires(ii), TopAbs_EDGE);
+        for (; Explo.More(); Explo.Next())
+        {
+          const TopoDS_Edge& anEdge = TopoDS::Edge(Explo.Current());
+          Standard_Integer aSign = 1;
+          TopoDS_Vertex Vfirst, Vlast;
+          TopExp::Vertices(anEdge, Vfirst, Vlast);
+          TopTools_ListOfShape aNewEdges = Georges.GeneratedShapes(anEdge);
+          TColStd_ListOfInteger IList;
+          aWorkingSection = WorkingSections(ii);
+          Standard_Integer NbNewEdges = aNewEdges.Extent();
+          TopTools_ListIteratorOfListOfShape itl(aNewEdges);
+          for (Standard_Integer kk = 1; itl.More(); itl.Next(),kk++)
+          {
+            const TopoDS_Edge& aNewEdge = TopoDS::Edge(itl.Value());
+            Standard_Integer inde = 1;
+            for (itw.Initialize(aWorkingSection); itw.More(); itw.Next(),inde++)
+            {
+              const TopoDS_Shape& aWorkingEdge = itw.Value();
+              if (aWorkingEdge.IsSame(aNewEdge))
+              {
+                aSign = (aWorkingEdge.Orientation() == TopAbs_FORWARD)? 1 : -1;
+                break;
+              }
+            }
+            IList.Append(inde);
+            if (kk == 1 || kk == NbNewEdges)
+            {
+              //For each sub-vertex of each section
+              //we save its index of new edge
+              TopoDS_Vertex NewVfirst, NewVlast;
+              TopExp::Vertices(aNewEdge, NewVfirst, NewVlast);
+              if (NewVfirst.IsSame(Vfirst) && !myVertexIndex.IsBound(Vfirst))
+                myVertexIndex.Bind(Vfirst, aSign*inde);
+              if (NewVlast.IsSame(Vlast) && !myVertexIndex.IsBound(Vlast))
+                myVertexIndex.Bind(Vlast, aSign*(-inde));
+            }
+          }
+          myEdgeNewIndices.Bind(anEdge, IList);
+        }
+      }
     }
     myWires = WorkingSections;
+  } //if (myWCheck)
+  else //no check
+  {
+    TopoDS_Edge anEdge;
+    for (Standard_Integer ii = 1; ii <= myWires.Length(); ii++)
+    {
+      TopExp_Explorer Explo(myWires(ii), TopAbs_EDGE);
+      Standard_Integer inde = 1;
+      for (; Explo.More(); Explo.Next(),inde++)
+      {
+        anEdge = TopoDS::Edge(Explo.Current());
+        TColStd_ListOfInteger IList;
+        IList.Append(inde);
+        myEdgeNewIndices.Bind(anEdge, IList);
+        TopoDS_Vertex V1, V2;
+        TopExp::Vertices(anEdge, V1, V2);
+        if (!myVertexIndex.IsBound(V1))
+          myVertexIndex.Bind(V1, inde);
+        if (!myVertexIndex.IsBound(V2))
+          myVertexIndex.Bind(V2, -inde);
+      }
+      inde--;
+      if (inde > myNbEdgesInSection)
+        myNbEdgesInSection = inde;
+      if (inde == 1 && BRep_Tool::Degenerated(anEdge))
+      {
+        if (ii == 1)
+          myDegen1 = Standard_True;
+        else
+          myDegen2 = Standard_True;
+      }
+    }
   }
 
   try {
@@ -504,7 +597,7 @@ void BRepOffsetAPI_ThruSections::CreateRuled()
         for (it.Initialize(MV.FindFromKey(Vdegen)); it.More(); it.Next()) {
           const TopoDS_Shape& Face = it.Value();
           if (MapFaces.Contains(Face)) {
-            myGenerated.Bind(edge1, Face);
+            myEdgeFace.Bind(edge1, Face);
             break;
           }
         }
@@ -513,7 +606,7 @@ void BRepOffsetAPI_ThruSections::CreateRuled()
         for (it.Initialize(M.FindFromKey(edge1)); it.More(); it.Next()) {
           const TopoDS_Shape& Face = it.Value();
           if (MapFaces.Contains(Face)) {
-            myGenerated.Bind(edge1, Face);
+            myEdgeFace.Bind(edge1, Face);
             break;
           }
         }
@@ -793,7 +886,7 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
     BW2.Add(newW2, edge22);
 
     // history
-    myGenerated.Bind(firstEdge, face);
+    myEdgeFace.Bind(firstEdge, face);
   }
 
   if (uClosed && w1Point && w2Point)
@@ -1071,6 +1164,206 @@ const TopoDS_Shape& BRepOffsetAPI_ThruSections::LastShape() const
 }
 
 //=======================================================================
+//function : Generated
+//purpose  : 
+//=======================================================================
+const TopTools_ListOfShape& 
+BRepOffsetAPI_ThruSections::Generated(const TopoDS_Shape& S) 
+{
+  myGenerated.Clear();
+
+  TopTools_SequenceOfShape AllFaces;
+  TopExp_Explorer Explo(myShape, TopAbs_FACE);
+  for (; Explo.More(); Explo.Next())
+    AllFaces.Append(Explo.Current());
+
+  if (S.ShapeType() == TopAbs_EDGE)
+  {
+    if (!myEdgeNewIndices.IsBound(S))
+      return myGenerated;
+
+    const TColStd_ListOfInteger& Indices = myEdgeNewIndices(S);
+    //Append the faces corresponding to <Indices>
+    //These faces "grow" from the first section
+    TColStd_ListIteratorOfListOfInteger itl(Indices);
+    for (; itl.More(); itl.Next())
+    {
+      Standard_Integer IndOfFace = itl.Value();
+      myGenerated.Append(AllFaces(IndOfFace));
+    }
+
+    if (myIsRuled)
+      //Append the next faces corresponding to <Indices>
+      for (Standard_Integer i = 2; i < myWires.Length(); i++)
+        for (itl.Initialize(Indices); itl.More(); itl.Next())
+        {
+          Standard_Integer IndOfFace = itl.Value();
+          IndOfFace += (i-1)*myNbEdgesInSection;
+          myGenerated.Append(AllFaces(IndOfFace));
+        }
+  }
+  else if (S.ShapeType() == TopAbs_VERTEX)
+  {
+    if (!myVertexIndex.IsBound(S))
+      return myGenerated;
+
+    TopTools_IndexedDataMapOfShapeListOfShape VEmap;
+    
+    Standard_Boolean IsDegen [2] = {Standard_False, Standard_False};
+    if (myDegen1 || myDegen2)
+    {
+      TopoDS_Shape EndSections [2];
+      EndSections[0] = myWires(1);
+      EndSections[1] = myWires(myWires.Length());
+      for (Standard_Integer i = 0; i < 2; i++)
+      {
+        if (i == 0 && !myDegen1)
+          continue;
+        if (i == 1 && !myDegen2)
+          continue;
+        
+        Explo.Init(EndSections[i], TopAbs_VERTEX);
+        const TopoDS_Shape& aVertex = Explo.Current();
+        if (S.IsSame(aVertex))
+        {
+          IsDegen[i] = Standard_True;
+          break;
+        }
+      }
+    }
+    // Only one of <IsDegen> can be True:
+    // in case of one vertex for start and end degenerated sections
+    // IsDegen[0] is True;
+    if (IsDegen[0] || IsDegen[1])
+    {
+      //For start or end degenerated section
+      //we return the whole bunch of longitudinal edges
+      TopExp::MapShapesAndAncestors(myShape, TopAbs_VERTEX, TopAbs_EDGE, VEmap);
+      TopTools_IndexedMapOfShape Emap;
+      const TopTools_ListOfShape& Elist = VEmap.FindFromKey(S);
+      TopTools_ListIteratorOfListOfShape itl(Elist);
+      for (; itl.More(); itl.Next())
+      {
+        const TopoDS_Edge& anEdge = TopoDS::Edge(itl.Value());
+        if (!BRep_Tool::Degenerated(anEdge))
+        {
+          TopoDS_Vertex VV [2];
+          TopExp::Vertices(anEdge, VV[0], VV[1]);
+          //Comprehensive check for possible case of
+          //one vertex for start and end degenerated sections:
+          //we must take only outgoing or only ingoing edges
+          if ((IsDegen[0] && S.IsSame(VV[0])) ||
+              (IsDegen[1] && S.IsSame(VV[1])))
+            Emap.Add(anEdge);
+        }
+      }
+      for (Standard_Integer j = 1; j <= Emap.Extent(); j++)
+      {
+        TopoDS_Edge anEdge = TopoDS::Edge(Emap(j));
+        myGenerated.Append(anEdge);
+        if (myIsRuled)
+        {
+          Standard_Integer i,k;
+          for (i = 2,k = myWires.Length()-1; i < myWires.Length(); i++,k--)
+          {
+            Standard_Integer IndOfSec = (IsDegen[0])? i : k;
+            TopoDS_Vertex aVertex = (IsDegen[0])?
+              TopExp::LastVertex(anEdge) : TopExp::FirstVertex(anEdge);
+            const TopTools_ListOfShape& EElist = VEmap.FindFromKey(aVertex);
+            TopTools_IndexedMapOfShape EmapOfSection;
+            TopExp::MapShapes(myWires(IndOfSec), TopAbs_EDGE, EmapOfSection);
+            TopoDS_Edge NextEdge;
+            for (itl.Initialize(EElist); itl.More(); itl.Next())
+            {
+              NextEdge = TopoDS::Edge(itl.Value());
+              if (!NextEdge.IsSame(anEdge) &&
+                  !EmapOfSection.Contains(NextEdge))
+                break;
+            }
+            myGenerated.Append(NextEdge);
+            anEdge = NextEdge;
+          }
+        }
+      }
+      return myGenerated;
+    } //end of if (IsDegen[0] || IsDegen[1])
+    
+    Standard_Integer Eindex = myVertexIndex(S);
+    Standard_Integer Vindex = (Eindex > 0)? 0 : 1;
+    Eindex = Abs(Eindex);
+    const TopoDS_Shape& FirstSection = myWires(1);
+    TopoDS_Edge FirstEdge;
+    TopoDS_Iterator itw(FirstSection);
+    for (Standard_Integer inde = 1; itw.More(); itw.Next(),inde++)
+    {
+      FirstEdge = TopoDS::Edge(itw.Value());
+      if (inde == Eindex)
+        break;
+    }
+
+    //Find the first longitudinal edge
+    TopoDS_Face FirstFace = TopoDS::Face(AllFaces(Eindex));
+    FirstFace.Orientation(TopAbs_FORWARD);
+    Explo.Init(FirstFace, TopAbs_EDGE);
+    TopoDS_Edge anEdge;
+    BRepAdaptor_Surface BAsurf(FirstFace, Standard_False);
+    TopoDS_Vertex FirstVertex;
+    TopExp::MapShapesAndAncestors(FirstFace, TopAbs_VERTEX, TopAbs_EDGE, VEmap);
+    if (myDegen1 && BAsurf.GetType() == GeomAbs_Plane)
+    {
+      //There are only 3 edges in the face in this case:
+      //we take 1-st or 3-rd edge
+      if (Vindex == 0)
+      {
+        Explo.Next();
+        Explo.Next();
+      }
+      anEdge = TopoDS::Edge(Explo.Current());
+    }
+    else
+    {
+      TopoDS_Shape FirstEdgeInFace;
+      FirstEdgeInFace = Explo.Current();
+      TopoDS_Vertex VV [2];
+      TopExp::Vertices(FirstEdge, VV[0], VV[1]);
+      FirstVertex = VV[Vindex];
+      const TopTools_ListOfShape& Elist = VEmap.FindFromKey(FirstVertex);
+      TopTools_ListIteratorOfListOfShape itl(Elist);
+      TopAbs_Orientation anEdgeOr = (Vindex == 0)? TopAbs_REVERSED : TopAbs_FORWARD;
+      for (; itl.More(); itl.Next())
+      {
+        anEdge = TopoDS::Edge(itl.Value());
+        if (!anEdge.IsSame(FirstEdgeInFace) &&
+            !BRep_Tool::Degenerated(anEdge) &&
+            anEdge.Orientation() == anEdgeOr)
+          break;
+      }
+    }
+    myGenerated.Append(anEdge);
+    if (myIsRuled)
+      //Find the chain of longitudinal edges from first to last
+      for (Standard_Integer i = 2; i < myWires.Length(); i++)
+      {
+        FirstVertex = TopExp::LastVertex(anEdge);
+        const TopTools_ListOfShape& Elist1 = VEmap.FindFromKey(FirstVertex);
+        FirstEdge = (anEdge.IsSame(Elist1.First()))?
+          TopoDS::Edge(Elist1.Last()) : TopoDS::Edge(Elist1.First());
+        Eindex += myNbEdgesInSection;
+        FirstFace = TopoDS::Face(AllFaces(Eindex));
+        FirstFace.Orientation(TopAbs_FORWARD);
+        VEmap.Clear();
+        TopExp::MapShapesAndAncestors(FirstFace, TopAbs_VERTEX, TopAbs_EDGE, VEmap);
+        const TopTools_ListOfShape& Elist2 = VEmap.FindFromKey(FirstVertex);
+        anEdge = (FirstEdge.IsSame(Elist2.First()))?
+          TopoDS::Edge(Elist2.Last()) : TopoDS::Edge(Elist2.First());
+        myGenerated.Append(anEdge);
+      }
+  }
+
+  return myGenerated;
+}
+
+//=======================================================================
 //function : GeneratedFace
 //purpose  : 
 //=======================================================================
@@ -1078,8 +1371,8 @@ const TopoDS_Shape& BRepOffsetAPI_ThruSections::LastShape() const
 TopoDS_Shape BRepOffsetAPI_ThruSections::GeneratedFace(const TopoDS_Shape& edge) const
 {
   TopoDS_Shape bid;
-  if (myGenerated.IsBound(edge)) {
-    return myGenerated(edge);
+  if (myEdgeFace.IsBound(edge)) {
+    return myEdgeFace(edge);
   }
   else {
     return bid;

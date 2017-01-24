@@ -1,0 +1,65 @@
+puts "============"
+puts "OCC26150"
+puts "============"
+puts ""
+#########################################################################
+# BRepOffsetAPI_ThruSections doesn't implement history method Generated()
+#########################################################################
+
+restore [locate_data_file bug27386_pr2.brep] pr2
+restore [locate_data_file bug27386_pr3.brep] pr3
+beziercurve c1 3  0 50 -45  5 50 -50  0 50 -55
+beziercurve c2 3  0 50 -45  -5 50 -50  0 50 -55
+mkedge e1 c1
+mkedge e2 c2
+orientation e2 R
+wire pr4 e1 e2
+vertex vv 0 0 0
+donly vv pr2 pr3 pr4
+
+explode pr2
+explode pr3
+explode pr4
+
+thrusections r 1 0 vv pr2 pr3 pr4 vv
+
+genthrus r1 pr2_1
+genthrus r2 pr2_2
+genthrus r3 pr2_3
+genthrus r4 pr3_1
+genthrus r5 pr4_1
+genthrus r6 pr4_2
+
+checknbshapes r1 -face 2
+checkprops r1 -s 2756.24
+checknbshapes r2 -face 1
+checkprops r2 -s 2749.35
+checknbshapes r3 -face 2
+checkprops r3 -s 2322.62
+checknbshapes r4 -face 5
+checkprops r4 -s 7828.21
+checknbshapes r5 -face 3
+checkprops r5 -s 3917.55
+checknbshapes r6 -face 2
+checkprops r6 -s 3910.66
+
+explode pr2 v
+explode pr3 v
+explode pr4 v
+
+genthrus r7 vv
+genthrus r8 pr2_1
+genthrus r9 pr2_2
+genthrus r10 pr2_3
+genthrus r11 pr3_1
+genthrus r12 pr4_1
+genthrus r13 pr4_2
+
+checknbshapes r7 -edge 5
+checkprops r7 -l 1618.63
+checkprops r8 -l 313.428
+checkprops r9 -l 360.862
+checkprops r10 -l 313.428
+checkprops r11 -l 328.857
+checkprops r12 -l 302.052
+checkprops r13 -l 360.862
