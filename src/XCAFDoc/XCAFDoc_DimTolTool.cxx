@@ -19,6 +19,7 @@
 #include <TColStd_MapOfAsciiString.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_TreeNode.hxx>
+#include <TDataStd_UAttribute.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIDIterator.hxx>
@@ -918,7 +919,36 @@ Standard_Boolean XCAFDoc_DimTolTool::GetTolerOfDatumLabels(const TDF_Label& theD
   return Standard_True;
 }
 
+//=======================================================================
+//function : IsLocked
+//purpose  : 
+//=======================================================================
 
+Standard_Boolean XCAFDoc_DimTolTool::IsLocked(const TDF_Label& theViewL) const
+{
+  Handle(TDataStd_UAttribute) anAttr;
+  return theViewL.FindAttribute(XCAFDoc::LockGUID(), anAttr);
+}
+
+//=======================================================================
+//function : Lock
+//purpose  : 
+//=======================================================================
+
+void XCAFDoc_DimTolTool::Lock(const TDF_Label& theViewL) const
+{
+  TDataStd_UAttribute::Set(theViewL, XCAFDoc::LockGUID());
+}
+
+//=======================================================================
+//function : Unlock
+//purpose  : 
+//=======================================================================
+
+void XCAFDoc_DimTolTool::Unlock(const TDF_Label& theViewL) const
+{
+  theViewL.ForgetAttribute(XCAFDoc::LockGUID());
+}
 
 //=======================================================================
 //function : ID

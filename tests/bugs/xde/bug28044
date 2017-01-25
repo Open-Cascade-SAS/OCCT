@@ -45,6 +45,7 @@ Close D_Second
 
 set ref_data {Reference shapes: 0:1:1:1 0:1:1:2 
 Reference GD&Ts: 0:1:4:1 
+Reference Clipping Planes: 
 Name: ALL
 Type: parallel
 Projection point: 2 3 5

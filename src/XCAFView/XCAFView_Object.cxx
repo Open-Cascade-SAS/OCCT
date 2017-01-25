@@ -23,10 +23,11 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFView_Object,Standard_Transient)
 //=======================================================================
 XCAFView_Object::XCAFView_Object()
 {
-  myHasClippingPlane = Standard_False;
+  myClippingExpression = new TCollection_HAsciiString();
   myFrontPlaneClipping = Standard_False;
   myBackPlaneClipping = Standard_False;
   myViewVolumeSidesClipping = Standard_False;
+  myGDTPoints = NULL;
 }
 
 //=======================================================================
@@ -35,7 +36,6 @@ XCAFView_Object::XCAFView_Object()
 //=======================================================================
 XCAFView_Object::XCAFView_Object(const Handle(XCAFView_Object)& theObj)
 {
-   
   myType = theObj->myType;
   myProjectionPoint = theObj->myProjectionPoint;
   myViewDirection = theObj->myViewDirection;
@@ -43,11 +43,12 @@ XCAFView_Object::XCAFView_Object(const Handle(XCAFView_Object)& theObj)
   myZoomFactor = theObj->myZoomFactor;
   myWindowHorizontalSize = theObj->myWindowHorizontalSize;
   myWindowVerticalSize = theObj->myWindowVerticalSize;
-  myHasClippingPlane = theObj->myHasClippingPlane;
-  myClippingPlane = theObj->myClippingPlane;
+  myClippingExpression = theObj->myClippingExpression;
   myFrontPlaneClipping = theObj->myFrontPlaneClipping;
   myFrontPlaneDistance = theObj->myFrontPlaneDistance;
   myBackPlaneClipping = theObj->myBackPlaneClipping;
   myBackPlaneDistance = theObj->myBackPlaneDistance;
   myViewVolumeSidesClipping = theObj->myViewVolumeSidesClipping;
+  myGDTPoints = NULL;
 }
+

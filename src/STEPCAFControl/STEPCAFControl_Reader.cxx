@@ -16,6 +16,8 @@
 
 #include <BRep_Builder.hxx>
 #include <Geom_Axis2Placement.hxx>
+#include <Geom_CartesianPoint.hxx>
+#include <Geom_Plane.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <StepData_StepModel.hxx>
@@ -109,6 +111,7 @@
 #include <StepRepr_DerivedShapeAspect.hxx>
 #include <StepRepr_DescriptiveRepresentationItem.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_MappedItem.hxx>
 #include <StepRepr_MeasureRepresentationItem.hxx>
 #include <StepRepr_NextAssemblyUsageOccurrence.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
@@ -117,6 +120,7 @@
 #include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_RepresentationMap.hxx>
 #include <StepRepr_RepresentationRelationship.hxx>
 #include <StepRepr_RepresentedDefinition.hxx>
 #include <StepRepr_ReprItemAndLengthMeasureWithUnit.hxx>
@@ -177,6 +181,13 @@
 #include <StepVisual_AnnotationCurveOccurrence.hxx>
 #include <StepVisual_AnnotationFillArea.hxx>
 #include <StepVisual_AnnotationPlane.hxx>
+#include <StepVisual_CameraModelD3.hxx>
+#include <StepVisual_CameraModelD3MultiClipping.hxx>
+#include <StepVisual_CameraModelD3MultiClippingIntersection.hxx>
+#include <StepVisual_CameraModelD3MultiClippingUnion.hxx>
+#include <StepVisual_CoordinatesList.hxx>
+#include <StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect.hxx>
+#include <StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect.hxx>
 #include <StepVisual_DraughtingCallout.hxx>
 #include <StepVisual_DraughtingCalloutElement.hxx>
 #include <StepVisual_DraughtingModel.hxx>
@@ -187,6 +198,7 @@
 #include <StepVisual_PresentationStyleByContext.hxx>
 #include <StepVisual_StyleContextSelect.hxx>
 #include <StepVisual_StyledItem.hxx>
+#include <StepVisual_ViewVolume.hxx>
 #include <StepShape_TypeQualifier.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -218,6 +230,7 @@
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_Area.hxx>
 #include <XCAFDoc_Centroid.hxx>
+#include <XCAFDoc_ClippingPlaneTool.hxx>
 #include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_DataMapOfShapeLabel.hxx>
 #include <XCAFDoc_DimTolTool.hxx>
@@ -229,12 +242,15 @@
 #include <XCAFDoc_LayerTool.hxx>
 #include <XCAFDoc_MaterialTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
+#include <XCAFDoc_View.hxx>
+#include <XCAFDoc_ViewTool.hxx>
 #include <XCAFDoc_Volume.hxx>
 #include <XCAFDimTolObjects_DimensionModifiersSequence.hxx>
 #include <XCAFDimTolObjects_GeomToleranceType.hxx>
 #include <XCAFDimTolObjects_DimensionObject.hxx>
 #include <XCAFDimTolObjects_GeomToleranceObject.hxx>
 #include <XCAFDimTolObjects_DatumObject.hxx>
+#include <XCAFView_Object.hxx>
 #include <XSControl_TransferReader.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <StepAP242_DraughtingModelItemAssociation.hxx>
@@ -321,7 +337,8 @@ STEPCAFControl_Reader::STEPCAFControl_Reader ():
        myPropsMode( Standard_True ),
 	   mySHUOMode ( Standard_False ),
        myGDTMode  ( Standard_True ),
-       myMatMode  ( Standard_True )
+       myMatMode(Standard_True),
+       myViewMode(Standard_True)
 {
   STEPCAFControl_Controller::Init();
 }
@@ -340,7 +357,8 @@ STEPCAFControl_Reader::STEPCAFControl_Reader (const Handle(XSControl_WorkSession
        myPropsMode( Standard_True ),
 	   mySHUOMode ( Standard_False ),
        myGDTMode  ( Standard_True ),
-       myMatMode  ( Standard_True )
+       myMatMode(Standard_True),
+       myViewMode(Standard_True)
 {
   STEPCAFControl_Controller::Init();
   Init ( WS, scratch );
@@ -684,6 +702,10 @@ Standard_Boolean STEPCAFControl_Reader::Transfer (STEPControl_Reader &reader,
   // read Material entities from STEP model
   if(GetMatMode())
     ReadMaterials(reader.WS(),doc,SeqPDS);
+
+  // read View entities from STEP model
+  if (GetViewMode())
+    ReadViews(reader.WS(), doc);
 
   // Expand resulting CAF structure for sub-shapes (optionally with their
   // names) if requested
@@ -2346,14 +2368,14 @@ static TDF_Label getShapeLabel(const Handle(StepRepr_RepresentationItem)& theIte
 //purpose  : 
 //=======================================================================
 
-static Standard_Boolean setDatumToXCAF(const Handle(StepDimTol_Datum)& theDat,
-                                       const TDF_Label theGDTL,
-                                       const Standard_Integer thePositionCounter,
-                                       const XCAFDimTolObjects_DatumModifiersSequence& theXCAFModifiers,
-                                       const XCAFDimTolObjects_DatumModifWithValue theXCAFModifWithVal,
-                                       const Standard_Real theModifValue,
-                                       const Handle(TDocStd_Document)& theDoc,
-                                       const Handle(XSControl_WorkSession)& theWS)
+Standard_Boolean STEPCAFControl_Reader::setDatumToXCAF(const Handle(StepDimTol_Datum)& theDat,
+                                                       const TDF_Label theGDTL,
+                                                       const Standard_Integer thePositionCounter,
+                                                       const XCAFDimTolObjects_DatumModifiersSequence& theXCAFModifiers,
+                                                       const XCAFDimTolObjects_DatumModifWithValue theXCAFModifWithVal,
+                                                       const Standard_Real theModifValue,
+                                                       const Handle(TDocStd_Document)& theDoc,
+                                                       const Handle(XSControl_WorkSession)& theWS)
 {
   Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool(theDoc->Main());
   Handle(XCAFDoc_DimTolTool) aDGTTool = XCAFDoc_DocumentTool::DimTolTool(theDoc->Main());
@@ -2532,6 +2554,8 @@ static Standard_Boolean setDatumToXCAF(const Handle(StepDimTol_Datum)& theDat,
     // Create datum target object
     if (isValidDT) {
       TDF_Label aDatL = aDGTTool->AddDatum();
+      myGDTMap.Bind(aDT, aDatL);
+      aDGTTool->Lock(aDatL);
       aDat = XCAFDoc_Datum::Set(aDatL);
       aDGTTool->SetDatum(aDTShapeLabels, aDatL);
       aDatTargetObj->SetName(theDat->Identification());
@@ -2552,6 +2576,8 @@ static Standard_Boolean setDatumToXCAF(const Handle(StepDimTol_Datum)& theDat,
   if (aShapeLabels.Length() > 0 || !isExistDatumTarget) {
     // Create object for datum
     TDF_Label aDatL = aDGTTool->AddDatum();
+    myGDTMap.Bind(theDat, aDatL);
+    aDGTTool->Lock(aDatL);
     aDat = XCAFDoc_Datum::Set(aDatL);
     aDGTTool->SetDatum(aShapeLabels, aDatL);
     aDatObj->SetName(theDat->Identification());
@@ -2576,10 +2602,10 @@ static Standard_Boolean setDatumToXCAF(const Handle(StepDimTol_Datum)& theDat,
 //function : ReadDatums
 //purpose  : auxilary
 //=======================================================================
-static Standard_Boolean readDatumsAP242(const Handle(Standard_Transient)& theEnt,
-                                        const TDF_Label theGDTL,
-                                        const Handle(TDocStd_Document)& theDoc,
-                                        const Handle(XSControl_WorkSession)& theWS)
+Standard_Boolean STEPCAFControl_Reader::readDatumsAP242(const Handle(Standard_Transient)& theEnt,
+                                                        const TDF_Label theGDTL,
+                                                        const Handle(TDocStd_Document)& theDoc,
+                                                        const Handle(XSControl_WorkSession)& theWS)
 {
   const Handle(XSControl_TransferReader) &aTR = theWS->TransferReader();
   const Handle(Transfer_TransientProcess) &aTP = aTR->TransientProcess();
@@ -2724,9 +2750,9 @@ static Standard_Boolean readDatumsAP242(const Handle(Standard_Transient)& theEnt
 //function : createGeomTolObjectInXCAF
 //purpose  : 
 //=======================================================================
-static TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
-                                               const Handle(TDocStd_Document)& theDoc,
-                                               const Handle(XSControl_WorkSession)& theWS)
+TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
+                                                       const Handle(TDocStd_Document)& theDoc,
+                                                       const Handle(XSControl_WorkSession)& theWS)
 {
   TDF_Label aGDTL;
   if(!theEnt->IsKind(STANDARD_TYPE(StepShape_DimensionalSize)) &&
@@ -3092,6 +3118,8 @@ static TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
     if(!theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance)))
     {
       aGDTL = aDGTTool->AddDimension();
+      myGDTMap.Bind(theEnt, aGDTL);
+      aDGTTool->Lock(aGDTL);
       Handle(XCAFDoc_Dimension) aDim = XCAFDoc_Dimension::Set(aGDTL);
       TCollection_AsciiString aStr("DGT:Dimensional_");
       if(theEnt->IsKind(STANDARD_TYPE(StepShape_DimensionalSize)))
@@ -3117,6 +3145,8 @@ static TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
     else
     {
       aGDTL = aDGTTool->AddGeomTolerance();
+      myGDTMap.Bind(theEnt, aGDTL);
+      aDGTTool->Lock(aGDTL);
       Handle(XCAFDoc_GeomTolerance) aGTol = XCAFDoc_GeomTolerance::Set(aGDTL);
       TCollection_AsciiString aStr("DGT:GeomTolerance");
       TDataStd_Name::Set(aGDTL, aStr);
@@ -3791,7 +3821,7 @@ static void setGeomTolObjectToXCAF(const Handle(Standard_Transient)& theEnt,
 //=======================================================================
 
 Standard_Boolean STEPCAFControl_Reader::ReadGDTs(const Handle(XSControl_WorkSession)& theWS,
-                                                 Handle(TDocStd_Document)& theDoc) const
+                                                 Handle(TDocStd_Document)& theDoc)
 {
   const Handle(Interface_InterfaceModel) &aModel = theWS->Model();
   const Interface_Graph& aGraph = theWS->Graph();
@@ -3920,6 +3950,8 @@ Standard_Boolean STEPCAFControl_Reader::ReadGDTs(const Handle(XSControl_WorkSess
       
       // Set object to XCAF
       TDF_Label aGDTL = aDGTTool->AddDimension();
+      myGDTMap.Bind(anEnt, aGDTL);
+      aDGTTool->Lock(aGDTL);
       Handle(XCAFDimTolObjects_DimensionObject) aDimObj = new XCAFDimTolObjects_DimensionObject();
       Handle(XCAFDoc_Dimension) aDim = XCAFDoc_Dimension::Set(aGDTL);
       TCollection_AsciiString aStr("DGT:");
@@ -4092,6 +4124,220 @@ Standard_Boolean STEPCAFControl_Reader::ReadMaterials(const Handle(XSControl_Wor
     MatTool->SetMaterial(shL,aName,aDescription,aDensity,aDensName,aDensValType);
   }
 
+  return Standard_True;
+}
+
+//=======================================================================
+//function : collectViewShapes
+//purpose  : collect all labels of representations in given representation
+//=======================================================================
+
+void collectViewShapes(const Handle(XSControl_WorkSession)& theWS,
+  const Handle(TDocStd_Document)& theDoc,
+  const Handle(StepRepr_Representation) theRepr,
+  TDF_LabelSequence& theShapes)
+{
+  Handle(XSControl_TransferReader) aTR = theWS->TransferReader();
+  Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
+  const Interface_Graph& aGraph = aTP->Graph();
+  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool(theDoc->Main());
+  Standard_Integer anIndex = aTP->MapIndex(theRepr);
+  TopoDS_Shape aSh;
+  if (anIndex > 0) {
+    Handle(Transfer_Binder) aBinder = aTP->MapItem(anIndex);
+    aSh = TransferBRep::ShapeResult(aBinder);
+  }
+  if (!aSh.IsNull()) {
+    TDF_Label aShL;
+    aSTool->FindShape(aSh, aShL);
+    if (!aShL.IsNull())
+      theShapes.Append(aShL);
+  }
+  Interface_EntityIterator anIter = aGraph.Sharings(theRepr);
+  for (; anIter.More(); anIter.Next()) {
+    if (!anIter.Value()->IsKind(STANDARD_TYPE(StepRepr_RepresentationRelationship)))
+      continue;
+    Handle(StepRepr_RepresentationRelationship) aReprRelationship = Handle(StepRepr_RepresentationRelationship)::DownCast(anIter.Value());
+    if (aReprRelationship->Rep1() != theRepr)
+      collectViewShapes(theWS, theDoc, aReprRelationship->Rep1(), theShapes);
+  }
+}
+
+//=======================================================================
+//function : buildClippingPlanes
+//purpose  :
+//=======================================================================
+Handle(TCollection_HAsciiString) buildClippingPlanes(const Handle(StepGeom_GeometricRepresentationItem)& theClippingCameraModel,
+  TDF_LabelSequence& theClippingPlanes,
+  const Handle(XCAFDoc_ClippingPlaneTool) theTool)
+{
+  Handle(TCollection_HAsciiString) anExpression = new TCollection_HAsciiString();
+  NCollection_Sequence<Handle(StepGeom_GeometricRepresentationItem)> aPlanes;
+  Handle(TCollection_HAsciiString) anOperation = new TCollection_HAsciiString("*");
+
+  // Store operands
+  if (theClippingCameraModel->IsKind(STANDARD_TYPE(StepVisual_CameraModelD3MultiClipping))) {
+    Handle(StepVisual_CameraModelD3MultiClipping) aCameraModel =
+      Handle(StepVisual_CameraModelD3MultiClipping)::DownCast(theClippingCameraModel);
+    // Root of clipping planes tree
+    if (aCameraModel->ShapeClipping()->Length() == 1) {
+      Handle(StepVisual_CameraModelD3MultiClippingUnion) aCameraModelUnion =
+        aCameraModel->ShapeClipping()->Value(1).CameraModelD3MultiClippingUnion();
+      if (!aCameraModelUnion.IsNull())
+        return buildClippingPlanes(aCameraModelUnion, theClippingPlanes, theTool);
+    }
+    for (Standard_Integer i = 1; i <= aCameraModel->ShapeClipping()->Length(); i++) {
+      aPlanes.Append(Handle(StepGeom_GeometricRepresentationItem)::DownCast(aCameraModel->ShapeClipping()->Value(i).Value()));
+    }
+  }
+  else if (theClippingCameraModel->IsKind(STANDARD_TYPE(StepVisual_CameraModelD3MultiClippingUnion))) {
+    Handle(StepVisual_CameraModelD3MultiClippingUnion) aCameraModel =
+      Handle(StepVisual_CameraModelD3MultiClippingUnion)::DownCast(theClippingCameraModel);
+    anOperation = new TCollection_HAsciiString("+");
+    for (Standard_Integer i = 1; i <= aCameraModel->ShapeClipping()->Length(); i++) {
+      aPlanes.Append(Handle(StepGeom_GeometricRepresentationItem)::DownCast(aCameraModel->ShapeClipping()->Value(i).Value()));
+    }
+  }
+  else if (theClippingCameraModel->IsKind(STANDARD_TYPE(StepVisual_CameraModelD3MultiClippingIntersection))) {
+    Handle(StepVisual_CameraModelD3MultiClippingIntersection) aCameraModel =
+      Handle(StepVisual_CameraModelD3MultiClippingIntersection)::DownCast(theClippingCameraModel);
+    for (Standard_Integer i = 1; i <= aCameraModel->ShapeClipping()->Length(); i++) {
+      aPlanes.Append(Handle(StepGeom_GeometricRepresentationItem)::DownCast(aCameraModel->ShapeClipping()->Value(i).Value()));
+    }
+  }
+  // Build expression
+  anExpression->AssignCat("(");
+  for (Standard_Integer i = 1; i <= aPlanes.Length(); i++) {
+    Handle(StepGeom_Plane) aPlaneEnt = Handle(StepGeom_Plane)::DownCast(aPlanes.Value(i));
+    if (!aPlaneEnt.IsNull()) {
+      Handle(Geom_Plane) aPlane = StepToGeom::MakePlane(aPlaneEnt);
+      if (!aPlane.IsNull()) {
+        TDF_Label aPlaneL = theTool->AddClippingPlane(aPlane->Pln(), aPlaneEnt->Name());
+        theClippingPlanes.Append(aPlaneL);
+        TCollection_AsciiString anEntry;
+        TDF_Tool::Entry(aPlaneL, anEntry);
+        anExpression->AssignCat(new TCollection_HAsciiString(anEntry));
+      }
+    }
+    else {
+      anExpression->AssignCat(buildClippingPlanes(aPlanes.Value(i), theClippingPlanes, theTool));
+    }
+    anExpression->AssignCat(anOperation);
+  }
+  // Insert brace instead of operation after last operand.
+  anExpression->SetValue(anExpression->Length(), ')');
+  return anExpression;
+}
+
+
+//=======================================================================
+//function : ReadViews
+//purpose  :
+//=======================================================================
+Standard_Boolean STEPCAFControl_Reader::ReadViews(const Handle(XSControl_WorkSession)& theWS, Handle(TDocStd_Document)& theDoc) const
+{
+  const Handle(Interface_InterfaceModel) &aModel = theWS->Model();
+  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool(theDoc->Main());
+  Handle(XCAFDoc_DimTolTool) aDGTTool = XCAFDoc_DocumentTool::DimTolTool(theDoc->Main());
+  Handle(XCAFDoc_ViewTool) aViewTool = XCAFDoc_DocumentTool::ViewTool(theDoc->Main());
+  if (aDGTTool.IsNull()) return Standard_False;
+
+  Standard_Integer nb = aModel->NbEntities();
+  for (Standard_Integer i = 1; i <= nb; i++) {
+    Handle(Standard_Transient) anEnt = aModel->Value(i);
+    if (!anEnt->IsKind(STANDARD_TYPE(StepVisual_CameraModelD3)))
+      continue;
+    Handle(XCAFView_Object) anObj = new XCAFView_Object();
+    // Import attributes of view
+    Handle(StepVisual_CameraModelD3) aCameraModel = Handle(StepVisual_CameraModelD3)::DownCast(anEnt);
+    anObj->SetName(aCameraModel->Name());
+    Handle(Geom_Axis2Placement) anAxis = StepToGeom::MakeAxis2Placement(aCameraModel->ViewReferenceSystem());
+    anObj->SetViewDirection(anAxis->Direction());
+    anObj->SetUpDirection(anAxis->Direction() ^ anAxis->XDirection());
+    Handle(StepVisual_ViewVolume) aViewVolume = aCameraModel->PerspectiveOfVolume();
+    XCAFView_ProjectionType aType = XCAFView_ProjectionType_NoCamera;
+    if (aViewVolume->ProjectionType() == StepVisual_copCentral)
+      aType = XCAFView_ProjectionType_Central;
+    else if (aViewVolume->ProjectionType() == StepVisual_copParallel)
+      aType = XCAFView_ProjectionType_Parallel;
+    anObj->SetType(aType);
+    Handle(Geom_CartesianPoint) aPoint = StepToGeom::MakeCartesianPoint(aViewVolume->ProjectionPoint());
+    anObj->SetProjectionPoint(aPoint->Pnt());
+    anObj->SetZoomFactor(aViewVolume->ViewPlaneDistance());
+    anObj->SetWindowHorizontalSize(aViewVolume->ViewWindow()->SizeInX());
+    anObj->SetWindowVerticalSize(aViewVolume->ViewWindow()->SizeInY());
+    if (aViewVolume->FrontPlaneClipping())
+      anObj->SetFrontPlaneDistance(aViewVolume->FrontPlaneDistance());
+    if (aViewVolume->BackPlaneClipping())
+      anObj->SetBackPlaneDistance(aViewVolume->BackPlaneDistance());
+    anObj->SetViewVolumeSidesClipping(aViewVolume->ViewVolumeSidesClipping());
+    // Clipping plane
+    Handle(StepVisual_CameraModelD3MultiClipping) aClippingCameraModel =
+      Handle(StepVisual_CameraModelD3MultiClipping)::DownCast(aCameraModel);
+    TDF_LabelSequence aClippingPlanes;
+    if (!aClippingCameraModel.IsNull()) {
+      Handle(TCollection_HAsciiString) aClippingExpression;
+      Handle(XCAFDoc_ClippingPlaneTool) aClippingPlaneTool = XCAFDoc_DocumentTool::ClippingPlaneTool(theDoc->Main());
+      aClippingExpression = buildClippingPlanes(aClippingCameraModel, aClippingPlanes, aClippingPlaneTool);
+      anObj->SetClippingExpression(aClippingExpression);
+    }
+    // Collect shapes and GDTs
+    TDF_LabelSequence aShapes, aGDTs;
+    Handle(XSControl_TransferReader) aTR = theWS->TransferReader();
+    Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
+    const Interface_Graph& aGraph = aTP->Graph();
+    Handle(StepVisual_DraughtingModel) aDModel;
+    Interface_EntityIterator anIter = aGraph.Sharings(aCameraModel);
+    for (; anIter.More() && aDModel.IsNull(); anIter.Next()) {
+      aDModel = Handle(StepVisual_DraughtingModel)::DownCast(anIter.Value());
+    }
+    if (aDModel.IsNull())
+      return Standard_False;
+
+    anIter = aGraph.Shareds(aDModel);
+    for (; anIter.More(); anIter.Next()) {
+      if (anIter.Value()->IsKind(STANDARD_TYPE(StepRepr_MappedItem))) {
+        Handle(StepRepr_MappedItem) anItem = Handle(StepRepr_MappedItem)::DownCast(anIter.Value());
+        Handle(StepRepr_Representation) aRepr = anItem->MappingSource()->MappedRepresentation();
+        collectViewShapes(theWS, theDoc, aRepr, aShapes);
+      }
+      else if (anIter.Value()->IsKind(STANDARD_TYPE(StepVisual_AnnotationOccurrence)) ||
+        anIter.Value()->IsKind(STANDARD_TYPE(StepVisual_DraughtingCallout))) {
+        Interface_EntityIterator aDMIAIter = aGraph.Sharings(anIter.Value());
+        for (; aDMIAIter.More(); aDMIAIter.Next()) {
+          if (!aDMIAIter.Value()->IsKind(STANDARD_TYPE(StepAP242_DraughtingModelItemAssociation)))
+            continue;
+          Handle(StepAP242_DraughtingModelItemAssociation) aDMIA =
+            Handle(StepAP242_DraughtingModelItemAssociation)::DownCast(aDMIAIter.Value());
+          TDF_Label aGDTL;
+          Standard_Boolean isFind = myGDTMap.Find(aDMIA->Definition().Value(), aGDTL);
+          if (isFind)
+            aGDTs.Append(aGDTL);
+        }
+      }
+      else if (anIter.Value()->IsKind(STANDARD_TYPE(StepVisual_AnnotationPlane))) {
+        Handle(StepVisual_AnnotationPlane) aPlane = Handle(StepVisual_AnnotationPlane)::DownCast(anIter.Value());
+        for (Standard_Integer i = 1; i <= aPlane->NbElements(); i++) {
+          Interface_EntityIterator aDMIAIter = aGraph.Sharings(anIter.Value());
+          for (; aDMIAIter.More(); aDMIAIter.Next()) {
+            if (!aDMIAIter.Value()->IsKind(STANDARD_TYPE(StepAP242_DraughtingModelItemAssociation)))
+              continue;
+            Handle(StepAP242_DraughtingModelItemAssociation) aDMIA =
+              Handle(StepAP242_DraughtingModelItemAssociation)::DownCast(aDMIAIter.Value());
+            TDF_Label aGDTL;
+            Standard_Boolean isFind = myGDTMap.Find(aDMIA->Definition().Value(), aGDTL);
+            if (isFind)
+              aGDTs.Append(aGDTL);
+          }
+        }
+      }
+    }
+    TDF_Label aViewL = aViewTool->AddView();
+    Handle(XCAFDoc_View) aView = XCAFDoc_View::Set(aViewL);
+    aView->SetObject(anObj);
+    aViewTool->SetView(aShapes, aGDTs, aClippingPlanes, aViewL);
+    aViewTool->Lock(aViewL);
+  }
   return Standard_True;
 }
 
@@ -4473,4 +4719,24 @@ void STEPCAFControl_Reader::SetMatMode (const Standard_Boolean matmode)
 Standard_Boolean STEPCAFControl_Reader::GetMatMode () const
 {
   return myMatMode;
+}
+
+//=======================================================================
+//function : SetViewMode
+//purpose  : 
+//=======================================================================
+
+void STEPCAFControl_Reader::SetViewMode(const Standard_Boolean viewmode)
+{
+  myViewMode = viewmode;
+}
+
+//=======================================================================
+//function : GetViewMode
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean STEPCAFControl_Reader::GetViewMode() const
+{
+  return myViewMode;
 }

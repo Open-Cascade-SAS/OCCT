@@ -31,6 +31,8 @@
 #include <STEPCAFControl_DataMapOfPDExternFile.hxx>
 #include <XCAFDoc_DataMapOfShapeLabel.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
+#include <XCAFDimTolObjects_DatumModifiersSequence.hxx>
+#include <XCAFDimTolObjects_DatumModifWithValue.hxx>
 class XSControl_WorkSession;
 class TDocStd_Document;
 class TCollection_AsciiString;
@@ -44,6 +46,7 @@ class Transfer_TransientProcess;
 class StepShape_ConnectedFaceSet;
 class StepRepr_NextAssemblyUsageOccurrence;
 class STEPConstruct_Tool;
+class StepDimTol_Datum;
 
 
 //! Provides a tool to read STEP file and put it into
@@ -153,6 +156,12 @@ public:
   Standard_EXPORT void SetMatMode (const Standard_Boolean matmode);
   
   Standard_EXPORT Standard_Boolean GetMatMode() const;
+  
+  //! Set View mode
+  Standard_EXPORT void SetViewMode(const Standard_Boolean viewmode);
+
+  //! Get View mode
+  Standard_EXPORT Standard_Boolean GetViewMode() const;
 
 
 
@@ -201,12 +210,15 @@ protected:
   
   //! Reads D&GT for instances defined in the STEP model and
   //! set reference between shape instances from different assemblyes
-  Standard_EXPORT Standard_Boolean ReadGDTs (const Handle(XSControl_WorkSession)& WS, Handle(TDocStd_Document)& doc) const;
+  Standard_EXPORT Standard_Boolean ReadGDTs (const Handle(XSControl_WorkSession)& WS, Handle(TDocStd_Document)& doc);
   
   //! Reads materials for instances defined in the STEP model and
   //! set reference between shape instances from different assemblyes
   Standard_EXPORT Standard_Boolean ReadMaterials (const Handle(XSControl_WorkSession)& WS, Handle(TDocStd_Document)& doc, const Handle(TColStd_HSequenceOfTransient)& SeqPDS) const;
   
+  //! Reads Views for instances defined in the STEP model
+  Standard_EXPORT Standard_Boolean ReadViews(const Handle(XSControl_WorkSession)& theWS, Handle(TDocStd_Document)& theDoc) const;
+
   //! Populates the sub-Label of the passed TDF Label with shape
   //! data associated with the given STEP Representation Item,
   //! including naming and topological information.
@@ -238,6 +250,26 @@ protected:
 
 private:
 
+  //! Internal method. Import all Datum attributes and set them to XCAF object. Set connection of Datum to GeomTolerance (theGDTL).
+  Standard_Boolean setDatumToXCAF(const Handle(StepDimTol_Datum)& theDat,
+    const TDF_Label theGDTL,
+    const Standard_Integer thePositionCounter,
+    const XCAFDimTolObjects_DatumModifiersSequence& theXCAFModifiers,
+    const XCAFDimTolObjects_DatumModifWithValue theXCAFModifWithVal,
+    const Standard_Real theModifValue,
+    const Handle(TDocStd_Document)& theDoc,
+    const Handle(XSControl_WorkSession)& theWS);
+  
+  //! Internal method. Read Datums, connected to GeomTolerance theGDTL.
+  Standard_Boolean readDatumsAP242(const Handle(Standard_Transient)& theEnt,
+    const TDF_Label theGDTL,
+    const Handle(TDocStd_Document)& theDoc,
+    const Handle(XSControl_WorkSession)& theWS);
+
+  //! Internal method. Read Dimension or GeomTolerance.
+  TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
+    const Handle(TDocStd_Document)& theDoc,
+    const Handle(XSControl_WorkSession)& theWS);
 
 
   STEPControl_Reader myReader;
@@ -249,7 +281,8 @@ private:
   Standard_Boolean mySHUOMode;
   Standard_Boolean myGDTMode;
   Standard_Boolean myMatMode;
-
+  Standard_Boolean myViewMode;
+  NCollection_DataMap<Handle(Standard_Transient), TDF_Label> myGDTMap;
 
 };
 

@@ -18,11 +18,14 @@
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
 #include <Draw.hxx>
+#include <DrawTrSurf.hxx>
+#include <Geom_Plane.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TDF_Tool.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <TDocStd_Document.hxx>
+#include <XCAFDoc_ClippingPlaneTool.hxx>
 #include <XCAFDoc_DimTolTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
@@ -70,6 +73,74 @@ static Standard_Integer setView(Draw_Interpretor& di, Standard_Integer argc, con
   TCollection_AsciiString anEntry;
   TDF_Tool::Entry(aViewL, anEntry);
   di << anEntry << "\n";
+  return 0;
+}
+
+//=======================================================================
+//function : removeView
+//purpose  : 
+//=======================================================================
+static Standard_Integer removeView(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 3) {
+    di << "Use: XRemoveView Doc View_Label\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument(argv[1], aDoc);
+  if (aDoc.IsNull()) {
+    di << argv[1] << " is not a document\n";
+    return 1;
+  }
+  Handle(XCAFDoc_ViewTool) aViewTool = XCAFDoc_DocumentTool::ViewTool(aDoc->Main());
+
+  TDF_Label aLabel;
+  TDF_Tool::Label(aDoc->GetData(), argv[2], aLabel);
+  if (aLabel.IsNull())
+  {
+    di << "View " << argv[2] << " is absent in " << argv[1] << "\n";
+    return 1;
+  }
+  aViewTool->RemoveView(aLabel);
+  return 0;
+}
+
+
+//=======================================================================
+//function : setClippingPlanes
+//purpose  : 
+//=======================================================================
+static Standard_Integer setClippingPlanes(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 3) {
+    di << "Use: XSetClippingPlanes Doc view_label plane_label1 ... plane_labelN";
+    return 1;
+  }
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument(argv[1], aDoc);
+  if (aDoc.IsNull()) {
+    di << argv[1] << " is not a document\n";
+    return 1;
+  }
+  Handle(XCAFDoc_ViewTool) aViewTool = XCAFDoc_DocumentTool::ViewTool(aDoc->Main());
+  Handle(XCAFDoc_ClippingPlaneTool) aCPlaneTool = XCAFDoc_DocumentTool::ClippingPlaneTool(aDoc->Main());
+
+  TDF_LabelSequence aCPlanes;
+  for (Standard_Integer i = 3; i < argc; i++) {
+    TDF_Label aLabel;
+    TDF_Tool::Label(aDoc->GetData(), argv[i], aLabel);
+    if (aLabel.IsNull())
+      continue;
+    if (aCPlaneTool->IsClippingPlane(aLabel))
+      aCPlanes.Append(aLabel);
+  }
+
+  if (aCPlanes.Length() == 0)
+    return 1;
+
+  TDF_Label aViewL;
+  TDF_Tool::Label(aDoc->GetData(), argv[2], aViewL);
+  aViewTool->SetClippingPlanes(aCPlanes, aViewL);
   return 0;
 }
 
@@ -170,13 +241,52 @@ static Standard_Integer getRefGDTs(Draw_Interpretor& di, Standard_Integer argc, 
   }
 
   TDF_LabelSequence aGDTs;
-  aViewTool->GetRefShapeLabel(aLabel, aGDTs);
+  aViewTool->GetRefGDTLabel(aLabel, aGDTs);
   if (aGDTs.Length() == 0) {
     di << "No GDTs in the given View\n";
   }
   for (Standard_Integer i = 1; i <= aGDTs.Length(); i++) {
     TCollection_AsciiString anEntry;
     TDF_Tool::Entry(aGDTs.Value(i), anEntry);
+    di << anEntry << " ";
+  }
+  return 0;
+}
+
+//=======================================================================
+//function : getRefClippingPlanes
+//purpose  : 
+//=======================================================================
+static Standard_Integer getRefClippingPlanes(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 3) {
+    di << "Use: XGetViewClippingPlanes Doc ViewLabel\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument(argv[1], aDoc);
+  if (aDoc.IsNull()) {
+    di << argv[1] << " is not a document\n";
+    return 1;
+  }
+  Handle(XCAFDoc_ViewTool) aViewTool = XCAFDoc_DocumentTool::ViewTool(aDoc->Main());
+
+  TDF_Label aLabel;
+  TDF_Tool::Label(aDoc->GetData(), argv[2], aLabel);
+  if (aLabel.IsNull() || !aViewTool->IsView(aLabel))
+  {
+    di << "Invalid label\n";
+    return 1;
+  }
+
+  TDF_LabelSequence aCPlanes;
+  aViewTool->GetRefClippingPlaneLabel(aLabel, aCPlanes);
+  if (aCPlanes.Length() == 0) {
+    di << "No Clipping Planes in the given View\n";
+  }
+  for (Standard_Integer i = 1; i <= aCPlanes.Length(); i++) {
+    TCollection_AsciiString anEntry;
+    TDF_Tool::Entry(aCPlanes.Value(i), anEntry);
     di << anEntry << " ";
   }
   return 0;
@@ -960,7 +1070,7 @@ static Standard_Integer getViewVolumeSidesClipping(Draw_Interpretor& di, Standar
 }
 
 //=======================================================================
-//function : getName
+//function : dump
 //purpose  : 
 //=======================================================================
 static Standard_Integer dump(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
@@ -1002,6 +1112,16 @@ static Standard_Integer dump(Draw_Interpretor& di, Standard_Integer argc, const 
   for (Standard_Integer i = 1; i <= aGDTs.Length(); i++) {
     TCollection_AsciiString anEntry;
     TDF_Tool::Entry(aGDTs.Value(i), anEntry);
+    di << anEntry << " ";
+  }
+  di << "\n";
+
+  TDF_LabelSequence aCPlanes;
+  aViewTool->GetRefClippingPlaneLabel(aLabel, aCPlanes);
+  di << "Reference Clipping Planes: ";
+  for (Standard_Integer i = 1; i <= aCPlanes.Length(); i++) {
+    TCollection_AsciiString anEntry;
+    TDF_Tool::Entry(aCPlanes.Value(i), anEntry);
     di << anEntry << " ";
   }
   di << "\n";
@@ -1049,6 +1169,136 @@ static Standard_Integer dump(Draw_Interpretor& di, Standard_Integer argc, const 
   return 0;
 }
 
+//=======================================================================
+//function : addClippingPlane
+//purpose  : 
+//=======================================================================
+static Standard_Integer addClippingPlane(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 5) {
+    di << "Use: XAddClippingPlane Doc plane name capping[0/1]";
+    return 1;
+  }
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument(argv[1], aDoc);
+  if (aDoc.IsNull()) {
+    di << argv[1] << " is not a document\n";
+    return 1;
+  }
+  Handle(XCAFDoc_ClippingPlaneTool) aCPlaneTool = XCAFDoc_DocumentTool::ClippingPlaneTool(aDoc->Main());
+  gp_Pln aPlane;
+  Handle(Geom_Plane) aSurf = Handle(Geom_Plane)::DownCast(DrawTrSurf::GetSurface(argv[2]));
+  if (aSurf.IsNull()) {
+    cout << argv[2] << " is not a plane" << endl;
+    return 1;
+  }
+  aPlane = aSurf->Pln();
+  Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString(argv[3]);
+  Standard_Boolean aCapping = (argv[4][0] == '1');
+
+  TDF_Label aCPlaneL = aCPlaneTool->AddClippingPlane(aPlane, aName, aCapping);
+  TCollection_AsciiString anEntry;
+  TDF_Tool::Entry(aCPlaneL, anEntry);
+  di << anEntry << "\n";
+  return 0;
+}
+
+//=======================================================================
+//function : getClippingPlane
+//purpose  : 
+//=======================================================================
+static Standard_Integer getClippingPlane(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 3) {
+    di << "Use: XGetClippingPlane Doc ClippingPlane_Label\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument(argv[1], aDoc);
+  if (aDoc.IsNull()) {
+    di << argv[1] << " is not a document\n";
+    return 1;
+  }
+  Handle(XCAFDoc_ClippingPlaneTool) aClippingPlaneTool = XCAFDoc_DocumentTool::ClippingPlaneTool(aDoc->Main());
+
+  TDF_Label aLabel;
+  TDF_Tool::Label(aDoc->GetData(), argv[2], aLabel);
+  if (aLabel.IsNull())
+  {
+    di << "ClippingPlane " << argv[2] << " is absent in " << argv[1] << "\n";
+    return 1;
+  }
+  gp_Pln aPlane;
+  Handle(TCollection_HAsciiString) aName;
+  Standard_Boolean aCapping;
+  aClippingPlaneTool->GetClippingPlane(aLabel, aPlane, aName, aCapping);
+  Handle(Geom_Plane) aCPlane = new Geom_Plane(aPlane);
+  DrawTrSurf::Set(aName->ToCString(), aCPlane);
+  di << aName->ToCString();
+  return 0;
+}
+
+//=======================================================================
+//function : removeClippingPlane
+//purpose  : 
+//=======================================================================
+static Standard_Integer removeClippingPlane(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 3) {
+    di << "Use: XRemoveClippingPlane Doc ClippingPlane_Label\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument(argv[1], aDoc);
+  if (aDoc.IsNull()) {
+    di << argv[1] << " is not a document\n";
+    return 1;
+  }
+  Handle(XCAFDoc_ClippingPlaneTool) aClippingPlaneTool = XCAFDoc_DocumentTool::ClippingPlaneTool(aDoc->Main());
+
+  TDF_Label aLabel;
+  TDF_Tool::Label(aDoc->GetData(), argv[2], aLabel);
+  if (aLabel.IsNull())
+  {
+    di << "ClippingPlane " << argv[2] << " is absent in " << argv[1] << "\n";
+    return 1;
+  }
+  Standard_Boolean isRemoved = aClippingPlaneTool->RemoveClippingPlane(aLabel);
+  if (isRemoved)
+    di << "removed\n";
+  else
+    di << "clipping plane is not free, not removed\n";
+  return 0;
+}
+
+//=======================================================================
+//function : getClippingPlaneCapping
+//purpose  : 
+//=======================================================================
+static Standard_Integer getClippingPlaneCapping(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 3) {
+    di << "Use: XGetClippingPlaneCapping Doc ClippingPlane_Label\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument(argv[1], aDoc);
+  if (aDoc.IsNull()) {
+    di << argv[1] << " is not a document\n";
+    return 1;
+  }
+  Handle(XCAFDoc_ClippingPlaneTool) aClippingPlaneTool = XCAFDoc_DocumentTool::ClippingPlaneTool(aDoc->Main());
+
+  TDF_Label aLabel;
+  TDF_Tool::Label(aDoc->GetData(), argv[2], aLabel);
+  if (aLabel.IsNull())
+  {
+    di << "ClippingPlane " << argv[2] << " is absent in " << argv[1] << "\n";
+    return 1;
+  }
+  di << aClippingPlaneTool->GetCapping(aLabel);
+  return 0;
+}
 
 //=======================================================================
 //function : InitCommands
@@ -1067,6 +1317,12 @@ void XDEDRAW_Views::InitCommands(Draw_Interpretor& di)
   di.Add("XSetView", "XSetView Doc shape_label1 ... shape_labelN gdt_label1 ... gdt_labelN",
     __FILE__, setView, g);
 
+  di.Add("XRemoveView", "XRemoveView Doc ViewLabel",
+    __FILE__, removeView, g);
+
+  di.Add("XSetClippingPlanes", "XSetView Doc view_plane plane_label1 ... plane_labelN",
+    __FILE__, setClippingPlanes, g);
+
   di.Add("XIsView", "XIsView Doc Label",
     __FILE__, isView, g);
 
@@ -1075,6 +1331,9 @@ void XDEDRAW_Views::InitCommands(Draw_Interpretor& di)
 
   di.Add("XGetViewGDTs", "XGetViewGDTs Doc ViewLabel" "Return labels of reference GDTs",
     __FILE__, getRefGDTs, g);
+
+  di.Add("XGetViewClippingPlanes", "XGetViewClippingPlanes Doc ViewLabel" "Return labels of reference Clipping Planes",
+    __FILE__, getRefClippingPlanes, g);
 
   di.Add("XSetViewName", "XSetViewName Doc ViewLabel name",
     __FILE__, setName, g);
@@ -1144,4 +1403,16 @@ void XDEDRAW_Views::InitCommands(Draw_Interpretor& di)
 
   di.Add("XDumpView", "XDumpView Doc ViewLabel",
     __FILE__, dump, g);
+
+  di.Add("XAddClippingPlane", "XAddClippingPlane Doc plane name capping[0/1]",
+    __FILE__, addClippingPlane, g);
+
+  di.Add("XGetClippingPlaneCapping", "XGetClippingPlaneCapping Doc ClippingPlane_Label",
+    __FILE__, getClippingPlaneCapping, g);
+
+  di.Add("XGetClippingPlane", "XGetClippingPlane Doc ClippingPlane_Label",
+    __FILE__, getClippingPlane, g);
+
+  di.Add("XRemoveClippingPlane", "XRemoveClippingPlane Doc ClippingPlane_Label",
+    __FILE__, removeClippingPlane, g);
 }

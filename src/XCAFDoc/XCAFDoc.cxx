@@ -227,3 +227,25 @@ Standard_GUID XCAFDoc::ViewRefGDTGUID()
   static Standard_GUID ID("efd213e7-6dfd-11d4-b9c8-0060b0ee281b");
   return ID;
 }
+
+//=======================================================================
+//function : ViewRefPlaneGUID
+//purpose  : 
+//=======================================================================
+
+Standard_GUID XCAFDoc::ViewRefPlaneGUID()
+{
+  static Standard_GUID ID("efd213e9-6dfd-11d4-b9c8-0060b0ee281b");
+  return ID;
+}
+
+//=======================================================================
+//function : LockGUID
+//purpose  : 
+//=======================================================================
+
+Standard_GUID XCAFDoc::LockGUID()
+{
+  static Standard_GUID ID("efd213eb-6dfd-11d4-b9c8-0060b0ee281b");
+  return ID;
+}

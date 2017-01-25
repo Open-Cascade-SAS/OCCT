@@ -33,6 +33,7 @@ class XCAFDoc_Material;
 class XCAFDoc_Volume;
 class XCAFDoc_Area;
 class XCAFDoc_Centroid;
+class XCAFDoc_ClippingPlaneTool;
 class XCAFDoc_ShapeTool;
 class XCAFDoc_ShapeMapTool;
 class XCAFDoc_ColorTool;
@@ -113,6 +114,12 @@ public:
 
   //! Return GUIDs for TreeNode representing specified types of View
   Standard_EXPORT static Standard_GUID ViewRefGDTGUID();
+  
+  //! Return GUIDs for TreeNode representing specified types of View
+  Standard_EXPORT static Standard_GUID ViewRefPlaneGUID();
+
+  //! Returns GUID for UAttribute identifying lock flag
+  Standard_EXPORT static Standard_GUID LockGUID();
 
 protected:
 
@@ -134,6 +141,7 @@ friend class XCAFDoc_Material;
 friend class XCAFDoc_Volume;
 friend class XCAFDoc_Area;
 friend class XCAFDoc_Centroid;
+friend class XCAFDoc_ClippingPlaneTool;
 friend class XCAFDoc_ShapeTool;
 friend class XCAFDoc_ShapeMapTool;
 friend class XCAFDoc_ColorTool;

@@ -4,6 +4,8 @@ XmlMXCAFDoc_AreaDriver.cxx
 XmlMXCAFDoc_AreaDriver.hxx
 XmlMXCAFDoc_CentroidDriver.cxx
 XmlMXCAFDoc_CentroidDriver.hxx
+XmlMXCAFDoc_ClippingPlaneToolDriver.cxx
+XmlMXCAFDoc_ClippingPlaneToolDriver.hxx
 XmlMXCAFDoc_ColorDriver.cxx
 XmlMXCAFDoc_ColorDriver.hxx
 XmlMXCAFDoc_ColorToolDriver.cxx

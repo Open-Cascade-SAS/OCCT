@@ -4,6 +4,8 @@ BinMXCAFDoc_AreaDriver.cxx
 BinMXCAFDoc_AreaDriver.hxx
 BinMXCAFDoc_CentroidDriver.cxx
 BinMXCAFDoc_CentroidDriver.hxx
+BinMXCAFDoc_ClippingPlaneToolDriver.cxx
+BinMXCAFDoc_ClippingPlaneToolDriver.hxx
 BinMXCAFDoc_ColorDriver.cxx
 BinMXCAFDoc_ColorDriver.hxx
 BinMXCAFDoc_ColorToolDriver.cxx

@@ -1398,6 +1398,12 @@ Handle(atype) result = Handle(atype)::DownCast (start)
 #include <StepVisual_AnnotationFillAreaOccurrence.hxx>
 #include <RWStepVisual_RWAnnotationFillArea.hxx>
 #include <RWStepVisual_RWAnnotationFillAreaOccurrence.hxx>
+#include <StepVisual_CameraModelD3MultiClipping.hxx>
+#include <StepVisual_CameraModelD3MultiClippingIntersection.hxx>
+#include <StepVisual_CameraModelD3MultiClippingUnion.hxx>
+#include <RWStepVisual_RWCameraModelD3MultiClipping.hxx>
+#include <RWStepVisual_RWCameraModelD3MultiClippingIntersection.hxx>
+#include <RWStepVisual_RWCameraModelD3MultiClippingUnion.hxx>
 
 
 // -- General Declarations (Recognize, StepType) ---
@@ -2037,6 +2043,9 @@ static TCollection_AsciiString Reco_CoordinatesList("COORDINATES_LIST");
 static TCollection_AsciiString Reco_ConstructiveGeometryRepresentation("CONSTRUCTIVE_GEOMETRY_REPRESENTATION");
 static TCollection_AsciiString Reco_ConstructiveGeometryRepresentationRelationship("CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP");
 static TCollection_AsciiString Reco_CharacterizedRepresentation("CHARACTERIZED_REPRESENTATION");
+static TCollection_AsciiString Reco_CameraModelD3MultiClipping("CAMERA_MODEL_D3_MULTI_CLIPPING");
+static TCollection_AsciiString Reco_CameraModelD3MultiClippingIntersection("CAMERA_MODEL_D3_MULTI_CLIPPING_INTERSECTION");
+static TCollection_AsciiString Reco_CameraModelD3MultiClippingUnion("CAMERA_MODEL_D3_MULTI_CLIPPING_UNION");
 // -- Definition of the libraries --
 
 static NCollection_DataMap<TCollection_AsciiString, Standard_Integer> typenums;
@@ -2690,6 +2699,9 @@ RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule ()
   typenums.Bind ( Reco_ConstructiveGeometryRepresentation, 712);
   typenums.Bind ( Reco_ConstructiveGeometryRepresentationRelationship, 713);
   typenums.Bind ( Reco_CharacterizedRepresentation, 714);
+  typenums.Bind ( Reco_CameraModelD3MultiClipping, 716);
+  typenums.Bind ( Reco_CameraModelD3MultiClippingIntersection, 717);
+  typenums.Bind ( Reco_CameraModelD3MultiClippingUnion, 718);
 
   
 //    SHORT NAMES
@@ -4519,6 +4531,9 @@ const TCollection_AsciiString& RWStepAP214_ReadWriteModule::StepType
   case 712 : return Reco_ConstructiveGeometryRepresentation;
   case 713 : return Reco_ConstructiveGeometryRepresentationRelationship;
   case 714 : return Reco_CharacterizedRepresentation;
+  case 716 : return Reco_CameraModelD3MultiClipping;
+  case 717 : return Reco_CameraModelD3MultiClippingIntersection;
+  case 718 : return Reco_CameraModelD3MultiClippingUnion;
 
   default : return PasReco;
   }
@@ -9383,6 +9398,27 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
       tool.ReadStep(data, num, ach, anent);
     }
     break;
+     case 716:
+   {
+     DeclareAndCast(StepVisual_CameraModelD3MultiClipping, anent, ent);
+     RWStepVisual_RWCameraModelD3MultiClipping tool;
+     tool.ReadStep(data, num, ach, anent);
+   }
+   break;
+     case 717:
+   {
+     DeclareAndCast(StepVisual_CameraModelD3MultiClippingIntersection, anent, ent);
+     RWStepVisual_RWCameraModelD3MultiClippingIntersection tool;
+     tool.ReadStep(data, num, ach, anent);
+   }
+   break;
+     case 718:
+   {
+     DeclareAndCast(StepVisual_CameraModelD3MultiClippingUnion, anent, ent);
+     RWStepVisual_RWCameraModelD3MultiClippingUnion tool;
+     tool.ReadStep(data, num, ach, anent);
+   }
+   break;
 
   default: 
     ach->AddFail("Type Mismatch when reading - Entity");
@@ -14211,6 +14247,28 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
       tool.WriteStep(SW, anent);
     }
     break;
+      case 716:
+    {
+      DeclareAndCast(StepVisual_CameraModelD3MultiClipping, anent, ent);
+      RWStepVisual_RWCameraModelD3MultiClipping tool;
+      tool.WriteStep(SW, anent);
+    }
+    break;
+      case 717:
+    {
+      DeclareAndCast(StepVisual_CameraModelD3MultiClippingIntersection, anent, ent);
+      RWStepVisual_RWCameraModelD3MultiClippingIntersection tool;
+      tool.WriteStep(SW, anent);
+    }
+    break;
+      case 718:
+    {
+      DeclareAndCast(StepVisual_CameraModelD3MultiClippingUnion, anent, ent);
+      RWStepVisual_RWCameraModelD3MultiClippingUnion tool;
+      tool.WriteStep(SW, anent);
+    }
+    break;
+
 
   default: 
     return;

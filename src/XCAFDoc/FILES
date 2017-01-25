@@ -6,6 +6,8 @@ XCAFDoc_Area.cxx
 XCAFDoc_Area.hxx
 XCAFDoc_Centroid.cxx
 XCAFDoc_Centroid.hxx
+XCAFDoc_ClippingPlaneTool.cxx
+XCAFDoc_ClippingPlaneTool.hxx
 XCAFDoc_Color.cxx
 XCAFDoc_Color.hxx
 XCAFDoc_ColorTool.cxx

@@ -800,6 +800,9 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
     else if (att->ID() == XCAFDoc::ViewRefGDTGUID()){
       type = "View GD&T Link";
     }
+    else if (att->ID() == XCAFDoc::ViewRefPlaneGUID()) {
+      type = "View Clipping Plane Link";
+    }
     else return 0;
 
     Handle(XCAFDoc_GraphNode) DETGN = Handle(XCAFDoc_GraphNode)::DownCast(att);

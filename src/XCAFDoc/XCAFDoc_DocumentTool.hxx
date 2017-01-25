@@ -26,6 +26,7 @@ class TDF_Label;
 class TDocStd_Document;
 class XCAFDoc_ShapeTool;
 class XCAFDoc_ColorTool;
+class XCAFDoc_ClippingPlaneTool;
 class XCAFDoc_LayerTool;
 class XCAFDoc_DimTolTool;
 class XCAFDoc_MaterialTool;
@@ -81,6 +82,9 @@ public:
   //! Returns sub-label of DocLabel() with tag 7.
   Standard_EXPORT static TDF_Label ViewsLabel(const TDF_Label& acces);
   
+  //! Returns sub-label of DocLabel() with tag 8.
+  Standard_EXPORT static TDF_Label ClippingPlanesLabel(const TDF_Label& acces);
+  
   //! Creates (if it does not exist) ShapeTool attribute on ShapesLabel().
   Standard_EXPORT static Handle(XCAFDoc_ShapeTool) ShapeTool (const TDF_Label& acces);
   
@@ -98,6 +102,9 @@ public:
 
   //! Creates (if it does not exist) ViewTool attribute on ViewsLabel().
   Standard_EXPORT static Handle(XCAFDoc_ViewTool) ViewTool(const TDF_Label& acces);
+  
+  //! Creates (if it does not exist) ClippingPlaneTool attribute on ClippingPlanesLabel().
+  Standard_EXPORT static Handle(XCAFDoc_ClippingPlaneTool) ClippingPlaneTool(const TDF_Label& acces);
   
   Standard_EXPORT XCAFDoc_DocumentTool();
   

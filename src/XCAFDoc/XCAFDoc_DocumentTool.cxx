@@ -25,6 +25,7 @@
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
 #include <XCAFDoc_ColorTool.hxx>
+#include <XCAFDoc_ClippingPlaneTool.hxx>
 #include <XCAFDoc_DimTolTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_LayerTool.hxx>
@@ -83,6 +84,7 @@ Handle(XCAFDoc_DocumentTool) XCAFDoc_DocumentTool::Set(const TDF_Label& L,
     XCAFDoc_DimTolTool::Set(DGTsLabel(L));
     XCAFDoc_MaterialTool::Set(MaterialsLabel(L));
     XCAFDoc_ViewTool::Set(ViewsLabel(L));
+    XCAFDoc_ClippingPlaneTool::Set(ClippingPlanesLabel(L));
   }
   return A;
 }
@@ -197,6 +199,17 @@ TDF_Label XCAFDoc_DocumentTool::ViewsLabel(const TDF_Label& acces)
   return L;
 }
 
+//=======================================================================
+//function : ClippingPlanesLabel
+//purpose  : 
+//=======================================================================
+
+TDF_Label XCAFDoc_DocumentTool::ClippingPlanesLabel(const TDF_Label& acces)
+{
+  TDF_Label L = DocLabel(acces).FindChild(8, Standard_True);
+  TDataStd_Name::Set(L, "Clipping Planes");
+  return L;
+}
 
 //=======================================================================
 //function : ShapeTool
@@ -262,6 +275,15 @@ Handle(XCAFDoc_ViewTool) XCAFDoc_DocumentTool::ViewTool(const TDF_Label& acces)
   return XCAFDoc_ViewTool::Set(ViewsLabel(acces));
 }
 
+//=======================================================================
+//function : ClippingPlaneTool
+//purpose  : 
+//=======================================================================
+
+Handle(XCAFDoc_ClippingPlaneTool) XCAFDoc_DocumentTool::ClippingPlaneTool(const TDF_Label& acces)
+{
+  return XCAFDoc_ClippingPlaneTool::Set(ClippingPlanesLabel(acces));
+}
 
 //=======================================================================
 //function : ID

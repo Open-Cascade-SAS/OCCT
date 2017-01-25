@@ -24,6 +24,7 @@ class BinMDF_ADriverTable;
 class CDM_MessageDriver;
 class BinMXCAFDoc_AreaDriver;
 class BinMXCAFDoc_CentroidDriver;
+class BinMXCAFDoc_ClippingPlaneToolDriver;
 class BinMXCAFDoc_ColorDriver;
 class BinMXCAFDoc_GraphNodeDriver;
 class BinMXCAFDoc_LocationDriver;
@@ -70,6 +71,7 @@ private:
 
 friend class BinMXCAFDoc_AreaDriver;
 friend class BinMXCAFDoc_CentroidDriver;
+friend class BinMXCAFDoc_ClippingPlaneToolDriver;
 friend class BinMXCAFDoc_ColorDriver;
 friend class BinMXCAFDoc_GraphNodeDriver;
 friend class BinMXCAFDoc_LocationDriver;

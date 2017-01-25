@@ -187,6 +187,15 @@ public:
 
   //! Returns Datum label defined for label ShapeL
   Standard_EXPORT   Standard_Boolean GetRefDatumLabel (const TDF_Label& theShapeL, TDF_LabelSequence& theDatum)  const;
+
+  //! Returns true if the given GDT is marked as locked
+  Standard_EXPORT Standard_Boolean IsLocked(const TDF_Label& theViewL) const;
+
+  //! Mark the given GDT as locked
+  Standard_EXPORT void Lock(const TDF_Label& theViewL) const;
+
+  //! Unlock the given GDT
+  Standard_EXPORT void Unlock(const TDF_Label& theViewL) const;
     
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   

@@ -23,6 +23,7 @@
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <XCAFView_ProjectionType.hxx>
 
@@ -119,25 +120,14 @@ public:
     return myWindowVerticalSize;
   }
 
-  Standard_EXPORT void UnsetClippingPlane()
+  Standard_EXPORT void SetClippingExpression(Handle(TCollection_HAsciiString) theExpression)
   {
-    myHasClippingPlane = Standard_False;
+    myClippingExpression = theExpression;
   }
 
-  Standard_EXPORT Standard_Boolean HasClippingPlane()
+  Standard_EXPORT Handle(TCollection_HAsciiString) ClippingExpression()
   {
-    return myHasClippingPlane;
-  }
-
-  Standard_EXPORT void SetClippingPlane(gp_Pln thePlane)
-  {
-    myClippingPlane = thePlane;
-    myHasClippingPlane = Standard_True;
-  }
-
-  Standard_EXPORT gp_Pln ClippingPlane()
-  {
-    return myClippingPlane;
+    return myClippingExpression;
   }
 
   Standard_EXPORT void UnsetFrontPlaneClipping()
@@ -191,6 +181,42 @@ public:
   {
     return myViewVolumeSidesClipping;
   }
+
+  Standard_EXPORT void CreateGDTPoints(const Standard_Integer theLenght)
+  {
+    if (theLenght > 0)
+      myGDTPoints = new TColgp_HArray1OfPnt(1, theLenght);
+  }
+
+  Standard_EXPORT Standard_Boolean HasGDTPoints()
+  {
+    return (!myGDTPoints.IsNull());
+  }
+
+  Standard_EXPORT Standard_Integer NbGDTPoints()
+  {
+    if (myGDTPoints.IsNull())
+      return 0;
+    return myGDTPoints->Length();
+  }
+
+  Standard_EXPORT void SetGDTPoint(const Standard_Integer theIndex, const gp_Pnt thePoint)
+  {
+    if (myGDTPoints.IsNull())
+      return;
+    if (theIndex > 0 && theIndex <= myGDTPoints->Length())
+      myGDTPoints->SetValue(theIndex, thePoint);
+  }
+
+  Standard_EXPORT gp_Pnt GDTPoint(const Standard_Integer theIndex)
+  {
+    if (myGDTPoints.IsNull())
+      return gp_Pnt();
+    if (theIndex > 0 && theIndex <= myGDTPoints->Length())
+      return myGDTPoints->Value(theIndex);
+    else
+      return gp_Pnt();
+  }
   
   DEFINE_STANDARD_RTTIEXT(XCAFView_Object,Standard_Transient)
 
@@ -204,14 +230,13 @@ private:
   Standard_Real myZoomFactor;
   Standard_Real myWindowHorizontalSize;
   Standard_Real myWindowVerticalSize;
-  Standard_Boolean myHasClippingPlane;
-  gp_Pln myClippingPlane;
+  Handle(TCollection_HAsciiString) myClippingExpression;
   Standard_Boolean myFrontPlaneClipping;
   Standard_Real myFrontPlaneDistance;
   Standard_Boolean myBackPlaneClipping;
   Standard_Real myBackPlaneDistance;
   Standard_Boolean myViewVolumeSidesClipping;
-
+  Handle(TColgp_HArray1OfPnt) myGDTPoints; // Point for each GDT to describe position of GDT frame in View.
 };
 
 #endif // _XCAFView_Object_HeaderFile

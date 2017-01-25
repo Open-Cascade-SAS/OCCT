@@ -2182,6 +2182,117 @@ static Standard_Integer OCC28217(Draw_Interpretor& theDI,
   return 0;
 }
 
+#include <TDF_Tool.hxx>
+#include <XCAFDoc_View.hxx>
+#include <XCAFDoc_ViewTool.hxx>
+#include <XCAFView_Object.hxx>
+#include <XCAFView_ProjectionType.hxx>
+static Standard_Integer OCC28389(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 20) {
+    di << "Use: OCC28389 Doc label nb_shapes nb_GDT nb_planes name type pp_x pp_y pp_z vd_x vd_y vd_z ud_x ud_y ud_z zoom width height";
+    return 1;
+  }
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument(argv[1], aDoc);
+  if (aDoc.IsNull()) {
+    di << "Error: Wrong document";
+    return 1;
+  }
+  Handle(XCAFDoc_ViewTool) aViewTool = XCAFDoc_DocumentTool::ViewTool(aDoc->Main());
+
+  TDF_Label aLabel;
+  TDF_Tool::Label(aDoc->GetData(), argv[2], aLabel);
+  if (aLabel.IsNull()) {
+    di << "Error: Wrong label";
+    return 1;
+  }
+  Handle(XCAFDoc_View) aView;
+  if (!aLabel.FindAttribute(XCAFDoc_View::GetID(), aView)) {
+    di << "Error: Wrong label";
+    return 1;
+  }
+  Handle(XCAFView_Object) anObj = aView->GetObject();
+  if (anObj.IsNull()) {
+    di << "Error: Wrong label";
+    return 1;
+  }
+
+  Standard_Boolean isOK = Standard_True;
+  // check links
+  Standard_Integer nbShapes = Draw::Atoi(argv[3]);
+  Standard_Integer nbGDTs = Draw::Atoi(argv[4]);
+  Standard_Integer nbPlanes = Draw::Atoi(argv[5]);
+  TDF_LabelSequence aSequence;
+  aViewTool->GetRefShapeLabel(aLabel, aSequence);
+  if (aSequence.Length() != nbShapes)
+    isOK = Standard_False;
+  aSequence.Clear();
+  aViewTool->GetRefGDTLabel(aLabel, aSequence);
+  if (aSequence.Length() != nbGDTs)
+    isOK = Standard_False;
+  aSequence.Clear();
+  aViewTool->GetRefClippingPlaneLabel(aLabel, aSequence);
+  if (aSequence.Length() != nbPlanes)
+    isOK = Standard_False;
+  if (!isOK) {
+    di << "Error: Wrong references";
+    return 1;
+  }
+
+  if (anObj->Name()->IsDifferent(new TCollection_HAsciiString(argv[6]))) {
+    di << "Error: Wrong name";
+    return 1;
+  }
+
+  XCAFView_ProjectionType aType = XCAFView_ProjectionType_NoCamera;
+  if (argv[7][0] == 'p')
+    aType = XCAFView_ProjectionType_Parallel;
+  else if (argv[7][0] == 'c')
+    aType = XCAFView_ProjectionType_Central;
+
+  if (anObj->Type()!= aType) {
+    di << "Error: Wrong type";
+    return 1;
+  }
+
+  gp_Pnt aPP(Draw::Atof(argv[8]), Draw::Atof(argv[9]), Draw::Atof(argv[10]));
+  if (aPP.Distance(anObj->ProjectionPoint()) > Precision::Confusion()) {
+    di << "Error: Wrong projection point";
+    return 1;
+  }
+
+  gp_Dir aVD(Draw::Atof(argv[11]), Draw::Atof(argv[12]), Draw::Atof(argv[13]));
+  if (!aVD.IsEqual(anObj->ViewDirection(), Precision::Angular())) {
+    di << "Error: Wrong view direction";
+    return 1;
+  }
+
+  gp_Dir aUD(Draw::Atof(argv[14]), Draw::Atof(argv[15]), Draw::Atof(argv[16]));
+  if (!aUD.IsEqual(anObj->UpDirection(), Precision::Angular())) {
+    di << "Error: Wrong up direction";
+    return 1;
+  }
+
+  if (fabs(anObj->ZoomFactor() - Draw::Atof(argv[17])) > Precision::Confusion()) {
+    di << "Error: Wrong zoom factor";
+    return 1;
+  }
+
+  if (fabs(anObj->WindowHorizontalSize() - Draw::Atof(argv[18])) > Precision::Confusion())
+    isOK = Standard_False;
+  if (fabs(anObj->WindowVerticalSize() - Draw::Atof(argv[19])) > Precision::Confusion())
+    isOK = Standard_False;
+  if (!isOK) {
+    di << "Error: Wrong Window size";
+    return 1;
+  }
+
+  di << argv[2] << " OK";
+  return 0;
+}
+
+
 
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
@@ -2203,6 +2314,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC27552", "OCC27552", __FILE__, OCC27552, group); 
   theCommands.Add("OCC27875", "OCC27875 curve", __FILE__, OCC27875, group);
   theCommands.Add("OCC28217", "OCC28217", __FILE__, OCC28217, group);
+  theCommands.Add("OCC28389", "OCC28389", __FILE__, OCC28389, group);
 
   return;
 }

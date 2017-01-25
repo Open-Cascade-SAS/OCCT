@@ -65,13 +65,31 @@ public:
   Standard_EXPORT void GetViewLabels (TDF_LabelSequence& theLabels) const;
   
   //! Sets a link with GUID
-  Standard_EXPORT void SetView (const TDF_LabelSequence& theShapes, const TDF_LabelSequence& theGDTs, const TDF_Label& theViewL) const;
+  Standard_EXPORT void SetView (const TDF_LabelSequence& theShapes,
+                                const TDF_LabelSequence& theGDTs,
+                                const TDF_LabelSequence& theClippingPlanes,
+                                const TDF_Label& theViewL) const;
+
+  //! Sets a link with GUID
+  Standard_EXPORT void SetView(const TDF_LabelSequence& theShapes,
+                               const TDF_LabelSequence& theGDTs,
+                               const TDF_Label& theViewL) const;
+
+  //! Set Clipping planes to  given View
+  Standard_EXPORT void SetClippingPlanes(const TDF_LabelSequence& theClippingPlaneLabels,
+                                         const TDF_Label& theViewL) const;
+
+  //! Remove View
+  Standard_EXPORT void RemoveView(const TDF_Label& theViewL);
 
   //! Returns all View labels defined for label ShapeL
   Standard_EXPORT Standard_Boolean GetViewLabelsForShape (const TDF_Label& theShapeL, TDF_LabelSequence& theViews) const;
 
   //! Returns all View labels defined for label GDTL
   Standard_EXPORT Standard_Boolean GetViewLabelsForGDT (const TDF_Label& theGDTL, TDF_LabelSequence& theViews) const;
+
+  //! Returns all View labels defined for label ClippingPlaneL
+  Standard_EXPORT Standard_Boolean GetViewLabelsForClippingPlane(const TDF_Label& theClippingPlaneL, TDF_LabelSequence& theViews) const;
   
   //! Adds a view definition to a View table and returns its label
   Standard_EXPORT TDF_Label AddView() ;
@@ -83,6 +101,19 @@ public:
   //! Returns GDT labels defined for label theViewL
   //! Returns False if the theViewL is not in View table
   Standard_EXPORT Standard_Boolean GetRefGDTLabel (const TDF_Label& theViewL, TDF_LabelSequence& theGDTLabels) const;
+
+  //! Returns ClippingPlane labels defined for label theViewL
+  //! Returns False if the theViewL is not in View table
+  Standard_EXPORT Standard_Boolean GetRefClippingPlaneLabel(const TDF_Label& theViewL, TDF_LabelSequence& theClippingPlaneLabels) const;
+
+  //! Returns true if the given View is marked as locked
+  Standard_EXPORT Standard_Boolean IsLocked(const TDF_Label& theViewL) const;
+
+  //! Mark the given View as locked
+  Standard_EXPORT void Lock(const TDF_Label& theViewL) const;
+
+  //! Unlock the given View
+  Standard_EXPORT void Unlock(const TDF_Label& theViewL) const;
   
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   

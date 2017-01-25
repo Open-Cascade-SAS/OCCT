@@ -1097,19 +1097,6 @@
 #include <StepVisual_ViewVolume.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <StepVisual_TessellatedAnnotationOccurrence.hxx>
-#include <StepVisual_TessellatedItem.hxx>
-#include <StepVisual_TessellatedGeometricSet.hxx>
-#include <StepVisual_TessellatedCurveSet.hxx>
-#include <StepVisual_CoordinatesList.hxx>
-
-#include <RWStepVisual_RWTessellatedAnnotationOccurrence.hxx>
-#include <RWStepVisual_RWTessellatedItem.hxx>
-#include <RWStepVisual_RWTessellatedGeometricSet.hxx>
-#include <RWStepVisual_RWTessellatedCurveSet.hxx>
-#include <RWStepVisual_RWCoordinatesList.hxx>
-
-
 IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_GeneralModule,StepData_GeneralModule)
 
 //#define DeclareAndCast(atype,result,start) \  NON car Name
@@ -1363,6 +1350,12 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_GeneralModule,StepData_GeneralModule)
 #include <StepVisual_AnnotationFillAreaOccurrence.hxx>
 #include <RWStepVisual_RWAnnotationFillArea.hxx>
 #include <RWStepVisual_RWAnnotationFillAreaOccurrence.hxx>
+#include <StepVisual_CameraModelD3MultiClipping.hxx>
+#include <StepVisual_CameraModelD3MultiClippingIntersection.hxx>
+#include <StepVisual_CameraModelD3MultiClippingUnion.hxx>
+#include <RWStepVisual_RWCameraModelD3MultiClipping.hxx>
+#include <RWStepVisual_RWCameraModelD3MultiClippingIntersection.hxx>
+#include <RWStepVisual_RWCameraModelD3MultiClippingUnion.hxx>
 
 static Standard_Integer catsh,catdr,catstr,catdsc,cataux;
 
@@ -5136,6 +5129,27 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer CN,
     tool.Share(anent, iter);
   }
   break;
+  case 716:
+  {
+    DeclareAndCast(StepVisual_CameraModelD3MultiClipping, anent, ent);
+    RWStepVisual_RWCameraModelD3MultiClipping tool;
+    tool.Share(anent, iter);
+  }
+  break;
+  case 717:
+  {
+    DeclareAndCast(StepVisual_CameraModelD3MultiClippingIntersection, anent, ent);
+    RWStepVisual_RWCameraModelD3MultiClippingIntersection tool;
+    tool.Share(anent, iter);
+  }
+  break;
+  case 718:
+  {
+    DeclareAndCast(StepVisual_CameraModelD3MultiClippingUnion, anent, ent);
+    RWStepVisual_RWCameraModelD3MultiClippingUnion tool;
+    tool.Share(anent, iter);
+  }
+  break;
     default : break;
     }
 }
@@ -7136,6 +7150,15 @@ Standard_Boolean RWStepAP214_GeneralModule::NewVoid
    case 715:
    ent = new StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation;
    break;
+   case 716:
+     ent = new StepVisual_CameraModelD3MultiClipping;
+   break;
+   case 717:
+     ent = new StepVisual_CameraModelD3MultiClippingIntersection;
+   break;
+   case 718:
+     ent = new StepVisual_CameraModelD3MultiClippingUnion;
+   break;
 
     
   default: 
@@ -7732,6 +7755,9 @@ Standard_Integer  RWStepAP214_GeneralModule::CategoryNumber
   case 713: return catsh;
   case 714: return catstr;
   case 715: return catdsc;
+  case 716:
+  case 717:
+  case 718: return cataux;
     
   default : break;
   }

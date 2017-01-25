@@ -21,6 +21,7 @@
 #include <XmlMXCAFDoc.hxx>
 #include <XmlMXCAFDoc_AreaDriver.hxx>
 #include <XmlMXCAFDoc_CentroidDriver.hxx>
+#include <XmlMXCAFDoc_ClippingPlaneToolDriver.hxx>
 #include <XmlMXCAFDoc_ColorDriver.hxx>
 #include <XmlMXCAFDoc_ColorToolDriver.hxx>
 #include <XmlMXCAFDoc_DatumDriver.hxx>
@@ -73,4 +74,5 @@ void XmlMXCAFDoc::AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable,
   aDriverTable -> AddDriver (new XmlMXCAFDoc_DimTolToolDriver   (anMsgDrv));
   aDriverTable -> AddDriver (new XmlMXCAFDoc_MaterialToolDriver (anMsgDrv));
   aDriverTable -> AddDriver (new XmlMXCAFDoc_ViewToolDriver     (anMsgDrv));
+  aDriverTable -> AddDriver (new XmlMXCAFDoc_ClippingPlaneToolDriver(anMsgDrv));
 }
