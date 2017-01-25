@@ -19,92 +19,108 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <Quantity_ColorHasher.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <Quantity_Color.hxx>
-#include <Standard_Integer.hxx>
-class Quantity_Color;
-
-
-//! Represents a set of styling settings applicable to
-//! a (sub)shape
+//! Represents a set of styling settings applicable to a (sub)shape
 class XCAFPrs_Style 
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
+  //! Empty constructor - colors are unset, visibility is TRUE.
   Standard_EXPORT XCAFPrs_Style();
-  
-  Standard_EXPORT Standard_Boolean IsSetColorSurf() const;
-  
-  Standard_EXPORT Quantity_Color GetColorSurf() const;
-  
+
+  //! Return TRUE if surface color has been defined.
+  Standard_Boolean IsSetColorSurf() const { return myHasColorSurf; }
+
+  //! Return surface color.
+  const Quantity_Color& GetColorSurf() const { return myColorSurf; }
+
+  //! Set surface color.
   Standard_EXPORT void SetColorSurf (const Quantity_Color& col);
   
   //! Manage surface color setting
   Standard_EXPORT void UnSetColorSurf();
   
-  Standard_EXPORT Standard_Boolean IsSetColorCurv() const;
-  
-  Standard_EXPORT Quantity_Color GetColorCurv() const;
-  
+  //! Return TRUE if curve color has been defined.
+  Standard_Boolean IsSetColorCurv() const { return myHasColorCurv; }
+
+  //! Return curve color.
+  const Quantity_Color& GetColorCurv() const { return myColorCurv; }
+
+  //! Set curve color.
   Standard_EXPORT void SetColorCurv (const Quantity_Color& col);
   
   //! Manage curve color setting
   Standard_EXPORT void UnSetColorCurv();
-  
-  Standard_EXPORT void SetVisibility (const Standard_Boolean visibility);
-  
-  //! Manage visibility
-  //! Note: Setting visibility to False makes colors undefined
-  //! This is necessary for HashCode
-  Standard_EXPORT Standard_Boolean IsVisible() const;
-  
-  //! Returs True if styles are the same
+
+  //! Assign visibility.
+  void SetVisibility (const Standard_Boolean theVisibility) { myIsVisible = theVisibility; }
+
+  //! Manage visibility.
+  Standard_Boolean IsVisible() const { return myIsVisible; }
+
+  //! Returns True if styles are the same
   //! Methods for using Style as key in maps
-  Standard_EXPORT Standard_Boolean IsEqual (const XCAFPrs_Style& other) const;
-Standard_Boolean operator == (const XCAFPrs_Style& other) const
-{
-  return IsEqual(other);
-}
-  
-  //! Returns a HasCode value  for  the  Key <K>  in the
-  //! range 0..Upper.
-  Standard_EXPORT static Standard_Integer HashCode (const XCAFPrs_Style& S, const Standard_Integer Upper);
-  
-  //! Returns True  when the two  keys are the same. Two
-  //! same  keys  must   have  the  same  hashcode,  the
-  //! contrary is not necessary.
-  Standard_EXPORT static Standard_Boolean IsEqual (const XCAFPrs_Style& S1, const XCAFPrs_Style& S2);
+  Standard_Boolean IsEqual (const XCAFPrs_Style& theOther) const
+  {
+    if (myIsVisible != theOther.myIsVisible)
+    {
+      return false;
+    }
+    else if (!myIsVisible)
+    {
+      return true;
+    }
 
+    return myHasColorSurf == theOther.myHasColorSurf
+        && myHasColorCurv == theOther.myHasColorCurv
+        && (!myHasColorSurf || myColorSurf == theOther.myColorSurf)
+        && (!myHasColorCurv || myColorCurv == theOther.myColorCurv);
+  }
 
+  //! Returns True if styles are the same.
+  Standard_Boolean operator== (const XCAFPrs_Style& theOther) const
+  {
+    return IsEqual (theOther);
+  }
 
+  //! Returns a HasCode value.
+  static Standard_Integer HashCode (const XCAFPrs_Style& theStyle,
+                                    const Standard_Integer theUpper)
+  {
+    if (!theStyle.myIsVisible)
+    {
+      return 1;
+    }
+
+    int aHashCode = 0;
+    if (theStyle.myHasColorSurf)
+    {
+      aHashCode = aHashCode ^ Quantity_ColorHasher::HashCode (theStyle.myColorSurf, theUpper);
+    }
+    if (theStyle.myHasColorCurv)
+    {
+      aHashCode = aHashCode ^ Quantity_ColorHasher::HashCode (theStyle.myColorCurv, theUpper);
+    }
+    return ((aHashCode & 0x7fffffff) % theUpper) + 1;
+  }
+
+  //! Returns True when the two keys are the same.
+  static Standard_Boolean IsEqual (const XCAFPrs_Style& theS1, const XCAFPrs_Style& theS2)
+  {
+    return theS1.IsEqual (theS2);
+  }
 
 protected:
 
-
-
-
-
-private:
-
-
-
-  Standard_Boolean defColorSurf;
-  Standard_Boolean defColorCurv;
-  Standard_Boolean myVisibility;
-  Quantity_Color myColorSurf;
-  Quantity_Color myColorCurv;
-
+  Quantity_Color   myColorSurf;
+  Quantity_Color   myColorCurv;
+  Standard_Boolean myHasColorSurf;
+  Standard_Boolean myHasColorCurv;
+  Standard_Boolean myIsVisible;
 
 };
-
-
-
-
-
-
 
 #endif // _XCAFPrs_Style_HeaderFile
