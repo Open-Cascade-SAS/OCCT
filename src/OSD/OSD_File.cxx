@@ -2601,113 +2601,48 @@ static OSD_SingleProtection __fastcall _get_protection ( DWORD mask ) {
 
 }  // end _get_protection
 
-static OSD_SingleProtection __fastcall _get_protection_dir ( DWORD mask ) {
-
- OSD_SingleProtection retVal;
-
- switch ( mask ) {
- 
-  case GENERIC_READ:
-
-   retVal = OSD_R;
-
-  break;
-
-  case GENERIC_WRITE:
-
-   retVal = OSD_W;
-
-  break;
-
-  case GENERIC_READ | GENERIC_WRITE:
-
-   retVal = OSD_RW;
-
-  break;
-
-  case GENERIC_EXECUTE:
-
-   retVal = OSD_X;
-
-  break;
-
-  case GENERIC_READ | GENERIC_EXECUTE:
-
-   retVal = OSD_RX;
-
-  break;
-
-  case GENERIC_WRITE | GENERIC_EXECUTE:
-
-   retVal = OSD_WX;
-
-  break;
-
-  case GENERIC_READ | GENERIC_WRITE | GENERIC_EXECUTE:
-
-   retVal = OSD_RWX;
-
-  break;
-
-  case DELETE:
-
-   retVal = OSD_D;
-
-  break;
-
-  case GENERIC_READ | DELETE:
-
-   retVal = OSD_RD;
-
-  break;
-
-  case GENERIC_WRITE | DELETE:
-
-   retVal = OSD_WD;
-
-  break;
-
-  case GENERIC_READ | GENERIC_WRITE | DELETE:
-
-   retVal = OSD_RWD;
-
-  break;
-
-  case GENERIC_EXECUTE | DELETE:
-
-   retVal = OSD_XD;
-
-  break;
-
-  case GENERIC_READ | GENERIC_EXECUTE | DELETE:
-
-   retVal = OSD_RXD;
-
-  break;
-
-  case GENERIC_WRITE | GENERIC_EXECUTE | DELETE:
-
-   retVal = OSD_WXD;
-
-  break;
-
-  case FILE_ALL_ACCESS:
-  case GENERIC_READ | GENERIC_WRITE | GENERIC_EXECUTE | DELETE:
-
-   retVal = OSD_RWXD;
-
-  break;
-
-  case 0:
-  default:
-
-   retVal = OSD_None;
- 
- }  // end switch
-
- return retVal;
-
-}  // end _get_protection_dir
+static OSD_SingleProtection __fastcall _get_protection_dir (DWORD theMask)
+{
+  switch (theMask)
+  {
+    case GENERIC_READ:
+      return OSD_R;
+    case GENERIC_WRITE:
+      return OSD_W;
+    case GENERIC_READ | GENERIC_WRITE:
+      return OSD_RW;
+    case GENERIC_EXECUTE:
+      return OSD_X;
+    case GENERIC_READ | GENERIC_EXECUTE:
+      return OSD_RX;
+    case GENERIC_WRITE | GENERIC_EXECUTE:
+      return OSD_WX;
+    case GENERIC_READ | GENERIC_WRITE | GENERIC_EXECUTE:
+      return OSD_RWX;
+    case DELETE:
+      return OSD_D;
+    case GENERIC_READ | DELETE:
+      return OSD_RD;
+    case GENERIC_WRITE | DELETE:
+      return OSD_WD;
+    case GENERIC_READ | GENERIC_WRITE | DELETE:
+      return OSD_RWD;
+    case GENERIC_EXECUTE | DELETE:
+      return OSD_XD;
+    case GENERIC_READ | GENERIC_EXECUTE | DELETE:
+      return OSD_RXD;
+    case GENERIC_WRITE | GENERIC_EXECUTE | DELETE:
+      return OSD_WXD;
+    case FILE_ALL_ACCESS:
+    case GENERIC_READ | GENERIC_WRITE | GENERIC_EXECUTE | DELETE:
+      return OSD_RWXD;
+    case 0:
+      return OSD_None;
+    default:
+      // remote directories (on Samba server) have flags like for files
+      return _get_protection (theMask);
+  }
+}
 #endif
 
 Standard_Boolean OSD_File::IsReadable()
