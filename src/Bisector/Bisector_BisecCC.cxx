@@ -684,12 +684,13 @@ gp_Pnt2d Bisector_BisecCC::ValueAndDist (const Standard_Real  U,
     gp_Vec2d P2P1(P1.X() - P2.X(),P1.Y() - P2.Y());
     Standard_Real SquareP2P1 = P2P1.SquareMagnitude();
     Standard_Real N1P2P1     = N1.Dot(P2P1);
+    const Standard_Real anEps = Epsilon(1);
 
     if (P1.IsEqual(P2,Precision::Confusion())) {
       PBis = P1 ;
       Dist = 0.0;
     }
-    else if (N1P2P1*sign1 < 0) {
+    else if (N1P2P1*sign1 < anEps) {
       Valid = Standard_False;
     }
     else {	

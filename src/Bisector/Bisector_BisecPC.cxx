@@ -328,26 +328,35 @@ void Bisector_BisecPC::Extension(const Standard_Real    U,
 				       gp_Vec2d&        V2,
 				       gp_Vec2d&        V3 ) const
 {
-  gp_Dir2d      DirExt;
   Standard_Real dU;
 
+  V1.SetCoord(0., 0.);
+  V2.SetCoord(0., 0.);
+  V3.SetCoord(0., 0.);
   if      ( U < startIntervals.Value(bisInterval)) {
-    dU = U - startIntervals.Value(bisInterval);
-    DirExt.SetCoord(pointStartBis.X() - point.X(),
-		    pointStartBis.Y() - point.Y());
-    P.SetCoord(pointStartBis.X() + dU*DirExt.X(),
-	       pointStartBis.Y() + dU*DirExt.Y());
+    if (pointStartBis.IsEqual(point, Precision::PConfusion()))
+      P = pointStartBis;
+    else {
+      dU = U - startIntervals.Value(bisInterval);
+      gp_Dir2d DirExt(pointStartBis.X() - point.X(),
+                      pointStartBis.Y() - point.Y());
+      P.SetCoord(pointStartBis.X() + dU*DirExt.X(),
+                 pointStartBis.Y() + dU*DirExt.Y());
+      V1.SetCoord(DirExt.X(), DirExt.Y());
+    }
   }
   else if ( U > endIntervals.Value(bisInterval)) { 
-    dU =  U - endIntervals.Value(bisInterval);
-    DirExt.SetCoord(point.X() - pointEndBis.X(),
-		    point.Y() - pointEndBis.Y()); 
-    P.SetCoord(pointEndBis.X() + dU*DirExt.X(),
-	       pointEndBis.Y() + dU*DirExt.Y());
+    if (pointEndBis.IsEqual(point, Precision::PConfusion()))
+      P = pointEndBis;
+    else {
+      dU =  U - endIntervals.Value(bisInterval);
+      gp_Dir2d DirExt(point.X() - pointEndBis.X(),
+                      point.Y() - pointEndBis.Y()); 
+      P.SetCoord(pointEndBis.X() + dU*DirExt.X(),
+                 pointEndBis.Y() + dU*DirExt.Y());
+      V1.SetCoord(DirExt.X(), DirExt.Y());
+    }
   }
-  V1.SetCoord(DirExt.X(),DirExt.Y());
-  V2.SetCoord(0.        ,0.        );
-  V3.SetCoord(0.        ,0.        );
 }
 
 
