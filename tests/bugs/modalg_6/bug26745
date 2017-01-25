@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC26745"
+puts "========"
+puts ""
+#################################################
+# Boolean Cut produces invalid result
+#################################################
+
+restore [locate_data_file bug26745_BodyA.brep] a
+restore [locate_data_file bug26745_BodyB.brep] b
+
+bclearobjects
+bcleartools
+baddobjects a
+baddtools b
+bfillds
+
+# CUT
+bbop result 2
+
+checkshape result
+checknbshapes result -solid 1 -shell 1
+checkprops result -v 20808.1 -s 28247.4
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

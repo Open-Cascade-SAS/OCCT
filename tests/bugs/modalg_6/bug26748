@@ -1,0 +1,33 @@
+puts "========"
+puts "OCC26748"
+puts "========"
+puts ""
+#################################################
+# Section between cylindrical and planar faces is not found
+#################################################
+
+set ExpTol 5.0e-8
+set GoodNbCurv 1
+
+restore [locate_data_file bug26745_BodyA.brep] a
+restore [locate_data_file bug26745_BodyB.brep] b
+
+explode a f
+explode b f
+
+set log [bopcurves a_9 b_1 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Number of curves is bad!"
+}
+
+checkreal TolReached $Toler $ExpTol 5.0e-8 0.0
+
+smallview
+don c_*
+fit
+disp a_9 b_1
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
