@@ -8,6 +8,9 @@ uniform int uFrameRndSeed;
 //! become structured. Can be used fo final rendering.
 uniform int uBlockedRngEnabled;
 
+//! Number of previously rendered frames (used in non-ISS mode).
+uniform int uAccumSamples;
+
 #ifndef ADAPTIVE_SAMPLING
   //! Input image with previously accumulated samples.
   uniform sampler2D uAccumTexture;
@@ -57,7 +60,18 @@ void main (void)
 
 #ifdef PATH_TRACING
 
-  vec4 aColor = PathTrace (aRay, aInvDirect);
+#ifndef ADAPTIVE_SAMPLING
+
+  vec4 aColor = PathTrace (aRay, aInvDirect, uAccumSamples);
+
+#else
+
+  float aNbSamples = imageAtomicAdd (uRenderImage, ivec2 (3 * aFragCoord.x + 0,
+                                                          2 * aFragCoord.y + 1), 1.0);
+
+  vec4 aColor = PathTrace (aRay, aInvDirect, int (aNbSamples));
+
+#endif
 
   if (any (isnan (aColor.rgb)))
   {
@@ -78,17 +92,11 @@ void main (void)
   imageAtomicAdd (uRenderImage, ivec2 (3 * aFragCoord.x + 2,
                                        2 * aFragCoord.y + 1), aColor.w);
 
-  // accumulate number of samples
-  float aNbSamples = imageAtomicAdd (uRenderImage, ivec2 (3 * aFragCoord.x + 0,
-                                                          2 * aFragCoord.y + 1), 1.0);
-
   if (int (aNbSamples) % 2 == 0) // accumulate luminance for even samples only
   {
     imageAtomicAdd (uRenderImage, ivec2 (3 * aFragCoord.x + 2,
                                          2 * aFragCoord.y + 0), dot (LUMA, aColor.rgb));
   }
-
-  discard; // fragment should not be written to frame buffer
 
 #else
 

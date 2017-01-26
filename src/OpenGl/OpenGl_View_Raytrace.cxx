@@ -1359,17 +1359,39 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
       }
     }
 
+    Standard_Integer aNbTilesX = 8;
+    Standard_Integer aNbTilesY = 8;
+
+    for (Standard_Integer anIdx = 0; aNbTilesX * aNbTilesY < myRenderParams.NbRayTracingTiles; ++anIdx)
+    {
+      (anIdx % 2 == 0 ? aNbTilesX : aNbTilesY) <<= 1;
+    }
+
     if (myRenderParams.RaytracingDepth             != myRaytraceParameters.NbBounces
      || myRenderParams.IsTransparentShadowEnabled  != myRaytraceParameters.TransparentShadows
      || myRenderParams.IsGlobalIlluminationEnabled != myRaytraceParameters.GlobalIllumination
      || myRenderParams.TwoSidedBsdfModels          != myRaytraceParameters.TwoSidedBsdfModels
-     || myRaytraceGeometry.HasTextures()           != myRaytraceParameters.UseBindlessTextures)
+     || myRaytraceGeometry.HasTextures()           != myRaytraceParameters.UseBindlessTextures
+     || aNbTilesX                                  != myRaytraceParameters.NbTilesX
+     || aNbTilesY                                  != myRaytraceParameters.NbTilesY)
     {
       myRaytraceParameters.NbBounces           = myRenderParams.RaytracingDepth;
       myRaytraceParameters.TransparentShadows  = myRenderParams.IsTransparentShadowEnabled;
       myRaytraceParameters.GlobalIllumination  = myRenderParams.IsGlobalIlluminationEnabled;
       myRaytraceParameters.TwoSidedBsdfModels  = myRenderParams.TwoSidedBsdfModels;
       myRaytraceParameters.UseBindlessTextures = myRaytraceGeometry.HasTextures();
+
+#ifdef RAY_TRACE_PRINT_INFO
+      if (aNbTilesX != myRaytraceParameters.NbTilesX
+       || aNbTilesY != myRaytraceParameters.NbTilesY)
+      {
+        std::cout << "Number of tiles X: " << aNbTilesX << "\n";
+        std::cout << "Number of tiles Y: " << aNbTilesY << "\n";
+      }
+#endif
+
+      myRaytraceParameters.NbTilesX = aNbTilesX;
+      myRaytraceParameters.NbTilesY = aNbTilesY;
 
       aToRebuildShaders = Standard_True;
     }
@@ -1848,25 +1870,42 @@ Standard_Boolean OpenGl_View::updateRaytraceBuffers (const Standard_Integer     
     return Standard_True;
   }
 
-  if (myRaytraceFBO1[0]->GetSizeX() != theSizeX
-   || myRaytraceFBO1[0]->GetSizeY() != theSizeY)
+  if (myRaytraceParameters.AdaptiveScreenSampling)
   {
-    myAccumFrames = 0;
-  }
+    const Standard_Integer aSizeX = std::max (myRaytraceParameters.NbTilesX * 64, theSizeX);
+    const Standard_Integer aSizeY = std::max (myRaytraceParameters.NbTilesY * 64, theSizeY);
 
-  myRaytraceFBO1[0]->InitLazy (theGlContext, theSizeX, theSizeY, GL_RGBA32F, myFboDepthFormat);
-  myRaytraceFBO2[0]->InitLazy (theGlContext, theSizeX, theSizeY, GL_RGBA32F, myFboDepthFormat);
+    myRaytraceFBO1[0]->InitLazy (theGlContext, aSizeX, aSizeY, GL_RGBA32F, myFboDepthFormat);
+    myRaytraceFBO2[0]->InitLazy (theGlContext, aSizeX, aSizeY, GL_RGBA32F, myFboDepthFormat);
 
-  // Init second set of buffers for stereographic rendering.
-  if (myCamera->ProjectionType() == Graphic3d_Camera::Projection_Stereo)
-  {
-    myRaytraceFBO1[1]->InitLazy (theGlContext, theSizeX, theSizeY, GL_RGBA32F, myFboDepthFormat);
-    myRaytraceFBO2[1]->InitLazy (theGlContext, theSizeX, theSizeY, GL_RGBA32F, myFboDepthFormat);
+    if (myRaytraceFBO1[1]->IsValid()) // second FBO not needed
+    {
+      myRaytraceFBO1[1]->Release (theGlContext.operator->());
+      myRaytraceFBO2[1]->Release (theGlContext.operator->());
+    }
   }
-  else
+  else // non-adaptive mode
   {
-    myRaytraceFBO1[1]->Release (theGlContext.operator->());
-    myRaytraceFBO2[1]->Release (theGlContext.operator->());
+    if (myRaytraceFBO1[0]->GetSizeX() != theSizeX
+     || myRaytraceFBO1[0]->GetSizeY() != theSizeY)
+    {
+      myAccumFrames = 0; // accumulation should be restarted
+    }
+
+    myRaytraceFBO1[0]->InitLazy (theGlContext, theSizeX, theSizeY, GL_RGBA32F, myFboDepthFormat);
+    myRaytraceFBO2[0]->InitLazy (theGlContext, theSizeX, theSizeY, GL_RGBA32F, myFboDepthFormat);
+
+    // Init second set of buffers for stereographic rendering
+    if (myCamera->ProjectionType() == Graphic3d_Camera::Projection_Stereo)
+    {
+      myRaytraceFBO1[1]->InitLazy (theGlContext, theSizeX, theSizeY, GL_RGBA32F, myFboDepthFormat);
+      myRaytraceFBO2[1]->InitLazy (theGlContext, theSizeX, theSizeY, GL_RGBA32F, myFboDepthFormat);
+    }
+    else if (myRaytraceFBO1[1]->IsValid()) // second FBO not needed
+    {
+      myRaytraceFBO1[1]->Release (theGlContext.operator->());
+      myRaytraceFBO2[1]->Release (theGlContext.operator->());
+    }
   }
 
   myTileSampler.SetSize (theSizeX, theSizeY);
@@ -1883,6 +1922,8 @@ Standard_Boolean OpenGl_View::updateRaytraceBuffers (const Standard_Integer     
   if (myRaytraceOutputTexture[0]->SizeX() / 3 != theSizeX
    || myRaytraceOutputTexture[0]->SizeY() / 2 != theSizeY)
   {
+    myAccumFrames = 0;
+
     // Due to limitations of OpenGL image load-store extension
     // atomic operations are supported only for single-channel
     // images, so we define GL_R32F image. It is used as array
@@ -2634,7 +2675,7 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
 
   if (myRaytraceParameters.GlobalIllumination) // path tracing
   {
-    aResult &= runPathtrace (theProjection, theReadDrawFbo, theGlContext);
+    aResult &= runPathtrace (theSizeX, theSizeY, theProjection, theReadDrawFbo, theGlContext);
   }
   else // Whitted-style ray-tracing
   {
@@ -2775,7 +2816,9 @@ Standard_Boolean OpenGl_View::runRaytrace (const Standard_Integer        theSize
 // function : runPathtrace
 // purpose  : Runs path tracing shader
 // =======================================================================
-Standard_Boolean OpenGl_View::runPathtrace (const Graphic3d_Camera::Projection  theProjection,
+Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              theSizeX,
+                                            const Standard_Integer              theSizeY,
+                                            const Graphic3d_Camera::Projection  theProjection,
                                             OpenGl_FrameBuffer*                 theReadDrawFbo,
                                             const Handle(OpenGl_Context)&       theGlContext)
 {
@@ -2793,13 +2836,12 @@ Standard_Boolean OpenGl_View::runPathtrace (const Graphic3d_Camera::Projection  
       myTileSampler.Reset(); // reset tile sampler to its initial state
     }
 
-    // We upload tile offset texture each 4 frames in order
-    // to minimize overhead of additional memory bandwidth.
-    // Adaptive sampling is starting after first 30 frames.
-    if (myAccumFrames % 4 == 0)
-    {
-      myTileSampler.Upload (theGlContext, myRaytraceTileOffsetsTexture, myAccumFrames > 30);
-    }
+    // Adaptive sampling is starting at the second frame
+    myTileSampler.Upload (theGlContext,
+                          myRaytraceTileOffsetsTexture,
+                          myRaytraceParameters.NbTilesX,
+                          myRaytraceParameters.NbTilesY,
+                          myAccumFrames > 0);
   }
 
   bindRaytraceTextures (theGlContext);
@@ -2859,8 +2901,24 @@ Standard_Boolean OpenGl_View::runPathtrace (const Graphic3d_Camera::Projection  
 
   glDisable (GL_DEPTH_TEST);
 
+  if (myRaytraceParameters.AdaptiveScreenSampling && myAccumFrames > 0)
+  {
+    glViewport (0,
+                0,
+                myTileSampler.TileSize() * myRaytraceParameters.NbTilesX,
+                myTileSampler.TileSize() * myRaytraceParameters.NbTilesY);
+  }
+
   // Generate for the given RNG seed
   theGlContext->core20fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
+
+  if (myRaytraceParameters.AdaptiveScreenSampling && myAccumFrames > 0)
+  {
+    glViewport (0,
+                0,
+                theSizeX,
+                theSizeY);
+  }
 
   // Output accumulated path traced image
   theGlContext->BindProgram (myOutImageProgram);

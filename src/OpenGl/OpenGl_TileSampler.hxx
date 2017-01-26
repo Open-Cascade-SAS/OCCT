@@ -22,7 +22,12 @@
 #include <vector>
 
 //! Tool object used for sampling screen tiles according to estimated pixel variance (used in path tracing engine).
-//! To improve GPU thread coherency, render window is split into pixel blocks or tiles.
+//! To improve GPU thread coherency, rendering window is split into pixel blocks or tiles. The important feature of
+//! this approach is that it is possible to keep the same number of tiles for any screen resolution (e.g. 256 tiles
+//! can be used for both 512 x 512 window and 1920 x 1080 window). So, a smaller number of tiles allows to increase
+//! interactivity (FPS), but at the cost of higher per-frame variance ('noise'). On the contrary a larger number of
+//! tiles decrease interactivity, but leads to lower per-frame variance. Note that the total time needed to produce
+//! final final image is the same for both cases.
 class OpenGl_TileSampler
 {
 public:
@@ -76,7 +81,9 @@ public:
   //! Uploads offsets of sampled tiles to the given OpenGL texture.
   Standard_EXPORT void Upload (const Handle(OpenGl_Context)& theContext,
                                const Handle(OpenGl_Texture)& theTexture,
-                               bool theAdaptive);
+                               const int                     theNbTilesX,
+                               const int                     theNbTilesY,
+                               const bool                    theAdaptive);
 
 protected:
 

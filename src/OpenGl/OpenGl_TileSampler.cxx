@@ -150,36 +150,45 @@ void OpenGl_TileSampler::SetSize (const int theSizeX,
 //=======================================================================
 void OpenGl_TileSampler::Upload (const Handle(OpenGl_Context)& theContext,
                                  const Handle(OpenGl_Texture)& theTexture,
-                                 bool theAdaptive)
+                                 const int                     theNbTilesX,
+                                 const int                     theNbTilesY,
+                                 const bool                    theAdaptive)
 {
   if (theTexture.IsNull())
   {
     return;
   }
 
-  std::vector<GLint> aData (myTilesX * myTilesY * 2);
-  for (int aX = 0; aX < myTilesX; ++aX)
+  const int aNbTilesX = theAdaptive ? theNbTilesX : myTilesX;
+  const int aNbTilesY = theAdaptive ? theNbTilesY : myTilesY;
+
+  Standard_ASSERT_RAISE (aNbTilesX * aNbTilesY > 0,
+    "Error! Number of sampling tiles should be positive");
+
+  std::vector<GLint> aData (aNbTilesX * aNbTilesY * 2);
+
+  for (int aX = 0; aX < aNbTilesX; ++aX)
   {
-    for (int aY = 0; aY < myTilesY; ++aY)
+    for (int aY = 0; aY < aNbTilesY; ++aY)
     {
       if (!theAdaptive)
       {
-        aData[(aY * myTilesX + aX) * 2 + 0] = aX * TileSize();
-        aData[(aY * myTilesX + aX) * 2 + 1] = aY * TileSize();
+        aData[(aY * aNbTilesX + aX) * 2 + 0] = aX * TileSize();
+        aData[(aY * aNbTilesX + aX) * 2 + 1] = aY * TileSize();
       }
       else
       {
-        Sample (aData[(aY * myTilesX + aX) * 2 + 0],
-                aData[(aY * myTilesX + aX) * 2 + 1]);
+        Sample (aData[(aY * aNbTilesX + aX) * 2 + 0],
+                aData[(aY * aNbTilesX + aX) * 2 + 1]);
       }
     }
   }
 
   theTexture->Bind (theContext);
 
-  theContext->core11fwd->glTexImage2D (GL_TEXTURE_2D, 0, GL_RG32I, myTilesX, myTilesY, 0, GL_RG_INTEGER, GL_UNSIGNED_INT, &aData.front());
-  const GLenum anErr = theContext->core11fwd->glGetError();
-  if (anErr != GL_NO_ERROR)
+  theContext->core11fwd->glTexImage2D (GL_TEXTURE_2D, 0, GL_RG32I, aNbTilesX, aNbTilesY, 0, GL_RG_INTEGER, GL_UNSIGNED_INT, &aData.front());
+
+  if (theContext->core11fwd->glGetError() != GL_NO_ERROR)
   {
     theContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_MEDIUM,
                              "Error! Failed to upload tile offset map on the GPU");

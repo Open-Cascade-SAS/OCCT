@@ -62,6 +62,7 @@ public:
     TwoSidedBsdfModels          (Standard_False),
     RadianceClampingValue       (30.0),
     RebuildRayTracingShaders    (Standard_False),
+    NbRayTracingTiles           (16 * 16),
     // stereoscopic parameters
     StereoMode (Graphic3d_StereoMode_QuadBuffer),
     AnaglyphFilter (Anaglyph_RedCyan_Optimized),
@@ -105,6 +106,7 @@ public:
   Standard_Boolean        TwoSidedBsdfModels;          //!< forces path tracing to use two-sided versions of original one-sided scattering models
   Standard_ShortReal      RadianceClampingValue;       //!< maximum radiance value used for clamping radiance estimation.
   Standard_Boolean        RebuildRayTracingShaders;    //!< forces rebuilding ray tracing shaders at the next frame
+  Standard_Integer        NbRayTracingTiles;           //!< total number of screen tiles used in adaptive sampling mode (PT only)
 
   Graphic3d_StereoMode    StereoMode;                  //!< stereoscopic output mode, Graphic3d_StereoMode_QuadBuffer by default
   Anaglyph                AnaglyphFilter;              //!< filter for anaglyph output, Anaglyph_RedCyan_Optimized by default

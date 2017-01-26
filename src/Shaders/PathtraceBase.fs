@@ -12,9 +12,6 @@
 
 #ifdef PATH_TRACING
 
-//! Number of previously rendered frames.
-uniform int uAccumSamples;
-
 ///////////////////////////////////////////////////////////////////////////////////////
 // Specific data types
 
@@ -700,17 +697,26 @@ vec3 IntersectLight (in SRay theRay, in int theDepth, in float theHitDistance, o
 #define MATERIAL_FRESNEL(index) (18 * index + 16)
 #define MATERIAL_ABSORPT(index) (18 * index + 17)
 
-// Enables expiremental russian roulette sampling
+//! Enables experimental russian roulette sampling path termination.
+//! In most cases, it provides faster image convergence with minimal
+//! bias, so it is enabled by default.
 #define RUSSIAN_ROULETTE
 
-//! Frame step to increase number of bounces
-#define FRAME_STEP 5
+//! Frame step to increase number of bounces. This mode is used
+//! for interaction with the model, when path length is limited
+//! for the first samples, and gradually increasing when camera
+//! is stabilizing.
+#ifdef ADAPTIVE_SAMPLING
+  #define FRAME_STEP 4
+#else
+  #define FRAME_STEP 5
+#endif
 
 //=======================================================================
 // function : PathTrace
 // purpose  : Calculates radiance along the given ray
 //=======================================================================
-vec4 PathTrace (in SRay theRay, in vec3 theInverse)
+vec4 PathTrace (in SRay theRay, in vec3 theInverse, in int theNbSamples)
 {
   float aRaytraceDepth = MAXFLOAT;
 
@@ -867,7 +873,8 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
     aSurvive = aDepth < 3 ? 1.f : min (dot (LUMA, aThroughput), 0.95f);
 #endif
 
-    if (RandFloat() > aSurvive || all (lessThan (aThroughput, MIN_THROUGHPUT)) || aDepth >= uAccumSamples / FRAME_STEP + step (1.f / M_PI, aImpPDF))
+    // here, we additionally increase path length for non-diffuse bounces
+    if (RandFloat() > aSurvive || all (lessThan (aThroughput, MIN_THROUGHPUT)) || aDepth >= theNbSamples / FRAME_STEP + step (1.f / M_PI, aImpPDF))
     {
       aDepth = INVALID_BOUNCES; // terminate path
     }

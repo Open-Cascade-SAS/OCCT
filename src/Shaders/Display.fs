@@ -2,6 +2,8 @@
 
   #extension GL_ARB_shader_image_load_store : require
 
+  #extension GL_ARB_shader_image_size : enable
+
   //! OpenGL image used for accumulating rendering result.
   volatile restrict layout(size1x32) uniform image2D uRenderImage;
 
@@ -87,8 +89,9 @@ void main (void)
   // calculate visual error
   float anError = (aAverRad - aHalfRad) * (aAverRad - aHalfRad);
 
-  // accumulate visual error to current block
-  imageAtomicAdd (uVarianceImage, ivec2 (aPixel / vec2 (BLOCK_SIZE)), int (anError * SCALE_FACTOR));
+  // accumulate visual error to current block; estimated error is written only
+  // after the first 40 samples and path length has reached 10 bounces or more
+  imageAtomicAdd (uVarianceImage, ivec2 (aPixel / vec2 (BLOCK_SIZE)), int (mix (SCALE_FACTOR, anError * SCALE_FACTOR, aColor.w > 40.f)));
 
   if (uDebugAdaptive == 0) // normal rendering
   {
@@ -96,7 +99,13 @@ void main (void)
   }
   else // showing number of samples
   {
-    aColor = vec4 (0.5f * aColor.rgb * aSampleWeight + vec3 (0.f, aColor.w / uAccumFrames * 0.35f, 0.f), 1.0);
+    vec2 aRatio = vec2 (1.f, 1.f);
+
+#ifdef GL_ARB_shader_image_size
+    aRatio = vec2 (imageSize (uRenderImage)) / vec2 (3.f * 512.f, 2.f * 512.f);
+#endif
+
+    aColor = vec4 (0.5f * aColor.rgb * aSampleWeight + vec3 (0.f, sqrt (aRatio.x * aRatio.y) * aColor.w / uAccumFrames * 0.35f, 0.f), 1.0);
   }
 
 #endif // ADAPTIVE_SAMPLING

@@ -711,6 +711,12 @@ protected: //! @name data types related to ray-tracing
     //! Maximum radiance value used for clamping radiance estimation.
     Standard_ShortReal RadianceClampingValue;
 
+    //! Number of tiles in X dimension (in adaptive sampling mode).
+    Standard_Integer NbTilesX;
+    
+    //! Number of tiles in Y dimension (in adaptive sampling mode).
+    Standard_Integer NbTilesY;
+
     //! Creates default compile-time ray-tracing parameters.
     RaytracingParams()
     : StackSize              (THE_DEFAULT_STACK_SIZE),
@@ -721,7 +727,9 @@ protected: //! @name data types related to ray-tracing
       TwoSidedBsdfModels     (Standard_False),
       AdaptiveScreenSampling (Standard_False),
       UseEnvMapForBackground (Standard_False),
-      RadianceClampingValue  (30.0)            { }
+      RadianceClampingValue  (30.0),
+      NbTilesX               (16),
+      NbTilesY               (16) { }
   };
 
   //! Describes state of OpenGL structure.
@@ -897,9 +905,11 @@ protected: //! @name methods related to ray-tracing
                                 const Handle(OpenGl_Context)& theGlContext);
 
   //! Runs path tracing (global illumination) kernel.
-  Standard_Boolean runPathtrace (const Graphic3d_Camera::Projection theProjection,
-                                 OpenGl_FrameBuffer*                theReadDrawFbo,
-                                 const Handle(OpenGl_Context)&      theGlContext);
+  Standard_Boolean runPathtrace (const Standard_Integer        theSizeX,
+                                 const Standard_Integer        theSizeY,
+                                 Graphic3d_Camera::Projection  theProjection,
+                                 OpenGl_FrameBuffer*           theReadDrawFbo,
+                                 const Handle(OpenGl_Context)& theGlContext);
 
   //! Redraws the window using OpenGL/GLSL ray-tracing or path tracing.
   Standard_Boolean raytrace (const Standard_Integer        theSizeX,

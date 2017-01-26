@@ -1,0 +1,20 @@
+puts "============"
+puts "Visualization - Path Tracing, Ball sample (ISS mode)"
+puts "============"
+puts ""
+
+cpulimit 1000
+
+source $env(CSF_OCCTSamplesPath)/tcl/pathtrace_ball.tcl
+
+vrenderparams -iss -nbtiles 64
+vfps 1024
+vdump $imagedir/${casename}_iss_64.png
+
+vrenderparams -iss -nbtiles 256
+vfps 256
+vdump $imagedir/${casename}_iss_256.png
+
+vrenderparams -iss -nbtiles 1024
+vfps 64
+vdump $imagedir/${casename}_iss_1024.png
