@@ -510,8 +510,8 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
   {
     typename BVH_Box<T, 4>::BVH_VecNt& aCorner = anArrayOfCorners[anIt];
     aCorner  = aTPers * aCorner;
-    aCorner /= aCorner.w();
-    theBoundingBox.Add (aCorner.xyz());
+    aCorner = aCorner / aCorner.w();
+    theBoundingBox.Add (typename BVH_Box<T, 3>::BVH_VecNt (aCorner.x(), aCorner.y(), aCorner.z()));
   }
 }
 
