@@ -1,0 +1,14 @@
+puts "============"
+puts "OCC28361 Visualization, TKV3d - buggy behavior of Transformation Persistence compiled on several Linux platforms in optimized mode"
+puts "============"
+puts ""
+
+vclear
+vinit View1
+pload MODELING VISUALIZATION
+box b 10 10 10
+vdisplay b -trsfPers zoomRotate -trsfPersPos 90 90 90
+vmoveto 266 164
+if { [vreadpixel 256 174 rgb name] != "CYAN1" } { puts "Error: the box is not highlighted" }
+
+vdump $imagedir/${casename}.png
