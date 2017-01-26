@@ -51,3 +51,8 @@ inline const Handle(Adaptor3d_HSurface)& IntPatch_ArcFunction::Surface() const
 {
   return(mySurf);
 }
+
+inline const gp_Pnt& IntPatch_ArcFunction::LastComputedPoint() const
+{
+  return ptsol;
+}

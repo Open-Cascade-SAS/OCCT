@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC27221"
+puts "============"
+puts ""
+#######################################################################
+# Regression vs. 6.7.0: bcut fails without notice
+#######################################################################
+
+restore [locate_data_file bug27221.brep] a
+explode a
+mkplane f a_2
+prism p f -25 0 0 
+
+bcut result a_1 p
+
+checkprops result -v 56860.2
+checkprops result -s 72076
+checkshape result
+bopargcheck result
+
+checknbshapes result -solid 1 -shell 1 -face 18 -t -m "NbShapes in result"
+
+checkview -display result -2d -v -path ${imagedir}/${test_image}.png

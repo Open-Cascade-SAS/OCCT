@@ -53,3 +53,13 @@ inline const gp_Pnt& Contap_ArcFunction::Valpoint
 {
   return seqpt(Index);
 }
+
+inline const Handle(Adaptor3d_HSurface)& Contap_ArcFunction::Surface() const
+{
+  return(mySurf);
+}
+
+inline const gp_Pnt& Contap_ArcFunction::LastComputedPoint() const
+{
+  return solpt;
+}

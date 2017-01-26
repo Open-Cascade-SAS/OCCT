@@ -2899,28 +2899,25 @@ Standard_Real FindMaxDistance(const Handle(Geom_Curve)& theC,
   aA = theFirst;
   aB = theLast;
   //
-  aX1 = aB - aCf * (aB - aA);
+  aX1=aB - aCf*(aB-aA);
   aF1 = MaxDistance(theC, aX1, theProjPS);
   aX2 = aA + aCf * (aB - aA);
   aF2 = MaxDistance(theC, aX2, theProjPS);
-  //
-  for (;;) {
-    if ((aB - aA) < theEps) {
-      break;
-    }
-    //
+
+  while (Abs(aX1-aX2) > theEps)
+  {
     if (aF1 > aF2) {
       aB = aX2;
       aX2 = aX1;
       aF2 = aF1;
-      aX1 = aB - aCf * (aB - aA); 
+      aX1 = aB-aCf*(aB-aA);
       aF1 = MaxDistance(theC, aX1, theProjPS);
     }
     else {
       aA = aX1;
       aX1 = aX2;
       aF1 = aF2;
-      aX2 = aA + aCf * (aB - aA);
+      aX2=aA+aCf*(aB-aA);
       aF2 = MaxDistance(theC, aX2, theProjPS);
     }
   }

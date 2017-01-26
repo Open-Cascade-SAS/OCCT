@@ -1,5 +1,3 @@
-puts "TODO OCC24861 ALL: Error : The area of result shape is"
-
 puts "========="
 puts " OCC497 "
 puts "(case 5)"
@@ -20,6 +18,6 @@ if [catch {bfuse result a_1 a_2 } catch_result] {
 } else {
     puts "OCC497 : function FUSE works without hangs up "
 }
-checkprops result -s 3280.73 
+checkprops result -s 3233.5
 checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png

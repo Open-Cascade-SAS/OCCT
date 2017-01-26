@@ -68,6 +68,9 @@ public:
   
     const Handle(Adaptor3d_HSurface)& Surface() const;
 
+    //! Returns the point, which has been computed
+    //! while the last calling Value() method
+    const gp_Pnt& LastComputedPoint() const;
 
 
 

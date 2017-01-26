@@ -1,5 +1,3 @@
-puts "TODO OCC12345 ALL: Faulty OCC569: function intersection works wrongly with trimmed plane and cone surfaces"
-
 puts "========"
 puts "OCC569"
 puts "========"
@@ -8,26 +6,57 @@ puts ""
 ## Can not intersect trimmed plane and cone surfaces 
 ##################################
 
+set GoodNbCurv 1
+
 restore [locate_data_file OCC569a.draw] s1 
 restore [locate_data_file OCC569b.draw] s2 
 
+smallview
+don s1 s2
+fit
+
 if { [catch {intersect result s1 s2 } catch_result] } {
-    puts "Faulty OCC569 exception: function intersection works wrongly with trimmed plane and cone surfaces "
+  puts "Faulty OCC569 exception: function intersection works wrongly with trimmed plane and cone surfaces "
 } else {
-    set nom 0
-    set j 1
-    repeat 10 {
-	set err [lindex [whatis result_$j] 5]
-	if { $err != "curve"} {
-	    break
-	} else {
-	    set nom [expr $nom + 1]
-	}
-	incr j
+  checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+  set che [whatis result]
+  set ind [string first "3d curve" $che]
+  if {${ind} >= 0} {
+    #Only variable "res" exists
+    copy result result_1
+  }
+  
+  trim s1 s1
+  trim s2 s2
+  
+  set ic 1
+  set AllowRepeate 1
+  while { $AllowRepeate != 0 } {
+    set che [whatis result_$ic]
+    set ind [string first "3d curve" $che]
+    if {${ind} < 0} {
+      set AllowRepeate 0
+      break
     }
-    if { $nom == 0} {
-	puts "Faulty OCC569: function intersection works wrongly with trimmed plane and cone surfaces"
-    } else {
-	puts "OCC569 OK: function intersection works with trimmed plane and cone surfaces"
+    
+    bounds result_$ic U1 U2
+    dump U1 U2
+    
+    if {[dval U2-U1] < 1.0e-9} {
+      puts "Error: Wrong curve's range!"
     }
+    
+    xdistcs result_$ic s1 U1 U2 10 1e-7
+    xdistcs result_$ic s2 U1 U2 10 1e-7
+    
+    incr ic
+  }
 }
+  
+if {[expr {$ic - 1}] == $GoodNbCurv} {
+  puts "OCC569 OK: function intersection works with trimmed plane and cone surfaces"
+} else {
+  puts "Faulty OCC569: function intersection works wrongly with trimmed plane and cone surfaces"
+}
+

@@ -12,6 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <algorithm>
 #include <TopoDS_Edge.hxx>
 #include <Geom_Curve.hxx>
 #include <BRepAdaptor_Curve.hxx>
@@ -39,6 +40,11 @@
 
 #include <Precision.hxx>
 #include <IntSurf_Quadric.hxx>
+#include <math_Function.hxx>
+#include <math_BrentMinimum.hxx>
+#include <math_Matrix.hxx>
+#include <math_Vector.hxx>
+#include <NCollection_Array1.hxx>
 
 static void FindVertex (const TheArc&,
                         const Handle(TheTopolTool)&,
@@ -75,6 +81,33 @@ static Standard_Integer TreatLC (const TheArc& A,
 
 static Standard_Boolean IsRegularity(const TheArc& A,
                                      const Handle(TheTopolTool)& aDomain);
+
+class MinFunction : public math_Function
+{
+public:
+  MinFunction(TheFunction &theFunc) : myFunc(&theFunc) {};
+
+  //returns value of the one-dimension-function when parameter
+  //is equal to theX
+  virtual Standard_Boolean Value(const Standard_Real theX,
+                                 Standard_Real& theFVal)
+  {
+    if(!myFunc->Value(theX, theFVal))
+      return Standard_False;
+
+    theFVal *= theFVal;
+    return Standard_True;
+  }
+
+  //see analogical method for abstract owner class math_Function
+  virtual Standard_Integer GetStateNumber()
+  {
+    return 0;
+  }
+
+private:
+  TheFunction *myFunc;
+};
 
 
 //=======================================================================
@@ -116,6 +149,54 @@ void FindVertex (const TheArc& A,
   }
 }
 
+class SolInfo
+{
+public:
+  SolInfo() : myMathIndex(-1), myValue(RealLast())
+  {
+  }
+
+  void Init(const math_FunctionAllRoots& theSolution, const Standard_Integer theIndex)
+  {
+    myMathIndex = theIndex;
+    myValue = theSolution.GetPoint(theIndex);
+  }
+
+  Standard_Real Value() const
+  {
+    return myValue;
+  }
+
+  Standard_Integer Index() const
+  {
+    return myMathIndex;
+  }
+
+  bool operator>(const SolInfo& theOther) const
+  {
+    return myValue > theOther.myValue;
+  }
+
+  bool operator<(const SolInfo& theOther) const
+  {
+    return myValue < theOther.myValue;
+  }
+
+  bool operator==(const SolInfo& theOther) const
+  {
+    return myValue == theOther.myValue;
+  }
+
+  Standard_Real& ChangeValue()
+  {
+    return myValue;
+  }
+
+private:
+  Standard_Integer myMathIndex;
+  Standard_Real myValue;
+};
+
 static
 void BoundedArc (const TheArc& A,
                  const Handle(TheTopolTool)& Domain,
@@ -129,18 +210,17 @@ void BoundedArc (const TheArc& A,
                  Standard_Boolean& Arcsol,
                  const Standard_Boolean RecheckOnRegularity)
 {
-  
-// Recherche des points solutions et des bouts d arc solution sur un arc donne.
-// On utilise la fonction math_FunctionAllRoots. Ne convient donc que pour
-// des arcs ayant un point debut et un point de fin (intervalle ferme de
-// parametrage).
+  // Recherche des points solutions et des bouts d arc solution sur un arc donne.
+  // On utilise la fonction math_FunctionAllRoots. Ne convient donc que pour
+  // des arcs ayant un point debut et un point de fin (intervalle ferme de
+  // parametrage).
 
   Standard_Integer i,Nbi,Nbp;
 
   gp_Pnt ptdeb,ptfin;
   Standard_Real pardeb = 0., parfin = 0.;
   Standard_Integer ideb,ifin,range,ranged,rangef;
-  
+
 
   // Creer l echantillonage (math_FunctionSample ou classe heritant)
   // Appel a math_FunctionAllRoots
@@ -156,10 +236,10 @@ void BoundedArc (const TheArc& A,
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-  
-//  Standard_Integer NbEchant = TheSOBTool::NbSamplesOnArc(A); 
+
+  //  Standard_Integer NbEchant = TheSOBTool::NbSamplesOnArc(A); 
   Standard_Integer NbEchant = Func.NbSamples(); 
-  
+
   //-- Modif 24  Aout 93 -----------------------------
   Standard_Real nTolTangency = TolTangency;
   if((Pfin - Pdeb) < (TolTangency*10.0)) { 
@@ -176,13 +256,12 @@ void BoundedArc (const TheArc& A,
   //-- if(NbEchant<3) NbEchant = 3; //-- lbr le 19 Avril 95
   //--------------------------------------------------
   Standard_Real para=0,dist,maxdist;
-/*  if(NbEchant<20) NbEchant = 20; //-- lbr le 22 Avril 96 
-                                 //-- Toujours des pbs 
-*/
-   if(NbEchant<100) NbEchant = 100; //-- lbr le 22 Avril 96 
-                                  //-- Toujours des pbs 
-
-
+  /*  if(NbEchant<20) NbEchant = 20; //-- lbr le 22 Avril 96 
+  //-- Toujours des pbs 
+  */
+  if(NbEchant<100) NbEchant = 100; //-- lbr le 22 Avril 96 
+  //-- Toujours des pbs 
+  
   //-------------------------------------------------------------- REJECTIONS le 15 oct 98 
   Standard_Boolean Rejection=Standard_True;  
   Standard_Real maxdr,maxr,minr,ur,dur;
@@ -222,7 +301,7 @@ void BoundedArc (const TheArc& A,
 
   if(Rejection==Standard_False) { 
     math_FunctionSample Echant(Pdeb,Pfin,NbEchant);
-    
+
     Standard_Boolean aelargir=Standard_True;
     //modified by NIZNHY-PKV Thu Apr 12 09:25:19 2001 f
     //
@@ -241,11 +320,11 @@ void BoundedArc (const TheArc& A,
     if(!(aelargir && maxdist<0.01)) { 
       maxdist = TolBoundary;
     }
-    
+
     math_FunctionAllRoots Sol(Func,Echant,EpsX,maxdist,maxdist); //-- TolBoundary,nTolTangency);
-    
+
     if (!Sol.IsDone()) {Standard_Failure::Raise();}
-    
+
     Nbp=Sol.NbPoints();
     //
     //jgv: build solution on the whole boundary
@@ -255,11 +334,11 @@ void BoundedArc (const TheArc& A,
       //theTol += theTol;
       Standard_Real theTol = 5.e-4;
       math_FunctionAllRoots SolAgain(Func,Echant,EpsX,theTol,theTol); //-- TolBoundary,nTolTangency);
-      
+
       if (!SolAgain.IsDone()) {Standard_Failure::Raise();}
-      
+
       Standard_Integer Nbi_again = SolAgain.NbIntervals();
-      
+
       if (Nbi_again > 0)
       {
         Standard_Integer NbSamples = 10;
@@ -286,19 +365,19 @@ void BoundedArc (const TheArc& A,
             newseg.SetValue(A);
             // Recuperer point debut et fin, et leur parametre.
             SolAgain.GetInterval(i,pardeb,parfin);
-            
+
             if (Abs(pardeb - Pdeb) <= Precision::PConfusion())
               pardeb = Pdeb;
             if (Abs(parfin - Pfin) <= Precision::PConfusion())
               parfin = Pfin;
-            
+
             SolAgain.GetIntervalState(i,ideb,ifin);
-            
+
             //-- cout<<" Debug : IntStart_SearchOnBoundaries_1.gxx : i= "<<i<<" ParDeb:"<<pardeb<<"  ParFin:"<<parfin<<endl;
-            
+
             ptdeb=Func.Valpoint(ideb);
             ptfin=Func.Valpoint(ifin);
-          
+
             PointProcess(ptdeb,pardeb,A,Domain,pnt,theTol,ranged);
             newseg.SetLimitPoint(pnt.Value(ranged),Standard_True);
             PointProcess(ptfin,parfin,A,Domain,pnt,theTol,rangef);
@@ -311,30 +390,22 @@ void BoundedArc (const TheArc& A,
       }
     }
     ////////////////////////////////////////////
-    
+
     //-- detection du cas ou la fonction est quasi tangente et que les 
     //-- zeros sont quasi confondus. 
     //-- Dans ce cas on prend le point "milieu"
     //-- On suppose que les solutions sont triees. 
 
-    Standard_Real *TabSol=NULL;
     if(Nbp) { 
-      TabSol = new Standard_Real [Nbp+2];
-      for(i=1;i<=Nbp;i++) { 
-        TabSol[i]=Sol.GetPoint(i);
+      NCollection_Array1<SolInfo> aSI(1, Nbp);
+
+      for(i=1;i<=Nbp;i++)
+      {
+        aSI(i).Init(Sol, i);
       }
-      Standard_Boolean ok;
-      do { 
-        ok=Standard_True;
-        for(i=1;i<Nbp;i++) { 
-          if(TabSol[i]>TabSol[i+1]) { 
-            ok=Standard_False;
-            para=TabSol[i]; TabSol[i]=TabSol[i+1]; TabSol[i+1]=para;
-          }
-        }
-      }
-      
-      while(ok==Standard_False);
+
+      std::sort(aSI.begin(), aSI.end());
+
       //modified by NIZNHY-PKV Wed Mar 21 18:34:18 2001 f
       //////////////////////////////////////////////////////////
       // The treatment of the situation when line(arc) that is 
@@ -345,105 +416,126 @@ void BoundedArc (const TheArc& A,
       //                           PKV Fri Mar 23 12:17:29 2001
       Standard_Integer ip;
       const IntSurf_Quadric& aQuadric=Func.Quadric();
-      
+
       ip=TreatLC (A, Domain, aQuadric, TolBoundary, pnt);
       if (ip) {
-      //////////////////////////////////////////////////////////
-      //modified by NIZNHY-PKV Wed Mar 21 18:34:23 2001 t
-      // 
-      // Using of old usual way proposed by Laurent 
-      //
-      for(i=1;i<Nbp;i++) { 
-        Standard_Real parap1=TabSol[i+1];
-        para=TabSol[i];
-        Standard_Real param=(para+parap1)*0.5;
-        Standard_Real ym;
-        if(Func.Value(param,ym)) {
-          if(Abs(ym)<maxdist) { 
-            //  Modified by skv - Tue Aug 31 12:13:51 2004 OCC569 Begin
-            // Consider this interval as tangent one. Treat it to find
-            // parameter with the lowest function value.
+        //////////////////////////////////////////////////////////
+        //modified by NIZNHY-PKV Wed Mar 21 18:34:23 2001 t
+        // 
+        // Using of old usual way proposed by Laurent 
+        //
+        for(i=1;i<Nbp;i++) { 
+          Standard_Real parap1 = aSI(i + 1).Value();
+          para = aSI(i).Value();
 
-            // Compute the number of nodes.
-            Standard_Real    aTol = TolBoundary*1000.0;
-            if(aTol > 0.001)
-        aTol = 0.001;
+          Standard_Real param=(para+parap1)*0.5;
+          Standard_Real ym;
+          if(Func.Value(param,ym)) {
+            if(Abs(ym)<maxdist) { 
+              //  Modified by skv - Tue Aug 31 12:13:51 2004 OCC569 Begin
+              // Consider this interval as tangent one. Treat it to find
+              // parameter with the lowest function value.
 
-            // fix floating point exception 569, chl-922-e9
-            parap1 = (Abs(parap1) < 1.e9) ? parap1 : ((parap1 >= 0.) ? 1.e9 : -1.e9);
-            para   = (Abs(para) < 1.e9) ? para : ((para >= 0.) ? 1.e9 : -1.e9);
-            
-            Standard_Integer aNbNodes = RealToInt(Ceiling((parap1 - para)/aTol));
+              // Compute the number of nodes.
+              Standard_Real    aTol = TolBoundary*1000.0;
+              if(aTol > 0.001)
+                aTol = 0.001;
 
-            Standard_Real    aVal     = RealLast();
-            //Standard_Integer aNbNodes = 23;
-            Standard_Real    aDelta   = (parap1 - para)/(aNbNodes + 1.);
-            Standard_Integer ii;
-            Standard_Real    aCurPar;
-            Standard_Real    aCurVal;
+              // fix floating point exception 569, chl-922-e9
+              parap1 = (Abs(parap1) < 1.e9) ? parap1 : ((parap1 >= 0.) ? 1.e9 : -1.e9);
+              para   = (Abs(para) < 1.e9) ? para : ((para >= 0.) ? 1.e9 : -1.e9);
 
-            for (ii = 0; ii <= aNbNodes + 1; ii++) {
-        aCurPar = (ii < aNbNodes + 1) ? para + ii*aDelta : parap1;
+              Standard_Integer aNbNodes = RealToInt(Ceiling((parap1 - para)/aTol));
 
-        if (Func.Value(aCurPar, aCurVal)) {
-          //if (aCurVal < aVal) {
-          if (Abs(aCurVal) < aVal) {
-            //aVal  = aCurVal;
-            aVal  = Abs(aCurVal);
-            param = aCurPar;
-          }
-        }
+              Standard_Real    aVal     = RealLast();
+              //Standard_Integer aNbNodes = 23;
+              Standard_Real    aDelta   = (parap1 - para)/(aNbNodes + 1.);
+              Standard_Integer ii;
+              Standard_Real    aCurPar;
+              Standard_Real    aCurVal;
+
+              for (ii = 0; ii <= aNbNodes + 1; ii++) {
+                aCurPar = (ii < aNbNodes + 1) ? para + ii*aDelta : parap1;
+
+                if (Func.Value(aCurPar, aCurVal)) {
+                  //if (aCurVal < aVal) {
+                  if (Abs(aCurVal) < aVal) {
+                    //aVal  = aCurVal;
+                    aVal  = Abs(aCurVal);
+                    param = aCurPar;
+                  }
+                }
+              }
+              //  Modified by skv - Tue Aug 31 12:13:51 2004 OCC569 End
+              aSI(i).ChangeValue() = Pdeb - 1;
+              aSI(i + 1).ChangeValue() = param;
             }
-            //  Modified by skv - Tue Aug 31 12:13:51 2004 OCC569 End
-            TabSol[i]=Pdeb-1;
-            TabSol[i+1]=param;
           }
         }
-      }
-          
-      for (i=1; i<=Nbp; i++) {
-        para=TabSol[i];
-        if((para-Pdeb)<EpsX || (Pfin-para)<EpsX) { 
-        }
-        else { 
-          if(Func.Value(para,dist)) {
-            //modified by jgv 5.07.01 for the bug buc60927
-            Standard_Integer anIndx;
-            Standard_Real aParam;
-            if (Abs(dist) < maxdist)
-        {
-          aParam = Sol.GetPoint(i);
-          if (Abs(aParam-Pdeb)<=Precision::PConfusion() || Abs(aParam-Pfin)<=Precision::PConfusion())
-            anIndx = Sol.GetPointState(i);
-          else
+
+        for (i=1; i<=Nbp; i++) {
+          para = aSI(i).Value();
+          if((para-Pdeb)<EpsX || (Pfin-para)<EpsX)
+            continue;
+
+          if(!Func.Value(para,dist))
+            continue;
+
+          dist = Abs(dist);
+
+          Standard_Integer anIndx = -1;
+          const Standard_Real aParam = Sol.GetPoint(aSI(i).Index());
+          if (dist < maxdist)
+          {
+            if (Abs(aParam - Pdeb) <= Precision::PConfusion() || Abs(aParam - Pfin) <= Precision::PConfusion())
             {
-              anIndx = Func.GetStateNumber(); //take the middle point
-              aParam = para;
+              Standard_Real aDistTemp = RealLast();
+              if (Func.Value(aParam, aDistTemp))
+              {
+                if (Abs(aDistTemp) < maxdist)
+                {
+                  anIndx = Sol.GetPointState(aSI(i).Index());
+                }
+              }
             }
-        }
-            else
-        {
-          anIndx = Sol.GetPointState(i);
-          aParam = Sol.GetPoint(i);
-        }
-            const gp_Pnt& aPnt = Func.Valpoint(anIndx);
-            //////////////////////////////////////////////
-
-            PointProcess(aPnt, aParam, A, Domain, pnt, TolBoundary, range);
           }
+
+          gp_Pnt aPnt(anIndx < 0 ? Func.LastComputedPoint() : Func.Valpoint(anIndx));
+
+          if (dist > 0.1*Precision::Confusion())
+          {
+            //Precise found points. It results in following:
+            //  1. Make the vertex nearer to the intersection line
+            //    (see description to issue #27252 in order to 
+            //    understand necessity).
+            //  2. Merge two near vertices to single point.
+
+            //All members in TabSol array has already been sorted in increase order.
+            //Now, we limit precise boundaries in order to avoid changing this order.
+            const Standard_Real aFPar = (i == 1) ? Pdeb : (para + aSI(i - 1).Value()) / 2.0;
+            const Standard_Real aLPar = (i == Nbp) ? Pfin : (para + aSI(i + 1).Value()) / 2.0;
+
+            MinFunction aNewFunc(Func);
+            math_BrentMinimum aMin(Precision::Confusion());
+
+            aMin.Perform(aNewFunc, aFPar, para, aLPar);
+            if(aMin.IsDone())
+            {
+              para = aMin.Location();
+              const gp_Pnt2d aP2d(A->Value(para));
+              aPnt = Func.Surface()->Value(aP2d.X(), aP2d.Y());
+            }
+          }
+
+          PointProcess(aPnt, para, A, Domain, pnt, TolBoundary, range);
         }
-      }
-      
-      if(TabSol) { 
-        delete [] TabSol;
-      }
-      }// end ofif (ip)
+      }// end of if(ip)
     } // end of if(Nbp)  
 
     // Pour chaque intervalle trouve faire
     //   Traiter les extremites comme des points
     //   Ajouter intervalle dans la liste des segments
-    
+
     Nbi=Sol.NbIntervals();
 
 
@@ -453,7 +545,7 @@ void BoundedArc (const TheArc& A,
     }
 
     //-- cout<<" Debug : IntStart_SearchOnBoundaries_1.gxx : Nbi : "<<Nbi<<endl;
-    
+
     for (i=1; i<=Nbi; i++) {
       IntStart_TheSegment newseg;
       newseg.SetValue(A);
@@ -466,7 +558,7 @@ void BoundedArc (const TheArc& A,
 
       ptdeb=Func.Valpoint(ideb);
       ptfin=Func.Valpoint(ifin);
-      
+
       PointProcess(ptdeb,pardeb,A,Domain,pnt,TolBoundary,ranged);
       newseg.SetLimitPoint(pnt.Value(ranged),Standard_True);
       PointProcess(ptfin,parfin,A,Domain,pnt,TolBoundary,rangef);
@@ -475,8 +567,8 @@ void BoundedArc (const TheArc& A,
     }
 
     if (Nbi==1) {
-      if (  (Abs(pardeb - Pdeb) < Precision::PConfusion()) &&
-            (Abs(parfin - Pfin) < Precision::PConfusion()))
+      if((Abs(pardeb - Pdeb) < Precision::PConfusion()) &&
+         (Abs(parfin - Pfin) < Precision::PConfusion()))
       {
         Arcsol=Standard_True;
       }

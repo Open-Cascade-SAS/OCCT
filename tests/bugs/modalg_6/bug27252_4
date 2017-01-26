@@ -1,0 +1,84 @@
+puts "========="
+puts "OCC24585"
+puts "========="
+puts ""
+###########################################################
+# Wrong pcurve of the section curve
+###########################################################
+
+set GoodNbCurv 1
+set GoodLength 0.9119608849931454
+
+restore [locate_data_file bug27252_s1071.draw] s1
+restore [locate_data_file bug27252_s1072.draw] s2
+
+set CheckID 0
+
+foreach Toler { 1.0e-7 1.0e-4 } {
+  incr CheckID
+  
+  intersect result s1 s2 ${Toler}
+
+  set che [whatis result]
+  set ind [string first "3d curve" $che]
+  if {${ind} >= 0} {
+    #Only variable "result" exists
+    renamevar result result_1
+  }
+
+  set clen 0.0
+
+  set ic 1
+  set AllowRepeate 1
+  while { $AllowRepeate != 0 } {
+    set che [whatis result_$ic]
+    set ind [string first "3d curve" $che]
+    if {${ind} < 0} {
+      set AllowRepeate 0
+    } else {
+      display result_$ic
+      
+      bounds result_$ic U1 U2
+      
+      if {[dval U2-U1] < 1.0e-9} {
+        puts "Error: Wrong curve's range!"
+      }
+      
+      xdistcs result_$ic s1 U1 U2 10 1.0e-7
+      xdistcs result_$ic s2 U1 U2 10 1.0e-7
+      
+      for { set ip [expr $ic-1] } { $ip > 0 } { incr ip -1 } {
+        mkedge e1 result_$ic
+        mkedge e2 result_$ip
+
+        set coe [checkoverlapedges e1 e2 5.0e-5]
+
+        puts "result_$ic <-> result_$ip: $coe"
+        if { [regexp "Edges is not overlaped" $coe] != 1 } {
+          puts "Error: result_$ic and result_$ip are overlaped"
+        }
+      }
+      
+      regexp "The length result_$ic is +(\[-0-9.+eE\]+)" [length result_$ic] full ll
+      set clen [expr $clen+$ll]
+       
+      incr ic
+    }
+  }
+
+  if {[expr {$ic - 1}] == $GoodNbCurv} {
+    puts "OK: Number of curves is good!"
+  } else {
+    puts "Error: $GoodNbCurv is expected but [expr {$ic - 1}] is found!"
+  }
+
+  puts "Summary length = $clen"
+  checkreal SumLength $clen $GoodLength 0.0 1.0e-6
+
+  smallview
+  don result*
+  fit
+  clear
+  don s1 s2 result*
+  checkview -screenshot -2d -path ${imagedir}/${test_image}_${CheckID}.png
+}
