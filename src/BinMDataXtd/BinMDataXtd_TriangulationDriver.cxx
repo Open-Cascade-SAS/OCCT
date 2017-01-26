@@ -147,7 +147,7 @@ void BinMDataXtd_TriangulationDriver::Paste(const Handle(TDF_Attribute)& theSour
 
     // Write triangles
     const Poly_Array1OfTriangle& Triangles = PT->Triangles();
-    for (int i = 1; i <= nbTriangles; i++)
+    for (i = 1; i <= nbTriangles; i++)
     {
       Triangles(i).Get(n1, n2, n3);
       theTarget << n1;
