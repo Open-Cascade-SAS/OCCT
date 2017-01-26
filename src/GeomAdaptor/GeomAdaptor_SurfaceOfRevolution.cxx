@@ -401,13 +401,21 @@ GeomAbs_SurfaceType GeomAdaptor_SurfaceOfRevolution::GetType() const
 {
   Standard_Real TolConf = Precision::Confusion();
   Standard_Real TolAng  = Precision::Angular();
+  Standard_Real TolConeSemiAng = Precision::Confusion();
 
   switch (myBasisCurve->GetType()) {
   case GeomAbs_Line:    {
     gp_Ax1 Axe = myBasisCurve->Line().Position();
     
     if (myAxis.IsParallel(Axe, TolAng))
-      return GeomAbs_Cylinder;
+    {
+      gp_Pnt P = Value(0., 0.);
+      Standard_Real R = gp_Vec(myAxeRev.Location(), P) * myAxeRev.XDirection();
+      if (R > TolConf)
+      {
+        return GeomAbs_Cylinder;
+      }
+    }
     else if (myAxis.IsNormal(Axe, TolAng))
       return GeomAbs_Plane;
     else
@@ -425,16 +433,27 @@ GeomAbs_SurfaceType GeomAdaptor_SurfaceOfRevolution::GetType() const
         gp_Vec vlin(pf,pl);
         gp_Vec vaxe(myAxis.Direction());
         Standard_Real projlen = Abs(vaxe.Dot(vlin));
-        Standard_Real aTolConf = len*TolAng;
-        if ((len - projlen) <= aTolConf)
-          return GeomAbs_Cylinder;
-        else if (projlen <= aTolConf)
+        if ((len - projlen) <= TolConf)
+        {
+          gp_Pnt P = Value(0., 0.);
+          Standard_Real R = gp_Vec(myAxeRev.Location(), P) * myAxeRev.XDirection();
+          if (R > TolConf)
+          {
+            return GeomAbs_Cylinder;
+          }
+        }
+        else if (projlen <= TolConf)
           return GeomAbs_Plane;
       }
       gp_Vec V(myAxis.Location(), myBasisCurve->Line().Location());
       gp_Vec W(Axe.Direction());
-      if (Abs(V.DotCross(myAxis.Direction(), W)) <= TolConf)
+      gp_Vec AxisDir(myAxis.Direction());
+      Standard_Real proj = Abs(W.Dot(AxisDir));
+      if (Abs(V.DotCross(AxisDir, W)) <= TolConf &&
+        (proj >= TolConeSemiAng && proj <= 1. - TolConeSemiAng))
+      {
         return GeomAbs_Cone;
+      }
     }
     break;
   }//case GeomAbs_Line: 
