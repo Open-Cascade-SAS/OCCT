@@ -4948,6 +4948,62 @@ static int VPickShape( Draw_Interpretor& di, Standard_Integer argc, const char**
 }
 
 //=======================================================================
+//function : VSetFilter
+//purpose  :
+//=======================================================================
+static int VSetFilter(Draw_Interpretor& theDi, Standard_Integer theArgc,
+                      const char** theArgv)
+{
+  if (theArgc != 2)
+  {
+    theDi << theArgv[0] << " error : wrong number of parameters.\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if (aContext.IsNull())
+  {
+    std::cout << "Error: AIS context is not available.\n";
+    return 1;
+  }
+
+  TCollection_AsciiString anArg(theArgv[1]);
+  if (anArg.IsEqual("-clear")) {
+    aContext->RemoveFilters();
+  }
+  else {
+    TCollection_AsciiString aPName, aPValue;
+    if (!ViewerTest::SplitParameter (anArg, aPName, aPValue)) {
+      std::cout << "Error: wrong command attribute name" << std::endl;
+      return 1;
+    }
+
+    TopAbs_ShapeEnum aType = TopAbs_COMPOUND;
+    if(aPValue.IsEqual("VERTEX")) aType = TopAbs_VERTEX;
+    else if (aPValue.IsEqual("EDGE")) aType = TopAbs_EDGE;
+    else if (aPValue.IsEqual("WIRE")) aType = TopAbs_WIRE;
+    else if (aPValue.IsEqual("FACE")) aType = TopAbs_FACE;
+    else if(aPValue.IsEqual("SHAPE")) aType = TopAbs_SHAPE;
+    else if (aPValue.IsEqual("SHELL")) aType = TopAbs_SHELL;
+    else if (aPValue.IsEqual("SOLID")) aType = TopAbs_SOLID;
+    else {
+      std::cout << "Error: wrong command attribute value" << std::endl;
+      return 1;
+    }
+
+    if(aType==TopAbs_SHAPE){
+      Handle(AIS_TypeFilter) aFilter = new AIS_TypeFilter(AIS_KOI_Shape);
+      aContext->AddFilter(aFilter);
+    }
+    else{
+      Handle(StdSelect_ShapeTypeFilter) aFilter = new StdSelect_ShapeTypeFilter(aType);
+      aContext->AddFilter(aFilter);
+    }
+  }
+  return 0;
+}
+
+//=======================================================================
 //function : VPickSelected
 //purpose  :
 //=======================================================================
@@ -5838,6 +5894,13 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "vr filename"
       "\n\t\t: Reads shape from BREP-format file and displays it in the viewer. ",
 		  __FILE__,vr, group);
+
+  theCommands.Add("vsetfilter",
+ 		  "vsetfilter [-type={VERTEX|EDGE|WIRE|FACE|SHAPE|SHELL|SOLID}] [-clear]"
+    "\nSets selection shape type filter in context or remove all filters."
+    "\n    : Option -type set type of selection filter. Filters are applyed with Or combination."
+    "\n    : Option -clear remove all filters in context",
+		  __FILE__,VSetFilter,group);
 
   theCommands.Add("vpickselected", "vpickselected [name]: extract selected shape.",
     __FILE__, VPickSelected, group);

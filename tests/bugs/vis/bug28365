@@ -1,0 +1,21 @@
+puts "==========="
+puts "OCC28365"
+puts "==========="
+puts ""
+##########################################################################
+# Visualization, AIS_InteractiveContext - apply selection filter in
+# AddOrRemoveSelected at Neutral point
+##########################################################################
+
+pload ALL
+vinit
+box b 10 10 10
+vdisplay b
+vfit
+vsetfilter -type=VERTEX
+vchangeselected b
+
+set NbSelected1 [vnbselected]
+if { ${NbSelected1} != 0 } {
+  puts "Error : Vertex filter was not applyed"
+}
