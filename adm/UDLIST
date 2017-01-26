@@ -437,3 +437,4 @@ n IVtkDraw
 t TKIVtkDraw
 n Geom2dEvaluator
 t TKVCAF
+n XCAFView
