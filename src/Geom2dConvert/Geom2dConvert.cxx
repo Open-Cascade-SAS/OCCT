@@ -1480,7 +1480,7 @@ void Geom2dConvert::C0BSplineToC1BSplineCurve(Handle(Geom2d_BSplineCurve)& BS,
    Geom2dConvert_CompCurveToBSplineCurve C(ArrayOfConcatenated->Value(0));
    if (ArrayOfConcatenated->Length()>=2){
      for (i=1;i<ArrayOfConcatenated->Length();i++){
-       fusion=C.Add(ArrayOfConcatenated->Value(i),tolerance);
+       fusion=C.Add(ArrayOfConcatenated->Value(i),tolerance, Standard_True);
        if (fusion==Standard_False)
 	 Standard_ConstructionError::Raise("Geom2dConvert Concatenation Error") ;
      }

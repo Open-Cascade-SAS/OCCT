@@ -1,0 +1,11 @@
+puts "============"
+puts "CR28230"
+puts "==========="
+puts ""
+###############################################################################
+# Convert C0 2d curve to C1 raises exception
+###############################################################################
+
+restore [locate_data_file bug28230_edge.brep] e
+mk2dcurve pc e 2
+splitc12d pc 0

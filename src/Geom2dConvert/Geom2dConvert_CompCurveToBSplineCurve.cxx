@@ -88,19 +88,29 @@ Add(const Handle(Geom2d_BoundedCurve)& NewCurve,
   Standard_Integer LBs = Bs->NbPoles(), LCb = myCurve->NbPoles();
   
   // myCurve est elle fermee ?
-  if (myCurve->Pole(LCb).Distance(myCurve->Pole(1))< myTol){
+  if (myCurve->Pole(LCb).Distance(myCurve->Pole(1)) < myTol){
     if(After){
       // Ajout Apres ?
-      if (myCurve->Pole(LCb).Distance(Bs->Pole(LBs)) < myTol) {Bs->Reverse();}
-      if (myCurve->Pole(LCb).Distance(Bs->Pole(1)) < myTol) {
+      Standard_Real d1 = myCurve->Pole(LCb).Distance(Bs->Pole(1));
+      Standard_Real d2 = myCurve->Pole(LCb).Distance(Bs->Pole(LBs));
+      if (d2 < d1) {
+        Bs->Reverse();
+        d1 = d2;
+      }
+      if (d1 < myTol) {
 	Add(myCurve, Bs, Standard_True);
 	return Standard_True;
       }
     }
     else{
       // Ajout avant ?  
-      if (myCurve->Pole(1).Distance(Bs->Pole(1)) < myTol) {Bs->Reverse();}
-      if (myCurve->Pole(1).Distance(Bs->Pole(LBs)) < myTol) {
+      Standard_Real d1 = myCurve->Pole(1).Distance(Bs->Pole(1));
+      Standard_Real d2 = myCurve->Pole(1).Distance(Bs->Pole(LBs));
+      if (d1 < d2) {
+        Bs->Reverse();
+        d2 = d1;
+      }
+      if (d2 < myTol) {
 	Add(Bs, myCurve, Standard_False);
 	return Standard_True;
       }
