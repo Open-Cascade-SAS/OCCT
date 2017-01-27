@@ -23,7 +23,6 @@
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_Material.hxx>
 #include <OpenGl_Matrix.hxx>
-#include <OpenGl_NamedStatus.hxx>
 #include <OpenGl_RenderFilter.hxx>
 #include <OpenGl_ShaderObject.hxx>
 #include <OpenGl_ShaderProgram.hxx>
@@ -124,8 +123,6 @@ public:
 
   //! @return true if clipping algorithm enabled
   Standard_EXPORT Standard_Boolean IsCullingEnabled() const;
-
-  Standard_Integer NamedStatus;
 
   //// RELATED TO STATUS ////
 

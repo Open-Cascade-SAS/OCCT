@@ -208,10 +208,6 @@ public:
   //! Set material type.
   Standard_EXPORT void SetMaterialType (const Graphic3d_TypeOfMaterial theType);
 
-  Standard_ShortReal EnvReflexion() const { return myEnvReflexion; }
-
-  void SetEnvReflexion (const Standard_ShortReal theValue) { myEnvReflexion = theValue; }
-
   //! Returns TRUE if this material differs from specified one.
   Standard_Boolean IsDifferent (const Graphic3d_MaterialAspect& theOther) const { return !IsEqual (theOther); }
 
@@ -229,7 +225,6 @@ public:
         && myRefractionIndex  == theOther.myRefractionIndex
         && myBSDF             == theOther.myBSDF
         && myShininess        == theOther.myShininess
-        && myEnvReflexion     == theOther.myEnvReflexion
         && myColors[Graphic3d_TOR_AMBIENT]    == theOther.myColors[Graphic3d_TOR_AMBIENT]
         && myColors[Graphic3d_TOR_DIFFUSE]    == theOther.myColors[Graphic3d_TOR_DIFFUSE]
         && myColors[Graphic3d_TOR_SPECULAR]   == theOther.myColors[Graphic3d_TOR_SPECULAR]
@@ -266,7 +261,6 @@ private:
   Standard_ShortReal       myTransparencyCoef;
   Standard_ShortReal       myRefractionIndex;
   Standard_ShortReal       myShininess;
-  Standard_ShortReal       myEnvReflexion;
 
   Graphic3d_TypeOfMaterial myMaterialType;
   Graphic3d_NameOfMaterial myMaterialName;

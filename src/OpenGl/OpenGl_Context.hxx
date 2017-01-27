@@ -628,8 +628,7 @@ public: //! @name methods to alter or retrieve current state
   //! Setup current shading material.
   Standard_EXPORT void SetShadingMaterial (const OpenGl_AspectFace* theAspect,
                                            const Handle(Graphic3d_PresentationAttributes)& theHighlight,
-                                           const Standard_Boolean theUseDepthWrite,
-                                           Standard_Integer& theRenderingPassFlags);
+                                           const Standard_Boolean theUseDepthWrite);
 
   //! Setup current color.
   Standard_EXPORT void SetColor4fv (const OpenGl_Vec4& theColor);

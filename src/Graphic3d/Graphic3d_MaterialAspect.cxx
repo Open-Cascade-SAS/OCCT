@@ -30,7 +30,6 @@ namespace
     Standard_ShortReal       TransparencyCoef;
     Standard_ShortReal       RefractionIndex;
     Standard_ShortReal       Shininess;
-    Standard_ShortReal       EnvReflexion;
     Graphic3d_TypeOfMaterial MaterialType;
     Graphic3d_NameOfMaterial MaterialName;
     Standard_Boolean         ReflActivity[Graphic3d_TypeOfReflection_NB];
@@ -81,7 +80,6 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
   TransparencyCoef(0.0f),
   RefractionIndex (1.0f),
   Shininess       (0.039f),
-  EnvReflexion    (0.0f),
   MaterialType    (Graphic3d_MATERIAL_ASPECT),
   MaterialName    (theName)
 {
@@ -516,7 +514,6 @@ void Graphic3d_MaterialAspect::init (const Graphic3d_NameOfMaterial theName)
   myTransparencyCoef = aMat.TransparencyCoef;
   myRefractionIndex  = aMat.RefractionIndex;
   myShininess        = aMat.Shininess;
-  myEnvReflexion     = aMat.EnvReflexion;
   myMaterialType     = aMat.MaterialType;
   myMaterialName     = theName;
   myRequestedMaterialName = theName;

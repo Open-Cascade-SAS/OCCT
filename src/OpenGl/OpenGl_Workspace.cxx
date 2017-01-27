@@ -130,8 +130,7 @@ void OpenGl_Material::Init (const Graphic3d_MaterialAspect& theMat,
 // purpose  :
 // =======================================================================
 OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Window)& theWindow)
-: NamedStatus (0),
-  myView (theView),
+: myView (theView),
   myWindow (theWindow),
   myGlContext (!theWindow.IsNull() ? theWindow->GetGlContext() : NULL),
   myUseZBuffer    (Standard_True),
@@ -211,7 +210,6 @@ void OpenGl_Workspace::ResetAppliedAspect()
 {
   myGlContext->BindDefaultVao();
 
-  NamedStatus           = 0;
   myHighlightStyle.Nullify();
   myToAllowFaceCulling  = false;
   myAspectLineSet       = &myDefaultAspectLine;
@@ -635,8 +633,7 @@ const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
     }
     if (toSuppressBackFaces)
     {
-      if (!(NamedStatus & OPENGL_NS_2NDPASSDO)
-       && (float )myAspectFaceSet->Aspect()->FrontMaterial().Transparency() != 0.0f)
+      if ((float )myAspectFaceSet->Aspect()->FrontMaterial().Transparency() != 0.0f)
       {
         // disable culling in case of translucent shading aspect
         toSuppressBackFaces = false;
@@ -715,7 +712,7 @@ const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
   }
   else
   {
-    myGlContext->SetShadingMaterial (myAspectFaceSet, myHighlightStyle, myUseDepthWrite, NamedStatus);
+    myGlContext->SetShadingMaterial (myAspectFaceSet, myHighlightStyle, myUseDepthWrite);
   }
 
   if (myAspectFaceSet->Aspect()->ToMapTexture())

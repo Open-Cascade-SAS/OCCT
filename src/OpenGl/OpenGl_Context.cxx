@@ -2848,8 +2848,7 @@ Handle(OpenGl_FrameBuffer) OpenGl_Context::SetDefaultFrameBuffer (const Handle(O
 // =======================================================================
 void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
                                          const Handle(Graphic3d_PresentationAttributes)& theHighlight,
-                                         const Standard_Boolean theUseDepthWrite,
-                                         Standard_Integer& theRenderingPassFlags)
+                                         const Standard_Boolean theUseDepthWrite)
 {
   const Handle(Graphic3d_AspectFillArea3d)& anAspect = (!theHighlight.IsNull() && !theHighlight->BasicFillAreaAspect().IsNull())
                                                       ?  theHighlight->BasicFillAreaAspect()
@@ -2887,21 +2886,7 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
     aTranspFront = theHighlight->Transparency();
     aTranspBack  = theHighlight->Transparency();
   }
-  if ((theRenderingPassFlags & OPENGL_NS_2NDPASSDO) != 0)
   {
-    // second pass
-    myMatFront.Diffuse.a() = aMatFrontSrc.EnvReflexion();
-    myMatBack .Diffuse.a() = aMatBackSrc .EnvReflexion();
-  }
-  else
-  {
-    if (aMatFrontSrc.EnvReflexion() != 0.0f
-     || aMatBackSrc .EnvReflexion() != 0.0f)
-    {
-      // if the material reflects the environment scene, the second pass is needed
-      theRenderingPassFlags |= OPENGL_NS_2NDPASSNEED;
-    }
-
     GLboolean aDepthMask = GL_TRUE;
     if (aTranspFront != 0.0f
      || aTranspBack  != 0.0f)

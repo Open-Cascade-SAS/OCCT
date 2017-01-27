@@ -938,53 +938,8 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
     aContext->ShaderManager()->UpdateClippingState();
   }
 
-  // Clear status bitfields
-  myWorkspace->NamedStatus &= ~(OPENGL_NS_2NDPASSNEED | OPENGL_NS_2NDPASSDO);
-
-  // First pass
   renderStructs (theProjection, theReadDrawFbo, theToDrawImmediate);
   myWorkspace->DisableTexture();
-
-  // Second pass
-  if (myWorkspace->NamedStatus & OPENGL_NS_2NDPASSNEED)
-  {
-    myWorkspace->NamedStatus |= OPENGL_NS_2NDPASSDO;
-
-    // Remember OpenGl properties
-    GLint aSaveBlendDst = GL_ONE_MINUS_SRC_ALPHA, aSaveBlendSrc = GL_SRC_ALPHA;
-    GLint aSaveZbuffFunc;
-    GLboolean aSaveZbuffWrite;
-    glGetBooleanv (GL_DEPTH_WRITEMASK, &aSaveZbuffWrite);
-    glGetIntegerv (GL_DEPTH_FUNC, &aSaveZbuffFunc);
-  #if !defined(GL_ES_VERSION_2_0)
-    glGetIntegerv (GL_BLEND_DST, &aSaveBlendDst);
-    glGetIntegerv (GL_BLEND_SRC, &aSaveBlendSrc);
-  #endif
-    GLboolean wasZbuffEnabled = glIsEnabled (GL_DEPTH_TEST);
-    GLboolean wasBlendEnabled = glIsEnabled (GL_BLEND);
-
-    // Change the properties for second rendering pass
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable (GL_BLEND);
-
-    glDepthFunc (GL_EQUAL);
-    glDepthMask (GL_FALSE);
-    glEnable (GL_DEPTH_TEST);
-
-    // Render the view
-    renderStructs (theProjection, theReadDrawFbo, theToDrawImmediate);
-    myWorkspace->DisableTexture();
-
-    // Restore properties back
-    glBlendFunc (aSaveBlendSrc, aSaveBlendDst);
-    if (!wasBlendEnabled)
-      glDisable (GL_BLEND);
-
-    glDepthFunc (aSaveZbuffFunc);
-    glDepthMask (aSaveZbuffWrite);
-    if (!wasZbuffEnabled)
-      glDisable (GL_DEPTH_FUNC);
-  }
 
   // Apply restored view matrix.
   aContext->ApplyWorldViewMatrix();
