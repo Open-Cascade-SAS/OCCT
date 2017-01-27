@@ -447,8 +447,17 @@ else()
   set (3RDPARTY_DIR "${3RDPARTY_DIR}" CACHE PATH "${3RDPARTY_DIR_DESCR}" FORCE)
 endif()
 
-# search for CSF_TclLibs variable in EXTERNLIB of each being used toolkit
+# search for CSF variable in EXTERNLIB of each being used toolkit
+OCCT_IS_PRODUCT_REQUIRED (CSF_FreeImagePlus CAN_USE_FREEIMAGE)
 OCCT_IS_PRODUCT_REQUIRED (CSF_TclLibs USE_TCL)
+OCCT_IS_PRODUCT_REQUIRED (CSF_FREETYPE USE_FREETYPE)
+OCCT_IS_PRODUCT_REQUIRED (CSF_OpenGlLibs CAN_USE_GLES2)
+OCCT_IS_PRODUCT_REQUIRED (CSF_GL2PS CAN_USE_GL2PS)
+OCCT_IS_PRODUCT_REQUIRED (CSF_TBB CAN_USE_TBB)
+OCCT_IS_PRODUCT_REQUIRED (CSF_EIGEN CAN_USE_EIGEN)
+
+# define CSF variable
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_csf")
 
 if (USE_TCL)
   message (STATUS "Info: TCL is used by OCCT")
@@ -463,9 +472,6 @@ else()
   OCCT_CHECK_AND_UNSET ("INSTALL_TCL")
   OCCT_CHECK_AND_UNSET ("INSTALL_TK")
 endif()
-
-# search for CSF_FREETYPE variable in EXTERNLIB of each being used toolkit
-OCCT_IS_PRODUCT_REQUIRED (CSF_FREETYPE USE_FREETYPE)
 
 if (USE_FREETYPE)
   message (STATUS "Info: Freetype is used by OCCT")
@@ -507,8 +513,6 @@ if (USE_GLX)
 endif()
 
 # FREEIMAGE
-# search for CSF_FREEIMAGE variable in EXTERNLIB of each being used toolkit
-OCCT_IS_PRODUCT_REQUIRED (CSF_FreeImagePlus CAN_USE_FREEIMAGE)
 
 if (CAN_USE_FREEIMAGE)
   set (USE_FREEIMAGE OFF CACHE BOOL "${USE_FREEIMAGE_DESCR}")
@@ -528,7 +532,6 @@ else()
 endif()
 
 # OpenGL ES 2.0
-OCCT_IS_PRODUCT_REQUIRED (CSF_OpenGlLibs CAN_USE_GLES2)
 if (WIN32 AND CAN_USE_GLES2)
   if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
     set (USE_GLES2 ON)
@@ -556,9 +559,6 @@ else()
 endif()
 
 # GL2PS
-# search for CSF_GL2PS variable in EXTERNLIB of each being used toolkit
-OCCT_IS_PRODUCT_REQUIRED (CSF_GL2PS CAN_USE_GL2PS)
-
 if (NOT DEFINED ANDROID AND CAN_USE_GL2PS)
   set (USE_GL2PS OFF CACHE BOOL "${USE_GL2PS_DESCR}")
 
@@ -577,9 +577,6 @@ else()
 endif()
 
 # TBB
-# search for CSF_TBB variable in EXTERNLIB of each being used toolkit
-OCCT_IS_PRODUCT_REQUIRED (CSF_TBB CAN_USE_TBB)
-
 if (NOT DEFINED ANDROID AND CAN_USE_TBB)
   set (USE_TBB OFF CACHE BOOL "${USE_TBB_DESCR}")
 
@@ -600,9 +597,6 @@ else()
 endif()
 
 # EIGEN
-# search for CSF_EIGEN variable in EXTERNLIB of each being used toolkit
-OCCT_IS_PRODUCT_REQUIRED (CSF_EIGEN CAN_USE_EIGEN)
-
 if (CAN_USE_EIGEN)
   set (USE_EIGEN OFF CACHE BOOL "${USE_EIGEN_DESCR}")
 
@@ -839,9 +833,6 @@ endforeach()
 if (NOT "${BUILD_SHARED_LIBRARY_NAME_POSTFIX}" STREQUAL "")
   OCCT_UPDATE_DRAW_DEFAULT_FILE()
 endif()
-
-# define CSF variable
-OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_csf")
 
 # include patched toolkit projects or original ones
 foreach (BUILD_TOOLKIT ${BUILD_TOOLKITS})

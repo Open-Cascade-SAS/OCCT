@@ -1,3 +1,4 @@
 # glx
 
-THIRDPARTY_PRODUCT("GLX" "GL/glx.h" "GL" "GLd")
+separate_arguments (CSF_OpenGlLibs)
+THIRDPARTY_PRODUCT("GLX" "GL/glx.h" "CSF_OpenGlLibs" "d")

@@ -1,3 +1,3 @@
 #freeimage
 
-THIRDPARTY_PRODUCT("FREEIMAGE" "FreeImage.h" "freeimage" "freeimaged")
+THIRDPARTY_PRODUCT("FREEIMAGE" "FreeImage.h" "CSF_FreeImagePlus" "d")

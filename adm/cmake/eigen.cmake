@@ -39,7 +39,7 @@ if (NOT 3RDPARTY_EIGEN_INCLUDE_DIR OR NOT EXISTS "${3RDPARTY_EIGEN_INCLUDE_DIR}"
 
   # use default (CMake) EIGEN search
   if (NOT 3RDPARTY_EIGEN_INCLUDE_DIR OR NOT EXISTS "${3RDPARTY_EIGEN_INCLUDE_DIR}")
-    # use 3RDPARTY_FREETYPE_DIR if it is specified for freetype search
+    # use 3RDPARTY_EIGEN_DIR if it is specified for eigen search
     if (3RDPARTY_EIGEN_DIR AND EXISTS "${3RDPARTY_EIGEN_DIR}")
       set (CACHED_EIGEN_DIR $ENV{Eigen3_DIR})
       set (ENV{Eigen3_DIR} "${3RDPARTY_EIGEN_DIR}")

@@ -231,13 +231,13 @@ if (BUILD_SHARED_LIBS)
     set (3RDPARTY_FREETYPE_LIBRARY "3RDPARTY_FREETYPE_LIBRARY-NOTFOUND" CACHE FILEPATH "The path to freetype library" FORCE)
 
     if (3RDPARTY_FREETYPE_DIR AND EXISTS "${3RDPARTY_FREETYPE_DIR}")
-      find_library (3RDPARTY_FREETYPE_LIBRARY freetype
+      find_library (3RDPARTY_FREETYPE_LIBRARY ${CSF_FREETYPE}
                                               PATHS "${3RDPARTY_FREETYPE_LIBRARY_DIR}" "${3RDPARTY_FREETYPE_DIR}"
                                               PATH_SUFFIXES ${FREETYPE_PATH_SUFFIXES}
                                               CMAKE_FIND_ROOT_PATH_BOTH
                                               NO_DEFAULT_PATH)
     else()
-      find_library (3RDPARTY_FREETYPE_LIBRARY freetype 
+      find_library (3RDPARTY_FREETYPE_LIBRARY ${CSF_FREETYPE}
                                               PATH_SUFFIXES ${FREETYPE_PATH_SUFFIXES}
                                               CMAKE_FIND_ROOT_PATH_BOTH)
     endif()
@@ -268,12 +268,12 @@ if (BUILD_SHARED_LIBS)
       set (3RDPARTY_FREETYPE_DLL "3RDPARTY_FREETYPE_DLL-NOTFOUND" CACHE FILEPATH "The path to freetype shared library" FORCE)
 
       if (3RDPARTY_FREETYPE_DIR AND EXISTS "${3RDPARTY_FREETYPE_DIR}")
-        find_library (3RDPARTY_FREETYPE_DLL freetype
+        find_library (3RDPARTY_FREETYPE_DLL ${CSF_FREETYPE}
                                             PATHS "${3RDPARTY_FREETYPE_DIR}"
                                             PATH_SUFFIXES bin
                                             NO_DEFAULT_PATH)
       else()
-        find_library (3RDPARTY_FREETYPE_DLL freetype
+        find_library (3RDPARTY_FREETYPE_DLL ${CSF_FREETYPE}
                                             PATH_SUFFIXES bin)
       endif()
 

@@ -97,9 +97,9 @@ if (BUILD_SHARED_LIBS)
         endif()
 
         set (3RDPARTY_TK_DLL "3RDPARTY_TK_DLL-NOTFOUND" CACHE FILEPATH "TK shared library" FORCE)
-        find_library (3RDPARTY_TK_DLL NAMES tk86 tk85
-                                              PATHS "${DLL_FOLDER_FOR_SEARCH}"
-                                              NO_DEFAULT_PATH)
+        find_library (3RDPARTY_TK_DLL NAMES ${CSF_TclTkLibs}
+                                            PATHS "${DLL_FOLDER_FOR_SEARCH}"
+                                            NO_DEFAULT_PATH)
     endif()
   endif()
 endif()
@@ -110,14 +110,14 @@ if (BUILD_SHARED_LIBS)
   # tk dir and library
   if (NOT 3RDPARTY_TK_LIBRARY)
     set (3RDPARTY_TK_LIBRARY "3RDPARTY_TK_LIBRARY-NOTFOUND" CACHE FILEPATH "TK library" FORCE)
-    find_library (3RDPARTY_TK_LIBRARY NAMES tk8.6 tk86 tk8.5 tk85
-                                              PATHS "${3RDPARTY_TK_LIBRARY_DIR}"
-                                              NO_DEFAULT_PATH)
+    find_library (3RDPARTY_TK_LIBRARY NAMES ${CSF_TclTkLibs}
+                                            PATHS "${3RDPARTY_TK_LIBRARY_DIR}"
+                                            NO_DEFAULT_PATH)
 
     # search in another place if previous search doesn't find anything
-    find_library (3RDPARTY_TK_LIBRARY NAMES tk8.6 tk86 tk8.5 tk85
-                                              PATHS "${3RDPARTY_TK_DIR}/lib"
-                                              NO_DEFAULT_PATH)
+    find_library (3RDPARTY_TK_LIBRARY NAMES ${CSF_TclTkLibs}
+                                            PATHS "${3RDPARTY_TK_DIR}/lib"
+                                            NO_DEFAULT_PATH)
 
 
     if (NOT 3RDPARTY_TK_LIBRARY OR NOT EXISTS "${3RDPARTY_TK_LIBRARY}")
@@ -165,8 +165,8 @@ if (BUILD_SHARED_LIBS)
 
       set (3RDPARTY_TK_DLL "3RDPARTY_TK_DLL-NOTFOUND" CACHE FILEPATH "TK shared library" FORCE)
       find_library (3RDPARTY_TK_DLL NAMES tk${3RDPARTY_TK_LIBRARY_VERSION}
-                                            PATHS "${DLL_FOLDER_FOR_SEARCH}"
-                                            NO_DEFAULT_PATH)
+                                          PATHS "${DLL_FOLDER_FOR_SEARCH}"
+                                          NO_DEFAULT_PATH)
 
       if (NOT 3RDPARTY_TK_DLL OR NOT EXISTS "${3RDPARTY_TK_DLL}")
         set (3RDPARTY_TK_DLL "" CACHE FILEPATH "TK shared library" FORCE)
@@ -190,7 +190,7 @@ if (BUILD_SHARED_LIBS)
   if (3RDPARTY_TK_LIBRARY AND EXISTS "${3RDPARTY_TK_LIBRARY}")
     list (APPEND 3RDPARTY_LIBRARY_DIRS "${3RDPARTY_TK_LIBRARY_DIR}")
   else()
-    list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_TK_LIBRARY_DIR})
+    list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_TK_LIBRARY_DIR)
   endif()
 
   if (WIN32)
