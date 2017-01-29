@@ -53,8 +53,6 @@ public:
   
   Standard_EXPORT DBRep_DrawableShape(const TopoDS_Shape& C, const Draw_Color& FreeCol, const Draw_Color& ConnCol, const Draw_Color& EdgeCol, const Draw_Color& IsosCol, const Standard_Real size, const Standard_Integer nbisos, const Standard_Integer discret);
   
-  Standard_EXPORT void Set (const TopoDS_Shape& C);
-  
   //! Changes the number of isoparametric curves in a shape.
   Standard_EXPORT void ChangeNbIsos (const Standard_Integer NbIsos);
   
@@ -113,20 +111,21 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(DBRep_DrawableShape,Draw_Drawable3D)
 
-protected:
+private:
 
+  void display (const Handle(Poly_Triangulation)& T, const gp_Trsf& tr, Draw_Display& dis) const;
 
-
+  //! Updates internal data necessary for display
+  void updateDisplayData () const;
 
 private:
 
-  
-  Standard_EXPORT void Display (const Handle(Poly_Triangulation)& T, const gp_Trsf& tr, Draw_Display& dis) const;
-
   TopoDS_Shape myShape;
-  DBRep_ListOfEdge myEdges;
-  DBRep_ListOfFace myFaces;
+
+  mutable DBRep_ListOfEdge myEdges;
+  mutable DBRep_ListOfFace myFaces;
   DBRep_ListOfHideData myHidData;
+
   Standard_Real mySize;
   Standard_Integer myDiscret;
   Draw_Color myFreeCol;

@@ -104,18 +104,16 @@ DBRep_DrawableShape::DBRep_DrawableShape
   myRgN(Standard_False),
   myHid(Standard_False)
 {
-  Set(aShape);
+  myShape = aShape;
 }
 
 //=======================================================================
-//function : Set
+//function : updateDisplayData
 //purpose  : 
 //=======================================================================
 
-void  DBRep_DrawableShape::Set(const TopoDS_Shape& aShape)
+void DBRep_DrawableShape::updateDisplayData () const
 {
-  myShape = aShape;
-  
   myFaces.Clear();
   myEdges.Clear();
   
@@ -154,7 +152,7 @@ void  DBRep_DrawableShape::Set(const TopoDS_Shape& aShape)
   //==============================================================
   
   TopTools_IndexedDataMapOfShapeListOfShape edgemap;
-  TopExp::MapShapesAndAncestors(aShape,TopAbs_EDGE,TopAbs_FACE,edgemap);
+  TopExp::MapShapesAndAncestors(myShape,TopAbs_EDGE,TopAbs_FACE,edgemap);
   Standard_Integer iedge;
   
   for (iedge = 1; iedge <= edgemap.Extent(); iedge++) {
@@ -357,6 +355,9 @@ void  DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
     dis.DrawString(gp_Pnt(0,0,0),"Null Shape");
     return;
   }
+
+  if (myFaces.IsEmpty() || myEdges.IsEmpty())
+    updateDisplayData();
 
   // hidden lines
   if (myHLR) {
@@ -610,7 +611,7 @@ void  DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
     if (aSurf.IsNull() || mytriangulations) {
       Tr = BRep_Tool::Triangulation(F->Face(), loc);
       if (!Tr.IsNull()) {
-	Display(Tr, loc.Transformation(), dis);
+	display(Tr, loc.Transformation(), dis);
       }
     }
     itf.Next();
@@ -1093,11 +1094,11 @@ void  DBRep_DrawableShape::LastPick(TopoDS_Shape& s,
 
 
 //=======================================================================
-//function : Display
+//function : display
 //purpose  : 
 //=======================================================================
 
-void  DBRep_DrawableShape::Display(const Handle(Poly_Triangulation)& T,
+void  DBRep_DrawableShape::display(const Handle(Poly_Triangulation)& T,
 				   const gp_Trsf&                    tr,
 				   Draw_Display&                     dis) const
 {
