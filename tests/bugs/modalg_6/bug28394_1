@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC28394"
+puts "========"
+puts ""
+##############################################
+# Not precise extrema solution of line and circle lying in the same plane
+##############################################
+
+restore [locate_data_file bug28394_edges.brep] e
+explode e
+set anInfo [distmini d e_1 e_2]
+
+if {[dval d_val] > 1.0e-7} {
+  puts "Error: Extrema cannot find minimal distance"
+}

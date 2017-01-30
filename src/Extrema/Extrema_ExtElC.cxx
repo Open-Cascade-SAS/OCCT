@@ -15,20 +15,24 @@
 
 #include <ElCLib.hxx>
 #include <Extrema_ExtElC.hxx>
+#include <Extrema_ExtElC2d.hxx>
 #include <Extrema_ExtPElC.hxx>
 #include <Extrema_POnCurv.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Circ.hxx>
+#include <gp_Circ2d.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Elips.hxx>
 #include <gp_Hypr.hxx>
 #include <gp_Lin.hxx>
+#include <gp_Lin2d.hxx>
 #include <gp_Parab.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <IntAna_QuadQuadGeo.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
 #include <math_DirectPolynomialRoots.hxx>
 #include <math_TrigonometricFunctionRoots.hxx>
 #include <Precision.hxx>
@@ -323,6 +327,90 @@ Extrema_ExtElC::Extrema_ExtElC (const gp_Lin& theC1,
   myNbExt = 1;
   myDone = Standard_True;
 }
+
+//=======================================================================
+//function : PlanarLineCircleExtrema
+//purpose  : 
+//=======================================================================
+Standard_Boolean Extrema_ExtElC::PlanarLineCircleExtrema(const gp_Lin& theLin,
+                                                         const gp_Circ& theCirc)
+{
+  const gp_Dir &aDirC = theCirc.Axis().Direction(),
+               &aDirL = theLin.Direction();
+
+  if (Abs(aDirC.Dot(aDirL)) > Precision::Angular())
+    return Standard_False;
+  
+  //The line is in the circle-plane completely
+  //(or parallel to the circle-plane).
+  //Therefore, we are looking for extremas and
+  //intersections in 2D-space.
+
+  const gp_XYZ &aCLoc = theCirc.Location().XYZ();
+  const gp_XYZ &aDCx = theCirc.Position().XDirection().XYZ(),
+               &aDCy = theCirc.Position().YDirection().XYZ();
+
+  const gp_XYZ &aLLoc = theLin.Location().XYZ();
+  const gp_XYZ &aLDir = theLin.Direction().XYZ();
+
+  const gp_XYZ aVecCL(aLLoc - aCLoc);
+
+  //Center of 2D-circle
+  const gp_Pnt2d aPC(0.0, 0.0);
+
+  gp_Ax22d aCircAxis(aPC, gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0));
+  gp_Circ2d aCirc2d(aCircAxis, theCirc.Radius());
+
+  gp_Pnt2d aPL(aVecCL.Dot(aDCx), aVecCL.Dot(aDCy));
+  gp_Dir2d aDL(aLDir.Dot(aDCx), aLDir.Dot(aDCy));
+  gp_Lin2d aLin2d(aPL, aDL);
+
+  // Extremas
+  Extrema_ExtElC2d anExt2d(aLin2d, aCirc2d, Precision::Confusion());
+  //Intersections
+  IntAna2d_AnaIntersection anInters(aLin2d, aCirc2d);
+
+  myDone = anExt2d.IsDone() || anInters.IsDone();
+
+  if (!myDone)
+    return Standard_True;
+
+  const Standard_Integer aNbExtr = anExt2d.NbExt();
+  const Standard_Integer aNbSol = anInters.NbPoints();
+
+  const Standard_Integer aNbSum = aNbExtr + aNbSol;
+  for (Standard_Integer anExtrID = 1; anExtrID <= aNbSum; anExtrID++)
+  {
+    const Standard_Integer aDelta = anExtrID - aNbExtr;
+
+    Standard_Real aLinPar = 0.0, aCircPar = 0.0;
+
+    if (aDelta < 1)
+    {
+      Extrema_POnCurv2d aPLin2d, aPCirc2d;
+      anExt2d.Points(anExtrID, aPLin2d, aPCirc2d);
+      aLinPar = aPLin2d.Parameter();
+      aCircPar = aPCirc2d.Parameter();
+    }
+    else
+    {
+      aLinPar = anInters.Point(aDelta).ParamOnFirst();
+      aCircPar = anInters.Point(aDelta).ParamOnSecond();
+    }
+
+    const gp_Pnt aPOnL(ElCLib::LineValue(aLinPar, theLin.Position())),
+                 aPOnC(ElCLib::CircleValue(aCircPar,
+                                            theCirc.Position(), theCirc.Radius()));
+
+    mySqDist[myNbExt] = aPOnL.SquareDistance(aPOnC);
+    myPoint[myNbExt][0].SetValues(aLinPar, aPOnL);
+    myPoint[myNbExt][1].SetValues(aCircPar, aPOnC);
+    myNbExt++;
+  }
+
+  return Standard_True;
+}
+
 //=======================================================================
 //function : Extrema_ExtElC
 //purpose  : 
@@ -366,6 +454,11 @@ Extrema_ExtElC::Extrema_ExtElC (const gp_Lin& C1,
   myIsPar = Standard_False;
   myDone = Standard_False;
   myNbExt = 0;
+
+  if (PlanarLineCircleExtrema(C1, C2))
+  {
+    return;
+  }
 
   // Calculate T1 in the reference of the circle ...
   D = C1.Direction();

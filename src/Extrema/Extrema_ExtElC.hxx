@@ -130,6 +130,9 @@ public:
 
 protected:
 
+  //! Computes extrema in case when considered line and circle are in one plane
+  Standard_EXPORT Standard_Boolean PlanarLineCircleExtrema(const gp_Lin& C1,
+                                                           const gp_Circ& C2);
 
 
 

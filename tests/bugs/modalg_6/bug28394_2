@@ -1,0 +1,42 @@
+puts "========"
+puts "OCC28394"
+puts "========"
+puts ""
+##############################################
+# Not precise extrema solution of line and circle lying in the same plane
+##############################################
+
+set GoodNbExtremas 4
+
+circle c1 5 5 10 0 1 1 20
+mkedge e1 c1
+bmirror e1 e1 5 5 10 1 0 0
+mkcurve c1 e1
+
+cvalue c1 0.63 x1 y1 z1
+cvalue c1 5.47 x2 y2 z2
+
+dset dlx x2-x1
+dset dly y2-y1
+dset dlz z2-z1
+line l1 x1 y1+5 z1+5 dlx dly dlz
+
+set extrema_length [ llength [ extrema c1 l1 1 ] ]
+
+# Amount check
+if {${extrema_length} != [ expr 5*${GoodNbExtremas}] } {
+  puts "Error: Number of extremas computed is wrong"
+}
+
+for {set i 1} {${i} <= 4} {incr i} {
+  regexp {Axis   :([-0-9.+eE]+), ([-0-9.+eE]+), ([-0-9.+eE]+)} [dump ext_${i}] full dx dy dz
+  
+  cvalue c1 prm_1_${i} x y z dcx dcy dcz
+  
+  set DPL [ dval ${dx}*dlx+${dy}*dly+${dz}*dlz ]
+  set DPC [ dval ${dx}*dcx+${dy}*dcy+${dz}*dcz ]
+  
+  if { (abs(${DPL}) > 1.0e-12) || (abs(${DPC}) > 1.0e-12) } {
+    puts "Error: extrema ext_${i} was computed wrong (is not the normal to the curves)"
+  }
+}
