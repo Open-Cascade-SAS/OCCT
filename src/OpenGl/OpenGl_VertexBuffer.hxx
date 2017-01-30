@@ -300,7 +300,7 @@ private:
                            const Graphic3d_TypeOfAttribute theMode);
 
   //! Disable FFP color array pointer.
-  static void unbindFixedColor (const Handle(OpenGl_Context)& theCtx);
+  Standard_EXPORT static void unbindFixedColor (const Handle(OpenGl_Context)& theCtx);
 
 #endif
 public: //! @name methods for interleaved attributes array
