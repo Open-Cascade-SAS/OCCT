@@ -19,7 +19,6 @@
 
 #include <Aspect_GenId.hxx>
 #include <Aspect_TypeOfHighlightMethod.hxx>
-#include <Aspect_TypeOfUpdate.hxx>
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_MapOfObject.hxx>
 #include <Graphic3d_MapOfStructure.hxx>
@@ -66,31 +65,8 @@ public:
   //! Deletes the manager <me>.
   Standard_EXPORT ~Graphic3d_StructureManager();
 
-  //! Modifies the screen update mode.
-  //!
-  //! TOU_ASAP - as soon as possible
-  //! TOU_WAIT - on demand (with the Update function)
-  //! Note : Dynamic Operations and Update Mode
-  //! Use SetUpdateMode to control when changes to
-  //! the display are made.   Use one of the   following
-  //! functions to update one or more views:
-  //! - Update all views of the viewer: Graphic3d_StructureManager::Update()
-  //! - Update one view of the viewer:  Graphic3d_View::Update()
-  //! Use one of the following functions to update the entire display:
-  //! - Redraw all structures in all views: Graphic3d_StructureManager::Redraw()
-  //! - Redraw all structures in one view:  Graphic3d_View::Redraw()
-  void SetUpdateMode (const Aspect_TypeOfUpdate theType) { myUpdateMode = theType; }
-
-  //! Returns the screen update mode.
-  //!
-  //! TOU_ASAP	as soon as possible
-  //! TOU_WAIT	on demand (Update)
-  Aspect_TypeOfUpdate UpdateMode() const { return myUpdateMode; }
-
-  //! Updates screen in function of modifications of the structures
-  //! and invalidates bounding box of specified ZLayerId.
-  Standard_EXPORT virtual void Update (const Aspect_TypeOfUpdate theMode = Aspect_TOU_ASAP,
-                                       const Graphic3d_ZLayerId  theLayerId = Graphic3d_ZLayerId_UNKNOWN) const;
+  //! Invalidates bounding box of specified ZLayerId.
+  Standard_EXPORT virtual void Update (const Graphic3d_ZLayerId  theLayerId = Graphic3d_ZLayerId_UNKNOWN) const;
 
   //! Deletes and erases the 3D structure manager.
   Standard_EXPORT virtual void Remove();
@@ -193,7 +169,6 @@ protected:
 protected:
 
   Aspect_GenId myViewGenId;
-  Aspect_TypeOfUpdate myUpdateMode;
   Graphic3d_MapOfStructure myDisplayedStructure;
   Graphic3d_MapOfStructure myHighlightedStructure;
   Graphic3d_MapOfObject myRegisteredObjects;

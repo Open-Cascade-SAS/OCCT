@@ -1945,63 +1945,51 @@ The *V3d* package is basically a set of tools directed by  commands from the vie
 
 @subsubsection occt_visu_4_4_2 A programming example
 
-This sample TEST program for the *V3d* Package uses primary  packages *Xw* and *Graphic3d* and secondary packages *Visual3d, Aspect, Quantity,  Phigs* and *math*.  
+This sample TEST program for the *V3d* Package uses primary packages *Xw* and *Graphic3d* and secondary packages *Visual3d, Aspect, Quantity* and *math*.
 
 ~~~~~
-//Create a default display  connection
-Handle(Aspect_DisplayConnection)  aDisplayConnection = new  Aspect_DisplayConnection(); 
+// Create a default display connection
+Handle(Aspect_DisplayConnection) aDispConnection = new Aspect_DisplayConnection();
 
-//Create a Graphic Driver from  the default Aspect_DisplayConnection
-Handle(OpenGl_GraphicDriver)  GD = new OpenGl_GraphicDriver (aDisplayConnection);
+// Create a Graphic Driver from the default Aspect_DisplayConnection
+Handle(OpenGl_GraphicDriver) aGraphicDriver = new OpenGl_GraphicDriver (aDispConnection);
 
-//Create a Viewer to this Driver 
-Handle(V3d_Viewer)  VM = new V3d_Viewer(GD, 400.,  
-	// Space size  
-	V3d_Xpos,
-	// Default projection  
-	Quantity_NOC_DARKVIOLET, 
-	// Default  background  
-	V3d_ZBUFFER, 
-	// Type of  visualization  
-	V3d_GOURAUD, 
-	// Shading  model  
-	V3d_WAIT); 
-	// Update mode   
-// Create a structure in this  Viewer 
-Handle(Graphic3d_Structure) S =  new  Graphic3d_Structure(VM->Viewer()) ;  
+// Create a Viewer to this Driver
+Handle(V3d_Viewer) VM = new V3d_Viewer (aGraphicDriver);
+VM->SetDefaultBackgroundColor (Quantity_NOC_DARKVIOLET);
+VM->SetDefaultViewProj (V3d_Xpos);
+// Create a structure in this Viewer
+Handle(Graphic3d_Structure) aStruct = new Graphic3d_Structure (VM->Viewer());
 
-// Type of structure 
-S->SetVisual (Graphic3d_TOS_SHADING);  
+// Type of structure
+aStruct->SetVisual (Graphic3d_TOS_SHADING);
 
 // Create a group of primitives  in this structure
-Handle(Graphic3d_Group) G = new Graphic3d_Group(S) ;  
+Handle(Graphic3d_Group) aPrsGroup = new Graphic3d_Group (aStruct);
 
-// Fill this group with  one polygon of size 100  
-Graphic3d_Array1OfVertex Points(0,3) ;  
-Points(0).SetCoord(-100./2.,-100./2.,-100./2.) ;  
-Points(1).SetCoord(-100./2., 100./2.,-100./2.) ;  
-Points(2).SetCoord( 100./2., 100./2.,-100./2.) ;  
-Points(3).SetCoord( 100./2.,-100./2.,-100./2.) ;  
-Normal.SetCoord(0.,0.,1.) ;  
-G->Polygon(Points,Normal) ;  
+// Fill this group with one quad of size 100
+Handle(Graphic3d_ArrayOfTriangleStrips) aTriangles = new Graphic3d_ArrayOfTriangleStrips (4);
+aTriangles->AddVertex (-100./2., -100./2., 0.0);
+aTriangles->AddVertex (-100./2.,  100./2., 0.0);
+aTriangles->AddVertex ( 100./2., -100./2., 0.0);
+aTriangles->AddVertex ( 100./2.,  100./2., 0.0);
+aPrsGroup->Polygon (aTriangles);
 
 //  Create Ambient and Infinite Lights in this Viewer
-Handle(V3d_AmbientLight) L1  = new V3d_AmbientLight  
-	(VM,Quantity_NOC_GRAY50)  ;  
-Handle(V3d_DirectionalLight)  L2 = new V3d_DirectionalLight  
-	(VM,V3d_XnegYnegZneg,Quantity_NOC_WHITE)  ;  
+Handle(V3d_AmbientLight) aLight1 = new V3d_AmbientLight (VM, Quantity_NOC_GRAY50);
+Handle(V3d_DirectionalLight) aLight2 = new V3d_DirectionalLight (VM, V3d_XnegYnegZneg, Quantity_NOC_WHITE);
 
 // Create a 3D quality  Window with the same DisplayConnection
-Handle(Xw_Window) W =  new Xw_Window(aDisplayConnection,"Test  V3d",0.5,0.5,0.5,0.5) ;  
+Handle(Xw_Window) aWindow = new Xw_Window (aDispConnection, "Test V3d", 0.5, 0.5, 0.5, 0.5);
 
-// Map this Window to  this screen
-W->Map() ;  
+// Map this Window to this screen
+aWindow->Map();
 
 // Create a Perspective  View in this Viewer
-Handle(V3d_View) aView = new V3d_View(VM);
+Handle(V3d_View) aView = new V3d_View (VM);
 aView->Camera()->SetProjectionType (Graphic3d_Camera::Projection_Perspective);
 // Associate this View with the Window
-aView ->SetWindow(W);
+aView ->SetWindow (aWindow);
 // Display ALL structures in this View
 VM->Viewer()->Display();
 // Finally update the Visualization in this View

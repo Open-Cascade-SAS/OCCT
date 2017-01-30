@@ -799,8 +799,8 @@ void OpenGl_View::changeZLayer (const Handle(Graphic3d_CStructure)& theStructure
   const Graphic3d_ZLayerId anOldLayer = theStructure->ZLayer();
   const OpenGl_Structure* aStruct = reinterpret_cast<const OpenGl_Structure*> (theStructure.operator->());
   myZLayers.ChangeLayer (aStruct, anOldLayer, theNewLayerId);
-  Update (Aspect_TOU_WAIT, anOldLayer);
-  Update (Aspect_TOU_WAIT, theNewLayerId);
+  Update (anOldLayer);
+  Update (theNewLayerId);
 }
 
 //=======================================================================

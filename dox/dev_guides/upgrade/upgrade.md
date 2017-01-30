@@ -887,7 +887,7 @@ void UserDrawObject::Compute (const Handle(PrsMgr_PresentationManager3d)& thePrs
   aGroup->AddElement(anElem);
 
   // invalidate bounding box of the scene
-  thePrsMgr->StructureManager()->Update (thePrsMgr->StructureManager()->UpdateMode());
+  thePrsMgr->StructureManager()->Update();
 }
 ~~~~~
 
@@ -1199,6 +1199,13 @@ The follow AIS_InteractiveContext methods have been changed:
   SetHLRDeviationAngle, SetHLRAngleAndDeviation, SetSelectedAspect, MoveTo, Select, ShiftSelect, SetSelected,
   UpdateSelected, AddOrRemoveSelected, HilightSelected, UnhilightSelected, ClearSelected, ResetOriginalState,
   SubIntensityOn, SubIntensityOff, FitSelected, EraseGlobal, ClearGlobal, ClearGlobalPrs.
+
+In addition, the API for immediate viewer update has been removed from V3d_View and Graphic3d_StructureManager classes
+(enumerations *Aspect_TypeOfUpdate* and *V3d_TypeOfUpdate*):
+  V3d::SetUpdateMode(), V3d::UpdateMode(), Graphic3d_StructureManager::SetUpdateMode(), Graphic3d_StructureManager::UpdateMode().
+
+The argument theUpdateMode has been removed from methods Graphic3d_CView::Display(), ::Erase(), ::Update().
+Method Graphic3d_CView::Update() does not redraw the view and does not re-compute structures anymore.
 
 @subsection upgrade_720_Result_Of_BOP_On_Containers Result of Boolean operations on containers
 

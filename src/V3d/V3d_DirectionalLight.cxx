@@ -274,7 +274,6 @@ void V3d_DirectionalLight::Display (const Handle(V3d_View)& theView,
   Standard_Real DXRef,DYRef,DZRef,DXini,DYini,DZini;
   Standard_Real R1,G1,B1;
   V3d_TypeOfRepresentation Pres;
-  V3d_TypeOfUpdate UpdSov;
 
 //  Creation of a structure of markable elements (position of the
 //  light, and the domain of lighting represented by a circle)
@@ -283,8 +282,6 @@ void V3d_DirectionalLight::Display (const Handle(V3d_View)& theView,
 
     Pres = theTPres;
     Handle(V3d_Viewer) TheViewer = theView->Viewer();
-    UpdSov = TheViewer->UpdateMode();
-    TheViewer->SetUpdateMode(V3d_WAIT);
     if (!myGraphicStructure.IsNull()) {
        myGraphicStructure->Disconnect(myGraphicStructure1);
        myGraphicStructure->Clear();
@@ -369,7 +366,6 @@ void V3d_DirectionalLight::Display (const Handle(V3d_View)& theView,
 //    cout << "MyGraphicStructure exploration \n" << flush; MyGraphicStructure->Exploration();
   myTypeOfRepresentation = Pres;
   myGraphicStructure->Display();
-  TheViewer->SetUpdateMode(UpdSov);
 }
 
 // =======================================================================

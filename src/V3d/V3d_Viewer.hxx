@@ -47,7 +47,6 @@
 #include <V3d_ListOfView.hxx>
 #include <V3d_TypeOfOrientation.hxx>
 #include <V3d_TypeOfShadingModel.hxx>
-#include <V3d_TypeOfUpdate.hxx>
 #include <V3d_TypeOfView.hxx>
 #include <V3d_TypeOfVisualization.hxx>
 
@@ -194,15 +193,6 @@ public:
   //! Gives the default type of SHADING.
   void SetDefaultShadingModel (const V3d_TypeOfShadingModel theType) { myShadingModel = theType; }
 
-  //! Returns the regeneration mode of views in the viewer.
-  Standard_EXPORT V3d_TypeOfUpdate UpdateMode() const;
-
-  //! Defines the mode of regenerating the views making
-  //! up the viewer. This can be immediate <ASAP> or
-  //! deferred <WAIT>. In this latter case, the views are
-  //! updated when the method Update(me) is called.
-  Standard_EXPORT void SetUpdateMode (const V3d_TypeOfUpdate theMode);
-  
   void SetDefaultTypeOfView (const V3d_TypeOfView theType) { myDefaultTypeOfView = theType; }
 
   //! Returns the default background colour object.
@@ -447,7 +437,6 @@ public: //! @name deprecated methods
                               const Quantity_NameOfColor theViewBackground = Quantity_NOC_GRAY30,
                               const V3d_TypeOfVisualization theVisualization = V3d_ZBUFFER,
                               const V3d_TypeOfShadingModel theShadingModel = V3d_GOURAUD,
-                              const V3d_TypeOfUpdate theUpdateMode = V3d_WAIT,
                               const Standard_Boolean theComputedMode = Standard_True,
                               const Standard_Boolean theDefaultComputedMode = Standard_True);
 

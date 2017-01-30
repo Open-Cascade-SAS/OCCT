@@ -30,7 +30,6 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_StructureManager,MMgt_TShared)
 // ========================================================================
 Graphic3d_StructureManager::Graphic3d_StructureManager (const Handle(Graphic3d_GraphicDriver)& theDriver)
 : myViewGenId (0, 31),
-  myUpdateMode (Aspect_TOU_WAIT),
   myGraphicDriver (theDriver)
 {
   //
@@ -51,12 +50,11 @@ Graphic3d_StructureManager::~Graphic3d_StructureManager()
 // function : Update
 // purpose  :
 // ========================================================================
-void Graphic3d_StructureManager::Update (const Aspect_TypeOfUpdate theMode,
-                                         const Graphic3d_ZLayerId  theLayerId) const
+void Graphic3d_StructureManager::Update (const Graphic3d_ZLayerId theLayerId) const
 {
   for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
   {
-    aViewIt.Value()->Update (theMode, theLayerId);
+    aViewIt.Value()->Update (theLayerId);
   }
 }
 

@@ -70,7 +70,6 @@ V3d_Viewer::V3d_Viewer (const Handle(Graphic3d_GraphicDriver)& theDriver,
                         const Quantity_NameOfColor    theViewBackground,
                         const V3d_TypeOfVisualization theVisualization,
                         const V3d_TypeOfShadingModel  theShadingModel,
-                        const V3d_TypeOfUpdate        theUpdateMode,
                         const Standard_Boolean        theComputedMode,
                         const Standard_Boolean        theDefaultComputedMode)
 : myDriver (theDriver),
@@ -94,7 +93,6 @@ V3d_Viewer::V3d_Viewer (const Handle(Graphic3d_GraphicDriver)& theDriver,
   myRGrid = new V3d_RectangularGrid (this, Quantity_Color (Quantity_NOC_GRAY50), Quantity_Color (Quantity_NOC_GRAY70));
   myCGrid = new V3d_CircularGrid    (this, Quantity_Color (Quantity_NOC_GRAY50), Quantity_Color (Quantity_NOC_GRAY70));
   SetDefaultViewSize (theViewSize);
-  SetUpdateMode (theUpdateMode);
 }
 
 // ========================================================================
@@ -235,24 +233,6 @@ void V3d_Viewer::SetDefaultViewSize (const Standard_Real theSize)
 {
   V3d_BadValue_Raise_if (theSize <= 0.0, "V3d_Viewer::SetDefaultViewSize, bad size");
   myViewSize = theSize;
-}
-
-// ========================================================================
-// function : SetUpdateMode
-// purpose  :
-// ========================================================================
-void V3d_Viewer::SetUpdateMode (const V3d_TypeOfUpdate theMode)
-{
-  myStructureManager->SetUpdateMode (static_cast<Aspect_TypeOfUpdate> (theMode));
-}
-
-// ========================================================================
-// function : UpdateMode
-// purpose  :
-// ========================================================================
-V3d_TypeOfUpdate V3d_Viewer::UpdateMode() const
-{
-  return static_cast<V3d_TypeOfUpdate> (myStructureManager->UpdateMode());
 }
 
 // ========================================================================

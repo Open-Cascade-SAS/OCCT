@@ -208,7 +208,7 @@ void Graphic3d_Group::Update() const
     return;
   }
 
-  myStructure->StructureManager()->Update (myStructure->StructureManager()->UpdateMode());
+  myStructure->StructureManager()->Update();
 }
 
 // =======================================================================

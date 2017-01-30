@@ -136,7 +136,7 @@ void VUserDrawObj::Compute(const Handle(PrsMgr_PresentationManager3d)& thePrsMgr
   aGroup->AddElement(anElem);
 
   // invalidate bounding box of the scene
-  thePrsMgr->StructureManager()->Update (thePrsMgr->StructureManager()->UpdateMode());
+  thePrsMgr->StructureManager()->Update();
 }
 
 void VUserDrawObj::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,

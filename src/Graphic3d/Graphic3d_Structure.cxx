@@ -619,24 +619,10 @@ void Graphic3d_Structure::SetVisual (const Graphic3d_TypeOfStructure theVisual)
   }
   else
   {
-    Aspect_TypeOfUpdate anUpdateMode  = myStructureManager->UpdateMode();
-    if (anUpdateMode == Aspect_TOU_WAIT)
-    {
-      Erase();
-      myVisual = theVisual;
-      SetComputeVisual (theVisual);
-      Display();
-    }
-    else {
-      // To avoid calling method : Update ()
-      // Not useful and can be costly.
-      myStructureManager->SetUpdateMode (Aspect_TOU_WAIT);
-      Erase();
-      myVisual = theVisual;
-      SetComputeVisual (theVisual);
-      myStructureManager->SetUpdateMode (anUpdateMode);
-      Display();
-    }
+    Erase();
+    myVisual = theVisual;
+    SetComputeVisual (theVisual);
+    Display();
   }
 }
 
@@ -1254,8 +1240,7 @@ void Graphic3d_Structure::Update (const bool theUpdateLayer) const
     return;
   }
 
-  myStructureManager->Update (myStructureManager->UpdateMode(),
-                              theUpdateLayer ? myCStructure->ZLayer() : Graphic3d_ZLayerId_UNKNOWN);
+  myStructureManager->Update (theUpdateLayer ? myCStructure->ZLayer() : Graphic3d_ZLayerId_UNKNOWN);
 }
 
 //=============================================================================

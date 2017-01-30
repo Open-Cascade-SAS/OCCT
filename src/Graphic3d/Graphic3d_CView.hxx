@@ -16,7 +16,6 @@
 
 #include <Aspect_Handle.hxx>
 #include <Aspect_RenderingContext.hxx>
-#include <Aspect_TypeOfUpdate.hxx>
 #include <Aspect_Window.hxx>
 #include <Graphic3d_BufferType.hxx>
 #include <Graphic3d_Camera.hxx>
@@ -106,10 +105,11 @@ public:
   //! Computes the new presentation of the structure  displayed in this view with the type Graphic3d_TOS_COMPUTED.
   Standard_EXPORT void ReCompute (const Handle(Graphic3d_Structure)& theStructure);
 
-  //! Updates screen in function of modifications of the structures
-  //! and invalidates bounding box of specified ZLayerId.
-  Standard_EXPORT void Update (const Aspect_TypeOfUpdate theUpdateMode,
-                               const Graphic3d_ZLayerId  theLayerId = Graphic3d_ZLayerId_UNKNOWN);
+  //! Invalidates bounding box of specified ZLayerId.
+  Standard_EXPORT void Update (const Graphic3d_ZLayerId theLayerId = Graphic3d_ZLayerId_UNKNOWN);
+
+  //! Computes the new presentation of the structures displayed in this view with the type Graphic3d_TOS_COMPUTED.
+  Standard_EXPORT void Compute();
 
   //! Returns Standard_True if one of the structures displayed in the view contains Polygons, Triangles or Quadrangles.
   Standard_EXPORT Standard_Boolean ContainsFacet() const;
@@ -158,9 +158,6 @@ private:
   //! Is it possible to display the structure in the view?
   Standard_EXPORT Graphic3d_TypeOfAnswer acceptDisplay (const Graphic3d_TypeOfStructure theStructType) const;
 
-  //! Computes the new presentation of the structures displayed in this view with the type Graphic3d_TOS_COMPUTED.
-  Standard_EXPORT void Compute();
-
   //! Clears the structure in this view.
   Standard_EXPORT void Clear (const Handle(Graphic3d_Structure)& theStructure, const Standard_Boolean theWithDestruction);
 
@@ -175,16 +172,8 @@ private:
   //! Displays the structure in the view.
   Standard_EXPORT void Display (const Handle(Graphic3d_Structure)& theStructure);
 
-  //! Display the structure in the view.
-  Standard_EXPORT void Display (const Handle(Graphic3d_Structure)& theStructure,
-                                const Aspect_TypeOfUpdate theUpdateMode);
-
   //! Erases the structure from the view.
   Standard_EXPORT void Erase (const Handle(Graphic3d_Structure)& theStructure);
-
-  //! Erases the structure from the view.
-  Standard_EXPORT void Erase (const Handle(Graphic3d_Structure)& theStructure,
-                              const Aspect_TypeOfUpdate theUpdateMode);
 
   //! Highlights the structure in the view.
   Standard_EXPORT void Highlight (const Handle(Graphic3d_Structure)& theStructure);

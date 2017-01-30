@@ -218,7 +218,9 @@ void V3d_View::Update() const
     return;
   }
 
-  myView->Update (Aspect_TOU_ASAP);
+  myView->Update();
+  myView->Compute();
+  myView->Redraw();
 }
 
 //=============================================================================

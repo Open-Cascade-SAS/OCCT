@@ -86,12 +86,12 @@ void Graphic3d_CView::Activate()
       if (anAnswer == Graphic3d_TOA_YES
        || anAnswer == Graphic3d_TOA_COMPUTE)
       {
-        Display (aStruct, Aspect_TOU_WAIT);
+        Display (aStruct);
       }
     }
   }
 
-  Update (myStructureManager->UpdateMode());
+  Update();
 }
 
 // =======================================================================
@@ -122,11 +122,11 @@ void Graphic3d_CView::Deactivate()
       if (anAnswer == Graphic3d_TOA_YES
        || anAnswer == Graphic3d_TOA_COMPUTE)
       {
-        Erase (aStruct, Aspect_TOU_WAIT);
+        Erase (aStruct);
       }
     }
 
-    Update (myStructureManager->UpdateMode());
+    Update();
     myIsActive = Standard_False;
   }
 }
@@ -146,7 +146,7 @@ void Graphic3d_CView::Remove()
 
   for (Graphic3d_MapIteratorOfMapOfStructure aStructIter (aDisplayedStructs); aStructIter.More(); aStructIter.Next())
   {
-    Erase (aStructIter.Value(), Aspect_TOU_WAIT);
+    Erase (aStructIter.Value());
   }
 
   myStructsToCompute.Clear();
@@ -212,7 +212,7 @@ void Graphic3d_CView::SetComputedMode (const Standard_Boolean theMode)
       eraseStructure   (aStruct->CStructure());
       displayStructure (myStructsComputed.Value (anIndex)->CStructure(), aStruct->DisplayPriority());
 
-      Display (aStruct, Aspect_TOU_WAIT);
+      Display (aStruct);
       if (aStruct->IsHighlighted())
       {
         const Handle(Graphic3d_Structure)& aCompStruct = myStructsComputed.Value (anIndex);
@@ -262,7 +262,7 @@ void Graphic3d_CView::SetComputedMode (const Standard_Boolean theMode)
       displayStructure (aCompStruct->CStructure(), aStruct->DisplayPriority());
     }
   }
-  Update (myStructureManager->UpdateMode());
+  Update();
 }
 
 // =======================================================================
@@ -347,16 +347,9 @@ void Graphic3d_CView::ReCompute (const Handle(Graphic3d_Structure)& theStruct)
 // function : Update
 // purpose  :
 // =======================================================================
-void Graphic3d_CView::Update (const Aspect_TypeOfUpdate theUpdateMode,
-                              const Graphic3d_ZLayerId  theLayerId)
+void Graphic3d_CView::Update (const Graphic3d_ZLayerId theLayerId)
 {
   InvalidateZLayerBoundingBox (theLayerId);
-
-  if (theUpdateMode == Aspect_TOU_ASAP)
-  {
-    Compute();
-    Redraw();
-  }
 }
 
 // =======================================================================
@@ -589,10 +582,9 @@ Graphic3d_TypeOfAnswer Graphic3d_CView::acceptDisplay (const Graphic3d_TypeOfStr
 void Graphic3d_CView::Compute()
 {
   // force HLRValidation to False on all structures calculated in the view
-  const Standard_Integer aNbCompStructs = myStructsComputed.Length();
-  for (Standard_Integer aStructIter = 1; aStructIter <= aNbCompStructs; ++aStructIter)
+  for (Graphic3d_SequenceOfStructure::Iterator aStructIter (myStructsComputed); aStructIter.More(); aStructIter.Next())
   {
-    myStructsComputed.Value (aStructIter)->SetHLRValidation (Standard_False);
+    aStructIter.Value()->SetHLRValidation (Standard_False);
   }
 
   if (!ComputedMode())
@@ -615,7 +607,7 @@ void Graphic3d_CView::Compute()
 
   for (NCollection_Sequence<Handle(Graphic3d_Structure)>::Iterator aStructIter (aStructsSeq); aStructIter.More(); aStructIter.Next())
   {
-    Display (aStructIter.ChangeValue(), Aspect_TOU_WAIT);
+    Display (aStructIter.ChangeValue());
   }
 }
 
@@ -677,16 +669,6 @@ void Graphic3d_CView::Disconnect (const Handle(Graphic3d_Structure)& theMother,
 // =======================================================================
 void Graphic3d_CView::Display (const Handle(Graphic3d_Structure)& theStructure)
 {
-  Display (theStructure, myStructureManager->UpdateMode());
-}
-
-// =======================================================================
-// function : Display
-// purpose  :
-// =======================================================================
-void Graphic3d_CView::Display (const Handle(Graphic3d_Structure)& theStructure,
-                               const Aspect_TypeOfUpdate theUpdateMode)
-{
   if (!IsActive())
   {
     return;
@@ -725,7 +707,7 @@ void Graphic3d_CView::Display (const Handle(Graphic3d_Structure)& theStructure,
 
     theStructure->CalculateBoundBox();
     displayStructure (theStructure->CStructure(), theStructure->DisplayPriority());
-    Update (theUpdateMode, theStructure->GetZLayer());
+    Update (theStructure->GetZLayer());
     return;
   }
   else if (anAnswer != Graphic3d_TOA_COMPUTE)
@@ -746,7 +728,7 @@ void Graphic3d_CView::Display (const Handle(Graphic3d_Structure)& theStructure,
       }
 
       displayStructure (anOldStruct->CStructure(), theStructure->DisplayPriority());
-      Update (theUpdateMode, anOldStruct->GetZLayer());
+      Update (anOldStruct->GetZLayer());
       return;
     }
     else
@@ -769,7 +751,7 @@ void Graphic3d_CView::Display (const Handle(Graphic3d_Structure)& theStructure,
         const Handle(Graphic3d_Structure)& aNewStruct = myStructsComputed.Value (aNewIndex);
         myStructsComputed.SetValue (anIndex, aNewStruct);
         displayStructure (aNewStruct->CStructure(), theStructure->DisplayPriority());
-        Update (theUpdateMode, aNewStruct->GetZLayer());
+        Update (aNewStruct->GetZLayer());
         return;
       }
       else
@@ -849,7 +831,7 @@ void Graphic3d_CView::Display (const Handle(Graphic3d_Structure)& theStructure,
   myStructsDisplayed.Add (theStructure);
   displayStructure (aStruct->CStructure(), theStructure->DisplayPriority());
 
-  Update (theUpdateMode, aStruct->GetZLayer());
+  Update (aStruct->GetZLayer());
 }
 
 // =======================================================================
@@ -857,16 +839,6 @@ void Graphic3d_CView::Display (const Handle(Graphic3d_Structure)& theStructure,
 // purpose  :
 // =======================================================================
 void Graphic3d_CView::Erase (const Handle(Graphic3d_Structure)& theStructure)
-{
-  Erase (theStructure, myStructureManager->UpdateMode());
-}
-
-// =======================================================================
-// function : Erase
-// purpose  :
-// =======================================================================
-void Graphic3d_CView::Erase (const Handle(Graphic3d_Structure)& theStructure,
-                             const Aspect_TypeOfUpdate theUpdateMode)
 {
   if (!IsDisplayed (theStructure))
   {
@@ -893,7 +865,7 @@ void Graphic3d_CView::Erase (const Handle(Graphic3d_Structure)& theStructure,
     }
   }
   myStructsDisplayed.Remove (theStructure);
-  Update (theUpdateMode, theStructure->GetZLayer());
+  Update (theStructure->GetZLayer());
 }
 
 // =======================================================================
