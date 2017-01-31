@@ -4324,82 +4324,70 @@ static Standard_Integer VListConnected (Draw_Interpretor& /*di*/,
   return 0;
 }
 
-namespace
-{
-  //! Checks if theMode is already turned on for theObj.
-  static Standard_Boolean InList (const Handle(AIS_InteractiveContext)& theAISContext,
-                                  const Handle(AIS_InteractiveObject)&  theObj,
-                                  const Standard_Integer                theMode)
-  {
-    TColStd_ListOfInteger anActiveModes;
-    theAISContext->ActivatedModes (theObj, anActiveModes);
-    for (TColStd_ListIteratorOfListOfInteger aModeIt (anActiveModes); aModeIt.More(); aModeIt.Next())
-    {
-      if (aModeIt.Value() == theMode)
-      {
-        return Standard_True;
-      }
-    }
-    return Standard_False;
-  }
-}
-
 //===============================================================================================
 //function : VSetSelectionMode
-//purpose  : Sets input selection mode for input object or for all displayed objects 
-//Draw arg : vselmode [object] mode On/Off (1/0)
+//purpose  : vselmode
 //===============================================================================================
 static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
-                                           Standard_Integer  theArgc,
+                                           Standard_Integer  theNbArgs,
                                            const char**      theArgv)
 {
   // Check errors
   Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
   if (anAISContext.IsNull())
   {
-    std::cerr << "Call vinit before!" << std::endl;
+    std::cout << "Error: no active Viewer\n";
     return 1;
   }
 
-  // Check the arguments
-  if (theArgc < 3 && theArgc > 5)
-  {
-    std::cerr << "vselmode error : expects at least 2 arguments.\n"
-              << "Type help "<< theArgv[0] <<" for more information." << std::endl;
-    return 1;
-  }
-
-  TCollection_AsciiString aLastArg (theArgv[theArgc - 1]);
-  aLastArg.LowerCase();
-  Standard_Boolean isToOpenLocalCtx = aLastArg == "-local";
-
-  // get objects to change selection mode
-  AIS_ListOfInteractive aTargetIOs;
-  Standard_Integer anArgNb = isToOpenLocalCtx ? theArgc - 1 : theArgc;
-  if (anArgNb == 3)
-  {
-    anAISContext->DisplayedObjects (aTargetIOs);
-  }
-  else
-  {
-    // Check if there is an object with given name in context
-    const TCollection_AsciiString aNameIO (theArgv[1]);
-    if (GetMapOfAIS().IsBound2 (aNameIO))
-    {
-      Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aNameIO));
-      if (anIO.IsNull())
-      {
-        std::cerr << "vselmode error : object name is used for non AIS viewer" << std::endl;
-        return 1;
-      }
-      aTargetIOs.Append (anIO);
-    }
-  }
-
+  NCollection_Sequence<TCollection_AsciiString> anObjNames;
+  Standard_Integer toOpenLocalCtx = -1;
   Standard_Integer aSelectionMode = -1;
   Standard_Boolean toTurnOn = Standard_True;
+  AIS_SelectionModesConcurrency aSelModeConcurrency = AIS_SelectionModesConcurrency_GlobalOrLocal;
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
-    const TCollection_AsciiString aSelModeString (theArgv[anArgNb == 3 ? 1 : 2]);
+    TCollection_AsciiString anArgCase (theArgv[anArgIter]);
+    anArgCase.LowerCase();
+    if (toOpenLocalCtx == -1
+     && anArgCase == "-local")
+    {
+      toOpenLocalCtx = 1;
+    }
+    else if (anArgCase == "-set"
+          || anArgCase == "-replace"
+          || anArgCase == "-single"
+          || anArgCase == "-exclusive")
+    {
+      aSelModeConcurrency = AIS_SelectionModesConcurrency_Single;
+    }
+    else if (anArgCase == "-add"
+          || anArgCase == "-combine"
+          || anArgCase == "-combination"
+          || anArgCase == "-multiple")
+    {
+      aSelModeConcurrency = AIS_SelectionModesConcurrency_Multiple;
+    }
+    else if (anArgCase == "-globalorlocal"
+          || anArgCase == "-localorglobal")
+    {
+      aSelModeConcurrency = AIS_SelectionModesConcurrency_GlobalOrLocal;
+    }
+    else
+    {
+      anObjNames.Append (theArgv[anArgIter]);
+    }
+  }
+  if (anObjNames.Size() < 2
+  || !ViewerTest::ParseOnOff (anObjNames.Last().ToCString(), toTurnOn))
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
+  }
+  anObjNames.Remove (anObjNames.Upper());
+  {
+    const TCollection_AsciiString aSelModeString = anObjNames.Last();
+    anObjNames.Remove (anObjNames.Upper());
     TopAbs_ShapeEnum aShapeType = TopAbs_SHAPE;
     if (aSelModeString.IsIntegerValue())
     {
@@ -4415,10 +4403,27 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
       return 1;
     }
   }
-  if (!ViewerTest::ParseOnOff (theArgv[anArgNb == 3 ? 2 : 3], toTurnOn))
+
+  AIS_ListOfInteractive aTargetIOs;
+  for (NCollection_Sequence<TCollection_AsciiString>::Iterator anObjIter (anObjNames); anObjIter.More(); anObjIter.Next())
   {
-    std::cout << "Syntax error: on/off is expected by found '" << theArgv[anArgNb == 3 ? 2 : 3] << "'\n";
-    return 1;
+    const TCollection_AsciiString& aNameIO = anObjIter.Value();
+    Handle(AIS_InteractiveObject) anIO;
+    if (GetMapOfAIS().IsBound2 (aNameIO))
+    {
+      anIO = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aNameIO));
+    }
+
+    if (anIO.IsNull())
+    {
+      std::cout << "Syntax error: undefined presentable object " << aNameIO << "\n";
+      return 1;
+    }
+    aTargetIOs.Append (anIO);
+  }
+  if (aTargetIOs.IsEmpty())
+  {
+    anAISContext->DisplayedObjects (aTargetIOs);
   }
 
   Standard_DISABLE_DEPRECATION_WARNINGS
@@ -4426,66 +4431,24 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
   {
     anAISContext->CloseLocalContext();
   }
-  Standard_ENABLE_DEPRECATION_WARNINGS
-
-  if (aSelectionMode == 0)
+  else if (aSelectionMode != 0 && toTurnOn)
   {
-    if (toTurnOn)
-    {
-      for (AIS_ListIteratorOfListOfInteractive aTargetIt (aTargetIOs); aTargetIt.More(); aTargetIt.Next())
-      {
-        const Handle(AIS_InteractiveObject)& anIO = aTargetIt.Value();
-        TColStd_ListOfInteger anActiveModes;
-        anAISContext->ActivatedModes (anIO, anActiveModes);
-        if (!anActiveModes.IsEmpty())
-        {
-          anAISContext->Deactivate (anIO);
-        }
-        if (!InList (anAISContext, anIO, aSelectionMode))
-        {
-          anAISContext->Activate (anIO);
-        }
-      }
-    }
-    else
-    {
-      for (AIS_ListIteratorOfListOfInteractive aTargetIt (aTargetIOs); aTargetIt.More(); aTargetIt.Next())
-      {
-        const Handle(AIS_InteractiveObject)& anIO = aTargetIt.Value();
-        if (InList (anAISContext, anIO, aSelectionMode))
-        {
-          anAISContext->Deactivate (anIO);
-        }
-      }
-    }
-  }
-
-  if (aSelectionMode != 0 && toTurnOn) // Turn on specified mode
-  {
-    Standard_DISABLE_DEPRECATION_WARNINGS
-    if (!anAISContext->HasOpenedContext() && isToOpenLocalCtx)
+    if (!anAISContext->HasOpenedContext() && toOpenLocalCtx == 1)
     {
       anAISContext->OpenLocalContext (Standard_False);
     }
-    Standard_ENABLE_DEPRECATION_WARNINGS
-
-    for (AIS_ListIteratorOfListOfInteractive aTargetIt (aTargetIOs); aTargetIt.More(); aTargetIt.Next())
-    {
-      const Handle(AIS_InteractiveObject)& anIO = aTargetIt.Value();
-      anAISContext->Deactivate (anIO, 0);
-      anAISContext->Load (anIO, -1, Standard_True);
-      anAISContext->Activate (anIO, aSelectionMode);
-    }
   }
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
-  if (aSelectionMode != 0 && !toTurnOn) // Turn off specified mode
+  for (AIS_ListIteratorOfListOfInteractive aTargetIt (aTargetIOs); aTargetIt.More(); aTargetIt.Next())
   {
-    for (AIS_ListIteratorOfListOfInteractive aTargetIt (aTargetIOs); aTargetIt.More(); aTargetIt.Next())
+    const Handle(AIS_InteractiveObject)& anIO = aTargetIt.Value();
+    if (toOpenLocalCtx == 1 && toTurnOn && aSelectionMode != 0)
     {
-      anAISContext->Deactivate (aSelectionMode);
+      anAISContext->Load (anIO, -1, Standard_True);
     }
+    anAISContext->SetSelectionModeActive (anIO, aSelectionMode, toTurnOn, aSelModeConcurrency);
   }
-
   return 0;
 }
 
@@ -6695,24 +6658,19 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
 
 
   theCommands.Add("vselmode", 
-    "vselmode : [object] mode_number is_turned_on=(1|0)\n"
-    "  switches selection mode for the determined object or\n"
-    "  for all objects in context.\n"
-    "  mode_number is non-negative integer that has different\n"
-    "    meaning for different interactive object classes.\n"
-    "    For shapes the following mode_number values are allowed:\n"
-    "      0 - shape\n"
-    "      1 - vertex\n"
-    "      2 - edge\n"
-    "      3 - wire\n"
-    "      4 - face\n"
-    "      5 - shell\n"
-    "      6 - solid\n"
-    "      7 - compsolid\n"
-    "      8 - compound\n"
-    "  is_turned_on is:\n"
-    "    1 if mode is to be switched on\n"
-    "    0 if mode is to be switched off\n", 
+                "vselmode [object] selectionMode {on|off}"
+      "\n\t\t:            [{-add|-set|-globalOrLocal}=-globalOrLocal]"
+      "\n\t\t: Switches selection mode for the specified object or for all objects in context."
+      "\n\t\t: Selection mode is either an integer number specific to Interactive Object,"
+      "\n\t\t: or sub-shape type in case of AIS_Shape:"
+      "\n\t\t:   Shape, Vertex, Edge, Wire, Face, Shell, Solid, CompSolid, Compound"
+      "\n\t\t: The integer mode 0 (Shape in case of AIS_Shape) is reserved for selecting object as whole."
+      "\n\t\t: Additional options:"
+      "\n\t\t:  -add           already activated selection modes will be left activated"
+      "\n\t\t:  -set           already activated selection modes will be deactivated"
+      "\n\t\t:  -globalOrLocal (default) if new mode is Global selection mode,"
+      "\n\t\t:                 then active local selection modes will be deactivated"
+      "\n\t\t:                 and the samthen active local selection modes will be deactivated",
     __FILE__, VSetSelectionMode, group);
 
   theCommands.Add("vselnext",

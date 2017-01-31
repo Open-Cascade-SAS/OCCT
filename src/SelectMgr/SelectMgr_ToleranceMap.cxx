@@ -72,7 +72,9 @@ void SelectMgr_ToleranceMap::Decrement (const Standard_Integer& theTolerance)
     return;
   }
 
+  Standard_ProgramError_Raise_if (*aFreq == 0, "SelectMgr_ToleranceMap::Decrement() - internal error");
   --(*aFreq);
+
   if (theTolerance == myLargestKey
   && *aFreq == 0)
   {

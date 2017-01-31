@@ -25,6 +25,7 @@
 #include <AIS_KindOfInteractive.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_Selection.hxx>
+#include <AIS_SelectionModesConcurrency.hxx>
 #include <AIS_StatusOfDetection.hxx>
 #include <AIS_StatusOfPick.hxx>
 #include <AIS_TypeOfIso.hxx>
@@ -596,18 +597,48 @@ public: //! @name immediate mode rendering
 
 public: //! @name management of active Selection Modes
 
+  //! Activates or deactivates the selection mode for specified object.
+  //! Has no effect if selection mode was already active/deactivated.
+  //! @param theObj         object to activate/deactivate selection mode
+  //! @param theMode        selection mode to activate/deactivate;
+  //!                       deactivation of -1 selection mode will effectively deactivate all selection modes;
+  //!                       activation of -1 selection mode with AIS_SelectionModesConcurrency_Single
+  //!                       will deactivate all selection modes, and will has no effect otherwise
+  //! @param theToActivate  activation/deactivation flag
+  //! @param theConcurrency specifies how to handle already activated selection modes;
+  //!                       default value (AIS_SelectionModesConcurrency_Multiple) means active selection modes should be left as is,
+  //!                       AIS_SelectionModesConcurrency_Single can be used if only one selection mode is expected to be active
+  //!                       and AIS_SelectionModesConcurrency_GlobalOrLocal can be used if either AIS_InteractiveObject::GlobalSelectionMode()
+  //!                       or any combination of Local selection modes is acceptable;
+  //!                       this value is considered only if theToActivate set to TRUE
+  //! @param theIsForce     when set to TRUE, the display status will be ignored while activating selection mode
+  Standard_EXPORT void SetSelectionModeActive (const Handle(AIS_InteractiveObject)& theObj,
+                                               const Standard_Integer theMode,
+                                               const Standard_Boolean theToActivate,
+                                               const AIS_SelectionModesConcurrency theConcurrency = AIS_SelectionModesConcurrency_Multiple,
+                                               const Standard_Boolean theIsForce = Standard_False);
+
   //! Activates the selection mode aMode whose index is given, for the given interactive entity anIobj.
-  Standard_EXPORT void Activate (const Handle(AIS_InteractiveObject)& anIobj, const Standard_Integer aMode = 0, const Standard_Boolean theIsForce = Standard_False);
+  void Activate (const Handle(AIS_InteractiveObject)& theObj, const Standard_Integer theMode = 0, const Standard_Boolean theIsForce = Standard_False)
+  {
+    SetSelectionModeActive (theObj, theMode, Standard_True, AIS_SelectionModesConcurrency_GlobalOrLocal, theIsForce);
+  }
 
   //! Activates the given selection mode for the all displayed objects.
   Standard_EXPORT void Activate (const Standard_Integer theMode,
                                  const Standard_Boolean theIsForce = Standard_False);
   
   //! Deactivates all the activated selection modes of an object.
-  Standard_EXPORT void Deactivate (const Handle(AIS_InteractiveObject)& anIObj);
+  void Deactivate (const Handle(AIS_InteractiveObject)& theObj)
+  {
+    SetSelectionModeActive (theObj, -1, Standard_False, AIS_SelectionModesConcurrency_Single);
+  }
 
   //! Deactivates all the activated selection modes of the interactive object anIobj with a given selection mode aMode.
-  Standard_EXPORT void Deactivate (const Handle(AIS_InteractiveObject)& anIobj, const Standard_Integer aMode);
+  void Deactivate (const Handle(AIS_InteractiveObject)& theObj, const Standard_Integer theMode)
+  {
+    SetSelectionModeActive (theObj, theMode, Standard_False);
+  }
 
   //! Deactivates the given selection mode for all displayed objects.
   Standard_EXPORT void Deactivate (const Standard_Integer theMode);

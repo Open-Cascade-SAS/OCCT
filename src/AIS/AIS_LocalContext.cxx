@@ -376,48 +376,95 @@ void AIS_LocalContext::Clear(const AIS_ClearMode aType)
     ClearDetected();
   }
 }
-//=======================================================================
-//function : ActivateMode
-//purpose  : 
-//=======================================================================
 
-void AIS_LocalContext::ActivateMode(const Handle(AIS_InteractiveObject)& aSelectable,
-				       const Standard_Integer aMode)
+//=======================================================================
+//function : SetSelectionModeActive
+//purpose  :
+//=======================================================================
+void AIS_LocalContext::SetSelectionModeActive (const Handle(AIS_InteractiveObject)& theObj,
+                                               const Standard_Integer theMode,
+                                               const Standard_Boolean theIsActive,
+                                               const AIS_SelectionModesConcurrency theActiveFilter)
 {
-  if(!myActiveObjects.IsBound(aSelectable)) return;
-//  if(myActiveObjects(aSelectable)->SelectionMode()!=aMode)
-//    mySM->Deactivate(aSelectable,aMode,myMainVS);
-  if(aMode != -1){
-    myActiveObjects(aSelectable)->AddSelectionMode(aMode);
-    mySM->Activate(aSelectable,aMode,myMainVS);
+  const Handle(AIS_LocalStatus)* aStat = myActiveObjects.Seek (theObj);
+  if (aStat == NULL)
+  {
+    return;
   }
-}
-//=======================================================================
-//function : ActivateMode
-//purpose  : 
-//=======================================================================
 
-void AIS_LocalContext::DeactivateMode(const Handle(AIS_InteractiveObject)& aSelectable,
-					 const Standard_Integer aMode)
-{
-  if(!myActiveObjects.IsBound(aSelectable)) return;
-  
-  if(aMode==-1) return;
-  
-  myActiveObjects(aSelectable)->RemoveSelectionMode(aMode);
-  mySM->Deactivate(aSelectable,aMode,myMainVS);
-}
-//=======================================================================
-//function : ActivateMode
-//purpose  : 
-//=======================================================================
+  if (!theIsActive
+   || (theMode == -1
+    && theActiveFilter == AIS_SelectionModesConcurrency_Single))
+  {
+    if (theMode == -1)
+    {
+      for (TColStd_ListIteratorOfListOfInteger aModeIter ((*aStat)->SelectionModes()); aModeIter.More(); aModeIter.Next())
+      {
+        mySM->Deactivate (theObj, aModeIter.Value(), myMainVS);
+      }
+      (*aStat)->ClearSelectionModes();
+    }
+    else
+    {
+      mySM->Deactivate (theObj, theMode, myMainVS);
+      (*aStat)->RemoveSelectionMode (theMode);
+    }
+    return;
+  }
+  else if (theMode == -1)
+  {
+    return;
+  }
+  else if ((*aStat)->SelectionModes().Size() == 1
+        && (*aStat)->SelectionModes().First() == theMode)
+  {
+    return;
+  }
 
-void AIS_LocalContext::Deactivate(const Handle(AIS_InteractiveObject)& aSelectable)
-{
-  if(!myActiveObjects.IsBound(aSelectable)) return;
-  
-  mySM->Deactivate(aSelectable, -1, myMainVS);
-  myActiveObjects(aSelectable)->ClearSelectionModes();
+  switch (theActiveFilter)
+  {
+    case AIS_SelectionModesConcurrency_Single:
+    {
+      for (TColStd_ListIteratorOfListOfInteger aModeIter ((*aStat)->SelectionModes()); aModeIter.More(); aModeIter.Next())
+      {
+        mySM->Deactivate (theObj, aModeIter.Value(), myMainVS);
+      }
+      (*aStat)->ClearSelectionModes();
+      break;
+    }
+    case AIS_SelectionModesConcurrency_GlobalOrLocal:
+    {
+      const Standard_Integer aGlobSelMode = theObj->GlobalSelectionMode();
+      TColStd_ListOfInteger aRemovedModes;
+      for (TColStd_ListIteratorOfListOfInteger aModeIter ((*aStat)->SelectionModes()); aModeIter.More(); aModeIter.Next())
+      {
+        if ((theMode == aGlobSelMode && aModeIter.Value() != aGlobSelMode)
+          || (theMode != aGlobSelMode && aModeIter.Value() == aGlobSelMode))
+        {
+          mySM->Deactivate (theObj, aModeIter.Value(), myMainVS);
+          aRemovedModes.Append (aModeIter.Value());
+        }
+      }
+      if (aRemovedModes.Size() == (*aStat)->SelectionModes().Size())
+      {
+        (*aStat)->ClearSelectionModes();
+      }
+      else
+      {
+        for (TColStd_ListIteratorOfListOfInteger aModeIter (aRemovedModes); aModeIter.More(); aModeIter.Next())
+        {
+          (*aStat)->RemoveSelectionMode (aModeIter.Value());
+        }
+      }
+      break;
+    }
+    case AIS_SelectionModesConcurrency_Multiple:
+    {
+      break;
+    }
+  }
+  mySM->Activate (theObj, theMode, myMainVS);
+  (*aStat)->AddSelectionMode (theMode);
 }
 
 //=======================================================================
