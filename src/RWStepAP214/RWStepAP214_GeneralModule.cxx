@@ -1356,6 +1356,8 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_GeneralModule,StepData_GeneralModule)
 #include <RWStepVisual_RWCameraModelD3MultiClipping.hxx>
 #include <RWStepVisual_RWCameraModelD3MultiClippingIntersection.hxx>
 #include <RWStepVisual_RWCameraModelD3MultiClippingUnion.hxx>
+#include <StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem.hxx>
+#include <RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem.hxx>
 
 static Standard_Integer catsh,catdr,catstr,catdsc,cataux;
 
@@ -5150,6 +5152,13 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer CN,
     tool.Share(anent, iter);
   }
   break;
+  case 719:
+  {
+    DeclareAndCast(StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem, anent, ent);
+    RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem tool;
+    tool.Share(anent, iter);
+  }
+  break;
     default : break;
     }
 }
@@ -7159,6 +7168,9 @@ Standard_Boolean RWStepAP214_GeneralModule::NewVoid
    case 718:
      ent = new StepVisual_CameraModelD3MultiClippingUnion;
    break;
+   case 719:
+     ent = new StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem;
+   break;
 
     
   default: 
@@ -7758,6 +7770,7 @@ Standard_Integer  RWStepAP214_GeneralModule::CategoryNumber
   case 716:
   case 717:
   case 718: return cataux;
+  case 719: return catdr;
     
   default : break;
   }

@@ -2577,6 +2577,13 @@ Standard_Boolean STEPCAFControl_Reader::setDatumToXCAF(const Handle(StepDimTol_D
     // Create object for datum
     TDF_Label aDatL = aDGTTool->AddDatum();
     myGDTMap.Bind(theDat, aDatL);
+    // bind datum label with all reference datum_feature entities
+    for (Standard_Integer i = 1; i <= aSAs.Length(); i++) {
+      Handle(StepRepr_ShapeAspect) aSA = aSAs.Value(i);
+      if (aSA.IsNull() || aSA->IsKind(STANDARD_TYPE(StepDimTol_DatumTarget)))
+        continue;
+      myGDTMap.Bind(aSA, aDatL);
+    }
     aDGTTool->Lock(aDatL);
     aDat = XCAFDoc_Datum::Set(aDatL);
     aDGTTool->SetDatum(aShapeLabels, aDatL);
@@ -4311,6 +4318,9 @@ Standard_Boolean STEPCAFControl_Reader::ReadViews(const Handle(XSControl_WorkSes
             Handle(StepAP242_DraughtingModelItemAssociation)::DownCast(aDMIAIter.Value());
           TDF_Label aGDTL;
           Standard_Boolean isFind = myGDTMap.Find(aDMIA->Definition().Value(), aGDTL);
+          if (!isFind) {
+            isFind = myGDTMap.Find(anIter.Value(), aGDTL);
+          }
           if (isFind)
             aGDTs.Append(aGDTL);
         }

@@ -1404,6 +1404,8 @@ Handle(atype) result = Handle(atype)::DownCast (start)
 #include <RWStepVisual_RWCameraModelD3MultiClipping.hxx>
 #include <RWStepVisual_RWCameraModelD3MultiClippingIntersection.hxx>
 #include <RWStepVisual_RWCameraModelD3MultiClippingUnion.hxx>
+#include <StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem.hxx>
+#include <RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem.hxx>
 
 
 // -- General Declarations (Recognize, StepType) ---
@@ -3462,6 +3464,13 @@ Standard_Integer RWStepAP214_ReadWriteModule::CaseStep
                  types(5).IsEqual(StepType(624))))) {
         return 705;
       }
+      if ((types(1).IsEqual(StepType(4))) &&
+          (types(2).IsEqual(StepType(7))) &&
+          (types(3).IsEqual(StepType(144))) &&
+          (types(4).IsEqual(StepType(247))) &&
+          (types(5).IsEqual(StepType(270)))) {
+        return 719;
+      }
     }
     else if (NbComp == 4) {
       if ((types(1).IsEqual(StepType(161))) &&
@@ -3875,6 +3884,8 @@ Standard_Boolean RWStepAP214_ReadWriteModule::IsComplex
     case 706:
       return Standard_True;
     case 715:
+      return Standard_True;
+    case 719:
       return Standard_True;
     default:
       return Standard_False;
@@ -4848,6 +4859,14 @@ Standard_Boolean RWStepAP214_ReadWriteModule::ComplexType(const Standard_Integer
       types.Append(StepType(714));
       types.Append(StepType(441));
       types.Append(StepType(245));
+      break;
+    case 719:
+      types.Append(StepType(4));
+      types.Append(StepType(7));
+      types.Append(StepType(144));
+      types.Append(StepType(247));
+      types.Append(StepType(270));
+      break;
     }
   return Standard_True;
 }
@@ -9419,6 +9438,14 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
      tool.ReadStep(data, num, ach, anent);
    }
    break;
+     case 719:
+   {
+     DeclareAndCast(StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem, anent, ent);
+     RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem tool;
+     tool.ReadStep(data, num, ach, anent);
+   }
+   break;
+   
 
   default: 
     ach->AddFail("Type Mismatch when reading - Entity");
@@ -14268,7 +14295,13 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
       tool.WriteStep(SW, anent);
     }
     break;
-
+      case 719:
+    {
+      DeclareAndCast(StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem, anent, ent);
+      RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem tool;
+      tool.WriteStep(SW, anent);
+    }
+      break;
 
   default: 
     return;
