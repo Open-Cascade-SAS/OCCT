@@ -175,22 +175,13 @@ Run this command without arguments to get help on supported options.
 @section OCCT_OVW_SECTION_5 Requirements
 
 Open CASCADE Technology is designed to be highly portable and is known to 
-work on wide range of platforms (UNIX, Linux, Windows, Mac OS X, Android). 
+work on wide range of platforms. 
 Current version is officially certified on Windows (IA-32 and x86-64), 
-Linux (x86-64), MAC OS X (x86-64) and Android (4.0.4 armv7) platforms. 
+Linux (x86-64), OS X / macOS (x86-64), Android (armv7 and x86), and 
+iOS (armv7, arm64) platforms. 
 
-The tables below describe the recommended hardware and software configurations
+The tables below describe the recommended software configurations
 for which OCCT is certified to work.
-
-@subsection overview_req_os Operating System
-
-| OS        | Versions |
-| --------- | ----------- |
-| Windows   | 10, 8.1, 7 SP1, Vista SP2 |
-| Linux     | Mandriva 2010, CentOS 6.3, Fedora 18, Ubuntu 14.10 - 15.10, Debian 6.0, Debian 7.0 |
-| OS X      | 10.10 Yosemite / 10.9 Mavericks / 10.8 Mountain Lion / 10.7 Lion |
-| Android   | 6.x, 5.x, 4.0.4+ |
-| iOS       | iOS 7 |
 
 @subsection overview_req_cpp C++ Compiler / IDE
 
@@ -229,19 +220,14 @@ On desktop, 3D viewer for optimal performance requires graphics processing unit 
 Ray tracing requires OpenGL 4.0+ or OpenGL 3.3+ with *GL_ARB_texture_buffer_object_rgb32* extension.
 Textures within ray tracing will be available only when *GL_ARB_bindless_texture extension* is provided by driver.
 
-On mobile platforms, OpenGL ES 2.0+ is required for 3D viewer. The ray tracing is not yet available on mobile platforms.
+On mobile platforms, OpenGL ES 2.0+ is required for 3D viewer (OpenGL ES 3.1+ is recommended).
+The ray tracing is not yet available on mobile platforms.
 Some old hardware might be unable to execute complex GLSL programs (e.g. with high number of light sources, clipping planes).
 
-The following table lists graphic cards tested to work with OCCT.
-
-| Graphic card  | Driver | OS | OpenGL (fixed pipeline) | OpenGL (shaders) | OpenGL (ray tracing) |
-| ---- | ---- | ---- | :----: | :----: | :----: |
-| NVIDIA GeForce GTX 650     | Driver 340.52, OpenGL 4.4        | Windows 7 64 bit           | OK | OK  | OK |
-| AMD/ATI RadeOn HD 7870     | Driver 14.100, OpenGL 4.4        | Windows 7 64-bit           | OK | OK  | OK |
-| Intel(R) HD Graphics 2500  | Driver 10.18.10.3621, OpenGL 4.0 | Windows 7 64 bit           | OK | OK  | limited (no textures) |
-| NVIDIA GeForce 320         | N/A                              | Mac OS X 10.6 / OS X 10.10 | OK | OK  | not yet supported by OCCT |
-| Apple software OpenGL      | N/A                              | Mac OS X 10.6 / OS X 10.10 | OK | OK  | N/A |
-| Mesa 10.2.4 (software emulator) | "Gallium 0.4 on llvmpipe (LLVM 3.4, 256 bits)" OpenGL 3.0 | Windows 7 64 bit   | OK | OK  | unsupported by software |
+OCCT 3D Viewer, in general, supports wide range of graphics hardware - from very old to new.
+Therefore, if you observe some unexpected visual issues - first check for OpenGL driver update (or firmware update in case of mobile platforms);
+but beware that driver update might also come with new bugs.
+Don't forget to report these bugs to vendors.
 
 @section OCCT_OVW_SECTION_4 Installation
 
