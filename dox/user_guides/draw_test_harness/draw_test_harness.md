@@ -9845,7 +9845,31 @@ projcurve k_1 0 1 5
 ==Param = -0.20000000000000001  Gap = 5.0009999000199947 
 ~~~~~
 
-@subsubsection occt_draw_9_1_14 projface
+@subsubsection occt_draw_9_1_14 projpcurve
+
+Syntax:      
+~~~~~
+projpcurve <edge> <face>  <Tol> <X> <Y> <Z> [<start_param>]
+~~~~~
+
+**projpcurve** returns the projection of a given point on a given curve on surface. The curve on surface is defined by giving the edge and face names. Edge must have curve 2D repesentation on the face. Optional parameter <i>\<start_param\></i> is any parameter of pcurve, which is used by algoritm as start point for searching projection of given point with help of local Extrema algorithm. If this parameter is not set, algorithm uses whole parametric interval of pcurve for searching projection.   
+
+**Example:** 
+~~~~~ 
+##Using global searching   
+projpcurve f_1 f 1.e-7 0.877 0 0.479
+==Point: 0.87762772831890712 0 0.47934285275342808
+==Param: 0.49990578239977856
+==Dist: 0.0007152557954264938
+~~~~~
+##Using starting parameter on edge
+projpcurve f_1 f 1.e-7 0.877 0 0.479 .6
+==Point: 0.87762772831890712 0 0.47934285275342808
+==Param: 0.49990578239977856
+==Dist: 0.0007152557954264938
+~~~~~
+
+@subsubsection occt_draw_9_1_15 projface
 
 Syntax:      
 ~~~~~
@@ -9861,7 +9885,7 @@ projface a_1 10.0 0.0
 ==   =   proj  X = -116  Y = -45  Z = 0 
 ~~~~~
 
-@subsubsection occt_draw_9_1_15 scaleshape
+@subsubsection occt_draw_9_1_16 scaleshape
 
 Syntax:   
 ~~~~~
@@ -9875,7 +9899,7 @@ Returns a new shape, which is the result of scaling of a given shape with a coef
 scaleshape r a_1 0.8 
 ~~~~~
 
-@subsubsection occt_draw_9_1_16 settolerance
+@subsubsection occt_draw_9_1_17 settolerance
 
 Syntax:      
 ~~~~~
@@ -9890,7 +9914,7 @@ Sets new values of tolerance for a given shape. If the second parameter <i>mode<
 settolerance a 0.001 
 ~~~~~
 
-@subsubsection occt_draw_9_1_17 splitface
+@subsubsection occt_draw_9_1_18 splitface
 
 Syntax:      
 ~~~~~
@@ -9908,7 +9932,7 @@ splitface r f u 5
 ==> Status:  DONE1 
 ~~~~~
 
-@subsubsection occt_draw_9_1_18 statshape
+@subsubsection occt_draw_9_1_19 statshape
 
 Syntax:      
 ~~~~~
@@ -9934,7 +9958,7 @@ statshape a
 ==> 34     bspsur: BSplineSurface 
 ~~~~~
 
-@subsubsection occt_draw_9_1_19 tolerance
+@subsubsection occt_draw_9_1_20 tolerance
 
 Syntax:
 ~~~~~

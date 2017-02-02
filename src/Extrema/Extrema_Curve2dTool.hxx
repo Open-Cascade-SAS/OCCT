@@ -25,6 +25,7 @@
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 #include <Standard_Boolean.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
@@ -63,7 +64,12 @@ public:
   //! Stores in <T> the  parameters bounding the intervals
   //! of continuity <S>.
     static void Intervals (const Adaptor2d_Curve2d& C, TColStd_Array1OfReal& T, const GeomAbs_Shape S);
-  
+
+  //! Returns the parameters bounding the intervals of subdivision of curve
+  //! according to Curvature deflection. Value of deflection is defined in method.
+  //!
+    Standard_EXPORT static Handle(TColStd_HArray1OfReal) DeflCurvIntervals(const Adaptor2d_Curve2d& C);
+
     static Standard_Boolean IsClosed (const Adaptor2d_Curve2d& C);
   
     static Standard_Boolean IsPeriodic (const Adaptor2d_Curve2d& C);

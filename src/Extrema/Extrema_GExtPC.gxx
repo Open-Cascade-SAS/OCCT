@@ -28,6 +28,7 @@
 #include <Precision.hxx>
 #include <ElCLib.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 #include <NCollection_Array1.hxx>
 
 
@@ -260,13 +261,32 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
     }
   default:
     {
+      const Standard_Integer aMaxSample = 17;
       Standard_Boolean IntExtIsDone = Standard_False;
       Standard_Boolean IntIsNotValid;
+      Handle(TColStd_HArray1OfReal) theHInter;
       n = TheCurveTool::NbIntervals(aCurve, GeomAbs_C2);
-      TColStd_Array1OfReal theInter(1, n+1);
+      if (n > 1)
+      {
+        theHInter = new TColStd_HArray1OfReal(1, n + 1);
+        TheCurveTool::Intervals(aCurve, theHInter->ChangeArray1(), GeomAbs_C2);
+      }
+      else
+      {
+        theHInter = TheCurveTool::DeflCurvIntervals(aCurve);
+        n = theHInter->Length() - 1;
+      }
+      mysample = Max(mysample / n, aMaxSample);
+      Standard_Real maxint = 0.;
+      for (i = 1; i <= n; ++i)
+      {
+        Standard_Real dt = theHInter->Value(i + 1) - theHInter->Value(i);
+        if (maxint < dt)
+        {
+          maxint = dt;
+        }
+      }
       Standard_Boolean isPeriodic = TheCurveTool::IsPeriodic(aCurve);
-      TheCurveTool::Intervals(aCurve, theInter, GeomAbs_C2);
-      mysample = Max(mysample/n, 17);
       TheVector V1;
       ThePoint PP;
       Standard_Real s1 = 0.0 ;
@@ -274,8 +294,9 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
       myExtPC.Initialize(aCurve);
       for (i = 1; i <= n; i++)
       {
-        myintuinf = theInter(i);
-        myintusup = theInter(i+1);
+        myintuinf = theHInter->Value(i);
+        myintusup = theHInter->Value(i+1);
+        mysample = Max(RealToInt(aMaxSample*(myintusup - myintuinf) / maxint), 3);
         
         Standard_Real anInfToCheck = myintuinf;
         Standard_Real aSupToCheck = myintusup;

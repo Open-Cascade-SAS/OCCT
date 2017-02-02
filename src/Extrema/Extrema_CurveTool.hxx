@@ -25,6 +25,7 @@
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 #include <Standard_Boolean.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <gp_Pnt.hxx>
@@ -65,8 +66,13 @@ public:
   //! The array must provide  enough room to  accomodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
     static void Intervals (Adaptor3d_Curve& C, TColStd_Array1OfReal& T, const GeomAbs_Shape S);
-  
-  Standard_EXPORT static Standard_Boolean IsPeriodic (const Adaptor3d_Curve& C);
+
+  //! Returns the parameters bounding the intervals of subdivision of curve
+  //! according to Curvature deflection. Value of deflection is defined in method.
+  //!
+    Standard_EXPORT static Handle(TColStd_HArray1OfReal) DeflCurvIntervals(const Adaptor3d_Curve& C);
+
+    Standard_EXPORT static Standard_Boolean IsPeriodic (const Adaptor3d_Curve& C);
   
     static Standard_Real Period (const Adaptor3d_Curve& C);
   

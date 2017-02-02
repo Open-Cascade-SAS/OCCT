@@ -9,6 +9,7 @@ Extrema_CCLocFOfLocECC.hxx
 Extrema_CCLocFOfLocECC2d.hxx
 Extrema_CCLocFOfLocECC2d_0.cxx
 Extrema_CCLocFOfLocECC_0.cxx
+Extrema_Curve2dTool.cxx
 Extrema_Curve2dTool.hxx
 Extrema_Curve2dTool.lxx
 Extrema_CurveLocator.gxx
