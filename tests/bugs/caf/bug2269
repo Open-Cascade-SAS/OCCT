@@ -1,3 +1,5 @@
+puts "REQUIRED All: XmlDriver warning: failure reading attribute TDataStd_RealArray"
+
 puts "================"
 puts "OCC2269"
 puts "================"
