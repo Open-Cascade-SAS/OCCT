@@ -127,23 +127,6 @@ public:
   
   Standard_EXPORT void AppendEStr (const Handle(TColStd_HSequenceOfHExtendedString)& seqval, const Standard_ExtString strval) const;
   
-  //! Writes a Shape under the internal BRepTools form
-  //! (an internal help utility)
-  //! Returns True if writing has succeeded, False else
-  Standard_EXPORT Standard_Boolean WriteShape (const TopoDS_Shape& shape, const Standard_CString filename) const;
-  
-  //! Returns a new empty, undefined Shape, which can then be filled
-  //! by ReadShape
-  Standard_EXPORT TopoDS_Shape NewShape() const;
-  
-  //! Reads a Shape from the internal BRepTools form and returns it
-  //! (an internal help utility)
-  //! Returns True if reading has succeeded, False else
-  Standard_EXPORT Standard_Boolean ReadShape (TopoDS_Shape& shape, const Standard_CString filename) const;
-  
-  //! Returns True if a Shape is Null
-  Standard_EXPORT Standard_Boolean IsNullShape (const TopoDS_Shape& shape) const;
-  
   //! Converts a list of Shapes to a Compound (a kind of Shape)
   Standard_EXPORT TopoDS_Shape CompoundFromSeq (const Handle(TopTools_HSequenceOfShape)& seqval) const;
   

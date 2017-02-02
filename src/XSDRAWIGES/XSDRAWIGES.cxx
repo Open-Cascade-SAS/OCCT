@@ -14,6 +14,7 @@
 //gka 06.01.99 S3767 new function TPSTAT (first version)
 //pdn 11.01.99 putting "return" statement for compilation on NT
 
+#include <BRepTools.hxx>
 #include <DBRep.hxx>
 #include <Draw_Appli.hxx>
 #include <Draw_ProgressIndicator.hxx>
@@ -61,17 +62,40 @@
 #include <XSControl_WorkSession.hxx>
 #include <XSControl_TransferReader.hxx>
 #include <XSDRAW.hxx>
-#include <XSDRAW_Commands.hxx>
 #include <XSDRAWIGES.hxx>
 
 #include <stdio.h>
-// #include <IGESData_IGESWriter.hxx>
-// pour igeslist
-//#include <GeometryTest.hxx>  essai CKY 4-AUT-1998
-//#include <BRepTest.hxx>      essai CKY 4-AUT-1998
-//#include <MeshTest.hxx>      essai CKY 4-AUT-1998
-// Init functions
-// + tplosttrim
+
+namespace {
+
+  //=======================================================================
+//function : WriteShape
+//purpose  : Creates a file Shape_'number'
+//=======================================================================
+void WriteShape(const TopoDS_Shape& shape, const Standard_Integer number)
+{
+  char fname[110];
+  sprintf(fname, "Shape_%d",number);
+  ofstream f(fname,ios::out);
+  cout << "Output file name : " << fname << endl;
+  f << "DBRep_DrawableShape\n";
+  
+  BRepTools::Write(shape, f);
+  f.close();
+}
+
+TCollection_AsciiString XSDRAW_CommandPart
+  (Standard_Integer argc, const char** argv, const Standard_Integer argf)
+{
+  TCollection_AsciiString res;
+  for (Standard_Integer i = argf; i < argc; i ++) {
+    if (i > argf) res.AssignCat(" ");
+    res.AssignCat (argv[i]);
+  }
+  return res;
+}
+}
+
 //--------------------------------------------------------------
 // Function : igesbrep
 //--------------------------------------------------------------
@@ -182,7 +206,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 	char fname[110];
 	Sprintf(fname, "%s", rnom.ToCString());
 	di << "Saving shape in variable Draw : " << fname << "\n";
-	if (answer == 3) IGESToBRep::WriteShape (shape,1);
+	if (answer == 3) WriteShape (shape,1);
 	try {
 	  OCC_CATCH_SIGNALS
 	  DBRep::Set(fname,shape);
@@ -192,7 +216,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 	  di << Standard_Failure::Caught()->GetMessageString();
 	  di<<" ** Skip\n";
 	  di << "Saving shape in variable Draw : " << fname << "\n";
-	  IGESToBRep::WriteShape (shape,1);
+	  WriteShape (shape,1);
 	}
       }
 	
@@ -205,7 +229,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 	  char fname[110];
 	  Sprintf(fname, "%s_%d", rnom.ToCString(),inum);
 	  di << "Saving shape in variable Draw : " << fname << "\n";
-	  if (answer == 4) IGESToBRep::WriteShape (shape,inum);
+	  if (answer == 4) WriteShape (shape,inum);
 	  try {
 	    OCC_CATCH_SIGNALS
 	    DBRep::Set(fname,shape);
@@ -279,7 +303,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 	  di << Standard_Failure::Caught()->GetMessageString();
 	  di<<" ** Skip\n";
           di << "Saving shape in variable Draw : " << fname << "\n";
-          IGESToBRep::WriteShape (shape,1);
+          WriteShape (shape,1);
         }                                                                             
         return 0;
       }

@@ -950,7 +950,7 @@ The related classes, e.g. *AIS_LocalContext*, and methods ( <i>AIS_InteractiveCo
 
 The main functionality provided by Local Context - selection of object subparts - can be now used within Neutral Point without opening any Local Context.
 
-The property *::SelectionMode()* has been removed from the class *AIS_InteractiveObject*.
+The property *SelectionMode()* has been removed from the class *AIS_InteractiveObject*.
 This property contradicts to selection logic, since it is allowed to activate several Selection modes at once.
 Therefore keeping one selection mode as object field makes no sense.
 Applications that used this method should implement selection mode caching at application level, if it is necessary for some reason.
@@ -1120,7 +1120,7 @@ The following classes have been changed:
 @subsection upgrade_720_removed Removed features
 
 The following obsolete features have been removed:
-* *AIS_InteractiveContext::PreSelectionColor()*, *::DefaultColor()*, *::WasCurrentTouched()*, *::ZDetection()*.
+* *AIS_InteractiveContext::PreSelectionColor()*, *DefaultColor()*, *WasCurrentTouched()*, *ZDetection()*.
   These properties were unused, and therefore application should remove occurrences of these methods.
 * *AIS_InteractiveObject::SelectionPriority()*.
   These property was not implemented.
@@ -1170,7 +1170,7 @@ Management of highlight attributes has been revised and might require modificati
 * Since Highlight and Selection styles within *AIS_InteractiveContext* are now defined by *Prs3d_Drawer* inheriting from *Graphic3d_PresentationAttributes*,
   it is now possible to customize default highlight attributes like *Display Mode* and *ZLayer*, which previously could be defined only on Object level.
 * Properties *Prs3d_Drawer::HighlightStyle()* and *Prs3d_Drawer::SelectionStyle()* have been removed.
-  Instead, *AIS_InteractiveObject* now defines *::DynamicHilightAttributes()* for dynamic highlighting in addition to *::HilightAttributes()* used for highlighting in selected state.
+  Instead, *AIS_InteractiveObject* now defines *DynamicHilightAttributes()* for dynamic highlighting in addition to *HilightAttributes()* used for highlighting in selected state.
 * The following protected fields have been removed from class *AIS_InteractiveObject*:
   - *myOwnColor*, replaced by *myDrawer->Color()*
   - *myTransparency*, replaced by *myDrawer->Transparency()*

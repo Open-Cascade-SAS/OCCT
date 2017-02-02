@@ -49,8 +49,6 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT static void DumpMapOfShapeWithState (const Standard_Integer iP, const TopOpeBRepDS_IndexedDataMapOfShapeWithState& aMapOfShapeWithState);
-  
   Standard_EXPORT static void FindState (const TopoDS_Shape& aVertex, const TopAbs_State aState, const TopAbs_ShapeEnum aShapeEnum, const TopTools_IndexedDataMapOfShapeListOfShape& aMapVertexEdges, TopTools_MapOfShape& aMapProcessedVertices, TopOpeBRepDS_DataMapOfShapeState& aMapVs);
   
   Standard_EXPORT static void PropagateState (const TopOpeBRepDS_DataMapOfShapeState& aSplEdgesState, const TopTools_IndexedMapOfShape& anEdgesToRestMap, const TopAbs_ShapeEnum aShapeEnum1, const TopAbs_ShapeEnum aShapeEnum2, TopOpeBRepTool_ShapeClassifier& aShapeClassifier, TopOpeBRepDS_IndexedDataMapOfShapeWithState& aMapOfShapeWithState, const TopTools_MapOfShape& anUnkStateShapes);

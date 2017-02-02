@@ -335,26 +335,6 @@ static const Standard_ExtString   voidext = { 0 };
 //  ##########################################################
 //  #######           SHAPES : Acces de base           #######
 
-    Standard_Boolean  XSControl_Utils::WriteShape
-  (const TopoDS_Shape& shape,
-   const Standard_CString filename) const
-      {  return BRepTools::Write (shape,filename);  }
-
-    TopoDS_Shape  XSControl_Utils::NewShape () const
-      {  TopoDS_Shape shape;  return shape;  }
-
-    Standard_Boolean  XSControl_Utils::ReadShape
-  (TopoDS_Shape& shape,
-   const Standard_CString filename) const
-{
-  BRep_Builder B;
-  return BRepTools::Read (shape,filename,B);
-}
-
-    Standard_Boolean  XSControl_Utils::IsNullShape (const TopoDS_Shape& shape) const
-      {  return shape.IsNull();  }
-
-
     TopoDS_Shape  XSControl_Utils::CompoundFromSeq
   (const Handle(TopTools_HSequenceOfShape)& seqval) const
 {

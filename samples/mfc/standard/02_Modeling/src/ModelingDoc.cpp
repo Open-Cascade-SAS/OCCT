@@ -2504,7 +2504,6 @@ void CModelingDoc::OnSplitLocal()
 	asect.Approximation(Standard_True);
 	asect.Build();
 	TopoDS_Shape R = asect.Shape();
-	BRepTools::Write(R,"E:\\temp\\R");
 
 	BRepFeat_SplitShape asplit(S);
 	
@@ -3143,9 +3142,6 @@ void CModelingDoc::OnFace()
 	PinkFace = BRepBuilderAPI_MakeFace(aFace,Wire1);
 	BRepLib::BuildCurves3d(PinkFace);
 
-	BRepTools::Write(PinkFace,"E:\\temp\\PinkFace.rle");
-
-
 /////////////Display
 	Handle(AIS_Shape) white = new AIS_Shape(WhiteFace);
 	myAISContext->SetColor(white,Quantity_NOC_WHITE,Standard_False);
@@ -3758,8 +3754,6 @@ void CModelingDoc::OnBuilder()
 
 	B.Add(FXMAX,W);
 
-	BRepTools::Write(FXMAX,"E:\\temp\\f1.rle");
-
 	//Face FXMIN
 	P = new Geom_Plane(gp_Ax2(gp_Pnt(0,0,0),gp_Dir(-1,0,0),gp_Dir(0,0,1)));
 	B.MakeFace(FXMIN,P,precision);
@@ -3937,9 +3931,6 @@ void CModelingDoc::OnBuilder()
 
 	FYMAX.Orientation(TopAbs_REVERSED);
 
-	BRepTools::Write(FZMIN,"E:\\temp\\f3.rle");
-	BRepTools::Write(FYMAX,"E:\\temp\\f2.rle");
-
 	//Shell
 	TopoDS_Shell Sh;
 	B.MakeShell(Sh);
@@ -3955,7 +3946,6 @@ void CModelingDoc::OnBuilder()
 	B.MakeSolid(Sol);
 	B.Add(Sol,Sh);
 
-	BRepTools::Write(Sol,"e://temp//solid");
 	Handle(AIS_Shape) borne = new AIS_Shape(Sol);
 	myAISContext->SetDisplayMode (borne, 1, Standard_False);
 	myAISContext->SetColor (borne, Quantity_NOC_RED, Standard_False);

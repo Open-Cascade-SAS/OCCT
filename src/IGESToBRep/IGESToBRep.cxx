@@ -21,7 +21,6 @@
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepTools.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
@@ -78,12 +77,6 @@
 #include <TopoDS_Wire.hxx>
 #include <XSAlgo.hxx>
 
-#include <stdio.h>
-/* Just used for WriteShape */
-//:21 
-//                     =========================
-//                     ==  Selection Members  ==
-//                     =========================
 static Handle(IGESToBRep_AlgoContainer) theContainer; 
  
 //=======================================================================                                                
@@ -245,23 +238,6 @@ Standard_Boolean IGESToBRep::IsBRepEntity(const Handle(IGESData_IGESEntity)& sta
   if (start->IsKind(STANDARD_TYPE(IGESSolid_EdgeList)))       return Standard_True;
   if (start->IsKind(STANDARD_TYPE(IGESSolid_Loop)))           return Standard_True;
   return Standard_False;
-}
-
-//=======================================================================
-//function : WriteShape
-//purpose  : Creates a file Shape_'number'
-//=======================================================================
-void IGESToBRep::WriteShape(const TopoDS_Shape& shape,
-			    const Standard_Integer number)
-{
-  char fname[110];
-  sprintf(fname, "Shape_%d",number);
-  ofstream f(fname,ios::out);
-  cout << "Output file name : " << fname << endl;
-  f << "DBRep_DrawableShape\n";
-  
-  BRepTools::Write(shape, f);
-  f.close();
 }
 
 //=======================================================================

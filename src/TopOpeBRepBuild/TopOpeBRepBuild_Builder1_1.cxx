@@ -85,7 +85,6 @@ static TopTools_MapOfShape theUnkStateVer;
 
 extern Standard_Boolean GLOBAL_faces2d;
 
-//modified by NIZNHY-PKV Mon Dec 16 11:38:55 2002 f
 //=======================================================================
 //function : ~TopOpeBRepBuild_Builder1
 //purpose  : 
@@ -96,7 +95,116 @@ TopOpeBRepBuild_Builder1::~TopOpeBRepBuild_Builder1()
   theUsedVertexMap.Clear();
   theUnkStateVer.Clear();
 }
-//modified by NIZNHY-PKV Mon Dec 16 11:38:59 2002 t
+
+/*
+namespace {
+
+void DumpMapOfShapeWithState (const Standard_Integer iP,
+                              const TopOpeBRepDS_IndexedDataMapOfShapeWithState& aMapOfShapeWithState)
+{
+  static Standard_Integer cnt=0;
+  TCollection_AsciiString aFName1 ("/DEBUG/TOPOPE/"), postfix;
+
+  Standard_CString ShapeType [9] = {"COMPO", "COMPS", "SOLID", "SHELL", "FACE ", "WIRE ", "EDGE ", "VERTX"};
+  Standard_CString ShapeState[4] = {"IN ", "OUT", "ON ", "UNKNOWN"};
+  
+  printf("\n\n********************************\n");
+  printf("*                              *\n");
+  Standard_Integer i, n=aMapOfShapeWithState.Extent();
+  if (!iP) {
+    printf("*  Object comparing with TOOL  *\n");
+    postfix=TCollection_AsciiString("Obj");
+  }
+    
+  else {
+    printf("*  Tool comparing with Object  *\n");
+    postfix=TCollection_AsciiString("Tool");
+  }
+  
+  printf("*                              *\n");
+  printf("********************************\n");
+  printf("***       aMapOfShapeWithState.Extent()=%d\n", n);
+  printf("                 C O N T E N T S\n"); 
+
+  TCollection_AsciiString aFName;
+  aFName+=aFName1; 
+  aFName+=postfix;
+
+  for (i=1; i<=n; i++) {
+    TCollection_AsciiString aI(i), aName;;
+    aName+=aFName; aName+=aI;
+
+    const TopoDS_Shape& aShape=aMapOfShapeWithState.FindKey(i);
+    const TopOpeBRepDS_ShapeWithState& aShapeWithState=
+      aMapOfShapeWithState.FindFromIndex(i);
+    
+    BRepTools::Write (aShape, aName.ToCString());
+
+    TCollection_AsciiString ann;
+    ann+=postfix; ann+=aI;
+
+    printf("Key: %-8s , " , ann.ToCString());
+    printf("%s, ", ShapeType[aShape.ShapeType()]);
+    if (!iP) 
+      printf("State comp.with Tool=%s\n",  ShapeState[aShapeWithState.State()]);
+
+    else 
+      printf("State comp.with Obj =%s\n",  ShapeState[aShapeWithState.State()]);
+    
+    if (aShapeWithState.IsSplitted()) {
+      
+      const TopTools_ListOfShape& aListOfShape=aShapeWithState.Part(TopAbs_IN);
+      TopTools_ListIteratorOfListOfShape anIt(aListOfShape);
+      for (;anIt.More(); anIt.Next()) {
+	const TopoDS_Shape& aS=anIt.Value();
+	
+	TCollection_AsciiString cn(cnt), prefix("_S_"), sn;
+	sn+=aFName; sn+=prefix; sn+=cn;
+	BRepTools::Write (aS, sn.ToCString());
+	
+	TCollection_AsciiString an;//=postfix+prefix+cn;
+	an+=postfix; an+=prefix; an+=cn;
+	printf("  -> Splitted Part IN : %s\n",  an.ToCString());
+	cnt++;
+      }
+
+      const TopTools_ListOfShape& aListOfShapeOut=aShapeWithState.Part(TopAbs_OUT);
+      anIt.Initialize (aListOfShapeOut);
+      for (;anIt.More(); anIt.Next()) {
+	const TopoDS_Shape& aS=anIt.Value();
+
+	TCollection_AsciiString cn(cnt), prefix("_S_"), sn;//=aFName+prefix+cn;
+	sn+=aFName; sn+=prefix; sn+=cn;
+	BRepTools::Write (aS, sn.ToCString());
+	
+	TCollection_AsciiString an;//=postfix+prefix+cn;
+	an+=postfix; an+=prefix; an+=cn;
+	printf("  -> Splitted Part OUT: %-s\n",  an.ToCString());
+	cnt++;
+      }
+
+      const TopTools_ListOfShape& aListOfShapeOn=aShapeWithState.Part(TopAbs_ON);
+      anIt.Initialize (aListOfShapeOn);
+      for (;anIt.More(); anIt.Next()) {
+	const TopoDS_Shape& aS=anIt.Value();
+
+	TCollection_AsciiString cn(cnt), prefix("_S_"), sn;//=aFName+prefix+cn;
+	sn+=aFName; sn+=prefix; sn+=cn;
+	BRepTools::Write (aS, sn.ToCString());
+
+	TCollection_AsciiString an;//=postfix+prefix+cn;
+	an+=postfix; an+=prefix; an+=cn;
+	printf("  -> Splitted Part ON : %s\n",  an.ToCString());
+	cnt++;
+      } 
+    }
+  
+  }
+  cnt=0;
+}
+
+} // anonymous namespace
+*/
 
 //=======================================================================
 //function : PerformShapeWithStates
@@ -252,8 +360,8 @@ TopOpeBRepBuild_Builder1::~TopOpeBRepBuild_Builder1()
   TopOpeBRepDS_IndexedDataMapOfShapeWithState& aMapOfShapeWithStateTool=
     aDS.ChangeMapOfShapeWithStateTool();
  
-  TopOpeBRepBuild_Tools::DumpMapOfShapeWithState(0, aMapOfShapeWithStateObj);
-  TopOpeBRepBuild_Tools::DumpMapOfShapeWithState(1, aMapOfShapeWithStateTool);
+  DumpMapOfShapeWithState(0, aMapOfShapeWithStateObj);
+  DumpMapOfShapeWithState(1, aMapOfShapeWithStateTool);
 */  
  
   // Phase#2 Phase ON

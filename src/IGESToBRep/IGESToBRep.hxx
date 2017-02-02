@@ -97,46 +97,10 @@ public:
   //! 502, 504, 508, 510, 514, 186.
   Standard_EXPORT static Standard_Boolean IsBRepEntity (const Handle(IGESData_IGESEntity)& start);
   
-  //! Creates  a file  Shape_'number' with the shape being
-  //! able to be restored by Draw.
-  Standard_EXPORT static void WriteShape (const TopoDS_Shape& shape, const Standard_Integer number);
-  
   Standard_EXPORT static Standard_Integer IGESCurveToSequenceOfIGESCurve (const Handle(IGESData_IGESEntity)& curve, Handle(TColStd_HSequenceOfTransient)& sequence);
   
   Standard_EXPORT static Standard_Boolean TransferPCurve (const TopoDS_Edge& fromedge, const TopoDS_Edge& toedge, const TopoDS_Face& face);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class IGESToBRep_CurveAndSurface;
-friend class IGESToBRep_BasicSurface;
-friend class IGESToBRep_BasicCurve;
-friend class IGESToBRep_TopoSurface;
-friend class IGESToBRep_TopoCurve;
-friend class IGESToBRep_BRepEntity;
-friend class IGESToBRep_IGESBoundary;
-friend class IGESToBRep_Reader;
-friend class IGESToBRep_Actor;
-friend class IGESToBRep_AlgoContainer;
-friend class IGESToBRep_ToolContainer;
-
 };
-
-
-
-
-
-
 
 #endif // _IGESToBRep_HeaderFile
