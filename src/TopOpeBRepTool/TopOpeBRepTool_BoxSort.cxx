@@ -183,7 +183,7 @@ const TopoDS_Shape& TopOpeBRepTool_BoxSort::HABShape(const Standard_Integer I) c
   Standard_Integer iu = myHAI->Upper();
   Standard_Boolean b = (I >= 1 && I <= iu);
   if (!b) {
-    Standard_ProgramError::Raise("BS::Box3");
+    throw Standard_ProgramError("BS::Box3");
   }
   Standard_Integer im = myHAI->Value(I);
   const TopoDS_Shape& S = myHBT->Shape(im);

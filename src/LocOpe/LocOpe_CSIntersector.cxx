@@ -79,7 +79,7 @@ void LocOpe_CSIntersector::Init(const TopoDS_Shape& S)
 void LocOpe_CSIntersector::Perform(const LocOpe_SequenceOfLin& Slin)
 {
   if (myShape.IsNull() || Slin.Length() <= 0) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   myDone = Standard_False;
 
@@ -115,7 +115,7 @@ void LocOpe_CSIntersector::Perform(const LocOpe_SequenceOfLin& Slin)
 void LocOpe_CSIntersector::Perform(const LocOpe_SequenceOfCirc& Scir)
 {
   if (myShape.IsNull() || Scir.Length() <= 0) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   myDone = Standard_False;
 
@@ -157,7 +157,7 @@ void LocOpe_CSIntersector::Perform(const LocOpe_SequenceOfCirc& Scir)
 void LocOpe_CSIntersector::Perform(const TColGeom_SequenceOfCurve& Scur)
 {
   if (myShape.IsNull() || Scur.Length() <= 0) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   myDone = Standard_False;
 
@@ -199,9 +199,9 @@ void LocOpe_CSIntersector::Perform(const TColGeom_SequenceOfCurve& Scur)
 Standard_Integer LocOpe_CSIntersector::NbPoints
    (const Standard_Integer I) const
 {
-  if (!myDone) {StdFail_NotDone::Raise();}
+  if (!myDone) {throw StdFail_NotDone();}
   if (I <= 0 || I > myNbelem) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return ((LocOpe_SequenceOfPntFace *)myPoints)[I-1].Length();
 }
@@ -215,9 +215,9 @@ const LocOpe_PntFace& LocOpe_CSIntersector::
    Point(const Standard_Integer I,
 	 const Standard_Integer Index) const
 {
-  if (!myDone) {StdFail_NotDone::Raise();}
+  if (!myDone) {throw StdFail_NotDone();}
   if (I <= 0 || I > myNbelem) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return ((LocOpe_SequenceOfPntFace *)myPoints)[I-1](Index);
 }
@@ -250,10 +250,10 @@ Standard_Boolean LocOpe_CSIntersector::LocalizeAfter
     Standard_Integer& IndTo) const
 {
   if (!myDone) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   if (I <= 0 || I > myNbelem) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return LocAfter((((LocOpe_SequenceOfPntFace*)myPoints)[I-1]),
 		  From,Tol,Or,IndFrom,IndTo);
@@ -274,10 +274,10 @@ Standard_Boolean LocOpe_CSIntersector::LocalizeBefore
     Standard_Integer& IndTo) const
 {
   if (!myDone) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   if (I <= 0 || I > myNbelem) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return LocBefore(((LocOpe_SequenceOfPntFace*)myPoints)[I-1],
 		   From,Tol,Or,IndFrom,IndTo);
@@ -297,10 +297,10 @@ Standard_Boolean LocOpe_CSIntersector::LocalizeAfter
     Standard_Integer& IndTo) const
 {
   if (!myDone) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   if (I <= 0 || I > myNbelem) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return LocAfter(((LocOpe_SequenceOfPntFace*)myPoints)[I-1],
 		  FromInd,Tol,Or,IndFrom,IndTo);
@@ -321,10 +321,10 @@ Standard_Boolean LocOpe_CSIntersector::LocalizeBefore
     Standard_Integer& IndTo) const
 {
   if (!myDone) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   if (I <= 0 || I > myNbelem) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return LocBefore(((LocOpe_SequenceOfPntFace*)myPoints)[I-1],
 		   FromInd,Tol,Or,IndFrom,IndTo);

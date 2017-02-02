@@ -90,7 +90,7 @@ void ChFi2d_FilletAlgo::Init(const TopoDS_Wire& theWire, const gp_Pln& thePlane)
       break;
   }
   if (theEdge1.IsNull() || theEdge2.IsNull())
-    Standard_ConstructionError::Raise("The fillet algorithms expects a wire consisting of two edges.");
+    throw Standard_ConstructionError("The fillet algorithms expects a wire consisting of two edges.");
   Init(theEdge1, theEdge2, thePlane);
 }
 

@@ -55,7 +55,7 @@ GeomPlate_Surface::GeomPlate_Surface(const Handle(Geom_Surface)& Surfinit,const 
 
 void GeomPlate_Surface::UReverse()
 {
- //Standard_Failure::Raise("UReverse"); 
+ //throw Standard_Failure("UReverse");
 }
 
 
@@ -65,7 +65,7 @@ void GeomPlate_Surface::UReverse()
 //=======================================================================
 
 Standard_Real GeomPlate_Surface::UReversedParameter(const Standard_Real U) const 
-{ //Standard_Failure::Raise("UReversedParameter"); 
+{ //throw Standard_Failure("UReversedParameter");
   return (-U);
 }
 
@@ -76,7 +76,7 @@ Standard_Real GeomPlate_Surface::UReversedParameter(const Standard_Real U) const
 //=======================================================================
 
 void GeomPlate_Surface::VReverse()
-{ //Standard_Failure::Raise("VReverse");
+{ //throw Standard_Failure("VReverse");
 }
 
 
@@ -86,7 +86,7 @@ void GeomPlate_Surface::VReverse()
 //=======================================================================
 
 Standard_Real GeomPlate_Surface::VReversedParameter(const Standard_Real V) const 
-{ //Standard_Failure::Raise("VReversedParameter");
+{ //throw Standard_Failure("VReversedParameter");
   return (-V);
 }
 
@@ -98,7 +98,7 @@ Standard_Real GeomPlate_Surface::VReversedParameter(const Standard_Real V) const
 
 //void GeomPlate_Surface::TransformParameters(Standard_Real& U, Standard_Real& V, const gp_Trsf& T) const 
 void GeomPlate_Surface::TransformParameters(Standard_Real& , Standard_Real& , const gp_Trsf& ) const 
-{//Standard_Failure::Raise("TransformParameters");
+{//throw Standard_Failure("TransformParameters");
 }
 
 
@@ -109,7 +109,7 @@ void GeomPlate_Surface::TransformParameters(Standard_Real& , Standard_Real& , co
 
 //gp_GTrsf2d GeomPlate_Surface::ParametricTransformation(const gp_Trsf& T) const 
 gp_GTrsf2d GeomPlate_Surface::ParametricTransformation(const gp_Trsf& ) const 
-{//Standard_Failure::Raise("ParametricTransformation");
+{//throw Standard_Failure("ParametricTransformation");
   return gp_GTrsf2d();
 }
 
@@ -134,7 +134,7 @@ void GeomPlate_Surface::Bounds(Standard_Real& U1, Standard_Real& U2, Standard_Re
 //=======================================================================
 
 Standard_Boolean GeomPlate_Surface::IsUClosed() const 
-{ //Standard_Failure::Raise("IsUClosed(");
+{ //throw Standard_Failure("IsUClosed(");
   //return 1;
   return 0;
 }
@@ -146,7 +146,7 @@ Standard_Boolean GeomPlate_Surface::IsUClosed() const
 //=======================================================================
 
 Standard_Boolean GeomPlate_Surface::IsVClosed() const 
-{ //Standard_Failure::Raise("IsVClosed(");
+{ //throw Standard_Failure("IsVClosed(");
   //return 1;
   return 0;
 }
@@ -203,7 +203,7 @@ Standard_Real GeomPlate_Surface::VPeriod() const
 
 //Handle(Geom_Curve) GeomPlate_Surface::UIso(const Standard_Real U) const 
 Handle(Geom_Curve) GeomPlate_Surface::UIso(const Standard_Real ) const 
-{ //Standard_Failure::Raise("UIso");
+{ //throw Standard_Failure("UIso");
   return Handle(Geom_Curve)();
 }
 
@@ -215,7 +215,7 @@ Handle(Geom_Curve) GeomPlate_Surface::UIso(const Standard_Real ) const
 
 //Handle(Geom_Curve) GeomPlate_Surface::VIso(const Standard_Real V) const 
 Handle(Geom_Curve) GeomPlate_Surface::VIso(const Standard_Real ) const 
-{ //Standard_Failure::Raise("VIso");
+{ //throw Standard_Failure("VIso");
   return Handle(Geom_Curve)();
 }
 
@@ -226,7 +226,7 @@ Handle(Geom_Curve) GeomPlate_Surface::VIso(const Standard_Real ) const
 //=======================================================================
 
 GeomAbs_Shape GeomPlate_Surface::Continuity() const 
-{ //Standard_Failure::Raise("Continuity()");
+{ //throw Standard_Failure("Continuity()");
   return GeomAbs_Shape();
 
 }
@@ -239,8 +239,8 @@ GeomAbs_Shape GeomPlate_Surface::Continuity() const
 
 //Standard_Boolean GeomPlate_Surface::IsCNu(const Standard_Integer N) const 
 Standard_Boolean GeomPlate_Surface::IsCNu(const Standard_Integer ) const 
-{ Standard_Failure::Raise("IsCNu");
-  return 1;
+{
+  throw Standard_Failure("IsCNu");
 }
 
 
@@ -251,8 +251,8 @@ Standard_Boolean GeomPlate_Surface::IsCNu(const Standard_Integer ) const
 
 //Standard_Boolean GeomPlate_Surface::IsCNv(const Standard_Integer N) const 
 Standard_Boolean GeomPlate_Surface::IsCNv(const Standard_Integer ) const 
-{ Standard_Failure::Raise("IsCNv");
- return 1;
+{
+  throw Standard_Failure("IsCNv");
 }
 
 
@@ -329,7 +329,7 @@ void GeomPlate_Surface::D2(const Standard_Real U, const Standard_Real V, gp_Pnt&
 
 //void GeomPlate_Surface::D3(const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const 
 void GeomPlate_Surface::D3(const Standard_Real , const Standard_Real , gp_Pnt& , gp_Vec& , gp_Vec& , gp_Vec& , gp_Vec& , gp_Vec& , gp_Vec& , gp_Vec& , gp_Vec& , gp_Vec& ) const 
-{ Standard_Failure::Raise("D3");
+{ throw Standard_Failure("D3");
 }
 
 
@@ -340,8 +340,8 @@ void GeomPlate_Surface::D3(const Standard_Real , const Standard_Real , gp_Pnt& ,
 
 //gp_Vec GeomPlate_Surface::DN(const Standard_Real U, const Standard_Real V, const Standard_Integer Nu, const Standard_Integer Nv) const 
 gp_Vec GeomPlate_Surface::DN(const Standard_Real , const Standard_Real , const Standard_Integer , const Standard_Integer ) const 
-{ Standard_Failure::Raise("DN");
-  return gp_Vec();
+{
+  throw Standard_Failure("DN");
 }
 
 
@@ -365,7 +365,7 @@ Handle(Geom_Geometry) GeomPlate_Surface::Copy() const
 
 //void GeomPlate_Surface::Transform(const gp_Trsf& T)
 void GeomPlate_Surface::Transform(const gp_Trsf& )
-{ //Standard_Failure::Raise("Transform");
+{ //throw Standard_Failure("Transform");
 }
 
 //=======================================================================
@@ -387,8 +387,8 @@ Handle(Geom_Surface) GeomPlate_Surface::CallSurfinit() const
 
 void GeomPlate_Surface::SetBounds(const Standard_Real Umin, const Standard_Real Umax, const Standard_Real Vmin, const Standard_Real Vmax)
 {
-  if ((Umin>Umax) || (Vmin>Vmax)) Standard_Failure::Raise("Bounds haven't the good sense");
-  if ((Umin==Umax) || (Vmin==Vmax)) Standard_Failure::Raise("Bounds are equal");
+  if ((Umin>Umax) || (Vmin>Vmax)) throw Standard_Failure("Bounds haven't the good sense");
+  if ((Umin==Umax) || (Vmin==Vmax)) throw Standard_Failure("Bounds are equal");
   myUmin=Umin;myUmax=Umax;myVmin=Vmin;myVmax=Vmax;
 }
 

@@ -68,26 +68,26 @@ inline Standard_Boolean IntPatch_WLine::HasLastPoint () const
 
 inline const IntPatch_Point& IntPatch_WLine::FirstPoint () const
 {
-  if (!fipt) {Standard_DomainError::Raise();}
+  if (!fipt) {throw Standard_DomainError();}
   return svtx(indf);
 }
 
 inline const IntPatch_Point& IntPatch_WLine::LastPoint () const
 {
-  if (!lapt) {Standard_DomainError::Raise();}
+  if (!lapt) {throw Standard_DomainError();}
   return svtx(indl);
 }
 
 inline const IntPatch_Point& IntPatch_WLine::FirstPoint (Standard_Integer& Indfirst) const
 {
-  if (!fipt) {Standard_DomainError::Raise();}
+  if (!fipt) {throw Standard_DomainError();}
   Indfirst = indf;
   return svtx(indf);
 }
 
 inline const IntPatch_Point& IntPatch_WLine::LastPoint (Standard_Integer& Indlast) const
 {
-  if (!lapt) {Standard_DomainError::Raise();}
+  if (!lapt) {throw Standard_DomainError();}
   Indlast = indl;
   return svtx(indl);
 }
@@ -115,7 +115,7 @@ inline void IntPatch_WLine::ClearVertexes()
 inline void IntPatch_WLine::RemoveVertex(const Standard_Integer theIndex)
 {
   if((theIndex < 1) || (theIndex > NbVertex()))
-    Standard_OutOfRange::Raise("Cannot delete not existing vertex");
+    throw Standard_OutOfRange("Cannot delete not existing vertex");
   svtx.Remove(theIndex);
 }
 

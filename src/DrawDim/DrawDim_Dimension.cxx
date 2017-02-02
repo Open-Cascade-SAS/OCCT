@@ -54,7 +54,7 @@ void DrawDim_Dimension::SetValue (const Standard_Real avalue)
 
 Standard_Real DrawDim_Dimension::GetValue() const 
 {
-  if (!is_valued) Standard_DomainError::Raise();
+  if (!is_valued) throw Standard_DomainError();
   return myValue;
 }
 

@@ -51,7 +51,7 @@ inline void FairCurve_Batten::SetAngle2(const Standard_Real Angle2)
  inline void FairCurve_Batten::SetHeight(const Standard_Real Height)
 {
   if (Height <= 0) 
-    Standard_NegativeValue::Raise("FairCurve : Height is no positive");  
+    throw Standard_NegativeValue("FairCurve : Height is no positive");
   NewHeight = Height;
 }
 

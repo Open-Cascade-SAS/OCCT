@@ -36,7 +36,7 @@ Plate_SampledCurveConstraint::Plate_SampledCurveConstraint(const Plate_SequenceO
 {
   Standard_Integer m = SOPPC.Length();
 
-  if (n > m)  Standard_DimensionMismatch::Raise();
+  if (n > m)  throw Standard_DimensionMismatch();
   for(Standard_Integer index =1; index <= m;index++)
     myLXYZC.SetPPC(index,SOPPC(index));
 

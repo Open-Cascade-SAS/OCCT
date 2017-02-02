@@ -68,9 +68,9 @@ Handle(GccInt_Bisec) GccAna_CircLin2dBisec::
    ThisSolution (const Standard_Integer Index) const 
 {
   
-  if (!WellDone) StdFail_NotDone::Raise();
+  if (!WellDone) throw StdFail_NotDone();
   
-  if ((Index <=0) || (Index > NbrSol)) Standard_OutOfRange::Raise();
+  if ((Index <=0) || (Index > NbrSol)) throw Standard_OutOfRange();
   
   Handle(GccInt_Bisec) bissol;
   Standard_Real xdir = line.Direction().X();

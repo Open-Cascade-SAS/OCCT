@@ -29,10 +29,10 @@ void Expr_UnaryExpression::SetOperand (const Handle(Expr_GeneralExpression)& exp
 {
   Handle(Expr_UnaryExpression) me = this;
   if (exp == me) {
-    Expr_InvalidOperand::Raise();
+    throw Expr_InvalidOperand();
   }
   if (exp->Contains(me)) {
-    Expr_InvalidOperand::Raise();
+    throw Expr_InvalidOperand();
   }
   myOperand = exp;
 }
@@ -50,7 +50,7 @@ Standard_Integer Expr_UnaryExpression::NbSubExpressions () const
 const Handle(Expr_GeneralExpression)& Expr_UnaryExpression::SubExpression (const Standard_Integer I) const
 {
   if (I != 1) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return myOperand;
 }

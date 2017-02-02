@@ -219,11 +219,12 @@ static void CollectSolids(const TopTools_SequenceOfShape& aSeqShells ,
         }
       }
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
       cout << "Warning: ShapeFix_Solid::SolidFromShell: Exception: ";
-      Standard_Failure::Caught()->Print(cout); cout << endl;
+      anException.Print(cout); cout << endl;
 #endif
+      (void)anException;
       continue;
     }
   }
@@ -296,11 +297,12 @@ static Standard_Boolean CreateSolids(const TopoDS_Shape theShape,TopTools_Indexe
       bsc3d.PerformInfinitePoint(Precision::Confusion());
       infinstatus = bsc3d.State();
       }
-    catch(Standard_Failure) {
+    catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
       cout << "Warning: ShapeFix_Solid::SolidFromShell: Exception: ";
-      Standard_Failure::Caught()->Print(cout); cout << endl;
+      anException.Print(cout); cout << endl;
 #endif
+      (void)anException;
       ShellSolid.Add(aShell,aSolid);
       continue;
     } 
@@ -572,11 +574,12 @@ TopoDS_Solid ShapeFix_Solid::SolidFromShell (const TopoDS_Shell& shell)
       myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE2 );
     }
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
     cout << "Warning: ShapeFix_Solid::SolidFromShell: Exception: ";
-    Standard_Failure::Caught()->Print(cout); cout << endl;
+    anException.Print(cout); cout << endl;
 #endif
+    (void)anException;
     return solid;
   }
   return solid;

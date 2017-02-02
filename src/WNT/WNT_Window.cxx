@@ -53,7 +53,7 @@ WNT_Window::WNT_Window (const Standard_CString           theTitle,
 {
   if (thePxWidth <= 0 || thePxHeight <= 0)
   {
-    Aspect_WindowDefinitionError::Raise ("Coordinate(s) out of range");
+    throw Aspect_WindowDefinitionError("Coordinate(s) out of range");
   }
 
   DWORD aStyle = theStyle;
@@ -90,7 +90,7 @@ WNT_Window::WNT_Window (const Standard_CString           theTitle,
                              theClientStruct);
   if (!myHWindow)
   {
-    Aspect_WindowDefinitionError::Raise ("Unable to create window");
+    throw Aspect_WindowDefinitionError("Unable to create window");
   }
 
   myHParentWindow = theParent;

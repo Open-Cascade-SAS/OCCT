@@ -407,7 +407,7 @@ Standard_Boolean BRepBlend_RstRstConstRad::IsTangencyPoint() const
 
 const gp_Vec& BRepBlend_RstRstConstRad::TangentOnRst1() const
 {
-  if (istangent) {Standard_DomainError::Raise();}
+  if (istangent) {throw Standard_DomainError();}
   return tgrst1;
 }
 
@@ -418,7 +418,7 @@ const gp_Vec& BRepBlend_RstRstConstRad::TangentOnRst1() const
 
 const gp_Vec2d& BRepBlend_RstRstConstRad::Tangent2dOnRst1() const
 {
-  if (istangent) {Standard_DomainError::Raise();}
+  if (istangent) {throw Standard_DomainError();}
   return tg2drst1;
 }
 
@@ -429,7 +429,7 @@ const gp_Vec2d& BRepBlend_RstRstConstRad::Tangent2dOnRst1() const
 
 const gp_Vec& BRepBlend_RstRstConstRad::TangentOnRst2() const
 {
-  if (istangent) {Standard_DomainError::Raise();}
+  if (istangent) {throw Standard_DomainError();}
   return tgrst2;
 }
 
@@ -440,7 +440,7 @@ const gp_Vec& BRepBlend_RstRstConstRad::TangentOnRst2() const
 
 const gp_Vec2d& BRepBlend_RstRstConstRad::Tangent2dOnRst2() const
 {
-  if (istangent) {Standard_DomainError::Raise();}
+  if (istangent) {throw Standard_DomainError();}
   return tg2drst2;
 }
 

@@ -36,10 +36,10 @@ IGESDraw_ViewsVisible::IGESDraw_ViewsVisible ()    {  }
 {
   if (!allDisplayEntity.IsNull())
     if (allDisplayEntity->Lower() != 1)
-      Standard_DimensionMismatch::Raise("IGESDraw_ViewsVisible : Init");
+      throw Standard_DimensionMismatch("IGESDraw_ViewsVisible : Init");
   if (!allViewEntities.IsNull())
     if (allViewEntities->Lower() != 1)
-      Standard_DimensionMismatch::Raise("IGESDraw_ViewsVisible : Init");
+      throw Standard_DimensionMismatch("IGESDraw_ViewsVisible : Init");
   theViewEntities  = allViewEntities;
   theDisplayEntity = allDisplayEntity;
   InitTypeAndForm(402,3);
@@ -50,7 +50,7 @@ IGESDraw_ViewsVisible::IGESDraw_ViewsVisible ()    {  }
 {
   if (!allDisplayEntity.IsNull())
     if (allDisplayEntity->Lower() != 1)
-      Standard_DimensionMismatch::Raise("IGESDraw_ViewsVisible : InitImplied");
+      throw Standard_DimensionMismatch("IGESDraw_ViewsVisible : InitImplied");
   theDisplayEntity = allDisplayEntity;
 }
 

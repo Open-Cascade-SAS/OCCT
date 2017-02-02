@@ -33,27 +33,27 @@ inline Standard_Boolean IntWalk_IWalking::IsDone() const
 
 inline Standard_Integer IntWalk_IWalking::NbLines() const
 { 
-  if(!done) StdFail_NotDone::Raise(); 
+  if(!done) throw StdFail_NotDone();
   return lines.Length();
 }
 
 inline const Handle(IntWalk_TheIWLine)& IntWalk_IWalking::Value
   (const Standard_Integer Index) const
 { 
-  if(!done) StdFail_NotDone::Raise();
+  if(!done) throw StdFail_NotDone();
   return lines.Value(Index);
 }
 
 inline Standard_Integer IntWalk_IWalking::NbSinglePnts() const 
 {
-    if(!done) StdFail_NotDone::Raise();
+    if(!done) throw StdFail_NotDone();
     return seqSingle.Length();
 }
 
 inline const ThePointOfPath& IntWalk_IWalking::SinglePnt
   (const Standard_Integer Index) const
 {
-  if(!done) StdFail_NotDone::Raise();
+  if(!done) throw StdFail_NotDone();
   return seqSingle.Value(Index);
 }
 

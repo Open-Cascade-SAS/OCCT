@@ -76,13 +76,13 @@ GccAna_Circ2dTanOnRad::
    NbrSol = 0;
    if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
 	 Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
-     GccEnt_BadQualifier::Raise();
+     throw GccEnt_BadQualifier();
      return;
    }
    TColStd_Array1OfReal Coef(1,2);
    gp_Circ2d C1 = Qualified1.Qualified();
 
-   if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+   if (Radius < 0.0) { throw Standard_NegativeValue(); }
    else {
      Standard_Integer nbsol = 0;
      Standard_Integer signe = 0;
@@ -264,7 +264,7 @@ Standard_Integer GccAna_Circ2dTanOnRad::
 gp_Circ2d GccAna_Circ2dTanOnRad::ThisSolution (const Standard_Integer Index) const 
 {
   if (Index > NbrSol || Index <= 0) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return cirsol(Index);
 }
@@ -273,8 +273,8 @@ void GccAna_Circ2dTanOnRad::
   WhichQualifier(const Standard_Integer Index   ,
 		       GccEnt_Position& Qualif1 ) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-   else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+   else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
    else {
      Qualif1 = qualifier1(Index);
    }
@@ -286,10 +286,10 @@ void GccAna_Circ2dTanOnRad::
               Standard_Real& ParArg,
               gp_Pnt2d& PntSol) const{
    if (!WellDone) {
-     StdFail_NotDone::Raise();
+     throw StdFail_NotDone();
    }
    else if (Index <= 0 ||Index > NbrSol) {
-     Standard_OutOfRange::Raise();
+     throw Standard_OutOfRange();
    }
    else {
      ParSol = par1sol(Index);
@@ -304,10 +304,10 @@ void GccAna_Circ2dTanOnRad::
               Standard_Real& ParArg,
               gp_Pnt2d& PntSol) const{
    if (!WellDone) {
-     StdFail_NotDone::Raise();
+     throw StdFail_NotDone();
    }
    else if (Index <= 0 ||Index > NbrSol) {
-     Standard_OutOfRange::Raise();
+     throw Standard_OutOfRange();
    }
    else {
      ParArg = parcen3(Index);
@@ -318,10 +318,10 @@ void GccAna_Circ2dTanOnRad::
 Standard_Boolean GccAna_Circ2dTanOnRad::IsTheSame1 (const Standard_Integer Index) const
 {
   if (!WellDone)
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   
   if (Index <= 0 ||Index > NbrSol)
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   
   if (TheSame1(Index) == 0)
     return Standard_False;

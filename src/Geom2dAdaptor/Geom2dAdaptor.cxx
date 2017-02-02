@@ -90,7 +90,7 @@ Handle(Geom2d_Curve) Geom2dAdaptor::MakeCurve
     break;
     
   default:
-    Standard_DomainError::Raise("Geom2dAdaptor::MakeCurve, OtherCurve");
+    throw Standard_DomainError("Geom2dAdaptor::MakeCurve, OtherCurve");
 
   }
 

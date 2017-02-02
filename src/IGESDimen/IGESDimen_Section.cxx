@@ -34,7 +34,7 @@ IGESDimen_Section::IGESDimen_Section ()    {  }
    const Handle(TColgp_HArray1OfXY)& dataPoints)
 {
   if (dataPoints->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESDimen_Section : Init");
+    throw Standard_DimensionMismatch("IGESDimen_Section : Init");
   theDatatype      = dataType;
   theZDisplacement = aDisp;
   theDataPoints    = dataPoints;
@@ -45,8 +45,7 @@ IGESDimen_Section::IGESDimen_Section ()    {  }
 
     void  IGESDimen_Section::SetFormNumber (const Standard_Integer form)
 {
-  if (form < 31 || form > 38) Standard_OutOfRange::Raise
-    ("IGESDimen_Section : SetFormNumber");
+  if (form < 31 || form > 38) throw Standard_OutOfRange("IGESDimen_Section : SetFormNumber");
   InitTypeAndForm(106,form);
 }
 

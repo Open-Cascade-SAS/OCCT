@@ -98,10 +98,10 @@ Handle(GccInt_Bisec) GccAna_CircPnt2dBisec::
 {
   
   if (!WellDone)
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   
   if ((Index <=0) || (Index > NbrSol))
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
 
   Handle(GccInt_Bisec) bissol;  
   Standard_Real xpoint = point.X();

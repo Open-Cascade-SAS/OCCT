@@ -970,7 +970,7 @@ static Standard_Integer scalexyz(Draw_Interpretor& /*di*/, Standard_Integer n, c
   aGTrsf.SetVectorialPart(rot);
   BRepBuilderAPI_GTransform aBRepGTrsf (aShapeBase, aGTrsf, Standard_False);
   if (!aBRepGTrsf.IsDone())
-    Standard_ConstructionError::Raise("Scaling not done");
+    throw Standard_ConstructionError("Scaling not done");
   TopoDS_Shape Result = aBRepGTrsf.Shape();
 
   DBRep::Set(a[1], Result);

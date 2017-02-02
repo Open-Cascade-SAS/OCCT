@@ -94,20 +94,20 @@ static void CheckCurveData
  const Standard_Boolean            Periodic)
 {
   if (Degree < 1 || Degree > Law_BSpline::MaxDegree()) {
-    Standard_ConstructionError::Raise();  
+    throw Standard_ConstructionError();
   }
   
-  if (CPoles.Length() < 2)                Standard_ConstructionError::Raise();
-  if (CKnots.Length() != CMults.Length()) Standard_ConstructionError::Raise();
+  if (CPoles.Length() < 2)                throw Standard_ConstructionError();
+  if (CKnots.Length() != CMults.Length()) throw Standard_ConstructionError();
   
   for (Standard_Integer I = CKnots.Lower(); I < CKnots.Upper(); I++) {
     if (CKnots (I+1) - CKnots (I) <= Epsilon (Abs(CKnots (I)))) {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
   }
   
   if (CPoles.Length() != BSplCLib::NbPoles(Degree,Periodic,CMults))
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
 }
 
 
@@ -273,12 +273,12 @@ Law_BSpline::Law_BSpline
 		  Periodic);
   
   if (Weights.Length() != Poles.Length())
-    Standard_ConstructionError::Raise("Law_BSpline");
+    throw Standard_ConstructionError("Law_BSpline");
   
   Standard_Integer i;
   for (i = Weights.Lower(); i <= Weights.Upper(); i++) {
     if (Weights(i) <= gp::Resolution())  
-      Standard_ConstructionError::Raise("Law_BSpline");
+      throw Standard_ConstructionError("Law_BSpline");
   }
   
   // check really rational
@@ -324,7 +324,7 @@ void Law_BSpline::IncreaseDegree  (const Standard_Integer Degree)
   if (Degree == deg) return;
   
   if (Degree < deg || Degree > Law_BSpline::MaxDegree()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   
   Standard_Integer FromK1 = FirstUKnotIndex ();
@@ -460,7 +460,7 @@ void  Law_BSpline::InsertKnots(const TColStd_Array1OfReal& Knots,
   if (!BSplCLib::PrepareInsertKnots(deg,periodic,
 				    knots->Array1(),mults->Array1(),
 				    Knots,&Mults,nbpoles,nbknots,Epsilon,Add))
-    Standard_ConstructionError::Raise("Law_BSpline::InsertKnots");
+    throw Standard_ConstructionError("Law_BSpline::InsertKnots");
   
   if (nbpoles == poles->Length()) return;
   
@@ -518,10 +518,10 @@ Standard_Boolean  Law_BSpline::RemoveKnot(const Standard_Integer Index,
   Standard_Integer I2  = LastUKnotIndex  ();
   
   if ( !periodic && (Index <= I1 || Index >= I2) ) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   else if ( periodic  && (Index < I1 || Index > I2)) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   
   const TColStd_Array1OfReal   & oldpoles   = poles->Array1();
@@ -601,9 +601,9 @@ void Law_BSpline::InsertPoleAfter
  const Standard_Real& P,
  const Standard_Real Weight)
 {
-  if (Index < 0 || Index > poles->Length())  Standard_OutOfRange::Raise();
+  if (Index < 0 || Index > poles->Length())  throw Standard_OutOfRange();
   
-  if (Weight <= gp::Resolution())     Standard_ConstructionError::Raise();
+  if (Weight <= gp::Resolution())     throw Standard_ConstructionError();
   
   
   // find the spans which are modified with the inserting pole
@@ -744,12 +744,12 @@ void Law_BSpline::InsertPoleBefore
 void Law_BSpline::RemovePole
 (const Standard_Integer Index)
 {
-  if (Index < 1 || Index > poles->Length())  Standard_OutOfRange::Raise();
+  if (Index < 1 || Index > poles->Length())  throw Standard_OutOfRange();
   
-  if (poles->Length() <= 2)           Standard_ConstructionError::Raise();
+  if (poles->Length() <= 2)           throw Standard_ConstructionError();
   
   if (knotSet == GeomAbs_NonUniform || knotSet == GeomAbs_PiecewiseBezier) 
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   
   Standard_Integer i;
   Handle(TColStd_HArray1OfReal) nknots =
@@ -957,20 +957,20 @@ void Law_BSpline::SetKnot
 (const Standard_Integer Index,
  const Standard_Real K)
 {
-  if (Index < 1 || Index > knots->Length())     Standard_OutOfRange::Raise();
+  if (Index < 1 || Index > knots->Length())     throw Standard_OutOfRange();
   Standard_Real DK = Abs(Epsilon (K));
   if (Index == 1) { 
-    if (K >= knots->Value(2) - DK) Standard_ConstructionError::Raise();
+    if (K >= knots->Value(2) - DK) throw Standard_ConstructionError();
   }
   else if (Index == knots->Length()) {
     if (K <= knots->Value (knots->Length()-1) + DK)  {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
   }
   else {
     if (K <= knots->Value(Index-1) + DK ||
 	K >= knots->Value(Index+1) - DK ) {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
   }
   if (K != knots->Value (Index)) {
@@ -1202,7 +1202,7 @@ void Law_BSpline::SetPole
 (const Standard_Integer Index,
  const Standard_Real P)
 {
-  if (Index < 1 || Index > poles->Length()) Standard_OutOfRange::Raise();
+  if (Index < 1 || Index > poles->Length()) throw Standard_OutOfRange();
   poles->SetValue (Index, P);
 }
 
@@ -1230,9 +1230,9 @@ void Law_BSpline::SetWeight
 (const Standard_Integer Index,
  const Standard_Real W)
 {
-  if (Index < 1 || Index > poles->Length())   Standard_OutOfRange::Raise();
+  if (Index < 1 || Index > poles->Length())   throw Standard_OutOfRange();
   
-  if (W <= gp::Resolution ())     Standard_ConstructionError::Raise();
+  if (W <= gp::Resolution ())     throw Standard_ConstructionError();
   
   
   Standard_Boolean rat = IsRational() || (Abs(W - 1.) > gp::Resolution());

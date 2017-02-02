@@ -61,7 +61,7 @@ Handle(TPrsStd_AISPresentation) TPrsStd_AISPresentation::Set
   // create associated data (unless already there)
   Handle(TDataXtd_Presentation) aData = TDataXtd_Presentation::Set (theLabel, theDriver);
   if(aData.IsNull())
-    Standard_NoMoreObject::Raise (NO_MORE_OBJECT);
+    throw Standard_NoMoreObject(NO_MORE_OBJECT);
   if ( !theLabel.FindAttribute(TPrsStd_AISPresentation::GetID(), aPresentation) )
   {
     aPresentation = new TPrsStd_AISPresentation();
@@ -102,7 +102,7 @@ Handle(TDataXtd_Presentation) TPrsStd_AISPresentation::getData () const
 {
   Handle(TDataXtd_Presentation) aData;
   if (!Label().FindAttribute(TDataXtd_Presentation::GetID(), aData))
-      Standard_NoMoreObject::Raise (NO_MORE_OBJECT);
+      throw Standard_NoMoreObject(NO_MORE_OBJECT);
   return aData;
 }
 

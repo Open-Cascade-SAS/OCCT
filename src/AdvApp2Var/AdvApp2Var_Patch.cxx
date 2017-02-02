@@ -502,8 +502,7 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context& Conditions,
   if (IORDRV>=0) {
     AdvApp2Var_ApproxF2var::mma1her_(&IORDRV,HermV,&IERCOD);
     if (IERCOD!=0) {
-      Standard_ConstructionError::Raise
-	   ("AdvApp2Var_Patch::AddConstraints : Error in FORTRAN");
+      throw Standard_ConstructionError("AdvApp2Var_Patch::AddConstraints : Error in FORTRAN");
     }
     AdvApp2Var_ApproxF2var::mma2ac2_(&NDIMEN,
 				     &NDegU,
@@ -526,8 +525,7 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context& Conditions,
   if (IORDRU>=0) {
     AdvApp2Var_ApproxF2var::mma1her_(&IORDRU,HermU,&IERCOD);
     if (IERCOD!=0) {
-      Standard_ConstructionError::Raise
-	   ("AdvApp2Var_Patch::AddConstraints : Error in FORTRAN");
+      throw Standard_ConstructionError("AdvApp2Var_Patch::AddConstraints : Error in FORTRAN");
     }
     AdvApp2Var_ApproxF2var::mma2ac3_(&NDIMEN,&NDegU,&NDegV,&IORDRU,&NCFLMV,
 				     NCFU0,IsoU0,NCFU1,IsoU1,HermU,PATCAN);
@@ -910,8 +908,7 @@ void AdvApp2Var_Patch::MakeApprox(const AdvApp2Var_Context& Conditions,
 				     &myNbCoeffInV,
 				     PATJAC,PATAUX,PATCAN,&IERCOD);
     if (IERCOD !=0) {
-      Standard_ConstructionError::Raise
-	      ("AdvApp2Var_Patch::MakeApprox : Error in FORTRAN");
+      throw Standard_ConstructionError("AdvApp2Var_Patch::MakeApprox : Error in FORTRAN");
     }
     myEquation = HPCAN;
 
@@ -1173,8 +1170,7 @@ AdvApp2Var_Patch::Poles(const Standard_Integer SSPIndex,
     SousEquation = myEquation;
   }
   else {
-    Standard_ConstructionError::Raise
-               ("AdvApp2Var_Patch::Poles :  SSPIndex out of range");
+    throw Standard_ConstructionError("AdvApp2Var_Patch::Poles :  SSPIndex out of range");
   }
   Handle(TColStd_HArray1OfReal) Intervalle = 
     new (TColStd_HArray1OfReal) (1,2);
@@ -1214,8 +1210,7 @@ AdvApp2Var_Patch::Coefficients(const Standard_Integer SSPIndex,
     SousEquation = myEquation;
   }
   else {
-    Standard_ConstructionError::Raise
-               ("AdvApp2Var_Patch::Poles :  SSPIndex out of range");
+    throw Standard_ConstructionError("AdvApp2Var_Patch::Poles :  SSPIndex out of range");
   }
   return SousEquation;
 }

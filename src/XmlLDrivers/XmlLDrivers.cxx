@@ -61,9 +61,7 @@ const Handle(Standard_Transient)& XmlLDrivers::Factory(const Standard_GUID& theG
     return model_rd;
   }
  
-  Standard_Failure::Raise ("XmlLDrivers : unknown GUID");
-  static Handle(Standard_Transient) aNullHandle;
-  return aNullHandle;
+  throw Standard_Failure("XmlLDrivers : unknown GUID");
 }
 
 #define SLENGTH 80

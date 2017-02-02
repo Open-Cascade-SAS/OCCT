@@ -72,7 +72,7 @@ Geom2d_TrimmedCurve::Geom2d_TrimmedCurve (const Handle(Geom2d_Curve)& C,
      uTrim1 (U1),
      uTrim2 (U2)
 {
-  if(C.IsNull()) Standard_ConstructionError::Raise("Geom2d_TrimmedCurve:: C is null");
+  if(C.IsNull()) throw Standard_ConstructionError("Geom2d_TrimmedCurve:: C is null");
   // kill trimmed basis curves
   Handle(Geom2d_TrimmedCurve) T = Handle(Geom2d_TrimmedCurve)::DownCast(C);
   if (!T.IsNull())
@@ -118,7 +118,7 @@ void Geom2d_TrimmedCurve::SetTrim (const Standard_Real U1,
 {
   Standard_Boolean sameSense = Standard_True;
   if (U1 == U2)
-    Standard_ConstructionError::Raise("Geom2d_TrimmedCurve::U1 == U2");
+    throw Standard_ConstructionError("Geom2d_TrimmedCurve::U1 == U2");
 
   Standard_Real Udeb = basisCurve->FirstParameter();
   Standard_Real Ufin = basisCurve->LastParameter();
@@ -149,8 +149,7 @@ void Geom2d_TrimmedCurve::SetTrim (const Standard_Real U1,
 
     if ((Udeb - uTrim1 > Precision::PConfusion()) ||
 	(uTrim2 - Ufin > Precision::PConfusion()))   {
-      Standard_ConstructionError::Raise
-	("Geom_TrimmedCurve::parameters out of range");
+      throw Standard_ConstructionError("Geom_TrimmedCurve::parameters out of range");
     }
   }    
 

@@ -138,7 +138,7 @@ static const Standard_ExtString   voidext = { 0 };
   DeclareAndCast(TColStd_HSequenceOfTransient,seqt,seqval);
   if (!seqt.IsNull())
     {  if (num <= seqt->Length()) val = seqt->Value(num);  return val;  }
-//  Standard_TypeMismatch::Raise("XSControl_Utils::SeqTraValue");
+//  throw Standard_TypeMismatch("XSControl_Utils::SeqTraValue");
   return val;
 }
 
@@ -515,7 +515,7 @@ static const Standard_ExtString   voidext = { 0 };
   if (!seqh.IsNull()) return seqh->Length();
   DeclareAndCast(TColStd_HSequenceOfInteger,seqi,seqval);
   if (!seqi.IsNull()) return seqi->Length();
-//  Standard_TypeMismatch::Raise("XSControl_Utils::SeqLength");
+//  throw Standard_TypeMismatch("XSControl_Utils::SeqLength");
   return 0;
 }
 
@@ -541,8 +541,7 @@ static const Standard_ExtString   voidext = { 0 };
     for (i = 1; i <= lng; i ++)  arrt->SetValue (i-first+1,seqt->Value(i));
     return arrt;
   }
-  Standard_TypeMismatch::Raise("XSControl_Utils::SeqToArr");
-  return val;
+  throw Standard_TypeMismatch("XSControl_Utils::SeqToArr");
 }
 
 
@@ -570,8 +569,7 @@ static const Standard_ExtString   voidext = { 0 };
     for (i = first; i <= last; i ++)  seqt->Append (arrt->Value(i));
     return seqt;
   }
-  Standard_TypeMismatch::Raise("XSControl_Utils::ArrToSeq");
-  return val;
+  throw Standard_TypeMismatch("XSControl_Utils::ArrToSeq");
 }
 
 

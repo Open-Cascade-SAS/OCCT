@@ -63,7 +63,7 @@ Handle(Expr_NamedUnknown) Expr_NamedFunction::Variable (const Standard_Integer i
 Standard_Real Expr_NamedFunction::Evaluate (const Expr_Array1OfNamedUnknown& vars, const TColStd_Array1OfReal& values) const
 {
   if (vars.Length() != values.Length()) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return myExp->Evaluate(vars,values);
 }

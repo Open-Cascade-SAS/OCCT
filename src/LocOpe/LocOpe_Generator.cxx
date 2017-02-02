@@ -85,7 +85,7 @@ static Standard_Real NewParameter(const TopoDS_Edge&,
 void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
 {
   if (myShape.IsNull()) {
-    Standard_NullObject::Raise();
+    throw Standard_NullObject();
   }
   myDone = Standard_False;
   myRes.Nullify();
@@ -1043,7 +1043,7 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
 {
  // TopTools_ListOfShape list;
 
-  if (!myDone) {StdFail_NotDone::Raise();}
+  if (!myDone) {throw StdFail_NotDone();}
   return myModShapes(F);
 }
 

@@ -514,8 +514,7 @@ void GeomFill_ConstrainedFilling::SetDomain
 
 void GeomFill_ConstrainedFilling::ReBuild()
 {
-  if(!appdone) Standard_Failure::Raise
-    ("GeomFill_ConstrainedFilling::ReBuild Approx non faite");
+  if(!appdone) throw Standard_Failure("GeomFill_ConstrainedFilling::ReBuild Approx non faite");
   MatchKnots();
   PerformS0();
   PerformS1();

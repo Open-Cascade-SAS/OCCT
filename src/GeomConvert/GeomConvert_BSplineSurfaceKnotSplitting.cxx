@@ -35,7 +35,7 @@ const Standard_Integer        VContinuityRange
 
 
   if (UContinuityRange < 0 || VContinuityRange < 0) { 
-    Standard_RangeError::Raise(); 
+    throw Standard_RangeError();
   }
 
   Standard_Integer FirstUIndex = BasisSurface->FirstUKnotIndex ();

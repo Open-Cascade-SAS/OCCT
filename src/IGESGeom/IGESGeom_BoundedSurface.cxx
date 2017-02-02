@@ -34,7 +34,7 @@ IGESGeom_BoundedSurface::IGESGeom_BoundedSurface ()    {  }
    const Handle(IGESGeom_HArray1OfBoundary)& aBoundary)
 {
   if (aBoundary->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESGeom_BoundedSurface : Init");
+    throw Standard_DimensionMismatch("IGESGeom_BoundedSurface : Init");
   theType       = aType;
   theSurface    = aSurface;
   theBoundaries = aBoundary;

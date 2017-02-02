@@ -149,11 +149,12 @@ Handle(Geom2d_Curve) BRepBuilderAPI_Sewing::SameRange(const Handle(Geom2d_Curve)
     GeomLib::SameRange(Precision::PConfusion(),CurvePtr,FirstOnCurve,LastOnCurve,
 		       RequestedFirst,RequestedLast,NewCurvePtr);
   }
-  catch (Standard_Failure) {
+  catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
     cout << "Exception in BRepBuilderAPI_Sewing::SameRange: ";
-    Standard_Failure::Caught()->Print(cout); cout << endl;
+    anException.Print(cout); cout << endl;
 #endif
+    (void)anException;
   }
   return NewCurvePtr;
 }
@@ -321,11 +322,12 @@ void BRepBuilderAPI_Sewing::SameParameter(const TopoDS_Edge& edge) const
     
     BRepLib::SameParameter(edge);
   }
-  catch (Standard_Failure) {
+  catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
     cout << "Exception in BRepBuilderAPI_Sewing::SameParameter: ";
-    Standard_Failure::Caught()->Print(cout); cout << endl;
+    anException.Print(cout); cout << endl;
 #endif
+    (void)anException;
   }
 }
 
@@ -4348,12 +4350,13 @@ void BRepBuilderAPI_Sewing::ProjectPointsOnCurve(const TColgp_Array1OfPnt& arrPn
         }
       }
     }
-    catch (Standard_Failure) {
-      worktol = MinTolerance();
+    catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
       cout << "Exception in BRepBuilderAPI_Sewing::ProjectPointsOnCurve: ";
-      Standard_Failure::Caught()->Print(cout); cout << endl;
+      anException.Print(cout); cout << endl;
 #endif
+      (void)anException;
+      worktol = MinTolerance();
     }
     if (!isProjected && isConsiderEnds) {
       if (Min(distF2,distL2) < worktol * worktol) {

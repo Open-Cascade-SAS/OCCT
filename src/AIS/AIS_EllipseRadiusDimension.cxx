@@ -164,7 +164,7 @@ void AIS_EllipseRadiusDimension::ComputeCylFaceGeometry(const AIS_KindOfSurface 
       }
       else 
 	{
-	  Standard_ConstructionError::Raise("AIS:: Not expected type of surface") ;
+	  throw Standard_ConstructionError("AIS:: Not expected type of surface") ;
 	    return;
 	  }
       
@@ -174,7 +174,7 @@ void AIS_EllipseRadiusDimension::ComputeCylFaceGeometry(const AIS_KindOfSurface 
 	{
 	  if(Offset <0.0 && Abs(Offset) > myEllipse.MinorRadius ())
 	    {
-	      Standard_ConstructionError::Raise("AIS:: Absolute value of negative offset is larger than MinorRadius");
+	      throw Standard_ConstructionError("AIS:: Absolute value of negative offset is larger than MinorRadius");
 		return;
 	      }
 	  
@@ -225,7 +225,7 @@ void AIS_EllipseRadiusDimension::ComputePlanarFaceGeometry()
     }
   if( !find )
     {
-      Standard_ConstructionError::Raise("AIS:: Curve is not an ellipsee or is Null") ;
+      throw Standard_ConstructionError("AIS:: Curve is not an ellipsee or is Null") ;
 	return;
       }
   

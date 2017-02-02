@@ -26,7 +26,7 @@ DEFINE_STANDARD_HANDLE(Aspect_IdentDefinitionError, Standard_OutOfRange)
 
 #if !defined No_Exception && !defined No_Aspect_IdentDefinitionError
   #define Aspect_IdentDefinitionError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Aspect_IdentDefinitionError::Raise(MESSAGE);
+  if (CONDITION) throw Aspect_IdentDefinitionError(MESSAGE);
 #else
   #define Aspect_IdentDefinitionError_Raise_if(CONDITION, MESSAGE)
 #endif

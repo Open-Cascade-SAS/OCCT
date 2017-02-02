@@ -212,7 +212,7 @@ void LocOpe_Revol::IntPerf()
 const TopoDS_Shape& LocOpe_Revol::Shape () const
 {
   if (!myDone) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   return myRes;
 }

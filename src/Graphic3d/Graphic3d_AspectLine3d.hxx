@@ -76,7 +76,7 @@ public:
   {
     if (theWidth <= 0.0f)
     {
-      Aspect_AspectLineDefinitionError::Raise ("Graphic3d_AspectLine3d, Bad value for LineWidth");
+      throw Aspect_AspectLineDefinitionError("Graphic3d_AspectLine3d, Bad value for LineWidth");
     }
     myWidth = theWidth;
   }

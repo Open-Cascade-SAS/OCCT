@@ -33,7 +33,7 @@ IGESDefs_MacroDef::IGESDefs_MacroDef ()    {  }
    const Handle(TCollection_HAsciiString)& endMacro)
 {
   if (langStatements->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESDefs_MacroDef : Init");
+    throw Standard_DimensionMismatch("IGESDefs_MacroDef : Init");
   theMACRO          = macro;
   theEntityTypeID   = entityTypeID;
   theLangStatements = langStatements;

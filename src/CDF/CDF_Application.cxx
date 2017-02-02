@@ -222,12 +222,12 @@ Handle(CDM_Document) CDF_Application::Retrieve(const Handle(CDM_MetaData)& aMeta
     case PCDM_RS_UnknownDocument: 
       aMsg << "could not find the referenced document: " << aMetaData->Path() << "; not found."  <<(char)0 << endl;
       myRetrievableStatus = PCDM_RS_UnknownDocument;
-      Standard_Failure::Raise(aMsg);
+      throw Standard_Failure(aMsg.str().c_str());
       break;
     case PCDM_RS_PermissionDenied:      
       aMsg << "Could not find the referenced document: " << aMetaData->Path() << "; permission denied. " <<(char)0 << endl;
       myRetrievableStatus = PCDM_RS_PermissionDenied;
-      Standard_Failure::Raise(aMsg);
+      throw Standard_Failure(aMsg.str().c_str());
       break;
     default:
       break;
@@ -245,7 +245,7 @@ Handle(CDM_Document) CDF_Application::Retrieve(const Handle(CDM_MetaData)& aMeta
     {
       Standard_SStream aMsg;
       aMsg << "Could not determine format for the file " << aMetaData->FileName() << (char)0;
-      Standard_NoSuchObject::Raise(aMsg);
+      throw Standard_NoSuchObject(aMsg.str().c_str());
     }
     Handle(PCDM_Reader) theReader = ReaderFromFormat (aFormat);
         
@@ -267,12 +267,12 @@ Handle(CDM_Document) CDF_Application::Retrieve(const Handle(CDM_MetaData)& aMeta
       OCC_CATCH_SIGNALS
       theReader->Read(aMetaData->FileName(),theDocument,this);
     } 
-    catch (Standard_Failure) {
+    catch (Standard_Failure const& anException) {
       myRetrievableStatus = theReader->GetStatus();
       if(myRetrievableStatus  > PCDM_RS_AlreadyRetrieved){
 	Standard_SStream aMsg;
-	aMsg << Standard_Failure::Caught() << endl;
-	Standard_Failure::Raise(aMsg);
+	aMsg << anException << endl;
+	throw Standard_Failure(aMsg.str().c_str());
       }	
     }
     myRetrievableStatus = theReader->GetStatus();    
@@ -333,13 +333,13 @@ Handle(CDM_Document) CDF_Application::Read (Standard_IStream& theIStream)
     
     aFormat = PCDM_ReadWriter::FileFormat (theIStream, dData);
   }
-  catch (Standard_Failure)
+  catch (Standard_Failure const& anException)
   {
     myRetrievableStatus = PCDM_RS_FormatFailure;
     
     Standard_SStream aMsg;
-    aMsg << Standard_Failure::Caught() << endl;
-    Standard_Failure::Raise(aMsg);
+    aMsg << anException << endl;
+    throw Standard_Failure(aMsg.str().c_str());
   }
 
   if (aFormat.IsEmpty())
@@ -361,14 +361,14 @@ Handle(CDM_Document) CDF_Application::Read (Standard_IStream& theIStream)
   
     aReader->Read (theIStream, dData, aDoc, this);
   }
-  catch (Standard_Failure)
+  catch (Standard_Failure const& anException)
   {
     myRetrievableStatus = aReader->GetStatus();
     if (myRetrievableStatus  > PCDM_RS_AlreadyRetrieved)
     {
       Standard_SStream aMsg;
-      aMsg << Standard_Failure::Caught() << endl;
-      Standard_Failure::Raise(aMsg);
+      aMsg << anException << endl;
+      throw Standard_Failure(aMsg.str().c_str());
     }	
   }
 
@@ -397,7 +397,7 @@ Handle(PCDM_Reader) CDF_Application::ReaderFromFormat(const TCollection_Extended
     Standard_SStream aMsg; 
     aMsg << "Could not found the item:" << aResourceName <<(char)0;
     myRetrievableStatus = PCDM_RS_WrongResource;
-    Standard_NoSuchObject::Raise(aMsg);
+    throw Standard_NoSuchObject(aMsg.str().c_str());
   }
 
   // Get GUID as a string.
@@ -414,11 +414,11 @@ Handle(PCDM_Reader) CDF_Application::ReaderFromFormat(const TCollection_Extended
     OCC_CATCH_SIGNALS
     aReader = Handle(PCDM_RetrievalDriver)::DownCast(Plugin::Load(aPluginId));  
   } 
-  catch (Standard_Failure)
+  catch (Standard_Failure const& anException)
   {
     myReaders.Add(theFormat, aReader);
     myRetrievableStatus = PCDM_RS_WrongResource;
-    Standard_Failure::Caught()->Reraise();
+    throw anException;
   }	
   if (!aReader.IsNull()) {
     aReader->SetFormat(theFormat);
@@ -452,7 +452,7 @@ Handle(PCDM_StorageDriver) CDF_Application::WriterFromFormat(const TCollection_E
     myWriters.Add(theFormat, aDriver);
     Standard_SStream aMsg; 
     aMsg << "Could not found the resource definition:" << aResourceName <<(char)0;
-    Standard_NoSuchObject::Raise(aMsg);
+    throw Standard_NoSuchObject(aMsg.str().c_str());
   }
 
   // Get GUID as a string.
@@ -469,11 +469,11 @@ Handle(PCDM_StorageDriver) CDF_Application::WriterFromFormat(const TCollection_E
     OCC_CATCH_SIGNALS
     aDriver = Handle(PCDM_StorageDriver)::DownCast(Plugin::Load(aPluginId));
   } 
-  catch (Standard_Failure)
+  catch (Standard_Failure const& anException)
   {
     myWriters.Add(theFormat, aDriver);
     myRetrievableStatus = PCDM_RS_WrongResource;
-    Standard_Failure::Caught()->Reraise();
+    throw anException;
   }	
   if (aDriver.IsNull()) 
   {

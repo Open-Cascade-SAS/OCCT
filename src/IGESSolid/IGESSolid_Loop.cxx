@@ -50,7 +50,7 @@ IGESSolid_Loop::IGESSolid_Loop ()    {  }
       nbParameterCurves->Lower() != 1 || nb != nbParameterCurves->Length() ||
       IsoparametricFlags->Lower() != 1 || nb != IsoparametricFlags->Length() ||
       Curves->Lower() != 1 || nb != Curves->Length() )
-    Standard_DimensionError::Raise("IGESSolid_Loop : Init");
+    throw Standard_DimensionError("IGESSolid_Loop : Init");
 
   theTypes  = Types;
   theEdges  = Edges;

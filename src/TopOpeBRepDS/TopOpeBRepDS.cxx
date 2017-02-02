@@ -170,7 +170,7 @@ TopOpeBRepDS_Kind TopOpeBRepDS::ShapeToKind(const TopAbs_ShapeEnum S)
   case TopAbs_SOLID  : res = TopOpeBRepDS_SOLID; break;
   case TopAbs_COMPSOLID : res = TopOpeBRepDS_COMPSOLID; break;
   case TopAbs_COMPOUND : res = TopOpeBRepDS_COMPOUND; break;
-  default : Standard_ProgramError::Raise("TopOpeBRepDS::ShapeToKind");
+  default : throw Standard_ProgramError("TopOpeBRepDS::ShapeToKind");
   }
   return res;
 }
@@ -194,7 +194,7 @@ TopAbs_ShapeEnum TopOpeBRepDS::KindToShape(const TopOpeBRepDS_Kind K)
   case TopOpeBRepDS_SOLID  : res = TopAbs_SOLID; break;
   case TopOpeBRepDS_COMPSOLID  : res = TopAbs_COMPSOLID; break;
   case TopOpeBRepDS_COMPOUND : res = TopAbs_COMPOUND; break;
-  default : Standard_ProgramError::Raise("TopOpeBRepDS::KindToShape");
+  default : throw Standard_ProgramError("TopOpeBRepDS::KindToShape");
   }
   return res;
 }

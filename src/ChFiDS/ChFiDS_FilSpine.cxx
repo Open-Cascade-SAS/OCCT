@@ -332,7 +332,7 @@ Standard_Real  ChFiDS_FilSpine::Radius(const Standard_Integer IE)const
       par = parandrad(i).X();
       rad = parandrad(i).Y();
       if (Abs( rad-StartRad ) > Precision::Confusion())
-	Standard_DomainError::Raise("Edge is not constant");
+	throw Standard_DomainError("Edge is not constant");
       if (Abs( Ul-par ) <= gp::Resolution())
 	return StartRad;
       if (par > Ul)
@@ -348,7 +348,7 @@ Standard_Real  ChFiDS_FilSpine::Radius(const Standard_Integer IE)const
 
 Standard_Real  ChFiDS_FilSpine::Radius()const 
 {
-  if (!IsConstant()) Standard_DomainError::Raise("Spine is not constant");
+  if (!IsConstant()) throw Standard_DomainError("Spine is not constant");
   return parandrad(1).Y();
 }
 
@@ -416,7 +416,7 @@ static void mklaw(Law_Laws&                  res,
 
   if(npr.IsEmpty()){
     if( Rdeb < 0. && Rfin <0. ) 
-      Standard_DomainError::Raise("Impossible to create the law");
+      throw Standard_DomainError("Impossible to create the law");
     else if(Rdeb < 0. || Rfin <0.){
       Standard_Real r = (Rfin<0.)? Rdeb  : Rfin;
       Handle(Law_Constant) loi = new Law_Constant();
@@ -548,7 +548,7 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw
     }
     if(k > len){ // no !
       if(parandrad.IsEmpty()) 
-	Standard_DomainError::Raise("Radius not defined");
+	throw Standard_DomainError("Radius not defined");
       Standard_Integer nbp = parandrad.Length();
       if(nbp > 1){
 	deb = parandrad.First().X();
@@ -587,7 +587,7 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw
       if (IsConstant(iprec)){
 	Rdeb = Radius(iprec);
       }
-      else Standard_DomainError::Raise("AppendLaw : previous constant is missing!");
+      else throw Standard_DomainError("AppendLaw : previous constant is missing!");
       lawencours = Standard_True;
     }
     // the raduis at end.
@@ -599,7 +599,7 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw
       if (IsConstant(isuiv)) {
 	Rfin = Radius(isuiv);
       }
-      else Standard_DomainError::Raise("AppendLaw : next constant is missing!");
+      else throw Standard_DomainError("AppendLaw : next constant is missing!");
     }
   }
   else{
@@ -618,10 +618,10 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw
 	if (IsConstant(ind(1) - 1)){
 	  Rdeb = Radius(ind(1) - 1);
 	}
-	else Standard_DomainError::Raise("AppendLaw : previous constant is missing");
+	else throw Standard_DomainError("AppendLaw : previous constant is missing");
       }
       else if(parandrad.IsEmpty()){
-	Standard_DomainError::Raise("AppendLaw : no radius on vertex");
+	throw Standard_DomainError("AppendLaw : no radius on vertex");
       }
       else Rdeb = -1.;
       lawencours = Standard_True;
@@ -631,10 +631,10 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw
     else{
       if(ind(nbed) < len){
 	if (IsConstant(ind(nbed) + 1)) Rfin = Radius(ind(nbed) + 1);
-	else Standard_DomainError::Raise("AppendLaw : next constant is missing");
+	else throw Standard_DomainError("AppendLaw : next constant is missing");
       }
       else if(parandrad.IsEmpty()){
-	Standard_DomainError::Raise("AppendLaw : no radius on vertex");
+	throw Standard_DomainError("AppendLaw : no radius on vertex");
       }
       else Rfin = -1.;
     }
@@ -729,11 +729,11 @@ Handle(Law_Composite) ChFiDS_FilSpine::Law(const Handle(ChFiDS_HElSpine)& Els) c
 Handle(Law_Function)& ChFiDS_FilSpine::ChangeLaw(const TopoDS_Edge& E)
 {
   if(!SplitDone()) {
-    Standard_DomainError::Raise("ChFiDS_FilSpine::ChangeLaw : the limits are not up-to-date");
+    throw Standard_DomainError("ChFiDS_FilSpine::ChangeLaw : the limits are not up-to-date");
   }
   Standard_Integer IE = Index(E);
   if (IsConstant(IE)) {
-    Standard_DomainError::Raise("ChFiDS_FilSpine::ChangeLaw : no law on constant edges");
+    throw Standard_DomainError("ChFiDS_FilSpine::ChangeLaw : no law on constant edges");
   }
   Handle(ChFiDS_HElSpine) hsp = ElSpine(IE);
   Standard_Real w = 0.5*(FirstParameter(IE) + LastParameter(IE));

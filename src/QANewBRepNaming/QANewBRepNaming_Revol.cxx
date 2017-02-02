@@ -55,7 +55,7 @@ QANewBRepNaming_Revol::QANewBRepNaming_Revol(const TDF_Label& Label)
 void QANewBRepNaming_Revol::Init(const TDF_Label& Label)
 {
   if(Label.IsNull())
-    Standard_NullObject::Raise("QANewBRepNaming_Revol::Init The Result label is Null ..."); 
+    throw Standard_NullObject("QANewBRepNaming_Revol::Init The Result label is Null ...");
   myResultLabel = Label;
 }
 

@@ -368,10 +368,8 @@ static const XmlObjMgt_DOMString& NameTypeToString (const TNaming_NameType theE)
   case TNaming_WIREIN              : return ::NTWireInString();
   case TNaming_SHELLIN             : return ::NTShellInString();
   default:
-    Standard_DomainError::Raise("TNaming_NameType; enum term unknown ");
+    throw Standard_DomainError("TNaming_NameType; enum term unknown ");
   }
-  static XmlObjMgt_DOMString aNullString;
-  return aNullString; // To avoid compilation error message.
 }
 
 //=======================================================================
@@ -400,8 +398,7 @@ static TopAbs_ShapeEnum ShapeEnumFromString (const XmlObjMgt_DOMString& theStrin
     else if (theString.equals (::ShVertexString()))
       aResult = TopAbs_VERTEX;
     else
-      Standard_DomainError::Raise
-        ("TopAbs_ShapeEnum; string value without enum term equivalence");
+      throw Standard_DomainError("TopAbs_ShapeEnum; string value without enum term equivalence");
   }
   return aResult;
 }
@@ -438,8 +435,7 @@ static TNaming_NameType NameTypeFromString (const XmlObjMgt_DOMString& theString
     else if (theString.equals (::NTShellInString()))
       aResult = TNaming_SHELLIN;
     else
-      Standard_DomainError::Raise
-        ("TNaming_NameType; string value without enum term equivalence");
+      throw Standard_DomainError("TNaming_NameType; string value without enum term equivalence");
   }
   return aResult;
 }

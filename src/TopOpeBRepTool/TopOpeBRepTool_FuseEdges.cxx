@@ -82,7 +82,7 @@ TopOpeBRepTool_FuseEdges::TopOpeBRepTool_FuseEdges(const TopoDS_Shape& theShape,
  myResultEdgesDone(Standard_False),myNbConnexEdge(0)
 {
 //  if (theShape.ShapeType() != TopAbs_SHELL && theShape.ShapeType() != TopAbs_SOLID)
-//    Standard_ConstructionError::Raise("FuseEdges");
+//    throw Standard_ConstructionError("FuseEdges");
   Standard_NullObject_Raise_if(theShape.IsNull(),"FuseEdges");
   myMapFaces.Clear();
 
@@ -347,10 +347,10 @@ void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
 
 	  ME.Init(ExtC,VF,VL);
 	  if (!ME.IsDone()) 
-	    Standard_ConstructionError::Raise("FuseEdges : Fusion failed");
+	    throw Standard_ConstructionError("FuseEdges : Fusion failed");
 	}
 	else
-	  Standard_ConstructionError::Raise("FuseEdges : Fusion failed");
+	  throw Standard_ConstructionError("FuseEdges : Fusion failed");
       }
 
       NewEdge = ME.Edge();

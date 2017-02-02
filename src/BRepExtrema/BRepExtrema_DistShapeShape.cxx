@@ -410,7 +410,7 @@ Standard_Boolean BRepExtrema_DistShapeShape::Perform()
 Standard_Real BRepExtrema_DistShapeShape::Value() const 
 { 
   if (!myIsDone)
-    StdFail_NotDone::Raise("BRepExtrema_DistShapeShape::Value: There's no solution ");
+    throw StdFail_NotDone("BRepExtrema_DistShapeShape::Value: There's no solution ");
 
   return myDistRef;
 }
@@ -423,7 +423,7 @@ Standard_Real BRepExtrema_DistShapeShape::Value() const
 TopoDS_Shape BRepExtrema_DistShapeShape::SupportOnShape1(const Standard_Integer N) const
 { 
   if (!myIsDone)
-    StdFail_NotDone::Raise("BRepExtrema_DistShapeShape::SupportOnShape1: There's no solution ");
+    throw StdFail_NotDone("BRepExtrema_DistShapeShape::SupportOnShape1: There's no solution ");
 
   const BRepExtrema_SolutionElem &sol = mySolutionsShape1.Value(N);
   switch (sol.SupportKind())
@@ -443,7 +443,7 @@ TopoDS_Shape BRepExtrema_DistShapeShape::SupportOnShape1(const Standard_Integer 
 TopoDS_Shape BRepExtrema_DistShapeShape::SupportOnShape2(const Standard_Integer N) const 
 { 
   if (!myIsDone)
-    StdFail_NotDone::Raise("BRepExtrema_DistShapeShape::SupportOnShape2: There's no solution ");
+    throw StdFail_NotDone("BRepExtrema_DistShapeShape::SupportOnShape2: There's no solution ");
 
   const BRepExtrema_SolutionElem &sol = mySolutionsShape2.Value(N);
   switch (sol.SupportKind())
@@ -463,12 +463,11 @@ TopoDS_Shape BRepExtrema_DistShapeShape::SupportOnShape2(const Standard_Integer 
 void BRepExtrema_DistShapeShape::ParOnEdgeS1(const Standard_Integer N, Standard_Real& t) const 
 { 
   if (!myIsDone)
-    StdFail_NotDone::Raise("BRepExtrema_DistShapeShape::ParOnEdgeS1: There's no solution");
+    throw StdFail_NotDone("BRepExtrema_DistShapeShape::ParOnEdgeS1: There's no solution");
 
   const BRepExtrema_SolutionElem &sol = mySolutionsShape1.Value(N);
   if (sol.SupportKind() != BRepExtrema_IsOnEdge)
-    BRepExtrema_UnCompatibleShape::Raise
-      ("BRepExtrema_DistShapeShape::ParOnEdgeS1: ParOnEdgeS1 is impossible without EDGE");
+    throw BRepExtrema_UnCompatibleShape("BRepExtrema_DistShapeShape::ParOnEdgeS1: ParOnEdgeS1 is impossible without EDGE");
 
   sol.EdgeParameter(t);
 }
@@ -481,12 +480,11 @@ void BRepExtrema_DistShapeShape::ParOnEdgeS1(const Standard_Integer N, Standard_
 void BRepExtrema_DistShapeShape::ParOnEdgeS2(const Standard_Integer N,  Standard_Real& t) const 
 { 
   if (!myIsDone)
-    StdFail_NotDone::Raise("BRepExtrema_DistShapeShape::ParOnEdgeS2: There's no solution");
+    throw StdFail_NotDone("BRepExtrema_DistShapeShape::ParOnEdgeS2: There's no solution");
 
   const BRepExtrema_SolutionElem &sol = mySolutionsShape2.Value(N);
   if (sol.SupportKind() != BRepExtrema_IsOnEdge)
-    BRepExtrema_UnCompatibleShape::Raise
-      ("BRepExtrema_DistShapeShape::ParOnEdgeS2: ParOnEdgeS2 is impossible without EDGE");
+    throw BRepExtrema_UnCompatibleShape("BRepExtrema_DistShapeShape::ParOnEdgeS2: ParOnEdgeS2 is impossible without EDGE");
  
   sol.EdgeParameter(t);
 }
@@ -499,12 +497,11 @@ void BRepExtrema_DistShapeShape::ParOnEdgeS2(const Standard_Integer N,  Standard
 void BRepExtrema_DistShapeShape::ParOnFaceS1(const Standard_Integer N,  Standard_Real& u,  Standard_Real& v) const 
 { 
   if (!myIsDone)
-    StdFail_NotDone::Raise("BRepExtrema_DistShapeShape::ParOnFaceS1: There's no solution");
+    throw StdFail_NotDone("BRepExtrema_DistShapeShape::ParOnFaceS1: There's no solution");
 
   const BRepExtrema_SolutionElem &sol = mySolutionsShape1.Value(N);
   if (sol.SupportKind() != BRepExtrema_IsInFace)
-    BRepExtrema_UnCompatibleShape::Raise
-      ("BRepExtrema_DistShapeShape::ParOnFaceS1: ParOnFaceS1 is impossible without FACE");
+    throw BRepExtrema_UnCompatibleShape("BRepExtrema_DistShapeShape::ParOnFaceS1: ParOnFaceS1 is impossible without FACE");
   
   sol.FaceParameter(u, v);
 }
@@ -517,12 +514,11 @@ void BRepExtrema_DistShapeShape::ParOnFaceS1(const Standard_Integer N,  Standard
 void BRepExtrema_DistShapeShape::ParOnFaceS2(const Standard_Integer N,  Standard_Real& u, Standard_Real& v) const 
 { 
   if (!myIsDone)
-    StdFail_NotDone::Raise("BRepExtrema_DistShapeShape::ParOnFaceS2: There's no solution");
+    throw StdFail_NotDone("BRepExtrema_DistShapeShape::ParOnFaceS2: There's no solution");
 
   const BRepExtrema_SolutionElem &sol = mySolutionsShape2.Value(N);
   if (sol.SupportKind() != BRepExtrema_IsInFace)
-    BRepExtrema_UnCompatibleShape::Raise
-      ("BRepExtrema_DistShapeShape::ParOnFaceS2:ParOnFaceS2 is impossible without FACE ");
+    throw BRepExtrema_UnCompatibleShape("BRepExtrema_DistShapeShape::ParOnFaceS2:ParOnFaceS2 is impossible without FACE ");
   
   sol.FaceParameter(u, v);
 }

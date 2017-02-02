@@ -75,7 +75,7 @@ void AIS_ConnectedInteractive::connect (const Handle(AIS_InteractiveObject)& the
   }
   else
   {
-    Standard_ProgramError::Raise ("AIS_ConnectedInteractive::Connect() - object without own presentation can not be connected");
+    throw Standard_ProgramError("AIS_ConnectedInteractive::Connect() - object without own presentation can not be connected");
   }
 
   if (!myReference.IsNull())

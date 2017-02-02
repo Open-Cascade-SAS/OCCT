@@ -92,7 +92,7 @@ Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeAfter
     Standard_Integer& IndTo) const
 {
   if (!myDone) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   Standard_Real Eps = Precision::Confusion();
   Standard_Real param,FMEPS = From - Eps;
@@ -149,7 +149,7 @@ Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeBefore
     Standard_Integer& IndTo) const
 {
   if (!myDone) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   Standard_Real Eps = Precision::Confusion();
   Standard_Real param,FPEPS = From + Eps;
@@ -206,7 +206,7 @@ Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeAfter
     Standard_Integer& IndTo) const
 {
   if (!myDone) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   Standard_Integer nbpoints = myPoints.Length();
   if (FromInd >= nbpoints) {
@@ -275,7 +275,7 @@ Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeBefore
     Standard_Integer& IndTo) const
 {
   if (!myDone) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   Standard_Integer nbpoints = myPoints.Length();
   if (FromInd <= 1) {

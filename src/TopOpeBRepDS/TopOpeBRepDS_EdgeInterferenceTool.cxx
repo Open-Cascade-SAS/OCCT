@@ -46,7 +46,7 @@ static Standard_Real Parameter(const Handle(TopOpeBRepDS_Interference)& I)
   else if ( I->IsKind(STANDARD_TYPE(TopOpeBRepDS_CurvePointInterference)) )
     p = Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I)->Parameter();
   else {
-    Standard_ProgramError::Raise("TopOpeBRepDS_EdgeInterferenceTool1");
+    throw Standard_ProgramError("TopOpeBRepDS_EdgeInterferenceTool1");
   }
   return p;
 }

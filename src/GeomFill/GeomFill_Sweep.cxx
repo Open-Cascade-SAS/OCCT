@@ -1101,7 +1101,7 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
 {
   Standard_Integer ind = IndexOfTrace+1;
   if (IndexOfTrace > myLoc->TraceNumber())
-    Standard_OutOfRange::Raise(" GeomFill_Sweep::ErrorOnTrace");
+    throw Standard_OutOfRange(" GeomFill_Sweep::ErrorOnTrace");
 
   UError =  CError->Value(1, ind);
   VError =  CError->Value(2, ind);
@@ -1146,6 +1146,6 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
 {
   Standard_Integer ind = IndexOfTrace+1;
   if (IndexOfTrace > myLoc->TraceNumber())
-    Standard_OutOfRange::Raise(" GeomFill_Sweep::Trace");
+    throw Standard_OutOfRange(" GeomFill_Sweep::Trace");
   return  myCurve2d->Value(ind);  
 }

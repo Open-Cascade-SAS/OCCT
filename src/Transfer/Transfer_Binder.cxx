@@ -130,8 +130,7 @@ Handle(Transfer_Binder)  Transfer_Binder::NextResult () const
 
 void Transfer_Binder::SetResultPresent ()
 {
-  if (thestatus == Transfer_StatusUsed) Transfer_TransferFailure::Raise
-    ("Binder : SetResult, Result is Already Set and Used");
+  if (thestatus == Transfer_StatusUsed) throw Transfer_TransferFailure("Binder : SetResult, Result is Already Set and Used");
   theexecst = Transfer_StatusDone;
   thestatus = Transfer_StatusDefined;
 }

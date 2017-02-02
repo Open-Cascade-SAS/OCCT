@@ -46,7 +46,7 @@ myPoint(Pt),
 myTolDist(TolDist),
 hasPnt2dOnSurf(Standard_False)
 { if ((myOrder>1)||(myOrder<-1))
-    Standard_Failure::Raise("GeomPlate_PointConstraint : the constraint must 0 or -1 with a point"); 
+    throw Standard_Failure("GeomPlate_PointConstraint : the constraint must 0 or -1 with a point");
 }
 
 //---------------------------------------------------------
@@ -150,14 +150,14 @@ Standard_Real GeomPlate_PointConstraint::G2Criterion() const
 // Fonction : Surface 
 //---------------------------------------------------------
 //Handle(Geom_Surface) GeomPlate_PointConstraint::Surface() const
-//{  Standard_Failure::Raise("GeomPlate_PointConstraint.cxx : The surface does not exist"); 
+//{  throw Standard_Failure("GeomPlate_PointConstraint.cxx : The surface does not exist");
 //}
 //------------------------------------------------------------
 //Fonction : LPropSurf
 //------------------------------------------------------------
 GeomLProp_SLProps &GeomPlate_PointConstraint::LPropSurf()
 { // if (myFrontiere.IsNull())
-  //  Standard_Failure::Raise("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface"); 
+  //  throw Standard_Failure("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface");
  // gp_Pnt2d P2d= myFrontiere->ChangeCurve().GetCurve()->Value(U);
 myLProp.SetParameters(myU,myV);
 return myLProp;

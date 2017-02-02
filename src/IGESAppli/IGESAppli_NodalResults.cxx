@@ -42,7 +42,7 @@ IGESAppli_NodalResults::IGESAppli_NodalResults ()    {  }
       allNodes->Length()  != allNodeIdentifiers->Length() ||
       allData->LowerCol() != 1 || allData->LowerRow() != 1 ||
       allNodes->Length()  != allData->UpperRow() )
-    Standard_DimensionMismatch::Raise("IGESAppli_NodalResults : Init");
+    throw Standard_DimensionMismatch("IGESAppli_NodalResults : Init");
   theNote            = aNote;
   theSubCaseNum      = aNumber;
   theTime            = aTime;
@@ -55,8 +55,7 @@ IGESAppli_NodalResults::IGESAppli_NodalResults ()    {  }
 
     void  IGESAppli_NodalResults::SetFormNumber (const Standard_Integer form)
 {
-  if (form < 0 || form > 34) Standard_OutOfRange::Raise
-    ("IGESAppli_NodalResults : SetFormNumber");
+  if (form < 0 || form > 34) throw Standard_OutOfRange("IGESAppli_NodalResults : SetFormNumber");
   InitTypeAndForm(146,form);
 }
 

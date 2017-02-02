@@ -662,7 +662,7 @@ void BOPTools_AlgoTools2D::MakePCurveOnFace
   //
   if(aC2D.IsNull())
   {
-    Standard_ConstructionError::Raise("BOPTools_AlgoTools2D::MakePCurveOnFace : PCurve is Null");
+    throw Standard_ConstructionError("BOPTools_AlgoTools2D::MakePCurveOnFace : PCurve is Null");
   }
   //
   TolReached2d=aTolR;
@@ -717,8 +717,7 @@ void  BOPTools_AlgoTools2D::MakePCurveOfType
   case GeomAbs_BezierCurve : 
   case GeomAbs_OtherCurve : 
     default :
-    Standard_NotImplemented::Raise
-      ("BOPTools_AlgoTools2D::MakePCurveOfType");
+    throw Standard_NotImplemented("BOPTools_AlgoTools2D::MakePCurveOfType");
     break;
   }
 }

@@ -49,8 +49,7 @@ Standard_Boolean ShapeAnalysis_BoxBndTreeSelector::
   Accept (const Standard_Integer& theObj)
 {
   if (theObj < 1 || theObj > mySeq->Length())
-    Standard_NoSuchObject::Raise
-      ("ShapeAnalysis_BoxBndTreeSelector::Accept : no such object for current index");
+    throw Standard_NoSuchObject("ShapeAnalysis_BoxBndTreeSelector::Accept : no such object for current index");
   Standard_Boolean IsAccept = Standard_False;
   if (myList.Contains(theObj))
     return Standard_False;

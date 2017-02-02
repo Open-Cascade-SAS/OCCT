@@ -86,7 +86,7 @@ inline Standard_Boolean IntRes2d_IntersectionSegment::HasLastPoint () const {
 inline const IntRes2d_IntersectionPoint& 
         IntRes2d_IntersectionSegment::FirstPoint () const {
 
-  if (!first) { Standard_DomainError::Raise(); }
+  if (!first) { throw Standard_DomainError(); }
   return ptfirst;
 }
 
@@ -94,7 +94,7 @@ inline const IntRes2d_IntersectionPoint&
 inline const IntRes2d_IntersectionPoint&
         IntRes2d_IntersectionSegment::LastPoint () const {
 
-  if (!last) { Standard_DomainError::Raise();}
+  if (!last) { throw Standard_DomainError();}
   return ptlast;
 }
 

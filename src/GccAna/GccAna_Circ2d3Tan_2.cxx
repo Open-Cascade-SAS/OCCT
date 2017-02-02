@@ -76,7 +76,7 @@ pararg3(1,8)
 	 Qualified2.IsOutside() || Qualified2.IsUnqualified()) ||
        !(Qualified3.IsEnclosed() ||
 	 Qualified3.IsOutside() || Qualified3.IsUnqualified())) {
-     GccEnt_BadQualifier::Raise();
+     throw GccEnt_BadQualifier();
      return;
    }
 

@@ -83,11 +83,10 @@ void TObj_TIntSparseArray::SetValue (const Standard_Size theId,
 {
   // check that modification is allowed
   if ( !Label().Data()->IsModificationAllowed() )
-    Standard_ImmutableObject::Raise
-      ("Attribute TObj_TIntSparseArray is changed outside transaction");
+    throw Standard_ImmutableObject("Attribute TObj_TIntSparseArray is changed outside transaction");
 
   if (theId < 1 || theValue < 1)
-    Standard_OutOfRange::Raise ("TObj_TIntSparseArray::SetValue");
+    throw Standard_OutOfRange("TObj_TIntSparseArray::SetValue");
 
   Standard_Integer anOld = AbsentValue;
   Standard_Boolean isOld = myVector.HasValue(theId);
@@ -128,11 +127,10 @@ void TObj_TIntSparseArray::UnsetValue (const Standard_Size theId)
 {
   // check that modification is allowed
   if ( !Label().Data()->IsModificationAllowed() )
-    Standard_ImmutableObject::Raise
-      ("Attribute TObj_TIntSparseArray is changed outside transaction");
+    throw Standard_ImmutableObject("Attribute TObj_TIntSparseArray is changed outside transaction");
 
   if (theId < 1)
-    Standard_OutOfRange::Raise ("TObj_TIntSparseArray::UnsetValue");
+    throw Standard_OutOfRange("TObj_TIntSparseArray::UnsetValue");
 
   Standard_Integer anOld = AbsentValue;
   Standard_Boolean isOld = myVector.HasValue(theId);

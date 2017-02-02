@@ -211,9 +211,9 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 	  OCC_CATCH_SIGNALS
 	  DBRep::Set(fname,shape);
 	}
-	catch(Standard_Failure) {
+	catch(Standard_Failure const& anException) {
 	  di << "** Exception : ";
-	  di << Standard_Failure::Caught()->GetMessageString();
+	  di << anException.GetMessageString();
 	  di<<" ** Skip\n";
 	  di << "Saving shape in variable Draw : " << fname << "\n";
 	  WriteShape (shape,1);
@@ -234,9 +234,9 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 	    OCC_CATCH_SIGNALS
 	    DBRep::Set(fname,shape);
 	  }
-	  catch(Standard_Failure) {
+	  catch(Standard_Failure const& anException) {
 	    di << "** Exception : ";
-	    di << Standard_Failure::Caught()->GetMessageString();
+	    di << anException.GetMessageString();
 	    di<<" ** Skip\n";
 	  }
 	}
@@ -298,9 +298,9 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
           OCC_CATCH_SIGNALS
           DBRep::Set(fname,shape);
         }
-        catch(Standard_Failure) {
+        catch(Standard_Failure const& anException) {
           di << "** Exception : ";
-	  di << Standard_Failure::Caught()->GetMessageString();
+	  di << anException.GetMessageString();
 	  di<<" ** Skip\n";
           di << "Saving shape in variable Draw : " << fname << "\n";
           WriteShape (shape,1);

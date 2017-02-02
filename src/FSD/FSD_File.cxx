@@ -278,11 +278,11 @@ void FSD_File::ReadExtendedLine(TCollection_ExtendedString& buffer)
 	}
       }
       else {
-	Storage_StreamExtCharParityError::Raise();	
+	throw Storage_StreamExtCharParityError();
       }
     }
     else {
-      Storage_StreamExtCharParityError::Raise();
+      throw Storage_StreamExtCharParityError();
     }
   }
 }
@@ -424,7 +424,7 @@ void FSD_File::SkipObject()
 Storage_BaseDriver& FSD_File::PutReference(const Standard_Integer aValue)
 {
   myStream << aValue << " ";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
   return *this;
 }
 
@@ -439,7 +439,7 @@ Storage_BaseDriver& FSD_File::PutCharacter(const Standard_Character aValue)
 
   i = aValue;
   myStream << i << " ";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
   return *this;
 }
 
@@ -451,7 +451,7 @@ Storage_BaseDriver& FSD_File::PutCharacter(const Standard_Character aValue)
 Storage_BaseDriver& FSD_File::PutExtCharacter(const Standard_ExtCharacter aValue)
 {
   myStream << (short )aValue << " ";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
   return *this;
 }
 
@@ -463,7 +463,7 @@ Storage_BaseDriver& FSD_File::PutExtCharacter(const Standard_ExtCharacter aValue
 Storage_BaseDriver& FSD_File::PutInteger(const Standard_Integer aValue)
 {
   myStream << aValue << " ";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
   return *this;
 }
 
@@ -475,7 +475,7 @@ Storage_BaseDriver& FSD_File::PutInteger(const Standard_Integer aValue)
 Storage_BaseDriver& FSD_File::PutBoolean(const Standard_Boolean aValue)
 {
   myStream << ((Standard_Integer)aValue) << " ";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
   return *this;
 }
 
@@ -487,7 +487,7 @@ Storage_BaseDriver& FSD_File::PutBoolean(const Standard_Boolean aValue)
 Storage_BaseDriver& FSD_File::PutReal(const Standard_Real aValue)
 {
   myStream << ((Standard_Real)aValue) << " ";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
   return *this;
 }
 
@@ -499,7 +499,7 @@ Storage_BaseDriver& FSD_File::PutReal(const Standard_Real aValue)
 Storage_BaseDriver& FSD_File::PutShortReal(const Standard_ShortReal aValue)
 {
   myStream << aValue << " ";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
   return *this;
 }
 
@@ -510,7 +510,7 @@ Storage_BaseDriver& FSD_File::PutShortReal(const Standard_ShortReal aValue)
 
 Storage_BaseDriver& FSD_File::GetReference(Standard_Integer& aValue)
 {
-  if (!(myStream >> aValue)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> aValue)) throw Storage_StreamTypeMismatchError();
 
   return *this;
 }
@@ -527,7 +527,7 @@ Storage_BaseDriver& FSD_File::GetCharacter(Standard_Character& aValue)
     // SGI : donne une erreur mais a une bonne valeur pour les caracteres ecrits
     //       signes (-80 fait ios::badbit, mais la variable i est initialisee)
     //
-    if (i == 0) Storage_StreamTypeMismatchError::Raise();
+    if (i == 0) throw Storage_StreamTypeMismatchError();
     myStream.clear(ios::goodbit); // .clear(0) is not portable
   }
   aValue = (char)i;
@@ -543,7 +543,7 @@ Storage_BaseDriver& FSD_File::GetCharacter(Standard_Character& aValue)
 Storage_BaseDriver& FSD_File::GetExtCharacter(Standard_ExtCharacter& aValue)
 {
   short aChar = 0;
-  if (!(myStream >> aChar)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> aChar)) throw Storage_StreamTypeMismatchError();
   aValue = aChar;
   return *this;
 }
@@ -555,7 +555,7 @@ Storage_BaseDriver& FSD_File::GetExtCharacter(Standard_ExtCharacter& aValue)
 
 Storage_BaseDriver& FSD_File::GetInteger(Standard_Integer& aValue)
 {
-  if (!(myStream >> aValue)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> aValue)) throw Storage_StreamTypeMismatchError();
 
   return *this;
 }
@@ -567,7 +567,7 @@ Storage_BaseDriver& FSD_File::GetInteger(Standard_Integer& aValue)
 
 Storage_BaseDriver& FSD_File::GetBoolean(Standard_Boolean& aValue)
 {
-  if (!(myStream >> aValue)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> aValue)) throw Storage_StreamTypeMismatchError();
 
   return *this;
 }
@@ -583,12 +583,12 @@ Storage_BaseDriver& FSD_File::GetReal(Standard_Real& aValue)
   char realbuffer[100];
 
   realbuffer[0] = '\0';
-  if (!(myStream >> realbuffer)) Storage_StreamTypeMismatchError::Raise();
-  if (!OSD::CStringToReal(realbuffer,aValue)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> realbuffer)) throw Storage_StreamTypeMismatchError();
+  if (!OSD::CStringToReal(realbuffer,aValue)) throw Storage_StreamTypeMismatchError();
 
   return *this;
 #else
-  if (!(myStream >> aValue)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> aValue)) throw Storage_StreamTypeMismatchError();
 
   return *this;
 #endif
@@ -606,14 +606,14 @@ Storage_BaseDriver& FSD_File::GetShortReal(Standard_ShortReal& aValue)
   Standard_Real r = 0.0;
 
   realbuffer[0] = '\0';
-  if (!(myStream >> realbuffer)) Storage_StreamTypeMismatchError::Raise();
-  if (!OSD::CStringToReal(realbuffer,r)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> realbuffer)) throw Storage_StreamTypeMismatchError();
+  if (!OSD::CStringToReal(realbuffer,r)) throw Storage_StreamTypeMismatchError();
 
   aValue = r;
 
   return *this;
 #else
-  if (!(myStream >> aValue)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> aValue)) throw Storage_StreamTypeMismatchError();
  return *this;
 #endif
 }
@@ -639,7 +639,7 @@ Storage_Error FSD_File::BeginWriteInfoSection()
 {
   myStream << FSD_File::MagicNumber() << '\n';
   myStream << "BEGIN_INFO_SECTION\n";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
 
   return Storage_VSOk;
 }
@@ -672,11 +672,11 @@ void FSD_File::WriteInfo(const Standard_Integer nbObj,
   WriteExtendedLine(dataType);
   myStream << userInfo.Length() << "\n";
 
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
 
   for (i = 1; i <= userInfo.Length(); i++) {
     myStream << userInfo.Value(i).ToCString() << "\n";
-    if (myStream.bad()) Storage_StreamWriteError::Raise();
+    if (myStream.bad()) throw Storage_StreamWriteError();
   }
 }
 
@@ -688,7 +688,7 @@ void FSD_File::WriteInfo(const Standard_Integer nbObj,
 Storage_Error FSD_File::EndWriteInfoSection() 
 {
   myStream << "END_INFO_SECTION\n";
-  if (myStream.bad())  Storage_StreamWriteError::Raise();
+  if (myStream.bad())  throw Storage_StreamWriteError();
   return Storage_VSOk;
 }
 
@@ -730,7 +730,7 @@ void FSD_File::ReadInfo(Standard_Integer& nbObj,
 			TCollection_ExtendedString& dataType,
 			TColStd_SequenceOfAsciiString& userInfo) 
 {
-  if (!(myStream >> nbObj)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> nbObj)) throw Storage_StreamTypeMismatchError();
 
   FlushEndOfLine();
 
@@ -744,7 +744,7 @@ void FSD_File::ReadInfo(Standard_Integer& nbObj,
 
   Standard_Integer i,len = 0;
 
-  if (!(myStream >> len)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> len)) throw Storage_StreamTypeMismatchError();
 
   FlushEndOfLine();
 
@@ -786,7 +786,7 @@ Storage_Error FSD_File::EndReadInfoSection()
 Storage_Error FSD_File::BeginWriteCommentSection() 
 {
   myStream << "BEGIN_COMMENT_SECTION\n";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
   return Storage_VSOk;
 }
 
@@ -801,11 +801,11 @@ void FSD_File::WriteComment(const TColStd_SequenceOfExtendedString& aCom)
 
  aSize = aCom.Length();
  myStream << aSize << "\n";
- if (myStream.bad()) Storage_StreamWriteError::Raise();
+ if (myStream.bad()) throw Storage_StreamWriteError();
 
  for (i = 1; i <= aSize; i++) {
    WriteExtendedLine(aCom.Value(i));
-   if (myStream.bad()) Storage_StreamWriteError::Raise();
+   if (myStream.bad()) throw Storage_StreamWriteError();
  }
 }
 
@@ -817,7 +817,7 @@ void FSD_File::WriteComment(const TColStd_SequenceOfExtendedString& aCom)
 Storage_Error FSD_File::EndWriteCommentSection() 
 {
   myStream << "END_COMMENT_SECTION\n";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
   return Storage_VSOk;
 }
 
@@ -841,7 +841,7 @@ void FSD_File::ReadComment(TColStd_SequenceOfExtendedString& aCom)
   TCollection_ExtendedString line;
   Standard_Integer           len,i;
 
-  if (!(myStream >> len)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> len)) throw Storage_StreamTypeMismatchError();
   
   FlushEndOfLine();  
 
@@ -870,7 +870,7 @@ Storage_Error FSD_File::EndReadCommentSection()
 Storage_Error FSD_File::BeginWriteTypeSection() 
 {
   myStream << "BEGIN_TYPE_SECTION\n";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
   return Storage_VSOk;
 }
 
@@ -882,7 +882,7 @@ Storage_Error FSD_File::BeginWriteTypeSection()
 void FSD_File::SetTypeSectionSize(const Standard_Integer aSize) 
 {
   myStream << aSize << "\n";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
 }
 
 //=======================================================================
@@ -894,7 +894,7 @@ void FSD_File::WriteTypeInformations(const Standard_Integer typeNum,
 				      const TCollection_AsciiString& typeName) 
 {
   myStream << typeNum << " " << typeName.ToCString() << "\n";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
 }
 
 //=======================================================================
@@ -905,7 +905,7 @@ void FSD_File::WriteTypeInformations(const Standard_Integer typeNum,
 Storage_Error FSD_File::EndWriteTypeSection() 
 {
   myStream << "END_TYPE_SECTION\n";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
   return Storage_VSOk;
 }
 
@@ -928,7 +928,7 @@ Standard_Integer FSD_File::TypeSectionSize()
 {
   Standard_Integer i;
 
-  if (!(myStream >> i)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> i)) throw Storage_StreamTypeMismatchError();
 
   FlushEndOfLine();
 
@@ -943,8 +943,8 @@ Standard_Integer FSD_File::TypeSectionSize()
 void FSD_File::ReadTypeInformations(Standard_Integer& typeNum,
 				    TCollection_AsciiString& typeName) 
 {
-  if (!(myStream >> typeNum)) Storage_StreamTypeMismatchError::Raise();
-  if (!(myStream >> typeName)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> typeNum)) throw Storage_StreamTypeMismatchError();
+  if (!(myStream >> typeName)) throw Storage_StreamTypeMismatchError();
   FlushEndOfLine();
 }
 
@@ -967,7 +967,7 @@ Storage_Error FSD_File::EndReadTypeSection()
 Storage_Error FSD_File::BeginWriteRootSection() 
 {
   myStream << "BEGIN_ROOT_SECTION\n";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
   return Storage_VSOk;
 }
 
@@ -979,7 +979,7 @@ Storage_Error FSD_File::BeginWriteRootSection()
 void FSD_File::SetRootSectionSize(const Standard_Integer aSize) 
 {
   myStream << aSize << "\n";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
 }
 
 //=======================================================================
@@ -990,7 +990,7 @@ void FSD_File::SetRootSectionSize(const Standard_Integer aSize)
 void FSD_File::WriteRoot(const TCollection_AsciiString& rootName, const Standard_Integer aRef, const TCollection_AsciiString& rootType) 
 {
   myStream << aRef << " " << rootName.ToCString() << " " << rootType.ToCString() << "\n";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
 }
 
 //=======================================================================
@@ -1001,7 +1001,7 @@ void FSD_File::WriteRoot(const TCollection_AsciiString& rootName, const Standard
 Storage_Error FSD_File::EndWriteRootSection() 
 {
   myStream << "END_ROOT_SECTION\n";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
   return Storage_VSOk;
 }
 
@@ -1024,7 +1024,7 @@ Standard_Integer FSD_File::RootSectionSize()
 {
   Standard_Integer i;
 
-  if (!(myStream >> i)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> i)) throw Storage_StreamTypeMismatchError();
   
   FlushEndOfLine();
   
@@ -1038,7 +1038,7 @@ Standard_Integer FSD_File::RootSectionSize()
 
 void FSD_File::ReadRoot(TCollection_AsciiString& rootName, Standard_Integer& aRef,TCollection_AsciiString& rootType) 
 {
-  if (!(myStream >> aRef)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> aRef)) throw Storage_StreamTypeMismatchError();
   ReadWord(rootName);
   ReadWord(rootType);
 }
@@ -1062,7 +1062,7 @@ Storage_Error FSD_File::EndReadRootSection()
 Storage_Error FSD_File::BeginWriteRefSection() 
 {
   myStream << "BEGIN_REF_SECTION\n";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
   return Storage_VSOk;
 }
 
@@ -1074,7 +1074,7 @@ Storage_Error FSD_File::BeginWriteRefSection()
 void FSD_File::SetRefSectionSize(const Standard_Integer aSize) 
 {
   myStream << aSize << "\n";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
 }
 
 //=======================================================================
@@ -1086,7 +1086,7 @@ void FSD_File::WriteReferenceType(const Standard_Integer reference,
 				  const Standard_Integer typeNum) 
 {
   myStream << reference << " " << typeNum << "\n";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
 }
 
 //=======================================================================
@@ -1097,7 +1097,7 @@ void FSD_File::WriteReferenceType(const Standard_Integer reference,
 Storage_Error FSD_File::EndWriteRefSection() 
 {
   myStream << "END_REF_SECTION\n";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
   return Storage_VSOk;
 }
 
@@ -1120,7 +1120,7 @@ Standard_Integer FSD_File::RefSectionSize()
 {
   Standard_Integer i;
 
-  if (!(myStream >> i)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> i)) throw Storage_StreamTypeMismatchError();
   FlushEndOfLine();
 
   return i;
@@ -1134,8 +1134,8 @@ Standard_Integer FSD_File::RefSectionSize()
 void FSD_File::ReadReferenceType(Standard_Integer& reference,
 				 Standard_Integer& typeNum) 
 {
-  if (!(myStream >> reference)) Storage_StreamTypeMismatchError::Raise();
-  if (!(myStream >> typeNum)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> reference)) throw Storage_StreamTypeMismatchError();
+  if (!(myStream >> typeNum)) throw Storage_StreamTypeMismatchError();
   FlushEndOfLine();
 }
 
@@ -1158,7 +1158,7 @@ Storage_Error FSD_File::EndReadRefSection()
 Storage_Error FSD_File::BeginWriteDataSection() 
 {
   myStream << "BEGIN_DATA_SECTION";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
   return Storage_VSOk;
 }
 
@@ -1171,7 +1171,7 @@ void FSD_File::WritePersistentObjectHeader(const Standard_Integer aRef,
 					   const Standard_Integer aType) 
 {
   myStream << "\n#" << aRef << "=%" << aType;
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
 }
 
 //=======================================================================
@@ -1182,7 +1182,7 @@ void FSD_File::WritePersistentObjectHeader(const Standard_Integer aRef,
 void FSD_File::BeginWritePersistentObjectData() 
 {
   myStream << "( ";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
 }
 
 //=======================================================================
@@ -1193,7 +1193,7 @@ void FSD_File::BeginWritePersistentObjectData()
 void FSD_File::BeginWriteObjectData() 
 {
   myStream << "( ";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
 }
 
 //=======================================================================
@@ -1204,7 +1204,7 @@ void FSD_File::BeginWriteObjectData()
 void FSD_File::EndWriteObjectData() 
 {
   myStream << ") ";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
 }
 
 //=======================================================================
@@ -1215,7 +1215,7 @@ void FSD_File::EndWriteObjectData()
 void FSD_File::EndWritePersistentObjectData() 
 {
   myStream << ")";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
 }
 
 //=======================================================================
@@ -1226,7 +1226,7 @@ void FSD_File::EndWritePersistentObjectData()
 Storage_Error FSD_File::EndWriteDataSection() 
 {
   myStream << "\nEND_DATA_SECTION\n";
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
+  if (myStream.bad()) throw Storage_StreamWriteError();
   return Storage_VSOk;
 }
 
@@ -1254,19 +1254,19 @@ void FSD_File::ReadPersistentObjectHeader(Standard_Integer& aRef,
 
   while (c != '#') {
     if (IsEnd() || (c != ' ') || (c == '\n')) {
-      Storage_StreamFormatError::Raise();
+      throw Storage_StreamFormatError();
     }
     myStream.get(c);
   }
 
-  if (!(myStream >> aRef)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> aRef)) throw Storage_StreamTypeMismatchError();
 
   myStream.get(c);
 
 
    while (c != '=') {
     if (IsEnd() || (c != ' ') || (c == '\n')) {
-      Storage_StreamFormatError::Raise();
+      throw Storage_StreamFormatError();
     }
     myStream.get(c);
   }
@@ -1275,12 +1275,12 @@ void FSD_File::ReadPersistentObjectHeader(Standard_Integer& aRef,
 
   while (c != '%') {
     if (IsEnd() || (c != ' ') || (c == '\n')) {
-      Storage_StreamFormatError::Raise();
+      throw Storage_StreamFormatError();
     }
     myStream.get(c);
   }
 
-  if (!(myStream >> aType)) Storage_StreamTypeMismatchError::Raise();
+  if (!(myStream >> aType)) throw Storage_StreamTypeMismatchError();
 //  cout << "REF:" << aRef << " TYPE:"<< aType << endl;
 }
 
@@ -1295,7 +1295,7 @@ void FSD_File::BeginReadPersistentObjectData()
   myStream.get(c);
   while (c != '(') {
     if (IsEnd() || (c != ' ') || (c == '\n')) {
-      Storage_StreamFormatError::Raise();
+      throw Storage_StreamFormatError();
     }
     myStream.get(c);
   }
@@ -1315,7 +1315,7 @@ void FSD_File::BeginReadObjectData()
   myStream.get(c);
   while (c != '(') {
     if (IsEnd() || (c != ' ') || (c == '\n')) {
-      Storage_StreamFormatError::Raise();
+      throw Storage_StreamFormatError();
     }
     myStream.get(c);
   }
@@ -1335,7 +1335,7 @@ void FSD_File::EndReadObjectData()
   myStream.get(c);
   while (c != ')') {
     if (IsEnd() || (c != ' ') || (c == '\n')) {
-      Storage_StreamFormatError::Raise();
+      throw Storage_StreamFormatError();
     }
     myStream.get(c);
   }
@@ -1356,7 +1356,7 @@ void FSD_File::EndReadPersistentObjectData()
   myStream.get(c);
   while (c != ')') {
     if (IsEnd() || (c != ' ') || (c == '\n')) {
-      Storage_StreamFormatError::Raise();
+      throw Storage_StreamFormatError();
     }
     myStream.get(c);
   }
@@ -1364,7 +1364,7 @@ void FSD_File::EndReadPersistentObjectData()
   myStream.get(c);
   while (c != '\n') {
     if (IsEnd() || (c != ' ')) {
-      Storage_StreamFormatError::Raise();
+      throw Storage_StreamFormatError();
     }
     myStream.get(c);
   }

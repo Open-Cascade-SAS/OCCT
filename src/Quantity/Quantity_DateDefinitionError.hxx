@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Quantity_DateDefinitionError, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_Quantity_DateDefinitionError
   #define Quantity_DateDefinitionError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Quantity_DateDefinitionError::Raise(MESSAGE);
+  if (CONDITION) throw Quantity_DateDefinitionError(MESSAGE);
 #else
   #define Quantity_DateDefinitionError_Raise_if(CONDITION, MESSAGE)
 #endif

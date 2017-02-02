@@ -365,12 +365,12 @@ static Standard_Real AdjustOnPeriodic3d (const Handle(Geom_Curve)& c,
 	  else tc = new Geom_TrimmedCurve(c,first,last);
 	  bsp = GeomConvert::CurveToBSplineCurve(tc);
 	}
-	catch (Standard_Failure) 
-        {
+	catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
 	  cout << "Warning: ShapeFix_Wire_1::FixGap3d: Exception in TrimmedCurve" <<first<<" " <<last<<endl;
-	  Standard_Failure::Caught()->Print(cout); cout << endl; 
+	  anException.Print(cout); cout << endl; 
 #endif  
+	  (void)anException;
 	}
       }
 
@@ -640,12 +640,12 @@ static Standard_Real AdjustOnPeriodic3d (const Handle(Geom_Curve)& c,
 	  }
 	}
       }
-      catch (Standard_Failure) 
-      {
+      catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
 	cout << "Warning: ShapeFix_Wire_1::FixGap3d: Exception in TrimmedCurve      :"<<endl;
-	Standard_Failure::Caught()->Print(cout); cout << endl;
+	anException.Print(cout); cout << endl;
 #endif
+	(void)anException;
       }  
     }
   }
@@ -948,12 +948,12 @@ static Standard_Real AdjustOnPeriodic2d (const Handle(Geom2d_Curve)& pc,
 	    c = new Geom2d_TrimmedCurve(pc,first,last);
 	  bsp = Geom2dConvert::CurveToBSplineCurve(c);
 	}
-	catch (Standard_Failure) 
-        {
+	catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
 	  cout << "Warning: ShapeFix_Wire_1::FixGap2d: Exception in TrimmedCurve2d" <<first<<" " <<last<<endl;
-	  Standard_Failure::Caught()->Print(cout); cout << endl; 
+	  anException.Print(cout); cout << endl; 
 #endif  
+	  (void)anException;
 	}
       }
       
@@ -1527,13 +1527,12 @@ static Standard_Real AdjustOnPeriodic2d (const Handle(Geom2d_Curve)& pc,
 	  }
 	}
       }
-      catch (Standard_Failure) 
-      {
-	
+      catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
 	cout << "Warning: ShapeFix_Wire_1::FixGap2d: Exception in TrimmedCurve2d  :"<<endl;
-	Standard_Failure::Caught()->Print(cout); cout << endl;
+	anException.Print(cout); cout << endl;
 #endif	
+	(void)anException;
       }  
     }
   }

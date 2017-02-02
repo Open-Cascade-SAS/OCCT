@@ -185,7 +185,7 @@ public:
 
 gp_Pnt tsee_entity0::Pnt() const
 {
-  if (!Is0()) Standard_Failure::Raise("not 0d");
+  if (!Is0()) throw Standard_Failure("not 0d");
   gp_Pnt P; 
   if      (IsP()) P = myEPDS->Point(myEindex).Point();
   else if (IsV()) P = BRep_Tool::Pnt(TopoDS::Vertex(myEPDS->Shape(myEindex)));

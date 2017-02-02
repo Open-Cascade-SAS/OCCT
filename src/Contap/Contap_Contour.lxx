@@ -28,21 +28,21 @@ inline Standard_Boolean Contap_Contour::IsEmpty () const
 
 inline Standard_Integer Contap_Contour::NbLines () const
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return slin.Length();
 }
 
 inline const Contap_Line & 
 Contap_Contour::Line (const Standard_Integer Index) const
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return slin(Index);
 }
 
 inline Contap_SurfFunction & 
 Contap_Contour::SurfaceFunction ()
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return mySFunc;
 }
 

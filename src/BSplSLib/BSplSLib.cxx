@@ -3517,7 +3517,7 @@ void BSplSLib::FunctionMultiply
 		 result,
 		 error_code) ;
 	if (error_code) {
-	  Standard_ConstructionError::Raise();
+	  throw Standard_ConstructionError();
 	}
 	gp_Pnt& P = NewNumerator(ii,jj);
 	P.SetX(P.X() * result);
@@ -3537,6 +3537,6 @@ void BSplSLib::FunctionMultiply
 		Status) ;
   }
   else {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 }

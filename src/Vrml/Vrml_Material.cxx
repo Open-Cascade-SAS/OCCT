@@ -34,7 +34,7 @@ Vrml_Material::Vrml_Material(const Handle(Quantity_HArray1OfColor)& aAmbientColo
    {
      if (aShininess->Value(i) < 0. || aShininess->Value(i) > 1.)
        {
-	 Standard_Failure::Raise("The value of aShininess is out of range (0 - 1)");
+	 throw Standard_Failure("The value of aShininess is out of range (0 - 1)");
        }
    }
  myShininess     = aShininess;
@@ -43,7 +43,7 @@ Vrml_Material::Vrml_Material(const Handle(Quantity_HArray1OfColor)& aAmbientColo
    {
      if (aTransparency->Value(i) < 0. || aTransparency->Value(i) > 1.)
        {
-	 Standard_Failure::Raise("The value of aTransparency is out of range (0 - 1)");
+	 throw Standard_Failure("The value of aTransparency is out of range (0 - 1)");
        }
    }
  myTransparency  = aTransparency;
@@ -118,7 +118,7 @@ void Vrml_Material::SetShininess(const Handle(TColStd_HArray1OfReal)& aShininess
    {
      if (aShininess->Value(i) < 0. || aShininess->Value(i) > 1.)
        {
-	 Standard_Failure::Raise("The value of aShininess is out of range (0 - 1)");
+	 throw Standard_Failure("The value of aShininess is out of range (0 - 1)");
        }
    }
  myShininess = aShininess;
@@ -136,7 +136,7 @@ void Vrml_Material::SetTransparency(const Handle(TColStd_HArray1OfReal)& aTransp
    {
      if (aTransparency->Value(i) < 0. || aTransparency->Value(i) > 1.)
        {
-	 Standard_Failure::Raise("The value of aTransparency is out of range (0 - 1)");
+	 throw Standard_Failure("The value of aTransparency is out of range (0 - 1)");
        }
    }
  myTransparency = aTransparency;

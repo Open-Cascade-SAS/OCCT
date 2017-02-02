@@ -328,7 +328,7 @@ void BRepFill_Filling::AddConstraints( const BRepFill_SequenceOfEdgeFaceAndOrder
 	  Standard_Real f, l;
 	  BRep_Tool::CurveOnSurface( CurEdge, C2d, Surface, loc, f, l);
 	  if (Surface.IsNull()) {
-	    Standard_Failure::Raise( "Add" );
+	    throw Standard_Failure( "Add" );
 	    return;
 	  }
 	  Surface = Handle(Geom_Surface)::DownCast(Surface->Copy());
@@ -708,7 +708,7 @@ void BRepFill_Filling::Build()
   
   TopoDS_Wire FinalWire = WireFromList(FinalEdges);
   if (!(FinalWire.Closed()))
-    Standard_Failure::Raise("Wire is not closed");
+    throw Standard_Failure("Wire is not closed");
   
   myFace = BRepLib_MakeFace( Surface, FinalWire );
 }

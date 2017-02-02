@@ -75,7 +75,7 @@ Standard_EXPORT void FDS_repvg2
     TopOpeBRepDS_Point PDS; TopoDS_Shape VDS;
     if      (ispoint)  PDS = BDS.Point(G1);
     else if (isvertex) VDS = BDS.Shape(G1);
-    else Standard_Failure::Raise("TopOpeBRepDS FDS_repvg2 1");
+    else throw Standard_Failure("TopOpeBRepDS FDS_repvg2 1");
 
     Standard_Boolean isEd1 = BRep_Tool::Degenerated(E1); if (isEd1) {it1.Next(); continue;}
     TopOpeBRepDS_ListIteratorOfListOfInterference it2(it1); if (it2.More()) it2.Next(); else {it1.Next(); continue; }

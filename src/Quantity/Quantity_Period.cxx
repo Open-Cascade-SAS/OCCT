@@ -142,8 +142,7 @@ void Quantity_Period::SetValues(
                          const Standard_Integer mics) {
 
 if ( ! Quantity_Period::IsValid(ss,mics) )
-   Quantity_PeriodDefinitionError::Raise(
-             "Quantity_Period::SetValues invalid parameters");
+   throw Quantity_PeriodDefinitionError("Quantity_Period::SetValues invalid parameters");
 
 mySec  = ss;
 myUSec = mics;

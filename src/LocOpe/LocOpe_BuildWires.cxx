@@ -139,7 +139,7 @@ void LocOpe_BuildWires::Perform(const TopTools_ListOfShape& L,
       }
 
       if (!anIterl.More()) {
-	Standard_ConstructionError::Raise();
+	throw Standard_ConstructionError();
       }
       const TopoDS_Edge& theEdge = TopoDS::Edge(anIterl.Value());
       TopoDS_Vertex Vf,Vl;
@@ -232,7 +232,7 @@ Standard_Boolean LocOpe_BuildWires::IsDone() const
 const TopTools_ListOfShape& LocOpe_BuildWires::Result () const
 {
   if (!myDone) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   return myRes;
 }

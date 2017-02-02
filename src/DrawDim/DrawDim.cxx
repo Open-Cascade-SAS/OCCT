@@ -133,7 +133,7 @@ Standard_Boolean DrawDim::Lin (const TopoDS_Edge& e,
       return Standard_True;
     }
     else if (vf.IsNull() || vl.IsNull()) {
-      Standard_DomainError::Raise("DrawDim::Lin : semi infinite edge");
+      throw Standard_DomainError("DrawDim::Lin : semi infinite edge");
     }
     else {    
       l = L->Lin();   

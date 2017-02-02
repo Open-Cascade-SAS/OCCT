@@ -127,9 +127,7 @@ void Quantity_Date::SetValues(const Standard_Integer mm,
 Standard_Integer i;
 
 if ( ! Quantity_Date::IsValid (mm,dd,yy,hh,mn,ss,mis,mics))
-   Quantity_DateDefinitionError::Raise(
-             "Quantity_Date::Quantity_Date invalid parameters");
-
+   throw Quantity_DateDefinitionError("Quantity_Date::Quantity_Date invalid parameters");
 
 if ( Quantity_Date::IsLeap (yy) ) month_table[1] = 29;
 else month_table[1] = 28;
@@ -288,7 +286,7 @@ if ( result.mySec >= 0 && result.myUSec < 0 ) {
 
 
 if ( result.mySec <0   )
-   Quantity_DateDefinitionError::Raise(
+   throw Quantity_DateDefinitionError(
    "Quantity_Date::Subtract : The result date is anterior to Jan,1 1979");
 
 return (result); 

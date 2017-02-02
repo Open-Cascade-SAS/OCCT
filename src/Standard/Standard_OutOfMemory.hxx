@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Standard_OutOfMemory, Standard_ProgramError)
 
 #if !defined No_Exception && !defined No_Standard_OutOfMemory
   #define Standard_OutOfMemory_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Standard_OutOfMemory::Raise(MESSAGE);
+  if (CONDITION) throw Standard_OutOfMemory(MESSAGE);
 #else
   #define Standard_OutOfMemory_Raise_if(CONDITION, MESSAGE)
 #endif
@@ -48,7 +48,7 @@ DEFINE_STANDARD_HANDLE(Standard_OutOfMemory, Standard_ProgramError)
 
 class Standard_OutOfMemory : public Standard_ProgramError
 {
-  void Throw () const Standard_OVERRIDE;
+  Standard_EXPORT void Throw () const Standard_OVERRIDE;
 
 public:
 

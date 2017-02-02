@@ -104,9 +104,7 @@ const TopoDS_Shape& TopOpeBRep_ShapeIntersector2d::CurrentGeomShape
     }
   }
   
-  Standard_ProgramError::Raise("CurrentGeomShape : no intersection 2d");
-  TopoDS_Shape* bid = new TopoDS_Shape();
-  return *bid;
+  throw Standard_ProgramError("CurrentGeomShape : no intersection 2d");
 }
 
 
@@ -431,9 +429,7 @@ const TopoDS_Shape& TopOpeBRep_ShapeIntersector2d::Shape
   if      ( Index == 1 ) return myShape1;
   else if ( Index == 2 ) return myShape2;
   
-  Standard_ProgramError::Raise("ShapeIntersector : no shape");
-  TopoDS_Shape* bid = new TopoDS_Shape();
-  return *bid;
+  throw Standard_ProgramError("ShapeIntersector : no shape");
 }
 
 //=======================================================================

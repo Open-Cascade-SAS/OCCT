@@ -456,7 +456,7 @@ void OSD_Path::RemoveATrek(const Standard_Integer thewhere){
  Standard_Integer length=TrekLength();
 
  if (length <= 0 || thewhere > length)
-  Standard_NumericError::Raise("OSD_Path::RemoveATrek : where has an invalid value");
+  throw Standard_NumericError("OSD_Path::RemoveATrek : where has an invalid value");
 
  Standard_Integer posit,aHowmany;
  TCollection_AsciiString tok;
@@ -494,7 +494,7 @@ TCollection_AsciiString OSD_Path::TrekValue(const Standard_Integer thewhere)cons
  TCollection_AsciiString result=myTrek.Token("|",thewhere);
 
  if (result == "")
-  Standard_NumericError::Raise("OSD_Path::TrekValue : where is invalid");
+  throw Standard_NumericError("OSD_Path::TrekValue : where is invalid");
 
  return(result);
 }
@@ -504,7 +504,7 @@ void OSD_Path::InsertATrek(const TCollection_AsciiString& aName,
  Standard_Integer length=TrekLength();
 
  if (thewhere <= 0 || thewhere > length)
-  Standard_NumericError::Raise("OSD_Path::InsertATrek : where has an invalid value");
+  throw Standard_NumericError("OSD_Path::InsertATrek : where has an invalid value");
 
  TCollection_AsciiString tok=myTrek.Token("|",thewhere);
  Standard_Integer wwhere = myTrek.Search(tok);
@@ -1362,7 +1362,7 @@ static void __fastcall _test_raise ( OSD_SysType type, Standard_CString str ) {
   strcat (  buff, str );
   strcat (  buff, " (): unknown system type"  );
 
-  Standard_ProgramError :: Raise ( buff );
+  throw Standard_ProgramError ( buff );
  
  }  // end if
 

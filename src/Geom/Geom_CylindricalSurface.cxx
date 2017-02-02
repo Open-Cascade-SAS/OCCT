@@ -89,7 +89,7 @@ Geom_CylindricalSurface::Geom_CylindricalSurface ( const Ax3& A3,
 						   const Standard_Real R) 
 : radius (R) {
 
-  if (R < 0.0) Standard_ConstructionError::Raise();
+  if (R < 0.0) throw Standard_ConstructionError();
   pos = A3;
 }
 
@@ -168,7 +168,7 @@ void Geom_CylindricalSurface::SetCylinder (const gp_Cylinder& C) {
 
 void Geom_CylindricalSurface::SetRadius (const Standard_Real R) {
 
-  if (R < 0.0) { Standard_ConstructionError::Raise(); }
+  if (R < 0.0) { throw Standard_ConstructionError(); }
   radius = R;
 }
 

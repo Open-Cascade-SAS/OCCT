@@ -41,7 +41,7 @@ Standard_Address Standard_MMgrRaw::Allocate(const Standard_Size aSize)
   Standard_Address aPtr = ( myClear ? calloc(aRoundSize, sizeof(char)) :
                                       malloc(aRoundSize) );
   if ( ! aPtr )
-    Standard_OutOfMemory::Raise("Standard_MMgrRaw::Allocate(): malloc failed");
+    throw Standard_OutOfMemory("Standard_MMgrRaw::Allocate(): malloc failed");
   return aPtr;
 }
 
@@ -68,7 +68,7 @@ Standard_Address Standard_MMgrRaw::Reallocate(Standard_Address theStorage,
   const Standard_Size aRoundSize = (theSize + 3) & ~0x3;
   Standard_Address newStorage = (Standard_Address)realloc(theStorage, aRoundSize);
   if ( ! newStorage )
-    Standard_OutOfMemory::Raise("Standard_MMgrRaw::Reallocate(): realloc failed");
+    throw Standard_OutOfMemory("Standard_MMgrRaw::Reallocate(): realloc failed");
   // Note that it is not possible to ensure that additional memory
   // allocated by realloc will be cleared (so as to satisfy myClear mode);
   // in order to do that we would need using memset...

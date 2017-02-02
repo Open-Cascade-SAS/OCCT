@@ -159,9 +159,7 @@ const TopoDS_Shape& TopOpeBRep_ShapeIntersector::CurrentGeomShape
     }
   }
 
-  Standard_Failure::Raise("CurrentGeomShape : no intersection");
-  TopoDS_Shape* bid = new TopoDS_Shape();
-  return *bid;
+  throw Standard_Failure("CurrentGeomShape : no intersection");
 }
 //modified by NIZNHY-PKV Fri Sep 24 11:02:59 1999 from
 //=======================================================================
@@ -1017,9 +1015,7 @@ const TopoDS_Shape& TopOpeBRep_ShapeIntersector::Shape
   if      ( Index == 1 ) return myShape1;
   else if ( Index == 2 ) return myShape2;
 
-  Standard_Failure::Raise("ShapeIntersector : no shape");
-  TopoDS_Shape* bid = new TopoDS_Shape();
-  return *bid;
+  throw Standard_Failure("ShapeIntersector : no shape");
 }
 
 

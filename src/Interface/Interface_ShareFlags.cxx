@@ -127,8 +127,7 @@ Interface_ShareFlags::Interface_ShareFlags
   (const Handle(Standard_Transient)& ent) const 
 {
   Standard_Integer num = themodel->Number(ent);
-  if (num == 0 || num > themodel->NbEntities()) Standard_DomainError::Raise
-    ("Interface ShareFlags : IsShared");
+  if (num == 0 || num > themodel->NbEntities()) throw Standard_DomainError("Interface ShareFlags : IsShared");
   return theflags.Value(num);
 }
 

@@ -106,9 +106,9 @@ IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteTransient
     status = myController->TransferWriteTransient
       (obj,myTransferWriter,model,myTransferMode);
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
     sout<<"****  ****  TransferWriteShape, EXCEPTION : ";
-    sout<<Standard_Failure::Caught()->GetMessageString(); 
+    sout<<anException.GetMessageString(); 
     sout<<endl;
     status = IFSelect_RetFail;
   }
@@ -154,9 +154,9 @@ IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteShape
     status = myController->TransferWriteShape
       (shape,myTransferWriter,model,myTransferMode);
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
     sout<<"****  ****  TransferWriteShape, EXCEPTION : "; 
-    sout<<Standard_Failure::Caught()->GetMessageString(); 
+    sout<<anException.GetMessageString(); 
     sout<<endl;
     status = IFSelect_RetFail;
   }

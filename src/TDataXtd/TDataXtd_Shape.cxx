@@ -66,7 +66,7 @@ Standard_Boolean TDataXtd_Shape::Find (const TDF_Label& current,
 Handle(TDataXtd_Shape) TDataXtd_Shape::New (const TDF_Label& label)
 {  
   if (label.HasAttribute()) {
-    Standard_DomainError::Raise("TDataXtd_Shape::New : not an empty label");
+    throw Standard_DomainError("TDataXtd_Shape::New : not an empty label");
   }
   Handle(TDataXtd_Shape) A = new TDataXtd_Shape ();  
   label.AddAttribute(A);                     

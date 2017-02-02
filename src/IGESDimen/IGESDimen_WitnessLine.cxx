@@ -34,7 +34,7 @@ IGESDimen_WitnessLine::IGESDimen_WitnessLine ()    {  }
    const Handle(TColgp_HArray1OfXY)& dataPoints)
 {
   if (dataPoints->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESDimen_WitnessLine : Init");
+    throw Standard_DimensionMismatch("IGESDimen_WitnessLine : Init");
   theDatatype      = dataType;
   theZDisplacement = aDisp;
   theDataPoints    = dataPoints;

@@ -31,7 +31,7 @@ IGESSolid_VertexList::IGESSolid_VertexList ()    {  }
   (const Handle(TColgp_HArray1OfXYZ)& Vertices)
 {
   if (Vertices.IsNull() || Vertices->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESSolid_VertexList : Init");
+    throw Standard_DimensionMismatch("IGESSolid_VertexList : Init");
   theVertices = Vertices;
   InitTypeAndForm(502,1);
 }

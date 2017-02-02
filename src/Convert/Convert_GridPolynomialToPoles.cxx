@@ -40,12 +40,12 @@ Convert_GridPolynomialToPoles(
   if ((NumCoeffPerSurface->Lower()!=1 ) || 
       (NumCoeffPerSurface->Upper()!= 2) )
     {
-      Standard_DomainError::Raise("Convert : Wrong Coefficients");
+      throw Standard_DomainError("Convert : Wrong Coefficients");
     } 
   if ((Coefficients->Lower()!=1 ) || 
       (Coefficients->Upper()!= 3*(MaxUDegree+1)*(MaxVDegree+1)))
     {
-      Standard_DomainError::Raise("Convert : Wrong Coefficients");
+      throw Standard_DomainError("Convert : Wrong Coefficients");
     }  
 
   // Les Degres
@@ -53,11 +53,9 @@ Convert_GridPolynomialToPoles(
   myVDegree = NumCoeffPerSurface->Value(2)-1;
 
   if (myUDegree > MaxUDegree) 
-     Standard_DomainError::Raise
-       ("Convert : Incoherence beetween NumCoeffPerSurface and MaxUDegree");
+     throw Standard_DomainError("Convert : Incoherence beetween NumCoeffPerSurface and MaxUDegree");
   if (myVDegree > MaxVDegree) 
-     Standard_DomainError::Raise
-       ("Convert : Incoherence beetween NumCoeffPerSurface and MaxVDegree");
+     throw Standard_DomainError("Convert : Incoherence beetween NumCoeffPerSurface and MaxVDegree");
 
   Handle(TColStd_HArray2OfInteger) NumCoeff = 
     new (TColStd_HArray2OfInteger)(1, 1, 1, 2);
@@ -102,14 +100,14 @@ Convert_GridPolynomialToPoles(
      (NumCoeffPerSurface->LowerCol()!=1) || 
      (NumCoeffPerSurface->UpperCol()!=2) )
     {
-      Standard_DomainError::Raise("Convert : Wrong NumCoeffPerSurface");
+      throw Standard_DomainError("Convert : Wrong NumCoeffPerSurface");
     }
 
   if ((Coefficients->Lower()!=1 ) || 
       (Coefficients->Upper()!= 3*NbUSurfaces*NbVSurfaces*
        (RealUDegree + 1) * (RealVDegree + 1)) )
     {
-      Standard_DomainError::Raise("Convert : Wrong Coefficients");
+      throw Standard_DomainError("Convert : Wrong Coefficients");
     }
      
   // Calcul des degree
@@ -121,11 +119,9 @@ Convert_GridPolynomialToPoles(
   }
 
   if (myUDegree > RealUDegree) 
-     Standard_DomainError::Raise
-       ("Convert : Incoherence beetween NumCoeffPerSurface and MaxUDegree");
+     throw Standard_DomainError("Convert : Incoherence beetween NumCoeffPerSurface and MaxUDegree");
   if (myVDegree > RealVDegree) 
-     Standard_DomainError::Raise
-       ("Convert : Incoherence beetween NumCoeffPerSurface and MaxVDegree");
+     throw Standard_DomainError("Convert : Incoherence beetween NumCoeffPerSurface and MaxVDegree");
 
   Perform (UContinuity, VContinuity, 
 	   RealUDegree, RealVDegree,

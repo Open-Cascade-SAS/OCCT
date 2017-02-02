@@ -41,7 +41,7 @@ inline Standard_Boolean TopOpeBRep_Point2d::HasPint() const
 //=======================================================================
 inline const IntRes2d_IntersectionPoint& TopOpeBRep_Point2d::Pint() const
 {
-  if (!HasPint()) Standard_Failure::Raise("TopOpeBRep_Point2d::Pint");
+  if (!HasPint()) throw Standard_Failure("TopOpeBRep_Point2d::Pint");
   return mypint;
 }
 
@@ -53,7 +53,7 @@ inline void TopOpeBRep_Point2d::SetIsVertex(const Standard_Integer Index,const S
 {
   if      (Index == 1) myisvertex1 = B;
   else if (Index == 2) myisvertex2 = B;
-  else Standard_Failure::Raise("TopOpeBRep_Point2d::SetIsVertex");
+  else throw Standard_Failure("TopOpeBRep_Point2d::SetIsVertex");
 }
 
 //=======================================================================
@@ -64,8 +64,7 @@ inline Standard_Boolean TopOpeBRep_Point2d::IsVertex(const Standard_Integer Inde
 {
   if      (Index == 1) return myisvertex1;
   else if (Index == 2) return myisvertex2;
-  else Standard_Failure::Raise("TopOpeBRep_Point2d::IsVertex");
-  return myisvertex1;
+  else throw Standard_Failure("TopOpeBRep_Point2d::IsVertex");
 }
 
 //=======================================================================
@@ -76,7 +75,7 @@ inline void TopOpeBRep_Point2d::SetVertex(const Standard_Integer Index,const Top
 {
   if      (Index == 1) {myvertex1 = V; myisvertex1 = Standard_True;}
   else if (Index == 2) {myvertex2 = V; myisvertex2 = Standard_True;}
-  else Standard_Failure::Raise("TopOpeBRep_Point2d::SetVertex");
+  else throw Standard_Failure("TopOpeBRep_Point2d::SetVertex");
 }
 
 //=======================================================================
@@ -87,7 +86,7 @@ inline void TopOpeBRep_Point2d::SetTransition(const Standard_Integer Index,const
 {
   if      (Index == 1) mytransition1 = T;
   else if (Index == 2) mytransition2 = T;
-  else Standard_Failure::Raise("TopOpeBRep_Point2d::SetTransition");
+  else throw Standard_Failure("TopOpeBRep_Point2d::SetTransition");
 }
 
 //=======================================================================
@@ -98,7 +97,7 @@ inline void TopOpeBRep_Point2d::SetParameter(const Standard_Integer Index,const 
 {
   if      (Index == 1) myparameter1 = P;
   else if (Index == 2) myparameter2 = P;
-  else Standard_Failure::Raise("TopOpeBRep_Point2d::SetParameter");
+  else throw Standard_Failure("TopOpeBRep_Point2d::SetParameter");
 }
 
 //=======================================================================
@@ -109,8 +108,7 @@ inline Standard_Real TopOpeBRep_Point2d::Parameter(const Standard_Integer Index)
 {
   if      (Index == 1) return myparameter1;
   else if (Index == 2) return myparameter2;
-  else Standard_Failure::Raise("TopOpeBRep_Point2d::Parameter");
-  return myparameter1;
+  else throw Standard_Failure("TopOpeBRep_Point2d::Parameter");
 }
 
 //=======================================================================

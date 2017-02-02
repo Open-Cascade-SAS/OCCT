@@ -23,14 +23,14 @@ inline Standard_Boolean IntStart_SearchOnBoundaries::IsDone () const {
 
 inline Standard_Boolean IntStart_SearchOnBoundaries::AllArcSolution () const {
 
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return all;
 }
 
 
 inline Standard_Integer IntStart_SearchOnBoundaries::NbPoints () const {
 
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return spnt.Length();
 }
 
@@ -38,13 +38,13 @@ inline Standard_Integer IntStart_SearchOnBoundaries::NbPoints () const {
 inline const IntStart_ThePathPoint& IntStart_SearchOnBoundaries::Point 
   (const Standard_Integer Index) const {
 
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return spnt.Value(Index);
 }
 
 inline Standard_Integer IntStart_SearchOnBoundaries::NbSegments () const {
 
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return sseg.Length();
 }
 
@@ -52,7 +52,7 @@ inline Standard_Integer IntStart_SearchOnBoundaries::NbSegments () const {
 inline const IntStart_TheSegment& IntStart_SearchOnBoundaries::Segment
   (const Standard_Integer Index) const {
 
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return sseg.Value(Index);
 }
 

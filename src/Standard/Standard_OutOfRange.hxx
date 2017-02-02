@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Standard_OutOfRange, Standard_RangeError)
 
 #if !defined No_Exception && !defined No_Standard_OutOfRange
   #define Standard_OutOfRange_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Standard_OutOfRange::Raise(MESSAGE);
+  if (CONDITION) throw Standard_OutOfRange(MESSAGE);
 #else
   #define Standard_OutOfRange_Raise_if(CONDITION, MESSAGE)
 #endif

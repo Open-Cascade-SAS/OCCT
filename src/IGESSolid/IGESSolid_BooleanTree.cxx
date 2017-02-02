@@ -33,7 +33,7 @@ IGESSolid_BooleanTree::IGESSolid_BooleanTree ()    {  }
 {
   if (operands->Lower()  != 1 || operations->Lower() != 1 ||
       operands->Length() != operations->Length())
-    Standard_DimensionError::Raise("IGESSolid_BooleanTree : Init");
+    throw Standard_DimensionError("IGESSolid_BooleanTree : Init");
 
   theOperations = operations;
   theOperands   = operands;

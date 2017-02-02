@@ -23,7 +23,7 @@
 
 Adaptor3d_InterFunc::Adaptor3d_InterFunc(const Handle(Adaptor2d_HCurve2d)& C, const Standard_Real FixVal, const Standard_Integer Fix) : myCurve2d(C),myFixVal(FixVal),myFix(Fix)
 {
-  if(Fix != 1 && Fix != 2 ) Standard_ConstructionError::Raise();
+  if(Fix != 1 && Fix != 2 ) throw Standard_ConstructionError();
 
 }
 

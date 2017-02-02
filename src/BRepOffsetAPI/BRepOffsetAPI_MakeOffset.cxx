@@ -148,7 +148,7 @@ static void BuildDomains(TopoDS_Face&               myFace,
   if (myFace.IsNull()) {
     myFace   = BRepBuilderAPI_MakeFace(TopoDS::Wire(WorkWires.First()),Standard_True);
     if (myFace.IsNull())
-      StdFail_NotDone::Raise ("BRepOffsetAPI_MakeOffset : the wire is not planar");
+      throw StdFail_NotDone("BRepOffsetAPI_MakeOffset : the wire is not planar");
   }
 //  Modified by Sergey KHROMOV - Thu Apr 26 16:04:43 2001 Begin
   TopExp_Explorer anExp(myFace, TopAbs_WIRE);
@@ -189,7 +189,7 @@ static void BuildDomains(TopoDS_Face&               myFace,
   }
   FR.Perform();
   if (!FR.IsDone()) {
-    StdFail_NotDone::Raise ("BRepOffsetAPI_MakeOffset : Build Domains");
+    throw StdFail_NotDone("BRepOffsetAPI_MakeOffset : Build Domains");
   }
   TopTools_ListOfShape Faces;
 #ifdef OCCT_DEBUG
@@ -354,13 +354,13 @@ void BRepOffsetAPI_MakeOffset::Perform(const Standard_Real Offset,
     else
       Done();
   }
-  catch(Standard_Failure) //Every exception was caught.
-  {
+  catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
     cout<<"An exception was caught in BRepOffsetAPI_MakeOffset::Perform : ";
-    Standard_ConstructionError::Caught()->Print(cout); 
+    anException.Print(cout); 
     cout<<endl;
 #endif
+    (void)anException;
     NotDone();
     myShape.Nullify();
   }

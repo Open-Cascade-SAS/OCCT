@@ -211,11 +211,11 @@ GeomAbs_Shape GeomAdaptor_Curve::Continuity() const
       case GeomAbs_G1: return GeomAbs_G1;
       case GeomAbs_G2: return GeomAbs_G2;
       default:
-        Standard_NoSuchObject::Raise("GeomAdaptor_Curve::Continuity");
+        throw Standard_NoSuchObject("GeomAdaptor_Curve::Continuity");
     }
   }
   else if (myTypeCurve == GeomAbs_OtherCurve) {
-    Standard_NoSuchObject::Raise("GeomAdaptor_Curve::Contunuity");
+    throw Standard_NoSuchObject("GeomAdaptor_Curve::Contunuity");
   }
 
   return GeomAbs_CN;
@@ -239,7 +239,7 @@ Standard_Integer GeomAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
       switch ( S) {
       case GeomAbs_G1:
       case GeomAbs_G2:
-        Standard_DomainError::Raise("GeomAdaptor_Curve::NbIntervals");
+        throw Standard_DomainError("GeomAdaptor_Curve::NbIntervals");
         break;
       case GeomAbs_C0:
         myNbIntervals = 1;
@@ -310,7 +310,7 @@ Standard_Integer GeomAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
     switch(S){
     case GeomAbs_G1:
     case GeomAbs_G2:
-      Standard_DomainError::Raise("GeomAdaptor_Curve::NbIntervals");
+      throw Standard_DomainError("GeomAdaptor_Curve::NbIntervals");
       break;
     case GeomAbs_C0: BaseS = GeomAbs_C1; break;
     case GeomAbs_C1: BaseS = GeomAbs_C2; break;
@@ -359,7 +359,7 @@ void GeomAdaptor_Curve::Intervals(TColStd_Array1OfReal& T,
 	switch ( S) {
 	case GeomAbs_G1:
 	case GeomAbs_G2:
-	  Standard_DomainError::Raise("Geom2dAdaptor_Curve::NbIntervals");
+	  throw Standard_DomainError("Geom2dAdaptor_Curve::NbIntervals");
 	  break;
 	case GeomAbs_C0:
 	  myNbIntervals = 1;
@@ -444,7 +444,7 @@ void GeomAdaptor_Curve::Intervals(TColStd_Array1OfReal& T,
     switch(S){
     case GeomAbs_G1:
     case GeomAbs_G2:
-      Standard_DomainError::Raise("GeomAdaptor_Curve::NbIntervals");
+      throw Standard_DomainError("GeomAdaptor_Curve::NbIntervals");
       break;
     case GeomAbs_C0: BaseS = GeomAbs_C1; break;
     case GeomAbs_C1: BaseS = GeomAbs_C2; break;
@@ -885,9 +885,7 @@ Standard_Integer GeomAdaptor_Curve::Degree() const
   else if (myTypeCurve == GeomAbs_BSplineCurve)
     return myBSplineCurve->Degree();
   else
-    Standard_NoSuchObject::Raise();
-  // portage WNT 
-  return 0;
+    throw Standard_NoSuchObject();
 }
 
 //=======================================================================
@@ -918,9 +916,7 @@ Standard_Integer GeomAdaptor_Curve::NbPoles() const
   else if (myTypeCurve == GeomAbs_BSplineCurve)
     return myBSplineCurve->NbPoles();
   else
-    Standard_NoSuchObject::Raise();
-  // portage WNT
-  return 0;
+    throw Standard_NoSuchObject();
 }
 
 //=======================================================================
@@ -931,7 +927,7 @@ Standard_Integer GeomAdaptor_Curve::NbPoles() const
 Standard_Integer GeomAdaptor_Curve::NbKnots() const
 {
   if ( myTypeCurve != GeomAbs_BSplineCurve)
-    Standard_NoSuchObject::Raise("GeomAdaptor_Curve::NbKnots");
+    throw Standard_NoSuchObject("GeomAdaptor_Curve::NbKnots");
   return myBSplineCurve->NbKnots();
 }
 
@@ -943,7 +939,7 @@ Standard_Integer GeomAdaptor_Curve::NbKnots() const
 Handle(Geom_BezierCurve) GeomAdaptor_Curve::Bezier() const 
 {
  if ( myTypeCurve != GeomAbs_BezierCurve)
-    Standard_NoSuchObject::Raise("GeomAdaptor_Curve::Bezier");
+    throw Standard_NoSuchObject("GeomAdaptor_Curve::Bezier");
   return Handle(Geom_BezierCurve)::DownCast (myCurve);
 }
 
@@ -955,7 +951,7 @@ Handle(Geom_BezierCurve) GeomAdaptor_Curve::Bezier() const
 Handle(Geom_BSplineCurve) GeomAdaptor_Curve::BSpline() const 
 {
  if ( myTypeCurve != GeomAbs_BSplineCurve)
-    Standard_NoSuchObject::Raise("GeomAdaptor_Curve::BSpline");
+    throw Standard_NoSuchObject("GeomAdaptor_Curve::BSpline");
 
   return myBSplineCurve;
 }
@@ -968,6 +964,6 @@ Handle(Geom_BSplineCurve) GeomAdaptor_Curve::BSpline() const
 Handle(Geom_OffsetCurve) GeomAdaptor_Curve::OffsetCurve() const
 {
   if ( myTypeCurve != GeomAbs_OffsetCurve)
-    Standard_NoSuchObject::Raise("GeomAdaptor_Curve::OffsetCurve");
+    throw Standard_NoSuchObject("GeomAdaptor_Curve::OffsetCurve");
   return Handle(Geom_OffsetCurve)::DownCast(myCurve);
 }

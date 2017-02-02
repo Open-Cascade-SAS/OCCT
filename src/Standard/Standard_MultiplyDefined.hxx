@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Standard_MultiplyDefined, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_Standard_MultiplyDefined
   #define Standard_MultiplyDefined_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Standard_MultiplyDefined::Raise(MESSAGE);
+  if (CONDITION) throw Standard_MultiplyDefined(MESSAGE);
 #else
   #define Standard_MultiplyDefined_Raise_if(CONDITION, MESSAGE)
 #endif

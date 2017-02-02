@@ -69,26 +69,6 @@ public:
   //! In the other case it has the opposite orientation.
   Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Ax1& A1, const Standard_Real Radius, const Standard_Real Height);
   
-  //! Make a RectangularTrimmedSurface <Cylinder> from gp by
-  //! a cylinder from gp.
-  //! It is trimmed by the point <P> and the heigh <Heigh>.
-  //! <Height> can be greater than zero or lower than zero.
-  //! in the first case the limit section is in the side of
-  //! the positives V paramters of <Cyl> and in the other
-  //! side if <Heigh> is lower than zero.
-  Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Cylinder& Cyl, const gp_Pnt& P, const Standard_Real Height);
-  
-  //! Make a RectangularTrimmedSurface <Cylinder> from gp by
-  //! a cylinder from gp.
-  //! It is trimmed by the two points <P1> and <P2>.
-  //! Warning
-  //! If an error occurs (that is, when IsDone returns
-  //! false), the Status function returns:
-  //! -   gce_NegativeRadius if Radius is less than 0.0, or
-  //! -   gce_ConfusedPoints if the points P1 and P2 are coincident.
-  //! -   gce_ColinearPoints if the points P1, P2 and P3 are collinear.
-  Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Cylinder& Cyl, const gp_Pnt& P1, const gp_Pnt& P2);
-  
   //! Returns the constructed trimmed cylinder.
   //! Exceptions
   //! StdFail_NotDone if no trimmed cylinder is constructed.

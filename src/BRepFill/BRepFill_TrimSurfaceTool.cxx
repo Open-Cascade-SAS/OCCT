@@ -224,7 +224,7 @@ static void EvalParameters(const TopoDS_Edge&          Edge,
     Intersector = Geom2dInt_GInter(ABis, AC, TolC, Tol);
 
     if ( !Intersector.IsDone()) {
-      StdFail_NotDone::Raise("BRepFill_TrimSurfaceTool::IntersectWith");
+      throw StdFail_NotDone("BRepFill_TrimSurfaceTool::IntersectWith");
     }
 
     NbPoints = Intersector.NbPoints();
@@ -259,7 +259,7 @@ static void EvalParameters(const TopoDS_Edge&          Edge,
       Intersector = Geom2dInt_GInter(ABis, AC, TolC, Tol*10);
 
       if ( !Intersector.IsDone()) {
-        StdFail_NotDone::Raise("BRepFill_TrimSurfaceTool::IntersectWith");
+        throw StdFail_NotDone("BRepFill_TrimSurfaceTool::IntersectWith");
       }
 
       NbPoints = Intersector.NbPoints();
@@ -376,7 +376,7 @@ static void EvalParameters(const TopoDS_Edge&          Edge,
       break;
                                       }
     default:
-      Standard_NotImplemented::Raise(" BRepFill_TrimSurfaceTool");
+      throw Standard_NotImplemented(" BRepFill_TrimSurfaceTool");
     }
 
     gp_Vec2d D12d = Bis->DN(UBis,1);

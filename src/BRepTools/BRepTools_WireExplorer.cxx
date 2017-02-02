@@ -604,8 +604,7 @@ TopAbs_Orientation BRepTools_WireExplorer::Orientation() const
       return it.Value().Orientation();
     it.Next();
   }
-  Standard_NoSuchObject::Raise("BRepTools_WireExplorer::Orientation");
-  return TopAbs_FORWARD;
+  throw Standard_NoSuchObject("BRepTools_WireExplorer::Orientation");
 }
 
 //=======================================================================

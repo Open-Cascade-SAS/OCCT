@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Standard_DomainError, Standard_Failure)
 
 #if !defined No_Exception && !defined No_Standard_DomainError
   #define Standard_DomainError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Standard_DomainError::Raise(MESSAGE);
+  if (CONDITION) throw Standard_DomainError(MESSAGE);
 #else
   #define Standard_DomainError_Raise_if(CONDITION, MESSAGE)
 #endif

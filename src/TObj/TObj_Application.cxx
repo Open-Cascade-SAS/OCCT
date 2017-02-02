@@ -56,7 +56,7 @@ TObj_Application::TObj_Application () : myIsError(Standard_False)
     Message_MsgFile::LoadFromString (TObj_TObj_msg, sizeof(TObj_TObj_msg) - 1);
     if (!Message_MsgFile::HasMsg ("TObj_Appl_SUnknownFailure"))
     {
-      Standard_ProgramError::Raise ("Critical Error - message resources for TObj_Application are invalid or undefined!");
+      throw Standard_ProgramError("Critical Error - message resources for TObj_Application are invalid or undefined!");
     }
   }
 
@@ -135,12 +135,12 @@ Standard_Boolean TObj_Application::LoadDocument
     {
       aStatus = Open (theSourceFile, theTargetDoc);
     }
-    catch (Standard_Failure)
-    {
+    catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
       ErrorMessage (Message_Msg("TObj_Appl_Exception") << 
-                    Standard_Failure::Caught()->GetMessageString());
+                    anException.GetMessageString());
 #endif
+      (void)anException;
     }
   }
   myIsError = aStatus != PCDM_RS_OK;

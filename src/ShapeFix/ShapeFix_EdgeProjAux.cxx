@@ -209,11 +209,13 @@ static Standard_Boolean FindParameterWithExt (const gp_Pnt& Pt1,
     }
     else return Standard_False;
   }  // end try
-  catch(Standard_Failure) {
-#ifdef OCCT_DEBUG //:s5
+  catch(Standard_Failure const& anException) {
+#ifdef OCCT_DEBUG
+//:s5
     cout << "Warning: ShapeFix_EdgeProjAux, FindParameterWithExt(): Exception: ";
-    Standard_Failure::Caught()->Print(cout); cout << endl;
+    anException.Print(cout); cout << endl;
 #endif
+    (void)anException;
     return Standard_False;
   }
 }

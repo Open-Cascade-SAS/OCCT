@@ -62,8 +62,7 @@ Interface_UndefinedContent::Interface_UndefinedContent () // Unknown
    Handle(Standard_Transient)& ent,
    Handle(TCollection_HAsciiString)& val) const
 {
-  if (num < 1 || num > thenbparams) Standard_OutOfRange::Raise
-    ("Interface UndefinedContent : ParamData");
+  if (num < 1 || num > thenbparams) throw Standard_OutOfRange("Interface UndefinedContent : ParamData");
   Standard_Integer desc  = theparams->Value(num);
   Standard_Integer local = ((desc >> Content_LocalShift) & Content_LocalField);
   ptype = Interface_ParamType (desc & Content_TypeField);
@@ -89,8 +88,7 @@ Interface_UndefinedContent::Interface_UndefinedContent () // Unknown
 {
   Standard_Integer desc = theparams->Value(num);
   if (((desc >> Content_LocalShift) & Content_LocalField) != Content_LocalRef)
-    Interface_InterfaceError::Raise
-      ("UndefinedContent : Param is not Entity type");
+    throw Interface_InterfaceError("UndefinedContent : Param is not Entity type");
   return theentities.Value (desc >> Content_NumberShift);
 }
 
@@ -100,8 +98,7 @@ Interface_UndefinedContent::ParamValue
 {
   Standard_Integer desc = theparams->Value(num);
   if (((desc >> Content_LocalShift) & Content_LocalField) != 0)
-    Interface_InterfaceError::Raise
-      ("UndefinedContent : Param is not literal");
+    throw Interface_InterfaceError("UndefinedContent : Param is not literal");
   return thevalues->Value (desc >> Content_NumberShift);
 }
 
@@ -284,7 +281,7 @@ Interface_UndefinedContent::ParamValue
   Standard_Integer rang  = desc >> Content_NumberShift;
   Standard_Integer local = ((desc >> Content_LocalShift) & Content_LocalField);
   Standard_Boolean c1ent = (local == Content_LocalRef);
-  if (!c1ent) Interface_InterfaceError::Raise("UndefinedContent : SetEntity");
+  if (!c1ent) throw Interface_InterfaceError("UndefinedContent : SetEntity");
   theentities.SetValue(rang,ent);
 }
 

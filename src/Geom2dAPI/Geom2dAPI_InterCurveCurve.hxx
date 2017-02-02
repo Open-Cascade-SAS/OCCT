@@ -119,19 +119,6 @@ public:
   //! computing of self-intersections on a curve.
   Standard_EXPORT void Segment (const Standard_Integer Index, Handle(Geom2d_Curve)& Curve1, Handle(Geom2d_Curve)& Curve2) const;
   
-  //! Use this syntax to get solutions of
-  //! tangential intersections only in case of a self-intersected curve.
-  //! Output value Curve1 is the intersection segment of the curve
-  //! defined by number Index. An intersection segment is a
-  //! portion of the initial curve limited by two points. The distance
-  //! between each point of this segment to another portion of the curve is
-  //! less or equal to the tolerance value assigned at the time of
-  //! construction or in the function Init (this value is defaulted to 1.0e-6).
-  //! Exceptions
-  //! Standard_OutOfRange if Index is not in the range [ 1,NbSegments ],
-  //! where NbSegments is the number of computed tangential intersections.
-  Standard_EXPORT void Segment (const Standard_Integer Index, Handle(Geom2d_Curve)& Curve1) const;
-  
   //! return the algorithmic object from Intersection.
     const Geom2dInt_GInter& Intersector() const;
 

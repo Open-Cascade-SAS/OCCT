@@ -87,7 +87,7 @@ void BinDrivers_DocumentStorageDriver::SetWithTriangles (const Handle(CDM_Messag
   Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
   if (aShapesDriver.IsNull())
   {
-    Standard_NotImplemented::Raise("Internal Error - TNaming_NamedShape is not found!");
+    throw Standard_NotImplemented("Internal Error - TNaming_NamedShape is not found!");
   }
 
   aShapesDriver->SetWithTriangles (theWithTriangulation);
@@ -112,12 +112,11 @@ void BinDrivers_DocumentStorageDriver::WriteShapeSection
         Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
       aNamedShapeDriver->WriteShapeSection (theOS);
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure const& anException) {
       TCollection_ExtendedString anErrorStr ("Error: ");
-      Handle(Standard_Failure) aFailure = Standard_Failure::Caught();
       TCollection_ExtendedString aStr = 
 	anErrorStr + "BinDrivers_DocumentStorageDriver, Shape Section :";
-      WriteMessage (aStr  + aFailure->GetMessageString());
+      WriteMessage (aStr  + anException.GetMessageString());
     }
   }
    

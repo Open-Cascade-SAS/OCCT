@@ -28,8 +28,7 @@ Interface_LineBuffer::Interface_LineBuffer (const Standard_Integer size)
 
     void  Interface_LineBuffer::SetMax (const Standard_Integer max)
 {
-  if (max > theline.Length()) Standard_OutOfRange::Raise
-    ("Interface LineBuffer : SetMax");
+  if (max > theline.Length()) throw Standard_OutOfRange("Interface LineBuffer : SetMax");
   if (max <= 0) themax = theline.Length();
   else themax = max;
 }
@@ -38,8 +37,7 @@ Interface_LineBuffer::Interface_LineBuffer (const Standard_Integer size)
     void  Interface_LineBuffer::SetInitial (const Standard_Integer initial)
 {
   if (thefriz > 0) return;
-  if (initial >= themax) Standard_OutOfRange::Raise
-    ("Interface LineBuffer : SetInitial");
+  if (initial >= themax) throw Standard_OutOfRange("Interface LineBuffer : SetInitial");
   if (initial <= 0) theinit = 0;
   else theinit = initial;
 }

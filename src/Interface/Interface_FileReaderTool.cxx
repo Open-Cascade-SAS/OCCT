@@ -380,15 +380,14 @@ void Interface_FileReaderTool::LoadModel
 
     //   En cas d erreur NON PREVUE par l analyse, recuperation par defaut
     //   Attention : la recuperation peut elle-meme planter ... (cf ierr)
-    catch (Standard_Failure) {
+    catch (Standard_Failure const& anException) {
       //      Au passage suivant, on attaquera le record suivant
       num0 = thereader->FindNextRecord(num); //:g9 abv 28 May 98: tr8_as2_ug.stp - infinite cycle: (0);
 
-      Handle(Standard_Failure) afail = Standard_Failure::Caught();
 #ifdef _WIN32
-      if (afail.IsNull() || afail->IsKind(STANDARD_TYPE(OSD_Exception))) ierr = 2;
+      if (anException.IsKind(STANDARD_TYPE(OSD_Exception))) ierr = 2;
 #else
-      if (afail.IsNull() || afail->IsKind(STANDARD_TYPE(OSD_Signal))) ierr = 2;
+      if (anException.IsKind(STANDARD_TYPE(OSD_Signal))) ierr = 2;
 #endif
 //:abv 03Apr00: anent is actually a previous one:      if (anent.IsNull()) 
       anent = thereader->BoundEntity(num);

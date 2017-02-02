@@ -208,7 +208,7 @@ TopAbs_ShapeEnum TopOpeBRepDS_Transition::ShapeAfter() const
 Standard_Integer TopOpeBRepDS_Transition::Index() const
 {
   if ( myIndexAfter != myIndexBefore ) 
-    Standard_Failure::Raise("Transition::Index() on different shapes");
+    throw Standard_Failure("Transition::Index() on different shapes");
   return myIndexBefore;
 }
 

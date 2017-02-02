@@ -68,7 +68,7 @@ public:
     }
     else
     {
-      Standard_ProgramError::Raise ("Graphic3d_TransformPers::SetPersistence(), wrong persistence mode.");
+      throw Standard_ProgramError("Graphic3d_TransformPers::SetPersistence(), wrong persistence mode.");
     }
   }
 
@@ -111,7 +111,7 @@ public:
   {
     if (!IsZoomOrRotate (theMode))
     {
-      Standard_ProgramError::Raise ("Graphic3d_TransformPers::SetPersistence(), wrong persistence mode.");
+      throw Standard_ProgramError("Graphic3d_TransformPers::SetPersistence(), wrong persistence mode.");
     }
 
     myMode = theMode;
@@ -128,7 +128,7 @@ public:
   {
     if (!IsTrihedronOr2d (theMode))
     {
-      Standard_ProgramError::Raise ("Graphic3d_TransformPers::SetPersistence(), wrong persistence mode.");
+      throw Standard_ProgramError("Graphic3d_TransformPers::SetPersistence(), wrong persistence mode.");
     }
 
     myMode = theMode;
@@ -144,7 +144,7 @@ public:
   {
     if (!IsZoomOrRotate())
     {
-      Standard_ProgramError::Raise ("Graphic3d_TransformPers::AnchorPoint(), wrong persistence mode.");
+      throw Standard_ProgramError("Graphic3d_TransformPers::AnchorPoint(), wrong persistence mode.");
     }
 
     return gp_Pnt (myParams.Params3d.PntX, myParams.Params3d.PntY, myParams.Params3d.PntZ);
@@ -155,7 +155,7 @@ public:
   {
     if (!IsZoomOrRotate())
     {
-      Standard_ProgramError::Raise ("Graphic3d_TransformPers::SetAnchorPoint(), wrong persistence mode.");
+      throw Standard_ProgramError("Graphic3d_TransformPers::SetAnchorPoint(), wrong persistence mode.");
     }
 
     myParams.Params3d.PntX = thePnt.X();
@@ -168,7 +168,7 @@ public:
   {
     if (!IsTrihedronOr2d())
     {
-      Standard_ProgramError::Raise ("Graphic3d_TransformPers::Corner2d(), wrong persistence mode.");
+      throw Standard_ProgramError("Graphic3d_TransformPers::Corner2d(), wrong persistence mode.");
     }
 
     return myParams.Params2d.Corner;
@@ -179,7 +179,7 @@ public:
   {
     if (!IsTrihedronOr2d())
     {
-      Standard_ProgramError::Raise ("Graphic3d_TransformPers::SetCorner2d(), wrong persistence mode.");
+      throw Standard_ProgramError("Graphic3d_TransformPers::SetCorner2d(), wrong persistence mode.");
     }
 
     myParams.Params2d.Corner = thePos;
@@ -190,7 +190,7 @@ public:
   {
     if (!IsTrihedronOr2d())
     {
-      Standard_ProgramError::Raise ("Graphic3d_TransformPers::Offset2d(), wrong persistence mode.");
+      throw Standard_ProgramError("Graphic3d_TransformPers::Offset2d(), wrong persistence mode.");
     }
 
     return Graphic3d_Vec2i (myParams.Params2d.OffsetX, myParams.Params2d.OffsetY);
@@ -201,7 +201,7 @@ public:
   {
     if (!IsTrihedronOr2d())
     {
-      Standard_ProgramError::Raise ("Graphic3d_TransformPers::SetOffset2d(), wrong persistence mode.");
+      throw Standard_ProgramError("Graphic3d_TransformPers::SetOffset2d(), wrong persistence mode.");
     }
 
     myParams.Params2d.OffsetX = theOffset.x();

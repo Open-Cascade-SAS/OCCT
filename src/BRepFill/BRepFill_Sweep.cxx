@@ -719,7 +719,7 @@ static TopoDS_Edge BuildEdge(Handle(Geom_Curve)& C3d,
     char* Temp = name ;
     DrawTrSurf::Set(Temp, C3d);
 //    DrawTrSurf::Set(name, C3d);
-    Standard_ConstructionError::Raise("BRepFill_Sweep::BuildEdge");
+    throw Standard_ConstructionError("BRepFill_Sweep::BuildEdge");
 #endif
   }
 
@@ -1419,7 +1419,7 @@ static TopoDS_Edge BuildEdge(const Handle(Geom_Surface)& S,
       DrawTrSurf::Set(Temp,Iso);
 //      DrawTrSurf::Set(name,Iso);
 #endif
-      Standard_ConstructionError::Raise("BRepFill_Sweep::BuildEdge");
+      throw Standard_ConstructionError("BRepFill_Sweep::BuildEdge");
     }
 
     E = MkE.Edge();
@@ -1903,7 +1903,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
       char* Temp = name ;
       DrawTrSurf::Set(Temp,Iso);
 //       DrawTrSurf::Set(name,Iso);
-      Standard_ConstructionError::Raise("BRepFill_Sweep::BuildEdge");
+      throw Standard_ConstructionError("BRepFill_Sweep::BuildEdge");
 #endif
        return Standard_False;  
      }

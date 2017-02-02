@@ -42,19 +42,20 @@
 static int errh = 1;
 
 
-static void raisecheck (Handle(Interface_Check)& ach)
+static void raisecheck (Standard_Failure& theException,Handle(Interface_Check)& ach)
 {
-  Handle(Standard_Failure) afail = Standard_Failure::Caught();
   char mess[100];
   sprintf (mess,"** Exception Raised during Check : %s **",
-	   afail->DynamicType()->Name());
+	   theException.DynamicType()->Name());
   ach->AddFail(mess);
 #ifdef _WIN32
-  if (afail->IsKind(STANDARD_TYPE(OSD_Exception)))
+  if (theException.IsKind(STANDARD_TYPE(OSD_Exception))) {
 #else
-  if (afail->IsKind(STANDARD_TYPE(OSD_Signal)))
+  if (theException.IsKind(STANDARD_TYPE(OSD_Signal))) {
 #endif
-    afail->Reraise("System Signal received, check interrupt");
+    theException.SetMessageString("System Signal received, check interrupt");
+    throw theException;
+  }
 }
 
 
@@ -134,8 +135,8 @@ void Interface_CheckTool::FillCheck(const Handle(Standard_Transient)& ent,
       OCC_CATCH_SIGNALS
       module->CheckCase(CN,ent,sh,ach);
     }
-    catch (Standard_Failure) {
-      raisecheck(ach);
+    catch (Standard_Failure& anException) {
+      raisecheck(anException,ach);
     }
   }
   else {
@@ -216,23 +217,20 @@ Handle(Interface_Check) Interface_CheckTool::Check(const Standard_Integer num)
 void Interface_CheckTool::CheckSuccess (const Standard_Boolean reset)
 {
   if (reset) thestat = 0;
-  if (thestat > 3) Interface_CheckFailure::Raise    // deja teste avec erreur
+  if (thestat > 3) throw Interface_CheckFailure    // deja teste avec erreur
     ("Interface Model : Global Check");
   Handle(Interface_InterfaceModel) model = theshare.Model();
-  if (model->GlobalCheck()->NbFails() > 0) Interface_CheckFailure::Raise
-    ("Interface Model : Global Check");
+  if (model->GlobalCheck()->NbFails() > 0) throw Interface_CheckFailure("Interface Model : Global Check");
   Handle(Interface_Check) modchk = new Interface_Check;
   model->VerifyCheck(modchk);
   if (!model->Protocol().IsNull()) model->Protocol()->GlobalCheck (theshare.Graph(),modchk);
-  if (modchk->HasFailed())  Interface_CheckFailure::Raise
-    ("Interface Model : Verify Check");
+  if (modchk->HasFailed())  throw Interface_CheckFailure("Interface Model : Verify Check");
   if (thestat == 3) return;                    // tout teste et ca passe
 
   errh = 0;  // Pas de try/catch, car justement on raise
   Standard_Integer nb = model->NbEntities();
   for (Standard_Integer i = 1; i <= nb; i ++) {
-    if (model->IsErrorEntity(i)) Interface_CheckFailure::Raise
-      ("Interface Model : an Entity is recorded as Erroneous");
+    if (model->IsErrorEntity(i)) throw Interface_CheckFailure("Interface Model : an Entity is recorded as Erroneous");
     Handle(Standard_Transient) ent = model->Value(i);
     if (thestat & 1) {
       if (!model->IsErrorEntity(i)) continue;    // deja verify, reste analyse
@@ -243,8 +241,7 @@ void Interface_CheckTool::CheckSuccess (const Standard_Boolean reset)
 
     Handle(Interface_Check) ach = new Interface_Check(ent);
     FillCheck(ent,theshare,ach);
-    if (ach->HasFailed()) Interface_CheckFailure::Raise
-      ("Interface Model : Check on an Entity has Failed");
+    if (ach->HasFailed()) throw Interface_CheckFailure("Interface Model : Check on an Entity has Failed");
   }
 }
 
@@ -293,9 +290,9 @@ Interface_CheckIterator Interface_CheckTool::CompleteCheckList ()
       }
       n0 = nb+1;
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure& anException) {
       n0 = i+1;
-      raisecheck(ach);
+      raisecheck(anException,ach);
       res.Add(ach,i);  thestat |= 12;
     }
   }
@@ -345,9 +342,9 @@ Interface_CheckIterator Interface_CheckTool::CheckList ()
       }
       n0 = nb+1;
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure& anException) {
       n0 = i+1;
-      raisecheck(ach);
+      raisecheck(anException,ach);
       res.Add(ach,i);  thestat |= 12;
     }
   }
@@ -385,9 +382,9 @@ Interface_CheckIterator Interface_CheckTool::AnalyseCheckList ()
       }
       n0 = nb+1;
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure& anException) {
       n0 = i+1;
-      raisecheck(ach);
+      raisecheck(anException,ach);
       res.Add(ach,i);  thestat |= 8;
     }
   }
@@ -429,9 +426,9 @@ Interface_CheckIterator Interface_CheckTool::VerifyCheckList ()
       }
       n0 = nb+1;
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure& anException) {
       n0 = i+1;
-      raisecheck(ach);
+      raisecheck(anException,ach);
       res.Add(ach,i);  thestat |= 4;
     }
   }
@@ -477,9 +474,9 @@ Interface_CheckIterator Interface_CheckTool::WarningCheckList ()
       }
       n0 = nb+1;
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure& anException) {
       n0 = i+1;
-      raisecheck(ach);
+      raisecheck(anException,ach);
       res.Add(ach,i);  thestat |= 12;
     }
   }

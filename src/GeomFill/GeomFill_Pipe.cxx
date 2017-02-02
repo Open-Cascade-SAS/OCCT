@@ -567,8 +567,7 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
 
   default :
     {
-      Standard_ConstructionError::Raise
-		("GeomFill::Init : Unknown Option");
+      throw Standard_ConstructionError("GeomFill::Init : Unknown Option");
     }
   }
  
@@ -717,8 +716,7 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
     }
     for ( i = 1; i<NSections.Length(); i++) {
       if ( Abs(SeqP.Value(i+1)-SeqP.Value(i)) < Precision::PConfusion()) {
-       Standard_ConstructionError::Raise
-	 ("GeomFill_Pipe::Init with NSections : invalid parameters");     
+       throw Standard_ConstructionError("GeomFill_Pipe::Init with NSections : invalid parameters");
       }
     }
     
@@ -890,7 +888,7 @@ void GeomFill_Pipe::Perform(const Standard_Real Tol,
        myIsDone = Standard_True;
      }
      //else {
-     //  Standard_ConstructionError::Raise ("GeomFill_Pipe::Perform : Cannot make a surface");
+     //  throw Standard_ConstructionError("GeomFill_Pipe::Perform : Cannot make a surface");
      //}
    }
  }
@@ -904,7 +902,7 @@ void GeomFill_Pipe::Perform(const Standard_Real Tol,
       myIsDone = Standard_True;
    }
    //else {
-   //  Standard_ConstructionError::Raise ("GeomFill_Pipe::Perform : Cannot make a surface");
+   //  throw Standard_ConstructionError("GeomFill_Pipe::Perform : Cannot make a surface");
    //}
    }
  else {
@@ -1057,7 +1055,7 @@ void GeomFill_Pipe::ApproxSurf(const Standard_Boolean WithParameters) {
   // generate a sequence of the section by <SweepSectionGenerator> 
   // and approximate this sequence. 
   
-  if (myType != 4) Standard_ConstructionError::Raise("GeomFill_Pipe");
+  if (myType != 4) throw Standard_ConstructionError("GeomFill_Pipe");
   GeomFill_SweepSectionGenerator Section(myAdpPath, myAdpFirstSect,
 					   myAdpLastSect,myRadius);
 
@@ -1123,7 +1121,7 @@ void GeomFill_Pipe::ApproxSurf(const Standard_Boolean WithParameters) {
 #endif
     }
 #endif
-    //StdFail_NotDone::Raise("Pipe : App not done");
+    //throw StdFail_NotDone("Pipe : App not done");
   }
   else {
     Standard_Integer UDegree, VDegree, NbUPoles, NbVPoles, NbUKnots, 

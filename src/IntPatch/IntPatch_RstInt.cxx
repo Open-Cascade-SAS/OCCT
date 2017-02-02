@@ -382,7 +382,7 @@ static Standard_Boolean FindParameter(const Handle(IntPatch_Line)& L,
     if (found) return Standard_True;
   }
   else {
-    Standard_DomainError::Raise();
+    throw Standard_DomainError();
   }
   return Standard_False;
 }
@@ -499,7 +499,7 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
     Nbptlin = rlin->NbPnts();
   }
   else {
-    Standard_DomainError::Raise();
+    throw Standard_DomainError();
   }
   if (!Domain->Has3d())
     // don't use computed deflection in the mode of pure geometric intersection

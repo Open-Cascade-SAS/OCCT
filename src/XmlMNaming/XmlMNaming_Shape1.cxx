@@ -63,13 +63,11 @@ XmlMNaming_Shape1::XmlMNaming_Shape1 (const XmlObjMgt_Element& theEl)
     case '-' : myOrientation = TopAbs_REVERSED; break;
     case 'i' : myOrientation = TopAbs_INTERNAL; break;
     case 'e' : myOrientation = TopAbs_EXTERNAL; break;
-    default:       Standard_DomainError::Raise
-      ("XmlMNaming_Shape1; orientation value without enum term equivalence");
+    default:   throw Standard_DomainError("XmlMNaming_Shape1; orientation value without enum term equivalence");
     }
     Standard_CString anIntPtr = (Standard_CString) &aPtr[1];
     if (XmlObjMgt::GetInteger (anIntPtr, myTShapeID) == Standard_False)
-      Standard_DomainError::Raise
-        ("XmlMNaming_Shape1; tshape value cannot be initialised by integer");
+      throw Standard_DomainError("XmlMNaming_Shape1; tshape value cannot be initialised by integer");
   }
 }
 

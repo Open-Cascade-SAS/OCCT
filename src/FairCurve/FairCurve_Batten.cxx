@@ -64,9 +64,9 @@ FairCurve_Batten::FairCurve_Batten(const gp_Pnt2d& P1,
                     Degree(9)
 {
   if (P1.IsEqual(P2, Precision::Confusion())) 
-    Standard_NullValue::Raise("FairCurve : P1 and P2 are confused");
+    throw Standard_NullValue("FairCurve : P1 and P2 are confused");
   if (Height <= 0) 
-    Standard_NegativeValue::Raise("FairCurve : Height is not positive");
+    throw Standard_NegativeValue("FairCurve : Height is not positive");
 //
 //   Initialize by a straight line (2 poles)
 //
@@ -135,7 +135,7 @@ void FairCurve_Batten::SetP1(const gp_Pnt2d& P1)
 // ==================================================================
 {
   if (P1.IsEqual(NewP2, Precision::Confusion())) 
-    Standard_NullValue::Raise("FairCurve : P1 and P2 are confused");  
+    throw Standard_NullValue("FairCurve : P1 and P2 are confused");
   Angles(P1, NewP2);
   NewP1 = P1;
 }
@@ -145,7 +145,7 @@ void FairCurve_Batten::SetP2(const gp_Pnt2d& P2)
 // ==================================================================
 {
  if (NewP1.IsEqual(P2, Precision::Confusion())) 
-    Standard_NullValue::Raise("FairCurve : P1 and P2 are confused");
+    throw Standard_NullValue("FairCurve : P1 and P2 are confused");
   Angles(NewP1, P2);
   NewP2 = P2;
 }

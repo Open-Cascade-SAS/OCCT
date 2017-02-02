@@ -674,8 +674,7 @@ const gp_Trsf& GeomFill_SweepSectionGenerator::Transformation
   (const Standard_Integer Index) const 
 {
   if (Index > myTrsfs.Length())
-    Standard_RangeError::Raise
-      ("GeomFill_SweepSectionGenerator::Transformation");
+    throw Standard_RangeError("GeomFill_SweepSectionGenerator::Transformation");
   
   return myTrsfs(Index);
 }

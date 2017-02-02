@@ -50,14 +50,14 @@ inline IntSurf_TypeTrans IntPatch_Line::TransitionOnS2 () const {
 
 inline IntSurf_Situation IntPatch_Line::SituationS1 () const {
 
-  if (tS1 != IntSurf_Touch) {Standard_DomainError::Raise();}
+  if (tS1 != IntSurf_Touch) {throw Standard_DomainError();}
   return sit1;
 }
 
 
 inline IntSurf_Situation IntPatch_Line::SituationS2 () const {
 
-  if (tS2 != IntSurf_Touch) {Standard_DomainError::Raise();}
+  if (tS2 != IntSurf_Touch) {throw Standard_DomainError();}
   return sit2;
 }
 

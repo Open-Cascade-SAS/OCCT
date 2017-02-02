@@ -63,13 +63,13 @@ inline Standard_Boolean IntSurf_PathPoint::IsTangent () const {
 
 inline const gp_Vec& IntSurf_PathPoint::Direction3d () const {
 
-  if (istgt) {StdFail_UndefinedDerivative::Raise();}
+  if (istgt) {throw StdFail_UndefinedDerivative();}
   return vectg;
 }
 
 inline const gp_Dir2d& IntSurf_PathPoint::Direction2d () const {
 
-  if (istgt) {StdFail_UndefinedDerivative::Raise();}
+  if (istgt) {throw StdFail_UndefinedDerivative();}
   return dirtg;
 }
 

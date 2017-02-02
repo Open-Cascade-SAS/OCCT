@@ -179,8 +179,8 @@ void TCollection_IndexedMap::Substitute(const Standard_Integer I,
   while (p) {
     if (Hasher::IsEqual(p->Key1(),K1)) {
       if (p->Key2() != I)
-        Standard_DomainError::Raise("IndexedMap::Substitute : "
-                                    "Attempt to substitute existing key");
+        throw Standard_DomainError("IndexedMap::Substitute : "
+                                   "Attempt to substitute existing key");
       p->Key1() = K1;
       return;
     }
@@ -289,7 +289,7 @@ const TheKey& TCollection_IndexedMap::FindKey(const Standard_Integer K2) const
     if (p2->Key2() == K2) return p2->Key1();
     p2 = (TCollection_IndexedMapNode*)p2->Next2();
   }
-  Standard_OutOfRange::Raise("IndexedMap : missing index !!!");
+  throw Standard_OutOfRange("IndexedMap : missing index !!!");
   return p2->Key1();
 }
 

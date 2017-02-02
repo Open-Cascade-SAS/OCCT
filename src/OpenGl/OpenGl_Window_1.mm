@@ -91,7 +91,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
     || ![EAGLContext setCurrentContext: aGLContext])
     {
       TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: EAGLContext creation failed");
-      Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+      throw Aspect_GraphicDeviceDefinitionError(aMsg.ToCString());
       return;
     }
 
@@ -102,7 +102,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
     if (![EAGLContext setCurrentContext: aGLContext])
     {
       TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: EAGLContext can not be assigned");
-      Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+      throw Aspect_GraphicDeviceDefinitionError(aMsg.ToCString());
       return;
     }
 
@@ -183,7 +183,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
     if (aGLContext == NULL)
     {
       TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: NSOpenGLContext creation failed");
-      Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+      throw Aspect_GraphicDeviceDefinitionError(aMsg.ToCString());
       return;
     }
 
@@ -317,7 +317,7 @@ void OpenGl_Window::Init()
     if (!aDefFbo->InitWithRB (myGlContext, myWidth, myHeight, GL_RGBA8, GL_DEPTH24_STENCIL8, aWinRBColor))
     {
       TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: default FBO creation failed");
-      Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+      throw Aspect_GraphicDeviceDefinitionError(aMsg.ToCString());
       return;
     }
   }
@@ -326,7 +326,7 @@ void OpenGl_Window::Init()
     if (!aDefFbo->InitWrapper (myGlContext))
     {
       TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: default FBO wrapper creation failed");
-      Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+      throw Aspect_GraphicDeviceDefinitionError(aMsg.ToCString());
       return;
     }
 

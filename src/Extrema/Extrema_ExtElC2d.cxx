@@ -405,55 +405,19 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Circ2d& C1, const gp_Parab2d& C2)
 }
 //============================================================================
 
-Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Elips2d&, const gp_Elips2d&)
-{
-  Standard_NotImplemented::Raise();
-}
-//============================================================================
-
-Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Elips2d&, const gp_Hypr2d&)
-{
-  Standard_NotImplemented::Raise();
-}
-//============================================================================
-
-Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Elips2d&, const gp_Parab2d&)
-{
-  Standard_NotImplemented::Raise();
-}
-//============================================================================
-
-Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Hypr2d&, const gp_Hypr2d&)
-{
-  Standard_NotImplemented::Raise();
-}
-//============================================================================
-
-Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Hypr2d&, const gp_Parab2d&)
-{
-  Standard_NotImplemented::Raise();
-}
-//============================================================================
-
-Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Parab2d&, const gp_Parab2d&)
-{
-  Standard_NotImplemented::Raise();
-}
-//============================================================================
-
 Standard_Boolean Extrema_ExtElC2d::IsDone () const { return myDone; }
 //============================================================================
 
 Standard_Boolean Extrema_ExtElC2d::IsParallel () const
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myIsPar;
 }
 //============================================================================
 
 Standard_Integer Extrema_ExtElC2d::NbExt () const
 {
-  if (IsParallel()) { StdFail_InfiniteSolutions::Raise(); }
+  if (IsParallel()) { throw StdFail_InfiniteSolutions(); }
   return myNbExt;
 }
 //============================================================================
@@ -461,7 +425,7 @@ Standard_Integer Extrema_ExtElC2d::NbExt () const
 Standard_Real Extrema_ExtElC2d::SquareDistance (const Standard_Integer N) const
 {
   if (!(N == 1 && myDone)) {
-    if (N < 1 || N > NbExt()) { Standard_OutOfRange::Raise(); }
+    if (N < 1 || N > NbExt()) { throw Standard_OutOfRange(); }
   }
   return mySqDist[N-1];
 }
@@ -471,7 +435,7 @@ void Extrema_ExtElC2d::Points (const Standard_Integer N,
 			       Extrema_POnCurv2d& P1, 
 			       Extrema_POnCurv2d& P2) const
 {
-  if (N < 1 || N > NbExt()) { Standard_OutOfRange::Raise(); }
+  if (N < 1 || N > NbExt()) { throw Standard_OutOfRange(); }
   P1 = myPoint[N-1][0];
   P2 = myPoint[N-1][1];
 }

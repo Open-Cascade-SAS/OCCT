@@ -652,7 +652,7 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
 	  di << string8;
 	}
       }
-      catch (Standard_Failure) {
+      catch (Standard_Failure const& anException) {
 	//printf ( "%40.40s", "exception" );
 	char string9[260];
 	Sprintf (string9, "%40.40s", "exception" );
@@ -660,9 +660,10 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
 #ifdef OCCT_DEBUG
 	//fflush ( stdout );
 	di << ": ";
-	di << Standard_Failure::Caught()->GetMessageString();
+	di << anException.GetMessageString();
 	di<<" ** Skip\n";
 #endif
+	(void)anException;
       }
     }
     else if ( wholeDoc ) {

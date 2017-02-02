@@ -49,7 +49,7 @@ Interface_EntityCluster::Interface_EntityCluster ()    {  }
     void  Interface_EntityCluster::Append
   (const Handle(Standard_Transient)& ent)
 {
-  if (ent.IsNull()) Standard_NullObject::Raise("Interface_EntityCluster Append");
+  if (ent.IsNull()) throw Standard_NullObject("Interface_EntityCluster Append");
   if      (theents[0].IsNull()) theents[0] = ent;
   else if (theents[1].IsNull()) theents[1] = ent;
   else if (theents[2].IsNull()) theents[2] = ent;
@@ -63,7 +63,7 @@ Interface_EntityCluster::Interface_EntityCluster ()    {  }
     Standard_Boolean  Interface_EntityCluster::Remove
   (const Handle(Standard_Transient)& ent)
 {
-  if (ent.IsNull()) Standard_NullObject::Raise("Interface_EntityCluster Remove");
+  if (ent.IsNull()) throw Standard_NullObject("Interface_EntityCluster Remove");
   Standard_Integer i;
 //  <ent> est-il ici ? si oui, on a son rang
   if      (ent == theents[0]) i = 1;
@@ -85,10 +85,10 @@ Interface_EntityCluster::Interface_EntityCluster ()    {  }
     Standard_Boolean  Interface_EntityCluster::Remove
   (const Standard_Integer num)
 {
-  if (num < 1) Standard_OutOfRange::Raise("EntityCluster : Remove");
+  if (num < 1) throw Standard_OutOfRange("EntityCluster : Remove");
   Standard_Integer n = NbLocal();
   if (num > n) {
-    if (thenext.IsNull()) Standard_OutOfRange::Raise("EntityCluster : Remove");
+    if (thenext.IsNull()) throw Standard_OutOfRange("EntityCluster : Remove");
     Standard_Boolean res = thenext->Remove (num-n);
     if (res) thenext = thenext->Next();
     return Standard_False;
@@ -111,10 +111,9 @@ Interface_EntityCluster::Interface_EntityCluster ()    {  }
   (const Standard_Integer num) const
 {
   Standard_Integer nb = NbLocal();
-  if (num <= 0) Standard_OutOfRange::Raise("Interface EntityCluster : Value");
+  if (num <= 0) throw Standard_OutOfRange("Interface EntityCluster : Value");
   if (num > nb) {
-    if (thenext.IsNull()) Standard_OutOfRange::Raise
-      ("Interface EntityCluster : Value");
+    if (thenext.IsNull()) throw Standard_OutOfRange("Interface EntityCluster : Value");
     return thenext->Value(num-nb);
   }
   return theents[num-1];  // numerotation a partir de 0
@@ -123,12 +122,11 @@ Interface_EntityCluster::Interface_EntityCluster ()    {  }
     void  Interface_EntityCluster::SetValue
   (const Standard_Integer num, const Handle(Standard_Transient)& ent)
 {
-  if (ent.IsNull()) Standard_NullObject::Raise("Interface_EntityCluster SetValue");
+  if (ent.IsNull()) throw Standard_NullObject("Interface_EntityCluster SetValue");
   Standard_Integer nb = NbLocal();
-  if (num <= 0) Standard_OutOfRange::Raise("Interface EntityCluster : SetValue");
+  if (num <= 0) throw Standard_OutOfRange("Interface EntityCluster : SetValue");
   if (num > nb) {
-    if (thenext.IsNull()) Standard_OutOfRange::Raise
-      ("Interface EntityCluster : SetValue");
+    if (thenext.IsNull()) throw Standard_OutOfRange("Interface EntityCluster : SetValue");
     thenext->SetValue(num-nb,ent);
   }
   else theents[num-1] = ent;  // numerotation a partir de 0

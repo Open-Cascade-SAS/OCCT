@@ -656,7 +656,7 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
   // do not build any dimension for equal points
   if (theFirstPoint.IsEqual (theSecondPoint, Precision::Confusion()))
   {
-    Standard_ProgramError::Raise ("Can not build presentation for equal points.");
+    throw Standard_ProgramError("Can not build presentation for equal points.");
   }
 
   Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
@@ -684,7 +684,7 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
     if (!AdjustParametersForLinear (myFixedTextPosition, theFirstPoint, theSecondPoint,
                                     anExtensionSize, aHorisontalTextPos, myFlyout, myPlane, myIsPlaneCustom))
     {
-      Standard_ProgramError::Raise ("Can not adjust plane to the custom label position.");
+      throw Standard_ProgramError("Can not adjust plane to the custom label position.");
     }
   }
 

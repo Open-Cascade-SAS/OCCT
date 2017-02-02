@@ -91,7 +91,7 @@ TopAbs_State TopOpeBRep_VPointInterClassifier::VPointPosition
     }
     break;
   }
-  default : Standard_ProgramError::Raise("VPointClassifier : wrong Index");
+  default : throw Standard_ProgramError("VPointClassifier : wrong Index");
   }
 
   if (myState == TopAbs_ON) {

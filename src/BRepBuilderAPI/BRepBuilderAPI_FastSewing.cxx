@@ -83,7 +83,7 @@ static Handle(Geom2d_Curve)
                         const Standard_Boolean theIsReverse = Standard_False)
 {
   if((theIndex < 0) || (theIndex > 3))
-    Standard_OutOfRange::Raise("BRepBuilderAPI_FastSewing.cxx, Get2DCurve(): OUT of Range");
+    throw Standard_OutOfRange("BRepBuilderAPI_FastSewing.cxx, Get2DCurve(): OUT of Range");
   
   Handle(Geom2d_Curve) a2dCurv;
 
@@ -677,7 +677,7 @@ void BRepBuilderAPI_FastSewing::FS_Edge::
     a3dCurv = aSurf->UIso(aUf);
     break;
   default:
-    Standard_OutOfRange::Raise("FS_Edge::CreateTopologicalEdge()");
+    throw Standard_OutOfRange("FS_Edge::CreateTopologicalEdge()");
     break;
   }
 

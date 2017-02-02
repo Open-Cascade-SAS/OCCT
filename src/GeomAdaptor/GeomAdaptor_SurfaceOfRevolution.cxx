@@ -132,7 +132,7 @@ void GeomAdaptor_SurfaceOfRevolution::Load(const gp_Ax1& V)
     while ( Dist < Precision::Confusion() && Ratio < 100);
 
     if ( Ratio >= 100 ) {
-      Standard_ConstructionError::Raise("Adaptor3d_SurfaceOfRevolution : Axe and meridian are confused");
+      throw Standard_ConstructionError("Adaptor3d_SurfaceOfRevolution : Axe and meridian are confused");
     }
     Ox = ( (Oz^gp_Vec(PP.XYZ()-O.XYZ()))^Oz); 
   }
@@ -621,8 +621,7 @@ Standard_Integer GeomAdaptor_SurfaceOfRevolution::NbVPoles() const
 
 Standard_Integer GeomAdaptor_SurfaceOfRevolution::NbVKnots() const 
 {
-  Standard_NoSuchObject::Raise("GeomAdaptor_SurfaceOfRevolution::NbVKnots");
-  return 0;
+  throw Standard_NoSuchObject("GeomAdaptor_SurfaceOfRevolution::NbVKnots");
 }
 
 
@@ -634,8 +633,7 @@ Standard_Integer GeomAdaptor_SurfaceOfRevolution::NbVKnots() const
 
 Standard_Boolean GeomAdaptor_SurfaceOfRevolution::IsURational() const 
 {
-  Standard_NoSuchObject::Raise("GeomAdaptor_SurfaceOfRevolution::IsURational");
-  return Standard_False;
+  throw Standard_NoSuchObject("GeomAdaptor_SurfaceOfRevolution::IsURational");
 }
 
 //=======================================================================
@@ -645,8 +643,7 @@ Standard_Boolean GeomAdaptor_SurfaceOfRevolution::IsURational() const
 
 Standard_Boolean GeomAdaptor_SurfaceOfRevolution::IsVRational() const 
 {
-  Standard_NoSuchObject::Raise("GeomAdaptor_SurfaceOfRevolution::IsVRational");
-  return Standard_False;
+  throw Standard_NoSuchObject("GeomAdaptor_SurfaceOfRevolution::IsVRational");
 }
 
 
@@ -657,8 +654,7 @@ Standard_Boolean GeomAdaptor_SurfaceOfRevolution::IsVRational() const
 
 Handle(Geom_BezierSurface) GeomAdaptor_SurfaceOfRevolution::Bezier() const 
 {
-  Standard_NoSuchObject::Raise("GeomAdaptor_SurfaceOfRevolution::Bezier");
-  return Handle(Geom_BezierSurface)();
+  throw Standard_NoSuchObject("GeomAdaptor_SurfaceOfRevolution::Bezier");
 }
 
 
@@ -669,8 +665,7 @@ Handle(Geom_BezierSurface) GeomAdaptor_SurfaceOfRevolution::Bezier() const
 
 Handle(Geom_BSplineSurface) GeomAdaptor_SurfaceOfRevolution::BSpline() const 
 {
-  Standard_NoSuchObject::Raise("GeomAdaptor_SurfaceOfRevolution::BSpline");
-  return Handle(Geom_BSplineSurface)();
+  throw Standard_NoSuchObject("GeomAdaptor_SurfaceOfRevolution::BSpline");
 }
 
 //=======================================================================

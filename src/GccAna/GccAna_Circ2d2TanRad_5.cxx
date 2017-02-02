@@ -58,7 +58,7 @@ GccAna_Circ2d2TanRad::
   Standard_Real Tol = Abs(Tolerance);
   NbrSol = 0;
   WellDone = Standard_False;
-  if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+  if (Radius < 0.0) { throw Standard_NegativeValue(); }
   else {
     if (Point1.Distance(Point2)-Radius*2.0 > Tol) { WellDone = Standard_True; }
     else {

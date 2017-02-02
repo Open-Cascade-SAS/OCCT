@@ -374,7 +374,7 @@ Standard_Boolean Extrema_GenExtCS::IsDone() const
 //=======================================================================
 Standard_Integer Extrema_GenExtCS::NbExt() const 
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myF.NbExt();
 }
 
@@ -384,7 +384,7 @@ Standard_Integer Extrema_GenExtCS::NbExt() const
 //=======================================================================
 Standard_Real Extrema_GenExtCS::SquareDistance(const Standard_Integer N) const 
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myF.SquareDistance(N);
 }
 
@@ -394,7 +394,7 @@ Standard_Real Extrema_GenExtCS::SquareDistance(const Standard_Integer N) const
 //=======================================================================
 const Extrema_POnCurv& Extrema_GenExtCS::PointOnCurve(const Standard_Integer N) const 
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myF.PointOnCurve(N);
 }
 
@@ -404,7 +404,7 @@ const Extrema_POnCurv& Extrema_GenExtCS::PointOnCurve(const Standard_Integer N) 
 //=======================================================================
 const Extrema_POnSurf& Extrema_GenExtCS::PointOnSurface(const Standard_Integer N) const 
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myF.PointOnSurface(N);
 }
 

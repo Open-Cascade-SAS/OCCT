@@ -94,7 +94,7 @@ pararg2(1,aNbSolMAX)
     !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
     Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
 
-      GccEnt_BadQualifier::Raise();
+      throw GccEnt_BadQualifier();
       return;
   }
   gp_Lin2d L1 = Qualified1.Qualified();
@@ -105,7 +105,7 @@ pararg2(1,aNbSolMAX)
   gp_Pnt2d origin1(lxloc,lyloc);
   gp_Dir2d normL1(-y1dir,x1dir);
   Geom2dAdaptor_Curve Cu2= Qualified2.Qualified();
-  if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+  if (Radius < 0.0) { throw Standard_NegativeValue(); }
   else {
     if (Qualified1.IsEnclosed() && Qualified2.IsEnclosed()) {
       //   =======================================================
@@ -281,13 +281,13 @@ pararg2(1,aNbSolMAX)
     Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
     !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
     Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-      GccEnt_BadQualifier::Raise();
+      throw GccEnt_BadQualifier();
       return;
   }
   gp_Circ2d C1 = Qualified1.Qualified();
   gp_Pnt2d center1(C1.Location());
   Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
-  if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+  if (Radius < 0.0) { throw Standard_NegativeValue(); }
   else {
     if (Qualified1.IsEnclosed() && Qualified2.IsEnclosed()) {
       //   =======================================================
@@ -470,11 +470,11 @@ pararg2(1,aNbSolMAX)
   NbrSol = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
     Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
-      GccEnt_BadQualifier::Raise();
+      throw GccEnt_BadQualifier();
       return;
   }
   Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
-  if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+  if (Radius < 0.0) { throw Standard_NegativeValue(); }
   else {
     if (Qualified1.IsEnclosed()) {
       //    ===========================
@@ -753,12 +753,12 @@ pararg2(1,aNbSolMAX)
     Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
     !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
     Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-      GccEnt_BadQualifier::Raise();
+      throw GccEnt_BadQualifier();
       return;
   }
   Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
   Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
-  if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+  if (Radius < 0.0) { throw Standard_NegativeValue(); }
   else {
     if (Qualified1.IsEnclosed() && Qualified2.IsEnclosed()) {
       //   =======================================================
@@ -918,8 +918,8 @@ NbSolutions () const { return NbrSol; }
 gp_Circ2d Geom2dGcc_Circ2d2TanRadGeo::
 ThisSolution (const Standard_Integer Index) const 
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
   return cirsol(Index);
 }
 
@@ -928,8 +928,8 @@ WhichQualifier(const Standard_Integer Index   ,
                GccEnt_Position& Qualif1 ,
                GccEnt_Position& Qualif2 ) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
   else {
     Qualif1 = qualifier1(Index);
     Qualif2 = qualifier2(Index);
@@ -941,15 +941,15 @@ Tangency1 (const Standard_Integer Index,
            Standard_Real&   ParSol,
            Standard_Real&   ParArg,
            gp_Pnt2d&        PntSol) const{
-             if (!WellDone) { StdFail_NotDone::Raise(); }
-             else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+             if (!WellDone) { throw StdFail_NotDone(); }
+             else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
              else {
                if (TheSame1(Index) == 0) {
                  ParSol = par1sol(Index);
                  ParArg = pararg1(Index);
                  PntSol = gp_Pnt2d(pnttg1sol(Index));
                }
-               else { StdFail_NotDone::Raise(); }
+               else { throw StdFail_NotDone(); }
              }
 }
 
@@ -958,23 +958,23 @@ Tangency2 (const Standard_Integer Index,
            Standard_Real&   ParSol,
            Standard_Real&   ParArg,
            gp_Pnt2d&        PntSol) const{
-             if (!WellDone) { StdFail_NotDone::Raise(); }
-             else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+             if (!WellDone) { throw StdFail_NotDone(); }
+             else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
              else {
                if (TheSame2(Index) == 0) {
                  ParSol = par2sol(Index);
                  ParArg = pararg2(Index);
                  PntSol = gp_Pnt2d(pnttg2sol(Index));
                }
-               else { StdFail_NotDone::Raise(); }
+               else { throw StdFail_NotDone(); }
              }
 }
 
 Standard_Boolean Geom2dGcc_Circ2d2TanRadGeo::
 IsTheSame1 (const Standard_Integer Index) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
 
   if (TheSame1(Index) == 0) { return Standard_False; }
   return Standard_True;
@@ -983,8 +983,8 @@ IsTheSame1 (const Standard_Integer Index) const
 Standard_Boolean Geom2dGcc_Circ2d2TanRadGeo::
 IsTheSame2 (const Standard_Integer Index) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
 
   if (TheSame2(Index) == 0) { return Standard_False; }
   return Standard_True;

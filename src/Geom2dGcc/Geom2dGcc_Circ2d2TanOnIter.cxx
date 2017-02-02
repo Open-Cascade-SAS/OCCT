@@ -66,7 +66,7 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedLin&  Qualified1 ,
                                 Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
                                 !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
                                 Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-                                  GccEnt_BadQualifier::Raise();
+                                  throw GccEnt_BadQualifier();
                                   return;
                               }
                               gp_Dir2d dirx(1.,0.);
@@ -167,7 +167,7 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve& Qualified1 ,
                                 Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
                                 !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
                                 Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-                                  GccEnt_BadQualifier::Raise();
+                                  throw GccEnt_BadQualifier();
                                   return;
                               }
                               Standard_Real Tol = Abs(Tolerance);
@@ -274,7 +274,7 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve& Qualified1 ,
                               WellDone = Standard_False;
                               if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
                                 Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
-                                  GccEnt_BadQualifier::Raise();
+                                  throw GccEnt_BadQualifier();
                                   return;
                               }
                               Standard_Real Tol = Abs(Tolerance);
@@ -361,7 +361,7 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedCirc& Qualified1 ,
                                 Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
                                 !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
                                 Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-                                  GccEnt_BadQualifier::Raise();
+                                  throw GccEnt_BadQualifier();
                                   return;
                               }
                               Standard_Real Tol = Abs(Tolerance);
@@ -469,7 +469,7 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedCirc& Qualified1 ,
                                 Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
                                 !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
                                 Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-                                  GccEnt_BadQualifier::Raise();
+                                  throw GccEnt_BadQualifier();
                                   return;
                               }
                               Standard_Real Tol = Abs(Tolerance);
@@ -575,7 +575,7 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedLin&  Qualified1 ,
                                 Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
                                 !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
                                 Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-                                  GccEnt_BadQualifier::Raise();
+                                  throw GccEnt_BadQualifier();
                                   return;
                               }
                               Standard_Real Tol = Abs(Tolerance);
@@ -679,7 +679,7 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve& Qualified1 ,
                                 Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
                                 !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
                                 Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-                                  GccEnt_BadQualifier::Raise();
+                                  throw GccEnt_BadQualifier();
                                   return;
                               }
                               Standard_Real Tol = Abs(Tolerance);
@@ -787,7 +787,7 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve&  Qualified1 ,
                               WellDone = Standard_False;
                               if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
                                 Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
-                                  GccEnt_BadQualifier::Raise();
+                                  throw GccEnt_BadQualifier();
                                   return;
                               }
                               Standard_Real Tol = Abs(Tolerance);
@@ -876,7 +876,7 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve& Qualified1 ,
                                 Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
                                 !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
                                 Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-                                  GccEnt_BadQualifier::Raise();
+                                  throw GccEnt_BadQualifier();
                                   return;
                               }
                               gp_Dir2d dirx(1.,0.);
@@ -981,7 +981,7 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedCirc& Qualified1 ,
                                 Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
                                 !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
                                 Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-                                  GccEnt_BadQualifier::Raise();
+                                  throw GccEnt_BadQualifier();
                                   return;
                               }
                               Standard_Real Tol = Abs(Tolerance);
@@ -1083,7 +1083,7 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedLin&  Qualified1 ,
                                 Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
                                 !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
                                 Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-                                  GccEnt_BadQualifier::Raise();
+                                  throw GccEnt_BadQualifier();
                                   return;
                               }
                               Standard_Real Tol = Abs(Tolerance);
@@ -1181,7 +1181,7 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve&    Qualified1 ,
   WellDone = Standard_False;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
     Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
-      GccEnt_BadQualifier::Raise();
+      throw GccEnt_BadQualifier();
       return;
   }
   Standard_Real Tol = Abs(Tolerance);
@@ -1257,7 +1257,7 @@ void Geom2dGcc_Circ2d2TanOnIter::
 WhichQualifier (GccEnt_Position& Qualif1  ,
                 GccEnt_Position& Qualif2  ) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
   else {
     Qualif1 = qualifier1;
     Qualif2 = qualifier2;
@@ -1269,14 +1269,14 @@ Tangency1 (Standard_Real&      ParSol         ,
            Standard_Real&      ParArg         ,
            gp_Pnt2d&  PntSol         ) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
   else {
     if (TheSame1 == 0) {
       ParSol = 0;
       ParArg = 0;
       PntSol = pnttg1sol;
     }
-    else { StdFail_NotDone::Raise(); }
+    else { throw StdFail_NotDone(); }
   }
 }
 
@@ -1285,7 +1285,7 @@ Tangency2 (Standard_Real&      ParSol         ,
            Standard_Real&      ParArg         ,
            gp_Pnt2d&  PntSol         ) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
   else {
     ParSol = 0;
     ParArg = 0;
@@ -1297,7 +1297,7 @@ void Geom2dGcc_Circ2d2TanOnIter::
 CenterOn3 (Standard_Real&      ParArg         ,
            gp_Pnt2d&  PntSol         ) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
   else {
     ParArg = 0;
     PntSol = pntcen;
@@ -1307,7 +1307,7 @@ CenterOn3 (Standard_Real&      ParArg         ,
 Standard_Boolean Geom2dGcc_Circ2d2TanOnIter::
 IsTheSame1 () const
 {
-  if (!WellDone) StdFail_NotDone::Raise();
+  if (!WellDone) throw StdFail_NotDone();
 
   if (TheSame1 == 0) 
     return Standard_False;
@@ -1318,6 +1318,6 @@ IsTheSame1 () const
 Standard_Boolean Geom2dGcc_Circ2d2TanOnIter::
 IsTheSame2 () const
 {
-  if (!WellDone) StdFail_NotDone::Raise();
+  if (!WellDone) throw StdFail_NotDone();
   return Standard_False;
 }

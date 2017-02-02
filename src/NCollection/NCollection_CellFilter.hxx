@@ -246,7 +246,7 @@ protected:
     ListNode()
     {
       // Empty constructor is forbidden.
-      Standard_NoSuchObject::Raise("NCollection_CellFilter::ListNode()");
+      throw Standard_NoSuchObject("NCollection_CellFilter::ListNode()");
     }
 
     Target Object;

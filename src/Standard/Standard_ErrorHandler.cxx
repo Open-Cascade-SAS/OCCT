@@ -267,7 +267,7 @@ Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_Handler
   return anActive;
 }
 
-#if defined(NO_CXX_EXCEPTION) || defined(OCC_CONVERT_SIGNALS)
+#if defined(OCC_CONVERT_SIGNALS)
 
 Standard_ErrorHandler::Callback::Callback ()
   : myHandler(0), myPrev(0), myNext(0)

@@ -242,8 +242,8 @@ void Poly_CoherentTriangle::RemoveConnection(const Standard_Integer iConn)
       else if (pConnectedTri->mypConnected[2] == this)
         iConn1 = 2;
       else
-        Standard_ProgramError::Raise("Poly_CoherentTriangle::RemoveConnection: "
-                                     "wrong connection between triangles");
+        throw Standard_ProgramError("Poly_CoherentTriangle::RemoveConnection: "
+                                    "wrong connection between triangles");
     }
     pConnectedTri->mypConnected[iConn1] = 0L;
     pConnectedTri->myNodesOnConnected[iConn1] = -1;

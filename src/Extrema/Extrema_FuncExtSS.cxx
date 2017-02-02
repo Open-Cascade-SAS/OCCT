@@ -118,7 +118,7 @@ Standard_Integer Extrema_FuncExtSS::NbEquations () const { return 4;}
 Standard_Boolean Extrema_FuncExtSS::Value (const math_Vector& UV, 
 					   math_Vector& F)
 {
-  if (!myS1init || !myS2init) Standard_TypeMismatch::Raise();
+  if (!myS1init || !myS2init) throw Standard_TypeMismatch();
   myU1 = UV(1);
   myV1 = UV(2);
   myU2 = UV(3);
@@ -159,7 +159,7 @@ Standard_Boolean Extrema_FuncExtSS::Values (const math_Vector& UV,
 					    math_Vector& F,
 					    math_Matrix& Df)
 {
-  if (!myS1init || !myS2init) Standard_TypeMismatch::Raise();
+  if (!myS1init || !myS2init) throw Standard_TypeMismatch();
   myU1 = UV(1);
   myV1 = UV(2);
   myU2 = UV(3);
@@ -206,7 +206,7 @@ Standard_Boolean Extrema_FuncExtSS::Values (const math_Vector& UV,
 
 Standard_Integer Extrema_FuncExtSS::GetStateNumber ()
 {
-  if (!myS1init || !myS2init) Standard_TypeMismatch::Raise();
+  if (!myS1init || !myS2init) throw Standard_TypeMismatch();
 #if 0
   math_Vector Sol(1, 4), UVSol(1, 4);
   UVSol(1) = myU1; UVSol(2) = myV1; UVSol(3) = myU2; UVSol(4) = myV2;
@@ -237,7 +237,7 @@ Standard_Integer Extrema_FuncExtSS::NbExt () const
 
 Standard_Real Extrema_FuncExtSS::SquareDistance (const Standard_Integer N) const
 {
-  if (!myS1init || !myS2init) Standard_TypeMismatch::Raise();
+  if (!myS1init || !myS2init) throw Standard_TypeMismatch();
   return mySqDist.Value(N);
 }
 
@@ -248,7 +248,7 @@ Standard_Real Extrema_FuncExtSS::SquareDistance (const Standard_Integer N) const
 
 const Extrema_POnSurf& Extrema_FuncExtSS::PointOnS1 (const Standard_Integer N) const
 {
-  if (!myS1init || !myS2init) Standard_TypeMismatch::Raise();
+  if (!myS1init || !myS2init) throw Standard_TypeMismatch();
   return myPoint1.Value(N);
 }
 //=======================================================================
@@ -258,7 +258,7 @@ const Extrema_POnSurf& Extrema_FuncExtSS::PointOnS1 (const Standard_Integer N) c
 
 const Extrema_POnSurf& Extrema_FuncExtSS::PointOnS2 (const Standard_Integer N) const
 {
-  if (!myS1init || !myS2init) Standard_TypeMismatch::Raise();
+  if (!myS1init || !myS2init) throw Standard_TypeMismatch();
   return myPoint2.Value(N);
 }
 

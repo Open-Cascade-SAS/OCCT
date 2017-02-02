@@ -77,8 +77,7 @@ static StepData_Field bid;
     ent = Member(i);
     if (ent->HasField (name)) return ent->Field (name);
   }
-  Interface_InterfaceMismatch::Raise("StepData_Plex : Field");
-  return bid;  // pour faire plaisir au compilo
+  throw Interface_InterfaceMismatch("StepData_Plex : Field");
 }
 
 
@@ -90,8 +89,7 @@ static StepData_Field bid;
     ent = Member(i);
     if (ent->HasField (name)) return ent->CField (name);
   }
-  Interface_InterfaceMismatch::Raise("StepData_Plex : Field");
-  return bid;  // pour faire plaisir au compilo
+  throw Interface_InterfaceMismatch("StepData_Plex : Field");
 }
 
 

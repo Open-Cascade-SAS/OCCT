@@ -235,8 +235,7 @@ void Geom_RectangularTrimmedSurface::SetTrim(const Standard_Real U1,
   }
   else {
     if ( U1 == U2)
-      Standard_ConstructionError::Raise
-	("Geom_RectangularTrimmedSurface::U1==U2");
+      throw Standard_ConstructionError("Geom_RectangularTrimmedSurface::U1==U2");
 
     if (basisSurf->IsUPeriodic()) {
       UsameSense = USense;
@@ -263,8 +262,7 @@ void Geom_RectangularTrimmedSurface::SetTrim(const Standard_Real U1,
       
       if ((Udeb-utrim1 > Precision::PConfusion()) ||
 	  (utrim2-Ufin > Precision::PConfusion()))
-	Standard_ConstructionError::Raise
-	  ("Geom_RectangularTrimmedSurface::U parameters out of range");
+	throw Standard_ConstructionError("Geom_RectangularTrimmedSurface::U parameters out of range");
 
     }
   }
@@ -277,8 +275,7 @@ void Geom_RectangularTrimmedSurface::SetTrim(const Standard_Real U1,
   }
   else {
     if ( V1 == V2)
-      Standard_ConstructionError::Raise
-	("Geom_RectangularTrimmedSurface::V1==V2");
+      throw Standard_ConstructionError("Geom_RectangularTrimmedSurface::V1==V2");
 
     if (basisSurf->IsVPeriodic()) {
       VsameSense = VSense;
@@ -305,8 +302,7 @@ void Geom_RectangularTrimmedSurface::SetTrim(const Standard_Real U1,
       
       if ((Vdeb-vtrim1 > Precision::PConfusion()) ||
 	  (vtrim2-Vfin > Precision::PConfusion()))
-	Standard_ConstructionError::Raise
-	  ("Geom_RectangularTrimmedSurface::V parameters out of range");
+	throw Standard_ConstructionError("Geom_RectangularTrimmedSurface::V parameters out of range");
 
     }
   }

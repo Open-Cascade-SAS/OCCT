@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(gp_VectorWithNullMagnitude, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_gp_VectorWithNullMagnitude
   #define gp_VectorWithNullMagnitude_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) gp_VectorWithNullMagnitude::Raise(MESSAGE);
+  if (CONDITION) throw gp_VectorWithNullMagnitude(MESSAGE);
 #else
   #define gp_VectorWithNullMagnitude_Raise_if(CONDITION, MESSAGE)
 #endif

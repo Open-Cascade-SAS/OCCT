@@ -66,7 +66,7 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius)
 {
   const TopoDS_Shape& aObject=myArguments.First();
   if (aObject.IsNull() || !myAxDef) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   myIsBlind = Standard_False;
@@ -120,7 +120,7 @@ void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
   //
   const TopoDS_Shape& aObject=myArguments.First();
   if (aObject.IsNull() || !myAxDef) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   myIsBlind = Standard_False;
@@ -251,7 +251,7 @@ void BRepFeat_MakeCylindricalHole::PerformUntilEnd(const Standard_Real Radius,
   //
   const TopoDS_Shape& aObject=myArguments.First();
   if (aObject.IsNull() || !myAxDef) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   myIsBlind = Standard_False;
@@ -344,7 +344,7 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius,
   //
   const TopoDS_Shape& aObject=myArguments.First();
   if (aObject.IsNull() || !myAxDef) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   myIsBlind = Standard_False;
@@ -449,7 +449,7 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
   //
   const TopoDS_Shape& aObject=myArguments.First();
   if (aObject.IsNull() || !myAxDef || Length <= 0.) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   myIsBlind = Standard_True;

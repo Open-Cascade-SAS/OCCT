@@ -421,9 +421,9 @@ Handle(TFunction_Driver) TFunction_IFunction::GetDriver(const Standard_Integer t
   Handle(TFunction_Driver) driver;
   Handle(TFunction_Function) func;
   if (!myLabel.FindAttribute(TFunction_Function::GetID(), func))
-    Standard_NoSuchObject::Raise("TFunction_IFunction::GetDriver(): A Function is not found attached to this label");
+    throw Standard_NoSuchObject("TFunction_IFunction::GetDriver(): A Function is not found attached to this label");
   if (!TFunction_DriverTable::Get()->FindDriver(func->GetDriverGUID(), driver, thread))
-    Standard_NoSuchObject::Raise("TFunction_IFunction::GetDriver(): A driver is not found for this ID");
+    throw Standard_NoSuchObject("TFunction_IFunction::GetDriver(): A driver is not found for this ID");
   driver->Init(myLabel);
   return driver;
 }
@@ -437,6 +437,6 @@ Handle(TFunction_GraphNode) TFunction_IFunction::GetGraphNode() const
 {
   Handle(TFunction_GraphNode) graphNode;
   if (!myLabel.FindAttribute(TFunction_GraphNode::GetID(), graphNode))
-    Standard_NoSuchObject::Raise("TFunction_IFunction::GetStatus(): A graph node is not found attached to this label");
+    throw Standard_NoSuchObject("TFunction_IFunction::GetStatus(): A graph node is not found attached to this label");
   return graphNode;
 }

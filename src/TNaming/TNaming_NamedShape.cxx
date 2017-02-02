@@ -472,7 +472,7 @@ const
 { 
   TDF_Label        Lab = into->Label();
   if (Lab.IsNull()) {
-    Standard_NullObject::Raise("TNaming_NamedShape::Paste");
+    throw Standard_NullObject("TNaming_NamedShape::Paste");
   }
   TNaming_Builder B(Lab);
 
@@ -638,7 +638,7 @@ static void UpdateFirstUseOrNextSameShape(TNaming_RefShape*& prs,
       ldn = cdn;
       cdn = cdn->NextSameShape(prs);
       if (ldn == cdn) {
-	Standard_ConstructionError::Raise("UpdateFirstUseOrNextSameShape");
+	throw Standard_ConstructionError("UpdateFirstUseOrNextSameShape");
 	break;
       }
     }
@@ -660,7 +660,7 @@ void TNaming_Builder::Generated(const TopoDS_Shape& newShape)
   if (myAtt->myNode == 0L) myAtt->myEvolution = TNaming_PRIMITIVE;
   else {
     if (myAtt->myEvolution != TNaming_PRIMITIVE)
-      Standard_ConstructionError::Raise("TNaming_Builder : not same evolution");
+      throw Standard_ConstructionError("TNaming_Builder : not same evolution");
   }
 
   TNaming_RefShape* pos = 0L;
@@ -672,7 +672,7 @@ void TNaming_Builder::Generated(const TopoDS_Shape& newShape)
 #endif
     pns = myShapes->myMap.ChangeFind(newShape);
     if (pns->FirstUse()->myAtt  == myAtt.operator->()) {
-      Standard_ConstructionError::Raise("TNaming_Builder::Generate");
+      throw Standard_ConstructionError("TNaming_Builder::Generate");
     }
     TNaming_Node* pdn = new TNaming_Node(pos,pns);
     myAtt->Add(pdn);
@@ -699,7 +699,7 @@ void TNaming_Builder::Delete(const TopoDS_Shape& oldShape)
   if (myAtt->myNode == 0L) myAtt->myEvolution = TNaming_DELETE;
   else {
     if (myAtt->myEvolution != TNaming_DELETE)
-      Standard_ConstructionError::Raise("TNaming_Builder : not same evolution");
+      throw Standard_ConstructionError("TNaming_Builder : not same evolution");
   }
 
   TNaming_RefShape* pns = 0L;
@@ -730,7 +730,7 @@ void TNaming_Builder::Generated(const TopoDS_Shape& oldShape,
   if (myAtt->myNode == 0L) myAtt->myEvolution = TNaming_GENERATED;
   else {
     if (myAtt->myEvolution != TNaming_GENERATED)
-      Standard_ConstructionError::Raise("TNaming_Builder : not same evolution");
+      throw Standard_ConstructionError("TNaming_Builder : not same evolution");
   }
 
   if (oldShape.IsSame(newShape)) {
@@ -773,7 +773,7 @@ void TNaming_Builder::Modify(const TopoDS_Shape& oldShape,
   if (myAtt->myNode == 0L) myAtt->myEvolution = TNaming_MODIFY;
   else {
     if (myAtt->myEvolution != TNaming_MODIFY)
-      Standard_ConstructionError::Raise("TNaming_Builder : not same evolution");
+      throw Standard_ConstructionError("TNaming_Builder : not same evolution");
   }
 
   if (oldShape.IsSame(newShape)) {
@@ -815,7 +815,7 @@ void TNaming_Builder::Select (const TopoDS_Shape& S,
   if (myAtt->myNode == 0L) myAtt->myEvolution = TNaming_SELECTED;
   else {
     if (myAtt->myEvolution != TNaming_SELECTED)
-      Standard_ConstructionError::Raise("TNaming_Builder : not same evolution");
+      throw Standard_ConstructionError("TNaming_Builder : not same evolution");
   }
 
   TNaming_RefShape* pos;  
@@ -1340,7 +1340,7 @@ void TNaming_OldShapeIterator::Next()
 
 TDF_Label TNaming_OldShapeIterator::Label() const
 {  
-  if (myNode == 0L) Standard_NoSuchObject::Raise("TNaming_OldShapeIterator::Label");
+  if (myNode == 0L) throw Standard_NoSuchObject("TNaming_OldShapeIterator::Label");
   return myNode->Label();
   
 }
@@ -1352,7 +1352,7 @@ TDF_Label TNaming_OldShapeIterator::Label() const
 
 Handle(TNaming_NamedShape) TNaming_OldShapeIterator::NamedShape() const
 {  
-  if (myNode == 0L) Standard_NoSuchObject::Raise("TNaming_OldShapeIterator::Label");
+  if (myNode == 0L) throw Standard_NoSuchObject("TNaming_OldShapeIterator::Label");
   return myNode->myAtt;
 }
 //=======================================================================
@@ -1362,7 +1362,7 @@ Handle(TNaming_NamedShape) TNaming_OldShapeIterator::NamedShape() const
 
 const TopoDS_Shape& TNaming_OldShapeIterator::Shape() const
 {   
-  if(myNode == 0L) Standard_NoSuchObject::Raise("TNaming_OldShapeIterator::Shape"); 
+  if(myNode == 0L) throw Standard_NoSuchObject("TNaming_OldShapeIterator::Shape");
   return myNode->myOld->Shape();
 }
 

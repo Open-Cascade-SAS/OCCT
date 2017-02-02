@@ -71,7 +71,7 @@ static Standard_Real epsa = 1.E-10;
 {
   Standard_Integer num, nb = theXYZ->Length();
   if (datatype < 1 || datatype > 3 || nb == 0 || (polyline && datatype == 3))
-    Standard_DomainError::Raise ("IGESConvGeom_GeomBuilder : MakeCopiousData");
+    throw Standard_DomainError("IGESConvGeom_GeomBuilder : MakeCopiousData");
 
   Standard_Integer nbd = datatype+1;  // 1->2  2->3   et   3->6
   if (datatype == 3) nbd = 6;

@@ -100,8 +100,7 @@ const HLRAlgo_Intersection &  HLRBRep_VertexList::Current() const
   else if (fromInterf)
     return myIterator.Value().Intersection();
   else
-    Standard_NoSuchObject::Raise("HLRBRep_VertexList::Current");
-  return myTool.CurrentVertex(); // only for WNT.
+    throw Standard_NoSuchObject("HLRBRep_VertexList::Current");
 }
 
 //=======================================================================
@@ -134,8 +133,7 @@ TopAbs_Orientation  HLRBRep_VertexList::Orientation() const
   if (fromEdge)
     return myTool.CurrentOrientation();
   else
-    Standard_DomainError::Raise("HLRBRep_VertexList::Orientation");
-  return TopAbs_EXTERNAL; // only for WNT.
+    throw Standard_DomainError("HLRBRep_VertexList::Orientation");
 }
 
 //=======================================================================
@@ -148,8 +146,7 @@ TopAbs_Orientation  HLRBRep_VertexList::Transition() const
   if (fromInterf)
     return myIterator.Value().Transition();
   else
-    Standard_DomainError::Raise("HLRBRep_VertexList::Transition");
-  return TopAbs_EXTERNAL; // only for WNT.
+    throw Standard_DomainError("HLRBRep_VertexList::Transition");
 }
 
 //=======================================================================
@@ -162,6 +159,5 @@ TopAbs_Orientation  HLRBRep_VertexList::BoundaryTransition() const
   if (fromInterf)
     return myIterator.Value().BoundaryTransition();
   else
-    Standard_DomainError::Raise("HLRBRep_VertexList::BoundaryTransition");
-  return TopAbs_EXTERNAL; // only for WNT.
+    throw Standard_DomainError("HLRBRep_VertexList::BoundaryTransition");
 }

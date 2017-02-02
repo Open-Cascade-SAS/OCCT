@@ -181,7 +181,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
    || anEglContext == EGL_NO_CONTEXT
    || anEglConfig == NULL)
   {
-    Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window, EGL does not provide compatible configurations!");
+    throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL does not provide compatible configurations!");
     return;
   }
 
@@ -195,13 +195,13 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
                                         NULL);
     if (anEglSurf == EGL_NO_SURFACE)
     {
-      Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window, EGL is unable to create surface for window!");
+      throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL is unable to create surface for window!");
       return;
     }
   }
   else if (theGContext != anEglContext)
   {
-    Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window, EGL is used in unsupported combination!");
+    throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL is used in unsupported combination!");
     return;
   }
   else
@@ -209,7 +209,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
     anEglSurf = eglGetCurrentSurface(EGL_DRAW);
     if (anEglSurf == EGL_NO_SURFACE)
     {
-      Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window, EGL is unable to retrieve current surface!");
+      throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL is unable to retrieve current surface!");
       return;
     }
   }
@@ -259,7 +259,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
 
     TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: ChoosePixelFormat failed. Error code: ");
     aMsg += (int )GetLastError();
-    Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+    throw Aspect_GraphicDeviceDefinitionError(aMsg.ToCString());
     return;
   }
 
@@ -359,7 +359,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
 
       TCollection_AsciiString aMsg("OpenGl_Window::CreateWindow: SetPixelFormat failed. Error code: ");
       aMsg += (int )GetLastError();
-      Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+      throw Aspect_GraphicDeviceDefinitionError(aMsg.ToCString());
       return;
     }
 
@@ -450,7 +450,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
 
       TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: wglCreateContext failed. Error code: ");
       aMsg += (int )GetLastError();
-      Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+      throw Aspect_GraphicDeviceDefinitionError(aMsg.ToCString());
       return;
     }
   }
@@ -460,7 +460,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
   {
     TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: wglShareLists failed. Error code: ");
     aMsg += (int )GetLastError();
-    Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+    throw Aspect_GraphicDeviceDefinitionError(aMsg.ToCString());
     return;
   }
 
@@ -481,12 +481,12 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
   int isGl = 0;
   if (aVis == NULL)
   {
-    Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window::CreateWindow: XGetVisualInfo is unable to choose needed configuration in existing OpenGL context. ");
+    throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window::CreateWindow: XGetVisualInfo is unable to choose needed configuration in existing OpenGL context. ");
     return;
   }
   else if (glXGetConfig (aDisp, aVis, GLX_USE_GL, &isGl) != 0 || !isGl)
   {
-    Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window::CreateWindow: window Visual does not support GL rendering!");
+    throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window::CreateWindow: window Visual does not support GL rendering!");
     return;
   }
 
@@ -559,7 +559,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
     aGContext = glXCreateContext (aDisp, aVis, aSlaveCtx, GL_TRUE);
     if (aGContext == NULL)
     {
-      Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window::CreateWindow: glXCreateContext failed.");
+      throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window::CreateWindow: glXCreateContext failed.");
       return;
     }
   }

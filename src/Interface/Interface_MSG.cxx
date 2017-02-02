@@ -192,7 +192,7 @@ Standard_CString  Interface_MSG::Translated (const Standard_CString key)
     } else
       thelist.Bind(key, 1);
   }
-  if (theraise) Standard_DomainError::Raise ("Interface_MSG : Translate");
+  if (theraise) throw Standard_DomainError("Interface_MSG : Translate");
   return key;
 }
 
@@ -216,7 +216,7 @@ void  Interface_MSG::Record
     dup = new TCollection_HAsciiString(item);
     thedup->Append(dup);
   }
-  if (theraise) Standard_DomainError::Raise ("Interface_MSG : Record");
+  if (theraise) throw Standard_DomainError("Interface_MSG : Record");
 }
 
 

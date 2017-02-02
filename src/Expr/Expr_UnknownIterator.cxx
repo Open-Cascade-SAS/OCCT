@@ -50,7 +50,7 @@ Standard_Boolean Expr_UnknownIterator::More() const
 void Expr_UnknownIterator::Next ()
 {
   if (!More()) {
-    Standard_NoMoreObject::Raise();
+    throw Standard_NoMoreObject();
   }
   myCurrent++;
 }

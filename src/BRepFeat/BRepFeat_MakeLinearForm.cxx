@@ -782,7 +782,7 @@ void BRepFeat_MakeLinearForm::Add(const TopoDS_Edge& E,
       }
     }
     if (!exp.More()) {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
   
     if (!mySlface.IsBound(F)) {

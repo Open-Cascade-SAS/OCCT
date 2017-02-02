@@ -91,7 +91,7 @@ const TDF_LabelMap& TDocStd_Modified::Get (const TDF_Label& access)
 {  
   Handle(TDocStd_Modified) MDF;
   if (!access.Root().FindAttribute (TDocStd_Modified::GetID(), MDF)) {
-    Standard_DomainError::Raise("TDocStd_Modified::Get : IsEmpty");
+    throw Standard_DomainError("TDocStd_Modified::Get : IsEmpty");
   }
   return MDF->Get();
 }

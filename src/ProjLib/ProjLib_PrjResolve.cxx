@@ -28,7 +28,7 @@
 
 ProjLib_PrjResolve::ProjLib_PrjResolve(const Adaptor3d_Curve& C,const Adaptor3d_Surface& S,const Standard_Integer Fix) : myFix(Fix)
 {
-  if (myFix > 3 || myFix < 1) Standard_ConstructionError::Raise();
+  if (myFix > 3 || myFix < 1) throw Standard_ConstructionError();
   mySolution = gp_Pnt2d(0.,0.);
   myCurve    = (Adaptor3d_CurvePtr)&C;
   mySurface  = (Adaptor3d_SurfacePtr)&S; 
@@ -130,6 +130,6 @@ ProjLib_PrjResolve::ProjLib_PrjResolve(const Adaptor3d_Curve& C,const Adaptor3d_
 
  gp_Pnt2d ProjLib_PrjResolve::Solution() const
 {
-  if (!IsDone())  StdFail_NotDone::Raise(); 
+  if (!IsDone())  throw StdFail_NotDone();
   return mySolution;
 }

@@ -85,30 +85,6 @@ public:
   //! parabola.
   Standard_EXPORT Extrema_ExtElC2d(const gp_Circ2d& C1, const gp_Parab2d& C2);
   
-  //! Calculates the distance between two elipses.
-  //! The elipses can be parallel or identical.
-  Standard_EXPORT Extrema_ExtElC2d(const gp_Elips2d& C1, const gp_Elips2d& C2);
-  
-  //! Calculates the distance between an elipse and a
-  //! hyperbola.
-  Standard_EXPORT Extrema_ExtElC2d(const gp_Elips2d& C1, const gp_Hypr2d& C2);
-  
-  //! Calculates the distance between an elipse and a
-  //! parabola.
-  Standard_EXPORT Extrema_ExtElC2d(const gp_Elips2d& C1, const gp_Parab2d& C2);
-  
-  //! Calculates the distance between two hyperbolas.
-  //! The hyperbolas can be parallel or identical.
-  Standard_EXPORT Extrema_ExtElC2d(const gp_Hypr2d& C1, const gp_Hypr2d& C2);
-  
-  //! Calculates the distance between a hyperbola and a
-  //! parabola.
-  Standard_EXPORT Extrema_ExtElC2d(const gp_Hypr2d& C1, const gp_Parab2d& C2);
-  
-  //! Calculates the distance between two parabolas
-  //! The parabolas can be parallel or identical.
-  Standard_EXPORT Extrema_ExtElC2d(const gp_Parab2d& C1, const gp_Parab2d& C2);
-  
   //! Returns True if the distances are found.
   Standard_EXPORT Standard_Boolean IsDone() const;
   

@@ -72,7 +72,7 @@ static void Select(const TopoDS_Edge&,
 void LocOpe_Spliter::Perform(const Handle(LocOpe_WiresOnShape)& PW)
 {
   if (myShape.IsNull()) {
-    Standard_NullObject::Raise();
+    throw Standard_NullObject();
   }
   myDone = Standard_False;
   myMap.Clear();
@@ -126,7 +126,7 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_WiresOnShape)& PW)
 	const TopTools_ListOfShape& lsub = theSubs.Copy(itdesc.Key());
 #ifdef OCCT_DEBUG
 	if (lsub.Extent() != 1) {
-	  Standard_ConstructionError::Raise();
+	  throw Standard_ConstructionError();
 	}
 #endif
 	myMap(itdesc.Key()).Clear(); 
@@ -307,7 +307,7 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_WiresOnShape)& PW)
 	const TopTools_ListOfShape& lsub = theSubs.Copy(itl.Value());
 #ifdef OCCT_DEBUG
 	if (lsub.Extent() != 1) {
-	  Standard_ConstructionError::Raise();
+	  throw Standard_ConstructionError();
 	}
 #endif
 	newdesc.Append(lsub.First());
@@ -502,7 +502,7 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_WiresOnShape)& PW)
 const TopTools_ListOfShape& LocOpe_Spliter::
    DescendantShapes(const TopoDS_Shape& F)
 {
-  if (!myDone) {StdFail_NotDone::Raise();}
+  if (!myDone) {throw StdFail_NotDone();}
   if (myMap.IsBound(F))
     return myMap(F);
   else {
@@ -519,7 +519,7 @@ const TopTools_ListOfShape& LocOpe_Spliter::
 
 const TopTools_ListOfShape& LocOpe_Spliter::DirectLeft() const
 {
-  if (!myDone) {StdFail_NotDone::Raise();}
+  if (!myDone) {throw StdFail_NotDone();}
   return myDLeft;
 
 }
@@ -532,7 +532,7 @@ const TopTools_ListOfShape& LocOpe_Spliter::DirectLeft() const
 
 const TopTools_ListOfShape& LocOpe_Spliter::Left() const
 {
-  if (!myDone) {StdFail_NotDone::Raise();}
+  if (!myDone) {throw StdFail_NotDone();}
   return myLeft;
 
 }
@@ -551,7 +551,7 @@ static void RebuildWires(TopTools_ListOfShape& ledge,
   LocOpe_BuildWires theBuild(ledge, PW);
 //  Modified by skv - Mon May 31 12:31:40 2004 OCC5865 End
   if (!theBuild.IsDone()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   ledge = theBuild.Result();
 

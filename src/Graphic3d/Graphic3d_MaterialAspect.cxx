@@ -559,7 +559,7 @@ void Graphic3d_MaterialAspect::SetAmbient (const Standard_ShortReal theValue)
   if (theValue < 0.0f
    || theValue > 1.0f)
   {
-    Graphic3d_MaterialDefinitionError::Raise ("Bad value for SetAmbient < 0. or > 1.0");
+    throw Graphic3d_MaterialDefinitionError("Bad value for SetAmbient < 0. or > 1.0");
   }
 
   myColorCoef[Graphic3d_TOR_AMBIENT] = theValue;
@@ -653,7 +653,7 @@ void Graphic3d_MaterialAspect::SetDiffuse (const Standard_ShortReal theValue)
   if (theValue < 0.0f
    || theValue > 1.0f)
   {
-    Graphic3d_MaterialDefinitionError::Raise ("Bad value for SetDiffuse < 0. or > 1.0");
+    throw Graphic3d_MaterialDefinitionError("Bad value for SetDiffuse < 0. or > 1.0");
   }
 
   myColorCoef[Graphic3d_TOR_DIFFUSE] = theValue;
@@ -673,7 +673,7 @@ void Graphic3d_MaterialAspect::SetEmissive (const Standard_ShortReal theValue)
   if (theValue < 0.0f
    || theValue > 1.0f)
   {
-    Graphic3d_MaterialDefinitionError::Raise ("Bad value for SetEmissive < 0. or > 1.0");
+    throw Graphic3d_MaterialDefinitionError("Bad value for SetEmissive < 0. or > 1.0");
   }
 
   myColorCoef[Graphic3d_TOR_EMISSION] = theValue;
@@ -707,7 +707,7 @@ void Graphic3d_MaterialAspect::SetSpecular (const Standard_ShortReal theValue)
   if (theValue < 0.0f
    || theValue > 1.0f)
   {
-    Graphic3d_MaterialDefinitionError::Raise ("Bad value for SetSpecular < 0. or > 1.0");
+    throw Graphic3d_MaterialDefinitionError("Bad value for SetSpecular < 0. or > 1.0");
   }
 
   myColorCoef[Graphic3d_TOR_SPECULAR] = theValue;
@@ -727,7 +727,7 @@ void Graphic3d_MaterialAspect::SetTransparency (const Standard_ShortReal theValu
   if (theValue < 0.0f
    || theValue > 1.0f)
   {
-    Graphic3d_MaterialDefinitionError::Raise ("Bad value for SetTransparency < 0. or > 1.0");
+    throw Graphic3d_MaterialDefinitionError("Bad value for SetTransparency < 0. or > 1.0");
   }
 
   myTransparencyCoef = theValue;
@@ -741,7 +741,7 @@ void Graphic3d_MaterialAspect::SetRefractionIndex (const Standard_ShortReal theV
 {
   if (theValue < 1.0f)
   {
-    Graphic3d_MaterialDefinitionError::Raise ("Bad value for refraction index < 1.0");
+    throw Graphic3d_MaterialDefinitionError("Bad value for refraction index < 1.0");
   }
 
   myRefractionIndex = theValue;
@@ -756,7 +756,7 @@ void Graphic3d_MaterialAspect::SetShininess (const Standard_ShortReal theValue)
   if (theValue < 0.0f
    || theValue > 1.0f)
   {
-    Graphic3d_MaterialDefinitionError::Raise ("Bad value for Shininess < 0. or > 1.0");
+    throw Graphic3d_MaterialDefinitionError("Bad value for Shininess < 0. or > 1.0");
   }
 
   myShininess = theValue;
@@ -771,7 +771,7 @@ Standard_CString Graphic3d_MaterialAspect::MaterialName (const Standard_Integer 
 {
   if (theRank < 1 || theRank > NumberOfMaterials())
   {
-    Standard_OutOfRange::Raise ("BAD index of material");
+    throw Standard_OutOfRange("BAD index of material");
   }
   const RawMaterial& aMat = THE_MATERIALS[theRank - 1];
   return aMat.StringName;
@@ -832,7 +832,7 @@ Graphic3d_TypeOfMaterial Graphic3d_MaterialAspect::MaterialType (const Standard_
 {
   if (theRank < 1 || theRank > NumberOfMaterials())
   {
-    Standard_OutOfRange::Raise ("BAD index of material");
+    throw Standard_OutOfRange("BAD index of material");
   }
   const RawMaterial& aMat = THE_MATERIALS[theRank - 1];
   return aMat.MaterialType;

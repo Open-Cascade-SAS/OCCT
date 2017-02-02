@@ -38,7 +38,7 @@ IGESDefs_AssociativityDef::IGESDefs_AssociativityDef ()    {  }
       (orders->Lower()       != 1 || orders->Length()   != len) ||
       (numItems->Lower()     != 1 || numItems->Length() != len) ||
       (items->Lower()        != 1 || items->Length()    != len) )
-    Standard_DimensionMismatch::Raise("IGESDefs_AssociativityDef : Init");
+    throw Standard_DimensionMismatch("IGESDefs_AssociativityDef : Init");
 
   theBackPointerReqs = requirements;
   theClassOrders     = orders;

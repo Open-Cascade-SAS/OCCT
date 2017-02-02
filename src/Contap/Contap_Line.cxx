@@ -100,6 +100,6 @@ IntSurf_TypeTrans Contap_Line::TransitionOnS() const {
 
 const Handle(Adaptor2d_HCurve2d)& Contap_Line::Arc () const
 {
-  if (typL != Contap_Restriction) {Standard_DomainError::Raise();}
+  if (typL != Contap_Restriction) {throw Standard_DomainError();}
   return thearc;
 }

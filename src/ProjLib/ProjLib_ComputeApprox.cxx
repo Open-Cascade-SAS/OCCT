@@ -116,7 +116,7 @@ static gp_Pnt2d Function_Value(const Standard_Real U,
       break;
     }
   default:
-    Standard_NoSuchObject::Raise("ProjLib_ComputeApprox::Value");
+    throw Standard_NoSuchObject("ProjLib_ComputeApprox::Value");
   }
 
   if ( UCouture) {
@@ -1213,7 +1213,7 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox
         break;
       }
     default:
-      Standard_NoSuchObject::Raise("ProjLib_ComputeApprox::Value");
+      throw Standard_NoSuchObject("ProjLib_ComputeApprox::Value");
     }
     Standard_Boolean ToMirror = Standard_False;
     Standard_Real du = 0., dv = 0.;

@@ -94,9 +94,9 @@ Standard_Integer TDF_Transaction::Open()
   cout<<"Transaction "<<myName<<" opens #"<<myDF->Transaction()+1<<endl;
 #endif
   if (IsOpen())
-    Standard_DomainError::Raise("This transaction is already open.");
+    throw Standard_DomainError("This transaction is already open.");
   if (myDF.IsNull())
-    Standard_NullObject::Raise("Null TDF_Data.");
+    throw Standard_NullObject("Null TDF_Data.");
   return myUntilTransaction = myDF->OpenTransaction();
 }
 

@@ -107,7 +107,7 @@ gp_Pnt2d Convert_ConicToBSplineCurve::Pole
   (const Standard_Integer Index) const 
 {
   if (Index < 1 || Index > nbPoles)
-    Standard_OutOfRange::Raise(" ");
+    throw Standard_OutOfRange(" ");
   return poles->Value (Index);
 }
 
@@ -121,7 +121,7 @@ Standard_Real Convert_ConicToBSplineCurve::Weight
   (const Standard_Integer Index) const 
 {
   if (Index < 1 || Index > nbPoles)
-    Standard_OutOfRange::Raise(" ");
+    throw Standard_OutOfRange(" ");
   return weights->Value (Index);
 }
 
@@ -135,7 +135,7 @@ Standard_Real Convert_ConicToBSplineCurve::Knot
   (const Standard_Integer Index) const 
 {
   if (Index < 1 || Index > nbKnots)
-    Standard_OutOfRange::Raise(" ");
+    throw Standard_OutOfRange(" ");
   return knots->Value (Index);
 }
 
@@ -149,7 +149,7 @@ Standard_Integer Convert_ConicToBSplineCurve::Multiplicity
   (const Standard_Integer Index) const 
 {
   if (Index < 1 || Index > nbKnots)
-    Standard_OutOfRange::Raise(" ");
+    throw Standard_OutOfRange(" ");
   return mults->Value (Index);
 }
 //=======================================================================
@@ -269,7 +269,7 @@ void AlgorithmicCosAndSin(Standard_Integer               Degree,
    if (num_poles != CosNumerator.Length() ||
        num_poles != SinNumerator.Length() ||
        num_poles != Denominator.Length() ) {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
       }
    TColStd_Array1OfReal      parameters(1,num_poles)  ;
    TColgp_Array1OfPnt        poles_array(1,num_poles) ;
@@ -366,14 +366,14 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
   case Convert_TgtThetaOver2_1:
     num_spans = 1 ;
     if (delta > 0.9999 * M_PI) {
-      Standard_ConstructionError::Raise() ; 
+      throw Standard_ConstructionError() ; 
       }
     tgt_theta_flag = 1 ;
     break ;
   case Convert_TgtThetaOver2_2:
     num_spans = 2 ;
     if (delta > 1.9999 * M_PI) {
-      Standard_ConstructionError::Raise() ;
+      throw Standard_ConstructionError() ;
       }
     tgt_theta_flag = 1 ;
     break ;
@@ -637,7 +637,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
 
   if (Parameterisation != Convert_TgtThetaOver2 &&
       Parameterisation != Convert_RationalC1) {
-      Standard_ConstructionError::Raise() ;
+      throw Standard_ConstructionError() ;
       }
   Handle(TColStd_HArray1OfReal) temp_cos_ptr,
   temp_sin_ptr,

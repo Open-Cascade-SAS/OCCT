@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Graphic3d_VectorError, Standard_OutOfRange)
 
 #if !defined No_Exception && !defined No_Graphic3d_VectorError
   #define Graphic3d_VectorError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Graphic3d_VectorError::Raise(MESSAGE);
+  if (CONDITION) throw Graphic3d_VectorError(MESSAGE);
 #else
   #define Graphic3d_VectorError_Raise_if(CONDITION, MESSAGE)
 #endif

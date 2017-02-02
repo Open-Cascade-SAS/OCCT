@@ -44,7 +44,7 @@ IGESDimen_DimensionDisplayData::IGESDimen_DimensionDisplayData ()    {  }
     if (notes->Lower() != 1 ||
 	(startInd->Lower() != 1 || notes->Length() != startInd->Length()) || 
 	(endInd->Lower()   != 1 || notes->Length() != endInd->Length())   )
-      Standard_DimensionMismatch::Raise("IGESDimen_DimensionDisplayData : Init");
+      throw Standard_DimensionMismatch("IGESDimen_DimensionDisplayData : Init");
 
   theNbPropertyValues     = numProps;
   theDimensionType        = aDimType;

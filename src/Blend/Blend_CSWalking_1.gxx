@@ -136,7 +136,7 @@ Standard_Boolean Blend_CSWalking::Complete(Blend_CSFunction& Func,
 //					   Blend_CSFuncInv& FuncInv,
 					   const Standard_Real Pmin)
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   if (iscomplete) {return Standard_True;}
 
 /*

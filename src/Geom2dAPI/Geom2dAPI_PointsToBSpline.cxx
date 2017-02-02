@@ -317,7 +317,7 @@ void Geom2dAPI_PointsToBSpline::Init
    const GeomAbs_Shape         Continuity,
    const Standard_Real         Tol2D)
 {
-  if (Params.Length() != Points.Length()) Standard_OutOfRange::Raise("");
+  if (Params.Length() != Points.Length()) throw Standard_OutOfRange("");
 
   Standard_Real Tol3D = 0.; // dummy argument for BSplineCompute.
   Standard_Integer Nbp = Params.Length();
@@ -468,7 +468,7 @@ void Geom2dAPI_PointsToBSpline::Init
 const Handle(Geom2d_BSplineCurve)& Geom2dAPI_PointsToBSpline::Curve() const 
 {
   if ( !myIsDone) 
-    StdFail_NotDone::Raise(" ");
+    throw StdFail_NotDone(" ");
   return myCurve;
 }
 

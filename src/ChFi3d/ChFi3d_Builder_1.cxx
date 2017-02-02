@@ -346,7 +346,7 @@ Standard_Boolean ChFi3d_Builder::FaceTangency(const TopoDS_Edge& E0,
   //It is checked if the connection is not on a regular edge.
   for (It.Initialize(myEFMap(E1)), Nbf= 0 ;It.More();It.Next(), Nbf++) {
     if (Nbf>1) 
-      Standard_ConstructionError::Raise("ChFi3d_Builder:only 2 faces");
+      throw Standard_ConstructionError("ChFi3d_Builder:only 2 faces");
     F[Nbf] = TopoDS::Face(It.Value());
   }      
   if(Nbf < 2) return Standard_False;
@@ -365,7 +365,7 @@ Standard_Boolean ChFi3d_Builder::FaceTangency(const TopoDS_Edge& E0,
 	!BRep_Tool::Degenerated(Ec)) {
       for (It.Initialize(myEFMap(Ec)), Nbf= 0 ;It.More();It.Next(), Nbf++) {
 	if (Nbf>1) 
-	  Standard_ConstructionError::Raise("ChFi3d_Builder:only 2 faces");
+	  throw Standard_ConstructionError("ChFi3d_Builder:only 2 faces");
 	F[Nbf] = TopoDS::Face(It.Value());
       }      
       if(Nbf < 2) return Standard_False;

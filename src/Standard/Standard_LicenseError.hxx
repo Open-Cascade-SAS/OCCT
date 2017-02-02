@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Standard_LicenseError, Standard_Failure)
 
 #if !defined No_Exception && !defined No_Standard_LicenseError
   #define Standard_LicenseError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Standard_LicenseError::Raise(MESSAGE);
+  if (CONDITION) throw Standard_LicenseError(MESSAGE);
 #else
   #define Standard_LicenseError_Raise_if(CONDITION, MESSAGE)
 #endif

@@ -61,7 +61,7 @@ Standard_Boolean Expr_RUIterator::More () const
 void Expr_RUIterator::Next ()
 {
   if (!More()) {
-    Standard_NoMoreObject::Raise();
+    throw Standard_NoMoreObject();
   }
   myCurrent++;
 }

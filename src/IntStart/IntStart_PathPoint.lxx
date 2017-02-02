@@ -58,7 +58,7 @@ inline Standard_Boolean IntStart_PathPoint::IsNew () const {
 
 inline const TheVertex& IntStart_PathPoint::Vertex () const {
 
-  if (isnew) {Standard_DomainError::Raise ();}
+  if (isnew) {throw Standard_DomainError();}
   return vtx;
 }
 

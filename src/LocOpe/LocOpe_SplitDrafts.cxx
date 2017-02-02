@@ -138,11 +138,11 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
   myResult.Nullify();
   myMap.Clear();
   if (myShape.IsNull() || F.IsNull() || W.IsNull()) {
-    Standard_NullObject::Raise();
+    throw Standard_NullObject();
   }    
 
   if (!ModLeft && !ModRight) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   TopAbs_Orientation OriF = TopAbs_FORWARD;
@@ -160,8 +160,8 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
   }
 
   if (!FinS) {
-    cout << "LocOpe_SplitDrafts:!Fins Standard_ConstructionError::Raise()" << endl;
-    Standard_ConstructionError::Raise();
+    cout << "LocOpe_SplitDrafts:!Fins throw Standard_ConstructionError()" << endl;
+    throw Standard_ConstructionError();
   }    
 
   gp_Pln NewPlg,NewPld;
@@ -204,7 +204,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
     thePipe.Init(theLinePipe,i2s.Line(1));
     thePipe.Perform(Standard_True);
     if (!thePipe.IsDone())
-      Standard_ConstructionError::Raise ("GeomFill_Pipe : Cannot make a surface");
+      throw Standard_ConstructionError("GeomFill_Pipe : Cannot make a surface");
 
     Handle(Geom_Surface) Spl = thePipe.Surface();
     AS.Load(Spl);
@@ -418,7 +418,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
 	thePipe.Init(theLinePipe,C);
 	thePipe.Perform(Standard_True);
         if (!thePipe.IsDone())
-          Standard_ConstructionError::Raise ("GeomFill_Pipe : Cannot make a surface");
+          throw Standard_ConstructionError("GeomFill_Pipe : Cannot make a surface");
 
 	Handle(Geom_Surface) thePS = thePipe.Surface();
 	if (thePS->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
@@ -1294,7 +1294,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
 const TopoDS_Shape& LocOpe_SplitDrafts::Shape () const
 {
   if (myResult.IsNull()) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   return myResult;
 }
@@ -1308,7 +1308,7 @@ const TopTools_ListOfShape& LocOpe_SplitDrafts::ShapesFromShape
    (const TopoDS_Shape& S) const
 {
   if (myResult.IsNull()) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   return myMap(S);
 }

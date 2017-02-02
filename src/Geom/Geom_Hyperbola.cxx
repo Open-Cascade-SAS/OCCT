@@ -79,7 +79,7 @@ Geom_Hyperbola::Geom_Hyperbola ( const Ax2& A,
  : majorRadius (MajorRadius), minorRadius (MinorRadius) {
 
   if (MajorRadius < 0.0 || MinorRadius < 0.0) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   pos = A;
 }
@@ -148,7 +148,7 @@ void Geom_Hyperbola::SetHypr (const gp_Hypr& H) {
 
 void Geom_Hyperbola::SetMajorRadius (const Standard_Real MajorRadius) {
 
-  if (MajorRadius < 0.0) Standard_ConstructionError::Raise();
+  if (MajorRadius < 0.0) throw Standard_ConstructionError();
   else                   majorRadius = MajorRadius;
 }
 
@@ -160,7 +160,7 @@ void Geom_Hyperbola::SetMajorRadius (const Standard_Real MajorRadius) {
 
 void Geom_Hyperbola::SetMinorRadius (const Standard_Real MinorRadius) {
 
-  if (MinorRadius < 0.0)  Standard_ConstructionError::Raise();
+  if (MinorRadius < 0.0)  throw Standard_ConstructionError();
   else                    minorRadius = MinorRadius;
 }
 

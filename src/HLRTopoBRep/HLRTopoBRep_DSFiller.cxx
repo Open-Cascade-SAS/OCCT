@@ -419,7 +419,7 @@ void  HLRTopoBRep_DSFiller::InsertFace (const Standard_Integer /*FI*/,
 	      
               case Contap_Restriction :
               {
-                Standard_ProgramError::Raise("HLRTopoBRep_DSFiller::InsertFace : Restriction");
+                throw Standard_ProgramError("HLRTopoBRep_DSFiller::InsertFace : Restriction");
               }
               break;
             }

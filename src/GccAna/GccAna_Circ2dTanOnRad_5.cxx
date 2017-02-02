@@ -63,7 +63,7 @@ GccAna_Circ2dTanOnRad::
    Standard_Real dist1 = Point1.Distance(OnCirc.Location())-Roncirc;
    Standard_Real dist2 = Point1.Distance(OnCirc.Location())+Roncirc;
 
-   if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+   if (Radius < 0.0) { throw Standard_NegativeValue(); }
    else if ((dist1-Radius > Tol) || (Tol < Radius-dist2)) { 
      WellDone = Standard_True; 
    }

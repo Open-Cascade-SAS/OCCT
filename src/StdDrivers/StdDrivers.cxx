@@ -46,8 +46,7 @@ Handle(Standard_Transient) StdDrivers::Factory (const Standard_GUID& aGUID)
     return model_rd;
   }
  
-  Standard_Failure::Raise ("StdDrivers : unknown GUID");
-  return NULL;
+  throw Standard_Failure("StdDrivers : unknown GUID");
 }
 
 //=======================================================================

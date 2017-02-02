@@ -194,7 +194,7 @@ NCollection_IncAllocator::NCollection_IncAllocator (const size_t theBlockSize)
   mySize = aSize - IMEM_SIZE(sizeof(IBlock));
   myMemSize = aSize * sizeof(aligned_t);
   if (aBlock == NULL)
-    Standard_OutOfMemory::Raise("NCollection_IncAllocator: out of memory");
+    throw Standard_OutOfMemory("NCollection_IncAllocator: out of memory");
   aBlock -> p_free_space = (aligned_t *) IMEM_ALIGN (&aBlock[1]);
   aBlock -> p_end_block  = ((aligned_t *) aBlock) + aSize;
   aBlock -> p_next       = NULL;
@@ -233,7 +233,7 @@ void * NCollection_IncAllocator::Allocate (const size_t aSize)
     if (aResult)
       myFirstBlock -> p_free_space = myFirstBlock -> p_end_block;
     else
-      Standard_OutOfMemory::Raise("NCollection_IncAllocator: out of memory");
+      throw Standard_OutOfMemory("NCollection_IncAllocator: out of memory");
   } else
     if (cSize <= IMEM_FREE(myFirstBlock)) {
       /* If the requested size fits into the free space in the 1st block  */
@@ -259,14 +259,14 @@ void * NCollection_IncAllocator::Allocate (const size_t aSize)
         {
           const size_t aDefault = IMEM_SIZE(DefaultBlockSize);
           if (cSize > aDefault)
-              Standard_OutOfMemory::Raise("NCollection_IncAllocator: out of memory");
+              throw Standard_OutOfMemory("NCollection_IncAllocator: out of memory");
           else
           {            
             aResult = (aligned_t *) allocateNewBlock (aDefault);
             if (aResult)
               myFirstBlock -> p_free_space = aResult + cSize;
             else
-              Standard_OutOfMemory::Raise("NCollection_IncAllocator: out of memory");
+              throw Standard_OutOfMemory("NCollection_IncAllocator: out of memory");
           }
         }
       }
@@ -327,7 +327,7 @@ void * NCollection_IncAllocator::Reallocate (void         * theAddress,
   }
   else
   {
-    Standard_OutOfMemory::Raise("NCollection_IncAllocator: out of memory");
+    throw Standard_OutOfMemory("NCollection_IncAllocator: out of memory");
   }
   return aResult;
 }

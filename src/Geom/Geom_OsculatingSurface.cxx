@@ -464,7 +464,7 @@ Standard_Boolean  Geom_OsculatingSurface::BuildOsculatingSurface
 #ifdef OCCT_DEBUG
     cout<<" surface osculatrice nulle "<<endl;
 #endif
-    //Standard_ConstructionError::Raise("Geom_OsculatingSurface");
+    //throw Standard_ConstructionError("Geom_OsculatingSurface");
     OsculSurf=Standard_False;
   }
   else

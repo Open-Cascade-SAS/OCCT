@@ -62,7 +62,7 @@ QANewBRepNaming_ImportShape::QANewBRepNaming_ImportShape(const TDF_Label& L):QAN
 
 void QANewBRepNaming_ImportShape::Init(const TDF_Label& Label) {
   if(Label.IsNull()) 
-    Standard_NullObject::Raise("QANewBRepNaming_ImportShape::Init The Result label is Null ..."); 
+    throw Standard_NullObject("QANewBRepNaming_ImportShape::Init The Result label is Null ...");
   myResultLabel = Label;
 }  
 

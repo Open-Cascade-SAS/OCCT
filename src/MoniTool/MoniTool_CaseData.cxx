@@ -115,8 +115,8 @@ static OSD_Timer& chrono() {
   thesubst = 0;
 }
 
-    void  MoniTool_CaseData::AddRaised (const Standard_CString name)
-      {  AddData ( Standard_Failure::Caught(),1,name);  }
+    void  MoniTool_CaseData::AddRaised (const Handle(Standard_Failure)& theException, const Standard_CString name)
+      {  AddData ( theException,1,name);  }
 
     void  MoniTool_CaseData::AddShape
   (const TopoDS_Shape& sh, const Standard_CString name)

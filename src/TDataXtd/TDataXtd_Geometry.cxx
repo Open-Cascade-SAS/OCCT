@@ -399,7 +399,7 @@ TDataXtd_GeometryEnum  TDataXtd_Geometry::Type (const Handle(TNaming_NamedShape)
       }
 #ifdef OCCT_DEBUG
       else {
-	Standard_Failure::Raise("curve Null dans TDataXtd_Geometry");
+	throw Standard_Failure("curve Null dans TDataXtd_Geometry");
       }
 #endif
     }
@@ -420,7 +420,7 @@ TDataXtd_GeometryEnum  TDataXtd_Geometry::Type (const Handle(TNaming_NamedShape)
       } 
 #ifdef OCCT_DEBUG
       else {
-	Standard_Failure::Raise("surface Null dans TDataXtd_Geometry");
+	throw Standard_Failure("surface Null dans TDataXtd_Geometry");
       }
 #endif
       break;

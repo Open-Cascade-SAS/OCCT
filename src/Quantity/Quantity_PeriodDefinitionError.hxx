@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Quantity_PeriodDefinitionError, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_Quantity_PeriodDefinitionError
   #define Quantity_PeriodDefinitionError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Quantity_PeriodDefinitionError::Raise(MESSAGE);
+  if (CONDITION) throw Quantity_PeriodDefinitionError(MESSAGE);
 #else
   #define Quantity_PeriodDefinitionError_Raise_if(CONDITION, MESSAGE)
 #endif

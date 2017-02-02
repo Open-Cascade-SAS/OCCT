@@ -24,8 +24,7 @@
 Standard_Integer HashCode(const Standard_ShortReal me, const Standard_Integer Upper)
 {
   if (Upper < 1){
-     Standard_RangeError::
-      Raise("Try to apply HashCode method with negative or null argument.");
+     throw Standard_RangeError("Try to apply HashCode method with negative or null argument.");
   }
   union 
     {

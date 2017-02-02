@@ -49,10 +49,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  //! Raises Construction Error
-  Standard_EXPORT GeomInt_TheInt2SOfThePrmPrmSvSurfacesOfWLApprox();
-  
   //! compute the solution point with the close point
   Standard_EXPORT GeomInt_TheInt2SOfThePrmPrmSvSurfacesOfWLApprox(const TColStd_Array1OfReal& Param, const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2, const Standard_Real TolTangency);
   

@@ -133,8 +133,6 @@ static const XmlObjMgt_DOMString& GeometryTypeString
   case TDataXtd_ELLIPSE  : return ::GeomEllipseString();
     
   default:
-    Standard_DomainError::Raise("TDataXtd_GeometryEnum; enum term unknown");
+    throw Standard_DomainError("TDataXtd_GeometryEnum; enum term unknown");
   }
-  static XmlObjMgt_DOMString aNullString;
-  return aNullString; // To avoid compilation error message.
 }

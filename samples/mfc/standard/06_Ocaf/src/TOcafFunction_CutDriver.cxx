@@ -113,9 +113,9 @@ Standard_Integer TOcafFunction_CutDriver::Execute(Handle(TFunction_Logbook)& /*l
 	// Get the TNaming_NamedShape attributes of these labels
 	Handle(TNaming_NamedShape) OriginalNShape, ToolNShape;
 	if (!( OriginalLab.FindAttribute(TNaming_NamedShape::GetID(),OriginalNShape) ))
-		Standard_Failure::Raise("TOcaf_Commands::CutObjects");		
+		throw Standard_Failure("TOcaf_Commands::CutObjects");
 	if (!( ToolLab.FindAttribute(TNaming_NamedShape::GetID(),ToolNShape) ))
-		Standard_Failure::Raise("TOcaf_Commands::CutObjects");		
+		throw Standard_Failure("TOcaf_Commands::CutObjects");
 
 	// Now, let's get the TopoDS_Shape of these TNaming_NamedShape:
 	TopoDS_Shape OriginalShape  = OriginalNShape->Get();

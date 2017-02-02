@@ -62,35 +62,35 @@ static void CheckSurfaceData
 {
   if (UDegree < 1 || UDegree > Geom_BSplineSurface::MaxDegree () || 
       VDegree < 1 || VDegree > Geom_BSplineSurface::MaxDegree ()) {
-    Standard_ConstructionError::Raise("Geom_BSplineSurface");
+    throw Standard_ConstructionError("Geom_BSplineSurface");
   }
   if (SPoles.ColLength () < 2 || SPoles.RowLength () < 2) {
-    Standard_ConstructionError::Raise("Geom_BSplineSurface");
+    throw Standard_ConstructionError("Geom_BSplineSurface");
   }
 
   if (SUKnots.Length() != SUMults.Length() ||
       SVKnots.Length() != SVMults.Length()) {
-    Standard_ConstructionError::Raise("Geom_BSplineSurface");
+    throw Standard_ConstructionError("Geom_BSplineSurface");
   }
 
   Standard_Integer i;
   for (i = SUKnots.Lower(); i < SUKnots.Upper(); i++) {
     if (SUKnots(i+1) - SUKnots(i) <= Epsilon(Abs(SUKnots(i)))) {
-      Standard_ConstructionError::Raise("Geom_BSplineSurface");
+      throw Standard_ConstructionError("Geom_BSplineSurface");
     }
   }
 
   for (i = SVKnots.Lower(); i < SVKnots.Upper(); i++) {
     if (SVKnots(i+1) - SVKnots(i) <= Epsilon(Abs(SVKnots(i)))) {
-      Standard_ConstructionError::Raise("Geom_BSplineSurface");
+      throw Standard_ConstructionError("Geom_BSplineSurface");
     }
   }
   
   if (SPoles.ColLength() != BSplCLib::NbPoles(UDegree,UPeriodic,SUMults))
-    Standard_ConstructionError::Raise("Geom_BSplineSurface");
+    throw Standard_ConstructionError("Geom_BSplineSurface");
 
   if (SPoles.RowLength() != BSplCLib::NbPoles(VDegree,VPeriodic,SVMults))
-    Standard_ConstructionError::Raise("Geom_BSplineSurface");
+    throw Standard_ConstructionError("Geom_BSplineSurface");
 }
 
 //=======================================================================
@@ -237,16 +237,16 @@ Geom_BSplineSurface::Geom_BSplineSurface
   // check weights
 
   if (Weights.ColLength() != Poles.ColLength())
-    Standard_ConstructionError::Raise("Geom_BSplineSurface");
+    throw Standard_ConstructionError("Geom_BSplineSurface");
 
   if (Weights.RowLength() != Poles.RowLength())
-    Standard_ConstructionError::Raise("Geom_BSplineSurface");
+    throw Standard_ConstructionError("Geom_BSplineSurface");
 
   Standard_Integer i,j;
   for (i = Weights.LowerRow(); i <= Weights.UpperRow(); i++) {
     for (j = Weights.LowerCol(); j <= Weights.UpperCol(); j++) {
       if (Weights(i,j) <= gp::Resolution())  
-	Standard_ConstructionError::Raise("Geom_BSplineSurface");
+	throw Standard_ConstructionError("Geom_BSplineSurface");
     }
   }
   
@@ -357,7 +357,7 @@ void Geom_BSplineSurface::IncreaseDegree (const Standard_Integer UDegree,
 { 
   if (UDegree != udeg) {
     if ( UDegree < udeg || UDegree > Geom_BSplineSurface::MaxDegree())
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     
     Standard_Integer FromK1 = FirstUKnotIndex();
     Standard_Integer ToK2   = LastUKnotIndex();
@@ -409,7 +409,7 @@ void Geom_BSplineSurface::IncreaseDegree (const Standard_Integer UDegree,
 
   if (VDegree != vdeg) {
     if ( VDegree < vdeg || VDegree > Geom_BSplineSurface::MaxDegree())
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     
     Standard_Integer FromK1 = FirstVKnotIndex();
     Standard_Integer ToK2   = LastVKnotIndex();
@@ -539,14 +539,14 @@ void Geom_BSplineSurface::Segment(const Standard_Real U1,
 				  const Standard_Real V2) 
 {
   if ((U2 < U1) || (V2 < V1))
-    Standard_DomainError::Raise("Geom_BSplineSurface::Segment");
+    throw Standard_DomainError("Geom_BSplineSurface::Segment");
   Standard_Real deltaU = Max(Abs(U2),Abs(U1));
   Standard_Real EpsU = Epsilon(deltaU);
   deltaU = U2 - U1;
   if (uperiodic) {
     Standard_Real aUPeriod = uknots->Last() - uknots->First();
     if (deltaU - aUPeriod > Precision::PConfusion())
-      Standard_DomainError::Raise("Geom_BSplineSurface::Segment");
+      throw Standard_DomainError("Geom_BSplineSurface::Segment");
     if (deltaU > aUPeriod)
       deltaU = aUPeriod;
   }
@@ -557,7 +557,7 @@ void Geom_BSplineSurface::Segment(const Standard_Real U1,
   if (vperiodic) {
     Standard_Real aVPeriod = vknots->Last() - vknots->First();
     if (deltaV - aVPeriod > Precision::PConfusion())
-      Standard_DomainError::Raise("Geom_BSplineSurface::Segment");
+      throw Standard_DomainError("Geom_BSplineSurface::Segment");
     if (deltaV > aVPeriod)
       deltaV = aVPeriod;
   }
@@ -761,14 +761,14 @@ void Geom_BSplineSurface::CheckAndSegment(const Standard_Real U1,
 {
 
   if ((U2 < U1) || (V2 < V1))
-    Standard_DomainError::Raise("Geom_BSplineSurface::CheckAndSegment");
+    throw Standard_DomainError("Geom_BSplineSurface::CheckAndSegment");
   Standard_Real deltaU = Max(Abs(U2),Abs(U1));
   Standard_Real EpsU = Epsilon(deltaU);
   deltaU = U2 - U1;
   if (uperiodic) {
     Standard_Real aUPeriod = uknots->Last() - uknots->First();
     if (deltaU - aUPeriod > Precision::PConfusion())
-      Standard_DomainError::Raise("Geom_BSplineSurface::CheckAndSegment");
+      throw Standard_DomainError("Geom_BSplineSurface::CheckAndSegment");
     if (deltaU > aUPeriod)
       deltaU = aUPeriod;
   }
@@ -779,7 +779,7 @@ void Geom_BSplineSurface::CheckAndSegment(const Standard_Real U1,
   if (vperiodic) {
     Standard_Real aVPeriod = vknots->Last() - vknots->First();
     if (deltaV - aVPeriod > Precision::PConfusion())
-      Standard_DomainError::Raise("Geom_BSplineSurface::CheckAndSegment");
+      throw Standard_DomainError("Geom_BSplineSurface::CheckAndSegment");
     if (deltaV > aVPeriod)
       deltaV = aVPeriod;
   }
@@ -992,22 +992,22 @@ void Geom_BSplineSurface::SetUKnot
 (const Standard_Integer UIndex,
  const Standard_Real    K      )
 {
-  if (UIndex < 1 || UIndex > uknots->Length()) Standard_OutOfRange::Raise();
+  if (UIndex < 1 || UIndex > uknots->Length()) throw Standard_OutOfRange();
 
   Standard_Integer NewIndex = UIndex;
   Standard_Real DU = Abs(Epsilon (K));
   if (UIndex == 1) {
-    if (K >= uknots->Value (2) - DU) Standard_ConstructionError::Raise();
+    if (K >= uknots->Value (2) - DU) throw Standard_ConstructionError();
   }
   else if (UIndex == uknots->Length()) {
     if (K <= uknots->Value (uknots->Length()-1) + DU)  {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
   }
   else {
     if (K <= uknots->Value (NewIndex-1) + DU || 
 	K >= uknots->Value (NewIndex+1) - DU ) { 
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     } 
   }
   
@@ -1029,16 +1029,16 @@ void Geom_BSplineSurface::SetUKnots (const TColStd_Array1OfReal& UK) {
   Standard_Integer Upper = UK.Upper();
   if (Lower < 1 || Lower > uknots->Length() ||
       Upper < 1 || Upper > uknots->Length() ) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   if (Lower > 1) {
     if (Abs (UK (Lower) - uknots->Value (Lower-1)) <= gp::Resolution()) {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
   }
   if (Upper < uknots->Length ()) {
     if (Abs (UK (Upper) - uknots->Value (Upper+1)) <= gp::Resolution()) {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
   }
   Standard_Real K1 = UK (Lower);
@@ -1046,7 +1046,7 @@ void Geom_BSplineSurface::SetUKnots (const TColStd_Array1OfReal& UK) {
     uknots->SetValue (i, UK(i));
     if (i != Lower) {
       if (Abs (UK(i) - K1) <= gp::Resolution()) {
-        Standard_ConstructionError::Raise();
+        throw Standard_ConstructionError();
       }
       K1 = UK (i);
     }
@@ -1079,23 +1079,23 @@ void Geom_BSplineSurface::SetVKnot
 (const Standard_Integer VIndex,
  const Standard_Real    K)
 {
-  if (VIndex < 1 || VIndex > vknots->Length())  Standard_OutOfRange::Raise();
+  if (VIndex < 1 || VIndex > vknots->Length())  throw Standard_OutOfRange();
   Standard_Integer NewIndex = VIndex + vknots->Lower() - 1;
   Standard_Real DV = Abs(Epsilon (K));
   if (VIndex == 1) {
     if (K >=  vknots->Value (2) - DV) {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
   }
   else if (VIndex == vknots->Length()) {
     if (K <= vknots->Value (vknots->Length()-1) + DV)  {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
   }
   else {
     if (K <= vknots->Value (NewIndex-1) + DV || 
 	K >= vknots->Value (NewIndex+1) - DV ) { 
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     } 
   }
   
@@ -1117,16 +1117,16 @@ void Geom_BSplineSurface::SetVKnots (const TColStd_Array1OfReal& VK) {
   Standard_Integer Upper = VK.Upper();
   if (Lower < 1 || Lower > vknots->Length() ||
       Upper < 1 || Upper > vknots->Length() ) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   if (Lower > 1) {
     if (Abs (VK (Lower) - vknots->Value (Lower-1)) <= gp::Resolution()) {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
   }
   if (Upper < vknots->Length ()) {
     if (Abs (VK (Upper) - vknots->Value (Upper+1)) <= gp::Resolution()) {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
   }
   Standard_Real K1 = VK (Lower);
@@ -1134,7 +1134,7 @@ void Geom_BSplineSurface::SetVKnots (const TColStd_Array1OfReal& VK) {
     vknots->SetValue (i, VK(i));
     if (i != Lower) {
       if (Abs (VK(i) - K1) <= gp::Resolution()) {
-        Standard_ConstructionError::Raise();
+        throw Standard_ConstructionError();
       }
       K1 = VK (i);
     }
@@ -1326,7 +1326,7 @@ void Geom_BSplineSurface::PeriodicNormalization
     Period =  aMaxVal - aMinVal;
 
     if(Period <= eps) 
-      Standard_OutOfRange::Raise("Geom_BSplineSurface::PeriodicNormalization: Uparameter is too great number");
+      throw Standard_OutOfRange("Geom_BSplineSurface::PeriodicNormalization: Uparameter is too great number");
 
     Standard_Boolean isLess, isGreater;
     isLess = aMinVal - Uparameter > 0;
@@ -1345,7 +1345,7 @@ void Geom_BSplineSurface::PeriodicNormalization
     Period = aMaxVal - aMinVal;
 
     if(Period <= eps) 
-      Standard_OutOfRange::Raise("Geom_BSplineSurface::PeriodicNormalization: Vparameter is too great number");
+      throw Standard_OutOfRange("Geom_BSplineSurface::PeriodicNormalization: Vparameter is too great number");
 
     Standard_Boolean isLess, isGreater;
     isLess = aMinVal - Vparameter > 0;
@@ -1368,11 +1368,11 @@ void Geom_BSplineSurface::SetWeight (const Standard_Integer UIndex,
 				     const Standard_Integer VIndex,
 				     const Standard_Real    Weight)
 {
-  if (Weight <= gp::Resolution())  Standard_ConstructionError::Raise(); 
+  if (Weight <= gp::Resolution())  throw Standard_ConstructionError();
   TColStd_Array2OfReal & Weights = weights->ChangeArray2();
   if (UIndex < 1 || UIndex > Weights.ColLength() ||
       VIndex < 1 || VIndex > Weights.RowLength() ) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   Weights (UIndex+Weights.LowerRow()-1, VIndex+Weights.LowerCol()-1) = Weight;
   Rational(Weights, urational, vrational);
@@ -1389,18 +1389,18 @@ void Geom_BSplineSurface::SetWeightCol
 {
   TColStd_Array2OfReal & Weights = weights->ChangeArray2();   
   if (VIndex < 1 || VIndex > Weights.RowLength()) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   if (CPoleWeights.Lower() < 1 || 
       CPoleWeights.Lower() > Weights.ColLength() ||
       CPoleWeights.Upper() < 1 ||
       CPoleWeights.Upper() > Weights.ColLength()  ) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   Standard_Integer I = CPoleWeights.Lower();
   while (I <= CPoleWeights.Upper()) {
     if (CPoleWeights(I) <= gp::Resolution()) { 
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
     Weights (I+Weights.LowerRow()-1, VIndex+Weights.LowerCol()-1) = 
       CPoleWeights (I);
@@ -1421,20 +1421,20 @@ void Geom_BSplineSurface::SetWeightRow
 {
   TColStd_Array2OfReal & Weights = weights->ChangeArray2();   
   if (UIndex < 1 || UIndex > Weights.ColLength()) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   if (CPoleWeights.Lower() < 1 ||
       CPoleWeights.Lower() > Weights.RowLength() ||
       CPoleWeights.Upper() < 1 ||
       CPoleWeights.Upper() > Weights.RowLength()  ) {
     
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   Standard_Integer I = CPoleWeights.Lower();
 
   while (I <= CPoleWeights.Upper()) {
     if (CPoleWeights(I)<=gp::Resolution()) {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
     Weights (UIndex+Weights.LowerRow()-1, I+Weights.LowerCol()-1) = 
       CPoleWeights (I);

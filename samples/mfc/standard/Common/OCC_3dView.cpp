@@ -302,7 +302,7 @@ void OCC_3dView::OnLButtonDown(UINT nFlags, CPoint point)
       myView->StartRotation(point.x,point.y);  
       break;
     default :
-      Standard_Failure::Raise(" incompatible Current Mode ");
+      throw Standard_Failure(" incompatible Current Mode ");
       break;
     }
   }
@@ -372,7 +372,7 @@ void OCC_3dView::OnLButtonUp(UINT nFlags, CPoint point)
       }
       break;
     default :
-      Standard_Failure::Raise(" incompatible Current Mode ");
+      throw Standard_Failure(" incompatible Current Mode ");
       break;
     } //switch (myCurrentMode)
   } //	else // if ( Ctrl )
@@ -472,7 +472,7 @@ void OCC_3dView::OnMouseMove(UINT nFlags, CPoint point)
         myView->Redraw();
         break;
       default :
-        Standard_Failure::Raise(" incompatible Current Mode ");
+        throw Standard_Failure(" incompatible Current Mode ");
         break;
       }//  switch (myCurrentMode)
     }// if ( nFlags & MK_CONTROL )  else 

@@ -26,8 +26,7 @@
 Standard_Integer HashCode(const Standard_Real me, const Standard_Integer Upper)
 {
   if (Upper < 1){
-     Standard_RangeError::
-      Raise("Try to apply HashCode method with negative or null argument.");
+     throw Standard_RangeError("Try to apply HashCode method with negative or null argument.");
   }
   union 
     {
@@ -45,7 +44,7 @@ Standard_Integer HashCode(const Standard_Real me, const Standard_Integer Upper)
 Standard_Real ACos (const Standard_Real Value) 
 { 
   if ( (Value < -1.) || (Value > 1.) ){
-    Standard_RangeError::Raise();
+    throw Standard_RangeError();
   } 
   return acos(Value); 
 }
@@ -95,7 +94,7 @@ Standard_Real ACosApprox (const Standard_Real Value)
 Standard_Real ASin (const Standard_Real Value) 
 { 
   if ( Value < -1 || Value > 1 ){
-    Standard_RangeError::Raise();
+    throw Standard_RangeError();
   }
   return asin(Value); 
 }
@@ -106,7 +105,7 @@ Standard_Real ASin (const Standard_Real Value)
 Standard_Real ATan2 (const Standard_Real Value, const Standard_Real Other) 
 { 
   if ( Value == 0. && Other == 0. ){
-    Standard_NullValue::Raise();
+    throw Standard_NullValue();
   }
   return atan2(Value,Other); 
 }
@@ -233,10 +232,10 @@ double NextAfter(const double x, const double y)
 Standard_Real     ATanh(const Standard_Real Value) 
 { 
   if ( (Value <= -1.) || (Value >= 1.) ){
-    Standard_NumericError::Raise("Illegal agument in ATanh");
 #ifdef OCCT_DEBUG
     cout << "Illegal agument in ATanh" << endl ;
 #endif
+    throw Standard_NumericError("Illegal agument in ATanh");
   }
 #if __QNX__
   return std::atanh(Value);
@@ -251,10 +250,10 @@ Standard_Real     ATanh(const Standard_Real Value)
 Standard_Real     ACosh (const Standard_Real Value) 
 { 
   if ( Value < 1. ){
-    Standard_NumericError::Raise("Illegal agument in ACosh");
 #ifdef OCCT_DEBUG
     cout << "Illegal agument in ACosh" << endl ;
 #endif
+    throw Standard_NumericError("Illegal agument in ACosh");
   }
 #if __QNX__
   return std::acosh(Value);
@@ -269,10 +268,10 @@ Standard_Real     ACosh (const Standard_Real Value)
 Standard_Real     Cosh (const Standard_Real Value) 
 { 
   if ( Abs(Value) > 0.71047586007394394e+03 ){
-    Standard_NumericError::Raise("Result of Cosh exceeds the maximum value Standard_Real");
 #ifdef OCCT_DEBUG
     cout << "Result of Cosh exceeds the maximum value Standard_Real" << endl ;
 #endif
+    throw Standard_NumericError("Result of Cosh exceeds the maximum value Standard_Real");
   } 
   return cosh(Value); 
 }
@@ -283,10 +282,10 @@ Standard_Real     Cosh (const Standard_Real Value)
 Standard_Real     Sinh (const Standard_Real Value) 
 { 
   if ( Abs(Value) > 0.71047586007394394e+03 ){
-    Standard_NumericError::Raise("Result of Sinh exceeds the maximum value Standard_Real");
 #ifdef OCCT_DEBUG
     cout << "Result of Sinh exceeds the maximum value Standard_Real" << endl ;
 #endif
+    throw Standard_NumericError("Result of Sinh exceeds the maximum value Standard_Real");
   } 
   return sinh(Value); 
 }
@@ -296,10 +295,10 @@ Standard_Real     Sinh (const Standard_Real Value)
 //-------------------------------------------------------------------
 Standard_Real     Log (const Standard_Real Value) 
 {   if ( Value <= 0. ){
-    Standard_NumericError::Raise("Illegal agument in Log");
 #ifdef OCCT_DEBUG
     cout << "Illegal agument in Log" << endl ;
 #endif
+    throw Standard_NumericError("Illegal agument in Log");
   } 
  return log(Value); 
 }
@@ -309,10 +308,10 @@ Standard_Real     Log (const Standard_Real Value)
 Standard_Real     Sqrt (const Standard_Real Value) 
 { 
   if (  Value < 0. ){
-    Standard_NumericError::Raise("Illegal agument in Sqrt");
 #ifdef OCCT_DEBUG
     cout << "Illegal agument in Sqrt" << endl ;
 #endif
+    throw Standard_NumericError("Illegal agument in Sqrt");
   } 
  return sqrt(Value); 
 }

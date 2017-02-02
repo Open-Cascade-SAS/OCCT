@@ -69,7 +69,7 @@ GccAna_Circ2d2TanRad::
 	Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
       !(Qualified2.IsEnclosed() || Qualified2.IsOutside() || 
 	Qualified2.IsUnqualified())) {
-    GccEnt_BadQualifier::Raise();
+    throw GccEnt_BadQualifier();
     return;
   }
   Standard_Integer i ;
@@ -96,7 +96,7 @@ GccAna_Circ2d2TanRad::
   Standard_Real dist = Radius*2.0 + R1;
   Standard_Real distance = L2.Distance(center1);
   
-  if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+  if (Radius < 0.0) { throw Standard_NegativeValue(); }
   else {
     if ( distance-dist >Tol) { WellDone = Standard_True; }
     else if (Qualified1.IsEnclosed()) {

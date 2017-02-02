@@ -303,7 +303,7 @@ Standard_Boolean TopOpeBRep_FacesIntersector::IsDone () const
 Standard_Boolean TopOpeBRep_FacesIntersector::SameDomain () const 
 {
   if (!myIntersectionDone) 
-    Standard_ProgramError::Raise("FacesIntersector : bad SameDomain");
+    throw Standard_ProgramError("FacesIntersector : bad SameDomain");
 
   Standard_Boolean sd = myIntersector.TangentFaces();
 
@@ -324,9 +324,7 @@ const TopoDS_Shape& TopOpeBRep_FacesIntersector::Face
 {
   if      ( Index == 1 ) return myFace1;
   else if ( Index == 2 ) return myFace2;
-  else Standard_ProgramError::Raise("TopOpeBRep_FacesIntersector::Face");
-
-  return myNullShape;
+  else throw Standard_ProgramError("TopOpeBRep_FacesIntersector::Face");
 }
 
 
@@ -340,8 +338,7 @@ Standard_Boolean TopOpeBRep_FacesIntersector::SurfacesSameOriented () const
   if ( SameDomain() ) {
     return mySurfacesSameOriented;
   }
-  Standard_ProgramError::Raise("FacesIntersector : bad SurfacesSameOriented");
-  return Standard_False;
+  throw Standard_ProgramError("FacesIntersector : bad SurfacesSameOriented");
 }
 
 //=======================================================================

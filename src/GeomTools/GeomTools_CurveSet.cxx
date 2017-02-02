@@ -846,12 +846,12 @@ Handle(Geom_Curve) GeomTools_CurveSet::ReadCurve (Standard_IStream& IS)
       }
     }
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    Handle(Standard_Failure) anExc = Standard_Failure::Caught();
     cout <<"EXCEPTION in GeomTools_CurveSet::ReadCurve(..)!!!" << endl;
-    cout << anExc << endl;
+    cout << anException << endl;
 #endif
+    (void)anException;
   }
   return C;
 }

@@ -161,7 +161,7 @@ void Extrema_FuncExtPC::SetPoint(const Pnt& P)
 Standard_Boolean Extrema_FuncExtPC::Value (const Standard_Real U, Standard_Real& F)
 {
   if (!myPinit || !myCinit)
-    Standard_TypeMismatch::Raise("No init");
+    throw Standard_TypeMismatch("No init");
 
   myU = U;
   Vec D1c;
@@ -271,7 +271,7 @@ Standard_Boolean Extrema_FuncExtPC::Value (const Standard_Real U, Standard_Real&
 
 Standard_Boolean Extrema_FuncExtPC::Derivative (const Standard_Real U, Standard_Real& D1f)
 {
-  if (!myPinit || !myCinit) Standard_TypeMismatch::Raise();
+  if (!myPinit || !myCinit) throw Standard_TypeMismatch();
   Standard_Real F;
   return Values(U,F,D1f);  /* on fait appel a Values pour simplifier la
                            sauvegarde de l'etat. */
@@ -283,7 +283,7 @@ Standard_Boolean Extrema_FuncExtPC::Values (const Standard_Real U,
                                             Standard_Real& D1f)
 {
   if (!myPinit || !myCinit)
-    Standard_TypeMismatch::Raise("No init");
+    throw Standard_TypeMismatch("No init");
 
   Pnt myPc_old = myPc, myP_old = myP;
 
@@ -377,7 +377,7 @@ Standard_Boolean Extrema_FuncExtPC::Values (const Standard_Real U,
 
 Standard_Integer Extrema_FuncExtPC::GetStateNumber ()
 {
-  if (!myPinit || !myCinit) Standard_TypeMismatch::Raise();
+  if (!myPinit || !myCinit) throw Standard_TypeMismatch();
   mySqDist.Append(myPc.SquareDistance(myP));
 
   // It is necessary to always compute myD1f.
@@ -402,19 +402,19 @@ Standard_Integer Extrema_FuncExtPC::NbExt () const { return mySqDist.Length(); }
 
 Standard_Real Extrema_FuncExtPC::SquareDistance (const Standard_Integer N) const
 {
-  if (!myPinit || !myCinit) Standard_TypeMismatch::Raise();
+  if (!myPinit || !myCinit) throw Standard_TypeMismatch();
   return mySqDist.Value(N);
 }
 //=============================================================================
 Standard_Boolean Extrema_FuncExtPC::IsMin (const Standard_Integer N) const
 {
-  if (!myPinit || !myCinit) Standard_TypeMismatch::Raise();
+  if (!myPinit || !myCinit) throw Standard_TypeMismatch();
   return (myIsMin.Value(N) == 1);
 }
 //=============================================================================
 const POnC & Extrema_FuncExtPC::Point (const Standard_Integer N) const
 {
-  if (!myPinit || !myCinit) Standard_TypeMismatch::Raise();
+  if (!myPinit || !myCinit) throw Standard_TypeMismatch();
   return myPoint.Value(N);
 }
 //=============================================================================

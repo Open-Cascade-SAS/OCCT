@@ -34,7 +34,7 @@ Standard_Boolean Expr_GeneralExpression::IsShareable() const
  Handle(Expr_GeneralExpression) Expr_GeneralExpression::NDerivative (const Handle(Expr_NamedUnknown)& X, const Standard_Integer N) const
  {
    if (N <= 0) {
-     Standard_OutOfRange::Raise();
+     throw Standard_OutOfRange();
    }
    Handle(Expr_GeneralExpression) first = Derivative(X);
    if (N > 1) {
@@ -47,7 +47,7 @@ Standard_Boolean Expr_GeneralExpression::IsShareable() const
  Standard_Real Expr_GeneralExpression::EvaluateNumeric() const
  {
    if (ContainsUnknowns()) {
-     Expr_NotEvaluable::Raise();
+     throw Expr_NotEvaluable();
    }
    Expr_Array1OfNamedUnknown tabvr(1,1);
    TColStd_Array1OfReal tabvl(1,1);

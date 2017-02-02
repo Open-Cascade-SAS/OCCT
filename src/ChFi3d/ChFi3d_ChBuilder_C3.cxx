@@ -315,9 +315,9 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     deb = (pivot+1)%3 ; fin = (pivot+2)%3;
     CornerAllSame = Standard_True;
   } 
-  else Standard_Failure::Raise("FD en vis a vis non trouvees");
+  else throw Standard_Failure("FD en vis a vis non trouvees");
   if (!okinter)
-     Standard_Failure::Raise("Echec intersection PCurves OnCommonFace");
+     throw Standard_Failure("Echec intersection PCurves OnCommonFace");
 
   // on a le pivot, le CD deb et le CD fin (enfin on espere !?!) :
   // -------------------------------------------------------------
@@ -328,7 +328,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
      cheminement et creations de Surf data mutantes a 3 ou 5 cotes!!!
      NON TRAITE !!!!!! (pour l instant)*/
   if(i[pivot][deb] != i[pivot][fin]){
-    Standard_NotImplemented::Raise("coin mutant non programme");
+    throw Standard_NotImplemented("coin mutant non programme");
   }
   /* Autre Remarque : dans le cas ou les indices des Surf data
      du deb (de la fin) sur lesquelles ont ete trouvees les intersections
@@ -337,7 +337,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
      PerformSetOfSurf adapte.*/
   if(oksea[pivot] && 
      (i[deb][pivot] != i[deb][fin] || i[fin][pivot] != i[fin][deb])){
-    Standard_NotImplemented::Raise("coin sur plusieurs faces non programme");
+    throw Standard_NotImplemented("coin sur plusieurs faces non programme");
   }
   
   Handle(ChFiDS_SurfData)& 
@@ -501,7 +501,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
 			     p3d[fin],p2d[fin],p3d[deb],p2d[deb],
 			     gcpiv,pivpc1,pivpc2,deru,derv,ptbid,
 			     tolesp,tol2d,tolrcoinpiv))
-      StdFail_NotDone::Raise("echec calcul intersection coin-pivot");
+      throw StdFail_NotDone("echec calcul intersection coin-pivot");
     gp_Vec norpiv = deru.Crossed(derv);
     
     //intersection coin-deb
@@ -518,7 +518,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
 			     p3d[pivot],p2d1,p3d[fin],p2d2,
 			     gcdeb,debpc1,debpc2,deru,derv,ptbid,
 			     tolesp,tol2d,tolrcoindeb))
-      StdFail_NotDone::Raise("echec calcul intersection coin-deb"); 
+      throw StdFail_NotDone("echec calcul intersection coin-deb");
     Icf = DStr.AddCurve(TopOpeBRepDS_Curve(gcdeb,tolrcoindeb));    
 
     //intersection coin-fin
@@ -537,7 +537,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
 			     p3dface,p2d1,p3d[deb],p2d2,
 			     gcfin,finpc1,finpc2,deru,derv,ptbid,
 			     tolesp,tol2d,tolrcoinfin)) 
-      StdFail_NotDone::Raise("echec calcul intersection coin-face");
+      throw StdFail_NotDone("echec calcul intersection coin-face");
     Icl = DStr.AddCurve(TopOpeBRepDS_Curve(gcfin,tolrcoinfin));  
     
     //!c1triangle: intersection coin-face[pivot]

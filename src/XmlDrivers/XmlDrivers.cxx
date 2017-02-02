@@ -61,9 +61,7 @@ const Handle(Standard_Transient)& XmlDrivers::Factory(const Standard_GUID& theGU
     return model_rd;
   }
  
-  Standard_Failure::Raise ("XmlDrivers : unknown GUID");
-  static Handle(Standard_Transient) aNullHandle;
-  return aNullHandle;
+  throw Standard_Failure("XmlDrivers : unknown GUID");
 }
 
 //=======================================================================

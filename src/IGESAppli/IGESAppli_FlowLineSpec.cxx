@@ -30,7 +30,7 @@ IGESAppli_FlowLineSpec::IGESAppli_FlowLineSpec ()    {  }
   (const Handle(Interface_HArray1OfHAsciiString)& allProperties)
 {
   if (allProperties->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESAppli_FlowLineSpec : Init");
+    throw Standard_DimensionMismatch("IGESAppli_FlowLineSpec : Init");
   theNameAndModifiers = allProperties;
   InitTypeAndForm(406,14);
 }

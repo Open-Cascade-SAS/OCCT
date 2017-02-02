@@ -1512,7 +1512,7 @@ void PLib::Trimming(const Standard_Real U1,
 
   if (rat) {
     if(len != WCoefs->Length())
-      Standard_Failure::Raise("PLib::Trimming : nbcoefs/dim != nbweights !!!");
+      throw Standard_Failure("PLib::Trimming : nbcoefs/dim != nbweights !!!");
     upw = WCoefs->Upper();
   }
   len --;
@@ -1861,10 +1861,10 @@ void PLib::JacobiParameters(const GeomAbs_Shape ConstraintOrder,
   case GeomAbs_C1: NivConstr = 1; break;
   case GeomAbs_C2: NivConstr = 2; break;
   default: 
-    Standard_ConstructionError::Raise("Invalid ConstraintOrder");
+    throw Standard_ConstructionError("Invalid ConstraintOrder");
   }
   if (MaxDegree < 2*NivConstr+1)
-    Standard_ConstructionError::Raise("Invalid MaxDegree");
+    throw Standard_ConstructionError("Invalid MaxDegree");
   
   if (Code >= 1)
     WorkDegree = MaxDegree + 9;
@@ -1892,7 +1892,7 @@ void PLib::JacobiParameters(const GeomAbs_Shape ConstraintOrder,
   else if (WorkDegree < NDEG61) 
     IPMIN=NDEG61;
   else
-    Standard_ConstructionError::Raise("Invalid MaxDegree");
+    throw Standard_ConstructionError("Invalid MaxDegree");
   // ---> Nbre de points voulus.
   Standard_Integer IWANT=0;
   switch (Code) {
@@ -1906,7 +1906,7 @@ void PLib::JacobiParameters(const GeomAbs_Shape ConstraintOrder,
   case  3: IWANT=NDEG50; break;
   case  4: IWANT=NDEG61; break;
   default: 
-    Standard_ConstructionError::Raise("Invalid Code");
+    throw Standard_ConstructionError("Invalid Code");
   }      
   //-->  NbGaussPoints est le nombre de points de discretisation de la fonction,
   //     il ne peut prendre que les valeurs 8,10,15,20,25,30,40,50 ou 61.
@@ -1928,7 +1928,7 @@ void PLib::JacobiParameters(const GeomAbs_Shape ConstraintOrder,
     case GeomAbs_C1: NivConstr = 1; break;
     case GeomAbs_C2: NivConstr = 2; break;
     default: 
-      Standard_ConstructionError::Raise("Invalid ConstraintOrder");
+      throw Standard_ConstructionError("Invalid ConstraintOrder");
   }
   return NivConstr;
 }
@@ -1946,7 +1946,7 @@ void PLib::JacobiParameters(const GeomAbs_Shape ConstraintOrder,
     case 1: ConstraintOrder = GeomAbs_C1; break;
     case 2: ConstraintOrder = GeomAbs_C2; break;
     default: 
-      Standard_ConstructionError::Raise("Invalid NivConstr");
+      throw Standard_ConstructionError("Invalid NivConstr");
   }
   return ConstraintOrder;
 }

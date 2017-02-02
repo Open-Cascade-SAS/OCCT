@@ -61,7 +61,7 @@ void TDocStd_XLinkTool::Copy (const TDF_Label& target,
   SOURCE = TDocStd_Document::Get(source);
   if (TARGET != SOURCE) {
     if (!TDF_Tool::IsSelfContained(source)) {
-      Standard_DomainError::Raise("TDocStd_XLinkTool::Copy : not self-contained");
+      throw Standard_DomainError("TDocStd_XLinkTool::Copy : not self-contained");
     }
   }
 
@@ -128,7 +128,7 @@ void TDocStd_XLinkTool::CopyWithLink (const TDF_Label& target,
 {  
   Handle(TDF_Reference) REF;
   if (target.FindAttribute(TDF_Reference::GetID(),REF)) {
-    Standard_DomainError::Raise(" TDocStd_CopyWithLink : already a ref");
+    throw Standard_DomainError(" TDocStd_CopyWithLink : already a ref");
   }
   Copy(target,source);
   if (isDone) {
@@ -159,7 +159,7 @@ void TDocStd_XLinkTool::UpdateLink (const TDF_Label& label)
 {
   Handle(TDF_Reference) REF;
   if (!label.FindAttribute(TDF_Reference::GetID(),REF)) {
-    Standard_DomainError::Raise(" TDocStd_XLinkTool::UpdateLink : not ref registred");
+    throw Standard_DomainError(" TDocStd_XLinkTool::UpdateLink : not ref registred");
   }
   TDocStd_XLinkTool XLinkTool;
   Copy (label,REF->Get());

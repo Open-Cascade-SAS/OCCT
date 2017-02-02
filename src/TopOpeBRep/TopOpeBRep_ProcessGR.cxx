@@ -130,9 +130,10 @@ TopAbs_State TopOpeBRep_FacesFiller::StBipVPonF
     if (Lrest.ArcIsEdge(2)) IArc = 2; 
     if (IArc == 0) {
 #ifdef OCCT_DEBUG
-      Standard_Failure::Raise("StBipVPonF");
-#endif
+      throw Standard_Failure("StBipVPonF");
+#else
       return TopAbs_UNKNOWN;
+#endif
     }
     Standard_Integer ISI = (IArc == 1) ? 2 : 1; 
     Standard_Integer sif = vpf.ShapeIndex();
@@ -355,7 +356,7 @@ Standard_Real TopOpeBRep_FacesFiller::VPParamOnER(const TopOpeBRep_VPointInter& 
   tolee = tolee * 1.e2; //xpu290998 : PRO15369
   Standard_Real param, dist; Standard_Boolean projok = FUN_tool_projPonE(vp.Value(),tolee,E,param,dist);
   if (!projok) {
-    Standard_ProgramError::Raise("TopOpeBRep_FacesFiller::VPParamOnER");
+    throw Standard_ProgramError("TopOpeBRep_FacesFiller::VPParamOnER");
   }
   return param;
 }

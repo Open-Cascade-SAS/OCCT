@@ -344,8 +344,7 @@ static TDataXtd_ConstraintEnum ConstraintTypeEnum (const XmlObjMgt_DOMString& th
     else if (theString.equals (::ConOffsetString()))
       aResult = TDataXtd_OFFSET;
     else
-      Standard_DomainError::Raise
-        ("TDataXtd_ConstraintEnum; string value without enum term equivalence");
+      throw Standard_DomainError("TDataXtd_ConstraintEnum; string value without enum term equivalence");
   }
   return aResult;
 }
@@ -388,8 +387,6 @@ static const XmlObjMgt_DOMString& ConstraintTypeString (const TDataXtd_Constrain
   case TDataXtd_OFFSET         : return ::ConOffsetString();
     
   default:
-    Standard_DomainError::Raise("TDataXtd_ConstraintEnum; enum term unknown");
+    throw Standard_DomainError("TDataXtd_ConstraintEnum; enum term unknown");
   }
-  static XmlObjMgt_DOMString aNullString;
-  return aNullString; // To avoid compilation error message.
 }

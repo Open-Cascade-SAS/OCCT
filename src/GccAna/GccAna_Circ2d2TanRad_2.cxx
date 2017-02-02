@@ -67,7 +67,7 @@ GccAna_Circ2d2TanRad::
   WellDone = Standard_False;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
 	Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
-    GccEnt_BadQualifier::Raise();
+    throw GccEnt_BadQualifier();
     return;
   }
   Standard_Integer i ;
@@ -85,7 +85,7 @@ GccAna_Circ2d2TanRad::
   Standard_Real dispc1 = C1.Distance(Point2);
   gp_Dir2d dir1(Point2.XY()-(C1.Location().XY()));
   gp_Pnt2d center1(C1.Location());
-  if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+  if (Radius < 0.0) { throw Standard_NegativeValue(); }
   else {
     if ( dispc1-Radius*2.0 > Tol) { WellDone = Standard_True; }
     else if (Qualified1.IsEnclosed()) {

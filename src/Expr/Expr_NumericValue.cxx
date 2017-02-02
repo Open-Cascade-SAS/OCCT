@@ -47,9 +47,7 @@ Standard_Integer Expr_NumericValue::NbSubExpressions() const
 
 const Handle(Expr_GeneralExpression)& Expr_NumericValue::SubExpression(const Standard_Integer) const
 {
-  Standard_OutOfRange::Raise();
-  Handle(Expr_GeneralExpression)* bid=NULL;
-  return *bid;
+  throw Standard_OutOfRange();
 }
 
 Handle(Expr_GeneralExpression) Expr_NumericValue::Simplified() const

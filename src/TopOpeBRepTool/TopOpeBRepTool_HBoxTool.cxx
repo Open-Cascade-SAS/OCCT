@@ -106,7 +106,7 @@ void TopOpeBRepTool_HBoxTool::ComputeBox(const TopoDS_Shape& S,Bnd_Box& B)
   //modified by NIZHNY-MZV  Wed Apr  5 10:05:53 2000
   else if ( t == TopAbs_VERTEX) BRepBndLib::Add(S,B);
   else {
-    Standard_ProgramError::Raise("HBT::ComputeBox : invalid type");
+    throw Standard_ProgramError("HBT::ComputeBox : invalid type");
   }
 }
 
@@ -139,7 +139,7 @@ const Bnd_Box& TopOpeBRepTool_HBoxTool::Box(const TopoDS_Shape& S)
 {
   Standard_Boolean hb = HasBox(S);
   if (!hb) {
-    Standard_ProgramError::Raise("HBT::Box1");
+    throw Standard_ProgramError("HBT::Box1");
   }
 
   const Bnd_Box& B = myIMS.FindFromKey(S);
@@ -155,7 +155,7 @@ const Bnd_Box& TopOpeBRepTool_HBoxTool::Box(const Standard_Integer I) const
   Standard_Integer iu = Extent();
   Standard_Integer hb = (I >= 1 && I <= iu);
   if (!hb) {
-    Standard_ProgramError::Raise("HBT::Box2");
+    throw Standard_ProgramError("HBT::Box2");
   }
   const Bnd_Box& B = myIMS.FindFromIndex(I);
   return B;
@@ -180,7 +180,7 @@ const TopoDS_Shape& TopOpeBRepTool_HBoxTool::Shape(const Standard_Integer I) con
   Standard_Integer iu = Extent();
   Standard_Integer hs = (I >= 1 && I <= iu);
   if (!hs) {
-    Standard_ProgramError::Raise("HBT::Box4");
+    throw Standard_ProgramError("HBT::Box4");
   }
   const TopoDS_Shape& S = myIMS.FindKey(I);
   return S;

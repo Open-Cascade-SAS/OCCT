@@ -39,7 +39,7 @@ Expr_NamedUnknown::Expr_NamedUnknown(const TCollection_AsciiString& name)
 const Handle(Expr_GeneralExpression)& Expr_NamedUnknown::AssignedExpression () const
 {
   if (!IsAssigned()) {
-    Expr_NotAssigned::Raise();
+    throw Expr_NotAssigned();
   }
   return myExpression;
 }
@@ -48,7 +48,7 @@ void Expr_NamedUnknown::Assign (const Handle(Expr_GeneralExpression)& exp)
 {
   Handle(Expr_NamedUnknown) me = this;
   if (exp->Contains(me)) {
-    Expr_InvalidAssignment::Raise();
+    throw Expr_InvalidAssignment();
   }
   myExpression = exp;
 }
@@ -57,10 +57,10 @@ void Expr_NamedUnknown::Assign (const Handle(Expr_GeneralExpression)& exp)
 const Handle(Expr_GeneralExpression)& Expr_NamedUnknown::SubExpression (const Standard_Integer I) const
 {
   if (!IsAssigned()) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   if (I != 1) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return AssignedExpression();
 }
@@ -149,7 +149,7 @@ void Expr_NamedUnknown::Replace (const Handle(Expr_NamedUnknown)& var, const Han
     if (myExpression == var) {
       Handle(Expr_NamedUnknown) me = this;
       if (with->Contains(me)) {
-	Expr_InvalidOperand::Raise();
+	throw Expr_InvalidOperand();
       }
       Assign(with);
     }
@@ -180,7 +180,7 @@ Standard_Real Expr_NamedUnknown::Evaluate(const Expr_Array1OfNamedUnknown& vars,
 	return vals(i-vars.Lower()+vals.Lower());
       }
     }
-    Expr_NotEvaluable::Raise();
+    throw Expr_NotEvaluable();
   }
   return myExpression->Evaluate(vars,vals);
 }

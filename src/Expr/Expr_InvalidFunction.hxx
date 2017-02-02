@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Expr_InvalidFunction, Expr_ExprFailure)
 
 #if !defined No_Exception && !defined No_Expr_InvalidFunction
   #define Expr_InvalidFunction_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Expr_InvalidFunction::Raise(MESSAGE);
+  if (CONDITION) throw Expr_InvalidFunction(MESSAGE);
 #else
   #define Expr_InvalidFunction_Raise_if(CONDITION, MESSAGE)
 #endif

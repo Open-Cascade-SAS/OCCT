@@ -131,9 +131,9 @@ Standard_Boolean ShapeProcess::Perform (const Handle(ShapeProcess_Context)& cont
       if ( op->Perform(context) )
         isDone = Standard_True;
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const& anException) {
       Message_Msg SMSG2 ("SP.Sequence.Error.Except"); //Operator %s failed with exception %s
-      SMSG2 << oper << Standard_Failure::Caught()->GetMessageString();
+      SMSG2 << oper << anException.GetMessageString();
       context->Messenger()->Send (SMSG2, Message_Alarm);
     }
     context->UnSetScope();

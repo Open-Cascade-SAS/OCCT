@@ -256,12 +256,14 @@ Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& C3D,
       }
     }
   }
-  catch(Standard_Failure) {
-    OK = Standard_False;
-#ifdef OCCT_DEBUG //:s5
+  catch(Standard_Failure const& anException) {
+#ifdef OCCT_DEBUG
+ //:s5
     cout << "\nWarning: ShapeAnalysis_Curve::ProjectAct(): Exception in Extrema_ExtPC: "; 
-    Standard_Failure::Caught()->Print(cout); cout << endl;
+    anException.Print(cout); cout << endl;
 #endif
+    (void)anException;
+    OK = Standard_False;
   }
   
   //szv#4:S4163:12Mar99 moved

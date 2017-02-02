@@ -43,7 +43,7 @@ void BRepCheck_Analyzer::Init(const TopoDS_Shape& S,
          const Standard_Boolean B)
 {
   if (S.IsNull()) {
-    Standard_NullObject::Raise();
+    throw Standard_NullObject();
   }
   myShape = S;
   myMap.Clear();
@@ -133,13 +133,13 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
           Handle(BRepCheck_Edge)::DownCast(aRes)->SetStatus(ste);
         }
       }
-      catch(Standard_Failure)
-      {
+      catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
         cout<<"BRepCheck_Analyzer : ";
-        Standard_Failure::Caught()->Print(cout);  
+        anException.Print(cout);  
         cout<<endl;
 #endif
+        (void)anException;
         if ( ! myMap(S).IsNull() )
         {
           myMap(S)->SetFailStatus(S);
@@ -163,13 +163,13 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
           if (MapS.Add(aVertex))
             myMap(aVertex)->InContext(S);
         }
-        catch(Standard_Failure)
-        {
+        catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
           cout<<"BRepCheck_Analyzer : ";
-          Standard_Failure::Caught()->Print(cout);  
+          anException.Print(cout);  
           cout<<endl;
 #endif
+          (void)anException;
           if ( ! myMap(S).IsNull() )
             myMap(S)->SetFailStatus(S);
 
@@ -201,13 +201,13 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
             myMap(exp.Current())->InContext(S);
           }
         }
-        catch(Standard_Failure)
-        {
+        catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
           cout<<"BRepCheck_Analyzer : ";
-          Standard_Failure::Caught()->Print(cout);  
+          anException.Print(cout);  
           cout<<endl;
 #endif
+          (void)anException;
           if ( ! myMap(S).IsNull() )
           {
             myMap(S)->SetFailStatus(S);
@@ -261,13 +261,13 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
             }
           }
         }
-        catch(Standard_Failure)
-        {
+        catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
           cout<<"BRepCheck_Analyzer : ";
-          Standard_Failure::Caught()->Print(cout);  
+          anException.Print(cout);  
           cout<<endl;
 #endif
+          (void)anException;
           if ( ! myMap(S).IsNull() )
           {
             myMap(S)->SetFailStatus(S);
@@ -314,13 +314,13 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
             }
           }
         }
-        catch(Standard_Failure)
-        {
+        catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
           cout<<"BRepCheck_Analyzer : ";
-          Standard_Failure::Caught()->Print(cout);  
+          anException.Print(cout);  
           cout<<endl;
 #endif
+          (void)anException;
           if ( ! myMap(S).IsNull() )
           {
             myMap(S)->SetFailStatus(S);
@@ -361,13 +361,13 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
           Handle(BRepCheck_Face)::DownCast(myMap(S))->SetUnorientable();
         }
       }
-      catch(Standard_Failure)
-      {
+      catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
         cout<<"BRepCheck_Analyzer : ";
-        Standard_Failure::Caught()->Print(cout);  
+        anException.Print(cout);  
         cout<<endl;
 #endif
+        (void)anException;
         if ( ! myMap(S).IsNull() )
         {
           myMap(S)->SetFailStatus(S);
@@ -402,13 +402,13 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
               OCC_CATCH_SIGNALS
                 myMap(aShell)->InContext(S);
             }
-          catch(Standard_Failure)
-            {
+          catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
               cout<<"BRepCheck_Analyzer : ";
-              Standard_Failure::Caught()->Print(cout);  
+              anException.Print(cout);  
               cout<<endl;
 #endif
+              (void)anException;
               if ( ! myMap(S).IsNull() )
                 {
                   myMap(S)->SetFailStatus(S);

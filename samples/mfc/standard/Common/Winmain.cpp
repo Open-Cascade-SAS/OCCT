@@ -103,10 +103,10 @@ Application:
 	  nReturnCode = pApp->Run();
     }
 //  if(_Function.Catches(STANDARD_TYPE(Standard_Failure)))
-	catch(Standard_Failure)
+	catch(Standard_Failure const& anException)
     {
       Standard_SStream ostr;
-      ostr<<Standard_Failure::Caught()<<"\n\0";
+      ostr<<anException<<"\n\0";
       CString aMsg = ostr.str().c_str();
       MessageBoxW (NULL, aMsg, L"CasCade Error", MB_ICONERROR);
       goto Application; // restart application loop

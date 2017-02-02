@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Graphic3d_StructureDefinitionError, Standard_OutOfRange)
 
 #if !defined No_Exception && !defined No_Graphic3d_StructureDefinitionError
   #define Graphic3d_StructureDefinitionError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Graphic3d_StructureDefinitionError::Raise(MESSAGE);
+  if (CONDITION) throw Graphic3d_StructureDefinitionError(MESSAGE);
 #else
   #define Graphic3d_StructureDefinitionError_Raise_if(CONDITION, MESSAGE)
 #endif

@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Expr_InvalidOperand, Expr_ExprFailure)
 
 #if !defined No_Exception && !defined No_Expr_InvalidOperand
   #define Expr_InvalidOperand_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Expr_InvalidOperand::Raise(MESSAGE);
+  if (CONDITION) throw Expr_InvalidOperand(MESSAGE);
 #else
   #define Expr_InvalidOperand_Raise_if(CONDITION, MESSAGE)
 #endif

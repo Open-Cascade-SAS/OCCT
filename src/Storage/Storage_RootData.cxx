@@ -131,7 +131,7 @@ void Storage_RootData::UpdateRoot(const TCollection_AsciiString& aName,const Han
     myObjects.ChangeFind(aName)->SetObject(aPers);
   }
   else {
-    Standard_NoSuchObject::Raise();
+    throw Standard_NoSuchObject();
   }
 }
 

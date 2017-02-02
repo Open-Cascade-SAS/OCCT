@@ -64,6 +64,6 @@ Graphic3d_AspectFillArea3d::Graphic3d_AspectFillArea3d (const Aspect_InteriorSty
 {
   if (theEdgeLineWidth <= 0.0)
   {
-    Aspect_AspectFillAreaDefinitionError::Raise ("Bad value for EdgeLineWidth");
+    throw Aspect_AspectFillAreaDefinitionError("Bad value for EdgeLineWidth");
   }
 }

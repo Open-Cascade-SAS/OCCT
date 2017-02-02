@@ -255,19 +255,16 @@ GeomAbs_Shape Geom2dAdaptor_Curve::Continuity() const
     case GeomAbs_G2: return GeomAbs_G2;
 
     default:
-      Standard_NoSuchObject::Raise("Geom2dAdaptor_Curve::Continuity");
+      throw Standard_NoSuchObject("Geom2dAdaptor_Curve::Continuity");
     }
   }
 
   else if (myTypeCurve == GeomAbs_OtherCurve) {
-    Standard_NoSuchObject::Raise("Geom2dAdaptor_Curve::Continuity");
+    throw Standard_NoSuchObject("Geom2dAdaptor_Curve::Continuity");
   }
   else {
     return GeomAbs_CN;
   }
-
-  // portage WNT
-  return GeomAbs_CN;
 }
 
 //=======================================================================
@@ -288,7 +285,7 @@ Standard_Integer Geom2dAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
       switch ( S) {
       case GeomAbs_G1:
       case GeomAbs_G2:
-	Standard_DomainError::Raise("Geom2dAdaptor_Curve::NbIntervals");
+	throw Standard_DomainError("Geom2dAdaptor_Curve::NbIntervals");
 	break;
       case GeomAbs_C0:
 	myNbIntervals = 1;
@@ -360,7 +357,7 @@ Standard_Integer Geom2dAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
     switch(S){
     case GeomAbs_G1:
     case GeomAbs_G2:
-      Standard_DomainError::Raise("GeomAdaptor_Curve::NbIntervals");
+      throw Standard_DomainError("GeomAdaptor_Curve::NbIntervals");
       break;
     case GeomAbs_C0: BaseS = GeomAbs_C1; break;
     case GeomAbs_C1: BaseS = GeomAbs_C2; break;
@@ -393,7 +390,7 @@ void Geom2dAdaptor_Curve::Intervals(TColStd_Array1OfReal& T,
       switch ( S) {
       case GeomAbs_G1:
       case GeomAbs_G2:
-	Standard_DomainError::Raise("Geom2dAdaptor_Curve::NbIntervals");
+	throw Standard_DomainError("Geom2dAdaptor_Curve::NbIntervals");
 	break;
       case GeomAbs_C0:
 	myNbIntervals = 1;
@@ -476,7 +473,7 @@ void Geom2dAdaptor_Curve::Intervals(TColStd_Array1OfReal& T,
     switch(S){
     case GeomAbs_G1:
     case GeomAbs_G2:
-      Standard_DomainError::Raise("GeomAdaptor_Curve::NbIntervals");
+      throw Standard_DomainError("GeomAdaptor_Curve::NbIntervals");
       break;
     case GeomAbs_C0: BaseS = GeomAbs_C1; break;
     case GeomAbs_C1: BaseS = GeomAbs_C2; break;
@@ -910,9 +907,7 @@ Standard_Integer Geom2dAdaptor_Curve::Degree() const
   else if (myTypeCurve == GeomAbs_BSplineCurve)
     return myBSplineCurve->Degree();
   else
-    Standard_NoSuchObject::Raise();
-  // portage WNT 
-  return 0;
+    throw Standard_NoSuchObject();
 }
 
 //=======================================================================
@@ -943,9 +938,7 @@ Standard_Integer Geom2dAdaptor_Curve::NbPoles() const
   else if (myTypeCurve == GeomAbs_BSplineCurve)
     return myBSplineCurve->NbPoles();
   else
-    Standard_NoSuchObject::Raise();
-  // portage WNT 
-  return 0;
+    throw Standard_NoSuchObject();
 }
 
 //=======================================================================
@@ -956,7 +949,7 @@ Standard_Integer Geom2dAdaptor_Curve::NbPoles() const
 Standard_Integer Geom2dAdaptor_Curve::NbKnots() const
 {
   if ( myTypeCurve != GeomAbs_BSplineCurve)
-    Standard_NoSuchObject::Raise("Geom2dAdaptor_Curve::NbKnots");
+    throw Standard_NoSuchObject("Geom2dAdaptor_Curve::NbKnots");
   return myBSplineCurve->NbKnots();
 }
 

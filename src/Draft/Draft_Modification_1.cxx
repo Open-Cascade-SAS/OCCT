@@ -691,7 +691,7 @@ Standard_Boolean Draft_Modification::Propagate ()
 
 void Draft_Modification::Perform ()
 {
-  if (!badShape.IsNull())  Standard_ConstructionError::Raise();
+  if (!badShape.IsNull())  throw Standard_ConstructionError();
 
   if (!myComp) {
     myComp = Standard_True;
@@ -2066,7 +2066,7 @@ static Standard_Real Parameter(const Handle(Geom_Curve)& C,
     GeomAdaptor_Curve TheCurve(C);
     Extrema_ExtPC myExtPC(P,TheCurve);
     if (!myExtPC.IsDone()) {
-      Standard_Failure::Raise("Draft_Modification_1::Parameter: ExtremaPC not done.");
+      throw Standard_Failure("Draft_Modification_1::Parameter: ExtremaPC not done.");
     }
     if (myExtPC.NbExt() >= 1) {
       Standard_Real Dist2, Dist2Min = myExtPC.SquareDistance(1);

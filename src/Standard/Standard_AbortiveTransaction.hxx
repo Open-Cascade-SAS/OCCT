@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Standard_AbortiveTransaction, Standard_Failure)
 
 #if !defined No_Exception && !defined No_Standard_AbortiveTransaction
   #define Standard_AbortiveTransaction_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Standard_AbortiveTransaction::Raise(MESSAGE);
+  if (CONDITION) throw Standard_AbortiveTransaction(MESSAGE);
 #else
   #define Standard_AbortiveTransaction_Raise_if(CONDITION, MESSAGE)
 #endif

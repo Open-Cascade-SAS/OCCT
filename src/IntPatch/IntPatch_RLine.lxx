@@ -86,13 +86,13 @@ inline Standard_Boolean IntPatch_RLine::HasLastPoint () const
 
 inline const IntPatch_Point& IntPatch_RLine::FirstPoint () const
 {
-  if (!fipt) {Standard_DomainError::Raise();}
+  if (!fipt) {throw Standard_DomainError();}
   return svtx(indf);
 }
 
 inline const IntPatch_Point& IntPatch_RLine::LastPoint () const
 {
-  if (!lapt) {Standard_DomainError::Raise();}
+  if (!lapt) {throw Standard_DomainError();}
   return svtx(indl);
 }
 
@@ -114,7 +114,7 @@ inline IntPatch_Point& IntPatch_RLine::ChangeVertex (const Standard_Integer Inde
 inline void IntPatch_RLine::RemoveVertex(const Standard_Integer theIndex)
 {
   if((theIndex < 1) || (theIndex > NbVertex()))
-    Standard_OutOfRange::Raise("Cannot delete not existing vertex");
+    throw Standard_OutOfRange("Cannot delete not existing vertex");
   svtx.Remove(theIndex);
 }
 
@@ -125,13 +125,13 @@ inline Standard_Boolean IntPatch_RLine::HasPolygon () const
 
 inline Standard_Integer IntPatch_RLine::NbPnts () const
 {
-  if (curv.IsNull()) {Standard_DomainError::Raise();}
+  if (curv.IsNull()) {throw Standard_DomainError();}
   return curv->NbPoints();
 }
 
 inline const IntSurf_PntOn2S& IntPatch_RLine::Point (const Standard_Integer Index) const
 {
-  if (curv.IsNull()) {Standard_DomainError::Raise();}
+  if (curv.IsNull()) {throw Standard_DomainError();}
   return curv->Value(Index);
 }
 

@@ -220,12 +220,13 @@ Standard_Boolean ShapeUpgrade_ShapeDivide::Perform(const Standard_Boolean newCon
 	    }
 	  }
 	}
-	catch (Standard_Failure) {
-	  myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );
+	catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
 	  cout << "\nError: Exception in ShapeUpgrade_FaceDivide::Perform(): ";
-	  Standard_Failure::Caught()->Print(cout); cout << endl;
+	  anException.Print(cout); cout << endl;
 #endif
+	  (void)anException;
+	  myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );
 	}
       }
     }

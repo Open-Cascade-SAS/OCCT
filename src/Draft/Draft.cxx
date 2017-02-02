@@ -48,7 +48,7 @@ Standard_Real Draft::Angle(const TopoDS_Face& F,
   if (TypeS != STANDARD_TYPE(Geom_Plane) &&
       TypeS != STANDARD_TYPE(Geom_ConicalSurface) &&
       TypeS != STANDARD_TYPE(Geom_CylindricalSurface)) {
-    Standard_DomainError::Raise();
+    throw Standard_DomainError();
   }
 
   Standard_Real Angle;
@@ -68,7 +68,7 @@ Standard_Real Draft::Angle(const TopoDS_Face& F,
     gp_Cylinder Cy(Handle(Geom_CylindricalSurface)::DownCast(S)->Cylinder());
     Standard_Real testdir = D.Dot(Cy.Axis().Direction());
     if (Abs(testdir) <= 1.-Precision::Angular()) {
-      Standard_DomainError::Raise();
+      throw Standard_DomainError();
     }
     Angle = 0.;
   }
@@ -76,7 +76,7 @@ Standard_Real Draft::Angle(const TopoDS_Face& F,
     gp_Cone Co(Handle(Geom_ConicalSurface)::DownCast(S)->Cone());
     Standard_Real testdir = D.Dot(Co.Axis().Direction());
     if (Abs(testdir) <= 1.-Precision::Angular()) {
-      Standard_DomainError::Raise();
+      throw Standard_DomainError();
     }
     Standard_Real umin,umax,vmin,vmax;
     BRepTools::UVBounds(F,umin,umax,vmin,vmax);

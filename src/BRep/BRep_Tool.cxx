@@ -1190,7 +1190,7 @@ gp_Pnt  BRep_Tool::Pnt(const TopoDS_Vertex& V)
   
   if (TV == 0)
   {
-    Standard_NullObject::Raise("BRep_Tool:: TopoDS_Vertex hasn't gp_Pnt");
+    throw Standard_NullObject("BRep_Tool:: TopoDS_Vertex hasn't gp_Pnt");
   }
 
   const gp_Pnt& P = TV->Pnt();
@@ -1213,7 +1213,7 @@ Standard_Real  BRep_Tool::Tolerance(const TopoDS_Vertex& V)
 
   if (aTVert == 0)
   {
-    Standard_NullObject::Raise("BRep_Tool:: TopoDS_Vertex hasn't gp_Pnt");
+    throw Standard_NullObject("BRep_Tool:: TopoDS_Vertex hasn't gp_Pnt");
   }
 
   Standard_Real p = aTVert->Tolerance();
@@ -1338,8 +1338,7 @@ Standard_Real  BRep_Tool::Parameter(const TopoDS_Vertex& V,
     }
   }
   
-  Standard_NoSuchObject::Raise("BRep_Tool:: no parameter on edge");
-  return 0;
+  throw Standard_NoSuchObject("BRep_Tool:: no parameter on edge");
 }
 
 //=======================================================================
@@ -1449,8 +1448,7 @@ Standard_Real BRep_Tool::Parameter(const TopoDS_Vertex& V,
   
 //----------------------------------------------------------   
  
-  Standard_NoSuchObject::Raise("BRep_Tool:: no parameter on edge");
-  return 0;
+  throw Standard_NoSuchObject("BRep_Tool:: no parameter on edge");
 }
 
 //=======================================================================
@@ -1491,8 +1489,7 @@ gp_Pnt2d  BRep_Tool::Parameters(const TopoDS_Vertex& V,
       else              return Pl;//Ambiguity (natural) for degenerated edges.
     }
   }
-  Standard_NoSuchObject::Raise("BRep_Tool:: no parameters on surface");
-  return gp_Pnt2d(0,0);
+  throw Standard_NoSuchObject("BRep_Tool:: no parameters on surface");
 }
 //=======================================================================
 //function : IsClosed

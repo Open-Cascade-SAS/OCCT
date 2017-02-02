@@ -284,7 +284,7 @@ static gp_Pnt2d Function_Value(const Standard_Real theU,
         break;
       }
     default:
-      Standard_NoSuchObject::Raise("ProjLib_ComputeApproxOnPolarSurface::Value");
+      throw Standard_NoSuchObject("ProjLib_ComputeApproxOnPolarSurface::Value");
     }
     return gp_Pnt2d(S, T);
   }
@@ -363,7 +363,7 @@ static gp_Pnt2d Function_Value(const Standard_Real theU,
   }
   else
   {
-    Standard_NoSuchObject::Raise("");
+    throw Standard_NoSuchObject("");
   }
 
   // Try to run simple search with initial point (U0, V0).
@@ -1031,7 +1031,7 @@ Handle(Adaptor2d_HCurve2d)
 	break;
       }
     default:
-      Standard_NoSuchObject::Raise("ProjLib_ComputeApproxOnPolarSurface::BuildInitialCurve2d");
+      throw Standard_NoSuchObject("ProjLib_ComputeApproxOnPolarSurface::BuildInitialCurve2d");
     }
   }
   else {

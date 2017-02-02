@@ -153,9 +153,7 @@ const TopoDS_Shape& TopOpeBRep_FaceEdgeIntersector::Shape
 {
   if      ( Index == 1 ) return myFace;
   else if ( Index == 2 ) return myEdge;
-  else Standard_ProgramError::Raise("TopOpeBRep_FaceEdgeIntersector::Shape");
-
-  return myNullShape;
+  else throw Standard_ProgramError("TopOpeBRep_FaceEdgeIntersector::Shape");
 }
 
 //=======================================================================
@@ -330,11 +328,7 @@ TopOpeBRepDS_Transition TopOpeBRep_FaceEdgeIntersector::Transition
     return TR;
   }
 
-  else Standard_ProgramError::Raise("FEINT Transition Index");
-
-//  return(TopOpeBRepDS_Transition());
-  TopOpeBRepDS_Transition aValRet ;
-  return (aValRet);
+  else throw Standard_ProgramError("FEINT Transition Index");
 }
 
 //=======================================================================

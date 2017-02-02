@@ -45,8 +45,7 @@ IGESAppli_NodalDisplAndRot::IGESAppli_NodalDisplAndRot ()    {  }
        allTransParams->Length()  != allNodes->Length()) ||
       (allRotParams->Lower()     != 1 ||
        allRotParams->Length()    != allNodes->Length()) )
-    Standard_DimensionMismatch::Raise
-  ("IGESAppli_NodalDisplAndRot : Init(Lengths of arrays inconsistent)");
+    throw Standard_DimensionMismatch("IGESAppli_NodalDisplAndRot : Init(Lengths of arrays inconsistent)");
 
   for (Standard_Integer i= 1; i <= allNodes->Length(); i++)
     {
@@ -54,8 +53,7 @@ IGESAppli_NodalDisplAndRot::IGESAppli_NodalDisplAndRot ()    {  }
       Handle(TColgp_HArray1OfXYZ) temp2 = allRotParams->Value(i);
       if ((temp1->Lower() != 1 || temp1->Length() != allNotes->Length()) ||
 	  (temp2->Lower() != 1 || temp2->Length() != allNotes->Length()) )
-	Standard_DimensionMismatch::Raise
-	  ("IGESAppli_NodalDisplAndRot: Init(No. of Param per Node != Nbcases)");
+	throw Standard_DimensionMismatch("IGESAppli_NodalDisplAndRot: Init(No. of Param per Node != Nbcases)");
     }
 
   theNotes           = allNotes;

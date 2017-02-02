@@ -604,7 +604,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
     BSplCLib::Interpolate(3,FlatKnots,InterpolationParameters,ContactOrder,
       1,Poles(1),inversion_problem);
     if(inversion_problem) {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
 
     // Test if par2d(par3d) is monotonous function or not           ----- IFV, Jan 2000
@@ -841,7 +841,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
                           1,Poles(1),inversion_problem);
     if(inversion_problem)
     {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
 
     Standard_Real besttol = sqrt(besttol2);

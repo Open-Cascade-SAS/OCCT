@@ -56,7 +56,7 @@ AdvApprox_SimpleApprox(const Standard_Integer TotalDimension,
     case GeomAbs_C1: myNivConstr = 1; break;
     case GeomAbs_C2: myNivConstr = 2; break;
     default: 
-      Standard_ConstructionError::Raise("Invalid Continuity");
+      throw Standard_ConstructionError("Invalid Continuity");
   }
 
   Standard_Integer DegreeQ = myWorkDegree - 2*(myNivConstr+1);

@@ -24,43 +24,43 @@ inline Standard_Boolean IntPatch_Intersection::IsDone () const
 
 inline Standard_Boolean IntPatch_Intersection::IsEmpty () const
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return empt;
 }
 
 inline Standard_Boolean IntPatch_Intersection::TangentFaces () const
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return tgte;
 }
 
 inline Standard_Boolean IntPatch_Intersection::OppositeFaces () const
 {
-  if (!done) {StdFail_NotDone::Raise();}
-  if (!tgte) {Standard_DomainError::Raise();}
+  if (!done) {throw StdFail_NotDone();}
+  if (!tgte) {throw Standard_DomainError();}
   return oppo;
 }
 
 inline Standard_Integer IntPatch_Intersection::NbPnts () const
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return spnt.Length();
 }
 
 inline const IntPatch_Point& IntPatch_Intersection::Point (const Standard_Integer Index) const
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return spnt(Index);
 }
 
 inline Standard_Integer IntPatch_Intersection::NbLines () const
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return slin.Length();
 }
 
 inline const Handle(IntPatch_Line)& IntPatch_Intersection::Line (const Standard_Integer Index) const
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return slin(Index);
 }

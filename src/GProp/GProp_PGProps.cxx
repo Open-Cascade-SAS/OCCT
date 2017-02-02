@@ -72,7 +72,7 @@ void GProp_PGProps::AddPoint (const Pnt& P)
 
 void GProp_PGProps::AddPoint (const gp_Pnt& P, const Standard_Real Density)
 {
-  if (Density <= gp::Resolution())  Standard_DomainError::Raise();
+  if (Density <= gp::Resolution())  throw Standard_DomainError();
   Standard_Real Xp, Yp, Zp;
   P.Coord (Xp, Yp, Zp);
   Standard_Real Ixy = - Xp * Yp;
@@ -117,12 +117,12 @@ GProp_PGProps::GProp_PGProps (const Array2OfPnt& Pnts)
 
 GProp_PGProps::GProp_PGProps (const Array1OfPnt& Pnts,const Array1OfReal& Density)
 {
-  if (Pnts.Length() != Density.Length())  Standard_DomainError::Raise();
+  if (Pnts.Length() != Density.Length())  throw Standard_DomainError();
   Standard_Integer ip = Pnts.Lower();
   Standard_Integer id = Density.Lower();
   while (id <= Pnts.Upper()) {
     Standard_Real D = Density (id);
-    if (D <= gp::Resolution()) Standard_DomainError::Raise();
+    if (D <= gp::Resolution()) throw Standard_DomainError();
     AddPoint(Pnts (ip),D); 
     ip++;  id++;
   }      
@@ -130,7 +130,7 @@ GProp_PGProps::GProp_PGProps (const Array1OfPnt& Pnts,const Array1OfReal& Densit
 
 GProp_PGProps::GProp_PGProps (const Array2OfPnt& Pnts,const Array2OfReal& Density)
 {
-  if (Pnts.ColLength() != Density.ColLength() || Pnts.RowLength() != Density.RowLength()) Standard_DomainError::Raise();
+  if (Pnts.ColLength() != Density.ColLength() || Pnts.RowLength() != Density.RowLength()) throw Standard_DomainError();
   Standard_Integer ip = Pnts.LowerRow();
   Standard_Integer id = Density.LowerRow();
   Standard_Integer jp = Pnts.LowerCol();
@@ -138,7 +138,7 @@ GProp_PGProps::GProp_PGProps (const Array2OfPnt& Pnts,const Array2OfReal& Densit
   while (jp <= Pnts.UpperCol()) {
     while (ip <= Pnts.UpperRow()) {
       Standard_Real D = Density (id, jd);
-      if (D <= gp::Resolution())  Standard_DomainError::Raise();
+      if (D <= gp::Resolution())  throw Standard_DomainError();
       AddPoint(Pnts (ip, jp),D); 
       ip++; id++;
     }      
@@ -153,7 +153,7 @@ void GProp_PGProps::Barycentre(const Array1OfPnt&  Pnts,
 			       Standard_Real&      Mass, 
 			       Pnt&                G)
 {
-  if (Pnts.Length() != Density.Length())  Standard_DimensionError::Raise();
+  if (Pnts.Length() != Density.Length())  throw Standard_DimensionError();
   Standard_Integer ip = Pnts.Lower();
   Standard_Integer id = Density.Lower();
   Mass = Density (id);
@@ -177,7 +177,7 @@ void GProp_PGProps::Barycentre(const Array2OfPnt&  Pnts,
 			       Standard_Real&      Mass,
 			       Pnt&                G)
 {
-  if (Pnts.RowLength() != Density.RowLength() || Pnts.ColLength() != Density.ColLength()) Standard_DimensionError::Raise();
+  if (Pnts.RowLength() != Density.RowLength() || Pnts.ColLength() != Density.ColLength()) throw Standard_DimensionError();
   Standard_Integer ip = Pnts.LowerRow();
   Standard_Integer id = Density.LowerRow();
   Standard_Integer jp = Pnts.LowerCol();

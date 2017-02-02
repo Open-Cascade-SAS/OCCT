@@ -77,7 +77,7 @@ GccAna_Circ2d2TanOn::
   NbrSol = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
 	Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
-    GccEnt_BadQualifier::Raise();
+    throw GccEnt_BadQualifier();
     return;
   }
   TColStd_Array1OfReal Radius(1,2);

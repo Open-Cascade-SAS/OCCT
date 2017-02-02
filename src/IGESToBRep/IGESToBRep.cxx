@@ -303,11 +303,12 @@ Standard_Boolean IGESToBRep::IsBRepEntity(const Handle(IGESData_IGESEntity)& sta
 	  result = Standard_False;
 	}
       }
-      catch(Standard_Failure) {
+      catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
 	cout << "\n**IGESToBRep::TransferPCurve: Exception in SameRange : "; 
-	Standard_Failure::Caught()->Print(cout);
+	anException.Print(cout);
 #endif
+	(void)anException;
 	result = Standard_False;
       }
     }

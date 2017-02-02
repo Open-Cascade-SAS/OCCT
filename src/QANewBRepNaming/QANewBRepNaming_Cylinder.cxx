@@ -47,7 +47,7 @@ QANewBRepNaming_Cylinder::QANewBRepNaming_Cylinder(const TDF_Label& ResultLabel)
 
 void QANewBRepNaming_Cylinder::Init(const TDF_Label& ResultLabel) {
   if(ResultLabel.IsNull())
-    Standard_NullObject::Raise("QANewBRepNaming_Cylinder::Init The Result label is Null ..."); 
+    throw Standard_NullObject("QANewBRepNaming_Cylinder::Init The Result label is Null ...");
   myResultLabel = ResultLabel;
 }    
 

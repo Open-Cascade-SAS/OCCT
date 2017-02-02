@@ -312,7 +312,7 @@ void Approx_CurveOnSurface_Eval2d::Evaluate (Standard_Integer *Dimension,
 					      const Standard_Boolean only2d)
 {
   myIsDone = Standard_False;
-  if(only3d && only2d) Standard_ConstructionError::Raise();
+  if(only3d && only2d) throw Standard_ConstructionError();
   GeomAbs_Shape Order  = S;
 
   Handle( Adaptor2d_HCurve2d ) TrimmedC2D = C2D->Trim( First, Last, Precision::PConfusion() );

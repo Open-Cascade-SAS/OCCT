@@ -34,7 +34,7 @@ IGESSolid_SolidAssembly::IGESSolid_SolidAssembly ()    {  }
 {
   if (Items->Lower()  != 1 || Matrices->Lower() != 1 ||
       Items->Length() != Matrices->Length())
-    Standard_DimensionError::Raise("IGESSolid_SolidAssembly : Init");
+    throw Standard_DimensionError("IGESSolid_SolidAssembly : Init");
 
   theItems    = Items;
   theMatrices = Matrices;

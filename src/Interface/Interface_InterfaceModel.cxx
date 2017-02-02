@@ -431,18 +431,15 @@ Standard_Boolean Interface_InterfaceModel::SetReportEntity
   Handle(Standard_Transient) ent;
   if (num > 0) {
     ent = Value(nm);
-    if (! (ent == rep->Concerned()) ) Interface_InterfaceMismatch::Raise
-      ("InterfaceModel : SetReportEntity");
+    if (! (ent == rep->Concerned()) ) throw Interface_InterfaceMismatch("InterfaceModel : SetReportEntity");
   } else if (num < 0) {
     nm = -num;
     ent = Value(nm);
-    if (! (ent == rep->Concerned()) ) Interface_InterfaceMismatch::Raise
-      ("InterfaceModel : SetReportEntity");
+    if (! (ent == rep->Concerned()) ) throw Interface_InterfaceMismatch("InterfaceModel : SetReportEntity");
   } else {
     ent = rep->Concerned();
     nm = Number (ent);
-    if (nm == 0)  Interface_InterfaceMismatch::Raise
-      ("InterfaceModel : SetReportEntity");
+    if (nm == 0)  throw Interface_InterfaceMismatch("InterfaceModel : SetReportEntity");
   }
   if (!thereports.IsBound(nm)) {
     Standard_Integer maxrep = thereports.NbBuckets();
@@ -624,8 +621,7 @@ void Interface_InterfaceModel::AddWithRefs(const Handle(Standard_Transient)& ane
                                            const Standard_Boolean listall)
 {
   Handle(Interface_Protocol) proto = Protocol();
-  if (proto.IsNull()) Interface_InterfaceMismatch::Raise
-    ("InterfaceModel : AddWithRefs");
+  if (proto.IsNull()) throw Interface_InterfaceMismatch("InterfaceModel : AddWithRefs");
   AddWithRefs (anent,proto,level,listall);
 }
 
@@ -726,8 +722,7 @@ void Interface_InterfaceModel::ChangeOrder(const Standard_Integer oldnum,
   Standard_Integer minum  = (oldnum > newnum ? newnum : oldnum);
   Standard_Integer mxnum  = (oldnum < newnum ? newnum : oldnum);
   Standard_Integer kount  = (oldnum > newnum ? cnt  : -cnt);
-  if (cnt <= 0 || cnt > mxnum - minum) Interface_InterfaceMismatch::Raise
-    ("InterfaceModel : ChangeOrder, Overlap");
+  if (cnt <= 0 || cnt > mxnum - minum) throw Interface_InterfaceMismatch("InterfaceModel : ChangeOrder, Overlap");
   for (i = 1; i < minum; i ++)  ents.SetValue (i,theentities.FindKey(i));
   for (i = mxnum+cnt; i <= nb; i ++) ents.SetValue (i,theentities.FindKey(i));
   for (i = minum; i < mxnum; i ++)

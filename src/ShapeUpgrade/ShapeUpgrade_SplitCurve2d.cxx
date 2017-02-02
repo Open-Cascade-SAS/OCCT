@@ -174,11 +174,12 @@ ShapeUpgrade_SplitCurve2d::ShapeUpgrade_SplitCurve2d()
 	  else if (myCurve->IsKind (STANDARD_TYPE (Geom2d_BezierCurve)))
 	    Handle(Geom2d_BezierCurve)::DownCast(theNewCurve)->Segment (First, Last);
 	}
-	catch (Standard_Failure) {
+	catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
 	  cout << "Warning: ShapeUpgrade_Split2dCurve::Build(): Exception in Segment      :";
-	  Standard_Failure::Caught()->Print(cout); cout << endl;
+	  anException.Print(cout); cout << endl;
 #endif
+	  (void)anException;
 	  theNewCurve = new Geom2d_TrimmedCurve(Handle(Geom2d_Curve)::DownCast(myCurve->Copy()),First,Last);
 	}
 	myResultingCurves->SetValue (1, theNewCurve);
@@ -227,11 +228,12 @@ ShapeUpgrade_SplitCurve2d::ShapeUpgrade_SplitCurve2d()
 	    Handle(Geom2d_BezierCurve)::DownCast(theNewCurve)->Segment (Firstt, Lastt);
 	  myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
 	}
-	catch (Standard_Failure) {
+	catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
 	  cout << "Warning: ShapeUpgrade_Split2dCurve::Build(): Exception in Segment      :";
-	  Standard_Failure::Caught()->Print(cout); cout << endl;
+	  anException.Print(cout); cout << endl;
 #endif
+	  (void)anException;
 	  theNewCurve = new Geom2d_TrimmedCurve(Handle(Geom2d_Curve)::DownCast(myCurve->Copy()),Firstt,Lastt);
 	}
       }

@@ -163,9 +163,7 @@ const TopoDS_Face& TopOpeBRep_Hctxff2d::Face(const Standard_Integer Index) const
 {
   if      ( Index == 1 ) return myFace1;
   else if ( Index == 2 ) return myFace2;
-  else Standard_Failure::Raise("TopOpeBRep_Hctxff2d::Face");
-  
-  return myFace1;
+  else throw Standard_Failure("TopOpeBRep_Hctxff2d::Face");
 }
 
 //=======================================================================
@@ -176,9 +174,7 @@ Handle(BRepAdaptor_HSurface) TopOpeBRep_Hctxff2d::HSurface(const Standard_Intege
 {
   if      ( Index == 1 ) return mySurface1;
   else if ( Index == 2 ) return mySurface2;
-  else Standard_Failure::Raise("TopOpeBRep_Hctxff2d::HSurface");
-  
-  return mySurface1;
+  else throw Standard_Failure("TopOpeBRep_Hctxff2d::HSurface");
 }
 
 //=======================================================================
@@ -207,7 +203,5 @@ Standard_Boolean TopOpeBRep_Hctxff2d::FaceSameOrientedWithRef (const Standard_In
 {
   if      ( Index == 1 ) return myf1surf1F_sameoriented;
   else if ( Index == 2 ) return myf2surf1F_sameoriented;
-  else Standard_Failure::Raise("TopOpeBRep_Hctxff2d::FSO");
-
-  return Standard_True;
+  else throw Standard_Failure("TopOpeBRep_Hctxff2d::FSO");
 }

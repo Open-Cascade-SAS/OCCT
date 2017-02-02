@@ -159,7 +159,7 @@ Standard_Real CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C,
 //  FG.Init(f3d,(Standard_Address)&C);
   math_GaussSingleIntegration TheLength(FG, U1, U2, order(C));
   if (!TheLength.IsDone()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   return Abs(TheLength.Value());
 }
@@ -180,7 +180,7 @@ Standard_Real CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C,
 //  FG.Init(f2d,(Standard_Address)&C);
   math_GaussSingleIntegration TheLength(FG, U1, U2, order(C));
   if (!TheLength.IsDone()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   return Abs(TheLength.Value());
 }
@@ -202,7 +202,7 @@ Standard_Real CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C,
 //  FG.Init(f3d,(Standard_Address)&C);
   math_GaussSingleIntegration TheLength(FG, U1, U2, order(C), Tol);
   if (!TheLength.IsDone()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   return Abs(TheLength.Value());
 }
@@ -224,7 +224,7 @@ Standard_Real CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C,
 //  FG.Init(f2d,(Standard_Address)&C);
   math_GaussSingleIntegration TheLength(FG, U1, U2, order(C), Tol);
   if (!TheLength.IsDone()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   return Abs(TheLength.Value());
 }

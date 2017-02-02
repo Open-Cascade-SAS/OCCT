@@ -325,7 +325,7 @@ void Contap_HContTool::Value(const Handle(Adaptor2d_HCurve2d)&,
                              Standard_Real&,
                              Standard_Real&)
 {
-  Standard_OutOfRange::Raise();
+  throw Standard_OutOfRange();
 }
 
 Standard_Boolean Contap_HContTool::IsVertex(const Handle(Adaptor2d_HCurve2d)&,
@@ -338,7 +338,7 @@ void Contap_HContTool::Vertex(const Handle(Adaptor2d_HCurve2d)&,
                               const Standard_Integer,
                               Handle(Adaptor3d_HVertex)&)
 {
-  Standard_OutOfRange::Raise();
+  throw Standard_OutOfRange();
 }
 
 Standard_Integer Contap_HContTool::NbSegments(const Handle(Adaptor2d_HCurve2d)&)
@@ -351,8 +351,7 @@ Standard_Boolean Contap_HContTool::HasFirstPoint
  const Standard_Integer,
  Standard_Integer&)
 {
-  Standard_OutOfRange::Raise();
-  return Standard_False;
+  throw Standard_OutOfRange();
 }
 
 Standard_Boolean Contap_HContTool::HasLastPoint
@@ -360,8 +359,7 @@ Standard_Boolean Contap_HContTool::HasLastPoint
  const Standard_Integer,
  Standard_Integer&)
 {
-  Standard_OutOfRange::Raise();
-  return Standard_False;
+  throw Standard_OutOfRange();
 }
 
 Standard_Boolean Contap_HContTool::IsAllSolution

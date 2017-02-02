@@ -1959,12 +1959,13 @@ static void EncodeRegularity(const TopoDS_Shape&        theShape,
         BRepLib::EncodeRegularity(E, F1, F2, theTolAng);
     }
   }
-  catch (Standard_Failure) {
+  catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
     cout << "Warning: Exception in BRepLib::EncodeRegularity(): ";
-    Standard_Failure::Caught()->Print(cout);
+    anException.Print(cout);
     cout << endl;
 #endif
+    (void)anException;
   }
 }
 

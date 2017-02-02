@@ -147,7 +147,7 @@ Sweep_NumShape Sweep_NumShapeTool::FirstVertex()const
 			    myNumShape.Closed(),Standard_False,
 			    Standard_False);
     }
-    else Standard_ConstructionError::Raise("inifinite Shape");
+    else throw Standard_ConstructionError("inifinite Shape");
   }
   return myNumShape;
 }
@@ -166,7 +166,7 @@ Sweep_NumShape Sweep_NumShapeTool::LastVertex()const
 			    myNumShape.Closed(),Standard_False,
 			    Standard_False);
     }
-    else Standard_ConstructionError::Raise("inifinite Shape");
+    else throw Standard_ConstructionError("inifinite Shape");
   }
   return myNumShape;
 }

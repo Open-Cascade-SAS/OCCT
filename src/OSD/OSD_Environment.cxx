@@ -54,7 +54,7 @@ OSD_Environment::OSD_Environment(const TCollection_AsciiString& Name)
 {
 
  if (!Name.IsAscii() || Name.Search("$") != -1 ) 
-   Standard_ConstructionError::Raise("OSD_Environment::OSD_Environment: bad argument");
+   throw Standard_ConstructionError("OSD_Environment::OSD_Environment: bad argument");
 
  myName = Name; 
 }
@@ -71,7 +71,7 @@ OSD_Environment::OSD_Environment(const TCollection_AsciiString& Name,
  if (!Name.IsAscii() || !Value.IsAscii() || 
 // JPT : Dec-7-1992     Name.Search("$") != -1 || Value.Search("$") != -1) 
      Name.Search("$") != -1 ) 
-   Standard_ConstructionError::Raise("OSD_Environment::OSD_Environment: bad argument");
+   throw Standard_ConstructionError("OSD_Environment::OSD_Environment: bad argument");
 
  myName = Name; 
  myValue = Value;
@@ -95,7 +95,7 @@ void OSD_Environment::SetName (const TCollection_AsciiString& Name)
 {
  myError.Reset();
  if (!Name.IsAscii() || Name.Search("$") != -1 ) 
-   Standard_ConstructionError::Raise("OSD_Environment::SetName: bad argument");
+   throw Standard_ConstructionError("OSD_Environment::SetName: bad argument");
 
  myName = Name;
 }
@@ -107,7 +107,7 @@ void OSD_Environment::SetName (const TCollection_AsciiString& Name)
 void OSD_Environment::SetValue (const TCollection_AsciiString& Value)
 {
  if (!Value.IsAscii() || Value.Search("$") != -1) 
-   Standard_ConstructionError::Raise("OSD_Environment::Change: bad argument");
+   throw Standard_ConstructionError("OSD_Environment::Change: bad argument");
 
  myValue = Value;
 }

@@ -302,7 +302,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
     Isd1=ChFi3d_IndexOfSurfData(Vtx,st1,Sens1);
     Isd2=ChFi3d_IndexOfSurfData(Vtx,st2,Sens2);
   }
-   // StdFail_NotDone::Raise("TwoCorner : no common face");
+   // throw StdFail_NotDone("TwoCorner : no common face");
   Standard_Integer IFaArc1 = 3-IFaCo1, IFaArc2 = 3-IFaCo2;
   SeqFil1 = st1->ChangeSetOfSurfData()->ChangeSequence();
   SeqFil2 = st2->ChangeSetOfSurfData()->ChangeSequence();
@@ -712,7 +712,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
     else {
       //it is necessary to make difference with
       if(!OkinterCC) {
-	Standard_Failure::Raise("TwoCorner : No intersection pc pc");
+	throw Standard_Failure("TwoCorner : No intersection pc pc");
       }
       Handle(ChFiDS_Stripe) stsam, stdif;
       Handle(ChFiDS_SurfData) sdsam, sddif;
@@ -732,15 +732,14 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
 	ifacodif = IFaCo1; ifaopdif = IFaArc1; isfirstdif = isfirst1;
       }
       else {
-	Standard_Failure::Raise("TwoCorner : Config unknown");
+	throw Standard_Failure("TwoCorner : Config unknown");
       }
       //It is checked if surface ondiff has a point on arc from the side opposed
       //to the common face and if this arc is connected to the base face  
       //opposed to common face of the surface onsame.
       ChFiDS_CommonPoint& cpopdif = sddif->ChangeVertex(isfirstdif,ifaopdif);
       if(!cpopdif.IsOnArc()) {
-	Standard_Failure::Raise
-	  ("TwoCorner : No point on restriction on surface OnDiff");
+	throw Standard_Failure("TwoCorner : No point on restriction on surface OnDiff");
       }
       const TopoDS_Edge& Arcopdif = cpopdif.Arc();
       const TopoDS_Face& Fopsam = TopoDS::Face(DStr.Shape(sdsam->Index(ifaopsam)));
@@ -750,8 +749,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
 	  break;
 	}
 	else if(!ex.More()) {
-	  Standard_Failure::Raise
-	    ("TwoCorner : No common face to loop the contour");
+	  throw Standard_Failure("TwoCorner : No common face to loop the contour");
 	}
       }
 #ifdef OCCT_DEBUG
@@ -828,7 +826,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
 #ifdef OCCT_DEBUG
       ChFi3d_ResultChron(ch , t_remplissage);// result perf filling 
 #endif 
-      if(!done) Standard_Failure::Raise("concavites inverted : fail");
+      if(!done) throw Standard_Failure("concavites inverted : fail");
 #ifdef OCCT_DEBUG
       ChFi3d_InitChron(ch); // init perf update DS
 #endif 

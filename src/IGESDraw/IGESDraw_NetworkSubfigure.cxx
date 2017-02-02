@@ -42,7 +42,7 @@ IGESDraw_NetworkSubfigure::IGESDraw_NetworkSubfigure ()    {  }
 {
   if (!allConnectPoints.IsNull())
     if (allConnectPoints->Lower() != 1)
-      Standard_DimensionMismatch::Raise("IGESDraw_NetworkSubfigure : Init");
+      throw Standard_DimensionMismatch("IGESDraw_NetworkSubfigure : Init");
   theSubfigureDefinition = aDefinition;
   theTranslation         = aTranslation;
   theScaleFactor         = aScaleFactor;

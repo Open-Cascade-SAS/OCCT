@@ -32,7 +32,7 @@ inline Standard_Boolean BRepBlend_RstRstLineBuilder::IsDone() const
 
 inline const Handle(BRepBlend_Line)& BRepBlend_RstRstLineBuilder::Line() const
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return line;
 }
 

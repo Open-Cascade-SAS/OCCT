@@ -111,13 +111,12 @@ void HLRBRep_InternalAlgo::Update ()
 	de = DS[i-1]->NbEdges   ();
 	df = DS[i-1]->NbFaces   ();
       }
-      catch(Standard_Failure) {
+      catch(Standard_Failure const& anException) {
         if (myDebug)
         {
           cout << "An exception was catched when preparing the Shape " << i;
           cout << " and computing its OutLines " << endl;
-          Handle(Standard_Failure) fail = Standard_Failure::Caught();
-          cout << fail << endl;
+          cout << anException << endl;
         }
 	DS[i-1] = new HLRBRep_Data(0,0,0);
 	dv = 0;

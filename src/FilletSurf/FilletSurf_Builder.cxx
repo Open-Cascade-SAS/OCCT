@@ -98,8 +98,7 @@ FilletSurf_ErrorTypeStatus FilletSurf_Builder::StatusError() const
 Standard_Integer FilletSurf_Builder::NbSurface() const 
 {
   if (IsDone()!=FilletSurf_IsNotOk)  return myIntBuild.NbSurface();
-  StdFail_NotDone::Raise("FilletSurf_Builder::NbSurface");
-  return 0;
+  throw StdFail_NotDone("FilletSurf_Builder::NbSurface");
 }
 
 //=======================================================================
@@ -109,7 +108,7 @@ Standard_Integer FilletSurf_Builder::NbSurface() const
 
 const Handle(Geom_Surface)& FilletSurf_Builder::SurfaceFillet(const Standard_Integer Index) const 
 {
-  if ( (Index<1)||(Index>NbSurface())) Standard_OutOfRange::Raise("FilletSurf_Builder::SurfaceFillet");
+  if ( (Index<1)||(Index>NbSurface())) throw Standard_OutOfRange("FilletSurf_Builder::SurfaceFillet");
   return myIntBuild.SurfaceFillet(Index); 
 }
 
@@ -120,7 +119,7 @@ const Handle(Geom_Surface)& FilletSurf_Builder::SurfaceFillet(const Standard_Int
 Standard_Real  FilletSurf_Builder::TolApp3d(const Standard_Integer Index) const 
 {
   if ( (Index<1)||(Index>NbSurface())) 
-    Standard_OutOfRange::Raise("FilletSurf_Builder::TolApp3d");
+    throw Standard_OutOfRange("FilletSurf_Builder::TolApp3d");
   return myIntBuild.TolApp3d(Index);
 }
 
@@ -131,7 +130,7 @@ Standard_Real  FilletSurf_Builder::TolApp3d(const Standard_Integer Index) const
 const TopoDS_Face& FilletSurf_Builder::SupportFace1(const Standard_Integer Index) const
 {
   if ( (Index<1)||(Index>NbSurface())) 
-    Standard_OutOfRange::Raise("FilletSurf_Builder::SupportFace1");
+    throw Standard_OutOfRange("FilletSurf_Builder::SupportFace1");
   return myIntBuild.SupportFace1(Index); 
 }
 
@@ -142,7 +141,7 @@ const TopoDS_Face& FilletSurf_Builder::SupportFace1(const Standard_Integer Index
 const TopoDS_Face& FilletSurf_Builder::SupportFace2(const Standard_Integer Index) const 
 {
  if ( (Index<1)||(Index>NbSurface())) 
-   Standard_OutOfRange::Raise("FilletSurf_Builder::SupportFace2");
+   throw Standard_OutOfRange("FilletSurf_Builder::SupportFace2");
  return myIntBuild.SupportFace2(Index);
   
 }
@@ -154,7 +153,7 @@ const TopoDS_Face& FilletSurf_Builder::SupportFace2(const Standard_Integer Index
 const Handle(Geom_Curve)& FilletSurf_Builder::CurveOnFace1(const Standard_Integer Index) const 
 {
   if ( (Index<1)||(Index>NbSurface())) 
-    Standard_OutOfRange::Raise("FilletSurf_Builder::CurveOnFace1"); 
+    throw Standard_OutOfRange("FilletSurf_Builder::CurveOnFace1");
   return myIntBuild.CurveOnFace1(Index);
 }
 
@@ -165,7 +164,7 @@ const Handle(Geom_Curve)& FilletSurf_Builder::CurveOnFace1(const Standard_Intege
 const Handle(Geom_Curve)& FilletSurf_Builder::CurveOnFace2(const Standard_Integer Index) const 
 { 
   if ( (Index<1)||(Index>NbSurface())) 
-    Standard_OutOfRange::Raise("FilletSurf_Builder::CurveOnFace2"); 
+    throw Standard_OutOfRange("FilletSurf_Builder::CurveOnFace2");
   return myIntBuild.CurveOnFace2(Index);
 }
 
@@ -176,7 +175,7 @@ const Handle(Geom_Curve)& FilletSurf_Builder::CurveOnFace2(const Standard_Intege
 const Handle(Geom2d_Curve)& FilletSurf_Builder::PCurveOnFace1(const Standard_Integer Index) const 
 { 
   if ( (Index<1)||(Index>NbSurface())) 
-    Standard_OutOfRange::Raise( "FilletSurf_Builder::PCurveOnFace1"); 
+    throw Standard_OutOfRange( "FilletSurf_Builder::PCurveOnFace1");
   return myIntBuild.PCurveOnFace1(Index);
 }
 
@@ -187,7 +186,7 @@ const Handle(Geom2d_Curve)& FilletSurf_Builder::PCurveOnFace1(const Standard_Int
 const Handle(Geom2d_Curve)& FilletSurf_Builder::PCurve1OnFillet(const Standard_Integer Index) const 
 { 
   if ( (Index<1)||(Index>NbSurface())) 
-    Standard_OutOfRange::Raise("FilletSurf_Builder::PCurve1OnFillet");
+    throw Standard_OutOfRange("FilletSurf_Builder::PCurve1OnFillet");
   return myIntBuild.PCurve1OnFillet(Index);
 }
 
@@ -198,7 +197,7 @@ const Handle(Geom2d_Curve)& FilletSurf_Builder::PCurve1OnFillet(const Standard_I
 const Handle(Geom2d_Curve)& FilletSurf_Builder::PCurveOnFace2(const Standard_Integer Index) const 
 {
   if ( (Index<1)||(Index>NbSurface())) 
-    Standard_OutOfRange::Raise("FilletSurf_Builder::PCurveOnFace2");
+    throw Standard_OutOfRange("FilletSurf_Builder::PCurveOnFace2");
   return myIntBuild.PCurveOnFace2(Index);
 }
 
@@ -209,7 +208,7 @@ const Handle(Geom2d_Curve)& FilletSurf_Builder::PCurveOnFace2(const Standard_Int
 const Handle(Geom2d_Curve)& FilletSurf_Builder::PCurve2OnFillet(const Standard_Integer Index) const 
 {
   if ( (Index<1)||(Index>NbSurface())) 
-    Standard_OutOfRange::Raise("FilletSurf_Builder::PCurve2OnFillet");
+    throw Standard_OutOfRange("FilletSurf_Builder::PCurve2OnFillet");
   return myIntBuild.PCurve2OnFillet(Index);
 }
 
@@ -220,7 +219,7 @@ const Handle(Geom2d_Curve)& FilletSurf_Builder::PCurve2OnFillet(const Standard_I
 Standard_Real FilletSurf_Builder::FirstParameter() const
 {
   if (IsDone()==FilletSurf_IsNotOk) 
-    StdFail_NotDone::Raise("FilletSurf_Builder::FirstParameter");
+    throw StdFail_NotDone("FilletSurf_Builder::FirstParameter");
   return myIntBuild.FirstParameter();
 }
 
@@ -231,7 +230,7 @@ Standard_Real FilletSurf_Builder::FirstParameter() const
 Standard_Real FilletSurf_Builder::LastParameter() const
 {
   if (IsDone()==FilletSurf_IsNotOk) 
-    StdFail_NotDone::Raise("FilletSurf_Builder::LastParameter");
+    throw StdFail_NotDone("FilletSurf_Builder::LastParameter");
   return myIntBuild.LastParameter();
 }
 
@@ -248,7 +247,7 @@ Standard_Real FilletSurf_Builder::LastParameter() const
 FilletSurf_StatusType  FilletSurf_Builder::StartSectionStatus() const 
 {
   if (IsDone()==FilletSurf_IsNotOk)
-    StdFail_NotDone::Raise("FilletSurf_Builder::StartSectionStatus" );
+    throw StdFail_NotDone("FilletSurf_Builder::StartSectionStatus" );
   return  myIntBuild.StartSectionStatus();
 }
 
@@ -265,7 +264,7 @@ FilletSurf_StatusType  FilletSurf_Builder::StartSectionStatus() const
 FilletSurf_StatusType  FilletSurf_Builder::EndSectionStatus() const 
 {
   if (IsDone()==FilletSurf_IsNotOk) 
-    StdFail_NotDone::Raise("FilletSurf_Builder::StartSectionStatus");
+    throw StdFail_NotDone("FilletSurf_Builder::StartSectionStatus");
   return  myIntBuild.EndSectionStatus(); 
 }
 
@@ -291,9 +290,8 @@ void FilletSurf_Builder::Simulate()
 Standard_Integer FilletSurf_Builder::NbSection(const Standard_Integer IndexSurf) const 
 {
   if (IsDone()==FilletSurf_IsNotOk) 
-    StdFail_NotDone::Raise("FilletSurf_Builder::NbSection)");
-  else if ( (IndexSurf<1)||(IndexSurf>NbSurface())) Standard_OutOfRange::Raise
-    ("FilletSurf_Builder::NbSection");
+    throw StdFail_NotDone("FilletSurf_Builder::NbSection)");
+  else if ( (IndexSurf<1)||(IndexSurf>NbSurface())) throw Standard_OutOfRange("FilletSurf_Builder::NbSection");
   return myIntBuild.NbSection(IndexSurf);
 }
 
@@ -308,10 +306,10 @@ void FilletSurf_Builder::Section(const Standard_Integer IndexSurf,
 				 Handle(Geom_TrimmedCurve)& Circ) const 
 {
   if ((IndexSurf<1)||(IndexSurf>NbSurface())) 
-    Standard_OutOfRange::Raise("FilletSurf_Builder::Section NbSurface");
+    throw Standard_OutOfRange("FilletSurf_Builder::Section NbSurface");
 
   else if ((IndexSec<1)||(IndexSec>NbSection(IndexSurf))) 
-    Standard_OutOfRange::Raise("FilletSurf_Builder::Section NbSection");
+    throw Standard_OutOfRange("FilletSurf_Builder::Section NbSection");
 
   else myIntBuild.Section(IndexSurf, IndexSec,Circ);
 }

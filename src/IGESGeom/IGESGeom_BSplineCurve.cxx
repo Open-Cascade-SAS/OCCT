@@ -42,11 +42,11 @@ IGESGeom_BSplineCurve::IGESGeom_BSplineCurve ()    {  }
 {
   if (!allPoles.IsNull()) {
     if (allPoles->Length() != allWeights->Length())
-      Standard_DimensionMismatch::Raise("IGESGeom_BSplineCurve : Init");
+      throw Standard_DimensionMismatch("IGESGeom_BSplineCurve : Init");
     if (allKnots->Lower()   != -aDegree || allKnots->Upper()   != anIndex+1 ||
 	allWeights->Upper() !=  anIndex ||
 	allWeights->Lower() != 0        || allPoles->Lower() != 0)
-      Standard_DimensionMismatch::Raise("IGESGeom_BSplineCurve : Init");
+      throw Standard_DimensionMismatch("IGESGeom_BSplineCurve : Init");
   }
 
   theIndex     = anIndex;
@@ -67,8 +67,7 @@ IGESGeom_BSplineCurve::IGESGeom_BSplineCurve ()    {  }
 
     void  IGESGeom_BSplineCurve::SetFormNumber (const Standard_Integer form)
 {
-  if (form < 0 || form > 5) Standard_OutOfRange::Raise
-    ("IGESGeom_BSplineCurve : SetFormNumber");
+  if (form < 0 || form > 5) throw Standard_OutOfRange("IGESGeom_BSplineCurve : SetFormNumber");
   InitTypeAndForm(126,form);
 }
 

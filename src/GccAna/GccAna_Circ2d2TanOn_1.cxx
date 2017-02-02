@@ -75,7 +75,7 @@ GccAna_Circ2d2TanOn::
 	 Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
        !(Qualified2.IsEnclosed() ||
 	 Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-     GccEnt_BadQualifier::Raise();
+     throw GccEnt_BadQualifier();
      return;
    }
    Standard_Real Tol = Abs(Tolerance);
@@ -110,7 +110,7 @@ GccAna_Circ2d2TanOn::
    }
    else if (Qualified1.IsUnqualified()) { ok = Standard_True; }
    else { 
-     GccEnt_BadQualifier::Raise();
+     throw GccEnt_BadQualifier();
      return;
    }
    if (ok) {
@@ -124,7 +124,7 @@ GccAna_Circ2d2TanOn::
      }
      else if (Qualified2.IsUnqualified()) { WellDone = Standard_False; }
      else { 
-       GccEnt_BadQualifier::Raise();
+       throw GccEnt_BadQualifier();
        return;
      }
    }

@@ -40,11 +40,11 @@ BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle,
        myRadius(Radius)
 {
   if (Height < Precision::Confusion())
-    Standard_DomainError::Raise("cone with null height");
+    throw Standard_DomainError("cone with null height");
   if (myHalfAngle*Height < Precision::Confusion())
-    Standard_DomainError::Raise("cone with null angle");
+    throw Standard_DomainError("cone with null angle");
   if ((M_PI/2 - myHalfAngle)*Height < Precision::Confusion())
-    Standard_DomainError::Raise("cone with angle > PI/2");
+    throw Standard_DomainError("cone with angle > PI/2");
   
   // cut at top
   VMax(Height / Cos(myHalfAngle));
@@ -63,7 +63,7 @@ BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle) :
        myRadius(0.)
 {
   if ((Angle < 0) || (Angle > M_PI/2)) 
-    Standard_DomainError::Raise("cone with angle <0 or > PI/2");
+    throw Standard_DomainError("cone with angle <0 or > PI/2");
   VMin(0.);
   SetMeridian();
 }
@@ -81,7 +81,7 @@ BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle,
        myRadius(0.)
 {
   if ((Angle < 0) || (Angle > M_PI/2)) 
-    Standard_DomainError::Raise("cone with angle <0 or > PI/2");
+    throw Standard_DomainError("cone with angle <0 or > PI/2");
   VMin(0.);
   SetMeridian();
 }
@@ -97,7 +97,7 @@ BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle,
        myHalfAngle(Angle)
 {
   if ((Angle < 0) || (Angle > M_PI/2)) 
-    Standard_DomainError::Raise("cone with angle <0 or > PI/2");
+    throw Standard_DomainError("cone with angle <0 or > PI/2");
   VMin(0.);
   SetMeridian();
 }
@@ -190,11 +190,11 @@ void BRepPrim_Cone::SetParameters(const Standard_Real R1,
 {
   if (((R1 != 0) && (R1 < Precision::Confusion())) ||
       ((R2 != 0) && (R2 < Precision::Confusion())))
-    Standard_DomainError::Raise("cone with negative or too small radius");
+    throw Standard_DomainError("cone with negative or too small radius");
   if (Abs(R1-R2) < Precision::Confusion())
-    Standard_DomainError::Raise("cone with two identic radii");
+    throw Standard_DomainError("cone with two identic radii");
   if (H < Precision::Confusion())
-    Standard_DomainError::Raise("cone with negative or null height");
+    throw Standard_DomainError("cone with negative or null height");
 
   myRadius = R1;
   myHalfAngle = ATan((R2 - R1) / H);

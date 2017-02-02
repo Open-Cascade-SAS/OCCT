@@ -396,15 +396,15 @@ Standard_Boolean Extrema_ExtCC2d::IsDone() const
 
 Standard_Real Extrema_ExtCC2d::SquareDistance(const Standard_Integer N) const 
 {
-  if(!myDone) StdFail_NotDone::Raise();
-  if ((N <= 0) || (N > mynbext)) Standard_OutOfRange::Raise();
+  if(!myDone) throw StdFail_NotDone();
+  if ((N <= 0) || (N > mynbext)) throw Standard_OutOfRange();
   return mySqDist.Value(N);
 }
 
 
 Standard_Integer Extrema_ExtCC2d::NbExt() const
 {
-  if(!myDone) StdFail_NotDone::Raise();
+  if(!myDone) throw StdFail_NotDone();
   return mynbext;
 }
 
@@ -413,8 +413,8 @@ void Extrema_ExtCC2d::Points(const Standard_Integer N,
 			      Extrema_POnCurv2d& P1,
 			      Extrema_POnCurv2d& P2) const
 {
-  if(!myDone) StdFail_NotDone::Raise();
-  if ((N <= 0) || (N > mynbext)) Standard_OutOfRange::Raise();
+  if(!myDone) throw StdFail_NotDone();
+  if ((N <= 0) || (N > mynbext)) throw Standard_OutOfRange();
   P1 = mypoints.Value(2*N-1);
   P2 = mypoints.Value(2*N);
 }
@@ -558,7 +558,7 @@ void Extrema_ExtCC2d::Results(const Extrema_ECC2d& AlgExt,
 
 Standard_Boolean Extrema_ExtCC2d::IsParallel() const
 {
-  if (!myDone) StdFail_NotDone::Raise();
+  if (!myDone) throw StdFail_NotDone();
   return myIsPar;
 }
 

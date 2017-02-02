@@ -686,6 +686,5 @@ const BRepTopAdaptor_FClass2d &  BRepTopAdaptor_FClass2d::Copy(const BRepTopAdap
 #ifdef OCCT_DEBUG
   cerr<<"Copy not allowed in BRepTopAdaptor_FClass2d"<<endl;
 #endif
-  Standard_ConstructionError::Raise();
-  return(*this);
+  throw Standard_ConstructionError();
 }

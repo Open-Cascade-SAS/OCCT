@@ -337,13 +337,12 @@ Standard_Boolean IGESData_IGESEntity::CResValues (const Standard_CString res1,
     Handle(IGESData_IGESEntity) IGESData_IGESEntity::UniqueParent () const
 {
   if (NbTypedProperties(STANDARD_TYPE(IGESData_SingleParentEntity)) != 1)
-    Interface_InterfaceError::Raise ("IGESEntity : UniqueParent");
+    throw Interface_InterfaceError("IGESEntity : UniqueParent");
   else {
     DeclareAndCast(IGESData_SingleParentEntity,PP,
 		   TypedProperty(STANDARD_TYPE(IGESData_SingleParentEntity)));
     return PP->SingleParent();
   }
-  return this;  // ne rime a rien (cf exception) mais calme le compilateur
 }
 
 

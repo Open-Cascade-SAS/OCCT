@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Storage_StreamTypeMismatchError, Storage_StreamReadError)
 
 #if !defined No_Exception && !defined No_Storage_StreamTypeMismatchError
   #define Storage_StreamTypeMismatchError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Storage_StreamTypeMismatchError::Raise(MESSAGE);
+  if (CONDITION) throw Storage_StreamTypeMismatchError(MESSAGE);
 #else
   #define Storage_StreamTypeMismatchError_Raise_if(CONDITION, MESSAGE)
 #endif

@@ -317,7 +317,7 @@ Standard_Boolean Extrema_GLocateExtPC::IsDone () const
 
 Standard_Real Extrema_GLocateExtPC::SquareDistance () const 
 {
-  if (!myDone) { StdFail_NotDone::Raise(); }
+  if (!myDone) { throw StdFail_NotDone(); }
   Standard_Real d=0;
   if ((type == GeomAbs_BezierCurve)) {
     d =  myLocExtPC.SquareDistance();
@@ -343,7 +343,7 @@ Standard_Real Extrema_GLocateExtPC::SquareDistance () const
 
 Standard_Boolean Extrema_GLocateExtPC::IsMin () const 
 {
-  if (!myDone) { StdFail_NotDone::Raise(); }
+  if (!myDone) { throw StdFail_NotDone(); }
   Standard_Boolean b=0;
   if ((type == GeomAbs_BezierCurve)) {
     b = myLocExtPC.IsMin();
@@ -369,7 +369,7 @@ Standard_Boolean Extrema_GLocateExtPC::IsMin () const
 
 const ThePOnC & Extrema_GLocateExtPC::Point () const 
 {
-  if (!myDone) { StdFail_NotDone::Raise(); }
+  if (!myDone) { throw StdFail_NotDone(); }
   if (type == GeomAbs_BezierCurve) {
     return myLocExtPC.Point();
   }

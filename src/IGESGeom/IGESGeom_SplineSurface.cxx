@@ -37,26 +37,22 @@ IGESGeom_SplineSurface::IGESGeom_SplineSurface ()    {  }
 {
   Standard_Integer i,j;
   if (allUBreakPoints->Lower() != 1 || allVBreakPoints->Lower() != 1)
-    Standard_DimensionMismatch::Raise
-  ("IGESGeom_SplineSurface: Lower Indices of BreakPoints in Init");
+    throw Standard_DimensionMismatch("IGESGeom_SplineSurface: Lower Indices of BreakPoints in Init");
 
   Standard_Integer nbUSegs = allUBreakPoints->Length() - 1;
   Standard_Integer nbVSegs = allVBreakPoints->Length() - 1;
 
   Standard_Integer len = allXCoeffs->RowLength();
   if ((len != allYCoeffs->RowLength()) || (len != allZCoeffs->RowLength()))
-    Standard_DimensionMismatch::Raise
-  ("IGESGeom_SplineSurface: Row Length of HArray2s in Init");
+    throw Standard_DimensionMismatch("IGESGeom_SplineSurface: Row Length of HArray2s in Init");
   if (allXCoeffs->LowerCol() != 1 || allXCoeffs->LowerRow() != 1 ||
       allYCoeffs->LowerCol() != 1 || allYCoeffs->LowerRow() != 1 ||
       allZCoeffs->LowerCol() != 1 || allZCoeffs->LowerRow() != 1 )
-    Standard_DimensionMismatch::Raise
-  ("IGESGeom_SplineSurface: Lower Col-Row Indices of HArray2s in Init");
+    throw Standard_DimensionMismatch("IGESGeom_SplineSurface: Lower Col-Row Indices of HArray2s in Init");
 
   len = allXCoeffs->ColLength();
   if ((len != allYCoeffs->ColLength()) || (len != allZCoeffs->ColLength()))
-    Standard_DimensionMismatch::Raise
-  ("IGESGeom_SplineSurface: Column Length of HArray2s in Init");
+    throw Standard_DimensionMismatch("IGESGeom_SplineSurface: Column Length of HArray2s in Init");
 
   Handle(TColStd_HArray1OfReal) temp1;
   Handle(TColStd_HArray1OfReal) temp2;
@@ -70,8 +66,7 @@ IGESGeom_SplineSurface::IGESGeom_SplineSurface ()    {  }
         if ((temp1.IsNull() || temp1->Length() != 16) || 
             (temp2.IsNull() || temp2->Length() != 16) || 
             (temp3.IsNull() || temp3->Length() != 16))
-	  Standard_DimensionMismatch::Raise
-	    ("IGESGeom_SplineSurface: Lengths of elements of HArray2s in Init");
+	  throw Standard_DimensionMismatch("IGESGeom_SplineSurface: Lengths of elements of HArray2s in Init");
       }
 
 

@@ -317,7 +317,7 @@ Standard_Boolean EdgesIntersector_checkT1D(const TopoDS_Edge& E1,const TopoDS_Ed
   //modified by NIZNHY-PKV Thu Nov  4 15:44:13 1999 to
 
   if (PC1.IsNull()) 
-    Standard_Failure::Raise("EdgesIntersector::Perform : no 2d curve");
+    throw Standard_Failure("EdgesIntersector::Perform : no 2d curve");
   
   myCurve1.Load(PC1);
   BRep_Tool::UVPoints(myEdge1,myFace1,pfirst,plast);
@@ -844,9 +844,7 @@ const TopoDS_Shape& TopOpeBRep_EdgesIntersector::Edge(const Standard_Integer Ind
 {
   if      ( Index == 1 ) return myEdge1;
   else if ( Index == 2 ) return myEdge2;
-  else Standard_Failure::Raise("TopOpeBRep_EdgesIntersector::Edge");
-  
-  return myEdge1;
+  else throw Standard_Failure("TopOpeBRep_EdgesIntersector::Edge");
 }
 
 //=======================================================================
@@ -857,9 +855,7 @@ const Geom2dAdaptor_Curve& TopOpeBRep_EdgesIntersector::Curve(const Standard_Int
 {
   if      ( Index == 1 ) return myCurve1;
   else if ( Index == 2 ) return myCurve2;
-  else Standard_Failure::Raise("TopOpeBRep_EdgesIntersector::Curve");
-  
-  return myCurve1;
+  else throw Standard_Failure("TopOpeBRep_EdgesIntersector::Curve");
 }
 
 //=======================================================================
@@ -870,9 +866,7 @@ const TopoDS_Shape& TopOpeBRep_EdgesIntersector::Face(const Standard_Integer Ind
 {
   if      ( Index == 1 ) return myFace1;
   else if ( Index == 2 ) return myFace2;
-  else Standard_Failure::Raise("TopOpeBRep_EdgesIntersector::Face");
-  
-  return myFace1;
+  else throw Standard_Failure("TopOpeBRep_EdgesIntersector::Face");
 }
 
 //=======================================================================
@@ -883,9 +877,7 @@ const BRepAdaptor_Surface& TopOpeBRep_EdgesIntersector::Surface(const Standard_I
 {
   if      ( Index == 1 ) return mySurface1->ChangeSurface();
   else if ( Index == 2 ) return mySurface2->ChangeSurface();
-  else Standard_Failure::Raise("TopOpeBRep_EdgesIntersector::Surface");
-  
-  return mySurface1->ChangeSurface();
+  else throw Standard_Failure("TopOpeBRep_EdgesIntersector::Surface");
 }
 
 //=======================================================================
@@ -979,7 +971,7 @@ const TopOpeBRep_Point2d& TopOpeBRep_EdgesIntersector::Point() const
 //=======================================================================
 const TopOpeBRep_Point2d& TopOpeBRep_EdgesIntersector::Point(const Standard_Integer I) const
 {
-  if (I<1 || I>mysp2d.Length()) Standard_Failure::Raise("TopOpeBRep_EdgesIntersector::Point(I)");
+  if (I<1 || I>mysp2d.Length()) throw Standard_Failure("TopOpeBRep_EdgesIntersector::Point(I)");
   return mysp2d(I);
 }
 

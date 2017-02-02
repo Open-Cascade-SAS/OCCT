@@ -25,7 +25,7 @@ DEFINE_STANDARD_HANDLE(OSD_Exception_FLT_INVALID_OPERATION, OSD_Exception)
 
 #if !defined No_Exception && !defined No_OSD_Exception_FLT_INVALID_OPERATION
   #define OSD_Exception_FLT_INVALID_OPERATION_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) OSD_Exception_FLT_INVALID_OPERATION::Raise(MESSAGE);
+  if (CONDITION) throw OSD_Exception_FLT_INVALID_OPERATION(MESSAGE);
 #else
   #define OSD_Exception_FLT_INVALID_OPERATION_Raise_if(CONDITION, MESSAGE)
 #endif

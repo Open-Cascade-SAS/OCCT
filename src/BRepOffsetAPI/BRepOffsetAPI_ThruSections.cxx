@@ -193,7 +193,7 @@ static TopoDS_Solid MakeSolid(TopoDS_Shell& shell, const TopoDS_Wire& wire1,
   TopoDS_Face& face1, TopoDS_Face& face2)
 {
   if (shell.IsNull())
-    StdFail_NotDone::Raise("Thrusections is not build");
+    throw StdFail_NotDone("Thrusections is not build");
   Standard_Boolean B = shell.Closed();
   BRep_Builder BB;
 
@@ -346,7 +346,7 @@ void BRepOffsetAPI_ThruSections::Build()
       wdeg = wdeg && (BRep_Tool::Degenerated(anEdge));
     }
     if (wdeg)
-      Standard_Failure::Raise("Wrong usage of punctual sections");
+      throw Standard_Failure("Wrong usage of punctual sections");
   }
   if (myWires.Length() <= 2)
   {
@@ -358,7 +358,7 @@ void BRepOffsetAPI_ThruSections::Build()
         wdeg = wdeg && (BRep_Tool::Degenerated(anEdge));
       }
       if (wdeg)
-        Standard_Failure::Raise("Wrong usage of punctual sections");
+        throw Standard_Failure("Wrong usage of punctual sections");
   }
 
   if (myWCheck) {
@@ -878,7 +878,7 @@ static Handle(Geom_BSplineCurve) EdgeToBSpline (const TopoDS_Edge& theEdge)
     Standard_Real aFirst, aLast;
     Handle(Geom_Curve) aCurve = BRep_Tool::Curve (theEdge, aLoc, aFirst, aLast);
     if (aCurve.IsNull())
-      Standard_NullObject::Raise("Null 3D curve in edge");
+      throw Standard_NullObject("Null 3D curve in edge");
 
     // convert its part used by edge to bspline; note that if edge curve is bspline,
     // conversion made via trimmed curve is still needed -- it will copy it, segment 
@@ -1106,7 +1106,7 @@ void BRepOffsetAPI_ThruSections::CriteriumWeight(Standard_Real& W1, Standard_Rea
 
 void BRepOffsetAPI_ThruSections::SetCriteriumWeight(const Standard_Real W1, const Standard_Real W2, const Standard_Real W3)
 {
-  if (W1 < 0 || W2 < 0 || W3 < 0 ) Standard_DomainError::Raise();
+  if (W1 < 0 || W2 < 0 || W3 < 0 ) throw Standard_DomainError();
   myCritWeights[0] = W1;
   myCritWeights[1] = W2;
   myCritWeights[2] = W3;

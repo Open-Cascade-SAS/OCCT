@@ -175,7 +175,7 @@ const gp_Pnt& Poly_Triangulation::Node (const Standard_Integer theIndex) const
 {
   if (theIndex < 1 || theIndex > myNodes.Size())
   {
-    Standard_OutOfRange::Raise ("Poly_Triangulation::Node : index out of range");
+    throw Standard_OutOfRange ("Poly_Triangulation::Node : index out of range");
   }
   return myNodes.Value (theIndex);
 }
@@ -189,7 +189,7 @@ gp_Pnt& Poly_Triangulation::ChangeNode (const Standard_Integer theIndex)
 {
   if (theIndex < 1 || theIndex > myNodes.Size())
   {
-    Standard_OutOfRange::Raise ("Poly_Triangulation::ChangeNode : index out of range");
+    throw Standard_OutOfRange ("Poly_Triangulation::ChangeNode : index out of range");
   }
   return myNodes.ChangeValue (theIndex);
 }
@@ -223,7 +223,7 @@ const gp_Pnt2d& Poly_Triangulation::UVNode (const Standard_Integer theIndex) con
 {
   if (myUVNodes.IsNull() || theIndex < 1 || theIndex > myUVNodes->Size())
   {
-    Standard_OutOfRange::Raise ("Poly_Triangulation::UVNode : index out of range");
+    throw Standard_OutOfRange ("Poly_Triangulation::UVNode : index out of range");
   }
   return myUVNodes->Value (theIndex);
 }
@@ -237,7 +237,7 @@ gp_Pnt2d& Poly_Triangulation::ChangeUVNode (const Standard_Integer theIndex)
 {
   if (myUVNodes.IsNull() || theIndex < 1 || theIndex > myUVNodes->Size())
   {
-    Standard_OutOfRange::Raise ("Poly_Triangulation::ChangeUVNode : index out of range");
+    throw Standard_OutOfRange ("Poly_Triangulation::ChangeUVNode : index out of range");
   }
   return myUVNodes->ChangeValue (theIndex);
 }
@@ -271,7 +271,7 @@ const Poly_Triangle& Poly_Triangulation::Triangle (const Standard_Integer theInd
 {
   if (theIndex < 1 || theIndex > myTriangles.Size())
   {
-    Standard_OutOfRange::Raise ("Poly_Triangulation::Triangle : index out of range");
+    throw Standard_OutOfRange ("Poly_Triangulation::Triangle : index out of range");
   }
   return myTriangles.Value (theIndex);
 }
@@ -285,7 +285,7 @@ Poly_Triangle& Poly_Triangulation::ChangeTriangle (const Standard_Integer theInd
 {
   if (theIndex < 1 || theIndex > myTriangles.Size())
   {
-    Standard_OutOfRange::Raise ("Poly_Triangulation::ChangeTriangle : index out of range");
+    throw Standard_OutOfRange ("Poly_Triangulation::ChangeTriangle : index out of range");
   }
   return myTriangles.ChangeValue (theIndex);
 }
@@ -299,7 +299,7 @@ void Poly_Triangulation::SetNormals (const Handle(TShort_HArray1OfShortReal)& th
 {
 
   if(theNormals.IsNull() || theNormals->Length() != 3*myNbNodes) {
-    Standard_DomainError::Raise("Poly_Triangulation::SetNormals : wrong length");
+    throw Standard_DomainError("Poly_Triangulation::SetNormals : wrong length");
   }
 
   myNormals = theNormals;
@@ -314,8 +314,8 @@ const TShort_Array1OfShortReal& Poly_Triangulation::Normals() const
 {
 
   if(myNormals.IsNull() || myNormals->Length() != 3*myNbNodes) {
-    Standard_NullObject::Raise("Poly_Triangulation::Normals : "
-                               "wrong length or null array");
+    throw Standard_NullObject("Poly_Triangulation::Normals : "
+                              "wrong length or null array");
   }
 
   return myNormals->Array1();
@@ -330,8 +330,8 @@ TShort_Array1OfShortReal& Poly_Triangulation::ChangeNormals()
 {
 
   if(myNormals.IsNull() || myNormals->Length() != 3*myNbNodes) {
-    Standard_NullObject::Raise("Poly_Triangulation::ChangeNormals : "
-                               "wrong length or null array");
+    throw Standard_NullObject("Poly_Triangulation::ChangeNormals : "
+                              "wrong length or null array");
   }
 
   return myNormals->ChangeArray1();
@@ -359,7 +359,7 @@ void Poly_Triangulation::SetNormal (const Standard_Integer theIndex, const gp_Di
 {
   if (myNormals.IsNull() || theIndex < 1 || theIndex > myNodes.Size())
   {
-    Standard_NullObject::Raise("Poly_Triangulation::SetNormal : empty array or index out of range");
+    throw Standard_NullObject ("Poly_Triangulation::SetNormal : empty array or index out of range");
   }
 
   myNormals->ChangeValue (theIndex * 3 - 2) = (Standard_ShortReal) theNormal.X();
@@ -376,7 +376,7 @@ const gp_Dir Poly_Triangulation::Normal (const Standard_Integer theIndex) const
 {
   if (myNormals.IsNull() || theIndex < 1 || theIndex > myNodes.Size())
   {
-    Standard_NullObject::Raise("Poly_Triangulation::Normal : empty array or index out of range");
+    throw Standard_NullObject ("Poly_Triangulation::Normal : empty array or index out of range");
   }
 
   gp_Dir N;

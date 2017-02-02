@@ -644,15 +644,15 @@ void BRepFill_OffsetWire::Perform (const Standard_Real Offset,
       PerformWithBiLo(myWorkSpine,Offset,myBilo,myLink,myJoinType,Alt);
     }
   }
-  catch (Standard_Failure)//Every exception was caught.
-  {
-    myShape.Nullify();
-    myIsDone = Standard_False;
+  catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
     cout<<"An exception was caught in BRepFill_OffsetWire::Perform : ";
-    Standard_Failure::Caught()->Print(cout);
+    anException.Print(cout);
     cout<<endl;
 #endif
+    (void)anException;
+    myShape.Nullify();
+    myIsDone = Standard_False;
 
     return;
   }
@@ -669,7 +669,7 @@ void BRepFill_OffsetWire::Perform (const Standard_Real Offset,
       if (!aWire.Closed()) {
         myShape.Nullify();
         myIsDone = Standard_False;
-        Standard_ConstructionError::Raise("Offset wire is not closed.");
+        throw Standard_ConstructionError("Offset wire is not closed.");
       }
     }
   }
@@ -1602,10 +1602,7 @@ void BRepFill_OffsetWire::FixHoles()
     TopExp::Vertices( Base, Vf, Vl );
     if(Vf.IsNull() || Vl.IsNull())
     {
-      Standard_Failure::Raise("BRepFill_OffsetWire::FixHoles(): Wrong wire.");
-#ifdef OCCT_DEBUG
-      BRepTools::Write(Base, "Base");
-#endif
+      throw Standard_Failure("BRepFill_OffsetWire::FixHoles(): Wrong wire.");
     }
     gp_Pnt Pf, Pl;
     Pf = BRep_Tool::Pnt(Vf);
@@ -1621,13 +1618,7 @@ void BRepFill_OffsetWire::FixHoles()
 
       if(V1.IsNull() || V2.IsNull())
       {
-        Standard_Failure::Raise("BRepFill_OffsetWire::FixHoles(): Wrong wire.");
-#ifdef OCCT_DEBUG
-        BRepTools::Write(Base, "Base");
-        char name[128];
-        sprintf(name,"Wire_%d",i);
-        BRepTools::Write(aWire, name);
-#endif
+        throw Standard_Failure("BRepFill_OffsetWire::FixHoles(): Wrong wire.");
       }
 
       gp_Pnt P1, P2;

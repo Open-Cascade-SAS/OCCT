@@ -80,7 +80,7 @@ static Standard_Integer DDocStd_DumpCommand (Draw_Interpretor& di,
       else if (AD->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval)))      {removed.Append(AD);}
       else if (AD->IsKind(STANDARD_TYPE(TDF_DeltaOnModification))) {modified.Append(AD);}
       else {
-	Standard_DomainError::Raise("DDocStd_DumpCommand : unknown delta");
+	throw Standard_DomainError("DDocStd_DumpCommand : unknown delta");
       }
     }
     //

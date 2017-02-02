@@ -85,7 +85,7 @@ void Image_PixMap::SetFormat (Image_PixMap::ImgFormat thePixelFormat)
   if (!IsEmpty()
     && SizePixelBytes (myImgFormat) != SizePixelBytes (thePixelFormat))
   {
-    Standard_ProgramError::Raise ("Image_PixMap::SetFormat() - incompatible pixel format");
+    throw Standard_ProgramError("Image_PixMap::SetFormat() - incompatible pixel format");
     return;
   }
 

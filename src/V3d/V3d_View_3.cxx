@@ -50,7 +50,7 @@ void V3d_View::Move (const Standard_Real Dx,
     gp_Dir anUp (aCamera->Up());
     if (!ScreenAxis (aReferencePlane, anUp, myXscreenAxis, myYscreenAxis, myZscreenAxis))
     {
-          V3d_BadValue::Raise ("V3d_View::Translate, alignment of Eye,At,Up");
+          throw V3d_BadValue("V3d_View::Translate, alignment of Eye,At,Up");
     }
   }
 
@@ -136,7 +136,7 @@ void V3d_View::Translate (const Standard_Real Dx,
     gp_Dir anUp (aCamera->Up());
     if (!ScreenAxis (aReferencePlane, anUp,
 		  myXscreenAxis,myYscreenAxis,myZscreenAxis))
-	      V3d_BadValue::Raise ("V3d_View::Translate, alignment of Eye,At,Up");
+	      throw V3d_BadValue("V3d_View::Translate, alignment of Eye,At,Up");
   }
 
   Standard_Real XX, XY, XZ, YX, YY, YZ, ZX, ZY, ZZ;

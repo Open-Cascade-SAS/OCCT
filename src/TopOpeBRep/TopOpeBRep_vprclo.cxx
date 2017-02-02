@@ -95,7 +95,7 @@ TopOpeBRepDS_Transition TopOpeBRep_FacesFiller::GetEdgeTrans(const TopOpeBRep_VP
   Standard_Integer vpsind = VP.ShapeIndex();
   Standard_Boolean on2edges = (vpsind == 3);
   Standard_Boolean isvalid = on2edges || (vpsind == ShapeIndex);
-  if (!isvalid) Standard_Failure::Raise("TopOpeBRep_FacesFiller::GetEdgeTrans");
+  if (!isvalid) throw Standard_Failure("TopOpeBRep_FacesFiller::GetEdgeTrans");
   
   const TopoDS_Edge& edge = TopoDS::Edge(VP.Edge(ShapeIndex));
   Standard_Real paredge = VP.EdgeParameter(ShapeIndex);

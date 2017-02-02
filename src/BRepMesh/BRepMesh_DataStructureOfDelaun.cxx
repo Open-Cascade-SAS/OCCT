@@ -571,9 +571,9 @@ Standard_CString BRepMesh_Dump(void*            theMeshHandlePtr,
     if (!BRepTools::Write(aMesh, theFileNameStr))
       return "Error: write failed";
   }
-  catch (Standard_Failure)
+  catch (Standard_Failure const& anException)
   {
-    return Standard_Failure::Caught()->GetMessageString();
+    return anException.GetMessageString();
   }
 
   return theFileNameStr;

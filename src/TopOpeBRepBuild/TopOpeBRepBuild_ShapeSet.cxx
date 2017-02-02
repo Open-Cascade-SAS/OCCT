@@ -50,7 +50,7 @@ TopOpeBRepBuild_ShapeSet::TopOpeBRepBuild_ShapeSet(const TopAbs_ShapeEnum SubSha
 {
   if      (SubShapeType == TopAbs_EDGE)   myShapeType = TopAbs_FACE;
   else if (SubShapeType == TopAbs_VERTEX) myShapeType = TopAbs_EDGE;
-  else Standard_ProgramError::Raise("ShapeSet : bad ShapeType");
+  else throw Standard_ProgramError("ShapeSet : bad ShapeType");
   myDEBNumber = 0;
 
   myCheckShape = Standard_False; // temporary NYI

@@ -51,7 +51,7 @@ Standard_Address Standard_MMgrTBBalloc::Allocate(const Standard_Size aSize)
   Standard_Address aPtr = ( myClear ? scalable_calloc(aRoundSize, sizeof(char)) :
                                       scalable_malloc(aRoundSize) );
   if ( ! aPtr )
-    Standard_OutOfMemory::Raise("Standard_MMgrTBBalloc::Allocate(): malloc failed");
+    throw Standard_OutOfMemory("Standard_MMgrTBBalloc::Allocate(): malloc failed");
   return aPtr;
 }
 
@@ -78,7 +78,7 @@ Standard_Address Standard_MMgrTBBalloc::Reallocate (Standard_Address theStorage,
   const Standard_Size aRoundSize = (theSize + 3) & ~0x3;
   Standard_Address newStorage = (Standard_Address)scalable_realloc(theStorage, aRoundSize);
   if ( ! newStorage )
-    Standard_OutOfMemory::Raise("Standard_MMgrTBBalloc::Reallocate(): realloc failed");
+    throw Standard_OutOfMemory("Standard_MMgrTBBalloc::Reallocate(): realloc failed");
   // Note that it is not possible to ensure that additional memory
   // allocated by realloc will be cleared (so as to satisfy myClear mode);
   // in order to do that we would need using memset...

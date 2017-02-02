@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Graphic3d_MaterialDefinitionError, Standard_OutOfRange)
 
 #if !defined No_Exception && !defined No_Graphic3d_MaterialDefinitionError
   #define Graphic3d_MaterialDefinitionError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Graphic3d_MaterialDefinitionError::Raise(MESSAGE);
+  if (CONDITION) throw Graphic3d_MaterialDefinitionError(MESSAGE);
 #else
   #define Graphic3d_MaterialDefinitionError_Raise_if(CONDITION, MESSAGE)
 #endif

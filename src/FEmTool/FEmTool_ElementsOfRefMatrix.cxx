@@ -25,7 +25,7 @@ FEmTool_ElementsOfRefMatrix::FEmTool_ElementsOfRefMatrix(const Handle(PLib_Base)
        myBase(TheBase)
 {
   if(DerOrder < 0 || DerOrder > 3) 
-    Standard_ConstructionError::Raise("FEmTool_ElementsOfRefMatrix");
+    throw Standard_ConstructionError("FEmTool_ElementsOfRefMatrix");
 
   myDerOrder = DerOrder;
   myNbEquations = (myBase->WorkDegree()+2)*(myBase->WorkDegree()+1)/2;
@@ -44,7 +44,7 @@ Standard_Integer FEmTool_ElementsOfRefMatrix::NbEquations() const
 
 Standard_Boolean FEmTool_ElementsOfRefMatrix::Value(const math_Vector& X, math_Vector& F) 
 {
-  if(F.Length() < myNbEquations) Standard_OutOfRange::Raise("FEmTool_ElementsOfRefMatrix::Value");
+  if(F.Length() < myNbEquations) throw Standard_OutOfRange("FEmTool_ElementsOfRefMatrix::Value");
 
   Standard_Real u = X(X.Lower());
   TColStd_Array1OfReal Basis(0,myBase->WorkDegree()), Aux(0,myBase->WorkDegree());

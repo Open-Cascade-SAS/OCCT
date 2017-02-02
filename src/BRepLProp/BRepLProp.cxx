@@ -50,7 +50,7 @@ GeomAbs_Shape BRepLProp::Continuity(const BRepAdaptor_Curve& C1,
   BRepLProp_CLProps clp1(C1,u1,n1,tl);
   BRepLProp_CLProps clp2(C2,u2,n2,tl);
   if(!(clp1.Value().IsEqual(clp2.Value(),tl))) {
-    Standard_Failure::Raise("Courbes non jointives");
+    throw Standard_Failure("Courbes non jointives");
   }
   Standard_Integer min = Min(n1,n2);
   if ( min >= 1 ) {

@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Standard_ConstructionError, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_Standard_ConstructionError
   #define Standard_ConstructionError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Standard_ConstructionError::Raise(MESSAGE);
+  if (CONDITION) throw Standard_ConstructionError(MESSAGE);
 #else
   #define Standard_ConstructionError_Raise_if(CONDITION, MESSAGE)
 #endif

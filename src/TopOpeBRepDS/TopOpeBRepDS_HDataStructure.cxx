@@ -729,7 +729,7 @@ void TopOpeBRepDS_HDataStructure::StoreInterference
 {
   Standard_Boolean h = myDS.HasShape(S);
   if ( !h ) {
-    Standard_ProgramError::Raise("StoreInterference on shape out of DS");
+    throw Standard_ProgramError("StoreInterference on shape out of DS");
     return;
   }
   StoreInterference(I,myDS.ChangeShapeInterferences(S));
@@ -746,7 +746,7 @@ void TopOpeBRepDS_HDataStructure::StoreInterference
 {
   Standard_Integer n = myDS.NbShapes();
   if ( IS < 1 || IS > n ) {
-    Standard_ProgramError::Raise("StoreInterference on index out of DS");
+    throw Standard_ProgramError("StoreInterference on index out of DS");
     return;
   }
 

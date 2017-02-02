@@ -76,16 +76,16 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
   int aDummy = 0;
   if (thePxWidth <= 0 || thePxHeight <= 0)
   {
-    Aspect_WindowDefinitionError::Raise ("Xw_Window, Coordinate(s) out of range");
+    throw Aspect_WindowDefinitionError("Xw_Window, Coordinate(s) out of range");
   }
   else if (theXDisplay.IsNull())
   {
-    Aspect_WindowDefinitionError::Raise ("Xw_Window, X Display connection is undefined");
+    throw Aspect_WindowDefinitionError("Xw_Window, X Display connection is undefined");
     return;
   }
   else if (!glXQueryExtension (myDisplay->GetDisplay(), &aDummy, &aDummy))
   {
-    Aspect_WindowDefinitionError::Raise ("Xw_Window, GLX extension is unavailable");
+    throw Aspect_WindowDefinitionError("Xw_Window, GLX extension is unavailable");
     return;
   }
 
@@ -125,7 +125,7 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
   }
   if (aVisInfo == NULL)
   {
-    Aspect_WindowDefinitionError::Raise ("Xw_Window, couldn't find compatible Visual (RGBA, double-buffered)");
+    throw Aspect_WindowDefinitionError("Xw_Window, couldn't find compatible Visual (RGBA, double-buffered)");
     return;
   }
 
@@ -147,7 +147,7 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
   XFree (aVisInfo); aVisInfo = NULL;
   if (myXWindow == 0)
   {
-    Aspect_WindowDefinitionError::Raise ("Xw_Window, Unable to create window");
+    throw Aspect_WindowDefinitionError("Xw_Window, Unable to create window");
     return;
   }
 
@@ -192,18 +192,18 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
   int aDummy = 0;
   if (theXWin == 0)
   {
-    Aspect_WindowDefinitionError::Raise ("Xw_Window, given invalid X window");
+    throw Aspect_WindowDefinitionError("Xw_Window, given invalid X window");
     return;
   }
   else if (theXDisplay.IsNull())
   {
-    Aspect_WindowDefinitionError::Raise ("Xw_Window, X Display connection is undefined");
+    throw Aspect_WindowDefinitionError("Xw_Window, X Display connection is undefined");
     return;
   }
   else if (!glXQueryExtension (myDisplay->GetDisplay(), &aDummy, &aDummy))
   {
     myXWindow = 0;
-    Aspect_WindowDefinitionError::Raise ("Xw_Window, GLX extension is unavailable");
+    throw Aspect_WindowDefinitionError("Xw_Window, GLX extension is unavailable");
     return;
   }
 
@@ -220,7 +220,7 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
   XVisualInfo* aVisInfo = XGetVisualInfo (aDisp, aVisInfoMask, &aVisInfoTmp, &aNbItems);
   if (aVisInfo == NULL)
   {
-    Aspect_WindowDefinitionError::Raise ("Xw_Window, Visual is unavailable");
+    throw Aspect_WindowDefinitionError("Xw_Window, Visual is unavailable");
     return;
   }
   XFree (aVisInfo);

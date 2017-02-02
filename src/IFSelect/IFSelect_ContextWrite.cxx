@@ -212,7 +212,7 @@ void IFSelect_ContextWrite::Next ()
 Handle(Standard_Transient) IFSelect_ContextWrite::Value() const
 {
   if (thecurr < 1 || thecurr > thenbent)
-    Standard_NoSuchObject::Raise("IFSelect_ContextWrite:Value");
+    throw Standard_NoSuchObject("IFSelect_ContextWrite:Value");
   Standard_Integer num = theapply->ItemNum (thecurr);
   return themodel->Value(num);
 }

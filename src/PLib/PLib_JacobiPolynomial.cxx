@@ -45,11 +45,11 @@ const Standard_Integer UNDEFINED=-999;
     case GeomAbs_C1: myNivConstr = 1; break;
     case GeomAbs_C2: myNivConstr = 2; break;
     default: 
-      Standard_ConstructionError::Raise("Invalid ConstraintOrder");
+      throw Standard_ConstructionError("Invalid ConstraintOrder");
   }
   myDegree = myWorkDegree - 2*(myNivConstr+1);
   if (myDegree > 30)
-    Standard_ConstructionError::Raise("Invalid Degree");
+    throw Standard_ConstructionError("Invalid Degree");
 }
 
 //=======================================================================
@@ -66,7 +66,7 @@ void PLib_JacobiPolynomial::Points(const Standard_Integer NbGaussPoints,
       NbGaussPoints != NDEG40 && NbGaussPoints != NDEG50 && 
       NbGaussPoints != NDEG61) || 
       NbGaussPoints <= myDegree)
-    Standard_ConstructionError::Raise("Invalid NbGaussPoints");
+    throw Standard_ConstructionError("Invalid NbGaussPoints");
 
   math_Vector DecreasingPoints(1,NbGaussPoints);
 

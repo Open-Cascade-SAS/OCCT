@@ -65,20 +65,20 @@ static void CheckCurveData
  const Standard_Boolean            Periodic)
 {
   if (Degree < 1 || Degree > Geom_BSplineCurve::MaxDegree()) {
-    Standard_ConstructionError::Raise();  
+    throw Standard_ConstructionError();
   }
   
-  if (CPoles.Length() < 2)                Standard_ConstructionError::Raise();
-  if (CKnots.Length() != CMults.Length()) Standard_ConstructionError::Raise();
+  if (CPoles.Length() < 2)                throw Standard_ConstructionError();
+  if (CKnots.Length() != CMults.Length()) throw Standard_ConstructionError();
   
   for (Standard_Integer I = CKnots.Lower(); I < CKnots.Upper(); I++) {
     if (CKnots (I+1) - CKnots (I) <= Epsilon (Abs(CKnots (I)))) {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
   }
   
   if (CPoles.Length() != BSplCLib::NbPoles(Degree,Periodic,CMults))
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
 }
 
 //=======================================================================
@@ -187,12 +187,12 @@ Geom_BSplineCurve::Geom_BSplineCurve
                  Periodic);
 
   if (Weights.Length() != Poles.Length())
-    Standard_ConstructionError::Raise("Geom_BSplineCurve");
+    throw Standard_ConstructionError("Geom_BSplineCurve");
 
   Standard_Integer i;
   for (i = Weights.Lower(); i <= Weights.Upper(); i++) {
     if (Weights(i) <= gp::Resolution())  
-      Standard_ConstructionError::Raise("Geom_BSplineCurve");
+      throw Standard_ConstructionError("Geom_BSplineCurve");
   }
   
   // check really rational
@@ -237,7 +237,7 @@ void Geom_BSplineCurve::IncreaseDegree  (const Standard_Integer Degree)
   if (Degree == deg) return;
   
   if (Degree < deg || Degree > Geom_BSplineCurve::MaxDegree()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   Standard_Integer FromK1 = FirstUKnotIndex ();
   Standard_Integer ToK2   = LastUKnotIndex  ();
@@ -372,7 +372,7 @@ void  Geom_BSplineCurve::InsertKnots(const TColStd_Array1OfReal& Knots,
   if (!BSplCLib::PrepareInsertKnots(deg,periodic,
 				    knots->Array1(),mults->Array1(),
 				    Knots,&Mults,nbpoles,nbknots,Epsilon,Add))
-    Standard_ConstructionError::Raise("Geom_BSplineCurve::InsertKnots");
+    throw Standard_ConstructionError("Geom_BSplineCurve::InsertKnots");
 
   if (nbpoles == poles->Length()) return;
 
@@ -430,10 +430,10 @@ Standard_Boolean  Geom_BSplineCurve::RemoveKnot(const Standard_Integer Index,
   Standard_Integer I2  = LastUKnotIndex  ();
 
   if ( !periodic && (Index <= I1 || Index >= I2) ) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   else if ( periodic  && (Index < I1 || Index > I2)) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   
   const TColgp_Array1OfPnt   & oldpoles   = poles->Array1();
@@ -526,7 +526,7 @@ void Geom_BSplineCurve::Segment(const Standard_Real U1,
 				const Standard_Real U2)
 {
   if (U2 < U1)
-    Standard_DomainError::Raise("Geom_BSplineCurve::Segment");
+    throw Standard_DomainError("Geom_BSplineCurve::Segment");
   
   Standard_Real NewU1, NewU2;
   Standard_Real U,DU=0,aDDU=0;
@@ -541,7 +541,7 @@ void Geom_BSplineCurve::Segment(const Standard_Real U1,
     Standard_Real Period = LastParameter() - FirstParameter();
     DU = U2 - U1;
     if (DU - Period > Precision::PConfusion())
-      Standard_DomainError::Raise("Geom_BSplineCurve::Segment");
+      throw Standard_DomainError("Geom_BSplineCurve::Segment");
     if (DU > Period)
       DU = Period;
     aDDU = DU;
@@ -683,20 +683,20 @@ void Geom_BSplineCurve::SetKnot
 (const Standard_Integer Index,
  const Standard_Real K)
 {
-  if (Index < 1 || Index > knots->Length())     Standard_OutOfRange::Raise();
+  if (Index < 1 || Index > knots->Length())     throw Standard_OutOfRange();
   Standard_Real DK = Abs(Epsilon (K));
   if (Index == 1) { 
-    if (K >= knots->Value(2) - DK) Standard_ConstructionError::Raise();
+    if (K >= knots->Value(2) - DK) throw Standard_ConstructionError();
   }
   else if (Index == knots->Length()) {
     if (K <= knots->Value (knots->Length()-1) + DK)  {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
   }
   else {
     if (K <= knots->Value(Index-1) + DK ||
 	K >= knots->Value(Index+1) - DK ) {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
   }
   if (K != knots->Value (Index)) {
@@ -784,14 +784,14 @@ void Geom_BSplineCurve::SetPeriodic ()
 void Geom_BSplineCurve::SetOrigin(const Standard_Integer Index)
 {
   if (!periodic)
-    Standard_NoSuchObject::Raise("Geom_BSplineCurve::SetOrigin");
+    throw Standard_NoSuchObject("Geom_BSplineCurve::SetOrigin");
 
   Standard_Integer i,k;
   Standard_Integer first = FirstUKnotIndex();
   Standard_Integer last  = LastUKnotIndex();
 
   if ((Index < first) || (Index > last))
-    Standard_DomainError::Raise("Geom_BSplineCurve::SetOrigin");
+    throw Standard_DomainError("Geom_BSplineCurve::SetOrigin");
 
   Standard_Integer nbknots = knots->Length();
   Standard_Integer nbpoles = poles->Length();
@@ -874,7 +874,7 @@ void Geom_BSplineCurve::SetOrigin(const Standard_Real U,
 				  const Standard_Real Tol)
 {
   if (!periodic)
-    Standard_NoSuchObject::Raise("Geom_BSplineCurve::SetOrigin");
+    throw Standard_NoSuchObject("Geom_BSplineCurve::SetOrigin");
   //U est il dans la period.
   Standard_Real uf = FirstParameter(), ul = LastParameter();
   Standard_Real u = U, period = ul - uf;
@@ -973,7 +973,7 @@ void Geom_BSplineCurve::SetPole
 (const Standard_Integer Index,
  const gp_Pnt& P)
 {
-  if (Index < 1 || Index > poles->Length()) Standard_OutOfRange::Raise();
+  if (Index < 1 || Index > poles->Length()) throw Standard_OutOfRange();
   poles->SetValue (Index, P);
   maxderivinvok = 0;
 }
@@ -1001,9 +1001,9 @@ void Geom_BSplineCurve::SetWeight
 (const Standard_Integer Index,
  const Standard_Real W)
 {
-  if (Index < 1 || Index > poles->Length())   Standard_OutOfRange::Raise();
+  if (Index < 1 || Index > poles->Length())   throw Standard_OutOfRange();
 
-  if (W <= gp::Resolution ())     Standard_ConstructionError::Raise();
+  if (W <= gp::Resolution ())     throw Standard_ConstructionError();
 
 
   Standard_Boolean rat = IsRational() || (Abs(W - 1.) > gp::Resolution());
@@ -1040,7 +1040,7 @@ void Geom_BSplineCurve::MovePoint(const Standard_Real U,
 {
   if (Index1 < 1 || Index1 > poles->Length() || 
       Index2 < 1 || Index2 > poles->Length() || Index1 > Index2) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   TColgp_Array1OfPnt npoles(1, poles->Length());
   gp_Pnt P0;

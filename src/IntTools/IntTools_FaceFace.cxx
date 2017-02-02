@@ -1955,7 +1955,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
     quad1.SetValue(HS1->Surface().Torus());
     break;
   default:
-    Standard_ConstructionError::Raise("GeomInt_IntSS::MakeCurve");
+    throw Standard_ConstructionError("GeomInt_IntSS::MakeCurve");
   }
   
   typs = HS2->Surface().GetType();
@@ -1976,7 +1976,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
     quad2.SetValue(HS2->Surface().Torus());
     break;
   default:
-    Standard_ConstructionError::Raise("GeomInt_IntSS::MakeCurve");
+    throw Standard_ConstructionError("GeomInt_IntSS::MakeCurve");
   }
 
   quad1.Parameters(Ptref,U1,V1);

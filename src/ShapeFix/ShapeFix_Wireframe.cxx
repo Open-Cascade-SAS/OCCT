@@ -390,12 +390,12 @@ ShapeFix_Wireframe::ShapeFix_Wireframe(const TopoDS_Shape& shape)
     E3 = newedge;
     return ReplaceFirst;
   }
-  catch ( Standard_Failure ) 
-  {
+  catch ( Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
     cout<<"Error: ShapeFix_Wireframe::FixSmallEdges: JoinEdges: Exception in GeomConvert_CompCurveToBSplineCurve: ";
-    Standard_Failure::Caught()->Print(cout); cout<<endl;
+    anException.Print(cout); cout<<endl;
 #endif
+    (void)anException;
     return ReplaceFirst;
   }
 }

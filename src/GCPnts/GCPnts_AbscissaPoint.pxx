@@ -398,7 +398,7 @@ GCPnts_AbscissaPoint::GCPnts_AbscissaPoint
 {
   Standard_Real L = GCPnts_AbscissaPoint::Length(C);
   if (L < Precision::Confusion()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   } 
   Standard_Real Abscis = Abscissa;
   Standard_Real UU0 = U0;
@@ -423,7 +423,7 @@ GCPnts_AbscissaPoint::GCPnts_AbscissaPoint
 /*  if (L < Precision::Confusion()) {
     cout<<"FirstParameter = "<<C.FirstParameter()<<endl;
     cout<<"LastParameter = "<<C.LastParameter()<<endl;
-    Standard_ConstructionError::Raise("GCPnts_AbscissaPoint::GCPnts_AbscissaPoint");
+    throw Standard_ConstructionError("GCPnts_AbscissaPoint::GCPnts_AbscissaPoint");
   } 
 */
   Standard_Real Abscis = Abscissa;

@@ -50,7 +50,7 @@ Geom2dGcc_Lin2d2TanIter (const GccEnt_QualifiedCirc& Qualified1 ,
                            //Standard_Real Tol = Abs(Tolang);
 
                            WellDone = Standard_False;
-                           if (Qualified1.IsEnclosed()) { GccEnt_BadQualifier::Raise(); }
+                           if (Qualified1.IsEnclosed()) { throw GccEnt_BadQualifier(); }
                            gp_Circ2d C1 = Qualified1.Qualified();
                            Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
                            Standard_Real U1 = Geom2dGcc_CurveTool::FirstParameter(Cu2);
@@ -127,7 +127,7 @@ Geom2dGcc_Lin2d2TanIter (const Geom2dGcc_QCurve& Qualified1 ,
                              Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
                              !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
                              Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-                               GccEnt_BadQualifier::Raise();
+                               throw GccEnt_BadQualifier();
                                return;
                            }
                            Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
@@ -199,7 +199,7 @@ Geom2dGcc_Lin2d2TanIter (const Geom2dGcc_QCurve& Qualified1 ,
                            WellDone = Standard_False;
                            if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
                              Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
-                               GccEnt_BadQualifier::Raise();
+                               throw GccEnt_BadQualifier();
                                return;
                            }
                            Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
@@ -247,7 +247,7 @@ IsDone () const { return WellDone; }
 gp_Lin2d Geom2dGcc_Lin2d2TanIter::
 ThisSolution () const 
 {
-  if (!WellDone) StdFail_NotDone::Raise();
+  if (!WellDone) throw StdFail_NotDone();
   return linsol;
 }
 
@@ -255,7 +255,7 @@ void Geom2dGcc_Lin2d2TanIter::
 WhichQualifier (GccEnt_Position& Qualif1  ,
                 GccEnt_Position& Qualif2  ) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
   else {
     Qualif1 = qualifier1;
     Qualif2 = qualifier2;
@@ -266,7 +266,7 @@ void Geom2dGcc_Lin2d2TanIter::
 Tangency1 (Standard_Real& ParSol ,
            Standard_Real& ParArg ,
            gp_Pnt2d& Pnt) const {
-             if (!WellDone) { StdFail_NotDone::Raise(); }
+             if (!WellDone) { throw StdFail_NotDone(); }
              else {
                ParSol = par1sol;
                ParArg = pararg1;
@@ -278,7 +278,7 @@ void Geom2dGcc_Lin2d2TanIter::
 Tangency2 (Standard_Real& ParSol ,
            Standard_Real& ParArg ,
            gp_Pnt2d& Pnt) const {
-             if (!WellDone) { StdFail_NotDone::Raise(); }
+             if (!WellDone) { throw StdFail_NotDone(); }
              else {
                ParSol = par2sol;
                ParArg = pararg2;

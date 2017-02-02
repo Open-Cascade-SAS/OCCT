@@ -384,8 +384,7 @@ Standard_Boolean BlendFunc_Chamfer::IsRational() const
 //=======================================================================
 Standard_Real BlendFunc_Chamfer::GetSectionSize() const 
 {
-  Standard_NotImplemented::Raise("BlendFunc_Chamfer::GetSectionSize()");
-  return 0;
+  throw Standard_NotImplemented("BlendFunc_Chamfer::GetSectionSize()");
 }
 
 //=======================================================================

@@ -45,11 +45,10 @@ IGESDraw_Drawing::IGESDraw_Drawing ()    {  }
     Standard_Integer Len  = allViews->Length();
     Standard_Boolean Flag = ( allViewOrigins->Length() == Len );
     if (!Flag || allViews->Lower() != 1 || allViewOrigins->Lower() != 1)
-      Standard_DimensionMismatch::Raise("IGESDraw_Drawing : Init");
+      throw Standard_DimensionMismatch("IGESDraw_Drawing : Init");
   }
   if (!allAnnotations.IsNull())
-    if (allAnnotations->Lower() != 1) Standard_DimensionMismatch::Raise
-      ("IGESDraw_Drawing : Init");
+    if (allAnnotations->Lower() != 1) throw Standard_DimensionMismatch("IGESDraw_Drawing : Init");
 
   theViews         = allViews; 
   theViewOrigins   = allViewOrigins; 

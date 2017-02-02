@@ -173,8 +173,7 @@ Standard_Boolean Adaptor2d_Line2d::IsPeriodic() const
 
 Standard_Real Adaptor2d_Line2d::Period() const 
 {
-  Standard_NoSuchObject::Raise();
-  return 0;
+  throw Standard_NoSuchObject();
 }
 
 //=======================================================================
@@ -238,7 +237,7 @@ void Adaptor2d_Line2d::D3(const Standard_Real X, gp_Pnt2d& P, gp_Vec2d& V1, gp_V
 //gp_Vec2d Adaptor2d_Line2d::DN(const Standard_Real U, const Standard_Integer N) const 
 gp_Vec2d Adaptor2d_Line2d::DN(const Standard_Real , const Standard_Integer N) const 
 {
-  if (N<=0) {Standard_OutOfRange::Raise();}
+  if (N<=0) {throw Standard_OutOfRange();}
   if (N==1) {
     return myAx2d.Direction();
   }
@@ -282,8 +281,7 @@ gp_Lin2d Adaptor2d_Line2d::Line() const
 
 gp_Circ2d Adaptor2d_Line2d::Circle() const 
 {
-  Standard_NoSuchObject::Raise();
-  return gp_Circ2d();
+  throw Standard_NoSuchObject();
 }
 
 //=======================================================================
@@ -293,8 +291,7 @@ gp_Circ2d Adaptor2d_Line2d::Circle() const
 
 gp_Elips2d Adaptor2d_Line2d::Ellipse() const 
 {
-  Standard_NoSuchObject::Raise();
-  return gp_Elips2d();
+  throw Standard_NoSuchObject();
 }
 
 //=======================================================================
@@ -304,8 +301,7 @@ gp_Elips2d Adaptor2d_Line2d::Ellipse() const
 
 gp_Hypr2d Adaptor2d_Line2d::Hyperbola() const 
 {
-  Standard_NoSuchObject::Raise();
-  return gp_Hypr2d();
+  throw Standard_NoSuchObject();
 }
 
 //=======================================================================
@@ -315,8 +311,7 @@ gp_Hypr2d Adaptor2d_Line2d::Hyperbola() const
 
 gp_Parab2d Adaptor2d_Line2d::Parabola() const 
 {
-  Standard_NoSuchObject::Raise();
-  return gp_Parab2d();
+  throw Standard_NoSuchObject();
 }
 
 //=======================================================================
@@ -326,8 +321,7 @@ gp_Parab2d Adaptor2d_Line2d::Parabola() const
 
 Standard_Integer Adaptor2d_Line2d::Degree()  const 
  {
-  Standard_NoSuchObject::Raise();
-  return 0 ;
+  throw Standard_NoSuchObject();
 }
 //=======================================================================
 //function : IsRational
@@ -336,8 +330,7 @@ Standard_Integer Adaptor2d_Line2d::Degree()  const
 
 Standard_Boolean Adaptor2d_Line2d::IsRational()  const 
  {
-  Standard_NoSuchObject::Raise();
-  return 0 ;
+  throw Standard_NoSuchObject();
 }
 //=======================================================================
 //function : NbPoles
@@ -346,8 +339,7 @@ Standard_Boolean Adaptor2d_Line2d::IsRational()  const
 
 Standard_Integer Adaptor2d_Line2d::NbPoles()  const 
  {
-  Standard_NoSuchObject::Raise();
-  return 0 ;
+  throw Standard_NoSuchObject();
 }
 //=======================================================================
 //function : NbKnots
@@ -356,8 +348,7 @@ Standard_Integer Adaptor2d_Line2d::NbPoles()  const
 
 Standard_Integer Adaptor2d_Line2d::NbKnots()  const 
  {
-  Standard_NoSuchObject::Raise();
-  return 0 ;
+  throw Standard_NoSuchObject();
 }
 //=======================================================================
 //function : Bezier
@@ -366,9 +357,7 @@ Standard_Integer Adaptor2d_Line2d::NbKnots()  const
 
 Handle(Geom2d_BezierCurve) Adaptor2d_Line2d::Bezier() const 
 {
-  Standard_NoSuchObject::Raise();
-  Handle(Geom2d_BezierCurve) nul;
-  return nul;
+  throw Standard_NoSuchObject();
 }
 
 //=======================================================================
@@ -378,8 +367,6 @@ Handle(Geom2d_BezierCurve) Adaptor2d_Line2d::Bezier() const
 
 Handle(Geom2d_BSplineCurve) Adaptor2d_Line2d::BSpline() const 
 {
-  Standard_NoSuchObject::Raise();
-  Handle(Geom2d_BSplineCurve) nul;
-  return nul;
+  throw Standard_NoSuchObject();
 }
 

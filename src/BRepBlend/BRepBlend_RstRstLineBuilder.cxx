@@ -512,7 +512,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Complete(Blend_RstRstFunction&   F
 						       Blend_CurvPointFuncInv& FinvP2, 
 						       const Standard_Real     Pmin) 
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   if (iscomplete) {return Standard_True;}
   if (sens >0.) {
     previousP = line->Point(1);

@@ -132,13 +132,13 @@ Handle(Geom_BSplineSurface) GeomConvert::SplitBSplineSurface
   Standard_Integer FirstV = S->FirstVKnotIndex ();
   Standard_Integer LastU  = S->LastUKnotIndex  ();
   Standard_Integer LastV  = S->LastVKnotIndex  ();
-  if (FromUK1 == ToUK2 || FromVK1 == ToVK2)   Standard_DomainError::Raise();
+  if (FromUK1 == ToUK2 || FromVK1 == ToVK2)   throw Standard_DomainError();
   Standard_Integer FirstUK = Min (FromUK1, ToUK2);
   Standard_Integer LastUK  = Max (FromUK1, ToUK2);
   Standard_Integer FirstVK = Min (FromVK1, ToVK2);
   Standard_Integer LastVK  = Max (FromVK1, ToVK2);
   if (FirstUK < FirstU || LastUK > LastU || 
-    FirstVK < FirstV || LastVK > LastV) { Standard_DomainError::Raise(); }
+    FirstVK < FirstV || LastVK > LastV) { throw Standard_DomainError(); }
 
   Handle(Geom_BSplineSurface) S1= Handle(Geom_BSplineSurface)::DownCast(S->Copy());
 
@@ -173,7 +173,7 @@ Handle(Geom_BSplineSurface) GeomConvert::SplitBSplineSurface
   const Standard_Boolean USplit, 
   const Standard_Boolean SameOrientation )
 {
-  if (FromK1 == ToK2)   Standard_DomainError::Raise();
+  if (FromK1 == ToK2)   throw Standard_DomainError();
 
 
   Handle(Geom_BSplineSurface) S1 = Handle(Geom_BSplineSurface)::DownCast(S->Copy());
@@ -184,7 +184,7 @@ Handle(Geom_BSplineSurface) GeomConvert::SplitBSplineSurface
     Standard_Integer LastU  = S->LastUKnotIndex  ();
     Standard_Integer FirstUK = Min (FromK1, ToK2);
     Standard_Integer LastUK  = Max (FromK1, ToK2);
-    if (FirstUK < FirstU || LastUK > LastU)  Standard_DomainError::Raise();
+    if (FirstUK < FirstU || LastUK > LastU)  throw Standard_DomainError();
 
     S1->Segment( S1->UKnot(FirstUK), 
       S1->UKnot(LastUK),
@@ -205,7 +205,7 @@ Handle(Geom_BSplineSurface) GeomConvert::SplitBSplineSurface
     Standard_Integer LastV  = S->LastVKnotIndex  ();
     Standard_Integer FirstVK = Min (FromK1, ToK2);
     Standard_Integer LastVK  = Max (FromK1, ToK2);
-    if (FirstVK < FirstV || LastVK > LastV)  Standard_DomainError::Raise();
+    if (FirstVK < FirstV || LastVK > LastV)  throw Standard_DomainError();
 
     S1->Segment( S1->UKnot(S1->FirstUKnotIndex()), 
       S1->UKnot(S1->LastUKnotIndex()),
@@ -280,7 +280,7 @@ Handle(Geom_BSplineSurface) GeomConvert::SplitBSplineSurface
   const Standard_Boolean                 SameOrientation  )
 {
   if (Abs (FromParam1 - ToParam2) <= Abs(ParametricTolerance)) {
-    Standard_DomainError::Raise();
+    throw Standard_DomainError();
   }
   Handle(Geom_BSplineSurface) NewSurface
     = Handle(Geom_BSplineSurface)::DownCast(S->Copy());
@@ -341,7 +341,7 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface
     Precision::IsPositiveInfinite(ULast)  || 
     Precision::IsNegativeInfinite(VFirst) || 
     Precision::IsPositiveInfinite(VLast) )   {
-      Standard_DomainError::Raise("");
+      throw Standard_DomainError("");
   }
 
   Handle(Geom_BSplineSurface) TheSurface;

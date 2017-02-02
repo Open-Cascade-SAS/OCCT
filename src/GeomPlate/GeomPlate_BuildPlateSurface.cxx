@@ -134,21 +134,21 @@ myNbBounds(0)
   myLinCont = new GeomPlate_HSequenceOfCurveConstraint;
   myPntCont = new GeomPlate_HSequenceOfPointConstraint;
   if (myNbIter<1)
-    Standard_ConstructionError::Raise("GeomPlate :  Number of iteration must be >= 1");
+    throw Standard_ConstructionError("GeomPlate :  Number of iteration must be >= 1");
     
   if (NTCurve==0) 
-    Standard_ConstructionError::Raise("GeomPlate : the bounds Array is null");
+    throw Standard_ConstructionError("GeomPlate : the bounds Array is null");
   if (Tang->Length()==0) 
-    Standard_ConstructionError::Raise("GeomPlate : the constraints Array is null");
+    throw Standard_ConstructionError("GeomPlate : the constraints Array is null");
   Standard_Integer nbp = 0;
   Standard_Integer i ;
   for ( i=1;i<=NTCurve;i++) 
     { nbp+=NPoints->Value(i);
     }
   if (nbp==0) 
-    Standard_ConstructionError::Raise("GeomPlate : the resolution is impossible if the number of constraints points is 0");
+    throw Standard_ConstructionError("GeomPlate : the resolution is impossible if the number of constraints points is 0");
   if (myDegree<2) 
-    Standard_ConstructionError::Raise("GeomPlate ; the degree resolution must be upper of 2");  
+    throw Standard_ConstructionError("GeomPlate ; the degree resolution must be upper of 2");
   // Remplissage des champs  passage de l'ancien constructeur au nouveau
   for(i=1;i<=NTCurve;i++) 
     { Handle(GeomPlate_CurveConstraint) Cont = new GeomPlate_CurveConstraint 
@@ -187,9 +187,9 @@ myTol3d(Tol3d),
 myTolAng(TolAng),
 myNbBounds(0)
 {   if (myNbIter<1)
-    Standard_ConstructionError::Raise("GeomPlate :  Number of iteration must be >= 1");
+    throw Standard_ConstructionError("GeomPlate :  Number of iteration must be >= 1");
  if (myDegree<2) 
-     Standard_ConstructionError::Raise("GeomPlate : the degree resolution must be upper of 2");  
+     throw Standard_ConstructionError("GeomPlate : the degree resolution must be upper of 2");
    myLinCont = new GeomPlate_HSequenceOfCurveConstraint;
    myPntCont = new GeomPlate_HSequenceOfPointConstraint;
   mySurfInitIsGive=Standard_True;
@@ -221,9 +221,9 @@ myTol3d(Tol3d),
 myTolAng(TolAng),
 myNbBounds(0)
 {  if (myNbIter<1)
-    Standard_ConstructionError::Raise("GeomPlate :  Number of iteration must be >= 1");
+    throw Standard_ConstructionError("GeomPlate :  Number of iteration must be >= 1");
  if (myDegree<2) 
-    Standard_ConstructionError::Raise("GeomPlate : the degree resolution must be upper of 2");  
+    throw Standard_ConstructionError("GeomPlate : the degree resolution must be upper of 2");
   myLinCont = new GeomPlate_HSequenceOfCurveConstraint;
   myPntCont = new GeomPlate_HSequenceOfPointConstraint;
   mySurfInitIsGive=Standard_False;
@@ -497,7 +497,7 @@ void GeomPlate_BuildPlateSurface::Perform()
 	  for (Standard_Integer l=1;l<=NTLinCont;l++)
 	    myInitOrder->SetValue(l,l);
 	  if (!CourbeJointive(myTol3d)) 
-	    {//    Standard_Failure::Raise("Curves are not joined"); 
+	    {//    throw Standard_Failure("Curves are not joined");
 #ifdef OCCT_DEBUG
 	      cout<<"WARNING : Courbes non jointives a "<<myTol3d<<" pres"<<endl;
 #endif	  
@@ -1527,7 +1527,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit()
       if ( NTPntCont != 0)
 	nopt = 1;  //Calcul par la methode du plan d'inertie
       else if (!CourbeJoint || NTLinCont != myNbBounds)
-	{//    Standard_Failure::Raise("Curves are not joined"); 
+	{//    throw Standard_Failure("Curves are not joined");
 #ifdef OCCT_DEBUG	    
 	  cout<<"WARNING : Courbes non jointives a "<<myTol3d<<" pres"<<endl;
 #endif	  

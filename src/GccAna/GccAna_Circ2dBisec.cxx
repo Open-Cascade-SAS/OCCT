@@ -137,8 +137,8 @@ Handle(GccInt_Bisec) GccAna_Circ2dBisec::
    Standard_Real Tol = 1.e-14;
    Handle(GccInt_Bisec) bissol;
 
-   if (!WellDone) { StdFail_NotDone::Raise(); }
-   else if (Index <= 0 || Index > NbrSol) { Standard_OutOfRange::Raise(); }
+   if (!WellDone) { throw StdFail_NotDone(); }
+   else if (Index <= 0 || Index > NbrSol) { throw Standard_OutOfRange(); }
    else {
      Standard_Real xcencir1 = circle1.Location().X();
      Standard_Real ycencir1 = circle1.Location().Y();
@@ -336,7 +336,7 @@ Standard_Boolean GccAna_Circ2dBisec::
 
 Standard_Integer GccAna_Circ2dBisec::NbSolutions () const 
 {
-  if (!WellDone) StdFail_NotDone::Raise();
+  if (!WellDone) throw StdFail_NotDone();
 
   return NbrSol;
 }

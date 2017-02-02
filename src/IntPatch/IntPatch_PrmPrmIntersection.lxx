@@ -26,7 +26,7 @@
 //======================================================================
 inline Standard_Integer IntPatch_PrmPrmIntersection::NbLines() const { 
   if(!done) 
-    StdFail_NotDone::Raise(" IntPatch_PrmPrmIntersection ");
+    throw StdFail_NotDone(" IntPatch_PrmPrmIntersection ");
   return(SLin.Length());
 }
 
@@ -34,14 +34,14 @@ inline Standard_Integer IntPatch_PrmPrmIntersection::NbLines() const {
 inline const Handle(IntPatch_Line)& IntPatch_PrmPrmIntersection::Line
   (const Standard_Integer n) const {
   if(!done) 
-    StdFail_NotDone::Raise(" IntPatch_PrmPrmIntersection ");
+    throw StdFail_NotDone(" IntPatch_PrmPrmIntersection ");
   return(SLin.Value(n));
 }
 
 //======================================================================
 inline Standard_Boolean IntPatch_PrmPrmIntersection::IsEmpty() const { 
   if(!done) 
-    StdFail_NotDone::Raise(" IntPatch_PrmPrmIntersection ");
+    throw StdFail_NotDone(" IntPatch_PrmPrmIntersection ");
   return(empt);
 }
 

@@ -274,8 +274,7 @@ Standard_Boolean GeomAdaptor_SurfaceOfLinearExtrusion::IsVPeriodic() const
 
 Standard_Real GeomAdaptor_SurfaceOfLinearExtrusion::VPeriod() const 
 {
-  Standard_DomainError::Raise("GeomAdaptor_SurfaceOfLinearExtrusion::VPeriod");
-  return 0.0e0 ;
+  throw Standard_DomainError("GeomAdaptor_SurfaceOfLinearExtrusion::VPeriod");
 }
 
 //=======================================================================
@@ -424,8 +423,7 @@ gp_Cylinder GeomAdaptor_SurfaceOfLinearExtrusion::Cylinder() const
 
 gp_Cone GeomAdaptor_SurfaceOfLinearExtrusion::Cone() const 
 {
-  Standard_NoSuchObject::Raise("GeomAdaptor_SurfaceOfLinearExtrusion::Cone");
-  return gp_Cone();
+  throw Standard_NoSuchObject("GeomAdaptor_SurfaceOfLinearExtrusion::Cone");
 }
 
 //=======================================================================
@@ -435,8 +433,7 @@ gp_Cone GeomAdaptor_SurfaceOfLinearExtrusion::Cone() const
 
 gp_Sphere GeomAdaptor_SurfaceOfLinearExtrusion::Sphere() const 
 {
-  Standard_NoSuchObject::Raise("GeomAdaptor_SurfaceOfLinearExtrusion::Sphere");
-  return gp_Sphere();
+  throw Standard_NoSuchObject("GeomAdaptor_SurfaceOfLinearExtrusion::Sphere");
 }
 
 //=======================================================================
@@ -446,8 +443,7 @@ gp_Sphere GeomAdaptor_SurfaceOfLinearExtrusion::Sphere() const
 
 gp_Torus GeomAdaptor_SurfaceOfLinearExtrusion::Torus() const 
 {
-  Standard_NoSuchObject::Raise("GeomAdaptor_SurfaceOfLinearExtrusion::Torus");
-  return gp_Torus();
+  throw Standard_NoSuchObject("GeomAdaptor_SurfaceOfLinearExtrusion::Torus");
 }
 
 
@@ -458,8 +454,7 @@ gp_Torus GeomAdaptor_SurfaceOfLinearExtrusion::Torus() const
 
 gp_Ax1 GeomAdaptor_SurfaceOfLinearExtrusion::AxeOfRevolution() const 
 {
-  Standard_NoSuchObject::Raise("GeomAdaptor_SurfaceOfLinearExtrusion::Axes");
-  return gp_Ax1();
+  throw Standard_NoSuchObject("GeomAdaptor_SurfaceOfLinearExtrusion::Axes");
 }
 
 //=======================================================================
@@ -488,9 +483,7 @@ Standard_Integer GeomAdaptor_SurfaceOfLinearExtrusion::NbUPoles() const
 
 Standard_Boolean GeomAdaptor_SurfaceOfLinearExtrusion::IsURational() const 
 {
-  Standard_NoSuchObject::Raise
-    ("GeomAdaptor_SurfaceOfLinearExtrusion::IsURational");
-  return Standard_False;
+  throw Standard_NoSuchObject("GeomAdaptor_SurfaceOfLinearExtrusion::IsURational");
 }
 //=======================================================================
 //function : IsVRational
@@ -499,9 +492,7 @@ Standard_Boolean GeomAdaptor_SurfaceOfLinearExtrusion::IsURational() const
 
 Standard_Boolean GeomAdaptor_SurfaceOfLinearExtrusion::IsVRational() const 
 {
-  Standard_NoSuchObject::Raise
-    ("GeomAdaptor_SurfaceOfLinearExtrusion::IsVRational");
-  return Standard_False;
+  throw Standard_NoSuchObject("GeomAdaptor_SurfaceOfLinearExtrusion::IsVRational");
 }
 //=======================================================================
 //function : Bezier
@@ -511,8 +502,7 @@ Standard_Boolean GeomAdaptor_SurfaceOfLinearExtrusion::IsVRational() const
 
 Handle(Geom_BezierSurface)  GeomAdaptor_SurfaceOfLinearExtrusion::Bezier() const 
 {
-  Standard_NoSuchObject::Raise("GeomAdaptor_SurfaceOfLinearExtrusion::Bezier");
-  return Handle(Geom_BezierSurface)() ;
+  throw Standard_NoSuchObject("GeomAdaptor_SurfaceOfLinearExtrusion::Bezier");
 }
 
 //=======================================================================
@@ -522,8 +512,7 @@ Handle(Geom_BezierSurface)  GeomAdaptor_SurfaceOfLinearExtrusion::Bezier() const
 
 Handle(Geom_BSplineSurface)  GeomAdaptor_SurfaceOfLinearExtrusion::BSpline() const 
 {
-  Standard_NoSuchObject::Raise("GeomAdaptor_SurfaceOfLinearExtrusion::BSpline");
-  return Handle(Geom_BSplineSurface)() ;
+  throw Standard_NoSuchObject("GeomAdaptor_SurfaceOfLinearExtrusion::BSpline");
 }
 
 //=======================================================================

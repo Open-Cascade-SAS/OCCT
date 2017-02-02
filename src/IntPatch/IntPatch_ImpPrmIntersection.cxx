@@ -549,7 +549,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
         break;
       default:
         {
-          Standard_ConstructionError::Raise();
+          throw Standard_ConstructionError();
           break;
         }
       } 

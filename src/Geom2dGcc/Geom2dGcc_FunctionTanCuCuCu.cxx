@@ -87,7 +87,7 @@ InitDerivative(const math_Vector&  X,
     break;
   default:
     {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
                  }
 }

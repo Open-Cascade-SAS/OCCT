@@ -110,7 +110,7 @@ void AIS_Point::Compute(const Handle(Prs3d_Projector)& aProjector,
                         const Handle(Geom_Transformation)& aTransformation,
                         const Handle(Prs3d_Presentation)& aPresentation)
 {
-// Standard_NotImplemented::Raise("AIS_Point::Compute(const Handle(Prs3d_Projector)&, const Handle(Geom_Transformation)&, const Handle(Prs3d_Presentation)&)");
+// throw Standard_NotImplemented("AIS_Point::Compute(const Handle(Prs3d_Projector)&, const Handle(Geom_Transformation)&, const Handle(Prs3d_Presentation)&)");
  PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation) ;
 }
 

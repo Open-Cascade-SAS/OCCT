@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Units_NoSuchUnit, Standard_NoSuchObject)
 
 #if !defined No_Exception && !defined No_Units_NoSuchUnit
   #define Units_NoSuchUnit_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Units_NoSuchUnit::Raise(MESSAGE);
+  if (CONDITION) throw Units_NoSuchUnit(MESSAGE);
 #else
   #define Units_NoSuchUnit_Raise_if(CONDITION, MESSAGE)
 #endif

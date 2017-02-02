@@ -47,10 +47,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  //! Raises Construction Error
-  Standard_EXPORT BRepApprox_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfApprox();
-  
   Standard_EXPORT BRepApprox_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfApprox(const BRepAdaptor_Surface& S1, const BRepAdaptor_Surface& S2);
   
   Standard_EXPORT Standard_Integer NbVariables() const;

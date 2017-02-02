@@ -352,7 +352,7 @@ static const Standard_Real IBT[] = {
 
 void IBTMatrix(const Standard_Integer classe, math_Matrix& IBTMa)
 {
-  if (classe > 26) Standard_DimensionError::Raise("IBTMatrix: classe > 26");
+  if (classe > 26) throw Standard_DimensionError("IBTMatrix: classe > 26");
 //  math_Matrix IBTMa(1, classe-4, 1, classe-4);
   Standard_Integer i, j, k = 0, Som = 0;
   for (i = 1; i < classe-4; i++) {

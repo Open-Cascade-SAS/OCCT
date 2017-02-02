@@ -34,7 +34,7 @@ math_EigenValuesSearcher::math_EigenValuesSearcher(const TColStd_Array1OfReal& D
 
   Standard_Integer n = Diagonal.Length();
   if (Subdiagonal.Length() != n)
-    Standard_Failure::Raise("math_EigenValuesSearcher : dimension mismatch");
+    throw Standard_Failure("math_EigenValuesSearcher : dimension mismatch");
 
   myDiagonal    = new TColStd_HArray1OfReal(1, n);
   myDiagonal->ChangeArray1() = Diagonal;

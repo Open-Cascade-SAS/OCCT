@@ -108,7 +108,7 @@ TCollection_ExtendedString::TCollection_ExtendedString
 {
   if (theString == NULL)
   {
-    Standard_NullObject::Raise ("TCollection_ExtendedString : null parameter ");
+    throw Standard_NullObject("TCollection_ExtendedString : null parameter ");
   }
 
   if (isMultiByte)
@@ -140,7 +140,7 @@ TCollection_ExtendedString::TCollection_ExtendedString (const Standard_ExtString
 {
   if (theString == NULL)
   {
-    Standard_NullObject::Raise("TCollection_ExtendedString : null parameter ");
+    throw Standard_NullObject("TCollection_ExtendedString : null parameter ");
   }
 
   for (mylength = 0; theString[mylength] != '\0'; ++mylength) {}
@@ -159,7 +159,7 @@ TCollection_ExtendedString::TCollection_ExtendedString (const Standard_WideChar*
 {
   if (theStringUtf == NULL)
   {
-    Standard_NullObject::Raise ("TCollection_ExtendedString : null parameter ");
+    throw Standard_NullObject("TCollection_ExtendedString : null parameter ");
   }
 
   mystring = fromWideString<sizeof(Standard_WideChar)> (theStringUtf, mylength);
@@ -389,11 +389,11 @@ void TCollection_ExtendedString::Insert(const Standard_Integer where,
                                         const Standard_ExtCharacter what)
 {
   if (where > mylength + 1 )
-    Standard_OutOfRange::Raise("TCollection_ExtendedString::Insert : "
-                               "Parameter where is too big");
+    throw Standard_OutOfRange("TCollection_ExtendedString::Insert : "
+                              "Parameter where is too big");
   if (where < 0)
-    Standard_OutOfRange::Raise("TCollection_ExtendedString::Insert : "
-                               "Parameter where is negative");
+    throw Standard_OutOfRange("TCollection_ExtendedString::Insert : "
+                              "Parameter where is negative");
 
   if (mystring != NULL)
   {
@@ -441,8 +441,8 @@ void TCollection_ExtendedString::Insert(const Standard_Integer            where,
     }
   }
   else {
-    Standard_OutOfRange::Raise("TCollection_ExtendedString::Insert : "
-                               "Parameter where is too big");
+    throw Standard_OutOfRange("TCollection_ExtendedString::Insert : "
+                              "Parameter where is too big");
   }
 }
 
@@ -617,9 +617,9 @@ void TCollection_ExtendedString::Remove (const Standard_Integer where,
     mystring[mylength] =  '\0';
   }
   else
-    Standard_OutOfRange::Raise("TCollection_ExtendedString::Remove: "
-                               "Too many characters to erase or "
-                               "invalid starting value.");
+    throw Standard_OutOfRange("TCollection_ExtendedString::Remove: "
+                              "Too many characters to erase or "
+                              "invalid starting value.");
 }
 
 // ----------------------------------------------------------------------------
@@ -678,7 +678,7 @@ void TCollection_ExtendedString::SetValue(const Standard_Integer      where,
     mystring[where-1] = what;
   }
   else {
-    Standard_OutOfRange::Raise("TCollection_ExtendedString::SetValue : parameter where");
+    throw Standard_OutOfRange("TCollection_ExtendedString::SetValue : parameter where");
   }
 }
 
@@ -707,8 +707,8 @@ void TCollection_ExtendedString::SetValue
     mystring[mylength] =  '\0';
   }
   else
-    Standard_OutOfRange::Raise("TCollection_ExtendedString::SetValue : "
-                               "parameter where");
+    throw Standard_OutOfRange("TCollection_ExtendedString::SetValue : "
+                              "parameter where");
 }
 
 // ----------------------------------------------------------------------------
@@ -722,9 +722,7 @@ TCollection_ExtendedString TCollection_ExtendedString::Split
     Trunc(where);
     return res;
   }
-  Standard_OutOfRange::Raise("TCollection_ExtendedString::Split index");
-  TCollection_ExtendedString res;
-  return res;
+  throw Standard_OutOfRange("TCollection_ExtendedString::Split index");
 }
 
 // ----------------------------------------------------------------------------
@@ -736,8 +734,8 @@ TCollection_ExtendedString TCollection_ExtendedString::Token
 {
   TCollection_ExtendedString res;
   if (!separators)
-    Standard_NullObject::Raise("TCollection_ExtendedString::Token : "
-                               "parameter 'separators'");
+    throw Standard_NullObject("TCollection_ExtendedString::Token : "
+                              "parameter 'separators'");
   
   int                   i,j,k,l;
   Standard_PExtCharacter  buftmp = allocateExtChars (mylength);
@@ -819,8 +817,8 @@ Standard_ExtString TCollection_ExtendedString::ToExtString() const
 void TCollection_ExtendedString::Trunc(const Standard_Integer ahowmany)
 {
   if (ahowmany < 0 || ahowmany > mylength)
-    Standard_OutOfRange::Raise("TCollection_ExtendedString::Trunc : "
-                               "parameter 'ahowmany'");
+    throw Standard_OutOfRange("TCollection_ExtendedString::Trunc : "
+                              "parameter 'ahowmany'");
   mylength = ahowmany;
   mystring[mylength] =  '\0';
 }
@@ -835,9 +833,8 @@ Standard_ExtCharacter TCollection_ExtendedString::Value
    if(mystring) return mystring[where-1];
    else         return 0;
  }
- Standard_OutOfRange::Raise("TCollection_ExtendedString::Value : "
-                            "parameter where");
- return 0;
+ throw Standard_OutOfRange("TCollection_ExtendedString::Value : "
+                           "parameter where");
 }
 
 

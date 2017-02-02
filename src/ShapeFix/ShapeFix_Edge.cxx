@@ -547,12 +547,14 @@ Standard_Boolean ShapeFix_Edge::FixAddPCurve (const TopoDS_Edge& edge,
       B.Range(edge, G3dCFirst, G3dCLast, Standard_True);
     }
   }   // end try
-  catch(Standard_Failure) {
-    myStatus |= ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
-#ifdef OCCT_DEBUG //:s5
+  catch(Standard_Failure const& anException) {
+#ifdef OCCT_DEBUG
+//:s5
     cout << "Warning: ShapeFix_Edge::FixAddPCurve(): Exception: ";
-    Standard_Failure::Caught()->Print(cout); cout << endl;
+    anException.Print(cout); cout << endl;
 #endif
+    (void)anException;
+    myStatus |= ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
   }
   myStatus |= ShapeExtend::EncodeStatus (ShapeExtend_DONE1);
   return Standard_True;
@@ -775,12 +777,12 @@ Standard_Boolean ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
         if ( ! SP ) myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );
       }
     }
-    catch(Standard_Failure)
-    {
+    catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
       cout << "\nWarning: ShapeFix_Edge: Exception in SameParameter: "; 
-      Standard_Failure::Caught()->Print(cout); cout << endl;
+      anException.Print(cout); cout << endl;
 #endif
+      (void)anException;
       myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );
     }
   }

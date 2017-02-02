@@ -227,8 +227,7 @@ Standard_Real Hatch_Hatcher::Coordinate(const Standard_Integer I) const
     return myLines(I).myLin.Location().Y();
 
   case Hatch_ANYLINE :
-    Standard_OutOfRange::Raise("Hatcher : not an X or Y line");
-    return 0.;
+    throw Standard_OutOfRange("Hatcher : not an X or Y line");
   }
 
   return 0.;
@@ -260,7 +259,7 @@ Standard_Real Hatch_Hatcher::Start(const Standard_Integer I,
 				   const Standard_Integer J) const
 {
   if (myLines(I).myInters.IsEmpty()) {
-    if (J != 1 || !myOrient) Standard_OutOfRange::Raise();
+    if (J != 1 || !myOrient) throw Standard_OutOfRange();
     return RealFirst();
   }
   else {
@@ -283,7 +282,7 @@ void Hatch_Hatcher::StartIndex
    Standard_Real& Par2) const
 {
   if (myLines(I).myInters.IsEmpty()) {
-    if (J != 1) Standard_OutOfRange::Raise();
+    if (J != 1) throw Standard_OutOfRange();
     Index = 0;
     Par2  = 0;
   }
@@ -310,7 +309,7 @@ Standard_Real Hatch_Hatcher::End(const Standard_Integer I,
 				 const Standard_Integer J) const
 {
   if (myLines(I).myInters.IsEmpty()) {
-    if (J != 1 || !myOrient) Standard_OutOfRange::Raise();
+    if (J != 1 || !myOrient) throw Standard_OutOfRange();
     return RealLast();
   }
   else {
@@ -333,7 +332,7 @@ void Hatch_Hatcher::EndIndex
    Standard_Real& Par2) const
 {
   if (myLines(I).myInters.IsEmpty()) {
-    if (J != 1) Standard_OutOfRange::Raise();
+    if (J != 1) throw Standard_OutOfRange();
     Index = 0;
     Par2  = 0;
   }

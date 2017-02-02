@@ -152,12 +152,13 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
 	  context->SetResult ( S );
 	}
       }
-      catch (Standard_Failure) {
+      catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
 	cout << "Error: XSAlgo_AlgoContainer::ProcessShape(): Exception in ShapeFix::Shape" << endl;
-        Standard_Failure::Caught()->Print(cout); cout << endl;
+        anException.Print(cout); cout << endl;
 #endif
-      }  
+	(void)anException;
+      }
       return context->Result();
     }
     // for writing, define default sequence of DirectFaces

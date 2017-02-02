@@ -71,12 +71,11 @@ void BinDrivers_DocumentRetrievalDriver::ReadShapeSection
         Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
       aNamedShapeDriver->ReadShapeSection (theIS);
     }
-    catch(Standard_Failure) {
-      Handle(Standard_Failure) aFailure = Standard_Failure::Caught();
+    catch(Standard_Failure const& anException) {
       const TCollection_ExtendedString aMethStr
         ("BinDrivers_DocumentRetrievalDriver: ");
       WriteMessage (aMethStr + "error of Shape Section " +
-        aFailure->GetMessageString());
+        anException.GetMessageString());
     }
   }
 }

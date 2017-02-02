@@ -32,7 +32,7 @@ inline Standard_Boolean BRepBlend_Extremity::HasTangent () const
 
 inline const gp_Vec& BRepBlend_Extremity::Tangent () const
 {
-  if (!hastang) {Standard_DomainError::Raise();} 
+  if (!hastang) {throw Standard_DomainError();}
   return tang;
 }
 
@@ -57,7 +57,7 @@ inline Standard_Boolean BRepBlend_Extremity::IsVertex() const
 
 inline const Handle(Adaptor3d_HVertex)& BRepBlend_Extremity::Vertex () const
 {
-  if (!isvtx) {Standard_DomainError::Raise();}
+  if (!isvtx) {throw Standard_DomainError();}
   return vtx;
 }
 

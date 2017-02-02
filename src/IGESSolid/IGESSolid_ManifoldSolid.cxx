@@ -36,7 +36,7 @@ IGESSolid_ManifoldSolid::IGESSolid_ManifoldSolid ()    {  }
   if (!VoidShells.IsNull())
     if (VoidShells->Lower()  != 1 || VoidShellFlags->Lower() != 1 ||
 	VoidShells->Length() != VoidShellFlags->Length())
-      Standard_DimensionError::Raise("IGESSolid_ManifoldSolid : Init");
+      throw Standard_DimensionError("IGESSolid_ManifoldSolid : Init");
 
   theShell           = aShell;
   theOrientationFlag = Shellflag;

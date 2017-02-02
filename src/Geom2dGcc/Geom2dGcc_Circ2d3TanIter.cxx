@@ -69,7 +69,7 @@ Geom2dGcc_Circ2d3TanIter (const Geom2dGcc_QCurve& Qualified1 ,
                               Qualified2.IsOutside() || Qualified2.IsUnqualified()) ||
                               !(Qualified3.IsEnclosed() || Qualified3.IsEnclosing() || 
                               Qualified3.IsOutside() || Qualified3.IsUnqualified())) {
-                                GccEnt_BadQualifier::Raise();
+                                throw GccEnt_BadQualifier();
                                 return;
                             }
                             Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
@@ -193,7 +193,7 @@ Geom2dGcc_Circ2d3TanIter (const GccEnt_QualifiedCirc& Qualified1 ,
                               Qualified2.IsOutside() || Qualified2.IsUnqualified()) ||
                               !(Qualified3.IsEnclosed() || Qualified3.IsEnclosing() || 
                               Qualified3.IsOutside() || Qualified3.IsUnqualified())) {
-                                GccEnt_BadQualifier::Raise();
+                                throw GccEnt_BadQualifier();
                                 return;
                             }
                             gp_Circ2d C1 = Qualified1.Qualified();
@@ -322,7 +322,7 @@ Geom2dGcc_Circ2d3TanIter (const GccEnt_QualifiedCirc& Qualified1 ,
                               Qualified2.IsOutside() || Qualified2.IsUnqualified()) ||
                               !(Qualified3.IsEnclosed() || Qualified3.IsEnclosing() || 
                               Qualified3.IsOutside() || Qualified3.IsUnqualified())) {
-                                GccEnt_BadQualifier::Raise();
+                                throw GccEnt_BadQualifier();
                                 return;
                             }
                             gp_Circ2d C1 = Qualified1.Qualified();
@@ -454,7 +454,7 @@ Geom2dGcc_Circ2d3TanIter (const GccEnt_QualifiedLin& Qualified1 ,
                               Qualified2.IsOutside() || Qualified2.IsUnqualified()) ||
                               !(Qualified3.IsEnclosed() || Qualified3.IsEnclosing() || 
                               Qualified3.IsOutside() || Qualified3.IsUnqualified())) {
-                                GccEnt_BadQualifier::Raise();
+                                throw GccEnt_BadQualifier();
                                 return;
                             }
                             gp_Lin2d L1 = Qualified1.Qualified();
@@ -586,7 +586,7 @@ Geom2dGcc_Circ2d3TanIter (const GccEnt_QualifiedLin&  Qualified1 ,
                               Qualified2.IsOutside() || Qualified2.IsUnqualified()) ||
                               !(Qualified3.IsEnclosed() || Qualified3.IsEnclosing() || 
                               Qualified3.IsOutside() || Qualified3.IsUnqualified())) {
-                                GccEnt_BadQualifier::Raise();
+                                throw GccEnt_BadQualifier();
                                 return;
                             }
                             gp_Lin2d L1 = Qualified1.Qualified();
@@ -709,7 +709,7 @@ Geom2dGcc_Circ2d3TanIter (const Geom2dGcc_QCurve& Qualified1 ,
                               Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
                               !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
                               Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-                                GccEnt_BadQualifier::Raise();
+                                throw GccEnt_BadQualifier();
                                 return;
                             }
                             gp_Circ2d C1(gp_Ax2d(Point3,gp_Dir2d(1.,0.)),0.);
@@ -822,7 +822,7 @@ Geom2dGcc_Circ2d3TanIter (const Geom2dGcc_QCurve& Qualified1 ,
                             WellDone = Standard_False;
                             if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
                               Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
-                                GccEnt_BadQualifier::Raise();
+                                throw GccEnt_BadQualifier();
                                 return;
                             }
                             gp_Dir2d dirx(1.,0.);
@@ -933,7 +933,7 @@ Geom2dGcc_Circ2d3TanIter (const GccEnt_QualifiedLin&  Qualified1 ,
                               Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
                               !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
                               Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-                                GccEnt_BadQualifier::Raise();
+                                throw GccEnt_BadQualifier();
                                 return;
                             }
                             gp_Dir2d dirx(1.,0.);
@@ -1054,7 +1054,7 @@ Geom2dGcc_Circ2d3TanIter (const GccEnt_QualifiedCirc& Qualified1 ,
                               Qualified2.IsOutside() || Qualified2.IsUnqualified()) ||
                               !(Qualified3.IsEnclosed() || Qualified3.IsEnclosing() || 
                               Qualified3.IsOutside() || Qualified3.IsUnqualified())) {
-                                GccEnt_BadQualifier::Raise();
+                                throw GccEnt_BadQualifier();
                                 return;
                             }
                             gp_Circ2d C1 = Qualified1.Qualified();
@@ -1181,7 +1181,7 @@ Geom2dGcc_Circ2d3TanIter (const GccEnt_QualifiedCirc& Qualified1 ,
                               Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
                               !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
                               Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-                                GccEnt_BadQualifier::Raise();
+                                throw GccEnt_BadQualifier();
                                 return;
                             }
                             gp_Circ2d C1 = Qualified1.Qualified();
@@ -1287,7 +1287,7 @@ WhichQualifier (GccEnt_Position& Qualif1  ,
                 GccEnt_Position& Qualif2  ,
                 GccEnt_Position& Qualif3  ) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
   else {
     Qualif1 = qualifier1;
     Qualif2 = qualifier2;
@@ -1299,14 +1299,14 @@ void Geom2dGcc_Circ2d3TanIter::
 Tangency1 (Standard_Real&      ParSol ,
            Standard_Real&      ParArg ,
            gp_Pnt2d&           PntSol ) const{
-             if (!WellDone) { StdFail_NotDone::Raise(); }
+             if (!WellDone) { throw StdFail_NotDone(); }
              else {
                if (TheSame1 == 0) {
                  ParSol = par1sol;
                  ParArg = pararg1;
                  PntSol = pnttg1sol;
                }
-               else { StdFail_NotDone::Raise(); }
+               else { throw StdFail_NotDone(); }
              }
 }
 
@@ -1314,7 +1314,7 @@ void Geom2dGcc_Circ2d3TanIter::
 Tangency2 (Standard_Real&      ParSol         ,
            Standard_Real&      ParArg         ,
            gp_Pnt2d&  PntSol         ) const{
-             if (!WellDone) { StdFail_NotDone::Raise(); }
+             if (!WellDone) { throw StdFail_NotDone(); }
              else {
                ParSol = par2sol;
                ParArg = pararg2;
@@ -1326,7 +1326,7 @@ void Geom2dGcc_Circ2d3TanIter::
 Tangency3 (Standard_Real&      ParSol         ,
            Standard_Real&      ParArg         ,
            gp_Pnt2d&  PntSol         ) const{
-             if (!WellDone) { StdFail_NotDone::Raise(); }
+             if (!WellDone) { throw StdFail_NotDone(); }
              else {
                ParSol = par3sol;
                ParArg = pararg3;
@@ -1337,7 +1337,7 @@ Tangency3 (Standard_Real&      ParSol         ,
 Standard_Boolean Geom2dGcc_Circ2d3TanIter::
 IsTheSame1 () const
 {
-  if (!WellDone) StdFail_NotDone::Raise();
+  if (!WellDone) throw StdFail_NotDone();
 
   if (TheSame1 == 0) 
     return Standard_False;
@@ -1349,7 +1349,7 @@ IsTheSame1 () const
 Standard_Boolean Geom2dGcc_Circ2d3TanIter::
 IsTheSame2 () const
 {
-  if (!WellDone) StdFail_NotDone::Raise();
+  if (!WellDone) throw StdFail_NotDone();
 
   if (TheSame3 == 0) 
     return Standard_False;
@@ -1361,7 +1361,7 @@ IsTheSame2 () const
 Standard_Boolean Geom2dGcc_Circ2d3TanIter::
 IsTheSame3 () const
 {
-  if (!WellDone) StdFail_NotDone::Raise();
+  if (!WellDone) throw StdFail_NotDone();
 
   return Standard_True;
 }

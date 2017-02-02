@@ -385,7 +385,7 @@ void  HLRBRep_EdgeBuilder::NextVertex()
       current = 3;
   }
   else
-    Standard_NoSuchObject::Raise("EdgeBuilder::NextVertex : No current edge");
+    throw Standard_NoSuchObject("EdgeBuilder::NextVertex : No current edge");
 }
 
 //=======================================================================
@@ -400,8 +400,7 @@ const HLRAlgo_Intersection& HLRBRep_EdgeBuilder::Current() const
   else if (current == 2)
     return right->Vertex();
   else
-    Standard_NoSuchObject::Raise("EdgeBuilder::Current : No current vertex");
-  return left->Vertex(); // only for WNT.
+    throw Standard_NoSuchObject("EdgeBuilder::Current : No current vertex");
 }
 
 //=======================================================================
@@ -416,9 +415,7 @@ Standard_Boolean  HLRBRep_EdgeBuilder::IsBoundary() const
   else if (current == 2)
     return right->IsBoundary();
   else
-    Standard_NoSuchObject::Raise
-      ("EdgeBuilder::IsBoundary : No current vertex");
-  return left->IsBoundary(); // only for WNT.
+    throw Standard_NoSuchObject("EdgeBuilder::IsBoundary : No current vertex");
 }
 
 //=======================================================================
@@ -433,9 +430,7 @@ Standard_Boolean  HLRBRep_EdgeBuilder::IsInterference() const
   else if (current == 2)
     return right->IsInterference();
   else
-    Standard_NoSuchObject::Raise
-      ("EdgeBuilder::IsInterference : No current vertex");
-  return left->IsInterference(); // only for WNT.
+    throw Standard_NoSuchObject("EdgeBuilder::IsInterference : No current vertex");
 }
 
 //=======================================================================

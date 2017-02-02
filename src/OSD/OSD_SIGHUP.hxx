@@ -25,7 +25,7 @@ DEFINE_STANDARD_HANDLE(OSD_SIGHUP, OSD_Signal)
 
 #if !defined No_Exception && !defined No_OSD_SIGHUP
   #define OSD_SIGHUP_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) OSD_SIGHUP::Raise(MESSAGE);
+  if (CONDITION) throw OSD_SIGHUP(MESSAGE);
 #else
   #define OSD_SIGHUP_Raise_if(CONDITION, MESSAGE)
 #endif

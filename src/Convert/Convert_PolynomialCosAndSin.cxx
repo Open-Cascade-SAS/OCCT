@@ -206,7 +206,7 @@ void BuildHermitePolynomialCosAndSin
 {
 
   if (num_poles%2 != 0) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   Standard_Integer ii;
   Standard_Integer ordre_deriv = num_poles/2;
@@ -286,7 +286,7 @@ void BuildHermitePolynomialCosAndSin
 			ContactOrderArray,Poles,InversionPb);
 
   if (InversionPb !=0) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   for (ii=1; ii<=num_poles; ii++) {
     CosNumeratorPtr->SetValue(ii,Poles(ii).X());

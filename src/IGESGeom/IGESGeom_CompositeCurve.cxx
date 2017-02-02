@@ -31,7 +31,7 @@ IGESGeom_CompositeCurve::IGESGeom_CompositeCurve ()    {  }
   (const Handle(IGESData_HArray1OfIGESEntity)& allEntities)
 {
   if (!allEntities.IsNull() && allEntities->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESGeom_CompositeCurve : Init");
+    throw Standard_DimensionMismatch("IGESGeom_CompositeCurve : Init");
   theEntities = allEntities;
   InitTypeAndForm(102,0);
 }

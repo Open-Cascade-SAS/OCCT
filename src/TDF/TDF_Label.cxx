@@ -38,7 +38,7 @@
 //=======================================================================
 void TDF_Label::Imported(const Standard_Boolean aStatus) const
 {
-  if (IsNull()) Standard_NullObject::Raise("A null Label has no status.");
+  if (IsNull()) throw Standard_NullObject("A null Label has no status.");
   if (myLabelNode->IsImported() != aStatus) {
     myLabelNode->Imported(aStatus);
     for (TDF_ChildIterator itr(*this, Standard_True);
@@ -57,7 +57,7 @@ Standard_Boolean TDF_Label::FindAttribute
 (const Standard_GUID& anID,
  Handle(TDF_Attribute)& anAttribute) const
 {
-  if (IsNull()) Standard_NullObject::Raise("A null Label has no attribute.");
+  if (IsNull()) throw Standard_NullObject("A null Label has no attribute.");
   TDF_AttributeIterator itr (myLabelNode); // Without removed attributes.
   for ( ; itr.More(); itr.Next()) {
     if (itr.Value()->ID() == anID) {
@@ -101,7 +101,7 @@ Standard_Boolean TDF_Label::FindAttribute
 
 Standard_Integer TDF_Label::Depth() const
 {
-  if (IsNull()) Standard_NullObject::Raise("A null Label has no depth.");
+  if (IsNull()) throw Standard_NullObject("A null Label has no depth.");
   return myLabelNode->Depth();
 }
 
@@ -120,7 +120,7 @@ Standard_Boolean TDF_Label::IsDescendant(const TDF_Label& aLabel) const
   TDF_LabelNode*   lp2 = myLabelNode;
 #ifdef OCCT_DEBUG
   if ((lp1 == NULL) || (lp2 == NULL))
-    Standard_NullObject::Raise("A null label has no ancestor nor descendant.");
+    throw Standard_NullObject("A null label has no ancestor nor descendant.");
 #endif
   if ((lp1 != NULL) && (lp2 != NULL)) {
     const Standard_Integer d1 = lp1->Depth();
@@ -143,7 +143,7 @@ Standard_Boolean TDF_Label::IsDescendant(const TDF_Label& aLabel) const
 
 const TDF_Label TDF_Label::Root() const
 {
-  if (IsNull()) Standard_NullObject::Raise("A null Label has no root.");
+  if (IsNull()) throw Standard_NullObject("A null Label has no root.");
   return myLabelNode->RootNode();
 }
 
@@ -155,7 +155,7 @@ const TDF_Label TDF_Label::Root() const
 
 Standard_Integer TDF_Label::NbChildren() const
 {
-  if (IsNull()) Standard_NullObject::Raise("A null Label has no children.");
+  if (IsNull()) throw Standard_NullObject("A null Label has no children.");
   Standard_Integer n = 0;
   if (myLabelNode->FirstChild() != NULL)
     for (TDF_ChildIterator itr(*this); itr.More(); itr.Next()) ++n;
@@ -173,9 +173,9 @@ TDF_Label TDF_Label::FindChild
  const Standard_Boolean create) const
 {
   if (IsNull())
-    Standard_NullObject::Raise("A null Label has no child.");
+    throw Standard_NullObject("A null Label has no child.");
   if (create && ((Depth()+1) & TDF_LabelNodeFlagsMsk))
-      Standard_OutOfRange::Raise("Depth value out of range");
+      throw Standard_OutOfRange("Depth value out of range");
 
   return FindOrAddChild(aTag,create);
 }
@@ -212,7 +212,7 @@ Standard_Boolean TDF_Label::IsAttribute(const Standard_GUID& anID) const
 
 Standard_Boolean TDF_Label::HasAttribute() const
 {
-  if (IsNull()) Standard_NullObject::Raise("A null Label has no attribute.");
+  if (IsNull()) throw Standard_NullObject("A null Label has no attribute.");
 
   if (!myLabelNode->FirstAttribute().IsNull()) {
     TDF_AttributeIterator itr (myLabelNode); // Without removed attributes.
@@ -229,7 +229,7 @@ Standard_Boolean TDF_Label::HasAttribute() const
 
 Standard_Integer TDF_Label::NbAttributes() const
 {
-  if (IsNull()) Standard_NullObject::Raise("A null Label has no attribute.");
+  if (IsNull()) throw Standard_NullObject("A null Label has no attribute.");
   Standard_Integer n = 0;
   if (!myLabelNode->FirstAttribute().IsNull())
     for (TDF_AttributeIterator itr (myLabelNode); itr.More(); itr.Next()) ++n;
@@ -247,7 +247,7 @@ Standard_Integer TDF_Label::NbAttributes() const
 
 Standard_Integer TDF_Label::Transaction() const
 {
-  if (IsNull()) Standard_NullObject::Raise("A null Label has no transaction.");
+  if (IsNull()) throw Standard_NullObject("A null Label has no transaction.");
   return myLabelNode->Data()->Transaction();
 }
 
@@ -540,15 +540,15 @@ void TDF_Label::AddToNode (const TDF_LabelNodePtr& toNode,
     aMess = "Attribute \"";
     aMess += anAttribute->DynamicType()->Name();
     aMess += "\" is added to label outside transaction";
-    Standard_ImmutableObject::Raise(aMess.ToCString());
+    throw Standard_ImmutableObject(aMess.ToCString());
   }
     
   if (!anAttribute->Label().IsNull())
-    Standard_DomainError::Raise("Attribute to add is already attached to a label.");
+    throw Standard_DomainError("Attribute to add is already attached to a label.");
   Handle(TDF_Attribute) dummyAtt;
   //if (Find(anAttribute->ID(),dummyAtt))  
   if (FindAttribute(anAttribute->ID(),dummyAtt))
-    Standard_DomainError::Raise("This label has already such an attribute.");
+    throw Standard_DomainError("This label has already such an attribute.");
 
   anAttribute->myTransaction = toNode->Data()->Transaction();  /// myData->Transaction();
   anAttribute->mySavedTransaction = 0;
@@ -579,12 +579,11 @@ void TDF_Label::ForgetFromNode (const TDF_LabelNodePtr& fromNode,
     aMess = "Attribute \"";
     aMess += anAttribute->DynamicType()->Name();
     aMess += "\" is removed from label outside transaction";
-    Standard_ImmutableObject::Raise(aMess.ToCString());
+    throw Standard_ImmutableObject(aMess.ToCString());
   }
     
   if (fromNode != anAttribute->Label().myLabelNode)
-    Standard_DomainError::Raise
-      ("Attribute to forget not attached to my label.");
+    throw Standard_DomainError("Attribute to forget not attached to my label.");
 
   Standard_Integer curTrans = fromNode->Data()->Transaction();
   if (!anAttribute->IsForgotten()) {
@@ -633,13 +632,11 @@ void TDF_Label::ResumeToNode (const TDF_LabelNodePtr& toNode,
                               const Handle(TDF_Attribute)& anAttribute) const
 {
   if (anAttribute.IsNull())
-    Standard_NullObject::Raise("The attribute is a null handle.");
+    throw Standard_NullObject("The attribute is a null handle.");
   if (!anAttribute->Label().IsNull())
-    Standard_NullObject::Raise
-      ("Cannot resume an attribute already attached to a label.");
+    throw Standard_NullObject("Cannot resume an attribute already attached to a label.");
   if (!anAttribute->IsForgotten()) 
-    Standard_DomainError::Raise
-      ("Cannot resume an unforgotten attribute.");
+    throw Standard_DomainError("Cannot resume an unforgotten attribute.");
 
   AddToNode(toNode, anAttribute); // vro
   anAttribute->Resume();

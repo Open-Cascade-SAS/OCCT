@@ -52,7 +52,7 @@ Handle(Standard_Transient) Plugin::Load (const Standard_GUID& aGUID,
       aMsg << theResource.ToCString() << endl;
       if (theVerbose)
         cout << "could not find the resource:" << theResource.ToCString() << endl;
-      Plugin_Failure::Raise(aMsg);
+      throw Plugin_Failure(aMsg.str().c_str());
     }
     
     TCollection_AsciiString thePluginLibrary("");
@@ -78,7 +78,7 @@ Handle(Standard_Transient) Plugin::Load (const Standard_GUID& aGUID,
       aMsg << error.ToCString();
       if (theVerbose)
         cout << "could not open: "  << PluginResource->Value(theResource.ToCString())<< " ; reason: "<< error.ToCString() << endl;
-      Plugin_Failure::Raise(aMsg);
+      throw Plugin_Failure(aMsg.str().c_str());
     }
     f = theSharedLibrary.DlSymb("PLUGINFACTORY");
     if( f == NULL ) {
@@ -86,7 +86,7 @@ Handle(Standard_Transient) Plugin::Load (const Standard_GUID& aGUID,
       Standard_SStream aMsg; aMsg << "could not find the factory in:";
       aMsg << PluginResource->Value(theResource.ToCString());
       aMsg << error.ToCString();
-      Plugin_Failure::Raise(aMsg);
+      throw Plugin_Failure(aMsg.str().c_str());
     }
     theMapOfFunctions.Bind(pid,f);
   }

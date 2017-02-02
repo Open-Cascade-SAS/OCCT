@@ -188,8 +188,8 @@ void Geom2dEvaluator_OffsetCurve::CalculateD0(      gp_Pnt2d& theValue,
                                               const gp_Vec2d& theD1) const
 {
   if (theD1.SquareMagnitude() <= gp::Resolution())
-    Standard_NullValue::Raise("Geom2dEvaluator_OffsetCurve: Undefined normal vector "
-                              "because tangent vector has zero-magnitude!");
+    throw Standard_NullValue("Geom2dEvaluator_OffsetCurve: Undefined normal vector "
+                             "because tangent vector has zero-magnitude!");
 
   gp_Dir2d aNormal(theD1.Y(), -theD1.X());
   theValue.ChangeCoord().Add(aNormal.XY() * myOffset);
@@ -213,7 +213,7 @@ void Geom2dEvaluator_OffsetCurve::CalculateD1(      gp_Pnt2d& theValue,
   if (R3 <= gp::Resolution())
   {
     if (R2 <= gp::Resolution())
-      Standard_NullValue::Raise("Geom2dEvaluator_OffsetCurve: Null derivative");
+      throw Standard_NullValue("Geom2dEvaluator_OffsetCurve: Null derivative");
     //We try another computation but the stability is not very good.
     DNdir.Multiply(R);
     DNdir.Subtract(Ndir.Multiplied(Dr / R));
@@ -260,7 +260,7 @@ void Geom2dEvaluator_OffsetCurve::CalculateD2(      gp_Pnt2d& theValue,
   if (R5 <= gp::Resolution())
   {
     if (R4 <= gp::Resolution())
-      Standard_NullValue::Raise("Geom2dEvaluator_OffsetCurve: Null derivative");
+      throw Standard_NullValue("Geom2dEvaluator_OffsetCurve: Null derivative");
     //We try another computation but the stability is not very good dixit ISG.
     // V2 = P" (U) :
     D2Ndir.Subtract(DNdir.Multiplied(2.0 * Dr / R2));
@@ -334,7 +334,7 @@ void Geom2dEvaluator_OffsetCurve::CalculateD3(      gp_Pnt2d& theValue,
   if (R7 <= gp::Resolution())
   {
     if (R6 <= gp::Resolution())
-      Standard_NullValue::Raise("Geom2dEvaluator_OffsetCurve: Null derivative");
+      throw Standard_NullValue("Geom2dEvaluator_OffsetCurve: Null derivative");
     //We try another computation but the stability is not very good dixit ISG.
     // V3 = P"' (U) :
     D3Ndir.Subtract(D2Ndir.Multiplied(3.0 * myOffset * Dr / R2));

@@ -1796,7 +1796,7 @@ protected:
     {
       if (theObj->myCTXPtr != this)
       {
-        Standard_ProgramError::Raise ("AIS_InteractiveContext - object has been already displayed in another context!");
+        throw Standard_ProgramError("AIS_InteractiveContext - object has been already displayed in another context!");
       }
     }
     else

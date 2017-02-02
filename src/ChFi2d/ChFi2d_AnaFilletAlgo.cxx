@@ -174,17 +174,17 @@ void ChFi2d_AnaFilletAlgo::Init(const TopoDS_Wire& theWire, const gp_Pln& thePla
       e2 = TopoDS::Edge(itr.Value());
   }
   if (e1.IsNull() || e2.IsNull())
-    Standard_TypeMismatch::Raise("The algorithm expects a wire consisting of two linear or circular edges.");
+    throw Standard_TypeMismatch("The algorithm expects a wire consisting of two linear or circular edges.");
 
   // Left neighbour.
   BRepAdaptor_Curve AC1(e1);
   if (AC1.GetType() != GeomAbs_Line && AC1.GetType() != GeomAbs_Circle)
-    Standard_TypeMismatch::Raise("A segment or an arc of circle is expected.");
+    throw Standard_TypeMismatch("A segment or an arc of circle is expected.");
 
   TopoDS_Vertex v1, v2;
   TopExp::Vertices(e1, v1, v2, Standard_True);
   if (v1.IsNull() || v2.IsNull())
-    Standard_Failure::Raise("An infinite edge.");
+    throw Standard_Failure("An infinite edge.");
 
   gp_Pnt P1 = BRep_Tool::Pnt(v1);
   gp_Pnt P2 = BRep_Tool::Pnt(v2);
@@ -209,11 +209,11 @@ void ChFi2d_AnaFilletAlgo::Init(const TopoDS_Wire& theWire, const gp_Pln& thePla
   // Right neighbour.
   BRepAdaptor_Curve AC2(e2);
   if (AC2.GetType() != GeomAbs_Line && AC2.GetType() != GeomAbs_Circle)
-    Standard_TypeMismatch::Raise("A segment or an arc of circle is expected.");
+    throw Standard_TypeMismatch("A segment or an arc of circle is expected.");
 
   TopExp::Vertices(e2, v1, v2, Standard_True);
   if (v1.IsNull() || v2.IsNull())
-    Standard_Failure::Raise("An infinite edge.");
+    throw Standard_Failure("An infinite edge.");
 
   P1 = BRep_Tool::Pnt(v1);
   P2 = BRep_Tool::Pnt(v2);
@@ -247,7 +247,7 @@ void ChFi2d_AnaFilletAlgo::Init(const TopoDS_Edge& theEdge1, const TopoDS_Edge& 
   TopExp::Vertices(theEdge1, v11, v12, Standard_True);
   TopExp::Vertices(theEdge2, v21, v22, Standard_True);
   if (v11.IsNull() || v12.IsNull() || v21.IsNull() || v22.IsNull())
-    Standard_Failure::Raise("An infinite edge.");
+    throw Standard_Failure("An infinite edge.");
 
   gp_Pnt p11 = BRep_Tool::Pnt(v11);
   gp_Pnt p12 = BRep_Tool::Pnt(v12);
@@ -264,7 +264,7 @@ void ChFi2d_AnaFilletAlgo::Init(const TopoDS_Edge& theEdge1, const TopoDS_Edge& 
     pcommon = p12;
   }
   else
-    Standard_Failure::Raise("The edges have no common point.");
+    throw Standard_Failure("The edges have no common point.");
 
   // Reverse the edges in case of need (to construct a wire).
   Standard_Boolean is1stReversed(Standard_False), is2ndReversed(Standard_False);
@@ -284,7 +284,7 @@ void ChFi2d_AnaFilletAlgo::Init(const TopoDS_Edge& theEdge1, const TopoDS_Edge& 
   else
     mkWire.Add(theEdge2);
   if (!mkWire.IsDone())
-    Standard_Failure::Raise("Can't make a wire.");
+    throw Standard_Failure("Can't make a wire.");
 
   const TopoDS_Wire& W = mkWire.Wire();
   Init(W, thePlane);

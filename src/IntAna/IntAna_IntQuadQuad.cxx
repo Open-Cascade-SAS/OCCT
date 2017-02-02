@@ -84,21 +84,21 @@ class TrigonometricRoots {
   //NbSolutions
   Standard_Integer NbSolutions() { 
     if(!done) {
-      StdFail_NotDone::Raise();
+      throw StdFail_NotDone();
     }
     return NbRoots; 
   }
   //InfiniteRoots
   Standard_Boolean InfiniteRoots() { 
     if(!done) {
-      StdFail_NotDone::Raise();
+      throw StdFail_NotDone();
     }    
     return infinite_roots; 
   }
   //Value
   Standard_Real Value(const Standard_Integer n) {
     if((!done)||(n>NbRoots)) {
-      StdFail_NotDone::Raise();
+      throw StdFail_NotDone();
     }    
     return Roots[n-1];
   }
@@ -1051,13 +1051,13 @@ void IntAna_IntQuadQuad::InternalSetNextAndPrevious()
 Standard_Boolean IntAna_IntQuadQuad::HasPreviousCurve(const Standard_Integer I) const
 {
   if(!done) {
-    StdFail_NotDone::Raise("IntQuadQuad Not done");
+    throw StdFail_NotDone("IntQuadQuad Not done");
   }  
   if (identical) {
-    Standard_DomainError::Raise("IntQuadQuad identical");
+    throw Standard_DomainError("IntQuadQuad identical");
   }
   if((I>NbCurves)||(I<=0)) {
-    Standard_OutOfRange::Raise("Incorrect Curve Number 'HasPrevious Curve'");
+    throw Standard_OutOfRange("Incorrect Curve Number 'HasPrevious Curve'");
   }
   if(previouscurve[I-1]) {
     return Standard_True;
@@ -1071,13 +1071,13 @@ Standard_Boolean IntAna_IntQuadQuad::HasPreviousCurve(const Standard_Integer I) 
 Standard_Boolean IntAna_IntQuadQuad::HasNextCurve(const Standard_Integer I) const
 {
   if(!done) {
-    StdFail_NotDone::Raise("IntQuadQuad Not done");
+    throw StdFail_NotDone("IntQuadQuad Not done");
   }  
   if (identical) {
-    Standard_DomainError::Raise("IntQuadQuad identical");
+    throw Standard_DomainError("IntQuadQuad identical");
   }
   if((I>NbCurves)||(I<=0)) {
-    Standard_OutOfRange::Raise("Incorrect Curve Number 'HasNextCurve'");
+    throw Standard_OutOfRange("Incorrect Curve Number 'HasNextCurve'");
   }
   if(nextcurve[I-1]) {
     return Standard_True;
@@ -1102,7 +1102,7 @@ Standard_Integer IntAna_IntQuadQuad::PreviousCurve  (const Standard_Integer I,
     }
   }
   else {
-    Standard_DomainError::Raise("Incorrect Curve Number 'PreviousCurve'"); return(0);
+    throw Standard_DomainError("Incorrect Curve Number 'PreviousCurve'");
   }
 }
 //=======================================================================
@@ -1123,8 +1123,7 @@ Standard_Integer IntAna_IntQuadQuad::NextCurve (const Standard_Integer I,
     }
   }
   else {
-    Standard_DomainError::Raise("Incorrect Curve Number 'NextCurve'"); 
-    return(0);
+    throw Standard_DomainError("Incorrect Curve Number 'NextCurve'");
   }
 }
 //=======================================================================
@@ -1134,13 +1133,13 @@ Standard_Integer IntAna_IntQuadQuad::NextCurve (const Standard_Integer I,
 const IntAna_Curve& IntAna_IntQuadQuad::Curve(const Standard_Integer i) const
 {
   if(!done) {
-    StdFail_NotDone::Raise("IntQuadQuad Not done");
+    throw StdFail_NotDone("IntQuadQuad Not done");
   }
   if (identical) {
-    Standard_DomainError::Raise("IntQuadQuad identical");
+    throw Standard_DomainError("IntQuadQuad identical");
   }
   if((i <= 0) || (i>NbCurves)) {
-    Standard_OutOfRange::Raise("Incorrect Curve Number");
+    throw Standard_OutOfRange("Incorrect Curve Number");
   }
   return TheCurve[i-1];
 }
@@ -1151,13 +1150,13 @@ const IntAna_Curve& IntAna_IntQuadQuad::Curve(const Standard_Integer i) const
 const gp_Pnt& IntAna_IntQuadQuad::Point (const Standard_Integer i) const
 {
   if(!done) {
-    StdFail_NotDone::Raise("IntQuadQuad Not done");
+    throw StdFail_NotDone("IntQuadQuad Not done");
   }  
   if (identical) {
-    Standard_DomainError::Raise("IntQuadQuad identical");
+    throw Standard_DomainError("IntQuadQuad identical");
   }
   if((i <= 0) || (i>Nbpoints)) {
-    Standard_OutOfRange::Raise("Incorrect Point Number");
+    throw Standard_OutOfRange("Incorrect Point Number");
   }
   return Thepoints[i-1];
 }

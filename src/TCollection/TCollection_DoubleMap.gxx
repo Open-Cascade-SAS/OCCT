@@ -39,7 +39,7 @@ TCollection_DoubleMap::TCollection_DoubleMap
        TCollection_BasicMap(Other.NbBuckets(),Standard_False)
 {
   if (Other.Extent() != 0)
-    Standard_DomainError::Raise("TCollection:Copy of DoubleMap");
+    throw Standard_DomainError("TCollection:Copy of DoubleMap");
 }
 
 //=======================================================================
@@ -139,13 +139,13 @@ void TCollection_DoubleMap::Bind(const TheKey1& K1, const TheKey2& K2)
   p = data1[k1];
   while (p) {
     if (Hasher1::IsEqual(p->Key1(),K1)) 
-      Standard_MultiplyDefined::Raise("DoubleMap:Bind");
+      throw Standard_MultiplyDefined("DoubleMap:Bind");
     p = (TCollection_DoubleMapNode*) p->Next();
   }
   p = data2[k2];
   while (p) {
     if (Hasher2::IsEqual(p->Key2(),K2)) 
-      Standard_MultiplyDefined::Raise("DoubleMap:Bind");
+      throw Standard_MultiplyDefined("DoubleMap:Bind");
     p = (TCollection_DoubleMapNode*)p->Next2();
   }
   p = new TCollection_DoubleMapNode(K1,K2,data1[k1],data2[k2]);
@@ -238,7 +238,7 @@ const TheKey2& TCollection_DoubleMap::Find1(const TheKey1& K1) const
     if (Hasher1::IsEqual(p1->Key1(),K1)) return p1->Key2();
     p1 = (TCollection_DoubleMapNode*) p1->Next();
   }
-  Standard_NoSuchObject::Raise("TCollection_DoubleMap::Find1");
+  throw Standard_NoSuchObject("TCollection_DoubleMap::Find1");
   return p1->Key2();
 }
 
@@ -258,7 +258,7 @@ const TheKey1& TCollection_DoubleMap::Find2(const TheKey2& K2) const
     if (Hasher2::IsEqual(p2->Key2(),K2)) return p2->Key1();
     p2 = (TCollection_DoubleMapNode*)p2->Next2();
   }
-  Standard_NoSuchObject::Raise("TCollection_DoubleMap::Find2");
+  throw Standard_NoSuchObject("TCollection_DoubleMap::Find2");
   return p2->Key1();
 }
 

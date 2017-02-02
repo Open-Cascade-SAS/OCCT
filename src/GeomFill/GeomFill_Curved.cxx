@@ -63,36 +63,6 @@ GeomFill_Curved::GeomFill_Curved(const TColgp_Array1OfPnt&   P1,
   Init(P1, P2, P3, P4, W1, W2, W3, W4);
 }
 
-
-//=======================================================================
-//function : GeomFill_Curved
-//purpose  : 
-//=======================================================================
-
-GeomFill_Curved::GeomFill_Curved(const TColgp_Array1OfPnt& P1, 
-			   const TColgp_Array1OfPnt& P2, 
-			   const TColgp_Array1OfPnt& P3)
-{
-  Init(P1, P2, P3);
-}
-
-
-//=======================================================================
-//function : GeomFill_Curved
-//purpose  : 
-//=======================================================================
-
-GeomFill_Curved::GeomFill_Curved(const TColgp_Array1OfPnt&   P1, 
-			   const TColgp_Array1OfPnt&   P2, 
-			   const TColgp_Array1OfPnt&   P3, 
-			   const TColStd_Array1OfReal& W1, 
-			   const TColStd_Array1OfReal& W2, 
-			   const TColStd_Array1OfReal& W3)
-{
-  Init(P1, P2, P3, W1, W2, W3);
-}
-
-
 //=======================================================================
 //function : GeomFill_Curved
 //purpose  : 
@@ -232,35 +202,6 @@ void  GeomFill_Curved::Init(const TColgp_Array1OfPnt&   P1,
       myWeights->SetValue(i,j,W);
     }
   }
-}
-
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void  GeomFill_Curved::Init(const TColgp_Array1OfPnt& ,  // P1, 
-			 const TColgp_Array1OfPnt& ,  // P2, 
-			 const TColgp_Array1OfPnt&  )// P3)
-{
-  Standard_NotImplemented::Raise(" ");
-}
-
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void  GeomFill_Curved::Init(const TColgp_Array1OfPnt&   ,  // P1, 
-			 const TColgp_Array1OfPnt&   ,  // P2, 
-			 const TColgp_Array1OfPnt&   ,  // P3, 
-			 const TColStd_Array1OfReal& ,  // W1, 
-			 const TColStd_Array1OfReal& ,  // W2,
-			 const TColStd_Array1OfReal&  ) // W3)
-{
-  Standard_NotImplemented::Raise(" ");
 }
 
 

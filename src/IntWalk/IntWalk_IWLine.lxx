@@ -101,13 +101,13 @@ inline Standard_Boolean IntWalk_IWLine::HasFirstPoint() const
 
 inline Standard_Integer IntWalk_IWLine::FirstPointIndex() const
 {
-  if (!hasFirst) Standard_DomainError::Raise();
+  if (!hasFirst) throw Standard_DomainError();
   return firstIndex;
 }
 
 inline const TheStartPoint& IntWalk_IWLine::FirstPoint() const
 {
- if (!hasFirst) Standard_DomainError::Raise();
+ if (!hasFirst) throw Standard_DomainError();
  return theFirstPoint;
 }
 
@@ -118,13 +118,13 @@ inline Standard_Boolean IntWalk_IWLine::HasLastPoint() const
 
 inline const TheStartPoint& IntWalk_IWLine::LastPoint() const
 {
-  if (!hasLast) Standard_DomainError::Raise();
+  if (!hasLast) throw Standard_DomainError();
   return theLastPoint;
 }
 
 inline Standard_Integer IntWalk_IWLine::LastPointIndex() const
 {
-  if (!hasLast) Standard_DomainError::Raise();
+  if (!hasLast) throw Standard_DomainError();
   return lastIndex;
 }
 

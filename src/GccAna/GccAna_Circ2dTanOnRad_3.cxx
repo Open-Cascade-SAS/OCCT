@@ -72,14 +72,14 @@ GccAna_Circ2dTanOnRad::
    NbrSol = 0;
    if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
 	 Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
-     GccEnt_BadQualifier::Raise();
+     throw GccEnt_BadQualifier();
      return;
    }
    gp_Circ2d C1 = Qualified1.Qualified();
    TColgp_Array1OfPnt2d Center(1,4);
    TColgp_Array1OfDir2d dir1on(1,4);
 
-   if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+   if (Radius < 0.0) { throw Standard_NegativeValue(); }
    else {
      Standard_Real R1 = C1.Radius();
      Standard_Real R2 = OnCirc.Radius();

@@ -204,7 +204,7 @@ void AppDef_LinearCriteria::GetEstimation(Standard_Real& E1,
 //=======================================================================
 Handle(FEmTool_HAssemblyTable) AppDef_LinearCriteria::AssemblyTable() const
 {
-  if(myCurve.IsNull()) Standard_DomainError::Raise("AppDef_LinearCriteria::AssemblyTable");
+  if(myCurve.IsNull()) throw Standard_DomainError("AppDef_LinearCriteria::AssemblyTable");
 
   Standard_Integer NbDim = myCurve->Dimension(),
                    NbElm = myCurve->NbElements(),
@@ -279,7 +279,7 @@ Handle(FEmTool_HAssemblyTable) AppDef_LinearCriteria::AssemblyTable() const
 //=======================================================================
 Handle(TColStd_HArray2OfInteger) AppDef_LinearCriteria::DependenceTable() const
 {
-  if(myCurve.IsNull()) Standard_DomainError::Raise("AppDef_LinearCriteria::DependenceTable");
+  if(myCurve.IsNull()) throw Standard_DomainError("AppDef_LinearCriteria::DependenceTable");
 
   Standard_Integer Dim = myCurve->Dimension();
 
@@ -304,7 +304,7 @@ Standard_Integer AppDef_LinearCriteria::QualityValues(const Standard_Real J1min,
 							    Standard_Real& J2,
 							    Standard_Real& J3) 
 {
-  if(myCurve.IsNull()) Standard_DomainError::Raise("AppDef_LinearCriteria::QualityValues");
+  if(myCurve.IsNull()) throw Standard_DomainError("AppDef_LinearCriteria::QualityValues");
 
   Standard_Integer NbDim = myCurve->Dimension(),
                    NbElm = myCurve->NbElements();
@@ -414,13 +414,13 @@ void AppDef_LinearCriteria::ErrorValues(Standard_Real& MaxError,
 					      Standard_Real& QuadraticError,
 					      Standard_Real& AverageError) 
 {
-  if(myCurve.IsNull()) Standard_DomainError::Raise("AppDef_LinearCriteria::ErrorValues");
+  if(myCurve.IsNull()) throw Standard_DomainError("AppDef_LinearCriteria::ErrorValues");
 
   Standard_Integer NbDim = myCurve->Dimension();
 
   Standard_Integer myNbP2d = AppDef_MyLineTool::NbP2d(mySSP), myNbP3d = AppDef_MyLineTool::NbP3d(mySSP);
 
-  if(NbDim != (2*myNbP2d + 3*myNbP3d)) Standard_DomainError::Raise("AppDef_LinearCriteria::ErrorValues");
+  if(NbDim != (2*myNbP2d + 3*myNbP3d)) throw Standard_DomainError("AppDef_LinearCriteria::ErrorValues");
 
   TColgp_Array1OfPnt TabP3d(1, Max(1,myNbP3d));
   TColgp_Array1OfPnt2d TabP2d(1, Max(1,myNbP2d));    
@@ -473,10 +473,10 @@ void AppDef_LinearCriteria::Hessian(const Standard_Integer Element,
 					  const Standard_Integer Dimension2,
 					  math_Matrix& H) 
 {
-  if(myCurve.IsNull()) Standard_DomainError::Raise("AppDef_LinearCriteria::Hessian");
+  if(myCurve.IsNull()) throw Standard_DomainError("AppDef_LinearCriteria::Hessian");
 
   if(DependenceTable()->Value(Dimension1, Dimension2) == 0) 
-    Standard_DomainError::Raise("AppDef_LinearCriteria::Hessian");
+    throw Standard_DomainError("AppDef_LinearCriteria::Hessian");
 
   Standard_Integer //NbDim = myCurve->Dimension(),
                    MxDeg = myCurve->Base()->WorkDegree(),
@@ -570,12 +570,12 @@ void AppDef_LinearCriteria::Gradient(const Standard_Integer Element,
 					   math_Vector& G) 
 {
   if(myCurve.IsNull()) 
-    Standard_DomainError::Raise("AppDef_LinearCriteria::ErrorValues");
+    throw Standard_DomainError("AppDef_LinearCriteria::ErrorValues");
 
   Standard_Integer myNbP2d = AppDef_MyLineTool::NbP2d(mySSP), myNbP3d = AppDef_MyLineTool::NbP3d(mySSP);
 
   if(Dimension > (2*myNbP2d + 3*myNbP3d)) 
-    Standard_DomainError::Raise("AppDef_LinearCriteria::ErrorValues");
+    throw Standard_DomainError("AppDef_LinearCriteria::ErrorValues");
 
   TColgp_Array1OfPnt TabP3d(1, Max(1,myNbP3d));
   TColgp_Array1OfPnt2d TabP2d(1, Max(1,myNbP2d));    
@@ -687,9 +687,9 @@ void AppDef_LinearCriteria::SetWeight(const Standard_Real QuadraticWeight,
 					    const Standard_Real percentJ3) 
 {
   if (QuadraticWeight < 0. || QualityWeight < 0.) 
-    Standard_DomainError::Raise("AppDef_LinearCriteria::SetWeight");
+    throw Standard_DomainError("AppDef_LinearCriteria::SetWeight");
   if (percentJ1 < 0. || percentJ2 < 0. || percentJ3 < 0.) 
-    Standard_DomainError::Raise("AppDef_LinearCriteria::SetWeight");
+    throw Standard_DomainError("AppDef_LinearCriteria::SetWeight");
 
   myQuadraticWeight = QuadraticWeight; myQualityWeight = QualityWeight;
 

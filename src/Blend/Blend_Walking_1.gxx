@@ -445,7 +445,7 @@ Standard_Boolean Blend_Walking::PerformFirstSection (Blend_Function& Func,
     break;
   default:
     {
-      Standard_Failure::Raise("Blend_Walking::PerformFirstSection : echec");
+      throw Standard_Failure("Blend_Walking::PerformFirstSection : echec");
     }
   }
   if (sens < 0.0)
@@ -465,7 +465,7 @@ Standard_Boolean Blend_Walking::Continu(Blend_Function& Func,
 					Blend_FuncInv& FuncInv,
 					const Standard_Real P)
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   const Blend_Point& firstBP =  line->Point(1);
   const Blend_Point& lastBP =  line->Point(line->NbPoints());
 
@@ -492,7 +492,7 @@ Standard_Boolean Blend_Walking::Continu(Blend_Function& Func,
 					const Standard_Real P,
 					const Standard_Boolean OnS1)
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   TheExtremity Ext1,Ext2;
   if (sens < 0.) {
     Ext1 = line->StartPointOnFirst();
@@ -553,7 +553,7 @@ Standard_Boolean Blend_Walking::Complete(Blend_Function& Func,
 					 Blend_FuncInv& FuncInv,
 					 const Standard_Real Pmin)
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   if (iscomplete) {return Standard_True;}
 
   if (sens >0.) {

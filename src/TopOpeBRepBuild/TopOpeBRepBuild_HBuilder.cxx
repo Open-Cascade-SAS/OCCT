@@ -314,8 +314,8 @@ void TopOpeBRepBuild_HBuilder::NextSection()
 
 const TopoDS_Shape& TopOpeBRepBuild_HBuilder::CurrentSection() const
 {
-  if (PITLE == NULL) Standard_ProgramError::Raise("no more CurrentSection");
-  if (!PITLE->More()) Standard_ProgramError::Raise("no more CurrentSection");
+  if (PITLE == NULL) throw Standard_ProgramError("no more CurrentSection");
+  if (!PITLE->More()) throw Standard_ProgramError("no more CurrentSection");
   return PITLE->Value();
 }
 

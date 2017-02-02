@@ -90,5 +90,5 @@ AdvApprox_ApproxAFunction::Multiplicities() const
 //=======================================================================
 
 inline Standard_Integer AdvApprox_ApproxAFunction::NumSubSpaces(const Standard_Integer Dimension)  const 
-{ if (Dimension < 1 || Dimension > 3) Standard_ConstructionError::Raise()  ;
+{ if (Dimension < 1 || Dimension > 3) throw Standard_ConstructionError()  ;
   return myNumSubSpaces[Dimension-1] ; }

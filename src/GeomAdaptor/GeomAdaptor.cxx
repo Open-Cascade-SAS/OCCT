@@ -81,7 +81,7 @@ Handle(Geom_Curve) GeomAdaptor::MakeCurve (const Adaptor3d_Curve& HC)
     break;
 
   default:
-    Standard_DomainError::Raise("GeomAdaptor::MakeCurve : OtherCurve");
+    throw Standard_DomainError("GeomAdaptor::MakeCurve : OtherCurve");
 
   }
 
@@ -152,7 +152,7 @@ Handle(Geom_Surface) GeomAdaptor::MakeSurface(const Adaptor3d_Surface& HS,
     break;
 
   case GeomAbs_OtherSurface:
-    Standard_DomainError::Raise("GeomAdaptor::MakeSurface : OtherSurface");
+    throw Standard_DomainError("GeomAdaptor::MakeSurface : OtherSurface");
     break;
   }
 

@@ -442,28 +442,28 @@ Standard_Boolean Extrema_ExtPElC::IsDone () const { return myDone; }
 
 Standard_Integer Extrema_ExtPElC::NbExt () const
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myNbExt;
 }
 //=============================================================================
 
 Standard_Real Extrema_ExtPElC::SquareDistance (const Standard_Integer N) const
 {
-  if ((N < 1) || (N > NbExt())) { Standard_OutOfRange::Raise(); }
+  if ((N < 1) || (N > NbExt())) { throw Standard_OutOfRange(); }
   return mySqDist[N-1];
 }
 //=============================================================================
 
 Standard_Boolean Extrema_ExtPElC::IsMin (const Standard_Integer N) const
 {
-  if ((N < 1) || (N > NbExt())) { Standard_OutOfRange::Raise(); }
+  if ((N < 1) || (N > NbExt())) { throw Standard_OutOfRange(); }
   return myIsMin[N-1];
 }
 //=============================================================================
 
 const Extrema_POnCurv& Extrema_ExtPElC::Point (const Standard_Integer N) const
 {
-  if ((N < 1) || (N > NbExt())) { Standard_OutOfRange::Raise(); }
+  if ((N < 1) || (N > NbExt())) { throw Standard_OutOfRange(); }
   return myPoint[N-1];
 }
 //=============================================================================

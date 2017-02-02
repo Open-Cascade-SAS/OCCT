@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Standard_RangeError, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_Standard_RangeError
   #define Standard_RangeError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Standard_RangeError::Raise(MESSAGE);
+  if (CONDITION) throw Standard_RangeError(MESSAGE);
 #else
   #define Standard_RangeError_Raise_if(CONDITION, MESSAGE)
 #endif

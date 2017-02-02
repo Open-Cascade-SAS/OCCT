@@ -112,12 +112,6 @@ class NCollection_DoubleMap : public NCollection_BaseMap
       Standard_NoSuchObject_Raise_if (!More(), "NCollection_DoubleMap::Iterator::Value");
       return ((DoubleMapNode *) myNode)->Value();
     }
-    //! Value change access - denied
-    TheKey2Type& ChangeValue(void) const
-    {  
-      Standard_ImmutableObject::Raise("NCollection_DoubleMap::Iterator::ChangeValue");
-      return * (TheKey2Type *) NULL; // For compiler
-    }
   };
 
  public:
@@ -219,14 +213,14 @@ class NCollection_DoubleMap : public NCollection_BaseMap
     while (pNode) 
     {
       if (Hasher1::IsEqual (pNode->Key1(), theKey1))
-        Standard_MultiplyDefined::Raise("NCollection_DoubleMap:Bind");
+        throw Standard_MultiplyDefined("NCollection_DoubleMap:Bind");
       pNode = (DoubleMapNode *) pNode->Next();
     }
     pNode = (DoubleMapNode *) myData2[iK2];
     while (pNode) 
     {
       if (Hasher2::IsEqual (pNode->Key2(), theKey2))
-        Standard_MultiplyDefined::Raise("NCollection_DoubleMap:Bind");
+        throw Standard_MultiplyDefined("NCollection_DoubleMap:Bind");
       pNode = (DoubleMapNode *) pNode->Next();
     }
     pNode = new (this->myAllocator) DoubleMapNode (theKey1, theKey2, 
@@ -403,8 +397,7 @@ class NCollection_DoubleMap : public NCollection_BaseMap
         return pNode1->Key2();
       pNode1 = (DoubleMapNode*) pNode1->Next();
     }
-    Standard_NoSuchObject::Raise("NCollection_DoubleMap::Find1");
-    return pNode1->Key2(); // This for compiler
+    throw Standard_NoSuchObject("NCollection_DoubleMap::Find1");
   }
 
   //! Find2
@@ -419,8 +412,7 @@ class NCollection_DoubleMap : public NCollection_BaseMap
         return pNode2->Key1();
       pNode2 = (DoubleMapNode*) pNode2->Next2();
     }
-    Standard_NoSuchObject::Raise("NCollection_DoubleMap::Find2");
-    return pNode2->Key1(); // This for compiler
+    throw Standard_NoSuchObject("NCollection_DoubleMap::Find2");
   }
 
   //! Clear data. If doReleaseMemory is false then the table of

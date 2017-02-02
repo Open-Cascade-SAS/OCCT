@@ -144,7 +144,7 @@ inline void Graphic3d_ArrayOfPrimitives::SetVertice (const Standard_Integer   th
   if (theIndex < 1
    || theIndex > myMaxVertexs)
   {
-    Standard_OutOfRange::Raise ("BAD VERTEX index");
+    throw Standard_OutOfRange("BAD VERTEX index");
   }
 
   Graphic3d_Vec3& aVec = myAttribs->ChangeValue<Graphic3d_Vec3> (theIndex - 1);
@@ -168,7 +168,7 @@ inline void Graphic3d_ArrayOfPrimitives::SetVertexColor (const Standard_Integer 
   if (theIndex < 1
    || theIndex > myMaxVertexs)
   {
-    Standard_OutOfRange::Raise ("BAD VERTEX index");
+    throw Standard_OutOfRange("BAD VERTEX index");
   }
 
   if (myVCol != 0)
@@ -200,7 +200,7 @@ inline void Graphic3d_ArrayOfPrimitives::SetVertexNormal (const Standard_Integer
   if (theIndex < 1
    || theIndex > myMaxVertexs)
   {
-    Standard_OutOfRange::Raise ("BAD VERTEX index");
+    throw Standard_OutOfRange("BAD VERTEX index");
   }
 
   if (myVNor != 0)
@@ -225,7 +225,7 @@ inline void Graphic3d_ArrayOfPrimitives::SetVertexTexel (const Standard_Integer 
   if (theIndex < 1
    || theIndex > myMaxVertexs)
   {
-    Standard_OutOfRange::Raise ("BAD VERTEX index");
+    throw Standard_OutOfRange("BAD VERTEX index");
   }
 
   if (myVTex != 0)
@@ -250,7 +250,7 @@ inline void Graphic3d_ArrayOfPrimitives::SetBoundColor (const Standard_Integer t
   if (theIndex < 1
    || theIndex > myMaxBounds)
   {
-    Standard_OutOfRange::Raise ("BAD BOUND index");
+    throw Standard_OutOfRange("BAD BOUND index");
   }
 
   Graphic3d_Vec4& aVec = myBounds->Colors[theIndex - 1];
@@ -275,7 +275,7 @@ inline void Graphic3d_ArrayOfPrimitives::Vertice (const Standard_Integer theInde
   if (theIndex < 1
    || theIndex > myAttribs->NbElements)
   {
-    Standard_OutOfRange::Raise ("BAD VERTEX index");
+    throw Standard_OutOfRange("BAD VERTEX index");
   }
 
   const Graphic3d_Vec3& aVec = myAttribs->Value<Graphic3d_Vec3> (theIndex - 1);
@@ -298,7 +298,7 @@ inline void Graphic3d_ArrayOfPrimitives::VertexColor (const Standard_Integer the
   if (theIndex < 1
    || theIndex > myAttribs->NbElements)
   {
-    Standard_OutOfRange::Raise ("BAD VERTEX index");
+    throw Standard_OutOfRange("BAD VERTEX index");
   }
   Standard_Integer aColorInt = 0;
   VertexColor (theIndex, aColorInt);
@@ -331,7 +331,7 @@ inline void Graphic3d_ArrayOfPrimitives::VertexNormal (const Standard_Integer th
   if (theIndex < 1
    || theIndex > myAttribs->NbElements)
   {
-    Standard_OutOfRange::Raise ("BAD VERTEX index");
+    throw Standard_OutOfRange("BAD VERTEX index");
   }
 
   if (myVNor != 0)
@@ -356,7 +356,7 @@ inline void Graphic3d_ArrayOfPrimitives::VertexTexel (const Standard_Integer the
   if (theIndex < 1
    || theIndex > myAttribs->NbElements)
   {
-    Standard_OutOfRange::Raise ("BAD VERTEX index");
+    throw Standard_OutOfRange("BAD VERTEX index");
   }
 
   if (myVTex != 0)
@@ -378,7 +378,7 @@ inline Standard_Integer Graphic3d_ArrayOfPrimitives::Edge (const Standard_Intege
    || theIndex <= 0
    || theIndex > myIndices->NbElements)
   {
-    Standard_OutOfRange::Raise ("BAD EDGE index");
+    throw Standard_OutOfRange("BAD EDGE index");
   }
   return Standard_Integer(myIndices->Index (theIndex - 1) + 1);
 }
@@ -399,7 +399,7 @@ inline Standard_Integer Graphic3d_ArrayOfPrimitives::Bound (const Standard_Integ
    || theIndex <= 0
    || theIndex > myBounds->NbBounds)
   {
-    Standard_OutOfRange::Raise ("BAD BOUND index");
+    throw Standard_OutOfRange("BAD BOUND index");
   }
   return myBounds->Bounds[theIndex - 1];
 }
@@ -414,7 +414,7 @@ inline void Graphic3d_ArrayOfPrimitives::BoundColor (const Standard_Integer theI
    || theIndex <= 0
    || theIndex > myBounds->NbBounds)
   {
-    Standard_OutOfRange::Raise(" BAD BOUND index");
+    throw Standard_OutOfRange(" BAD BOUND index");
   }
 
   const Graphic3d_Vec4& aVec = myBounds->Colors[theIndex - 1];

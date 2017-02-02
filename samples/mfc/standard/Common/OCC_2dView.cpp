@@ -232,7 +232,7 @@ void OCC_2dView::OnBUTTONGridValues()
     TheCircularGridDialog.ShowWindow(SW_SHOW);
     break;
   default :
-    Standard_Failure::Raise("invalid Aspect_GridType");
+    throw Standard_Failure("invalid Aspect_GridType");
   }
 }
 void OCC_2dView::OnUpdateBUTTONGridValues(CCmdUI* pCmdUI) 
@@ -282,7 +282,7 @@ void OCC_2dView::OnLButtonDown(UINT nFlags, CPoint point)
     case CurAction2d_GlobalPanning :// nothing
       break;
     default :
-      Standard_Failure::Raise(" incompatible Current Mode ");
+      throw Standard_Failure(" incompatible Current Mode ");
       break;
     }
   }
@@ -344,7 +344,7 @@ void OCC_2dView::OnLButtonUp(UINT nFlags, CPoint point)
       myCurrentMode = CurAction2d_Nothing;
       break;
     default :
-      Standard_Failure::Raise(" incompatible Current Mode ");
+      throw Standard_Failure(" incompatible Current Mode ");
       break;
     } //switch (myCurrentMode)
   } //	else // if ( CASCADESHORTCUTKEY )	
@@ -432,7 +432,7 @@ void OCC_2dView::OnMouseMove(UINT nFlags, CPoint point)
       case CurAction2d_GlobalPanning : // nothing
         break;
       default :
-        Standard_Failure::Raise(" incompatible Current Mode ");
+        throw Standard_Failure(" incompatible Current Mode ");
         break;
       }//  switch (myCurrentMode)
     }// if ( nFlags & CASCADESHORTCUTKEY )  else 

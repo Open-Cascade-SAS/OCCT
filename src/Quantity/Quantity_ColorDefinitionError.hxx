@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Quantity_ColorDefinitionError, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_Quantity_ColorDefinitionError
   #define Quantity_ColorDefinitionError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Quantity_ColorDefinitionError::Raise(MESSAGE);
+  if (CONDITION) throw Quantity_ColorDefinitionError(MESSAGE);
 #else
   #define Quantity_ColorDefinitionError_Raise_if(CONDITION, MESSAGE)
 #endif

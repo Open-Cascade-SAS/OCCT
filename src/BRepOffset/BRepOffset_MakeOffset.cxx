@@ -451,7 +451,7 @@ static Standard_Boolean FindParameter(const TopoDS_Vertex& V,
     }
   }
   
-  //Standard_NoSuchObject::Raise("BRep_Tool:: no parameter on edge");
+  //throw Standard_NoSuchObject("BRep_Tool:: no parameter on edge");
   return Standard_False;
 }
 
@@ -1644,11 +1644,7 @@ void BRepOffset_MakeOffset::SelfInter(TopTools_MapOfShape& /*Modif*/)
   }    
 #endif  
 
-  Standard_NotImplemented::Raise();
-
-#ifdef OCCT_DEBUG
-  if ( ChronBuild) Clock.Show();
-#endif
+  throw Standard_NotImplemented();
 }
 
 
@@ -3947,7 +3943,7 @@ void TrimEdge(TopoDS_Edge&                  NE,
         gp_Pnt thePoint = BRep_Tool::Pnt(V);
         GeomAPI_ProjectPointOnCurve Projector(thePoint, theCurve);
         if (Projector.NbPoints() == 0)
-          Standard_ConstructionError::Raise("BRepOffset_MakeOffset::TrimEdge no projection");
+          throw Standard_ConstructionError("BRepOffset_MakeOffset::TrimEdge no projection");
         U = Projector.LowerDistanceParameter();
       }
       if (U < UMin) {
@@ -3959,7 +3955,7 @@ void TrimEdge(TopoDS_Edge&                  NE,
     }
     //
     if (V1.IsNull() || V2.IsNull()) {
-      Standard_ConstructionError::Raise("BRepOffset_MakeOffset::TrimEdge");
+      throw Standard_ConstructionError("BRepOffset_MakeOffset::TrimEdge");
     }
     if (!V1.IsSame(V2)) {
       NE.Free( Standard_True );

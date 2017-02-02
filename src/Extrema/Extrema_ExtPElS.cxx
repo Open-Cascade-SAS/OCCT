@@ -408,23 +408,23 @@ Standard_Boolean Extrema_ExtPElS::IsDone () const { return myDone; }
 
 Standard_Integer Extrema_ExtPElS::NbExt () const
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myNbExt;
 }
 //=============================================================================
 
 Standard_Real Extrema_ExtPElS::SquareDistance (const Standard_Integer N) const
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
-  if ((N < 1) || (N > myNbExt)) { Standard_OutOfRange::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
+  if ((N < 1) || (N > myNbExt)) { throw Standard_OutOfRange(); }
   return mySqDist[N-1];
 }
 //=============================================================================
 
 const Extrema_POnSurf& Extrema_ExtPElS::Point (const Standard_Integer N) const
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
-  if ((N < 1) || (N > myNbExt)) { Standard_OutOfRange::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
+  if ((N < 1) || (N > myNbExt)) { throw Standard_OutOfRange(); }
   return myPoint[N-1];
 }
 //=============================================================================

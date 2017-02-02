@@ -42,7 +42,7 @@ static Standard_Boolean STATIC_TOREVERSE = Standard_False; // xpu150498
 #define M_REVERSED(ori) (ori == TopAbs_REVERSED)
 
 //------------------------------------------------------
-static void FUN_RaiseError(){Standard_ProgramError::Raise("TopOpeBRepDS_FaceInterferenceTool");}
+static void FUN_RaiseError(){throw Standard_ProgramError("TopOpeBRepDS_FaceInterferenceTool");}
 
 //------------------------------------------------------
 Standard_EXPORT Standard_Boolean FUN_Parameters
@@ -99,7 +99,7 @@ Standard_EXPORT void FUN_ComputeGeomData
   // Getting the principle directions,the normal and the curvatures
   BRepLProp_SLProps props(surf,uu,vv,2,Precision::Confusion());
   Standard_Boolean curdef = props.IsCurvatureDefined();
-  if (!curdef) Standard_ProgramError::Raise("TopOpeBRepDS_FaceInterferenceTool::Init");
+  if (!curdef) throw Standard_ProgramError("TopOpeBRepDS_FaceInterferenceTool::Init");
   Standard_Boolean umbilic = props.IsUmbilic();
   if (umbilic) { 
     Cur1 = Cur2 = props.MeanCurvature(); 
@@ -118,7 +118,7 @@ Standard_EXPORT void FUN_ComputeGeomData
                                            //          describes "direct" geometry 
     }
     else                
-      Standard_Failure::Raise("FUN_ComputeGeomData");
+      throw Standard_Failure("FUN_ComputeGeomData");
     
     D1 = Norm; Standard_Real x = D1.X(),y = D1.Y(),z = D1.Z(),tol = Precision::Confusion(); 
     Standard_Boolean nullx = (Abs(x)<tol),nully = (Abs(y)<tol),nullz = (Abs(z)<tol);
@@ -325,7 +325,7 @@ void TopOpeBRepDS_FaceInterferenceTool::SetEdgePntPar(const gp_Pnt& P,const Stan
 //=======================================================================
 void TopOpeBRepDS_FaceInterferenceTool::GetEdgePntPar(gp_Pnt& P,Standard_Real& p) const
 {
-  if (!myOnEdDef) Standard_ProgramError::Raise("GetEdgePntPar");
+  if (!myOnEdDef) throw Standard_ProgramError("GetEdgePntPar");
   P = myPntOnEd;
   p = myParOnEd;
 }

@@ -36,7 +36,7 @@
 
 static void FUN_Raise()
 {
-  Standard_ProgramError::Raise("Edge3dInterferenceTool");
+  throw Standard_ProgramError("Edge3dInterferenceTool");
 }
 
 #define POINT        (0)

@@ -26,7 +26,7 @@ DEFINE_STANDARD_HANDLE(Aspect_WindowError, Standard_OutOfRange)
 
 #if !defined No_Exception && !defined No_Aspect_WindowError
   #define Aspect_WindowError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Aspect_WindowError::Raise(MESSAGE);
+  if (CONDITION) throw Aspect_WindowError(MESSAGE);
 #else
   #define Aspect_WindowError_Raise_if(CONDITION, MESSAGE)
 #endif

@@ -91,10 +91,10 @@ void OSD_File::Build(const OSD_OpenMode Mode,
  TCollection_AsciiString aBuffer;
 
  if (myPath.Name().Length()==0)
-  Standard_ProgramError::Raise("OSD_File::Build : no name was given");
+  throw Standard_ProgramError("OSD_File::Build : no name was given");
 
  if (myFileChannel != -1)
-  Standard_ProgramError::Raise("OSD_File::Build : file is already open");
+  throw Standard_ProgramError("OSD_File::Build : file is already open");
 
 
  myMode = Mode;
@@ -144,14 +144,14 @@ void  OSD_File::Append(const OSD_OpenMode Mode,
  TCollection_AsciiString aBuffer;
 
  if ( OSD_File::KindOfFile ( ) == OSD_DIRECTORY ) {
-    Standard_ProgramError::Raise("OSD_File::Append : it is a directory");
+    throw Standard_ProgramError("OSD_File::Append : it is a directory");
  } 
  
  if (myPath.Name().Length()==0)
-  Standard_ProgramError::Raise("OSD_File::Append : no name was given");
+  throw Standard_ProgramError("OSD_File::Append : no name was given");
 
  if (myFileChannel != -1)
-  Standard_ProgramError::Raise("OSD_File::Append : file is already open");
+  throw Standard_ProgramError("OSD_File::Append : file is already open");
 
  internal_prot = Protect.Internal();
  myMode = Mode;
@@ -202,10 +202,10 @@ void  OSD_File::Open(const OSD_OpenMode Mode,
   }
 
  if (myPath.Name().Length()==0)
-  Standard_ProgramError::Raise("OSD_File::Open : no name was given");
+  throw Standard_ProgramError("OSD_File::Open : no name was given");
 
  if (myFileChannel != -1)
-  Standard_ProgramError::Raise("OSD_File::Open : file is already open");
+  throw Standard_ProgramError("OSD_File::Open : file is already open");
 
  internal_prot = Protect.Internal();
  myMode = Mode;
@@ -283,19 +283,19 @@ void  OSD_File::Read(TCollection_AsciiString& Buffer,
  int status;
 
   if ( OSD_File::KindOfFile ( ) == OSD_DIRECTORY ) { 
-    Standard_ProgramError::Raise("OSD_File::Read : it is a directory");
+    throw Standard_ProgramError("OSD_File::Read : it is a directory");
   }
 
  if (myFileChannel == -1)
-  Standard_ProgramError::Raise("OSD_File::Read : file is not open");
+  throw Standard_ProgramError("OSD_File::Read : file is not open");
 
  if (Failed()) Perror();
 
  if (myMode == OSD_WriteOnly)
-  Standard_ProgramError::Raise("OSD_File::Read : file is Write only");
+  throw Standard_ProgramError("OSD_File::Read : file is Write only");
 
  if (Nbyte <= 0)
-  Standard_ProgramError::Raise("OSD_File::Read : Nbyte is null");
+  throw Standard_ProgramError("OSD_File::Read : Nbyte is null");
 
  TCollection_AsciiString transfert(Nbyte,' ');
  readbuf = (Standard_PCharacter)transfert.ToCString();  
@@ -321,19 +321,19 @@ void OSD_File::ReadLine(TCollection_AsciiString& Buffer,
   Standard_PCharacter readbuf, abuffer;
   //
   if (OSD_File::KindOfFile() == OSD_DIRECTORY ) { 
-    Standard_ProgramError::Raise("OSD_File::Read : it is a directory");
+    throw Standard_ProgramError("OSD_File::Read : it is a directory");
   }
   if (myFileChannel == -1){
-    Standard_ProgramError::Raise("OSD_File::ReadLine : file is not open");
+    throw Standard_ProgramError("OSD_File::ReadLine : file is not open");
   }
   if (Failed()) {
     Perror();
   }
   if (myMode == OSD_WriteOnly) {
-    Standard_ProgramError::Raise("OSD_File::ReadLine : file is Write only");
+    throw Standard_ProgramError("OSD_File::ReadLine : file is Write only");
   }
   if (Nbyte <= 0){
-    Standard_ProgramError::Raise("OSD_File::ReadLine : Nbyte is null");
+    throw Standard_ProgramError("OSD_File::ReadLine : Nbyte is null");
   }
   //
   TCollection_AsciiString transfert(Nbyte,' ');
@@ -391,22 +391,22 @@ void  OSD_File::Read(const Standard_Address   Buffer,
   
   Readbyte = 0;
   if ( OSD_File::KindOfFile ( ) == OSD_DIRECTORY ) { 
-    Standard_ProgramError::Raise("OSD_File::Read : it is a directory");
+    throw Standard_ProgramError("OSD_File::Read : it is a directory");
   }
  
   if (myFileChannel == -1)
-    Standard_ProgramError::Raise("OSD_File::Read : file is not open");
+    throw Standard_ProgramError("OSD_File::Read : file is not open");
   
   if (Failed()) Perror();
   
   if (myMode == OSD_WriteOnly)
-    Standard_ProgramError::Raise("OSD_File::Read : file is Write only");
+    throw Standard_ProgramError("OSD_File::Read : file is Write only");
   
   if (Nbyte <= 0)
-    Standard_ProgramError::Raise("OSD_File::Read : Nbyte is null");
+    throw Standard_ProgramError("OSD_File::Read : Nbyte is null");
 
   if (Buffer == NULL)
-    Standard_ProgramError::Raise("OSD_File::Read : Buffer is null");
+    throw Standard_ProgramError("OSD_File::Read : Buffer is null");
   
   status = read (myFileChannel, (char*) Buffer, Nbyte);
   
@@ -426,19 +426,19 @@ void  OSD_File::Write(const TCollection_AsciiString &Buffer,
  int status;
 
  if ( OSD_File::KindOfFile ( ) == OSD_DIRECTORY ) { 
-   Standard_ProgramError::Raise("OSD_File::Write : it is a directory");
+   throw Standard_ProgramError("OSD_File::Write : it is a directory");
  }
  
  if (myFileChannel == -1)
-  Standard_ProgramError::Raise("OSD_File::Write : file is not open");
+  throw Standard_ProgramError("OSD_File::Write : file is not open");
 
  if (Failed()) Perror();
 
  if (myMode == OSD_ReadOnly)
-  Standard_ProgramError::Raise("OSD_File::Write : file is Read only");
+  throw Standard_ProgramError("OSD_File::Write : file is Read only");
 
  if (Nbyte <= 0)
-  Standard_ProgramError::Raise("OSD_File::Write : Nbyte is null");
+  throw Standard_ProgramError("OSD_File::Write : Nbyte is null");
 
  writebuf = Buffer.ToCString();
 
@@ -457,15 +457,15 @@ void  OSD_File::Write(const Standard_Address   Buffer,
   int status;
   
   if (myFileChannel == -1)
-    Standard_ProgramError::Raise("OSD_File::Write : file is not open");
+    throw Standard_ProgramError("OSD_File::Write : file is not open");
   
   if (Failed()) Perror();
   
   if (myMode == OSD_ReadOnly)
-    Standard_ProgramError::Raise("OSD_File::Write : file is Read only");
+    throw Standard_ProgramError("OSD_File::Write : file is Read only");
   
   if (Nbyte <= 0)
-    Standard_ProgramError::Raise("OSD_File::Write : Nbyte is null");
+    throw Standard_ProgramError("OSD_File::Write : Nbyte is null");
   
   status = write (myFileChannel, (const char *)Buffer, Nbyte);
   
@@ -485,7 +485,7 @@ void  OSD_File::Seek(const Standard_Integer Offset,
  int iwhere=0;
 
  if (myFileChannel == -1)
-  Standard_ProgramError::Raise("OSD_File::Seek : file is not open");
+  throw Standard_ProgramError("OSD_File::Seek : file is not open");
 
  if (Failed()) Perror();
 
@@ -518,7 +518,7 @@ void  OSD_File::Close(){
  int status;
 
  if (myFileChannel == -1)
-  Standard_ProgramError::Raise("OSD_File::Close : file is not open");
+  throw Standard_ProgramError("OSD_File::Close : file is not open");
 
  if (Failed()) Perror();
 
@@ -543,7 +543,7 @@ void  OSD_File::Close(){
 
 Standard_Boolean OSD_File::IsAtEnd(){
  if (myFileChannel == -1)
-  Standard_ProgramError::Raise("OSD_File::IsAtEnd : file is not open");
+  throw Standard_ProgramError("OSD_File::IsAtEnd : file is not open");
 
  if (myIO == EOF) return (Standard_True);
  return (Standard_False);
@@ -553,7 +553,7 @@ Standard_Boolean OSD_File::IsAtEnd(){
 
 /*void  OSD_File::Link(const TCollection_AsciiString& ToFile){
  if (myFileChannel == -1)
-  Standard_ProgramError::Raise("OSD_File::Link : file is not open");
+  throw Standard_ProgramError("OSD_File::Link : file is not open");
 
  TCollection_AsciiString aBuffer;
  myPath.SystemName ( aBuffer );
@@ -567,7 +567,7 @@ void  OSD_File::SetLock(const OSD_LockType Lock){
 int status;
 
  if (myFileChannel == -1)
-  Standard_ProgramError::Raise("OSD_File::SetLock : file is not open");
+  throw Standard_ProgramError("OSD_File::SetLock : file is not open");
 
 
 #ifdef POSIX
@@ -652,7 +652,7 @@ void  OSD_File::UnLock(){
 int status;
 
  if (myFileChannel == -1)
-  Standard_ProgramError::Raise("OSD_File::UnLock : file is not open");
+  throw Standard_ProgramError("OSD_File::UnLock : file is not open");
 
 #ifdef POSIX
  struct stat buf;
@@ -711,7 +711,7 @@ Standard_Size  OSD_File::Size(){
  int status;
 
  if (myPath.Name().Length()==0)
-  Standard_ProgramError::Raise("OSD_File::Size : empty file name");
+  throw Standard_ProgramError("OSD_File::Size : empty file name");
 
  TCollection_AsciiString aBuffer;
  myPath.SystemName ( aBuffer );
@@ -814,7 +814,7 @@ void OSD_File::Rewind() {
 
 #define ACE_HEADER_SIZE (  sizeof ( ACCESS_ALLOWED_ACE ) - sizeof ( DWORD )  )
 
-#define RAISE( arg ) Standard_ProgramError :: Raise (  ( arg )  )
+#define RAISE( arg ) throw Standard_ProgramError (  ( arg )  )
 #define TEST_RAISE( arg ) _test_raise (  myFileHandle, ( arg )  )
 
 #define OPEN_NEW    0
@@ -923,7 +923,7 @@ void OSD_File :: Build ( const OSD_OpenMode Mode, const OSD_Protection& Protect)
  TCollection_AsciiString fName;
 
  if ( OSD_File::KindOfFile ( ) == OSD_DIRECTORY ) { 
-   Standard_ProgramError::Raise("OSD_File::Read : it is a directory");
+   throw Standard_ProgramError("OSD_File::Read : it is a directory");
  }
                                         
  if (myFileHandle != INVALID_HANDLE_VALUE)
@@ -1050,7 +1050,7 @@ void OSD_File :: Read (
    cout << " OSD_File::Read : it is a directory " << endl;
 #endif
    return ;
-//   Standard_ProgramError::Raise("OSD_File::Read : it is a directory");
+//   throw Standard_ProgramError("OSD_File::Read : it is a directory");
  }
                                         
  Standard_Integer NbyteRead;
@@ -1096,7 +1096,7 @@ void OSD_File :: ReadLine (
  LONG               aSeekPos;
 
  if ( OSD_File::KindOfFile ( ) == OSD_DIRECTORY ) { 
-   Standard_ProgramError::Raise("OSD_File::Read : it is a directory");
+   throw Standard_ProgramError("OSD_File::Read : it is a directory");
  }
                                         
  TEST_RAISE(  "ReadLine"  );              
@@ -1237,7 +1237,7 @@ void OSD_File :: Read (
  DWORD dwBytesRead;
 
  if ( OSD_File::KindOfFile ( ) == OSD_DIRECTORY ) { 
-   Standard_ProgramError::Raise("OSD_File::Read : it is a directory");
+   throw Standard_ProgramError("OSD_File::Read : it is a directory");
  }
                                         
  TEST_RAISE(  "Read"  );
@@ -1926,7 +1926,7 @@ static void __fastcall _test_raise ( HANDLE hFile, Standard_CString str ) {
     buff += str;
     buff += " (): wrong access";
 
-    Standard_ProgramError::Raise(buff.ToCString());
+    throw Standard_ProgramError(buff.ToCString());
   }  // end if
 
 }  // end _test_raise

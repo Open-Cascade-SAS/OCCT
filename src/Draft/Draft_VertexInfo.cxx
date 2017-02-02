@@ -85,7 +85,7 @@ Standard_Real Draft_VertexInfo::Parameter (const TopoDS_Edge& E)
       return itp.Value();
     }
   }
-  Standard_DomainError::Raise(); return 0;
+  throw Standard_DomainError();
 }
 
 
@@ -103,7 +103,7 @@ Standard_Real& Draft_VertexInfo::ChangeParameter (const TopoDS_Edge& E)
       return itp.Value();
     }
   }
-  Standard_DomainError::Raise(); return itp.Value();
+  throw Standard_DomainError();
 }
 
 

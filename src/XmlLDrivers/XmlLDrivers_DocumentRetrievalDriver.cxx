@@ -197,7 +197,7 @@ void XmlLDrivers_DocumentRetrievalDriver::Read
                                       theFileName + " cannot be opened for reading";
 
     theApplication->MessageDriver()->Write (aMsg.ToExtString());
-    Standard_Failure::Raise("File cannot be opened for reading");
+    throw Standard_Failure("File cannot be opened for reading");
   }
 }
 
@@ -451,9 +451,9 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
     else
       myReaderStatus = PCDM_RS_OK;
   }
-  catch (Standard_Failure)
+  catch (Standard_Failure const& anException)
   {
-    TCollection_ExtendedString anErrorString (Standard_Failure::Caught()->GetMessageString());
+    TCollection_ExtendedString anErrorString (anException.GetMessageString());
     aMsgDriver -> Write (anErrorString.ToExtString());
   }
 

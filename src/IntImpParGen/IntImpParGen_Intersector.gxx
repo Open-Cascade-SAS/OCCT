@@ -243,7 +243,7 @@ void IntImpParGen_Intersector::Perform(const ImpTool& TheImpTool,
 
   if (!(TheParCurveDomain.HasFirstPoint() &&
     TheParCurveDomain.HasLastPoint())) {
-    Standard_ConstructionError::Raise("Domaine sur courbe incorrect");
+    throw Standard_ConstructionError("Domaine sur courbe incorrect");
   }
 
   Standard_Integer nb_echantillons = ParTool::NbSamples(TheParCurve,

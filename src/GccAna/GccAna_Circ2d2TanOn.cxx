@@ -76,7 +76,7 @@ GccAna_Circ2d2TanOn::
 	Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
       !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
 	Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-   GccEnt_BadQualifier::Raise();
+   throw GccEnt_BadQualifier();
      return;
    }
   gp_Circ2d C1 = Qualified1.Qualified();
@@ -346,8 +346,8 @@ void GccAna_Circ2d2TanOn::
 		       GccEnt_Position& Qualif1 ,
 		       GccEnt_Position& Qualif2 ) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-   else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+   else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
    else {
      Qualif1 = qualifier1(Index);
      Qualif2 = qualifier2(Index);
@@ -359,15 +359,15 @@ void GccAna_Circ2d2TanOn::
                     Standard_Real&      ParSol ,
                     Standard_Real&      ParArg ,
                     gp_Pnt2d&  PntSol ) const{
-   if (!WellDone) { StdFail_NotDone::Raise(); }
-   else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+   if (!WellDone) { throw StdFail_NotDone(); }
+   else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
    else {
      if (TheSame1(Index) == 0) {
        ParSol = par1sol(Index);
        ParArg = pararg1(Index);
        PntSol = gp_Pnt2d(pnttg1sol(Index));
      }
-     else { StdFail_NotDone::Raise(); }
+     else { throw StdFail_NotDone(); }
    }
  }
 
@@ -376,15 +376,15 @@ void GccAna_Circ2d2TanOn::
                     Standard_Real&      ParSol ,
                     Standard_Real&      ParArg ,
                     gp_Pnt2d&  PntSol ) const{
-   if (!WellDone) { StdFail_NotDone::Raise(); }
-   else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+   if (!WellDone) { throw StdFail_NotDone(); }
+   else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
    else {
      if (TheSame2(Index) == 0) {
        ParSol = par2sol(Index);
        ParArg = pararg2(Index);
        PntSol = gp_Pnt2d(pnttg2sol(Index));
      }
-     else { StdFail_NotDone::Raise(); }
+     else { throw StdFail_NotDone(); }
    }
  }
 
@@ -392,8 +392,8 @@ void GccAna_Circ2d2TanOn::
    CenterOn3 (const Standard_Integer    Index  ,
                     Standard_Real&      ParArg ,
                     gp_Pnt2d&  PntSol ) const{
-   if (!WellDone) { StdFail_NotDone::Raise(); }
-   else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+   if (!WellDone) { throw StdFail_NotDone(); }
+   else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
    else {
      ParArg = parcen3(Index);
      PntSol = pnttg1sol(Index);
@@ -403,8 +403,8 @@ void GccAna_Circ2d2TanOn::
 Standard_Boolean GccAna_Circ2d2TanOn::
    IsTheSame1 (const Standard_Integer Index) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
 
   if (TheSame1(Index) == 0) { return Standard_False; }
   return Standard_True;
@@ -413,8 +413,8 @@ Standard_Boolean GccAna_Circ2d2TanOn::
 Standard_Boolean GccAna_Circ2d2TanOn::
    IsTheSame2 (const Standard_Integer Index) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
 
   if (TheSame2(Index) == 0) { return Standard_False; }
   return Standard_True;

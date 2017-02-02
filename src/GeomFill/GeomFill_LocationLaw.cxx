@@ -28,8 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_LocationLaw,MMgt_TShared)
 
 Standard_Boolean GeomFill_LocationLaw::D1(const Standard_Real, gp_Mat&, gp_Vec&,gp_Mat&, gp_Vec&,TColgp_Array1OfPnt2d&,TColgp_Array1OfVec2d&) 
 {
-  Standard_NotImplemented::Raise("GeomFill_LocationLaw::D1");
-  return 0;
+  throw Standard_NotImplemented("GeomFill_LocationLaw::D1");
 }
 
  Standard_Boolean GeomFill_LocationLaw::D2(const Standard_Real,
@@ -38,8 +37,7 @@ Standard_Boolean GeomFill_LocationLaw::D1(const Standard_Real, gp_Mat&, gp_Vec&,
 					   gp_Mat&, gp_Vec&, 
 					   TColgp_Array1OfPnt2d&,TColgp_Array1OfVec2d&,TColgp_Array1OfVec2d&) 
 {
-  Standard_NotImplemented::Raise("GeomFill_LocationLaw::D2");
-  return 0;
+  throw Standard_NotImplemented("GeomFill_LocationLaw::D2");
 }
 
  Standard_Integer GeomFill_LocationLaw::Nb2dCurves() const
@@ -78,7 +76,7 @@ Standard_Boolean GeomFill_LocationLaw::D1(const Standard_Real, gp_Mat&, gp_Vec&,
 // void GeomFill_LocationLaw::Resolution(const Standard_Integer Index,const Standard_Real Tol,Standard_Real& TolU,Standard_Real& TolV) const
  void GeomFill_LocationLaw::Resolution(const Standard_Integer ,const Standard_Real ,Standard_Real& ,Standard_Real& ) const
 {
-  Standard_NotImplemented::Raise("GeomFill_LocationLaw::Resolution");
+  throw Standard_NotImplemented("GeomFill_LocationLaw::Resolution");
 }
 
  void GeomFill_LocationLaw::SetTolerance(const Standard_Real,
@@ -97,5 +95,5 @@ Standard_Boolean GeomFill_LocationLaw::D1(const Standard_Real, gp_Mat&, gp_Vec&,
 }
  void GeomFill_LocationLaw::Rotation(gp_Pnt&) const
 {
-  Standard_NotImplemented::Raise("GeomFill_SectionLaw::Rotation");
+  throw Standard_NotImplemented("GeomFill_SectionLaw::Rotation");
 }

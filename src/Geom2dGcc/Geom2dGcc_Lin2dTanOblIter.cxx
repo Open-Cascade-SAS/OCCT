@@ -48,7 +48,7 @@ Geom2dGcc_Lin2dTanOblIter (const Geom2dGcc_QCurve&  Qualified1 ,
   WellDone = Standard_False;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
     Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
-      GccEnt_BadQualifier::Raise();
+      throw GccEnt_BadQualifier();
       return;
   }
   Paral2 = Standard_False;
@@ -113,7 +113,7 @@ IsDone () const { return WellDone; }
 
 gp_Lin2d Geom2dGcc_Lin2dTanOblIter::ThisSolution () const 
 {	
-  if (!WellDone) StdFail_NotDone::Raise();
+  if (!WellDone) throw StdFail_NotDone();
 
   return linsol;
 }
@@ -121,7 +121,7 @@ gp_Lin2d Geom2dGcc_Lin2dTanOblIter::ThisSolution () const
 void Geom2dGcc_Lin2dTanOblIter:: 
 WhichQualifier (GccEnt_Position& Qualif1) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
   else {
     Qualif1 = qualifier1;
   }
@@ -134,7 +134,7 @@ void Geom2dGcc_Lin2dTanOblIter::
 Tangency1 (Standard_Real& ParSol    ,
            Standard_Real& ParArg    ,
            gp_Pnt2d& PntSol) const {
-             if (!WellDone) { StdFail_NotDone::Raise(); }
+             if (!WellDone) { throw StdFail_NotDone(); }
              else {
                ParSol = par1sol;
                ParArg = pararg1;
@@ -146,8 +146,8 @@ void Geom2dGcc_Lin2dTanOblIter::
 Intersection2 (Standard_Real&     ParSol ,
                Standard_Real&     ParArg ,
                gp_Pnt2d& PntSol ) const {
-                 if (!WellDone) { StdFail_NotDone::Raise(); }
-                 else if (Paral2) { Geom2dGcc_IsParallel::Raise(); }
+                 if (!WellDone) { throw StdFail_NotDone(); }
+                 else if (Paral2) { throw Geom2dGcc_IsParallel(); }
                  else {
                    PntSol = pntint2sol;
                    ParSol = par2sol;

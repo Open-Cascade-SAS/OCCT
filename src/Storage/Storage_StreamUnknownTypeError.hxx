@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Storage_StreamUnknownTypeError, Storage_StreamReadError)
 
 #if !defined No_Exception && !defined No_Storage_StreamUnknownTypeError
   #define Storage_StreamUnknownTypeError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Storage_StreamUnknownTypeError::Raise(MESSAGE);
+  if (CONDITION) throw Storage_StreamUnknownTypeError(MESSAGE);
 #else
   #define Storage_StreamUnknownTypeError_Raise_if(CONDITION, MESSAGE)
 #endif

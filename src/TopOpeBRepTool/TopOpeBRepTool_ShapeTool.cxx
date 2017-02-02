@@ -54,8 +54,7 @@ Standard_Real TopOpeBRepTool_ShapeTool::Tolerance(const TopoDS_Shape& S)
     case TopAbs_FACE   : tol = BRep_Tool::Tolerance(TopoDS::Face(S)); break;
     case TopAbs_EDGE   : tol = BRep_Tool::Tolerance(TopoDS::Edge(S)); break;
     case TopAbs_VERTEX : tol = BRep_Tool::Tolerance(TopoDS::Vertex(S)); break;
-    default : Standard_ProgramError::Raise
-    ("TopOpeBRepTool_ShapeTool : Shape has no tolerance"); break;
+    default : throw Standard_ProgramError("TopOpeBRepTool_ShapeTool : Shape has no tolerance"); break;
   }
   return tol;
 }
@@ -69,8 +68,7 @@ Standard_Real TopOpeBRepTool_ShapeTool::Tolerance(const TopoDS_Shape& S)
 gp_Pnt TopOpeBRepTool_ShapeTool::Pnt(const TopoDS_Shape& S)
 {
   if ( S.ShapeType() != TopAbs_VERTEX ) {
-    Standard_ProgramError::Raise("TopOpeBRepTool_ShapeTool::Pnt");
-    return gp_Pnt();
+    throw Standard_ProgramError("TopOpeBRepTool_ShapeTool::Pnt");
   }
   return BRep_Tool::Pnt(TopoDS::Vertex(S));
 }
@@ -318,7 +316,7 @@ Standard_Real TopOpeBRepTool_ShapeTool::PeriodizeParameter
 
   Standard_Real first,last,tolpc;
   const Handle(Geom2d_Curve) PC = FC2D_CurveOnSurface(E,F,first,last,tolpc);
-  if (PC.IsNull()) Standard_ProgramError::Raise("ShapeTool::PeriodizeParameter : no 2d curve");
+  if (PC.IsNull()) throw Standard_ProgramError("ShapeTool::PeriodizeParameter : no 2d curve");
 
   Handle(Standard_Type) TheType = PC->DynamicType();
   if (TheType == STANDARD_TYPE(Geom2d_Line)) {

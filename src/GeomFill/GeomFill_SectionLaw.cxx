@@ -28,14 +28,12 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_SectionLaw,MMgt_TShared)
 
 Standard_Boolean GeomFill_SectionLaw::D1(const Standard_Real,TColgp_Array1OfPnt&,TColgp_Array1OfVec&,TColStd_Array1OfReal&,TColStd_Array1OfReal& ) 
 {
-  Standard_NotImplemented::Raise("GeomFill_SectionLaw::D1");
-  return 0;
+  throw Standard_NotImplemented("GeomFill_SectionLaw::D1");
 }
 
  Standard_Boolean GeomFill_SectionLaw::D2(const Standard_Real,TColgp_Array1OfPnt& ,TColgp_Array1OfVec&,TColgp_Array1OfVec&,TColStd_Array1OfReal&,TColStd_Array1OfReal&,TColStd_Array1OfReal&) 
 {
-  Standard_NotImplemented::Raise("GeomFill_SectionLaw::D2");
-  return 0;  
+  throw Standard_NotImplemented("GeomFill_SectionLaw::D2");
 }
 
  Handle(Geom_BSplineSurface) GeomFill_SectionLaw::BSplineSurface() const
@@ -53,13 +51,12 @@ Standard_Boolean GeomFill_SectionLaw::D1(const Standard_Real,TColgp_Array1OfPnt&
  gp_Pnt GeomFill_SectionLaw::BarycentreOfSurf() const
 {
 
-  Standard_NotImplemented::Raise("GeomFill_SectionLaw::BarycentreOfSurf");
-    return gp_Pnt(0.0, 0.0, 0.0);
+  throw Standard_NotImplemented("GeomFill_SectionLaw::BarycentreOfSurf");
 }
 
  void GeomFill_SectionLaw::GetMinimalWeight(TColStd_Array1OfReal&) const
 {
-  Standard_NotImplemented::Raise("GeomFill_SectionLaw::GetMinimalWeight");
+  throw Standard_NotImplemented("GeomFill_SectionLaw::GetMinimalWeight");
 }
 
  Standard_Boolean GeomFill_SectionLaw::IsConstant(Standard_Real& Error) const
@@ -71,8 +68,7 @@ Standard_Boolean GeomFill_SectionLaw::D1(const Standard_Real,TColgp_Array1OfPnt&
  Handle(Geom_Curve)  GeomFill_SectionLaw::ConstantSection() const
 {
  Handle(Geom_Curve) C;
- Standard_DomainError::Raise("GeomFill_SectionLaw::ConstantSection");
- return C;
+ throw Standard_DomainError("GeomFill_SectionLaw::ConstantSection");
 }
 
  Standard_Boolean GeomFill_SectionLaw::IsConicalLaw(Standard_Real& Error) const
@@ -85,6 +81,5 @@ Standard_Boolean GeomFill_SectionLaw::D1(const Standard_Real,TColgp_Array1OfPnt&
  CirclSection(const Standard_Real) const
 {
  Handle(Geom_Curve) C;
- Standard_DomainError::Raise("GeomFill_SectionLaw::CirclSection");
- return C;
+ throw Standard_DomainError("GeomFill_SectionLaw::CirclSection");
 }

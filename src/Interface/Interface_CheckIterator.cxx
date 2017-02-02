@@ -436,8 +436,7 @@ void Interface_CheckIterator::Next () const
 
 const Handle(Interface_Check)& Interface_CheckIterator::Value () const 
 {
-  if (thecurr->Value() > thelist->Length()) Standard_NoSuchObject::Raise
-    ("Interface Check Iterator : Value");
+  if (thecurr->Value() > thelist->Length()) throw Standard_NoSuchObject("Interface Check Iterator : Value");
   return thelist->Value(thecurr->Value());
 }
 
@@ -449,8 +448,7 @@ const Handle(Interface_Check)& Interface_CheckIterator::Value () const
 
 Standard_Integer Interface_CheckIterator::Number () const 
 {
-  if (thecurr->Value() > thenums->Length()) Standard_NoSuchObject::Raise
-    ("Interface Check Iterator : Value");
+  if (thecurr->Value() > thenums->Length()) throw Standard_NoSuchObject("Interface Check Iterator : Value");
   return thenums->Value(thecurr->Value());
 }
 

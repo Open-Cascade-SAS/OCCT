@@ -124,7 +124,7 @@ static Standard_Boolean ComputeSection(const TopoDS_Wire& W1,
   BRepFill_CompatibleWires CW(SSh);
   CW.SetPercent(0.1);
   CW.Perform();
-  if (!CW.IsDone()) StdFail_NotDone::Raise("Uncompatible wires");
+  if (!CW.IsDone()) throw StdFail_NotDone("Uncompatible wires");
   GeomFill_SequenceOfTrsf EmptyTrsfs;
   Handle(BRepFill_NSections) SL = new (BRepFill_NSections) (CW.Shape(),EmptyTrsfs,SR,0.,1.);
   Standard_Real US = p1/(p1+p2);
@@ -356,7 +356,7 @@ BRepFill_PipeShell::BRepFill_PipeShell(const TopoDS_Wire& Spine)
     BRepFill_CompatibleWires CW(Seq);
     CW.SetPercent(0.1);
     CW.Perform();
-    if (!CW.IsDone()) StdFail_NotDone::Raise("Uncompatible wires");
+    if (!CW.IsDone()) throw StdFail_NotDone("Uncompatible wires");
     TheGuide = TopoDS::Wire(CW.Shape().Value(2));
   }
   else if (GuideClose) {
@@ -825,7 +825,7 @@ void BRepFill_PipeShell::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
  Standard_Boolean BRepFill_PipeShell::MakeSolid() 
 { 
   if (myShape.IsNull()) 
-    StdFail_NotDone::Raise("PipeShell is not built");
+    throw StdFail_NotDone("PipeShell is not built");
   Standard_Boolean B = myShape.Closed();
   BRep_Builder BS;
 
@@ -919,7 +919,7 @@ const TopoDS_Shape& BRepFill_PipeShell::LastShape() const
 void BRepFill_PipeShell::Generated(const TopoDS_Shape&   theShape,
 				   TopTools_ListOfShape& theList) 
 {
-  //   Standard_NotImplemented::Raise("Generated:Pas Fait");
+  //   throw Standard_NotImplemented("Generated:Pas Fait");
   
   theList.Clear();
 
@@ -938,7 +938,7 @@ void BRepFill_PipeShell::Generated(const TopoDS_Shape&   theShape,
  void BRepFill_PipeShell::Prepare() 
 {
   TopoDS_Wire theSect;
-  if (!IsReady()) StdFail_NotDone::Raise("PipeShell");
+  if (!IsReady()) throw StdFail_NotDone("PipeShell");
   if (!myLocation.IsNull() && !mySection.IsNull()) return; // It is ready
  
   //Check set of section for right configuration of punctual sections
@@ -953,7 +953,7 @@ void BRepFill_PipeShell::Generated(const TopoDS_Shape&   theShape,
 	  wdeg = wdeg && (BRep_Tool::Degenerated(anEdge));
 	}
       if (wdeg)
-	Standard_Failure::Raise("Wrong usage of punctual sections");
+	throw Standard_Failure("Wrong usage of punctual sections");
     }
   if (mySeq.Length() <= 2)
     {
@@ -965,7 +965,7 @@ void BRepFill_PipeShell::Generated(const TopoDS_Shape&   theShape,
 	    wdeg = wdeg && (BRep_Tool::Degenerated(anEdge));
 	  }
       if (wdeg)
-	Standard_Failure::Raise("Wrong usage of punctual sections");
+	throw Standard_Failure("Wrong usage of punctual sections");
     }
 
   // Construction of the law of location  
@@ -984,7 +984,7 @@ void BRepFill_PipeShell::Generated(const TopoDS_Shape&   theShape,
 	  } 
 	  default :
 	    { // Not planned!
-	      Standard_ConstructionError::Raise("PipeShell");
+	      throw Standard_ConstructionError("PipeShell");
 	    }
 	}
     }  
@@ -1146,7 +1146,7 @@ void BRepFill_PipeShell::Generated(const TopoDS_Shape&   theShape,
       }
     }
     else {
-      Standard_ConstructionError::Raise("PipeShell : uncompatible wires");
+      throw Standard_ConstructionError("PipeShell : uncompatible wires");
     }
     mySection = new (BRepFill_NSections) (WorkingSections,Transformations,Param,V1,V2);
     

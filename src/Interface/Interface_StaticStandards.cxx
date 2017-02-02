@@ -96,7 +96,7 @@ void  Interface_Static::Standards ()
     }
     if (!Message_MsgFile::HasMsg ("XSTEP_1"))
     {
-      Standard_ProgramError::Raise ("Critical Error - message resources for Interface_Static are invalid or undefined!");
+      throw Standard_ProgramError("Critical Error - message resources for Interface_Static are invalid or undefined!");
     }
   }
 }

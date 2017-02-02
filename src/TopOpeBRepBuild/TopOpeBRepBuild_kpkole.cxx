@@ -624,11 +624,11 @@ Standard_EXPORT void FUNKP_KPmakefaces(const TopOpeBRepBuild_Builder& BU,
     BU.GFindSamDomSODO(Fac1,LFSO,LFDO);
   }
   else {
-    Standard_ProgramError::Raise("KPmakeface Stfac1 != OUT");
+    throw Standard_ProgramError("KPmakeface Stfac1 != OUT");
   }
   
   if (rankIN == 0) {
-    Standard_ProgramError::Raise("KPmakeface rankIN = 0");
+    throw Standard_ProgramError("KPmakeface rankIN = 0");
   }
   
   TopTools_ListOfShape LFIN;
@@ -712,13 +712,11 @@ TopoDS_Shape TopOpeBRepBuild_Builder::KPmakeface(const TopoDS_Shape& Fac1,
     GFindSamDomSODO(Fac1,LFSO,LFDO);
   }
   else {
-    Standard_ProgramError::Raise("KPmakeface Stfac1 != OUT");
-    return myFaceReference; //Dummy
+    throw Standard_ProgramError("KPmakeface Stfac1 != OUT");
   }
   
   if (rankIN == 0) {
-    Standard_ProgramError::Raise("KPmakeface rankIN = 0");
-    return myFaceReference; //Dummy
+    throw Standard_ProgramError("KPmakeface rankIN = 0");
   }
   
   TopTools_ListOfShape LFIN;

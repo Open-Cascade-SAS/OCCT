@@ -30,12 +30,12 @@ Standard_Integer  StepData_FieldListD::NbFields () const
 
 const StepData_Field&  StepData_FieldListD::Field (const Standard_Integer num) const
 {
-  if (thefields.IsNull()) Standard_OutOfRange::Raise("StepData_FieldListD::Field");
+  if (thefields.IsNull()) throw Standard_OutOfRange("StepData_FieldListD::Field");
   return thefields->Value(num);
 }
 
 StepData_Field&  StepData_FieldListD::CField (const Standard_Integer num)
 {
-  if (thefields.IsNull()) Standard_OutOfRange::Raise("StepData_FieldListD::Field");
+  if (thefields.IsNull()) throw Standard_OutOfRange("StepData_FieldListD::Field");
   return thefields->ChangeValue(num);
 }

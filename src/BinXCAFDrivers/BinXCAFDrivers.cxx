@@ -56,9 +56,7 @@ const Handle(Standard_Transient)& BinXCAFDrivers::Factory(const Standard_GUID& t
   }
 
 
-  Standard_Failure::Raise ("XCAFBinDrivers : unknown GUID");
-  static Handle(Standard_Transient) aNullHandle;
-  return aNullHandle;
+  throw Standard_Failure("XCAFBinDrivers : unknown GUID");
 }
 
 //=======================================================================

@@ -515,7 +515,7 @@ void Draw::Load(Draw_Interpretor& theDI, const TCollection_AsciiString& theKey,
       Standard_SStream aMsg; aMsg << "Could not find the resource:";
       aMsg << theKey.ToCString()<< endl;
       cout << "could not find the resource:"<<theKey.ToCString()<< endl;
-      Draw_Failure::Raise(aMsg);
+      throw Draw_Failure(aMsg.str().c_str());
     }
 
     TCollection_AsciiString aPluginLibrary("");
@@ -542,7 +542,7 @@ void Draw::Load(Draw_Interpretor& theDI, const TCollection_AsciiString& theKey,
 #ifdef OCCT_DEBUG
       cout << "could not open: "  << aPluginResource->Value(theKey.ToCString())<< " ; reason: "<< error.ToCString() << endl;
 #endif
-      Draw_Failure::Raise(aMsg);
+      throw Draw_Failure(aMsg.str().c_str());
     }
     f = aSharedLibrary.DlSymb("PLUGINFACTORY");
     if( f == NULL ) {
@@ -550,7 +550,7 @@ void Draw::Load(Draw_Interpretor& theDI, const TCollection_AsciiString& theKey,
       Standard_SStream aMsg; aMsg << "Could not find the factory in: ";
       aMsg << aPluginResource->Value(theKey.ToCString());
       aMsg << error.ToCString();
-      Draw_Failure::Raise(aMsg);
+      throw Draw_Failure(aMsg.str().c_str());
     }
     theMapOfFunctions.Bind(theKey, f);
   }

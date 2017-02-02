@@ -263,7 +263,7 @@ Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound (const Standard_Integer t
   Standard_Integer anIndex = myBounds->NbBounds;
   if (anIndex >= myMaxBounds)
   {
-    Standard_OutOfRange::Raise ("TOO many BOUNDS");
+    throw Standard_OutOfRange("TOO many BOUNDS");
   }
 
   myBounds->Bounds[anIndex] = theEdgeNumber;
@@ -289,7 +289,7 @@ Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound (const Standard_Integer t
   Standard_Integer anIndex = myBounds->NbBounds;
   if (anIndex >= myMaxBounds)
   {
-    Standard_OutOfRange::Raise ("TOO many BOUND");
+    throw Standard_OutOfRange("TOO many BOUND");
   }
 
   myBounds->Bounds[anIndex] = theEdgeNumber;
@@ -308,14 +308,14 @@ Standard_Integer Graphic3d_ArrayOfPrimitives::AddEdge (const Standard_Integer th
   Standard_Integer anIndex = myIndices->NbElements;
   if (anIndex >= myMaxEdges)
   {
-    Standard_OutOfRange::Raise ("TOO many EDGE");
+    throw Standard_OutOfRange("TOO many EDGE");
   }
 
   Standard_Integer aVertIndex = theVertexIndex - 1;
   if (theVertexIndex <= 0
    || aVertIndex >= myMaxVertexs)
   {
-    Standard_OutOfRange::Raise ("BAD EDGE vertex index");
+    throw Standard_OutOfRange("BAD EDGE vertex index");
   }
 
   myIndices->SetIndex (anIndex, aVertIndex);
@@ -349,7 +349,7 @@ void Graphic3d_ArrayOfPrimitives::SetVertexColor (const Standard_Integer theInde
   if (theIndex < 1
    || theIndex > myMaxVertexs)
   {
-    Standard_OutOfRange::Raise ("BAD VERTEX index");
+    throw Standard_OutOfRange("BAD VERTEX index");
   }
 
   if (myVCol != 0)

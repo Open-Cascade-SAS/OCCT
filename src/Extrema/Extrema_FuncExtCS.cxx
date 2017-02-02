@@ -112,7 +112,7 @@ Standard_Integer Extrema_FuncExtCS::NbEquations() const
 Standard_Boolean Extrema_FuncExtCS::Value(const math_Vector& UV, 
 					  math_Vector& F)
 {
-  if (!myCinit || !mySinit) Standard_TypeMismatch::Raise();
+  if (!myCinit || !mySinit) throw Standard_TypeMismatch();
 
   myt = UV(1);
   myU = UV(2);
@@ -155,7 +155,7 @@ Standard_Boolean Extrema_FuncExtCS::Values(const math_Vector& UV,
 					   math_Vector& F, 
 					   math_Matrix& Df)
 {
-  if (!myCinit || !mySinit) Standard_TypeMismatch::Raise();
+  if (!myCinit || !mySinit) throw Standard_TypeMismatch();
 
   myt = UV(1);
   myU = UV(2);
@@ -195,7 +195,7 @@ Standard_Boolean Extrema_FuncExtCS::Values(const math_Vector& UV,
 
 Standard_Integer Extrema_FuncExtCS::GetStateNumber()
 {
-  if (!myCinit || !mySinit) Standard_TypeMismatch::Raise();
+  if (!myCinit || !mySinit) throw Standard_TypeMismatch();
 #if 0
   math_Vector Sol(1, 3), UVSol(1, 3);
   UVSol(1) = myt; UVSol(2) = myU; UVSol(3) = myV;
@@ -236,7 +236,7 @@ Standard_Integer Extrema_FuncExtCS::NbExt() const
 
 Standard_Real Extrema_FuncExtCS::SquareDistance(const Standard_Integer N) const 
 {
-  if (!myCinit || !mySinit) Standard_TypeMismatch::Raise();
+  if (!myCinit || !mySinit) throw Standard_TypeMismatch();
   return mySqDist.Value(N);
 }
 
@@ -247,7 +247,7 @@ Standard_Real Extrema_FuncExtCS::SquareDistance(const Standard_Integer N) const
 
 const Extrema_POnCurv& Extrema_FuncExtCS::PointOnCurve(const Standard_Integer N) const 
 {
-  if (!myCinit || !mySinit) Standard_TypeMismatch::Raise();
+  if (!myCinit || !mySinit) throw Standard_TypeMismatch();
   return myPoint1.Value(N);
 }
 
@@ -258,7 +258,7 @@ const Extrema_POnCurv& Extrema_FuncExtCS::PointOnCurve(const Standard_Integer N)
 
 const Extrema_POnSurf& Extrema_FuncExtCS::PointOnSurface(const Standard_Integer N) const 
 {
-  if (!myCinit || !mySinit) Standard_TypeMismatch::Raise();
+  if (!myCinit || !mySinit) throw Standard_TypeMismatch();
   return myPoint2.Value(N);
 }
 

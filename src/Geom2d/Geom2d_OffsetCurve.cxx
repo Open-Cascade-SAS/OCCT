@@ -146,7 +146,7 @@ void Geom2d_OffsetCurve::SetBasisCurve (const Handle(Geom2d_Curve)& C,
 
     // Raise exception if still C0
     if (isC0)
-      Standard_ConstructionError::Raise("Offset on C0 curve");
+      throw Standard_ConstructionError("Offset on C0 curve");
   }
   //
   if(isTrimmed)
@@ -265,7 +265,7 @@ gp_Vec2d Geom2d_OffsetCurve::DN (const Standard_Real U,
   case 2: D2( U, PBidon, VBidon, VN); break;
   case 3: D3( U, PBidon, VBidon, VBidon, VN); break;
   default:
-    Standard_NotImplemented::Raise("Exception: Derivative order is greater than 3. "
+    throw Standard_NotImplemented("Exception: Derivative order is greater than 3. "
       "Cannot compute of derivative.");
   }
   

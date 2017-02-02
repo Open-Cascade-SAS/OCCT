@@ -78,7 +78,7 @@ void  ChFi3d_Builder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
 				const Standard_Boolean              ,
 				const math_Vector&                  )
 {
-  Standard_Failure::Raise("SimulSurf Not Implemented");
+  throw Standard_Failure("SimulSurf Not Implemented");
 }
 
 //=======================================================================
@@ -111,7 +111,7 @@ void  ChFi3d_Builder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
 				const Standard_Boolean              ,
 				const math_Vector&                  )
 {
-  Standard_Failure::Raise("SimulSurf Not Implemented");
+  throw Standard_Failure("SimulSurf Not Implemented");
 }
 
 
@@ -151,7 +151,7 @@ void  ChFi3d_Builder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
 				const Standard_Boolean              ,
 				const math_Vector&                  )
 {
-  Standard_Failure::Raise("SimulSurf Not Implemented");
+  throw Standard_Failure("SimulSurf Not Implemented");
 }
 
 
@@ -187,7 +187,7 @@ void  ChFi3d_Builder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
 				  const Standard_Boolean              ,
 				  const math_Vector&                  )
 {
-  Standard_Failure::Raise("PerformSurf Not Implemented");
+  throw Standard_Failure("PerformSurf Not Implemented");
 }
 
 //=======================================================================
@@ -221,7 +221,7 @@ void  ChFi3d_Builder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
 				  const Standard_Boolean              ,
 				  const math_Vector&                  )
 {
-  Standard_Failure::Raise("PerformSurf Not Implemented");
+  throw Standard_Failure("PerformSurf Not Implemented");
 
 }
 
@@ -266,6 +266,6 @@ void  ChFi3d_Builder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
 				  const Standard_Boolean              ,
 				  const math_Vector&                  )
 {
-  Standard_Failure::Raise("PerformSurf Not Implemented");
+  throw Standard_Failure("PerformSurf Not Implemented");
 
 }

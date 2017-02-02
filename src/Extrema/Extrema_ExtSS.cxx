@@ -241,16 +241,16 @@ Standard_Boolean Extrema_ExtSS::IsParallel() const
 
 Standard_Real Extrema_ExtSS::SquareDistance(const Standard_Integer N) const
 {
-  if(!myDone) StdFail_NotDone::Raise();
-  if (myIsPar && N != 1) StdFail_InfiniteSolutions::Raise();
-  if ((N < 1) || (N > mySqDist.Length())) Standard_OutOfRange::Raise();
+  if(!myDone) throw StdFail_NotDone();
+  if (myIsPar && N != 1) throw StdFail_InfiniteSolutions();
+  if ((N < 1) || (N > mySqDist.Length())) throw Standard_OutOfRange();
   return mySqDist.Value(N);
 }
 
 
 Standard_Integer Extrema_ExtSS::NbExt() const
 {
-  if(!myDone) StdFail_NotDone::Raise();
+  if(!myDone) throw StdFail_NotDone();
   return mySqDist.Length();
 }
 
@@ -260,7 +260,7 @@ void Extrema_ExtSS::Points(const Standard_Integer N,
 			   Extrema_POnSurf&       P1,
 			   Extrema_POnSurf&       P2) const
 {
-  if(!myDone) StdFail_NotDone::Raise();
+  if(!myDone) throw StdFail_NotDone();
   P1 = myPOnS1.Value(N);
   P2 = myPOnS2.Value(N);
 }

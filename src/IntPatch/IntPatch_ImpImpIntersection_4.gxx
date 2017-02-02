@@ -222,7 +222,7 @@ ComputationMethods::stCoeffsValue::stCoeffsValue(const gp_Cylinder& theCyl1,
   // AxeOperator::AxeOperator(...) in IntAna_QuadQuadGeo.cxx file).
   if(Abs(aDetV1V2) < Precision::Angular())
   {
-    Standard_Failure::Raise("Error. Exception in divide by zerro (IntCyCyTrim)!!!!");
+    throw Standard_Failure("Error. Exception in divide by zerro (IntCyCyTrim)!!!!");
   }
 
   switch(aFoundCouple)
@@ -1276,7 +1276,7 @@ Standard_Boolean CyCyAnalyticalIntersect( const IntSurf_Quadric& Quad1,
 
   case IntAna_Parabola:
   case IntAna_Hyperbola:
-    Standard_Failure::Raise("IntCyCy(): Wrong intersection type!");
+    throw Standard_Failure("IntCyCy(): Wrong intersection type!");
 
   case IntAna_Circle:
     // Circle is useful when we will work with trimmed surfaces
@@ -1388,7 +1388,7 @@ Standard_Boolean ComputationMethods::CylCylMonotonicity(const Standard_Real theU
     isPlus = Standard_False;
     break;
   default:
-    //Standard_Failure::Raise("Error. Range Error!!!!");
+    //throw Standard_Failure("Error. Range Error!!!!");
     return Standard_False;
   }
 

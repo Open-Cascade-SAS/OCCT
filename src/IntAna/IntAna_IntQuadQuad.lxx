@@ -21,20 +21,20 @@ inline Standard_Boolean IntAna_IntQuadQuad::IsDone () const
 }
 
 inline Standard_Boolean IntAna_IntQuadQuad::IdenticalElements () const { 
-  if(!done) {StdFail_NotDone::Raise("IntQuadQuad Not done");}
+  if(!done) {throw StdFail_NotDone("IntQuadQuad Not done");}
   return(identical); 
 }
 
 inline Standard_Integer IntAna_IntQuadQuad::NbCurve () const { 
-  if(!done) {StdFail_NotDone::Raise("IntQuadQuad Not done");}
-  if (identical) {Standard_DomainError::Raise();}
+  if(!done) {throw StdFail_NotDone("IntQuadQuad Not done");}
+  if (identical) {throw Standard_DomainError();}
   return(NbCurves); 
 }
 
 inline Standard_Integer IntAna_IntQuadQuad::NbPnt () const
 {
-  if(!done) {StdFail_NotDone::Raise("IntQuadQuad Not done");}
-  if (identical) {Standard_DomainError::Raise();}
+  if(!done) {throw StdFail_NotDone("IntQuadQuad Not done");}
+  if (identical) {throw Standard_DomainError();}
   return(Nbpoints);
 }
 

@@ -1000,9 +1000,9 @@ static Standard_Integer checkshape(Draw_Interpretor& theCommands,
       }
     }
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
     theCommands<<"checkshape exception : ";
-    theCommands << Standard_Failure::Caught()->GetMessageString();
+    theCommands << anException.GetMessageString();
     theCommands<<"\n";
     return 1;
   }

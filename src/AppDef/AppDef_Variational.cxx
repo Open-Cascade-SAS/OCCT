@@ -117,13 +117,13 @@ myWithMinMax(WithMinMax),
 myWithCutting(WithCutting)
 {
   // Verifications:
-  if (myMaxDegree < 1) Standard_DomainError::Raise();
+  if (myMaxDegree < 1) throw Standard_DomainError();
   myMaxDegree = Min (30, myMaxDegree);
   //
-  if (myMaxSegment < 1) Standard_DomainError::Raise();
+  if (myMaxSegment < 1) throw Standard_DomainError();
   //
-  if (myWithMinMax != 0 && myWithMinMax !=1 ) Standard_DomainError::Raise();
-  if (myWithCutting != 0 && myWithCutting !=1 ) Standard_DomainError::Raise();
+  if (myWithMinMax != 0 && myWithMinMax !=1 ) throw Standard_DomainError();
+  if (myWithCutting != 0 && myWithCutting !=1 ) throw Standard_DomainError();
   //
   myIsOverConstr = Standard_False;
   myIsCreated    = Standard_False;
@@ -139,7 +139,7 @@ myWithCutting(WithCutting)
       myNivCont=2;
       break ;
     default:
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
   }
   //
   myNbP2d = AppDef_MyLineTool::NbP2d(SSP); 
@@ -158,7 +158,7 @@ myWithCutting(WithCutting)
   mySmoothCriterion = new AppDef_LinearCriteria(mySSP, myFirstPoint, myLastPoint);
   myParameters = new TColStd_HArray1OfReal(myFirstPoint, myLastPoint);
   myNbPoints=myLastPoint-myFirstPoint+1;
-  if (myNbPoints <= 0) Standard_ConstructionError::Raise();
+  if (myNbPoints <= 0) throw Standard_ConstructionError();
   // 
   myTabPoints= new TColStd_HArray1OfReal(1,myDimension*myNbPoints);
   //
@@ -242,7 +242,7 @@ void AppDef_Variational::Init()
   gp_Vec2d Vt2d, Vc2d;
 
   myNbConstraints=myConstraints->Length();
-  if (myNbConstraints < 0) Standard_ConstructionError::Raise(); 
+  if (myNbConstraints < 0) throw Standard_ConstructionError();
 
   myTypConstraints = new TColStd_HArray1OfInteger(1,Max(1,2*myNbConstraints));
   myTabConstraints = new TColStd_HArray1OfReal(1,Max(1,2*myDimension*myNbConstraints));
@@ -284,7 +284,7 @@ void AppDef_Variational::Init()
                                if(myNbP2d !=0 && myNbP3d == 0 ) 
                                {
                                  if (AppDef_MyLineTool::Tangency(mySSP,ipoint,TabV2d) == Standard_False)
-                                   Standard_ConstructionError::Raise();
+                                   throw Standard_ConstructionError();
                                  for (jp2d=1;jp2d<=myNbP2d;jp2d++)
                                  {  
                                    Vt2d=TabV2d.Value(jp2d);
@@ -298,7 +298,7 @@ void AppDef_Variational::Init()
                                if(myNbP3d !=0 && myNbP2d == 0) 
                                {
                                  if (AppDef_MyLineTool::Tangency(mySSP,ipoint,TabV3d) == Standard_False)
-                                   Standard_ConstructionError::Raise();
+                                   throw Standard_ConstructionError();
                                  for (jp3d=1;jp3d<=myNbP3d;jp3d++)
                                  {  
                                    Vt3d=TabV3d.Value(jp3d);
@@ -315,7 +315,7 @@ void AppDef_Variational::Init()
                                if(myNbP3d !=0 && myNbP2d != 0) 
                                {
                                  if (AppDef_MyLineTool::Tangency(mySSP,ipoint,TabV3d,TabV2d) == Standard_False)
-                                   Standard_ConstructionError::Raise();
+                                   throw Standard_ConstructionError();
                                  for (jp3d=1;jp3d<=myNbP3d;jp3d++)
                                  {  
                                    Vt3d=TabV3d.Value(jp3d);
@@ -348,16 +348,16 @@ void AppDef_Variational::Init()
                                if(myNbP2d !=0 && myNbP3d == 0) 
                                {
                                  if (AppDef_MyLineTool::Tangency(mySSP,ipoint,TabV2d) == Standard_False )
-                                   Standard_ConstructionError::Raise();
+                                   throw Standard_ConstructionError();
                                  if (AppDef_MyLineTool::Curvature(mySSP,ipoint,TabV2dcurv) == Standard_False)
-                                   Standard_ConstructionError::Raise();
+                                   throw Standard_ConstructionError();
                                  for (jp2d=1;jp2d<=myNbP2d;jp2d++)
                                  {  
                                    Vt2d=TabV2d.Value(jp2d);
                                    Vt2d.Normalize();
                                    Vc2d=TabV2dcurv.Value(jp2d);
                                    if (Abs(Abs(Vc2d.Angle(Vt2d)) - M_PI/2.) > Precision::Angular())
-                                     Standard_ConstructionError::Raise();
+                                     throw Standard_ConstructionError();
                                    myTabConstraints->SetValue(jndex++,Vt2d.X());
                                    myTabConstraints->SetValue(jndex++,Vt2d.Y());
                                    myTabConstraints->SetValue(jndex++,Vc2d.X());
@@ -369,16 +369,16 @@ void AppDef_Variational::Init()
                                if(myNbP3d !=0 && myNbP2d == 0 ) 
                                {
                                  if (AppDef_MyLineTool::Tangency(mySSP,ipoint,TabV3d) == Standard_False )
-                                   Standard_ConstructionError::Raise();
+                                   throw Standard_ConstructionError();
                                  if (AppDef_MyLineTool::Curvature(mySSP,ipoint,TabV3dcurv) == Standard_False)
-                                   Standard_ConstructionError::Raise();
+                                   throw Standard_ConstructionError();
                                  for (jp3d=1;jp3d<=myNbP3d;jp3d++)
                                  {  
                                    Vt3d=TabV3d.Value(jp3d);
                                    Vt3d.Normalize();
                                    Vc3d=TabV3dcurv.Value(jp3d);
                                    if ( (Vc3d.Normalized()).IsNormal(Vt3d,Precision::Angular()) == Standard_False) 
-                                     Standard_ConstructionError::Raise();
+                                     throw Standard_ConstructionError();
                                    myTabConstraints->SetValue(jndex++,Vt3d.X());
                                    myTabConstraints->SetValue(jndex++,Vt3d.Y()); 
                                    myTabConstraints->SetValue(jndex++,Vt3d.Z());
@@ -391,16 +391,16 @@ void AppDef_Variational::Init()
                                if(myNbP3d !=0 && myNbP2d != 0 ) 
                                {
                                  if (AppDef_MyLineTool::Tangency(mySSP,ipoint,TabV3d,TabV2d) == Standard_False )
-                                   Standard_ConstructionError::Raise();
+                                   throw Standard_ConstructionError();
                                  if (AppDef_MyLineTool::Curvature(mySSP,ipoint,TabV3dcurv,TabV2dcurv) == Standard_False)
-                                   Standard_ConstructionError::Raise();
+                                   throw Standard_ConstructionError();
                                  for (jp3d=1;jp3d<=myNbP3d;jp3d++)
                                  {  
                                    Vt3d=TabV3d.Value(jp3d);
                                    Vt3d.Normalize();
                                    Vc3d=TabV3dcurv.Value(jp3d);
                                    if ( (Vc3d.Normalized()).IsNormal(Vt3d,Precision::Angular()) == Standard_False) 
-                                     Standard_ConstructionError::Raise();
+                                     throw Standard_ConstructionError();
                                    myTabConstraints->SetValue(jndex++,Vt3d.X());
                                    myTabConstraints->SetValue(jndex++,Vt3d.Y()); 
                                    myTabConstraints->SetValue(jndex++,Vt3d.Z());
@@ -415,7 +415,7 @@ void AppDef_Variational::Init()
                                    Vt2d.Normalize();
                                    Vc2d=TabV2dcurv.Value(jp2d);
                                    if (Abs(Abs(Vc2d.Angle(Vt2d)) - M_PI/2.) > Precision::Angular())
-                                     Standard_ConstructionError::Raise();
+                                     throw Standard_ConstructionError();
                                    myTabConstraints->SetValue(jndex++,Vt2d.X());
                                    myTabConstraints->SetValue(jndex++,Vt2d.Y());
                                    myTabConstraints->SetValue(jndex++,Vc2d.X());
@@ -426,7 +426,7 @@ void AppDef_Variational::Init()
                                }
                                break ; 
                              default:
-                               Standard_ConstructionError::Raise();
+                               throw Standard_ConstructionError();
     }
     CurMultyPoint += myNbP3d * 6 + myNbP2d * 2;
   }
@@ -455,7 +455,7 @@ void AppDef_Variational::Init()
 void AppDef_Variational::Approximate()
 
 {
-  if (myIsCreated == Standard_False )  StdFail_NotDone:: Raise();
+  if (myIsCreated == Standard_False )  throw StdFail_NotDone();
 
 
   Standard_Real WQuadratic, WQuality;
@@ -666,7 +666,7 @@ Standard_Boolean AppDef_Variational::IsOverConstrained() const
 //
 AppParCurves_MultiBSpCurve AppDef_Variational::Value() const 
 { 
-  if (myIsDone == Standard_False)  StdFail_NotDone::Raise(); 
+  if (myIsDone == Standard_False)  throw StdFail_NotDone();
   return myMBSpCurve;
 
 }
@@ -680,7 +680,7 @@ AppParCurves_MultiBSpCurve AppDef_Variational::Value() const
 //
 Standard_Real AppDef_Variational::MaxError() const 
 {
-  if (myIsDone == Standard_False)  StdFail_NotDone::Raise();
+  if (myIsDone == Standard_False)  throw StdFail_NotDone();
   return myMaxError;
 }
 //
@@ -691,7 +691,7 @@ Standard_Real AppDef_Variational::MaxError() const
 //
 Standard_Integer AppDef_Variational::MaxErrorIndex() const 
 {
-  if (myIsDone == Standard_False)  StdFail_NotDone::Raise(); 
+  if (myIsDone == Standard_False)  throw StdFail_NotDone();
   return myMaxErrorIndex;
 }
 //
@@ -704,7 +704,7 @@ Standard_Integer AppDef_Variational::MaxErrorIndex() const
 //
 Standard_Real AppDef_Variational::QuadraticError() const 
 {
-  if (myIsDone == Standard_False)  StdFail_NotDone::Raise(); 
+  if (myIsDone == Standard_False)  throw StdFail_NotDone();
   return myCriterium[0];
 }
 //
@@ -717,7 +717,7 @@ Standard_Real AppDef_Variational::QuadraticError() const
 void AppDef_Variational::Distance(math_Matrix& mat)
 
 {
-  if (myIsDone == Standard_False)  StdFail_NotDone::Raise();
+  if (myIsDone == Standard_False)  throw StdFail_NotDone();
   Standard_Integer ipoint,jp2d,jp3d,index;
   TColgp_Array1OfPnt TabP3d(1,Max(1,myNbP3d));
   TColgp_Array1OfPnt2d TabP2d(1, Max(1,myNbP2d));
@@ -766,7 +766,7 @@ void AppDef_Variational::Distance(math_Matrix& mat)
 //
 Standard_Real AppDef_Variational::AverageError() const 
 {
-  if (myIsDone == Standard_False)  StdFail_NotDone::Raise();
+  if (myIsDone == Standard_False)  throw StdFail_NotDone();
   return myAverageError;
 }
 //
@@ -777,7 +777,7 @@ Standard_Real AppDef_Variational::AverageError() const
 //
 const Handle(TColStd_HArray1OfReal)& AppDef_Variational::Parameters() const 
 {
-  if (myIsDone == Standard_False)  StdFail_NotDone::Raise();
+  if (myIsDone == Standard_False)  throw StdFail_NotDone();
   return myParameters;
 }
 //
@@ -788,7 +788,7 @@ const Handle(TColStd_HArray1OfReal)& AppDef_Variational::Parameters() const
 //
 const Handle(TColStd_HArray1OfReal)& AppDef_Variational::Knots() const 
 {
-  if (myIsDone == Standard_False)  StdFail_NotDone::Raise();
+  if (myIsDone == Standard_False)  throw StdFail_NotDone();
   return myKnots;
 }
 //
@@ -799,7 +799,7 @@ const Handle(TColStd_HArray1OfReal)& AppDef_Variational::Knots() const
 //
 void AppDef_Variational::Criterium(Standard_Real& VFirstOrder, Standard_Real& VSecondOrder, Standard_Real& VThirdOrder) const 
 {     
-  if (myIsDone == Standard_False)  StdFail_NotDone::Raise();
+  if (myIsDone == Standard_False)  throw StdFail_NotDone();
   VFirstOrder=myCriterium[1] ;
   VSecondOrder=myCriterium[2];
   VThirdOrder=myCriterium[3];
@@ -1027,7 +1027,7 @@ Standard_Boolean AppDef_Variational::SetContinuity(const GeomAbs_Shape C)
       NivCont=2;
       break ;
     default:
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
   }
   if (((myMaxDegree-NivCont)*myMaxSegment-myNbPassPoints-2*myNbTangPoints-3*myNbCurvPoints) < 0 )
     return Standard_False; 
@@ -1097,7 +1097,7 @@ Standard_Boolean AppDef_Variational::SetWithCutting(const Standard_Boolean Cutti
 //
 void AppDef_Variational::SetCriteriumWeight(const Standard_Real Percent1, const Standard_Real Percent2, const Standard_Real Percent3)
 {
-  if (Percent1 < 0 || Percent2 < 0 || Percent3 < 0 ) Standard_DomainError::Raise();
+  if (Percent1 < 0 || Percent2 < 0 || Percent3 < 0 ) throw Standard_DomainError();
   Standard_Real Total = Percent1 + Percent2 + Percent3;
   myPercent[0] = Percent1/Total;
   myPercent[1] = Percent2/Total;
@@ -1115,8 +1115,8 @@ void AppDef_Variational::SetCriteriumWeight(const Standard_Real Percent1, const 
 //
 void AppDef_Variational::SetCriteriumWeight(const Standard_Integer Order, const Standard_Real Percent)
 {
-  if ( Percent < 0 ) Standard_DomainError::Raise();
-  if ( Order < 1 || Order > 3 ) Standard_ConstructionError::Raise();
+  if ( Percent < 0 ) throw Standard_DomainError();
+  if ( Order < 1 || Order > 3 ) throw Standard_ConstructionError();
   myPercent[Order-1] = Percent;
   Standard_Real Total = myPercent[0] + myPercent[1] + myPercent[2];
   myPercent[0] = myPercent[0] / Total;
@@ -2043,7 +2043,7 @@ void AppDef_Variational::InitParameters(Standard_Real& Length)
 
 
   if(Length <= Eps1) 
-    Standard_ConstructionError::Raise("AppDef_Variational::InitParameters");
+    throw Standard_ConstructionError("AppDef_Variational::InitParameters");
 
 
   for(ipoint = myFirstPoint + 1; ipoint <= myLastPoint - 1; ipoint++) 
@@ -2438,7 +2438,7 @@ void AppDef_Variational::InitCutting(const Handle(PLib_Base)& aBase,
   }
 
   if(ORCMx > myMaxDegree - myNivCont) 
-    Standard_ConstructionError::Raise("AppDef_Variational::InitCutting");
+    throw Standard_ConstructionError("AppDef_Variational::InitCutting");
 
   Standard_Integer NLibre = Max(myMaxDegree - myNivCont - (myMaxDegree + 1) / 4,
     myNivCont + 1);
@@ -2454,7 +2454,7 @@ void AppDef_Variational::InitCutting(const Handle(PLib_Base)& aBase,
 
 
   if(NbElem > myMaxSegment) 
-    Standard_ConstructionError::Raise("AppDef_Variational::InitCutting");
+    throw Standard_ConstructionError("AppDef_Variational::InitCutting");
 
 
   aCurve = new FEmTool_Curve(myDimension, NbElem, aBase, CurvTol);

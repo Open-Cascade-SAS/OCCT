@@ -331,6 +331,6 @@ GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const Handle(Geom_Surface)& S,
 
  const gp_Pln& GeomLib_IsPlanarSurface::Plan() const
 {
-  if (!IsPlan) StdFail_NotDone::Raise(" GeomLib_IsPlanarSurface");
+  if (!IsPlan) throw StdFail_NotDone(" GeomLib_IsPlanarSurface");
   return myPlan;
 }

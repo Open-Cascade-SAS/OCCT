@@ -36,7 +36,7 @@ IGESDefs_UnitsData::IGESDefs_UnitsData ()    {  }
   if ( unitTypes->Lower()  != 1  ||
       (unitValues->Lower() != 1 || unitValues->Length() != length) ||
       (unitScales->Lower() != 1 || unitScales->Length() != length) )
-    Standard_DimensionMismatch::Raise("IGESDefs_UnitsData : Init");
+    throw Standard_DimensionMismatch("IGESDefs_UnitsData : Init");
   theUnitTypes   = unitTypes;
   theUnitValues  = unitValues;
   theUnitScales  = unitScales;

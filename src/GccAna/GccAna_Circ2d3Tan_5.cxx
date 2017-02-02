@@ -75,7 +75,7 @@ GccAna_Circ2d3Tan::
 	 Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
        !(Qualified2.IsEnclosed() ||
 	 Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-     GccEnt_BadQualifier::Raise();
+     throw GccEnt_BadQualifier();
      return;
    }
 

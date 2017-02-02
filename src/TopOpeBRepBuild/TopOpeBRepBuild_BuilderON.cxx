@@ -62,7 +62,7 @@ Standard_EXPORT Standard_Boolean DEBTEFOR(const TopOpeBRepBuild_Builder& B,const
 
 #ifdef OCCT_DEBUG
 Standard_EXPORT void FUN_RaiseON()
-{Standard_Failure::Raise("BuilderON");}
+{throw Standard_Failure("BuilderON");}
 static void FUN_cout(const TopoDS_Shape& eON)
 {
   TopAbs_Orientation oE = eON.Orientation();

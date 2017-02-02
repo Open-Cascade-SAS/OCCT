@@ -653,8 +653,7 @@ void BRepFill::Axe (const TopoDS_Shape&       Spine,
 	L = FS.Location();
       }
       else {
-	Standard_NoSuchObject::Raise 
-	  ("BRepFill_Evolved : The Face is not planar");
+	throw Standard_NoSuchObject("BRepFill_Evolved : The Face is not planar");
       }
     }
   }
@@ -663,7 +662,7 @@ void BRepFill::Axe (const TopoDS_Shape&       Spine,
     S = BRep_Tool::Surface(aFace, L);
   }
   
-  if (S.IsNull()) Standard_DomainError::Raise("BRepFill_Evolved::Axe");
+  if (S.IsNull()) throw Standard_DomainError("BRepFill_Evolved::Axe");
     
   if (!L.IsIdentity())
     S = Handle(Geom_Surface)::DownCast(S->Transformed(L.Transformation()));

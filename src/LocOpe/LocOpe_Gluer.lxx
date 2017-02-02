@@ -57,7 +57,7 @@ inline Standard_Boolean LocOpe_Gluer::IsDone() const
 inline const TopoDS_Shape& LocOpe_Gluer::ResultingShape () const
 {
   if (!myDone) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   return myRes;
 }

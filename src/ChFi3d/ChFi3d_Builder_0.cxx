@@ -1221,7 +1221,7 @@ void ChFi3d_ProjectPCurv(const Handle(Adaptor3d_HCurve)&   HCg,
         }
         break;
       default:
-        Standard_NotImplemented::Raise("echec approximation de la pcurve ");
+        throw Standard_NotImplemented("echec approximation de la pcurve ");
       }
   }
 }
@@ -1885,7 +1885,7 @@ Standard_Integer ChFi3d_SolidIndex(const Handle(ChFiDS_Spine)&  sp,
   ChFiDS_Map&                  MapESh)
 {
   if(sp.IsNull() || sp->NbEdges() == 0) 
-    Standard_Failure::Raise("SolidIndex : Spine incomplete");
+    throw Standard_Failure("SolidIndex : Spine incomplete");
   TopoDS_Shape edref= sp->Edges(1);
   TopoDS_Shape shellousolid;
   if(!MapESo(edref).IsEmpty()) shellousolid = MapESo(edref).First();
@@ -2836,7 +2836,7 @@ void ChFi3d_StripeEdgeInter (const Handle(ChFiDS_Stripe)& theStripe1,
         Precision::PConfusion());
       if (anIntersector.NbSegments() > 0 ||
         anIntersector.NbPoints() > 0)
-        StdFail_NotDone::Raise ("StripeEdgeInter : fillets have too big radiuses");
+        throw StdFail_NotDone("StripeEdgeInter : fillets have too big radiuses");
     }
   }
 }
@@ -2864,7 +2864,7 @@ Standard_Integer ChFi3d_IndexOfSurfData(const TopoDS_Vertex& V1,
     sens = -1;
     if(CD->SetOfSurfData().IsNull()) return 0;
     else if (Vref.IsSame(V1)) Index = CD->SetOfSurfData()->Length();
-    else Standard_ConstructionError::Raise("");
+    else throw Standard_ConstructionError("");
   }
   return Index; 
 }  
@@ -2891,9 +2891,8 @@ TopoDS_Edge ChFi3d_EdgeFromV1(const TopoDS_Vertex& V1,
     else Vref = TopExp::LastVertex(E1); 
     sens = -1;
     if (Vref.IsSame(V1)) return E1;
-    else Standard_ConstructionError::Raise("");
+    else throw Standard_ConstructionError("");
   }
-  return E;
 }
 //=======================================================================
 //function : ConvTol2dToTol3d
@@ -3816,7 +3815,7 @@ void ChFi3d_Parameters(const Handle(Geom_Surface)& S,
     {
       GeomAPI_ProjectPointOnSurf tool(p3d,S);
       if ( tool.NbPoints() != 1 )
-        StdFail_NotDone::Raise("");
+        throw StdFail_NotDone("");
       else
         tool.Parameters(1,u,v);
     }
@@ -3871,12 +3870,12 @@ void ChFi3d_TrimCurve(const Handle(Geom_Curve)& gc,
     {
       GeomAPI_ProjectPointOnCurve tool(FirstP,gc);
       if ( tool.NbPoints() != 1 )
-        StdFail_NotDone::Raise("");
+        throw StdFail_NotDone("");
       else
         uf = tool.Parameter(1);
       tool.Init(LastP,gc);
       if ( tool.NbPoints() != 1 )
-        StdFail_NotDone::Raise("");
+        throw StdFail_NotDone("");
       else
         ul = tool.Parameter(1);
     }
@@ -4103,7 +4102,7 @@ Standard_EXPORT
     //
     Bof = BRepLib::BuildCurve3d(E);
     if (!Bof) {
-      Standard_ConstructionError::Raise("PerformElSpine : BuildCurve3d error");
+      throw Standard_ConstructionError("PerformElSpine : BuildCurve3d error");
     }
     //
     Cv = BRep_Tool::Curve(E, First, Last);
@@ -4162,7 +4161,7 @@ Standard_EXPORT
     if (!Bof) {
       Bof = Concat.Add( TC, 200.*epsV, Standard_True );
       if (!Bof) {
-        Standard_ConstructionError::Raise("PerformElSpine: spine merged error");
+        throw Standard_ConstructionError("PerformElSpine: spine merged error");
       }
     }
     Eold = E;

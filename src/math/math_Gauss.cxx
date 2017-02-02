@@ -61,7 +61,7 @@ math_Gauss::math_Gauss(const math_Matrix& A,
        StdFail_NotDone_Raise_if(!Done, " ");
 
        if(X.Length() != LU.RowNumber()) {
-         Standard_DimensionError::Raise();
+         throw Standard_DimensionError();
        }
        LU_Solve(LU,
                 Index,

@@ -32,7 +32,7 @@ ProjLib_PrjFunc::ProjLib_PrjFunc(const Adaptor3d_CurvePtr & C,const Standard_Rea
   case 1: myt = FixVal; break;
   case 2: myU = FixVal; break;
   case 3: myV = FixVal; break;
-  default: Standard_ConstructionError::Raise();
+  default: throw Standard_ConstructionError();
   }
 }
 

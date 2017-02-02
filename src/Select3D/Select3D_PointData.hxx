@@ -27,7 +27,7 @@ public:
   : mynbpoints(theNbPoints)
   {
     if (theNbPoints <= 0)
-      Standard_ConstructionError::Raise("Select3D_PointData");
+      throw Standard_ConstructionError("Select3D_PointData");
 
     mypolyg3d = new Select3D_Pnt[mynbpoints];
   }
@@ -44,7 +44,7 @@ public:
                const Select3D_Pnt& theValue)
   {
     if (theIndex < 0 || theIndex >= mynbpoints)
-      Standard_OutOfRange::Raise("Select3D_PointData::SetPnt");
+      throw Standard_OutOfRange("Select3D_PointData::SetPnt");
     mypolyg3d[theIndex] = theValue;
   }
 
@@ -54,7 +54,7 @@ public:
                const gp_Pnt& theValue)
   {
     if (theIndex < 0 || theIndex >= mynbpoints)
-      Standard_OutOfRange::Raise("Select3D_PointData::SetPnt");
+      throw Standard_OutOfRange("Select3D_PointData::SetPnt");
     mypolyg3d[theIndex] = theValue;
   }
 
@@ -63,7 +63,7 @@ public:
   Select3D_Pnt Pnt (const Standard_Integer theIndex) const
   {
     if (theIndex < 0 || theIndex >= mynbpoints)
-      Standard_OutOfRange::Raise("Select3D_PointData::Pnt");
+      throw Standard_OutOfRange("Select3D_PointData::Pnt");
     return mypolyg3d[theIndex];
   }
 
@@ -72,7 +72,7 @@ public:
   gp_Pnt Pnt3d (const Standard_Integer theIndex) const
   {
     if (theIndex < 0 || theIndex >= mynbpoints)
-      Standard_OutOfRange::Raise("Select3D_PointData::Pnt");
+      throw Standard_OutOfRange("Select3D_PointData::Pnt");
     return mypolyg3d[theIndex];
   }
 

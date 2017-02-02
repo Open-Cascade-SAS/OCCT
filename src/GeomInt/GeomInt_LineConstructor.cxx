@@ -679,7 +679,7 @@ void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
       quad1.SetValue(myHS1->Surface().Torus()); 
       break;
     default: 
-      Standard_ConstructionError::Raise("GeomInt_LineConstructor::Parameters");
+      throw Standard_ConstructionError("GeomInt_LineConstructor::Parameters");
   }
   quad1.Parameters(Ptref,U1,V1);
 }
@@ -710,7 +710,7 @@ void GLinePoint(const IntPatch_IType typl,
     aP = ElCLib::Value(aT, GLine->Parabola()); 
     break;
   default:
-    Standard_ConstructionError::Raise("GeomInt_LineConstructor::Parameters");
+    throw Standard_ConstructionError("GeomInt_LineConstructor::Parameters");
   }
 }
 

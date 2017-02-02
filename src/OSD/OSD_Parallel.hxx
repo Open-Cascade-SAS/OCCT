@@ -222,7 +222,7 @@ void OSD_Parallel::ForEach( InputIterator          theBegin,
     }
     catch ( tbb::captured_exception& anException )
     {
-      Standard_NotImplemented::Raise(anException.what());
+      throw Standard_NotImplemented(anException.what());
     }
   }
   #else
@@ -271,7 +271,7 @@ void OSD_Parallel::For( const Standard_Integer theBegin,
     }
     catch ( tbb::captured_exception& anException )
     {
-      Standard_NotImplemented::Raise(anException.what());
+      throw Standard_NotImplemented(anException.what());
     }
   }
   #else

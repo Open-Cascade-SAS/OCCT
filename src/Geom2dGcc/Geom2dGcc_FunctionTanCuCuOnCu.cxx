@@ -137,7 +137,7 @@ void Geom2dGcc_FunctionTanCuCuOnCu::
     break;
   default:
     {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
   }
 }

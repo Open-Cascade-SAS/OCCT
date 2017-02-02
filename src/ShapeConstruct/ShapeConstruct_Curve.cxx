@@ -153,11 +153,12 @@ Handle(Geom_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline (const Handle(G
       OCC_CATCH_SIGNALS
       bspl = GeomConvert::CurveToBSplineCurve(tc);
     }
-    catch ( Standard_Failure ) {
+    catch ( Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
       cout << "Warning: ShapeConstruct_Curve::ConvertToBSpline(): Exception in GeomConvert: ";
-      Standard_Failure::Caught()->Print(cout); cout << endl;
+      anException.Print(cout); cout << endl;
 #endif
+      (void)anException;
     }
   }
 
@@ -174,11 +175,12 @@ Handle(Geom_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline (const Handle(G
       bspl->Segment ( fbsp, lbsp );
       return bspl;
     }
-    catch ( Standard_Failure ) {
+    catch ( Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
       cout << "Warning: ShapeConstruct_Curve::ConvertToBSpline(): Exception in Segment: ";
-      Standard_Failure::Caught()->Print(cout); cout << endl;
+      anException.Print(cout); cout << endl;
 #endif
+      (void)anException;
     }
   }
 
@@ -192,11 +194,12 @@ Handle(Geom_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline (const Handle(G
     if ( Conv.IsDone() || Conv.HasResult() ) 
       bspl = Conv.Curve();
   }
-  catch ( Standard_Failure ) {
+  catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
     cout << "Warning: ShapeConstruct_Curve::ConvertToBSpline(): Exception in Approx_Curve3d: ";
-    Standard_Failure::Caught()->Print(cout); cout << endl;
+    anException.Print(cout); cout << endl;
 #endif
+    (void)anException;
   }
   return bspl;
 }
@@ -223,11 +226,12 @@ Handle(Geom2d_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline (const Handle
       OCC_CATCH_SIGNALS
       bspl = Geom2dConvert::CurveToBSplineCurve(tc);
     }
-    catch ( Standard_Failure ) {
+    catch ( Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
       cout << "Warning: ShapeConstruct_Curve::ConvertToBSpline(): Exception in Geom2dConvert: ";
-      Standard_Failure::Caught()->Print(cout); cout << endl;
+      anException.Print(cout); cout << endl;
 #endif
+      (void)anException;
     }
   }
 
@@ -244,11 +248,12 @@ Handle(Geom2d_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline (const Handle
       bspl->Segment ( fbsp, lbsp );
       return bspl;
     }
-    catch ( Standard_Failure ) {
+    catch ( Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
       cout << "Warning: ShapeConstruct_Curve::ConvertToBSpline(): Exception in Segment: ";
-      Standard_Failure::Caught()->Print(cout); cout << endl;
+      anException.Print(cout); cout << endl;
 #endif
+      (void)anException;
     }
   }
 
@@ -263,11 +268,12 @@ Handle(Geom2d_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline (const Handle
     if ( Conv.IsDone() || Conv.HasResult() ) 
       bspl = Conv.Curve();
   }
-  catch ( Standard_Failure ) {
+  catch ( Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
     cout << "Warning: ShapeConstruct_Curve::ConvertToBSpline(): Exception in Approx_Curve3d: ";
-    Standard_Failure::Caught()->Print(cout); cout << endl;
+    anException.Print(cout); cout << endl;
 #endif
+    (void)anException;
   }
   return bspl;
 }

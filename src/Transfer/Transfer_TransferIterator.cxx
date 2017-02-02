@@ -121,10 +121,8 @@ static Handle(Standard_Transient)   nultrans;  // pour retour const&(Null)
 
     const Handle(Transfer_Binder)&  Transfer_TransferIterator::Value () const
 {
-  if (thecurr == 0 || thecurr > themaxi) Standard_NoSuchObject::Raise
-    ("TransferIterator : Value");
-  if (theselect->Value(thecurr) == 0)    Standard_NoSuchObject::Raise
-    ("TransferIterator : Value");
+  if (thecurr == 0 || thecurr > themaxi) throw Standard_NoSuchObject("TransferIterator : Value");
+  if (theselect->Value(thecurr) == 0)    throw Standard_NoSuchObject("TransferIterator : Value");
   return theitems->Value(thecurr);
 }
 

@@ -474,7 +474,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Complete(Blend_SurfRstFunction&  
 							Blend_SurfCurvFuncInv&  FinvC,
 							const Standard_Real     Pmin) 
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   if (iscomplete) {return Standard_True;}
   if (sens >0.) {
     previousP = line->Point(1);

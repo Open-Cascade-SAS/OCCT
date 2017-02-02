@@ -74,7 +74,7 @@ QANewBRepNaming_Gluing::QANewBRepNaming_Gluing(const TDF_Label& ResultLabel):QAN
 
 void QANewBRepNaming_Gluing::Init(const TDF_Label& ResultLabel) {  
   if(ResultLabel.IsNull()) 
-    Standard_NullObject::Raise("QANewBRepNaming_Gluing::Init The Result label is Null ..."); 
+    throw Standard_NullObject("QANewBRepNaming_Gluing::Init The Result label is Null ...");
   myResultLabel = ResultLabel; 
 }
 

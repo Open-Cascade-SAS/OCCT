@@ -21,6 +21,6 @@ inline Standard_Boolean Blend_CSWalking::IsDone () const
 
 inline const Handle(TheLine)& Blend_CSWalking::Line () const
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return line;
 }

@@ -47,10 +47,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  //! Raises Construction Error
-  Standard_EXPORT GeomInt_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfWLApprox();
-  
   Standard_EXPORT GeomInt_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfWLApprox(const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2);
   
   Standard_EXPORT Standard_Integer NbVariables() const;

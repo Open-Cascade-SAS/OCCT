@@ -34,7 +34,7 @@ Vrml_PointLight::Vrml_PointLight():
 {
   if (aIntensity < 0. || aIntensity > 1.)
     {
-      Standard_Failure::Raise("Error : Light intensity must be in the range 0.0 to 1.0, inclusive.");
+      throw Standard_Failure("Error : Light intensity must be in the range 0.0 to 1.0, inclusive.");
     }
   myOnOff = aOnOff;
   myIntensity = aIntensity;
@@ -56,7 +56,7 @@ void Vrml_PointLight::SetIntensity(const Standard_Real aIntensity)
 {
   if (aIntensity < 0. || aIntensity > 1.)
     {
-      Standard_Failure::Raise("Error : Light intensity must be in the range 0.0 to 1.0, inclusive.");
+      throw Standard_Failure("Error : Light intensity must be in the range 0.0 to 1.0, inclusive.");
     }
   myIntensity = aIntensity;
 }

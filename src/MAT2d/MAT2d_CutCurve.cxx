@@ -109,7 +109,7 @@ Standard_Boolean MAT2d_CutCurve::UnModified() const
 
 Standard_Integer MAT2d_CutCurve::NbCurves() const 
 {
-  if (UnModified()) {Standard_OutOfRange::Raise();}
+  if (UnModified()) {throw Standard_OutOfRange();}
   return theCurves.Length();
 }
 
@@ -123,9 +123,9 @@ Handle(Geom2d_TrimmedCurve) MAT2d_CutCurve::Value (
    const Standard_Integer Index) 
 const 
 {
-  if (UnModified()) {Standard_OutOfRange::Raise();}
+  if (UnModified()) {throw Standard_OutOfRange();}
   if ( Index < 1 || Index > theCurves.Length()) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return Handle(Geom2d_TrimmedCurve)::DownCast(theCurves.Value(Index));
 }

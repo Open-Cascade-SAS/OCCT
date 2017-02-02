@@ -301,7 +301,7 @@ void  ChFi3d_ChBuilder::SetDist(const Standard_Real    Dis,
 
     }
     else
-      Standard_DomainError::Raise("the face is not common to any of edges of the contour");
+      throw Standard_DomainError("the face is not common to any of edges of the contour");
 
   }
 }
@@ -440,7 +440,7 @@ void  ChFi3d_ChBuilder::SetDists(const Standard_Real    Dis1,
       else csp->SetDists(Dis1,Dis2);
     }
     else
-      Standard_DomainError::Raise("the face is not common to any of edges of the contour");
+      throw Standard_DomainError("the face is not common to any of edges of the contour");
 
   }
 }
@@ -589,7 +589,7 @@ void  ChFi3d_ChBuilder::SetDistAngle(const Standard_Real    Dis,
       }
     }
     else
-      Standard_DomainError::Raise("the face is not common to any edges of the contour");
+      throw Standard_DomainError("the face is not common to any edges of the contour");
 
   }
 }
@@ -808,8 +808,7 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
     chsp = Handle(ChFiDS_ChamfSpine)::DownCast(Spine);
   
   if (chsp.IsNull()) 
-    Standard_ConstructionError::Raise
-      ("SimulSurf : this is not the spine of a chamfer");
+    throw Standard_ConstructionError("SimulSurf : this is not the spine of a chamfer");
 
 
   Standard_Real radius;
@@ -1204,7 +1203,7 @@ void  ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
 				const Standard_Boolean              ,
 				const math_Vector&                  )
 {
-  Standard_Failure::Raise("SimulSurf Not Implemented");
+  throw Standard_Failure("SimulSurf Not Implemented");
 }
 void  ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
 				const Handle(ChFiDS_HElSpine)&      , 
@@ -1231,7 +1230,7 @@ void  ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
 				const Standard_Boolean              ,
 				const math_Vector&                  )
 {
-  Standard_Failure::Raise("SimulSurf Not Implemented");
+  throw Standard_Failure("SimulSurf Not Implemented");
 }
 void  ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
 				const Handle(ChFiDS_HElSpine)&      ,
@@ -1264,7 +1263,7 @@ void  ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
 				const Standard_Boolean              ,
 				const math_Vector&                  )
 {
-  Standard_Failure::Raise("SimulSurf Not Implemented");
+  throw Standard_Failure("SimulSurf Not Implemented");
 }
 //------------------------MODIFS---------------------------------------
 //=======================================================================
@@ -1289,8 +1288,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     chsp = Handle(ChFiDS_ChamfSpine)::DownCast(Spine);
   
   if (chsp.IsNull()) 
-    Standard_ConstructionError::Raise
-      ("PerformSurf : this is not the spine of a chamfer");
+    throw Standard_ConstructionError("PerformSurf : this is not the spine of a chamfer");
 
   Standard_Real TolGuide = HGuide->Resolution(tolesp) ;
 
@@ -1602,8 +1600,7 @@ ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
     chsp = Handle(ChFiDS_ChamfSpine)::DownCast(Spine);
   
   if (chsp.IsNull()) 
-    Standard_ConstructionError::Raise
-      ("PerformSurf : this is not the spine of a chamfer");
+    throw Standard_ConstructionError("PerformSurf : this is not the spine of a chamfer");
   
   Standard_Boolean gd1,gd2,gf1,gf2;
   Handle(BRepBlend_Line) lin;
@@ -1626,7 +1623,7 @@ ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
 		       gd1,gd2,gf1,gf2,RecOnS1,RecOnS2);
     if(!done) return Standard_False; // ratrappage possible PMN 14/05/1998
     done = CompleteData(Data,Func,lin,S1,S2,Or,gd1,gd2,gf1,gf2);
-    if(!done) Standard_Failure::Raise("PerformSurf : Fail of approximation!");
+    if(!done) throw Standard_Failure("PerformSurf : Fail of approximation!");
   }
   else if (chsp->IsChamfer() == ChFiDS_TwoDist) {
     BRepBlend_Chamfer  Func(S1,S2,HGuide);
@@ -1642,7 +1639,7 @@ ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
 		       gd1,gd2,gf1,gf2,RecOnS1,RecOnS2);
     if(!done) return Standard_False; // ratrappage possible PMN 14/05/1998
     done = CompleteData(Data,Func,lin,S1,S2,Or,gd1,gd2,gf1,gf2);
-    if(!done) Standard_Failure::Raise("PerformSurf : Fail of approximation!");
+    if(!done) throw Standard_Failure("PerformSurf : Fail of approximation!");
   }
   else {
     Standard_Real d1, angle;
@@ -1664,7 +1661,7 @@ ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
 
       if(!done) return Standard_False; // ratrappage possible PMN 14/05/1998
       done = CompleteData(Data,Func,lin,S1,S2,Or,gd1,gd2,gf1,gf2);
-      if(!done) Standard_Failure::Raise("PerformSurf : Fail of approximation!");
+      if(!done) throw Standard_Failure("PerformSurf : Fail of approximation!");
     }
     else {
       Standard_Real Rtemp;
@@ -1695,7 +1692,7 @@ ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
       Data->ChangeVertexLastOnS2() = tmp;
       if(!done) return Standard_False; // ratrappage possible PMN 14/05/1998
       done = CompleteData(Data,Func,lin,S1,S2,Or2,gd1,gd2,gf1,gf2, Standard_True);
-      if(!done) Standard_Failure::Raise("PerformSurf : Fail of approximation!");
+      if(!done) throw Standard_Failure("PerformSurf : Fail of approximation!");
     }      
 
   }
@@ -1727,7 +1724,7 @@ void  ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
 				  const Standard_Boolean              ,
 				  const math_Vector&                  )
 {
-  Standard_Failure::Raise("PerformSurf Not Implemented");
+  throw Standard_Failure("PerformSurf Not Implemented");
 }
 void  ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
 				  const Handle(ChFiDS_HElSpine)&      , 
@@ -1755,7 +1752,7 @@ void  ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
 				  const Standard_Boolean              ,
 				  const math_Vector&                  )
 {
-  Standard_Failure::Raise("PerformSurf Not Implemented");
+  throw Standard_Failure("PerformSurf Not Implemented");
 
 }
 void  ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
@@ -1790,7 +1787,7 @@ void  ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
 				  const Standard_Boolean              ,
 				  const math_Vector&                  )
 {
-  Standard_Failure::Raise("PerformSurf Not Implemented");
+  throw Standard_Failure("PerformSurf Not Implemented");
 
 }
 //=======================================================================

@@ -81,7 +81,7 @@ void  TopOpeBRep_GeomTool::MakeCurves
   case TopOpeBRep_RESTRICTION : 
   case TopOpeBRep_OTHERTYPE :
     default : 
-      Standard_ProgramError::Raise("TopOpeBRep_GeomTool::MakePrivateCurves");
+      throw Standard_ProgramError("TopOpeBRep_GeomTool::MakePrivateCurves");
     break;
   }
 
@@ -132,7 +132,7 @@ void  TopOpeBRep_GeomTool::MakeCurve
   case TopOpeBRep_RESTRICTION : 
   case TopOpeBRep_OTHERTYPE :
   default : 
-    Standard_ProgramError::Raise("TopOpeBRep_GeomTool::MakePrivateCurves");
+    throw Standard_ProgramError("TopOpeBRep_GeomTool::MakePrivateCurves");
     break;
   }
 }

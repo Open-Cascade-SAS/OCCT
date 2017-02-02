@@ -171,13 +171,13 @@ void IGESData_IGESWriter::SendStartLine (const Standard_CString startline)
 
     void IGESData_IGESWriter::SectionS ()
 {
-  if (thesect != 0) Interface_InterfaceError::Raise("IGESWriter : SectionS");
+  if (thesect != 0) throw Interface_InterfaceError("IGESWriter : SectionS");
   thesect = 1;
 }
 
     void IGESData_IGESWriter::SectionG (const IGESData_GlobalSection& header)
 {
-  if (thesect != 1) Interface_InterfaceError::Raise("IGESWriter : SectionG");
+  if (thesect != 1) throw Interface_InterfaceError("IGESWriter : SectionG");
   thesect = 2;
   thesep  = header.Separator();
   theendm = header.EndMark();
@@ -197,7 +197,7 @@ void IGESData_IGESWriter::SendStartLine (const Standard_CString startline)
 
     void IGESData_IGESWriter::SectionsDP ()
 {
-  if (thesect != 2) Interface_InterfaceError::Raise("IGESWriter : SectionsDP");
+  if (thesect != 2) throw Interface_InterfaceError("IGESWriter : SectionsDP");
   thesect = 3;
   thecurr.SetMax (MaxcarsP);
   thestep = IGESData_ReadEnd;
@@ -205,7 +205,7 @@ void IGESData_IGESWriter::SendStartLine (const Standard_CString startline)
 
     void IGESData_IGESWriter::SectionT ()
 {
-  if (thesect != 3) Interface_InterfaceError::Raise("IGESWriter : SectionT");
+  if (thesect != 3) throw Interface_InterfaceError("IGESWriter : SectionT");
   thesect = 4;
   thepnum.SetValue(thepnum.Length(),thepars->Length()+1);
 }
@@ -215,7 +215,7 @@ void IGESData_IGESWriter::SendStartLine (const Standard_CString startline)
       (const Handle(IGESData_IGESEntity)& anent)
 {
   if (thesect != 3 && thestep != IGESData_ReadEnd)
-    Interface_InterfaceError::Raise("IGESWriter : DirPart");
+    throw Interface_InterfaceError("IGESWriter : DirPart");
   Standard_Integer v[17]; Standard_Character res1[9],res2[9],label[9],snum[9];
   Standard_Integer nument = themodel->Number(anent);
   if (nument == 0) return;
@@ -289,7 +289,7 @@ void IGESData_IGESWriter::SendStartLine (const Standard_CString startline)
 {
   char text[20];
   if (thesect != 3 && thestep != IGESData_ReadDir)
-    Interface_InterfaceError::Raise("IGESWriter : OwnParams");
+    throw Interface_InterfaceError("IGESWriter : OwnParams");
   thepnum.SetValue(themodel->Number(anent),thepars->Length()+1);
   thecurr.Clear();
   sprintf(text,"%d",anent->TypeNumber());
@@ -301,7 +301,7 @@ void IGESData_IGESWriter::SendStartLine (const Standard_CString startline)
   (const Handle(IGESData_IGESEntity)& anent)
 {
   if (thesect != 3 && thestep != IGESData_ReadOwn)
-    Interface_InterfaceError::Raise("IGESWriter : Properties");
+    throw Interface_InterfaceError("IGESWriter : Properties");
   thestep = IGESData_ReadProps;
   if (!anent->ArePresentProperties()) return;
   Send(anent->NbProperties());
@@ -316,7 +316,7 @@ void IGESData_IGESWriter::SendStartLine (const Standard_CString startline)
   (const Handle(IGESData_IGESEntity)& anent)
 {
   if (thesect != 3 && thestep != IGESData_ReadOwn)
-    Interface_InterfaceError::Raise("IGESWriter : Associativities");
+    throw Interface_InterfaceError("IGESWriter : Associativities");
   thestep = IGESData_ReadAssocs;
   if (!anent->ArePresentAssociativities() && !anent->ArePresentProperties())
     return;  // Properties suivent : ne pas les omettre !
@@ -332,7 +332,7 @@ void IGESData_IGESWriter::SendStartLine (const Standard_CString startline)
     void IGESData_IGESWriter::EndEntity ()
 {
   if (thesect != 3 && thestep != IGESData_ReadOwn)
-    Interface_InterfaceError::Raise("IGESWriter : EndEntity");
+    throw Interface_InterfaceError("IGESWriter : EndEntity");
   AddChar(theendm);
   if (thecurr.Length() > 0) thepars->Append(thecurr.Moved());
   thestep = IGESData_ReadEnd;
@@ -496,8 +496,7 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
       blancs[i] = (char)(blancs[i] ^ (150 + (i & 3)));
   }
 
-  if (thesect != 4) Interface_InterfaceError::Raise
-    ("IGESWriter not ready for Print");
+  if (thesect != 4) throw Interface_InterfaceError("IGESWriter not ready for Print");
 //  Start Section (assez simple, somme toute). Attention si commentaires
   Handle(TCollection_HAsciiString) line;
   Standard_Integer nbs = 1;

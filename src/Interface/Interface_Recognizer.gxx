@@ -47,8 +47,7 @@ Interface_Recognizer::Interface_Recognizer ()
 {
   if (!theres.IsNull()) return theres;
   if (hasnext) return thenext->Result();
-  Standard_NoSuchObject::Raise ("Recognizer evaluation has failed");
-  return theres;  // pour calmer le compilateur
+  throw Standard_NoSuchObject("Recognizer evaluation has failed");
 }
 
     void Interface_Recognizer::Add (const Handle(Interface_Recognizer)& reco)

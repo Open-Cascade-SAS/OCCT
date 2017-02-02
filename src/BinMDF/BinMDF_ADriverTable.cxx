@@ -62,8 +62,7 @@ void BinMDF_ADriverTable::AssignIds
       myMapId.Bind (aType, i);
     }
     else {
-      Standard_NoSuchObject::Raise
-        ((TCollection_AsciiString("BinMDF_ADriverTable::AssignIds : ") +
+      throw Standard_NoSuchObject((TCollection_AsciiString("BinMDF_ADriverTable::AssignIds : ") +
           "the type " + aType->Name() + " has not been registered").ToCString());
     }
   }

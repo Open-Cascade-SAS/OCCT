@@ -148,7 +148,7 @@ static void BuildPeriodicTangent(
   gp_Vec a_vector ;
   
   if (PointsArray.Length() < 3) {
-    Standard_ConstructionError::Raise(); 
+    throw Standard_ConstructionError();
     }   
  
   if (!TangentFlags.Value(1)) {
@@ -194,7 +194,7 @@ static void BuildTangents(const TColgp_Array1OfPnt&      PointsArray,
  degree = 3 ;
 
  if ( PointsArray.Length() < 3) {
-   Standard_ConstructionError::Raise(); 
+   throw Standard_ConstructionError();
    }   
  if (PointsArray.Length() == 3) {
    degree = 2 ;
@@ -332,7 +332,7 @@ myTangentRequest(Standard_False)
 				   myPoints->Upper()) ;
 
  if (!result) {
-   Standard_ConstructionError::Raise();
+   throw Standard_ConstructionError();
    }
  BuildParameters(PeriodicFlag,
 		 PointsPtr->Array1(),
@@ -372,7 +372,7 @@ myTangentRequest(Standard_False)
 
  if (PeriodicFlag) {
    if ((PointsPtr->Length()) + 1 != ParametersPtr->Length()) {
-     Standard_ConstructionError::Raise();
+     throw Standard_ConstructionError();
    }
  }
  myTangents = 
@@ -383,13 +383,13 @@ myTangentRequest(Standard_False)
 				    myPoints->Upper()) ;
  
  if (!result) {
-   Standard_ConstructionError::Raise();
+   throw Standard_ConstructionError();
    }
  		
  result =
  CheckParameters(ParametersPtr->Array1()) ;
  if (!result) {
-   Standard_ConstructionError::Raise();
+   throw Standard_ConstructionError();
    }
 	
  for (ii = myPoints->Lower() ; ii <= myPoints->Upper() ; ii++) {
@@ -414,7 +414,7 @@ void GeomAPI_Interpolate::Load(
  myTangentFlags = TangentFlagsPtr ;
  if (Tangents.Length() != myPoints->Length() ||
      TangentFlagsPtr->Length() != myPoints->Length()) {
-   Standard_ConstructionError::Raise();
+   throw Standard_ConstructionError();
    }
  result  = 
    CheckTangents(Tangents,
@@ -435,7 +435,7 @@ void GeomAPI_Interpolate::Load(
     }
   }
  else {
-   Standard_ConstructionError::Raise();
+   throw Standard_ConstructionError();
    }
  
   
@@ -461,7 +461,7 @@ void GeomAPI_Interpolate::Load(const gp_Vec& InitialTangent,
 		  myTangentFlags->Array1(),
 		  myTolerance) ;
   if (!result) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
     }
 
   if(Scale) {
@@ -906,7 +906,7 @@ void GeomAPI_Interpolate::PerformNonPeriodic()
 const Handle(Geom_BSplineCurve)& GeomAPI_Interpolate::Curve() const 
 {
   if ( !myIsDone) 
-    StdFail_NotDone::Raise(" ");
+    throw StdFail_NotDone(" ");
   return myCurve;
 }
 

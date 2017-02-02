@@ -88,11 +88,12 @@ Handle(Geom_BSplineCurve) ShapeConstruct::ConvertCurveToBSpline(const Handle(Geo
       else
 	aBSpline = GeomConvert::CurveToBSplineCurve(C3D,Convert_QuasiAngular);
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
 	    cout << "Warning: GeomConvert_ApproxSurface Exception:  ";
-	    Standard_Failure::Caught()->Print(cout); cout << endl;
+	    anException.Print(cout); cout << endl;
 #endif 
+	    (void)anException;
 	    aBSpline = GeomConvert::CurveToBSplineCurve(C3D,Convert_QuasiAngular);    
 	  }
   }
@@ -256,11 +257,12 @@ Handle(Geom_BSplineSurface) ShapeConstruct::ConvertSurfaceToBSpline(const Handle
       }
     }
 	
-    catch (Standard_Failure) {
+    catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
       cout << "Warning: GeomConvert_ApproxSurface Exception: try to decrease continuity ";
-      Standard_Failure::Caught()->Print(cout); cout << endl;
+      anException.Print(cout); cout << endl;
 #endif
+      (void)anException;
       if(cnt > 0) cnt--;
       continue;
     }
@@ -360,11 +362,12 @@ Standard_Boolean ShapeConstruct::JoinPCurves(const Handle(TopTools_HSequenceOfSh
     B.SameParameter(theEdge,Standard_False);
     return (i <= edges->Length());
   }
-  catch ( Standard_Failure ) {
+  catch ( Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
     cout<<"Error: ShapeConstruct::JoinPCurves Exception in GeomConvert_CompCurveToBSplineCurve: ";
-    Standard_Failure::Caught()->Print(cout); cout<<endl;
+    anException.Print(cout); cout<<endl;
 #endif
+    (void)anException;
   }
   return Standard_False;
 }

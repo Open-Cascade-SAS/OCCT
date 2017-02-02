@@ -67,7 +67,7 @@ static Standard_Integer BRepPrim_Wedge_NumDir2
 {
   Standard_Integer i1 = BRepPrim_Wedge_NumDir1(d1);
   Standard_Integer i2 = BRepPrim_Wedge_NumDir1(d2);
-  if ( i1/2 == i2/2 ) Standard_DomainError::Raise();
+  if ( i1/2 == i2/2 ) throw Standard_DomainError();
   return tab[i1][i2];
 }
 
@@ -86,7 +86,7 @@ static Standard_Integer BRepPrim_Wedge_NumDir3
   Standard_Integer i3 = BRepPrim_Wedge_NumDir1(d3);
   if (( i1/2 == i2/2 ) ||
       ( i2/2 == i3/2 ) ||
-      ( i3/2 == i1/2 )) Standard_DomainError::Raise();
+      ( i3/2 == i1/2 )) throw Standard_DomainError();
   return val[i1]+val[i2]+val[i3];
 }
 
@@ -102,13 +102,13 @@ static void BRepPrim_Wedge_Check(const Standard_Boolean V[],
 {
   Standard_Integer i;
   for (i = 0; i < NBVERTICES; i++)
-    if (V[i]) Standard_DomainError::Raise();
+    if (V[i]) throw Standard_DomainError();
   for (i = 0; i < NBEDGES; i++)
-    if (E[i]) Standard_DomainError::Raise();
+    if (E[i]) throw Standard_DomainError();
   for (i = 0; i < NBWIRES; i++)
-    if (W[i]) Standard_DomainError::Raise();
+    if (W[i]) throw Standard_DomainError();
   for (i = 0; i < NBFACES; i++)
-    if (F[i]) Standard_DomainError::Raise();
+    if (F[i]) throw Standard_DomainError();
 }
 
 //=======================================================================
@@ -161,7 +161,7 @@ BRepPrim_GWedge::BRepPrim_GWedge (const BRepPrim_Builder& B,
   if ( ( dx <= Precision::Confusion() ) ||
        ( dy <= Precision::Confusion() ) ||
        ( dz <= Precision::Confusion() ) )
-    Standard_DomainError::Raise();
+    throw Standard_DomainError();
   BRepPrim_Wedge_Init(ShellBuilt,VerticesBuilt,EdgesBuilt,
 			WiresBuilt,FacesBuilt);
 }
@@ -195,7 +195,7 @@ BRepPrim_GWedge::BRepPrim_GWedge (const BRepPrim_Builder& B,
        ( dy <= Precision::Confusion() ) ||
        ( dz <= Precision::Confusion() ) ||
        ( ltx < 0 ) )
-    Standard_DomainError::Raise();
+    throw Standard_DomainError();
   BRepPrim_Wedge_Init(ShellBuilt,VerticesBuilt,EdgesBuilt,
 			WiresBuilt,FacesBuilt);
 }
@@ -236,7 +236,7 @@ BRepPrim_GWedge::BRepPrim_GWedge (const BRepPrim_Builder& B,
        ( ZMax-ZMin <= Precision::Confusion() ) ||
        ( Z2Max-Z2Min < 0 ) ||
        ( X2Max-X2Min < 0 ) )
-    Standard_DomainError::Raise();
+    throw Standard_DomainError();
   BRepPrim_Wedge_Init(ShellBuilt,VerticesBuilt,EdgesBuilt,
 			WiresBuilt,FacesBuilt);
 }
@@ -658,7 +658,7 @@ gp_Lin BRepPrim_GWedge::Line
   (const BRepPrim_Direction d1,
    const BRepPrim_Direction d2)
 {
-  if (!HasEdge(d1,d2)) Standard_DomainError::Raise();
+  if (!HasEdge(d1,d2)) throw Standard_DomainError();
 
   Standard_Integer i = BRepPrim_Wedge_NumDir2(d1,d2);
 
@@ -799,7 +799,7 @@ const TopoDS_Edge& BRepPrim_GWedge::Edge
        (const BRepPrim_Direction d1,
 	const BRepPrim_Direction d2)
 {
-  if (!HasEdge(d1,d2)) Standard_DomainError::Raise();
+  if (!HasEdge(d1,d2)) throw Standard_DomainError();
 
   Standard_Integer i = BRepPrim_Wedge_NumDir2(d1,d2);
 
@@ -894,7 +894,7 @@ gp_Pnt  BRepPrim_GWedge::Point
    const BRepPrim_Direction d2,
    const BRepPrim_Direction d3)
 {
-  if (!HasVertex(d1,d2,d3)) Standard_DomainError::Raise();
+  if (!HasVertex(d1,d2,d3)) throw Standard_DomainError();
 
   Standard_Integer i = BRepPrim_Wedge_NumDir3(d1,d2,d3);
 
@@ -969,7 +969,7 @@ const TopoDS_Vertex& BRepPrim_GWedge::Vertex
 	const BRepPrim_Direction d2,
 	const BRepPrim_Direction d3)
 {
-  if (!HasVertex(d1,d2,d3)) Standard_DomainError::Raise();
+  if (!HasVertex(d1,d2,d3)) throw Standard_DomainError();
 
   Standard_Integer i = BRepPrim_Wedge_NumDir3(d1,d2,d3);
 

@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Geom_UndefinedDerivative, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_Geom_UndefinedDerivative
   #define Geom_UndefinedDerivative_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Geom_UndefinedDerivative::Raise(MESSAGE);
+  if (CONDITION) throw Geom_UndefinedDerivative(MESSAGE);
 #else
   #define Geom_UndefinedDerivative_Raise_if(CONDITION, MESSAGE)
 #endif

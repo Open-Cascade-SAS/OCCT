@@ -192,8 +192,7 @@ Standard_Boolean BRepTools_TrsfModification::NewCurve2d
     if ( gtrsf.Form() != gp_Identity) {
       NewC = GeomLib::GTransform(NewC,gtrsf);
       if (NewC.IsNull()) {
-	Standard_DomainError::Raise("TrsfModification:Error in NewCurve2d");
-	  return Standard_False;
+	throw Standard_DomainError("TrsfModification:Error in NewCurve2d");
 	}
       newf = NewC->FirstParameter();
       newl = NewC->LastParameter();

@@ -218,7 +218,7 @@ void Geom_OffsetCurve::SetBasisCurve (const Handle(Geom_Curve)& C,
 
     // Raise exception if still C0
     if (isC0)
-      Standard_ConstructionError::Raise("Offset on C0 curve");
+      throw Standard_ConstructionError("Offset on C0 curve");
   }
   //
   if(isTrimmed)
@@ -333,7 +333,7 @@ gp_Vec Geom_OffsetCurve::DN (const Standard_Real U, const Standard_Integer N) co
       D3( U, Ptemp, Vtemp, Vtemp, VN);
       break;
     default:
-      Standard_NotImplemented::Raise("Exception: "
+      throw Standard_NotImplemented("Exception: "
         "Derivative order is greater than 3. Cannot compute of derivative.");
   }
   

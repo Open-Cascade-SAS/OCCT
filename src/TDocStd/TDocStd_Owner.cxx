@@ -51,7 +51,7 @@ void TDocStd_Owner::SetDocument (const Handle(TDF_Data)& indata,
     indata->Root().AddAttribute(A);
   }
   else {  
-    Standard_DomainError::Raise("TDocStd_Owner::SetDocument : already called");
+    throw Standard_DomainError("TDocStd_Owner::SetDocument : already called");
   }
 }
 
@@ -64,7 +64,7 @@ Handle(TDocStd_Document) TDocStd_Owner::GetDocument (const Handle(TDF_Data)& ofd
 {
   Handle(TDocStd_Owner) A;
   if (!ofdata->Root().FindAttribute (TDocStd_Owner::GetID(), A)) {
-    Standard_DomainError::Raise("TDocStd_Owner::GetDocument : document not found");
+    throw Standard_DomainError("TDocStd_Owner::GetDocument : document not found");
   }
   return A->GetDocument();
 }

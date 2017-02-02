@@ -393,7 +393,7 @@ void  TopOpeBRepBuild_WireEdgeClassifier::ResetElement(const TopoDS_Shape& EE)
   } //jyl980406+
   
   C2D = FC2D_CurveOnSurface(E,F,f2,l2,tolpc);
-  if (C2D.IsNull()) Standard_ProgramError::Raise("WEC : ResetElement");
+  if (C2D.IsNull()) throw Standard_ProgramError("WEC : ResetElement");
 
   Standard_Real t = 0.397891143689; Standard_Real par = ((1-t)*f2 + t*l2);
   myPoint2d = C2D->Value(par);

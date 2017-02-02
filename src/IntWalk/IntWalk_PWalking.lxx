@@ -20,44 +20,44 @@ inline Standard_Boolean IntWalk_PWalking::IsDone() const {
 }
 
 inline Standard_Integer IntWalk_PWalking::NbPoints() const {
-  if(!done) StdFail_NotDone::Raise();
+  if(!done) throw StdFail_NotDone();
   return line->NbPoints();
 }
 
 inline const IntSurf_PntOn2S& IntWalk_PWalking::Value
   (const Standard_Integer Index) const
 {
-  if (!done) StdFail_NotDone::Raise();
+  if (!done) throw StdFail_NotDone();
   return line->Value(Index);
 }
 
 
 inline const Handle(IntSurf_LineOn2S)& IntWalk_PWalking::Line () const {
 
-  if (!done) StdFail_NotDone::Raise();
+  if (!done) throw StdFail_NotDone();
   return line;
 }
 
 
 inline Standard_Boolean IntWalk_PWalking::TangentAtFirst() const{ 
-  if(!done) StdFail_NotDone::Raise();
+  if(!done) throw StdFail_NotDone();
   return tgfirst;
 }
 
 inline Standard_Boolean IntWalk_PWalking::TangentAtLast() const{ 
-  if(!done) StdFail_NotDone::Raise();
+  if(!done) throw StdFail_NotDone();
   return tglast;
 }
 
 inline Standard_Boolean IntWalk_PWalking::IsClosed() const{ 
-  if(!done) StdFail_NotDone::Raise();
+  if(!done) throw StdFail_NotDone();
   return close;
 }
 
 inline const gp_Dir& IntWalk_PWalking::TangentAtLine
   (Standard_Integer& Index) const
 {
-  if(!done) StdFail_NotDone::Raise();
+  if(!done) throw StdFail_NotDone();
   Index = indextg;
   return tgdir;
 }

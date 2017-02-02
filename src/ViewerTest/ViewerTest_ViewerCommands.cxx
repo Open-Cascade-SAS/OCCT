@@ -3417,10 +3417,10 @@ static int VExport(Draw_Interpretor& di, Standard_Integer argc, const char** arg
       di << "Error: export of image to " << aFormatStr << " failed!\n";
     }
   }
-  catch (Standard_Failure)
+  catch (Standard_Failure const& anException)
   {
     di << "Error: export of image to " << aFormatStr << " failed";
-    di << " (exception: " << Standard_Failure::Caught()->GetMessageString() << ")";
+    di << " (exception: " << anException.GetMessageString() << ")";
   }
   Standard_ENABLE_DEPRECATION_WARNINGS
   return 0;

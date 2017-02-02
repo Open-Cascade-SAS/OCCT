@@ -18,5 +18,5 @@
 
 void StepFile_CallFailure(char * const message)
 {
-  Standard_Failure::Raise(message);
+  throw Standard_Failure(message);
 }

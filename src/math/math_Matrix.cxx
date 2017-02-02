@@ -169,7 +169,7 @@ void math_Matrix::Invert()
     Sol.Invert(*this);
   }
   else {
-    math_SingularMatrix::Raise(); // SingularMatrix Exception;
+    throw math_SingularMatrix(); // SingularMatrix Exception;
   }
 }
 

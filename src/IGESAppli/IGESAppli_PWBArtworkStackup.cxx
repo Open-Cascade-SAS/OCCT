@@ -33,7 +33,7 @@ IGESAppli_PWBArtworkStackup::IGESAppli_PWBArtworkStackup ()    {  }
    const Handle(TColStd_HArray1OfInteger)& allLevelNums)
 {
   if (allLevelNums->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESAppli_PWBArtworkStackup : Init");
+    throw Standard_DimensionMismatch("IGESAppli_PWBArtworkStackup : Init");
   theNbPropertyValues    = nbPropVal;
   theArtworkStackupIdent = anArtIdent;
   theLevelNumbers        = allLevelNums;

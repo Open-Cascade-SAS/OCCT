@@ -149,12 +149,10 @@ Interface_ShareTool::Interface_ShareTool (const Handle(Interface_HGraph)& ahgrap
     if (entsh->IsKind(atype)) {
       entresult = entsh;
       result ++;
-      if (result > 1)  Interface_InterfaceError::Raise
-	("Interface ShareTool : TypedSharing, more than one found");
+      if (result > 1)  throw Interface_InterfaceError("Interface ShareTool : TypedSharing, more than one found");
     }
   }
-  if (result == 0) Interface_InterfaceError::Raise
-    ("Interface ShareTool : TypedSharing, not found");
+  if (result == 0) throw Interface_InterfaceError("Interface ShareTool : TypedSharing, not found");
   return entresult;
 }
 

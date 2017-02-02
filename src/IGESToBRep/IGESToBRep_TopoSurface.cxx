@@ -781,13 +781,13 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferSurfaceOfRevolution
         }//if ( !aResultSurf.IsNull())
       }//if (extractCurve3d(generatrix, aBasisCurve))
     }
-    catch (Standard_Failure)
-    {
+    catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
       cout << "Warning: IgesToBRep_TopoSurface::"
                     "TransferSurfaceOfRevolution(): exception by Geom: ";
-      Standard_Failure::Caught()->Print ( cout ); cout << endl;
+      anException.Print ( cout ); cout << endl;
 #endif
+      (void)anException;
     }//catch (Standard_Failure)
   }
   
@@ -914,11 +914,12 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTabulatedCylinder
       }
     }
   }
-  catch (Standard_Failure) {
+  catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
     cout << "Warning: IgesToBRep_TopoSurface::TransferTabulatedCylinder(): exception by Geom: ";
-    Standard_Failure::Caught()->Print ( cout ); cout << endl;
+    anException.Print ( cout ); cout << endl;
 #endif
+    (void)anException;
   }
   }
   

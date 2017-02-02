@@ -437,7 +437,7 @@ void  GeomFill_BezierCurves::Init(const Handle(Geom_BezierCurve)& C1,
     }
 
     if(!IsOK)
-      Standard_OutOfRange::Raise("GeomFill_BezierCurves: Courbes non jointives");
+      throw Standard_OutOfRange("GeomFill_BezierCurves: Courbes non jointives");
 
     CC1->Poles(P1);
     CC2->Poles(P2);

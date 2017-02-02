@@ -44,7 +44,7 @@ QANewBRepNaming_Box::QANewBRepNaming_Box(const TDF_Label& Label)
 
 void QANewBRepNaming_Box::Init(const TDF_Label& Label) {
   if(Label.IsNull())
-    Standard_NullObject::Raise("QANewBRepNaming_Box::Init The Result label is Null ..."); 
+    throw Standard_NullObject("QANewBRepNaming_Box::Init The Result label is Null ...");
   myResultLabel = Label;
 }  
 

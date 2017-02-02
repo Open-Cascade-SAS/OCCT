@@ -825,12 +825,12 @@ Handle(Geom2d_Curve) GeomTools_Curve2dSet::ReadCurve2d(Standard_IStream& IS)
       break;
     }
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    Handle(Standard_Failure) anExc = Standard_Failure::Caught();
     cout <<"EXCEPTION in GeomTools_Curve2dSet::ReadCurve2d(..)!!!" << endl;
-    cout << anExc << endl;
+    cout << anException << endl;
 #endif
+    (void)anException;
   }
   return C;
 }

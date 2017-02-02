@@ -65,7 +65,7 @@ IntTools_TopolTool::IntTools_TopolTool(const Handle(Adaptor3d_HSurface)& theSurf
 // =====================================================================================
 void IntTools_TopolTool::Initialize() 
 {
-  Standard_NotImplemented::Raise("IntTools_TopolTool::Initialize ()");
+  throw Standard_NotImplemented("IntTools_TopolTool::Initialize ()");
 }
 
 // =====================================================================================

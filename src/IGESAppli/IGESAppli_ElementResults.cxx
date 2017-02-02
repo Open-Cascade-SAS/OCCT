@@ -54,16 +54,16 @@ IGESAppli_ElementResults::IGESAppli_ElementResults ()    {  }
       allnbResDataLocs->Lower()  != 1 || allnbResDataLocs->Upper()  != num ||
       allResDataLocs->Lower()    != 1 || allResDataLocs->Upper()    != num ||
       allResults->Lower()        != 1 || allResults->Upper()        != num )
-    Standard_DimensionMismatch::Raise("IGESAppli_ElementsResults : Init");
+    throw Standard_DimensionMismatch("IGESAppli_ElementsResults : Init");
   for (Standard_Integer i = 1; i <= num; i ++) {
     Standard_Integer nl  = nbLayers->Value(i);
     Standard_Integer nrl = allnbResDataLocs->Value(i);
     if (allResDataLocs->Value(i)->Lower() != 1 || 
 	allResDataLocs->Value(i)->Upper() != nrl)
-      Standard_DimensionMismatch::Raise("IGESAppli_ElementsResults : DataLoc");
+      throw Standard_DimensionMismatch("IGESAppli_ElementsResults : DataLoc");
     if (allResults->Value(i)->Lower() != 1 ||
 	allResults->Value(i)->Upper() != nl*nrl*nbResults)
-      Standard_DimensionMismatch::Raise("IGESAppli_ElementsResults : Results");
+      throw Standard_DimensionMismatch("IGESAppli_ElementsResults : Results");
   }
 
   theNote                 = aNote;
@@ -85,8 +85,7 @@ IGESAppli_ElementResults::IGESAppli_ElementResults ()    {  }
 
     void  IGESAppli_ElementResults::SetFormNumber (const Standard_Integer form)
 {
-  if (form < 0 || form > 34) Standard_OutOfRange::Raise
-    ("IGESAppli_ElementResults : SetFormNumber");
+  if (form < 0 || form > 34) throw Standard_OutOfRange("IGESAppli_ElementResults : SetFormNumber");
   InitTypeAndForm(148,form);
 }
 

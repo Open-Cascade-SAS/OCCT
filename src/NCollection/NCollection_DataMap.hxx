@@ -301,7 +301,7 @@ class NCollection_DataMap : public NCollection_BaseMap
   {
     DataMapNode* p = 0;
     if (!lookup(theKey, p))
-      Standard_NoSuchObject::Raise("NCollection_DataMap::Find");
+      throw Standard_NoSuchObject("NCollection_DataMap::Find");
     return p->Value();
   }
 
@@ -337,7 +337,7 @@ class NCollection_DataMap : public NCollection_BaseMap
   {
     DataMapNode* p = 0;
     if (!lookup(theKey, p))
-      Standard_NoSuchObject::Raise("NCollection_DataMap::Find");
+      throw Standard_NoSuchObject("NCollection_DataMap::Find");
     return p->ChangeValue();
   }
 

@@ -1165,7 +1165,7 @@ const TopTools_ListOfShape& LocOpe_SplitShape::LeftOf(const TopoDS_Wire& W,
                                                       const TopoDS_Face& F)
 {
   if (myShape.IsNull()) {
-    Standard_NoSuchObject::Raise();
+    throw Standard_NoSuchObject();
   }
 
   TopExp_Explorer exp,expw,expf;
@@ -1176,7 +1176,7 @@ const TopTools_ListOfShape& LocOpe_SplitShape::LeftOf(const TopoDS_Wire& W,
     }
   }
   if (!exp.More()) {
-    Standard_NoSuchObject::Raise();
+    throw Standard_NoSuchObject();
   }
   myLeft.Clear();
 

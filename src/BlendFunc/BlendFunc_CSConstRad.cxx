@@ -104,7 +104,7 @@ void BlendFunc_CSConstRad::Set(const Standard_Real Param)
 
 void BlendFunc_CSConstRad::Set(const Standard_Real, const Standard_Real)
 {
-  Standard_NotImplemented::Raise("BlendFunc_CSConstRad::Set");
+  throw Standard_NotImplemented("BlendFunc_CSConstRad::Set");
 }
 
 
@@ -451,7 +451,7 @@ Standard_Boolean BlendFunc_CSConstRad::IsTangencyPoint () const
 const gp_Vec& BlendFunc_CSConstRad::TangentOnS () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_CSConstRad::TangentOnS");
+    throw Standard_DomainError("BlendFunc_CSConstRad::TangentOnS");
   return tgs;
 }
 
@@ -463,7 +463,7 @@ const gp_Vec& BlendFunc_CSConstRad::TangentOnS () const
 const gp_Vec& BlendFunc_CSConstRad::TangentOnC () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_CSConstRad::TangentOnC");
+    throw Standard_DomainError("BlendFunc_CSConstRad::TangentOnC");
   return tgc;
 }
 
@@ -475,7 +475,7 @@ const gp_Vec& BlendFunc_CSConstRad::TangentOnC () const
 const gp_Vec2d& BlendFunc_CSConstRad::Tangent2d () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_CSConstRad::Tangent2d");
+    throw Standard_DomainError("BlendFunc_CSConstRad::Tangent2d");
   return tg2d;
 }
 
@@ -548,8 +548,7 @@ void BlendFunc_CSConstRad::Section(const Standard_Real Param,
 
 Standard_Boolean BlendFunc_CSConstRad::Section(const Blend_Point&, TColgp_Array1OfPnt&, TColgp_Array1OfVec&, TColgp_Array1OfVec&, TColgp_Array1OfPnt2d&, TColgp_Array1OfVec2d&, TColgp_Array1OfVec2d&, TColStd_Array1OfReal&, TColStd_Array1OfReal&, TColStd_Array1OfReal&)
 {
- Standard_DomainError::Raise("BlendFunc_CSConstRad::Section : Not implemented");
- return Standard_False ;
+ throw Standard_DomainError("BlendFunc_CSConstRad::Section : Not implemented");
 }
 
 //=======================================================================
@@ -565,7 +564,7 @@ Standard_Boolean BlendFunc_CSConstRad::GetSection(const Standard_Real Param,
 						  TColgp_Array1OfVec& tabV)
 {
   Standard_Integer NbPoint=tabP.Length();
-  if (NbPoint != tabV.Length() || NbPoint < 2) {Standard_RangeError::Raise();}
+  if (NbPoint != tabV.Length() || NbPoint < 2) {throw Standard_RangeError();}
 
   Standard_Integer i, lowp = tabP.Lower(), lowv = tabV.Lower();
 

@@ -62,7 +62,7 @@ inline Standard_Boolean GeomInt_LineConstructor::IsDone () const
 
 inline Standard_Integer GeomInt_LineConstructor::NbParts () const
 {
-  if (!done) { StdFail_NotDone::Raise(); }
+  if (!done) { throw StdFail_NotDone(); }
   return (seqp.Length() / 2);
 }
 
@@ -75,7 +75,7 @@ inline void GeomInt_LineConstructor::Part (const Standard_Integer I,
                                            Standard_Real& WFirst,
                                            Standard_Real& WLast) const
 {
-  if (!done) { StdFail_NotDone::Raise(); }
+  if (!done) { throw StdFail_NotDone(); }
   WFirst = seqp(2*I-1);
   WLast  = seqp(2*I);
 }

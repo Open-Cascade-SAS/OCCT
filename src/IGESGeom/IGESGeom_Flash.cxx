@@ -48,8 +48,7 @@ IGESGeom_Flash::IGESGeom_Flash ()     {  }
 
     void  IGESGeom_Flash::SetFormNumber (const Standard_Integer form)
 {
-  if (form < 0 || form > 4) Standard_OutOfRange::Raise
-    ("IGESGeom_Flash : SetFormNumber");
+  if (form < 0 || form > 4) throw Standard_OutOfRange("IGESGeom_Flash : SetFormNumber");
   InitTypeAndForm(125,form);
 }
 

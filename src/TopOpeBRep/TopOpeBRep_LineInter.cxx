@@ -520,7 +520,7 @@ Standard_Boolean TopOpeBRep_LineInter::ArcIsEdge(const Standard_Integer Index) c
 Standard_Boolean TopOpeBRep_LineInter::HasFirstPoint() const
 {
   if (myILG.IsNull())
-    Standard_ProgramError::Raise("TopOpeBRep_LineInter::HasFirstPoint sur line != GLine");
+    throw Standard_ProgramError("TopOpeBRep_LineInter::HasFirstPoint sur line != GLine");
   return myILG->HasFirstPoint();
 }
 
@@ -532,7 +532,7 @@ Standard_Boolean TopOpeBRep_LineInter::HasFirstPoint() const
 Standard_Boolean TopOpeBRep_LineInter::HasLastPoint() const
 {
   if (myILG.IsNull())
-    Standard_ProgramError::Raise("TopOpeBRep_LineInter::HasLastPoint sur line != GLine");
+    throw Standard_ProgramError("TopOpeBRep_LineInter::HasLastPoint sur line != GLine");
   return myILG->HasLastPoint();
 }
 
@@ -558,8 +558,7 @@ const TopOpeBRepDS_Transition& TopOpeBRep_LineInter::FaceFaceTransition
 {
   if (I == 1) return myLineTonF1;
   if (I == 2) return myLineTonF2;
-  Standard_ProgramError::Raise("TopOpeBRep_LineInter::FaceFaceTransition");
-  return myLineTonF1;
+  throw Standard_ProgramError("TopOpeBRep_LineInter::FaceFaceTransition");
 }
 
 //=======================================================================

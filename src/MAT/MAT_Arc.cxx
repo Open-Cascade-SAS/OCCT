@@ -107,8 +107,7 @@ Handle(MAT_Node) MAT_Arc::TheOtherNode(const Handle(MAT_Node)& aNode)const
   else if (SecondNode() == aNode)
     return FirstNode();
   else {
-    Standard_DomainError::Raise("MAT_Arc::TheOtherNode");
-    return aNode;
+    throw Standard_DomainError("MAT_Arc::TheOtherNode");
   }
 }
 
@@ -131,8 +130,7 @@ Standard_Boolean MAT_Arc::HasNeighbour(const Handle(MAT_Node)& aNode,
 //    if (aNode == SecondNode()) return (!secondArcRight == NULL);
     if (aNode == SecondNode()) return (secondArcRight != 0);
   }
-  Standard_DomainError::Raise("MAT_Arc::HasNeighbour");
-  return Standard_False;
+  throw Standard_DomainError("MAT_Arc::HasNeighbour");
 }
 
 //========================================================================
@@ -152,8 +150,7 @@ const
     if (aNode == FirstNode())  return (MAT_Arc*)firstArcRight;
     if (aNode == SecondNode()) return (MAT_Arc*)secondArcRight;
   }
-  Standard_DomainError::Raise("MAT_Arc::Neighbour");
-  return (MAT_Arc*)firstArcLeft;
+  throw Standard_DomainError("MAT_Arc::Neighbour");
 }
 
 //========================================================================
@@ -250,7 +247,7 @@ void  MAT_Arc::SetNeighbour(const MAT_Side aSide,
     else if (aNode == SecondNode())
       secondArcLeft = anArc.operator->();
     else
-     Standard_DomainError::Raise("MAT_Arc::SetNeighbour"); 
+     throw Standard_DomainError("MAT_Arc::SetNeighbour");
   }
   else {
     if (aNode == FirstNode())  
@@ -258,7 +255,7 @@ void  MAT_Arc::SetNeighbour(const MAT_Side aSide,
     else if (aNode == SecondNode())
       secondArcRight = anArc.operator->();
     else
-      Standard_DomainError::Raise("MAT_Arc::SetNeighbour");
+      throw Standard_DomainError("MAT_Arc::SetNeighbour");
   }
 }
 

@@ -26,7 +26,7 @@ AppDef_MultiLine::AppDef_MultiLine(){}
 
 AppDef_MultiLine::AppDef_MultiLine (const Standard_Integer NbMult)
 {
-  if (NbMult < 0 ) Standard_ConstructionError::Raise();
+  if (NbMult < 0 ) throw Standard_ConstructionError();
 
   tabMult = new AppDef_HArray1OfMultiPointConstraint (1, NbMult);
 }
@@ -81,7 +81,7 @@ Standard_Integer AppDef_MultiLine::NbPoints() const {
 void AppDef_MultiLine::SetValue (const Standard_Integer Index, 
 				const AppDef_MultiPointConstraint& MPoint) {
   if ((Index <= 0) || (Index > tabMult->Length())) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   tabMult->SetValue(Index, MPoint);
 }
@@ -89,7 +89,7 @@ void AppDef_MultiLine::SetValue (const Standard_Integer Index,
 AppDef_MultiPointConstraint AppDef_MultiLine::Value (const Standard_Integer Index) const
 {
   if ((Index <= 0) || (Index > tabMult->Length())) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return tabMult->Value(Index);
 }

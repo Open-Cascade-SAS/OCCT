@@ -73,7 +73,7 @@ static void NormalD0(const Standard_Real U, const Standard_Real V, const Handle(
     (Surf->Surface().UContinuity()) : (Surf->Surface().VContinuity());
   OrderU = OrderV = 0;
 #ifdef CHECK  
-  if (Cont == GeomAbs_C0) Geom_UndefinedValue::Raise();
+  if (Cont == GeomAbs_C0) throw Geom_UndefinedValue();
 #endif
   gp_Pnt P;
   Surf->D1(U, V, P, D1U, D1V);
@@ -84,7 +84,7 @@ static void NormalD0(const Standard_Real U, const Standard_Real V, const Handle(
   if (NStatus != CSLib_Defined) {
     if (Cont==GeomAbs_C0 || 
         Cont==GeomAbs_C1) {
-      Geom_UndefinedValue::Raise();
+      throw Geom_UndefinedValue();
       }
     Standard_Integer MaxOrder=3;
     TColgp_Array2OfVec DerNUV(0,MaxOrder,0,MaxOrder);
@@ -121,7 +121,7 @@ static void NormalD0(const Standard_Real U, const Standard_Real V, const Handle(
 	       << DerSurf(i,j).Y() <<"," << DerSurf(i,j).Z() << endl;
 	}
 #endif
-      Geom_UndefinedValue::Raise();
+      throw Geom_UndefinedValue();
     }
   }
 }
@@ -139,7 +139,7 @@ void NormalD1 (const Standard_Real U, const Standard_Real V,
     (Surf->Surface().UContinuity()) : (Surf->Surface().VContinuity());
   if (Cont==GeomAbs_C0 || 
       Cont==GeomAbs_C1) { 
-    Geom_UndefinedDerivative::Raise();
+    throw Geom_UndefinedDerivative();
   }
 #endif
   gp_Vec d2u, d2v, d2uv;
@@ -182,7 +182,7 @@ void NormalD1 (const Standard_Real U, const Standard_Real V,
   
   CSLib::Normal(MaxOrder,DerNUV,MagTol,U,V,Umin,Umax,Vmin,Vmax,
                 NStatus,Normal,OrderU,OrderV);
-  if (NStatus != CSLib_Defined) Geom_UndefinedValue::Raise();
+  if (NStatus != CSLib_Defined) throw Geom_UndefinedValue();
 
   D1UNormal = CSLib::DNNormal(1,0,DerNUV,OrderU,OrderV);
   D1VNormal = CSLib::DNNormal(0,1,DerNUV,OrderU,OrderV);
@@ -201,7 +201,7 @@ void NormalD2 (const Standard_Real U, const Standard_Real V,
   GeomAbs_Shape Cont = (Surf->Surface().UContinuity() < Surf->Surface().VContinuity()) ? 
     (Surf->Surface().UContinuity()) : (Surf->Surface().VContinuity());
      if (Cont == GeomAbs_C0 || Continuity == GeomAbs_C1 ||
-         Cont == GeomAbs_C2) { Geom_UndefinedDerivative::Raise(); }
+         Cont == GeomAbs_C2) { throw Geom_UndefinedDerivative(); }
 #endif
   gp_Vec d3u, d3uuv, d3uvv, d3v;
   gp_Pnt P;
@@ -250,7 +250,7 @@ void NormalD2 (const Standard_Real U, const Standard_Real V,
   
   CSLib::Normal(MaxOrder,DerNUV,MagTol,U,V,Umin,Umax,Vmin,Vmax,
                 NStatus,Normal,OrderU,OrderV);
-  if (NStatus != CSLib_Defined) Geom_UndefinedValue::Raise();
+  if (NStatus != CSLib_Defined) throw Geom_UndefinedValue();
   
   D1UNormal = CSLib::DNNormal(1,0,DerNUV,OrderU,OrderV);
   D1VNormal = CSLib::DNNormal(0,1,DerNUV,OrderU,OrderV);

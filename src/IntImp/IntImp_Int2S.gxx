@@ -28,12 +28,6 @@
 
 //Standard_IMPORT extern IntImp_ConstIsoparametric   *ChoixRef;
 
-
-IntImp_Int2S::IntImp_Int2S() { 
-  Standard_ConstructionError::Raise(" Empty Constructor : IntImp_Int2S");
-}
-
-
 IntImp_Int2S::IntImp_Int2S(const ThePSurface& surf1,
                            const ThePSurface& surf2,
                            const Standard_Real TolTangency ) :

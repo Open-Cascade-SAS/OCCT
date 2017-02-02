@@ -35,7 +35,7 @@ IGESAppli_FiniteElement::IGESAppli_FiniteElement ()    {  }
    const Handle(TCollection_HAsciiString)& aName)
 {
   if (allNodes->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESAppli_FiniteElement : Init");
+    throw Standard_DimensionMismatch("IGESAppli_FiniteElement : Init");
   theTopology = aType;
   theNodes    = allNodes;
   theName     = aName;

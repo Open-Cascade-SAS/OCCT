@@ -1300,7 +1300,7 @@ void AIS_AngleDimension::SetTextPosition (const gp_Pnt& theTextPos)
   // The text position point for angle dimension should belong to the working plane.
   if (!GetPlane().Contains (theTextPos, Precision::Confusion()))
   {
-    Standard_ProgramError::Raise ("The text position point for angle dimension doesn't belong to the working plane.");
+    throw Standard_ProgramError("The text position point for angle dimension doesn't belong to the working plane.");
   }
 
   myIsTextPositionFixed = Standard_True;

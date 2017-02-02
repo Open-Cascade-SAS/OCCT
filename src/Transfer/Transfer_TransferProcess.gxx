@@ -224,8 +224,7 @@ Standard_Boolean Transfer_TransferProcess::IsAlreadyUsed(const TheStart& start) 
   Handle(Transfer_Binder) binder = Find(start); //,categ); skl
   if (binder.IsNull()) {
     StartTrace (binder,start,thelevel,4);
-    Transfer_TransferFailure::Raise
-      ("TransferProcess : IsAlreadyUsed, transfer not done cannot be used...");
+    throw Transfer_TransferFailure("TransferProcess : IsAlreadyUsed, transfer not done cannot be used...");
   }
   return (binder->Status() == Transfer_StatusUsed);
 }
@@ -277,8 +276,7 @@ void Transfer_TransferProcess::Bind (const TheStart& start,
     }
     else if (former->Status() == Transfer_StatusUsed) {
       StartTrace (former,start,thelevel,4);
-      Transfer_TransferFailure::Raise
-	("TransferProcess : Bind, already Bound");
+      throw Transfer_TransferFailure("TransferProcess : Bind, already Bound");
     }
     else {
       if (thetrace > 2) StartTrace (former,start,thelevel,5);
@@ -734,7 +732,7 @@ void Transfer_TransferProcess::BindMultiple(const TheStart& start)
   if (!binder.IsNull()) {
     if (!binder->IsKind(STANDARD_TYPE(Transfer_MultipleBinder))) {
       StartTrace (thelastbnd,start,thelevel,4);
-      Transfer_TransferFailure::Raise ("TransferProcess : BindMultiple");
+      throw Transfer_TransferFailure("TransferProcess : BindMultiple");
     }
   }
   else Bind(start,new Transfer_MultipleBinder);//,categ);skl
@@ -755,10 +753,8 @@ void Transfer_TransferProcess::AddMultiple(const TheStart& start,
     Handle(Transfer_MultipleBinder)::DownCast(binder);
   if (multr.IsNull()) {
     StartTrace (binder,start,thelevel,4);
-    if (binder.IsNull()) Transfer_TransferFailure::Raise
-      ("TransferProcess : AddMultiple, nothing bound");
-    else                 Transfer_TransferFailure::Raise
-      ("TransferProcess : AddMultiple, Binder not a MultipleBinder");
+    if (binder.IsNull()) throw Transfer_TransferFailure("TransferProcess : AddMultiple, nothing bound");
+    else                 throw Transfer_TransferFailure("TransferProcess : AddMultiple, Binder not a MultipleBinder");
   }
   multr->AddResult(res);
 }
@@ -854,7 +850,7 @@ void Transfer_TransferProcess::SetRoot (const TheStart& start)
   Standard_Integer index = MapIndex(start);
   if (index == 0) {
     //StartTrace (thelastbnd,start,thelevel,4);
-    //Transfer_TransferFailure::Raise("TransferProcess : SetRoot");
+    //throw Transfer_TransferFailure("TransferProcess : SetRoot");
     return;
   }
 
@@ -1032,8 +1028,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
 //	  (*themessenger->Out()) << flush;
 	}
 	else StartTrace (former, start,thelevel,4);
-	Transfer_TransferFailure::Raise
-	  ("TransferProcess : Transfer in Error Status");
+	throw Transfer_TransferFailure("TransferProcess : Transfer in Error Status");
       case Transfer_StatusLoop :                  // la boucle est bouclee ...
 	if (thetrace) {
 	  themessenger << "                  *** Transfer  Head of Dead Loop  :" << endl;
@@ -1041,8 +1036,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
 //	  (*themessenger->Out()) << flush;
 	}
 	else StartTrace (former, start,thelevel,4);
-	Transfer_TransferDeadLoop::Raise
-	  ("TransferProcess : Transfer at Head of a Dead Loop");
+	throw Transfer_TransferDeadLoop("TransferProcess : Transfer at Head of a Dead Loop");
     }
 #ifdef TRANSLOG
     cout << "Transfer,level "<<thelevel<<Message_Flush;
@@ -1080,7 +1074,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
 	  StartTrace (binder, start, thelevel-1,0);
 	}
 	else StartTrace (binder, start,thelevel-1,4);
-	Transfer_TransferFailure::Raise("TransferProcess : Head of Dead Loop");
+	throw Transfer_TransferFailure("TransferProcess : Head of Dead Loop");
 // Autrement dit, on change d exception (on est sorti de la boucle)
       } else {
 	if (thetrace) {
@@ -1091,7 +1085,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
       binder->AddFail("Transfer in dead Loop");
       thelevel = oldlev;
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const& anException) {
       if (binder.IsNull()) {
 	themessenger << "                  *** Exception Raised with no Result" << endl;
 	binder = new Transfer_VoidBinder;
@@ -1099,7 +1093,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
       }
       binder->AddFail("Transfer stopped by exception raising");
       if (thetrace) {
-	themessenger << "    *** Raised : " << Standard_Failure::Caught()->GetMessageString() << endl;
+	themessenger << "    *** Raised : " << anException.GetMessageString() << endl;
 	StartTrace (binder, start, thelevel-1,4);
       }
       thelevel = oldlev;

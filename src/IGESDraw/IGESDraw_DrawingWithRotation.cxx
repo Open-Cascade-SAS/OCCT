@@ -46,11 +46,9 @@ IGESDraw_DrawingWithRotation::IGESDraw_DrawingWithRotation ()    {  }
   if ( allViews->Lower() != 1 ||
       (allViewOrigins->Lower() != 1 || allViewOrigins->Length() != Len) ||
       (allOrientationAngles->Lower() != 1 || allOrientationAngles->Length() != Len) )
-    Standard_DimensionMismatch::Raise
-      ("IGESDraw_DrawingWithRotation : Init");
+    throw Standard_DimensionMismatch("IGESDraw_DrawingWithRotation : Init");
   if (!allAnnotations.IsNull())
-    if (allAnnotations->Lower() != 1) Standard_DimensionMismatch::Raise
-      ("IGESDraw_DrawingWithRotation : Init");
+    if (allAnnotations->Lower() != 1) throw Standard_DimensionMismatch("IGESDraw_DrawingWithRotation : Init");
 
   theViews             = allViews; 
   theViewOrigins       = allViewOrigins; 

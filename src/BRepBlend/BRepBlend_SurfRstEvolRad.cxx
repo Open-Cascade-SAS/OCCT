@@ -568,7 +568,7 @@ const gp_Pnt2d& BRepBlend_SurfRstEvolRad::Pnt2dOnRst() const
 //=======================================================================
 const gp_Vec& BRepBlend_SurfRstEvolRad::TangentOnS() const
 {
-  if (istangent) {Standard_DomainError::Raise();}
+  if (istangent) {throw Standard_DomainError();}
   return tgs;
 }
 
@@ -578,7 +578,7 @@ const gp_Vec& BRepBlend_SurfRstEvolRad::TangentOnS() const
 //=======================================================================
 const gp_Vec2d& BRepBlend_SurfRstEvolRad::Tangent2dOnS() const
 {
-  if (istangent) {Standard_DomainError::Raise();}
+  if (istangent) {throw Standard_DomainError();}
   return tg2ds;
 }
 
@@ -588,7 +588,7 @@ const gp_Vec2d& BRepBlend_SurfRstEvolRad::Tangent2dOnS() const
 //=======================================================================
 const gp_Vec& BRepBlend_SurfRstEvolRad::TangentOnRst() const
 {
-  if (istangent) {Standard_DomainError::Raise();}
+  if (istangent) {throw Standard_DomainError();}
   return tgrst;
 }
 
@@ -598,7 +598,7 @@ const gp_Vec& BRepBlend_SurfRstEvolRad::TangentOnRst() const
 //=======================================================================
 const gp_Vec2d& BRepBlend_SurfRstEvolRad::Tangent2dOnRst() const
 {
-  if (istangent) {Standard_DomainError::Raise();}
+  if (istangent) {throw Standard_DomainError();}
   return tg2drst;
 }
 

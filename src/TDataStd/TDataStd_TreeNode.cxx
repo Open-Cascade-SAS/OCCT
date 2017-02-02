@@ -108,7 +108,7 @@ TDataStd_TreeNode::TDataStd_TreeNode () :
 Standard_Boolean TDataStd_TreeNode::Append (const Handle(TDataStd_TreeNode)& TN)
 {  
   if (!(TN->ID() == myTreeID) )
-    Standard_DomainError::Raise("TDataStd_TreeNode::Append : uncompatible GUID");
+    throw Standard_DomainError("TDataStd_TreeNode::Append : uncompatible GUID");
 
   Handle(TDataStd_TreeNode) bid;
   TN->SetNext(bid); // Deconnects from next.
@@ -138,7 +138,7 @@ Standard_Boolean TDataStd_TreeNode::Append (const Handle(TDataStd_TreeNode)& TN)
 Standard_Boolean TDataStd_TreeNode::Prepend (const Handle(TDataStd_TreeNode)& TN)
 {  
   if (!(TN->ID() == myTreeID) ) 
-    Standard_DomainError::Raise("TDataStd_TreeNode::Prepend : uncompatible GUID");
+    throw Standard_DomainError("TDataStd_TreeNode::Prepend : uncompatible GUID");
 
   Handle(TDataStd_TreeNode) bid;
   TN->SetPrevious(bid);
@@ -163,7 +163,7 @@ Standard_Boolean TDataStd_TreeNode::Prepend (const Handle(TDataStd_TreeNode)& TN
 Standard_Boolean TDataStd_TreeNode::InsertBefore (const Handle(TDataStd_TreeNode)& TN)
 {
   if (!(TN->ID() == myTreeID) ) 
-    Standard_DomainError::Raise("TDataStd_TreeNode::InsertBefore : uncompatible GUID");
+    throw Standard_DomainError("TDataStd_TreeNode::InsertBefore : uncompatible GUID");
 
   TN->SetFather(Father());
   TN->SetPrevious(Previous());
@@ -186,7 +186,7 @@ Standard_Boolean TDataStd_TreeNode::InsertBefore (const Handle(TDataStd_TreeNode
 Standard_Boolean TDataStd_TreeNode::InsertAfter (const Handle(TDataStd_TreeNode)& TN)
 {
   if (!(TN->ID() == myTreeID) ) 
-    Standard_DomainError::Raise("TDataStd_TreeNode::InsertAfter : uncompatible GUID");
+    throw Standard_DomainError("TDataStd_TreeNode::InsertAfter : uncompatible GUID");
   
   if (HasFather() && !HasNext())
     Father()->SetLast(TN);

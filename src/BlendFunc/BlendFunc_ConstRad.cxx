@@ -1029,7 +1029,7 @@ Standard_Boolean BlendFunc_ConstRad::IsTangencyPoint () const
 const gp_Vec& BlendFunc_ConstRad::TangentOnS1 () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_ConstRad::TangentOnS1");
+    throw Standard_DomainError("BlendFunc_ConstRad::TangentOnS1");
   return tg1;
 }
 
@@ -1042,7 +1042,7 @@ const gp_Vec& BlendFunc_ConstRad::TangentOnS1 () const
 const gp_Vec& BlendFunc_ConstRad::TangentOnS2 () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_ConstRad::TangentOnS2");
+    throw Standard_DomainError("BlendFunc_ConstRad::TangentOnS2");
   return tg2;
 }
 
@@ -1055,7 +1055,7 @@ const gp_Vec& BlendFunc_ConstRad::TangentOnS2 () const
 const gp_Vec2d& BlendFunc_ConstRad::Tangent2dOnS1 () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_ConstRad::Tangent2dOnS1");
+    throw Standard_DomainError("BlendFunc_ConstRad::Tangent2dOnS1");
   return tg12d;
 }
 
@@ -1068,7 +1068,7 @@ const gp_Vec2d& BlendFunc_ConstRad::Tangent2dOnS1 () const
 const gp_Vec2d& BlendFunc_ConstRad::Tangent2dOnS2 () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_ConstRad::Tangent2dOnS2");
+    throw Standard_DomainError("BlendFunc_ConstRad::Tangent2dOnS2");
   return tg22d;
 }
 
@@ -1128,7 +1128,7 @@ void BlendFunc_ConstRad::Tangent(const Standard_Real U1,
 Standard_Boolean BlendFunc_ConstRad::TwistOnS1() const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_ConstRad::TwistOnS1");
+    throw Standard_DomainError("BlendFunc_ConstRad::TwistOnS1");
   return tg1.Dot(nplan) < 0.;
 }
 
@@ -1140,7 +1140,7 @@ Standard_Boolean BlendFunc_ConstRad::TwistOnS1() const
 Standard_Boolean BlendFunc_ConstRad::TwistOnS2() const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_ConstRad::TwistOnS2");
+    throw Standard_DomainError("BlendFunc_ConstRad::TwistOnS2");
   return tg2.Dot(nplan) < 0.;
 }
 

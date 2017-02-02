@@ -163,7 +163,7 @@ Standard_Boolean Bisector_BisecPC::IsExtendAtEnd() const
 //=============================================================================
 void Bisector_BisecPC::Reverse()
 {
-  Standard_NotImplemented::Raise();
+  throw Standard_NotImplemented();
 }
 
 //=============================================================================
@@ -600,10 +600,9 @@ gp_Vec2d Bisector_BisecPC::DN (const Standard_Real     U,
   case 2 : return V2;
   case 3 : return V3;
   default: {
-    Standard_NotImplemented::Raise();
+    throw Standard_NotImplemented();
     }
   }
-  return V1;
 }
 
 //=============================================================================
@@ -640,7 +639,7 @@ Standard_Real Bisector_BisecPC::SearchBound (const Standard_Real U1,
 //=============================================================================
 void Bisector_BisecPC::CuspFilter()
 {
-  Standard_NotImplemented::Raise();
+  throw Standard_NotImplemented();
 }
 
 //=============================================================================

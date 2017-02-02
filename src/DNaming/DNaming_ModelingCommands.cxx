@@ -1948,13 +1948,9 @@ static Standard_Integer DNaming_TestSingle (Draw_Interpretor& theDI,
 		isSelected = MakeXSelection(auxObj, aCurShape, aCntObj, Geometry, Orientation);
 	    }
 	}
-	catch (Standard_Failure) {
-	  Handle(Standard_Failure) aFailure =  Standard_Failure::Caught();
+	catch (Standard_Failure const& anException) {
 	  cout << "%%%INFO:Error: ::TestSingleSelection failed :";
-	  if (!aFailure.IsNull()) 
-	    cout << aFailure->GetMessageString() << endl;
-	  else
-	    cout << "%%%INFO:Error: ::TestSingleSelection : Standard_Failure with null caught failure"<< endl;
+	  cout << anException.GetMessageString() << endl;
 	}
 	catch(...) {
 	  cout << "%%%INFO:Error: ::TestSingleSelection selection failed : unknown exception type";
@@ -2086,13 +2082,9 @@ static Standard_Integer DNaming_Multiple (Draw_Interpretor& theDI,
 		isSelected = MakeXSelection(auxObj, aCurShape, aCntObj, Geometry, Orientation);
 	    }
 	}
-	catch (Standard_Failure) {
-	  Handle(Standard_Failure) aFailure =  Standard_Failure::Caught();
+	catch (Standard_Failure const& anException) {
 	  cout << "%%%INFO:Error: ::TestSingleSelection failed :";
-	  if (!aFailure.IsNull()) 
-	    cout << aFailure->GetMessageString() << endl;
-	  else
-	    cout << "%%%INFO:Error: ::TestSingleSelection : Standard_Failure with null caught failure"<< endl;
+	  cout << anException.GetMessageString() << endl;
 	}
 	catch(...) {
 	  cout << "%%%INFO:Error: ::TestSingleSelection selection failed : unknown exception type";

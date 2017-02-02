@@ -60,8 +60,8 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
      MaxDegree  <= 0              ||
      Dimension  <= 0              ||
      PolynomialIntervals->RowLength() != 2) {
-   Standard_ConstructionError::
-   Raise("Convert_CompPolynomialToPoles:bad arguments");
+   throw Standard_ConstructionError
+   ("Convert_CompPolynomialToPoles:bad arguments");
  } 
  myDegree = 0 ;
 
@@ -72,8 +72,8 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
    myDegree = Max(NumCoeffPerCurve->Value(ii)-1,myDegree) ;
  }
  if ((Continuity > myDegree)&& (NumCurves>1)) {
-   Standard_ConstructionError::
-   Raise("Convert_CompPolynomialToPoles:Continuity is too great");
+   throw Standard_ConstructionError
+   ("Convert_CompPolynomialToPoles:Continuity is too great");
  } 
 //
 //  prepare output
@@ -117,8 +117,8 @@ Convert_CompPolynomialToPoles(const Standard_Integer NumCurves,
      MaxDegree  <= 0              ||
      Dimension  <= 0              ||
      PolynomialIntervals.RowLength() != 2) {
-   Standard_ConstructionError::
-   Raise("Convert_CompPolynomialToPoles:bad arguments");
+   throw Standard_ConstructionError
+   ("Convert_CompPolynomialToPoles:bad arguments");
  } 
  myDegree = 0 ;
 
@@ -144,8 +144,8 @@ Convert_CompPolynomialToPoles(const Standard_Integer NumCurves,
  new TColStd_HArray1OfInteger(1, NumCurves + 1) ;
  for (ii = 2 ; ii < NumCurves + 1 ; ii++) {
    if ((Continuity(ii) > myDegree)&& (NumCurves>1)) {
-     Standard_ConstructionError::
-     Raise("Convert_CompPolynomialToPoles:Continuity is too great");
+     throw Standard_ConstructionError
+     ("Convert_CompPolynomialToPoles:Continuity is too great");
    }
 
    myMults -> SetValue(ii, myDegree-Continuity(ii) );
@@ -174,8 +174,8 @@ Convert_CompPolynomialToPoles(const Standard_Integer Dimension,
      Dimension  <= 0              ||
      PolynomialIntervals.Length() != 2) 
    {
-     Standard_ConstructionError::
-     Raise("Convert_CompPolynomialToPoles:bad arguments");
+     throw Standard_ConstructionError
+     ("Convert_CompPolynomialToPoles:bad arguments");
    }
 
  TColStd_Array2OfReal ThePolynomialIntervals(1,1,1,2);
@@ -293,8 +293,8 @@ Perform(const Standard_Integer NumCurves,
 		       poles_array[0],
 		       inversion_problem) ;
  if (inversion_problem != 0) {
-  Standard_ConstructionError::
-  Raise("Convert_CompPolynomialToPoles:inversion_problem");
+  throw Standard_ConstructionError
+  ("Convert_CompPolynomialToPoles:inversion_problem");
  } 
  myDone = Standard_True ;
 }

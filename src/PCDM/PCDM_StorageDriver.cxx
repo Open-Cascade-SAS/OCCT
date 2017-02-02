@@ -54,17 +54,17 @@ void PCDM_StorageDriver::Write(const Handle(CDM_Document)& aDocument, const TCol
   PCDM_SequenceOfDocument thePersistentDocuments;
   {
     try { OCC_CATCH_SIGNALS Make(aDocument,thePersistentDocuments);}
-    catch (Standard_Failure) {
-      aMsg << Standard_Failure::Caught()<<(char)0;
+    catch (Standard_Failure const& anException) {
+      aMsg << anException<<(char)0;
       Failure=Standard_True;
     }
   }
 
-  if(Failure) PCDM_DriverError::Raise(aMsg);
+  if(Failure) throw PCDM_DriverError(aMsg.str().c_str());
 
   if(thePersistentDocuments.IsEmpty()) {
     aMsg << "the storage driver: " << DynamicType()->Name() << "returned no documents to store" << (char) 0;
-    PCDM_DriverError::Raise(aMsg);
+    throw PCDM_DriverError(aMsg.str().c_str());
   }
 
   Standard_Integer i=1;
@@ -97,7 +97,7 @@ void PCDM_StorageDriver::Write(const Handle(CDM_Document)& aDocument, const TCol
   theFile.Close();
 
   if ( theData->ErrorStatus() != Storage_VSOk )
-    PCDM_DriverError::Raise(theData->ErrorStatusExtension().ToCString());
+    throw PCDM_DriverError(theData->ErrorStatusExtension().ToCString());
 }
 
 
@@ -115,8 +115,7 @@ Handle(PCDM_Document) PCDM_StorageDriver::Make(const Handle(CDM_Document)& ) {
   Handle(PCDM_Document) voidDocument;
   Standard_SStream aMsg;
   aMsg << "No Make method were implemented in this Driver" << DynamicType()->Name() << (char) 0;
-  Standard_NotImplemented::Raise(aMsg);
-  return voidDocument;
+  throw Standard_NotImplemented(aMsg.str().c_str());
 }
 
 void PCDM_StorageDriver::Make(const Handle(CDM_Document)& aDocument, PCDM_SequenceOfDocument& Documents) {

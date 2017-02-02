@@ -32,7 +32,7 @@ IGESDimen_GeneralLabel::IGESDimen_GeneralLabel ()    {  }
    const Handle(IGESDimen_HArray1OfLeaderArrow)& someLeaders)
 {
   if (someLeaders->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESDimen_GeneralLabel : Init");
+    throw Standard_DimensionMismatch("IGESDimen_GeneralLabel : Init");
   theNote    = aNote;
   theLeaders = someLeaders;
   InitTypeAndForm(210,0);

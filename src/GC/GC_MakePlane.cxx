@@ -29,11 +29,6 @@
 #include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 
-GC_MakePlane::GC_MakePlane(const gp_Ax2& ) //A2)
-{
-  Standard_NotImplemented::Raise("GC_MakePlane");
-}
-
 GC_MakePlane::GC_MakePlane(const gp_Pln& Pl)
 {
   TheError = gce_Done;

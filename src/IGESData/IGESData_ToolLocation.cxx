@@ -153,10 +153,8 @@ Standard_Boolean  IGESData_ToolLocation::HasParent
 {
   Standard_Integer num = themodel->Number(ent);
   if (num == 0) return Standard_False;
-  if (therefs(num) <  0 || theassocs(num) <  0) Standard_DomainError::Raise
-    ("IGESData_ToolLocation : HasParent");
-  if (therefs(num) != 0 && theassocs(num) != 0) Standard_DomainError::Raise
-    ("IGESData_ToolLocation : HasParent");
+  if (therefs(num) <  0 || theassocs(num) <  0) throw Standard_DomainError("IGESData_ToolLocation : HasParent");
+  if (therefs(num) != 0 && theassocs(num) != 0) throw Standard_DomainError("IGESData_ToolLocation : HasParent");
   if (therefs(num) != 0 || theassocs(num) != 0) return Standard_True;
   return Standard_False;
 }
@@ -167,10 +165,8 @@ Handle(IGESData_IGESEntity)  IGESData_ToolLocation::Parent
   Handle(IGESData_IGESEntity) parent;
   Standard_Integer num = themodel->Number(ent);
   if (num == 0) return parent;
-  if (therefs(num) <  0 || theassocs(num) <  0) Standard_DomainError::Raise
-    ("IGESData_ToolLocation : Parent");
-  if (therefs(num) != 0 && theassocs(num) != 0) Standard_DomainError::Raise
-    ("IGESData_ToolLocation : Parent");
+  if (therefs(num) <  0 || theassocs(num) <  0) throw Standard_DomainError("IGESData_ToolLocation : Parent");
+  if (therefs(num) != 0 && theassocs(num) != 0) throw Standard_DomainError("IGESData_ToolLocation : Parent");
   if (therefs(num)   != 0) parent = themodel->Entity (therefs   (num));
   if (theassocs(num) != 0) parent = themodel->Entity (theassocs (num));
   return parent;
@@ -181,10 +177,8 @@ Standard_Boolean  IGESData_ToolLocation::HasParentByAssociativity
 {
   Standard_Integer num = themodel->Number(ent);
   if (num == 0) return Standard_False;
-  if (therefs(num) <  0 || theassocs(num) <  0) Standard_DomainError::Raise
-    ("IGESData_ToolLocation : HasParentByAssociativity");
-  if (therefs(num) != 0 && theassocs(num) != 0) Standard_DomainError::Raise
-    ("IGESData_ToolLocation : HasParentByAssociativity");
+  if (therefs(num) <  0 || theassocs(num) <  0) throw Standard_DomainError("IGESData_ToolLocation : HasParentByAssociativity");
+  if (therefs(num) != 0 && theassocs(num) != 0) throw Standard_DomainError("IGESData_ToolLocation : HasParentByAssociativity");
   if (theassocs(num) != 0) return Standard_True;
   return Standard_False;
 }

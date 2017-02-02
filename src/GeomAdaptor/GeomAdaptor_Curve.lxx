@@ -61,7 +61,7 @@ inline GeomAdaptor_Curve::GeomAdaptor_Curve(const Handle(Geom_Curve)& C,
 
 inline void GeomAdaptor_Curve::Load(const Handle(Geom_Curve)& C)
 {
-  if ( C.IsNull()) Standard_NullObject::Raise();
+  if ( C.IsNull()) throw Standard_NullObject();
   
   load(C,C->FirstParameter(),C->LastParameter());
 }
@@ -75,9 +75,9 @@ inline void GeomAdaptor_Curve::Load(const Handle(Geom_Curve)& C,
                                     const Standard_Real UFirst,
                                     const Standard_Real ULast)
 {
-  if ( C.IsNull()) Standard_NullObject::Raise();
+  if ( C.IsNull()) throw Standard_NullObject();
   
-  if ( UFirst > ULast) Standard_ConstructionError::Raise();
+  if ( UFirst > ULast) throw Standard_ConstructionError();
   
   load(C,UFirst,ULast);
 }

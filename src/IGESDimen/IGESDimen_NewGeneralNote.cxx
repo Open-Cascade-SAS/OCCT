@@ -77,7 +77,7 @@ IGESDimen_NewGeneralNote::IGESDimen_NewGeneralNote ()    {  }
       (rotateFlags->Lower()     != 1 || rotateFlags->Length()     != num) ||
       (startPoints->Lower()     != 1 || startPoints->Length()     != num) ||
       (texts->Lower()           != 1 || texts->Length() != num))
-    Standard_DimensionMismatch::Raise("IGESDimen_GeneralNote : Init");
+    throw Standard_DimensionMismatch("IGESDimen_GeneralNote : Init");
 
   theWidth                = width;
   theHeight               = height;

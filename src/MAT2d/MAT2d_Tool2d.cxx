@@ -1070,7 +1070,7 @@ Standard_Real MAT2d_Tool2d::Distance(const Handle(MAT_Bisector)& Bis,
 void MAT2d_Tool2d::Dump(const Standard_Integer ,
   const Standard_Integer ) const
 {
-  Standard_NotImplemented::Raise();
+  throw Standard_NotImplemented();
 #else
 void MAT2d_Tool2d::Dump(const Standard_Integer bisector,
   const Standard_Integer) const

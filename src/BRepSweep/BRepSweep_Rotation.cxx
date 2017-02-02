@@ -461,7 +461,7 @@ void  BRepSweep_Rotation::SetGeneratingPCurve
       if (!aTrimmedCurve.IsNull()) {
         GL = Handle(Geom_Line)::DownCast(aTrimmedCurve->BasisCurve());
         if (GL.IsNull()) {
-            Standard_ConstructionError::Raise("BRepSweep_Rotation::SetGeneratingPCurve");
+            throw Standard_ConstructionError("BRepSweep_Rotation::SetGeneratingPCurve");
         }
       }
     }

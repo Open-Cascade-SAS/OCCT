@@ -4736,7 +4736,7 @@ void CModelingDoc::OnStopStop()
 		if (!(W.Closed())){
 			AfxMessageBox (L"Wire is not closed!");
 			return;
-			//Standard_Failure::Raise("Wire is not closed");
+			//throw Standard_Failure("Wire is not closed");
 			
 		}
 		BRepBuilderAPI_MakeFace MF(support,W,Standard_True);

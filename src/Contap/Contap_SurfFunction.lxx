@@ -70,13 +70,13 @@ inline Standard_Real Contap_SurfFunction::Tolerance () const
 
 inline const gp_Vec& Contap_SurfFunction::Direction3d()
 {
-  if (IsTangent()) StdFail_UndefinedDerivative::Raise();       
+  if (IsTangent()) throw StdFail_UndefinedDerivative();
   return d3d;
 }
 
 inline const gp_Dir2d& Contap_SurfFunction::Direction2d()
 {
-  if (IsTangent()) StdFail_UndefinedDerivative::Raise();       
+  if (IsTangent()) throw StdFail_UndefinedDerivative();
   return d2d;
 }
 

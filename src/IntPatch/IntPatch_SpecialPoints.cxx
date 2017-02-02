@@ -374,7 +374,7 @@ Standard_Boolean IntPatch_SpecialPoints::
   }
   else
   {
-    Standard_TypeMismatch::Raise( "IntPatch_SpecialPoints::AddSingularPole(),"
+    throw Standard_TypeMismatch( "IntPatch_SpecialPoints::AddSingularPole(),"
                                   "Unsupported quadric with Pole");
   }
 

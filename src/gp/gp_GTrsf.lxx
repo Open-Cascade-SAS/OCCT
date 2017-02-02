@@ -177,7 +177,7 @@ inline void gp_GTrsf::Transforms (Standard_Real& X,
 inline gp_Trsf gp_GTrsf::Trsf () const
 {
   if ( Form() == gp_Other )
-    Standard_ConstructionError::Raise("gp_GTrsf::Trsf() - non-orthogonal GTrsf");
+    throw Standard_ConstructionError("gp_GTrsf::Trsf() - non-orthogonal GTrsf");
 
   gp_Trsf T;
   T.shape = shape;

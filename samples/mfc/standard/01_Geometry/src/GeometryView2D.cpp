@@ -102,7 +102,7 @@ void CGeometryView2D::OnLButtonDown(UINT nFlags, CPoint point)
     case CurAction2d_GlobalPanning :// noting
       break;
     default :
-      Standard_Failure::Raise(" incompatible Current Mode ");
+      throw Standard_Failure(" incompatible Current Mode ");
       break;
     }
   }
@@ -163,7 +163,7 @@ void CGeometryView2D::OnLButtonUp(UINT nFlags, CPoint point)
       myCurrentMode = CurAction2d_Nothing;
       break;
     default :
-      Standard_Failure::Raise(" incompatible Current Mode ");
+      throw Standard_Failure(" incompatible Current Mode ");
       break;
     } //switch (myCurrentMode)
   } //	else // if ( Ctrl )
@@ -247,7 +247,7 @@ void CGeometryView2D::OnMouseMove(UINT nFlags, CPoint point)
       case CurAction2d_GlobalPanning : // nothing           
         break;
       default :
-        Standard_Failure::Raise(" incompatible Current Mode ");
+        throw Standard_Failure(" incompatible Current Mode ");
         break;
       }//  switch (myCurrentMode)
     }// if ( nFlags & MK_CONTROL )  else 

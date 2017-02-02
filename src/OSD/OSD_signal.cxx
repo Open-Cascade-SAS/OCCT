@@ -149,8 +149,7 @@ static LONG CallHandler (DWORD dwExceptionCode,
       break ;
     case STATUS_NO_MEMORY:
 //      cout << "CallHandler : STATUS_NO_MEMORY:" << endl ;
-      OSD_Exception_STATUS_NO_MEMORY ::
-      Raise (  "MEMORY ALLOCATION ERROR ( no room in the process heap )"  );
+      throw OSD_Exception_STATUS_NO_MEMORY (  "MEMORY ALLOCATION ERROR ( no room in the process heap )"  );
     case EXCEPTION_ACCESS_VIOLATION:
 //      cout << "CallHandler : EXCEPTION_ACCESS_VIOLATION:" << endl ;
       StringCchPrintfW (buffer, _countof(buffer), L"%s%s%s0x%.8p%s%s%s", L"ACCESS VIOLATION",
@@ -288,8 +287,8 @@ static void SIGWntHandler (int signum, int sub_code)
           CallHandler( EXCEPTION_FLT_INEXACT_RESULT ,0,0) ;
           break ;
         default:
-          cout << "SIGWntHandler(default) -> Standard_NumericError::Raise(\"Floating Point Error\");" << endl;
-          Standard_NumericError::Raise("Floating Point Error");
+          cout << "SIGWntHandler(default) -> throw Standard_NumericError(\"Floating Point Error\");" << endl;
+          throw Standard_NumericError("Floating Point Error");
           break ;
       }
       break ;
@@ -421,7 +420,7 @@ void OSD::SetSignal (const Standard_Boolean theFloatingSignal)
 void OSD::ControlBreak () {
   if ( fCtrlBrk ) {
     fCtrlBrk = Standard_False;
-    OSD_Exception_CTRL_BREAK :: Raise ( "*** INTERRUPT ***" );
+    throw OSD_Exception_CTRL_BREAK ( "*** INTERRUPT ***" );
   }
 }  // end OSD :: ControlBreak
 #if !defined(__MINGW32__) && !defined(__CYGWIN32__)
@@ -449,54 +448,54 @@ static LONG __fastcall _osd_raise ( DWORD dwCode, LPSTR msg )
   switch (dwCode)
   {
     case EXCEPTION_ACCESS_VIOLATION:
-      OSD_Exception_ACCESS_VIOLATION::Raise (msg);
+      throw OSD_Exception_ACCESS_VIOLATION(msg);
       break;
     case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:
-      OSD_Exception_ARRAY_BOUNDS_EXCEEDED::Raise (msg);
+      throw OSD_Exception_ARRAY_BOUNDS_EXCEEDED(msg);
       break;
     case EXCEPTION_DATATYPE_MISALIGNMENT:
-      Standard_ProgramError::Raise (msg);
+      throw Standard_ProgramError(msg);
       break;
     case EXCEPTION_ILLEGAL_INSTRUCTION:
-      OSD_Exception_ILLEGAL_INSTRUCTION::Raise (msg);
+      throw OSD_Exception_ILLEGAL_INSTRUCTION(msg);
       break;
     case EXCEPTION_IN_PAGE_ERROR:
-      OSD_Exception_IN_PAGE_ERROR::Raise (msg);
+      throw OSD_Exception_IN_PAGE_ERROR(msg);
       break;
     case EXCEPTION_INT_DIVIDE_BY_ZERO:
-      Standard_DivideByZero::Raise (msg);
+      throw Standard_DivideByZero(msg);
       break;
     case EXCEPTION_INT_OVERFLOW:
-      OSD_Exception_INT_OVERFLOW::Raise (msg);
+      throw OSD_Exception_INT_OVERFLOW(msg);
       break;
     case EXCEPTION_INVALID_DISPOSITION:
-      OSD_Exception_INVALID_DISPOSITION::Raise (msg);
+      throw OSD_Exception_INVALID_DISPOSITION(msg);
       break;
     case EXCEPTION_NONCONTINUABLE_EXCEPTION:
-      OSD_Exception_NONCONTINUABLE_EXCEPTION::Raise (msg);
+      throw OSD_Exception_NONCONTINUABLE_EXCEPTION(msg);
       break;
     case EXCEPTION_PRIV_INSTRUCTION:
-      OSD_Exception_PRIV_INSTRUCTION::Raise (msg);
+      throw OSD_Exception_PRIV_INSTRUCTION(msg);
       break;
     case EXCEPTION_STACK_OVERFLOW:
-      OSD_Exception_STACK_OVERFLOW::Raise (msg);
+      throw OSD_Exception_STACK_OVERFLOW(msg);
       break;
     case EXCEPTION_FLT_DIVIDE_BY_ZERO:
-      Standard_DivideByZero::Raise (msg);
+      throw Standard_DivideByZero(msg);
       break;
     case EXCEPTION_FLT_STACK_CHECK:
     case EXCEPTION_FLT_OVERFLOW:
-      Standard_Overflow::Raise (msg);
+      throw Standard_Overflow(msg);
       break;
     case EXCEPTION_FLT_UNDERFLOW:
-      Standard_Underflow::Raise (msg);
+      throw Standard_Underflow(msg);
       break;
     case EXCEPTION_FLT_INVALID_OPERATION:
     case EXCEPTION_FLT_DENORMAL_OPERAND:
     case EXCEPTION_FLT_INEXACT_RESULT:
     case STATUS_FLOAT_MULTIPLE_TRAPS:
     case STATUS_FLOAT_MULTIPLE_FAULTS:
-      Standard_NumericError::Raise (msg);
+      throw Standard_NumericError(msg);
       break;
     default:
       break;
@@ -650,27 +649,6 @@ typedef void (* SIG_PFV) (int);
   #include <sys/signal.h>
 #endif
 
-#if defined(HAVE_PTHREAD_H) && defined(NO_CXX_EXCEPTION)
-//============================================================================
-//====  GetOldSigAction
-//====     get previous 
-//============================================================================
-
-static struct sigaction *GetOldSigAction() 
-{
-  static struct sigaction oldSignals[NSIG];
-  return oldSignals;
-}
-
-#ifdef SOLARIS
-static sigfpe_handler_type *GetOldFPE()
-{
-  static sigfpe_handler_type aIEEEHandler[5] = { NULL, NULL, NULL, NULL, NULL } ;
-  return aIEEEHandler;
-}
-#endif
-#endif
-
 //============================================================================
 //==== Handler
 //====     Catche the differents signals:
@@ -691,11 +669,7 @@ static sigfpe_handler_type *GetOldFPE()
 //==== SIGSEGV is handled by "SegvHandler()"
 //============================================================================
 #ifdef SA_SIGINFO
-  #if defined(HAVE_PTHREAD_H) && defined(NO_CXX_EXCEPTION)
-static void Handler (const int theSignal, siginfo_t *theSigInfo, const Standard_Address theContext)
-  #else
 static void Handler (const int theSignal, siginfo_t */*theSigInfo*/, const Standard_Address /*theContext*/)
-  #endif
 #else
 static void Handler (const int theSignal)
 #endif
@@ -709,91 +683,6 @@ static void Handler (const int theSignal)
   else {
     perror ("sigaction");
   }
-
-#if defined(HAVE_PTHREAD_H) && defined(NO_CXX_EXCEPTION)
-  if (pthread_self() != getOCCThread()  || !Standard_ErrorHandler::IsInTryBlock()) {
-    // use the previous signal handler
-    // cout << "OSD::Handler: signal " << (int) theSignal << " occured outside a try block " <<  endl ;
-    struct sigaction *oldSignals = GetOldSigAction();
-    struct sigaction  asigacthandler =  oldSignals[theSignal >= 0 && theSignal < NSIG ? theSignal : 0];
-
-    if (asigacthandler.sa_flags & SA_SIGINFO) {
-      void (*aCurInfoHandle)(int, siginfo_t *, void *) = asigacthandler.sa_sigaction;
-
-      siginfo_t * aSigInfo = NULL;
-#ifdef SA_SIGINFO
-      aSigInfo = theSigInfo;
-#endif
-
-      if (aSigInfo) {
-        switch (aSigInfo->si_signo) {
-          case SIGFPE:
-          {
-#ifdef SOLARIS
-            sigfpe_handler_type *aIEEEHandlerTab = GetOldFPE();
-            sigfpe_handler_type  aIEEEHandler = NULL;
-            switch (aSigInfo->si_code) {
-              case FPE_INTDIV_TRAP :
-              case FPE_FLTDIV_TRAP :
-               aIEEEHandler = aIEEEHandlerTab[1];
-                break;
-              case FPE_INTOVF_TRAP :
-              case FPE_FLTOVF_TRAP :
-                aIEEEHandler = aIEEEHandlerTab[2];
-                break;
-              case FPE_FLTUND_TRAP :
-                aIEEEHandler = aIEEEHandlerTab[4];
-                break;
-              case FPE_FLTRES_TRAP :
-                aIEEEHandler = aIEEEHandlerTab[3];
-                break;
-              case FPE_FLTINV_TRAP :
-                aIEEEHandler = aIEEEHandlerTab[0];
-                break;
-              case FPE_FLTSUB_TRAP :
-              default:
-                break;
-            }
-            if (aIEEEHandler) {
-              // cout << "OSD::Handler: calling previous IEEE signal handler with info" <<  endl ;
-              (*aIEEEHandler) (theSignal, aSigInfo, theContext);
-              return;
-            }
-#endif
-            break;
-          }
-          default:
-            break;
-        }
-      }
-      if (aCurInfoHandle) {
-        // cout << "OSD::Handler: calling previous signal handler with info " << aCurInfoHandle <<  endl ;
-        (*aCurInfoHandle) (theSignal, aSigInfo, theContext);
-#ifdef OCCT_DEBUG
-        cerr << " previous signal handler return" <<  endl ;
-#endif
-        return;
-      }
-      else {
-	// cout << "OSD::Handler: no handler with info for the signal" << endl;
-      }
-    }
-    else {
-      // no siginfo needed for the signal
-      void (*aCurHandler) (int) = asigacthandler.sa_handler;
-      if(aCurHandler) {
-        // cout << "OSD::Handler: calling previous signal handler" <<  endl ;
-        (*aCurHandler) (theSignal);
-#ifdef OCCT_DEBUG
-        cerr << " previous signal handler return" <<  endl ;
-#endif
-        return;
-      }
-    }
-    // cout << " Signal occured outside a try block, but no handler for it" <<endl;
-    return;
-  }
-#endif
 
   // cout << "OSD::Handler: signal " << (int) theSignal << " occured inside a try block " <<  endl ;
   if ( ADR_ACT_SIGIO_HANDLER != NULL )
@@ -913,15 +802,9 @@ static void SegvHandler(const int theSignal,
                         siginfo_t *ip,
                         const Standard_Address theContext)
 {
-#ifdef NO_CXX_EXCEPTION
-  if (!Standard_ErrorHandler::IsInTryBlock()) {
-    Handler(theSignal, ip, theContext);
-    return;
-  }
-#else
   (void)theSignal; // silence GCC warnings
   (void)theContext;
-#endif
+
 #ifdef __linux__
   if (fFltExceptions)
     feenableexcept (FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
@@ -1149,7 +1032,7 @@ void OSD :: ControlBreak ()
 {
   if ( fCtrlBrk ) {
     fCtrlBrk = Standard_False;
-    OSD_Exception_CTRL_BREAK::Raise ("*** INTERRUPT ***");
+    throw OSD_Exception_CTRL_BREAK("*** INTERRUPT ***");
   }
 }
 

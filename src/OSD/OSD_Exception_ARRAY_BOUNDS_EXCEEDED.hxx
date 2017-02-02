@@ -25,7 +25,7 @@ DEFINE_STANDARD_HANDLE(OSD_Exception_ARRAY_BOUNDS_EXCEEDED, OSD_Exception)
 
 #if !defined No_Exception && !defined No_OSD_Exception_ARRAY_BOUNDS_EXCEEDED
   #define OSD_Exception_ARRAY_BOUNDS_EXCEEDED_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) OSD_Exception_ARRAY_BOUNDS_EXCEEDED::Raise(MESSAGE);
+  if (CONDITION) throw OSD_Exception_ARRAY_BOUNDS_EXCEEDED(MESSAGE);
 #else
   #define OSD_Exception_ARRAY_BOUNDS_EXCEEDED_Raise_if(CONDITION, MESSAGE)
 #endif

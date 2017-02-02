@@ -82,11 +82,11 @@ Cocoa_Window::Cocoa_Window (const Standard_CString theTitle,
 #else
   if (thePxWidth <= 0 || thePxHeight <= 0)
   {
-    Aspect_WindowDefinitionError::Raise ("Coordinate(s) out of range");
+    throw Aspect_WindowDefinitionError("Coordinate(s) out of range");
   }
   else if (NSApp == NULL)
   {
-    Aspect_WindowDefinitionError::Raise ("Cocoa application should be instantiated before window");
+    throw Aspect_WindowDefinitionError("Cocoa application should be instantiated before window");
     return;
   }
 
@@ -103,7 +103,7 @@ Cocoa_Window::Cocoa_Window (const Standard_CString theTitle,
                                               defer: NO];
   if (myHWindow == NULL)
   {
-    Aspect_WindowDefinitionError::Raise ("Unable to create window");
+    throw Aspect_WindowDefinitionError("Unable to create window");
   }
   myHView = [[myHWindow contentView] retain];
 

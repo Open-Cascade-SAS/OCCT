@@ -139,7 +139,7 @@ Standard_Boolean Extrema_GenLocateExtPC::IsDone () const
 
 Standard_Real Extrema_GenLocateExtPC::SquareDistance() const 
 {
-  if (!myDone) { StdFail_NotDone::Raise(); }
+  if (!myDone) { throw StdFail_NotDone(); }
   return myF.SquareDistance(1);
 }
 
@@ -151,7 +151,7 @@ Standard_Real Extrema_GenLocateExtPC::SquareDistance() const
 
 Standard_Boolean Extrema_GenLocateExtPC::IsMin () const 
 {
-  if (!myDone) { StdFail_NotDone::Raise(); }
+  if (!myDone) { throw StdFail_NotDone(); }
   return myF.IsMin(1);
 }
 
@@ -163,7 +163,7 @@ Standard_Boolean Extrema_GenLocateExtPC::IsMin () const
 
 const POnC & Extrema_GenLocateExtPC::Point () const 
 {
-  if (!myDone) { StdFail_NotDone::Raise(); }
+  if (!myDone) { throw StdFail_NotDone(); }
   return myF.Point(1);
 }
 

@@ -68,7 +68,7 @@ inline GeomAdaptor_Surface::GeomAdaptor_Surface(const Handle(Geom_Surface)& S,
 
 inline void GeomAdaptor_Surface::Load(const Handle(Geom_Surface)& S)
 {
-  if ( S.IsNull()) Standard_NullObject::Raise("GeomAdaptor_Surface::Load");
+  if ( S.IsNull()) throw Standard_NullObject("GeomAdaptor_Surface::Load");
 
   Standard_Real U1,U2,V1,V2;
   S->Bounds(U1,U2,V1,V2);
@@ -88,10 +88,10 @@ inline void GeomAdaptor_Surface::Load(const Handle(Geom_Surface)& S,
                                const Standard_Real TolU,
                                const Standard_Real TolV)
 {
-  if ( S.IsNull()) Standard_NullObject::Raise("GeomAdaptor_Surface::Load");
+  if ( S.IsNull()) throw Standard_NullObject("GeomAdaptor_Surface::Load");
 
   if(UFirst>ULast || VFirst>VLast)
-    Standard_ConstructionError::Raise("GeomAdaptor_Surface::Load");
+    throw Standard_ConstructionError("GeomAdaptor_Surface::Load");
 
   load(S,UFirst,ULast,VFirst,VLast,TolU,TolV);
 }

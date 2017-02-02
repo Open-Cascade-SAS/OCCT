@@ -250,11 +250,12 @@ ShapeUpgrade_SplitCurve3d::ShapeUpgrade_SplitCurve3d()
 	    Handle(Geom_BezierCurve)::DownCast(theNewCurve)->Segment (Firstt, Lastt);
 	  myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
 	}
-	catch (Standard_Failure) {
+	catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
 	  cout << "Warning: ShapeUpgrade_Split3dCurve::Build(): Exception in Segment      :";
-	  Standard_Failure::Caught()->Print(cout); cout << endl;
+	  anException.Print(cout); cout << endl;
 #endif
+	  (void)anException;
 	  theNewCurve = new Geom_TrimmedCurve(Handle(Geom_Curve)::DownCast(myCurve->Copy()),Firstt,Lastt);  
 	}
       }

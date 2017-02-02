@@ -35,7 +35,7 @@ IGESDraw_Planar::IGESDraw_Planar ()    {  }
 {
   if (!allEntities.IsNull())
     if (allEntities->Lower() != 1)
-      Standard_DimensionMismatch::Raise("IGESDraw_Planar : Init");
+      throw Standard_DimensionMismatch("IGESDraw_Planar : Init");
   theNbMatrices           = nbMats;
   theTransformationMatrix = aTransformationMatrix;
   theEntities             = allEntities;

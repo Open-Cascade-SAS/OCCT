@@ -239,7 +239,7 @@ void GeomEvaluator_OffsetSurface::CalculateD0(
     }
 
     if (NStatus != CSLib_Defined)
-      Geom_UndefinedValue::Raise(
+      throw Geom_UndefinedValue(
           "GeomEvaluator_OffsetSurface::CalculateD0(): Unable to calculate normal");
 
     theValue.SetXYZ(theValue.XYZ() + myOffset * aSign * Normal.XYZ());
@@ -360,7 +360,7 @@ void GeomEvaluator_OffsetSurface::CalculateD1(
   }
 
   if (NStatus != CSLib_Defined)
-    Geom_UndefinedValue::Raise(
+    throw Geom_UndefinedValue(
         "GeomEvaluator_OffsetSurface::CalculateD1(): Unable to calculate normal");
 
   theValue.SetXYZ(theValue.XYZ() + myOffset * aSign * Normal.XYZ());
@@ -419,7 +419,7 @@ void GeomEvaluator_OffsetSurface::CalculateD2(
   CSLib::Normal(MaxOrder, DerNUV, MagTol, theU, theV, Umin, Umax, Vmin, Vmax,
                 NStatus, Normal, OrderU, OrderV);
   if (NStatus != CSLib_Defined)
-    Geom_UndefinedValue::Raise(
+    throw Geom_UndefinedValue(
         "GeomEvaluator_OffsetSurface::CalculateD2(): Unable to calculate normal");
 
   theValue.SetXYZ(theValue.XYZ() + myOffset * aSign * Normal.XYZ());
@@ -494,7 +494,7 @@ void GeomEvaluator_OffsetSurface::CalculateD3(
   CSLib::Normal(MaxOrder, DerNUV, MagTol, theU, theV, Umin, Umax, Vmin, Vmax,
                 NStatus, Normal, OrderU, OrderV);
   if (NStatus != CSLib_Defined)
-    Geom_UndefinedValue::Raise(
+    throw Geom_UndefinedValue(
         "GeomEvaluator_OffsetSurface::CalculateD3(): Unable to calculate normal");
 
   theValue.SetXYZ(theValue.XYZ() + myOffset * aSign * Normal.XYZ());
@@ -574,7 +574,7 @@ gp_Vec GeomEvaluator_OffsetSurface::CalculateDN(
   CSLib::Normal(MaxOrder, DerNUV, MagTol, theU, theV, Umin, Umax, Vmin, Vmax,
                 NStatus, Normal, OrderU, OrderV);
   if (NStatus != CSLib_Defined)
-    Geom_UndefinedValue::Raise(
+    throw Geom_UndefinedValue(
         "GeomEvaluator_OffsetSurface::CalculateDN(): Unable to calculate normal");
 
   gp_Vec D;

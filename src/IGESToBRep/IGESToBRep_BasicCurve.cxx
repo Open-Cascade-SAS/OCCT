@@ -217,11 +217,12 @@ Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferBasicCurve
     }
 
   } //:36
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
     cout << "\n** Exception in IGESToBRep_BasicCurve::TransferBasicCurve : "; 
-    Standard_Failure::Caught()->Print(cout);
+    anException.Print(cout);
 #endif
+    (void)anException;
   }
   if (res.IsNull()) {
     // AddFail(start, "The IGESEntity cannot be transfered.");
@@ -280,11 +281,12 @@ Handle(Geom2d_Curve) IGESToBRep_BasicCurve::Transfer2dBasicCurve
       return res;
     }
   } //:h8
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
     cout << "\n** Exception in IGESToBRep_BasicCurve::Transfer2dBasicCurve : "; 
-    Standard_Failure::Caught()->Print(cout);
+    anException.Print(cout);
 #endif
+    (void)anException;
   }
   return res;
 }
@@ -1088,11 +1090,12 @@ Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferBSplineCurve
       else 
         BSplineRes = new Geom_BSplineCurve(Poles, Weight, Knot, Mult, Degree); 
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
       cout << "\n** Exception in IGESToBRep_BasicCurve::TransferBSplineCurve during creation of Geom_BSplineCurve : "; 
-      Standard_Failure::Caught()->Print(cout);
+      anException.Print(cout);
 #endif
+      (void)anException;
     }
   }
   

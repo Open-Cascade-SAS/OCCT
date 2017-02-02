@@ -69,7 +69,7 @@ extern Standard_Boolean TopOpeBRepBuild_GettraceKPB();
 static void FUN_Raise() {
 #ifdef OCCT_DEBUG
   cout<<"******************************ERROR"<<endl;
-  Standard_ProgramError::Raise("KPart.cxx");
+  throw Standard_ProgramError("KPart.cxx");
 #endif
 }
 

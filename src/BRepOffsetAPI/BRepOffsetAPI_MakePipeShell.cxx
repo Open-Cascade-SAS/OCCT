@@ -277,7 +277,7 @@ void BRepOffsetAPI_MakePipeShell::SetMaxSegments(const Standard_Integer NewMaxSe
 //=======================================================================
  Standard_Boolean BRepOffsetAPI_MakePipeShell::MakeSolid() 
 {
-  if (!IsDone()) StdFail_NotDone::Raise("BRepOffsetAPI_MakePipeShell::MakeSolid");
+  if (!IsDone()) throw StdFail_NotDone("BRepOffsetAPI_MakePipeShell::MakeSolid");
   Standard_Boolean Ok;
   Ok = myPipe->MakeSolid();
   if (Ok) myShape = myPipe->Shape();

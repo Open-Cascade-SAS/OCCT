@@ -36,7 +36,7 @@ Expr_FunctionDerivative::Expr_FunctionDerivative (const Handle(Expr_GeneralFunct
   myFunction = func;
   myDerivate = withX;
   if (deg <= 0) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   myDegree = deg;
   UpdateExpression();
@@ -55,7 +55,7 @@ Handle(Expr_NamedUnknown) Expr_FunctionDerivative::Variable (const Standard_Inte
 Standard_Real Expr_FunctionDerivative::Evaluate (const Expr_Array1OfNamedUnknown& vars, const TColStd_Array1OfReal& values) const
 {
   if (vars.Length() != values.Length()) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return myExp->Evaluate(vars,values);
 }

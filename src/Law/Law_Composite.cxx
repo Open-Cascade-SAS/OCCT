@@ -60,8 +60,7 @@ Law_Composite::Law_Composite(const Standard_Real First,
 //=======================================================================
 GeomAbs_Shape Law_Composite::Continuity() const 
 {
-  Standard_NotImplemented::Raise("Law_Composite::Continuity()");
-  return GeomAbs_C0;
+  throw Standard_NotImplemented("Law_Composite::Continuity()");
 }
 
 //=======================================================================

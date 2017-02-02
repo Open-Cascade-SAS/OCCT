@@ -1115,7 +1115,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
   GeomFill_Pipe Pipe(HCP, HEdge1, HEdge2, Abs(Offset));
   Pipe.Perform(Tol, Polynomial, Conti);
   if (!Pipe.IsDone())
-    Standard_ConstructionError::Raise ("GeomFill_Pipe : Cannot make a surface");
+    throw Standard_ConstructionError("GeomFill_Pipe : Cannot make a surface");
   Standard_Real ErrorPipe = Pipe.ErrorOnSurf();
 
   Handle(Geom_Surface) S = Pipe.Surface();
@@ -1584,7 +1584,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Edge,
   GeomFill_Pipe Pipe(CP,myOffset);
   Pipe.Perform();
   if (!Pipe.IsDone())
-    Standard_ConstructionError::Raise ("GeomFill_Pipe : Cannot make a surface");
+    throw Standard_ConstructionError("GeomFill_Pipe : Cannot make a surface");
 
   BRepLib_MakeFace MF(Pipe.Surface(), Precision::Confusion());
   myFace = MF.Face();

@@ -117,7 +117,7 @@ void AppBlend_AppSurf::CriteriumWeight(Standard_Real& W1, Standard_Real& W2, Sta
 
 void AppBlend_AppSurf::SetCriteriumWeight(const Standard_Real W1, const Standard_Real W2, const Standard_Real W3)
 {
-  if (W1 < 0 || W2 < 0 || W3 < 0 ) Standard_DomainError::Raise();
+  if (W1 < 0 || W2 < 0 || W3 < 0 ) throw Standard_DomainError();
   critweights[0] = W1;
   critweights[1] = W2;
   critweights[2] = W3;
@@ -906,7 +906,7 @@ void AppBlend_AppSurf::SurfShape (Standard_Integer& UDegree,
 				  Standard_Integer& NbUKnots,
 				  Standard_Integer& NbVKnots) const
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   UDegree  = udeg;
   VDegree  = vdeg;
   NbUPoles = tabPoles->ColLength();
@@ -924,7 +924,7 @@ void AppBlend_AppSurf::Surface(TColgp_Array2OfPnt& TPoles,
 			       TColStd_Array1OfInteger& TVMults) const
 
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   TPoles   = tabPoles->Array2();
   TWeights = tabWeights->Array2();
   TUKnots  = tabUKnots->Array1();
@@ -942,8 +942,8 @@ void AppBlend_AppSurf::Curves2dShape(Standard_Integer& Degree,
 				     Standard_Integer& NbPoles,
 				     Standard_Integer& NbKnots) const
 {
-  if (!done) {StdFail_NotDone::Raise();}
-  if (seqPoles2d.Length() == 0) {Standard_DomainError::Raise();}
+  if (!done) {throw StdFail_NotDone();}
+  if (seqPoles2d.Length() == 0) {throw Standard_DomainError();}
   Degree = vdeg;
   NbPoles = tabPoles->ColLength();
   NbKnots = tabVKnots->Length();
@@ -959,8 +959,8 @@ void AppBlend_AppSurf::Curve2d(const Standard_Integer Index,
 			       TColStd_Array1OfReal& TKnots,
 			       TColStd_Array1OfInteger& TMults) const
 {
-  if (!done) {StdFail_NotDone::Raise();}
-  if (seqPoles2d.Length() == 0) {Standard_DomainError::Raise();}
+  if (!done) {throw StdFail_NotDone();}
+  if (seqPoles2d.Length() == 0) {throw Standard_DomainError();}
   TPoles = seqPoles2d(Index)->Array1();
   TKnots  = tabVKnots->Array1();
   TMults  = tabVMults->Array1();

@@ -37,7 +37,7 @@ public:
                                                     myFirst(theMin), myLast(theMax)
   {
     if(myLast < myFirst)
-      Standard_ConstructionError::Raise("Last < First");
+      throw Standard_ConstructionError("Last < First");
   };
 
   //! Replaces <this> with common-part of <this> and theOther

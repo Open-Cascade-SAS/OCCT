@@ -98,8 +98,8 @@ void NCollection_AccAllocator::Free(void* theAddress)
 #if !defined No_Exception && !defined No_Standard_ProgramError
   if (aBlock == 0L || aBlock->IsEmpty())
   {
-    Standard_ProgramError::Raise("NCollection_AccAllocator::Free: \
-                                 Trying to free an invalid address");
+    throw Standard_ProgramError("NCollection_AccAllocator::Free: \
+                                Trying to free an invalid address");
   }
 #endif
 

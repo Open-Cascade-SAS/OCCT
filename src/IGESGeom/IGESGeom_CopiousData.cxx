@@ -41,9 +41,9 @@ IGESGeom_CopiousData::IGESGeom_CopiousData ()
 {
   // PTV OCC386 crach application while reading So5771b.igs
   if (allData.IsNull())
-    Standard_NullObject::Raise("IGESGeom_CopiousData : Init with null data");
+    throw Standard_NullObject("IGESGeom_CopiousData : Init with null data");
   
-  if (allData->Lower() != 1) Standard_DimensionMismatch::Raise("IGESGeom_CopiousData : Init");
+  if (allData->Lower() != 1) throw Standard_DimensionMismatch("IGESGeom_CopiousData : Init");
   theDataType = aDataType;
   theZPlane   = aZPlane;
   theData     = allData;

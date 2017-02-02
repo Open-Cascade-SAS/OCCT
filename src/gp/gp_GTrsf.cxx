@@ -131,7 +131,7 @@ void gp_GTrsf::SetForm()
   Standard_Real s = M.Determinant();
 
   if ( Abs(s) < gp::Resolution() )
-    Standard_ConstructionError::Raise("gp_GTrsf::SetForm, null determinant");
+    throw Standard_ConstructionError("gp_GTrsf::SetForm, null determinant");
 
   if (s > 0)
     s = Pow(s,1./3.);

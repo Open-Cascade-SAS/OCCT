@@ -352,7 +352,7 @@ void GeomFill_EvolvedSection::GetMinimalWeight(TColStd_Array1OfReal& Weights) co
  Handle(Geom_Curve) GeomFill_EvolvedSection::ConstantSection() const
 {
   Standard_Real Err, scale;
-  if (!IsConstant(Err)) StdFail_NotDone::Raise("The Law is not Constant!");
+  if (!IsConstant(Err)) throw StdFail_NotDone("The Law is not Constant!");
   gp_Trsf T;
   gp_Pnt P(0, 0, 0);
   scale = myLaw->Value(First) +  

@@ -119,7 +119,7 @@ static TopTools_IndexedMapOfShape MapE, MapF;
 void BRepTools_Modifier::Perform(const Handle(BRepTools_Modification)& M, const Handle(Message_ProgressIndicator) & aProgress)
 {
   if (myShape.IsNull()) {
-    Standard_NullObject::Raise();
+    throw Standard_NullObject();
   }
 #ifdef DEBUG_Modifier
   MapE.Clear(); MapF.Clear();

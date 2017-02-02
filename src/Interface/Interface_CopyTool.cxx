@@ -65,8 +65,7 @@ Interface_CopyTool::Interface_CopyTool
   (const Handle(Interface_InterfaceModel)& amodel)
     : thelib (Interface_Protocol::Active()) , thelst (amodel->NbEntities())
 {
-  if (Interface_Protocol::Active().IsNull()) Interface_InterfaceError::Raise
-    ("Interface CopyTool : Create with Active Protocol undefined");
+  if (Interface_Protocol::Active().IsNull()) throw Interface_InterfaceError("Interface CopyTool : Create with Active Protocol undefined");
 
   thelst.Init(Standard_False);
   themod = amodel;
@@ -172,8 +171,7 @@ Interface_CopyTool::Interface_CopyTool
 
 //  <nument> == 0 -> Peut etre une sous-partie non partagee ...
 //  On accepte mais on se protege contre un bouclage
-  if (nument == 0 && thelev > 100) Interface_InterfaceError::Raise
-    ("CopyTool : Transferred, Entity is not contained in Starting Model");
+  if (nument == 0 && thelev > 100) throw Interface_InterfaceError("CopyTool : Transferred, Entity is not contained in Starting Model");
   if (!themap->Search(ent,res)) {       // deja transfere ? sinon, le faire
 
 //  On opere la Copie (enfin, on tente)

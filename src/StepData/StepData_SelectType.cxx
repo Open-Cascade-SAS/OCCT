@@ -36,7 +36,7 @@ Standard_Boolean  StepData_SelectType::Matches
 {
   if (ent.IsNull())  thevalue.Nullify();
   else if (!Matches(ent))
-    Standard_TypeMismatch::Raise ("StepData : SelectType, SetValue");
+    throw Standard_TypeMismatch("StepData : SelectType, SetValue");
   else thevalue = ent;
 }
 
@@ -97,7 +97,7 @@ Standard_Boolean  StepData_SelectType::Matches
     void  StepData_SelectType::SetInt (const Standard_Integer val)
 {
   DeclareAndCast(StepData_SelectMember,sm,thevalue);
-  if (sm.IsNull()) Standard_TypeMismatch::Raise ("StepData : SelectType, SetInt");
+  if (sm.IsNull()) throw Standard_TypeMismatch("StepData : SelectType, SetInt");
   sm->SetInt (val);
 }
 
@@ -110,7 +110,7 @@ static Handle(StepData_SelectMember) SelectVal
   DeclareAndCast(StepData_SelectMember,sm,thevalue);
   if (!sm.IsNull()) {
     if (name && name[0] != '\0')
-      if (!sm->SetName(name)) Standard_TypeMismatch::Raise ("StepData : SelectType, SetInteger");
+      if (!sm->SetName(name)) throw Standard_TypeMismatch("StepData : SelectType, SetInteger");
   }
   else if (name && name[0] != '\0') {
     Handle(StepData_SelectNamed) sn = new StepData_SelectNamed;
@@ -136,7 +136,7 @@ static Handle(StepData_SelectMember) SelectVal
 {
   Handle(StepData_SelectMember) sm = SelectVal (thevalue,name,0);
   sm->SetInteger (val);
-  if (CaseMem (sm) == 0) Standard_TypeMismatch::Raise ("StepData : SelectType, SetInteger");
+  if (CaseMem (sm) == 0) throw Standard_TypeMismatch("StepData : SelectType, SetInteger");
   thevalue = sm;
 }
 
@@ -152,7 +152,7 @@ static Handle(StepData_SelectMember) SelectVal
 {
   Handle(StepData_SelectMember) sm = SelectVal (thevalue,name,0);
   sm->SetBoolean (val);
-  if (CaseMem (sm) == 0) Standard_TypeMismatch::Raise ("StepData : SelectType, SetBoolean");
+  if (CaseMem (sm) == 0) throw Standard_TypeMismatch("StepData : SelectType, SetBoolean");
   thevalue = sm;
 }
 
@@ -168,7 +168,7 @@ static Handle(StepData_SelectMember) SelectVal
 {
   Handle(StepData_SelectMember) sm = SelectVal (thevalue,name,0);
   sm->SetLogical (val);
-  if (CaseMem (sm) == 0) Standard_TypeMismatch::Raise ("StepData : SelectType, SetLogical");
+  if (CaseMem (sm) == 0) throw Standard_TypeMismatch("StepData : SelectType, SetLogical");
   thevalue = sm;
 }
 
@@ -184,7 +184,7 @@ Standard_Real  StepData_SelectType::Real () const
 {
   Handle(StepData_SelectMember) sm = SelectVal (thevalue,name,1);
   sm->SetReal (val);
-  if (CaseMem (sm) == 0) Standard_TypeMismatch::Raise ("StepData : SelectType, SetReal");
+  if (CaseMem (sm) == 0) throw Standard_TypeMismatch("StepData : SelectType, SetReal");
   thevalue = sm;
 }
 

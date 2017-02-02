@@ -2069,7 +2069,7 @@ static const Standard_Real IMatrix[] = {
 void InvMMatrix(const Standard_Integer classe,
 		math_Matrix&           InvM)
 {
-  if (classe > 24) Standard_DimensionError::Raise("InvMMatrix: classe > 24");
+  if (classe > 24) throw Standard_DimensionError("InvMMatrix: classe > 24");
   Standard_Integer i, j, k = 0, Som = 0;
   for (i = 2; i < classe; i++) {
     Som += (i)*(i);

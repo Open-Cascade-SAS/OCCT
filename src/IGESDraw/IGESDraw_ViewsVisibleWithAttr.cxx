@@ -49,11 +49,10 @@ IGESDraw_ViewsVisibleWithAttr::IGESDraw_ViewsVisibleWithAttr ()    {  }
 	(allLineWeights->Lower()  != 1 || allLineWeights->Length() != Exp) ||
 	(allLineDefinitions->Lower() != 1 || allLineDefinitions->Length() != Exp) ||
 	(allColorDefinitions->Lower() != 1 || allColorDefinitions->Length() != Exp))
-      Standard_DimensionMismatch::Raise("IGESDraw_ViewsVisibleWithAttr : Init");
+      throw Standard_DimensionMismatch("IGESDraw_ViewsVisibleWithAttr : Init");
   }
   if (!allDisplayEntities.IsNull())
-    if (allDisplayEntities->Lower() != 1) Standard_DimensionMismatch::Raise
-  ("IGESDraw_ViewsVisibleWithAttr : Init");
+    if (allDisplayEntities->Lower() != 1) throw Standard_DimensionMismatch("IGESDraw_ViewsVisibleWithAttr : Init");
 
   theViewEntities     = allViewEntities;
   theLineFonts        = allLineFonts;
@@ -70,7 +69,7 @@ IGESDraw_ViewsVisibleWithAttr::IGESDraw_ViewsVisibleWithAttr ()    {  }
 {
   if (!allDisplayEntity.IsNull())
     if (allDisplayEntity->Lower() != 1)
-      Standard_DimensionMismatch::Raise("IGESDraw_ViewsVisibleWithAttr : InitImplied");
+      throw Standard_DimensionMismatch("IGESDraw_ViewsVisibleWithAttr : InitImplied");
   theDisplayEntities = allDisplayEntity;
 }
 

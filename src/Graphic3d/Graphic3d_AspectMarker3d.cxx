@@ -42,7 +42,7 @@ Graphic3d_AspectMarker3d::Graphic3d_AspectMarker3d (const Aspect_TypeOfMarker th
 {
   if (theScale <= 0.0)
   {
-    Aspect_AspectMarkerDefinitionError::Raise ("Bad value for MarkerScale");
+    throw Aspect_AspectMarkerDefinitionError("Bad value for MarkerScale");
   }
 }
 

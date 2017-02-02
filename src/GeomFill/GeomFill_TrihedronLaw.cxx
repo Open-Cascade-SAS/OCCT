@@ -43,8 +43,7 @@ void GeomFill_TrihedronLaw::SetCurve(const Handle(Adaptor3d_HCurve)& C)
 					    gp_Vec& ,gp_Vec&,gp_Vec&,
 					    gp_Vec&,gp_Vec&,gp_Vec& ) 
 {
-  Standard_NotImplemented::Raise(" GeomFill_TrihedronLaw::D2");
-  return Standard_False; 
+  throw Standard_NotImplemented(" GeomFill_TrihedronLaw::D2");
 }
 
  Standard_Boolean GeomFill_TrihedronLaw::D2(const Standard_Real,
@@ -52,8 +51,7 @@ void GeomFill_TrihedronLaw::SetCurve(const Handle(Adaptor3d_HCurve)& C)
 					    gp_Vec& ,gp_Vec&,gp_Vec&,
 					    gp_Vec&,gp_Vec& ,gp_Vec&) 
 {
-  Standard_NotImplemented::Raise(" GeomFill_TrihedronLaw::D2");
-  return Standard_False;
+  throw Standard_NotImplemented(" GeomFill_TrihedronLaw::D2");
 }
 
 void GeomFill_TrihedronLaw::SetInterval(const Standard_Real First,

@@ -24,7 +24,7 @@
 inline const TopoDS_Shape& BRepTools_Modifier::ModifiedShape
   (const TopoDS_Shape& S) const
 {
-  if (!myMap.IsBound(S)) { Standard_NoSuchObject::Raise();}
+  if (!myMap.IsBound(S)) { throw Standard_NoSuchObject();}
   return myMap(S);
 }
 

@@ -25,7 +25,7 @@ DEFINE_STANDARD_HANDLE(OSD_Exception_CTRL_BREAK, OSD_Exception)
 
 #if !defined No_Exception && !defined No_OSD_Exception_CTRL_BREAK
   #define OSD_Exception_CTRL_BREAK_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) OSD_Exception_CTRL_BREAK::Raise(MESSAGE);
+  if (CONDITION) throw OSD_Exception_CTRL_BREAK(MESSAGE);
 #else
   #define OSD_Exception_CTRL_BREAK_Raise_if(CONDITION, MESSAGE)
 #endif

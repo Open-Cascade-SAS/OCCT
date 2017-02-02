@@ -1050,8 +1050,7 @@ Standard_Boolean StdSelect_ViewerSelector3d::ToPixMap (Image_PixMap&            
 {
   if (theImage.IsEmpty())
   {
-    Standard_ProgramError::Raise ("StdSelect_ViewerSelector3d::ToPixMap() has been called with empty image");
-    return Standard_False;
+    throw Standard_ProgramError("StdSelect_ViewerSelector3d::ToPixMap() has been called with empty image");
   }
 
   Handle(BaseFiller) aFiller;

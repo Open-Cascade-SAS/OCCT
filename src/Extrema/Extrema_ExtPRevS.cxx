@@ -523,7 +523,7 @@ Standard_Boolean Extrema_ExtPRevS::IsDone() const
 
 Standard_Integer Extrema_ExtPRevS::NbExt() const
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myNbExt;
 }
 
@@ -535,8 +535,8 @@ Standard_Integer Extrema_ExtPRevS::NbExt() const
 
 Standard_Real Extrema_ExtPRevS::SquareDistance(const Standard_Integer N) const
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
-  if ((N < 1) || (N > myNbExt)) { Standard_OutOfRange::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
+  if ((N < 1) || (N > myNbExt)) { throw Standard_OutOfRange(); }
   if (myIsAnalyticallyComputable)
     return mySqDist[N-1];
   else
@@ -549,8 +549,8 @@ Standard_Real Extrema_ExtPRevS::SquareDistance(const Standard_Integer N) const
 
 const Extrema_POnSurf& Extrema_ExtPRevS::Point(const Standard_Integer N) const
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
-  if ((N < 1) || (N > myNbExt)) { Standard_OutOfRange::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
+  if ((N < 1) || (N > myNbExt)) { throw Standard_OutOfRange(); }
   if (myIsAnalyticallyComputable)
     return myPoint[N-1];
   else

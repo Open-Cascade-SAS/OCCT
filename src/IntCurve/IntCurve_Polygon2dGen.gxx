@@ -333,7 +333,7 @@ void IntCurve_Polygon2dGen::Segment(const Standard_Integer theIndex,
   theBegin = ThePnts(TheIndex(theIndex));
   if (theIndex >= NbPntIn) {
     if (!ClosedPolygon)
-      Standard_OutOfRange::Raise("IntCurve_Polygon2dGen::Segment!");
+      throw Standard_OutOfRange("IntCurve_Polygon2dGen::Segment!");
     ind = 0;
   }
   theEnd = ThePnts(TheIndex(ind+1));

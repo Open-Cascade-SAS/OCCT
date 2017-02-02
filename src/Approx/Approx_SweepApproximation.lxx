@@ -29,95 +29,95 @@ inline  Standard_Boolean Approx_SweepApproximation::IsDone() const
  
 inline  Standard_Integer Approx_SweepApproximation::UDegree() const
 {
-  if (!done) {StdFail_NotDone::Raise(" Approx_SweepApproximation");}
+  if (!done) {throw StdFail_NotDone(" Approx_SweepApproximation");}
   return udeg;
 }
 
  
 inline  Standard_Integer Approx_SweepApproximation::VDegree() const
 {
-  if (!done) {StdFail_NotDone::Raise(" Approx_SweepApproximation");}
+  if (!done) {throw StdFail_NotDone(" Approx_SweepApproximation");}
   return vdeg;
 }
 
  
 inline const TColgp_Array2OfPnt& Approx_SweepApproximation::SurfPoles() const
 {
-  if (!done) {StdFail_NotDone::Raise(" Approx_SweepApproximation");}
+  if (!done) {throw StdFail_NotDone(" Approx_SweepApproximation");}
   return tabPoles->Array2();
 }
 
  
 inline const TColStd_Array2OfReal& Approx_SweepApproximation::SurfWeights() const
 {
-  if (!done) {StdFail_NotDone::Raise(" Approx_SweepApproximation");}
+  if (!done) {throw StdFail_NotDone(" Approx_SweepApproximation");}
   return tabWeights->Array2();
 }
 
  
 inline const TColStd_Array1OfReal& Approx_SweepApproximation::SurfUKnots() const
 {
-  if (!done) {StdFail_NotDone::Raise(" Approx_SweepApproximation");}
+  if (!done) {throw StdFail_NotDone(" Approx_SweepApproximation");}
   return tabUKnots->Array1();
 }
 
  
 inline const TColStd_Array1OfReal& Approx_SweepApproximation::SurfVKnots() const
 {
-  if (!done) {StdFail_NotDone::Raise(" Approx_SweepApproximation");}
+  if (!done) {throw StdFail_NotDone(" Approx_SweepApproximation");}
   return tabVKnots->Array1();
 }
 
  
 inline const TColStd_Array1OfInteger& Approx_SweepApproximation::SurfUMults() const
 {
-  if (!done) {StdFail_NotDone::Raise(" Approx_SweepApproximation");}
+  if (!done) {throw StdFail_NotDone(" Approx_SweepApproximation");}
   return tabUMults->Array1();
 }
 
  
 inline const TColStd_Array1OfInteger& Approx_SweepApproximation::SurfVMults() const
 {
-  if (!done) {StdFail_NotDone::Raise(" Approx_SweepApproximation");}
+  if (!done) {throw StdFail_NotDone(" Approx_SweepApproximation");}
   return tabVMults->Array1();
 }
 
  
 inline  Standard_Integer Approx_SweepApproximation::NbCurves2d() const
 {
-  if (!done) {StdFail_NotDone::Raise(" Approx_SweepApproximation");}
+  if (!done) {throw StdFail_NotDone(" Approx_SweepApproximation");}
   return Num2DSS;
 }
 
  
 inline  Standard_Integer Approx_SweepApproximation::Curves2dDegree() const
 {
-  if (!done) {StdFail_NotDone::Raise(" Approx_SweepApproximation");}
-  if (seqPoles2d.Length() == 0) {Standard_DomainError::Raise();}
+  if (!done) {throw StdFail_NotDone(" Approx_SweepApproximation");}
+  if (seqPoles2d.Length() == 0) {throw Standard_DomainError();}
   return deg2d;
 }
 
  
 inline const TColgp_Array1OfPnt2d& Approx_SweepApproximation::Curve2dPoles(const Standard_Integer Index) const
 {
-  if (!done) {StdFail_NotDone::Raise(" Approx_SweepApproximation");}
- if (seqPoles2d.Length() == 0) {Standard_DomainError::Raise();}
+  if (!done) {throw StdFail_NotDone(" Approx_SweepApproximation");}
+ if (seqPoles2d.Length() == 0) {throw Standard_DomainError();}
   return seqPoles2d(Index)->Array1();
 }
 
  
 inline const TColStd_Array1OfReal& Approx_SweepApproximation::Curves2dKnots() const
 {
-  if (!done) {StdFail_NotDone::Raise(" Approx_SweepApproximation");}
-  if (seqPoles2d.Length() == 0) {Standard_DomainError::Raise();}
+  if (!done) {throw StdFail_NotDone(" Approx_SweepApproximation");}
+  if (seqPoles2d.Length() == 0) {throw Standard_DomainError();}
   return tab2dKnots->Array1();
 }
 
  
 inline const TColStd_Array1OfInteger& Approx_SweepApproximation::Curves2dMults() const
 {
-  if (!done) {StdFail_NotDone::Raise(" Approx_SweepApproximation");}
- if (seqPoles2d.Length() == 0) {Standard_DomainError::Raise();}
+  if (!done) {throw StdFail_NotDone(" Approx_SweepApproximation");}
+ if (seqPoles2d.Length() == 0) {throw Standard_DomainError();}
   return tab2dMults->Array1();
 }
 

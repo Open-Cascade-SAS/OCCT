@@ -37,7 +37,7 @@ inline Standard_Boolean IntStart_Segment::HasFirstPoint () const {
 
 inline const ThePathPoint& IntStart_Segment::FirstPoint () const {
 
-  if (!hasfp) { Standard_DomainError::Raise(); }
+  if (!hasfp) { throw Standard_DomainError(); }
   return thefp;
 }
 
@@ -50,7 +50,7 @@ inline Standard_Boolean IntStart_Segment::HasLastPoint () const {
 
 inline const ThePathPoint& IntStart_Segment::LastPoint () const {
 
-  if (!haslp) { Standard_DomainError::Raise(); }
+  if (!haslp) { throw Standard_DomainError(); }
   return thelp;
 }
 

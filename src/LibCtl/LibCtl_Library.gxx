@@ -146,12 +146,12 @@ static Handle(LibCtl_Node) thelast;
 
     const Handle(TheModule)& LibCtl_Library::Module () const
 {
-  if (thecurr.IsNull()) Standard_NoSuchObject::Raise("Library from LibCtl");
+  if (thecurr.IsNull()) throw Standard_NoSuchObject("Library from LibCtl");
   return thecurr->Module();
 }
 
     const Handle(TheProtocol)& LibCtl_Library::Protocol () const
 {
-  if (thecurr.IsNull()) Standard_NoSuchObject::Raise("Library from LibCtl");
+  if (thecurr.IsNull()) throw Standard_NoSuchObject("Library from LibCtl");
   return thecurr->Protocol();
 }

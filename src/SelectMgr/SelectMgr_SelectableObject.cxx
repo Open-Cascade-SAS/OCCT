@@ -296,7 +296,7 @@ void SelectMgr_SelectableObject::HilightSelected
   ( const Handle(PrsMgr_PresentationManager3d)&,
     const SelectMgr_SequenceOfOwner&)
 {
-  Standard_NotImplemented::Raise ("SelectMgr_SelectableObject::HilightSelected");
+  throw Standard_NotImplemented("SelectMgr_SelectableObject::HilightSelected");
 }
 
 //=======================================================================
@@ -326,7 +326,7 @@ void SelectMgr_SelectableObject::HilightOwnerWithColor (const Handle(PrsMgr_Pres
                                                         const Handle(Prs3d_Drawer)&,
                                                         const Handle(SelectMgr_EntityOwner)&)
 {
-  Standard_NotImplemented::Raise ("SelectMgr_SelectableObject::HilightOwnerWithColor");
+  throw Standard_NotImplemented("SelectMgr_SelectableObject::HilightOwnerWithColor");
 }
 
 //=======================================================================

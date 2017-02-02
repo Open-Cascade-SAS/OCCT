@@ -106,7 +106,7 @@ void  TopOpeBRep_VPointInterIterator::Next()
 const TopOpeBRep_VPointInter& TopOpeBRep_VPointInterIterator::CurrentVP()
 {
   if (!More())
-    Standard_ProgramError::Raise("TopOpeBRep_VPointInterIterator::CurrentVP");
+    throw Standard_ProgramError("TopOpeBRep_VPointInterIterator::CurrentVP");
   const TopOpeBRep_VPointInter& VP = myLineInter->VPoint(myVPointIndex);
   return VP;
 }
@@ -119,7 +119,7 @@ const TopOpeBRep_VPointInter& TopOpeBRep_VPointInterIterator::CurrentVP()
 TopOpeBRep_VPointInter& TopOpeBRep_VPointInterIterator::ChangeCurrentVP()
 {
   if (!More()) 
-    Standard_ProgramError::Raise("TopOpeBRep_VPointInterIterator::ChangeCurrentVP");
+    throw Standard_ProgramError("TopOpeBRep_VPointInterIterator::ChangeCurrentVP");
   TopOpeBRep_VPointInter& VP = myLineInter->ChangeVPoint(myVPointIndex);
   return VP;
 }
@@ -132,7 +132,7 @@ TopOpeBRep_VPointInter& TopOpeBRep_VPointInterIterator::ChangeCurrentVP()
 Standard_Integer TopOpeBRep_VPointInterIterator::CurrentVPIndex()const
 {
   if (!More()) 
-    Standard_ProgramError::Raise("TopOpeBRep_VPointInterIterator::CurrentVPIndex");
+    throw Standard_ProgramError("TopOpeBRep_VPointInterIterator::CurrentVPIndex");
   return myVPointIndex;
 }
 

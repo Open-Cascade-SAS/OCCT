@@ -166,11 +166,11 @@ void ChFiKPart_ProjPC(const GeomAdaptor_Curve& Cg,
       break;
 #endif
       default :
-      Standard_NotImplemented::Raise("failed approximation of the pcurve ");
+      throw Standard_NotImplemented("failed approximation of the pcurve ");
     }
   }
   else {
-    Standard_NotImplemented::Raise("approximate pcurve on the left surface");
+    throw Standard_NotImplemented("approximate pcurve on the left surface");
   }
 }
 

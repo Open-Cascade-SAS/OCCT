@@ -3276,7 +3276,7 @@ static const Standard_Real BBMatrix[] = {
 void MMatrix(const Standard_Integer classe,
 	     math_Matrix&           M)
 {
-  if (classe > 24) Standard_DimensionError::Raise("MMatrix: classe > 24");
+  if (classe > 24) throw Standard_DimensionError("MMatrix: classe > 24");
   Standard_Integer i, j, k = 0, Som = 0;
   for (i = 2; i < classe; i++) {
     Som += (i)*(i);

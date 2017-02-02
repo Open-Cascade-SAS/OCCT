@@ -28,7 +28,7 @@ inline Standard_Real IntAna2d_IntPoint::ParamOnFirst () const {
 inline Standard_Real IntAna2d_IntPoint::ParamOnSecond () const {
 
   if (myimplicit) {
-    Standard_DomainError::Raise();
+    throw Standard_DomainError();
   }
   return myu2;
 }

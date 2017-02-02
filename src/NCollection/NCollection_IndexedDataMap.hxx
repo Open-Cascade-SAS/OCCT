@@ -306,8 +306,8 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
       {
         if (p->Key2() != theIndex)
         {
-          Standard_DomainError::Raise ("NCollection_IndexedDataMap::Substitute : "
-                                       "Attempt to substitute existing key");
+          throw Standard_DomainError ("NCollection_IndexedDataMap::Substitute : "
+                                      "Attempt to substitute existing key");
         }
         p->Key1() = theKey1;
         p->ChangeValue() = theItem;
@@ -443,7 +443,7 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
     IndexedDataMapNode* aNode = nodeFromIndex (theKey2);
     if (aNode == NULL)
     {
-      Standard_NoSuchObject::Raise ("NCollection_IndexedDataMap::FindKey");
+      throw Standard_NoSuchObject("NCollection_IndexedDataMap::FindKey");
     }
     return aNode->Key1();
   }
@@ -456,7 +456,7 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
     IndexedDataMapNode* aNode = nodeFromIndex (theKey2);
     if (aNode == NULL)
     {
-      Standard_NoSuchObject::Raise ("NCollection_IndexedDataMap::FindFromIndex");
+      throw Standard_NoSuchObject("NCollection_IndexedDataMap::FindFromIndex");
     }
     return aNode->Value();
   }
@@ -473,7 +473,7 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
     IndexedDataMapNode* aNode = nodeFromIndex (theKey2);
     if (aNode == NULL)
     {
-      Standard_NoSuchObject::Raise ("NCollection_IndexedDataMap::ChangeFromIndex");
+      throw Standard_NoSuchObject("NCollection_IndexedDataMap::ChangeFromIndex");
     }
     return aNode->ChangeValue();
   }
@@ -510,8 +510,7 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
         return pNode1->Value();
       pNode1 = (IndexedDataMapNode*) pNode1->Next();
     }
-    Standard_NoSuchObject::Raise("NCollection_IndexedDataMap::FindFromKey");
-    return pNode1->Value();
+    throw Standard_NoSuchObject("NCollection_IndexedDataMap::FindFromKey");
   }
 
   //! ChangeFromKey
@@ -527,8 +526,7 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
         return pNode1->ChangeValue();
       pNode1 = (IndexedDataMapNode*) pNode1->Next();
     }
-    Standard_NoSuchObject::Raise("NCollection_IndexedDataMap::ChangeFromKey");
-    return pNode1->ChangeValue();
+    throw Standard_NoSuchObject("NCollection_IndexedDataMap::ChangeFromKey");
   }
 
   //! Seek returns pointer to Item by Key. Returns

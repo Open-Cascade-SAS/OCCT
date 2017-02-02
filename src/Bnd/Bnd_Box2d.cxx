@@ -77,7 +77,7 @@ void Bnd_Box2d::Get (Standard_Real& x, Standard_Real& y,
 		     Standard_Real& Xm, Standard_Real& Ym) const
 {
   if(Flags & VoidMask)
-    Standard_ConstructionError::Raise("Bnd_Box is void");
+    throw Standard_ConstructionError("Bnd_Box is void");
   Standard_Real pinf = 1e+100; //-- Precision::Infinite();
   if (Flags & XminMask) x = -pinf;
   else                  x =  Xmin-Gap;

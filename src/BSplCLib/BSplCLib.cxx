@@ -2810,7 +2810,7 @@ void BSplCLib::Trimming(const Standard_Integer         Degree,
   mm[0] = mm[1] = Degree;
   if (!PrepareInsertKnots( Degree, Periodic, Knots, Mults, K, &M, 
 			  nbpoles, nbknots, Epsilon( U1), 0))
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
 
   TColStd_Array1OfReal    TempPoles(1, nbpoles*Dimension);
   TColStd_Array1OfReal    TempKnots(1, nbknots);
@@ -3040,7 +3040,7 @@ void  BSplCLib::Interpolate(const Standard_Integer         Degree,
                            UpperBandWidth,
                            LowerBandWidth) ;
   if(ErrorCode)
-    Standard_OutOfRange::Raise("BSplCLib::Interpolate");
+    throw Standard_OutOfRange("BSplCLib::Interpolate");
 
   ErrorCode =
   BSplCLib::FactorBandedMatrix(InterpolationMatrix,
@@ -3048,7 +3048,7 @@ void  BSplCLib::Interpolate(const Standard_Integer         Degree,
                            LowerBandWidth,
                            InversionProblem) ;
   if(ErrorCode)
-    Standard_OutOfRange::Raise("BSplCLib::Interpolate");
+    throw Standard_OutOfRange("BSplCLib::Interpolate");
 
   ErrorCode  =
   BSplCLib::SolveBandedSystem(InterpolationMatrix,
@@ -3057,7 +3057,7 @@ void  BSplCLib::Interpolate(const Standard_Integer         Degree,
 			      ArrayDimension,
                               Poles) ;
   if(ErrorCode)
-    Standard_OutOfRange::Raise("BSplCLib::Interpolate");
+    throw Standard_OutOfRange("BSplCLib::Interpolate");
 }
 
 //=======================================================================
@@ -3089,7 +3089,7 @@ void  BSplCLib::Interpolate(const Standard_Integer         Degree,
                            UpperBandWidth,
                            LowerBandWidth) ;
   if(ErrorCode)
-    Standard_OutOfRange::Raise("BSplCLib::Interpolate");
+    throw Standard_OutOfRange("BSplCLib::Interpolate");
 
   ErrorCode =
   BSplCLib::FactorBandedMatrix(InterpolationMatrix,
@@ -3097,7 +3097,7 @@ void  BSplCLib::Interpolate(const Standard_Integer         Degree,
                            LowerBandWidth,
                            InversionProblem) ;
   if(ErrorCode)
-    Standard_OutOfRange::Raise("BSplCLib::Interpolate");
+    throw Standard_OutOfRange("BSplCLib::Interpolate");
 
   ErrorCode  =
   BSplCLib::SolveBandedSystem(InterpolationMatrix,
@@ -3108,7 +3108,7 @@ void  BSplCLib::Interpolate(const Standard_Integer         Degree,
                               Poles,
 			      Weights) ;
   if(ErrorCode)
-    Standard_OutOfRange::Raise("BSplCLib::Interpolate");
+    throw Standard_OutOfRange("BSplCLib::Interpolate");
 }
 
 //=======================================================================

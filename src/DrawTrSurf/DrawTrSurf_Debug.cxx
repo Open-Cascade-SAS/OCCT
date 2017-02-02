@@ -51,9 +51,9 @@ const char* DrawTrSurf_Set (const char* theNameStr, void* theHandlePtr)
 
     return "Error: Not a geometric object";
   }
-  catch (Standard_Failure)
+  catch (Standard_Failure const& anException)
   {
-    return Standard_Failure::Caught()->GetMessageString();
+    return anException.GetMessageString();
   }
 }
 
@@ -71,9 +71,9 @@ const char* DrawTrSurf_SetPnt (const char* theNameStr, void* thePntPtr)
     DrawTrSurf::Set (theNameStr, aP);
     return buff;
   }
-  catch (Standard_Failure)
+  catch (Standard_Failure const& anException)
   {
-    return Standard_Failure::Caught()->GetMessageString();
+    return anException.GetMessageString();
   }
 }
 
@@ -91,9 +91,9 @@ const char* DrawTrSurf_SetPnt2d (const char* theNameStr, void* thePnt2dPtr)
     DrawTrSurf::Set (theNameStr, aP);
     return buff;
   }
-  catch (Standard_Failure)
+  catch (Standard_Failure const& anException)
   {
-    return Standard_Failure::Caught()->GetMessageString();
+    return anException.GetMessageString();
   }
 }
 

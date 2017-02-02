@@ -80,7 +80,7 @@ Geom2d_Ellipse::Geom2d_Ellipse (const Ax2d& MajorAxis,
 :majorRadius (MajorRadius), minorRadius (MinorRadius){
 
   if (MajorRadius < MinorRadius || MinorRadius < 0.0 ) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   pos = gp_Ax22d(MajorAxis, Sense);
 }
@@ -97,7 +97,7 @@ Geom2d_Ellipse::Geom2d_Ellipse (const gp_Ax22d& Axis,
 : majorRadius (MajorRadius), minorRadius (MinorRadius)
 {
   if (MajorRadius < MinorRadius || MinorRadius < 0.0 ) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   pos = Axis;
 }
@@ -124,7 +124,7 @@ void Geom2d_Ellipse::SetElips2d (const gp_Elips2d& E)
 void Geom2d_Ellipse::SetMajorRadius (const Standard_Real MajorRadius) 
 {
   if (MajorRadius < minorRadius) 
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   else                           
     majorRadius = MajorRadius; 
 }
@@ -138,7 +138,7 @@ void Geom2d_Ellipse::SetMajorRadius (const Standard_Real MajorRadius)
 void Geom2d_Ellipse::SetMinorRadius (const Standard_Real MinorRadius) 
 {
    if (MinorRadius < 0 || majorRadius < MinorRadius) 
-     { Standard_ConstructionError::Raise(); }
+     { throw Standard_ConstructionError(); }
    else 
      { minorRadius = MinorRadius; }
 }

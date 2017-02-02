@@ -121,7 +121,7 @@ Standard_Integer GccAna_Lin2dBisec::
    NbSolutions () const 
 {
   if (!WellDone) 
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   return NbrSol;
 }
 
@@ -129,9 +129,9 @@ gp_Lin2d GccAna_Lin2dBisec::
    ThisSolution (const Standard_Integer Index) const 
 {
   if (!WellDone) 
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   if (Index <= 0 || Index > NbrSol) 
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   return linsol(Index);
 }
 
@@ -140,8 +140,8 @@ void GccAna_Lin2dBisec::
                   Standard_Real& ParSol,
                   Standard_Real& ParArg,
                   gp_Pnt2d& PntSol) const{
-   if (!WellDone) { StdFail_NotDone::Raise(); }
-   else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+   if (!WellDone) { throw StdFail_NotDone(); }
+   else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
    else {
      ParSol = par1sol(Index);
      ParArg = pararg1(Index);
@@ -155,8 +155,8 @@ void GccAna_Lin2dBisec::
                   Standard_Real& ParSol,
                   Standard_Real& ParArg,
                   gp_Pnt2d& PntSol) const{
-   if (!WellDone) { StdFail_NotDone::Raise(); }
-   else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+   if (!WellDone) { throw StdFail_NotDone(); }
+   else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
    else {
      ParSol = par2sol(Index);
      ParArg = pararg2(Index);

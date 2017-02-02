@@ -45,7 +45,7 @@ IGESDraw_LabelDisplay::IGESDraw_LabelDisplay ()    {  }
       (allLeaderEntities->Lower() != 1 || allLeaderEntities->Length() != Ln) ||
       (allLabelLevels->Lower()    != 1 || allLabelLevels->Length()    != Ln) ||
       (allDisplayedEntities->Lower() != 1 || allDisplayedEntities->Length() != Ln))
-    Standard_DimensionMismatch::Raise("IGESDraw_LabelDisplay : Init");
+    throw Standard_DimensionMismatch("IGESDraw_LabelDisplay : Init");
 
   theViews             = allViews; 
   theTextLocations     = allTextLocations; 

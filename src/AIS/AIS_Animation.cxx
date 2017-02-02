@@ -59,7 +59,7 @@ void AIS_Animation::Add (const Handle(AIS_Animation)& theAnimation)
 {
   if (theAnimation.IsNull())
   {
-    Standard_ProgramError::Raise ("AIS_Animation::Add() - attempt to add a NULL animation!");
+    throw Standard_ProgramError("AIS_Animation::Add() - attempt to add a NULL animation!");
   }
 
   for (NCollection_Sequence<Handle(AIS_Animation)>::Iterator anIter (myAnimations); anIter.More(); anIter.Next())
@@ -189,7 +189,7 @@ Standard_Real AIS_Animation::UpdateTimer()
 {
   if (myTimer.IsNull())
   {
-    Standard_ProgramError::Raise ("AIS_Animation::UpdateTimer() - timer was not created!");
+    throw Standard_ProgramError("AIS_Animation::UpdateTimer() - timer was not created!");
   }
 
   const Standard_Real anElapsedTime = myTimer->ElapsedTime();

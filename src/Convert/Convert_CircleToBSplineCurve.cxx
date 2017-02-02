@@ -132,7 +132,7 @@ Convert_CircleToBSplineCurve::Convert_CircleToBSplineCurve
   Standard_Real Eps = Precision::PConfusion();
 
   if ( (delta > (2*M_PI + Eps)) || (delta <= 0.0e0) ) {
-    Standard_DomainError::Raise( "Convert_CircleToBSplineCurve");
+    throw Standard_DomainError( "Convert_CircleToBSplineCurve");
   }
 
   Standard_Integer ii;

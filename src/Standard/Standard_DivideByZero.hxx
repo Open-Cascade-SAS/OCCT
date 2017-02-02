@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Standard_DivideByZero, Standard_NumericError)
 
 #if !defined No_Exception && !defined No_Standard_DivideByZero
   #define Standard_DivideByZero_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Standard_DivideByZero::Raise(MESSAGE);
+  if (CONDITION) throw Standard_DivideByZero(MESSAGE);
 #else
   #define Standard_DivideByZero_Raise_if(CONDITION, MESSAGE)
 #endif

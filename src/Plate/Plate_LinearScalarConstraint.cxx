@@ -36,7 +36,7 @@ Plate_LinearScalarConstraint::Plate_LinearScalarConstraint
 
 Plate_LinearScalarConstraint::Plate_LinearScalarConstraint(const Plate_Array1OfPinpointConstraint& thePPC,const TColgp_Array1OfXYZ& theCoeff)
 {
-  if(theCoeff.Length()!= thePPC.Length()) Standard_DimensionMismatch::Raise();
+  if(theCoeff.Length()!= thePPC.Length()) throw Standard_DimensionMismatch();
   myPPC = new Plate_HArray1OfPinpointConstraint(1, thePPC.Length());
   myCoef = new TColgp_HArray2OfXYZ(1,1,1, theCoeff.Length());
 
@@ -49,7 +49,7 @@ Plate_LinearScalarConstraint::Plate_LinearScalarConstraint(const Plate_Array1OfP
 Plate_LinearScalarConstraint::Plate_LinearScalarConstraint
    (const Plate_Array1OfPinpointConstraint& thePPC,const TColgp_Array2OfXYZ& theCoeff)
 {
-  if(theCoeff.RowLength()!= thePPC.Length()) Standard_DimensionMismatch::Raise();
+  if(theCoeff.RowLength()!= thePPC.Length()) throw Standard_DimensionMismatch();
   myPPC = new Plate_HArray1OfPinpointConstraint(1, thePPC.Length());
   myCoef = new TColgp_HArray2OfXYZ(1, theCoeff.ColLength(),1, theCoeff.RowLength());
   

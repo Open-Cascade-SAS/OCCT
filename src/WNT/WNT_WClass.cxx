@@ -56,7 +56,7 @@ WNT_WClass::WNT_WClass (const TCollection_AsciiString& theClassName,
   if (!RegisterClassW (&aWinClass))
   {
     myClassName.Clear();
-    WNT_ClassDefinitionError::Raise ("Unable to register window class");
+    throw WNT_ClassDefinitionError("Unable to register window class");
   }
   myWndProc = (Standard_Address )aWinClass.lpfnWndProc;
 }

@@ -30,7 +30,7 @@ Vrml_SFImage::Vrml_SFImage()
   Standard_Integer size = aWidth*aHeight;
   if (anArray->Length() != size)
     {
-      Standard_Failure::Raise("The size of Array is no equal (aWidth*aHeight)");
+      throw Standard_Failure("The size of Array is no equal (aWidth*aHeight)");
     }
   myWidth  = aWidth;
   myHeight = aHeight;
@@ -74,7 +74,7 @@ void Vrml_SFImage::SetArray(const Handle(TColStd_HArray1OfInteger)& anArray)
   Standard_Integer size = myWidth*myHeight;
   if (anArray->Length() != size)
     {
-      Standard_Failure::Raise("The size of Array is no equal (aWidth*aHeight)");
+      throw Standard_Failure("The size of Array is no equal (aWidth*aHeight)");
       }
   myArray = anArray; 
   myArrayFlag = Standard_True;

@@ -47,7 +47,7 @@ IGESDefs_GenericData::IGESDefs_GenericData ()    {  }
   if ( !allTypes.IsNull() && !allValues.IsNull() &&
       (allValues->Lower() != 1 || allTypes->Lower() != 1 ||
        allTypes->Length() != allValues->Length() ) )
-    Standard_DimensionMismatch::Raise("IGESDefs_GenericData: Init");
+    throw Standard_DimensionMismatch("IGESDefs_GenericData: Init");
   theNbPropertyValues = nbPropVal;
   theName   = aName;
   theTypes  = allTypes;

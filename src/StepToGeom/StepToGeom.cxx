@@ -1540,12 +1540,14 @@ Handle(Geom_Surface) StepToGeom::MakeSurface (const Handle(StepGeom_Surface)& SS
       }
     }
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
+#ifdef OCCT_DEBUG
 //   ShapeTool_DB ?
-#ifdef OCCT_DEBUG //:s5
+//:s5
     cout<<"Warning: MakeSurface: Exception:";
-    Standard_Failure::Caught()->Print(cout); cout << endl;
+    anException.Print(cout); cout << endl;
 #endif
+    (void)anException;
   }
   return 0;
 }

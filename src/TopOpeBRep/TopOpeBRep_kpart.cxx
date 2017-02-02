@@ -84,7 +84,7 @@ static void FUNBREP_Periodize
 	parline = f;
       }
       else {
-	Standard_ProgramError::Raise("FUNBREP_Periodize");
+	throw Standard_ProgramError("FUNBREP_Periodize");
       }
     } // onfl
     else {
@@ -143,8 +143,7 @@ Standard_Boolean FUNBREP_topowalki_new
 //----------------------------------------------------------------------
 {
   if (L.TypeLineCurve() != TopOpeBRep_WALKING) {
-    Standard_ProgramError::Raise("FUNBREP_topowalki_new : line is not a walking");
-    return Standard_False;
+    throw Standard_ProgramError("FUNBREP_topowalki_new : line is not a walking");
   }
 
   Standard_Boolean CPIfound = !Ifound.IsNull();
@@ -247,8 +246,7 @@ Standard_Boolean FUNBREP_topowalki
 //----------------------------------------------------------------------
 {
   if (L.TypeLineCurve() != TopOpeBRep_WALKING) {
-    Standard_ProgramError::Raise("FUNBREP_topowalki : line is not a walking");
-    return Standard_False;
+    throw Standard_ProgramError("FUNBREP_topowalki : line is not a walking");
   }
 
 #ifdef OCCT_DEBUG
@@ -400,8 +398,7 @@ Standard_Boolean FUNBREP_topogline_new
 //----------------------------------------------------------------------
 {
   if (L.TypeLineCurve() == TopOpeBRep_WALKING) {
-    Standard_ProgramError::Raise("FUNBREP_topogline_new : line is not a GLine");
-    return Standard_False;
+    throw Standard_ProgramError("FUNBREP_topogline_new : line is not a GLine");
   }
 
   Standard_Integer iVP = VP.Index();
@@ -517,8 +514,7 @@ static Standard_Boolean FUNBREP_topogline
 //----------------------------------------------------------------------
 {
   if (L.TypeLineCurve() == TopOpeBRep_WALKING) {
-    Standard_ProgramError::Raise("FUNBREP_topogline : line is not a GLine");
-    return Standard_False;
+    throw Standard_ProgramError("FUNBREP_topogline : line is not a GLine");
   }
   
 #ifdef OCCT_DEBUG

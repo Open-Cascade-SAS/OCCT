@@ -42,10 +42,8 @@ Interface_CopyMap::Interface_CopyMap
    const Handle(Standard_Transient)& res)
 {
   Standard_Integer num = themod->Number(ent);
-  if (num == 0 || num > theres.Upper()) Interface_InterfaceError::Raise
-    ("CopyMap : Bind, Starting Entity not issued from Starting Model");
-  if (!theres.Value(num).IsNull()) Interface_InterfaceError::Raise
-    ("CopyMap : Bind, Starting Entity already bound");
+  if (num == 0 || num > theres.Upper()) throw Interface_InterfaceError("CopyMap : Bind, Starting Entity not issued from Starting Model");
+  if (!theres.Value(num).IsNull()) throw Interface_InterfaceError("CopyMap : Bind, Starting Entity already bound");
   theres.SetValue(num,res);
 }
 

@@ -125,7 +125,7 @@ Handle(Expr_GeneralExpression) Expr_Sum::Derivative (const Handle(Expr_NamedUnkn
 Handle(Expr_GeneralExpression) Expr_Sum::NDerivative (const Handle(Expr_NamedUnknown)& X, const Standard_Integer N) const
 {
   if (N <= 0) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   Expr_SequenceOfGeneralExpression opsder;
   Standard_Integer i;

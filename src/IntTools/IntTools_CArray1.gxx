@@ -97,7 +97,7 @@ IntTools_CArray1::IntTools_CArray1 (const Standard_Integer Length):
   if (theNewLength > 0) {
     // default creator called for each item of the array
     p =  new Array1Item[theNewLength];
-    if (!p) Standard_OutOfMemory::Raise("IntTools_CArray1 : Allocation failed.");
+    if (!p) throw Standard_OutOfMemory("IntTools_CArray1 : Allocation failed.");
     myIsAllocated = Standard_True;
   }
   
@@ -117,7 +117,7 @@ IntTools_CArray1::IntTools_CArray1 (const Standard_Integer Length):
   if (theNewLength > 0) {
     // default creator called for each item of the array
     p =  new Array1Item[theNewLength];
-    if (!p) Standard_OutOfMemory::Raise("IntTools_CArray1 : Allocation failed.");
+    if (!p) throw Standard_OutOfMemory("IntTools_CArray1 : Allocation failed.");
     
     if (myLength!=0) {
       Standard_Integer aBytesPerItem=sizeof(Array1Item);
@@ -139,7 +139,7 @@ IntTools_CArray1::IntTools_CArray1 (const Standard_Integer Length):
   const Array1Item& IntTools_CArray1::Value(const Standard_Integer Index) const
 {
   if (myLength <1 || Index < 0 || Index >= myLength)
-    Standard_OutOfRange::Raise("IntTools_CArray1::Value");
+    throw Standard_OutOfRange("IntTools_CArray1::Value");
   
   return ((Array1Item *)myStart)[Index];
 }
@@ -162,7 +162,7 @@ IntTools_CArray1::IntTools_CArray1 (const Standard_Integer Length):
   Array1Item& IntTools_CArray1::ChangeValue(const Standard_Integer Index)
 {
   if (myLength < 1 || Index < 0 || Index >= myLength)
-    Standard_OutOfRange::Raise("IntTools_CArray1::ChangeValue");
+    throw Standard_OutOfRange("IntTools_CArray1::ChangeValue");
 
   return ((Array1Item *)myStart)[Index];
 }

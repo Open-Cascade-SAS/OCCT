@@ -189,14 +189,13 @@ Standard_Boolean TObj_Model::Load (const TCollection_ExtendedString& theFile)
       {
         isInitOk = initNewModel(isFileEmpty);
       }
-      catch (Standard_Failure)
-      {
+      catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-        Handle(Standard_Failure) anExc = Standard_Failure::Caught();
-        TCollection_ExtendedString aString(anExc->DynamicType()->Name());
-        aString = aString + ": " + anExc->GetMessageString();
+        TCollection_ExtendedString aString(anException.DynamicType()->Name());
+        aString = aString + ": " + anException.GetMessageString();
         Messenger()->Send(Message_Msg("TObj_Appl_Exception") << aString);
 #endif
+        (void)anException;
         Messenger()->Send(Message_Msg("TObj_M_WrongFile") << theFile,
 				 Message_Alarm);
       }

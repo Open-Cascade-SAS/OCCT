@@ -43,8 +43,7 @@ Handle(Standard_Transient) StdLDrivers::Factory (const Standard_GUID& aGUID)
     return model_rd;
   }
  
-  Standard_Failure::Raise ("StdLDrivers : unknown GUID");
-  return NULL;
+  throw Standard_Failure("StdLDrivers : unknown GUID");
 }
 
 //=======================================================================

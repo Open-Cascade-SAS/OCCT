@@ -95,7 +95,7 @@ QANewBRepNaming_BooleanOperationFeat::QANewBRepNaming_BooleanOperationFeat(const
 
 void QANewBRepNaming_BooleanOperationFeat::Init(const TDF_Label& ResultLabel) {  
   if(ResultLabel.IsNull()) 
-    Standard_NullObject::Raise("QANewBRepNaming_BooleanOperationFeat::Init The Result label is Null ..."); 
+    throw Standard_NullObject("QANewBRepNaming_BooleanOperationFeat::Init The Result label is Null ...");
   myResultLabel = ResultLabel; 
 }
 

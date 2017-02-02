@@ -41,7 +41,7 @@ IGESDraw_NetworkSubfigureDef::IGESDraw_NetworkSubfigureDef ()    {  }
 {
   if (!allPointEntities.IsNull())
     if (allPointEntities->Lower() != 1 || allEntities->Lower() != 1)
-      Standard_DimensionMismatch::Raise("IGESDraw_NetworkSubfigureDef : Init");
+      throw Standard_DimensionMismatch("IGESDraw_NetworkSubfigureDef : Init");
   theDepth              = aDepth;
   theName               = aName;
   theEntities           = allEntities;

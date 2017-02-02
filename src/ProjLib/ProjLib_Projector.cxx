@@ -128,7 +128,7 @@ void ProjLib_Projector::SetPeriodic()
 const gp_Lin2d&  ProjLib_Projector::Line()const 
 {
   if (myType != GeomAbs_Line)
-    Standard_NoSuchObject::Raise("ProjLib_Projector::Line");
+    throw Standard_NoSuchObject("ProjLib_Projector::Line");
   return myLin;
 }
 
@@ -141,7 +141,7 @@ const gp_Lin2d&  ProjLib_Projector::Line()const
 const gp_Circ2d&  ProjLib_Projector::Circle()const 
 {
   if (myType != GeomAbs_Circle)
-    Standard_NoSuchObject::Raise("ProjLib_Projector::Circle");
+    throw Standard_NoSuchObject("ProjLib_Projector::Circle");
   return myCirc;
 }
 
@@ -154,7 +154,7 @@ const gp_Circ2d&  ProjLib_Projector::Circle()const
 const gp_Elips2d&  ProjLib_Projector::Ellipse()const 
 {
   if (myType != GeomAbs_Ellipse)
-    Standard_NoSuchObject::Raise("ProjLib_Projector::Ellipse");
+    throw Standard_NoSuchObject("ProjLib_Projector::Ellipse");
   return myElips;
 }
 
@@ -167,7 +167,7 @@ const gp_Elips2d&  ProjLib_Projector::Ellipse()const
 const gp_Hypr2d&  ProjLib_Projector::Hyperbola()const 
 {
   if (myType != GeomAbs_Hyperbola)
-    Standard_NoSuchObject::Raise("ProjLib_Projector::Hyperbola");
+    throw Standard_NoSuchObject("ProjLib_Projector::Hyperbola");
   return myHypr;
 }
 
@@ -180,7 +180,7 @@ const gp_Hypr2d&  ProjLib_Projector::Hyperbola()const
 const gp_Parab2d&  ProjLib_Projector::Parabola()const 
 {
   if (myType != GeomAbs_Parabola)
-    Standard_NoSuchObject::Raise("ProjLib_Projector::Parabola");
+    throw Standard_NoSuchObject("ProjLib_Projector::Parabola");
   return myParab;
 }
 

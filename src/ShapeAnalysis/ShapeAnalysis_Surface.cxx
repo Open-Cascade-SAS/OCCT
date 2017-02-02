@@ -474,12 +474,14 @@ static Handle(Geom_Curve) ComputeIso
     if (utype) iso = surf->UIso (par);
     else       iso = surf->VIso (par);
   }
-  catch(Standard_Failure) {
-    iso.Nullify();
-#ifdef OCCT_DEBUG //:s5
+  catch(Standard_Failure const& anException) {
+#ifdef OCCT_DEBUG
+//:s5
     cout << "\nWarning: ShapeAnalysis_Surface, ComputeIso(): Exception in UVIso(): "; 
-    Standard_Failure::Caught()->Print(cout); cout << endl;
+    anException.Print(cout); cout << endl;
 #endif
+    (void)anException;
+    iso.Nullify();
   }
   return iso;
 }
@@ -1155,22 +1157,24 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D,const Standard_Real 
 
   }  // end Try ValueOfUV (CKY 30-DEC-1997)
 
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
+#ifdef OCCT_DEBUG
 //   Pas de raison mais qui sait. Mieux vaut retourner un truc faux que stopper
 //   L ideal serait d avoir un status ... mais qui va l interroger ?
 //   Avec ce status, on saurait que ce point est a sauter et voila tout
 //   En attendant, on met une valeur "pas idiote" mais surement fausse ...
-    //szv#4:S4163:12Mar99 optimized
+//szv#4:S4163:12Mar99 optimized
+//:s5
+    cout << "\nWarning: ShapeAnalysis_Surface::ValueOfUV(): Exception: "; 
+    anException.Print(cout); cout << endl;
+#endif
+    (void)anException;
     S = (Precision::IsInfinite(uf))? 0 : (uf+ul) / 2.;
     T = (Precision::IsInfinite(vf))? 0 : (vf+vl) / 2.;
-#ifdef OCCT_DEBUG //:s5
-    cout << "\nWarning: ShapeAnalysis_Surface::ValueOfUV(): Exception: "; 
-    Standard_Failure::Caught()->Print(cout); cout << endl;
-#endif
   }
   } //:c9
   //szv#4:S4163:12Mar99 waste raise
-  //if (!computed) Standard_NoSuchObject::Raise("PCurveLib_ProjectPointOnSurf::ValueOfUV untreated surface type");
+  //if (!computed) throw Standard_NoSuchObject("PCurveLib_ProjectPointOnSurf::ValueOfUV untreated surface type");
   if (computed) { if (myGap <= 0) myGap = P3D.Distance (SurfAdapt.Value (S,T)); }
   else { myGap = -1.; S = 0.; T = 0.; }
   return gp_Pnt2d( S, T);
@@ -1359,12 +1363,14 @@ Standard_Real ShapeAnalysis_Surface::UVFromIso(const gp_Pnt& P3d,const Standard_
     U = UU;  V = VV;
 
   }  // fin try RAJOUT
-  catch(Standard_Failure) {
-    theMin = RealLast();    // theMin de depart
-#ifdef OCCT_DEBUG //:s5
+  catch(Standard_Failure const& anException) {
+#ifdef OCCT_DEBUG
+//:s5
     cout << "\nWarning: ShapeAnalysis_Curve::UVFromIso(): Exception: "; 
-    Standard_Failure::Caught()->Print(cout); cout << endl;
+    anException.Print(cout); cout << endl;
 #endif
+    (void)anException;
+    theMin = RealLast();    // theMin de depart
   }
   return theMin;
 }

@@ -1218,7 +1218,7 @@ Handle(IntPatch_Line) IntPatch_PrmPrmIntersection::NewLine (const Handle(Adaptor
 { 
   Standard_Integer NbPnts = NbPntsToInsert + High - Low;
   if(NumLine>NbLines() || NumLine<1  || Low>=High ) 
-    Standard_OutOfRange::Raise(" IntPatch_PrmPrmIntersection NewLine "); 
+    throw Standard_OutOfRange(" IntPatch_PrmPrmIntersection NewLine ");
   //------------------------------------------------------------------
   //--  Indice     :   Low       Low+1     I    I+1         High    --
   //--                                                              --

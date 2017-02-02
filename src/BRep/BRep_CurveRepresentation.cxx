@@ -193,8 +193,7 @@ Standard_Boolean  BRep_CurveRepresentation::IsPolygonOnSurface
 
 const Handle(Geom_Curve)&  BRep_CurveRepresentation::Curve3D()const 
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
-    return *((Handle(Geom_Curve)*) NULL);
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 //=======================================================================
@@ -204,7 +203,7 @@ const Handle(Geom_Curve)&  BRep_CurveRepresentation::Curve3D()const
 
 void BRep_CurveRepresentation::Curve3D(const Handle(Geom_Curve)&)
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 
@@ -218,8 +217,7 @@ void BRep_CurveRepresentation::Curve3D(const Handle(Geom_Curve)&)
 
 const Handle(Geom_Surface)&  BRep_CurveRepresentation::Surface()const 
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
-    return *((Handle(Geom_Surface)*) NULL);
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 
@@ -230,8 +228,7 @@ const Handle(Geom_Surface)&  BRep_CurveRepresentation::Surface()const
 
 const Handle(Geom2d_Curve)&  BRep_CurveRepresentation::PCurve()const 
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
-    return *((Handle(Geom2d_Curve)*) NULL);
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 //=======================================================================
@@ -241,8 +238,7 @@ const Handle(Geom2d_Curve)&  BRep_CurveRepresentation::PCurve()const
 
 const Handle(Geom2d_Curve)&  BRep_CurveRepresentation::PCurve2()const 
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
-    return *((Handle(Geom2d_Curve)*) NULL);
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 //=======================================================================
@@ -252,7 +248,7 @@ const Handle(Geom2d_Curve)&  BRep_CurveRepresentation::PCurve2()const
 
 void  BRep_CurveRepresentation::PCurve(const Handle(Geom2d_Curve)&)
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 //=======================================================================
@@ -262,7 +258,7 @@ void  BRep_CurveRepresentation::PCurve(const Handle(Geom2d_Curve)&)
 
 void  BRep_CurveRepresentation::PCurve2(const Handle(Geom2d_Curve)&)
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 
@@ -273,8 +269,7 @@ void  BRep_CurveRepresentation::PCurve2(const Handle(Geom2d_Curve)&)
 
 const GeomAbs_Shape&  BRep_CurveRepresentation::Continuity()const 
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
-    return *((GeomAbs_Shape*) NULL);
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 //=======================================================================
@@ -284,7 +279,7 @@ const GeomAbs_Shape&  BRep_CurveRepresentation::Continuity()const
 
 void BRep_CurveRepresentation::Continuity(const GeomAbs_Shape )
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 
@@ -295,8 +290,7 @@ void BRep_CurveRepresentation::Continuity(const GeomAbs_Shape )
 
 const Handle(Geom_Surface)&  BRep_CurveRepresentation::Surface2()const 
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
-    return *((Handle(Geom_Surface)*) NULL);
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 
@@ -307,8 +301,7 @@ const Handle(Geom_Surface)&  BRep_CurveRepresentation::Surface2()const
 
 const TopLoc_Location&  BRep_CurveRepresentation::Location2()const 
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
-    return *((TopLoc_Location*) NULL);
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 
@@ -320,8 +313,7 @@ const TopLoc_Location&  BRep_CurveRepresentation::Location2()const
 
 const Handle(Poly_Polygon3D)&  BRep_CurveRepresentation::Polygon3D()const 
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
-    return *((Handle(Poly_Polygon3D)*) NULL);
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 //=======================================================================
@@ -331,7 +323,7 @@ const Handle(Poly_Polygon3D)&  BRep_CurveRepresentation::Polygon3D()const
 
 void BRep_CurveRepresentation::Polygon3D(const Handle(Poly_Polygon3D)&)
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 
@@ -342,8 +334,7 @@ void BRep_CurveRepresentation::Polygon3D(const Handle(Poly_Polygon3D)&)
 
 const Handle(Poly_Polygon2D)&  BRep_CurveRepresentation::Polygon()const 
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
-  return *((Handle(Poly_Polygon2D)*) NULL);
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 
@@ -354,7 +345,7 @@ const Handle(Poly_Polygon2D)&  BRep_CurveRepresentation::Polygon()const
 
 void BRep_CurveRepresentation::Polygon(const Handle(Poly_Polygon2D)&)
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 //=======================================================================
@@ -364,8 +355,7 @@ void BRep_CurveRepresentation::Polygon(const Handle(Poly_Polygon2D)&)
 
 const Handle(Poly_PolygonOnTriangulation)& BRep_CurveRepresentation::PolygonOnTriangulation2() const
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
-  return *((Handle(Poly_PolygonOnTriangulation)*) NULL);
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 //=======================================================================
@@ -376,7 +366,7 @@ const Handle(Poly_PolygonOnTriangulation)& BRep_CurveRepresentation::PolygonOnTr
 void BRep_CurveRepresentation::PolygonOnTriangulation2
   (const Handle(Poly_PolygonOnTriangulation)&) 
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 
@@ -388,7 +378,7 @@ void BRep_CurveRepresentation::PolygonOnTriangulation2
 void BRep_CurveRepresentation::PolygonOnTriangulation
   (const Handle(Poly_PolygonOnTriangulation)&)
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 
@@ -400,8 +390,7 @@ void BRep_CurveRepresentation::PolygonOnTriangulation
 const Handle(Poly_PolygonOnTriangulation)& BRep_CurveRepresentation::PolygonOnTriangulation()
 const
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
-  return *(Handle(Poly_PolygonOnTriangulation)*)NULL;
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 //=======================================================================
 //function : Triangulation
@@ -411,8 +400,7 @@ const
 const Handle(Poly_Triangulation)& BRep_CurveRepresentation::Triangulation()
 const
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
-  return *(Handle(Poly_Triangulation)*)NULL;
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 
@@ -424,8 +412,7 @@ const
 
 const Handle(Poly_Polygon2D)&  BRep_CurveRepresentation::Polygon2()const 
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
-  return *((Handle(Poly_Polygon2D)*) NULL);
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 
@@ -436,6 +423,6 @@ const Handle(Poly_Polygon2D)&  BRep_CurveRepresentation::Polygon2()const
 
 void BRep_CurveRepresentation::Polygon2(const Handle(Poly_Polygon2D)&)
 {
-  Standard_DomainError::Raise("BRep_CurveRepresentation");
+  throw Standard_DomainError("BRep_CurveRepresentation");
 }
 

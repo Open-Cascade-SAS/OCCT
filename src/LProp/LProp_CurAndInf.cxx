@@ -126,7 +126,7 @@ Standard_Integer LProp_CurAndInf::NbPoints() const
 
 Standard_Real LProp_CurAndInf::Parameter(const Standard_Integer N) const 
 {
-  if (N <1 || N > NbPoints ()) {Standard_OutOfRange::Raise();}
+  if (N <1 || N > NbPoints ()) {throw Standard_OutOfRange();}
   return theParams.Value(N);
 }
 
@@ -138,7 +138,7 @@ Standard_Real LProp_CurAndInf::Parameter(const Standard_Integer N) const
 
 LProp_CIType LProp_CurAndInf::Type(const Standard_Integer N) const 
 {  
-  if (N <1 || N > NbPoints()) {Standard_OutOfRange::Raise();}
+  if (N <1 || N > NbPoints()) {throw Standard_OutOfRange();}
   return theTypes.Value(N);
 }
 

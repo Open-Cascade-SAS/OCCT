@@ -41,35 +41,35 @@ inline void IntPatch_GLine::SetLastPoint (const Standard_Integer IndLast)
 
 inline gp_Lin IntPatch_GLine::Line () const
 {
-  if (typ != IntPatch_Lin) {Standard_DomainError::Raise();}
+  if (typ != IntPatch_Lin) {throw Standard_DomainError();}
   return gp_Lin(pos.Axis());
 }
 
 
 inline gp_Circ IntPatch_GLine::Circle () const
 {
-  if (typ != IntPatch_Circle) {Standard_DomainError::Raise();}
+  if (typ != IntPatch_Circle) {throw Standard_DomainError();}
   return gp_Circ(pos,par1);
 }
 
 
 inline gp_Elips IntPatch_GLine::Ellipse () const
 {
-  if (typ != IntPatch_Ellipse) {Standard_DomainError::Raise();}
+  if (typ != IntPatch_Ellipse) {throw Standard_DomainError();}
   return gp_Elips(pos,par1,par2);
 }
 
 
 inline gp_Parab IntPatch_GLine::Parabola () const
 {
-  if (typ != IntPatch_Parabola) {Standard_DomainError::Raise();}
+  if (typ != IntPatch_Parabola) {throw Standard_DomainError();}
   return gp_Parab(pos,par1);
 }
 
 
 inline gp_Hypr IntPatch_GLine::Hyperbola () const
 {
-  if (typ != IntPatch_Hyperbola) {Standard_DomainError::Raise();}
+  if (typ != IntPatch_Hyperbola) {throw Standard_DomainError();}
   return gp_Hypr(pos,par1,par2);
 }
 
@@ -88,14 +88,14 @@ inline Standard_Boolean IntPatch_GLine::HasLastPoint () const
 
 inline const IntPatch_Point& IntPatch_GLine::FirstPoint () const
 {
-  if (!fipt) {Standard_DomainError::Raise();}
+  if (!fipt) {throw Standard_DomainError();}
   return svtx(indf);
 }
 
 
 inline const IntPatch_Point& IntPatch_GLine::LastPoint () const
 {
-  if (!lapt) {Standard_DomainError::Raise();}
+  if (!lapt) {throw Standard_DomainError();}
   return svtx(indl);
 }
 

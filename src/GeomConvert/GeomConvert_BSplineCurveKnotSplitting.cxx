@@ -32,7 +32,7 @@ const Standard_Integer      ContinuityRange
 ) {
 
 
-  if (ContinuityRange < 0)  Standard_RangeError::Raise();
+  if (ContinuityRange < 0)  throw Standard_RangeError();
 
   Standard_Integer FirstIndex = BasisCurve->FirstUKnotIndex();
   Standard_Integer LastIndex  = BasisCurve->LastUKnotIndex();

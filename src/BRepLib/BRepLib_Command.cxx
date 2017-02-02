@@ -49,7 +49,7 @@ Standard_Boolean  BRepLib_Command::IsDone()const
 void  BRepLib_Command::Check()const 
 {
   if (!myDone)
-    StdFail_NotDone::Raise("BRep_API: command not done");
+    throw StdFail_NotDone("BRep_API: command not done");
 }
 
 

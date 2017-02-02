@@ -245,7 +245,7 @@ public:
   {
     if (theWidth <= 0.0)
     {
-      Aspect_AspectFillAreaDefinitionError::Raise ("Bad value for EdgeLineWidth");
+      throw Aspect_AspectFillAreaDefinitionError("Bad value for EdgeLineWidth");
     }
     myEdgeWidth = (float )theWidth;
   }

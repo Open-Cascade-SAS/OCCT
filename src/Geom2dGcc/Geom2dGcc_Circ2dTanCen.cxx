@@ -115,8 +115,8 @@ Standard_Integer Geom2dGcc_Circ2dTanCen::
 gp_Circ2d Geom2dGcc_Circ2dTanCen::
   ThisSolution (const Standard_Integer Index) const 
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
   return cirsol(Index); 
 }
 
@@ -124,8 +124,8 @@ void Geom2dGcc_Circ2dTanCen::
   WhichQualifier(const Standard_Integer Index,
 		       GccEnt_Position& Qualif1) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
   else { Qualif1 = qualifier1(Index); }
 }
 
@@ -135,23 +135,23 @@ void Geom2dGcc_Circ2dTanCen::
 	           Standard_Real&   ParArg,
 	           gp_Pnt2d&        PntSol) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
   else {
     if (TheSame1(Index) == 0) {
       ParSol = par1sol(Index);
       ParArg = pararg1(Index);
       PntSol = pnttg1sol(Index);
     }
-    else { StdFail_NotDone::Raise(); }
+    else { throw StdFail_NotDone(); }
   }
 }
 
 Standard_Boolean Geom2dGcc_Circ2dTanCen::
    IsTheSame1 (const Standard_Integer Index) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
   if (TheSame1(Index) == 0) { return Standard_False; }
   return Standard_True; 
 }

@@ -144,7 +144,7 @@ void CHLRView3D::OnLButtonDown(UINT nFlags, CPoint point)
 			myView->StartRotation(point.x,point.y);  
         break;
         default :
-           Standard_Failure::Raise(" incompatible Current Mode ");
+           throw Standard_Failure(" incompatible Current Mode ");
         break;
         }
     }
@@ -205,7 +205,7 @@ void CHLRView3D::OnLButtonUp(UINT nFlags, CPoint point)
 	       myCurrentMode = CurAction3d_Nothing;
         break;
         default :
-           Standard_Failure::Raise(" incompatible Current Mode ");
+           throw Standard_Failure(" incompatible Current Mode ");
         break;
         } //switch (myCurrentMode)
     } //	else // if ( Ctrl )
@@ -276,7 +276,7 @@ void CHLRView3D::OnMouseMove(UINT nFlags, CPoint point)
 	      myView->Redraw();
         break;
         default :
-           Standard_Failure::Raise(" incompatible Current Mode ");
+           throw Standard_Failure(" incompatible Current Mode ");
         break;
         }//  switch (myCurrentMode)
       }// if ( nFlags & CASCADESHORTCUTKEY )  else 

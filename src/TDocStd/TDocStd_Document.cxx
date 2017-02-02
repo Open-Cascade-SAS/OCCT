@@ -241,7 +241,7 @@ void TDocStd_Document::NewCommand()
 {
 #ifdef OCCT_DEBUG_TRANS
   if (myUndoTransaction.IsOpen() && myData->Transaction() > 1) {
-    Standard_DomainError::Raise ("NewCommand : many open transactions");
+    throw Standard_DomainError("NewCommand : many open transactions");
   }
 #endif
 
@@ -271,7 +271,7 @@ Standard_Boolean TDocStd_Document::HasOpenCommand() const
 void TDocStd_Document::OpenCommand ()
 {
   if (!myIsNestedTransactionMode && myUndoTransaction.IsOpen()) {
-    Standard_DomainError::Raise("TDocStd_Document::OpenCommand : already open");
+    throw Standard_DomainError("TDocStd_Document::OpenCommand : already open");
   }
   OpenTransaction();
 //  if (myUndoLimit != 0) myUndoTransaction.Open();

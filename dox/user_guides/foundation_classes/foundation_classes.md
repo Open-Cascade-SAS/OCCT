@@ -752,7 +752,7 @@ In order to actually convert signals to exceptions, macro *OCC_CATCH_SIGNALS* ne
 
 @subsubsection occt_fcug_2_4_4 Implementation on various platforms. 
 
-The exception handling mechanism in Open CASCADE Technology  is implemented in different ways depending on the preprocessor macros *NO_CXX_EXCEPTIONS*  and *OCC_CONVERT_SIGNALS*, which shall be consistently defined by compilation  procedures for both Open CASCADE Technology and user applications: 
+The exception handling mechanism in Open CASCADE Technology  is implemented in different ways depending on the preprocessor macro *OCC_CONVERT_SIGNALS*, which shall be consistently defined by compilation  procedures for both Open CASCADE Technology and user applications: 
 
 1. On  Windows, these macros are not defined by default, and normal C++  exceptions are used in all cases, including throwing from signal handler. Thus the  behavior is as expected in C++. 
 
@@ -763,18 +763,7 @@ The exception handling mechanism in Open CASCADE Technology  is implemented in d
    * macro *OCC_CATCH_SIGNALS* is necessary (besides call to  *OSD::SetSignal()* described above) for conversion of signals into exceptions;
    * the destructors for automatic C++ objects created in the code  after that macro and till the place where signal is raised will not be called in  case of signal, since no C++ stack unwinding is performed by long jump.
 
-3. On  Linux Open CASCADE Technology can also be compiled in compatibility  mode. In that case macro  *NO_CXX_EXCEPTIONS* is defined and the C++ exceptions are simulated with C long  jumps. As a consequence, the behavior is slightly different from that expected  in the C++ standard.  
-
-While exception handling with  *NO_CXX_EXCEPTIONS* is very similar to C++ by syntax, it has a number of  peculiarities that should be taken into account: 
-
-* try and catch are actually macros defined in the file *Standard_ErrorHandler.hxx*. Therefore, including this file is necessary for  handling OCCT exceptions;
-* due to being a macro, catch cannot contain a declaration of the  exception object after its type; only type is allowed in the catch statement.  Use method *Standard_Failure::Caught()* to access an exception object;
-* catch macro may conflict with some STL classes that might use  catch(...) statements in their header files. So STL headers should not be  included after *Standard_ErrorHandler.hxx*;
-* Open CASCADE Technology try/catch block will not handle normal  C++ exceptions; however this can be achieved using special workarounds;
-* the try macro defines a C++ object that holds an entry point in the  exception handler. Therefore if exception is raised by code located immediately  after the try/catch block but on the same nesting level as *try*, it may  be handled by that *catch*. This may lead to unexpected behavior,  including infinite loop. To avoid that, always surround the try/catch block with curved brackets;
-* the destructors of C++ objects allocated on the stack after  handler initialization are not called by exception raising.
-
-In general, for writing platform-independent code it is recommended  to insert macros *OCC_CATCH_SIGNALS* in try {} blocks or other code where signals  may happen. For compatibility with previous versions of Open CASCADE Technology  the limitations described above for *NO_CXX_EXCEPTIONS* shall be assumed. 
+In general, for writing platform-independent code it is recommended  to insert macros *OCC_CATCH_SIGNALS* in try {} blocks or other code where signals  may happen.
 
 @subsection occt_fcug_2_5 Plug-In  Management
 

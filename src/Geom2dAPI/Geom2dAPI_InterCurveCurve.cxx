@@ -216,17 +216,3 @@ void Geom2dAPI_InterCurveCurve::Segment
   theCurve1 = new Geom2d_TrimmedCurve(myCurve1, aU1, aU2);
   theCurve2 = new Geom2d_TrimmedCurve(myCurve2, aV1, aV2);
 }
-
-//=======================================================================
-//function : Segment
-//purpose  : 
-//=======================================================================
-
-void Geom2dAPI_InterCurveCurve::Segment (const Standard_Integer Index,
-                                         Handle(Geom2d_Curve)&) const 
-{
-  Standard_NotImplemented::Raise(" ");
-  (void)Index; // avoid compiler warning in Release mode
-  Standard_OutOfRange_Raise_if(Index < 0 || Index > NbSegments(),
-			       "Geom2dAPI_InterCurveCurve::Segment");
-}

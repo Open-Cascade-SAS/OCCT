@@ -70,7 +70,7 @@ GccAna_Circ2d3Tan::
    NbrSol = 0;
    if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
 	 Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
-     GccEnt_BadQualifier::Raise();
+     throw GccEnt_BadQualifier();
      return;
    }
 

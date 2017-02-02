@@ -73,7 +73,7 @@ GccAna_Circ2d2TanRad::
 	Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
       !(Qualified2.IsEnclosed() ||
 	Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-    GccEnt_BadQualifier::Raise();
+    throw GccEnt_BadQualifier();
     return;
   }
   gp_Lin2d L1 = Qualified1.Qualified();
@@ -90,7 +90,7 @@ GccAna_Circ2d2TanRad::
   gp_Pnt2d origin2(lx2loc,ly2loc);
   gp_Dir2d normL1(x1dir,y1dir);
   gp_Dir2d normL2(x2dir,y2dir);
-  if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+  if (Radius < 0.0) { throw Standard_NegativeValue(); }
   else {
     if (L1.Direction().IsParallel(L2.Direction(),Precision::Angular())) { 
       WellDone = Standard_True;

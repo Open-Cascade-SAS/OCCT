@@ -53,9 +53,6 @@ public:
   
   Standard_EXPORT BRepClass3d_SolidExplorer();
   
-  //! Raise if called.
-  Standard_EXPORT BRepClass3d_SolidExplorer(const BRepClass3d_SolidExplorer& Oth);
-  
   Standard_EXPORT BRepClass3d_SolidExplorer(const TopoDS_Shape& S);
   
   Standard_EXPORT virtual ~BRepClass3d_SolidExplorer();
@@ -151,6 +148,10 @@ public:
   const TopTools_IndexedMapOfShape& GetMapEV () {return myMapEV;}
   
   Standard_EXPORT void Destroy();
+
+private:
+
+  Standard_EXPORT BRepClass3d_SolidExplorer(const BRepClass3d_SolidExplorer& Oth);
 
 protected:
 

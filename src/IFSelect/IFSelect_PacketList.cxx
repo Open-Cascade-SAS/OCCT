@@ -63,10 +63,8 @@ IFSelect_PacketList::IFSelect_PacketList
   (const Handle(Standard_Transient)& ent)
 {
   Standard_Integer num = themodel->Number(ent);
-  if (num == 0) Interface_InterfaceError::Raise
-    ("PacketList:Add, Entity not in Model");
-  if (thelast == 0) Interface_InterfaceError::Raise
-    ("PacketList:Add, no Packet yet added");
+  if (num == 0) throw Interface_InterfaceError("PacketList:Add, Entity not in Model");
+  if (thelast == 0) throw Interface_InterfaceError("PacketList:Add, no Packet yet added");
   if (theflags(num) != 0) return;
   theflags(num) = 1;
   thedupls(num) ++;

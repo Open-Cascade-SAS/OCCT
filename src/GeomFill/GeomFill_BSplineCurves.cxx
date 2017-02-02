@@ -182,7 +182,7 @@ Standard_Integer SetSameDistribution(Handle(Geom_BSplineCurve)& C1,
     }
   }
   else {
-    Standard_ConstructionError::Raise(" ");
+    throw Standard_ConstructionError(" ");
   }
   
   return C1->NbPoles();
@@ -286,7 +286,7 @@ void  GeomFill_BSplineCurves::Init
 
   if(Type == GeomFill_CoonsStyle) {
     if(NbUPoles < 4 || NbVPoles < 4)
-      Standard_ConstructionError::Raise("GeomFill_BSplineCurves: invalid filling style");
+      throw Standard_ConstructionError("GeomFill_BSplineCurves: invalid filling style");
   }
 
   TColgp_Array1OfPnt P1(1,NbUPoles);
@@ -537,7 +537,7 @@ void  GeomFill_BSplineCurves::Init
     }
     
     if(!IsOK)
-      Standard_OutOfRange::Raise("GeomFill_BSplineCurves: Courbes non jointives");
+      throw Standard_OutOfRange("GeomFill_BSplineCurves: Courbes non jointives");
 
     Standard_Integer NbUPoles = CC1->NbPoles();
     Standard_Integer NbVPoles = CC2->NbPoles();

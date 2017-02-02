@@ -62,9 +62,9 @@ Geom2dGcc_Circ2dTanCenGeo (const Geom2dGcc_QCurve&  Qualified1,
   Geom2dAdaptor_Curve curve = Qualified1.Qualified();
   Extrema_ExtPC2d distmin(Pcenter,curve,Geom2dGcc_CurveTool::NbSamples(curve),
     Geom2dGcc_CurveTool::EpsX(curve,Tol),Tol);
-  if (!distmin.IsDone() ) { Standard_Failure::Raise(); }
+  if (!distmin.IsDone() ) { throw Standard_Failure(); }
   Standard_Integer nbext = distmin.NbExt();
-  if(nbext==0) { Standard_Failure::Raise(); }
+  if(nbext==0) { throw Standard_Failure(); }
   while (i<=nbext) {
     thePar = distmin.Point(i).Parameter();
     if (distmin.SquareDistance(i)<theDist2(1) && 
@@ -130,7 +130,7 @@ NbSolutions () const { return NbrSol; }
 gp_Circ2d Geom2dGcc_Circ2dTanCenGeo::
 ThisSolution (const Standard_Integer Index) const 
 {
-  if (Index > NbrSol || Index <= 0) Standard_OutOfRange::Raise();
+  if (Index > NbrSol || Index <= 0) throw Standard_OutOfRange();
 
   return cirsol(Index);
 }
@@ -139,8 +139,8 @@ void Geom2dGcc_Circ2dTanCenGeo::
 WhichQualifier(const Standard_Integer Index   ,
                GccEnt_Position& Qualif1 ) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
   else {
     Qualif1 = qualifier1(Index);
   }
@@ -152,10 +152,10 @@ Tangency1 (const Standard_Integer Index,
            Standard_Real&   ParArg,
            gp_Pnt2d& PntSol) const{
              if (!WellDone) {
-               StdFail_NotDone::Raise();
+               throw StdFail_NotDone();
              }
              else if (Index <= 0 ||Index > NbrSol) {
-               Standard_OutOfRange::Raise();
+               throw Standard_OutOfRange();
              }
              else {
                PntSol = gp_Pnt2d(pnttg1sol(Index));

@@ -134,7 +134,7 @@ void BlendFunc_CSCircular::Set(const Standard_Real Param)
 
 void BlendFunc_CSCircular::Set(const Standard_Real, const Standard_Real)
 {
-  Standard_NotImplemented::Raise("BlendFunc_CSCircular::Set");
+  throw Standard_NotImplemented("BlendFunc_CSCircular::Set");
 }
 
 //=======================================================================
@@ -469,7 +469,7 @@ Standard_Boolean BlendFunc_CSCircular::IsTangencyPoint () const
 const gp_Vec& BlendFunc_CSCircular::TangentOnS () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_CSCircular::TangentOnS");
+    throw Standard_DomainError("BlendFunc_CSCircular::TangentOnS");
   return tgs;
 }
 
@@ -481,7 +481,7 @@ const gp_Vec& BlendFunc_CSCircular::TangentOnS () const
 const gp_Vec& BlendFunc_CSCircular::TangentOnC () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_CSCircular::TangentOnC");
+    throw Standard_DomainError("BlendFunc_CSCircular::TangentOnC");
   return tgc;
 }
 
@@ -493,7 +493,7 @@ const gp_Vec& BlendFunc_CSCircular::TangentOnC () const
 const gp_Vec2d& BlendFunc_CSCircular::Tangent2d () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_CSCircular::Tangent2d");
+    throw Standard_DomainError("BlendFunc_CSCircular::Tangent2d");
   return tg2d;
 }
 
@@ -592,7 +592,7 @@ Standard_Boolean BlendFunc_CSCircular::GetSection(const Standard_Real Param,
 						  TColgp_Array1OfVec& tabV)
 {
   Standard_Integer NbPoint=tabP.Length();
-  if (NbPoint != tabV.Length() || NbPoint < 2) {Standard_RangeError::Raise();}
+  if (NbPoint != tabV.Length() || NbPoint < 2) {throw Standard_RangeError();}
 
   Standard_Integer i, lowp = tabP.Lower(), lowv = tabV.Lower();
 

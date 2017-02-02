@@ -177,7 +177,7 @@ void BRepFeat_MakeDPrism::Add(const TopoDS_Edge& E,
     }
   }
   if (!exp.More()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   for (exp.Init(myPbase,TopAbs_EDGE);exp.More();exp.Next()) {
@@ -186,7 +186,7 @@ void BRepFeat_MakeDPrism::Add(const TopoDS_Edge& E,
     }
   }
   if (!exp.More()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   if (!mySlface.IsBound(F)) {
@@ -298,11 +298,11 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& Until)
   if (trc) cout << "BRepFeat_MakeDPrism::Perform(Until)" << endl;
 #endif
   if (Until.IsNull()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   TopExp_Explorer exp(Until, TopAbs_FACE);
   if (!exp.More()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   //  myPbase.Orientation(TopAbs_FORWARD);
 
@@ -434,7 +434,7 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From,
   if (trc) cout << "BRepFeat_MakeDPrism::Perform(From,Until)" << endl;
 #endif
   if (From.IsNull() || Until.IsNull()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   if (!mySkface.IsNull()) {
@@ -457,11 +457,11 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From,
 
   TopExp_Explorer exp(From, TopAbs_FACE);
   if (!exp.More()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   exp.Init(Until, TopAbs_FACE);
   if (!exp.More()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   mySFrom = From;
   Standard_Boolean Trff = TransformShapeFU(0);
@@ -652,7 +652,7 @@ void BRepFeat_MakeDPrism::PerformFromEnd(const TopoDS_Shape& Until)
   if (trc) cout << "BRepFeat_MakeDPrism::PerformFromEnd(From,Until)" << endl;
 #endif
   if (Until.IsNull()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   if (!mySkface.IsNull() && Until.IsSame(mySkface)) {
     PerformUntilEnd();
@@ -661,7 +661,7 @@ void BRepFeat_MakeDPrism::PerformFromEnd(const TopoDS_Shape& Until)
   TopExp_Explorer exp;
   exp.Init(Until, TopAbs_FACE);
   if (!exp.More()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   //  myPbase.Orientation(TopAbs_FORWARD);
   myPerfSelection = BRepFeat_SelectionShU;
@@ -876,7 +876,7 @@ void BRepFeat_MakeDPrism::PerformUntilHeight(const TopoDS_Shape& Until,
   }
   TopExp_Explorer exp(Until, TopAbs_FACE);
   if (!exp.More()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   //  myPbase.Orientation(TopAbs_FORWARD);
   myGluedF.Clear();

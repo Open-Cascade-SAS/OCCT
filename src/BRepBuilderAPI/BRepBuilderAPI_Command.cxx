@@ -53,7 +53,7 @@ Standard_Boolean  BRepBuilderAPI_Command::IsDone()const
 void  BRepBuilderAPI_Command::Check()const 
 {
   if (!myDone)
-    StdFail_NotDone::Raise("BRep_API: command not done");
+    throw StdFail_NotDone("BRep_API: command not done");
 }
 
 

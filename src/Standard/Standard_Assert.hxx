@@ -146,7 +146,7 @@ inline void Standard_ASSERT_DO_NOTHING() {}
 
 //! Raise exception (Standard_ProgramError) with the provided message
 #define Standard_ASSERT_RAISE(theExpr, theDesc)                                  \
-  Standard_ASSERT(theExpr, theDesc, Standard_ProgramError::Raise(                \
+  Standard_ASSERT(theExpr, theDesc, throw Standard_ProgramError(                \
       "*** ERROR: ASSERT in file '" __FILE__ "': \n" theDesc " (" #theExpr ")" ) )
 
 //! Return from the current function with specified value (empty

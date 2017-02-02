@@ -72,8 +72,7 @@ void  IFSelect_SelectAnyList::SetRange
 {
   Interface_EntityIterator input = InputResult(G);
   KeepInputEntity (input);    // selon type voulu
-  if (input.NbEntities() > 1) Interface_InterfaceError::Raise
-    ("SelectAnyList : more than ONE Entity in input");
+  if (input.NbEntities() > 1) throw Interface_InterfaceError("SelectAnyList : more than ONE Entity in input");
   if (input.NbEntities() == 0) return input;
 
   Handle(Standard_Transient) ent;

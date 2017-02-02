@@ -243,7 +243,7 @@ Standard_Boolean CDM_Document::IsInSession
   if(aReferenceIdentifier == 0) return Standard_True;
   Handle(CDM_Reference) theReference=Reference(aReferenceIdentifier);
   if(theReference.IsNull())
-    Standard_NoSuchObject::Raise("CDM_Document::IsInSession: "
+    throw Standard_NoSuchObject("CDM_Document::IsInSession: "
                                  "invalid reference identifier");
   return theReference->IsInSession();
 }
@@ -259,7 +259,7 @@ Standard_Boolean CDM_Document::IsStored
   if(aReferenceIdentifier == 0) return IsStored();
   Handle(CDM_Reference) theReference=Reference(aReferenceIdentifier);
   if(theReference.IsNull())
-    Standard_NoSuchObject::Raise("CDM_Document::IsInSession: "
+    throw Standard_NoSuchObject("CDM_Document::IsInSession: "
                                  "invalid reference identifier");
   return theReference->IsStored();
 }
@@ -273,7 +273,7 @@ TCollection_ExtendedString CDM_Document::Name
                                 (const Standard_Integer aReferenceIdentifier) const
 {
   if(!IsStored(aReferenceIdentifier))
-    Standard_DomainError::Raise("CDM_Document::Name: document is not stored");
+    throw Standard_DomainError("CDM_Document::Name: document is not stored");
 
   if(aReferenceIdentifier == 0) return myMetaData->Name();
 
@@ -599,7 +599,7 @@ Handle(CDM_Document) CDM_Document::FindFromPresentation
     Standard_SStream aMsg;
     aMsg <<"No document having this presentation: " << x << " does exist."
          << endl << (char)0;
-    Standard_NoSuchObject::Raise(aMsg);
+    throw Standard_NoSuchObject(aMsg.str().c_str());
   }
   return getPresentations()(x);
 }
@@ -694,7 +694,7 @@ void CDM_Document::UnsetIsStored()
 Handle(CDM_MetaData) CDM_Document::MetaData() const
 {
   if(myMetaData.IsNull())
-    Standard_NoSuchObject::Raise("cannot furnish the MetaData of an object "
+    throw Standard_NoSuchObject("cannot furnish the MetaData of an object "
                                  "which is not stored");
   return myMetaData;
 }
@@ -726,7 +726,7 @@ TCollection_ExtendedString CDM_Document::RequestedComment() const
 
 TCollection_ExtendedString CDM_Document::Folder() const {
   if(myMetaData.IsNull())
-    Standard_NoSuchObject::Raise("cannot furnish the folder of an object "
+    throw Standard_NoSuchObject("cannot furnish the folder of an object "
                                  "which is not stored");
   return myMetaData->Folder();
 }
@@ -885,17 +885,17 @@ void CDM_Document::Close()
 {
   switch (CanClose()) {
   case CDM_CCS_NotOpen: 
-    Standard_Failure::Raise("cannot close a document that has not been opened");
+    throw Standard_Failure("cannot close a document that has not been opened");
     break;
   case CDM_CCS_UnstoredReferenced:
-     Standard_Failure::Raise("cannot close an unstored document which is referenced");
+     throw Standard_Failure("cannot close an unstored document which is referenced");
     break;
   case CDM_CCS_ModifiedReferenced:
-    Standard_Failure::Raise("cannot close a document which is referenced when "
+    throw Standard_Failure("cannot close a document which is referenced when "
                             "the document has been modified since it was stored.");
     break;
   case CDM_CCS_ReferenceRejection:
-    Standard_Failure::Raise("cannot close this document because a document "
+    throw Standard_Failure("cannot close this document because a document "
                             "referencing it refuses");
     break;
   default:
@@ -967,7 +967,7 @@ void CDM_Document::CloseReference (const Handle(CDM_Document)& /*aDocument*/,
 const Handle(CDM_Application)& CDM_Document::Application() const
 {
   if(!IsOpened())
-    Standard_Failure::Raise("this document has not yet been opened "
+    throw Standard_Failure("this document has not yet been opened "
                             "by any application");
   return myApplication;
 }
@@ -1125,7 +1125,7 @@ Handle(Resource_Manager) CDM_Document::StorageResource()
     Standard_SStream aMsg;
     aMsg << "this document of format "<< StorageFormat()
          << " has not yet been opened by any application. "<< endl;
-    Standard_Failure::Raise(aMsg);
+    throw Standard_Failure(aMsg.str().c_str());
   }
   return myApplication->Resources();
 }  

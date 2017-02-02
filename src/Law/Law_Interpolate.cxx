@@ -127,7 +127,7 @@ static void BuildTangents(const TColStd_Array1OfReal&  PointsArray,
   Standard_Real *point_array, *parameter_array, eval_result[2];
   
   if ( PointsArray.Length() < 3) {
-    Standard_ConstructionError::Raise(); 
+    throw Standard_ConstructionError();
   }   
   if (PointsArray.Length() == 3) {
     degree = 2;
@@ -210,7 +210,7 @@ Law_Interpolate::Law_Interpolate
 //Standard_Integer ii;
   if (PeriodicFlag) {
     if ((PointsPtr->Length()) + 1 != ParametersPtr->Length()) {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
   }
   myTangents = new TColStd_HArray1OfReal(myPoints->Lower(),
@@ -219,7 +219,7 @@ Law_Interpolate::Law_Interpolate
 						myPoints->Upper());
   Standard_Boolean result = CheckParameters(ParametersPtr->Array1());
   if (!result) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   myTangentFlags->Init(Standard_False);
 }
@@ -239,7 +239,7 @@ void Law_Interpolate::Load
   myTangentFlags = TangentFlagsPtr;
   if (Tangents.Length() != myPoints->Length() ||
       TangentFlagsPtr->Length() != myPoints->Length()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   myTangents = new TColStd_HArray1OfReal(Tangents.Lower(),Tangents.Upper());
   for (ii = Tangents.Lower() ; ii <= Tangents.Upper() ; ii++ ) {
@@ -634,7 +634,7 @@ void Law_Interpolate::PerformNonPeriodic()
 const Handle(Law_BSpline)& Law_Interpolate::Curve() const 
 {
   if ( !myIsDone) 
-    StdFail_NotDone::Raise(" ");
+    throw StdFail_NotDone(" ");
   return myCurve;
 }
 

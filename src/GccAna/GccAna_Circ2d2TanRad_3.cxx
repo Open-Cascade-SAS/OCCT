@@ -70,7 +70,7 @@ GccAna_Circ2d2TanRad::
   WellDone = Standard_False;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || 
 	Qualified1.IsUnqualified())) {
-    GccEnt_BadQualifier::Raise();
+    throw GccEnt_BadQualifier();
     return;
   }
   Standard_Integer nbsol = 0;
@@ -87,7 +87,7 @@ GccAna_Circ2d2TanRad::
   Standard_Real cxloc = Point2.X();
   Standard_Real cyloc = Point2.Y();
 
-  if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+  if (Radius < 0.0) { throw Standard_NegativeValue(); }
 
   else {
     if ( displ1-Radius*2.0 > Tol) { WellDone = Standard_True; }

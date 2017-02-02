@@ -43,7 +43,7 @@ IGESDefs_AttributeTable::IGESDefs_AttributeTable ()    {  }
   (const Handle(TColStd_HArray2OfTransient)& attributes)
 {
   if (attributes->LowerCol() != 1 || attributes->LowerRow() != 1)
-    Standard_DimensionMismatch::Raise("IGESDefs_AttributeTable : Init");
+    throw Standard_DimensionMismatch("IGESDefs_AttributeTable : Init");
   theAttributes = attributes;
 
   Standard_Integer fn = FormNumber();

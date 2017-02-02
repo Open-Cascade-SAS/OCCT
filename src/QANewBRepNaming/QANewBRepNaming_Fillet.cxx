@@ -57,7 +57,7 @@ QANewBRepNaming_Fillet::QANewBRepNaming_Fillet(const TDF_Label& theLabel):
 void QANewBRepNaming_Fillet::Init(const TDF_Label& theLabel)
 {
   if(theLabel.IsNull())
-    Standard_NullObject::Raise("QANewBRepNaming_Fillet::Init: The Result label is Null ...");
+    throw Standard_NullObject("QANewBRepNaming_Fillet::Init: The Result label is Null ...");
   myResultLabel = theLabel;
 }
 

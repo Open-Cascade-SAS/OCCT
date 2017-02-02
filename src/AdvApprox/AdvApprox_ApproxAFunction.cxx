@@ -459,7 +459,7 @@ void AdvApprox_ApproxAFunction::Approximation(
          Continuity = GeomAbs_C2 ;
          break ;
       default:
-        Standard_ConstructionError::Raise();
+        throw Standard_ConstructionError();
   }
 
 //--------------------- Choix du nombre de points ----------------------
@@ -683,7 +683,7 @@ void AdvApprox_ApproxAFunction::Perform(const Standard_Integer Num1DSS,
       myLast < myFirst ||
       myMaxDegree < 1  ||
       myMaxSegments < 0)
-    Standard_ConstructionError::Raise(); 
+    throw Standard_ConstructionError();
   if (myMaxDegree > 14) { 
       myMaxDegree = 14 ;
   }
@@ -717,7 +717,7 @@ void AdvApprox_ApproxAFunction::Perform(const Standard_Integer Num1DSS,
     ContinuityOrder = 2 ;
     break ;
   default:
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   Standard_Real ApproxStartEnd[2] ;
   Standard_Integer NumMaxCoeffs = Max(myMaxDegree + 1, 2 * ContinuityOrder + 2);
@@ -1019,7 +1019,7 @@ Handle(TColStd_HArray1OfReal)
   if (D <= 0 ||
       D > 3) {
     
-    Standard_OutOfRange::Raise() ;
+    throw Standard_OutOfRange() ;
   }
   switch (D) {
   case 1:
@@ -1059,7 +1059,7 @@ Handle(TColStd_HArray1OfReal)
   if (D <= 0 ||
       D > 3) {
     
-    Standard_OutOfRange::Raise() ;
+    throw Standard_OutOfRange() ;
   }
   switch (D) {
   case 1:

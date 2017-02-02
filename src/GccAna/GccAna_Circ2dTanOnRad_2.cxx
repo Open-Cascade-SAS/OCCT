@@ -67,7 +67,7 @@ GccAna_Circ2dTanOnRad::
    NbrSol = 0;
    Standard_Real dp1lin = OnLine.Distance(Point1);
 
-   if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+   if (Radius < 0.0) { throw Standard_NegativeValue(); }
    else {
      if (dp1lin > Radius+Tol) { WellDone = Standard_True; }
      Standard_Real xc;

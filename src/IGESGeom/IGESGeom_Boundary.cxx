@@ -40,7 +40,7 @@ IGESGeom_Boundary::IGESGeom_Boundary ()    {  }
   if ( allSenses->Lower()          != 1 ||
       (allModelCurves->Lower()     != 1 || allModelCurves->Length() != num1) ||
       (allParameterCurves->Lower() != 1 || allParameterCurves->Length() != num1))
-    Standard_DimensionMismatch::Raise("IGESGeom_Boundary: Init");
+    throw Standard_DimensionMismatch("IGESGeom_Boundary: Init");
 
   theType            = aType;
   thePreference      = aPreference;

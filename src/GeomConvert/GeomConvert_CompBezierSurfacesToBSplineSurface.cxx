@@ -255,7 +255,7 @@ GeomConvert_CompBezierSurfacesToBSplineSurface(
     decu = 3;
     break;
   default:
-    Standard_ConstructionError::Raise( 
+    throw Standard_ConstructionError(
      "GeomConvert_CompBezierSurfacesToBSpl:: UContinuity error");
   }
   
@@ -273,7 +273,7 @@ GeomConvert_CompBezierSurfacesToBSplineSurface(
     decv = 3;
     break;
   default:
-    Standard_ConstructionError::Raise( 
+    throw Standard_ConstructionError(
      "GeomConvert_CompBezierSurfacesToBSpl:: VContinuity error");
   }
 

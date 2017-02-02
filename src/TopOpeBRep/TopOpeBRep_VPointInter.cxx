@@ -85,7 +85,7 @@ const TopoDS_Shape&  TopOpeBRep_VPointInter::ArcOnS2() const
 const TopoDS_Shape& TopOpeBRep_VPointInter::VertexOnS1() const
 {
   if ( !myPPOI->IsVertexOnS1() )
-    Standard_DomainError::Raise("TopOpeBRep_VPointInter::VertexOnS1");
+    throw Standard_DomainError("TopOpeBRep_VPointInter::VertexOnS1");
 
   const Handle(BRepTopAdaptor_HVertex)* HBRTAHV = (Handle(BRepTopAdaptor_HVertex)*)&(myPPOI->VertexOnS1());
   return (*HBRTAHV)->Vertex();
@@ -98,7 +98,7 @@ const TopoDS_Shape& TopOpeBRep_VPointInter::VertexOnS1() const
 const TopoDS_Shape& TopOpeBRep_VPointInter::VertexOnS2() const 
 {
   if ( !myPPOI->IsVertexOnS2() )
-    Standard_DomainError::Raise("TopOpeBRep_VPointInter::VertexOnS2");
+    throw Standard_DomainError("TopOpeBRep_VPointInter::VertexOnS2");
 
   const Handle(BRepTopAdaptor_HVertex)* HBRTAHV = (Handle(BRepTopAdaptor_HVertex)*)&(myPPOI->VertexOnS2());
   return (*HBRTAHV)->Vertex();
@@ -112,7 +112,7 @@ void TopOpeBRep_VPointInter::State(const TopAbs_State S,const Standard_Integer I
 {
   if      (I == 1) myState1 = S;
   else if (I == 2) myState2 = S;
-  else Standard_DomainError::Raise("TopOpeBRep_VPointInter::State");
+  else throw Standard_DomainError("TopOpeBRep_VPointInter::State");
   UpdateKeep();
 }
 
@@ -124,7 +124,7 @@ TopAbs_State TopOpeBRep_VPointInter::State(const Standard_Integer I) const
 {
   if      (I == 1) return myState1;
   else if (I == 2) return myState2;
-  else { Standard_DomainError::Raise("TopOpeBRep_VPointInter::State"); return TopAbs_UNKNOWN; }
+  else { throw Standard_DomainError("TopOpeBRep_VPointInter::State");}
 }
 
 //=======================================================================
@@ -151,8 +151,7 @@ const TopoDS_Shape& TopOpeBRep_VPointInter::EdgeON(const Standard_Integer I) con
 {
   if      (I == 1) return myEdgeON1;
   else if (I == 2) return myEdgeON2;
-  else Standard_DomainError::Raise("TopOpeBRep_VPointInter::EdgeON");
-  return myNullShape;
+  else throw Standard_DomainError("TopOpeBRep_VPointInter::EdgeON");
 }
 
 //=======================================================================
@@ -163,8 +162,7 @@ Standard_Real TopOpeBRep_VPointInter::EdgeONParameter(const Standard_Integer I) 
 {
   if      (I == 1) return myEdgeONPar1;
   else if (I == 2) return myEdgeONPar2;
-  else Standard_DomainError::Raise("TopOpeBRep_VPointInter::EdgeONParameter");
-  return 0.;
+  else throw Standard_DomainError("TopOpeBRep_VPointInter::EdgeONParameter");
 }
 
 //=======================================================================

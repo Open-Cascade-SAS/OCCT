@@ -35,7 +35,7 @@ IGESDimen_LeaderArrow::IGESDimen_LeaderArrow ()    {  }
    const Handle(TColgp_HArray1OfXY)& segments)
 {
   if (segments->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESDimen_LeaderArrow : Init");
+    throw Standard_DimensionMismatch("IGESDimen_LeaderArrow : Init");
   theArrowHeadHeight = height;
   theArrowHeadWidth  = width;
   theZDepth          = depth ;
@@ -47,8 +47,7 @@ IGESDimen_LeaderArrow::IGESDimen_LeaderArrow ()    {  }
 
     void  IGESDimen_LeaderArrow::SetFormNumber (const Standard_Integer form)
 {
-  if (form < 1 || form > 12) Standard_OutOfRange::Raise
-    ("IGESDimen_LeaderArrow : SetFormNumber");
+  if (form < 1 || form > 12) throw Standard_OutOfRange("IGESDimen_LeaderArrow : SetFormNumber");
   InitTypeAndForm(214,form);
 }
 

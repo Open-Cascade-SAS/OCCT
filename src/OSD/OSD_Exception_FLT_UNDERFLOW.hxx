@@ -25,7 +25,7 @@ DEFINE_STANDARD_HANDLE(OSD_Exception_FLT_UNDERFLOW, OSD_Exception)
 
 #if !defined No_Exception && !defined No_OSD_Exception_FLT_UNDERFLOW
   #define OSD_Exception_FLT_UNDERFLOW_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) OSD_Exception_FLT_UNDERFLOW::Raise(MESSAGE);
+  if (CONDITION) throw OSD_Exception_FLT_UNDERFLOW(MESSAGE);
 #else
   #define OSD_Exception_FLT_UNDERFLOW_Raise_if(CONDITION, MESSAGE)
 #endif

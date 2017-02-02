@@ -34,29 +34,29 @@ inline IntRes2d_Intersection::IntRes2d_Intersection(const IntRes2d_Intersection&
 }
 //----------------------------------------------------------------------
 inline Standard_Boolean IntRes2d_Intersection::IsEmpty() const {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return ((lpnt.Length() == 0) && (lseg.Length() == 0));
 }
 //----------------------------------------------------------------------
 inline Standard_Integer IntRes2d_Intersection::NbPoints() const {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return lpnt.Length();
 }
 //----------------------------------------------------------------------
 inline const IntRes2d_IntersectionPoint&
   IntRes2d_Intersection::Point( const Standard_Integer N) const {
-    if (!done) {StdFail_NotDone::Raise();}
+    if (!done) {throw StdFail_NotDone();}
     return lpnt(N);
   }
 //----------------------------------------------------------------------
 inline Standard_Integer IntRes2d_Intersection::NbSegments() const {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return lseg.Length();
 }
 //----------------------------------------------------------------------
 inline const IntRes2d_IntersectionSegment& 
   IntRes2d_Intersection::Segment(const Standard_Integer N) const {
-    if (!done) {StdFail_NotDone::Raise();}
+    if (!done) {throw StdFail_NotDone();}
     return lseg(N);
   }
 //----------------------------------------------------------------------

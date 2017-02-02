@@ -59,7 +59,7 @@ QANewBRepNaming_Prism::QANewBRepNaming_Prism(const TDF_Label& Label):QANewBRepNa
 
 void QANewBRepNaming_Prism::Init(const TDF_Label& Label) {
   if(Label.IsNull())
-    Standard_NullObject::Raise("QANewBRepNaming_Prism::Init The Result label is Null ..."); 
+    throw Standard_NullObject("QANewBRepNaming_Prism::Init The Result label is Null ...");
   myResultLabel = Label;
 }
 

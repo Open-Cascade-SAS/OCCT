@@ -167,7 +167,7 @@ Standard_Boolean LProp_CLProps::IsTangentDefined ()
 void  LProp_CLProps::Tangent (Dir& D)
 {
   if(!IsTangentDefined())
-    LProp_NotDefined::Raise();
+    throw LProp_NotDefined();
   
   if(mySignificantFirstDerivativeOrder == 1)
     D = Dir(myDerivArr[0]);
@@ -251,7 +251,7 @@ void  LProp_CLProps::Normal (Dir& D)
   Standard_Real c = Curvature();
   if(c==RealLast() || Abs(c) <= myLinTol)
   {
-    LProp_NotDefined::Raise("LProp_CLProps::Normal(...):"
+    throw LProp_NotDefined("LProp_CLProps::Normal(...):"
         "Curvature is null or infinity"); 
   }
 
@@ -267,7 +267,7 @@ void  LProp_CLProps::CentreOfCurvature (Pnt& P)
 {
   if(Abs(Curvature()) <= myLinTol)
   {
-    LProp_NotDefined::Raise(); 
+    throw LProp_NotDefined();
   }
 
   // we used here the following vector relation 

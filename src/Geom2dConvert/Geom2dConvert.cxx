@@ -133,10 +133,10 @@ const Standard_Boolean               SameOrientation
 
   Standard_Integer TheFirst = C->FirstUKnotIndex ();
   Standard_Integer TheLast  = C->LastUKnotIndex  ();
-  if (FromK1 == ToK2)  Standard_DomainError::Raise();
+  if (FromK1 == ToK2)  throw Standard_DomainError();
   Standard_Integer FirstK = Min (FromK1, ToK2);
   Standard_Integer LastK  = Max (FromK1, ToK2);
-  if (FirstK < TheFirst || LastK > TheLast) Standard_OutOfRange::Raise();
+  if (FirstK < TheFirst || LastK > TheLast) throw Standard_OutOfRange();
 
   Handle(Geom2d_BSplineCurve) NewCurve = Handle(Geom2d_BSplineCurve)::DownCast(C->Copy());
 
@@ -383,10 +383,10 @@ const Convert_ParameterisationType  Parameterisation)
 					  MaxSegments, MaxDegree);
       if (ApprCOffs.HasResult())
 	TheCurve = ApprCOffs.Curve();
-      else  Standard_ConstructionError::Raise();
+      else  throw Standard_ConstructionError();
     }
 
-    else { Standard_DomainError::Raise("No such curve"); }
+    else { throw Standard_DomainError("No such curve"); }
     
   }
   
@@ -449,10 +449,10 @@ const Convert_ParameterisationType  Parameterisation)
 					  MaxSegments, MaxDegree);
       if (ApprCOffs.HasResult())
 	TheCurve = ApprCOffs.Curve();
-      else  Standard_ConstructionError::Raise();
+      else  throw Standard_ConstructionError();
     }
 
-    else { Standard_DomainError::Raise(); }
+    else { throw Standard_DomainError(); }
   }
   
   return TheCurve;
@@ -875,7 +875,7 @@ static GeomAbs_Shape Continuity(const Handle(Geom2d_Curve)& C1,
     }
   }
   else
-    Standard_Failure::Raise("Courbes non jointives");
+    throw Standard_Failure("Courbes non jointives");
   return cont ;
 }
 
@@ -968,7 +968,7 @@ void  Geom2dConvert::ConcatG1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
 		    PreLast,First,
 		    Standard_True,
 		    Standard_True)<GeomAbs_C0)
-       Standard_ConstructionError::Raise("Geom2dConvert curves not C0") ;                //renvoi d'une erreur
+       throw Standard_ConstructionError("Geom2dConvert curves not C0") ;                //renvoi d'une erreur
      else{
        if (Continuity(ArrayOfCurves(i-1),
 		      ArrayOfCurves(i),
@@ -1117,7 +1117,7 @@ void  Geom2dConvert::ConcatG1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
      fusion=C.Add(Curve1,
 		  local_tolerance(j-1));          //fusion de deux courbes adjacentes               
      if (fusion==Standard_False)
-       Standard_ConstructionError::Raise("Geom2dConvert Concatenation Error") ;
+       throw Standard_ConstructionError("Geom2dConvert Concatenation Error") ;
      Curve2=C.BSplineCurve();
    }
    Curve2->SetPeriodic();      //1 seule courbe C1
@@ -1143,7 +1143,7 @@ void  Geom2dConvert::ConcatG1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
 	 Geom2dConvert_CompCurveToBSplineCurve  C(ArrayOfConcatenated->Value(i));
 	 fusion=C.Add(Curve1,ArrayOfToler(j-1));          //fusion de deux courbes adjacentes               
 	 if (fusion==Standard_False)
-	   Standard_ConstructionError::Raise("Geom2dConvert Concatenation Error") ;
+	   throw Standard_ConstructionError("Geom2dConvert Concatenation Error") ;
 	 ArrayOfConcatenated->SetValue(i,C.BSplineCurve());
        }
      }
@@ -1213,7 +1213,7 @@ void  Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
 		    Standard_True,
 		    ArrayOfToler(i-1),
 		    AngularTolerance)<GeomAbs_C0)
-       Standard_ConstructionError::Raise("Geom2dConvert curves not C0") ;                //renvoi d'une erreur
+       throw Standard_ConstructionError("Geom2dConvert curves not C0") ;                //renvoi d'une erreur
      else{
        if (Continuity(ArrayOfCurves(i-1),
 		      ArrayOfCurves(i),
@@ -1358,7 +1358,7 @@ void  Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
        fusion=C.Add(Curve1,
 		    local_tolerance(j-1));          //fusion de deux courbes adjacentes               
        if (fusion==Standard_False)
-	 Standard_ConstructionError::Raise("Geom2dConvert Concatenation Error") ;
+	 throw Standard_ConstructionError("Geom2dConvert Concatenation Error") ;
        Curve2=C.BSplineCurve();
      }
    }
@@ -1401,7 +1401,7 @@ void  Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
 	 Geom2dConvert_CompCurveToBSplineCurve C (ArrayOfConcatenated->Value(i));
 	 fusion=C.Add(Curve1,ArrayOfToler(j-1));          //fusion de deux courbes adjacentes               
 	 if (fusion==Standard_False)
-	   Standard_ConstructionError::Raise("Geom2dConvert Concatenation Error") ;
+	   throw Standard_ConstructionError("Geom2dConvert Concatenation Error") ;
 	 ArrayOfConcatenated->SetValue(i,C.BSplineCurve());
        }
      }
@@ -1482,7 +1482,7 @@ void Geom2dConvert::C0BSplineToC1BSplineCurve(Handle(Geom2d_BSplineCurve)& BS,
      for (i=1;i<ArrayOfConcatenated->Length();i++){
        fusion=C.Add(ArrayOfConcatenated->Value(i),tolerance, Standard_True);
        if (fusion==Standard_False)
-	 Standard_ConstructionError::Raise("Geom2dConvert Concatenation Error") ;
+	 throw Standard_ConstructionError("Geom2dConvert Concatenation Error") ;
      }
    }
    BS=C.BSplineCurve();

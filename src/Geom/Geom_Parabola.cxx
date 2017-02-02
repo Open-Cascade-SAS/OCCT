@@ -72,7 +72,7 @@ Geom_Parabola::Geom_Parabola (const gp_Parab& Prb)
 Geom_Parabola::Geom_Parabola (const Ax2& A2, const Standard_Real Focal) 
  : focalLength (Focal) {
    
-  if(Focal < 0.0)  Standard_ConstructionError::Raise();
+  if(Focal < 0.0)  throw Standard_ConstructionError();
   pos = A2;
 }
 
@@ -158,7 +158,7 @@ Standard_Real Geom_Parabola::Parameter () const         { return 2.0 * focalLeng
 
 void Geom_Parabola::SetFocal (const Standard_Real Focal) {
 
-   if (Focal < 0.0)  Standard_ConstructionError::Raise();
+   if (Focal < 0.0)  throw Standard_ConstructionError();
    focalLength = Focal;
 }
 

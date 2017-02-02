@@ -194,7 +194,7 @@ void GeomEvaluator_OffsetCurve::CalculateD0(      gp_Pnt& theValue,
   gp_XYZ Ndir = (theD1.XYZ()).Crossed(myOffsetDir.XYZ());
   Standard_Real R = Ndir.Modulus();
   if (R <= gp::Resolution())
-    Standard_NullValue::Raise("GeomEvaluator_OffsetCurve: Undefined normal vector "
+    throw Standard_NullValue("GeomEvaluator_OffsetCurve: Undefined normal vector "
                               "because tangent vector has zero-magnitude!");
 
   Ndir.Multiply(myOffset / R);
@@ -218,7 +218,7 @@ void GeomEvaluator_OffsetCurve::CalculateD1(      gp_Pnt& theValue,
   Standard_Real Dr = Ndir.Dot(DNdir);
   if (R3 <= gp::Resolution()) {
     if (R2 <= gp::Resolution())
-      Standard_NullValue::Raise("GeomEvaluator_OffsetCurve: Null derivative");
+      throw Standard_NullValue("GeomEvaluator_OffsetCurve: Null derivative");
     //We try another computation but the stability is not very good.
     DNdir.Multiply(R);
     DNdir.Subtract(Ndir.Multiplied(Dr / R));
@@ -264,7 +264,7 @@ void GeomEvaluator_OffsetCurve::CalculateD2(      gp_Pnt& theValue,
 
   if (R5 <= gp::Resolution()) {
     if (R4 <= gp::Resolution())
-      Standard_NullValue::Raise("GeomEvaluator_OffsetCurve: Null derivative");
+      throw Standard_NullValue("GeomEvaluator_OffsetCurve: Null derivative");
     //We try another computation but the stability is not very good
     //dixit ISG.
     // V2 = P" (U) :
@@ -337,7 +337,7 @@ void GeomEvaluator_OffsetCurve::CalculateD3(      gp_Pnt& theValue,
   Standard_Real D3r = Ndir.Dot(D3Ndir) + 3.0 * DNdir.Dot(D2Ndir);
   if (R7 <= gp::Resolution()) {
     if (R6 <= gp::Resolution())
-      Standard_NullValue::Raise("CSLib_Offset: Null derivative");
+      throw Standard_NullValue("CSLib_Offset: Null derivative");
     // V3 = P"' (U) :
     D3Ndir.Subtract(D2Ndir.Multiplied(3.0 * Dr / R2));
     D3Ndir.Subtract(DNdir.Multiplied(3.0 * ((D2r / R2) + (Dr*Dr / R4))));

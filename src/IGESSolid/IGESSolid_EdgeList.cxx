@@ -42,7 +42,7 @@ IGESSolid_EdgeList::IGESSolid_EdgeList ()    {  }
       startVertexIndex->Lower() != 1 || startVertexIndex->Length() != nb ||
       endVertexList->Lower()    != 1 || endVertexList->Length()    != nb ||
       endVertexIndex->Lower()   != 1 || endVertexIndex->Length()   != nb  )
-    Standard_DimensionError::Raise("IGESSolid_EdgeList : Init");
+    throw Standard_DimensionError("IGESSolid_EdgeList : Init");
 
   theCurves = Curves;
   theStartVertexList  = startVertexList;

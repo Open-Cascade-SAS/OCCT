@@ -111,7 +111,7 @@ Standard_Boolean Draft_Modification::Add(const TopoDS_Face& F,
   const Standard_Boolean Flag)
 {
   if (!badShape.IsNull()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   if (myComp) {
@@ -130,7 +130,7 @@ Standard_Boolean Draft_Modification::Add(const TopoDS_Face& F,
 void Draft_Modification::Remove(const TopoDS_Face& F)
 {
   if (!myFMap.Contains(F) || myComp) {
-    Standard_NoSuchObject::Raise();
+    throw Standard_NoSuchObject();
   }
 
   conneF.Clear();
@@ -229,10 +229,10 @@ const TopoDS_Shape& Draft_Modification::ProblematicShape() const
 const TopTools_ListOfShape & Draft_Modification::ConnectedFaces(const TopoDS_Face& F)
 {
   if (!myFMap.Contains(F)) {
-    Standard_NoSuchObject::Raise();
+    throw Standard_NoSuchObject();
   }
   if (!IsDone()) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   conneF.Clear();
   curFace = myFMap.FindFromKey(F).RootFace();
@@ -259,7 +259,7 @@ const TopTools_ListOfShape & Draft_Modification::ConnectedFaces(const TopoDS_Fac
 const TopTools_ListOfShape & Draft_Modification::ModifiedFaces()
 {
   if (!badShape.IsNull()) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   conneF.Clear();
 
@@ -289,7 +289,7 @@ Standard_Boolean Draft_Modification::NewSurface(const TopoDS_Face& F,
   Standard_Boolean& RevWires,
   Standard_Boolean& RevFace)
 {
-  if (!IsDone()) {Standard_DomainError::Raise();}
+  if (!IsDone()) {throw Standard_DomainError();}
 
   if (!myFMap.Contains(F) || !myFMap.FindFromKey(F).NewGeometry()) {
     return Standard_False;
@@ -319,7 +319,7 @@ Standard_Boolean Draft_Modification::NewCurve(const TopoDS_Edge& E,
   TopLoc_Location& L, 
   Standard_Real& Tol)
 {
-  if (!IsDone()) {Standard_DomainError::Raise();}
+  if (!IsDone()) {throw Standard_DomainError();}
 
   if (!myEMap.Contains(E)) 
     return Standard_False;
@@ -347,7 +347,7 @@ Standard_Boolean Draft_Modification::NewPoint(const TopoDS_Vertex& V,
   gp_Pnt& P, 
   Standard_Real& Tol)
 {
-  if (!IsDone()) {Standard_DomainError::Raise();};
+  if (!IsDone()) {throw Standard_DomainError();};
 
   if (!myVMap.Contains(V)) {
     return Standard_False;
@@ -372,7 +372,7 @@ Standard_Boolean Draft_Modification::NewCurve2d(const TopoDS_Edge& E,
   Standard_Real& Tol)
 {
 
-  if (!IsDone()) {Standard_DomainError::Raise();};
+  if (!IsDone()) {throw Standard_DomainError();};
 
   if (!myEMap.Contains(E)) {
     return Standard_False;
@@ -479,7 +479,7 @@ Standard_Boolean Draft_Modification::NewParameter(const TopoDS_Vertex& V,
   Standard_Real& Tol)
 {
 
-  if (!IsDone()) {Standard_DomainError::Raise();};
+  if (!IsDone()) {throw Standard_DomainError();};
 
   if (!myVMap.Contains(V)) {
     return Standard_False;

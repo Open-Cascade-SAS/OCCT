@@ -1088,7 +1088,7 @@ void TPrsStd_ConstraintTools::ComputeConcentric(const Handle(TDataXtd_Constraint
 {
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 2) {
-    Standard_ProgramError::Raise ("TPrsStd_ConstraintTools::ComputeConcentric: at least 2 constraintes are needed");
+    throw Standard_ProgramError("TPrsStd_ConstraintTools::ComputeConcentric: at least 2 constraintes are needed");
   }
   if (!aConst->IsPlanar()) {
 #ifdef OCCT_DEBUG
@@ -1939,8 +1939,7 @@ void TPrsStd_ConstraintTools::ComputePlacement
 {
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 2) 
-    Standard_ProgramError::Raise
-      ("TPrsStd_ConstraintTools::ComputePlacement: at leat two constraints are needed");
+    throw Standard_ProgramError("TPrsStd_ConstraintTools::ComputePlacement: at leat two constraints are needed");
   
   TopoDS_Shape shape1,shape2 ;
   GetTwoShapes(aConst,shape1,shape2);

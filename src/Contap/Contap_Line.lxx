@@ -50,23 +50,23 @@ inline Contap_IType Contap_Line::TypeContour () const
 }
 
 inline Standard_Integer Contap_Line::NbPnts () const {
-  if (typL != Contap_Walking) {Standard_DomainError::Raise();}
+  if (typL != Contap_Walking) {throw Standard_DomainError();}
   return(curv->NbPoints());
 }
 
 inline const IntSurf_PntOn2S& Contap_Line::Point (const Standard_Integer Index) const {
-  if (typL != Contap_Walking) {Standard_DomainError::Raise();}
+  if (typL != Contap_Walking) {throw Standard_DomainError();}
   return(curv->Value(Index));
 }
 
 inline gp_Lin Contap_Line::Line () const
 {
-  if (typL != Contap_Lin) {Standard_DomainError::Raise();}
+  if (typL != Contap_Lin) {throw Standard_DomainError();}
   return gp_Lin(pt,dir1);
 }
 
 inline gp_Circ Contap_Line::Circle () const
 {
-  if (typL != Contap_Circle) {Standard_DomainError::Raise();}
+  if (typL != Contap_Circle) {throw Standard_DomainError();}
   return gp_Circ(gp_Ax2(pt,dir1,dir2),rad);
 }

@@ -403,7 +403,7 @@ static void __fastcall _osd_wnt_set_disk_name ( TCollection_AsciiString& result,
   
   } else {
 badPath:  
-   Standard_ProgramError :: Raise ( "OSD_Disk: bad disk name" );
+   throw Standard_ProgramError ( "OSD_Disk: bad disk name" );
 
   }  // end else
  

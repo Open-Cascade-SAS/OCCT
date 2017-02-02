@@ -112,7 +112,7 @@ void XmlLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)&      
                                       theFileName + " cannot be opened for writing";
 
     theDocument->Application()->MessageDriver()->Write (aMsg.ToExtString());
-    Standard_Failure::Raise("File cannot be opened for writing");
+    throw Standard_Failure("File cannot be opened for writing");
   }
 }
 
@@ -150,7 +150,7 @@ Standard_EXPORT void XmlLDrivers_DocumentStorageDriver::Write (const Handle(CDM_
                                         " cannot be used for writing";
       theDocument->Application()->MessageDriver()->Write (aMsg.ToExtString());
       
-      Standard_Failure::Raise("File cannot be opened for writing");
+      throw Standard_Failure("File cannot be opened for writing");
     }
 
     ::take_time (0, " +++++ Fin formatting to XML : ", aMessageDriver);
@@ -312,11 +312,11 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument (const Ha
       OCC_CATCH_SIGNALS
       anObjNb = MakeDocument(theDocument, theElement);
     }
-    catch (Standard_Failure)
+    catch (Standard_Failure const& anException)
     {
       SetIsError (Standard_True);
       SetStoreStatus(PCDM_SS_Failure);
-      TCollection_ExtendedString anErrorString (Standard_Failure::Caught()->GetMessageString());
+      TCollection_ExtendedString anErrorString (anException.GetMessageString());
       aMessageDriver -> Write (anErrorString.ToExtString());
     }
   }

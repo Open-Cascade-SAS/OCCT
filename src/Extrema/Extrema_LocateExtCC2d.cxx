@@ -77,7 +77,7 @@ Standard_Boolean Extrema_LocateExtCC2d::IsDone () const {
 
 Standard_Real Extrema_LocateExtCC2d::SquareDistance() const {
 
-  if (!myDone) { StdFail_NotDone::Raise(); }
+  if (!myDone) { throw StdFail_NotDone(); }
   return mySqDist;
 }
 
@@ -91,7 +91,7 @@ Standard_Real Extrema_LocateExtCC2d::SquareDistance() const {
 void Extrema_LocateExtCC2d::Point (Extrema_POnCurv2d& P1, 
                                    Extrema_POnCurv2d& P2) const 
 {
-  if (!myDone) { StdFail_NotDone::Raise(); }
+  if (!myDone) { throw StdFail_NotDone(); }
   P1 = myPoint1;
   P2 = myPoint2;
 }

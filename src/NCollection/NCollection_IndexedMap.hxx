@@ -20,7 +20,6 @@
 #include <NCollection_TListNode.hxx>
 #include <NCollection_StlIterator.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <Standard_ImmutableObject.hxx>
 
 #include <NCollection_DefaultHasher.hxx>
 
@@ -104,12 +103,7 @@ class NCollection_IndexedMap : public NCollection_BaseMap
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_IndexedMap::Iterator::Value");
       return myMap->FindKey(myIndex);
     }
-    //! Value change access denied - use Substitute
-    TheKeyType& ChangeValue(void) const
-    {  
-      Standard_ImmutableObject::Raise ("impossible to ChangeValue");
-      return * (TheKeyType *) NULL; // This for compiler
-    }
+
     //! Performs comparison of two iterators.
     Standard_Boolean IsEqual (const Iterator& theOther) const
     {
@@ -277,8 +271,8 @@ class NCollection_IndexedMap : public NCollection_BaseMap
       {
         if (p->Key2() != theIndex)
         {
-          Standard_DomainError::Raise ("NCollection_IndexedMap::Substitute : "
-                                       "Attempt to substitute existing key");
+          throw Standard_DomainError ("NCollection_IndexedMap::Substitute : "
+                                      "Attempt to substitute existing key");
         }
         p->Key1() = theKey1;
         return;
@@ -417,8 +411,7 @@ class NCollection_IndexedMap : public NCollection_BaseMap
         return pNode2->Key1();
       pNode2 = (IndexedMapNode*) pNode2->Next2();
     }
-    Standard_NoSuchObject::Raise("NCollection_IndexedMap::FindKey");
-    return pNode2->Key1(); // This for compiler
+    throw Standard_NoSuchObject("NCollection_IndexedMap::FindKey");
   }
 
   //! operator ()

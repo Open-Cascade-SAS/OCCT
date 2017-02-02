@@ -144,22 +144,22 @@ gp_Trsf2d gp_GTrsf2d::Trsf2d () const
   const Standard_Real aTolerance2 = 2.0 * aTolerance;
 
   if ( Form() == gp_Other )
-    Standard_ConstructionError::Raise("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(0)");
+    throw Standard_ConstructionError("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(0)");
 
   Standard_Real value = (matrix.Value(1, 1) * matrix.Value(1, 1)
                       +  matrix.Value(2, 1) * matrix.Value(2, 1));
   if ( Abs(value - 1.) > aTolerance2 )
-    Standard_ConstructionError::Raise("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(1)");
+    throw Standard_ConstructionError("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(1)");
 
   value = (matrix.Value(1, 2) * matrix.Value(1, 2)
         +  matrix.Value(2, 2) * matrix.Value(2, 2));
   if ( Abs(value - 1.) > aTolerance2 )
-    Standard_ConstructionError::Raise("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(2)");
+    throw Standard_ConstructionError("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(2)");
 
   value = (matrix.Value(1, 1) * matrix.Value(1, 2)
         +  matrix.Value(2, 1) * matrix.Value(2, 2));
   if ( Abs(value) > aTolerance )
-    Standard_ConstructionError::Raise("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(3)");
+    throw Standard_ConstructionError("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(3)");
 
 
   gp_Trsf2d aTransformation;

@@ -58,7 +58,7 @@ GeomConvert_BSplineSurfaceToBezierSurface::GeomConvert_BSplineSurfaceToBezierSur
 {
   if ( (U2 - U1 <  ParametricTolerance) ||
        (V2 - V1 <  ParametricTolerance) )
-      Standard_DomainError::Raise("GeomConvert_BSplineSurfaceToBezierSurface");
+      throw Standard_DomainError("GeomConvert_BSplineSurfaceToBezierSurface");
 
   Standard_Real Uf=U1, Ul=U2, Vf=V1, Vl=V2, PTol = ParametricTolerance/2;
   Standard_Integer I1, I2;
@@ -106,7 +106,7 @@ Handle(Geom_BezierSurface) GeomConvert_BSplineSurfaceToBezierSurface::Patch
 {
   if (UIndex < 1 || UIndex > mySurface->NbUKnots()-1 ||
       VIndex < 1 || VIndex > mySurface->NbVKnots()-1   ) {
-    Standard_OutOfRange::Raise("GeomConvert_BSplineSurfaceToBezierSurface");
+    throw Standard_OutOfRange("GeomConvert_BSplineSurfaceToBezierSurface");
   }
   Standard_Integer UDeg = mySurface->UDegree();
   Standard_Integer VDeg = mySurface->VDegree();

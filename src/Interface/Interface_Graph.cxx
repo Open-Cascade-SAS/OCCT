@@ -363,8 +363,7 @@ void  Interface_Graph::GetFromIter
 
 void Interface_Graph::GetFromGraph (const Interface_Graph& agraph)
 {
-  if (Model() != agraph.Model()) Standard_DomainError::Raise
-    ("Graph from Interface : GetFromGraph");
+  if (Model() != agraph.Model()) throw Standard_DomainError("Graph from Interface : GetFromGraph");
   Standard_Integer nb = Size();
   for (Standard_Integer i = 1; i <= nb; i ++) {
     if (agraph.IsPresent(i))
@@ -375,8 +374,7 @@ void Interface_Graph::GetFromGraph (const Interface_Graph& agraph)
 void Interface_Graph::GetFromGraph
 (const Interface_Graph& agraph, const Standard_Integer stat)
 {
-  if (Model() != agraph.Model()) Standard_DomainError::Raise
-    ("Graph from Interface : GetFromGraph");
+  if (Model() != agraph.Model()) throw Standard_DomainError("Graph from Interface : GetFromGraph");
   Standard_Integer nb = Size();
   for (Standard_Integer i = 1; i <= nb; i ++) {
     if (agraph.IsPresent(i) && agraph.Status(i) == stat)
@@ -410,7 +408,7 @@ Interface_EntityIterator Interface_Graph::Shareds
   if (themodel->IsRedefinedContent(num)) 
      aCurEnt = themodel->ReportEntity(num)->Content();
 
-  //if (num == 0)  Standard_DomainError::Raise ("Interface : Shareds");
+  //if (num == 0)  throw Standard_DomainError("Interface : Shareds");
   Handle(Interface_GeneralModule) module;
   Standard_Integer CN;
   if (themodel->GTool()->Select(aCurEnt,module,CN))  

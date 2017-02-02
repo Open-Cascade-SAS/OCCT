@@ -94,7 +94,7 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
   else {
     curv1 = BRep_Tool::Curve(Edge1, loc, first1, last1);
     if (curv1.IsNull())
-      Standard_NullObject::Raise("Null 3D curve in edge");
+      throw Standard_NullObject("Null 3D curve in edge");
     curv1 = 
       Handle(Geom_Curve)::DownCast(curv1->Transformed(loc.Transformation()));
     ff = first1;
@@ -161,7 +161,7 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
     else {
       curv = BRep_Tool::Curve(Edge2, loc, first2, last2);
       if (curv.IsNull())
-        Standard_NullObject::Raise("Null 3D curve in edge");
+        throw Standard_NullObject("Null 3D curve in edge");
       curv = 
 	Handle(Geom_Curve)::DownCast(curv->Transformed(loc.Transformation()));
       ff = first2;
@@ -341,7 +341,7 @@ void CreateKPart(const TopoDS_Edge& Edge1,const TopoDS_Edge& Edge2,
   else {
     C1 = BRep_Tool::Curve(Edge1, loc, a1, b1);
     if (C1.IsNull())
-      Standard_NullObject::Raise("Null 3D curve in edge");
+      throw Standard_NullObject("Null 3D curve in edge");
     C1 = Handle(Geom_Curve)::DownCast(C1->Transformed(loc.Transformation()));
     aa = a1;
     bb = b1;
@@ -366,7 +366,7 @@ void CreateKPart(const TopoDS_Edge& Edge1,const TopoDS_Edge& Edge2,
   else {
     C2 = BRep_Tool::Curve(Edge2, loc, a1, b1);
     if (C2.IsNull())
-      Standard_NullObject::Raise("Null 3D curve in edge");
+      throw Standard_NullObject("Null 3D curve in edge");
     C2 = Handle(Geom_Curve)::DownCast(C2->Transformed(loc.Transformation()));
     if (Edge2.Orientation() == TopAbs_REVERSED) {
       C2->Reverse();
@@ -669,7 +669,7 @@ void BRepFill_Generator::Perform()
 	else {
 	  C1 = BRep_Tool::Curve(Edge1,L1,f1,l1);
           if (C1.IsNull())
-            Standard_NullObject::Raise("Null 3D curve in edge");
+            throw Standard_NullObject("Null 3D curve in edge");
 	}
 	if (degen2) {
 	  Extremities(1) = BRep_Tool::Pnt(V2l);
@@ -679,7 +679,7 @@ void BRepFill_Generator::Perform()
 	else {
 	  C2 = BRep_Tool::Curve(Edge2,L2,f2,l2);
           if (C2.IsNull())
-            Standard_NullObject::Raise("Null 3D curve in edge");
+            throw Standard_NullObject("Null 3D curve in edge");
 	}
 	
 	// compute the location

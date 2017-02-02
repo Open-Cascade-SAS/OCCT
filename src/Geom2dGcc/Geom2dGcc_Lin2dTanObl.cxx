@@ -159,7 +159,7 @@ Standard_Integer Geom2dGcc_Lin2dTanObl::
 gp_Lin2d Geom2dGcc_Lin2dTanObl::
    ThisSolution (const Standard_Integer Index) const {
 
-   if (Index > NbrSol || Index <= 0) { Standard_OutOfRange::Raise(); }
+   if (Index > NbrSol || Index <= 0) { throw Standard_OutOfRange(); }
    return linsol(Index);
  }
 
@@ -167,8 +167,8 @@ void Geom2dGcc_Lin2dTanObl::
    WhichQualifier (const Standard_Integer Index,
 		         GccEnt_Position& Qualif1) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
   else { Qualif1 = qualifier1(Index);   }
 }
 
@@ -177,8 +177,8 @@ void Geom2dGcc_Lin2dTanObl::
               Standard_Real& ParSol,
               Standard_Real& ParArg,
               gp_Pnt2d& PntSol) const {
-   if (!WellDone) { StdFail_NotDone::Raise(); }
-   else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+   if (!WellDone) { throw StdFail_NotDone(); }
+   else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
    else {
      ParSol = par1sol(Index);
      ParArg = pararg1(Index);
@@ -191,8 +191,8 @@ void Geom2dGcc_Lin2dTanObl::
                     Standard_Real&     ParSol ,
                     Standard_Real&     ParArg ,
                     gp_Pnt2d& PntSol ) const {
-   if (!WellDone) { StdFail_NotDone::Raise(); }
-   else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+   if (!WellDone) { throw StdFail_NotDone(); }
+   else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
    else {
      ParSol = par2sol(Index);
      ParArg = pararg2(Index);

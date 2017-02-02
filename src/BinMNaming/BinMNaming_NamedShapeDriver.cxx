@@ -46,9 +46,8 @@ static Standard_Character EvolutionToChar(const TNaming_Evolution theEvol)
     case TNaming_SELECTED     : return 'S';
     case TNaming_REPLACE      : return 'M'; // for compatibility case TNaming_REPLACE      : return 'R';
   default:
-    Standard_DomainError::Raise("TNaming_Evolution:: Evolution Unknown");
+    throw Standard_DomainError("TNaming_Evolution:: Evolution Unknown");
   }
-  return 'P'; // To avoid compilation error message.
 }
 
 //=======================================================================
@@ -62,9 +61,8 @@ static TNaming_Evolution EvolutionToEnum(const Standard_Character theEvol)
     case 'S': return TNaming_SELECTED;
     case 'R': return TNaming_MODIFY; //for compatibility //TNaming_REPLACE;
   default:
-    Standard_DomainError::Raise("TNaming_Evolution:: Evolution Unknown");
+    throw Standard_DomainError("TNaming_Evolution:: Evolution Unknown");
   }
-  return TNaming_PRIMITIVE; // To avoid compilation error message.
 }
 //=======================================================================
 static Standard_Character OrientationToChar(const TopAbs_Orientation theOrient)
@@ -75,9 +73,8 @@ static Standard_Character OrientationToChar(const TopAbs_Orientation theOrient)
     case TopAbs_INTERNAL   : return 'I';
     case TopAbs_EXTERNAL   : return 'E';
   default:
-    Standard_DomainError::Raise("TopAbs_Orientation:: Orientation Unknown");
+    throw Standard_DomainError("TopAbs_Orientation:: Orientation Unknown");
   }
-  return 'F'; // To avoid compilation error message.
 }
 //=======================================================================
 static TopAbs_Orientation CharToOrientation(const Standard_Character  theCharOrient)
@@ -88,9 +85,8 @@ static TopAbs_Orientation CharToOrientation(const Standard_Character  theCharOri
     case 'I':  return TopAbs_INTERNAL;
     case 'E':  return TopAbs_EXTERNAL;
   default:
-    Standard_DomainError::Raise("TopAbs_Orientation:: Orientation Unknown");
+    throw Standard_DomainError("TopAbs_Orientation:: Orientation Unknown");
   }
-  return TopAbs_FORWARD; // To avoid compilation error message.
 }
 
 //=======================================================================
@@ -217,7 +213,7 @@ Standard_Boolean BinMNaming_NamedShapeDriver::Paste
       aBuilder.Modify(anOldShape, aNewShape); // for compatibility aBuilder.Replace(anOldShape, aNewShape);
       break;
       default :
-        Standard_DomainError::Raise("TNaming_Evolution:: Evolution Unknown");
+        throw Standard_DomainError("TNaming_Evolution:: Evolution Unknown");
     }
     anOldShape.Nullify();
     aNewShape.Nullify();

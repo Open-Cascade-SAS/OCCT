@@ -104,7 +104,7 @@ Standard_Boolean Extrema_GenLocateExtCC::IsDone () const { return myDone; }
 
 Standard_Real Extrema_GenLocateExtCC::SquareDistance() const
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return mySqDist;
 }
 //=============================================================================
@@ -112,7 +112,7 @@ Standard_Real Extrema_GenLocateExtCC::SquareDistance() const
 void Extrema_GenLocateExtCC::Point (POnC& P1, POnC& P2)
      const
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   P1 = myPoint1;
   P2 = myPoint2;
 }

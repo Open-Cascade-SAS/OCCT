@@ -39,10 +39,10 @@ void Expr_PolyExpression::SetOperand (const Handle(Expr_GeneralExpression)& exp,
 {
   Handle(Expr_PolyExpression) me = this;
   if (exp == me) {
-    Expr_InvalidOperand::Raise();
+    throw Expr_InvalidOperand();
   }
   if (exp->Contains(me)) {
-    Expr_InvalidOperand::Raise();
+    throw Expr_InvalidOperand();
   }
   myOperands(index) = exp;
 }
@@ -55,7 +55,7 @@ void Expr_PolyExpression::AddOperand (const Handle(Expr_GeneralExpression)& exp)
 void Expr_PolyExpression::RemoveOperand (const Standard_Integer index)
 {
   if (myOperands.Length() <= 2) {
-    Standard_DimensionMismatch::Raise();
+    throw Standard_DimensionMismatch();
   }
   myOperands.Remove(index);
 }

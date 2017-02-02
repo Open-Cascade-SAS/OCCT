@@ -352,7 +352,7 @@ Standard_Integer Resource_Manager::Integer(const Standard_CString aResourceName)
     TCollection_AsciiString n("Value of resource `");
     n+= aResourceName;
     n+= "` is not an integer";
-    Standard_TypeMismatch::Raise(n.ToCString());
+    throw Standard_TypeMismatch(n.ToCString());
   }
   return Result.IntegerValue();
 }
@@ -369,7 +369,7 @@ Standard_Real Resource_Manager::Real(const Standard_CString  aResourceName) cons
     TCollection_AsciiString n("Value of resource `");
     n+= aResourceName;
     n+= "` is not a real";
-    Standard_TypeMismatch::Raise(n.ToCString());
+    throw Standard_TypeMismatch(n.ToCString());
   }
   return Result.RealValue();
 }
@@ -386,8 +386,7 @@ Standard_CString Resource_Manager::Value(const Standard_CString aResource) const
     return myUserMap(Resource).ToCString();
   if (myRefMap.IsBound(Resource))
     return myRefMap(Resource).ToCString();
-  Resource_NoSuchResource::Raise(aResource);
-  return ("");
+  throw Resource_NoSuchResource(aResource);
 }
 
 //=======================================================================

@@ -77,7 +77,7 @@ inline const TopoDS_Shape& LocOpe_Spliter::Shape() const
 
 inline const TopoDS_Shape& LocOpe_Spliter::ResultingShape() const
 {
-  if (!myDone) {StdFail_NotDone::Raise();}
+  if (!myDone) {throw StdFail_NotDone();}
   return myRes;
 }
 

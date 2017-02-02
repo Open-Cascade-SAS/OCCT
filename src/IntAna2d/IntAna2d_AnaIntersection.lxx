@@ -22,7 +22,7 @@ inline Standard_Boolean IntAna2d_AnaIntersection::IsDone () const {
 inline Standard_Boolean IntAna2d_AnaIntersection::IsEmpty () const {
   
   if (!done) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   return ((nbp==0)&&(!iden));
 }
@@ -30,7 +30,7 @@ inline Standard_Boolean IntAna2d_AnaIntersection::IsEmpty () const {
 inline Standard_Boolean IntAna2d_AnaIntersection::IdenticalElements () const {
   
   if (!done) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   return iden ;
 }
@@ -38,7 +38,7 @@ inline Standard_Boolean IntAna2d_AnaIntersection::IdenticalElements () const {
 inline Standard_Boolean IntAna2d_AnaIntersection::ParallelElements () const {
   
   if (!done) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   return para ;
 }
@@ -46,7 +46,7 @@ inline Standard_Boolean IntAna2d_AnaIntersection::ParallelElements () const {
 inline Standard_Integer IntAna2d_AnaIntersection::NbPoints () const {
   
   if (!done) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   return nbp ;
 }
@@ -54,13 +54,11 @@ inline Standard_Integer IntAna2d_AnaIntersection::NbPoints () const {
 inline const IntAna2d_IntPoint& IntAna2d_AnaIntersection::Point (const Standard_Integer N) const {
   
   if (!done) {
-    StdFail_NotDone::Raise();
-    return lpnt[0];
+    throw StdFail_NotDone();
   }
   else {
     if ((N<=0)||(N>nbp)) {
-      Standard_OutOfRange::Raise();
-      return lpnt[0];
+      throw Standard_OutOfRange();
     }
     else {
       return lpnt[N-1];

@@ -73,7 +73,7 @@ public:
   {
     if (theScale <= 0.0f)
     {
-      Aspect_AspectMarkerDefinitionError::Raise ("Bad value for MarkerScale");
+      throw Aspect_AspectMarkerDefinitionError("Bad value for MarkerScale");
     }
     myScale = theScale;
   }

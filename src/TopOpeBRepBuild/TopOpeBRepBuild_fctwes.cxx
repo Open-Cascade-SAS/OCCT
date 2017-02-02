@@ -202,7 +202,7 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopOpeBRepDS_CurveIter
 //      Standard_Real tolE = BRep_Tool::Tolerance(E);
       Standard_Real f2,l2,tolpc; Handle(Geom2d_Curve) C2D;
       C2D = FC2D_CurveOnSurface(E,WESF,f2,l2,tolpc);
-      if (C2D.IsNull()) Standard_ProgramError::Raise("GFillCurveTopologyWES");
+      if (C2D.IsNull()) throw Standard_ProgramError("GFillCurveTopologyWES");
 #ifdef OCCT_DEBUG
 //      Standard_Real tol = Max(tolE,tolpc);
 #endif

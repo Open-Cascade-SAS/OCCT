@@ -81,7 +81,7 @@ IGESSolid_TopoBuilder::IGESSolid_TopoBuilder ()    {  Clear();  }
 {
   if (curve.IsNull() || vstart <= 0 || vend <= 0 ||
       vstart > thepoint->Length() || vend > thepoint->Length())
-    Standard_DomainError::Raise ("IGESSolid_TopoBuilder : AddEdge");
+    throw Standard_DomainError("IGESSolid_TopoBuilder : AddEdge");
   thecur3d->Append (curve);
   thevstar->Append (vstart);
   thevend->Append  (vend);
@@ -150,7 +150,7 @@ IGESSolid_TopoBuilder::IGESSolid_TopoBuilder ()    {  Clear();  }
    const Standard_Integer orientation)
 {
   if (edge3d <= 0 || edge3d > thecur3d->Length())
-    Standard_DomainError::Raise ("IGESSolid_TopoBuilder : MakeEdge");
+    throw Standard_DomainError("IGESSolid_TopoBuilder : MakeEdge");
   theetype->Append (edgetype);
   thee3d->Append   (edge3d);
   theeflag->Append (orientation);
@@ -161,7 +161,7 @@ IGESSolid_TopoBuilder::IGESSolid_TopoBuilder ()    {  Clear();  }
   (const Handle(IGESData_IGESEntity)& curve, const Standard_Integer iso)
 {
   if (curve.IsNull() || thee3d->IsEmpty())
-    Standard_DomainError::Raise ("IGESSolid_TopoBuilder : AddCurveUV");
+    throw Standard_DomainError("IGESSolid_TopoBuilder : AddCurveUV");
   thecuruv->Append(curve);
   theisol->Append(iso);
 }
@@ -223,7 +223,7 @@ IGESSolid_TopoBuilder::IGESSolid_TopoBuilder ()    {  Clear();  }
   (const Handle(IGESData_IGESEntity)& surface)
 {
   if (surface.IsNull())
-    Standard_DomainError::Raise ("IGESSolid_TopoBuilder : MakeFace");
+    throw Standard_DomainError("IGESSolid_TopoBuilder : MakeFace");
   thesurf  = surface;
   theouter = Standard_False;
   theinner->Clear();

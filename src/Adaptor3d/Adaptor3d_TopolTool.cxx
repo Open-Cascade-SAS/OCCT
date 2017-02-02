@@ -73,7 +73,7 @@ Adaptor3d_TopolTool::Adaptor3d_TopolTool (const Handle(Adaptor3d_HSurface)& S)
 
 void Adaptor3d_TopolTool::Initialize ()
 {
- Standard_NotImplemented::Raise("Adaptor3d_TopolTool::Initialize ()");
+ throw Standard_NotImplemented("Adaptor3d_TopolTool::Initialize ()");
 }
 
 void Adaptor3d_TopolTool::Initialize (const Handle(Adaptor3d_HSurface)& S)
@@ -222,7 +222,7 @@ Standard_Boolean Adaptor3d_TopolTool::More ()
 
 Handle(Adaptor2d_HCurve2d) Adaptor3d_TopolTool::Value ()
 {
-  if (idRestr >= nbRestr) {Standard_DomainError::Raise();}
+  if (idRestr >= nbRestr) {throw Standard_DomainError();}
   return myRestr[idRestr];
 }
 
@@ -266,7 +266,7 @@ Standard_Boolean Adaptor3d_TopolTool::MoreVertex ()
 
 Handle(Adaptor3d_HVertex) Adaptor3d_TopolTool::Vertex ()
 {
-  if (idVtx >= nbVtx) {Standard_DomainError::Raise();}
+  if (idVtx >= nbVtx) {throw Standard_DomainError();}
   return myVtx[idVtx];
 }
 
@@ -812,8 +812,7 @@ Standard_Boolean Adaptor3d_TopolTool::Has3d() const
 
 Standard_Real Adaptor3d_TopolTool::Tol3d(const Handle(Adaptor2d_HCurve2d)&) const
 {
-  Standard_DomainError::Raise("Adaptor3d_TopolTool: has no 3d representation");
-  return 0.;
+  throw Standard_DomainError("Adaptor3d_TopolTool: has no 3d representation");
 }
 
 //=======================================================================
@@ -823,8 +822,7 @@ Standard_Real Adaptor3d_TopolTool::Tol3d(const Handle(Adaptor2d_HCurve2d)&) cons
 
 Standard_Real Adaptor3d_TopolTool::Tol3d(const Handle(Adaptor3d_HVertex)&) const
 {
-  Standard_DomainError::Raise("Adaptor3d_TopolTool: has no 3d representation");
-  return 0.;
+  throw Standard_DomainError("Adaptor3d_TopolTool: has no 3d representation");
 }
 
 //=======================================================================
@@ -834,8 +832,7 @@ Standard_Real Adaptor3d_TopolTool::Tol3d(const Handle(Adaptor3d_HVertex)&) const
 
 gp_Pnt Adaptor3d_TopolTool::Pnt(const Handle(Adaptor3d_HVertex)&) const
 {
-  Standard_DomainError::Raise("Adaptor3d_TopolTool: has no 3d representation");
-  return gp::Origin();
+  throw Standard_DomainError("Adaptor3d_TopolTool: has no 3d representation");
 }
 
 

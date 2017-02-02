@@ -205,7 +205,7 @@
     }
   }
   else {
-    Standard_DomainError::Raise("IntAna_Curve::Domain");
+    throw Standard_DomainError("IntAna_Curve::Domain");
   }
 }
 //=======================================================================
@@ -275,7 +275,7 @@
      ((Theta>DomainSup*aRelTolp) && (!TwoCurves)) ||  
      (Theta>(DomainSup+DomainSup-DomainInf)*aRelTolp)) {
     SigneSqrtDis = 0.;
-    Standard_DomainError::Raise("IntAna_Curve::Domain");
+    throw Standard_DomainError("IntAna_Curve::Domain");
   }
   
   if(Theta>DomainSup) { 
@@ -573,7 +573,7 @@
 			       const Standard_Real DSup) 
 {
   if(DInf>=DSup) {
-    Standard_DomainError::Raise("IntAna_Curve::Domain");
+    throw Standard_DomainError("IntAna_Curve::Domain");
   }
   //
   DomainInf=DInf;

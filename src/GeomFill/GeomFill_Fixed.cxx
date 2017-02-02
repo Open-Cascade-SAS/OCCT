@@ -29,7 +29,7 @@ GeomFill_Fixed::GeomFill_Fixed(const gp_Vec& Tangent,
 			       const gp_Vec& Normal)
 {
   if (Tangent.IsParallel(Normal, 0.01) ) 
-    Standard_ConstructionError::Raise(
+    throw Standard_ConstructionError(
       "GeomFill_Fixed : Two parallel vectors !");
   T = Tangent;
   T.Normalize();

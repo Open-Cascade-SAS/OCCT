@@ -42,7 +42,7 @@ void ShapeExtend::Init()
     }
     if (!Message_MsgFile::HasMsg ("ShapeFix.FixSmallSolid.MSG0"))
     {
-      Standard_ProgramError::Raise ("Critical Error - message resources for ShapeExtend are invalid or undefined!");
+      throw Standard_ProgramError("Critical Error - message resources for ShapeExtend are invalid or undefined!");
     }
   }
 }

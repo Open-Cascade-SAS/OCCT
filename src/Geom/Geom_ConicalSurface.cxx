@@ -77,7 +77,7 @@ Geom_ConicalSurface::Geom_ConicalSurface ( const Ax3& A3 ,
 {
 
   if (R < 0.0 || Abs(Ang) <= gp::Resolution() || Abs(Ang) >= M_PI/2.0 - gp::Resolution()) 
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   
   pos = A3;
 }
@@ -206,7 +206,7 @@ void Geom_ConicalSurface::SetCone (const gp_Cone& C) {
 
 void Geom_ConicalSurface::SetRadius (const Standard_Real R) {
 
-  if (R < 0.0)  Standard_ConstructionError::Raise();
+  if (R < 0.0)  throw Standard_ConstructionError();
   radius = R;
 }
 
@@ -219,7 +219,7 @@ void Geom_ConicalSurface::SetRadius (const Standard_Real R) {
 void Geom_ConicalSurface::SetSemiAngle (const Standard_Real Ang) {
 
   if (Abs(Ang) <= gp::Resolution() || Abs(Ang) >= M_PI/2.0 - gp::Resolution()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   semiAngle = Ang;
 }

@@ -45,7 +45,7 @@ IGESDefs_TabularData::IGESDefs_TabularData ()    {  }
       nbValuesInd->Lower() != 1 || nbValuesInd->Length() != num ||
       valuesInd->Lower()   != 1 || valuesInd->Length()   != num ||
       valuesDep->Lower()   != 1 )
-    Standard_DimensionMismatch::Raise("IGESDefs_TabularData : Init");
+    throw Standard_DimensionMismatch("IGESDefs_TabularData : Init");
   theNbPropertyValues = nbProps;
   thePropertyType               = propType;
 /*     theNbDependents = nbDeps; */

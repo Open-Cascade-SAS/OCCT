@@ -167,7 +167,7 @@ void CHLRView2D::OnMouseMove(UINT nFlags, CPoint point)
       case CurAction2d_GlobalPanning :
         break;
       default :
-        Standard_Failure::Raise(" incompatible Current Mode ");
+        throw Standard_Failure(" incompatible Current Mode ");
         break;
       }
     }

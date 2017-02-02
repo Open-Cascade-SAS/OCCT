@@ -27,7 +27,7 @@ Fonction:
     definition de la courbe.
 -----------------------------------------------------------------------------*/
 
-  if (NbU < 2) { Standard_OutOfRange::Raise(); }
+  if (NbU < 2) { throw Standard_OutOfRange(); }
 
   Standard_Real U = Tool1::FirstParameter(C);
   Standard_Real PasU = (Tool1::LastParameter(C) - U)/ (NbU - 1);
@@ -63,7 +63,7 @@ Fonction:
     definition de la courbe.
 -----------------------------------------------------------------------------*/
 
-  if (NbU < 2) { Standard_OutOfRange::Raise(); }
+  if (NbU < 2) { throw Standard_OutOfRange(); }
   Standard_Real U1, U2, U11, U12;
   Standard_Real Uinf = Tool1::FirstParameter(C);
   Standard_Real Ulast = Tool1::LastParameter(C);

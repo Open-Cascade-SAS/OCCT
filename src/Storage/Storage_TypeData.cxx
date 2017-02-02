@@ -111,7 +111,7 @@ TCollection_AsciiString Storage_TypeData::Type(const Standard_Integer aTypeNum) 
     r = myPt.FindKey(aTypeNum);
   }
   else {
-    Standard_NoSuchObject::Raise("Storage_TypeData::Type - aTypeNum not in range");
+    throw Standard_NoSuchObject("Storage_TypeData::Type - aTypeNum not in range");
   }
 
   return r;
@@ -125,7 +125,7 @@ Standard_Integer Storage_TypeData::Type(const TCollection_AsciiString& aTypeName
     r = myPt.FindFromKey(aTypeName);
   }
   else {
-    Standard_NoSuchObject::Raise("Storage_TypeData::Type - aTypeName not found");
+    throw Standard_NoSuchObject("Storage_TypeData::Type - aTypeName not found");
   }
 
   return r;

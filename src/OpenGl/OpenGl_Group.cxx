@@ -47,7 +47,7 @@ OpenGl_Group::OpenGl_Group (const Handle(Graphic3d_Structure)& theStruct)
   Handle(OpenGl_Structure) aStruct = Handle(OpenGl_Structure)::DownCast (myStructure->CStructure());
   if (aStruct.IsNull())
   {
-    Graphic3d_GroupDefinitionError::Raise ("OpenGl_Group should be created by OpenGl_Structure!");
+    throw Graphic3d_GroupDefinitionError("OpenGl_Group should be created by OpenGl_Structure!");
   }
 }
 

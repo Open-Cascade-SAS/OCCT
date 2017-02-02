@@ -63,7 +63,7 @@ Standard_Boolean GccAna_Pnt2dBisec::
 
 gp_Lin2d GccAna_Pnt2dBisec::
    ThisSolution () const {
-   if (!WellDone) { StdFail_NotDone::Raise(); }
-   else if (!HasSol) { GccAna_NoSolution::Raise(); }
+   if (!WellDone) { throw StdFail_NotDone(); }
+   else if (!HasSol) { throw GccAna_NoSolution(); }
    return linsol;
  }

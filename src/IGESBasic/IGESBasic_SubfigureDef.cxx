@@ -35,7 +35,7 @@ IGESBasic_SubfigureDef::IGESBasic_SubfigureDef ()    {  }
    const Handle(IGESData_HArray1OfIGESEntity)& allAssocEntities)
 {
   if (!allAssocEntities.IsNull() && allAssocEntities->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESBasic_SubfigureDef : Init");
+    throw Standard_DimensionMismatch("IGESBasic_SubfigureDef : Init");
   theDepth         = aDepth;
   theName          = aName;
   theAssocEntities = allAssocEntities;

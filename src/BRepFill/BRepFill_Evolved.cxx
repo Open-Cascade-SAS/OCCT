@@ -396,7 +396,7 @@ void BRepFill_Evolved::PrivatePerform(const TopoDS_Face&     Spine,
   myMap.Clear();
 
   if (myJoinType > GeomAbs_Arc)  {
-    Standard_NotImplemented::Raise();
+    throw Standard_NotImplemented();
   }
 
   TopTools_ListOfShape               WorkProf;
@@ -2369,8 +2369,7 @@ TopLoc_Location BRepFill_Evolved::FindLocation(const TopoDS_Face& Face)
       L = FS.Location();
     }
     else
-      Standard_NoSuchObject::Raise
-      ("BRepFill_Evolved : The Face is not planar");
+      throw Standard_NoSuchObject("BRepFill_Evolved : The Face is not planar");
   }
 
   if (!L.IsIdentity())
@@ -2686,7 +2685,7 @@ const TopoDS_Wire PutProfilAt (const TopoDS_Wire&     ProfRef,
 
   C2d = BRep_Tool::CurveOnSurface(E,F,First,Last);
   if (C2d.IsNull()) {
-    Standard_ConstructionError::Raise("ConstructionError in PutProfilAt"); 
+    throw Standard_ConstructionError("ConstructionError in PutProfilAt");
   }
 
   if (E.Orientation() == TopAbs_REVERSED) {
@@ -2937,8 +2936,7 @@ TopAbs_Orientation OriEdgeInFace (const TopoDS_Edge& E,
       return Exp.Current().Orientation();
     }
   }
-  Standard_ConstructionError::Raise("BRepFill_Evolved::OriEdgeInFace");
-  return E.Orientation();
+  throw Standard_ConstructionError("BRepFill_Evolved::OriEdgeInFace");
 }
 
 

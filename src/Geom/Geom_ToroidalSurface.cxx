@@ -78,7 +78,7 @@ Geom_ToroidalSurface::Geom_ToroidalSurface
 : majorRadius (MajorRadius), minorRadius (MinorRadius) {
 
   if (MinorRadius < 0.0 || MajorRadius < 0.0) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   else {
     pos = A3;
@@ -192,7 +192,7 @@ Standard_Boolean Geom_ToroidalSurface::IsVPeriodic () const {
 void Geom_ToroidalSurface::SetMajorRadius (const Standard_Real MajorRadius) {
 
   if (MajorRadius - minorRadius <= gp::Resolution())
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   else 
     majorRadius = MajorRadius;
 }
@@ -206,7 +206,7 @@ void Geom_ToroidalSurface::SetMajorRadius (const Standard_Real MajorRadius) {
 void Geom_ToroidalSurface::SetMinorRadius (const Standard_Real MinorRadius) {
 
   if (MinorRadius < 0.0 || majorRadius - MinorRadius <= gp::Resolution())
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   else 
     minorRadius = MinorRadius;
 }

@@ -31,6 +31,6 @@ inline Standard_Boolean Blend_Walking::TwistOnS2() const
 
 inline const Handle(TheLine)& Blend_Walking::Line () const
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return line;
 }

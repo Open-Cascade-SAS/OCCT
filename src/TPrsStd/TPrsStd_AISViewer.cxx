@@ -48,7 +48,7 @@ Handle(TPrsStd_AISViewer) TPrsStd_AISViewer::New (const TDF_Label& acces,
 {   
   Handle(TPrsStd_AISViewer) V;
   if (acces.Root().FindAttribute(TPrsStd_AISViewer::GetID(),V)) { 
-    Standard_DomainError::Raise("already done");
+    throw Standard_DomainError("already done");
   }
   V = new TPrsStd_AISViewer();
   V->SetInteractiveContext (new AIS_InteractiveContext(viewer));
@@ -76,7 +76,7 @@ Handle(TPrsStd_AISViewer) TPrsStd_AISViewer::New (const TDF_Label& acces,
 {   
   Handle(TPrsStd_AISViewer) V;
   if (acces.Root().FindAttribute(TPrsStd_AISViewer::GetID(),V)) { 
-    Standard_DomainError::Raise("already done");
+    throw Standard_DomainError("already done");
   }
   V = new TPrsStd_AISViewer();
   V->SetInteractiveContext (IC);

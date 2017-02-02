@@ -99,7 +99,7 @@ Standard_Real Graphic3d_Vector::Z () const {
 void Graphic3d_Vector::Normalize () {
 
 	if (Abs (MyNorme) <= RealEpsilon ())
-		Graphic3d_VectorError::Raise ("The norm is null");
+		throw Graphic3d_VectorError("The norm is null");
 
 	if (!IsNormalized()) // CQO CTS40181
 	    {	

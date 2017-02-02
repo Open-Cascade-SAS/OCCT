@@ -469,7 +469,7 @@ TopoDS_Face BRepFill_Pipe::Face(const TopoDS_Edge& ESpine,
   // *************************************************
   iprof = FindEdge(myProfile, EProfile, count);
 
-  if (!iprof) Standard_DomainError::Raise(
+  if (!iprof) throw Standard_DomainError(
               "BRepFill_Pipe::Face : Edge not in the Profile");
 
 
@@ -480,7 +480,7 @@ TopoDS_Face BRepFill_Pipe::Face(const TopoDS_Edge& ESpine,
  for (ii=1; ii<=myLoc->NbLaw() && (!ispin); ii++) 
     if  (ESpine.IsSame(myLoc->Edge(ii))) ispin = ii;
 
-  if (!ispin) Standard_DomainError::Raise(
+  if (!ispin) throw Standard_DomainError(
     "BRepFill_Pipe::Edge  : Edge not in the Spine");
 
   theFace = TopoDS::Face(myFaces->Value(iprof, ispin));
@@ -501,7 +501,7 @@ TopoDS_Edge BRepFill_Pipe::Edge(const TopoDS_Edge&   ESpine,
   // Search if VProfile is a Vertex of myProfile
   // *************************************************
   iprof = FindVertex(myProfile, VProfile, count);
-  if (!iprof) Standard_DomainError::Raise(
+  if (!iprof) throw Standard_DomainError(
 	"BRepFill_Pipe::Edge : Vertex not in the Profile");
 
 
@@ -513,7 +513,7 @@ TopoDS_Edge BRepFill_Pipe::Edge(const TopoDS_Edge&   ESpine,
   for (ii=1; ii<=myLoc->NbLaw() && (!ispin); ii++) 
     if  (ESpine.IsSame(myLoc->Edge(ii))) ispin = ii;
 
-  if (!ispin) Standard_DomainError::Raise(
+  if (!ispin) throw Standard_DomainError(
     "BRepFill_Pipe::Edge  : Edge not in the Spine");
 
 
@@ -550,7 +550,7 @@ TopoDS_Shape BRepFill_Pipe::Section(const TopoDS_Vertex& VSpine) const
  for (ii=1; ii<=myLoc->NbLaw()+1 && (!ispin); ii++) 
     if  (VSpine.IsSame(myLoc->Vertex(ii))) ispin = ii;
 
-  if (!ispin) Standard_DomainError::Raise(
+  if (!ispin) throw Standard_DomainError(
     "BRepFill_Pipe::Section  : Vertex not in the Spine");
 
   BRep_Builder B;
@@ -672,7 +672,7 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
 
   case TopAbs_SOLID :
   case TopAbs_COMPSOLID :
-    Standard_DomainError::Raise("BRepFill_Pipe::profile contains solids");
+    throw Standard_DomainError("BRepFill_Pipe::profile contains solids");
     break;
 
   case TopAbs_COMPOUND :
@@ -897,7 +897,7 @@ Standard_Integer BRepFill_Pipe::FindEdge(const TopoDS_Shape& S,
 
   case TopAbs_SOLID :
   case TopAbs_COMPSOLID :
-    Standard_DomainError::Raise("BRepFill_Pipe::SOLID or COMPSOLID");
+    throw Standard_DomainError("BRepFill_Pipe::SOLID or COMPSOLID");
     break;
   default:
     break;
@@ -963,7 +963,7 @@ Standard_Integer BRepFill_Pipe::FindVertex(const TopoDS_Shape& S,
 
   case TopAbs_SOLID :
   case TopAbs_COMPSOLID :
-    Standard_DomainError::Raise("BRepFill_Pipe::SOLID or COMPSOLID");
+    throw Standard_DomainError("BRepFill_Pipe::SOLID or COMPSOLID");
     break;
   default:
     break;

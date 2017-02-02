@@ -80,7 +80,7 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
   if (type != MoniTool_ValueInteger && type != MoniTool_ValueReal &&
       type != MoniTool_ValueEnum    && type != MoniTool_ValueText &&
       type != MoniTool_ValueIdent)
-    Standard_ConstructionError::Raise("MoniTool_TypedValue : Type not supported");
+    throw Standard_ConstructionError("MoniTool_TypedValue : Type not supported");
   if (init[0] != '\0')
     if (Satisfies(new TCollection_HAsciiString(init))) SetCStringValue (init);
 
@@ -315,8 +315,7 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
     void  MoniTool_TypedValue::SetIntegerLimit
   (const Standard_Boolean max, const Standard_Integer val)
 {
-  if (thetype != MoniTool_ValueInteger) Standard_ConstructionError::Raise
-      ("MoniTool_TypedValue : SetIntegerLimit, not an Integer");
+  if (thetype != MoniTool_ValueInteger) throw Standard_ConstructionError("MoniTool_TypedValue : SetIntegerLimit, not an Integer");
 
   if (max)  {  thelims |= 2;  theintup  = val; }
   else      {  thelims |= 1;  theintlow = val; }
@@ -335,8 +334,7 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
     void  MoniTool_TypedValue::SetRealLimit
   (const Standard_Boolean max, const Standard_Real val)
 {
-  if (thetype != MoniTool_ValueReal) Standard_ConstructionError::Raise
-      ("MoniTool_TypedValue : SetRealLimit, not a Real");
+  if (thetype != MoniTool_ValueReal) throw Standard_ConstructionError("MoniTool_TypedValue : SetRealLimit, not a Real");
 
   if (max)  {  thelims |= 2;  therealup = val; }
   else      {  thelims |= 1;  therealow = val; }
@@ -362,8 +360,7 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
     void  MoniTool_TypedValue::StartEnum
   (const Standard_Integer start, const Standard_Boolean match)
 {
-  if (thetype != MoniTool_ValueEnum) Standard_ConstructionError::Raise
-    ("MoniTool_TypedValue : StartEnum, Not an Enum");
+  if (thetype != MoniTool_ValueEnum) throw Standard_ConstructionError("MoniTool_TypedValue : StartEnum, Not an Enum");
 
   thelims |= 4;  if (!match) thelims -= 4;
   theintlow = start;  theintup = start -1;
@@ -376,8 +373,7 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
    const Standard_CString v7, const Standard_CString v8,
    const Standard_CString v9, const Standard_CString v10)
 {
-  if (thetype != MoniTool_ValueEnum) Standard_ConstructionError::Raise
-    ("MoniTool_TypedValue : AddEnum, Not an Enum");
+  if (thetype != MoniTool_ValueEnum) throw Standard_ConstructionError("MoniTool_TypedValue : AddEnum, Not an Enum");
   if (theenums.IsNull()) theenums =
     new TColStd_HArray1OfAsciiString(theintlow,theintlow+10);
   else if (theenums->Upper() < theintup + 10) {
@@ -433,10 +429,8 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
     void  MoniTool_TypedValue::AddEnumValue
   (const Standard_CString val, const Standard_Integer num)
 {
-  if (thetype != MoniTool_ValueEnum) Standard_ConstructionError::Raise
-    ("MoniTool_TypedValue : AddEnum, Not an Enum");
-  if (num < theintlow) Standard_ConstructionError::Raise
-    ("MoniTool_TypedValue : AddEnum, out of range");
+  if (thetype != MoniTool_ValueEnum) throw Standard_ConstructionError("MoniTool_TypedValue : AddEnum, Not an Enum");
+  if (num < theintlow) throw Standard_ConstructionError("MoniTool_TypedValue : AddEnum, out of range");
   if (val[0] == '\0') return;
   if (theenums.IsNull()) theenums =
     new TColStd_HArray1OfAsciiString(theintlow,num+1);
@@ -498,8 +492,7 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
     void  MoniTool_TypedValue::SetObjectType
   (const Handle(Standard_Type)& typ)
 {
-  if (thetype != MoniTool_ValueIdent) Standard_ConstructionError::Raise
-    ("MoniTool_TypedValue : AddEnum, Not an Entity/Object");
+  if (thetype != MoniTool_ValueIdent) throw Standard_ConstructionError("MoniTool_TypedValue : AddEnum, Not an Entity/Object");
   theotyp = typ;
 }
 

@@ -326,13 +326,13 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
             TP->AddWarning(C,"Could not convert a curve. Curve definition is incorrect");
         }
       }
-      catch (Standard_Failure)
-      {
-        TP->AddFail(C,"Exeption was raised. Curve geometry definition is incorrect");
+      catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-  cout << "Warning: StepToTopoDS_TranslateEdgeLoop: Exception: ";
-  Standard_Failure::Caught()->Print(cout); cout << endl;
+        cout << "Warning: StepToTopoDS_TranslateEdgeLoop: Exception: ";
+        anException.Print(cout); cout << endl;
 #endif
+        (void)anException;
+        TP->AddFail(C,"Exeption was raised. Curve geometry definition is incorrect");
       }
     }
 

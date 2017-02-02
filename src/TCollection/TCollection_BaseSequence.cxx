@@ -168,7 +168,7 @@ void TCollection_BaseSequence::PInsertAfter(const Standard_Integer Index, const 
 
 void TCollection_BaseSequence::PInsertAfter(const Standard_Integer Index, TCollection_BaseSequence& Other)
 {
-  if (Index < 0 || Index > Size) Standard_OutOfRange::Raise();
+  if (Index < 0 || Index > Size) throw Standard_OutOfRange();
   if (Other.Size == 0) return;
   if (Index == 0) 
     PPrepend( Other );

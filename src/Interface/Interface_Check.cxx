@@ -143,7 +143,7 @@ Standard_Integer Interface_Check::NbFails () const
 const Handle(TCollection_HAsciiString)& Interface_Check::Fail
        (const Standard_Integer num, const Standard_Boolean final) const
 {
-  if (thefails.IsNull()) Standard_OutOfRange::Raise();
+  if (thefails.IsNull()) throw Standard_OutOfRange();
   return (final ? thefails->Value(num) : thefailo->Value(num));
 }
 
@@ -271,7 +271,7 @@ Standard_Integer Interface_Check::NbWarnings () const
 const Handle(TCollection_HAsciiString)& Interface_Check::Warning
        (const Standard_Integer num, const Standard_Boolean final) const
 {
-  if (thewarns.IsNull()) Standard_OutOfRange::Raise();
+  if (thewarns.IsNull()) throw Standard_OutOfRange();
   return (final ? thewarns->Value(num) : thewarno->Value(num));
 }
 
@@ -341,7 +341,7 @@ Standard_Integer Interface_Check::NbInfoMsgs () const
 const Handle(TCollection_HAsciiString)& Interface_Check::InfoMsg
   (const Standard_Integer num, const Standard_Boolean final) const
 {
-  if (theinfos.IsNull()) Standard_OutOfRange::Raise();
+  if (theinfos.IsNull()) throw Standard_OutOfRange();
   return (final ? theinfos->Value(num) : theinfoo->Value(num));
 }
 

@@ -93,7 +93,7 @@ void TopOpeBRep_WPointInterIterator::Next()
 const TopOpeBRep_WPointInter& TopOpeBRep_WPointInterIterator::CurrentWP()
 {
   if (!More()) 
-    Standard_ProgramError::Raise("TopOpeBRep_WPointInterIterator::Current");
+    throw Standard_ProgramError("TopOpeBRep_WPointInterIterator::Current");
   const TopOpeBRep_WPointInter& WP = myLineInter->WPoint(myWPointIndex);
   return WP;
 }

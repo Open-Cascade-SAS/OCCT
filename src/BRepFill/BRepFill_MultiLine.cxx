@@ -68,7 +68,7 @@ static Standard_Boolean isIsoU(const TopoDS_Face& Face,
 
   C = BRep_Tool::CurveOnSurface(Edge,Face, f, l);
   if ( C.IsNull()) {
-    Standard_ConstructionError::Raise ("BRepFill_MultiLine : Edge without PCurve");
+    throw Standard_ConstructionError("BRepFill_MultiLine : Edge without PCurve");
   }
 
   gp_Dir2d D = C->DN(f,1);
@@ -635,7 +635,7 @@ static gp_Pnt2d ValueOnFace(const Standard_Real        U,
         cout << "MultiLine : D1 = D2 and the Curve is not a circle" << endl;
         cout << "  ---> ValueOnFace failed at parameter U = " << U << endl;
 #endif
-        Standard_ConstructionError::Raise("BRepFill_MultiLine: ValueOnFace");
+        throw Standard_ConstructionError("BRepFill_MultiLine: ValueOnFace");
       }
     }
     else if ( D1 < D2) {

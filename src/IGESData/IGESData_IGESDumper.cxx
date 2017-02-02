@@ -46,7 +46,7 @@ IGESData_IGESDumper::IGESData_IGESDumper
   if (!ent.IsNull()) {
     if (themodel.IsNull())                          S<<"    D???    ";
     else if ( (num = themodel->Number(ent)) == 0)   S<<"    0:D?????";
-// Interface_InterfaceError::Raise  ("IGESDumper : PrintDNum");
+// throw Interface_InterfaceError("IGESDumper : PrintDNum");
     else {
       S<<Interface_MSG::Blanks(num,9)<<num<<":D"<<2*num-1<<Interface_MSG::Blanks(2*num-1,9);
     }

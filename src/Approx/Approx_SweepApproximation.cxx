@@ -610,7 +610,7 @@ SurfShape(Standard_Integer& UDegree,
 	  Standard_Integer& NbUKnots,
 	  Standard_Integer& NbVKnots) const
 {
-  if (!done) {StdFail_NotDone::Raise("Approx_SweepApproximation");}
+  if (!done) {throw StdFail_NotDone("Approx_SweepApproximation");}
   UDegree  = udeg;
   VDegree  = vdeg;
   NbUPoles = tabPoles->ColLength();
@@ -627,7 +627,7 @@ Surface(TColgp_Array2OfPnt& TPoles,
 	TColStd_Array1OfInteger& TUMults,
 	TColStd_Array1OfInteger& TVMults) const
 {
-  if (!done) {StdFail_NotDone::Raise("Approx_SweepApproximation");}
+  if (!done) {throw StdFail_NotDone("Approx_SweepApproximation");}
   TPoles   = tabPoles->Array2();
   TWeights = tabWeights->Array2();
   TUKnots  = tabUKnots->Array1();
@@ -640,7 +640,7 @@ Standard_Real Approx_SweepApproximation::MaxErrorOnSurf() const
 {
  Standard_Integer ii;
  Standard_Real MaxError = 0, err;
- if (!done) {StdFail_NotDone::Raise("Approx_SweepApproximation");}
+ if (!done) {throw StdFail_NotDone("Approx_SweepApproximation");}
 
  if (myFunc->IsRational()) {
    TColStd_Array1OfReal Wmin(1, Num1DSS);
@@ -664,7 +664,7 @@ Standard_Real Approx_SweepApproximation::MaxErrorOnSurf() const
 {
  Standard_Integer ii;
  Standard_Real MoyError = 0, err;
- if (!done) {StdFail_NotDone::Raise("Approx_SweepApproximation");}
+ if (!done) {throw StdFail_NotDone("Approx_SweepApproximation");}
 
  if (myFunc->IsRational()) {
    TColStd_Array1OfReal Wmin(1, Num1DSS);
@@ -689,8 +689,8 @@ void Approx_SweepApproximation::Curves2dShape(Standard_Integer& Degree,
 					      Standard_Integer& NbPoles,
 					      Standard_Integer& NbKnots) const
 {
-  if (!done) {StdFail_NotDone::Raise("Approx_SweepApproximation");}
-  if (seqPoles2d.Length() == 0) {Standard_DomainError::Raise("Approx_SweepApproximation");}
+  if (!done) {throw StdFail_NotDone("Approx_SweepApproximation");}
+  if (seqPoles2d.Length() == 0) {throw Standard_DomainError("Approx_SweepApproximation");}
   Degree = deg2d;
   NbPoles = seqPoles2d(1)->Length();
   NbKnots = tab2dKnots->Length();
@@ -701,8 +701,8 @@ void Approx_SweepApproximation::Curve2d(const Standard_Integer Index,
 					TColStd_Array1OfReal& TKnots,
 					TColStd_Array1OfInteger& TMults) const
 {
-  if (!done) {StdFail_NotDone::Raise("Approx_SweepApproximation");}
-  if (seqPoles2d.Length() == 0) {Standard_DomainError::Raise("Approx_SweepApproximation");}
+  if (!done) {throw StdFail_NotDone("Approx_SweepApproximation");}
+  if (seqPoles2d.Length() == 0) {throw Standard_DomainError("Approx_SweepApproximation");}
   TPoles = seqPoles2d(Index)->Array1();
   TKnots  = tab2dKnots->Array1();
   TMults  = tab2dMults->Array1(); 
@@ -710,19 +710,19 @@ void Approx_SweepApproximation::Curve2d(const Standard_Integer Index,
 
  Standard_Real Approx_SweepApproximation::Max2dError(const Standard_Integer Index) const
 {
-  if (!done) {StdFail_NotDone::Raise("Approx_SweepApproximation");}
+  if (!done) {throw StdFail_NotDone("Approx_SweepApproximation");}
   return tab2dError->Value(Index);
 }
 
  Standard_Real Approx_SweepApproximation::Average2dError(const Standard_Integer Index) const
 {
-  if (!done) {StdFail_NotDone::Raise("Approx_SweepApproximation");}
+  if (!done) {throw StdFail_NotDone("Approx_SweepApproximation");}
   return Ave2dError->Value(Index); 
 }
 
 Standard_Real Approx_SweepApproximation::TolCurveOnSurf(const Standard_Integer Index) const
 {
-  if (!done) {StdFail_NotDone::Raise("Approx_SweepApproximation");}
+  if (!done) {throw StdFail_NotDone("Approx_SweepApproximation");}
   return  COnSurfErr->Value(Index);
 }
 

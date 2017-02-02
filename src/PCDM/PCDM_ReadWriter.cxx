@@ -61,7 +61,7 @@ void PCDM_ReadWriter::Open (Storage_BaseDriver&                 aDriver,
       break;
     }
     aMsg << (char)0;
-    Standard_Failure::Raise(aMsg);
+    throw Standard_Failure(aMsg.str().c_str());
   }
 }
 

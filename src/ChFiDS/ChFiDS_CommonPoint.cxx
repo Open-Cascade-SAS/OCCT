@@ -86,7 +86,7 @@ void  ChFiDS_CommonPoint::SetParameter(const Standard_Real Param)
 const TopoDS_Edge&  ChFiDS_CommonPoint::Arc()const 
 {
   if (!isonarc){
-    Standard_DomainError::Raise("CommonPoint not on Arc"); 
+    throw Standard_DomainError("CommonPoint not on Arc");
   }
   return arc;
 }
@@ -100,7 +100,7 @@ const TopoDS_Edge&  ChFiDS_CommonPoint::Arc()const
 TopAbs_Orientation  ChFiDS_CommonPoint::TransitionOnArc()const 
 {
   if (!isonarc){
-    Standard_DomainError::Raise("CommonPoint not on Arc"); 
+    throw Standard_DomainError("CommonPoint not on Arc");
   }
   return traarc;
 }
@@ -114,7 +114,7 @@ TopAbs_Orientation  ChFiDS_CommonPoint::TransitionOnArc()const
 Standard_Real  ChFiDS_CommonPoint::ParameterOnArc()const 
 {
   if (!isonarc){
-    Standard_DomainError::Raise("CommonPoint not on Arc"); 
+    throw Standard_DomainError("CommonPoint not on Arc");
   }
   return prmarc;
 }

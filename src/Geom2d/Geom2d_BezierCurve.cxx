@@ -106,12 +106,12 @@ Geom2d_BezierCurve::Geom2d_BezierCurve
   Standard_Integer nbpoles = Poles.Length();
   
   if (Weights.Length() != nbpoles)
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   
   Standard_Integer i;
   for (i = 1; i <= nbpoles; i++) {
     if (Weights(i) <= gp::Resolution()) {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
   }
   

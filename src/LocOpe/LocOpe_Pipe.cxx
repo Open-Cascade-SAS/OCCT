@@ -269,7 +269,7 @@ const TopTools_ListOfShape& LocOpe_Pipe::Shapes (const TopoDS_Shape& S)
 {
   TopAbs_ShapeEnum typS = S.ShapeType();
   if (typS != TopAbs_EDGE && typS != TopAbs_VERTEX) {
-    Standard_DomainError::Raise();
+    throw Standard_DomainError();
   }
 //  for (TopExp_Explorer exp(myPipe.Profile(),typS); exp.More(); exp.Next()) {
   TopExp_Explorer exp(myPipe.Profile(),typS) ;
@@ -279,7 +279,7 @@ const TopTools_ListOfShape& LocOpe_Pipe::Shapes (const TopoDS_Shape& S)
     }
   }
   if (!exp.More()) {
-    Standard_NoSuchObject::Raise();
+    throw Standard_NoSuchObject();
   }
 
   myGShap.Clear();
@@ -412,8 +412,7 @@ static TopAbs_Orientation Orientation(const TopoDS_Shape& Sub,
       return exp.Current().Orientation();
     }
   }
-  Standard_NoSuchObject::Raise();
-  return TopAbs_INTERNAL;
+  throw Standard_NoSuchObject();
 }
 
 

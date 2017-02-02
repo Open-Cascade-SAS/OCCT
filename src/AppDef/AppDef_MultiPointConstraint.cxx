@@ -74,7 +74,7 @@ AppDef_MultiPointConstraint::AppDef_MultiPointConstraint
       (tabP2d.Length() != tabVec2d.Length()) ||
       (tabCur.Length() != tabP.Length()) ||
       (tabCur2d.Length() != tabP2d.Length())) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   tabTang = new TColgp_HArray1OfVec(1, tabVec.Length());
@@ -113,7 +113,7 @@ AppDef_MultiPointConstraint::AppDef_MultiPointConstraint
 
   if ((tabP.Length() != tabVec.Length()) ||
       (tabP2d.Length() != tabVec2d.Length())) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   tabTang = new TColgp_HArray1OfVec(1, tabVec.Length());
@@ -137,7 +137,7 @@ AppDef_MultiPointConstraint::AppDef_MultiPointConstraint (
                                       AppParCurves_MultiPoint(tabP) {
   
   if (tabP.Length() != tabVec.Length()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   tabTang = new TColgp_HArray1OfVec(1, tabVec.Length());
@@ -157,7 +157,7 @@ AppDef_MultiPointConstraint::AppDef_MultiPointConstraint
 
   if ((tabP.Length() != tabVec.Length()) ||
       (tabP.Length() != tabCur.Length())) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   tabTang = new TColgp_HArray1OfVec(1, tabVec.Length());
@@ -182,7 +182,7 @@ AppDef_MultiPointConstraint::AppDef_MultiPointConstraint
                                       AppParCurves_MultiPoint(tabP2d) {
 
   if (tabP2d.Length() != tabVec2d.Length()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   tabTang2d = new TColgp_HArray1OfVec2d(1, tabVec2d.Length());
@@ -203,7 +203,7 @@ AppDef_MultiPointConstraint::AppDef_MultiPointConstraint
 
   if ((tabP2d.Length() != tabVec2d.Length()) ||
       (tabCur2d.Length() != tabP2d.Length()))  {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   
   tabTang2d = new TColgp_HArray1OfVec2d(1, tabVec2d.Length());
@@ -226,7 +226,7 @@ void AppDef_MultiPointConstraint::SetTang (const Standard_Integer Index,
   if (tabTang.IsNull())
     tabTang = new TColgp_HArray1OfVec (1, nbP);
   if ((Index <= 0) || (Index > nbP)) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   tabTang->SetValue(Index, Tang);
 }
@@ -234,7 +234,7 @@ void AppDef_MultiPointConstraint::SetTang (const Standard_Integer Index,
 
 gp_Vec AppDef_MultiPointConstraint::Tang (const Standard_Integer Index) const {
   if ((Index <= 0) || (Index > nbP)) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return tabTang->Value(Index);
 }
@@ -248,7 +248,7 @@ void AppDef_MultiPointConstraint::SetTang2d (const Standard_Integer Index,
     
   if ((Index <= nbP) || 
       (Index > nbP+nbP2d)) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   tabTang2d->SetValue(Index-nbP, Tang2d);
 }
@@ -257,7 +257,7 @@ void AppDef_MultiPointConstraint::SetTang2d (const Standard_Integer Index,
 gp_Vec2d AppDef_MultiPointConstraint::Tang2d (const Standard_Integer Index) const {
   if ((Index <= nbP) || 
       (Index > nbP+nbP2d)) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return tabTang2d->Value(Index-nbP);
 }
@@ -267,7 +267,7 @@ void AppDef_MultiPointConstraint::SetCurv (const Standard_Integer Index, const g
   if (tabCurv.IsNull())
     tabCurv = new TColgp_HArray1OfVec (1, nbP);
   if ((Index <= 0) || (Index > nbP)) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   tabCurv->SetValue(Index, Curv);
 }
@@ -275,7 +275,7 @@ void AppDef_MultiPointConstraint::SetCurv (const Standard_Integer Index, const g
 
 gp_Vec AppDef_MultiPointConstraint::Curv (const Standard_Integer Index) const {
   if ((Index <= 0) || (Index > nbP)) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return tabCurv->Value(Index);
 }
@@ -288,7 +288,7 @@ void AppDef_MultiPointConstraint::SetCurv2d (const Standard_Integer Index,
     tabCurv2d = new TColgp_HArray1OfVec2d (1, nbP2d);
   if ((Index <= nbP) || 
       (Index > nbP+nbP2d)) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   tabCurv2d->SetValue(Index- nbP, Curv2d);
 }
@@ -298,7 +298,7 @@ void AppDef_MultiPointConstraint::SetCurv2d (const Standard_Integer Index,
 gp_Vec2d AppDef_MultiPointConstraint::Curv2d (const Standard_Integer Index) const {
   if ((Index <= nbP) ||
       (Index > nbP+nbP2d)) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return tabCurv2d->Value(Index - nbP);
 }

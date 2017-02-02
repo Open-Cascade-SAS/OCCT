@@ -222,8 +222,7 @@ Handle(Law_BSpline) Law::Reparametrize(const Adaptor3d_Curve&   Curve,
   }
   inter.Perform();
   if(!inter.IsDone()) 
-    Standard_Failure::Raise
-      ("Law::Reparametrize echec interpolation");
+    throw Standard_Failure("Law::Reparametrize echec interpolation");
   Handle(Law_BSpline) bs = inter.Curve();
   return bs;
 }

@@ -68,7 +68,7 @@ myTolCurv(TolCurv)
 {
   myOrder=Tang;
   if ((Tang<-1)||(Tang>2))
-    Standard_Failure::Raise("GeomPlate : The continuity is not G0 G1 or G2"); 
+    throw Standard_Failure("GeomPlate : The continuity is not G0 G1 or G2");
   myNbPoints=NPt;
   myConstG0=Standard_True;
   myConstG1=Standard_True;
@@ -94,7 +94,7 @@ myTolCurv(TolCurv)
       //      BS1=Handle(BRepAdaptor_HSurface)::DownCast(myFrontiere->
       //                                            ChangeCurve().GetSurface());
       //      Surf = BRep_Tool::Surface(BS1->ChangeSurface().Face());
-      Standard_Failure::Raise(
+      throw Standard_Failure(
                     "GeomPlate_CurveConstraint : Surface must be GeomAdaptor_Surface");
     }
 
@@ -178,7 +178,7 @@ void GeomPlate_CurveConstraint :: D1(const Standard_Real U,
                                  gp_Pnt& P,gp_Vec& V1,gp_Vec& V2) const
 { gp_Pnt2d P2d;
    if (!my3dCurve.IsNull())
-    Standard_Failure::Raise("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface"); 
+    throw Standard_Failure("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface");
 
   P2d = myFrontiere->ChangeCurve().GetCurve()->Value(U);
   myFrontiere->ChangeCurve().GetSurface()->D1(P2d.Coord(1),P2d.Coord(2),P,V1,V2);
@@ -193,7 +193,7 @@ void GeomPlate_CurveConstraint :: D2(const Standard_Real U,
                                gp_Vec& V3,gp_Vec& V4,gp_Vec& V5) const
 {  gp_Pnt2d P2d;
    if (!my3dCurve.IsNull())
-    Standard_Failure::Raise("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface"); 
+    throw Standard_Failure("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface");
 
   P2d = myFrontiere->ChangeCurve().GetCurve()->Value(U);
   myFrontiere->ChangeCurve().GetSurface()->D2(P2d.Coord(1),P2d.Coord(2),P,V1,V2,V3,V4,V5);
@@ -211,7 +211,7 @@ void GeomPlate_CurveConstraint :: SetG0Criterion(const Handle(Law_Function) &G0C
 //---------------------------------------------------------
 void GeomPlate_CurveConstraint :: SetG1Criterion(const Handle(Law_Function) &G1Crit)
 { if (!my3dCurve.IsNull())
-    Standard_Failure::Raise("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface"); 
+    throw Standard_Failure("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface");
   myG1Crit=G1Crit;
   myConstG1=Standard_False;
 }
@@ -220,7 +220,7 @@ void GeomPlate_CurveConstraint :: SetG1Criterion(const Handle(Law_Function) &G1C
 //---------------------------------------------------------
 void GeomPlate_CurveConstraint :: SetG2Criterion(const Handle(Law_Function) &G2Crit)
 { if (!my3dCurve.IsNull())
-    Standard_Failure::Raise("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface"); 
+    throw Standard_Failure("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface");
   myG2Crit=G2Crit;
   myConstG2=Standard_False;
 }
@@ -238,7 +238,7 @@ Standard_Real GeomPlate_CurveConstraint :: G0Criterion(const Standard_Real U) co
 //---------------------------------------------------------
 Standard_Real GeomPlate_CurveConstraint :: G1Criterion(const Standard_Real U) const
 { if (!my3dCurve.IsNull())
-    Standard_Failure::Raise("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface"); 
+    throw Standard_Failure("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface");
   if (myConstG1)
     return myTolAng;
   else 
@@ -249,7 +249,7 @@ Standard_Real GeomPlate_CurveConstraint :: G1Criterion(const Standard_Real U) co
 //---------------------------------------------------------
 Standard_Real GeomPlate_CurveConstraint :: G2Criterion(const Standard_Real U) const
 { if (!my3dCurve.IsNull())
-    Standard_Failure::Raise("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface"); 
+    throw Standard_Failure("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface");
   if (myConstG2)
     return myTolCurv;
   else 
@@ -338,7 +338,7 @@ myOrder = Order;
 //------------------------------------------------------------
 GeomLProp_SLProps &GeomPlate_CurveConstraint::LPropSurf(const Standard_Real U)
 {  if (myFrontiere.IsNull())
-    Standard_Failure::Raise("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface"); 
+    throw Standard_Failure("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface");
   gp_Pnt2d P2d= myFrontiere->ChangeCurve().GetCurve()->Value(U);
 myLProp.SetParameters(P2d.X(),P2d.Y());
 return myLProp;

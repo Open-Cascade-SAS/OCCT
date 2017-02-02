@@ -35,7 +35,7 @@ Interface_EntityList::Interface_EntityList ()    {  }
     void  Interface_EntityList::Append
   (const Handle(Standard_Transient)& ent)
 {
-  if (ent.IsNull()) Standard_NullObject::Raise("Interface_EntityList Append");
+  if (ent.IsNull()) throw Standard_NullObject("Interface_EntityList Append");
   if (theval.IsNull()) {  theval = ent;  return;  }
   Handle(Interface_EntityCluster) aValEC =
     Handle(Interface_EntityCluster)::DownCast(theval);
@@ -55,7 +55,7 @@ Interface_EntityList::Interface_EntityList ()    {  }
     void  Interface_EntityList::Add
   (const Handle(Standard_Transient)& ent)
 {
-  if (ent.IsNull()) Standard_NullObject::Raise("Interface_EntityList Add");
+  if (ent.IsNull()) throw Standard_NullObject("Interface_EntityList Add");
   if (theval.IsNull()) {  theval = ent;  return;  }
   Handle(Interface_EntityCluster) aValEC =
     Handle(Interface_EntityCluster)::DownCast(theval);
@@ -75,7 +75,7 @@ Interface_EntityList::Interface_EntityList ()    {  }
 
     void  Interface_EntityList::Remove (const Handle(Standard_Transient)& ent)
 {
-  if (ent.IsNull()) Standard_NullObject::Raise("Interface_EntityList Remove");
+  if (ent.IsNull()) throw Standard_NullObject("Interface_EntityList Remove");
   if (theval.IsNull()) return;
   if (theval == ent) {
     theval.Nullify();
@@ -92,11 +92,11 @@ Interface_EntityList::Interface_EntityList ()    {  }
 
     void  Interface_EntityList::Remove  (const Standard_Integer num)
 {
-  if (theval.IsNull()) Standard_OutOfRange::Raise("EntityList : Remove");
+  if (theval.IsNull()) throw Standard_OutOfRange("EntityList : Remove");
   Handle(Interface_EntityCluster) ec =
     Handle(Interface_EntityCluster)::DownCast(theval);
   if (ec.IsNull()) {
-    if (num != 1) Standard_OutOfRange::Raise("EntityList : Remove");
+    if (num != 1) throw Standard_OutOfRange("EntityList : Remove");
     theval.Nullify();
     return;
   }
@@ -122,23 +122,23 @@ Interface_EntityList::Interface_EntityList ()    {  }
     const Handle(Standard_Transient)&  Interface_EntityList::Value
   (const Standard_Integer num) const 
 {
-  if (theval.IsNull()) Standard_OutOfRange::Raise("Interface EntityList : Value");
+  if (theval.IsNull()) throw Standard_OutOfRange("Interface EntityList : Value");
   Handle(Interface_EntityCluster) ec =
     Handle(Interface_EntityCluster)::DownCast(theval);
   if (!ec.IsNull()) return ec->Value(num);  // EntityCluster
-  else if (num != 1) Standard_OutOfRange::Raise("Interface EntityList : Value");
+  else if (num != 1) throw Standard_OutOfRange("Interface EntityList : Value");
   return theval;
 }
 
     void  Interface_EntityList::SetValue
   (const Standard_Integer num, const Handle(Standard_Transient)& ent)
 {
-  if (ent.IsNull()) Standard_NullObject::Raise("Interface_EntityList SetValue");
-  if (theval.IsNull()) Standard_OutOfRange::Raise("Interface EntityList : SetValue");
+  if (ent.IsNull()) throw Standard_NullObject("Interface_EntityList SetValue");
+  if (theval.IsNull()) throw Standard_OutOfRange("Interface EntityList : SetValue");
   Handle(Interface_EntityCluster) ec =
     Handle(Interface_EntityCluster)::DownCast(theval);
   if (!ec.IsNull()) ec->SetValue(num,ent);   // EntityCluster
-  else if (num != 1) Standard_OutOfRange::Raise("Interface EntityList : SetValue");
+  else if (num != 1) throw Standard_OutOfRange("Interface EntityList : SetValue");
   else theval = ent;
 
 }
@@ -182,8 +182,7 @@ Interface_EntityList::Interface_EntityList ()    {  }
 {
   Standard_Integer res = 0;
   Handle(Standard_Transient) entres;
-  if (theval.IsNull()) Interface_InterfaceError::Raise
-    ("Interface EntityList : TypedEntity , none found");
+  if (theval.IsNull()) throw Interface_InterfaceError("Interface EntityList : TypedEntity , none found");
   Handle(Interface_EntityCluster) ec =
     Handle(Interface_EntityCluster)::DownCast(theval);
   if (!ec.IsNull()) {                // EntityCluster
@@ -191,8 +190,7 @@ Interface_EntityList::Interface_EntityList ()    {  }
       for (Standard_Integer i = ec->NbLocal(); i > 0; i --) {
 	if (ec->Value(i)->IsKind(atype)) {
 	  res ++;
-	  if (num == 0 && res > 1) Interface_InterfaceError::Raise
-	    ("Interface EntityList : TypedEntity , several found");
+	  if (num == 0 && res > 1) throw Interface_InterfaceError("Interface EntityList : TypedEntity , several found");
 	  entres = ec->Value(i);
 	  if (res == num) return entres;
 	}
@@ -201,11 +199,9 @@ Interface_EntityList::Interface_EntityList ()    {  }
       ec = ec->Next();
     }
   } else if (num > 1) {
-    Interface_InterfaceError::Raise
-      ("Interface EntityList : TypedEntity ,out of range");
+    throw Interface_InterfaceError("Interface EntityList : TypedEntity ,out of range");
   } else {                          // InterfaceEntity
-    if (!theval->IsKind(atype)) Interface_InterfaceError::Raise
-      ("Interface EntityList : TypedEntity , none found");
+    if (!theval->IsKind(atype)) throw Interface_InterfaceError("Interface EntityList : TypedEntity , none found");
     entres = theval;
   }
   return entres;

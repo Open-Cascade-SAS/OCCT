@@ -77,7 +77,7 @@ inline const TopoDS_Shape& LocOpe_Generator::Shape() const
 
 inline const TopoDS_Shape& LocOpe_Generator::ResultingShape() const
 {
-  if (!myDone) {StdFail_NotDone::Raise();}
+  if (!myDone) {throw StdFail_NotDone();}
   return myRes;
 }
 

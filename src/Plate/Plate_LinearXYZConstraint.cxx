@@ -24,7 +24,7 @@ Plate_LinearXYZConstraint::Plate_LinearXYZConstraint() {}
 
 Plate_LinearXYZConstraint::Plate_LinearXYZConstraint(const Plate_Array1OfPinpointConstraint& thePPC,const TColStd_Array1OfReal& theCoeff)
 {
-  if(theCoeff.Length()!= thePPC.Length()) Standard_DimensionMismatch::Raise();
+  if(theCoeff.Length()!= thePPC.Length()) throw Standard_DimensionMismatch();
   myPPC = new Plate_HArray1OfPinpointConstraint(1, thePPC.Length());
   myCoef = new TColStd_HArray2OfReal(1,1,1, theCoeff.Length());
   
@@ -35,7 +35,7 @@ Plate_LinearXYZConstraint::Plate_LinearXYZConstraint(const Plate_Array1OfPinpoin
 
 Plate_LinearXYZConstraint::Plate_LinearXYZConstraint(const Plate_Array1OfPinpointConstraint& thePPC,const TColStd_Array2OfReal& theCoeff)
 {
-  if(theCoeff.RowLength()!= thePPC.Length()) Standard_DimensionMismatch::Raise();
+  if(theCoeff.RowLength()!= thePPC.Length()) throw Standard_DimensionMismatch();
   myPPC = new Plate_HArray1OfPinpointConstraint(1, thePPC.Length());
   myCoef = new TColStd_HArray2OfReal(1, theCoeff.ColLength(),1, theCoeff.RowLength());
   

@@ -119,7 +119,7 @@ void StepData_StepWriter::SetScope (const Standard_Integer numscope,
 {
   Standard_Integer nb = themodel->NbEntities();
   if (numscope <= 0 || numscope > nb || numin <= 0 || numin > nb)
-    Interface_InterfaceMismatch::Raise("StepWriter : SetScope, out of range");
+    throw Interface_InterfaceMismatch("StepWriter : SetScope, out of range");
   if (thescopenext.IsNull()) {
     thescopebeg  = new TColStd_HArray1OfInteger (1,nb); thescopebeg->Init(0);
     thescopeend  = new TColStd_HArray1OfInteger (1,nb); thescopeend->Init(0);
@@ -130,7 +130,7 @@ void StepData_StepWriter::SetScope (const Standard_Integer numscope,
     cout << "StepWriter : SetScope (scope : " << numscope << " entity : "
       << numin << "), Entity already in a Scope"<<endl;
 #endif
-    Interface_InterfaceMismatch::Raise("StepWriter : SetScope, already set");
+    throw Interface_InterfaceMismatch("StepWriter : SetScope, already set");
   }
   thescopenext->SetValue(numin,-1);  // nouvelle fin de scope
   if (thescopebeg->Value(numscope) == 0) thescopebeg->SetValue(numscope,numin);
@@ -258,7 +258,7 @@ void StepData_StepWriter::SendHeader ()
 
 void StepData_StepWriter::SendData ()
 {
-  if (thesect) Interface_InterfaceMismatch::Raise("StepWriter : Data section");
+  if (thesect) throw Interface_InterfaceMismatch("StepWriter : Data section");
   NewLine(Standard_False);
   thefile->Append (new TCollection_HAsciiString("DATA;"));
   thesect = Standard_True;
@@ -284,7 +284,7 @@ void StepData_StepWriter::EndSec ()
 
 void StepData_StepWriter::EndFile ()
 {
-  if (thesect) Interface_InterfaceMismatch::Raise("StepWriter : EndFile");
+  if (thesect) throw Interface_InterfaceMismatch("StepWriter : EndFile");
   NewLine(Standard_False);
   thefile->Append (new TCollection_HAsciiString("END-ISO-10303-21;"));
   thesect = Standard_False;
@@ -489,7 +489,7 @@ void StepData_StepWriter::Comment (const Standard_Boolean mode)
 
 void StepData_StepWriter::SendComment(const Handle(TCollection_HAsciiString)& text)
 {
-  if (!thecomm) Interface_InterfaceMismatch::Raise("StepWriter : Comment");
+  if (!thecomm) throw Interface_InterfaceMismatch("StepWriter : Comment");
   AddString(text->ToCString(),text->Length());
 }
 
@@ -501,7 +501,7 @@ void StepData_StepWriter::SendComment(const Handle(TCollection_HAsciiString)& te
 
 void StepData_StepWriter::SendComment (const Standard_CString text)
 {
-  if (!thecomm) Interface_InterfaceMismatch::Raise("StepWriter : Comment");
+  if (!thecomm) throw Interface_InterfaceMismatch("StepWriter : Comment");
   AddString(text,(Standard_Integer) strlen(text));
 }
 
@@ -515,8 +515,7 @@ void StepData_StepWriter::StartEntity(const TCollection_AsciiString& atype)
 {
   if (atype.Length() == 0) return;
   if (themult) {
-    if (thelevel != 1) Interface_InterfaceMismatch::Raise
-      ("StepWriter : StartEntity");   // decompte de parentheses mauvais ...
+    if (thelevel != 1) throw Interface_InterfaceMismatch("StepWriter : StartEntity");   // decompte de parentheses mauvais ...
     AddString(textendlist);
     AddString(" ",1); //skl 29.01.2003
   }
@@ -876,7 +875,7 @@ void StepData_StepWriter::Send (const Handle(Standard_Transient)& val)
   char lident[20];
 //  Undefined ?
   if (val.IsNull()) {
-//   Interface_InterfaceMismatch::Raise("StepWriter : Sending Null Reference");
+//   throw Interface_InterfaceMismatch("StepWriter : Sending Null Reference");
     thechecks.CCheck(thenum)->AddFail("Null Reference");
     SendUndef();
     Comment(Standard_True);
@@ -906,7 +905,7 @@ void StepData_StepWriter::Send (const Handle(Standard_Transient)& val)
       Comment(Standard_True);
       SendComment(" UNKNOWN REF ");
       Comment(Standard_False);
-//      Interface_InterfaceMismatch::Raise("StepWriter : Sending Unknown Reference");
+//      throw Interface_InterfaceMismatch("StepWriter : Sending Unknown Reference");
     }
   }
 //  Cas normal : une bonne Entite, on envoie son Ident.
@@ -1062,8 +1061,7 @@ void StepData_StepWriter::SendDerived ()
 
 void StepData_StepWriter::EndEntity ()
 {
-  if (thelevel != 1) Interface_InterfaceMismatch::Raise
-    ("StepWriter : EndEntity");   // decompte de parentheses mauvais ...
+  if (thelevel != 1) throw Interface_InterfaceMismatch("StepWriter : EndEntity");   // decompte de parentheses mauvais ...
   AddString(textendent);
   thelevel  = 0;        // on garde theindval : sera traite au prochain NewLine
   Standard_Boolean indent = theindent; theindent = Standard_False;

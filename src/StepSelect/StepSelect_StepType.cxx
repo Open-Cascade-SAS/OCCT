@@ -36,7 +36,7 @@ static TCollection_AsciiString lastvalue;
   (const Handle(Interface_Protocol)& proto)
 {
   DeclareAndCast(StepData_Protocol,newproto,proto);
-  if (newproto.IsNull()) Interface_InterfaceError::Raise("StepSelect_StepType");
+  if (newproto.IsNull()) throw Interface_InterfaceError("StepSelect_StepType");
   theproto = newproto;
   thelib.Clear();
   thelib.AddProtocol (theproto);

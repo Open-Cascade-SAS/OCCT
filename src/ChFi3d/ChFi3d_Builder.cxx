@@ -230,7 +230,7 @@ void  ChFi3d_Builder::Compute()
 #endif 
   
   if (myListStripe.IsEmpty())
-    Standard_Failure::Raise("There are no suitable edges for chamfer or fillet");
+    throw Standard_Failure("There are no suitable edges for chamfer or fillet");
   
   Reset();
   myDS = new TopOpeBRepDS_HDataStructure();
@@ -272,11 +272,11 @@ void  ChFi3d_Builder::Compute()
       OCC_CATCH_SIGNALS
       PerformSetOfSurf(itel.Value());
     }
-    catch(Standard_Failure) {
-      Handle(Standard_Failure) exc = Standard_Failure::Caught();
+    catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-      cout <<"EXCEPTION Stripe compute " << exc << endl;
+      cout <<"EXCEPTION Stripe compute " << anException << endl;
 #endif
+      (void)anException;
       badstripes.Append(itel.Value());
       done = Standard_True;
       if (itel.Value()->Spine()->ErrorStatus()==ChFiDS_Ok) 
@@ -302,12 +302,11 @@ void  ChFi3d_Builder::Compute()
         OCC_CATCH_SIGNALS
         PerformFilletOnVertex(j);
       }
-      catch(Standard_Failure)
-      {
-        Handle(Standard_Failure) exc = Standard_Failure::Caught();
+      catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-        cout <<"EXCEPTION Corner compute " << exc << endl;
+        cout <<"EXCEPTION Corner compute " << anException << endl;
 #endif
+        (void)anException;
         badvertices.Append(myVDataMap.FindKey(j));
         hasresult=Standard_False;
         done = Standard_True;
@@ -358,11 +357,11 @@ void  ChFi3d_Builder::Compute()
 	  OCC_CATCH_SIGNALS
 	  ChFi3d_StripeEdgeInter (st, aCheckStripe, DStr, tol2d);
 	}
-	catch(Standard_Failure) {
-	  Handle(Standard_Failure) exc = Standard_Failure::Caught();
+	catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-	  cout <<"EXCEPTION Fillets compute " << exc << endl;
+	  cout <<"EXCEPTION Fillets compute " << anException << endl;
 #endif
+	  (void)anException;
 	  badstripes.Append(itel.Value());
 	  hasresult=Standard_False;
 	  done = Standard_False;

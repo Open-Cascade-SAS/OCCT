@@ -47,8 +47,7 @@ Adaptor3d_Curve::~Adaptor3d_Curve()
 
 Standard_Real Adaptor3d_Curve::FirstParameter() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::FirstParameter");
-  return 0.;
+  throw Standard_NotImplemented("Adaptor3d_Curve::FirstParameter");
 }
 
 
@@ -59,8 +58,7 @@ Standard_Real Adaptor3d_Curve::FirstParameter() const
 
 Standard_Real Adaptor3d_Curve::LastParameter() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::LastParameter");
-  return 0.;
+  throw Standard_NotImplemented("Adaptor3d_Curve::LastParameter");
 }
 
 
@@ -71,8 +69,7 @@ Standard_Real Adaptor3d_Curve::LastParameter() const
 
 GeomAbs_Shape Adaptor3d_Curve::Continuity() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::Continuity");
-  return GeomAbs_C0;
+  throw Standard_NotImplemented("Adaptor3d_Curve::Continuity");
 }
 
 
@@ -83,8 +80,7 @@ GeomAbs_Shape Adaptor3d_Curve::Continuity() const
 
 Standard_Integer Adaptor3d_Curve::NbIntervals(const GeomAbs_Shape ) const
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::NbIntervals");
-  return 0;
+  throw Standard_NotImplemented("Adaptor3d_Curve::NbIntervals");
 }
 
 
@@ -95,7 +91,7 @@ Standard_Integer Adaptor3d_Curve::NbIntervals(const GeomAbs_Shape ) const
 
 void Adaptor3d_Curve::Intervals(TColStd_Array1OfReal& , const GeomAbs_Shape ) const
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::Intervals");
+  throw Standard_NotImplemented("Adaptor3d_Curve::Intervals");
 }
 
 
@@ -107,8 +103,7 @@ void Adaptor3d_Curve::Intervals(TColStd_Array1OfReal& , const GeomAbs_Shape ) co
 //Handle(Adaptor3d_HCurve) Adaptor3d_Curve::Trim(const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const 
 Handle(Adaptor3d_HCurve) Adaptor3d_Curve::Trim(const Standard_Real , const Standard_Real , const Standard_Real ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::Trim");
-  return Handle(Adaptor3d_HCurve)();
+  throw Standard_NotImplemented("Adaptor3d_Curve::Trim");
 }
 
 
@@ -119,8 +114,7 @@ Handle(Adaptor3d_HCurve) Adaptor3d_Curve::Trim(const Standard_Real , const Stand
 
 Standard_Boolean Adaptor3d_Curve::IsClosed() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::IsClosed");
-  return 0;
+  throw Standard_NotImplemented("Adaptor3d_Curve::IsClosed");
 }
 
 
@@ -131,8 +125,7 @@ Standard_Boolean Adaptor3d_Curve::IsClosed() const
 
 Standard_Boolean Adaptor3d_Curve::IsPeriodic() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::IsPeriodic");
-  return 0;
+  throw Standard_NotImplemented("Adaptor3d_Curve::IsPeriodic");
 }
 
 
@@ -143,8 +136,7 @@ Standard_Boolean Adaptor3d_Curve::IsPeriodic() const
 
 Standard_Real Adaptor3d_Curve::Period() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::Period");
-  return 0.;
+  throw Standard_NotImplemented("Adaptor3d_Curve::Period");
 }
 
 
@@ -156,8 +148,7 @@ Standard_Real Adaptor3d_Curve::Period() const
 //gp_Pnt Adaptor3d_Curve::Value(const Standard_Real U) const 
 gp_Pnt Adaptor3d_Curve::Value(const Standard_Real ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::Value");
-  return gp_Pnt();
+  throw Standard_NotImplemented("Adaptor3d_Curve::Value");
 }
 
 
@@ -169,7 +160,7 @@ gp_Pnt Adaptor3d_Curve::Value(const Standard_Real ) const
 //void Adaptor3d_Curve::D0(const Standard_Real U, gp_Pnt& P) const 
 void Adaptor3d_Curve::D0(const Standard_Real , gp_Pnt& ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::D0");
+  throw Standard_NotImplemented("Adaptor3d_Curve::D0");
 }
 
 
@@ -181,7 +172,7 @@ void Adaptor3d_Curve::D0(const Standard_Real , gp_Pnt& ) const
 //void Adaptor3d_Curve::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const 
 void Adaptor3d_Curve::D1(const Standard_Real , gp_Pnt& , gp_Vec& ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::D1");
+  throw Standard_NotImplemented("Adaptor3d_Curve::D1");
 }
 
 
@@ -193,7 +184,7 @@ void Adaptor3d_Curve::D1(const Standard_Real , gp_Pnt& , gp_Vec& ) const
 //void Adaptor3d_Curve::D2(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const 
 void Adaptor3d_Curve::D2(const Standard_Real , gp_Pnt& , gp_Vec& , gp_Vec& ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::D2");
+  throw Standard_NotImplemented("Adaptor3d_Curve::D2");
 }
 
 
@@ -205,7 +196,7 @@ void Adaptor3d_Curve::D2(const Standard_Real , gp_Pnt& , gp_Vec& , gp_Vec& ) con
 //void Adaptor3d_Curve::D3(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const 
 void Adaptor3d_Curve::D3(const Standard_Real , gp_Pnt& , gp_Vec& , gp_Vec& , gp_Vec& ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::D3");
+  throw Standard_NotImplemented("Adaptor3d_Curve::D3");
 }
 
 
@@ -217,8 +208,7 @@ void Adaptor3d_Curve::D3(const Standard_Real , gp_Pnt& , gp_Vec& , gp_Vec& , gp_
 //gp_Vec Adaptor3d_Curve::DN(const Standard_Real U, const Standard_Integer N) const 
 gp_Vec Adaptor3d_Curve::DN(const Standard_Real , const Standard_Integer ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::DN");
-  return gp_Vec();
+  throw Standard_NotImplemented("Adaptor3d_Curve::DN");
 }
 
 
@@ -230,8 +220,7 @@ gp_Vec Adaptor3d_Curve::DN(const Standard_Real , const Standard_Integer ) const
 //Standard_Real Adaptor3d_Curve::Resolution(const Standard_Real R3d) const 
 Standard_Real Adaptor3d_Curve::Resolution(const Standard_Real ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::Resolution");
-  return 0.;
+  throw Standard_NotImplemented("Adaptor3d_Curve::Resolution");
 }
 
 
@@ -242,8 +231,7 @@ Standard_Real Adaptor3d_Curve::Resolution(const Standard_Real ) const
 
 GeomAbs_CurveType Adaptor3d_Curve::GetType() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::GetType");
-  return GeomAbs_OtherCurve;
+  throw Standard_NotImplemented("Adaptor3d_Curve::GetType");
 }
 
 
@@ -254,8 +242,7 @@ GeomAbs_CurveType Adaptor3d_Curve::GetType() const
 
 gp_Lin Adaptor3d_Curve::Line() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::Line");
-  return gp_Lin();
+  throw Standard_NotImplemented("Adaptor3d_Curve::Line");
 }
 
 
@@ -266,8 +253,7 @@ gp_Lin Adaptor3d_Curve::Line() const
 
 gp_Circ Adaptor3d_Curve::Circle() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::Circle");
-  return gp_Circ();
+  throw Standard_NotImplemented("Adaptor3d_Curve::Circle");
 }
 
 
@@ -278,8 +264,7 @@ gp_Circ Adaptor3d_Curve::Circle() const
 
 gp_Elips Adaptor3d_Curve::Ellipse() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::Ellipse");
-  return gp_Elips();
+  throw Standard_NotImplemented("Adaptor3d_Curve::Ellipse");
 }
 
 
@@ -290,8 +275,7 @@ gp_Elips Adaptor3d_Curve::Ellipse() const
 
 gp_Hypr Adaptor3d_Curve::Hyperbola() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::Hyperbola");
-  return gp_Hypr();
+  throw Standard_NotImplemented("Adaptor3d_Curve::Hyperbola");
 }
 
 
@@ -302,8 +286,7 @@ gp_Hypr Adaptor3d_Curve::Hyperbola() const
 
 gp_Parab Adaptor3d_Curve::Parabola() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::Parabola");
-  return gp_Parab();
+  throw Standard_NotImplemented("Adaptor3d_Curve::Parabola");
 }
 
 
@@ -314,8 +297,7 @@ gp_Parab Adaptor3d_Curve::Parabola() const
 
 Standard_Integer Adaptor3d_Curve::Degree() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::Degree");
-  return 0;
+  throw Standard_NotImplemented("Adaptor3d_Curve::Degree");
 }
 
 
@@ -326,8 +308,7 @@ Standard_Integer Adaptor3d_Curve::Degree() const
 
 Standard_Boolean Adaptor3d_Curve::IsRational() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::IsRational");
-  return 0;
+  throw Standard_NotImplemented("Adaptor3d_Curve::IsRational");
 }
 
 
@@ -338,8 +319,7 @@ Standard_Boolean Adaptor3d_Curve::IsRational() const
 
 Standard_Integer Adaptor3d_Curve::NbPoles() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::NbPoles");
-  return 0;
+  throw Standard_NotImplemented("Adaptor3d_Curve::NbPoles");
 }
 
 
@@ -350,8 +330,7 @@ Standard_Integer Adaptor3d_Curve::NbPoles() const
 
 Standard_Integer Adaptor3d_Curve::NbKnots() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::NbKnots");
-  return 0;
+  throw Standard_NotImplemented("Adaptor3d_Curve::NbKnots");
 }
 
 
@@ -362,8 +341,7 @@ Standard_Integer Adaptor3d_Curve::NbKnots() const
 
 Handle(Geom_BezierCurve) Adaptor3d_Curve::Bezier() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::Bezier");
-  return Handle(Geom_BezierCurve)();
+  throw Standard_NotImplemented("Adaptor3d_Curve::Bezier");
 }
 
 
@@ -374,8 +352,7 @@ Handle(Geom_BezierCurve) Adaptor3d_Curve::Bezier() const
 
 Handle(Geom_BSplineCurve) Adaptor3d_Curve::BSpline() const 
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::BSpline");
-  return Handle(Geom_BSplineCurve)();
+  throw Standard_NotImplemented("Adaptor3d_Curve::BSpline");
 }
 
 //=======================================================================
@@ -385,6 +362,5 @@ Handle(Geom_BSplineCurve) Adaptor3d_Curve::BSpline() const
 
 Handle(Geom_OffsetCurve) Adaptor3d_Curve::OffsetCurve() const
 {
-  Standard_NotImplemented::Raise("Adaptor3d_Curve::OffsetCurve");
-  return Handle(Geom_OffsetCurve)();
+  throw Standard_NotImplemented("Adaptor3d_Curve::OffsetCurve");
 }

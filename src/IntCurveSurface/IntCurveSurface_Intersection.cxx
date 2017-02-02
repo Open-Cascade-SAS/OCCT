@@ -31,22 +31,22 @@ IntCurveSurface_Intersection::IntCurveSurface_Intersection(): done(Standard_Fals
 Standard_Boolean IntCurveSurface_Intersection::IsDone() const { return(done); } 
 //================================================================================
 Standard_Integer IntCurveSurface_Intersection::NbPoints() const { 
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return lpnt.Length();
 }
 //================================================================================
 Standard_Integer IntCurveSurface_Intersection::NbSegments() const { 
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return lseg.Length();
 }
 //================================================================================
 const IntCurveSurface_IntersectionPoint& IntCurveSurface_Intersection::Point( const Standard_Integer N) const {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return lpnt.Value(N);
 }
 //================================================================================
 const IntCurveSurface_IntersectionSegment& IntCurveSurface_Intersection::Segment( const Standard_Integer N) const {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return lseg.Value(N);
 }
 //================================================================================

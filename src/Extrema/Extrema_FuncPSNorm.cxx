@@ -73,7 +73,7 @@ Standard_Integer Extrema_FuncPSNorm::NbEquations () const { return 2;}
 Standard_Boolean Extrema_FuncPSNorm::Value (const math_Vector& UV, 
                                            math_Vector& F)
 {
-  if (!myPinit || !mySinit) Standard_TypeMismatch::Raise();
+  if (!myPinit || !mySinit) throw Standard_TypeMismatch();
   myU = UV(1);
   myV = UV(2);
   gp_Vec Dus, Dvs;
@@ -100,7 +100,7 @@ Standard_Boolean Extrema_FuncPSNorm::Values (const math_Vector& UV,
                                             math_Vector& F,
                                             math_Matrix& Df)
 {
-  if (!myPinit || !mySinit) Standard_TypeMismatch::Raise();
+  if (!myPinit || !mySinit) throw Standard_TypeMismatch();
   myU = UV(1);
   myV = UV(2);
   gp_Vec Dus, Dvs, Duus, Dvvs, Duvs;
@@ -123,7 +123,7 @@ Standard_Boolean Extrema_FuncPSNorm::Values (const math_Vector& UV,
 
 Standard_Integer Extrema_FuncPSNorm::GetStateNumber ()
 {
-  if (!myPinit || !mySinit) Standard_TypeMismatch::Raise();
+  if (!myPinit || !mySinit) throw Standard_TypeMismatch();
   //comparison of solution with previous solutions
   Standard_Integer i = 1, nbSol = mySqDist.Length();
   Standard_Real tol2d = Precision::PConfusion() * Precision::PConfusion();
@@ -151,13 +151,13 @@ Standard_Integer Extrema_FuncPSNorm::NbExt () const
 
 Standard_Real Extrema_FuncPSNorm::SquareDistance (const Standard_Integer N) const
 {
-  if (!myPinit || !mySinit) Standard_TypeMismatch::Raise();
+  if (!myPinit || !mySinit) throw Standard_TypeMismatch();
   return mySqDist.Value(N);
 }
 //=============================================================================
 
 const Extrema_POnSurf& Extrema_FuncPSNorm::Point (const Standard_Integer N) const
 {
-  if (!myPinit || !mySinit) Standard_TypeMismatch::Raise();
+  if (!myPinit || !mySinit) throw Standard_TypeMismatch();
   return myPoint.Value(N);
 }

@@ -115,7 +115,7 @@ void AppParCurves_MultiPoint::Transform(const Standard_Integer CuIndex,
 					const Standard_Real    z,
 					const Standard_Real    dz) 
 {
-  if (Dimension(CuIndex) != 3) Standard_OutOfRange::Raise();
+  if (Dimension(CuIndex) != 3) throw Standard_OutOfRange();
 
   gp_Pnt P, newP;
   P = Point(CuIndex);
@@ -130,7 +130,7 @@ void AppParCurves_MultiPoint::Transform2d(const Standard_Integer CuIndex,
 					  const Standard_Real    y,
 					  const Standard_Real    dy) 
 {
-  if (Dimension(CuIndex) != 2) Standard_OutOfRange::Raise();
+  if (Dimension(CuIndex) != 2) throw Standard_OutOfRange();
 
   gp_Pnt2d P, newP;
   P = Point2d(CuIndex);

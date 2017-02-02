@@ -292,7 +292,7 @@ static void Add(const Standard_Integer ind,
 
 {
   if (!mapI.Add(ind)) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   TopTools_ListIteratorOfListOfShape itl(mapEF(ind));
@@ -306,7 +306,7 @@ static void Add(const Standard_Integer ind,
 	const TopoDS_Shape& edg = exp.Current();
 	Standard_Integer indedg = mapEF.FindIndex(edg);
 	if (indedg == 0) {
-	  Standard_ConstructionError::Raise();
+	  throw Standard_ConstructionError();
 	}
 	if (!mapI.Contains(indedg)) {
 	  Add(indedg,mapI,mapF,mapEF);

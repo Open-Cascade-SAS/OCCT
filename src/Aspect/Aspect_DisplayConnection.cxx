@@ -89,7 +89,7 @@ void Aspect_DisplayConnection::Init()
     TCollection_AsciiString aMessage;
     aMessage += "Can not connect to the server \"";
     aMessage += myDisplayName + "\"";
-    Aspect_DisplayConnectionDefinitionError::Raise (aMessage.ToCString());
+    throw Aspect_DisplayConnectionDefinitionError(aMessage.ToCString());
   }
 }
 

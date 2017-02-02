@@ -215,7 +215,7 @@ void AIS_EqualDistanceRelation::Compute( const Handle( PrsMgr_PresentationManage
 void AIS_EqualDistanceRelation::Compute( const Handle( Prs3d_Projector )& /*aProjector*/,
 					 const Handle( Prs3d_Presentation )& /*aPresentation*/) 
 {
-// Standard_NotImplemented::Raise("AIS_EqualDistanceRelation::Compute( const Handle( Prs3d_Projector )&,
+// throw Standard_NotImplemented("AIS_EqualDistanceRelation::Compute( const Handle( Prs3d_Projector )&,
  // const Handle( Prs3d_Presentation )& )");
 // PrsMgr_PresentableObject::Compute( aProjector , aPresentation ) ; 
 }
@@ -228,7 +228,7 @@ void AIS_EqualDistanceRelation::Compute(const Handle(Prs3d_Projector)& aProjecto
 				  const Handle(Geom_Transformation)& aTransformation,
 				  const Handle(Prs3d_Presentation)& aPresentation)
 {
-// Standard_NotImplemented::Raise("AIS_EqualDistanceRelation::Compute(const Handle(Prs3d_Projector)&,
+// throw Standard_NotImplemented("AIS_EqualDistanceRelation::Compute(const Handle(Prs3d_Projector)&,
 //  const Handle(Geom_Transformation)&,const Handle(Prs3d_Presentation)&)");
  PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation ) ; 
 }

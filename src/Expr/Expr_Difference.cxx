@@ -136,7 +136,7 @@ Handle(Expr_GeneralExpression) Expr_Difference::Derivative (const Handle(Expr_Na
 Handle(Expr_GeneralExpression) Expr_Difference::NDerivative (const Handle(Expr_NamedUnknown)& X, const Standard_Integer N) const
 {
   if (N <= 0) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   if (!Contains(X)) {
     return new Expr_NumericValue(0.0);

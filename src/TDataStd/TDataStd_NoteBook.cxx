@@ -61,7 +61,7 @@ Standard_Boolean TDataStd_NoteBook::Find (const TDF_Label& current,
 Handle(TDataStd_NoteBook) TDataStd_NoteBook::New (const TDF_Label& label)
 {  
   if (label.HasAttribute()) {
-    Standard_DomainError::Raise("TDataStd_NoteBook::New : not an empty label");
+    throw Standard_DomainError("TDataStd_NoteBook::New : not an empty label");
   }
   Handle(TDataStd_NoteBook) NB = new TDataStd_NoteBook ();  
   label.AddAttribute(NB);

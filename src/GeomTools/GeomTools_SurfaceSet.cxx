@@ -1037,12 +1037,12 @@ Handle(Geom_Surface) GeomTools_SurfaceSet::ReadSurface(Standard_IStream& IS)
       break;
     }
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    Handle(Standard_Failure) anExc = Standard_Failure::Caught();
     cout <<"EXCEPTION in GeomTools_SurfaceSet::ReadSurface(..)!!!" << endl;
-    cout << anExc << endl;
+    cout << anException << endl;
 #endif
+    (void)anException;
   }
   return S;
 }

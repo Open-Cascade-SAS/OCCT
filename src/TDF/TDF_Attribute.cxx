@@ -158,8 +158,7 @@ Standard_Integer TDF_Attribute::UntilTransaction() const
   if      (IsForgotten())   return myTransaction;
   else if (IsBackuped())  return myNext->myTransaction - 1;
   else if (IsValid())     return myLabelNode->Data()->Transaction();
-  Standard_DomainError::Raise("The attribute structure is wrong.");
-  return 0;
+  throw Standard_DomainError("The attribute structure is wrong.");
 }
 
 
@@ -253,7 +252,7 @@ void TDF_Attribute::Backup()
       aMess = "Attribute \"";
       aMess += DynamicType()->Name();
       aMess += "\" is changed outside transaction";
-      Standard_ImmutableObject::Raise(aMess.ToCString());
+      throw Standard_ImmutableObject(aMess.ToCString());
     }
 
     const Standard_Integer currentTransaction =
@@ -297,7 +296,7 @@ void TDF_Attribute::RemoveBackup()
 {
 #ifdef OCCT_DEBUG
   if (myBackup.IsNull())
-    Standard_DomainError::Raise("Impossible to remove a nonexistent backup.");
+    throw Standard_DomainError("Impossible to remove a nonexistent backup.");
 #endif
   myBackup->BeforeRemoval();
   myBackup->myLabelNode = NULL; // Absolutly necessary!

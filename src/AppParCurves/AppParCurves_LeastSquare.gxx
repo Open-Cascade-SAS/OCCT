@@ -1115,7 +1115,7 @@ void AppParCurves_LeastSquare::Error(Standard_Real& F,
 				     Standard_Real& MaxE2d)
 {
 
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   Standard_Integer i, j, k, i2, indexdeb, indexfin;
   Standard_Integer i21, i22;
   Standard_Real AA, BB, CC, Fi, FX, FY, FZ, AIJ;
@@ -1168,7 +1168,7 @@ void AppParCurves_LeastSquare::ErrorGradient(math_Vector& Grad,
 					     Standard_Real& MaxE3d,
 					     Standard_Real& MaxE2d)
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   Standard_Integer i, j, k, i2, indexdeb, indexfin;
   Standard_Real AA, BB, CC, Fi, FX, FY, FZ, AIJ;
 //  Standard_Real DAIJ, DAA, DBB, DCC, Gr, gr1= 0.0, gr2= 0.0;
@@ -1263,14 +1263,14 @@ Standard_Boolean AppParCurves_LeastSquare::IsDone() const
 
 AppParCurves_MultiCurve AppParCurves_LeastSquare::BezierValue() 
 {
-  if (!myknots.IsNull()) Standard_NoSuchObject::Raise();
+  if (!myknots.IsNull()) throw Standard_NoSuchObject();
   return (AppParCurves_MultiCurve)(BSplineValue());
 }
 
 
 const AppParCurves_MultiBSpCurve& AppParCurves_LeastSquare::BSplineValue() 
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
 
   Standard_Integer i, j, j2, npoints = nbP+nbP2d;;
   gp_Pnt Pt;
@@ -1302,14 +1302,14 @@ const AppParCurves_MultiBSpCurve& AppParCurves_LeastSquare::BSplineValue()
 
 const math_Matrix& AppParCurves_LeastSquare::FunctionMatrix() const
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return A;
 }
 
 
 const math_Matrix& AppParCurves_LeastSquare::DerivativeFunctionMatrix() const
 {
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return DA;
 }
 

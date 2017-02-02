@@ -49,7 +49,7 @@ FEmTool_LinearFlexion::FEmTool_LinearFlexion(const Standard_Integer WorkDegree,
 
   if (myOrder != Order) {
     //Calculating RefMatrix
-    if (WorkDegree > WDeg) Standard_ConstructionError::Raise("Degree too high");
+    if (WorkDegree > WDeg) throw Standard_ConstructionError("Degree too high");
     Order = myOrder;
     Standard_Integer DerOrder = 2;
     Handle(PLib_HermitJacobi) theBase = new PLib_HermitJacobi(WDeg, ConstraintOrder);
@@ -78,7 +78,7 @@ FEmTool_LinearFlexion::FEmTool_LinearFlexion(const Standard_Integer WorkDegree,
 //=======================================================================
 Handle(TColStd_HArray2OfInteger) FEmTool_LinearFlexion::DependenceTable() const
 {
-  if(myCoeff.IsNull()) Standard_DomainError::Raise("FEmTool_LinearFlexion::DependenceTable");
+  if(myCoeff.IsNull()) throw Standard_DomainError("FEmTool_LinearFlexion::DependenceTable");
 
   Handle(TColStd_HArray2OfInteger) DepTab = 
     new TColStd_HArray2OfInteger(myCoeff->LowerCol(), myCoeff->UpperCol(),
@@ -149,10 +149,10 @@ void FEmTool_LinearFlexion::Hessian(const Standard_Integer Dimension1,
 
   if(Dimension1 < DepTab->LowerRow() || Dimension1 > DepTab->UpperRow() || 
      Dimension2 < DepTab->LowerCol() || Dimension2 > DepTab->UpperCol()) 
-    Standard_OutOfRange::Raise("FEmTool_LinearJerk::Hessian");
+    throw Standard_OutOfRange("FEmTool_LinearJerk::Hessian");
 
   if(DepTab->Value(Dimension1,Dimension2) == 0) 
-    Standard_DomainError::Raise("FEmTool_LinearJerk::Hessian");
+    throw Standard_DomainError("FEmTool_LinearJerk::Hessian");
 
   Standard_Integer deg = Min(RefMatrix.UpperRow(), H.RowNumber() - 1), degH = Min(2*myOrder+1, deg);
   
@@ -193,7 +193,7 @@ void FEmTool_LinearFlexion::Hessian(const Standard_Integer Dimension1,
 void FEmTool_LinearFlexion::Gradient(const Standard_Integer Dimension,math_Vector& G) 
 {
   if(Dimension < myCoeff->LowerCol() || Dimension > myCoeff->UpperCol()) 
-    Standard_OutOfRange::Raise("FEmTool_LinearFlexion::Gradient");
+    throw Standard_OutOfRange("FEmTool_LinearFlexion::Gradient");
 
   Standard_Integer deg = Min(G.Length() - 1, myCoeff->ColLength() - 1);
 

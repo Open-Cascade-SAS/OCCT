@@ -1234,8 +1234,8 @@ void VBernstein(const Standard_Integer classe,
 		const Standard_Integer nbpoints,
 		math_Matrix&           M)
 {
-  if (classe > 26) Standard_DimensionError::Raise("VBernstein: classe > 26");
-  if (nbpoints > 24) Standard_DimensionError::Raise("VBernstein: nbpoints > 24");
+  if (classe > 26) throw Standard_DimensionError("VBernstein: classe > 26");
+  if (nbpoints > 24) throw Standard_DimensionError("VBernstein: nbpoints > 24");
   //  math_Matrix VB(classe, nbpoints);
   
   Standard_Integer i, j, k = 0, Som;

@@ -317,7 +317,7 @@ void IFSelect_ContextModif::Next()
 
 Handle(Standard_Transient) IFSelect_ContextModif::ValueOriginal () const
 {
-  if (thecurr <= 0) Standard_NoSuchObject::Raise("IFSelect_ContextModif");
+  if (thecurr <= 0) throw Standard_NoSuchObject("IFSelect_ContextModif");
   return thegraf.Entity(thecurr);
 }
 
@@ -329,7 +329,7 @@ Handle(Standard_Transient) IFSelect_ContextModif::ValueOriginal () const
 
 Handle(Standard_Transient) IFSelect_ContextModif::ValueResult   () const
 {
-  if (thecurr <= 0) Standard_NoSuchObject::Raise("IFSelect_ContextModif");
+  if (thecurr <= 0) throw Standard_NoSuchObject("IFSelect_ContextModif");
   Handle(Standard_Transient) ent,newent;
   ent = thegraf.Entity(thecurr);
   if (themap.IsNull()) newent = ent;

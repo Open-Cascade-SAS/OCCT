@@ -145,7 +145,7 @@ GeomAbs_Shape Adaptor2d_OffsetCurve::Continuity() const
   case GeomAbs_G1: return GeomAbs_C0;
   case GeomAbs_C0:
 // No Continuity !!
-    Standard_TypeMismatch::Raise("Adaptor2d_OffsetCurve::IntervalContinuity");
+    throw Standard_TypeMismatch("Adaptor2d_OffsetCurve::IntervalContinuity");
     break;
   }
 
@@ -309,8 +309,7 @@ gp_Pnt2d Adaptor2d_OffsetCurve::Value(const Standard_Real U) const
       return gp_Pnt2d(P.XY()+myOffset*V.XY()/Norme);
     }
     else {
-      gp_VectorWithNullMagnitude::Raise("Adaptor2d_OffsetCurve::Value");
-      return gp_Pnt2d();
+      throw gp_VectorWithNullMagnitude("Adaptor2d_OffsetCurve::Value");
     }
   }
   else {
@@ -351,7 +350,7 @@ void Adaptor2d_OffsetCurve::D1
 				    (V2.XY()*V3.XY())/(Norme*Norme)));
     }
     else {
-      gp_VectorWithNullMagnitude::Raise("Adaptor2d_OffsetCurve::D1");
+      throw gp_VectorWithNullMagnitude("Adaptor2d_OffsetCurve::D1");
     }
   }
   else {
@@ -392,7 +391,7 @@ void Adaptor2d_OffsetCurve::D2
       D1( U,P,V1);
     }
     else {
-      gp_VectorWithNullMagnitude::Raise("Adaptor2d_OffsetCurve::D2");
+      throw gp_VectorWithNullMagnitude("Adaptor2d_OffsetCurve::D2");
     }
   }
   else {
@@ -412,7 +411,7 @@ void Adaptor2d_OffsetCurve::D3
   (const Standard_Real , 
    gp_Pnt2d& , gp_Vec2d& , gp_Vec2d& , gp_Vec2d& ) const
 {
-  Standard_NotImplemented::Raise("Adaptor2d_OffsetCurve::D3");
+  throw Standard_NotImplemented("Adaptor2d_OffsetCurve::D3");
 }
 
 //=======================================================================
@@ -424,8 +423,7 @@ gp_Vec2d Adaptor2d_OffsetCurve::DN
 //  (const Standard_Real T, const Standard_Integer N) const
   (const Standard_Real , const Standard_Integer ) const
 {
-  Standard_NotImplemented::Raise("Adaptor2d_OffsetCurve::DN");
-  return gp_Vec2d();
+  throw Standard_NotImplemented("Adaptor2d_OffsetCurve::DN");
 }
 
 
@@ -480,8 +478,7 @@ gp_Lin2d Adaptor2d_OffsetCurve::Line() const
     return gp_Lin2d(P,V);
   }
   else {
-    Standard_NoSuchObject::Raise("Adaptor2d_OffsetCurve::Line");
-    return gp_Lin2d();
+    throw Standard_NoSuchObject("Adaptor2d_OffsetCurve::Line");
   }
 }
 
@@ -516,15 +513,13 @@ gp_Circ2d Adaptor2d_OffsetCurve::Circle() const
 	return gp_Circ2d( axes,radius); 
       }
       else {     // Cercle de rayon Nul
-	Standard_NoSuchObject::Raise("Adaptor2d_OffsetCurve::Circle");
+	throw Standard_NoSuchObject("Adaptor2d_OffsetCurve::Circle");
       }
     }
   }
   else {
-    Standard_NoSuchObject::Raise("Adaptor2d_OffsetCurve::Circle");
+    throw Standard_NoSuchObject("Adaptor2d_OffsetCurve::Circle");
   }
-  // portage WNT
-  return gp_Circ2d();
 }
 
 //=======================================================================
@@ -538,10 +533,8 @@ gp_Elips2d Adaptor2d_OffsetCurve::Ellipse() const
     return myCurve->Ellipse();;
   }
   else {
-    Standard_NoSuchObject::Raise("Adaptor2d_OffsetCurve:Ellipse");
+    throw Standard_NoSuchObject("Adaptor2d_OffsetCurve:Ellipse");
   }
-  // portage WNT
-  return gp_Elips2d();
 }
 
 //=======================================================================
@@ -555,10 +548,8 @@ gp_Hypr2d Adaptor2d_OffsetCurve::Hyperbola() const
     return myCurve->Hyperbola();
   }
   else {
-    Standard_NoSuchObject::Raise("Adaptor2d_OffsetCurve:Hyperbola");
+    throw Standard_NoSuchObject("Adaptor2d_OffsetCurve:Hyperbola");
   }
-  // portage WNT
-  return gp_Hypr2d();
 }
 
 //=======================================================================
@@ -572,10 +563,8 @@ gp_Parab2d Adaptor2d_OffsetCurve::Parabola() const
     return myCurve->Parabola();
   }
   else {
-    Standard_NoSuchObject::Raise("Adaptor2d_OffsetCurve:Parabola");
+    throw Standard_NoSuchObject("Adaptor2d_OffsetCurve:Parabola");
   }
-  // portage WNT
-  return gp_Parab2d();
 }
 //=======================================================================
 //function : Degree
@@ -590,8 +579,7 @@ Standard_Integer  Adaptor2d_OffsetCurve::Degree() const
     return myCurve->Degree();
   }
   else {
-    Standard_NoSuchObject::Raise("Adaptor2d_OffsetCurve::Degree");
-    return 0;
+    throw Standard_NoSuchObject("Adaptor2d_OffsetCurve::Degree");
   }
 }
 //=======================================================================
@@ -619,8 +607,7 @@ Standard_Integer  Adaptor2d_OffsetCurve::NbPoles() const
     return myCurve->NbPoles();
   }
   else {
-    Standard_NoSuchObject::Raise("Adaptor2d_OffsetCurve::NbPoles");
-    return 0;
+    throw Standard_NoSuchObject("Adaptor2d_OffsetCurve::NbPoles");
   }
 }
 
@@ -635,8 +622,7 @@ Standard_Integer  Adaptor2d_OffsetCurve::NbKnots() const
     return myCurve->NbKnots();
   }
   else {
-    Standard_NoSuchObject::Raise("Adaptor2d_OffsetCurve::NbKnots");
-    return 0;
+    throw Standard_NoSuchObject("Adaptor2d_OffsetCurve::NbKnots");
   }
 }
 

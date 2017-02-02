@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(WNT_ClassDefinitionError, Standard_ConstructionError)
 
 #if !defined No_Exception && !defined No_WNT_ClassDefinitionError
   #define WNT_ClassDefinitionError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) WNT_ClassDefinitionError::Raise(MESSAGE);
+  if (CONDITION) throw WNT_ClassDefinitionError(MESSAGE);
 #else
   #define WNT_ClassDefinitionError_Raise_if(CONDITION, MESSAGE)
 #endif

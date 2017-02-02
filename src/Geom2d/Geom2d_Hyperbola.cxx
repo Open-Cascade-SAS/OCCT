@@ -82,7 +82,7 @@ Geom2d_Hyperbola::Geom2d_Hyperbola (const Ax2d& A,
 : majorRadius (MajorRadius), minorRadius (MinorRadius) 
 {
   if( MajorRadius < 0.0|| MinorRadius < 0.0) 
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   pos = gp_Ax22d(A, Sense);
 }
 
@@ -97,7 +97,7 @@ Geom2d_Hyperbola::Geom2d_Hyperbola (const gp_Ax22d& Axis,
 : majorRadius (MajorRadius), minorRadius (MinorRadius) 
 {
   if( MajorRadius < 0.0|| MinorRadius < 0.0)
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   pos = Axis;
 }
 
@@ -123,7 +123,7 @@ void Geom2d_Hyperbola::SetHypr2d (const gp_Hypr2d& H)
 void Geom2d_Hyperbola::SetMajorRadius (const Standard_Real MajorRadius) 
 {
   if (MajorRadius < 0.0) 
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   else                   
     majorRadius = MajorRadius;
 }
@@ -137,7 +137,7 @@ void Geom2d_Hyperbola::SetMajorRadius (const Standard_Real MajorRadius)
 void Geom2d_Hyperbola::SetMinorRadius (const Standard_Real MinorRadius) 
 {
   if (MinorRadius < 0.0 ) 
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   else
     minorRadius = MinorRadius;
 }

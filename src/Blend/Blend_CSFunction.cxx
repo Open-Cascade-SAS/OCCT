@@ -54,6 +54,5 @@ Standard_Boolean Blend_CSFunction::Section (const Blend_Point& /*P*/,
 
 Standard_Real Blend_CSFunction::GetMinimalDistance() const
 {
-  Standard_NotImplemented::Raise("Blend_CSFunction::GetMinimalDistance");
-  return RealLast();
+  throw Standard_NotImplemented("Blend_CSFunction::GetMinimalDistance");
 }

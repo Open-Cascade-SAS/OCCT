@@ -382,7 +382,7 @@ gp_Pnt SelectMgr_SelectingVolumeManager::DetectedPoint (const Standard_Real theD
 {
   if (myActiveSelectionType != Point)
   {
-    Standard_ProgramError::Raise ("SelectMgr_SelectingVolumeManager::DetectedPoint() should be called only for Point selection type");
+    throw Standard_ProgramError("SelectMgr_SelectingVolumeManager::DetectedPoint() should be called only for Point selection type");
   }
 
   return mySelectingVolumes[Frustum]->DetectedPoint (theDepth);

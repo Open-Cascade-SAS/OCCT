@@ -934,13 +934,13 @@ void TopOpeBRepDS_DataStructure::FillShapesSameDomain(const TopoDS_Shape& S1,
   else if ( r1 != iS1 && r2 == iS2 ) r = r1;
   else if ( r1 != iS1 && r2 != iS2 ) { 
     if (r1 != r2) {
-      //      Standard_ProgramError::Raise("FacesFiller::Insert SD 1");
+      //      throw Standard_ProgramError("FacesFiller::Insert SD 1");
     }
     r = (refFirst? r1 : r2);
   }
   
   if (r == 0) {
-    Standard_ProgramError::Raise("FacesFiller::Insert SD 2");
+    throw Standard_ProgramError("FacesFiller::Insert SD 2");
   }
 
   TopoDS_Shape Sr = Shape(r);
@@ -1142,7 +1142,7 @@ TopOpeBRepDS_Curve& TopOpeBRepDS_DataStructure::ChangeCurve(const Standard_Integ
 const TopOpeBRepDS_Point& TopOpeBRepDS_DataStructure::Point(const Standard_Integer I)const 
 {
   if ( I < 1 || I > myNbPoints ) {
-    Standard_ProgramError::Raise("TopOpeBRepDS_DataStructure::Point");
+    throw Standard_ProgramError("TopOpeBRepDS_DataStructure::Point");
   }
 
   if ( myPoints.IsBound(I) ) 
@@ -1158,7 +1158,7 @@ const TopOpeBRepDS_Point& TopOpeBRepDS_DataStructure::Point(const Standard_Integ
 TopOpeBRepDS_Point& TopOpeBRepDS_DataStructure::ChangePoint(const Standard_Integer I)
 {
   if ( I < 1 || I > myNbPoints ) {
-    Standard_ProgramError::Raise("TopOpeBRepDS_DataStructure::Point");
+    throw Standard_ProgramError("TopOpeBRepDS_DataStructure::Point");
   }
 
   if ( myPoints.IsBound(I) ) 

@@ -30,7 +30,7 @@ IGESGraph_DefinitionLevel::IGESGraph_DefinitionLevel ()    {  }
   (const Handle(TColStd_HArray1OfInteger)& allLevelNumbers)
 {
   if (allLevelNumbers->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESGraph_DefinitionLevel : Init");
+    throw Standard_DimensionMismatch("IGESGraph_DefinitionLevel : Init");
   theLevelNumbers = allLevelNumbers;
   InitTypeAndForm(406,1);
 }

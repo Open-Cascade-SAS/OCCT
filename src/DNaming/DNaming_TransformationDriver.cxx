@@ -139,7 +139,7 @@ Standard_Integer DNaming_TransformationDriver::Execute(Handle(TFunction_Logbook)
       Handle(TDataStd_UAttribute) aLineObj  = DNaming::GetObjectArg(aFunction, PTRANSF_LINE);
       Handle(TNaming_NamedShape) aLineNS = DNaming::GetObjectValue(aLineObj);
       gp_Ax1 anAxis;
-      if(!DNaming::ComputeAxis(aLineNS, anAxis)) Standard_Failure::Raise();
+      if(!DNaming::ComputeAxis(aLineNS, anAxis)) throw Standard_Failure();
       gp_Vec aVector(anAxis.Direction());
       aVector.Normalize();
       Standard_Real anOffset = DNaming::GetReal(aFunction,PTRANSF_OFF)->Get();
@@ -150,7 +150,7 @@ Standard_Integer DNaming_TransformationDriver::Execute(Handle(TFunction_Logbook)
       Handle(TDataStd_UAttribute) aLineObj  = DNaming::GetObjectArg(aFunction, PTRANSF_LINE);
       Handle(TNaming_NamedShape) aLineNS = DNaming::GetObjectValue(aLineObj);
       gp_Ax1 anAxis;
-      if(!DNaming::ComputeAxis(aLineNS, anAxis)) Standard_Failure::Raise();
+      if(!DNaming::ComputeAxis(aLineNS, anAxis)) throw Standard_Failure();
 
       Standard_Real anAngle = DNaming::GetReal(aFunction,PTRANSF_ANG)->Get();
       aTransformation.SetRotation(anAxis, anAngle);
@@ -159,11 +159,11 @@ Standard_Integer DNaming_TransformationDriver::Execute(Handle(TFunction_Logbook)
       Handle(TNaming_NamedShape) aNS = DNaming::GetObjectValue(aPlaneObj);
       
       if(aNS.IsNull() ||  aNS->IsEmpty() || aNS->Get().IsNull() || 
-	 aNS->Get().ShapeType() != TopAbs_FACE) Standard_Failure::Raise();
+	 aNS->Get().ShapeType() != TopAbs_FACE) throw Standard_Failure();
       TopoDS_Face aFace = TopoDS::Face(aNS->Get());
       Handle(Geom_Surface) aSurf = BRep_Tool::Surface(aFace);
       GeomLib_IsPlanarSurface isPlanarSurface (aSurf);
-      if(!isPlanarSurface.IsPlanar()) Standard_Failure::Raise();
+      if(!isPlanarSurface.IsPlanar()) throw Standard_Failure();
       gp_Pln aPlane = isPlanarSurface.Plan();
       gp_Ax2 aMirrorAx2 = aPlane.Position().Ax2();
       aTransformation.SetMirror(aMirrorAx2);

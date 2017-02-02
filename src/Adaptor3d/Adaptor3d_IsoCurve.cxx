@@ -137,7 +137,7 @@ void Adaptor3d_IsoCurve::Load(const GeomAbs_IsoType Iso,
     break;
 
   case GeomAbs_NoneIso:
-    Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+    throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
     break;
   }
 }
@@ -230,8 +230,7 @@ GeomAbs_Shape Adaptor3d_IsoCurve::Continuity() const
     break;
   }
   
-  Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
-  return GeomAbs_C0;
+  throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
 }
 
 //=======================================================================
@@ -241,7 +240,7 @@ GeomAbs_Shape Adaptor3d_IsoCurve::Continuity() const
 
 Standard_Integer Adaptor3d_IsoCurve::NbIntervals(const GeomAbs_Shape S) const
 {
-  if (myIso == GeomAbs_NoneIso) Standard_NoSuchObject::Raise();
+  if (myIso == GeomAbs_NoneIso) throw Standard_NoSuchObject();
   Standard_Boolean UIso =  (myIso == GeomAbs_IsoU);
 
   Standard_Integer nbInter = UIso ? 
@@ -272,7 +271,7 @@ Standard_Integer Adaptor3d_IsoCurve::NbIntervals(const GeomAbs_Shape S) const
 void Adaptor3d_IsoCurve::Intervals(TColStd_Array1OfReal& TI,
                                    const GeomAbs_Shape S) const
 {
-  if (myIso == GeomAbs_NoneIso) Standard_NoSuchObject::Raise();
+  if (myIso == GeomAbs_NoneIso) throw Standard_NoSuchObject();
   Standard_Boolean UIso =  (myIso == GeomAbs_IsoU);
 
   Standard_Integer nbInter = UIso ? 
@@ -338,8 +337,7 @@ Standard_Boolean Adaptor3d_IsoCurve::IsClosed() const
     break;
   }
 
-  Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
-  return Standard_False;
+  throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
 }
 
 //=======================================================================
@@ -359,8 +357,7 @@ Standard_Boolean Adaptor3d_IsoCurve::IsPeriodic() const
     break;
   }
 
-  Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
-  return Standard_False;
+  throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
 }
 
 //=======================================================================
@@ -380,8 +377,7 @@ Standard_Real Adaptor3d_IsoCurve::Period() const
     break;
   }
 
-  Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
-  return 0.;
+  throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
 }
 
 //=======================================================================
@@ -401,7 +397,7 @@ gp_Pnt Adaptor3d_IsoCurve::Value(const Standard_Real T) const
     
   case GeomAbs_NoneIso: 
     {
-      Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+      throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
       break;
     }
   }
@@ -428,7 +424,7 @@ void Adaptor3d_IsoCurve::D0(const Standard_Real T, gp_Pnt& P) const
     break;
     
   case GeomAbs_NoneIso:
-    Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+    throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
     break;
   }
 }
@@ -452,7 +448,7 @@ void Adaptor3d_IsoCurve::D1(const Standard_Real T, gp_Pnt& P, gp_Vec& V) const
     break;
     
   case GeomAbs_NoneIso:
-    Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+    throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
     break;
   }
 }
@@ -477,7 +473,7 @@ void Adaptor3d_IsoCurve::D2(const Standard_Real T, gp_Pnt& P,
 		  P,V1,dummy1,V2,dummy2,dummy3);
     break;
   case GeomAbs_NoneIso:
-    Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+    throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
     break;
   }
 }
@@ -504,7 +500,7 @@ void Adaptor3d_IsoCurve::D3(const Standard_Real T, gp_Pnt& P,
     break;
     
   case GeomAbs_NoneIso:
-    Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+    throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
     break;
   }
 }
@@ -525,7 +521,7 @@ gp_Vec Adaptor3d_IsoCurve::DN(const Standard_Real T,
     return mySurface->DN(T,myParameter,N,0);
   case GeomAbs_NoneIso:
     {
-      Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+      throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
       break;
     }
   }
@@ -572,9 +568,7 @@ GeomAbs_CurveType Adaptor3d_IsoCurve::GetType() const {
 	
       case GeomAbs_NoneIso:
 	{
-	  Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
-	  // portage WNT
-	  return GeomAbs_OtherCurve;
+	  throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
 	}
       }
       break;
@@ -600,9 +594,7 @@ GeomAbs_CurveType Adaptor3d_IsoCurve::GetType() const {
 	return GeomAbs_Circle;
 	
       case GeomAbs_NoneIso:
-	Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
-	// portage WNT
-	return GeomAbs_OtherCurve;
+	throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
 	break;
       }
       break;
@@ -618,9 +610,7 @@ GeomAbs_CurveType Adaptor3d_IsoCurve::GetType() const {
 	return mySurface->BasisCurve()->GetType();
 	
       case GeomAbs_NoneIso:
-	Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
-	// portage WNT
-	return GeomAbs_OtherCurve;
+	throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
 	break;
       }
       break;
@@ -681,8 +671,7 @@ gp_Circ Adaptor3d_IsoCurve::Circle() const
 	
       case GeomAbs_IsoU: 
 	{
-	  Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:UIso");
-	  return gp_Circ();
+	  throw Standard_NoSuchObject("Adaptor3d_IsoCurve:UIso");
 	}
       case GeomAbs_IsoV: 
 	{
@@ -690,8 +679,7 @@ gp_Circ Adaptor3d_IsoCurve::Circle() const
 	}
       case GeomAbs_NoneIso: 
 	{
-	  Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
-	  return gp_Circ();
+	  throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
 	}
       }
       break;
@@ -705,8 +693,7 @@ gp_Circ Adaptor3d_IsoCurve::Circle() const
 	
       case GeomAbs_IsoU: 
 	{
-	  Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:UIso");
-	  return gp_Circ();
+	  throw Standard_NoSuchObject("Adaptor3d_IsoCurve:UIso");
 	}
       case GeomAbs_IsoV: 
 	{
@@ -715,8 +702,7 @@ gp_Circ Adaptor3d_IsoCurve::Circle() const
 	}
       case GeomAbs_NoneIso: 
 	{
-	  Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
-	  return gp_Circ();
+	  throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
 	}
       }
       break;
@@ -740,8 +726,7 @@ gp_Circ Adaptor3d_IsoCurve::Circle() const
 	
       case GeomAbs_NoneIso: 
 	{
-	  Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
-	  return gp_Circ();
+	  throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
 	}
       }
       break;
@@ -766,8 +751,7 @@ gp_Circ Adaptor3d_IsoCurve::Circle() const
       
     case GeomAbs_NoneIso: 
       {
-	Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
-	return gp_Circ();
+	throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
       }
     }
     break;
@@ -802,8 +786,7 @@ gp_Circ Adaptor3d_IsoCurve::Circle() const
   }
   default:  
     {
-      Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:Circle");
-      return gp_Circ();
+      throw Standard_NoSuchObject("Adaptor3d_IsoCurve:Circle");
     }
     
   }
@@ -826,10 +809,9 @@ gp_Elips Adaptor3d_IsoCurve::Ellipse() const
   }
   default:  
     {
-      Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:Ellipse");
+      throw Standard_NoSuchObject("Adaptor3d_IsoCurve:Ellipse");
     } 
   }
-  return gp_Elips();
 }
 
 //=======================================================================
@@ -839,8 +821,7 @@ gp_Elips Adaptor3d_IsoCurve::Ellipse() const
 
 gp_Hypr Adaptor3d_IsoCurve::Hyperbola() const
 {
-  Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:Hyperbola");
-  return gp_Hypr();
+  throw Standard_NoSuchObject("Adaptor3d_IsoCurve:Hyperbola");
 }
 
 //=======================================================================
@@ -850,8 +831,7 @@ gp_Hypr Adaptor3d_IsoCurve::Hyperbola() const
 
 gp_Parab Adaptor3d_IsoCurve::Parabola() const
 {
-  Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:Parabola");
-  return gp_Parab();
+  throw Standard_NoSuchObject("Adaptor3d_IsoCurve:Parabola");
 }
 
 //=======================================================================
@@ -877,7 +857,7 @@ Standard_Integer Adaptor3d_IsoCurve::Degree() const
 	
       case GeomAbs_NoneIso:
       default:
-	Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+	throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
       }	
     }
     break ;
@@ -888,7 +868,7 @@ Standard_Integer Adaptor3d_IsoCurve::Degree() const
 	degree = mySurface->BasisCurve()->Degree();
 	break;
       default:
-	Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+	throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
       }
     }
     break;
@@ -899,12 +879,12 @@ Standard_Integer Adaptor3d_IsoCurve::Degree() const
 	degree = mySurface->BasisCurve()->Degree();
 	break;
       default:
-	Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+	throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
       }
     }
     break;
   default:
-    Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+    throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
     break ;
   }
   return degree ;
@@ -933,7 +913,7 @@ Standard_Boolean Adaptor3d_IsoCurve::IsRational() const
 	
       case GeomAbs_NoneIso:
       default:
-	Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+	throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
       }	
     }
     break ;
@@ -944,7 +924,7 @@ Standard_Boolean Adaptor3d_IsoCurve::IsRational() const
 	is_rational = mySurface->BasisCurve()->IsRational();
 	break;
       default:
-	Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+	throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
       }
     }
     break;
@@ -955,12 +935,12 @@ Standard_Boolean Adaptor3d_IsoCurve::IsRational() const
 	is_rational = mySurface->BasisCurve()->IsRational();
 	break;
       default:
-	Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+	throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
       }
     }
     break;
   default:
-    Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+    throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
   }
   return is_rational;
 }	
@@ -988,7 +968,7 @@ Standard_Integer Adaptor3d_IsoCurve::NbPoles() const
       
     case GeomAbs_NoneIso:
     default:
-      Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+      throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
     }	
     break ;
   case GeomAbs_SurfaceOfRevolution: 
@@ -1000,7 +980,7 @@ Standard_Integer Adaptor3d_IsoCurve::NbPoles() const
 	}
 	break;
       default:
-	Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+	throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
       }
     }
     break;
@@ -1013,13 +993,13 @@ Standard_Integer Adaptor3d_IsoCurve::NbPoles() const
 	}
 	break;
       default:
-	Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+	throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
       }
     }
     break;
 
   default:
-    Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+    throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
     break ;
   }
  return nb_poles ;
@@ -1047,7 +1027,7 @@ Standard_Integer Adaptor3d_IsoCurve::NbKnots() const
 	
       case GeomAbs_NoneIso:
       default:
-	Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+	throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
       }	
     }
     break ;
@@ -1060,7 +1040,7 @@ Standard_Integer Adaptor3d_IsoCurve::NbKnots() const
 	  break ;
 	}
       default:
-	Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+	throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
       }	
     }
     break ;
@@ -1073,12 +1053,12 @@ Standard_Integer Adaptor3d_IsoCurve::NbKnots() const
 	  break ;
 	}
       default:
-	Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+	throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
       }	
     }
     break ;
   default:
-    Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
+    throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
     break ;
   }
   return nb_knots ;

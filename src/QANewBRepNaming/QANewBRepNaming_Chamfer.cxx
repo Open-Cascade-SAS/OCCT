@@ -47,7 +47,7 @@ QANewBRepNaming_Chamfer::QANewBRepNaming_Chamfer(const TDF_Label& ResultLabel):
 void QANewBRepNaming_Chamfer::Init(const TDF_Label& ResultLabel)
 {
   if(ResultLabel.IsNull())
-    Standard_NullObject::Raise("QANewBRepNaming_Chamfer::Init The Result label is Null ..."); 
+    throw Standard_NullObject("QANewBRepNaming_Chamfer::Init The Result label is Null ...");
   myResultLabel = ResultLabel;
 }   
 

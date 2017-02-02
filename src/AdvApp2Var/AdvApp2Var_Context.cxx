@@ -102,7 +102,7 @@ Standard_Integer ncfl;
 ncfl = nlimu;
 if (ncfl<2*iu+2) ncfl = 2*iu+2;
 if (!lesparam(iu,ncfl,iprecis,NbPntU,JDegU) )
-  { Standard_ConstructionError::Raise("AdvApp2Var_Context");}
+  { throw Standard_ConstructionError("AdvApp2Var_Context");}
 myNbURoot = NbPntU;
 myJDegU = JDegU;
 if (iu>-1) NbPntU = myNbURoot - 2;
@@ -121,7 +121,7 @@ ncfl = nlimv;
 if (ncfl<2*iv+2) ncfl = 2*iv+2;
 //Ma1nbp(&iv,&ncfl,&iprec,&NbPntV,&JDegV,&ErrorCode);
 if (!lesparam(iv, ncfl, iprecis, NbPntV, JDegV) )
-  { Standard_ConstructionError::Raise("AdvApp2Var_Context");}
+  { throw Standard_ConstructionError("AdvApp2Var_Context");}
 myNbVRoot = NbPntV;
 myJDegV = JDegV;
 if (iv>-1) NbPntV = myNbVRoot - 2;
@@ -156,7 +156,7 @@ Standard_Real *UG_array =
   (Standard_Real *) &UGauss->ChangeArray1()(UGauss->Lower());
 AdvApp2Var_ApproxF2var::mmapptt_(&JDegU,&NbPntU,&iu,UG_array,&ErrorCode);
 if (ErrorCode != 0 ) {
-  Standard_ConstructionError::Raise("AdvApp2Var_Context : Error in FORTRAN");
+  throw Standard_ConstructionError("AdvApp2Var_Context : Error in FORTRAN");
 }
 myUGauss = UGauss;
 
@@ -168,7 +168,7 @@ Standard_Real *VG_array =
   (Standard_Real *) &VGauss->ChangeArray1()(VGauss->Lower());
 AdvApp2Var_ApproxF2var::mmapptt_(&JDegV,&NbPntV,&iv,VG_array,&ErrorCode);
 if (ErrorCode != 0 ) {
-  Standard_ConstructionError::Raise("AdvApp2Var_Context : Error in FORTRAN");
+  throw Standard_ConstructionError("AdvApp2Var_Context : Error in FORTRAN");
 }
 myVGauss = VGauss;
 

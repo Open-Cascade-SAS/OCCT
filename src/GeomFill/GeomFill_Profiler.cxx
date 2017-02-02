@@ -256,7 +256,7 @@ void GeomFill_Profiler::Perform(const Standard_Real PTol)
 Standard_Integer GeomFill_Profiler::Degree() const 
 {
   if ( !myIsDone)
-    StdFail_NotDone::Raise("GeomFill_Profiler::Degree");
+    throw StdFail_NotDone("GeomFill_Profiler::Degree");
 
   Handle(Geom_BSplineCurve) C = 
     Handle(Geom_BSplineCurve)::DownCast(mySequence(1));
@@ -272,7 +272,7 @@ Standard_Integer GeomFill_Profiler::Degree() const
 Standard_Integer GeomFill_Profiler::NbPoles() const 
 {
   if ( !myIsDone)
-    StdFail_NotDone::Raise("GeomFill_Profiler::Degree");
+    throw StdFail_NotDone("GeomFill_Profiler::Degree");
 
   Handle(Geom_BSplineCurve) C = 
     Handle(Geom_BSplineCurve)::DownCast(mySequence(1));
@@ -289,7 +289,7 @@ void GeomFill_Profiler::Poles(const Standard_Integer Index,
 			            TColgp_Array1OfPnt& Poles) const 
 {
   if ( !myIsDone)
-    StdFail_NotDone::Raise("GeomFill_Profiler::Degree");
+    throw StdFail_NotDone("GeomFill_Profiler::Degree");
 
   Standard_DomainError_Raise_if( Poles.Length() != NbPoles(),
 				"GeomFill_Profiler::Poles");
@@ -312,7 +312,7 @@ void GeomFill_Profiler::Weights(const Standard_Integer      Index,
 				      TColStd_Array1OfReal& Weights) const 
 {
   if ( !myIsDone)
-    StdFail_NotDone::Raise("GeomFill_Profiler::Degree");
+    throw StdFail_NotDone("GeomFill_Profiler::Degree");
 
   Standard_DomainError_Raise_if( Weights.Length() != NbPoles(),
 				"GeomFill_Profiler::Weights");
@@ -334,7 +334,7 @@ void GeomFill_Profiler::Weights(const Standard_Integer      Index,
 Standard_Integer GeomFill_Profiler::NbKnots() const 
 {
   if ( !myIsDone)
-    StdFail_NotDone::Raise("GeomFill_Profiler::Degree");
+    throw StdFail_NotDone("GeomFill_Profiler::Degree");
 
   Handle(Geom_BSplineCurve) C = 
     Handle(Geom_BSplineCurve)::DownCast(mySequence(1));
@@ -352,7 +352,7 @@ void GeomFill_Profiler::KnotsAndMults(TColStd_Array1OfReal&    Knots,
 				      TColStd_Array1OfInteger& Mults ) const 
 {
   if ( !myIsDone)
-    StdFail_NotDone::Raise("GeomFill_Profiler::Degree");
+    throw StdFail_NotDone("GeomFill_Profiler::Degree");
 
 #ifndef No_Exception
   Standard_Integer n = NbKnots();

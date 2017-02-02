@@ -183,7 +183,7 @@ void LocOpe_RevolutionForm::IntPerf()
 const TopoDS_Shape& LocOpe_RevolutionForm::Shape () const
 {
   if (!myDone) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   return myRes;
 }

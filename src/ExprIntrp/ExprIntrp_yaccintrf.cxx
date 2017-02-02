@@ -87,7 +87,7 @@ extern "C" void ExprIntrp_Derivation()
     namexp = new Expr_NamedUnknown(thename);
   }
   if (!namexp->IsKind(STANDARD_TYPE(Expr_NamedUnknown))) {
-    ExprIntrp_SyntaxError::Raise();
+    throw ExprIntrp_SyntaxError();
   }
   ExprIntrp_Recept.Push(namexp);
 }
@@ -119,7 +119,7 @@ extern "C" void ExprIntrp_DiffDegreeVar()
   const TCollection_AsciiString& aStr = ExprIntrp_GetResult();
   const char* s = aStr.ToCString();
   if ( *s != 'X' && *s != 'x' ) {
-    ExprIntrp_SyntaxError::Raise();
+    throw ExprIntrp_SyntaxError();
   }
   s++;
   Standard_Integer rank = atoi(s);
@@ -146,7 +146,7 @@ extern "C" void ExprIntrp_VerDiffDegree()
   Standard_Integer deg = aStr.IntegerValue();
   Standard_Integer thedeg = ExprIntrp_Recept.PopValue();
   if (deg != thedeg) {
-    ExprIntrp_SyntaxError::Raise();
+    throw ExprIntrp_SyntaxError();
   }
   ExprIntrp_Recept.PushValue(deg);
 }
@@ -156,7 +156,7 @@ extern "C" void ExprIntrp_EndDifferential()
   TCollection_AsciiString name = ExprIntrp_Recept.PopName();
   Handle(Expr_GeneralFunction) thefunc = ExprIntrp_Recept.GetFunction(name);
   if (thefunc.IsNull()) {
-    ExprIntrp_SyntaxError::Raise();
+    throw ExprIntrp_SyntaxError();
   }
   Standard_Integer rank,degree;
   Handle(Expr_NamedUnknown) thediff;
@@ -166,7 +166,7 @@ extern "C" void ExprIntrp_EndDifferential()
     rank = ExprIntrp_Recept.PopValue();
     degree = ExprIntrp_Recept.PopValue();
     if ((rank > nbvars) || (rank < 1)) {
-      ExprIntrp_SyntaxError::Raise();
+      throw ExprIntrp_SyntaxError();
     }
     thediff = thefunc->Variable(rank);
     thefunc = new Expr_FunctionDerivative(thefunc,thediff,degree);
@@ -178,7 +178,7 @@ extern "C" void ExprIntrp_EndDiffFunction()
 {
   Handle(Expr_GeneralFunction) thefunc = ExprIntrp_Recept.PopFunction();
   if (thefunc.IsNull()) {
-    ExprIntrp_SyntaxError::Raise();
+    throw ExprIntrp_SyntaxError();
   }
   Standard_Integer nbargs = thefunc->NbOfVariables();
   if (nbargs == 1) {
@@ -191,7 +191,7 @@ extern "C" void ExprIntrp_EndDiffFunction()
     Handle(Expr_GeneralExpression) arg2 = ExprIntrp_Recept.Pop();
     Handle(Expr_GeneralExpression) arg1 = ExprIntrp_Recept.Pop();
     if (arg1.IsNull()) {
-      ExprIntrp_SyntaxError::Raise();
+      throw ExprIntrp_SyntaxError();
     }
     Handle(Expr_BinaryFunction) res =
       new Expr_BinaryFunction(thefunc,arg1,arg2);
@@ -203,7 +203,7 @@ extern "C" void ExprIntrp_EndDiffFunction()
     for (Standard_Integer i = 1; i<= nbargs; i++) {
       arg = ExprIntrp_Recept.Pop();
       if (arg.IsNull()) {
-	ExprIntrp_SyntaxError::Raise();
+	throw ExprIntrp_SyntaxError();
       }
       tabarg(nbargs-i+1) = arg;
     }
@@ -289,7 +289,7 @@ extern "C" void ExprIntrp_EndDerFunction()
     Expr_UnknownIterator rit(resstand);
     while (rit.More()) {
       if (!var.IsNull()) {
-	ExprIntrp_SyntaxError::Raise();
+	throw ExprIntrp_SyntaxError();
       }
       else {
 	var = rit.Value();
@@ -300,7 +300,7 @@ extern "C" void ExprIntrp_EndDerFunction()
       rit.Next();
     }
     if (var.IsNull()) {
-      ExprIntrp_SyntaxError::Raise();
+      throw ExprIntrp_SyntaxError();
     }
     else {
       Handle(Expr_GeneralExpression) res = resstand->NDerivative(var,ExprIntrp_Recept.PopValue());
@@ -310,11 +310,11 @@ extern "C" void ExprIntrp_EndDerFunction()
   else {
     Handle(Expr_NamedFunction) thefunc = ExprIntrp_Recept.GetFunction(name);
     if (thefunc.IsNull()) {
-      ExprIntrp_SyntaxError::Raise();
+      throw ExprIntrp_SyntaxError();
     }
     Standard_Integer nbargs = thefunc->NbOfVariables();
     if (nbargs != 1) {
-      ExprIntrp_SyntaxError::Raise();
+      throw ExprIntrp_SyntaxError();
     }
     Handle(Expr_NamedUnknown) var = thefunc->Variable(1);
     Handle(Expr_FunctionDerivative) thefuncder = 
@@ -337,7 +337,7 @@ extern "C" void ExprIntrp_EndFunction()
   else {
     Handle(Expr_NamedFunction) thefunc = ExprIntrp_Recept.GetFunction(name);
     if (thefunc.IsNull()) {
-      ExprIntrp_SyntaxError::Raise();
+      throw ExprIntrp_SyntaxError();
       }
     Standard_Integer nbargs = thefunc->NbOfVariables();
     if (nbargs == 1) {
@@ -348,7 +348,7 @@ extern "C" void ExprIntrp_EndFunction()
     else if (nbargs == 2) {
       Handle(Expr_GeneralExpression) arg1 = ExprIntrp_Recept.Pop();
       if (arg1.IsNull()) {
-	ExprIntrp_SyntaxError::Raise();
+	throw ExprIntrp_SyntaxError();
       }
       Handle(Expr_BinaryFunction) res =
 	new Expr_BinaryFunction(thefunc,arg1,op);
@@ -361,7 +361,7 @@ extern "C" void ExprIntrp_EndFunction()
       for (Standard_Integer i = 1; i< nbargs; i++) {
 	arg = ExprIntrp_Recept.Pop();
 	if (arg.IsNull()) {
-	  ExprIntrp_SyntaxError::Raise();
+	  throw ExprIntrp_SyntaxError();
 	}
 	tabarg(nbargs-i) = arg;
       }
@@ -465,10 +465,10 @@ extern "C" void ExprIntrp_Deassign()
   const TCollection_AsciiString& thename = ExprIntrp_GetResult();
   Handle(Expr_NamedExpression) nameexp = ExprIntrp_Recept.GetNamed(thename);
   if (nameexp.IsNull()) {
-    ExprIntrp_SyntaxError::Raise();
+    throw ExprIntrp_SyntaxError();
   }
   if (!nameexp->IsKind(STANDARD_TYPE(Expr_NamedUnknown))) {
-    ExprIntrp_SyntaxError::Raise();
+    throw ExprIntrp_SyntaxError();
   }
   Handle(Expr_NamedUnknown) var = Handle(Expr_NamedUnknown)::DownCast(nameexp);
   var->Deassign();
@@ -488,7 +488,7 @@ extern "C" void ExprIntrp_close()
 extern "C" void ExprIntrperror(char* msg)
 {
   ExprIntrp_close();
-  ExprIntrp_SyntaxError::Raise(msg);
+  throw ExprIntrp_SyntaxError(msg);
 }
 
 
@@ -537,7 +537,7 @@ extern "C" void ExprIntrp_EndOfAssign()
   }
   else {
     if (!namexp->IsKind(STANDARD_TYPE(Expr_NamedUnknown))) {
-      ExprIntrp_SyntaxError::Raise();
+      throw ExprIntrp_SyntaxError();
     }
     namu = Handle(Expr_NamedUnknown)::DownCast(namexp);
   }

@@ -139,7 +139,7 @@ void TopOpeBRepBuild_Builder::SplitShapes(TopOpeBRepTool_ShapeExplorer& Ex,
 	      add = (state == ToBuild1);
 	    }
 	    else {
-	      Standard_ProgramError::Raise("SplitShapes no 3D curve on edge");
+	      throw Standard_ProgramError("SplitShapes no 3D curve on edge");
 	      // NYI pas de courbe 3d : prendre un point sur (courbe 2d,face)
 	    }
 	  }

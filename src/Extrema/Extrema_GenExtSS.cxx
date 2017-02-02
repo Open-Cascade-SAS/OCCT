@@ -402,7 +402,7 @@ Standard_Boolean Extrema_GenExtSS::IsDone() const
 
 Standard_Integer Extrema_GenExtSS::NbExt() const 
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myF.NbExt();
 
 }
@@ -414,7 +414,7 @@ Standard_Integer Extrema_GenExtSS::NbExt() const
 
 Standard_Real Extrema_GenExtSS::SquareDistance(const Standard_Integer N) const 
 {  
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myF.SquareDistance(N);
 }
 
@@ -425,7 +425,7 @@ Standard_Real Extrema_GenExtSS::SquareDistance(const Standard_Integer N) const
 
 const Extrema_POnSurf& Extrema_GenExtSS::PointOnS1(const Standard_Integer N) const 
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myF.PointOnS1(N);
 }
 
@@ -436,7 +436,7 @@ const Extrema_POnSurf& Extrema_GenExtSS::PointOnS1(const Standard_Integer N) con
 
 const Extrema_POnSurf& Extrema_GenExtSS::PointOnS2(const Standard_Integer N) const 
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myF.PointOnS2(N);
 }
 

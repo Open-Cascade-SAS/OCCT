@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(LProp_NotDefined, Standard_Failure)
 
 #if !defined No_Exception && !defined No_LProp_NotDefined
   #define LProp_NotDefined_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) LProp_NotDefined::Raise(MESSAGE);
+  if (CONDITION) throw LProp_NotDefined(MESSAGE);
 #else
   #define LProp_NotDefined_Raise_if(CONDITION, MESSAGE)
 #endif

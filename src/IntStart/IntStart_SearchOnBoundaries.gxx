@@ -323,7 +323,7 @@ void BoundedArc (const TheArc& A,
 
     math_FunctionAllRoots Sol(Func,Echant,EpsX,maxdist,maxdist); //-- TolBoundary,nTolTangency);
 
-    if (!Sol.IsDone()) {Standard_Failure::Raise();}
+    if (!Sol.IsDone()) {throw Standard_Failure();}
 
     Nbp=Sol.NbPoints();
     //
@@ -335,7 +335,7 @@ void BoundedArc (const TheArc& A,
       Standard_Real theTol = 5.e-4;
       math_FunctionAllRoots SolAgain(Func,Echant,EpsX,theTol,theTol); //-- TolBoundary,nTolTangency);
 
-      if (!SolAgain.IsDone()) {Standard_Failure::Raise();}
+      if (!SolAgain.IsDone()) {throw Standard_Failure();}
 
       Standard_Integer Nbi_again = SolAgain.NbIntervals();
 

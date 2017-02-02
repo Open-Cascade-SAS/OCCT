@@ -2549,10 +2549,10 @@ void IntAna_QuadQuadGeo::Perform(const gp_Torus& Tor1,
 //=======================================================================
   gp_Pnt IntAna_QuadQuadGeo::Point(const Standard_Integer n) const 
 {
-  if(!done)          {    StdFail_NotDone::Raise();        }
-  if(n>nbint || n<1) {    Standard_DomainError::Raise();   }
+  if(!done)          {    throw StdFail_NotDone();        }
+  if(n>nbint || n<1) {    throw Standard_DomainError();   }
   if(typeres==IntAna_PointAndCircle) {
-    if(n!=1) { Standard_DomainError::Raise();  }
+    if(n!=1) { throw Standard_DomainError();  }
     if(param1==0.0) return(pt1);
     return(pt2);
   }
@@ -2570,9 +2570,9 @@ void IntAna_QuadQuadGeo::Perform(const gp_Torus& Tor1,
 //=======================================================================
   gp_Lin IntAna_QuadQuadGeo::Line(const Standard_Integer n) const 
 {
-  if(!done)        {   StdFail_NotDone::Raise();   }
+  if(!done)        {   throw StdFail_NotDone();   }
   if((n>nbint) || (n<1) || (typeres!=IntAna_Line)) {
-    Standard_DomainError::Raise();
+    throw Standard_DomainError();
     }
   if(n==1) {  return(gp_Lin(pt1,dir1));   }
   else {      return(gp_Lin(pt2,dir2));   }
@@ -2583,14 +2583,14 @@ void IntAna_QuadQuadGeo::Perform(const gp_Torus& Tor1,
 //=======================================================================
   gp_Circ IntAna_QuadQuadGeo::Circle(const Standard_Integer n) const 
 {
-  if(!done) {    StdFail_NotDone::Raise();     }
+  if(!done) {    throw StdFail_NotDone();     }
   if(typeres==IntAna_PointAndCircle) {
-    if(n!=1) { Standard_DomainError::Raise();  }
+    if(n!=1) { throw Standard_DomainError();  }
     if(param2==0.0) return(gp_Circ(DirToAx2(pt1,dir1),param1));
     return(gp_Circ(DirToAx2(pt2,dir2),param2));
   }
   else if((n>nbint) || (n<1) || (typeres!=IntAna_Circle)) {
-    Standard_DomainError::Raise();
+    throw Standard_DomainError();
     }
   if      (n==1) { return(gp_Circ(DirToAx2(pt1,dir1),param1));}
   else if (n==2) { return(gp_Circ(DirToAx2(pt2,dir2),param2));}
@@ -2604,9 +2604,9 @@ void IntAna_QuadQuadGeo::Perform(const gp_Torus& Tor1,
 //=======================================================================
   gp_Elips IntAna_QuadQuadGeo::Ellipse(const Standard_Integer n) const
 {
-  if(!done) {     StdFail_NotDone::Raise();     }
+  if(!done) {     throw StdFail_NotDone();     }
   if((n>nbint) || (n<1) || (typeres!=IntAna_Ellipse)) {
-    Standard_DomainError::Raise();
+    throw Standard_DomainError();
   }
 
   if(n==1) {
@@ -2635,13 +2635,13 @@ void IntAna_QuadQuadGeo::Perform(const gp_Torus& Tor1,
   gp_Parab IntAna_QuadQuadGeo::Parabola(const Standard_Integer n) const 
 {
   if(!done) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
     }
   if (typeres!=IntAna_Parabola) {
-    Standard_DomainError::Raise();
+    throw Standard_DomainError();
   }
   if((n>nbint) || (n!=1)) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   return(gp_Parab(gp_Ax2( pt1
                          ,dir1
@@ -2655,10 +2655,10 @@ void IntAna_QuadQuadGeo::Perform(const gp_Torus& Tor1,
   gp_Hypr IntAna_QuadQuadGeo::Hyperbola(const Standard_Integer n) const 
 {
   if(!done) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
     }
   if((n>nbint) || (n<1) || (typeres!=IntAna_Hyperbola)) {
-    Standard_DomainError::Raise();
+    throw Standard_DomainError();
     }
   if(n==1) {
     return(gp_Hypr(gp_Ax2( pt1

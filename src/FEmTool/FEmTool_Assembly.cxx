@@ -142,7 +142,7 @@ void FEmTool_Assembly::AddMatrix(const Standard_Integer Element,
 {
 
   if(myDepTable(Dimension1, Dimension2) == 0) 
-    Standard_DomainError::Raise("FEmTool_Assembly::AddMatrix");
+    throw Standard_DomainError("FEmTool_Assembly::AddMatrix");
 
   const TColStd_Array1OfInteger & T1 = myRefTable->Value(Dimension1,Element)->Array1();
   const TColStd_Array1OfInteger & T2 = myRefTable->Value(Dimension2,Element)->Array1();
@@ -362,7 +362,7 @@ Standard_Boolean FEmTool_Assembly::Solve()
 //=======================================================================
 void FEmTool_Assembly::Solution(math_Vector& Solution) const
 {
-  if(!IsSolved) StdFail_NotDone::Raise("FEmTool_Assembly::Solution");
+  if(!IsSolved) throw StdFail_NotDone("FEmTool_Assembly::Solution");
 
   if(G.IsEmpty()) H->Solve(B, Solution);
   else {

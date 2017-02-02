@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Expr_InvalidAssignment, Expr_ExprFailure)
 
 #if !defined No_Exception && !defined No_Expr_InvalidAssignment
   #define Expr_InvalidAssignment_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Expr_InvalidAssignment::Raise(MESSAGE);
+  if (CONDITION) throw Expr_InvalidAssignment(MESSAGE);
 #else
   #define Expr_InvalidAssignment_Raise_if(CONDITION, MESSAGE)
 #endif

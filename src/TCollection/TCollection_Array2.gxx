@@ -40,7 +40,7 @@ void TCollection_Array2::Allocate ()
 //  Modified by Sergey KHROMOV - Mon Feb 10 11:46:15 2003 End
     myData = new Array2Item [Size];
 
-    if (!myData) Standard_OutOfMemory::Raise("Array2 : Allocation failed");
+    if (!myData) throw Standard_OutOfMemory("Array2 : Allocation failed");
   }
   
   // allocation of the indirection table (pointers on rows)

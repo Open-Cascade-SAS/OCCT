@@ -61,7 +61,7 @@ Standard_Real gp_Vec2d::Angle (const gp_Vec2d& Other) const
   const Standard_Real theNorm = Magnitude();
   const Standard_Real theOtherNorm = Other.Magnitude();
   if (theNorm <= gp::Resolution() || theOtherNorm <= gp::Resolution())
-    gp_VectorWithNullMagnitude::Raise();
+    throw gp_VectorWithNullMagnitude();
 
   const Standard_Real D = theNorm * theOtherNorm;
   const Standard_Real Cosinus = coord.Dot   (Other.coord) / D;

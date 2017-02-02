@@ -534,7 +534,7 @@ Standard_Boolean LocOpe_DPrism::IsDone() const
 const TopoDS_Shape& LocOpe_DPrism::Shape () const
 {
   if (!myDPrism.IsDone()) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   return myRes;
 }
@@ -591,7 +591,7 @@ const TopTools_ListOfShape&
  LocOpe_DPrism::Shapes (const TopoDS_Shape& S)const
 {
   if (!myDPrism.IsDone()) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   if (myMap.IsBound(S)) {
     return myMap(S);
@@ -625,7 +625,7 @@ void LocOpe_DPrism::Curves(TColGeom_SequenceOfCurve& Scurves) const
 
   Handle(Geom_Plane) PP = Handle(Geom_Plane)::DownCast(S);
   if (PP.IsNull()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   gp_Pln P = PP->Pln();
@@ -696,7 +696,7 @@ Handle(Geom_Curve) LocOpe_DPrism::BarycCurve() const
 
   Handle(Geom_Plane) PP = Handle(Geom_Plane)::DownCast(S);
   if (PP.IsNull()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   gp_Pln P = PP->Pln();

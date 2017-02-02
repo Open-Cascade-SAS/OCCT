@@ -133,7 +133,7 @@ void QANewModTopOpe_Limitation::Cut()
     
   }
   else {
-    Standard_ConstructionError::Raise("QANewModTopOpe_Limitation : wrong mode");
+    throw Standard_ConstructionError("QANewModTopOpe_Limitation : wrong mode");
   }
 
 

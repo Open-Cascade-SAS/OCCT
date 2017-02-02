@@ -80,7 +80,7 @@ void LocOpe_GluedShape::GlueOnFace(const TopoDS_Face& F)
     }
   }
   if (!exp.More()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   myMap.Add(exp.Current()); // bonne orientation
 }
@@ -117,7 +117,7 @@ void LocOpe_GluedShape::MapEdgeAndVertices()
       }
       // Est-ce un edge de connexite entre les faces collees
       if (theMapEF.FindFromKey(edg).Extent() != 2) {
-	Standard_ConstructionError::Raise();
+	throw Standard_ConstructionError();
       }
       for (itl.Initialize(theMapEF.FindFromKey(edg)); itl.More(); itl.Next()) {
 	if (!myMap.Contains(itl.Value())) {

@@ -727,11 +727,12 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(const Handle(Geo
 
         }
 
-        catch (Standard_Failure) {
+        catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
           cout << "Warning: GeomConvert_ApproxSurface Exception: try to decrease continuity ";
-          Standard_Failure::Caught()->Print(cout); cout << endl;
+          anException.Print(cout); cout << endl;
 #endif
+          (void)anException;
           //szv: protection against loop
           if(aCU == 0 && aCV == 0) break;
           if(aCU > 0) aCU--;
@@ -1063,11 +1064,12 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(const Handle(Geom_
               return Standard_True;
             }
         }
-        catch (Standard_Failure) {
+        catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
           cout << "Warning: GeomConvert_ApproxCurve Exception: Wrong Coefficient : Decrease continuity    ";
-          Standard_Failure::Caught()->Print(cout); cout << endl;
+          anException.Print(cout); cout << endl;
 #endif
+          (void)anException;
           continue;
         } 
       }
@@ -1371,11 +1373,12 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(const Handle(Geo
             return Standard_True;
           }
         }
-        catch (Standard_Failure) {
+        catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
           cout << "Warning: Geom2dConvert_ApproxCurve Exception: Wrong Cofficient :Decrease Continuity    ";
-          Standard_Failure::Caught()->Print(cout); cout << endl;
+          anException.Print(cout); cout << endl;
 #endif
+          (void)anException;
           continue;
         }
       }

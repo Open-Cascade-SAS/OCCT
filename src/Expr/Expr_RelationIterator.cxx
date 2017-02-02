@@ -57,7 +57,7 @@ Standard_Boolean Expr_RelationIterator::More () const
 void Expr_RelationIterator::Next ()
 {
   if (!More()) {
-    Standard_NoMoreObject::Raise();
+    throw Standard_NoMoreObject();
   }
   current++;
 }
@@ -65,7 +65,7 @@ void Expr_RelationIterator::Next ()
 Handle(Expr_SingleRelation) Expr_RelationIterator::Value () const
 {
   if (!More()) {
-    Standard_NoSuchObject::Raise();
+    throw Standard_NoSuchObject();
   }
   return myRelation(current);
 }

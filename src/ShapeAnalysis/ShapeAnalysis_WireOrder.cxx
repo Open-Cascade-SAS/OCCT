@@ -96,7 +96,7 @@ void ShapeAnalysis_WireOrder::Add(const gp_XYZ& start3d,const gp_XYZ& end3d)
 {
   //szv#4:S4163:12Mar99 waste raise
   //if (!myMode)
-    //Standard_TypeMismatch::Raise("ShapeAnalysis_WireOrder : AddXYZ");
+    //throw Standard_TypeMismatch("ShapeAnalysis_WireOrder : AddXYZ");
   if (myMode) {
     myXYZ->Append (start3d);  myXYZ->Append (end3d);
   }
@@ -111,7 +111,7 @@ void ShapeAnalysis_WireOrder::Add(const gp_XY& start2d,const gp_XY& end2d)
 {
   //szv#4:S4163:12Mar99 waste raise
   //if ( myMode)
-    //Standard_TypeMismatch::Raise("ShapeAnalysis_WireOrder : AddXY");
+    //throw Standard_TypeMismatch("ShapeAnalysis_WireOrder : AddXY");
   if (!myMode) {
     gp_XYZ val;
     val.SetCoord (start2d.X(),start2d.Y(),0.);

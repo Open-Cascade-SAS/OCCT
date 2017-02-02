@@ -36,7 +36,7 @@ TCollection_DataMap::TCollection_DataMap(const TCollection_DataMap& Other) :
        TCollection_BasicMap(Other.NbBuckets(),Standard_True)
 {
   if (!Other.IsEmpty())
-    Standard_DomainError::Raise("TCollection:Copy of DataMap");
+    throw Standard_DomainError("TCollection:Copy of DataMap");
 }
 
 //=======================================================================
@@ -201,8 +201,7 @@ const TheItem& TCollection_DataMap::Find(const TheKey& K) const
       }
     p = (TCollection_DataMapNode*) p->Next();
   }
-  Standard_NoSuchObject::Raise("TCollection_DataMap::Find");
-  return p->Value();
+  throw Standard_NoSuchObject("TCollection_DataMap::Find");
 }
 //=======================================================================
 //function : ChangeFind
@@ -219,8 +218,7 @@ TheItem& TCollection_DataMap::ChangeFind(const TheKey& K)
       }
     p = (TCollection_DataMapNode*)  p->Next();
   }
-  Standard_NoSuchObject::Raise("TCollection_DataMap::ChangeFind");
-  return p->Value();
+  throw Standard_NoSuchObject("TCollection_DataMap::ChangeFind");
 }
 //modified by NIZNHY-PKV Tue Jul 05 09:54:14 2011f
 //=======================================================================

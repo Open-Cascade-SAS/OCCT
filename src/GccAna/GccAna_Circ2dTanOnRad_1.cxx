@@ -64,7 +64,7 @@ GccAna_Circ2dTanOnRad::
    NbrSol = 0;
    if (!(Qualified1.IsEnclosed() ||
 	 Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
-     GccEnt_BadQualifier::Raise();
+     throw GccEnt_BadQualifier();
      return;
    }
    Standard_Integer nbsol = 0;
@@ -74,7 +74,7 @@ GccAna_Circ2dTanOnRad::
    gp_Dir2d dir1(L1.Direction());
    gp_Dir2d normL1(-dir1.Y(),dir1.X());
 
-   if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+   if (Radius < 0.0) { throw Standard_NegativeValue(); }
    else if ((OnLine.Direction()).IsParallel(dir1,Tol)) {
      WellDone = Standard_True;
    }

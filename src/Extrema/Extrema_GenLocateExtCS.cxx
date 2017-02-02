@@ -123,7 +123,7 @@ Standard_Boolean Extrema_GenLocateExtCS::IsDone() const
 
 Standard_Real Extrema_GenLocateExtCS::SquareDistance() const 
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return mySqDist;
 }
 
@@ -134,7 +134,7 @@ Standard_Real Extrema_GenLocateExtCS::SquareDistance() const
 
 const Extrema_POnCurv& Extrema_GenLocateExtCS::PointOnCurve() const 
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myPoint1;
 }
 
@@ -145,7 +145,7 @@ const Extrema_POnCurv& Extrema_GenLocateExtCS::PointOnCurve() const
 
 const Extrema_POnSurf& Extrema_GenLocateExtCS::PointOnSurface() const 
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myPoint2;
 }
 

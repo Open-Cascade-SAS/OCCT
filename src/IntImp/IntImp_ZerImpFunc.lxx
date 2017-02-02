@@ -46,13 +46,13 @@ inline const gp_Pnt& IntImp_ZerImpFunc::Point() const
 
 inline const gp_Vec& IntImp_ZerImpFunc::Direction3d()
 {
-  if (IsTangent()) StdFail_UndefinedDerivative::Raise();       
+  if (IsTangent()) throw StdFail_UndefinedDerivative();
   return d3d;
 }
 
 inline const gp_Dir2d& IntImp_ZerImpFunc::Direction2d()
 {
-  if (IsTangent()) StdFail_UndefinedDerivative::Raise();       
+  if (IsTangent()) throw StdFail_UndefinedDerivative();
   return d2d;
 }
 

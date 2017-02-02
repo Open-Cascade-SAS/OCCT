@@ -46,7 +46,7 @@ IGESAppli_PipingFlow::IGESAppli_PipingFlow ()    {  }
       allJoins->Lower()          != 1 || allJoins->Length()          != num ||
       allFlowNames->Lower()      != 1 || allFlowNames->Length()      != num ||
       allContFlowAssocs->Lower() != 1 || allContFlowAssocs->Length() != num )
-    Standard_DimensionMismatch::Raise("IGESAppli_PipingFlow : Init");
+    throw Standard_DimensionMismatch("IGESAppli_PipingFlow : Init");
   theNbContextFlags          = nbContextFlags;
   theTypeOfFlow              = aFlowType;
   theFlowAssociativities     = allFlowAssocs;

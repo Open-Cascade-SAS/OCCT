@@ -43,13 +43,13 @@ IGESGeom_BSplineSurface::IGESGeom_BSplineSurface ()    {  }
 {
   if (allWeights->RowLength() !=  allPoles->RowLength() || 
       allWeights->ColLength() !=  allPoles->ColLength())
-    Standard_DimensionMismatch::Raise("IGESGeom_BSplineSurface : Init");
+    throw Standard_DimensionMismatch("IGESGeom_BSplineSurface : Init");
   if (allKnotsU->Lower() != -aDegU       || allKnotsV->Lower() != -aDegV     ||
       allKnotsU->Upper() != anIndexU+1   || allKnotsV->Upper() != anIndexV+1 ||
       allWeights->LowerRow() != 0        || allWeights->LowerCol() != 0 ||
       allPoles->LowerRow()   != 0        || allPoles->LowerCol()   != 0 ||
       allPoles->UpperRow()   != anIndexU || allPoles->UpperCol()   != anIndexV)
-    Standard_DimensionMismatch::Raise("IGESGeom_BSplineSurface : Init");
+    throw Standard_DimensionMismatch("IGESGeom_BSplineSurface : Init");
 
   theIndexU    = anIndexU;
   theIndexV    = anIndexV;
@@ -74,8 +74,7 @@ IGESGeom_BSplineSurface::IGESGeom_BSplineSurface ()    {  }
 
     void  IGESGeom_BSplineSurface::SetFormNumber (const Standard_Integer form)
 {
-  if (form < 0 || form > 9) Standard_OutOfRange::Raise
-    ("IGESGeom_BSplineSurface : SetFormNumber");
+  if (form < 0 || form > 9) throw Standard_OutOfRange("IGESGeom_BSplineSurface : SetFormNumber");
   InitTypeAndForm(128,form);
 }
 

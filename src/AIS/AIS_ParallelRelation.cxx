@@ -124,13 +124,13 @@ void AIS_ParallelRelation::Compute(const Handle(PrsMgr_PresentationManager3d)&,
 void AIS_ParallelRelation::Compute(const Handle(Prs3d_Projector)& aProjector,
 				   const Handle(Prs3d_Presentation)& aPresentation)
 {
-// Standard_NotImplemented::Raise("AIS_ParallelRelation::Compute(const Handle(Prs3d_Projector)&,const Handle(Prs3d_Presentation)&)");
+// throw Standard_NotImplemented("AIS_ParallelRelation::Compute(const Handle(Prs3d_Projector)&,const Handle(Prs3d_Presentation)&)");
   PrsMgr_PresentableObject::Compute( aProjector , aPresentation ) ;
 }
 
 void AIS_ParallelRelation::Compute(const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTransformation, const Handle(Prs3d_Presentation)& aPresentation)
 {
-// Standard_NotImplemented::Raise("AIS_ParallelRelation::Compute(const Handle(Prs3d_Projector)&, const Handle(Geom_Transformation)&, const Handle(Prs3d_Presentation)&)");
+// throw Standard_NotImplemented("AIS_ParallelRelation::Compute(const Handle(Prs3d_Projector)&, const Handle(Geom_Transformation)&, const Handle(Prs3d_Presentation)&)");
   PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation ) ;
 }
 
@@ -209,7 +209,7 @@ void AIS_ParallelRelation::ComputeSelection(const Handle(SelectMgr_Selection)& a
 //=======================================================================
 void AIS_ParallelRelation::ComputeTwoFacesParallel(const Handle(Prs3d_Presentation)&)
 {
-  Standard_NotImplemented::Raise("AIS_ParallelRelation::ComputeTwoFacesParallel not implemented");
+  throw Standard_NotImplemented("AIS_ParallelRelation::ComputeTwoFacesParallel not implemented");
 }
 
 //=======================================================================

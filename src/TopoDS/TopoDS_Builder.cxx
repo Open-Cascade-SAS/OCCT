@@ -111,11 +111,11 @@ void TopoDS_Builder::Add (TopoDS_Shape& aShape,
       aShape.TShape()->Modified(Standard_True);
     }
     else {
-      TopoDS_UnCompatibleShapes::Raise("TopoDS_Builder::Add");
+      throw TopoDS_UnCompatibleShapes("TopoDS_Builder::Add");
     }
   }
   else {
-    TopoDS_FrozenShape::Raise("TopoDS_Buider::Add");
+    throw TopoDS_FrozenShape("TopoDS_Buider::Add");
   }
 }
 

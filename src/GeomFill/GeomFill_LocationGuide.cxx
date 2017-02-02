@@ -218,7 +218,7 @@ static void InGoodPeriod(const Standard_Real Prec,
 					   Standard_Real& LastAngle)
 {
   if (myCurve.IsNull())
-    Standard_ConstructionError::Raise(
+    throw Standard_ConstructionError(
           "GeomFill_LocationGuide::The path is not setted !!");
 
     //repere fixe
@@ -811,7 +811,7 @@ static void InGoodPeriod(const Standard_Real Prec,
 	    cout << "DEDX = " << DEDX << endl;
 	    cout << "DEDT = " << DEDT << endl;
 #endif
-	    Standard_ConstructionError::Raise(
+	    throw Standard_ConstructionError(
 	     "LocationGuide::D1 : No Result dans la derivee");
 	  }
 	  
@@ -1364,7 +1364,7 @@ void GeomFill_LocationGuide::Resolution (const Standard_Integer ,
 // void GeomFill_LocationGuide::Rotation(gp_Pnt& Centre)  const
  void GeomFill_LocationGuide::Rotation(gp_Pnt& )  const
 {
-  Standard_NotImplemented::Raise("GeomFill_LocationGuide::Rotation");
+  throw Standard_NotImplemented("GeomFill_LocationGuide::Rotation");
 }
 
 //==================================================================

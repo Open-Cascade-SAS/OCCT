@@ -148,7 +148,7 @@ FEmTool_ProfileMatrix::FEmTool_ProfileMatrix(const TColStd_Array1OfInteger& Firs
 //=======================================================================
  void FEmTool_ProfileMatrix::Solve(const math_Vector& B,math_Vector& X) const
 {
-  if (!IsDecomp) StdFail_NotDone::Raise("Decomposition must be done");
+  if (!IsDecomp) throw StdFail_NotDone("Decomposition must be done");
  
   Standard_Integer i, j, jj,DiagAddr, CurrAddr;
   Standard_Real Sum;
@@ -188,14 +188,13 @@ FEmTool_ProfileMatrix::FEmTool_ProfileMatrix(const TColStd_Array1OfInteger& Firs
 
  Standard_Boolean FEmTool_ProfileMatrix::Prepare() 
 {
-  Standard_NotImplemented::Raise("FEmTool_ProfileMatrix::Prepare");
-  return Standard_False;  
+  throw Standard_NotImplemented("FEmTool_ProfileMatrix::Prepare");
 }
 
 // void FEmTool_ProfileMatrix::Solve(const math_Vector& B,const math_Vector& Init,math_Vector& X,math_Vector& Residual,const Standard_Real Tolerance,const Standard_Integer NbIterations) const
  void FEmTool_ProfileMatrix::Solve(const math_Vector& ,const math_Vector& ,math_Vector& ,math_Vector& ,const Standard_Real ,const Standard_Integer ) const
 {
-  Standard_NotImplemented::Raise("FEmTool_ProfileMatrix::Solve");
+  throw Standard_NotImplemented("FEmTool_ProfileMatrix::Solve");
 }
 
 

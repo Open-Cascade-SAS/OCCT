@@ -43,7 +43,7 @@ IGESBasic_Group::IGESBasic_Group ()    {  InitTypeAndForm(402,1);  }
   // ptv and rln September 14, 2000 BUC60743
   // Protection against empty groups
   if (!allEntities.IsNull() && (allEntities->Lower() != 1))
-    Standard_DimensionMismatch::Raise("IGESBasic_Group : Init");
+    throw Standard_DimensionMismatch("IGESBasic_Group : Init");
   theEntities   = allEntities;
   if (FormNumber() == 0) InitTypeAndForm(402,1);
 }
@@ -87,7 +87,7 @@ IGESBasic_Group::IGESBasic_Group ()    {  InitTypeAndForm(402,1);  }
     void  IGESBasic_Group::SetUser
   (const Standard_Integer type, const Standard_Integer form)
 {
-  if (type <= 5000) Standard_OutOfRange::Raise("IGESBasic_Group::SetUser");
+  if (type <= 5000) throw Standard_OutOfRange("IGESBasic_Group::SetUser");
   InitTypeAndForm (type,form);
 }
 

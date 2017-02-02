@@ -196,8 +196,7 @@ static Standard_Boolean FUN_EstaEE(const TopoDS_Edge& E, const TopAbs_State sta,
   EinEE = FUN_PinE(P,EE);
   if      (sta == TopAbs_IN)  return EinEE;
   else if (sta == TopAbs_OUT) return !EinEE;
-  else Standard_ProgramError::Raise("TopOpeBRepBuild FUN_EstaEE on invalid state");
-  return EinEE;
+  else throw Standard_ProgramError("TopOpeBRepBuild FUN_EstaEE on invalid state");
 }
 
 //=======================================================================
@@ -538,7 +537,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
 //	Standard_Real tolpc; MGhc2 PC = FC2D_CurveOnSurface(eon,F,esdF,f,l,tolpc);
 	Standard_Real tolpc; MGhc2 PC = FC2D_CurveOnSurface(eon,F,esdF,f,l,tolpc,Standard_True);//xpu051198 :PRO15049
 	hasPC = (!PC.IsNull());
-	if (!hasPC) Standard_ProgramError::Raise("TopOpeBRepBuild_Builder::SSE null PC on F");
+	if (!hasPC) throw Standard_ProgramError("TopOpeBRepBuild_Builder::SSE null PC on F");
 	Standard_Real tol = Max(tolE,tolpc);
 	BB.UpdateEdge(eon,PC,F,tol);
       }
@@ -581,10 +580,10 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
 #endif
       Standard_Boolean haspc = FC2D_HasCurveOnSurface(EG,FS); if (haspc) continue;
       Standard_Boolean hasc3d = FC2D_HasC3D(EG);
-      if (!hasc3d) Standard_ProgramError::Raise("TopOpeBRepBuild_Builder::SSE EG without C3D");
+      if (!hasc3d) throw Standard_ProgramError("TopOpeBRepBuild_Builder::SSE EG without C3D");
       Standard_Real pf,pl,tolpc; Handle(Geom2d_Curve) PC;
       Standard_Boolean trim3d = Standard_True; PC = FC2D_CurveOnSurface(EG,FS,pf,pl,tolpc,trim3d);
-      if (PC.IsNull()) Standard_ProgramError::Raise("TopOpeBRepBuild_Builder::SSE EG without PC on FS");
+      if (PC.IsNull()) throw Standard_ProgramError("TopOpeBRepBuild_Builder::SSE EG without PC on FS");
     } 
   } //5
   
@@ -633,7 +632,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
 	  Standard_Boolean isouon,isovon; gp_Pnt2d o2don; gp_Dir2d d2don; 
 	  Standard_Boolean ISOon = TopOpeBRepTool_TOOL::UVISO(PCon,isouon,isovon,d2don,o2don);
 	  Standard_Boolean PCko = !ISOon || ((isoU && !isouon) || (isoV && !isovon));
-	  if (PCko) Standard_ProgramError::Raise("TopOpeBRepBuild_Builder::splitON");
+	  if (PCko) throw Standard_ProgramError("TopOpeBRepBuild_Builder::splitON");
 
 	  Standard_Boolean test = (FFuper && isoU) || (FFvper && isoV);
 	  if (!test) { newlON.Append(eon); continue;}

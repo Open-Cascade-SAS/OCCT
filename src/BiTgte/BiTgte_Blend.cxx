@@ -954,7 +954,7 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
   for ( ;expf.More(); expf.Next()) Sew->Add(expf.Current());
   Sew->Perform();
   TopoDS_Shape SewedShape = Sew->SewedShape();
-  if ( SewedShape.IsNull()) Standard_Failure::Raise("Sewing aux fraises");
+  if ( SewedShape.IsNull()) throw Standard_Failure("Sewing aux fraises");
 
   // Check if the sewing modified the orientation.
   expf.Init(myShape,TopAbs_FACE);
@@ -1173,7 +1173,7 @@ const
 const TopoDS_Face& BiTgte_Blend::Face(const TopoDS_Shape& CenterLine) const
 {
   if ( !myMapSF.IsBound(CenterLine)) {
-    Standard_DomainError::Raise("BiTgte_Blend::Face");
+    throw Standard_DomainError("BiTgte_Blend::Face");
   }
 
   return myMapSF(CenterLine).Face();

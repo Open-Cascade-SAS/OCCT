@@ -195,7 +195,7 @@ Standard_Boolean Extrema_GenExtPC::IsDone () const {
 
 Standard_Integer Extrema_GenExtPC::NbExt () const {
 
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myF.NbExt();
 }
 
@@ -207,7 +207,7 @@ Standard_Integer Extrema_GenExtPC::NbExt () const {
 
 Standard_Real Extrema_GenExtPC::SquareDistance (const Standard_Integer N) const {
 
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myF.SquareDistance(N);
 }
 
@@ -219,7 +219,7 @@ Standard_Real Extrema_GenExtPC::SquareDistance (const Standard_Integer N) const 
 
 Standard_Boolean Extrema_GenExtPC::IsMin (const Standard_Integer N) const {
 
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myF.IsMin(N);
 }
 
@@ -231,7 +231,7 @@ Standard_Boolean Extrema_GenExtPC::IsMin (const Standard_Integer N) const {
 
 const POnC & Extrema_GenExtPC::Point (const Standard_Integer N) const 
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myF.Point(N);
 }
 //=============================================================================

@@ -216,7 +216,7 @@ Standard_Boolean LProp_SLProps::IsTangentUDefined ()
 void LProp_SLProps::TangentU (gp_Dir& D) 
 {
   if(!IsTangentUDefined())
-    LProp_NotDefined::Raise();
+    throw LProp_NotDefined();
 
   if(mySignificantFirstDerivativeOrderU == 1)
     D = gp_Dir(myD1u);
@@ -273,7 +273,7 @@ Standard_Boolean LProp_SLProps::IsTangentVDefined ()
 void LProp_SLProps::TangentV (gp_Dir& D)
 {
   if(!IsTangentVDefined())
-    LProp_NotDefined::Raise();
+    throw LProp_NotDefined();
   
   if(mySignificantFirstDerivativeOrderV == 1)
     D = gp_Dir(myD1v);
@@ -342,7 +342,7 @@ const gp_Dir& LProp_SLProps::Normal ()
 {
   if(!IsNormalDefined())
   {
-    LProp_NotDefined::Raise();
+    throw LProp_NotDefined();
   }
 
   return myNormal;
@@ -491,7 +491,7 @@ Standard_Boolean LProp_SLProps::IsCurvatureDefined ()
 Standard_Boolean LProp_SLProps::IsUmbilic ()
 {
   if(!IsCurvatureDefined())
-    LProp_NotDefined::Raise();
+    throw LProp_NotDefined();
   
   return Abs(myMaxCurv - myMinCurv) < Abs(Epsilon(myMaxCurv));
 }
@@ -499,7 +499,7 @@ Standard_Boolean LProp_SLProps::IsUmbilic ()
 Standard_Real LProp_SLProps::MaxCurvature ()
 {
   if(!IsCurvatureDefined())
-    LProp_NotDefined::Raise();
+    throw LProp_NotDefined();
 
   return myMaxCurv;
 }
@@ -507,7 +507,7 @@ Standard_Real LProp_SLProps::MaxCurvature ()
 Standard_Real LProp_SLProps::MinCurvature ()
 {
   if(!IsCurvatureDefined())
-    LProp_NotDefined::Raise();
+    throw LProp_NotDefined();
   
   return myMinCurv;
 }
@@ -515,7 +515,7 @@ Standard_Real LProp_SLProps::MinCurvature ()
 void LProp_SLProps::CurvatureDirections(gp_Dir& Max, gp_Dir& Min)
 {
   if(!IsCurvatureDefined())
-    LProp_NotDefined::Raise();
+    throw LProp_NotDefined();
 
   Max = myDirMaxCurv;
   Min = myDirMinCurv;
@@ -524,7 +524,7 @@ void LProp_SLProps::CurvatureDirections(gp_Dir& Max, gp_Dir& Min)
 Standard_Real LProp_SLProps::MeanCurvature ()
 {
   if(!IsCurvatureDefined())
-    LProp_NotDefined::Raise();
+    throw LProp_NotDefined();
 
   return myMeanCurv;
 }
@@ -532,7 +532,7 @@ Standard_Real LProp_SLProps::MeanCurvature ()
 Standard_Real LProp_SLProps::GaussianCurvature ()
 {
   if(!IsCurvatureDefined())
-    LProp_NotDefined::Raise();
+    throw LProp_NotDefined();
 
   return myGausCurv;
 }

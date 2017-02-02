@@ -25,7 +25,7 @@ DEFINE_STANDARD_HANDLE(OSD_Exception, Standard_Failure)
 
 #if !defined No_Exception && !defined No_OSD_Exception
   #define OSD_Exception_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) OSD_Exception::Raise(MESSAGE);
+  if (CONDITION) throw OSD_Exception(MESSAGE);
 #else
   #define OSD_Exception_Raise_if(CONDITION, MESSAGE)
 #endif

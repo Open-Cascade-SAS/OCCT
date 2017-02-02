@@ -136,12 +136,13 @@ Standard_Integer StepFile_Read
     OCC_CATCH_SIGNALS
     if (stepread () != 0) {  lir_file_fin(3);  stepread_endinput (newin,ficnom);  return 1;  }
   }
-  catch (Standard_Failure) {
+  catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
     sout << " ...  Exception Raised while reading Step File : " << ficnom << ":\n" << endl;
-    sout << Standard_Failure::Caught()->GetMessageString();  
+    sout << anException.GetMessageString();  
     sout << "    ..." << endl;
 #endif
+    (void)anException;
     lir_file_fin(3);  
     stepread_endinput (newin,ficnom);  
     return 1;

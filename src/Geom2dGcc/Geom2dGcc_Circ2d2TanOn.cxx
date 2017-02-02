@@ -680,8 +680,8 @@ Standard_Integer Geom2dGcc_Circ2d2TanOn::
 gp_Circ2d Geom2dGcc_Circ2d2TanOn::
   ThisSolution (const Standard_Integer Index) const 
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
   return cirsol(Index);
 }
 
@@ -690,8 +690,8 @@ void Geom2dGcc_Circ2d2TanOn::
 	                GccEnt_Position& Qualif1 ,
 	                GccEnt_Position& Qualif2) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
   else {
     if (Invert) {
       Qualif1 = qualifier2(Index);
@@ -710,8 +710,8 @@ void Geom2dGcc_Circ2d2TanOn::
 	           Standard_Real&   ParArg,
 	           gp_Pnt2d&        PntSol) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
   else {
     if (Invert) {
       if (TheSame2(Index) == 0) {
@@ -719,7 +719,7 @@ void Geom2dGcc_Circ2d2TanOn::
 	ParArg = pararg2(Index);
         PntSol = pnttg2sol(Index);
       }
-      else { StdFail_NotDone::Raise(); }
+      else { throw StdFail_NotDone(); }
     }
     else {
       if (TheSame1(Index) == 0) {
@@ -727,7 +727,7 @@ void Geom2dGcc_Circ2d2TanOn::
 	ParArg = pararg1(Index);
         PntSol = pnttg1sol(Index);
       }
-      else { StdFail_NotDone::Raise(); }
+      else { throw StdFail_NotDone(); }
     }
   }
 }
@@ -738,8 +738,8 @@ void Geom2dGcc_Circ2d2TanOn::
               Standard_Real& ParArg,
               gp_Pnt2d& PntSol) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
   else {
     if (!Invert) {
       if (TheSame2(Index) == 0) {
@@ -747,7 +747,7 @@ void Geom2dGcc_Circ2d2TanOn::
 	ParArg = pararg2(Index);
         PntSol = pnttg2sol(Index);
       }
-      else { StdFail_NotDone::Raise(); }
+      else { throw StdFail_NotDone(); }
     }
     else {
       if (TheSame1(Index) == 0) {
@@ -755,7 +755,7 @@ void Geom2dGcc_Circ2d2TanOn::
 	ParArg = pararg1(Index);
         PntSol = pnttg1sol(Index);
       }
-      else { StdFail_NotDone::Raise(); }
+      else { throw StdFail_NotDone(); }
     }
   }
 }
@@ -765,8 +765,8 @@ void Geom2dGcc_Circ2d2TanOn::
               Standard_Real& ParArg,
               gp_Pnt2d& PntSol) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
   else {
     ParArg = parcen3(Index);
     PntSol = pntcen(Index);
@@ -776,8 +776,8 @@ void Geom2dGcc_Circ2d2TanOn::
 Standard_Boolean Geom2dGcc_Circ2d2TanOn::
    IsTheSame1 (const Standard_Integer Index) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
   if (Invert) {
     if (TheSame2(Index) == 0) { return Standard_False; }
     else { return Standard_True; }
@@ -791,8 +791,8 @@ Standard_Boolean Geom2dGcc_Circ2d2TanOn::
 Standard_Boolean Geom2dGcc_Circ2d2TanOn::
    IsTheSame2 (const Standard_Integer Index) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
   if (!Invert) {
     if (TheSame2(Index) == 0) { return Standard_False; }
     else { return Standard_True; }

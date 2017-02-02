@@ -155,7 +155,7 @@ Standard_Integer TopOpeBRepBuild_SolidBuilder::InitFace()
 {
   const Handle(TopOpeBRepBuild_Loop)& L = mySolidAreaBuilder.Loop();
   if ( L->IsShape() )
-    Standard_DomainError::Raise("TopOpeBRepBuild_SolidBuilder:InitFace");
+    throw Standard_DomainError("TopOpeBRepBuild_SolidBuilder:InitFace");
   else {
     myBlockIterator = L->BlockIterator();
     myBlockIterator.Initialize();

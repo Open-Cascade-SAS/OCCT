@@ -263,19 +263,19 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 #ifdef OCCT_DEBUG
 	  cout << "Error in MakeWire" << endl;
 #endif 
-	  Standard_ConstructionError::Raise("BRepFill_Draft");
+	  throw Standard_ConstructionError("BRepFill_Draft");
 	}
       }
       else {
 #ifdef OCCT_DEBUG
 	  cout << "No Free Borders !" << endl;
 #endif 
-	  Standard_ConstructionError::Raise("BRepFill_Draft");
+	  throw Standard_ConstructionError("BRepFill_Draft");
       }
       break;
     }
     default :
-      Standard_ConstructionError::Raise("BRepFill_Draft");
+      throw Standard_ConstructionError("BRepFill_Draft");
   }
 
   // Attention to closed non declared wires !

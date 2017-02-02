@@ -58,9 +58,8 @@ static Standard_Character NameTypeToChar(const TNaming_NameType theNameType)
     case TNaming_WIREIN       : return 'W';
     case TNaming_SHELLIN      : return 'H';
   default:
-    Standard_DomainError::Raise("TNaming_NameType:: Name Type Unknown");
+    throw Standard_DomainError("TNaming_NameType:: Name Type Unknown");
   }
-  return 'N'; // To avoid compilation error message.
 }
 
 //=======================================================================
@@ -80,9 +79,8 @@ static TNaming_NameType CharTypeToName(const Standard_Character theCharType)
     case 'W'  : return TNaming_WIREIN;
     case 'H'  : return TNaming_SHELLIN;
   default:
-    Standard_DomainError::Raise("TNaming_NameType:: Name Type Unknown");
+    throw Standard_DomainError("TNaming_NameType:: Name Type Unknown");
   }
-  return TNaming_UNKNOWN; // To avoid compilation error message.
 }
 
 //=======================================================================

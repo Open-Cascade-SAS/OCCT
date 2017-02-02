@@ -197,7 +197,7 @@ void AdvApp2Var_ApproxAFunc2Var::Init()
     iu = 2;
     break;
   default :
-    Standard_ConstructionError::Raise("AdvApp2Var_ApproxAFunc2Var : UContinuity Error");
+    throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : UContinuity Error");
   }
   switch (myContInV) {
   case GeomAbs_C0 :
@@ -210,14 +210,14 @@ void AdvApp2Var_ApproxAFunc2Var::Init()
     iv = 2;
     break;
   default :
-    Standard_ConstructionError::Raise("AdvApp2Var_ApproxAFunc2Var : VContinuity Error");
+    throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : VContinuity Error");
   }
   ndu = Max(myMaxDegInU+1,2*iu+2);
   ndv = Max(myMaxDegInV+1,2*iv+2);
   if (ndu<2*iu+2)
-    Standard_ConstructionError::Raise("AdvApp2Var_ApproxAFunc2Var : UMaxDegree Error");
+    throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : UMaxDegree Error");
   if (ndv<2*iv+2)
-    Standard_ConstructionError::Raise("AdvApp2Var_ApproxAFunc2Var : VMaxDegree Error");
+    throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : VMaxDegree Error");
   myPrecisionCode = Max(0,Min(myPrecisionCode,3));
   AdvApp2Var_Context Conditions(ifav,iu,iv,ndu,ndv,
 				myPrecisionCode,
@@ -363,8 +363,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
     myResult(FirstNA).Discretise(myConditions,myConstraints,Func);
     if ( ! myResult(FirstNA).IsDiscretised() ) {
       myHasResult =  myDone = Standard_False;
-      Standard_ConstructionError::Raise
-              ("AdvApp2Var_ApproxAFunc2Var : Surface Discretisation Error");
+      throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : Surface Discretisation Error");
     }
 
 // calculate the number and the type of autorized cuts
@@ -403,8 +402,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
         }
         else {
           myHasResult =  myDone = Standard_False;
-          Standard_ConstructionError::Raise
-              ("AdvApp2Var_ApproxAFunc2Var : Surface Approximation Error");
+          throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : Surface Approximation Error");
         }
 	break;
       case 1 :
@@ -426,8 +424,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
 	break;
       default :
         myHasResult =  myDone = Standard_False;
-        Standard_ConstructionError::Raise
-              ("AdvApp2Var_ApproxAFunc2Var : Surface Approximation Error");
+        throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : Surface Approximation Error");
       }
     }
   }
@@ -460,8 +457,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
     myResult(FirstNA).Discretise(myConditions,myConstraints,Func);
     if ( ! myResult(FirstNA).IsDiscretised() ) {
       myHasResult =  myDone = Standard_False;
-      Standard_ConstructionError::Raise
-              ("AdvApp2Var_ApproxAFunc2Var : Surface Discretisation Error");
+      throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : Surface Discretisation Error");
     }
 
 // calculate the number and type of autorized cuts
@@ -521,8 +517,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
 	}
 	else {
 	  myHasResult =  myDone = Standard_False;
-	  Standard_ConstructionError::Raise
-	    ("AdvApp2Var_ApproxAFunc2Var : Surface Approximation Error");
+	  throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : Surface Approximation Error");
 	}
 	break;
       case 1 :
@@ -544,8 +539,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
 	break;
 	default :
 	myHasResult =  myDone = Standard_False;
-	Standard_ConstructionError::Raise
-	  ("AdvApp2Var_ApproxAFunc2Var : Surface Approximation Error");
+	throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : Surface Approximation Error");
       }
     }
   }
@@ -623,8 +617,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting& UCh
 	}
 	else {
 	  myHasResult =  myDone = Standard_False;
-	  Standard_ConstructionError::Raise
-	    ("AdvApp2Var_ApproxAFunc2Var : Curve Approximation Error");
+	  throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : Curve Approximation Error");
 	}
       }
     }
@@ -708,8 +701,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting& UCh
           }
           else {
 	    myHasResult =  myDone = Standard_False;
-	    Standard_ConstructionError::Raise
-              ("AdvApp2Var_ApproxAFunc2Var : Curve Approximation Error");
+	    throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : Curve Approximation Error");
           }
 	}
       }
@@ -880,8 +872,7 @@ Handle(TColStd_HArray1OfReal)
 {
   Handle (TColStd_HArray1OfReal) EPtr;
   if (Dimension <1 || Dimension >3) {
-    Standard_OutOfRange::Raise
-      ("AdvApp2Var_ApproxAFunc2Var::MaxError : Dimension must be equal to 1,2 or 3 !");
+    throw Standard_OutOfRange("AdvApp2Var_ApproxAFunc2Var::MaxError : Dimension must be equal to 1,2 or 3 !");
   }
   switch (Dimension) {
   case 1:
@@ -907,8 +898,7 @@ Handle(TColStd_HArray1OfReal)
 {
   Handle (TColStd_HArray1OfReal) EPtr;
   if (Dimension <1 || Dimension >3) {
-    Standard_OutOfRange::Raise
-      ("AdvApp2Var_ApproxAFunc2Var::AverageError : Dimension must be equal to 1,2 or 3 !");
+    throw Standard_OutOfRange("AdvApp2Var_ApproxAFunc2Var::AverageError : Dimension must be equal to 1,2 or 3 !");
   }
   switch (Dimension) {
   case 1:
@@ -934,8 +924,7 @@ Handle(TColStd_HArray1OfReal)
 {
   Handle (TColStd_HArray1OfReal) EPtr;
   if (Dimension <1 || Dimension >3) {
-    Standard_OutOfRange::Raise
-      ("AdvApp2Var_ApproxAFunc2Var::UFrontError : Dimension must be equal to 1,2 or 3 !");
+    throw Standard_OutOfRange("AdvApp2Var_ApproxAFunc2Var::UFrontError : Dimension must be equal to 1,2 or 3 !");
   }
   switch (Dimension) {
   case 1:
@@ -961,8 +950,7 @@ Handle(TColStd_HArray1OfReal)
 {
   Handle (TColStd_HArray1OfReal) EPtr;
   if (Dimension <=0 || Dimension >3) {
-    Standard_OutOfRange::Raise
-      ("AdvApp2Var_ApproxAFunc2Var::VFrontError : Dimension must be equal to 1,2 or 3 !");
+    throw Standard_OutOfRange("AdvApp2Var_ApproxAFunc2Var::VFrontError : Dimension must be equal to 1,2 or 3 !");
   }
   switch (Dimension) {
   case 1:
@@ -988,8 +976,7 @@ Standard_Real
 				      const Standard_Integer SSPIndex) const 
 {
   if (Dimension !=3 || SSPIndex !=1) {
-    Standard_OutOfRange::Raise
-      ("AdvApp2Var_ApproxAFunc2Var::MaxError: ONE Surface 3D only !");
+    throw Standard_OutOfRange("AdvApp2Var_ApproxAFunc2Var::MaxError: ONE Surface 3D only !");
   }
   Handle (TColStd_HArray1OfReal) EPtr = MaxError(Dimension);
   return EPtr->Value(SSPIndex);
@@ -1005,8 +992,7 @@ Standard_Real
 					  const Standard_Integer SSPIndex) const 
 {
   if (Dimension !=3 || SSPIndex !=1) {
-    Standard_OutOfRange::Raise
-      ("AdvApp2Var_ApproxAFunc2Var::AverageError : ONE Surface 3D only !");
+    throw Standard_OutOfRange("AdvApp2Var_ApproxAFunc2Var::AverageError : ONE Surface 3D only !");
   }
   Handle (TColStd_HArray1OfReal) EPtr = AverageError(Dimension);
   return EPtr->Value(SSPIndex);
@@ -1022,8 +1008,7 @@ Standard_Real
 					 const Standard_Integer SSPIndex) const 
 {
   if (Dimension !=3 || SSPIndex !=1) {
-    Standard_OutOfRange::Raise
-      ("AdvApp2Var_ApproxAFunc2Var::UFrontError : ONE Surface 3D only !");
+    throw Standard_OutOfRange("AdvApp2Var_ApproxAFunc2Var::UFrontError : ONE Surface 3D only !");
   }
   Handle (TColStd_HArray1OfReal) EPtr = UFrontError(Dimension);
   return EPtr->Value(SSPIndex);
@@ -1039,8 +1024,7 @@ Standard_Real
 					 const Standard_Integer SSPIndex) const 
 {
   if (Dimension !=3 || SSPIndex !=1) {
-    Standard_OutOfRange::Raise
-      ("AdvApp2Var_ApproxAFunc2Var::VFrontError : ONE Surface 3D only !");
+    throw Standard_OutOfRange("AdvApp2Var_ApproxAFunc2Var::VFrontError : ONE Surface 3D only !");
   }
   Handle (TColStd_HArray1OfReal) EPtr = VFrontError(Dimension);
   return EPtr->Value(SSPIndex);
@@ -1057,8 +1041,7 @@ Standard_Real
 				       const Standard_Integer SSPIndex) const 
 {
   if (Dimension !=3 || SSPIndex !=1) {
-    Standard_OutOfRange::Raise
-      ("AdvApp2Var_ApproxAFunc2Var::CritError: ONE Surface 3D only !");
+    throw Standard_OutOfRange("AdvApp2Var_ApproxAFunc2Var::CritError: ONE Surface 3D only !");
   }
   return myCriterionError;
 }

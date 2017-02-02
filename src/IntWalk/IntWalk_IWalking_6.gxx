@@ -63,7 +63,7 @@ void IntWalk_IWalking::MakeWalkingPoint
     MakeWalkingPoint(Case - 10, U, V, sp, Psol); 
   }
   else {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
 

@@ -104,7 +104,7 @@
     case GeomAbs_Cone:     quad1.SetValue(HS1->Surface().Cone()); break;
     case GeomAbs_Sphere:   quad1.SetValue(HS1->Surface().Sphere()); break;
     case GeomAbs_Torus:    quad1.SetValue(HS1->Surface().Torus()); break;
-    default: Standard_ConstructionError::Raise("GeomInt_IntSS::MakeCurve");
+    default: throw Standard_ConstructionError("GeomInt_IntSS::MakeCurve");
   }
 }
 

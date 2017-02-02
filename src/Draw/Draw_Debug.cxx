@@ -36,8 +36,8 @@ Standard_EXPORT const char* Draw_Eval (const char *theCommandStr)
     cout << theCommands.Result() << endl;
     return theCommands.Result();
   }
-  catch (Standard_Failure)
+  catch (Standard_Failure const& anException)
   {
-    return Standard_Failure::Caught()->GetMessageString();
+    return anException.GetMessageString();
   }
 }

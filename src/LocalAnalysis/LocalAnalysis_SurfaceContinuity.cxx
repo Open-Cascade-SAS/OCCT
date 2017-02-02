@@ -373,7 +373,7 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const Handle(Ge
 /*********************************************************************************/
 
 Standard_Boolean LocalAnalysis_SurfaceContinuity::IsC0() const 
-{ if (!myIsDone) { StdFail_NotDone::Raise();}
+{ if (!myIsDone) { throw StdFail_NotDone();}
   if ( myContC0 <= myepsC0 ) 
      return Standard_True;
      else return Standard_False;
@@ -382,7 +382,7 @@ Standard_Boolean LocalAnalysis_SurfaceContinuity::IsC0() const
 /*********************************************************************************/
 
 Standard_Boolean LocalAnalysis_SurfaceContinuity::IsC1() const 
-{ if (!myIsDone) { StdFail_NotDone::Raise();}
+{ if (!myIsDone) { throw StdFail_NotDone();}
   if ( IsC0 () && (myContC1U <= myepsC1) && (myContC1V <= myepsC1))
    return Standard_True;
   else return Standard_False;
@@ -393,7 +393,7 @@ Standard_Boolean LocalAnalysis_SurfaceContinuity::IsC1() const
 Standard_Boolean LocalAnalysis_SurfaceContinuity::IsC2() const 
 { Standard_Real eps1u, eps1v, eps2u, eps2v;
 
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   if ( IsC1())
      { eps1u = 0.5*myepsC1*myepsC1*myLambda1U;
        eps1v = 0.5*myepsC1*myepsC1*myLambda1V;
@@ -416,7 +416,7 @@ Standard_Boolean LocalAnalysis_SurfaceContinuity::IsC2() const
 
 Standard_Boolean LocalAnalysis_SurfaceContinuity::IsG1() const 
 {
-  if (!myIsDone) { StdFail_NotDone::Raise();} 
+  if (!myIsDone) { throw StdFail_NotDone();} 
   if ( IsC0 () &&( myContG1 <= myepsG1))
        return Standard_True;
       else return Standard_False;
@@ -428,7 +428,7 @@ Standard_Boolean LocalAnalysis_SurfaceContinuity::IsG2()const
 { Standard_Real EPSNL;
   Standard_Integer itype;
  
-  if (!myIsDone) { StdFail_NotDone::Raise();} 
+  if (!myIsDone) { throw StdFail_NotDone();} 
   itype =0;
   EPSNL= 8*myepsC0/(mymaxlen*mymaxlen);
   if ( IsG1())
@@ -465,7 +465,7 @@ Standard_Boolean LocalAnalysis_SurfaceContinuity::IsG2()const
 
 GeomAbs_Shape  LocalAnalysis_SurfaceContinuity::ContinuityStatus() const 
 {
- if (!myIsDone) { StdFail_NotDone::Raise();}
+ if (!myIsDone) { throw StdFail_NotDone();}
  return (myTypeCont);
 }
 
@@ -473,7 +473,7 @@ GeomAbs_Shape  LocalAnalysis_SurfaceContinuity::ContinuityStatus() const
 
 Standard_Real LocalAnalysis_SurfaceContinuity::C0Value() const 
 { 
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   return ( myContC0    );
 }
 
@@ -481,7 +481,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C0Value() const
 
 Standard_Real LocalAnalysis_SurfaceContinuity::C1UAngle() const 
 {
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   return ( myContC1U    );
 }
 
@@ -489,7 +489,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C1UAngle() const
 
 Standard_Real LocalAnalysis_SurfaceContinuity::C1VAngle() const 
 {
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   return ( myContC1V    );
 }
 
@@ -497,7 +497,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C1VAngle() const
 
 Standard_Real LocalAnalysis_SurfaceContinuity::C2UAngle() const 
 {
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   return ( myContC2U    );
 }
 
@@ -505,7 +505,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C2UAngle() const
 
 Standard_Real LocalAnalysis_SurfaceContinuity::C2VAngle() const 
 {
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   return ( myContC2V    );
 }
 
@@ -513,7 +513,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C2VAngle() const
 
 Standard_Real LocalAnalysis_SurfaceContinuity::G1Angle() const 
 {
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   return ( myContG1    );
 }
 
@@ -521,7 +521,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::G1Angle() const
 
 Standard_Real LocalAnalysis_SurfaceContinuity::C1URatio() const 
 {
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   return ( myLambda1U    );
 }
 
@@ -529,7 +529,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C1URatio() const
 
 Standard_Real LocalAnalysis_SurfaceContinuity::C2URatio() const 
 {
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   return ( myLambda2U    );
 }
 
@@ -537,7 +537,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C2URatio() const
 
 Standard_Real LocalAnalysis_SurfaceContinuity::C1VRatio() const 
 {
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   return ( myLambda1V    );
 }
 
@@ -545,7 +545,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C1VRatio() const
 
 Standard_Real LocalAnalysis_SurfaceContinuity::C2VRatio() const 
 { 
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
  return ( myLambda2V    );
 }
 
@@ -553,7 +553,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C2VRatio() const
 
 Standard_Real LocalAnalysis_SurfaceContinuity::G2CurvatureGap() const 
 {
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   return ( myGap    );
 }
 

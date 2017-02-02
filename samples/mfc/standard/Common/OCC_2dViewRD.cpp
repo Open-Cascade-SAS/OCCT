@@ -177,7 +177,7 @@ void OCC_2dViewRD::OnBUTTONGridValues()
       TheCircularGridDialog.ShowWindow(SW_SHOW);                  \n\
     break;                                                        \n\
     default :                                                     \n\
-      Standard_Failure::Raise(\"invalid Aspect_GridType\"); \n\
+      throw Standard_Failure(\"invalid Aspect_GridType\"); \n\
   }                                                               \n\
 \n");
   // Update The Result Dialog

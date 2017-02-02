@@ -76,7 +76,7 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
 #if !defined(_WIN32) && !defined(__ANDROID__) && !defined(__QNX__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   if (myDisplayConnection.IsNull())
   {
-    //Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_GraphicDriver: cannot connect to X server!");
+    //throw Aspect_GraphicDeviceDefinitionError("OpenGl_GraphicDriver: cannot connect to X server!");
     return;
   }
 
@@ -97,7 +97,7 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
   if (theToInitialize
   && !InitContext())
   {
-    Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_GraphicDriver: default context can not be initialized!");
+    throw Aspect_GraphicDeviceDefinitionError("OpenGl_GraphicDriver: default context can not be initialized!");
   }
 
   // default layers are always presented in display layer sequence it can not be removed
@@ -186,7 +186,7 @@ void OpenGl_GraphicDriver::ReleaseContext()
   for (NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIter (myMapOfView);
        aViewIter.More(); aViewIter.Next())
   {
-    const Handle(OpenGl_View)& aView = aViewIter.ChangeValue();
+    const Handle(OpenGl_View)& aView = aViewIter.Value();
     const Handle(OpenGl_Window)& aWindow = aView->GlWindow();
     if (aWindow.IsNull())
     {
@@ -208,7 +208,7 @@ void OpenGl_GraphicDriver::ReleaseContext()
   for (NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIter (myMapOfView);
        aViewIter.More(); aViewIter.Next())
   {
-    const Handle(OpenGl_View)& aView = aViewIter.ChangeValue();
+    const Handle(OpenGl_View)& aView = aViewIter.Value();
     aView->ReleaseGlResources (aCtxShared);
   }
 
@@ -223,7 +223,7 @@ void OpenGl_GraphicDriver::ReleaseContext()
   for (NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIter (myMapOfView);
        aViewIter.More(); aViewIter.Next())
   {
-    const Handle(OpenGl_View)& aView = aViewIter.ChangeValue();
+    const Handle(OpenGl_View)& aView = aViewIter.Value();
     const Handle(OpenGl_Window)& aWindow = aView->GlWindow();
     if (aWindow.IsNull())
     {

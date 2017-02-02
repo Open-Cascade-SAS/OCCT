@@ -306,7 +306,7 @@ void BndLib::Add( const gp_Lin& L,const Standard_Real P1,
 
   if (Precision::IsNegativeInfinite(P1)) {
     if (Precision::IsNegativeInfinite(P2)) {
-      Standard_Failure::Raise("BndLib::bad parameter");
+      throw Standard_Failure("BndLib::bad parameter");
     }
     else if (Precision::IsPositiveInfinite(P2)) {
       OpenMinMax(L.Direction(),B);
@@ -323,7 +323,7 @@ void BndLib::Add( const gp_Lin& L,const Standard_Real P1,
       B.Add(ElCLib::Value(0.,L));
     }
     else if (Precision::IsPositiveInfinite(P2)) {
-      Standard_Failure::Raise("BndLib::bad parameter");
+      throw Standard_Failure("BndLib::bad parameter");
     }
     else {
       OpenMax(L.Direction(),B);
@@ -351,7 +351,7 @@ void BndLib::Add( const gp_Lin2d& L,const Standard_Real P1,
 
   if (Precision::IsNegativeInfinite(P1)) {
     if (Precision::IsNegativeInfinite(P2)) {
-      Standard_Failure::Raise("BndLib::bad parameter");
+      throw Standard_Failure("BndLib::bad parameter");
     }
     else if (Precision::IsPositiveInfinite(P2)) {
       OpenMinMax(L.Direction(),B);
@@ -368,7 +368,7 @@ void BndLib::Add( const gp_Lin2d& L,const Standard_Real P1,
       B.Add(ElCLib::Value(0.,L));
     }
     else if (Precision::IsPositiveInfinite(P2)) {
-      Standard_Failure::Raise("BndLib::bad parameter");
+      throw Standard_Failure("BndLib::bad parameter");
     }
     else {
       OpenMax(L.Direction(),B);
@@ -767,7 +767,7 @@ void BndLib::Add( const gp_Parab& P,const Standard_Real P1,
 
   if (Precision::IsNegativeInfinite(P1)) {
     if (Precision::IsNegativeInfinite(P2)) {
-      Standard_Failure::Raise("BndLib::bad parameter");
+      throw Standard_Failure("BndLib::bad parameter");
     }
     else if (Precision::IsPositiveInfinite(P2)) {
       B.OpenXmax();B.OpenYmax();B.OpenZmax();
@@ -782,7 +782,7 @@ void BndLib::Add( const gp_Parab& P,const Standard_Real P1,
       B.OpenXmin();B.OpenYmin();B.OpenZmin();
     }
     else if (Precision::IsPositiveInfinite(P2)) {
-      Standard_Failure::Raise("BndLib::bad parameter");
+      throw Standard_Failure("BndLib::bad parameter");
     }
     else {
       B.Add(ElCLib::Value(P2,P));
@@ -811,7 +811,7 @@ void BndLib::Add( const gp_Parab2d& P,const Standard_Real P1,
 
   if (Precision::IsNegativeInfinite(P1)) {
     if (Precision::IsNegativeInfinite(P2)) {
-      Standard_Failure::Raise("BndLib::bad parameter");
+      throw Standard_Failure("BndLib::bad parameter");
     }
     else if (Precision::IsPositiveInfinite(P2)) {
       B.OpenXmax();B.OpenYmax();
@@ -826,7 +826,7 @@ void BndLib::Add( const gp_Parab2d& P,const Standard_Real P1,
       B.OpenXmin();B.OpenYmin();
     }
     else if (Precision::IsPositiveInfinite(P2)) {
-      Standard_Failure::Raise("BndLib::bad parameter");
+      throw Standard_Failure("BndLib::bad parameter");
     }
     else {
       B.Add(ElCLib::Value(P2,P));
@@ -861,7 +861,7 @@ void BndLib::Add(const gp_Hypr& H,
 {
   if (Precision::IsNegativeInfinite(P1)) {
     if (Precision::IsNegativeInfinite(P2)) {
-      Standard_Failure::Raise("BndLib::bad parameter");
+      throw Standard_Failure("BndLib::bad parameter");
     }
     else if (Precision::IsPositiveInfinite(P2)) {
       B.OpenXmax();B.OpenYmax();B.OpenZmax();
@@ -876,7 +876,7 @@ void BndLib::Add(const gp_Hypr& H,
       B.OpenXmin();B.OpenYmin();B.OpenZmin();
     }
     else if (Precision::IsPositiveInfinite(P2)) {
-      Standard_Failure::Raise("BndLib::bad parameter");
+      throw Standard_Failure("BndLib::bad parameter");
     }
     else {
       B.Add(ElCLib::Value(P2,H));
@@ -904,7 +904,7 @@ void BndLib::Add(const gp_Hypr2d& H,const Standard_Real P1,
   
   if (Precision::IsNegativeInfinite(P1)) {
     if (Precision::IsNegativeInfinite(P2)) {
-      Standard_Failure::Raise("BndLib::bad parameter");
+      throw Standard_Failure("BndLib::bad parameter");
     }
     else if (Precision::IsPositiveInfinite(P2)) {
       B.OpenXmax();B.OpenYmax();
@@ -919,7 +919,7 @@ void BndLib::Add(const gp_Hypr2d& H,const Standard_Real P1,
       B.OpenXmin();B.OpenYmin();
     }
     else if (Precision::IsPositiveInfinite(P2)) {
-      Standard_Failure::Raise("BndLib::bad parameter");
+      throw Standard_Failure("BndLib::bad parameter");
     }
     else {
       B.Add(ElCLib::Value(P2,H));
@@ -963,7 +963,7 @@ void BndLib::Add( const gp_Cylinder& S,const Standard_Real UMin,
   {
     if (Precision::IsNegativeInfinite(VMax))
     {
-      Standard_Failure::Raise("BndLib::bad parameter");
+      throw Standard_Failure("BndLib::bad parameter");
     }
     else if (Precision::IsPositiveInfinite(VMax))
     {
@@ -983,7 +983,7 @@ void BndLib::Add( const gp_Cylinder& S,const Standard_Real UMin,
     }
     else if (Precision::IsPositiveInfinite(VMax))
     {
-      Standard_Failure::Raise("BndLib::bad parameter");
+      throw Standard_Failure("BndLib::bad parameter");
     }
     else
     {
@@ -1057,7 +1057,7 @@ void BndLib::Add(const gp_Cone& S,const Standard_Real UMin,
   {
     if (Precision::IsNegativeInfinite(VMax)) 
     {
-      Standard_Failure::Raise("BndLib::bad parameter");
+      throw Standard_Failure("BndLib::bad parameter");
     }
     else if (Precision::IsPositiveInfinite(VMax)) 
     {
@@ -1081,7 +1081,7 @@ void BndLib::Add(const gp_Cone& S,const Standard_Real UMin,
     }
     else if (Precision::IsPositiveInfinite(VMax)) 
     {
-      Standard_Failure::Raise("BndLib::bad parameter");
+      throw Standard_Failure("BndLib::bad parameter");
     }
     else 
     {

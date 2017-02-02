@@ -26,7 +26,7 @@ DEFINE_STANDARD_HANDLE(Aspect_BadAccess, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_Aspect_BadAccess
   #define Aspect_BadAccess_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Aspect_BadAccess::Raise(MESSAGE);
+  if (CONDITION) throw Aspect_BadAccess(MESSAGE);
 #else
   #define Aspect_BadAccess_Raise_if(CONDITION, MESSAGE)
 #endif

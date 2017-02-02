@@ -800,19 +800,14 @@ void  TopOpeBRepDS_BuildTool::RecomputeCurves
   const Standard_Boolean approx = Approximation();
   
   const Handle(Geom_Curve)& C3D = C.Curve();
-  if (comppc1 && C.Shape1().IsNull()) Standard_ProgramError::Raise
-    ("TopOpeBRepDS_BuildTool::RecomputeCurve 2");
-  if (comppc2 && C.Shape2().IsNull()) Standard_ProgramError::Raise
-    ("TopOpeBRepDS_BuildTool::RecomputeCurve 3");
+  if (comppc1 && C.Shape1().IsNull()) throw Standard_ProgramError("TopOpeBRepDS_BuildTool::RecomputeCurve 2");
+  if (comppc2 && C.Shape2().IsNull()) throw Standard_ProgramError("TopOpeBRepDS_BuildTool::RecomputeCurve 3");
   TopoDS_Vertex Vmin,Vmax; TopExp::Vertices(E,Vmin,Vmax);
-  if ( Vmin.IsNull() ) Standard_ProgramError::Raise
-    ("TopOpeBRepDS_BuildTool::RecomputeCurve 4");
-  if ( Vmax.IsNull() ) Standard_ProgramError::Raise
-    ("TopOpeBRepDS_BuildTool::RecomputeCurve 5");
+  if ( Vmin.IsNull() ) throw Standard_ProgramError("TopOpeBRepDS_BuildTool::RecomputeCurve 4");
+  if ( Vmax.IsNull() ) throw Standard_ProgramError("TopOpeBRepDS_BuildTool::RecomputeCurve 5");
   
   if (iswalk && approx) {
-    if (compc3d && C3D.IsNull()) Standard_ProgramError::Raise
-      ("TopOpeBRepDS_BuildTool::RecomputeCurve 1");
+    if (compc3d && C3D.IsNull()) throw Standard_ProgramError("TopOpeBRepDS_BuildTool::RecomputeCurve 1");
     ApproxCurves(C, E, inewC, HDS);
     TopOpeBRepDS_Curve& newC = HDS->ChangeCurve(inewC);
     PutPCurves(newC, E, comppc1, comppc2);
@@ -829,8 +824,7 @@ void  TopOpeBRepDS_BuildTool::RecomputeCurves
       inewC = HDS->MakeCurve(C,newC1);
       TopOpeBRepDS_Curve& newC = HDS->ChangeCurve(inewC);
       if(iswalk && !approx) {
-	if (compc3d && C3D.IsNull()) Standard_ProgramError::Raise
-	  ("TopOpeBRepDS_BuildTool::RecomputeCurve 1");
+	if (compc3d && C3D.IsNull()) throw Standard_ProgramError("TopOpeBRepDS_BuildTool::RecomputeCurve 1");
 	newC.Curve1(C.Curve1());
 	newC.Curve2(C.Curve2());
       }
@@ -1341,17 +1335,12 @@ void  TopOpeBRepDS_BuildTool::RecomputeCurve
   Standard_Boolean comppc2 = GT.CompPC2();
   
   const Handle(Geom_Curve)& C3D = C1.Curve();
-  if (compc3d && C3D.IsNull()) Standard_ProgramError::Raise
-    ("TopOpeBRepDS_BuildTool::RecomputeCurve 1");
-  if (comppc1 && C2.Shape1().IsNull()) Standard_ProgramError::Raise
-    ("TopOpeBRepDS_BuildTool::RecomputeCurve 2");
-  if (comppc2 && C2.Shape2().IsNull()) Standard_ProgramError::Raise
-    ("TopOpeBRepDS_BuildTool::RecomputeCurve 3");
+  if (compc3d && C3D.IsNull()) throw Standard_ProgramError("TopOpeBRepDS_BuildTool::RecomputeCurve 1");
+  if (comppc1 && C2.Shape1().IsNull()) throw Standard_ProgramError("TopOpeBRepDS_BuildTool::RecomputeCurve 2");
+  if (comppc2 && C2.Shape2().IsNull()) throw Standard_ProgramError("TopOpeBRepDS_BuildTool::RecomputeCurve 3");
   TopoDS_Vertex Vmin,Vmax; TopExp::Vertices(TopoDS::Edge(E),Vmin,Vmax);
-  if ( Vmin.IsNull() ) Standard_ProgramError::Raise
-    ("TopOpeBRepDS_BuildTool::RecomputeCurve 4");
-  if ( Vmax.IsNull() ) Standard_ProgramError::Raise
-    ("TopOpeBRepDS_BuildTool::RecomputeCurve 5");
+  if ( Vmin.IsNull() ) throw Standard_ProgramError("TopOpeBRepDS_BuildTool::RecomputeCurve 4");
+  if ( Vmax.IsNull() ) throw Standard_ProgramError("TopOpeBRepDS_BuildTool::RecomputeCurve 5");
 
   Standard_Boolean kbspl1 = Standard_False;
   Handle(Geom_BSplineCurve) BS = Handle(Geom_BSplineCurve)::DownCast(C3D);
@@ -1416,7 +1405,7 @@ void  TopOpeBRepDS_BuildTool::RecomputeBSpline1Curve
   }
 
   else if ( typec3d == TopOpeBRepTool_APPROX ) {
-    if (!comppc1 || !comppc2) Standard_NotImplemented::Raise("DSBuildToolAPPROX");
+    if (!comppc1 || !comppc2) throw Standard_NotImplemented("DSBuildToolAPPROX");
     myCurveTool.MakeCurves(parmin,parmax,
 			   C3D,PC1,PC2,F1,F2,
 			   C3Dnew,PC1new,PC2new,
@@ -1424,7 +1413,7 @@ void  TopOpeBRepDS_BuildTool::RecomputeBSpline1Curve
   }
 
   else if ( typec3d == TopOpeBRepTool_INTERPOL ) {
-    Standard_NotImplemented::Raise("DSBuildToolINTERPOL");
+    throw Standard_NotImplemented("DSBuildToolINTERPOL");
   }
 
   Standard_Real newtol,newparmin,newparmax;

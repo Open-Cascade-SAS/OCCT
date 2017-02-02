@@ -141,7 +141,7 @@ void Contap_Contour::Init (const gp_Pnt& Eye)
 void Contap_Contour::Perform (const Handle(Adaptor3d_HSurface)& Surf,
                               const Handle(Adaptor3d_TopolTool)& Domain)
 {
-  if (!modeset) {Standard_ConstructionError::Raise();}
+  if (!modeset) {throw Standard_ConstructionError();}
   mySFunc.Set(Surf);
   myAFunc.Set(Surf);
 

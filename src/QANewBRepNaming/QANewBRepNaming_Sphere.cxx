@@ -58,7 +58,7 @@ QANewBRepNaming_Sphere::QANewBRepNaming_Sphere(const TDF_Label& ResultLabel):QAN
 
 void QANewBRepNaming_Sphere::Init(const TDF_Label& ResultLabel) {
   if(ResultLabel.IsNull())
-    Standard_NullObject::Raise("QANewBRepNaming_Sphere::Init The Result label is Null ..."); 
+    throw Standard_NullObject("QANewBRepNaming_Sphere::Init The Result label is Null ...");
   myResultLabel = ResultLabel;
 }   
 

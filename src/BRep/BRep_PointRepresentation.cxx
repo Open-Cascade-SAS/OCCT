@@ -117,8 +117,7 @@ Standard_Boolean  BRep_PointRepresentation::IsPointOnSurface
 
 Standard_Real  BRep_PointRepresentation::Parameter2()const 
 {
-  Standard_DomainError::Raise("BRep_PointRepresentation");
-    return 0;
+  throw Standard_DomainError("BRep_PointRepresentation");
 }
 
 
@@ -129,7 +128,7 @@ Standard_Real  BRep_PointRepresentation::Parameter2()const
 
 void  BRep_PointRepresentation::Parameter2(const Standard_Real )
 {
-  Standard_DomainError::Raise("BRep_PointRepresentation");
+  throw Standard_DomainError("BRep_PointRepresentation");
 }
 
 
@@ -140,8 +139,7 @@ void  BRep_PointRepresentation::Parameter2(const Standard_Real )
 
 const Handle(Geom_Curve)&  BRep_PointRepresentation::Curve()const 
 {
-  Standard_DomainError::Raise("BRep_PointRepresentation");
-    return *((Handle(Geom_Curve)*) NULL);
+  throw Standard_DomainError("BRep_PointRepresentation");
 }
 
 
@@ -152,7 +150,7 @@ const Handle(Geom_Curve)&  BRep_PointRepresentation::Curve()const
 
 void  BRep_PointRepresentation::Curve(const Handle(Geom_Curve)& )
 {
-  Standard_DomainError::Raise("BRep_PointRepresentation");
+  throw Standard_DomainError("BRep_PointRepresentation");
 }
 
 
@@ -163,8 +161,7 @@ void  BRep_PointRepresentation::Curve(const Handle(Geom_Curve)& )
 
 const Handle(Geom2d_Curve)&  BRep_PointRepresentation::PCurve()const 
 {
-  Standard_DomainError::Raise("BRep_PointRepresentation");
-    return *((Handle(Geom2d_Curve)*) NULL);
+  throw Standard_DomainError("BRep_PointRepresentation");
 }
 
 
@@ -175,7 +172,7 @@ const Handle(Geom2d_Curve)&  BRep_PointRepresentation::PCurve()const
 
 void  BRep_PointRepresentation::PCurve(const Handle(Geom2d_Curve)& )
 {
-  Standard_DomainError::Raise("BRep_PointRepresentation");
+  throw Standard_DomainError("BRep_PointRepresentation");
 }
 
 
@@ -186,8 +183,7 @@ void  BRep_PointRepresentation::PCurve(const Handle(Geom2d_Curve)& )
 
 const Handle(Geom_Surface)&  BRep_PointRepresentation::Surface()const 
 {
-  Standard_DomainError::Raise("BRep_PointRepresentation");
-    return *((Handle(Geom_Surface)*) NULL);
+  throw Standard_DomainError("BRep_PointRepresentation");
 }
 
 
@@ -198,7 +194,7 @@ const Handle(Geom_Surface)&  BRep_PointRepresentation::Surface()const
 
 void  BRep_PointRepresentation::Surface(const Handle(Geom_Surface)& )
 {
-  Standard_DomainError::Raise("BRep_PointRepresentation");
+  throw Standard_DomainError("BRep_PointRepresentation");
 }
 
 

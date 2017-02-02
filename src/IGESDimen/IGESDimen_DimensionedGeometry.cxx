@@ -33,7 +33,7 @@ IGESDimen_DimensionedGeometry::IGESDimen_DimensionedGeometry ()    {  }
    const Handle(IGESData_HArray1OfIGESEntity)& entities)
 {
   if (entities->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESDimen_DimensionedGeometry : Init");
+    throw Standard_DimensionMismatch("IGESDimen_DimensionedGeometry : Init");
   theNbDimensions     = nbDims;
   theDimension        = aDimension;
   theGeometryEntities = entities;

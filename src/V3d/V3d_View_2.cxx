@@ -54,9 +54,8 @@ void V3d_View::SetLightOn (const Handle(V3d_Light)& theLight)
 {
   if (!myActiveLights.Contains (theLight))
   {
-    V3d_BadValue_Raise_if (myActiveLights.Extent() >= LightLimit(),
-                           "V3d_View::SetLightOn, "
-                           "too many lights");
+    if (myActiveLights.Extent() >= LightLimit())
+      throw V3d_BadValue("V3d_View::SetLightOn, too many lights");
     myActiveLights.Append (theLight);
     UpdateLights();
   }
@@ -68,9 +67,8 @@ void V3d_View::SetLightOn (const Handle(V3d_Light)& theLight)
 //=============================================================================
 void V3d_View::SetLightOff (const Handle(V3d_Light)& theLight)
 {
-  Standard_TypeMismatch_Raise_if (MyViewer->IsGlobalLight (theLight),
-                                  "V3d_View::SetLightOff, "
-                                  "the light is global");
+  if (MyViewer->IsGlobalLight (theLight))
+    throw Standard_TypeMismatch("V3d_View::SetLightOff, the light is global");
   myActiveLights.Remove (theLight);
   UpdateLights();
 }

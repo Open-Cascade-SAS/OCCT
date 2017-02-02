@@ -39,8 +39,7 @@ IGESGeom_TransformationMatrix::IGESGeom_TransformationMatrix ()    {  }
     
   }
   if ((aMatrix->RowLength() != 4) || (aMatrix->ColLength() != 3))
-    Standard_DimensionMismatch::Raise
-  ("IGESGeom_TransformationMatrix : Init");
+    throw Standard_DimensionMismatch("IGESGeom_TransformationMatrix : Init");
 
   
   
@@ -55,8 +54,7 @@ IGESGeom_TransformationMatrix::IGESGeom_TransformationMatrix ()    {  }
 {
   if(theData.IsNull()) 
     cout<<"Inavalid Transformation Data"<<endl;
-  if ((fm < 0 || fm > 1) && (fm < 10 || fm > 12)) Standard_OutOfRange::Raise
-    ("IGESGeom_TransformationMatrix : SetFormNumber");
+  if ((fm < 0 || fm > 1) && (fm < 10 || fm > 12)) throw Standard_OutOfRange("IGESGeom_TransformationMatrix : SetFormNumber");
   InitTypeAndForm(124,fm);
 }
 

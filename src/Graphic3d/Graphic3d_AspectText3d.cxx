@@ -64,6 +64,6 @@ Graphic3d_AspectText3d::Graphic3d_AspectText3d (const Quantity_Color&  theColor,
 
   if (theExpansionFactor <= 0.0)
   {
-    Graphic3d_AspectTextDefinitionError::Raise ("Bad value for TextScaleFactor");
+    throw Graphic3d_AspectTextDefinitionError("Bad value for TextScaleFactor");
   }
 }

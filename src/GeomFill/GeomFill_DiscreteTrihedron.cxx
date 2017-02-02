@@ -156,7 +156,7 @@ void GeomFill_DiscreteTrihedron::Init()
         {
           Standard_Real NewParam = (myKnots->Value(i-1) + myKnots->Value(i))/2.;
           if (NewParam - myKnots->Value(i-1) < gp::Resolution())
-            Standard_ConstructionError::Raise("GeomFill_DiscreteTrihedron : impassable singularities on path curve");
+            throw Standard_ConstructionError("GeomFill_DiscreteTrihedron : impassable singularities on path curve");
           myKnots->InsertBefore(i, NewParam);
           i--;
         }

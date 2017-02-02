@@ -103,6 +103,7 @@ public:
   //! Returns the last caught exception.
   //! Needed when exceptions are emulated by C longjumps,
   //! in other cases is also provided for compatibility.
+  Standard_DEPRECATED("This method is deprecated (not thread-safe), use standard C++ mechanism instead")
   Standard_EXPORT static Handle(Standard_Failure) Caught();
 
 
@@ -132,6 +133,13 @@ inline Standard_OStream& operator << (Standard_OStream& AStream,
                                       const Handle(Standard_Failure)& AFailure)
 {
   AFailure->Print(AStream);
+  return AStream;
+}
+
+inline Standard_OStream& operator << (Standard_OStream& AStream,
+                                      const Standard_Failure& AFailure)
+{
+  AFailure.Print(AStream);
   return AStream;
 }
 

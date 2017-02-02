@@ -1075,7 +1075,7 @@ void BSplCLib::FunctionMultiply
   
   if (Poles.Length() != num_bspline_poles ||
       NewPoles.Length() != num_new_poles) {
-    Standard_ConstructionError::Raise();  
+    throw Standard_ConstructionError();
   }
   Standard_Real  * array_of_poles =
     (Standard_Real *) &Poles(Poles.Lower()) ;
@@ -1114,7 +1114,7 @@ void BSplCLib::FunctionReparameterise
   
   if (Poles.Length() != num_bspline_poles ||
       NewPoles.Length() != num_new_poles) {
-    Standard_ConstructionError::Raise();  
+    throw Standard_ConstructionError();
   }
   Standard_Real  * array_of_poles =
     (Standard_Real *) &Poles(Poles.Lower()) ;

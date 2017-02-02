@@ -127,7 +127,7 @@ void OSD_Directory :: Build (const OSD_Protection& Protect) {
 
  if (  dirName.IsEmpty ()  )
 
-  Standard_ProgramError :: Raise ( "OSD_Directory :: Build (): incorrect call - no directory name");
+  throw Standard_ProgramError ( "OSD_Directory :: Build (): incorrect call - no directory name");
 
   Standard_Boolean isOK = Exists();
   if (! isOK)

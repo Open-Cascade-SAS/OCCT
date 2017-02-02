@@ -434,7 +434,7 @@ void OSD_Error::Perror() {
    }
  }
  buffer += ".\n\n";
- OSD_OSDError::Raise (buffer.ToCString());
+ throw OSD_OSDError(buffer.ToCString());
 }
 
 #else

@@ -88,7 +88,7 @@ void BRepMAT2d_LinkTopoBilo::Perform(const BRepMAT2d_Explorer&       Explo,
     }
   }
   else {
-    Standard_ConstructionError::Raise("BRepMAT2d_LinkTopoBilo::Perform");
+    throw Standard_ConstructionError("BRepMAT2d_LinkTopoBilo::Perform");
   }
   
 }

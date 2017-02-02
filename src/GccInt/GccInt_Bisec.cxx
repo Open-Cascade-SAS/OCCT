@@ -30,37 +30,31 @@ IMPLEMENT_STANDARD_RTTIEXT(GccInt_Bisec,MMgt_TShared)
 
 gp_Circ2d GccInt_Bisec::
   Circle() const { 
-    Standard_NotImplemented::Raise();
-    return gp_Circ2d();
+    throw Standard_NotImplemented();
     }
 
 gp_Elips2d GccInt_Bisec::
   Ellipse() const { 
-    Standard_NotImplemented::Raise();
-    return gp_Elips2d();
+    throw Standard_NotImplemented();
     }
 
 gp_Hypr2d GccInt_Bisec::
   Hyperbola() const { 
-    Standard_NotImplemented::Raise();
-    return gp_Hypr2d();
+    throw Standard_NotImplemented();
     }
 
 gp_Lin2d GccInt_Bisec::
   Line() const {
-    Standard_NotImplemented::Raise();
-    return gp_Lin2d();
+    throw Standard_NotImplemented();
     }
 
 gp_Parab2d GccInt_Bisec::
   Parabola() const { 
-    Standard_NotImplemented::Raise();
-    return gp_Parab2d();
+    throw Standard_NotImplemented();
     }
 
 gp_Pnt2d GccInt_Bisec::
   Point() const { 
-    Standard_NotImplemented::Raise();
-    return gp_Pnt2d();
+    throw Standard_NotImplemented();
     }
 

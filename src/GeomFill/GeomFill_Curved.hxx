@@ -40,10 +40,6 @@ public:
   
   Standard_EXPORT GeomFill_Curved(const TColgp_Array1OfPnt& P1, const TColgp_Array1OfPnt& P2, const TColgp_Array1OfPnt& P3, const TColgp_Array1OfPnt& P4, const TColStd_Array1OfReal& W1, const TColStd_Array1OfReal& W2, const TColStd_Array1OfReal& W3, const TColStd_Array1OfReal& W4);
   
-  Standard_EXPORT GeomFill_Curved(const TColgp_Array1OfPnt& P1, const TColgp_Array1OfPnt& P2, const TColgp_Array1OfPnt& P3);
-  
-  Standard_EXPORT GeomFill_Curved(const TColgp_Array1OfPnt& P1, const TColgp_Array1OfPnt& P2, const TColgp_Array1OfPnt& P3, const TColStd_Array1OfReal& W1, const TColStd_Array1OfReal& W2, const TColStd_Array1OfReal& W3);
-  
   Standard_EXPORT GeomFill_Curved(const TColgp_Array1OfPnt& P1, const TColgp_Array1OfPnt& P2);
   
   Standard_EXPORT GeomFill_Curved(const TColgp_Array1OfPnt& P1, const TColgp_Array1OfPnt& P2, const TColStd_Array1OfReal& W1, const TColStd_Array1OfReal& W2);
@@ -51,10 +47,6 @@ public:
   Standard_EXPORT void Init (const TColgp_Array1OfPnt& P1, const TColgp_Array1OfPnt& P2, const TColgp_Array1OfPnt& P3, const TColgp_Array1OfPnt& P4);
   
   Standard_EXPORT void Init (const TColgp_Array1OfPnt& P1, const TColgp_Array1OfPnt& P2, const TColgp_Array1OfPnt& P3, const TColgp_Array1OfPnt& P4, const TColStd_Array1OfReal& W1, const TColStd_Array1OfReal& W2, const TColStd_Array1OfReal& W3, const TColStd_Array1OfReal& W4);
-  
-  Standard_EXPORT void Init (const TColgp_Array1OfPnt& P1, const TColgp_Array1OfPnt& P2, const TColgp_Array1OfPnt& P3);
-  
-  Standard_EXPORT void Init (const TColgp_Array1OfPnt& P1, const TColgp_Array1OfPnt& P2, const TColgp_Array1OfPnt& P3, const TColStd_Array1OfReal& W1, const TColStd_Array1OfReal& W2, const TColStd_Array1OfReal& W3);
   
   Standard_EXPORT void Init (const TColgp_Array1OfPnt& P1, const TColgp_Array1OfPnt& P2);
   

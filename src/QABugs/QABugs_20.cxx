@@ -2140,47 +2140,6 @@ static Standard_Integer OCC27875(Draw_Interpretor& theDI,
   return 0;
 }
 
-#include <OSD_Parallel.hxx>
-
-namespace {
-  struct ExceptionRaiser
-  {
-    void operator () (int i) const
-    {
-      try 
-      {
-        f (i);
-      }
-      catch (Standard_ProgramError)
-      {
-        strlen (Standard_Failure::Caught()->GetMessageString());
-      }
-    }
-
-    void f(int i) const;
-  };
-
-  void ExceptionRaiser::f (int i) const
-  {
-    const char str[] = "0123456789";
-    Standard_ProgramError::Raise (str + i % 10);
-  }
-};
-
-static Standard_Integer OCC28217(Draw_Interpretor& theDI,
-                                 Standard_Integer /*theNArg*/,
-                                 const char ** /*theArgVal*/)
-{
-  NCollection_Array1<int> aVec (1, 10000);
-  for (int i=1; i < aVec.Length(); i++) 
-    aVec(i) = i;
-
-  ExceptionRaiser aProc;
-  OSD_Parallel::For (1, aVec.Length(), aProc);
-
-  theDI << "OCC28217: OK";
-  return 0;
-}
 
 #include <TDF_Tool.hxx>
 #include <XCAFDoc_View.hxx>
@@ -2313,7 +2272,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC26270", "OCC26270 shape result", __FILE__, OCC26270, group);
   theCommands.Add ("OCC27552", "OCC27552", __FILE__, OCC27552, group); 
   theCommands.Add("OCC27875", "OCC27875 curve", __FILE__, OCC27875, group);
-  theCommands.Add("OCC28217", "OCC28217", __FILE__, OCC28217, group);
   theCommands.Add("OCC28389", "OCC28389", __FILE__, OCC28389, group);
 
   return;

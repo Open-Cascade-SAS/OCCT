@@ -298,7 +298,7 @@ void Extrema_GenExtPS::Initialize(const Adaptor3d_Surface& S,
   myvsup = Vsup;
 
   if ((myusample < 2) ||
-      (myvsample < 2)) { Standard_OutOfRange::Raise(); }
+      (myvsample < 2)) { throw Standard_OutOfRange(); }
 
   myF.Initialize(S);
 
@@ -960,21 +960,21 @@ Standard_Boolean Extrema_GenExtPS::IsDone () const { return myDone; }
 
 Standard_Integer Extrema_GenExtPS::NbExt () const
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myF.NbExt();
 }
 //=============================================================================
 
 Standard_Real Extrema_GenExtPS::SquareDistance (const Standard_Integer N) const
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myF.SquareDistance(N);
 }
 //=============================================================================
 
 const Extrema_POnSurf& Extrema_GenExtPS::Point (const Standard_Integer N) const
 {
-  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  if (!IsDone()) { throw StdFail_NotDone(); }
   return myF.Point(N);
 }
 //=============================================================================

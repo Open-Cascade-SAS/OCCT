@@ -46,8 +46,7 @@ Adaptor2d_Curve2d::~Adaptor2d_Curve2d()
 
 Standard_Real Adaptor2d_Curve2d::FirstParameter() const 
 {  
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::FirstParameter");
-  return 0.;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::FirstParameter");
 }
 
 
@@ -58,8 +57,7 @@ Standard_Real Adaptor2d_Curve2d::FirstParameter() const
 
 Standard_Real Adaptor2d_Curve2d::LastParameter() const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::LastParameter");
-  return 0.;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::LastParameter");
 }
 
 
@@ -70,8 +68,7 @@ Standard_Real Adaptor2d_Curve2d::LastParameter() const
 
 GeomAbs_Shape Adaptor2d_Curve2d::Continuity() const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::Continuity");
-  return GeomAbs_C0;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::Continuity");
 }
 
 
@@ -83,8 +80,7 @@ GeomAbs_Shape Adaptor2d_Curve2d::Continuity() const
 //Standard_Integer Adaptor2d_Curve2d::NbIntervals(const GeomAbs_Shape S) const 
 Standard_Integer Adaptor2d_Curve2d::NbIntervals(const GeomAbs_Shape ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::NbIntervals");
-  return 0;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::NbIntervals");
 }
 
 
@@ -98,7 +94,7 @@ Standard_Integer Adaptor2d_Curve2d::NbIntervals(const GeomAbs_Shape ) const
 void Adaptor2d_Curve2d::Intervals(TColStd_Array1OfReal& , 
 				const GeomAbs_Shape ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::Intervals");
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::Intervals");
 }
 
 
@@ -114,8 +110,7 @@ Handle(Adaptor2d_HCurve2d) Adaptor2d_Curve2d::Trim(const Standard_Real ,
 					       const Standard_Real ,
 					       const Standard_Real ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::Trim");
-  return Handle(Adaptor2d_HCurve2d)();
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::Trim");
 }
 
 //=======================================================================
@@ -125,8 +120,7 @@ Handle(Adaptor2d_HCurve2d) Adaptor2d_Curve2d::Trim(const Standard_Real ,
 
 Standard_Boolean Adaptor2d_Curve2d::IsClosed() const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::IsClosed");
-  return 0;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::IsClosed");
 }
 
 
@@ -137,8 +131,7 @@ Standard_Boolean Adaptor2d_Curve2d::IsClosed() const
 
 Standard_Boolean Adaptor2d_Curve2d::IsPeriodic() const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::IsPeriodic");
-  return 0;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::IsPeriodic");
 }
 
 
@@ -149,8 +142,7 @@ Standard_Boolean Adaptor2d_Curve2d::IsPeriodic() const
 
 Standard_Real Adaptor2d_Curve2d::Period() const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::Period");
-  return 0.;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::Period");
 }
 
 
@@ -162,8 +154,7 @@ Standard_Real Adaptor2d_Curve2d::Period() const
 //gp_Pnt2d Adaptor2d_Curve2d::Value(const Standard_Real U) const 
 gp_Pnt2d Adaptor2d_Curve2d::Value(const Standard_Real ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::Value");
-  return gp_Pnt2d();
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::Value");
 }
 
 
@@ -175,7 +166,7 @@ gp_Pnt2d Adaptor2d_Curve2d::Value(const Standard_Real ) const
 //void Adaptor2d_Curve2d::D0(const Standard_Real U, gp_Pnt2d& P) const 
 void Adaptor2d_Curve2d::D0(const Standard_Real , gp_Pnt2d& ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::D0");
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::D0");
 }
 
 
@@ -189,7 +180,7 @@ void Adaptor2d_Curve2d::D0(const Standard_Real , gp_Pnt2d& ) const
 void Adaptor2d_Curve2d::D1(const Standard_Real , 
 			 gp_Pnt2d& , gp_Vec2d& ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::D1");
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::D1");
 }
 
 
@@ -203,7 +194,7 @@ void Adaptor2d_Curve2d::D1(const Standard_Real ,
 void Adaptor2d_Curve2d::D2(const Standard_Real , 
 			 gp_Pnt2d& , gp_Vec2d& , gp_Vec2d& ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::D2");
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::D2");
 }
 
 
@@ -217,7 +208,7 @@ void Adaptor2d_Curve2d::D2(const Standard_Real ,
 void Adaptor2d_Curve2d::D3(const Standard_Real , 
 			 gp_Pnt2d& , gp_Vec2d& , gp_Vec2d& , gp_Vec2d& ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::D3");
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::D3");
 }
 
 
@@ -231,8 +222,7 @@ void Adaptor2d_Curve2d::D3(const Standard_Real ,
 gp_Vec2d Adaptor2d_Curve2d::DN(const Standard_Real , 
 			     const Standard_Integer ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::DN");
-  return gp_Vec2d();
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::DN");
 }
 
 
@@ -244,8 +234,7 @@ gp_Vec2d Adaptor2d_Curve2d::DN(const Standard_Real ,
 //Standard_Real Adaptor2d_Curve2d::Resolution(const Standard_Real R3d) const 
 Standard_Real Adaptor2d_Curve2d::Resolution(const Standard_Real ) const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::Resolution");
-  return 0.;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::Resolution");
 }
 
 
@@ -256,8 +245,7 @@ Standard_Real Adaptor2d_Curve2d::Resolution(const Standard_Real ) const
 
 GeomAbs_CurveType Adaptor2d_Curve2d::GetType() const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::GetType");
-  return GeomAbs_OtherCurve;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::GetType");
 }
 
 
@@ -268,8 +256,7 @@ GeomAbs_CurveType Adaptor2d_Curve2d::GetType() const
 
 gp_Lin2d Adaptor2d_Curve2d::Line() const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::Line");
-  return gp_Lin2d();
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::Line");
 }
 
 
@@ -280,8 +267,7 @@ gp_Lin2d Adaptor2d_Curve2d::Line() const
 
 gp_Circ2d Adaptor2d_Curve2d::Circle() const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::Circle");
-  return gp_Circ2d();
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::Circle");
 }
 
 
@@ -292,8 +278,7 @@ gp_Circ2d Adaptor2d_Curve2d::Circle() const
 
 gp_Elips2d Adaptor2d_Curve2d::Ellipse() const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::Ellipse");
-  return gp_Elips2d();
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::Ellipse");
 }
 
 
@@ -304,8 +289,7 @@ gp_Elips2d Adaptor2d_Curve2d::Ellipse() const
 
 gp_Hypr2d Adaptor2d_Curve2d::Hyperbola() const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::Hyperbola");
-  return gp_Hypr2d();
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::Hyperbola");
 }
 
 
@@ -316,8 +300,7 @@ gp_Hypr2d Adaptor2d_Curve2d::Hyperbola() const
 
 gp_Parab2d Adaptor2d_Curve2d::Parabola() const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::Parabola");
-  return gp_Parab2d();
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::Parabola");
 }
 
 
@@ -328,8 +311,7 @@ gp_Parab2d Adaptor2d_Curve2d::Parabola() const
 
 Standard_Integer Adaptor2d_Curve2d::Degree() const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::Degree");
-  return 0;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::Degree");
 }
 
 
@@ -340,8 +322,7 @@ Standard_Integer Adaptor2d_Curve2d::Degree() const
 
 Standard_Boolean Adaptor2d_Curve2d::IsRational() const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::IsRational");
-  return 0;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::IsRational");
 }
 
 
@@ -352,8 +333,7 @@ Standard_Boolean Adaptor2d_Curve2d::IsRational() const
 
 Standard_Integer Adaptor2d_Curve2d::NbPoles() const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::NbPole");
-  return 0;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::NbPole");
 }
 
 
@@ -364,8 +344,7 @@ Standard_Integer Adaptor2d_Curve2d::NbPoles() const
 
 Standard_Integer Adaptor2d_Curve2d::NbKnots() const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::NbKnots");
-  return 0;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::NbKnots");
 }
 
 
@@ -376,8 +355,7 @@ Standard_Integer Adaptor2d_Curve2d::NbKnots() const
 
 Handle(Geom2d_BezierCurve) Adaptor2d_Curve2d::Bezier() const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::Bezier");
-  return Handle(Geom2d_BezierCurve)();
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::Bezier");
 }
 
 
@@ -388,8 +366,7 @@ Handle(Geom2d_BezierCurve) Adaptor2d_Curve2d::Bezier() const
 
 Handle(Geom2d_BSplineCurve) Adaptor2d_Curve2d::BSpline() const 
 {
-  Standard_NotImplemented::Raise("Adaptor2d_Curve2d::BSpline");
-  return Handle(Geom2d_BSplineCurve)();
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::BSpline");
 }
 
 //=======================================================================

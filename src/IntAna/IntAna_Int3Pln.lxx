@@ -23,14 +23,14 @@ inline Standard_Boolean IntAna_Int3Pln::IsDone () const {
 
 inline Standard_Boolean IntAna_Int3Pln::IsEmpty () const {
 
-  if (!done) {StdFail_NotDone::Raise();}
+  if (!done) {throw StdFail_NotDone();}
   return empt;
 }
 
 inline const gp_Pnt& IntAna_Int3Pln::Value () const {
 
-  if (!done) {StdFail_NotDone::Raise();}
-  if (empt) {Standard_DomainError::Raise();}
+  if (!done) {throw StdFail_NotDone();}
+  if (empt) {throw Standard_DomainError();}
   return pnt;
 }
 

@@ -100,13 +100,13 @@ GccAna_Lin2d2Tan::
    NbrSol = 0;
    if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
 	 Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
-     GccEnt_BadQualifier::Raise();
+     throw GccEnt_BadQualifier();
      return;
    }
    gp_Circ2d C1 = Qualified1.Qualified();
    Standard_Real R1 = C1.Radius();
 
-   if (Qualified1.IsEnclosed()) { GccEnt_BadQualifier::Raise(); }
+   if (Qualified1.IsEnclosed()) { throw GccEnt_BadQualifier(); }
 // ============================
    else if (Tol < R1-ThePoint.Distance(C1.Location())) { 
      WellDone = Standard_True; 
@@ -203,7 +203,7 @@ GccAna_Lin2d2Tan::
 	  Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
 	!(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
 	  Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
-      GccEnt_BadQualifier::Raise();
+      throw GccEnt_BadQualifier();
       return;
     }
     gp_Circ2d C1 = Qualified1.Qualified();
@@ -211,7 +211,7 @@ GccAna_Lin2d2Tan::
 
     if (Qualified1.IsEnclosed() || Qualified2.IsEnclosed()) {
  // =======================================================
-      GccEnt_BadQualifier::Raise();
+      throw GccEnt_BadQualifier();
     }
     else {
       Standard_Real R1 = C1.Radius();
@@ -481,7 +481,7 @@ Standard_Integer GccAna_Lin2d2Tan::
 gp_Lin2d GccAna_Lin2d2Tan::
    ThisSolution (const Standard_Integer Index) const {
 
-   if (Index > NbrSol || Index <= 0) { Standard_OutOfRange::Raise(); }
+   if (Index > NbrSol || Index <= 0) { throw Standard_OutOfRange(); }
    return linsol(Index);
  }
 
@@ -490,8 +490,8 @@ void GccAna_Lin2d2Tan::
 		       GccEnt_Position& Qualif1 ,
 		       GccEnt_Position& Qualif2 ) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-   else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+   else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
    else {
      Qualif1 = qualifier1(Index);
      Qualif2 = qualifier2(Index);
@@ -503,8 +503,8 @@ void GccAna_Lin2d2Tan::
               Standard_Real& ParSol,
               Standard_Real& ParArg,
               gp_Pnt2d& PntSol) const {
-   if (!WellDone) { StdFail_NotDone::Raise(); }
-   else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+   if (!WellDone) { throw StdFail_NotDone(); }
+   else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
    else {
      ParSol = par1sol(Index);
      ParArg = pararg1(Index);
@@ -517,8 +517,8 @@ void GccAna_Lin2d2Tan::
                     Standard_Real&     ParSol ,
                     Standard_Real&     ParArg ,
                     gp_Pnt2d& PntSol ) const {
-   if (!WellDone) { StdFail_NotDone::Raise(); }
-   else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+   if (!WellDone) { throw StdFail_NotDone(); }
+   else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
    else {
      ParSol = par2sol(Index);
      ParArg = pararg2(Index);

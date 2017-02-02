@@ -51,10 +51,10 @@ void Expr_SystemRelation::Remove (const Handle(Expr_GeneralRelation)& relation)
   }
 
   if (alreadyHere) {
-    Standard_NoSuchObject::Raise();
+    throw Standard_NoSuchObject();
   }
   if (myRelations.Length() <= 1) {
-    Standard_DimensionMismatch::Raise();
+    throw Standard_DimensionMismatch();
   }
   myRelations.Remove(position);
 }

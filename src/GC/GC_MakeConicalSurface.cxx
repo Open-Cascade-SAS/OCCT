@@ -47,18 +47,6 @@ GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Cone& C)
   TheCone = new Geom_ConicalSurface(C);
 }
 
-GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Cone& , //C,
-					       const gp_Pnt&  ) //P )
-{
-  Standard_NotImplemented::Raise("GC_MakeConicalSurface");
-}
-
-GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Cone& , //C,
-					       const Standard_Real) // Dist )
-{
-  Standard_NotImplemented::Raise("GC_MakeConicalSurface");
-}
-
 //=========================================================================
 //   Creation of a cone by four points.                                +
 //   two first give the axis.                                     +
@@ -76,22 +64,6 @@ GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Pnt& P1 ,
   if (TheError == gce_Done) {
     TheCone = new Geom_ConicalSurface(C.Value());
   }
-}
-
-
-GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Ax1& , //Axis,
-					       const gp_Pnt& , //P1  ,
-					       const gp_Pnt& ) //P2   )
-{
-  Standard_NotImplemented::Raise("GC_MakeConicalSurface");
-}
-
-
-GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Lin& , //Axis,
-					       const gp_Pnt& , //P1  ,
-					       const gp_Pnt& ) //P2   )
-{
-  Standard_NotImplemented::Raise("GC_MakeConicalSurface");
 }
 
 

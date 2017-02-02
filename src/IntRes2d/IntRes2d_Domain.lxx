@@ -26,7 +26,7 @@
 inline void IntRes2d_Domain::SetEquivalentParameters
         (const Standard_Real p_first,
 	 const Standard_Real p_last)  {
-  if((status&3)!=3) { Standard_DomainError::Raise(); }
+  if((status&3)!=3) { throw Standard_DomainError(); }
   status|=4;
   periodfirst=p_first;
   periodlast=p_last;
@@ -37,17 +37,17 @@ inline Standard_Boolean IntRes2d_Domain::HasFirstPoint () const {
 }
 
 inline Standard_Real IntRes2d_Domain::FirstParameter () const {
-  if(!(status&1)) { Standard_DomainError::Raise(); }
+  if(!(status&1)) { throw Standard_DomainError(); }
   return(first_param);
 }
 
 inline const gp_Pnt2d& IntRes2d_Domain::FirstPoint () const {
-  if(!(status&1)) { Standard_DomainError::Raise(); }
+  if(!(status&1)) { throw Standard_DomainError(); }
   return(first_point);
 }
 
 inline Standard_Real IntRes2d_Domain::FirstTolerance () const {
-  if(!(status&1)) { Standard_DomainError::Raise(); }
+  if(!(status&1)) { throw Standard_DomainError(); }
   return(first_tol);
 }
 
@@ -58,17 +58,17 @@ inline Standard_Boolean IntRes2d_Domain::HasLastPoint () const {
 }
 
 inline Standard_Real IntRes2d_Domain::LastParameter () const {
-  if(!(status&2)) { Standard_DomainError::Raise(); }
+  if(!(status&2)) { throw Standard_DomainError(); }
   return(last_param);
 }
 
 inline const gp_Pnt2d& IntRes2d_Domain::LastPoint () const {
-  if(!(status&2)) { Standard_DomainError::Raise(); }
+  if(!(status&2)) { throw Standard_DomainError(); }
   return(last_point);
 }
 
 inline Standard_Real IntRes2d_Domain::LastTolerance () const {
-  if(!(status&2)) { Standard_DomainError::Raise(); }
+  if(!(status&2)) { throw Standard_DomainError(); }
   return(last_tol);
 }
 

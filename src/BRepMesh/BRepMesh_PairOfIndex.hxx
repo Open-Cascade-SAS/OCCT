@@ -45,7 +45,7 @@ public:
     else
     {
       if (myIndex[1] >= 0)
-        Standard_OutOfRange::Raise("BRepMesh_PairOfIndex::Append, more than two index to store");
+        throw Standard_OutOfRange("BRepMesh_PairOfIndex::Append, more than two index to store");
 
       myIndex[1] = theIndex;
     }
@@ -55,7 +55,7 @@ public:
   inline void Prepend(const Standard_Integer theIndex)
   {
     if (myIndex[1] >= 0)
-      Standard_OutOfRange::Raise ("BRepMesh_PairOfIndex::Prepend, more than two index to store");
+      throw Standard_OutOfRange("BRepMesh_PairOfIndex::Prepend, more than two index to store");
 
     myIndex[1] = myIndex[0];
     myIndex[0] = theIndex;
@@ -92,7 +92,7 @@ public:
   inline Standard_Integer Index(const Standard_Integer thePairPos) const
   {
     if (thePairPos != 1 && thePairPos != 2)
-      Standard_OutOfRange::Raise ("BRepMesh_PairOfIndex::Index, requested index is out of range");
+      throw Standard_OutOfRange("BRepMesh_PairOfIndex::Index, requested index is out of range");
 
     return myIndex[thePairPos - 1];
   }
@@ -104,7 +104,7 @@ public:
                        const Standard_Integer theIndex)
   {
     if (thePairPos != 1 && thePairPos != 2)
-      Standard_OutOfRange::Raise ("BRepMesh_PairOfIndex::SetIndex, requested index is out of range");
+      throw Standard_OutOfRange("BRepMesh_PairOfIndex::SetIndex, requested index is out of range");
 
     myIndex[thePairPos - 1] = theIndex;
   }
@@ -114,7 +114,7 @@ public:
   inline void RemoveIndex(const Standard_Integer thePairPos)
   {
     if (thePairPos != 1 && thePairPos != 2)
-      Standard_OutOfRange::Raise ("BRepMesh_PairOfIndex::RemoveIndex, requested index is out of range");
+      throw Standard_OutOfRange("BRepMesh_PairOfIndex::RemoveIndex, requested index is out of range");
 
     if ( thePairPos == 1 )
       myIndex[0] = myIndex[1];

@@ -56,8 +56,7 @@ Transfer_TransferInput::Transfer_TransferInput ()    {  }
       for (Standard_Integer i = 1; i <= nbres; i ++)
 	iter.AddItem(mulres->Value(i));
     }
-    else Transfer_TransferFailure::Raise
-      ("TransferInput : Entities, one of the Results is not Transient Handle");
+    else throw Transfer_TransferFailure("TransferInput : Entities, one of the Results is not Transient Handle");
   }
   return iter;
 }

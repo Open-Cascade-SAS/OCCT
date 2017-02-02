@@ -61,7 +61,7 @@ Standard_Boolean ExprIntrp_GenRel::IsDone() const
 Handle(Expr_GeneralRelation) ExprIntrp_GenRel::Relation () const
 {
   if (!done) {
-    Standard_NoSuchObject::Raise();
+    throw Standard_NoSuchObject();
   }
   return myRelation;
 }

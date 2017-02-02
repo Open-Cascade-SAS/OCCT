@@ -178,8 +178,7 @@ TopAbs_Orientation BRepOffset_Tool::OriEdgeInFace (const TopoDS_Edge& E,
       return Exp.Current().Orientation();
     }
   }
-  Standard_ConstructionError::Raise("BRepOffset_Tool::OriEdgeInFace");
-  return E.Orientation();
+  throw Standard_ConstructionError("BRepOffset_Tool::OriEdgeInFace");
 }
 
 
@@ -473,8 +472,7 @@ static void BuildPCurves (const TopoDS_Edge&  E,
     B.UpdateEdge (E,C2d,F,BRep_Tool::Tolerance(E));
   }
   else {
-    Standard_ConstructionError::Raise("BRepOffset_Tool::BuildPCurves");
-    cout <<"Echec ProjLib"<<endl;
+    throw Standard_ConstructionError("BRepOffset_Tool::BuildPCurves");
   }
 }
 

@@ -26,10 +26,6 @@
 #define SURF2 (*((ThePSurface *)(surf2)))
 
 
-IntImp_ZerParFunc::IntImp_ZerParFunc() { 
-  Standard_ConstructionError::Raise(" Empty Constructor : IntImp_ZerParFunc");
-}
-
 IntImp_ZerParFunc::IntImp_ZerParFunc(const ThePSurface& S1 ,
 				     const ThePSurface& S2) {
     surf1 = (Standard_Address)(&S1);

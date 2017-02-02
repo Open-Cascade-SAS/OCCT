@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(StdFail_InfiniteSolutions, Standard_Failure)
 
 #if !defined No_Exception && !defined No_StdFail_InfiniteSolutions
   #define StdFail_InfiniteSolutions_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) StdFail_InfiniteSolutions::Raise(MESSAGE);
+  if (CONDITION) throw StdFail_InfiniteSolutions(MESSAGE);
 #else
   #define StdFail_InfiniteSolutions_Raise_if(CONDITION, MESSAGE)
 #endif

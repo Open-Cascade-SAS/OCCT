@@ -66,13 +66,13 @@ inline const Blend_Point& BRepBlend_Line::Point(const Standard_Integer Index) co
 
 inline IntSurf_TypeTrans BRepBlend_Line::TransitionOnS1 () const
 {
-  if (!hass1) {Standard_DomainError::Raise();}
+  if (!hass1) {throw Standard_DomainError();}
   return tras1;
 }
 
 inline IntSurf_TypeTrans BRepBlend_Line::TransitionOnS2 () const
 {
-  if (!hass2) {Standard_DomainError::Raise();}
+  if (!hass2) {throw Standard_DomainError();}
   return tras2;
 }
 
@@ -98,7 +98,7 @@ inline const BRepBlend_Extremity& BRepBlend_Line::EndPointOnSecond() const
 
 inline IntSurf_TypeTrans BRepBlend_Line::TransitionOnS () const
 {
-  if (!hass1) {Standard_DomainError::Raise();}
+  if (!hass1) {throw Standard_DomainError();}
   return tras1;
 }
 

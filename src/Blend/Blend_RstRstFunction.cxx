@@ -37,8 +37,7 @@ const gp_Pnt& Blend_RstRstFunction::Pnt2() const
 
 Standard_Real Blend_RstRstFunction::GetMinimalDistance() const
 {
-  Standard_NotImplemented::Raise("Blend_RstRstFunction::GetMinimalDistance");
-  return RealLast();
+  throw Standard_NotImplemented("Blend_RstRstFunction::GetMinimalDistance");
 }
 
 

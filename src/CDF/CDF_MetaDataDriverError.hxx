@@ -31,7 +31,7 @@ DEFINE_STANDARD_HANDLE(CDF_MetaDataDriverError, Standard_Failure)
 
 #if !defined No_Exception && !defined No_CDF_MetaDataDriverError
   #define CDF_MetaDataDriverError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) CDF_MetaDataDriverError::Raise(MESSAGE);
+  if (CONDITION) throw CDF_MetaDataDriverError(MESSAGE);
 #else
   #define CDF_MetaDataDriverError_Raise_if(CONDITION, MESSAGE)
 #endif

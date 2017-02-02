@@ -36,7 +36,4 @@ const gp_Pnt& Blend_SurfRstFunction::Pnt2() const
 }
 
 Standard_Real Blend_SurfRstFunction::GetMinimalDistance() const
-{
-  Standard_NotImplemented::Raise("Blend_SurfRstFunction::GetMinimalDistance");
-  return RealLast();
-}
+{  throw Standard_NotImplemented("Blend_SurfRstFunction::GetMinimalDistance");}

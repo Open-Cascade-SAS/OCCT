@@ -1863,7 +1863,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& Line
 				     ,const Standard_Real TolConf,const Standard_Real Tol) {
 
 //--  if(! CIRC_Domain.IsClosed()) {
-//--    Standard_ConstructionError::Raise("Domaine incorrect");
+//--    throw Standard_ConstructionError("Domaine incorrect");
 //--  }
 
   Standard_Boolean TheReversedParameters=ReversedParameters();

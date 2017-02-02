@@ -36,7 +36,7 @@ IFSelect_Editor::IFSelect_Editor (const Standard_Integer nbval)
 
     void  IFSelect_Editor::SetNbValues (const Standard_Integer nbval)
 {
-  if (nbval > thevalues.Upper()) Standard_OutOfRange::Raise("IFSelect_Editor:SetNbValues");
+  if (nbval > thevalues.Upper()) throw Standard_OutOfRange("IFSelect_Editor:SetNbValues");
   thenbval = nbval;
 }
 

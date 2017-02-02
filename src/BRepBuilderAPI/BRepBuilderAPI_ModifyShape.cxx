@@ -72,7 +72,7 @@ BRepBuilderAPI_ModifyShape::BRepBuilderAPI_ModifyShape
 void BRepBuilderAPI_ModifyShape::DoModif ()
 {
   if (myInitialShape.IsNull() || myModification.IsNull()) {
-    Standard_NullObject::Raise();
+    throw Standard_NullObject();
   }
   myModifier.Perform(myModification);
   if (myModifier.IsDone()) {

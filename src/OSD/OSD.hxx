@@ -99,8 +99,8 @@ public:
   //! across threads.
   //!
   //! Keep in mind that whether the C++ exception will really be thrown (i.e.
-  //! ::throw() will be called) is regulated by the NO_CXX_EXCEPTIONS and
-  //! OCC_CONVERT_SIGNALS macros used during compilation of Open CASCADE and
+  //! ::throw() will be called) is regulated by the
+  //! OCC_CONVERT_SIGNALS macro used during compilation of Open CASCADE and
   //! user's code. Refer to Foundation Classes User's Guide for further details.
   //!
   Standard_EXPORT static void SetSignal (const Standard_Boolean theFloatingSignal = Standard_True);

@@ -407,7 +407,7 @@ void TopOpeBRepTool_ShapeClassifier::Perform()
 	}
 	else {
 	  myState = TopAbs_UNKNOWN;
-	  Standard_ProgramError::Raise("TopOpeBRepTool_ShapeClassifier !P3Ddef");
+	  throw Standard_ProgramError("TopOpeBRepTool_ShapeClassifier !P3Ddef");
 	}
       }
     }
@@ -434,7 +434,7 @@ void TopOpeBRepTool_ShapeClassifier::Perform()
     }
   }
   else {
-    Standard_ProgramError::Raise("StateShapeShape : bad operands");
+    throw Standard_ProgramError("StateShapeShape : bad operands");
   }
   
   // take orientation of reference shape in account
@@ -479,7 +479,7 @@ void TopOpeBRepTool_ShapeClassifier::StateEdgeReference()
 	  C2D = FC2D_CurveOnSurface(myEdge,F,f2d,l2d,tol2d,trimCurve);
 
 	  if(C2D.IsNull())
-	    Standard_ProgramError::Raise("StateShapeShape : no 2d curve");
+	    throw Standard_ProgramError("StateShapeShape : no 2d curve");
 
 	  Standard_Real t = 0.127956477;
 	  Standard_Real p = (1-t)*f2d + t*l2d;
@@ -498,7 +498,7 @@ void TopOpeBRepTool_ShapeClassifier::StateEdgeReference()
 	  C3D = BRep_Tool::Curve(myEdge,f3d,l3d);
 
 	  if(C3D.IsNull())
-	    Standard_ProgramError::Raise("StateShapeShape : no 3d curve");
+	    throw Standard_ProgramError("StateShapeShape : no 3d curve");
 
 	  Standard_Real t = 0.127956477;
 	  Standard_Real p = (1-t)*f3d + t*l3d;
@@ -522,7 +522,7 @@ void TopOpeBRepTool_ShapeClassifier::StateEdgeReference()
 	  C3D = BRep_Tool::Curve(myEdge,f3d,l3d);
 
 	  if (C3D.IsNull())
-	    Standard_ProgramError::Raise("StateShapeShape : no 3d curve");
+	    throw Standard_ProgramError("StateShapeShape : no 3d curve");
 
 	  Standard_Real t = 0.127956477;
 	  Standard_Real p = (1-t)*f3d + t*l3d;
@@ -532,7 +532,7 @@ void TopOpeBRepTool_ShapeClassifier::StateEdgeReference()
 	}
     }
   else
-    Standard_ProgramError::Raise("StateShapeShape : bad operands");
+    throw Standard_ProgramError("StateShapeShape : bad operands");
 }
 
 
@@ -577,7 +577,7 @@ void TopOpeBRepTool_ShapeClassifier::StateP2DReference
     }
   }
   else {
-    Standard_ProgramError::Raise("StateShapeShape : bad operands");
+    throw Standard_ProgramError("StateShapeShape : bad operands");
   }
 }
 
@@ -616,7 +616,7 @@ void TopOpeBRepTool_ShapeClassifier::StateP3DReference(const gp_Pnt& P3D)
     }
   }
   else {
-    Standard_ProgramError::Raise("StateShapeShape : bad operands");
+    throw Standard_ProgramError("StateShapeShape : bad operands");
   }
 }
 
@@ -640,8 +640,7 @@ const gp_Pnt& TopOpeBRepTool_ShapeClassifier::P3D() const
   if (myP3Ddef) { 
     return myP3D;
   }
-  Standard_ProgramError::Raise("ShapeClassifier::P3D undefined");
-  return myP3D;
+  throw Standard_ProgramError("ShapeClassifier::P3D undefined");
 }
 
 //=======================================================================
@@ -654,8 +653,7 @@ const gp_Pnt2d& TopOpeBRepTool_ShapeClassifier::P2D() const
   if (myP2Ddef) {
     return myP2D;
   }
-  Standard_ProgramError::Raise("ShapeClassifier::P2D undefined");
-  return myP2D;
+  throw Standard_ProgramError("ShapeClassifier::P2D undefined");
 }
 
 //=======================================================================

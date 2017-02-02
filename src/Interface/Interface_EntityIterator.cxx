@@ -137,9 +137,9 @@ Interface_EntityIterator::Interface_EntityIterator ()
     const Handle(Standard_Transient)& Interface_EntityIterator::Value () const
 {
 //  NbEntity pas const (on ne sait pas comment il est implemente apres tout)
-  if (thelist.IsNull()) Standard_NoSuchObject::Raise("Interface_EntityIterator");
+  if (thelist.IsNull()) throw Standard_NoSuchObject("Interface_EntityIterator");
   if (thecurr->Value() < 1 || thecurr->Value() > thelist->Length())
-    Standard_NoSuchObject::Raise("Interface_EntityIterator");
+    throw Standard_NoSuchObject("Interface_EntityIterator");
   return thelist->Value(thecurr->Value());
 }
 

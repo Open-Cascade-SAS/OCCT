@@ -131,29 +131,29 @@ void IntImp_IntCS::Perform(const Standard_Real U,
 Standard_Boolean IntImp_IntCS::IsDone() const { return done;}
 
 Standard_Boolean IntImp_IntCS::IsEmpty()const { 
-  if (!done) StdFail_NotDone::Raise();
+  if (!done) throw StdFail_NotDone();
   return empty;
 }
 
 const gp_Pnt& IntImp_IntCS::Point() const
 { 
-  if (!done) StdFail_NotDone::Raise();
-  if (empty) Standard_DomainError::Raise();
+  if (!done) throw StdFail_NotDone();
+  if (empty) throw Standard_DomainError();
   return myFunction.Point();
 }
 
 void IntImp_IntCS::ParameterOnSurface(Standard_Real& U,
 				      Standard_Real& V) const
 { 
-  if (!done) StdFail_NotDone::Raise();
-  if (empty) Standard_DomainError::Raise();
+  if (!done) throw StdFail_NotDone();
+  if (empty) throw Standard_DomainError();
   U=u;
   V=v;
 }
 Standard_Real  IntImp_IntCS::ParameterOnCurve() const
 { 
-  if (!done) StdFail_NotDone::Raise();
-  if (empty) Standard_DomainError::Raise();
+  if (!done) throw StdFail_NotDone();
+  if (empty) throw Standard_DomainError();
   return w;
 }
 

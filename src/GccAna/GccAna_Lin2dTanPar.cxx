@@ -82,14 +82,14 @@ GccAna_Lin2dTanPar::
    NbrSol = 0;
    if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
 	 Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
-     GccEnt_BadQualifier::Raise();
+     throw GccEnt_BadQualifier();
      return;
    }
    gp_Circ2d C1 = Qualified1.Qualified();
    Standard_Real xdir = (Lin1.Direction()).X();
    Standard_Real ydir = (Lin1.Direction()).Y();
 
-   if (Qualified1.IsEnclosed()) { GccEnt_BadQualifier::Raise(); }
+   if (Qualified1.IsEnclosed()) { throw GccEnt_BadQualifier(); }
 // ============================
    else if (Qualified1.IsEnclosing()) {
 // ==================================
@@ -130,14 +130,14 @@ Standard_Boolean GccAna_Lin2dTanPar::
 Standard_Integer GccAna_Lin2dTanPar::NbSolutions () const 
 {
   if (!WellDone) 
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   return NbrSol;
 }
 
 gp_Lin2d GccAna_Lin2dTanPar::ThisSolution (const Standard_Integer Index) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-  else if (Index <= 0 || Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+  else if (Index <= 0 || Index > NbrSol) { throw Standard_OutOfRange(); }
   return linsol(Index);
 }
 
@@ -145,8 +145,8 @@ void GccAna_Lin2dTanPar::
   WhichQualifier(const Standard_Integer Index   ,
 		       GccEnt_Position& Qualif1 ) const
 {
-  if (!WellDone) { StdFail_NotDone::Raise(); }
-   else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  if (!WellDone) { throw StdFail_NotDone(); }
+   else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
    else {
      Qualif1 = qualifier1(Index);
    }
@@ -157,8 +157,8 @@ void GccAna_Lin2dTanPar::
               Standard_Real& ParSol,
               Standard_Real& ParArg,
               gp_Pnt2d& Pnt) const {
-   if (!WellDone) { StdFail_NotDone::Raise(); }
-   else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+   if (!WellDone) { throw StdFail_NotDone(); }
+   else if (Index <= 0 ||Index > NbrSol) { throw Standard_OutOfRange(); }
    else {
      ParSol = par1sol(Index);
      ParArg = pararg1(Index);

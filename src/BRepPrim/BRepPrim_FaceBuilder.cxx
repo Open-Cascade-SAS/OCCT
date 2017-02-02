@@ -93,12 +93,12 @@ void BRepPrim_FaceBuilder::Init(const BRep_Builder& B,
   Standard_Real USMin,USMax,VSMin,VSMax;
   S->Bounds(USMin,USMax,VSMin,VSMax);
   
-  if (UMin >= UMax) Standard_ConstructionError::Raise("BRepPrim_FaceBuilder");
-  if (VMin >= VMax) Standard_ConstructionError::Raise("BRepPrim_FaceBuilder");
-  if (UMin < USMin) Standard_ConstructionError::Raise("BRepPrim_FaceBuilder");
-  if (UMax > USMax) Standard_ConstructionError::Raise("BRepPrim_FaceBuilder");
-  if (VMin < VSMin) Standard_ConstructionError::Raise("BRepPrim_FaceBuilder");
-  if (VMax > VSMax) Standard_ConstructionError::Raise("BRepPrim_FaceBuilder");
+  if (UMin >= UMax) throw Standard_ConstructionError("BRepPrim_FaceBuilder");
+  if (VMin >= VMax) throw Standard_ConstructionError("BRepPrim_FaceBuilder");
+  if (UMin < USMin) throw Standard_ConstructionError("BRepPrim_FaceBuilder");
+  if (UMax > USMax) throw Standard_ConstructionError("BRepPrim_FaceBuilder");
+  if (VMin < VSMin) throw Standard_ConstructionError("BRepPrim_FaceBuilder");
+  if (VMax > VSMax) throw Standard_ConstructionError("BRepPrim_FaceBuilder");
 
   // Make the vertices
   B.MakeVertex(myVertex[0],S->Value(UMin,VMin),Precision::Confusion());

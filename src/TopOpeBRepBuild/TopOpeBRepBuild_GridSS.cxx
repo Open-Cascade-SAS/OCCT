@@ -983,7 +983,7 @@ static Standard_Boolean FUN_SplitEvisoONperiodicF(const Handle(TopOpeBRepDS_HDat
     Handle(Geom2d_Curve) PC = FC2D_CurveOnSurface(EG,FS,pf,pl,tol);
     if (PC.IsNull()) {
       TopoDS_Edge EEG = EG; Standard_Boolean ok = FUN_tool_pcurveonF(FS,EEG);
-      if (!ok) Standard_ProgramError::Raise("_Builder::SplitONVisolineonCyl");
+      if (!ok) throw Standard_ProgramError("_Builder::SplitONVisolineonCyl");
       Standard_Real f,l; PC = FC2D_CurveOnSurface(EEG,FS,f,l,tol);
     }
     
@@ -1045,7 +1045,7 @@ void TopOpeBRepBuild_Builder::SplitEvisoONperiodicF()
     TopoDS_Shape FF = FOR; FF.Orientation(TopAbs_FORWARD);
     
     Standard_Boolean ok = FUN_SplitEvisoONperiodicF(myDataStructure,FF);
-    if (!ok) Standard_ProgramError::Raise("_Builder::SplitONVisolineonCyl");
+    if (!ok) throw Standard_ProgramError("_Builder::SplitONVisolineonCyl");
   } // i
 }
 

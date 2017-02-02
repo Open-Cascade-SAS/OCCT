@@ -70,7 +70,7 @@ static void FUN_Raise()
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceREGUSO(); 
   if (trc) cout<<"***** Failure in REGUS **********"<<endl;
-//  Standard_Failure::Raise("REGUS");
+//  throw Standard_Failure("REGUS");
 #endif
 }
 

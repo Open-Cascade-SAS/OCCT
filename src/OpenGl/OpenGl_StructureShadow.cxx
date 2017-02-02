@@ -49,7 +49,7 @@ OpenGl_StructureShadow::OpenGl_StructureShadow (const Handle(Graphic3d_Structure
 // =======================================================================
 void OpenGl_StructureShadow::Connect (Graphic3d_CStructure& )
 {
-  Standard_ProgramError::Raise ("Error! OpenGl_StructureShadow::Connect() should not be called!");
+  throw Standard_ProgramError("Error! OpenGl_StructureShadow::Connect() should not be called!");
 }
 
 // =======================================================================
@@ -58,5 +58,5 @@ void OpenGl_StructureShadow::Connect (Graphic3d_CStructure& )
 // =======================================================================
 void OpenGl_StructureShadow::Disconnect (Graphic3d_CStructure& )
 {
-  Standard_ProgramError::Raise ("Error! OpenGl_StructureShadow::Disconnect() should not be called!");
+  throw Standard_ProgramError("Error! OpenGl_StructureShadow::Disconnect() should not be called!");
 }

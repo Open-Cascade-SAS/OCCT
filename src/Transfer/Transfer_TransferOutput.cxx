@@ -56,8 +56,7 @@ Handle(Transfer_TransientProcess)  Transfer_TransferOutput::TransientProcess () 
 
 void  Transfer_TransferOutput::Transfer (const Handle(Standard_Transient)& obj)
 {
-  if (themodel->Number(obj) == 0) Transfer_TransferFailure::Raise
-    ("TransferOutput : Transfer, entities do not come from same initial model");
+  if (themodel->Number(obj) == 0) throw Transfer_TransferFailure("TransferOutput : Transfer, entities do not come from same initial model");
 //  Standard_Integer scope = 0;
 //  if (thescope) scope = theproc->NewScope (obj);
 
@@ -70,8 +69,7 @@ void  Transfer_TransferOutput::Transfer (const Handle(Standard_Transient)& obj)
 
 /*  switch (theundef) {
     case Transfer_UndefIgnore  : return;
-    case Transfer_UndefFailure : Transfer_TransferFailure::Raise
-      ("TransferOutput : Transfer Undefined as Failure");
+    case Transfer_UndefFailure : throw Transfer_TransferFailure("TransferOutput : Transfer Undefined as Failure");
     case Transfer_UndefContent : break; // on ne sait pas traiter ...
     case Transfer_UndefUser    : break; // idem
   }

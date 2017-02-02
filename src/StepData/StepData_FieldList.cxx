@@ -30,14 +30,12 @@ Standard_Integer  StepData_FieldList::NbFields () const
 
 const StepData_Field&  StepData_FieldList::Field (const Standard_Integer) const
 {
-  Standard_OutOfRange::Raise("StepData_FieldList : Field");
-  return nulfild;
+  throw Standard_OutOfRange("StepData_FieldList : Field");
 }
 
 StepData_Field&  StepData_FieldList::CField (const Standard_Integer)
 {
-  Standard_OutOfRange::Raise("StepData_FieldList : CField");
-  return nulfild;
+  throw Standard_OutOfRange("StepData_FieldList : CField");
 }
 
 

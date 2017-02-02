@@ -289,7 +289,7 @@ void IntPatch_HInterTool::Value(const Handle(Adaptor2d_HCurve2d)&,
                                 Standard_Real&,
                                 Standard_Real&)
 {
-  Standard_OutOfRange::Raise();
+  throw Standard_OutOfRange();
 }
 
 Standard_Boolean IntPatch_HInterTool::IsVertex(const Handle(Adaptor2d_HCurve2d)&,
@@ -302,7 +302,7 @@ void IntPatch_HInterTool::Vertex(const Handle(Adaptor2d_HCurve2d)&,
                                  const Standard_Integer,
                                  Handle(Adaptor3d_HVertex)&)
 {
-  Standard_OutOfRange::Raise();
+  throw Standard_OutOfRange();
 }
 
 Standard_Integer IntPatch_HInterTool::NbSegments(const Handle(Adaptor2d_HCurve2d)&)
@@ -314,16 +314,14 @@ Standard_Boolean IntPatch_HInterTool::HasFirstPoint (const Handle(Adaptor2d_HCur
                                                      const Standard_Integer,
                                                      Standard_Integer&)
 {
-  Standard_OutOfRange::Raise();
-  return Standard_False;
+  throw Standard_OutOfRange();
 }
 
 Standard_Boolean IntPatch_HInterTool::HasLastPoint (const Handle(Adaptor2d_HCurve2d)&,
                                                     const Standard_Integer,
                                                     Standard_Integer&)
 {
-  Standard_OutOfRange::Raise();
-  return Standard_False;
+  throw Standard_OutOfRange();
 }
 
 Standard_Boolean IntPatch_HInterTool::IsAllSolution (const Handle(Adaptor2d_HCurve2d)&)

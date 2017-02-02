@@ -634,7 +634,7 @@ void View::onLButtonDown( const int/*Qt::MouseButtons*/ nFlags, const QPoint poi
            myView->StartRotation( point.x(), point.y() );
            break;
       default:
-           Standard_Failure::Raise( "incompatible Current Mode" );
+           throw Standard_Failure( "incompatible Current Mode" );
            break;
     }
   }
@@ -720,7 +720,7 @@ void View::onLButtonUp( Qt::MouseButtons nFlags, const QPoint point )
             noActiveActions();
             break;
         default:
-          Standard_Failure::Raise(" incompatible Current Mode ");
+            throw Standard_Failure(" incompatible Current Mode ");
             break;
     }
     activateCursor( myCurrentMode );
@@ -788,7 +788,7 @@ void View::onMouseMove( Qt::MouseButtons nFlags, const QPoint point )
           myView->Redraw();
           break;
         default:
-          Standard_Failure::Raise( "incompatible Current Mode" );
+          throw Standard_Failure( "incompatible Current Mode" );
           break;
     }
     }

@@ -41,7 +41,7 @@ TCollection_IndexedDataMap::TCollection_IndexedDataMap
   TCollection_BasicMap(Other.NbBuckets(),Standard_False)
 {
   if (Other.Extent() != 0)
-    Standard_DomainError::Raise("TCollection:Copy of non empty IndexedDataMap");
+    throw Standard_DomainError("TCollection:Copy of non empty IndexedDataMap");
 }
 
 //=======================================================================
@@ -177,8 +177,8 @@ void TCollection_IndexedDataMap::Substitute(const Standard_Integer I,
   while (p) {
     if (Hasher::IsEqual(p->Key1(),K1)) {
       if (p->Key2() != I)
-        Standard_DomainError::Raise("IndexedDataMap::Substitute : "
-                                    "Attempt to substitute existing key");
+        throw Standard_DomainError("IndexedDataMap::Substitute : "
+                                   "Attempt to substitute existing key");
       p->Key1() = K1;
       p->Value() = T;
       return;
@@ -271,7 +271,7 @@ const TheKey& TCollection_IndexedDataMap::FindKey(const Standard_Integer K2) con
     if (p2->Key2() == K2) return p2->Key1();
     p2 = (TCollection_IndexedDataMapNode*)p2->Next2();
   }
-  Standard_OutOfRange::Raise("IndexedDataMap : missing index !!!");
+  throw Standard_OutOfRange("IndexedDataMap : missing index !!!");
   return p2->Key1();
 }
 
@@ -292,7 +292,7 @@ const TheItem& TCollection_IndexedDataMap::FindFromIndex
     if (p2->Key2() == K2) return p2->Value();
     p2 = (TCollection_IndexedDataMapNode*)p2->Next2();
   }
-  Standard_OutOfRange::Raise("IndexedDataMap : missing index !!!");
+  throw Standard_OutOfRange("IndexedDataMap : missing index !!!");
   return p2->Value();
 }
 
@@ -312,7 +312,7 @@ TheItem& TCollection_IndexedDataMap::ChangeFromIndex(const Standard_Integer K2)
     if (p2->Key2() == K2) return p2->Value();
     p2 = (TCollection_IndexedDataMapNode*)p2->Next2();
   }
-  Standard_OutOfRange::Raise("IndexedDataMap : missing index !!!");
+  throw Standard_OutOfRange("IndexedDataMap : missing index !!!");
   return p2->Value();
 }
 
@@ -366,7 +366,7 @@ const TheItem& TCollection_IndexedDataMap::FindFromKey(const TheKey& K1) const
     if (Hasher::IsEqual(p1->Key1(),K1)) return p1->Value();
     p1 = (TCollection_IndexedDataMapNode*) p1->Next();
   }
-  Standard_OutOfRange::Raise("TCollection_IndexedDataMap::FindFromKey");
+  throw Standard_OutOfRange("TCollection_IndexedDataMap::FindFromKey");
   return p1->Value();
 }
 //=======================================================================
@@ -384,7 +384,7 @@ TheItem& TCollection_IndexedDataMap::ChangeFromKey(const TheKey& K1)
     if (Hasher::IsEqual(p1->Key1(),K1)) return p1->Value();
     p1 = (TCollection_IndexedDataMapNode*)p1->Next();
   }
-  Standard_OutOfRange::Raise("TCollection_IndexedDataMap::ChangeFromKey");
+  throw Standard_OutOfRange("TCollection_IndexedDataMap::ChangeFromKey");
   return p1->Value();
 }
 //modified by NIZNHY-PKV Tue Jul 05 08:37:03 2011f

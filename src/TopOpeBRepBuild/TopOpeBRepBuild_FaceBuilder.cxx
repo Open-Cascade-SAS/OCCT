@@ -556,7 +556,7 @@ Standard_Integer TopOpeBRepBuild_FaceBuilder::InitEdge()
 {
   const Handle(TopOpeBRepBuild_Loop)& L = myFaceAreaBuilder.Loop();
   if ( L->IsShape() )
-    Standard_DomainError::Raise("TopOpeBRepBuild_FaceBuilder:InitEdge");
+    throw Standard_DomainError("TopOpeBRepBuild_FaceBuilder:InitEdge");
   else {
     myBlockIterator = L->BlockIterator();
     myBlockIterator.Initialize();
@@ -592,11 +592,11 @@ void TopOpeBRepBuild_FaceBuilder::NextEdge()
 //=======================================================================
 const TopoDS_Shape& TopOpeBRepBuild_FaceBuilder::Edge() const
 {
-  if (!myBlockIterator.More()) Standard_Failure::Raise("OutOfRange");
+  if (!myBlockIterator.More()) throw Standard_Failure("OutOfRange");
 
   const Standard_Integer i = myBlockIterator.Value();
   Standard_Boolean isvalid = myBlockBuilder.ElementIsValid(i);
-  if (!isvalid) Standard_Failure::Raise("Edge not Valid");
+  if (!isvalid) throw Standard_Failure("Edge not Valid");
 
   const TopoDS_Shape& E = myBlockBuilder.Element(i);
   return E;
@@ -609,9 +609,10 @@ const TopoDS_Shape& TopOpeBRepBuild_FaceBuilder::Edge() const
 Standard_Integer TopOpeBRepBuild_FaceBuilder::EdgeConnexity(const TopoDS_Shape& /*E*/) const
 {
 #ifdef OCCT_DEBUG
-  Standard_ProgramError::Raise("FaceBuilder::EdgeConnexity management disactivated");
-#endif
+  throw Standard_ProgramError("FaceBuilder::EdgeConnexity management disactivated");
+#else
   return 0;
+#endif
 //  Standard_Boolean inmosi = myMOSI.IsBound(E);
 //  Standard_Integer nmosi = (inmosi) ? myMOSI.Find(E) : 0;
 //  return nmosi;

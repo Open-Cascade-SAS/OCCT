@@ -79,7 +79,7 @@ Handle(Expr_GeneralExpression) Expr_UnaryMinus::Derivative (const Handle(Expr_Na
 Handle(Expr_GeneralExpression) Expr_UnaryMinus::NDerivative (const Handle(Expr_NamedUnknown)& X, const Standard_Integer N) const
 {
   if (N <= 0) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   Handle(Expr_GeneralExpression) myder = Operand();
   myder = myder->NDerivative(X,N);

@@ -88,7 +88,7 @@ inline IntRes2d_TypeTrans IntRes2d_Transition::TransitionType () const {
 inline Standard_Boolean IntRes2d_Transition::IsTangent () const {
 
   if (typetra==IntRes2d_Undecided) {
-    Standard_DomainError::Raise();
+    throw Standard_DomainError();
   }
   return tangent;
 }
@@ -96,7 +96,7 @@ inline Standard_Boolean IntRes2d_Transition::IsTangent () const {
 inline IntRes2d_Situation IntRes2d_Transition::Situation () const {
 
   if (typetra!=IntRes2d_Touch) {
-    Standard_DomainError::Raise();
+    throw Standard_DomainError();
   }
   return situat;
 }
@@ -104,7 +104,7 @@ inline IntRes2d_Situation IntRes2d_Transition::Situation () const {
 inline Standard_Boolean IntRes2d_Transition::IsOpposite () const {
 
   if (typetra!=IntRes2d_Touch) {
-    Standard_DomainError::Raise();
+    throw Standard_DomainError();
   }
   return oppos;
 }

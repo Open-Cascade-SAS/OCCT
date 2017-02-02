@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Standard_ProgramError, Standard_Failure)
 
 #if !defined No_Exception && !defined No_Standard_ProgramError
   #define Standard_ProgramError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Standard_ProgramError::Raise(MESSAGE);
+  if (CONDITION) throw Standard_ProgramError(MESSAGE);
 #else
   #define Standard_ProgramError_Raise_if(CONDITION, MESSAGE)
 #endif

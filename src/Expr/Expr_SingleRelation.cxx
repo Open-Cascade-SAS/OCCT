@@ -96,9 +96,7 @@ Standard_Integer Expr_SingleRelation::NbOfSubRelations () const
 
 Handle(Expr_GeneralRelation) Expr_SingleRelation::SubRelation (const Standard_Integer ) const
 {
- Standard_OutOfRange::Raise();
- Handle(Expr_GeneralRelation) bid;
- return bid;
+ throw Standard_OutOfRange();
 }
 
 Standard_Integer Expr_SingleRelation::NbOfSingleRelations() const

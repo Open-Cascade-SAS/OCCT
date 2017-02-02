@@ -194,8 +194,7 @@ void TDF_CopyTool::CopyAttributes
 	if (tAtt->IsInstance(sAtt->DynamicType()))
 	  aAttMap.Bind(sAtt,tAtt);
 	else
-	  Standard_TypeMismatch::Raise
-	    ("TDF_CopyTool: Cannot paste to a different type attribute.");
+	  throw Standard_TypeMismatch("TDF_CopyTool: Cannot paste to a different type attribute.");
       }
     }
   }

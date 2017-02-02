@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Standard_NullValue, Standard_RangeError)
 
 #if !defined No_Exception && !defined No_Standard_NullValue
   #define Standard_NullValue_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Standard_NullValue::Raise(MESSAGE);
+  if (CONDITION) throw Standard_NullValue(MESSAGE);
 #else
   #define Standard_NullValue_Raise_if(CONDITION, MESSAGE)
 #endif

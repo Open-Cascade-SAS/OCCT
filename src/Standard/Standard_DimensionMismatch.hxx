@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Standard_DimensionMismatch, Standard_DimensionError)
 
 #if !defined No_Exception && !defined No_Standard_DimensionMismatch
   #define Standard_DimensionMismatch_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Standard_DimensionMismatch::Raise(MESSAGE);
+  if (CONDITION) throw Standard_DimensionMismatch(MESSAGE);
 #else
   #define Standard_DimensionMismatch_Raise_if(CONDITION, MESSAGE)
 #endif

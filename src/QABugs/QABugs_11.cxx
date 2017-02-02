@@ -1710,12 +1710,11 @@ static Standard_Integer OCC670 (Draw_Interpretor& di, Standard_Integer argc, con
 
   // check that exception initialized without message string can be safely handled and printed
   try {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
-  catch (Standard_Failure) {
+  catch (Standard_Failure const& anException) {
     std::cout << "Caught successfully: ";
-    Standard_Failure::Caught()->Print (std::cout);
-    std::cout << endl;
+    std::cout << anException << endl;
   }
   return 0;
 }
@@ -2422,19 +2421,17 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
     {
       di << "Caught, OK\n";
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure const& anException) {
       di << " Caught (";
-      di << Standard_Failure::Caught()->GetMessageString();
+      di << anException.GetMessageString();
       di << ")... KO\n";
       Succes = Standard_False;
     }
-#ifndef NO_CXX_EXCEPTION
     // this case tests if (...) supersedes (Standard_*),
     // the normal behaviour is not
     catch(...) {
       di<<" unknown exception... (But) Ok\n";
     }
-#endif
   }
 
   {//==== Test Divide ByZero (Real) ===========================================
@@ -2457,10 +2454,10 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
     {
       di << "Caught, OK\n";
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure const& anException) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
       di << " Caught (";
-      di << Standard_Failure::Caught()->GetMessageString();
+      di << anException.GetMessageString();
       di << ")... KO\n";
       Succes = Standard_False;
     }
@@ -2482,10 +2479,10 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
     catch(Standard_Overflow) {
       di << "Caught, OK\n";
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure const& anException) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
       di << " Caught (";
-      di << Standard_Failure::Caught()->GetMessageString();
+      di << anException.GetMessageString();
       di << ")... KO\n";
       Succes = Standard_False;
     }
@@ -2514,10 +2511,10 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
     {
       di << "Caught, OK\n";
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure const& anException) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
       di << " Caught (";
-      di << Standard_Failure::Caught()->GetMessageString();
+      di << anException.GetMessageString();
       di << ")... KO\n";
       Succes = Standard_False;
     }
@@ -2547,10 +2544,10 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "Exception caught, KO\n";
       Succes = Standard_False;
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure const& anException) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
       di << " Caught (";
-      di << Standard_Failure::Caught()->GetMessageString();
+      di << anException.GetMessageString();
       di << ")... KO\n";
       Succes = Standard_False;
     }
@@ -2571,10 +2568,10 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
     catch(Standard_NumericError) {
       di << "Caught, OK\n";
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure const& anException) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
       di << " Caught (";
-      di << Standard_Failure::Caught()->GetMessageString();
+      di << anException.GetMessageString();
       di << ")... KO\n";
       Succes = Standard_False;
     }
@@ -2599,10 +2596,10 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
 #endif
     {
       di << "Caught, OK\n";
-    } catch(Standard_Failure) {
+    } catch(Standard_Failure const& anException) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
       di << " Caught (";
-      di << Standard_Failure::Caught()->GetMessageString();
+      di << anException.GetMessageString();
       di << ")... KO\n";
       Succes = Standard_False;
     }
@@ -2697,10 +2694,10 @@ static Standard_Integer OCC7141 (Draw_Interpretor& di, Standard_Integer argc, co
   catch(OSD_Exception_STACK_OVERFLOW) {
     di << "Failed : STACK OVERFLOW\n\n";
   }
-  catch (Standard_Failure) {
+  catch (Standard_Failure const& anException) {
     di << "Failed :\n\n";
     //cout << Standard_Failure::Caught() << endl;
-    di << Standard_Failure::Caught()->GetMessageString();
+    di << anException.GetMessageString();
   }
   di << argv[0] << " : Finish\n";
   
@@ -4938,9 +4935,8 @@ Standard_Integer CR23403 (Draw_Interpretor& di, Standard_Integer argc, const cha
     OCC_CATCH_SIGNALS
     myExpr->Process( aString );
   }
-  catch(Standard_Failure) {
-    Handle(Standard_Failure) aFail = Standard_Failure::Caught();
-    di << "Exception : " << aFail->GetMessageString() << "\n";
+  catch(Standard_Failure const& anException) {
+    di << "Exception : " << anException.GetMessageString() << "\n";
   }
 
   return 0;

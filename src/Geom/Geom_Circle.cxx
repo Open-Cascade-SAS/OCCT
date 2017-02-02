@@ -71,7 +71,7 @@ Geom_Circle::Geom_Circle (const gp_Circ& C) : radius (C.Radius()) {
 
 Geom_Circle::Geom_Circle (const Ax2& A2, const Standard_Real R) : radius (R) {
 
-  if (R < 0.0) Standard_ConstructionError::Raise();
+  if (R < 0.0) throw Standard_ConstructionError();
   pos = A2;
 }
 
@@ -153,7 +153,7 @@ void Geom_Circle::SetCirc (const gp_Circ& C) {
 
 void Geom_Circle::SetRadius (const Standard_Real R) { 
 
-   if (R < 0.0)  Standard_ConstructionError::Raise();
+   if (R < 0.0)  throw Standard_ConstructionError();
    radius = R;
 }
 

@@ -204,13 +204,13 @@ static Standard_Integer plate (Draw_Interpretor & di,Standard_Integer n,const ch
     DBRep::Set(name, E);
     MW.Add(E);
     if (MW.IsDone()==Standard_False) {
-      Standard_Failure::Raise("mkWire is over ");
+      throw Standard_Failure("mkWire is over ");
     }
       
   }
   TopoDS_Wire W;
   W=MW.Wire();
-  if (!(W.Closed())) Standard_Failure::Raise("Wire is not closed");
+  if (!(W.Closed())) throw Standard_Failure("Wire is not closed");
   BRepBuilderAPI_MakeFace MF(Henri.Surface(),W,Standard_True);
   DBRep::Set(a[1],MF.Face());
   return 0;
@@ -437,12 +437,12 @@ static Standard_Integer approxplate (Draw_Interpretor & di,Standard_Integer n,co
     BRepLib::BuildCurve3d(E);
     MW.Add(E);
     if (MW.IsDone()==Standard_False) {
-      Standard_Failure::Raise("mkWire is over ");
+      throw Standard_Failure("mkWire is over ");
     }
   }
   TopoDS_Wire W;
   W=MW.Wire();
-  if (!(W.Closed())) Standard_Failure::Raise("Wire is not closed");
+  if (!(W.Closed())) throw Standard_Failure("Wire is not closed");
   BRepBuilderAPI_MakeFace MF(support,W,Standard_True);
   DBRep::Set(a[1],MF.Face());
 

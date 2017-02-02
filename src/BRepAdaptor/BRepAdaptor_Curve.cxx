@@ -104,7 +104,7 @@ void BRepAdaptor_Curve::Initialize(const TopoDS_Edge& E)
       myConSurf->ChangeCurve().Load(HC, HS);
     }
     else {
-      Standard_NullObject::Raise("BRepAdaptor_Curve::No geometry");
+      throw Standard_NullObject("BRepAdaptor_Curve::No geometry");
     }
   }
   myTrsf = L.Transformation();
@@ -661,7 +661,7 @@ Handle(Geom_BSplineCurve) BRepAdaptor_Curve::BSpline() const
 Handle(Geom_OffsetCurve) BRepAdaptor_Curve::OffsetCurve() const
 {
   if ( !Is3DCurve() || myCurve.GetType() != GeomAbs_OffsetCurve)
-    Standard_NoSuchObject::Raise("BRepAdaptor_Curve::OffsetCurve");
+    throw Standard_NoSuchObject("BRepAdaptor_Curve::OffsetCurve");
 
   Handle(Geom_OffsetCurve) anOffC = myCurve.OffsetCurve();
   return myTrsf.Form() == gp_Identity

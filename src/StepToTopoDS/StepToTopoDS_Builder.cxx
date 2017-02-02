@@ -800,10 +800,10 @@ void StepToTopoDS_Builder::Init
 	  OCC_CATCH_SIGNALS
           aGeomCrv = StepToGeom::MakeCurve (aCrv);
 	}
-	catch(Standard_Failure) {
+	catch(Standard_Failure const& anException) {
 	  Handle(Message_Messenger) sout = TP->Messenger();
 	  sout<<"StepToTopoDS, GeometricSet, elem "<<i<<" of "<<nbElem<<": exception ";
-	  sout<<Standard_Failure::Caught()->GetMessageString() << endl;
+	  sout<<anException.GetMessageString() << endl;
 	}
 	if ( ! aGeomCrv.IsNull() ) {
 	  BRepBuilderAPI_MakeEdge anEdge(aGeomCrv, aGeomCrv->FirstParameter(), aGeomCrv->LastParameter());

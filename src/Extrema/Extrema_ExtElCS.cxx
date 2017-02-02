@@ -195,9 +195,7 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
 
 Extrema_ExtElCS::Extrema_ExtElCS(const gp_Lin& C,
 				 const gp_Cone& S)
-{
-  Perform(C, S);
-}
+{  Perform(C, S);}
 
 
 
@@ -206,7 +204,7 @@ Extrema_ExtElCS::Extrema_ExtElCS(const gp_Lin& C,
 void Extrema_ExtElCS::Perform(const gp_Lin& ,
 			      const gp_Cone& )
 {
-  Standard_NotImplemented::Raise();
+  throw Standard_NotImplemented();
 
 }
 
@@ -295,9 +293,7 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
 
 Extrema_ExtElCS::Extrema_ExtElCS(const gp_Lin& C,
 				 const gp_Torus& S)
-{
-  Perform(C, S);
-}
+{  Perform(C, S);}
 
 
 
@@ -306,7 +302,7 @@ Extrema_ExtElCS::Extrema_ExtElCS(const gp_Lin& C,
 void Extrema_ExtElCS::Perform(const gp_Lin& ,
 			      const gp_Torus& )
 {
-  Standard_NotImplemented::Raise();
+  throw Standard_NotImplemented();
 
 }
 
@@ -523,9 +519,7 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
 
 Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C,
 				 const gp_Cone& S)
-{
-  Perform(C, S);
-}
+{  Perform(C, S);}
 
 
 
@@ -534,7 +528,7 @@ Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C,
 void Extrema_ExtElCS::Perform(const gp_Circ& ,
 			 const gp_Cone& )
 {
-  Standard_NotImplemented::Raise();
+  throw Standard_NotImplemented();
 
 }
 
@@ -542,9 +536,7 @@ void Extrema_ExtElCS::Perform(const gp_Circ& ,
 
 Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C,
 				 const gp_Sphere& S)
-{
-  Perform(C, S);
-}
+{  Perform(C, S);}
 
 
 
@@ -553,15 +545,13 @@ Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C,
 void Extrema_ExtElCS::Perform(const gp_Circ& ,
 			      const gp_Sphere& )
 {
-  Standard_NotImplemented::Raise();
+  throw Standard_NotImplemented();
 
 }
 
 Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C,
 				 const gp_Torus& S)
-{
-  Perform(C, S);
-}
+{  Perform(C, S);}
 
 
 
@@ -570,7 +560,7 @@ Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C,
 void Extrema_ExtElCS::Perform(const gp_Circ& ,
 			      const gp_Torus& )
 {
-  Standard_NotImplemented::Raise();
+  throw Standard_NotImplemented();
 
 }
 
@@ -643,13 +633,13 @@ Standard_Boolean Extrema_ExtElCS::IsDone() const
 
 Standard_Integer Extrema_ExtElCS::NbExt() const
 {
-  if (myIsPar) StdFail_InfiniteSolutions::Raise();
+  if (myIsPar) throw StdFail_InfiniteSolutions();
   return myNbExt;
 }
 
 Standard_Real Extrema_ExtElCS::SquareDistance(const Standard_Integer N) const
 {
-  if (myIsPar && N != 1) StdFail_InfiniteSolutions::Raise();
+  if (myIsPar && N != 1) throw StdFail_InfiniteSolutions();
   return mySqDist->Value(N);
 }
 
@@ -658,7 +648,7 @@ void Extrema_ExtElCS::Points(const Standard_Integer N,
 			     Extrema_POnCurv& P1,
 			     Extrema_POnSurf& P2) const
 {
-  if (myIsPar) StdFail_InfiniteSolutions::Raise();
+  if (myIsPar) throw StdFail_InfiniteSolutions();
   P1 = myPoint1->Value(N);
   P2 = myPoint2->Value(N);
 }

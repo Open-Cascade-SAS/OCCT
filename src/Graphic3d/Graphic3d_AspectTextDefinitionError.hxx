@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Graphic3d_AspectTextDefinitionError, Standard_OutOfRange)
 
 #if !defined No_Exception && !defined No_Graphic3d_AspectTextDefinitionError
   #define Graphic3d_AspectTextDefinitionError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Graphic3d_AspectTextDefinitionError::Raise(MESSAGE);
+  if (CONDITION) throw Graphic3d_AspectTextDefinitionError(MESSAGE);
 #else
   #define Graphic3d_AspectTextDefinitionError_Raise_if(CONDITION, MESSAGE)
 #endif

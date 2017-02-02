@@ -60,8 +60,7 @@ IFGraph_SubPartsIterator::IFGraph_SubPartsIterator
     void  IFGraph_SubPartsIterator::GetParts
   (IFGraph_SubPartsIterator& other)
 {
-  if (Model() != other.Model()) Interface_InterfaceError::Raise
-    ("SubPartsIterator : GetParts");
+  if (Model() != other.Model()) throw Interface_InterfaceError("SubPartsIterator : GetParts");
 //  On AJOUTE les Parts de other, sans perdre les siennes propres
 //  (meme principe que le constructeur ci-dessus)
   Standard_Integer nb = thegraph.Size();
@@ -102,8 +101,7 @@ IFGraph_SubPartsIterator::IFGraph_SubPartsIterator
 
     void  IFGraph_SubPartsIterator::SetPartNum (const Standard_Integer num)
 {
-  if (num <= 0 || num > theparts->Length()) Standard_OutOfRange::Raise
-    ("IFGraph_SubPartsIterator : SetPartNum");
+  if (num <= 0 || num > theparts->Length()) throw Standard_OutOfRange("IFGraph_SubPartsIterator : SetPartNum");
   thepart = num;
 }
 
@@ -220,26 +218,22 @@ IFGraph_SubPartsIterator::IFGraph_SubPartsIterator
 
     Standard_Boolean  IFGraph_SubPartsIterator::IsSingle () const
 {
-  if (thecurr < 1 || thecurr > theparts->Length()) Standard_NoSuchObject::Raise
-    ("IFGraph_SubPartsIterator : IsSingle");
+  if (thecurr < 1 || thecurr > theparts->Length()) throw Standard_NoSuchObject("IFGraph_SubPartsIterator : IsSingle");
   return (theparts->Value(thecurr) == 1);
 }
 
     Handle(Standard_Transient)  IFGraph_SubPartsIterator::FirstEntity
   () const 
 {
-  if (thecurr < 1 || thecurr > theparts->Length()) Standard_NoSuchObject::Raise
-    ("IFGraph_SubPartsIterator : FirstEntity");
+  if (thecurr < 1 || thecurr > theparts->Length()) throw Standard_NoSuchObject("IFGraph_SubPartsIterator : FirstEntity");
   Standard_Integer nument = thefirsts->Value(thecurr);
-  if (nument == 0) Standard_NoSuchObject::Raise
-    ("IFGraph_SubPartsIterator : FirstEntity (current part is empty)");
+  if (nument == 0) throw Standard_NoSuchObject("IFGraph_SubPartsIterator : FirstEntity (current part is empty)");
   return thegraph.Entity(nument);
 }
 
     Interface_EntityIterator  IFGraph_SubPartsIterator::Entities () const 
 {
-  if (thecurr < 1 || thecurr > theparts->Length()) Standard_NoSuchObject::Raise
-    ("IFGraph_SubPartsIterator : Entities");
+  if (thecurr < 1 || thecurr > theparts->Length()) throw Standard_NoSuchObject("IFGraph_SubPartsIterator : Entities");
   Interface_EntityIterator iter;
   Standard_Integer nb = thegraph.Size();
   Standard_Integer nument = thefirsts->Value(thecurr);

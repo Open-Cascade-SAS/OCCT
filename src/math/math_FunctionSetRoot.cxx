@@ -708,7 +708,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   if ((Neq <= 0)                      ||
     (StartingPoint.Length()!= Ninc) ||
     (theInfBound.Length() != Ninc)     ||
-    (theSupBound.Length() != Ninc))  { Standard_DimensionError:: Raise(); }
+    (theSupBound.Length() != Ninc))  { throw Standard_DimensionError(); }
 
   Standard_Integer i;
   Standard_Boolean ChangeDirection = Standard_False, Sort = Standard_False, isNewSol = Standard_False;

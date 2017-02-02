@@ -35,7 +35,7 @@ IGESDimen_CenterLine::IGESDimen_CenterLine ()    {  }
    const Handle(TColgp_HArray1OfXY)& dataPnts)
 {
   if (dataPnts->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESDimen_CenterLine : Init");
+    throw Standard_DimensionMismatch("IGESDimen_CenterLine : Init");
   theDatatype      = aDataType;
   theZDisplacement = aZdisp;
   theDataPoints    = dataPnts;

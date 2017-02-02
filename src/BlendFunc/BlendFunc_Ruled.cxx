@@ -57,7 +57,7 @@ void BlendFunc_Ruled::Set(const Standard_Real Param)
 void BlendFunc_Ruled::Set(const Standard_Real,
                           const Standard_Real)
 {
-  Standard_NotImplemented::Raise("BlendFunc_Ruled::Set");
+  throw Standard_NotImplemented("BlendFunc_Ruled::Set");
 }
 
 void BlendFunc_Ruled::GetTolerance(math_Vector& Tolerance,
@@ -417,27 +417,27 @@ Standard_Boolean BlendFunc_Ruled::IsTangencyPoint () const
 const gp_Vec& BlendFunc_Ruled::TangentOnS1 () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_Ruled::TangentOnS1");
+    throw Standard_DomainError("BlendFunc_Ruled::TangentOnS1");
   return tg1;
 }
 
 const gp_Vec& BlendFunc_Ruled::TangentOnS2 () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_Ruled::TangentOnS2");
+    throw Standard_DomainError("BlendFunc_Ruled::TangentOnS2");
   return tg2;
 }
 const gp_Vec2d& BlendFunc_Ruled::Tangent2dOnS1 () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_Ruled::Tangent2dOnS1");
+    throw Standard_DomainError("BlendFunc_Ruled::Tangent2dOnS1");
   return tg12d;
 }
 
 const gp_Vec2d& BlendFunc_Ruled::Tangent2dOnS2 () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_Ruled::Tangent2dOnS2");
+    throw Standard_DomainError("BlendFunc_Ruled::Tangent2dOnS2");
   return tg22d;
 }
 
@@ -451,7 +451,7 @@ Standard_Boolean BlendFunc_Ruled::GetSection(const Standard_Real Param,
 
 {
   Standard_Integer NbPoint=tabP.Length();
-  if (NbPoint != tabV.Length() || NbPoint < 2) {Standard_RangeError::Raise();}
+  if (NbPoint != tabV.Length() || NbPoint < 2) {throw Standard_RangeError();}
 
   Standard_Integer i, lowp = tabP.Lower(), lowv = tabV.Lower();
 
@@ -548,8 +548,7 @@ Standard_Boolean BlendFunc_Ruled::IsRational () const
 //=======================================================================
 Standard_Real BlendFunc_Ruled::GetSectionSize() const 
 {
-  Standard_NotImplemented::Raise("BlendFunc_Ruled::GetSectionSize()");
-  return 0;
+  throw Standard_NotImplemented("BlendFunc_Ruled::GetSectionSize()");
 }
 
 //=======================================================================

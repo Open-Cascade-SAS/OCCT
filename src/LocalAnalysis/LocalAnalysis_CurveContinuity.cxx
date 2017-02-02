@@ -201,7 +201,7 @@ LocalAnalysis_CurveContinuity::LocalAnalysis_CurveContinuity(const Handle(Geom_C
 
 Standard_Boolean LocalAnalysis_CurveContinuity::IsC0() const 
 { 
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   if (myContC0 <= myepsC0 )
      return Standard_True;
      else return Standard_False;
@@ -211,7 +211,7 @@ Standard_Boolean LocalAnalysis_CurveContinuity::IsC0() const
 
 Standard_Boolean LocalAnalysis_CurveContinuity::IsC1() const  
 {
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   if ( IsC0() && ( (myContC1 <= myepsC1)||(Abs(myContC1-M_PI)<=myepsC1)))
      return Standard_True;
      else return Standard_False;	
@@ -222,7 +222,7 @@ Standard_Boolean LocalAnalysis_CurveContinuity::IsC1() const
 Standard_Boolean LocalAnalysis_CurveContinuity::IsC2() const  
 { Standard_Real epsil1, epsil2;
 
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   if ( IsC1())
     { if ((myContC2 <= myepsC2)||(Abs(myContC2-M_PI)<=myepsC2))
       { epsil1 = 0.5*myepsC1*myepsC1*myLambda1;
@@ -240,7 +240,7 @@ Standard_Boolean LocalAnalysis_CurveContinuity::IsC2() const
 
 Standard_Boolean LocalAnalysis_CurveContinuity::IsG1() const  
 {
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
  if ( IsC0() && (( myContG1 <= myepsG1||(Abs(myContG1-M_PI)<=myepsG1))))
      return Standard_True;
      else return Standard_False;	
@@ -255,7 +255,7 @@ Standard_Boolean LocalAnalysis_CurveContinuity::IsG2()const
 	//			   -> 1 Crbure finie
 	//			   -> 2 Crbure infinie
 
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   if ( IsG1 ())
      { CRBINF = 1/myepsC0;
        CRBNUL = 8*myepsC0/(myMaxLon*myMaxLon);
@@ -286,7 +286,7 @@ Standard_Boolean LocalAnalysis_CurveContinuity::IsG2()const
 
 Standard_Real LocalAnalysis_CurveContinuity::C0Value() const 
 { 
-  if (!myIsDone) {StdFail_NotDone::Raise();}
+  if (!myIsDone) {throw StdFail_NotDone();}
   return ( myContC0 );
 }
 
@@ -294,7 +294,7 @@ Standard_Real LocalAnalysis_CurveContinuity::C0Value() const
 
 Standard_Real LocalAnalysis_CurveContinuity::C1Angle() const 
 {
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   return ( myContC1 );
 }
 
@@ -302,7 +302,7 @@ Standard_Real LocalAnalysis_CurveContinuity::C1Angle() const
 
 Standard_Real LocalAnalysis_CurveContinuity::C2Angle() const 
 {
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   return ( myContC2 );
 }
 
@@ -310,14 +310,14 @@ Standard_Real LocalAnalysis_CurveContinuity::C2Angle() const
 
 Standard_Real LocalAnalysis_CurveContinuity::G1Angle() const 
 {
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   return ( myContG1    );
 }
 /*********************************************************************************/
 
 Standard_Real LocalAnalysis_CurveContinuity::G2Angle() const 
 {
-  if (!myIsDone) { StdFail_NotDone::Raise();}
+  if (!myIsDone) { throw StdFail_NotDone();}
   return ( myContG2    );
 }
 
@@ -327,7 +327,7 @@ Standard_Real LocalAnalysis_CurveContinuity::G2Angle() const
 
 Standard_Real LocalAnalysis_CurveContinuity::C1Ratio() const 
 {
-  if (!myIsDone) {StdFail_NotDone::Raise();}
+  if (!myIsDone) {throw StdFail_NotDone();}
   return ( myLambda1    );
 }
 
@@ -335,14 +335,14 @@ Standard_Real LocalAnalysis_CurveContinuity::C1Ratio() const
 
 Standard_Real LocalAnalysis_CurveContinuity::C2Ratio() const 
 {
-  if (!myIsDone) {StdFail_NotDone::Raise();}
+  if (!myIsDone) {throw StdFail_NotDone();}
   return ( myLambda2    );
 }
 
 /********************************************************************************/
 Standard_Real LocalAnalysis_CurveContinuity::G2CurvatureVariation() const 
 {
-  if (!myIsDone) {StdFail_NotDone::Raise();}
+  if (!myIsDone) {throw StdFail_NotDone();}
   return ( myG2Variation);
 }
 
@@ -362,7 +362,7 @@ return  myErrorStatus;
 /*************************************************************************/
 GeomAbs_Shape  LocalAnalysis_CurveContinuity::ContinuityStatus() const 
 {
- if (!myIsDone) { StdFail_NotDone::Raise();}
+ if (!myIsDone) { throw StdFail_NotDone();}
  return (myTypeCont);
 }
 /*********************************************************************************/

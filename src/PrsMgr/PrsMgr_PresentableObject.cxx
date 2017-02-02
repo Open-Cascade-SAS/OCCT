@@ -90,7 +90,7 @@ void PrsMgr_PresentableObject::Compute (const Handle(PrsMgr_PresentationManager)
                                         const Handle(Prs3d_Presentation)& /*aPresentation*/,
                                         const Standard_Integer /*aMode*/)
 {
-  Standard_NotImplemented::Raise("cannot compute in a 3d visualizer");
+  throw Standard_NotImplemented("cannot compute in a 3d visualizer");
 }
 
 //=======================================================================
@@ -100,7 +100,7 @@ void PrsMgr_PresentableObject::Compute (const Handle(PrsMgr_PresentationManager)
 void PrsMgr_PresentableObject::Compute(const Handle(Prs3d_Projector)& /*aProjector*/,
                                        const Handle(Prs3d_Presentation)& /*aPresentation*/)
 {
-  Standard_NotImplemented::Raise("cannot compute under a specific projector");
+  throw Standard_NotImplemented("cannot compute under a specific projector");
 }
 
 //=======================================================================
@@ -111,7 +111,7 @@ void PrsMgr_PresentableObject::Compute(const Handle(Prs3d_Projector)& /* aProjec
                                        const Handle(Geom_Transformation)& /*aTrsf*/,
 				                               const Handle(Prs3d_Presentation)& /*aPresentation*/)
 {
-  Standard_NotImplemented::Raise("cannot compute under a specific projector");
+  throw Standard_NotImplemented("cannot compute under a specific projector");
 }
 
 //=======================================================================

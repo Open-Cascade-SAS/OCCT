@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Expr_ExprFailure, Standard_Failure)
 
 #if !defined No_Exception && !defined No_Expr_ExprFailure
   #define Expr_ExprFailure_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Expr_ExprFailure::Raise(MESSAGE);
+  if (CONDITION) throw Expr_ExprFailure(MESSAGE);
 #else
   #define Expr_ExprFailure_Raise_if(CONDITION, MESSAGE)
 #endif

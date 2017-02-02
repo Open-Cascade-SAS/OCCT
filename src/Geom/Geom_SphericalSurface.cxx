@@ -67,7 +67,7 @@ Handle(Geom_Geometry) Geom_SphericalSurface::Copy () const {
 Geom_SphericalSurface::Geom_SphericalSurface (const Ax3& A, const Standard_Real R) 
 : radius (R) {
 
-  if (R < 0.0) Standard_ConstructionError::Raise();
+  if (R < 0.0) throw Standard_ConstructionError();
   pos = A;
 }
 
@@ -161,7 +161,7 @@ Standard_Boolean Geom_SphericalSurface::IsVPeriodic () const
 
 void Geom_SphericalSurface::SetRadius (const Standard_Real R) {
 
-  if (R < 0.0) { Standard_ConstructionError::Raise(); }
+  if (R < 0.0) { throw Standard_ConstructionError(); }
   radius = R;
 }
 

@@ -108,7 +108,7 @@ TCollection_AsciiString Graphic3d_Texture2D::TextureName (const Standard_Integer
 {
   if (theRank < 1 || theRank > NumberOfTextures())
   {
-    Standard_OutOfRange::Raise ("BAD index of texture");
+    throw Standard_OutOfRange("BAD index of texture");
   }
 
   TCollection_AsciiString aFileName (NameOfTexture_to_FileName[theRank - 1]);

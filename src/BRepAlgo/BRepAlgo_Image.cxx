@@ -51,7 +51,7 @@ void BRepAlgo_Image::Bind(const TopoDS_Shape& OldS,
 			    const TopoDS_Shape& NewS)
 {
   if (down.IsBound(OldS)) {
-    Standard_ConstructionError::Raise(" BRepAlgo_Image::Bind");
+    throw Standard_ConstructionError(" BRepAlgo_Image::Bind");
     return;
   }
   TopTools_ListOfShape L;
@@ -70,7 +70,7 @@ void BRepAlgo_Image::Bind(const TopoDS_Shape& OldS,
 			    const TopTools_ListOfShape& L)
 {  
   if (HasImage(OldS)) {
-    Standard_ConstructionError::Raise(" BRepAlgo_Image::Bind");
+    throw Standard_ConstructionError(" BRepAlgo_Image::Bind");
     return; 
   }
   TopTools_ListIteratorOfListOfShape it(L);
@@ -102,7 +102,7 @@ void BRepAlgo_Image::Clear()
 void BRepAlgo_Image::Add(const TopoDS_Shape& OldS, const TopoDS_Shape& NewS)
 {
   if (!HasImage(OldS)) {    
-    Standard_ConstructionError::Raise(" BRepAlgo_Image::Add");
+    throw Standard_ConstructionError(" BRepAlgo_Image::Add");
   }
   down(OldS).Append(NewS);
   up.Bind(NewS,OldS);
@@ -131,7 +131,7 @@ void BRepAlgo_Image::Add(const TopoDS_Shape&         OldS,
 void BRepAlgo_Image::Remove(const TopoDS_Shape& S)
 {
   if (!up.IsBound(S)) {
-    Standard_ConstructionError::Raise(" BRepAlgo_Image::Remove");
+    throw Standard_ConstructionError(" BRepAlgo_Image::Remove");
   }
   const TopoDS_Shape& OldS = up(S);
   TopTools_ListOfShape& L = down(OldS);
@@ -176,7 +176,7 @@ Standard_Boolean  BRepAlgo_Image::IsImage(const TopoDS_Shape& S) const
 const TopoDS_Shape&  BRepAlgo_Image::ImageFrom(const TopoDS_Shape& S) const 
 {
   if (!up.IsBound(S)) {
-    Standard_ConstructionError::Raise(" BRepAlgo_Image::ImageFrom");
+    throw Standard_ConstructionError(" BRepAlgo_Image::ImageFrom");
   }  
   return up(S);
 }
@@ -190,7 +190,7 @@ const TopoDS_Shape&  BRepAlgo_Image::Root(const TopoDS_Shape& S)
 const 
 {
   if (!up.IsBound(S)) {
-    Standard_ConstructionError::Raise(" BRepAlgo_Image::FirstImageFrom");
+    throw Standard_ConstructionError(" BRepAlgo_Image::FirstImageFrom");
   }
 
   TopoDS_Shape S1 = up(S);

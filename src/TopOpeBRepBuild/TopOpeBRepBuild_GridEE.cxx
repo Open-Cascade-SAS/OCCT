@@ -799,7 +799,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::GParamOnReference(const TopoDS_Vertex&
   Standard_Real u,v; ElSLib::Parameters(pln,p3,u,v); gp_Pnt2d p2(u,v);
   Standard_Real f,l,tolpc; Handle(Geom2d_Curve) C2D;
   C2D = FC2D_CurveOnSurface(myEdgeReference,myFaceReference,f,l,tolpc);
-  if (C2D.IsNull()) Standard_ProgramError::Raise("TopOpeBRepBuild_Builder::GParamOnReference");
+  if (C2D.IsNull()) throw Standard_ProgramError("TopOpeBRepBuild_Builder::GParamOnReference");
   
 //  Standard_Real U;
   Geom2dAdaptor_Curve AC(C2D);

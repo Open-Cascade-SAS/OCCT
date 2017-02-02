@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Draw_Failure, Standard_Failure)
 
 #if !defined No_Exception && !defined No_Draw_Failure
   #define Draw_Failure_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Draw_Failure::Raise(MESSAGE);
+  if (CONDITION) throw Draw_Failure(MESSAGE);
 #else
   #define Draw_Failure_Raise_if(CONDITION, MESSAGE)
 #endif

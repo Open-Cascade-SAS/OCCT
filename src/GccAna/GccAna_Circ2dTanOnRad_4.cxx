@@ -67,7 +67,7 @@ GccAna_Circ2dTanOnRad::
    NbrSol = 0;
    if (!(Qualified1.IsEnclosed() ||
 	 Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
-     GccEnt_BadQualifier::Raise();
+     throw GccEnt_BadQualifier();
      return;
    }
 
@@ -88,7 +88,7 @@ GccAna_Circ2dTanOnRad::
 //  Processing.                                                           +
 //=========================================================================
 
-   if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+   if (Radius < 0.0) { throw Standard_NegativeValue(); }
    else {
      L1 = Qualified1.Qualified();
      if ((dist1-Radius>Tol) || (Tol<Radius-dist2)) { WellDone=Standard_True; }

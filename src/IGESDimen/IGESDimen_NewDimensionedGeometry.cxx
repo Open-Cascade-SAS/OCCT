@@ -42,8 +42,7 @@ IGESDimen_NewDimensionedGeometry::IGESDimen_NewDimensionedGeometry ()   { }
   if (allEntities->Lower()  != 1 ||
       allLocations->Lower() != 1 || allLocations->Length() != num ||
       allPoints->Lower()    != 1 || allPoints->Length()    != num )
-    Standard_DimensionMismatch::Raise
-      ("IGESDimen_NewDimensionedGeometry: Init");
+    throw Standard_DimensionMismatch("IGESDimen_NewDimensionedGeometry: Init");
   theNbDimensions             = nbDimens;
   theDimensionEntity          = aDimen;
   theDimensionOrientationFlag = anOrientation;

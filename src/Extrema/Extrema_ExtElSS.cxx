@@ -58,9 +58,7 @@ void Extrema_ExtElSS::Perform(const gp_Pln& S1, const gp_Pln& S2)
 
 
 Extrema_ExtElSS::Extrema_ExtElSS(const gp_Pln& S1, const gp_Sphere& S2)
-{
-  Perform(S1, S2);
-}
+{  Perform(S1, S2);}
 
 
 //void Extrema_ExtElSS::Perform(const gp_Pln& S1, const gp_Sphere& S2)
@@ -70,30 +68,25 @@ void Extrema_ExtElSS::Perform(const gp_Pln& , const gp_Sphere& )
   myDone = Standard_True;
   myIsPar = Standard_False;
   myNbExt = 0;
-  Standard_NotImplemented::Raise();
+  throw Standard_NotImplemented();
 }
 
 Extrema_ExtElSS::Extrema_ExtElSS(const gp_Sphere& S1, const gp_Sphere& S2)
-{
-  Perform(S1, S2);
-}
+{  Perform(S1, S2);}
 
 
 //void Extrema_ExtElSS::Perform(const gp_Sphere& S1, const gp_Sphere& S2)
 void Extrema_ExtElSS::Perform(const gp_Sphere& , const gp_Sphere& )
 {
-
   myDone = Standard_True;
   myIsPar = Standard_False;
   myNbExt = 0;
-  Standard_NotImplemented::Raise();
+  throw Standard_NotImplemented();
 }
 
 
 Extrema_ExtElSS::Extrema_ExtElSS(const gp_Sphere& S1, const gp_Cylinder& S2)
-{
-  Perform(S1, S2);
-}
+{  Perform(S1, S2);}
 
 
 //void Extrema_ExtElSS::Perform(const gp_Sphere& S1, const gp_Cylinder& S2)
@@ -103,13 +96,11 @@ void Extrema_ExtElSS::Perform(const gp_Sphere& , const gp_Cylinder& )
   myDone = Standard_True;
   myIsPar = Standard_False;
   myNbExt = 0;
-  Standard_NotImplemented::Raise();
+  throw Standard_NotImplemented();
 }
 
 Extrema_ExtElSS::Extrema_ExtElSS(const gp_Sphere& S1, const gp_Cone& S2)
-{
-  Perform(S1, S2);
-}
+{  Perform(S1, S2);}
 
 
 //void Extrema_ExtElSS::Perform(const gp_Sphere& S1, const gp_Cone& S2)
@@ -119,14 +110,12 @@ void Extrema_ExtElSS::Perform(const gp_Sphere& , const gp_Cone& )
   myDone = Standard_True;
   myIsPar = Standard_False;
   myNbExt = 0;
-  Standard_NotImplemented::Raise();
+  throw Standard_NotImplemented();
 }
 
 
 Extrema_ExtElSS::Extrema_ExtElSS(const gp_Sphere& S1, const gp_Torus& S2)
-{
-  Perform(S1, S2);
-}
+{  Perform(S1, S2);}
 
 
 //void Extrema_ExtElSS::Perform(const gp_Sphere& S1, const gp_Torus& S2)
@@ -136,7 +125,7 @@ void Extrema_ExtElSS::Perform(const gp_Sphere& , const gp_Torus& )
   myDone = Standard_True;
   myIsPar = Standard_False;
   myNbExt = 0;
-  Standard_NotImplemented::Raise();
+  throw Standard_NotImplemented();
 }
 
 
@@ -148,23 +137,23 @@ Standard_Boolean Extrema_ExtElSS::IsDone() const
 
 Standard_Boolean Extrema_ExtElSS::IsParallel() const
 {
-  if(!myDone) StdFail_NotDone::Raise();
+  if(!myDone) throw StdFail_NotDone();
   return myIsPar;
 }
 
 
 Standard_Integer Extrema_ExtElSS::NbExt() const
 {
-  if(!myDone) StdFail_NotDone::Raise();
-  if (myIsPar) StdFail_InfiniteSolutions::Raise();
+  if(!myDone) throw StdFail_NotDone();
+  if (myIsPar) throw StdFail_InfiniteSolutions();
   return myNbExt;
 }
 
 
 Standard_Real Extrema_ExtElSS::SquareDistance(const Standard_Integer N) const
 {
-  if(!myDone) StdFail_NotDone::Raise();
-  if (myIsPar && N != 1) StdFail_InfiniteSolutions::Raise();
+  if(!myDone) throw StdFail_NotDone();
+  if (myIsPar && N != 1) throw StdFail_InfiniteSolutions();
   return mySqDist->Value(N);
 }
 
@@ -173,8 +162,8 @@ void Extrema_ExtElSS::Points(const Standard_Integer N,
 			     Extrema_POnSurf&       P1,
 			     Extrema_POnSurf&       P2) const
 {
-  if(!myDone) StdFail_NotDone::Raise();
-  if (myIsPar) StdFail_InfiniteSolutions::Raise();
+  if(!myDone) throw StdFail_NotDone();
+  if (myIsPar) throw StdFail_InfiniteSolutions();
   P1 = myPOnS1->Value(N);
   P2 = myPOnS2->Value(N);
 }

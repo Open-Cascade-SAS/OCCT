@@ -77,7 +77,7 @@ Geom2d_Parabola::Geom2d_Parabola (const Ax2d& MirrorAxis,
 				  const Standard_Boolean Sense) 
 : focalLength (Focal) 
 {
-  if (Focal < 0.0) { Standard_ConstructionError::Raise(); }
+  if (Focal < 0.0) { throw Standard_ConstructionError(); }
   pos = gp_Ax22d(MirrorAxis, Sense);
 }
 
@@ -90,7 +90,7 @@ Geom2d_Parabola::Geom2d_Parabola (const Ax2d& MirrorAxis,
 Geom2d_Parabola::Geom2d_Parabola (const gp_Ax22d& Axis, const Standard_Real Focal)
 : focalLength (Focal) 
 {
-  if (Focal < 0.0) { Standard_ConstructionError::Raise(); }
+  if (Focal < 0.0) { throw Standard_ConstructionError(); }
   pos  = Axis;
 }
 
@@ -114,7 +114,7 @@ Geom2d_Parabola::Geom2d_Parabola (const Ax2d& D, const Pnt2d& F) {
 
 void Geom2d_Parabola::SetFocal (const Standard_Real Focal) 
 {
-  if (Focal < 0.0) Standard_ConstructionError::Raise();
+  if (Focal < 0.0) throw Standard_ConstructionError();
   focalLength = Focal;
 }
 

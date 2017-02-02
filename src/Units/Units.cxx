@@ -332,7 +332,7 @@ Handle(Units_Dimensions) Units::Dimensions(const Standard_CString aType)
        return qSeq->Value(i)->Dimensions();
      }
    }
-   Standard_NoSuchObject::Raise("Units::Dimensions");
+   throw Standard_NoSuchObject("Units::Dimensions");
  }
  return Units_Dimensions::ALess();
 }

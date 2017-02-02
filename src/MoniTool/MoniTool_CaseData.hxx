@@ -128,7 +128,7 @@ public:
   Standard_EXPORT void AddData (const Handle(Standard_Transient)& val, const Standard_Integer kind, const Standard_CString name = "");
   
   //! Adds the currently caught exception
-  Standard_EXPORT void AddRaised (const Standard_CString name = "");
+  Standard_EXPORT void AddRaised (const Handle(Standard_Failure)& theException, const Standard_CString name = "");
   
   //! Adds a Shape (recorded as a HShape)
   Standard_EXPORT void AddShape (const TopoDS_Shape& sh, const Standard_CString name = "");

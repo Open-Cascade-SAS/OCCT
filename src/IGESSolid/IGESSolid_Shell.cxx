@@ -33,7 +33,7 @@ IGESSolid_Shell::IGESSolid_Shell ()    {  }
 {
   if (Faces->Lower()  != 1 || Orient->Lower() != 1 ||
       Faces->Length() != Orient->Length())
-    Standard_DimensionError::Raise("IGESSolid_Shell : Init");
+    throw Standard_DimensionError("IGESSolid_Shell : Init");
 
   theFaces = Faces;
   theOrientation = Orient;

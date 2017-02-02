@@ -48,9 +48,6 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! Raises Construction Error
-  Standard_EXPORT IntWalk_TheFunctionOfTheInt2S();
-  
   Standard_EXPORT IntWalk_TheFunctionOfTheInt2S(const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2);
   
   Standard_EXPORT Standard_Integer NbVariables() const;

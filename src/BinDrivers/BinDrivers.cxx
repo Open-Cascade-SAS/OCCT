@@ -62,9 +62,7 @@ const Handle(Standard_Transient)& BinDrivers::Factory(const Standard_GUID& theGU
     return model_rd;
   }
 
-  Standard_Failure::Raise ("BinDrivers : unknown GUID");
-  static Handle(Standard_Transient) aNullHandle;
-  return aNullHandle;
+  throw Standard_Failure("BinDrivers : unknown GUID");
 }
 
 //=======================================================================

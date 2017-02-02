@@ -342,15 +342,14 @@ void BinTools_CurveSet::WriteCurve(const Handle(Geom_Curve)& C,
       OS << Handle(Geom_OffsetCurve)::DownCast(C);
     }
     else {
-      Standard_Failure::Raise("UNKNOWN CURVE TYPE");
+      throw Standard_Failure("UNKNOWN CURVE TYPE");
     }
   }
-   catch(Standard_Failure) {
+   catch(Standard_Failure const& anException) {
      Standard_SStream aMsg;
      aMsg << "EXCEPTION in BinTools_CurveSet::WriteCurve(..)" << endl;
-     Handle(Standard_Failure) anExc = Standard_Failure::Caught();
-     aMsg << anExc << endl;
-     Standard_Failure::Raise(aMsg);
+     aMsg << anException << endl;
+     throw Standard_Failure(aMsg.str().c_str());
    }  
 }
 
@@ -693,16 +692,16 @@ Standard_IStream& BinTools_CurveSet::ReadCurve(Standard_IStream& IS,
     default:
       {
 	C = NULL;
-	Standard_Failure::Raise("UNKNOWN CURVE TYPE");
+	throw Standard_Failure("UNKNOWN CURVE TYPE");
       }
     }
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
     C = NULL;
     Standard_SStream aMsg;
     aMsg <<"EXCEPTION in BinTools_CurveSet::ReadCurve(..)" << endl;
-    Handle(Standard_Failure) anExc = Standard_Failure::Caught();
-    Standard_Failure::Raise(aMsg);
+    aMsg << anException << endl;
+    throw Standard_Failure(aMsg.str().c_str());
   }
   return IS;
 }
@@ -722,7 +721,7 @@ void  BinTools_CurveSet::Read(Standard_IStream& IS)
 #ifdef OCCT_DEBUG
     cout <<"CurveSet buffer: " << buffer << endl;
 #endif
-    Standard_Failure::Raise(aMsg);
+    throw Standard_Failure(aMsg.str().c_str());
     return;
   }
 

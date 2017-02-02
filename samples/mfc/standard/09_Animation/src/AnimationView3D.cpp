@@ -359,7 +359,7 @@ void CAnimationView3D::OnLButtonDown(UINT nFlags, CPoint point)
 			SetTimer ( 1 , 100 , NULL ) ;
 		break ;
         default :
-           Standard_Failure::Raise(" incompatible Current Mode ");
+           throw Standard_Failure(" incompatible Current Mode ");
         break;
         }
     }
@@ -426,7 +426,7 @@ void CAnimationView3D::OnLButtonUp(UINT nFlags, CPoint point)
 			KillTimer ( 1 ) ;
 		break;
         default :
-           Standard_Failure::Raise(" incompatible Current Mode ");
+           throw Standard_Failure(" incompatible Current Mode ");
         break;
         } //switch (myCurrentMode)
     } //	else // if ( Ctrl )
@@ -529,7 +529,7 @@ void CAnimationView3D::OnMouseMove(UINT nFlags, CPoint point)
 		case CurrentAction3d_Turn :
 			break ;
         default :
-           Standard_Failure::Raise(" incompatible Current Mode ");
+           throw Standard_Failure(" incompatible Current Mode ");
         break;
         }//  switch (myCurrentMode)
       }// if ( nFlags & MK_CONTROL )  else 

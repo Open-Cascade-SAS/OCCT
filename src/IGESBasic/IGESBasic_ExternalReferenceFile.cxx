@@ -31,7 +31,7 @@ IGESBasic_ExternalReferenceFile::IGESBasic_ExternalReferenceFile ()    {  }
   (const Handle(Interface_HArray1OfHAsciiString)& aNameArray)
 {
   if (aNameArray->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESBasic_ExternalReferenceFile : Init");
+    throw Standard_DimensionMismatch("IGESBasic_ExternalReferenceFile : Init");
   theNames = aNameArray;
   InitTypeAndForm(406,12);
 }

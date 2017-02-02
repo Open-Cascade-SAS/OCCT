@@ -50,7 +50,7 @@ IGESGraph_TextFontDef::IGESGraph_TextFontDef ()    {  }
       (allPenFlags->Lower()   != 1 || allPenFlags->Length()   != Len) ||
       (allMovePenToX->Lower() != 1 || allMovePenToX->Length() != Len) ||
       (allMovePenToY->Lower() != 1 || allMovePenToY->Length() != Len) )
-    Standard_DimensionMismatch::Raise("IGESGraph_TextFontDef : Init");
+    throw Standard_DimensionMismatch("IGESGraph_TextFontDef : Init");
 
   theFontCode             = aFontCode;           
   theFontName             = aFontName; 

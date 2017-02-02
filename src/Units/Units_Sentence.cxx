@@ -61,7 +61,7 @@ Units_Sentence::Units_Sentence(const Handle(Units_Lexicon)& alexicon,
   thesequenceoftokens = new Units_TokensSequence();
   Handle(Units_TokensSequence) lstlexicon=alexicon->Sequence();
   if(lstlexicon.IsNull())
-    Units_NoSuchType::Raise("BAD LEXICON descriptor");
+    throw Units_NoSuchType("BAD LEXICON descriptor");
   limchain=strlen(astring);
   i=0;
 

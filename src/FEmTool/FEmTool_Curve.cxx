@@ -69,7 +69,7 @@ FEmTool_Curve::FEmTool_Curve(const Standard_Integer Dimension,
 				const TColStd_Array2OfReal& Coeffs) 
 {
   Standard_Integer i, j, degBase, deg;
-  if (IndexOfElement > myNbElements || IndexOfElement < 1) Standard_OutOfRange::Raise(); 
+  if (IndexOfElement > myNbElements || IndexOfElement < 1) throw Standard_OutOfRange();
   degBase = myBase->WorkDegree();
   deg = myDegree(IndexOfElement);
   Standard_Integer iBase = (IndexOfElement - 1)*(degBase + 1)*myDimension, 
@@ -108,7 +108,7 @@ FEmTool_Curve::FEmTool_Curve(const Standard_Integer Dimension,
  void FEmTool_Curve::GetElement(const Standard_Integer IndexOfElement, TColStd_Array2OfReal& Coeffs) 
 {
   Standard_Integer i, j, degBase, deg;
-  if (IndexOfElement > myNbElements || IndexOfElement < 1) Standard_OutOfRange::Raise(); 
+  if (IndexOfElement > myNbElements || IndexOfElement < 1) throw Standard_OutOfRange();
   degBase = myBase->WorkDegree();
   deg = myDegree(IndexOfElement);
   Standard_Integer iBase = (IndexOfElement - 1)*(degBase + 1)*myDimension, 
@@ -286,7 +286,7 @@ FEmTool_Curve::FEmTool_Curve(const Standard_Integer Dimension,
 			    Standard_Real& Length) 
 {
   Standard_Integer Low, High, deg, degBase, i, Ptr;
-  if(FirstU > LastU) Standard_OutOfRange::Raise("FEmTool_Curve::Length");  
+  if(FirstU > LastU) throw Standard_OutOfRange("FEmTool_Curve::Length");
   
   if(myKnots->Value(1) > FirstU) Low = 1;
   else
@@ -403,7 +403,7 @@ FEmTool_Curve::FEmTool_Curve(const Standard_Integer Dimension,
     HasPoly(IndexOfElement) = HasDeri(IndexOfElement) = HasSecn(IndexOfElement) = 0;
     myLength(IndexOfElement) = -1;
   }
-  else if(Degree > myBase->WorkDegree()) Standard_OutOfRange::Raise("FEmTool_Curve::SetDegree");
+  else if(Degree > myBase->WorkDegree()) throw Standard_OutOfRange("FEmTool_Curve::SetDegree");
 }
 
 

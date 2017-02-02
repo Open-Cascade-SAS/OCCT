@@ -40,7 +40,7 @@ IGESDimen_SectionedArea::IGESDimen_SectionedArea ()    {  }
 {
   if (!someIslands.IsNull())
     if (someIslands->Lower() != 1)
-      Standard_DimensionMismatch::Raise("IGESDimen_SectionedArea : Init");
+      throw Standard_DimensionMismatch("IGESDimen_SectionedArea : Init");
   theExteriorCurve = aCurve;
   thePattern       = aPattern;
   thePassingPoint  = aPoint;

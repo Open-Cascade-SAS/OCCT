@@ -25,7 +25,7 @@ DEFINE_STANDARD_HANDLE(OSD_SIGQUIT, OSD_Signal)
 
 #if !defined No_Exception && !defined No_OSD_SIGQUIT
   #define OSD_SIGQUIT_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) OSD_SIGQUIT::Raise(MESSAGE);
+  if (CONDITION) throw OSD_SIGQUIT(MESSAGE);
 #else
   #define OSD_SIGQUIT_Raise_if(CONDITION, MESSAGE)
 #endif

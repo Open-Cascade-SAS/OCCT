@@ -66,7 +66,7 @@ inline GeomAbs_CurveType Geom2dAdaptor_Curve::GetType() const
 
 inline void Geom2dAdaptor_Curve::Load(const Handle(Geom2d_Curve)& C) 
 {
-  if ( C.IsNull()) Standard_NullObject::Raise();
+  if ( C.IsNull()) throw Standard_NullObject();
   
   load(C,C->FirstParameter(),C->LastParameter());
 }
@@ -80,9 +80,9 @@ inline void Geom2dAdaptor_Curve::Load(const Handle(Geom2d_Curve)& C,
 			                          const Standard_Real UFirst,
 			                          const Standard_Real ULast) 
 {
-  if ( C.IsNull()) Standard_NullObject::Raise();
+  if ( C.IsNull()) throw Standard_NullObject();
 
-  if ( UFirst > ULast) Standard_ConstructionError::Raise();
+  if ( UFirst > ULast) throw Standard_ConstructionError();
   
   load(C,UFirst,ULast);
 }

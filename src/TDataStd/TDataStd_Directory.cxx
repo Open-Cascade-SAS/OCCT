@@ -73,7 +73,7 @@ const Standard_GUID& TDataStd_Directory::GetID()
 Handle(TDataStd_Directory) TDataStd_Directory::New (const TDF_Label& L)
 {  
   if (L.HasAttribute()) {
-    Standard_DomainError::Raise("TDataStd_Directory::New : not an empty label");
+    throw Standard_DomainError("TDataStd_Directory::New : not an empty label");
   }
   Handle(TDataStd_Directory) A = new TDataStd_Directory ();
   L.AddAttribute(A);                        

@@ -97,10 +97,10 @@ void StepData_StepReaderTool::Prepare (const Standard_Boolean optim)
       stepdat->SetEntityNumbers(optim);
       SetEntities();
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure const& anException) {
       Handle(Message_Messenger) sout = Message::DefaultMessenger();
       sout << " Exception Raised during Preparation :\n";
-      sout << Standard_Failure::Caught()->GetMessageString();
+      sout << anException.GetMessageString();
       sout << "\n Now, trying to continue, but with presomption of failure\n";
     }
   }

@@ -374,11 +374,11 @@ static Standard_Boolean FUN_correctDegeneratedE
   if (!uviso) return Standard_False;
 
   Standard_Real pfEin,plEin,tolEin; Handle(Geom2d_Curve) PCEin = FUNTOOLC2D_CurveOnSurface(Ein,Fsp,pfEin,plEin,tolEin); 
-  if (PCEin.IsNull()) Standard_Failure::Raise(" FUN_correctDegeneratedE : no 2d curve Ein");
+  if (PCEin.IsNull()) throw Standard_Failure(" FUN_correctDegeneratedE : no 2d curve Ein");
   Standard_Real pf1,pl1,tol1; Handle(Geom2d_Curve) PC1 = FUNTOOLC2D_CurveOnSurface(e1,Fsp,pf1,pl1,tol1); 
-  if (PC1.IsNull()) Standard_Failure::Raise(" FUN_correctDegeneratedE : no 2d curve e1");
+  if (PC1.IsNull()) throw Standard_Failure(" FUN_correctDegeneratedE : no 2d curve e1");
   Standard_Real pf2,pl2,tol2; Handle(Geom2d_Curve) PC2 = FUNTOOLC2D_CurveOnSurface(e2,Fsp,pf2,pl2,tol2); 
-  if (PC2.IsNull()) Standard_Failure::Raise(" FUN_correctDegeneratedE : no 2d curve e2");
+  if (PC2.IsNull()) throw Standard_Failure(" FUN_correctDegeneratedE : no 2d curve e2");
   
   Standard_Real parv1 = BRep_Tool::Parameter(v1,Ein,Fsp);
   Standard_Real parv2 = BRep_Tool::Parameter(v2,Ein,Fsp);

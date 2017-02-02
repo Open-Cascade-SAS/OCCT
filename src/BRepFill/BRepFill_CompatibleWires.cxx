@@ -851,7 +851,7 @@ void BRepFill_CompatibleWires::Perform (const Standard_Boolean WithRotation)
   else {
     // There are open and closed sections :
     // not processed
-    Standard_DomainError::Raise("Sections must be all closed or all open");
+    throw Standard_DomainError("Sections must be all closed or all open");
   }
   
 }
@@ -893,7 +893,7 @@ void BRepFill_CompatibleWires::
     //allClosed = (allClosed && myWork(i).Closed());
   }
   if (!allClosed)
-    Standard_NoSuchObject::Raise("BRepFill_CompatibleWires::SameNumberByPolarMethod : the wires must be closed");
+    throw Standard_NoSuchObject("BRepFill_CompatibleWires::SameNumberByPolarMethod : the wires must be closed");
   
   // sections ponctuelles, sections bouclantes ?
   if (myDegen1) ideb++;
@@ -974,7 +974,7 @@ void BRepFill_CompatibleWires::
     // sequence of vertices of the first wire
     SeqOfVertices(wire1,SeqV);
     if (SeqV.Length()>NbMaxV) 
-      Standard_NoSuchObject::Raise("BRepFill::SameNumberByPolarMethod failed");
+      throw Standard_NoSuchObject("BRepFill::SameNumberByPolarMethod failed");
     
     // loop on vertices of wire1
     for (ii=1;ii<=SeqV.Length();ii++) {
@@ -1049,7 +1049,7 @@ void BRepFill_CompatibleWires::
     // sequence of vertices of the first wire
     SeqOfVertices(wire1,SeqV);
     if ( SeqV.Length()>NbMaxV || SeqV.Length()>SizeMap ) 
-      Standard_NoSuchObject::Raise("BRepFill::SameNumberByPolarMethod failed");
+      throw Standard_NoSuchObject("BRepFill::SameNumberByPolarMethod failed");
     
 
     // next wire 
@@ -1171,7 +1171,7 @@ void BRepFill_CompatibleWires::
 	}
       } //end of for(; itW.More(); itW.Next())
     if (Esol.IsNull())
-      Standard_ConstructionError::Raise("BRepFill :: profiles are inconsistent");
+      throw Standard_ConstructionError("BRepFill :: profiles are inconsistent");
     MW.Add(Esol);
 
     TopTools_ListOfShape ConnectedEdges;
@@ -1237,7 +1237,7 @@ void BRepFill_CompatibleWires::
     if (nbmin>nbEdges) nbmin = nbEdges;
   }
   if (nbmin!=nbmax) {
-    Standard_NoSuchObject::Raise("BRepFill_CompatibleWires::SameNumberByPolarMethod failed");
+    throw Standard_NoSuchObject("BRepFill_CompatibleWires::SameNumberByPolarMethod failed");
   }
 
   //Fill <myMap>
@@ -1456,7 +1456,7 @@ void BRepFill_CompatibleWires::SameNumberByACR(const  Standard_Boolean  report)
     if (nbmin>nbEdges(i)) nbmin = nbEdges(i);
   }
   if (nbmax!=nbmin) 
-    Standard_NoSuchObject::Raise("BRepFill_CompatibleWires::SameNumberByACR failed");
+    throw Standard_NoSuchObject("BRepFill_CompatibleWires::SameNumberByACR failed");
 }
 
 //=======================================================================
@@ -1501,7 +1501,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean /*polar*/ )
   }
 */
   if (!allClosed) 
-    Standard_NoSuchObject::Raise("BRepFill_CompatibleWires::ComputeOrigin : the wires must be closed");
+    throw Standard_NoSuchObject("BRepFill_CompatibleWires::ComputeOrigin : the wires must be closed");
 
 /*  
   // Max number of possible cuts
@@ -1836,7 +1836,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean /*polar*/ )
       gp_Pnt Pmini,P1,P2;
       SeqOfVertices(wire,SeqV);
       if (SeqV.Length()>NbMaxV) 
-	Standard_NoSuchObject::Raise("BRepFill::ComputeOrigin failed");
+	throw Standard_NoSuchObject("BRepFill::ComputeOrigin failed");
       if (!polar) {
 	// choix du vertex le plus proche comme origine
 	distmini = Precision::Infinite();
@@ -2060,7 +2060,7 @@ void BRepFill_CompatibleWires::SearchOrigin()
     allOpen = (allOpen && !myWork(i).Closed());
   }
   if (!allOpen)
-    Standard_NoSuchObject::Raise("BRepFill_CompatibleWires::SearchOrigin : the wires must be open");
+    throw Standard_NoSuchObject("BRepFill_CompatibleWires::SearchOrigin : the wires must be open");
 
   // init
 

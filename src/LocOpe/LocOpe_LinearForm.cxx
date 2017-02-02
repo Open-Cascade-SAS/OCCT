@@ -218,7 +218,7 @@ void LocOpe_LinearForm::IntPerf()
 const TopoDS_Shape& LocOpe_LinearForm::Shape () const
 {
   if (!myDone) {
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   }
   return myRes;
 }

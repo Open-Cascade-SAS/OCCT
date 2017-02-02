@@ -840,7 +840,7 @@ void AIS_InteractiveContext::Remove (const Handle(AIS_InteractiveObject)& theIOb
   {
     if (theIObj->myCTXPtr != this)
     {
-      Standard_ProgramError::Raise ("AIS_InteractiveContext - object has been displayed in another context!");
+      throw Standard_ProgramError("AIS_InteractiveContext - object has been displayed in another context!");
     }
     theIObj->SetContext (Handle(AIS_InteractiveContext)());
   }

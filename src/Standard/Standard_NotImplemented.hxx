@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(Standard_NotImplemented, Standard_ProgramError)
 
 #if !defined No_Exception && !defined No_Standard_NotImplemented
   #define Standard_NotImplemented_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Standard_NotImplemented::Raise(MESSAGE);
+  if (CONDITION) throw Standard_NotImplemented(MESSAGE);
 #else
   #define Standard_NotImplemented_Raise_if(CONDITION, MESSAGE)
 #endif

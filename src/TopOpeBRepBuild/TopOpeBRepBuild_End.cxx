@@ -229,7 +229,7 @@ void TopOpeBRepBuild_Builder::End()
           Handle(Geom2d_Curve) C2D;
           if (!pcf) {
             C2D = FC2D_CurveOnSurface(E,F,f,l,tolpc);
-            if (C2D.IsNull()) Standard_ProgramError::Raise("TopOpeBRepBuild_Builder::End 1");
+            if (C2D.IsNull()) throw Standard_ProgramError("TopOpeBRepBuild_Builder::End 1");
             Standard_Real tolE = BRep_Tool::Tolerance(E);
             Standard_Real tol = Max(tolE,tolpc);
             B.UpdateEdge(E,C2D,F,tol);

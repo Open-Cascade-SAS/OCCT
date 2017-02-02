@@ -72,7 +72,7 @@ Geom2d_Circle::Geom2d_Circle (const Ax2d& A, const Standard_Real Radius,
 			      const Standard_Boolean Sense)
 : radius(Radius) {
   
-   if (Radius < 0.0) { Standard_ConstructionError::Raise(); }
+   if (Radius < 0.0) { throw Standard_ConstructionError(); }
    pos = gp_Ax22d(A, Sense);
 }
 
@@ -85,7 +85,7 @@ Geom2d_Circle::Geom2d_Circle (const gp_Ax22d& A, const Standard_Real Radius)
 
 : radius (Radius) {
 
-   if (Radius < 0.0) { Standard_ConstructionError::Raise(); }
+   if (Radius < 0.0) { throw Standard_ConstructionError(); }
    pos = A;
 }
 
@@ -108,7 +108,7 @@ void Geom2d_Circle::SetCirc2d (const gp_Circ2d& C) {
 
 void Geom2d_Circle::SetRadius (const Standard_Real R) 
 { 
-  if (R < 0.0) { Standard_ConstructionError::Raise(); }
+  if (R < 0.0) { throw Standard_ConstructionError(); }
   radius = R;
 }
 

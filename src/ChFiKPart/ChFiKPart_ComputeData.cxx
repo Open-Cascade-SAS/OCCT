@@ -164,7 +164,7 @@
 				    Wref,OrFace2,Standard_False);
     }
     else{
-      Standard_NotImplemented::Raise("particular case not written");
+      throw Standard_NotImplemented("particular case not written");
     }
   }
   else if(!CSpine.IsNull()){
@@ -213,7 +213,7 @@
 				       Wref,OrFace2,Standard_False); 
       }
       else{
-	Standard_NotImplemented::Raise("particular case not written");
+	throw Standard_NotImplemented("particular case not written");
       }
     }
     else if (CSpine->IsChamfer() == ChFiDS_TwoDist) {    
@@ -261,7 +261,7 @@
 				       Wref,OrFace2,Standard_False); 
       }
       else{
-	Standard_NotImplemented::Raise("particular case not written");
+	throw Standard_NotImplemented("particular case not written");
       }
     }
     else {
@@ -310,7 +310,7 @@
 				      Wref,OrFace2,Standard_False, DisOnP); 
       }
       else{
-	Standard_NotImplemented::Raise("particular case not written");
+	throw Standard_NotImplemented("particular case not written");
       }
     }
   }
@@ -342,8 +342,7 @@ Standard_Boolean ChFiKPart_ComputeData::ComputeCorner
   GeomAbs_SurfaceType typ1 = S1->GetType();
   GeomAbs_SurfaceType typ2 = S2->GetType();
   if ( typ1 != GeomAbs_Plane ){
-    Standard_ConstructionError::Raise
-      ("la face du conge torique doit etre plane");
+    throw Standard_ConstructionError("la face du conge torique doit etre plane");
   }
   // The guideline is the circle corresponding 
   // to the section of S2, and other construction elements.
@@ -428,8 +427,7 @@ Standard_Boolean ChFiKPart_ComputeData::ComputeCorner
   if (typ != GeomAbs_Plane ||
       typ1 != GeomAbs_Plane ||
       typ2 != GeomAbs_Plane){
-    Standard_ConstructionError::Raise
-      ("torus joint only between the planes");
+    throw Standard_ConstructionError("torus joint only between the planes");
   }
   return ChFiKPart_MakeRotule(DStr,Data,S->Plane(),S1->Plane(),
 			      S2->Plane(),OS,OS1,OS2,Radius,OfS);

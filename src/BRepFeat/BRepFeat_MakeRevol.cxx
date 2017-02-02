@@ -176,7 +176,7 @@ void BRepFeat_MakeRevol::Add(const TopoDS_Edge& E,
     }
   }
   if (!exp.More()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   for (exp.Init(myPbase,TopAbs_EDGE);exp.More();exp.Next()) {
@@ -185,7 +185,7 @@ void BRepFeat_MakeRevol::Add(const TopoDS_Edge& E,
     }
   }
   if (!exp.More()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   if (!mySlface.IsBound(F)) {
@@ -345,11 +345,11 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
   Standard_Boolean TourComplet = Standard_False;
 
   if (Until.IsNull()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   TopExp_Explorer exp(Until, TopAbs_FACE);
   if (!exp.More()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   if (!mySkface.IsNull() && Until.IsSame(mySkface)) {
     Angle = 2*M_PI;
@@ -510,7 +510,7 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From,
   if (trc) cout << "BRepFeat_MakeRevol::Perform(From,Until)" << endl;
 #endif
   if (From.IsNull() || Until.IsNull()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   if (!mySkface.IsNull()) {
     if (From.IsSame(mySkface)) {
@@ -532,11 +532,11 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From,
 
   TopExp_Explorer exp(From, TopAbs_FACE);
   if (!exp.More()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   exp.Init(Until, TopAbs_FACE);
   if (!exp.More()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   mySFrom = From;
@@ -699,7 +699,7 @@ void BRepFeat_MakeRevol::PerformUntilAngle(const TopoDS_Shape& Until,
   }
   TopExp_Explorer exp(Until, TopAbs_FACE);
   if (!exp.More()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   if (!mySkface.IsNull() && Until.IsSame(mySkface)) {
     Perform(Angle);

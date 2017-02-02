@@ -88,7 +88,7 @@ inline void  ChFiDS_CommonPoint::SetVertex(const TopoDS_Vertex& V)
 
  inline const TopoDS_Vertex&  ChFiDS_CommonPoint::Vertex()const 
 {
-  if (!isvtx) {Standard_DomainError::Raise();}
+  if (!isvtx) {throw Standard_DomainError();}
   return vtx;
 }
 
@@ -120,7 +120,7 @@ inline void  ChFiDS_CommonPoint::SetVertex(const TopoDS_Vertex& V)
  inline const gp_Vec&  ChFiDS_CommonPoint::Vector()const 
 {
   if (!hasvector) {
-    Standard_DomainError::Raise("ChFiDS_CommonPoint::Vector");
+    throw Standard_DomainError("ChFiDS_CommonPoint::Vector");
   }
   return vector;
 }

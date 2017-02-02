@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(StdFail_NotDone, Standard_Failure)
 
 #if !defined No_Exception && !defined No_StdFail_NotDone
   #define StdFail_NotDone_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) StdFail_NotDone::Raise(MESSAGE);
+  if (CONDITION) throw StdFail_NotDone(MESSAGE);
 #else
   #define StdFail_NotDone_Raise_if(CONDITION, MESSAGE)
 #endif

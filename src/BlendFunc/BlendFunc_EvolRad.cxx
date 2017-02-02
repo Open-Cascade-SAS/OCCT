@@ -1115,7 +1115,7 @@ void BlendFunc_EvolRad::Tangent(const Standard_Real U1,
 
 Standard_Boolean BlendFunc_EvolRad::TwistOnS1() const
 {
-  if (istangent) {Standard_DomainError::Raise();}
+  if (istangent) {throw Standard_DomainError();}
   return tg1.Dot(nplan) < 0.;
 }
 
@@ -1126,7 +1126,7 @@ Standard_Boolean BlendFunc_EvolRad::TwistOnS1() const
 
 Standard_Boolean BlendFunc_EvolRad::TwistOnS2() const
 {
-  if (istangent) {Standard_DomainError::Raise();}
+  if (istangent) {throw Standard_DomainError();}
   return tg2.Dot(nplan) < 0.;
 }
 
@@ -1226,7 +1226,7 @@ Standard_Boolean BlendFunc_EvolRad::IsTangencyPoint () const
 
 const gp_Vec& BlendFunc_EvolRad::TangentOnS1 () const
 {
-  if (istangent) {Standard_DomainError::Raise();}
+  if (istangent) {throw Standard_DomainError();}
   return tg1;
 }
 
@@ -1238,7 +1238,7 @@ const gp_Vec& BlendFunc_EvolRad::TangentOnS1 () const
 
 const gp_Vec& BlendFunc_EvolRad::TangentOnS2 () const
 {
-  if (istangent) {Standard_DomainError::Raise();}
+  if (istangent) {throw Standard_DomainError();}
   return tg2;
 }
 
@@ -1250,7 +1250,7 @@ const gp_Vec& BlendFunc_EvolRad::TangentOnS2 () const
 
 const gp_Vec2d& BlendFunc_EvolRad::Tangent2dOnS1 () const
 {
-  if (istangent) {Standard_DomainError::Raise();}
+  if (istangent) {throw Standard_DomainError();}
   return tg12d;
 }
 
@@ -1262,7 +1262,7 @@ const gp_Vec2d& BlendFunc_EvolRad::Tangent2dOnS1 () const
 
 const gp_Vec2d& BlendFunc_EvolRad::Tangent2dOnS2 () const
 {
-  if (istangent) {Standard_DomainError::Raise();}
+  if (istangent) {throw Standard_DomainError();}
   return tg22d;
 }
 

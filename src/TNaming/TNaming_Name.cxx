@@ -1096,7 +1096,7 @@ static Standard_Boolean  Generated (const TDF_Label&                L,
 				    const TNaming_ListOfNamedShape& Args)
 {
   if (Args.Extent() < 2) {
-    Standard_ConstructionError::Raise("TNaming_Name::Solve: => Generated");
+    throw Standard_ConstructionError("TNaming_Name::Solve: => Generated");
   }
   // First argument : label of generation
   // Next arguments : generators.
@@ -1303,7 +1303,7 @@ static Standard_Boolean Identity (const TDF_Label&                L,
                                   const TopAbs_ShapeEnum          ShapeType)
 {
   if (Args.Extent() > 2) {
-    Standard_ConstructionError::Raise("TNaming_Name::Solve");
+    throw Standard_ConstructionError("TNaming_Name::Solve");
     }
   if(!ValidArgs(Args)) return Standard_False;
   const Handle(TNaming_NamedShape)& A = Args.First();
@@ -1724,7 +1724,7 @@ static Standard_Boolean WireIN(const TDF_Label&                L,
   TopTools_IndexedMapOfShape aMapOfSh;
   TDF_LabelMap        aForbiden;
   if (Args.Extent() < 1 ) 
-    Standard_ConstructionError::Raise("TNaming_Name::Solve"); 
+    throw Standard_ConstructionError("TNaming_Name::Solve");
   const Handle(TNaming_NamedShape)& A = Args.First();
   TNaming_NamingTool::CurrentShape (Valid,aForbiden,A, aMapOfSh);
   if (aMapOfSh.Extent() != 1) return aResult;
@@ -1860,7 +1860,7 @@ static Standard_Boolean ShellIN(const TDF_Label&                L,
   TopTools_IndexedMapOfShape aMapOfSh; 
   TDF_LabelMap        aForbiden;
   if (Args.Extent() < 1 ) 
-    Standard_ConstructionError::Raise("TNaming_Name::Solve"); 
+    throw Standard_ConstructionError("TNaming_Name::Solve");
   const Handle(TNaming_NamedShape)& A = Args.First();
   TNaming_NamingTool::CurrentShape (Valid,aForbiden,A, aMapOfSh);
   if (aMapOfSh.Extent() != 1) return aResult;
@@ -2007,9 +2007,8 @@ static  Standard_CString NameTypeToString (const TNaming_NameType Type)
     case  TNaming_ORIENTATION         : return "ORIENTATION";
     case  TNaming_WIREIN              : return "WIREIN";
       default :
-        Standard_DomainError::Raise("TNaming_NameType; enum term unknown ");
+        throw Standard_DomainError("TNaming_NameType; enum term unknown ");
     }
-  return "";
 }
 #endif
 //=======================================================================
@@ -2058,7 +2057,7 @@ Standard_Boolean TNaming_Name::Solve(const TDF_Label&    aLab,
     }
   case TNaming_SUBSTRACTION: 
     {
-      Standard_NotImplemented::Raise();
+      throw Standard_NotImplemented();
 //      Done = Substraction (aLab,Valid,myArgs);
       break;
     }

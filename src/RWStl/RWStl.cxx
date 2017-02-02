@@ -378,7 +378,7 @@ Handle(StlMesh_Mesh) RWStl::ReadBinary (const OSD_Path& thePath,
   Standard_Integer NBFACET = (Standard_Integer)((filesize - HEADER_SIZE) / SIZEOF_STL_FACET);
   if (NBFACET < 1)
   {
-    Standard_NoMoreObject::Raise("RWStl::ReadBinary (wrong file size)");
+    throw Standard_NoMoreObject("RWStl::ReadBinary (wrong file size)");
   }
 
   theFile.Seek (80, OSD_FromBeginning);

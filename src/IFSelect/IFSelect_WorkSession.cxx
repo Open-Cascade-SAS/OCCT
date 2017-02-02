@@ -221,10 +221,10 @@ IFSelect_ReturnStatus  IFSelect_WorkSession::ReadFile
     else if (stat < 0) status = IFSelect_RetError;
     else status = IFSelect_RetFail;
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
     Handle(Message_Messenger) sout = Message::DefaultMessenger();
     sout<<"    ****    Interruption ReadFile par Exception :   ****\n";
-    sout << Standard_Failure::Caught()->GetMessageString();
+    sout << anException.GetMessageString();
     sout<<"\n    Abandon"<<endl;
     status = IFSelect_RetFail;
   }
@@ -479,8 +479,7 @@ Handle(Interface_HGraph) IFSelect_WorkSession::HGraph ()
 const Interface_Graph& IFSelect_WorkSession::Graph ()
 {
   ComputeGraph();
-  if (thegraph.IsNull()) Standard_DomainError::Raise
-    ("IFSelect WorkSession : Graph not available");
+  if (thegraph.IsNull()) throw Standard_DomainError("IFSelect WorkSession : Graph not available");
   return thegraph->Graph();
 }
 
@@ -1245,10 +1244,10 @@ Interface_EntityIterator IFSelect_WorkSession::EvalSelection
       OCC_CATCH_SIGNALS
       iter = EvalSelection(sel);    // appel normal (donc, code pas duplique)
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const& anException) {
       Handle(Message_Messenger) sout = Message::DefaultMessenger();
       sout<<"    ****    Interruption EvalSelection par Exception :   ****\n";
-      sout<<Standard_Failure::Caught()->GetMessageString();
+      sout<<anException.GetMessageString();
       sout<<"\n    Abandon"<<endl;
     }
     errhand = theerrhand;
@@ -1288,10 +1287,10 @@ Handle(TColStd_HSequenceOfTransient) IFSelect_WorkSession::SelectionResult
       OCC_CATCH_SIGNALS
       res = SelectionResult(sel);    // appel normal (->code unique)
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const& anException) {
       Handle(Message_Messenger) sout = Message::DefaultMessenger();
       sout<<"    ****    Interruption SelectionResult par Exception :   ****\n";
-      sout<<Standard_Failure::Caught()->GetMessageString();
+      sout<<anException.GetMessageString();
       sout<<"\n    Abandon"<<endl;
     }
     errhand = theerrhand;
@@ -2021,10 +2020,10 @@ void IFSelect_WorkSession::EvaluateFile ()
       OCC_CATCH_SIGNALS
       EvaluateFile();    // appel normal (donc, code pas duplique)
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const& anException) {
       Handle(Message_Messenger) sout = Message::DefaultMessenger();
       sout<<"    ****    Interruption EvaluateFile par Exception :   ****\n";
-      sout<<Standard_Failure::Caught()->GetMessageString();
+      sout<<anException.GetMessageString();
       sout<<"\n    Abandon"<<endl;
       checks.CCheck(0)->AddFail ("Exception Raised -> Abandon");
     }
@@ -2125,10 +2124,10 @@ Standard_Boolean IFSelect_WorkSession::SendSplit ()
       OCC_CATCH_SIGNALS
       return SendSplit();   // appel normal (donc, code pas duplique)
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const& anException) {
       Handle(Message_Messenger) sout = Message::DefaultMessenger();
       sout<<"    ****    Interruption SendSplit par Exception :   ****\n";
-      sout<<Standard_Failure::Caught()->GetMessageString();
+      sout<<anException.GetMessageString();
       sout<<"\n    Abandon"<<endl;
       checks.CCheck(0)->AddFail ("Exception Raised -> Abandon");
     }
@@ -2348,10 +2347,10 @@ IFSelect_ReturnStatus IFSelect_WorkSession::SendAll
       ComputeGraph(computegraph);
       checks = thecopier->SendAll(filename,thegraph->Graph(),thelibrary,theprotocol);
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const& anException) {
       Handle(Message_Messenger) sout = Message::DefaultMessenger();
       sout<<"    ****    Interruption SendAll par Exception :   ****\n";
-      sout<<Standard_Failure::Caught()->GetMessageString();
+      sout<<anException.GetMessageString();
       sout<<"\n    Abandon"<<endl;
       errhand = theerrhand;
       checks.CCheck(0)->AddFail ("Exception Raised -> Abandon");
@@ -2398,10 +2397,10 @@ IFSelect_ReturnStatus IFSelect_WorkSession::SendSelected
       ComputeGraph(computegraph);
       return SendSelected (filename,sel);    // appel normal
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const& anException) {
       Handle(Message_Messenger) sout = Message::DefaultMessenger();
       sout<<"    ****    Interruption SendSelected par Exception :   ****\n";
-      sout<<Standard_Failure::Caught()->GetMessageString();
+      sout<<anException.GetMessageString();
       sout<<"\n    Abandon"<<endl;
       checks.CCheck(0)->AddFail ("Exception Raised -> Abandon");
       errhand = theerrhand;
@@ -3333,10 +3332,10 @@ void IFSelect_WorkSession::DumpModel
       OCC_CATCH_SIGNALS
       C.Print(S,myModel, (level == 3));
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const& anException) {
       Handle(Message_Messenger) sout = Message::DefaultMessenger();
       sout<<"    ****    Interruption DumpModel par Exception :   ****\n";
-      sout<<Standard_Failure::Caught()->GetMessageString();
+      sout<<anException.GetMessageString();
       sout<<"\n    Abandon"<<endl;
     }
 
@@ -3501,9 +3500,9 @@ void IFSelect_WorkSession::EvaluateSelection
       OCC_CATCH_SIGNALS
       EvaluateSelection(sel);    // appel normal (->code unique)
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const& anException) {
       sout<<"    ****    Interruption EvaluateSelection par Exception    ****  Intitule\n";
-      sout<<Standard_Failure::Caught()->GetMessageString();
+      sout<<anException.GetMessageString();
       sout<<"\n    Abandon"<<endl;
     }
     errhand = theerrhand;
@@ -3539,9 +3538,9 @@ void IFSelect_WorkSession::EvaluateDispatch
       OCC_CATCH_SIGNALS
       EvaluateDispatch(disp,mode);    // appel normal (->code unique)
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const& anException) {
       sout<<"    ****    Interruption EvaluateDispatch par Exception    ****  Intitule\n";
-      sout<<Standard_Failure::Caught()->GetMessageString();
+      sout<<anException.GetMessageString();
       sout<<"\n    Abandon"<<endl;
     }
     errhand = theerrhand;
@@ -3617,9 +3616,9 @@ void IFSelect_WorkSession::EvaluateComplete
       OCC_CATCH_SIGNALS
       EvaluateComplete(mode);    // appel normal (donc, code pas duplique)
     }
-    catch (Standard_Failure) {
+    catch (Standard_Failure const& anException) {
       sout<<"    ****    Interruption EvaluateComplete par Exception :   ****\n";
-      sout<<Standard_Failure::Caught()->GetMessageString();
+      sout<<anException.GetMessageString();
       sout<<"\n    Abandon"<<endl;
     }
     errhand = theerrhand;
@@ -3733,9 +3732,9 @@ void IFSelect_WorkSession::ListEntities
     if (mode == 0) sout<<endl;
     if (mode == 2) sout<<")"<<endl;
   }
-  catch (Standard_Failure) {
+  catch (Standard_Failure const& anException) {
     sout<<"    ****    Interruption ListEntities par Exception :   ****\n";
-    sout<<Standard_Failure::Caught()->GetMessageString();
+    sout<<anException.GetMessageString();
     sout<<"\n    Abandon"<<endl;
   }
 }

@@ -34,7 +34,7 @@ IGESGraph_LineFontDefPattern::IGESGraph_LineFontDefPattern ()    {  }
    const Handle(TCollection_HAsciiString)&   aPattern)
 {
   if (allSegLength->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESGraph_LineFontDefPattern : Init");
+    throw Standard_DimensionMismatch("IGESGraph_LineFontDefPattern : Init");
   theSegmentLengths = allSegLength;
   theDisplayPattern = aPattern;
   InitTypeAndForm(304,2);

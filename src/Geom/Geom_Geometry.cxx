@@ -37,8 +37,7 @@ typedef gp_Trsf               Trsf;
 Handle(Geom_Geometry) Geom_Geometry::Copy() const {
 
    Handle(Geom_Geometry) G;
-   Standard_ConstructionError::Raise();
-   return G;
+   throw Standard_ConstructionError();
 }
 
 

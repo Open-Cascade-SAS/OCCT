@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(PCDM_DriverError, Standard_Failure)
 
 #if !defined No_Exception && !defined No_PCDM_DriverError
   #define PCDM_DriverError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) PCDM_DriverError::Raise(MESSAGE);
+  if (CONDITION) throw PCDM_DriverError(MESSAGE);
 #else
   #define PCDM_DriverError_Raise_if(CONDITION, MESSAGE)
 #endif

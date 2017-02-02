@@ -33,9 +33,7 @@ Expr_NamedConstant::Expr_NamedConstant(const TCollection_AsciiString& name, cons
 
 const Handle(Expr_GeneralExpression)& Expr_NamedConstant::SubExpression (const Standard_Integer ) const
 {
- Standard_OutOfRange::Raise();
- Handle(Expr_GeneralExpression)* bid = new Handle(Expr_GeneralExpression);
- return *bid;
+ throw Standard_OutOfRange();
 }
 
 Handle(Expr_GeneralExpression) Expr_NamedConstant::Simplified () const

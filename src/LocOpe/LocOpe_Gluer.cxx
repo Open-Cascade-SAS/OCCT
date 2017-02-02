@@ -90,7 +90,7 @@ void LocOpe_Gluer::Bind(const TopoDS_Face& Fnew,
     }
   }
   if (!exp.More()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   TopoDS_Shape aLocalFace =  Fnew.Oriented(exp.Current().Orientation());
@@ -103,7 +103,7 @@ void LocOpe_Gluer::Bind(const TopoDS_Face& Fnew,
     }
   }
   if (!exp.More()) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   aLocalFace = Fbase.Oriented(exp.Current().Orientation());
@@ -153,7 +153,7 @@ void LocOpe_Gluer::Bind(const TopoDS_Edge& Enew,
 			const TopoDS_Edge& Ebase)
 {
   if (myMapEE.IsBound(Enew) && !myMapEE(Enew).IsSame(Ebase)) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   myMapEE.Bind(Enew,Ebase);
 }
@@ -172,7 +172,7 @@ void LocOpe_Gluer::Perform()
   }
   if (mySb.IsNull() || mySn.IsNull() || 
       myMapEF.IsEmpty() || myOpe ==LocOpe_INVALID) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   Handle(LocOpe_WiresOnShape) theWOnS = new LocOpe_WiresOnShape(mySb);
@@ -330,7 +330,7 @@ void LocOpe_Gluer::Perform()
 const TopTools_ListOfShape& LocOpe_Gluer::DescendantFaces
    (const TopoDS_Face& F) const
 {
-  if (!myDone) {StdFail_NotDone::Raise();}
+  if (!myDone) {throw StdFail_NotDone();}
   if (myDescF.IsBound(F))
     return myDescF(F);
   static TopTools_ListOfShape nullList;

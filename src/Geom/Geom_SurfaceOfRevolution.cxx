@@ -363,8 +363,7 @@ Vec Geom_SurfaceOfRevolution::DN (const Standard_Real    U , const Standard_Real
 
 Ax2 Geom_SurfaceOfRevolution::ReferencePlane() const {
         
-   Standard_NotImplemented::Raise ();
-   return gp_Ax2();
+   throw Standard_NotImplemented();
 }
 
 

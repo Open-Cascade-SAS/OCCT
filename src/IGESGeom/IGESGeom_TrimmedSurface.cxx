@@ -36,7 +36,7 @@ IGESGeom_TrimmedSurface::IGESGeom_TrimmedSurface ()    {  }
 {
   if (!anInner.IsNull())
     if (anInner->Lower() != 1)
-      Standard_DimensionMismatch::Raise("IGESGeom_TrimmedSurface : Init");
+      throw Standard_DimensionMismatch("IGESGeom_TrimmedSurface : Init");
 
   theSurface     = aSurface;
   theFlag        = aFlag;

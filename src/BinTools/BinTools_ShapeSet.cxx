@@ -425,7 +425,7 @@ void  BinTools_ShapeSet::Read(Standard_IStream& IS)
   if (IS.fail() || strcmp(buffer,"TShapes")) {
     Standard_SStream aMsg;
     aMsg << "BinTools_ShapeSet::Read: Not a TShape table"<<endl;
-    Standard_Failure::Raise(aMsg);    
+    throw Standard_Failure(aMsg.str().c_str());
     return;
   }
 
@@ -746,12 +746,11 @@ void  BinTools_ShapeSet::WriteGeometry(const TopoDS_Shape& S,
 	OS << (Standard_Byte) 0;//without triangulation
     }
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
     Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_ShapeSet::WriteGeometry(S,OS)" << endl;
-    Handle(Standard_Failure) anExc = Standard_Failure::Caught();
-    aMsg << anExc << endl;
-    Standard_Failure::Raise(aMsg);
+    aMsg << anException << endl;
+    throw Standard_Failure(aMsg.str().c_str());
   }
 }
 
@@ -872,7 +871,7 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 	    {
               Standard_SStream aMsg;
 	      aMsg << "BinTools_SurfaceSet::ReadGeometry: UnExpected BRep_PointRepresentation = "<< val <<endl;
-	      Standard_Failure::Raise(aMsg);
+	      throw Standard_Failure(aMsg.str().c_str());
 	      }
 	  }
 	  
@@ -1067,7 +1066,7 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 	    {
               Standard_SStream aMsg;
 	      aMsg <<"Unexpected Curve Representation ="<< val << endl;
-	      Standard_Failure::Raise(aMsg);
+	      throw Standard_Failure(aMsg.str().c_str());
 	    }
             
           }
@@ -1154,17 +1153,16 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
       {
         Standard_SStream aMsg;
         aMsg << "Unexpected topology type = "<< T <<endl;
-        Standard_Failure::Raise(aMsg);
+        throw Standard_Failure(aMsg.str().c_str());
         break;
       }
     }
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
     Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_ShapeSet::ReadGeometry(S,OS)" << endl;
-    Handle(Standard_Failure) anExc = Standard_Failure::Caught();
-    aMsg << anExc << endl;
-    Standard_Failure::Raise(aMsg);
+    aMsg << anException << endl;
+    throw Standard_Failure(aMsg.str().c_str());
   }
 }
 
@@ -1217,12 +1215,11 @@ void BinTools_ShapeSet::WritePolygonOnTriangulation(Standard_OStream& OS) const
 	BinTools::PutBool(OS, Standard_False);
     }
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
     Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_ShapeSet::WritePolygonOnTriangulation(..)" << endl;
-    Handle(Standard_Failure) anExc = Standard_Failure::Caught();
-    aMsg << anExc << endl;
-    Standard_Failure::Raise(aMsg);
+    aMsg << anException << endl;
+    throw Standard_Failure(aMsg.str().c_str());
   }
 }
 
@@ -1236,7 +1233,7 @@ void BinTools_ShapeSet::ReadPolygonOnTriangulation(Standard_IStream& IS)
   char buffer[255];
   IS >> buffer;
   if (IS.fail() || (strstr(buffer,"PolygonOnTriangulations") == NULL)) {
-    Standard_Failure::Raise("BinTools_ShapeSet::ReadPolygonOnTriangulation: Not a PolygonOnTriangulation section");
+    throw Standard_Failure("BinTools_ShapeSet::ReadPolygonOnTriangulation: Not a PolygonOnTriangulation section");
   }
   Standard_Integer i, j, val, nbpol = 0, nbnodes =0;
   Standard_Boolean hasparameters;
@@ -1271,12 +1268,11 @@ void BinTools_ShapeSet::ReadPolygonOnTriangulation(Standard_IStream& IS)
       myNodes.Add(Poly);
     }
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
     Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_ShapeSet::ReadPolygonOnTriangulation(..)" << endl;
-    Handle(Standard_Failure) anExc = Standard_Failure::Caught();
-    aMsg << anExc << endl;
-    Standard_Failure::Raise(aMsg);
+    aMsg << anException << endl;
+    throw Standard_Failure(aMsg.str().c_str());
   }
 }
 
@@ -1318,12 +1314,11 @@ void BinTools_ShapeSet::WritePolygon3D(Standard_OStream& OS)const
       }
     }
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
     Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_ShapeSet::WritePolygon3D(..)" << endl;
-    Handle(Standard_Failure) anExc = Standard_Failure::Caught();
-    aMsg << anExc << endl;
-    Standard_Failure::Raise(aMsg);
+    aMsg << anException << endl;
+    throw Standard_Failure(aMsg.str().c_str());
   }
 }
 //=======================================================================
@@ -1343,7 +1338,7 @@ void BinTools_ShapeSet::ReadPolygon3D(Standard_IStream& IS)
 #ifdef OCCT_DEBUG
     cout <<"Buffer: " << buffer << endl;
 #endif
-    Standard_Failure::Raise("BinTools_ShapeSet::ReadPolygon3D: Not a Polygon3D section");
+    throw Standard_Failure("BinTools_ShapeSet::ReadPolygon3D: Not a Polygon3D section");
   }
   Handle(Poly_Polygon3D) P;
   IS >> nbpol;
@@ -1374,12 +1369,11 @@ void BinTools_ShapeSet::ReadPolygon3D(Standard_IStream& IS)
       myPolygons3D.Add(P);
     }
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
     Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_ShapeSet::ReadPolygon3D(..)" << endl;
-    Handle(Standard_Failure) anExc = Standard_Failure::Caught();
-    aMsg << anExc << endl;
-    Standard_Failure::Raise(aMsg);
+    aMsg << anException << endl;
+    throw Standard_Failure(aMsg.str().c_str());
   }
 }
 
@@ -1431,12 +1425,11 @@ void BinTools_ShapeSet::WriteTriangulation(Standard_OStream& OS) const
       }
     }
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
     Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_ShapeSet::WriteTriangulation(..)" << endl;
-    Handle(Standard_Failure) anExc = Standard_Failure::Caught();
-    aMsg << anExc << endl;
-    Standard_Failure::Raise(aMsg);
+    aMsg << anException << endl;
+    throw Standard_Failure(aMsg.str().c_str());
   }
 }
 
@@ -1457,7 +1450,7 @@ void BinTools_ShapeSet::ReadTriangulation(Standard_IStream& IS)
   IS >> buffer;
 
   if (IS.fail() || (strstr(buffer,"Triangulations") == NULL)) {
-    Standard_Failure::Raise("BinTools_ShapeSet::Triangulation: Not a Triangulation section");
+    throw Standard_Failure("BinTools_ShapeSet::Triangulation: Not a Triangulation section");
   }
   IS >> nbtri;
   IS.get();// remove LF 
@@ -1502,12 +1495,11 @@ void BinTools_ShapeSet::ReadTriangulation(Standard_IStream& IS)
       myTriangulations.Add(T);
     }
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
     Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_ShapeSet::ReadTriangulation(..)" << endl;
-    Handle(Standard_Failure) anExc = Standard_Failure::Caught();
-    aMsg << anExc << endl;
-    Standard_Failure::Raise(aMsg);
+    aMsg << anException << endl;
+    throw Standard_Failure(aMsg.str().c_str());
   }
 }
 

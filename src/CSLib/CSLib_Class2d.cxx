@@ -304,8 +304,7 @@ const CSLib_Class2d& CSLib_Class2d::Copy(const CSLib_Class2d& ) const
 #ifdef OCCT_DEBUG
   cerr<<"Copy not allowed in CSLib_Class2d"<<endl;
 #endif
-  Standard_ConstructionError::Raise();
-  return *this;
+  throw Standard_ConstructionError();
 }
 //=======================================================================
 //function : Transform2d

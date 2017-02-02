@@ -196,7 +196,7 @@ static void EvalParameters(const Geom2dAdaptor_Curve& Bis,
   gp_Pnt P;
 
   if ( !Intersector.IsDone()) {
-    StdFail_NotDone::Raise("BRepFill_TrimSurfaceTool::IntersectWith");
+    throw StdFail_NotDone("BRepFill_TrimSurfaceTool::IntersectWith");
   }
 
   NbPoints = Intersector.NbPoints();
@@ -260,7 +260,7 @@ static void EvalParametersBis(const Geom2dAdaptor_Curve& Bis,
   gp_Pnt P;
 
   if ( !Intersector.IsDone()) {
-    StdFail_NotDone::Raise("BRepFill_TrimSurfaceTool::IntersectWith");
+    throw StdFail_NotDone("BRepFill_TrimSurfaceTool::IntersectWith");
   }
 
   NbPoints = Intersector.NbPoints();

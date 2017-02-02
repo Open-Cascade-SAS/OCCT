@@ -420,15 +420,14 @@ void BinTools_SurfaceSet::WriteSurface(const Handle(Geom_Surface)& S,
       OS << Handle(Geom_OffsetSurface)::DownCast(S);
     }
     else {
-      Standard_Failure::Raise("UNKNOWN SURFACE TYPE");
+      throw Standard_Failure("UNKNOWN SURFACE TYPE");
     }
   }
-   catch(Standard_Failure) {
+   catch(Standard_Failure const& anException) {
      Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_SurfaceSet::WriteSurface(..)" << endl;
-    Handle(Standard_Failure) anExc = Standard_Failure::Caught();
-    aMsg << anExc << endl;
-    Standard_Failure::Raise(aMsg);
+    aMsg << anException << endl;
+    throw Standard_Failure(aMsg.str().c_str());
   }  
 }
 
@@ -854,18 +853,17 @@ Standard_IStream& BinTools_SurfaceSet::ReadSurface(Standard_IStream& IS,
     default :
       {
 	S = NULL;
-	Standard_Failure::Raise("UNKNOWN SURFACE TYPE");        
+	throw Standard_Failure("UNKNOWN SURFACE TYPE");
       }
       break;
     }
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure const& anException) {
     S = NULL;
     Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_SurfaceSet::ReadSurface(..)" << endl;
-    Handle(Standard_Failure) anExc = Standard_Failure::Caught();
-    aMsg << anExc << endl;
-    Standard_Failure::Raise(aMsg);
+    aMsg << anException << endl;
+    throw Standard_Failure(aMsg.str().c_str());
   }
   return IS;
 }
@@ -885,7 +883,7 @@ void  BinTools_SurfaceSet::Read(Standard_IStream& IS)
 #ifdef OCCT_DEBUG
     cout <<"SurfaceSet buffer: " << buffer << endl;
 #endif
-    Standard_Failure::Raise(aMsg);
+    throw Standard_Failure(aMsg.str().c_str());
     return;
   }
 

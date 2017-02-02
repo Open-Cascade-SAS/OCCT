@@ -37,7 +37,7 @@ IGESDimen_FlagNote::IGESDimen_FlagNote ()    {  }
 {
   if (!someLeaders.IsNull())
     if (someLeaders->Lower() != 1)
-      Standard_DimensionMismatch::Raise("IGESDimen_FlagNote : Init");
+      throw Standard_DimensionMismatch("IGESDimen_FlagNote : Init");
   theLowerLeftcorner = leftCorner;
   theAngle           = anAngle;
   theNote            = aNote;

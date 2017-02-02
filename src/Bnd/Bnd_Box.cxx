@@ -169,7 +169,7 @@ void Bnd_Box::Get (Standard_Real& theXmin,
 {
   if (IsVoid())
   {
-    Standard_ConstructionError::Raise ("Bnd_Box is void");
+    throw Standard_ConstructionError("Bnd_Box is void");
   }
 
   if (IsOpenXmin()) theXmin = -Bnd_Precision_Infinite;
@@ -196,8 +196,7 @@ gp_Pnt Bnd_Box::CornerMin() const
   gp_Pnt aCornerMin;
   if (IsVoid())
   {
-    Standard_ConstructionError::Raise ("Bnd_Box is void");
-    return aCornerMin;
+    throw Standard_ConstructionError("Bnd_Box is void");
   }
   if (IsOpenXmin()) aCornerMin.SetX (-Bnd_Precision_Infinite);
   else              aCornerMin.SetX (Xmin - Gap);
@@ -218,8 +217,7 @@ gp_Pnt Bnd_Box::CornerMax() const
   gp_Pnt aCornerMax;
   if (IsVoid())
   {
-    Standard_ConstructionError::Raise ("Bnd_Box is void");
-    return aCornerMax;
+    throw Standard_ConstructionError("Bnd_Box is void");
   }
   if (IsOpenXmax()) aCornerMax.SetX (Bnd_Precision_Infinite);
   else              aCornerMax.SetX (Xmax + Gap);

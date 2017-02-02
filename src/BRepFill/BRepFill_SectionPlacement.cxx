@@ -196,7 +196,7 @@ BRepFill_SectionPlacement(const Handle(BRepFill_LocationLaw)& Law,
 //     BRepExtrema_DistShapeShape Ext(mySection, myLaw->Wire());
     
 //     if (! Ext.IsDone()) 
-//        Standard_ConstructionError::Raise("Distance Vertex/Spine");
+//        throw Standard_ConstructionError("Distance Vertex/Spine");
 
 //     if (Ext.SupportTypeShape2(1) == BRepExtrema_IsOnEdge) {
 //       TopoDS_Shape sbis = Ext.SupportOnShape2(1);
@@ -317,7 +317,7 @@ BRepFill_SectionPlacement(const Handle(BRepFill_LocationLaw)& Law,
     }
   }
   
-  if (Bof) Standard_ConstructionError::Raise("Interval non trouve !!");
+  if (Bof) throw Standard_ConstructionError("Interval non trouve !!");
   Ind1 = Index(Ind1);
   if (Ind2) Ind2 = Index(Ind2);
   

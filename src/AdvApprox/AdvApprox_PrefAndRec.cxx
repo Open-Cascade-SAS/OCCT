@@ -28,7 +28,7 @@ AdvApprox_PrefAndRec::AdvApprox_PrefAndRec(const TColStd_Array1OfReal& RecCut,
 {
   myRecCutting =  RecCut;
   myPrefCutting =  PrefCut;
-  if (myWeight <= 1) { Standard_DomainError::Raise("PrefAndRec : Weight is too small");}
+  if (myWeight <= 1) { throw Standard_DomainError("PrefAndRec : Weight is too small");}
 }
 
 Standard_Boolean AdvApprox_PrefAndRec::Value(const Standard_Real a,

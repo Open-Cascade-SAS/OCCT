@@ -150,7 +150,7 @@ static void d1(const Standard_Real t,
     DS1_v*DS1_v + Ort*DS2_v);
 
   Standard_Real det = dE_du.X()*dE_dv.Y() - dE_du.Y()*dE_dv.X();
-  if (fabs(det) < gp::Resolution()) Standard_ConstructionError::Raise();
+  if (fabs(det) < gp::Resolution()) throw Standard_ConstructionError();
 
   gp_Mat2d M(gp_XY(dE_dv.Y()/det, -dE_du.Y()/det), 
     gp_XY(-dE_dv.X()/det, dE_du.X()/det));
@@ -186,7 +186,7 @@ static void d2(const Standard_Real t,
     DS1_v*DS1_v + Ort*DS2_v);
 
   Standard_Real det = dE_du.X()*dE_dv.Y() - dE_du.Y()*dE_dv.X();
-  if (fabs(det) < gp::Resolution()) Standard_ConstructionError::Raise();
+  if (fabs(det) < gp::Resolution()) throw Standard_ConstructionError();
 
   gp_Mat2d M(gp_XY(dE_dv.Y()/det, -dE_du.Y()/det), 
     gp_XY(-dE_dv.X()/det, dE_du.X()/det));
@@ -259,7 +259,7 @@ static void d1CurvOnSurf(const Standard_Real t,
     DS1_v*DS1_v + Ort*DS2_v);
 
   Standard_Real det = dE_du.X()*dE_dv.Y() - dE_du.Y()*dE_dv.X();
-  if (fabs(det) < gp::Resolution()) Standard_ConstructionError::Raise();
+  if (fabs(det) < gp::Resolution()) throw Standard_ConstructionError();
 
   gp_Mat2d M(gp_XY(dE_dv.Y()/det, -dE_du.Y()/det), 
     gp_XY(-dE_dv.X()/det, dE_du.X()/det));
@@ -300,7 +300,7 @@ static void d2CurvOnSurf(const Standard_Real t,
     DS1_v*DS1_v + Ort*DS2_v);
 
   Standard_Real det = dE_du.X()*dE_dv.Y() - dE_du.Y()*dE_dv.X();
-  if (fabs(det) < gp::Resolution()) Standard_ConstructionError::Raise();
+  if (fabs(det) < gp::Resolution()) throw Standard_ConstructionError();
 
   gp_Mat2d M(gp_XY(dE_dv.Y()/det, -dE_du.Y()/det), 
     gp_XY(-dE_dv.X()/det, dE_du.X()/det));
@@ -1185,7 +1185,7 @@ void ProjLib_CompProjectedCurve::Bounds(const Standard_Integer Index,
   Standard_Real& Udeb,
   Standard_Real& Ufin) const
 {
-  if(Index < 1 || Index > myNbCurves) Standard_NoSuchObject::Raise();
+  if(Index < 1 || Index > myNbCurves) throw Standard_NoSuchObject();
   Udeb = mySequence->Value(Index)->Value(1).X();
   Ufin = mySequence->Value(Index)->Value(mySequence->Value(Index)->Length()).X();
 }
@@ -1196,7 +1196,7 @@ void ProjLib_CompProjectedCurve::Bounds(const Standard_Integer Index,
 
 Standard_Boolean ProjLib_CompProjectedCurve::IsSinglePnt(const Standard_Integer Index, gp_Pnt2d& P) const
 {
-  if(Index < 1 || Index > myNbCurves) Standard_NoSuchObject::Raise();
+  if(Index < 1 || Index > myNbCurves) throw Standard_NoSuchObject();
   P = gp_Pnt2d(mySequence->Value(Index)->Value(1).Y(), mySequence->Value(Index)->Value(1).Z());
   return mySnglPnts->Value(Index);
 }
@@ -1208,7 +1208,7 @@ Standard_Boolean ProjLib_CompProjectedCurve::IsSinglePnt(const Standard_Integer 
 
 Standard_Boolean ProjLib_CompProjectedCurve::IsUIso(const Standard_Integer Index, Standard_Real& U) const
 {
-  if(Index < 1 || Index > myNbCurves) Standard_NoSuchObject::Raise();
+  if(Index < 1 || Index > myNbCurves) throw Standard_NoSuchObject();
   U = mySequence->Value(Index)->Value(1).Y();
   return myUIso->Value(Index);
 }
@@ -1219,7 +1219,7 @@ Standard_Boolean ProjLib_CompProjectedCurve::IsUIso(const Standard_Integer Index
 
 Standard_Boolean ProjLib_CompProjectedCurve::IsVIso(const Standard_Integer Index, Standard_Real& V) const
 {
-  if(Index < 1 || Index > myNbCurves) Standard_NoSuchObject::Raise();
+  if(Index < 1 || Index > myNbCurves) throw Standard_NoSuchObject();
   V = mySequence->Value(Index)->Value(1).Z();
   return myVIso->Value(Index);
 }
@@ -1254,7 +1254,7 @@ void ProjLib_CompProjectedCurve::D0(const Standard_Real U,gp_Pnt2d& P) const
       break;
     }
   }
-  if (!found) Standard_DomainError::Raise("ProjLib_CompProjectedCurve::D0");
+  if (!found) throw Standard_DomainError("ProjLib_CompProjectedCurve::D0");
 
   Standard_Real U0, V0;
 
@@ -1389,7 +1389,7 @@ void ProjLib_CompProjectedCurve::D2(const Standard_Real t,
 gp_Vec2d ProjLib_CompProjectedCurve::DN(const Standard_Real t, 
   const Standard_Integer N) const 
 {
-  if (N < 1 ) Standard_OutOfRange::Raise("ProjLib_CompProjectedCurve : N must be greater than 0");
+  if (N < 1 ) throw Standard_OutOfRange("ProjLib_CompProjectedCurve : N must be greater than 0");
   else if (N ==1) 
   {
     gp_Pnt2d P;
@@ -1405,7 +1405,7 @@ gp_Vec2d ProjLib_CompProjectedCurve::DN(const Standard_Real t,
     return V2;
   }
   else if (N > 2 ) 
-    Standard_NotImplemented::Raise("ProjLib_CompProjectedCurve::DN");
+    throw Standard_NotImplemented("ProjLib_CompProjectedCurve::DN");
   return gp_Vec2d();
 }
 
@@ -1445,7 +1445,7 @@ Standard_Real ProjLib_CompProjectedCurve::LastParameter() const
 
 Standard_Real ProjLib_CompProjectedCurve::MaxDistance(const Standard_Integer Index) const
 {
-  if(Index < 1 || Index > myNbCurves) Standard_NoSuchObject::Raise();
+  if(Index < 1 || Index > myNbCurves) throw Standard_NoSuchObject();
   return myMaxDistance->Value(Index);
 }
 
@@ -1497,7 +1497,7 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
     SforS = GeomAbs_CN; 
     break;
   default: 
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
   Standard_Integer i, j, k;
   Standard_Integer NbIntCur = myCurve->NbIntervals(S);

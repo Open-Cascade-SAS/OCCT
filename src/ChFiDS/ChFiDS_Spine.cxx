@@ -335,7 +335,7 @@ Standard_Real ChFiDS_Spine::Absc(const TopoDS_Vertex& V) const
 
 Standard_Real ChFiDS_Spine::Period() const
 {
-  if(!IsPeriodic()) Standard_Failure::Raise("Non-periodic Spine");
+  if(!IsPeriodic()) throw Standard_Failure("Non-periodic Spine");
   return abscissa->Value(abscissa->Upper());
 }
 
@@ -358,8 +358,7 @@ Standard_Real ChFiDS_Spine::Resolution(const Standard_Real R3d) const
 
 void  ChFiDS_Spine::SetFirstTgt(const Standard_Real W)
 {
-  if(IsPeriodic()) Standard_Failure::Raise
-    ("No extension by tangent on periodic contours"); 
+  if(IsPeriodic()) throw Standard_Failure("No extension by tangent on periodic contours");
 #ifdef OCCT_DEBUG
   if(W >= Precision::Confusion()) 
     cout<<"Interior extension at start of the guideline"<<endl;
@@ -381,8 +380,7 @@ void  ChFiDS_Spine::SetFirstTgt(const Standard_Real W)
 
 void  ChFiDS_Spine::SetLastTgt(const Standard_Real W)
 {
-  if(IsPeriodic()) Standard_Failure::Raise
-    ("No extension by tangent periodic contours"); 
+  if(IsPeriodic()) throw Standard_Failure("No extension by tangent periodic contours");
 
 #ifdef OCCT_DEBUG
   Standard_Real L = W - abscissa->Value(abscissa->Upper());

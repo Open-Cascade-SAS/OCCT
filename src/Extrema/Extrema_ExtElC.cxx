@@ -90,21 +90,21 @@ class ExtremaExtElC_TrigonometricRoots {
   //
   Standard_Integer NbSolutions() { 
     if(!done) {
-      StdFail_NotDone::Raise();
+      throw StdFail_NotDone();
     }
     return NbRoots; 
   }
   //
   Standard_Boolean InfiniteRoots() { 
     if(!done) {
-      StdFail_NotDone::Raise();
+      throw StdFail_NotDone();
     }
     return infinite_roots; 
   }
   //
   Standard_Real Value(const Standard_Integer& n) {
     if((!done)||(n>NbRoots)) {
-      StdFail_NotDone::Raise();
+      throw StdFail_NotDone();
     }
     return Roots[n-1];
   }
@@ -1024,78 +1024,7 @@ Extrema_ExtElC::Extrema_ExtElC (const gp_Circ& C1,
     }// if (!bOut || !bIn) {
   }// else
 }
-//=======================================================================
-//function : Extrema_ExtElC
-//purpose  : 
-//=======================================================================
-Extrema_ExtElC::Extrema_ExtElC (const gp_Circ&, const gp_Elips&)
-{
-  Standard_NotImplemented::Raise();
-}
-//=======================================================================
-//function : Extrema_ExtElC
-//purpose  : 
-//=======================================================================
-Extrema_ExtElC::Extrema_ExtElC (const gp_Circ&, const gp_Hypr&)
-{
-  Standard_NotImplemented::Raise();
-}
-//=======================================================================
-//function : Extrema_ExtElC
-//purpose  : 
-//=======================================================================
-Extrema_ExtElC::Extrema_ExtElC (const gp_Circ&, const gp_Parab&)
-{
-  Standard_NotImplemented::Raise();
-}
-//=======================================================================
-//function : Extrema_ExtElC
-//purpose  : 
-//=======================================================================
-Extrema_ExtElC::Extrema_ExtElC (const gp_Elips&, const gp_Elips&)
-{
-  Standard_NotImplemented::Raise();
-}
-//=======================================================================
-//function : Extrema_ExtElC
-//purpose  : 
-//=======================================================================
-Extrema_ExtElC::Extrema_ExtElC (const gp_Elips&, const gp_Hypr&)
-{
-  Standard_NotImplemented::Raise();
-}
-//=======================================================================
-//function : Extrema_ExtElC
-//purpose  : 
-//=======================================================================
-Extrema_ExtElC::Extrema_ExtElC (const gp_Elips&, const gp_Parab&)
-{
-  Standard_NotImplemented::Raise();
-}
-//=======================================================================
-//function : Extrema_ExtElC
-//purpose  : 
-//=======================================================================
-Extrema_ExtElC::Extrema_ExtElC (const gp_Hypr&, const gp_Hypr&)
-{
-  Standard_NotImplemented::Raise();
-}
-//=======================================================================
-//function : Extrema_ExtElC
-//purpose  : 
-//=======================================================================
-Extrema_ExtElC::Extrema_ExtElC (const gp_Hypr&, const gp_Parab&)
-{
-  Standard_NotImplemented::Raise();
-}
-//=======================================================================
-//function : Extrema_ExtElC
-//purpose  : 
-//=======================================================================
-Extrema_ExtElC::Extrema_ExtElC (const gp_Parab&, const gp_Parab&)
-{
-  Standard_NotImplemented::Raise();
-}
+
 //=======================================================================
 //function : IsDone
 //purpose  : 
@@ -1110,7 +1039,7 @@ Standard_Boolean Extrema_ExtElC::IsDone () const {
 Standard_Boolean Extrema_ExtElC::IsParallel () const
 {
   if (!IsDone()) { 
-    StdFail_NotDone::Raise(); 
+    throw StdFail_NotDone();
   }
   return myIsPar;
 }
@@ -1121,7 +1050,7 @@ Standard_Boolean Extrema_ExtElC::IsParallel () const
 Standard_Integer Extrema_ExtElC::NbExt () const
 {
   if (IsParallel()) {
-    StdFail_InfiniteSolutions::Raise(); 
+    throw StdFail_InfiniteSolutions();
   }
   return myNbExt;
 }
@@ -1132,16 +1061,16 @@ Standard_Integer Extrema_ExtElC::NbExt () const
 Standard_Real Extrema_ExtElC::SquareDistance (const Standard_Integer N) const
 {
   if (!myDone) { 
-    StdFail_NotDone::Raise(); 
+    throw StdFail_NotDone();
   }
   if (myIsPar) {
     if (N < 1 || N > 2) { 
-      Standard_OutOfRange::Raise(); 
+      throw Standard_OutOfRange();
     }
   }
   else {  
     if (N < 1 || N > NbExt()) { 
-      Standard_OutOfRange::Raise(); 
+      throw Standard_OutOfRange();
     }
   }
   return mySqDist[N-1];
@@ -1155,7 +1084,7 @@ void Extrema_ExtElC::Points (const Standard_Integer N,
 			     Extrema_POnCurv& P2) const
 {
   if (N < 1 || N > NbExt()) { 
-    Standard_OutOfRange::Raise(); 
+    throw Standard_OutOfRange();
   }
   P1 = myPoint[N-1][0];
   P2 = myPoint[N-1][1];

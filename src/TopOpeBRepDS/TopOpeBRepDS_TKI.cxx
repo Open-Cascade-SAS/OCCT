@@ -47,7 +47,7 @@ void TopOpeBRepDS_TKI::Reset()
   Standard_Integer ip = (Standard_Integer)TopOpeBRepDS_POINT;
   Standard_Integer is = (Standard_Integer)TopOpeBRepDS_SOLID;
   if (ip > is ) {
-    Standard_ProgramError::Raise("TopOpeBRepDS_TKI : enumeration badly ordered");
+    throw Standard_ProgramError("TopOpeBRepDS_TKI : enumeration badly ordered");
     return;
   }
   Standard_Integer f = 1;           // first index of table
@@ -158,7 +158,7 @@ void TopOpeBRepDS_TKI::Add(const TopOpeBRepDS_Kind K,const Standard_Integer G)
 {
   Standard_Boolean ok = IsValidKG(K,G);
   if (!ok) {
-    Standard_ProgramError::Raise("TopOpeBRepDS_TKI : Add K G");
+    throw Standard_ProgramError("TopOpeBRepDS_TKI : Add K G");
     return;
   }
 
@@ -176,7 +176,7 @@ void TopOpeBRepDS_TKI::Add(const TopOpeBRepDS_Kind K,const Standard_Integer G)
 void TopOpeBRepDS_TKI::Add(const TopOpeBRepDS_Kind K,const Standard_Integer G,const Handle(TopOpeBRepDS_Interference)& HI)
 {
   Standard_Boolean ok = IsValidKG(K,G);
-  if (!ok) Standard_ProgramError::Raise("TopOpeBRepDS_TKI : Add K G HI");
+  if (!ok) throw Standard_ProgramError("TopOpeBRepDS_TKI : Add K G HI");
 
   Add(K,G);
   ChangeInterferences(K,G).Append(HI);

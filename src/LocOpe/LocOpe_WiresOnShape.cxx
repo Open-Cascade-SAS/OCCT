@@ -176,7 +176,7 @@ void LocOpe_WiresOnShape::Bind(const TopoDS_Edge& E,
     }
   }
   else {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 }
 
@@ -930,7 +930,7 @@ void PutPCurves(const TopoDS_Edge& Efrom,
   }
 
   if (Lfaces.Extent() != 1 && Lfaces.Extent() !=2) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
 
   // soit bord libre, soit connexite entre 2 faces, eventuellement edge closed
@@ -1077,7 +1077,7 @@ void PutPCurves(const TopoDS_Edge& Efrom,
   else {
     const TopoDS_Face& Fac = TopoDS::Face(Lfaces.First());
     if (!BRep_Tool::IsClosed(Eto,Fac)) {
-      Standard_ConstructionError::Raise();
+      throw Standard_ConstructionError();
     }
 
     TopoDS_Shape aLocalE = Efrom.Oriented(TopAbs_FORWARD);

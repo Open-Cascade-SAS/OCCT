@@ -433,7 +433,7 @@ myType      (GeomAbs_OtherCurve),
 myIsApprox  (Standard_False)
 {
 //  if ( Abs(D * Pl.Direction()) < Precision::Confusion()) {
-//    Standard_ConstructionError::Raise
+//    throw Standard_ConstructionError
 //      ("ProjLib_ProjectOnPlane:  The Direction and the Plane are parallel");
 //  }
 }
@@ -974,12 +974,8 @@ ProjLib_ProjectOnPlane::Trim(const Standard_Real First,
     return myResult->Trim(First,Last,Tolerance) ;
   }
   else {
-    Standard_NotImplemented::Raise("");
+    throw Standard_NotImplemented("");
   }
-
-  // portage WNT
-  Handle(Adaptor3d_HCurve) dummy;
-  return dummy;
 }
 
   
@@ -1016,7 +1012,7 @@ Standard_Boolean ProjLib_ProjectOnPlane::IsPeriodic() const
 Standard_Real ProjLib_ProjectOnPlane::Period() const
 {
   if ( !IsPeriodic()) {
-    Standard_NoSuchObject::Raise("ProjLib_ProjectOnPlane::Period");
+    throw Standard_NoSuchObject("ProjLib_ProjectOnPlane::Period");
   }
 				
   if ( myIsApprox)
@@ -1198,7 +1194,7 @@ GeomAbs_CurveType ProjLib_ProjectOnPlane::GetType() const
 gp_Lin ProjLib_ProjectOnPlane::Line() const
 {
   if (myType != GeomAbs_Line)
-    Standard_NoSuchObject::Raise("ProjLib_ProjectOnPlane:Line");
+    throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:Line");
 
   return myResult->Line();
 }
@@ -1212,7 +1208,7 @@ gp_Lin ProjLib_ProjectOnPlane::Line() const
 gp_Circ ProjLib_ProjectOnPlane::Circle() const
 {
   if (myType != GeomAbs_Circle)
-    Standard_NoSuchObject::Raise("ProjLib_ProjectOnPlane:Circle");
+    throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:Circle");
 
   return myResult->Circle();
 }
@@ -1226,7 +1222,7 @@ gp_Circ ProjLib_ProjectOnPlane::Circle() const
 gp_Elips ProjLib_ProjectOnPlane::Ellipse() const
 {
   if (myType != GeomAbs_Ellipse)
-    Standard_NoSuchObject::Raise("ProjLib_ProjectOnPlane:Ellipse");
+    throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:Ellipse");
 
   return myResult->Ellipse();
 }
@@ -1240,7 +1236,7 @@ gp_Elips ProjLib_ProjectOnPlane::Ellipse() const
 gp_Hypr ProjLib_ProjectOnPlane::Hyperbola() const
 {
   if (myType != GeomAbs_Hyperbola)
-    Standard_NoSuchObject::Raise("ProjLib_ProjectOnPlane:Hyperbola");
+    throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:Hyperbola");
 
   return myResult->Hyperbola() ;
 }
@@ -1254,7 +1250,7 @@ gp_Hypr ProjLib_ProjectOnPlane::Hyperbola() const
 gp_Parab ProjLib_ProjectOnPlane::Parabola() const
 {
   if (myType != GeomAbs_Parabola)
-    Standard_NoSuchObject::Raise("ProjLib_ProjectOnPlane:Parabola");
+    throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:Parabola");
   
   return myResult->Parabola() ;
 }
@@ -1268,7 +1264,7 @@ Standard_Integer ProjLib_ProjectOnPlane::Degree() const
 {
   if ((GetType() != GeomAbs_BSplineCurve) &&
       (GetType() != GeomAbs_BezierCurve))
-    Standard_NoSuchObject::Raise("ProjLib_ProjectOnPlane:Degree");
+    throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:Degree");
 
   if ( myIsApprox)
     return myResult->Degree();
@@ -1285,7 +1281,7 @@ Standard_Boolean ProjLib_ProjectOnPlane::IsRational() const
 {
   if ((GetType() != GeomAbs_BSplineCurve) &&
       (GetType() != GeomAbs_BezierCurve))
-    Standard_NoSuchObject::Raise("ProjLib_ProjectOnPlane:IsRational");
+    throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:IsRational");
   
   if ( myIsApprox) 
     return myResult->IsRational();
@@ -1302,7 +1298,7 @@ Standard_Integer ProjLib_ProjectOnPlane::NbPoles() const
 {
   if ((GetType() != GeomAbs_BSplineCurve) &&
       (GetType() != GeomAbs_BezierCurve))
-    Standard_NoSuchObject::Raise("ProjLib_ProjectOnPlane:NbPoles");
+    throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:NbPoles");
   
   if ( myIsApprox)
     return myResult->NbPoles();
@@ -1318,7 +1314,7 @@ Standard_Integer ProjLib_ProjectOnPlane::NbPoles() const
 Standard_Integer ProjLib_ProjectOnPlane::NbKnots() const 
 {
   if ( GetType() != GeomAbs_BSplineCurve) 
-    Standard_NoSuchObject::Raise("ProjLib_ProjectOnPlane:NbKnots");
+    throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:NbKnots");
   
   if ( myIsApprox) 
     return myResult->NbKnots();
@@ -1335,7 +1331,7 @@ Standard_Integer ProjLib_ProjectOnPlane::NbKnots() const
 Handle(Geom_BezierCurve)  ProjLib_ProjectOnPlane::Bezier() const
 {
   if (myType != GeomAbs_BezierCurve)
-    Standard_NoSuchObject::Raise("ProjLib_ProjectOnPlane:Bezier");
+    throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:Bezier");
 
   return myResult->Bezier() ;
 }
@@ -1348,7 +1344,7 @@ Handle(Geom_BezierCurve)  ProjLib_ProjectOnPlane::Bezier() const
 Handle(Geom_BSplineCurve)  ProjLib_ProjectOnPlane::BSpline() const
 {
   if (myType != GeomAbs_BSplineCurve)
-    Standard_NoSuchObject::Raise("ProjLib_ProjectOnPlane:BSpline");
+    throw Standard_NoSuchObject("ProjLib_ProjectOnPlane:BSpline");
 
   return myResult->BSpline() ;
 }

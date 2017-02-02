@@ -228,7 +228,7 @@ static void PolyTest(const TColStd_Array1OfReal&         Herm,
     Standard_Real  Polemax=Polesinit(max).Y();
     if (((Polemax)>=((1/TolPoles)*Polemin))||((Polemin==0.0)&&(Polemax>=(1/TolPoles)))){
       if (Polesinit(0).Y()>=(1/TolPoles)*Polesinit(3).Y()||Polesinit(0).Y()<=TolPoles*Polesinit(3).Y())
-        Standard_DimensionError::Raise("Hermit Impossible Tolerance");       
+        throw Standard_DimensionError("Hermit Impossible Tolerance");
       if ((max==0)||(max==3))
       {
         for (i=0;i<=3;i++)
@@ -454,7 +454,7 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
     if (((Polemax)>=((1/TolPoles)*Polemin))||((Polemin==0.0)&&(Polemax>=(1/TolPoles))))
     {
       if (Polesinit(0).Y()>=(1/TolPoles)*Polesinit(3).Y()||Polesinit(0).Y()<=TolPoles*Polesinit(3).Y())
-        Standard_DimensionError::Raise("Hermit Impossible Tolerance");       
+        throw Standard_DimensionError("Hermit Impossible Tolerance");
       if ((max==0)||(max==3))
       {
         for (i=0;i<=3;i++)
@@ -714,7 +714,7 @@ Handle(Geom2d_BSplineCurve) Hermit::Solution(const Handle(Geom_BSplineCurve)& BS
     InsertKnots(BS2,Utol1,Utol2);
   }
   if ((BS2->Knot(2)<TolKnots)||(BS2->Knot(BS2->NbKnots()-1)>(1-TolKnots))) //checking of the knots tolerance
-    Standard_DimensionError::Raise("Hermit Impossible Tolerance");
+    throw Standard_DimensionError("Hermit Impossible Tolerance");
   else{
     if ((Upos2==1.0)&&(Utol2==1.0)&&(Uint2==1.0))    //test on the final inserted knots
       InsertKnots(BS1,BS2->Knot(2),1.0);
@@ -804,7 +804,7 @@ Handle(Geom2d_BSplineCurve) Hermit::Solution(const Handle(Geom2d_BSplineCurve)& 
     InsertKnots(BS2,Utol1,Utol2);
   }
   if ((BS2->Knot(2)<TolKnots)||(BS2->Knot(BS2->NbKnots()-1)>(1-TolKnots))) //checking of the knots tolerance
-    Standard_DimensionError::Raise("Hermit Impossible Tolerance");
+    throw Standard_DimensionError("Hermit Impossible Tolerance");
   else{
     if ((Upos2==1.0)&&(Utol2==1.0)&&(Uint2==1.0))    //test on the final inserted knots
       InsertKnots(BS1,BS2->Knot(2),1.0);
@@ -896,7 +896,7 @@ void Hermit::Solutionbis(const Handle(Geom_BSplineCurve)& BS,
     InsertKnots(BS2,Utol1,Utol2);
   }
   if ((BS2->Knot(2)<TolKnots)||(BS2->Knot(BS2->NbKnots()-1)>(1-TolKnots))) //checking of the knots tolerance
-    Standard_DimensionError::Raise("Hermit Impossible Tolerance");
+    throw Standard_DimensionError("Hermit Impossible Tolerance");
   else{
     if ((Upos2==1.0)&&(Utol2==1.0)&&(Uint2==1.0))    //test on the final inserted knots
       Knotmin=BS2->Knot(2);

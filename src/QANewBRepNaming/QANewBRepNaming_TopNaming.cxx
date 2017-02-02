@@ -34,7 +34,7 @@ QANewBRepNaming_TopNaming::QANewBRepNaming_TopNaming()
 QANewBRepNaming_TopNaming::QANewBRepNaming_TopNaming(const TDF_Label& Label)
 {
   if(Label.IsNull())
-    Standard_NullObject::Raise("QANewBRepNaming_TopNaming:: The Result label is Null ..."); 
+    throw Standard_NullObject("QANewBRepNaming_TopNaming:: The Result label is Null ...");
   myResultLabel = Label;
 }
 

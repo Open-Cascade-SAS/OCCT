@@ -703,7 +703,7 @@ Handle(Geom_Curve) GeomLib::To3d (const gp_Ax2&               Position,
     Curve3d = GeomH3d;
   }
   else {
-    Standard_NotImplemented::Raise();
+    throw Standard_NotImplemented();
   }
   
   return Curve3d;
@@ -886,7 +886,7 @@ void GeomLib::SameRange(const Standard_Real         Tolerance,
 			const Standard_Real         RequestedLast,
 			      Handle(Geom2d_Curve)& NewCurvePtr) 
 {
-  if(CurvePtr.IsNull()) Standard_Failure::Raise();
+  if(CurvePtr.IsNull()) throw Standard_Failure();
   if (Abs(LastOnCurve - RequestedLast) <= Tolerance &&
     Abs(FirstOnCurve - RequestedFirst) <= Tolerance)
   { 
@@ -1222,7 +1222,7 @@ void GeomLib::AdjustExtremity(Handle(Geom_BoundedCurve)& Curve,
   // Interpolation des contraintes
   math_Matrix Mat(1, 4, 1, 4);
   if (!PLib::HermiteCoefficients(0., 1., 1, 1, Mat)) 
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
 
   for (jj=1; jj<=4; jj++) {
     gp_XYZ aux(0.,0.,0.);
@@ -1251,7 +1251,7 @@ void GeomLib::AdjustExtremity(Handle(Geom_BoundedCurve)& Curve,
   }
 
   if (aDef->NbPoles() != aIn->NbPoles()) 
-    Standard_ConstructionError::Raise("Inconsistent poles's number");
+    throw Standard_ConstructionError("Inconsistent poles's number");
 
   for (ii=1; ii<=aDef->NbPoles(); ii++) {
     P = aIn->Pole(ii);
@@ -1373,7 +1373,7 @@ void GeomLib::ExtendCurveToPoint(Handle(Geom_BoundedCurve)& Curve,
 
   // Concatenation
   Ok = Concat.Add(Bezier, Tol, After);
-  if (!Ok) Standard_ConstructionError::Raise("ExtendCurveToPoint");
+  if (!Ok) throw Standard_ConstructionError("ExtendCurveToPoint");
   
   Curve =  Concat.BSplineCurve();
 }
@@ -2232,7 +2232,7 @@ static void FunctionMultiply(Handle(Geom_BSplineSurface)&          BSurf,
 			    NewDenominator,
 			    status);
  if (status!=0)
-   Standard_ConstructionError::Raise("GeomLib Multiplication Error") ;
+   throw Standard_ConstructionError("GeomLib Multiplication Error") ;
  for (i = 1 ; i <= new_num_u_poles ; i++) {
       for (j = 1 ; j <= new_num_v_poles ; j++) {
 	for (k = 1 ; k <= 3 ; k++) {

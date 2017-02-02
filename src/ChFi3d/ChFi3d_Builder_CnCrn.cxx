@@ -1138,8 +1138,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       nbcouture++;
     }
     else ChFi3d_cherche_edge(V1,Evive,Fcur,Enext,VV);
-    if (Enext.IsNull())Standard_Failure::Raise
-    ("PerformMoreThreeCorner: pb in the parsing of edges and faces"); 
+    if (Enext.IsNull())throw Standard_Failure("PerformMoreThreeCorner: pb in the parsing of edges and faces");
     if (Enext.IsSame(edgelibre1)|| Enext.IsSame(edgelibre2)) {
       CD.SetValue(ii, cdbid);
       Index.SetValue(ii, 0);

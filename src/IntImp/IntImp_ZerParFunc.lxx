@@ -29,17 +29,17 @@ inline gp_Pnt IntImp_ZerParFunc::Point() const {
 }
 
 inline gp_Dir IntImp_ZerParFunc::Direction() const {
-  if (tangent ) StdFail_UndefinedDerivative::Raise();
+  if (tangent ) throw StdFail_UndefinedDerivative();
   return gp_Dir(tgduv[0]*dpuv[0].XYZ() + tgduv[1]*dpuv[1].XYZ());
 }
 
 inline gp_Dir2d IntImp_ZerParFunc::DirectionOnS1() const {
-  if (tangent ) StdFail_UndefinedDerivative::Raise();       
+  if (tangent ) throw StdFail_UndefinedDerivative();
   return gp_Dir2d(tgduv[0],tgduv[1]);
 }
 
 inline gp_Dir2d IntImp_ZerParFunc::DirectionOnS2() const {
-  if (tangent ) StdFail_UndefinedDerivative::Raise();       
+  if (tangent ) throw StdFail_UndefinedDerivative();
   return gp_Dir2d(tgduv[2],tgduv[3]);
 }
 

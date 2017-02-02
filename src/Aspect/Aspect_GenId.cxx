@@ -44,7 +44,7 @@ Aspect_GenId::Aspect_GenId (const Standard_Integer theLow,
 {
   if (theLow > theUpper)
   {
-    Aspect_IdentDefinitionError::Raise ("GenId Create Error: wrong interval");
+    throw Aspect_IdentDefinitionError("GenId Create Error: wrong interval");
   }
 }
 
@@ -121,7 +121,7 @@ Standard_Integer Aspect_GenId::Next()
   }
   else if (myFreeCount < 1)
   {
-    Aspect_IdentDefinitionError::Raise ("GenId Next Error: Available == 0");
+    throw Aspect_IdentDefinitionError("GenId Next Error: Available == 0");
   }
 
   --myFreeCount;

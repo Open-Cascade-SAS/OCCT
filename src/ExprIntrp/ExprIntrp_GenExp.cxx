@@ -62,7 +62,7 @@ Standard_Boolean ExprIntrp_GenExp::IsDone() const
 Handle(Expr_GeneralExpression) ExprIntrp_GenExp::Expression () const
 {
   if (!done) {
-    Standard_NoSuchObject::Raise();
+    throw Standard_NoSuchObject();
   }
   return myExpression;
 }

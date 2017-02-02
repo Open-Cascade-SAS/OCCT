@@ -30,10 +30,10 @@ void Expr_BinaryExpression::SetFirstOperand (const Handle(Expr_GeneralExpression
   Handle(Expr_BinaryExpression) me;
   me = this;
   if (exp == me) {
-    Expr_InvalidOperand::Raise();
+    throw Expr_InvalidOperand();
   }
   if (exp->Contains(me)) {
-    Expr_InvalidOperand::Raise();
+    throw Expr_InvalidOperand();
   }
   myFirstOperand = exp;
 }
@@ -43,10 +43,10 @@ void Expr_BinaryExpression::SetSecondOperand (const Handle(Expr_GeneralExpressio
   Handle(Expr_BinaryExpression) me;
   me = this;
   if (exp == me) {
-    Expr_InvalidOperand::Raise();
+    throw Expr_InvalidOperand();
   }
   if (exp->Contains(me)) {
-    Expr_InvalidOperand::Raise();
+    throw Expr_InvalidOperand();
   }
   mySecondOperand = exp;
 }
@@ -76,10 +76,9 @@ const Handle(Expr_GeneralExpression)& Expr_BinaryExpression::SubExpression (cons
       return mySecondOperand;
     }
     else {
-      Standard_OutOfRange::Raise();
+      throw Standard_OutOfRange();
     }
   }
- return *(  ( Handle(Expr_GeneralExpression)* )NULL  );
 }
 
 Standard_Boolean Expr_BinaryExpression::ContainsUnknowns () const

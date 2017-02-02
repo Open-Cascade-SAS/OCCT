@@ -38,7 +38,7 @@
 TopOpeBRepTool_PurgeInternalEdges::TopOpeBRepTool_PurgeInternalEdges(const TopoDS_Shape& theShape,const Standard_Boolean PerformNow):myShape(theShape),myIsDone(Standard_False)
 {
 //  if (theShape.ShapeType() != TopAbs_SHELL && theShape.ShapeType() != TopAbs_SOLID)
-//    Standard_ConstructionError::Raise("PurgeInternalEdges");
+//    throw Standard_ConstructionError("PurgeInternalEdges");
   Standard_NullObject_Raise_if(theShape.IsNull(),"PurgeInternalEdges");
   
   if (PerformNow) {

@@ -186,13 +186,13 @@ void AIS_Chamf3dDimension::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
 void AIS_Chamf3dDimension::Compute(const Handle(Prs3d_Projector)& aProjector,
 				   const Handle(Prs3d_Presentation)& aPresentation)
 {
-// Standard_NotImplemented::Raise("AIS_Chamf3dDimension::Compute(const Handle(Prs3d_Projector)&,const Handle(Prs3d_Presentation)&)");
+// throw Standard_NotImplemented("AIS_Chamf3dDimension::Compute(const Handle(Prs3d_Projector)&,const Handle(Prs3d_Presentation)&)");
  PrsMgr_PresentableObject::Compute( aProjector , aPresentation ) ;
 }
 
 void AIS_Chamf3dDimension::Compute(const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTransformation, const Handle(Prs3d_Presentation)& aPresentation)
 {
-// Standard_NotImplemented::Raise("AIS_Chamf3dDimension::Compute(const Handle(Prs3d_Projector)&, const Handle(Geom_Transformation)&, const Handle(Prs3d_Presentation)&)");
+// throw Standard_NotImplemented("AIS_Chamf3dDimension::Compute(const Handle(Prs3d_Projector)&, const Handle(Geom_Transformation)&, const Handle(Prs3d_Presentation)&)");
   PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation ) ;
 }
 

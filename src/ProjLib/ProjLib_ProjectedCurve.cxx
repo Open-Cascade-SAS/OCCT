@@ -250,7 +250,7 @@ static void Project(ProjLib_Projector& P, Handle(Adaptor3d_HCurve)& C)
     case GeomAbs_OtherCurve:    // try the approximation
       break;
     default:
-      Standard_NoSuchObject::Raise(" ");
+      throw Standard_NoSuchObject(" ");
   }
 }
 
@@ -786,8 +786,7 @@ Standard_Real ProjLib_ProjectedCurve::LastParameter() const
 
 GeomAbs_Shape ProjLib_ProjectedCurve::Continuity() const
 {
-  Standard_NotImplemented::Raise("");
-  return GeomAbs_C0;
+  throw Standard_NotImplemented("");
 }
 
 
@@ -798,8 +797,7 @@ GeomAbs_Shape ProjLib_ProjectedCurve::Continuity() const
 
 Standard_Integer ProjLib_ProjectedCurve::NbIntervals(const GeomAbs_Shape ) const 
 {
-  Standard_NotImplemented::Raise("");
-  return 0;
+  throw Standard_NotImplemented("");
 }
 
 
@@ -812,7 +810,7 @@ Standard_Integer ProjLib_ProjectedCurve::NbIntervals(const GeomAbs_Shape ) const
 void ProjLib_ProjectedCurve::Intervals(TColStd_Array1OfReal&  ,
 				       const GeomAbs_Shape ) const 
 {
-  Standard_NotImplemented::Raise("");
+  throw Standard_NotImplemented("");
 }
 
 
@@ -823,8 +821,7 @@ void ProjLib_ProjectedCurve::Intervals(TColStd_Array1OfReal&  ,
 
 Standard_Boolean ProjLib_ProjectedCurve::IsClosed() const
 {
-  Standard_NotImplemented::Raise("");
-  return Standard_True;
+  throw Standard_NotImplemented("");
 }
 
 
@@ -846,8 +843,7 @@ Standard_Boolean ProjLib_ProjectedCurve::IsPeriodic() const
 
 Standard_Real ProjLib_ProjectedCurve::Period() const
 {
-  Standard_NotImplemented::Raise("");
-  return 0.;
+  throw Standard_NotImplemented("");
 }
 
 
@@ -858,8 +854,7 @@ Standard_Real ProjLib_ProjectedCurve::Period() const
 
 gp_Pnt2d ProjLib_ProjectedCurve::Value(const Standard_Real ) const 
 {
-  Standard_NotImplemented::Raise("");
-  return gp_Pnt2d(0.,0.);
+  throw Standard_NotImplemented("");
 }
 
 
@@ -870,7 +865,7 @@ gp_Pnt2d ProjLib_ProjectedCurve::Value(const Standard_Real ) const
 
 void ProjLib_ProjectedCurve::D0(const Standard_Real , gp_Pnt2d& ) const
 {
-  Standard_NotImplemented::Raise("");
+  throw Standard_NotImplemented("");
 }
 
 
@@ -883,7 +878,7 @@ void ProjLib_ProjectedCurve::D1(const Standard_Real ,
 			              gp_Pnt2d&     , 
                                       gp_Vec2d&     ) const 
 {
-  Standard_NotImplemented::Raise("");
+  throw Standard_NotImplemented("");
 }
 
 
@@ -897,7 +892,7 @@ void ProjLib_ProjectedCurve::D2(const Standard_Real ,
                                       gp_Vec2d&     , 
                                       gp_Vec2d&     ) const 
 {
-  Standard_NotImplemented::Raise("");
+  throw Standard_NotImplemented("");
 }
 
 
@@ -912,7 +907,7 @@ void ProjLib_ProjectedCurve::D3(const Standard_Real,
 				      gp_Vec2d&, 
 			              gp_Vec2d&) const 
 {
-  Standard_NotImplemented::Raise("");
+  throw Standard_NotImplemented("");
 }
 
 
@@ -924,8 +919,7 @@ void ProjLib_ProjectedCurve::D3(const Standard_Real,
 gp_Vec2d ProjLib_ProjectedCurve::DN(const Standard_Real, 
 				    const Standard_Integer) const 
 {
-  Standard_NotImplemented::Raise("");
-  return gp_Vec2d(0.,0.);
+  throw Standard_NotImplemented("");
 }
 
 
@@ -936,8 +930,7 @@ gp_Vec2d ProjLib_ProjectedCurve::DN(const Standard_Real,
 
 Standard_Real ProjLib_ProjectedCurve::Resolution(const Standard_Real) const 
 {
-  Standard_NotImplemented::Raise("");
-  return 0.;
+  throw Standard_NotImplemented("");
 }
     
 
@@ -1117,7 +1110,6 @@ Handle(Adaptor2d_HCurve2d) ProjLib_ProjectedCurve::Trim
  const Standard_Real ,
  const Standard_Real ) const 
 {
-  Standard_NotImplemented::Raise("");
-  return NULL ;
+  throw Standard_NotImplemented("");
 }
 

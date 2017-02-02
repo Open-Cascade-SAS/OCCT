@@ -121,7 +121,7 @@ void Geom_TrimmedCurve::SetTrim (const Standard_Real U1,
 {
    Standard_Boolean sameSense = Standard_True;
    if (U1 == U2) 
-     Standard_ConstructionError::Raise("Geom_TrimmedCurve::U1 == U2");
+     throw Standard_ConstructionError("Geom_TrimmedCurve::U1 == U2");
 
    Standard_Real Udeb = basisCurve->FirstParameter();
    Standard_Real Ufin = basisCurve->LastParameter();
@@ -153,8 +153,7 @@ void Geom_TrimmedCurve::SetTrim (const Standard_Real U1,
 
      if ((Udeb - uTrim1 > Precision::PConfusion()) ||
 	 (uTrim2 - Ufin > Precision::PConfusion()))
-      Standard_ConstructionError::Raise
-	("Geom_TrimmedCurve::parameters out of range");
+      throw Standard_ConstructionError("Geom_TrimmedCurve::parameters out of range");
        
 
    }

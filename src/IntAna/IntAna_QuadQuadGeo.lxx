@@ -20,12 +20,12 @@ inline Standard_Boolean IntAna_QuadQuadGeo::IsDone() const {
 
 
 inline IntAna_ResultType IntAna_QuadQuadGeo::TypeInter()  const {
-  if(!done) {StdFail_NotDone::Raise();}
+  if(!done) {throw StdFail_NotDone();}
   return(typeres);
 }
 
 inline Standard_Integer IntAna_QuadQuadGeo::NbSolutions() const {
-  if(!done) {StdFail_NotDone::Raise();}
+  if(!done) {throw StdFail_NotDone();}
   return(nbint);
 }
 

@@ -44,7 +44,7 @@ IGESDraw_RectArraySubfigure::IGESDraw_RectArraySubfigure ()    {  }
 {
   if (!allNumPos.IsNull())
     if (allNumPos->Lower() != 1)
-      Standard_DimensionMismatch::Raise("IGESDraw_RectArraySubfigure : Init");
+      throw Standard_DimensionMismatch("IGESDraw_RectArraySubfigure : Init");
   theBaseEntity       = aBase;
   theScaleFactor      = aScale;
   theLowerLeftCorner  = aCorner;

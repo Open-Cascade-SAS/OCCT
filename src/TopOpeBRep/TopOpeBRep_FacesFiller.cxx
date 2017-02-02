@@ -466,7 +466,7 @@ void TopOpeBRep_FacesFiller::VP_PositionOnR(TopOpeBRep_LineInter& L)
 	VP.EdgeON(E,paramC,Esi);
       }
       else {
-//	Standard_ProgramError::Raise("VP_Position projection failed on E");
+//	throw Standard_ProgramError("VP_Position projection failed on E");
 	VP.ChangeKeep(Standard_False); // xpu051198
       }
     }
@@ -479,7 +479,7 @@ void TopOpeBRep_FacesFiller::VP_PositionOnR(TopOpeBRep_LineInter& L)
 	VP.EdgeON(OOE,paramC,OOEsi);
       }
       else {
-//	Standard_ProgramError::Raise("VP_Position projection failed on OOE");
+//	throw Standard_ProgramError("VP_Position projection failed on OOE");
 	VP.ChangeKeep(Standard_False); // xpu051198
       }
     }
@@ -593,8 +593,7 @@ const TopoDS_Face& TopOpeBRep_FacesFiller::Face(const Standard_Integer I) const
 {
   if      (I == 1) return myF1;
   else if (I == 2) return myF2;
-  Standard_ProgramError::Raise("FacesFiller::Face");
-  return myF1;
+  throw Standard_ProgramError("FacesFiller::Face");
 }
 
 //=======================================================================

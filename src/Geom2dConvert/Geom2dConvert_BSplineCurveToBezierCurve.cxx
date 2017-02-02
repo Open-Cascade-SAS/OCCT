@@ -56,7 +56,7 @@ Geom2dConvert_BSplineCurveToBezierCurve::Geom2dConvert_BSplineCurveToBezierCurve
  const Standard_Real ParametricTolerance)
 {
  if (U2 - U1 < ParametricTolerance)
-      Standard_DomainError::Raise("GeomConvert_BSplineCurveToBezierSurface");
+      throw Standard_DomainError("GeomConvert_BSplineCurveToBezierSurface");
 
   Standard_Real Uf = U1, Ul = U2; 
   Standard_Real PTol = ParametricTolerance/2 ;
@@ -92,7 +92,7 @@ Handle(Geom2d_BezierCurve) Geom2dConvert_BSplineCurveToBezierCurve::Arc
 (const Standard_Integer Index)
 {
   if ( Index < 1 || Index > myCurve->NbKnots()-1) {
-    Standard_OutOfRange::Raise("Geom2dConvert_BSplineCurveToBezierCurve");
+    throw Standard_OutOfRange("Geom2dConvert_BSplineCurveToBezierCurve");
   }
   Standard_Integer Deg = myCurve->Degree();
 

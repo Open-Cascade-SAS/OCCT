@@ -54,15 +54,15 @@ IGESDefs_AttributeDef::IGESDefs_AttributeDef ()    {  }
   if (attrTypes->Lower() != 1 || attrValueDataTypes->Lower() != 1 ||
       attrValueDataTypes->Length() != nb ||
       attrValueCounts->Lower()     != 1  || attrValueCounts->Length() != nb)
-    Standard_DimensionMismatch::Raise("IGESDefs_AttributeDef : Init");
+    throw Standard_DimensionMismatch("IGESDefs_AttributeDef : Init");
 
   if (FormNumber() >= 1)
     if (attrValues->Lower() != 1 || attrValues->Length() != nb)
-      Standard_DimensionMismatch::Raise("IGESDefs_AttributeDef : Init");
+      throw Standard_DimensionMismatch("IGESDefs_AttributeDef : Init");
 
   if (FormNumber() == 2)
     if (attrValuePointers->Lower() != 1 || attrValuePointers->Length() != nb)
-      Standard_DimensionMismatch::Raise("IGESDefs_AttributeDef : Init");
+      throw Standard_DimensionMismatch("IGESDefs_AttributeDef : Init");
 // Form 1 : attrValues defined  Form = 2 : attrValuePointers defined
 
   theName               = aName;

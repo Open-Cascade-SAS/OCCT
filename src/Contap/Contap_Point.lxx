@@ -96,25 +96,25 @@ inline Standard_Boolean Contap_Point::IsOnArc () const{
 
 inline const Handle(Adaptor2d_HCurve2d)& Contap_Point::Arc () const {
 
-  if (!onarc) {Standard_DomainError::Raise();}
+  if (!onarc) {throw Standard_DomainError();}
   return arc;
 }
 
 inline const IntSurf_Transition& Contap_Point::TransitionOnLine () const {
 
-  if (!onarc) {Standard_DomainError::Raise();}
+  if (!onarc) {throw Standard_DomainError();}
   return traline;
 }
 
 inline const IntSurf_Transition& Contap_Point::TransitionOnArc () const {
 
-  if (!onarc) {Standard_DomainError::Raise();}
+  if (!onarc) {throw Standard_DomainError();}
   return traarc;
 }
 
 inline Standard_Real Contap_Point::ParameterOnArc () const {
 
-  if (!onarc) {Standard_DomainError::Raise();}
+  if (!onarc) {throw Standard_DomainError();}
   return prmarc;
 }
 
@@ -124,6 +124,6 @@ inline Standard_Boolean Contap_Point::IsVertex () const {
 
 inline const Handle(Adaptor3d_HVertex)& Contap_Point::Vertex () const {
 
-  if (!isvtx) {Standard_DomainError::Raise();}
+  if (!isvtx) {throw Standard_DomainError();}
   return vtx;
 }

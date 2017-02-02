@@ -33,7 +33,7 @@ IGESBasic_SingleParent::IGESBasic_SingleParent ()    {  }
    const Handle(IGESData_HArray1OfIGESEntity)& allChildren)
 {
   if (!allChildren.IsNull() && allChildren->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESBasic_SingleParent : Init");
+    throw Standard_DimensionMismatch("IGESBasic_SingleParent : Init");
   theParentEntity     = aParentEntity;
   theChildren         = allChildren;
   theNbParentEntities = nbParentEntities;

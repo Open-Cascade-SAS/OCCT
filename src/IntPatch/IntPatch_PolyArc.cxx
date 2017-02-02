@@ -47,7 +47,7 @@ IntPatch_PolyArc::IntPatch_PolyArc(const Handle(Adaptor2d_HCurve2d)& Line ,
   gp_Pnt2d p2d;
   
   if (Pdeb == RealFirst() || Pfin == RealLast() || NbSample <= 1) {
-    Standard_ConstructionError::Raise();
+    throw Standard_ConstructionError();
   }
   //----------------------------------------------------------------------
   //-- On veut eviter les cas ou  le present polygone est beaucoup plus 

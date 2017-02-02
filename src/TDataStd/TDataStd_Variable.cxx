@@ -85,7 +85,7 @@ const TCollection_ExtendedString& TDataStd_Variable::Name () const
 {
   Handle(TDataStd_Name) N;
   if (!Label().FindAttribute(TDataStd_Name::GetID(),N)) {
-    Standard_DomainError::Raise("TDataStd_Variable::Name : invalid model");
+    throw Standard_DomainError("TDataStd_Variable::Name : invalid model");
   }
   return N->Get();
 }
@@ -109,7 +109,7 @@ Handle(TDataStd_Real) TDataStd_Variable::Real() const
 {
   Handle(TDataStd_Real) R;
   if (!Label().FindAttribute(TDataStd_Real::GetID(),R)) {
-    Standard_DomainError::Raise("TDataStd_Variable::Real : invalid model");
+    throw Standard_DomainError("TDataStd_Variable::Real : invalid model");
   }
   return R;
 }
@@ -140,7 +140,7 @@ Standard_Real TDataStd_Variable::Get () const
 {  
   Handle(TDataStd_Real) R;
   if (!Label().FindAttribute(TDataStd_Real::GetID(),R)) {
-    Standard_DomainError::Raise("TDataStd_Variable::Get : invalid model");
+    throw Standard_DomainError("TDataStd_Variable::Get : invalid model");
   }
   return R->Get();
 }
@@ -177,7 +177,7 @@ void TDataStd_Variable::Desassign () const
 {  
   Handle(TDataStd_Expression) E;
   if (!Label().FindAttribute(TDataStd_Expression::GetID(),E)) {
-    Standard_DomainError::Raise("TDataStd_Variable::Deassign");
+    throw Standard_DomainError("TDataStd_Variable::Deassign");
   }   
   Label().ForgetAttribute(E);
 }
@@ -191,7 +191,7 @@ Handle(TDataStd_Expression) TDataStd_Variable::Expression () const
 {
   Handle(TDataStd_Expression) E;
   if (!Label().FindAttribute(TDataStd_Expression::GetID(),E)) {
-    Standard_DomainError::Raise("TDataStd_Variable::GetExpression");
+    throw Standard_DomainError("TDataStd_Variable::GetExpression");
   }
   return E;
 }

@@ -177,16 +177,16 @@ Standard_GUID::Standard_GUID(const Standard_CString aGuid)
 {
   char* tmpBuffer =(char*) aGuid;
 
-  if(!CheckGUIDFormat(tmpBuffer)) Standard_RangeError::Raise("Invalid format of GUID");
+  if(!CheckGUIDFormat(tmpBuffer)) throw Standard_RangeError("Invalid format of GUID");
 
   if((tmpBuffer = Standard_GUID_GetValue32(tmpBuffer,my32b)) == NULL) 
-    Standard_RangeError::Raise("Invalid format of GUID");
+    throw Standard_RangeError("Invalid format of GUID");
   if((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer,my16b1)) == NULL) 
-    Standard_RangeError::Raise("Invalid format of GUID");
+    throw Standard_RangeError("Invalid format of GUID");
   if((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer,my16b2)) == NULL) 
-    Standard_RangeError::Raise("Invalid format of GUID");
+    throw Standard_RangeError("Invalid format of GUID");
   if((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer,my16b3)) == NULL) 
-    Standard_RangeError::Raise("Invalid format of GUID");
+    throw Standard_RangeError("Invalid format of GUID");
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b1);
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b2);
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b3);
@@ -217,16 +217,16 @@ Standard_GUID::Standard_GUID(const Standard_ExtString aGuid)
 
   tmpBuffer[i] = '\0';
 
-  if(!CheckGUIDFormat(tmpBuffer)) Standard_RangeError::Raise("Invalid format of GUID");
+  if(!CheckGUIDFormat(tmpBuffer)) throw Standard_RangeError("Invalid format of GUID");
 
   if((tmpBuffer = Standard_GUID_GetValue32(tmpBuffer,my32b)) == NULL) 
-    Standard_RangeError::Raise("Invalid format of GUID");
+    throw Standard_RangeError("Invalid format of GUID");
   if((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer,my16b1)) == NULL) 
-    Standard_RangeError::Raise("Invalid format of GUID");
+    throw Standard_RangeError("Invalid format of GUID");
   if((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer,my16b2)) == NULL) 
-    Standard_RangeError::Raise("Invalid format of GUID");
+    throw Standard_RangeError("Invalid format of GUID");
   if((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer,my16b3)) == NULL) 
-    Standard_RangeError::Raise("Invalid format of GUID");
+    throw Standard_RangeError("Invalid format of GUID");
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b1);
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b2);
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b3);
@@ -390,8 +390,7 @@ Standard_Integer Standard_GUID::HashCode(const Standard_GUID& aGuid,const Standa
 Standard_Integer Standard_GUID::Hash(const Standard_Integer Upper) const
 {
   if (Upper < 1){
-    Standard_RangeError::
-      Raise("Standard_GUID::Hash: Try to apply HashCode method with negative or null argument.");
+    throw Standard_RangeError("Standard_GUID::Hash: Try to apply HashCode method with negative or null argument.");
   }
 
   char sguid[Standard_GUID_SIZE_ALLOC];

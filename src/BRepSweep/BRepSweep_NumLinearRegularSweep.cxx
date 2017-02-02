@@ -137,16 +137,16 @@ TopoDS_Shape BRepSweep_NumLinearRegularSweep::Shape (const TopoDS_Shape& aGenS,
         myBuilder.MakeShell(myShapes(iGenS,iDirS));
         break;
       case TopAbs_SOLID :
-        Standard_NoSuchObject::Raise("Solids are not Processed");
+        throw Standard_NoSuchObject("Solids are not Processed");
         break;
       case TopAbs_COMPSOLID :
-        Standard_NoSuchObject::Raise("Solids are not Processed");
+        throw Standard_NoSuchObject("Solids are not Processed");
         break;
       case TopAbs_COMPOUND :
         myBuilder.MakeCompound(myShapes(iGenS,iDirS));
         break;
       default:
-        Standard_NoSuchObject::Raise("Unknown Shape");	
+        throw Standard_NoSuchObject("Unknown Shape");
         break;
       }
       bGenS = aGenS;
@@ -230,16 +230,16 @@ TopoDS_Shape BRepSweep_NumLinearRegularSweep::Shape (const TopoDS_Shape& aGenS,
         myBuilder.MakeCompSolid(myShapes(iGenS,iDirS));
         break;
       case TopAbs_SOLID :
-        Standard_NoSuchObject::Raise("Solids are not Processed");
+        throw Standard_NoSuchObject("Solids are not Processed");
         break;
       case TopAbs_COMPSOLID :
-        Standard_NoSuchObject::Raise("Solids are not Processed");
+        throw Standard_NoSuchObject("Solids are not Processed");
         break;
       case TopAbs_COMPOUND :
         myBuilder.MakeCompound(myShapes(iGenS,iDirS));
         break;
       default:
-        Standard_NoSuchObject::Raise("Unknown Shape");	
+        throw Standard_NoSuchObject("Unknown Shape");
         break;
       }
       bGenS = aGenS;
@@ -374,16 +374,16 @@ TopoDS_Shape BRepSweep_NumLinearRegularSweep::Shape (const TopoDS_Shape& aGenS,
         myBuilder.MakeCompSolid(myShapes(iGenS,iDirS));
         break;
       case TopAbs_SOLID :
-        Standard_NoSuchObject::Raise("Solids are not Processed");
+        throw Standard_NoSuchObject("Solids are not Processed");
         break;
       case TopAbs_COMPSOLID :
-        Standard_NoSuchObject::Raise("Solids are not Processed");
+        throw Standard_NoSuchObject("Solids are not Processed");
         break;
       case TopAbs_COMPOUND :
         myBuilder.MakeCompound(myShapes(iGenS,iDirS));
         break;
       default:
-        Standard_NoSuchObject::Raise("Unknown Shape");	
+        throw Standard_NoSuchObject("Unknown Shape");
         break;
       }
       bDirS = aDirS;

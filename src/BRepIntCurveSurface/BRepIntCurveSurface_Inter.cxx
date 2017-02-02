@@ -228,7 +228,7 @@ Standard_Boolean BRepIntCurveSurface_Inter::FindPoint()
 IntCurveSurface_IntersectionPoint BRepIntCurveSurface_Inter::Point() const 
 {
   if(myCurrentindex==0) 
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   const IntCurveSurface_IntersectionPoint& ICPS = myIntcs.Point(myCurrentindex);
   return(IntCurveSurface_IntersectionPoint(ICPS.Pnt(),
 					   myCurrentU,     // ICPS.U(),
@@ -245,7 +245,7 @@ IntCurveSurface_IntersectionPoint BRepIntCurveSurface_Inter::Point() const
 Standard_Real BRepIntCurveSurface_Inter::U() const 
 {
   if(myCurrentindex==0) 
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   //-- return(myIntcs.Point(myCurrentindex).U());
   return(myCurrentU);
 }
@@ -257,7 +257,7 @@ Standard_Real BRepIntCurveSurface_Inter::U() const
 Standard_Real BRepIntCurveSurface_Inter::V() const 
 {
   if(myCurrentindex==0) 
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   //-- return(myIntcs.Point(myCurrentindex).V());
   return(myCurrentV);
 }
@@ -269,7 +269,7 @@ Standard_Real BRepIntCurveSurface_Inter::V() const
 Standard_Real BRepIntCurveSurface_Inter::W() const 
 {
   if(myCurrentindex==0) 
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   return(myIntcs.Point(myCurrentindex).W());
 }
 
@@ -280,7 +280,7 @@ Standard_Real BRepIntCurveSurface_Inter::W() const
 TopAbs_State BRepIntCurveSurface_Inter::State() const 
 {
   if(myCurrentindex==0) 
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   //-- return(classifier.State());
   return(myCurrentstate);
 }
@@ -292,7 +292,7 @@ TopAbs_State BRepIntCurveSurface_Inter::State() const
 IntCurveSurface_TransitionOnCurve BRepIntCurveSurface_Inter::Transition() const 
 {
   if(myCurrentindex==0) 
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   return(myIntcs.Point(myCurrentindex).Transition());
 }
 
@@ -311,7 +311,7 @@ const TopoDS_Face& BRepIntCurveSurface_Inter::Face() const
 //===========================================================================
 const gp_Pnt& BRepIntCurveSurface_Inter::Pnt() const { 
   if(myCurrentindex==0) 
-    StdFail_NotDone::Raise();
+    throw StdFail_NotDone();
   return(myIntcs.Point(myCurrentindex).Pnt());
 }
 

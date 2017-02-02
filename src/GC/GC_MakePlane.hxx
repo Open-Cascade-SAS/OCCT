@@ -49,17 +49,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-
-  //! Creates a plane located in 3D space with an axis placement
-  //! two axis.  The "ZDirection" of "A2" is the direction normal
-  //! to the plane.  The "Location" point of "A2" is the origin of
-  //! the plane. The "XDirection" and "YDirection" of "A2" define
-  //! the directions of the U isoparametric and V isoparametric
-  //! curves.
-  Standard_EXPORT GC_MakePlane(const gp_Ax2& A2);
-  
-
   //! Creates a plane from a non persistent plane from package gp.
   Standard_EXPORT GC_MakePlane(const gp_Pln& Pl);
   

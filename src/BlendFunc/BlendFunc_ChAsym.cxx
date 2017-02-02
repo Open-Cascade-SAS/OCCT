@@ -396,7 +396,7 @@ Standard_Boolean BlendFunc_ChAsym::IsTangencyPoint () const
 const gp_Vec& BlendFunc_ChAsym::TangentOnS1 () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_ChAsym::TangentOnS1");
+    throw Standard_DomainError("BlendFunc_ChAsym::TangentOnS1");
   return tg1;
 }
 
@@ -409,7 +409,7 @@ const gp_Vec& BlendFunc_ChAsym::TangentOnS1 () const
 const gp_Vec2d& BlendFunc_ChAsym::Tangent2dOnS1 () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_ChAsym::Tangent2dOnS1");
+    throw Standard_DomainError("BlendFunc_ChAsym::Tangent2dOnS1");
   return tg12d;
 }
 
@@ -421,7 +421,7 @@ const gp_Vec2d& BlendFunc_ChAsym::Tangent2dOnS1 () const
 const gp_Vec& BlendFunc_ChAsym::TangentOnS2 () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_ChAsym::TangentOnS2");
+    throw Standard_DomainError("BlendFunc_ChAsym::TangentOnS2");
   return tg2;
 }
 
@@ -434,7 +434,7 @@ const gp_Vec& BlendFunc_ChAsym::TangentOnS2 () const
 const gp_Vec2d& BlendFunc_ChAsym::Tangent2dOnS2 () const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_ChAsym::Tangent2dOnS2");
+    throw Standard_DomainError("BlendFunc_ChAsym::Tangent2dOnS2");
   return tg22d;
 }
 
@@ -447,7 +447,7 @@ const gp_Vec2d& BlendFunc_ChAsym::Tangent2dOnS2 () const
 Standard_Boolean BlendFunc_ChAsym::TwistOnS1() const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_ChAsym::TwistOnS1");
+    throw Standard_DomainError("BlendFunc_ChAsym::TwistOnS1");
   return tg1.Dot(nplan) < 0.;
 }
 
@@ -459,7 +459,7 @@ Standard_Boolean BlendFunc_ChAsym::TwistOnS1() const
 Standard_Boolean BlendFunc_ChAsym::TwistOnS2() const
 {
   if (istangent)
-    Standard_DomainError::Raise("BlendFunc_ChAsym::TwistOnS2");
+    throw Standard_DomainError("BlendFunc_ChAsym::TwistOnS2");
   return tg2.Dot(nplan) < 0.;
 }
 
@@ -557,8 +557,7 @@ Standard_Boolean BlendFunc_ChAsym::IsRational () const
 //=======================================================================
 Standard_Real BlendFunc_ChAsym::GetSectionSize() const 
 {
-  Standard_NotImplemented::Raise("BlendFunc_ChAsym::GetSectionSize()");
-  return 0.;
+  throw Standard_NotImplemented("BlendFunc_ChAsym::GetSectionSize()");
 }
 
 //=======================================================================

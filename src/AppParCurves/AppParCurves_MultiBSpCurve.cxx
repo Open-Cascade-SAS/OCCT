@@ -165,7 +165,7 @@ void AppParCurves_MultiBSpCurve::Value (const Standard_Integer CuIndex,
 			      const Standard_Real U, gp_Pnt& Pt) const {
 
   if (Dimension(CuIndex) != 3) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
 
   TColgp_Array1OfPnt TabPoles(1, tabPoint->Length());
@@ -185,7 +185,7 @@ void AppParCurves_MultiBSpCurve::Value (const Standard_Integer CuIndex,
 			      const Standard_Real U, gp_Pnt2d& Pt) const {
 
   if (Dimension(CuIndex) != 2) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
 
   TColgp_Array1OfPnt2d TabPoles(1, tabPoint->Length());
@@ -204,7 +204,7 @@ void AppParCurves_MultiBSpCurve::Value (const Standard_Integer CuIndex,
 void AppParCurves_MultiBSpCurve::D1 (const Standard_Integer CuIndex, 
 			   const Standard_Real U, gp_Pnt& Pt, gp_Vec& V1) const {
   if (Dimension(CuIndex) != 3) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
 
   TColgp_Array1OfPnt TabPoles(1, tabPoint->Length());
@@ -226,7 +226,7 @@ void AppParCurves_MultiBSpCurve::D2 (const Standard_Integer CuIndex,
 			    gp_Vec& V1,
 			    gp_Vec& V2) const {
   if (Dimension(CuIndex) != 3) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
 
   TColgp_Array1OfPnt TabPoles(1, tabPoint->Length());
@@ -245,7 +245,7 @@ void AppParCurves_MultiBSpCurve::D2 (const Standard_Integer CuIndex,
 void AppParCurves_MultiBSpCurve::D1 (const Standard_Integer CuIndex,
 		       const Standard_Real U, gp_Pnt2d& Pt, gp_Vec2d& V1) const {
   if (Dimension(CuIndex) != 2) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
 
   TColgp_Array1OfPnt2d TabPoles(1, tabPoint->Length());
@@ -267,7 +267,7 @@ void AppParCurves_MultiBSpCurve::D2 (const Standard_Integer CuIndex,
 			    gp_Vec2d& V1,
 			    gp_Vec2d& V2) const {
   if (Dimension(CuIndex) != 2) {
-    Standard_OutOfRange::Raise();
+    throw Standard_OutOfRange();
   }
 
   TColgp_Array1OfPnt2d TabPoles(1, tabPoint->Length());

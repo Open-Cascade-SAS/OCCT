@@ -86,7 +86,7 @@ Quantity_Color::Quantity_Color (const Quantity_Parameter R1, const Quantity_Para
 			if ( R1 < 0. || R1 > 1. ||
 			     R2 < 0. || R2 > 1. ||
 			     R3 < 0. || R3 > 1. )
-				Standard_OutOfRange::Raise ("Color out");
+				throw Standard_OutOfRange("Color out");
 			MyRed	= Standard_ShortReal (R1);
 			MyGreen	= Standard_ShortReal (R2);
 			MyBlue	= Standard_ShortReal (R3);
@@ -97,7 +97,7 @@ Quantity_Color::Quantity_Color (const Quantity_Parameter R1, const Quantity_Para
 			  || (R1 > 360.) ||
 			     R2 < 0. || R2 > 1. ||
 			     R3 < 0. || R3 > 1. )
-				Standard_OutOfRange::Raise ("Color out");
+				throw Standard_OutOfRange("Color out");
 			Quantity_Color::hlsrgb
 				(Standard_ShortReal (R1),
 				 Standard_ShortReal (R2),
@@ -117,7 +117,7 @@ Quantity_Color::Quantity_Color (const NCollection_Vec3<float>& theRgb)
    || theRgb.g() < 0.0f || theRgb.g() > 1.0f
    || theRgb.b() < 0.0f || theRgb.b() > 1.0f)
   {
-    Standard_OutOfRange::Raise ("Color out");
+    throw Standard_OutOfRange("Color out");
   }
 }
 
@@ -167,7 +167,7 @@ void Quantity_Color::SetValues (const Quantity_Parameter R1, const Quantity_Para
 			if ( R1 < 0. || R1 > 1. ||
 			     R2 < 0. || R2 > 1. ||
 			     R3 < 0. || R3 > 1. )
-				Standard_OutOfRange::Raise ("Color out");
+				throw Standard_OutOfRange("Color out");
 			else {
 				MyRed	= Standard_ShortReal (R1);
 				MyGreen	= Standard_ShortReal (R2);
@@ -179,7 +179,7 @@ void Quantity_Color::SetValues (const Quantity_Parameter R1, const Quantity_Para
 			if ( R1 < 0. || R1 > 360. ||
 			     R2 < 0. || R2 > 1. ||
 			     R3 < 0. || R3 > 1. )
-				Standard_OutOfRange::Raise ("Color out");
+				throw Standard_OutOfRange("Color out");
 			else {
 				Quantity_Color::hlsrgb
 					(Standard_ShortReal (R1),
@@ -309,7 +309,7 @@ Quantity_NameOfColor Quantity_Color::Name (const Quantity_Parameter R, const Qua
 	if ( R < 0. || R > 1. ||
 	     G < 0. || G > 1. ||
 	     B < 0. || B > 1. )
-		Standard_OutOfRange::Raise ("Color out");
+		throw Standard_OutOfRange("Color out");
 
 Quantity_Color AColor (R, G, B, Quantity_TOC_RGB);	// Couleur definie en RGB.
 
@@ -2031,7 +2031,7 @@ switch (AName) {
 		RR = R1 = (float ) 0.603922; RG = R2 = (float ) 0.803922; RB = R3 = (float ) 0.196078;
 	break;
 	default :
-		Standard_OutOfRange::Raise ("Bad name");
+		throw Standard_OutOfRange("Bad name");
 	break;
 }
 	if (AType == Quantity_TOC_HLS)
@@ -3598,7 +3598,7 @@ switch (AName) {
 	break;
 	default :
 		TheName = "UNDEFINED";
-		Standard_OutOfRange::Raise ("Bad name");
+		throw Standard_OutOfRange("Bad name");
 	break;
 }
 return (TheName);
@@ -3618,9 +3618,8 @@ void TestOfColor ();
 		TestOfColor ();
 	}
 
-	catch (Standard_Failure) {
-		Handle(Standard_Failure) E = Standard_Failure::Caught();
-		cout << E << endl;
+	catch (Standard_Failure const& anException) {
+		cout << anException << endl;
 	}
 
 }

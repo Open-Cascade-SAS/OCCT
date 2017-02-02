@@ -126,7 +126,7 @@ void XSControl_Controller::Record (const Standard_CString theName) const
     if (newadapt->IsKind(thisadapt->DynamicType()))
       return;
     if (!(thisadapt->IsKind(newadapt->DynamicType())) && thisadapt != newadapt)
-      Standard_DomainError::Raise("XSControl_Controller : Record");
+      throw Standard_DomainError("XSControl_Controller : Record");
   }
   listad.Bind(theName, this);
 }

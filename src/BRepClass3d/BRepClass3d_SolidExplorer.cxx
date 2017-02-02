@@ -771,18 +771,6 @@ Standard_Boolean BRepClass3d_SolidExplorer::FindAPointInTheFace
 BRepClass3d_SolidExplorer::BRepClass3d_SolidExplorer() 
 {
 }
-#include <Standard_ConstructionError.hxx>
-
-//=======================================================================
-//function : BRepClass3d_SolidExplorer
-//purpose  : Raise if called.
-//=======================================================================
-
-//BRepClass3d_SolidExplorer::BRepClass3d_SolidExplorer(const BRepClass3d_SolidExplorer& Oth) 
-BRepClass3d_SolidExplorer::BRepClass3d_SolidExplorer(const BRepClass3d_SolidExplorer& ) 
-{
-  Standard_ConstructionError::Raise("Magic constructor not allowed");
-}
 
 //=======================================================================
 //function : BRepClass3d_SolidExplorer

@@ -111,7 +111,7 @@ void BRepAlgoAPI_Algo::UserBreak() const
     return;
   }
   if (myProgressIndicator->UserBreak()) {
-    Standard_NotImplemented::Raise("");
+    throw Standard_NotImplemented("");
   }
 } 
 //=======================================================================

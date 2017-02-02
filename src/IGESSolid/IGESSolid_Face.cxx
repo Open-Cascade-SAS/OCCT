@@ -34,7 +34,7 @@ IGESSolid_Face::IGESSolid_Face ()    {  }
    const Handle(IGESSolid_HArray1OfLoop)& Loops)
 {
   if (Loops->Lower() != 1)
-    Standard_DimensionMismatch::Raise("IGESSolid_Face : Init");
+    throw Standard_DimensionMismatch("IGESSolid_Face : Init");
   theSurface   = aSurface;
   hasOuterLoop = OuterLoopFlag;
   theLoops     = Loops;

@@ -96,7 +96,7 @@ Standard_Boolean TopOpeBRepTool_face::IsDone() const
 
 Standard_Boolean TopOpeBRepTool_face::Finite() const
 {
-  if (!IsDone()) Standard_Failure::Raise("TopOpeBRepTool_face NOT DONE");
+  if (!IsDone()) throw Standard_Failure("TopOpeBRepTool_face NOT DONE");
   return myfinite;
 }
 
@@ -107,7 +107,7 @@ Standard_Boolean TopOpeBRepTool_face::Finite() const
 
 const TopoDS_Face& TopOpeBRepTool_face::Ffinite() const
 {
-  if (!IsDone()) Standard_Failure::Raise("TopOpeBRepTool_face NOT DONE");
+  if (!IsDone()) throw Standard_Failure("TopOpeBRepTool_face NOT DONE");
   return myFfinite;
 }
 

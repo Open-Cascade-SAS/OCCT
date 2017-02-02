@@ -679,7 +679,7 @@ Standard_Boolean
   case GeomAbs_C2:
   case GeomAbs_C3:
   case GeomAbs_CN: tmpS = GeomAbs_CN; break;
-  default: Standard_OutOfRange::Raise();
+  default: throw Standard_OutOfRange();
   }
   
   NbTrimmed = myCurve->NbIntervals(tmpS);
@@ -711,7 +711,7 @@ Standard_Boolean
   case GeomAbs_C2:
   case GeomAbs_C3:
   case GeomAbs_CN: tmpS = GeomAbs_CN; break;
-  default: Standard_OutOfRange::Raise();
+  default: throw Standard_OutOfRange();
   }
 
   if (!isSngl) {

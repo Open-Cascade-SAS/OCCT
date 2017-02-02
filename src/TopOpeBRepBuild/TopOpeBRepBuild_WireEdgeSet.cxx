@@ -522,7 +522,7 @@ void TopOpeBRepBuild_WireEdgeSet::IsUVISO(const TopoDS_Edge& E,const TopoDS_Face
   Standard_Real fE,lE,tolpc;Handle(Geom2d_Curve) PC;
   Standard_Boolean trim3d = Standard_True;
   PC = FC2D_CurveOnSurface(E,F,fE,lE,tolpc,trim3d);
-  if (PC.IsNull()) Standard_ProgramError::Raise("TopOpeBRepBuild_WireEdgeSet::IsUVISO");
+  if (PC.IsNull()) throw Standard_ProgramError("TopOpeBRepBuild_WireEdgeSet::IsUVISO");
 
   Handle(Standard_Type) TheType = PC->DynamicType();
   if (TheType == STANDARD_TYPE(Geom2d_Line)) {

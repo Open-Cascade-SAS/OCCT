@@ -163,7 +163,7 @@ static void Parameters(const Handle(Adaptor3d_HSurface)& myHS1,
     quad1.SetValue(myHS1->Surface().Torus());
     break;
   default:
-    Standard_ConstructionError::Raise("IntPatch_IntSS::MakeCurve");
+    throw Standard_ConstructionError("IntPatch_IntSS::MakeCurve");
   }
   
   typs = myHS2->Surface().GetType();
@@ -184,7 +184,7 @@ static void Parameters(const Handle(Adaptor3d_HSurface)& myHS1,
     quad2.SetValue(myHS2->Surface().Torus());
     break;
   default:
-    Standard_ConstructionError::Raise("IntPatch_IntSS::MakeCurve");
+    throw Standard_ConstructionError("IntPatch_IntSS::MakeCurve");
   }
   quad1.Parameters(Ptref,U1,V1);
   quad2.Parameters(Ptref,U2,V2);
@@ -728,7 +728,7 @@ static void AddLine(const Handle(IntPatch_Line)& L,
       break;
     }
     default: { 
-      Standard_ConstructionError::Raise("IntPatch_LineConstructor::AddLine");
+      throw Standard_ConstructionError("IntPatch_LineConstructor::AddLine");
     }
       break;
     }

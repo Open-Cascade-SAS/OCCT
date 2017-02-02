@@ -471,12 +471,12 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
     }
     
   }
-  catch(Standard_Failure)
-  {
+  catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
     cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(): Exception: ";
-    Standard_Failure::Caught()->Print(cout); cout << endl;
+    anException.Print(cout); cout << endl;
 #endif
+    (void)anException;
     myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL3);
     c2d.Nullify();
   }
@@ -1480,13 +1480,14 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::ApproximatePCurve(con
     C2d = new Geom2d_BSplineCurve  ( poles2d, weights, knots, multiplicities, crv3d->Degree(), crv3d->IsPeriodic());
     return C2d;
   }
-  catch(Standard_Failure) {
-#ifdef OCCT_DEBUG //:s5
+  catch(Standard_Failure const& anException) {
+#ifdef OCCT_DEBUG
+ //:s5
     //    debug ...
     Standard_Integer nbp = params->Length();
     Standard_Integer nb2 = points2d->Length();
     cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::ApproximatePCurve(): Exception: ";
-    Standard_Failure::Caught()->Print(cout); 
+    anException.Print(cout); 
     cout<<"Pb Geom2dAPI_Approximate, tol2d="<<theTolerance2d<<" NbParams="<<nbp<<" NbPnts="<<nb2<<endl;
 //     if (nb2 > nbp) nb2 = nbp;
 //     Standard_Real rbp,rb2; rbp = nbp; rb2 = nb2;
@@ -1497,6 +1498,7 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::ApproximatePCurve(con
 //       dbl.AddXYZ (quoi);
 //     }
 #endif
+     (void)anException;
      C2d.Nullify();
   }
   return C2d;
@@ -1524,13 +1526,14 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::ApproximatePCurve(con
     myInterPol2d.Perform();
     if (myInterPol2d.IsDone()) C2d = myInterPol2d.Curve();
   }
-  catch(Standard_Failure) {
-#ifdef OCCT_DEBUG //:s5
+  catch(Standard_Failure const& anException) {
+#ifdef OCCT_DEBUG
+//:s5
 // //    debug ...
     Standard_Integer nbp = params->Length();
     Standard_Integer nb2 = points2d->Length();
     cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::InterpolatePCurve(): Exception: ";
-    Standard_Failure::Caught()->Print(cout); 
+    anException.Print(cout); 
     cout<<"Pb Geom2dAPI_Interpolate, tol2d="<<theTolerance2d<<" NbParams="<<nbp<<" NbPnts="<<nb2<<endl;
 //     if (nb2 > nbp) nb2 = nbp;
 //     Standard_Real rbp,rb2; rbp = nbp; rb2 = nb2;
@@ -1541,6 +1544,7 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::ApproximatePCurve(con
 //       dbl.AddXYZ (quoi);
 //     }
 #endif
+    (void)anException;
     C2d.Nullify();
   }
   return C2d;
@@ -1565,12 +1569,14 @@ Handle(Geom_Curve) ShapeConstruct_ProjectCurveOnSurface::InterpolateCurve3d(cons
     myInterPol.Perform();
     if (myInterPol.IsDone()) C3d = myInterPol.Curve();
   }
-  catch(Standard_Failure) {
-    C3d.Nullify();
-#ifdef OCCT_DEBUG //:s5
+  catch(Standard_Failure const& anException) {
+#ifdef OCCT_DEBUG
+ //:s5
     cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::InterpolateCurve3d(): Exception: ";
-    Standard_Failure::Caught()->Print(cout); cout << endl;
+    anException.Print(cout); cout << endl;
 #endif
+    (void)anException;
+    C3d.Nullify();
   }
   return C3d;
 }
@@ -1965,18 +1971,17 @@ Handle(Geom_Curve) ShapeConstruct_ProjectCurveOnSurface::InterpolateCurve3d(cons
   }  */
   return isoParam;
   }  // RAJOUT
-  catch(Standard_Failure) {
-//  pb : on affiche ce qu on peut
+  catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
+//  pb : on affiche ce qu on peut
     for (Standard_Integer numpnt = 1; numpnt <= nbrPnt; numpnt ++) {
       cout<<"["<<numpnt<<"]param="<<params(numpnt)<<" point=("<<
 	points(numpnt).X()<<"  "<<points(numpnt).Y()<<"  "<<points(numpnt).Z()<<")"<<endl;
     }
-#endif
-#ifdef OCCT_DEBUG //:s5
     cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(): Exception: ";
-    Standard_Failure::Caught()->Print(cout); cout << endl;
+    anException.Print(cout); cout << endl;
 #endif
+    (void)anException;
     return Standard_False;
   }
 }
