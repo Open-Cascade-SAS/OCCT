@@ -3699,7 +3699,7 @@ static Standard_Integer DDataStd_SetRefArray (Draw_Interpretor& di,
 
   Handle(TDataStd_ReferenceArray) A = TDataStd_ReferenceArray::Set(label, From, To);
   
-  if (nb > 6) {
+  if (nb >= 6) {
     j = 5;
     for(Standard_Integer i = From; i<=To; i++) { 
       TDF_Label aRefLabel; 

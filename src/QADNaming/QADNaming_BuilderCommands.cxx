@@ -23,7 +23,7 @@
 static Standard_Integer BuildNamedShape (Draw_Interpretor& di,
 					 Standard_Integer nb, 
 					 const char** arg) {
-  if (nb > 4) { 
+  if (nb >= 4) { 
     TDF_Label aLabel;
     if (!QADNaming::Entry(arg, aLabel)) return 1;
     char anEvolution = arg[3][0];
@@ -73,7 +73,7 @@ static Standard_Integer BuildNamedShape (Draw_Interpretor& di,
 //       OnlyModif = Draw::Atoi(arg[3]);
 //     }
   } else {
-    di<<"Usage: BuildName df entry evolution(P[RIMITIVE] G[ENERATED] M[ODIFY] D[ELETE] R[EPLACE] S[ELECTED]) shape1 [shape2 ...]\n";
+    di<<"Usage: BuildName df entry evolution(P[RIMITIVE] G[ENERATED] M[ODIFY] D[ELETE] R[EPLACE] S[ELECTED]) [shape1 shape2 ...]\n";
     return 1;
   }
   return 0;
@@ -89,6 +89,6 @@ void QADNaming::BuilderCommands(Draw_Interpretor& theCommands)
   const char* g = "Naming builder commands";
 
   theCommands.Add("BuildNamedShape",
-		  "BuildNamedShape df entry evolution(P[RIMITIVE] G[ENERATED] M[ODIFY] D[ELETE] R[EPLACE] S[ELECTED]) shape1 [shape2 ...]",
+		  "BuildNamedShape df entry evolution(P[RIMITIVE] G[ENERATED] M[ODIFY] D[ELETE] R[EPLACE] S[ELECTED]) [shape1 shape2 ...]",
 		  __FILE__,BuildNamedShape,g);
 }

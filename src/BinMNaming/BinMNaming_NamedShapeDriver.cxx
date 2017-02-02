@@ -171,7 +171,6 @@ Standard_Boolean BinMNaming_NamedShapeDriver::Paste
   theSource >> aNbShapes;
   TDF_Label aLabel = theTarget->Label ();
   TNaming_Builder   aBuilder   (aLabel);
-  if (aNbShapes == 0) return Standard_False;
   Standard_Integer aVer;
   Standard_Boolean ok = theSource >> aVer;
   if(!ok) return Standard_False;
@@ -247,8 +246,6 @@ void BinMNaming_NamedShapeDriver::Paste (const Handle(TDF_Attribute)& theSource,
   for (TNaming_Iterator SItr (aSAtt); SItr.More (); SItr.Next ()) NbShapes++;
   //--------------------------------------------------------------
 
-  if (NbShapes == 0) return;
-
   BinTools_ShapeSet& aShapeSet = (BinTools_ShapeSet&) myShapeSet;
   TNaming_Evolution anEvol = aSAtt->Evolution();
   
@@ -317,4 +314,3 @@ void BinMNaming_NamedShapeDriver::ReadShapeSection (Standard_IStream& theIS)
   else
     theIS.seekg(aPos); // no shape section is present, try to return to initial point
 }
-
