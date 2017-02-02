@@ -2620,10 +2620,10 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
     catch(OSD_Exception_STACK_OVERFLOW) {
       di << "Caught, OK\n";
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure const& anException) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
       di << " Caught (";
-      di << Standard_Failure::Caught()->GetMessageString();
+      di << anException.GetMessageString();
       di << ")... KO\n";
       Succes = Standard_False;
     }
