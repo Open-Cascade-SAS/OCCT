@@ -93,6 +93,11 @@ fillloadmenu
 
 # the view menu
 
+source [file join $dir Move.tcl]
+
+addmenuitem Views {checkbutton -label "Extended view commands" \
+    -command ShowHideExtCommands -variable ShowExtCommands -onvalue 1 -offvalue 0}
+addmenuitem Views   "separator"
 addmenu Views axo   {smallview AXON}
 addmenu Views top   {smallview +X+Y}
 addmenu Views front {smallview +X+Z}

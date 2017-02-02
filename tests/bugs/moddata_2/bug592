@@ -16,7 +16,7 @@ cvalue cc 0.95 x y z
 vertex vv x y z
 mksurface gs ff114
 mkface ff gs
-donl ff114 vv
+donly ff114 vv
 trim trcc cc
 set aa [distmini dd vv ff]
 

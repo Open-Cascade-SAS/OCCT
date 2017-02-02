@@ -19,7 +19,6 @@
 #
 
 frame .move -relief groove -borderwidth 1 
-pack .move -pady 1 -padx 1 -anchor w -side left
 #toplevel .move
 
 frame .move.rotate -borderwidth 1 
@@ -61,3 +60,26 @@ pack .move.zoom.mu -side top
 pack .move.zoom.md -side bottom
 pack .move.zoom
 
+frame .pick -borderwidth 1
+label .pick.title -text " Pick "
+button .pick.coords -text "Coords" -command {catch {puts [mpick]}}
+button .pick.dist -text "Dist" -command {catch {puts [mdist]}}
+button .pick.whatis -text "What is" -command {catch {puts [whatis .]}}
+button .pick.erase -text "Erase" -command {catch {puts [erase .]}}
+pack .pick.title
+pack .pick.coords -pady 2 -padx 10
+pack .pick.dist -pady 2 -padx 10
+pack .pick.whatis -pady 2 -padx 10
+pack .pick.erase -pady 2 -padx 10
+
+set ShowExtCommands 0
+
+proc ShowHideExtCommands {} {
+    global ShowExtCommands
+    if $ShowExtCommands {
+        pack .move -pady 1 -padx 1 -side left
+        pack .pick -pady 1 -padx 1
+    } else {
+        pack forget .move .pick
+    }
+}

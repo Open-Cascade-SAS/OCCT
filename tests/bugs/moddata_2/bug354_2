@@ -13,7 +13,7 @@ explode a f
 
 explode a_5 e
 
-donl a a_5_6
+donly a a_5_6
 
 chamf result a a_5_6 a_5 A 2 45
 checkshape result

@@ -43,8 +43,9 @@ This documentation describes:
   * The graphical commands.
   * The Geometry set of commands.
   * The Topology set of commands.
-
-This document does not describe other sets of commands and does not explain how to extend Draw using C++. 
+  * OCAF commands.
+  * Data Exchange commands
+  * Shape Healing commands
 
 This document is a reference manual. It contains a full description of each command. All descriptions have the format illustrated below for the exit command. 
 
@@ -325,6 +326,17 @@ puts ;x = [dval x], cos(x/pi) = [dval cos(x/pi)];
 
 **Note,** that in TCL, parentheses are not considered to be special characters. Do not forget to quote an expression if it contains spaces in order to avoid parsing different words. <i>(a + b)</i> is parsed as three words: <i>"(a + b)"</i> or <i>(a+b)</i> are correct.
 
+@subsubsection occt_draw_2_3_3 del, dall
+
+Syntax:      
+~~~~~
+del varname_pattern [varname_pattern ...] 
+dall
+~~~~~
+
+*del* command does the same thing as *unset*, but it deletes the variables matched by the pattern.
+
+*dall* command deletes all variables in the session.
 
 @subsection occt_draw_2_4 lists
 
@@ -698,21 +710,21 @@ Radius :5
 **Note** The behavior of *whatis* on other variables (not Draw) is not excellent. 
 
 
-@subsubsection occt_draw_3_2_3 rename, copy
+@subsubsection occt_draw_3_2_3 renamevar, copy
 
 Syntax:      
 ~~~~~
-rename varname tovarname [varname tovarname ...] 
+renamevar varname tovarname [varname tovarname ...] 
 copy varname tovarname [varname tovarname ...] 
 ~~~~~
 
-  * **rename** changes the name of a Draw variable. The original variable will no longer exist. Note that the content is not modified. Only the name is changed. 
+  * **renamevar** changes the name of a Draw variable. The original variable will no longer exist. Note that the content is not modified. Only the name is changed. 
   * **copy** creates a new variable with a copy of the content of an existing variable. The exact behavior of **copy** is type dependent; in the case of certain topological variables, the content may still be shared. 
 
 **Example:** 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 circle c1 0 0 1 0 5 
-rename c1 c2 
+renamevar c1 c2 
 
 # curves are copied, c2 will not be modified 
 copy c2 c3 
@@ -1180,7 +1192,7 @@ point . x y z
 # p0, p1, p2, .... 
 
 # give a name to a graphic object 
-rename . x 
+renamevar . x 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -1254,6 +1266,13 @@ foreach var [directory c_*] {erase $var}
 # clear 2d views 
 2dclear 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+@subsubsection occt_draw_4_1_14_1 disp, don, era
+
+These commands have the same meaning as correspondingly display, donly and erase, but with the difference that they evaluate the arguments using glob pattern rules. For example, to display all objects with names d_1, d_2, d_3, etc. it is enouth to run the command:
+~~~~~{.cpp}
+disp d_*
+~~~~~
 
 @subsubsection occt_draw_4_1_15 repaint, dflush
 
@@ -5939,6 +5958,20 @@ Creates a vertex at either a 3d location x,y,z or the point at parameter p on an
 vertex v1 10 20 30 
 ~~~~~
 
+@subsubsection occt_draw_7_2_1a  mkpoint
+
+Syntax:
+~~~~~
+mkpoint name vertex
+~~~~~
+
+Creates a point from the coordinates of a given vertex.
+
+**Example:** 
+~~~~~
+mkpoint p v1
+~~~~~
+
 @subsubsection occt_draw_7_2_2  edge, mkedge, uisoedge, visoedge
 
 Syntax:      
@@ -9901,6 +9934,510 @@ vdrawsphere s 200 1 1 1 500 1
 == CPU average time of scene redrawing: 15.6000999999998950 msec 
 ~~~~~
 
+
+@section occt_draw_12 Simple vector algebra and measurements
+
+This section contains description of auxiliary commands that can be useful for simple calculations and manipulations needed when analyzing complex models.
+
+@subsection occt_draw_12_1 Vector algebra commands
+
+This section describes commands providing simple calculations with 2D and 3D vectors. The vector is represented by a TCL list of double values (coordinates). The commands get input vector coordinates from the command line as distinct values. So, if you have a vector stored in a variable you need to use *eval* command as a prefix, for example, to compute the magnitude of cross products of two vectors given by 3 points the following commands can be used:
+~~~~~{.cpp}
+Draw[10]> set vec1 [vec 12 28 99 12 58 99]
+0 30 0
+Draw[13]> set vec2 [vec 12 28 99 16 21 89]
+4 -7 -10
+Draw[14]> set cross [eval cross $vec1 $vec2]
+-300 0 -120
+Draw[15]> eval module $cross
+323.10988842807024
+~~~~~
+
+@subsubsection occt_draw_12_1_1 vec
+
+Syntax:
+~~~~~
+vec <x1> <y1> <z1> <x2> <y2> <z2>
+~~~~~ 
+
+Returns coordinates of vector between two 3D points.
+
+Example:
+~~~~~{.cpp}
+vec 1 2 3 6 5 4
+~~~~~
+
+@subsubsection occt_draw_12_1_2 2dvec
+
+Syntax:
+~~~~~
+2dvec <x1> <y1> <x2> <y2>
+~~~~~ 
+
+Returns coordinates of vector between two 2D points.
+
+Example: 
+~~~~~{.cpp}
+2dvec 1 2 4 3
+~~~~~
+
+@subsubsection occt_draw_12_1_3 pln
+
+Syntax:
+~~~~~
+pln <x1> <y1> <z1> <x2> <y2> <z2> <x3> <y3> <z3>
+~~~~~ 
+
+Returns plane built on three points. A plane is represented by 6 double values: coordinates of the origin point and the normal directoin.
+
+Example: 
+~~~~~{.cpp}
+pln 1 2 3 6 5 4 9 8 7
+~~~~~
+
+@subsubsection occt_draw_12_1_4 module
+
+Syntax:
+~~~~~
+module <x> <y> <z>
+~~~~~ 
+
+Returns module of a vector.
+
+Example: 
+~~~~~{.cpp}
+module 1 2 3
+~~~~~
+
+@subsubsection occt_draw_12_1_5 2dmodule
+
+Syntax:
+~~~~~
+2dmodule <x> <y>
+~~~~~ 
+
+Returns module of a 2D vector.
+
+Example: 
+~~~~~{.cpp}
+2dmodule 1 2
+~~~~~
+
+@subsubsection occt_draw_12_1_6 norm
+
+Syntax:
+~~~~~
+norm <x> <y> <z>
+~~~~~ 
+
+Returns unified vector from a given 3D vector.
+
+Example: 
+~~~~~{.cpp}
+norm 1 2 3
+~~~~~
+
+@subsubsection occt_draw_12_1_7 2dnorm
+
+Syntax:
+~~~~~
+2dnorm <x> <y>
+~~~~~ 
+
+Returns unified vector from a given 2D vector.
+
+Example: 
+~~~~~{.cpp}
+2dnorm 1 2
+~~~~~
+
+@subsubsection occt_draw_12_1_8 inverse
+
+Syntax:
+~~~~~
+inverse <x> <y> <z>
+~~~~~ 
+
+Returns inversed 3D vector.
+
+Example: 
+~~~~~{.cpp}
+inverse 1 2 3
+~~~~~
+
+@subsubsection occt_draw_12_1_9 2dinverse
+
+Syntax:
+~~~~~
+2dinverse <x> <y>
+~~~~~ 
+
+Returns inversed 2D vector.
+
+Example: 
+~~~~~{.cpp}
+2dinverse 1 2
+~~~~~
+
+@subsubsection occt_draw_12_1_10 2dort
+
+Syntax:
+~~~~~
+2dort <x> <y>
+~~~~~ 
+
+Returns 2D vector rotated on 90 degrees.
+
+Example: 
+~~~~~{.cpp}
+2dort 1 2
+~~~~~
+
+@subsubsection occt_draw_12_1_11 distpp
+
+Syntax:
+~~~~~
+distpp <x1> <y1> <z1> <x2> <y2> <z2>
+~~~~~ 
+
+Returns distance between two 3D points.
+
+Example: 
+~~~~~{.cpp}
+distpp 1 2 3 4 5 6
+~~~~~
+
+@subsubsection occt_draw_12_1_12 2ddistpp
+
+Syntax:
+~~~~~
+2ddistpp <x1> <y1> <x2> <y2>
+~~~~~ 
+
+Returns distance between two 2D points.
+
+Example: 
+~~~~~{.cpp}
+2ddistpp 1 2 3 4
+~~~~~
+
+@subsubsection occt_draw_12_1_13 distplp
+
+Syntax:
+~~~~~
+distplp <x0> <y0> <z0> <nx> <ny> <nz> <xp> <yp> <zp>
+~~~~~ 
+
+Returns distance between plane defined by point and normal direction and another point.
+
+Example: 
+~~~~~{.cpp}
+distplp 0 0 0 0 0 1 5 6 7
+~~~~~
+
+@subsubsection occt_draw_12_1_14 distlp
+
+Syntax:
+~~~~~
+distlp <x0> <y0> <z0> <dx> <dy> <dz> <xp> <yp> <zp>
+~~~~~ 
+
+Returns distance between 3D line defined by point and direction and another point.
+
+Example: 
+~~~~~{.cpp}
+distlp 0 0 0 1 0 0 5 6 7
+~~~~~
+
+@subsubsection occt_draw_12_1_15 2ddistlp
+
+Syntax:
+~~~~~
+2ddistlp <x0> <y0> <dx> <dy> <xp> <yp>
+~~~~~ 
+
+Returns distance between 2D line defined by point and direction and another point.
+
+Example: 
+~~~~~{.cpp}
+2ddistlp 0 0 1 0 5 6
+~~~~~
+
+@subsubsection occt_draw_12_1_16 distppp
+
+Syntax:
+~~~~~
+distppp <x1> <y1> <z1> <x2> <y2> <z2> <x3> <y3> <z3>
+~~~~~ 
+
+Returns deviation of point (x2,y2,z2) from segment defined by points (x1,y1,z1) and (x3,y3,z3).
+
+Example: 
+~~~~~{.cpp}
+distppp 0 0 0 1 1 0 2 0 0
+~~~~~
+
+@subsubsection occt_draw_12_1_17 2ddistppp
+
+Syntax:
+~~~~~
+2ddistppp <x1> <y1> <x2> <y2> <x3> <y3>
+~~~~~ 
+
+Returns deviation of point (x2,y2) from segment defined by points (x1,y1) and (x3,y3). The result is a signed value. It is positive if the point (x2,y2) is on the left side of the segment, and negative otherwise.
+
+Example: 
+~~~~~{.cpp}
+2ddistppp 0 0 1 -1 2 0
+~~~~~
+
+@subsubsection occt_draw_12_1_18 barycen
+
+Syntax:
+~~~~~
+barycen <x1> <y1> <z1> <x2> <y2> <z2> <par>
+~~~~~ 
+
+Returns point of a given parameter between two 3D points.
+
+Example: 
+~~~~~{.cpp}
+barycen 0 0 0 1 1 1 0.3
+~~~~~
+
+@subsubsection occt_draw_12_1_19 2dbarycen
+
+Syntax:
+~~~~~
+2dbarycen <x1> <y1> <x2> <y2> <par>
+~~~~~ 
+
+Returns point of a given parameter between two 2D points.
+
+Example: 
+~~~~~{.cpp}
+2dbarycen 0 0 1 1 0.3
+~~~~~
+
+@subsubsection occt_draw_12_1_20 cross
+
+Syntax:
+~~~~~
+cross <x1> <y1> <z1> <x2> <y2> <z2>
+~~~~~ 
+
+Returns cross product of two 3D vectors.
+
+Example: 
+~~~~~{.cpp}
+cross 1 0 0 0 1 0
+~~~~~
+
+@subsubsection occt_draw_12_1_21 2dcross
+
+Syntax:
+~~~~~
+2dcross <x1> <y1> <x2> <y2>
+~~~~~ 
+
+Returns cross product of two 2D vectors.
+
+Example: 
+~~~~~{.cpp}
+2dcross 1 0 0 1
+~~~~~
+
+@subsubsection occt_draw_12_1_22 dot
+
+Syntax:
+~~~~~
+dot <x1> <y1> <z1> <x2> <y2> <z2>
+~~~~~ 
+
+Returns scalar product of two 3D vectors.
+
+Example: 
+~~~~~{.cpp}
+dot 1 0 0 0 1 0
+~~~~~
+
+@subsubsection occt_draw_12_1_23 2ddot
+
+Syntax:
+~~~~~
+2ddot <x1> <y1> <x2> <y2>
+~~~~~ 
+
+Returns scalar product of two 2D vectors.
+
+Example: 
+~~~~~{.cpp}
+2ddot 1 0 0 1
+~~~~~
+
+@subsubsection occt_draw_12_1_23 scale
+
+Syntax:
+~~~~~
+scale <x> <y> <z> <factor>
+~~~~~ 
+
+Returns 3D vector multiplied by scalar.
+
+Example: 
+~~~~~{.cpp}
+scale 1 0 0 5
+~~~~~
+
+@subsubsection occt_draw_12_1_24 2dscale
+
+Syntax:
+~~~~~
+2dscale <x> <y> <factor>
+~~~~~ 
+
+Returns 2D vector multiplied by scalar.
+
+Example: 
+~~~~~{.cpp}
+2dscale 1 0 5
+~~~~~
+
+@subsection occt_draw_12_2 Measurements commands
+
+This section describes commands that make possible to provide measurements on a model.
+
+@subsubsection occt_draw_12_2_1 pnt
+
+Syntax:
+~~~~~
+pnt <object>
+~~~~~ 
+
+Returns coordinates of point in the given Draw variable. Object can be of type point or vertex. Actually this command is built up from the commands @ref occt_draw_7_2_1a "mkpoint" and @ref occt_draw_6_6_1 "coord".
+
+Example: 
+~~~~~{.cpp}
+vertex v 0 1 0
+pnt v
+~~~~~
+
+@subsubsection occt_draw_12_2_2 pntc
+
+Syntax:
+~~~~~
+pntc <curv> <par>
+~~~~~ 
+
+Returns coordinates of point on 3D curve with given parameter. Actually this command is based on the command @ref occt_draw_6_6_2 "cvalue".
+
+Example: 
+~~~~~{.cpp}
+circle c 0 0 0 10
+pntc c [dval pi/2]
+~~~~~
+
+@subsubsection occt_draw_12_2_3 2dpntc
+
+Syntax:
+~~~~~
+2dpntc <curv2d> <par>
+~~~~~ 
+
+Returns coordinates of point on 2D curve with given parameter. Actually this command is based on the command @ref occt_draw_6_6_2 "2dcvalue".
+
+Example: 
+~~~~~{.cpp}
+circle c 0 0 10
+2dpntc c [dval pi/2]
+~~~~~
+
+@subsubsection occt_draw_12_2_4 pntsu
+
+Syntax:
+~~~~~
+pntsu <surf> <u> <v>
+~~~~~ 
+
+Returns coordinates of point on surface with given parameters. Actually this command is based on the command @ref occt_draw_6_6_3 "svalue".
+
+Example: 
+~~~~~{.cpp}
+cylinder s 10
+pntsu s [dval pi/2] 5
+~~~~~
+
+@subsubsection occt_draw_12_2_5 pntcons
+
+Syntax:
+~~~~~
+pntcons <curv2d> <surf> <par>
+~~~~~ 
+
+Returns coordinates of point on surface defined by point on 2D curve with given parameter. Actually this command is based on the commands @ref occt_draw_6_6_2 "2dcvalue" and @ref occt_draw_6_6_3 "svalue".
+
+Example: 
+~~~~~{.cpp}
+line c 0 0 1 0
+cylinder s 10
+pntcons c s [dval pi/2]
+~~~~~
+
+@subsubsection occt_draw_12_2_6 drseg
+
+Syntax:
+~~~~~
+drseg <name> <x1> <y1> <z1> <x2> <y2> <z2>
+~~~~~ 
+
+Creates a linear segment between two 3D points. The new object is given the *name*. The object is drawn in the axonometric view.
+
+Example: 
+~~~~~{.cpp}
+drseg s 0 0 0 1 0 0
+~~~~~
+
+@subsubsection occt_draw_12_2_7 2ddrseg
+
+Syntax:
+~~~~~
+2ddrseg <name> <x1> <y1> <x2> <y2>
+~~~~~ 
+
+Creates a linear segment between two 2D points. The new object is given the *name*. The object is drawn in the 2D view.
+
+Example: 
+~~~~~{.cpp}
+2ddrseg s 0 0 1 0
+~~~~~
+
+@subsubsection occt_draw_12_2_8 mpick
+
+Syntax:
+~~~~~
+mpick
+~~~~~ 
+
+Prints in the console the coordinates of a point clicked by mouse in a view (axonometric or 2D). This command will wait for mouse click event in a view.
+
+Example: 
+~~~~~{.cpp}
+mpick
+~~~~~
+
+@subsubsection occt_draw_12_2_9 mdist
+
+Syntax:
+~~~~~
+mdist
+~~~~~ 
+
+Prints in the console the distance between two points clicked by mouse in a view (axonometric or 2D). This command will wait for two mouse click events in a view.
+
+Example: 
+~~~~~{.cpp}
+mdist
+~~~~~
 
 @section occt_draw_11 Extending Test Harness with custom commands
 

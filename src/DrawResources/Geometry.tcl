@@ -58,6 +58,9 @@ proc smp {} {
 #################################################
 # smooth
 #################################################
+
+help smooth {smooth  cname tol [filename] } "DRAW Variables management"
+
 proc smooth {name tol {file ""}} {
     if {$file == ""} {
 	uplevel #0 "bsmooth $name $tol"
@@ -68,11 +71,12 @@ proc smooth {name tol {file ""}} {
     return $name
 }
 
-help smooth {smooth  cname tol [filename] } "DRAW Variables management"
-
 #################################################
 # beziersmooth
 #################################################
+
+help beziersmooth { beziersmooth  cname tol deg [-GR -VA -PR] [filename] } "DRAW Variables management"
+
 proc beziersmooth {name tol deg option {file ""}} {
     if {$file == ""} {
 	uplevel #0 "bzsmooth $name $tol $deg $option"
@@ -83,6 +87,10 @@ proc beziersmooth {name tol deg option {file ""}} {
     return $name
 }
 
-help beziersmooth { beziersmooth  cname tol deg [-GR -VA -PR] [filename] } "DRAW Variables management"
+help pickf {name : extract picked with mouse face as a new variable\
+} {DRAW Variables management}
 
-
+proc pickf {name} {
+    global $name
+    eval renamevar "[pickface]" $name
+}

@@ -95,6 +95,7 @@ help help {help pattern, or help command string group, to set help} {DRAW Genera
 # the getsourcefile command in TCL
 #################################################
 
+help getsourcefile {getsourcefile, or getsourcefile command } {DRAW General Commands}
 
 proc getsourcefile {{command ""}} {
 
@@ -136,8 +137,6 @@ proc getsourcefile {{command ""}} {
     return [join $out "\n"]
 }
 
-help getsourcefile {getsourcefile, or getsourcefile command } {DRAW General Commands}
-
 #################################################
 # whatis
 #################################################
@@ -146,6 +145,8 @@ help getsourcefile {getsourcefile, or getsourcefile command } {DRAW General Comm
 #    global $aVarName
 #    puts -nonewline $aVarName; puts -nonewline " is a "; puts [dtyp ${aVarName}]
 #}
+
+help whatis "whatis object1 object2 ..." 
 
 proc whatis args {
     set __out_string ""
@@ -158,8 +159,6 @@ proc whatis args {
     }
     return ${__out_string}
 }
-
-help whatis "whatis object1 object2 ..." 
 
 #################################################
 # library, lsource
@@ -195,6 +194,8 @@ proc isgdraw {var} {
     return [isdraw $var]
 }
 
+help directory {directory [pattern], list draw variables} {DRAW Variables management}
+
 proc directory {{joker *}} {
     set res ""
     foreach var [info globals $joker] { 
@@ -202,8 +203,6 @@ proc directory {{joker *}} {
     }
     return $res
 }
-
-help directory {directory [pattern], list draw variables} {DRAW Variables management}
 
 proc lsd {} { exec ls [datadir] }
 
@@ -259,6 +258,8 @@ proc do {var start end args} {
 
 set Draw_DataDir "."
 
+help datadir {datadir [directory]} "DRAW Variables management"
+
 proc datadir {{dir ""}} {
     global Draw_DataDir
     if {$dir != ""} {
@@ -271,7 +272,7 @@ proc datadir {{dir ""}} {
     return $Draw_DataDir
 }
 
-help datadir {datadir [directory]} "DRAW Variables management"
+help save {save variable [filename]} "DRAW Variables management"
 
 proc save {name {file ""}} {
     if {$file == ""} {set file $name}
@@ -282,7 +283,7 @@ proc save {name {file ""}} {
     return [file join $Draw_DataDir $file]
 }
 
-help save {save variable [filename]} "DRAW Variables management"
+help restore {restore filename [variablename]} "DRAW Variables management"
 
 proc restore {file {name ""}} {
     if {$name == ""} {
@@ -294,8 +295,6 @@ proc restore {file {name ""}} {
     brestore [file join $Draw_DataDir $file ] n
     return $name
 }
-
-help restore {restore filename [variablename]} "DRAW Variables management"
 
 #################################################
 # misc...
@@ -311,6 +310,7 @@ proc ppcurve {a} {
 # display and donly with jokers
 #################################################
 
+help disp {display variables matched by glob pattern} "DRAW Variables management"
 
 proc disp { args } {
     set res ""
@@ -331,25 +331,7 @@ proc disp { args } {
     return $res
 }
 
-
-proc donl { args } {
-    set res ""
-    foreach joker $args {
-	if { $joker == "." } {
-             dtyp .
-             set joker [lastrep id x y b]
-	}
-        foreach var [info globals $joker] { 
-	   if { $var == "." } {
-               dtyp .
-               set var [lastrep id x y b]
-	   }
-	   if [isgdraw $var] {lappend res $var}
-        }
-    }
-    uplevel #0 eval donly $res
-    return $res
-}
+help don {display only variables matched by glob pattern} "DRAW Variables management"
 
 proc don { args } {
     set res ""
@@ -368,6 +350,41 @@ proc don { args } {
     }
     uplevel #0 eval donly $res
     return $res
+}
+
+help del {unset (remove) variables matched by glob pattern} "DRAW Variables management"
+
+proc del args {
+    set res ""
+    foreach joker [eval concat $args] {
+        if { $joker == "." } {
+            dtyp .
+            set joker [lastrep id x y b]
+        }
+        foreach var [directory $joker] {
+            global $var
+            if ![isprot $var] {
+                lappend res $var; unset $var
+            }
+        }
+    }
+    return $res
+}
+
+help era {erase variables matched by glob pattern} "DRAW Variables management"
+
+proc era args {
+    set res ""
+    foreach joker [eval concat $args] {
+        if { $joker == "." } {
+            dtyp .
+            set joker [lastrep id x y b]
+        }
+        eval lappend res [directory $joker]
+    }
+    if [llength $res] {
+        uplevel \#0 eval erase $res
+    }
 }
 
 # The following commands (definitions are surrounded by if) are
