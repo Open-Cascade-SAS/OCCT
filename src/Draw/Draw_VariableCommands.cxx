@@ -46,8 +46,6 @@ Standard_Boolean Draw_ParseFailed;
 static Standard_Boolean autodisp = Standard_True;
 static Standard_Boolean repaint2d,repaint3d;
 
-extern Draw_Interpretor theCommands;
-
 //===============================================
 // dictionnary of variables
 // Variables are stored in a map Integer, Transient
@@ -737,15 +735,17 @@ static char* tracevar(ClientData CD, Tcl_Interp*,const char* name,const char*, i
   // protect if the map was destroyed before the interpretor
   if (theVariables.IsEmpty()) return NULL;
 
+  Draw_Interpretor& aCommands = Draw::GetInterpretor();
+
   // MSV 9.10.14 CR25344
   Handle(Draw_Drawable3D) D(reinterpret_cast<Draw_Drawable3D*>(CD));
   if (D.IsNull()) {
-    Tcl_UntraceVar(theCommands.Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
+    Tcl_UntraceVar(aCommands.Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
                    tracevar,CD);
     return NULL;
   }
   if (D->Protected()) {
-    D->Name(Tcl_SetVar(theCommands.Interp(),name,name,0));
+    D->Name(Tcl_SetVar(aCommands.Interp(),name,name,0));
     return (char*) "variable is protected";
   } else {
     if (D->Visible()) {
@@ -755,7 +755,7 @@ static char* tracevar(ClientData CD, Tcl_Interp*,const char* name,const char*, i
       else
           repaint2d = Standard_True;
     }
-    Tcl_UntraceVar(theCommands.Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
+    Tcl_UntraceVar(aCommands.Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
                    tracevar,CD);
     theVariables.Remove(D);
     return NULL;
@@ -770,6 +770,8 @@ void Draw::Set(const Standard_CString name,
                const Handle(Draw_Drawable3D)& D,
                const Standard_Boolean displ)
 {
+  Draw_Interpretor& aCommands = Draw::GetInterpretor();
+
   if ((name[0] == '.') && (name[1] == '\0')) {
     if (!D.IsNull()) {
       dout.RemoveDrawable(D);
@@ -779,7 +781,7 @@ void Draw::Set(const Standard_CString name,
   else {
     // Check if the variable with the same name exists
     ClientData aCD =
-      Tcl_VarTraceInfo(theCommands.Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
+      Tcl_VarTraceInfo(aCommands.Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
                        tracevar, NULL);
     Handle(Draw_Drawable3D) anOldD(reinterpret_cast<Draw_Drawable3D*>(aCD));
     if (!anOldD.IsNull()) {
@@ -790,14 +792,14 @@ void Draw::Set(const Standard_CString name,
       anOldD.Nullify();
     }
 
-    Tcl_UnsetVar(theCommands.Interp(),name,0);
+    Tcl_UnsetVar(aCommands.Interp(),name,0);
 
     if (!D.IsNull()) {
       theVariables.Add(D);
-      D->Name(Tcl_SetVar(theCommands.Interp(),name,name,0));
+      D->Name(Tcl_SetVar(aCommands.Interp(),name,name,0));
     
       // set the trace function
-      Tcl_TraceVar(theCommands.Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
+      Tcl_TraceVar(aCommands.Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
                    tracevar,reinterpret_cast<ClientData>(D.operator->()));
       if (displ) {
         if (!D->Visible())
@@ -850,7 +852,7 @@ Handle(Draw_Drawable3D) Draw::Get(Standard_CString& name,
   }
   else {
     ClientData aCD =
-      Tcl_VarTraceInfo(theCommands.Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
+      Tcl_VarTraceInfo(Draw::GetInterpretor().Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
                        tracevar, NULL);
     D = reinterpret_cast<Draw_Drawable3D*>(aCD);
     if (!theVariables.Contains(D))
@@ -1044,22 +1046,24 @@ static Standard_Real ParseValue(char*& name)
 		*(p-1) = '\0';
 		c = *p;
 
+    Draw_Interpretor& aCommands = Draw::GetInterpretor();
+
 		// call the function, save the current result
 		char* sv = 0;
-		if (*theCommands.Result()) {
-		  sv = new char [strlen(theCommands.Result())];
-		  strcpy(sv,theCommands.Result());
-		  theCommands.Reset();
+		if (*aCommands.Result()) {
+		  sv = new char [strlen(aCommands.Result())];
+		  strcpy(sv,aCommands.Result());
+		  aCommands.Reset();
 		}
-		if (theCommands.Eval(name) != 0) {
+		if (aCommands.Eval(name) != 0) {
 		  cout << "Call of function " << name << " failed" << endl;
 		  x = 0;
 		}
 		else
-		  x = Atof(theCommands.Result());
-		theCommands.Reset();
+		  x = Atof(aCommands.Result());
+		aCommands.Reset();
 		if (sv) {
-		  theCommands << sv;
+		  aCommands << sv;
 		  delete [] sv;
 		}
 	      }
@@ -1124,8 +1128,8 @@ static Standard_Real Parse(char*& name)
       break;
 
       default :
-	name--;
-	return x;
+  name--;
+  return x;
       
     }
   }
@@ -1162,7 +1166,7 @@ void Draw::Set(const Standard_CString Name, const Standard_CString val)
   pName=(Standard_PCharacter)Name;
   pVal=(Standard_PCharacter)val;
   //
-  Tcl_SetVar(theCommands.Interp(), pName, pVal, 0);
+  Tcl_SetVar(Draw::GetInterpretor().Interp(), pName, pVal, 0);
 }
 //=======================================================================
 // Command management

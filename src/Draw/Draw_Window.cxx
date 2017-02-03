@@ -30,7 +30,6 @@
 #include <Image_AlienPixMap.hxx>
 #include <NCollection_List.hxx>
 
-extern Draw_Interpretor theCommands;
 extern Standard_Boolean Draw_VirtualWindows;
 static Tcl_Interp *interp;        /* Interpreter for this application. */
 static NCollection_List<Draw_Window::FCallbackBeforeTerminate> MyCallbacks;
@@ -1021,8 +1020,10 @@ void Run_Appli(Standard_Boolean (*interprete) (const char*))
 
 #endif
 
-  if (tty) Prompt(theCommands.Interp(), 0);
-  Prompt(theCommands.Interp(), 0);
+  Draw_Interpretor& aCommands = Draw::GetInterpretor();
+
+  if (tty) Prompt(aCommands.Interp(), 0);
+  Prompt(aCommands.Interp(), 0);
 
   outChannel = Tcl_GetStdChannel(TCL_STDOUT);
   if (outChannel) {
@@ -1040,7 +1041,7 @@ void Run_Appli(Standard_Boolean (*interprete) (const char*))
   if (Draw_VirtualWindows) {
     // main window will never shown
     // but main loop will parse all Xlib messages
-    Tcl_Eval(theCommands.Interp(), "wm withdraw .");
+    Tcl_Eval(aCommands.Interp(), "wm withdraw .");
   }
   Tk_MainLoop();
 
@@ -1076,8 +1077,9 @@ void Run_Appli(Standard_Boolean (*interprete) (const char*))
 //======================================================
 Standard_Boolean Init_Appli()
 {
-  theCommands.Init();
-  interp = theCommands.Interp();
+  Draw_Interpretor& aCommands = Draw::GetInterpretor();
+  aCommands.Init();
+  interp = aCommands.Interp();
 
   Tcl_Init(interp) ;
   try {
@@ -1974,11 +1976,13 @@ bool volatile isTkLoopStarted = false;
 Standard_Boolean Init_Appli(HINSTANCE hInst,
                             HINSTANCE hPrevInst, int nShow, HWND& hWndFrame )
 {
+  Draw_Interpretor& aCommands = Draw::GetInterpretor();
+
   DWORD IDThread;
   HANDLE hThread;
   console_semaphore = STOP_CONSOLE;
-  theCommands.Init();
-  interp = theCommands.Interp();
+  aCommands.Init();
+  interp = aCommands.Interp();
   Tcl_Init(interp) ;
 
   dwMainThreadId = GetCurrentThreadId();
@@ -2112,6 +2116,8 @@ void exitProc(ClientData /*dc*/)
 \*--------------------------------------------------------*/
 static DWORD WINAPI tkLoop(VOID)
 {
+  Draw_Interpretor& aCommands = Draw::GetInterpretor();
+
   Tcl_CreateExitHandler(exitProc, 0);
 #if (TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 5))
   {
@@ -2120,15 +2126,15 @@ static DWORD WINAPI tkLoop(VOID)
     Tcl_Channel aChannelErr = Tcl_GetStdChannel (TCL_STDERR);
     if (aChannelIn != NULL)
     {
-      Tcl_RegisterChannel (theCommands.Interp(), aChannelIn);
+      Tcl_RegisterChannel (aCommands.Interp(), aChannelIn);
     }
     if (aChannelOut != NULL)
     {
-      Tcl_RegisterChannel (theCommands.Interp(), aChannelOut);
+      Tcl_RegisterChannel (aCommands.Interp(), aChannelOut);
     }
     if (aChannelErr != NULL)
     {
-      Tcl_RegisterChannel (theCommands.Interp(), aChannelErr);
+      Tcl_RegisterChannel (aCommands.Interp(), aChannelErr);
     }
   }
 #endif

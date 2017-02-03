@@ -116,6 +116,15 @@ static void ReadInitFile (const TCollection_AsciiString& theFileName)
 }
 
 //=======================================================================
+//function : GetInterpretor
+//purpose  :
+//=======================================================================
+Draw_Interpretor& Draw::GetInterpretor()
+{
+  return theCommands;
+}
+
+//=======================================================================
 //function :
 //purpose  : Set/Get Progress Indicator
 //=======================================================================

@@ -70,6 +70,9 @@ public:
   
   //! Sets a numeric variable.
   Standard_EXPORT static void Set (const Standard_CString Name, const Standard_Real val);
+
+  //! Returns main DRAW interpretor.
+  Standard_EXPORT static Draw_Interpretor& GetInterpretor();
   
   //! Returns a variable  value.  Null if  the  variable
   //! does not exist, a warning  is printed if  Complain
