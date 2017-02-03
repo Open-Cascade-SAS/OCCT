@@ -253,9 +253,9 @@ Handle(XCAFView_Object) XCAFDoc_View::GetObject()  const
     anObj->CreateGDTPoints(aPointsLabel.NbChildren());
     for (Standard_Integer i = 1; i <= aPointsLabel.NbChildren(); i++) {
       gp_Pnt aPoint;
-      Handle(TDataXtd_Point) aPointAttr;
-      aPointsLabel.FindChild(i).FindAttribute(TDataXtd_Point::GetID(), aPointAttr);
-      TDataXtd_Geometry::Point(aPointAttr->Label(), aPoint);
+      Handle(TDataXtd_Point) aGDTPointAttr;
+      aPointsLabel.FindChild(i).FindAttribute(TDataXtd_Point::GetID(), aGDTPointAttr);
+      TDataXtd_Geometry::Point(aGDTPointAttr->Label(), aPoint);
       anObj->SetGDTPoint(i, aPoint);
     }
   }

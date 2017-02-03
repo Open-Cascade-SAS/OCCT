@@ -4317,7 +4317,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadViews(const Handle(XSControl_WorkSes
       }
       else if (anIter.Value()->IsKind(STANDARD_TYPE(StepVisual_AnnotationPlane))) {
         Handle(StepVisual_AnnotationPlane) aPlane = Handle(StepVisual_AnnotationPlane)::DownCast(anIter.Value());
-        for (Standard_Integer i = 1; i <= aPlane->NbElements(); i++) {
+        for (Standard_Integer j = 1; j <= aPlane->NbElements(); j++) {
           Interface_EntityIterator aDMIAIter = aGraph.Sharings(anIter.Value());
           for (; aDMIAIter.More(); aDMIAIter.Next()) {
             if (!aDMIAIter.Value()->IsKind(STANDARD_TYPE(StepAP242_DraughtingModelItemAssociation)))
