@@ -612,12 +612,12 @@ Normal (const Standard_Integer iNode,
   gp_Pnt P;
   gp_Dir Norma;
   Standard_Boolean OK;
-  CSLib_DerivativeStatus Status;
+  CSLib_DerivativeStatus aStatus;
   CSLib_NormalStatus NStat;
   myBSurf.D1(Nod1RValues.UV.X(), Nod1RValues.UV.Y(), P, D1U, D1V);
   CSLib::Normal(D1U,D1V,Standard_Real(Precision::Angular()),
-		Status,Norma);
-  if (Status != CSLib_Done) {
+		aStatus,Norma);
+  if (aStatus != CSLib_Done) {
     myBSurf.D2(Nod1RValues.UV.X(), Nod1RValues.UV.Y(), P, D1U, D1V, D2U, D2V, D2UV);
     CSLib::Normal(D1U,D1V,D2U,D2V,D2UV,
 		  Precision::Angular(),OK,NStat,Norma);

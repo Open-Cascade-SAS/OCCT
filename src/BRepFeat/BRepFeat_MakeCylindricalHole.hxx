@@ -22,16 +22,14 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_Ax1.hxx>
-#include <Standard_Boolean.hxx>
 #include <BRepFeat_Status.hxx>
 #include <TopoDS_Face.hxx>
 #include <BRepFeat_Builder.hxx>
-#include <Standard_Real.hxx>
-class StdFail_NotDone;
-class Standard_ConstructionError;
-class gp_Ax1;
-class TopoDS_Shape;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 //! Provides a tool to make cylindrical holes on a shape.
 class BRepFeat_MakeCylindricalHole  : public BRepFeat_Builder

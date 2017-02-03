@@ -37,6 +37,10 @@ class gp_Vec2d;
 class gp_Pnt;
 class Adaptor3d_Curve;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 //! Tool for analyzing the edge.
 //! Queries geometrical representations of the edge (3d curve, pcurve

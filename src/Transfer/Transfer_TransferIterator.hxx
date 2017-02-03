@@ -32,6 +32,10 @@ class Transfer_Binder;
 class Standard_Transient;
 class Interface_Check;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 //! Defines an Iterator on the result of a Transfer
 //! Available for Normal Results or not (Erroneous Transfer)

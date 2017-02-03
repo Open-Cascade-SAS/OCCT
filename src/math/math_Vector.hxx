@@ -19,10 +19,11 @@
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
 
-class Standard_DimensionError;
-class Standard_DivideByZero;
-class Standard_RangeError;
-class Standard_NullValue;
+// resolve name collisions with X11 headers
+#ifdef Opposite
+  #undef Opposite
+#endif
+
 class math_Matrix;
 
 //! This class implements the real vector abstract data type.

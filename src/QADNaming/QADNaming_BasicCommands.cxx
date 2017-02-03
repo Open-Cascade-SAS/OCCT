@@ -160,14 +160,14 @@ static Standard_Integer Getentry (Draw_Interpretor& di, Standard_Integer n, cons
     di << 0;
     return 0;
   }
-  Standard_Integer Status ;
-  TCollection_AsciiString Name   = QADNaming::GetEntry(S,ND,Status);
-  if (Status == 0) {
+  Standard_Integer aStatus = 0;
+  TCollection_AsciiString Name = QADNaming::GetEntry (S, ND, aStatus);
+  if (aStatus == 0) {
     di <<"E_NoName";
   }
   else  {
     di <<Name.ToCString();
-    if (Status == 2) {
+    if (aStatus == 2) {
       di <<"Several shapes have the same name\n";
     }
   }
@@ -429,15 +429,14 @@ static Standard_Integer Getcreationentry (Draw_Interpretor& di, Standard_Integer
     di <<"E_NoName";
     return 0;
   }
-  Standard_Integer Status ;
-  
-  TCollection_AsciiString Name   = QADNaming::GetEntry(S,ND,Status);
-  if (Status == 0) {
+  Standard_Integer aStatus = 0;
+  TCollection_AsciiString Name = QADNaming::GetEntry (S, ND, aStatus);
+  if (aStatus == 0) {
     di <<"E_NoName";
   }
   else  {
     di <<Name.ToCString();
-    if (Status == 2) {
+    if (aStatus == 2) {
       di <<"Several shapes have the same name\n";
     }
   }

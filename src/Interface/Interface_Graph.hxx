@@ -24,21 +24,22 @@
 #include <Interface_BitMap.hxx>
 #include <Interface_InterfaceModel.hxx>
 
-#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfListOfInteger.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 
-class Interface_InterfaceModel;
 class Standard_DomainError;
 class Interface_GeneralLib;
 class Interface_Protocol;
 class Interface_GTool;
 class Standard_Transient;
-class Interface_BitMap;
 class Interface_EntityIterator;
-class TCollection_HAsciiString;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 //! Gives basic data structure for operating and storing
 //! graph results (usage is normally internal)

@@ -38,8 +38,11 @@ class ShapeAnalysis_Surface;
 class Geom_Surface;
 class Geom_Curve;
 class Geom2d_Curve;
-class gp_Pnt2d;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class ShapeConstruct_ProjectCurveOnSurface;
 DEFINE_STANDARD_HANDLE(ShapeConstruct_ProjectCurveOnSurface, MMgt_TShared)
@@ -99,7 +102,7 @@ public:
   Standard_EXPORT Standard_Integer& AdjustOverDegenMode();
   
   //! Returns the status of last Peform
-  Standard_EXPORT Standard_Boolean Status (const ShapeExtend_Status Status) const;
+  Standard_EXPORT Standard_Boolean Status (const ShapeExtend_Status theStatus) const;
   
   //! Computes the projection of 3d curve onto a surface using the
   //! specialized algorithm. Returns False if projector fails,

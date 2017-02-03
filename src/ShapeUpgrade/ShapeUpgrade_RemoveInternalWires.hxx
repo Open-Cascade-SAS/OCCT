@@ -28,8 +28,11 @@
 #include <Standard_Integer.hxx>
 #include <ShapeUpgrade_Tool.hxx>
 #include <ShapeExtend_Status.hxx>
-class TopoDS_Shape;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class ShapeUpgrade_RemoveInternalWires;
 DEFINE_STANDARD_HANDLE(ShapeUpgrade_RemoveInternalWires, ShapeUpgrade_Tool)

@@ -1422,7 +1422,7 @@ static Standard_Integer wavefront(Draw_Interpretor&, Standard_Integer nbarg, con
   gp_Dir Nor;
   gp_Pnt P;
   Standard_Real U, V;
-  CSLib_DerivativeStatus Status;
+  CSLib_DerivativeStatus aStatus;
   CSLib_NormalStatus NStat;
   Standard_Real x, y, z;
   Standard_Integer n1, n2, n3;
@@ -1473,8 +1473,8 @@ static Standard_Integer wavefront(Draw_Interpretor&, Standard_Integer nbarg, con
           V = UVNodes(i).Y();
 
           BS.D1(U,V,P,D1U,D1V);
-          CSLib::Normal(D1U,D1V,Precision::Angular(),Status,Nor);
-          if (Status != CSLib_Done) {
+          CSLib::Normal (D1U, D1V, Precision::Angular(), aStatus, Nor);
+          if (aStatus != CSLib_Done) {
             BS.D2(U,V,P,D1U,D1V,D2U,D2V,D2UV);
             CSLib::Normal(D1U,D1V,D2U,D2V,D2UV,Precision::Angular(),OK,NStat,Nor);
           }

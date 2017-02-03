@@ -255,7 +255,7 @@ Standard_Boolean Resource_Manager::Save() const
   TCollection_AsciiString aFilePath(dir);
   OSD_Path anOSDPath(aFilePath);
   OSD_Directory Dir = anOSDPath;
-  Standard_Boolean Status = Standard_True;
+  Standard_Boolean aStatus = Standard_True;
   if ( !Dir.Exists() ) {
     {
       try {
@@ -263,11 +263,11 @@ Standard_Boolean Resource_Manager::Save() const
         Dir.Build(OSD_Protection(OSD_RX, OSD_RWXD, OSD_RX, OSD_RX));
       }
       catch (Standard_Failure) {
-        Status = Standard_False;
+        aStatus = Standard_False;
       }
     }
-    Status = Status && !Dir.Failed();
-    if (!Status) {
+    aStatus = aStatus && !Dir.Failed();
+    if (!aStatus) {
       if (myVerbose)
         cout << "Resource Manager: Error opening or creating directory \"" << aFilePath
              << "\". Permission denied. Cannot save resources." << endl;
@@ -285,18 +285,18 @@ Standard_Boolean Resource_Manager::Save() const
 
   OSD_File File = anOSDPath;
   OSD_Protection theProt;
-  Status = Standard_True;
+  aStatus = Standard_True;
   {
     try {
       OCC_CATCH_SIGNALS
       File.Build(OSD_ReadWrite, theProt);
     }
     catch (Standard_Failure) {
-      Status = Standard_False;
+      aStatus = Standard_False;
     }
   }
-  Status = Status && !File.Failed();
-  if (!Status) {
+  aStatus = aStatus && !File.Failed();
+  if (!aStatus) {
     if (myVerbose)
       cout << "Resource Manager: Error opening or creating file \"" << aFilePath
            << "\". Permission denied. Cannot save resources." << endl;

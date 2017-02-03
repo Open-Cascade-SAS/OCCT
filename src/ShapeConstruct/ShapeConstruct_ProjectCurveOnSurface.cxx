@@ -195,9 +195,9 @@ static Standard_Integer NbSurfIntervals(const Handle(GeomAdaptor_HSurface)& GAS,
 //purpose  : 
 //=======================================================================
 
- Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Status (const ShapeExtend_Status Status) const
+ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Status (const ShapeExtend_Status theStatus) const
 {
-  return ShapeExtend::DecodeStatus (myStatus, Status);
+  return ShapeExtend::DecodeStatus (myStatus, theStatus);
 }
 
 //=======================================================================

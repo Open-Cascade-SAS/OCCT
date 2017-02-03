@@ -1281,7 +1281,7 @@ namespace AllocTest
   // The test is based of occupying of all available virtual memory.
   // Obviously it has no sense on 64-bit platforms.
 
-  enum Status
+  enum AllocTestStatus
   {
     NotApplicable = 0x1,
     OUMCatchOK    = 0x2,

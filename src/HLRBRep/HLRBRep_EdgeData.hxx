@@ -30,10 +30,11 @@
 #include <Standard_ShortReal.hxx>
 #include <Standard_Real.hxx>
 class TopoDS_Edge;
-class HLRAlgo_EdgeStatus;
-class HLRBRep_Curve;
 
-
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class HLRBRep_EdgeData 
 {

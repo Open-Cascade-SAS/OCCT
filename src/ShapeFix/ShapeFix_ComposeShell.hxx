@@ -35,14 +35,15 @@
 #include <TopTools_SequenceOfShape.hxx>
 class ShapeExtend_CompositeSurface;
 class ShapeAnalysis_TransferParameters;
-class TopLoc_Location;
-class TopoDS_Face;
-class TopoDS_Shape;
 class ShapeExtend_WireData;
 class gp_Lin2d;
 class ShapeFix_WireSegment;
 class Geom_Surface;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class ShapeFix_ComposeShell;
 DEFINE_STANDARD_HANDLE(ShapeFix_ComposeShell, ShapeFix_Root)

@@ -480,18 +480,18 @@ const
   for ( ;It.More() ; It.Next()) {
     const TopoDS_Shape& OS     = It.OldShape();
     const TopoDS_Shape& NS     = It.NewShape();
-    TNaming_Evolution   Status = It.Evolution();
+    TNaming_Evolution   aStatus = It.Evolution();
 
 // Modification_1 24.06.99 (szy)  
     TopoDS_Shape copOS, copNS;
-    if(Status != TNaming_PRIMITIVE)
+    if(aStatus != TNaming_PRIMITIVE)
       TNaming_CopyShape::CopyTool(OS, Tab->TransientTable(), copOS);
     else copOS.Nullify();    
-    if(Status != TNaming_DELETE )
+    if(aStatus != TNaming_DELETE )
       TNaming_CopyShape::CopyTool(NS, Tab->TransientTable(), copNS);
     else copNS.Nullify();
     
-    switch (Status) {
+    switch (aStatus) {
     case TNaming_PRIMITIVE :
       {
 	B.Generated(copNS);

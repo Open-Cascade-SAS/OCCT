@@ -28,13 +28,13 @@
 #include <HatchGen_Domains.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-class Standard_OutOfRange;
-class Geom2dAdaptor_Curve;
-class HatchGen_PointOnHatching;
-class HatchGen_Domain;
+
 class gp_Pnt2d;
 
-
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class Geom2dHatch_Hatching 
 {
@@ -76,7 +76,7 @@ public:
   Standard_EXPORT Standard_Boolean IsDone() const;
   
   //! Sets the error status.
-  Standard_EXPORT void Status (const HatchGen_ErrorStatus Status);
+  Standard_EXPORT void Status (const HatchGen_ErrorStatus theStatus);
   
   //! Returns the error status.
   Standard_EXPORT HatchGen_ErrorStatus Status() const;

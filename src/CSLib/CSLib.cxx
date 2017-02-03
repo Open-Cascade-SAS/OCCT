@@ -50,7 +50,7 @@ void CSLib::Normal (
 const gp_Vec&        D1U, 
 const gp_Vec&        D1V,
 const Standard_Real        SinTol, 
-CSLib_DerivativeStatus& Status, 
+CSLib_DerivativeStatus& theStatus,
 gp_Dir&              Normal
 ) {
 
@@ -61,18 +61,18 @@ gp_Dir&              Normal
   gp_Vec D1UvD1V = D1U.Crossed(D1V);
 
   if (D1UMag <= gp::Resolution() && D1VMag <= gp::Resolution()) {
-     Status = D1IsNull;
+     theStatus = D1IsNull;
   }
-  else if (D1UMag <= gp::Resolution())           Status = D1uIsNull;
-  else if (D1VMag <= gp::Resolution())           Status = D1vIsNull;
-//  else if ((D1VMag / D1UMag) <= RealEpsilon())   Status = D1vD1uRatioIsNull;
-//  else if ((D1UMag / D1VMag) <= RealEpsilon())   Status = D1uD1vRatioIsNull;
+  else if (D1UMag <= gp::Resolution())           theStatus = D1uIsNull;
+  else if (D1VMag <= gp::Resolution())           theStatus = D1vIsNull;
+//  else if ((D1VMag / D1UMag) <= RealEpsilon())   theStatus = D1vD1uRatioIsNull;
+//  else if ((D1UMag / D1VMag) <= RealEpsilon())   theStatus = D1uD1vRatioIsNull;
   else  {
     Standard_Real Sin2 = 
     D1UvD1V.SquareMagnitude() / (D1UMag * D1VMag);
     
-    if (Sin2 < (SinTol * SinTol))  { Status = D1uIsParallelD1v; }
-    else { Normal = gp_Dir (D1UvD1V);   Status = Done; }
+    if (Sin2 < (SinTol * SinTol))  { theStatus = D1uIsParallelD1v; }
+    else { Normal = gp_Dir (D1UvD1V);   theStatus = Done; }
   }
 }
 
@@ -85,7 +85,7 @@ const gp_Vec&    D2V,
 const gp_Vec&    DUV,
 const Standard_Real    SinTol,
 Standard_Boolean&      Done,
-CSLib_NormalStatus& Status,
+CSLib_NormalStatus& theStatus,
 gp_Dir&          Normal
 ) {
 
@@ -107,25 +107,25 @@ gp_Dir&          Normal
 
 
   if (LD1Nu <= RealEpsilon() && LD1Nv <= RealEpsilon())  { 
-      Status = D1NIsNull;
+      theStatus = D1NIsNull;
       Done = Standard_False;
   }
   else if (LD1Nu < RealEpsilon()) {
-      Status = D1NuIsNull;
+      theStatus = D1NuIsNull;
       Done = Standard_True;
       Normal = gp_Dir (D1Nv);
   }
   else if (LD1Nv < RealEpsilon()) {
-      Status = D1NvIsNull;
+      theStatus = D1NvIsNull;
       Done = Standard_True;
       Normal = gp_Dir (D1Nu);
   }
   else if ((LD1Nv / LD1Nu) <= RealEpsilon()) { 
-      Status = D1NvNuRatioIsNull;
+      theStatus = D1NvNuRatioIsNull;
       Done = Standard_False;
   }
   else if ((LD1Nu / LD1Nv) <= RealEpsilon()) { 
-      Status = D1NuNvRatioIsNull; 
+      theStatus = D1NuNvRatioIsNull;
       Done = Standard_False;
   }
   else {
@@ -133,12 +133,12 @@ gp_Dir&          Normal
     Standard_Real Sin2 = D1NCross.SquareMagnitude() / (LD1Nu * LD1Nv);
 
     if (Sin2 < (SinTol * SinTol))  { 
-      Status = D1NuIsParallelD1Nv;
+      theStatus = D1NuIsParallelD1Nv;
       Done = Standard_True;
       Normal = gp_Dir (D1Nu);
     }    
     else { 
-      Status = InfinityOfSolutions;
+      theStatus = InfinityOfSolutions;
       Done = Standard_False;
     }
   }
@@ -149,7 +149,7 @@ void CSLib::Normal (
 const gp_Vec&        D1U, 
 const gp_Vec&        D1V,
 const Standard_Real        MagTol, 
-CSLib_NormalStatus& Status, 
+CSLib_NormalStatus& theStatus,
 gp_Dir&              Normal
 ) {
 // Function: Calculate the normal from tangents by u and by v.
@@ -161,7 +161,7 @@ gp_Dir&              Normal
 
   if (NMag <= MagTol || D1UMag <= MagTol || D1VMag <= MagTol ) {
 
-     Status = Singular;
+     theStatus = Singular;
 //     if (D1UMag <= MagTol || D1VMag <= MagTol && NMag > MagTol) MagTol = 2* NMag;
 }
   else
@@ -170,7 +170,7 @@ gp_Dir&              Normal
     gp_Dir aD1U(D1U);
     gp_Dir aD1V(D1V);
     Normal = gp_Dir(aD1U.Crossed(aD1V));
-    Status = Defined;
+    theStatus = Defined;
   }
   
 
@@ -186,7 +186,7 @@ void CSLib::Normal(const Standard_Integer MaxOrder,
                    const Standard_Real Umax,
                    const Standard_Real Vmin,
                    const Standard_Real Vmax,
-                   CSLib_NormalStatus& Status,
+                   CSLib_NormalStatus& theStatus,
                    gp_Dir& Normal, 
                    Standard_Integer& OrderU, 
                    Standard_Integer& OrderV)
@@ -194,7 +194,7 @@ void CSLib::Normal(const Standard_Integer MaxOrder,
 //  Standard_Integer i,l,Order=-1;
   Standard_Integer i=0,Order=-1;
   Standard_Boolean Trouve=Standard_False;
-//  Status = Singular;
+//  theStatus = Singular;
   Standard_Real Norme;
   gp_Vec D;
   //Find k0 such that all derivatives N=dS/du ^ dS/dv are null
@@ -219,7 +219,7 @@ void CSLib::Normal(const Standard_Integer MaxOrder,
   {
      if(Order == 0) 
      {
-         Status = Defined;
+         theStatus = Defined;
          Normal=D.Normalized();
      }
      else
@@ -373,16 +373,16 @@ void CSLib::Normal(const Standard_Integer MaxOrder,
                  //Polynom is always negative
                  SP=-1;
          if(SP==0)
-             Status = InfinityOfSolutions;
+             theStatus = InfinityOfSolutions;
          else
          {
-            Status = Defined;
+            theStatus = Defined;
             Normal=SP*Vk0.Normalized();
          }
        }
        else 
        {
-         Status = Defined;
+         theStatus = Defined;
          Normal=D.Normalized();
        }
     }

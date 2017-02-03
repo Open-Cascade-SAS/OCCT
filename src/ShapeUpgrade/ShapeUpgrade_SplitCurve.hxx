@@ -27,6 +27,10 @@
 #include <Standard_Boolean.hxx>
 #include <ShapeExtend_Status.hxx>
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class ShapeUpgrade_SplitCurve;
 DEFINE_STANDARD_HANDLE(ShapeUpgrade_SplitCurve, MMgt_TShared)

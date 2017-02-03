@@ -27,6 +27,10 @@
 #include <ShapeExtend_Status.hxx>
 class TopoDS_Shape;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class ShapeBuild_ReShape;
 DEFINE_STANDARD_HANDLE(ShapeBuild_ReShape, BRepTools_ReShape)

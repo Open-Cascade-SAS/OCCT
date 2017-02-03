@@ -55,9 +55,9 @@ public:
   //! parallel the normal is undefined.
   //! To check that D1U and D1V are colinear the sinus of the angle
   //! between D1U and D1V is computed and compared with SinTol.
-  //! The normal is computed if Status == Done else the Status gives the
+  //! The normal is computed if theStatus == Done else the theStatus gives the
   //! reason why the computation has failed.
-  Standard_EXPORT static void Normal (const gp_Vec& D1U, const gp_Vec& D1V, const Standard_Real SinTol, CSLib_DerivativeStatus& Status, gp_Dir& Normal);
+  Standard_EXPORT static void Normal (const gp_Vec& D1U, const gp_Vec& D1V, const Standard_Real SinTol, CSLib_DerivativeStatus& theStatus, gp_Dir& Normal);
   
 
   //! If there is a singularity on the surface  the previous method
@@ -87,19 +87,19 @@ public:
   //! order 2 (it means that we cannot omit Eps).
   //! . if DNu Is not Null and DNv Is not Null Done = False, there are
   //! an infinity of normals at the considered point on the surface.
-  Standard_EXPORT static void Normal (const gp_Vec& D1U, const gp_Vec& D1V, const gp_Vec& D2U, const gp_Vec& D2V, const gp_Vec& D2UV, const Standard_Real SinTol, Standard_Boolean& Done, CSLib_NormalStatus& Status, gp_Dir& Normal);
+  Standard_EXPORT static void Normal (const gp_Vec& D1U, const gp_Vec& D1V, const gp_Vec& D2U, const gp_Vec& D2V, const gp_Vec& D2UV, const Standard_Real SinTol, Standard_Boolean& Done, CSLib_NormalStatus& theStatus, gp_Dir& Normal);
   
 
   //! Computes the normal direction of a surface as the cross product
   //! between D1U and D1V.
-  Standard_EXPORT static void Normal (const gp_Vec& D1U, const gp_Vec& D1V, const Standard_Real MagTol, CSLib_NormalStatus& Status, gp_Dir& Normal);
+  Standard_EXPORT static void Normal (const gp_Vec& D1U, const gp_Vec& D1V, const Standard_Real MagTol, CSLib_NormalStatus& theStatus, gp_Dir& Normal);
   
   //! find the first  order k0  of deriviative of NUV
   //! where: foreach order < k0  all the derivatives of NUV  are
   //! null all the derivatives of NUV corresponding to the order
   //! k0 are collinear and have the same sens.
   //! In this case, normal at U,V is unique.
-  Standard_EXPORT static void Normal (const Standard_Integer MaxOrder, const TColgp_Array2OfVec& DerNUV, const Standard_Real MagTol, const Standard_Real U, const Standard_Real V, const Standard_Real Umin, const Standard_Real Umax, const Standard_Real Vmin, const Standard_Real Vmax, CSLib_NormalStatus& Status, gp_Dir& Normal, Standard_Integer& OrderU, Standard_Integer& OrderV);
+  Standard_EXPORT static void Normal (const Standard_Integer MaxOrder, const TColgp_Array2OfVec& DerNUV, const Standard_Real MagTol, const Standard_Real U, const Standard_Real V, const Standard_Real Umin, const Standard_Real Umax, const Standard_Real Vmin, const Standard_Real Vmax, CSLib_NormalStatus& theStatus, gp_Dir& Normal, Standard_Integer& OrderU, Standard_Integer& OrderV);
   
   //! -- Computes the derivative  of order Nu in the --
   //! direction U and Nv in the direction V of the not --

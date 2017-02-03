@@ -3461,7 +3461,7 @@ void BSplSLib::FunctionMultiply
  const Standard_Integer                      VNewDegree,
  TColgp_Array2OfPnt&                         NewNumerator,
  TColStd_Array2OfReal&                       NewDenominator,
- Standard_Integer&                           Status) 
+ Standard_Integer&                           theStatus)
 {
   Standard_Integer num_uparameters,
 //  ii,jj,kk,
@@ -3534,7 +3534,7 @@ void BSplSLib::FunctionMultiply
 		VParameters,
 		NewNumerator,
 		NewDenominator, 
-		Status) ;
+		theStatus);
   }
   else {
     throw Standard_ConstructionError();

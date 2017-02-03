@@ -51,7 +51,7 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
   //11) calculate the step of advancement depending on the vector
   //12) adjust the step depending on the previous steps 
   
-  IntWalk_StatusDeflection Status = IntWalk_OK;
+  IntWalk_StatusDeflection aStatus = IntWalk_OK;
 
   //---------------------------------------------------------------------------------
   //-- lbr le 4 Avril 95 : it is possible that the status returns points confused
@@ -80,7 +80,7 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
   //if ((++NbPointsConfondusConsecutifs < 10) && (Norme <= epsilon)) { // the square is already taken in the constructor
   if ((Norme <= epsilon) && ((Duv <= aTol) || (StatusPrecedent != IntWalk_OK)))
   { // the square is already taken in the constructor
-    Status = IntWalk_PointConfondu;
+    aStatus = IntWalk_PointConfondu;
     if (StatusPrecedent == IntWalk_PasTropGrand) {
       return IntWalk_ArretSurPointPrecedent;
     }
@@ -92,7 +92,7 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
     if (Cosi*StepSign >= 0.) {// angle 3d <= pi/2 !!!!
       const Standard_Real aDiv = previousd3d.SquareMagnitude()*Norme;
       if(aDiv == 0)
-        return Status;
+        return aStatus;
       Cosi2 = Cosi * Cosi / aDiv;
     }
     if (Cosi2 < CosRef3D) { //angle 3d too great
@@ -100,10 +100,10 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
       Standard_Real StepU = Abs(Step*previousd2d.X()),
                     StepV = Abs(Step*previousd2d.Y());
       if (StepU < tolerance(1) && StepV < tolerance(2)) 
-        Status = IntWalk_ArretSurPointPrecedent;
+        aStatus = IntWalk_ArretSurPointPrecedent;
       else 
-        Status = IntWalk_PasTropGrand;
-      return Status;
+        aStatus = IntWalk_PasTropGrand;
+      return aStatus;
     }
   }
 
@@ -128,7 +128,7 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
 
   Standard_Real Cosi = StepSign * (Du * previousd2d.X() + Dv * previousd2d.Y());
 
-  if (Cosi < 0 && Status == IntWalk_PointConfondu) 
+  if (Cosi < 0 && aStatus == IntWalk_PointConfondu)
     return IntWalk_ArretSurPointPrecedent; // leave as step back  
                                            // with confused point
 
@@ -138,7 +138,7 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
 //if during routing one has subdivided more than  MaxDivision for each
 //previous step, bug on the square; do nothing (experience U4)
 
-  if ((NbDivision < MaxDivision) && (Status != IntWalk_PointConfondu) && 
+  if ((NbDivision < MaxDivision) && (aStatus != IntWalk_PointConfondu) &&
     (StatusPrecedent!= IntWalk_PointConfondu))
   {
     Standard_Real Cosi2 = Cosi * Cosi / Duv;
@@ -148,11 +148,11 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
                     StepV = Abs(Step*previousd2d.Y());
 
       if (StepU < tolerance(1) && StepV < tolerance(2))
-        Status = IntWalk_ArretSurPointPrecedent;
+        aStatus = IntWalk_ArretSurPointPrecedent;
       else 
-        Status = IntWalk_PasTropGrand;
+        aStatus = IntWalk_PasTropGrand;
       NbDivision = NbDivision + 1;
-      return Status;
+      return aStatus;
     }
 
     Cosi = Corde * sp.Direction3d(); 
@@ -162,10 +162,10 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
       Standard_Real StepU = Abs(Step*previousd2d.X()),
                     StepV = Abs(Step*previousd2d.Y());
       if (StepU < tolerance(1) && StepV < tolerance(2))
-        Status = IntWalk_ArretSurPoint;
+        aStatus = IntWalk_ArretSurPoint;
       else 
-        Status = IntWalk_PasTropGrand;
-      return Status;
+        aStatus = IntWalk_PasTropGrand;
+      return aStatus;
     }
     Cosi = Du * sp.Direction2d().X() + 
       Dv * sp.Direction2d().Y();
@@ -177,15 +177,15 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
         Standard_Real StepU = Abs(Step*previousd2d.X()),
                       StepV = Abs(Step*previousd2d.Y());
         if (StepU < tolerance(1) && StepV < tolerance(2))
-          Status = IntWalk_ArretSurPointPrecedent;
+          aStatus = IntWalk_ArretSurPointPrecedent;
         else 
-          Status = IntWalk_PasTropGrand;
-        return Status;
+          aStatus = IntWalk_PasTropGrand;
+        return aStatus;
     }
   }
 
   if (!Finished) {
-    if (Status == IntWalk_PointConfondu)
+    if (aStatus == IntWalk_PointConfondu)
     {
       Standard_Real StepU = Min(Abs(1.5 * Du),pas*(UM-Um)),
                     StepV = Min(Abs(1.5 * Dv),pas*(VM-Vm));
@@ -277,9 +277,9 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
                         StepV = Abs(Step*previousd2d.Y());
           
           if (StepU < tolerance(1) && StepV < tolerance(2)) 
-            Status = IntWalk_ArretSurPointPrecedent;
+            aStatus = IntWalk_ArretSurPointPrecedent;
           else 
-            Status = IntWalk_PasTropGrand;
+            aStatus = IntWalk_PasTropGrand;
         }
         else
         {
@@ -305,9 +305,5 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
       }
     }
   }
-  return Status;     
+  return aStatus;
 }
-
-
-
-

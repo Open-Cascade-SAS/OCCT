@@ -28,10 +28,14 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class TopoDS_Face;
+
 class TopoDS_Edge;
 class TopoDS_Vertex;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 //! This  class contains  the algorithm  used to build
 //! fillet on planar wire.

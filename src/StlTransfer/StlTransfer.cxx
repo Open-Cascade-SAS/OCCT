@@ -59,7 +59,7 @@ static void Normal(const TopoDS_Face&  aFace,
     gp_Vec D2U,D2V,D2UV;
     gp_Pnt P;
     Standard_Real U, V;
-    CSLib_DerivativeStatus Status;
+    CSLib_DerivativeStatus aStatus;
     CSLib_NormalStatus NStat;
     S.Initialize(aFace, Standard_False);
     const TColgp_Array1OfPnt2d& UVNodes = T->UVNodes();
@@ -68,8 +68,8 @@ static void Normal(const TopoDS_Face&  aFace,
 	U = UVNodes(i).X();
 	V = UVNodes(i).Y();
 	S.D1(U,V,P,D1U,D1V);
-	CSLib::Normal(D1U,D1V,Precision::Angular(),Status,Nor(i));
-	if (Status != CSLib_Done) {
+	CSLib::Normal (D1U, D1V, Precision::Angular(), aStatus, Nor (i));
+	if (aStatus != CSLib_Done) {
 	  S.D2(U,V,P,D1U,D1V,D2U,D2V,D2UV);
 	  CSLib::Normal(D1U,D1V,D2U,D2V,D2UV,Precision::Angular(),OK,NStat,Nor(i));
 	}
@@ -81,8 +81,8 @@ static void Normal(const TopoDS_Face&  aFace,
       U = UVNodes(UVNodes.Lower()).X();
       V = UVNodes(UVNodes.Lower()).Y();
       S.D1(U,V,P,D1U,D1V);
-      CSLib::Normal(D1U,D1V,Precision::Angular(),Status,NPlane);
-      if (Status != CSLib_Done) {
+      CSLib::Normal (D1U, D1V, Precision::Angular(), aStatus, NPlane);
+      if (aStatus != CSLib_Done) {
 	S.D2(U,V,P,D1U,D1V,D2U,D2V,D2UV);
 	CSLib::Normal(D1U,D1V,D2U,D2V,D2UV,Precision::Angular(),OK,NStat,NPlane);
       }

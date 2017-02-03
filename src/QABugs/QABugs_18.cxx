@@ -152,7 +152,7 @@ static Standard_Integer OCC367 (Draw_Interpretor& di, Standard_Integer argc, con
   Standard_Real goodY = Draw::Atof(argv[4]);
   Standard_Real goodZ = Draw::Atof(argv[5]);
   Standard_Real percent = Draw::Atof(argv[6]);
-  Standard_Boolean Status = Standard_False;
+  Standard_Boolean aStatus = Standard_False;
 
   // Find the first vertex of the wire
   BRepTools_WireExplorer wire_exp(myTopoDSWire);
@@ -221,14 +221,14 @@ static Standard_Integer OCC367 (Draw_Interpretor& di, Standard_Integer argc, con
 	  deltaY = delta_percent(FirstEdgeY, goodY);
 	  deltaZ = delta_percent(FirstEdgeZ, goodZ);
 	  if (deltaX <= percent && deltaY <= percent && deltaZ <= percent) {
-	    Status = Standard_True;
+	    aStatus = Standard_True;
 	  }
 	}
       }
     }
   di << "\n\nFirstEdge = " << FirstEdgeX <<" " << FirstEdgeY <<" " << FirstEdgeZ << "\n";
   di << "deltaX = " << deltaX << " deltaY = " << deltaY << " deltaZ = " << deltaZ << "\n";
-  if (Status) {
+  if (aStatus) {
     di << argv[0] << " : OK\n";
   } else {
     di << argv[0] << " : ERROR\n";

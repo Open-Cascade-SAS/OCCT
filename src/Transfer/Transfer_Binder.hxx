@@ -29,6 +29,10 @@
 class Interface_Check;
 class Transfer_TransferFailure;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class Transfer_Binder;
 DEFINE_STANDARD_HANDLE(Transfer_Binder, MMgt_TShared)

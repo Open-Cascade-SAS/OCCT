@@ -31,12 +31,14 @@ class ShapeUpgrade_SplitCurve2d;
 class ShapeUpgrade_EdgeDivide;
 class ShapeAnalysis_TransferParameters;
 class ShapeUpgrade_FixSmallCurves;
-class TopoDS_Wire;
-class TopoDS_Face;
 class Geom_Surface;
 class TopoDS_Edge;
 class TopLoc_Location;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class ShapeUpgrade_WireDivide;
 DEFINE_STANDARD_HANDLE(ShapeUpgrade_WireDivide, ShapeUpgrade_Tool)

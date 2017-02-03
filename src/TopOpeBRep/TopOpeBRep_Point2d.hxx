@@ -34,13 +34,11 @@
 class TopOpeBRep_Hctxff2d;
 class TopOpeBRep_Hctxee2d;
 class TopOpeBRep_EdgesIntersector;
-class IntRes2d_IntersectionPoint;
-class TopoDS_Vertex;
-class TopOpeBRepDS_Transition;
-class gp_Pnt;
-class gp_Pnt2d;
 
-
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class TopOpeBRep_Point2d 
 {

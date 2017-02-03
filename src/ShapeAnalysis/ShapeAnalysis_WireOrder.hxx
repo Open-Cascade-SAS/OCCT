@@ -30,6 +30,10 @@ class Standard_TypeMismatch;
 class gp_XYZ;
 class gp_XY;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 //! This class is intended to control and, if possible, redefine
 //! the order of a list of edges which define a wire

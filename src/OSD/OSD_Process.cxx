@@ -181,9 +181,6 @@ Standard_Integer OSD_Process::Error()const{
 #endif
 #include <windows.h>
 
-#ifdef SetCurrentDirectory
-# undef SetCurrentDirectory /* undefine SetCurrentDirectory from <winbase.h> to correctly include <OSD_Process.hxx> */
-#endif
 #include <OSD_Process.hxx>
 
 #include <OSD_Path.hxx>

@@ -37,6 +37,10 @@ class SelectMgr_SensitiveEntitySet;
 class SelectMgr_EntityOwner;
 class SelectBasics_SensitiveEntity;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), Handle(SelectMgr_SensitiveEntitySet) > SelectMgr_MapOfObjectSensitives;
 typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), Handle(SelectMgr_SensitiveEntitySet) >::Iterator SelectMgr_MapOfObjectSensitivesIterator;
 

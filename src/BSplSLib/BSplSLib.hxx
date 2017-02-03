@@ -402,17 +402,17 @@ public:
   //! ---Warning:  it is   the caller's  responsability  to
   //! insure that conditions 1. and  2. above are satisfied
   //! : no  check  whatsoever is made   in  this method  --
-  //! Status will  return 0 if  OK else it will return  the
+  //! theStatus will  return 0 if  OK else it will return  the
   //! pivot index -- of the   matrix that was inverted to
   //! compute the multiplied -- BSpline  : the method used
   //! is  interpolation   at Schoenenberg   --  points  of
   //! a(u,v)* N(u,v) and a(u,v) * D(u,v)
-  //! Status will return 0 if OK else it will return the pivot index
+  //! theStatus will return 0 if OK else it will return the pivot index
   //! of the matrix that was inverted to compute the multiplied
   //! BSpline : the method used is interpolation at Schoenenberg
   //! points of a(u,v)*F(u,v)
   //! --
-  Standard_EXPORT static void FunctionMultiply (const BSplSLib_EvaluatorFunction& Function, const Standard_Integer UBSplineDegree, const Standard_Integer VBSplineDegree, const TColStd_Array1OfReal& UBSplineKnots, const TColStd_Array1OfReal& VBSplineKnots, const TColStd_Array1OfInteger* UMults, const TColStd_Array1OfInteger* VMults, const TColgp_Array2OfPnt& Poles, const TColStd_Array2OfReal* Weights, const TColStd_Array1OfReal& UFlatKnots, const TColStd_Array1OfReal& VFlatKnots, const Standard_Integer UNewDegree, const Standard_Integer VNewDegree, TColgp_Array2OfPnt& NewNumerator, TColStd_Array2OfReal& NewDenominator, Standard_Integer& Status);
+  Standard_EXPORT static void FunctionMultiply (const BSplSLib_EvaluatorFunction& Function, const Standard_Integer UBSplineDegree, const Standard_Integer VBSplineDegree, const TColStd_Array1OfReal& UBSplineKnots, const TColStd_Array1OfReal& VBSplineKnots, const TColStd_Array1OfInteger* UMults, const TColStd_Array1OfInteger* VMults, const TColgp_Array2OfPnt& Poles, const TColStd_Array2OfReal* Weights, const TColStd_Array1OfReal& UFlatKnots, const TColStd_Array1OfReal& VFlatKnots, const Standard_Integer UNewDegree, const Standard_Integer VNewDegree, TColgp_Array2OfPnt& NewNumerator, TColStd_Array2OfReal& NewDenominator, Standard_Integer& theStatus);
 
 
 

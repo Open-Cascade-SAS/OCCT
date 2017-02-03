@@ -27,13 +27,11 @@
 #include <Standard_Address.hxx>
 #include <math_Vector.hxx>
 #include <Standard_OStream.hxx>
-class Standard_DimensionError;
-class Standard_RangeError;
-class Standard_DivideByZero;
-class math_NotSquare;
-class math_SingularMatrix;
-class math_Vector;
 
+// resolve name collisions with X11 headers
+#ifdef Opposite
+  #undef Opposite
+#endif
 
 //! This class implements the real matrix abstract data type.
 //! Matrixes can have an arbitrary range which must be defined

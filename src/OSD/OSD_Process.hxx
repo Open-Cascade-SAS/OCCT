@@ -29,6 +29,10 @@ class TCollection_AsciiString;
 class Quantity_Date;
 class OSD_Path;
 
+// undefine SetCurrentDirectory that can be #defined by previous inclusion of windows.h
+#ifdef SetCurrentDirectory
+# undef SetCurrentDirectory
+#endif
 
 //! A set of system process tools
 class OSD_Process 

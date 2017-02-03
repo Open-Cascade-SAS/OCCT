@@ -24,6 +24,10 @@
 #include <gce_ErrorType.hxx>
 #include <Standard_Boolean.hxx>
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 //! This class implements the common services for
 //! all classes of gce which report error.

@@ -32,13 +32,16 @@
 #include <ShapeExtend_Status.hxx>
 class ShapeAnalysis_Surface;
 class ShapeFix_Wire;
-class TopoDS_Face;
 class Geom_Surface;
 class ShapeExtend_BasicMsgRegistrator;
 class TopoDS_Wire;
 class ShapeExtend_WireData;
 class TopoDS_Vertex;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class ShapeFix_Face;
 DEFINE_STANDARD_HANDLE(ShapeFix_Face, ShapeFix_Root)

@@ -25,10 +25,14 @@
 #include <MMgt_TShared.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-class Standard_ConstructionError;
+
 class TopoDS_Iterator;
 class TopoDS_Builder;
 
+// resolve name collisions with X11 headers
+#ifdef Convex
+  #undef Convex
+#endif
 
 class TopoDS_TShape;
 DEFINE_STANDARD_HANDLE(TopoDS_TShape, MMgt_TShared)

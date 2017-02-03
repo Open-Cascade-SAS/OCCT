@@ -61,7 +61,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 
   Standard_Integer StepSign;
   
-  IntWalk_StatusDeflection Status = IntWalk_OK, StatusPrecedent;
+  IntWalk_StatusDeflection aStatus = IntWalk_OK, StatusPrecedent;
   Standard_Integer NbDivision ;   // number of divisions of step 
   // during calculation of  1 section
 
@@ -245,7 +245,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
                   Standard_Real aScaleCoeff = 0.0;
 
                   // Avoid finite cycle which lead to stop computing iline.
-                  if (Status != IntWalk_PasTropGrand)
+                  if (aStatus != IntWalk_PasTropGrand)
                   {
                     // Make linear extrapolation.
                     if ( Abs(uv[aCoordIdx - 1] - uvprev[aCoordIdx - 1]) > gp::Resolution())
@@ -303,11 +303,11 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
                 Arrive = (wd2[I].etat == 12); // the line is open
               }
             }
-            Status = TestDeflection(Func, Arrive,Uvap,StatusPrecedent,
+            aStatus = TestDeflection(Func, Arrive,Uvap,StatusPrecedent,
                                                 NbDivision,PasC,StepSign);
 
-            StatusPrecedent = Status; 
-            if (Status == IntWalk_PasTropGrand) {// division of the step
+            StatusPrecedent = aStatus;
+            if (aStatus == IntWalk_PasTropGrand) {// division of the step
               Arrive = Standard_False;
               ArretAjout = Standard_False;
               Tgtend = Standard_False; // jag 940616
@@ -322,7 +322,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 
               if (Arrive) { // line s is open
                 CurrentLine->AddStatusLast(Standard_False);
-                //if (Status != IntWalk_ArretSurPointPrecedent)
+                //if (aStatus != IntWalk_ArretSurPointPrecedent)
                 CurrentLine->AddPoint(Psol);
 
                 //Remove <SaveN> from <seqAlone> and, if it is first found point,
@@ -370,7 +370,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
                 StepSign = -1;
                 StatusPrecedent = IntWalk_OK;
                 PasC = PasSav;
-                if (Status == IntWalk_ArretSurPointPrecedent) {
+                if (aStatus == IntWalk_ArretSurPointPrecedent) {
                   CurrentLine->AddPoint(Psol);
                   OpenLine(0,Psol,Pnts1,Func,CurrentLine);
                 }
@@ -407,7 +407,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
                 }
               }
             }
-            else if ( Status == IntWalk_ArretSurPointPrecedent) {
+            else if (aStatus == IntWalk_ArretSurPointPrecedent) {
               if (CurrentLine->NbPoints() == 1) { //cancel the line
                 Arrive = Standard_False;
                 RemoveTwoEndPoints(I);
@@ -445,7 +445,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
                 AddPointInCurrentLine(N,PathPnt,CurrentLine);
               }
             }
-            else if (Status == IntWalk_ArretSurPoint) {
+            else if (aStatus == IntWalk_ArretSurPoint) {
               if (wd2[I].etat >12) { //line should become open
                 wd2[I].etat = 12; //declare it open
                 Tgtbeg = Standard_True;
@@ -479,14 +479,14 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
                 }
               }
             }
-            else if (Status == IntWalk_OK) { 
+            else if (aStatus == IntWalk_OK) {
               if (Ipass!=0) CurrentLine->AddIndexPassing(Ipass);
               previousPoint.SetValue(Func.Point(),reversed,Uvap(1),Uvap(2));
               previousd3d = Func.Direction3d();
               previousd2d = Func.Direction2d();
               CurrentLine->AddPoint(previousPoint);
             }
-            else if (Status == IntWalk_PointConfondu)
+            else if (aStatus == IntWalk_PointConfondu)
             {
               aNbIter --;
             }

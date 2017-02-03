@@ -34,6 +34,10 @@ class gp_Pnt;
 class TopoDS_Edge;
 class TopoDS_Compound;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 //! Analysis of the face size
 class ShapeAnalysis_CheckSmallFace 

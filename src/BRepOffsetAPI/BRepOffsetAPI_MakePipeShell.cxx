@@ -172,29 +172,24 @@ void BRepOffsetAPI_MakePipeShell::Delete( const TopoDS_Shape& Profile)
 //=======================================================================
  BRepBuilderAPI_PipeError BRepOffsetAPI_MakePipeShell::GetStatus() const
 {
-  BRepBuilderAPI_PipeError Status;
   GeomFill_PipeError stat;
   stat = myPipe->GetStatus();
   switch (stat) {
   case GeomFill_PipeOk :
     {
-      Status = BRepBuilderAPI_PipeDone;
-      break;
+      return BRepBuilderAPI_PipeDone;
     }
   case  GeomFill_PlaneNotIntersectGuide :
     {
-      Status = BRepBuilderAPI_PlaneNotIntersectGuide;
-      break;
+      return BRepBuilderAPI_PlaneNotIntersectGuide;
     }
   case  GeomFill_ImpossibleContact :
     {
-      Status = BRepBuilderAPI_ImpossibleContact;
-      break;
+      return BRepBuilderAPI_ImpossibleContact;
     }
     default :
-      Status = BRepBuilderAPI_PipeNotDone; 
+      return BRepBuilderAPI_PipeNotDone;
   }
-  return Status;
 }
 
 //=======================================================================

@@ -55,7 +55,7 @@ public:
   
   //! this method is called affter the update of a document.
   //! By default, writes in MessageDriver().
-  Standard_EXPORT virtual void EndOfUpdate (const Handle(CDM_Document)& aDocument, const Standard_Boolean Status, const TCollection_ExtendedString& ErrorString);
+  Standard_EXPORT virtual void EndOfUpdate (const Handle(CDM_Document)& aDocument, const Standard_Boolean theStatus, const TCollection_ExtendedString& ErrorString);
   
   //! writes the string in the application MessagerDriver.
   Standard_EXPORT void Write (const Standard_ExtString aString);

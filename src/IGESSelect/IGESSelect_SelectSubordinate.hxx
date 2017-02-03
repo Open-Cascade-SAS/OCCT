@@ -27,6 +27,10 @@ class Standard_Transient;
 class Interface_InterfaceModel;
 class TCollection_AsciiString;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class IGESSelect_SelectSubordinate;
 DEFINE_STANDARD_HANDLE(IGESSelect_SelectSubordinate, IFSelect_SelectExtract)

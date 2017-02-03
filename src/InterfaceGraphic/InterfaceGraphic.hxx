@@ -28,24 +28,17 @@
 #include <stdio.h>
 
 // exclude modern definitions and system-provided glext.h, should be defined before gl.h inclusion
-#define GL_GLEXT_LEGACY
-#define GLX_GLXEXT_LEGACY
+#ifndef GL_GLEXT_LEGACY
+  #define GL_GLEXT_LEGACY
+#endif
+#ifndef GLX_GLXEXT_LEGACY
+  #define GLX_GLXEXT_LEGACY
+#endif
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <GL/glx.h>
-
-// workaround name conflicts with OCCT methods (in class TopoDS_Shape for example)
-#ifdef Convex
-  #undef Convex
-#endif
-#ifdef Status
-  #undef Status
-#endif
-#ifdef Opposite
-  #undef Opposite
-#endif
 
 #endif
 

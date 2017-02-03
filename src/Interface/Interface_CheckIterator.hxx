@@ -36,6 +36,10 @@ class Interface_Check;
 class Standard_Transient;
 class Message_Messenger;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 //! Result of a Check operation (especially from InterfaceModel)
 class Interface_CheckIterator 

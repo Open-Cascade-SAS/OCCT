@@ -21,16 +21,17 @@
 #include <Standard_Type.hxx>
 
 #include <TopoDS_Face.hxx>
-#include <TopoDS_Shape.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <ShapeUpgrade_Tool.hxx>
 #include <ShapeExtend_Status.hxx>
 class ShapeUpgrade_SplitSurface;
 class ShapeUpgrade_WireDivide;
-class TopoDS_Face;
-class TopoDS_Shape;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class ShapeUpgrade_FaceDivide;
 DEFINE_STANDARD_HANDLE(ShapeUpgrade_FaceDivide, ShapeUpgrade_Tool)

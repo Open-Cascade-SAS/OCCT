@@ -29,6 +29,10 @@
 class TopoDS_Shape;
 class TopoDS_Vertex;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class BRepTools_ReShape;
 DEFINE_STANDARD_HANDLE(BRepTools_ReShape, MMgt_TShared)

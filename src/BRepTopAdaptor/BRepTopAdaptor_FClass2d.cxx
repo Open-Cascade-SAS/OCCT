@@ -423,7 +423,7 @@ TopAbs_State BRepTopAdaptor_FClass2d::Perform(const gp_Pnt2d& _Puv,
   const Standard_Boolean IsVPer  = surf->IsVPeriodic();
   const Standard_Real    uperiod = IsUPer ? surf->UPeriod() : 0.0;
   const Standard_Real    vperiod = IsVPer ? surf->VPeriod() : 0.0;
-  TopAbs_State Status = TopAbs_UNKNOWN;
+  TopAbs_State aStatus = TopAbs_UNKNOWN;
   Standard_Boolean urecadre = Standard_False, vrecadre = Standard_False;
 
   if (RecadreOnPeriodic)
@@ -484,25 +484,25 @@ TopAbs_State BRepTopAdaptor_FClass2d::Perform(const gp_Pnt2d& _Puv,
 	  Standard_Real m_Toluv = (Toluv > 4.0) ? 4.0 : Toluv;
 	  //aClassifier.Perform(Face,Puv,Toluv);
 	  aClassifier.Perform(Face,Puv,m_Toluv);
-	  Status = aClassifier.State();
+	  aStatus = aClassifier.State();
 	}
 	if(dedans == 1) { 
-	  Status = TopAbs_IN;
+	  aStatus = TopAbs_IN;
 	}
 	if(dedans == -1) {
-	  Status = TopAbs_OUT;
+	  aStatus = TopAbs_OUT;
 	}
       }
       else {  //-- TabOrien(1)=-1    False Wire
 	BRepClass_FaceClassifier aClassifier;
 	aClassifier.Perform(Face,Puv,Toluv);
-	Status = aClassifier.State();
+	aStatus = aClassifier.State();
       }
 
       if (!RecadreOnPeriodic || (!IsUPer && !IsVPer))
-	return Status;
-      if (Status == TopAbs_IN || Status == TopAbs_ON)
-	return Status;
+	return aStatus;
+      if (aStatus == TopAbs_IN || aStatus == TopAbs_ON)
+	return aStatus;
 
       if (!urecadre)
 	{
@@ -526,7 +526,7 @@ TopAbs_State BRepTopAdaptor_FClass2d::Perform(const gp_Pnt2d& _Puv,
 	  u = uu;
 
 	  if (v > Vmax || !IsVPer)
-	    return Status;
+	    return aStatus;
 	}
     } //for (;;)
 }
@@ -557,7 +557,7 @@ TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
   const Standard_Boolean IsVPer  = surf->IsVPeriodic();
   const Standard_Real    uperiod = IsUPer ? surf->UPeriod() : 0.0;
   const Standard_Real    vperiod = IsVPer ? surf->VPeriod() : 0.0;
-  TopAbs_State Status = TopAbs_UNKNOWN;
+  TopAbs_State aStatus = TopAbs_UNKNOWN;
   Standard_Boolean urecadre = Standard_False, vrecadre = Standard_False;
   
   if (RecadreOnPeriodic)
@@ -614,25 +614,25 @@ TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
 	  }
 	}
 	if(dedans==0) {
-	  Status = TopAbs_ON;
+	  aStatus = TopAbs_ON;
 	}
 	if(dedans == 1) {
-	  Status = TopAbs_IN;
+	  aStatus = TopAbs_IN;
 	}
 	if(dedans == -1) {
-	  Status = TopAbs_OUT;
+	  aStatus = TopAbs_OUT;
 	}
       }
       else {  //-- TabOrien(1)=-1    False Wire
 	BRepClass_FaceClassifier aClassifier;
 	aClassifier.Perform(Face,Puv,Tol);
-	Status = aClassifier.State();
+	aStatus = aClassifier.State();
       }
       
       if (!RecadreOnPeriodic || (!IsUPer && !IsVPer))
-	return Status;
-      if (Status == TopAbs_IN || Status == TopAbs_ON)
-	return Status;
+	return aStatus;
+      if (aStatus == TopAbs_IN || aStatus == TopAbs_ON)
+	return aStatus;
       
       if (!urecadre)
 	{
@@ -656,7 +656,7 @@ TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
 	  u = uu;
 	  
 	  if (v > Vmax || !IsVPer)
-	    return Status;
+	    return aStatus;
 	}
     } //for (;;)
 }

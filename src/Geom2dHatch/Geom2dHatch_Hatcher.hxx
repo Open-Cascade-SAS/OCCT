@@ -26,14 +26,13 @@
 #include <TopAbs_Orientation.hxx>
 #include <HatchGen_ErrorStatus.hxx>
 
-class Standard_NoSuchObject;
-class Standard_OutOfRange;
-class StdFail_NotDone;
-class Geom2dHatch_Intersector;
-class Geom2dHatch_Element;
-class Geom2dHatch_Hatching;
 class HatchGen_PointOnHatching;
 class HatchGen_Domain;
+
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class Geom2dHatch_Hatcher 
 {

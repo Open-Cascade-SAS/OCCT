@@ -28,11 +28,13 @@
 #include <ShapeExtend_Status.hxx>
 class ShapeUpgrade_SplitCurve3d;
 class ShapeUpgrade_SplitCurve2d;
-class TopoDS_Edge;
-class TopoDS_Face;
 class Geom_Curve;
 class Geom2d_Curve;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class ShapeUpgrade_FixSmallCurves;
 DEFINE_STANDARD_HANDLE(ShapeUpgrade_FixSmallCurves, ShapeUpgrade_Tool)

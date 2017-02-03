@@ -137,9 +137,9 @@ Standard_Boolean Geom2dHatch_Hatching::IsDone () const
 // Purpose  : Sets the error status.
 //=======================================================================
 
-void Geom2dHatch_Hatching::Status (const HatchGen_ErrorStatus Status)
+void Geom2dHatch_Hatching::Status (const HatchGen_ErrorStatus theStatus)
 {
-  myStatus = Status ;
+  myStatus = theStatus;
 }
 
 //=======================================================================

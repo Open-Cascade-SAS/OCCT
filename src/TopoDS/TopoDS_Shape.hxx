@@ -27,11 +27,11 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Integer.hxx>
 class TopoDS_TShape;
-class Standard_NullObject;
-class Standard_DomainError;
-class Standard_TypeMismatch;
-class TopLoc_Location;
 
+// resolve name collisions with X11 headers
+#ifdef Convex
+  #undef Convex
+#endif
 
 //! Describes a shape which
 //! - references an underlying shape with the potential

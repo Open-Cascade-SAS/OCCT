@@ -864,7 +864,7 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d& Circle1
   IntRes2d_Transition T1a,T1b,T2a,T2b;
   IntRes2d_Position Pos1a,Pos1b,Pos2a,Pos2b;
 
-  Standard_Boolean Opposite = 
+  Standard_Boolean isOpposite =
     ((Circle1.Location().SquareDistance(Circle2.Location())) > (R1*R1+R2*R2)) ? 
           Standard_True : Standard_False;
 
@@ -873,8 +873,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d& Circle1
 
   for(i=0; i<NbSolTotal; i++)
   {
-    Standard_Real C2inf=(Opposite)? SolutionC2[i].Bsup : SolutionC2[i].Binf;
-    Standard_Real C2sup=(Opposite)? SolutionC2[i].Binf : SolutionC2[i].Bsup;
+    Standard_Real C2inf  = isOpposite ? SolutionC2[i].Bsup : SolutionC2[i].Binf;
+    Standard_Real C2sup  = isOpposite ? SolutionC2[i].Binf : SolutionC2[i].Bsup;
     Standard_Real C1tinf = SolutionC1[i].Binf, C2tinf = C2inf;
     Standard_Real C1inf=NormalizeOnCircleDomain(C1tinf,DomainCirc1);
                   C2inf=NormalizeOnCircleDomain(C2tinf,DomainCirc2);
@@ -977,7 +977,7 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d& Circle1
 
         //--------------------------------------------------
 
-        if(Opposite)
+        if (isOpposite)
         {
           if(nbsol!=3)
           {
@@ -994,9 +994,7 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d& Circle1
         }
 
         IntRes2d_IntersectionPoint NewPoint2(P1b,C1sup,PIpPI-C2sup,T1b,T2b,Standard_False);
-        IntRes2d_IntersectionSegment NewSeg(NewPoint1,NewPoint2,
-          (Opposite==Standard_True)? Standard_False : Standard_True,
-          Standard_False);
+        IntRes2d_IntersectionSegment NewSeg (NewPoint1,NewPoint2, !isOpposite, Standard_False);
         Append(NewSeg);
       }
       else
@@ -1032,7 +1030,7 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d& Circle1
 
         //--------------------------------------------------
 
-        if(Opposite)
+        if (isOpposite)
         {
             if(C2inf<C2sup)
               C2inf+=PIpPI;
@@ -1044,7 +1042,7 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d& Circle1
         }
 
         IntRes2d_IntersectionPoint NewPoint2(P1b,C1sup,C2sup,T1b,T2b,Standard_False);
-        IntRes2d_IntersectionSegment NewSeg(NewPoint1,NewPoint2,Opposite,Standard_False);
+        IntRes2d_IntersectionSegment NewSeg(NewPoint1,NewPoint2,isOpposite,Standard_False);
         Append(NewSeg);
       }
       else
@@ -1243,7 +1241,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
   gp_Vec2d Tan2=L2.Direction();
  
   Standard_Real aCosT1T2 = Tan1.Dot(Tan2);
-  Standard_Boolean Opposite=(aCosT1T2 < 0.0)? Standard_True : Standard_False;
+  Standard_Boolean isOpposite = (aCosT1T2 < 0.0) ? Standard_True : Standard_False;
 
   done=Standard_True;
 
@@ -1355,8 +1353,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 	Standard_Real U2inf,U2sup;
 	Standard_Real Res2inf,Res2sup;
 	
-	if(Opposite) { U2inf = U1pU2 -Res1sup;  U2sup= U1pU2-Res1inf;  }
-	else         { U2inf = Res1inf-U1mU2;   U2sup= Res1sup-U1mU2;  }
+	if (isOpposite) { U2inf = U1pU2 -Res1sup; U2sup= U1pU2-Res1inf; }
+	else            { U2inf = Res1inf-U1mU2;  U2sup= Res1sup-U1mU2; }
 	
 	DomainIntersection(Domain2,U2inf,U2sup,Res2inf,Res2sup,Pos2a,Pos2b);
 
@@ -1373,7 +1371,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 	  //-- Attention, les bornes Res1inf(sup) bougent donc il faut
 	  //--  eventuellement recalculer les attributs
 	  
-	  if(Opposite) { Res1inf=U1pU2-Res2sup; Res1sup=U1pU2-Res2inf; 
+	  if(isOpposite) { Res1inf=U1pU2-Res2sup; Res1sup=U1pU2-Res2inf;
 			 Standard_Real Tampon=Res2inf; Res2inf=Res2sup; Res2sup=Tampon;
 			 IntRes2d_Position Pos=Pos2a; Pos2a=Pos2b; Pos2b=Pos;
 		       }
@@ -1393,8 +1391,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 	    T2a.SetValue(Standard_False,Pos2a,IntRes2d_Out);
 	  }
 	  else {
-	    T1a.SetValue(Standard_False,Pos1a,IntRes2d_Unknown,Opposite);
-	    T2a.SetValue(Standard_False,Pos2a,IntRes2d_Unknown,Opposite);
+	    T1a.SetValue (Standard_False, Pos1a, IntRes2d_Unknown, isOpposite);
+	    T2a.SetValue (Standard_False, Pos2a, IntRes2d_Unknown, isOpposite);
 	  }
 	  
 
@@ -1461,13 +1459,13 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 	      T2b.SetValue(Standard_False,Pos2b,IntRes2d_Out);
 	    }
 	    else {
-	      T1b.SetValue(Standard_False,Pos1b,IntRes2d_Unknown,Opposite);
-	      T2b.SetValue(Standard_False,Pos2b,IntRes2d_Unknown,Opposite);
+	      T1b.SetValue (Standard_False, Pos1b, IntRes2d_Unknown, isOpposite);
+	      T2b.SetValue (Standard_False, Pos2b, IntRes2d_Unknown, isOpposite);
 	    }
 	    gp_Pnt2d Ptdebut;
 	    if(Pos1a==IntRes2d_Middle) { 
 	      Standard_Real t3;
-	      if(Opposite) {
+	      if (isOpposite) {
 		t3 = (Pos2a == IntRes2d_Head)? Res2sup : Res2inf;
 	      }
 	      else {
@@ -1495,8 +1493,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 		Res2sup=ElCLib::Parameter(L2,Ptfin);
 	      }
 	      PtSeg2.SetValues(Ptfin,Res1sup,Res2sup,T1b,T2b,Standard_False);
-	      IntRes2d_IntersectionSegment Segment(PtSeg1,PtSeg2
-						   ,Opposite,Standard_False);
+	      IntRes2d_IntersectionSegment Segment (PtSeg1, PtSeg2, isOpposite, Standard_False);
 	      Append(Segment);  
 	    } 
 	    else { //-- Extremite(L1 ou L2)  ------>   Point Middle(L1 et L2)
@@ -1512,14 +1509,14 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 		T2b.SetValue(Standard_False,Pos2b,IntRes2d_Out);
 	      }
 	      else {
-		T1b.SetValue(Standard_False,Pos1b,IntRes2d_Unknown,Opposite);
-		T2b.SetValue(Standard_False,Pos2b,IntRes2d_Unknown,Opposite);
+		T1b.SetValue (Standard_False, Pos1b, IntRes2d_Unknown, isOpposite);
+		T2b.SetValue (Standard_False, Pos2b, IntRes2d_Unknown, isOpposite);
 	      }
 	      
 	      PtSeg2.SetValues(ElCLib::Value(U2,L2),U1,U2,T1b,T2b,Standard_False);
 
 	      if((Abs(Res1inf-U1) >LongMiniSeg) && (Abs(Res2inf-U2) >LongMiniSeg)) {
-		IntRes2d_IntersectionSegment Segment(PtSeg1,PtSeg2,Opposite,Standard_False);
+		IntRes2d_IntersectionSegment Segment (PtSeg1, PtSeg2, isOpposite, Standard_False);
 		Append(Segment);  
 	      }
 	      else {
@@ -1538,7 +1535,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 		gp_Pnt2d Ptfin;
 		if(Pos1b==IntRes2d_Middle) {
 		  Standard_Real t2;
-		  if(Opposite) { 
+		  if (isOpposite) {
 		    t2 = (Pos2b == IntRes2d_Head)? Res2sup : Res2inf;
 		  }
 		  else {
@@ -1568,8 +1565,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 		  T2b.SetValue(Standard_False,Pos2b,IntRes2d_Out);
 		}
 		else {
-		  T1b.SetValue(Standard_False,Pos1b,IntRes2d_Unknown,Opposite);
-		  T2b.SetValue(Standard_False,Pos2b,IntRes2d_Unknown,Opposite);
+		  T1b.SetValue (Standard_False, Pos1b, IntRes2d_Unknown, isOpposite);
+		  T2b.SetValue (Standard_False, Pos2b, IntRes2d_Unknown, isOpposite);
 		}
 	        PtSeg2.SetValues(Ptfin,Res1sup,Res2sup,T1b,T2b,Standard_False);
 		Append(PtSeg2);
@@ -1587,8 +1584,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 		  T2b.SetValue(Standard_False,Pos2b,IntRes2d_Out);
 		}
 		else {
-		  T1b.SetValue(Standard_False,Pos1b,IntRes2d_Unknown,Opposite);
-		  T2b.SetValue(Standard_False,Pos2b,IntRes2d_Unknown,Opposite);
+		  T1b.SetValue (Standard_False, Pos1b, IntRes2d_Unknown, isOpposite);
+		  T2b.SetValue (Standard_False, Pos2b, IntRes2d_Unknown, isOpposite);
 		}
 		PtSeg1.SetValues(ElCLib::Value(U2,L2),U1,U2,T1b,T2b,Standard_False);
 		Append(PtSeg1); 
@@ -1607,8 +1604,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 		  T2b.SetValue(Standard_False,Pos2b,IntRes2d_Out);
 		}
 		else {
-		  T1b.SetValue(Standard_False,Pos1b,IntRes2d_Unknown,Opposite);
-		  T2b.SetValue(Standard_False,Pos2b,IntRes2d_Unknown,Opposite);
+		  T1b.SetValue (Standard_False, Pos1b, IntRes2d_Unknown, isOpposite);
+		  T2b.SetValue (Standard_False, Pos2b, IntRes2d_Unknown, isOpposite);
 		}
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//~~ Ajustement des parametres et du point renvoye
@@ -1628,8 +1625,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 		   ||(Abs(U2-Res2sup)>LongMiniSeg)) { 
 		  //-- Modif du 1er Octobre 92 (Pour Composites)
 		  
-		  IntRes2d_IntersectionSegment Segment(PtSeg1,PtSeg2
-						       ,Opposite,Standard_False);
+		  IntRes2d_IntersectionSegment Segment (PtSeg1, PtSeg2, isOpposite, Standard_False);
 		  Append(Segment);  
 		}
 		else {
@@ -1698,7 +1694,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
       //== 1 : L1 borne
       if(Domain1.HasFirstPoint()) ResHasFirstPoint=1;
       if(Domain1.HasLastPoint())   ResHasLastPoint=1;
-      if(Opposite) {
+      if (isOpposite) {
 	if(Domain2.HasLastPoint())     ResHasFirstPoint+=2;
 	if(Domain2.HasFirstPoint())   ResHasLastPoint+=2;
       }
@@ -1708,17 +1704,16 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
       }
       if(ResHasFirstPoint==0 && ResHasLastPoint==0) {
 	//~~~~ Creation d un segment infini avec Opposite
-	Append(IntRes2d_IntersectionSegment(Opposite));
+	Append (IntRes2d_IntersectionSegment (isOpposite));
       }
       else {  //-- On obtient au pire une demi-droite
 	switch(ResHasFirstPoint) {
 	case 1: 
 	  ParamStart=Domain1.FirstParameter(); 
-	  ParamStart2=(Opposite)? (Org2SurL1-ParamStart) 
-	                         :(ParamStart-Org2SurL1); 
+	  ParamStart2 = isOpposite ? (Org2SurL1 - ParamStart) : (ParamStart - Org2SurL1);
 	  break;
 	case 2:
-	  if(Opposite) {
+	  if (isOpposite) {
 	    ParamStart2=Domain2.LastParameter();
 	    ParamStart=Org2SurL1 - ParamStart2; 
 	  }
@@ -1728,7 +1723,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 	  }
 	  break;
 	case 3:
-	  if(Opposite) {
+	  if (isOpposite) {
 	    ParamStart2=Domain2.LastParameter();
 	    ParamStart=Org2SurL1 - ParamStart2; 
 	    if(ParamStart < Domain1.FirstParameter()) {
@@ -1752,11 +1747,10 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 	switch(ResHasLastPoint) {
 	case 1: 
 	  ParamEnd=Domain1.LastParameter(); 
-	  ParamEnd2=(Opposite)? (Org2SurL1-ParamEnd) 
-	                         :(ParamEnd-Org2SurL1); 
+	  ParamEnd2 = isOpposite ? (Org2SurL1 - ParamEnd) : (ParamEnd - Org2SurL1);
 	  break;
 	case 2:
-	  if(Opposite) {
+	  if (isOpposite) {
 	    ParamEnd2=Domain2.FirstParameter();
 	    ParamEnd=Org2SurL1 - ParamEnd2; 
 	  }
@@ -1766,7 +1760,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 	  }
 	  break;
 	case 3:
-	  if(Opposite) {
+	  if (isOpposite) {
 	    ParamEnd2=Domain2.FirstParameter();
 	    ParamEnd=Org2SurL1 - ParamEnd2; 
 	    if(ParamEnd > Domain1.LastParameter()) {
@@ -1798,8 +1792,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 	      IntRes2d_Position Pos1,Pos2;
 	      Pos1=FindPositionLL(ParamStart,Domain1);
 	      Pos2=FindPositionLL(ParamStart2,Domain2);
-	      Tinf.SetValue(Standard_True,Pos1,IntRes2d_Unknown,Opposite);
-	      Tsup.SetValue(Standard_True,Pos2,IntRes2d_Unknown,Opposite);
+	      Tinf.SetValue (Standard_True, Pos1, IntRes2d_Unknown, isOpposite);
+	      Tsup.SetValue (Standard_True, Pos2, IntRes2d_Unknown, isOpposite);
 	      IntRes2d_IntersectionPoint P1(ElCLib::Value(ParamStart,L1)
 					    ,ParamStart,ParamStart2
 					    ,Tinf,Tsup,Standard_False);
@@ -1807,13 +1801,13 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 		//~~~ Le segment est assez long
 		Pos1=FindPositionLL(ParamEnd,Domain1);
 		Pos2=FindPositionLL(ParamEnd2,Domain2);
-		Tinf.SetValue(Standard_True,Pos1,IntRes2d_Unknown,Opposite);
-		Tsup.SetValue(Standard_True,Pos2,IntRes2d_Unknown,Opposite);
+		Tinf.SetValue (Standard_True, Pos1, IntRes2d_Unknown, isOpposite);
+		Tsup.SetValue (Standard_True, Pos2, IntRes2d_Unknown, isOpposite);
 
 		IntRes2d_IntersectionPoint P2(ElCLib::Value(ParamEnd,L1)
 					      ,ParamEnd,ParamEnd2
 					      ,Tinf,Tsup,Standard_False);
-		IntRes2d_IntersectionSegment Seg(P1,P2,Opposite,Standard_False);
+		IntRes2d_IntersectionSegment Seg (P1, P2, isOpposite, Standard_False);
 		Append(Seg);
 	      }
 	      else {   //~~~~ le segment est de longueur inferieure a Tol
@@ -1825,26 +1819,26 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 	    //~~~ Creation de la demi droite   |----------->
 	    IntRes2d_Position Pos1=FindPositionLL(ParamStart,Domain1);
 	    IntRes2d_Position Pos2=FindPositionLL(ParamStart2,Domain2);
-	    Tinf.SetValue(Standard_True,Pos1,IntRes2d_Unknown,Opposite);
-	    Tsup.SetValue(Standard_True,Pos2,IntRes2d_Unknown,Opposite);
+	    Tinf.SetValue (Standard_True, Pos1, IntRes2d_Unknown, isOpposite);
+	    Tsup.SetValue (Standard_True, Pos2, IntRes2d_Unknown, isOpposite);
 
 	    IntRes2d_IntersectionPoint P(ElCLib::Value(ParamStart,L1)
 					  ,ParamStart,ParamStart2
 					  ,Tinf,Tsup,Standard_False);
-	    IntRes2d_IntersectionSegment Seg(P,Standard_True,Opposite,Standard_False);
+	    IntRes2d_IntersectionSegment Seg (P, Standard_True, isOpposite, Standard_False);
 	    Append(Seg);
 	  }
 	}
 	else {
 	  IntRes2d_Position Pos1=FindPositionLL(ParamEnd,Domain1);
 	  IntRes2d_Position Pos2=FindPositionLL(ParamEnd2,Domain2);
-	  Tinf.SetValue(Standard_True,Pos1,IntRes2d_Unknown,Opposite);
-	  Tsup.SetValue(Standard_True,Pos2,IntRes2d_Unknown,Opposite);
+	  Tinf.SetValue (Standard_True, Pos1, IntRes2d_Unknown, isOpposite);
+	  Tsup.SetValue (Standard_True, Pos2, IntRes2d_Unknown, isOpposite);
 
 	  IntRes2d_IntersectionPoint P2(ElCLib::Value(ParamEnd,L1)
 					,ParamEnd,ParamEnd2
 					,Tinf,Tsup,Standard_False);
-	  IntRes2d_IntersectionSegment Seg(P2,Standard_False,Opposite,Standard_False);
+	  IntRes2d_IntersectionSegment Seg (P2, Standard_False, isOpposite, Standard_False);
 	  Append(Seg);
 	  //~~~ Creation de la demi droite   <-----------|
 	}
@@ -2053,7 +2047,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& Line
     ElCLib::CircleD1(SolutionCircle[0].Binf,CircleAxis,R,P1a,Tan1);
     ElCLib::LineD1(SolutionLine[0].Binf,LineAxis,P2a,Tan2);
     
-    Standard_Boolean Opposite=((Tan1.Dot(Tan2))<0.0)? Standard_True : Standard_False;
+    Standard_Boolean isOpposite = (Tan1.Dot (Tan2) < 0.0);
     
     
     for(i=0; i<NbSolTotal; i++ ) {
@@ -2099,8 +2093,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& Line
 //-- Fin 7 aout 97
 
       
-      Standard_Real Linf=(Opposite)? SolutionLine[i].Bsup : SolutionLine[i].Binf;
-      Standard_Real Lsup=(Opposite)? SolutionLine[i].Binf : SolutionLine[i].Bsup;
+      Standard_Real Linf = isOpposite ? SolutionLine[i].Bsup : SolutionLine[i].Binf;
+      Standard_Real Lsup = isOpposite ? SolutionLine[i].Binf : SolutionLine[i].Bsup;
       
       //---------------------------------------------------------------
       //-- Si les parametres sur le cercle sont en premier 
@@ -2191,8 +2185,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& Line
 	   || (T1a.TransitionType() != T2a.TransitionType())) {  
 	  //-- Verifier egalement les transitions 
 	  
-	  IntRes2d_IntersectionSegment NewSeg(NewPoint1,NewPoint2
-					      ,Opposite,ReversedParameters());
+	  IntRes2d_IntersectionSegment NewSeg (NewPoint1, NewPoint2, isOpposite, ReversedParameters());
 	  Append(NewSeg);
 	}
 	else { 

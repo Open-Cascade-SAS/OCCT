@@ -25,6 +25,10 @@
 class TCollection_HAsciiString;
 class StepBasic_ApplicationContext;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class StepBasic_ApplicationProtocolDefinition;
 DEFINE_STANDARD_HANDLE(StepBasic_ApplicationProtocolDefinition, MMgt_TShared)

@@ -539,7 +539,7 @@ static Handle(Geom_BSplineCurve) MultNumandDenom(const Handle(Geom2d_BSplineCurv
   Standard_Real                      tolerance=Precision::PConfusion();
   Standard_Integer                   resNbPoles,degree,
                                      ii,jj,
-				     Status;
+				     aStatus;
   
   BS->Knots(BSKnots);            //storage of the two BSpline 
   BS->Multiplicities(BSMults);   //features
@@ -580,7 +580,7 @@ static Handle(Geom_BSplineCurve) MultNumandDenom(const Handle(Geom2d_BSplineCurv
 			     resFlatKnots,
 			     degree,
 			     resNumPoles,
-			     Status);
+			     aStatus);
 
   BSplCLib::FunctionMultiply(ev,
 			     BS->Degree(),
@@ -589,7 +589,7 @@ static Handle(Geom_BSplineCurve) MultNumandDenom(const Handle(Geom2d_BSplineCurv
 			     resFlatKnots,
 			     degree,
 			     resDenPoles,
-			     Status);
+			     aStatus);
   for (ii=1;ii<=resNbPoles;ii++)
     for(jj=1;jj<=3;jj++) 
       resPoles(ii).SetCoord(jj,resNumPoles(ii).Coord(jj)/resDenPoles(ii));
@@ -903,7 +903,7 @@ private:
        
        BSplCLib::KnotSequence(KnotC1,KnotC1Mults,FlatKnots);
        TColgp_Array1OfPnt  NewPoles(1,FlatKnots.Length()-(2*Curve1->Degree()+1));
-       Standard_Integer      Status;
+       Standard_Integer      aStatus;
        TColStd_Array1OfReal Curve1Weights(1,Curve1->NbPoles());
        Curve1->Weights(Curve1Weights);
        for (ii=1;ii<=Curve1->NbPoles();ii++)
@@ -919,7 +919,7 @@ private:
 					FlatKnots,
 					2*Curve1->Degree(),
 					NewPoles,
-					Status
+					aStatus
 					);
        TColStd_Array1OfReal NewWeights(1,FlatKnots.Length()-(2*Curve1->Degree()+1));
 //       BSplCLib::FunctionReparameterise(reparameterise_evaluator,
@@ -930,7 +930,7 @@ private:
 					FlatKnots,
 					2*Curve1->Degree(),
 					NewWeights,
-					Status
+					aStatus
 					);
        for (ii=1;ii<=NewPoles.Length();ii++)
 	 for (jj=1;jj<=3;jj++)
@@ -1138,7 +1138,7 @@ void  GeomConvert::ConcatC1(TColGeom_Array1OfBSplineCurve&           ArrayOfCurv
 	 
 	 BSplCLib::KnotSequence(KnotC1,KnotC1Mults,FlatKnots);
 	 TColgp_Array1OfPnt  NewPoles(1,FlatKnots.Length()-(2*Curve1->Degree()+1));
-	 Standard_Integer      Status;
+	 Standard_Integer      aStatus;
 	 TColStd_Array1OfReal Curve1Weights(1,Curve1->NbPoles());
 	 Curve1->Weights(Curve1Weights);
 	 for (ii=1;ii<=Curve1->NbPoles();ii++)
@@ -1154,7 +1154,7 @@ void  GeomConvert::ConcatC1(TColGeom_Array1OfBSplineCurve&           ArrayOfCurv
 					  FlatKnots,
 					  2*Curve1->Degree(),
 					  NewPoles,
-					  Status
+					  aStatus
 					  );
 	 TColStd_Array1OfReal NewWeights(1,FlatKnots.Length()-(2*Curve1->Degree()+1));
 
@@ -1165,7 +1165,7 @@ void  GeomConvert::ConcatC1(TColGeom_Array1OfBSplineCurve&           ArrayOfCurv
 					  FlatKnots,
 					  2*Curve1->Degree(),
 					  NewWeights,
-					  Status
+					  aStatus
 					  );
 	 for (ii=1;ii<=NewPoles.Length();ii++)
 	   for (jj=1;jj<=3;jj++)

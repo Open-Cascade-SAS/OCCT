@@ -52,8 +52,6 @@
 class TopOpeBRepDS_HDataStructure;
 class Standard_NoSuchObject;
 class TopOpeBRepBuild_HBuilder;
-class TopOpeBRepDS_BuildTool;
-class TopoDS_Shape;
 class TopOpeBRepTool_ShapeExplorer;
 class TopOpeBRepBuild_ShapeSet;
 class TopOpeBRepBuild_EdgeBuilder;
@@ -67,11 +65,12 @@ class TopOpeBRepBuild_ShellFaceSet;
 class TopOpeBRepDS_SurfaceIterator;
 class TopOpeBRepDS_CurveIterator;
 class TopoDS_Vertex;
-class TopoDS_Edge;
 class gp_Pnt;
-class TopoDS_Face;
-class TCollection_AsciiString;
 
+// resolve name collisions with X11 headers
+#ifdef FillSolid
+  #undef FillSolid
+#endif
 
 //! The Builder  algorithm    constructs   topological
 //! objects  from   an    existing  topology  and  new

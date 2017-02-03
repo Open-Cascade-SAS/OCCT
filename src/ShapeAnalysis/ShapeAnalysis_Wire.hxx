@@ -35,7 +35,6 @@
 class ShapeExtend_WireData;
 class ShapeAnalysis_Surface;
 class TopoDS_Wire;
-class TopoDS_Face;
 class Geom_Surface;
 class TopLoc_Location;
 class ShapeAnalysis_WireOrder;
@@ -44,6 +43,10 @@ class gp_Pnt2d;
 class TopoDS_Shape;
 class TopoDS_Edge;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class ShapeAnalysis_Wire;
 DEFINE_STANDARD_HANDLE(ShapeAnalysis_Wire, MMgt_TShared)

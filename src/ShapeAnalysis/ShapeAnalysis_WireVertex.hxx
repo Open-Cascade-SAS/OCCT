@@ -31,6 +31,10 @@ class ShapeExtend_WireData;
 class TopoDS_Wire;
 class gp_XYZ;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 //! Analyzes and records status of vertices in a Wire
 //!

@@ -39,11 +39,11 @@
 //=======================================================================
 Handle(Geom_Surface) BRepOffset::Surface(const Handle(Geom_Surface)& Surface,
 					 const Standard_Real Offset,
-					       BRepOffset_Status& Status)
+					       BRepOffset_Status& theStatus)
 {
   Standard_Real Tol = Precision::Confusion();
 
-  Status = BRepOffset_Good;
+  theStatus = BRepOffset_Good;
   Handle(Geom_Surface) Result;
   
   Handle(Standard_Type) TheType = Surface->DynamicType();
@@ -70,10 +70,10 @@ Handle(Geom_Surface) BRepOffset::Surface(const Handle(Geom_Surface)& Surface,
     else if ( Radius <= -Tol ){
       Axis.Rotate(gp_Ax1(Axis.Location(),Axis.Direction()),M_PI);
       Result = new Geom_CylindricalSurface( Axis, Abs(Radius));
-      Status = BRepOffset_Reversed;
+      theStatus = BRepOffset_Reversed;
     }
     else {
-      Status = BRepOffset_Degenerated;
+      theStatus = BRepOffset_Degenerated;
     }
   }
   else if (TheType == STANDARD_TYPE(Geom_ConicalSurface)) {
@@ -113,10 +113,10 @@ Handle(Geom_Surface) BRepOffset::Surface(const Handle(Geom_Surface)& Surface,
       Axis.Rotate(gp_Ax1(Axis.Location(),Axis.Direction()),M_PI);
       Axis.ZReverse();
       Result = new Geom_SphericalSurface(Axis, -Radius);
-      Status = BRepOffset_Reversed;
+      theStatus = BRepOffset_Reversed;
     }
     else {
-      Status = BRepOffset_Degenerated;
+      theStatus = BRepOffset_Degenerated;
     }
   }
   else if (TheType == STANDARD_TYPE(Geom_ToroidalSurface)) {
@@ -134,10 +134,10 @@ Handle(Geom_Surface) BRepOffset::Surface(const Handle(Geom_Surface)& Surface,
 	Result = new Geom_ToroidalSurface(Axis,MajorRadius,MinorRadius);
       }
       else if (MinorRadius <= -Tol) {
-	Status = BRepOffset_Reversed;
+	theStatus = BRepOffset_Reversed;
       }
       else {
-	Status = BRepOffset_Degenerated;
+	theStatus = BRepOffset_Degenerated;
       }
     }
   }
@@ -152,8 +152,7 @@ Handle(Geom_Surface) BRepOffset::Surface(const Handle(Geom_Surface)& Surface,
       Handle(Geom_RectangularTrimmedSurface)::DownCast(Surface);
     Standard_Real U1,U2,V1,V2;
     S->Bounds(U1,U2,V1,V2);
-    Handle(Geom_Surface) Off = 
-      BRepOffset::Surface(S->BasisSurface(),Offset,Status);
+    Handle(Geom_Surface) Off = BRepOffset::Surface (S->BasisSurface(), Offset, theStatus);
     Result = new Geom_RectangularTrimmedSurface (Off,U1,U2,V1,V2);
   }
   else if (TheType == STANDARD_TYPE(Geom_OffsetSurface)) {

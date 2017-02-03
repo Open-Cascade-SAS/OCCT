@@ -50,7 +50,7 @@ public:
   //!
   //! If  no particular  case  is detected, the returned
   //! surface will have the Type Geom_OffsetSurface.
-  Standard_EXPORT static Handle(Geom_Surface) Surface (const Handle(Geom_Surface)& Surface, const Standard_Real Offset, BRepOffset_Status& Status);
+  Standard_EXPORT static Handle(Geom_Surface) Surface (const Handle(Geom_Surface)& Surface, const Standard_Real Offset, BRepOffset_Status& theStatus);
 
 
 

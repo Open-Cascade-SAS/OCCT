@@ -32,6 +32,10 @@ class Message_Msg;
 class TCollection_HAsciiString;
 class Message_Messenger;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class Interface_Check;
 DEFINE_STANDARD_HANDLE(Interface_Check, MMgt_TShared)

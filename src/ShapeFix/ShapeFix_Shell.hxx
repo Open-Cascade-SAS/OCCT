@@ -26,10 +26,12 @@
 #include <ShapeExtend_Status.hxx>
 
 class ShapeFix_Face;
-class TopoDS_Shell;
-class TopoDS_Shape;
-class TopoDS_Compound;
 class ShapeExtend_BasicMsgRegistrator;
+
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class ShapeFix_Shell;
 DEFINE_STANDARD_HANDLE(ShapeFix_Shell, ShapeFix_Root)

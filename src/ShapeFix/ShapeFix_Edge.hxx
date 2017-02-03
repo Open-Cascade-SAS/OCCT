@@ -33,6 +33,11 @@ class TopLoc_Location;
 class ShapeAnalysis_Surface;
 class ShapeBuild_ReShape;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
+
 class ShapeFix_Edge;
 DEFINE_STANDARD_HANDLE(ShapeFix_Edge, MMgt_TShared)
 

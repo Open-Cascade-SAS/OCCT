@@ -30,6 +30,10 @@ class Message_Printer;
 class TCollection_AsciiString;
 class TCollection_ExtendedString;
 
+// resolve name collisions with WinAPI headers
+#ifdef AddPrinter
+  #undef AddPrinter
+#endif
 
 class Message_Messenger;
 DEFINE_STANDARD_HANDLE(Message_Messenger, MMgt_TShared)

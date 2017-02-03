@@ -91,11 +91,11 @@ void CDM_Application::BeginOfUpdate (const Handle(CDM_Document)& aDocument)
 
 void CDM_Application::EndOfUpdate
                         (const Handle(CDM_Document)&       aDocument,
-                         const Standard_Boolean            Status,
+                         const Standard_Boolean            theStatus,
                          const TCollection_ExtendedString& /*ErrorString*/)
 {
   TCollection_ExtendedString message;
-  if (Status) 
+  if (theStatus)
     message="Updated:";
   else
     message="Error during updating:";

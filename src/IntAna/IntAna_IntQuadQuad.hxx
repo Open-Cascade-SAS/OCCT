@@ -102,13 +102,13 @@ public:
   
   //! If  HasNextCurve(I)  returns True,  this  function
   //! returns  the  Index J  of the curve  which   has a
-  //! common bound  with the curve   I.  If  Opposite ==
+  //! common bound  with the curve   I.  If  theOpposite ==
   //! True , then the last parameter of the curve I, and
   //! the last parameter of  the curve J  give  the same
   //! point. Else the last  parameter of the curve I and
   //! the first parameter  of  the curve J are  the same
   //! point.
-  Standard_EXPORT Standard_Integer NextCurve (const Standard_Integer I, Standard_Boolean& Opposite) const;
+  Standard_EXPORT Standard_Integer NextCurve (const Standard_Integer I, Standard_Boolean& theOpposite) const;
   
   //! Returns True if the Curve I shares its first bound
   //! with another curve.
@@ -116,13 +116,13 @@ public:
   
   //! if HasPreviousCurve(I) returns True, this function
   //! returns the   Index  J of the   curve  which has a
-  //! common  bound with the  curve  I.  If Opposite  ==
+  //! common  bound with the  curve  I.  If theOpposite  ==
   //! True  , then the  first parameter of  the curve I,
   //! and the first parameter of the curve  J  give  the
   //! same point. Else the first  parameter of the curve
   //! I and the last  parameter  of the curve J  are the
   //! same point.
-  Standard_EXPORT Standard_Integer PreviousCurve (const Standard_Integer I, Standard_Boolean& Opposite) const;
+  Standard_EXPORT Standard_Integer PreviousCurve (const Standard_Integer I, Standard_Boolean& theOpposite) const;
 
 
 

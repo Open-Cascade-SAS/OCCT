@@ -31,7 +31,6 @@
 #include <Message_ProgressIndicator.hxx>
 
 class ShapeFix_Solid;
-class TopoDS_Shape;
 class Message_ProgressIndicator;
 class ShapeFix_Shell;
 class ShapeFix_Face;
@@ -39,6 +38,10 @@ class ShapeFix_Wire;
 class ShapeFix_Edge;
 class ShapeExtend_BasicMsgRegistrator;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class ShapeFix_Shape;
 DEFINE_STANDARD_HANDLE(ShapeFix_Shape, ShapeFix_Root)

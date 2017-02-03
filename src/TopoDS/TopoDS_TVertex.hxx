@@ -25,6 +25,12 @@
 
 
 class TopoDS_TVertex;
+
+// resolve name collisions with X11 headers
+#ifdef Convex
+  #undef Convex
+#endif
+
 DEFINE_STANDARD_HANDLE(TopoDS_TVertex, TopoDS_TShape)
 
 //! A  Vertex is a topological  point in  two or three

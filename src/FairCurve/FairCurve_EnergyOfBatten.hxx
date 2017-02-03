@@ -32,8 +32,11 @@
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>
-class FairCurve_BattenLaw;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 //! Energy Criterium to minimize in Batten.
 class FairCurve_EnergyOfBatten  : public FairCurve_Energy

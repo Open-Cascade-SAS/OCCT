@@ -107,9 +107,9 @@ TopoDS_Shape QADNaming::CurrentShape (const Standard_CString  LabelName,
 
 TCollection_AsciiString QADNaming::GetEntry (const TopoDS_Shape&         Shape,
 					   const Handle(TDF_Data)&     DF,
-					   Standard_Integer&           Status)
+					   Standard_Integer&           theStatus)
 {
-  Status = 0;
+  theStatus = 0;
   //Handle(TNaming_UsedShapes) US;
   //DF->Root().FindAttribute(TNaming_UsedShapes::GetID(),US);
 
@@ -119,11 +119,11 @@ TCollection_AsciiString QADNaming::GetEntry (const TopoDS_Shape&         Shape,
   Standard_Integer Transdef;
   TDF_Label Lab = TNaming_Tool::Label (DF->Root(), Shape,Transdef);
   TCollection_AsciiString entry; TDF_Tool::Entry(Lab,entry);
-  //Update Status;
+  //Update theStatus;
   TNaming_Iterator it(Lab,DF->Transaction());
   for (; it.More(); it.Next()) {
-    Status++;
-    if (Status == 2) break;
+    theStatus++;
+    if (theStatus == 2) break;
   }
   return entry;
 }

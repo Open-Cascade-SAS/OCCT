@@ -29,7 +29,7 @@ static Standard_Boolean IsTangentDefined (LProp_SLProps& SProp,
                                           const Standard_Real linTol,
                                           const Standard_Integer  Derivative, 
                                           Standard_Integer&       Order,
-                                          LProp_Status&  Status) 
+                                          LProp_Status&  theStatus)
 {
   Standard_Real Tol = linTol * linTol;
   gp_Vec V[2];
@@ -54,13 +54,13 @@ static Standard_Boolean IsTangentDefined (LProp_SLProps& SProp,
 
       if(V[Derivative].SquareMagnitude() > Tol)
       {
-        Status = LProp_Defined;
+        theStatus = LProp_Defined;
         return Standard_True;
       }
     }//if(cn >= Order)
     else
     {
-      Status = LProp_Undefined;
+      theStatus = LProp_Undefined;
       return Standard_False;
     }
   }
@@ -324,9 +324,9 @@ Standard_Boolean LProp_SLProps::IsNormalDefined()
 
   // status = UnDecided 
   // first try the standard computation of the normal.
-  CSLib_DerivativeStatus Status;
-  CSLib::Normal(myD1u, myD1v, myLinTol, Status, myNormal);
-  if (Status  == CSLib_Done ) 
+  CSLib_DerivativeStatus aStatus = CSLib_Done;
+  CSLib::Normal(myD1u, myD1v, myLinTol, aStatus, myNormal);
+  if (aStatus == CSLib_Done)
   {
     myNormalStatus = LProp_Computed;
     return Standard_True;

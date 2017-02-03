@@ -30,9 +30,12 @@ class ShapeFix_Shell;
 class TopoDS_Solid;
 class Message_ProgressIndicator;
 class TopoDS_Shell;
-class TopoDS_Shape;
 class ShapeExtend_BasicMsgRegistrator;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 class ShapeFix_Solid;
 DEFINE_STANDARD_HANDLE(ShapeFix_Solid, ShapeFix_Root)

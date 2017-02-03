@@ -34,6 +34,10 @@ class TopoDS_Edge;
 class TopoDS_Vertex;
 class TopoDS_Shape;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 //! Describes functions to build fillets and chamfers on the
 //! vertices of a planar face.

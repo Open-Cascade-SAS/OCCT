@@ -387,7 +387,7 @@ void VrmlConverter_ShadedShape::ComputeNormal(const TopoDS_Face& aFace,
     gp_Vec D2U,D2V,D2UV;
     gp_Pnt P;
     Standard_Real U, V;
-    CSLib_DerivativeStatus Status;
+    CSLib_DerivativeStatus aStatus;
     CSLib_NormalStatus NStat;
     S.Initialize(aFace);
     const TColgp_Array1OfPnt2d& UVNodes = T->UVNodes();
@@ -395,8 +395,8 @@ void VrmlConverter_ShadedShape::ComputeNormal(const TopoDS_Face& aFace,
       U = UVNodes(i).X();
       V = UVNodes(i).Y();
       S.D1(U,V,P,D1U,D1V);
-      CSLib::Normal(D1U,D1V,Precision::Angular(),Status,Nor(i));
-      if (Status != CSLib_Done) {
+      CSLib::Normal(D1U,D1V,Precision::Angular(),aStatus,Nor(i));
+      if (aStatus != CSLib_Done) {
 	S.D2(U,V,P,D1U,D1V,D2U,D2V,D2UV);
 	CSLib::Normal(D1U,D1V,D2U,D2V,D2UV,Precision::Angular(),OK,NStat,Nor(i));
       }

@@ -882,7 +882,7 @@ void BSplCLib::FunctionMultiply
  const TColStd_Array1OfReal &       FlatKnots,
  const Standard_Integer             NewDegree,
  Standard_Real &                    NewPoles,
- Standard_Integer &                 Status) 
+ Standard_Integer &                 theStatus)
 {
   Standard_Integer ii,
   jj,
@@ -932,7 +932,7 @@ void BSplCLib::FunctionMultiply
 		   result,
 		   error_code);
     if (error_code) {
-      Status = 1 ;
+      theStatus = 1;
       goto FINISH ;
     }     
     
@@ -957,7 +957,7 @@ void BSplCLib::FunctionMultiply
 	      contact_order_array,
 	      PolesDimension,
 	      array_of_new_poles[0],
-	      Status) ;
+	      theStatus);
   
   for (ii = 0 ; ii < num_new_poles * PolesDimension ; ii++) {
     array_of_poles[ii] = array_of_new_poles[ii] ;
@@ -981,7 +981,7 @@ void BSplCLib::FunctionReparameterise
  const TColStd_Array1OfReal &       FlatKnots,
  const Standard_Integer             NewDegree,
  Standard_Real &                    NewPoles,
- Standard_Integer &                 Status) 
+ Standard_Integer &                 theStatus)
 {
   Standard_Integer ii,
 //  jj,
@@ -1022,7 +1022,7 @@ void BSplCLib::FunctionReparameterise
 		   result,
 		   error_code);
     if (error_code) {
-      Status = 1 ;
+      theStatus = 1;
       goto FINISH ;
     }     
     
@@ -1043,7 +1043,7 @@ void BSplCLib::FunctionReparameterise
 	      contact_order_array,
 	      PolesDimension,
 	      array_of_new_poles[0],
-	      Status) ;
+	      theStatus);
   
   for (ii = 0 ; ii < num_new_poles * PolesDimension ; ii++) {
     array_of_poles[ii] = array_of_new_poles[ii] ;
@@ -1066,7 +1066,7 @@ void BSplCLib::FunctionMultiply
  const TColStd_Array1OfReal &        FlatKnots,
  const Standard_Integer              NewDegree,
  TColStd_Array1OfReal &              NewPoles,
- Standard_Integer &                  Status) 
+ Standard_Integer &                  theStatus)
 { 
   Standard_Integer num_bspline_poles =
     BSplineFlatKnots.Length() - BSplineDegree - 1 ;
@@ -1089,7 +1089,7 @@ void BSplCLib::FunctionMultiply
 			     FlatKnots,
 			     NewDegree,
 			     array_of_new_poles[0],
-			     Status) ;
+			     theStatus);
 }
 
 //=======================================================================
@@ -1105,7 +1105,7 @@ void BSplCLib::FunctionReparameterise
  const TColStd_Array1OfReal &        FlatKnots,
  const Standard_Integer              NewDegree,
  TColStd_Array1OfReal &              NewPoles,
- Standard_Integer &                  Status) 
+ Standard_Integer &                  theStatus)
 { 
   Standard_Integer num_bspline_poles =
     BSplineFlatKnots.Length() - BSplineDegree - 1 ;
@@ -1129,7 +1129,7 @@ void BSplCLib::FunctionReparameterise
 				   FlatKnots,
 				   NewDegree,
 				   array_of_new_poles[0],
-				   Status) ;
+				   theStatus);
 }
 
 //=======================================================================

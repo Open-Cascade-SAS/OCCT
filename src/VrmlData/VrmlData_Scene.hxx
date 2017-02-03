@@ -29,6 +29,11 @@
 #include <Standard_Mutex.hxx>
 #include <VrmlData_DataMapOfShapeAppearance.hxx>
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
+
 struct VrmlData_InBuffer;
 
 /**

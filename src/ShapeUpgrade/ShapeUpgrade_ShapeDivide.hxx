@@ -30,9 +30,12 @@
 class ShapeUpgrade_FaceDivide;
 class ShapeBuild_ReShape;
 class ShapeExtend_BasicMsgRegistrator;
-class TopoDS_Shape;
 class Message_Msg;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 //! Divides a all faces in shell with given criteria Shell.
 class ShapeUpgrade_ShapeDivide 

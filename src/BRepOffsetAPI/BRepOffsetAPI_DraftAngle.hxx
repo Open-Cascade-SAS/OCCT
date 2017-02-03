@@ -29,15 +29,15 @@
 #include <Draft_ErrorStatus.hxx>
 #include <BRepTools_ReShape.hxx>
 
-class StdFail_NotDone;
-class Standard_NullObject;
-class Standard_NoSuchObject;
-class Standard_ConstructionError;
 class TopoDS_Shape;
 class TopoDS_Face;
 class gp_Dir;
 class gp_Pln;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 //! Taper-adding transformations on a shape.
 //! The resulting shape is constructed by defining one face

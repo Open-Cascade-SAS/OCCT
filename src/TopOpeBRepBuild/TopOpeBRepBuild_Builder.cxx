@@ -75,9 +75,9 @@ Standard_EXPORT void debchangesplit(const Standard_Integer i) {cout<<"++ debchan
 static  Standard_Integer STATIC_SOLIDINDEX = 0;
 #include <TopOpeBRepBuild_SplitEdge.hxx>
 #include <TopOpeBRepBuild_SplitFace.hxx>
-#include <TopOpeBRepBuild_SplitSolid.hxx>
+#include "TopOpeBRepBuild_SplitSolid.pxx"
 #include <TopOpeBRepBuild_SplitShapes.hxx>
-#include <TopOpeBRepBuild_Fill.hxx>
+#include "TopOpeBRepBuild_Fill.pxx"
 
 Standard_EXPORT TopOpeBRepBuild_Builder* GLOBAL_PBUILDER;
 

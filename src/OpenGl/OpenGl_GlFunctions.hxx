@@ -36,8 +36,12 @@
 #endif
 
 // exclude modern definitions and system-provided glext.h, should be defined before gl.h inclusion
-#define GL_GLEXT_LEGACY
-#define GLX_GLXEXT_LEGACY
+#ifndef GL_GLEXT_LEGACY
+  #define GL_GLEXT_LEGACY
+#endif
+#ifndef GLX_GLXEXT_LEGACY
+  #define GLX_GLXEXT_LEGACY
+#endif
 
 // include main OpenGL header provided with system
 #if defined(__APPLE__)

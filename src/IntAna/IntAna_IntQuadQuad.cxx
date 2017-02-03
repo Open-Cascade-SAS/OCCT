@@ -1089,15 +1089,15 @@ Standard_Boolean IntAna_IntQuadQuad::HasNextCurve(const Standard_Integer I) cons
 //purpose  : 
 //=======================================================================     
 Standard_Integer IntAna_IntQuadQuad::PreviousCurve  (const Standard_Integer I,
-						     Standard_Boolean& Opposite) const
+						     Standard_Boolean& theOpposite) const
 {
   if(HasPreviousCurve(I)) {
     if(previouscurve[I-1]>0) {
-      Opposite = Standard_False;
+      theOpposite = Standard_False;
       return(previouscurve[I-1]);
     }
     else {
-      Opposite = Standard_True;
+      theOpposite = Standard_True;
       return( - previouscurve[I-1]);
     }
   }
@@ -1110,15 +1110,15 @@ Standard_Integer IntAna_IntQuadQuad::PreviousCurve  (const Standard_Integer I,
 //purpose  : 
 //=======================================================================    
 Standard_Integer IntAna_IntQuadQuad::NextCurve (const Standard_Integer I,
-						Standard_Boolean& Opposite) const
+						Standard_Boolean& theOpposite) const
 {
   if(HasNextCurve(I)) {
     if(nextcurve[I]>0) {
-      Opposite = Standard_False;
+      theOpposite = Standard_False;
       return(nextcurve[I-1]);
     }
     else {
-      Opposite = Standard_True;
+      theOpposite = Standard_True;
       return( - nextcurve[I-1]);
     }
   }

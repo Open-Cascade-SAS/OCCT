@@ -21,20 +21,19 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopoDS_Shape.hxx>
 #include <BRepOffset_Status.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <GeomAbs_JoinType.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
-class TopoDS_Face;
 class TopoDS_Edge;
 class TopoDS_Vertex;
-class TopoDS_Shape;
 
+// resolve name collisions with X11 headers
+#ifdef Status
+  #undef Status
+#endif
 
 //! This class compute elemenary offset surface.
 //! Evaluate the offset generated :
