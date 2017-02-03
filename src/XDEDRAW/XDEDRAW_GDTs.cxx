@@ -1322,7 +1322,7 @@ static Standard_Integer addTolModif (Draw_Interpretor& di, Standard_Integer argc
   {
     for(Standard_Integer i = 3; i < argc; i++)
     {
-      if(Draw::Atoi(argv[i]) > -1 && Draw::Atoi(argv[i]) < 15)
+      if(Draw::Atoi(argv[i]) > -1 && Draw::Atoi(argv[i]) < 17)
       {
         Handle(XCAFDimTolObjects_GeomToleranceObject) anObj = aGeomTolerance->GetObject();
         anObj->AddModifier((XCAFDimTolObjects_GeomToleranceModif)Draw::Atoi(argv[i]));
