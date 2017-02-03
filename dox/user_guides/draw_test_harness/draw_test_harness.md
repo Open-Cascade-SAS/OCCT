@@ -7656,6 +7656,19 @@ nurbsconvert result name [result name]
 Changes the NURBS curve definition of a shape to a Bspline curve definition. This conversion is required for assymetric deformation and prepares the arguments for other commands such as **deform**. The conversion can be necessary when transferring shape data to other applications. 
 
 
+@subsubsection occt_draw_7_11_6 edgestofaces
+
+**edgestofaces** - The command allows building planar faces from the planar edges randomly located in 3D space.
+
+It has the following syntax:
+~~~~
+edgestofaces r_faces edges [-a AngTol -s Shared(0/1)]
+~~~~
+Options:
+ * -a AngTol - angular tolerance used for distinguishing the planar faces;
+ * -s Shared(0/1) - boolean flag which defines whether the input edges are already shared or have to be intersected.
+
+
 @subsection occt_draw_7_12  Texture Mapping to a Shape
 
 Texture mapping allows you to map textures on a shape. Textures are texture image files and several are predefined. You can control the number of occurrences of the texture on a face, the position of a texture and the scale factor of the texture. 

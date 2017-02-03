@@ -23,10 +23,12 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+#include <Draw.hxx>
+#include <BOPAlgo_Tools.hxx>
 
 static Standard_Integer attachpcurve (Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer edgestowire  (Draw_Interpretor&, Standard_Integer, const char**);
-
+static Standard_Integer edgestofaces  (Draw_Interpretor&, Standard_Integer, const char**);
 
 //=======================================================================
 //function : BOPCommands
@@ -43,6 +45,7 @@ static Standard_Integer edgestowire  (Draw_Interpretor&, Standard_Integer, const
   
   theCommands.Add("attachpcurve", "attachpcurve eold enew face", __FILE__, attachpcurve, group);
   theCommands.Add("edgestowire" , "edgestowire wire edges"     , __FILE__, edgestowire , group);
+  theCommands.Add("edgestofaces" , "edgestofaces faces edges [-a AngTol -s Shared(0/1)]", __FILE__, edgestofaces , group);
 }
 
 //=======================================================================
@@ -126,5 +129,57 @@ static Standard_Integer edgestowire(Draw_Interpretor& theDI,
   //
   BOPTools_AlgoTools::OrientEdgesOnWire(anEdges);
   DBRep::Set(theArgVal[1], anEdges);
+  return 0;
+}
+
+//=======================================================================
+//function : edgestofaces
+//purpose  : Creates planar faces from linear edges
+//=======================================================================
+static Standard_Integer edgestofaces(Draw_Interpretor& theDI,
+                                     Standard_Integer  theNArg,
+                                     const char ** theArgVal)
+{
+  if (theNArg < 3) {
+    theDI << "Use: edgestofaces faces edges [-a AngTol -s Shared(0/1)]\n";
+    theDI << " AngTol - angular tolerance for comparing the planes;\n";
+    theDI << " Shared - boolean flag which defines whether the input\n";
+    theDI << "          edges are already shared or have to be intersected.\n";
+    return 1;
+  }
+  //
+  TopoDS_Shape anEdges = DBRep::Get(theArgVal[2]);
+  if (anEdges.IsNull()) {
+    theDI << "no edges\n";
+    return 1;
+  }
+  //
+  Standard_Real anAngTol = 1.e-8;
+  Standard_Boolean bShared = Standard_False;
+  //
+  for (Standard_Integer i = 3; i < theNArg; ++i) {
+    if (!strcmp(theArgVal[i], "-a") && (i+1 < theNArg)) {
+      anAngTol = Draw::Atof(theArgVal[i+1]);
+    }
+    if (!strcmp(theArgVal[i], "-s") && (i+1 < theNArg)) {
+      bShared = (Draw::Atoi(theArgVal[i+1]) == 1);
+    }
+  }
+  //
+  TopoDS_Shape aWires;
+  Standard_Integer iErr = BOPAlgo_Tools::EdgesToWires(anEdges, aWires, bShared, anAngTol);
+  if (iErr) {
+    theDI << "Unable to build wires from given edges\n";
+    return 0;
+  }
+  //
+  TopoDS_Shape aFaces;
+  Standard_Boolean bDone = BOPAlgo_Tools::WiresToFaces(aWires, aFaces, anAngTol);
+  if (!bDone) {
+    theDI << "Unable to build faces from wires\n";
+    return 0;
+  }
+  //
+  DBRep::Set(theArgVal[1], aFaces);
   return 0;
 }

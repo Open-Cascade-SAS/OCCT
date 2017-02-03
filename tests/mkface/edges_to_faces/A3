@@ -1,0 +1,20 @@
+puts "========"
+puts "OCC28426"
+puts "========"
+puts ""
+#################################################
+# Implementation of the EdgesToFaces function
+#################################################
+
+box b1 10 10 10
+box b2 10 5 5 10 10 10
+eval compound [explode b1 e] [explode b2 e] c
+
+edgestofaces result c
+
+checkshape result
+checknbshapes result -face 13 -wire 13
+
+if { [regexp "This shape seems to be OK" [bopcheck result]] != 1 } {
+  puts "Error : The result is self-interfered"
+}

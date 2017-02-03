@@ -1066,6 +1066,120 @@ Handle(Geom2d_Curve) C2d = GeomAPI::To2d(C3d, Pln);
 Handle(Geom_Curve) C3d = GeomAPI::To3d(C2d, Pln); 
 ~~~~~
 
+
+@section occt_modalg_2_topo_tools Topological Tools
+
+Open CASCADE Technology topological tools provide algorithms to
+ * Create wires from edges;
+ * Create faces from wires;
+ * Compute state of the shape relatively other shape;
+ * Orient shapes in container;
+ * Create new shapes from the existing ones;
+ * Build PCurves of edges on the faces;
+ * Check the validity of the shapes;
+ * Take the point in the face;
+ * Get the normal direction for the face.
+
+
+@subsection occt_modalg_2_topo_tools_1 Creation of the faces from wireframe model
+
+It is possible to create the planar faces from the arbitrary set of planar edges randomly located in 3D space.
+This feature might be useful if you need for instance to restore the shape from the wireframe model:
+<table align="center">
+<tr>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_image062.png, "Wireframe model"}</td>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_image063.png, "Faces of the model"}</td>
+</tr>
+</table>
+
+To make the faces from edges it is, firstly, necessary to create planar wires from the given edges and than create planar faces from each wire.
+The static methods *BOPAlgo_Tools::EdgesToWires* and *BOPAlgo_Tools::WiresToFaces* can be used for that:
+~~~~~
+TopoDS_Shape anEdges = ...; /* The input edges */
+Standard_Real anAngTol = 1.e-8; /* The angular tolerance for distinguishing the planes in which the wires are located */
+Standard_Boolean bShared = Standard_False; /* Defines whether the edges are shared or not */
+//
+TopoDS_Shape aWires; /* resulting wires */
+Standard_Integer iErr = BOPAlgo_Tools::EdgesToWires(anEdges, aWires, bShared, anAngTol);
+if (iErr) {
+  cout << "Error: Unable to build wires from given edges\n";
+  return;
+}
+//
+TopoDS_Shape aFaces; /* resulting faces */
+Standard_Boolean bDone = BOPAlgo_Tools::WiresToFaces(aWires, aFaces, anAngTol);
+if (!bDone) {
+  cout << "Error: Unable to build faces from wires\n";
+  return;
+}
+~~~~~
+
+These methods can also be used separately:
+ * *BOPAlgo_Tools::EdgesToWires* allows creating planar wires from edges.
+The input edges may be not shared, but the output wires will be sharing the coinciding vertices and edges. For this the intersection of the edges is performed.
+Although, it is possible to skip the intersection stage (if the input edges are already shared) by passing the corresponding flag into the method.
+The input edges are expected to be planar, but the method does not check it. Thus, if the input edges are not planar, the output wires will also be not planar.
+In general, the output wires are non-manifold and may contain free vertices, as well as multi-connected vertices.
+ * *BOPAlgo_Tools::WiresToFaces* allows creating planar faces from the planar wires.
+In general, the input wires are non-manifold and may be not closed, but should share the coinciding parts.
+The wires located in the same plane and completely included into other wires will create holes in the faces built from outer wires:
+
+<table align="center">
+<tr>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_image064.png, "Wireframe model"}</td>
+  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_image065.png, "Two faces (red face has a hole)"}</td>
+</tr>
+</table>
+
+
+@subsection occt_modalg_2_topo_tools_2 Classification of the shapes
+
+The following methods allow classifying the different shapes relatively other shapes:
+ * The variety of the *BOPTools_AlgoTools::ComputState* methods classify the vertex/edge/face relatively solid;
+ * *BOPTools_AlgoTools::IsHole* classifies wire relatively face;
+ * *IntTools_Tools::ClassifyPointByFace* classifies point relatively face.
+
+@subsection occt_modalg_2_topo_tools_3 Orientation of the shapes in the container
+
+The following methods allow reorienting shapes in the containers:
+ * *BOPTools_AlgoTools::OrientEdgesOnWire* correctly orients edges on the wire;
+ * *BOPTools_AlgoTools::OrientFacesOnShell* correctly orients faces on the shell.
+
+@subsection occt_modalg_2_topo_tools_4 Making new shapes
+
+The following methods allow creating new shapes from the existing ones:
+ * The variety of the *BOPTools_AlgoTools::MakeNewVertex* creates the new vertices from other vertices and edges;
+ * *BOPTools_AlgoTools::MakeSplitEdge* splits the edge by the given parameters.
+
+@subsection occt_modalg_2_topo_tools_5 Building PCurves
+
+The following methods allow building PCurves of edges on faces:
+ * *BOPTools_AlgoTools::BuildPCurveForEdgeOnFace* computes PCurve for the edge on the face;
+ * *BOPTools_AlgoTools::BuildPCurveForEdgeOnPlane* and *BOPTools_AlgoTools::BuildPCurveForEdgesOnPlane* allow building PCurves for edges on the planar face;
+ * *BOPTools_AlgoTools::AttachExistingPCurve* takes PCurve on the face from one edge and attach this PCurve to other edge coinciding with the first one.
+
+@subsection occt_modalg_2_topo_tools_6 Checking the validity of the shapes
+
+The following methods allow checking the validity of the shapes:
+ * *BOPTools_AlgoTools::IsMicroEdge* detects the small edges;
+ * *BOPTools_AlgoTools::ComputeTolerance* computs the correct tolerance for the edge on the face;
+ * *BOPTools_AlgoTools::CorrectShapeTolerances* and *BOPTools_AlgoTools::CorrectTolerances* allows correcting the tolerances of the sub-shapes.
+
+@subsection occt_modalg_2_topo_tools_7 Taking a point inside the face
+
+The following methods allow taking a point located inside the face:
+ * The variety of the *BOPTools_AlgoTools3D::PointNearEdge* allows getting a point inside the face located near the edge;
+ * *BOPTools_AlgoTools3D::PointInFace* allows getting a point inside the face.
+
+@subsection occt_modalg_2_topo_tools_8 Getting normal for the face
+
+The following methods allow getting the normal direction for the face/surface:
+ * *BOPTools_AlgoTools3D::GetNormalToSurface* computes the normal direction for the surface in the given point defined by UV parameters;
+ * *BOPTools_AlgoTools3D::GetNormalToFaceOnEdge* computes the normal direction for the face in the point located on the edge of the face;
+ * *BOPTools_AlgoTools3D::GetApproxNormalToFaceOnEdge* computes the normal direction for the face in the point located near the edge of the face.
+
+
+
 @section occt_modalg_3a The Topology API
   
 The Topology  API of Open  CASCADE Technology (**OCCT**) includes the following six packages: 
