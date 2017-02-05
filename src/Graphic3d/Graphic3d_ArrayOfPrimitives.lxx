@@ -152,7 +152,10 @@ inline void Graphic3d_ArrayOfPrimitives::SetVertice (const Standard_Integer   th
   aVec.y() = theY;
   aVec.z() = theZ;
 
-  myAttribs->NbElements = Max (theIndex, myAttribs->NbElements);
+  if (myAttribs->NbElements < theIndex)
+  {
+    myAttribs->NbElements = theIndex;
+  }
 }
 
 inline void Graphic3d_ArrayOfPrimitives::SetVertexColor (const Standard_Integer theIndex,
