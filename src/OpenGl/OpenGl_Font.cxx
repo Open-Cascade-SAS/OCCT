@@ -133,11 +133,11 @@ bool OpenGl_Font::createTexture (const Handle(OpenGl_Context)& theCtx)
   Handle(OpenGl_Texture)& aTexture = myTextures.ChangeLast();
 
   Image_PixMap aBlackImg;
-  if (!aBlackImg.InitZero (Image_PixMap::ImgAlpha, Standard_Size(aTextureSizeX), Standard_Size(aTextureSizeY))
+  if (!aBlackImg.InitZero (Image_Format_Alpha, Standard_Size(aTextureSizeX), Standard_Size(aTextureSizeY))
    || !aTexture->Init (theCtx, aBlackImg, Graphic3d_TOT_2D)) // myTextureFormat
   {
     TCollection_ExtendedString aMsg;
-    aMsg += "New texture intialization of size ";
+    aMsg += "New texture initialization of size ";
     aMsg += aTextureSizeX;
     aMsg += "x";
     aMsg += aTextureSizeY;

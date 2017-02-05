@@ -986,12 +986,12 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
   }
 
   Image_AlienPixMap aPixMap;
-  Image_PixMap::ImgFormat aFormat = Image_PixMap::ImgUNKNOWN;
+  Image_Format aFormat = Image_Format_UNKNOWN;
   switch (aParams.BufferType)
   {
-    case Graphic3d_BT_RGB:   aFormat = Image_PixMap::ImgRGB;   break;
-    case Graphic3d_BT_RGBA:  aFormat = Image_PixMap::ImgRGBA;  break;
-    case Graphic3d_BT_Depth: aFormat = Image_PixMap::ImgGrayF; break;
+    case Graphic3d_BT_RGB:   aFormat = Image_Format_RGB;   break;
+    case Graphic3d_BT_RGBA:  aFormat = Image_Format_RGBA;  break;
+    case Graphic3d_BT_Depth: aFormat = Image_Format_GrayF; break;
   }
 
   switch (aStereoPair)

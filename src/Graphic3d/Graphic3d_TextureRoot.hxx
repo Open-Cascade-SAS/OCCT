@@ -57,7 +57,7 @@ public:
   //!
   //! Default implementation generates unique ID although inheritors may re-initialize it.
   //!
-  //! Multiple Graphic3d_TextureRoot instancies with same ID
+  //! Multiple Graphic3d_TextureRoot instances with same ID
   //! will be treated as single texture with different parameters
   //! to optimize memory usage though this will be more natural
   //! to use same instance of Graphic3d_TextureRoot when possible.
@@ -73,7 +73,7 @@ public:
   Standard_Size Revision() const { return myRevision; }
 
   //! Update image revision.
-  //! Can be used for signalling changes in the texture source (e.g. file update, pixmap update)
+  //! Can be used for signaling changes in the texture source (e.g. file update, pixmap update)
   //! without re-creating texture source itself (e.g. preserving the unique id).
   void UpdateRevision() { ++myRevision; }
 
@@ -110,7 +110,7 @@ protected:
   TCollection_AsciiString         myTexId;    //!< unique identifier of this resource (for sharing)
   Handle(Image_PixMap)            myPixMap;   //!< image pixmap - as one of the ways for defining the texture source
   OSD_Path                        myPath;     //!< image file path - as one of the ways for defining the texture source
-  Standard_Size                   myRevision; //!< image revision - for signalling changes in the texture source (e.g. file update, pixmap update)
+  Standard_Size                   myRevision; //!< image revision - for signaling changes in the texture source (e.g. file update, pixmap update)
   Graphic3d_TypeOfTexture         myType;     //!< texture type
 
 };

@@ -757,7 +757,7 @@ Standard_Boolean Draw_Window::Save (const char* theFileName) const
   Image_AlienPixMap anImage;
   bool isBigEndian = Image_PixMap::IsBigEndianHost();
   const Standard_Size aSizeRowBytes = Standard_Size(winAttr.width) * 4;
-  if (!anImage.InitTrash (isBigEndian ? Image_PixMap::ImgRGB32 : Image_PixMap::ImgBGR32,
+  if (!anImage.InitTrash (isBigEndian ? Image_Format_RGB32 : Image_Format_BGR32,
                           Standard_Size(winAttr.width), Standard_Size(winAttr.height), aSizeRowBytes))
   {
     return Standard_False;
@@ -1796,7 +1796,7 @@ static Standard_Boolean SaveBitmap (HBITMAP     theHBitmap,
 
   Image_AlienPixMap anImage;
   const Standard_Size aSizeRowBytes = Standard_Size(aBitmap.bmWidth) * 4;
-  if (!anImage.InitTrash (Image_PixMap::ImgBGR32, Standard_Size(aBitmap.bmWidth), Standard_Size(aBitmap.bmHeight), aSizeRowBytes))
+  if (!anImage.InitTrash (Image_Format_BGR32, Standard_Size(aBitmap.bmWidth), Standard_Size(aBitmap.bmHeight), aSizeRowBytes))
   {
     return Standard_False;
   }

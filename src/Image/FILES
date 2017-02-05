@@ -3,6 +3,7 @@ Image_AlienPixMap.hxx
 Image_Color.hxx
 Image_Diff.cxx
 Image_Diff.hxx
+Image_Format.hxx
 Image_PixMap.cxx
 Image_PixMap.hxx
 Image_PixMapData.hxx

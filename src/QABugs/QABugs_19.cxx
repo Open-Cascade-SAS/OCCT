@@ -1823,11 +1823,11 @@ static Standard_Integer OCC24622 (Draw_Interpretor& /*theDi*/, Standard_Integer 
   aTextureTypeArg.UpperCase();
   if (aTextureTypeArg == "1D")
   {
-    anImage->InitWrapper (Image_PixMap::ImgRGB, (Standard_Byte*)aBitmap, 8, 1);
+    anImage->InitWrapper (Image_Format_RGB, (Standard_Byte*)aBitmap, 8, 1);
   }
   else if (aTextureTypeArg == "2D")
   {
-    anImage->InitTrash (Image_PixMap::ImgRGB, 8, 8);
+    anImage->InitTrash (Image_Format_RGB, 8, 8);
     for (Standard_Integer aRow = 0; aRow < 8; ++aRow)
     {
       for (Standard_Integer aCol = 0; aCol < 8; ++aCol)

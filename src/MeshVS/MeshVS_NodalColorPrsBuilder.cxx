@@ -794,7 +794,7 @@ Handle(Graphic3d_Texture2D) MeshVS_NodalColorPrsBuilder::CreateTexture() const
 
   // create and fill image with colors
   Handle(Image_PixMap) anImage = new Image_PixMap();
-  if (!anImage->InitTrash (Image_PixMap::ImgRGBA, Standard_Size(getNearestPow2 (aColorsNb)), 2))
+  if (!anImage->InitTrash (Image_Format_RGBA, Standard_Size(getNearestPow2 (aColorsNb)), 2))
   {
     return NULL;
   }

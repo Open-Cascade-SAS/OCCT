@@ -29,11 +29,11 @@ struct FIBITMAP;
 //! - *.jpg, *.jpe, *.jpeg - JPEG/JIFF (Joint Photographic Experts Group) lossy format (compressed with quality losses). YUV color space used (automatically converted from/to RGB).
 //! - *.tif, *.tiff - TIFF (Tagged Image File Format).
 //! - *.tga - TGA (Truevision Targa Graphic), lossless format.
-//! - *.gif - GIF (Graphical Interchange Format), lossy format. Color stored using pallete (up to 256 distinct colors).
+//! - *.gif - GIF (Graphical Interchange Format), lossy format. Color stored using palette (up to 256 distinct colors).
 //! - *.exr - OpenEXR high dynamic-range format (supports float pixel formats). 
 class Image_AlienPixMap : public Image_PixMap
 {
-
+  DEFINE_STANDARD_RTTIEXT(Image_AlienPixMap, Image_PixMap)
 public:
 
   //! Empty constructor.
@@ -52,7 +52,7 @@ public:
   //! thePixelFormat - if specified pixel format doesn't supported by image library
   //!                  than nearest supported will be used instead!
   //! theSizeRowBytes - may be ignored by this class and required alignemnt will be used instead!
-  Standard_EXPORT virtual bool InitTrash (ImgFormat           thePixelFormat,
+  Standard_EXPORT virtual bool InitTrash (Image_Format        thePixelFormat,
                                           const Standard_Size theSizeX,
                                           const Standard_Size theSizeY,
                                           const Standard_Size theSizeRowBytes = 0) Standard_OVERRIDE;
@@ -79,7 +79,7 @@ private:
 
   //! Wrapper initialization is disallowed for this class (will return false in any case)!
   //! Use only copying and allocation initializers.
-  Standard_EXPORT virtual bool InitWrapper (ImgFormat           thePixelFormat,
+  Standard_EXPORT virtual bool InitWrapper (Image_Format        thePixelFormat,
                                             Standard_Byte*      theDataPtr,
                                             const Standard_Size theSizeX,
                                             const Standard_Size theSizeY,
@@ -87,10 +87,6 @@ private:
 
   //! Built-in PPM export
   Standard_EXPORT bool savePPM (const TCollection_AsciiString& theFileName) const;
-
-public:
-
-  DEFINE_STANDARD_RTTIEXT(Image_AlienPixMap,Image_PixMap) // Type definition
 
 };
 

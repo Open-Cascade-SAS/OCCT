@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Image_PixMap,Standard_Transient)
 // purpose  :
 // =======================================================================
 Image_PixMap::Image_PixMap()
-: myImgFormat (Image_PixMap::ImgGray)
+: myImgFormat (Image_Format_Gray)
 {
   //
 }
@@ -40,32 +40,32 @@ Image_PixMap::~Image_PixMap()
   Clear();
 }
 
-Standard_Size Image_PixMap::SizePixelBytes (const Image_PixMap::ImgFormat thePixelFormat)
+Standard_Size Image_PixMap::SizePixelBytes (const Image_Format thePixelFormat)
 {
   switch (thePixelFormat)
   {
-    case ImgGrayF:
-    case ImgAlphaF:
+    case Image_Format_GrayF:
+    case Image_Format_AlphaF:
       return sizeof(float);
-    case ImgRGBAF:
-    case ImgBGRAF:
+    case Image_Format_RGBAF:
+    case Image_Format_BGRAF:
       return sizeof(float) * 4;
-    case ImgRGBF:
-    case ImgBGRF:
+    case Image_Format_RGBF:
+    case Image_Format_BGRF:
       return sizeof(float) * 3;
-    case ImgRGBA:
-    case ImgBGRA:
+    case Image_Format_RGBA:
+    case Image_Format_BGRA:
       return 4;
-    case ImgRGB32:
-    case ImgBGR32:
+    case Image_Format_RGB32:
+    case Image_Format_BGR32:
       return 4;
-    case ImgRGB:
-    case ImgBGR:
+    case Image_Format_RGB:
+    case Image_Format_BGR:
       return 3;
-    case ImgGray:
-    case ImgAlpha:
+    case Image_Format_Gray:
+    case Image_Format_Alpha:
       return 1;
-    case ImgUNKNOWN:
+    case Image_Format_UNKNOWN:
       return 1;
   }
   return 1;
@@ -75,7 +75,7 @@ Standard_Size Image_PixMap::SizePixelBytes (const Image_PixMap::ImgFormat thePix
 // function : SetFormat
 // purpose  :
 // =======================================================================
-void Image_PixMap::SetFormat (Image_PixMap::ImgFormat thePixelFormat)
+void Image_PixMap::SetFormat (Image_Format thePixelFormat)
 {
   if (myImgFormat == thePixelFormat)
   {
@@ -96,11 +96,11 @@ void Image_PixMap::SetFormat (Image_PixMap::ImgFormat thePixelFormat)
 // function : InitWrapper
 // purpose  :
 // =======================================================================
-bool Image_PixMap::InitWrapper (Image_PixMap::ImgFormat thePixelFormat,
-                                Standard_Byte*          theDataPtr,
-                                const Standard_Size     theSizeX,
-                                const Standard_Size     theSizeY,
-                                const Standard_Size     theSizeRowBytes)
+bool Image_PixMap::InitWrapper (Image_Format        thePixelFormat,
+                                Standard_Byte*      theDataPtr,
+                                const Standard_Size theSizeX,
+                                const Standard_Size theSizeY,
+                                const Standard_Size theSizeRowBytes)
 {
   Clear();
   myImgFormat = thePixelFormat;
@@ -119,10 +119,10 @@ bool Image_PixMap::InitWrapper (Image_PixMap::ImgFormat thePixelFormat,
 // function : InitTrash
 // purpose  :
 // =======================================================================
-bool Image_PixMap::InitTrash (Image_PixMap::ImgFormat thePixelFormat,
-                              const Standard_Size     theSizeX,
-                              const Standard_Size     theSizeY,
-                              const Standard_Size     theSizeRowBytes)
+bool Image_PixMap::InitTrash (Image_Format        thePixelFormat,
+                              const Standard_Size theSizeX,
+                              const Standard_Size theSizeY,
+                              const Standard_Size theSizeRowBytes)
 {
   Clear();
   myImgFormat = thePixelFormat;
@@ -143,11 +143,11 @@ bool Image_PixMap::InitTrash (Image_PixMap::ImgFormat thePixelFormat,
 // function : InitZero
 // purpose  :
 // =======================================================================
-bool Image_PixMap::InitZero (Image_PixMap::ImgFormat thePixelFormat,
-                             const Standard_Size     theSizeX,
-                             const Standard_Size     theSizeY,
-                             const Standard_Size     theSizeRowBytes,
-                             const Standard_Byte     theValue)
+bool Image_PixMap::InitZero (Image_Format        thePixelFormat,
+                             const Standard_Size theSizeX,
+                             const Standard_Size theSizeY,
+                             const Standard_Size theSizeRowBytes,
+                             const Standard_Byte theValue)
 {
   if (!InitTrash (thePixelFormat, theSizeX, theSizeY, theSizeRowBytes))
   {
@@ -205,7 +205,7 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
 
   switch (myImgFormat)
   {
-    case ImgGrayF:
+    case Image_Format_GrayF:
     {
       const Standard_ShortReal& aPixel = Value<Standard_ShortReal> (theY, theX);
       theAlpha = 1.0; // opaque
@@ -214,13 +214,13 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                              Quantity_Parameter (Standard_Real (aPixel)),
                              Quantity_TOC_RGB);
     }
-    case ImgAlphaF:
+    case Image_Format_AlphaF:
     {
       const Standard_ShortReal& aPixel = Value<Standard_ShortReal> (theY, theX);
       theAlpha = aPixel;
       return Quantity_Color (1.0, 1.0, 1.0, Quantity_TOC_RGB);
     }
-    case ImgRGBAF:
+    case Image_Format_RGBAF:
     {
       const Image_ColorRGBAF& aPixel = Value<Image_ColorRGBAF> (theY, theX);
       theAlpha = aPixel.a();
@@ -229,7 +229,7 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                              Quantity_Parameter (aPixel.b()),
                              Quantity_TOC_RGB);
     }
-    case ImgBGRAF:
+    case Image_Format_BGRAF:
     {    
       const Image_ColorBGRAF& aPixel = Value<Image_ColorBGRAF> (theY, theX);
       theAlpha = aPixel.a();
@@ -238,7 +238,7 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                              Quantity_Parameter (aPixel.b()),
                              Quantity_TOC_RGB);
     }
-    case ImgRGBF:
+    case Image_Format_RGBF:
     {
       const Image_ColorRGBF& aPixel = Value<Image_ColorRGBF> (theY, theX);
       theAlpha =  1.0; // opaque
@@ -247,7 +247,7 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                              Quantity_Parameter (aPixel.b()),
                              Quantity_TOC_RGB);
     }
-    case ImgBGRF:
+    case Image_Format_BGRF:
     {
       const Image_ColorBGRF& aPixel = Value<Image_ColorBGRF> (theY, theX);
       theAlpha =  1.0; // opaque
@@ -256,7 +256,7 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                              Quantity_Parameter (aPixel.b()),
                              Quantity_TOC_RGB);
     }
-    case ImgRGBA:
+    case Image_Format_RGBA:
     {
       const Image_ColorRGBA& aPixel = Value<Image_ColorRGBA> (theY, theX);
       theAlpha = Standard_Real (aPixel.a()) / 255.0;
@@ -265,7 +265,7 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                              Quantity_Parameter (Standard_Real (aPixel.b()) / 255.0),
                              Quantity_TOC_RGB);
     }
-    case ImgBGRA:
+    case Image_Format_BGRA:
     {
       const Image_ColorBGRA& aPixel = Value<Image_ColorBGRA> (theY, theX);
       theAlpha = Standard_Real (aPixel.a()) / 255.0;
@@ -274,7 +274,7 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                              Quantity_Parameter (Standard_Real (aPixel.b()) / 255.0),
                              Quantity_TOC_RGB);
     }
-    case ImgRGB32:
+    case Image_Format_RGB32:
     {
       const Image_ColorRGB32& aPixel = Value<Image_ColorRGB32> (theY, theX);
       theAlpha = 1.0; // opaque
@@ -283,7 +283,7 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                              Quantity_Parameter (Standard_Real (aPixel.b()) / 255.0),
                              Quantity_TOC_RGB);
     }
-    case ImgBGR32:
+    case Image_Format_BGR32:
     {
       const Image_ColorBGR32& aPixel = Value<Image_ColorBGR32> (theY, theX);
       theAlpha = 1.0; // opaque
@@ -292,7 +292,7 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                              Quantity_Parameter (Standard_Real (aPixel.b()) / 255.0),
                              Quantity_TOC_RGB);
     }
-    case ImgRGB:
+    case Image_Format_RGB:
     {
       const Image_ColorRGB& aPixel = Value<Image_ColorRGB> (theY, theX);
       theAlpha = 1.0; // opaque
@@ -301,7 +301,7 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                              Quantity_Parameter (Standard_Real (aPixel.b()) / 255.0),
                              Quantity_TOC_RGB);
     }
-    case ImgBGR:
+    case Image_Format_BGR:
     {
       const Image_ColorBGR& aPixel = Value<Image_ColorBGR> (theY, theX);
       theAlpha = 1.0; // opaque
@@ -310,7 +310,7 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                              Quantity_Parameter (Standard_Real (aPixel.b()) / 255.0),
                              Quantity_TOC_RGB);
     }
-    case ImgGray:
+    case Image_Format_Gray:
     {
       const Standard_Byte& aPixel = Value<Standard_Byte> (theY, theX);
       theAlpha = 1.0; // opaque
@@ -319,13 +319,13 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                              Quantity_Parameter (Standard_Real (aPixel) / 255.0),
                              Quantity_TOC_RGB);
     }
-    case ImgAlpha:
+    case Image_Format_Alpha:
     {
       const Standard_Byte& aPixel = Value<Standard_Byte> (theY, theX);
       theAlpha = Standard_Real (aPixel) / 255.0;
       return Quantity_Color (1.0, 1.0, 1.0, Quantity_TOC_RGB);
     }
-    case ImgUNKNOWN:
+    case Image_Format_UNKNOWN:
     {
       break;
     }
@@ -353,17 +353,17 @@ void Image_PixMap::SetPixelColor (const Standard_Integer theX,
 
   switch (myImgFormat)
   {
-    case ImgGrayF:
+    case Image_Format_GrayF:
     {
       ChangeValue<Standard_ShortReal> (theY, theX) = theColor.r();
       return;
     }
-    case ImgAlphaF:
+    case Image_Format_AlphaF:
     {
       ChangeValue<Standard_ShortReal> (theY, theX) = theColor.a();
       return;
     }
-    case ImgRGBAF:
+    case Image_Format_RGBAF:
     {
       Image_ColorRGBAF& aPixel = ChangeValue<Image_ColorRGBAF> (theY, theX);
       aPixel.r() = theColor.r();
@@ -372,7 +372,7 @@ void Image_PixMap::SetPixelColor (const Standard_Integer theX,
       aPixel.a() = theColor.a();
       return;
     }
-    case ImgBGRAF:
+    case Image_Format_BGRAF:
     {
       Image_ColorBGRAF& aPixel = ChangeValue<Image_ColorBGRAF> (theY, theX);
       aPixel.r() = theColor.r();
@@ -381,7 +381,7 @@ void Image_PixMap::SetPixelColor (const Standard_Integer theX,
       aPixel.a() = theColor.a();
       return;
     }
-    case ImgRGBF:
+    case Image_Format_RGBF:
     {
       Image_ColorRGBF& aPixel = ChangeValue<Image_ColorRGBF> (theY, theX);
       aPixel.r() = theColor.r();
@@ -389,7 +389,7 @@ void Image_PixMap::SetPixelColor (const Standard_Integer theX,
       aPixel.b() = theColor.b();
       return;
     }
-    case ImgBGRF:
+    case Image_Format_BGRF:
     {
       Image_ColorBGRF& aPixel = ChangeValue<Image_ColorBGRF> (theY, theX);
       aPixel.r() = theColor.r();
@@ -397,7 +397,7 @@ void Image_PixMap::SetPixelColor (const Standard_Integer theX,
       aPixel.b() = theColor.b();
       return;
     }
-    case ImgRGBA:
+    case Image_Format_RGBA:
     {
       Image_ColorRGBA& aPixel = ChangeValue<Image_ColorRGBA> (theY, theX);
       aPixel.r() = Standard_Byte(theColor.r() * 255.0f);
@@ -406,7 +406,7 @@ void Image_PixMap::SetPixelColor (const Standard_Integer theX,
       aPixel.a() = Standard_Byte(theColor.a() * 255.0f);
       return;
     }
-    case ImgBGRA:
+    case Image_Format_BGRA:
     {
       Image_ColorBGRA& aPixel = ChangeValue<Image_ColorBGRA> (theY, theX);
       aPixel.r() = Standard_Byte(theColor.r() * 255.0f);
@@ -415,7 +415,7 @@ void Image_PixMap::SetPixelColor (const Standard_Integer theX,
       aPixel.a() = Standard_Byte(theColor.a() * 255.0f);
       return;
     }
-    case ImgRGB32:
+    case Image_Format_RGB32:
     {
       Image_ColorRGB32& aPixel = ChangeValue<Image_ColorRGB32> (theY, theX);
       aPixel.r()  = Standard_Byte(theColor.r() * 255.0f);
@@ -424,7 +424,7 @@ void Image_PixMap::SetPixelColor (const Standard_Integer theX,
       aPixel.a_() = 255;
       return;
     }
-    case ImgBGR32:
+    case Image_Format_BGR32:
     {
       Image_ColorBGR32& aPixel = ChangeValue<Image_ColorBGR32> (theY, theX);
       aPixel.r()  = Standard_Byte(theColor.r() * 255.0f);
@@ -433,7 +433,7 @@ void Image_PixMap::SetPixelColor (const Standard_Integer theX,
       aPixel.a_() = 255;
       return;
     }
-    case ImgRGB:
+    case Image_Format_RGB:
     {
       Image_ColorRGB& aPixel = ChangeValue<Image_ColorRGB> (theY, theX);
       aPixel.r() = Standard_Byte(theColor.r() * 255.0f);
@@ -441,7 +441,7 @@ void Image_PixMap::SetPixelColor (const Standard_Integer theX,
       aPixel.b() = Standard_Byte(theColor.b() * 255.0f);
       return;
     }
-    case ImgBGR:
+    case Image_Format_BGR:
     {
       Image_ColorBGR& aPixel = ChangeValue<Image_ColorBGR> (theY, theX);
       aPixel.r() = Standard_Byte(theColor.r() * 255.0f);
@@ -449,17 +449,17 @@ void Image_PixMap::SetPixelColor (const Standard_Integer theX,
       aPixel.b() = Standard_Byte(theColor.b() * 255.0f);
       return;
     }
-    case ImgGray:
+    case Image_Format_Gray:
     {
       ChangeValue<Standard_Byte> (theY, theX) = Standard_Byte(theColor.r() * 255.0f);
       return;
     }
-    case ImgAlpha:
+    case Image_Format_Alpha:
     {
       ChangeValue<Standard_Byte> (theY, theX) = Standard_Byte(theColor.a() * 255.0f);
       return;
     }
-    case ImgUNKNOWN:
+    case Image_Format_UNKNOWN:
     {
       return;
     }
@@ -474,13 +474,13 @@ bool Image_PixMap::SwapRgbaBgra (Image_PixMap& theImage)
 {
   switch (theImage.Format())
   {
-    case Image_PixMap::ImgBGR32:
-    case Image_PixMap::ImgRGB32:
-    case Image_PixMap::ImgBGRA:
-    case Image_PixMap::ImgRGBA:
+    case Image_Format_BGR32:
+    case Image_Format_RGB32:
+    case Image_Format_BGRA:
+    case Image_Format_RGBA:
     {
-      const bool toResetAlpha = theImage.Format() == Image_PixMap::ImgBGR32
-                             || theImage.Format() == Image_PixMap::ImgRGB32;
+      const bool toResetAlpha = theImage.Format() == Image_Format_BGR32
+                             || theImage.Format() == Image_Format_RGB32;
       for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
       {
         for (Standard_Size aCol = 0; aCol < theImage.SizeX(); ++aCol)
@@ -498,8 +498,8 @@ bool Image_PixMap::SwapRgbaBgra (Image_PixMap& theImage)
       }
       return true;
     }
-    case Image_PixMap::ImgBGR:
-    case Image_PixMap::ImgRGB:
+    case Image_Format_BGR:
+    case Image_Format_RGB:
     {
       for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
       {
@@ -514,10 +514,10 @@ bool Image_PixMap::SwapRgbaBgra (Image_PixMap& theImage)
       }
       return true;
     }
-    case Image_PixMap::ImgBGRF:
-    case Image_PixMap::ImgRGBF:
-    case Image_PixMap::ImgBGRAF:
-    case Image_PixMap::ImgRGBAF:
+    case Image_Format_BGRF:
+    case Image_Format_RGBF:
+    case Image_Format_BGRAF:
+    case Image_Format_RGBAF:
     {
       for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
       {

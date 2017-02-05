@@ -183,7 +183,7 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
   theDataType    = 0;
   switch (theData.Format())
   {
-    case Image_PixMap::ImgGrayF:
+    case Image_Format_GrayF:
     {
       if (theCtx->core11 == NULL)
       {
@@ -198,7 +198,7 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
       theDataType = GL_FLOAT;
       return true;
     }
-    case Image_PixMap::ImgAlphaF:
+    case Image_Format_AlphaF:
     {
       if (theCtx->core11 == NULL)
       {
@@ -213,14 +213,14 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
       theDataType = GL_FLOAT;
       return true;
     }
-    case Image_PixMap::ImgRGBAF:
+    case Image_Format_RGBAF:
     {
       theTextFormat  = GL_RGBA8; // GL_RGBA32F
       thePixelFormat = GL_RGBA;
       theDataType    = GL_FLOAT;
       return true;
     }
-    case Image_PixMap::ImgBGRAF:
+    case Image_Format_BGRAF:
     {
       if (!theCtx->IsGlGreaterEqual (1, 2) && !theCtx->extBgra)
       {
@@ -231,14 +231,14 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
       theDataType    = GL_FLOAT;
       return true;
     }
-    case Image_PixMap::ImgRGBF:
+    case Image_Format_RGBF:
     {
       theTextFormat  = GL_RGB8; // GL_RGB32F
       thePixelFormat = GL_RGB;
       theDataType    = GL_FLOAT;
       return true;
     }
-    case Image_PixMap::ImgBGRF:
+    case Image_Format_BGRF:
     {
     #if !defined(GL_ES_VERSION_2_0)
       theTextFormat  = GL_RGB8; // GL_RGB32F
@@ -249,14 +249,14 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
       return false;
     #endif
     }
-    case Image_PixMap::ImgRGBA:
+    case Image_Format_RGBA:
     {
       theTextFormat = GL_RGBA8;
       thePixelFormat = GL_RGBA;
       theDataType    = GL_UNSIGNED_BYTE;
       return true;
     }
-    case Image_PixMap::ImgBGRA:
+    case Image_Format_BGRA:
     {
       if (!theCtx->IsGlGreaterEqual (1, 2) && !theCtx->extBgra)
       {
@@ -267,14 +267,14 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
       theDataType    = GL_UNSIGNED_BYTE;
       return true;
     }
-    case Image_PixMap::ImgRGB32:
+    case Image_Format_RGB32:
     {
       theTextFormat = GL_RGB8;
       thePixelFormat = GL_RGBA;
       theDataType    = GL_UNSIGNED_BYTE;
       return true;
     }
-    case Image_PixMap::ImgBGR32:
+    case Image_Format_BGR32:
     {
       if (!theCtx->IsGlGreaterEqual (1, 2) && !theCtx->extBgra)
       {
@@ -285,14 +285,14 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
       theDataType    = GL_UNSIGNED_BYTE;
       return true;
     }
-    case Image_PixMap::ImgRGB:
+    case Image_Format_RGB:
     {
       theTextFormat = GL_RGB8;
       thePixelFormat = GL_RGB;
       theDataType    = GL_UNSIGNED_BYTE;
       return true;
     }
-    case Image_PixMap::ImgBGR:
+    case Image_Format_BGR:
     {
     #if !defined(GL_ES_VERSION_2_0)
       if (!theCtx->IsGlGreaterEqual (1, 2) && !theCtx->extBgra)
@@ -307,7 +307,7 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
       return false;
     #endif
     }
-    case Image_PixMap::ImgGray:
+    case Image_Format_Gray:
     {
       if (theCtx->core11 == NULL)
       {
@@ -322,7 +322,7 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
       theDataType = GL_UNSIGNED_BYTE;
       return true;
     }
-    case Image_PixMap::ImgAlpha:
+    case Image_Format_Alpha:
     {
       if (theCtx->core11 == NULL)
       {
@@ -337,7 +337,7 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
       theDataType = GL_UNSIGNED_BYTE;
       return true;
     }
-    case Image_PixMap::ImgUNKNOWN:
+    case Image_Format_UNKNOWN:
     {
       return false;
     }
@@ -380,8 +380,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
 
   if (theImage != NULL)
   {
-    myIsAlpha = theImage->Format() == Image_PixMap::ImgAlpha
-             || theImage->Format() == Image_PixMap::ImgAlphaF;
+    myIsAlpha = theImage->Format() == Image_Format_Alpha
+             || theImage->Format() == Image_Format_AlphaF;
   }
   else
   {

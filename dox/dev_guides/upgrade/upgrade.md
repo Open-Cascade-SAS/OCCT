@@ -1218,8 +1218,10 @@ The following Grid management methods within class V3d_Viewer do not implicitly 
 @subsection upgrade_720_changes_methods Other changes
 
 * Class GeomPlate_BuildPlateSurface accepts base class Adaptor3d_HCurve (instead of inherited Adaptor3d_HCurveOnSurface accepted earlier).
-
 * Types GeomPlate_Array1OfHCurveOnSurface and GeomPlate_HArray1OfHCurveOnSurface have been replaced with GeomPlate_Array1OfHCurve and GeomPlate_HArray1OfHCurve correspondingly (accept base class Adaptor3d_HCurve instead of Adaptor3d_HCurveOnSurface).
+* Enumeration *Image_PixMap::ImgFormat*, previously declared as nested enumeration within class *Image_PixMap*, has been moved to global namespace as *Image_Format* following OCCT coding rules.
+  The enumeration values have suffix Image_Format_ and preserve previous name scheme for easy renaming of old values - e.g. Image_PixMap::ImgGray become Image_Format_Gray.
+  Old definitions are preserved as depreacated aliases to the new ones.
 
 @subsection upgrade_720_BOP_DataStructure BOP - Pairs of interfering indices
 

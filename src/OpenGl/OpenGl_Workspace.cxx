@@ -913,71 +913,71 @@ Standard_Boolean OpenGl_Workspace::BufferDump (const Handle(OpenGl_FrameBuffer)&
   switch (theImage.Format())
   {
   #if !defined(GL_ES_VERSION_2_0)
-    case Image_PixMap::ImgGray:
+    case Image_Format_Gray:
       aFormat = GL_DEPTH_COMPONENT;
       aType   = GL_UNSIGNED_BYTE;
       break;
-    case Image_PixMap::ImgGrayF:
+    case Image_Format_GrayF:
       aFormat = GL_DEPTH_COMPONENT;
       aType   = GL_FLOAT;
       break;
-    case Image_PixMap::ImgRGB:
+    case Image_Format_RGB:
       aFormat = GL_RGB;
       aType   = GL_UNSIGNED_BYTE;
       break;
-    case Image_PixMap::ImgBGR:
+    case Image_Format_BGR:
       aFormat = GL_BGR;
       aType   = GL_UNSIGNED_BYTE;
       break;
-    case Image_PixMap::ImgBGRA:
-    case Image_PixMap::ImgBGR32:
+    case Image_Format_BGRA:
+    case Image_Format_BGR32:
       aFormat = GL_BGRA;
       aType   = GL_UNSIGNED_BYTE;
       break;
-    case Image_PixMap::ImgBGRF:
+    case Image_Format_BGRF:
       aFormat = GL_BGR;
       aType   = GL_FLOAT;
       break;
-    case Image_PixMap::ImgBGRAF:
+    case Image_Format_BGRAF:
       aFormat = GL_BGRA;
       aType   = GL_FLOAT;
       break;
   #else
-    case Image_PixMap::ImgGray:
-    case Image_PixMap::ImgGrayF:
-    case Image_PixMap::ImgBGRF:
-    case Image_PixMap::ImgBGRAF:
+    case Image_Format_Gray:
+    case Image_Format_GrayF:
+    case Image_Format_BGRF:
+    case Image_Format_BGRAF:
       return Standard_False;
-    case Image_PixMap::ImgBGRA:
-    case Image_PixMap::ImgBGR32:
+    case Image_Format_BGRA:
+    case Image_Format_BGR32:
       aFormat = GL_RGBA;
       aType   = GL_UNSIGNED_BYTE;
       toSwapRgbaBgra = true;
       break;
-    case Image_PixMap::ImgBGR:
-    case Image_PixMap::ImgRGB:
+    case Image_Format_BGR:
+    case Image_Format_RGB:
       aFormat = GL_RGBA;
       aType   = GL_UNSIGNED_BYTE;
       toConvRgba2Rgb = true;
       break;
   #endif
-    case Image_PixMap::ImgRGBA:
-    case Image_PixMap::ImgRGB32:
+    case Image_Format_RGBA:
+    case Image_Format_RGB32:
       aFormat = GL_RGBA;
       aType   = GL_UNSIGNED_BYTE;
       break;
-    case Image_PixMap::ImgRGBF:
+    case Image_Format_RGBF:
       aFormat = GL_RGB;
       aType   = GL_FLOAT;
       break;
-    case Image_PixMap::ImgRGBAF:
+    case Image_Format_RGBAF:
       aFormat = GL_RGBA;
       aType   = GL_FLOAT;
       break;
-    case Image_PixMap::ImgAlpha:
-    case Image_PixMap::ImgAlphaF:
+    case Image_Format_Alpha:
+    case Image_Format_AlphaF:
       return Standard_False; // GL_ALPHA is no more supported in core context
-    case Image_PixMap::ImgUNKNOWN:
+    case Image_Format_UNKNOWN:
       return Standard_False;
   }
 
@@ -1053,7 +1053,7 @@ Standard_Boolean OpenGl_Workspace::BufferDump (const Handle(OpenGl_FrameBuffer)&
       // while order in memory depends on the flag and processed by ChangeRow() method
       glReadPixels (0, GLint(theImage.SizeY() - aRow - 1), GLsizei (theImage.SizeX()), 1, aFormat, aType, aRowBuffer.ChangeData());
       const Image_ColorRGBA* aRowDataRgba = (const Image_ColorRGBA* )aRowBuffer.Data();
-      if (theImage.Format() == Image_PixMap::ImgBGR)
+      if (theImage.Format() == Image_Format_BGR)
       {
         convertRowFromRgba ((Image_ColorBGR* )theImage.ChangeRow (aRow), aRowDataRgba, theImage.SizeX());
       }

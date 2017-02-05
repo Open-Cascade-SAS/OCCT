@@ -16,6 +16,7 @@
 #ifndef _Image_PixMap_H__
 #define _Image_PixMap_H__
 
+#include <Image_Format.hxx>
 #include <Image_PixMapData.hxx>
 #include <Standard_Transient.hxx>
 #include <Quantity_ColorRGBA.hxx>
@@ -23,27 +24,8 @@
 //! Class represents packed image plane.
 class Image_PixMap : public Standard_Transient
 {
-
+  DEFINE_STANDARD_RTTIEXT(Image_PixMap, Standard_Transient)
 public:
-
-  //! This enumeration define packed image plane formats
-  typedef enum tagFormat {
-      ImgUNKNOWN = 0, //!< unsupported or unknown format
-      ImgGray    = 1, //!< 1 byte per pixel, intensity of the color
-      ImgAlpha,       //!< 1 byte per pixel, transparency
-      ImgRGB,         //!< 3 bytes packed RGB image plane
-      ImgBGR,         //!< same as RGB but with different components order
-      ImgRGB32,       //!< 4 bytes packed RGB image plane (1 extra byte for alignment, may have undefined value)
-      ImgBGR32,       //!< same as RGB but with different components order
-      ImgRGBA,        //!< 4 bytes packed RGBA image plane
-      ImgBGRA,        //!< same as RGBA but with different components order
-      ImgGrayF,       //!< 1 float  (4-bytes) per pixel (1-component plane), intensity of the color
-      ImgAlphaF,      //!< 1 float  (4-bytes) per pixel (1-component plane), transparency
-      ImgRGBF,        //!< 3 floats (12-bytes) RGB image plane
-      ImgBGRF,        //!< same as RGBF but with different components order
-      ImgRGBAF,       //!< 4 floats (16-bytes) RGBA image plane
-      ImgBGRAF,       //!< same as RGBAF but with different components order
-  } ImgFormat;
 
   //! Determine Big-Endian at runtime
   static inline bool IsBigEndianHost()
@@ -56,25 +38,22 @@ public:
   //! Auxiliary method for swapping bytes between RGB and BGR formats.
   //! This method modifies the image data but does not change pixel format!
   //! Method will fail if pixel format is not one of the following:
-  //!  - ImgRGB32 / ImgBGR32
-  //!  - ImgRGBA  / ImgBGRA
-  //!  - ImgRGB   / ImgBGR
-  //!  - ImgRGBF  / ImgBGRF
-  //!  - ImgRGBAF / ImgBGRAF
+  //!  - Image_Format_RGB32 / Image_Format_BGR32
+  //!  - Image_Format_RGBA  / Image_Format_BGRA
+  //!  - Image_Format_RGB   / Image_Format_BGR
+  //!  - Image_Format_RGBF  / Image_Format_BGRF
+  //!  - Image_Format_RGBAF / Image_Format_BGRAF
   Standard_EXPORT static bool SwapRgbaBgra (Image_PixMap& theImage);
 
 public: // high-level API
 
-  inline ImgFormat Format() const
-  {
-    return myImgFormat;
-  }
+  Image_Format Format() const { return myImgFormat; }
 
   //! Override pixel format specified by InitXXX() methods.
   //! Will throw exception if pixel size of new format is not equal to currently initialized format.
   //! Intended to switch formats indicating different interpretation of the same data
   //! (e.g. ImgGray and ImgAlpha).
-  Standard_EXPORT void SetFormat (const ImgFormat thePixelFormat);
+  Standard_EXPORT void SetFormat (const Image_Format thePixelFormat);
 
   //! @return image width in pixels
   inline Standard_Size Width() const
@@ -167,7 +146,7 @@ public: // high-level API
   //! Data will not be copied! Notice that caller should ensure
   //! that data pointer will not be released during this wrapper lifetime.
   //! You may call InitCopy() to perform data copying.
-  Standard_EXPORT virtual bool InitWrapper (ImgFormat            thePixelFormat,
+  Standard_EXPORT virtual bool InitWrapper (Image_Format         thePixelFormat,
                                             Standard_Byte*       theDataPtr,
                                             const Standard_Size  theSizeX,
                                             const Standard_Size  theSizeY,
@@ -175,7 +154,7 @@ public: // high-level API
 
   //! Initialize image plane with required dimensions.
   //! Memory will be left uninitialized (performance trick).
-  Standard_EXPORT virtual bool InitTrash (ImgFormat           thePixelFormat,
+  Standard_EXPORT virtual bool InitTrash (Image_Format        thePixelFormat,
                                           const Standard_Size theSizeX,
                                           const Standard_Size theSizeY,
                                           const Standard_Size theSizeRowBytes = 0);
@@ -186,7 +165,7 @@ public: // high-level API
 
   //! Initialize image plane with required dimensions.
   //! Buffer will be zeroed (black color for most formats).
-  Standard_EXPORT bool InitZero (ImgFormat           thePixelFormat,
+  Standard_EXPORT bool InitZero (Image_Format        thePixelFormat,
                                  const Standard_Size theSizeX,
                                  const Standard_Size theSizeY,
                                  const Standard_Size theSizeRowBytes = 0,
@@ -257,7 +236,7 @@ public: //! @name low-level API for batch-processing (pixels reading / compariso
   }
 
   //! @return bytes reserved for one pixel (may include extra bytes for alignment).
-  Standard_EXPORT static Standard_Size SizePixelBytes (const Image_PixMap::ImgFormat thePixelFormat);
+  Standard_EXPORT static Standard_Size SizePixelBytes (const Image_Format thePixelFormat);
 
   //! @return bytes reserved per row.
   //! Could be larger than needed to store packed row (extra bytes for alignment etc.).
@@ -303,20 +282,36 @@ public: //! @name low-level API for batch-processing (pixels reading / compariso
     return *reinterpret_cast<ColorType_t* >(myData.ChangeValue (theRow, theCol));
   }
 
+public:
+
+  Standard_DEPRECATED("This member is deprecated, use Image_Format enumeration instead")
+  typedef Image_Format ImgFormat;
+  static const Image_Format ImgUNKNOWN = Image_Format_UNKNOWN;
+  static const Image_Format ImgGray    = Image_Format_Gray;
+  static const Image_Format ImgAlpha   = Image_Format_Alpha;
+  static const Image_Format ImgRGB     = Image_Format_RGB;
+  static const Image_Format ImgBGR     = Image_Format_BGR;
+  static const Image_Format ImgRGB32   = Image_Format_RGB32;
+  static const Image_Format ImgBGR32   = Image_Format_BGR32;
+  static const Image_Format ImgRGBA    = Image_Format_RGBA;
+  static const Image_Format ImgBGRA    = Image_Format_BGRA;
+  static const Image_Format ImgGrayF   = Image_Format_GrayF;
+  static const Image_Format ImgAlphaF  = Image_Format_AlphaF;
+  static const Image_Format ImgRGBF    = Image_Format_RGBF;
+  static const Image_Format ImgBGRF    = Image_Format_BGRF;
+  static const Image_Format ImgRGBAF   = Image_Format_RGBAF;
+  static const Image_Format ImgBGRAF   = Image_Format_BGRAF;
+
 protected:
 
   Image_PixMapData myData;      //!< data buffer
-  ImgFormat        myImgFormat; //!< pixel format
+  Image_Format     myImgFormat; //!< pixel format
 
 private:
 
   //! Copying allowed only within Handles
   Image_PixMap            (const Image_PixMap& );
   Image_PixMap& operator= (const Image_PixMap& );
-
-public:
-
-  DEFINE_STANDARD_RTTIEXT(Image_PixMap,Standard_Transient) // Type definition
 
 };
 

@@ -1420,7 +1420,7 @@ Handle(Image_PixMap) MergeImages (const Handle(Image_PixMap)& theImage1,
   const Standard_Integer aMaxHeight = Max (aHeight1,  aHeight2);
   const Standard_Integer aSize      = Max (aMaxWidth, aMaxHeight);
 
-  aResultImage->InitZero (Image_PixMap::ImgAlpha, aSize, aSize);
+  aResultImage->InitZero (Image_Format_Alpha, aSize, aSize);
 
   if (!theImage1.IsNull())
   {
@@ -1714,8 +1714,8 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Context)&
           const Standard_Integer aSize = Max (aWidth + 2, aHeight + 2); // includes extra margin
           anImage  = new Image_PixMap();
           anImageA = new Image_PixMap();
-          anImage ->InitZero (Image_PixMap::ImgBGRA,  aSize, aSize);
-          anImageA->InitZero (Image_PixMap::ImgAlpha, aSize, aSize);
+          anImage ->InitZero (Image_Format_BGRA,  aSize, aSize);
+          anImageA->InitZero (Image_Format_Alpha, aSize, aSize);
 
           // we draw a set of circles
           Image_ColorBGRA aColor32;

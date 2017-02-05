@@ -117,14 +117,14 @@ namespace
     { 1, -1}, { 1,  0}, { 1,  1}
   };
 
-  static bool isSupportedFormat (const Image_PixMap::ImgFormat theFormat)
+  static bool isSupportedFormat (const Image_Format theFormat)
   {
-    return theFormat == Image_PixMap::ImgRGB
-        || theFormat == Image_PixMap::ImgBGR
-        || theFormat == Image_PixMap::ImgRGB32
-        || theFormat == Image_PixMap::ImgBGR32
-        || theFormat == Image_PixMap::ImgRGBA
-        || theFormat == Image_PixMap::ImgBGRA;
+    return theFormat == Image_Format_RGB
+        || theFormat == Image_Format_BGR
+        || theFormat == Image_Format_RGB32
+        || theFormat == Image_Format_BGR32
+        || theFormat == Image_Format_RGBA
+        || theFormat == Image_Format_BGRA;
   }
 
 } // anonymous namespace
@@ -344,7 +344,7 @@ Standard_Boolean Image_Diff::SaveDiffImage (Image_PixMap& theDiffImage) const
    || theDiffImage.SizeY() != myImageRef->SizeY()
    || !isSupportedFormat (theDiffImage.Format()))
   {
-    if (!theDiffImage.InitTrash (Image_PixMap::ImgRGB, myImageRef->SizeX(), myImageRef->SizeY()))
+    if (!theDiffImage.InitTrash (Image_Format_RGB, myImageRef->SizeX(), myImageRef->SizeY()))
     {
       return Standard_False;
     }
@@ -404,7 +404,7 @@ Standard_Boolean Image_Diff::SaveDiffImage (const TCollection_AsciiString& theDi
   }
 
   Image_AlienPixMap aDiff;
-  if (!aDiff.InitTrash (Image_PixMap::ImgRGB, myImageRef->SizeX(), myImageRef->SizeY())
+  if (!aDiff.InitTrash (Image_Format_RGB, myImageRef->SizeX(), myImageRef->SizeY())
    || !SaveDiffImage (aDiff))
   {
     return Standard_False;

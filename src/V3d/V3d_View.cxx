@@ -2828,12 +2828,12 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
      || theImage.SizeX() != Standard_Size(aTargetSize.x())
      || theImage.SizeY() != Standard_Size(aTargetSize.y()))
     {
-      Image_PixMap::ImgFormat aFormat = Image_PixMap::ImgUNKNOWN;
+      Image_Format aFormat = Image_Format_UNKNOWN;
       switch (theParams.BufferType)
       {
-        case Graphic3d_BT_RGB:   aFormat = Image_PixMap::ImgRGB;   break;
-        case Graphic3d_BT_RGBA:  aFormat = Image_PixMap::ImgRGBA;  break;
-        case Graphic3d_BT_Depth: aFormat = Image_PixMap::ImgGrayF; break;
+        case Graphic3d_BT_RGB:   aFormat = Image_Format_RGB;   break;
+        case Graphic3d_BT_RGBA:  aFormat = Image_Format_RGBA;  break;
+        case Graphic3d_BT_Depth: aFormat = Image_Format_GrayF; break;
       }
 
       if (!theImage.InitZero (aFormat, Standard_Size(aTargetSize.x()), Standard_Size(aTargetSize.y())))

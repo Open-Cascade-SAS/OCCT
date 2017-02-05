@@ -166,7 +166,7 @@ bool Font_FTFont::RenderGlyph (const Standard_Utf32Char theUChar)
   {
     return false;
   }
-  if (!myGlyphImg.InitWrapper (Image_PixMap::ImgAlpha, aBitmap.buffer,
+  if (!myGlyphImg.InitWrapper (Image_Format_Alpha, aBitmap.buffer,
                                aBitmap.width, aBitmap.rows, Abs (aBitmap.pitch)))
   {
     return false;

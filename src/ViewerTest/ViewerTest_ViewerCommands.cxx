@@ -5727,8 +5727,8 @@ static int VReadPixel (Draw_Interpretor& theDI,
     return 1;
   }
 
-  Image_PixMap::ImgFormat aFormat     = Image_PixMap::ImgRGBA;
-  Graphic3d_BufferType    aBufferType = Graphic3d_BT_RGBA;
+  Image_Format         aFormat     = Image_Format_RGBA;
+  Graphic3d_BufferType aBufferType = Graphic3d_BT_RGBA;
 
   Standard_Integer aWidth, aHeight;
   aView->Window()->Size (aWidth, aHeight);
@@ -5744,39 +5744,40 @@ static int VReadPixel (Draw_Interpretor& theDI,
   Standard_Boolean toShowHls  = Standard_False;
   for (Standard_Integer anIter = 3; anIter < theArgNb; ++anIter)
   {
-    const char* aParam = theArgVec[anIter];
-    if ( strcasecmp( aParam, "rgb" ) == 0 )
+    TCollection_AsciiString aParam (theArgVec[anIter]);
+    aParam.LowerCase();
+    if (aParam == "rgb")
     {
-      aFormat     = Image_PixMap::ImgRGB;
+      aFormat     = Image_Format_RGB;
       aBufferType = Graphic3d_BT_RGB;
     }
-    else if ( strcasecmp( aParam, "hls" ) == 0 )
+    else if (aParam == "hls")
     {
-      aFormat     = Image_PixMap::ImgRGB;
+      aFormat     = Image_Format_RGB;
       aBufferType = Graphic3d_BT_RGB;
       toShowHls   = Standard_True;
     }
-    else if ( strcasecmp( aParam, "rgbf" ) == 0 )
+    else if (aParam == "rgbf")
     {
-      aFormat     = Image_PixMap::ImgRGBF;
+      aFormat     = Image_Format_RGBF;
       aBufferType = Graphic3d_BT_RGB;
     }
-    else if ( strcasecmp( aParam, "rgba" ) == 0 )
+    else if (aParam == "rgba")
     {
-      aFormat     = Image_PixMap::ImgRGBA;
+      aFormat     = Image_Format_RGBA;
       aBufferType = Graphic3d_BT_RGBA;
     }
-    else if ( strcasecmp( aParam, "rgbaf" ) == 0 )
+    else if (aParam == "rgbaf")
     {
-      aFormat     = Image_PixMap::ImgRGBAF;
+      aFormat     = Image_Format_RGBAF;
       aBufferType = Graphic3d_BT_RGBA;
     }
-    else if ( strcasecmp( aParam, "depth" ) == 0 )
+    else if (aParam == "depth")
     {
-      aFormat     = Image_PixMap::ImgGrayF;
+      aFormat     = Image_Format_GrayF;
       aBufferType = Graphic3d_BT_Depth;
     }
-    else if ( strcasecmp( aParam, "name" ) == 0 )
+    else if (aParam == "name")
     {
       toShowName = Standard_True;
     }
@@ -10286,7 +10287,7 @@ static int VDumpSelectionImage (Draw_Interpretor& /*theDi*/,
 
   TCollection_AsciiString aFile;
   StdSelect_TypeOfSelectionImage aType = StdSelect_TypeOfSelectionImage_NormalizedDepth;
-  Image_PixMap::ImgFormat anImgFormat = Image_PixMap::ImgBGR;
+  Image_Format anImgFormat = Image_Format_BGR;
   Standard_Integer aPickedIndex = 1;
   for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
   {
@@ -10307,7 +10308,7 @@ static int VDumpSelectionImage (Draw_Interpretor& /*theDi*/,
        || aValue == "normalizeddepth")
       {
         aType       = StdSelect_TypeOfSelectionImage_NormalizedDepth;
-        anImgFormat = Image_PixMap::ImgGrayF;
+        anImgFormat = Image_Format_GrayF;
       }
       if (aValue == "depthinverted"
        || aValue == "normdepthinverted"
@@ -10315,13 +10316,13 @@ static int VDumpSelectionImage (Draw_Interpretor& /*theDi*/,
        || aValue == "inverted")
       {
         aType       = StdSelect_TypeOfSelectionImage_NormalizedDepthInverted;
-        anImgFormat = Image_PixMap::ImgGrayF;
+        anImgFormat = Image_Format_GrayF;
       }
       else if (aValue == "unnormdepth"
             || aValue == "unnormalizeddepth")
       {
         aType       = StdSelect_TypeOfSelectionImage_UnnormalizedDepth;
-        anImgFormat = Image_PixMap::ImgGrayF;
+        anImgFormat = Image_Format_GrayF;
       }
       else if (aValue == "objectcolor"
             || aValue == "object"

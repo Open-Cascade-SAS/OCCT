@@ -492,8 +492,8 @@ Graphic3d_HatchStyle::Graphic3d_HatchStyle (const Handle(Image_PixMap)& thePatte
 {
   Standard_ProgramError_Raise_if (thePattern.IsNull(), "Null pointer to a hatch pattern image");
   Standard_ProgramError_Raise_if (
-    thePattern->SizeX() != 32 || thePattern->SizeY() != 32 || thePattern->Format() != Image_PixMap::ImgGray,
-    "Hatch pattern must be a 32*32 bitmap (Image_PixMap::ImgGray format)");
+    thePattern->SizeX() != 32 || thePattern->SizeY() != 32 || thePattern->Format() != Image_Format_Gray,
+    "Hatch pattern must be a 32*32 bitmap (Image_Format_Gray format)");
 
   const Standard_Size aByteSize = thePattern->SizeBytes();
   Handle(NCollection_AlignedAllocator) anAllocator = new NCollection_AlignedAllocator (16);

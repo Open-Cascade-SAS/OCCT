@@ -36,66 +36,66 @@ IMPLEMENT_STANDARD_RTTIEXT(Image_AlienPixMap,Image_PixMap)
 #ifdef HAVE_FREEIMAGE
 namespace
 {
-  static Image_PixMap::ImgFormat convertFromFreeFormat (FREE_IMAGE_TYPE       theFormatFI,
-                                                        FREE_IMAGE_COLOR_TYPE theColorTypeFI,
-                                                        unsigned              theBitsPerPixel)
+  static Image_Format convertFromFreeFormat (FREE_IMAGE_TYPE       theFormatFI,
+                                             FREE_IMAGE_COLOR_TYPE theColorTypeFI,
+                                             unsigned              theBitsPerPixel)
   {
     switch (theFormatFI)
     {
-      case FIT_RGBF:   return Image_PixMap::ImgRGBF;
-      case FIT_RGBAF:  return Image_PixMap::ImgRGBAF;
-      case FIT_FLOAT:  return Image_PixMap::ImgGrayF;
+      case FIT_RGBF:   return Image_Format_RGBF;
+      case FIT_RGBAF:  return Image_Format_RGBAF;
+      case FIT_FLOAT:  return Image_Format_GrayF;
       case FIT_BITMAP:
       {
         switch (theColorTypeFI)
         {
           case FIC_MINISBLACK:
           {
-            return Image_PixMap::ImgGray;
+            return Image_Format_Gray;
           }
           case FIC_RGB:
           {
             if (Image_PixMap::IsBigEndianHost())
             {
-              return (theBitsPerPixel == 32) ? Image_PixMap::ImgRGB32 : Image_PixMap::ImgRGB;
+              return (theBitsPerPixel == 32) ? Image_Format_RGB32 : Image_Format_RGB;
             }
             else
             {
-              return (theBitsPerPixel == 32) ? Image_PixMap::ImgBGR32 : Image_PixMap::ImgBGR;
+              return (theBitsPerPixel == 32) ? Image_Format_BGR32 : Image_Format_BGR;
             }
           }
           case FIC_RGBALPHA:
           {
-            return Image_PixMap::IsBigEndianHost() ? Image_PixMap::ImgRGBA : Image_PixMap::ImgBGRA;
+            return Image_PixMap::IsBigEndianHost() ? Image_Format_RGBA : Image_Format_BGRA;
           }
           default:
-            return Image_PixMap::ImgUNKNOWN;
+            return Image_Format_UNKNOWN;
         }
       }
       default:
-        return Image_PixMap::ImgUNKNOWN;
+        return Image_Format_UNKNOWN;
     }
   }
 
-  static FREE_IMAGE_TYPE convertToFreeFormat (Image_PixMap::ImgFormat theFormat)
+  static FREE_IMAGE_TYPE convertToFreeFormat (Image_Format theFormat)
   {
     switch (theFormat)
     {
-      case Image_PixMap::ImgGrayF:
-      case Image_PixMap::ImgAlphaF:
+      case Image_Format_GrayF:
+      case Image_Format_AlphaF:
         return FIT_FLOAT;
-      case Image_PixMap::ImgRGBAF:
+      case Image_Format_RGBAF:
         return FIT_RGBAF;
-      case Image_PixMap::ImgRGBF:
+      case Image_Format_RGBF:
         return FIT_RGBF;
-      case Image_PixMap::ImgRGBA:
-      case Image_PixMap::ImgBGRA:
-      case Image_PixMap::ImgRGB32:
-      case Image_PixMap::ImgBGR32:
-      case Image_PixMap::ImgRGB:
-      case Image_PixMap::ImgBGR:
-      case Image_PixMap::ImgGray:
-      case Image_PixMap::ImgAlpha:
+      case Image_Format_RGBA:
+      case Image_Format_BGRA:
+      case Image_Format_RGB32:
+      case Image_Format_BGR32:
+      case Image_Format_RGB:
+      case Image_Format_BGR:
+      case Image_Format_Gray:
+      case Image_Format_Alpha:
         return FIT_BITMAP;
       default:
         return FIT_UNKNOWN;
@@ -128,7 +128,7 @@ Image_AlienPixMap::~Image_AlienPixMap()
 // function : InitWrapper
 // purpose  :
 // =======================================================================
-bool Image_AlienPixMap::InitWrapper (ImgFormat,
+bool Image_AlienPixMap::InitWrapper (Image_Format,
                                      Standard_Byte*,
                                      const Standard_Size,
                                      const Standard_Size,
@@ -143,7 +143,7 @@ bool Image_AlienPixMap::InitWrapper (ImgFormat,
 // purpose  :
 // =======================================================================
 #ifdef HAVE_FREEIMAGE
-bool Image_AlienPixMap::InitTrash (ImgFormat           thePixelFormat,
+bool Image_AlienPixMap::InitTrash (Image_Format        thePixelFormat,
                                    const Standard_Size theSizeX,
                                    const Standard_Size theSizeY,
                                    const Standard_Size /*theSizeRowBytes*/)
@@ -158,14 +158,14 @@ bool Image_AlienPixMap::InitTrash (ImgFormat           thePixelFormat,
   }
 
   FIBITMAP* anImage = FreeImage_AllocateT (aFormatFI, (int )theSizeX, (int )theSizeY, aBitsPerPixel);
-  Image_PixMap::ImgFormat aFormat = convertFromFreeFormat (FreeImage_GetImageType (anImage),
-                                                           FreeImage_GetColorType (anImage),
-                                                           FreeImage_GetBPP (anImage));
-  if (thePixelFormat == Image_PixMap::ImgBGR32
-   || thePixelFormat == Image_PixMap::ImgRGB32)
+  Image_Format aFormat = convertFromFreeFormat (FreeImage_GetImageType(anImage),
+                                                FreeImage_GetColorType(anImage),
+                                                FreeImage_GetBPP      (anImage));
+  if (thePixelFormat == Image_Format_BGR32
+   || thePixelFormat == Image_Format_RGB32)
   {
     //FreeImage_SetTransparent (anImage, FALSE);
-    aFormat = (aFormat == Image_PixMap::ImgBGRA) ? Image_PixMap::ImgBGR32 : Image_PixMap::ImgRGB32;
+    aFormat = (aFormat == Image_Format_BGRA) ? Image_Format_BGR32 : Image_Format_RGB32;
   }
 
   Image_PixMap::InitWrapper (aFormat, FreeImage_GetBits (anImage),
@@ -177,7 +177,7 @@ bool Image_AlienPixMap::InitTrash (ImgFormat           thePixelFormat,
   return true;
 }
 #else
-bool Image_AlienPixMap::InitTrash (ImgFormat           thePixelFormat,
+bool Image_AlienPixMap::InitTrash (Image_Format        thePixelFormat,
                                    const Standard_Size theSizeX,
                                    const Standard_Size theSizeY,
                                    const Standard_Size theSizeRowBytes)
@@ -297,10 +297,10 @@ bool Image_AlienPixMap::Load (const TCollection_AsciiString& theImagePath)
     return false;
   }
 
-  Image_PixMap::ImgFormat aFormat = convertFromFreeFormat (FreeImage_GetImageType (anImage),
-                                                           FreeImage_GetColorType (anImage),
-                                                           FreeImage_GetBPP (anImage));
-  if (aFormat == Image_PixMap::ImgUNKNOWN)
+  Image_Format aFormat = convertFromFreeFormat (FreeImage_GetImageType(anImage),
+                                                FreeImage_GetColorType(anImage),
+                                                FreeImage_GetBPP      (anImage));
+  if (aFormat == Image_Format_UNKNOWN)
   {
     //anImage = FreeImage_ConvertTo24Bits (anImage);
     TCollection_AsciiString aMessage = "Error: image file '";
@@ -401,16 +401,16 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
     SetTopDown (false);
   }
 
-  // FreeImage doesn't provide flexible format convertion API
-  // so we should perform multiple convertions in some cases!
+  // FreeImage doesn't provide flexible format conversion API
+  // so we should perform multiple conversions in some cases!
   FIBITMAP* anImageToDump = myLibImage;
   switch (anImageFormat)
   {
     case FIF_PNG:
     case FIF_BMP:
     {
-      if (Format() == Image_PixMap::ImgBGR32
-       || Format() == Image_PixMap::ImgRGB32)
+      if (Format() == Image_Format_BGR32
+       || Format() == Image_Format_RGB32)
       {
         // stupid FreeImage treats reserved byte as alpha if some bytes not set to 0xFF
         for (Standard_Size aRow = 0; aRow < SizeY(); ++aRow)
@@ -453,7 +453,7 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
         aTmpBitmap = aTmpBitmap24;
       }
 
-      // need convertion to image with pallete (requires 24bit bitmap)
+      // need conversion to image with palette (requires 24bit bitmap)
       anImageToDump = FreeImage_ColorQuantize (aTmpBitmap, FIQ_NNQUANT);
       if (aTmpBitmap != myLibImage)
       {
@@ -463,13 +463,13 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
     }
     case FIF_EXR:
     {
-      if (Format() == Image_PixMap::ImgGray
-       || Format() == Image_PixMap::ImgAlpha)
+      if (Format() == Image_Format_Gray
+       || Format() == Image_Format_Alpha)
       {
         anImageToDump = FreeImage_ConvertToType (myLibImage, FIT_FLOAT);
       }
-      else if (Format() == Image_PixMap::ImgRGBA
-            || Format() == Image_PixMap::ImgBGRA)
+      else if (Format() == Image_Format_RGBA
+            || Format() == Image_Format_BGRA)
       {
         anImageToDump = FreeImage_ConvertToType (myLibImage, FIT_RGBAF);
       }

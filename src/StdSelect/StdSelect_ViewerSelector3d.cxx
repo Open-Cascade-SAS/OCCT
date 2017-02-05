@@ -792,7 +792,7 @@ namespace
       myDepthMax (-RealLast()),
       myToInverse(theToInverse)
     {
-      myUnnormImage.InitZero (Image_PixMap::ImgGrayF, thePixMap.SizeX(), thePixMap.SizeY());
+      myUnnormImage.InitZero (Image_Format_GrayF, thePixMap.SizeX(), thePixMap.SizeY());
     }
 
     //! Accumulate the data.
