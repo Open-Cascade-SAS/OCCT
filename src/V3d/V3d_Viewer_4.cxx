@@ -80,7 +80,6 @@ void V3d_Viewer::ActivateGrid (const Aspect_GridType     theType,
   {
     anActiveViewIter.Value()->SetGrid (myPrivilegedPlane, Grid());
   }
-  Update();
 }
 
 // =======================================================================
@@ -101,7 +100,6 @@ void V3d_Viewer::DeactivateGrid()
       myGridEchoStructure->Erase();
     }
   }
-  Update();
 }
 
 // =======================================================================
@@ -145,7 +143,6 @@ void V3d_Viewer::SetRectangularGridValues (const Quantity_Length     theXOrigin,
   {
     anActiveViewIter.Value()->SetGrid (myPrivilegedPlane, myRGrid);
   }
-  Update();
 }
 
 // =======================================================================
@@ -181,7 +178,6 @@ void V3d_Viewer::SetCircularGridValues (const Quantity_Length     theXOrigin,
   {
     anActiveViewIter.Value()->SetGrid (myPrivilegedPlane, myCGrid);
   }
-  Update();
 }
 
 // =======================================================================
@@ -204,7 +200,6 @@ void V3d_Viewer::SetRectangularGridGraphicValues (const Quantity_Length theXSize
                                                   const Quantity_Length theOffSet)
 {
   myRGrid->SetGraphicValues (theXSize, theYSize, theOffSet);
-  Update();
 }
 
 // =======================================================================
@@ -225,7 +220,6 @@ void V3d_Viewer::SetCircularGridGraphicValues (const Quantity_Length theRadius,
                                                const Quantity_Length theOffSet)
 {
   myCGrid->SetGraphicValues (theRadius, theOffSet);
-  Update();
 }
 
 // =======================================================================

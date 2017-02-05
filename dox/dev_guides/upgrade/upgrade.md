@@ -1207,6 +1207,10 @@ In addition, the API for immediate viewer update has been removed from V3d_View 
 The argument theUpdateMode has been removed from methods Graphic3d_CView::Display(), Erase(), Update().
 Method Graphic3d_CView::Update() does not redraw the view and does not re-compute structures anymore.
 
+The following Grid management methods within class V3d_Viewer do not implicitly redraw the viewer:
+  ActivateGrid, DeactivateGrid, SetRectangularGridValues, SetCircularGridValues,
+  RectangularGridGraphicValues, CircularGridGraphicValues, SetPrivilegedPlane, DisplayPrivilegedPlane.
+
 @subsection upgrade_720_Result_Of_BOP_On_Containers Result of Boolean operations on containers
 
 * The result of Boolean operations on arguments of collection types (WIRE/SHELL/COMPSOLID) is now filtered from duplicating containers.

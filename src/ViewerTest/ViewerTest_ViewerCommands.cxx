@@ -4951,12 +4951,16 @@ static int VGrid (Draw_Interpretor& /*theDI*/,
 
   Aspect_GridType     aType = aViewer->GridType();
   Aspect_GridDrawMode aMode = aViewer->GridDrawMode();
-
+  ViewerTest_AutoUpdater anUpdateTool (ViewerTest::GetAISContext(), aView);
   Standard_Integer anIter = 1;
   for (; anIter < theArgNb; ++anIter)
   {
     const char* aValue = theArgVec[anIter];
-    if (*aValue == 'r')
+    if (anUpdateTool.parseRedrawMode (aValue))
+    {
+      continue;
+    }
+    else if (*aValue == 'r')
     {
       aType = Aspect_GT_Rectangular;
     }

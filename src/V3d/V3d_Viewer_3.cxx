@@ -63,8 +63,6 @@ void V3d_Viewer::SetPrivilegedPlane(const gp_Ax3& aPlane)
 
   if(myDisplayPlane)
     DisplayPrivilegedPlane(Standard_True,myDisplayPlaneLength);
-  else
-    Update();
 }
 
 /*----------------------------------------------------------------------*/
@@ -77,7 +75,6 @@ gp_Ax3 V3d_Viewer::PrivilegedPlane() const
 /*----------------------------------------------------------------------*/
 void V3d_Viewer::DisplayPrivilegedPlane(const Standard_Boolean OnOff, const Quantity_Length aSize)
 {
-  Standard_Boolean Change = (myDisplayPlane != OnOff);
   myDisplayPlane = OnOff;
   myDisplayPlaneLength = aSize;
 
@@ -128,7 +125,6 @@ void V3d_Viewer::DisplayPrivilegedPlane(const Standard_Boolean OnOff, const Quan
   {
     if( !myPlaneStructure.IsNull() )  myPlaneStructure->Erase();
   }
-  if(Change) Update();
 }
 
 /*----------------------------------------------------------------------*/
