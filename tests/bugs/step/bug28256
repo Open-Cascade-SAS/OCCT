@@ -1,28 +1,27 @@
 puts "========"
-puts "OCC26451"
+puts "OCC28256"
 puts "========"
 puts ""
 ##########################################################################
-# Crash importing STeP file
+# Opening specific STEP file leads to application crash
 ##########################################################################
 
-stepread [locate_data_file bug26451_Test_STEP.stp] a *
+stepread [locate_data_file bug28256_test.stp] a *
 tpcompound result
 
-checkprops result -s 551394 
-checkshape result
+checkprops result -s 1.8e+101 
 
 set nbshapes_expected "
 Number of shapes in shape
- VERTEX    : 8057
- EDGE      : 8372
- WIRE      : 1988
- FACE      : 1754
- SHELL     : 1754
- SOLID     : 0
+ VERTEX    : 56881
+ EDGE      : 85310
+ WIRE      : 37795
+ FACE      : 32992
+ SHELL     : 1318
+ SOLID     : 1308
  COMPSOLID : 0
  COMPOUND  : 1
- SHAPE     : 21926
+ SHAPE     : 215605
 "
 checknbshapes result -ref ${nbshapes_expected} -t -m "importing file"
 checkview -display result -3d -path ${imagedir}/${test_image}.png

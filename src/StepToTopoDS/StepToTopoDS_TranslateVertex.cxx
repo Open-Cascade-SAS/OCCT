@@ -65,6 +65,11 @@ void StepToTopoDS_TranslateVertex::Init(const Handle(StepShape_Vertex)& aVertex,
 				                                StepToTopoDS_Tool& aTool,
                                         StepToTopoDS_NMTool& NMTool)
 {
+  if (aVertex.IsNull()) {
+    myError = StepToTopoDS_TranslateVertexOther;
+    done = Standard_False;
+    return;
+  }
   if (!aTool.IsBound(aVertex)) {
 
     // [BEGIN] Proceed with non-manifold topology (ssv; 14.11.2010)
