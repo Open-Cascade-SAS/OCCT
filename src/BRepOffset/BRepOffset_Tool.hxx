@@ -132,27 +132,16 @@ public:
   
   Standard_EXPORT static Standard_Real Gabarit (const Handle(Geom_Curve)& aCurve);
 
-
-
+  //! Compares the normal directions of the planar faces and returns
+  //! TRUE if the directions are the same with the given precision.<br>
+  Standard_EXPORT static Standard_Boolean CheckPlanesNormals(const TopoDS_Face& theFace1,
+                                                             const TopoDS_Face& theFace2,
+                                                             const Standard_Real theTolAng = 1.e-8);
 
 protected:
 
-
-
-
-
 private:
 
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepOffset_Tool_HeaderFile

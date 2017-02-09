@@ -1,0 +1,10 @@
+restore [locate_data_file bug28442_input.brep] s
+
+OFFSETSHAPE 130 {} $calcul $type
+
+checkprops result -v 1.31751e+008 -s 1.66862e+006
+
+unifysamedom result_unif result
+checknbshapes result_unif -face 11 -shell 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

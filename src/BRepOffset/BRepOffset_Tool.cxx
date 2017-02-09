@@ -4022,5 +4022,30 @@ void BRepOffset_Tool::CorrectOrientation(const TopoDS_Shape&        SI,
 
 }
 
-
-
+//=======================================================================
+//function : CheckNormals
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepOffset_Tool::CheckPlanesNormals(const TopoDS_Face& theFace1,
+                                                     const TopoDS_Face& theFace2,
+                                                     const Standard_Real theTolAng)
+{
+  BRepAdaptor_Surface aBAS1(theFace1, Standard_False), aBAS2(theFace2, Standard_False);
+  if (aBAS1.GetType() != GeomAbs_Plane ||
+      aBAS2.GetType() != GeomAbs_Plane) {
+    return Standard_False;
+  }
+  //
+  gp_Dir aDN1 = aBAS1.Plane().Position().Direction();
+  if (theFace1.Orientation() == TopAbs_REVERSED) {
+    aDN1.Reverse();
+  }
+  //
+  gp_Dir aDN2 = aBAS2.Plane().Position().Direction();
+  if (theFace2.Orientation() == TopAbs_REVERSED) {
+    aDN2.Reverse();
+  }
+  //
+  Standard_Real anAngle = aDN1.Angle(aDN2);
+  return (anAngle < theTolAng);
+}

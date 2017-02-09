@@ -264,10 +264,6 @@ static
                                 TopoDS_Shape& theResult);
 
 static 
-  Standard_Boolean CheckNormals(const TopoDS_Face& theFIm,
-                                const TopoDS_Face& theFOr);
-
-static 
   void UpdateInitOffset(BRepAlgo_Image&         myInitOffset,
                         BRepAlgo_Image&         myImageOffset,
                         const TopoDS_Shape&     myOffsetShape,
@@ -4113,7 +4109,7 @@ Standard_Boolean BuildShellsCompleteInter(const BOPCol_ListOfShape& theLF,
     TopTools_ListIteratorOfListOfShape aItLF(aLFOr);
     for (; aItLF.More(); aItLF.Next()) {
       const TopoDS_Face& aFOr = TopoDS::Face(aItLF.Value());
-      if (CheckNormals(aF, aFOr)) {
+      if (BRepOffset_Tool::CheckPlanesNormals(aF, aFOr)) {
         aLF3.Append(aF);
         break;
       }
@@ -4157,71 +4153,6 @@ Standard_Boolean GetSubShapes(const TopoDS_Shape& theShape,
   }
   theResult = aResult;
   return Standard_True;
-}
-
-//=======================================================================
-//function : CheckNormals
-//purpose  : Comparing normal directions of the faces
-//=======================================================================
-Standard_Boolean CheckNormals(const TopoDS_Face& theFIm,
-                              const TopoDS_Face& theFOr)
-{
-  
-  Standard_Real aUMin, aUMax, aVMin, aVMax, aU, aV, anAngle;
-  gp_Pnt aP;
-  gp_Vec aVecU, aVecV, aVNIm, aVNOr;
-  Standard_Boolean bIsCollinear;
-  //
-  BRepAdaptor_Surface aSFIm(theFIm), aSFOr(theFOr);
-  //
-  aUMin = aSFIm.FirstUParameter();
-  aUMax = aSFIm.LastUParameter();
-  aVMin = aSFIm.FirstVParameter();
-  aVMax = aSFIm.LastVParameter();
-  //
-  aU = (aUMin + aUMax) * 0.5;
-  if (Precision::IsInfinite(aUMin) && 
-      Precision::IsInfinite(aUMax)) {
-    aU = 0.;
-  }
-  else if (Precision::IsInfinite(aUMin) && 
-           !Precision::IsInfinite(aUMax)) {
-    aU = aUMax;
-  }
-  else if (!Precision::IsInfinite(aUMin) && 
-           Precision::IsInfinite(aUMax)) {
-    aU = aUMin;
-  }
-  //
-  aV = (aVMin + aVMax) * 0.5;
-  if (Precision::IsInfinite(aVMin) && 
-      Precision::IsInfinite(aVMax)) {
-    aV = 0.;
-  }
-  else if (Precision::IsInfinite(aVMin) && 
-           !Precision::IsInfinite(aVMax)) {
-    aV = aVMax;
-  }
-  else if (!Precision::IsInfinite(aVMin) && 
-           Precision::IsInfinite(aVMax)) {
-    aV = aVMin;
-  }
-  //
-  aSFIm.D1(aU, aV, aP, aVecU, aVecV);
-  aVNIm = aVecU.Crossed(aVecV);
-  if (theFIm.Orientation() == TopAbs_REVERSED) {
-    aVNIm.Reverse();
-  }
-  //
-  aSFOr.D1(aU, aV, aP, aVecU, aVecV);
-  aVNOr = aVecU.Crossed(aVecV);
-  if (theFOr.Orientation() == TopAbs_REVERSED) {
-    aVNOr.Reverse();
-  }
-  //
-  anAngle = aVNIm.Angle(aVNOr);
-  bIsCollinear = (anAngle < Precision::Confusion());
-  return bIsCollinear;
 }
 
 //=======================================================================
