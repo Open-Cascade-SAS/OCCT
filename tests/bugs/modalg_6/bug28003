@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC28003"
+puts "========"
+puts ""
+#################################################
+# Cannot revolve a face with a straight B-spline edge lying on axis of revolution
+#################################################
+
+restore [locate_data_file bug28003_Surf_Bezier.brep] s
+revol result s 0 0 0 0 0 1 360
+
+checkshape result
+checkprops result -s 129536
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

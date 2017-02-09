@@ -65,7 +65,8 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BezierCurve.hxx>
 
 #include <TopExp_Explorer.hxx>
 static Standard_Real ComputeTolerance(TopoDS_Edge& E,
@@ -890,18 +891,32 @@ Standard_Boolean  BRepSweep_Rotation::HasShape
 Standard_Boolean  BRepSweep_Rotation::IsInvariant 
   (const TopoDS_Shape& aGenS)const
 {
-  if(aGenS.ShapeType()==TopAbs_EDGE){
-    TopLoc_Location Loc;
-    Standard_Real First,Last;
-    Handle(Geom_Curve) 
-      C = BRep_Tool::Curve(TopoDS::Edge(aGenS),Loc,First,Last);
-    if (C.IsNull() || C->DynamicType() == STANDARD_TYPE(Geom_Line)) {
+  if(aGenS.ShapeType()==TopAbs_EDGE)
+  {
+    BRepAdaptor_Curve aC(TopoDS::Edge(aGenS));
+    if (aC.GetType() == GeomAbs_Line ||
+        aC.GetType() == GeomAbs_BSplineCurve ||
+        aC.GetType() == GeomAbs_BezierCurve)
+    {
       TopoDS_Vertex V1, V2;
       TopExp::Vertices(TopoDS::Edge(aGenS), V1, V2);
-      return ( IsInvariant(V1) && IsInvariant(V2));
-    }
-    else{
-      return Standard_False;
+      if (IsInvariant(V1) && IsInvariant(V2))
+      {
+        if (aC.GetType() == GeomAbs_Line)
+          return Standard_True;
+
+        Standard_Real aTol = Max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
+        gp_Lin Lin(myAxe.Location(), myAxe.Direction());
+        const TColgp_Array1OfPnt& aPoles = (aC.GetType() == GeomAbs_BSplineCurve
+          ? aC.BSpline()->Poles() : aC.Bezier()->Poles());
+
+        for (Standard_Integer i=aPoles.Lower(); i <= aPoles.Upper(); i++)
+        {
+          if (Lin.Distance(aPoles(i)) > aTol)
+            return Standard_False;
+        }
+        return Standard_True;
+      }
     }
   }
   else if(aGenS.ShapeType()==TopAbs_VERTEX){
@@ -909,8 +924,7 @@ Standard_Boolean  BRepSweep_Rotation::IsInvariant
     gp_Lin Lin (myAxe.Location(), myAxe.Direction());
     return ( Lin.Distance(P) <= BRep_Tool::Tolerance(TopoDS::Vertex(aGenS))); 
   }
-  else
-    return Standard_False;
+  return Standard_False;
 }
 
 //=======================================================================

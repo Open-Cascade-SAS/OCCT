@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC28326"
+puts "========"
+puts ""
+#################################################
+# Checking invariant shapes in revolve is incomplete
+#################################################
+
+polyline w 0 0 0 10 0 0 10 5 0 0 0 0
+nurbsconvert wn w
+revol result wn 0 0 0 1 0 0 90
+
+checkshape result
+checkprops result -s 63.54
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
