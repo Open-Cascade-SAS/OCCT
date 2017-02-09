@@ -709,11 +709,14 @@ static Standard_Boolean fixshape (const Handle(ShapeProcess_Context)& context)
   sfs->FixSameParameterMode() = ctx->IntegerVal ( "FixSameParameterMode", -1 );
   sfs->FixSolidMode()         = ctx->IntegerVal ( "FixSolidMode", -1 );
   sfs->FixVertexPositionMode() = ctx->IntegerVal ( "FixVertexPositionMode", 0 );
+  sfs->FixVertexTolMode()      = ctx->IntegerVal ( "FixVertexToleranceMode", -1 );
 
   sfs->FixSolidTool()->FixShellMode() = ctx->IntegerVal ( "FixShellMode", -1 );
+  sfs->FixSolidTool()->FixShellOrientationMode() = ctx->IntegerVal ( "FixShellOrientationMode", -1 );
   sfs->FixSolidTool()->CreateOpenSolidMode() = ctx->BooleanVal ( "CreateOpenSolidMode", Standard_True );
 
   sfs->FixShellTool()->FixFaceMode() = ctx->IntegerVal ( "FixFaceMode", -1 );
+  sfs->FixShellTool()->FixOrientationMode() = ctx->IntegerVal ( "FixFaceOrientationMode", -1 );
 
   //parameters for ShapeFix_Face
   sff->FixWireMode()              = ctx->IntegerVal ( "FixWireMode", -1 );

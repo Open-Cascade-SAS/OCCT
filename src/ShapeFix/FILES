@@ -39,7 +39,6 @@ ShapeFix_Shell.hxx
 ShapeFix_Shell.lxx
 ShapeFix_Solid.cxx
 ShapeFix_Solid.hxx
-ShapeFix_Solid.lxx
 ShapeFix_SplitCommonVertex.cxx
 ShapeFix_SplitCommonVertex.hxx
 ShapeFix_SplitTool.cxx

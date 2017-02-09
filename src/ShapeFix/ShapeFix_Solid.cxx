@@ -70,6 +70,7 @@ ShapeFix_Solid::ShapeFix_Solid()
 {
   myStatus = ShapeExtend::EncodeStatus (ShapeExtend_OK);
   myFixShellMode = -1;
+  myFixShellOrientationMode = -1;
   myFixShell = new ShapeFix_Shell;
   myCreateOpenSolidMode = Standard_False;
 }
@@ -83,6 +84,7 @@ ShapeFix_Solid::ShapeFix_Solid(const TopoDS_Solid& solid)
 {
   myStatus = ShapeExtend::EncodeStatus (ShapeExtend_OK);
   myFixShellMode = -1;
+  myFixShellOrientationMode = -1;
   myFixShell = new ShapeFix_Shell;
   myCreateOpenSolidMode = Standard_False;
   Init(solid);
@@ -417,13 +419,13 @@ Standard_Boolean ShapeFix_Solid::Perform(const Handle(Message_ProgressIndicator)
         status = Standard_True;
         myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
       }
-      NbShells+= myFixShell->NbShells();
+      NbShells += myFixShell->NbShells();
     }
 
     // Halt algorithm in case of user's abort
     if ( !aPSentryFixShell.More() )
       return Standard_False;
-  }
+    }
   else 
   {
     NbShells = aNbShells;
@@ -431,7 +433,13 @@ Standard_Boolean ShapeFix_Solid::Perform(const Handle(Message_ProgressIndicator)
 
   // Switch to the second stage
   aPSentry.Next();
-    
+
+  if (!NeedFix(myFixShellOrientationMode))
+  {
+    myShape = Context()->Apply(myShape);
+    return status;
+  }
+
   if(NbShells ==1) {
     TopoDS_Shape tmpShape = Context()->Apply(myShape);
     TopExp_Explorer aExp(tmpShape,TopAbs_SHELL);
