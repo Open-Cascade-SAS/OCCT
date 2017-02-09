@@ -121,7 +121,7 @@ Standard_Boolean XmlMNaming_NamedShapeDriver::Paste
   Standard_Integer upper = NewPShapes.Upper();
   if (OldPShapes.Upper() > upper) upper = OldPShapes.Upper();
 
-  for (Standard_Integer i = lower; i <= upper; i++)
+  for (Standard_Integer i = upper; i >= lower; --i)
   {
     const XmlMNaming_Shape1 aNewPShape  = NewPShapes.Value(i);
     const XmlMNaming_Shape1 anOldPShape = OldPShapes.Value(i);
