@@ -17,9 +17,14 @@ FromSTEP.FixShape.FixFreeShellMode		: -1
 FromSTEP.FixShape.FixFreeFaceMode		: -1
 FromSTEP.FixShape.FixFreeWireMode		: -1
 FromSTEP.FixShape.FixSameParameterMode		: -1
+
 FromSTEP.FixShape.FixSolidMode			: -1
+FromSTEP.FixShape.FixShellOrientationMode	: -1
 FromSTEP.FixShape.CreateOpenSolidMode           :  0
+
 FromSTEP.FixShape.FixShellMode			: -1
+FromSTEP.FixShape.FixFaceOrientationMode	: -1
+
 FromSTEP.FixShape.FixFaceMode			: -1
 FromSTEP.FixShape.FixWireMode			: -1
 FromSTEP.FixShape.FixOrientationMode		: -1
@@ -58,4 +63,6 @@ FromSTEP.FixShape.MaxTailWidth : -1
 FromSTEP.FixShape.FixSelfIntersectingEdgeMode	: -1
 FromSTEP.FixShape.FixIntersectingEdgesMode	: -1
 FromSTEP.FixShape.FixNonAdjacentIntersectingEdgesMode : -1
+
 FromSTEP.FixShape.FixVertexPositionMode : 0
+FromSTEP.FixShape.FixVertexToleranceMode : -1

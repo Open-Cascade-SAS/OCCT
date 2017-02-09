@@ -17,9 +17,14 @@ FromIGES.FixShape.FixFreeShellMode		: -1
 FromIGES.FixShape.FixFreeFaceMode		: -1
 FromIGES.FixShape.FixFreeWireMode		: -1
 FromIGES.FixShape.FixSameParameterMode		: -1
+
 FromIGES.FixShape.FixSolidMode			: -1
+FromSTEP.FixShape.FixShellOrientationMode	: -1
 FromIGES.FixShape.CreateOpenSolidMode           :  1
+
 FromIGES.FixShape.FixShellMode			: -1
+FromSTEP.FixShape.FixFaceOrientationMode	: -1
+
 FromIGES.FixShape.FixFaceMode			: -1
 FromIGES.FixShape.FixWireMode			: -1
 FromIGES.FixShape.FixOrientationMode		: -1
@@ -55,4 +60,6 @@ FromIGES.FixShape.FixNotchedEdgesMode 		: -1
 FromIGES.FixShape.FixSelfIntersectingEdgeMode	: -1
 FromIGES.FixShape.FixIntersectingEdgesMode	: -1
 FromIGES.FixShape.FixNonAdjacentIntersectingEdgesMode : -1
+
 FromIGES.FixShape.FixVertexPositionMode : 0
+FromIGES.FixShape.FixVertexToleranceMode : -1

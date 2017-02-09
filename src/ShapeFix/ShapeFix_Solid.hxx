@@ -70,7 +70,10 @@ public:
   Standard_EXPORT TopoDS_Shape Solid() const;
   
   //! Returns tool for fixing shells.
-    Handle(ShapeFix_Shell) FixShellTool() const;
+  Handle(ShapeFix_Shell) FixShellTool() const
+  {
+    return myFixShell;
+  }
   
   //! Sets message registrator
   Standard_EXPORT virtual void SetMsgRegistrator (const Handle(ShapeExtend_BasicMsgRegistrator)& msgreg) Standard_OVERRIDE;
@@ -86,46 +89,41 @@ public:
   
   //! Returns (modifiable) the mode for applying fixes of
   //! ShapeFix_Shell, by default True.
-    Standard_Integer& FixShellMode();
+  Standard_Integer& FixShellMode()
+  {
+    return myFixShellMode;
+  }
+  
+  //! Returns (modifiable) the mode for applying analysis and fixes of
+  //! orientation of shells in the solid; by default True.
+  Standard_Integer& FixShellOrientationMode()
+  {
+    return myFixShellOrientationMode;
+  }
   
   //! Returns (modifiable) the mode for creation of solids.
   //! If mode myCreateOpenSolidMode is equal to true
   //! solids are created from open shells
   //! else solids are created  from closed shells only.
   //! ShapeFix_Shell, by default False.
-    Standard_Boolean& CreateOpenSolidMode();
+  Standard_Boolean& CreateOpenSolidMode()
+  {
+    return myCreateOpenSolidMode;
+  }
   
   //! In case of multiconnexity returns compound of fixed solids
   //! else returns one solid.
   Standard_EXPORT TopoDS_Shape Shape();
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(ShapeFix_Solid,ShapeFix_Root)
 
 protected:
-
-
   TopoDS_Shape mySolid;
   Handle(ShapeFix_Shell) myFixShell;
   Standard_Integer myStatus;
   Standard_Integer myFixShellMode;
-
-
-private:
-
-
+  Standard_Integer myFixShellOrientationMode;
   Standard_Boolean myCreateOpenSolidMode;
-
-
 };
-
-
-#include <ShapeFix_Solid.lxx>
-
-
-
-
 
 #endif // _ShapeFix_Solid_HeaderFile
