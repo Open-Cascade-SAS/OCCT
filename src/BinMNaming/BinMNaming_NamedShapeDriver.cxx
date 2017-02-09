@@ -187,39 +187,49 @@ Standard_Boolean BinMNaming_NamedShapeDriver::Paste
 
   BinTools_ShapeSet& aShapeSet = (BinTools_ShapeSet&) myShapeSet;
 
-  for (Standard_Integer i = 1; i <= aNbShapes; i++) {
+  NCollection_List<TopoDS_Shape> anOldShapes, aNewShapes;
+  for (Standard_Integer i = 1; i <= aNbShapes; i++)
+  {
     TopoDS_Shape anOldShape, aNewShape;
-    
-    if ( anEvol != TNaming_PRIMITIVE ) 
-      if(TranslateFrom(theSource, anOldShape, aShapeSet)) return Standard_False;
 
-    if (anEvol != TNaming_DELETE) 
-      if(TranslateFrom(theSource, aNewShape, aShapeSet)) return Standard_False;
+    if (anEvol != TNaming_PRIMITIVE)
+      if (TranslateFrom (theSource, anOldShape, aShapeSet)) return Standard_False;
 
-    switch (anEvol) {
-    case TNaming_PRIMITIVE    : 
-      aBuilder.Generated(aNewShape); 
-      break;
-    case TNaming_GENERATED    : 
-      aBuilder.Generated(anOldShape, aNewShape); 
-      break;
-    case TNaming_MODIFY       : 
-      aBuilder.Modify(anOldShape, aNewShape); 
-      break;
-    case TNaming_DELETE       : 
-      aBuilder.Delete (anOldShape); 
-      break;
-    case TNaming_SELECTED     : 
-      aBuilder.Select(aNewShape, anOldShape); 
-      break;
-    case TNaming_REPLACE      :
-      aBuilder.Modify(anOldShape, aNewShape); // for compatibility aBuilder.Replace(anOldShape, aNewShape);
-      break;
-      default :
-        Standard_DomainError::Raise("TNaming_Evolution:: Evolution Unknown");
+    if (anEvol != TNaming_DELETE)
+      if (TranslateFrom (theSource, aNewShape, aShapeSet)) return Standard_False;
+
+    // Here we add shapes in reverse order because TNaming_Builder also adds them in reverse order.
+    anOldShapes.Prepend (anOldShape);
+    aNewShapes.Prepend (aNewShape);
+  }
+
+  for (NCollection_List<TopoDS_Shape>::Iterator anOldIt (anOldShapes), aNewIt (aNewShapes);
+      anOldIt.More() && aNewIt.More();
+      anOldIt.Next(), aNewIt.Next())
+  {
+    switch (anEvol)
+    {
+      case TNaming_PRIMITIVE:
+        aBuilder.Generated (aNewIt.Value ());
+        break;
+      case TNaming_GENERATED:
+        aBuilder.Generated (anOldIt.Value(), aNewIt.Value());
+        break;
+      case TNaming_MODIFY:
+        aBuilder.Modify (anOldIt.Value(), aNewIt.Value());
+        break;
+      case TNaming_DELETE:
+        aBuilder.Delete (anOldIt.Value());
+        break;
+      case TNaming_SELECTED:
+        aBuilder.Select (aNewIt.Value(), anOldIt.Value());
+        break;
+      case TNaming_REPLACE:
+        aBuilder.Modify (anOldIt.Value(), aNewIt.Value()); // for compatibility aBuilder.Replace(anOldShape, aNewShape);
+        break;
+      default:
+          Standard_DomainError::Raise("TNaming_Evolution:: Evolution Unknown");
     }
-    anOldShape.Nullify();
-    aNewShape.Nullify();
   }
   return Standard_True;
 }
