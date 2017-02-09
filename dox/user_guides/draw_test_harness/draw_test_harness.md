@@ -10288,7 +10288,7 @@ Example:
 2ddot 1 0 0 1
 ~~~~~
 
-@subsubsection occt_draw_12_1_23 scale
+@subsubsection occt_draw_12_1_24 scale
 
 Syntax:
 ~~~~~
@@ -10302,7 +10302,7 @@ Example:
 scale 1 0 0 5
 ~~~~~
 
-@subsubsection occt_draw_12_1_24 2dscale
+@subsubsection occt_draw_12_1_25 2dscale
 
 Syntax:
 ~~~~~

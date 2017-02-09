@@ -1204,7 +1204,7 @@ In addition, the API for immediate viewer update has been removed from V3d_View 
 (enumerations *Aspect_TypeOfUpdate* and *V3d_TypeOfUpdate*):
   V3d::SetUpdateMode(), V3d::UpdateMode(), Graphic3d_StructureManager::SetUpdateMode(), Graphic3d_StructureManager::UpdateMode().
 
-The argument theUpdateMode has been removed from methods Graphic3d_CView::Display(), ::Erase(), ::Update().
+The argument theUpdateMode has been removed from methods Graphic3d_CView::Display(), Erase(), Update().
 Method Graphic3d_CView::Update() does not redraw the view and does not re-compute structures anymore.
 
 @subsection upgrade_720_Result_Of_BOP_On_Containers Result of Boolean operations on containers
