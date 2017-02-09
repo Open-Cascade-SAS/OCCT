@@ -58,12 +58,18 @@ static void deallocate_message(Standard_CString aMessage)
   }
 }
 
-// Define Standard_THREADLOCAL modifier as C++11 thread_local keyword
-// where it is available.
-#if (defined(__INTEL_COMPILER) && __INTEL_COMPILER > 1400) || \
-    (defined(__clang__)) /* assume standard CLang > 3.3 or XCode >= 8 */ || \
-    (defined(_MSC_VER) && _MSC_VER >= 1900) /* MSVC++ >= 14 */ || \
-    (defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8))) /* GCC >= 4.8 */
+// Define Standard_THREADLOCAL modifier as C++11 thread_local keyword where it is available.
+#if defined(__clang__)
+  // CLang version: standard CLang > 3.3 or XCode >= 8 (but excluding 32-bit ARM)
+  // Note: this has to be in separate #if to avoid failure of preprocessor on other platforms
+  #if __has_feature(cxx_thread_local)
+    #define Standard_THREADLOCAL thread_local
+  #else
+    #define Standard_THREADLOCAL
+  #endif
+#elif (defined(__INTEL_COMPILER) && __INTEL_COMPILER > 1400) || \
+      (defined(_MSC_VER) && _MSC_VER >= 1900) /* MSVC++ >= 14 */ || \
+      (defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8))) /* GCC >= 4.8 */
   #define Standard_THREADLOCAL thread_local
 #else
   #define Standard_THREADLOCAL

@@ -122,7 +122,10 @@ if(MINGW)
   add_definitions(-D_WIN32_WINNT=0x0501)
   # workaround bugs in mingw with vtable export
   set (CMAKE_SHARED_LINKER_FLAGS "-Wl,--export-all-symbols")
-elseif (DEFINED CMAKE_COMPILER_IS_GNUCXX OR "x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
+elseif ("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
+  # CLang can be used with both libstdc++ and libc++, however on OS X libstdc++ is outdated.
+  set (CMAKE_CXX_FLAGS "-std=c++0x -stdlib=libc++ ${CMAKE_CXX_FLAGS}")
+elseif (DEFINED CMAKE_COMPILER_IS_GNUCXX)
   set (CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 endif()
 
