@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC27894"
+puts "============"
+puts ""
+###############################
+## Crash when calling ShapeUpgrade_UnifySameDomain
+###############################
+
+stepread [locate_data_file bug27894_usd_raises_Standard_NullObject.stp] a *
+renamevar a_1 a
+unifysamedom result a
+
+checknbshapes result -m UnifySameDomain -face 18 -edge 45
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

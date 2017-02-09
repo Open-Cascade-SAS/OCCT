@@ -1374,7 +1374,7 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
         if (IsSameDomain(aFace,anCheckedFace, myLinTol, myAngTol)) {
 
           // hotfix for 27271: prevent merging along periodic direction.
-          if (IsLikeSeam(edge, aFace, aBaseSurface))
+          if (IsLikeSeam(edge, anCheckedFace, aBaseSurface))
             continue;
 
           // replacing pcurves
@@ -1574,6 +1574,8 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
             }
             sawo.Add(c2d->Value(f).XY(),c2d->Value(l).XY());
           }
+          if (sawo.NbEdges() == 0)
+            continue;
           sawo.Perform();
 
           // constructind one degenerative edge
