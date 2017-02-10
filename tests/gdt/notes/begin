@@ -1,0 +1,21 @@
+
+# assembly of 2 boxes
+box b1 1 1 1
+box b2 2 2 2
+btranslate b1 b1 2 2 2
+btranslate b2 b2 -3 -3 -3
+compound b1 b2 c
+
+# new document
+NewDocument D
+
+# populate D
+XAddShape D c
+
+# box extries
+set box_1 "0:1:1:2"
+set box_2 "0:1:1:3"
+
+# add int attribute to box_1
+set guid "27927843-72A0-41ef-901D-621FAB01C27A"
+SetInteger D ${box_1} 1965 ${guid}

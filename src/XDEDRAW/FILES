@@ -14,3 +14,5 @@ XDEDRAW_Shapes.cxx
 XDEDRAW_Shapes.hxx
 XDEDRAW_Views.cxx
 XDEDRAW_Views.hxx
+XDEDRAW_Notes.cxx
+XDEDRAW_Notes.hxx

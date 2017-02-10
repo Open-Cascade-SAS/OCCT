@@ -1,0 +1,33 @@
+
+# create comment_1 note
+set comment_1 [XNoteCreateComment D "Hello, World!" --user "The user" --time [clock format [clock seconds] -format "%Y-%m-%dT%H:%M:%S"]]
+XNoteDump D ${comment_1}
+
+# create comment_2 note
+set comment_2 [XNoteCreateComment D "Hello, Everyone!" --user "The user" --time [clock format [clock seconds] -format "%Y-%m-%dT%H:%M:%S"]]
+XNoteDump D ${comment_2}
+
+# annotate box_1
+XNoteRefDump D [XNoteAdd D ${comment_1} ${box_1}]
+XNoteRefDump D [XNoteAdd D ${comment_2} ${box_1}]
+
+# annotate box_1 attribute
+XNoteRefDump D [XNoteAdd D ${comment_1} ${box_1} --attr ${guid}]
+XNoteRefDump D [XNoteAdd D ${comment_2} ${box_1} --attr ${guid}]
+
+# annotate box_1 subshape 1
+XNoteRefDump D [XNoteAdd D ${comment_1} ${box_1} --subshape 1]
+XNoteRefDump D [XNoteAdd D ${comment_2} ${box_1} --subshape 1]
+
+# list annotations
+XNoteAnnotations D
+
+# remove all box annotations
+XNoteRemoveAll D ${box_1}
+XNoteRemoveAll D ${box_1} --attr ${guid}
+XNoteRemoveAll D ${box_1} --subshape 1
+
+# expected results
+set nb_annotations_result 0
+set nb_notes_result 2
+set nb_orphan_result 2

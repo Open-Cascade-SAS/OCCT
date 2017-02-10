@@ -91,6 +91,26 @@ XDE can read and write colors and layers assigned to shapes or their subparts (d
   
  @figure{/user_guides/xde/images/xde_image006.png,"Colors and Layers",240}
 
+@subsection occt_xde_1_7 Custom notes
+ 
+Custom notes is a kind of application specific data attached to assembly items, their attributes and sub-shapes. Basically, there are simple textual comments, binary data and other application specific data. Each note is provided with a timestamp and the user created it.
+
+Notes API provides the following functionality:
+  * Returns total number of notes and annotated items
+  * Returns labels for all notes and annotated items
+  * Creates notes:
+    - Comment note from a text string
+    - Binary data note from a file or byte array
+  * Checks if an assembly item is annotated
+  * Finds a label for the annotated item
+  * Returns all note labels for the annotated item
+  * Add a note to item(s):
+    - Assembly item
+    - Assembly item attribute
+    - Assembly item subshape index
+  * Remove note(s) from an annotated assembly item; orphan note(s) might be deleted optionally (items without linked notes will be deleted automatically)
+  * Delete note(s) and removes them from annotated items
+  * Get / delete orphan notes
 
 @section occt_xde_2 Working with XDE
 
@@ -607,6 +627,136 @@ To remove a Color and all the references to it (so that the related shapes will 
 myColors->RemoveColor(ColLabel); 
 ~~~~~
 
+@subsection occt_xde_2_7 Custom notes
+
+In an XDE document, custom notes are managed by the class *XCAFDoc_NotesTool*. This is done with the same principles as for ShapeTool with Shapes, and with the same capability of having a tool on the Main Label, or on any sub-label. The Property itself is defined as sub-classes of an *XCAFDoc_Note* abstract class, which is a sub-class of *TDF_Attribute* one. 
+
+Custom notes are stored in a child of the *XCAFDoc_NotesTool* label: it is at label 0.1.9.1. Each note then corresponds to a dedicated label. A note may be attached to a document item identified by a label, a sub-shape identified by integer index or an attribute identified by GUID. Annotations are stored in a child of the *XCAFDoc_NotesTool* label: it is at label 0.1.9.2.
+Notes binding is done through *XCAFDoc_GraphNode* attribute.
+
+  @figure{/user_guides/xde/images/xde_notes001.png,"Structure of notes part of XCAF document",240}
+  
+@subsubsection occt_xde_2_7_1 Initialization
+
+To query, edit, or initialize a Document to handle custom notes of XCAF, use: 
+~~~~~
+Handle(XCAFDoc_NotesTool) myNotes = 
+XCAFDoc_DocumentTool::NotesTool(Doc->Main ()); 
+~~~~~
+This call can be used at any time. The first time it is used, a relevant structure is added to the document. This definition is used for all the following notes calls and will not be repeated for these. 
+  
+@subsubsection occt_xde_2_7_2 Creating Notes
+
+Before annotating a Document item a note must be created using one of the following methods of *XCAFDoc_NotesTool* class:
+- CreateComment : creates a note with a textual comment
+- CreateBinData : creates a note with arbitrary binary data, e.g. contents of a file
+
+Both methods return an instance of *XCAFDoc_Note* class.
+~~~~~
+Handle(XCAFDoc_NotesTool) myNotes = ...
+Handle(XCAFDoc_Note) myNote = myNotes->CreateComment("User", "Timestamp", "Hello, World!");
+~~~~~
+This code adds a child label to label 0.1.9.1 with *XCAFDoc_NoteComment* attribute.
+
+@subsubsection occt_xde_2_7_3 Editing a Note
+An instance of *XCAFDoc_Note* class can be used for note editing.
+One may change common note data.
+~~~~~
+myNote->Set("New User", "New Timestamp");
+~~~~~
+To change specific data one need to down cast *myNote* handle to the appropriate sub-class:
+~~~~~
+Handle(XCAFDoc_NoteComment) myCommentNote = Handle(XCAFDoc_NoteComment)::DownCast(myNote);
+if (!myCommentNote.IsNull()) {
+  myCommentNote->Set("New comment");
+}
+~~~~~
+
+@subsubsection occt_xde_2_7_4 Adding Notes
+
+Once a note has been created it can be bound to a Document item using the following *XCAFDoc_NotesTool* methods:
+- AddNote : binds a note to a label
+- AddNoteToAttr : binds a note to a label's attribute
+- AddNoteToSubshape : binds a note to a sub-shape
+
+All methods return a pointer to *XCAFDoc_AssemblyItemRef* attribute identifying the annotated item.
+~~~~~
+Handle(XCAFDoc_NotesTool) myNotes = ...
+Handle(XCAFDoc_Note) myNote = ...
+TDF_Label theLabel; ...
+Handle(XCAFDoc_AssemblyItemRef) myRef = myNotes->AddNote(myNote->Label(), theLabel);
+Standard_GUID theAttrGUID; ...
+Handle(XCAFDoc_AssemblyItemRef) myRefAttr = myNotes->AddNoteToAttr(myNote->Label(), theAttrGUID);
+Standard_Integer theSubshape = 1;
+Handle(XCAFDoc_AssemblyItemRef) myRefSubshape = myNotes->AddNoteToSubshape(myNote->Label(), theSubshape);
+~~~~~
+This code adds three child labels to label 0.1.9.2 with *XCAFDoc_AssemblyItemRef* attribute with *XCAFDoc_GraphNode* attributes added to this and note labels.
+
+@subsubsection occt_xde_2_7_5 Finding Notes
+
+To find annotation labels under label 0.1.9.2 use the following *XCAFDoc_NotesTool* methods:
+- FindAnnotatedItem : returns an annotation label for a label
+- FindAnnotatedItemAttr : returns an annotation label for a label's attribute
+- FindAnnotatedItemSubshape : returns an annotation label for a sub-shape
+
+~~~~~
+Handle(XCAFDoc_NotesTool) myNotes = ...
+TDF_Label theLabel; ...
+TDF_Label myLabel = myNotes->FindAnnotatedItem(theLabel);
+Standard_GUID theAttrGUID; ...
+TDF_Label myLabelAttr = myNotes->FindAnnotatedItemAttr(theLabel, theAttrGUID);
+Standard_Integer theSubshape = 1;
+TDF_Label myLabelSubshape = myNotes->FindAnnotatedItemSubshape(theLabel, theSubshape);
+~~~~~
+Null label will be returned if there is no corresponding annotation.
+
+To get all notes of the Document item use the following *XCAFDoc_NotesTool* methods:
+- GetNotes : outputs a sequence of note labels bound to a label
+- GetAttrNotes : outputs a sequence of note labels bound to a label's attribute
+- GetAttrSubshape : outputs a sequence of note labels bound to a sub-shape
+
+All these methods return the number of notes.
+~~~~~
+Handle(XCAFDoc_NotesTool) myNotes = ...
+TDF_Label theLabel; ...
+TDF_LabelSequence theNotes;
+myNotes->GetNotes(theLabel, theNotes);
+Standard_GUID theAttrGUID; ...
+TDF_LabelSequence theNotesAttr;
+myNotes->GetAttrNotes(theLabel, theAttrGUID, theNotesAttr);
+Standard_Integer theSubshape = 1;
+TDF_LabelSequence theNotesSubshape;
+myNotes->GetAttrSubshape(theLabel, theSubshape, theNotesSubshape);
+~~~~~
+
+@subsubsection occt_xde_2_7_6 Removing Notes
+
+To remove a note use one of the following *XCAFDoc_NotesTool* methods:
+- RemoveNote : unbinds a note from a label
+- RemoveAttrNote : unbinds a note from a label's attribute
+- RemoveSubshapeNote : unbinds a note from a sub-shape
+
+~~~~~
+Handle(XCAFDoc_Note) myNote = ...
+TDF_Label theLabel; ...
+myNotes->RemoveNote(myNote->Label(), theLabel);
+Standard_GUID theAttrGUID; ...
+myRefAttr = myNotes->RemoveAttrNote(myNote->Label(), theAttrGUID);
+Standard_Integer theSubshape = 1;
+myNotes->RemoveSubshapeNote(myNote->Label(), theSubshape);
+~~~~~
+A note will not be deleted automatically.
+Counterpart methods to remove all notes are available too.
+  
+@subsubsection occt_xde_2_7_7 Deleting Notes
+
+To delete note(s) use the following *XCAFDoc_NotesTool* methods:
+- DeleteNote : deletes a single note
+- DeleteNotes : deletes a sequence of notes
+- DeleteAllNotes : deletes all Document notes
+- DeleteOrphanNotes : deletes notes not bound to Document items
+
+All these methods excepting the last one break all links with Document items as well.
   
 @subsection occt_xde_2_8 Reading and Writing STEP or IGES
 Note that saving and restoring the document itself are standard OCAF operations. As the various previously described definitions enter into this frame, they will not be explained any further. 

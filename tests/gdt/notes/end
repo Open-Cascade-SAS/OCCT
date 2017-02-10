@@ -1,0 +1,20 @@
+
+# check counts
+set count [XNoteCount D]
+set nb_annotations [lindex ${count} 0]
+set nb_notes [lindex ${count} 1]
+set nb_orphan [lindex ${count} 2]
+if {${nb_annotations} != ${nb_annotations_result}} {
+	puts "Error : ${nb_annotations_result} number of annotated items is expected instead of ${nb_annotations}!"
+}
+if {${nb_notes} != ${nb_notes_result}} {
+	puts "Error : ${nb_notes_result} number of notes is expected instead of ${nb_notes}!"
+}
+if {${nb_orphan} != ${nb_orphan_result}} {
+	puts "Error : ${nb_orphan_result} number of orphan notes is expected instead of ${nb_orphan}!"
+}
+
+# release document
+unset D
+
+puts "TEST COMPLETED"

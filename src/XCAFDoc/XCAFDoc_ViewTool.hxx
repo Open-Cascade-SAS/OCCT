@@ -63,7 +63,15 @@ public:
   //! Returns a sequence of View labels currently stored
   //! in the View table
   Standard_EXPORT void GetViewLabels (TDF_LabelSequence& theLabels) const;
-  
+
+  //! Sets a link with GUID
+  Standard_EXPORT void SetView(const TDF_LabelSequence& theShapes,
+                               const TDF_LabelSequence& theGDTs,
+                               const TDF_LabelSequence& theClippingPlanes,
+                               const TDF_LabelSequence& theNotes,
+                               const TDF_LabelSequence& theAnnotations,
+                               const TDF_Label& theViewL) const;
+
   //! Sets a link with GUID
   Standard_EXPORT void SetView (const TDF_LabelSequence& theShapes,
                                 const TDF_LabelSequence& theGDTs,
@@ -90,7 +98,13 @@ public:
 
   //! Returns all View labels defined for label ClippingPlaneL
   Standard_EXPORT Standard_Boolean GetViewLabelsForClippingPlane(const TDF_Label& theClippingPlaneL, TDF_LabelSequence& theViews) const;
-  
+
+  //! Returns all View labels defined for label NoteL
+  Standard_EXPORT Standard_Boolean GetViewLabelsForNote(const TDF_Label& theNoteL, TDF_LabelSequence& theViews) const;
+
+  //! Returns all View labels defined for label AnnotationL
+  Standard_EXPORT Standard_Boolean GetViewLabelsForAnnotation(const TDF_Label& theAnnotationL, TDF_LabelSequence& theViews) const;
+
   //! Adds a view definition to a View table and returns its label
   Standard_EXPORT TDF_Label AddView() ;
   
@@ -105,6 +119,14 @@ public:
   //! Returns ClippingPlane labels defined for label theViewL
   //! Returns False if the theViewL is not in View table
   Standard_EXPORT Standard_Boolean GetRefClippingPlaneLabel(const TDF_Label& theViewL, TDF_LabelSequence& theClippingPlaneLabels) const;
+
+  //! Returns Notes labels defined for label theViewL
+  //! Returns False if the theViewL is not in View table
+  Standard_EXPORT Standard_Boolean GetRefNoteLabel(const TDF_Label& theViewL, TDF_LabelSequence& theNoteLabels) const;
+
+  //! Returns Annotation labels defined for label theViewL
+  //! Returns False if the theViewL is not in View table
+  Standard_EXPORT Standard_Boolean GetRefAnnotationLabel(const TDF_Label& theViewL, TDF_LabelSequence& theAnnotationLabels) const;
 
   //! Returns true if the given View is marked as locked
   Standard_EXPORT Standard_Boolean IsLocked(const TDF_Label& theViewL) const;

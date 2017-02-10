@@ -1,0 +1,15 @@
+
+# create comment note
+set comment [XNoteCreateComment D "Hello, World!" --user "The user" --time [clock format [clock seconds] -format "%Y-%m-%dT%H:%M:%S"]]
+XNoteDump D ${comment}
+
+# annotate box_1 attribute
+XNoteRefDump D [XNoteAdd D ${comment} ${box_1} --attr ${guid}]
+
+# list annotations
+XNoteAnnotations D
+
+# expected results
+set nb_annotations_result 1
+set nb_notes_result 1
+set nb_orphan_result 0

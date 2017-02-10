@@ -1,0 +1,51 @@
+
+# create comment_1 note
+set comment_1 [XNoteCreateComment D "Hello, World!" --user "The user" --time [clock format [clock seconds] -format "%Y-%m-%dT%H:%M:%S"]]
+XNoteDump D ${comment_1}
+
+# create comment_2 note
+set comment_2 [XNoteCreateComment D "Hello, Everyone!" --user "The user" --time [clock format [clock seconds] -format "%Y-%m-%dT%H:%M:%S"]]
+XNoteDump D ${comment_2}
+
+# annotate box_1
+set annotated_1 [XNoteAdd D ${comment_1} ${box_1}]
+set annotated_2 [XNoteAdd D ${comment_2} ${box_1}]
+if {${annotated_1} != ${annotated_2}} {
+	puts "Error : item annotation labels (${annotated_1} and ${annotated_2}) must be equal not equal."
+}
+
+# annotate box_1 attribute
+set annotated_1_attr [XNoteAdd D ${comment_1} ${box_1} --attr ${guid}]
+set annotated_2_attr [XNoteAdd D ${comment_2} ${box_1} --attr ${guid}]
+if {${annotated_1_attr} != ${annotated_2_attr}} {
+	puts "Error : item's attribute annotation labels (${annotated_1_attr} and ${annotated_2_attr}) must be equal not equal."
+}
+
+# annotate box_1 subshape 1
+set annotated_1_subshape [XNoteAdd D ${comment_1} ${box_1} --subshape 1]
+set annotated_2_subshape [XNoteAdd D ${comment_2} ${box_1} --subshape 1]
+if {${annotated_1_subshape} != ${annotated_2_subshape}} {
+	puts "Error : item's subshape annotation labels (${annotated_1_subshape} and ${annotated_2_subshape}) must be equal not equal."
+}
+
+# find annotations
+set annotated_found [XNoteFindAnnotated D ${box_1}]
+if {${annotated_1} != ${annotated_found}} {
+	puts "Error : ${annotated_1} is expected to found instead of ${annotated_found}"
+}
+set annotated_attr_found [XNoteFindAnnotated D ${box_1} --attr ${guid}]
+if {${annotated_1_attr} != ${annotated_attr_found}} {
+	puts "Error : ${annotated_1_attr} is expected to found instead of ${annotated_attr_found}"
+}
+set annotated_subshape_found [XNoteFindAnnotated D ${box_1} --subshape 1]
+if {${annotated_1_subshape} != ${annotated_subshape_found}} {
+	puts "Error : ${annotated_1_subshape} is expected to found instead of ${annotated_subshape_found}"
+}
+
+# list annotations
+XNoteAnnotations D
+
+# expected results
+set nb_annotations_result 3
+set nb_notes_result 2
+set nb_orphan_result 0

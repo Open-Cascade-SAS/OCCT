@@ -97,7 +97,10 @@ public:
   Standard_EXPORT static Standard_GUID LayerRefGUID();
   
   Standard_EXPORT static Standard_GUID MaterialRefGUID();
-  
+
+  //! Return GUIDs for representing notes
+  Standard_EXPORT static Standard_GUID NoteRefGUID();
+
   Standard_EXPORT static Standard_GUID InvisibleGUID();
   
   //! Returns GUID for UAttribute identifying external reference on no-step file
@@ -117,6 +120,10 @@ public:
   
   //! Return GUIDs for TreeNode representing specified types of View
   Standard_EXPORT static Standard_GUID ViewRefPlaneGUID();
+
+  //! Return GUIDs for GraphNode representing specified types of View
+  Standard_EXPORT static Standard_GUID ViewRefNoteGUID();
+  Standard_EXPORT static Standard_GUID ViewRefAnnotationGUID();
 
   //! Returns GUID for UAttribute identifying lock flag
   Standard_EXPORT static Standard_GUID LockGUID();
