@@ -90,12 +90,18 @@
 #include <TopTools_MapOfShape.hxx>
 #include <TShort_HArray1OfShortReal.hxx>
 #include <TColgp_Array1OfXY.hxx>
+#include <BRepTools_ReShape.hxx>
+#include <TopTools_DataMapOfShapeReal.hxx>
+#include <TopoDS_LockedShape.hxx>
 
 #include <algorithm>
 
 // TODO - not thread-safe static variables
 static Standard_Real thePrecision = Precision::Confusion();     
 static Handle(Geom_Plane) thePlane;
+
+static void InternalUpdateTolerances(const TopoDS_Shape& theOldShape,
+  const Standard_Boolean IsVerifyTolerance, const Standard_Boolean IsMutableInput, BRepTools_ReShape& theReshaper);
 
 //=======================================================================
 // function: BRepLib_ComparePoints
@@ -725,7 +731,6 @@ Standard_Boolean  BRepLib::UpdateEdgeTol(const TopoDS_Edge& AnEdge,
 //function : UpdateEdgeTolerance
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean BRepLib::UpdateEdgeTolerance(const TopoDS_Shape& S,
   const Standard_Real MinToleranceRequested,
   const Standard_Real MaxToleranceToCheck) 
@@ -752,19 +757,18 @@ Standard_Boolean BRepLib::UpdateEdgeTolerance(const TopoDS_Shape& S,
 }
 
 //=======================================================================
-//function : SetEdgeTol
+//function : GetEdgeTol
 //purpose  : 
 //=======================================================================
-
-static void SetEdgeTol(const TopoDS_Edge& E,
-  const TopoDS_Face& F)
+static void GetEdgeTol(const TopoDS_Edge& theEdge,
+  const TopoDS_Face& theFace, Standard_Real& theEdTol)
 {
   TopLoc_Location L;
-  const Handle(Geom_Surface)& S = BRep_Tool::Surface(F,L);
-  TopLoc_Location l = L.Predivided(E.Location());
+  const Handle(Geom_Surface)& S = BRep_Tool::Surface(theFace,L);
+  TopLoc_Location l = L.Predivided(theEdge.Location());
 
-  const Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*)&E.TShape());
-  BRep_ListIteratorOfListOfCurveRepresentation itcr(TE->ChangeCurves());
+  const Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*)&theEdge.TShape());
+  BRep_ListIteratorOfListOfCurveRepresentation itcr(TE->Curves());
 
   while (itcr.More()) {
     const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
@@ -786,7 +790,7 @@ static void SetEdgeTol(const TopoDS_Edge& E,
   TopLoc_Location LC;
   Standard_Real First, Last;
   GeomAdaptor_Curve& GAC = HC->ChangeCurve();
-  GAC.Load(BRep_Tool::Curve(E,LC,First,Last));
+  GAC.Load(BRep_Tool::Curve(theEdge,LC,First,Last));
   LC = L.Predivided(LC);
 
   if (!LC.IsIdentity()) {
@@ -819,35 +823,161 @@ static void SetEdgeTol(const TopoDS_Edge& E,
     if(temp > d2) d2 = temp;
   }
   d2 = 1.5*sqrt(d2);
-  TE->UpdateTolerance(d2);
+  theEdTol = d2;
 }
 
 //=======================================================================
-//function : SameParameter
+//function : UpdTolMap
+//purpose  : Update map ShToTol (shape to tolerance)
+//=======================================================================
+static void UpdTolMap(const TopoDS_Shape& theSh, Standard_Real theNewTol, 
+  TopTools_DataMapOfShapeReal& theShToTol)
+{
+  TopAbs_ShapeEnum aSt = theSh.ShapeType();
+  Standard_Real aShTol;
+  if (aSt == TopAbs_VERTEX)
+    aShTol = BRep_Tool::Tolerance(TopoDS::Vertex(theSh));
+  else if (aSt == TopAbs_EDGE)
+    aShTol = BRep_Tool::Tolerance(TopoDS::Edge(theSh));
+  else
+    return;
+  //
+  if (theNewTol > aShTol)
+  {
+    const Standard_Real* anOldtol = theShToTol.Seek(theSh);
+    if (!anOldtol)
+      theShToTol.Bind(theSh, theNewTol);
+    else
+      theShToTol(theSh) = Max(*anOldtol, theNewTol);
+  }
+}
+
+//=======================================================================
+//function : UpdShTol
+//purpose  : Update vertices/edges/faces according to ShToTol map (create copies of necessary)
+//=======================================================================
+static void UpdShTol(const TopTools_DataMapOfShapeReal& theShToTol,
+  const Standard_Boolean IsMutableInput, BRepTools_ReShape& theReshaper,
+  Standard_Boolean theVForceUpdate)
+{
+  BRep_Builder aB;
+  TopTools_DataMapIteratorOfDataMapOfShapeReal SHToTolit(theShToTol);
+  for (;SHToTolit.More();SHToTolit.Next())
+  {
+    const TopoDS_Shape& aSh = SHToTolit.Key();
+    Standard_Real aTol = SHToTolit.Value();
+    //
+    TopoDS_Shape aNsh;
+    const TopoDS_Shape& aVsh = theReshaper.Value(aSh);
+    Standard_Boolean UseOldSh = IsMutableInput || theReshaper.IsNewShape(aSh) || !aVsh.IsSame(aSh);
+    if (UseOldSh)
+      aNsh = aVsh;
+    else
+    {
+      aNsh = aSh.EmptyCopied();
+      //add subshapes from the original shape
+      TopoDS_Iterator sit(aSh);
+      for (;sit.More();sit.Next())
+        aB.Add(aNsh, sit.Value());
+      //
+      aNsh.Free(aSh.Free());
+      aNsh.Checked(aSh.Checked());
+      aNsh.Orientable(aSh.Orientable());
+      aNsh.Closed(aSh.Closed());
+      aNsh.Infinite(aSh.Infinite());
+      aNsh.Convex(aSh.Convex());
+      //
+    }
+    //
+    switch (aSh.ShapeType())
+    {
+    case TopAbs_FACE: 
+      {
+        aB.UpdateFace(TopoDS::Face(aNsh), aTol); 
+        break;
+      }
+    case TopAbs_EDGE: 
+      {
+        aB.UpdateEdge(TopoDS::Edge(aNsh), aTol);   
+        break;
+      }
+    case TopAbs_VERTEX: 
+      {
+        const Handle(BRep_TVertex)& aTV = *((Handle(BRep_TVertex)*)&aNsh.TShape());
+        //
+        if(aTV->Locked())
+          throw TopoDS_LockedShape("BRep_Builder::UpdateVertex");
+        //
+        if (theVForceUpdate)
+          aTV->Tolerance(aTol);
+        else
+          aTV->UpdateTolerance(aTol);
+        aTV->Modified(Standard_True);
+        break;
+      }
+    default: 
+      break;
+    }
+    //
+    if (!UseOldSh)
+      theReshaper.Replace(aSh, aNsh);
+  }
+}
+
+//=======================================================================
+//function : InternalSameParameter
 //purpose  : 
 //=======================================================================
-void  BRepLib::SameParameter(const TopoDS_Shape& S,
-  const Standard_Real Tolerance,
-  const Standard_Boolean forced) 
+static void InternalSameParameter(const TopoDS_Shape& theSh, BRepTools_ReShape& theReshaper,
+  const Standard_Real theTol, const Standard_Boolean IsForced, const Standard_Boolean IsMutableInput ) 
 {
-  TopExp_Explorer ex(S,TopAbs_EDGE);
+  TopExp_Explorer ex(theSh,TopAbs_EDGE);
   TopTools_MapOfShape  Done;
-  BRep_Builder brB;
-
-  while (ex.More()) {
-    if (Done.Add(ex.Current())) {
-      if (forced) {
-        brB.SameRange(TopoDS::Edge(ex.Current()), Standard_False);
-        brB.SameParameter(TopoDS::Edge(ex.Current()), Standard_False);
+  BRep_Builder aB;
+  TopTools_DataMapOfShapeReal aShToTol;
+ 
+  while (ex.More()) 
+  {
+    const TopoDS_Edge& aCE = TopoDS::Edge(ex.Current());
+    if (Done.Add(aCE))
+    {
+      TopoDS_Edge aNE = TopoDS::Edge(theReshaper.Value(aCE));
+      Standard_Boolean UseOldEdge = IsMutableInput || theReshaper.IsNewShape(aCE) || !aNE.IsSame(aCE);
+      if (IsForced && (BRep_Tool::SameRange(aCE) || BRep_Tool::SameParameter(aCE)))
+      {
+        if (!UseOldEdge)
+        {
+          aNE = TopoDS::Edge(aCE.EmptyCopied());
+          TopoDS_Iterator sit(aCE);
+          for (;sit.More();sit.Next())
+            aB.Add(aNE, sit.Value());
+          theReshaper.Replace(aCE, aNE);
+          UseOldEdge = Standard_True;
+        }
+        aB.SameRange(aNE, Standard_False);
+        aB.SameParameter(aNE, Standard_False);
       }
-      BRepLib::SameParameter(TopoDS::Edge(ex.Current()),Tolerance);
+      Standard_Real aNewTol = -1;
+      TopoDS_Edge aResEdge = BRepLib::SameParameter(aNE, theTol, aNewTol, UseOldEdge);
+      if (!UseOldEdge && !aResEdge.IsNull())
+        //NE have been empty-copied
+        theReshaper.Replace(aNE, aResEdge);
+      if (aNewTol > 0)
+      {
+        TopoDS_Vertex aV1, aV2;
+        TopExp::Vertices(aCE,aV1,aV2);
+        if (!aV1.IsNull())
+          UpdTolMap(aV1, aNewTol, aShToTol);
+        if (!aV2.IsNull()) 
+          UpdTolMap(aV2, aNewTol, aShToTol);
+      }
     }
     ex.Next();
   }
-
+ 
   Done.Clear();
   BRepAdaptor_Surface BS;
-  for(ex.Init(S,TopAbs_FACE); ex.More(); ex.Next()){
+  for(ex.Init(theSh,TopAbs_FACE); ex.More(); ex.Next()){
     const TopoDS_Face& curface = TopoDS::Face(ex.Current());
     if(!Done.Add(curface)) continue;
     BS.Initialize(curface);
@@ -855,10 +985,18 @@ void  BRepLib::SameParameter(const TopoDS_Shape& S,
     TopExp_Explorer ex2;
     for(ex2.Init(curface,TopAbs_EDGE); ex2.More(); ex2.Next()){
       const TopoDS_Edge& E = TopoDS::Edge(ex2.Current());
-      SetEdgeTol(E,curface);
+      TopoDS_Shape aNe = theReshaper.Value(E);
+      Standard_Real aNewEtol = -1;
+      GetEdgeTol(TopoDS::Edge(aNe), curface, aNewEtol);
+      if (aNewEtol >= 0) //not equal to -1
+        UpdTolMap(E, aNewEtol, aShToTol);
     }
   }
-  BRepLib::UpdateTolerances(S);
+ 
+  //
+  UpdShTol(aShToTol, IsMutableInput, theReshaper, Standard_False );
+
+  InternalUpdateTolerances(theSh, Standard_False, IsMutableInput, theReshaper );
 }
 
 //================================================================
@@ -867,6 +1005,28 @@ void  BRepLib::SameParameter(const TopoDS_Shape& S,
 //  Recode in the edge the best tolerance found, 
 //  for vertex extremities it is required to find something else
 //================================================================
+void  BRepLib::SameParameter(const TopoDS_Shape& S,
+  const Standard_Real Tolerance,
+  const Standard_Boolean forced)
+{
+  BRepTools_ReShape reshaper;
+  InternalSameParameter( S, reshaper, Tolerance, forced, Standard_True);
+}
+
+//=======================================================================
+//function : SameParameter
+//purpose  : 
+//=======================================================================
+void BRepLib::SameParameter(const TopoDS_Shape& S, BRepTools_ReShape& theReshaper,
+  const Standard_Real Tolerance, const Standard_Boolean forced ) 
+{
+  InternalSameParameter( S, theReshaper, Tolerance, forced, Standard_False);
+}
+
+//=======================================================================
+//function : EvalTol
+//purpose  : 
+//=======================================================================
 static Standard_Boolean EvalTol(const Handle(Geom2d_Curve)& pc,
   const Handle(Geom_Surface)& s,
   const GeomAdaptor_Curve&    gac,
@@ -896,6 +1056,10 @@ static Standard_Boolean EvalTol(const Handle(Geom2d_Curve)& pc,
   return (ok > 2);
 }
 
+//=======================================================================
+//function : ComputeTol
+//purpose  : 
+//=======================================================================
 static Standard_Real ComputeTol(const Handle(Adaptor3d_HCurve)& c3d,
   const Handle(Adaptor2d_HCurve2d)& c2d,
   const Handle(Adaptor3d_HSurface)& surf,
@@ -1017,10 +1181,96 @@ static Standard_Real ComputeTol(const Handle(Adaptor3d_HCurve)& c3d,
   return d2;
 }
 
-void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
-  const Standard_Real Tolerance)
+//=======================================================================
+//function : GetCurve3d
+//purpose  : 
+//=======================================================================
+static void GetCurve3d(const TopoDS_Edge& theEdge, Handle(Geom_Curve)& theC3d, Standard_Real& theF3d, 
+  Standard_Real& theL3d, TopLoc_Location& theLoc3d, BRep_ListOfCurveRepresentation& theCList)
 {
-  if (BRep_Tool::SameParameter(AnEdge)) return;
+  const Handle(BRep_TEdge)& aTE = *((Handle(BRep_TEdge)*) &theEdge.TShape());
+  theCList = aTE->ChangeCurves(); // current function (i.e. GetCurve3d()) will not change any of this curves
+  BRep_ListIteratorOfListOfCurveRepresentation anIt(theCList);
+  Standard_Boolean NotDone = Standard_True;
+  while (NotDone && anIt.More()) {
+    Handle(BRep_GCurve) GCurve = Handle(BRep_GCurve)::DownCast(anIt.Value());
+    if (!GCurve.IsNull() && GCurve->IsCurve3D()) {
+      theC3d = GCurve->Curve3D() ;
+      theF3d = GCurve->First();
+      theL3d = GCurve->Last();
+      theLoc3d = GCurve->Location() ;
+      NotDone = Standard_False;
+    } 
+    anIt.Next() ;
+  }
+}
+
+//=======================================================================
+//function : UpdateVTol
+//purpose  : 
+//=======================================================================
+void UpdateVTol(const TopoDS_Vertex theV1, const TopoDS_Vertex& theV2, Standard_Real theTol)
+{
+  BRep_Builder aB;
+  if (!theV1.IsNull())
+    aB.UpdateVertex(theV1,theTol);
+  if (!theV2.IsNull())
+    aB.UpdateVertex(theV2,theTol);
+}
+
+//=======================================================================
+//function : SameParameter
+//purpose  : 
+//=======================================================================
+void BRepLib::SameParameter(const TopoDS_Edge& theEdge,
+  const Standard_Real theTolerance)
+{
+  Standard_Real aNewTol = -1;
+  SameParameter(theEdge, theTolerance, aNewTol, Standard_True);
+  if (aNewTol > 0)
+  {
+    TopoDS_Vertex aV1, aV2;
+    TopExp::Vertices(theEdge,aV1,aV2);
+    UpdateVTol(aV1, aV2, aNewTol);
+  }
+}
+
+//=======================================================================
+//function : SameParameter
+//purpose  : 
+//=======================================================================
+TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
+  const Standard_Real theTolerance, Standard_Real& theNewTol, Standard_Boolean IsUseOldEdge)
+{
+  if (BRep_Tool::SameParameter(theEdge)) 
+    return TopoDS_Edge();
+  Standard_Real f3d =0.,l3d =0.;
+  TopLoc_Location L3d;
+  Handle(Geom_Curve) C3d;
+  BRep_ListOfCurveRepresentation CList;
+  GetCurve3d(theEdge, C3d, f3d, l3d, L3d, CList);
+  if(C3d.IsNull()) 
+    return TopoDS_Edge();
+
+  BRep_Builder B;
+  TopoDS_Edge aNE;
+  Handle(BRep_TEdge) aNTE;
+  if (IsUseOldEdge)
+  {
+    aNE = theEdge;
+    aNTE = *((Handle(BRep_TEdge)*) &theEdge.TShape());
+  }
+  else
+  {
+    aNE = TopoDS::Edge(theEdge.EmptyCopied()); //will be modified a little bit later, so copy anyway  
+    GetCurve3d(aNE, C3d, f3d, l3d, L3d, CList); //C3d pointer and CList will be differ after copying
+    aNTE = *((Handle(BRep_TEdge)*) &aNE.TShape());
+    TopoDS_Iterator sit(theEdge);
+    for (;sit.More();sit.Next()) //add vertices from old edge to the new ones
+      B.Add(aNE, sit.Value());
+  }
+
+  BRep_ListIteratorOfListOfCurveRepresentation It(CList);
 
   const Standard_Integer NCONTROL = 22;
 
@@ -1029,30 +1279,7 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
   Handle(GeomAdaptor_HSurface) HS = new GeomAdaptor_HSurface();
   GeomAdaptor_Curve& GAC = HC->ChangeCurve();
   Geom2dAdaptor_Curve& GAC2d = HC2d->ChangeCurve2d();
-  GeomAdaptor_Surface& GAS = HS->ChangeSurface();
-  Standard_Real f3d =0.,l3d =0.;
-  TopLoc_Location L3d;
-  Handle(Geom_Curve) C3d;
-
-  const Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*) &AnEdge.TShape());
-  BRep_ListOfCurveRepresentation& CList = TE->ChangeCurves();
-  BRep_ListIteratorOfListOfCurveRepresentation It(CList);
-
-  Standard_Boolean NotDone = Standard_True;
-
-  while (NotDone && It.More()) {
-    Handle(BRep_GCurve) GCurve = Handle(BRep_GCurve)::DownCast(It.Value());
-    if (!GCurve.IsNull() && GCurve->IsCurve3D()) {
-      C3d = GCurve->Curve3D() ;
-      f3d = GCurve->First();
-      l3d = GCurve->Last();
-      L3d = GCurve->Location() ;
-      NotDone = Standard_False;
-    } 
-    It.Next() ;
-  }
-
-  if(C3d.IsNull()) return;
+  GeomAdaptor_Surface& GAS = HS->ChangeSurface(); 
 
   // modified by NIZHNY-OCC486  Tue Aug 27 17:15:13 2002 :
   Standard_Boolean m_TrimmedPeriodical = Standard_False;
@@ -1064,7 +1291,7 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
   }
   // modified by NIZHNY-OCC486  Tue Aug 27 17:15:17 2002 .
 
-  BRep_Builder B;
+
   if(!C3d->IsPeriodic()) {
     Standard_Real Udeb = C3d->FirstParameter();
     Standard_Real Ufin = C3d->LastParameter();
@@ -1087,14 +1314,15 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
   Standard_Real maxdist = 0.;
 
   //  Modified by skv - Thu Jun  3 12:39:19 2004 OCC5898 Begin
-  Standard_Real anEdgeTol = BRep_Tool::Tolerance(AnEdge);
+  Standard_Real anEdgeTol = BRep_Tool::Tolerance(aNE);
   //  Modified by skv - Thu Jun  3 12:39:20 2004 OCC5898 End
-  Standard_Boolean SameRange = BRep_Tool::SameRange(AnEdge);
+  Standard_Boolean SameRange = BRep_Tool::SameRange(aNE);
   Standard_Boolean YaPCu = Standard_False;
   const Standard_Real BigError = 1.e10;
   It.Initialize(CList);
 
   while (It.More()) {
+
     Standard_Boolean isANA = Standard_False;
     Standard_Boolean isBSP = Standard_False;
     Handle(BRep_GCurve) GCurve = Handle(BRep_GCurve)::DownCast(It.Value());
@@ -1115,8 +1343,8 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
       }
 
       // Eval tol2d to compute SameRange
-      Standard_Real UResol = Max(GAS.UResolution(Tolerance), Precision::PConfusion());
-      Standard_Real VResol = Max(GAS.VResolution(Tolerance), Precision::PConfusion());
+      Standard_Real UResol = Max(GAS.UResolution(theTolerance), Precision::PConfusion());
+      Standard_Real VResol = Max(GAS.VResolution(theTolerance), Precision::PConfusion());
       Standard_Real Tol2d  = Min(UResol, VResol);
       for(Standard_Integer i = 0; i < 2; i++){
         Handle(Geom2d_Curve) curPC = PC[i];
@@ -1174,7 +1402,7 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
 
             if(bs2d->Continuity() == GeomAbs_C0) {
               Standard_Real tolbail;
-              if(EvalTol(curPC,S,GAC,Tolerance,tolbail)){
+              if(EvalTol(curPC,S,GAC,theTolerance,tolbail)){
                 bs2d = bs2dsov;
                 Standard_Real UResbail = GAS.UResolution(tolbail);
                 Standard_Real VResbail = GAS.VResolution(tolbail);
@@ -1257,7 +1485,7 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
               GeomAbs_Shape cont = bs2d->Continuity();
               Standard_Boolean IsBad = Standard_False;
 
-              if(cont > GeomAbs_C0 && error > Max(1.e-3,Tolerance)) {
+              if(cont > GeomAbs_C0 && error > Max(1.e-3,theTolerance)) {
                 Standard_Integer NbKnots = bs2d->NbKnots();
                 TColStd_Array1OfReal Knots(1,NbKnots);
                 bs2d->Knots(Knots);
@@ -1279,7 +1507,7 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
                 }
                 if(IsBad) {
                   // To avoid failures in Approx_CurvilinearParameter 
-                  bs2d->Resolution(Max(1.e-3,Tolerance), dtcur);
+                  bs2d->Resolution(Max(1.e-3,theTolerance), dtcur);
                   if(dtmin < dtcur) IsBad = Standard_False;
                 }
               }
@@ -1292,7 +1520,7 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
                 if(cont > GeomAbs_C2) cont = GeomAbs_C2;
                 Standard_Integer maxdeg = bs2d->Degree();
                 if(maxdeg == 1) maxdeg = 14;
-                Approx_CurvilinearParameter AppCurPar(HC2d, HS, Max(1.e-3,Tolerance),
+                Approx_CurvilinearParameter AppCurPar(HC2d, HS, Max(1.e-3,theTolerance),
                   cont, maxdeg, 10);
                 if(AppCurPar.IsDone() || AppCurPar.HasResult()) {
                   bs2d = AppCurPar.Curve2d1();
@@ -1321,7 +1549,7 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
 
         if(goodpc){
           //	  Approx_SameParameter SameP(HC,HC2d,HS,Tolerance);
-          Standard_Real aTol = (isANA && isBSP) ? 1.e-7 : Tolerance;
+          Standard_Real aTol = (isANA && isBSP) ? 1.e-7 : theTolerance;
           const Handle(Adaptor3d_HCurve)& aHCurv = HC; // to avoid ambiguity
           const Handle(Adaptor2d_HCurve2d)& aHCurv2d = HC2d; // to avoid ambiguity
           Approx_SameParameter SameP(aHCurv,aHCurv2d,HS,aTol);
@@ -1378,8 +1606,8 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
     }
     It.Next() ;
   }
-  B.Range(AnEdge,f3d,l3d);
-  B.SameRange(AnEdge,Standard_True);
+  B.Range(aNE,f3d,l3d);
+  B.SameRange(aNE,Standard_True);
   if ( IsSameP) {
     // Reduce eventually the tolerance of the edge, as
     // all its representations are processed (except for some associated
@@ -1389,39 +1617,35 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
     if (YaPCu) {
       // Avoid setting too small tolerances.
       maxdist = Max(maxdist,Precision::Confusion());
-      TopoDS_Vertex V1,V2;
-      TopExp::Vertices(AnEdge,V1,V2);
-      if (!V1.IsNull())
-        B.UpdateVertex(V1,maxdist);
-      if (!V2.IsNull())
-        B.UpdateVertex(V2,maxdist);
-      TE->Modified(Standard_True);
-      TE->Tolerance(maxdist);
+      theNewTol = maxdist;
+      aNTE->Modified(Standard_True);
+      aNTE->Tolerance(maxdist);
     }
-    B.SameParameter(AnEdge,Standard_True);
+    B.SameParameter(aNE,Standard_True);
   }
+  
+  return aNE;
 }
 
 //=======================================================================
-//function : UpdateTolerances
+//function : InternalUpdateTolerances
 //purpose  : 
 //=======================================================================
-void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
-  const Standard_Boolean verifyTolerance) 
+static void InternalUpdateTolerances(const TopoDS_Shape& theOldShape,
+  const Standard_Boolean IsVerifyTolerance, const Standard_Boolean IsMutableInput, BRepTools_ReShape& theReshaper)
 {
-
+  TopTools_DataMapOfShapeReal aShToTol;
   // Harmonize tolerances
   // with rule Tolerance(VERTEX)>=Tolerance(EDGE)>=Tolerance(FACE)
-  BRep_Builder B;
   Standard_Real tol=0;
-  if (verifyTolerance) {
+  if (IsVerifyTolerance) {
     // Set tolerance to its minimum value
     Handle(Geom_Surface) S;
     TopLoc_Location l;
     TopExp_Explorer ex;
     Bnd_Box aB;
     Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax, dMax;
-    for (ex.Init(aShape, TopAbs_FACE); ex.More(); ex.Next()) {
+    for (ex.Init(theOldShape, TopAbs_FACE); ex.More(); ex.Next()) {
       const TopoDS_Face& curf=TopoDS::Face(ex.Current());
       S = BRep_Tool::Surface(curf, l);
       if (!S.IsNull()) {
@@ -1460,31 +1684,40 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
           // Do not process tolerances > 1.
           if (tol>1.) tol=0.99;
         }
-        const Handle(BRep_TFace)& Tf = *((Handle(BRep_TFace)*)&curf.TShape());
-        Tf->Tolerance(tol);
+        aShToTol.Bind(curf, tol);
       }
     }
   }
 
   //Process edges
   TopTools_IndexedDataMapOfShapeListOfShape parents;
-  TopExp::MapShapesAndAncestors(aShape, TopAbs_EDGE, TopAbs_FACE, parents);
+  TopExp::MapShapesAndAncestors(theOldShape, TopAbs_EDGE, TopAbs_FACE, parents);
   TopTools_ListIteratorOfListOfShape lConx;
   Standard_Integer iCur;
   for (iCur=1; iCur<=parents.Extent(); iCur++) {
     tol=0;
-    for (lConx.Initialize(parents(iCur)); lConx.More(); lConx.Next()) {
-      tol=Max(tol, BRep_Tool::Tolerance(TopoDS::Face(lConx.Value())));
+    for (lConx.Initialize(parents(iCur)); lConx.More(); lConx.Next()) 
+    {
+      const TopoDS_Face& FF = TopoDS::Face(lConx.Value());
+      Standard_Real Ftol;
+      if (IsVerifyTolerance && aShToTol.IsBound(FF)) //first condition for speed-up
+        Ftol = aShToTol(FF);
+      else
+        Ftol = BRep_Tool::Tolerance(FF); //tolerance have not been updated
+      tol=Max(tol, Ftol);
     }
     // Update can only increase tolerance, so if the edge has a greater
     //  tolerance than its faces it is not concerned
-    B.UpdateEdge(TopoDS::Edge(parents.FindKey(iCur)), tol);
+    const TopoDS_Edge& EK = TopoDS::Edge(parents.FindKey(iCur));
+    if (tol > BRep_Tool::Tolerance(EK))
+      aShToTol.Bind(EK, tol);
   }
 
   //Vertices are processed
   const Standard_Real BigTol = 1.e10;
   parents.Clear();
-  TopExp::MapShapesAndUniqueAncestors(aShape, TopAbs_VERTEX, TopAbs_EDGE, parents);
+
+  TopExp::MapShapesAndUniqueAncestors(theOldShape, TopAbs_VERTEX, TopAbs_EDGE, parents);
   TColStd_MapOfTransient Initialized;
   Standard_Integer nbV = parents.Extent();
   for (iCur=1; iCur<=nbV; iCur++) {
@@ -1495,7 +1728,8 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
     gp_Pnt p3d;
     for (lConx.Initialize(parents(iCur)); lConx.More(); lConx.Next()) {
       const TopoDS_Edge& E = TopoDS::Edge(lConx.Value());
-      tol=Max(tol, BRep_Tool::Tolerance(E));
+      const Standard_Real* aNtol = aShToTol.Seek(E);
+      tol=Max(tol, aNtol ? *aNtol : BRep_Tool::Tolerance(E));
       if(tol > BigTol) continue;
       if(!BRep_Tool::SameRange(E)) continue;
       Standard_Real par = BRep_Tool::Parameter(V,E);
@@ -1541,21 +1775,42 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
     aXmax -= aXmin; aYmax -= aYmin; aZmax -= aZmin;
     tol = Max(tol,sqrt(aXmax*aXmax+aYmax*aYmax+aZmax*aZmax));
     tol += 2.*Epsilon(tol);
-    if (verifyTolerance) {
+    //
+    Standard_Real aVTol = BRep_Tool::Tolerance(V);
+    Standard_Boolean anUpdTol = tol > aVTol;
+    const Handle(BRep_TVertex)& aTV = *((Handle(BRep_TVertex)*)&V.TShape());
+    Standard_Boolean toAdd = Standard_False;
+    if (IsVerifyTolerance) 
+    {
       // ASet minimum value of the tolerance 
-      // Attention to sharing of the vertex by other shapes
-      const Handle(BRep_TVertex)& TV = *((Handle(BRep_TVertex)*)&V.TShape());
-      if (Initialized.Add(TV)) 
-        TV->Tolerance(tol);
-      else 
-        B.UpdateVertex(V, tol);
+      // Attention to sharing of the vertex by other shapes      
+      toAdd = Initialized.Add(aTV) && aVTol != tol; //if Vtol == tol => no need to update toler
     }
-    else {
-      // Update can only increase tolerance, so if the edge has a greater
-      //  tolerance than its faces it is not concerned
-      B.UpdateVertex(V, tol);
-    }
+    //'Initialized' map is not used anywhere outside this block
+    if (anUpdTol || toAdd)
+      aShToTol.Bind(V, tol);
   }
+
+  UpdShTol(aShToTol, IsMutableInput, theReshaper, Standard_True);
+}
+
+//=======================================================================
+//function : UpdateTolerances
+//purpose  : 
+//=======================================================================
+void BRepLib::UpdateTolerances (const TopoDS_Shape& S, const Standard_Boolean verifyFaceTolerance)
+{
+  BRepTools_ReShape aReshaper;
+  InternalUpdateTolerances(S, verifyFaceTolerance, Standard_True, aReshaper);
+}
+
+//=======================================================================
+//function : UpdateTolerances
+//purpose  : 
+//=======================================================================
+void BRepLib::UpdateTolerances (const TopoDS_Shape& S, BRepTools_ReShape& theReshaper, const Standard_Boolean verifyFaceTolerance )
+{
+  InternalUpdateTolerances(S, verifyFaceTolerance, Standard_False, theReshaper);
 }
 
 //=======================================================================

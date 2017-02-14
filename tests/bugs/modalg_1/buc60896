@@ -11,8 +11,8 @@ restore [locate_data_file BUC60896_edge.rle] result
 # checkshape res
 
 sameparameter result
-sameparameter result tol 1.e-2
-sameparameter result tol 1000
+sameparameter result 1.e-2
+sameparameter result 1000
 
 checkprops result -l 48288.3 
 checkshape result

@@ -895,6 +895,7 @@ DRAW module: XSDRAW
 | fix_shape	| fixshape	| Shape healing | 
 | fix_gaps	| fixwgaps	| Fixing gaps between edges on a wire |
 | same_parameter	| sameparameter	| Fixing non-sameparameter edges |
+| same_parameter_locked	| sameparameter	| Fixing non-sameparameter edges |
 | fix_face_size	| DT_ApplySeq	| Removal of small faces |
 | elementary_to_revolution	| DT_ApplySeq	| Conversion of elementary surfaces to revolution |
 | direct_faces	| directfaces	| Correction of axis of elementary surfaces | 
@@ -910,6 +911,7 @@ DRAW module: XSDRAW
 | split_continuity_standard | DT_ShapeDivide | Split surfaces by continuity criterion |
 | surface_to_revolution_advanced |	DT_ShapeConvertRev	| Convert elementary surfaces to revolutions, complex cases |
 | surface_to_revolution_standard |	DT_ShapeConvertRev	| Convert elementary surfaces to revolutions, simple cases |
+| update_tolerance_locked	| updatetolerance	| Update the tolerance of shape so that it satisfy the rule: toler(face)<=toler(edge)<=toler(vertex) |
 
 @subsubsection testmanual_5_1_11 mesh
 

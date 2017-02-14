@@ -305,36 +305,80 @@ static Standard_Integer mkedgecurve (Draw_Interpretor& ,Standard_Integer n,const
 // sameparameter
 //=======================================================================
 
-static Standard_Integer sameparameter(Draw_Interpretor& ,Standard_Integer n,const char** a)
+static Standard_Integer sameparameter(Draw_Interpretor& di,Standard_Integer n,const char** a)
 {
-  if (n < 2) return 1;
-  Standard_Real tol = 1.e-7;
-  TopoDS_Shape S = DBRep::Get(a[1]);
-  if (S.IsNull()) return 1;
+  if (n < 2) 
+  {
+    di << "Use sameparameter [result] shape [toler]\n";
+    di << "shape is an initial shape\n";
+    di << "result is a result shape. if skipped = > initial shape will be modified\n";
+    di << "toler is tolerance (default is 1.e-7)";
+    return 1;
+  }
+  Standard_Real aTol = 1.e-7;
   Standard_Boolean force  = !strcmp(a[0],"fsameparameter");
-  if (n == 3) tol = Draw::Atof(a[2]);
 
-  BRepLib::SameParameter(S,tol,force);
+  Standard_Real aTol1 = Draw::Atof(a[n-1]);
+  Standard_Boolean IsUseTol = aTol1>0;
+  if (IsUseTol)
+    aTol = aTol1;
 
-  DBRep::Set(a[1],S);
+  TopoDS_Shape anInpS = DBRep::Get(IsUseTol ? a[n-2] : a[n-1]);
+  if (anInpS.IsNull())
+    return 1;
+
+  if ((n == 4 && IsUseTol) || (n == 3 && !IsUseTol))
+  {
+    TopoDS_Shape aResultSh;
+    BRepTools_ReShape aResh;
+    BRepLib::SameParameter(anInpS,aResh,aTol,force);
+    aResultSh = aResh.Apply(anInpS);
+    DBRep::Set(a[1],aResultSh); 
+  }
+  else
+  {
+    BRepLib::SameParameter(anInpS,aTol,force);
+    DBRep::Set(a[1],anInpS); 
+  }
+
   return 0;
 }
 //=======================================================================
 //function : updatetol
 //purpose  : 
 //=======================================================================
-static Standard_Integer updatetol(Draw_Interpretor& ,Standard_Integer n,const char** a)
+static Standard_Integer updatetol(Draw_Interpretor& di,Standard_Integer n,const char** a)
 {
-  if (n < 2) return 1;
+  if (n < 2) 
+  {
+    di << "Use updatetololerance [result] shape [param]\n";
+    di << "shape is an initial shape\n";
+    di << "result is a result shape. if skipped = > initial shape will be modified\n";
+    di << "if [param] is absent - not verify of face tolerance, else - perform it";
+    return 1;
+  }
+  TopoDS_Shape aSh1 = DBRep::Get(a[n-1]);
+  Standard_Boolean IsF = aSh1.IsNull();
 
-  TopoDS_Shape S = DBRep::Get(a[1]);
-  if (S.IsNull()) return 1;
+  TopoDS_Shape anInpS = IsF ? DBRep::Get(a[n-2]) : aSh1;
+  if (anInpS.IsNull())
+    return 1;
 
-  if (n==2) BRepLib::UpdateTolerances(S);
-  else BRepLib::UpdateTolerances(S,Standard_True);
-  DBRep::Set(a[1],S);
+  if ((n == 4 && IsF) || (n == 3 && !IsF))
+  {
+    TopoDS_Shape aResultSh;
+    BRepTools_ReShape aResh;
+    BRepLib::UpdateTolerances(anInpS,aResh, IsF);
+    aResultSh = aResh.Apply(anInpS);
+    DBRep::Set(a[1],aResultSh); 
+  }
+  else
+  {
+    BRepLib::UpdateTolerances(anInpS, IsF);
+    DBRep::Set(a[1],anInpS); 
+  }
+
   return 0;
-
 }
 
 //=======================================================================
@@ -1145,12 +1189,12 @@ void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
 		  sameparameter,g);
 
   theCommands.Add("sameparameter",
-		  "sameparameter shapename [tol (default 1.e-7)]",
+		  "sameparameter [result] shape [tol]",
 		  __FILE__,
 		  sameparameter,g);
 
   theCommands.Add("updatetolerance",
-		  "updatetolerance myShape [param] \n  if [param] is absent - not verify of face tolerance, else - perform it",
+		  "updatetolerance [result] shape [param] \n  if [param] is absent - not verify of face tolerance, else - perform it",
 		  __FILE__,
 		  updatetol,g);
 

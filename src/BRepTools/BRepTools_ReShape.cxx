@@ -104,6 +104,7 @@ void BRepTools_ReShape::Clear()
 {
   myNMap.Clear();
   myRMap.Clear();
+  myNewShapes.Clear();
 }
 
 
@@ -154,6 +155,7 @@ void BRepTools_ReShape::Replace (const TopoDS_Shape& ashape,
     }
     else
       myNMap.Bind (shape,newshape);
+    myNewShapes.Add (newshape);
   } 
   else {
     // protect against INTERNAL or EXTERNAL shape
@@ -621,4 +623,9 @@ TopoDS_Vertex BRepTools_ReShape::CopyVertex(const TopoDS_Vertex& theV,
     Replace(theV, aVertexCopy);
 
   return aVertexCopy;
+}
+
+Standard_Boolean BRepTools_ReShape::IsNewShape(const TopoDS_Shape& theShape) const
+{
+  return myNewShapes.Contains(theShape);
 }

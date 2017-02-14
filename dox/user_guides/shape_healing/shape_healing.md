@@ -1494,6 +1494,8 @@ For a sub-shape it is recommended to use method *Apply* before methods *Replace*
 3. Use method *Apply* for the initial shape again to get the resulting shape after all modifications have been made.
 4. Use method *Apply* to obtain the history of sub-shape modification.
 
+Additional method *IsNewShape* can be used to check if the shape has been recorded by *BRepTools_ReShape* tool as a value.
+
 **Note** that in fact class *ShapeBuild_ReShape* is an alias for class *BRepTools_ReShape*. They differ only in queries of statuses in the *ShapeBuild_ReShape* class. 
 
 Let us use the tool to get the result shape after modification of sub-shapes of the initial shape:

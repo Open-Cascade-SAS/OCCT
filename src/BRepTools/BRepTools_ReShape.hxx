@@ -21,6 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <MMgt_TShared.hxx>
@@ -138,6 +139,10 @@ public:
                                            const gp_Pnt& theNewPos,
                                            const Standard_Real aTol);
 
+  //! Checks if shape has been recorded by reshaper as a value
+  //@param theShape is the given shape
+  Standard_EXPORT Standard_Boolean IsNewShape(const TopoDS_Shape& theShape) const;
+
 
   DEFINE_STANDARD_RTTIEXT(BRepTools_ReShape,MMgt_TShared)
 
@@ -146,6 +151,7 @@ protected:
 
   TopTools_DataMapOfShapeShape myNMap;
   TopTools_DataMapOfShapeShape myRMap;
+  TopTools_MapOfShape myNewShapes;
   Standard_Integer myStatus;
 
 
