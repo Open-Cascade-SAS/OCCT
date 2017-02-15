@@ -46,9 +46,9 @@ vcaps -ffp 1
 vexport ${aFile} SVG
 
 if { [checkplatform -windows] } {
-   set refsize 14091
+   set refsize 12127
 } else {
-   set refsize 14207
+   set refsize 12113
 }
 
 if { [file exists ${aFile}] } {

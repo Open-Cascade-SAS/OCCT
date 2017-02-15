@@ -42,4 +42,5 @@ set aFile $imagedir/ExportToPS.ps
 
 set format PS
 
-set size 10646
+set size 9550
+

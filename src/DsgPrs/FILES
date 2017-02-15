@@ -7,8 +7,6 @@ DsgPrs_Chamf2dPresentation.cxx
 DsgPrs_Chamf2dPresentation.hxx
 DsgPrs_ConcentricPresentation.cxx
 DsgPrs_ConcentricPresentation.hxx
-DsgPrs_DatumPrs.cxx
-DsgPrs_DatumPrs.hxx
 DsgPrs_DiameterPresentation.cxx
 DsgPrs_DiameterPresentation.hxx
 DsgPrs_EllipseRadiusPresentation.cxx

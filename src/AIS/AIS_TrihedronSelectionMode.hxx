@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2014 OPEN CASCADE SAS
+// Copyright (c) 2017 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -11,24 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _DsgPrs_DatumPrs_H__
-#define _DsgPrs_DatumPrs_H__
+#ifndef _AIS_TrihedronSelectionMode_HeaderFile
+#define _AIS_TrihedronSelectionMode_HeaderFile
 
-#include <gp_Ax2.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
-
-class DsgPrs_DatumPrs : public Prs3d_Root
+//! Enumeration defining selection modes supported by AIS_Trihedron.
+enum AIS_TrihedronSelectionMode
 {
-public:
-
-  DEFINE_STANDARD_ALLOC
-
-  Standard_EXPORT static void Add
-          (const Handle(Prs3d_Presentation)& thePresentation,
-           const gp_Ax2&                     theDatum,
-           const Handle(Prs3d_Drawer)&       theDrawer);
-
+  AIS_TrihedronSelectionMode_EntireObject = 0, //!< select trihedron as whole
+  AIS_TrihedronSelectionMode_Origin       = 1, //!< origin
+  AIS_TrihedronSelectionMode_Axes         = 2, //!< axes
+  AIS_TrihedronSelectionMode_MainPlanes   = 3  //!< main planes
 };
-#endif
+
+#endif // _AIS_TrihedronSelectionMode_HeaderFile

@@ -42,4 +42,5 @@ set aFile $imagedir/ExportToPDF.pdf
 
 set format PDF
 
-set size 10343
+set size 9070
+

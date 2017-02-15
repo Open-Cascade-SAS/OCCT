@@ -4169,6 +4169,41 @@ static int VDisplay2 (Draw_Interpretor& theDI,
   return 0;
 }
 
+//=======================================================================
+//function : VNbDisplayed
+//purpose  : Returns number of displayed objects
+//=======================================================================
+static Standard_Integer VNbDisplayed (Draw_Interpretor& theDi,
+                                      Standard_Integer theArgsNb,
+                                      const char** theArgVec)
+{
+  if(theArgsNb != 1)
+  {
+    theDi << "Usage : " << theArgVec[0] << "\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
+  if (aContextAIS.IsNull())
+  {
+    std::cout << theArgVec[0] << "AIS context is not available.\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if(aContext.IsNull())
+  {
+    theDi << "use 'vinit' command before " << theArgVec[0] << "\n";
+    return 1;
+  }
+
+  AIS_ListOfInteractive aListOfIO;
+  aContextAIS->DisplayedObjects(aListOfIO, false);
+
+  theDi << aListOfIO.Extent() << "\n";
+  return 0;
+}
+
 //===============================================================================================
 //function : VUpdate
 //purpose  :
@@ -5857,6 +5892,11 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:  -highmode    Sets hilight mode for objects."
       "\n\t\t:  -redisplay   Recomputes presentation of objects.",
       __FILE__, VDisplay2, group);
+
+  theCommands.Add ("vnbdisplayed",
+      "vnbdisplayed"
+      "\n\t\t: Returns number of displayed objects",
+      __FILE__, VNbDisplayed, group);
 
   theCommands.Add ("vupdate",
       "vupdate name1 [name2] ... [name n]"

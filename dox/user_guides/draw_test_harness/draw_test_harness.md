@@ -2087,15 +2087,37 @@ vsetcolorbg 200 0 200
 
 Syntax:                  
 ~~~~~
-vtrihedron name [X0] [Y0] [Z0] [Zu] [Zv] [Zw] [Xu] [Xv] [Xw]
+vtrihedron name [-dispMode {wf|sh|wireframe|shading}]
+                [-origin x y z ]
+                [-zaxis u v w -xaxis u v w ]
+                [-drawaxes {X|Y|Z|XY|YZ|XZ|XYZ}]
+                [-hidelabels {on|off}]"
+                [-label {XAxis|YAxis|ZAxis} value]"
+                [-attribute {XAxisLength|YAxisLength|ZAxisLength
+                                        |TubeRadiusPercent|ConeRadiusPercent"
+                                        |ConeLengthPercent|OriginRadiusPercent"
+                                        |ShadingNumberOfFacettes} value]"
+                [-color {Origin|XAxis|YAxis|ZAxis|XOYAxis|YOZAxis"
+                                        |XOZAxis|Whole} {r g b | colorName}]"
+                [-textcolor {r g b | colorName}]"
+                [-arrowscolor {r g b | colorName}]"
+                [-priority {Origin|XAxis|YAxis|ZAxis|XArrow"
+                                        |YArrow|ZArrow|XOYAxis|YOZAxis"
+                                        |XOZAxis|Whole} value]
+
 ~~~~~ 
 
-Creates a new *AIS_Trihedron* object. If no argument is set, the default trihedron (0XYZ) is created.
- 
+Creates a new *AIS_Trihedron* object or changes existing trihedron. If no argument is set, the default trihedron (0XYZ) is created.
+
 **Example:** 
 ~~~~~
 vinit 
-vtrihedron tr
+vtrihedron tr1
+
+vtrihedron t2 -dispmode shading -origin -200 -200 -300
+vtrihedron t2 -color XAxis Quantity_NOC_RED
+vtrihedron t2 -color YAxis Quantity_NOC_GREEN
+vtrihedron t2 -color ZAxis|Origin Quantity_NOC_BLUE1
 ~~~~~ 
 
 @subsubsection occt_draw_4_4_2 vplanetri

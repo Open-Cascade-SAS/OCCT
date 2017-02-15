@@ -58,7 +58,7 @@ DEFINE_STANDARD_HANDLE(AIS_PlaneTrihedron, AIS_InteractiveObject)
 //! these dimensions, you must temporarily recover the
 //! Drawer object. From inside it, take the Aspects in
 //! which   the values for length are stocked, for example,
-//! PlaneAspect for planes and FirstAxisAspect for
+//! PlaneAspect for planes and LineAspect for
 //! trihedra. Change these values and recalculate the presentation.
 class AIS_PlaneTrihedron : public AIS_InteractiveObject
 {

@@ -1,7 +1,4 @@
-// Created on: 1997-03-06
-// Created by: Robert COUBLANC
-// Copyright (c) 1997-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 2016 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,8 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline const Handle(Geom_Axis2Placement)& AIS_Trihedron::Component() const
-{return myComponent;}
+#ifndef _Prs3d_DatumMode_HeaderFile
+#define _Prs3d_DatumMode_HeaderFile
 
-inline Standard_Boolean AIS_Trihedron::HasOwnSize() const 
-{return myHasOwnSize;}
+//! Enumeration defining a mode of datum graphic presentation, see Prs3d_Datum.
+enum Prs3d_DatumMode
+{
+  Prs3d_DM_WireFrame = 0,
+  Prs3d_DM_Shaded
+};
+
+#endif // _Prs3d_DatumMode_HeaderFile

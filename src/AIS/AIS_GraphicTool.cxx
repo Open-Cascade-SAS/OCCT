@@ -69,11 +69,11 @@ static Handle(Prs3d_LineAspect) GetLineAspect(const Handle(Prs3d_Drawer)& Dr,
     return Dr->SeenLineAspect();
     break;
   case AIS_TOA_FirstAxis:
-    return Dr->DatumAspect()->FirstAxisAspect();
+    return Dr->DatumAspect()->LineAspect(Prs3d_DP_XAxis);
   case AIS_TOA_SecondAxis:
-    return Dr->DatumAspect()->SecondAxisAspect();
+    return Dr->DatumAspect()->LineAspect(Prs3d_DP_YAxis);
   case AIS_TOA_ThirdAxis:
-    return Dr->DatumAspect()->SecondAxisAspect();
+    return Dr->DatumAspect()->LineAspect(Prs3d_DP_ZAxis);
   }
   Handle(Prs3d_LineAspect) bid;
   return bid;

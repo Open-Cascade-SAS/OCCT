@@ -16,6 +16,8 @@
 
 #include <ViewerTest.hxx>
 
+#include <AIS_PlaneTrihedron.hxx>
+
 #include <Quantity_NameOfColor.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw.hxx>
@@ -26,6 +28,9 @@
 #include <Font_BRepFont.hxx>
 #include <Font_BRepTextBuilder.hxx>
 #include <Font_FontMgr.hxx>
+
+#include <NCollection_List.hxx>
+
 #include <OSD_Chronometer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <V3d_Viewer.hxx>
@@ -106,7 +111,6 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <Geom_Circle.hxx>
 #include <GC_MakeCircle.hxx>
-#include <Prs3d_Presentation.hxx>
 #include <Select3D_SensitiveCircle.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
@@ -132,11 +136,13 @@
 
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
+#include <Prs3d_DatumAttribute.hxx>
 #include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_VertexDrawMode.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
+#include <Prs3d_Presentation.hxx>
 #include <Prs3d_TextAspect.hxx>
 
 #include <Image_AlienPixMap.hxx>
@@ -150,12 +156,335 @@ extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theNam
 extern int ViewerMainLoop(Standard_Integer argc, const char** argv);
 extern Handle(AIS_InteractiveContext)& TheAISContext();
 
+namespace
+{
+  static bool convertToColor (const Handle(TColStd_HSequenceOfAsciiString)& theColorValues,
+                              Quantity_Color& theColor)
+  {
+    const char* anArgs[3] =
+    {
+      theColorValues->Size() >= 1 ? theColorValues->Value (1).ToCString() : "",
+      theColorValues->Size() >= 2 ? theColorValues->Value (2).ToCString() : "",
+      theColorValues->Size() >= 3 ? theColorValues->Value (3).ToCString() : ""
+    };
+    return ViewerTest::ParseColor (theColorValues->Size(), anArgs, theColor) != 0;
+  }
+
+  static bool convertToDatumPart (const TCollection_AsciiString& theValue,
+                                  Prs3d_DatumParts& theDatumPart)
+  {
+    TCollection_AsciiString aValue = theValue;
+    aValue.LowerCase();
+    if      (aValue == "origin")  theDatumPart = Prs3d_DP_Origin;
+    else if (aValue == "xaxis")   theDatumPart = Prs3d_DP_XAxis;
+    else if (aValue == "yaxis")   theDatumPart = Prs3d_DP_YAxis;
+    else if (aValue == "zaxis")   theDatumPart = Prs3d_DP_ZAxis;
+    else if (aValue == "xarrow")  theDatumPart = Prs3d_DP_XArrow;
+    else if (aValue == "yarrow")  theDatumPart = Prs3d_DP_YArrow;
+    else if (aValue == "zarrow")  theDatumPart = Prs3d_DP_ZArrow;
+    else if (aValue == "xoyaxis") theDatumPart = Prs3d_DP_XOYAxis;
+    else if (aValue == "yozaxis") theDatumPart = Prs3d_DP_YOZAxis;
+    else if (aValue == "xozaxis") theDatumPart = Prs3d_DP_XOZAxis;
+    else if (aValue == "whole")   theDatumPart = Prs3d_DP_None;
+    else
+    {
+      return false;
+    }
+    return true;
+  }
+
+  static void convertToDatumParts (const TCollection_AsciiString& theValue,
+                                   NCollection_List<Prs3d_DatumParts>& theParts)
+  {
+    TCollection_AsciiString aValue = theValue;
+    const Standard_Integer aSplitPos = theValue.Search ("|");
+    Prs3d_DatumParts aPart = Prs3d_DP_None;
+    if (aSplitPos > 0)
+    {
+      convertToDatumParts (theValue.SubString (aSplitPos + 1, theValue.Length()), theParts);
+      if (aSplitPos == 1) // first symbol
+      {
+        return;
+      }
+      aValue = theValue.SubString (1, aSplitPos - 1);
+    }
+    if (convertToDatumPart (aValue, aPart))
+    {
+      theParts.Append (aPart);
+    }
+  }
+
+  static bool convertToDatumAttribute (const TCollection_AsciiString& theValue,
+                                       Prs3d_DatumAttribute& theAttribute)
+  {
+    TCollection_AsciiString aValue = theValue;
+    aValue.LowerCase();
+    if      (aValue == "xaxislength")       theAttribute = Prs3d_DA_XAxisLength;
+    else if (aValue == "yaxislength")       theAttribute = Prs3d_DA_YAxisLength;
+    else if (aValue == "zaxislength")       theAttribute = Prs3d_DA_ZAxisLength;
+    else if (aValue == "tuberadiuspercent") theAttribute = Prs3d_DP_ShadingTubeRadiusPercent;
+    else if (aValue == "coneradiuspercent") theAttribute = Prs3d_DP_ShadingConeRadiusPercent;
+    else if (aValue == "conelengthpercent") theAttribute = Prs3d_DP_ShadingConeLengthPercent;
+    else if (aValue == "originradiuspercent") theAttribute = Prs3d_DP_ShadingOriginRadiusPercent;
+    else if (aValue == "shadingnumberoffacettes") theAttribute = Prs3d_DP_ShadingNumberOfFacettes;
+    else
+      return false;
+    return true;
+  }
+
+  static void convertToDatumAttributes (const TCollection_AsciiString& theValue,
+                                        NCollection_List<Prs3d_DatumAttribute>& theAttributes)
+  {
+    TCollection_AsciiString aValue = theValue;
+    const Standard_Integer aSplitPos = theValue.Search ("|");
+    Prs3d_DatumAttribute anAttribute = Prs3d_DA_XAxisLength;
+    if (aSplitPos > 0)
+    {
+      convertToDatumAttributes (theValue.SubString (aSplitPos + 1, theValue.Length()), theAttributes);
+      if (aSplitPos == 1) // first symbol
+      {
+        return;
+      }
+      aValue = theValue.SubString (1, aSplitPos - 1);
+    }
+    if (convertToDatumAttribute (aValue, anAttribute))
+    {
+      theAttributes.Append (anAttribute);
+    }
+  }
+
+  static bool convertToDatumAxes (const TCollection_AsciiString& theValue,
+                                  Prs3d_DatumAxes& theDatumAxes)
+  {
+    TCollection_AsciiString aValue = theValue;
+    aValue.LowerCase();
+    if      (aValue == "x")   theDatumAxes = Prs3d_DA_XAxis;
+    else if (aValue == "y")   theDatumAxes = Prs3d_DA_YAxis;
+    else if (aValue == "z")   theDatumAxes = Prs3d_DA_ZAxis;
+    else if (aValue == "xy")  theDatumAxes = Prs3d_DA_XYAxis;
+    else if (aValue == "zy")  theDatumAxes = Prs3d_DA_YZAxis;
+    else if (aValue == "xz")  theDatumAxes = Prs3d_DA_XZAxis;
+    else if (aValue == "xyz") theDatumAxes = Prs3d_DA_XYZAxis;
+    else
+    {
+      return false;
+    }
+    return true;
+  }
+
+  static Standard_Boolean setTrihedronParams (Standard_Integer  theArgsNb,
+                                              const char** theArgVec,
+                                              Handle(AIS_Trihedron) theTrihedron)
+  {
+    NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfAsciiString)> aMapOfArgs;
+    TCollection_AsciiString aParseKey;
+    for (Standard_Integer anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
+    {
+      TCollection_AsciiString anArg (theArgVec [anArgIt]);
+      if (anArg.Value (1) == '-'
+      && !anArg.IsRealValue())
+      {
+        aParseKey = anArg;
+        aParseKey.Remove (1);
+        aParseKey.LowerCase();
+        std::string aKey = aParseKey.ToCString();
+        aMapOfArgs.Bind (aParseKey, new TColStd_HSequenceOfAsciiString());
+        continue;
+      }
+
+      if (aParseKey.IsEmpty())
+      {
+        continue;
+      }
+
+      aMapOfArgs (aParseKey)->Append (anArg);
+    }
+
+    // Check parameters
+    if ((aMapOfArgs.IsBound ("xaxis") && !aMapOfArgs.IsBound ("zaxis"))
+    || (!aMapOfArgs.IsBound ("xaxis") &&  aMapOfArgs.IsBound ("zaxis")))
+    {
+      std::cout << "Syntax error: -xaxis and -zaxis parameters are to set together.\n";
+      return Standard_False;
+    }
+
+    Handle(TColStd_HSequenceOfAsciiString) aValues;
+    Handle(Geom_Axis2Placement) aComponent = theTrihedron->Component();
+    if (aMapOfArgs.Find ("origin", aValues))
+    {
+      aComponent->SetLocation (gp_Pnt (aValues->Value (1).RealValue(),
+                                       aValues->Value (2).RealValue(),
+                                       aValues->Value (3).RealValue()));
+    }
+    Handle(TColStd_HSequenceOfAsciiString) aXValues, aZValues;
+    if (aMapOfArgs.Find ("xaxis", aXValues) && aMapOfArgs.Find ("zaxis", aZValues))
+    {
+      gp_Dir aXDir (aXValues->Value (1).RealValue(),
+                    aXValues->Value (2).RealValue(),
+                    aXValues->Value (3).RealValue());
+
+      gp_Dir aZDir (aZValues->Value (1).RealValue(),
+                    aZValues->Value (2).RealValue(),
+                    aZValues->Value (3).RealValue());
+
+      if (!aZDir.IsNormal (aXDir, M_PI / 180.0))
+      {
+        std::cout << "Syntax error - parameters 'xaxis' and 'zaxis' are not applied as VectorX is not normal to VectorZ\n";
+        return Standard_False;
+      }
+
+      aComponent->SetXDirection(aXDir);
+      aComponent->SetDirection (aZDir);
+    }
+
+    if (aMapOfArgs.Find ("dispmode", aValues))
+    {
+      TCollection_AsciiString aValue (aValues->Value (1));
+      bool isWireframe = true;
+      if (aValue.IsEqual ("sh") || aValue.IsEqual ("shading"))
+        isWireframe = false;
+      theTrihedron->SetDatumDisplayMode (isWireframe ? Prs3d_DM_WireFrame
+                                                     : Prs3d_DM_Shaded);
+    }
+
+    if (aMapOfArgs.Find ("hidelabels", aValues))
+    {
+      if (aValues->Size() == 0)
+      {
+        std::cout << "Syntax error: -hidelabels expects parameter 'on' or 'off' after.\n";
+        return Standard_False;
+      }
+
+      Standard_Boolean toHideLabels = Standard_True;
+      ViewerTest::ParseOnOff (aValues->Value (1).ToCString(), toHideLabels);
+      if (!theTrihedron->Attributes()->HasOwnDatumAspect())
+        theTrihedron->Attributes()->SetDatumAspect(new Prs3d_DatumAspect());
+      theTrihedron->Attributes()->DatumAspect()->SetToDrawLabels (!toHideLabels);
+    }
+
+    if (aMapOfArgs.Find ("color", aValues))
+    {
+      NCollection_List<Prs3d_DatumParts> aParts;
+      if (aValues->Size() < 2)
+      {
+        std::cout << "Syntax error: -color wrong parameters.\n";
+        return Standard_False;
+      }
+
+      convertToDatumParts (aValues->Value(1), aParts);
+      aValues->Remove (1); // datum part is processed
+      Quantity_Color aColor;
+      if (!convertToColor (aValues, aColor))
+      {
+        std::cout << "Syntax error: -color wrong parameters.\n";
+        return Standard_False;
+      }
+
+      for (NCollection_List<Prs3d_DatumParts>::Iterator anIterator (aParts); anIterator.More(); anIterator.Next())
+      {
+        Prs3d_DatumParts aDatumPart = anIterator.Value();
+        if (aDatumPart == Prs3d_DP_None)
+        {
+          theTrihedron->SetColor (aColor);
+        }
+        else
+        {
+          theTrihedron->SetDatumPartColor (aDatumPart, aColor);
+        }
+      }
+    }
+
+    if (aMapOfArgs.Find ("textcolor", aValues))
+    {
+      Quantity_Color aColor;
+      if (!convertToColor (aValues, aColor))
+      {
+        std::cout << "Syntax error: -textcolor wrong parameters.\n";
+        return Standard_False;
+      }
+      theTrihedron->SetTextColor (aColor);
+    }
+
+    if (aMapOfArgs.Find ("arrowcolor", aValues))
+    {
+      Quantity_Color aColor;
+      if (!convertToColor (aValues, aColor))
+      {
+        std::cout << "Syntax error: -arrowcolor wrong parameters.\n";
+        return Standard_False;
+      }
+      theTrihedron->SetArrowColor (aColor);
+    }
+
+    if (aMapOfArgs.Find ("attribute", aValues))
+    {
+      NCollection_List<Prs3d_DatumAttribute> anAttributes;
+      if (aValues->Size() != 2)
+      {
+        std::cout << "Syntax error: -attribute wrong parameters.\n";
+        return Standard_False;
+      }
+
+      convertToDatumAttributes (aValues->Value (1), anAttributes);
+      if (!theTrihedron->Attributes()->HasOwnDatumAspect())
+        theTrihedron->Attributes()->SetDatumAspect(new Prs3d_DatumAspect());
+      for (NCollection_List<Prs3d_DatumAttribute>::Iterator anIterator (anAttributes); anIterator.More(); anIterator.Next())
+      {
+        theTrihedron->Attributes()->DatumAspect()->SetAttribute (anIterator.Value(), aValues->Value (2).RealValue());
+      }
+    }
+
+    if (aMapOfArgs.Find ("priority", aValues))
+    {
+      Prs3d_DatumParts aDatumPart;
+      if (aValues->Size() < 2
+      || !convertToDatumPart (aValues->Value (1), aDatumPart))
+      {
+        std::cout << "Syntax error: -priority wrong parameters.\n";
+        return Standard_False;
+      }
+      theTrihedron->SetSelectionPriority (aDatumPart, aValues->Value (2).IntegerValue());
+    }
+
+    if (aMapOfArgs.Find ("labels", aValues))
+    {
+      Prs3d_DatumParts aDatumPart = Prs3d_DP_None;
+      if (aValues->Size() > 2
+       && convertToDatumPart(aValues->Value(1), aDatumPart)
+       && aDatumPart >= Prs3d_DP_XAxis
+       && aDatumPart <= Prs3d_DP_ZAxis) // labels are set to axes only
+      {
+        theTrihedron->SetLabel (aDatumPart, aValues->Value (2));
+      }
+      else
+      {
+        std::cout << "Syntax error: -labels wrong parameters.\n";
+        return Standard_False;
+      }
+    }
+
+    if (aMapOfArgs.Find ("drawaxes", aValues))
+    {
+      Prs3d_DatumAxes aDatumAxes = Prs3d_DA_XAxis;
+      if (aValues->Size() < 1
+      || !convertToDatumAxes (aValues->Value (1), aDatumAxes))
+      {
+        std::cout << "Syntax error: -drawaxes wrong parameters.\n";
+        return Standard_False;
+      }
+      if (!theTrihedron->Attributes()->HasOwnDatumAspect())
+        theTrihedron->Attributes()->SetDatumAspect(new Prs3d_DatumAspect());
+      theTrihedron->Attributes()->DatumAspect()->SetDrawDatumAxes (aDatumAxes);
+    }
+    return Standard_True;
+  }
+}
+
 //==============================================================================
 //function : Vtrihedron 2d
 //purpose  : Create a plane with a 2D  trihedron from a faceselection
 //Draw arg : vtri2d  name
 //==============================================================================
-#include <AIS_PlaneTrihedron.hxx>
 static int VTrihedron2D (Draw_Interpretor& /*theDI*/,
                          Standard_Integer  theArgsNum,
                          const char**      theArgVec)
@@ -210,136 +539,60 @@ static int VTrihedron2D (Draw_Interpretor& /*theDI*/,
   return 0;
 }
 
-
-
-//==============================================================================
-//function : VTriherdron
-//purpose  : Create a trihedron. If no arguments are set, the default
-//           trihedron (Oxyz) is created.
-//Draw arg : vtrihedron  name  [Xo] [Yo] [Zo] [Zu] [Zv] [Zw] [Xu] [Xv] [Xw]
-//==============================================================================
-
-static int VTrihedron (Draw_Interpretor& /*theDi*/,
-                       Standard_Integer  theArgsNb,
-                       const char**      theArgVec)
+//=======================================================================
+//function : VTrihedron
+//purpose  :
+//=======================================================================
+static int VTrihedron (Draw_Interpretor& ,
+                       Standard_Integer theArgsNb,
+                       const char** theArgVec)
 {
-  if (theArgsNb < 2 || theArgsNb > 11)
+  if (theArgsNb < 2)
   {
-    std::cout << theArgVec[0] << " syntax error\n";
+    std::cout << "Syntax error: the wrong number of input parameters.\n";
     return 1;
   }
 
-  // Parse parameters
-  NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfAsciiString)> aMapOfArgs;
-  TCollection_AsciiString aParseKey;
-  for (Standard_Integer anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
+  TCollection_AsciiString aName (theArgVec[1]);
+  gp_Pln aWorkingPlane;
+  Standard_Boolean toUpdate = Standard_True;
+
+  NCollection_DataMap<TCollection_AsciiString, Standard_Real> aRealParams;
+  NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> aStringParams;
+
+  Handle(AIS_Trihedron) aTrihedron;
+  if (GetMapOfAIS().IsBound2 (aName))
   {
-    TCollection_AsciiString anArg (theArgVec [anArgIt]);
-
-    if (anArg.Value (1) == '-' && !anArg.IsRealValue())
+    Handle(AIS_InteractiveObject) anObject = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
+    aTrihedron = Handle(AIS_Trihedron)::DownCast (anObject);
+    if (aTrihedron.IsNull())
     {
-      aParseKey = anArg;
-      aParseKey.Remove (1);
-      aParseKey.LowerCase();
-      aMapOfArgs.Bind (aParseKey, new TColStd_HSequenceOfAsciiString);
-      continue;
+      std::cout << "Syntax error: no trihedron with this name.\n";
+      return 1;
     }
-
-    if (aParseKey.IsEmpty())
-    {
-      continue;
-    }
-
-    aMapOfArgs(aParseKey)->Append (anArg);
+  }
+  else
+  {
+    Handle(Geom_Axis2Placement) aPlacement = new Geom_Axis2Placement (gp_Pnt (0.0, 0.0, 0.0),
+                                                                      gp::DZ(), gp::DX());
+    aTrihedron = new AIS_Trihedron (aPlacement);
   }
 
-  // Check parameters
-  if ( (aMapOfArgs.IsBound ("xaxis") && !aMapOfArgs.IsBound ("zaxis"))
-    || (!aMapOfArgs.IsBound ("xaxis") && aMapOfArgs.IsBound ("zaxis")) )
+  if (!setTrihedronParams (theArgsNb, theArgVec, aTrihedron))
   {
-    std::cout << theArgVec[0] << " error: -xaxis and -yaxis parameters are to set together.\n";
     return 1;
   }
 
-  for (NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfAsciiString)>::Iterator aMapIt (aMapOfArgs);
-       aMapIt.More(); aMapIt.Next())
+  // Redisplay a dimension after parameter changing.
+  if (ViewerTest::GetAISContext()->IsDisplayed (aTrihedron))
   {
-    const TCollection_AsciiString& aKey = aMapIt.Key();
-    const Handle(TColStd_HSequenceOfAsciiString)& anArgs = aMapIt.Value();
-
-    // Bool key, without arguments
-    if (aKey.IsEqual ("hidelabels") && anArgs->IsEmpty())
-    {
-      continue;
-    }
-
-    if ( (aKey.IsEqual ("xaxis") || aKey.IsEqual ("zaxis") || aKey.IsEqual ("origin")) && anArgs->Length() == 3
-      && anArgs->Value(1).IsRealValue() && anArgs->Value(2).IsRealValue() && anArgs->Value(3).IsRealValue() )
-    {
-      continue;
-    }
+    ViewerTest::GetAISContext()->Redisplay (aTrihedron, toUpdate);
+  }
+  else
+  {
+    VDisplayAISObject (theArgVec[1], aTrihedron);
   }
 
-  // Process parameters
-  gp_Pnt anOrigin (0.0, 0.0, 0.0);
-  gp_Dir aDirZ = gp::DZ();
-  gp_Dir aDirX = gp::DX();
-
-  Handle(TColStd_HSequenceOfAsciiString) aValues;
-
-  if (aMapOfArgs.Find ("origin", aValues))
-  {
-    anOrigin.SetX (aValues->Value(1).RealValue());
-    anOrigin.SetY (aValues->Value(2).RealValue());
-    anOrigin.SetZ (aValues->Value(3).RealValue());
-  }
-
-  Handle(TColStd_HSequenceOfAsciiString) aValues2;
-  if (aMapOfArgs.Find ("xaxis", aValues) && aMapOfArgs.Find ("zaxis", aValues2))
-  {
-    Standard_Real aX = aValues->Value(1).RealValue();
-    Standard_Real aY = aValues->Value(2).RealValue();
-    Standard_Real aZ = aValues->Value(3).RealValue();
-    aDirX.SetCoord (aX, aY, aZ);
-
-    aX = aValues->Value(1).RealValue();
-    aY = aValues->Value(2).RealValue();
-    aZ = aValues->Value(3).RealValue();
-    aDirZ.SetCoord (aX, aY, aZ);
-  }
-
-  if (!aDirZ.IsNormal (aDirX, M_PI / 180.0))
-  {
-    std::cout << theArgVec[0] << " error - VectorX is not normal to VectorZ\n";
-    return 1;
-  }
-
-  Handle(Geom_Axis2Placement) aPlacement = new Geom_Axis2Placement (anOrigin, aDirZ, aDirX);
-  Handle(AIS_Trihedron) aShape = new AIS_Trihedron (aPlacement);
-
-  if (aMapOfArgs.Find ("hidelabels", aValues))
-  {
-    const Handle(Prs3d_Drawer)& aDrawer = aShape->Attributes();
-
-    if(!aDrawer->HasOwnDatumAspect())
-    {
-      Handle(Prs3d_DatumAspect) aDefAspect = ViewerTest::GetAISContext()->DefaultDrawer()->DatumAspect();
-
-      Handle(Prs3d_DatumAspect) aDatumAspect = new Prs3d_DatumAspect();
-      aDatumAspect->FirstAxisAspect()->SetAspect (aDefAspect->FirstAxisAspect()->Aspect());
-      aDatumAspect->SecondAxisAspect()->SetAspect (aDefAspect->SecondAxisAspect()->Aspect());
-      aDatumAspect->ThirdAxisAspect()->SetAspect (aDefAspect->ThirdAxisAspect()->Aspect());
-      aDatumAspect->SetAxisLength (aDefAspect->FirstAxisLength(),
-                                   aDefAspect->SecondAxisLength(),
-                                   aDefAspect->ThirdAxisLength());
-
-      aDrawer->SetDatumAspect (aDatumAspect);
-    }
-
-    aDrawer->DatumAspect()->SetToDrawLabels (Standard_False);
-  }
-
-  VDisplayAISObject (theArgVec[1], aShape);
   return 0;
 }
 
@@ -6156,11 +6409,48 @@ static int VNormals (Draw_Interpretor& theDI,
 void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
 {
   const char *group ="AISObjects";
-  theCommands.Add("vtrihedron",
-    "vtrihedron         : vtrihedron name [ -origin x y z ] [ -zaxis u v w -xaxis u v w ] [ -hidelabels ]"
-    "\n\t\t: Creates a new *AIS_Trihedron* object. If no argument is set, the default trihedron (0XYZ) is created."
-     "\n\t\t: -hidelabels allows to draw trihedron without axes labels. By default, they are displayed.",
-    __FILE__,VTrihedron,group);
+
+  theCommands.Add ("vtrihedron",
+                   "vtrihedron : vtrihedron name"
+                   "\n\t\t: [-dispMode {wireframe|shading} ]"
+                   "\n\t\t: [-origin x y z ]"
+                   "\n\t\t: [-zaxis u v w -xaxis u v w ]"
+                   "\n\t\t: [-drawaxes {X|Y|Z|XY|YZ|XZ|XYZ}]"
+                   "\n\t\t: [-hidelabels {on|off}]"
+                   "\n\t\t: [-label {XAxis|YAxis|ZAxis} value]"
+                   "\n\t\t: [-attribute {XAxisLength|YAxisLength|ZAxisLength"
+                   "\n\t\t:             |TubeRadiusPercent|ConeRadiusPercent"
+                   "\n\t\t:             |ConeLengthPercent|OriginRadiusPercent"
+                   "\n\t\t:             |ShadingNumberOfFacettes} value]"
+                   "\n\t\t: [-color {Origin|XAxis|YAxis|ZAxis|XOYAxis|YOZAxis"
+                   "\n\t\t:         |XOZAxis|Whole} {r g b | colorName}]"
+                   "\n\t\t: [-textcolor {r g b | colorName}]"
+                   "\n\t\t: [-arrowscolor {r g b | colorName}]"
+                   "\n\t\t: [-priority {Origin|XAxis|YAxis|ZAxis|XArrow"
+                   "\n\t\t:            |YArrow|ZArrow|XOYAxis|YOZAxis"
+                   "\n\t\t:            |XOZAxis|Whole} value]"
+                   "\n\t\t:"
+                   "\n\t\t: Creates a new *AIS_Trihedron* object or changes parameters of "
+                   "\n\t\t: existing trihedron. If no argument is set,"
+                   "\n\t\t: the default trihedron (0XYZ) is created."
+                   "\n\t\t: -dispMode mode of visualization: wf - wireframe,"
+                   "\n\t\t:                                  sh - shading."
+                   "\n\t\t:               Default value is wireframe."
+                   "\n\t\t: -origin allows to set trihedron location."
+                   "\n\t\t: -zaxis/-xaxis allows to set trihedron X and Z"
+                   "\n\t\t:               directions. The directions should"
+                   "\n\t\t:               be orthogonal. Y direction is calculated."
+                   "\n\t\t: -drawaxes allows to set what axes are drawn in the"
+                   "\n\t\t:           trihedron, default state is XYZ"
+                   "\n\t\t: -hidelabels allows to hide or show trihedron labels"
+                   "\n\t\t: -labels allows to change default X/Y/Z titles of axes"
+                   "\n\t\t: -attribute sets parameters of trihedron"
+                   "\n\t\t: -color sets color properties of parts of trihedron"
+                   "\n\t\t: -textcolor sets color properties of trihedron labels"
+                   "\n\t\t: -arrowscolor sets color properties of trihedron arrows"
+                   "\n\t\t: -priority allows to change default selection priority"
+                   "\n\t\t: of trihedron components",
+                   __FILE__,VTrihedron,group);
 
   theCommands.Add("vtri2d",
     "vtri2d Name"

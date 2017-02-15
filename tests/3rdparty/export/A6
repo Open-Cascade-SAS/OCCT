@@ -42,4 +42,4 @@ set aFile $imagedir/ExportToSVG.svg
 
 set format SVG
 
-set size 14042
+set size 12120

@@ -412,9 +412,9 @@ void AIS_Plane::UnsetSize()
                                                                new Prs3d_DatumAspect();
 
     myDrawer->PlaneAspect()->SetPlaneLength(PA->PlaneXLength(),PA->PlaneYLength());
-    myDrawer->DatumAspect()->SetAxisLength(DA->FirstAxisLength(),
-					   DA->SecondAxisLength(),
-					   DA->ThirdAxisLength());
+    myDrawer->DatumAspect()->SetAxisLength(DA->AxisLength(Prs3d_DP_XAxis),
+					   DA->AxisLength(Prs3d_DP_YAxis),
+					   DA->AxisLength(Prs3d_DP_ZAxis));
   }
   
   myHasOwnSize = Standard_False;
@@ -467,9 +467,9 @@ void AIS_Plane::SetColor(const Quantity_Color &aCol)
   }
   
   PA->EdgesAspect()->SetColor(aCol);
-  DA->FirstAxisAspect()->SetColor(aCol);
-  DA->SecondAxisAspect()->SetColor(aCol);
-  DA->ThirdAxisAspect()->SetColor(aCol);
+  DA->LineAspect(Prs3d_DP_XAxis)->SetColor(aCol);
+  DA->LineAspect(Prs3d_DP_YAxis)->SetColor(aCol);
+  DA->LineAspect(Prs3d_DP_ZAxis)->SetColor(aCol);
 
   if(!yenavaitPA)
     myDrawer->SetPlaneAspect(PA);
@@ -500,9 +500,9 @@ void AIS_Plane::UnsetColor()
     Quantity_NameOfColor Col = PA->EdgesAspect()->Aspect()->Color().Name();
     myDrawer->PlaneAspect()->EdgesAspect()->SetColor(Col);
     
-    myDrawer->DatumAspect()->FirstAxisAspect()->SetColor(Col);
-    myDrawer->DatumAspect()->SecondAxisAspect()->SetColor(Col);
-    myDrawer->DatumAspect()->ThirdAxisAspect()->SetColor(Col);
+    myDrawer->DatumAspect()->LineAspect(Prs3d_DP_XAxis)->SetColor(Col);
+    myDrawer->DatumAspect()->LineAspect(Prs3d_DP_YAxis)->SetColor(Col);
+    myDrawer->DatumAspect()->LineAspect(Prs3d_DP_ZAxis)->SetColor(Col);
   }
  
  
@@ -566,9 +566,9 @@ void AIS_Plane::ComputeFields()
     oX.Coord(x1,y1,z1);
     oY.Coord(x2,y2,z2);
     oZ.Coord(x3,y3,z3);
-    Standard_Real DS1 = DA->FirstAxisLength();
-    Standard_Real DS2 = DA->SecondAxisLength();
-    Standard_Real DS3 = DA->ThirdAxisLength();
+    Standard_Real DS1 = DA->AxisLength(Prs3d_DP_XAxis);
+    Standard_Real DS2 = DA->AxisLength(Prs3d_DP_YAxis);
+    Standard_Real DS3 = DA->AxisLength(Prs3d_DP_ZAxis);
 //    gp_Pnt aPt2,aPt3;
 
     switch (myTypeOfPlane) {

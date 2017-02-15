@@ -1187,9 +1187,9 @@ void Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theP
       }
       if (!myDatumAspect.IsNull())
       {
-        setAspectProgram (theProgram, myDatumAspect->FirstAxisAspect());
-        setAspectProgram (theProgram, myDatumAspect->SecondAxisAspect());
-        setAspectProgram (theProgram, myDatumAspect->ThirdAxisAspect());
+        setAspectProgram (theProgram, myDatumAspect->LineAspect(Prs3d_DP_XAxis));
+        setAspectProgram (theProgram, myDatumAspect->LineAspect(Prs3d_DP_YAxis));
+        setAspectProgram (theProgram, myDatumAspect->LineAspect(Prs3d_DP_ZAxis));
       }
       setAspectProgram (theProgram, myArrowAspect);
       return;

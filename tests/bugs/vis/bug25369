@@ -19,5 +19,5 @@ set s [encoding convertfrom unicode "\x3A\x04\x30\x04\x40\x04\x2E\x00\x70\x00\x6
 vdrawtext text0 $s -pos 0 0 0 -color 1.0 1.0 1.0 -halign left -valign bottom -angle 0 -zoom 0 -height 50 -aspect regular -font SansFont
 vdump $::imagedir/$s
 vtexture b $::imagedir/$s
-
+file delete $::imagedir/$s
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

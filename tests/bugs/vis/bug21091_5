@@ -46,9 +46,9 @@ vcaps -ffp 1
 vexport ${aFile} PS
 
 if { [checkplatform -windows] } {
-   set refsize 10410
+   set refsize 9568
 } else {
-   set refsize 10386
+   set refsize 9544
 }
 
 if { [file exists ${aFile}] } {

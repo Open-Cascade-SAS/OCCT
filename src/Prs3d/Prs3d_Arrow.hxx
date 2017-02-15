@@ -20,6 +20,7 @@
 #include <Prs3d_Root.hxx>
 
 #include <Graphic3d_ArrayOfTriangles.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Quantity_PlaneAngle.hxx>
 #include <Quantity_Length.hxx>
 
@@ -45,6 +46,18 @@ public:
                                                                         const Standard_Real    theConeRadius,
                                                                         const Standard_Real    theConeLength,
                                                                         const Standard_Integer theNbFacettes);
+
+  //! Defines the representation of the arrow as a container of segments.
+  //! @param theLocation   location of the arrow tip
+  //! @param theDir        direction of the arrow
+  //! @param theAngle      angle of opening of the arrow head
+  //! @param theLength     length of the arrow (from the tip)
+  //! @param theNbSegments count of points on polyline where location is connected
+  Standard_EXPORT static Handle(Graphic3d_ArrayOfSegments) DrawSegments (const gp_Pnt& theLocation,
+                                                                         const gp_Dir& theDir,
+                                                                         const Quantity_PlaneAngle theAngle,
+                                                                         const Quantity_Length theLength,
+                                                                         const Standard_Integer theNbSegments);
 
   //! Defines the representation of the arrow.
   //! Note that this method does NOT assign any presentation aspects to the primitives group!

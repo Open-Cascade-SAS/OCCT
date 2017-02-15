@@ -42,4 +42,4 @@ set aFile $imagedir/ExportToPGF.pgf
 
 set format PGF
 
-set size 20398
+set size 17800

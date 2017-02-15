@@ -12,7 +12,7 @@ vinit
 vclear
 vaxo
 
-vtrihedron t -hidelabels
+vtrihedron t -hidelabels on
 vzoom 4
 
 vdump $anImage1

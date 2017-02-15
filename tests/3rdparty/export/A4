@@ -42,4 +42,4 @@ set aFile $imagedir/ExportToEPS.eps
 
 set format EPS
 
-set size 10590
+set size 9500

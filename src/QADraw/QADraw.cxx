@@ -30,89 +30,7 @@
 #include <OSD_Timer.hxx>
 #include <stdio.h>
 
-#if defined(_WIN32) || defined(__WIN32__)
-#  include <windows.h>
-#  include <io.h>
-#else
-#  include <unistd.h>
-#endif
-
 #include <Draw_PluginMacro.hxx>
-
-//=======================================================================
-
-#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
-#include <AIS_Trihedron.hxx>
-#include <AIS_Axis.hxx>
-#include <Geom_Line.hxx>
-#include <AIS_Line.hxx>
-
-Standard_EXPORT ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
-Standard_EXPORT Handle(AIS_InteractiveContext)& TheAISContext();
-
-//==============================================================================
-// function : VTrihedronOrigins
-// author   : ota
-// purpose  : draws triheron axis origin lines.
-// Draw arg : vtri_orig trihedron_name
-//==============================================================================
-static int VTrihedronOrigins(Draw_Interpretor& di,
-			      Standard_Integer argc,
-			      const char ** argv)
-{
-  if(argc != 2){
-    di <<"Usage : vtri_orig tri_name\n";
-    return 1;
-  }
-
-  if(TheAISContext().IsNull()){
-    di<<"Make 'vinit' before this method call\n";
-    return 1;
-  }
-
-  //get trihedron from AIS map.
-  TCollection_AsciiString aName(argv[1]);
-  if(!GetMapOfAIS().IsBound2(aName)){
-    di<<"No object named '"<<argv[1]<<"'\n";
-    return 1;
-  }
-
-  Handle(AIS_Trihedron) aTrih =
-    Handle(AIS_Trihedron)::DownCast(GetMapOfAIS().Find2(aName));
-  if(aTrih.IsNull()){
-    di<<"Trihedron is not found, try another name\n";
-    return 1;
-  }
-
-  //get axis
-  Handle(AIS_Axis) XAxis = aTrih->XAxis();
-  Handle(AIS_Axis) YAxis = aTrih->YAxis();
-  Handle(AIS_Axis) ZAxis = aTrih->Axis();
-
-  //get geometrical lines
-  Handle(Geom_Line) XGLine = XAxis->Component();
-  Handle(Geom_Line) YGLine = YAxis->Component();
-  Handle(Geom_Line) ZGLine = ZAxis->Component();
-
-  //make AIS_Lines
-  Handle(AIS_Line) XLine = new AIS_Line(XGLine);
-  Handle(AIS_Line) YLine = new AIS_Line(YGLine);
-  Handle(AIS_Line) ZLine = new AIS_Line(ZGLine);
-
-  //put them into AIS map:
-  GetMapOfAIS().Bind(XLine,aName+"_X");
-  GetMapOfAIS().Bind(YLine,aName+"_Y");
-  GetMapOfAIS().Bind(ZLine,aName+"_Z");
-  //print names of created objects:
-  di<<argv[1]<<"_X  "<<argv[1]<<"_Y  "<<argv[1]<<"_Z\n";
-
-  //try to draw them:
-  TheAISContext()->Display (XLine, Standard_False);
-  TheAISContext()->Display (YLine, Standard_False);
-  TheAISContext()->Display (ZLine, Standard_True);
-
-  return 0;
-}
 
 //=======================================================================
 //function : QATestExtremaSS
@@ -236,12 +154,6 @@ static Standard_Integer QATestExtremaSS (Draw_Interpretor& theInterpretor,
 void QADraw::CommonCommands (Draw_Interpretor& theCommands)
 {
   const char* group = "QA_Commands";
-
-  theCommands.Add ("vtri_orig",
-                   "vtri_orig         : vtri_orig trihedron_name  -  draws axis origin lines",
-                   __FILE__,
-                   VTrihedronOrigins,
-                   group);
 
   theCommands.Add ("QATestExtremaSS",
                    "QATestExtremaSS Shape Step [Flag { MIN = 0 | MAX = 1 | MINMAX = 2 }]",

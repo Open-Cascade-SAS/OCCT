@@ -2736,9 +2736,9 @@ void AIS_InteractiveContext::InitAttributes()
   const Standard_Real aLength = 100.0;
   aTrihAspect->SetAxisLength (aLength, aLength, aLength);
   const Quantity_NameOfColor aColor = Quantity_NOC_LIGHTSTEELBLUE4;
-  aTrihAspect->FirstAxisAspect() ->SetColor (aColor);
-  aTrihAspect->SecondAxisAspect()->SetColor (aColor);
-  aTrihAspect->ThirdAxisAspect() ->SetColor (aColor);
+  aTrihAspect->LineAspect(Prs3d_DP_XAxis)->SetColor (aColor);
+  aTrihAspect->LineAspect(Prs3d_DP_YAxis)->SetColor (aColor);
+  aTrihAspect->LineAspect(Prs3d_DP_ZAxis)->SetColor (aColor);
 
   Handle(Prs3d_PlaneAspect) aPlaneAspect = myDefaultDrawer->PlaneAspect();
   const Standard_Real aPlaneLength = 200.0;
@@ -2752,7 +2752,7 @@ void AIS_InteractiveContext::InitAttributes()
 //=======================================================================
 Standard_Real AIS_InteractiveContext::TrihedronSize() const
 {
-  return myDefaultDrawer->DatumAspect()->FirstAxisLength();
+  return myDefaultDrawer->DatumAspect()->AxisLength(Prs3d_DP_XAxis);
 }
 
 //=======================================================================
