@@ -640,6 +640,18 @@ void TPrsStd_AISPresentation::Paste (const Handle(TDF_Attribute)& theInto,
     Handle(TPrsStd_AISPresentation)::DownCast(theInto);
 
   anInto->Backup();
+  if (!anInto->myAIS.IsNull())
+  {
+    // Save displayed flag.
+    Standard_Boolean displayed = anInto->IsDisplayed();
+    // Erase the interactive object.
+    anInto->AISErase(Standard_True);
+    // Restore the displayed flag.
+    if (displayed)
+      anInto->SetDisplayed(displayed);
+  }
+  // Nullify the interactive object.
+  // It will be restored on the next call to AISUpdate().
   anInto->myAIS.Nullify();
 }
 
