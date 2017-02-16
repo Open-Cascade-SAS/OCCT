@@ -1350,6 +1350,12 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
       FindProcShort (wglDXLockObjectsNV);
       FindProcShort (wglDXUnlockObjectsNV);
     }
+    if (CheckExtension (aWglExts, "WGL_AMD_gpu_association"))
+    {
+      FindProcShort (wglGetGPUIDsAMD);
+      FindProcShort (wglGetGPUInfoAMD);
+      FindProcShort (wglGetContextGPUIDAMD);
+    }
   }
 #elif defined(__APPLE__)
     //
@@ -2560,6 +2566,21 @@ void OpenGl_Context::MemoryInfo (TColStd_IndexedDataMapOfStringString& theDict) 
       addInfo (theDict, "Total memory", TCollection_AsciiString() + (aValue / 1024) + " MiB");
     }
   }
+#if defined(_WIN32)
+  else if (myFuncs->wglGetGPUInfoAMD != NULL
+        && myFuncs->wglGetContextGPUIDAMD != NULL)
+  {
+    GLuint aTotalMemMiB = 0;
+    UINT anAmdId = myFuncs->wglGetContextGPUIDAMD ((HGLRC )myGContext);
+    if (anAmdId != 0)
+    {
+      if (myFuncs->wglGetGPUInfoAMD (anAmdId, WGL_GPU_RAM_AMD, GL_UNSIGNED_INT, sizeof(aTotalMemMiB), &aTotalMemMiB) > 0)
+      {
+        addInfo (theDict, "GPU memory", TCollection_AsciiString() + (int )aTotalMemMiB + " MiB");
+      }
+    }
+  }
+#endif
 #endif
 
 #if !defined(GL_ES_VERSION_2_0) && !defined(__APPLE__) && !defined(_WIN32)
