@@ -1383,13 +1383,13 @@ void V3d_View::SetZSize (const Standard_Real theSize)
 //function : SetZoom
 //purpose  :
 //=============================================================================
-void V3d_View::SetZoom(const Standard_Real Coef,const Standard_Boolean Start)
+void V3d_View::SetZoom (const Standard_Real theCoef,const Standard_Boolean theToStart)
 {
-  V3d_BadValue_Raise_if( Coef <= 0.,"V3d_View::SetZoom, bad coefficient");
+  V3d_BadValue_Raise_if (theCoef <= 0., "V3d_View::SetZoom, bad coefficient");
 
   Handle(Graphic3d_Camera) aCamera = Camera();
 
-  if (Start)
+  if (theToStart)
   {
     myCamStartOpEye    = aCamera->Eye();
     myCamStartOpCenter = aCamera->Center();
@@ -1399,27 +1399,27 @@ void V3d_View::SetZoom(const Standard_Real Coef,const Standard_Boolean Start)
   Standard_Real aViewHeight = aCamera->ViewDimensions().Y();
 
   // ensure that zoom will not be too small or too big
-  Standard_Real coef = Coef;
-  if (aViewWidth < coef * Precision::Confusion())
+  Standard_Real aCoef = theCoef;
+  if (aViewWidth < aCoef * Precision::Confusion())
   {
-    coef = aViewWidth / Precision::Confusion();
+    aCoef = aViewWidth / Precision::Confusion();
   }
-  else if (aViewWidth > coef * 1e12)
+  else if (aViewWidth > aCoef * 1e12)
   {
-    coef = aViewWidth / 1e12;
+    aCoef = aViewWidth / 1e12;
   }
-  if (aViewHeight < coef * Precision::Confusion())
+  if (aViewHeight < aCoef * Precision::Confusion())
   {
-    coef = aViewHeight / Precision::Confusion();
+    aCoef = aViewHeight / Precision::Confusion();
   }
-  else if (aViewHeight > coef * 1e12)
+  else if (aViewHeight > aCoef * 1e12)
   {
-    coef = aViewHeight / 1e12;
+    aCoef = aViewHeight / 1e12;
   }
 
   aCamera->SetEye (myCamStartOpEye);
   aCamera->SetCenter (myCamStartOpCenter);
-  aCamera->SetScale (aCamera->Scale() / Coef);
+  aCamera->SetScale (aCamera->Scale() / aCoef);
 
   AutoZFit();
 
