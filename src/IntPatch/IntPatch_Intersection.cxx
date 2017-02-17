@@ -26,6 +26,15 @@
 #include <IntPatch_WLine.hxx>
 #include <IntPatch_WLineTool.hxx>
 
+#include <ProjLib_ProjectOnPlane.hxx>
+#include <Geom_Plane.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <ProjLib_ProjectedCurve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <ProjLib.hxx>
+
 //======================================================================
 // function: SequenceOfLine
 //======================================================================
@@ -129,12 +138,35 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
 
   switch (S1->GetType())
   { 
-    case GeomAbs_Plane:
-    case GeomAbs_Cylinder:
-    case GeomAbs_Sphere:
-    case GeomAbs_Cone:
-    case GeomAbs_Torus: break;
-    default:
+  case GeomAbs_Plane:
+  case GeomAbs_Cylinder:
+  case GeomAbs_Sphere:
+  case GeomAbs_Cone:
+  case GeomAbs_Torus:
+    break;
+  case GeomAbs_SurfaceOfExtrusion:
+    {
+      gp_Dir aDirection = S1->Direction();
+      gp_Ax3 anAxis(gp::Origin(), aDirection);
+      Handle(Adaptor3d_HCurve) aBasisCurve = S1->BasisCurve();
+      ProjLib_ProjectOnPlane Projector(anAxis);
+      Projector.Load(aBasisCurve, Precision::Confusion());
+      Handle(GeomAdaptor_HCurve) aProjCurve = Projector.GetResult();
+      Handle(Geom_Plane) aPlane = new Geom_Plane(anAxis);
+      Handle(GeomAdaptor_HSurface) aGAHsurf = new GeomAdaptor_HSurface(aPlane);
+      ProjLib_ProjectedCurve aProjectedCurve(aGAHsurf, aProjCurve);
+      Handle(Geom2d_Curve) aPCurve;
+      ProjLib::MakePCurveOfType(aProjectedCurve, aPCurve);
+      Geom2dAdaptor_Curve AC(aPCurve,
+                             aProjectedCurve.FirstParameter(),
+                             aProjectedCurve.LastParameter());
+      Geom2dInt_GInter Intersector(AC,
+                                   Precision::Confusion(),
+                                   Precision::Confusion());
+      if (Intersector.IsDone() && Intersector.IsEmpty())
+        break;
+    }
+  default:
     {
       IntPatch_PrmPrmIntersection interpp;
       interpp.Perform(S1,D1,TolTang,TolArc,myFleche,myUVMaxStep);

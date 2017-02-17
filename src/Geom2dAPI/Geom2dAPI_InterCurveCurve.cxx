@@ -180,13 +180,22 @@ void Geom2dAPI_InterCurveCurve::Segment
   Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > NbSegments(),
                                "Geom2dAPI_InterCurveCurve::Segment");
 
-  Standard_NullObject_Raise_if(myCurve1.IsNull() || myCurve2.IsNull(),
+  Standard_NullObject_Raise_if(myCurve1.IsNull(),
                                "Geom2dAPI_InterCurveCurve::Segment");
 
-  Standard_Real aU1 = myCurve1->FirstParameter(),
-                aU2 = myCurve1->LastParameter(),
-                aV1 = myCurve2->FirstParameter(),
-                aV2 = myCurve2->LastParameter();
+  Standard_Real aU1, aU2, aV1, aV2;
+  aU1 = myCurve1->FirstParameter();
+  aU2 = myCurve1->LastParameter();
+  if (myCurve2.IsNull())
+  {
+    aV1 = aU1;
+    aV2 = aU2;
+  }
+  else
+  {
+    aV1 = myCurve2->FirstParameter();
+    aV2 = myCurve2->LastParameter();
+  }
 
   const IntRes2d_IntersectionSegment& aSeg = myIntersector.Segment(theIndex);
   const Standard_Boolean isOpposite = aSeg.IsOpposite();
@@ -214,5 +223,8 @@ void Geom2dAPI_InterCurveCurve::Segment
   }
 
   theCurve1 = new Geom2d_TrimmedCurve(myCurve1, aU1, aU2);
-  theCurve2 = new Geom2d_TrimmedCurve(myCurve2, aV1, aV2);
+  if (myCurve2.IsNull())
+    theCurve2 = new Geom2d_TrimmedCurve(myCurve1, aV1, aV2);
+  else
+    theCurve2 = new Geom2d_TrimmedCurve(myCurve2, aV1, aV2);
 }

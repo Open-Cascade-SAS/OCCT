@@ -191,11 +191,6 @@ public:
                                                 Standard_Real& aToler,
                                                 const Handle(IntTools_Context)& theContext = Handle(IntTools_Context)());
   
-
-  //! Make empty  P-Curve <aC> of relevant to <PC> type
-  Standard_EXPORT static void MakePCurveOfType (const ProjLib_ProjectedCurve& PC, Handle(Geom2d_Curve)& aC);
-  
-
   //! Attach P-Curve from the edge <aEold> on surface <aF>
   //! to the edge <aEnew>
   //! Returns 0 in case of success

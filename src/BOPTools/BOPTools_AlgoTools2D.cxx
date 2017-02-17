@@ -57,6 +57,7 @@
 #include <IntTools_Tools.hxx>
 #include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
+#include <ProjLib.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <TopExp.hxx>
@@ -638,24 +639,24 @@ void BOPTools_AlgoTools2D::MakePCurveOnFace
     }
     //
     ProjLib_ProjectedCurve aProj1(aBAHS, aBAHC, aTR);
-    BOPTools_AlgoTools2D::MakePCurveOfType(aProj1, aC2D);
+    ProjLib::MakePCurveOfType(aProj1, aC2D);
     aTolR = aProj1.GetTolerance();
   } 
   else {
     ProjLib_ProjectedCurve aProjCurv(aBAHS, aBAHC);// 1
-    BOPTools_AlgoTools2D::MakePCurveOfType(aProjCurv, aC2D);
+    ProjLib::MakePCurveOfType(aProjCurv, aC2D);
     aTolR=aProjCurv.GetTolerance();
   }
   //
   if (aC2D.IsNull()) { 
     ProjLib_ProjectedCurve aProjCurvAgain(aBAHS, aBAHC, TolReached2d);// 2
-    BOPTools_AlgoTools2D::MakePCurveOfType(aProjCurvAgain, aC2D);
+    ProjLib::MakePCurveOfType(aProjCurvAgain, aC2D);
     aTolR = aProjCurvAgain.GetTolerance();
     //
     if (aC2D.IsNull()) { 
       Standard_Real aTR=0.0001;
       ProjLib_ProjectedCurve aProj3(aBAHS, aBAHC, aTR);// 3
-      BOPTools_AlgoTools2D::MakePCurveOfType(aProj3, aC2D);
+      ProjLib::MakePCurveOfType(aProj3, aC2D);
       aTolR = aProj3.GetTolerance();
     }
   }
@@ -685,42 +686,6 @@ void BOPTools_AlgoTools2D::MakePCurveOnFace
   }
 }
 
-//=======================================================================
-//function : MakePCurveOfType
-//purpose  : 
-//=======================================================================
-void  BOPTools_AlgoTools2D::MakePCurveOfType
-  (const ProjLib_ProjectedCurve& PC, 
-   Handle(Geom2d_Curve)& C2D)
-{
-  
-  switch (PC.GetType()) {
-
-  case GeomAbs_Line : 
-    C2D = new Geom2d_Line(PC.Line()); 
-    break;
-  case GeomAbs_Circle : 
-    C2D = new Geom2d_Circle(PC.Circle());
-    break;
-  case GeomAbs_Ellipse :
-    C2D = new Geom2d_Ellipse(PC.Ellipse());
-    break;
-  case GeomAbs_Parabola : 
-    C2D = new Geom2d_Parabola(PC.Parabola()); 
-    break;
-  case GeomAbs_Hyperbola : 
-    C2D = new Geom2d_Hyperbola(PC.Hyperbola()); 
-    break;
-  case GeomAbs_BSplineCurve :
-    C2D = PC.BSpline(); 
-    break;
-  case GeomAbs_BezierCurve : 
-  case GeomAbs_OtherCurve : 
-    default :
-    throw Standard_NotImplemented("BOPTools_AlgoTools2D::MakePCurveOfType");
-    break;
-  }
-}
 //=======================================================================
 //function : CheckEdgeLength
 //purpose  : 

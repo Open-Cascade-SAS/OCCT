@@ -19,6 +19,7 @@
 
 #include <BOPAlgo_CheckerSI.hxx>
 #include <BOPCol_MapOfShape.hxx>
+#include <BOPCol_Parallel.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_IteratorSI.hxx>
@@ -34,9 +35,83 @@
 #include <BOPTools_AlgoTools.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <IntTools_Context.hxx>
+#include <IntTools_Tools.hxx>
+#include <IntTools_FaceFace.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <TopTools_ListOfShape.hxx>
+#include <BRep_Tool.hxx>
+#include <gp_Torus.hxx>
+
+//=======================================================================
+//class    : BOPAlgo_FaceSelfIntersect
+//purpose  : 
+//=======================================================================
+class BOPAlgo_FaceSelfIntersect : 
+  public IntTools_FaceFace,
+  public BOPAlgo_Algo {
+
+ public:
+  DEFINE_STANDARD_ALLOC
+
+  BOPAlgo_FaceSelfIntersect() : 
+    IntTools_FaceFace(),  
+    BOPAlgo_Algo(),
+    myIF(-1), myTolF(1.e-7) {
+  }
+  //
+  virtual ~BOPAlgo_FaceSelfIntersect() {
+  }
+  //
+  void SetIndex(const Standard_Integer nF) {
+    myIF = nF;
+  }
+  //
+  Standard_Integer IndexOfFace() const {
+    return myIF;
+  }
+  //
+  void SetFace(const TopoDS_Face& aF) {
+    myF = aF;
+  }
+  //
+  const TopoDS_Face& Face()const {
+    return myF;
+  }
+  //
+  void SetTolF(const Standard_Real aTolF) {
+    myTolF = aTolF;
+  }
+  //
+  Standard_Real TolF() const{
+    return myTolF;
+  }
+  //
+  virtual void Perform() {
+    BOPAlgo_Algo::UserBreak();
+    IntTools_FaceFace::Perform(myF, myF);
+  }
+  //
+ protected:
+  Standard_Integer myIF;
+  Standard_Real myTolF;
+  TopoDS_Face myF;
+};
+//end of definition of class BOPAlgo_FaceSelfIntersect
+
+//=======================================================================
+
+typedef BOPCol_NCVector
+  <BOPAlgo_FaceSelfIntersect> BOPAlgo_VectorOfFaceSelfIntersect; 
+//
+typedef BOPCol_Functor 
+  <BOPAlgo_FaceSelfIntersect,
+  BOPAlgo_VectorOfFaceSelfIntersect> BOPAlgo_FaceSelfIntersectFunctor;
+//
+typedef BOPCol_Cnt 
+  <BOPAlgo_FaceSelfIntersectFunctor,
+  BOPAlgo_VectorOfFaceSelfIntersect> BOPAlgo_FaceSelfIntersectCnt;
+
 
 //=======================================================================
 //function : 
@@ -116,6 +191,8 @@ void BOPAlgo_CheckerSI::Perform()
     // Perform intersection of sub shapes
     BOPAlgo_PaveFiller::Perform();
     //
+    CheckFaceSelfIntersection();
+    
     // Perform intersection with solids
     if (!myErrorStatus)
       PerformVZ();
@@ -150,8 +227,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   BOPDS_MapOfPair& aMPK=
     *((BOPDS_MapOfPair*)&myDS->Interferences());
-  aMPK.Clear();
-  //
+
   // 0
   BOPDS_VectorOfInterfVV& aVVs=myDS->InterfVV();
   aNb=aVVs.Extent();
@@ -238,23 +314,27 @@ void BOPAlgo_CheckerSI::PostTreat()
       continue;
     }
     //
-    iFound=0;
-    if (bTangentFaces) {
-      const TopoDS_Face& aF1=*((TopoDS_Face*)&myDS->Shape(n1));
-      const TopoDS_Face& aF2=*((TopoDS_Face*)&myDS->Shape(n2));
-      bFlag=BOPTools_AlgoTools::AreFacesSameDomain
-        (aF1, aF2, myContext, myFuzzyValue);
-      if (bFlag) {
-        ++iFound;
-      }
-    }
-    else {
-      for (j=0; j!=aNbC; ++j) {
-        const BOPDS_Curve& aNC=aVC(j);
-        const BOPDS_ListOfPaveBlock& aLPBC=aNC.PaveBlocks();
-        if (aLPBC.Extent()) {
+    iFound = (n1 == n2) ? 1 : 0;
+    //case of self-intersection inside one face
+    if (!iFound)
+    {
+      if (bTangentFaces) {
+        const TopoDS_Face& aF1=*((TopoDS_Face*)&myDS->Shape(n1));
+        const TopoDS_Face& aF2=*((TopoDS_Face*)&myDS->Shape(n2));
+        bFlag=BOPTools_AlgoTools::AreFacesSameDomain
+          (aF1, aF2, myContext, myFuzzyValue);
+        if (bFlag) {
           ++iFound;
-          break;
+        }
+      }
+      else {
+        for (j=0; j!=aNbC; ++j) {
+          const BOPDS_Curve& aNC=aVC(j);
+          const BOPDS_ListOfPaveBlock& aLPBC=aNC.PaveBlocks();
+          if (aLPBC.Extent()) {
+            ++iFound;
+            break;
+          }
         }
       }
     }
@@ -313,5 +393,89 @@ void BOPAlgo_CheckerSI::PostTreat()
     aZZ.Indices(n1, n2);
     aPK.SetIndices(n1, n2);
     aMPK.Add(aPK);
+  }
+}
+
+//=======================================================================
+//function : CheckFaceSelfIntersection
+//purpose  : 
+//=======================================================================
+void BOPAlgo_CheckerSI::CheckFaceSelfIntersection()
+{
+  if (myLevelOfCheck < 5)
+    return;
+  
+  BOPDS_Pair aPK;
+
+  BOPDS_MapOfPair& aMPK=
+    *((BOPDS_MapOfPair*)&myDS->Interferences());
+  aMPK.Clear();
+  
+  BOPAlgo_VectorOfFaceSelfIntersect aVFace;
+  
+  Standard_Integer aNbS=myDS->NbSourceShapes();
+  
+  //
+  for (Standard_Integer i = 0; i < aNbS; i++)
+  {
+    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
+    if (aSI.ShapeType() != TopAbs_FACE)
+      continue;
+    //
+    const TopoDS_Face& aF = (*(TopoDS_Face*)(&aSI.Shape()));
+    BRepAdaptor_Surface BAsurf(aF, Standard_False);
+    GeomAbs_SurfaceType aSurfType = BAsurf.GetType();
+    if (aSurfType == GeomAbs_Plane ||
+        aSurfType == GeomAbs_Cylinder ||
+        aSurfType == GeomAbs_Cone ||
+        aSurfType == GeomAbs_Sphere)
+      continue;
+
+    if (aSurfType == GeomAbs_Torus)
+    {
+      gp_Torus aTorus = BAsurf.Torus();
+      Standard_Real aMajorRadius = aTorus.MajorRadius();
+      Standard_Real aMinorRadius = aTorus.MinorRadius();
+      if (aMajorRadius > aMinorRadius + Precision::Confusion())
+        continue;
+    }
+
+    Standard_Real aTolF = BRep_Tool::Tolerance(aF);
+    
+    BOPAlgo_FaceSelfIntersect& aFaceSelfIntersect = aVFace.Append1();
+    //
+    aFaceSelfIntersect.SetIndex(i);
+    aFaceSelfIntersect.SetFace(aF);
+    aFaceSelfIntersect.SetTolF(aTolF);
+    //
+    aFaceSelfIntersect.SetProgressIndicator(myProgressIndicator);
+  }
+  
+  Standard_Integer aNbFace = aVFace.Extent();
+  //======================================================
+  BOPAlgo_FaceSelfIntersectCnt::Perform(myRunParallel, aVFace);
+  //======================================================
+  //
+  for (Standard_Integer k = 0; k < aNbFace; k++)
+  {
+    BOPAlgo_FaceSelfIntersect& aFaceSelfIntersect = aVFace(k);
+    //
+    Standard_Integer nF = aFaceSelfIntersect.IndexOfFace();
+
+    Standard_Boolean bIsDone = aFaceSelfIntersect.IsDone();
+    if (bIsDone)
+    {
+      const IntTools_SequenceOfCurves& aCvsX = aFaceSelfIntersect.Lines();
+      const IntTools_SequenceOfPntOn2Faces& aPntsX = aFaceSelfIntersect.Points();
+      //
+      Standard_Integer aNbCurves = aCvsX.Length();
+      Standard_Integer aNbPoints = aPntsX.Length();
+      //
+      if (aNbCurves || aNbPoints)
+      {
+        aPK.SetIndices(nF, nF);
+        aMPK.Add(aPK);
+      }
+    }
   }
 }

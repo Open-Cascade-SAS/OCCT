@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <Geom2d_Curve.hxx>
 
 class gp_Pnt2d;
 class gp_Pln;
@@ -128,6 +129,9 @@ public:
   
   Standard_EXPORT static gp_Lin2d Project (const gp_Torus& To, const gp_Circ& Ci);
 
+  //! Make empty  P-Curve <aC> of relevant to <PC> type
+  Standard_EXPORT static void MakePCurveOfType (const ProjLib_ProjectedCurve& PC,
+                                                Handle(Geom2d_Curve)& aC);
 
 
 

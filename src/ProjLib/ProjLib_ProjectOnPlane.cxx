@@ -898,6 +898,16 @@ const Handle(Adaptor3d_HCurve)& ProjLib_ProjectOnPlane::GetCurve() const
   return myCurve;
 }
 
+//=======================================================================
+//function : GetResult
+//purpose  : 
+//=======================================================================
+
+const Handle(GeomAdaptor_HCurve)& ProjLib_ProjectOnPlane::GetResult() const
+{
+  return myResult;
+}
+
 
 //=======================================================================
 //function : FirstParameter
