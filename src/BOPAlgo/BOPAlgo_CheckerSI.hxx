@@ -68,6 +68,8 @@ protected:
   //! Treats the intersection results
   Standard_EXPORT void PostTreat();
 
+  Standard_EXPORT void CheckFaceSelfIntersection();
+
   //! Methods for intersection with solids
 
   //! Vertex/Solid intersection

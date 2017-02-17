@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC27998"
+puts "============"
+puts ""
+######################################################
+# Self-intersection is not detected
+######################################################
+
+restore [locate_data_file bug27998_solid_8.brep] a
+
+set info1 [bopcheck a 9]
+
+if { [regexp "F/F: x6 x6" $info1] != 1 } {
+    puts "Error : bopcheck a works wrong"
+} else {
+    puts "OK: bopcheck a works properly"
+}

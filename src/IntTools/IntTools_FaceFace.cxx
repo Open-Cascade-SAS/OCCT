@@ -627,8 +627,11 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
 #endif
 
   const Standard_Boolean isGeomInt = isTreatAnalityc(aBAS1, aBAS2, myTol);
-  myIntersector.Perform(myHS1, dom1, myHS2, dom2, TolArc, TolTang, 
-                                  myListOfPnts, RestrictLine, isGeomInt);
+  if (aF1.IsSame(aF2))
+    myIntersector.Perform(myHS1, dom1, TolArc, TolTang);
+  else
+    myIntersector.Perform(myHS1, dom1, myHS2, dom2, TolArc, TolTang, 
+                          myListOfPnts, RestrictLine, isGeomInt);
 
   myIsDone = myIntersector.IsDone();
 

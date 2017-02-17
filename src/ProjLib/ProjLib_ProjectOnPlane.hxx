@@ -92,6 +92,8 @@ public:
   
   Standard_EXPORT const Handle(Adaptor3d_HCurve)& GetCurve() const;
   
+  Standard_EXPORT const Handle(GeomAdaptor_HCurve)& GetResult() const;
+  
   Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;

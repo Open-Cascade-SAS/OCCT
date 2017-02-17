@@ -486,6 +486,181 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
     delete [] PtrSegIndex1;
     delete [] PtrSegIndex2;
   }
+
+  //----------------------------------------------------------------------
+  //-- Processing of TangentZone
+  //----------------------------------------------------------------------
+  Standard_Integer Nbtz = InterPP.NbTangentZones();
+  for(Standard_Integer tz=1; tz <= Nbtz; tz++) {
+    Standard_Integer NbPnts = InterPP.ZoneValue(tz).NumberOfPoints();
+    //====================================================================
+    //== Find the first and the last point in the tangency zone.
+    //====================================================================
+    Standard_Real ParamSupOnCurve2,ParamInfOnCurve2;
+    Standard_Real ParamSupOnCurve1,ParamInfOnCurve1;
+//    Standard_Integer SegIndex,SegIndex1onP1,SegIndex1onP2,SegIndex2onP1,SegIndex2onP2;
+    Standard_Integer SegIndex1onP1,SegIndex1onP2;
+    Intf_PIType Type;
+    Standard_Real ParamOnLine;
+    Standard_Real PolyUInf,PolyUSup,PolyVInf,PolyVSup;
+    ParamSupOnCurve2=ParamSupOnCurve1=PolyUSup=PolyVSup=-RealLast();
+    ParamInfOnCurve2=ParamInfOnCurve1=PolyUInf=PolyVInf= RealLast();
+    for(Standard_Integer qq=1;qq<=NbPnts;qq++) { 
+      const Intf_SectionPoint& SPnt1 = InterPP.ZoneValue(tz).GetPoint(qq);
+      //====================================================================
+      //== The zones of tangency are discretized 
+      //== Test of stop : Check if 
+      //==     (Deflection  < Tolerance)
+      //==  Or (Sample < EpsX)   (normally the first condition is 
+      //==                           more strict)
+      //====================================================================
+//      Standard_Real _PolyUInf,_PolyUSup,_PolyVInf,_PolyVSup;
+      Standard_Real _PolyUInf,_PolyVInf;
+
+      SPnt1.InfoFirst(Type,SegIndex1onP1,ParamOnLine);
+      if(SegIndex1onP1 > Poly1.NbSegments()) { SegIndex1onP1--; ParamOnLine = 1.0; }
+      if(SegIndex1onP1 <= 0) { SegIndex1onP1=1; ParamOnLine = 0.0; }
+      _PolyUInf = Poly1.ApproxParamOnCurve(SegIndex1onP1,ParamOnLine);
+      
+      SPnt1.InfoSecond(Type,SegIndex1onP2,ParamOnLine);
+      if(SegIndex1onP2 > Poly1.NbSegments()) { SegIndex1onP2--; ParamOnLine = 1.0; }
+      if(SegIndex1onP2 <= 0) { SegIndex1onP2=1; ParamOnLine = 0.0; }
+      _PolyVInf = Poly1.ApproxParamOnCurve(SegIndex1onP2,ParamOnLine);
+      
+      //----------------------------------------------------------------------
+
+      if(ParamInfOnCurve1 > _PolyUInf) ParamInfOnCurve1=_PolyUInf;
+      if(ParamInfOnCurve2 > _PolyVInf) ParamInfOnCurve2=_PolyVInf;
+
+      if(ParamSupOnCurve1 < _PolyUInf) ParamSupOnCurve1=_PolyUInf;
+      if(ParamSupOnCurve2 < _PolyVInf) ParamSupOnCurve2=_PolyVInf;
+    }
+
+    PolyUInf= ParamInfOnCurve1;
+    PolyUSup= ParamSupOnCurve1;
+    PolyVInf= ParamInfOnCurve2;
+    PolyVSup= ParamSupOnCurve2;
+    
+    TheCurveTool::D0(C1,PolyUInf,P1);
+    TheCurveTool::D0(C1,PolyVInf,P2);
+    Standard_Real distmemesens = P1.SquareDistance(P2);
+    TheCurveTool::D0(C1,PolyVSup,P2);
+    Standard_Real distdiffsens = P1.SquareDistance(P2);
+    if(distmemesens > distdiffsens) { 
+      Standard_Real qwerty=PolyVInf; PolyVInf=PolyVSup; PolyVSup=qwerty;
+    }
+
+    //-----------------------------------------------------------------
+    //-- Calculate Positions of Points on the curve and  
+    //-- Transitions on each limit of the segment
+    
+    IntRes2d_Position Pos1 = IntRes2d_Middle;
+    IntRes2d_Position Pos2 = IntRes2d_Middle;
+    IntRes2d_Transition  Trans1,Trans2;
+    
+    TheCurveTool::D1(C1,PolyUInf,P1,Tan1);
+    TheCurveTool::D1(C1,PolyVInf,P2,Tan2);
+    
+    if(P1.Distance(DomainOnCurve1.FirstPoint())<=DomainOnCurve1.FirstTolerance())    { 
+      Pos1 = IntRes2d_Head;
+    }
+    else if(P1.Distance(DomainOnCurve1.LastPoint())<=DomainOnCurve1.LastTolerance()) { 
+      Pos1 = IntRes2d_End;  
+    }
+    if(P2.Distance(DomainOnCurve2.FirstPoint())<=DomainOnCurve2.FirstTolerance())    { 
+      Pos2 = IntRes2d_Head; 
+    }
+    else if(P2.Distance(DomainOnCurve2.LastPoint())<=DomainOnCurve2.LastTolerance()) { 
+      Pos2 = IntRes2d_End;  
+    }
+    
+    if(Pos1==IntRes2d_Middle && Pos2!=IntRes2d_Middle) { 
+      PolyUInf=TheProjPCur::FindParameter( C1,P2,D1.FirstParameter(),D1.LastParameter(),TheCurveTool::EpsX(C1));
+    }
+    else if(Pos1!=IntRes2d_Middle && Pos2==IntRes2d_Middle) { 
+      PolyVInf=TheProjPCur::FindParameter( C1,P1,D1.FirstParameter(),D1.LastParameter(),TheCurveTool::EpsX(C1));
+    }
+    else if(Abs(ParamInfOnCurve1-ParamSupOnCurve1) > Abs(ParamInfOnCurve2-ParamSupOnCurve2)) { 
+      PolyVInf=TheProjPCur::FindParameter( C1,P1,D1.FirstParameter(),D1.LastParameter(),TheCurveTool::EpsX(C1));
+    }
+    else { 
+      PolyUInf=TheProjPCur::FindParameter( C1,P2,D1.FirstParameter(),D1.LastParameter(),TheCurveTool::EpsX(C1));
+    }
+    
+
+    
+    if(IntImpParGen::DetermineTransition( Pos1,Tan1,Trans1,Pos2,Tan2,Trans2,TolConf) 
+       == Standard_False)
+    {
+      TheCurveTool::D2(C1,PolyUInf,P1,Tan1,Norm1);
+      TheCurveTool::D2(C1,PolyVInf,P2,Tan2,Norm2);
+      IntImpParGen::DetermineTransition(Pos1,Tan1,Norm1,Trans1,
+                                        Pos2,Tan2,Norm2,Trans2,TolConf);
+    }
+    IntRes2d_IntersectionPoint PtSeg1(P1,PolyUInf,PolyVInf
+					,Trans1,Trans2,Standard_False);
+    //----------------------------------------------------------------------
+    
+    if((Abs(PolyUInf-PolyUSup) <= TheCurveTool::EpsX(C1)) ||
+       (Abs(PolyVInf-PolyVSup) <= TheCurveTool::EpsX(C1)))
+    { 
+      //bad segment
+    }
+    else 
+    { 
+      TheCurveTool::D1(C1,PolyUSup,P1,Tan1);
+      TheCurveTool::D1(C1,PolyVSup,P2,Tan2);
+      Pos1 = IntRes2d_Middle; Pos2 = IntRes2d_Middle;
+      
+      if(P1.Distance(DomainOnCurve1.FirstPoint())<=DomainOnCurve1.FirstTolerance())    { 
+        Pos1 = IntRes2d_Head; 
+      }
+      else if(P1.Distance(DomainOnCurve1.LastPoint())<=DomainOnCurve1.LastTolerance()) { 
+        Pos1 = IntRes2d_End;  
+      }
+      if(P2.Distance(DomainOnCurve2.FirstPoint())<=DomainOnCurve2.FirstTolerance())    { 
+        Pos2 = IntRes2d_Head; 
+      }
+      else if(P2.Distance(DomainOnCurve2.LastPoint())<=DomainOnCurve2.LastTolerance()) { 
+        Pos2 = IntRes2d_End;  
+      }
+      
+      
+      if(Pos1==IntRes2d_Middle && Pos2!=IntRes2d_Middle) { 
+        PolyUSup=TheProjPCur::FindParameter( C1,P2,D1.FirstParameter(),D1.LastParameter(),TheCurveTool::EpsX(C1));
+      }
+      else if(Pos1!=IntRes2d_Middle && Pos2==IntRes2d_Middle) { 
+        PolyVSup=TheProjPCur::FindParameter( C1,P1,D1.FirstParameter(),D1.LastParameter(),TheCurveTool::EpsX(C1));
+      }
+      else if(Abs(ParamInfOnCurve1-ParamSupOnCurve1) > Abs(ParamInfOnCurve2-ParamSupOnCurve2)) { 
+        PolyVSup=TheProjPCur::FindParameter( C1,P1,D1.FirstParameter(),D1.LastParameter(),TheCurveTool::EpsX(C1));
+      }
+      else { 
+        PolyUSup=TheProjPCur::FindParameter( C1,P2,D1.FirstParameter(),D1.LastParameter(),TheCurveTool::EpsX(C1));
+      }
+      
+      if(IntImpParGen::DetermineTransition( Pos1,Tan1,Trans1,Pos2,Tan2,Trans2,TolConf)
+         ==Standard_False) { 
+        TheCurveTool::D2(C1,PolyUSup,P1,Tan1,Norm1);
+        TheCurveTool::D2(C1,PolyVSup,P2,Tan2,Norm2);
+        IntImpParGen::DetermineTransition(Pos1,Tan1,Norm1,Trans1,
+                                          Pos2,Tan2,Norm2,Trans2,TolConf);
+      }
+      IntRes2d_IntersectionPoint PtSeg2(P1,PolyUSup,PolyVSup
+                                        ,Trans1,Trans2,Standard_False);
+      
+      Standard_Boolean Oppos = (Tan1.Dot(Tan2) > 0.0)? Standard_False : Standard_True;
+      if(ParamInfOnCurve1 > ParamSupOnCurve1) {
+        IntRes2d_IntersectionSegment Seg(PtSeg2,PtSeg1,Oppos,Standard_False);
+        Append(Seg);
+      }
+      else { 
+        IntRes2d_IntersectionSegment Seg(PtSeg1,PtSeg2,Oppos,Standard_False);
+        Append(Seg);
+      }
+    }
+  } //end of processing of TangentZone
+  
  done = Standard_True;
 }
 

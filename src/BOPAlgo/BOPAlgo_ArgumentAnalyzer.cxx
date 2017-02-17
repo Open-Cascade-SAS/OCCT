@@ -384,12 +384,14 @@ void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
       if(ii == 0) {
         aResult.SetShape1(myShape1);
         aResult.AddFaultyShape1(aS1);
-        aResult.AddFaultyShape1(aS2);
+        if (!aS1.IsSame(aS2))
+          aResult.AddFaultyShape1(aS2);
       }
       else {
         aResult.SetShape2(myShape2);
         aResult.AddFaultyShape2(aS1);
-        aResult.AddFaultyShape2(aS2);
+        if (!aS1.IsSame(aS2))
+          aResult.AddFaultyShape2(aS2);
       }
       aResult.SetCheckStatus(BOPAlgo_SelfIntersect);
       myResult.Append(aResult);
