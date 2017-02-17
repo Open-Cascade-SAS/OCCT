@@ -1259,7 +1259,7 @@ static Standard_Integer removeloc (Draw_Interpretor& di,
                                    const char** argv)
 {
   if (argc<3) {
-    di << "bad number of arguments. Should be:  removeloc res shape\n";
+    di << "bad number of arguments. Should be:  removeloc res shape [remove_level(see ShapeEnum)]\n";
     return 1;
   }
   
@@ -1267,6 +1267,8 @@ static Standard_Integer removeloc (Draw_Interpretor& di,
   if(aShape.IsNull())
     return 1;
   ShapeUpgrade_RemoveLocations aRemLoc;
+  if (argc > 3)
+    aRemLoc.SetRemoveLevel((TopAbs_ShapeEnum)Draw::Atoi(argv[3]));
   aRemLoc.Remove(aShape);
   TopoDS_Shape aNewShape = aRemLoc.GetResult();
   
@@ -1376,7 +1378,7 @@ static Standard_Integer copytranslate(Draw_Interpretor& di,
                                    const char** argv)
 {
   if (argc<6) {
-    di << "bad number of arguments. Should be:  removeloc res shape dx dyy dz\n";
+    di << "bad number of arguments. Should be:  copytranslate res shape dx dy dz\n";
     return 1;
   }
   TopoDS_Shape aShape = DBRep::Get(argv[2]);
@@ -1571,7 +1573,7 @@ Standard_Integer reshape(Draw_Interpretor& di,
   theCommands.Add ("RemoveIntWires","result minarea wholeshape [faces or wires] [moderemoveface ]",
                    __FILE__,removeinternalwires,g);
   
-  theCommands.Add ("removeloc","result shape",__FILE__,removeloc,g);
+  theCommands.Add ("removeloc","result shape [remove_level(see ShapeEnum)]",__FILE__,removeloc,g);
   
   theCommands.Add ("unifysamedom",
                    "unifysamedom result shape [-f] [-e] [+b] [-i] [-t val] [-a val]", __FILE__,unifysamedom,g);

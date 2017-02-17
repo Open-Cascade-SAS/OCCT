@@ -1,0 +1,14 @@
+puts "======="
+puts "OCC28471"
+puts "======="
+puts ""
+##################################################
+# ShapeUpgrade_RemoveLocations breaks sharing of sub-shapes
+##################################################
+
+restore [locate_data_file bug28471_faces_share_vertex.brep] a
+
+set remove_level 0 ;# allow compound
+removeloc r a $remove_level
+
+checknbshapes r -ref [nbshapes a]
