@@ -134,33 +134,13 @@ Standard_Boolean StdPrs_ToolTriangulatedShape::IsClosed (const TopoDS_Shape& the
 //function : Normal
 //purpose  :
 //=======================================================================
-void StdPrs_ToolTriangulatedShape::Normal (const TopoDS_Face&  theFace,
-                                           Poly_Connect&       thePolyConnect,
-                                           TColgp_Array1OfDir& theNormals)
+void StdPrs_ToolTriangulatedShape::Normal (const TopoDS_Face& theFace,
+                                           Poly_Connect&      thePolyConnect)
 {
   const Handle(Poly_Triangulation)& aPolyTri = thePolyConnect.Triangulation();
-  const TColgp_Array1OfPnt&         aNodes   = aPolyTri->Nodes();
-  if (aPolyTri->HasNormals())
+  if (aPolyTri.IsNull()
+   || aPolyTri->HasNormals())
   {
-    // normals pre-computed in triangulation structure
-    const TShort_Array1OfShortReal& aNormals = aPolyTri->Normals();
-    const Standard_ShortReal*       aNormArr = &(aNormals.Value (aNormals.Lower()));
-    for (Standard_Integer aNodeIter = aNodes.Lower(); aNodeIter <= aNodes.Upper(); ++aNodeIter)
-    {
-      const Standard_Integer anId = 3 * (aNodeIter - aNodes.Lower());
-      const gp_Dir aNorm (aNormArr[anId + 0],
-                          aNormArr[anId + 1],
-                          aNormArr[anId + 2]);
-      theNormals (aNodeIter) = aNorm;
-    }
-
-    if (theFace.Orientation() == TopAbs_REVERSED)
-    {
-      for (Standard_Integer aNodeIter = aNodes.Lower(); aNodeIter <= aNodes.Upper(); ++aNodeIter)
-      {
-        theNormals.ChangeValue (aNodeIter).Reverse();
-      }
-    }
     return;
   }
 
@@ -174,11 +154,13 @@ void StdPrs_ToolTriangulatedShape::Normal (const TopoDS_Face&  theFace,
                                           ? &aPolyTri->UVNodes()
                                           : NULL;
   Standard_Integer aTri[3];
+  const TColgp_Array1OfPnt& aNodes = aPolyTri->Nodes();
+  gp_Dir aNorm;
   for (Standard_Integer aNodeIter = aNodes.Lower(); aNodeIter <= aNodes.Upper(); ++aNodeIter)
   {
     // try to retrieve normal from real surface first, when UV coordinates are available
     if (aNodesUV == NULL
-     || GeomLib::NormEstim (aSurf, aNodesUV->Value (aNodeIter), aTol, theNormals (aNodeIter)) > 1)
+     || GeomLib::NormEstim (aSurf, aNodesUV->Value (aNodeIter), aTol, aNorm) > 1)
     {
       // compute flat normals
       gp_XYZ eqPlan (0.0, 0.0, 0.0);
@@ -195,15 +177,42 @@ void StdPrs_ToolTriangulatedShape::Normal (const TopoDS_Face&  theFace,
         }
       }
       const Standard_Real aModMax = eqPlan.Modulus();
-      theNormals (aNodeIter) = (aModMax > aTol) ? gp_Dir (eqPlan) : gp::DZ();
+      aNorm = (aModMax > aTol) ? gp_Dir (eqPlan) : gp::DZ();
     }
 
     const Standard_Integer anId = (aNodeIter - aNodes.Lower()) * 3;
-    aNormals->SetValue (anId + 1, (Standard_ShortReal )theNormals (aNodeIter).X());
-    aNormals->SetValue (anId + 2, (Standard_ShortReal )theNormals (aNodeIter).Y());
-    aNormals->SetValue (anId + 3, (Standard_ShortReal )theNormals (aNodeIter).Z());
+    aNormals->SetValue (anId + 1, (Standard_ShortReal )aNorm.X());
+    aNormals->SetValue (anId + 2, (Standard_ShortReal )aNorm.Y());
+    aNormals->SetValue (anId + 3, (Standard_ShortReal )aNorm.Z());
   }
   aPolyTri->SetNormals (aNormals);
+}
+
+//=======================================================================
+//function : Normal
+//purpose  :
+//=======================================================================
+void StdPrs_ToolTriangulatedShape::Normal (const TopoDS_Face&  theFace,
+                                           Poly_Connect&       thePolyConnect,
+                                           TColgp_Array1OfDir& theNormals)
+{
+  const Handle(Poly_Triangulation)& aPolyTri = thePolyConnect.Triangulation();
+  if (!aPolyTri->HasNormals())
+  {
+    Normal (theFace, thePolyConnect);
+  }
+
+  const TColgp_Array1OfPnt&       aNodes   = aPolyTri->Nodes();
+  const TShort_Array1OfShortReal& aNormals = aPolyTri->Normals();
+  const Standard_ShortReal*       aNormArr = &aNormals.First();
+  for (Standard_Integer aNodeIter = aNodes.Lower(); aNodeIter <= aNodes.Upper(); ++aNodeIter)
+  {
+    const Standard_Integer anId = 3 * (aNodeIter - aNodes.Lower());
+    const gp_Dir aNorm (aNormArr[anId + 0],
+                        aNormArr[anId + 1],
+                        aNormArr[anId + 2]);
+    theNormals (aNodeIter) = aNorm;
+  }
 
   if (theFace.Orientation() == TopAbs_REVERSED)
   {

@@ -39,6 +39,13 @@ public:
   //! @return true if shape is closed manifold Solid or compound of such Solids. <br>
   Standard_EXPORT static Standard_Boolean IsClosed (const TopoDS_Shape& theShape);
 
+  //! Computes nodal normals for Poly_Triangulation structure using UV coordinates and surface.
+  //! Does nothing if triangulation already defines normals.
+  //! @param theFace [in] the face
+  //! @param thePolyConnect [in] the definition of a face triangulation
+  Standard_EXPORT static void Normal (const TopoDS_Face& theFace,
+                                      Poly_Connect& thePolyConnect);
+
   //! Evaluate normals for a triangle of a face.
   //! @param theFace [in] the face.
   //! @param thePolyConnect [in] the definition of a face triangulation.

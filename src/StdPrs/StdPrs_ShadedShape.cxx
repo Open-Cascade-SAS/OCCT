@@ -190,8 +190,9 @@ namespace
       // Extracts vertices & normals from nodes
       const TColgp_Array1OfPnt&   aNodes   = aT->Nodes();
       const TColgp_Array1OfPnt2d& aUVNodes = aT->UVNodes();
-      TColgp_Array1OfDir aNormals (aNodes.Lower(), aNodes.Upper());
-      StdPrs_ToolTriangulatedShape::Normal (aFace, aPolyConnect, aNormals);
+      StdPrs_ToolTriangulatedShape::Normal (aFace, aPolyConnect);
+      const TShort_Array1OfShortReal& aNormals = aT->Normals();
+      const Standard_ShortReal*       aNormArr = &aNormals.First();
 
       if (theHasTexels)
       {
@@ -204,22 +205,27 @@ namespace
       for (Standard_Integer aNodeIter = aNodes.Lower(); aNodeIter <= aNodes.Upper(); ++aNodeIter)
       {
         aPoint = aNodes (aNodeIter);
+        const Standard_Integer anId = 3 * (aNodeIter - aNodes.Lower());
+        gp_Dir aNorm (aNormArr[anId + 0], aNormArr[anId + 1], aNormArr[anId + 2]);
+        if (aFace.Orientation() == TopAbs_REVERSED)
+        {
+          aNorm.Reverse();
+        }
         if (!aLoc.IsIdentity())
         {
           aPoint.Transform (aTrsf);
-
-          aNormals (aNodeIter) = aNormals (aNodeIter).Transformed (aTrsf);
+          aNorm.Transform (aTrsf);
         }
 
         if (theHasTexels && aUVNodes.Upper() == aNodes.Upper())
         {
           const gp_Pnt2d aTexel = gp_Pnt2d ((-theUVOrigin.X() + (theUVRepeat.X() * (aUVNodes (aNodeIter).X() - aUmin)) / dUmax) / theUVScale.X(),
                                             (-theUVOrigin.Y() + (theUVRepeat.Y() * (aUVNodes (aNodeIter).Y() - aVmin)) / dVmax) / theUVScale.Y());
-          anArray->AddVertex (aPoint, aNormals (aNodeIter), aTexel);
+          anArray->AddVertex (aPoint, aNorm, aTexel);
         }
         else
         {
-          anArray->AddVertex (aPoint, aNormals (aNodeIter));
+          anArray->AddVertex (aPoint, aNorm);
         }
       }
 
