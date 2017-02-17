@@ -135,9 +135,32 @@ vsetcolorbg 255 255 255
 vtop
 vfit
 
-# add dimension
-explode snowflake v
-vdimension length -length -shapes snowflake_89 snowflake_15 -plane xoy -value 0.001 -dispunits mm -showunits -flyout 70 -label above -color black -text 5 3d sh
+# add dimension:
+# detect vertices extremal in X direction
+boundingstr snowflake x1 y1 z1 x2 y2 z2
+plane f1 x1 0 0 1 0 0
+plane f2 x2 0 0 1 0 0
+mkface f1 f1
+mkface f2 f2
+bsection s1 snowflake f1
+bsection s2 snowflake f2
+# select only upper vertices (nearer to the upper bound)
+explode s1 v
+explode s2 v
+plane fup 0 y2 0 0 1 0
+mkface fup fup
+for {set i 1} {$i <= 2} {incr i} {
+  set dmin 1e10
+  for {set j 1} {$j <= 2} {incr j} {
+    distmini d s${i}_$j fup
+    set dist [dval d_val]
+    if {$dmin > $dist} {
+      set dmin $dist
+      eval set v$i s${i}_$j
+    }
+  }
+}
+vdimension length -length -shapes $v1 $v2 -plane xoy -value 0.001 -dispunits mm -showunits -flyout 70 -label above -color black -text 5 3d sh
 
 if { [regexp HAVE_GL2PS [dversion]] } {
     puts "You can use command vexport to generate PDF: vexport your_file_path.pdf"

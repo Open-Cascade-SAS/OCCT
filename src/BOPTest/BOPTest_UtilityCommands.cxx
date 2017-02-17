@@ -23,12 +23,15 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopExp_Explorer.hxx>
 #include <Draw.hxx>
 #include <BOPAlgo_Tools.hxx>
+#include <BRepLib.hxx>
 
 static Standard_Integer attachpcurve (Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer edgestowire  (Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer edgestofaces  (Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer BuildPcurvesOnPlane(Draw_Interpretor&, Standard_Integer, const char**);
 
 //=======================================================================
 //function : BOPCommands
@@ -46,7 +49,8 @@ static Standard_Integer edgestofaces  (Draw_Interpretor&, Standard_Integer, cons
   theCommands.Add("attachpcurve", "attachpcurve eold enew face", __FILE__, attachpcurve, group);
   theCommands.Add("edgestowire" , "edgestowire wire edges"     , __FILE__, edgestowire , group);
   theCommands.Add("edgestofaces" , "edgestofaces faces edges [-a AngTol -s Shared(0/1)]", __FILE__, edgestofaces , group);
-}
+  theCommands.Add("buildpcurvesonplane", "buildpcurvesonplane shape", __FILE__, BuildPcurvesOnPlane, group);
+  }
 
 //=======================================================================
 //function : BOPCommands
@@ -181,5 +185,42 @@ static Standard_Integer edgestofaces(Draw_Interpretor& theDI,
   }
   //
   DBRep::Set(theArgVal[1], aFaces);
+  return 0;
+}
+
+//=======================================================================
+//function : BuildPcurvesOnPlane
+//purpose  : Build and store pcurves of edges on planes
+//=======================================================================
+static Standard_Integer BuildPcurvesOnPlane(Draw_Interpretor& theDI,
+                                 Standard_Integer  theNArg,
+                                 const char ** theArgVal)
+{
+  if (theNArg != 2)
+  {
+    theDI << "Use: " << theArgVal[0] << " shape\n";
+    return 1;
+  }
+
+  TopoDS_Shape aShape(DBRep::Get(theArgVal[1]));
+  if (aShape.IsNull()) {
+    theDI << theArgVal[1] << " is null shape\n";
+    return 1;
+  }
+
+  TopExp_Explorer exp(aShape, TopAbs_FACE);
+  for (; exp.More(); exp.Next())
+  {
+    const TopoDS_Face& aF = TopoDS::Face(exp.Current());
+    BRepAdaptor_Surface aS(aF, Standard_False);
+    if (aS.GetType() == GeomAbs_Plane)
+    {
+      BOPCol_ListOfShape aLE;
+      TopExp_Explorer exp1(aF, TopAbs_EDGE);
+      for (; exp1.More(); exp1.Next())
+        aLE.Append(exp1.Current());
+      BRepLib::BuildPCurveForEdgesOnPlane(aLE, aF);
+    }
+  }
   return 0;
 }

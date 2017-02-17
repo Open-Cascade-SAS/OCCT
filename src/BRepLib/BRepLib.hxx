@@ -25,12 +25,14 @@
 #include <Standard_Boolean.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <NCollection_List.hxx>
 
+class Geom2d_Curve;
 class Adaptor3d_Curve;
 class Geom_Plane;
-class TopoDS_Edge;
 class TopoDS_Shape;
 class TopoDS_Solid;
 class TopoDS_Face;
@@ -111,7 +113,26 @@ public:
   //! Computes  the 3d curves  for all the  edges of <S>
   //! return False if one of the computation failed.
   Standard_EXPORT static Standard_Boolean BuildCurves3d (const TopoDS_Shape& S);
-  
+
+  //! Builds pcurve of edge on face if the surface is plane, and updates the edge.
+  Standard_EXPORT static void BuildPCurveForEdgeOnPlane(const TopoDS_Edge& theE, const TopoDS_Face& theF);
+
+  //! Builds pcurve of edge on face if the surface is plane, but does not update the edge.
+  //! The output are the pcurve and the flag telling that pcurve was built.
+  Standard_EXPORT static void BuildPCurveForEdgeOnPlane(const TopoDS_Edge& theE, const TopoDS_Face& theF,
+                                                        Handle(Geom2d_Curve)& aC2D, Standard_Boolean& bToUpdate);
+
+  //! Builds pcurves of edges on face if the surface is plane, and update the edges.
+  template<class TCont> static void BuildPCurveForEdgesOnPlane(const TCont& theLE, const TopoDS_Face& theF)
+  {
+    for (typename TCont::Iterator aIt(theLE); aIt.More(); aIt.Next())
+    {
+      const TopoDS_Edge& aE = TopoDS::Edge(aIt.Value());
+      if (!aE.IsNull())
+        BRepLib::BuildPCurveForEdgeOnPlane(aE, theF);
+    }
+  }
+
   //! Checks if the edge has a  Tolerance smaller than -- --
   //! -- -- MaxToleranceToCheck  if  so it will compute  the
   //! radius    of  -- the   cylindrical  pipe  surface that

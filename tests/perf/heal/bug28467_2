@@ -1,0 +1,23 @@
+puts "======="
+puts "0028467"
+puts "======="
+puts ""
+##################################################
+# Improve UnifySameDomain performance
+##################################################
+
+autodisplay 0
+
+restore [locate_data_file bug28467_shape2.brep] a
+
+removeloc a a
+
+chrono h reset;chrono h start
+unifysamedom r a -nosafe
+chrono h stop
+
+checknbshapes r -m "unifysamedom result" -vertex 1008 -edge 1512 -wire 656 -face 581
+checkprops r -s 3.9225e+006 -l 181240
+checkshape r
+
+chrono h show COUNTER unifysamedom

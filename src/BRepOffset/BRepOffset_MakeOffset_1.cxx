@@ -30,6 +30,7 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 
+#include <BRepLib.hxx>
 #include <BRepTools.hxx>
 
 #include <BRepAdaptor_Curve.hxx>
@@ -1365,7 +1366,7 @@ void BuildSplitsOfFace(const TopoDS_Face& theFace,
   aFF.Orientation(TopAbs_FORWARD);
   //
   // build pcurves for edges on the face
-  BOPTools_AlgoTools2D::BuildPCurveForEdgesOnPlane(aLE, aFF);
+  BRepLib::BuildPCurveForEdgesOnPlane(aLE, aFF);
   //
   // build splits of faces
   BOPAlgo_BuilderFace aBF;

@@ -1437,3 +1437,19 @@ The Error/Warning reporting system of the algorithms in Boolean Component (in al
 The methods returning the status of errors and warnings of the algorithms (ErrorStatus() and WarningStatus()) have been removed.
 Instead use methods HasErrors() and HasWarnings() to check for presence of errors and warnings, respectively.
 The full list of errors and warnings, with associated data such as problematic sub-shapes, can be obtained by method GetReport().
+
+@section upgrade_occt721 Upgrade to OCCT 7.2.1
+
+@subsection upgrade_721_Changes_In_USD Changes in ShapeUpgrade_UnifySameDomain
+
+The following public methods in the class ShapeUpgrade_UnifySameDomain became protected:
+* *UnifyFaces*
+* *UnifyEdges*
+
+The following public method has been removed:
+* *UnifyFacesAndEdges*
+
+@subsection upgrade_721_Move_BuildPCurveForEdgeOnPlane Moving BuildPCurveForEdgeOnPlane from BOPTools_AlgoTools2D to BRepLib
+
+The methods BuildPCurveForEdgeOnPlane and BuildPCurveForEdgesOnPlane have been moved from the class BOPTools_AlgoTools2D
+to the more lower level class BRepLib.

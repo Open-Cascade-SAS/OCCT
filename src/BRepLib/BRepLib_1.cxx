@@ -14,6 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepLib.hxx>
+#include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <Geom_OffsetCurve.hxx>
@@ -233,4 +234,38 @@ Standard_Boolean BRepLib::FindValidRange
                         aParV[0], aPntV[0], aTolV[0],
                         aParV[1], aPntV[1], aTolV[1],
                         theFirst, theLast);
+}
+
+//=======================================================================
+//function : BuildPCurveForEdgeOnPlane
+//purpose  : 
+//=======================================================================
+void BRepLib::BuildPCurveForEdgeOnPlane(const TopoDS_Edge& aE,
+                                        const TopoDS_Face& aF)
+{
+  Standard_Boolean bToUpdate;
+  Standard_Real aTolE;
+  Handle(Geom2d_Curve) aC2D;
+  BRep_Builder aBB;
+  //
+  BuildPCurveForEdgeOnPlane(aE, aF, aC2D, bToUpdate);
+  if (bToUpdate) {
+    aTolE = BRep_Tool::Tolerance(aE);
+    aBB.UpdateEdge(aE, aC2D, aF, aTolE);
+  }
+}
+
+//=======================================================================
+//function : BuildPCurveForEdgeOnPlane
+//purpose  : 
+//=======================================================================
+void BRepLib::BuildPCurveForEdgeOnPlane(const TopoDS_Edge& aE,
+                                        const TopoDS_Face& aF,
+                                        Handle(Geom2d_Curve)& aC2D,
+                                        Standard_Boolean& bToUpdate)
+{
+  Standard_Real aT1, aT2;
+  Standard_Boolean isStored;
+  aC2D = BRep_Tool::CurveOnSurface(aE, aF, aT1, aT2, &isStored);
+  bToUpdate = !isStored && !aC2D.IsNull();
 }

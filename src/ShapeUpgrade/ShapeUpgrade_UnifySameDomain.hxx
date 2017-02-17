@@ -107,17 +107,6 @@ public:
   {
     return myShape;
   }
-  
-  //! this method makes if possible a common face from each
-  //! group of faces lying on coincident surfaces
-  Standard_EXPORT void UnifyFaces();
-  
-  //! this method makes if possible a common edge from each
-  //! group of edges connecting common couple of faces
-  Standard_EXPORT void UnifyEdges();
-  
-  //! this method unifies same domain faces and edges
-  Standard_EXPORT void UnifyFacesAndEdges();
 
   //! Returns the history of the processed shapes.
   const Handle(BRepTools_History)& History() const
@@ -135,10 +124,13 @@ public:
 
 protected:
 
+  //! this method makes if possible a common face from each
+  //! group of faces lying on coincident surfaces
+  Standard_EXPORT void UnifyFaces();
 
-
-
-private:
+  //! this method makes if possible a common edge from each
+  //! group of edges connecting common couple of faces
+  Standard_EXPORT void UnifyEdges();
 
   void IntUnifyFaces(const TopoDS_Shape& theInpShape,
                      TopTools_IndexedDataMapOfShapeListOfShape& theGMapEdgeFaces,
@@ -147,6 +139,7 @@ private:
   //! Fills the history of the modifications during the operation.
   Standard_EXPORT void FillHistory();
 
+private:
 
   TopoDS_Shape myInitShape;
   Standard_Real myLinTol;

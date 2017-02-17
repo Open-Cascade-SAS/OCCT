@@ -40,6 +40,7 @@
 #include <BOPDS_VectorOfListOfPaveBlock.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
+#include <BRepLib.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBndLib.hxx>
@@ -365,7 +366,7 @@ class BOPAlgo_BPC {
   }
   //
   void Perform() {
-    BOPTools_AlgoTools2D::BuildPCurveForEdgeOnPlane (myE, myF, myCurve, myToUpdate);
+    BRepLib::BuildPCurveForEdgeOnPlane(myE, myF, myCurve, myToUpdate);
   };
   //
  protected:
