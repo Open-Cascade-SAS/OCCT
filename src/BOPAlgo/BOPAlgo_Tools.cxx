@@ -44,6 +44,7 @@
 
 #include <BRepBuilderAPI_MakeFace.hxx>
 
+#include <BRepLib.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
 
@@ -659,7 +660,7 @@ Standard_Boolean BOPAlgo_Tools::WiresToFaces(const TopoDS_Shape& theWires,
       OCC_CATCH_SIGNALS
       //
       // build pcurves for edges on this face
-      BOPTools_AlgoTools2D::BuildPCurveForEdgesOnPlane(aLE, aFF);
+      BRepLib::BuildPCurveForEdgesOnPlane(aLE, aFF);
       //
       // split the face with the edges
       BOPAlgo_BuilderFace aBF;

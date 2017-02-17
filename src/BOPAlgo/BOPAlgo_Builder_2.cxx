@@ -45,6 +45,7 @@
 #include <BOPTools_ListOfCoupleOfShape.hxx>
 #include <BOPTools_MapOfSet.hxx>
 #include <BRep_Builder.hxx>
+#include <BRepLib.hxx>
 #include <BRep_Tool.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomLib.hxx>
@@ -438,7 +439,7 @@ void BOPAlgo_Builder::BuildSplitFaces()
     //
     if (!myPaveFiller->NonDestructive()) {
       // speed up for planar faces
-      BOPTools_AlgoTools2D::BuildPCurveForEdgesOnPlane (aLE, aFF);
+      BRepLib::BuildPCurveForEdgesOnPlane(aLE, aFF);
     }
     // 3 Build split faces
     BOPAlgo_BuilderFace& aBF=aVBF.Append1();

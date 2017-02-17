@@ -141,17 +141,6 @@ public:
 
   //! Compute intermediate value of parameter for the edge <anE>.
   Standard_EXPORT static Standard_Real IntermediatePoint (const TopoDS_Edge& anE);
-  
-  //! Build pcurve of edge on face if the surface is plane, and update the edge.
-  Standard_EXPORT static void BuildPCurveForEdgeOnPlane (const TopoDS_Edge& theE, const TopoDS_Face& theF);
-  
-  //! Build pcurve of edge on face if the surface is plane, but do not update the edge.
-  //! The output are the pcurve and the flag telling that pcurve was built.
-  Standard_EXPORT static void BuildPCurveForEdgeOnPlane (const TopoDS_Edge& theE, const TopoDS_Face& theF,
-                                                         Handle(Geom2d_Curve)& aC2D, Standard_Boolean& bToUpdate);
-
-  Standard_EXPORT static void BuildPCurveForEdgesOnPlane (const BOPCol_ListOfShape& theLE, const TopoDS_Face& theF);
-  
 
   //! Make P-Curve <aC> for the edge <aE> on surface <aF> .<br>
   //! [aFirst, aLast] - range of the P-Curve<br>

@@ -32,7 +32,7 @@ if {$bug_info != ""} {
 
 set bug_info [unifysamedommod res a_3]
 set bug_info [string trim [string range $bug_info 0 [expr {[string first "\n" $bug_info] - 1}]]]
-if {$bug_info != ""} {
+if {$bug_info != "The shape has not been modified"} {
   puts "ERROR: OCC28226 is reproduced. Command unifysamedommod does not work correctly."
 }
 
