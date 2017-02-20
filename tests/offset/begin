@@ -15,7 +15,7 @@ if { [info exists test_image ] == 0 } {
 proc OFFSETSHAPE {distance faces  calcul type} {
     global GlobFaces
     set GlobFaces $faces
-    uplevel #0 explode s f
+    if {[llength $faces] > 0} {uplevel #0 explode s f}
     uplevel #0 offsetparameter 1e-7 $calcul $type
     uplevel #0 offsetload s $distance $faces
     uplevel #0 offsetperform result

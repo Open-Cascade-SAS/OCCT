@@ -196,7 +196,6 @@ static
                                  const TopTools_DataMapOfShapeListOfShape& theOEImages,
                                  const TopTools_DataMapOfShapeListOfShape& theOEOrigins,
                                  const TopTools_DataMapOfShapeListOfShape& theEdgesOrigins,
-                                 const TopTools_IndexedDataMapOfShapeListOfShape& theDMEF,
                                  const TopTools_IndexedDataMapOfShapeListOfShape& theDMVE,
                                  const TopTools_IndexedMapOfShape& theMEdges,
                                  TopTools_MapOfShape& theMEInverted);
@@ -1675,7 +1674,7 @@ void FindInvalidEdges(const TopoDS_Face& theF,
       // check if the edge has been inverted
       Standard_Boolean bInverted = !aNbE ? Standard_False :
         CheckInverted(aEIm, aFOr, theOEImages, theOEOrigins,
-          theEdgesOrigins, aDMEF, aDMVE, aMEdges, theMEInverted);
+          theEdgesOrigins, aDMVE, aMEdges, theMEInverted);
       //
       if (!bInverted || !aNbVOr) {
         theValidEdges.Add(aEIm);
@@ -2162,16 +2161,11 @@ Standard_Boolean CheckInverted(const TopoDS_Edge& theEIm,
                                const TopTools_DataMapOfShapeListOfShape& theOEImages,
                                const TopTools_DataMapOfShapeListOfShape& theOEOrigins,
                                const TopTools_DataMapOfShapeListOfShape& theEdgesOrigins,
-                               const TopTools_IndexedDataMapOfShapeListOfShape& theDMEF,
                                const TopTools_IndexedDataMapOfShapeListOfShape& theDMVE,
                                const TopTools_IndexedMapOfShape& theMEdges,
                                TopTools_MapOfShape& theMEInverted)
 {
-  if (theDMEF.FindFromKey(theEIm).Extent() > 1) {
-    return Standard_False;
-  }
-  //
-  // it is necessary to compare the direction from first vertex
+  // It is necessary to compare the direction from first vertex
   // to the last vertex on the original edge with the
   // same direction on the new edge. If the directions
   // will be different - the edge has been inverted.
