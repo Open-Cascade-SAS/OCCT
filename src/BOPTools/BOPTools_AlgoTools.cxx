@@ -1192,93 +1192,82 @@ Standard_Boolean BOPTools_AlgoTools::IsSplitToReverse
    const TopoDS_Face& theFSr,
    Handle(IntTools_Context)& theContext)
 {
-  Standard_Boolean bRet, bFound, bInFace;
-  Standard_Real aT1, aT2, aT, aU, aV, aScPr;
-  gp_Pnt aPFSp, aPFSr;
-  gp_Dir aDNFSp;
-  gp_Vec aD1U, aD1V;
-  Handle(Geom_Surface) aSr, aSp;
-  TopAbs_Orientation aOrSr, aOrSp;
-  TopExp_Explorer anExp;
-  TopoDS_Edge aESp;
-  //
-  bRet=Standard_False;
-  //
-  aSr=BRep_Tool::Surface(theFSr);
-  aSp=BRep_Tool::Surface(theFSp);
-  if (aSr==aSp) {
-    aOrSr=theFSr.Orientation();
-    aOrSp=theFSp.Orientation();
-    bRet=(aOrSr!=aOrSp);
-    return bRet;
+  // Compare surfaces
+  Handle(Geom_Surface) aSFSp = BRep_Tool::Surface(theFSp);
+  Handle(Geom_Surface) aSFOr = BRep_Tool::Surface(theFSr);
+  if (aSFSp == aSFOr) {
+    return theFSp.Orientation() != theFSr.Orientation();
   }
   //
-  bFound=Standard_False;
-  anExp.Init(theFSp, TopAbs_EDGE);
-  for (; anExp.More(); anExp.Next()) {
-    aESp=(*(TopoDS_Edge*)(&anExp.Current()));
-    if (!BRep_Tool::Degenerated(aESp)) {
-      if (!BRep_Tool::IsClosed(aESp, theFSp)) {
-        bFound=!bFound;
-        break;
+  Standard_Boolean bDone = Standard_False;
+  // Find the point inside the split face
+  gp_Pnt aPFSp;
+  gp_Pnt2d aP2DFSp;
+  //
+  // Error status
+  Standard_Integer iErr;
+  // Use the hatcher to find the point in the middle of the face
+  iErr = BOPTools_AlgoTools3D::PointInFace(theFSp, aPFSp, aP2DFSp, theContext);
+  if (iErr) {
+    // Hatcher has failed to find a point.
+    // Try to get the point near some not closed and
+    // not degenerated edge on the split face.
+    TopExp_Explorer anExp(theFSp, TopAbs_EDGE);
+    for (; anExp.More(); anExp.Next()) {
+      const TopoDS_Edge& aESp = (*(TopoDS_Edge*)(&anExp.Current()));
+      if (!BRep_Tool::Degenerated(aESp) && !BRep_Tool::IsClosed(aESp, theFSp)) {
+        iErr = BOPTools_AlgoTools3D::PointNearEdge
+                 (aESp, theFSp, aP2DFSp, aPFSp, theContext);
+        if (!iErr) {
+          break;
+        }
       }
     }
-  }
-  if (!bFound) {
-    Standard_Boolean bFlag;
-    Standard_Integer iErr;
-    gp_Pnt2d aP2DFSp;
     //
-    iErr=BOPTools_AlgoTools3D::PointInFace(theFSp, aPFSp, aP2DFSp, 
-                                           theContext);
-    if (iErr) {
-      return bRet;
+    if (!anExp.More()) {
+      // The point has not been found.
+      return bDone;
     }
-    //
-    aP2DFSp.Coord(aU, aV);
-    bFlag=BOPTools_AlgoTools3D::GetNormalToSurface(aSp, aU, aV, aDNFSp);
-    if (!bFlag) {
-      return bRet;
-    }
-    //
-    if (theFSp.Orientation()==TopAbs_REVERSED){
-      aDNFSp.Reverse();
-    }
-  }
-  else {
-    BRep_Tool::Range(aESp, aT1, aT2);
-    aT=BOPTools_AlgoTools2D::IntermediatePoint(aT1, aT2);
-    BOPTools_AlgoTools3D::GetApproxNormalToFaceOnEdge(aESp, theFSp, aT, 
-                                                      aPFSp, aDNFSp, 
-                                                      theContext);
   }
   //
-  // Parts of theContext->ComputeVS(..) 
-  GeomAPI_ProjectPointOnSurf& aProjector=theContext->ProjPS(theFSr);
+  // Compute normal direction of the split face
+  gp_Dir aDNFSp;
+  bDone = BOPTools_AlgoTools3D::GetNormalToSurface
+    (aSFSp, aP2DFSp.X(), aP2DFSp.Y(), aDNFSp);
+  if (!bDone) {
+    return bDone;
+  }
+  //
+  if (theFSp.Orientation() == TopAbs_REVERSED){
+    aDNFSp.Reverse();
+  }
+  //
+  // Project the point from the split face on the original face
+  // to find its UV coordinates
+  GeomAPI_ProjectPointOnSurf& aProjector = theContext->ProjPS(theFSr);
   aProjector.Perform(aPFSp);
-  if (!aProjector.IsDone()) {
-    return bRet;
+  bDone = (aProjector.NbPoints() > 0);
+  if (!bDone) {
+    return bDone;
   }
-  //
+  // UV coordinates of the point on the original face
+  Standard_Real aU, aV;
   aProjector.LowerDistanceParameters(aU, aV);
-  gp_Pnt2d aP2D(aU, aV);
-  bInFace=theContext->IsPointInOnFace (theFSr, aP2D);
-  if (!bInFace) {
-    return bRet;
+  //
+  // Compute normal direction for the original face in this point
+  gp_Dir aDNFOr;
+  bDone = BOPTools_AlgoTools3D::GetNormalToSurface(aSFOr, aU, aV, aDNFOr);
+  if (!bDone) {
+    return bDone;
   }
   //
-  aSr->D1(aU, aV, aPFSr, aD1U, aD1V);
-  gp_Dir aDD1U(aD1U); 
-  gp_Dir aDD1V(aD1V);
-  gp_Dir aDNFSr=aDD1U^aDD1V; 
-  if (theFSr.Orientation()==TopAbs_REVERSED){
-    aDNFSr.Reverse();
+  if (theFSr.Orientation() == TopAbs_REVERSED) {
+    aDNFOr.Reverse();
   }
   //
-  aScPr=aDNFSp*aDNFSr;
-  bRet=(aScPr<0.);
-  //
-  return bRet;
+  // compare the normals
+  Standard_Real aCos = aDNFSp*aDNFOr;
+  return (aCos < 0.);
 }
 //=======================================================================
 //function :IsSplitToReverse

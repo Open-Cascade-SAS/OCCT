@@ -750,6 +750,8 @@ void MakeShell(const BOPCol_ListOfShape& aLS,
     const TopoDS_Shape& aF=aIt.Value();
     aBB.Add(aShell, aF);
   }
+  //
+  BOPTools_AlgoTools::OrientFacesOnShell(aShell);
 }
 //=======================================================================
 // function: MapEdgesAndFaces
