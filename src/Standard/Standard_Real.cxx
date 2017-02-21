@@ -20,6 +20,8 @@
 #include <Standard_Stream.hxx>
 #include <Standard_OStream.hxx>
 
+static const Standard_Real ACosLimit = 1. + Epsilon(1.);
+
 // ------------------------------------------------------------------
 // Hascode : Computes a hascoding value for a given real
 // ------------------------------------------------------------------
@@ -43,10 +45,18 @@ Standard_Integer HashCode(const Standard_Real me, const Standard_Integer Upper)
 //-------------------------------------------------------------------
 Standard_Real ACos (const Standard_Real Value) 
 { 
-  if ( (Value < -1.) || (Value > 1.) ){
+  if ((Value < -ACosLimit) || (Value > ACosLimit)){
     throw Standard_RangeError();
-  } 
-  return acos(Value); 
+  }
+  else if (Value > 1.)
+  {
+    return 0.; //acos(1.)
+  }
+  else if (Value < -1.)
+  {
+    return M_PI; //acos(-1.)
+  }
+  return acos(Value);
 }
 
 //-------------------------------------------------------------------
@@ -93,10 +103,18 @@ Standard_Real ACosApprox (const Standard_Real Value)
 //-------------------------------------------------------------------
 Standard_Real ASin (const Standard_Real Value) 
 { 
-  if ( Value < -1 || Value > 1 ){
+  if ((Value < -ACosLimit) || (Value > ACosLimit)){
     throw Standard_RangeError();
   }
-  return asin(Value); 
+  else if (Value > 1.)
+  {
+    return M_PI_2; //asin(1.)
+  }
+  else if (Value < -1.)
+  {
+    return -M_PI_2; //asin(-1.)
+  }
+  return asin(Value);
 }
 
 //-------------------------------------------------------------------
