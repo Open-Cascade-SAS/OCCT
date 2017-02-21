@@ -1,0 +1,30 @@
+puts "========"
+puts "OCC28486"
+puts "========"
+puts ""
+#################################################
+# Fuse of several solids fails due to presence of common zones between faces
+#################################################
+
+plane p 0 0 0 0 0 1
+mkface f1 p -10 10 -10 10
+copy f1 f2
+trotate f2 0 0 0 1 0 0 20
+line l 0 0 0 0 1 0
+mkedge e l -8 8
+trotate e 0 0 0 1 0 0 10
+settolerance e 1.5
+donly f1 f2 e
+
+bclearobjects
+bcleartools
+baddobjects f1 f2
+baddtools e
+bfillds
+bbuild result
+
+checkshape result
+checknbshapes result -face 4 -wire 8
+checkprops result -s 800
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

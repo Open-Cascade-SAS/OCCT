@@ -398,6 +398,14 @@ protected:
                                             Standard_Real& theSLast,
                                             Bnd_Box& theBox);
 
+  //! Treatment of the possible common zones, not detected by the
+  //! Face/Face intersection algorithm, by intersection of each section edge
+  //! with all faces not participated in creation of that section edge.
+  //! If the intersection says that the section edge is lying on the face
+  //! it will be added into FaceInfo structure of the face as IN edge
+  //! and will be used for splitting.
+  Standard_EXPORT void PutSEInOtherFaces();
+
   BOPCol_ListOfShape myArguments;
   BOPDS_PDS myDS;
   BOPDS_PIterator myIterator;

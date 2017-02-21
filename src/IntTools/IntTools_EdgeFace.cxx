@@ -659,7 +659,6 @@ void IntTools_EdgeFace::Perform()
     if (IsCoincident()) {
       aCommonPrt.SetType(TopAbs_EDGE);
       aCommonPrt.SetRange1(myRange.First(), myRange.Last());
-      MakeType (aCommonPrt); 
       mySeqOfCommonPrts.Append(aCommonPrt);
       myIsDone=Standard_True;
       return;

@@ -475,7 +475,7 @@ void BOPAlgo_Builder::BuildSplitFaces()
 void BOPAlgo_Builder::FillSameDomainFaces()
 {
   Standard_Boolean bFlag;
-  Standard_Integer i, j, k, aNbFFs, aNbCurves, aNbPoints, nF1, nF2, aNbS;
+  Standard_Integer i, j, k, aNbFFs, nF1, nF2, aNbS;
   Handle(NCollection_BaseAllocator) aAllocator;
   BOPCol_ListIteratorOfListOfShape aItF;
   BOPCol_MapOfShape aMFence;
@@ -494,30 +494,6 @@ void BOPAlgo_Builder::FillSameDomainFaces()
   for (i=0; i<aNbFFs; ++i) {
     const BOPDS_InterfFF& aFF=aFFs(i);
     aFF.Indices(nF1, nF2);
-    //
-    const BOPDS_VectorOfCurve& aCurves=aFF.Curves();
-    aNbCurves=aCurves.Extent();
-    if (aNbCurves) {
-      //
-      bFlag=Standard_False;
-      for (j=0; j<aNbCurves; ++j) {
-        const BOPDS_Curve& aNC=aCurves.Value(j);
-        bFlag=aNC.HasEdge();
-        if (bFlag) {
-          break;
-        }
-      }
-      if (bFlag) {
-        continue;
-      }
-      //continue;
-    }
-    //
-    const BOPDS_VectorOfPoint& aPoints=aFF.Points();
-    aNbPoints=aPoints.Extent();
-    if (aNbPoints) {
-      continue;
-    }
     //
     if (!myDS->HasFaceInfo(nF1) || !myDS->HasFaceInfo(nF2) ) {
       continue;

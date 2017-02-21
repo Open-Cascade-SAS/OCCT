@@ -280,6 +280,9 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
                                       IntPatch_SequenceOfLine& theLines) const 
 {
   const Standard_Integer aNbVert = theALine->NbVertex();
+  if (!aNbVert) {
+    return;
+  }
   const Standard_Real aTol = 2.0*myTol3D+Precision::Confusion();
   IntPatch_SpecPntType aPrePointExist = IntPatch_SPntNone;
   

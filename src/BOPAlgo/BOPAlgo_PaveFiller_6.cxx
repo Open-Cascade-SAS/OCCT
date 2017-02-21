@@ -453,7 +453,8 @@ void BOPAlgo_PaveFiller::MakeBlocks()
     //
     myDS->SubShapesOnIn(nF1, nF2, aMVOnIn, aMPBOnIn, aMPBCommon);
     myDS->SharedEdges(nF1, nF2, aLSE, aAllocator);
-    
+    //
+    Standard_Boolean bHasRealSectionEdge = Standard_False;
     // 1. Treat Points
     for (j=0; j<aNbP; ++j) {
       TopoDS_Vertex aV;
@@ -577,7 +578,7 @@ void BOPAlgo_PaveFiller::MakeBlocks()
         Standard_Real aTolNew;
         bExist=IsExistingPaveBlock(aPB, aNC, aTolR3D, aMPBOnIn, aMPBCommon, aPBOut, aTolNew);
         if (bExist) {
-          if (aMPBAdd.Add(aPBOut)) {
+          if (!aMPBAdd.Contains(aPBOut)) {
             Standard_Boolean bInBothFaces = Standard_True;
             if (!myDS->IsCommonBlock(aPBOut)) {
               Standard_Integer nE;
@@ -600,6 +601,7 @@ void BOPAlgo_PaveFiller::MakeBlocks()
                               aFI2.PaveBlocksIn().Contains(aPBOut));
             }
             if (!bInBothFaces) {
+              aMPBAdd.Add(aPBOut);
               PreparePostTreatFF(i, j, aPBOut, aMSCPB, aMVI, aLPBC);
             }
           }
@@ -627,6 +629,8 @@ void BOPAlgo_PaveFiller::MakeBlocks()
         //
         aMVTol.UnBind(nV1);
         aMVTol.UnBind(nV2);
+        //
+        bHasRealSectionEdge = Standard_True;
       }
       //
       aLPBC.RemoveFirst();
@@ -655,6 +659,28 @@ void BOPAlgo_PaveFiller::MakeBlocks()
     }
     //
     ProcessExistingPaveBlocks(i, aMPBOnIn, aDMBV, aMSCPB, aMVI, aMPBAdd);
+    //
+    // If the pair of faces has produced any real section edges
+    // it is necessary to check if these edges do not intersect
+    // any common IN edges of the faces. For that, all such edges
+    // are added for Post Treatment along with sections edges.
+    if (bHasRealSectionEdge) {
+      const BOPDS_IndexedMapOfPaveBlock& aMPBIn1 = aFI1.PaveBlocksIn();
+      const BOPDS_IndexedMapOfPaveBlock& aMPBIn2 = aFI2.PaveBlocksIn();
+      //
+      // For simplicity add all IN edges into the first set of section curves.
+      // These existing edges will be removed from the set on the post treatment
+      // stage in the UpdateFaceInfo function.
+      BOPDS_ListOfPaveBlock& aLPBC = aVC.ChangeValue(0).ChangePaveBlocks();
+      //
+      Standard_Integer aNbIn1 = aMPBIn1.Extent();
+      for (j = 1; j <= aNbIn1; ++j) {
+        const Handle(BOPDS_PaveBlock)& aPB = aMPBIn1(j);
+        if (aMPBIn2.Contains(aPB) && aMPBAdd.Add(aPB)) {
+          PreparePostTreatFF(i, 0, aPB, aMSCPB, aMVI, aLPBC);
+        }
+      }
+    }
   }//for (i=0; i<aNbFF; ++i) {
   // 
   // post treatment
@@ -670,6 +696,11 @@ void BOPAlgo_PaveFiller::MakeBlocks()
   UpdateFaceInfo(aDMExEdges, aDMNewSD);
   //Update all pave blocks
   UpdatePaveBlocks(aDMNewSD);
+  //
+  // Treat possible common zones by trying to put each section edge
+  // into all faces, not participated in creation of that edge, as IN edge
+  PutSEInOtherFaces();
+  //
   //-----------------------------------------------------scope t
   aMF.Clear();
   aMVStick.Clear();
@@ -2926,6 +2957,119 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
     //
     if (aMaxTol < aTolV) {
       reinterpret_cast<BRep_TVertex*>(aV.TShape().operator->())->Tolerance(aMaxTol);
+    }
+  }
+}
+
+//=======================================================================
+//function : PutSEInOtherFaces
+//purpose  : 
+//=======================================================================
+void BOPAlgo_PaveFiller::PutSEInOtherFaces()
+{
+  // Try to intersect each section edge with the faces
+  // not participated in its creation
+  //
+  // 1. Get all section edges
+  BOPDS_IndexedMapOfPaveBlock aMPBScAll;
+  //
+  BOPDS_VectorOfInterfFF& aFFs = myDS->InterfFF();
+  Standard_Integer i, j, aNbFF = aFFs.Extent();
+  //
+  for (i = 0; i < aNbFF; ++i) {
+    const BOPDS_VectorOfCurve& aVNC = aFFs(i).Curves();
+    Standard_Integer aNbC = aVNC.Extent();
+    for (j = 0; j < aNbC; ++j) {
+      const BOPDS_ListOfPaveBlock& aLPBC = aVNC(j).PaveBlocks();
+      BOPDS_ListIteratorOfListOfPaveBlock aItPB(aLPBC);
+      for (; aItPB.More(); aItPB.Next()) {
+        aMPBScAll.Add(aItPB.Value());
+      }
+    }
+  }
+  //
+  Standard_Integer aNbPBSc = aMPBScAll.Extent();
+  //
+  // 2. Loop for all faces and check each section curve
+  Standard_Integer aNbS = myDS->NbSourceShapes();
+  for (i = 0; i < aNbS; ++i) {
+    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
+    if (aSI.ShapeType() != TopAbs_FACE) {
+      continue;
+    }
+    //
+    const TopoDS_Face& aF = (*(TopoDS_Face*)(&aSI.Shape()));
+    BOPDS_FaceInfo& aFI = myDS->ChangeFaceInfo(i);
+    //
+    // IN edges to add new ones
+    BOPDS_IndexedMapOfPaveBlock& aMFPBIn = aFI.ChangePaveBlocksIn();
+    // Section edges to check the participation of the face
+    const BOPDS_IndexedMapOfPaveBlock& aMFPBSc = aFI.PaveBlocksSc();
+    //
+    // Get vertices of the face to check that vertices of the
+    // processed section edge belong to the face
+    BOPCol_MapOfInteger aMFVerts;
+    // Get vertices from ON, IN and Sc pave blocks of the face
+    for (j = 0; j < 3; ++j) {
+      const BOPDS_IndexedMapOfPaveBlock& aMPB =
+        !j ? aFI.PaveBlocksOn() : (j == 1 ? aMFPBIn : aMFPBSc);
+      Standard_Integer aNbPB = aMPB.Extent();
+      for (Standard_Integer k = 1; k <= aNbPB; ++k) {
+        const Handle(BOPDS_PaveBlock)& aPB = aMPB(k);
+        aMFVerts.Add(aPB->Pave1().Index());
+        aMFVerts.Add(aPB->Pave2().Index());
+      }
+    }
+    // Add ON, IN and Sc vertices of the face
+    for (j = 0; j < 3; ++j) {
+      const BOPCol_MapOfInteger& aMFV = !j ? aFI.VerticesOn() :
+        (j == 1 ? aFI.VerticesIn() : aFI.VerticesSc());
+      BOPCol_MapIteratorOfMapOfInteger aItMI(aMFV);
+      for (; aItMI.More(); aItMI.Next()) {
+        aMFVerts.Add(aItMI.Value());
+      }
+    }
+    //
+    // Check each section edge for possible belonging to the face
+    for (j = 1; j <= aNbPBSc; ++j) {
+      const Handle(BOPDS_PaveBlock)& aPB = aMPBScAll(j);
+      if (aMFPBSc.Contains(aPB)) {
+        continue;
+      }
+      //
+      // Both vertices of the section edge should belong to the face
+      if (!aMFVerts.Contains(aPB->Pave1().Index()) ||
+        !aMFVerts.Contains(aPB->Pave2().Index())) {
+        continue;
+      }
+      //
+      // Perform intersection
+      const TopoDS_Edge& aE = TopoDS::Edge(myDS->Shape(aPB->Edge()));
+      //
+      IntTools_EdgeFace anEFInt;
+      anEFInt.SetEdge(aE);
+      anEFInt.SetFace(aF);
+      anEFInt.SetFuzzyValue(myFuzzyValue);
+      anEFInt.SetRange(aPB->Pave1().Parameter(), aPB->Pave2().Parameter());
+      anEFInt.SetContext(myContext);
+      anEFInt.UseQuickCoincidenceCheck(Standard_True);
+      anEFInt.Perform();
+      //
+      const IntTools_SequenceOfCommonPrts& aCPrts = anEFInt.CommonParts();
+      if ((aCPrts.Length() == 1) && (aCPrts(1).Type() == TopAbs_EDGE)) {
+        Handle(BOPDS_CommonBlock) aCB;
+        if (myDS->IsCommonBlock(aPB)) {
+          aCB = myDS->CommonBlock(aPB);
+        }
+        else {
+          aCB = new BOPDS_CommonBlock;
+          aCB->AddPaveBlock(aPB);
+        }
+        //
+        aCB->AddFace(i);
+        //
+        aMFPBIn.Add(aPB);
+      }
     }
   }
 }

@@ -143,7 +143,12 @@ void  ProjLib_Cone::Project(const gp_Circ& C)
 
   gp_Ax3 ConePos = myCone.Position();
   gp_Ax3 CircPos = C.Position();
-
+  //
+  if (!ConePos.Direction().IsParallel(CircPos.Direction(), Precision::Angular())) {
+    isDone = Standard_False;
+    return;
+  }
+  //
   gp_Dir ZCone = ConePos.XDirection().Crossed(ConePos.YDirection());
   gp_Dir ZCir =  CircPos.XDirection().Crossed(CircPos.YDirection());
 
