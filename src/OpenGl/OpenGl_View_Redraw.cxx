@@ -143,9 +143,6 @@ void OpenGl_View::Redraw()
   // fetch OpenGl context state
   aCtx->FetchState();
 
-  // set resolution ratio
-  aCtx->SetResolutionRatio (RenderingParams().ResolutionRatio());
-
   OpenGl_FrameBuffer* aFrameBuffer = myFBO.operator->();
   bool toSwap = aCtx->IsRender()
             && !aCtx->caps->buffersNoSwap
@@ -153,9 +150,11 @@ void OpenGl_View::Redraw()
 
   Standard_Integer aSizeX = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeX() : myWindow->Width();
   Standard_Integer aSizeY = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeY() : myWindow->Height();
+  Standard_Integer aRendSizeX = Standard_Integer(myRenderParams.RenderResolutionScale * aSizeX + 0.5f);
+  Standard_Integer aRendSizeY = Standard_Integer(myRenderParams.RenderResolutionScale * aSizeY + 0.5f);
 
   // determine multisampling parameters
-  Standard_Integer aNbSamples = !myToDisableMSAA
+  Standard_Integer aNbSamples = !myToDisableMSAA && aSizeX == aRendSizeX
                               ? Max (Min (myRenderParams.NbMsaaSamples, aCtx->MaxMsaaSamples()), 0)
                               : 0;
   if (aNbSamples != 0)
@@ -173,10 +172,11 @@ void OpenGl_View::Redraw()
   if (myHasFboBlit
    && (myTransientDrawToFront
     || aProjectType == Graphic3d_Camera::Projection_Stereo
-    || aNbSamples != 0))
+    || aNbSamples != 0
+    || aSizeX != aRendSizeX))
   {
-    if (myMainSceneFbos[0]->GetVPSizeX() != aSizeX
-     || myMainSceneFbos[0]->GetVPSizeY() != aSizeY
+    if (myMainSceneFbos[0]->GetVPSizeX() != aRendSizeX
+     || myMainSceneFbos[0]->GetVPSizeY() != aRendSizeY
      || myMainSceneFbos[0]->NbSamples()  != aNbSamples)
     {
       if (!myTransientDrawToFront)
@@ -191,7 +191,7 @@ void OpenGl_View::Redraw()
       // for further blitting and rendering immediate presentations on top
       if (aCtx->core20fwd != NULL)
       {
-        myMainSceneFbos[0]->Init (aCtx, aSizeX, aSizeY, myFboColorFormat, myFboDepthFormat, aNbSamples);
+        myMainSceneFbos[0]->Init (aCtx, aRendSizeX, aRendSizeY, myFboColorFormat, myFboDepthFormat, aNbSamples);
       }
       if (myTransientDrawToFront
        && !aCtx->caps->useSystemBuffer
@@ -266,12 +266,17 @@ void OpenGl_View::Redraw()
   #if !defined(GL_ES_VERSION_2_0)
     aCtx->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT : GL_BACK);
   #endif
+    aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(),
+                         aMainFbos[0] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
+
     redraw (Graphic3d_Camera::Projection_MonoLeftEye, aMainFbos[0]);
     myBackBufferRestored = Standard_True;
     myIsImmediateDrawn   = Standard_False;
   #if !defined(GL_ES_VERSION_2_0)
     aCtx->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT : GL_BACK);
   #endif
+    aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(),
+                         anImmFbos[0] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
     if (!redrawImmediate (Graphic3d_Camera::Projection_MonoLeftEye, aMainFbos[0], anImmFbos[0]))
     {
       toSwap = false;
@@ -284,9 +289,14 @@ void OpenGl_View::Redraw()
   #if !defined(GL_ES_VERSION_2_0)
     aCtx->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_RIGHT : GL_BACK);
   #endif
+    aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(),
+                         aMainFbos[1] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
+
     redraw (Graphic3d_Camera::Projection_MonoRightEye, aMainFbos[1]);
     myBackBufferRestored = Standard_True;
     myIsImmediateDrawn   = Standard_False;
+    aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(),
+                         anImmFbos[1] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
     if (!redrawImmediate (Graphic3d_Camera::Projection_MonoRightEye, aMainFbos[1], anImmFbos[1]))
     {
       toSwap = false;
@@ -294,6 +304,7 @@ void OpenGl_View::Redraw()
 
     if (anImmFbos[0] != NULL)
     {
+      aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(), 1.0f);
       drawStereoPair (aFrameBuffer);
     }
   }
@@ -316,9 +327,13 @@ void OpenGl_View::Redraw()
       aCtx->SetReadDrawBuffer (GL_BACK);
     }
   #endif
+    aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(),
+                         aMainFbo != aFrameBuffer ? myRenderParams.RenderResolutionScale : 1.0f);
     redraw (aProjectType, aMainFbo);
     myBackBufferRestored = Standard_True;
     myIsImmediateDrawn   = Standard_False;
+    aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(),
+                         anImmFbo != aFrameBuffer ? myRenderParams.RenderResolutionScale : 1.0f);
     if (!redrawImmediate (aProjectType, aMainFbo, anImmFbo))
     {
       toSwap = false;
@@ -439,6 +454,9 @@ void OpenGl_View::RedrawImmediate()
       aCtx->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT : GL_BACK);
     }
   #endif
+
+    aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(),
+                         anImmFbos[0] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
     toSwap = redrawImmediate (Graphic3d_Camera::Projection_MonoLeftEye,
                               aMainFbos[0],
                               anImmFbos[0],
@@ -460,6 +478,8 @@ void OpenGl_View::RedrawImmediate()
       aCtx->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_RIGHT : GL_BACK);
     }
   #endif
+    aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(),
+                         anImmFbos[1] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
     toSwap = redrawImmediate (Graphic3d_Camera::Projection_MonoRightEye,
                               aMainFbos[1],
                               anImmFbos[1],
@@ -483,6 +503,8 @@ void OpenGl_View::RedrawImmediate()
       aCtx->SetReadDrawBuffer (GL_BACK);
     }
   #endif
+    aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(),
+                         anImmFbo != aFrameBuffer ? myRenderParams.RenderResolutionScale : 1.0f);
     toSwap = redrawImmediate (aProjectType,
                               aMainFbo,
                               anImmFbo,
@@ -1034,6 +1056,10 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
                                const Standard_Boolean theToFlip)
 {
   Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
+  const Standard_Integer aReadSizeX = theReadFbo != NULL ? theReadFbo->GetVPSizeX() : myWindow->Width();
+  const Standard_Integer aReadSizeY = theReadFbo != NULL ? theReadFbo->GetVPSizeY() : myWindow->Height();
+  const Standard_Integer aDrawSizeX = theDrawFbo != NULL ? theDrawFbo->GetVPSizeX() : myWindow->Width();
+  const Standard_Integer aDrawSizeY = theDrawFbo != NULL ? theDrawFbo->GetVPSizeY() : myWindow->Height();
   if (theReadFbo == NULL || aCtx->IsFeedback())
   {
     return false;
@@ -1053,6 +1079,9 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
   {
     aCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
   }
+  const Standard_Integer aViewport[4] = { 0, 0, aDrawSizeX, aDrawSizeY };
+  aCtx->ResizeViewport (aViewport);
+
 #if !defined(GL_ES_VERSION_2_0)
   aCtx->core20fwd->glClearDepth  (1.0);
 #else
@@ -1095,8 +1124,8 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
     }
 
     // we don't copy stencil buffer here... does it matter for performance?
-    aCtx->arbFBOBlit->glBlitFramebuffer (0, 0, theReadFbo->GetVPSizeX(), theReadFbo->GetVPSizeY(),
-                                         0, 0, theReadFbo->GetVPSizeX(), theReadFbo->GetVPSizeY(),
+    aCtx->arbFBOBlit->glBlitFramebuffer (0, 0, aReadSizeX, aReadSizeY,
+                                         0, 0, aDrawSizeX, aDrawSizeY,
                                          aCopyMask, GL_NEAREST);
     const int anErr = ::glGetError();
     if (anErr != GL_NO_ERROR)
@@ -1150,13 +1179,30 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
 
     myWorkspace->DisableTexture();
 
+    const Graphic3d_TypeOfTextureFilter aFilter = (aDrawSizeX == aReadSizeX && aDrawSizeY == aReadSizeY) ? Graphic3d_TOTF_NEAREST : Graphic3d_TOTF_BILINEAR;
+    const GLint aFilterGl = aFilter == Graphic3d_TOTF_NEAREST ? GL_NEAREST : GL_LINEAR;
+
     OpenGl_VertexBuffer* aVerts = initBlitQuad (theToFlip);
     const Handle(OpenGl_ShaderManager)& aManager = aCtx->ShaderManager();
     if (aVerts->IsValid()
      && aManager->BindFboBlitProgram())
     {
-      theReadFbo->ColorTexture()       ->Bind   (aCtx, GL_TEXTURE0 + 0);
-      theReadFbo->DepthStencilTexture()->Bind   (aCtx, GL_TEXTURE0 + 1);
+      theReadFbo->ColorTexture()->Bind (aCtx, GL_TEXTURE0 + 0);
+      if (theReadFbo->ColorTexture()->GetParams()->Filter() != aFilter)
+      {
+        theReadFbo->ColorTexture()->GetParams()->SetFilter (aFilter);
+        aCtx->core20fwd->glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, aFilterGl);
+        aCtx->core20fwd->glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, aFilterGl);
+      }
+
+      theReadFbo->DepthStencilTexture()->Bind (aCtx, GL_TEXTURE0 + 1);
+      if (theReadFbo->DepthStencilTexture()->GetParams()->Filter() != aFilter)
+      {
+        theReadFbo->DepthStencilTexture()->GetParams()->SetFilter (aFilter);
+        aCtx->core20fwd->glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, aFilterGl);
+        aCtx->core20fwd->glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, aFilterGl);
+      }
+
       aVerts->BindVertexAttrib (aCtx, Graphic3d_TOA_POS);
 
       aCtx->core20fwd->glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);

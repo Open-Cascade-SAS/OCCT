@@ -22,6 +22,10 @@
 #if(defined(_MSC_VER) && (_MSC_VER < 1800))
   // only Visual Studio 2013 (vc12) provides <cinttypes> header
   // we do not defined all macros here - only used by OCCT framework
+  #define PRId64 "I64d"
+  #define PRIu64 "I64u"
+  #define SCNd64 "I64d"
+  #define SCNu64 "I64u"
   #ifdef _WIN64
     #define PRIdPTR "I64d"
     #define PRIuPTR "I64u"

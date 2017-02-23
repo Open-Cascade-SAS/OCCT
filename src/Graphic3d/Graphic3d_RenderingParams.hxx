@@ -48,6 +48,7 @@ public:
   Graphic3d_RenderingParams()
   : Method                      (Graphic3d_RM_RASTERIZATION),
     NbMsaaSamples               (0),
+    RenderResolutionScale       (1.0f),
     // ray tracing parameters
     IsGlobalIlluminationEnabled (Standard_False),
     RaytracingDepth             (THE_DEFAULT_DEPTH),
@@ -91,6 +92,8 @@ public:
 
   Graphic3d_RenderingMode Method;                      //!< specifies rendering mode, Graphic3d_RM_RASTERIZATION by default
   Standard_Integer        NbMsaaSamples;               //!< number of MSAA samples (should be within 0..GL_MAX_SAMPLES, power-of-two number), 0 by default
+  Standard_ShortReal      RenderResolutionScale;       //!< rendering resolution scale factor, 1 by default;
+                                                       //!  incompatible with MSAA (e.g. NbMsaaSamples should be set to 0)
 
   Standard_Boolean        IsGlobalIlluminationEnabled; //!< enables/disables global illumination effects (path tracing)
   Standard_Integer        SamplesPerPixel;             //!< number of samples per pixel (SPP)
@@ -115,10 +118,10 @@ public:
   Standard_Boolean        ToReverseStereo;             //!< flag to reverse stereo pair, FALSE by default
 
   unsigned int            Resolution;                  //!< Pixels density (PPI), defines scaling factor for parameters like text size
-                                                       //!< (when defined in screen-space units rather than in 3D) to be properly displayed
-                                                       //!< on device (screen / printer). 72 is default value.
-                                                       //!< Note that using difference resolution in different Views in same Viewer
-                                                       //!< will lead to performance regression (for example, text will be recreated every time).
+                                                       //!  (when defined in screen-space units rather than in 3D) to be properly displayed
+                                                       //!  on device (screen / printer). 72 is default value.
+                                                       //!  Note that using difference resolution in different Views in same Viewer
+                                                       //!  will lead to performance regression (for example, text will be recreated every time).
 
 };
 

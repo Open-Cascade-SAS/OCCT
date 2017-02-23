@@ -439,7 +439,7 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
           *aTextAspect,
           theWorkspace->TextColor(),
           theWorkspace->TextSubtitleColor(),
-          theWorkspace->View()->RenderingParams().Resolution);
+          aCtx->Resolution());
 
   // restore aspects
   if (!aPrevTexture.IsNull())
@@ -543,6 +543,10 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_Context)& theCtx,
     if (!theTextAspect.Aspect()->GetTextZoomable())
     {
       Graphic3d_TransformUtils::Scale<GLdouble> (aModViewMat, myScaleHeight, myScaleHeight, myScaleHeight);
+    }
+    else if (theCtx->HasRenderScale())
+    {
+      Graphic3d_TransformUtils::Scale<GLdouble> (aModViewMat, theCtx->RenderScaleInv(), theCtx->RenderScaleInv(), theCtx->RenderScaleInv());
     }
   }
 
@@ -807,64 +811,34 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   myExportHeight = 1.0f;
   myScaleHeight  = 1.0f;
 
-  if (myHasPlane && !myHasAnchorPoint)
-  {
-    OpenGl_Mat4d aWorldViewMat;
-    aWorldViewMat.Convert (theCtx->WorldViewState.Current());
-    theCtx->WorldViewState.Push();
-    theCtx->WorldViewState.SetCurrent<Standard_Real> (aWorldViewMat);
-    theCtx->ApplyWorldViewMatrix();
-  }
-  else
-  {
-    theCtx->WorldViewState.Push();
-  }
-
+  theCtx->WorldViewState.Push();
   myModelMatrix.Convert (theCtx->WorldViewState.Current() * theCtx->ModelWorldState.Current());
 
+  const GLdouble aPointSize = (GLdouble )myFont->FTFont()->PointSize();
   if (!myIs2d)
   {
-    Graphic3d_TransformUtils::Project<Standard_Real> (myPoint.x(),
-                                                      myPoint.y(),
-                                                      myPoint.z(),
-                                                      myModelMatrix,
-                                                      myProjMatrix,
-                                                      theCtx->Viewport(),
-                                                      myWinX,
-                                                      myWinY,
-                                                      myWinZ);
+    Graphic3d_TransformUtils::Project<Standard_Real> (myPoint.x(), myPoint.y(), myPoint.z(),
+                                                      myModelMatrix, myProjMatrix, theCtx->Viewport(),
+                                                      myWinX, myWinY, myWinZ);
 
     // compute scale factor for constant text height
-    GLdouble x1, y1, z1;
-    Graphic3d_TransformUtils::UnProject<Standard_Real> (myWinX,
-                                                        myWinY,
-                                                        myWinZ,
-                                                        OpenGl_Mat4d::Map (THE_IDENTITY_MATRIX),
-                                                        myProjMatrix,
-                                                        theCtx->Viewport(),
-                                                        x1,
-                                                        y1,
-                                                        z1);
-
-    GLdouble x2, y2, z2;
-    const GLdouble h = (GLdouble )myFont->FTFont()->PointSize();
-    Graphic3d_TransformUtils::UnProject<Standard_Real> (myWinX,
-                                                        myWinY + h,
-                                                        myWinZ,
-                                                        OpenGl_Mat4d::Map (THE_IDENTITY_MATRIX),
-                                                        myProjMatrix,
-                                                        theCtx->Viewport(),
-                                                        x2,
-                                                        y2,
-                                                        z2);
-
-    myScaleHeight = (y2 - y1) / h;
     if (theTextAspect.Aspect()->GetTextZoomable())
     {
-      myExportHeight = (float )h;
+      myExportHeight = aPointSize;
+    }
+    else
+    {
+      Graphic3d_Vec3d aPnt1, aPnt2;
+      Graphic3d_TransformUtils::UnProject<Standard_Real> (myWinX, myWinY, myWinZ,
+                                                          OpenGl_Mat4d::Map (THE_IDENTITY_MATRIX), myProjMatrix, theCtx->Viewport(),
+                                                          aPnt1.x(), aPnt1.y(), aPnt1.z());
+      Graphic3d_TransformUtils::UnProject<Standard_Real> (myWinX, myWinY + aPointSize, myWinZ,
+                                                          OpenGl_Mat4d::Map (THE_IDENTITY_MATRIX), myProjMatrix, theCtx->Viewport(),
+                                                          aPnt2.x(), aPnt2.y(), aPnt2.z());
+      myScaleHeight = (aPnt2.y() - aPnt1.y()) / aPointSize;
     }
   }
-  myExportHeight = (float )myFont->FTFont()->PointSize() / myExportHeight;
+  myExportHeight = aPointSize / myExportHeight;
 
 #if !defined(GL_ES_VERSION_2_0)
   if (theCtx->core11 != NULL)

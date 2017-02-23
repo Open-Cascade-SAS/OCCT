@@ -1,0 +1,40 @@
+puts "========"
+puts "Rendering resolution scale factor"
+puts "========"
+
+set aFontFile ""
+catch { set aFontFile [locate_data_file DejaVuSans.ttf] }
+
+pload MODELING VISUALIZATION
+
+set aLabelFont "Arial"
+if { "$aFontFile" != "" } {
+  vfont add "$aFontFile" SansFont
+  set aLabelFont "SansFont"
+}
+
+box b 1 2 3
+vclear
+vinit View1
+vdisplay b
+vfit
+vpoint p 0 0 0
+vzbufftrihedron
+vdrawtext t Text2d -font $aLabelFont
+vtrihedron tt
+vdisplay -trsfPers zoom -trsfPersPos 1 0 0 tt
+text2brep ttl "Top-Left" -font $aLabelFont -height 30 -pos 0 -30 0
+vdisplay  ttl -2d topLeft -dispMode 1
+vcolorscale cs -demo
+
+vrenderparams -rendScale 1
+vdump $::imagedir/${::casename}_100.png
+
+vrenderparams -rendScale 0.5
+vdump $::imagedir/${::casename}_050.png
+
+vrenderparams -rendScale 0.75
+vdump $::imagedir/${::casename}_075.png
+
+vrenderparams -rendScale 2
+vdump $::imagedir/${::casename}_200.png

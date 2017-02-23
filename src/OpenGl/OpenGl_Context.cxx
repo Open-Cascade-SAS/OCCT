@@ -32,6 +32,7 @@
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_AspectFace.hxx>
 #include <Graphic3d_TransformUtils.hxx>
+#include <Graphic3d_RenderingParams.hxx>
 
 #include <Message_Messenger.hxx>
 
@@ -174,12 +175,20 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myDrawBuffer (0),
   myDefaultVao (0),
   myIsGlDebugCtx (Standard_False),
-  myResolutionRatio (1.0f)
+  myResolution (Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION),
+  myResolutionRatio (1.0f),
+  myLineWidthScale (1.0f),
+  myRenderScale (1.0f),
+  myRenderScaleInv (1.0f)
 {
   myViewport[0] = 0;
   myViewport[1] = 0;
   myViewport[2] = 0;
   myViewport[3] = 0;
+  myViewportVirt[0] = 0;
+  myViewportVirt[1] = 0;
+  myViewportVirt[2] = 0;
+  myViewportVirt[3] = 0;
 
   // system-dependent fields
 #if defined(HAVE_EGL)
@@ -326,6 +335,20 @@ void OpenGl_Context::ResizeViewport (const Standard_Integer* theRect)
   myViewport[1] = theRect[1];
   myViewport[2] = theRect[2];
   myViewport[3] = theRect[3];
+  if (HasRenderScale())
+  {
+    myViewportVirt[0] = Standard_Integer(theRect[0] * myRenderScaleInv);
+    myViewportVirt[1] = Standard_Integer(theRect[1] * myRenderScaleInv);
+    myViewportVirt[2] = Standard_Integer(theRect[2] * myRenderScaleInv);
+    myViewportVirt[3] = Standard_Integer(theRect[3] * myRenderScaleInv);
+  }
+  else
+  {
+    myViewportVirt[0] = theRect[0];
+    myViewportVirt[1] = theRect[1];
+    myViewportVirt[2] = theRect[2];
+    myViewportVirt[3] = theRect[3];
+  }
 }
 
 #if !defined(GL_ES_VERSION_2_0)
@@ -3056,7 +3079,7 @@ void OpenGl_Context::SetLineWidth (const Standard_ShortReal theWidth)
   if (core11 != NULL)
   {
     // glLineWidth() is still defined within Core Profile, but has no effect with values != 1.0f
-    core11fwd->glLineWidth (theWidth * myResolutionRatio);
+    core11fwd->glLineWidth (theWidth * myLineWidthScale);
   }
 #ifdef HAVE_GL2PS
   if (IsFeedback())

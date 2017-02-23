@@ -577,6 +577,9 @@ public: //! @name methods to alter or retrieve current state
   //! @param theRect viewport definition (x, y, width, height)
   Standard_EXPORT void ResizeViewport (const Standard_Integer theRect[4]);
 
+  //! Return virtual viewport definition (x, y, width, height).
+  const Standard_Integer* VirtualViewport() const { return myViewportVirt; }
+
   //! Return active read buffer.
   Standard_Integer ReadBuffer() { return myReadBuffer; }
 
@@ -675,11 +678,40 @@ public: //! @name methods to alter or retrieve current state
 
   Standard_EXPORT void DisableFeatures() const;
 
+  //! Return resolution for rendering text.
+  unsigned int Resolution() const { return myResolution; }
+
+  //! Resolution scale factor (rendered resolution to standard resolution).
+  //! This scaling factor for parameters like text size to be properly displayed on device (screen / printer).
+  Standard_ShortReal ResolutionRatio() const { return myResolutionRatio; }
+
+  //! Rendering scale factor (rendering viewport height to real window buffer height).
+  Standard_ShortReal RenderScale() const { return myRenderScale; }
+
+  //! Return TRUE if rendering scale factor is not 1.
+  Standard_Boolean HasRenderScale() const { return Abs (myRenderScale - 1.0f) > 0.0001f; }
+
+  //! Rendering scale factor (inverted value).
+  Standard_ShortReal RenderScaleInv() const { return myRenderScaleInv; }
+
+  //! Set resolution ratio.
+  //! Note that this method rounds @theRatio to nearest integer.
+  void SetResolution (unsigned int theResolution,
+                      Standard_ShortReal theRatio,
+                      Standard_ShortReal theScale)
+  {
+    myResolution      = (unsigned int )(theScale * theResolution + 0.5f);
+    myRenderScale     = theScale;
+    myRenderScaleInv  = 1.0f / theScale;
+    SetResolutionRatio (theRatio * theScale);
+  }
+
   //! Set resolution ratio.
   //! Note that this method rounds @theRatio to nearest integer.
   void SetResolutionRatio (const Standard_ShortReal theRatio)
   {
-    myResolutionRatio = Max (1.0f, std::floor (theRatio + 0.5f));
+    myResolutionRatio = theRatio;
+    myLineWidthScale  = Max (1.0f, std::floor (theRatio + 0.5f));
   }
 
 private:
@@ -811,6 +843,7 @@ private: //! @name fields tracking current state
   Handle(OpenGl_FrameBuffer)    myDefaultFbo;      //!< default Frame Buffer Object
   Handle(OpenGl_LineAttributes) myHatchStyles;     //!< resource holding predefined hatch styles patterns
   Standard_Integer              myViewport[4];     //!< current viewport
+  Standard_Integer              myViewportVirt[4]; //!< virtual viewport
   Standard_Integer              myPointSpriteOrig; //!< GL_POINT_SPRITE_COORD_ORIGIN state (GL_UPPER_LEFT by default)
   Standard_Integer              myRenderMode;      //!< value for active rendering mode
   Standard_Integer              myPolygonMode;     //!< currently used polygon rasterization mode (glPolygonMode)
@@ -821,8 +854,12 @@ private: //! @name fields tracking current state
   Standard_Boolean              myIsGlDebugCtx;    //!< debug context initialization state
   TCollection_AsciiString       myVendor;          //!< Graphics Driver's vendor
   TColStd_PackedMapOfInteger    myFilters[6];      //!< messages suppressing filter (for sources from GL_DEBUG_SOURCE_API_ARB to GL_DEBUG_SOURCE_OTHER_ARB)
+  unsigned int                  myResolution;      //!< Pixels density (PPI), defines scaling factor for parameters like text size
   Standard_ShortReal            myResolutionRatio; //!< scaling factor for parameters like text size
-                                                   //!< to be properly displayed on device (screen / printer)
+                                                   //!  to be properly displayed on device (screen / printer)
+  Standard_ShortReal            myLineWidthScale;  //!< scaling factor for line width
+  Standard_ShortReal            myRenderScale;     //!< scaling factor for rendering resolution
+  Standard_ShortReal            myRenderScaleInv;  //!< scaling factor for rendering resolution (inverted value)
   OpenGl_Material               myMatFront;        //!< current front material state (cached to reduce GL context updates)
   OpenGl_Material               myMatBack;         //!< current back  material state
 

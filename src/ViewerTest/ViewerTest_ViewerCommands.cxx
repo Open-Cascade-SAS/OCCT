@@ -2647,10 +2647,44 @@ static int VZFit (Draw_Interpretor& /*theDi*/, Standard_Integer theArgsNb, const
 //function : VRepaint
 //purpose  :
 //==============================================================================
-static int VRepaint (Draw_Interpretor& , Standard_Integer , const char** )
+static int VRepaint (Draw_Interpretor& , Standard_Integer theArgNb, const char** theArgVec)
 {
-  Handle(V3d_View) V = ViewerTest::CurrentView();
-  if ( !V.IsNull() ) V->Redraw(); return 0;
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    std::cout << "Error: no active viewer!\n";
+    return 1;
+  }
+
+  Standard_Boolean isImmediateUpdate = Standard_False;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "-immediate")
+    {
+      isImmediateUpdate = Standard_True;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], isImmediateUpdate))
+      {
+        ++anArgIter;
+      }
+    }
+    else
+    {
+      std::cout << "Syntax error at '" << anArg << "'\n";
+    }
+  }
+
+  if (isImmediateUpdate)
+  {
+    aView->RedrawImmediate();
+  }
+  else
+  {
+    aView->Redraw();
+  }
+  return 0;
 }
 
 //==============================================================================
@@ -5530,6 +5564,7 @@ static int VCaps (Draw_Interpretor& theDI,
     theDI << "VSync:   " <<  aCaps->swapInterval                   << "\n";
     theDI << "Compatible:" << (aCaps->contextCompatible ? "1" : "0") << "\n";
     theDI << "Stereo:  " << (aCaps->contextStereo ? "1" : "0") << "\n";
+    theDI << "WinBuffer: " << (aCaps->useSystemBuffer ? "1" : "0") << "\n";
     return 0;
   }
 
@@ -5594,6 +5629,20 @@ static int VCaps (Draw_Interpretor& theDI,
         --anArgIter;
       }
       aCaps->contextNoAccel = toEnable;
+    }
+    else if (anArgCase == "-winbuffer"
+          || anArgCase == "-windowbuffer"
+          || anArgCase == "-usewinbuffer"
+          || anArgCase == "-usewindowbuffer"
+          || anArgCase == "-usesystembuffer")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aCaps->useSystemBuffer = toEnable;
     }
     else if (anArgCase == "-accel"
           || anArgCase == "-acceleration")
@@ -9070,6 +9119,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
     }
     theDI << "\n";
     theDI << "msaa:           " <<  aParams.NbMsaaSamples                               << "\n";
+    theDI << "rendScale:      " <<  aParams.RenderResolutionScale                       << "\n";
     theDI << "rayDepth:       " <<  aParams.RaytracingDepth                             << "\n";
     theDI << "fsaa:           " << (aParams.IsAntialiasingEnabled       ? "on" : "off") << "\n";
     theDI << "shadows:        " << (aParams.IsShadowEnabled             ? "on" : "off") << "\n";
@@ -9175,6 +9225,32 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       else
       {
         aParams.NbMsaaSamples = aNbSamples;
+      }
+    }
+    else if (aFlag == "-rendscale"
+          || aFlag == "-renderscale"
+          || aFlag == "-renderresolutionscale")
+    {
+      if (toPrint)
+      {
+        theDI << aParams.RenderResolutionScale << " ";
+        continue;
+      }
+      else if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      const Standard_Real aScale = Draw::Atof (theArgVec[anArgIter]);
+      if (aScale < 0.01)
+      {
+        std::cerr << "Error: invalid rendering resolution scale " << aScale << ".\n";
+        return 1;
+      }
+      else
+      {
+        aParams.RenderResolutionScale = Standard_ShortReal(aScale);
       }
     }
     else if (aFlag == "-raydepth"
@@ -10487,7 +10563,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "   \"scale\" - specifies factor to scale computed z range.\n",
     __FILE__, VZFit, group);
   theCommands.Add("vrepaint",
-    "vrepaint        : vrepaint, force redraw",
+            "vrepaint [-immediate]"
+    "\n\t\t: force redraw",
     __FILE__,VRepaint,group);
   theCommands.Add("vclear",
     "vclear          : vclear"
@@ -10689,7 +10766,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add ("vcaps",
             "vcaps [-vbo {0|1}] [-sprites {0|1}] [-ffp {0|1}]"
     "\n\t\t:       [-compatibleProfile {0|1}]"
-    "\n\t\t:       [-vsync {0|1}]"
+    "\n\t\t:       [-vsync {0|1}] [-useWinBuffer {0|1}]"
     "\n\t\t:       [-quadBuffer {0|1}] [-stereo {0|1}]"
     "\n\t\t:       [-softMode {0|1}] [-noupdate|-update]"
     "\n\t\t: Modify particular graphic driver options:"
@@ -10700,6 +10777,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:             arrays to GPU memory)"
     "\n\t\t:  sprite   - use textured sprites instead of bitmaps"
     "\n\t\t:  vsync    - switch VSync on or off"
+    "\n\t\t:  winBuffer - allow using window buffer for rendering"
     "\n\t\t: Context creation options:"
     "\n\t\t:  softMode          - software OpenGL implementation"
     "\n\t\t:  compatibleProfile - backward-compatible profile"
@@ -10958,6 +11036,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n    Manages rendering parameters: "
     "\n      '-raster'                Disables GPU ray-tracing"
     "\n      '-msaa         0..4'     Specifies number of samples for MSAA"
+    "\n      '-rendScale    value     Rendering resolution scale factor"
     "\n      '-rayTrace'              Enables  GPU ray-tracing"
     "\n      '-rayDepth     0..10'    Defines maximum ray-tracing depth"
     "\n      '-shadows      on|off'   Enables/disables shadows rendering"

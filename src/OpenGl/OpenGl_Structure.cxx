@@ -516,7 +516,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
     OpenGl_Mat4& aWorldView = aCtx->WorldViewState.ChangeCurrent();
     myTrsfPers->Apply (theWorkspace->View()->Camera(),
                        aCtx->ProjectionState.Current(), aWorldView,
-                       aCtx->Viewport()[2], aCtx->Viewport()[3]);
+                       aCtx->VirtualViewport()[2], aCtx->VirtualViewport()[3]);
 
   #if !defined(GL_ES_VERSION_2_0)
     if (!aCtx->IsGlNormalizeEnabled()
