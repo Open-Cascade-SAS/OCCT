@@ -1,0 +1,30 @@
+puts "========"
+puts "OCC27615"
+puts "========"
+puts ""
+#################################################
+# General Fuse operation error
+#################################################
+
+restore [locate_data_file bug27615.brep] p
+
+whatis p
+tolerance p
+checkshape p
+explode p
+brunparallel 1
+bopcheck p_1
+bopcheck p_2
+bopargcheck p_1 p_2 -O #F
+bop p_1 p_2
+bopcommon result
+whatis result
+explode result
+whatis result_1
+
+checkshape result_1
+
+checkprops result_1 -v 15041.2 -s 8245.4
+
+checkview -display result_1 -2d -path ${imagedir}/${test_image}.png
+
