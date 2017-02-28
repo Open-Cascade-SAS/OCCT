@@ -896,17 +896,31 @@ void Extrema_GenExtPS::Perform(const gp_Pnt& P)
     {
       Standard_Real Dist;
 
-      for (NoU = 1; NoU <= myusample; NoU++) {
-        for (NoV = 1; NoV <= myvsample; NoV++) {
-          Dist = myPoints->Value(NoU, NoV).GetSqrDistance();
-          if ((myPoints->Value(NoU-1,NoV-1).GetSqrDistance() <= Dist) &&
-              (myPoints->Value(NoU-1,NoV  ).GetSqrDistance() <= Dist) &&
-              (myPoints->Value(NoU-1,NoV+1).GetSqrDistance() <= Dist) &&
-              (myPoints->Value(NoU  ,NoV-1).GetSqrDistance() <= Dist) &&
-              (myPoints->Value(NoU  ,NoV+1).GetSqrDistance() <= Dist) &&
-              (myPoints->Value(NoU+1,NoV-1).GetSqrDistance() <= Dist) &&
-              (myPoints->Value(NoU+1,NoV  ).GetSqrDistance() <= Dist) &&
-              (myPoints->Value(NoU+1,NoV+1).GetSqrDistance() <= Dist)) {
+      for (NoU = 1; NoU <= myusample; NoU++)
+      {
+        for (NoV = 1; NoV <= myvsample; NoV++)
+        {
+          const Extrema_POnSurfParams &aParamMain = myPoints->Value(NoU, NoV);
+          const Extrema_POnSurfParams &aParam1 = myPoints->Value(NoU - 1, NoV - 1);
+          const Extrema_POnSurfParams &aParam2 = myPoints->Value(NoU - 1, NoV);
+          const Extrema_POnSurfParams &aParam3 = myPoints->Value(NoU - 1, NoV + 1);
+          const Extrema_POnSurfParams &aParam4 = myPoints->Value(NoU, NoV - 1);
+          const Extrema_POnSurfParams &aParam5 = myPoints->Value(NoU, NoV + 1);
+          const Extrema_POnSurfParams &aParam6 = myPoints->Value(NoU + 1, NoV - 1);
+          const Extrema_POnSurfParams &aParam7 = myPoints->Value(NoU + 1, NoV);
+          const Extrema_POnSurfParams &aParam8 = myPoints->Value(NoU + 1, NoV + 1);
+
+          Dist = aParamMain.GetSqrDistance();
+
+          if ((aParam1.GetSqrDistance() <= Dist) &&
+              (aParam2.GetSqrDistance() <= Dist) &&
+              (aParam3.GetSqrDistance() <= Dist) &&
+              (aParam4.GetSqrDistance() <= Dist) &&
+              (aParam5.GetSqrDistance() <= Dist) &&
+              (aParam6.GetSqrDistance() <= Dist) &&
+              (aParam7.GetSqrDistance() <= Dist) &&
+              (aParam8.GetSqrDistance() <= Dist))
+          {
             // Find maximum.
             FindSolution(P, myPoints->Value(NoU, NoV));
           }
