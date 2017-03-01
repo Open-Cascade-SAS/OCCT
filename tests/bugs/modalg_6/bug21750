@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC21750"
+puts "============"
+puts ""
+##################################
+#  Intersection of two cylindrical surfaces fails
+##################################
+
+cylinder c1 1031.3339148728076 -113.25868616662650 56.152387686082520 -0.86602540378443815 0.50000000000000089 0.0 -0.50000000000000089 -0.86602540378443815 0.0 76.499999999999986
+cylinder c2 1017.0706583606553 -103.24955863669388 56.152387686082548 0.86602540378443915 -0.49999999999999933 0.0 0.49999999999999933 0.86602540378443915 0.0 76.499999999999986
+
+if { [catch {set info [intersect r c1 c2 1e-7]} catch_result] } {
+    puts "Error: The intersection of two cylindrical surfaces causes an exception"
+}
+
+# Number of solutions check. 
+# There should be only 2 solution.
+if {[llength $info] != 2} {
+  Error: Incorrect number of solutions.
+} 
+
+smallview
+
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
