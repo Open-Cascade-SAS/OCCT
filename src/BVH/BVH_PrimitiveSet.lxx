@@ -24,7 +24,7 @@ BVH_PrimitiveSet<T, N>::BVH_PrimitiveSet()
 : myBVH (new BVH_Tree<T, N>())
 {
   // Set default builder - binned SAH split
-  myBuilder = new BVH_BinnedBuilder<T, N, 48> (5, 32);
+  myBuilder = new BVH_BinnedBuilder<T, N, 48> (5, MaxTreeDepth);
 }
 
 // =======================================================================

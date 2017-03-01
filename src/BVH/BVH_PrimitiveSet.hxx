@@ -35,6 +35,7 @@ protected:
   using BVH_Set<T, N>::Box;
 
 public:
+  static const Standard_Integer MaxTreeDepth = 32;
 
   //! Creates set of abstract primitives.
   BVH_PrimitiveSet();
