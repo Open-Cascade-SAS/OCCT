@@ -2475,6 +2475,12 @@ void GeomLib::IsClosed (const Handle(Geom_Surface)& S,
   GeomAdaptor_Surface aGAS(S);
   GeomAbs_SurfaceType aSType = aGAS.GetType();
   //
+  Standard_Real u1, u2, v1, v2;
+  u1 = aGAS.FirstUParameter();
+  u2 = aGAS.LastUParameter();
+  v1 = aGAS.FirstVParameter();
+  v2 = aGAS.LastVParameter();
+  //
   Standard_Real Tol2 = Tol * Tol;
   switch (aSType)
   {
@@ -2482,11 +2488,15 @@ void GeomLib::IsClosed (const Handle(Geom_Surface)& S,
     {
       return;
     }
-    case GeomAbs_Cylinder:
     case GeomAbs_SurfaceOfExtrusion:
     {
-      Standard_Real u1 = aGAS.FirstUParameter(), u2 = aGAS.LastUParameter();
-      Standard_Real v1 = aGAS.FirstVParameter();
+      if (Precision::IsInfinite(u1) || Precision::IsInfinite(u2)) {
+        // not closed
+        return;
+      }
+    }
+    case GeomAbs_Cylinder:
+    {
       if(Precision::IsInfinite(v1))
         v1 = 0.;
       gp_Pnt p1 = aGAS.Value(u1, v1);
@@ -2496,8 +2506,6 @@ void GeomLib::IsClosed (const Handle(Geom_Surface)& S,
     }
     case GeomAbs_Cone:
     {
-      Standard_Real u1 = aGAS.FirstUParameter(), u2 = aGAS.LastUParameter();
-      Standard_Real v1 = aGAS.FirstVParameter(), v2 = aGAS.LastVParameter();
       //find v with maximal distance from axis
       if(!(Precision::IsInfinite(v1) || Precision::IsInfinite(v2)))
       {
@@ -2521,8 +2529,6 @@ void GeomLib::IsClosed (const Handle(Geom_Surface)& S,
     }
     case GeomAbs_Sphere:
     {
-      Standard_Real u1 = aGAS.FirstUParameter(), u2 = aGAS.LastUParameter();
-      Standard_Real v1 = aGAS.FirstVParameter(), v2 = aGAS.LastVParameter();
       //find v with maximal distance from axis
       if(v1*v2 <= 0.)
       {
@@ -2544,8 +2550,6 @@ void GeomLib::IsClosed (const Handle(Geom_Surface)& S,
     {
       Standard_Real ures = aGAS.UResolution(Tol);
       Standard_Real vres = aGAS.VResolution(Tol);
-      Standard_Real u1 = aGAS.FirstUParameter(), u2 = aGAS.LastUParameter();
-      Standard_Real v1 = aGAS.FirstVParameter(), v2 = aGAS.LastVParameter();
       //
       isUClosed = (u2 - u1) >= aGAS.UPeriod() - ures;
       isVClosed = (v2 - v1) >= aGAS.VPeriod() - vres;
@@ -2553,8 +2557,6 @@ void GeomLib::IsClosed (const Handle(Geom_Surface)& S,
     }
     case GeomAbs_BSplineSurface:
     {
-      Standard_Real u1 = aGAS.FirstUParameter(), u2 = aGAS.LastUParameter();
-      Standard_Real v1 = aGAS.FirstVParameter(), v2 = aGAS.LastVParameter();
       Handle(Geom_BSplineSurface) aBSpl = aGAS.BSpline();
       isUClosed = GeomLib::IsBSplUClosed(aBSpl, u1, u2, Tol);
       isVClosed = GeomLib::IsBSplVClosed(aBSpl, v1, v2, Tol);
@@ -2562,8 +2564,6 @@ void GeomLib::IsClosed (const Handle(Geom_Surface)& S,
     }
     case GeomAbs_BezierSurface:
     {
-      Standard_Real u1 = aGAS.FirstUParameter(), u2 = aGAS.LastUParameter();
-      Standard_Real v1 = aGAS.FirstVParameter(), v2 = aGAS.LastVParameter();
       Handle(Geom_BezierSurface) aBz = aGAS.Bezier();
       isUClosed = GeomLib::IsBzUClosed(aBz, u1, u2, Tol);
       isVClosed = GeomLib::IsBzVClosed(aBz, v1, v2, Tol);
@@ -2574,8 +2574,6 @@ void GeomLib::IsClosed (const Handle(Geom_Surface)& S,
     case GeomAbs_OtherSurface:
     {
       Standard_Integer nbp = 23;
-      Standard_Real u1 = aGAS.FirstUParameter(), u2 = aGAS.LastUParameter();
-      Standard_Real v1 = aGAS.FirstVParameter(), v2 = aGAS.LastVParameter();
       if(Precision::IsInfinite(v1))
       {
         v1 = Sign(1., v1);
