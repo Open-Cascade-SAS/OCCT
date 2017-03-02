@@ -1,9 +1,7 @@
-#puts "TODO OCC12345 ALL: An exception was caught"
-#puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
-#puts "TODO OCC12345 ALL: TEST INCOMPLETE"
-#puts "TODO OCC12345 ALL: xception"
-puts "TODO OCC25892 ALL: Faulty shapes in variables"
-puts "TODO OCC25892 ALL: The area of result shape is"
+puts "TODO OCC28556 ALL: Faulty shapes in variables"
+puts "TODO OCC28556 ALL: The area of result shape is"
+puts "TODO OCC28556 ALL: The volume of result shape is"
+puts "TODO OCC28556 ALL: Error :  is WRONG because number of"
 
 puts "========================"
 puts " OCC469 "
@@ -16,11 +14,10 @@ puts ""
 restore [locate_data_file OCC469.brep] a 
 explode a
 
-checkshape a_1
-checkshape a_2
-
 bfuse result a_1 a_2
-checkshape result
 
-checkprops result -s 10
+checkshape result
+checkprops result -s 30523.3 -v 22730.1
+checknbshapes result -shell 1 -solid 1
+
 checkview -display result -2d -path ${imagedir}/${test_image}.png

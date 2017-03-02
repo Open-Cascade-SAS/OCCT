@@ -1,6 +1,8 @@
 # test script on make volume operation
 # cone plane
 
+puts "TODO CR28503 ALL: Error :  is WRONG because number of SOLID entities in shape"
+
 # planar face 
 plane pln_f1 -306.53078964627537 -1038.2137499999999 -251.37646071372467 -0.70710678118654746 4.4408920985006262e-016 0.70710678118654768
 erase pln_f1
@@ -39,4 +41,6 @@ mkface f7 con_f7 0 6.2831853071795862 0 1000000
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5 f6 f7
 
-checkprops result -s 6.22995e+006
+checkprops result -s 6.45353e+006
+
+checknbshapes result -solid 29
