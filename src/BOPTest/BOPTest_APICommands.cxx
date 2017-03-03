@@ -23,6 +23,7 @@
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepAlgoAPI_Section.hxx>
+#include <BRepAlgoAPI_Splitter.hxx>
 #include <DBRep.hxx>
 #include <Draw.hxx>
 #include <TopoDS_Shape.hxx>
@@ -34,8 +35,9 @@ static
   void ConvertList(const BOPCol_ListOfShape& aLSB,
                    TopTools_ListOfShape& aLS);
 
-static Standard_Integer bapibuild(Draw_Interpretor&, Standard_Integer, const char**); 
-static Standard_Integer bapibop  (Draw_Interpretor&, Standard_Integer, const char**); 
+static Standard_Integer bapibuild(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bapibop  (Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bapisplit(Draw_Interpretor&, Standard_Integer, const char**);
 
 //=======================================================================
 //function : APICommands
@@ -51,6 +53,7 @@ void BOPTest::APICommands(Draw_Interpretor& theCommands)
   // Commands  
   theCommands.Add("bapibuild", "use bapibuild r" , __FILE__, bapibuild, g);
   theCommands.Add("bapibop", "use bapibop r type" , __FILE__, bapibop, g);
+  theCommands.Add("bapisplit", "use bapisplit r" , __FILE__, bapisplit, g);
 }
 //=======================================================================
 //function : bapibop
@@ -219,3 +222,46 @@ void ConvertList(const BOPCol_ListOfShape& aLSB,
   }
 }
   
+
+//=======================================================================
+//function : bapisplit
+//purpose  : 
+//=======================================================================
+Standard_Integer bapisplit(Draw_Interpretor& di,
+  Standard_Integer n,
+  const char** a)
+{
+  if (n < 2) {
+    di << " use bapisplit r\n";
+    return 1;
+  }
+  //
+  BRepAlgoAPI_Splitter aSplitter;
+  // setting arguments
+  aSplitter.SetArguments(BOPTest_Objects::Shapes());
+  aSplitter.SetTools(BOPTest_Objects::Tools());
+  // setting options
+  aSplitter.SetRunParallel(BOPTest_Objects::RunParallel());
+  aSplitter.SetFuzzyValue(BOPTest_Objects::FuzzyValue());
+  aSplitter.SetNonDestructive(BOPTest_Objects::NonDestructive());
+  aSplitter.SetGlue(BOPTest_Objects::Glue());
+  //
+  // performing operation
+  aSplitter.Build();
+  // checking error status
+  Standard_Integer iErr = aSplitter.ErrorStatus();
+  if (iErr) {
+    di << "Error: " << iErr << "\n";
+    return 0;
+  }
+  //
+  // getting the result of the operation
+  const TopoDS_Shape& aR = aSplitter.Shape();
+  if (aR.IsNull()) {
+    di << " null shape\n";
+    return 0;
+  }
+  //
+  DBRep::Set(a[1], aR);
+  return 0;
+}

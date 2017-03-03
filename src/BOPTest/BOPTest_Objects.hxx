@@ -31,10 +31,10 @@ class BOPAlgo_PaveFiller;
 class BOPAlgo_Builder;
 class BOPAlgo_BOP;
 class BOPAlgo_Section;
+class BOPAlgo_Splitter;
 
 
-
-class BOPTest_Objects 
+class BOPTest_Objects
 {
 public:
 
@@ -56,6 +56,8 @@ public:
   Standard_EXPORT static BOPAlgo_Section& Section();
   
   Standard_EXPORT static BOPAlgo_CellsBuilder& CellsBuilder();
+  
+  Standard_EXPORT static BOPAlgo_Splitter& Splitter();
   
   Standard_EXPORT static BOPCol_ListOfShape& Shapes();
   
@@ -84,22 +86,8 @@ public:
 
 protected:
 
-
-
-
-
 private:
 
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BOPTest_Objects_HeaderFile

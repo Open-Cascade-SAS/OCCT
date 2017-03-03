@@ -7763,7 +7763,9 @@ The following terms and definitions are used in this document:
 * **baddobjects** *S1 S2...Sn*	-- adds shapes *S1, S2, ... Sn* as Objects;	
 * **baddtools** *S1 S2...Sn* -- adds shapes *S1, S2, ... Sn* as Tools;
 * **bfillds** -- performs the Intersection Part of the Algorithm;	
-* **bbuild** *r* -- performs the Building Part of the Algorithm; *r* is the resulting shape.
+* **bbuild** *r* -- performs the Building Part of the Algorithm (General Fuse operation); *r* is the resulting shape;
+* **bsplit** *r* -- performs the Partition operation; *r* is the resulting shape;
+* **bbop** *r* *iOp* -- performs the Boolean operation; *r* is the resulting shape; *iOp* - type of the operation (0 - COMMON; 1 - FUSE; 2 - CUT; 3 - CUT21; 4 - SECTION).
 
 @subsection occt_draw_20_3 Commands for Intersection Part
 

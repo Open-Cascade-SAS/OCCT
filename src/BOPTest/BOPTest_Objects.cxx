@@ -19,6 +19,7 @@
 #include <BOPAlgo_Section.hxx>
 #include <BOPTest_Objects.hxx>
 #include <BOPAlgo_CellsBuilder.hxx>
+#include <BOPAlgo_Splitter.hxx>
 #include <NCollection_BaseAllocator.hxx>
 
 static Handle(NCollection_BaseAllocator)& Allocator1();
@@ -252,6 +253,15 @@ BOPAlgo_CellsBuilder& BOPTest_Objects::CellsBuilder()
 {
   static BOPAlgo_CellsBuilder sCBuilder(Allocator1());
   return sCBuilder;
+}
+//=======================================================================
+//function : Splitter
+//purpose  : 
+//=======================================================================
+BOPAlgo_Splitter& BOPTest_Objects::Splitter()
+{
+  static BOPAlgo_Splitter aSplitter(Allocator1());
+  return aSplitter;
 }
 //=======================================================================
 //function : Shapes

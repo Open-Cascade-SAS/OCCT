@@ -14,3 +14,5 @@ BRepAlgoAPI_Fuse.cxx
 BRepAlgoAPI_Fuse.hxx
 BRepAlgoAPI_Section.cxx
 BRepAlgoAPI_Section.hxx
+BRepAlgoAPI_Splitter.cxx
+BRepAlgoAPI_Splitter.hxx

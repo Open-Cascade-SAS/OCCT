@@ -40,6 +40,8 @@ where:
 
 **Note** There is an operation *Cut21*, which is an extension for forward Cut operation, i.e <i>Cut21=Cut(G2, G1)</i>.
 
+For more details see @ref occt_algorithms_9 "Boolean Operations Algorithm" section.
+
 @subsubsection occt_algorithms_2_1_2 General Fuse operator
 
 The General fuse operator can be applied to an arbitrary number of arguments in terms of *TopoDS_Shape*.
@@ -71,6 +73,8 @@ This Figure shows that
 
 The fact that *R<sub>GF</sub>* contains the components of *R<sub>B</sub>* allows considering GFA as the general case of BOA. So it is possible to implement BOA as a subclass of GFA.
 
+For more details see @ref occt_algorithms_7 "General Fuse Algorithm" section.
+
 @subsubsection occt_algorithms_2_1_3 Partition operator 
 
 The Partition operator can be applied to an arbitrary number of arguments in terms of *TopoDS_Shape*. The arguments are divided on two groups: Objects, Tools. The result of PA contains all parts belonging to the Objects but does not contain the parts that belongs to the Tools only.
@@ -99,6 +103,7 @@ For example, when *G<sub>1</sub>* consists of shapes *S<sub>1</sub>* and *S<sub>
 
 The fact that the *R<sub>GF</sub>* contains the components of *R<sub>PA</sub>* allows considering GFA as the general case of PA. Thus, it is possible to implement PA as a subclass of GFA.
 
+For more details see @ref occt_algorithms_8 "Partition Algorithm" section.
 
 @subsubsection occt_algorithms_2_1_4 Section operator
 
@@ -108,6 +113,8 @@ The SA operator can be represented as follows:
 * <i>R<sub>SA</sub></i> -- the operation result;
 * <i>S1, S2 ... Sn</i> -- the operation arguments;
 * *n* -- the number of arguments.
+
+For more details see @ref occt_algorithms_10a "Section Algorithm" section.
 
 @subsection occt_algorithms_2_2 Parts of algorithms 
 
@@ -1041,6 +1048,158 @@ The input data for this step is a *BOPAlgo_Builder* object after building result
 | 1	| Correct tolerances of vertices on curves | *BOPTools_Tools::CorrectPointOnCurve()* |
 | 2	| Correct tolerances of edges on faces | *BOPTools_Tools::CorrectCurveOnSurface()* |
 
+
+@section occt_algorithms_8  Partition Algorithm
+
+The Partition algorithm is a General Fuse (GF) based algorithm. It provides means to split the group of an arbitrary number of shapes of an arbitrary dimension by the other group of an arbitrary number of shapes of an arbitrary dimension.
+All the options of the GF algorithm, such as Fuzzy mode, safe mode, parallel mode, gluing mode and history support are also available in this algorithm.
+
+@subsection occt_algorithms_8_1 Arguments
+
+* The arguments of the Partition algorithms are divided on two groups - *Objects* and *Tools*;
+* The requirements for the arguments (both for *Objects* and *Tools*) are the same as for General Fuse algorithm - there could be any number of arguments of any type, but each argument should be valid and not self-interfered.
+
+@subsection occt_algorithms_8_2 Results
+
+* The result of Partition algorithm is similar to the result of General Fuse algorithm, but it contains only the split parts of the shapes included into the group of *Objects*;
+* Splits parts of the shapes included only into group of *Tools* are excluded from the result;
+* If there are no shapes in the group of *Tools* the result of the operation will be equivalent to the result of General Fuse operation.
+
+@subsection occt_algorithms_8_3 Usage
+
+@subsubsection occt_algorithms_8_3_1 API
+
+On the low level the Partition algorithm is implemented in the class *BOPAlgo_Splitter*. The usage of this algorithm looks as follows:
+~~~~~
+BOPAlgo_Splitter aSplitter;
+BOPCol_ListOfShape aLSObjects = …; // Objects
+BOPCol_ListOfShape aLSTools = …; // Tools
+Standard_Boolean bRunParallel = Standard_False; /* parallel or single mode (the default value is FALSE)*/
+Standard_Real aTol = 0.0; /* fuzzy option (default value is 0)*/
+Standard_Boolean bSafeMode = Standard_False; /* protect or not the arguments from modification*/
+BOPAlgo_Glue aGlue = BOPAlgo_GlueOff; /* Glue option to speed up intersection of the arguments*/
+// setting arguments
+aSplitter.SetArguments(aLSObjects);
+aSplitter.SetTools(aLSTools);
+// setting options
+aSplitter.SetRunParallel(bRunParallel);
+aSplitter.SetFuzzyValue(aTol);
+aSplitter.SetNonDestructive(bSafeMode);
+aSplitter.SetGlue(aGlue);
+//
+aSplitter.Perform(); //perform the operation
+if (aSplitter.ErrorStatus()) { //check error status
+  return;
+}
+//
+const TopoDS_Shape& aResult = aSplitter.Shape(); // result of the operation
+~~~~~
+
+@subsubsection occt_algorithms_8_3_2 DRAW
+
+For the usage of the Partition algorithm in DRAW the command *bsplit* is implemented. Similarly to the *bbuild* command (for the usage of the General Fuse algorithm) the *bsplit* command should be used after the Pave Filler is filled.
+~~~~~
+# s1 s2 s3 - objects
+# t1 t2 t3 - tools
+bclearobjects
+bcleartools
+baddobjects s1 s2 s3
+baddtools t1 t2 t3
+bfillds
+bsplit result
+~~~~~
+
+@subsection occt_algorithms_8_4 Examples
+
+@subsubsection occt_algorithms_8_4_1 Example 1
+
+Splitting face by the set of edges:
+
+~~~~
+# draw script for reproducing
+bclearobjects
+bcleartools
+
+set height 20
+cylinder cyl 0 0 0 0 0 1 10
+mkface f cyl 0 2*pi -$height $height
+baddobjects f
+
+# create tool edges
+compound edges
+
+set nb_uedges 10
+set pi2 [dval 2*pi]
+set ustep [expr $pi2/$nb_uedges]
+for {set i 0} {$i <= $pi2} {set i [expr $i + $ustep]} {
+  uiso c cyl $i
+  mkedge e c -25 25
+  add e edges
+}
+
+set nb_vedges 10
+set vstep [expr 2*$height/$nb_vedges]
+for {set i -20} {$i <= 20} {set i [expr $i + $vstep]} {
+  viso c cyl $i
+  mkedge e c
+  add e edges
+}
+baddctools edges
+
+bfillds
+bsplit result
+~~~~
+
+<table align="center">
+<tr>
+  <td>@figure{/user_guides/boolean_operations/images/bsplit_image001.png, "Arguments"}</td>
+  <td>@figure{/user_guides/boolean_operations/images/bsplit_image002.png, "Result"}</td>
+</tr>
+</table>
+
+@subsubsection occt_algorithms_8_4_2 Example 2
+
+Splitting plate by the set of cylinders:
+
+~~~~
+# draw script for reproducing:
+bclearobjects
+bcleartools
+
+box plate 100 100 1
+baddobjects plate
+
+pcylinder p 1 11
+compound cylinders
+for {set i 0} {$i < 101} {incr i 5} {
+  for {set j 0} {$j < 101} {incr j 5} {
+    copy p p1;
+    ttranslate p1 $i $j -5;
+    add p1 cylinders
+  }
+}
+baddtools cylinders
+
+bfillds
+bsplit result
+~~~~
+
+<table align="center">
+<tr>
+  <td>@figure{/user_guides/boolean_operations/images/bsplit_image003.png, "Arguments"}</td>
+  <td>@figure{/user_guides/boolean_operations/images/bsplit_image004.png, "Result"}</td>
+</tr>
+</table>
+
+@subsubsection occt_algorithms_8_4_3 Example 3
+
+Splitting shell hull by the planes:
+<table align="center">
+<tr>
+  <td>@figure{/user_guides/boolean_operations/images/bsplit_image005.png, "Arguments"}</td>
+  <td>@figure{/user_guides/boolean_operations/images/bsplit_image006.png, "Results"}</td>
+</tr>
+</table>
 
 @section occt_algorithms_9	Boolean Operations Algorithm
 
@@ -2237,7 +2396,7 @@ This example stresses not only the validity, but also the performance issue. The
 
 @subsection occt_algorithms_11a_2 Gluing Operation
 
-The Gluing operation is the option of the Basic Operations, such as General Fuse, Boolean and Section operations.
+The Gluing operation is the option of the Basic Operations, such as General Fuse, Partition, Boolean, Section, Maker Volume operations.
 It has been designed to speed up the computation of the interferences among arguments of the operations on special cases, in which the arguments may be overlapping but do not have real intersections between their sub-shapes.
 
 This option cannot be used on the shapes having real intersections, like intersection vertex between edges, or intersection vertex between edge and a face or intersection line between faces:
@@ -2299,6 +2458,41 @@ Performance improvement from using the GlueShift option in this case is about 70
 
 Performance improvement in this case is also about 70 percent.
 
+@subsection occt_algorithms_11a_3 Safe processing mode
+
+The safe processing mode is the advanced option in Boolean Operation component. This mode can be applied to all Basic operations such as General Fuse, Partition, Boolean, Section, Maker Volume.
+This option allows keeping the input arguments untouched. In other words, switching this option on prevents the input arguments from any modification such as tolerance increase, addition of the P-Curves on edges etc.
+
+The option might be very useful for implementation of the Undo/Redo mechanism in the applications and allows performing the operation many times without changing the inputs.
+
+By default the safe processing option is switched off for the algorithms. Enabling this option might slightly decrease the performance of the operation, because instead of the modification of some entitiy it will be necessary to create the copy of this entitiy and modify it. But this degradation should be very small because the copying is performed only in case of necessity.
+
+The option is also availible in the Intersection algorithm - *BOPAlgo_PaveFiller*. Thus, if it is necessary to perform several different operations on the same arguemnts, it is possible to enable the safe processing mode in PaveFiller and prepare it only once and then use it in operations. It is enough to set the option to PaveFiller only and all algorithms taking this PaveFiller will also work in safe mode.
+
+@subsubsection occt_algorithms_11a_3_1 Usage
+
+#### API level
+
+To enable/disable the safe processing mode for the algorithm it is necessary to call the SetNonDestructive() method with appropriate value:
+~~~~
+BOPAlgo_Builder aGF;
+//
+....
+// enabling the safe processing mode to prevent modification of the input shapes
+aGF.SetNonDestructive(Standard_True);
+//
+....
+~~~~
+
+#### TCL level
+For enabling the safe processing mode for the operaton in DRAW it is necessary to call the <i>bnondestructive</i> command with appropriate value:
+* 0 - default value, the safe mode is switched off;
+* 1 - the safe mode will be switched on.
+
+~~~~
+bnondestructive 1
+~~~~
+
 
 @section occt_algorithms_11b Usage 
 
@@ -2311,13 +2505,14 @@ The package *BRepAlgoAPI* provides the Application Programming Interface of the 
 The package consists of the following classes:
 * *BRepAlgoAPI_Algo* -- the root class that provides the interface for algorithms. 
 * *BRepAlgoAPI_BuilderAlgo* -- the class API level of General Fuse algorithm.
+* *BRepAlgoAPI_Splitter* -- the class API level of the Partition algorithm.
 * *BRepAlgoAPI_BooleanOperation* -- the root class for the classes *BRepAlgoAPI_Fuse*. *BRepAlgoAPI_Common*, *BRepAlgoAPI_Cut* and *BRepAlgoAPI_Section*.
 * *BRepAlgoAPI_Fuse* -- the class provides Boolean fusion operation. 
 * *BRepAlgoAPI_Common* -- the class provides Boolean common operation.
 * *BRepAlgoAPI_Cut* -- the class provides Boolean cut operation.
 * *BRepAlgoAPI_Section* -- the class provides Boolean section operation.
 
-@figure{/user_guides/boolean_operations/images/operations_image065.svg, "Diagram of BRepAlgoAPI package"} 
+@figure{/user_guides/boolean_operations/images/operations_image065.png, "Diagram of BRepAlgoAPI package"} 
 
 The detailed description of the classes can be found in the corresponding .hxx files. The examples are below in this chapter.
 
@@ -2325,11 +2520,12 @@ The detailed description of the classes can be found in the corresponding .hxx f
 The package *BOPTest* provides the usage of the Boolean Component on Tcl level. The method *BOPTest::APICommands* contains corresponding Tcl commands: 
 
 * *bapibuild* -- for General Fuse Operator;
+* *bapisplit* -- for Partition Operator;
 * *bapibop* -- for Boolean Operator and Section Operator.
 
 The examples of how to use the commands are below in this chapter.
 
-@subsubsection occt_algorithms_11b_2_1 Case 1 General Fuse operation
+@subsubsection occt_algorithms_11b_2_1 Case 1. General Fuse operation
 
 The following example illustrates how to use General Fuse operator:
 
@@ -2363,6 +2559,19 @@ The following example illustrates how to use General Fuse operator:
   //  if aFuzzyValue>0.: the Fuzzy option is on
   aBuilder.SetFuzzyValue(aFuzzyValue);
   //
+  // safe mode - avoid modification of the arguments
+  Standard_Boolean bSafeMode = Standard_True;
+  // if bSafeMode == Standard_True  - the safe mode is switched on
+  // if bSafeMode == Standard_False - the safe mode is switched off
+  aBuilder.SetNonDestructive(bSafeMode);
+  //
+  // gluing options - for coinciding arguments
+  BOPAlgo_GlueEnum aGlueOpt = BOPAlgo_GlueFull;
+  // if aGlueOpt == BOPAlgo_GlueOff   - the gluing mode is switched off
+  // if aGlueOpt == BOPAlgo_GlueShift - the gluing mode is switched on
+  // if aGlueOpt == BOPAlgo_GlueFull  - the gluing mode is switched on
+  aBuilder.SetGlue(aGlueOpt);
+  //
   // run the algorithm 
   aBuilder.Build(); 
   iErr=aBuilder.ErrorStatus();
@@ -2394,17 +2603,137 @@ baddobjects b1 b2 b3
 # 1:  the parallel processing is switched on
 # 0:  the parallel processing is switched off
 brunparallel 1 
+#
 # set Fuzzy value
 # 0.    : the Fuzzy option is off
 # >0. : the Fuzzy option is on
 bfuzzyvalue 0.
+#
+# set safe processing mode
+bnondestructive 1
+# set safe mode
+# 1 - the safe processing mode is switched on
+# 0 - the safe processing mode is switched off
+#
+# set gluing mode
+bglue 1
+# set the gluing mode
+# 1 or 2 - the gluing mode is switched on
+# 0 - the gluing mode is switched off
 #
 # run the algorithm
 # r is the result of the operation
 bapibuild r 
 ~~~~
 
-@subsubsection occt_algorithms_11b_2_2 Case 2. Common operation
+@subsubsection occt_algorithms_11b_2_2 Case 2. Partition operation
+
+The following example illustrates how to use the Partition operator:
+
+#### C++ Level
+
+~~~~
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <BRepAlgoAPI_Splitter.hxx>
+//
+BRepAlgoAPI_BuilderAlgo aSplitter;
+//
+// prepare the arguments
+// objects
+TopTools_ListOfShape& aLSObjects = … ;
+// tools
+TopTools_ListOfShape& aLSTools = … ;
+//
+// set the arguments
+aSplitter.SetArguments(aLSObjects);
+aSplitter.SetTools(aLSTools);
+//
+// set options
+// parallel processing mode 
+Standard_Boolean bRunParallel = Standard_True;
+// bRunParallel == Standard_True  - the parallel processing is switched on
+// bRunParallel == Standard_False - the parallel processing is switched off
+aSplitter.SetRunParallel();
+//
+// fuzzy value - additional tolerance for the operation
+Standard_Real aFuzzyValue = 1.e-5;
+// if aFuzzyValue == 0. - the Fuzzy option is off
+// if aFuzzyValue > 0.  - the Fuzzy option is on
+aSplitter.SetFuzzyValue(aFuzzyValue);
+//
+// safe mode - avoid modification of the arguments
+Standard_Boolean bSafeMode = Standard_True;
+// if bSafeMode == Standard_True  - the safe mode is switched on
+// if bSafeMode == Standard_False - the safe mode is switched off
+aSplitter.SetNonDestructive(bSafeMode);
+//
+// gluing options - for coinciding arguments
+BOPAlgo_GlueEnum aGlueOpt = BOPAlgo_GlueFull;
+// if aGlueOpt == BOPAlgo_GlueOff   - the gluing mode is switched off
+// if aGlueOpt == BOPAlgo_GlueShift - the gluing mode is switched on
+// if aGlueOpt == BOPAlgo_GlueFull  - the gluing mode is switched on
+aSplitter.SetGlue(aGlueOpt);
+//
+// run the algorithm 
+aSplitter.Build(); 
+// check error status
+if (aSplitter.ErrorStatus()) {
+  return;
+}
+//
+// result of the operation aResult
+const TopoDS_Shape& aResult = aSplitter.Shape();
+~~~~
+
+#### Tcl Level
+
+~~~~
+# prepare the arguments
+# objects
+box b1 10 10 10 
+box b2 7 0 0 10 10 10
+
+# tools
+plane p 10 5 5 0 1 0
+mkface f p -20 20 -20 20
+#
+# clear inner contents
+bclearobjects; bcleartools;
+#
+# set the objects
+baddobjects b1 b2
+# set the tools
+baddtools f
+#
+# set parallel processing mode
+# 1:  the parallel processing is switched on
+# 0:  the parallel processing is switched off
+brunparallel 1 
+#
+# set Fuzzy value
+# 0.  : the Fuzzy option is off
+# >0. : the Fuzzy option is on
+bfuzzyvalue 0.
+#
+# set safe processing mode
+bnondestructive 1
+# set safe mode
+# 1 - the safe processing mode is switched on
+# 0 - the safe processing mode is switched off
+#
+# set gluing mode
+bglue 1
+# set the gluing mode
+# 1 or 2 - the gluing mode is switched on
+# 0 - the gluing mode is switched off
+#
+# run the algorithm
+# r is the result of the operation
+bapisplit r 
+~~~~
+
+@subsubsection occt_algorithms_11b_2_3 Case 3. Common operation
 
 The following example illustrates how to use Common operation:
 
@@ -2441,6 +2770,19 @@ The following example illustrates how to use Common operation:
   //  if aFuzzyValue>0.: the Fuzzy option is on
   aBuilder.SetFuzzyValue(aFuzzyValue);
   //
+  // safe mode - avoid modification of the arguments
+  Standard_Boolean bSafeMode = Standard_True;
+  // if bSafeMode == Standard_True  - the safe mode is switched on
+  // if bSafeMode == Standard_False - the safe mode is switched off
+  aBuilder.SetNonDestructive(bSafeMode);
+  //
+  // gluing options - for coinciding arguments
+  BOPAlgo_GlueEnum aGlueOpt = BOPAlgo_GlueFull;
+  // if aGlueOpt == BOPAlgo_GlueOff   - the gluing mode is switched off
+  // if aGlueOpt == BOPAlgo_GlueShift - the gluing mode is switched on
+  // if aGlueOpt == BOPAlgo_GlueFull  - the gluing mode is switched on
+  aBuilder.SetGlue(aGlueOpt);
+  //
   // run the algorithm 
   aBuilder.Build(); 
   iErr=aBuilder.ErrorStatus();
@@ -2480,13 +2822,25 @@ brunparallel 1
 # >0. : the Fuzzy option is on
 bfuzzyvalue 0.
 #
+# set safe processing mode
+bnondestructive 1
+# set safe mode
+# 1 - the safe processing mode is switched on
+# 0 - the safe processing mode is switched off
+#
+# set gluing mode
+bglue 1
+# set the gluing mode
+# 1 or 2 - the gluing mode is switched on
+# 0 - the gluing mode is switched off
+#
 # run the algorithm
 # r is the result of the operation
 # 0 means Common operation
 bapibop r 0
 ~~~~
 
-@subsubsection occt_algorithms_11b_2_3 Case 3. Fuse operation
+@subsubsection occt_algorithms_11b_2_4 Case 4. Fuse operation
 
 The following example illustrates how to use Fuse operation:
 
@@ -2523,6 +2877,19 @@ The following example illustrates how to use Fuse operation:
   //  if aFuzzyValue>0.: the Fuzzy option is on
   aBuilder.SetFuzzyValue(aFuzzyValue);
   //
+  // safe mode - avoid modification of the arguments
+  Standard_Boolean bSafeMode = Standard_True;
+  // if bSafeMode == Standard_True  - the safe mode is switched on
+  // if bSafeMode == Standard_False - the safe mode is switched off
+  aBuilder.SetNonDestructive(bSafeMode);
+  //
+  // gluing options - for coinciding arguments
+  BOPAlgo_GlueEnum aGlueOpt = BOPAlgo_GlueFull;
+  // if aGlueOpt == BOPAlgo_GlueOff   - the gluing mode is switched off
+  // if aGlueOpt == BOPAlgo_GlueShift - the gluing mode is switched on
+  // if aGlueOpt == BOPAlgo_GlueFull  - the gluing mode is switched on
+  aBuilder.SetGlue(aGlueOpt);
+  //
   // run the algorithm 
   aBuilder.Build(); 
   iErr=aBuilder.ErrorStatus();
@@ -2562,13 +2929,25 @@ brunparallel 1
 # >0. : the Fuzzy option is on
 bfuzzyvalue 0.
 #
+# set safe processing mode
+bnondestructive 1
+# set safe mode
+# 1 - the safe processing mode is switched on
+# 0 - the safe processing mode is switched off
+#
+# set gluing mode
+bglue 1
+# set the gluing mode
+# 1 or 2 - the gluing mode is switched on
+# 0 - the gluing mode is switched off
+#
 # run the algorithm
 # r is the result of the operation
 # 1 means Fuse operation
 bapibop r 1
 ~~~~
 
-@subsubsection occt_algorithms_11b_2_4 Case 4. Cut operation
+@subsubsection occt_algorithms_11b_2_5 Case 5. Cut operation
 
 The following example illustrates how to use Cut operation:
 
@@ -2605,6 +2984,19 @@ The following example illustrates how to use Cut operation:
   //  if aFuzzyValue>0.: the Fuzzy option is on
   aBuilder.SetFuzzyValue(aFuzzyValue);
   //
+  // safe mode - avoid modification of the arguments
+  Standard_Boolean bSafeMode = Standard_True;
+  // if bSafeMode == Standard_True  - the safe mode is switched on
+  // if bSafeMode == Standard_False - the safe mode is switched off
+  aBuilder.SetNonDestructive(bSafeMode);
+  //
+  // gluing options - for coinciding arguments
+  BOPAlgo_GlueEnum aGlueOpt = BOPAlgo_GlueFull;
+  // if aGlueOpt == BOPAlgo_GlueOff   - the gluing mode is switched off
+  // if aGlueOpt == BOPAlgo_GlueShift - the gluing mode is switched on
+  // if aGlueOpt == BOPAlgo_GlueFull  - the gluing mode is switched on
+  aBuilder.SetGlue(aGlueOpt);
+  //
   // run the algorithm 
   aBuilder.Build(); 
   iErr=aBuilder.ErrorStatus();
@@ -2644,6 +3036,18 @@ brunparallel 1
 # >0. : the Fuzzy option is on
 bfuzzyvalue 0.
 #
+# set safe processing mode
+bnondestructive 1
+# set safe mode
+# 1 - the safe processing mode is switched on
+# 0 - the safe processing mode is switched off
+# set gluing mode
+#
+bglue 1
+# set the gluing mode
+# 1 or 2 - the gluing mode is switched on
+# 0 - the gluing mode is switched off
+#
 # run the algorithm
 # r is the result of the operation
 # 2 means Cut operation
@@ -2651,7 +3055,7 @@ bapibop r 2
 ~~~~
 
 
-@subsubsection occt_algorithms_11b_2_5 Case 5. Section operation
+@subsubsection occt_algorithms_11b_2_6 Case 6. Section operation
 
 The following example illustrates how to use Section operation:
 
@@ -2687,6 +3091,19 @@ The following example illustrates how to use Section operation:
   // if aFuzzyValue=0.: the Fuzzy option is off
   //  if aFuzzyValue>0.: the Fuzzy option is on
   aBuilder.SetFuzzyValue(aFuzzyValue);
+  //
+  // safe mode - avoid modification of the arguments
+  Standard_Boolean bSafeMode = Standard_True;
+  // if bSafeMode == Standard_True  - the safe mode is switched on
+  // if bSafeMode == Standard_False - the safe mode is switched off
+  aBuilder.SetNonDestructive(bSafeMode);
+  //
+  // gluing options - for coinciding arguments
+  BOPAlgo_GlueEnum aGlueOpt = BOPAlgo_GlueFull;
+  // if aGlueOpt == BOPAlgo_GlueOff   - the gluing mode is switched off
+  // if aGlueOpt == BOPAlgo_GlueShift - the gluing mode is switched on
+  // if aGlueOpt == BOPAlgo_GlueFull  - the gluing mode is switched on
+  aBuilder.SetGlue(aGlueOpt);
   //
   // run the algorithm 
   aBuilder.Build(); 
@@ -2726,6 +3143,18 @@ brunparallel 1
 # 0.    : the Fuzzy option is off
 # >0. : the Fuzzy option is on
 bfuzzyvalue 0.
+#
+# set safe processing mode
+bnondestructive 1
+# set safe mode
+# 1 - the safe processing mode is switched on
+# 0 - the safe processing mode is switched off
+#
+# set gluing mode
+bglue 1
+# set the gluing mode
+# 1 or 2 - the gluing mode is switched on
+# 0 - the gluing mode is switched off
 #
 # run the algorithm
 # r is the result of the operation

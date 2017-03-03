@@ -1,0 +1,36 @@
+puts "============"
+puts "OCC26874"
+puts "============"
+puts ""
+#######################################################################
+# Implementation of the Partition operator in OCCT
+#######################################################################
+
+# split plate by set of cylinders
+
+box plate 100 100 1
+
+bclearobjects
+bcleartools
+baddobjects plate
+
+pcylinder p 1 11
+
+compound cylinders
+
+for {set i 0} {$i < 101} {incr i 5} {
+  for {set j 0} {$j < 101} {incr j 5} {
+    copy p p1;
+    ttranslate p1 $i $j -5;
+    add p1 cylinders
+  }
+}
+
+baddtools cylinders
+
+bfillds
+bapisplit result
+
+checkshape result
+checknbshapes result -solid 442
+checkprops result -v 10000

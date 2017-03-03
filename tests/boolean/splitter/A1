@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC26874"
+puts "============"
+puts ""
+#######################################################################
+# Implementation of the Partition operator in OCCT
+#######################################################################
+
+# split box by two other boxes
+
+box b1 10 10 10
+box b2 4 -2 -2 2 14 14
+box b3 -2 4 -2 14 2 14
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2 b3
+bfillds
+bsplit result
+
+checkshape result
+checknbshapes result -solid 9
+checkprops result -v 1000
