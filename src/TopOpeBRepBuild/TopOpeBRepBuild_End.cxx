@@ -174,7 +174,7 @@ void TopOpeBRepBuild_Builder::End()
 #endif
         
     TopTools_IndexedDataMapOfShapeListOfShape idmoelof; TopExp::MapShapesAndAncestors(R,TopAbs_EDGE,TopAbs_FACE,idmoelof);
-    TopTools_IndexedDataMapOfShapeListOfShape idmovloe; TopExp::MapShapesAndAncestors(R,TopAbs_VERTEX,TopAbs_EDGE,idmovloe);
+    TopTools_IndexedDataMapOfShapeListOfShape idmovloe; TopExp::MapShapesAndUniqueAncestors(R,TopAbs_VERTEX,TopAbs_EDGE,idmovloe);
     TopTools_IndexedDataMapOfShapeListOfShape idmovloes; for (TopTools_ListIteratorOfListOfShape I(LOES);I.More();I.Next())
       TopExp::MapShapesAndAncestors(I.Value(),TopAbs_VERTEX,TopAbs_EDGE,idmovloes);
     Standard_Integer iv,nv = idmovloe.Extent();
@@ -184,33 +184,23 @@ void TopOpeBRepBuild_Builder::End()
       Standard_Boolean isbe = idmovloes.Contains(V);
       if ( !isbe ) continue;
 
-      const TopTools_ListOfShape& loe1 = idmovloe.FindFromIndex(iv); 
-#ifdef OCCT_DEBUG
-//      Standard_Integer nloe1 = loe1.Extent();
-#endif
-      TopTools_MapOfShape mose; //une seule fois chaque arete
-      TopTools_ListOfShape loe; 
-      TopTools_ListIteratorOfListOfShape iloe;
-      for (iloe.Initialize(loe1);iloe.More();iloe.Next()) {
-	const TopoDS_Edge& E = TopoDS::Edge(iloe.Value());
-	Standard_Boolean isb = mose.Contains(E); if (isb) continue;
-	mose.Add(E);loe.Append(E);
-      }
+      const TopTools_ListOfShape& loe = idmovloe.FindFromIndex(iv); 
+
 #ifdef OCCT_DEBUG
 //      Standard_Integer nloe = loe.Extent();
 #endif
-      
+      TopTools_ListIteratorOfListOfShape iloe;
       for (iloe.Initialize(loe);iloe.More();iloe.Next()) {
-	const TopoDS_Edge& E = TopoDS::Edge(iloe.Value());
-	const TopTools_ListOfShape& lof = idmoelof.FindFromKey(E);
-	Standard_Integer nlof = lof.Extent();
-	nP1 += nlof+1;
+        const TopoDS_Edge& E = TopoDS::Edge(iloe.Value());
+        const TopTools_ListOfShape& lof = idmoelof.FindFromKey(E);
+        Standard_Integer nlof = lof.Extent();
+        nP1 += nlof+1;
       }
 
       TColgp_Array1OfPnt TP(1,nP1);
       Standard_Integer nP2 = 0;
       for (iloe.Initialize(loe);iloe.More();iloe.Next()) {
-	const TopoDS_Edge& E = TopoDS::Edge(iloe.Value());
+        const TopoDS_Edge& E = TopoDS::Edge(iloe.Value());
         Standard_Real pv = BRep_Tool::Parameter(V,E);
         gp_Pnt Pv;
         Standard_Real f,l;Handle(Geom_Curve) C3D = BRep_Tool::Curve(E,f,l);
@@ -218,12 +208,12 @@ void TopOpeBRepBuild_Builder::End()
           Pv = C3D->Value(pv);
           TP(++nP2) = Pv;
         }
-	const TopTools_ListOfShape& lof = idmoelof.FindFromKey(E);
+        const TopTools_ListOfShape& lof = idmoelof.FindFromKey(E);
 #ifdef OCCT_DEBUG
 //	Standard_Integer nlof = lof.Extent();
 #endif
-	for (TopTools_ListIteratorOfListOfShape ilof(lof);ilof.More();ilof.Next()) {
-	  const TopoDS_Face& F = TopoDS::Face(ilof.Value());
+        for (TopTools_ListIteratorOfListOfShape ilof(lof);ilof.More();ilof.Next()) {
+          const TopoDS_Face& F = TopoDS::Face(ilof.Value());
           Standard_Real tolpc;
           Standard_Boolean pcf = FC2D_HasCurveOnSurface(E,F);
           Handle(Geom2d_Curve) C2D;

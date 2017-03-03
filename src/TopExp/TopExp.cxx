@@ -99,7 +99,55 @@ void  TopExp::MapShapesAndAncestors
   }
 }
 
+//=======================================================================
+//function : MapShapesAndUniqueAncestors
+//purpose  : 
+//=======================================================================
 
+void  TopExp::MapShapesAndUniqueAncestors
+  (const TopoDS_Shape& S, 
+   const TopAbs_ShapeEnum TS, 
+   const TopAbs_ShapeEnum TA, 
+   TopTools_IndexedDataMapOfShapeListOfShape& M,
+   const Standard_Boolean useOrientation)
+{
+  TopTools_ListOfShape empty;
+  
+  // visit ancestors
+  TopExp_Explorer exa(S,TA);
+  while (exa.More())
+  {
+    // visit shapes
+    const TopoDS_Shape& anc = exa.Current();
+    TopExp_Explorer exs(anc,TS);
+    while (exs.More())
+    {
+      Standard_Integer index = M.FindIndex(exs.Current());
+      if (index == 0)
+        index = M.Add(exs.Current(),empty);
+      TopTools_ListOfShape& aList = M(index);
+      // check if anc already exists in a list
+      TopTools_ListIteratorOfListOfShape it(aList);
+      for (; it.More(); it.Next())
+        if (useOrientation? anc.IsEqual(it.Value()) : anc.IsSame(it.Value()))
+          break;
+      if (!it.More())
+        aList.Append(anc);
+      exs.Next();
+    }
+    exa.Next();
+  }
+
+  // visit shapes not under ancestors
+  TopExp_Explorer ex(S,TS,TA);
+  while (ex.More())
+  {
+    Standard_Integer index = M.FindIndex(ex.Current());
+    if (index == 0) 
+      M.Add(ex.Current(),empty);
+    ex.Next();
+  }
+}
 
 //=======================================================================
 //function : FirstVertex

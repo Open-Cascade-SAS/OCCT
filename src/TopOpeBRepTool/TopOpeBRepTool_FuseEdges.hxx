@@ -98,12 +98,6 @@ protected:
 
 
 private:
-
-  
-  //! build a map of shapes and ancestors, like
-  //! TopExp.MapShapesAndAncestors, but we remove duplicate
-  //! shapes in list of shapes.
-  Standard_EXPORT void BuildAncestors (const TopoDS_Shape& S, const TopAbs_ShapeEnum TS, const TopAbs_ShapeEnum TA, TopTools_IndexedDataMapOfShapeListOfShape& M) const;
   
   //! Build the all the lists of edges that are to be fused
   Standard_EXPORT void BuildListEdges();

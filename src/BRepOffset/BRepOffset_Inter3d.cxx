@@ -445,33 +445,7 @@ void BRepOffset_Inter3d::ConnexIntByInt
     TopExp::MapShapes(SI, TopAbs_VERTEX, VEmap);
     //
     // make vertex-faces connexity map with unique ancestors
-    // TopExp::MapShapesAndAncestors(SI, TopAbs_VERTEX, TopAbs_FACE, aMVF);
-    TopExp_Explorer aExpF(SI, TopAbs_FACE);
-    for (; aExpF.More(); aExpF.Next()) {
-      const TopoDS_Shape& aF = aExpF.Current();
-      //
-      TopExp_Explorer aExpV(aF, TopAbs_VERTEX);
-      for (; aExpV.More(); aExpV.Next()) {
-        const TopoDS_Shape& aV = aExpV.Current();
-        //
-        TopTools_ListOfShape *pLF = aMVF.ChangeSeek(aV);
-        if (!pLF) {
-          pLF = &aMVF(aMVF.Add(aV, TopTools_ListOfShape()));
-          pLF->Append(aF);
-          continue;
-        }
-        //
-        TopTools_ListIteratorOfListOfShape aItLF(*pLF);
-        for (; aItLF.More(); aItLF.Next()) {
-          if (aItLF.Value().IsSame(aF)) {
-            break;
-          }
-        }
-        if (!aItLF.More()) {
-          pLF->Append(aF);
-        }
-      }
-    }
+    TopExp::MapShapesAndUniqueAncestors(SI, TopAbs_VERTEX, TopAbs_FACE, aMVF);
   }
   //
   TopTools_DataMapOfShapeListOfShape aDMVLF1, aDMVLF2, aDMIntFF;

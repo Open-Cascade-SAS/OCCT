@@ -1134,11 +1134,7 @@ static void CheckSharedVertices(const TopTools_SequenceOfShape& theSeqEdges,
   for (Standard_Integer k = 1; k <= SeqVertexes.Length()/* && !IsSharedVertexPresent*/; k++ )
   {
     const TopTools_ListOfShape& ListEdgesV1 = theMapEdgesVertex.FindFromKey(SeqVertexes(k));
-    TopTools_MapOfShape aMapOfEdges;
-    TopTools_ListIteratorOfListOfShape iter(ListEdgesV1);
-    for (; iter.More(); iter.Next())
-      aMapOfEdges.Add(iter.Value());
-    if (aMapOfEdges.Extent() > 2 || theMapKeepShape.Contains(SeqVertexes(k)))
+    if (ListEdgesV1.Extent() > 2 || theMapKeepShape.Contains(SeqVertexes(k)))
       theShareVertMap.Add(SeqVertexes(k));
   }
   //return theShareVertMap.IsEmpty() ? false : true;
@@ -1832,7 +1828,7 @@ void ShapeUpgrade_UnifySameDomain::UnifyEdges()
   
   // creating map of vertex edges
   TopTools_IndexedDataMapOfShapeListOfShape aMapEdgesVertex;
-  TopExp::MapShapesAndAncestors(myShape, TopAbs_VERTEX, TopAbs_EDGE, aMapEdgesVertex);
+  TopExp::MapShapesAndUniqueAncestors(myShape, TopAbs_VERTEX, TopAbs_EDGE, aMapEdgesVertex);
 
   //Handle(ShapeBuild_ReShape) aContext = new ShapeBuild_ReShape;
   TopoDS_Shape aRes = myShape;

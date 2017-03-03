@@ -1470,20 +1470,17 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
   //Vertices are processed
   const Standard_Real BigTol = 1.e10;
   parents.Clear();
-  TopExp::MapShapesAndAncestors(aShape, TopAbs_VERTEX, TopAbs_EDGE, parents);
+  TopExp::MapShapesAndUniqueAncestors(aShape, TopAbs_VERTEX, TopAbs_EDGE, parents);
   TColStd_MapOfTransient Initialized;
-  TopTools_MapOfShape Done;
   Standard_Integer nbV = parents.Extent();
   for (iCur=1; iCur<=nbV; iCur++) {
     tol=0;
-    Done.Clear();
     const TopoDS_Vertex& V = TopoDS::Vertex(parents.FindKey(iCur));
     Bnd_Box box;
     box.Add(BRep_Tool::Pnt(V));
     gp_Pnt p3d;
     for (lConx.Initialize(parents(iCur)); lConx.More(); lConx.Next()) {
       const TopoDS_Edge& E = TopoDS::Edge(lConx.Value());
-      if(!Done.Add(E)) continue;
       tol=Max(tol, BRep_Tool::Tolerance(E));
       if(tol > BigTol) continue;
       if(!BRep_Tool::SameRange(E)) continue;

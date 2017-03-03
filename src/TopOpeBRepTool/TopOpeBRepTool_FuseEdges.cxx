@@ -239,7 +239,7 @@ void TopOpeBRepTool_FuseEdges::BuildListEdges()
   myMapVerLstEdg.Clear();
   myMapEdgLstFac.Clear();
   
-  BuildAncestors(myShape,TopAbs_VERTEX,TopAbs_EDGE,myMapVerLstEdg);
+  TopExp::MapShapesAndUniqueAncestors(myShape,TopAbs_VERTEX,TopAbs_EDGE,myMapVerLstEdg);
   TopExp::MapShapesAndAncestors(myShape,TopAbs_EDGE,TopAbs_FACE,myMapEdgLstFac);
 
   Standard_Integer iEdg;
@@ -825,49 +825,6 @@ Standard_Boolean TopOpeBRepTool_FuseEdges::SameSupport(const TopoDS_Edge& E1,
   }
   return Standard_False;
 }
-
-
-//=======================================================================
-//function : BuildAncestors
-//purpose  : This function is like TopExp::MapShapesAndAncestors except
-// that in the list of shape we do not want duplicate shapes.
-// if this is useful for other purpose we should create a new method in
-// TopExp
-//=======================================================================
-
-void TopOpeBRepTool_FuseEdges::BuildAncestors
-  (const TopoDS_Shape& S, 
-   const TopAbs_ShapeEnum TS, 
-   const TopAbs_ShapeEnum TA, 
-   TopTools_IndexedDataMapOfShapeListOfShape& M) const
-{
-
-  TopTools_MapOfShape mapDuplicate;
-  TopTools_ListIteratorOfListOfShape it;
-  Standard_Integer iSh;
-
-  TopExp::MapShapesAndAncestors(S,TS,TA,M);
-
-  // for each shape of M
-  for (iSh = 1; iSh <= M.Extent(); iSh++) {
-    TopTools_ListOfShape& Lsh = M(iSh);
-
-    mapDuplicate.Clear();
-    // we check for duplicate in the list of Shape
-    it.Initialize(Lsh);
-    while (it.More() ) {
-      if (!mapDuplicate.Contains(it.Value())) {
-	mapDuplicate.Add(it.Value());
-	it.Next();
-      }
-      else {
-	Lsh.Remove(it);
-      }
-    }
-  }  
-
-}
-
 
 //=======================================================================
 //function : UpdatePCurve

@@ -126,27 +126,11 @@ static void EdgeAnalyse(const TopoDS_Edge&         E,
 //=======================================================================
 
 static void BuildAncestors (const TopoDS_Shape&                        S,
-			    TopTools_IndexedDataMapOfShapeListOfShape& MA)
+                            TopTools_IndexedDataMapOfShapeListOfShape& MA)
 {  
   MA.Clear();
-  TopExp::MapShapesAndAncestors(S,TopAbs_VERTEX,TopAbs_EDGE,MA);
-  TopExp::MapShapesAndAncestors(S,TopAbs_EDGE  ,TopAbs_FACE,MA);
-
-  // Purge ancestors.
-  TopTools_MapOfShape Map;
-  for (Standard_Integer i = 1; i <= MA.Extent(); i++) {
-    Map.Clear();
-    TopTools_ListOfShape&              L = MA(i);
-    TopTools_ListIteratorOfListOfShape it(L);
-    while (it.More()) {
-      if (!Map.Add(it.Value())) {
-	L.Remove(it);
-      }
-      else {
-	it.Next();
-      }
-    }
-  }
+  TopExp::MapShapesAndUniqueAncestors(S,TopAbs_VERTEX,TopAbs_EDGE,MA);
+  TopExp::MapShapesAndUniqueAncestors(S,TopAbs_EDGE  ,TopAbs_FACE,MA);
 }
 
 //=======================================================================

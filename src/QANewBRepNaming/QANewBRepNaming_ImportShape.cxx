@@ -40,7 +40,7 @@
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : QANewBRepNaming_ImportShape
@@ -205,45 +205,18 @@ void QANewBRepNaming_ImportShape::LoadNextLevels(const TopoDS_Shape& S,
 void QANewBRepNaming_ImportShape::LoadC0Edges(const TopoDS_Shape& S,
 					      const Handle(TDF_TagSource)& Tagger) const 
 {
-// vro: It sets vertices twicely:
-//   TopTools_IndexedDataMapOfShapeListOfShape vertexNaborFaces;
-//   TopExp::MapShapesAndAncestors(S, TopAbs_VERTEX, TopAbs_FACE, vertexNaborFaces);
-  TopTools_DataMapOfShapeListOfShape edgeNaborFaces;
-  TopTools_ListOfShape empty;
-  TopExp_Explorer explF(S, TopAbs_FACE);
-  for (; explF.More(); explF.Next()) {
-    const TopoDS_Shape& aFace = explF.Current();
-    TopExp_Explorer explV(aFace, TopAbs_EDGE);
-    for (; explV.More(); explV.Next()) {
-      const TopoDS_Shape& anEdge = explV.Current();
-      if (!edgeNaborFaces.IsBound(anEdge)) edgeNaborFaces.Bind(anEdge, empty);
-      Standard_Boolean faceIsNew = Standard_True;
-      TopTools_ListIteratorOfListOfShape itrF(edgeNaborFaces.Find(anEdge));
-      for (; itrF.More(); itrF.Next()) {
-	if (itrF.Value().IsSame(aFace)) {
-	  faceIsNew = Standard_False;
-	  break;
-	}
-      }
-      if (faceIsNew) {
-	edgeNaborFaces.ChangeFind(anEdge).Append(aFace);
-      }
-    }
-  }
+  TopTools_IndexedDataMapOfShapeListOfShape edgeNaborFaces;
+  TopExp::MapShapesAndUniqueAncestors(S, TopAbs_EDGE, TopAbs_FACE, edgeNaborFaces);
   
-  TopExp_Explorer anEx(S,TopAbs_EDGE); // mpv: new explorer iterator becouse we need keep edges order
-  for(;anEx.More();anEx.Next()) {
+  TopTools_MapOfShape aEdgesToRemove;
+  for(Standard_Integer i = 1; i <= edgeNaborFaces.Extent(); i++) {
     Standard_Boolean aC0 = Standard_False;
-    TopoDS_Shape anEdge1 = anEx.Current();
-    if (edgeNaborFaces.IsBound(anEdge1)) {
-      TopTools_ListOfShape aEdgesToRemove; // record items to be removed from the map (should be done after iteration)
-      aEdgesToRemove.Append (anEdge1);
-      const TopTools_ListOfShape& aList1 = edgeNaborFaces.Find(anEdge1);
-      TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itr(edgeNaborFaces);
-      for (; itr.More(); itr.Next()) {
-        TopoDS_Shape anEdge2 = itr.Key();
-        if (anEdge1.IsSame(anEdge2)) continue;
-        const TopTools_ListOfShape& aList2 = itr.Value();
+    TopoDS_Shape anEdge1 = edgeNaborFaces.FindKey(i);
+    if (aEdgesToRemove.Add(anEdge1)) {
+      const TopTools_ListOfShape& aList1 = edgeNaborFaces.FindFromIndex(i);
+      for(Standard_Integer j = i + 1; j <= edgeNaborFaces.Extent(); j++) {
+        TopoDS_Shape anEdge2 = edgeNaborFaces.FindKey(j);
+        const TopTools_ListOfShape& aList2 = edgeNaborFaces.FindFromIndex(j);
         // compare lists of the neighbour faces of edge1 and edge2
         if (aList1.Extent() == aList2.Extent()) {
           Standard_Integer aMatches = 0;
@@ -254,14 +227,11 @@ void QANewBRepNaming_ImportShape::LoadC0Edges(const TopoDS_Shape& S,
             aC0=Standard_True;
             TNaming_Builder bC0Edge(Tagger->NewChild());
             bC0Edge.Generated(anEdge2);
-            aEdgesToRemove.Append (anEdge2);
+            aEdgesToRemove.Add(anEdge2);
           }
         }
       }
-      // remove items from the data map
-      for(TopTools_ListIteratorOfListOfShape anIt(aEdgesToRemove); anIt.More(); anIt.Next())
-        edgeNaborFaces.UnBind(anIt.Value());
-      }
+    }
     if (aC0) {
       TNaming_Builder bC0Edge(Tagger->NewChild());
       bC0Edge.Generated(anEdge1);

@@ -192,8 +192,8 @@ void ReduceVertexTolerance (const TopoDS_Shape& aS)
   Standard_Integer i, aNbV;
   TopTools_IndexedDataMapOfShapeListOfShape aVEMap, aVFMap;
   
-  TopExp::MapShapesAndAncestors(aS, TopAbs_VERTEX, TopAbs_EDGE, aVEMap);
-  TopExp::MapShapesAndAncestors(aS, TopAbs_VERTEX, TopAbs_FACE, aVFMap);
+  TopExp::MapShapesAndUniqueAncestors(aS, TopAbs_VERTEX, TopAbs_EDGE, aVEMap);
+  TopExp::MapShapesAndUniqueAncestors(aS, TopAbs_VERTEX, TopAbs_FACE, aVFMap);
 
   aNbV=aVEMap.Extent();
   for (i=1; i<=aNbV; i++) {
@@ -299,7 +299,6 @@ void ProcessVertex(const TopoDS_Vertex& aV,
   TopAbs_Orientation anOrV;
 
   TopTools_ListIteratorOfListOfShape anIt;
-  TopTools_MapOfShape aProcessedEdges;
   TopExp_Explorer aVExp;
   
   BRep_ListIteratorOfListOfCurveRepresentation itcr;
@@ -313,11 +312,6 @@ void ProcessVertex(const TopoDS_Vertex& aV,
   anIt.Initialize(aLE);
   for (; anIt.More(); anIt.Next()) {
     const TopoDS_Edge& aE=TopoDS::Edge(anIt.Value());
-    //
-    if (aProcessedEdges.Contains(aE)) {
-      continue;
-    }
-    aProcessedEdges.Add(aE);
     //
     Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*)&aE.TShape());
     const TopLoc_Location& Eloc = aE.Location();
@@ -395,15 +389,9 @@ void ProcessVertex(const TopoDS_Vertex& aV,
     return;
   }
   //
-  aProcessedEdges.Clear();
   anIt.Initialize(aLE);
   for (; anIt.More(); anIt.Next()) {
     const TopoDS_Edge& aE=TopoDS::Edge(anIt.Value());
-
-    if (aProcessedEdges.Contains(aE)) {
-      continue;
-    }
-    aProcessedEdges.Add(aE);
 
     aTolE =BRep_Tool::Tolerance(aE);
     if (aTolMax2 < aTolE) {
@@ -411,15 +399,9 @@ void ProcessVertex(const TopoDS_Vertex& aV,
     }
   }
   //
-  aProcessedEdges.Clear();
   anIt.Initialize(aLF);
   for (; anIt.More(); anIt.Next()) {
     const TopoDS_Face& aF=TopoDS::Face(anIt.Value());
-    
-    if (aProcessedEdges.Contains(aF)) {
-      continue;
-    }
-    aProcessedEdges.Add(aF);
     
     aTolE =BRep_Tool::Tolerance(aF);
     if (aTolMax2 < aTolE) {
