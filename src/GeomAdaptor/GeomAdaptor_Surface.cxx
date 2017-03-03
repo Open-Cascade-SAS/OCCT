@@ -353,7 +353,7 @@ Standard_Integer GeomAdaptor_Surface::NbUIntervals(const GeomAbs_Shape S) const
         case GeomAbs_CN: break;
       }
       Handle(Geom_OffsetSurface) myOffSurf = Handle(Geom_OffsetSurface)::DownCast(mySurface);
-      GeomAdaptor_Surface Sur(myOffSurf->BasisSurface());
+      GeomAdaptor_Surface Sur(myOffSurf->BasisSurface(), myUFirst, myULast, myVFirst, myVLast);
       return Sur.NbUIntervals(BaseS);
     }
     case GeomAbs_Plane:
@@ -406,7 +406,7 @@ Standard_Integer GeomAdaptor_Surface::NbVIntervals(const GeomAbs_Shape S) const
         case GeomAbs_CN: break;
       }
       Handle(Geom_OffsetSurface) myOffSurf = Handle(Geom_OffsetSurface)::DownCast(mySurface);
-      GeomAdaptor_Surface Sur(myOffSurf->BasisSurface());
+      GeomAdaptor_Surface Sur(myOffSurf->BasisSurface(), myUFirst, myULast, myVFirst, myVLast);
       return Sur.NbVIntervals(BaseS);
     }
     case GeomAbs_Plane:
@@ -465,7 +465,7 @@ void GeomAdaptor_Surface::UIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
         case GeomAbs_CN: break;
       }
       Handle(Geom_OffsetSurface) myOffSurf = Handle(Geom_OffsetSurface)::DownCast(mySurface);
-      GeomAdaptor_Surface Sur(myOffSurf->BasisSurface());
+      GeomAdaptor_Surface Sur(myOffSurf->BasisSurface(), myUFirst, myULast, myVFirst, myVLast);
       myNbUIntervals = Sur.NbUIntervals(BaseS);
       Sur.UIntervals(T, BaseS);
     }
@@ -528,7 +528,7 @@ void GeomAdaptor_Surface::VIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
         case GeomAbs_CN: break;
       }
       Handle(Geom_OffsetSurface) myOffSurf = Handle(Geom_OffsetSurface)::DownCast(mySurface);
-      GeomAdaptor_Surface Sur(myOffSurf->BasisSurface());
+      GeomAdaptor_Surface Sur(myOffSurf->BasisSurface(), myUFirst, myULast, myVFirst, myVLast);
       myNbVIntervals = Sur.NbVIntervals(BaseS);
       Sur.VIntervals(T, BaseS);
     }
