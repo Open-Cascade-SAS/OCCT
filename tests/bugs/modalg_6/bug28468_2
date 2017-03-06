@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC28468"
+puts "============"
+puts ""
+##############################################################################################
+# Sweep with different sections raises Standard_NoSuchObject: BRep_Tool:: no parameter on edge
+##############################################################################################
+
+beziercurve bc1 3  100 0 0 1  0 100 0 3  -100 0 0 1
+beziercurve bc2 3  -100 0 0 1  0 -100 0 3  100 0 0 1
+mkedge e1 bc1
+mkedge e2 bc2
+wire sp e1 e2
+polyline pr1 110 0 10  90 0 10  90 0 -10  110 0 -10  110 0 10
+circle pr2 -100 0 0  0 1 0  10
+mkedge pr2 pr2
+wire pr2 pr2
+donly sp pr1 pr2
+explode sp v
+
+mksweep sp
+addsweep pr1 sp_1
+addsweep pr2 sp_2
+buildsweep r
+
+checkshape r
+
+checknbshapes r -shell 1 -face 10 -wire 10 -edge 25 -vertex 15
+checkprops r -s 28569.4
