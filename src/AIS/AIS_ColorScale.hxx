@@ -24,6 +24,8 @@
 #include <TCollection_ExtendedString.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 
+class AIS_ColorScale;
+DEFINE_STANDARD_HANDLE(AIS_ColorScale, AIS_InteractiveObject)
 //! Class for drawing a custom color scale.
 //!
 //! The color scale consists of rectangular color bar (composed of fixed
