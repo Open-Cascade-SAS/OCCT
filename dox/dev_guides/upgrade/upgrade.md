@@ -1228,3 +1228,7 @@ The following Grid management methods within class V3d_Viewer do not implicitly 
 * The classes *BOPDS_PassKey* and *BOPDS_PassKeyBoolean* are too excessive and not used any more in Boolean Operations. To replace them the new *BOPDS_Pair* class has been implemented. Thus:
   - The method *BOPDS_DS::Interferences()* now returns the *BOPDS_MapOfPair*;
   - The method *BOPDS_Iterator::Value()* takes now only two parameters - the indices of interfering sub-shapes.
+  
+@subsection upgrade_720_UnifySameDomain_history History changes in ShapeUpgrade_UnifySameDomain algorithm
+
+* The result of Generated and Modified methods in ShapeUpgrade_UnifySameDomain class is now returned list of shape instead only one shape.

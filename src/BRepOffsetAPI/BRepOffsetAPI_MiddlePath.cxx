@@ -258,6 +258,41 @@ BRepOffsetAPI_MiddlePath::BRepOffsetAPI_MiddlePath(const TopoDS_Shape& aShape,
 */
 
 //=======================================================================
+//function : GetUnifiedWire
+//purpose  : 
+//=======================================================================
+static TopoDS_Wire GetUnifiedWire(const TopoDS_Wire& theWire,
+                                   ShapeUpgrade_UnifySameDomain& theUnifier)
+{
+  BRepLib_MakeWire aWMaker;
+  BRepTools_WireExplorer wexp(theWire);
+  TopTools_MapOfShape aGeneratedEdges;
+  for (; wexp.More(); wexp.Next())
+  {
+    TopoDS_Shape anEdge = wexp.Current();
+    const TopTools_ListOfShape& aLSG = theUnifier.Generated(anEdge);
+    // take care of processing the result of Generated() before getting Modified()
+    Standard_Boolean isEmpty = aLSG.IsEmpty();
+    if (!isEmpty) {
+      TopTools_ListIteratorOfListOfShape anIt(aLSG);
+      for (; anIt.More(); anIt.Next()) {
+        const TopoDS_Shape& aShape = anIt.Value();
+        //wire shouldn't contain duplicated generated edges
+        if (aGeneratedEdges.Add(aShape))
+          aWMaker.Add(TopoDS::Edge(aShape));
+      }
+    }
+    const TopTools_ListOfShape& aLSM = theUnifier.Modified(anEdge);
+    if (!aLSM.IsEmpty())
+      aWMaker.Add(aLSM);
+    else if (isEmpty)
+      // no change, put original edge
+      aWMaker.Add(TopoDS::Edge(anEdge));
+  }
+  return aWMaker.Wire();
+}
+
+//=======================================================================
 //function : BRepOffsetAPI_MiddlePath
 //purpose  : Constructor
 //=======================================================================
@@ -287,28 +322,8 @@ BRepOffsetAPI_MiddlePath::BRepOffsetAPI_MiddlePath(const TopoDS_Shape& aShape,
   else
     anEndWire = TopoDS::Wire(EndShape);
 
-  BRepLib_MakeWire MWstart;
-  //TopTools_MapOfShape MapEdges;
-  BRepTools_WireExplorer wexp(aStartWire);
-  for (; wexp.More(); wexp.Next())
-  {
-    TopoDS_Shape anEdge = wexp.Current();
-    TopoDS_Shape NewEdge = Unifier.Generated(anEdge);
-    if (!NewEdge.IsNull())
-      MWstart.Add(TopoDS::Edge(NewEdge));
-  }
-  myStartWire = MWstart.Wire();
-
-  BRepLib_MakeWire MWend;
-  //MapEdges.Clear();
-  for (wexp.Init(anEndWire); wexp.More(); wexp.Next())
-  {
-    TopoDS_Shape anEdge = wexp.Current();
-    TopoDS_Shape NewEdge = Unifier.Generated(anEdge);
-    if (!NewEdge.IsNull())
-      MWend.Add(TopoDS::Edge(NewEdge));
-  }
-  myEndWire = MWend.Wire();
+  myStartWire = GetUnifiedWire(aStartWire, Unifier);
+  myEndWire = GetUnifiedWire(anEndWire, Unifier);
 
   myClosedSection = myStartWire.Closed();
   myClosedRing    = myStartWire.IsSame(myEndWire);

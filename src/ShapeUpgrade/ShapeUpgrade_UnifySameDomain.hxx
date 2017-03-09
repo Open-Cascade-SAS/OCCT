@@ -94,8 +94,21 @@ public:
   //! Gives the resulting shape
   Standard_EXPORT const TopoDS_Shape& Shape() const;
   
-  //! Gets new common shape from the old one
-  Standard_EXPORT TopoDS_Shape Generated (const TopoDS_Shape& aShape) const;
+  //! Returns list of new common shapes from the old one shape.
+  //! After successful common operation based on <aShape> list 
+  //! will contain new generated shape.
+  //! In other cases it will return an empty list
+  Standard_EXPORT const TopTools_ListOfShape& Generated(const TopoDS_Shape& aShape);
+
+  //! Returns list of new modified shapes.
+  //! After successful modifying <aShape> without geometry changes list 
+  //! will contain new modified shape.
+  //! In other cases it will return an empty list
+  Standard_EXPORT const TopTools_ListOfShape& Modified(const TopoDS_Shape& aShape);
+
+  //! Returns true if the <aShape> has been deleted. The
+  //! result shape of the operation does not contain even trace of <aShape>.
+  Standard_EXPORT Standard_Boolean IsDeleted(const TopoDS_Shape& aShape);
   
   //! this method makes if possible a common face from each
   //! group of faces lying on coincident surfaces
@@ -133,7 +146,9 @@ private:
   Standard_Boolean myAllowInternal;
   TopoDS_Shape myShape;
   Handle(ShapeBuild_ReShape) myContext;
-  TopTools_DataMapOfShapeShape myOldShapes;
+  TopTools_DataMapOfShapeShape myOldToGeneratedShapes;
+  TopTools_ListOfShape myHistShapes;
+  TopTools_MapOfShape myRemovedShapes;
   TopTools_MapOfShape myKeepShapes;
 
 

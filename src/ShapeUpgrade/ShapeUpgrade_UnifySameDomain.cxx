@@ -1080,8 +1080,9 @@ static Standard_Boolean MergeSeq (TopTools_SequenceOfShape& SeqEdges,
                                   const Standard_Real Tol,
                                   const Standard_Boolean ConcatBSplines,
                                   Handle(ShapeBuild_ReShape)& theContext,
-                                  TopTools_DataMapOfShapeShape& theOldShapes,
+                                  TopTools_DataMapOfShapeShape& theOldToGeneratedShapes,
                                   const TopTools_MapOfShape& nonMergVert,
+                                  TopTools_MapOfShape& RemovedShapes,
                                   const TopTools_DataMapOfShapeShape& NewEdges2OldEdges)
 { 
   NCollection_Sequence<SubSequenceOfEdges> SeqOfSubsSeqOfEdges;
@@ -1091,15 +1092,27 @@ static Standard_Boolean MergeSeq (TopTools_SequenceOfShape& SeqEdges,
     {
       if (SeqOfSubsSeqOfEdges(i).UnionEdges.IsNull())
         continue;
-      theContext->Replace(SeqOfSubsSeqOfEdges(i).SeqsEdges(1), SeqOfSubsSeqOfEdges(i).UnionEdges);
-      for (Standard_Integer j = 2; j <= SeqOfSubsSeqOfEdges(i).SeqsEdges.Length(); j++)
+      ShapeAnalysis_Edge sae;
+      TopoDS_Vertex VF = sae.FirstVertex(SeqOfSubsSeqOfEdges(i).UnionEdges);
+      TopoDS_Vertex VL = sae.LastVertex(SeqOfSubsSeqOfEdges(i).UnionEdges);
+      for (Standard_Integer j = 1; j <= SeqOfSubsSeqOfEdges(i).SeqsEdges.Length(); j++)
       {
         const TopoDS_Shape& anOldEdge = SeqOfSubsSeqOfEdges(i).SeqsEdges(j);
         const TopoDS_Shape* pOrigEdge = NewEdges2OldEdges.Seek(anOldEdge);
         if (!pOrigEdge)
           pOrigEdge = &anOldEdge;
-        theOldShapes.Bind(*pOrigEdge, SeqOfSubsSeqOfEdges(i).UnionEdges);
-        theContext->Remove(SeqOfSubsSeqOfEdges(i).SeqsEdges(j));
+        theOldToGeneratedShapes.Bind(*pOrigEdge, SeqOfSubsSeqOfEdges(i).UnionEdges);
+        if (j == 1)
+          theContext->Replace(anOldEdge, SeqOfSubsSeqOfEdges(i).UnionEdges);
+        else
+          theContext->Remove(anOldEdge);
+        TopoDS_Vertex V[2];
+        TopExp::Vertices(TopoDS::Edge(anOldEdge), V[0], V[1]);
+        for (int k = 0; k < 2; k++) 
+        {
+          if (!V[k].IsEqual(VF) && !V[k].IsEqual(VL))
+            RemovedShapes.Add(V[k]);
+        }
       }
     }
     return Standard_True;
@@ -1194,8 +1207,9 @@ void ShapeUpgrade_UnifySameDomain::Initialize(const TopoDS_Shape& aShape,
   myConcatBSplines = ConcatBSplines;
 
   myContext->Clear();
-  myOldShapes.Clear();
+  myOldToGeneratedShapes.Clear();
   myKeepShapes.Clear();
+  myRemovedShapes.Clear();
 }
 
 //=======================================================================
@@ -1516,6 +1530,28 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
       Standard_Integer nbWires = 0;
 
       TopoDS_Face tmpF = TopoDS::Face(myContext->Apply(faces(1).Oriented(TopAbs_FORWARD)));
+
+      TopTools_IndexedMapOfShape anOldEdges;
+      for (int j = 1; j <= faces.Length(); j++) {
+        TopExp::MapShapes(faces(j), TopAbs_EDGE, anOldEdges);
+      }
+      TopTools_IndexedMapOfShape aMapEdgesAndVertexes;
+      for (int j = 1; j <= edges.Length(); j++) {
+        TopExp::MapShapes(edges(j), aMapEdgesAndVertexes);
+      }
+      for (int j = 1; j <= anOldEdges.Extent(); j++) {
+        const TopoDS_Edge& anEdge = TopoDS::Edge(anOldEdges(j));
+        if (!aMapEdgesAndVertexes.Contains(anEdge)) {
+          myRemovedShapes.Add(anEdge);
+          TopoDS_Vertex V[2];
+          TopExp::Vertices(anEdge, V[0], V[1]);
+          for (int k = 0; k < 2; k++) {
+            if (!aMapEdgesAndVertexes.Contains(V[k]))
+              myRemovedShapes.Add(V[k]);
+          }
+        }
+      }
+
       // connecting wires
       while (edges.Length()>0) {
 
@@ -1575,6 +1611,7 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
               if(BRep_Tool::Degenerated(E)) {
                 sewd->Remove(j);
                 isDegRemoved = Standard_True;
+                myRemovedShapes.Add(E);
                 j--;
               }
             }
@@ -1752,10 +1789,11 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
       }
 
       // remove the remaining faces
-      for(i = 2; i <= faces.Length(); i++)
+      for(i = 1; i <= faces.Length(); i++)
       { 
-        myOldShapes.Bind(faces(i), theResult);
-        myContext->Remove(faces(i));
+        myOldToGeneratedShapes.Bind(faces(i), theResult);
+        if (i > 1)
+          myContext->Remove(faces(i));
       }
     }
   } // end processing each face
@@ -1837,7 +1875,6 @@ void ShapeUpgrade_UnifySameDomain::UnifyEdges()
   
   TopTools_MapOfShape SharedVert;
 
-  
   TopTools_IndexedMapOfShape anOldEdges;
   TopExp::MapShapes(myInitShape, TopAbs_EDGE, anOldEdges);
 
@@ -1860,7 +1897,8 @@ void ShapeUpgrade_UnifySameDomain::UnifyEdges()
     SharedVert.Clear();
     CheckSharedVertices(SeqEdges, aMapEdgesVertex, myKeepShapes, SharedVert); 
     MergeSeq(SeqEdges, Tol, myConcatBSplines, myContext, 
-             myOldShapes, SharedVert, NewEdges2OldEdges);
+             myOldToGeneratedShapes, SharedVert, 
+             myRemovedShapes, NewEdges2OldEdges);
   }
 
   TopTools_DataMapOfShapeShape oldFaces2NewFaces;
@@ -1921,7 +1959,8 @@ void ShapeUpgrade_UnifySameDomain::UnifyEdges()
       //if (!SharedVert.IsEmpty()) 
       //  continue;
       if ( MergeSeq(SeqEdges, Tol, myConcatBSplines, myContext, 
-                    myOldShapes, SharedVert, NewEdges2OldEdges) )
+                    myOldToGeneratedShapes, SharedVert, 
+                    myRemovedShapes, NewEdges2OldEdges))
       {
         //for history
         /*
@@ -1952,7 +1991,8 @@ void ShapeUpgrade_UnifySameDomain::UnifyEdges()
       SharedVert.Clear();
       CheckSharedVertices(aNonSharedEdges, aMapEdgesVertex, myKeepShapes, SharedVert);
       if ( MergeSeq(aNonSharedEdges, Tol, myConcatBSplines, myContext, 
-                    myOldShapes, SharedVert, NewEdges2OldEdges) )
+                    myOldToGeneratedShapes, SharedVert, 
+                    myRemovedShapes, NewEdges2OldEdges))
       {
         TopoDS_Face tmpF = TopoDS::Face(exp.Current());
         if ( !ChangedFaces.Contains(tmpF) )
@@ -2081,12 +2121,44 @@ const TopoDS_Shape& ShapeUpgrade_UnifySameDomain::Shape() const
 //function : Generated
 //purpose  : returns the new shape from the old one
 //=======================================================================
-TopoDS_Shape ShapeUpgrade_UnifySameDomain::Generated(const TopoDS_Shape& aShape) const
+const TopTools_ListOfShape& ShapeUpgrade_UnifySameDomain::Generated(const TopoDS_Shape& aShape)
 {
-  TopoDS_Shape aNewShape = myContext->Apply(aShape);
+  const TopoDS_Shape* aNewShape;
+  myHistShapes.Clear();
+  aNewShape = myOldToGeneratedShapes.Seek(aShape);
+  if (aNewShape) {
+    if (myContext->IsRecorded(*aNewShape))
+      myHistShapes.Append(myContext->Apply(*aNewShape));
+    else
+      myHistShapes.Append(*aNewShape);
+  }
+  return myHistShapes;
+}
 
-  if (aNewShape.IsNull())
-    aNewShape = myContext->Apply(myOldShapes(aShape));
-  
-  return aNewShape;
+//=======================================================================
+//function : Modified
+//purpose  : returns the new modified shape from the old one shape
+//=======================================================================
+const TopTools_ListOfShape& ShapeUpgrade_UnifySameDomain::Modified(const TopoDS_Shape& aShape)
+{
+  TopoDS_Shape aNewShape;
+  Standard_Integer aModifiedStatus;
+  myHistShapes.Clear();
+  if (!myOldToGeneratedShapes.Seek(aShape) && 
+      !myRemovedShapes.Contains(aShape) &&
+      myContext->IsRecorded(aShape)){
+    aModifiedStatus = myContext->Status(aShape, aNewShape, Standard_True);
+    if (aModifiedStatus > 0)
+      myHistShapes.Append(aNewShape);
+  }
+  return myHistShapes;
+}
+
+//=======================================================================
+//function : IsDeleted
+//purpose  : returns true if the shape has been deleted.
+//=======================================================================
+Standard_Boolean ShapeUpgrade_UnifySameDomain::IsDeleted(const TopoDS_Shape& aShape)
+{
+  return myRemovedShapes.Contains(aShape);
 }

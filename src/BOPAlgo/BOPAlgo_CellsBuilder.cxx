@@ -667,9 +667,18 @@ Standard_Integer BOPAlgo_CellsBuilder::RemoveInternals(const BOPCol_ListOfShape&
     aNb = aMG.Extent();
     for (i = 1; i <= aNb; ++i) {
       const TopoDS_Shape& aSS = aMG(i);
-      const TopoDS_Shape& aSGen = anUnify.Generated(aSS);
-      if (!aSGen.IsNull() && !aSS.IsSame(aSGen)) {
-        myMapGenerated.Bind(aSS, aSGen);
+      const TopTools_ListOfShape& aLSGen = anUnify.Generated(aSS);
+      TopTools_ListIteratorOfListOfShape aIt(aLSGen);
+      for (; aIt.More(); aIt.Next()) {
+        const TopoDS_Shape& aShape = aIt.Value();
+        if (!aShape.IsNull() && !aSS.IsSame(aShape))
+          myMapGenerated.Bind(aSS, aShape);
+      }
+      const TopTools_ListOfShape& aLSMod = anUnify.Modified(aSS);
+      for (aIt.Init(aLSMod); aIt.More(); aIt.Next()) {
+        const TopoDS_Shape& aShape = aIt.Value();
+        if (!aShape.IsNull() && !aSS.IsSame(aShape))
+          myMapGenerated.Bind(aSS, aShape);
       }
     }
   }
