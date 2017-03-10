@@ -179,6 +179,8 @@ AIS_Triangulation.hxx
 AIS_Trihedron.cxx
 AIS_Trihedron.hxx
 AIS_Trihedron.lxx
+AIS_TrihedronOwner.cxx
+AIS_TrihedronOwner.hxx
 AIS_TypeFilter.cxx
 AIS_TypeFilter.hxx
 AIS_TypeOfAngle.hxx

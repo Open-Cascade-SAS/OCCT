@@ -31,20 +31,38 @@
 //purpose  : 
 //=======================================================================
 void Prs3d_Arrow::Draw(const Handle(Graphic3d_Group)& theGroup,
-                       const gp_Pnt& aLocation,
-                       const gp_Dir& aDirection,
-                       const Quantity_PlaneAngle anAngle,
-                       const Quantity_Length aLength)
+                       const gp_Pnt& theLocation,
+                       const gp_Dir& theDirection,
+                       const Quantity_PlaneAngle theAngle,
+                       const Quantity_Length theLength)
 {
-  Quantity_Length dx,dy,dz;  aDirection.Coord(dx,dy,dz);
+  Handle(Graphic3d_ArrayOfSegments) aPrimitives = Prs3d_Arrow::DrawSegments(theLocation,
+                                                  theDirection, theAngle, theLength, 15);
+  theGroup->AddPrimitiveArray (aPrimitives);
+}
+
+//=======================================================================
+//function : DrawSegments
+//purpose  : 
+//=======================================================================
+Handle(Graphic3d_ArrayOfSegments) Prs3d_Arrow::DrawSegments (const gp_Pnt& theLocation,
+                                                             const gp_Dir& theDirection,
+                                                             const Quantity_PlaneAngle theAngle,
+                                                             const Quantity_Length theLength,
+                                                             const int theNumberOfSegments)
+{
+  Handle(Graphic3d_ArrayOfSegments) aSegments = new Graphic3d_ArrayOfSegments(theNumberOfSegments+1,
+                                                                              2*(2*theNumberOfSegments));
+
+  Quantity_Length dx,dy,dz;  theDirection.Coord(dx,dy,dz);
 //
 // Point of the arrow:
-  Quantity_Length xo,yo,zo;  aLocation.Coord(xo,yo,zo);
+  Quantity_Length xo,yo,zo;  theLocation.Coord(xo,yo,zo);
 
 // Center of the base circle of the arrow:
-  Quantity_Length xc = xo - dx * aLength;
-  Quantity_Length yc = yo - dy * aLength;
-  Quantity_Length zc = zo - dz * aLength;
+  Quantity_Length xc = xo - dx * theLength;
+  Quantity_Length yc = yo - dy * theLength;
+  Quantity_Length zc = zo - dz * theLength;
 
 // Construction of i,j mark for the circle:
   Quantity_Length xn=0., yn=0., zn=0.;
@@ -63,32 +81,43 @@ void Prs3d_Arrow::Draw(const Handle(Graphic3d_Group)& theGroup,
   const Quantity_Length  yj = dz * xi - dx * zi;
   const Quantity_Length  zj = dx * yi - dy * xi;
 
-  const Standard_Integer NbPoints = 15;
+  const Standard_Integer NbPoints = theNumberOfSegments;
 
-  Handle(Graphic3d_ArrayOfSegments) aPrims1 = new Graphic3d_ArrayOfSegments(2*NbPoints);
-  Handle(Graphic3d_ArrayOfPolylines) aPrims2 = new Graphic3d_ArrayOfPolylines(NbPoints+1);
+  aSegments->AddVertex(theLocation);
 
   gp_Pnt p1;
-  const Standard_Real Tg=tan(anAngle);
+  const Standard_Real Tg=tan(theAngle);
 
   for (Standard_Integer i = 1; i <= NbPoints ; i++)
   {
-    const Standard_Real cosinus = cos ( 2 * M_PI / NbPoints * (i-1) );   
+    const Standard_Real cosinus = cos ( 2 * M_PI / NbPoints * (i-1) );
     const Standard_Real sinus   = sin ( 2 * M_PI / NbPoints * (i-1) );
 
-    const gp_Pnt pp(xc + (cosinus * xi + sinus * xj) * aLength * Tg,
-                    yc + (cosinus * yi + sinus * yj) * aLength * Tg,
-                    zc + (cosinus * zi + sinus * zj) * aLength * Tg);
+    const gp_Pnt pp(xc + (cosinus * xi + sinus * xj) * theLength * Tg,
+                    yc + (cosinus * yi + sinus * yj) * theLength * Tg,
+                    zc + (cosinus * zi + sinus * zj) * theLength * Tg);
 
-    aPrims1->AddVertex(aLocation);
-    aPrims1->AddVertex(pp);
-    if(i==1) p1 = pp;
-    aPrims2->AddVertex(pp);
+    aSegments->AddVertex(pp);
   }
-  aPrims2->AddVertex(p1);
 
-  theGroup->AddPrimitiveArray (aPrims1);
-  theGroup->AddPrimitiveArray (aPrims2);
+  int aNbVertices = NbPoints + 1;
+  int aFirstContourVertex = 2;
+  int anEdgeCount = 0;
+  for (Standard_Integer i = aFirstContourVertex; i <= aNbVertices ; i++) {
+    aSegments->AddEdge(1); // location vertex
+    aSegments->AddEdge(i);
+    anEdgeCount++;
+  }
+  aSegments->AddEdge(aNbVertices);
+  aSegments->AddEdge(aFirstContourVertex);
+  anEdgeCount++;
+
+  for (Standard_Integer i = aFirstContourVertex; i <= aNbVertices-1 ; i++) {
+    aSegments->AddEdge(i);
+    aSegments->AddEdge(i+1);
+    anEdgeCount++;
+  }
+  return aSegments;
 }
 
 // ============================================================================

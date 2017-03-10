@@ -85,7 +85,7 @@ static int VTrihedronOrigins(Draw_Interpretor& di,
   }
 
   //get axis
-  Handle(AIS_Axis) XAxis = aTrih->XAxis();
+  /*Handle(AIS_Axis) XAxis = aTrih->XAxis();
   Handle(AIS_Axis) YAxis = aTrih->YAxis();
   Handle(AIS_Axis) ZAxis = aTrih->Axis();
 
@@ -110,7 +110,7 @@ static int VTrihedronOrigins(Draw_Interpretor& di,
   TheAISContext()->Display(XLine);
   TheAISContext()->Display(YLine);
   TheAISContext()->Display(ZLine);
-
+  */
   return 0;
 }
 

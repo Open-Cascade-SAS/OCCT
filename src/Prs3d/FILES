@@ -8,6 +8,10 @@ Prs3d_BasicAspect.cxx
 Prs3d_BasicAspect.hxx
 Prs3d_DatumAspect.cxx
 Prs3d_DatumAspect.hxx
+Prs3d_DatumAttribute.hxx
+Prs3d_DatumAxes.hxx
+Prs3d_DatumMode.hxx
+Prs3d_DatumParts.hxx
 Prs3d_DimensionArrowOrientation.hxx
 Prs3d_DimensionAspect.cxx
 Prs3d_DimensionAspect.hxx
