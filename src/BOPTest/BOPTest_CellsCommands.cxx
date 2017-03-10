@@ -137,7 +137,7 @@ Standard_Integer bcbuild(Draw_Interpretor& di,
 //purpose  : 
 //=======================================================================
 Standard_Integer bcaddall(Draw_Interpretor& di,
-                          Standard_Integer n, 
+                          Standard_Integer n,
                           const char** a)
 {
   if (n < 2 || n > 5) {
@@ -161,6 +161,10 @@ Standard_Integer bcaddall(Draw_Interpretor& di,
   BOPAlgo_CellsBuilder& aCBuilder = BOPTest_Objects::CellsBuilder();
   //
   aCBuilder.AddAllToResult(iMaterial, bUpdate);
+  //
+  Standard_SStream aSStream;
+  aCBuilder.DumpWarnings(aSStream);
+  di << aSStream;
   //
   const TopoDS_Shape& aR = aCBuilder.Shape();
   //
@@ -243,6 +247,10 @@ Standard_Integer bcadd(Draw_Interpretor& di,
   BOPAlgo_CellsBuilder& aCBuilder = BOPTest_Objects::CellsBuilder();
   aCBuilder.AddToResult(aLSToTake, aLSToAvoid, iMaterial, bUpdate);
   //
+  Standard_SStream aSStream;
+  aCBuilder.DumpWarnings(aSStream);
+  di << aSStream;
+  //
   const TopoDS_Shape& aR = aCBuilder.Shape();
   //
   DBRep::Set(a[1], aR);
@@ -310,6 +318,10 @@ Standard_Integer bcremoveint(Draw_Interpretor& di,
   //
   BOPAlgo_CellsBuilder& aCBuilder = BOPTest_Objects::CellsBuilder();
   aCBuilder.RemoveInternalBoundaries();
+  //
+  Standard_SStream aSStream;
+  aCBuilder.DumpWarnings(aSStream);
+  di << aSStream;
   //
   const TopoDS_Shape& aR = aCBuilder.Shape();
   //

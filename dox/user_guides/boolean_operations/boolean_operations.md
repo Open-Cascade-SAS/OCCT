@@ -2099,7 +2099,216 @@ Creating compartments on a ship defined by hull shell and a set of planes. The s
 </tr>
 </table>
 
-@section occt_algorithms_10	Algorithm Limitations 
+@section occt_algorithms_10c_Cells Cells Builder algorithm
+
+The Cells Builder algorithm has been designed as an extension of the General Fuse algorithm. The result of General Fuse algorithm is all split parts of the arguments. The Cells Builder algorithm provides means to specify uniquely any split part of the arguments, which are called Cells, to be taken or avoided in the result.
+The possibility of selecting any Cell allows combining any possible result and gives the Cells Builder algorithm a very wide application - from building the result of any Boolean operation to building the result of any application-specific operation.
+The algorithm builds the Cells only once, and then just reuses these Cells for combining the result. This gives the algorithm the performance advantage over the Booleans which are always rebuilding the splits to obtain the desirable result.
+Thus, the Cells Builder algorithm can be especially useful for simulating Boolean expressions - sequence of Boolean operations on the same arguments. Instead of performing many Boolean operations it allows getting the final result in a single operation.
+Usage of the Cells Builder will also be beneficial if you need to obtain a few results of different Boolean operations on the same arguments - Cut and Common for example.
+
+The Cells Builder algorithm also provides the possibility to remove any internal boundaries between splits of the same type, i.e. fuse any same-dimensional parts added into result and keep any other separate.
+It is implemented through the Cells material approach - to remove boundary between two Cells, both of these Cells should be assigned with the same material ID.
+But, if the same material ID has been assigned to the Cells of different dimension, the removal of the internal boundaries for that material will not be performed. Currently, such case is considered as limitation for the algorithm.
+
+The algorithm can also create containers from the connected Cells added into result - WIRES from Edges, SHELLS from Faces and COMPSOLIDS from Solids.
+
+@subsection occt_algorithms_10c_Cells_1 Usage
+
+The algorithm has been implemented in the *BOPAlgo_CellsBuilder* class.
+
+Cells Builder is a General Fuse based algorithm. Thus all the options of the General Fuse algorithm, such as parallel processing mode, fuzzy mode, safe processing mode, gluing mode and history support are also available in this algorithm.
+
+The requirements for the input shapes are the same as for General Fuse - each argument should be valid in terms of *BRepCheck_Analyzer* and *BOPAlgo_ArgumentAnalyzer*.
+
+The result of the algorithm is compound containing selected parts of the basic type (VERTEX, EDGE, FACE or SOLID). The default result is an empty compound.
+It is possible to add any Cell by using the methods AddToRessult() and AddAllToResult(). It is also possible to remove any part from the result by using methods RemoveFromResult() and RemoveAllFromResult(). The method RemoveAllFromResult() is also suitable for clearing the result.
+
+Definition of the Cells that should be added/removed to/from the result is performed by the definition of the input shapes from which the parts should be taken (ShapesToTake) and shapes which parts should be avoided (ShapesToAvoid).
+To be taken into result the part must be IN for all shapes from ShapesToTake and must be OUT of all shapes from ShapesToAvoid.
+
+To remove Internal boundaries it is necessary to set the same material to the Cells between which the boundaries should be removed and call the method RemoveInternalBoundaries().
+The material should not be equal to 0, as this is default material ID. The boundaries between Cells with this material ID will not be removed. The same Cell cannot be added with the different materials.
+It is also possible to remove the boundaries during combining the result. To do this it is necessary to set the material for parts (not equal to 0) and set the flag bUpdate to TRUE.
+If the same material ID has been set for the parts of different dimension, the removal of internal boundaries for this material will not be performed.
+
+It is possible to create typed Containers from the parts added into result by using method MakeContainers(). The type of the containers will depend on the type of the input shapes: WIRES for EDGE, SHELLS for FACES and COMPSOLIDS for SOLIDS. The result will be compound containing containers.
+
+#### API usage
+Here is the example of the usage of the algorithm on the API level:
+~~~~
+BOPAlgo_CellsBuilder aCBuilder;
+BOPCol_ListOfShape aLS = …; // arguments
+Standard_Boolean bRunParallel = Standard_False; /* parallel or single mode (the default value is FALSE)*/
+Standard_Real aTol = 0.0; /* fuzzy option (default value is 0)*/
+Standard_Boolean bSafeMode = Standard_False; /* protect or not the arguments from modification*/
+BOPAlgo_Glue aGlue = BOPAlgo_GlueOff; /* Glue option to speed up intersection of the arguments*/
+//
+aCBuilder.SetArguments(aLS);
+aCBuilder.SetRunParallel(bRunParallel);
+aCBuilder.SetFuzzyValue(aTol);
+aCBuilder.SetNonDestructive(bSafeMode);
+aCBuilder.SetGlue(aGlue);
+//
+aCBuilder.Perform(); // build splits of all arguments (GF)
+if (aCBuilder.ErrorStatus()) { // check error status
+  return;
+}
+//
+// collecting of the cells into result
+const TopoDS_Shape& anEmptyRes = aCBuilder.Shape(); // empty result, as nothing has been added yet 
+const TopoDS_Shape& anAllCells = aCBuilder.GetAllParts(); //all split parts 
+//
+BOPCol_ListOfShape aLSToTake = ...; // parts of these arguments will be taken into result
+BOPCol_ListOfShape aLSToAvoid = ...; // parts of these arguments will not be taken into result
+//
+Standard_Integer iMaterial = 1; // defines the material for the cells
+Standard_Boolean bUpdate = Standard_False; // defines whether to update the result right now or not
+// adding to result
+aCBuilder.AddToResult(aLSToTake, aLSToAvoid, iMaterial, bUpdate);
+aCBuilder.RemoveInternalBoundaries(); // removing of the boundaries
+TopoDS_Shape aResult = aCBuilder.Shape(); // the result
+// removing from result
+aCBuilder.AddAllToResult();
+aCBuilder.RemoveFromResult(aLSToTake, aLSToAvoid);
+aResult = aCBuilder.Shape(); // the result
+~~~~
+
+#### DRAW usage
+
+The following set of new commands has been implemented to run the algorithm in DRAW Test Harness:
+~~~~
+bcbuild          : Initialization of the Cells Builder. Use: bcbuild r
+bcadd            : Add parts to result. Use: bcadd r s1 (0,1) s2 (0,1) ... [-m material [-u]]
+bcaddall         : Add all parts to result. Use: bcaddall r [-m material [-u]]
+bcremove         : Remove parts from result. Use: bcremove r s1 (0,1) s2 (0,1) ...
+bcremoveall      : Remove all parts from result. Use: bcremoveall
+bcremoveint      : Remove internal boundaries. Use: bcremoveint r
+bcmakecontainers : Make containers from the parts added to result. Use: bcmakecontainers r
+~~~~
+
+Here is the example of the usage of the algorithm on the DRAW level:
+~~~~
+psphere s1 15
+psphere s2 15
+psphere s3 15
+ttranslate s1 0 0 10
+ttranslate s2 20 0 10
+ttranslate s3 10 0 0 
+bclearobjects; bcleartools
+baddobjects s1 s2 s3
+bfillds
+# rx will contain all split parts
+bcbuild rx 
+# add to result the part that is common for all three spheres
+bcadd res s1 1 s2 1 s3 1 -m 1
+# add to result the part that is common only for first and third spheres
+bcadd res s1 1 s2 0 s3 1 -m 1
+# remove internal boundaries
+bcremoveint res
+~~~~
+
+@subsection occt_algorithms_10c_Cells_2 Examples
+
+The following simple example illustrates the possibilities of the algorithm - cylinder and a sphere intersected by a plane:
+~~~~
+pcylinder c 10 30 
+psphere s 15
+ttranslate s 0 0 30
+plane p 0 0 20 1 0 0
+mkface f p -25 30 -17 17
+~~~~
+
+@figure{/user_guides/boolean_operations/images/cells_algorithm_001.png, "Arguments"} 
+
+~~~~
+bclearobjects
+bcleartools
+baddobjects c s f
+bfillds
+bcbuild r
+~~~~
+
+#### 1. Common for all arguments
+
+~~~~
+bcremoveall
+bcadd res c 1 s 1 f 1
+~~~~
+
+@figure{/user_guides/boolean_operations/images/cells_algorithm_002.png, "The result of COMMON operation"} 
+
+#### 2. Common between cylinder and face
+
+~~~~
+bcremoveall
+bcadd res f 1 c 1
+~~~~
+
+@figure{/user_guides/boolean_operations/images/cells_algorithm_003.png, "The result of COMMON operation between cylinder and face"} 
+
+#### 3. Common between cylinder and sphere
+
+~~~~
+bcremoveall
+bcadd res c 1 s 1
+~~~~
+
+@figure{/user_guides/boolean_operations/images/cells_algorithm_004.png, "The result of COMMON operation between cylinder and sphere"} 
+
+#### 4. Fuse of cylinder and sphere
+
+~~~~
+bcremoveall
+bcadd res c 1 -m 1
+bcadd res s 1 -m 1
+bcremoveint res
+~~~~
+
+@figure{/user_guides/boolean_operations/images/cells_algorithm_005.png, "The result of FUSE operation between cylinder and sphere"} 
+
+#### 5. Parts of the face inside solids - FUSE(COMMON(f, c), COMMON(f, s))
+
+~~~~
+bcremoveall
+bcadd res f 1 s 1 -m 1
+bcadd res f 1 c 1 -m 1
+~~~~
+
+@figure{/user_guides/boolean_operations/images/cells_algorithm_006_1.png, "Parts of the face inside solids"} 
+
+~~~~
+bcremoveint res
+~~~~
+
+@figure{/user_guides/boolean_operations/images/cells_algorithm_006_2.png, "Unified parts of the face inside solids"} 
+
+#### 6. Part of the face outside solids
+
+~~~~
+bcremoveall
+bcadd res f 1 c 0 s 0
+~~~~
+
+@figure{/user_guides/boolean_operations/images/cells_algorithm_007.png, "Part of the face outside solids"} 
+
+#### 7. Fuse operation (impossible using standard Boolean Fuse operation)
+
+~~~~
+bcremoveall
+bcadd res c 1 -m 1
+bcadd res s 1 -m 1
+bcadd res f 1 c 0 s 0
+bcremoveint res
+~~~~
+
+@figure{/user_guides/boolean_operations/images/cells_algorithm_008.png, "Fuse operation"} 
+
+
+These examples may last forever. To define any new operation, it is just necessary to define which Cells should be taken and which should be avoided.
+
+
+@section occt_algorithms_10	Algorithms Limitations 
 
 The chapter describes the problems that are considered as Algorithm limitations. In most cases an Algorithm failure is caused by a combination of various factors, such as self-interfered arguments, inappropriate or ungrounded values of the argument tolerances, adverse mutual position of the arguments, tangency, etc.
 
@@ -2396,7 +2605,7 @@ This example stresses not only the validity, but also the performance issue. The
 
 @subsection occt_algorithms_11a_2 Gluing Operation
 
-The Gluing operation is the option of the Basic Operations, such as General Fuse, Partition, Boolean, Section, Maker Volume operations.
+The Gluing operation is the option of the Basic Operations, such as General Fuse, Partition, Boolean, Section, Maker Volume and Cells building operations.
 It has been designed to speed up the computation of the interferences among arguments of the operations on special cases, in which the arguments may be overlapping but do not have real intersections between their sub-shapes.
 
 This option cannot be used on the shapes having real intersections, like intersection vertex between edges, or intersection vertex between edge and a face or intersection line between faces:
@@ -2460,14 +2669,14 @@ Performance improvement in this case is also about 70 percent.
 
 @subsection occt_algorithms_11a_3 Safe processing mode
 
-The safe processing mode is the advanced option in Boolean Operation component. This mode can be applied to all Basic operations such as General Fuse, Partition, Boolean, Section, Maker Volume.
+The safe processing mode is the advanced option in Boolean Operation component. This mode can be applied to all Basic operations such as General Fuse, Partition, Boolean, Section, Maker Volume, Cells building.
 This option allows keeping the input arguments untouched. In other words, switching this option on prevents the input arguments from any modification such as tolerance increase, addition of the P-Curves on edges etc.
 
 The option might be very useful for implementation of the Undo/Redo mechanism in the applications and allows performing the operation many times without changing the inputs.
 
 By default the safe processing option is switched off for the algorithms. Enabling this option might slightly decrease the performance of the operation, because instead of the modification of some entitiy it will be necessary to create the copy of this entitiy and modify it. But this degradation should be very small because the copying is performed only in case of necessity.
 
-The option is also availible in the Intersection algorithm - *BOPAlgo_PaveFiller*. Thus, if it is necessary to perform several different operations on the same arguemnts, it is possible to enable the safe processing mode in PaveFiller and prepare it only once and then use it in operations. It is enough to set the option to PaveFiller only and all algorithms taking this PaveFiller will also work in safe mode.
+The option is also available in the Intersection algorithm - *BOPAlgo_PaveFiller*. Thus, if it is necessary to perform several different operations on the same arguments, it is possible to enable the safe processing mode in PaveFiller and prepare it only once and then use it in operations. It is enough to set the option to PaveFiller only and all algorithms taking this PaveFiller will also work in safe mode.
 
 @subsubsection occt_algorithms_11a_3_1 Usage
 

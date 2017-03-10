@@ -1,0 +1,50 @@
+puts "========"
+puts "OCC28528"
+puts "========"
+puts ""
+#######################################################################
+# Make the CellsBuilder algorithm to work with multi-dimensional arguments
+#######################################################################
+
+puts "Arguments: face and an edge"
+
+cylinder c 0 0 0 0 0 1 10
+mkface f c 0 2*pi -20 20
+viso l c 0
+mkedge e l
+
+bclearobjects
+bcleartools
+baddobjects f e
+bfillds
+bcbuild r
+
+puts "Results"
+
+puts "All split shapes"
+bcaddall result
+checknbshapes result -face 2 -m "Number of FACEs in the result containing all splits"
+checknbshapes result -edge 5 -m "Number of EDGEs in the result containing all splits"
+checkprops result -s 2513.27 -l 394.159
+
+puts "Cut face from edge"
+bcremoveall
+bcadd result e 1 f 0
+checknbshapes result -edge 0 -m "Number of EDGEs in the result of CUT(e, f) operation"
+
+puts "Cut edge from face"
+bcremoveall
+bcadd result f 1 e 0
+checknbshapes result -face 2 -m "Number of FACE in the result of CUT(f, e) operation"
+
+puts "Common between face and edge"
+bcremoveall
+bcadd result f 1 e 1
+checknbshapes result -edge 1 -m "Number of EDGEs in the result of COMMON(f, e) operation"
+
+puts "Fuse operation between face and edge"
+bcremoveall
+bcadd result f 1
+bcadd result e 1 s 0
+checknbshapes result -face 2 -m "Number of FACEs in the result of FUSE(f, e) operation"
+checknbshapes result -edge 5 -m "Number of EDGEs in the result of FUSE(f, e) operation"
