@@ -1826,8 +1826,8 @@ Standard_Boolean IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsop
               ChoixIso = myIntersectionOn2S.Perform(Param, Rsnld, theChoixIso);
 
               if(myIntersectionOn2S.IsEmpty()) { 
-                bStop = !myIntersectionOn2S.IsTangent();
-                bOutOfTangentZone = !myIntersectionOn2S.IsTangent();
+                bStop = Standard_True;// !myIntersectionOn2S.IsTangent();
+                bOutOfTangentZone = Standard_False; // !myIntersectionOn2S.IsTangent();
               }
               else {
                 Standard_Boolean bAddPoint = Standard_True;
