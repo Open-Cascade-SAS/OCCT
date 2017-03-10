@@ -79,7 +79,7 @@ public:
   }
 
   //! Returns primitives.
-  Handle(Graphic3d_ArrayOfPrimitives) ArrayOfPrimitives(const Prs3d_DatumParts& thePart) const;
+  Standard_EXPORT Handle(Graphic3d_ArrayOfPrimitives) ArrayOfPrimitives(const Prs3d_DatumParts& thePart) const;
 
   //! Updates graphic groups for the current datum mode
   //! Parameters of datum position and orientation
