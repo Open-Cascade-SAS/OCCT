@@ -501,6 +501,7 @@ help checkprops {
     -s AREA: command sprops, computes the mass properties of all faces with a surface density of 1 
     -v VOLUME: command vprops, computes the mass properties of all solids with a density of 1
     -eps EPSILON: the epsilon defines relative precision of computation
+    -deps DEPSILON: the epsilon defines relative precision to compare corresponding values
     -equal SHAPE: compare area\volume\length of input shapes. Puts error if its are not equal
     -notequal SHAPE: compare area\volume\length of input shapes. Puts error if its are equal
     -skip: count shared shapes only once, skipping repeatitions
@@ -524,11 +525,13 @@ proc checkprops {shape args} {
     set compared_notequal_shape -1
     set equal_check 0
     set skip 0
+    set depsilon 1e-2
 
     set options {{"-eps" epsilon 1}
                  {"-equal" compared_equal_shape 1}
                  {"-notequal" compared_notequal_shape 1}
-                 {"-skip" skip 0}}
+                 {"-skip" skip 0}
+                 {"-deps" depsilon 1}}
 
     if { [regexp {\-[not]*equal} $args] } {
         lappend options {"-s" area 0}
@@ -593,7 +596,7 @@ proc checkprops {shape args} {
                     puts "The expected $prop is $mass"
                 }
                 #check of change of area is < 1%
-                if { ($mass != 0 && [expr 1.*abs($mass - $m)/$mass] > 0.01) || ($mass == 0 && $m != 0) } {
+                if { ($mass != 0 && [expr 1.*abs($mass - $m)/$mass] > $depsilon) || ($mass == 0 && $m != 0) } {
                     puts "Error : The $prop of result shape is $m"
                 }
             } else {

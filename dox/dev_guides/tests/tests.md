@@ -1307,6 +1307,7 @@ Allowed options are:
  * <i>-s AREA</i> -- command *sprops*, computes the mass properties of all faces with a surface density of 1; 
  * <i>-v VOLUME</i> -- command *vprops*, computes the mass properties of all solids with a density of 1;
  * <i>-eps EPSILON</i> -- the epsilon defines relative precision of computation;
+ * <i>-deps DEPSILON</i> -- the epsilon defines relative precision to compare corresponding values;
  * <i>-equal SHAPE</i> -- compares area, volume and length of input shapes. Puts error if they are not equal;
  * <i>-notequal SHAPE</i> -- compares area, volume and length of input shapes. Puts error if they are equal.
 
