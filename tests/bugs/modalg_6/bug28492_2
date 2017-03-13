@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC28492"
+puts "========"
+puts ""
+##########################################
+## Boolean common does not produce expected result
+##########################################
+
+restore [locate_data_file bug28492_case2.brep] a
+explode a
+bcommon result a_1 a_2
+
+checknbshapes result -wire 1 -face 1 -t
+checkprops result -s 77.8077
+checkshape result
+
+if {! [regexp "to be valid for BOP" [bopargcheck result] ] } {
+  puts "Error: bopargcheck failed"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

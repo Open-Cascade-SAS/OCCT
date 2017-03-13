@@ -1,10 +1,8 @@
-puts "TODO #22911 ALL: Error : The area of result shape is"
-
 restore [locate_data_file a350] a
 restore [locate_data_file b350] b
 
 bop a b
 bopfuse result
 
-checkprops result -s 0
+checkprops result -s 120.576
 checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

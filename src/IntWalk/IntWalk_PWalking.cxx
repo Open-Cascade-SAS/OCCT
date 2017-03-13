@@ -721,7 +721,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 
   AddAPoint(line,previousPoint);
   //
-  IntWalk_StatusDeflection Status = IntWalk_OK;
+  IntWalk_StatusDeflection Status = IntWalk_OK, aPrevStatus = IntWalk_OK;
   Standard_Boolean NoTestDeflection = Standard_False;
   Standard_Real SvParam[4], f;
   Standard_Integer LevelOfEmptyInmyIntersectionOn2S=0;
@@ -736,6 +736,8 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
   Arrive = Standard_False;
   while(!Arrive) //010
   {
+    aPrevStatus = Status;
+
     LevelOfIterWithoutAppend++;
     if(LevelOfIterWithoutAppend>20)
     {
@@ -1126,7 +1128,13 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
               Param(3)=SvParam[2];
               Param(4)=SvParam[3];
 
-              LevelOfIterWithoutAppend = 0;
+              // In order to avoid cyclic changes
+              // (PasTropGrand --> Decrease step --> 
+              // StepTooSmall --> Increase step --> PasTropGrand...)
+              // nullify LevelOfIterWithoutAppend only if the condition
+              // is satisfied:
+              if (aPrevStatus != IntWalk_PasTropGrand)
+                LevelOfIterWithoutAppend = 0;
 
               break;
             }
@@ -2952,7 +2960,7 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection(const IntImp_ConstIso
     SquareDistance(CurrentPoint.Value());
 
 
-  if (aSqDist < tolconf*tolconf) { 
+  if (aSqDist < Precision::SquareConfusion()) { 
     pasInit[0] = Max(pasInit[0], 5.0*ResoU1);
     pasInit[1] = Max(pasInit[1], 5.0*ResoV1);
     pasInit[2] = Max(pasInit[2], 5.0*ResoU2);
