@@ -20,6 +20,7 @@
 //            OCC_VERSION_MAJOR       : (integer) number identifying major version 
 //            OCC_VERSION_MINOR       : (integer) number identifying minor version 
 //            OCC_VERSION_MAINTENANCE : (integer) number identifying maintenance version 
+//            OCC_VERSION_SERVICEPACK : (integer) if defined, indicates development or modified version
 //            OCC_VERSION_DEVELOPMENT : (string)  if defined, indicates development or modified version
 //            OCC_VERSION             : (real)    complete number (major.minor)
 //            OCC_VERSION_STRING      : (string)  short version number ("major.minor")
@@ -36,6 +37,7 @@
 #define OCC_VERSION_MAJOR         7
 #define OCC_VERSION_MINOR         1
 #define OCC_VERSION_MAINTENANCE   0
+#define OCC_VERSION_SERVICEPACK   1
 
 //! This macro must be commented in official release, and set to non-empty 
 //! string in other situations, to identify specifics of the version, e.g.:
