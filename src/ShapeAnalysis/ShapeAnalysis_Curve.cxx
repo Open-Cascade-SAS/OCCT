@@ -637,7 +637,8 @@ static Standard_Integer SearchForExtremum (const Handle(Geom2d_Curve)& C2d,
 					   gp_Pnt2d &res)
 {
   Standard_Real prevpar;
-  for ( Standard_Integer i=0; i <10; i++ ) {
+  Standard_Integer nbOut = 0;
+  for (Standard_Integer i = 0; i <10; i++) {
     prevpar = par;
       
     gp_Vec2d D1, D2;
@@ -647,9 +648,19 @@ static Standard_Integer SearchForExtremum (const Handle(Geom2d_Curve)& C2d,
     
     par -= ( D1 * dir ) / Det;
     if ( Abs ( par - prevpar ) < Precision::PConfusion() ) return Standard_True;
-    
-    if ( First - par >= Precision::PConfusion() || 
-	 par - Last  >= Precision::PConfusion() ) return Standard_False;
+
+    if (par < First)
+    {
+      if (nbOut++ > 2 || prevpar == First)
+        return Standard_False;
+      par = First;
+    }
+    if (par > Last)
+    {
+      if (nbOut++ > 2 || prevpar == Last)
+        return Standard_False;
+      par = Last;
+    }
   }
   return Standard_True;
 }
@@ -661,24 +672,46 @@ void ShapeAnalysis_Curve::FillBndBox (const Handle(Geom2d_Curve)& C2d,
 				      const Standard_Boolean Exact,
 				      Bnd_Box2d &Box) const
 {
-  Standard_Integer nseg = ( NPoints <2 ? 1 : NPoints-1 );
-  Standard_Real step = ( Last - First ) / nseg;
-  for ( Standard_Integer i=0; i <= nseg; i++ ) {
-    Standard_Real par = First + i * step;
-    gp_Pnt2d pnt = C2d->Value ( par );
-    Box.Add ( pnt );
-    if ( ! Exact ) continue;
-    
-    gp_Pnt2d pextr;
-    Standard_Real parextr = par;
-    if ( SearchForExtremum ( C2d, Max(First,par-2.*step), Min(Last,par+2.*step),
-			     gp_Vec2d(1,0), parextr, pextr ) ) {
-      Box.Add ( pextr );
+  if (!Exact) {
+    Standard_Integer nseg = (NPoints < 2 ? 1 : NPoints - 1);
+    Standard_Real step = (Last - First) / nseg;
+    for (Standard_Integer i = 0; i <= nseg; i++) {
+      Standard_Real par = First + i * step;
+      gp_Pnt2d pnt = C2d->Value(par);
+      Box.Add(pnt);
     }
-    parextr = par;
-    if ( SearchForExtremum ( C2d, Max(First,par-2.*step), Min(Last,par+2.*step),
-			     gp_Vec2d(0,1), parextr, pextr ) ) {
-      Box.Add ( pextr );
+    return;
+  }
+
+  // We should solve the task on intervals of C2 continuity.
+  Geom2dAdaptor_Curve anAC(C2d, First, Last);
+  Standard_Integer nbInt = anAC.NbIntervals(GeomAbs_C2);
+  // If we have only 1 interval then use input NPoints parameter to get samples.
+  Standard_Integer nbSamples = (nbInt < 2 ? NPoints - 1 : nbInt);
+  TColStd_Array1OfReal aParams(1, nbSamples + 1);
+  if (nbSamples == nbInt)
+    anAC.Intervals(aParams, GeomAbs_C2);
+  else {
+    Standard_Real step = (Last - First) / nbSamples;
+    for (Standard_Integer i = 0; i <= nbSamples; i++)
+      aParams(i+1) = First + i * step;
+  }
+  for (Standard_Integer i = 1; i <= nbSamples + 1; i++) {
+    Standard_Real aPar1 = aParams(i);
+    gp_Pnt2d aPnt = C2d->Value(aPar1);
+    Box.Add(aPnt);
+    if (i <= nbSamples) {
+      Standard_Real aPar2 = aParams(i + 1);
+      Standard_Real par = (aPar1 + aPar2) * 0.5;
+      gp_Pnt2d pextr;
+      Standard_Real parextr = par;
+      if (SearchForExtremum(C2d, aPar1, aPar2, gp_Vec2d(1, 0), parextr, pextr)) {
+        Box.Add(pextr);
+      }
+      parextr = par;
+      if (SearchForExtremum(C2d, aPar1, aPar2, gp_Vec2d(0, 1), parextr, pextr)) {
+        Box.Add(pextr);
+      }
     }
   }
 }

@@ -1,0 +1,24 @@
+puts "======="
+puts "OCC28553"
+puts "======="
+puts ""
+##################################################
+# Incorrect result of the ShapeUpgrade_ShapeDivideContinuity algorithm
+##################################################
+
+restore [locate_data_file bug28553_sh.brep] f
+
+#Split shape
+DT_ShapeDivide r f
+
+explode r F
+mksurface s2 r_1
+don r_1 s2
+
+set fbnd [xbounds r_1]
+set v2f [lindex $fbnd 3]
+bounds s2 u1 u2 v1 v2
+
+if {$v2f > [dval v2]} {
+  puts "Error: result face bounds are out of surface ($v2f > [dval v2])"
+}

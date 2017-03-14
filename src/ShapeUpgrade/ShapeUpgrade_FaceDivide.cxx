@@ -132,7 +132,21 @@ Standard_Boolean ShapeUpgrade_FaceDivide::SplitSurface ()
   if(Precision::IsInfinite(Uf) || Precision::IsInfinite(Ul) ||
      Precision::IsInfinite(Vf) || Precision::IsInfinite(Vl))
     return Standard_False;
-       
+
+  // make little extension to ensure all pcurves fit inside new surface bounds
+  Standard_Real aSUf, aSUl, aSVf, aSVl;
+  surf->Bounds(aSUf, aSUl, aSVf, aSVl);
+  if (!surf->IsUPeriodic()) {
+    Standard_Real dU = (Ul - Uf) * 0.01;
+    if (Uf > aSUf) Uf -= Min(dU, Uf - aSUf);
+    if (Ul < aSUl) Ul += Min(dU, aSUl - Ul);
+  }
+  if (!surf->IsVPeriodic()) {
+    Standard_Real dV = (Vl - Vf) * 0.01;
+    if (Vf > aSVf) Vf -= Min(dV, Vf - aSVf);
+    if (Vl < aSVl) Vl += Min(dV, aSVl - Vl);
+  }
+
   SplitSurf->Init ( surf, Uf, Ul, Vf, Vl );
   SplitSurf->Perform(mySegmentMode);
 
