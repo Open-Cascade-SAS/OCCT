@@ -1402,7 +1402,9 @@ void BRepFill_CompatibleWires::SameNumberByACR(const  Standard_Boolean  report)
       // insertion of cuts in each wire
       for (i=1; i<=nbSects; i++) {
 	const TopoDS_Wire& oldwire = TopoDS::Wire(myWork(i));
-        Standard_Real tol = Precision::Confusion() / WireLen(i);
+        Standard_Real tol = Precision::Confusion();
+        if (WireLen(i) > gp::Resolution())
+          tol /= WireLen(i);
 	TopoDS_Wire newwire = BRepFill::InsertACR(oldwire, dec3, tol);
 	BRepTools_WireExplorer anExp1,anExp2;
 	anExp1.Init(oldwire);
