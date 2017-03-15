@@ -1,8 +1,3 @@
-puts "TODO OCC28556 ALL: Faulty shapes in variables"
-puts "TODO OCC28556 ALL: The area of result shape is"
-puts "TODO OCC28556 ALL: The volume of result shape is"
-puts "TODO OCC28556 ALL: Error :  is WRONG because number of"
-
 puts "========================"
 puts " OCC469 "
 puts "========================"
@@ -12,10 +7,22 @@ puts ""
 ######################################################
 
 restore [locate_data_file OCC469.brep] a 
+# remove small edges from the shape
+fixsmalledges a a 0.002
+
+# explode to get two arguemnts
 explode a
 
+# use fuzzy value to treat misalignment of the arguments
+bfuzzyvalue 0.002
+
+# perform Boolean operation
 bfuse result a_1 a_2
 
+# restoring fuzzy value to zero
+bfuzzyvalue 0.0
+
+# check the obtained result
 checkshape result
 checkprops result -s 30523.3 -v 22730.1
 checknbshapes result -shell 1 -solid 1

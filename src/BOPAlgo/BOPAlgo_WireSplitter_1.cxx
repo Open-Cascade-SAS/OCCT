@@ -42,6 +42,7 @@
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
@@ -412,15 +413,23 @@ void Path (const GeomAdaptor_Surface& aGAS,
     bIsClosed = aVertMap.Find(aVb);
     {
       BOPCol_ListOfShape aBuf;
+      Standard_Boolean bHasEdge = Standard_False;
       //
       aNb = aLS.Length();
       for (i = aNb; i>0; --i) {
         const TopoDS_Shape& aVPrev=aVertVa(i);
         const gp_Pnt2d& aPaPrev=aCoordVa(i);
-        const TopoDS_Shape& aEPrev=aLS(i);
-        
+        const TopoDS_Edge& aEPrev = TopoDS::Edge(aLS(i));
+        //
         aBuf.Append(aEPrev);
-        
+        if (!bHasEdge) {
+          bHasEdge = !BRep_Tool::Degenerated(aEPrev);
+          // do not create wire from degenerated edges only
+          if (!bHasEdge) {
+            continue;
+          }
+        }
+        //
         anIsSameV = aVPrev.IsSame(aVb);
         anIsSameV2d = anIsSameV;
         if (anIsSameV) {
