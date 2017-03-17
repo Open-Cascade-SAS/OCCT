@@ -57,7 +57,6 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-//#include <BRepAlgo_Cut.hxx>
 #define NECHANTBARYC 11
 
 //=======================================================================

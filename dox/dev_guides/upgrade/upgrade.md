@@ -1098,6 +1098,7 @@ The following obsolete features have been removed:
   Text resolution can be managed by rendering parameter *Graphic3d_RenderingParams::Resolution*, returned by *V3d_View::ChangeRenderingParams()*.
 * Methods *PrsMgr_PresentationManager::BoundBox*, *PrsMgr_PresentationManager::Hilight* and *SelectMgr_EntityOwner::Hilight* have been removed as not used. The corresponding method in custom implementations of *SelectMgr_EntityOwner* can be removed safely. *PrsMgr_PresentationManager::Color* with the corresponding style must be used instead.
 * Class *NCollection_QuickSort* has been removed. The code that used the tools provided by that class should be corrected manually. The recommended approach is to use sorting algorithms provided by STL (std::sort). See also @ref upgrade_occt700_sorttools above.
+* The class *QANewBRepNaming_BooleanOperationFeat* has been removed. The class *QANewBRepNaming_BooleanOperation* should be used instead.
 
 * Package *Dico*. The code that used the tools provided by that package should be corrected manually.  The recommended approach is to use *NCollection_DataMap* and *NCollection_IndexedDataMap* classes.
 
@@ -1228,7 +1229,8 @@ The following Grid management methods within class V3d_Viewer do not implicitly 
 * The classes *BOPDS_PassKey* and *BOPDS_PassKeyBoolean* are too excessive and not used any more in Boolean Operations. To replace them the new *BOPDS_Pair* class has been implemented. Thus:
   - The method *BOPDS_DS::Interferences()* now returns the *BOPDS_MapOfPair*;
   - The method *BOPDS_Iterator::Value()* takes now only two parameters - the indices of interfering sub-shapes.
-  
-@subsection upgrade_720_UnifySameDomain_history History changes in ShapeUpgrade_UnifySameDomain algorithm
 
-* The result of Generated and Modified methods in ShapeUpgrade_UnifySameDomain class is now returned list of shape instead only one shape.
+@subsection upgrade_720_Removal_Of_Old_Boolean_Operations_Draw Removal of the Draw commands based on old Boolean operations
+
+* The commands *fubl* and *cubl* have been removed. The alternative for these commands are the commands *bfuseblend* and *bcutblend* respectively.
+* The command *ksection* has been removed. The alternative for this command is the command *bsection*.

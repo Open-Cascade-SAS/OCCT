@@ -45,7 +45,7 @@ QANewBRepNaming_Limitation::QANewBRepNaming_Limitation() {}
 //=======================================================================
 
 QANewBRepNaming_Limitation::QANewBRepNaming_Limitation(const TDF_Label& ResultLabel)
-     :QANewBRepNaming_BooleanOperationFeat(ResultLabel) {}
+     :QANewBRepNaming_BooleanOperation(ResultLabel) {}
 
 //=======================================================================
 //function : Load

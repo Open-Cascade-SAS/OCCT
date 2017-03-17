@@ -52,7 +52,7 @@ QANewBRepNaming_Intersection::QANewBRepNaming_Intersection() {}
 //=======================================================================
 
 QANewBRepNaming_Intersection::QANewBRepNaming_Intersection(const TDF_Label& ResultLabel)
-     :QANewBRepNaming_BooleanOperationFeat(ResultLabel) {}
+     :QANewBRepNaming_BooleanOperation(ResultLabel) {}
 
 //=======================================================================
 //function : Load

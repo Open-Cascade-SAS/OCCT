@@ -57,10 +57,6 @@
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-//modified by NIZNHY-PKV Thu Mar 21 17:30:25 2002 f
-//#include <BRepAlgo_Cut.hxx>
-//#include <BRepAlgo_Fuse.hxx>
-//modified by NIZNHY-PKV Thu Mar 21 17:30:29 2002 t
 #ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();
 #endif
@@ -320,10 +316,7 @@ static void Descendants(const TopoDS_Shape&,
     TopTools_DataMapOfShapeListOfShape locmap;
     TopExp_Explorer expp(Comp, TopAbs_SOLID);
     if(expp.More() && !Comp.IsNull() && !myGShape.IsNull())  {
-      //modified by NIZNHY-PKV Thu Mar 21 17:15:36 2002 f
-      //BRepAlgo_Cut trP(myGShape,Comp);
       BRepAlgoAPI_Cut trP(myGShape, Comp);
-      //modified by NIZNHY-PKV Thu Mar 21 17:15:58 2002 t
       exp.Init(trP.Shape(), TopAbs_SOLID);
       if (exp.Current().IsNull()) {
         theOpe = 2;
@@ -395,10 +388,7 @@ static void Descendants(const TopoDS_Shape&,
             }
           }// if(!mySUntil.IsNull())
           //
-          //modified by NIZNHY-PKV Thu Mar 21 17:21:49 2002 f
-          //UpdateDescendants(trP.Builder(),theGShape,Standard_True); // skip faces
           UpdateDescendants(trP,theGShape,Standard_True); // skip faces
-          //modified by NIZNHY-PKV Thu Mar 21 17:22:32 2002 t
 
           theGlue.Init(mySbase,theGShape);
           for (itm.Initialize(myGluedF);itm.More();itm.Next()) {
@@ -605,10 +595,7 @@ static void Descendants(const TopoDS_Shape&,
 
     TopExp_Explorer expp(Comp, TopAbs_SOLID);
     if(expp.More() && !Comp.IsNull() && !myGShape.IsNull())  {
-      //modified by NIZNHY-PKV Thu Mar 21 17:24:52 2002 f
-      //BRepAlgo_Cut trP(myGShape,Comp);
       BRepAlgoAPI_Cut trP(myGShape, Comp);
-      //modified by NIZNHY-PKV Thu Mar 21 17:24:56 2002 t
       // the result is necessarily a compound.
       exp.Init(trP.Shape(),TopAbs_SOLID);
       if (!exp.More()) {
@@ -659,10 +646,7 @@ static void Descendants(const TopoDS_Shape&,
           }
         }
       }
-      //modified by NIZNHY-PKV Thu Mar 21 17:27:23 2002 f
-      //UpdateDescendants(trP.Builder(),theGShape,Standard_True); 
       UpdateDescendants(trP,theGShape,Standard_True); 
-      //modified by NIZNHY-PKV Thu Mar 21 17:27:31 2002 t
     }//if(expp.More() && !Comp.IsNull() && !myGShape.IsNull())  {
     //
 
@@ -1007,14 +991,12 @@ static void Descendants(const TopoDS_Shape&,
     if (!myJustFeat) {
       // removal of edges of section that have no common vertices
       // with PartsOfTool preserved
-      //modified by NIZHNY-EMV Thu May 10 15:56:24 2012
       if (bFlag) { 
         theBuilder.PerformResult();
         myShape = theBuilder.Shape();
       } else {
         myShape = theBuilder.Shape();
       }
-      //modified by NIZHNY-EMV Thu May 10 15:56:26 2012
       Done();
     }
     else {
@@ -1372,7 +1354,6 @@ static void Descendants(const TopoDS_Shape& S,
     }
   }
 }
-//modified by NIZNHY-PKV Thu Mar 21 18:43:18 2002 f
 //=======================================================================
 //function : UpdateDescendants
 //purpose  : 
@@ -1429,4 +1410,3 @@ static void Descendants(const TopoDS_Shape& S,
     }
   }
 }
-//modified by NIZNHY-PKV Thu Mar 21 18:43:36 2002 t

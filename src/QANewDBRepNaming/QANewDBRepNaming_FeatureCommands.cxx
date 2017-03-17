@@ -67,15 +67,15 @@
 #include <TopTools_MapOfShape.hxx>
 
 //==============================================================
-//function : QANewDBRepNaming_NameBooleanOperationFeat
-//purpose  : NameBooleanOperationFeat Doc Label Op = 1(Fuse), 2(Cut), 3(Common), 4(Inserction) 5(Limitation) DrawShape1 DrawShape2 [Forward = 0 || Reversed = 1 || BothSides = 2] 
+//function : QANewDBRepNaming_NameBooleanOperation
+//purpose  : NameBooleanOperation Doc Label Op = 1(Fuse), 2(Cut), 3(Common), 4(Inserction) 5(Limitation) DrawShape1 DrawShape2 [Forward = 0 || Reversed = 1 || BothSides = 2] 
 //==============================================================
-static Standard_Integer QANewDBRepNaming_NameBooleanOperationFeat (Draw_Interpretor& di,
+static Standard_Integer QANewDBRepNaming_NameBooleanOperation (Draw_Interpretor& di,
 							      Standard_Integer nb, 
 							      const char ** arg)
 {
   if (nb != 6 && nb != 7) {
-    di <<  "QANewDBRepNaming_NameBooleanOperationFeat : Error"  << "\n";
+    di <<  "QANewDBRepNaming_NameBooleanOperation : Error"  << "\n";
     return 1;
   }
 
@@ -359,12 +359,12 @@ void QANewDBRepNaming::FeatureCommands (Draw_Interpretor& theCommands)
   static Standard_Boolean done = Standard_False;
   if (done) return;
   done = Standard_True;
-  const char* g = "Naming algorithm commands for features" ;
+  const char* g = "Naming algorithm commands for Booleans";
 
 
-  theCommands.Add ("NameBooleanOperationFeat", 
-		   "NameBooleanOperationFeat Doc Label Operation(1, 2, 3, 4 or 5) DrawShape1 DrawShape2 [Forward = 0 || Reversed = 1 || BothSides = 2] ",
-		   __FILE__, QANewDBRepNaming_NameBooleanOperationFeat, g);
+  theCommands.Add ("NameBooleanOperation", 
+		   "NameBooleanOperation Doc Label Operation(1, 2, 3, 4 or 5) DrawShape1 DrawShape2 [Forward = 0 || Reversed = 1 || BothSides = 2] ",
+		   __FILE__, QANewDBRepNaming_NameBooleanOperation, g);
 
   theCommands.Add ("NameFuse", 
 		   "NameFuse Doc Label DrawShape1 DrawShape2",

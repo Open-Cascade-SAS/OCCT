@@ -6998,7 +6998,8 @@ Blending is the creation of a new shape by rounding edges to create a fillet.
   * Use the **depouille** command for drafting.
   * Use the **chamf** command to add a chamfer to an edge
   * Use the **blend** command for simple blending.
-  * Use **fubl** for a fusion + blending operation.
+  * Use **bfuseblend** for a fusion + blending operation.
+  * Use **bcutblend** for a cut + blending operation.
   * Use **buildevol**, **mkevol**, **updatevol** to realize varying radius blending.
 
 
@@ -7105,24 +7106,43 @@ blend b b 2 .
 ==- SetRegul 0s 
 ~~~~~
 
-@subsubsection occt_draw_7_8_4  fubl
+@subsubsection occt_draw_7_8_4  bfuseblend
 
-Syntax:      
+Syntax:
 ~~~~~
-fubl name shape1 shape2 radius
-~~~~~ 
+bfuseblend name shape1 shape2 radius [-d]
+~~~~~
  
-Creates a boolean fusion of two shapes and then blends (fillets) the intersection edges using the given radius. 
+Creates a boolean fusion of two shapes and then blends (fillets) the intersection edges using the given radius.
+Option [-d] enables the Debugging mode in which the error messages, if any, will be printed.
 
-**Example:** 
+**Example:**
 ~~~~~
-# fuse-blend two boxes 
-box b1 20 20 5 
-copy b1 b2 
-ttranslate b2 -10 10 3 
-fubl a b1 b2 1 
+# fuse-blend two boxes
+box b1 20 20 5
+copy b1 b2
+ttranslate b2 -10 10 3
+bfuseblend a b1 b2 1
 ~~~~~
 
+@subsubsection occt_draw_7_8_4a  bcutblend
+
+Syntax:
+~~~~~
+bcutblend name shape1 shape2 radius [-d]
+~~~~~
+
+Creates a boolean cut of two shapes and then blends (fillets) the intersection edges using the given radius.
+Option [-d] enables the Debugging mode in which the error messages, if any, will be printed.
+
+**Example:**
+~~~~~
+# cut-blend two boxes
+box b1 20 20 5
+copy b1 b2
+ttranslate b2 -10 10 3
+bcutblend a b1 b2 1
+~~~~~
 
 @subsubsection occt_draw_7_8_5  mkevol, updatevol, buildevol
 

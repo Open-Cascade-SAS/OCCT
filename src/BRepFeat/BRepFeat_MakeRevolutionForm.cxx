@@ -94,11 +94,6 @@
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-//modified by NIZNHY-PKV Fri Mar 22 16:56:15 2002
-//#include <BRepAlgo_Cut.hxx>
-//#include <BRepAlgo_Section.hxx>
-//#include <BRepAlgo_Common.hxx>
-//modified by NIZNHY-PKV Fri Mar 22 16:56:17 2002 t
 #ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();
 extern Standard_Boolean BRepFeat_GettraceFEATRIB();
@@ -270,10 +265,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
 			  6.*myBnd, -6.*myBnd, 6.*myBnd);
   TopoDS_Face PlaneFace = TopoDS::Face(PlaneF.Shape());
   
-  //modified by NIZNHY-PKV Fri Mar 22 16:52:26 2002 f
-  //BRepAlgo_Common PlaneS(BndBox, PlaneFace);
   BRepAlgoAPI_Common PlaneS(BndBox, PlaneFace);
-  //modified by NIZNHY-PKV Fri Mar 22 16:52:31 2002 t
   TopExp_Explorer EXP;
   TopoDS_Shape PlaneSect = PlaneS.Shape();
   EXP.Init(PlaneSect, TopAbs_WIRE);
@@ -890,14 +882,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
     ElSLib::Parameters(myPln->Pln(), CheckPnt, paru, parv);
     gp_Pnt2d checkpnt2d(paru, parv);
     if(Cl.Perform(checkpnt2d, Standard_True) == TopAbs_OUT) {
-      //modified by NIZNHY-PKV Fri Mar 22 16:52:52 2002 f
-      //BRepAlgo_Cut c(BndFace, NewBndFace);     
       BRepAlgoAPI_Cut c(BndFace, NewBndFace);     
-      //modified by NIZNHY-PKV Fri Mar 22 16:52:57 2002 t
       TopExp_Explorer exp(c.Shape(), TopAbs_WIRE);
       const TopoDS_Wire& aCurWire = TopoDS::Wire(exp.Current());
-      // akm 13/02/02 : we know the plane. Why not to use it?
-      // BRepLib_MakeFace ff(w);
       BRepLib_MakeFace ff(myPln->Pln(), aCurWire, Standard_True);
       NewBndFace = TopoDS::Face(ff.Shape());
     }
@@ -1158,10 +1145,7 @@ void BRepFeat_MakeRevolutionForm::Perform()
   if (!S1.IsNull()) B.Add(Comp,S1);
   if (!S2.IsNull()) B.Add(Comp,S2);
 
-  //modified by NIZNHY-PKV Fri Mar 22 16:53:20 2002 f
-  //BRepAlgo_Cut trP(VraiForm,Comp);    
   BRepAlgoAPI_Cut trP(VraiForm,Comp);    
-  //modified by NIZNHY-PKV Fri Mar 22 16:53:23 2002 t
   // coupe de la nervure par deux plans parallels
   TopTools_DataMapOfShapeListOfShape SlidingMap;
 
@@ -1287,10 +1271,7 @@ Standard_Boolean BRepFeat_MakeRevolutionForm::Propagate(TopTools_ListOfShape& Sl
   //  BRepBuilderAPI_MakeFace fac(myPln);
   Standard_Boolean LastOK = Standard_False, FirstOK= Standard_False;
   TopoDS_Vertex v1, v2, v3, v4, Vert;
-  //modified by NIZNHY-PKV Fri Mar 22 16:54:09 2002 f
-  //BRepAlgo_Section sect (fac, CurrentFace, Standard_False);
   BRepAlgoAPI_Section sect (fac, CurrentFace, Standard_False);
-  //modified by NIZNHY-PKV Fri Mar 22 16:54:14 2002 t
   sect.Approximation(Standard_True);
   sect.Build();
   TopExp_Explorer Ex;
@@ -1312,7 +1293,6 @@ Standard_Boolean BRepFeat_MakeRevolutionForm::Propagate(TopTools_ListOfShape& Sl
     return Standard_False;
   }
   //
-  //modified by NIZNHY-PKV Tue Apr  2 15:08:23 2002 f
   if(!e1.IsNull()) {
     Standard_Real aTolV1, aTolV2;
     myListOfEdges.Clear();
@@ -1348,7 +1328,6 @@ Standard_Boolean BRepFeat_MakeRevolutionForm::Propagate(TopTools_ListOfShape& Sl
       myListOfEdges.Clear();
     }
   }
-  //modified by NIZNHY-PKV Tue Apr  2 15:08:26 2002 t
   //
   if(!e1.IsNull()) {
     myListOfEdges.Clear();
@@ -1513,10 +1492,7 @@ Standard_Boolean BRepFeat_MakeRevolutionForm::Propagate(TopTools_ListOfShape& Sl
       }
     }
 
-    //modified by NIZNHY-PKV Fri Mar 22 16:54:28 2002 f
-    //BRepAlgo_Section sectf (fac, CurrentFace, Standard_False);
     BRepAlgoAPI_Section sectf (fac, CurrentFace, Standard_False);
-    //modified by NIZNHY-PKV Fri Mar 22 16:54:33 2002 t
     sectf.Approximation(Standard_True);
     sectf.Build();
 
@@ -1618,10 +1594,7 @@ Standard_Boolean BRepFeat_MakeRevolutionForm::Propagate(TopTools_ListOfShape& Sl
 
     ii = 0;
  
-    //modified by NIZNHY-PKV Fri Mar 22 16:54:45 2002 f
-    //BRepAlgo_Section sectf (fac, CurrentFace, Standard_False);
     BRepAlgoAPI_Section sectf (fac, CurrentFace, Standard_False);
-    //modified by NIZNHY-PKV Fri Mar 22 16:54:52 2002 t
     sectf.Approximation(Standard_True);
     sectf.Build();
 

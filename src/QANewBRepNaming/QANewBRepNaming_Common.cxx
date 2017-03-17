@@ -40,7 +40,7 @@ QANewBRepNaming_Common::QANewBRepNaming_Common() {}
 //=======================================================================
 
 QANewBRepNaming_Common::QANewBRepNaming_Common(const TDF_Label& ResultLabel)
-     :QANewBRepNaming_BooleanOperationFeat(ResultLabel) {}
+     :QANewBRepNaming_BooleanOperation(ResultLabel) {}
 
 //=======================================================================
 //function : Load

@@ -2,8 +2,6 @@ QANewBRepNaming.cxx
 QANewBRepNaming.hxx
 QANewBRepNaming_BooleanOperation.cxx
 QANewBRepNaming_BooleanOperation.hxx
-QANewBRepNaming_BooleanOperationFeat.cxx
-QANewBRepNaming_BooleanOperationFeat.hxx
 QANewBRepNaming_Box.cxx
 QANewBRepNaming_Box.hxx
 QANewBRepNaming_Chamfer.cxx

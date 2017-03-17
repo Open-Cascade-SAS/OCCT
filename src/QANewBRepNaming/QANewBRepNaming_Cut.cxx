@@ -40,7 +40,7 @@ QANewBRepNaming_Cut::QANewBRepNaming_Cut() {}
 //=======================================================================
 
 QANewBRepNaming_Cut::QANewBRepNaming_Cut(const TDF_Label& ResultLabel)
-     :QANewBRepNaming_BooleanOperationFeat(ResultLabel) {}
+     :QANewBRepNaming_BooleanOperation(ResultLabel) {}
 
 //=======================================================================
 //function : Load
@@ -141,7 +141,7 @@ void QANewBRepNaming_Cut::Load(BRepAlgoAPI_BooleanOperation& MS) const {
 	LoadModified1n (MS, ObjSh,  TopAbs_FACE);
 	LoadModified11 (MS, ObjSh,  TopAbs_FACE);
 	LoadModified11 (MS, ToolSh, TopAbs_FACE);
-      } else if(QANewBRepNaming_BooleanOperationFeat::IsWRCase2(MS)) {
+      } else if(QANewBRepNaming_BooleanOperation::IsWRCase2(MS)) {
 	LoadModified1n (MS, ObjSh,  TopAbs_FACE);
 	LoadModified11 (MS, ObjSh,  TopAbs_FACE);
 	LoadModified11 (MS, ToolSh, TopAbs_FACE);

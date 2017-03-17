@@ -20,13 +20,13 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <QANewBRepNaming_BooleanOperationFeat.hxx>
+#include <QANewBRepNaming_BooleanOperation.hxx>
 class TDF_Label;
 class BRepAlgoAPI_BooleanOperation;
 
 
 
-class QANewBRepNaming_Cut  : public QANewBRepNaming_BooleanOperationFeat
+class QANewBRepNaming_Cut  : public QANewBRepNaming_BooleanOperation
 {
 public:
 

@@ -20,13 +20,13 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <QANewBRepNaming_BooleanOperationFeat.hxx>
+#include <QANewBRepNaming_BooleanOperation.hxx>
 class TDF_Label;
 class QANewModTopOpe_Limitation;
 
 
 
-class QANewBRepNaming_Limitation  : public QANewBRepNaming_BooleanOperationFeat
+class QANewBRepNaming_Limitation  : public QANewBRepNaming_BooleanOperation
 {
 public:
 

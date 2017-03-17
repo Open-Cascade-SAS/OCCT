@@ -80,11 +80,6 @@
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-//modified by NIZNHY-PKV Fri Mar 22 16:51:33 2002 f
-//#include <BRepAlgo_Section.hxx>
-//#include <BRepAlgo_Common.hxx>
-//modified by NIZNHY-PKV Fri Mar 22 16:51:35 2002 t
-//#include <DbgTools.hxx>
 #ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();
 extern Standard_Boolean BRepFeat_GettraceFEATRIB();
@@ -227,10 +222,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
 			  6.*myBnd, -6.*myBnd, 6.*myBnd);
   TopoDS_Face PlaneFace = TopoDS::Face(PlaneF.Shape());
 
-  //modified by NIZNHY-PKV Fri Mar 22 16:49:28 2002 f
-  //BRepAlgo_Common PlaneS(BndBox, PlaneFace);
   BRepAlgoAPI_Common PlaneS(BndBox, PlaneFace);
-  //modified by NIZNHY-PKV Fri Mar 22 16:49:39 2002 t  
   TopExp_Explorer EXP;
   TopoDS_Shape PlaneSect = PlaneS.Shape();
   EXP.Init(PlaneSect, TopAbs_WIRE);
@@ -945,10 +937,7 @@ void BRepFeat_MakeLinearForm::Perform()
   Standard_Boolean v1OK = Standard_False, v2OK= Standard_False;
   TopoDS_Vertex v1, v2, v3, v4, ve1, ve2;
 
-  //modified by NIZNHY-PKV Fri Mar 22 16:50:24 2002 f
-  //BRepAlgo_Section sect (fac, CurrentFace, Standard_False);
   BRepAlgoAPI_Section sect (fac, CurrentFace, Standard_False);
-  //modified by NIZNHY-PKV Fri Mar 22 16:50:32 2002 t
 
   sect.Approximation(Standard_True);
   sect.Build();
@@ -1069,10 +1058,7 @@ void BRepFeat_MakeLinearForm::Perform()
       }
     }
 
-    //modified by NIZNHY-PKV Fri Mar 22 16:50:53 2002 f
-    //BRepAlgo_Section sectf (fac, CurrentFace, Standard_False);
     BRepAlgoAPI_Section sectf (fac, CurrentFace, Standard_False);
-    //modified by NIZNHY-PKV Fri Mar 22 16:51:03 2002 t
     sectf.Approximation(Standard_True);
     sectf.Build();
 

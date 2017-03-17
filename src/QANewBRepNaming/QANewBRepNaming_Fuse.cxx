@@ -37,7 +37,7 @@ QANewBRepNaming_Fuse::QANewBRepNaming_Fuse() {}
 //=======================================================================
 
 QANewBRepNaming_Fuse::QANewBRepNaming_Fuse(const TDF_Label& ResultLabel)
-     :QANewBRepNaming_BooleanOperationFeat(ResultLabel) {}
+     :QANewBRepNaming_BooleanOperation(ResultLabel) {}
 
 
 //=======================================================================

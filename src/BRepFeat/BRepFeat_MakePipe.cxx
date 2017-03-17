@@ -44,10 +44,6 @@
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-//modified by NIZNHY-PKV Thu Mar 21 17:54:27 2002 f
-//#include <BRepAlgo_Fuse.hxx>
-//#include <BRepAlgo_Cut.hxx> 
-//modified by NIZNHY-PKV Thu Mar 21 17:54:30 2002 t
 #ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();
 #endif
@@ -200,25 +196,15 @@ void BRepFeat_MakePipe::Perform()
 
   if(myGluedF.IsEmpty()) {
     if(myFuse == 1) {
-      //modified by NIZNHY-PKV Thu Mar 21 17:53:05 2002 f
-      //BRepAlgo_Fuse f(mySbase, myGShape);
-      //myShape = f.Shape();
-      //UpdateDescendants(f.Builder(), myShape, Standard_False);
       BRepAlgoAPI_Fuse f(mySbase, myGShape);
       myShape = f.Shape();
       UpdateDescendants(f, myShape, Standard_False);
-      //modified by NIZNHY-PKV Thu Mar 21 17:53:10 2002 t
       Done();
     }
     else if(myFuse == 0) {
-      //modified by NIZNHY-PKV Thu Mar 21 17:53:37 2002 f
-      //BRepAlgo_Cut c(mySbase, myGShape);
-      //myShape = c.Shape();
-      //UpdateDescendants(c.Builder(), myShape, Standard_False);
       BRepAlgoAPI_Cut c(mySbase, myGShape);
       myShape = c.Shape();
       UpdateDescendants(c, myShape, Standard_False);
-      //modified by NIZNHY-PKV Thu Mar 21 17:53:50 2002 t
       Done();
     }
     else {
