@@ -22,9 +22,9 @@
 #include <BRepAdaptor_HCurve.hxx>
 #include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <BRepAlgo_BooleanOperations.hxx>
 #include <BRepAlgo_NormalProjection.hxx>
 #include <BRepAlgo_SequenceOfSequenceOfInteger.hxx>
+#include <BRepAlgoAPI_Common.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepLib_MakeWire.hxx>
@@ -51,7 +51,6 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
@@ -479,31 +478,23 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 #ifdef OCCT_DEBUG_CHRONO
 	    InitChron(chr_booltool);
 #endif
-            if(!Degenerated){
-    	       BRepAlgo_BooleanOperations BoolTool;
-	       BoolTool.Shapes2d(Faces->Value(j),prj);
-	       BoolTool.Common();
-	       Handle(TopOpeBRepBuild_HBuilder) HB;
-	       TopTools_ListOfShape LS;
-	       TopTools_ListIteratorOfListOfShape Iter; 
-	       HB = BoolTool.Builder();
-	       LS.Clear();
-	       if (HB->IsSplit(prj, TopAbs_IN))
-	         LS = HB->Splits(prj, TopAbs_IN);
-	       Iter.Initialize(LS);
-	       if(Iter.More()) {
-#ifdef OCCT_DEBUG
-                  cout << " BooleanOperations :"  << Iter.More()<<" solutions " << endl; 
-#endif
-	          for(; Iter.More(); Iter.Next()) {
-	  	     BB.Add(myRes, Iter.Value());
-		     myAncestorMap.Bind(Iter.Value(), Edges->Value(i));
-		     myCorresp.Bind(Iter.Value(),Faces->Value(j));
-	          }
-	       }
-
-  	       else {
-
+            if (!Degenerated) {
+              // Perform Boolean COMMON operation to get parts of projected edge
+              // inside the face
+              BRepAlgoAPI_Common aCommon(Faces->Value(j), prj);
+              if (aCommon.IsDone()) {
+                const TopoDS_Shape& aRC = aCommon.Shape();
+                //
+                TopExp_Explorer aExpE(aRC, TopAbs_EDGE);
+                for (; aExpE.More(); aExpE.Next()) {
+                  const TopoDS_Shape& aE = aExpE.Current();
+                  BB.Add(myRes, aE);
+                  myAncestorMap.Bind(aE, Edges->Value(i));
+                  myCorresp.Bind(aE, Faces->Value(j));
+                }
+              }
+              else {
+                // if the common operation has failed, try to classify the part
 	         BRepTopAdaptor_FClass2d classifier(TopoDS::Face(Faces->Value(j)),
 			  		  	    Precision::Confusion());
 	         gp_Pnt2d Puv;
