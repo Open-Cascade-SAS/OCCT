@@ -1098,7 +1098,6 @@ The following obsolete features have been removed:
   Text resolution can be managed by rendering parameter *Graphic3d_RenderingParams::Resolution*, returned by *V3d_View::ChangeRenderingParams()*.
 * Methods *PrsMgr_PresentationManager::BoundBox*, *PrsMgr_PresentationManager::Hilight* and *SelectMgr_EntityOwner::Hilight* have been removed as not used. The corresponding method in custom implementations of *SelectMgr_EntityOwner* can be removed safely. *PrsMgr_PresentationManager::Color* with the corresponding style must be used instead.
 * Class *NCollection_QuickSort* has been removed. The code that used the tools provided by that class should be corrected manually. The recommended approach is to use sorting algorithms provided by STL (std::sort). See also @ref upgrade_occt700_sorttools above.
-* The class *QANewBRepNaming_BooleanOperationFeat* has been removed. The class *QANewBRepNaming_BooleanOperation* should be used instead.
 
 * Package *Dico*. The code that used the tools provided by that package should be corrected manually.  The recommended approach is to use *NCollection_DataMap* and *NCollection_IndexedDataMap* classes.
 
@@ -1125,6 +1124,8 @@ The following obsolete features have been removed:
   These properties were unused, and therefore application should remove occurrences of these methods.
 * *AIS_InteractiveObject::SelectionPriority()*.
   These property was not implemented.
+* The class *LocOpe_HBuilder* has been removed as obsolete.
+* The class *QANewBRepNaming_BooleanOperationFeat* has been removed. The class *QANewBRepNaming_BooleanOperation* should be used instead.
 
 @subsection upgrade_occt720_correction_of_Offset_API Corrections in BRepOffset API
 

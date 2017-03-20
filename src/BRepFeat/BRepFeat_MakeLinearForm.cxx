@@ -71,7 +71,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>

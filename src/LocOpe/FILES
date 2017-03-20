@@ -31,9 +31,6 @@ LocOpe_GluedShape.hxx
 LocOpe_Gluer.cxx
 LocOpe_Gluer.hxx
 LocOpe_Gluer.lxx
-LocOpe_HBuilder.cxx
-LocOpe_HBuilder.hxx
-LocOpe_HBuilder.lxx
 LocOpe_LinearForm.cxx
 LocOpe_LinearForm.hxx
 LocOpe_LinearForm.lxx

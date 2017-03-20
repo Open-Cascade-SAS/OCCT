@@ -47,7 +47,6 @@ class LocOpe_CurveShapeIntersector;
 class LocOpe_CSIntersector;
 class LocOpe_BuildShape;
 class LocOpe_SplitDrafts;
-class LocOpe_HBuilder;
 class LocOpe_BuildWires;
 
 
@@ -107,7 +106,6 @@ friend class LocOpe_CurveShapeIntersector;
 friend class LocOpe_CSIntersector;
 friend class LocOpe_BuildShape;
 friend class LocOpe_SplitDrafts;
-friend class LocOpe_HBuilder;
 friend class LocOpe_BuildWires;
 
 };

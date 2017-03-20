@@ -33,7 +33,6 @@
 
 static Standard_Boolean STATIC_DEFINED = Standard_False;
 
-//#include <TopOpeBRepTool_EXPORT.hxx>
 static gp_Dir FUN_nCinsideS(const gp_Dir& tgC, const gp_Dir& ngS)
 {
   // Give us a curve C on suface S, <parOnC>, a parameter

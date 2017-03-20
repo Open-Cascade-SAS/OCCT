@@ -36,7 +36,6 @@ class TopoDS_Shape;
 class Geom_Curve;
 class LocOpe_Gluer;
 class BRepAlgoAPI_BooleanOperation;
-class TopOpeBRepBuild_HBuilder;
 
 
 //! Provides general functions to build form features.
@@ -157,8 +156,6 @@ protected:
   Standard_EXPORT void UpdateDescendants (const LocOpe_Gluer& G);
   
   Standard_EXPORT void UpdateDescendants (const BRepAlgoAPI_BooleanOperation& aBOP, const TopoDS_Shape& SResult, const Standard_Boolean SkipFace = Standard_False);
-  
-  Standard_EXPORT void UpdateDescendants (const Handle(TopOpeBRepBuild_HBuilder)& B, const TopoDS_Shape& SResult, const Standard_Boolean SkipFace = Standard_False);
   
   Standard_EXPORT Standard_Boolean TransformShapeFU (const Standard_Integer flag);
 

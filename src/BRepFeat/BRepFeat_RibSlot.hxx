@@ -43,7 +43,6 @@ class TopoDS_Face;
 class Geom_Curve;
 class TopoDS_Vertex;
 class LocOpe_Gluer;
-class TopOpeBRepBuild_HBuilder;
 class BRepAlgoAPI_BooleanOperation;
 
 
@@ -145,8 +144,6 @@ protected:
   //! shapes during the glueing operation.Returns the modified, generated
   //! and deleted faces during the course of the glueing operation.
   Standard_EXPORT void UpdateDescendants (const LocOpe_Gluer& G);
-  
-  Standard_EXPORT void UpdateDescendants (const Handle(TopOpeBRepBuild_HBuilder)& B, const TopoDS_Shape& SResult, const Standard_Boolean SkipFace = Standard_False);
   
   Standard_EXPORT void UpdateDescendants (const BRepAlgoAPI_BooleanOperation& aBOP, const TopoDS_Shape& SResult, const Standard_Boolean SkipFace = Standard_False);
 

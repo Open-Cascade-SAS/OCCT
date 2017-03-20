@@ -17,6 +17,7 @@
 
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
+#include <BRep_Builder.hxx>
 #include <BRepAlgo.hxx>
 #include <BRepAlgoAPI_BooleanOperation.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
@@ -50,7 +51,6 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
-#include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
@@ -1270,90 +1270,6 @@ static void Descendants(const TopoDS_Shape& S,
   }
 }
 
-//=======================================================================
-//function : UpdateDescendants
-//purpose  : 
-//=======================================================================
-  void BRepFeat_Form::UpdateDescendants(const Handle(TopOpeBRepBuild_HBuilder)& B,
-                                        const TopoDS_Shape& S,
-                                        const Standard_Boolean SkipFace)
-{
-  TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itdm;
-  TopTools_ListIteratorOfListOfShape it,it2;
-  TopTools_MapIteratorOfMapOfShape itm;
-  TopExp_Explorer exp;
-
-  for (itdm.Initialize(myMap);itdm.More();itdm.Next()) {
-    const TopoDS_Shape& orig = itdm.Key();
-    if (SkipFace && orig.ShapeType() == TopAbs_FACE) {
-      continue;
-    }
-    TopTools_MapOfShape newdsc;
-
-    if (itdm.Value().IsEmpty()) {myMap.ChangeFind(orig).Append(orig);}
-
-    for (it.Initialize(itdm.Value());it.More();it.Next()) {
-      const TopoDS_Shape& sh = it.Value();
-      if(sh.ShapeType() != TopAbs_FACE) continue;
-      const TopoDS_Face& fdsc = TopoDS::Face(it.Value()); 
-      for (exp.Init(S,TopAbs_FACE);exp.More();exp.Next()) {
-        if (exp.Current().IsSame(fdsc)) { // preserved
-          newdsc.Add(fdsc);
-          break;
-        }
-      }
-      if (!exp.More()) {
-        if (B->IsSplit(fdsc, TopAbs_OUT)) {
-          for (it2.Initialize(B->Splits(fdsc,TopAbs_OUT));
-               it2.More();it2.Next()) {
-            newdsc.Add(it2.Value());
-          }
-        }
-        if (B->IsSplit(fdsc, TopAbs_IN)) {
-          for (it2.Initialize(B->Splits(fdsc,TopAbs_IN));
-               it2.More();it2.Next()) {
-            newdsc.Add(it2.Value());
-          }
-        }
-        if (B->IsSplit(fdsc, TopAbs_ON)) {
-          for (it2.Initialize(B->Splits(fdsc,TopAbs_ON));
-               it2.More();it2.Next()) {
-            newdsc.Add(it2.Value());
-          }
-        }
-        if (B->IsMerged(fdsc, TopAbs_OUT)) {
-          for (it2.Initialize(B->Merged(fdsc,TopAbs_OUT));
-               it2.More();it2.Next()) {
-            newdsc.Add(it2.Value());
-          }
-        }
-        if (B->IsMerged(fdsc, TopAbs_IN)) {
-          for (it2.Initialize(B->Merged(fdsc,TopAbs_IN));
-               it2.More();it2.Next()) {
-            newdsc.Add(it2.Value());
-          }
-        }
-        if (B->IsMerged(fdsc, TopAbs_ON)) {
-          for (it2.Initialize(B->Merged(fdsc,TopAbs_ON));
-               it2.More();it2.Next()) {
-            newdsc.Add(it2.Value());
-          }
-        }
-      }
-    }
-    myMap.ChangeFind(orig).Clear();
-    for (itm.Initialize(newdsc); itm.More(); itm.Next()) {
-       // check the appartenance to the shape...
-      for (exp.Init(S,TopAbs_FACE);exp.More();exp.Next()) {
-        if (exp.Current().IsSame(itm.Key())) {
-//          const TopoDS_Shape& sh = itm.Key();
-          myMap.ChangeFind(orig).Append(itm.Key());
-          break;
-        }
-      }
-    }
-  }
-}
 //=======================================================================
 //function : UpdateDescendants
 //purpose  : 
