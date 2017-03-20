@@ -18,10 +18,12 @@
 #include <BRepTest.hxx>
 #include <DBRep.hxx>
 #include <Draw_Interpretor.hxx>
+#include <Draw_PluginMacro.hxx>
 #include <GeometryTest.hxx>
 #include <GeomliteTest.hxx>
 #include <HLRTest.hxx>
 #include <MeshTest.hxx>
+#include <SWDRAW.hxx>
 
 //=======================================================================
 //function : AllCommands
@@ -64,4 +66,7 @@ void  BOPTest::AllCommands(Draw_Interpretor& theCommands)
   MeshTest::Commands(theCommands);
   HLRTest::Commands(theCommands);
   BOPTest::AllCommands(theCommands);
+  SWDRAW::Init (theCommands);
 }
+// Declare entry point PLUGINFACTORY
+DPLUGIN(BOPTest)

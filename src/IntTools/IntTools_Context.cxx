@@ -282,9 +282,8 @@ GeomAPI_ProjectPointOnSurf& IntTools_Context::ProjPS(const TopoDS_Face& aF)
     //
     pProjPS=(GeomAPI_ProjectPointOnSurf*)myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnSurf));
     new (pProjPS) GeomAPI_ProjectPointOnSurf();
-    pProjPS->Init(aS ,Umin, Usup, Vmin, Vsup, myPOnSTolerance/*, Extrema_ExtAlgo_Tree*/);
-    Extrema_ExtPS& anExtAlgo = const_cast<Extrema_ExtPS&>(pProjPS->Extrema());
-    anExtAlgo.SetFlag(Extrema_ExtFlag_MIN);
+    pProjPS->Init(aS ,Umin, Usup, Vmin, Vsup, myPOnSTolerance);
+    pProjPS->SetExtremaFlag(Extrema_ExtFlag_MIN);
     //
     anAdr=(Standard_Address)pProjPS;
     myProjPSMap.Bind(aF, anAdr);

@@ -5439,7 +5439,7 @@ parameters p 5 5 5 u v
 # the values of u and v are : 0 5 
 ~~~~~
 
-@subsubsection occt_draw_6_6_6  proj, dproj
+@subsubsection occt_draw_6_6_6  proj, 2dproj
 
 Syntax:      
 ~~~~~
@@ -5571,13 +5571,50 @@ surfapp s 3 4 \
 0 30 0 10 30 0 20 30 0 
 ~~~~~
 
-@subsection occt_draw_6_9  Constraints
+@subsection  occt_draw_6_9  Projections
+
+Draw provides commands to project points/curves on curves/surfaces.
+
+* **proj** projects point on the curve/surface (see @ref occt_draw_6_6_6 "proj command description");
+* **project** projects 3D curve on the surface (see @ref occt_draw_6_2_11 "project command description");
+* **projponf** projects point on the face.
+
+@subsubsection  occt_draw_6_9_1 projponf
+
+Syntax:
+~~~~~
+projponf face pnt [extrema flag: -min/-max/-minmax] [extrema algo: -g(grad)/-t(tree)]
+~~~~~
+
+**projponf** projects point *pnt* on the face *face*.
+You can change the Extrema options:
+* To change the Extrema search algorithm use the following options:<br>
+ -g - for Grad algorithm;<br>
+ -t - for Tree algorithm;
+* To change the Extrema search solutions use the following options:<br>
+ -min - to look for Min solutions;<br>
+ -max - to look for Max solutions;<br>
+ -minmax - to look for MinMax solutions.
+
+**Example**
+~~~~~
+plane p 0 0 0 0 0 1
+mkface f p
+point pnt 5 5 10
+
+projponf f pnt
+# proj dist = 10
+# uvproj = 5 5
+# pproj = 5 5 0
+~~~~~
+
+@subsection occt_draw_6_10  Constraints
 
 * **cirtang** constructs 2d circles tangent to curves;
 * **lintan** constructs 2d lines tangent to curves. 
 
 
-@subsubsection occt_draw_6_9_1  cirtang
+@subsubsection occt_draw_6_10_1  cirtang
 
 Syntax: 
 ~~~~~
@@ -5595,7 +5632,7 @@ cirtang c p 1 4
 == c_1 c_2 
 ~~~~~
 
-@subsubsection occt_draw_6_9_2  lintan
+@subsubsection occt_draw_6_10_2  lintan
 
 Syntax:      
 ~~~~~
@@ -5618,7 +5655,7 @@ line l 2 0 1 1
 lintan l1 c1 l 15 
 ~~~~~
 
-@subsection occt_draw_6_10  Display
+@subsection occt_draw_6_11  Display
 
 Draw provides commands to control the display of geometric objects. Some display parameters are used for all objects, others are valid for surfaces only, some for bezier and bspline only, and others for bspline only. 
 
@@ -5631,7 +5668,7 @@ On bezier and bspline curve and surface you can toggle the display of the contro
 On bspline curves and surfaces you can toggle the display of the knots with the **shknots** and **clknots** commands. 
 
 
-@subsubsection occt_draw_6_10_1  dmod, discr, defle
+@subsubsection occt_draw_6_11_1  dmod, discr, defle
 
 Syntax:      
 ~~~~~
@@ -5658,7 +5695,7 @@ discr 100
 dmode c u 
 ~~~~~
 
-@subsubsection occt_draw_6_10_2   nbiso
+@subsubsection occt_draw_6_11_2   nbiso
 
 Syntax:      
 ~~~~~
@@ -5675,7 +5712,7 @@ sphere s 20
 nbiso s 35 15 
 ~~~~~
 
-@subsubsection occt_draw_6_10_3  clpoles, shpoles
+@subsubsection occt_draw_6_11_3  clpoles, shpoles
 
 Syntax:      
 ~~~~~
@@ -5694,7 +5731,7 @@ beziercurve c 3 0 0 0 10 0 0 10 10 0
 clpoles c 
 ~~~~~
 
-@subsubsection occt_draw_6_10_4  clknots, shknots
+@subsubsection occt_draw_6_11_4  clknots, shknots
 
 Syntax:   
 ~~~~~
@@ -5930,6 +5967,49 @@ this shape seems to be valid
 ~~~~~
 
 **Note** that this test is performed using the tolerance set in the algorithm.
+
+@subsubsection occt_draw_7_1_6  compare
+
+Syntax:
+~~~~~
+compare shape1 shape2
+~~~~~
+
+**compare** compares the two shapes *shape1* and *shape2* using the methods *TopoDS_Shape::IsSame()* and *TopoDS_Shape::IsEqual()*.
+
+**Example**
+~~~~~
+box b1 1 1 1
+copy b1 b2
+compare b1 b2
+# same shapes
+# equal shapes
+
+orientation b2 R
+compare b1 b2
+# same shapes
+
+box b2 1 1 1
+compare b1 b2
+# shapes are not same
+~~~~~
+
+@subsubsection occt_draw_7_1_7  issubshape
+
+Syntax:
+~~~~~
+issubshape subshape shape
+~~~~~
+
+**issubshape** checks if the shape *subshape* is sub-shape of the shape *shape* and gets its index in the shape.
+
+**Example**
+~~~~~
+box b 1 1 1
+explode b f
+issubshape b_2 b
+# b_2 is sub-shape of b. Index in the shape: 2.
+~~~~~
 
 
 @subsection occt_draw_7_2  Curve and surface topology

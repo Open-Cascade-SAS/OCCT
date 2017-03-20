@@ -398,9 +398,6 @@ n HLRTest
 n MeshTest
 n SWDRAW
 n TObjDRAW
-n TestTopOpe
-n TestTopOpeDraw
-n TestTopOpeTools
 n ViewerTest
 n XDEDRAW
 n XSDRAW

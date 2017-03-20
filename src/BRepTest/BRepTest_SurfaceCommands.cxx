@@ -45,6 +45,8 @@
 #include <NCollection_Vector.hxx>
 #include <BRepBuilderAPI_FastSewing.hxx>
 
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+
 #ifdef _WIN32
 //#define strcasecmp strcmp Already defined
 #include <stdio.h>
@@ -576,6 +578,104 @@ static Standard_Integer getedgeregul
 }
 
 //=======================================================================
+//function : projponf
+//purpose  : 
+//=======================================================================
+static Standard_Integer projponf(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n < 3 || n > 5) {
+    di << "Project point on the face.\n";
+    di << "Usage: projponf face pnt [extrema flag: -min/-max/-minmax] [extrema algo: -g(grad)/-t(tree)]\n";
+    return 1;
+  }
+  // get face
+  TopoDS_Shape aS = DBRep::Get(a[1]);
+  if (aS.IsNull()) {
+    di << "the face is a null shape\n";
+    return 0;
+  }
+  //
+  if (aS.ShapeType() != TopAbs_FACE) {
+    di << "not a face\n";
+    return 0;
+  }
+  //
+  const TopoDS_Face& aFace = *(TopoDS_Face*)&aS;
+  //
+  // get point
+  gp_Pnt aP;
+  DrawTrSurf::GetPoint(a[2], aP);
+  //
+  // get projection options
+  // default values;
+  Extrema_ExtAlgo anExtAlgo = Extrema_ExtAlgo_Grad;
+  Extrema_ExtFlag anExtFlag = Extrema_ExtFlag_MINMAX;
+  //
+  for (Standard_Integer i = 3; i < n; ++i) {
+    if (!strcasecmp(a[i], "-min")) {
+      anExtFlag = Extrema_ExtFlag_MIN;
+    }
+    else if (!strcasecmp(a[i], "-max")) {
+      anExtFlag = Extrema_ExtFlag_MAX;
+    }
+    else if (!strcasecmp(a[i], "-minmax")) {
+      anExtFlag = Extrema_ExtFlag_MINMAX;
+    }
+    else if (!strcasecmp(a[i], "-t")) {
+      anExtAlgo = Extrema_ExtAlgo_Tree;
+    }
+    else if (!strcasecmp(a[i], "-g")) {
+      anExtAlgo = Extrema_ExtAlgo_Grad;
+    }
+  }
+  //
+  // get surface
+  TopLoc_Location aLoc;
+  const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(aFace, aLoc);
+  // move point to surface location
+  aP.Transform(aLoc.Transformation().Inverted());
+  //
+  // get bounds of the surface
+  Standard_Real aUMin, aUMax, aVMin, aVMax;
+  aSurf->Bounds(aUMin, aUMax, aVMin, aVMax);
+  //
+  // initialize projector
+  GeomAPI_ProjectPointOnSurf aProjPS;
+  aProjPS.Init(aSurf, aUMin, aUMax, aVMin, aVMax);
+  // set the options
+  aProjPS.SetExtremaAlgo(anExtAlgo);
+  aProjPS.SetExtremaFlag(anExtFlag);
+  // perform projection
+  aProjPS.Perform(aP);
+  //
+  if (aProjPS.NbPoints()) {
+    // lower distance
+    Standard_Real aDist = aProjPS.LowerDistance();
+    // lower distance parameters
+    Standard_Real U, V;
+    aProjPS.LowerDistanceParameters(U, V);
+    // nearest point
+    gp_Pnt aPProj = aProjPS.NearestPoint();
+    // translate projection point to face location
+    aPProj.Transform(aLoc.Transformation());
+    //
+    // print the projection values
+    di << "proj dist = " << aDist << "\n";
+    di << "uvproj = " << U << " " << V << "\n";
+    di << "pproj = " << aPProj.X() << " " << aPProj.Y() << " " << aPProj.Z() << "\n";
+  }
+  else {
+    if (!aProjPS.IsDone()) {
+      di << "projection failed\n";
+    }
+    else {
+      di << "no projection found\n";
+    }
+  }
+  return 0;
+}
+
+//=======================================================================
 //function : SurfaceCommands
 //purpose  : 
 //=======================================================================
@@ -630,5 +730,10 @@ void  BRepTest::SurfaceCommands(Draw_Interpretor& theCommands)
   theCommands.Add ("fastsewing", "fastsewing result [-tol <value>] <list_of_faces>", 
                                                 __FILE__, fastsewing, g);
   theCommands.Add ("getedgeregularity", "getedgeregularity edge face1 [face2]",  __FILE__,getedgeregul,g);
+
+  theCommands.Add ("projponf",
+                   "projponf face pnt [extrema flag: -min/-max/-minmax] [extrema algo: -g(grad)/-t(tree)]\n"
+                   "\t\tProject point on the face.",
+                   __FILE__, projponf, g);
 }
 

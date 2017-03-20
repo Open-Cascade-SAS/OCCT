@@ -80,10 +80,6 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
-#ifdef DRAW
-#include <TestTopOpeTools.hxx>
-#include <TestTopOpe.hxx>
-#endif
 #ifdef OCCT_DEBUG
 #include <OSD_Chronometer.hxx>
 
@@ -237,11 +233,6 @@ void  ChFi3d_Builder::Compute()
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
   done = Standard_True;
   hasresult=Standard_False;
-#ifdef DRAW
-  TestTopOpe::CurrentDS(myDS);
-  TopoDS_Shape bids;
-  TestTopOpe::Shapes(myShape,bids);
-#endif
   
   // filling of myVDatatMap
   ChFiDS_ListIteratorOfListOfStripe itel;

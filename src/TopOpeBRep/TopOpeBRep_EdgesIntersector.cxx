@@ -15,10 +15,22 @@
 // commercial license or contractual agreement.
 
 #ifdef DRAW
-#include <TestTopOpeDraw_TTOT.hxx>
-#include <TopOpeBRepTool_DRAW.hxx>
+static void CurveToString(const GeomAbs_CurveType t, TCollection_AsciiString& N)
+{
+  switch(t) {
+  case GeomAbs_Line                : N = "LINE";              break;
+  case GeomAbs_Circle              : N = "CIRCLE";            break;
+  case GeomAbs_Ellipse             : N = "ELLIPSE";           break;
+  case GeomAbs_Hyperbola           : N = "HYPERBOLA";         break;
+  case GeomAbs_Parabola            : N = "PARABOLA";          break;
+  case GeomAbs_BezierCurve         : N = "BEZIER";       break;
+  case GeomAbs_BSplineCurve        : N = "BSPLINE";      break;
+  case GeomAbs_OffsetCurve         : N = "OFFSET";       break;
+  case GeomAbs_OtherCurve          : N = "OTHER";        break;
+  default                          : N = "UNKNOWN";           break;  
+  }
+}
 #endif
-
 
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
@@ -454,8 +466,8 @@ Standard_Boolean EdgesIntersector_checkT1D(const TopoDS_Edge& E1,const TopoDS_Ed
 #ifdef DRAW
     GeomAbs_CurveType t1 = myCurve1.GetType();
     GeomAbs_CurveType t2 = myCurve2.GetType();
-    TCollection_AsciiString s1;TestTopOpeDraw_TTOT::CurveToString(t1,s1);cout<<" "<<s1;
-    TCollection_AsciiString s2;TestTopOpeDraw_TTOT::CurveToString(t2,s2);cout<<" "<<s2;
+    TCollection_AsciiString s1;CurveToString(t1,s1);cout<<" "<<s1;
+    TCollection_AsciiString s2;CurveToString(t2,s2);cout<<" "<<s2;
 #endif
     cout<<endl;
     cout<<"                   tol1 = "<<tol1<<endl;

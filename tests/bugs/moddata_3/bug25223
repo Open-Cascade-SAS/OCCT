@@ -34,7 +34,9 @@ mkface f s
 set proj_fp [projponf f p1]
 #proj dist = 9.8455689542838467e-014
 
-regexp {proj dist = ([-0-9.+eE]+) uvproj = \(([-0-9.+eE]+) ([-0-9.+eE]+)\); pproj = \(([-0-9.+eE]+) ([-0-9.+eE]+) ([-0-9.+eE]+)\)} ${proj_fp} full dist uproj vproj proj1 proj2
+regexp {proj dist = ([-0-9.+eE]+)} ${proj_fp} full dist
+regexp {uvproj = ([-0-9.+eE]+) ([-0-9.+eE]+)} ${proj_fp} full uproj vproj
+regexp {pproj = ([-0-9.+eE]+) ([-0-9.+eE]+) ([-0-9.+eE]+)} ${proj_fp} full proj1 proj2
 
 puts "dist=${dist}"
 puts "uproj=${uproj}"

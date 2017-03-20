@@ -16,7 +16,6 @@
 
 #ifdef DRAW
 #include <DBRep.hxx>
-#include <TestTopOpeDraw_TTOT.hxx>
 static TCollection_AsciiString PRODINS("dins ");
 #endif
 

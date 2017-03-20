@@ -52,9 +52,6 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-#ifdef DRAW
-//#include <TestTopOpe.hxx>
-#endif
 
 //=======================================================================
 //function : Create
@@ -145,10 +142,6 @@ void BRepAlgo_DSAccess::Load(TopoDS_Shape& S1,
   myS1 = S1;
   myS2 = S2;
 
-#ifdef DRAW
-//  TestTopOpe::CurrentDS(myHDS);
-//  TestTopOpe::Shapes(myS1,myS2);
-#endif
 }
 
 //=======================================================================

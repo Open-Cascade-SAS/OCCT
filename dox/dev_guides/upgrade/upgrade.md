@@ -1126,6 +1126,9 @@ The following obsolete features have been removed:
   These property was not implemented.
 * The class *LocOpe_HBuilder* has been removed as obsolete.
 * The class *QANewBRepNaming_BooleanOperationFeat* has been removed. The class *QANewBRepNaming_BooleanOperation* should be used instead.
+* The package *TestTopOpe* has been removed;
+* The package *TestTopOpeDraw* has been removed;
+* The package *TestTopOpeTools* has been removed.
 
 @subsection upgrade_occt720_correction_of_Offset_API Corrections in BRepOffset API
 

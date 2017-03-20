@@ -977,6 +977,83 @@ static Standard_Integer scalexyz(Draw_Interpretor& /*di*/, Standard_Integer n, c
   return 0;  
 }
 
+//=======================================================================
+//function : compareshapes
+//purpose  : 
+//=======================================================================
+static Standard_Integer compareshapes(Draw_Interpretor& di,
+                                      Standard_Integer n,
+                                      const char** a)
+{
+  if (n != 3) {
+    di << "Compare shapes. Usage: compare shape1 shape2\n";
+    return 1;
+  }
+  // get shapes
+  TopoDS_Shape aS1 = DBRep::Get(a[1]);
+  TopoDS_Shape aS2 = DBRep::Get(a[2]);
+  // check shapes
+  if (aS1.IsNull() || aS2.IsNull()) {
+    di << "null shapes\n";
+    return 0;
+  }
+  // compare shapes
+  if (aS1.IsSame(aS2)) {
+    di << "same shapes\n";
+    if (aS1.IsEqual(aS2)) {
+      di << "equal shapes\n";
+    }
+  }
+  else {
+    di << "shapes are not same\n";
+  }
+  return 0;
+}
+
+//=======================================================================
+//function : issubshape
+//purpose  : 
+//=======================================================================
+static Standard_Integer issubshape(Draw_Interpretor& di,
+                                   Standard_Integer n,
+                                   const char** a)
+{  
+  if (n != 3) {
+    di << "Check if the shape is sub-shape of other shape and get its index in the shape.\n";
+    di << "Usage: issubshape subshape shape\n";
+    return 1;
+  }
+  // get shapes
+  TopoDS_Shape aSubShape = DBRep::Get(a[1]);
+  TopoDS_Shape aShape    = DBRep::Get(a[2]);
+  // check shapes
+  if (aSubShape.IsNull() || aShape.IsNull()) {
+    di << "null shapes\n";
+    return 0;
+  }
+  // find index of the sub-shape in the shape
+  TopTools_MapOfShape aMShapes;
+  // try to find the SubShape in Shape
+  TopExp_Explorer anExp(aShape, aSubShape.ShapeType());
+  for (; anExp.More(); anExp.Next()) {
+    const TopoDS_Shape& aSS = anExp.Current();
+    if (aMShapes.Add(aSS)) {
+      if (aSS.IsSame(aSubShape)) {
+        break;
+      }
+    }
+  }
+  //
+  if (anExp.More()) {
+    di << a[1] << " is sub-shape of " << a[2] << ". Index in the shape: " << aMShapes.Extent() << ".\n";
+  }
+  else {
+    di << a[1] << " is NOT sub-shape of " << a[2] << ".\n";
+  }
+  //
+  return 0;
+}
+
 void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
@@ -1149,4 +1226,15 @@ void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
                   "scalexyz res shape factor_x factor_y factor_z",
 		  __FILE__,
 		  scalexyz, g);
+
+  theCommands.Add("compare",
+                  "Compare shapes. Usage: compare shape1 shape2",
+                  __FILE__,
+                  compareshapes, g);
+
+  theCommands.Add("issubshape",
+                  "issubshape subshape shape\n"
+                  "\t\tCheck if the shape is sub-shape of other shape and get its index in the shape.",
+                  __FILE__,
+                  issubshape, g);
 }

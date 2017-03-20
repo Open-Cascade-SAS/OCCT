@@ -8,7 +8,10 @@ puts ""
 
 box b 10 10 10
 explode b f
-mkshe profile b_1 b_3
+
+shape profile Sh
+add b_1 profile
+add b_3 profile
 
 polyline spine 0 0 0 10 10 0
 
@@ -17,7 +20,11 @@ pipe sh spine profile
 whatis sh
 plane pl 10 10 0 -1 -1 0 1 0 0
 mkface f pl
-mksol sl f
+
+shape sl So
+shape sl_sh Sh
+add f sl_sh
+add sl_sh sl
 
 bcut res sh sl
 

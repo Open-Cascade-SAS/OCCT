@@ -26,6 +26,7 @@
 #include <Extrema_ExtPS.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <Extrema_ExtAlgo.hxx>
+#include <Extrema_ExtFlag.hxx>
 #include <Standard_Real.hxx>
 #include <Quantity_Parameter.hxx>
 #include <Quantity_Length.hxx>
@@ -84,7 +85,21 @@ public:
   Standard_EXPORT void Init (const Handle(Geom_Surface)& Surface, const Quantity_Parameter Umin, const Quantity_Parameter Usup, const Quantity_Parameter Vmin, const Quantity_Parameter Vsup, const Standard_Real Tolerance, const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
   
   Standard_EXPORT void Init (const Handle(Geom_Surface)& Surface, const Quantity_Parameter Umin, const Quantity_Parameter Usup, const Quantity_Parameter Vmin, const Quantity_Parameter Vsup, const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
-  
+
+  //! Sets the Extrema search algorithm - Grad or Tree. <br>
+  //! By default the Extrema is initialized with Grad algorithm.
+  void SetExtremaAlgo(const Extrema_ExtAlgo theAlgo)
+  {
+    myExtPS.SetAlgo(theAlgo);
+  }
+
+  //! Sets the Extrema search flag - MIN or MAX or MINMAX.<br>
+  //! By default the Extrema is set to search the MinMax solutions.
+  void SetExtremaFlag(const Extrema_ExtFlag theExtFlag)
+  {
+    myExtPS.SetFlag(theExtFlag);
+  }
+
   //! Performs the projection of a point on the current surface.
   Standard_EXPORT void Perform (const gp_Pnt& P);
   
