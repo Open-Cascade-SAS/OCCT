@@ -20,6 +20,36 @@
 #include <gp_Vec2d.hxx>
 #include <gp_Vec.hxx>
 #include <IntSurf_LineOn2S.hxx>
+#include <Precision.hxx>
+#include <math_Vector.hxx>
+
+#ifdef DRAW
+#include <DrawTrSurf.hxx>
+#endif
+
+//=======================================================================
+//function : Constructor
+//purpose  : 
+//=======================================================================
+ApproxInt_MultiLine::ApproxInt_MultiLine()
+{
+  PtrOnmySvSurfaces = NULL;
+  myLine = NULL;
+  indicemin = 0;
+  indicemax = 0;
+  nbp3d = 0;
+  nbp2d = 0;
+  myApproxU1V1 = Standard_False;
+  myApproxU2V2 = Standard_False;
+  p2donfirst = Standard_True;
+  Xo = 0.;
+  Yo = 0.;
+  Zo = 0.;
+  U1o = 0.;
+  V1o = 0.;
+  U2o = 0.;
+  V2o = 0.;
+}
 
 //=======================================================================
 //function : Constructor
@@ -30,6 +60,8 @@ ApproxInt_MultiLine::
                       const Standard_Address svsurf,
                       const Standard_Integer NbP3d,
                       const Standard_Integer NbP2d,
+                      const Standard_Boolean ApproxU1V1,
+                      const Standard_Boolean ApproxU2V2,
                       const Standard_Real xo,
                       const Standard_Real yo,
                       const Standard_Real zo,
@@ -44,6 +76,8 @@ ApproxInt_MultiLine::
                                                       indicemin(Min(IndMin, IndMax)),
                                                       indicemax(Max(IndMin, IndMax)),
                                                       nbp3d(NbP3d), nbp2d(NbP2d),
+                                                      myApproxU1V1(ApproxU1V1),
+                                                      myApproxU2V2(ApproxU2V2),
                                                       p2donfirst(P2DOnFirst),
                                                       Xo(xo), Yo(yo), Zo(zo),
                                                       U1o(u1o), V1o(v1o),
@@ -66,6 +100,8 @@ ApproxInt_MultiLine::
   ApproxInt_MultiLine(const Handle_TheLine& line,
                       const Standard_Integer NbP3d,
                       const Standard_Integer NbP2d,
+                      const Standard_Boolean ApproxU1V1,
+                      const Standard_Boolean ApproxU2V2,
                       const Standard_Real xo,
                       const Standard_Real yo,
                       const Standard_Real zo,
@@ -80,6 +116,8 @@ ApproxInt_MultiLine::
                                                       indicemin(Min(IndMin, IndMax)),
                                                       indicemax(Max(IndMin, IndMax)),
                                                       nbp3d(NbP3d), nbp2d(NbP2d),
+                                                      myApproxU1V1(ApproxU1V1),
+                                                      myApproxU2V2(ApproxU2V2),
                                                       p2donfirst(P2DOnFirst),
                                                       Xo(xo), Yo(yo), Zo(zo),
                                                       U1o(u1o), V1o(v1o),
@@ -95,26 +133,26 @@ ApproxInt_MultiLine::
 
 //--------------------------------------------------------------------------------
 Standard_Integer ApproxInt_MultiLine::FirstPoint() const { 
-  return(indicemin);
+  return indicemin;
 }
 //--------------------------------------------------------------------------------
 Standard_Integer ApproxInt_MultiLine::LastPoint() const { 
-  return(indicemax);
+  return indicemax;
 }
 //--------------------------------------------------------------------------------
 Approx_Status ApproxInt_MultiLine::WhatStatus() const { 
   if(PtrOnmySvSurfaces)
-    return(Approx_PointsAdded);
+    return Approx_PointsAdded;
   else 
-    return(Approx_NoPointsAdded);
+    return Approx_NoPointsAdded;
 }
 //--------------------------------------------------------------------------------
 Standard_Integer ApproxInt_MultiLine::NbP3d() const { 
-  return(nbp3d);
+  return nbp3d;
 }
 //--------------------------------------------------------------------------------
 Standard_Integer ApproxInt_MultiLine::NbP2d() const { 
-  return(nbp2d);
+  return nbp2d;
 }
 //================================================================================
 void ApproxInt_MultiLine::Value(const Standard_Integer  Index,
@@ -268,13 +306,14 @@ ApproxInt_MultiLine
     //-- cout<<"\n Erreur dans : ApproxInt_MultiLine  ApproxInt_MultiLine::MakeMLBetween "<<endl;
     Handle(IntSurf_LineOn2S) vide1 = new IntSurf_LineOn2S();
     Handle(TheLine) vide = new TheLine(vide1,Standard_False);
-    return(ApproxInt_MultiLine(vide,
-			       NULL,
-			       nbp3d,
-			       nbp2d,
-			       Xo,Yo,Zo,U1o,V1o,U2o,V2o,
-			       p2donfirst,
-			       1,1));
+    return (ApproxInt_MultiLine(vide,
+                                NULL,
+                                nbp3d,
+                                nbp2d,
+                                myApproxU1V1, myApproxU2V2,
+                                Xo,Yo,Zo,U1o,V1o,U2o,V2o,
+                                p2donfirst,
+                                1,1));
     //-- return(*this);
   }
 
@@ -525,15 +564,16 @@ ApproxInt_MultiLine
 
   if((temp->NbPnts() >= NbPntsToInsert + High - Low + 1) && (CodeErreur==0))
   {
-    return(ApproxInt_MultiLine( temp, 
-                                (High-Low>10)? PtrOnmySvSurfaces : NULL,
-                                nbp3d,
-                                nbp2d,
-                                Xo,Yo,Zo,
-                                U1o,V1o,
-                                U2o,V2o,
-                                p2donfirst,
-                                1,ResultPntOn2SLine->NbPoints()));
+    return (ApproxInt_MultiLine( temp, 
+                                 (High-Low>10)? PtrOnmySvSurfaces : NULL,
+                                 nbp3d,
+                                 nbp2d,
+                                 myApproxU1V1, myApproxU2V2,
+                                 Xo,Yo,Zo,
+                                 U1o,V1o,
+                                 U2o,V2o,
+                                 p2donfirst,
+                                 1,ResultPntOn2SLine->NbPoints()));
   }
   else
   {
@@ -541,16 +581,137 @@ ApproxInt_MultiLine
     //-- cout<<" Pas de Rajout de points ds1min =  "<<minds1<<" ds2min = "<<minds2<<endl;
     Handle(IntSurf_LineOn2S) vide1 = new IntSurf_LineOn2S();
     Handle(TheLine) vide = new TheLine(vide1,Standard_False);
-    return(ApproxInt_MultiLine( vide,
-                                NULL,
-                                nbp3d,
-                                nbp2d,
-                                Xo,Yo,Zo,
-                                U1o,V1o,
+    return (ApproxInt_MultiLine( vide,
+                                 NULL,
+                                 nbp3d,
+                                 nbp2d,
+                                 myApproxU1V1, myApproxU2V2,
+                                 Xo,Yo,Zo,
+                                 U1o,V1o,
                                 U2o,V2o,
-                                p2donfirst,
-                                1,1));
+                                 p2donfirst,
+                                 1,1));
   }
+}
+
+//=======================================================================
+//function : MakeMLOneMorePoint
+//purpose  : 
+//=======================================================================
+Standard_Boolean
+  ApproxInt_MultiLine::MakeMLOneMorePoint(const Standard_Integer theLow,
+                                          const Standard_Integer theHigh,
+                                          const Standard_Integer theIndbad,
+                                          ApproxInt_MultiLine& theNewMultiLine) const
+{
+  Standard_Boolean OtherLineMade = Standard_False;
+  if(PtrOnmySvSurfaces==NULL)
+    return Standard_False;
+  
+  const Standard_Real SqTol3d = Precision::SquareConfusion();
+  math_Vector tolerance(1,2);
+  tolerance(1) = tolerance(2) = 1.e-8;
+  
+  Handle(IntSurf_LineOn2S) ResultPntOn2SLine = new IntSurf_LineOn2S();
+  for (Standard_Integer Indice = theLow; Indice <= theHigh; Indice++)
+    ResultPntOn2SLine->Add(myLine->Point(Indice));
+
+  //Insert new point between (theIndbad-1) and theIndbad
+  //Using <thePtrSVSurf> for Rsnld: it may be ImpPrm or PrmPrm
+  gp_Pnt PrevPnt = myLine->Point(theIndbad-1).Value();
+  gp_Pnt CurPnt  = myLine->Point(theIndbad).Value();
+  Standard_Real uprev1, vprev1, uprev2, vprev2, ucur1, vcur1, ucur2, vcur2;
+  myLine->Point(theIndbad-1).Parameters(uprev1, vprev1, uprev2, vprev2);
+  myLine->Point(theIndbad).Parameters(ucur1, vcur1, ucur2, vcur2);
+  Standard_Real umid1, vmid1, umid2, vmid2;
+  umid1 = (uprev1 + ucur1)/2;
+  vmid1 = (vprev1 + vcur1)/2;
+  umid2 = (uprev2 + ucur2)/2;
+  vmid2 = (vprev2 + vcur2)/2;
+  IntSurf_PntOn2S MidPoint;
+  Standard_Boolean IsNewPointInvalid = Standard_False;
+  IsNewPointInvalid =
+    myApproxU1V1 &&
+    Abs(ucur1 - umid1) <= tolerance(1) &&
+    Abs(vcur1 - vmid1) <= tolerance(2);
+  if (!IsNewPointInvalid)
+  {
+    IsNewPointInvalid =
+      myApproxU2V2 &&
+      Abs(ucur2 - umid2) <= tolerance(1) &&
+      Abs(vcur2 - vmid2) <= tolerance(2);
+    if (!IsNewPointInvalid &&
+        ((TheSvSurfaces *)PtrOnmySvSurfaces)->SeekPoint(umid1, vmid1, umid2, vmid2,
+                                                        MidPoint))
+    {
+      const gp_Pnt& NewPnt = MidPoint.Value();
+      Standard_Real SqDistNewPrev = NewPnt.SquareDistance(PrevPnt);
+      Standard_Real SqDistNewCur  = NewPnt.SquareDistance(CurPnt);
+      IsNewPointInvalid = (SqDistNewPrev <= SqTol3d ||
+                           SqDistNewCur  <= SqTol3d);
+      if (!IsNewPointInvalid)
+      {
+        Standard_Real unew1, vnew1, unew2, vnew2;
+        MidPoint.Parameters(unew1, vnew1, unew2, vnew2);
+        if (myApproxU1V1)
+        {
+          Standard_Real SqDistCurMid1 =
+            (ucur1 - umid1)*(ucur1 - umid1)+(vcur1 - vmid1)*(vcur1 - vmid1);
+          Standard_Real SqDistMidNew1 =
+            (umid1 - unew1)*(umid1 - unew1)+(vmid1 - vnew1)*(vmid1 - vnew1);
+          IsNewPointInvalid = (SqDistMidNew1 > SqDistCurMid1);
+        }
+        if (!IsNewPointInvalid)
+        {
+          if (myApproxU2V2)
+          {
+            Standard_Real SqDistCurMid2 =
+              (ucur2 - umid2)*(ucur2 - umid2)+(vcur2 - vmid2)*(vcur2 - vmid2);
+            Standard_Real SqDistMidNew2 =
+              (umid2 - unew2)*(umid2 - unew2)+(vmid2 - vnew2)*(vmid2 - vnew2);
+            IsNewPointInvalid = (SqDistMidNew2 > SqDistCurMid2);
+          }
+          if (!IsNewPointInvalid)
+          {
+            ResultPntOn2SLine->InsertBefore(theIndbad-theLow+1, MidPoint);
+            OtherLineMade = Standard_True;
+          }
+        }
+      }
+    }
+  }
+
+  if (!OtherLineMade)
+    return Standard_False;
+
+#ifdef DRAW
+  char* name = new char[100];
+  Standard_Integer indc = 1;
+  Standard_Boolean onfirst = Standard_True;
+  for (Standard_Integer i = 1; i <= ResultPntOn2SLine->NbPoints(); i++)
+  {
+    const IntSurf_PntOn2S& thePoint = ResultPntOn2SLine->Value(i);
+    gp_Pnt curPnt = thePoint.Value();
+    sprintf(name, "p%d_%d", indc, i);
+    DrawTrSurf::Set(name, curPnt);
+    gp_Pnt2d curPnt2d = thePoint.ValueOnSurface(onfirst);
+    sprintf(name, "pp%d_%d", indc, i);
+    DrawTrSurf::Set(name, curPnt2d);
+  }
+#endif
+  Handle(TheLine) temp = new TheLine(ResultPntOn2SLine,Standard_False);
+  theNewMultiLine = ApproxInt_MultiLine( temp, 
+                                         PtrOnmySvSurfaces,
+                                         nbp3d,
+                                         nbp2d,
+                                         myApproxU1V1,
+                                         myApproxU2V2,
+                                         Xo,Yo,Zo,
+                                         U1o,V1o,
+                                         U2o,V2o,
+                                         p2donfirst,
+                                         1,ResultPntOn2SLine->NbPoints());
+  return Standard_True;
 }
 
 //=======================================================================

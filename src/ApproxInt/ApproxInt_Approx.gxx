@@ -557,8 +557,8 @@ void ApproxInt_Approx::buildKnots(const Handle(TheWLine)& theline,
 
   const ApproxInt_TheMultiLine aTestLine( theline, thePtrSVSurf,
                                           ((myData.ApproxXYZ)? 1 : 0),
-                                          ((myData.ApproxU1V1)? 1: 0) +
-                                                ((myData.ApproxU2V2)? 1: 0),
+                                          ((myData.ApproxU1V1)? 1: 0) + ((myData.ApproxU2V2)? 1: 0),
+                                          myData.ApproxU1V1, myData.ApproxU2V2,
                                           myData.Xo, myData.Yo, myData.Zo,
                                           myData.U1o, myData.V1o, myData.U2o, myData.V2o,
                                           myData.ApproxU1V1,
@@ -631,10 +631,11 @@ void ApproxInt_Approx::buildCurve(const Handle(TheWLine)& theline,
     imin = myKnots(kind);
     imax = myKnots(kind+1);
     ApproxInt_TheMultiLine myMultiLine(theline, thePtrSVSurf,
-      ((myData.ApproxXYZ)? 1 : 0),
-      ((myData.ApproxU1V1)? 1: 0) + ((myData.ApproxU2V2)? 1: 0),
-      myData.Xo, myData.Yo, myData.Zo, myData.U1o, myData.V1o,
-      myData.U2o, myData.V2o, myData.ApproxU1V1, imin, imax);
+                                       ((myData.ApproxXYZ)? 1 : 0),
+                                       ((myData.ApproxU1V1)? 1: 0) + ((myData.ApproxU2V2)? 1: 0),
+                                       myData.ApproxU1V1, myData.ApproxU2V2,
+                                       myData.Xo, myData.Yo, myData.Zo, myData.U1o, myData.V1o,
+                                       myData.U2o, myData.V2o, myData.ApproxU1V1, imin, imax);
 
     if(myData.myBezierApprox)
     {

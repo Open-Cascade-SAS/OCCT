@@ -803,12 +803,20 @@ void PutPCurve(const TopoDS_Edge& Edg,
 
   S = BRep_Tool::Surface(Fac);
 
+  Standard_Real TolFirst = -1, TolLast = -1;
+  TopoDS_Vertex V1, V2;
+  TopExp::Vertices(Edg, V1, V2);
+  if (!V1.IsNull())
+    TolFirst = BRep_Tool::Tolerance(V1);
+  if (!V2.IsNull())
+    TolLast = BRep_Tool::Tolerance(V2);
+  
   Standard_Real tol2d = Precision::Confusion();
   Handle(Geom2d_Curve) C2d;
   ShapeConstruct_ProjectCurveOnSurface aToolProj;
   aToolProj.Init(S, tol2d);
 
-  aToolProj.Perform(C,f,l, C2d);
+  aToolProj.Perform(C,f,l,C2d,TolFirst,TolLast);
   if (C2d.IsNull())
   {
     return;
@@ -819,7 +827,6 @@ void PutPCurve(const TopoDS_Edge& Edg,
   gp_Pnt PF,PL;
   S->D0(pf.X(),pf.Y(),PF);
   S->D0(pl.X(),pl.Y(),PL);
-  TopoDS_Vertex V1,V2;
   if (Edg.Orientation() == TopAbs_REVERSED) {
     V1 = TopExp::LastVertex(Edg);
     V1.Reverse();

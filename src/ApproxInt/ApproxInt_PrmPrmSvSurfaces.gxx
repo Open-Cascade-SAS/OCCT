@@ -34,7 +34,12 @@ ApproxInt_PrmPrmSvSurfaces::ApproxInt_PrmPrmSvSurfaces( const ThePSurface& Surf1
        MyIntersectionOn2S(Surf1,Surf2,TOLTANGENCY)
 { 
 }
-//--------------------------------------------------------------------------------
+
+//=======================================================================
+//function : Compute
+//purpose  :    Computes point on curve, 3D and 2D-tangents of a curve and
+//            parameters on the surfaces.
+//=======================================================================
 Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Compute( Standard_Real& u1
 						     ,Standard_Real& v1
 						     ,Standard_Real& u2
@@ -220,6 +225,31 @@ void ApproxInt_PrmPrmSvSurfaces::Pnt(const Standard_Real u1,
   Standard_Real tv2=v2;
   this->Compute(tu1,tv1,tu2,tv2,aP,aT,aTS1,aTS2);
   P=MyPnt;
+}
+
+//=======================================================================
+//function : SeekPoint
+//purpose  :    Computes point on curve and
+//            parameters on the surfaces.
+//=======================================================================
+Standard_Boolean ApproxInt_PrmPrmSvSurfaces::SeekPoint(const Standard_Real u1,
+                                                       const Standard_Real v1,
+                                                       const Standard_Real u2,
+                                                       const Standard_Real v2,
+                                                       IntSurf_PntOn2S& Point)
+{
+  gp_Pnt aP;
+  gp_Vec aT;
+  gp_Vec2d aTS1,aTS2;
+  Standard_Real tu1=u1;
+  Standard_Real tu2=u2;
+  Standard_Real tv1=v1;
+  Standard_Real tv2=v2;
+  if (!Compute(tu1,tv1,tu2,tv2,aP,aT,aTS1,aTS2))
+    return Standard_False;
+  
+  Point.SetValue(aP, tu1,tv1,tu2,tv2);
+  return Standard_True;
 }
 //--------------------------------------------------------------------------------
 Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Tangency(const Standard_Real u1,

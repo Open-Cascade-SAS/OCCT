@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <IntSurf_PntOn2S.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <StdFail_NotDone.hxx>
@@ -489,12 +490,10 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute( Standard_Real& u1,
     }
   }
 
-  Standard_Real aBornInf[2],aBornSup[2],aF[1],aX[2],aTolerance[2];
-  math_Vector BornInf(aBornInf,1,2),BornSup(aBornSup,1,2),F(aF,1,1),
-    X(aX,1,2),Tolerance(aTolerance,1,2);
-  Standard_Real aD[1][2];
-  math_Matrix D(aD,1, 1, 1, 2); 
-
+  math_Vector X(1,2);
+  math_Vector BornInf(1,2), BornSup(1,2), Tolerance(1,2);
+  //--- ThePSurfaceTool::GetResolution(aPSurf,Tolerance(1),Tolerance(2));
+  Tolerance(1) = 1.0e-8; Tolerance(2) = 1.0e-8;
   Standard_Real binfu,bsupu,binfv,bsupv;
   binfu = ThePSurfaceTool::FirstUParameter(aPSurf);
   binfv = ThePSurfaceTool::FirstVParameter(aPSurf);
@@ -502,124 +501,23 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute( Standard_Real& u1,
   bsupv = ThePSurfaceTool::LastVParameter(aPSurf);
   BornInf(1) = binfu; BornSup(1) = bsupu; 
   BornInf(2) = binfv; BornSup(2) = bsupv;
-
-  //--- ThePSurfaceTool::GetResolution(aPSurf,Tolerance(1),Tolerance(2));
-  Tolerance(1) = 1.0e-8; Tolerance(2) = 1.0e-8;
-
-  Standard_Real TranslationU=0.0;
-  Standard_Real TranslationV=0.0;
-
-  math_FunctionSetRoot  Rsnld(MyZerImpFunc);
-  Rsnld.SetTolerance(Tolerance);
-  if(MyImplicitFirst) { 
-    if(u2<binfu-0.0000000001) { 
-      if(ThePSurfaceTool::IsUPeriodic(aPSurf)) { 
-	Standard_Real d = ThePSurfaceTool::UPeriod(aPSurf);
-	do {  TranslationU+=d; } while(u2+TranslationU < binfu);
-      }
-      else { 
-	MyIsTangent=MyIsTangentbis=Standard_False;
-	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
-	return(Standard_False);
-      }
-    }
-    else if(u2>bsupu+0.0000000001) { 
-      if(ThePSurfaceTool::IsUPeriodic(aPSurf)) { 
-	Standard_Real d = ThePSurfaceTool::UPeriod(aPSurf);
-	do { TranslationU-=d; } while(u2+TranslationU > bsupu);
-      }
-      else { 
-	MyIsTangent=MyIsTangentbis=Standard_False;
-	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
-	return(Standard_False);
-      } 
-    }
-    if(v2<binfv-0.0000000001) { 
-      if(ThePSurfaceTool::IsVPeriodic(aPSurf)) { 
-	Standard_Real d = ThePSurfaceTool::VPeriod(aPSurf);
-	do { TranslationV+=d; }	while(v2+TranslationV < binfv);
-      }
-      else { 
-	MyIsTangent=MyIsTangentbis=Standard_False;
-	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
-	return(Standard_False);
-      }
-    }
-    else if(v2>bsupv+0.0000000001) { 
-      if(ThePSurfaceTool::IsVPeriodic(aPSurf)) { 
-	Standard_Real d = ThePSurfaceTool::VPeriod(aPSurf);
-	do { TranslationV-=d; } while(v2+TranslationV > bsupv);
-      }
-      else { 
-	MyIsTangent=MyIsTangentbis=Standard_False;
-	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
-	return(Standard_False);
-      } 
-    }
-    X(1) = u2+TranslationU; 
-    X(2) = v2+TranslationV;
-  }
-  else { 
-    if(u1<binfu-0.0000000001) { 
-      if(ThePSurfaceTool::IsUPeriodic(aPSurf)) { 
-	Standard_Real d = ThePSurfaceTool::UPeriod(aPSurf);
-	do {  TranslationU+=d; 	} while(u1+TranslationU < binfu);
-      }
-      else { 
-	MyIsTangent=MyIsTangentbis=Standard_False;
-	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
-	return(Standard_False);
-      }
-    }
-    else if(u1>bsupu+0.0000000001) { 
-      if(ThePSurfaceTool::IsUPeriodic(aPSurf)) { 
-	Standard_Real d = ThePSurfaceTool::UPeriod(aPSurf);
-	do { TranslationU-=d; } while(u1+TranslationU > bsupu);
-      }
-      else { 
-	MyIsTangent=MyIsTangentbis=Standard_False;
-	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
-	return(Standard_False);
-      } 
-    }
-    if(v1<binfv-0.0000000001) { 
-      if(ThePSurfaceTool::IsVPeriodic(aPSurf)) { 
-	Standard_Real d = ThePSurfaceTool::VPeriod(aPSurf);
-	do { TranslationV+=d; }	while(v1+TranslationV < binfv);
-      }
-      else { 
-	MyIsTangent=MyIsTangentbis=Standard_False;
-	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
-	return(Standard_False);
-      }
-    }
-    else if(v1>bsupv+0.0000000001) { 
-      if(ThePSurfaceTool::IsVPeriodic(aPSurf)) { 
-	Standard_Real d = ThePSurfaceTool::VPeriod(aPSurf);
-	do { TranslationV-=d; }	while(v1+TranslationV > bsupv);
-      }
-      else { 
-	MyIsTangent=MyIsTangentbis=Standard_False;
-	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
-	return(Standard_False);
-      } 
-    }
-    X(1) = u1+TranslationU;
-    X(2) = v1+TranslationV;
-  }
+  Standard_Real TranslationU = 0., TranslationV = 0.;
   
-  //----------------------------------------------------
-  //Make a small step from boundaries in order to avoid
-  //finding "outboundaried" solution (Rsnld -> NotDone).
-  if(X(1)-0.0000000001 <= binfu) X(1)=X(1)+0.0000001;
-  if(X(1)+0.0000000001 >= bsupu) X(1)=X(1)-0.0000001;
-  if(X(2)-0.0000000001 <= binfv) X(2)=X(2)+0.0000001;
-  if(X(2)+0.0000000001 >= bsupv) X(2)=X(2)-0.0000001;
-  
+  if (!FillInitialVectorOfSolution(u1, v1, u2, v2,
+                                   binfu, bsupu, binfv, bsupv,
+                                   X,
+                                   TranslationU, TranslationV))
+  {
+    MyIsTangent=MyIsTangentbis=Standard_False;
+    MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
+    return(Standard_False);
+  }
 
   Standard_Real PourTesterU = X(1);
   Standard_Real PourTesterV = X(2);
-  
+
+  math_FunctionSetRoot  Rsnld(MyZerImpFunc);
+  Rsnld.SetTolerance(Tolerance);
   Rsnld.Perform(MyZerImpFunc,X,BornInf,BornSup);
   if(Rsnld.IsDone()) { 
     MyHasBeenComputed = Standard_True;
@@ -826,9 +724,189 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute( Standard_Real& u1,
   }
 }
 
+//=======================================================================
+//function : SeekPoint
+//purpose  :    Computes point on curve and
+//            parameters on the surfaces.
+//=======================================================================
+Standard_Boolean ApproxInt_ImpPrmSvSurfaces::SeekPoint(const Standard_Real u1,
+                                                       const Standard_Real v1,
+                                                       const Standard_Real u2,
+                                                       const Standard_Real v2,
+                                                       IntSurf_PntOn2S& Point) { 
+  gp_Pnt aP;
+  gp_Vec aT;
+  gp_Vec2d aTS1,aTS2;
+  const IntSurf_Quadric&  aQSurf = MyZerImpFunc.ISurface();
+  const ThePSurface&      aPSurf = MyZerImpFunc.PSurface();
+
+  math_Vector X(1,2);
+  math_Vector BornInf(1,2), BornSup(1,2), Tolerance(1,2);
+  //--- ThePSurfaceTool::GetResolution(aPSurf,Tolerance(1),Tolerance(2));
+  Tolerance(1) = 1.0e-8; Tolerance(2) = 1.0e-8;
+  Standard_Real binfu,bsupu,binfv,bsupv;
+  binfu = ThePSurfaceTool::FirstUParameter(aPSurf);
+  binfv = ThePSurfaceTool::FirstVParameter(aPSurf);
+  bsupu = ThePSurfaceTool::LastUParameter(aPSurf);
+  bsupv = ThePSurfaceTool::LastVParameter(aPSurf);
+  BornInf(1) = binfu; BornSup(1) = bsupu; 
+  BornInf(2) = binfv; BornSup(2) = bsupv;
+  Standard_Real TranslationU = 0., TranslationV = 0.;
+  
+  if (!FillInitialVectorOfSolution(u1, v1, u2, v2,
+                                   binfu, bsupu, binfv, bsupv,
+                                   X,
+                                   TranslationU, TranslationV))
+    return Standard_False;
+
+  Standard_Real NewU1, NewV1, NewU2, NewV2;
+  
+  math_FunctionSetRoot  Rsnld(MyZerImpFunc);
+  Rsnld.SetTolerance(Tolerance);
+  Rsnld.Perform(MyZerImpFunc,X,BornInf,BornSup);
+  if(Rsnld.IsDone()) { 
+    MyHasBeenComputed = Standard_True;
+    Rsnld.Root(X);
+  
+    MyPnt = ThePSurfaceTool::Value(aPSurf, X(1), X(2));
+    
+    if(MyImplicitFirst)
+    { 
+      NewU2 = X(1)-TranslationU;
+      NewV2 = X(2)-TranslationV;
+
+      aQSurf.Parameters(MyPnt, NewU1, NewV1);
+      //adjust U
+      if (aQSurf.TypeQuadric() != GeomAbs_Plane)
+      {
+        Standard_Real sign = (NewU1 > u1)? -1 : 1;
+        while (Abs(u1 - NewU1) > M_PI)
+          NewU1 += sign*(M_PI+M_PI);
+      }
+    }
+    else
+    {
+      NewU1 = X(1)-TranslationU;
+      NewV1 = X(2)-TranslationV;
+
+      aQSurf.Parameters(MyPnt, NewU2, NewV2);
+      //adjust U
+      if (aQSurf.TypeQuadric() != GeomAbs_Plane)
+      {
+        Standard_Real sign = (NewU2 > u2)? -1 : 1;
+        while (Abs(u2 - NewU2) > M_PI)
+          NewU2 += sign*(M_PI+M_PI);
+      }
+    }
+  }
+  else
+    return Standard_False;
+  
+  Point.SetValue(MyPnt, NewU1, NewV1, NewU2, NewV2);
+  return Standard_True;
+}
 //--------------------------------------------------------------------------------
 
+Standard_Boolean
+ApproxInt_ImpPrmSvSurfaces::FillInitialVectorOfSolution(const Standard_Real u1,
+                                                        const Standard_Real v1,
+                                                        const Standard_Real u2,
+                                                        const Standard_Real v2,
+                                                        const Standard_Real binfu,
+                                                        const Standard_Real bsupu,
+                                                        const Standard_Real binfv,
+                                                        const Standard_Real bsupv,
+                                                        math_Vector& X,
+                                                        Standard_Real& TranslationU,
+                                                        Standard_Real& TranslationV)
+{
+  const ThePSurface&      aPSurf = MyZerImpFunc.PSurface();
 
+  math_Vector F(1,1);
 
+  TranslationU = 0.0;
+  TranslationV = 0.0;
 
-
+  if(MyImplicitFirst) { 
+    if(u2<binfu-0.0000000001) { 
+      if(ThePSurfaceTool::IsUPeriodic(aPSurf)) { 
+	Standard_Real d = ThePSurfaceTool::UPeriod(aPSurf);
+	do {  TranslationU+=d; } while(u2+TranslationU < binfu);
+      }
+      else 
+	return(Standard_False);
+    }
+    else if(u2>bsupu+0.0000000001) { 
+      if(ThePSurfaceTool::IsUPeriodic(aPSurf)) { 
+	Standard_Real d = ThePSurfaceTool::UPeriod(aPSurf);
+	do { TranslationU-=d; } while(u2+TranslationU > bsupu);
+      }
+      else
+	return(Standard_False);
+    }
+    if(v2<binfv-0.0000000001) { 
+      if(ThePSurfaceTool::IsVPeriodic(aPSurf)) { 
+	Standard_Real d = ThePSurfaceTool::VPeriod(aPSurf);
+	do { TranslationV+=d; }	while(v2+TranslationV < binfv);
+      }
+      else
+	return(Standard_False);
+    }
+    else if(v2>bsupv+0.0000000001) { 
+      if(ThePSurfaceTool::IsVPeriodic(aPSurf)) { 
+	Standard_Real d = ThePSurfaceTool::VPeriod(aPSurf);
+	do { TranslationV-=d; } while(v2+TranslationV > bsupv);
+      }
+      else
+	return(Standard_False);
+    }
+    X(1) = u2+TranslationU; 
+    X(2) = v2+TranslationV;
+  }
+  else { 
+    if(u1<binfu-0.0000000001) { 
+      if(ThePSurfaceTool::IsUPeriodic(aPSurf)) { 
+	Standard_Real d = ThePSurfaceTool::UPeriod(aPSurf);
+	do {  TranslationU+=d; 	} while(u1+TranslationU < binfu);
+      }
+      else
+	return(Standard_False);
+    }
+    else if(u1>bsupu+0.0000000001) { 
+      if(ThePSurfaceTool::IsUPeriodic(aPSurf)) { 
+	Standard_Real d = ThePSurfaceTool::UPeriod(aPSurf);
+	do { TranslationU-=d; } while(u1+TranslationU > bsupu);
+      }
+      else
+	return(Standard_False);
+    }
+    if(v1<binfv-0.0000000001) { 
+      if(ThePSurfaceTool::IsVPeriodic(aPSurf)) { 
+	Standard_Real d = ThePSurfaceTool::VPeriod(aPSurf);
+	do { TranslationV+=d; }	while(v1+TranslationV < binfv);
+      }
+      else
+	return(Standard_False);
+    }
+    else if(v1>bsupv+0.0000000001) { 
+      if(ThePSurfaceTool::IsVPeriodic(aPSurf)) { 
+	Standard_Real d = ThePSurfaceTool::VPeriod(aPSurf);
+	do { TranslationV-=d; }	while(v1+TranslationV > bsupv);
+      }
+      else
+	return(Standard_False);
+    }
+    X(1) = u1+TranslationU;
+    X(2) = v1+TranslationV;
+  }
+  
+  //----------------------------------------------------
+  //Make a small step from boundaries in order to avoid
+  //finding "outboundaried" solution (Rsnld -> NotDone).
+  if(X(1)-0.0000000001 <= binfu) X(1)=X(1)+0.0000001;
+  if(X(1)+0.0000000001 >= bsupu) X(1)=X(1)-0.0000001;
+  if(X(2)-0.0000000001 <= binfv) X(2)=X(2)+0.0000001;
+  if(X(2)+0.0000000001 >= bsupv) X(2)=X(2)-0.0000001;
+  
+  return Standard_True;
+}

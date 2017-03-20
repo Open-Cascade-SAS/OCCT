@@ -92,6 +92,13 @@ public:
   //! Is called if WhatStatus returned "PointsAdded".
     static GeomInt_TheMultiLineOfWLApprox MakeMLBetween (const GeomInt_TheMultiLineOfWLApprox& ML, const Standard_Integer I1, const Standard_Integer I2, const Standard_Integer NbPMin);
   
+  //! Is called when the Bezier curve contains a loop
+    static Standard_Boolean MakeMLOneMorePoint (const GeomInt_TheMultiLineOfWLApprox& ML,
+                                                const Standard_Integer I1,
+                                                const Standard_Integer I2,
+                                                const Standard_Integer indbad,
+                                                GeomInt_TheMultiLineOfWLApprox& OtherLine);
+  
     static Approx_Status WhatStatus (const GeomInt_TheMultiLineOfWLApprox& ML, const Standard_Integer I1, const Standard_Integer I2);
   
   //! Dump of the current multi-line.

@@ -53,9 +53,16 @@ public:
   Standard_EXPORT BRepApprox_TheImpPrmSvSurfacesOfApprox(const IntSurf_Quadric& Surf1, const BRepAdaptor_Surface& Surf2);
   
   //! returns True if Tg,Tguv1 Tguv2 can be computed.
-  Standard_EXPORT Standard_Boolean Compute (Standard_Real& u1, Standard_Real& v1, Standard_Real& u2, Standard_Real& v2, gp_Pnt& Pt, gp_Vec& Tg, gp_Vec2d& Tguv1, gp_Vec2d& Tguv2);
+  Standard_EXPORT Standard_Boolean Compute (Standard_Real& u1, Standard_Real& v1, Standard_Real& u2, Standard_Real& v2,
+                                            gp_Pnt& Pt, gp_Vec& Tg, gp_Vec2d& Tguv1, gp_Vec2d& Tguv2);
   
   Standard_EXPORT void Pnt (const Standard_Real u1, const Standard_Real v1, const Standard_Real u2, const Standard_Real v2, gp_Pnt& P);
+  
+  Standard_EXPORT Standard_Boolean SeekPoint(const Standard_Real u1,
+                                             const Standard_Real v1,
+                                             const Standard_Real u2,
+                                             const Standard_Real v2,
+                                             IntSurf_PntOn2S& Point);
   
   Standard_EXPORT Standard_Boolean Tangency (const Standard_Real u1, const Standard_Real v1, const Standard_Real u2, const Standard_Real v2, gp_Vec& Tg);
   
@@ -63,6 +70,17 @@ public:
   
   Standard_EXPORT Standard_Boolean TangencyOnSurf2 (const Standard_Real u1, const Standard_Real v1, const Standard_Real u2, const Standard_Real v2, gp_Vec2d& Tg);
 
+  Standard_Boolean FillInitialVectorOfSolution(const Standard_Real u1,
+                                               const Standard_Real v1,
+                                               const Standard_Real u2,
+                                               const Standard_Real v2,
+                                               const Standard_Real binfu,
+                                               const Standard_Real bsupu,
+                                               const Standard_Real binfv,
+                                               const Standard_Real bsupv,
+                                               math_Vector& X,
+                                               Standard_Real& TranslationU,
+                                               Standard_Real& TranslationV);
 
 
 

@@ -59,9 +59,11 @@ void AppDef_MyLineTool::Value(const AppDef_MultiLine& ML,
 			      TColgp_Array1OfPnt2d& tabPt2d)
 {
   AppDef_MultiPointConstraint MPC = ML.Value(MPointIndex);
-  Standard_Integer nbp2d = MPC.NbPoints2d(), low = tabPt2d.Lower();
+  Standard_Integer nbp3d = MPC.NbPoints();
+  Standard_Integer nbp2d = MPC.NbPoints2d();
+  Standard_Integer low = tabPt2d.Lower();
   for (Standard_Integer i = 1; i <= nbp2d; i++) {
-    tabPt2d(i+low-1) = MPC.Point2d(i);
+    tabPt2d(i+low-1) = MPC.Point2d(nbp3d+i);
   }
 }
 
@@ -102,10 +104,12 @@ Standard_Boolean AppDef_MyLineTool::Tangency(const AppDef_MultiLine& ML,
 				 TColgp_Array1OfVec2d& tabV2d)
 {
   AppDef_MultiPointConstraint MPC = ML.Value(MPointIndex);
-  if (MPC.IsTangencyPoint()) {
+  if (MPC.IsTangencyPoint())
+  {
+    Standard_Integer nbp3d = MPC.NbPoints();
     Standard_Integer nbp2d = MPC.NbPoints2d(), low = tabV2d.Lower();
     for (Standard_Integer i = 1; i <= nbp2d; i++) {
-      tabV2d(i+low-1) = MPC.Tang2d(i);
+      tabV2d(i+low-1) = MPC.Tang2d(nbp3d+i);
     }
     return Standard_True;
   }
@@ -142,6 +146,15 @@ AppDef_MultiLine& AppDef_MyLineTool::MakeMLBetween(const AppDef_MultiLine&,
   return *((AppDef_MultiLine*) 0);
 }
 
+Standard_Boolean AppDef_MyLineTool::MakeMLOneMorePoint(const AppDef_MultiLine& ,
+                                                       const Standard_Integer,
+                                                       const Standard_Integer,
+                                                       const Standard_Integer,
+                                                       AppDef_MultiLine&)
+{
+  return Standard_False;
+}
+
 Approx_Status AppDef_MyLineTool::WhatStatus(const AppDef_MultiLine&,
 					    const Standard_Integer,
 					    const Standard_Integer)
@@ -170,10 +183,12 @@ Standard_Boolean AppDef_MyLineTool::Curvature(const AppDef_MultiLine& ML,
 				 TColgp_Array1OfVec2d& tabV2d)
 {
   AppDef_MultiPointConstraint MPC = ML.Value(MPointIndex);
-  if (MPC.IsCurvaturePoint()) {
+  if (MPC.IsCurvaturePoint())
+  {
+    Standard_Integer nbp3d = MPC.NbPoints();
     Standard_Integer nbp2d = MPC.NbPoints2d(), low = tabV2d.Lower();
     for (Standard_Integer i = 1; i <= nbp2d; i++) {
-      tabV2d(i+low-1) = MPC.Curv2d(i);
+      tabV2d(i+low-1) = MPC.Curv2d(nbp3d+i);
     }
     return Standard_True;
   }

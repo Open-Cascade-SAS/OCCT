@@ -92,6 +92,13 @@ public:
   //! Is called if WhatStatus returned "PointsAdded".
     static BRepApprox_TheMultiLineOfApprox MakeMLBetween (const BRepApprox_TheMultiLineOfApprox& ML, const Standard_Integer I1, const Standard_Integer I2, const Standard_Integer NbPMin);
   
+  //! Is called when the Bezier curve contains a loop
+    static Standard_Boolean MakeMLOneMorePoint (const BRepApprox_TheMultiLineOfApprox& ML,
+                                                const Standard_Integer I1,
+                                                const Standard_Integer I2,
+                                                const Standard_Integer indbad,
+                                                BRepApprox_TheMultiLineOfApprox& OtherLine);
+  
     static Approx_Status WhatStatus (const BRepApprox_TheMultiLineOfApprox& ML, const Standard_Integer I1, const Standard_Integer I2);
   
   //! Dump of the current multi-line.

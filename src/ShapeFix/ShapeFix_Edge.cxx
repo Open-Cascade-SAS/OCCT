@@ -489,8 +489,16 @@ Standard_Boolean ShapeFix_Edge::FixAddPCurve (const TopoDS_Edge& edge,
     Handle(Geom2d_Curve) c2d;
     Standard_Real a1, b1;
     if ( ! sae.HasPCurve (edge, surf, location)) {
+      Standard_Real TolFirst = -1, TolLast = -1;
+      TopoDS_Vertex V1, V2;
+      TopExp::Vertices(edge, V1, V2);
+      if (!V1.IsNull())
+        TolFirst = BRep_Tool::Tolerance(V1);
+      if (!V2.IsNull())
+        TolLast = BRep_Tool::Tolerance(V2);
+      
       myProjector->Init ( sas, preci );
-      myProjector->Perform (c3d,First,Last,c2d);
+      myProjector->Perform (c3d,First,Last,c2d,TolFirst,TolLast);
       //  stat = 2 : reinterpoler la c3d ?
       if ( myProjector->Status ( ShapeExtend_DONE4 ) )
 	myStatus |= ShapeExtend::EncodeStatus (ShapeExtend_DONE2);

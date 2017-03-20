@@ -135,7 +135,13 @@ private:
 
   
   //! is internally used in the algorithm.
-  Standard_EXPORT Standard_Boolean Compute (const GeomInt_TheMultiLineOfWLApprox& Line, const Standard_Integer fpt, const Standard_Integer lpt, math_Vector& Para, Standard_Real& TheTol3d, Standard_Real& TheTol2d);
+  Standard_EXPORT Standard_Boolean Compute (const GeomInt_TheMultiLineOfWLApprox& Line,
+                                            const Standard_Integer fpt,
+                                            const Standard_Integer lpt,
+                                            math_Vector& Para,
+                                            Standard_Real& TheTol3d,
+                                            Standard_Real& TheTol2d,
+                                            Standard_Integer& indbad);
   
   //! is internally used in the algorithm.
   Standard_EXPORT Standard_Boolean ComputeCurve (const GeomInt_TheMultiLineOfWLApprox& Line, const Standard_Integer firspt, const Standard_Integer lastpt);
@@ -176,6 +182,7 @@ private:
   AppParCurves_Constraint myfirstC;
   AppParCurves_Constraint mylastC;
   Standard_Integer myMultiLineNb;
+  Standard_Integer myNbPlusOnePoint;
   Standard_Boolean myIsClear;
 
 

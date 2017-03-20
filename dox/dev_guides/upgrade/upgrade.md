@@ -1143,6 +1143,10 @@ The following obsolete features have been removed:
   - *NextStartingPointsResearch2*;
   - *TriangleComparePSP*;
   - *StartPointsCalcul*.
+* The method PerformAdvanced of the *ShapeConstruct_ProjectCurveOnSurface* class has been removed as unused.
+* The method Perform of the *ShapeConstruct_ProjectCurveOnSurface* class is modified:
+  - input arguments *continuity*, *maxdeg*, *nbinterval* have been removed as unused;
+  - input arguments *TolFirst*, *TolLast* have been added at the end of arguments' list.
 
 @subsection upgrade_occt720_correction_of_Offset_API Corrections in BRepOffset API
 

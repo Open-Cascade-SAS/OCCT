@@ -115,6 +115,15 @@ inline TheMultiLine ApproxInt_MultiLineTool::MakeMLBetween(const TheMultiLine& M
   
   return(ML.MakeMLBetween(I1,I2,NbPMin));
 }
+//--------------------------------------------------------------------------------	
+inline Standard_Boolean ApproxInt_MultiLineTool::MakeMLOneMorePoint(const TheMultiLine& ML,
+                                                                    const Standard_Integer I1,
+                                                                    const Standard_Integer I2,
+                                                                    const Standard_Integer indbad,
+                                                                    TheMultiLine& OtherLine)
+{ 
+  return (ML.MakeMLOneMorePoint(I1,I2,indbad,OtherLine));
+}
 
 inline void ApproxInt_MultiLineTool::Dump(const TheMultiLine& ML)
 { 

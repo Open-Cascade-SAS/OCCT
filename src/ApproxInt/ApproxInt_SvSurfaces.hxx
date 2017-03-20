@@ -26,7 +26,7 @@
 class gp_Pnt;
 class gp_Vec;
 class gp_Vec2d;
-
+class IntSurf_PntOn2S;
 
 
 class ApproxInt_SvSurfaces 
@@ -37,15 +37,37 @@ public:
 
   
   //! returns True if Tg,Tguv1 Tguv2 can be computed.
-  Standard_EXPORT virtual Standard_Boolean Compute (Standard_Real& u1, Standard_Real& v1, Standard_Real& u2, Standard_Real& v2, gp_Pnt& Pt, gp_Vec& Tg, gp_Vec2d& Tguv1, gp_Vec2d& Tguv2) = 0;
+  Standard_EXPORT virtual Standard_Boolean Compute (Standard_Real& u1, Standard_Real& v1,
+                                                    Standard_Real& u2, Standard_Real& v2,
+                                                    gp_Pnt& Pt,
+                                                    gp_Vec& Tg,
+                                                    gp_Vec2d& Tguv1,
+                                                    gp_Vec2d& Tguv2) = 0;
   
-  Standard_EXPORT virtual void Pnt (const Standard_Real u1, const Standard_Real v1, const Standard_Real u2, const Standard_Real v2, gp_Pnt& P) = 0;
+  Standard_EXPORT virtual void Pnt (const Standard_Real u1, const Standard_Real v1,
+                                    const Standard_Real u2, const Standard_Real v2,
+                                    gp_Pnt& P) = 0;
+
+  //! computes point on curve and parameters on the surfaces
+  Standard_EXPORT virtual Standard_Boolean SeekPoint(const Standard_Real u1, const Standard_Real v1,
+                                                     const Standard_Real u2, const Standard_Real v2,
+                                                     IntSurf_PntOn2S& Point) = 0;
   
-  Standard_EXPORT virtual Standard_Boolean Tangency (const Standard_Real u1, const Standard_Real v1, const Standard_Real u2, const Standard_Real v2, gp_Vec& Tg) = 0;
+  Standard_EXPORT virtual Standard_Boolean Tangency (const Standard_Real u1, const Standard_Real v1,
+                                                     const Standard_Real u2, const Standard_Real v2,
+                                                     gp_Vec& Tg) = 0;
   
-  Standard_EXPORT virtual Standard_Boolean TangencyOnSurf1 (const Standard_Real u1, const Standard_Real v1, const Standard_Real u2, const Standard_Real v2, gp_Vec2d& Tg) = 0;
+  Standard_EXPORT virtual Standard_Boolean TangencyOnSurf1 (const Standard_Real u1,
+                                                            const Standard_Real v1,
+                                                            const Standard_Real u2,
+                                                            const Standard_Real v2,
+                                                            gp_Vec2d& Tg) = 0;
   
-  Standard_EXPORT virtual Standard_Boolean TangencyOnSurf2 (const Standard_Real u1, const Standard_Real v1, const Standard_Real u2, const Standard_Real v2, gp_Vec2d& Tg) = 0;
+  Standard_EXPORT virtual Standard_Boolean TangencyOnSurf2 (const Standard_Real u1,
+                                                            const Standard_Real v1,
+                                                            const Standard_Real u2,
+                                                            const Standard_Real v2,
+                                                            gp_Vec2d& Tg) = 0;
   Standard_EXPORT virtual ~ApproxInt_SvSurfaces();
 
 

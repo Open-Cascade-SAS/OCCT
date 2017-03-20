@@ -41,6 +41,8 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
+  Standard_EXPORT GeomInt_TheMultiLineOfWLApprox();
+  
   //! The class SvSurfaces is used when the approximation algorithm 
   //! needs some extra points on the line <line>. 
   //! A New line  is then created which shares the same surfaces and functions.
@@ -51,6 +53,8 @@ public:
                                                   const Standard_Address PtrSvSurfaces,
                                                   const Standard_Integer NbP3d,
                                                   const Standard_Integer NbP2d,
+                                                  const Standard_Boolean ApproxU1V1,
+                                                  const Standard_Boolean ApproxU2V2,
                                                   const Standard_Real xo,
                                                   const Standard_Real yo,
                                                   const Standard_Real zo,
@@ -66,6 +70,8 @@ public:
   Standard_EXPORT GeomInt_TheMultiLineOfWLApprox( const Handle(IntPatch_WLine)& line,
                                                   const Standard_Integer NbP3d,
                                                   const Standard_Integer NbP2d,
+                                                  const Standard_Boolean ApproxU1V1,
+                                                  const Standard_Boolean ApproxU2V2,
                                                   const Standard_Real xo,
                                                   const Standard_Real yo,
                                                   const Standard_Real zo,
@@ -112,8 +118,19 @@ public:
   //! Returns the 3d and 2d points of the multipoint <MPointIndex>.
   Standard_EXPORT Standard_Boolean Tangency (const Standard_Integer MPointIndex, TColgp_Array1OfVec& tabV, TColgp_Array1OfVec2d& tabV2d) const;
   
-  Standard_EXPORT GeomInt_TheMultiLineOfWLApprox MakeMLBetween (const Standard_Integer Low, const Standard_Integer High, const Standard_Integer NbPointsToInsert) const;
+  //! Tries to make a sub-line between <Low> and <High> points of this line
+  //! by adding <NbPointsToInsert> new points
+  Standard_EXPORT GeomInt_TheMultiLineOfWLApprox MakeMLBetween (const Standard_Integer Low,
+                                                                const Standard_Integer High,
+                                                                const Standard_Integer NbPointsToInsert) const;
   
+  //! Tries to make a sub-line between <Low> and <High> points of this line
+  //! by adding one more point between (indbad-1)-th and indbad-th points
+  Standard_EXPORT Standard_Boolean MakeMLOneMorePoint (const Standard_Integer Low,
+                                                       const Standard_Integer High,
+                                                       const Standard_Integer indbad,
+                                                       GeomInt_TheMultiLineOfWLApprox& OtherLine) const;
+
   //! Dump of the current multi-line.
   Standard_EXPORT void Dump() const;
 
@@ -121,23 +138,24 @@ public:
 
 
 protected:
-  GeomInt_TheMultiLineOfWLApprox operator=(GeomInt_TheMultiLineOfWLApprox&);
 
 private:
-  const Standard_Address PtrOnmySvSurfaces;
-  const Handle(IntPatch_WLine) myLine;
-  const Standard_Integer indicemin;
-  const Standard_Integer indicemax;
-  const Standard_Integer nbp3d;
-  const Standard_Integer nbp2d;
-  const Standard_Boolean p2donfirst;
-  const Standard_Real Xo;
-  const Standard_Real Yo;
-  const Standard_Real Zo;
-  const Standard_Real U1o;
-  const Standard_Real V1o;
-  const Standard_Real U2o;
-  const Standard_Real V2o;
+  Standard_Address PtrOnmySvSurfaces;
+  Handle(IntPatch_WLine) myLine;
+  Standard_Integer indicemin;
+  Standard_Integer indicemax;
+  Standard_Integer nbp3d;
+  Standard_Integer nbp2d;
+  Standard_Boolean myApproxU1V1;
+  Standard_Boolean myApproxU2V2;
+  Standard_Boolean p2donfirst;
+  Standard_Real Xo;
+  Standard_Real Yo;
+  Standard_Real Zo;
+  Standard_Real U1o;
+  Standard_Real V1o;
+  Standard_Real U2o;
+  Standard_Real V2o;
 
 
 };

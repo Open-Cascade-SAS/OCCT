@@ -29,8 +29,8 @@
 #include <gp_Pnt2d.hxx>
 #include <Bnd_Box.hxx>
 #include <MMgt_TShared.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TColgp_SequenceOfPnt2d.hxx>
 class Geom_Surface;
 class GeomAdaptor_HSurface;
 class Geom_Curve;
@@ -82,7 +82,8 @@ public:
   //! Reads all the data from another Surface, without recomputing
   Standard_EXPORT void Init (const Handle(ShapeAnalysis_Surface)& other);
   
-  Standard_EXPORT void SetDomain (const Standard_Real U1, const Standard_Real U2, const Standard_Real V1, const Standard_Real V2);
+  Standard_EXPORT void SetDomain (const Standard_Real U1, const Standard_Real U2,
+                                  const Standard_Real V1, const Standard_Real V2);
   
   //! Returns a surface being analyzed
     const Handle(Geom_Surface)& Surface() const;
@@ -138,7 +139,14 @@ public:
   //! uisodeg: if the degenerated iso-line is U-iso (True) or
   //! V-iso (False).
   //! Returns False if <num> is out of range, else returns True.
-  Standard_EXPORT Standard_Boolean Singularity (const Standard_Integer num, Standard_Real& preci, gp_Pnt& P3d, gp_Pnt2d& firstP2d, gp_Pnt2d& lastP2d, Standard_Real& firstpar, Standard_Real& lastpar, Standard_Boolean& uisodeg);
+  Standard_EXPORT Standard_Boolean Singularity (const Standard_Integer num,
+                                                Standard_Real& preci,
+                                                gp_Pnt& P3d,
+                                                gp_Pnt2d& firstP2d,
+                                                gp_Pnt2d& lastP2d,
+                                                Standard_Real& firstpar,
+                                                Standard_Real& lastpar,
+                                                Standard_Boolean& uisodeg);
   
   //! Returns True if there is at least one surface boundary which
   //! is considered as degenerated with <preci> and distance
@@ -152,7 +160,13 @@ public:
   //! <preci> (like IsDegenerated).
   //! Returns characteristics of the first found boundary matching
   //! those criteria.
-  Standard_EXPORT Standard_Boolean DegeneratedValues (const gp_Pnt& P3d, const Standard_Real preci, gp_Pnt2d& firstP2d, gp_Pnt2d& lastP2d, Standard_Real& firstpar, Standard_Real& lastpar, const Standard_Boolean forward = Standard_True);
+  Standard_EXPORT Standard_Boolean DegeneratedValues (const gp_Pnt& P3d,
+                                                      const Standard_Real preci,
+                                                      gp_Pnt2d& firstP2d,
+                                                      gp_Pnt2d& lastP2d,
+                                                      Standard_Real& firstpar,
+                                                      Standard_Real& lastpar,
+                                                      const Standard_Boolean forward = Standard_True);
   
   //! Projects a point <P3d> on a singularity by computing
   //! one of the coordinates of preliminary computed <result>.
@@ -166,14 +180,20 @@ public:
   //! resolution (computed from <preci> by Geom_Adaptor).
   //! Then sets not yet computed <result>'s coordinate taking it
   //! from <neighbour> and returns True.
-  Standard_EXPORT Standard_Boolean ProjectDegenerated (const gp_Pnt& P3d, const Standard_Real preci, const gp_Pnt2d& neighbour, gp_Pnt2d& result);
+  Standard_EXPORT Standard_Boolean ProjectDegenerated (const gp_Pnt& P3d,
+                                                       const Standard_Real preci,
+                                                       const gp_Pnt2d& neighbour,
+                                                       gp_Pnt2d& result);
   
   //! Checks points at the beginning (direct is True) or end
   //! (direct is False) of array <points> to lie in singularity of
   //! surface, and if yes, adjusts the indeterminate 2d coordinate
   //! of these points by nearest point which is not in singularity.
   //! Returns True if some points were adjusted.
-  Standard_EXPORT Standard_Boolean ProjectDegenerated (const Standard_Integer nbrPnt, const TColgp_Array1OfPnt& points, TColgp_Array1OfPnt2d& pnt2d, const Standard_Real preci, const Standard_Boolean direct);
+  Standard_EXPORT Standard_Boolean ProjectDegenerated (const Standard_Integer nbrPnt,
+                                                       const TColgp_SequenceOfPnt& points,
+                                                       TColgp_SequenceOfPnt2d& pnt2d,
+                                                       const Standard_Real preci, const Standard_Boolean direct);
   
   //! Returns True if straight pcurve going from point p2d1 to p2d2
   //! is degenerate, i.e. lies in the singularity of the surface.
@@ -188,11 +208,15 @@ public:
   //! the Resolution computed from max distance in 3d
   //! (max3d < tol && max2d > ratio * Resolution(max3d))
   //! NOTE: <ratio> should be >1 (e.g. 10)
-  Standard_EXPORT Standard_Boolean IsDegenerated (const gp_Pnt2d& p2d1, const gp_Pnt2d& p2d2, const Standard_Real tol, const Standard_Real ratio);
+  Standard_EXPORT Standard_Boolean IsDegenerated (const gp_Pnt2d& p2d1,
+                                                  const gp_Pnt2d& p2d2,
+                                                  const Standard_Real tol,
+                                                  const Standard_Real ratio);
   
   //! Returns the bounds of the surface
   //! (from Bounds from Surface, but buffered)
-    void Bounds (Standard_Real& ufirst, Standard_Real& ulast, Standard_Real& vfirst, Standard_Real& vlast) const;
+    void Bounds (Standard_Real& ufirst, Standard_Real& ulast,
+                 Standard_Real& vfirst, Standard_Real& vlast) const;
   
   //! Computes bound isos (protected against exceptions)
   Standard_EXPORT void ComputeBoundIsos();
@@ -257,7 +281,10 @@ public:
   //! P3D is greater than <maxpreci>, that solution is considered
   //! as bad, and ValueOfUV() is used.
   //! If not succeded, calls ValueOfUV()
-  Standard_EXPORT gp_Pnt2d NextValueOfUV (const gp_Pnt2d& p2dPrev, const gp_Pnt& P3D, const Standard_Real preci, const Standard_Real maxpreci = -1.0);
+  Standard_EXPORT gp_Pnt2d NextValueOfUV (const gp_Pnt2d& p2dPrev,
+                                          const gp_Pnt& P3D,
+                                          const Standard_Real preci,
+                                          const Standard_Real maxpreci = -1.0);
   
   //! Tries a refinement of an already computed couple (U,V) by
   //! using projecting 3D point on iso-lines:
@@ -268,7 +295,10 @@ public:
   //! direction)
   //! Returns the best resulting distance between P3D and Value(U,V)
   //! in the case of success. Else, returns a very great value
-  Standard_EXPORT Standard_Real UVFromIso (const gp_Pnt& P3D, const Standard_Real preci, Standard_Real& U, Standard_Real& V);
+  Standard_EXPORT Standard_Real UVFromIso (const gp_Pnt& P3D,
+                                           const Standard_Real preci,
+                                           Standard_Real& U,
+                                           Standard_Real& V);
   
   //! Returns minimum value to consider the surface as U-closed
     Standard_Real UCloseVal() const;
@@ -349,7 +379,10 @@ private:
   Standard_EXPORT void ComputeBoxes();
 
   //! @return 0, 1 or 2.
-  Standard_EXPORT Standard_Integer SurfaceNewton (const gp_Pnt2d& p2dPrev, const gp_Pnt& P3D, const Standard_Real preci, gp_Pnt2d& sol);
+  Standard_EXPORT Standard_Integer SurfaceNewton (const gp_Pnt2d& p2dPrev,
+                                                  const gp_Pnt& P3D,
+                                                  const Standard_Real preci,
+                                                  gp_Pnt2d& sol);
 
   Standard_EXPORT void SortSingularities();
 

@@ -376,8 +376,8 @@ Standard_Boolean ShapeAnalysis_Surface::ProjectDegenerated(const gp_Pnt& P3d,
 //=======================================================================
 
 Standard_Boolean ShapeAnalysis_Surface::ProjectDegenerated(const Standard_Integer nbrPnt,
-							   const TColgp_Array1OfPnt& points,
-							   TColgp_Array1OfPnt2d& pnt2d,
+							   const TColgp_SequenceOfPnt& points,
+							   TColgp_SequenceOfPnt2d& pnt2d,
 							   const Standard_Real preci,
 							   const Standard_Boolean direct)
 {
