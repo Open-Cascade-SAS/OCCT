@@ -7,10 +7,8 @@ puts ""
 ####################################
 ## BRepAlgoAPI_Fuse fails on cylinder and sphere
 ####################################
-## (old topology)
-#####################################
 
-if { [ catch { set info_result [OCC824 a1 a2 result 0] } ] } {
+if { [ catch { set info_result [OCC824 a1 a2 result] } ] } {
     puts "Faulty OCC824"
 } else {
     if { [regexp {FAILED} $info_result] } {

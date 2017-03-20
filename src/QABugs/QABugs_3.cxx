@@ -323,7 +323,6 @@ static Standard_Integer BUC60574(Draw_Interpretor& di, Standard_Integer /*n*/, c
 #include <BRepPrimAPI_MakeSphere.hxx>
 
 #include <BRepAlgoAPI_Fuse.hxx>
-#include <BRepAlgo_Fuse.hxx>
 
 #include <V3d_View.hxx>
 #include <gce_MakePln.hxx>
@@ -732,20 +731,9 @@ static int BUC60825(Draw_Interpretor& di, Standard_Integer argc, const char ** a
 
 static int OCC10006(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
-  if(argc > 2) {
-    di << "Usage : " << argv[0] << " [BRepAlgoAPI/BRepAlgo = 1/0]\n";
+  if(argc != 1) {
+    di << "Usage : " << argv[0] << "\n";
     return 1;
-  }
-  Standard_Boolean IsBRepAlgoAPI = Standard_True;
-  if (argc == 2) {
-    Standard_Integer IsB = Draw::Atoi(argv[1]);
-    if (IsB != 1) {
-      IsBRepAlgoAPI = Standard_False;
-#if ! defined(BRepAlgo_def01)
-//      di << "Error: There is not BRepAlgo_Fuse class\n";
-//      return 1;
-#endif
-    }
   }
 
   double bottompoints1[12] = { 10, -10, 0, 100, -10, 0, 100, -100, 0, 10, -100, 0};
@@ -785,22 +773,10 @@ static int OCC10006(Draw_Interpretor& di, Standard_Integer argc, const char ** a
   DBRep::Set("TS1",loft1.Shape());
   DBRep::Set("TS2",loft2.Shape());
 
-//#if ! defined(BRepAlgoAPI_def01)
-//  BRepAlgoAPI_Fuse result(loft1.Shape(), loft2.Shape());
-//#else
-//  BRepAlgo_Fuse result(loft1.Shape(), loft2.Shape());
-//#endif
-  if (IsBRepAlgoAPI) {
-    di << "BRepAlgoAPI_Fuse result(loft1.Shape(), loft2.Shape())\n";
-    BRepAlgoAPI_Fuse result(loft1.Shape(), loft2.Shape());
-    DBRep::Set("F",result.Shape());
-  } else {
-    di << "BRepAlgo_Fuse result(loft1.Shape(), loft2.Shape())\n";
-    BRepAlgo_Fuse result(loft1.Shape(), loft2.Shape());
-    DBRep::Set("F",result.Shape());
-  }
+  di << "BRepAlgoAPI_Fuse result(loft1.Shape(), loft2.Shape())\n";
+  BRepAlgoAPI_Fuse result(loft1.Shape(), loft2.Shape());
+  DBRep::Set("F", result.Shape());
 
-//  DBRep::Set("F",result.Shape());
   return 0;
 }
 
@@ -945,20 +921,9 @@ static Standard_Integer BUC60773 (Draw_Interpretor& /*di*/, Standard_Integer /*n
 static int TestCMD(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 
 {
-  if(argc > 2) {
-    di << "Usage : " << argv[0] << " [BRepAlgoAPI/BRepAlgo = 1/0]\n";
+  if(argc != 1) {
+    di << "Usage : " << argv[0] << "\n";
     return 1;
-  }
-  Standard_Boolean IsBRepAlgoAPI = Standard_True;
-  if (argc == 2) {
-    Standard_Integer IsB = Draw::Atoi(argv[1]);
-    if (IsB != 1) {
-      IsBRepAlgoAPI = Standard_False;
-#if ! defined(BRepAlgo_def01)
-//      di << "Error: There is not BRepAlgo_Fuse class\n";
-//      return 1;
-#endif
-    }
   }
 
   //Cylindre 36.085182 20.0 8.431413 88.04671 20.0 38.931416 10.0
@@ -1000,34 +965,15 @@ static int TestCMD(Draw_Interpretor& di, Standard_Integer argc, const char ** ar
   TopoDS_Shape SCon = cone.Shape();
   DBRep::Set("con", SCon);
 
-//#if ! defined(BRepAlgoAPI_def01)
-//  BRepAlgoAPI_Fuse SFuse(SCyl, SCon);
-//#else
-//  BRepAlgo_Fuse SFuse(SCyl, SCon);
-//#endif
-//
-//  if(! SFuse.IsDone() )
-//    cout<<"Error: Boolean fuse operation failed !"<<endl;
-//
-//  TopoDS_Shape fuse = SFuse.Shape();
-
-  TopoDS_Shape fuse;
-  if (IsBRepAlgoAPI) {
-    di << "BRepAlgoAPI_Fuse SFuse(SCyl, SCon)\n";
-    BRepAlgoAPI_Fuse SFuse(SCyl, SCon);
-    if(! SFuse.IsDone() )
-      di<<"Error: Boolean fuse operation failed !\n";
-    fuse = SFuse.Shape();
-  } else {
-    di << "BRepAlgo_Fuse SFuse(SCyl, SCon)\n";
-    BRepAlgo_Fuse SFuse(SCyl, SCon);
-    if(! SFuse.IsDone() )
-      di<<"Error: Boolean fuse operation failed !\n";
-    fuse = SFuse.Shape();
+  di << "BRepAlgoAPI_Fuse SFuse(SCyl, SCon)\n";
+  BRepAlgoAPI_Fuse SFuse(SCyl, SCon);
+  if (!SFuse.IsDone()) {
+    di << "Error: Boolean fuse operation failed !\n";
   }
-
-  DBRep::Set("fus", fuse);
- 	
+  else {
+    const TopoDS_Shape& fuse = SFuse.Shape();
+    DBRep::Set("fus", fuse);
+  }
   return 0;
 }
 
@@ -1125,20 +1071,9 @@ static Standard_Integer statface (Draw_Interpretor& di,Standard_Integer /*argc*/
 
 static Standard_Integer BUC60841(Draw_Interpretor& di, Standard_Integer argc, const char ** argv )
 {
-  if(argc > 2) {
-    di << "Usage : " << argv[0] << " [BRepAlgoAPI/BRepAlgo = 1/0]\n";
+  if(argc != 1) {
+    di << "Usage : " << argv[0] << "\n";
     return 1;
-  }
-  Standard_Boolean IsBRepAlgoAPI = Standard_True;
-  if (argc == 2) {
-    Standard_Integer IsB = Draw::Atoi(argv[1]);
-    if (IsB != 1) {
-      IsBRepAlgoAPI = Standard_False;
-#if ! defined(BRepAlgo_def01)
-//      di << "Error: There is not BRepAlgo_Fuse class\n";
-//      return 1;
-#endif
-    }
   }
 
   gp_Ax2 Ax2 = gp_Ax2(gp_Pnt(0, 621, 78), gp_Dir(0, 1,0));
@@ -1156,52 +1091,21 @@ static Standard_Integer BUC60841(Draw_Interpretor& di, Standard_Integer argc, co
   TopoDS_Shape sh2 = trans1.Shape();
   DBRep::Set("sh2",sh2);
 
-//#if ! defined(BRepAlgoAPI_def01)
-//  BRepAlgoAPI_Fuse fuse1(sh1, sh2);
-//#else
-//  BRepAlgo_Fuse fuse1(sh1, sh2);
-//#endif
-//
-//  TopoDS_Shape fsh1 = fuse1.Shape();
-
-  TopoDS_Shape fsh1;
-  if (IsBRepAlgoAPI) {
-    di << "BRepAlgoAPI_Fuse fuse1(sh1, sh2)\n";
-    BRepAlgoAPI_Fuse fuse1(sh1, sh2);
-    fsh1 = fuse1.Shape();
-  } else {
-    di << "BRepAlgo_Fuse fuse1(sh1, sh2)\n";
-    BRepAlgo_Fuse fuse1(sh1, sh2);
-    fsh1 = fuse1.Shape();
-  }
-
+  di << "BRepAlgoAPI_Fuse fuse1(sh1, sh2)\n";
+  BRepAlgoAPI_Fuse fuse1(sh1, sh2);
+  TopoDS_Shape fsh1 = fuse1.Shape();
   DBRep::Set("fsh1",fsh1);
+
   BRepBuilderAPI_Transform trans2(fsh1, trsf2);
   TopoDS_Shape sh3 = trans2.Shape();
   DBRep::Set("sh3",sh3);
 
-//#if ! defined(BRepAlgoAPI_def01)
-//  BRepAlgoAPI_Fuse fuse2(fsh1,sh3);
-//#else
-//  BRepAlgo_Fuse fuse2(fsh1,sh3);
-//#endif
-//
-//  TopoDS_Shape fsh2 = fuse2.Shape();
-
-  TopoDS_Shape fsh2;
-  if (IsBRepAlgoAPI) {
-    di << "BRepAlgoAPI_Fuse fuse2(fsh1,sh3)\n";
-    BRepAlgoAPI_Fuse fuse2(fsh1,sh3);
-    fsh2 = fuse2.Shape();
-  } else {
-    di << "BRepAlgo_Fuse fuse2(fsh1,sh3)\n";
-    BRepAlgo_Fuse fuse2(fsh1,sh3);
-    fsh2 = fuse2.Shape();
-  }
-
+  di << "BRepAlgoAPI_Fuse fuse2(fsh1,sh3)\n";
+  BRepAlgoAPI_Fuse fuse2(fsh1, sh3);
+  const TopoDS_Shape& fsh2 = fuse2.Shape();
   DBRep::Set("fsh2",fsh2);
+
   Handle(AIS_Shape) aisp1 = new AIS_Shape(fsh2);
-//  aContext->Display(aisp1);
   return 0;
 }
 
@@ -1596,27 +1500,11 @@ static Standard_Integer BUC60921 (Draw_Interpretor& di,
 
 static Standard_Integer BUC60951_(Draw_Interpretor& di, Standard_Integer argc, const char ** a)
 {
-  //if(argc!=2)
-  //  {
-  //    cerr << "Usage : " << a[0] << " file.igs" << endl;
-  //    return -1;
-  //  }
-  if(argc < 2 || argc > 3) {
-    di << "Usage : " << a[0] << " [BRepAlgoAPI/BRepAlgo = 1/0]\n";
+  if (argc != 2) {
+    di << "Usage : " << a[0] << " file.igs\n";
     return 1;
   }
-  Standard_Boolean IsBRepAlgoAPI = Standard_True;
-  if (argc == 3) {
-    Standard_Integer IsB = Draw::Atoi(a[2]);
-    if (IsB != 1) {
-      IsBRepAlgoAPI = Standard_False;
-#if ! defined(BRepAlgo_def01)
-//      di << "Error: There is not BRepAlgo_Fuse class\n";
-//      return 1;
-#endif
-    }
-  }
-  
+
   Handle(AIS_InteractiveContext) myContext = ViewerTest::GetAISContext(); 
 
   if(myContext.IsNull()) {
@@ -1649,23 +1537,9 @@ static Standard_Integer BUC60951_(Draw_Interpretor& di, Standard_Integer argc, c
   BRepPrimAPI_MakeCylinder cyl(anAx2, 50, 300);
   TopoDS_Shape sh = cyl.Shape();
 
-//#if ! defined(BRepAlgoAPI_def01)
-//  BRepAlgoAPI_Fuse fuse(sol, sh);
-//#else
-//  BRepAlgo_Fuse fuse(sol, sh);
-//#endif
-//
-//  sh = fuse.Shape();
-
-  if (IsBRepAlgoAPI) {
-    di << "BRepAlgoAPI_Fuse fuse(sol, sh)\n";
-    BRepAlgoAPI_Fuse fuse(sol, sh);
-    sh = fuse.Shape();
-  } else {
-    di << "BRepAlgo_Fuse fuse(sol, sh)\n";
-    BRepAlgo_Fuse fuse(sol, sh);
-    sh = fuse.Shape();
-  }
+  di << "BRepAlgoAPI_Fuse fuse(sol, sh)\n";
+  BRepAlgoAPI_Fuse fuse(sol, sh);
+  sh = fuse.Shape();
 
   Handle(AIS_Shape) res = new AIS_Shape(sh);
   myContext->Display (res, Standard_True);
@@ -1694,7 +1568,7 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands) {
 
   theCommands.Add("BUC60825","BUC60825",__FILE__,BUC60825,group);
 
-  theCommands.Add("OCC10006","OCC10006 [BRepAlgoAPI/BRepAlgo = 1/0]",__FILE__,OCC10006,group);
+  theCommands.Add("OCC10006","OCC10006",__FILE__,OCC10006,group);
 
   theCommands.Add("BUC60856","BUC60856",__FILE__,BUC60856,group);
 
@@ -1705,11 +1579,11 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands) {
   theCommands.Add("BUC60876","BUC60876 shape",__FILE__,BUC60876_,group); 
   theCommands.Add("BUC60773","BUC60773",__FILE__,BUC60773,group); 
 
-  theCommands.Add("TestCMD","TestCMD [BRepAlgoAPI/BRepAlgo = 1/0]",__FILE__,TestCMD,group);
+  theCommands.Add("TestCMD","TestCMD",__FILE__,TestCMD,group);
 
   theCommands.Add("statface","statface face",__FILE__,statface,group);
 
-  theCommands.Add("BUC60841","BUC60841 [BRepAlgoAPI/BRepAlgo = 1/0]",__FILE__,BUC60841,group);
+  theCommands.Add("BUC60841","BUC60841",__FILE__,BUC60841,group);
 
   theCommands.Add("BUC60874","BUC60874",__FILE__,BUC60874,group);
 
@@ -1726,6 +1600,6 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands) {
   theCommands.Add("AISWidth","AISWidth (DOC,entry,[width])",__FILE__,AISWidth,group);
   theCommands.Add("BUC60921","BUC60921 Doc label brep_file",__FILE__,BUC60921,group);
 
-  theCommands.Add("BUC60951","BUC60951 file.igs [BRepAlgoAPI/BRepAlgo = 1/0]",__FILE__,BUC60951_, group );
+  theCommands.Add("BUC60951","BUC60951 file.igs",__FILE__,BUC60951_, group );
 
 }

@@ -10,7 +10,7 @@ puts ""
 ## (old topology)
 #####################################
 
-if { [ catch { set info_result [OCC822_2 a1 a2 result 0] } ] } {
+if { [ catch { set info_result [OCC822_2 a1 a2 result] } ] } {
   puts "Faulty OCC822"
 } else {
     if { [regexp {FAILED} $info_result] } {

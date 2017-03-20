@@ -7,8 +7,6 @@ puts ""
 ###############################
 ## BRepAlgoAPI_Fuse fails on two cylinders
 ###############################
-## (old topology)
-#####################################
 
 if { [ catch { set info_result [OCC823 a1 a2 result] } ] } {
     puts "Faulty OCC823"

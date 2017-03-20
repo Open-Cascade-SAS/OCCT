@@ -1399,7 +1399,6 @@ static Standard_Integer OCCN1 (Draw_Interpretor& di, Standard_Integer argc, cons
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepAlgoAPI_Section.hxx>
-#include <BRepAlgo_Section.hxx>
 //=======================================================================
 //function : OCCN2
 //purpose  : BOOLEAN OPERATION
@@ -1407,17 +1406,8 @@ static Standard_Integer OCCN1 (Draw_Interpretor& di, Standard_Integer argc, cons
 static Standard_Integer OCCN2 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if (argc > 2) {
-    di << "Usage : " << argv[0] << " [BRepAlgoAPI/BRepAlgo = 1/0]\n";
+    di << "Usage : " << argv[0] << "\n";
     return 1;
-  }
-  Standard_Boolean IsBRepAlgoAPI = Standard_True;
-  if (argc == 2) {
-    Standard_Integer IsB = Draw::Atoi(argv[1]);
-    if (IsB != 1) {
-      IsBRepAlgoAPI = Standard_False;
-#if ! defined(BRepAlgo_def04)
-#endif
-    }
   }
 
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
@@ -1433,27 +1423,12 @@ static Standard_Integer OCCN2 (Draw_Interpretor& di, Standard_Integer argc, cons
   BRepPrimAPI_MakeSphere sphere(gp_Pnt(60,0,100),50);
   TopoDS_Shape sphere_sh = sphere.Shape();
 
-  //BRepAlgoAPI_Section section(cylinder_sh, sphere_sh);
-  //TopoDS_Shape shape = section.Shape();
-
-  TopoDS_Shape shape;
-  if (IsBRepAlgoAPI) {
-    di << "BRepAlgoAPI_Section section(cylinder_sh, sphere_sh)\n";
-    BRepAlgoAPI_Section section(cylinder_sh, sphere_sh);
-    section.Build();
-    if(!section.IsDone()){
-      di << "Error performing intersection: not done.\n";
-    }
-    shape = section.Shape();
-  } else {
-    di << "BRepAlgo_Section section(cylinder_sh, sphere_sh)\n";
-    BRepAlgo_Section section(cylinder_sh, sphere_sh);
-    section.Build();
-    if(!section.IsDone()){
-      di << "Error performing intersection: not done.\n";
-    }
-    shape = section.Shape();
+  di << "BRepAlgoAPI_Section section(cylinder_sh, sphere_sh)\n";
+  BRepAlgoAPI_Section section(cylinder_sh, sphere_sh);
+  if (!section.IsDone()){
+    di << "Error performing intersection: not done.\n";
   }
+  const TopoDS_Shape& shape = section.Shape();
 
   DBRep::Set("OCCN2_cylinder",cylinder_sh);
   DBRep::Set("OCCN2_sphere",sphere_sh);

@@ -596,7 +596,6 @@ Standard_Integer  OCC165(Draw_Interpretor& di ,
 }
 
 #include<BRepAlgoAPI_Cut.hxx>
-#include<BRepAlgo_Cut.hxx>
 
 #include<BRepPrimAPI_MakeHalfSpace.hxx>
 #include<Geom_CartesianPoint.hxx>
@@ -609,71 +608,55 @@ Standard_Integer  OCC165(Draw_Interpretor& di ,
 static Standard_Integer OCC297 (Draw_Interpretor& di,Standard_Integer /*argc*/, const char ** argv )
 
 {
-
   Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
-  if(myAISContext.IsNull()) {
+  if (myAISContext.IsNull()) {
     di << "use 'vinit' command before " << argv[0] << "\n";
     return -1;
   }
+  
+  gp_Pnt pt1_(250., 250., 0.);
+  gp_Pnt pt2_(-250., 250., 0.);
+  gp_Pnt pt3_(-250., -250., 0.);
+  gp_Pnt pt4_(250., -250., 0.);
+  BRepBuilderAPI_MakeEdge edg1_(pt1_, pt2_);
+  BRepBuilderAPI_MakeEdge edg2_(pt2_, pt3_);
+  BRepBuilderAPI_MakeEdge edg3_(pt3_, pt4_);
+  BRepBuilderAPI_MakeEdge edg4_(pt4_, pt1_);
 
+  BRepBuilderAPI_MakeWire wire_(edg1_, edg2_, edg3_, edg4_);
+  BRepBuilderAPI_MakeFace face_(wire_);
+  TopoDS_Face sh_ = face_.Face();
 
-    gp_Pnt pt1_(250.,250.,0.);
-    gp_Pnt pt2_(-250.,250.,0.);
-    gp_Pnt pt3_(-250.,-250.,0.);
-    gp_Pnt pt4_(250.,-250.,0.);
-    BRepBuilderAPI_MakeEdge edg1_(pt1_, pt2_);
-    BRepBuilderAPI_MakeEdge edg2_(pt2_, pt3_);
-    BRepBuilderAPI_MakeEdge edg3_(pt3_, pt4_);
-    BRepBuilderAPI_MakeEdge edg4_(pt4_, pt1_);
+  int up = 1;
 
-    BRepBuilderAPI_MakeWire wire_(edg1_, edg2_, edg3_, edg4_);
-    BRepBuilderAPI_MakeFace face_(wire_);
-    TopoDS_Face sh_ = face_.Face();
+  gp_Pnt g_pnt;
+  if (up)
+    g_pnt = gp_Pnt(0, 0, -100);
+  else
+    g_pnt = gp_Pnt(0, 0, 100);
 
-    int up = 1;
+  myAISContext->EraseAll(Standard_False);
+  Handle(Geom_CartesianPoint) GEOMPoint = new Geom_CartesianPoint(g_pnt);
+  Handle(AIS_Point) AISPoint = new AIS_Point(GEOMPoint);
+  myAISContext->Display(AISPoint, Standard_True);
 
-    gp_Pnt g_pnt;
-    if(up)
-        g_pnt = gp_Pnt(0,0,-100);
-    else
-          g_pnt = gp_Pnt(0,0,100);
+  BRepPrimAPI_MakeHalfSpace half_(sh_, g_pnt);
+  TopoDS_Solid sol1_ = half_.Solid();
 
-    myAISContext->EraseAll(Standard_False);
-        Handle(Geom_CartesianPoint) GEOMPoint = new Geom_CartesianPoint(g_pnt);
-        Handle(AIS_Point) AISPoint = new AIS_Point(GEOMPoint);
-    myAISContext->Display (AISPoint, Standard_True);
+  DBRep::Set("Face", sol1_);
 
-    BRepPrimAPI_MakeHalfSpace half_(sh_, g_pnt);
-    TopoDS_Solid sol1_ = half_.Solid();
-//         Handle(AIS_Shape) AISHalf = new AIS_Shape(sol1_);
-//         AISHalf->SetColor(Quantity_NOC_GREEN);
-//     myAISContext->Display(AISHalf);
+  gp_Ax1 ax1_(gp_Pnt(0., 0., -100.), gp_Dir(0., 0., 1.));
 
-  DBRep::Set("Face",sol1_);
+  Standard_Real x = 0., y = 0., z = -80.;
 
-    gp_Ax1 ax1_(gp_Pnt(0., 0., -100.), gp_Dir(0., 0., 1.));
+  BRepPrimAPI_MakeBox box(gp_Pnt(x, y, z), gp_Pnt(x + 150, y + 200, z + 200));
 
-    Standard_Real x=0., y=0., z=-80.;
-
-    BRepPrimAPI_MakeBox box(gp_Pnt(x,y,z),gp_Pnt(x+150,y+200,z+200));
-//         Handle(AIS_Shape) AISBox = new AIS_Shape(box);
-//         AISBox->SetColor(Quantity_NOC_BLUE1);
-//     myAISContext->Display(AISBox);
-
- DBRep::Set("Box",box.Shape());
-
-//     BRepAlgoAPI_Cut cut( sol1_, box.Shape() );
-//         //BRepAlgoAPI_Cut cut(  box.Shape(), sol1_ );
-//     TopoDS_Shape sh1_ = cut.Shape();
-//         Handle(AIS_Shape) AISCut = new AIS_Shape(sh1_);
-//         AISCut->SetColor(Quantity_NOC_RED);
-//     myAISContext->Display(AISCut);
-
-//  DBRep::Set("Cut",sh1_);
+  DBRep::Set("Box", box.Shape());
 
   return 0;
 
 }
+
 #include<GProp_GProps.hxx>
 #include<BRepGProp.hxx>
 
@@ -944,25 +927,12 @@ static Standard_Integer OCC310bug (Draw_Interpretor& di, Standard_Integer nb, co
 
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepAlgoAPI_Common.hxx>
-#include <BRepAlgo_Fuse.hxx>
-#include <BRepAlgo_Common.hxx>
 
 static Standard_Integer OCC277bug (Draw_Interpretor& di, Standard_Integer nb, const char ** a)
 {
-  //if (nb != 1) {
-  //  cout << "Usage: " << a[0] << endl;
-  //  return 1;
-  //}
-  if(nb < 1 || nb > 2) {
-    di << "Usage : " << a[0] << " [BRepAlgoAPI/BRepAlgo = 1/0]\n";
+  if(nb != 1) {
+    di << "Usage : " << a[0] << "\n";
     return 1;
-  }
-  Standard_Boolean IsBRepAlgoAPI = Standard_True;
-  if (nb == 2) {
-    Standard_Integer IsB = Draw::Atoi(a[1]);
-    if (IsB != 1) {
-      IsBRepAlgoAPI = Standard_False;
-    }
   }
 
   BRepPrimAPI_MakeBox box1( 100, 100, 100 );
@@ -971,25 +941,11 @@ static Standard_Integer OCC277bug (Draw_Interpretor& di, Standard_Integer nb, co
   TopoDS_Shape shape1 = box1.Shape();
   TopoDS_Shape shape2 = box2.Shape();
 
-//#if ! defined(BRepAlgoAPI_def01)
-//  TopoDS_Shape fuse = BRepAlgoAPI_Fuse( shape1, shape2 );
-//  TopoDS_Shape comm = BRepAlgoAPI_Common( shape1, shape2 );
-//#else
-//  TopoDS_Shape fuse = BRepAlgo_Fuse( shape1, shape2 );
-//  TopoDS_Shape comm = BRepAlgo_Common( shape1, shape2 );
-//#endif
   TopoDS_Shape fuse,comm;
-  if (IsBRepAlgoAPI) {
-    di << "fuse = BRepAlgoAPI_Fuse( shape1, shape2 )\n";
-    di << "comm = BRepAlgoAPI_Common( shape1, shape2 )\n";
-    fuse = BRepAlgoAPI_Fuse( shape1, shape2 );
-    comm = BRepAlgoAPI_Common( shape1, shape2 );
-  } else {
-    di << "fuse = BRepAlgo_Fuse( shape1, shape2 )\n";
-    fuse = BRepAlgo_Fuse( shape1, shape2 );
-    di << "comm = BRepAlgo_Common( shape1, shape2 )\n";
-    comm = BRepAlgo_Common( shape1, shape2 );
-  }
+  di << "fuse = BRepAlgoAPI_Fuse( shape1, shape2 )\n";
+  di << "comm = BRepAlgoAPI_Common( shape1, shape2 )\n";
+  fuse = BRepAlgoAPI_Fuse(shape1, shape2).Shape();
+  comm = BRepAlgoAPI_Common(shape1, shape2).Shape();
 
   return 0;
 }
@@ -1444,34 +1400,15 @@ static Standard_Integer OCC525(Draw_Interpretor& di, Standard_Integer /*argc*/, 
 #include <gce_MakeTranslation.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepPrimAPI_MakeWedge.hxx>
-#include <BRepAlgoAPI_Fuse.hxx>
-#include <BRepAlgoAPI_Cut.hxx>
-#include <BRepAlgo_Fuse.hxx>
-#include <BRepAlgo_Cut.hxx>
 //=======================================================================
 //function :  OCC578
 //purpose  :
 //=======================================================================
 static Standard_Integer OCC578 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
-  //if (argc!=4) {
-  //  di<<"Usage : " << argv[0] << " shape1 shape2 shape3\n";
-  //  return 1;
-  //}
-  if(argc < 4 || argc > 5) {
-    di << "Usage : " << argv[0] << " shape1 shape2 shape3 [BRepAlgoAPI/BRepAlgo = 1/0]\n";
+  if(argc != 4) {
+    di << "Usage : " << argv[0] << " shape1 shape2 shape3\n";
     return 1;
-  }
-  Standard_Boolean IsBRepAlgoAPI = Standard_True;
-  if (argc == 5) {
-    Standard_Integer IsB = Draw::Atoi(argv[4]);
-    if (IsB != 1) {
-      IsBRepAlgoAPI = Standard_False;
-//      di << "Error: There is not BRepAlgo_Fuse class\n";
-//      return 1;
-//      di << "Error: There is not BRepAlgo_Cut class\n";
-//      return 1;
-    }
   }
 
   gp_Pnt P0(0,0,0.0);
@@ -1537,35 +1474,12 @@ static Standard_Integer OCC578 (Draw_Interpretor& di, Standard_Integer argc, con
 
 
   // combine wedges
-//#if ! defined(BRepAlgoAPI_def01)
-//  TopoDS_Shape wedge_common = BRepAlgoAPI_Fuse(wedge1a , wedge2a);
-//#else
-//  TopoDS_Shape wedge_common = BRepAlgo_Fuse(wedge1a , wedge2a);
-//#endif
-  TopoDS_Shape wedge_common;
-  if (IsBRepAlgoAPI) {
-    di << "wedge_common = BRepAlgoAPI_Fuse(wedge1a , wedge2a)\n";
-    wedge_common = BRepAlgoAPI_Fuse(wedge1a , wedge2a);
-  } else {
-    di << "wedge_common = BRepAlgo_Fuse(wedge1a , wedge2a)\n";
-    wedge_common = BRepAlgo_Fuse(wedge1a , wedge2a);
-  }
+  di << "wedge_common = BRepAlgoAPI_Fuse(wedge1a , wedge2a)\n";
+  TopoDS_Shape wedge_common = BRepAlgoAPI_Fuse(wedge1a , wedge2a).Shape();
 
-  // remove wedge area from substrate
-//#if ! defined(BRepAlgoAPI_def01)
-//  TopoDS_Shape sub_etch1 = BRepAlgoAPI_Cut(substrate, wedge_common);
-//#else
-//  TopoDS_Shape sub_etch1 = BRepAlgo_Cut(substrate, wedge_common);
-//#endif
-  TopoDS_Shape sub_etch1;
-  if (IsBRepAlgoAPI) {
-    di << "sub_etch1 = BRepAlgoAPI_Cut(substrate, wedge_common)\n";
-    sub_etch1 = BRepAlgoAPI_Cut(substrate, wedge_common);
-  } else {
-    di << "sub_etch1 = BRepAlgo_Cut(substrate, wedge_common)\n";
-    sub_etch1 = BRepAlgo_Cut(substrate, wedge_common);
-  }
-
+  di << "sub_etch1 = BRepAlgoAPI_Cut(substrate, wedge_common)\n";
+  TopoDS_Shape sub_etch1 = BRepAlgoAPI_Cut(substrate, wedge_common).Shape();
+ 
   if (sub_etch1.IsNull()) {
     di<<" Null shape3 is not allowed\n";
     return 1;
@@ -2047,30 +1961,15 @@ static Standard_Integer OCC1034_AISSelectionMode (Draw_Interpretor& di,
   return 1;
 }
 
-#include<BRepAlgoAPI_Cut.hxx>
-#include<BRepAlgo_Cut.hxx>
 //=======================================================================
 //function :  OCC1487
 //purpose  :
 //=======================================================================
 static Standard_Integer OCC1487 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
-  //if(argc != 5) {
-  //  cerr << "Usage : " << argv[0] << " CylinderVariant(=1/2) cylinder1 cylinder2 cutshape" << endl;
-  //  return -1;
-  //}
-  if(argc < 5 || argc > 6) {
-    di << "Usage : " << argv[0] << " CylinderVariant(=1/2) cylinder1 cylinder2 cutshape [BRepAlgoAPI/BRepAlgo = 1/0]\n";
+  if(argc != 5) {
+    di << "Usage : " << argv[0] << " CylinderVariant(=1/2) cylinder1 cylinder2 cutshape\n";
     return 1;
-  }
-  Standard_Boolean IsBRepAlgoAPI = Standard_True;
-  if (argc == 6) {
-    Standard_Integer IsB = Draw::Atoi(argv[5]);
-    if (IsB != 1) {
-      IsBRepAlgoAPI = Standard_False;
-//      di << "Error: There is not BRepAlgo_Cut class\n";
-//      return 1;
-    }
   }
 
   Standard_Integer CaseNumber = Draw::Atoi(argv[1]);
@@ -2093,18 +1992,8 @@ static Standard_Integer OCC1487 (Draw_Interpretor& di, Standard_Integer argc, co
     BRepPrimAPI_MakeCylinder o_mc2 (myAx2_mc2, 5, 150);
 
     cyl2 = o_mc2.Shape();
-//#if ! defined(BRepAlgoAPI_def01)
-//    o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ());
-//#else
-//    o_cut_shape = BRepAlgo_Cut (o_mc1.Solid (), o_mc2.Solid ());
-//#endif
-    if (IsBRepAlgoAPI) {
-      di << "o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ())\n";
-      o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ());
-    } else {
-      di << "o_cut_shape = BRepAlgo_Cut (o_mc1.Solid (), o_mc2.Solid ())\n";
-      o_cut_shape = BRepAlgo_Cut (o_mc1.Solid (), o_mc2.Solid ());
-    }
+    di << "o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ())\n";
+    o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ()).Shape();
   } else {
     //BRepPrimAPI_MakeCylinder o_mc2 (gp_Ax2 (gp_Pnt(978.34936, -50.0, 127.5),gp_Dir(sin(M_PI/3), 0.0, 0.5)), 5, 150);
     gp_Dir myDir_mc2(sin(M_PI/3), 0.0, 0.5);
@@ -2113,18 +2002,8 @@ static Standard_Integer OCC1487 (Draw_Interpretor& di, Standard_Integer argc, co
     BRepPrimAPI_MakeCylinder o_mc2 (myAx2_mc2, 5, 150);
 
     cyl2 = o_mc2.Shape();
-//#if ! defined(BRepAlgoAPI_def01)
-//    o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ());
-//#else
-//    o_cut_shape = BRepAlgo_Cut (o_mc1.Solid (), o_mc2.Solid ());
-//#endif
-    if (IsBRepAlgoAPI) {
-      di << "o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ())\n";
-      o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ());
-    } else {
-      di << "o_cut_shape = BRepAlgo_Cut (o_mc1.Solid (), o_mc2.Solid ())\n";
-      o_cut_shape = BRepAlgo_Cut (o_mc1.Solid (), o_mc2.Solid ());
-    }
+    di << "o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ())\n";
+    o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ()).Shape();
   }
 
   DBRep::Set(argv[2],cyl1);
@@ -4983,7 +4862,7 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC310","OCC310", __FILE__, OCC310bug, group);
 
   //theCommands.Add("OCC277","OCC277", __FILE__, OCC277bug, group);
-  theCommands.Add("OCC277","OCC277 [BRepAlgoAPI/BRepAlgo = 1/0]", __FILE__, OCC277bug, group);
+  theCommands.Add("OCC277","OCC277", __FILE__, OCC277bug, group);
 
   theCommands.Add("OCC333","OCC333 edge1 edge2 [toler domaindist]; Check overlapping edges", __FILE__, OCC333bug, group);
 
@@ -4997,7 +4876,7 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC524", "OCC524 LowerVector UpperVector InitialValueVector LowerRowMatrix UpperRowMatrix LowerColMatrix UpperColMatrix InitialValueMatrix", __FILE__, OCC524, group);
   theCommands.Add("OCC525", "OCC525", __FILE__, OCC525, group);
   //theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3", __FILE__, OCC578, group);
-  theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3 [BRepAlgoAPI/BRepAlgo = 1/0]", __FILE__, OCC578, group);
+  theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3", __FILE__, OCC578, group);
   theCommands.Add("OCC669", "OCC669 GUID", __FILE__, OCC669, group);
   theCommands.Add("OCC738_ShapeRef", "OCC738_ShapeRef", __FILE__, OCC738_ShapeRef, group);
   theCommands.Add("OCC738_Assembly", "OCC738_Assembly", __FILE__, OCC738_Assembly, group);
@@ -5016,7 +4895,7 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC1034_AISSelectionMode", "OCC1034_AISSelectionMode (DOC, entry, [selectionmode])", __FILE__, OCC1034_AISSelectionMode, group); 
 
   //theCommands.Add("OCC1487", "OCC1487 CylinderVariant(=1/2) cylinder1 cylinder2 cutshape", __FILE__, OCC1487, group);
-  theCommands.Add("OCC1487", "OCC1487 CylinderVariant(=1/2) cylinder1 cylinder2 cutshape [BRepAlgoAPI/BRepAlgo = 1/0]", __FILE__, OCC1487, group);
+  theCommands.Add("OCC1487", "OCC1487 CylinderVariant(=1/2) cylinder1 cylinder2 cutshape", __FILE__, OCC1487, group);
 
   theCommands.Add("OCC1077", "OCC1077 result", __FILE__, OCC1077, group);
   theCommands.Add("OCC5739", "OCC5739 name shape step", __FILE__, OCC5739_UniAbs, group);

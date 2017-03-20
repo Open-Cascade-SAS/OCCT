@@ -7,10 +7,8 @@ puts ""
 #####################################
 ## BRepMesh_IncrementalMesh fails on some faces
 #####################################
-## (old topology)
-#####################################
 
-if {[ catch { set info_result [OCC822_1 a1 a2 result 0] } ] } {
+if {[ catch { set info_result [OCC822_1 a1 a2 result] } ] } {
     puts "Faulty OCC822"
 } else {
     if { [regexp {FAILED} $info_result] } {

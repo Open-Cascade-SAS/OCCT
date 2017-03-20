@@ -18,7 +18,7 @@
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_LocalContext.hxx>
 #include <AIS_TexturedShape.hxx>
-#include <BRepAlgo_Cut.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
 #include <BRepOffsetAPI_MakePipe.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -125,7 +125,7 @@ static Standard_Integer OCC23237 (Draw_Interpretor& di, Standard_Integer /*argc*
     // do some operation that will take considerable time compared with time of starting / stopping timers
     BRepPrimAPI_MakeBox aBox (10., 10., 10.);
     BRepPrimAPI_MakeSphere aSphere (10.);
-    BRepAlgo_Cut aCutter (aBox.Shape(), aSphere.Shape());
+    BRepAlgoAPI_Cut aCutter (aBox.Shape(), aSphere.Shape());
 
     aTM.Stop();
     aPM.Stop();

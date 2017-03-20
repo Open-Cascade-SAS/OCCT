@@ -388,10 +388,6 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
 #include <TopExp.hxx>
 #include <BRepOffsetAPI_Sewing.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
-///////#else
-///////#include <BRepAlgo_Fuse.hxx>
-///////#include <BRepAlgoAPI_Fuse.hxx>
-#include <BRepAlgo_Fuse.hxx>
 
 //=======================================================================
 //function :  OCC544
@@ -399,20 +395,9 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
 //=======================================================================
 static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if(argc > 7) {
-    di << "Usage : " << argv[0] << " [[[[[wT [[[[d1 [[[d2 [[R [length [BRepAlgoAPI/BRepAlgo = 1/0]]]]]]\n";
+  if(argc > 6) {
+    di << "Usage : " << argv[0] << " [[[[[wT [[[[d1 [[[d2 [[R [length]]]]]\n";
     return 1;
-  }
-  Standard_Boolean IsBRepAlgoAPI = Standard_True;
-  if (argc == 7) {
-    Standard_Integer IsB = Draw::Atoi(argv[6]);
-    if (IsB != 1) {
-      IsBRepAlgoAPI = Standard_False;
-#if ! defined(BRepAlgo_def01)
-//      di << "Error: There is not BRepAlgo_Fuse class\n";
-//      return 1;
-#endif
-    }
   }
 
   // Used to Display Geometry or Topolgy
@@ -681,29 +666,18 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
       wallSolid = TopoDS::Solid(getSol.Current());
       TopoDS_Solid test_solid;
       while (getSol.More())
-	{
-	  di << "Next solid found in compound\n";
-	  getSol.Next();
-	  test_solid = TopoDS::Solid(getSol.Current());
-//////#if ! defined(BRepAlgoAPI_def01)
-//////	  BRepAlgoAPI_Fuse fuser(test_solid, wallSolid);
-//////#else
-//////	  BRepAlgo_Fuse fuser(test_solid, wallSolid);
-//////#endif
-//////	  fuser.Build();
-	  if (IsBRepAlgoAPI) {
-	    di << "BRepAlgoAPI_Fuse fuser(test_solid, wallSolid)\n";
-	    BRepAlgoAPI_Fuse fuser(test_solid, wallSolid);
-	    fuser.Build();
-	    wallSolid = TopoDS::Solid(fuser.Shape());
-	  } else {
-	    di << "BRepAlgo_Fuse fuser(test_solid, wallSolid)\n";
-	    BRepAlgo_Fuse fuser(test_solid, wallSolid);
-	    fuser.Build();
-	    wallSolid = TopoDS::Solid(fuser.Shape());
-	  }
-//////	  wallSolid = TopoDS::Solid(fuser.Shape());
-	}
+      {
+        di << "Next solid found in compound\n";
+        getSol.Next();
+        test_solid = TopoDS::Solid(getSol.Current());
+
+        di << "BRepAlgoAPI_Fuse fuser(test_solid, wallSolid)\n";
+        BRepAlgoAPI_Fuse fuser(test_solid, wallSolid);
+        TopExp_Explorer aExpS(fuser.Shape(), TopAbs_SOLID);
+        if (aExpS.More()) {
+          wallSolid = TopoDS::Solid(aExpS.Current());
+        }
+      }
     } else {
       // Let's see if we can extract shells instead of solids.
       TopExp_Explorer getShel;
@@ -794,41 +768,15 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Common.hxx>
-//////////#else
-//////////#include <BRepAlgo_Cut.hxx>
-//////////#include <BRepAlgo_Common.hxx>
-//////////#include <BRepAlgoAPI_Cut.hxx>
-//////////#include <BRepAlgoAPI_Common.hxx>
-#include <BRepAlgo_Cut.hxx>
-#include <BRepAlgo_Common.hxx>
 #include <Precision.hxx>
 
 static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  //////////if(argc != 3) {
-  //////////  cout << "Usage : " << argv[0] << " result mesh_delta" << endl;
-  //////////  return 1;	
-  //////////}
-  if(argc < 3 || argc > 4) {
-    di << "Usage : " << argv[0] << " result mesh_delta [BRepAlgoAPI/BRepAlgo = 1/0]\n";
+  if(argc != 3) {
+    di << "Usage : " << argv[0] << " result mesh_delta\n";
     return 1;
   }
-  Standard_Boolean IsBRepAlgoAPI = Standard_True;
-  if (argc == 4) {
-    Standard_Integer IsB = Draw::Atoi(argv[3]);
-    if (IsB != 1) {
-      IsBRepAlgoAPI = Standard_False;
-#if ! defined(BRepAlgo_def02)
-//      di << "Error: There is not BRepAlgo_Cut class\n";
-//      return 1;
-#endif
-#if ! defined(BRepAlgo_def03)
-//      di << "Error: There is not BRepAlgo_Common class\n";
-//      return 1;
-#endif
-    }
-  }
-  
+
   Standard_Real delt = 5.0*Precision::Confusion();
   Standard_Real mesh_delt = Draw::Atof(argv[2]);
   if (mesh_delt <= 0.0)
@@ -846,38 +794,14 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
   TopoDS_Solid internalSolid = BRepPrimAPI_MakeBox(P, 10.0, 10.0, 10.0).Solid();
 
   // Cut inner from outer
-//////////#if ! defined(BRepAlgoAPI_def01)
-//////////  BRepAlgoAPI_Cut cut( fullSolid, internalSolid );
-//////////#else
-//////////  BRepAlgo_Cut cut( fullSolid, internalSolid );
-//////////#endif
-//////////  TopoDS_Shape cut_shape = cut.Shape();
-//////////  if ( !cut.IsDone() )
-//////////  {
-//////////    cout << "Error: Could not cut volumes" << endl;
-//////////    return -1;
-//////////  }
-
-  TopoDS_Shape cut_shape;
-  if (IsBRepAlgoAPI) {
-    di << "BRepAlgoAPI_Cut cut( fullSolid, internalSolid )\n";
-    BRepAlgoAPI_Cut cut( fullSolid, internalSolid );
-    cut_shape = cut.Shape();
-    if ( !cut.IsDone() )
-      {
-	di << "Error: Could not cut volumes\n";
-	return -1;
-      }
-  } else {
-    di << "BRepAlgo_Cut cut( fullSolid, internalSolid )\n";
-    BRepAlgo_Cut cut( fullSolid, internalSolid );
-    cut_shape = cut.Shape();
-    if ( !cut.IsDone() )
-      {
-	di << "Error: Could not cut volumes\n";
-	return -1;
-      }
+  di << "BRepAlgoAPI_Cut cut( fullSolid, internalSolid )\n";
+  BRepAlgoAPI_Cut cut(fullSolid, internalSolid);
+  if (!cut.IsDone())
+  {
+    di << "Error: Could not cut volumes\n";
+    return -1;
   }
+  const TopoDS_Shape& cut_shape = cut.Shape();
 
   // see if we have a solid
   Standard_Integer found_solid = 0;
@@ -979,37 +903,14 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
     TopoDS_Shape copySolid = BRepBuilderAPI_Copy(cutSolid).Shape();
 
     // perform common
-//////////#if ! defined(BRepAlgoAPI_def01)
-//////////    BRepAlgoAPI_Common common(copySolid/*cutSolid*/, SubvolumeSolid(l));
-//////////#else
-//////////    BRepAlgo_Common common(copySolid/*cutSolid*/, SubvolumeSolid(l));
-//////////#endif
-//////////    if (!common.IsDone())
-//////////    {
-//////////      cout << "Error: could not construct a common solid " << l << endl;
-//////////      return 1;
-//////////    }
-
-    TopoDS_Shape aCommonShape;
-    if (IsBRepAlgoAPI) {
-      di << "BRepAlgoAPI_Common common(copySolid/*cutSolid*/, SubvolumeSolid(l))\n";
-      BRepAlgoAPI_Common common(copySolid/*cutSolid*/, SubvolumeSolid(l));
-      if (!common.IsDone())
-	{
-	  di << "Error: could not construct a common solid " << l << "\n";
-	  return 1;
-	}
-      aCommonShape = common.Shape();
-    } else {
-      di << "BRepAlgo_Common common(copySolid/*cutSolid*/, SubvolumeSolid(l))\n";
-      BRepAlgo_Common common(copySolid/*cutSolid*/, SubvolumeSolid(l));
-      if (!common.IsDone())
-	{
-	  di << "Error: could not construct a common solid " << l << "\n";
-	  return 1;
-	}
-      aCommonShape = common.Shape();
+    di << "BRepAlgoAPI_Common common(copySolid/*cutSolid*/, SubvolumeSolid(l))\n";
+    BRepAlgoAPI_Common common(copySolid/*cutSolid*/, SubvolumeSolid(l));
+    if (!common.IsDone())
+    {
+      di << "Error: could not construct a common solid " << l << "\n";
+      return 1;
     }
+    const TopoDS_Shape& aCommonShape = common.Shape();
 
     // see if we have a solid
     found_solid = 0;
@@ -1055,9 +956,9 @@ void QABugs::Commands_13(Draw_Interpretor& theCommands) {
 
   theCommands.Add ("OCC332", "OCC332 [wall_thickness [dia1 [dia2 [length [major_radius]]]]]", __FILE__, OCC332bug, group);
   //////theCommands.Add("OCC544", "OCC544 [[[[[wT [[[[d1 [[[d2 [[R [length]]]]]", __FILE__, OCC544, group);
-  theCommands.Add("OCC544", "OCC544 [[[[[wT [[[[d1 [[[d2 [[R [length [BRepAlgoAPI/BRepAlgo = 1/0]]]]]]", __FILE__, OCC544, group);
+  theCommands.Add("OCC544", "OCC544 [[[[[wT [[[[d1 [[[d2 [[R [length ]]]]]", __FILE__, OCC544, group);
   //////theCommands.Add("OCC817", "OCC817 result mesh_delta", __FILE__, OCC817, group);
-  theCommands.Add("OCC817", "OCC817 result mesh_delta [BRepAlgoAPI/BRepAlgo = 1/0]", __FILE__, OCC817, group);
+  theCommands.Add("OCC817", "OCC817 result mesh_delta ", __FILE__, OCC817, group);
 
   return;
 }

@@ -1,8 +1,6 @@
-if { ![checkplatform -windows] } {
-    puts "TODO ?OCC12345 MacOS: \\*\\* Exception"
-    puts "TODO ?OCC12345 MacOS: An exception was caught"
-    puts "TODO ?OCC12345 MacOS: TEST INCOMPLETE"
-}
+puts "TODO OCC24156 MacOS: \\*\\* Exception \\*\\*.*"
+puts "TODO OCC24156 MacOS: An exception was caught"
+puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
 
 pload QAcommands
 
@@ -15,10 +13,8 @@ puts "========"
 #############################################################################
 ## BRepFilletAPI_MakeFillet presents a bug on fillet computation (build())
 #############################################################################
-## (old topology)
-#############################################################################
 
-OCC426 result rs1 rs2 rs3 fuse32 fuse321 0
+OCC426 result rs1 rs2 rs3 fuse32 fuse321 fuseUnif
 
 checkshape rs1
 checkshape rs2
@@ -29,4 +25,3 @@ checkshape fuse321
 checkprops result -s 7507.61 
 checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png
-

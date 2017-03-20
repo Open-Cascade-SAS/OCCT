@@ -32,7 +32,6 @@
 #include <gp_Pln.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAlgoAPI_Section.hxx>
-#include <BRepAlgo_Section.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -49,23 +48,11 @@ static Standard_Integer OCC527(Draw_Interpretor& di, Standard_Integer argc, cons
   {
     OCC_CATCH_SIGNALS
     // 1. Verify amount of arguments of the command
-    //if (argc < 2) { di << "OCC527 FAULTY. Use : OCC527 shape "; return 0;} 
-    if (argc < 2 || argc > 3) {
-      di << "Usage : " << argv[0] << " shape [BRepAlgoAPI/BRepAlgo = 1/0]\n";
+    if (argc != 2) {
+      di << "Usage : " << argv[0] << "OCC527 shape\n";
       return 1;
     }
-    Standard_Boolean IsBRepAlgoAPI = Standard_True;
-    if (argc == 3) {
-      Standard_Integer IsB = Draw::Atoi(argv[2]);
-      if (IsB != 1) {
-	IsBRepAlgoAPI = Standard_False;
-//#if ! defined(BRepAlgo_def04)
-//	di << "Error: There is not BRepAlgo_Section class\n";
-//	return 1;
-//#endif
-      }
-    }
-    
+
     // 2. Get selected shape
     TopoDS_Shape aShape = DBRep::Get(argv[1]);
     if(aShape.IsNull()) { di << "OCC527 FAULTY. Entry shape is NULL"; return 0;} 
@@ -97,62 +84,34 @@ static Standard_Integer OCC527(Draw_Interpretor& di, Standard_Integer argc, cons
                 
         // Build current section
         gp_Pln pl(0,0,1,-zcur);
-//#if ! defined(BRepAlgoAPI_def01)
-//        BRepAlgoAPI_Section aSection(aFace,pl,Standard_False);
-//#else
-//        BRepAlgo_Section aSection(aFace,pl,Standard_False);
-//#endif
-//        aSection.Approximation(Standard_True);
-//        aSection.Build();
-//        // If section was built meassure distance between vertexes and plane of the one. Max distance is stored.
-//        if (aSection.IsDone())
-	
-	Standard_Boolean IsDone;
-	TopoDS_Shape aResult;
-	if (IsBRepAlgoAPI) {
-	  di << "BRepAlgoAPI_Section aSection(aFace,pl,Standard_False)\n";
-	  BRepAlgoAPI_Section aSection(aFace,pl,Standard_False);
-	  aSection.Approximation(Standard_True);
-	  aSection.Build();
-	  IsDone = aSection.IsDone();
-	  aResult = aSection.Shape();
-	} else {
-	  di << "BRepAlgo_Section aSection(aFace,pl,Standard_False)\n";
-	  BRepAlgo_Section aSection(aFace,pl,Standard_False);
-	  aSection.Approximation(Standard_True);
-	  aSection.Build();
-	  IsDone = aSection.IsDone();
-	  aResult = aSection.Shape();
-	}
+
+        //
+        di << "BRepAlgoAPI_Section aSection(aFace,pl,Standard_False)\n";
+        BRepAlgoAPI_Section aSection(aFace, pl, Standard_False);
+        aSection.Approximation(Standard_True);
+        aSection.Build();
+        Standard_Boolean IsDone = aSection.IsDone();
 
         if (IsDone)
-	  {
-//	    TopoDS_Shape aResult = aSection.Shape();
-	    if (!aResult.IsNull())
-	      {
+        {
+          const TopoDS_Shape& aResult = aSection.Shape();
+          if (!aResult.IsNull())
+          {
             double lmaxdist = 0.0;
             TopExp_Explorer aExp2;
-            for (aExp2.Init(aResult,TopAbs_VERTEX); aExp2.More(); aExp2.Next())
+            for (aExp2.Init(aResult, TopAbs_VERTEX); aExp2.More(); aExp2.Next())
             {
               TopoDS_Vertex aV = TopoDS::Vertex(aExp2.Current());
               Standard_Real  toler = BRep_Tool::Tolerance(aV);
               double dist = pl.Distance(BRep_Tool::Pnt(aV));
               if (dist > lmaxdist) lmaxdist = dist;
-      // If section was built check distance beetwen vertexes and plane of the one
-      str[0] =0;
-//       if (wasBuilt) 
-//       {
-//         if(gmaxdist > Precision::Confusion())
-//           Sprintf(str,"Dist=%f, Param=%f FAULTY\n",gmaxdist,gzmax);
-//         else
-//           Sprintf(str,"Dist=%f, Param=%f\n",gmaxdist,gzmax);
-        if(dist > toler)
-          Sprintf(str,"Dist=%f, Toler=%f, Param=%f FAULTY\n",dist,toler,gzmax);
-        else
-          Sprintf(str,"Dist=%f, Toler=%f, Param=%f\n",dist,toler,gzmax);
-//       }
-//       else Sprintf(str,"No result\n");
-      di << str;
+              // If section was built check distance beetwen vertexes and plane of the one
+              str[0] = 0;
+              if (dist > toler)
+                Sprintf(str, "Dist=%f, Toler=%f, Param=%f FAULTY\n", dist, toler, gzmax);
+              else
+                Sprintf(str, "Dist=%f, Toler=%f, Param=%f\n", dist, toler, gzmax);
+              di << str;
             }
             if (lmaxdist > gmaxdist)
             {
@@ -195,8 +154,7 @@ static Standard_Integer OCC1048 (Draw_Interpretor& di, Standard_Integer argc, co
 void QABugs::Commands_2(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
-  //theCommands.Add("OCC527", "OCC527 shape", __FILE__, OCC527, group);  
-  theCommands.Add("OCC527", "OCC527 shape [BRepAlgoAPI/BRepAlgo = 1/0]", __FILE__, OCC527, group);  
-  theCommands.Add("OCC1048", "OCC1048 shape", __FILE__, OCC1048, group);  
+  theCommands.Add("OCC527", "OCC527 shape", __FILE__, OCC527, group);
+  theCommands.Add("OCC1048", "OCC1048 shape", __FILE__, OCC1048, group);
   return;
 }
