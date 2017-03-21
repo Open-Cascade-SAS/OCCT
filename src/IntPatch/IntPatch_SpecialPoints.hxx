@@ -109,7 +109,7 @@ public:
   //! theArrPeriods must be filled as follows:
   //! {<U-period of 1st surface>, <V-period of 1st surface>,
   //!  <U-period of 2nd surface>, <V-period of 2nd surface>}.
-  //! If theVertex != 0 then its parameters will befilled as
+  //! If theVertex != 0 then its parameters will be filled as
   //! corresponding parameters of theNewPoint.
   //!
   //! ATTENTION!!!

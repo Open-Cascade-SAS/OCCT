@@ -946,7 +946,7 @@ static IntPatchWT_WLsConnectionType
           //However, it is necessary to add check if we
           //intersect boundary.
           const Standard_Real aPar = aParWL1[i] +
-                theArrPeriods[0]*Ceiling((aNewPar[i]-aParWL1[i])/theArrPeriods[0]);
+                theArrPeriods[i]*Ceiling((aNewPar[i]-aParWL1[i])/theArrPeriods[i]);
           aParWL1[i] = aParWL2[i];
           aParWL2[i] = aPar;
         }
@@ -964,14 +964,14 @@ static IntPatchWT_WLsConnectionType
           // aParWL1[i]   aNewPar[i]    aParWL2[i]
           
           const Standard_Real aPar = aParWL2[i] - 
-                theArrPeriods[0]*Ceiling((aParWL2[i]-aNewPar[i])/theArrPeriods[0]);
+                theArrPeriods[i]*Ceiling((aParWL2[i]-aNewPar[i])/theArrPeriods[i]);
           aParWL2[i] = aParWL1[i];
           aParWL1[i] = aPar;
         }
       }
 
-      if( IsOnPeriod(aParWL1[i] - aParLBC[i], aNewPar[i] - aParLBC[i], theArrPeriods[0]) ||
-          IsOnPeriod(aNewPar[i] - aParLBC[i], aParWL2[i] - aParLBC[i], theArrPeriods[0]))
+      if( IsOnPeriod(aParWL1[i] - aParLBC[i], aNewPar[i] - aParLBC[i], theArrPeriods[i]) ||
+          IsOnPeriod(aNewPar[i] - aParLBC[i], aParWL2[i] - aParLBC[i], theArrPeriods[i]))
       {
         return IntPatchWT_NotConnected;
       }
