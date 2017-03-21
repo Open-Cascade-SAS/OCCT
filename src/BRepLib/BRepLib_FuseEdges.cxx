@@ -71,9 +71,6 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-//#ifdef OCCT_DEBUG
-//Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceFE();
-//#endif
 static void BCSmoothing(Handle(Geom_BSplineCurve)& theC,
 			const Standard_Integer theCont,
 			const Standard_Real theTol)
@@ -366,11 +363,6 @@ TopoDS_Shape& BRepLib_FuseEdges::Shape()
 
 void BRepLib_FuseEdges::BuildListEdges()
 {
-
-//#ifdef OCCT_DEBUG
-  //Standard_Boolean tFE = TopOpeBRepBuild_GettraceFE();
-//#endif
-
   //--------------------------------------------------------
   // Step One : Build the map ancestors
   //--------------------------------------------------------
@@ -416,11 +408,6 @@ void BRepLib_FuseEdges::BuildListEdges()
 
 void BRepLib_FuseEdges::BuildListResultEdges()
 {
-
-//#ifdef OCCT_DEBUG
-  //Standard_Boolean tFE = TopOpeBRepBuild_GettraceFE();
-//#endif
-
   // if we have edges to fuse
   if (myMapLstEdg.Extent() > 0) {
     TopTools_DataMapIteratorOfDataMapOfIntegerListOfShape itLstEdg;
@@ -545,11 +532,6 @@ void BRepLib_FuseEdges::BuildListResultEdges()
 
 void BRepLib_FuseEdges::Perform()
 {
-
-//#ifdef OCCT_DEBUG
-  //Standard_Boolean tFE = TopOpeBRepBuild_GettraceFE();
-//#endif
-
   if (!myResultEdgesDone) {
     BuildListResultEdges();
   }
@@ -803,9 +785,6 @@ Standard_Boolean BRepLib_FuseEdges::SameSupport(const TopoDS_Edge& E1,
       typC1 != STANDARD_TYPE(Geom_Ellipse) &&
       typC1 != STANDARD_TYPE(Geom_BSplineCurve) && 
       typC1 != STANDARD_TYPE(Geom_BezierCurve)) {
-#ifdef OCCT_DEBUG
-    cout << " TopOpeBRepTool_FuseEdge : Type de Support non traite" << endl;
-#endif
     return Standard_False;
   }
 

@@ -51,11 +51,12 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopOpeBRep_EdgesIntersector.hxx>
-#include <TopOpeBRep_Point2d.hxx>
 #include <TopTools_DataMapOfShapeSequenceOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
+
+#include <Geom2dInt_GInter.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
 
 //=======================================================================
 //function : BRepOffsetAPI_DraftAngle
@@ -365,6 +366,19 @@ void BRepOffsetAPI_DraftAngle::CorrectWires()
     CurEdge = Eseq(i);
     CurWire = Wseq(i);
     CurFace = Fseq(i);
+    //
+    const TopoDS_Face& aFace = TopoDS::Face(CurFace);
+    //
+    // Prepare 2D adaptors for intersection.
+    // The seam edge has two 2D curve, thus we have to create 2 adaptors
+    BRepAdaptor_Curve2d aBAC2D1(TopoDS::Edge(CurEdge), aFace);
+    BRepAdaptor_Curve2d aBAC2D1R(TopoDS::Edge(CurEdge.Reversed()), aFace);
+    // Get surface of the face to get 3D intersection point
+    TopLoc_Location aLoc;
+    const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(aFace, aLoc);
+    // Get the tolerance of the current edge to compare intersection points
+    Standard_Real aTolCurE = BRep_Tool::Tolerance(TopoDS::Edge(CurEdge));
+    //
     wit.Initialize( CurFace );
     for (; wit.More(); wit.Next())
     {
@@ -372,102 +386,83 @@ void BRepOffsetAPI_DraftAngle::CorrectWires()
       if (! aWire.IsSame( CurWire ))
       {
         TColgp_SequenceOfPnt pts;
-        TopTools_SequenceOfShape edges;
-        TColStd_SequenceOfReal pars;
         Standard_Boolean Wadd = Standard_False;
         eit.Initialize( aWire );
         for (; eit.More(); eit.Next())
         {
-          TopoDS_Shape anEdge = eit.Value();
-          TopOpeBRep_EdgesIntersector EInter;
-          EInter.SetFaces( CurFace, CurFace );
-          EInter.ForceTolerances( TolInter, TolInter );
-          EInter.Perform( CurEdge, anEdge );
-          if (EInter.IsEmpty())
-          {
-            EInter.Perform( CurEdge.Reversed(), anEdge );
-            if (EInter.IsEmpty())
+          const TopoDS_Edge& anEdge = TopoDS::Edge(eit.Value());
+          //
+          // Prepare 2D adaptor for intersection
+          BRepAdaptor_Curve2d aBAC2D2(anEdge, aFace);
+          // Perform intersection
+          Geom2dInt_GInter aGInter;
+          aGInter.Perform(aBAC2D1, aBAC2D2, TolInter, TolInter);
+          if (!aGInter.IsDone() || aGInter.IsEmpty()) {
+            // If first intersection is empty try intersection with reversed edge
+            aGInter.Perform(aBAC2D1R, aBAC2D2, TolInter, TolInter);
+            if (!aGInter.IsDone() || aGInter.IsEmpty()) {
               continue;
+            }
           }
+          //
           Wadd = Standard_True;
           if (! WFmap.IsBound( aWire ))
             WFmap.Bind( aWire, CurFace );
           Standard_Integer ind = 0;
-          for (j = 1; j <= NonSeam.Length(); j++)
-            if (anEdge.IsSame( NonSeam(j) ))
+          for (j = 1; j <= NonSeam.Length(); j++) {
+            if (anEdge.IsSame(NonSeam(j)))
             {
               ind = j;
               break;
             }
-            if (ind == 0)
-            {
-              NonSeam.Append( anEdge );
-              NonSeamWires.Append( aWire );
-              ind = NonSeam.Length();
-              TColStd_SequenceOfReal emptyseq1, emptyseq2;
-              TopTools_SequenceOfShape emptyedgeseq;
-              ParsNonSeam.Append( emptyseq1 );
-              Seam.Append( emptyedgeseq );
-              ParsSeam.Append( emptyseq2 );
-            }
-            if (! Emap.IsBound( CurEdge ))
-            {
-              TColStd_SequenceOfReal emptyseq;
-              Emap.Bind( CurEdge, emptyseq );
-            }
-            EInter.InitPoint();
-            for (; EInter.MorePoint(); EInter.NextPoint())
-            {
-              const TopOpeBRep_Point2d& bp = EInter.Point();
-              if (bp.IsVertex(2))
+          }
+          if (ind == 0)
+          {
+            NonSeam.Append(anEdge);
+            NonSeamWires.Append(aWire);
+            ind = NonSeam.Length();
+            TColStd_SequenceOfReal emptyseq1, emptyseq2;
+            TopTools_SequenceOfShape emptyedgeseq;
+            ParsNonSeam.Append(emptyseq1);
+            Seam.Append(emptyedgeseq);
+            ParsSeam.Append(emptyseq2);
+          }
+          if (!Emap.IsBound(CurEdge))
+          {
+            TColStd_SequenceOfReal emptyseq;
+            Emap.Bind(CurEdge, emptyseq);
+          }
+          //
+          // Get the tolerance of edge to compare intersection points
+          Standard_Real aTolE = BRep_Tool::Tolerance(anEdge);
+          // Tolerance to compare the intersection points is the maximal
+          // tolerance of intersecting edges
+          Standard_Real aTolCmp = Max(aTolCurE, aTolE);
+          //
+          Standard_Integer k, aNbIntPnt = aGInter.NbPoints();
+          for (k = 1; k <= aNbIntPnt; ++k) {
+            const IntRes2d_IntersectionPoint& aP2DInt = aGInter.Point(k);
+            const gp_Pnt2d& aP2D = aP2DInt.Value();
+            gp_Pnt aP3D = aSurf->Value(aP2D.X(), aP2D.Y());
+            //
+            // Check if the intersection point is new
+            Standard_Integer ied = 0;
+            for (j = 1; j <= pts.Length(); j++) {
+              if (aP3D.IsEqual(pts(j), aTolCmp))
               {
-                gp_Pnt Pnt = bp.Value();
-                Standard_Integer ied = 0;
-                for (j = 1; j <= pts.Length(); j++)
-                  if (Pnt.IsEqual( pts(j), Precision::Confusion() ))
-                  {
-                    ied = j;
-                    break;
-                  }
-                  if (ied == 0)
-                  {
-                    pts.Append( Pnt );
-                    edges.Append( anEdge );
-                    pars.Append( bp.Parameter(2) );
-                    Emap(CurEdge).Append( bp.Parameter(1) );
-                    ParsNonSeam(ind).Append( bp.Parameter(2) );
-                    Seam(ind).Append( CurEdge );
-                    ParsSeam(ind).Append( bp.Parameter(1) );
-                  }
-                  /*
-                  else
-                  {
-                  Standard_Real ParOnSeam = bp.Parameter(1);
-                  Standard_Real Par1 = pars(ied);
-                  Standard_Real Par2 = bp.Parameter(2);
-                  BRepAdaptor_Curve2d SeamCurve( CurEdge, CurFace );
-                  BRepAdaptor_Curve2d Curve1( edges(ied), CurFace );
-                  BRepAdaptor_Curve2d Curve2( anEdge. CurFace );
-                  gp_Pnt2d P2d;
-                  gp_Vec2d SeamDer, Der1, Der2;
-                  //SeamCurve->D1( ParOnSeam, P2d, SeamDer );
-                  //Curve1->D1( Par1, P2d, Der1 );
-                  //Curve2->D1( Par2, P2d, Der2 );
-                  Standard_Real Crossed1 = SeamDer ^ Der1;
-                  Standard_Real Crossed2 = SeamDer ^ Der2;
-                  //if (Crossed1 > 0
-                  }
-                  */
+                ied = j;
+                break;
               }
-              else // ! bp.IsVertex(2)
-              {
-                //Temporary the case of tangency is not implemented
-                Emap(CurEdge).Append( bp.Parameter(1) );
-                ParsNonSeam(ind).Append( bp.Parameter(2) );
-                Seam(ind).Append( CurEdge );
-                ParsSeam(ind).Append( bp.Parameter(1) );
-              }
-            } //for (; EInter.MorePoint(); EInter.NextPoint())
+            }
+            if (ied == 0)
+            {
+              pts.Append(aP3D);
+              Emap(CurEdge).Append(aP2DInt.ParamOnFirst());
+              ParsNonSeam(ind).Append(aP2DInt.ParamOnSecond());
+              Seam(ind).Append(CurEdge);
+              ParsSeam(ind).Append(aP2DInt.ParamOnFirst());
+            }
+          }
         } //for (; eit.More(); eit.Next())
         if (Wadd)
         {
