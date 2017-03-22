@@ -1948,7 +1948,6 @@ Standard_Boolean readAnnotationPlane(const Handle(StepVisual_AnnotationPlane) th
 {
   if (theAnnotationPlane.IsNull())
     return Standard_False;
-  gp_Ax2 aPlaneAxes;
   Handle(StepRepr_RepresentationItem) aPlaneItem = theAnnotationPlane->Item();
   if (aPlaneItem.IsNull())
     return Standard_False;
@@ -1965,23 +1964,11 @@ Standard_Boolean readAnnotationPlane(const Handle(StepVisual_AnnotationPlane) th
   if (aA2P3D.IsNull())
     return Standard_False;
 
-  // build gp_Ax2 from axes
-  Handle(StepGeom_Direction) anAxis = aA2P3D->Axis(),
-    aRefDir = aA2P3D->RefDirection();
-  if (anAxis.IsNull() || aRefDir.IsNull())
-    return Standard_False;
-
-  Handle(TColStd_HArray1OfReal) aCoords;
-  aCoords = anAxis->DirectionRatios();
-  gp_Dir aXDir(aCoords->Value(1), aCoords->Value(2), aCoords->Value(3));
-  aCoords = aRefDir->DirectionRatios();
-  gp_Dir aYDir(aCoords->Value(1), aCoords->Value(2), aCoords->Value(3));
-  aPlaneAxes.SetDirection(aXDir.Crossed(aYDir));
-  aPlaneAxes.SetYDirection(aYDir);
-  //set location of the annotation plane
-  Handle(TColStd_HArray1OfReal) aLocCoords;
-  Handle(StepGeom_CartesianPoint) aLoc = aA2P3D->Location();
-  gp_Pnt aLocPos(aLoc->CoordinatesValue(1) * theFact, aLoc->CoordinatesValue(2) * theFact, aLoc->CoordinatesValue(3) * theFact);
+  gp_Ax2 aPlaneAxes;
+  Handle(Geom_Axis2Placement) anAxis = StepToGeom::MakeAxis2Placement(aA2P3D);
+  aPlaneAxes = anAxis->Ax2();
+  gp_XYZ aLocPos = aPlaneAxes.Location().XYZ();
+  aLocPos *= theFact;
   aPlaneAxes.SetLocation(aLocPos);
   thePlane = aPlaneAxes;
   return Standard_True;

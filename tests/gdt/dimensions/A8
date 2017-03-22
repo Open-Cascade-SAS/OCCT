@@ -32,7 +32,7 @@ if {$isOK} {
 set c_value "10"
 set c_type "Size_CurveLength"
 set c_pos {position: -5 0 7
-normal: -1 0 0
-x_direction: 0 1 0
+normal: 0 1 0
+x_direction: 0 0 -1
 }
 }

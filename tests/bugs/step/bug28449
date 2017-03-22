@@ -1,0 +1,26 @@
+puts "========"
+puts "OCC28449"
+puts "========"
+puts ""
+#################################################
+# Wrong orientation of Annotation Plane in GD&T
+#################################################
+
+ReadStep Doc [locate_data_file bug26689_nist_ctc_01_asme1_ap242.stp]
+
+set pos [XGetGDTPosition Doc 0:1:4:1]
+regexp {normal: +([-0-9.+eE]+) ([-0-9.+eE]+) ([-0-9.+eE]+)} $pos full pos_x pos_y pos_z
+regexp {x_direction: +([-0-9.+eE]+) ([-0-9.+eE]+) ([-0-9.+eE]+)} $pos full dir_x dir_y dir_z
+set isOK 1
+set prec 1e-7
+
+if {[expr abs($pos_x)] > $prec || [expr abs($pos_y + 1)] > $prec || [expr abs($pos_z)] > $prec} {
+  set isOK 0
+}
+if {[expr abs($dir_x - 1)] > $prec || [expr abs($dir_y)] > $prec || [expr abs($dir_z)] > $prec} {
+  set isOK 0
+}
+
+if {$isOK == 0} {
+  puts "Error: wrong Annotation plane"
+}
