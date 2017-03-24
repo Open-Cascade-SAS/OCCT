@@ -26,6 +26,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
+#include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_Surface.hxx>
@@ -313,10 +314,16 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferFace(const TopoDS_Face&
     }
   }
 
+  // protection against faces on infinite surfaces with mistaken natural restriction flag
+  Standard_Boolean isWholeSurface = BRep_Tool::NaturalRestriction(start);
+  if ((Surf->IsKind(STANDARD_TYPE(Geom_Plane)) ||
+       Surf->IsKind(STANDARD_TYPE(Geom_CylindricalSurface)) ||
+       Surf->IsKind(STANDARD_TYPE(Geom_ConicalSurface))) && !IOuter.IsNull())
+    isWholeSurface = Standard_False;
   // returns the TrimmedSurface
   // --------------------------
   Handle(IGESGeom_TrimmedSurface) TrimmedSurf = new IGESGeom_TrimmedSurface;
-  if (BRep_Tool::NaturalRestriction(start)) {
+  if (isWholeSurface) {
     //if face bounds and surface bounds are same, outer wire is unnecessary
     TrimmedSurf-> Init (ISurf, Standard_False, NULL, Tab);
   }
