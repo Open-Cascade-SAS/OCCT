@@ -14,6 +14,7 @@
 
 
 #include <Bnd_Box.hxx>
+#include <BRepLib.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
@@ -133,6 +134,8 @@ void IntTools_ShrunkRange::Perform()
     return;
   }
   //
+  gp_Pnt aP1 = BRep_Tool::Pnt(myV1);
+  gp_Pnt aP2 = BRep_Tool::Pnt(myV2);
   Standard_Real aTolE, aTolV1, aTolV2;
   aTolE = BRep_Tool::Tolerance(myEdge);
   aTolV1 = BRep_Tool::Tolerance(myV1);
@@ -150,8 +153,22 @@ void IntTools_ShrunkRange::Perform()
   // the tolerances of vertices are increased on Precision::Confusion()
   aTolV1 += aDTol;
   aTolV2 += aDTol;
-  //
+
+  // compute the shrunk range - part of the edge not covered
+  // by the tolerance spheres of its vertices
   BRepAdaptor_Curve aBAC(myEdge);
+  if (!BRepLib::FindValidRange(aBAC, aTolE, myT1, aP1, aTolV1,
+                               myT2, aP2, aTolV2, myTS1, myTS2)) {
+    // no valid range
+    return;
+  }
+  if ((myTS2 - myTS1) < aPDTol) {
+    // micro edge
+    return;
+  }
+  //
+  // compute the length of the edge on the shrunk range
+  //
   // parametric tolerance for the edge
   // to be used in AbscissaPoint computations
   Standard_Real aPTolE = aBAC.Resolution(aTolE);
@@ -161,31 +178,6 @@ void IntTools_ShrunkRange::Perform()
   if (aPTolE > aPTolEMin) {
     aPTolE = aPTolEMin;
   }
-  //
-  // compute the shrunk range - part of the edge not covered
-  // by the tolerance spheres of its vertices
-  GCPnts_AbscissaPoint aPC1(aBAC, aTolV1, myT1, aPTolE);
-  // if Abscissa is unable to compute the parameter
-  // use the resolution of the curve
-  myTS1 = aPC1.IsDone() ? aPC1.Parameter() : (myT1 + aBAC.Resolution(aTolV1));
-  if (myT2 - myTS1 < aPDTol) {
-    // micro edge
-    return;
-  }
-  //
-  GCPnts_AbscissaPoint aPC2(aBAC, -aTolV2, myT2, aPTolE);
-  myTS2 = aPC2.IsDone() ? aPC2.Parameter() : (myT2 - aBAC.Resolution(aTolV2));
-  if (myTS2 - myT1 < aPDTol) {
-    // micro edge
-    return;
-  }
-  //
-  if ((myTS2 - myTS1) < aPDTol) {
-    // micro edge
-    return;
-  }
-  //
-  // compute the length of the edge on the shrunk range
   Standard_Real anEdgeLength =
     GCPnts_AbscissaPoint::Length(aBAC, myTS1, myTS2, aPTolE);
   if (anEdgeLength < aDTol) {

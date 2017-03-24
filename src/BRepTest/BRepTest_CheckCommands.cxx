@@ -39,12 +39,14 @@
 #include <Precision.hxx>
 #include <LocalAnalysis.hxx>
 #include <LocalAnalysis_SurfaceContinuity.hxx>
+#include <Geom_SphericalSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <DrawTrSurf.hxx>
 #include <GeomAbs_Shape.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TopoDS.hxx>
 #include <TopExp.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
@@ -57,6 +59,7 @@
 
 #include <TopOpeBRepTool_PurgeInternalEdges.hxx>
 //#include <TopOpeBRepTool_FuseEdges.hxx>
+#include <BRepLib.hxx>
 #include <BRepLib_FuseEdges.hxx>
 
 #include <TopTools_HSequenceOfShape.hxx>
@@ -1579,7 +1582,75 @@ static Standard_Integer listfuseedge(Draw_Interpretor& di,
   return 0;
 }
 
+//=======================================================================
+//function : tolsphere
+//purpose  : 
+//=======================================================================
+static Standard_Integer tolsphere(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n != 2)
+  {
+    di << "use toolsphere shape\n";
+    return 1;
+  }
 
+  TopoDS_Shape aS = DBRep::Get(a[1]);
+  if (aS.IsNull())
+  {
+    di << "No such shape " << a[1] << "\n";
+    return 1;
+  }
+
+  TopTools_IndexedMapOfShape aMapV;
+  TopExp::MapShapes(aS, TopAbs_VERTEX, aMapV);
+  for (Standard_Integer i = 1; i <= aMapV.Extent(); i++)
+  {
+    const TopoDS_Vertex& aV = TopoDS::Vertex(aMapV.FindKey(i));
+    Standard_Real aRadius = BRep_Tool::Tolerance(aV);
+    gp_Pnt aCenter = BRep_Tool::Pnt(aV);
+    Handle(Geom_Surface) aSph = new Geom_SphericalSurface(gp_Ax2(aCenter,gp::DZ()), aRadius);
+    TCollection_AsciiString aName(a[1]);
+    aName = aName + "_v" + i;
+    DrawTrSurf::Set(aName.ToCString(), aSph);
+    di << aName << " ";
+  }
+  return 0;
+}
+
+//=======================================================================
+//function : validrange
+//purpose  : 
+//=======================================================================
+static Standard_Integer validrange(Draw_Interpretor& di,
+  Standard_Integer narg, const char** a)
+{
+  if (narg < 2)
+  {
+    di << "usage: validrange edge [(out) u1 u2]";
+    return 1;
+  }
+
+  TopoDS_Edge aE = TopoDS::Edge(DBRep::Get(a[1],TopAbs_EDGE, true));
+  if (aE.IsNull())
+    return 1;
+
+  Standard_Real u1, u2;
+  if (BRepLib::FindValidRange(aE, u1, u2))
+  {
+    if (narg > 3)
+    {
+      Draw::Set(a[2], u1);
+      Draw::Set(a[3], u2);
+    }
+    else
+    {
+      di << u1 << " " << u2;
+    }
+  }
+  else
+    di << "edge has no valid range";
+  return 0;
+}
 
 //=======================================================================
 //function : CheckCommands
@@ -1667,5 +1738,13 @@ theCommands.Add("listfuseedge",
 		  "listfuseedge shape",
 		  __FILE__,
 		  listfuseedge,g);
+theCommands.Add("tolsphere", "toolsphere shape\n"
+                "\t\tshows vertex tolerances by drawing spheres",
+                __FILE__, tolsphere, g);
+theCommands.Add("validrange",
+                "validrange edge [(out) u1 u2]\n"
+                "\t\tcomputes valid range of the edge, and\n"
+                "\t\tprints first and last values or sets the variables u1 and u2",
+                __FILE__, validrange, g);
 }
 

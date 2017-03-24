@@ -27,6 +27,8 @@
 #include <Standard_Integer.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <NCollection_List.hxx>
+
+class Adaptor3d_Curve;
 class Geom_Plane;
 class TopoDS_Edge;
 class TopoDS_Shape;
@@ -233,6 +235,23 @@ public:
   //! other vertices.
   Standard_EXPORT static  void BoundingVertex(const NCollection_List<TopoDS_Shape>& theLV,
                                               gp_Pnt& theNewCenter, Standard_Real& theNewTol);
+
+  //! For an edge defined by 3d curve and tolerance and vertices defined by points,
+  //! parameters on curve and tolerances,
+  //! finds a range of curve between vertices not covered by vertices tolerances.
+  //! Returns false if there is no such range. Otherwise, sets theFirst and 
+  //! theLast as its bounds.
+  Standard_EXPORT static Standard_Boolean FindValidRange
+    (const Adaptor3d_Curve& theCurve, const Standard_Real theTolE,
+     const Standard_Real theParV1, const gp_Pnt& thePntV1, const Standard_Real theTolV1,
+     const Standard_Real theParV2, const gp_Pnt& thePntV2, const Standard_Real theTolV2,
+     Standard_Real& theFirst, Standard_Real& theLast);
+
+  //! Finds a range of 3d curve of the edge not covered by vertices tolerances.
+  //! Returns false if there is no such range. Otherwise, sets theFirst and 
+  //! theLast as its bounds.
+  Standard_EXPORT static Standard_Boolean FindValidRange
+    (const TopoDS_Edge& theEdge, Standard_Real& theFirst, Standard_Real& theLast);
 
 protected:
 

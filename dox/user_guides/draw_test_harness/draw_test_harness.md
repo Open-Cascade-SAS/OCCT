@@ -5942,33 +5942,8 @@ box b3 6 0 0 1 1 1
 compound b1 b2 b3 c 
 ~~~~~
 
-@subsubsection occt_draw_7_1_5  checkshape
 
-Syntax:                  
-~~~~~
-checkshape [-top] shape [result] [-short] 
-~~~~~
-
-Where: 
-* *top* -- optional parameter, which allows checking only topological validity of a shape. 
-* *shape* -- the only required parameter which represents the name of the shape to check. 
-* *result* -- optional parameter which is the prefix of the output shape names. 
-* *short* -- a short description of the check. 
-
-**checkshape** examines the selected object for topological and geometric coherence. The object should be a three dimensional shape. 
-
-**Example:** 
-~~~~~
-# checkshape returns a comment valid or invalid 
-box b1 0 0 0 1 1 1 
-checkshape b1 
-# returns the comment 
-this shape seems to be valid 
-~~~~~
-
-**Note** that this test is performed using the tolerance set in the algorithm.
-
-@subsubsection occt_draw_7_1_6  compare
+@subsubsection occt_draw_7_1_5  compare
 
 Syntax:
 ~~~~~
@@ -5994,7 +5969,7 @@ compare b1 b2
 # shapes are not same
 ~~~~~
 
-@subsubsection occt_draw_7_1_7  issubshape
+@subsubsection occt_draw_7_1_6  issubshape
 
 Syntax:
 ~~~~~
@@ -7273,12 +7248,15 @@ buildevol
 
 @subsection occt_draw_7_9  Analysis of topology and geometry
 
-Analysis of shapes includes commands to compute length, area, volumes and inertial properties. 
+Analysis of shapes includes commands to compute length, area, volumes and inertial properties, as well as to compute some aspects impacting shape validity.
 
   * Use **lprops**, **sprops**, **vprops** to compute integral properties.
   * Use **bounding** to display the bounding box of a shape.
   * Use **distmini** to calculate the minimum distance between two shapes.
   * Use **xdistef**, **xdistcs**, **xdistcc**, **xdistc2dc2dss**, **xdistcc2ds** to check the distance between two objects on even grid.
+  * Use **checkshape** to check validity of the shape.
+  * Use **tolsphere** to see the tolerance spheres of all vertices in the shape.
+  * Use **validrange** to check range of an edge not covered by vertices.
 
 
 @subsubsection occt_draw_7_9_1  lprops, sprops, vprops
@@ -7409,6 +7387,80 @@ mksurf s2 b2
 xdistcs c_1 s1 0 1 100
 xdistcc2ds c_1 c2d2_1 s2 0 1
 xdistc2dc2dss c2d1_1 c2d2_1 s1 s2 0 1 1000
+~~~~~
+
+@subsubsection occt_draw_7_9_5  checkshape
+
+Syntax:                  
+~~~~~
+checkshape [-top] shape [result] [-short] 
+~~~~~
+
+Where: 
+* *top* -- optional parameter, which allows checking only topological validity of a shape. 
+* *shape* -- the only required parameter which represents the name of the shape to check. 
+* *result* -- optional parameter which is the prefix of the output shape names. 
+* *short* -- a short description of the check. 
+
+**checkshape** examines the selected object for topological and geometric coherence. The object should be a three dimensional shape. 
+
+**Example:** 
+~~~~~
+# checkshape returns a comment valid or invalid 
+box b1 0 0 0 1 1 1 
+checkshape b1 
+# returns the comment 
+this shape seems to be valid 
+~~~~~
+
+@subsubsection occt_draw_7_9_6  tolsphere
+
+Syntax:                  
+~~~~~
+tolsphere shape
+~~~~~
+
+Where: 
+* *shape* -- the name of the shape to process. 
+
+**tolsphere** shows vertex tolerances by drawing spheres around each vertex in the shape. Each sphere is assigned a name of the shape with suffix "_vXXX", where XXX is the number of the vertex in the shape.
+
+**Example:** 
+~~~~~
+# tolsphere returns all names of created spheres.
+box b1 0 0 0 1 1 1 
+settolerance b1 0.05
+tolsphere b1
+# creates spheres and returns the names
+b1_v1 b1_v2 b1_v3 b1_v4 b1_v5 b1_v6 b1_v7 b1_v8
+~~~~~
+
+@subsubsection occt_draw_7_9_7  validrange
+
+Syntax:                  
+~~~~~
+validrange edge [(out) u1 u2]
+~~~~~
+
+Where: 
+* *edge* -- the name of the edge to analyze. 
+* *u1*, *u2* -- optional names of variables to put the range into.
+
+**validrange** computes valid range of the edge. If *u1* and *u2* are not given it returns first and last parameters. Otherwise, it sets the variables u1 and u2.
+
+**Example:** 
+~~~~~
+circle c 0 0 0 10
+mkedge e c
+mkedge e c 0 pi
+validrange e
+# returns the range
+1.9884375000000002e-008 3.1415926337054181
+validrange e u1 u2
+dval u1
+1.9884375000000002e-008
+dval u2
+3.1415926337054181
 ~~~~~
 
 

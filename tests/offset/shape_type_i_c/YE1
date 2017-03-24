@@ -1,7 +1,4 @@
-puts "TODO OCC27414 ALL: Error: The command cannot be built"
-puts "TODO OCC27414 ALL: Tcl Exception"
-puts "TODO OCC27414 ALL: TEST INCOMPLETE"
-
+puts "TODO OCC27414 ALL: WRONG because number of FACE .* is 15"
 
 restore [locate_data_file bug28442_simple3.brep] s
 

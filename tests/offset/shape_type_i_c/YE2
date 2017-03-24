@@ -1,7 +1,4 @@
-puts "TODO OCC27414 ALL: Error: The command cannot be built"
-puts "TODO OCC27414 ALL: Tcl Exception"
-puts "TODO OCC27414 ALL: TEST INCOMPLETE"
-
+puts "TODO OCC27414 ALL: WRONG because number of FACE .* is 16"
 
 restore [locate_data_file bug28442_simple3.brep] s
 
@@ -25,9 +22,9 @@ foreach f [explode s f] {
 }
 offsetperform result
 
-checkprops result -v 0 -s 0
+checkprops result -v 1410.52 -s 845.819
 
 unifysamedom result_unif result
-checknbshapes result_unif -face 13 -shell 1
+checknbshapes result_unif -face 14 -shell 1
 
 checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

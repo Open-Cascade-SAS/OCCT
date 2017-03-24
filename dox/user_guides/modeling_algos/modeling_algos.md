@@ -1162,8 +1162,9 @@ The following methods allow building PCurves of edges on faces:
 
 The following methods allow checking the validity of the shapes:
  * *BOPTools_AlgoTools::IsMicroEdge* detects the small edges;
- * *BOPTools_AlgoTools::ComputeTolerance* computs the correct tolerance for the edge on the face;
+ * *BOPTools_AlgoTools::ComputeTolerance* computes the correct tolerance of the edge on the face;
  * *BOPTools_AlgoTools::CorrectShapeTolerances* and *BOPTools_AlgoTools::CorrectTolerances* allows correcting the tolerances of the sub-shapes.
+ * *BRepLib::FindValidRange* finds a range of 3d curve of the edge not covered by tolerance spheres of vertices.
 
 @subsection occt_modalg_2_topo_tools_7 Taking a point inside the face
 

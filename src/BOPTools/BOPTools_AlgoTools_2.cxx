@@ -146,7 +146,7 @@ void BOPTools_AlgoTools::MakeSplitEdge(const TopoDS_Edge&   aE,
   Standard_Real aTol;//f, l, 
   aTol=BRep_Tool::Tolerance(aE);
   //
-  TopoDS_Edge E=aE;
+  TopoDS_Edge E = TopoDS::Edge(aE.Oriented(TopAbs_FORWARD));
   E.EmptyCopy();
   //
   BRep_Builder BB;
@@ -159,6 +159,7 @@ void BOPTools_AlgoTools::MakeSplitEdge(const TopoDS_Edge&   aE,
   BB.Range(E, aP1, aP2);
   BB.UpdateEdge(E, aTol);
   aNewEdge=E;
+  aNewEdge.Orientation(aE.Orientation());
 }
 
 //=======================================================================

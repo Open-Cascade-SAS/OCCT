@@ -1,5 +1,6 @@
 BRepLib.cxx
 BRepLib.hxx
+BRepLib_1.cxx
 BRepLib_CheckCurveOnSurface.cxx
 BRepLib_CheckCurveOnSurface.hxx
 BRepLib_Command.cxx
