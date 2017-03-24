@@ -1382,8 +1382,8 @@ Standard_Integer unifysamedomgen(Draw_Interpretor& di,
     aBB.MakeCompound(aRes);
     TopTools_ListIteratorOfListOfShape aIt(aLS);
     for (; aIt.More(); aIt.Next()) {
-      const TopoDS_Shape& aShape = aIt.Value();
-      aBB.Add(aRes, aShape);
+      const TopoDS_Shape& aCurrentShape = aIt.Value();
+      aBB.Add(aRes, aCurrentShape);
     }
     DBRep::Set(a[1], aRes);
   }
@@ -1419,8 +1419,8 @@ Standard_Integer unifysamedommod(Draw_Interpretor& di,
     aBB.MakeCompound(aRes);
     TopTools_ListIteratorOfListOfShape aIt(aLS);
     for (; aIt.More(); aIt.Next()) {
-      const TopoDS_Shape& aShape = aIt.Value();
-      aBB.Add(aRes, aShape);
+      const TopoDS_Shape& aCurrentShape = aIt.Value();
+      aBB.Add(aRes, aCurrentShape);
     }
     DBRep::Set(a[1], aRes);
   }

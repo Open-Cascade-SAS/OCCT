@@ -774,17 +774,17 @@ Standard_Boolean BOPAlgo_CellsBuilder::RemoveInternals(const BOPCol_ListOfShape&
       const TopTools_ListOfShape& aLSGen = anUnify.Generated(aSS);
       TopTools_ListIteratorOfListOfShape aIt(aLSGen);
       for (; aIt.More(); aIt.Next()) {
-        const TopoDS_Shape& aShape = aIt.Value();
-        if (!aShape.IsNull() && !aSS.IsSame(aShape)) {
-          myMapGenerated.Bind(aSS, aShape);
+        const TopoDS_Shape& aSU = aIt.Value();
+        if (!aSU.IsNull() && !aSS.IsSame(aSU)) {
+          myMapGenerated.Bind(aSS, aSU);
           bRemoved = Standard_True;
         }
       }
       const TopTools_ListOfShape& aLSMod = anUnify.Modified(aSS);
       for (aIt.Init(aLSMod); aIt.More(); aIt.Next()) {
-        const TopoDS_Shape& aShape = aIt.Value();
-        if (!aShape.IsNull() && !aSS.IsSame(aShape)) {
-          myMapGenerated.Bind(aSS, aShape);
+        const TopoDS_Shape& aSU = aIt.Value();
+        if (!aSU.IsNull() && !aSS.IsSame(aSU)) {
+          myMapGenerated.Bind(aSS, aSU);
           bRemoved = Standard_True;
         }
       }
@@ -851,7 +851,7 @@ Standard_Boolean BOPAlgo_CellsBuilder::RemoveInternals(const BOPCol_ListOfShape&
       //
       if (aNb == aLFUnique.Extent()) {
         // no faces to remove
-        TopoDS_Iterator aItS(aCB);
+        aItS.Initialize(aCB);
         for (; aItS.More(); aItS.Next()) {
           theLSNew.Append(aItS.Value());
         }
@@ -866,7 +866,7 @@ Standard_Boolean BOPAlgo_CellsBuilder::RemoveInternals(const BOPCol_ListOfShape&
       if (aBS.ErrorStatus() || aBS.Areas().Extent() != 1) {
         myWarningStatus |= RemovalOfIBForSolidsFailed;
         //
-        TopoDS_Iterator aItS(aCB);
+        aItS.Initialize(aCB);
         for (; aItS.More(); aItS.Next()) {
           theLSNew.Append(aItS.Value());
         }

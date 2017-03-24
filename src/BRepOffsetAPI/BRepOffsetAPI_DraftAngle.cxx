@@ -439,7 +439,7 @@ void BRepOffsetAPI_DraftAngle::CorrectWires()
           // tolerance of intersecting edges
           Standard_Real aTolCmp = Max(aTolCurE, aTolE);
           //
-          Standard_Integer k, aNbIntPnt = aGInter.NbPoints();
+          Standard_Integer aNbIntPnt = aGInter.NbPoints();
           for (k = 1; k <= aNbIntPnt; ++k) {
             const IntRes2d_IntersectionPoint& aP2DInt = aGInter.Point(k);
             const gp_Pnt2d& aP2D = aP2DInt.Value();
