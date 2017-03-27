@@ -1,0 +1,76 @@
+puts "========"
+puts "OCC28641"
+puts "========"
+puts ""
+####################################################
+# Data Exchange - Support alpha-channel of color
+####################################################
+
+pload OCAF
+
+# Create document with View
+NewDocument D_First BinXCAF
+box b 1 1 1
+explode b e
+explode b f
+XAddShape D_First b
+XSetColor D_First b_1 1 0 0 s
+XSetColor D_First b_2 1 1 0 0.3 s
+XSetColor D_First b_11 1 1 1 0.2 c
+XSetColor D_First b_10 0 1 1 c
+XAddColor D_First 0.5 0.5 1 0.1
+
+# Write file
+SaveAs D_First ${imagedir}/bug28521.xbf
+Close D_First
+# Read document
+XOpen ${imagedir}/bug28521.xbf D_Second
+
+# Results validation
+set isOK 1
+set color ""
+set alpha ""
+set prec 1e-7
+#0:1:2:1
+set res [XGetColor D_Second 0:1:2:1]
+if {$res != "RED"} {
+  set isOK 0
+}
+#0:1:2:2
+set res [XGetColor D_Second 0:1:2:2]
+regexp {([A-Z0-9]+) \(([0-9.+eE]+)\)} $res full color alpha
+if {$color != "YELLOW"} {
+  set isOK 0
+}
+if {[expr abs(0.3 - $alpha)] > $prec} {
+  set isOK 0
+}
+#0:1:2:3
+set res [XGetColor D_Second 0:1:2:3]
+regexp {([A-Z0-9]+) \(([0-9.+eE]+)\)} $res full color alpha
+if {$color != "WHITE"} {
+  set isOK 0
+}
+if {[expr abs(0.2 - $alpha)] > $prec} {
+  set isOK 0
+}
+#0:1:2:4
+set res [XGetColor D_Second 0:1:2:4]
+if {$res != "CYAN1"} {
+  set isOK 0
+}
+#0:1:2:5
+set res [XGetColor D_Second 0:1:2:5]
+regexp {([A-Z0-9]+) \(([0-9.+eE]+)\)} $res full color alpha
+if {$color != "LIGHTSLATEBLUE"} {
+  set isOK 0
+}
+if {[expr abs(0.1 - $alpha)] > $prec} {
+  set isOK 0
+}
+
+if {$isOK == 0} {
+  puts "Error: wrong color."
+}
+
+Close D_Second

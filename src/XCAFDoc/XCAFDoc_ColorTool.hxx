@@ -27,6 +27,7 @@ class XCAFDoc_ShapeTool;
 class TDF_Label;
 class Standard_GUID;
 class Quantity_Color;
+class Quantity_ColorRGBA;
 class TopoDS_Shape;
 class TDF_Attribute;
 class TDF_RelocationTable;
@@ -67,20 +68,39 @@ public:
   //! Returns False if the label is not in colortable
   //! or does not define a color
   Standard_EXPORT Standard_Boolean GetColor (const TDF_Label& lab, Quantity_Color& col) const;
+
+  //! Returns color defined by label lab
+  //! Returns False if the label is not in colortable
+  //! or does not define a color
+  Standard_EXPORT Standard_Boolean GetColor(const TDF_Label& lab, Quantity_ColorRGBA& col) const;
   
   //! Finds a color definition in a colortable and returns
   //! its label if found
   //! Returns False if color is not found in colortable
   Standard_EXPORT Standard_Boolean FindColor (const Quantity_Color& col, TDF_Label& lab) const;
+
+  //! Finds a color definition in a colortable and returns
+  //! its label if found
+  //! Returns False if color is not found in colortable
+  Standard_EXPORT Standard_Boolean FindColor(const Quantity_ColorRGBA& col, TDF_Label& lab) const;
   
   //! Finds a color definition in a colortable and returns
   //! its label if found (or Null label else)
   Standard_EXPORT TDF_Label FindColor (const Quantity_Color& col) const;
+
+  //! Finds a color definition in a colortable and returns
+  //! its label if found (or Null label else)
+  Standard_EXPORT TDF_Label FindColor(const Quantity_ColorRGBA& col) const;
   
   //! Adds a color definition to a colortable and returns
   //! its label (returns existing label if the same color
   //! is already defined)
   Standard_EXPORT TDF_Label AddColor (const Quantity_Color& col) const;
+
+  //! Adds a color definition to a colortable and returns
+  //! its label (returns existing label if the same color
+  //! is already defined)
+  Standard_EXPORT TDF_Label AddColor(const Quantity_ColorRGBA& col) const;
   
   //! Removes color from the colortable
   Standard_EXPORT void RemoveColor (const TDF_Label& lab) const;
@@ -104,6 +124,12 @@ public:
   //! in the colortable
   //! Adds a color as necessary
   Standard_EXPORT void SetColor (const TDF_Label& L, const Quantity_Color& Color, const XCAFDoc_ColorType type) const;
+
+  //! Sets a link with GUID defined by <type> (see
+  //! XCAFDoc::ColorRefGUID()) from label <L> to color <Color>
+  //! in the colortable
+  //! Adds a color as necessary
+  Standard_EXPORT void SetColor(const TDF_Label& L, const Quantity_ColorRGBA& Color, const XCAFDoc_ColorType type) const;
   
   //! Removes a link with GUID defined by <type> (see
   //! XCAFDoc::ColorRefGUID()) from label <L> to color
@@ -120,6 +146,10 @@ public:
   //! Returns color assigned to <L> as <type>
   //! Returns False if no such color is assigned
   Standard_EXPORT Standard_Boolean GetColor (const TDF_Label& L, const XCAFDoc_ColorType type, Quantity_Color& color);
+
+  //! Returns color assigned to <L> as <type>
+  //! Returns False if no such color is assigned
+  Standard_EXPORT Standard_Boolean GetColor(const TDF_Label& L, const XCAFDoc_ColorType type, Quantity_ColorRGBA& color);
   
   //! Sets a link with GUID defined by <type> (see
   //! XCAFDoc::ColorRefGUID()) from label <L> to color
@@ -133,6 +163,13 @@ public:
   //! Adds a color as necessary
   //! Returns False if cannot find a label for shape S
   Standard_EXPORT Standard_Boolean SetColor (const TopoDS_Shape& S, const Quantity_Color& Color, const XCAFDoc_ColorType type);
+
+  //! Sets a link with GUID defined by <type> (see
+  //! XCAFDoc::ColorRefGUID()) from label <L> to color <Color>
+  //! in the colortable
+  //! Adds a color as necessary
+  //! Returns False if cannot find a label for shape S
+  Standard_EXPORT Standard_Boolean SetColor(const TopoDS_Shape& S, const Quantity_ColorRGBA& Color, const XCAFDoc_ColorType type);
   
   //! Removes a link with GUID defined by <type> (see
   //! XCAFDoc::ColorRefGUID()) from label <L> to color
@@ -150,6 +187,10 @@ public:
   //! Returns color assigned to <L> as <type>
   //! Returns False if no such color is assigned
   Standard_EXPORT Standard_Boolean GetColor (const TopoDS_Shape& S, const XCAFDoc_ColorType type, Quantity_Color& color);
+
+  //! Returns color assigned to <L> as <type>
+  //! Returns False if no such color is assigned
+  Standard_EXPORT Standard_Boolean GetColor(const TopoDS_Shape& S, const XCAFDoc_ColorType type, Quantity_ColorRGBA& color);
   
   //! Return TRUE if object on this label is visible, FALSE if invisible.
   Standard_EXPORT Standard_Boolean IsVisible (const TDF_Label& L) const;
@@ -163,9 +204,18 @@ public:
   //! NOTE: create SHUO structeure if it is necessary and if <isCreateSHUO>
   Standard_EXPORT Standard_Boolean SetInstanceColor (const TopoDS_Shape& theShape, const XCAFDoc_ColorType type, const Quantity_Color& color, const Standard_Boolean isCreateSHUO = Standard_True);
   
+  //! Sets the color of component that styled with SHUO structure
+  //! Returns FALSE if no sush component found
+  //! NOTE: create SHUO structeure if it is necessary and if <isCreateSHUO>
+  Standard_EXPORT Standard_Boolean SetInstanceColor(const TopoDS_Shape& theShape, const XCAFDoc_ColorType type, const Quantity_ColorRGBA& color, const Standard_Boolean isCreateSHUO = Standard_True);
+
   //! Gets the color of component that styled with SHUO structure
   //! Returns FALSE if no sush component or color type
   Standard_EXPORT Standard_Boolean GetInstanceColor (const TopoDS_Shape& theShape, const XCAFDoc_ColorType type, Quantity_Color& color);
+
+  //! Gets the color of component that styled with SHUO structure
+  //! Returns FALSE if no sush component or color type
+  Standard_EXPORT Standard_Boolean GetInstanceColor(const TopoDS_Shape& theShape, const XCAFDoc_ColorType type, Quantity_ColorRGBA& color);
   
   //! Gets the visibility status of component that styled with SHUO structure
   //! Returns FALSE if no sush component

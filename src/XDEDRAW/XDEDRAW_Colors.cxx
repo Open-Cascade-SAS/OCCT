@@ -1,4 +1,4 @@
-// Created on: 2000-08-04
+﻿// Created on: 2000-08-04
 // Created by: Pavel TELKOV
 // Copyright (c) 2000-2014 OPEN CASCADE SAS
 //
@@ -17,7 +17,9 @@
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
 #include <Draw.hxx>
+#include <Precision.hxx>
 #include <Quantity_Color.hxx>
+#include <Quantity_ColorRGBA.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelSequence.hxx>
@@ -35,7 +37,7 @@
 static Standard_Integer setColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 6) {
-    di<<"Use: "<<argv[0]<<" Doc {Label|Shape} R G B [curve|surf]\n";
+    di<<"Use: "<<argv[0]<<" Doc {Label|Shape} R G B [alpha] [curve|surf]\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
@@ -45,16 +47,29 @@ static Standard_Integer setColor (Draw_Interpretor& di, Standard_Integer argc, c
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
   Quantity_Color Col ( Draw::Atof(argv[3]), Draw::Atof(argv[4]), Draw::Atof(argv[5]), Quantity_TOC_RGB );
+
+  Quantity_ColorRGBA aColRGBA;
+  aColRGBA.SetRGB(Col);
+  if (argc > 6 && (argv[6][0] != 's' && argv[6][0] != 'c')) {
+    aColRGBA.SetAlpha((Standard_ShortReal)(Draw::Atof(argv[6])));
+  }
   
   Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  const XCAFDoc_ColorType ctype = ( argc <= 6 ? XCAFDoc_ColorGen : ( argv[6][0] == 's' ? XCAFDoc_ColorSurf : XCAFDoc_ColorCurv ) );
+  XCAFDoc_ColorType ctype = XCAFDoc_ColorGen;
+  if (argc > 6) {
+    if (argv[argc - 1][0] == 's')
+      ctype = XCAFDoc_ColorSurf;
+    else if (argv[argc - 1][0] == 'c')
+      ctype = XCAFDoc_ColorCurv;
+  }
+
   if ( !aLabel.IsNull() ) {
-    myColors->SetColor ( aLabel, Col, ctype );
+    myColors->SetColor(aLabel, aColRGBA, ctype);
   }
   else {
     TopoDS_Shape aShape= DBRep::Get(argv[2]);
     if ( !aShape.IsNull() ) {
-      myColors->SetColor ( aShape, Col, ctype );
+      myColors->SetColor(aShape, aColRGBA, ctype);
     }
   }
   return 0;
@@ -73,10 +88,13 @@ static Standard_Integer getColor (Draw_Interpretor& di, Standard_Integer argc, c
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
   Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  Quantity_Color col;
+  Quantity_ColorRGBA col;
   if ( !myColors->GetColor(aLabel, col) ) return 0;
   
-  di << col.StringName ( col.Name() );
+  if ((1 - col.Alpha()) < Precision::Confusion())
+    di << col.GetRGB().StringName(col.GetRGB().Name());
+  else
+    di << col.GetRGB().StringName ( col.GetRGB().Name() ) << " (" << col.Alpha() << ")";
    
   return 0;
 }
@@ -101,12 +119,13 @@ static Standard_Integer getShapeColor (Draw_Interpretor& di, Standard_Integer ar
   Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
   const XCAFDoc_ColorType ctype = ( argc <= 3 ? XCAFDoc_ColorGen : ( argv[3][0] == 's' ? XCAFDoc_ColorSurf : XCAFDoc_ColorCurv ) );
 
-  Quantity_Color col;
+  Quantity_ColorRGBA col;
   if ( !myColors->GetColor(aLabel, ctype, col) ) return 0;
 
-  TCollection_AsciiString Entry;
-  Entry = col.StringName ( col.Name() );
-  di << Entry.ToCString();
+  if ((1 - col.Alpha()) < Precision::Confusion())
+    di << col.GetRGB().StringName(col.GetRGB().Name());
+  else
+    di << col.GetRGB().StringName(col.GetRGB().Name()) << " (" << col.Alpha() << ")";
 
   return 0;
 }
@@ -123,14 +142,17 @@ static Standard_Integer getAllColors (Draw_Interpretor& di, Standard_Integer arg
 
   TDF_Label aLabel;
   Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  Quantity_Color col;
+  Quantity_ColorRGBA col;
   TDF_LabelSequence Labels;
   myColors->GetColors(Labels);
   if (Labels.Length() >= 1) {
     for ( Standard_Integer i = 1; i<= Labels.Length(); i++) {
       aLabel = Labels.Value(i);
       if ( !myColors->GetColor(aLabel, col) ) continue;
-      di << col.StringName ( col.Name() );
+      if ((1 - col.Alpha()) < Precision::Confusion())
+        di << col.GetRGB().StringName(col.GetRGB().Name());
+      else
+        di << col.GetRGB().StringName(col.GetRGB().Name()) << " (" << col.Alpha() << ")";
       di << " ";
     }
   }
@@ -140,8 +162,8 @@ static Standard_Integer getAllColors (Draw_Interpretor& di, Standard_Integer arg
 
 static Standard_Integer addColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc!=5) {
-    di<<"Use: "<<argv[0]<<" DocName R G B\n";
+  if (argc < 5) {
+    di<<"Use: "<<argv[0]<<" DocName R G B [alpha]\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
@@ -152,7 +174,13 @@ static Standard_Integer addColor (Draw_Interpretor& di, Standard_Integer argc, c
   Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
 
   Quantity_Color Col ( Draw::Atof(argv[2]), Draw::Atof(argv[3]), Draw::Atof(argv[4]), Quantity_TOC_RGB );
-  aLabel = myColors->AddColor(Col);
+  if (argc == 6) {
+    Quantity_ColorRGBA aColRGBA(Col);
+    aColRGBA.SetAlpha((Standard_ShortReal)(Draw::Atof(argv[5])));
+    aLabel = myColors->AddColor(aColRGBA);
+  }
+  else 
+    aLabel = myColors->AddColor(Col);
   
   TCollection_AsciiString Entry;
   TDF_Tool::Entry(aLabel, Entry);
@@ -180,8 +208,8 @@ static Standard_Integer removeColor (Draw_Interpretor& di, Standard_Integer argc
 
 static Standard_Integer findColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc!=5) {
-    di<<"Use: "<<argv[0]<<" DocName R G B\n";
+  if (argc < 5) {
+    di<<"Use: "<<argv[0]<<" DocName R G B [alpha]\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
@@ -189,11 +217,16 @@ static Standard_Integer findColor (Draw_Interpretor& di, Standard_Integer argc, 
   if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  
-  Quantity_Color Col ( Draw::Atof(argv[2]), Draw::Atof(argv[3]), Draw::Atof(argv[4]), Quantity_TOC_RGB );
-  
   TCollection_AsciiString Entry;
-  TDF_Tool::Entry(myColors->FindColor(Col), Entry);
+  Quantity_Color Col(Draw::Atof(argv[2]), Draw::Atof(argv[3]), Draw::Atof(argv[4]), Quantity_TOC_RGB);
+  if (argc == 5) {
+    TDF_Tool::Entry(myColors->FindColor(Col), Entry);
+  }
+  else {
+    Quantity_ColorRGBA aColRGBA(Col);
+    aColRGBA.SetAlpha((Standard_ShortReal)Draw::Atof(argv[5]));
+    TDF_Tool::Entry(myColors->FindColor(aColRGBA), Entry);
+  }
   di << Entry.ToCString();
   return 0;
 }
@@ -308,7 +341,7 @@ static Standard_Integer getStyledcolor (Draw_Interpretor& di, Standard_Integer a
   TopoDS_Shape aShape;
   aShape = DBRep::Get(argv[2]);
 
-  Quantity_Color col;
+  Quantity_ColorRGBA col;
   XCAFDoc_ColorType type;
   if ( argv[3] && argv[3][0] == 's' )
     type = XCAFDoc_ColorSurf;
@@ -319,9 +352,10 @@ static Standard_Integer getStyledcolor (Draw_Interpretor& di, Standard_Integer a
   Handle(XCAFDoc_ColorTool) localTool = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
   if (localTool->GetInstanceColor( aShape, type, col) ) 
   {
-    TCollection_AsciiString Entry;
-    Entry = col.StringName ( col.Name() );
-    di << Entry.ToCString();
+    if ((1 - col.Alpha()) < Precision::Confusion())
+      di << col.GetRGB().StringName(col.GetRGB().Name());
+    else
+      di << col.GetRGB().StringName(col.GetRGB().Name()) << " (" << col.Alpha() << ")";
   }
   return 0;
 }
@@ -329,7 +363,7 @@ static Standard_Integer getStyledcolor (Draw_Interpretor& di, Standard_Integer a
 static Standard_Integer setStyledcolor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc<6) {
-    di<<"Use: "<<argv[0]<<" Doc shape R G B type(s/c)\n";
+    di<<"Use: "<<argv[0]<<" Doc shape R G B [alpha] type(s/c)\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
@@ -339,15 +373,22 @@ static Standard_Integer setStyledcolor (Draw_Interpretor& di, Standard_Integer a
   aShape = DBRep::Get(argv[2]);
 
   Quantity_Color col ( Draw::Atof(argv[3]), Draw::Atof(argv[4]), Draw::Atof(argv[5]), Quantity_TOC_RGB );
-  XCAFDoc_ColorType type;
-  if ( argv[6] && argv[6][0] == 's' )
-    type = XCAFDoc_ColorSurf;
-  else if ( argv[6] && argv[6][0] == 'c' )
-    type = XCAFDoc_ColorCurv;
-  else
-    type = XCAFDoc_ColorGen;
+  Quantity_ColorRGBA aColRGBA;
+  aColRGBA.SetRGB(col);
+  if (argc > 6 && (argv[6][0] != 's' && argv[6][0] != 'c')) {
+    aColRGBA.SetAlpha((Standard_ShortReal)(Draw::Atof(argv[6])));
+  }
+
+  Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
+  XCAFDoc_ColorType ctype = XCAFDoc_ColorGen;
+  if (argc > 6) {
+    if (argv[argc - 1][0] == 's')
+      ctype = XCAFDoc_ColorSurf;
+    else if (argv[argc - 1][0] == 'c')
+      ctype = XCAFDoc_ColorCurv;
+  }
   Handle(XCAFDoc_ColorTool) localTool = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  if (!localTool->SetInstanceColor( aShape, type, col) ) 
+  if (!localTool->SetInstanceColor(aShape, ctype, aColRGBA))
   {
     di << "cannot set color for the indicated component\n";
     return 1;
@@ -372,7 +413,7 @@ void XDEDRAW_Colors::InitCommands(Draw_Interpretor& di)
   
   Standard_CString g = "XDE color's commands";
   
-  di.Add ("XSetColor","Doc {Label|Shape} R G B [c|s]\t: Set color [R G B] to shape given by Label, "
+  di.Add ("XSetColor","Doc {Label|Shape} R G B [alpha] [c|s]\t: Set color [R G B] to shape given by Label, "
                       "type of color 's' - for surface, 'c' - for curve (default generic)",
 		   __FILE__, setColor, g);
 
@@ -385,13 +426,13 @@ void XDEDRAW_Colors::InitCommands(Draw_Interpretor& di)
   di.Add ("XGetAllColors","Doc \t: Print all colors that defined in document",
  		   __FILE__, getAllColors, g);
   
-  di.Add ("XAddColor","Doc R G B \t: Add color in document to color table",
+  di.Add ("XAddColor","Doc R G B [alpha]\t: Add color in document to color table",
  		   __FILE__, addColor, g);
   
   di.Add ("XRemoveColor","Doc Label \t: Remove color in document from color table",
 		   __FILE__, removeColor, g);
 
-  di.Add ("XFindColor","Doc R G B \t: Find label where indicated color is situated",
+  di.Add ("XFindColor","Doc R G B [alpha]\t: Find label where indicated color is situated",
  		   __FILE__, findColor, g);
 
   di.Add ("XUnsetColor","Doc {Label|Shape} ColorType \t: Unset color ",
@@ -409,7 +450,7 @@ void XDEDRAW_Colors::InitCommands(Draw_Interpretor& di)
   di.Add ("XGetInstanceColor","Doc Shape \t: Return the color of component shape ",
 		   __FILE__, getStyledcolor, g);
 
-  di.Add ("XSetInstanceColor","Doc Shape color type \t: sets color for component of shape if SHUO structure exists already ",
+  di.Add ("XSetInstanceColor","Doc Shape R G B [alpha] type \t: sets color for component of shape if SHUO structure exists already ",
 		   __FILE__, setStyledcolor, g);
 
 }

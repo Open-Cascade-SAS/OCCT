@@ -20,12 +20,14 @@
 #include <Standard_Type.hxx>
 
 #include <Quantity_Color.hxx>
+#include <Quantity_ColorRGBA.hxx>
 #include <TDF_Attribute.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Standard_Real.hxx>
 class Standard_GUID;
 class TDF_Label;
 class Quantity_Color;
+class Quantity_ColorRGBA;
 class TDF_Attribute;
 class TDF_RelocationTable;
 
@@ -45,25 +47,32 @@ public:
   Standard_EXPORT static const Standard_GUID& GetID();
   
   Standard_EXPORT static Handle(XCAFDoc_Color) Set (const TDF_Label& label, const Quantity_Color& C);
+
+  Standard_EXPORT static Handle(XCAFDoc_Color) Set (const TDF_Label& label, const Quantity_ColorRGBA& C);
   
   Standard_EXPORT static Handle(XCAFDoc_Color) Set (const TDF_Label& label, const Quantity_NameOfColor C);
   
   //! Find, or create, a Color attribute and set it's value
   //! the Color attribute is returned.
-  Standard_EXPORT static Handle(XCAFDoc_Color) Set (const TDF_Label& label, const Standard_Real R, const Standard_Real G, const Standard_Real B);
+  Standard_EXPORT static Handle(XCAFDoc_Color) Set (const TDF_Label& label, const Standard_Real R, const Standard_Real G, const Standard_Real B, const Standard_Real alpha = 1.0);
   
   Standard_EXPORT void Set (const Quantity_Color& C);
+
+  Standard_EXPORT void Set (const Quantity_ColorRGBA& C);
   
   Standard_EXPORT void Set (const Quantity_NameOfColor C);
   
-  Standard_EXPORT void Set (const Standard_Real R, const Standard_Real G, const Standard_Real B);
+  Standard_EXPORT void Set (const Standard_Real R, const Standard_Real G, const Standard_Real B, const Standard_Real alpha = 1.0);
   
   Standard_EXPORT const Quantity_Color& GetColor() const;
+
+  Standard_EXPORT const Quantity_ColorRGBA& GetColorRGBA() const;
   
   Standard_EXPORT Quantity_NameOfColor GetNOC() const;
   
-  //! Returns True if there is a reference on the same label
   Standard_EXPORT void GetRGB (Standard_Real& R, Standard_Real& G, Standard_Real& B) const;
+
+  Standard_EXPORT Standard_ShortReal GetAlpha() const;
   
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   
@@ -86,7 +95,7 @@ protected:
 private:
 
 
-  Quantity_Color myColor;
+  Quantity_ColorRGBA myColor;
 
 
 };

@@ -15,6 +15,7 @@
 
 
 #include <Quantity_Color.hxx>
+#include <Quantity_ColorRGBA.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
@@ -60,6 +61,23 @@ const Standard_GUID& XCAFDoc_Color::GetID()
   return A;
 }
 
+ //=======================================================================
+ //function : Set
+ //purpose  : 
+ //=======================================================================
+
+ Handle(XCAFDoc_Color) XCAFDoc_Color::Set(const TDF_Label& L,
+   const Quantity_ColorRGBA& C)
+ {
+   Handle(XCAFDoc_Color) A;
+   if (!L.FindAttribute(XCAFDoc_Color::GetID(), A)) {
+     A = new XCAFDoc_Color();
+     L.AddAttribute(A);
+   }
+   A->Set(C);
+   return A;
+ }
+
 //=======================================================================
 //function : Set
 //purpose  : 
@@ -83,16 +101,17 @@ const Standard_GUID& XCAFDoc_Color::GetID()
 //=======================================================================
 
 Handle(XCAFDoc_Color) XCAFDoc_Color::Set(const TDF_Label& L,
-						     const Standard_Real R,
-						     const Standard_Real G,
-						     const Standard_Real B) 
+                                         const Standard_Real R,
+                                         const Standard_Real G,
+                                         const Standard_Real B,
+                                         const Standard_Real alpha) 
 {
   Handle(XCAFDoc_Color) A;
   if (!L.FindAttribute (XCAFDoc_Color::GetID(), A)) {
     A = new XCAFDoc_Color ();
     L.AddAttribute(A);
   }
-  A->Set (R,G,B); 
+  A->Set (R,G,B, alpha); 
   return A;
 }
 
@@ -102,6 +121,17 @@ Handle(XCAFDoc_Color) XCAFDoc_Color::Set(const TDF_Label& L,
 //=======================================================================
 
 void XCAFDoc_Color::Set(const Quantity_Color& C) 
+{
+  Backup();
+  myColor.SetRGB(C);
+}
+
+//=======================================================================
+//function : Set
+//purpose  : 
+//=======================================================================
+
+void XCAFDoc_Color::Set(const Quantity_ColorRGBA& C)
 {
   Backup();
   myColor = C;
@@ -115,7 +145,7 @@ void XCAFDoc_Color::Set(const Quantity_Color& C)
  void XCAFDoc_Color::Set(const Quantity_NameOfColor C) 
 {
   Backup();
-  myColor.SetValues(C);
+  myColor.SetRGB(C);
 }
 
 //=======================================================================
@@ -124,11 +154,15 @@ void XCAFDoc_Color::Set(const Quantity_Color& C)
 //=======================================================================
 
  void XCAFDoc_Color::Set(const Standard_Real R,
-			       const Standard_Real G,
-			       const Standard_Real B) 
+                         const Standard_Real G,
+                         const Standard_Real B,
+                         const Standard_Real alpha) 
 {
   Backup();
-  myColor.SetValues(R,G,B, Quantity_TOC_RGB);
+  Quantity_Color aColor;
+  aColor.SetValues(R, G, B, Quantity_TOC_RGB);
+  myColor.SetRGB(aColor);
+  myColor.SetAlpha((Standard_ShortReal)alpha);
 }
 
 //=======================================================================
@@ -137,6 +171,16 @@ void XCAFDoc_Color::Set(const Quantity_Color& C)
 //=======================================================================
 
 const Quantity_Color& XCAFDoc_Color::GetColor() const
+{
+  return myColor.GetRGB();
+}
+
+//=======================================================================
+//function : GetColorRGBA
+//purpose  : 
+//=======================================================================
+
+const Quantity_ColorRGBA& XCAFDoc_Color::GetColorRGBA() const
 {
   return myColor;
 }
@@ -148,7 +192,7 @@ const Quantity_Color& XCAFDoc_Color::GetColor() const
 
  Quantity_NameOfColor XCAFDoc_Color::GetNOC() const
 {
-  return myColor.Name();
+  return myColor.GetRGB().Name();
 }
 
 //=======================================================================
@@ -160,8 +204,18 @@ const Quantity_Color& XCAFDoc_Color::GetColor() const
 				  Standard_Real& G,
 				  Standard_Real& B) const
 {
-  myColor.Values(R,G,B, Quantity_TOC_RGB);
+  myColor.GetRGB().Values(R,G,B, Quantity_TOC_RGB);
 }
+
+ //=======================================================================
+ //function : GetRGBA
+ //purpose  : 
+ //=======================================================================
+
+ Standard_ShortReal XCAFDoc_Color::GetAlpha() const
+ {
+   return myColor.Alpha();
+ }
 //=======================================================================
 //function : ID
 //purpose  : 
@@ -179,7 +233,7 @@ const Standard_GUID& XCAFDoc_Color::ID() const
 
  void XCAFDoc_Color::Restore(const Handle(TDF_Attribute)& With) 
 {
-  myColor = Handle(XCAFDoc_Color)::DownCast(With)->GetColor();
+  myColor = Handle(XCAFDoc_Color)::DownCast(With)->GetColorRGBA();
 }
 
 //=======================================================================

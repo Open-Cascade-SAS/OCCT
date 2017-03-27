@@ -303,7 +303,7 @@ static void StatAssembly(const TDF_Label L,
     NbAreaProp++;
   }
   Handle(XCAFDoc_ColorTool) CTool = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
-  Quantity_Color col;
+  Quantity_ColorRGBA col;
   Standard_Boolean IsColor = Standard_False;
   if(CTool->GetColor(L,XCAFDoc_ColorGen,col))
     IsColor = Standard_True;
@@ -313,8 +313,8 @@ static void StatAssembly(const TDF_Label L,
     IsColor = Standard_True;
   if(IsColor) {
     TCollection_AsciiString Entry1;
-    Entry1 = col.StringName(col.Name());
-    if(PrintStructMode) di<<"Color("<<Entry1.ToCString()<<") ";
+    Entry1 = col.GetRGB().StringName(col.GetRGB().Name());
+    if(PrintStructMode) di<<"Color("<<Entry1.ToCString()<<" "<<col.Alpha()<<") ";
     NbShapesWithColor++;
   }
   Handle(XCAFDoc_LayerTool) LTool = XCAFDoc_DocumentTool::LayerTool(aDoc->Main());
@@ -723,10 +723,10 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
   }
   else if ( att->IsKind(STANDARD_TYPE(XCAFDoc_Color)) ) {
     Handle(XCAFDoc_Color) val = Handle(XCAFDoc_Color)::DownCast ( att );
-    Quantity_Color C = val->GetColor();
+    Quantity_ColorRGBA C = val->GetColorRGBA();
     char string[260];
-    Sprintf ( string, "%s (%g, %g, %g)", C.StringName ( C.Name() ),
-	      C.Red(), C.Green(), C.Blue() );
+    Sprintf ( string, "%s (%g, %g, %g, %g)", C.GetRGB().StringName ( C.GetRGB().Name() ),
+      C.GetRGB().Red(), C.GetRGB().Green(), C.GetRGB().Blue(), C.Alpha());
     di << string;
   }
   else if ( att->IsKind(STANDARD_TYPE(XCAFDoc_DimTol)) ) {
