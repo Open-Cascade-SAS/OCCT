@@ -27,6 +27,17 @@ public:
   //! Read persistent data from a file.
   inline void Read (StdObjMgt_ReadData& theReadData)
     { theReadData >> myDocEntry >> myLabEntry; }
+  //! Write persistent data to a file.
+  inline void Write (StdObjMgt_WriteData& theWriteData) const
+    { theWriteData << myDocEntry << myLabEntry; }
+  //! Gets persistent child objects
+  inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+  {
+    theChildren.Append(myDocEntry);
+    theChildren.Append(myLabEntry);
+  }
+  //! Returns persistent type name
+  inline Standard_CString PName() const { return "PDocStd_XLink"; }
 
   //! Import transient attribuite from the persistent data.
   void Import (const Handle(TDocStd_XLink)& theAttribute) const

@@ -35,7 +35,18 @@ public:
   public:
     //! Read persistent data from a file.
     inline void Read (StdObjMgt_ReadData& theReadData)
-    { theReadData >> myOldShapes >> myNewShapes >> myShapeStatus >> myVersion; }
+      { theReadData >> myOldShapes >> myNewShapes >> myShapeStatus >> myVersion; }
+    //! Read persistent data from a file.
+    inline void Write (StdObjMgt_WriteData& theWriteData) const
+      { theWriteData << myOldShapes << myNewShapes << myShapeStatus << myVersion; }
+    //! Gets persistent child objects
+    inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+    {
+      if (!myOldShapes.IsNull()) theChildren.Append(myOldShapes);
+      if (!myNewShapes.IsNull()) theChildren.Append(myNewShapes);
+    }
+    //! Returns persistent type name
+    inline Standard_CString PName() const { return "PNaming_NamedShape"; }
 
     //! Import transient attribuite from the persistent data.
     void Import (const Handle(TNaming_NamedShape)& theAttribute) const;
@@ -52,6 +63,16 @@ public:
   public:
     //! Read persistent data from a file.
     Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
+    //! Read persistent data from a file.
+    Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const;
+    //! Gets persistent child objects
+    inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+    {
+      if (!myArgs.IsNull()) theChildren.Append(myArgs);
+      if (!myStop.IsNull()) theChildren.Append(myStop);
+    }
+    //! Returns persistent type name
+    inline Standard_CString PName() const { return "PNaming_Name"; }
 
     //! Import transient object from the persistent data.
     Standard_EXPORT virtual void Import
@@ -70,6 +91,16 @@ public:
   public:
     //! Read persistent data from a file.
     Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
+    //! Read persistent data from a file.
+    Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const;
+    //! Gets persistent child objects
+    inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+    {
+      Name::PChildren(theChildren);
+      if (!myContextLabel.IsNull()) theChildren.Append(myContextLabel);
+    }
+    //! Returns persistent type name
+    inline Standard_CString PName() const { return "PNaming_Name_1"; }
 
     //! Import transient object from the persistent data.
     Standard_EXPORT virtual void Import
@@ -84,6 +115,13 @@ public:
   public:
     //! Read persistent data from a file.
     Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
+    //! Read persistent data from a file.
+    Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const;
+    //! Gets persistent child objects
+    inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+      { Name_1::PChildren(theChildren); }
+    //! Returns persistent type name
+    inline Standard_CString PName() const { return "PNaming_Name_2"; }
 
     //! Import transient object from the persistent data.
     Standard_EXPORT virtual void Import

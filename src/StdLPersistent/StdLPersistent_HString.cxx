@@ -13,6 +13,7 @@
 
 #include <StdLPersistent_HString.hxx>
 #include <StdObjMgt_ReadData.hxx>
+#include <StdObjMgt_WriteData.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
 
@@ -36,6 +37,26 @@ void StdLPersistent_HString::instance<StringClass, CharType>::Read
     CharType aChar;
     anObjectData >> aChar;
     myValue->SetValue (i, aChar);
+  }
+}
+
+//=======================================================================
+//function : Write
+//purpose  : Write persistent data to a file
+//=======================================================================
+template <class StringClass, typename CharType>
+void StdLPersistent_HString::instance<StringClass, CharType>::Write
+  (StdObjMgt_WriteData& theWriteData) const
+{
+  StdObjMgt_WriteData::Object anObjectData(theWriteData);
+
+  Standard_Integer aSize = myValue->Length();
+  anObjectData << aSize;
+
+  for (Standard_Integer i = 1; i <= aSize; i++)
+  {
+    CharType aChar (0);
+    anObjectData << aChar;
   }
 }
 

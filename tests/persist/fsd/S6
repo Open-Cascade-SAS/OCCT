@@ -1,0 +1,6 @@
+stepread [locate_data_file OCC167.step] s *
+copy s_1 base
+
+check_fsd base bin
+check_fsd base cmp
+check_fsd base gen

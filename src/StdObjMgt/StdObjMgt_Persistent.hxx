@@ -18,10 +18,12 @@
 #include <Standard.hxx>
 #include <Standard_Handle.hxx>
 #include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <TDF_Label.hxx>
 
 class StdObjMgt_ReadData;
+class StdObjMgt_WriteData;
 class TDocStd_Document;
 class TDF_Attribute;
 class TDF_Data;
@@ -34,6 +36,8 @@ class TCollection_HExtendedString;
 class StdObjMgt_Persistent : public Standard_Transient
 {
 public:
+  Standard_EXPORT StdObjMgt_Persistent();
+
   //! Derived class instance create function.
   typedef Handle(StdObjMgt_Persistent) (*Instantiator)();
 
@@ -44,6 +48,17 @@ public:
 
   //! Read persistent data from a file.
   Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData) = 0;
+
+  //! Write persistent data to a file.
+  Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const = 0;
+
+  typedef NCollection_Sequence<Handle(StdObjMgt_Persistent)> SequenceOfPersistent;
+
+  //! Gets persistent child objects
+  Standard_EXPORT virtual void PChildren (SequenceOfPersistent&) const = 0;
+
+  //! Returns persistent type name
+  Standard_EXPORT virtual Standard_CString PName() const = 0;
 
   //! Import transient document from the persistent data
   //! (to be overriden by document class;
@@ -80,6 +95,22 @@ public:
   //! (to be overriden by extended string class;
   //! returns a null label by default for other classes).
   Standard_EXPORT virtual TDF_Label Label (const Handle(TDF_Data)& theDF) const;
+
+  //! Returns the assigned persistent type number
+  Standard_Integer TypeNum() const { return myTypeNum; }
+
+  //! Assigns a persistent type number to the object
+  void TypeNum(Standard_Integer theTypeNum) { myTypeNum = theTypeNum; }
+
+  //! Returns the object reference number
+  Standard_Integer RefNum() const { return myRefNum; }
+
+  //! Sets an object reference number
+  void RefNum(Standard_Integer theRefNum) { myRefNum = theRefNum; }
+
+private:
+  Standard_Integer myTypeNum;
+  Standard_Integer myRefNum;
 };
 
 #endif // _StdObjMgt_Persistent_HeaderFile

@@ -16,6 +16,7 @@
 
 #include <StdObjMgt_Persistent.hxx>
 #include <StdObjMgt_ReadData.hxx>
+#include <StdObjMgt_WriteData.hxx>
 
 
 //! Root class for a temporary persistent object corresponding to an attribute.
@@ -31,7 +32,7 @@ class StdObjMgt_Attribute : public Standard_Transient
 
     //! Get transient attribuite for the persistent data
     Standard_EXPORT virtual Handle(TDF_Attribute) GetAttribute() const
-    { return Handle(TDF_Attribute)(myTransient); }
+      { return Handle(TDF_Attribute)(myTransient); }
 
   protected:
     Handle(Transient) myTransient;
@@ -47,6 +48,11 @@ public:
     //! Read persistent data from a file.
     Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myData; }
+    //! Write persistent data to a file.
+    Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const
+      { theWriteData << myData; }
+    Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const { }
+    Standard_EXPORT virtual Standard_CString PName() const { return "StdObjMgt_Attribute::undefined"; }
 
   protected:
     DataType myData;
@@ -66,6 +72,12 @@ private:
       myPersistent = new Persistent;
       myPersistent->Read (theReadData);
     }
+    //! Write persistent data to a file.
+    Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const
+      { myPersistent->Write(theWriteData); }
+    Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const { }
+    Standard_EXPORT virtual Standard_CString PName() const 
+      { return myPersistent->PName(); }
 
     //! Import transient attribuite from the persistent data
     Standard_EXPORT virtual void ImportAttribute()

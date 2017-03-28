@@ -13,6 +13,7 @@
 
 #include <StdLPersistent_Data.hxx>
 #include <StdObjMgt_ReadData.hxx>
+#include <StdObjMgt_WriteData.hxx>
 
 #include <TDF_Data.hxx>
 #include <TDF_Attribute.hxx>
@@ -78,6 +79,15 @@ private:
 void StdLPersistent_Data::Read (StdObjMgt_ReadData& theReadData)
 {
   theReadData >> myVersion >> myLabels >> myAttributes;
+}
+
+//=======================================================================
+//function : Write
+//purpose  : Write persistent data to a file
+//=======================================================================
+void StdLPersistent_Data::Write (StdObjMgt_WriteData& theWriteData) const
+{
+  theWriteData << myVersion << myLabels << myAttributes;
 }
 
 //=======================================================================

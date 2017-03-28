@@ -16,7 +16,6 @@
 #define _StdPersistent_HeaderFile
 
 #include <Standard_Macro.hxx>
-
 class StdObjMgt_MapOfInstantiators;
 
 class StdPersistent

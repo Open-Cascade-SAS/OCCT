@@ -1,0 +1,6 @@
+cone c 45 10
+mkface base c 0 1 0 10
+
+check_fsd base bin
+check_fsd base cmp
+check_fsd base gen

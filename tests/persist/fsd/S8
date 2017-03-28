@@ -1,0 +1,5 @@
+restore [locate_data_file bspl-con2.brep] base
+
+check_fsd base bin
+check_fsd base cmp
+check_fsd base gen

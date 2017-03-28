@@ -11,8 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapePersistent_HSequence.hxx>
 #include <StdObjMgt_ReadData.hxx>
+#include <StdObjMgt_WriteData.hxx>
+#include <ShapePersistent_HSequence.hxx>
 
 
 template <class SequenceClass>
@@ -23,10 +24,24 @@ void ShapePersistent_HSequence::node<SequenceClass>::Read
 }
 
 template <class SequenceClass>
+void ShapePersistent_HSequence::node<SequenceClass>::Write
+  (StdObjMgt_WriteData& theWriteData) const
+{
+  theWriteData << myPreviuos << myItem << myNext;
+}
+
+template <class SequenceClass>
 void ShapePersistent_HSequence::instance<SequenceClass>::Read
   (StdObjMgt_ReadData& theReadData)
 {
   theReadData >> myFirst >> myLast >> mySize;
+}
+
+template <class SequenceClass>
+void ShapePersistent_HSequence::instance<SequenceClass>::Write
+  (StdObjMgt_WriteData& theWriteData) const
+{
+  theWriteData << myFirst << myLast << mySize;
 }
 
 template <class SequenceClass>
@@ -50,3 +65,48 @@ template class ShapePersistent_HSequence::instance<TColgp_HSequenceOfXYZ>;
 template class ShapePersistent_HSequence::instance<TColgp_HSequenceOfPnt>;
 template class ShapePersistent_HSequence::instance<TColgp_HSequenceOfDir>;
 template class ShapePersistent_HSequence::instance<TColgp_HSequenceOfVec>;
+
+
+//=======================================================================
+// XYZ 
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_HSequence::instance<TColgp_HSequenceOfXYZ>
+  ::PName() const { return "PColgp_HSequenceOfXYZ"; }
+
+template<>
+Standard_CString ShapePersistent_HSequence::node<TColgp_HSequenceOfXYZ>
+  ::PName() const { return "PColgp_SeqNodeOfHSequenceOfXYZ"; }
+
+//=======================================================================
+// Pnt 
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_HSequence::instance<TColgp_HSequenceOfPnt>
+  ::PName() const { return "PColgp_HSequenceOfPnt"; }
+
+template<>
+Standard_CString ShapePersistent_HSequence::node<TColgp_HSequenceOfPnt>
+  ::PName() const { return "PColgp_SeqNodeOfHSequenceOfPnt"; }
+
+//=======================================================================
+// Dir 
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_HSequence::instance<TColgp_HSequenceOfDir>
+  ::PName() const { return "PColgp_HSequenceOfDir"; }
+
+template<>
+Standard_CString ShapePersistent_HSequence::node<TColgp_HSequenceOfDir>
+  ::PName() const { return "PColgp_SeqNodeOfHSequenceOffDir"; }
+
+//=======================================================================
+// Vec 
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_HSequence::instance<TColgp_HSequenceOfVec>
+  ::PName() const { return "PColgp_HSequenceOfVec"; }
+
+template<>
+Standard_CString ShapePersistent_HSequence::node<TColgp_HSequenceOfVec>
+  ::PName() const { return "PColgp_SeqNodeOfHSequenceOfVec"; }

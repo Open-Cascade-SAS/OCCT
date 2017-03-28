@@ -83,7 +83,8 @@ public:
   //! Create, Add, Remove, Open, Commit, Undo, Redo, SetNestedMode
   Standard_EXPORT static void MTMCommands (Draw_Interpretor& theCommands);
 
-
+  //! ShapeSchema_Read
+  Standard_EXPORT static void ShapeSchemaCommands(Draw_Interpretor& theCommands);
 
 
 protected:

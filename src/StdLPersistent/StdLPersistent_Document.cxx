@@ -14,6 +14,7 @@
 #include <StdLPersistent_Document.hxx>
 #include <StdLPersistent_Data.hxx>
 #include <StdObjMgt_ReadData.hxx>
+#include <StdObjMgt_WriteData.hxx>
 
 #include <TDocStd_Document.hxx>
 #include <TDocStd_Owner.hxx>
@@ -26,6 +27,24 @@
 void StdLPersistent_Document::Read (StdObjMgt_ReadData& theReadData)
 {
   theReadData >> myData;
+}
+
+//=======================================================================
+//function : Write
+//purpose  : Write persistent data to a file
+//=======================================================================
+void StdLPersistent_Document::Write (StdObjMgt_WriteData& theWriteData) const
+{
+  theWriteData << myData;
+}
+
+//=======================================================================
+//function : PChildren
+//purpose  : Gets persistent child objects
+//=======================================================================
+void StdLPersistent_Document::PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+{
+  theChildren.Append(myData);
 }
 
 //=======================================================================

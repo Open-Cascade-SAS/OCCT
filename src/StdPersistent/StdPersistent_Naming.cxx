@@ -62,6 +62,15 @@ void StdPersistent_Naming::Name::Read (StdObjMgt_ReadData& theReadData)
 }
 
 //=======================================================================
+//function : Write
+//purpose  : Write persistent data to a file
+//=======================================================================
+void StdPersistent_Naming::Name::Write (StdObjMgt_WriteData& theWriteData) const
+{
+  theWriteData << myType << myShapeType << myArgs << myStop << myIndex;
+}
+
+//=======================================================================
 //function : Import
 //purpose  : Import transient object from the persistent data
 //=======================================================================
@@ -105,6 +114,16 @@ void StdPersistent_Naming::Name_1::Read (StdObjMgt_ReadData& theReadData)
 }
 
 //=======================================================================
+//function : Write
+//purpose  : Write persistent data to a file
+//=======================================================================
+void StdPersistent_Naming::Name_1::Write (StdObjMgt_WriteData& theWriteData) const
+{
+  Name::Write (theWriteData);
+  theWriteData << myContextLabel;
+}
+
+//=======================================================================
 //function : Import
 //purpose  : Import transient object from the persistent data
 //=======================================================================
@@ -124,6 +143,16 @@ void StdPersistent_Naming::Name_2::Read (StdObjMgt_ReadData& theReadData)
 {
   Name_1::Read (theReadData);
   theReadData >> myOrientation;
+}
+
+//=======================================================================
+//function : Write
+//purpose  : Write persistent data to a file
+//=======================================================================
+void StdPersistent_Naming::Name_2::Write (StdObjMgt_WriteData& theWriteData) const
+{
+  Name_1::Write (theWriteData);
+  theWriteData << myOrientation;
 }
 
 //=======================================================================

@@ -26,6 +26,13 @@ class StdLPersistent_Document : public StdObjMgt_Persistent
 public:
   //! Read persistent data from a file.
   Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
+  //! Read persistent data from a file.
+  Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const;
+  //! Gets persistent child objects
+  Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const;
+  //! Returns persistent type name
+  Standard_EXPORT virtual Standard_CString PName() const
+    { return "PDocStd_Document"; }
 
   //! Import transient document from the persistent data.
   Standard_EXPORT virtual void ImportDocument

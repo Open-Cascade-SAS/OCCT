@@ -27,19 +27,39 @@
 inline StdObjMgt_ReadData& operator >>
   (StdObjMgt_ReadData::Object theReadData, gp_Mat2d& theMat)
 {
-  gp_XY aRow1, aRow2;
-  theReadData >> aRow1 >> aRow2;
-  theMat.SetRows (aRow1, aRow2);
+  theReadData
+    >> theMat(1, 1) >> theMat(1, 2)
+    >> theMat(2, 1) >> theMat(2, 2);
   return theReadData;
+}
+
+inline StdObjMgt_WriteData& operator <<
+  (StdObjMgt_WriteData::Object theWriteData, const gp_Mat2d& theMat)
+{
+  theWriteData
+    << theMat(1, 1) << theMat(1, 2)
+    << theMat(2, 1) << theMat(2, 2);
+  return theWriteData;
 }
 
 inline StdObjMgt_ReadData& operator >>
   (StdObjMgt_ReadData::Object theReadData, gp_Mat& theMat)
 {
-  gp_XYZ aRow1, aRow2, aRow3;
-  theReadData >> aRow1 >> aRow2 >> aRow3;
-  theMat.SetRows (aRow1, aRow2, aRow3);
+  theReadData
+    >> theMat(1, 1) >> theMat(1, 2) >> theMat(1, 3)
+    >> theMat(2, 1) >> theMat(2, 2) >> theMat(2, 3)
+    >> theMat(3, 1) >> theMat(3, 2) >> theMat(3, 3);
   return theReadData;
+}
+
+inline StdObjMgt_WriteData& operator <<
+  (StdObjMgt_WriteData::Object theWriteData, const gp_Mat& theMat)
+{
+  theWriteData
+    << theMat(1, 1) << theMat(1, 2) << theMat(1, 3)
+    << theMat(2, 1) << theMat(2, 2) << theMat(2, 3)
+    << theMat(3, 1) << theMat(3, 2) << theMat(3, 3);
+  return theWriteData;
 }
 
 inline StdObjMgt_ReadData& operator >>
@@ -56,6 +76,19 @@ inline StdObjMgt_ReadData& operator >>
                      aScale * aMat(2, 1), aScale * aMat(2, 2), aLoc.Y());
 
   return theReadData;
+}
+
+inline StdObjMgt_WriteData& operator <<
+(StdObjMgt_WriteData::Object theWriteData, const gp_Trsf2d& theTrsf)
+{
+  Standard_Real    aScale = theTrsf.ScaleFactor();
+  Standard_Integer aForm  = theTrsf.Form();
+  const gp_Mat2d&  aMat   = theTrsf.HVectorialPart();
+  const gp_XY&     aLoc   = theTrsf.TranslationPart();
+
+  theWriteData << aScale << aForm << aMat << aLoc;
+
+  return theWriteData;
 }
 
 inline StdObjMgt_ReadData& operator >>
@@ -76,5 +109,17 @@ inline StdObjMgt_ReadData& operator >>
   return theReadData;
 }
 
+inline StdObjMgt_WriteData& operator <<
+  (StdObjMgt_WriteData::Object theWriteData, const gp_Trsf& theTrsf)
+{
+  Standard_Real    aScale = theTrsf.ScaleFactor();
+  Standard_Integer aForm  = theTrsf.Form();
+  const gp_Mat&    aMat   = theTrsf.HVectorialPart();
+  const gp_XYZ&    aLoc   = theTrsf.TranslationPart();
+
+  theWriteData << aScale << aForm << aMat << aLoc;
+
+  return theWriteData;
+}
 
 #endif

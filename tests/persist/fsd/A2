@@ -1,0 +1,6 @@
+plane p 0 0 0 1 0 0
+mkface base p 0 10 0 10
+
+check_fsd base bin
+check_fsd base cmp
+check_fsd base gen

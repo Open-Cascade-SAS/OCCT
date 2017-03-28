@@ -15,6 +15,7 @@
 #ifndef _ShapePersistent_Geom2d_HeaderFile
 #define _ShapePersistent_Geom2d_HeaderFile
 
+#include <StdObjMgt_TransientPersistentMap.hxx>
 #include <ShapePersistent_Geom.hxx>
 
 #include <Geom2d_CartesianPoint.hxx>
@@ -24,8 +25,7 @@
 #include <Geom2d_Transformation.hxx>
 #include <Geom2d_Curve.hxx>
 
-
-class ShapePersistent_Geom2d : protected ShapePersistent_Geom
+class ShapePersistent_Geom2d : public ShapePersistent_Geom
 {
   typedef geometryBase<Geom2d_Geometry> basic;
 
@@ -46,6 +46,114 @@ public:
                     gp_Trsf2d>                                   Transformation;
 
   typedef geometryBase<Geom2d_Curve>                             Curve;
+
+public:
+  //! Create a persistent object for a curve
+  Standard_EXPORT static Handle(Curve) Translate (const Handle(Geom2d_Curve)& theCurve,
+                                                  StdObjMgt_TransientPersistentMap& theMap);
 };
+
+//=======================================================================
+// Geometry
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_Geom::geometryBase<Geom2d_Geometry>
+  ::PName() const;
+
+//=======================================================================
+// Point
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_Geom::subBase_empty<
+  ShapePersistent_Geom2d::geometryBase<Geom2d_Geometry> >
+  ::PName() const;
+
+//=======================================================================
+// CartesianPoint
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom2d::Point,
+                                                  Geom2d_CartesianPoint,
+                                                  gp_Pnt2d>
+  ::PName() const;
+
+template<>
+void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::Point,
+                                      Geom2d_CartesianPoint,
+                                      gp_Pnt2d>
+  ::Write(StdObjMgt_WriteData& theWriteData) const;
+
+//=======================================================================
+// Direction
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom2d::Direction,
+                                                  Geom2d_Direction,
+                                                  gp_Dir2d>
+  ::PName() const;
+
+template<>
+void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::Direction,
+                                      Geom2d_Direction,
+                                      gp_Dir2d>
+  ::Write(StdObjMgt_WriteData& theWriteData) const;
+
+//=======================================================================
+// VectorWithMagnitude
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom2d::VectorWithMagnitude,
+                                                  Geom2d_VectorWithMagnitude,
+                                                  gp_Vec2d>
+  ::PName() const;
+
+template<>
+void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::VectorWithMagnitude,
+                                      Geom2d_VectorWithMagnitude,
+                                      gp_Vec2d>
+  ::Write(StdObjMgt_WriteData& theWriteData) const;
+
+//=======================================================================
+// AxisPlacement
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom2d::AxisPlacement,
+                                                  Geom2d_AxisPlacement,
+                                                  gp_Ax2d>
+  ::PName() const;
+
+template<>
+void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::AxisPlacement,
+                                      Geom2d_AxisPlacement,
+                                      gp_Ax2d>
+  ::Write(StdObjMgt_WriteData& theWriteData) const;
+
+//=======================================================================
+// Transformation
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom2d::Transformation,
+                                                  Geom2d_Transformation,
+                                                  gp_Trsf2d>
+  ::PName() const;
+
+template<>
+void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::Transformation,
+                                    Geom2d_Transformation,
+                                    gp_Trsf2d>
+  ::PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+
+template<>
+void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::Transformation,
+                                      Geom2d_Transformation,
+                                      gp_Trsf2d>
+  ::Write(StdObjMgt_WriteData& theWriteData) const;
+
+//=======================================================================
+// Curve
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_Geom2d::geometryBase<Geom2d_Curve>
+  ::PName() const;
 
 #endif

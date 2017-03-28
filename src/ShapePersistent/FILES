@@ -9,6 +9,7 @@ ShapePersistent_Geom_Curve.hxx
 ShapePersistent_Geom_Surface.cxx
 ShapePersistent_Geom_Surface.hxx
 ShapePersistent_Geom2d.hxx
+ShapePersistent_Geom2d.cxx
 ShapePersistent_Geom2d_Curve.cxx
 ShapePersistent_Geom2d_Curve.hxx
 ShapePersistent_HArray1.hxx
@@ -19,3 +20,4 @@ ShapePersistent_Poly.cxx
 ShapePersistent_Poly.hxx
 ShapePersistent_TopoDS.cxx
 ShapePersistent_TopoDS.hxx
+ShapePersistent_TriangleMode.hxx

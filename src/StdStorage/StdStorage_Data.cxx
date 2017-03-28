@@ -1,4 +1,4 @@
-// Copyright (c) 2015 OPEN CASCADE SAS
+// Copyright (c) 2017 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -11,5 +11,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <StdStorage_Data.hxx>
+#include <StdStorage_HeaderData.hxx>
+#include <StdStorage_TypeData.hxx>
+#include <StdStorage_RootData.hxx>
 
-#include <StdObjMgt_MapOfInstantiators.hxx>
+StdStorage_Data::StdStorage_Data()
+  : myHeaderData(new StdStorage_HeaderData)
+  , myTypeData(new StdStorage_TypeData)
+  , myRootData(new StdStorage_RootData)
+{
+
+}
+
+void StdStorage_Data::Clear()
+{
+  myTypeData->Clear();
+  myRootData->Clear();
+}

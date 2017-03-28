@@ -26,6 +26,17 @@ class StdLPersistent_Data : public StdObjMgt_Persistent
 public:
   //! Read persistent data from a file.
   Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
+  //! Write persistent data to a file.
+  Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const;
+  //! Gets persistent child objects
+  Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+  {
+    theChildren.Append(myLabels);
+    theChildren.Append(myAttributes);
+  }
+  //! Returns persistent type name
+  Standard_EXPORT virtual Standard_CString PName() const
+    { return "PDF_Data"; }
 
   //! Import transient data from the persistent data.
   Standard_EXPORT Handle(TDF_Data) Import() const;

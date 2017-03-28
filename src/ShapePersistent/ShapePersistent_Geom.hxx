@@ -15,7 +15,12 @@
 #ifndef _ShapePersistent_Geom_HeaderFile
 #define _ShapePersistent_Geom_HeaderFile
 
+#include <Standard_NotImplemented.hxx>
+#include <Standard_NullObject.hxx>
+
+#include <StdObjMgt_WriteData.hxx>
 #include <StdObjMgt_SharedObject.hxx>
+#include <StdObjMgt_TransientPersistentMap.hxx>
 
 #include <StdObject_gp_Vectors.hxx>
 #include <StdObject_gp_Axes.hxx>
@@ -32,8 +37,7 @@
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 
-
-class ShapePersistent_Geom : protected StdObjMgt_SharedObject
+class ShapePersistent_Geom : public StdObjMgt_SharedObject
 {
 public:
   class Geometry : public StdObjMgt_Persistent
@@ -41,11 +45,32 @@ public:
   public:
     //! Read persistent data from a file.
     Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
+    //! Write persistent data to a file.
+    Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const;
+    //! Gets persistent objects
+    Standard_EXPORT virtual void PChildren(SequenceOfPersistent& theChildren) const;
+    //! Returns persistent type name
+    Standard_EXPORT virtual Standard_CString PName() const { return "PGeom_Geometry"; }
   };
 
 protected:
   template <class Transient>
-  struct geometryBase : DelayedBase<Geometry, Transient> {};
+  struct geometryBase : public DelayedBase<Geometry, Transient> 
+  {
+    //! Write persistent data to a file.
+    Standard_EXPORT virtual void Write (StdObjMgt_WriteData&) const
+    {
+      Standard_NotImplemented::Raise("ShapePersistent_Geom::geometryBase::Write - not implemented");
+    }
+    //! Gets persistent child objects
+    Standard_EXPORT virtual void PChildren (StdObjMgt_Persistent::SequenceOfPersistent&) const { }
+    //! Returns persistent type name
+    Standard_EXPORT virtual Standard_CString PName() const
+    { 
+      Standard_NotImplemented::Raise("ShapePersistent_Geom::geometryBase::PName - not implemented");
+      return ""; 
+    }
+  };
 
   template <class Base, class PData>
   class subBase : public Base
@@ -54,6 +79,20 @@ protected:
     //! Read persistent data from a file.
     Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData)
       { PData().Read (theReadData); }
+    //! Write persistent data to a file.
+    Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const
+      { PData().Write(theWriteData); }
+    //! Gets persistent child objects
+    Standard_EXPORT virtual void PChildren (StdObjMgt_Persistent::SequenceOfPersistent&) const
+    {
+      Standard_NotImplemented::Raise("ShapePersistent_Geom::subBase::PChildren - not implemented");
+    }
+    //! Returns persistent type name
+    Standard_EXPORT virtual Standard_CString PName() const
+    { 
+      Standard_NotImplemented::Raise("ShapePersistent_Geom::subBase::PName - not implemented");
+      return ""; 
+    }
   };
 
   template <class Base, class GpData>
@@ -61,15 +100,29 @@ protected:
   {
   public:
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData)
+    Standard_EXPORT virtual void Read (StdObjMgt_ReadData&) { }
+    //! Write persistent data to a file.
+    Standard_EXPORT virtual void Write (StdObjMgt_WriteData&) const { }
+    //! Gets persistent child objects
+    Standard_EXPORT virtual void PChildren (StdObjMgt_Persistent::SequenceOfPersistent&) const { }
+    //! Returns persistent type name
+    Standard_EXPORT virtual Standard_CString PName() const
     {
-      GpData aData;
-      theReadData >> aData;
+      Standard_NotImplemented::Raise("ShapePersistent_Geom::subBase_gp::PName - not implemented");
+      return "";
     }
   };
 
   template <class Base>
-  struct subBase_empty : Base {};
+  struct subBase_empty : Base  
+  { 
+    //! Returns persistent type name
+    Standard_EXPORT virtual Standard_CString PName() const
+    {
+      Standard_NotImplemented::Raise("ShapePersistent_Geom::subBase_empty::PName - not implemented");
+      return "";
+    }
+  };
 
   template <class Base, class Target, class Data = void>
   class instance : public Base
@@ -80,7 +133,20 @@ protected:
     {
       Data aData;
       theReadData >> aData;
-      this->myTransient = new Target (aData);
+      this->myTransient = new Target(aData);
+    }
+    //! Gets persistent child objects
+    Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const { }
+    //! Write persistent data to a file.
+    Standard_EXPORT virtual void Write(StdObjMgt_WriteData&) const
+    {
+      Standard_NotImplemented::Raise("ShapePersistent_Geom::instance::Write - not implemented");
+    }
+    //! Returns persistent type name
+    Standard_EXPORT virtual Standard_CString PName() const
+    {
+      Standard_NotImplemented::Raise("ShapePersistent_Geom::instance::PName - not implemented");
+      return "";
     }
   };
 
@@ -105,11 +171,203 @@ public:
 
   typedef geometryBase<Geom_Curve>                             Curve;
   typedef geometryBase<Geom_Surface>                           Surface;
+
+public:
+  //! Create a persistent object for a curve
+  Standard_EXPORT static Handle(Curve) Translate (const Handle(Geom_Curve)& theCurve,
+                                                  StdObjMgt_TransientPersistentMap& theMap);
+  //! Create a persistent object for a curve
+  Standard_EXPORT static Handle(Surface) Translate (const Handle(Geom_Surface)& theSurf,
+                                                    StdObjMgt_TransientPersistentMap& theMap);
 };
 
+//=======================================================================
+// Point 
+//=======================================================================
+
 template<>
-void ShapePersistent_Geom::instance<ShapePersistent_Geom::AxisPlacement,
-                                    Geom_Axis2Placement>
-  ::Read (StdObjMgt_ReadData& theReadData);
+inline Standard_CString ShapePersistent_Geom::subBase_empty<ShapePersistent_Geom::basic>
+  ::PName() const { return "PGeom_Point"; }
+
+//=======================================================================
+// CartesianPoint
+//=======================================================================
+
+template<>
+inline Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom::Point,
+                                                       Geom_CartesianPoint,
+						       gp_Pnt>
+  ::PName() const { return "PGeom_CartesianPoint"; }
+
+template<>
+inline void ShapePersistent_Geom::instance<ShapePersistent_Geom::Point,
+					   Geom_CartesianPoint,
+					   gp_Pnt>
+  ::Write(StdObjMgt_WriteData& theWriteData) const
+{
+  Handle(Geom_CartesianPoint) aMyGeom =
+    Handle(Geom_CartesianPoint)::DownCast(myTransient);
+  theWriteData << aMyGeom->Pnt();
+}
+
+//=======================================================================
+// Vector
+//=======================================================================
+
+template<>
+inline Standard_CString ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::basic,
+							 gp_Vec>
+  ::PName() const { return "PGeom_Vector"; }
+
+//=======================================================================
+// Direction
+//=======================================================================
+
+template<>
+inline Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom::Direction,
+						       Geom_Direction,
+						       gp_Dir>
+  ::PName() const { return "PGeom_Direction"; }
+
+template<>
+inline void ShapePersistent_Geom::instance<ShapePersistent_Geom::Direction,
+					   Geom_Direction,
+					   gp_Dir>
+  ::Write(StdObjMgt_WriteData& theWriteData) const
+{
+  Handle(Geom_Direction) aMyGeom =
+    Handle(Geom_Direction)::DownCast(myTransient);
+  theWriteData << aMyGeom->Dir();
+}
+
+//=======================================================================
+// VectorWithMagnitude
+//=======================================================================
+
+template<>
+inline Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom::VectorWithMagnitude,
+						       Geom_VectorWithMagnitude,
+						       gp_Vec>
+  ::PName() const { return "PGeom_VectorWithMagnitude"; }
+
+template<>
+inline void ShapePersistent_Geom::instance<ShapePersistent_Geom::VectorWithMagnitude,
+					   Geom_VectorWithMagnitude,
+					   gp_Vec>
+  ::Write(StdObjMgt_WriteData& theWriteData) const
+{
+  Handle(Geom_VectorWithMagnitude) aMyGeom =
+    Handle(Geom_VectorWithMagnitude)::DownCast(myTransient);
+  theWriteData << aMyGeom->Vec();
+}
+
+//=======================================================================
+// AxisPlacement 
+//=======================================================================
+
+template<>
+inline Standard_CString ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::basic,
+							 gp_Ax1>
+  ::PName() const { return "PGeom_AxisPlacement"; }
+
+//=======================================================================
+// Axis1Placement
+//=======================================================================
+
+template<>
+inline Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom::Axis1Placement,
+						       Geom_Axis1Placement,
+						       gp_Ax1>
+  ::PName() const { return "PGeom_Axis1Placement"; }
+
+template<>
+inline void ShapePersistent_Geom::instance<ShapePersistent_Geom::Axis1Placement,
+					   Geom_Axis1Placement,
+					   gp_Ax1>
+  ::Write(StdObjMgt_WriteData& theWriteData) const
+{
+  Handle(Geom_Axis1Placement) aMyGeom =
+    Handle(Geom_Axis1Placement)::DownCast(myTransient);
+  write(theWriteData, aMyGeom->Ax1());
+}
+
+//=======================================================================
+// Axis2Placement 
+//=======================================================================
+
+template<>
+inline Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom::AxisPlacement,
+						       Geom_Axis2Placement>
+  ::PName() const { return "PGeom_Axis2Placement"; }
+
+template<>
+inline void ShapePersistent_Geom::instance<ShapePersistent_Geom::AxisPlacement,
+					   Geom_Axis2Placement>
+  ::Read (StdObjMgt_ReadData& theReadData)
+{
+  gp_Ax1 anAxis;
+  gp_Dir anXDirection;
+
+  theReadData >> anAxis >> anXDirection;
+
+  myTransient = new Geom_Axis2Placement(anAxis.Location(),
+    anAxis.Direction(),
+    anXDirection);
+}
+
+template<>
+inline void ShapePersistent_Geom::instance<ShapePersistent_Geom::AxisPlacement,
+					   Geom_Axis2Placement>
+  ::Write (StdObjMgt_WriteData& theWriteData) const
+{
+  Handle(Geom_Axis2Placement) aMyGeom =
+    Handle(Geom_Axis2Placement)::DownCast(myTransient);
+  const gp_Ax1& anAxis = aMyGeom->Axis();
+  const gp_Dir& anXDirection = aMyGeom->Direction();
+  write(theWriteData, anAxis) << anXDirection;
+}
+
+//=======================================================================
+// Transformation
+//=======================================================================
+
+template<>
+inline Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom::Transformation,
+						       Geom_Transformation,
+						       gp_Trsf>
+  ::PName() const { return "PGeom_Transformation"; }
+
+template<>
+inline void ShapePersistent_Geom::instance<ShapePersistent_Geom::Transformation,
+					   Geom_Transformation,
+					   gp_Trsf>
+  ::Write (StdObjMgt_WriteData& theWriteData) const
+{
+  theWriteData << myTransient->Trsf();
+}
+
+//=======================================================================
+// Geometry
+//=======================================================================
+
+template<>
+inline Standard_CString ShapePersistent_Geom::geometryBase<Geom_Geometry>
+  ::PName() const { return "PGeom_Geometry"; }
+
+//=======================================================================
+// Curve
+//=======================================================================
+
+template<>
+inline Standard_CString ShapePersistent_Geom::geometryBase<Geom_Curve>
+  ::PName() const { return "PGeom_Curve"; }
+
+//=======================================================================
+// Surface
+//=======================================================================
+
+template<>
+inline Standard_CString ShapePersistent_Geom::geometryBase<Geom_Surface>
+  ::PName() const { return "PGeom_Surface"; }
 
 #endif

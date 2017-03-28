@@ -49,12 +49,21 @@ public:
 };
 
 inline StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData& theReadData, Poly_Triangle& theTriangle)
+  (StdObjMgt_ReadData::Object theReadData, Poly_Triangle& theTriangle)
 {
   Standard_Integer N1, N2, N3;
   theReadData >> N1 >> N2 >> N3;
   theTriangle.Set (N1, N2, N3);
   return theReadData;
+}
+
+inline StdObjMgt_WriteData& operator <<
+  (StdObjMgt_WriteData::Object theWriteData, const Poly_Triangle& theTriangle)
+{
+  Standard_Integer N1, N2, N3;
+  theTriangle.Get(N1, N2, N3);
+  theWriteData << N1 << N2 << N3;
+  return theWriteData;
 }
 
 #endif

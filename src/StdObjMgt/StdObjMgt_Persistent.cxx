@@ -13,6 +13,12 @@
 
 #include <StdObjMgt_Persistent.hxx>
 
+StdObjMgt_Persistent::StdObjMgt_Persistent()
+  : myTypeNum(0)
+  , myRefNum(0)
+{
+
+}
 
 //=======================================================================
 //function : ImportDocument

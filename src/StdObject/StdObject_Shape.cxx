@@ -31,3 +31,13 @@ TopoDS_Shape StdObject_Shape::Import() const
 
   return aShape;
 }
+
+//=======================================================================
+//function : PChildren
+//purpose  : 
+//=======================================================================
+void StdObject_Shape::PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+{
+  theChildren.Append(myTShape);
+  myLocation.PChildren(theChildren);
+}

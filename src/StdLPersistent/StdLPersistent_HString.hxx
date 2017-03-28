@@ -30,6 +30,9 @@ class StdLPersistent_HString
   public:
     //! Read persistent data from a file.
     Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
+    //! Write persistent data to a file.
+    Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const;
+    Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const { }
 
     //! Get/create a label defined by referenced string.
     Standard_EXPORT virtual TDF_Label Label (const Handle(TDF_Data)& theDF) const;
@@ -48,6 +51,8 @@ public:
   public:
     //! Get referenced ASCII string.
     Standard_EXPORT virtual Handle(TCollection_HAsciiString) AsciiString() const;
+
+    inline Standard_CString PName() const { return "PCollection_HAsciiString"; }
   };
 
   class Extended
@@ -56,6 +61,8 @@ public:
   public:
     //! Get referenced extended string.
     Standard_EXPORT virtual Handle(TCollection_HExtendedString) ExtString() const;
+
+    inline Standard_CString PName() const { return "PCollection_HExtendedString"; }
   };
 };
 

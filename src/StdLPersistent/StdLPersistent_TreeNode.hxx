@@ -28,6 +28,16 @@ public:
   //! Read persistent data from a file.
   Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
 
+  //! Write persistent data to a file.
+  Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const;
+
+  //! Gets persistent child objects
+  Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const;
+
+  //! Returns persistent type name
+  Standard_EXPORT virtual Standard_CString PName() const
+    { return "PDataStd_TreeNode"; }
+
   //! Create an empty transient attribuite
   Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
 

@@ -32,6 +32,17 @@ class StdLPersistent_Dependency
     //! Read persistent data from a file.
     inline void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myName >> myVariables; }
+    //! Write persistent data to a file.
+    inline void Write (StdObjMgt_WriteData& theWriteData) const
+      { theWriteData << myName << myVariables; }
+    //! Gets persistent child objects
+    inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+    {
+      theChildren.Append(myName);
+      theChildren.Append(myVariables);
+    }
+    //! Returns persistent type name
+    Standard_CString PName() const;
 
     //! Import transient attribuite from the persistent data.
     void Import (const Handle(AttribClass)& theAttribute) const;
@@ -45,5 +56,13 @@ public:
   typedef instance<TDataStd_Expression> Expression;
   typedef instance<TDataStd_Relation>   Relation;
 };
+
+template<>
+inline Standard_CString StdLPersistent_Dependency::instance<TDataStd_Expression>::PName() const
+  { return "PDataStd_Expression"; }
+
+template<>
+inline Standard_CString StdLPersistent_Dependency::instance<TDataStd_Relation>::PName() const
+  { return "PDataStd_Relation"; }
 
 #endif

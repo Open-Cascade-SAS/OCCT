@@ -16,21 +16,33 @@
 #define _StdObject_Location_HeaderFile
 
 #include <StdObjMgt_ReadData.hxx>
+#include <StdObjMgt_WriteData.hxx>
+#include <StdObjMgt_Persistent.hxx>
+#include <StdObjMgt_TransientPersistentMap.hxx>
 
 #include <TopLoc_Location.hxx>
-
 
 class StdObject_Location
 {
 public:
+
+  //! Gets persistent child objects
+  Standard_EXPORT void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+
   //! Import transient object from the persistent data.
   TopLoc_Location Import() const;
+
+  //! Creates a persistent wrapper object for a location
+  Standard_EXPORT static StdObject_Location Translate (const TopLoc_Location& theLoc,
+                                                       StdObjMgt_TransientPersistentMap& theMap);
 
 private:
   Handle(StdObjMgt_Persistent) myData;
 
   friend StdObjMgt_ReadData& operator >>
     (StdObjMgt_ReadData::Object, StdObject_Location&);
+  friend StdObjMgt_WriteData& operator <<
+    (StdObjMgt_WriteData::Object, const StdObject_Location&);
 };
 
 //! Read persistent data from a file.
@@ -38,6 +50,13 @@ inline StdObjMgt_ReadData& operator >>
   (StdObjMgt_ReadData::Object theReadData, StdObject_Location& theLocation)
 {
   return theReadData >> theLocation.myData;
+}
+
+//! Write persistent data to a file.
+inline StdObjMgt_WriteData& operator <<
+(StdObjMgt_WriteData::Object theWriteData, const StdObject_Location& theLocation)
+{
+  return theWriteData << theLocation.myData;
 }
 
 #endif

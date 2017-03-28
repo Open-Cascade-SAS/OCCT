@@ -1,0 +1,9 @@
+restore [locate_data_file CCV_2_b1_gsu.rle] s1
+restore [locate_data_file CCV_2_c1_gsv.rle] s2
+   
+compound s1 s2 base
+ 
+check_fsd base bin
+check_fsd base cmp
+check_fsd base gen
+ 

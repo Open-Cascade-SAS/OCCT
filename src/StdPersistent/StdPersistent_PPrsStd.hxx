@@ -32,6 +32,19 @@ public:
       theReadData >> myIsDisplayed >> myDriverGUID
         >> myTransparency >> myColor >> myMaterial >> myWidth;
     }
+    //! Write persistent data to a file.
+    inline void Write (StdObjMgt_WriteData& theWriteData) const
+    {
+      theWriteData << myIsDisplayed << myDriverGUID
+        << myTransparency << myColor << myMaterial << myWidth;
+    }
+    //! Gets persistent child objects
+    inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+    {
+      theChildren.Append(myDriverGUID);
+    }
+    //! Returns persistent type name
+    inline Standard_CString PName() const { return "PPrsStd_AISPresentation"; }
 
     //! Import transient attribuite from the persistent data.
     void Import (const Handle(TDataXtd_Presentation)& theAttribute) const;
@@ -54,6 +67,14 @@ public:
       AISPresentation::Read (theReadData);
       theReadData >> myMode;
     }
+    //! Write persistent data to a file.
+    inline void Write (StdObjMgt_WriteData& theWriteData)
+    {
+      AISPresentation::Write (theWriteData);
+      theWriteData << myMode;
+    }
+    //! Returns persistent type name
+    inline Standard_CString PName() const { return "PPrsStd_AISPresentation_1"; }
 
     //! Import transient attribuite from the persistent data.
     void Import (const Handle(TDataXtd_Presentation)& theAttribute) const;

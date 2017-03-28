@@ -30,6 +30,25 @@ public:
     theReadData >> mySignature >> myAxis1Reversed >> myAxis2Reversed >>
       myAxis1 >> myAxis2 >> myValue1 >> myValue2 >> myNb1 >> myNb2 >> myMirror;
   }
+  //! Write persistent data to a file.
+  inline void Write(StdObjMgt_WriteData& theWriteData)
+  {
+    theWriteData << mySignature << myAxis1Reversed << myAxis2Reversed <<
+      myAxis1 << myAxis2 << myValue1 << myValue2 << myNb1 << myNb2 << myMirror;
+  }
+  //! Gets persistent child objects
+  inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+  {
+    theChildren.Append(myAxis1);
+    theChildren.Append(myAxis2);
+    theChildren.Append(myValue1);
+    theChildren.Append(myValue2);
+    theChildren.Append(myNb1);
+    theChildren.Append(myNb2);
+    theChildren.Append(myMirror);
+  }
+  //! Returns persistent type name
+  inline Standard_CString PName() const { return "PDataXtd_PatternStd"; }
 
   //! Import transient attribuite from the persistent data.
   void Import (const Handle(TDataXtd_PatternStd)& theAttribute) const;

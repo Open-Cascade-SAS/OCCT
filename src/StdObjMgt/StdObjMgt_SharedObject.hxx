@@ -15,8 +15,8 @@
 #ifndef _StdObjMgt_SharedObject_HeaderFile
 #define _StdObjMgt_SharedObject_HeaderFile
 
+#include <Standard_NoSuchObject.hxx>
 #include <StdObjMgt_Persistent.hxx>
-
 
 class StdObjMgt_SharedObject
 {
@@ -28,15 +28,19 @@ public:
     virtual Handle(Transient) Import() const = 0;
   };
 
-  template <class Transient, class Base = StdObjMgt_Persistent>
+  template <class TransientT, class Base = StdObjMgt_Persistent>
   class SharedBase : public Base
   {
   public:
+    //! Changes transient object
+    inline void Transient(const Handle(TransientT)& theTransient)
+      { myTransient = theTransient; }
+
     //! Import transient object from the persistent data.
-    inline const Handle(Transient)& Import()  { return myTransient; }
+    inline const Handle(TransientT)& Import()  { return myTransient; }
 
   protected:
-    Handle(Transient) myTransient;
+    Handle(TransientT) myTransient;
   };
 
   template <class Base,
@@ -52,7 +56,7 @@ public:
     Standard_EXPORT virtual Handle(Transient) Import()
       { return myTransient; }
 
-  protected:
+  public:
     Handle(Transient) myTransient;
   };
 
@@ -65,6 +69,15 @@ public:
     //! Read persistent data from a file.
     Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData)
       { PersistentData().Read (theReadData); }
+    //! Write persistent data to a file.
+    Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const
+      { PersistentData().Write (theWriteData); }
+    //! Gets persistent child objects
+    Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+      { PersistentData().PChildren(theChildren); }
+    //! Returns persistent type name
+    Standard_EXPORT virtual Standard_CString PName() const
+      { return PersistentData().PName(); }
 
     //! Import transient object from the persistent data.
     Standard_EXPORT virtual Handle(Transient) Import()
@@ -88,7 +101,7 @@ private:
       return Base::myTransient;
     }
 
-  protected:
+  public:
     Handle(typename Base::PersistentBase) myPersistent;
   };
 
@@ -96,6 +109,19 @@ public:
   template <class Base, class Persistent = typename Base::PersistentBase>
   class Delayed : public delayedSubBase<Base>
   {
+  private:
+    template <class T1, class T2>
+    struct DownCast {
+      static Handle(T1) make(const Handle(T2)& theT2)
+        { return Handle(T1)::DownCast(theT2); }
+    };
+
+    template <class T>
+    struct DownCast<T, T> {
+      static Handle(T) make(const Handle(T)& theT)
+        { return theT; }
+    };
+
   public:
     //! Read persistent data from a file.
     Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData)
@@ -103,6 +129,33 @@ public:
       Handle(Persistent) aPersistent = new Persistent;
       aPersistent->Read (theReadData);
       this->myPersistent = aPersistent;
+    }
+    //! Write persistent data to a file.
+    Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const
+    { 
+      Handle(Persistent) aPersistent = 
+        DownCast<Persistent, typename Base::PersistentBase>::make(this->myPersistent);
+      Standard_NoSuchObject_Raise_if(aPersistent.IsNull(), 
+        "StdObjMgt_SharedObject::Delayed::Write - persistent object wasn't set for writing!");
+      aPersistent->Write(theWriteData);
+    }
+    //! Gets persistent child objects
+    Standard_EXPORT virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+    {
+      Handle(Persistent) aPersistent = 
+        DownCast<Persistent, typename Base::PersistentBase>::make(this->myPersistent);
+      Standard_NoSuchObject_Raise_if(aPersistent.IsNull(), 
+        "StdObjMgt_SharedObject::Delayed::PChildren - persistent object wasn't set for writing!");
+      aPersistent->PChildren(theChildren);
+    }
+    //! Returns persistent type name
+    Standard_EXPORT virtual Standard_CString PName() const 
+    { 
+      Handle(Persistent) aPersistent =
+        DownCast<Persistent, typename Base::PersistentBase>::make(this->myPersistent);
+      Standard_NoSuchObject_Raise_if(aPersistent.IsNull(), 
+        "StdObjMgt_SharedObject::Delayed::PName - persistent object wasn't set for writing!");
+      return aPersistent->PName();
     }
   };
 };

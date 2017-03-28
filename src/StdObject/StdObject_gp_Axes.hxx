@@ -35,6 +35,24 @@ inline StdObjMgt_ReadData& operator >>
   return theReadData;
 }
 
+inline StdObjMgt_WriteData& 
+  write (StdObjMgt_WriteData::Object theWriteData, const gp_Ax2d& theAx)
+{
+  const gp_Pnt2d& aLoc = theAx.Location();
+  const gp_Dir2d& aDir = theAx.Direction();
+  theWriteData << aLoc << aDir;
+  return theWriteData;
+}
+
+inline StdObjMgt_WriteData& operator <<
+  (StdObjMgt_WriteData::Object theWriteData, const gp_Ax2d& theAx)
+{
+  const gp_Pnt2d& aLoc = theAx.Location();
+  const gp_Dir2d& aDir = theAx.Direction();
+  theWriteData << aLoc << aDir;
+  return theWriteData;
+}
+
 inline StdObjMgt_ReadData& operator >>
   (StdObjMgt_ReadData::Object theReadData, gp_Ax22d& theAx)
 {
@@ -45,14 +63,42 @@ inline StdObjMgt_ReadData& operator >>
   return theReadData;
 }
 
+inline StdObjMgt_WriteData& operator <<
+  (StdObjMgt_WriteData::Object theWriteData, const gp_Ax22d& theAx)
+{
+  const gp_Pnt2d& aLoc = theAx.Location();
+  const gp_Dir2d& aYDir = theAx.YDirection();
+  const gp_Dir2d& aXDir = theAx.XDirection();
+  theWriteData << aLoc << aYDir << aXDir;
+  return theWriteData;
+}
+
 inline StdObjMgt_ReadData& operator >>
   (StdObjMgt_ReadData::Object theReadData, gp_Ax1& theAx)
 {
-  gp_XYZ aLoc;
+  gp_Pnt aLoc;
   gp_Dir aDir;
   theReadData >> aLoc >> aDir;
   theAx = gp_Ax1 (aLoc, aDir);
   return theReadData;
+}
+
+inline StdObjMgt_WriteData&
+  write(StdObjMgt_WriteData::Object theWriteData, const gp_Ax1& theAx)
+{
+  const gp_Pnt& aLoc = theAx.Location();
+  const gp_Dir& aDir = theAx.Direction();
+  theWriteData << aLoc << aDir;
+  return theWriteData;
+}
+
+inline StdObjMgt_WriteData& operator <<
+  (StdObjMgt_WriteData::Object theWriteData, const gp_Ax1& theAx)
+{
+  const gp_Pnt& aLoc = theAx.Location();
+  const gp_Dir& aDir = theAx.Direction();
+  theWriteData << aLoc << aDir;
+  return theWriteData;
 }
 
 inline StdObjMgt_ReadData& operator >>
@@ -65,6 +111,16 @@ inline StdObjMgt_ReadData& operator >>
   return theReadData;
 }
 
+inline StdObjMgt_WriteData& operator <<
+  (StdObjMgt_WriteData::Object theWriteData, const gp_Ax2& theAx)
+{
+  const gp_Ax1& anAx = theAx.Axis();
+  const gp_Dir& aYDir = theAx.YDirection();
+  const gp_Dir& aXDir = theAx.XDirection();
+  theWriteData << anAx << aYDir << aXDir;
+  return theWriteData;
+}
+
 inline StdObjMgt_ReadData& operator >>
   (StdObjMgt_ReadData::Object theReadData, gp_Ax3& theAx)
 {
@@ -75,6 +131,16 @@ inline StdObjMgt_ReadData& operator >>
   if (aYDir * theAx.YDirection() < 0.)
     theAx.YReverse();
   return theReadData;
+}
+
+inline StdObjMgt_WriteData& operator <<
+(StdObjMgt_WriteData::Object theWriteData, const gp_Ax3& theAx)
+{
+  const gp_Ax1& anAx = theAx.Axis();
+  const gp_Dir& aYDir = theAx.YDirection();
+  const gp_Dir& aXDir = theAx.XDirection();
+  theWriteData << anAx << aYDir << aXDir;
+  return theWriteData;
 }
 
 

@@ -32,6 +32,8 @@ class StdLPersistent_NamedData : public StdObjMgt_Attribute<TDataStd_NamedData>
 
     inline void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myKeys >> myValues; }
+    inline void Write (StdObjMgt_WriteData& theWriteData) const
+      { theWriteData << myKeys << myValues; }
 
     inline operator bool() const
       { return !myKeys.IsNull(); }
@@ -59,6 +61,24 @@ public:
     myIntArrays .Read (theReadData);
     myRealArrays.Read (theReadData);
   }
+
+  //! Write persistent data to a file.
+  inline void Write (StdObjMgt_WriteData& theWriteData) const
+  {
+    theWriteData << myDimensions;
+    myInts.Write(theWriteData);
+    myReals.Write(theWriteData);
+    myStrings.Write(theWriteData);
+    myBytes.Write(theWriteData);
+    myIntArrays.Write(theWriteData);
+    myRealArrays.Write(theWriteData);
+  }
+
+  //! Gets persistent child objects
+  void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const {}
+
+  //! Returns persistent type name
+  Standard_CString PName() const { return "PDataStd_NamedData"; }
 
   //! Import transient attribuite from the persistent data.
   void Import (const Handle(TDataStd_NamedData)& theAttribute) const;

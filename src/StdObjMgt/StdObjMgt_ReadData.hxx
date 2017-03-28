@@ -93,6 +93,8 @@ class StdObjMgt_ReadData::Object
 public:
   Object (StdObjMgt_ReadData& theData) : myReadData (&theData)
     { myReadData->myDriver->BeginReadObjectData(); }
+  Object(const StdObjMgt_ReadData::Object& theOther) : myReadData(theOther.myReadData)
+    { myReadData->myDriver->BeginReadObjectData(); }
 
   ~Object()
     { myReadData->myDriver->EndReadObjectData(); }
@@ -106,6 +108,8 @@ public:
 
 private:
   StdObjMgt_ReadData* myReadData;
+
+  StdObjMgt_ReadData::Object& operator = (const StdObjMgt_ReadData::Object&);
 };
 
 Standard_EXPORT StdObjMgt_ReadData& operator >>

@@ -1,4 +1,5 @@
 StdDrivers
 StdObject
 StdPersistent
+StdStorage
 ShapePersistent

@@ -15,6 +15,8 @@
 #ifndef _ShapePersistent_Geom_Surface_HeaderFile
 #define _ShapePersistent_Geom_Surface_HeaderFile
 
+#include <StdObjMgt_TransientPersistentMap.hxx>
+
 #include <ShapePersistent_Geom.hxx>
 #include <ShapePersistent_HArray2.hxx>
 #include <StdLPersistent_HArray1.hxx>
@@ -25,6 +27,12 @@
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_ToroidalSurface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_OffsetSurface.hxx>
 
 #include <gp_Ax3.hxx>
 #include <gp_Cone.hxx>
@@ -42,31 +50,54 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
 
   class pSweptData
   {
+    friend class ShapePersistent_Geom_Surface;
+
   public:
     inline void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myBasisCurve >> myDirection; }
+    inline void Write (StdObjMgt_WriteData& theWriteData) const
+      { theWriteData << myBasisCurve << myDirection; }
+    inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+      { theChildren.Append(myBasisCurve); }
 
   protected:
     Handle(Curve) myBasisCurve;
     gp_Dir        myDirection;
   };
 
-  struct pSwept : pBase, pSweptData {};
+  struct pSwept : pBase, pSweptData 
+  {
+    inline Standard_CString PName() const 
+      { return "PGeom_SweptSurface"; }
+  };
 
   class pLinearExtrusion : public pSwept
   {
+    friend class ShapePersistent_Geom_Surface;
+
   public:
     virtual Handle(Geom_Surface) Import() const;
+    inline Standard_CString PName() const 
+      { return "PGeom_SurfaceOfLinearExtrusion"; }
   };
 
   class pRevolution : public pSwept
   {
+    friend class ShapePersistent_Geom_Surface;
+
   public:
     inline void Read (StdObjMgt_ReadData& theReadData)
     {
       pSwept::Read (theReadData);
       theReadData >> myLocation;
     }
+    inline void Write (StdObjMgt_WriteData& theWriteData) const
+    {
+      pSwept::Write(theWriteData);
+      theWriteData << myLocation;
+    }
+    inline Standard_CString PName() const 
+      { return "PGeom_SurfaceOfRevolution"; }
 
     virtual Handle(Geom_Surface) Import() const;
 
@@ -78,9 +109,20 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
 
   class pBezier : public pBounded
   {
+    friend class ShapePersistent_Geom_Surface;
+
   public:
     inline void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myURational >> myVRational >> myPoles >> myWeights; }
+    inline void Write (StdObjMgt_WriteData& theWriteData) const
+      { theWriteData << myURational << myVRational << myPoles << myWeights; }
+    inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+    {
+      theChildren.Append(myPoles);
+      theChildren.Append(myWeights);
+    }
+    inline Standard_CString PName() const 
+      { return "PGeom_BezierSurface"; }
 
     virtual Handle(Geom_Surface) Import() const;
 
@@ -93,6 +135,8 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
 
   class pBSpline : public pBounded
   {
+    friend class ShapePersistent_Geom_Surface;
+
   public:
     inline void Read (StdObjMgt_ReadData& theReadData)
     {
@@ -104,6 +148,27 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
       theReadData >> myUKnots >> myVKnots;
       theReadData >> myUMultiplicities >> myVMultiplicities;
     }
+    inline void Write (StdObjMgt_WriteData& theWriteData) const
+    {
+      theWriteData << myURational << myVRational;
+      theWriteData << myUPeriodic << myVPeriodic;
+      theWriteData << myUSpineDegree << myVSpineDegree;
+      theWriteData << myPoles;
+      theWriteData << myWeights;
+      theWriteData << myUKnots << myVKnots;
+      theWriteData << myUMultiplicities << myVMultiplicities;
+    }
+    inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+    {
+      theChildren.Append(myPoles);
+      theChildren.Append(myWeights);
+      theChildren.Append(myUKnots);
+      theChildren.Append(myVKnots);
+      theChildren.Append(myUMultiplicities);
+      theChildren.Append(myVMultiplicities);
+    }
+    inline Standard_CString PName() const 
+      { return "PGeom_BSplineSurface"; }
 
     virtual Handle(Geom_Surface) Import() const;
 
@@ -124,12 +189,23 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
 
   class pRectangularTrimmed : public pBounded
   {
+    friend class ShapePersistent_Geom_Surface;
+
   public:
     inline void Read (StdObjMgt_ReadData& theReadData)
     {
       theReadData >> myBasisSurface;
       theReadData >> myFirstU >> myLastU >> myFirstV >> myLastV;
     }
+    inline void Write (StdObjMgt_WriteData& theWriteData) const
+    {
+      theWriteData << myBasisSurface;
+      theWriteData << myFirstU << myLastU << myFirstV << myLastV;
+    }
+    inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+      { theChildren.Append(myBasisSurface); }
+    inline Standard_CString PName() const 
+      { return "PGeom_RectangularTrimmedSurface"; }
 
     virtual Handle(Geom_Surface) Import() const;
 
@@ -143,9 +219,17 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
 
   class pOffset : public pBase
   {
+    friend class ShapePersistent_Geom_Surface;
+
   public:
     inline void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myBasisSurface >> myOffsetValue; }
+    inline void Write (StdObjMgt_WriteData& theWriteData) const
+      { theWriteData << myBasisSurface << myOffsetValue; }
+    inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+      { theChildren.Append(myBasisSurface); }
+    inline Standard_CString PName() const 
+      { return "PGeom_OffsetSurface"; }
 
     virtual Handle(Geom_Surface) Import() const;
 
@@ -172,6 +256,124 @@ public:
   typedef Delayed<Bounded, pRectangularTrimmed>                      RectangularTrimmed;
 
   typedef Delayed<Surface, pOffset>                                  Offset;
+
+public:
+  //! Create a persistent object for a plane
+  Standard_EXPORT static Handle(Surface) Translate (const Handle(Geom_Plane)& theSurf,
+                                                    StdObjMgt_TransientPersistentMap& theMap);
+  //! Create a persistent object for a cylinder
+  Standard_EXPORT static Handle(Surface) Translate (const Handle(Geom_CylindricalSurface)& theSurf,
+                                                    StdObjMgt_TransientPersistentMap& theMap);
+  //! Create a persistent object for a cone
+  Standard_EXPORT static Handle(Surface) Translate (const Handle(Geom_ConicalSurface)& theSurf,
+                                                    StdObjMgt_TransientPersistentMap& theMap);
+  //! Create a persistent object for a sphere
+  Standard_EXPORT static Handle(Surface) Translate (const Handle(Geom_SphericalSurface)& theSurf,
+                                                    StdObjMgt_TransientPersistentMap& theMap);
+  //! Create a persistent object for a torus
+  Standard_EXPORT static Handle(Surface) Translate (const Handle(Geom_ToroidalSurface)& theSurf,
+                                                    StdObjMgt_TransientPersistentMap& theMap);
+  //! Create a persistent object for a surface of linear extrusion
+  Standard_EXPORT static Handle(Surface) Translate (const Handle(Geom_SurfaceOfLinearExtrusion)& theSurf,
+                                                    StdObjMgt_TransientPersistentMap& theMap);
+  //! Create a persistent object for a surface of evolution
+  Standard_EXPORT static Handle(Surface) Translate (const Handle(Geom_SurfaceOfRevolution)& theSurf,
+                                                    StdObjMgt_TransientPersistentMap& theMap);
+  //! Create a persistent object for a Bezier surface
+  Standard_EXPORT static Handle(Surface) Translate (const Handle(Geom_BezierSurface)& theSurf,
+                                                    StdObjMgt_TransientPersistentMap& theMap);
+  //! Create a persistent object for a BSpline surface
+  Standard_EXPORT static Handle(Surface) Translate (const Handle(Geom_BSplineSurface)& theSurf,
+                                                    StdObjMgt_TransientPersistentMap& theMap);
+  //! Create a persistent object for a rectangylar trimmed surface
+  Standard_EXPORT static Handle(Surface) Translate (const Handle(Geom_RectangularTrimmedSurface)& theSurf,
+                                                    StdObjMgt_TransientPersistentMap& theMap);
+  //! Create a persistent object for an offset surface 
+  Standard_EXPORT static Handle(Surface) Translate (const Handle(Geom_OffsetSurface)& theSurf,
+                                                    StdObjMgt_TransientPersistentMap& theMap);
 };
+
+//=======================================================================
+// Elementary
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Surface, 
+                                                  gp_Ax3>
+  ::PName() const;
+
+//=======================================================================
+// Plane
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Surface, gp_Ax3>, 
+                                                Geom_Plane, 
+                                                gp_Ax3>
+  ::PName() const;
+
+template<>
+void ShapePersistent_Geom::instance<ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Surface, gp_Ax3>,
+                                    Geom_Plane,
+                                    gp_Ax3>
+  ::Write(StdObjMgt_WriteData& theWriteData) const;
+
+//=======================================================================
+// Conical
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Surface, gp_Ax3>,
+                                                Geom_ConicalSurface,
+                                                gp_Cone>
+  ::PName() const;
+
+template<>
+void ShapePersistent_Geom::instance<ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Surface, gp_Ax3>,
+                                    Geom_ConicalSurface,
+                                    gp_Cone>
+  ::Write(StdObjMgt_WriteData& theWriteData) const;
+
+//=======================================================================
+// Cylindrical
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Surface, gp_Ax3>,
+                                                Geom_CylindricalSurface,
+                                                gp_Cylinder>
+  ::PName() const;
+
+template<>
+void ShapePersistent_Geom::instance<ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Surface, gp_Ax3>,
+                                    Geom_CylindricalSurface,
+                                    gp_Cylinder>
+  ::Write(StdObjMgt_WriteData& theWriteData) const;
+
+//=======================================================================
+// Spherical
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Surface, gp_Ax3>,
+                                                Geom_SphericalSurface,
+                                                gp_Sphere>
+  ::PName() const;
+
+template<>
+void ShapePersistent_Geom::instance<ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Surface, gp_Ax3>,
+                                    Geom_SphericalSurface,
+                                    gp_Sphere>
+  ::Write(StdObjMgt_WriteData& theWriteData) const;
+
+//=======================================================================
+// Toroidal
+//=======================================================================
+template<>
+Standard_CString ShapePersistent_Geom::instance<ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Surface, gp_Ax3>,
+                                                Geom_ToroidalSurface,
+                                                gp_Torus>
+  ::PName() const;
+
+template<>
+void ShapePersistent_Geom::instance<ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Surface, gp_Ax3>,
+                                    Geom_ToroidalSurface,
+                                    gp_Torus>
+  ::Write(StdObjMgt_WriteData& theWriteData) const;
 
 #endif

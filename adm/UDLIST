@@ -247,6 +247,7 @@ n StdObjMgt
 n StdDrivers
 n StdObject
 n StdPersistent
+n StdStorage
 n ShapePersistent
 n TDF
 n TDataStd

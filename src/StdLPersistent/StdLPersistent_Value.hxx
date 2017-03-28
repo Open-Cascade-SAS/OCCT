@@ -48,15 +48,27 @@ class StdLPersistent_Value
 
 public:
 
-  typedef integer <TDF_TagSource>                TagSource;
-  typedef string <TDF_Reference>                 Reference;  
-  typedef string <TDataStd_Comment>              Comment;
+  class TagSource : public integer <TDF_TagSource> {
+  public:
+    Standard_CString PName() const { return "PDF_TagSource"; }
+  };
+
+  class Reference : public string <TDF_Reference> {
+  public:
+    Standard_CString PName() const { return "PDF_Reference"; }
+  };
+
+  class Comment : public string <TDataStd_Comment> {
+  public:
+    Standard_CString PName() const { return "PDF_Comment"; }
+  };
 
   class UAttribute : public string <TDataStd_UAttribute>
   {
   public:
     //! Create an empty transient attribuite
     Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
+    Standard_CString PName() const { return "PDataStd_UAttribute"; }
   };
 
   class Integer : public integer <TDataStd_Integer>
@@ -64,6 +76,7 @@ public:
   public:
     //! Create an empty transient attribuite
     Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
+    Standard_CString PName() const { return "PDataStd_Integer"; }
   };
 
   class Name : public string <TDataStd_Name>
@@ -71,6 +84,7 @@ public:
   public:
     //! Create an empty transient attribuite
     Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
+    Standard_CString PName() const { return "PDataStd_Name"; }
   };
 
   class AsciiString : public string <TDataStd_AsciiString, StdLPersistent_HString::Ascii>
@@ -78,7 +92,23 @@ public:
   public:
     //! Create an empty transient attribuite
     Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
+    Standard_CString PName() const { return "PDataStd_AsciiString"; }
   };
 };
+
+template<>
+template<>
+inline Standard_CString StdObjMgt_Attribute<TDF_TagSource>::Simple<Standard_Integer>::PName() const
+  { return "PDF_TagSource"; }
+
+template<>
+template<>
+inline Standard_CString StdObjMgt_Attribute<TDF_Reference>::Simple<Handle(StdObjMgt_Persistent)>::PName() const
+  { return "PDF_Reference"; }
+
+template<>
+template<>
+inline Standard_CString StdObjMgt_Attribute<TDataStd_Comment>::Simple<Handle(StdObjMgt_Persistent)>::PName() const
+  { return "PDataStd_Comment"; }
 
 #endif

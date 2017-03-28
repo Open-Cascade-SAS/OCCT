@@ -1,0 +1,11 @@
+brestore [locate_data_file CTO909_IR2_TuyoPipe20.brep]		s1
+brestore [locate_data_file CTO909_IR2_sphere1_20.brep]		s2
+brestore [locate_data_file IR2_TuyoPipeBSpline_20_draw2.brep]	s3
+brestore [locate_data_file IR2_sphere2_20.brep]			s4
+  
+compound s1 s2 s3 s4 base
+ 
+check_fsd base bin
+check_fsd base cmp
+check_fsd base gen
+ 

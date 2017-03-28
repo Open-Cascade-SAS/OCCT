@@ -131,8 +131,8 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
   NCollection_Array1<StdObjMgt_Persistent::Instantiator>
     anInstantiators (1, aTypeData.NumberOfTypes());
   {
-    StdObjMgt_MapOfInstantiators aMapOfInstantiators;
-    bindTypes (aMapOfInstantiators);
+    StdObjMgt_MapOfInstantiators aMapOfInst;
+    bindTypes (aMapOfInst);
 
     TColStd_SequenceOfAsciiString anUnknownTypes;
     Standard_Integer        aCurTypeNum;
@@ -144,7 +144,7 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
       aCurTypeNum  = aTypeData.Type (aCurTypeName);
 
       StdObjMgt_Persistent::Instantiator anInstantiator;
-      if (aMapOfInstantiators.Find (aCurTypeName, anInstantiator))
+      if (aMapOfInst.Find(aCurTypeName, anInstantiator))
         anInstantiators (aCurTypeNum) = anInstantiator;
       else
         anUnknownTypes.Append (aCurTypeName);

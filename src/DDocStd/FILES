@@ -6,4 +6,5 @@ DDocStd_DrawDocument.cxx
 DDocStd_DrawDocument.hxx
 DDocStd_MTMCommands.cxx
 DDocStd_ToolsCommands.cxx
+DDocStd_ShapeSchemaCommands.cxx
 IDNames.tcl

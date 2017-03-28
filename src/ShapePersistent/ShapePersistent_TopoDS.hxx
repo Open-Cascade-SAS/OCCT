@@ -15,10 +15,13 @@
 #ifndef _ShapePersistent_TopoDS_HeaderFile
 #define _ShapePersistent_TopoDS_HeaderFile
 
+#include <ShapePersistent_TriangleMode.hxx>
+
 #include <StdPersistent_TopoDS.hxx>
 #include <StdPersistent_HArray1.hxx>
 #include <StdLPersistent_HArray1.hxx>
 #include <StdObject_Shape.hxx>
+#include <StdObjMgt_TransientPersistentMap.hxx>
 
 #include <TopoDS_TWire.hxx>
 #include <TopoDS_TShell.hxx>
@@ -35,6 +38,12 @@ public:
   public:
     //! Read persistent data from a file.
     Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
+    //! Write persistent data to a file
+    Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const;
+    //! Gets persistent child objects
+    Standard_EXPORT virtual void PChildren(SequenceOfPersistent& theChildren) const;
+    //! Returns persistent type name
+    Standard_EXPORT virtual Standard_CString PName() const { return "PTopoDS_HShape"; }
 
   private:
     Handle(StdObjMgt_Persistent) myEntry;
@@ -72,27 +81,30 @@ protected:
 private:
   template <class Target>
   class pTSimple : public pTBase
-    { virtual Handle(TopoDS_TShape) createTShape() const; };
+  { 
+    virtual Handle(TopoDS_TShape) createTShape() const; 
+  public:
+    inline Standard_CString PName() const;
+  };
 
   template <class Persistent, class ShapesArray>
   class pTObject : public Persistent
   {
     virtual void addShapes (TopoDS_Shape& theParent) const
-    {
-      pTBase::addShapesT<ShapesArray> (theParent);
-    }
+      { pTBase::addShapesT<ShapesArray> (theParent); }
   };
 
   template <class Persistent, class ShapesArray>
-  struct tObjectT : Delayed <DelayedBase<TShape, TopoDS_TShape, pTBase>,
-                             pTObject<Persistent, ShapesArray> > {};
+  struct tObjectT : public Delayed <DelayedBase<TShape, TopoDS_TShape, pTBase>,
+                                    pTObject<Persistent, ShapesArray> > 
+    { typedef pTObject<Persistent, ShapesArray> pTObjectT; };
 
 protected:
   template <class Persistent>
-  struct tObject  : tObjectT<Persistent, StdLPersistent_HArray1::Persistent> {};
+  struct tObject : public tObjectT<Persistent, StdLPersistent_HArray1::Persistent> { };
 
   template <class Persistent>
-  struct tObject1 : tObjectT<Persistent, StdPersistent_HArray1::Shape1> {};
+  struct tObject1 : public tObjectT<Persistent, StdPersistent_HArray1::Shape1> { };
 
 public:
   typedef tObject  <pTSimple<TopoDS_TWire>      > TWire;
@@ -106,6 +118,32 @@ public:
   typedef tObject1 <pTSimple<TopoDS_TSolid>     > TSolid1;
   typedef tObject1 <pTSimple<TopoDS_TCompSolid> > TCompSolid1;
   typedef tObject1 <pTSimple<TopoDS_TCompound>  > TCompound1;
+
+public:
+  //! Create a persistent object for a shape
+  Standard_EXPORT static Handle(HShape) Translate (const TopoDS_Shape& theShape,
+                                                   StdObjMgt_TransientPersistentMap& theMap,
+                                                   ShapePersistent_TriangleMode theTriangleMode);
 };
+
+template<>
+inline Standard_CString ShapePersistent_TopoDS::pTSimple<TopoDS_TWire>::PName() const 
+  { return "PTopoDS_TWire"; }
+
+template<>
+inline Standard_CString ShapePersistent_TopoDS::pTSimple<TopoDS_TShell>::PName() const
+  { return "PTopoDS_TShell"; }
+
+template<>
+inline Standard_CString ShapePersistent_TopoDS::pTSimple<TopoDS_TSolid>::PName() const
+  { return "PTopoDS_TSolid"; }
+
+template<>
+inline Standard_CString ShapePersistent_TopoDS::pTSimple<TopoDS_TCompSolid>::PName() const
+  { return "PTopoDS_TCompSolid"; }
+
+template<>
+inline Standard_CString ShapePersistent_TopoDS::pTSimple<TopoDS_TCompound>::PName() const
+  { return "PTopoDS_TCompound"; }
 
 #endif
