@@ -44,50 +44,36 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Shell,BRepCheck_Result)
 //purpose  : 
 //=======================================================================
 static void Propagate(const TopTools_IndexedDataMapOfShapeListOfShape& mapEF,
-		      const TopoDS_Shape& theFac,
-		      TopTools_MapOfShape& mapF)
+                      const TopoDS_Shape& theFace,
+                      TopTools_IndexedMapOfShape& theMapF)
 {
-  if (mapF.Contains(theFac))
-  {
-    return;
-  }
-  mapF.Add(theFac);  // attention, if oriented == Standard_True, fac should
-                  // be FORWARD or REVERSED. It is not checked.
+  // Base for the traverse procedure.
+  theMapF.Add(theFace);
 
-  TopTools_MapIteratorOfMapOfShape itf(mapF);
-  while(itf.More())
+  // Perform well-known width-first traverse.
+  for (Standard_Integer anIdx = 1; anIdx <= theMapF.Extent(); ++anIdx)
   {
-    Standard_Boolean hasBeenAdded = Standard_False;
-    const TopoDS_Shape& fac = itf.Key();
-    TopExp_Explorer ex;
-    for (ex.Init(fac,TopAbs_EDGE); ex.More(); ex.Next())
+    const TopoDS_Shape& aFace = theMapF(anIdx);
+    for (TopExp_Explorer ex(aFace, TopAbs_EDGE); ex.More(); ex.Next())
     {
       const TopoDS_Edge& edg = TopoDS::Edge(ex.Current());
-      // test if the edge is in the map (only orienteed edges are present)
-      if (mapEF.Contains(edg))
-      {
-        for (TopTools_ListIteratorOfListOfShape itl(mapEF.FindFromKey(edg)); itl.More(); itl.Next())
-        {
-          if (!itl.Value().IsSame(fac) && !mapF.Contains(itl.Value()))
-          {
-            mapF.Add(itl.Value());
-            hasBeenAdded = Standard_True;
-          }
-        }
-      }
-    }//for (ex.Init(fac,TopAbs_EDGE); ex.More();)
 
-    if(hasBeenAdded)
-    {
-      itf.Initialize(mapF);
-    }
-    else
-    {
-      itf.Next();
+      // Test if the edge is in the map (only oriented edges are present).
+      const TopTools_ListOfShape* aList = mapEF.Seek(edg);
+
+      if ( aList == NULL )
+        continue;
+
+      for (TopTools_ListIteratorOfListOfShape itl(*aList); itl.More(); itl.Next())
+      {
+        // This code assumes that shape is added to an end of the map.
+        // The idea is simple: existing objects will not be added, new objects
+        // will be added to an end.
+        theMapF.Add(itl.Value());
+      }
     }
   }
 }
-
 
 //=======================================================================
 //function : BRepCheck_Trace
@@ -218,7 +204,7 @@ void BRepCheck_Shell::Minimum()
     }
     else if (nbface >= 2)
     {
-      TopTools_MapOfShape mapF;
+      TopTools_IndexedMapOfShape mapF;
       exp.ReInit();
 
       Propagate(myMapEF,exp.Current(),mapF);
@@ -338,7 +324,8 @@ BRepCheck_Status BRepCheck_Shell::Closed(const Standard_Boolean Update)
   //
   Standard_Integer index, aNbF;
   TopExp_Explorer exp, ede;
-  TopTools_MapOfShape mapS, aMEToAvoid;
+  TopTools_IndexedMapOfShape mapS;
+  TopTools_MapOfShape aMEToAvoid;
   myMapEF.Clear();
   
 
