@@ -76,6 +76,12 @@ public:
   //! If shape is edge it forbids merging of connected faces.
   Standard_EXPORT void KeepShapes(const TopTools_MapOfShape& theShapes);
 
+  //! Sets the flag defining the behavior of the algorithm regarding 
+  //! modification of input shape.
+  //! If this flag is equal to True then the input (original) shape can't be
+  //! modified during modification process. Default value is true.
+  Standard_EXPORT void SetSafeInputMode(Standard_Boolean theValue);
+
   //! Sets the linear tolerance. Default value is Precision::Confusion().
   void SetLinearTolerance(const Standard_Real theValue)
   {
@@ -134,7 +140,7 @@ protected:
 private:
 
   void IntUnifyFaces(const TopoDS_Shape& theInpShape,
-                     const TopTools_IndexedDataMapOfShapeListOfShape& theGMapEdgeFaces,
+                     TopTools_IndexedDataMapOfShapeListOfShape& theGMapEdgeFaces,
                      Standard_Boolean IsCheckSharedEdgeOri);
 
   TopoDS_Shape myInitShape;
@@ -144,6 +150,7 @@ private:
   Standard_Boolean myUnifyEdges;
   Standard_Boolean myConcatBSplines;
   Standard_Boolean myAllowInternal;
+  Standard_Boolean mySafeInputMode;
   TopoDS_Shape myShape;
   Handle(ShapeBuild_ReShape) myContext;
   TopTools_DataMapOfShapeShape myOldToGeneratedShapes;

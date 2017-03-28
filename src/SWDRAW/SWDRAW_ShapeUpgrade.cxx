@@ -1289,11 +1289,12 @@ static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, c
 {
   if (n < 3)
   {
-    di << "Use unifysamedom result shape [s1 s2 ...] [-f] [-e] [+b] [+i] [-t val] [-a val]\n";
+    di << "Use unifysamedom result shape [s1 s2 ...] [-f] [-e] [-nosafe] [+b] [+i] [-t val] [-a val]\n";
     di << "options:\n";
     di << "s1 s2 ... to keep the given edges during unification of faces\n";
     di << "-f to switch off 'unify-faces' mode \n";
     di << "-e to switch off 'unify-edges' mode\n";
+    di << "-nosafe to switch off 'safe input shape' mode\n";
     di << "+b to switch on 'concat bspline' mode\n";
     di << "+i to switch on 'allow internal edges' mode\n";
     di << "-t val to set linear tolerance\n";
@@ -1311,6 +1312,7 @@ static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, c
   Standard_Boolean anUEdges = Standard_True;
   Standard_Boolean anConBS = Standard_False;
   Standard_Boolean isAllowInternal = Standard_False;
+  Standard_Boolean isSafeInputMode = Standard_True;
   Standard_Real aLinTol = Precision::Confusion();
   Standard_Real aAngTol = Precision::Angular();
   TopoDS_Shape aKeepShape;
@@ -1328,6 +1330,8 @@ static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, c
           anUFaces = Standard_False;
         else if (!strcmp(a[i], "-e"))
           anUEdges = Standard_False;
+        else if (!strcmp(a[i], "-nosafe"))
+          isSafeInputMode = Standard_False;
         else if (!strcmp(a[i], "+b"))
           anConBS = Standard_True;
         else if (!strcmp(a[i], "+i"))
@@ -1349,6 +1353,7 @@ static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, c
 
   Unifier().Initialize(aShape, anUEdges, anUFaces, anConBS);
   Unifier().KeepShapes(aMapOfShapes);
+  Unifier().SetSafeInputMode(isSafeInputMode);
   Unifier().AllowInternalEdges(isAllowInternal);
   Unifier().SetLinearTolerance(aLinTol);
   Unifier().SetAngularTolerance(aAngTol);
@@ -1658,7 +1663,8 @@ Standard_Integer reshape(Draw_Interpretor& di,
   theCommands.Add ("removeloc","result shape [remove_level(see ShapeEnum)]",__FILE__,removeloc,g);
   
   theCommands.Add ("unifysamedom",
-                   "unifysamedom result shape [s1 s2 ...] [-f] [-e] [+b] [+i] [-t val] [-a val]", __FILE__,unifysamedom,g);
+                   "unifysamedom result shape [s1 s2 ...] [-f] [-e] [-nosafe] [+b] [+i] [-t val] [-a val]",
+                    __FILE__,unifysamedom,g);
   
   theCommands.Add("unifysamedomgen",
                   "unifysamedomgen newshape oldshape : get new shape generated "

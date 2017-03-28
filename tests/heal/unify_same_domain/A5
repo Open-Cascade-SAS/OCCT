@@ -1,0 +1,14 @@
+puts "TODO OCC28602 ALL: \\*\\* Exception \\*\\*.*"
+puts "TODO OCC28602 ALL: An exception was caught"
+puts "TODO OCC28602 ALL: TEST INCOMPLETE"
+puts "=========="
+puts "OCC28227"
+puts "=========="
+puts ""
+#############################################################################
+# ShapeUpgrade_UnifySameDomain modifies the edges even if it is not requested
+#############################################################################
+
+restore [locate_data_file bug28228_face.brep] a
+setflags a locked
+unifysamedom result a
