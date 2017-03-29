@@ -55,11 +55,6 @@
 #include <TopoDS_Edge.hxx>
 #include <gp_Elips.hxx>
 
-static
-  void TolR3d(const Standard_Real aTolF1,
-              const Standard_Real aTolF2,
-              Standard_Real& myTolReached3d);
-
 static 
   void Parameters(const Handle(GeomAdaptor_HSurface)&,
                   const Handle(GeomAdaptor_HSurface)&,
@@ -95,17 +90,16 @@ static
   Standard_Boolean  ApproxWithPCurves(const gp_Cylinder& theCyl, 
                                       const gp_Sphere& theSph);
 
-static void  PerformPlanes(const Handle(GeomAdaptor_HSurface)& theS1, 
-                           const Handle(GeomAdaptor_HSurface)& theS2, 
+static void  PerformPlanes(const Handle(GeomAdaptor_HSurface)& theS1,
+                           const Handle(GeomAdaptor_HSurface)& theS2,
                            const Standard_Real TolF1,
                            const Standard_Real TolF2,
-                           const Standard_Real TolAng, 
-                           const Standard_Real TolTang, 
+                           const Standard_Real TolAng,
+                           const Standard_Real TolTang,
                            const Standard_Boolean theApprox1,
                            const Standard_Boolean theApprox2,
-                           IntTools_SequenceOfCurves& theSeqOfCurve, 
-                           Standard_Boolean& theTangentFaces,
-                           Standard_Real& TolReached3d);
+                           IntTools_SequenceOfCurves& theSeqOfCurve,
+                           Standard_Boolean& theTangentFaces);
 
 static Standard_Boolean ClassifyLin2d(const Handle(GeomAdaptor_HSurface)& theS, 
                                       const gp_Lin2d& theLin2d, 
@@ -173,9 +167,6 @@ IntTools_FaceFace::IntTools_FaceFace()
   //
   myHS1 = new GeomAdaptor_HSurface ();
   myHS2 = new GeomAdaptor_HSurface ();
-  myTolReached2d=0.; 
-  myTolReached3d=0.;
-  myTolReal = 0.;
   myTolF1 = 0.;
   myTolF2 = 0.;
   myTol = 0.;
@@ -239,22 +230,6 @@ Standard_Boolean IntTools_FaceFace::IsDone() const
   return myIsDone;
 }
 //=======================================================================
-//function : TolReached3d
-//purpose  : 
-//=======================================================================
-Standard_Real IntTools_FaceFace::TolReached3d() const
-{
-  return myTolReached3d;
-}
-//=======================================================================
-//function : TolReal
-//purpose  : 
-//=======================================================================
-Standard_Real IntTools_FaceFace::TolReal() const
-{
-  return myTolReal;
-}
-//=======================================================================
 //function : Lines
 //purpose  : return lines of intersection
 //=======================================================================
@@ -264,14 +239,6 @@ const IntTools_SequenceOfCurves& IntTools_FaceFace::Lines() const
     (!myIsDone,
      "IntTools_FaceFace::Lines() => myIntersector NOT DONE");
   return mySeqOfCurve;
-}
-//=======================================================================
-//function : TolReached2d
-//purpose  : 
-//=======================================================================
-Standard_Real IntTools_FaceFace::TolReached2d() const
-{
-  return myTolReached2d;
 }
 // =======================================================================
 // function: SetParameters
@@ -398,9 +365,6 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
   }
 
   mySeqOfCurve.Clear();
-  myTolReached2d=0.;
-  myTolReached3d=0.;
-  myTolReal = 0.;
   myIsDone = Standard_False;
   myNbrestr=0;//?
 
@@ -472,38 +436,24 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     //
     Standard_Real TolAng = 1.e-8;
     //
-    PerformPlanes(myHS1, myHS2, 
-                  myTolF1, myTolF2, TolAng, TolTang, 
-                  myApprox1, myApprox2, 
-                  mySeqOfCurve, myTangentFaces, myTolReached3d);
+    PerformPlanes(myHS1, myHS2,
+                  myTolF1, myTolF2, TolAng, TolTang,
+                  myApprox1, myApprox2,
+                  mySeqOfCurve, myTangentFaces);
     //
     myIsDone = Standard_True;
-    
-    if(!myTangentFaces) {
+    //
+    if (!myTangentFaces) {
       const Standard_Integer NbLinPP = mySeqOfCurve.Length();
-      if(NbLinPP) {
-        Standard_Real aTolFMax;
-        aTolFMax=Max(myTolF1, myTolF2);
-        myTolReal = Precision::Confusion();
-        if (aTolFMax > myTolReal) {
-          myTolReal = aTolFMax;
-        }
-        if (aTolFMax > myTolReached3d) {
-          myTolReached3d = aTolFMax;
-        }
-        //
-        myTolReached2d = myTolReal;
-
-        if (bReverse) {
-          Handle(Geom2d_Curve) aC2D1, aC2D2;
-          const Standard_Integer aNbLin = mySeqOfCurve.Length();
-          for (Standard_Integer i = 1; i <= aNbLin; ++i) {
-            IntTools_Curve& aIC=mySeqOfCurve(i);
-            aC2D1=aIC.FirstCurve2d();
-            aC2D2=aIC.SecondCurve2d();
-            aIC.SetFirstCurve2d(aC2D2);
-            aIC.SetSecondCurve2d(aC2D1);
-          }
+      if (NbLinPP && bReverse) {
+        Handle(Geom2d_Curve) aC2D1, aC2D2;
+        const Standard_Integer aNbLin = mySeqOfCurve.Length();
+        for (Standard_Integer i = 1; i <= aNbLin; ++i) {
+          IntTools_Curve& aIC = mySeqOfCurve(i);
+          aC2D1 = aIC.FirstCurve2d();
+          aC2D2 = aIC.SecondCurve2d();
+          aIC.SetFirstCurve2d(aC2D2);
+          aIC.SetSecondCurve2d(aC2D1);
         }
       }
     }
@@ -712,121 +662,78 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
 }
 
 //=======================================================================
-//function : ComputeTolerance
+//function :ComputeTolReached3d 
 //purpose  : 
 //=======================================================================
-Standard_Real IntTools_FaceFace::ComputeTolerance()
+void IntTools_FaceFace::ComputeTolReached3d()
 {
-  Standard_Integer i, j, aNbLin;
-  Standard_Real aFirst, aLast, aD, aDMax, aT;
-  Handle(Geom_Surface) aS1, aS2;
+  Standard_Integer i, j, aNbLin = mySeqOfCurve.Length();
+  if (!aNbLin) {
+    return;
+  }
   //
-  aDMax = 0;
-  aNbLin = mySeqOfCurve.Length();
+  // Minimal tangential tolerance for the curve
+  Standard_Real aTolFMax = Max(myTolF1, myTolF2);
   //
-  aS1 = myHS1->ChangeSurface().Surface();
-  aS2 = myHS2->ChangeSurface().Surface();
+  const Handle(Geom_Surface)& aS1 = myHS1->ChangeSurface().Surface();
+  const Handle(Geom_Surface)& aS2 = myHS2->ChangeSurface().Surface();
   //
   for (i = 1; i <= aNbLin; ++i)
   {
-    const IntTools_Curve& aIC = mySeqOfCurve(i);
+    IntTools_Curve& aIC = mySeqOfCurve(i);
     const Handle(Geom_Curve)& aC3D = aIC.Curve();
     if (aC3D.IsNull())
     {
       continue;
     }
     //
-    aFirst = aC3D->FirstParameter();
-    aLast  = aC3D->LastParameter();
+    Standard_Real aTolC = aIC.Tolerance();
+    Standard_Real aFirst = aC3D->FirstParameter();
+    Standard_Real aLast  = aC3D->LastParameter();
     //
+    // Compute the tolerance for the curve
     const Handle(Geom2d_Curve)& aC2D1 = aIC.FirstCurve2d();
     const Handle(Geom2d_Curve)& aC2D2 = aIC.SecondCurve2d();
     //
     for (j = 0; j < 2; ++j)
     {
       const Handle(Geom2d_Curve)& aC2D = !j ? aC2D1 : aC2D2;
-      const Handle(Geom_Surface)& aS = !j ? aS1 : aS2;
-      //
       if (!aC2D.IsNull())
       {
+        // Look for the maximal deviation between 3D and 2D curves
+        Standard_Real aD, aT;
+        const Handle(Geom_Surface)& aS = !j ? aS1 : aS2;
         if (IntTools_Tools::ComputeTolerance
             (aC3D, aC2D, aS, aFirst, aLast, aD, aT))
         {
-          if (aD > aDMax)
+          if (aD > aTolC)
           {
-            aDMax = aD;
+            aTolC = aD;
           }
         }
       }
       else
       {
+        // Look for the maximal deviation between 3D curve and surface
         const TopoDS_Face& aF = !j ? myFace1 : myFace2;
-        aD = FindMaxDistance(aC3D, aFirst, aLast, aF, myContext);
-        if (aD > aDMax)
+        Standard_Real aD = FindMaxDistance(aC3D, aFirst, aLast, aF, myContext);
+        if (aD > aTolC)
         {
-          aDMax = aD;
+          aTolC = aD;
         }
       }
     }
-  }
-  //
-  return aDMax;
-}
-
-//=======================================================================
-//function :ComputeTolReached3d 
-//purpose  : 
-//=======================================================================
-void IntTools_FaceFace::ComputeTolReached3d()
-{
-  Standard_Integer aNbLin;
-  GeomAbs_SurfaceType aType1, aType2;
-  //
-  aNbLin=myIntersector.NbLines();
-  if (!aNbLin) {
-    return;
-  }
-  //
-  aType1=myHS1->Surface().GetType();
-  aType2=myHS2->Surface().GetType();
-  //
-  if (aType1==GeomAbs_Cylinder && aType2==GeomAbs_Cylinder)
-  {
-    if (aNbLin==2)
-    { 
-      Handle(IntPatch_Line) aIL1, aIL2;
-      IntPatch_IType aTL1, aTL2;
-      //
-      aIL1=myIntersector.Line(1);
-      aIL2=myIntersector.Line(2);
-      aTL1=aIL1->ArcType();
-      aTL2=aIL2->ArcType();
-      if (aTL1==IntPatch_Lin && aTL2==IntPatch_Lin) {
-        Standard_Real aD, aDTresh, dTol;
-        gp_Lin aL1, aL2;
-        //
-        dTol=1.e-8;
-        aDTresh=1.5e-6;
-        //
-        aL1=Handle(IntPatch_GLine)::DownCast(aIL1)->Line();
-        aL2=Handle(IntPatch_GLine)::DownCast(aIL2)->Line();
-        aD=aL1.Distance(aL2);
-        aD=0.5*aD;
-        if (aD<aDTresh)
-        {//In order to avoid creation too thin face
-          myTolReached3d=aD+dTol;
-        }
-      }
+    // Set the valid tolerance for the curve
+    aIC.SetTolerance(aTolC);
+    //
+    // Set the tangential tolerance for the curve.
+    // Note, that, currently, computation of the tangential tolerance is
+    // implemented for the Plane/Plane case only.
+    // Thus, set the tangential tolerance equal to maximal tolerance of faces.
+    if (aIC.TangentialTolerance() < aTolFMax) {
+      aIC.SetTangentialTolerance(aTolFMax);
     }
-  }// if (aType1==GeomAbs_Cylinder && aType2==GeomAbs_Cylinder) {
-  //
-
-  Standard_Real aDMax = ComputeTolerance();
-  if (aDMax > myTolReached3d)
-  {
-    myTolReached3d = aDMax;
   }
-  myTolReal = myTolReached3d;
 }
 
 //=======================================================================
@@ -931,11 +838,6 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
         new Geom_Hyperbola (Handle(IntPatch_GLine)::DownCast(L)->Hyperbola());
     }
     //
-    // myTolReached3d
-    if (typl == IntPatch_Lin) {
-      TolR3d (myTolF1, myTolF2, myTolReached3d);
-    }
-    //
     aNbParts=myLConstruct.NbParts();
     for (i=1; i<=aNbParts; i++) {
       Standard_Boolean bFNIt, bLPIt;
@@ -952,7 +854,8 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
         Handle(Geom_TrimmedCurve) aCT3D=new Geom_TrimmedCurve(newc, fprm, lprm);
         aCurve.SetCurve(aCT3D);
         if (typl == IntPatch_Parabola) {
-          myTolReached3d=IntTools_Tools::CurveTolerance(aCT3D, myTol);
+          Standard_Real aTolC = IntTools_Tools::CurveTolerance(aCT3D, myTol);
+          aCurve.SetTolerance(aTolC);
         }
         //
         aCurve.SetCurve(new Geom_TrimmedCurve(newc, fprm, lprm));
@@ -960,33 +863,16 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
           Handle (Geom2d_Curve) C2d;
           GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc,
                 myHS1->ChangeSurface().Surface(), newc, C2d);
-          if(Tolpc>myTolReached2d || myTolReached2d==0.) { 
-            myTolReached2d=Tolpc;
-          }
-            //            
-            aCurve.SetFirstCurve2d(new Geom2d_TrimmedCurve(C2d,fprm,lprm));
-          }
-          else { 
-            Handle(Geom2d_BSplineCurve) H1;
-            //
-            aCurve.SetFirstCurve2d(H1);
-          }
+          aCurve.SetFirstCurve2d(new Geom2d_TrimmedCurve(C2d, fprm, lprm));
+        }
         //
         if(myApprox2) { 
           Handle (Geom2d_Curve) C2d;
           GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc,
                     myHS2->ChangeSurface().Surface(), newc, C2d);
-          if(Tolpc>myTolReached2d || myTolReached2d==0.) { 
-            myTolReached2d=Tolpc;
-          }
-          //
-          aCurve.SetSecondCurve2d(new Geom2d_TrimmedCurve(C2d,fprm,lprm));
-          }
-        else { 
-          Handle(Geom2d_BSplineCurve) H1;
-          //
-          aCurve.SetSecondCurve2d(H1);
+          aCurve.SetSecondCurve2d(new Geom2d_TrimmedCurve(C2d, fprm, lprm));
         }
+        //
         mySeqOfCurve.Append(aCurve);
       } //if (!bFNIt && !bLPIt) {
       else {
@@ -1053,9 +939,6 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
         (Handle(IntPatch_GLine)::DownCast(L)->Ellipse());
     }
     //
-    // myTolReached3d
-    TolR3d (myTolF1, myTolF2, myTolReached3d);
-    //
     aNbParts=myLConstruct.NbParts();
     //
     Standard_Real aPeriod, aNul;
@@ -1079,10 +962,8 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
         else {
           gp_Pnt P1 = newc->Value(fprm);
           gp_Pnt P2 = newc->Value(aPeriod);
-          Standard_Real aTolDist = myTol;
-          aTolDist = (myTolReached3d > aTolDist) ? myTolReached3d : aTolDist;
 
-          if(P1.Distance(P2) > aTolDist) {
+          if(P1.Distance(P2) > myTol) {
             Standard_Real anewpar = fprm;
 
             if(ParameterOutOfBoundary(fprm, newc, myFace1, myFace2, 
@@ -1102,10 +983,8 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
         else {
           gp_Pnt P1 = newc->Value(aNul);
           gp_Pnt P2 = newc->Value(lprm);
-          Standard_Real aTolDist = myTol;
-          aTolDist = (myTolReached3d > aTolDist) ? myTolReached3d : aTolDist;
 
-          if(P1.Distance(P2) > aTolDist) {
+          if(P1.Distance(P2) > myTol) {
             Standard_Real anewpar = lprm;
 
             if(ParameterOutOfBoundary(lprm, newc, myFace1, myFace2, 
@@ -1123,7 +1002,6 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
         aSeqLprm.Append(lprm);
       }
     }
-    
     //
     aNbParts=aSeqFprm.Length();
     for (i=1; i<=aNbParts; i++) {
@@ -1145,39 +1023,17 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
             Handle (Geom2d_Curve) C2d;
             GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc, 
                         myHS1->ChangeSurface().Surface(), newc, C2d);
-            if(Tolpc>myTolReached2d || myTolReached2d==0) { 
-              myTolReached2d=Tolpc;
-            }
-            //
             aCurve.SetFirstCurve2d(C2d);
           }
-          else { //// 
-            Handle(Geom2d_BSplineCurve) H1;
-            aCurve.SetFirstCurve2d(H1);
-          }
-
 
           if(myApprox2) { 
             Handle (Geom2d_Curve) C2d;
             GeomInt_IntSS::BuildPCurves(fprm,lprm,Tolpc,
                     myHS2->ChangeSurface().Surface(),newc,C2d);
-            if(Tolpc>myTolReached2d || myTolReached2d==0) { 
-              myTolReached2d=Tolpc;
-            }
-            //
             aCurve.SetSecondCurve2d(C2d);
           }
-          else { 
-            Handle(Geom2d_BSplineCurve) H1;
-            aCurve.SetSecondCurve2d(H1);
-          }
         }
-        
-        else { 
-          Handle(Geom2d_BSplineCurve) H1;
-          aCurve.SetFirstCurve2d(H1);
-          aCurve.SetSecondCurve2d(H1);
-        }
+        //
         mySeqOfCurve.Append(aCurve);
           //==============================================        
       } //if (Abs(fprm) > RealEpsilon() || Abs(lprm-2.*M_PI) > RealEpsilon())
@@ -1198,31 +1054,16 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
               Handle (Geom2d_Curve) C2d;
               GeomInt_IntSS::BuildPCurves(fprm,lprm,Tolpc,
                     myHS1->ChangeSurface().Surface(),newc,C2d);
-              if(Tolpc>myTolReached2d || myTolReached2d==0) { 
-                myTolReached2d=Tolpc;
-              }
-              //
               aCurve.SetFirstCurve2d(C2d);
-            }
-            else { //// 
-              Handle(Geom2d_BSplineCurve) H1;
-              aCurve.SetFirstCurve2d(H1);
             }
 
             if(myApprox2) { 
               Handle (Geom2d_Curve) C2d;
               GeomInt_IntSS::BuildPCurves(fprm,lprm,Tolpc,
                     myHS2->ChangeSurface().Surface(),newc,C2d);
-              if(Tolpc>myTolReached2d || myTolReached2d==0) { 
-                myTolReached2d=Tolpc;
-              }
-              //
               aCurve.SetSecondCurve2d(C2d);
             }
-            else { 
-              Handle(Geom2d_BSplineCurve) H1;
-              aCurve.SetSecondCurve2d(H1);
-            }
+            //
             mySeqOfCurve.Append(aCurve);
             break;
           }
@@ -1251,40 +1092,16 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                 Handle (Geom2d_Curve) C2d;
                 GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc, 
                         myHS1->ChangeSurface().Surface(), newc, C2d);
-                if(Tolpc>myTolReached2d || myTolReached2d==0) { 
-                  myTolReached2d=Tolpc;
-                }
-                // 
                 aCurve.SetFirstCurve2d(C2d);
               }
-              else { 
-                Handle(Geom2d_BSplineCurve) H1;
-                aCurve.SetFirstCurve2d(H1);
-              }
-                
+
               if(myApprox2) { 
                 Handle (Geom2d_Curve) C2d;
                 GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc,
                         myHS2->ChangeSurface().Surface(), newc, C2d);
-                if(Tolpc>myTolReached2d || myTolReached2d==0) { 
-                  myTolReached2d=Tolpc;
-                }
-                //                 
                 aCurve.SetSecondCurve2d(C2d);
               }
-                
-              else { 
-                Handle(Geom2d_BSplineCurve) H1;
-                aCurve.SetSecondCurve2d(H1);
-              }
             }//  end of if (typl == IntPatch_Circle || typl == IntPatch_Ellipse)
-             
-            else { 
-              Handle(Geom2d_BSplineCurve) H1;
-              //         
-              aCurve.SetFirstCurve2d(H1);
-              aCurve.SetSecondCurve2d(H1);
-            }
             //==============================================        
             //
             mySeqOfCurve.Append(aCurve);
@@ -1410,14 +1227,13 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                              aSeqOfL, 
                              aReachedTol,
                              myContext);
-      if ( bIsDecomposited && ( myTolReached3d < aReachedTol ) ) {
-        myTolReached3d = aReachedTol;
-      }
       //
       aNbSeqOfL=aSeqOfL.Length();
       //
+      Standard_Real aTolC = 0.;
       if (bIsDecomposited) {
         nbiter=aNbSeqOfL;
+        aTolC = aReachedTol;
       }
       else {
         nbiter=1;
@@ -1495,27 +1311,22 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
           IntTools_Curve aIC(aBSp, H1, H2);
           mySeqOfCurve.Append(aIC);
         }
-        
         else {
-          if(myApprox1 || myApprox2 || (typs1==GeomAbs_Plane || typs2==GeomAbs_Plane)) { 
-            if( theapp3d.TolReached2d()>myTolReached2d || myTolReached2d==0.) { 
-              myTolReached2d = theapp3d.TolReached2d();
+          if (typs1 == GeomAbs_Plane || typs2 == GeomAbs_Plane) {
+            if (aTolC <  theapp3d.TolReached2d()) {
+              aTolC = theapp3d.TolReached2d();
             }
-          }
-          if(typs1==GeomAbs_Plane || typs2==GeomAbs_Plane) { 
-            myTolReached3d = myTolReached2d;
             //
-            if (typs1==GeomAbs_Torus || typs2==GeomAbs_Torus) {
-              if (myTolReached3d<1.e-6) {
-                myTolReached3d = theapp3d.TolReached3d();
-                myTolReached3d=1.e-6;
+            if (typs1 == GeomAbs_Torus || typs2 == GeomAbs_Torus) {
+              if (aTolC < 1.e-6) {
+                aTolC = 1.e-6;
               }
             }
           }
-          else  if( theapp3d.TolReached3d()>myTolReached3d || myTolReached3d==0.) { 
-            myTolReached3d = theapp3d.TolReached3d();
+          else if (aTolC < theapp3d.TolReached3d()) {
+            aTolC = theapp3d.TolReached3d();
           }
-          
+          //
           Standard_Integer aNbMultiCurves, nbpoles;
           aNbMultiCurves=theapp3d.NbMultiCurves(); 
           for (j=1; j<=aNbMultiCurves; j++) {
@@ -1568,10 +1379,6 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                 // ############################################
                 aCurve.SetFirstCurve2d(BS1);
               }
-              else {
-                Handle(Geom2d_BSplineCurve) H1;
-                aCurve.SetFirstCurve2d(H1);
-              }
 
               if(myApprox2) { 
                 mbspc.Curve(2, tpoles2d);
@@ -1595,11 +1402,8 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                 // 
                 aCurve.SetSecondCurve2d(BS2);
               }
-              else { 
-                Handle(Geom2d_BSplineCurve) H2;
-                //                 
-                  aCurve.SetSecondCurve2d(H2);
-              }
+              //
+              aCurve.SetTolerance(aTolC);
               //
               mySeqOfCurve.Append(aCurve);
 
@@ -1633,6 +1437,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
               //         
               IntTools_Curve aCurve;
               aCurve.SetCurve(BS);
+              aCurve.SetTolerance(aTolC);
 
               if(myApprox2) {
                 Handle(Geom2d_BSplineCurve) BS1=new Geom2d_BSplineCurve(tpoles2d,
@@ -1654,11 +1459,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                 bPCurvesOk = CheckPCurve(BS1, myFace2, myContext);
                 aCurve.SetSecondCurve2d(BS1);
               }
-              else {
-                Handle(Geom2d_BSplineCurve) H2;
-                aCurve.SetSecondCurve2d(H2);
-              }
-              
+
               if(myApprox1) { 
                 mbspc.Curve(1,tpoles2d);
                 Handle(Geom2d_BSplineCurve) BS2=new Geom2d_BSplineCurve(tpoles2d,
@@ -1679,11 +1480,6 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                 // ###########################################
                 bPCurvesOk = bPCurvesOk && CheckPCurve(BS2, myFace1, myContext);
                 aCurve.SetFirstCurve2d(BS2);
-              }
-              else { 
-                Handle(Geom2d_BSplineCurve) H1;
-                //                 
-                aCurve.SetFirstCurve2d(H1);
               }
               //
               //if points of the pcurves are out of the faces bounds
@@ -1707,7 +1503,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                 //if pcurves created without approximation are out of the 
                 //faces bounds, use approximated 3d and 2d curves
                 if (bPCurvesOk) {
-                  IntTools_Curve aIC(aBSp, H1, H2);
+                  IntTools_Curve aIC(aBSp, H1, H2, aTolC);
                   mySeqOfCurve.Append(aIC);
                 } else {
                   mySeqOfCurve.Append(aCurve);
@@ -1721,8 +1517,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
             else { //typs2 != GeomAbs_Plane && typs1 != GeomAbs_Plane
               Standard_Boolean bIsValid1, bIsValid2;
               Handle(Geom_BSplineCurve) BS;
-              Handle(Geom2d_BSplineCurve) aH2D;        
-              IntTools_Curve aCurve; 
+              IntTools_Curve aCurve;
               //
               bIsValid1=Standard_True;
               bIsValid2=Standard_True;
@@ -1737,10 +1532,9 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                                                                  mbspc.Degree());
               GeomLib_CheckBSplineCurve Check(BS,TOLCHECK,TOLANGCHECK);
               Check.FixTangent(Standard_True,Standard_True);
-              //                 
+              //
               aCurve.SetCurve(BS);
-              aCurve.SetFirstCurve2d(aH2D);
-              aCurve.SetSecondCurve2d(aH2D);
+              aCurve.SetTolerance(aTolC);
               //
               if(myApprox1) { 
                 if(anApprox1) {
@@ -1749,9 +1543,9 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                   mbspc.Curve(2,tpoles2d);
                   //
                   BS1=new Geom2d_BSplineCurve(tpoles2d,
-                                                                        mbspc.Knots(),
-                                                                        mbspc.Multiplicities(),
-                                                                        mbspc.Degree());
+                                              mbspc.Knots(),
+                                              mbspc.Multiplicities(),
+                                              mbspc.Degree());
                   GeomLib_Check2dBSplineCurve newCheck(BS1,TOLCHECK,TOLANGCHECK);
                   newCheck.FixTangent(Standard_True,Standard_True);
                   //         
@@ -2241,24 +2035,6 @@ Handle(Geom_Curve) MakeBSpline  (const Handle(IntPatch_WLine)& WL,
   }
 }
 
-//=======================================================================
-//function : TolR3d
-//purpose  : 
-//=======================================================================
-void TolR3d(const Standard_Real aTolF1,
-            const Standard_Real aTolF2,
-            Standard_Real& myTolReached3d)
-{
-  Standard_Real aTolFMax, aTolTresh;
-      
-  aTolTresh=2.999999e-3;
-  aTolFMax=Max(aTolF1, aTolF2);
-  
-  if (aTolFMax>aTolTresh) {
-    myTolReached3d=aTolFMax;
-  }
-}
-
 // ------------------------------------------------------------------------------------------------
 // static function: ParameterOutOfBoundary
 // purpose:         Computes a new parameter for given curve. The corresponding 2d points 
@@ -2443,17 +2219,16 @@ Standard_Boolean ApproxWithPCurves(const gp_Cylinder& theCyl,
 //function : PerformPlanes
 //purpose  : 
 //=======================================================================
-void  PerformPlanes(const Handle(GeomAdaptor_HSurface)& theS1, 
-                    const Handle(GeomAdaptor_HSurface)& theS2, 
-                    const Standard_Real TolF1, 
-                    const Standard_Real TolF2, 
-                    const Standard_Real TolAng, 
-                    const Standard_Real TolTang, 
+void  PerformPlanes(const Handle(GeomAdaptor_HSurface)& theS1,
+                    const Handle(GeomAdaptor_HSurface)& theS2,
+                    const Standard_Real TolF1,
+                    const Standard_Real TolF2,
+                    const Standard_Real TolAng,
+                    const Standard_Real TolTang,
                     const Standard_Boolean theApprox1,
                     const Standard_Boolean theApprox2,
-                    IntTools_SequenceOfCurves& theSeqOfCurve, 
-                    Standard_Boolean& theTangentFaces,
-                    Standard_Real& TolReached3d)
+                    IntTools_SequenceOfCurves& theSeqOfCurve,
+                    Standard_Boolean& theTangentFaces)
 {
 
   gp_Pln aPln1 = theS1->Surface().Plane();
@@ -2534,10 +2309,13 @@ void  PerformPlanes(const Handle(GeomAdaptor_HSurface)& theS1,
     Handle(Geom2d_Curve) H1;
     aCurve.SetFirstCurve2d(H1);
   }
-
-  theSeqOfCurve.Append(aCurve);
   //
-  // computation of the tolerance reached
+  // Valid tolerance for the intersection curve between planar faces
+  // is the maximal tolerance between tolerances of faces
+  Standard_Real aTolC = Max(TolF1, TolF2);
+  aCurve.SetTolerance(aTolC);
+  //
+  // Computation of the tangential tolerance
   Standard_Real anAngle, aDt;
   gp_Dir aD1, aD2;
   //
@@ -2546,7 +2324,11 @@ void  PerformPlanes(const Handle(GeomAdaptor_HSurface)& theS1,
   anAngle = aD1.Angle(aD2);
   //
   aDt = IntTools_Tools::ComputeIntRange(TolF1, TolF2, anAngle);
-  TolReached3d = sqrt(aDt*aDt + TolF1*TolF1);
+  Standard_Real aTangTol = sqrt(aDt*aDt + TolF1*TolF1);
+  //
+  aCurve.SetTangentialTolerance(aTangTol);
+  //
+  theSeqOfCurve.Append(aCurve);
 }
 
 //=======================================================================

@@ -12,105 +12,91 @@
 // commercial license or contractual agreement.
 
 
+#include <IntTools_Curve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_BoundedCurve.hxx>
 #include <Geom_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
-#include <IntTools_Curve.hxx>
 
 //=======================================================================
 //function : IntTools_Curve::IntTools_Curve
 //purpose  : 
 //=======================================================================
 IntTools_Curve::IntTools_Curve()
+:
+  myTolerance(0.0),
+  myTangentialTolerance(0.0)
 {
 }
 //=======================================================================
 //function : IntTools_Curve::IntTools_Curve
 //purpose  : 
 //=======================================================================
-  IntTools_Curve::IntTools_Curve(const Handle(Geom_Curve)& Curve3d,
-				 const Handle(Geom2d_Curve)& FirstCurve2d,
-				 const Handle(Geom2d_Curve)& SecondCurve2d)
+IntTools_Curve::IntTools_Curve(const Handle(Geom_Curve)& the3dCurve,
+                               const Handle(Geom2d_Curve)& the2dCurve1,
+                               const Handle(Geom2d_Curve)& the2dCurve2,
+                               const Standard_Real theTolerance,
+                               const Standard_Real theTangentialTolerance)
+:
+  myTolerance(theTolerance),
+  myTangentialTolerance(theTangentialTolerance)
 {
-  SetCurves(Curve3d, FirstCurve2d, SecondCurve2d);
+  SetCurves(the3dCurve, the2dCurve1, the2dCurve2);
 }
-//=======================================================================
-//function : SetCurves
-//purpose  : 
-//=======================================================================
-  void IntTools_Curve::SetCurves(const Handle(Geom_Curve)& Curve3d,
-				 const Handle(Geom2d_Curve)& FirstCurve2d,
-				 const Handle(Geom2d_Curve)& SecondCurve2d) 
-{
-  SetCurve(Curve3d);
-  SetFirstCurve2d(FirstCurve2d);
-  SetSecondCurve2d(SecondCurve2d);
-}
-
 //=======================================================================
 //function : HasBounds
 //purpose  : 
 //=======================================================================
   Standard_Boolean IntTools_Curve::HasBounds() const 
 {
-  Standard_Boolean bBounded;
-
   Handle(Geom_BoundedCurve) aC3DBounded =
     Handle(Geom_BoundedCurve)::DownCast(my3dCurve);
-  
-  bBounded=!aC3DBounded.IsNull();
-  
-  return bBounded ;
+  Standard_Boolean bIsBounded = !aC3DBounded.IsNull();
+  return bIsBounded;
 }
 
 //=======================================================================
 //function : Bounds
 //purpose  : 
 //=======================================================================
-  void IntTools_Curve::Bounds(Standard_Real& aT1,
-			      Standard_Real& aT2,
-			      gp_Pnt& aP1,
-			      gp_Pnt& aP2) const 
+Standard_Boolean IntTools_Curve::Bounds(Standard_Real& theFirst,
+                                        Standard_Real& theLast,
+                                        gp_Pnt& theFirstPnt,
+                                        gp_Pnt& theLastPnt) const
 {
-  aT1=0.;
-  aT2=0.;
-  aP1.SetCoord(0.,0.,0.);
-  aP2.SetCoord(0.,0.,0.);
-  if (HasBounds()) {
-    aT1=my3dCurve->FirstParameter();
-    aT2=my3dCurve->LastParameter();
-    my3dCurve->D0(aT1, aP1);
-    my3dCurve->D0(aT2, aP2);
+  Standard_Boolean bIsBounded = HasBounds();
+  if (bIsBounded) {
+    theFirst = my3dCurve->FirstParameter();
+    theLast  = my3dCurve->LastParameter();
+    my3dCurve->D0(theFirst, theFirstPnt);
+    my3dCurve->D0(theLast,  theLastPnt);
   }
+  return bIsBounded;
 }
 
 //=======================================================================
 //function : D0
 //purpose  : 
 //=======================================================================
-  Standard_Boolean IntTools_Curve::D0(Standard_Real& aT,
-				      gp_Pnt& aP) const 
+Standard_Boolean IntTools_Curve::D0(const Standard_Real& thePar,
+                                    gp_Pnt& thePnt) const
 {
-  Standard_Real aF, aL;
-
-  aF=my3dCurve->FirstParameter();
-  aL=my3dCurve->LastParameter();
-  if (aT<aF || aT>aL) {
-    return Standard_False;
+  Standard_Boolean bInside = !(thePar < my3dCurve->FirstParameter() &&
+                               thePar > my3dCurve->LastParameter());
+  if (bInside) {
+    my3dCurve->D0(thePar, thePnt);
   }
-  my3dCurve->D0(aT, aP);
-  return Standard_True;
+  return bInside;
 }
 
 //=======================================================================
-//function : D0
+//function : Type
 //purpose  : 
 //=======================================================================
-   GeomAbs_CurveType IntTools_Curve::Type() const 
+GeomAbs_CurveType IntTools_Curve::Type() const
 {
   GeomAdaptor_Curve aGAC(my3dCurve);
-  GeomAbs_CurveType aType=aGAC.GetType();
+  GeomAbs_CurveType aType = aGAC.GetType();
   return aType;
 }

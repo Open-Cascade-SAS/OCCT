@@ -118,33 +118,37 @@ virtual ~BOPDS_Curve();
   //! has edge
     Standard_Boolean HasEdge() const;
 
+  //! Sets the tolerance for the curve.
+  void SetTolerance(const Standard_Real theTol)
+  {
+    myTolerance = theTol;
+  }
 
+  //! Returns the tolerance of the curve
+  Standard_Real Tolerance() const
+  {
+    return myTolerance;
+  }
 
+  //! Returns the tangential tolerance of the curve
+  Standard_Real TangentialTolerance() const
+  {
+    return myCurve.TangentialTolerance();
+  }
 
 protected:
-
-
 
   BOPCol_BaseAllocator myAllocator;
   IntTools_Curve myCurve;
   BOPDS_ListOfPaveBlock myPaveBlocks;
   BOPCol_ListOfInteger myTechnoVertices;
   Bnd_Box myBox;
-
+  Standard_Real myTolerance;
 
 private:
 
-
-
-
-
 };
 
-
 #include <BOPDS_Curve.lxx>
-
-
-
-
 
 #endif // _BOPDS_Curve_HeaderFile

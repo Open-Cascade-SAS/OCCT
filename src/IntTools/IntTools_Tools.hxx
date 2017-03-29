@@ -142,8 +142,11 @@ public:
   //! if aC is trimmed curve and basis curve is parabola,
   //! otherwise returns value of aTolBase
   Standard_EXPORT static Standard_Real CurveTolerance (const Handle(Geom_Curve)& aC, const Standard_Real aTolBase);
-  
-  Standard_EXPORT static Standard_Boolean CheckCurve (const Handle(Geom_Curve)& theC, const Standard_Real theTol, Bnd_Box& theBox);
+
+  //! Checks if the curve is not covered by the default tolerance (confusion).<br>
+  //! Builds bounding box for the curve and stores it into <theBox>.
+  Standard_EXPORT static Standard_Boolean CheckCurve(const IntTools_Curve& theCurve,
+                                                     Bnd_Box& theBox);
   
   Standard_EXPORT static Standard_Boolean IsOnPave (const Standard_Real theT, const IntTools_Range& theRange, const Standard_Real theTol);
   

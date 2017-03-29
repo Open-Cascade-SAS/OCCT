@@ -1238,3 +1238,13 @@ The following Grid management methods within class V3d_Viewer do not implicitly 
 
 * The commands *fubl* and *cubl* have been removed. The alternative for these commands are the commands *bfuseblend* and *bcutblend* respectively.
 * The command *ksection* has been removed. The alternative for this command is the command *bsection*.
+
+@subsection upgrade_720_Change_Of_FaceFace_Intersection Change of Face/Face intersection in Boolean operations
+
+* Previously, the intersection tolerance for all section curves between pair of faces has been calculated as the maximal tolerance among all curves.
+  Now, each curve has its own valid tolerance calculated as the maximal deviation of the 3D curve from its 2D curves or surfaces in case there are no 2D curves.
+* The methods *IntTools_FaceFace::TolReached3d()*, *IntTools_FaceFace::TolReal()* and *IntTools_FaceFace::TolReached2d()* have been removed.
+* Intersection tolerances of the curve can be obtained from the curve itself:
+  - *IntTools_Curve::Tolerance()* - returns the valid tolerance for the curve;
+  - *IntTools_Curve::TangentialTolerance()* - returns the tangential tolerance, which reflects the size of the common between faces.
+* 2d tolerance (*IntTools_FaceFace::TolReached2d()*) has been completely removed from the algorithm as unused.

@@ -20,7 +20,6 @@ IntTools_Context.cxx
 IntTools_Context.hxx
 IntTools_Curve.cxx
 IntTools_Curve.hxx
-IntTools_Curve.lxx
 IntTools_CurveRangeLocalizeData.cxx
 IntTools_CurveRangeLocalizeData.hxx
 IntTools_CurveRangeLocalizeData.lxx

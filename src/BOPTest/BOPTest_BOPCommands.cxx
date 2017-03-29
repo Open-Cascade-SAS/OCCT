@@ -104,7 +104,8 @@ static Standard_Integer mkvolume   (Draw_Interpretor&, Standard_Integer, const c
   theCommands.Add("bsection", "use bsection r s1 s2 [-n2d/-n2d1/-n2d2] [-na]", 
                                                       __FILE__, bsection, g);
   //
-  theCommands.Add("bopcurves", "use bopcurves F1 F2 [-2d/-2d1/-2d2] [-p u1 v1 u2 v2]",
+  theCommands.Add("bopcurves", "use bopcurves F1 F2 [-2d/-2d1/-2d2] "
+                               "[-p u1 v1 u2 v2 (to add start points] [-v (for extended output)]",
                                                       __FILE__, bopcurves, g);
   theCommands.Add("mkvolume", "make solids from set of shapes.\nmkvolume r b1 b2 ... [-c] [-ni] [-ai]",
                   __FILE__, mkvolume , g);
@@ -544,7 +545,8 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
                             const char** a)
 {
   if (n<3) {
-    di << " use bopcurves F1 F2 [-2d/-2d1/-2d2]\n";
+    di << "Usage: bopcurves F1 F2 [-2d/-2d1/-2d2] "
+          "[-p u1 v1 u2 v2 (to add start points] [-v (for extended output)]\n";
     return 1;
   }
   //
@@ -553,7 +555,7 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
   TopAbs_ShapeEnum aType;
   //
   if (S1.IsNull() || S2.IsNull()) {
-    di << " Null shapes is not allowed \n";
+    di << " Null shapes are not allowed \n";
     return 1;
   }
   //
@@ -573,7 +575,7 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
   //
   Standard_Boolean aToApproxC3d, aToApproxC2dOnS1, aToApproxC2dOnS2, anIsDone;
   Standard_Integer aNbCurves, aNbPoints;
-  Standard_Real anAppTol, aTolR;
+  Standard_Real anAppTol;
   IntSurf_ListOfPntOn2S aListOfPnts;
   TCollection_AsciiString aNm("c_"), aNp("p_");
   //
@@ -583,6 +585,7 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
   aToApproxC2dOnS2 = Standard_False;
 
   //
+  Standard_Boolean bExtOut = Standard_False;
   for(Standard_Integer i = 3; i < n; i++)
   {
     if (!strcasecmp(a[i],"-2d")) {
@@ -605,13 +608,17 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
       aPt.SetValue(aU1, aV1, aU2, aV2);
       aListOfPnts.Append(aPt);
     }
+    else if (!strcasecmp(a[i],"-v")) {
+      bExtOut = Standard_True;
+    }
     else {
-      di << "Wrong key. To build 2d curves use: bopcurves F1 F2 [-2d/-2d1/-2d2] [-p u1 v1 u2 v2]\n";
+      di << "Wrong key.\n";
+      di << "To build 2d curves use one of the following keys: -2d/-2d1/-2d2\n";
+      di << "To add start points use the following key: -p u1 v1 u2 v2\n";
+      di << "For extended output use the following key: -v\n";
       return 1;
     }
-
   }
-
   //
   IntTools_FaceFace aFF;
   //
@@ -625,7 +632,7 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
   //
   anIsDone=aFF.IsDone();
   if (!anIsDone) {
-    di << "Error: anIsDone=" << (Standard_Integer) anIsDone << "\n";
+    di << "Error: Intersection failed\n";
     return 0;
   }
   //
@@ -641,11 +648,20 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
     return 0;
   }
   //
-  aTolR=aFF.TolReached3d();
-  di << "Tolerance Reached=" << aTolR << "\n";
-  //
   // curves
   if (aNbCurves) {
+    Standard_Real aTolR = 0.;
+    if (!bExtOut) {
+      // find maximal tolerance
+      for (Standard_Integer i = 1; i <= aNbCurves; i++) {
+        const IntTools_Curve& anIC = aSCs(i);
+        if (aTolR < anIC.Tolerance()) {
+          aTolR = anIC.Tolerance();
+        }
+      }
+      di << "Tolerance Reached=" << aTolR << "\n";
+    }
+    //
     di << aNbCurves << " curve(s) found.\n";
     //
     for (Standard_Integer i=1; i<=aNbCurves; i++) {
@@ -695,8 +711,16 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
         }
         di << ") ";
       }
+      //
+      if (bExtOut) {
+        di << "\nTolerance: " << anIC.Tolerance() << "\n";
+        di << "Tangential tolerance: " << anIC.TangentialTolerance() << "\n";
+        di << "\n";
+      }
     }
-    di << "\n";
+    if (!bExtOut) {
+      di << "\n";
+    }
   }
   //
   // points

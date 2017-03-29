@@ -22,7 +22,8 @@
 :
   myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
   myPaveBlocks(myAllocator),
-  myTechnoVertices(myAllocator)
+  myTechnoVertices(myAllocator),
+  myTolerance(0.)
 {
 }
 //=======================================================================
@@ -33,7 +34,8 @@
 :
   myAllocator(theAllocator),
   myPaveBlocks(myAllocator),
-  myTechnoVertices(myAllocator)
+  myTechnoVertices(myAllocator),
+  myTolerance(0.)
 {
 }
 //=======================================================================

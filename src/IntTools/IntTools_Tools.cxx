@@ -252,10 +252,9 @@ static
     aC2D2F=new Geom2d_TrimmedCurve (aC2D2, aF, aMid);
     aC2D2L=new Geom2d_TrimmedCurve (aC2D2, aMid, aL);
   }
-  // 
-  
-  IntTools_Curve aIC1(aC3DNewF, aC2D1F, aC2D2F);
-  IntTools_Curve aIC2(aC3DNewL, aC2D1L, aC2D2L);
+  //
+  IntTools_Curve aIC1(aC3DNewF, aC2D1F, aC2D2F, IC.Tolerance(), IC.TangentialTolerance());
+  IntTools_Curve aIC2(aC3DNewL, aC2D1L, aC2D2L, IC.Tolerance(), IC.TangentialTolerance());
   //
   aCvs.Append(aIC1);
   //
@@ -587,27 +586,32 @@ void ParabolaTolerance(const Handle(Geom_Curve)& aC3D,
 //function : CheckCurve
 //purpose  : 
 //=======================================================================
-Standard_Boolean IntTools_Tools::CheckCurve(const Handle (Geom_Curve)& aC3D,
-                                            const Standard_Real aTolR3D,
-                                            Bnd_Box& aBox)
+Standard_Boolean IntTools_Tools::CheckCurve(const IntTools_Curve& theCurve,
+                                            Bnd_Box& theBox)
 {
-  Standard_Boolean bRet;  
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax, dX, dY, dZ;
-  Standard_Real dS, aTol;
-  GeomAdaptor_Curve aGAC;
+  const Handle(Geom_Curve)& aC3D = theCurve.Curve();
+  Standard_Boolean bValid = !aC3D.IsNull();
+  if (!bValid) {
+    return bValid;
+  }
   //
-  aGAC.Load(aC3D);
-  BndLib_Add3dCurve::Add(aGAC, aTolR3D, aBox);
-  // 910/B1
-  aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-  dX=aXmax-aXmin;
-  dY=aYmax-aYmin;
-  dZ=aZmax-aZmin;
-  dS=1.e-12;
-  aTol=2.*aTolR3D+dS;
-  bRet=(dX>aTol ||  dY>aTol || dZ>aTol);
+  // Build bounding box for the curve
+  BndLib_Add3dCurve::Add(GeomAdaptor_Curve(aC3D),
+                         Max(theCurve.Tolerance(), theCurve.TangentialTolerance()),
+                         theBox);
   //
-  return bRet;
+  // Estimate the bounding box of the curve comparing it with the
+  // minimal length for the curve from which the valid edge can be built -
+  // 3*Precision::Confusion():
+  // - 2 vertices with the Precision::Confusion() tolerance;
+  // - plus Precision::Confusion() as the minimal distance between vertices.
+  Standard_Real aTolCmp = 3*Precision::Confusion();
+  //
+  // Check the size of the box using the Bnd_Box::IsThin() method
+  // which does not use the gap of the box.
+  bValid = !theBox.IsThin(aTolCmp);
+  //
+  return bValid;
 }
 //=======================================================================
 //function : IsOnPave
