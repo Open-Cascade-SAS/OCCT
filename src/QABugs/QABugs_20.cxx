@@ -2251,7 +2251,59 @@ static Standard_Integer OCC28389(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
+#include <TColgp_HArray1OfPnt2d.hxx>
+#include <TColgp_Array1OfVec2d.hxx>
+#include <TColStd_HArray1OfBoolean.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2dAPI_Interpolate.hxx>
+#include <GeomAPI.hxx>
+#include <BRepBuilderAPI_MakeEdge2d.hxx>
 
+static Standard_Integer OCC28594(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc != 3)
+  {
+    di << "Usage :" << argv[0] << " curve_with_scale curve_without_scale\n";
+    return 0;
+  }
+  Handle(TColgp_HArray1OfPnt2d) points_2d = new TColgp_HArray1OfPnt2d(1, 6);
+  (*points_2d)(1) = gp_Pnt2d(-30.4, 8);
+  (*points_2d)(2) = gp_Pnt2d(-16.689912, 17.498217);
+  (*points_2d)(3) = gp_Pnt2d(-23.803064, 24.748543);
+  (*points_2d)(4) = gp_Pnt2d(-16.907466, 32.919615);
+  (*points_2d)(5) = gp_Pnt2d(-8.543829, 26.549421);
+  (*points_2d)(6) = gp_Pnt2d(0, 39.200000);
+
+  TColgp_Array1OfVec2d tangent_2d(1, 6);
+  (tangent_2d)(1) = gp_Vec2d(0.3, 0.4);
+  (tangent_2d)(2) = gp_Vec2d(0, 0);
+  (tangent_2d)(3) = gp_Vec2d(0, 0);
+  (tangent_2d)(4) = gp_Vec2d(0, 0);
+  (tangent_2d)(5) = gp_Vec2d(0, 0);
+  (tangent_2d)(6) = gp_Vec2d(1, 0);
+
+  Handle(TColStd_HArray1OfBoolean) tangent_flags = new TColStd_HArray1OfBoolean(1, 6);
+  (*tangent_flags)(1) = true;
+  (*tangent_flags)(2) = false;
+  (*tangent_flags)(3) = false;
+  (*tangent_flags)(4) = false;
+  (*tangent_flags)(5) = false;
+  (*tangent_flags)(6) = true;
+
+  Geom2dAPI_Interpolate interp_2d_with_scale(points_2d, Standard_False, Precision::Confusion());
+  interp_2d_with_scale.Load(tangent_2d, tangent_flags);
+  interp_2d_with_scale.Perform();
+  Handle(Geom2d_BSplineCurve) curve_2d_with_scale = interp_2d_with_scale.Curve();
+
+  Geom2dAPI_Interpolate interp_2d_without_scale(points_2d, Standard_False, Precision::Confusion());
+  interp_2d_without_scale.Load(tangent_2d, tangent_flags, Standard_False);
+  interp_2d_without_scale.Perform();
+  Handle(Geom2d_BSplineCurve) curve_2d_without_scale = interp_2d_without_scale.Curve();
+
+  DrawTrSurf::Set(argv[1], curve_2d_with_scale);
+  DrawTrSurf::Set(argv[2], curve_2d_without_scale);
+  return 0;
+}
 
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
@@ -2273,6 +2325,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC27552", "OCC27552", __FILE__, OCC27552, group); 
   theCommands.Add("OCC27875", "OCC27875 curve", __FILE__, OCC27875, group);
   theCommands.Add("OCC28389", "OCC28389", __FILE__, OCC28389, group);
+  theCommands.Add("OCC28594", "OCC28594", __FILE__, OCC28594, group);
 
   return;
 }

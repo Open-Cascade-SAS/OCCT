@@ -405,7 +405,8 @@ myTangentRequest(Standard_False)
 
 void Geom2dAPI_Interpolate::Load( 
    const TColgp_Array1OfVec2d&              Tangents,
-   const Handle(TColStd_HArray1OfBoolean)& TangentFlagsPtr) 
+   const Handle(TColStd_HArray1OfBoolean)& TangentFlagsPtr,
+   const Standard_Boolean Scale)
 
 {
  Standard_Boolean result ;
@@ -426,10 +427,12 @@ void Geom2dAPI_Interpolate::Load(
     for (ii = Tangents.Lower() ; ii <= Tangents.Upper() ; ii++ ) {
       myTangents->SetValue(ii,Tangents.Value(ii)) ;
     }
-    ScaleTangents(myPoints->Array1(),
-		  myTangents->ChangeArray1(),
-		  TangentFlagsPtr->Array1(),
-		  myParameters->Array1()) ; 
+    if (Scale) {
+      ScaleTangents(myPoints->Array1(),
+		    myTangents->ChangeArray1(),
+		    TangentFlagsPtr->Array1(),
+		    myParameters->Array1()) ;
+    } 
   }
  else {
    throw Standard_ConstructionError();
@@ -444,7 +447,8 @@ void Geom2dAPI_Interpolate::Load(
 //=======================================================================
 
 void Geom2dAPI_Interpolate::Load(const gp_Vec2d& InitialTangent,
-			       const gp_Vec2d& FinalTangent) 
+			       const gp_Vec2d& FinalTangent,
+             const Standard_Boolean Scale)
 {
   Standard_Boolean result ;
   myTangentRequest = Standard_True ;
@@ -459,10 +463,12 @@ void Geom2dAPI_Interpolate::Load(const gp_Vec2d& InitialTangent,
   if (!result) {
     throw Standard_ConstructionError();
     }
-  ScaleTangents(myPoints->Array1(),
-		myTangents->ChangeArray1(),
-		myTangentFlags->Array1(),
-		myParameters->Array1()) ;
+  if (Scale) {
+    ScaleTangents(myPoints->Array1(),
+		  myTangents->ChangeArray1(),
+		  myTangentFlags->Array1(),
+		  myParameters->Array1()) ;
+  }
  
 }
 //=======================================================================

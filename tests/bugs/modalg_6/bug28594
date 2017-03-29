@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC28594"
+puts "========"
+puts ""
+####################################################################
+# Geom2dAPI_Interpolate generated curve is not the same as proe
+####################################################################
+
+pload QAcommands
+
+set anImageWithScale ${imagedir}/${test_image}_c1.png
+set anImageWithoutScale ${imagedir}/${test_image}_c2.png
+
+OCC28594 c1 c2
+smallview -2D-
+donly c1
+2dfit
+checkview -screenshot -2d -path ${anImageWithScale}
+donly c2
+checkview -screenshot -2d -path ${anImageWithoutScale}
+
+set aDiffImageResult [diffimage $anImageWithScale $anImageWithoutScale 0.1 0 0]
+if {$aDiffImageResult == 0} {
+  puts "Error: curves are equal"
+}

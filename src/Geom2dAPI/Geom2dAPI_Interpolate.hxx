@@ -56,14 +56,19 @@ public:
   //! It is also used to check if the tangent vector is not too small.
   //! There should be at least 2 points
   //! if PeriodicFlag is True then the curve will be periodic.
-  Standard_EXPORT Geom2dAPI_Interpolate(const Handle(TColgp_HArray1OfPnt2d)& Points, const Standard_Boolean PeriodicFlag, const Standard_Real Tolerance);
+  Standard_EXPORT Geom2dAPI_Interpolate(const Handle(TColgp_HArray1OfPnt2d)& Points, 
+                                        const Standard_Boolean PeriodicFlag, 
+                                        const Standard_Real Tolerance);
   
   //! if PeriodicFlag is True then the curve will be periodic
   //! Warning:
   //! There should be as many parameters as there are points
   //! except if PeriodicFlag is True : then there should be one more
   //! parameter to close the curve
-  Standard_EXPORT Geom2dAPI_Interpolate(const Handle(TColgp_HArray1OfPnt2d)& Points, const Handle(TColStd_HArray1OfReal)& Parameters, const Standard_Boolean PeriodicFlag, const Standard_Real Tolerance);
+  Standard_EXPORT Geom2dAPI_Interpolate(const Handle(TColgp_HArray1OfPnt2d)& Points, 
+                                        const Handle(TColStd_HArray1OfReal)& Parameters, 
+                                        const Standard_Boolean PeriodicFlag, 
+                                        const Standard_Real Tolerance);
   
   //! Assigns this constrained BSpline curve to be
   //! tangential to vectors InitialTangent and FinalTangent
@@ -71,7 +76,11 @@ public:
   //! the first and last points of the table of
   //! points through which the curve passes, as
   //! defined at the time of initialization).
-  Standard_EXPORT void Load (const gp_Vec2d& InitialTangent, const gp_Vec2d& FinalTangent);
+  //! <Scale> - boolean flag defining whether tangent vectors are to
+  //! be scaled according to derivatives of lagrange interpolation.
+  Standard_EXPORT void Load(const gp_Vec2d& InitialTangent, 
+                            const gp_Vec2d& FinalTangent, 
+                            const Standard_Boolean Scale = Standard_True);
   
   //! Assigns this constrained BSpline curve to be
   //! tangential to vectors defined in the table Tangents,
@@ -82,7 +91,11 @@ public:
   //! the flag given in the parallel table
   //! TangentFlags is true: only these vectors
   //! are set as tangency constraints.
-  Standard_EXPORT void Load (const TColgp_Array1OfVec2d& Tangents, const Handle(TColStd_HArray1OfBoolean)& TangentFlags);
+  //! <Scale> - boolean flag defining whether tangent vectors are to
+  //! be scaled according to derivatives of lagrange interpolation.
+  Standard_EXPORT void Load(const TColgp_Array1OfVec2d& Tangents, 
+                            const Handle(TColStd_HArray1OfBoolean)& TangentFlags, 
+                            const Standard_Boolean Scale = Standard_True);
   
   //! Clears all tangency constraints on this
   //! constrained BSpline curve (as initialized by the function Load).
