@@ -1852,8 +1852,6 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
 //=======================================================================
 void ShapeUpgrade_UnifySameDomain::UnifyEdges()
 {
-  Standard_Real Tol = Precision::Confusion();
-  
   //Handle(ShapeBuild_ReShape) myContext = new ShapeBuild_ReShape;
   Standard_Real myTolerance = Precision::Confusion();
   TopoDS_Shape aResult = myContext->Apply(myShape);
@@ -1896,7 +1894,7 @@ void ShapeUpgrade_UnifySameDomain::UnifyEdges()
       SeqEdges.Append(expE.Current());
     SharedVert.Clear();
     CheckSharedVertices(SeqEdges, aMapEdgesVertex, myKeepShapes, SharedVert); 
-    MergeSeq(SeqEdges, Tol, myConcatBSplines, myContext, 
+    MergeSeq(SeqEdges, myAngTol, myConcatBSplines, myContext,
              myOldToGeneratedShapes, SharedVert, 
              myRemovedShapes, NewEdges2OldEdges);
   }
@@ -1958,7 +1956,7 @@ void ShapeUpgrade_UnifySameDomain::UnifyEdges()
       CheckSharedVertices(SeqEdges, aMapEdgesVertex, myKeepShapes, SharedVert);
       //if (!SharedVert.IsEmpty()) 
       //  continue;
-      if ( MergeSeq(SeqEdges, Tol, myConcatBSplines, myContext, 
+      if ( MergeSeq(SeqEdges, myAngTol, myConcatBSplines, myContext, 
                     myOldToGeneratedShapes, SharedVert, 
                     myRemovedShapes, NewEdges2OldEdges))
       {
@@ -1990,7 +1988,7 @@ void ShapeUpgrade_UnifySameDomain::UnifyEdges()
     {
       SharedVert.Clear();
       CheckSharedVertices(aNonSharedEdges, aMapEdgesVertex, myKeepShapes, SharedVert);
-      if ( MergeSeq(aNonSharedEdges, Tol, myConcatBSplines, myContext, 
+      if ( MergeSeq(aNonSharedEdges, myAngTol, myConcatBSplines, myContext, 
                     myOldToGeneratedShapes, SharedVert, 
                     myRemovedShapes, NewEdges2OldEdges))
       {

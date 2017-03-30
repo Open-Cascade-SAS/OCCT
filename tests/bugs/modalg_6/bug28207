@@ -1,0 +1,20 @@
+puts "========"
+puts "OCC28207"
+puts "========"
+puts ""
+#########################################################
+##  Unexpected result of the unify same domain algorithm
+#########################################################
+
+restore [locate_data_file bug28207_face.brep] s1
+
+unifysamedom result1 s1
+checknbshapes result1 -face 1 -wire 1 -edge 984
+
+unifysamedom result2 s1 -a 0.001
+checknbshapes result2 -face 1 -wire 1 -edge 223
+
+unifysamedom result s1 -a 1.0
+checknbshapes result -face 1 -wire 1 -edge 4
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
