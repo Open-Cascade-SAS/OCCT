@@ -29,7 +29,7 @@ source [file join [file dirname [info script]] occaux.tcl]
 
 # Prints help message
 proc OCCDoc_PrintHelpMessage {} {
-    puts "\nUsage: gendoc \[-h\] {-refman|-overview} \[-html|-pdf|-chm\] \[-m=<list of modules>|-ug=<list of docs>\] \[-v\] \[-s=<search_mode>\] \[-mathjax=<path>\]"
+    puts "\nUsage: gendoc \[-h\] {-refman|-overview} \[-html|-pdf|-chm\] \[-m=<list of modules>|-ug=<list of docs>\] \[-v\] \[-s=<search_mode>\] \[-mathjax=<path>\] \[-update_images_size\]"
     puts ""
     puts "Options are:"
     puts ""
@@ -56,7 +56,8 @@ proc OCCDoc_PrintHelpMessage {} {
     puts "  -s=<search_mode>   : Specifies the Search mode of HTML documents"
     puts "                       Can be: none | local | server | external"
     puts "  -h                 : Prints this help message"
-    puts "  -v                 : Enables more verbose output"    
+    puts "  -v                 : Enables more verbose output"
+    puts "  -update_images_size: Updates width of images in *.md files during pdf generation for @figure alias. It takes actual size of image."
 }
 
 # A command for User Documentation compilation
@@ -69,6 +70,7 @@ proc gendoc {args} {
   set MODULES                   {}
   set DOCLABEL                  ""
   set VERB_MODE                 "NO"
+  set UPDATE_IMAGES_SIZE        "NO"
   set SEARCH_MODE               "none"
   set MATHJAX_LOCATION          "https://cdn.mathjax.org/mathjax/latest"
   set mathjax_js_name           "MathJax.js"
@@ -171,7 +173,7 @@ proc gendoc {args} {
       if { $DOCTYPE_COMBO_FLAG != 1 } { 
         set DOC_TYPE "REFMAN"
         set DOCTYPE_COMBO_FLAG 1
-        if { [info exists env(PRODROOT)] && [file exists $::env(PRODROOT)/src/VAS/Products.tcl] } {
+        if { [file exists [OCCDoc_GetProdRootDir]/src/VAS/Products.tcl] } {
           set GENERATE_PRODUCTS_REFMAN "YES"
         }
       } else {
@@ -197,6 +199,8 @@ proc gendoc {args} {
       
     } elseif {$arg_n == "v"} {
       set VERB_MODE "YES"
+    } elseif {$arg_n == "update_images_size"} {
+      set UPDATE_IMAGES_SIZE "YES"
     } elseif {$arg_n == "ug"} {
       if { ([ lsearch $args_names "refman" ]   != -1) } {
         continue
@@ -312,7 +316,23 @@ proc gendoc {args} {
   
   # Start main activities
   if { $GEN_MODE != "PDF_ONLY" } {
-    OCCDoc_Main $DOC_TYPE $DOCFILES $MODULES $GEN_MODE $VERB_MODE $SEARCH_MODE $MATHJAX_LOCATION $GENERATE_PRODUCTS_REFMAN $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
+    if { [OCCDoc_GetProdRootDir] == ""} {
+      OCCDoc_Main $DOC_TYPE $DOCFILES $MODULES $GEN_MODE $VERB_MODE $UPDATE_IMAGES_SIZE $SEARCH_MODE $MATHJAX_LOCATION $GENERATE_PRODUCTS_REFMAN $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
+    } else {
+      if { $DOC_TYPE == "REFMAN" } {
+        if { $MODULES != "" } {
+          foreach module $MODULES {
+            OCCDoc_Main $DOC_TYPE $DOCFILES $module $GEN_MODE $VERB_MODE $UPDATE_IMAGES_SIZE $SEARCH_MODE $MATHJAX_LOCATION $GENERATE_PRODUCTS_REFMAN $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
+          }
+        } else {
+          OCCDoc_Main $DOC_TYPE $DOCFILES $MODULES $GEN_MODE $VERB_MODE $UPDATE_IMAGES_SIZE $SEARCH_MODE $MATHJAX_LOCATION $GENERATE_PRODUCTS_REFMAN $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
+        }
+      } else {
+        foreach md $DOCFILES {
+          OCCDoc_Main $DOC_TYPE $md $MODULES $GEN_MODE $VERB_MODE $UPDATE_IMAGES_SIZE $SEARCH_MODE $MATHJAX_LOCATION $GENERATE_PRODUCTS_REFMAN $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
+        }
+      }
+    }
   } else {
     puts "Generating OCCT User Guides in PDF format...\n"
     foreach pdf $DOCFILES {
@@ -320,25 +340,19 @@ proc gendoc {args} {
       puts "Info: Processing file $pdf\n"
 
       # Some values are hardcoded because they are related only to PDF generation
-      OCCDoc_Main "OVERVIEW" [list $pdf] {} "PDF_ONLY" $VERB_MODE "none" $MATHJAX_LOCATION "NO" $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
+      OCCDoc_Main "OVERVIEW" [list $pdf] {} "PDF_ONLY" $VERB_MODE $UPDATE_IMAGES_SIZE "none" $MATHJAX_LOCATION "NO" $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
     }
     puts "[clock format [clock seconds] -format {%Y-%m-%d %H:%M}] Generation completed."
-    puts "\nPDF files are generated in \n[file normalize [OCCDoc_GetRootDir]/doc/pdf]"
   }
 }
 
 # Main procedure for documents compilation
-proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode searchMode mathjaxLocation generateProductsRefman DOXYGEN_PATH GRAPHVIZ_PATH INKSCAPE_PATH HHC_PATH} {
+proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode updateImagesSize searchMode mathjaxLocation generateProductsRefman DOXYGEN_PATH GRAPHVIZ_PATH INKSCAPE_PATH HHC_PATH} {
 
   global available_docfiles
   global available_pdf
 
-  set PRODPATH   ""
-  if { [string compare -nocase $generateProductsRefman "YES"] == 0 } {
-    set PRODPATH "$::env(PRODROOT)"
-  }
-
-  set ROOTDIR    [OCCDoc_GetRootDir $PRODPATH]
+  set ROOTDIR    [OCCDoc_GetRootDir [OCCDoc_GetProdRootDir]]
   set INDIR      [OCCDoc_GetDoxDir]
   set OUTDIR     $ROOTDIR/doc
   set PDFDIR     $OUTDIR/pdf
@@ -348,7 +362,29 @@ proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode s
   set HTMLDIR    $OUTDIR/overview/html
   set LATEXDIR   $OUTDIR/overview/latex
   set DOXYFILE   $OUTDIR/OCCT.cfg
- 
+
+  # OUTDIR for products documentation should be separate directories for each components
+  if { [OCCDoc_GetProdRootDir] != ""} {
+    if { $docType == "REFMAN" } {
+      if { "$modules" != "" } {
+        source "[OCCDoc_GetSourceDir [OCCDoc_GetProdRootDir]]/VAS/${modules}.tcl"
+        set doc_component_name [${modules}:documentation_name]
+        set OUTDIR     $OUTDIR/$doc_component_name
+      }
+    } else {
+      if {[regexp {([^/]+)/([^/]+)/([^/]+)} $docfiles dump doc_type doc_component doc_name]} {
+        set PDFNAME [file rootname $doc_name]
+        set OUTDIR     $OUTDIR/$doc_component
+      } else {
+        error "Could not parse input path to *.md file: \"${docfiles}\""
+      }
+    }
+    set HTMLDIR    $OUTDIR/html
+    set LATEXDIR   $OUTDIR/latex
+    set DOXYFILE   $OUTDIR/OCCT.cfg
+    set TAGFILEDIR $OUTDIR/refman
+  }
+
   # Create or cleanup the output folders
   if { [string compare -nocase $generateProductsRefman "YES"] != 0 } {
     if { ![file exists $OUTDIR] } {
@@ -357,19 +393,24 @@ proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode s
     if { ![file exists $HTMLDIR] } {
       file mkdir $HTMLDIR
     }
-    if { ![file exists $PDFDIR] } {
-      file mkdir $PDFDIR
+    if { [OCCDoc_GetProdRootDir] == ""} {
+      if { ![file exists $PDFDIR] } {
+        file mkdir $PDFDIR
+      }
+      if { ![file exists $UGDIR] } {
+        file mkdir $UGDIR
+      }
+      if { ![file exists $DGDIR] } {
+        file mkdir $DGDIR
+      }
     }
-    if { ![file exists $UGDIR] } {
-      file mkdir $UGDIR
+
+    if { $generatorMode == "PDF_ONLY" } {
+      if { [file exists $LATEXDIR] } {
+        file delete -force $LATEXDIR
+      }
+      file mkdir $LATEXDIR
     }
-    if { ![file exists $DGDIR] } {
-      file mkdir $DGDIR
-    }
-    if { [file exists $LATEXDIR] } {
-      file delete -force $LATEXDIR
-    }
-    file mkdir $LATEXDIR
   }
   if { $docType == "REFMAN" } {
     if { ![file exists $TAGFILEDIR] } {
@@ -397,7 +438,11 @@ proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode s
       set DOCDIR "$OUTDIR/refman"
       puts "\nGenerating Open CASCADE Reference Manual\n"
     } elseif { $docType == "OVERVIEW" } {
-      set DOCDIR "$OUTDIR/overview"
+      if { [OCCDoc_GetProdRootDir] == ""} {
+        set DOCDIR "$OUTDIR/overview"
+      } else {
+        set DOCDIR "$OUTDIR"
+      }
       set FORMAT ""
       if { ($generatorMode == "HTML_ONLY") || ($generatorMode == "CHM_ONLY") } {
         if { $generatorMode == "HTML_ONLY" } { 
@@ -416,8 +461,16 @@ proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode s
   # Generate Doxyfile
   puts "[clock format [clock seconds] -format {%Y-%m-%d %H:%M}] Generating Doxyfile..."
 
-  if { [OCCDoc_MakeDoxyfile $docType $DOCDIR $TAGFILEDIR $DOXYFILE $generatorMode $docfiles $modules $verboseMode $searchMode $HHC_PATH $mathjax_relative_location $GRAPHVIZ_PATH $PRODPATH] == -1 } {
+  if { [OCCDoc_MakeDoxyfile $docType $DOCDIR $TAGFILEDIR $DOXYFILE $generatorMode $docfiles $modules $verboseMode $searchMode $HHC_PATH $mathjax_relative_location $GRAPHVIZ_PATH [OCCDoc_GetProdRootDir]] == -1 } {
     return -1
+  }
+
+  # update image sizes in *.md files if necessary
+  if { ("$::tcl_platform(platform)" == "windows") &&
+       ($updateImagesSize == "YES") } {
+    if { [OCCDoc_UpdateImagesSize $docfiles [OCCDoc_GetDoxDir [OCCDoc_GetProdRootDir]] $verboseMode] == -1 } {
+      return -1
+    }
   }
 
   # Run doxygen tool
@@ -564,21 +617,29 @@ proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode s
 
         set destFolder $PDFDIR
         set parsed_string [split $TEX "_"]
-        if { [lsearch $parsed_string "tutorial"] != -1 } {
-          set TEX [string map [list occt__ occt_] $TEX]
-          set destFolder $PDFDIR
-        } elseif { [lsearch $parsed_string "user"] != -1 } {
-          set TEX [string map [list user_guides__ ""] $TEX]
-          set destFolder $UGDIR
-        } elseif { [lsearch $parsed_string "dev"]  != -1 } {
-          set TEX [string map [list dev_guides__ ""] $TEX]
-          set destFolder $DGDIR
+        if { [OCCDoc_GetProdRootDir] == ""} {
+          if { [lsearch $parsed_string "tutorial"] != -1 } {
+            set TEX [string map [list occt__ occt_] $TEX]
+            set destFolder $PDFDIR
+          } elseif { [lsearch $parsed_string "user"] != -1 } {
+            set TEX [string map [list user_guides__ ""] $TEX]
+            set destFolder $UGDIR
+          } elseif { [lsearch $parsed_string "dev"]  != -1 } {
+            set TEX [string map [list dev_guides__ ""] $TEX]
+            set destFolder $DGDIR
+          }
+        } else {
+          set destFolder $OUTDIR
+          set TEX "$PDFNAME"
         }
         file rename -force $LATEXDIR/refman.pdf "$destFolder/$TEX.pdf"
-
       }
     } elseif { $generatorMode == "CHM_ONLY" } {
-      file rename  $OUTDIR/overview.chm $OUTDIR/occt_overview.chm
+      if { [OCCDoc_GetProdRootDir] == ""} {
+        file rename $OUTDIR/overview.chm $OUTDIR/occt_overview.chm
+      } else {
+        file rename -force $ROOTDIR/doc/overview.chm $OUTDIR/occt_overview.chm
+      }
     }
     cd $INDIR
 
@@ -597,14 +658,17 @@ proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode s
   foreach file $deleteList {
     file delete $file
   }
+
+  puts "\nPDF files are generated in \n[file normalize $OUTDIR]"
+
   return 0
 }
 
 # Generates Doxygen configuration file for Overview documentation
 proc OCCDoc_MakeDoxyfile {docType outDir tagFileDir {doxyFileName} {generatorMode ""} {DocFilesList {}} {ModulesList {}} verboseMode searchMode hhcPath mathjaxLocation graphvizPath productsPath} {
+  set inputDir      [OCCDoc_GetDoxDir [OCCDoc_GetProdRootDir]]
 
-  set inputDir      [OCCDoc_GetDoxDir]
-  set TEMPLATES_DIR $inputDir/resources
+  set TEMPLATES_DIR [OCCDoc_GetDoxDir]/resources
   set occt_version  [OCCDoc_DetectCasVersion]
 
   # Delete existent doxyfile
@@ -751,10 +815,10 @@ proc OCCDoc_MakeDoxyfile {docType outDir tagFileDir {doxyFileName} {generatorMod
     # Add common options for generation of Overview and User Guides
     puts $doxyFile "PROJECT_NUMBER         = $occt_version"
     puts $doxyFile "OUTPUT_DIRECTORY       = $outDir/."
-    puts $doxyFile "PROJECT_LOGO           = $inputDir/resources/occ_logo.png"
+    puts $doxyFile "PROJECT_LOGO           = [OCCDoc_GetDoxDir]/resources/occ_logo.png"
 
     set PARAM_INPUT "INPUT                 ="
-    set PARAM_IMAGEPATH "IMAGE_PATH        = $inputDir/resources/ "
+    set PARAM_IMAGEPATH "IMAGE_PATH        = [OCCDoc_GetDoxDir]/resources/ "
     foreach docFile $DocFilesList {
       set NEW_IMG_PATH "$inputDir/$docFile"
       if { [string compare $NEW_IMG_PATH [OCCDoc_GetRootDir $productsPath]] != 0 } {

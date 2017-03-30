@@ -112,13 +112,11 @@ FreeType is required for text display in a 3D viewer. You can download its sourc
 
 5. If you build FreeType for a 64 bit platform, select in the main menu **Build - Configuration Manager**  and add *x64* platform to the solution configuration by copying the settings from Win32 platform: 
 
-   @image html /dev_guides/building/3rdparty/images/3rdparty_image001.png 
-   @image latex /dev_guides/building/3rdparty/images/3rdparty_image001.png 
+   @figure{/dev_guides/building/3rdparty/images/3rdparty_image001.png}
 
    Update the value of the Output File for  x64 configuration: 
 
-   @image html /dev_guides/building/3rdparty/images/3rdparty_image003.png 
-   @image latex /dev_guides/building/3rdparty/images/3rdparty_image003.png 
+   @figure{/dev_guides/building/3rdparty/images/3rdparty_image003.png}
 
    Build the *freetype* project. 
 
@@ -207,24 +205,20 @@ You can download its sources from  http://geuz.org/gl2ps/src/.
 
    * Press  **Configure** button. 
    
-     @image html /dev_guides/building/3rdparty/images/3rdparty_image004.png 
-     @image latex /dev_guides/building/3rdparty/images/3rdparty_image004.png 
+     @figure{/dev_guides/building/3rdparty/images/3rdparty_image004.png}
 
    * Select the generator (the compiler  and the target platform -- 32 or 64 bit) in the pop-up window. 
    
-     @image html /dev_guides/building/3rdparty/images/3rdparty_image005.png 
-     @image latex /dev_guides/building/3rdparty/images/3rdparty_image005.png 
+     @figure{/dev_guides/building/3rdparty/images/3rdparty_image005.png}
 
    * Press **Finish** button to  return to the main CMake window. 
      Expand the ENABLE group and uncheck  ENABLE_PNG and ENABLE_ZLIB check boxes. 
 	 
-     @image html /dev_guides/building/3rdparty/images/3rdparty_image006.png 
-     @image latex /dev_guides/building/3rdparty/images/3rdparty_image006.png 
+     @figure{/dev_guides/building/3rdparty/images/3rdparty_image006.png}
 
    * Expand the CMAKE group and define *CMAKE_INSTALL_PREFIX* which is the path where you want to install the build results, for example, *c:\\occ3rdparty\\gl2ps-1.3.5*. 
    
-     @image html /dev_guides/building/3rdparty/images/3rdparty_image007.png 
-     @image latex /dev_guides/building/3rdparty/images/3rdparty_image007.png 
+     @figure{/dev_guides/building/3rdparty/images/3rdparty_image007.png}
 
    * Press **Configure** button again, then press **Generate** button to generate Visual Studio projects. After completion, close CMake application. 
 

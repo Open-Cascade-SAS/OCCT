@@ -32,12 +32,12 @@ proc OCCDoc_ParseArguments {arguments} {
   array set args_values {}
 
   foreach arg $arguments {
-    if {[regexp {^(-)[a-z]+$} $arg] == 1} {
+    if {[regexp {^(-)[a-z_]+$} $arg] == 1} {
       set name [string range $arg 1 [string length $arg]-1]
       lappend args_names $name
       set args_values($name) "NULL"
       continue
-    } elseif {[regexp {^(-)[a-z]+=.+$} $arg] == 1} {
+    } elseif {[regexp {^(-)[a-z_]+=.+$} $arg] == 1} {
       set equal_symbol_position [string first "=" $arg]
       set name [string range $arg 1 $equal_symbol_position-1]
       lappend args_names $name
@@ -59,8 +59,19 @@ proc OCCDoc_ParseArguments {arguments} {
 }
 
 # Returns script parent folder
-proc OCCDoc_GetDoxDir {} {
-  return [file normalize [file dirname [info script]]/../dox]
+proc OCCDoc_GetDoxDir { {theProductsPath ""} } {
+  if { $theProductsPath == "" } {
+    return [file normalize [file dirname [info script]]/../dox]
+  } else {
+    return [file normalize $theProductsPath]/dox
+  }
+}
+
+# Returns products root folder
+proc OCCDoc_GetProdRootDir {} {
+  if {[info exists ::env(PRODROOT)]} {
+    return [file normalize $::env(PRODROOT)]
+  }
 }
 
 # Returns OCCT root dir
@@ -71,7 +82,6 @@ proc OCCDoc_GetOCCTRootDir {} {
 
 # Returns root dir
 proc OCCDoc_GetRootDir { {theProductsPath ""} } {
-
   if { $theProductsPath == "" } {
     return [OCCDoc_GetOCCTRootDir]
   } else {
@@ -736,8 +746,7 @@ proc OCCDoc_PostProcessor {outDir} {
 
 # Loads a list of docfiles from file FILES.txt
 proc OCCDoc_LoadFilesList {} {
-
-  set INPUTDIR [OCCDoc_GetDoxDir]
+  set INPUTDIR [OCCDoc_GetDoxDir [OCCDoc_GetProdRootDir]]
 
   global available_docfiles
   set available_docfiles {}
@@ -799,7 +808,11 @@ proc OCCDoc_MakeRefmanTex {fileName latexDir verboseMode latexFilesList} {
   }
 
   # Copy template file to latex folder
-  file copy "[OCCDoc_GetDoxDir]/resources/occt_pdf_template.tex" $DOCNAME
+  if { "[OCCDoc_GetProdRootDir]" != "" } {
+    file copy "[OCCDoc_GetDoxDir [OCCDoc_GetProdRootDir]]/resources/prod_pdf_template.tex" $DOCNAME
+  } else {
+    file copy "[OCCDoc_GetDoxDir]/resources/occt_pdf_template.tex" $DOCNAME
+  }
 
   # Get templatized data
   set texfile [open $DOCNAME "r"]
@@ -808,6 +821,7 @@ proc OCCDoc_MakeRefmanTex {fileName latexDir verboseMode latexFilesList} {
 
   # Replace dummy values 
   set year       [clock format [clock seconds] -format {%Y}]
+  set month      [clock format [clock seconds] -format {%B}]
   set texfile    [open $DOCNAME "w"]
   set casVersion [OCCDoc_DetectCasVersion]
 
@@ -815,23 +829,23 @@ proc OCCDoc_MakeRefmanTex {fileName latexDir verboseMode latexFilesList} {
   set docLabel   ""
   foreach aFileName $latexFilesList {
     # Find the file in FILES_PDF.txt
-    set parsedFileName [split $aFileName "/" ]
-    set newfileName [string range $fileName [expr [string first "__" $fileName] + 2] end]
-
-    if { [lsearch -nocase $parsedFileName "$newfileName.md" ] != -1 } {
-      set filepath "[OCCDoc_GetDoxDir]/$aFileName"
+    set parsedFileName [file rootname [lindex [split $aFileName "/" ] end]]
+    if { [regexp "${parsedFileName}$" $fileName] } {
+      set filepath "[OCCDoc_GetDoxDir [OCCDoc_GetProdRootDir]]/$aFileName"
       if { [file exists $filepath] } {
         set MDFile   [open $filepath "r"]
         set label    [split [gets $MDFile] "\{"]
         set docLabel [lindex $label 0]
         close $MDFile
-        
         break
       }
     }
   }
 
-  set texfile_loaded [string map [list DEFDOCLABEL "$docLabel" DEFCASVERSION "$casVersion" DEFFILENAME "$fileName" DEFYEAR "$year"] $texfile_loaded]
+  set occtlogo_path "[OCCDoc_GetDoxDir]/resources/occt_logo.png"
+  set occlogo_path  "[OCCDoc_GetDoxDir]/resources/occ_logo.png"
+  set copyright_path  "[OCCDoc_GetDoxDir [OCCDoc_GetProdRootDir]]/resources/prod_pdf_template.tex"
+  set texfile_loaded [string map [list DEFDOCLABEL "$docLabel" DEFCASVERSION "$casVersion" DEFFILENAME "$fileName" DEFYEAR "$year" DEFMONTH "$month" DEFCOPYRIGHT "$copyright_path" DEFLOGO "$occtlogo_path" DEFOCCLOGO "$occlogo_path" DEFTITLE ""] $texfile_loaded]
 
   # Get data
   puts $texfile $texfile_loaded
@@ -884,5 +898,102 @@ proc OCCDoc_ProcessTex {{texFiles {}} {latexDir} verboseMode} {
 
     file delete -force $TEX
     file rename $TMPFILENAME $TEX
+  }
+}
+
+# update image sizes in *.md files for PDF documentation if necessary
+proc OCCDoc_UpdateImagesSize {{DocFilesList {}} DoxDir verboseMode} {
+
+  foreach DocFile $DocFilesList {
+    if {$verboseMode == "YES"} {
+      puts "Info: Updating image sizes for file $DocFile..."
+    }
+
+    if {![file exists $DoxDir/$DocFile]} {
+      puts "Error: file $DoxDir/$DocFile does not exist."
+      return -1
+    }
+
+    if { [catch {set aFile [open $DoxDir/$DocFile r]} aReason] } {
+      puts "Error: cannot open file \"$DoxDir/$DocFile\" for reading: $aReason"
+      return -1
+    }
+
+    set aFileContent [read $aFile]
+    close $aFile
+
+    set aNumberOfImages [regexp -all -line {@figure\s*\{[^\}]+\}} $aFileContent]
+    set aLastImageIndex 0
+
+    if {!$aNumberOfImages} {
+      continue
+    }
+
+    while { $aNumberOfImages } {
+      set currentFigureIndex [string first "@figure" $aFileContent ${aLastImageIndex}]
+      set first_figure_inclusion [string range $aFileContent $currentFigureIndex end]
+      set line ""
+      set path ""
+      set name ""
+      set width ""
+      set dump ""
+      if [regexp {^(@figure[\s\t]*\{[^\}]+\})} $first_figure_inclusion dump line] {
+        if { [regexp {@figure[\s\t]*\{([^,\}]+)[\s\t]*\}} $line dump aPath] } {
+          set path "${aPath}"
+        } elseif { [regexp {@figure[\s\t]*\{([^,\}]+)[\s\t]*,[\s\t]*\"(.*)\"\}} $line dump aPath aName] } {
+          set path "${aPath}"
+          set name "\"${aName}\""
+        } elseif { [regexp {@figure[\s\t]*\{([^,\}]+)[\s\t]*,[\s\t]*\"(.*)\"[\s\t]*,[\s\t]*([0-9]+)\}} $line dump aPath aName aWidth] } {
+          set path "${aPath}"
+          set name "\"${aName}\""
+          set width "${aWidth}"
+        }
+
+        if {$name == ""} {
+          set name "\"\""
+        }
+        # find image
+        set anImagePath ""
+        if {[file exists "$DoxDir/$path"]} {
+          set anImagePath "$DoxDir/$path"
+        } elseif {[file exists "[OCCDoc_GetDoxDir]/$path"]} {
+          set anImagePath "[OCCDoc_GetDoxDir]/$path"
+        } elseif {[file exists "[OCCDoc_GetDoxDir]/resources/$path"]} {
+          set anImagePath "[OCCDoc_GetDoxDir]/resources/$path"
+        } elseif {[file exists "$DoxDir/[file dirname ${DocFile}]/images/$path"]} {
+          set anImagePath "$DoxDir/[file dirname ${DocFile}]/images/$path"
+        }
+        if { ![file exists "$anImagePath"] } {
+          puts "Warning: Could not find \"$DoxDir/$path\" file"
+          incr aNumberOfImages -1
+          set aLastImageIndex [expr $currentFigureIndex + [string length $dump]]
+          continue
+        }
+        # get image width
+        if [catch {exec identify "$anImagePath"} res] {
+          puts "Error: identify returns \"${identify_error}\""
+          incr aNumberOfImages -1
+          set aLastImageIndex [expr $currentFigureIndex + [string length $dump]]
+          continue
+        } else {
+          if [regexp {([0-9]+)x[0-9]+} $res dump2 loc_width] {
+            set width $loc_width
+          }
+        }
+
+        set newInfo "@figure{$path,$name,$width}"
+        set aFileContent "[string replace $aFileContent $currentFigureIndex [expr $currentFigureIndex + [string length $dump] - 1] $newInfo]"
+        set aLastImageIndex [expr $currentFigureIndex + [string length $newInfo]]
+      }
+      incr aNumberOfImages -1
+    }
+
+    if { [catch {set aFile [open $DoxDir/$DocFile w]} aReason] } {
+      puts "Error: cannot open file \"$DoxDir/$DocFile\" for writting: $aReason"
+      return -1
+    }
+
+     puts $aFile "${aFileContent}"
+     close $aFile
   }
 }

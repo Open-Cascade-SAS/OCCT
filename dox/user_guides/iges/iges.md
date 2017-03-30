@@ -601,8 +601,7 @@ Class *ShapeFix_Wire* can increase the tolerance of a shape.  This class is used
 The following diagram illustrates the structure of calls in  reading IGES. 
 The highlighted classes produce OCCT geometry. 
 
-@image html /user_guides/iges/images/iges_image003.png "The structure of calls in reading IGES"
-@image latex /user_guides/iges/images/iges_image003.png "The structure of calls in reading IGES"
+@figure{/user_guides/iges/images/iges_image003.png, "The structure of calls in reading IGES"}
 
 @subsection occt_iges_2_8 Example
 
@@ -820,8 +819,7 @@ If the value of  parameter *write.precision.mode* is -1, 0 or 1, resolution is c
 The following diagram illustrates the class structure in  writing IGES. 
 The highlighted classes are intended to translate geometry. 
 
-@image html /user_guides/iges/images/iges_image004.png "The class structure in writing IGES"
-@image latex /user_guides/iges/images/iges_image004.png "The class structure in writing IGES"
+@figure{/user_guides/iges/images/iges_image004.png, "The class structure in writing IGES"}
       
 @subsection occt_iges_3_7 Example
 

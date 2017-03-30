@@ -242,8 +242,7 @@ The names *begin, end, data, parse.rules, grids.list* and *cases.list* are reser
 
 General layout of test scripts is shown in Figure 1.
 
-@image html /dev_guides/tests/images/tests_image001.png "Layout of tests folder"
-@image latex /dev_guides/tests/images/tests_image001.png "Layout of tests folder"
+@figure{/dev_guides/tests/images/tests_image001.png, "Layout of tests folder"}
 
 
 @subsection testmanual_2_2 Test Groups

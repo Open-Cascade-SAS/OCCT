@@ -194,8 +194,7 @@ The results are:
 
 In the second case two edges have one or several common points in terms of tolerance.
 
-@image html /user_guides/boolean_operations/images/operations_image006.svg  "Edge/edge interference: common points"
-@image latex /user_guides/boolean_operations/images/operations_image006.svg  "Edge/edge interference: common points"
+@figure{/user_guides/boolean_operations/images/operations_image006.svg, "Edge/edge interference: common points"}
 
 The result is a new vertex *Vn* with 3D point *Pn* and tolerance value *Tol(Vn)*.
 
@@ -260,13 +259,13 @@ For an edge *Ei* and a solid *Zj* there is Edge/Solid interference if the edge *
 
 For a face *Fi* and a solid *Zj* there is Face/Solid interference if the face *Fi* and its sub-shapes have no BRep interferences with any sub-shape of *Zj* and *Fi* is completely inside the solid *Zj*. 
 
-@figure{/user_guides/boolean_operations/images/operations_image062.png,  "Face/Solid Interference"} 
+@figure{/user_guides/boolean_operations/images/operations_image062.png,  "Face/Solid Interference"}
 
 @subsubsection occt_algorithms_3_1_10  Solid/Soild Interference
 
 For a solid *Zi* and a solid *Zj* there is Solid/Solid interference if the solid *Zi* and its sub-shapes have no BRep interferences with any sub-shape of *Zj* and *Zi* is completely inside the solid *Zj*. 
 
-@figure{/user_guides/boolean_operations/images/operations_image063.png,  "Solid/Solid Interference"} 
+@figure{/user_guides/boolean_operations/images/operations_image063.png,  "Solid/Solid Interference"}
 
 
 @subsubsection occt_algorithms_3_1_11 Computation Order
@@ -1319,7 +1318,7 @@ In this case:
 	* argument edge *E1* has resulting split edges *E11* and *E12* (image of *E1*);
 	* argument edge *E2* has resulting split edges *E21* and *E22* (image of *E2*).
 	
-@figure{/user_guides/boolean_operations/images/boolean_image011.svg}	
+@figure{/user_guides/boolean_operations/images/boolean_image011.svg}
 
 * The result of *Common* operation is an empty compound because the dimension (0) of the common part between the edges (vertex) is less than the dimension of the arguments (1).
 
@@ -1327,13 +1326,13 @@ In this case:
 
 In this case the argument edge *E1* has resulting split edges *E11* and *E12* (image of *E1*).
 
-@figure{/user_guides/boolean_operations/images/boolean_image012.svg}	
+@figure{/user_guides/boolean_operations/images/boolean_image012.svg}
 
 * The result of *Cut21* operation is a compound containing split parts of the argument  *E2*, i.e. 2 new edges *E21* and *E12*. These edges have one shared vertex *Vn1*. 
 
 In this case the argument edge *E2* has resulting split edges *E21* and *E22* (image of *E2*).
 
-@figure{/user_guides/boolean_operations/images/boolean_image013.svg}	
+@figure{/user_guides/boolean_operations/images/boolean_image013.svg}
 
 @subsubsection occt_algorithms_9_4_6	Case 6: Two edges having a common block
 
@@ -1347,20 +1346,20 @@ In this case:
 	* argument edge *E2* has resulting split edges *E21* and *E22* (image of *E2*);
 	* edge *E12* is common for the images of *E1* and *E2*.
 	
-@figure{/user_guides/boolean_operations/images/boolean_image015.svg}	
+@figure{/user_guides/boolean_operations/images/boolean_image015.svg}
 
 * The result of *Common* operation is a compound containing split parts of arguments i.e. 1 new edge *E12*. In this case edge *E12* is common for the images of *E1* and *E2*. 
 The common part between the edges (edge) has the same dimension (1) as the dimension of the arguments (1).
 
-@figure{/user_guides/boolean_operations/images/boolean_image016.svg}	
+@figure{/user_guides/boolean_operations/images/boolean_image016.svg}
 
 * The result of *Cut12* operation is a compound containing a split part of argument  *E1*, i.e. new edge *E11*. 
 
-@figure{/user_guides/boolean_operations/images/boolean_image017.svg}	
+@figure{/user_guides/boolean_operations/images/boolean_image017.svg}
 
 * The result of *Cut21* operation is a compound containing a split part of argument  *E2*, i.e. new edge *E22*.
 
-@figure{/user_guides/boolean_operations/images/boolean_image018.svg}	
+@figure{/user_guides/boolean_operations/images/boolean_image018.svg}
 
 
 @subsubsection occt_algorithms_9_4_7	Case 7: An Edge and a Face intersecting at a point
@@ -1377,7 +1376,7 @@ Let us consider edge *E1* and face *F2* that intersect at a 3D point:
 
 In this case the argument edge *E1* has no common parts with the face *F2* so the whole image of *E1* is in the result.
 
-@figure{/user_guides/boolean_operations/images/boolean_image020.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image020.png}
 
 * The result of *Cut21* operation is not defined because the dimension of the edge (1) is less than the dimension of the face (2).
 
@@ -1399,7 +1398,7 @@ In this case the argument edge *E1* has a common part with face *F2* so the corr
 
 In this case the argument edge *E1* has a common part with face *F2* so the corresponding part is not included into the result. The yellow square is not a part of the result. It only shows the place of F2.
 
-@figure{/user_guides/boolean_operations/images/boolean_image023.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image023.png}
 
 * The result of *Cut21* operation is not defined because the dimension of the edge (1) is less than the dimension of the face (2).
 
@@ -1421,7 +1420,7 @@ In this case the argument edge *E1* has a common part with solid *S2* so the cor
 
 In this case the argument edge *E1* has a common part with solid *S2* so the corresponding part is not included into the result. The yellow square is not a part of the result. It only shows the place of *S2*.
 
-@figure{/user_guides/boolean_operations/images/boolean_image071.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image071.png}
 
 * The result of *Cut21* operation is not defined because the dimension of the edge (1) is less than the dimension of the solid (3).
 
@@ -1443,7 +1442,7 @@ In this case the argument edge *E1* has a common part with solid *S2* so the cor
 
 In this case the argument edge *E1* has a common part with solid *S2* so the corresponding part is not included into the result. The yellow square is not a part of the result. It only shows the place of *S2*.
 
-@figure{/user_guides/boolean_operations/images/boolean_image026.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image026.png}
 
 * The result of *Cut21* operation is not defined because the dimension of the edge (1) is less than the dimension of the solid (3).
 
@@ -1462,7 +1461,7 @@ Let us consider two intersecting faces *F1* and *F2*:
 
 * The result of *Cut12* operation is a compound containing split part of the argument *F1*, i.e. new face *F11*.  
 
-@figure{/user_guides/boolean_operations/images/boolean_image029.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image029.png}
 
 * The result of *Cut21* operation is a compound containing split parts of the argument  *F2*, i.e. 1 new face *F21*.
 
@@ -1490,7 +1489,7 @@ The common part between the faces (face) has the same dimension (2) as the dimen
 
 * The result of *Cut12* operation is a compound containing split part of the argument *F1*, i.e. new face *F11*.  
 	
-@figure{/user_guides/boolean_operations/images/boolean_image034.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image034.png}
 	
 * The result of *Cut21* operation is a compound containing split parts of the argument  *F2*, i.e. 1 new face *F21*.
 
@@ -1510,7 +1509,7 @@ Let us consider two faces *F1* and *F2* that have a common edge:
 
 * The result of *Cut12* operation is a compound containing split part of the argument *F1*, i.e. new face *F11*.  The vertices are shown just to clarify the fact that the edges are spitted.
 	
-@figure{/user_guides/boolean_operations/images/boolean_image038.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image038.png}
 	
 * The result of *Cut21* operation is a compound containing split parts of the argument  *F2*, i.e. 1 new face *F21*.  The vertices are shown just to clarify the fact that the edges are spitted.
 
@@ -1530,7 +1529,7 @@ Let us consider two faces *F1* and *F2* that have a common vertex:
 
 * The result of *Cut12* operation is a compound containing split part of the argument *F1*, i.e. new face *F11*.  
 	
-@figure{/user_guides/boolean_operations/images/boolean_image042.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image042.png}
 	
 * The result of *Cut21* operation is a compound containing split parts of the argument  *F2*, i.e. 1 new face *F21*. 
 
@@ -1551,7 +1550,7 @@ Let us consider face *F1* and solid *S2* that have an intersection curve:
 
 * The result of *Cut12* operation is a compound containing split part of the argument *F1*. In this case  argument face *F1* has a common part with solid *S2* so the corresponding part is not included into the result. The yellow contour is not a part of the result. It only shows the place of *S2*.
   	
-@figure{/user_guides/boolean_operations/images/boolean_image046.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image046.png}
 	
 * The result of *Cut21* operation is is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
 
@@ -1569,7 +1568,7 @@ Let us consider face *F1* and solid *S2* that have overlapping faces:
 
 * The result of *Cut12* operation is a compound containing split part of the argument *F1*. In this case  argument face *F1* has a common part with solid *S2* so the corresponding part is not included into the result. The yellow contour is not a part of the result. It only shows the place of *S2*.
   	
-@figure{/user_guides/boolean_operations/images/boolean_image049.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image049.png}
 	
 * The result of *Cut21* operation is is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
 
@@ -1586,7 +1585,7 @@ Let us consider face *F1* and solid *S2* that have overlapping edges:
 
 * The result of *Cut12* operation is a compound containing split part of the argument *F1*. In this case  argument face *F1* has a common part with solid *S2* so the corresponding part is not included into the result. The yellow contour is not a part of the result. It only shows the place of *S2*.
   	
-@figure{/user_guides/boolean_operations/images/boolean_image051.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image051.png}
 	
 * The result of *Cut21* operation is is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
 
@@ -1602,7 +1601,7 @@ Let us consider face *F1* and solid *S2* that have overlapping vertices:
 
 * The result of *Cut12* operation is a compound containing split part of the argument *F1*. In this case  argument face *F1* has a common part with solid *S2* so the corresponding part is not included into the result. The yellow contour is not a part of the result. It only shows the place of *S2*.
   	
-@figure{/user_guides/boolean_operations/images/boolean_image053.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image053.png}
 	
 * The result of *Cut21* operation is is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
 
@@ -1614,15 +1613,15 @@ Let us consider two intersecting solids *S1* and *S2*:
 
 * The result of *Fuse* operation is a compound composed from the split parts of arguments *S11, S12* and *S22* <i>(Cut12, Common, Cut21)</i>. All inner webs are removed, so the result is one new solid *R*. 
 	
-@figure{/user_guides/boolean_operations/images/boolean_image055.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image055.png}
 	
 * The result of *Common* operation is a compound containing split parts of arguments i.e. one new solid *S12*.  In this case solid *S12* is common for the images of *S1* and *S2*. The common part between the solids (solid) has the same dimension (3) as the dimension of the arguments (3). The yellow contour is not a part of the result. It only shows the place of *S1*. 
 
-@figure{/user_guides/boolean_operations/images/boolean_image056.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image056.png}
 
 * The result of *Cut12* operation is a compound containing split part of the argument *S1*, i.e. 1 new solid *S11*.
   	
-@figure{/user_guides/boolean_operations/images/boolean_image057.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image057.png}
 	
 * The result of *Cut21* operation is a compound containing split part of the argument *S2*, i.e. 1 new solid *S21*.
 
@@ -1636,13 +1635,13 @@ Let us consider two solids *S1* and *S2* that have a common part on face:
 
 * The result of *Fuse* operation is a compound composed from the split parts of arguments *S11, S12* and *S22* <i>(Cut12, Common, Cut21)</i>. All inner webs are removed, so the result is one new solid *R*. 
 	
-@figure{/user_guides/boolean_operations/images/boolean_image060.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image060.png}
 	
 * The result of *Common* operation is an  empty compound because the dimension (2) of the common part between *S1* and *S2* (face) is less than the lower dimension of the arguments (3). 
 
 * The result of *Cut12* operation is a compound containing split part of the argument *S1*, i.e. 1 new solid *S11*.
   	
-@figure{/user_guides/boolean_operations/images/boolean_image061.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image061.png}
 	
 * The result of *Cut21* operation is a compound containing split part of the argument *S2*, i.e. 1 new solid *S21*.
 @figure{/user_guides/boolean_operations/images/boolean_image062.png}
@@ -1656,14 +1655,14 @@ Let us consider two solids *S1* and *S2* that have overlapping edges:
 
 * The result of *Fuse* operation is a compound composed from the split parts of arguments i.e. 2 new solids *S11* and *S21*. These solids have one shared edge *En1*.
  	
-@figure{/user_guides/boolean_operations/images/boolean_image064.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image064.png}
 	
 * The result of *Common* operation is an  empty compound because the dimension (1) of the common part between *S1* and *S2* (edge) is less than the lower dimension of the arguments (3). 
 
 * The result of *Cut12* operation is a compound containing split part of the argument *S1*. In this case 
 argument *S1* has a common part with solid *S2* so the corresponding part is not included into the result.
   	
-@figure{/user_guides/boolean_operations/images/boolean_image065.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image065.png}
 	
 * The result of *Cut21* operation is a compound containing split part of the argument *S2*. In this case 
 argument *S2* has a common part with solid *S1* so the corresponding part is not included into the result.
@@ -1677,13 +1676,13 @@ Let us consider two solids *S1* and *S2* that have overlapping vertices:
 
 * The result of *Fuse* operation is a compound composed from the split parts of arguments i.e. 2 new solids *S11* and *S21*. These solids share *Vn1*.
  	
-@figure{/user_guides/boolean_operations/images/boolean_image068.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image068.png}
 	
 * The result of *Common* operation is an  empty compound because the dimension (0) of the common part between *S1* and *S2* (vertex) is less than the lower dimension of the arguments (3). 
 
 * The result of *Cut12* operation is a compound containing split part of the argument *S1*.
   	
-@figure{/user_guides/boolean_operations/images/boolean_image069.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image069.png}
 	
 * The result of *Cut21* operation is a  compound containing split part of the argument *S2*. 
 
@@ -1699,11 +1698,11 @@ Let us consider Shell *Sh* and Wire *W* as the objects and Solid *S* as the tool
  	
 * The result of *Common* operation is a compound containing the parts of the initial Shell and Wire common for the Solid. The new Shell and Wire are created from the objects.
 
-@figure{/user_guides/boolean_operations/images/boolean_image137.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image137.png}
 
 * The result of *Cut12* operation is a  compound containing new Shell and Wire split from the arguments *Sh* and *W*. In this case they have a common part with solid *S* so the corresponding part is not included into the result.
   	
-@figure{/user_guides/boolean_operations/images/boolean_image138.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image138.png}
 	
 * The result of *Cut21* operation is not defined as the objects have a lower dimension than the tool. 
 
@@ -1719,15 +1718,15 @@ Let us consider two Wires that have overlapping edges, *W1* is the object and *W
  	
 * The result of *Common* operation is a compound containing one Wire consisting of an overlapping edge. The new Wire is created from the objects:
 
-@figure{/user_guides/boolean_operations/images/boolean_image141.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image141.png}
 
 * The result of *Cut12* operation is a compound containing a wire split from object *W1*. Its common part with *W2* is not included into the result.
   	
-@figure{/user_guides/boolean_operations/images/boolean_image142.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image142.png}
 	
 * The result of *Cut21* operation is a compound containing a wire split from *W2*. Its common part with *W1* is not included into the result.
 	
-@figure{/user_guides/boolean_operations/images/boolean_image143.png}	
+@figure{/user_guides/boolean_operations/images/boolean_image143.png}
 
 
 @subsection occt_algorithms_9_5 Class BOPAlgo_BOP
@@ -1845,7 +1844,7 @@ Let us consider edges *E1* and *E2*, that have a common block:
  
 The result of *Section* operation is the compound that contains a new edge *Enew*.
 
-@figure{/user_guides/boolean_operations/images/boolean_image090.png} 
+@figure{/user_guides/boolean_operations/images/boolean_image090.png}
 
 @subsubsection occt_algorithms_10a_3_7 Case 7: An Edge and a Face intersecting at a point
 
@@ -1872,7 +1871,7 @@ The result of *Section* operation is the compound that contains new edge *Enew*.
 
 Let us consider edge *E1* and solid *Z2*, that intersect at a point:
 
-@figure{/user_guides/boolean_operations/images/boolean_image095.png} 
+@figure{/user_guides/boolean_operations/images/boolean_image095.png}
 
 The result of *Section* operation is the compound that contains a new vertex *Vnew*. 
 
@@ -1952,7 +1951,7 @@ The result of *Section* operation is the compound that contains new edges
 
 Let us consider face *F1* and solid *Z2* that have a common part on edge:
 
-@figure{/user_guides/boolean_operations/images/boolean_image109.png} 
+@figure{/user_guides/boolean_operations/images/boolean_image109.png}
 
 The result of *Section* operation is the compound that contains a new edge *Enew*.
 
@@ -1971,18 +1970,18 @@ The result of *Section* operation is the compound that contains a new vertex *Vn
 @subsubsection occt_algorithms_10a_3_19 Case 19: Two intersecting Solids
 
 Let us consider two intersecting solids *Z1* and *Z2*:
-@figure{/user_guides/boolean_operations/images/boolean_image113.png} 
+@figure{/user_guides/boolean_operations/images/boolean_image113.png}
 
 The result of *Section* operation is the compound that contains new edges.
-@figure{/user_guides/boolean_operations/images/boolean_image114.png} 
+@figure{/user_guides/boolean_operations/images/boolean_image114.png}
 
 @subsubsection occt_algorithms_10a_3_20 Case 20: Two Solids that have overlapping faces
 
 Let us consider two solids *Z1* and *Z2* that have a common part on face:
-@figure{/user_guides/boolean_operations/images/boolean_image115.png} 
+@figure{/user_guides/boolean_operations/images/boolean_image115.png}
 
 The result of *Section* operation is the compound that contains new edges.
-@figure{/user_guides/boolean_operations/images/boolean_image116.png} 
+@figure{/user_guides/boolean_operations/images/boolean_image116.png}
  
 @subsubsection occt_algorithms_10a_3_21 Case 21: Two Solids that have overlapping edges
 
@@ -1990,15 +1989,15 @@ Let us consider two solids *Z1* and *Z2* that have overlapping edges:
 @figure{/user_guides/boolean_operations/images/boolean_image117.png}
  
 The result of *Section* operation is the compound that contains a new edge *Enew*.
-@figure{/user_guides/boolean_operations/images/boolean_image118.png} 
+@figure{/user_guides/boolean_operations/images/boolean_image118.png}
 
 @subsubsection occt_algorithms_10a_3_22 Case 22: Two Solids that have overlapping vertices
 
 Let us consider two solids *Z1* and *Z2* that have overlapping vertices: 
-@figure{/user_guides/boolean_operations/images/boolean_image119.png} 
+@figure{/user_guides/boolean_operations/images/boolean_image119.png}
 
 The result of *Section* operation is the compound that contains a new vertex *Vnew*.
-@figure{/user_guides/boolean_operations/images/boolean_image120.png} 
+@figure{/user_guides/boolean_operations/images/boolean_image120.png}
 
 @subsection occt_algorithms_10a_4 Class BOPAlgo_Section
 
@@ -2366,8 +2365,8 @@ The face *F* is a self-interfered shape and cannot be used as an argument of the
 ####	Example 4: Face of Revolution
 The face *F* has been obtained by revolution of edge *E* around line *L*.
 
-@figure{/user_guides/boolean_operations/images/operations_image039a.png, "Face of Revolution: Arguments"} 
-@figure{/user_guides/boolean_operations/images/operations_image039b.png, "Face of Revolution: Result"} 
+@figure{/user_guides/boolean_operations/images/operations_image039a.png, "Face of Revolution: Arguments"}
+@figure{/user_guides/boolean_operations/images/operations_image039b.png, "Face of Revolution: Result"}
 
 In spite of the fact that face *F* is valid (in terms of *BRepCheck_Analyzer*) it is a self-interfered shape and cannot be used as the argument of the Algorithms.
 
@@ -2445,7 +2444,7 @@ Let us consider the intersection between two edges:
 * *E1* is based on a line: <i>{0,-10,0, 1,0,0}, Tol(E1)=2.</i>
 * *E2* is based on a circle: <i>{0,0,0, 0,0,1}, R=10, Tol(E2)=2.</i>
 
-@figure{/user_guides/boolean_operations/images/operations_image049.png, "Intersecting Edges"} 
+@figure{/user_guides/boolean_operations/images/operations_image049.png, "Intersecting Edges"}
 
 The result of pure intersection between *E1* and *E2* is vertex *Vx {0,-10,0}*.
 
@@ -2465,7 +2464,7 @@ Let us consider two planar rectangular faces *F1* and *F2*.
 
 The intersection curve between the planes is curve *C12*. The curve produces a new intersection edge *EC12*. The edge goes through vertices *V1* and *V2* thanks to big tolerance values of vertices *Tol(V1)* and *Tol(V2)*. So, two straight edges *E12* and *EC12* go through two vertices, which is  impossible in this case.
 
-@figure{/user_guides/boolean_operations/images/operations_image050.svg, "Intersecting Faces"} 
+@figure{/user_guides/boolean_operations/images/operations_image050.svg, "Intersecting Faces"}
 
 
 The problem cannot be solved in general, because the length of *E12* can be infinite and the values of *Tol(V1)* and *Tol(V2)* theoretically can be infinite too.
@@ -2482,11 +2481,11 @@ Let us consider two edges *E1* and *E2*, which have common vertices *V1* and *V2
 
 *C1* practically coincides in 3D with *C2*. The value of deflection is *Dmax* (e.g. *Dmax=1.e<sup>-6</sup>*). 
 
-@figure{/user_guides/boolean_operations/images/operations_image051.svg, "Intersecting Edges"} 
+@figure{/user_guides/boolean_operations/images/operations_image051.svg, "Intersecting Edges"}
 
 The evident and prospective result should be the Common Block between *E1* and *E2*. However, the result of intersection differs. 
 
-@figure{/user_guides/boolean_operations/images/operations_image052.svg, "Result of Intersection"} 
+@figure{/user_guides/boolean_operations/images/operations_image052.svg, "Result of Intersection"}
 
 The result contains three new vertices *Vx1, Vx2* and *Vx3*, 8 new edges <i>(V1, Vx1, Vx2, Vx3, V2)</i> and no Common Blocks. This is correct due to the source data: *Tol(E1)=1.e<sup>-7</sup>, Tol(E2)=1.e<sup>-7</sup>* and <i>Dmax=1.e<sup>-6</sup></i>.
 
@@ -2496,7 +2495,7 @@ In this particular case the problem can be solved by several ways:
 
 The example can be extended from 1D (edges) to 2D (faces).
 
-@figure{/user_guides/boolean_operations/images/operations_image053.svg, "Intersecting Faces"} 
+@figure{/user_guides/boolean_operations/images/operations_image053.svg, "Intersecting Faces"}
 
 The comments and recommendations are the same as for 1D case above.
 
@@ -2506,7 +2505,7 @@ The comments and recommendations are the same as for 1D case above.
 
 Let us consider vertex *V1* and edge *E2*. 
 
-@figure{/user_guides/boolean_operations/images/operations_image054.svg, "Vertex and Edge"} 
+@figure{/user_guides/boolean_operations/images/operations_image054.svg, "Vertex and Edge"}
 
 Vertex *V1* interferes with vertices *V12* and *V22*.
 So vertex *V21* should interfere with vertex *V22*, which is impossible because vertices *V21* and *V22* are the vertices of edge *E2*, thus *V21* is not equal to *V22*.
@@ -2519,7 +2518,7 @@ In a particular case the problem can be solved by refinement of arguments, i.e. 
   
 Let us consider vertex *V2* and wire consisting of edges *E11* and *E12*. 
 
-@figure{/user_guides/boolean_operations/images/operations_image055.svg, "Vertex and Wire"} 
+@figure{/user_guides/boolean_operations/images/operations_image055.svg, "Vertex and Wire"}
 
 The arguments themselves are not self-intersected.
 Vertex *V2* interferes with edges *E11* and *E12*. Thus, edge *E11* should interfere with edge *E22*, but it is impossible because edges *E11* and *E12* cannot interfere by the condition.
@@ -2551,13 +2550,13 @@ The following examples demonstrate the advantages of usage Fuzzy option operatio
 
 In this example the cylinder (shown in yellow and transparent) is subtracted from the box (shown in red). The cylinder is shifted by  5e<sup>-5</sup> relatively to the box along its axis (the distance between rear faces of the box and cylinder is 5e<sup>-5</sup>).
 
-@figure{/user_guides/boolean_operations/images/boolean_image121.png} 
+@figure{/user_guides/boolean_operations/images/boolean_image121.png}
   
 The following results are obtained using Basic Operations and the Fuzzy ones with the fuzzy value 5e<sup>-5</sup>:
 
-@figure{/user_guides/boolean_operations/images/boolean_image122.png, "Result of CUT operation obtained with Basic Operations"} 
+@figure{/user_guides/boolean_operations/images/boolean_image122.png, "Result of CUT operation obtained with Basic Operations"}
 
-@figure{/user_guides/boolean_operations/images/boolean_image123.png, "Result of CUT operation obtained with Fuzzy Option"} 
+@figure{/user_guides/boolean_operations/images/boolean_image123.png, "Result of CUT operation obtained with Fuzzy Option"}
 
 In this example Fuzzy option allows eliminating a very thin part of the result shape produced by Basic algorithm due to misalignment of rear faces of the box and the cylinder. 
 
@@ -2565,13 +2564,13 @@ In this example Fuzzy option allows eliminating a very thin part of the result s
 
 In this example two boxes are fused. One of them has dimensions 10*10*10, and the other is 10*10.000001*10.000001 and adjacent to the first one. There is no gap in this case as the surfaces of the neighboring faces coincide, but one box is slightly greater than the other. 
 
-@figure{/user_guides/boolean_operations/images/boolean_image124.png} 
+@figure{/user_guides/boolean_operations/images/boolean_image124.png}
 
 The following results are obtained using Basic Operations and the Fuzzy ones with the fuzzy value 1e<sup>-6</sup>: 
 
-@figure{/user_guides/boolean_operations/images/boolean_image125.png, "Result of CUT operation obtained with Basic Operations"} 
+@figure{/user_guides/boolean_operations/images/boolean_image125.png, "Result of CUT operation obtained with Basic Operations"}
 
-@figure{/user_guides/boolean_operations/images/boolean_image126.png, "Result of CUT operation obtained with Fuzzy Option"} 
+@figure{/user_guides/boolean_operations/images/boolean_image126.png, "Result of CUT operation obtained with Fuzzy Option"}
 
 In this example Fuzzy option allows eliminating an extremely narrow face in the result produced by Basic operation.
 
@@ -2579,13 +2578,13 @@ In this example Fuzzy option allows eliminating an extremely narrow face in the 
 
 In this example the small planar face (shown in orange) is subtracted from the big one (shown in yellow). There is a gap 1e<sup>-5</sup> between the edges of these faces.
 
-@figure{/user_guides/boolean_operations/images/boolean_image127.png} 
+@figure{/user_guides/boolean_operations/images/boolean_image127.png}
 
 The following results are obtained using Basic Operations and the Fuzzy ones with the fuzzy value 1e<sup>-5</sup>: 
 
-@figure{/user_guides/boolean_operations/images/boolean_image128.png, "Result of CUT operation obtained with Basic Operations"} 
+@figure{/user_guides/boolean_operations/images/boolean_image128.png, "Result of CUT operation obtained with Basic Operations"}
 
-@figure{/user_guides/boolean_operations/images/boolean_image129.png, "Result of CUT operation obtained with Fuzzy Option"} 
+@figure{/user_guides/boolean_operations/images/boolean_image129.png, "Result of CUT operation obtained with Fuzzy Option"}
 
 In this example Fuzzy options eliminated a pin-like protrusion resulting from the gap between edges of the argument faces.
 
@@ -2593,13 +2592,13 @@ In this example Fuzzy options eliminated a pin-like protrusion resulting from th
 
 In this example the small edge is subtracted from the big one. The edges are overlapping not precisely, with max deviation between them equal to 5.28004e<sup>-5</sup>. We will use 6e<sup>-5</sup> value for Fuzzy option.
 
-@figure{/user_guides/boolean_operations/images/boolean_image130.png} 
+@figure{/user_guides/boolean_operations/images/boolean_image130.png}
 
 The following results are obtained using Basic Operations and the Fuzzy ones with the fuzzy value 6e<sup>-5</sup>: 
 
-@figure{/user_guides/boolean_operations/images/boolean_image131.png, "Result of CUT operation obtained with Basic Operations"} 
+@figure{/user_guides/boolean_operations/images/boolean_image131.png, "Result of CUT operation obtained with Basic Operations"}
 
-@figure{/user_guides/boolean_operations/images/boolean_image132.png, "Result of CUT operation obtained with Fuzzy Option"} 
+@figure{/user_guides/boolean_operations/images/boolean_image132.png, "Result of CUT operation obtained with Fuzzy Option"}
 
 This example stresses not only the validity, but also the performance issue. The usage of Fuzzy option with the appropriate value allows processing the case much faster than with the pure Basic operation. The performance gain for the case is 45 (Processor: Intel(R) Core(TM) i5-3450 CPU @ 3.10 GHz).
 
@@ -2721,7 +2720,7 @@ The package consists of the following classes:
 * *BRepAlgoAPI_Cut* -- the class provides Boolean cut operation.
 * *BRepAlgoAPI_Section* -- the class provides Boolean section operation.
 
-@figure{/user_guides/boolean_operations/images/operations_image065.png, "Diagram of BRepAlgoAPI package"} 
+@figure{/user_guides/boolean_operations/images/operations_image065.png, "Diagram of BRepAlgoAPI package"}
 
 The detailed description of the classes can be found in the corresponding .hxx files. The examples are below in this chapter.
 

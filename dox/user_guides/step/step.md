@@ -735,8 +735,7 @@ This method is intended to force two adjacent edges in the wire to share the sam
 
 The following diagram illustrates the structure of calls in reading STEP. The highlighted classes are intended to translate geometry
 
-@image html /user_guides/step/images/step_image003.png "The structure of calls in reading STEP"
-@image latex /user_guides/step/images/step_image003.png "The structure of calls in reading STEP"
+@figure{/user_guides/step/images/step_image003.png, "The structure of calls in reading STEP"}
   
 @subsection occt_step_2_7 Example
 ~~~~~
@@ -1074,8 +1073,7 @@ The following diagram illustrates the structure of calls in writing STEP.
 The highlighted classes are intended to translate geometry. 
 
 
-@image html /user_guides/step/images/step_image004.png "The structure of calls in writing STEP"
-@image latex /user_guides/step/images/step_image004.png "The structure of calls in writing STEP"
+@figure{/user_guides/step/images/step_image004.png, "The structure of calls in writing STEP"}
 
     
 @subsection occt_step_3_7 Example

@@ -111,8 +111,7 @@ Data types described in a package may include one or  more of the following data
   * Pointers to other object classes
 Inside a package, two data types cannot bear the same  name. 
 
-@image html /user_guides/foundation_classes/images/foundation_classes_image003.png  "Contents of a package"
-@image latex /user_guides/foundation_classes/images/foundation_classes_image003.png  "Contents of a package"
+@figure{/user_guides/foundation_classes/images/foundation_classes_image003.png, "Contents of a package"}
 
 **Methods** are either **functions** or **procedures**.  Functions return an object, whereas procedures only communicate by passing arguments.  In both cases, when the transmitted object is an instance manipulated by a  handle, its identifier is passed. There are three categories of methods: 
 * **Object  constructor** Creates an instance of the described class. A class  will have one or more object constructors with various different arguments or none. 
@@ -143,8 +142,7 @@ The data types in Open CASCADE Technology fall into two  categories:
   * Data types manipulated by handle (or reference)
   * Data types manipulated by value
   
-@image html /user_guides/foundation_classes/images/foundation_classes_image004.png  "Manipulation of data types"
-@image latex /user_guides/foundation_classes/images/foundation_classes_image004.png  "Manipulation of data types"
+@figure{/user_guides/foundation_classes/images/foundation_classes_image004.png, "Manipulation of data types"}
   
 A data type is implemented as a class. The class not only  defines its data representation and the methods available on instances, but it  also suggests how the instance will be manipulated. 
   * A variable of a type manipulated by value contains the instance  itself.
@@ -213,15 +211,13 @@ There are three categories of types which are manipulated by  value:
   * Types defined by classes not inheriting from *Standard_Transient*, whether directly or not.
 Types which are manipulated by value behave in a more direct  fashion than those manipulated by handle and thus can be expected to perform  operations faster, but they cannot be stored independently in a file. 
 
-@image html /user_guides/foundation_classes/images/foundation_classes_image005.png   "Manipulation of a data type by value"
-@image latex /user_guides/foundation_classes/images/foundation_classes_image005.png   "Manipulation of a data type by value"
+@figure{/user_guides/foundation_classes/images/foundation_classes_image005.png, "Manipulation of a data type by value"}
 
 @subsubsection occt_fcug_2_1_3 Types manipulated by reference (handle)
 
 These are types defined by classes inheriting from the *Transient* class.
   
-@image html /user_guides/foundation_classes/images/foundation_classes_image006.png   "Manipulation of a data type by reference"
-@image latex /user_guides/foundation_classes/images/foundation_classes_image006.png   "Manipulation of a data type by reference"
+@figure{/user_guides/foundation_classes/images/foundation_classes_image006.png, "Manipulation of a data type by reference"}
   
 @subsubsection occt_fcug_2_1_4 When is it necessary to use a handle?
 
@@ -1754,7 +1750,7 @@ main ()
     sol.Solve(b1, x1);      // yes, so compute x1
     sol.Solve(b2, x2);      // then x2
     ...
-  } 
+  }
   else {                    // it is not OK:
     // fix up
     sol.Solve(b1, x1);            // error:

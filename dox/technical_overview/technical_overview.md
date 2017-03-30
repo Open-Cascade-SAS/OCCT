@@ -128,7 +128,7 @@ Top-level API provides the following functionality:
 	* Pipes -- general-form sweeps;
 	* Lofting.
 
-@figure{/technical_overview/images/0001.png "Shapes containing pipes with variable radius produced by sweeping"}  
+@figure{/technical_overview/images/0001.png "Shapes containing pipes with variable radius produced by sweeping"}
 
 * Boolean Operations, which allow creating new shapes from the combinations of source shapes. For two shapes *S1* and *S2*:
   * *Common* contains all points that are in *S1* and *S2*;
@@ -145,7 +145,7 @@ See @ref occt_user_guides__boolean_operations "Boolean Operations" User's Guide 
 
 * Algorithms for creation of mechanical features, i.e. depressions, protrusions, ribs and grooves or slots along planar or revolution surfaces. 
 
-@figure{/technical_overview/images/0004.png}  
+@figure{/technical_overview/images/0004.png}
  
 Please, see the details in @ref occt_user_guides__modeling_algos "Modeling Algorithms User's Guide".
 

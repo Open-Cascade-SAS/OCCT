@@ -399,12 +399,10 @@ Note that the image that will be included in documentation is the whole page of 
 Note that the *figure* command is an alias to the standard Doxygen command *image* repeated twice: once for HTML and then for Latex output (used for PDF generation). Thus if HTML and PDF outputs should include different images or captions, command "image" can be used:
 
 @verbatim
-  @image html /relative/path/to/image/occ_logo.png
-  @image latex /relative/path/to/image/occ_logo.png "OCC logo"
+  @figure{/relative/path/to/image/occ_logo.png, "OCC logo"}
 @endverbatim
 
-@image html /resources/occ_logo.png
-@image latex /resources/occ_logo.png "OCC logo"
+@figure{/resources/occ_logo.png, "OCC logo"}
  
 @subsection  OCCT_DM_SECTION_A_8 Table Of Contents
 
