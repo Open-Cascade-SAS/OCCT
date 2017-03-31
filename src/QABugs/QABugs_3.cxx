@@ -126,112 +126,6 @@ static int BUC60614(Draw_Interpretor& di, Standard_Integer argc, const char ** a
   return 0;
 }
 
-#include<BRep_Builder.hxx>
-#include<BRepTools_ShapeSet.hxx>
-#include<BRepTools.hxx>
-#include<BRepAdaptor_HSurface.hxx>
-#include<TopOpeBRep_PointClassifier.hxx>
-#include<Precision.hxx>
-#ifdef _MSC_VER
-#include<stdio.h>
-#endif
-
-static int BUC60609(Draw_Interpretor& di, Standard_Integer argc, const char ** argv) {
-  gp_Pnt2d uvSurf;
-  TopAbs_State state;
-  
-  if (argc == 3) {
-    // BUC60609 shape name
-  } else if ( argc == 5 ) {
-    // BUC60609 shape name U V
-  } else {
-    di << "Usage : "<< argv[0] << " shape name [U V]\n";
-    return(-1);
-  }
-  
-  TCollection_AsciiString  aFilePath(argv[1]); 
-  
-  filebuf fic;
-  istream in(&fic);
-  if (!fic.open(aFilePath.ToCString(),ios::in)) {
-    di << "Cannot open file for reading : " << aFilePath << "\n";
-    return(-1);
-  }
-
-  TopoDS_Shape theShape;
-  char typ[255];
-  in >> typ;
-  if (!in.fail()) {
-    if( !strcmp(typ, "DBRep_DrawableShape") ){
-      BRep_Builder B;
-      BRepTools_ShapeSet S(B);
-      S.Read(in);
-      S.Read(theShape,in);
-    }else{
-      di << "Wrong entity type in " << aFilePath << "\n";
-      return(-1);
-    }
-  }
-
-  const TopoDS_Face &face = TopoDS::Face (theShape);
-
-  if(argc > 2){
-    DBRep::Set(argv[2],face);
-  }
-
-  Standard_Real faceUMin,faceUMax,faceVMin,faceVMax;
-  
-  BRepTools::UVBounds (face, faceUMin,faceUMax,faceVMin,faceVMax);
-
-  di << "The bounds of the trimmed face:\n";
-  di << faceUMin << " <= U <= " << faceUMax << "\n";
-  di << faceVMin << " <= V <= " << faceVMax << "\n";
-  
-  Handle(BRepAdaptor_HSurface) hsurfa = new BRepAdaptor_HSurface(face);
-  
-  TopOpeBRep_PointClassifier PClass;
-
-  di << "Now test the point classifier by inputting U,V values\n";
-  di << "inside or outside the bounds displayed above\n";
-  di << "Type stop to exit\n";
-  
-  // Please register this:
-  // ***********************************************
-  // Note also that for periodic surfaces such as nimpod_1.topo,
-  // the U/V values may be +- 2pi compared to the actual face bounds
-  // (because U,V is probably coming from a Geom package routine).
-  // Hence IT WOULD BE USEFUL IF TopOpeBRep_PointClassifier COULD
-  // COPE WITH PERIODIC SURFACES, i.e. U,V +-Period giving same result.
-  // *************************************************
-
-  if (argc == 3) {
-    uvSurf = gp_Pnt2d(0.14,5.1);
-    state = PClass.Classify(face,uvSurf,Precision::PConfusion());
-    if(state == TopAbs_IN || state == TopAbs_ON){
-      di << "U=" << 0.14 << " V=" << 5.1 << "  classified INSIDE\n";
-    }else{
-      di << "U=" << 0.14 << " V=" << 5.1 << "  classified OUTSIDE\n";
-    }
-
-    uvSurf = gp_Pnt2d(1.28,5.1);
-    state = PClass.Classify(face,uvSurf,Precision::PConfusion());
-    if(state == TopAbs_IN || state == TopAbs_ON){
-      di << "U=" << 1.28 << " V=" << 5.1 << "  classified INSIDE\n";
-    }else{
-      di << "U=" << 1.28 << " V=" << 5.1 << "  classified OUTSIDE\n";
-    }
-  } else {
-    uvSurf = gp_Pnt2d(Draw::Atof(argv[3]),Draw::Atof(argv[4]));
-    state = PClass.Classify(face,uvSurf,Precision::PConfusion());
-    if(state == TopAbs_IN || state == TopAbs_ON){
-      di << "U=" << Draw::Atof(argv[3]) << " V=" << Draw::Atof(argv[4]) << "  classified INSIDE\n";
-    }else{
-      di << "U=" << Draw::Atof(argv[3]) << " V=" << Draw::Atof(argv[4]) << "  classified OUTSIDE\n";
-    }
-  }
-  return 0;
-}
-
 #include<BRepBuilderAPI_MakeVertex.hxx>
 #include<TCollection_ExtendedString.hxx>
 #include<AIS_LengthDimension.hxx>
@@ -274,6 +168,7 @@ static Standard_Integer BUC60632(Draw_Interpretor& di, Standard_Integer /*n*/, c
 }
 
 #include<TopoDS_Wire.hxx>
+#include <BRepTools.hxx>
 
 static Standard_Integer BUC60652(Draw_Interpretor& di, Standard_Integer argc, const char ** argv )
 {
@@ -434,7 +329,8 @@ return 0;
 #include <Bnd_BoundSortBox.hxx>
 #include <BRepBndLib.hxx>
 #include <Bnd_HArray1OfBox.hxx>
-  
+#include <TopExp_Explorer.hxx>
+
 static Standard_Integer BUC60729 (Draw_Interpretor& /*di*/,Standard_Integer /*argc*/, const char ** /*argv*/ )
 {
   Bnd_Box aMainBox;
@@ -1552,7 +1448,6 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands) {
   theCommands.Add("BUC60623","BUC60623 result Shape1 Shape2",__FILE__,BUC60623,group);
   theCommands.Add("BUC60569","BUC60569 shape",__FILE__,BUC60569,group);
   theCommands.Add("BUC60614","BUC60614 shape",__FILE__,BUC60614,group);
-  theCommands.Add("BUC60609","BUC60609 shape name [U V]",__FILE__,BUC60609,group);
   theCommands.Add("BUC60632","BUC60632 mode length",__FILE__,BUC60632,group);
   theCommands.Add("BUC60652","BUC60652 face",__FILE__,BUC60652,group);
   theCommands.Add("BUC60574","BUC60574 ",__FILE__,BUC60574,group);

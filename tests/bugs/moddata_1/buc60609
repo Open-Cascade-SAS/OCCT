@@ -2,25 +2,20 @@ puts "================"
 puts "BUC60609"
 puts "================"
 
-pload QAcommands
+restore [locate_data_file buc60609a.brep] a
 
-set INF [BUC60609 [locate_data_file buc60609a.brep] a]
-set ll [llength $INF]
-set first [lindex $INF [expr $ll - 5]]
-set second [lindex $INF [expr $ll - 1]]
+# two points will be classified
+point p1 0.14 5.1
+point p2 1.28 5.1
 
-if {$first != "INSIDE" && $first != "inside"} {
-    puts "Faulty BUC60609 first: $first is not right result. It should be INSIDE"
+if {![regexp "IN" [b2dclassify a p1]]} {
+  puts "Faulty BUC60609 first: $first is not right result. It should be INSIDE"
 } else {
-    puts "BUC60609 first OK:  It is INSIDE"
+  puts "BUC60609 first OK:  It is INSIDE"
 }
 
-if {$second != "INSIDE"} {
-    puts "Faulty BUC60609 second: $second is not right result. It should be INSIDE"
+if {![regexp "IN" [b2dclassify a p2]]} {
+  puts "Faulty BUC60609 second: $second is not right result. It should be INSIDE"
 } else {
-    puts "BUC60609 second OK:  It is INSIDE"
+  puts "BUC60609 second OK:  It is INSIDE"
 }
-
-renamevar a result
-checkview -display result -2d -path ${imagedir}/${test_image}.png
-

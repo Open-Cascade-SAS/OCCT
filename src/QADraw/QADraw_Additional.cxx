@@ -16,11 +16,6 @@
 #include <QABugs.hxx>
 #include <QADraw.hxx>
 #include <QADNaming.hxx>
-//#if defined(WOKC40)
-//#include <QADBRepNaming.hxx>
-//#else
-#include <QANewDBRepNaming.hxx>
-//#endif
 #include <QANCollection.hxx>
 
 void QADraw::AdditionalCommands(Draw_Interpretor& theCommands)
@@ -28,11 +23,6 @@ void QADraw::AdditionalCommands(Draw_Interpretor& theCommands)
   QABugs::Commands(theCommands);
 
   QADNaming::AllCommands(theCommands);
-//#if defined(WOKC40)
-//  QADBRepNaming::AllCommands(theCommands);
-//#else
-  QANewDBRepNaming::AllCommands(theCommands);
-//#endif
   QANCollection::Commands(theCommands);
 
   return;
