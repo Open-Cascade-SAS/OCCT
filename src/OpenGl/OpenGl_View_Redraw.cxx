@@ -1089,7 +1089,6 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
 #endif
   aCtx->core20fwd->glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-#if !defined(GL_ES_VERSION_2_0)
   if (aCtx->arbFBOBlit != NULL
    && theReadFbo->NbSamples() != 0)
   {
@@ -1164,7 +1163,6 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
     }
   }
   else
-#endif
   {
     aCtx->core20fwd->glDepthFunc (GL_ALWAYS);
     aCtx->core20fwd->glDepthMask (GL_TRUE);
