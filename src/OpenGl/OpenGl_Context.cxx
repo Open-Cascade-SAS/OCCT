@@ -1213,7 +1213,8 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
              || CheckExtension ("GL_EXT_texture_rg");
   extBgra     = CheckExtension ("GL_EXT_texture_format_BGRA8888");
   extAnis = CheckExtension ("GL_EXT_texture_filter_anisotropic");
-  extPDS  = CheckExtension ("GL_OES_packed_depth_stencil");
+  extPDS  = IsGlGreaterEqual (3, 0)
+         || CheckExtension ("GL_OES_packed_depth_stencil");
 
   core11fwd = (OpenGl_GlCore11Fwd* )(&(*myFuncs));
   if (IsGlGreaterEqual (2, 0))

@@ -129,6 +129,7 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   myVPSizeY = theSizeY;
   const Standard_Integer aSizeX = theSizeX > 0 ? theSizeX : 2;
   const Standard_Integer aSizeY = theSizeY > 0 ? theSizeY : 2;
+  bool hasStencilRB = false;
 
   // Create the textures (will be used as color buffer and depth-stencil buffer)
   if (theNbSamples != 0)
@@ -175,9 +176,15 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
                                  GL_DEBUG_SEVERITY_HIGH,
                                  aMsg);
 
+      hasStencilRB = aPixelFormat == GL_DEPTH_STENCIL
+                  && theGlContext->extPDS;
+      GLint aDepthStencilFormat = hasStencilRB
+                                ? GL_DEPTH24_STENCIL8
+                                : GL_DEPTH_COMPONENT16;
+
       theGlContext->arbFBO->glGenRenderbuffers (1, &myGlDepthRBufferId);
       theGlContext->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, myGlDepthRBufferId);
-      theGlContext->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, aSizeX, aSizeY);
+      theGlContext->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, aDepthStencilFormat, aSizeX, aSizeY);
       theGlContext->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, NO_RENDERBUFFER);
     }
   }
@@ -204,8 +211,18 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   }
   else if (myGlDepthRBufferId != NO_RENDERBUFFER)
   {
+  #ifdef GL_DEPTH_STENCIL_ATTACHMENT
+    theGlContext->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, hasStencilRB ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT,
+                                                     GL_RENDERBUFFER, myGlDepthRBufferId);
+  #else
     theGlContext->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                                                      GL_RENDERBUFFER, myGlDepthRBufferId);
+    if (hasStencilRB)
+    {
+      theGlContext->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+                                                       GL_RENDERBUFFER, myGlDepthRBufferId);
+    }
+  #endif
   }
   if (theGlContext->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
@@ -282,8 +299,14 @@ Standard_Boolean OpenGl_FrameBuffer::InitWithRB (const Handle(OpenGl_Context)& t
     theGlCtx->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, myColorFormat, aSizeX, aSizeY);
   }
 
+  bool hasStencilRB = false;
   if (myDepthFormat != 0)
   {
+    GLenum aPixelFormat = 0;
+    GLenum aDataType    = 0;
+    getDepthDataFormat (myDepthFormat, aPixelFormat, aDataType);
+    hasStencilRB = aPixelFormat == GL_DEPTH_STENCIL;
+
     theGlCtx->arbFBO->glGenRenderbuffers (1, &myGlDepthRBufferId);
     theGlCtx->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, myGlDepthRBufferId);
     theGlCtx->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, myDepthFormat, aSizeX, aSizeY);
@@ -298,13 +321,16 @@ Standard_Boolean OpenGl_FrameBuffer::InitWithRB (const Handle(OpenGl_Context)& t
   if (myGlDepthRBufferId != NO_RENDERBUFFER)
   {
   #ifdef GL_DEPTH_STENCIL_ATTACHMENT
-    theGlCtx->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
+    theGlCtx->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, hasStencilRB ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT,
                                                  GL_RENDERBUFFER, myGlDepthRBufferId);
   #else
     theGlCtx->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                                                  GL_RENDERBUFFER, myGlDepthRBufferId);
-    theGlCtx->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
-                                                 GL_RENDERBUFFER, myGlDepthRBufferId);
+    if (hasStencilRB)
+    {
+      theGlCtx->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+                                                   GL_RENDERBUFFER, myGlDepthRBufferId);
+    }
   #endif
   }
   if (theGlCtx->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
