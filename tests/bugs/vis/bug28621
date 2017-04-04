@@ -1,0 +1,28 @@
+puts "================================================================================================="
+puts "0028621: Visualization - AIS_ColoredShape::UnsetTransparency() is not implemented"
+puts "================================================================================================="
+
+pload VISUALIZATION MODELING
+box b 1 2 3
+vclear
+vinit View1
+vdisplay -noupdate -dispMode 1 b
+vfit
+
+# OK
+set aColor11 [vreadpixel 250 250 rgb name]
+vsettransparency b 0.8
+vunsettransparency b
+set aColor12 [vreadpixel 250 250 rgb name]
+if { "$aColor11" != "$aColor12" } { puts "Error: color is not set back" }
+
+explode b F
+vaspects b -subShapes b_2 -setColor RED
+
+set aColor21 [vreadpixel 250 250 rgb name]
+vsettransparency b 0.8
+vunsettransparency b
+set aColor22 [vreadpixel 250 250 rgb name]
+if { "$aColor21" != "$aColor22" } { puts "Error: color is not set back" }
+
+vdump $imagedir/${casename}.png

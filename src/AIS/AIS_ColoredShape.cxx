@@ -287,6 +287,33 @@ void AIS_ColoredShape::SetTransparency (const Standard_Real theValue)
 }
 
 //=======================================================================
+//function : UnsetTransparency
+//purpose  :
+//=======================================================================
+void AIS_ColoredShape::UnsetTransparency()
+{
+  myDrawer->SetTransparency (0.0f);
+  if (myDrawer->HasOwnShadingAspect())
+  {
+    myDrawer->ShadingAspect()->SetTransparency (0.0, myCurrentFacingModel);
+  }
+  if (!HasColor() && !HasMaterial())
+  {
+    myDrawer->SetShadingAspect (Handle(Prs3d_ShadingAspect)());
+  }
+
+  for (AIS_DataMapOfShapeDrawer::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
+  {
+    const Handle(Prs3d_Drawer)& aDrawer = anIter.Value();
+    if (aDrawer->HasOwnShadingAspect())
+    {
+      aDrawer->ShadingAspect()->SetTransparency (0.0, myCurrentFacingModel);
+    }
+  }
+  SynchronizeAspects();
+}
+
+//=======================================================================
 //function : SetMaterial
 //purpose  :
 //=======================================================================
