@@ -26,8 +26,6 @@
 #include <Standard_Boolean.hxx>
 class Poly_Triangulation;
 
-
-
 //! Provides an algorithm to explore, inside a triangulation, the
 //! adjacency data for a node or a triangle.
 //! Adjacency data for a node consists of triangles which
@@ -67,33 +65,53 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
+  //! Constructs an uninitialized algorithm.
+  Standard_EXPORT Poly_Connect();
+
   //! Constructs an algorithm to explore the adjacency data of
   //! nodes or triangles for the triangulation T.
-  Standard_EXPORT Poly_Connect(const Handle(Poly_Triangulation)& T);
-  
+  Standard_EXPORT Poly_Connect (const Handle(Poly_Triangulation)& theTriangulation);
+
+  //! Initialize the algorithm to explore the adjacency data of
+  //! nodes or triangles for the triangulation theTriangulation.
+  Standard_EXPORT void Load (const Handle(Poly_Triangulation)& theTriangulation);
+
   //! Returns the triangulation analyzed by this tool.
-    Handle(Poly_Triangulation) Triangulation() const;
-  
+  const Handle(Poly_Triangulation)& Triangulation() const { return myTriangulation; }
+
   //! Returns the index of a triangle containing the node at
   //! index N in the nodes table specific to the triangulation analyzed by this tool
-    Standard_Integer Triangle (const Standard_Integer N) const;
-  
+  Standard_Integer Triangle (const Standard_Integer N) const { return myTriangles (N); }
+
   //! Returns in t1, t2 and t3, the indices of the 3 triangles
   //! adjacent to the triangle at index T in the triangles table
   //! specific to the triangulation analyzed by this tool.
   //! Warning
   //! Null indices are returned when there are fewer than 3
   //! adjacent triangles.
-  Standard_EXPORT void Triangles (const Standard_Integer T, Standard_Integer& t1, Standard_Integer& t2, Standard_Integer& t3) const;
-  
+  void Triangles (const Standard_Integer T, Standard_Integer& t1, Standard_Integer& t2, Standard_Integer& t3) const
+  {
+    Standard_Integer index = 6*(T-1);
+    t1 = myAdjacents(index+1);
+    t2 = myAdjacents(index+2);
+    t3 = myAdjacents(index+3);
+  }
+
   //! Returns, in n1, n2 and n3, the indices of the 3 nodes
   //! adjacent to the triangle referenced at index T in the
   //! triangles table specific to the triangulation analyzed by this tool.
   //! Warning
   //! Null indices are returned when there are fewer than 3 adjacent nodes.
-  Standard_EXPORT void Nodes (const Standard_Integer T, Standard_Integer& n1, Standard_Integer& n2, Standard_Integer& n3) const;
-  
+  void Nodes (const Standard_Integer T, Standard_Integer& n1, Standard_Integer& n2, Standard_Integer& n3) const
+  {
+    Standard_Integer index = 6*(T-1);
+    n1 = myAdjacents(index+4);
+    n2 = myAdjacents(index+5);
+    n3 = myAdjacents(index+6);
+  }
+
+public:
+
   //! Initializes an iterator to search for all the triangles
   //! containing the node referenced at index N in the nodes
   //! table, for the triangulation analyzed by this tool.
@@ -116,8 +134,8 @@ public:
   //! Returns true if there is another element in the iterator
   //! defined with the function Initialize (i.e. if there is another
   //! triangle containing the given node).
-    Standard_Boolean More() const;
-  
+  Standard_Boolean More() const { return mymore; }
+
   //! Advances the iterator defined with the function Initialize to
   //! access the next triangle.
   //! Note: There is no action if the iterator is empty (i.e. if the
@@ -128,20 +146,9 @@ public:
   //! iterator, defined with the function Initialize, points. This is
   //! an index in the triangles table specific to the triangulation
   //! analyzed by this tool
-  Standard_EXPORT Standard_Integer Value() const;
-
-
-
-
-protected:
-
-
-
-
+  Standard_Integer Value() const { return mytr; }
 
 private:
-
-
 
   Handle(Poly_Triangulation) myTriangulation;
   TColStd_Array1OfInteger myTriangles;
@@ -153,14 +160,6 @@ private:
   Standard_Boolean mysense;
   Standard_Boolean mymore;
 
-
 };
-
-
-#include <Poly_Connect.lxx>
-
-
-
-
 
 #endif // _Poly_Connect_HeaderFile

@@ -14,42 +14,89 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Poly_Connect.hxx>
+
 #include <Poly_Triangle.hxx>
 #include <Poly_Triangulation.hxx>
-#include <Standard.hxx>
+
+// this structure records one of the edges starting from a node
+struct polyedge
+{
+  polyedge* next;         // the next edge in the list
+  Standard_Integer nd;    // the second node of the edge
+  Standard_Integer nt[2]; // the two adjacent triangles
+  Standard_Integer nn[2]; // the two adjacent nodes
+  DEFINE_STANDARD_ALLOC
+};
 
 //=======================================================================
 //function : Poly_Connect
-//purpose  : 
+//purpose  :
 //=======================================================================
-// this structure records one of the edges starting from a node
-//typedef struct polyedge {
-struct polyedge {
-    polyedge* next;             // the next edge in the list
-    Standard_Integer nd;    // the second node of the edge
-    Standard_Integer nt[2]; // the two adjacent triangles
-    Standard_Integer nn[2]; // the two adjacent nodes
-    DEFINE_STANDARD_ALLOC
-  };
-
-Poly_Connect::Poly_Connect(const Handle(Poly_Triangulation)& T) :
-    myTriangulation(T),
-    myTriangles(1,T->NbNodes()),
-    myAdjacents(1,6*T->NbTriangles())
+Poly_Connect::Poly_Connect()
+: mytr    (0),
+  myfirst (0),
+  mynode  (0),
+  myothernode (0),
+  mysense (false),
+  mymore  (false)
 {
+  //
+}
+
+//=======================================================================
+//function : Poly_Connect
+//purpose  :
+//=======================================================================
+Poly_Connect::Poly_Connect(const Handle(Poly_Triangulation)& theTriangulation)
+: myTriangulation (theTriangulation),
+  myTriangles (1, theTriangulation->NbNodes()),
+  myAdjacents (1, 6 * theTriangulation->NbTriangles()),
+  mytr    (0),
+  myfirst (0),
+  mynode  (0),
+  myothernode (0),
+  mysense (false),
+  mymore  (false)
+{
+  Load (theTriangulation);
+}
+
+//=======================================================================
+//function : Load
+//purpose  :
+//=======================================================================
+void Poly_Connect::Load (const Handle(Poly_Triangulation)& theTriangulation)
+{
+  myTriangulation = theTriangulation;
+  mytr = 0;
+  myfirst = 0;
+  mynode  = 0;
+  myothernode = 0;
+  mysense = false;
+  mymore  = false;
+
+  const Standard_Integer nbNodes     = myTriangulation->NbNodes();
+  const Standard_Integer nbTriangles = myTriangulation->NbTriangles();
+  {
+    const Standard_Integer aNbAdjs = 6 * nbTriangles;
+    if (myTriangles.Size() != nbNodes)
+    {
+      TColStd_Array1OfInteger aTriArray (1, nbNodes);
+      myTriangles.Move (std::move (aTriArray));
+    }
+    if (myAdjacents.Size() != aNbAdjs)
+    {
+      TColStd_Array1OfInteger anAdjArray (1, aNbAdjs);
+      myAdjacents.Move (std::move (anAdjArray));
+    }
+  }
+
   myTriangles.Init(0);
   myAdjacents.Init(0);
-  Standard_Integer nbNodes     = myTriangulation->NbNodes();
-  Standard_Integer nbTriangles = myTriangulation->NbTriangles();
 
   // We first build an array of the list of edges connected to the nodes
- 
-
-  
   // create an array to store the edges starting from the vertices
-
   Standard_Integer i;
   // the last node is not used because edges are stored at the lower node index
   polyedge** edges = new polyedge*[nbNodes];
@@ -165,39 +212,6 @@ Poly_Connect::Poly_Connect(const Handle(Poly_Triangulation)& T) :
 }
 
 //=======================================================================
-//function : Triangles
-//purpose  : 
-//=======================================================================
-
-void Poly_Connect::Triangles(const Standard_Integer T, 
-			     Standard_Integer& t1, 
-			     Standard_Integer& t2, 
-			     Standard_Integer& t3) const 
-{
-  Standard_Integer index = 6*(T-1);
-  t1 = myAdjacents(index+1);
-  t2 = myAdjacents(index+2);
-  t3 = myAdjacents(index+3);
-}
-
-//=======================================================================
-//function : Nodes
-//purpose  : 
-//=======================================================================
-
-void Poly_Connect::Nodes(const Standard_Integer T, 
-			 Standard_Integer& n1, 
-			 Standard_Integer& n2, 
-			 Standard_Integer& n3) const 
-{
-  Standard_Integer index = 6*(T-1);
-  n1 = myAdjacents(index+4);
-  n2 = myAdjacents(index+5);
-  n3 = myAdjacents(index+6);
-}
-
-
-//=======================================================================
 //function : Initialize
 //purpose  : 
 //=======================================================================
@@ -271,15 +285,4 @@ void Poly_Connect::Next()
     }
   }
   mymore = Standard_False;
-}
-
-
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
-
-Standard_Integer Poly_Connect::Value() const
-{
-  return mytr;
 }

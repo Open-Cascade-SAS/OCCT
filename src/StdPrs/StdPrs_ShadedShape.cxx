@@ -186,11 +186,10 @@ namespace
       // Determinant of transform matrix less then 0 means that mirror transform applied.
       Standard_Boolean isMirrored = aTrsf.VectorialPart().Determinant() < 0;
 
-      Poly_Connect aPolyConnect (aT);
       // Extracts vertices & normals from nodes
       const TColgp_Array1OfPnt&   aNodes   = aT->Nodes();
       const TColgp_Array1OfPnt2d& aUVNodes = aT->UVNodes();
-      StdPrs_ToolTriangulatedShape::Normal (aFace, aPolyConnect);
+      StdPrs_ToolTriangulatedShape::ComputeNormals (aFace, aT);
       const TShort_Array1OfShortReal& aNormals = aT->Normals();
       const Standard_ShortReal*       aNormArr = &aNormals.First();
 

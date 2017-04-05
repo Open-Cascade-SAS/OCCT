@@ -14,6 +14,7 @@
 #ifndef _StdPrs_ToolTriangulatedShape_HeaderFile
 #define _StdPrs_ToolTriangulatedShape_HeaderFile
 
+#include <Poly_Connect.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Standard.hxx>
@@ -42,9 +43,22 @@ public:
   //! Computes nodal normals for Poly_Triangulation structure using UV coordinates and surface.
   //! Does nothing if triangulation already defines normals.
   //! @param theFace [in] the face
-  //! @param thePolyConnect [in] the definition of a face triangulation
-  Standard_EXPORT static void Normal (const TopoDS_Face& theFace,
-                                      Poly_Connect& thePolyConnect);
+  //! @param theTris [in] the definition of a face triangulation
+  static void ComputeNormals (const TopoDS_Face& theFace,
+                              const Handle(Poly_Triangulation)& theTris)
+  {
+    Poly_Connect aPolyConnect;
+    ComputeNormals (theFace, theTris, aPolyConnect);
+  }
+
+  //! Computes nodal normals for Poly_Triangulation structure using UV coordinates and surface.
+  //! Does nothing if triangulation already defines normals.
+  //! @param theFace [in] the face
+  //! @param theTris [in] the definition of a face triangulation
+  //! @param thePolyConnect [in,out] optional, initialized tool for exploring triangulation
+  Standard_EXPORT static void ComputeNormals (const TopoDS_Face& theFace,
+                                              const Handle(Poly_Triangulation)& theTris,
+                                              Poly_Connect& thePolyConnect);
 
   //! Evaluate normals for a triangle of a face.
   //! @param theFace [in] the face.

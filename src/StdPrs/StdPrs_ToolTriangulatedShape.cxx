@@ -131,15 +131,15 @@ Standard_Boolean StdPrs_ToolTriangulatedShape::IsClosed (const TopoDS_Shape& the
 }
 
 //=======================================================================
-//function : Normal
+//function : ComputeNormals
 //purpose  :
 //=======================================================================
-void StdPrs_ToolTriangulatedShape::Normal (const TopoDS_Face& theFace,
-                                           Poly_Connect&      thePolyConnect)
+void StdPrs_ToolTriangulatedShape::ComputeNormals (const TopoDS_Face& theFace,
+                                                   const Handle(Poly_Triangulation)& theTris,
+                                                   Poly_Connect& thePolyConnect)
 {
-  const Handle(Poly_Triangulation)& aPolyTri = thePolyConnect.Triangulation();
-  if (aPolyTri.IsNull()
-   || aPolyTri->HasNormals())
+  if (theTris.IsNull()
+   || theTris->HasNormals())
   {
     return;
   }
@@ -148,13 +148,13 @@ void StdPrs_ToolTriangulatedShape::Normal (const TopoDS_Face& theFace,
   const TopoDS_Face      aZeroFace = TopoDS::Face (theFace.Located (TopLoc_Location()));
   Handle(Geom_Surface)   aSurf     = BRep_Tool::Surface (aZeroFace);
   const Standard_Real    aTol      = Precision::Confusion();
-  Handle(TShort_HArray1OfShortReal) aNormals = new TShort_HArray1OfShortReal (1, aPolyTri->NbNodes() * 3);
-  const Poly_Array1OfTriangle& aTriangles = aPolyTri->Triangles();
-  const TColgp_Array1OfPnt2d*  aNodesUV   = aPolyTri->HasUVNodes() && !aSurf.IsNull()
-                                          ? &aPolyTri->UVNodes()
+  Handle(TShort_HArray1OfShortReal) aNormals = new TShort_HArray1OfShortReal (1, theTris->NbNodes() * 3);
+  const Poly_Array1OfTriangle& aTriangles = theTris->Triangles();
+  const TColgp_Array1OfPnt2d*  aNodesUV   = theTris->HasUVNodes() && !aSurf.IsNull()
+                                          ? &theTris->UVNodes()
                                           : NULL;
   Standard_Integer aTri[3];
-  const TColgp_Array1OfPnt& aNodes = aPolyTri->Nodes();
+  const TColgp_Array1OfPnt& aNodes = theTris->Nodes();
   gp_Dir aNorm;
   for (Standard_Integer aNodeIter = aNodes.Lower(); aNodeIter <= aNodes.Upper(); ++aNodeIter)
   {
@@ -162,6 +162,11 @@ void StdPrs_ToolTriangulatedShape::Normal (const TopoDS_Face& theFace,
     if (aNodesUV == NULL
      || GeomLib::NormEstim (aSurf, aNodesUV->Value (aNodeIter), aTol, aNorm) > 1)
     {
+      if (thePolyConnect.Triangulation() != theTris)
+      {
+        thePolyConnect.Load (theTris);
+      }
+
       // compute flat normals
       gp_XYZ eqPlan (0.0, 0.0, 0.0);
       for (thePolyConnect.Initialize (aNodeIter); thePolyConnect.More(); thePolyConnect.Next())
@@ -185,7 +190,7 @@ void StdPrs_ToolTriangulatedShape::Normal (const TopoDS_Face& theFace,
     aNormals->SetValue (anId + 2, (Standard_ShortReal )aNorm.Y());
     aNormals->SetValue (anId + 3, (Standard_ShortReal )aNorm.Z());
   }
-  aPolyTri->SetNormals (aNormals);
+  theTris->SetNormals (aNormals);
 }
 
 //=======================================================================
@@ -199,7 +204,7 @@ void StdPrs_ToolTriangulatedShape::Normal (const TopoDS_Face&  theFace,
   const Handle(Poly_Triangulation)& aPolyTri = thePolyConnect.Triangulation();
   if (!aPolyTri->HasNormals())
   {
-    Normal (theFace, thePolyConnect);
+    ComputeNormals (theFace, aPolyTri, thePolyConnect);
   }
 
   const TColgp_Array1OfPnt&       aNodes   = aPolyTri->Nodes();
