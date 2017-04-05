@@ -24,10 +24,11 @@
 #include <TopTools_SequenceOfShape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_ListOfShape.hxx>
+#include <BRepTools_ReShape.hxx>
 class TopoDS_Wire;
 class TopoDS_Shape;
-
 
 //! Compute a topological surface ( a  shell) using
 //! generating wires. The face of the shell will be
@@ -56,31 +57,31 @@ public:
   //! <SSection>  of a  section.
   Standard_EXPORT const TopTools_ListOfShape& GeneratedShapes (const TopoDS_Shape& SSection) const;
 
+  //! Returns a modified shape in the constructed shell,
+  //! If shape is not changed (replaced) during operation => returns the same shape
+  Standard_EXPORT TopoDS_Shape ResultShape (const TopoDS_Shape& theShape) const;
 
-
+  //! Sets the mutable input state
+  //! If true then the input profile can be modified 
+  //! inside the operation. Default value is true.
+  Standard_EXPORT void SetMutableInput(const Standard_Boolean theIsMutableInput);
+    
+  //! Returns the current mutable input state
+  Standard_EXPORT Standard_Boolean IsMutableInput() const;
 
 protected:
 
-
-
-
-
 private:
-
-
 
   TopTools_SequenceOfShape myWires;
   TopoDS_Shell myShell;
   TopTools_DataMapOfShapeListOfShape myMap;
-
+  TopTools_DataMapOfShapeShape myOldNewShapes;
+  BRepTools_ReShape myReshaper;
+  Standard_Boolean myMutableInput;
 
 };
 
-
 #include <BRepFill_Generator.lxx>
-
-
-
-
 
 #endif // _BRepFill_Generator_HeaderFile

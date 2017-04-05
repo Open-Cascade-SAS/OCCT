@@ -470,10 +470,15 @@ Standard_Integer thrusections(Draw_Interpretor&, Standard_Integer n, const char*
     Generator = 0;
   }
   Generator = new BRepOffsetAPI_ThruSections(issolid, isruled);
-
+  Standard_Boolean IsMutableInput = Standard_True;
   Standard_Integer NbEdges = 0;
   Standard_Boolean IsFirstWire = Standard_False;
   for (Standard_Integer i = index + 2; i <= n - 1; i++) {
+    if (!strcmp(a[i], "-safe"))
+    {
+      IsMutableInput = Standard_False;
+      continue;
+    }
     Standard_Boolean IsWire = Standard_True;
     Shape = DBRep::Get(a[i], TopAbs_WIRE);
     if (!Shape.IsNull())
@@ -506,6 +511,8 @@ Standard_Integer thrusections(Draw_Interpretor&, Standard_Integer n, const char*
         samenumber = Standard_False;
 
   }
+
+  Generator->SetMutableInput(IsMutableInput);
 
   check = (check || !samenumber);
   Generator->CheckCompatibility(check);
@@ -1001,7 +1008,9 @@ void  BRepTest::SweepCommands(Draw_Interpretor& theCommands)
   theCommands.Add("gener", "gener result wire1 wire2 [..wire..]",
     __FILE__, gener, g);
 
-  theCommands.Add("thrusections", "thrusections [-N] result issolid isruled shape1 shape2 [..shape..], the option -N means no check on wires, shapes must be wires or vertices (only first or last)",
+  theCommands.Add("thrusections", "thrusections [-N] result issolid isruled shape1 shape2 [..shape..] [-safe],\n"
+    "\t\tthe option -N means no check on wires, shapes must be wires or vertices (only first or last),\n"
+    "\t\t-safe option allows to prevent the modifying of input shapes",
     __FILE__, thrusections, g);
 
   theCommands.Add("mksweep", "mksweep wire",

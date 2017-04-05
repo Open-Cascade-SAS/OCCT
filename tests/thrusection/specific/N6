@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC28642: BRepOffsetAPI_ThruSections/BRepFill_Generator are modifying the input shape sections"
+puts "========"
+puts ""
+
+#check "closed" thrusection (first profile is same as the last)
+polyline p1 0 0 0 1 0 0
+polyline p2 2 1 0 2 2 0
+polyline p3 3 0 0 4 0 0
+polyline p4 2 -1 0 2 -2 0
+thrusections result 0 1 p1 p2 p3 p4 p1
+
+checkprops result -s 6
+checknbshapes result -vertex 8 -edge 12 -wire 4 -face 4 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 29
+

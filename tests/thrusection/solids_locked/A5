@@ -1,0 +1,7 @@
+restore [locate_data_file cts21570_1.rle] w1
+restore [locate_data_file cts21570_2.rle] w2
+orientation w1 F
+setflags w1 locked
+setflags w2 locked
+thrusections result 1 0 w2 w1 -safe
+checkprops result -s 29817.5
