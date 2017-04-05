@@ -10,9 +10,9 @@ This document provides a comprehensive description of the Boolean Operation Algo
 * General Fuse Operator (GFA), 
 * Boolean Operator (BOA), 
 * Section Operator (SA), 
-* Partition Operator (PA). 
+* Splitter Operator (SPA). 
 
-GFA is the base algorithm for BOA, PA, SA.
+GFA is the base algorithm for BOA, SPA, SA.
 
 GFA has a history-based architecture designed to allow using OCAF naming functionality. The architecture of GFA is expandable, that allows creating new algorithms basing on it.
 
@@ -75,35 +75,35 @@ The fact that *R<sub>GF</sub>* contains the components of *R<sub>B</sub>* allows
 
 For more details see @ref occt_algorithms_7 "General Fuse Algorithm" section.
 
-@subsubsection occt_algorithms_2_1_3 Partition operator 
+@subsubsection occt_algorithms_2_1_3 Splitter operator 
 
-The Partition operator can be applied to an arbitrary number of arguments in terms of *TopoDS_Shape*. The arguments are divided on two groups: Objects, Tools. The result of PA contains all parts belonging to the Objects but does not contain the parts that belongs to the Tools only.
+The Splitter operator can be applied to an arbitrary number of arguments in terms of *TopoDS_Shape*. The arguments are divided into two groups: *Objects* and *Tools*. The result of *SPA* contains all parts that belong to the *Objects* but does not contain the parts that belong to the *Tools*.
 
-The PA operator can be represented as follows:
+The *SPA* operator can be represented as follows:
 
-<i>R<sub>PA</sub>=PA (G<sub>1</sub>, G<sub>2</sub>),</i>
+<i>R<sub>SPA</sub>=SPA (G<sub>1</sub>, G<sub>2</sub>),</i>
 where:
-* <i>R<sub>PA</sub></i> -- is the result of the operation; 
-* *G<sub>1</sub>={S<sub>11</sub>, S<sub>12</sub> ... S<sub>1n1</sub>}*  group of arguments (Objects); 
-* *G<sub>2</sub>={S<sub>21</sub>, S<sub>22</sub> ... S<sub>2n2</sub>}*  group of arguments (Tools);
+* <i>R<sub>SPA</sub></i> -- is the result of the operation; 
+* *G<sub>1</sub>={S<sub>11</sub>, S<sub>12</sub> ... S<sub>1n1</sub>}*  group of arguments (*Objects*); 
+* *G<sub>2</sub>={S<sub>21</sub>, S<sub>22</sub> ... S<sub>2n2</sub>}*  group of arguments (*Tools*);
 * *n<sub>1</sub>* -- Number of arguments in *Objects* group; 
 * *n<sub>2</sub>* -- Number of arguments in *Tools* group.
 
-The result *R<sub>PA</sub>* can be obtained from *R<sub>GF</sub>* .
+The result *R<sub>SPA</sub>* can be obtained from *R<sub>GF</sub>* .
 
-For example, for two arguments *S<sub>1</sub>* and  *S<sub>2</sub>* the result *R<sub>PA</sub>* is
+For example, for two arguments *S<sub>1</sub>* and  *S<sub>2</sub>* the result *R<sub>SPA</sub>* is
 
-<i>R<sub>PA</sub>=PA(S<sub>1</sub>,S<sub>2</sub>)=S<sub>p1</sub>+S<sub>p12</sub>.</i>      
+<i>R<sub>SPA</sub>=SPA(S<sub>1</sub>,S<sub>2</sub>)=S<sub>p1</sub>+S<sub>p12</sub>.</i>      
 
-In case when all arguments of the PA are Objects (no Tools), the result of PA is equivalent to the result of GFA. 
+In case when all arguments of the *SPA* are *Objects* and there are no *Tools*, the result of *SPA* is equivalent to the result of *GFA*. 
 
-For example, when *G<sub>1</sub>* consists of shapes *S<sub>1</sub>* and *S<sub>2</sub>* the result of  *R<sub>PA</sub>* is
+For example, when *G<sub>1</sub>* consists of shapes *S<sub>1</sub>* and *S<sub>2</sub>* the result of *SPA* is
 
-<i>R<sub>PA</sub>=PA(S<sub>1</sub>, S<sub>2</sub>) = S<sub>p1</sub> + S<sub>p2</sub> + S<sub>p12</sub> = GF (S<sub>1</sub>, S<sub>2</sub>)</i>
+<i>R<sub>SPA</sub>=SPA(S<sub>1</sub>, S<sub>2</sub>) = S<sub>p1</sub> + S<sub>p2</sub> + S<sub>p12</sub> = GF (S<sub>1</sub>, S<sub>2</sub>)</i>
 
-The fact that the *R<sub>GF</sub>* contains the components of *R<sub>PA</sub>* allows considering GFA as the general case of PA. Thus, it is possible to implement PA as a subclass of GFA.
+The fact that the *R<sub>GF</sub>* contains the components of *R<sub>SPA</sub>* allows considering *GFA* as the general case of *SPA*. Thus, it is possible to implement *SPA* as a subclass of *GFA*.
 
-For more details see @ref occt_algorithms_8 "Partition Algorithm" section.
+For more details see @ref occt_algorithms_8 "Splitter Algorithm" section.
 
 @subsubsection occt_algorithms_2_1_4 Section operator
 
@@ -118,13 +118,13 @@ For more details see @ref occt_algorithms_10a "Section Algorithm" section.
 
 @subsection occt_algorithms_2_2 Parts of algorithms 
 
-GFA, BOA, PA and SA have the same Data Structure (DS). The main goal of the Data Structure is to store all necessary information for input data and intermediate results.
+GFA, BOA, SPA and SA have the same Data Structure (DS). The main goal of the Data Structure is to store all necessary information for input data and intermediate results.
 
 The operators consist of two main parts:
 *	Intersection Part (IP). The main goal of IP is to compute the interferences between sub-shapes of arguments. The IP uses DS to retrieve input data and store the results of intersections.
 *	Building Part (BP). The main goal of BP is to build required result of an operation. This part also uses DS to retrieve data and store the results.
 
-As it follows from the definition of operator results, the main differences between GFA, BOA, PA and SA are in the Building Part. The Intersection Part is the same for the algorithms.
+As it follows from the definition of operator results, the main differences between GFA, BOA, SPA and SA are in the Building Part. The Intersection Part is the same for the algorithms.
 
 @section occt_algorithms_3 Terms and Definitions
 
@@ -1049,27 +1049,28 @@ The input data for this step is a *BOPAlgo_Builder* object after building result
 | 2	| Correct tolerances of edges on faces | *BOPTools_Tools::CorrectCurveOnSurface()* |
 
 
-@section occt_algorithms_8  Partition Algorithm
+@section occt_algorithms_8  Splitter Algorithm
 
-The Partition algorithm is a General Fuse (GF) based algorithm. It provides means to split the group of an arbitrary number of shapes of an arbitrary dimension by the other group of an arbitrary number of shapes of an arbitrary dimension.
-All the options of the GF algorithm, such as Fuzzy mode, safe mode, parallel mode, gluing mode and history support are also available in this algorithm.
+The Splitter algorithm allows splitting a group of arbitrary shapes by another group of arbitrary shapes.<br>
+It is based on the General Fuse  algorithm, thus all options of the General Fuse such as Fuzzy mode, safe processing mode, parallel mode, gluing mode and history support are also available in this algorithm.
 
 @subsection occt_algorithms_8_1 Arguments
 
-* The arguments of the Partition algorithms are divided on two groups - *Objects* and *Tools*;
-* The requirements for the arguments (both for *Objects* and *Tools*) are the same as for General Fuse algorithm - there could be any number of arguments of any type, but each argument should be valid and not self-interfered.
+* The arguments of the Splitter algorithm are divided into two groups - *Objects* (shapes that will be split) and *Tools* (shapes, by which the *Objects* will be split);
+* The requirements for the arguments (both for *Objects* and *Tools*) are the same as for the General Fuse algorithm - there can be any number of arguments of any type in each group, but each argument should be valid and not self-interfered.
 
 @subsection occt_algorithms_8_2 Results
 
-* The result of Partition algorithm is similar to the result of General Fuse algorithm, but it contains only the split parts of the shapes included into the group of *Objects*;
-* Splits parts of the shapes included only into group of *Tools* are excluded from the result;
-* If there are no shapes in the group of *Tools* the result of the operation will be equivalent to the result of General Fuse operation.
+* The result of Splitter algorithm contains only the split parts of the shapes included into the group of *Objects*;
+* The split parts of the shapes included only into the group of *Tools* are excluded from the result;
+* If there are no shapes in the group of *Tools* the result of the operation will be equivalent to the result of General Fuse operation;
+* The shapes can be split by other shapes from the same group (if these shapes are interfering).
 
 @subsection occt_algorithms_8_3 Usage
 
 @subsubsection occt_algorithms_8_3_1 API
 
-On the low level the Partition algorithm is implemented in the class *BOPAlgo_Splitter*. The usage of this algorithm looks as follows:
+On the low level the Splitter algorithm is implemented in class *BOPAlgo_Splitter*. The usage of this algorithm looks as follows:
 ~~~~~
 BOPAlgo_Splitter aSplitter;
 BOPCol_ListOfShape aLSObjects = …; // Objects
@@ -1097,7 +1098,7 @@ const TopoDS_Shape& aResult = aSplitter.Shape(); // result of the operation
 
 @subsubsection occt_algorithms_8_3_2 DRAW
 
-For the usage of the Partition algorithm in DRAW the command *bsplit* is implemented. Similarly to the *bbuild* command (for the usage of the General Fuse algorithm) the *bsplit* command should be used after the Pave Filler is filled.
+The command *bsplit* implements the Splitter algorithm in DRAW. Similarly to the *bbuild* command for the General Fuse algorithm, the *bsplit* command should be used after the Pave Filler is filled.
 ~~~~~
 # s1 s2 s3 - objects
 # t1 t2 t3 - tools
@@ -1113,7 +1114,7 @@ bsplit result
 
 @subsubsection occt_algorithms_8_4_1 Example 1
 
-Splitting face by the set of edges:
+Splitting a face by the set of edges:
 
 ~~~~
 # draw script for reproducing
@@ -1159,7 +1160,7 @@ bsplit result
 
 @subsubsection occt_algorithms_8_4_2 Example 2
 
-Splitting plate by the set of cylinders:
+Splitting a plate by the set of cylinders:
 
 ~~~~
 # draw script for reproducing:
@@ -2101,15 +2102,15 @@ Creating compartments on a ship defined by hull shell and a set of planes. The s
 
 @section occt_algorithms_10c_Cells Cells Builder algorithm
 
-The Cells Builder algorithm has been designed as an extension of the General Fuse algorithm. The result of General Fuse algorithm is all split parts of the arguments. The Cells Builder algorithm provides means to specify uniquely any split part of the arguments, which are called Cells, to be taken or avoided in the result.
-The possibility of selecting any Cell allows combining any possible result and gives the Cells Builder algorithm a very wide application - from building the result of any Boolean operation to building the result of any application-specific operation.
-The algorithm builds the Cells only once, and then just reuses these Cells for combining the result. This gives the algorithm the performance advantage over the Booleans which are always rebuilding the splits to obtain the desirable result.
-Thus, the Cells Builder algorithm can be especially useful for simulating Boolean expressions - sequence of Boolean operations on the same arguments. Instead of performing many Boolean operations it allows getting the final result in a single operation.
-Usage of the Cells Builder will also be beneficial if you need to obtain a few results of different Boolean operations on the same arguments - Cut and Common for example.
+The Cells Builder algorithm is an extension of the General Fuse algorithm. The result of General Fuse algorithm contains all split parts of the arguments. The Cells Builder algorithm provides means to specify if any given split part of the arguments (referred to as Cell) can be taken or avoided in the result.
 
-The Cells Builder algorithm also provides the possibility to remove any internal boundaries between splits of the same type, i.e. fuse any same-dimensional parts added into result and keep any other separate.
-It is implemented through the Cells material approach - to remove boundary between two Cells, both of these Cells should be assigned with the same material ID.
-But, if the same material ID has been assigned to the Cells of different dimension, the removal of the internal boundaries for that material will not be performed. Currently, such case is considered as limitation for the algorithm.
+The possibility of selecting any Cell allows combining any possible result and gives the Cells Builder algorithm a very wide sphere of application - from building the result of any Boolean operation to building the result of any application-specific operation.
+
+The algorithm builds Cells only once and then just reuses them for combining the result. This gives this algorithm the performance advantage over Boolean operations, which always rebuild the splits to obtain the desirable result.
+
+Thus, the Cells Builder algorithm can be especially useful for simulating Boolean expressions, i.e. a sequence of Boolean operations on the same arguments. Instead of performing many Boolean operations it allows getting the final result in a single operation. The Cells Builder will also be beneficial to obtain the results of different Boolean operations on the same arguments - Cut and Common, for example.
+
+The Cells Builder algorithm also provides the possibility to remove any internal boundaries between splits of the same type, i.e. to fuse any same-dimensional parts added into the result and to keep any other parts as separate. This possibility is implemented through the Cells material approach: to remove the boundary between two Cells, both Cells should be assigned with the same material ID. However, if the same material ID has been assigned to the Cells of different dimension, the removal of the internal boundaries for that material will not be performed. Currently, such case is considered a limitation for the algorithm.
 
 The algorithm can also create containers from the connected Cells added into result - WIRES from Edges, SHELLS from Faces and COMPSOLIDS from Solids.
 
@@ -2117,32 +2118,31 @@ The algorithm can also create containers from the connected Cells added into res
 
 The algorithm has been implemented in the *BOPAlgo_CellsBuilder* class.
 
-Cells Builder is a General Fuse based algorithm. Thus all the options of the General Fuse algorithm, such as parallel processing mode, fuzzy mode, safe processing mode, gluing mode and history support are also available in this algorithm.
+Cells Builder is based on the General Fuse algorithm. Thus all options of the General Fuse algorithm, such as parallel processing mode, fuzzy mode, safe processing mode, gluing mode and history support are also available in this algorithm.
 
 The requirements for the input shapes are the same as for General Fuse - each argument should be valid in terms of *BRepCheck_Analyzer* and *BOPAlgo_ArgumentAnalyzer*.
 
-The result of the algorithm is compound containing selected parts of the basic type (VERTEX, EDGE, FACE or SOLID). The default result is an empty compound.
-It is possible to add any Cell by using the methods AddToRessult() and AddAllToResult(). It is also possible to remove any part from the result by using methods RemoveFromResult() and RemoveAllFromResult(). The method RemoveAllFromResult() is also suitable for clearing the result.
+The result of the algorithm is a compound containing the selected parts of the basic type (VERTEX, EDGE, FACE or SOLID). The default result is an empty compound. It is possible to add any Cell by using the methods *AddToRessult()* and *AddAllToResult()*. It is also possible to remove any part from the result by using methods *RemoveFromResult()* and *RemoveAllFromResult()*. The method *RemoveAllFromResult()* is also suitable for clearing the result.
 
-Definition of the Cells that should be added/removed to/from the result is performed by the definition of the input shapes from which the parts should be taken (ShapesToTake) and shapes which parts should be avoided (ShapesToAvoid).
-To be taken into result the part must be IN for all shapes from ShapesToTake and must be OUT of all shapes from ShapesToAvoid.
+The Cells that should be added/removed to/from the result are defined through the input shapes containing the parts that should be taken *(ShapesToTake)* and the ones containing parts that should be avoided (ShapesToAvoid).
+To be taken into the result the part must be IN all shapes from *ShapesToTake* and OUT of all shapes from *ShapesToAvoid*.
 
-To remove Internal boundaries it is necessary to set the same material to the Cells between which the boundaries should be removed and call the method RemoveInternalBoundaries().
-The material should not be equal to 0, as this is default material ID. The boundaries between Cells with this material ID will not be removed. The same Cell cannot be added with the different materials.
-It is also possible to remove the boundaries during combining the result. To do this it is necessary to set the material for parts (not equal to 0) and set the flag bUpdate to TRUE.
-If the same material ID has been set for the parts of different dimension, the removal of internal boundaries for this material will not be performed.
+To remove Internal boundaries, it is necessary to set the same material to the Cells, between which the boundaries should be removed, and call the method *RemoveInternalBoundaries()*.
+The material should not be equal to 0, as this is the default material ID. The boundaries between Cells with this material ID will not be removed. The same Cell cannot be added with different materials.
+It is also possible to remove the boundaries when the result is combined. To do this, it is necessary to set the material for parts (not equal to 0) and set the flag *bUpdate* to TRUE.
+If the same material ID has been set for parts of different dimension, the removal of internal boundaries for this material will not be performed.
 
-It is possible to create typed Containers from the parts added into result by using method MakeContainers(). The type of the containers will depend on the type of the input shapes: WIRES for EDGE, SHELLS for FACES and COMPSOLIDS for SOLIDS. The result will be compound containing containers.
+It is possible to create typed Containers from the parts added into result by using method *MakeContainers()*. The type of the containers will depend on the type of the input shapes: WIRES for EDGE, SHELLS for FACES and COMPSOLIDS for SOLIDS. The result will be a compound containing containers.
 
 #### API usage
-Here is the example of the usage of the algorithm on the API level:
+Here is the example of the algorithm use on the API level:
 ~~~~
 BOPAlgo_CellsBuilder aCBuilder;
 BOPCol_ListOfShape aLS = …; // arguments
 Standard_Boolean bRunParallel = Standard_False; /* parallel or single mode (the default value is FALSE)*/
-Standard_Real aTol = 0.0; /* fuzzy option (default value is 0)*/
+Standard_Real aTol = 0.0; /* fuzzy option (the default value is 0)*/
 Standard_Boolean bSafeMode = Standard_False; /* protect or not the arguments from modification*/
-BOPAlgo_Glue aGlue = BOPAlgo_GlueOff; /* Glue option to speed up intersection of the arguments*/
+BOPAlgo_Glue aGlue = BOPAlgo_GlueOff; /* Glue option to speed up the intersection of arguments*/
 //
 aCBuilder.SetArguments(aLS);
 aCBuilder.SetRunParallel(bRunParallel);
@@ -2178,16 +2178,16 @@ aResult = aCBuilder.Shape(); // the result
 
 The following set of new commands has been implemented to run the algorithm in DRAW Test Harness:
 ~~~~
-bcbuild          : Initialization of the Cells Builder. Use: bcbuild r
-bcadd            : Add parts to result. Use: bcadd r s1 (0,1) s2 (0,1) ... [-m material [-u]]
-bcaddall         : Add all parts to result. Use: bcaddall r [-m material [-u]]
-bcremove         : Remove parts from result. Use: bcremove r s1 (0,1) s2 (0,1) ...
-bcremoveall      : Remove all parts from result. Use: bcremoveall
-bcremoveint      : Remove internal boundaries. Use: bcremoveint r
-bcmakecontainers : Make containers from the parts added to result. Use: bcmakecontainers r
+bcbuild          : Initialization of the Cells Builder. Use: *bcbuild r*
+bcadd            : Add parts to result. Use: *bcadd r s1 (0,1) s2 (0,1) ... [-m material [-u]]*
+bcaddall         : Add all parts to result. Use: *bcaddall r [-m material [-u]]*
+bcremove         : Remove parts from result. Use: *bcremove r s1 (0,1) s2 (0,1) ...*
+bcremoveall      : Remove all parts from result. Use: *bcremoveall*
+bcremoveint      : Remove internal boundaries. Use: *bcremoveint r*
+bcmakecontainers : Make containers from the parts added to result. Use: *bcmakecontainers r*
 ~~~~
 
-Here is the example of the usage of the algorithm on the DRAW level:
+Here is the example of the algorithm use on the DRAW level:
 ~~~~
 psphere s1 15
 psphere s2 15
@@ -2210,7 +2210,7 @@ bcremoveint res
 
 @subsection occt_algorithms_10c_Cells_2 Examples
 
-The following simple example illustrates the possibilities of the algorithm - cylinder and a sphere intersected by a plane:
+The following simple example illustrates the possibilities of the algorithm working on a cylinder and a sphere intersected by a plane:
 ~~~~
 pcylinder c 10 30 
 psphere s 15
@@ -2305,10 +2305,10 @@ bcremoveint res
 @figure{/user_guides/boolean_operations/images/cells_algorithm_008.png, "Fuse operation"} 
 
 
-These examples may last forever. To define any new operation, it is just necessary to define which Cells should be taken and which should be avoided.
+These examples may last forever. To define any new operation, it is just necessary to define, which Cells should be taken and which should be avoided.
 
 
-@section occt_algorithms_10	Algorithms Limitations 
+@section occt_algorithms_10	Algorithm Limitations 
 
 The chapter describes the problems that are considered as Algorithm limitations. In most cases an Algorithm failure is caused by a combination of various factors, such as self-interfered arguments, inappropriate or ungrounded values of the argument tolerances, adverse mutual position of the arguments, tangency, etc.
 
@@ -2534,9 +2534,9 @@ The chapter is devoted to Advanced Options. In some cases the usage of Advanced 
 
 @subsection occt_algorithms_11a_1  Fuzzy Boolean Operation
 
-Fuzzy Boolean operation is the option of Basic Operations (GFA, BOA, PA and SA), in which additional user-specified tolerance is used. This option allows operators to handle robustly cases of touching and near-coincident, misalignment entities of the arguments.
+Fuzzy Boolean operation is the option of Basic Operations such as General Fuse, Splitting, Boolean, Section, Maker Volume and Cells building operations, in which additional user-specified tolerance is used. This option allows operators to handle robustly cases of touching and near-coincident, misaligned entities of the arguments.
 
-The Fuzzy option is useful on the shapes with gaps or embeddings between the entities of these shapes which are not covered by the tolerance values of these entities. Such shapes can be the result of modeling mistakes, or translating process, or import from other systems with loss of precision, or errors in some algorithms. 
+The Fuzzy option is useful on the shapes with gaps or embeddings between the entities of these shapes, which are not covered by the tolerance values of these entities. Such shapes can be the result of modeling mistakes, or translating process, or import from other systems with loss of precision, or errors in some algorithms. 
 
 Most likely, the Basic Operations will give unsatisfactory results on such models. The result may contain unexpected and unwanted small entities, faulty entities (in terms of *BRepCheck_Analyzer*), or there can be no result at all.
 
@@ -2605,7 +2605,7 @@ This example stresses not only the validity, but also the performance issue. The
 
 @subsection occt_algorithms_11a_2 Gluing Operation
 
-The Gluing operation is the option of the Basic Operations, such as General Fuse, Partition, Boolean, Section, Maker Volume and Cells building operations.
+The Gluing operation is the option of the Basic Operations such as General Fuse, Splitting, Boolean, Section, Maker Volume and Cells building operations.
 It has been designed to speed up the computation of the interferences among arguments of the operations on special cases, in which the arguments may be overlapping but do not have real intersections between their sub-shapes.
 
 This option cannot be used on the shapes having real intersections, like intersection vertex between edges, or intersection vertex between edge and a face or intersection line between faces:
@@ -2669,20 +2669,20 @@ Performance improvement in this case is also about 70 percent.
 
 @subsection occt_algorithms_11a_3 Safe processing mode
 
-The safe processing mode is the advanced option in Boolean Operation component. This mode can be applied to all Basic operations such as General Fuse, Partition, Boolean, Section, Maker Volume, Cells building.
-This option allows keeping the input arguments untouched. In other words, switching this option on prevents the input arguments from any modification such as tolerance increase, addition of the P-Curves on edges etc.
+The safe processing mode is the advanced option in Boolean Operation component. This mode can be applied to all Basic operations such as General Fuse, Splitting, Boolean, Section, Maker Volume, Cells building.
+This option allows keeping the input arguments untouched. In other words, switching this option on prevents the input arguments from any modification such as tolerance increase, addition of the P-Curves on edges, etc.
 
-The option might be very useful for implementation of the Undo/Redo mechanism in the applications and allows performing the operation many times without changing the inputs.
+The option can be very useful for implementation of the Undo/Redo mechanism in the applications and allows performing the operation many times without changing the inputs.
 
-By default the safe processing option is switched off for the algorithms. Enabling this option might slightly decrease the performance of the operation, because instead of the modification of some entitiy it will be necessary to create the copy of this entitiy and modify it. But this degradation should be very small because the copying is performed only in case of necessity.
+By default the safe processing option is switched off for the algorithms. Enabling this option might slightly decrease the performance of the operation, because instead of the modification of some entity it will be necessary to create the copy of this entity and modify it. However, this degradation should be very small because the copying is performed only in case of necessity.
 
-The option is also available in the Intersection algorithm - *BOPAlgo_PaveFiller*. Thus, if it is necessary to perform several different operations on the same arguments, it is possible to enable the safe processing mode in PaveFiller and prepare it only once and then use it in operations. It is enough to set the option to PaveFiller only and all algorithms taking this PaveFiller will also work in safe mode.
+The option is also available in the Intersection algorithm - *BOPAlgo_PaveFiller*. To perform several different operations on the same arguments, the safe processing mode can be enabled in PaveFiller, prepared only once and then used in operations. It is enough to set this option to PaveFiller only and all algorithms taking this PaveFiller will also work in the safe mode.
 
 @subsubsection occt_algorithms_11a_3_1 Usage
 
 #### API level
 
-To enable/disable the safe processing mode for the algorithm it is necessary to call the SetNonDestructive() method with appropriate value:
+To enable/disable the safe processing mode for the algorithm, it is necessary to call *SetNonDestructive()* method with the  appropriate value:
 ~~~~
 BOPAlgo_Builder aGF;
 //
@@ -2694,7 +2694,7 @@ aGF.SetNonDestructive(Standard_True);
 ~~~~
 
 #### TCL level
-For enabling the safe processing mode for the operaton in DRAW it is necessary to call the <i>bnondestructive</i> command with appropriate value:
+To enable the safe processing mode for the operation in DRAW, it is necessary to call the <i>bnondestructive</i> command with the appropriate value:
 * 0 - default value, the safe mode is switched off;
 * 1 - the safe mode will be switched on.
 
@@ -2714,7 +2714,7 @@ The package *BRepAlgoAPI* provides the Application Programming Interface of the 
 The package consists of the following classes:
 * *BRepAlgoAPI_Algo* -- the root class that provides the interface for algorithms. 
 * *BRepAlgoAPI_BuilderAlgo* -- the class API level of General Fuse algorithm.
-* *BRepAlgoAPI_Splitter* -- the class API level of the Partition algorithm.
+* *BRepAlgoAPI_Splitter* -- the class API level of the Splitter algorithm.
 * *BRepAlgoAPI_BooleanOperation* -- the root class for the classes *BRepAlgoAPI_Fuse*. *BRepAlgoAPI_Common*, *BRepAlgoAPI_Cut* and *BRepAlgoAPI_Section*.
 * *BRepAlgoAPI_Fuse* -- the class provides Boolean fusion operation. 
 * *BRepAlgoAPI_Common* -- the class provides Boolean common operation.
@@ -2729,7 +2729,7 @@ The detailed description of the classes can be found in the corresponding .hxx f
 The package *BOPTest* provides the usage of the Boolean Component on Tcl level. The method *BOPTest::APICommands* contains corresponding Tcl commands: 
 
 * *bapibuild* -- for General Fuse Operator;
-* *bapisplit* -- for Partition Operator;
+* *bapisplit* -- for Splitter Operator;
 * *bapibop* -- for Boolean Operator and Section Operator.
 
 The examples of how to use the commands are below in this chapter.
@@ -2835,9 +2835,9 @@ bglue 1
 bapibuild r 
 ~~~~
 
-@subsubsection occt_algorithms_11b_2_2 Case 2. Partition operation
+@subsubsection occt_algorithms_11b_2_2 Case 2. Splitting operation
 
-The following example illustrates how to use the Partition operator:
+The following example illustrates how to use the Splitter operator:
 
 #### C++ Level
 

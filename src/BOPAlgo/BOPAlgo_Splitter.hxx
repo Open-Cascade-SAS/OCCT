@@ -21,17 +21,25 @@
 
 #include <BOPAlgo_Builder.hxx>
 
-//! The class is a General Fuse (GF) based algorithm.<br>
-//! It provides means to split an arbitrary number of shapes of arbitrary
-//! dimensions by other arbitrary shapes.<br>
-//! The arguments of the operation are divided on two groups - Objects
-//! (shapes that will be split) and Tools (shapes by which the objects will be split).<br>
-//! The result of the operation contains only the split parts of the Objects.<br>
-//! The split parts of the Tools are excluded from the result.<br>
-//! If there are no Tool shapes, the operation will be equivalent to General Fuse.<br>
+//! The **Splitter algorithm** is the algorithm for splitting a group of
+//! arbitrary shapes by the other group of arbitrary shapes.<br>
+//! The arguments of the operation are divided on two groups:<br>
+//! *Objects* - shapes that will be split;<br>
+//! *Tools*   - shapes by which the *Objects* will be split.<br>
+//! The result of the operation contains only the split parts
+//! of the shapes from the group of *Objects*.<br>
+//! The split parts of the shapes from the group of *Tools* are excluded
+//! from the result.<br>
+//! The shapes can be split by the other shapes from the same group
+//! (in case these shapes are interfering).
 //!
-//! All options of the General Fuse algorithm, such as Fuzzy mode, safe mode, parallel
-//! mode, gluing mode and history support are also available in this algorithm.<br>
+//! The class is a General Fuse based algorithm. Thus, all options
+//! of the General Fuse algorithm such as Fuzzy mode, safe processing mode,
+//! parallel processing mode, gluing mode and history support are also
+//! available in this algorithm.<br>
+//! There is no requirement on the existence of the *Tools* shapes.
+//! And if there are no *Tools* shapes, the result of the splitting
+//! operation will be equivalent to the General Fuse result.
 //!
 //! The implementation of the algorithm is minimal - only the methods
 //! CheckData() and Perform() have been overridden.<br>

@@ -7842,7 +7842,7 @@ The defaults are:
  
 @section occt_draw_20 General Fuse Algorithm commands
 
-This chapter describes existing commands of Open CASCADE Draw Test Harness that are used for debugging of General Fuse Algorithm (GFA). It is also applicable for Boolean Operations Algorithm (BOA) and Partition Algorithm (PA) because these algorithms are subclasses of GFA. 
+This chapter describes existing commands of Open CASCADE Draw Test Harness that are used for debugging of General Fuse Algorithm (GFA). It is also applicable for all General Fuse based algorithms such as Boolean Operations Algorithm (BOA), Splitter Algorithm (SPA), Cells Builder Algorithm etc.
 
 See @ref occt_user_guides__boolean_operations "Boolean operations" user's guide for the description of these algorithms.
 
@@ -7850,7 +7850,7 @@ See @ref occt_user_guides__boolean_operations "Boolean operations" user's guide 
 
 The following terms and definitions are used in this document:
 * **Objects** -- list of shapes that are arguments of the algorithm.
-* **Tools** -- list of shapes that are arguments of the algorithm. Difference between Objects and Tools is defined by specific requirements of the operations (Boolean Operations, Partition Operation).
+* **Tools** -- list of shapes that are arguments of the algorithm. Difference between Objects and Tools is defined by specific requirements of the operations (Boolean Operations, Splitting Operation).
 * **DS** -- internal data structure used by the algorithm (*BOPDS_DS* object).
 * **PaveFiller** -- intersection part of the algorithm (*BOPAlgo_PaveFiller* object).
 * **Builder** -- builder part of the algorithm (*BOPAlgo_Builder* object).
@@ -7864,8 +7864,9 @@ The following terms and definitions are used in this document:
 * **baddtools** *S1 S2...Sn* -- adds shapes *S1, S2, ... Sn* as Tools;
 * **bfillds** -- performs the Intersection Part of the Algorithm;	
 * **bbuild** *r* -- performs the Building Part of the Algorithm (General Fuse operation); *r* is the resulting shape;
-* **bsplit** *r* -- performs the Partition operation; *r* is the resulting shape;
-* **bbop** *r* *iOp* -- performs the Boolean operation; *r* is the resulting shape; *iOp* - type of the operation (0 - COMMON; 1 - FUSE; 2 - CUT; 3 - CUT21; 4 - SECTION).
+* **bsplit** *r* -- performs the Splitting operation; *r* is the resulting shape;
+* **bbop** *r* *iOp* -- performs the Boolean operation; *r* is the resulting shape; *iOp* - type of the operation (0 - COMMON; 1 - FUSE; 2 - CUT; 3 - CUT21; 4 - SECTION);
+* **bcbuild** *rx* -- performs initialization of the *Cells Builder* algorithm (see @ref occt_algorithms_10c_Cells_1 "Usage of the Cells Builder algorithm" for more details).
 
 @subsection occt_draw_20_3 Commands for Intersection Part
 
