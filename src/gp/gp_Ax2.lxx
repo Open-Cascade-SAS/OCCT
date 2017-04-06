@@ -12,11 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gp.hxx>
-#include <gp_Ax1.hxx>
 #include <Precision.hxx>
 
-inline gp_Ax2::gp_Ax2() : vydir(0.,1.,0.), vxdir(1.,0.,0.)
+inline gp_Ax2::gp_Ax2()
+  :
+  vydir(0.,1.,0.)
+  // vxdir(1.,0.,0.) use default ctor of gp_Dir, as it creates the same dir(1,0,0)
 { }
 
 inline gp_Ax2::gp_Ax2(const gp_Pnt& P,

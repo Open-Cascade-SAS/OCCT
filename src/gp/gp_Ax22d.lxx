@@ -12,7 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline gp_Ax22d::gp_Ax22d() : vydir(0.,1.), vxdir(1.,0.)
+inline gp_Ax22d::gp_Ax22d()
+  :
+  vydir(0.,1.)
+  // vxdir(1.,0.) use default ctor of gp_Dir2d, as it creates the same dir(1, 0)
 {}
 
 inline gp_Ax22d::gp_Ax22d(const gp_Pnt2d& P , 

@@ -17,7 +17,10 @@
 
 #include <gp_Ax2d.hxx>
 
-inline gp_Ax2d::gp_Ax2d() : loc(0.,0.), vdir(1.,0.)
+inline gp_Ax2d::gp_Ax2d()
+  :
+  loc(0.,0.)
+  //vdir(1.,0.) use default ctor of gp_Dir2d, as it creates the same dir (1,0)
 { }
 
 inline gp_Ax2d::gp_Ax2d (const gp_Pnt2d& P,
