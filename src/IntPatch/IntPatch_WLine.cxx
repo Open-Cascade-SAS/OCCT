@@ -580,7 +580,7 @@ void IntPatch_WLine::ComputeVertexParameters( const Standard_Real RTol)
       if (Substitution)
       {
         Standard_Integer ind_point;
-        for(ind_point = 2; (ind_point <= nbponline && nbponline > 2); ind_point++) { 
+        for(ind_point = 2; (ind_point <= nbponline && nbponline > 1); ind_point++) { 
           Standard_Real d = (curv->Value(ind_point-1).Value()).SquareDistance((curv->Value(ind_point).Value()));
           if(d < dmini) { 
             curv->RemovePoint(ind_point);

@@ -111,6 +111,8 @@ Standard_Boolean IntersectionWithAnArc(gp_Pnt& PSurf,
   //-- recherche bete du point le plus proche de thearc->Value(...)
   dtheta = (u1alin-u0alin)*0.01;
   Standard_Real du=0.000000001;
+  if (du >= dtheta)
+    du = dtheta/2;
   Standard_Real distmin = RealLast();
 
   Standard_Real thetamin = 0.;

@@ -561,7 +561,7 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
                                   theALine->SituationS1(),
                                   theALine->SituationS2());
     }
-    if(theALine->TransitionOnS1() == IntSurf_Undecided)  { 
+    else if(theALine->TransitionOnS1() == IntSurf_Undecided)  { 
       aWLine = new IntPatch_WLine(aLinOn2S, theALine->IsTangent());
     }
     else { 
@@ -578,10 +578,14 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 
     aWLine->SetPeriod(anArrPeriods[0],anArrPeriods[1],anArrPeriods[2],anArrPeriods[3]);
 
+    //the method ComputeVertexParameters can reduce the number of points in <aWLine>
     aWLine->ComputeVertexParameters(myTol3D);
 
-    aWLine->EnablePurging(Standard_False);
-    theLines.Append(aWLine);
+    if (aWLine->NbPnts() > 1)
+    {
+      aWLine->EnablePurging(Standard_False);
+      theLines.Append(aWLine);
+    }
   }//while(aParameter < theLPar)
 }
 

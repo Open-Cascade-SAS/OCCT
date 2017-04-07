@@ -1,0 +1,20 @@
+puts "========"
+puts "OCC28626"
+puts "========"
+puts ""
+####################################################################################
+## Boolean CUT operation fails due to exception while intersecting two conical faces
+####################################################################################
+
+restore [locate_data_file bug28626_case1_shapes.brep] b
+explode b
+
+bcut result b_1 b_2
+
+checkshape result
+
+checknbshapes result -solid 1 -shell 1 -face 10 -wire 10 -edge 20 -vertex 12
+
+checkmaxtol result -ref 8.00001e-007
+
+checkprops result -v 1.35999e+006

@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC28626"
+puts "========"
+puts ""
+####################################################################################
+## Boolean CUT operation fails due to exception while intersecting two conical faces
+####################################################################################
+
+cone c1 0 0 0  0 -1 0  45  0
+cone c2 -23 -20 10  1 0 0  45  0
+trimv tc1 c1 0 42.4264068711929
+trimv tc2 c2 0 42.4264068711929
+mkface f1 tc1
+mkface f2 tc2
+donly f1 f2
+fit
+
+bop f1 f2
+bopsection result
+
+checkshape result
+
+checknbshapes result -edge 2 -vertex 3
+
+checkmaxtol result -ref 5.21731e-007
+
+checkprops result -l 88.9692
