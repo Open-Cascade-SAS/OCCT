@@ -28,7 +28,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Real.hxx>
 #include <IntPolyh_PMaillageAffinage.hxx>
-#include <IntPolyh_ArrayOfCouples.hxx>
+#include <IntPolyh_ListOfCouples.hxx>
 class Adaptor3d_HSurface;
 
 
@@ -109,7 +109,7 @@ private:
   //! This method analyzes arrays to find same couples. If some
   //! are detected it leaves the couple in only one array
   //! deleting from others.
-  Standard_EXPORT void MergeCouples (IntPolyh_ArrayOfCouples& anArrayFF, IntPolyh_ArrayOfCouples& anArrayFR, IntPolyh_ArrayOfCouples& anArrayRF, IntPolyh_ArrayOfCouples& anArrayRR) const;
+  Standard_EXPORT void MergeCouples (IntPolyh_ListOfCouples& anArrayFF, IntPolyh_ListOfCouples& anArrayFR, IntPolyh_ListOfCouples& anArrayRF, IntPolyh_ListOfCouples& anArrayRR) const;
   
   //! Process default interference
   Standard_EXPORT Standard_Boolean PerformStd (IntPolyh_PMaillageAffinage& MaillageS, Standard_Integer& NbCouples);

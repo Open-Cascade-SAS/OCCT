@@ -15,7 +15,7 @@
 
 
 #include <Adaptor3d_HSurface.hxx>
-#include <IntPolyh_ArrayOfCouples.hxx>
+#include <IntPolyh_ListOfCouples.hxx>
 #include <IntPolyh_Couple.hxx>
 #include <IntPolyh_Intersection.hxx>
 #include <IntPolyh_MaillageAffinage.hxx>
@@ -153,34 +153,26 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage(const Standard_Boolean i
   theMaillageS->CommonBox(theMaillageS->GetBox(1), theMaillageS->GetBox(2),
 			  xx0, yy0, zz0, xx1, yy1, zz1);
   
+  theMaillageS->FillArrayOfTriangles(1);
+  theMaillageS->FillArrayOfTriangles(2);
+
   theMaillageS->FillArrayOfEdges(1);
   theMaillageS->FillArrayOfEdges(2);
 
-  theMaillageS->FillArrayOfTriangles(1);
-  theMaillageS->FillArrayOfTriangles(2);
-  
-  theMaillageS->LinkEdges2Triangles();
-  
   theMaillageS->TrianglesDeflectionsRefinementBSB();
 
   Standard_Integer FinTTC = theMaillageS->TriangleCompare();
 
   // if too many intersections, consider surfaces parallel (eap)
-/*
-  if(FinTTC > 200 &&
-     (FinTTC >= theMaillageS->GetArrayOfTriangles(1).NbTriangles() ||
-      FinTTC >= theMaillageS->GetArrayOfTriangles(2).NbTriangles()) ) {
-    return Standard_False;
-  }
-*/
-//IFV test for parallel surf
+  // test for parallel surf
   if(FinTTC > 200) {
     const Standard_Real eps = .996; //~ cos of 5deg.
-    IntPolyh_ArrayOfCouples& Couples = theMaillageS->GetArrayOfCouples();
+    IntPolyh_ListOfCouples& Couples = theMaillageS->GetCouples();
 
-    Standard_Integer i, npara = 0;
-    for(i = 0; i < FinTTC; ++i) {
-      Standard_Real cosa = Abs(Couples[i].AngleValue());
+    Standard_Integer npara = 0;
+    IntPolyh_ListIteratorOfListOfCouples aIt(Couples);
+    for(; aIt.More(); aIt.Next()) {
+      Standard_Real cosa = Abs(aIt.Value().Angle());
       if(cosa > eps) ++npara;
     }
     if(npara >= theMaillageS->GetArrayOfTriangles(1).NbItems() ||
@@ -214,14 +206,13 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage(const TColStd_Array1OfRe
   Standard_Real xx0,yy0,zz0,xx1,yy1,zz1;
   theMaillageS->CommonBox(theMaillageS->GetBox(1), theMaillageS->GetBox(2),
 			  xx0, yy0, zz0, xx1, yy1, zz1);
-  theMaillageS->FillArrayOfEdges(1);
-  theMaillageS->FillArrayOfEdges(2);
 
   theMaillageS->FillArrayOfTriangles(1);
   theMaillageS->FillArrayOfTriangles(2);
-  
-  theMaillageS->LinkEdges2Triangles();
-  
+
+  theMaillageS->FillArrayOfEdges(1);
+  theMaillageS->FillArrayOfEdges(2);
+
   theMaillageS->TrianglesDeflectionsRefinementBSB();
 
   Standard_Integer FinTTC = theMaillageS->TriangleCompare();
@@ -233,11 +224,10 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage(const TColStd_Array1OfRe
     theMaillageS->FillArrayOfPnt(2);
     theMaillageS->CommonBox(theMaillageS->GetBox(1), theMaillageS->GetBox(2),
 			    xx0, yy0, zz0, xx1, yy1, zz1);
-    theMaillageS->FillArrayOfEdges(1);
-    theMaillageS->FillArrayOfEdges(2);
     theMaillageS->FillArrayOfTriangles(1);
     theMaillageS->FillArrayOfTriangles(2);
-    theMaillageS->LinkEdges2Triangles();
+    theMaillageS->FillArrayOfEdges(1);
+    theMaillageS->FillArrayOfEdges(2);
     theMaillageS->TrianglesDeflectionsRefinementBSB();
     FinTTC = theMaillageS->TriangleCompare();
     myZone = Standard_False;
@@ -245,21 +235,15 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage(const TColStd_Array1OfRe
   }
 
   // if too many intersections, consider surfaces parallel (eap)
-/*
-  if(FinTTC > 200 &&
-     (FinTTC >= theMaillageS->GetArrayOfTriangles(1).NbTriangles() ||
-      FinTTC >= theMaillageS->GetArrayOfTriangles(2).NbTriangles()) ) {
-    return Standard_False;
-  }
-*/
 //IFV test for parallel surf
   if(FinTTC > 200) {
     const Standard_Real eps = .996; //~ cos of 5deg.
-    IntPolyh_ArrayOfCouples& Couples = theMaillageS->GetArrayOfCouples();
+    IntPolyh_ListOfCouples& Couples = theMaillageS->GetCouples();
 
-    Standard_Integer i, npara = 0;
-    for(i = 0; i < FinTTC; ++i) {
-      Standard_Real cosa = Abs(Couples[i].AngleValue());
+    Standard_Integer npara = 0;
+    IntPolyh_ListIteratorOfListOfCouples aIt(Couples);
+    for(; aIt.More(); aIt.Next()) {
+      Standard_Real cosa = Abs(aIt.Value().Angle());
       if(cosa > eps) ++npara;
     }
     if(npara >= theMaillageS->GetArrayOfTriangles(1).NbItems() ||
@@ -303,14 +287,14 @@ Standard_Boolean IntPolyh_Intersection::PerformAdv(const TColStd_Array1OfReal& U
     isdone = Standard_False; 
 
   if(isdone) {
-    NbCouples = MaillageFF->GetArrayOfCouples().NbItems() +
-      MaillageFR->GetArrayOfCouples().NbItems() +
-	MaillageRF->GetArrayOfCouples().NbItems() +
-	  MaillageRR->GetArrayOfCouples().NbItems();
+    NbCouples = MaillageFF->GetCouples().Extent() +
+      MaillageFR->GetCouples().Extent() +
+	MaillageRF->GetCouples().Extent() +
+	  MaillageRR->GetCouples().Extent();
 
     if(NbCouples > 0)
-      MergeCouples(MaillageFF->GetArrayOfCouples(),MaillageFR->GetArrayOfCouples(),
-		   MaillageRF->GetArrayOfCouples(),MaillageRR->GetArrayOfCouples());
+      MergeCouples(MaillageFF->GetCouples(),MaillageFR->GetCouples(),
+		   MaillageRF->GetCouples(),MaillageRR->GetCouples());
   }
   return isdone;
 }
@@ -328,6 +312,6 @@ Standard_Boolean IntPolyh_Intersection::PerformStd(const TColStd_Array1OfReal& U
 {
   Standard_Boolean isdone = PerformMaillage(Upars1, Vpars1, Upars2, Vpars2, 
 					    MaillageS);
-  NbCouples = (isdone) ? (MaillageS->GetArrayOfCouples().NbItems()) : 0;
+  NbCouples = (isdone) ? (MaillageS->GetCouples().Extent()) : 0;
   return isdone;
 }

@@ -13,12 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef IntPolyh_ArrayOfCouples_HeaderFile
-#define IntPolyh_ArrayOfCouples_HeaderFile
+#ifndef IntPolyh_ListOfCouples_HeaderFile
+#define IntPolyh_ListOfCouples_HeaderFile
 
-#include <IntPolyh_Array.hxx>
+#include <NCollection_List.hxx>
 #include <IntPolyh_Couple.hxx>
 
-typedef IntPolyh_Array <IntPolyh_Couple> IntPolyh_ArrayOfCouples;
+typedef NCollection_List <IntPolyh_Couple> IntPolyh_ListOfCouples;
+typedef IntPolyh_ListOfCouples::Iterator IntPolyh_ListIteratorOfListOfCouples;
 
 #endif

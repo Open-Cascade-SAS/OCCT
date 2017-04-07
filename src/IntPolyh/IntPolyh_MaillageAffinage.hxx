@@ -27,8 +27,7 @@
 #include <IntPolyh_ArrayOfPoints.hxx>
 #include <IntPolyh_ArrayOfEdges.hxx>
 #include <IntPolyh_ArrayOfTriangles.hxx>
-#include <IntPolyh_ArrayOfCouples.hxx>
-#include <IntPolyh_ArrayOfStartPoints.hxx>
+#include <IntPolyh_ListOfCouples.hxx>
 #include <Standard_Boolean.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <IntPolyh_ArrayOfSectionLines.hxx>
@@ -92,10 +91,6 @@ public:
   //! CommonBox function.
   Standard_EXPORT void FillArrayOfTriangles (const Standard_Integer SurfID);
   
-  //! fill the  edge fields in  Triangle object  for the
-  //! two array of triangles.
-  Standard_EXPORT void LinkEdges2Triangles();
-  
   //! Refine systematicaly all marked triangles of both surfaces
   Standard_EXPORT void CommonPartRefinement();
   
@@ -118,37 +113,23 @@ public:
   //! if no.
   Standard_EXPORT Standard_Integer TriContact (const IntPolyh_Point& P1, const IntPolyh_Point& P2, const IntPolyh_Point& P3, const IntPolyh_Point& Q1, const IntPolyh_Point& Q2, const IntPolyh_Point& Q3, Standard_Real& Angle) const;
   
-  Standard_EXPORT Standard_Integer TriangleEdgeContact (const Standard_Integer TriSurfID, const Standard_Integer EdgeIndice, const IntPolyh_Point& P1, const IntPolyh_Point& P2, const IntPolyh_Point& P3, const IntPolyh_Point& C1, const IntPolyh_Point& C2, const IntPolyh_Point& C3, const IntPolyh_Point& Pe1, const IntPolyh_Point& Pe2, const IntPolyh_Point& E, const IntPolyh_Point& N, IntPolyh_StartPoint& SP1, IntPolyh_StartPoint& SP2) const;
-  
-  Standard_EXPORT Standard_Integer TriangleEdgeContact2 (const Standard_Integer TriSurfID, const Standard_Integer EdgeIndice, const IntPolyh_Triangle& Tri1, const IntPolyh_Triangle& Tri2, const IntPolyh_Point& P1, const IntPolyh_Point& P2, const IntPolyh_Point& P3, const IntPolyh_Point& C1, const IntPolyh_Point& C2, const IntPolyh_Point& C3, const IntPolyh_Point& Pe1, const IntPolyh_Point& Pe2, const IntPolyh_Point& E, const IntPolyh_Point& N, IntPolyh_StartPoint& SP1, IntPolyh_StartPoint& SP2) const;
-  
-  Standard_EXPORT Standard_Integer StartingPointsResearch (const Standard_Integer T1, const Standard_Integer T2, IntPolyh_StartPoint& SP1, IntPolyh_StartPoint& SP2) const;
+  Standard_EXPORT Standard_Integer TriangleEdgeContact (const Standard_Integer TriSurfID, const Standard_Integer EdgeIndice, const IntPolyh_Triangle& Tri1, const IntPolyh_Triangle& Tri2, const IntPolyh_Point& P1, const IntPolyh_Point& P2, const IntPolyh_Point& P3, const IntPolyh_Point& C1, const IntPolyh_Point& C2, const IntPolyh_Point& C3, const IntPolyh_Point& Pe1, const IntPolyh_Point& Pe2, const IntPolyh_Point& E, const IntPolyh_Point& N, IntPolyh_StartPoint& SP1, IntPolyh_StartPoint& SP2) const;
   
   //! From  two  triangles compute intersection  points.
   //! If I found   more  than two intersection  points
   //! that's mean that those triangle are coplanar
-  Standard_EXPORT Standard_Integer StartingPointsResearch2 (const Standard_Integer T1, const Standard_Integer T2, IntPolyh_StartPoint& SP1, IntPolyh_StartPoint& SP2) const;
-  
-  Standard_EXPORT Standard_Integer NextStartingPointsResearch (const Standard_Integer T1, const Standard_Integer T2, const IntPolyh_StartPoint& SPInit, IntPolyh_StartPoint& SPNext) const;
+  Standard_EXPORT Standard_Integer StartingPointsResearch (const Standard_Integer T1, const Standard_Integer T2, IntPolyh_StartPoint& SP1, IntPolyh_StartPoint& SP2) const;
   
   //! from  two triangles  and an intersection   point I
   //! seach the other point (if it exist).
   //! This function is used by StartPointChain
-  Standard_EXPORT Standard_Integer NextStartingPointsResearch2 (const Standard_Integer T1, const Standard_Integer T2, const IntPolyh_StartPoint& SPInit, IntPolyh_StartPoint& SPNext) const;
+  Standard_EXPORT Standard_Integer NextStartingPointsResearch (const Standard_Integer T1, const Standard_Integer T2, const IntPolyh_StartPoint& SPInit, IntPolyh_StartPoint& SPNext) const;
   
   //! Analyse  each couple of  triangles from the two --
   //! array  of triangles,  to   see  if they are  in
   //! contact,  and  compute the  incidence.  Then  put
   //! couples  in contact  in  the  array  of  couples
   Standard_EXPORT Standard_Integer TriangleCompare();
-  
-  //! The   same as   TriangleCompare, plus compute the
-  //! StartPoints without chaining them.
-  Standard_EXPORT Standard_Integer TriangleComparePSP();
-  
-  //! From the array  of couples compute  all the start
-  //! points and display them on the screen
-  Standard_EXPORT void StartPointsCalcul() const;
   
   //! Loop on the array of couples. Compute StartPoints.
   //! Try to chain  the StartPoints into SectionLines or
@@ -172,12 +153,8 @@ public:
   
   Standard_EXPORT Bnd_Box GetBox (const Standard_Integer SurfID) const;
   
-  Standard_EXPORT void GetBoxDraw (const Standard_Integer SurfID) const;
-  
-  Standard_EXPORT const IntPolyh_ArrayOfStartPoints& GetArrayOfSP() const;
-  
-  //! This method returns array of couples of contact triangles.
-  Standard_EXPORT IntPolyh_ArrayOfCouples& GetArrayOfCouples();
+  //! This method returns list of couples of contact triangles.
+  Standard_EXPORT IntPolyh_ListOfCouples& GetCouples();
   
   Standard_EXPORT void SetEnlargeZone (Standard_Boolean& EnlargeZone);
   
@@ -190,12 +167,7 @@ public:
   Standard_EXPORT Standard_Real GetMaxDeflection (const Standard_Integer SurfID) const;
 
 
-
-
 protected:
-
-
-
 
 
 private:
@@ -216,23 +188,21 @@ private:
   Standard_Real FlecheMin2;
   Standard_Real FlecheMoy1;
   Standard_Real FlecheMoy2;
+  // For the arrays of Points, Edges and Triangles we need instant access to the items.
+  // Moreover, we might add new items during refinement process in case the deflection
+  // is too big, thus the vectors should be used.
   IntPolyh_ArrayOfPoints TPoints1;
   IntPolyh_ArrayOfPoints TPoints2;
   IntPolyh_ArrayOfEdges TEdges1;
   IntPolyh_ArrayOfEdges TEdges2;
   IntPolyh_ArrayOfTriangles TTriangles1;
   IntPolyh_ArrayOfTriangles TTriangles2;
-  IntPolyh_ArrayOfCouples TTrianglesContacts;
-  IntPolyh_ArrayOfStartPoints TStartPoints;
+  // The intersecting triangles are just filled and then
+  // sequentially analyzed, thus we might use the list.
+  IntPolyh_ListOfCouples TTrianglesContacts;
+
   Standard_Boolean myEnlargeZone;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IntPolyh_MaillageAffinage_HeaderFile

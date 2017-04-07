@@ -24,60 +24,92 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 
-
-//! couple of triangles
-class IntPolyh_Couple 
+//! The class represents the couple of indices with additional
+//! characteristics such as analyzed flag and an angle.<br>
+//! In IntPolyh_MaillageAffinage algorithm the class is used as a
+//! couple of interfering triangles with the intersection angle.
+class IntPolyh_Couple
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT IntPolyh_Couple();
-  
-  Standard_EXPORT IntPolyh_Couple(const Standard_Integer i1, const Standard_Integer i2);
-  
-  Standard_EXPORT Standard_Integer FirstValue() const;
-  
-  Standard_EXPORT Standard_Integer SecondValue() const;
-  
-  Standard_EXPORT Standard_Integer AnalyseFlagValue() const;
-  
-  Standard_EXPORT Standard_Real AngleValue() const;
-  
-  Standard_EXPORT void SetCoupleValue (const Standard_Integer v, const Standard_Integer w);
-  
-  Standard_EXPORT void SetAnalyseFlag (const Standard_Integer v);
-  
-  Standard_EXPORT void SetAngleValue (const Standard_Real ang);
-  
+  //! Constructor
+  IntPolyh_Couple() :
+    myIndex1(-1),myIndex2(-1),myAnalyzed(0),myAngle(-2.0)
+  {}
+  //! Constructor
+  IntPolyh_Couple(const Standard_Integer theTriangle1,
+                  const Standard_Integer theTriangle2,
+                  const Standard_Real theAngle = -2.0)
+  :
+    myIndex1(theTriangle1),
+    myIndex2(theTriangle2),
+    myAnalyzed(Standard_False),
+    myAngle(theAngle)
+  {}
+
+  //! Returns the first index
+  Standard_Integer FirstValue() const
+  {
+    return myIndex1;
+  }
+  //! Returns the second index
+  Standard_Integer SecondValue() const
+  {
+    return myIndex2;
+  }
+  //! Returns TRUE if the couple has been analyzed
+  Standard_Boolean IsAnalyzed() const
+  {
+    return myAnalyzed;
+  }
+  //! Returns the angle
+  Standard_Real Angle() const
+  {
+    return myAngle;
+  }
+  //! Sets the triangles
+  void SetCoupleValue(const Standard_Integer theInd1,
+                      const Standard_Integer theInd2)
+  {
+    myIndex1 = theInd1;
+    myIndex2 = theInd2;
+  }
+  //! Sets the analyzed flag
+  void SetAnalyzed(const Standard_Boolean theAnalyzed)
+  {
+    myAnalyzed = theAnalyzed;
+  }
+  //! Sets the angle
+  void SetAngle(const Standard_Real theAngle)
+  {
+    myAngle = theAngle;
+  }
+  //! Returns true if the Couple is equal to <theOther>
+  Standard_Boolean IsEqual (const IntPolyh_Couple& theOther) const
+  {
+    return (myIndex1 == theOther.myIndex1 && myIndex2 == theOther.myIndex2) ||
+           (myIndex1 == theOther.myIndex2 && myIndex2 == theOther.myIndex1);
+  }
+  //
+  //! Returns hash code
+  Standard_Integer HashCode (const Standard_Integer theUpper) const
+  {
+    return ::HashCode(myIndex1 + myIndex2, theUpper);
+  }
+  // Dump
   Standard_EXPORT void Dump (const Standard_Integer v) const;
-
-
-
 
 protected:
 
-
-
-
-
 private:
 
-
-
-  Standard_Integer t1;
-  Standard_Integer t2;
-  Standard_Integer ia;
-  Standard_Real angle;
-
+  Standard_Integer myIndex1;
+  Standard_Integer myIndex2;
+  Standard_Boolean myAnalyzed;
+  Standard_Real myAngle;
 
 };
-
-
-
-
-
-
 
 #endif // _IntPolyh_Couple_HeaderFile

@@ -24,6 +24,8 @@
 #include <IntPolyh_SectionLine.hxx>
 #include <IntPolyh_StartPoint.hxx>
 #include <IntPolyh_Triangle.hxx>
+#include <NCollection_Map.hxx>
+#include <IntPolyh_CoupleMapHasher.hxx>
 
 Standard_Integer MYDISPLAY = 0;
 Standard_Integer MYPRINT   = 0;
@@ -229,14 +231,12 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage
   theMaillageS->CommonBox(theMaillageS->GetBox(1), theMaillageS->GetBox(2),
 			  xx0, yy0, zz0, xx1, yy1, zz1);
   
-  theMaillageS->FillArrayOfEdges(1);
-  theMaillageS->FillArrayOfEdges(2);
-
   theMaillageS->FillArrayOfTriangles(1);
   theMaillageS->FillArrayOfTriangles(2);
   
-  theMaillageS->LinkEdges2Triangles();
-  
+  theMaillageS->FillArrayOfEdges(1);
+  theMaillageS->FillArrayOfEdges(2);
+
   theMaillageS->TrianglesDeflectionsRefinementBSB();
 
   Standard_Integer FinTTC = theMaillageS->TriangleCompare();
@@ -272,14 +272,12 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage(IntPolyh_PMaillageAffina
   theMaillageS->CommonBox(theMaillageS->GetBox(1), theMaillageS->GetBox(2),
 			  xx0, yy0, zz0, xx1, yy1, zz1);
   
-  theMaillageS->FillArrayOfEdges(1);
-  theMaillageS->FillArrayOfEdges(2);
-
   theMaillageS->FillArrayOfTriangles(1);
   theMaillageS->FillArrayOfTriangles(2);
   
-  theMaillageS->LinkEdges2Triangles();
-  
+  theMaillageS->FillArrayOfEdges(1);
+  theMaillageS->FillArrayOfEdges(2);
+
   theMaillageS->TrianglesDeflectionsRefinementBSB();
 
   Standard_Integer FinTTC = theMaillageS->TriangleCompare();
@@ -291,113 +289,63 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage(IntPolyh_PMaillageAffina
     theMaillageS->FillArrayOfPnt(2);
     theMaillageS->CommonBox(theMaillageS->GetBox(1), theMaillageS->GetBox(2),
 			    xx0, yy0, zz0, xx1, yy1, zz1);
-    theMaillageS->FillArrayOfEdges(1);
-    theMaillageS->FillArrayOfEdges(2);
     theMaillageS->FillArrayOfTriangles(1);
     theMaillageS->FillArrayOfTriangles(2);
-    theMaillageS->LinkEdges2Triangles();
+    theMaillageS->FillArrayOfEdges(1);
+    theMaillageS->FillArrayOfEdges(2);
     theMaillageS->TrianglesDeflectionsRefinementBSB();
     FinTTC = theMaillageS->TriangleCompare();
     myZone = Standard_False;
     theMaillageS->SetEnlargeZone( myZone );
   }
 
-  /*
-  // if too many intersections, consider surfaces parallel (eap)
-  if(FinTTC > 200 &&
-     (FinTTC >= theMaillageS->GetArrayOfTriangles(1).NbTriangles() ||
-      FinTTC >= theMaillageS->GetArrayOfTriangles(2).NbTriangles()) ) {
-    return Standard_False;
-  }
-  */
-  
   return Standard_True;
 }
 
 //=======================================================================
 //function : MergeCouples
-//purpose  : This method analyzes arrays to find same couples. If some 
-//           are detected it leaves the couple in only one array 
+//purpose  : This method analyzes the lists to find same couples.
+//           If some are detected it leaves the couple in only one list
 //           deleting from others.
 //=======================================================================
 
-void IntPolyh_Intersection::MergeCouples
-                            (IntPolyh_ArrayOfCouples &anArrayFF,
-			     IntPolyh_ArrayOfCouples &anArrayFR,
-			     IntPolyh_ArrayOfCouples &anArrayRF,
-			     IntPolyh_ArrayOfCouples &anArrayRR) const
+void IntPolyh_Intersection::MergeCouples(IntPolyh_ListOfCouples &anArrayFF,
+                                         IntPolyh_ListOfCouples &anArrayFR,
+                                         IntPolyh_ListOfCouples &anArrayRF,
+                                         IntPolyh_ListOfCouples &anArrayRR) const
 {
-  // Step 1: Sorting arrays.
-  IntPolyh_ArrayOfCouples *anArrays[4];
-  Standard_Integer         aNbCouples[4];
-  Standard_Integer         i;
-  IntPolyh_ArrayOfCouples *aTmpPtr;
-  Standard_Integer         aTmpNbr;
-
-  anArrays[0] = &anArrayFF;
-  anArrays[1] = &anArrayFR;
-  anArrays[2] = &anArrayRF;
-  anArrays[3] = &anArrayRR;
-
-  for (i = 0; i < 4; i++)
-    aNbCouples[i] = anArrays[i]->NbItems();
-
-  Standard_Boolean isChanged = Standard_True;
-
-  while (isChanged) {
-    isChanged = Standard_False;
-
-    for (i = 0; i < 3; i++) {
-      if (aNbCouples[i] < aNbCouples[i + 1]) {
-	aTmpPtr           = anArrays[i];
-	anArrays[i]       = anArrays[i + 1];
-	anArrays[i + 1]   = aTmpPtr;
-	aTmpNbr           = aNbCouples[i];
-	aNbCouples[i]     = aNbCouples[i + 1];
-	aNbCouples[i + 1] = aTmpNbr;
-	isChanged         = Standard_True;
+  // Fence map to remove from the lists the duplicating elements.
+  NCollection_Map<IntPolyh_Couple, IntPolyh_CoupleMapHasher> aFenceMap;
+  //
+  IntPolyh_ListOfCouples* pLists[4] = {&anArrayFF, &anArrayFR, &anArrayRF, &anArrayRR};
+  for (Standard_Integer i = 0; i < 4; ++i) {
+    IntPolyh_ListIteratorOfListOfCouples aIt(*pLists[i]);
+    for (; aIt.More();) {
+      if (!aFenceMap.Add(aIt.Value())) {
+        pLists[i]->Remove(aIt);
+        continue;
       }
-    }
-  }
-
-  // Step 2: Searching for same couples.
-  Standard_Integer j;
-  Standard_Integer indC1;
-  Standard_Integer indC2;
-
-  for (i = 0; i < 3; i++) {
-    for (j = i + 1; j < 4; j++) {
-      for (indC1 = 1; indC1 <= aNbCouples[i]; indC1++) {
-	IntPolyh_Couple &aCouple1 = anArrays[i]->ChangeValue(indC1);
-
-	if (aCouple1.AnalyseFlagValue() == 1)
-	  continue;
-
-	for (indC2 = 1; indC2 <= aNbCouples[j]; indC2++) {
-	  IntPolyh_Couple &aCouple2 = anArrays[j]->ChangeValue(indC2);
-
-	  if (aCouple2.AnalyseFlagValue() == 1)
-	    continue;
-
-	  if (aCouple1.FirstValue()  == aCouple2.FirstValue() &&
-	      aCouple1.SecondValue() == aCouple2.SecondValue()) {
-	    aCouple2.SetAnalyseFlag(1);
-	  }
-	}
-      }
+      aIt.Next();
     }
   }
 }
-//  Modified by skv - Thu Sep 25 18:07:42 2003 OCC567 End
 
+//=======================================================================
+//function : PerformStd
+//purpose  : 
+//=======================================================================
 Standard_Boolean IntPolyh_Intersection::PerformStd(IntPolyh_PMaillageAffinage& MaillageS,
 						   Standard_Integer&           NbCouples)
 {
   Standard_Boolean isdone = PerformMaillage(MaillageS);
-  NbCouples = (isdone) ? (MaillageS->GetArrayOfCouples().NbItems()) : 0;
+  NbCouples = (isdone) ? (MaillageS->GetCouples().Extent()) : 0;
   return isdone;
 }
 
+//=======================================================================
+//function : PerformAdv
+//purpose  : 
+//=======================================================================
 Standard_Boolean IntPolyh_Intersection::PerformAdv(IntPolyh_PMaillageAffinage& MaillageFF,
 						   IntPolyh_PMaillageAffinage& MaillageFR,
 						   IntPolyh_PMaillageAffinage& MaillageRF,
@@ -414,14 +362,14 @@ Standard_Boolean IntPolyh_Intersection::PerformAdv(IntPolyh_PMaillageAffinage& M
     isdone = Standard_False; 
 
   if(isdone) {
-    NbCouples = MaillageFF->GetArrayOfCouples().NbItems() +
-      MaillageFR->GetArrayOfCouples().NbItems() +
-	MaillageRF->GetArrayOfCouples().NbItems() +
-	  MaillageRR->GetArrayOfCouples().NbItems();
+    NbCouples = MaillageFF->GetCouples().Extent() +
+      MaillageFR->GetCouples().Extent() +
+	MaillageRF->GetCouples().Extent() +
+	  MaillageRR->GetCouples().Extent();
 
     if(NbCouples > 0)
-      MergeCouples(MaillageFF->GetArrayOfCouples(),MaillageFR->GetArrayOfCouples(),
-		   MaillageRF->GetArrayOfCouples(),MaillageRR->GetArrayOfCouples());
+      MergeCouples(MaillageFF->GetCouples(),MaillageFR->GetCouples(),
+		   MaillageRF->GetCouples(),MaillageRR->GetCouples());
   }
   return isdone;
 }

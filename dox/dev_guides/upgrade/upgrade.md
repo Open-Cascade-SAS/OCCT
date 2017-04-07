@@ -1131,6 +1131,18 @@ The following obsolete features have been removed:
 * The package *TestTopOpeDraw* has been removed;
 * The package *TestTopOpeTools* has been removed.
 * The packages *QANewModTopOpe*, *QANewBRepNaming* and *QANewDBRepNaming* have been removed as containing obsolete features.
+* The following methods of the *IntPolyh_Triangle* class have been removed as unused:
+  - *CheckCommonEdge*
+  - *SetEdgeandOrientation*
+  - *MultipleMiddleRefinement2*.
+* The method *IntPolyh_Triangle::TriangleDeflection* has been renamed to *IntPolyh_Triangle::ComputeDeflection*.
+* The following methods of the *IntPolyh_MaillageAffinage* class have been removed as unused:
+  - *LinkEdges2Triangles*;
+  - *TriangleEdgeContact2*;
+  - *StartingPointsResearch2*;
+  - *NextStartingPointsResearch2*;
+  - *TriangleComparePSP*;
+  - *StartPointsCalcul*.
 
 @subsection upgrade_occt720_correction_of_Offset_API Corrections in BRepOffset API
 

@@ -23,67 +23,81 @@
 
 #include <Standard_Integer.hxx>
 
-
-
-class IntPolyh_Edge 
+//! The class represents the edge built between the two IntPolyh points.<br>
+//! It is linked to two IntPolyh triangles.
+class IntPolyh_Edge
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT IntPolyh_Edge();
-  
-  Standard_EXPORT IntPolyh_Edge(const Standard_Integer i1, const Standard_Integer i2, const Standard_Integer i3, const Standard_Integer i4);
-  
-  Standard_EXPORT Standard_Integer FirstPoint() const;
-  
-  Standard_EXPORT Standard_Integer SecondPoint() const;
-  
-  Standard_EXPORT Standard_Integer FirstTriangle() const;
-  
-  Standard_EXPORT Standard_Integer SecondTriangle() const;
-  
-  Standard_EXPORT Standard_Integer AnalysisFlag() const;
-  
-  Standard_EXPORT void SetFirstPoint (const Standard_Integer v);
-  
-  Standard_EXPORT void SetSecondPoint (const Standard_Integer v);
-  
-  Standard_EXPORT void SetFirstTriangle (const Standard_Integer v);
-  
-  Standard_EXPORT void SetSecondTriangle (const Standard_Integer v);
-  
-  Standard_EXPORT void SetAnalysisFlag (const Standard_Integer v);
+  //! Constructor
+  IntPolyh_Edge() :
+    myPoint1(-1), myPoint2(-1), myTriangle1(-1), myTriangle2(-1)
+  {}
+  //! Constructor
+  IntPolyh_Edge(const Standard_Integer thePoint1,
+                const Standard_Integer thePoint2,
+                const Standard_Integer theTriangle1,
+                const Standard_Integer theTriangle2)
+  :
+    myPoint1(thePoint1),
+    myPoint2(thePoint2),
+    myTriangle1(theTriangle1),
+    myTriangle2(theTriangle2)
+  {}
+
+  //! Returns the first point
+  Standard_Integer FirstPoint() const
+  {
+    return myPoint1;
+  }
+  //! Returns the second point
+  Standard_Integer SecondPoint() const
+  {
+    return myPoint2;
+  }
+  //! Returns the first triangle
+  Standard_Integer FirstTriangle() const
+  {
+    return myTriangle1;
+  }
+  //! Returns the second triangle
+  Standard_Integer SecondTriangle() const
+  {
+    return myTriangle2;
+  }
+  //! Sets the first point
+  void SetFirstPoint (const Standard_Integer thePoint)
+  {
+    myPoint1 = thePoint;
+  }
+  //! Sets the second point
+  void SetSecondPoint (const Standard_Integer thePoint)
+  {
+    myPoint2 = thePoint;
+  }
+  //! Sets the first triangle
+  void SetFirstTriangle (const Standard_Integer theTriangle)
+  {
+    myTriangle1 = theTriangle;
+  }
+  //! Sets the second triangle
+  void SetSecondTriangle (const Standard_Integer theTriangle)
+  {
+    myTriangle2 = theTriangle;
+  }
   
   Standard_EXPORT void Dump (const Standard_Integer v) const;
 
-
-
-
 protected:
-
-
-
-
 
 private:
 
-
-
-  Standard_Integer p1;
-  Standard_Integer p2;
-  Standard_Integer t1;
-  Standard_Integer t2;
-  Standard_Integer ia;
-
-
+  Standard_Integer myPoint1;
+  Standard_Integer myPoint2;
+  Standard_Integer myTriangle1;
+  Standard_Integer myTriangle2;
 };
-
-
-
-
-
-
 
 #endif // _IntPolyh_Edge_HeaderFile
