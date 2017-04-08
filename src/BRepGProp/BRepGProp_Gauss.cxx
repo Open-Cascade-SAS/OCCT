@@ -621,7 +621,7 @@ Standard_Real BRepGProp_Gauss::Compute(
   while (isNaturalRestriction || theDomain.More())
   {
     if (isNaturalRestriction)
-    { 
+    {
       NbLGaussP[0] = Min(2 * NbUGaussP[0], math::GaussPointsMax());
     }
     else
@@ -662,7 +662,9 @@ Standard_Real BRepGProp_Gauss::Compute(
       LMaxSubs = BRepGProp_Gauss::MaxSubs(iLSubEnd);
 
       if (LMaxSubs > SM)
+      {
         LMaxSubs = SM;
+      }
 
       BRepGProp_Gauss::InitMass(0.0, 1, LMaxSubs, anInertiaL);
       BRepGProp_Gauss::Init(ErrL,  0.0, 1, LMaxSubs);
@@ -679,7 +681,9 @@ Standard_Real BRepGProp_Gauss::Compute(
           L2->Value(IL) = L1->Value(JL);
         }
         else
+        {
           LRange[0] = IL = JL;
+        }
 
         if (JL == LMaxSubs || Abs(L2->Value(JL) - L1->Value(JL)) < EPS_PARAM)
         {
@@ -697,6 +701,7 @@ Standard_Real BRepGProp_Gauss::Compute(
           }
         }
         else
+        {
           for (kL = 0; kL < kLEnd; kL++)
           {
             iLS = LRange[kL];
@@ -713,7 +718,7 @@ Standard_Real BRepGProp_Gauss::Compute(
               {
                 l = lm + lr * LGaussP[iGL]->Value(iL);
                 if (isNaturalRestriction)
-                { 
+                {
                   v = l;
                   u2 = BU2;
                   Dul = LGaussW[iGL]->Value(iL);
@@ -738,7 +743,7 @@ Standard_Real BRepGProp_Gauss::Compute(
                   if (u2 < BU1)
                     u2 = BU1;
                   else if (u2 > BU2)
-                    u2 = BU2; 
+                    u2 = BU2;
                 }
 
                 ErrUL->Value(iLS) = 0.0;
@@ -919,7 +924,7 @@ Standard_Real BRepGProp_Gauss::Compute(
                   CIxz = add(CIxz, mult(anIU.Ixz, Dul));
                   CIyz = add(CIyz, mult(anIU.Iyz, Dul));
                 }
-              }//for: iL 
+              }//for: iL
             }//for: iGL
 
             BRepGProp_Gauss::Inertia& aLI = anInertiaL->ChangeValue(iLS);
@@ -961,53 +966,56 @@ Standard_Real BRepGProp_Gauss::Compute(
             aLI.Ixz = mult(CIxz, lr);
             aLI.Iyz = mult(CIyz, lr);
           }//for: (kL)iLS
+        }
 
-          // Calculate/correct epsilon of computation by current value of dim
-          // That is need for not spend time for 
-          if (JL == iLSubEnd)
+        // Calculate/correct epsilon of computation by current value of dim
+        // That is need for not spend time for
+        if (JL == iLSubEnd)
+        {
+          kLEnd = 2;
+
+          Standard_Real DDim = 0.0;
+          for (i = 1; i <= JL; ++i)
+            DDim += anInertiaL->Value(i).Mass;
+
+          #ifndef IS_MIN_DIM
           {
-            kLEnd = 2;
-
-            Standard_Real DDim = 0.0;
-            for (i = 1; i <= JL; ++i)
-              DDim += anInertiaL->Value(i).Mass;
-
-            #ifndef IS_MIN_DIM
+            if (myType == Vinert)
             {
-              if (myType == Vinert)
+              Standard_Real DIxx = 0.0, DIyy = 0.0, DIzz = 0.0;
+              for (i = 1; i <= JL; ++i)
               {
-                Standard_Real DIxx = 0.0, DIyy = 0.0, DIzz = 0.0;
-                for (i = 1; i <= JL; ++i)
-                {
-                  const BRepGProp_Gauss::Inertia& aLocalL =
-                    anInertiaL->Value(i);
+                const BRepGProp_Gauss::Inertia& aLocalL =
+                  anInertiaL->Value(i);
 
-                  DIxx += aLocalL.Ixx;
-                  DIyy += aLocalL.Iyy;
-                  DIzz += aLocalL.Izz;
-                }
-
-                DDim = Abs(DIxx) + Abs(DIyy) + Abs(DIzz);
+                DIxx += aLocalL.Ixx;
+                DIyy += aLocalL.Iyy;
+                DIzz += aLocalL.Izz;
               }
-            }
-            #endif
 
-            DDim = Abs(DDim * anEpsilon);
-
-            if (DDim > Eps)
-            {
-              Eps  = DDim;
-              EpsL = 0.9 * Eps;
+              DDim = Abs(DIxx) + Abs(DIyy) + Abs(DIzz);
             }
           }
-          if (kLEnd == 2)
+          #endif
+
+          DDim = Abs(DDim * anEpsilon);
+
+          if (DDim > Eps)
           {
-            ErrorL = ErrL->Value(ErrL->Max());
+            Eps  = DDim;
+            EpsL = 0.9 * Eps;
           }
+        }
+        if (kLEnd == 2)
+        {
+          ErrorL = ErrL->Value(ErrL->Max());
+        }
       } while ( (ErrorL - EpsL > 0.0 && isVerifyComputation) || kLEnd == 1 );
 
       for ( i = 1; i <= JL; i++ )
+      {
         addAndRestoreInertia(anInertiaL->Value(i), anInertia);
+      }
 
       ErrorLMax = Max(ErrorLMax, ErrorL);
     }

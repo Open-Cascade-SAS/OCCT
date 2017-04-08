@@ -58,11 +58,15 @@
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_Activator,IFSelect_Activator)
 
-static int initActivator = 0;
+static int THE_IGESSelect_Activator_initActivator = 0;
 
-    IGESSelect_Activator::IGESSelect_Activator ()
+IGESSelect_Activator::IGESSelect_Activator()
 {
-  if (initActivator) return;  initActivator = 1;
+  if (THE_IGESSelect_Activator_initActivator)
+  {
+    return;
+  }
+  THE_IGESSelect_Activator_initActivator = 1;
 //  Add ( 0,"load");
 //  Add ( 0,"loadiges");    // homonyme
   SetForGroup ("XSTEP-IGES");

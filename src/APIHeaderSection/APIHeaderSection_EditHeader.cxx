@@ -34,32 +34,46 @@ static Standard_Boolean IsTimeStamp
   char dizmois = val->Value(6);
   char dizjour = val->Value(9);
   char dizheur = val->Value(12);
-  for (Standard_Integer i = 1; i <= 19; i ++) {
+  for (Standard_Integer i = 1; i <= 19; i ++)
+  {
     char uncar = val->Value(i);
     switch (i) {
-    case  1 : if (uncar != '1' && uncar != '2') return Standard_False;  break;
+    case  1 : if (uncar != '1' && uncar != '2') return Standard_False;
+      break;
     case  2 :
     case  3 :
-    case  4 : if (uncar < '0' || uncar > '9') return Standard_False; break;
+    case  4 : if (uncar < '0' || uncar > '9') return Standard_False;
+      break;
     case  5 : if (uncar != '-') return Standard_False;
-    case  6 : if (uncar != '0' && uncar != '1') return Standard_False;  break;
-    case  7 : if (uncar < '0' || uncar > '9') return Standard_False; 
-      if (dizmois == '1' && (uncar < '0' || uncar > '2')) return Standard_False; break;
+    case  6 : if (uncar != '0' && uncar != '1') return Standard_False;
+      break;
+    case  7 : if (uncar < '0' || uncar > '9') return Standard_False;
+      if (dizmois == '1' && (uncar < '0' || uncar > '2')) return Standard_False;
+      break;
     case  8 : if (uncar != '-') return Standard_False;
-    case  9 : if (uncar < '0' || uncar > '3') return Standard_False; break;
+    case  9 : if (uncar < '0' || uncar > '3') return Standard_False;
+      break;
     case 10 : if (uncar < '0' || uncar > '9') return Standard_False;
-      if (dizjour == '3' && (uncar != '0' && uncar != '1')) return Standard_False; break;
+      if (dizjour == '3' && (uncar != '0' && uncar != '1')) return Standard_False;
+      break;
     case 11 : if (uncar != 'T') return Standard_False;
-    case 12 : if (uncar < '0' || uncar > '2') return Standard_False; break;
+    case 12 : if (uncar < '0' || uncar > '2') return Standard_False;
+      break;
     case 13 : if (uncar < '0' || uncar > '9') return Standard_False;
-      if (dizheur == '2' && (uncar < '0' || uncar > '3')) return Standard_False; break;
+      if (dizheur == '2' && (uncar < '0' || uncar > '3')) return Standard_False;
+      break;
     case 14 : if (uncar != ':') return Standard_False;
-    case 15 : if (uncar < '0' || uncar > '5') return Standard_False; break;
-    case 16 : if (uncar < '0' || uncar > '9') return Standard_False; break;
+    case 15 : if (uncar < '0' || uncar > '5') return Standard_False;
+      break;
+    case 16 : if (uncar < '0' || uncar > '9') return Standard_False;
+      break;
     case 17 : if (uncar != ':') return Standard_False;
-    case 18 : if (uncar < '0' || uncar > '5') return Standard_False; break;
-    case 19 : if (uncar < '0' || uncar > '9') return Standard_False; break;
-      default : break;
+    case 18 : if (uncar < '0' || uncar > '5') return Standard_False;
+      break;
+    case 19 : if (uncar < '0' || uncar > '9') return Standard_False;
+      break;
+    default :
+      break;
     }
   }
   return Standard_True;

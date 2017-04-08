@@ -750,9 +750,8 @@ static Standard_CString schemaAP242DIS = "AP242_MANAGED_MODEL_BASED_3D_ENGINEERI
 #include <StepVisual_CameraModelD3MultiClippingUnion.hxx>
 #include <StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem.hxx>
 
-static int init = 0;
+static int THE_StepAP214_Protocol_init = 0;
 static Interface_DataMapOfTransientInteger types(800);
-
 
 //=======================================================================
 //function : StepAP214_Protocol
@@ -761,7 +760,11 @@ static Interface_DataMapOfTransientInteger types(800);
 
 StepAP214_Protocol::StepAP214_Protocol ()
 {
-  if (init) return;  init = 1;
+  if (THE_StepAP214_Protocol_init)
+  {
+    return;
+  }
+  THE_StepAP214_Protocol_init = 1;
 
   types.Bind (STANDARD_TYPE(StepBasic_Address), 1);
   types.Bind (STANDARD_TYPE(StepShape_AdvancedBrepShapeRepresentation), 2);

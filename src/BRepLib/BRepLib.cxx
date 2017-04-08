@@ -916,8 +916,8 @@ static Standard_Real ComputeTol(const Handle(Adaptor3d_HCurve)& c3d,
   Standard_Real first = c3d->FirstParameter();
   Standard_Real last  = c3d->LastParameter();
   Standard_Real dapp = -1.;
-  Standard_Integer i = 0;
-  for(i = 0; i <= nbp; i++){
+  for (Standard_Integer i = 0; i <= nbp; ++i)
+  {
     const Standard_Real t = IntToReal(i)/IntToReal(nbp);
     const Standard_Real u = first*(1.-t) + last*t;
     gp_Pnt Pc3d = c3d->Value(u);
@@ -953,16 +953,14 @@ static Standard_Real ComputeTol(const Handle(Adaptor3d_HCurve)& c3d,
         Precision::IsInfinite(Pcons.Y()) ||
         Precision::IsInfinite(Pcons.Z()))
     {
-        d2=Precision::Infinite();
-        break;
+      d2 = Precision::Infinite();
+      break;
     }
     Standard_Real temp = Pc3d.SquareDistance(Pcons);
 
-
     dist(i+1) = temp;
 
-
-    if(temp > d2) d2 = temp;
+    d2 = Max (d2, temp);
   }
 
   if(Precision::IsInfinite(d2))
@@ -982,25 +980,41 @@ static Standard_Real ComputeTol(const Handle(Adaptor3d_HCurve)& c3d,
   Standard_Integer N2 = 0;
   Standard_Integer N3 = 0;
 
-  for( i = 1; i<= nbp+10; i++)
-    if( dist(i) > 0 ) {
-      if( dist(i) < 1.0 ) N1++;
-      else N2++;
+  for (Standard_Integer i = 1; i<= nbp+10; ++i)
+  {
+    if (dist(i) > 0)
+    {
+      if (dist(i) < 1.0)
+      {
+        ++N1;
+      }
+      else
+      {
+        ++N2;
+      }
     }
+  }
 
-    if( N1 > N2 && N2 != 0 ) N3 = 100*N2/(N1+N2);
-    if( N3 < 10 && N3 != 0 ) {
-      ana = Standard_True;
-      for( i = 1; i<= nbp+10; i++)
-        if( dist(i) > 0 && dist(i) < 1.0 )
-          if( dist(i) > D2 ) D2 = dist(i);
+  if (N1 > N2 && N2 != 0)
+  {
+    N3 = 100*N2/(N1+N2);
+  }
+  if (N3 < 10 && N3 != 0)
+  {
+    ana = Standard_True;
+    for (Standard_Integer i = 1; i <= nbp+10; ++i)
+    {
+      if (dist(i) > 0 && dist(i) < 1.0)
+      {
+        D2 = Max (D2, dist(i));
+      }
     }
+  }
 
-    //d2 = 1.5*sqrt(d2);
-    d2 = (!ana) ? 1.5 * d2 : 1.5*sqrt(D2);
-    if(d2<1.e-7) d2 = 1.e-7;
-
-    return d2;
+  //d2 = 1.5*sqrt(d2);
+  d2 = (!ana) ? 1.5 * d2 : 1.5*sqrt(D2);
+  d2 = Max (d2, 1.e-7);
+  return d2;
 }
 
 void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,

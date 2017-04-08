@@ -394,7 +394,12 @@ IGESData_IGESReaderTool::IGESData_IGESReaderTool
     PR.SendFail(Msg221);
     return;
   }
-  if (nbprops == 0) return;  ncur ++;
+  if (nbprops == 0)
+  {
+    return;
+  }
+
+  ++ncur;
   Interface_EntityList props;
   if (PR.ReadEntList
       (IR,PR.CurrentList(nbprops),Msg38, props,Standard_False) )

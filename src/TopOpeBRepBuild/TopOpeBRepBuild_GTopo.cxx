@@ -288,11 +288,11 @@ void TopOpeBRepBuild_GTopo::DumpSSB(Standard_OStream& OS,
 
 //=======================================================================
 //function : Dump
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void TopOpeBRepBuild_GTopo::Dump(Standard_OStream& OS,
-				 const Standard_Address a) const 
+				 const Standard_Address a) const
 {
   char* s = (char*)a;
 
@@ -303,22 +303,26 @@ void TopOpeBRepBuild_GTopo::Dump(Standard_OStream& OS,
 
   if (myReverseForce) OS<<"reverse value : "<<myReverseValue<<endl;
 
-  if(s) OS<<s; OS<<"\\ I N O"; 
+  if(s) OS<<s;
+  OS<<"\\ I N O";
   OS<<endl;
 
-  if(s) OS<<s; OS<<"I ";
-  DumpVal(OS,TopAbs_IN,TopAbs_IN); OS<<" "; 
-  DumpVal(OS,TopAbs_IN,TopAbs_ON); OS<<" "; 
+  if(s) OS<<s;
+  OS<<"I ";
+  DumpVal(OS,TopAbs_IN,TopAbs_IN); OS<<" ";
+  DumpVal(OS,TopAbs_IN,TopAbs_ON); OS<<" ";
   DumpVal(OS,TopAbs_IN,TopAbs_OUT); OS<<endl;
 
-  if(s) OS<<s; OS<<"N ";
-  DumpVal(OS,TopAbs_ON,TopAbs_IN); OS<<" "; 
-  DumpVal(OS,TopAbs_ON,TopAbs_ON); OS<<" "; 
+  if(s) OS<<s;
+  OS<<"N ";
+  DumpVal(OS,TopAbs_ON,TopAbs_IN); OS<<" ";
+  DumpVal(OS,TopAbs_ON,TopAbs_ON); OS<<" ";
   DumpVal(OS,TopAbs_ON,TopAbs_OUT); OS<<endl;
 
-  if(s) OS<<s; OS<<"O ";
-  DumpVal(OS,TopAbs_OUT,TopAbs_IN); OS<<" "; 
-  DumpVal(OS,TopAbs_OUT,TopAbs_ON); OS<<" "; 
+  if(s) OS<<s;
+  OS<<"O ";
+  DumpVal(OS,TopAbs_OUT,TopAbs_IN); OS<<" ";
+  DumpVal(OS,TopAbs_OUT,TopAbs_ON); OS<<" ";
   DumpVal(OS,TopAbs_OUT,TopAbs_OUT); OS<<endl;
 }
 

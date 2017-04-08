@@ -111,17 +111,27 @@ void BRepTools_Quilt::Add(const TopoDS_Shape& S)
   // Binds all the faces of S
   //  - to the face itself if it is not copied
   //  - to the copy if it is copied
-  if(myBounds.Contains(S)) return;
+  if(myBounds.Contains(S))
+  {
+    return;
+  }
+
   BRep_Builder B;
-  for (TopExp_Explorer wex(S,TopAbs_WIRE,TopAbs_FACE); wex.More(); wex.Next()) 
-     myBounds.Add(wex.Current(),wex.Current());
-  
+  for (TopExp_Explorer wex(S,TopAbs_WIRE,TopAbs_FACE); wex.More(); wex.Next())
+  {
+    myBounds.Add(wex.Current(),wex.Current());
+  }
+
   for (TopExp_Explorer eex(S,TopAbs_EDGE,TopAbs_WIRE); eex.More(); eex.Next())
+  {
     myBounds.Add(eex.Current(),eex.Current());
-  
+  }
+
   for (TopExp_Explorer vex(S,TopAbs_VERTEX,TopAbs_EDGE); vex.More(); vex.Next())
+  {
     myBounds.Add(vex.Current(),vex.Current());
-  
+  }
+
     // explore the faces
     for (TopExp_Explorer fex(S,TopAbs_FACE); fex.More(); fex.Next()) {
       

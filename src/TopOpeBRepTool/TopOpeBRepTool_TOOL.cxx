@@ -1468,10 +1468,14 @@ void TopOpeBRepTool_TOOL::stuvF(const gp_Pnt2d& uv,const TopoDS_Face& f,  Standa
   Standard_Real uf=bs.FirstUParameter(),ul=bs.LastUParameter(),vf=bs.FirstVParameter(),vl=bs.LastVParameter();
   Standard_Boolean onuf = (Abs(uf-u)<tolu), onul = (Abs(ul-u)<tolu);
   Standard_Boolean onvf = (Abs(vf-v)<tolv), onvl = (Abs(vl-v)<tolv);
-  if (onuf) onU = ONFIRST; if (onul) onU = ONLAST;
-  if (onvf) onV = ONFIRST; if (onvl) onV = ONLAST;
-  if (u < (uf-tolu)) onU = INFFIRST; if (u > (ul+tolu)) onU = SUPLAST;
-  if (v < (vf-tolv)) onV = INFFIRST; if (v > (vl+tolv)) onV = SUPLAST;
+  if (onuf) onU = ONFIRST;
+  if (onul) onU = ONLAST;
+  if (onvf) onV = ONFIRST;
+  if (onvl) onV = ONLAST;
+  if (u < (uf-tolu)) onU = INFFIRST;
+  if (u > (ul+tolu)) onU = SUPLAST;
+  if (v < (vf-tolv)) onV = INFFIRST;
+  if (v > (vl+tolv)) onV = SUPLAST;
 }
 
 //=======================================================================

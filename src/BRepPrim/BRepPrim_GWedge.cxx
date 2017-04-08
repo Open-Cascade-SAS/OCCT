@@ -640,9 +640,9 @@ const TopoDS_Wire& BRepPrim_GWedge::Wire
 
 Standard_Boolean BRepPrim_GWedge::HasEdge (const BRepPrim_Direction d1,
 				   const BRepPrim_Direction d2) const
-{ 
+{
   Standard_Boolean state = !(myInfinite[BRepPrim_Wedge_NumDir1(d1)] ||
-	            myInfinite[BRepPrim_Wedge_NumDir1(d2)]); 
+	            myInfinite[BRepPrim_Wedge_NumDir1(d2)]);
   Standard_Integer i = BRepPrim_Wedge_NumDir2(d1,d2);
   if      ( i == 6 || i == 7 ) state = state && ( X2Max != X2Min );
   else if ( i == 1 || i == 3 ) state = state && ( Z2Max != Z2Min );
@@ -668,118 +668,125 @@ gp_Lin BRepPrim_GWedge::Line
   gp_Vec VX = myAxes.XDirection();
   gp_Vec VY = myAxes.YDirection();
   gp_Vec VZ = myAxes.Direction();
-  
+
   switch (i/4) {
-    
+
   case 0 :
     D = myAxes.Direction();
     break;
-    
+
   case 1 :
     D = myAxes.XDirection();
     break;
-    
+
   case 2 :
     D = myAxes.YDirection();
     break;
-    
+
   };
-  
+
   switch (i) {
-    
+
   case 0 :
     // XMin YMin
     X = XMin;
     Y = YMin;
     Z = ZMin;
     break;
-      
+
   case 1 :
     // XMin YMax
     X = X2Min;
     Y = YMax;
     Z = Z2Min;
     break;
-      
+
   case 2 :
     // XMax YMin
     X = XMax;
     Y = YMin;
     Z = ZMin;
     break;
-    
+
   case 3 :
     // XMax YMax
     X = X2Max;
     Y = YMax;
     Z = Z2Min;
     break;
-    
+
   case 4 :
     // YMin ZMin
     X = XMin;
     Y = YMin;
     Z = ZMin;
     break;
-    
+
   case 5 :
     // YMin ZMax
     X = XMin;
     Y = YMin;
     Z = ZMax;
     break;
-      
+
   case 6 :
     // YMax ZMin
     X = X2Min;
     Y = YMax;
     Z = Z2Min;
     break;
-      
+
   case 7 :
     // YMax ZMax
     X = X2Min;
     Y = YMax;
     Z = Z2Max;
     break;
-      
+
   case 8 :
     // ZMin XMin
     X = XMin;
     Y = YMin;
     Z = ZMin;
-    if ( (XMin != X2Min) || (ZMin != Z2Min) ) 
+    if ( (XMin != X2Min) || (ZMin != Z2Min) )
+    {
       D = gp_Vec( (X2Min-XMin)*VX + (YMax-YMin)*VY + (Z2Min-ZMin)*VZ);
+    }
     break;
-    
+
   case 9 :
     // ZMax XMin
     X = XMin;
     Y = YMin;
     Z = ZMax;
-    if ( (XMin != X2Min) || (ZMax != Z2Max) ) 
+    if ( (XMin != X2Min) || (ZMax != Z2Max) )
+    {
       D = gp_Vec( (X2Min-XMin)*VX + (YMax-YMin)*VY + (Z2Max-ZMax)*VZ);
+    }
     break;
-    
+
   case 10 :
     // ZMin XMax
     X = XMax;
     Y = YMin;
     Z = ZMin;
-    if ( (XMax != X2Max) || (ZMin != Z2Min) ) 
+    if ( (XMax != X2Max) || (ZMin != Z2Min) )
+    {
       D = gp_Vec( (X2Max-XMax)*VX + (YMax-YMin)*VY + (Z2Min-ZMin)*VZ);
+    }
     break;
-    
+
   case 11 :
     // ZMax XMax
     X = XMax;
     Y = YMin;
     Z = ZMax;
-    if ( (XMax != X2Max) || (ZMax != Z2Max) ) 
-      D = gp_Vec(gp_Pnt(XMax,YMin,ZMax),gp_Pnt(X2Max,YMax,Z2Max));
+    if ( (XMax != X2Max) || (ZMax != Z2Max) )
+    {
       D = gp_Vec( (X2Max-XMax)*VX + (YMax-YMin)*VY + (Z2Max-ZMax)*VZ);
+    }
     break;
-      
+
   }
 
   gp_Pnt P = myAxes.Location();
@@ -787,7 +794,7 @@ gp_Lin BRepPrim_GWedge::Line
   P.Translate(Y*gp_Vec(myAxes.YDirection()));
   P.Translate(Z*gp_Vec(myAxes.Direction ()));
   return gp_Lin(gp_Ax1(P,D));
-    
+
 }
 
 //=======================================================================

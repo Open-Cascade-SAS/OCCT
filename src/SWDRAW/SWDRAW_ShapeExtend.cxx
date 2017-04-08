@@ -69,8 +69,8 @@ static Standard_Integer sortcompound (Draw_Interpretor& di, Standard_Integer arg
     case 'e' : tse = TopAbs_EDGE;   break;
     case 'w' : tse = TopAbs_WIRE;   break;
     case 'f' : tse = TopAbs_FACE;   break;
-    case 's' : tse = TopAbs_SHELL;
-      if (argv[3][1] == 'o')  tse = TopAbs_SOLID; break;
+    case 's' : tse = (argv[3][1] == 'o' ? TopAbs_SOLID : TopAbs_SHELL);
+      break;
     default : break;
   }
   Standard_Boolean modexp = Standard_False;
@@ -98,8 +98,12 @@ static Standard_Integer sortcompound (Draw_Interpretor& di, Standard_Integer arg
  void SWDRAW_ShapeExtend::InitCommands(Draw_Interpretor& theCommands) 
 {
   static Standard_Integer initactor = 0;
-  if (initactor) return;  initactor = 1;
-  
+  if (initactor)
+  {
+    return;
+  }
+  initactor = 1;
+
   Standard_CString g = SWDRAW::GroupName();
   theCommands.Add ("sortcompound","shape_entree shape_result type=v-e-w-f-s-so [mode=n-e-c-x]",
 		   __FILE__,sortcompound,g);

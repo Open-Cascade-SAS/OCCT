@@ -703,24 +703,30 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
    for( ; i < 4; i +=3)
    {
      Standard_Integer j;
-     for ( j=0; j < myNbCashe; j++ ) 
+     for (j = 0; j < myNbCashe; ++j)
+     {
        if ( myCashe3d[j].SquareDistance (aP[i] ) < aTol2)
        {
-         aP2d[i] = mySurf->NextValueOfUV (myCashe2d[j], aP[i], theTol, 
-           theTol);
+         aP2d[i] = mySurf->NextValueOfUV (myCashe2d[j], aP[i], theTol, theTol);
          aSavedPointNum = i;
          aSavedPoint = myCashe2d[j];
          if (i == 0)
            isFromCashe = Standard_True;
          break;
        }
-       if ( j >= myNbCashe )
-         aP2d[i] = mySurf->ValueOfUV(aP[i], theTol);
+     }
 
-       Standard_Real aDist = mySurf->Gap();
-       Standard_Real aCurDist = aDist * aDist;
-       if( aTol2 < aDist * aDist)
-         aTol2 = aCurDist;
+     if (j >= myNbCashe)
+     {
+       aP2d[i] = mySurf->ValueOfUV(aP[i], theTol);
+     }
+
+     Standard_Real aDist = mySurf->Gap();
+     Standard_Real aCurDist = aDist * aDist;
+     if (aTol2 < aDist * aDist)
+     {
+       aTol2 = aCurDist;
+     }
    }
 
    if ( isPeriodicU || isPeriodicV )
@@ -729,7 +735,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
      for(i = 1; i < 3; i++)
      {
        Standard_Integer j;
-       for ( j=0; j < myNbCashe; j++ ) 
+       for (j = 0; j < myNbCashe; ++j)
+       {
          if ( myCashe3d[j].SquareDistance (aP[i] ) < aTol2)
          {
            aP2d[i] = mySurf->NextValueOfUV (myCashe2d[j], aP[i], theTol, theTol);
@@ -737,13 +744,19 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
            aSavedPoint = myCashe2d[j];
            break;
          }
-         if ( j >= myNbCashe )
-           aP2d[i] = mySurf->ValueOfUV(aP[i], theTol);
+       }
 
-         Standard_Real aDist = mySurf->Gap();
-         Standard_Real aCurDist = aDist * aDist;
-         if( aTol2 < aDist * aDist)
-           aTol2 = aCurDist;
+       if (j >= myNbCashe)
+       {
+         aP2d[i] = mySurf->ValueOfUV(aP[i], theTol);
+       }
+
+       Standard_Real aDist = mySurf->Gap();
+       Standard_Real aCurDist = aDist * aDist;
+       if (aTol2 < aDist * aDist)
+       {
+         aTol2 = aCurDist;
+       }
      }
 
      if (isPeriodicU)
@@ -1049,18 +1062,23 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
           {
             //:q9 abv 23 Mar 99: use cashe as 1st approach
             Standard_Integer j; // svv #1
-            for ( j=0; j < myNbCashe; j++ ) 
+            for (j = 0; j < myNbCashe; ++j)
+            {
               if ( myCashe3d[j].SquareDistance ( p3d ) < myPreci*myPreci )
               {
-                p2d = mySurf->NextValueOfUV (myCashe2d[j], p3d, myPreci, 
-                  Precision::Confusion()+gap);
-                if (i == 1) {
+                p2d = mySurf->NextValueOfUV (myCashe2d[j], p3d, myPreci, Precision::Confusion()+gap);
+                if (i == 1)
+                {
                   isFromCashe = Standard_True;
                   aSavedPoint = myCashe2d[j];
                 }
                 break;
               }
-              if ( j >= myNbCashe ) p2d = mySurf->ValueOfUV(p3d, myPreci);
+            }
+            if (j >= myNbCashe)
+            {
+              p2d = mySurf->ValueOfUV(p3d, myPreci);
+            }
           }
         }
         else {

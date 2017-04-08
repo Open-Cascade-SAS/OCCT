@@ -936,8 +936,10 @@ static Standard_Integer movepole (Draw_Interpretor& , Standard_Integer n, const 
   if (GBz.IsNull()) {
     GBs = DrawTrSurf::GetBSplineSurface(a[1]);
     if (GBs.IsNull())
+    {
       return 1;
-      BSpline = Standard_True;
+    }
+    BSpline = Standard_True;
   }
 
   Standard_Real dx = Draw::Atof(a[n-3]);
@@ -1227,8 +1229,10 @@ static Standard_Integer sfindp (Draw_Interpretor& , Standard_Integer n, const ch
   if (GBz.IsNull()) {
     GBs = DrawTrSurf::GetBSplineSurface(a[1]);
     if (GBs.IsNull())
+    {
       return 1;
-      BSpline = Standard_True;
+    }
+    BSpline = Standard_True;
   }
 
   Standard_Integer UIndex = 0;

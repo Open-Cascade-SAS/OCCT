@@ -3055,7 +3055,14 @@ Handle(IFSelect_Selection) IFSelect_WorkSession::GiveSelection
   }
 
   Handle(IFSelect_Selection) sel;
-  if (np >= 0) nomsel[np] = 0;  if (nf >= 0) nomsel[nf] = '\0';
+  if (np >= 0)
+  {
+    nomsel[np] = 0;
+  }
+  if (nf >= 0)
+  {
+    nomsel[nf] = '\0';
+  }
   Handle(Standard_Transient) item = NamedItem(nomsel);
 
 //  Parentheses ? essayer Signature (plus tard : Selection parametree)
@@ -3171,7 +3178,8 @@ Handle(TColStd_HSequenceOfTransient) IFSelect_WorkSession::GiveListFromList
       if (selname[i] == ' ') continue;
       if (selname[i] == ',' || selname[i] == ')') {
 	entid[j] = '\0';
-	if (j == 0) continue;  j = 0;
+	if (j == 0) continue;
+	j = 0;
 	num = NumberFromLabel (entid);
 	if (num <= 0 || !numap.Add (num)) continue;
 	Handle(Standard_Transient) anent = StartingEntity(num);

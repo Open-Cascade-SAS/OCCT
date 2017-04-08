@@ -639,18 +639,31 @@ void ChFi2d_Builder::UpDateHistory(const TopoDS_Edge& E1,
 				 const Standard_Integer Id)
 {
   if (Id == 1) // the new edge is a fillet
+  {
     fillets.Append(NewEdge);
-  else // the new edge is a chamfer
-    chamfers.Append(NewEdge);
-    if (history.IsBound(E1)) history.UnBind(E1);
-  if ( status != ChFi2d_FirstEdgeDegenerated
-       && status != ChFi2d_BothEdgesDegenerated) {
-    if (!E1.IsSame(TrimE1)) history.Bind(E1, TrimE1);
   }
-    if (history.IsBound(E2)) history.UnBind(E2);
-  if ( status != ChFi2d_LastEdgeDegenerated
-       && status != ChFi2d_BothEdgesDegenerated) {
-    if (!E2.IsSame(TrimE2)) history.Bind(E2, TrimE2);
+  else // the new edge is a chamfer
+  {
+    chamfers.Append(NewEdge);
+  }
+
+  history.UnBind(E1);
+  if (status != ChFi2d_FirstEdgeDegenerated
+   && status != ChFi2d_BothEdgesDegenerated)
+  {
+    if (!E1.IsSame(TrimE1))
+    {
+      history.Bind(E1, TrimE1);
+    }
+  }
+  history.UnBind(E2);
+  if (status != ChFi2d_LastEdgeDegenerated
+   && status != ChFi2d_BothEdgesDegenerated)
+  {
+    if (!E2.IsSame(TrimE2))
+    {
+      history.Bind(E2, TrimE2);
+    }
   }
 } // UpDateHistory
 

@@ -1097,9 +1097,12 @@ static Standard_Integer testDoc (Draw_Interpretor&,
 
 void XDEDRAW::Init(Draw_Interpretor& di)
 {
-
   static Standard_Boolean initactor = Standard_False;
-  if (initactor) return;  initactor = Standard_True;
+  if (initactor)
+  {
+    return;
+  }
+  initactor = Standard_True;
 
   // Load static variables for STEPCAF (ssv; 16.08.2012)
   STEPCAFControl_Controller::Init();

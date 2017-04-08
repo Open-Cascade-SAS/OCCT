@@ -1564,7 +1564,11 @@ Standard_Integer reshape(Draw_Interpretor& di,
  void SWDRAW_ShapeUpgrade::InitCommands(Draw_Interpretor& theCommands) 
 {
   static Standard_Integer initactor = 0;
-  if (initactor) return;  initactor = 1;
+  if (initactor)
+  {
+    return;
+  }
+  initactor = 1;
   
   Standard_CString g = SWDRAW::GroupName(); // "Tests of DivideTool";
  

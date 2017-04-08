@@ -44,14 +44,18 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Protocol,IGESData_Protocol)
 
-static int deja = 0;
+static int THE_IGESSolid_Protocol_deja = 0;
 static Handle(Standard_Type) atype01,atype02,atype03,atype04,atype05,atype06,
   atype07,atype08,atype09,atype10,atype11,atype12,atype13,atype14,atype15,
   atype16,atype17,atype18,atype19,atype20,atype21,atype22,atype23,atype24;
 
-    IGESSolid_Protocol::IGESSolid_Protocol ()
+IGESSolid_Protocol::IGESSolid_Protocol()
 {
-  if (deja) return;  deja = 1;
+  if (THE_IGESSolid_Protocol_deja)
+  {
+    return;
+  }
+  THE_IGESSolid_Protocol_deja = 1;
   atype01 = STANDARD_TYPE(IGESSolid_Block);
   atype02 = STANDARD_TYPE(IGESSolid_BooleanTree);
   atype03 = STANDARD_TYPE(IGESSolid_ConeFrustum);

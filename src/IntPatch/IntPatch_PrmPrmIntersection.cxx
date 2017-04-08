@@ -2098,6 +2098,7 @@ IntSurf_PntOn2S MakeNewPoint(const IntSurf_PntOn2S& replacePnt,
 
   Standard_Integer i;
   for (i = 0; i < 4; i++)
+  {
     if (Periods[i] != 0.)
     {
       if (Abs(NewParams[i] - OldParams[i]) >= 0.5*Periods[i])
@@ -2108,9 +2109,10 @@ IntSurf_PntOn2S MakeNewPoint(const IntSurf_PntOn2S& replacePnt,
           NewParams[i] -= Periods[i];
       }
     }
+  }
 
-    NewPoint.SetValue(NewParams[0], NewParams[1], NewParams[2], NewParams[3]);
-    return NewPoint;
+  NewPoint.SetValue(NewParams[0], NewParams[1], NewParams[2], NewParams[3]);
+  return NewPoint;
 }
 
 //==================================================================================

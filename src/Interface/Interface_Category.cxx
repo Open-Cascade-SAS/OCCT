@@ -23,7 +23,7 @@
 #include <TColStd_SequenceOfAsciiString.hxx>
 #include <NCollection_Vector.hxx>
 
-static int init = 0;
+static int THE_Interface_Category_init = 0;
 static Standard_CString unspec = "unspecified";
 
 static Standard_Mutex gMapTypesMutex;
@@ -111,16 +111,21 @@ void Interface_Category::Init ()
     gMapTypesMutex.Lock();
     if ( !gMapTypesInit )
     {
-      if (init) return;  init = 1;
-      init = Interface_Category::AddCategory ("Shape");
-      init = Interface_Category::AddCategory ("Drawing");
-      init = Interface_Category::AddCategory ("Structure");
-      init = Interface_Category::AddCategory ("Description");
-      init = Interface_Category::AddCategory ("Auxiliary");
-      init = Interface_Category::AddCategory ("Professional");
-      init = Interface_Category::AddCategory ("FEA");
-      init = Interface_Category::AddCategory ("Kinematics");
-      init = Interface_Category::AddCategory ("Piping");
+      if (THE_Interface_Category_init)
+      {
+        return;
+      }
+
+      THE_Interface_Category_init = 1;
+      Interface_Category::AddCategory ("Shape");
+      Interface_Category::AddCategory ("Drawing");
+      Interface_Category::AddCategory ("Structure");
+      Interface_Category::AddCategory ("Description");
+      Interface_Category::AddCategory ("Auxiliary");
+      Interface_Category::AddCategory ("Professional");
+      Interface_Category::AddCategory ("FEA");
+      Interface_Category::AddCategory ("Kinematics");
+      Interface_Category::AddCategory ("Piping");
 
       gMapTypesInit = Standard_True;
     }

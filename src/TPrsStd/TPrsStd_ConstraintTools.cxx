@@ -1827,8 +1827,11 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
       }
 
       if (is_planar)
+      {
         ais->SetCustomPlane (aplane->Pln());
-        anAIS = ais;
+      }
+
+      anAIS = ais;
       return;
     }
     else

@@ -57,7 +57,7 @@
 IGESData_IGESWriter::IGESData_IGESWriter
   (const Handle(IGESData_IGESModel)& amodel)
     : thedirs(0,amodel->NbEntities()) , thepnum(1,amodel->NbEntities()+1),
-      thecurr (MaxcarsG+1) , themodew (0) , thefloatw (9) 
+      thecurr (MaxcarsG+1) , themodew (0) , thefloatw (9)
 {
   themodel = amodel;
   thehead  = new TColStd_HSequenceOfHAsciiString();
@@ -90,7 +90,7 @@ IGESData_IGESWriter::IGESData_IGESWriter
 
 //=======================================================================
 //function : SendStartLine
-//purpose  : 
+//purpose  :
 //=======================================================================
 void IGESData_IGESWriter::SendStartLine (const Standard_CString startline)
 {
@@ -506,7 +506,7 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
       writefnes (S,"                                                                        S0000001");
     }
     else S<<"                                                                        S0000001";
-//      123456789 123456789 123456789 123456789 123456789 123456789 123456789 12 
+//      123456789 123456789 123456789 123456789 123456789 123456789 123456789 12
     S << endl;
   } else {
     nbs = thestar->Length();
@@ -520,7 +520,8 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
 //    for (Standard_Integer k = line->Length()+1; k <= MaxcarsG; k ++)  S<<' ';
       S << &blancs[line->Length()];
       if (fnes) writefnes (S,finlin);
-      else S << finlin;  S << endl;
+      else S << finlin;
+      S << endl;
     }
   }
 #ifdef PATIENCELOG
@@ -539,7 +540,8 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
 //    for (Standard_Integer k = line->Length()+1; k <= MaxcarsG; k ++)  S<<' ';
     S << &blancs[line->Length()];
     if (fnes) writefnes (S,finlin);
-    else S << finlin;  S << endl;
+    else S << finlin;
+    S << endl;
     isGood = S.good();
   }
   if(!isGood)
@@ -564,11 +566,13 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
 	    v[0],v[1],v[2],v[3],v[4],v[5],v[6],v[7],
 	    v[8],v[9],v[10],v[11] ,2*i-1);
     if (fnes) writefnes (S,ligne);
-    else S << ligne;  S<< "\n";
+    else S << ligne;
+    S<< "\n";
     sprintf(ligne,"%8d%8d%8d%8d%8d%8s%8s%8s%8sD%7.7d",
 	    v[0],v[13],v[14],v[15],v[16],res1,res2,lab,num,2*i);
     if (fnes) writefnes (S,ligne);
-    else S << ligne;  S<< "\n";
+    else S << ligne;
+    S<< "\n";
 //    cout << "Ent.no "<<i<<" No en P "<<thepnum.Value(i)<<
 //      " Lignes P:"<<thepnum.Value(i+1)-thepnum.Value(i)<<endl;
 //    for (j = 0; j < 17; j ++) S<<v[j]<<" ";
@@ -582,7 +586,7 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
   cout<<" Parameter Section : "<<thepnum.Value(nbd)-1
       <<" lines (* = 1000 lines) "<<flush;
 #endif
-  
+
   blancs[MaxcarsP] = '\0';
   for (i = 1; i <= nbd && isGood; i ++) {
     for (Standard_Integer j = thepnum.Value(i); j < thepnum.Value(i+1); j ++) {
@@ -596,7 +600,8 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
 //      for (Standard_Integer k = line->Length()+1; k <= MaxcarsP; k ++)S<<' ';
       S << &blancs[line->Length()];
       if (fnes) writefnes (S,finlin);
-      else S << finlin;  S << endl;
+      else S << finlin;
+      S << endl;
       isGood = S.good();
 #ifdef PATIENCELOG
       lignespatience --;
@@ -612,7 +617,8 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
 	   nbs,nbg,nbd*2,thepnum.Value(thepnum.Length())-1);
 //   12345678- 16- 24- 32  56789 123456789 123456789 123456789 12
   if (fnes) writefnes (S,ligne);
-  else S << ligne;  S<< "\n";
+  else S << ligne;
+  S<< "\n";
   S.flush();
   isGood = S.good();
 #ifdef PATIENCELOG

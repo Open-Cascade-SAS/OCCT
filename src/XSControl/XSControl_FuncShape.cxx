@@ -702,17 +702,21 @@ static IFSelect_ReturnStatus XSControl_twrite
 //  ####                                                              ####
 //  ######################################################################
 
-static int initactor = 0;
-
+static int THE_XSControl_FuncShape_initactor = 0;
 
 //=======================================================================
 //function : Init
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void  XSControl_FuncShape::Init ()
 {
-  if (initactor) return;  initactor = 1;
+  if (THE_XSControl_FuncShape_initactor)
+  {
+    return;
+  }
+
+  THE_XSControl_FuncShape_initactor = 1;
 
   IFSelect_Act::SetGroup("DE: General");
 
@@ -781,7 +785,11 @@ Standard_Integer  XSControl_FuncShape::MoreShapes
   //  liste
   if (n1 <= n2 && n1 > 0) {
     char nom[50], nomsh[60];  Standard_Integer nbsh = 0;
-    for (i = 0; i < paro; i ++) nom[i]=name[i];   nom[paro] = '\0';
+    for (i = 0; i < paro; i ++)
+    {
+      nom[i]=name[i];
+    }
+    nom[paro] = '\0';
     sout<<"Shapes DRAW named : "<<nom<<n1<<" to "<<nom<<n2;
     for (i = n1; i <= n2 ; i ++) {
       const char* nomshh = &nomsh[0];

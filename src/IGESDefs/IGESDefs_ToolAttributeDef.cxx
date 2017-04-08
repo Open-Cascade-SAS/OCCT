@@ -399,23 +399,40 @@ void IGESDefs_ToolAttributeDef::OwnCheck
     }
     else if (fn == 0) continue;
     mess[0] = '\0';
-    switch (aty) {
-      case 1 : if (!list->IsKind(STANDARD_TYPE(TColStd_HArray1OfInteger)))
-	sprintf(mess,"Attribute List n0.%d (Integers) badly defined", aty);
-	break;
-      case 2 : if (!list->IsKind(STANDARD_TYPE(TColStd_HArray1OfReal)))
-	sprintf(mess,"Attribute List n0.%d (Reals) badly defined", aty);
-	break;
-      case 3 : if (!list->IsKind(STANDARD_TYPE(Interface_HArray1OfHAsciiString)))
-	sprintf(mess,"Attribute List n0.%d (Strings) badly defined", aty);
-	break;
-      case 4 : if (!list->IsKind(STANDARD_TYPE(IGESData_HArray1OfIGESEntity)))
-	sprintf(mess,"Attribute List n0.%d (IGES Pointers) badly defined", aty);
-	break;
-      case 6 : if (!list->IsKind(STANDARD_TYPE(TColStd_HArray1OfInteger)))
-	sprintf(mess,"Attribute List n0.%d (Logicals i.e. Integers) badly defined", aty);
-	break;
-      default : break;
+    switch (aty)
+    {
+      case 1:
+        if (!list->IsKind(STANDARD_TYPE(TColStd_HArray1OfInteger)))
+        {
+          sprintf(mess,"Attribute List n0.%d (Integers) badly defined", aty);
+        }
+        break;
+      case 2:
+        if (!list->IsKind(STANDARD_TYPE(TColStd_HArray1OfReal)))
+        {
+          sprintf(mess,"Attribute List n0.%d (Reals) badly defined", aty);
+        }
+        break;
+      case 3:
+        if (!list->IsKind(STANDARD_TYPE(Interface_HArray1OfHAsciiString)))
+        {
+          sprintf(mess,"Attribute List n0.%d (Strings) badly defined", aty);
+        }
+        break;
+      case 4:
+        if (!list->IsKind(STANDARD_TYPE(IGESData_HArray1OfIGESEntity)))
+        {
+          sprintf(mess,"Attribute List n0.%d (IGES Pointers) badly defined", aty);
+        }
+        break;
+      case 6:
+        if (!list->IsKind(STANDARD_TYPE(TColStd_HArray1OfInteger)))
+        {
+          sprintf(mess,"Attribute List n0.%d (Logicals i.e. Integers) badly defined", aty);
+        }
+        break;
+      default:
+        break;
     }
     if (mess[0] != '\0') ach->AddFail(mess);
   }

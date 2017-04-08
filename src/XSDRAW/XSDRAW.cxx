@@ -97,7 +97,11 @@ static Standard_Integer XSTEPDRAWRUN (Draw_Interpretor& , Standard_Integer argc,
 
 void XSDRAW::LoadDraw (Draw_Interpretor& theCommands)
 {
-  if (dejald) return;  dejald = 1;
+  if (dejald)
+  {
+    return;
+  }
+  dejald = 1;
 //  Pour tout faire d un coup : BRepTest & cie:
   LoadSession();
 

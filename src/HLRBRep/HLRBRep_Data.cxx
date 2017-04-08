@@ -2084,22 +2084,23 @@ HLRBRep_Data::RejectedPoint (const IntRes2d_IntersectionPoint& PInter,
 
   switch (Tr1->TransitionType()) {                 // compute the transition
   case IntRes2d_In :
-    if (myFEOri == TopAbs_REVERSED)   Orie = TopAbs_REVERSED;
-    else                              Orie = TopAbs_FORWARD ; break;
+    Orie = (myFEOri == TopAbs_REVERSED ? TopAbs_REVERSED : TopAbs_FORWARD);
+    break;
   case IntRes2d_Out :
-    if (myFEOri == TopAbs_REVERSED)   Orie = TopAbs_FORWARD ;
-    else                              Orie = TopAbs_REVERSED; break;
+    Orie = (myFEOri == TopAbs_REVERSED ? TopAbs_FORWARD : TopAbs_REVERSED);
+    break;
   case IntRes2d_Touch :
     switch (Tr1->Situation()) {
     case IntRes2d_Inside :
-      if (myFEOri == TopAbs_REVERSED) Orie = TopAbs_EXTERNAL;
-      else                            Orie = TopAbs_INTERNAL; break;
+      Orie = (myFEOri == TopAbs_REVERSED ? TopAbs_EXTERNAL : TopAbs_INTERNAL);
+      break;
     case IntRes2d_Outside :
-      if (myFEOri == TopAbs_REVERSED) Orie = TopAbs_INTERNAL;
-      else                            Orie = TopAbs_EXTERNAL; break;
+      Orie = (myFEOri == TopAbs_REVERSED ? TopAbs_INTERNAL : TopAbs_EXTERNAL);
+      break;
     case IntRes2d_Unknown :
       return Standard_True;
-    }                                                         break;
+    }
+    break;
   case IntRes2d_Undecided :
     return Standard_True;
   }

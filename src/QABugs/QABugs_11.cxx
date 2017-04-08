@@ -2535,17 +2535,14 @@ static TopoDS_Compound AddTestStructure(int nCount_)
 
 static Standard_Integer OCC7141 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
-  int nCount = 10;
+  if (argc != 2 && argc != 3)
+  {
+    std::cout << "Usage : " << argv[0] << " [nCount] path\n";
+    return 1;
+  }
 
-  if (argc > 3)
-    {
-      di << "Usage : " << argv[0] << " [nCount] path\n";
-      return 1;
-    }
-
-  if (argc > 2)
-    nCount = Draw::Atoi(argv[1]);
-    TCollection_AsciiString aFilePath = argv[2];
+  int nCount = (argc > 2 ? Draw::Atoi(argv[1]) : 10);
+  TCollection_AsciiString aFilePath (argv[argc > 2 ? 2 : 1]);
   STEPCAFControl_Writer writer;
   Handle(TDocStd_Document) document;
   document = new TDocStd_Document("Pace Test-StepExporter-");

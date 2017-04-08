@@ -357,13 +357,17 @@ void BRepOffsetAPI_ThruSections::Build()
   {
     Standard_Boolean wdeg = Standard_True;
     for (i = 1; i <= myWires.Length(); i++)
+    {
       for (explo.Init(myWires(i), TopAbs_EDGE); explo.More(); explo.Next())
       {
         const TopoDS_Edge& anEdge = TopoDS::Edge(explo.Current());
         wdeg = wdeg && (BRep_Tool::Degenerated(anEdge));
       }
-      if (wdeg)
-        throw Standard_Failure("Wrong usage of punctual sections");
+    }
+    if (wdeg)
+    {
+      throw Standard_Failure("Wrong usage of punctual sections");
+    }
   }
 
   myNbEdgesInSection = 0;

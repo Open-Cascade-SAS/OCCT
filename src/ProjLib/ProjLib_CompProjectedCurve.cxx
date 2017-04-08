@@ -414,53 +414,57 @@ static Standard_Boolean ExactBound(gp_Pnt& Sol,
   Seq.Append(gp_Pnt(LastV, RV2, 3));
   Standard_Integer i, j;
   for(i = 1; i <= 3; i++)
+  {
     for(j = 1; j <= 4-i; j++)
-      if(Seq(j).Y() < Seq(j+1).Y()) 
+    {
+      if(Seq(j).Y() < Seq(j+1).Y())
       {
         gp_Pnt swp;
         swp = Seq.Value(j+1);
         Seq.ChangeValue(j+1) = Seq.Value(j);
         Seq.ChangeValue(j) = swp;
       }
+    }
+  }
 
-      t = Sol.X();
-      t1 = Min(Sol.X(), NotSol);
-      t2 = Max(Sol.X(), NotSol);
+  t = Sol.X ();
+  t1 = Min (Sol.X (), NotSol);
+  t2 = Max (Sol.X (), NotSol);
 
-      Standard_Boolean isDone = Standard_False;
-      while (!Seq.IsEmpty()) 
-      {
-        gp_Pnt P;
-        P = Seq.Last();
-        Seq.Remove(Seq.Length());
-        ProjLib_PrjResolve aPrjPS(Curve->Curve(), 
-          Surface->Surface(), 
-          Standard_Integer(P.Z()));
-        if(Standard_Integer(P.Z()) == 2) 
-        {
-          aPrjPS.Perform(t, P.X(), V0, gp_Pnt2d(Tol, TolV), 
-            gp_Pnt2d(t1, Surface->FirstVParameter()), 
-            gp_Pnt2d(t2, Surface->LastVParameter()), FuncTol);
-          if(!aPrjPS.IsDone()) continue;
-          POnS = aPrjPS.Solution();
-          Sol = gp_Pnt(POnS.X(), P.X(), POnS.Y());
-          isDone = Standard_True;
-          break;
-        }
-        else 
-        {
-          aPrjPS.Perform(t, U0, P.X(), gp_Pnt2d(Tol, TolU), 
-            gp_Pnt2d(t1, Surface->FirstUParameter()), 
-            gp_Pnt2d(t2, Surface->LastUParameter()), FuncTol);
-          if(!aPrjPS.IsDone()) continue;
-          POnS = aPrjPS.Solution();
-          Sol = gp_Pnt(POnS.X(), POnS.Y(), P.X());
-          isDone = Standard_True;
-          break;
-        }
-      }
+  Standard_Boolean isDone = Standard_False;
+  while (!Seq.IsEmpty ())
+  {
+    gp_Pnt P;
+    P = Seq.Last ();
+    Seq.Remove (Seq.Length ());
+    ProjLib_PrjResolve aPrjPS (Curve->Curve (),
+      Surface->Surface (),
+      Standard_Integer (P.Z ()));
+    if (Standard_Integer (P.Z ()) == 2)
+    {
+      aPrjPS.Perform (t, P.X (), V0, gp_Pnt2d (Tol, TolV),
+        gp_Pnt2d (t1, Surface->FirstVParameter ()),
+        gp_Pnt2d (t2, Surface->LastVParameter ()), FuncTol);
+      if (!aPrjPS.IsDone ()) continue;
+      POnS = aPrjPS.Solution ();
+      Sol = gp_Pnt (POnS.X (), P.X (), POnS.Y ());
+      isDone = Standard_True;
+      break;
+    }
+    else
+    {
+      aPrjPS.Perform (t, U0, P.X (), gp_Pnt2d (Tol, TolU),
+        gp_Pnt2d (t1, Surface->FirstUParameter ()),
+        gp_Pnt2d (t2, Surface->LastUParameter ()), FuncTol);
+      if (!aPrjPS.IsDone ()) continue;
+      POnS = aPrjPS.Solution ();
+      Sol = gp_Pnt (POnS.X (), POnS.Y (), P.X ());
+      isDone = Standard_True;
+      break;
+    }
+  }
 
-      return isDone;
+  return isDone;
 }
 
 //=======================================================================
@@ -1009,9 +1013,11 @@ void ProjLib_CompProjectedCurve::Init()
   // 2. Removing common parts of bounds
   for(i = 1; i < myNbCurves; i++) 
   {
-    if(mySequence->Value(i)->Value(mySequence->Value(i)->Length()).X() >= 
+    if(mySequence->Value(i)->Value(mySequence->Value(i)->Length()).X() >=
       mySequence->Value(i+1)->Value(1).X())
+    {
       mySequence->ChangeValue(i+1)->ChangeValue(1).SetX(mySequence->Value(i)->Value(mySequence->Value(i)->Length()).X() + 1.e-12);
+    }
   }
 
   // 3. Computation of the maximum distance from each part of curve to surface
@@ -1019,7 +1025,8 @@ void ProjLib_CompProjectedCurve::Init()
   myMaxDistance = new TColStd_HArray1OfReal(1, myNbCurves);
   myMaxDistance->Init(0);
   for(i = 1; i <= myNbCurves; i++)
-    for(j = 1; j <= mySequence->Value(i)->Length(); j++) 
+  {
+    for(j = 1; j <= mySequence->Value(i)->Length(); j++)
     {
       gp_Pnt POnC, POnS, aTriple;
       Standard_Real Distance;
@@ -1028,91 +1035,93 @@ void ProjLib_CompProjectedCurve::Init()
       mySurface->D0(aTriple.Y(), aTriple.Z(), POnS);
       Distance = POnC.Distance(POnS);
       if (myMaxDistance->Value(i) < Distance)
+      {
         myMaxDistance->ChangeValue(i) = Distance;
-    } 
+      }
+    }
+  }
 
+  // 4. Check the projection to be a single point
 
-    // 4. Check the projection to be a single point
+  gp_Pnt2d Pmoy, Pcurr, P;
+  Standard_Real AveU, AveV;
+  mySnglPnts = new TColStd_HArray1OfBoolean(1, myNbCurves);
+  mySnglPnts->Init (Standard_True);
 
-    gp_Pnt2d Pmoy, Pcurr, P;
-    Standard_Real AveU, AveV;
-    mySnglPnts = new TColStd_HArray1OfBoolean(1, myNbCurves);
-    for(i = 1; i <= myNbCurves; i++) mySnglPnts->SetValue(i, Standard_True);
+  for(i = 1; i <= myNbCurves; i++)
+  {
+    //compute an average U and V
 
-    for(i = 1; i <= myNbCurves; i++)
-    {    
+    for(j = 1, AveU = 0., AveV = 0.; j <= mySequence->Value(i)->Length(); j++)
+    {
+      AveU += mySequence->Value(i)->Value(j).Y();
+      AveV += mySequence->Value(i)->Value(j).Z();
+    }
+    AveU /= mySequence->Value(i)->Length();
+    AveV /= mySequence->Value(i)->Length();
+
+    Pmoy.SetCoord(AveU,AveV);
+    for(j = 1; j <= mySequence->Value(i)->Length(); j++)
+    {
+      Pcurr =
+        gp_Pnt2d(mySequence->Value(i)->Value(j).Y(), mySequence->Value(i)->Value(j).Z());
+      if (Pcurr.Distance(Pmoy) > ((myTolU < myTolV) ? myTolV : myTolU))
+      {
+        mySnglPnts->SetValue(i, Standard_False);
+        break;
+      }
+    }
+  }
+
+  // 5. Check the projection to be an isoparametric curve of the surface
+
+  myUIso = new TColStd_HArray1OfBoolean(1, myNbCurves);
+  myUIso->Init (Standard_True);
+
+  myVIso = new TColStd_HArray1OfBoolean(1, myNbCurves);
+  myVIso->Init (Standard_True);
+
+  for(i = 1; i <= myNbCurves; i++) {
+    if (IsSinglePnt(i, P)|| mySequence->Value(i)->Length() <=2) {
+      myUIso->SetValue(i, Standard_False);
+      myVIso->SetValue(i, Standard_False);
+      continue;
+    }
+
+    // new test for isoparametrics
+
+    if ( mySequence->Value(i)->Length() > 2) {
       //compute an average U and V
 
-      for(j = 1, AveU = 0., AveV = 0.; j <= mySequence->Value(i)->Length(); j++)
-      {
+      for(j = 1, AveU = 0., AveV = 0.; j <= mySequence->Value(i)->Length(); j++) {
         AveU += mySequence->Value(i)->Value(j).Y();
         AveV += mySequence->Value(i)->Value(j).Z();
       }
       AveU /= mySequence->Value(i)->Length();
       AveV /= mySequence->Value(i)->Length();
 
-      Pmoy.SetCoord(AveU,AveV);
+      // is i-part U-isoparametric ?
       for(j = 1; j <= mySequence->Value(i)->Length(); j++)
       {
-        Pcurr = 
-          gp_Pnt2d(mySequence->Value(i)->Value(j).Y(), mySequence->Value(i)->Value(j).Z());
-        if (Pcurr.Distance(Pmoy) > ((myTolU < myTolV) ? myTolV : myTolU))
+        if(Abs(mySequence->Value(i)->Value(j).Y() - AveU) > myTolU)
         {
-          mySnglPnts->SetValue(i, Standard_False);
+          myUIso->SetValue(i, Standard_False);
           break;
         }
       }
-    }
 
-    // 5. Check the projection to be an isoparametric curve of the surface
-
-    myUIso = new TColStd_HArray1OfBoolean(1, myNbCurves);
-    for(i = 1; i <= myNbCurves; i++) myUIso->SetValue(i, Standard_True);
-
-    myVIso = new TColStd_HArray1OfBoolean(1, myNbCurves);
-    for(i = 1; i <= myNbCurves; i++) myVIso->SetValue(i, Standard_True);
-
-    for(i = 1; i <= myNbCurves; i++) {
-      if (IsSinglePnt(i, P)|| mySequence->Value(i)->Length() <=2) {
-        myUIso->SetValue(i, Standard_False);
-        myVIso->SetValue(i, Standard_False);
-        continue;
-      }
-
-      // new test for isoparametrics
-
-      if ( mySequence->Value(i)->Length() > 2) {
-        //compute an average U and V
-
-        for(j = 1, AveU = 0., AveV = 0.; j <= mySequence->Value(i)->Length(); j++) {
-          AveU += mySequence->Value(i)->Value(j).Y();
-          AveV += mySequence->Value(i)->Value(j).Z();
-        }
-        AveU /= mySequence->Value(i)->Length();
-        AveV /= mySequence->Value(i)->Length();
-
-        // is i-part U-isoparametric ?
-        for(j = 1; j <= mySequence->Value(i)->Length(); j++) 
+      // is i-part V-isoparametric ?
+      for(j = 1; j <= mySequence->Value(i)->Length(); j++)
+      {
+        if(Abs(mySequence->Value(i)->Value(j).Z() - AveV) > myTolV)
         {
-          if(Abs(mySequence->Value(i)->Value(j).Y() - AveU) > myTolU) 
-          {
-            myUIso->SetValue(i, Standard_False);
-            break;
-          }
+          myVIso->SetValue(i, Standard_False);
+          break;
         }
-
-        // is i-part V-isoparametric ?
-        for(j = 1; j <= mySequence->Value(i)->Length(); j++) 
-        {
-          if(Abs(mySequence->Value(i)->Value(j).Z() - AveV) > myTolV) 
-          {
-            myVIso->SetValue(i, Standard_False);
-            break;
-          }
-        }
-        //
       }
+      //
     }
+  }
 }
 //=======================================================================
 //function : Load
@@ -1522,13 +1531,17 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
   // proccessing projection bounds
   BArr = new TColStd_HArray1OfReal(1, 2*myNbCurves);
   for(i = 1; i <= myNbCurves; i++)
+  {
     Bounds(i, BArr->ChangeValue(2*i - 1), BArr->ChangeValue(2*i));
+  }
 
   // proccessing curve discontinuities
   if(NbIntCur > 1) {
     CArr = new TColStd_HArray1OfReal(1, NbIntCur - 1);
     for(i = 1; i <= CArr->Length(); i++)
+    {
       CArr->ChangeValue(i) = CutPntsT(i + 1);
+    }
   }
 
   // proccessing U-surface discontinuities  
@@ -1537,7 +1550,9 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
   for(k = 2; k <= NbIntSurU; k++) {
     //    cout<<"CutPntsU("<<k<<") = "<<CutPntsU(k)<<endl;
     for(i = 1; i <= myNbCurves; i++)
-      for(j = 1; j < mySequence->Value(i)->Length(); j++) {
+    {
+      for(j = 1; j < mySequence->Value(i)->Length(); j++)
+      {
         Ul = mySequence->Value(i)->Value(j).Y();
         Ur = mySequence->Value(i)->Value(j + 1).Y();
 
@@ -1576,22 +1591,30 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
           }
         }
       }
+    }
   }
   for(i = 2; i <= TUdisc.Length(); i++)
+  {
     if(TUdisc(i) - TUdisc(i-1) < Precision::PConfusion())
+    {
       TUdisc.Remove(i--);
+    }
+  }
 
-  if(TUdisc.Length()) 
+  if(TUdisc.Length())
   {
     UArr = new TColStd_HArray1OfReal(1, TUdisc.Length());
     for(i = 1; i <= UArr->Length(); i++)
+    {
       UArr->ChangeValue(i) = TUdisc(i);
+    }
   }
   // proccessing V-surface discontinuities
   TColStd_SequenceOfReal TVdisc;
 
   for(k = 2; k <= NbIntSurV; k++)
-    for(i = 1; i <= myNbCurves; i++) 
+  {
+    for(i = 1; i <= myNbCurves; i++)
     {
       //      cout<<"CutPntsV("<<k<<") = "<<CutPntsV(k)<<endl;
       for(j = 1; j < mySequence->Value(i)->Length(); j++) {
@@ -1635,55 +1658,70 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
         }
       }
     }
-    for(i = 2; i <= TVdisc.Length(); i++)
-      if(TVdisc(i) - TVdisc(i-1) < Precision::PConfusion())
-        TVdisc.Remove(i--);
+  }
 
-    if(TVdisc.Length()) 
+  for(i = 2; i <= TVdisc.Length(); i++)
+  {
+    if(TVdisc(i) - TVdisc(i-1) < Precision::PConfusion())
     {
-      VArr = new TColStd_HArray1OfReal(1, TVdisc.Length());
-      for(i = 1; i <= VArr->Length(); i++)
-        VArr->ChangeValue(i) = TVdisc(i);
+      TVdisc.Remove(i--);
     }
+  }
 
-    // fusion
-    TColStd_SequenceOfReal Fusion;
-    if(!CArr.IsNull()) 
+  if(TVdisc.Length())
+  {
+    VArr = new TColStd_HArray1OfReal(1, TVdisc.Length());
+    for(i = 1; i <= VArr->Length(); i++)
     {
-      GeomLib::FuseIntervals(BArr->ChangeArray1(), 
-        CArr->ChangeArray1(), 
-        Fusion, Precision::PConfusion());
-      BArr = new TColStd_HArray1OfReal(1, Fusion.Length());
-      for(i = 1; i <= BArr->Length(); i++)
-        BArr->ChangeValue(i) = Fusion(i);
-      Fusion.Clear();
+      VArr->ChangeValue(i) = TVdisc(i);
     }
+  }
 
-    if(!UArr.IsNull()) 
-    {
-      GeomLib::FuseIntervals(BArr->ChangeArray1(), 
-        UArr->ChangeArray1(), 
-        Fusion, Precision::PConfusion());
-      BArr = new TColStd_HArray1OfReal(1, Fusion.Length());
-      for(i = 1; i <= BArr->Length(); i++)
-        BArr->ChangeValue(i) = Fusion(i);
-      Fusion.Clear();
-    }
-
-    if(!VArr.IsNull()) 
-    {
-      GeomLib::FuseIntervals(BArr->ChangeArray1(), 
-        VArr->ChangeArray1(), 
-        Fusion, Precision::PConfusion());
-      BArr = new TColStd_HArray1OfReal(1, Fusion.Length());
-      for(i = 1; i <= BArr->Length(); i++)
-        BArr->ChangeValue(i) = Fusion(i);
-    }
-
-    const_cast<ProjLib_CompProjectedCurve*>(this)->myTabInt = new TColStd_HArray1OfReal(1, BArr->Length());
+  // fusion
+  TColStd_SequenceOfReal Fusion;
+  if(!CArr.IsNull())
+  {
+    GeomLib::FuseIntervals(BArr->ChangeArray1(),
+      CArr->ChangeArray1(),
+      Fusion, Precision::PConfusion());
+    BArr = new TColStd_HArray1OfReal(1, Fusion.Length());
     for(i = 1; i <= BArr->Length(); i++)
-      myTabInt->ChangeValue(i) = BArr->Value(i);
+    {
+      BArr->ChangeValue(i) = Fusion(i);
+    }
+    Fusion.Clear();
+  }
 
+  if(!UArr.IsNull())
+  {
+    GeomLib::FuseIntervals(BArr->ChangeArray1(),
+      UArr->ChangeArray1(),
+      Fusion, Precision::PConfusion());
+    BArr = new TColStd_HArray1OfReal(1, Fusion.Length());
+    for(i = 1; i <= BArr->Length(); i++)
+    {
+      BArr->ChangeValue(i) = Fusion(i);
+    }
+    Fusion.Clear();
+  }
+
+  if(!VArr.IsNull())
+  {
+    GeomLib::FuseIntervals(BArr->ChangeArray1(),
+      VArr->ChangeArray1(),
+      Fusion, Precision::PConfusion());
+    BArr = new TColStd_HArray1OfReal(1, Fusion.Length());
+    for(i = 1; i <= BArr->Length(); i++)
+    {
+      BArr->ChangeValue(i) = Fusion(i);
+    }
+  }
+
+  const_cast<ProjLib_CompProjectedCurve*>(this)->myTabInt = new TColStd_HArray1OfReal(1, BArr->Length());
+  for(i = 1; i <= BArr->Length(); i++)
+  {
+    myTabInt->ChangeValue(i) = BArr->Value(i);
+  }
 }
 
 //=======================================================================

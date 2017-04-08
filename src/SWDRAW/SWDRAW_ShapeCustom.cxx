@@ -470,7 +470,11 @@ static Standard_Integer convtorevol(Draw_Interpretor& di, Standard_Integer argc,
 void SWDRAW_ShapeCustom::InitCommands(Draw_Interpretor& theCommands) 
 {
   static Standard_Integer initactor = 0;
-  if (initactor) return;  initactor = 1;
+  if (initactor)
+  {
+    return;
+  }
+  initactor = 1;
 
   Standard_CString g = SWDRAW::GroupName();
 

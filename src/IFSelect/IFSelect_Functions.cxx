@@ -2438,12 +2438,16 @@ Handle(IFSelect_Dispatch)  IFSelect_Functions::GiveDispatch
 //  ####    INITIALISATIONS              ####
 //  #########################################
 
-static int initactor = 0;
+static int THE_IFSelect_Functions_initactor = 0;
 
-
-    void  IFSelect_Functions::Init ()
+void IFSelect_Functions::Init()
 {
-  if (initactor) return;  initactor = 1;
+  if (THE_IFSelect_Functions_initactor)
+  {
+    return;
+  }
+
+  THE_IFSelect_Functions_initactor = 1;
   IFSelect_Act::SetGroup("DE: General");
   IFSelect_Act::AddFunc("xstatus","Lists XSTEP Status : Version, System Name ...",funstatus);
   IFSelect_Act::AddFunc("handler","Toggle status catch Handler Error of the session",fun1);

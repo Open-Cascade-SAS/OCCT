@@ -730,31 +730,31 @@ void Adaptor3d_CurveOnSurface::Load(const Handle(Adaptor3d_HSurface)& S)
 
 //=======================================================================
 //function : Load
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-void Adaptor3d_CurveOnSurface::Load(const Handle(Adaptor2d_HCurve2d)& C) 
+void Adaptor3d_CurveOnSurface::Load(const Handle(Adaptor2d_HCurve2d)& C)
 {
   myCurve = C;
-  if (!mySurface.IsNull()) 
-     {
-       EvalKPart();
-       GeomAbs_SurfaceType  SType ;
-       SType = mySurface->GetType();
-       if( SType == GeomAbs_BSplineSurface)
-	 EvalFirstLastSurf();
-       if( SType == GeomAbs_SurfaceOfExtrusion)
-	 EvalFirstLastSurf();
-	 if( SType == GeomAbs_SurfaceOfRevolution)
-	 EvalFirstLastSurf();
-	 if( SType == GeomAbs_OffsetSurface) {
-          SType = mySurface->BasisSurface()->GetType();
-	  if( SType == GeomAbs_SurfaceOfRevolution ||
-              SType == GeomAbs_SurfaceOfExtrusion ||
-	      SType == GeomAbs_BSplineSurface )
-	    EvalFirstLastSurf();
-	}
-     }
+  if (mySurface.IsNull())
+  {
+    return;
+  }
+
+  EvalKPart();
+
+  GeomAbs_SurfaceType SType = mySurface->GetType();
+  if (SType == GeomAbs_OffsetSurface)
+  {
+    SType = mySurface->BasisSurface()->GetType();
+  }
+
+  if (SType == GeomAbs_BSplineSurface ||  
+      SType == GeomAbs_SurfaceOfExtrusion ||
+      SType == GeomAbs_SurfaceOfRevolution)
+  {
+    EvalFirstLastSurf();
+  }
 }
 
 //=======================================================================

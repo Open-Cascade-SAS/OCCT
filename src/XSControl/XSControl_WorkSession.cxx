@@ -205,7 +205,11 @@ Standard_Boolean  XSControl_WorkSession::PrintTransferStatus(const Standard_Inte
     }
 
     S<<"Transfer Write item n0."<<ne<<" of "<<max;
-    if (nr > 0) S<<"  ** Transfer Root n0."<<ne;  S<<endl;
+    if (nr > 0)
+    {
+      S<<"  ** Transfer Root n0."<<ne;
+    }
+    S<<endl;
     ent = FP->FindTransient(finder);
     S<<" -> Type "<<finder->DynamicType()->Name()<<endl;
     FP->StartTrace (binder,finder,0,0);  // pb sout/S
@@ -240,7 +244,11 @@ Standard_Boolean  XSControl_WorkSession::PrintTransferStatus(const Standard_Inte
     }
 
     S<<"Transfer Read item n0."<<ne<<" of "<<max;
-    if (nr > 0) S<<"  ** Transfer Root n0."<<ne;  S<<endl;
+    if (nr > 0)
+    {
+      S<<"  ** Transfer Root n0."<<ne;
+    }
+    S<<endl;
     if (!model.IsNull())  {  S<<" In Model, Entity ";  model->Print(ent,S); }
     binder = TP->MapItem (ne);
     S<<endl;

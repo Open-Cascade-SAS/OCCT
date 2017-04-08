@@ -84,10 +84,14 @@ static void MinMaxPnt
   Standard_Real x,y,z;
   p.Coord (x,y,z);
   if (nb < 1)  {  minx = maxx = x; miny = maxy = y; minz = maxz = z;  }
-  else  {
-    if (minx > x) minx = x;  if (maxx < x) maxx = x;
-    if (miny > y) miny = y;  if (maxy < y) maxy = y;
-    if (minz > z) minz = z;  if (maxz < z) maxz = z;
+  else
+  {
+    if (minx > x) minx = x;
+    if (maxx < x) maxx = x;
+    if (miny > y) miny = y;
+    if (maxy < y) maxy = y;
+    if (minz > z) minz = z;
+    if (maxz < z) maxz = z;
   }
   nb ++;
 }

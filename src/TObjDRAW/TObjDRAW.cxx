@@ -458,9 +458,12 @@ static Standard_Integer getChild (Draw_Interpretor& di, Standard_Integer argc, c
 
 void TObjDRAW::Init(Draw_Interpretor& di)
 {
-
   static Standard_Boolean initactor = Standard_False;
-  if (initactor) return;  initactor = Standard_True;
+  if (initactor)
+  {
+    return;
+  }
+  initactor = Standard_True;
 
   //=====================================
   // General commands

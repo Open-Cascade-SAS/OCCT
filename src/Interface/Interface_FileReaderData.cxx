@@ -41,9 +41,9 @@ static Standard_Integer thenm0 = -1;
 static Standard_Integer thenp0 = -1;
 
 
-Interface_FileReaderData::Interface_FileReaderData (const Standard_Integer nbr, 
+Interface_FileReaderData::Interface_FileReaderData (const Standard_Integer nbr,
 						    const Standard_Integer npar)
-     : therrload (0), thenumpar (0,nbr), theents (0,nbr) 
+     : therrload (0), thenumpar (0,nbr), theents (0,nbr)
 {
   theparams = new Interface_ParamSet (npar);
   thenumpar.Init(0);
@@ -189,7 +189,7 @@ Interface_FileReaderData::Interface_FileReaderData (const Standard_Integer nbr,
 const Handle(Standard_Transient)& Interface_FileReaderData::BoundEntity
        (const Standard_Integer num) const
        //      {  return theents(num);  }
-{ 
+{
   if (num >= theents.Lower() && num <= theents.Upper()) {
     return theents(num);
   }
@@ -205,14 +205,14 @@ const Handle(Standard_Transient)& Interface_FileReaderData::BoundEntity
       OCC_CATCH_SIGNALS
       Handle(Standard_Transient) temp = theents.Value(num);
     }
-  ////sln 21.01.2002 OCC133: Exception handling 
+  ////sln 21.01.2002 OCC133: Exception handling
  // catch (Standard_OutOfRange) {
  //   cout<<" Catch of sln"<<endl;
-    
+
  //   return dummy;
  // }
     catch (Standard_Failure) {
-      
+
     // some work-around, the best would be to modify CDL to
     // return "Handle(Standard_Transient)" not "const Handle(Standard_Transient)&"
       static Handle(Standard_Transient) dummy;
@@ -222,7 +222,7 @@ const Handle(Standard_Transient)& Interface_FileReaderData::BoundEntity
   }
    //cout<<" Normal"<<endl;
   if (theents.Value(num).IsImmutable()) cout << "IMMUTABLE:"<<num<<endl;
-  return theents(num); 
+  return theents(num);
 }
 */
 
@@ -357,34 +357,64 @@ static const Standard_Real vtab[] =
   prem = MAXCHIF + 1;  point = -1;  //   ligne[MAXCHIF+1] = '\0';  fin forcee
 
 /*  Analyse de la ligne (reputee representer un Flottant)  */
-  for (i = 0; ; i ++) {    // critere d arret : cf '\0'
+  for (i = 0; ; i ++) // critere d arret : cf '\0'
+  {
     const char& car = ligne[i];
 /* critere d arret : ne pas l oublier, mais eviter de freiner le traitement
    DONC, une fois en fin, plus une fois pour 1er passage
     if (car == '\0')
       {  if (point < 0) {  point = i; jx = point - prem; };  break;  }   */
 
-    if (prem > MAXCHIF) {
+    if (prem > MAXCHIF)
+    {
       if (car == '0') continue;
       if (car == '.') {  point = i;  continue;  }
       if (car == '+') continue;
       if (car == '-') {  moins = 1;  continue;  }
       if (car == '\0')
-	{  if (point < 0) {  point = i; jx = point - prem; };  break;  }
-      if (car < 33) continue;
+      {
+        if (point < 0)
+        {
+          point = i;
+          jx = point - prem;
+        }
+        break;
+      }
+      if (car < 33)
+      {
+        continue;
+      }
       prem = i;
-      if (point >= 0) jx = point - prem + 1;
+      if (point >= 0)
+      {
+        jx = point - prem + 1;
+      }
     }
     if (car > 48 && car <= 57)
-      {  chiffre[j] = car - 48;  jj = ++j;  continue;  }    // j++ puis jj = j
+    {
+      chiffre[j] = car - 48;
+      jj = ++j; // j++ puis jj = j
+      continue;
+    }
     if (car == '0') {  chiffre[j] = 0;  j ++;  continue;  }
     if (car == '.') {  point = i;  jx = point - prem;  continue;  }
     if ((car & 94) == 68) { // prend  : e E d D
       je = i;     exp = atoi(&ligne[i+1]);     jx += exp;
-      if (exp < -100 || exp > 100) grexp = 1;  break;
+      if (exp < -100 || exp > 100)
+      {
+        grexp = 1;
+      }
+      break;
     }
     if (car == '\0')
-      {  if (point < 0) {  point = i; jx = point - prem; };  break;  }
+    {
+      if (point < 0)
+      {
+        point = i;
+        jx = point - prem;
+      }
+      break;
+    }
   }
 
 /*  Interpretation  : on decale le Point Decimal selon l Exposant

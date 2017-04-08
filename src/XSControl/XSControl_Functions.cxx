@@ -335,10 +335,10 @@ static IFSelect_ReturnStatus XSControl_trbegin(const Handle(IFSelect_SessionPilo
   if (init) {
     XSControl::Session(pilot)->InitTransferReader (0);
     TR = XSControl::Session(pilot)->TransferReader();
-    if (TR.IsNull()) { 
+    if (TR.IsNull()) {
       Handle(Message_Messenger) sout = Message::DefaultMessenger();
-      sout<<" init not done or failed"<<endl; 
-      return IFSelect_RetError; 
+      sout<<" init not done or failed"<<endl;
+      return IFSelect_RetError;
     }
   }
   TR->BeginTransfer();
@@ -462,16 +462,21 @@ static IFSelect_ReturnStatus XSControl_settransfert(const Handle(IFSelect_Sessio
 
 
 
-static int initactor = 0;
+static int THE_XSControl_Functions_initactor = 0;
 
 //=======================================================================
 //function : Init
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void XSControl_Functions::Init ()
 {
-  if (initactor) return;  initactor = 1;
+  if (THE_XSControl_Functions_initactor)
+  {
+    return;
+  }
+
+  THE_XSControl_Functions_initactor = 1;
   IFSelect_Act::SetGroup("DE: General");
 
   IFSelect_Act::AddFunc ("xinit","[norm:string to change norme] reinitialises according to the norm",XSControl_xinit);

@@ -45,14 +45,20 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_Protocol,IGESData_Protocol)
 
-static int deja = 0;
+static int THE_IGESDimen_Protocol_deja = 0;
+
 static Handle(Standard_Type) atype01,atype02,atype03,atype04,atype05,atype06,
   atype07,atype08,atype09,atype10,atype11,atype12,atype13,atype14,atype15,
   atype16,atype17,atype18,atype19,atype20,atype21,atype22,atype23;
 
-    IGESDimen_Protocol::IGESDimen_Protocol ()
+IGESDimen_Protocol::IGESDimen_Protocol()
 {
-  if (deja) return;  deja = 1;
+  if (THE_IGESDimen_Protocol_deja)
+  {
+    return;
+  }
+
+  THE_IGESDimen_Protocol_deja = 1;
   atype01 = STANDARD_TYPE(IGESDimen_AngularDimension);
   atype02 = STANDARD_TYPE(IGESDimen_BasicDimension);
   atype03 = STANDARD_TYPE(IGESDimen_CenterLine);

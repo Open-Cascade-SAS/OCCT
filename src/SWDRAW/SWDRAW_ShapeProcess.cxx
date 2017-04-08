@@ -64,7 +64,11 @@ static Standard_Integer ApplySequence(Draw_Interpretor& di,
 void SWDRAW_ShapeProcess::InitCommands(Draw_Interpretor& theCommands) 
 {
   static Standard_Boolean initactor = 0;
-  if (initactor) return;  initactor = 1;
+  if (initactor)
+  {
+    return;
+  }
+  initactor = 1;
   
   ShapeProcess_OperLibrary::Init();
   

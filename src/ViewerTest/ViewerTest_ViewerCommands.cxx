@@ -351,10 +351,11 @@ public:
           (ViewerTest_myContexts, TCollection_AsciiString (myDriverName + "/Viewer"));
       }
       else
+      {
         myViewerName = ViewerTest_myContexts.Find2 (ViewerTest::GetAISContext());
+      }
 
-        myViewName = CreateName <Handle(V3d_View)>
-          (ViewerTest_myViews, TCollection_AsciiString(myViewerName + "/View"));
+      myViewName = CreateName <Handle(V3d_View)> (ViewerTest_myViews, TCollection_AsciiString(myViewerName + "/View"));
     }
     else
     {
@@ -1082,14 +1083,16 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
     if (ViewerTest_myViews.Extent() > 1)
     {
       TCollection_AsciiString aNewViewName;
-      for (NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)> :: Iterator
-           anIter(ViewerTest_myViews); anIter.More(); anIter.Next())
+      for (NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)>::Iterator anIter (ViewerTest_myViews);
+           anIter.More(); anIter.Next())
+      {
         if (anIter.Key1() != theViewName)
         {
           aNewViewName = anIter.Key1();
           break;
         }
-        ActivateView (aNewViewName);
+      }
+      ActivateView (aNewViewName);
     }
     else
     {
@@ -1305,47 +1308,49 @@ static int VViewList (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const
     (( theArgsNb==1 ) || ( strcasecmp( theArgVec[1], "long" ) != 0 ));
 
   if (isTreeView)
+  {
     theDi << theArgVec[0] <<":\n";
+  }
 
-    for (NCollection_DoubleMap <TCollection_AsciiString, Handle(Graphic3d_GraphicDriver)>::Iterator
-      aDriverIter(ViewerTest_myDrivers); aDriverIter.More(); aDriverIter.Next())
+  for (NCollection_DoubleMap <TCollection_AsciiString, Handle(Graphic3d_GraphicDriver)>::Iterator aDriverIter (ViewerTest_myDrivers);
+       aDriverIter.More(); aDriverIter.Next())
+  {
+    if (isTreeView)
+      theDi << aDriverIter.Key1() << ":\n";
+
+    for (NCollection_DoubleMap <TCollection_AsciiString, Handle(AIS_InteractiveContext)>::Iterator
+      aContextIter(ViewerTest_myContexts); aContextIter.More(); aContextIter.Next())
     {
-      if (isTreeView)
-        theDi << aDriverIter.Key1() << ":\n";
-
-      for (NCollection_DoubleMap <TCollection_AsciiString, Handle(AIS_InteractiveContext)>::Iterator
-        aContextIter(ViewerTest_myContexts); aContextIter.More(); aContextIter.Next())
+      if (aContextIter.Key1().Search(aDriverIter.Key1()) != -1)
       {
-        if (aContextIter.Key1().Search(aDriverIter.Key1()) != -1)
+        if (isTreeView)
         {
-          if (isTreeView)
-          {
-            TCollection_AsciiString aContextName(aContextIter.Key1());
-            theDi << " " << aContextName.Split(aDriverIter.Key1().Length() + 1) << ":\n";
-          }
+          TCollection_AsciiString aContextName(aContextIter.Key1());
+          theDi << " " << aContextName.Split(aDriverIter.Key1().Length() + 1) << ":\n";
+        }
 
-          for (NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)>::Iterator
-            aViewIter(ViewerTest_myViews); aViewIter.More(); aViewIter.Next())
+        for (NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)>::Iterator aViewIter (ViewerTest_myViews);
+             aViewIter.More(); aViewIter.Next())
+        {
+          if (aViewIter.Key1().Search(aContextIter.Key1()) != -1)
           {
-            if (aViewIter.Key1().Search(aContextIter.Key1()) != -1)
+            TCollection_AsciiString aViewName(aViewIter.Key1());
+            if (isTreeView)
             {
-              TCollection_AsciiString aViewName(aViewIter.Key1());
-              if (isTreeView)
-              {
-                if (aViewIter.Value() == ViewerTest::CurrentView())
-                  theDi << "  " << aViewName.Split(aContextIter.Key1().Length() + 1) << "(*)\n";
-                else
-                  theDi << "  " << aViewName.Split(aContextIter.Key1().Length() + 1) << "\n";
-              }
+              if (aViewIter.Value() == ViewerTest::CurrentView())
+                theDi << "  " << aViewName.Split(aContextIter.Key1().Length() + 1) << "(*)\n";
               else
-              {
-                theDi << aViewName << " ";
-              }
+                theDi << "  " << aViewName.Split(aContextIter.Key1().Length() + 1) << "\n";
+            }
+            else
+            {
+              theDi << aViewName << " ";
             }
           }
         }
       }
     }
+  }
   return 0;
 }
 

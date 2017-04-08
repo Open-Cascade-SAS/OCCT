@@ -295,20 +295,29 @@ static Standard_Integer anaface
 //      On va tacher de calculer les positions et les comparer
       gp_Pnt2d fuv,luv;
       if (Edge.Orientation() == TopAbs_FORWARD)
-	{ TopExp::Vertices (Edge,fv,lv);
-	  if (ia2d) BRep_Tool::UVPoints (Edge,Face,fuv,luv); }
+      {
+        TopExp::Vertices (Edge, fv, lv);
+        if (ia2d) BRep_Tool::UVPoints (Edge, Face, fuv, luv);
+      }
       else
-	{ TopExp::Vertices (Edge,lv,fv);
-	  if (ia2d) BRep_Tool::UVPoints (Edge,Face,luv,fuv); }
+      {
+        TopExp::Vertices (Edge, lv, fv);
+        if (ia2d) BRep_Tool::UVPoints (Edge, Face, luv, fuv);
+      }
       gp_Pnt fp = BRep_Tool::Pnt (fv);
       gp_Pnt lp = BRep_Tool::Pnt (lv);
       gp_Pnt fxyz, lxyz;
-      if (ia2d) {
+      if (ia2d)
+      {
 	surface->D0 (fuv.X(),fuv.Y(),fxyz);
 	surface->D0 (luv.X(),luv.Y(),lxyz);
 	df3d = fp.Distance    (fxyz); maxp3d = Max (maxp3d,df3d);
 	dl3d = lp.Distance    (lxyz); maxp3d = Max (maxp3d,dl3d);
-	if (nbe > 1) duv  = finuv.Distance (fuv);  maxuv  = Max (maxuv, duv);
+        if (nbe > 1)
+        {
+          duv = finuv.Distance (fuv);
+          maxuv = Max (maxuv, duv);
+        }
 // et les min-max
 	u1 = Min (fuv.X(),luv.X());  u2 = Max (fuv.X(),luv.X());
 	v1 = Min (fuv.Y(),luv.Y());  v2 = Max (fuv.Y(),luv.Y());
@@ -975,8 +984,12 @@ static Standard_Integer checkedge(Draw_Interpretor& di, Standard_Integer argc, c
  void SWDRAW_ShapeAnalysis::InitCommands(Draw_Interpretor& theCommands) 
 {
   static Standard_Integer initactor = 0;
-  if (initactor) return;  initactor = 1;
-  
+  if (initactor)
+  {
+    return;
+  }
+  initactor = 1;
+
   Standard_CString g = SWDRAW::GroupName();
 
   theCommands.Add ("tolerance","shape [tolmin tolmax:real]", __FILE__,tolerance,g);

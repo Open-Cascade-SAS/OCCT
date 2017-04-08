@@ -948,16 +948,21 @@ void TopOpeBRepBuild_Builder1::GFillEdgeSameDomWES(const TopoDS_Shape& EOR,
 	if(mySDFaceToFill.Orientation() == TopAbs_REVERSED)
 	    aN1.Reverse();
 	scalarPr = aBiN*aN1;
-	
-	if(fabs(scalarPr) <= 1e-10) {//try to step inside
-	  TopOpeBRepBuild_Tools::GetNormalInNearestPoint(TopoDS::Face(mySDFaceToFill), aSplitP, aN1);
-	    if(mySDFaceToFill.Orientation() == TopAbs_REVERSED)
-	      aN1.Reverse();
-	      scalarPr = aBiN*aN1;
-	    if(fabs(scalarPr) <= 1e-10) // this can not be
-	      keep = (TB == TopAbs_IN); //just to do something
-	  }	    
-	
+
+        if (fabs (scalarPr) <= 1e-10) //try to step inside
+        {
+          TopOpeBRepBuild_Tools::GetNormalInNearestPoint (TopoDS::Face (mySDFaceToFill), aSplitP, aN1);
+          if (mySDFaceToFill.Orientation () == TopAbs_REVERSED)
+          {
+            aN1.Reverse ();
+          }
+          scalarPr = aBiN*aN1;
+          if (fabs (scalarPr) <= 1e-10) // this can not be
+          {
+            keep = (TB == TopAbs_IN); //just to do something
+          }
+        }
+
 	TopAbs_State aPartState = (scalarPr > 0) ? TopAbs_IN : TopAbs_OUT;
 	
 	keep = (aPartState == TB) ? Standard_True : Standard_False;

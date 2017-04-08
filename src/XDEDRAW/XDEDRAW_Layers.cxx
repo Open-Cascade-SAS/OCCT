@@ -401,9 +401,12 @@ static Standard_Integer isVisible (Draw_Interpretor& di, Standard_Integer argc, 
 
 void XDEDRAW_Layers::InitCommands(Draw_Interpretor& di) 
 {
-
   static Standard_Boolean initactor = Standard_False;
-  if (initactor) return;  initactor = Standard_True;
+  if (initactor)
+  {
+    return;
+  }
+  initactor = Standard_True;
 
   //=====================================
   // Work with layers

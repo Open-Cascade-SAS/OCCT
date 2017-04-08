@@ -36,19 +36,30 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SessionPilot,IFSelect_Activator)
 #define MAXWORDS 200
 #define MAXCARS 1000
 
-static int initactor = 0;
+static int THE_IFSelect_SessionPilot_initactor = 0;
 static TCollection_AsciiString nulword;
 
 //#define DEBUG_TRACE
 
 // Nb Maxi de words : cf thewords et method SetCommandLine
 
-    IFSelect_SessionPilot::IFSelect_SessionPilot (const Standard_CString prompt)
-    : theprompt (prompt) , thewords (0,MAXWORDS-1) , thewordeb (0,MAXWORDS-1)
+IFSelect_SessionPilot::IFSelect_SessionPilot (const Standard_CString prompt)
+: theprompt (prompt),
+  thewords  (0, MAXWORDS - 1),
+  thewordeb (0, MAXWORDS - 1)
 {
-  if (theprompt.Length() == 0) theprompt.AssignCat ("Test-XSTEP>");
-  therecord = Standard_False;  thenbwords = 0;
-  if (initactor) return;  initactor = 1;
+  if (theprompt.Length() == 0)
+  {
+    theprompt.AssignCat ("Test-XSTEP>");
+  }
+  therecord = Standard_False;
+  thenbwords = 0;
+  if (THE_IFSelect_SessionPilot_initactor)
+  {
+    return;
+  }
+
+  THE_IFSelect_SessionPilot_initactor = 1;
   Add (1,"x");
   Add (1,"exit");
   Add (2,"?");

@@ -221,11 +221,14 @@ static Standard_Integer samerange (Draw_Interpretor& di,  Standard_Integer argc,
 //  ##            DECLARATIONS            ##
 //  ########################################
 
-static int initactor = 0;
-
 void  SWDRAW_ShapeTool::InitCommands (Draw_Interpretor& theCommands)
 {
-  if (initactor) return;  initactor = 1;
+  static int initactor = 0;
+  if (initactor)
+  {
+    return;
+  }
+  initactor = 1;
 
   const char* g;
   g = "DE: old";

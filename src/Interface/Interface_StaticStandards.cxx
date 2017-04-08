@@ -21,11 +21,16 @@
 
 #include "../XSMessage/XSMessage_XSTEP_us.pxx"
 
-static int deja = 0;
+static int THE_Interface_Static_deja = 0;
 
 void  Interface_Static::Standards ()
 {
-  if (deja) return;  deja = 1;
+  if (THE_Interface_Static_deja)
+  {
+    return;
+  }
+
+  THE_Interface_Static_deja = 1;
 
 //   read precision
   //#74 rln 10.03.99 S4135: new values and default value

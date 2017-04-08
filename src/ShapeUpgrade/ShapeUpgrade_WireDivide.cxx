@@ -685,38 +685,50 @@ void ShapeUpgrade_WireDivide::Perform ()
 	else if ( ! myFace.IsNull() ) {
 	  B.UpdateEdge ( newEdge, theNewPCurve1, myFace, 0. );
 	}
-	  
+
         if(!theNewCurve3d.IsNull())
 	  sbe.SetRange3d(newEdge,f3d,l3d);
 	if(!theNewPCurve1.IsNull())
+	{
 	  B.Range ( newEdge, myFace, f2d, l2d);
+	}
 	if((!wasSR || !srNew)&&!BRep_Tool::Degenerated(newEdge) )
+	{
 	  B.SameRange(newEdge, Standard_False);
+	}
 
-	  //addition NM vertices to new edges
-	  Standard_Real afpar = (myEdgeDivide->HasCurve3d() ? f3d : f2d);
-				
-	  Standard_Real alpar = (myEdgeDivide->HasCurve3d() ? l3d: l2d);
-	  Standard_Integer n =1;
-	  for( ; n <= aSeqParNM.Length(); n++) {
-	    Standard_Real apar = aSeqParNM.Value(n);
-	    TopoDS_Vertex aVold = TopoDS::Vertex(aSeqNMVertices.Value(n));
-	    TopoDS_Vertex aNMVer =ShapeAnalysis_TransferParametersProj::CopyNMVertex(aVold,newEdge,E);
-	    Context()->Replace(aVold,aNMVer);
-	    if(fabs(apar - afpar) <= Precision::PConfusion()) 
-	      Context()->Replace(aNMVer,V1);
-	    else if(fabs(apar - alpar) <= Precision::PConfusion()) 
-	      Context()->Replace(aNMVer,V);
-	    else if( apar > afpar && apar <alpar) 
-	      B.Add (newEdge,aNMVer);
-	    else continue;  
-	    aSeqNMVertices.Remove(n);
-	    aSeqParNM.Remove(n);
-	    n--;
-	  }
-	  
-	  
-//	if (ShapeUpgrade::Debug()) cout <<"... New Edge " 
+        //addition NM vertices to new edges
+        Standard_Real afpar = (myEdgeDivide->HasCurve3d () ? f3d : f2d);
+        Standard_Real alpar = (myEdgeDivide->HasCurve3d () ? l3d : l2d);
+        for (Standard_Integer n = 1; n <= aSeqParNM.Length (); ++n)
+        {
+          Standard_Real apar = aSeqParNM.Value (n);
+          TopoDS_Vertex aVold = TopoDS::Vertex (aSeqNMVertices.Value (n));
+          TopoDS_Vertex aNMVer = ShapeAnalysis_TransferParametersProj::CopyNMVertex (aVold, newEdge, E);
+          Context ()->Replace (aVold, aNMVer);
+          if (fabs (apar - afpar) <= Precision::PConfusion ())
+          {
+            Context ()->Replace (aNMVer, V1);
+          }
+          else if (fabs (apar - alpar) <= Precision::PConfusion ())
+          {
+            Context ()->Replace (aNMVer, V);
+          }
+          else if (apar > afpar && apar < alpar)
+          {
+            B.Add (newEdge, aNMVer);
+          }
+          else
+          {
+            continue;
+          }
+
+          aSeqNMVertices.Remove (n);
+          aSeqParNM.Remove (n);
+          n--;
+        }
+
+//	if (ShapeUpgrade::Debug()) cout <<"... New Edge "
 //	  <<(void*) &(*newEdge.TShape())<<" on vertices "
 //	    <<(void*) &(*V1.TShape())<<", " <<(void*) &(*V.TShape())
 //	      <<" with Tolerance "<<TolEdge <<endl;

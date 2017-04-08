@@ -906,9 +906,12 @@ static Standard_Integer SetMaterial (Draw_Interpretor& di, Standard_Integer argc
 
 void XDEDRAW_Props::InitCommands(Draw_Interpretor& di) 
 {
-
   static Standard_Boolean initactor = Standard_False;
-  if (initactor) return;  initactor = Standard_True;
+  if (initactor)
+  {
+    return;
+  }
+  initactor = Standard_True;
 
   Standard_CString g = "XDE property's commands";
   

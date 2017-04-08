@@ -608,16 +608,23 @@ void AppBlend_AppSurf::Perform(const Handle(TheLine)& Lin,
   for(i = 1; i <= NbPointTot; i++){
     F.Section(Lin->Point(i),tabAppP,tabAppV,tabP2d,tabV2d,tabW,tabDW);
     Standard_Real x,y,z;
-    for(j = 1; j <= NbUPoles; j++){
+    for (j = 1; j <= NbUPoles; j++)
+    {
       tabAppP(j).Coord(x,y,z);
-      if(x < X) X = x; if(x > DX) DX = x;
-      if(y < Y) Y = y; if(y > DY) DY = y;
-      if(z < Z) Z = z; if(z > DZ) DZ = z;
+      if(x < X)  { X  = x; }
+      if(x > DX) { DX = x; }
+      if(y < Y)  { Y  = y; }
+      if(y > DY) { DY = y; }
+      if(z < Z)  { Z  = z; }
+      if(z > DZ) { DZ = z; }
     }
-    for(j = 1; j <= NbPoles2d; j++){
+    for (j = 1; j <= NbPoles2d; j++)
+    {
       tabP2d(j).Coord(x,y);
-      if(x < X2d(j)) X2d(j) = x; if(x > DX2d(j)) DX2d(j) = x;
-      if(y < Y2d(j)) Y2d(j) = y; if(y > DY2d(j)) DY2d(j) = y;
+      if(x < X2d (j)) { X2d (j) = x; }
+      if(x > DX2d(j)) { DX2d(j) = x; }
+      if(y < Y2d (j)) { Y2d (j) = y; }
+      if(y > DY2d(j)) { DY2d(j) = y; }
     }
   }
   // On calcule pour chaque ligne la transformation vers 0 1.

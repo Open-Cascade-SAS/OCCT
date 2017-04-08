@@ -27,12 +27,18 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_Protocol,IGESData_Protocol)
 
-static int deja = 0;
+static int THE_IGESDefs_Protocol_deja = 0;
+
 static Handle(Standard_Type) atype1,atype2,atype3,atype4,atype5,atype6,atype7;
 
-    IGESDefs_Protocol::IGESDefs_Protocol ()
+IGESDefs_Protocol::IGESDefs_Protocol()
 {
-  if (deja) return;  deja = 1;
+  if (THE_IGESDefs_Protocol_deja)
+  {
+    return;
+  }
+
+  THE_IGESDefs_Protocol_deja = 1;
   atype1 = STANDARD_TYPE(IGESDefs_AssociativityDef);
   atype2 = STANDARD_TYPE(IGESDefs_AttributeDef);
   atype3 = STANDARD_TYPE(IGESDefs_AttributeTable);
@@ -54,7 +60,7 @@ static Handle(Standard_Type) atype1,atype2,atype3,atype4,atype5,atype6,atype7;
 
     Standard_Integer IGESDefs_Protocol::TypeNumber
   (const Handle(Standard_Type)& atype) const
-{   
+{
   if      (atype == atype1) return 1;
   else if (atype == atype2) return 2;
   else if (atype == atype3) return 3;

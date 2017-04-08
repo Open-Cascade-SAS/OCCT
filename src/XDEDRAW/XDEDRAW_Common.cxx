@@ -513,10 +513,14 @@ static Standard_Integer Expand (Draw_Interpretor& di, Standard_Integer argc, con
   return 0;
 }
 
-void XDEDRAW_Common::InitCommands(Draw_Interpretor& di) {
-
+void XDEDRAW_Common::InitCommands(Draw_Interpretor& di)
+{
   static Standard_Boolean initactor = Standard_False;
-  if (initactor) return;  initactor = Standard_True;
+  if (initactor)
+  {
+    return;
+  }
+  initactor = Standard_True;
 
   Standard_CString g = "XDE translation commands";
 
