@@ -331,16 +331,22 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
   // (the objects must be AIS_Shapes)
   const Standard_Integer aDetectedNb = myMainSel->NbPicked();
   Standard_Integer aNewDetected = 0;
+  Standard_Boolean toIgnoreDetTop = Standard_False;
   for (Standard_Integer aDetIter = 1; aDetIter <= aDetectedNb; ++aDetIter)
   {
     Handle(SelectMgr_EntityOwner) anOwner = myMainSel->Picked (aDetIter);
     if (anOwner.IsNull()
      || !myFilters->IsOk (anOwner))
     {
+      if (myPickingStrategy == SelectMgr_PickingStrategy_OnlyTopmost)
+      {
+        toIgnoreDetTop = Standard_True;
+      }
       continue;
     }
 
-    if (aNewDetected < 1)
+    if (aNewDetected < 1
+    && !toIgnoreDetTop)
     {
       aNewDetected = aDetIter;
     }

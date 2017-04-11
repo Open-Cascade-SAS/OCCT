@@ -119,6 +119,7 @@ myDefaultDrawer(new Prs3d_Drawer()),
 myCurLocalIndex(0),
 myCurDetected(0),
 myCurHighlighted(0),
+myPickingStrategy (SelectMgr_PickingStrategy_FirstAcceptable),
 myIsAutoActivateSelMode(Standard_True)
 {
   myStyles[Prs3d_TypeOfHighlight_None]          = myDefaultDrawer;

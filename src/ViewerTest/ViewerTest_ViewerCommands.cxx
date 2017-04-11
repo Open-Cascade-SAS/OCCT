@@ -10175,6 +10175,37 @@ static int VSelectionProperties (Draw_Interpretor& theDi,
       }
       aCtx->SetAutoActivateSelection (toEnable);
     }
+    else if (anArg == "-pickstrategy"
+          || anArg == "-pickingstrategy")
+    {
+      if (++anArgIter >= theArgsNb)
+      {
+        std::cout << "Syntax error: type of highlighting is undefined\n";
+        return 1;
+      }
+
+      SelectMgr_PickingStrategy aStrategy = SelectMgr_PickingStrategy_FirstAcceptable;
+      TCollection_AsciiString aVal (theArgVec[anArgIter]);
+      aVal.LowerCase();
+      if (aVal == "first"
+       || aVal == "firstaccepted"
+       || aVal == "firstacceptable")
+      {
+        aStrategy = SelectMgr_PickingStrategy_FirstAcceptable;
+      }
+      else if (aVal == "topmost"
+            || aVal == "onlyTopmost")
+      {
+        aStrategy = SelectMgr_PickingStrategy_OnlyTopmost;
+      }
+      else
+      {
+        std::cout << "Syntax error: unknwon picking strategy '" << aVal << "'\n";
+        return 1;
+      }
+
+      aCtx->SetPickingStrategy (aStrategy);
+    }
     else if (anArg == "-pixtol"
           && anArgIter + 1 < theArgsNb)
     {
@@ -11103,6 +11134,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n    vselprops [dynHighlight|localDynHighlight|selHighlight|localSelHighlight] [options]"
     "\n    Customizes selection and dynamic highlight parameters for the whole interactive context:"
     "\n    -autoActivate {0|1}     : disables|enables default computation and activation of global selection mode"
+    "\n    -pickStrategy {first|topmost} : defines picking strategy"
+    "\n                            'first'   to pick first acceptable (default)"
+    "\n                            'topmost' to pick only topmost (and nothing, if topmost is rejected by filters)"
     "\n    -pixTol    value        : sets up pixel tolerance"
     "\n    -dispMode  dispMode     : sets display mode for highlighting"
     "\n    -layer     ZLayer       : sets ZLayer for highlighting"

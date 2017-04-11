@@ -21,6 +21,7 @@ SelectMgr_ListIteratorOfListOfFilter.hxx
 SelectMgr_ListOfFilter.hxx
 SelectMgr_OrFilter.cxx
 SelectMgr_OrFilter.hxx
+SelectMgr_PickingStrategy.hxx
 SelectMgr_RectangularFrustum.cxx
 SelectMgr_RectangularFrustum.hxx
 SelectMgr_SelectableObject.cxx
