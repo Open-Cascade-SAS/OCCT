@@ -14,14 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modified by  Eric Gouthiere [sep-oct 98] -> add commands for display...
-// Modified by  Robert Coublanc [nov 16-17-18 1998]
-//             -split ViewerTest.cxx into 3 files : ViewerTest.cxx,
-//                                                  ViewerTest_ObjectCommands.cxx
-//                                                  ViewerTest_RelationCommands.cxx
-//             -add Functions and commands for interactive selection of shapes and objects
-//              in AIS Viewers. (PickShape(s), PickObject(s),
-
 #include <Standard_Stream.hxx>
 
 #include <ViewerTest.hxx>
@@ -227,6 +219,111 @@ Standard_Boolean ViewerTest::ParseLineType (Standard_CString   theArg,
       return Standard_False;
     }
     theType = (Aspect_TypeOfLine )aTypeInt;
+  }
+  return Standard_True;
+}
+
+//=======================================================================
+//function : ParseMarkerType
+//purpose  :
+//=======================================================================
+Standard_Boolean ViewerTest::ParseMarkerType (Standard_CString theArg,
+                                              Aspect_TypeOfMarker& theType,
+                                              Handle(Image_PixMap)& theImage)
+{
+  theImage.Nullify();
+  TCollection_AsciiString aTypeStr (theArg);
+  aTypeStr.LowerCase();
+  if (aTypeStr == "empty")
+  {
+    theType = Aspect_TOM_EMPTY;
+  }
+  else if (aTypeStr == "point"
+        || aTypeStr == "dot"
+        || aTypeStr == ".")
+  {
+    theType = Aspect_TOM_POINT;
+  }
+  else if (aTypeStr == "plus"
+        || aTypeStr == "+")
+  {
+    theType = Aspect_TOM_PLUS;
+  }
+  else if (aTypeStr == "star"
+        || aTypeStr == "*")
+  {
+    theType = Aspect_TOM_STAR;
+  }
+  else if (aTypeStr == "cross"
+        || aTypeStr == "x")
+  {
+    theType = Aspect_TOM_X;
+  }
+  else if (aTypeStr == "circle"
+        || aTypeStr == "o")
+  {
+    theType = Aspect_TOM_O;
+  }
+  else if (aTypeStr == "pointincircle")
+  {
+    theType = Aspect_TOM_O_POINT;
+  }
+  else if (aTypeStr == "plusincircle")
+  {
+    theType = Aspect_TOM_O_PLUS;
+  }
+  else if (aTypeStr == "starincircle")
+  {
+    theType = Aspect_TOM_O_STAR;
+  }
+  else if (aTypeStr == "crossincircle"
+        || aTypeStr == "xcircle")
+  {
+    theType = Aspect_TOM_O_X;
+  }
+  else if (aTypeStr == "ring1")
+  {
+    theType = Aspect_TOM_RING1;
+  }
+  else if (aTypeStr == "ring2")
+  {
+    theType = Aspect_TOM_RING2;
+  }
+  else if (aTypeStr == "ring"
+        || aTypeStr == "ring3")
+  {
+    theType = Aspect_TOM_RING3;
+  }
+  else if (aTypeStr == "ball")
+  {
+    theType = Aspect_TOM_BALL;
+  }
+  else if (aTypeStr.IsIntegerValue())
+  {
+    const int aTypeInt = aTypeStr.IntegerValue();
+    if (aTypeInt < -1 || aTypeInt >= Aspect_TOM_USERDEFINED)
+    {
+      return Standard_False;
+    }
+    theType = (Aspect_TypeOfMarker )aTypeInt;
+  }
+  else
+  {
+    theType = Aspect_TOM_USERDEFINED;
+    Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap();
+    if (!anImage->Load (theArg))
+    {
+      return Standard_False;
+    }
+    if (anImage->Format() == Image_Format_Gray)
+    {
+      anImage->SetFormat (Image_Format_Alpha);
+    }
+    else if (anImage->Format() == Image_Format_GrayF)
+    {
+      anImage->SetFormat (Image_Format_AlphaF);
+    }
+    theImage = anImage;
   }
   return Standard_True;
 }
@@ -1522,6 +1619,13 @@ struct ViewerTest_AspectsChangeSet
   Standard_Integer         ToSetTypeOfLine;
   Aspect_TypeOfLine        TypeOfLine;
 
+  Standard_Integer         ToSetTypeOfMarker;
+  Aspect_TypeOfMarker      TypeOfMarker;
+  Handle(Image_PixMap)     MarkerImage;
+
+  Standard_Integer         ToSetMarkerSize;
+  Standard_Real            MarkerSize;
+
   Standard_Integer         ToSetTransparency;
   Standard_Real            Transparency;
 
@@ -1560,6 +1664,10 @@ struct ViewerTest_AspectsChangeSet
     LineWidth         (1.0),
     ToSetTypeOfLine   (0),
     TypeOfLine        (Aspect_TOL_SOLID),
+    ToSetTypeOfMarker (0),
+    TypeOfMarker      (Aspect_TOM_PLUS),
+    ToSetMarkerSize   (0),
+    MarkerSize        (1.0),
     ToSetTransparency (0),
     Transparency      (0.0),
     ToSetMaterial     (0),
@@ -1973,6 +2081,44 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
     {
       aChangeSet->ToSetTypeOfLine = -1;
     }
+    else if (anArg == "-setmarkertype"
+          || anArg == "-setpointtype")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      if (!ViewerTest::ParseMarkerType (theArgVec[anArgIter], aChangeSet->TypeOfMarker, aChangeSet->MarkerImage))
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+
+      aChangeSet->ToSetTypeOfMarker = 1;
+    }
+    else if (anArg == "-unsetmarkertype"
+          || anArg == "-unsetpointtype")
+    {
+      aChangeSet->ToSetTypeOfMarker = -1;
+    }
+    else if (anArg == "-setmarkersize"
+          || anArg == "-setpointsize")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aChangeSet->ToSetMarkerSize = 1;
+      aChangeSet->MarkerSize = Draw::Atof (theArgVec[anArgIter]);
+    }
+    else if (anArg == "-unsetmarkersize"
+          || anArg == "-unsetpointsize")
+    {
+      aChangeSet->ToSetMarkerSize = -1;
+      aChangeSet->MarkerSize = 1.0;
+    }
     else if (anArg == "-unsetcolor")
     {
       aChangeSet->ToSetColor = -1;
@@ -2146,6 +2292,10 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->LineWidth = 1.0;
       aChangeSet->ToSetTypeOfLine = -1;
       aChangeSet->TypeOfLine = Aspect_TOL_SOLID;
+      aChangeSet->ToSetTypeOfMarker = -1;
+      aChangeSet->TypeOfMarker = Aspect_TOM_PLUS;
+      aChangeSet->ToSetMarkerSize = -1;
+      aChangeSet->MarkerSize = 1.0;
       aChangeSet->ToSetTransparency = -1;
       aChangeSet->Transparency = 0.0;
       aChangeSet->ToSetColor = -1;
@@ -2299,6 +2449,17 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aDrawer->FreeBoundaryAspect()->SetTypeOfLine   (aChangeSet->TypeOfLine);
       aDrawer->UnFreeBoundaryAspect()->SetTypeOfLine (aChangeSet->TypeOfLine);
       aDrawer->SeenLineAspect()->SetTypeOfLine       (aChangeSet->TypeOfLine);
+    }
+    if (aChangeSet->ToSetTypeOfMarker != 0)
+    {
+      aDrawer->PointAspect()->SetTypeOfMarker (aChangeSet->TypeOfMarker);
+      aDrawer->PointAspect()->Aspect()->SetMarkerImage (aChangeSet->MarkerImage.IsNull()
+                                                      ? Handle(Graphic3d_MarkerImage)()
+                                                      : new Graphic3d_MarkerImage (aChangeSet->MarkerImage));
+    }
+    if (aChangeSet->ToSetMarkerSize != 0)
+    {
+      aDrawer->PointAspect()->SetScale (aChangeSet->MarkerSize);
     }
     if (aChangeSet->ToSetTransparency != 0)
     {
@@ -2466,6 +2627,25 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
           aDrawer->FreeBoundaryAspect()->SetTypeOfLine   (aChangeSet->TypeOfLine);
           aDrawer->UnFreeBoundaryAspect()->SetTypeOfLine (aChangeSet->TypeOfLine);
           aDrawer->SeenLineAspect()->SetTypeOfLine       (aChangeSet->TypeOfLine);
+          toRedisplay = Standard_True;
+        }
+        if (aChangeSet->ToSetTypeOfMarker != 0)
+        {
+          Handle(Prs3d_PointAspect) aMarkerAspect = new Prs3d_PointAspect (Aspect_TOM_PLUS, Quantity_NOC_YELLOW, 1.0);
+          *aMarkerAspect->Aspect() = *aDrawer->PointAspect()->Aspect();
+          aMarkerAspect->SetTypeOfMarker (aChangeSet->TypeOfMarker);
+          aMarkerAspect->Aspect()->SetMarkerImage (aChangeSet->MarkerImage.IsNull()
+                                                 ? Handle(Graphic3d_MarkerImage)()
+                                                 : new Graphic3d_MarkerImage (aChangeSet->MarkerImage));
+          aDrawer->SetPointAspect (aMarkerAspect);
+          toRedisplay = Standard_True;
+        }
+        if (aChangeSet->ToSetMarkerSize != 0)
+        {
+          Handle(Prs3d_PointAspect) aMarkerAspect = new Prs3d_PointAspect (Aspect_TOM_PLUS, Quantity_NOC_YELLOW, 1.0);
+          *aMarkerAspect->Aspect() = *aDrawer->PointAspect()->Aspect();
+          aMarkerAspect->SetScale (aChangeSet->MarkerSize);
+          aDrawer->SetPointAspect (aMarkerAspect);
           toRedisplay = Standard_True;
         }
         if (aChangeSet->ToSetMaxParamValue != 0)
@@ -5777,6 +5957,9 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:          [-setTransparency Transp] [-unsetTransparency]"
       "\n\t\t:          [-setWidth LineWidth] [-unsetWidth]"
       "\n\t\t:          [-setLineType {solid|dash|dot|dotDash}] [-unsetLineType]"
+      "\n\t\t:          [-setMarkerType {.|+|x|O|xcircle|pointcircle|ring1|ring2|ring3|ball|ImagePath}]"
+      "\n\t\t:          [-unsetMarkerType]"
+      "\n\t\t:          [-setMarkerSize Scale] [-unsetMarkerSize]"
       "\n\t\t:          [-freeBoundary {off/on | 0/1}]"
       "\n\t\t:          [-setFreeBoundaryWidth Width] [-unsetFreeBoundaryWidth]"
       "\n\t\t:          [-setFreeBoundaryColor {ColorName | R G B}] [-unsetFreeBoundaryColor]"

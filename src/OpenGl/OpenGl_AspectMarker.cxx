@@ -1605,9 +1605,17 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Context)&
     }
     SpriteAKey = aNewKeyA;
   }
+
+  if (!aNewResource)
+  {
+    if (!Sprite->IsDisplayList())
+    {
+      theMarkerSize = Standard_ShortReal (Max (Sprite->SizeX(), Sprite->SizeY()));
+    }
+    return;
+  }
   if (theType == Aspect_TOM_POINT
    || theType == Aspect_TOM_EMPTY
-   || !aNewResource
    || (theType == Aspect_TOM_USERDEFINED && theMarkerImage.IsNull()))
   {
     // nothing to do - just simple point

@@ -15,33 +15,28 @@
 #ifndef _ViewerTest_HeaderFile
 #define _ViewerTest_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Macro.hxx>
-
+#include <AIS_KindOfInteractive.hxx>
+#include <Aspect_TypeOfLine.hxx>
+#include <Aspect_TypeOfMarker.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopTools_HArray1OfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <AIS_KindOfInteractive.hxx>
-#include <Aspect_TypeOfLine.hxx>
+#include <Standard_DefineAlloc.hxx>
+#include <Standard_Macro.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
-#include <Quantity_NameOfColor.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_HArray1OfShape.hxx>
+#include <Quantity_Color.hxx>
 
-
-class TCollection_AsciiString;
-class V3d_View;
-class MMgt_TShared;
-class TopoDS_Shape;
-class AIS_InteractiveObject;
-class V3d_Viewer;
 class AIS_InteractiveContext;
+class AIS_InteractiveObject;
+class TCollection_AsciiString;
+class MMgt_TShared;
+class Image_PixMap;
+class V3d_View;
+class V3d_Viewer;
 class ViewerTest_EventManager;
-class ViewerTest_EventManager;
-class Quantity_Color;
+class TopoDS_Shape;
 
 class ViewerTest
 {
@@ -194,11 +189,16 @@ public:
   //! Returns list of selected shapes.
   Standard_EXPORT static void GetSelectedShapes (TopTools_ListOfShape& theShapes);
 
-
   //! Parses line type argument.
   //! Handles either enumeration (integer) value or string constant.
   Standard_EXPORT static Standard_Boolean ParseLineType (Standard_CString   theArg,
                                                          Aspect_TypeOfLine& theType);
+
+  //! Parses marker type argument.
+  //! Handles either enumeration (integer) value or string constant.
+  Standard_EXPORT static Standard_Boolean ParseMarkerType (Standard_CString theArg,
+                                                           Aspect_TypeOfMarker& theType,
+                                                           Handle(Image_PixMap)& theImage);
 
 private:
 
