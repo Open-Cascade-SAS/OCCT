@@ -97,6 +97,7 @@
 #include <gp_Vec.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
+#include <IntTools_FaceFace.hxx>
 #include <Precision.hxx>
 #include <ProjLib_HProjectedCurve.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
@@ -119,6 +120,19 @@
 #include <TopTools_SequenceOfShape.hxx>
 
 #include <stdio.h>
+
+// The constant defines the maximal value to enlarge surfaces.
+// It is limited to 1.e+7. This limitation is justified by the
+// floating point format. As we can have only 15
+// valuable decimal numbers, then during intersection of surfaces with
+// bounds of 1.e+8 the possible inaccuracy might appear already in seventh
+// decimal place which will be more than Precision::Confusion value -
+// 1.e-7, default tolerance value for the section curves.
+// By decreasing the max enlarge value to 1.e+7 the inaccuracy will be
+// shifted to eighth decimal place, i.e. the inaccuracy will be
+// decreased to values less than 1.e-7.
+const Standard_Real TheInfini = 1.e+7;
+
 //tma: for new boolean operation
 #ifdef DRAW
 #include <DBRep.hxx>
@@ -136,6 +150,16 @@ static Standard_Integer NbExtE      = 1;
 #ifdef OCCT_DEBUG
 static Standard_Boolean AffichExtent = Standard_False;
 #endif
+
+static
+  void PerformPlanes(const TopoDS_Face& theFace1,
+                     const TopoDS_Face& theFace2,
+                     const TopAbs_State theState,
+                     TopTools_ListOfShape& theL1,
+                     TopTools_ListOfShape& theL2);
+
+inline
+  Standard_Boolean IsInf(const Standard_Real theVal);
 
 //=======================================================================
 //function : EdgeVertices
@@ -1571,6 +1595,22 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face& F1,
   }
 #endif
 
+  // Check if the faces are planar and not trimmed - in this case
+  // the IntTools_FaceFace intersection algorithm will be used directly.
+  BRepAdaptor_Surface aBAS1(F1, Standard_False), aBAS2(F2, Standard_False);
+  if (aBAS1.GetType() == GeomAbs_Plane &&
+      aBAS2.GetType() == GeomAbs_Plane) {
+    aBAS1.Initialize(F1, Standard_True);
+    if (IsInf(aBAS1.LastUParameter()) && IsInf(aBAS1.LastVParameter())) {
+      aBAS2.Initialize(F2, Standard_True);
+      if (IsInf(aBAS2.LastUParameter()) && IsInf(aBAS2.LastVParameter())) {
+        // Intersect the planes without pave filler
+        PerformPlanes(F1, F2, Side, L1, L2);
+        return;
+      }
+    }
+  }
+  //
   TopoDS_Face cpF1=F1; 
   TopoDS_Face cpF2=F2;
   // create 3D curves on faces
@@ -3219,16 +3259,6 @@ Standard_Boolean BRepOffset_Tool::EnLargeFace
   Standard_Boolean      isVV1degen = Standard_False, isVV2degen = Standard_False;
   Standard_Real         US1,VS1,US2,VS2;
   Standard_Real         UF1,VF1,UF2,VF2;
-  // The maximal value to enlarge surfaces is decreased to 1.e+7.
-  // It is justified by the floating point format. As we can have only 15
-  // valuable decimal numbers, then during intersection of surfaces with
-  // bounds of 1.e+8 the possible inaccuracy might appear already in seventh
-  // decimal place which will be more than Precision::Confusion value -
-  // 1.e-7, default tolerance value for the section curves.
-  // By decreasing the max enlarge value to 1.e+7 the inaccuracy will be
-  // shifted to eighth decimal place, i.e. the inaccuracy will be
-  // decreased to values less than 1.e-7.
-  Standard_Real         infini = 1.e7;//1.e8;
   Standard_Boolean      SurfaceChange = Standard_False;
 
   if (S->IsUPeriodic() || S->IsVPeriodic()) {
@@ -3240,8 +3270,8 @@ Standard_Boolean BRepOffset_Tool::EnLargeFace
   }
 
   S->Bounds            (US1,US2,VS1,VS2);
-  UU1 = VV1 = - infini;
-  UU2 = VV2 =   infini;
+  UU1 = VV1 = - TheInfini;
+  UU2 = VV2 =   TheInfini;
   
   if (CanExtentSurface) {
     SurfaceChange = EnlargeGeometry( S, UU1, UU2, VV1, VV2, isVV1degen, isVV2degen, UF1, UF2, VF1, VF2,
@@ -4041,4 +4071,81 @@ Standard_Boolean BRepOffset_Tool::CheckPlanesNormals(const TopoDS_Face& theFace1
   //
   Standard_Real anAngle = aDN1.Angle(aDN2);
   return (anAngle < theTolAng);
+}
+
+//=======================================================================
+//function : PerformPlanes
+//purpose  : 
+//=======================================================================
+void PerformPlanes(const TopoDS_Face& theFace1,
+                   const TopoDS_Face& theFace2,
+                   const TopAbs_State theSide,
+                   TopTools_ListOfShape& theL1,
+                   TopTools_ListOfShape& theL2)
+{
+  theL1.Clear();
+  theL2.Clear();
+  // Intersect the planes using IntTools_FaceFace directly
+  IntTools_FaceFace aFF;
+  aFF.SetParameters(Standard_True, Standard_True, Standard_True, Precision::Confusion());
+  aFF.Perform(theFace1, theFace2);
+  //
+  if (!aFF.IsDone()) {
+    return;
+  }
+  //
+  const IntTools_SequenceOfCurves& aSC = aFF.Lines();
+  if (aSC.IsEmpty()) {
+    return;
+  }
+  //
+  // In Plane/Plane intersection only one curve is always produced.
+  // Make the edge from this section curve.
+  TopoDS_Edge aE;
+  {
+    BRep_Builder aBB;
+    const IntTools_Curve& aIC = aSC(1);
+    const Handle(Geom_Curve)& aC3D = aIC.Curve();
+    aBB.MakeEdge(aE, aC3D, aIC.Tolerance());
+    // Get bounds of the curve
+    Standard_Real aTF, aTL;
+    gp_Pnt aPF, aPL;
+    aIC.Bounds(aTF, aTL, aPF, aPL);
+    // Make the bounding vertices
+    TopoDS_Vertex aVF, aVL;
+    aBB.MakeVertex(aVF, aPF, aIC.Tolerance());
+    aBB.MakeVertex(aVL, aPL, aIC.Tolerance());
+    aVL.Orientation(TopAbs_REVERSED);
+    // Add vertices to the edge
+    aBB.Add(aE, aVF);
+    aBB.Add(aE, aVL);
+    // Add 2D curves to the edge
+    aBB.UpdateEdge(aE, aIC.FirstCurve2d(), theFace1, aIC.Tolerance());
+    aBB.UpdateEdge(aE, aIC.SecondCurve2d(), theFace2, aIC.Tolerance());
+    // Update range of the new edge
+    aBB.Range(aE, aTF, aTL);
+  }
+  //
+  // Orient section
+  TopAbs_Orientation O1, O2;
+  BRepOffset_Tool::OrientSection(aE, theFace1, theFace2, O1, O2);
+  if (theSide == TopAbs_OUT) {
+    O1 = TopAbs::Reverse(O1);
+    O2 = TopAbs::Reverse(O2);
+  }
+  //
+  BRepLib::SameParameter(aE, Precision::Confusion(), Standard_True);
+  //
+  // Add edge to result
+  theL1.Append(aE.Oriented(O1));
+  theL2.Append(aE.Oriented(O2));
+}
+
+//=======================================================================
+//function : IsInf
+//purpose  : Checks if the given value is close to infinite (TheInfini)
+//=======================================================================
+Standard_Boolean IsInf(const Standard_Real theVal)
+{
+  return (theVal > TheInfini*0.9);
 }
