@@ -210,6 +210,7 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
         Standard_Real tol0 = BRep_Tool::Tolerance(edge);
         tol = tol0;
         Standard_Real tol2 = tol*tol;
+        Standard_Boolean isChanged = Standard_False;
         const Standard_Integer NCONTROL = 23;
         for ( Standard_Integer i = 0; i < NCONTROL; i++ )
         {
@@ -217,17 +218,23 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
           gp_Pnt pnt = crv->Value ( par );
           gp_Pnt prj = ACS.Value( par );
           Standard_Real dist = pnt.SquareDistance(prj);
-          if ( tol2 < dist )
-            tol2 = dist;
-        }
-        tol = 1.00005 * sqrt(tol2); // coeff: see trj3_pm1-ct-203.stp #19681, edge 10
-        if ( tol >= tol0 )
-        {
-          B.UpdateEdge ( edge, tol );
-          for ( TopoDS_Iterator itV(edge); itV.More(); itV.Next() )
+          if ( tol2 < dist ) 
           {
-            TopoDS_Shape S = itV.Value();
-            B.UpdateVertex ( TopoDS::Vertex ( S ), tol );
+            tol2 = dist;
+            isChanged = Standard_True;
+          }
+        }
+        if ( isChanged )
+        {
+          tol = 1.00005 * sqrt(tol2); // coeff: see trj3_pm1-ct-203.stp #19681, edge 10
+          if ( tol >= tol0 )
+          {
+            B.UpdateEdge ( edge, tol );
+            for ( TopoDS_Iterator itV(edge); itV.More(); itV.Next() )
+            {
+              TopoDS_Shape S = itV.Value();
+              B.UpdateVertex ( TopoDS::Vertex ( S ), tol );
+            }
           }
         }
       }

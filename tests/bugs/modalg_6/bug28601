@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC28601"
+puts "========"
+puts ""
+###################################################################
+# ShapeFix_Shape increases tolerance of sub-shapes of a valid shape
+###################################################################
+
+box b 10 10 10
+set tol_before [checkmaxtol b]
+fixshape b1 b
+set tol_after [checkmaxtol b1]
+
+puts "MAX tolerance shape before fixshape : $tol_before"
+puts "MAX tolerance shape after fixshape : $tol_after"
+
+if { ${tol_after} > ${tol_before} } {
+  puts "Error: Export /Import cause increasing tolerances of shape"
+} else {
+  puts "Export /Import does not cause increasing tolerances of shape"
+}
