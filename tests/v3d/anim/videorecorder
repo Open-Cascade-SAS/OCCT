@@ -1,0 +1,17 @@
+puts "================"
+puts "OCC25382"
+puts "================"
+puts ""
+puts "==============================================================="
+puts "Visualization, TKOpenGl - improved video recording capability"
+puts "==============================================================="
+
+set aFile ${imagedir}/propeller.mkv
+file delete -force ${aFile}
+
+source $env(CSF_OCCTTestsPath)/v3d/anim/propeller
+vraytrace 1
+vrenderparams -msaa 8
+vrenderparams -fsaa 1
+XProgress +g
+vanimation anim -play -record ${aFile} 1920 1080 -vcodec ffv1 -fps 30 -speed 0.5

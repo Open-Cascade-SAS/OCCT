@@ -350,6 +350,11 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
 #else
   di << "FreeImage disabled\n";
 #endif
+#ifdef HAVE_FFMPEG
+  di << "FFmpeg enabled (HAVE_FFMPEG)\n";
+#else
+  di << "FFmpeg disabled\n";
+#endif
 #ifdef HAVE_GLES2
   di << "OpenGL: ES2\n";
 #else

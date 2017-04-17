@@ -82,6 +82,7 @@ endmacro()
 INSTALL_MESSAGE (INSTALL_SAMPLES          "OCCT samples")
 INSTALL_MESSAGE (INSTALL_TEST_CASES       "non-regression OCCT test scripts")
 INSTALL_MESSAGE (INSTALL_DOC_Overview     "OCCT overview documentation (HTML format)")
+INSTALL_MESSAGE (INSTALL_FFMPEG           "FFmpeg binaries")
 INSTALL_MESSAGE (INSTALL_FREEIMAGE        "FreeImage binaries")
 INSTALL_MESSAGE (INSTALL_EGL              "EGL binaries")
 INSTALL_MESSAGE (INSTALL_GLES2            "OpenGL ES 2.0 binaries")
@@ -135,6 +136,10 @@ set (3RDPARTY_DIR_DESCR
 "The root directory where all required third-party products will be searched. If a
 third-party product have been found - corresponding CMake variables will be specified
 (VTK: 3RDPARTY_VTK_DIR, 3RDPARTY_VTK_INCLUDE_DIR, 3RDPARTY_VTK_LIBRARY_DIR)")
+
+set (USE_FFMPEG_DESCR
+"Indicates whether FFmpeg framework is used or not. FFmpeg stands for
+multimedia data handling, open-source software libraries used for video encoding and decoding.")
 
 set (USE_FREEIMAGE_DESCR
 "Indicates whether Freeimage product should be used in OCCT visualization

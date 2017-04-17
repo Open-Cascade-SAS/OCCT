@@ -14,6 +14,7 @@ if /I "%VCVER%" == "@COMPILER@" (
     set "GL2PS_DIR=@3RDPARTY_GL2PS_DLL_DIRS@"
     set "TBB_DIR=@3RDPARTY_TBB_DLL_DIR@"
     set "VTK_DIR=@3RDPARTY_VTK_DLL_DIR@"
+    set "FFMPEG_DIR=@3RDPARTY_FFMPEG_DLL_DIR@"
 
     if not "@3RDPARTY_QT_DIR@" == "" (
       set "QTDIR=@3RDPARTY_QT_DIR@"

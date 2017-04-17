@@ -119,6 +119,21 @@ proc wokdep:SearchHeader {theHeader} {
   if { [file exists "$aPath"] } {
     return "$aPath"
   }
+
+  if { "$::tcl_platform(os)" == "Linux" } {
+    if { "$::ARCH" == "64" } {
+      set aPath "/usr/include/x86_64-linux-gnu/${theHeader}"
+      if { [file exists "$aPath"] } {
+        return "$aPath"
+      }
+    } else {
+      set aPath "/usr/include/i386-linux-gnu/${theHeader}"
+      if { [file exists "$aPath"] } {
+        return "$aPath"
+      }
+    }
+  }
+
   return ""
 }
 

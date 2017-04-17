@@ -135,6 +135,9 @@ by fully automating techniques as precompiled header usage and single compilatio
 Cotire is included in OCCT repository and used optionally by OCCT CMake scripts to accelerate builds by use of precompiled headers.
 Cotire is licensed under the MIT license (https://github.com/sakra/cotire/blob/master/license).
 
+**FFmpeg** is an Open Source framework supporting various image, video and audio codecs.
+FFmpeg is optionally used by OCCT for video recording, on LGPL conditions (https://www.ffmpeg.org/legal.html).
+
 **MikTEX** is up-to-date implementation of TeX/LaTeX and related programs for Windows. It is used 
 for generation of User and Developer Guides in PDF format. See https://miktex.org for information
 on this tool.
@@ -210,6 +213,7 @@ for which OCCT is certified to work.
 | TCL (for testing tools)    | Tcl/Tk 8.6.3+ http://www.tcl.tk/software/tcltk/download.html <br> or ActiveTcl 8.6 http://www.activestate.com/activetcl/downloads (for Windows)| 
 | Freetype (for text rendering) | FreeType 2.4.11-2.5.5 http://sourceforge.net/projects/freetype/files/ |
 | FreeImage (optional, for support of common 2D graphic formats) | FreeImage 3.17.0+ http://sourceforge.net/projects/freeimage/files |
+| FFmpeg (optional, for video recording) | FFmpeg 3.1+ https://www.ffmpeg.org |
 | gl2ps (optional, for export contents of OCCT viewer to vector formats) | gl2ps-1.3.8+  http://geuz.org/gl2ps/ |
 | Intel TBB (optional, for multithreaded algorithms) | TBB 4.x or 5.x http://www.threadingbuildingblocks.org/ |
 | VTK (for VTK Integration Services | VTK 6.1+ http://www.vtk.org/VTK/resources/software.html |

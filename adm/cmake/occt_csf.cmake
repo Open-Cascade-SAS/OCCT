@@ -24,6 +24,13 @@ else()
   set (CSF_FREETYPE)
 endif()
 
+# FFmpeg
+if (USE_FFMPEG)
+  set (CSF_FFmpeg "avcodec avformat swscale avutil")
+else()
+  set (CSF_FFmpeg)
+endif()
+
 # FREEIMAGE
 if (USE_FREEIMAGE)
   set (CSF_FreeImagePlus "freeimage")

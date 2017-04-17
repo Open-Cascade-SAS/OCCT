@@ -27,6 +27,7 @@
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <DBRep.hxx>
+#include <Draw_ProgressIndicator.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_ExportFormat.hxx>
@@ -46,6 +47,7 @@
 #include <V3d_DirectionalLight.hxx>
 #include <V3d_PositionalLight.hxx>
 #include <V3d_SpotLight.hxx>
+#include <Message_ProgressSentry.hxx>
 #include <NCollection_DoubleMap.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Vector.hxx>
@@ -54,6 +56,7 @@
 #include <Draw.hxx>
 #include <Draw_Appli.hxx>
 #include <Image_AlienPixMap.hxx>
+#include <Image_VideoRecorder.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OSD_Timer.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
@@ -6262,6 +6265,48 @@ namespace
     return Standard_True;
   }
 
+  //! Auxiliary class for flipping image upside-down.
+  class ImageFlipper
+  {
+  public:
+
+    //! Empty constructor.
+    ImageFlipper() : myTmp (NCollection_BaseAllocator::CommonBaseAllocator()) {}
+
+    //! Perform flipping.
+    Standard_Boolean FlipY (Image_PixMap& theImage)
+    {
+      if (theImage.IsEmpty()
+       || theImage.SizeX() == 0
+       || theImage.SizeY() == 0)
+      {
+        return Standard_False;
+      }
+
+      const Standard_Size aRowSize = theImage.SizeRowBytes();
+      if (myTmp.Size() < aRowSize
+      && !myTmp.Allocate (aRowSize))
+      {
+        return Standard_False;
+      }
+
+      // for odd height middle row should be left as is
+      Standard_Size aNbRowsHalf = theImage.SizeY() / 2;
+      for (Standard_Size aRowT = 0, aRowB = theImage.SizeY() - 1; aRowT < aNbRowsHalf; ++aRowT, --aRowB)
+      {
+        Standard_Byte* aTop = theImage.ChangeRow (aRowT);
+        Standard_Byte* aBot = theImage.ChangeRow (aRowB);
+        memcpy (myTmp.ChangeData(), aTop,         aRowSize);
+        memcpy (aTop,               aBot,         aRowSize);
+        memcpy (aBot,               myTmp.Data(), aRowSize);
+      }
+      return Standard_True;
+    }
+
+  private:
+    NCollection_Buffer myTmp;
+  };
+
 }
 
 //=================================================================================================
@@ -6590,10 +6635,13 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
   Standard_Real aPlaySpeed     = 1.0;
   Standard_Real aPlayStartTime = anAnimation->StartPts();
   Standard_Real aPlayDuration  = anAnimation->Duration();
-  Standard_Integer aFpsNum     = 0;
-  Standard_Integer aFpsDen     = 1;
   Standard_Boolean isFreeCamera = Standard_False;
   Standard_Boolean isLockLoop   = Standard_False;
+
+  // video recording parameters
+  TCollection_AsciiString aRecFile;
+  Image_VideoParams aRecParams;
+
   Handle(V3d_View) aView = ViewerTest::CurrentView();
   for (; anArgIter < theArgNb; ++anArgIter)
   {
@@ -6679,6 +6727,37 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
     {
       isFreeCamera = Standard_True;
     }
+    // video recodring options
+    else if (anArg == "-rec"
+          || anArg == "-record")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Syntax error at " << anArg << ".\n";
+        return 1;
+      }
+
+      aRecFile = theArgVec[anArgIter];
+      if (aRecParams.FpsNum <= 0)
+      {
+        aRecParams.FpsNum = 24;
+      }
+
+      if (anArgIter + 2 < theArgNb
+      && *theArgVec[anArgIter + 1] != '-'
+      && *theArgVec[anArgIter + 2] != '-')
+      {
+        TCollection_AsciiString aWidthArg  (theArgVec[anArgIter + 1]);
+        TCollection_AsciiString aHeightArg (theArgVec[anArgIter + 2]);
+        if (aWidthArg .IsIntegerValue()
+         && aHeightArg.IsIntegerValue())
+        {
+          aRecParams.Width  = aWidthArg .IntegerValue();
+          aRecParams.Height = aHeightArg.IntegerValue();
+          anArgIter += 2;
+        }
+      }
+    }
     else if (anArg == "-fps")
     {
       if (++anArgIter >= theArgNb)
@@ -6691,21 +6770,65 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
       Standard_Integer aSplitIndex = aFpsArg.FirstLocationInSet ("/", 1, aFpsArg.Length());
       if (aSplitIndex == 0)
       {
-        aFpsNum = aFpsArg.IntegerValue();
+        aRecParams.FpsNum = aFpsArg.IntegerValue();
       }
       else
       {
         const TCollection_AsciiString aDenStr = aFpsArg.Split (aSplitIndex);
         aFpsArg.Split (aFpsArg.Length() - 1);
         const TCollection_AsciiString aNumStr = aFpsArg;
-        aFpsNum = aNumStr.IntegerValue();
-        aFpsDen = aDenStr.IntegerValue();
-        if (aFpsDen < 1)
+        aRecParams.FpsNum = aNumStr.IntegerValue();
+        aRecParams.FpsDen = aDenStr.IntegerValue();
+        if (aRecParams.FpsDen < 1)
         {
           std::cout << "Syntax error at " << anArg << ".\n";
           return 1;
         }
       }
+    }
+    else if (anArg == "-format")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Syntax error at " << anArg << ".\n";
+        return 1;
+      }
+      aRecParams.Format = theArgVec[anArgIter];
+    }
+    else if (anArg == "-pix_fmt"
+          || anArg == "-pixfmt"
+          || anArg == "-pixelformat")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Syntax error at " << anArg << ".\n";
+        return 1;
+      }
+      aRecParams.PixelFormat = theArgVec[anArgIter];
+    }
+    else if (anArg == "-codec"
+          || anArg == "-vcodec"
+          || anArg == "-videocodec")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Syntax error at " << anArg << ".\n";
+        return 1;
+      }
+      aRecParams.VideoCodec = theArgVec[anArgIter];
+    }
+    else if (anArg == "-crf"
+          || anArg == "-preset"
+          || anArg == "-qp")
+    {
+      const TCollection_AsciiString aParamName = anArg.SubString (2, anArg.Length());
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Syntax error at " << anArg << ".\n";
+        return 1;
+      }
+
+      aRecParams.VideoCodecParams.Bind (aParamName, theArgVec[anArgIter]);
     }
     // animation definition options
     else if (anArg == "-start"
@@ -6958,7 +7081,7 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
     }
   }
 
-  if (!toPlay)
+  if (!toPlay && aRecFile.IsEmpty())
   {
     return 0;
   }
@@ -6974,7 +7097,7 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
   }
 
   const Standard_Real anUpperPts = aPlayStartTime + aPlayDuration;
-  if (aFpsNum <= 0)
+  if (aRecParams.FpsNum <= 0)
   {
     while (!anAnimation->IsStopped())
     {
@@ -7028,12 +7151,35 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
     OSD_Timer aPerfTimer;
     aPerfTimer.Start();
 
+    Handle(Image_VideoRecorder) aRecorder;
+    ImageFlipper aFlipper;
+    Handle(Draw_ProgressIndicator) aProgress;
+    if (!aRecFile.IsEmpty())
+    {
+      if (aRecParams.Width  <= 0
+       || aRecParams.Height <= 0)
+      {
+        aView->Window()->Size (aRecParams.Width, aRecParams.Height);
+      }
+
+      aRecorder = new Image_VideoRecorder();
+      if (!aRecorder->Open (aRecFile.ToCString(), aRecParams))
+      {
+        std::cout << "Error: failed to open video file for recording\n";
+        return 0;
+      }
+
+      aProgress = new Draw_ProgressIndicator (theDI, 1);
+    }
+
     // Manage frame-rated animation here
     Standard_Real aPts = aPlayStartTime;
     int64_t aNbFrames = 0;
-    for (; aPts <= anUpperPts;)
+    Message_ProgressSentry aPSentry (aProgress, "Video recording, sec", 0, Max (1, Standard_Integer(aPlayDuration / aPlaySpeed)), 1);
+    Standard_Integer aSecondsProgress = 0;
+    for (; aPts <= anUpperPts && aPSentry.More();)
     {
-      const Standard_Real aRecPts = aPlaySpeed * ((Standard_Real(aFpsDen) / Standard_Real(aFpsNum)) * Standard_Real(aNbFrames));
+      const Standard_Real aRecPts = aPlaySpeed * ((Standard_Real(aRecParams.FpsDen) / Standard_Real(aRecParams.FpsNum)) * Standard_Real(aNbFrames));
       aPts = aPlayStartTime + aRecPts;
       ++aNbFrames;
       if (!anAnimation->Update (aPts))
@@ -7041,7 +7187,35 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
         break;
       }
 
-      aView->Redraw();
+      if (!aRecorder.IsNull())
+      {
+        V3d_ImageDumpOptions aDumpParams;
+        aDumpParams.Width          = aRecParams.Width;
+        aDumpParams.Height         = aRecParams.Height;
+        aDumpParams.BufferType     = Graphic3d_BT_RGBA;
+        aDumpParams.StereoOptions  = V3d_SDO_MONO;
+        aDumpParams.ToAdjustAspect = Standard_True;
+        if (!aView->ToPixMap (aRecorder->ChangeFrame(), aDumpParams))
+        {
+          std::cout << "Error: view dump is failed!\n";
+          return 0;
+        }
+        aFlipper.FlipY (aRecorder->ChangeFrame());
+        if (!aRecorder->PushFrame())
+        {
+          return 0;
+        }
+      }
+      else
+      {
+        aView->Redraw();
+      }
+
+      while (aSecondsProgress < Standard_Integer(aRecPts / aPlaySpeed))
+      {
+        aPSentry.Next();
+        ++aSecondsProgress;
+      }
     }
 
     aPerfTimer.Stop();
@@ -11172,6 +11346,17 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:   %Pts        overall animation presentation timestamp"
     "\n\t\t:   %LocalPts   local animation timestamp"
     "\n\t\t:   %Normalized local animation normalized value in range 0..1"
+    "\n\t\t:"
+    "\n\t\t: Video recording:"
+    "\n\t\t:  vanim name -record FileName [Width Height] [-fps FrameRate=24]"
+    "\n\t\t:             [-format Format] [-vcodec Codec] [-pix_fmt PixelFormat]"
+    "\n\t\t:             [-crf Value] [-preset Preset]"
+    "\n\t\t:   -fps     video framerate"
+    "\n\t\t:   -format  file format, container (matroska, etc.)"
+    "\n\t\t:   -vcodec  video codec identifier (ffv1, mjpeg, etc.)"
+    "\n\t\t:   -pix_fmt image pixel format (yuv420p, rgb24, etc.)"
+    "\n\t\t:   -crf     constant rate factor (specific to codec)"
+    "\n\t\t:   -preset  codec parameters preset (specific to codec)"
     __FILE__, VAnimation, group);
 
   theCommands.Add("vchangeselected",

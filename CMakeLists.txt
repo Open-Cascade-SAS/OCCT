@@ -561,6 +561,27 @@ else()
   OCCT_CHECK_AND_UNSET ("INSTALL_FREEIMAGE")
 endif()
 
+# FFmpeg
+# search for CSF_FFmpeg variable in EXTERNLIB of each being used toolkit
+OCCT_IS_PRODUCT_REQUIRED (CSF_FFmpeg CAN_USE_FFMPEG)
+
+if (CAN_USE_FFMPEG)
+  set (USE_FFMPEG OFF CACHE BOOL "${USE_FFMPEG_DESCR}")
+
+  if (USE_FFMPEG)
+    add_definitions (-DHAVE_FFMPEG)
+    OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/ffmpeg")
+  else()
+    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_FFMPEG")
+    OCCT_CHECK_AND_UNSET ("INSTALL_FFMPEG")
+  endif()
+else()
+  OCCT_CHECK_AND_UNSET ("USE_FFMPEG")
+
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_FFMPEG")
+  OCCT_CHECK_AND_UNSET ("INSTALL_FFMPEG")
+endif()
+
 # OpenGL ES 2.0
 if (WIN32 AND CAN_USE_GLES2)
   if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")

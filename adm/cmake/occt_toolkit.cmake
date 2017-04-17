@@ -316,6 +316,7 @@ if (BUILD_USE_PCH)
 
   # workaround for old gcc
   if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+    add_definitions("-D__STDC_CONSTANT_MACROS")
     add_definitions("-D__STDC_FORMAT_MACROS")
   endif()
 
