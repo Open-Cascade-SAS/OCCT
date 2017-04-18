@@ -193,7 +193,22 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_CSF_NAME LIBRARY_NAME
         endif()
       endif()
 
-      set (USED_3RDPARTY_${PRODUCT_NAME}_DIR "")
+      if (WIN32)
+        set (3RDPARTY_${PRODUCT_NAME}_DLL_DIRS "")
+      else()
+        set (3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIRS "")
+      endif()
+
+      foreach (LIBRARY_NAME ${${LIBRARY_CSF_NAME}})
+        string (REPLACE "." "" LIBRARY_NAME_SUFFIX "${LIBRARY_NAME}")
+        if (WIN32)
+          set (3RDPARTY_${PRODUCT_NAME}_DLL_DIRS "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR_${LIBRARY_NAME_SUFFIX}};${3RDPARTY_${PRODUCT_NAME}_DLL_DIRS}")
+        else()
+          set (3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIRS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR_${LIBRARY_NAME_SUFFIX}}:${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIRS}")
+        endif()
+      endforeach()
+
+      set (USED_3RDPARTY_${PRODUCT_NAME}_DIRS "")
 
       if (INSTALL_${PRODUCT_NAME})
         OCCT_MAKE_OS_WITH_BITNESS()
@@ -260,11 +275,14 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_CSF_NAME LIBRARY_NAME
         endif()
       else()
         # the library directory for using by the executable
-        if (WIN32)
-          set (USED_3RDPARTY_${PRODUCT_NAME}_DIR "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR_${LIBRARY_NAME_SUFFIX}}")
-        else()
-          set (USED_3RDPARTY_${PRODUCT_NAME}_DIR "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR_${LIBRARY_NAME_SUFFIX}}")
-        endif()
+      foreach (LIBRARY_NAME ${${LIBRARY_CSF_NAME}})
+        string (REPLACE "." "" LIBRARY_NAME_SUFFIX "${LIBRARY_NAME}")
+          if (WIN32)
+            set (USED_3RDPARTY_${PRODUCT_NAME}_DIRS "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR_${LIBRARY_NAME_SUFFIX}};${USED_3RDPARTY_${PRODUCT_NAME}_DIRS}")
+          else()
+            set (USED_3RDPARTY_${PRODUCT_NAME}_DIRS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR_${LIBRARY_NAME_SUFFIX}}:${USED_3RDPARTY_${PRODUCT_NAME}_DIRS}")
+          endif()
+        endforeach()
       endif()
 
       mark_as_advanced (3RDPARTY_${PRODUCT_NAME}_LIBRARY_${LIBRARY_NAME_SUFFIX} 3RDPARTY_${PRODUCT_NAME}_DLL_${LIBRARY_NAME_SUFFIX})
