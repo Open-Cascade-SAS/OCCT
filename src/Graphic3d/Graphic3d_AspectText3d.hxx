@@ -77,6 +77,9 @@ public:
   //! Modifies the color.
   void SetColor (const Quantity_Color& theColor) { myColor.SetRGB (theColor); }
 
+  //! Modifies the color.
+  void SetColor (const Quantity_ColorRGBA& theColor) { myColor = theColor; }
+
   //! Modifies the expansion factor (height/width ratio)
   //! If the factor is less than 1, the characters will
   //! be higher than they are wide.
@@ -143,6 +146,10 @@ public:
   //! Modifies the color of the subtitle for the TODT_SUBTITLE TextDisplayType
   //! and the color of background for the TODT_DEKALE TextDisplayType.
   void SetColorSubTitle (const Quantity_Color& theColor) { myColorSubTitle.SetRGB (theColor); }
+
+  //! Modifies the color of the subtitle for the TODT_SUBTITLE TextDisplayType
+  //! and the color of background for the TODT_DEKALE TextDisplayType.
+  void SetColorSubTitle (const Quantity_ColorRGBA& theColor) { myColorSubTitle = theColor; }
 
   //! Returns TRUE when the Text Zoomable is on.
   bool GetTextZoomable() const { return myTextZoomable; }

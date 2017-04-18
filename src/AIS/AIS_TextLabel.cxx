@@ -30,7 +30,6 @@
 
 #include <V3d_Viewer.hxx>
 
-
 IMPLEMENT_STANDARD_RTTIEXT(AIS_TextLabel,AIS_InteractiveObject)
 
 //=======================================================================
@@ -61,12 +60,20 @@ void AIS_TextLabel::SetColor (const Quantity_Color& theColor)
 }
 
 //=======================================================================
-//function : SetColor
+//function : SetTransparency
 //purpose  :
 //=======================================================================
-void AIS_TextLabel::SetColor (const Quantity_NameOfColor theColor)
+void AIS_TextLabel::SetTransparency (const Standard_Real theValue)
 {
-  SetColor (Quantity_Color (theColor));
+  Quantity_ColorRGBA aTextColor (myDrawer->TextAspect()->Aspect()->Color());
+  aTextColor.SetAlpha (Standard_ShortReal(1.0 - theValue));
+
+  Quantity_ColorRGBA aSubColor (myDrawer->TextAspect()->Aspect()->ColorSubTitle());
+  aSubColor.SetAlpha (aTextColor.Alpha());
+
+  myDrawer->TextAspect()->Aspect()->SetColor (aTextColor);
+  myDrawer->TextAspect()->Aspect()->SetColorSubTitle (aSubColor);
+  myDrawer->SetTransparency (Standard_ShortReal(theValue));
 }
 
 //=======================================================================
@@ -233,7 +240,6 @@ void AIS_TextLabel::SetColorSubTitle (const Quantity_Color& theColor)
   myDrawer->TextAspect()->Aspect()->SetColorSubTitle(theColor);
 }
 
-#include <Graphic3d_ArrayOfPoints.hxx>
 //=======================================================================
 //function : Compute
 //purpose  :
