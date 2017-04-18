@@ -287,32 +287,36 @@ TCollection_AsciiString OSD_Environment::Value()
   Standard_Mutex::Sentry aLock (THE_ENV_LOCK);
   THE_ENV_MAP.Find (myName, myValue);
 #else
+
+  // msvc C-runtime (_wputenv()) puts variable using WinAPI internally (calls SetEnvironmentVariableW())
+  // and also caches its value in its own map,
+  // so that _wgetenv() ignores WinAPI and retieves variable from this cache.
+  //
+  // Using _wgetenv() might lead to awkward results in context when several C-runtimes are used
+  // at once within application or WinAPI is used directly for setting environment variable.
+  //
+  // Using _wputenv() + GetEnvironmentVariableW() pair should provide most robust behavior in tricky scenarios.
+  // So that  _wgetenv() users will retrieve proper value set by OSD_Environment if used C-runtime library is the same as used by OCCT,
+  // and OSD_Environment will retreieve most up-to-date value of environment variable nevertheless C-runtime version used (or not used at all) for setting value externally,
+  // considering msvc C-runtime implementation details.
   SetLastError (ERROR_SUCCESS);
-  wchar_t* anEnvVal = NULL;
   NCollection_UtfWideString aNameWide (myName.ToCString());
   DWORD aSize = GetEnvironmentVariableW (aNameWide.ToCString(), NULL, 0);
-  if ((aSize == 0 && GetLastError() != ERROR_SUCCESS)
-   || (anEnvVal = _wgetenv (aNameWide.ToCString())) == NULL)
+  if (aSize == 0 && GetLastError() != ERROR_SUCCESS)
   {
     _set_error (myError, ERROR_ENVVAR_NOT_FOUND);
     return myValue;
   }
 
   NCollection_Utf8String aValue;
-  if (anEnvVal != NULL)
-  {
-    aValue.FromUnicode (anEnvVal);
-  }
-  else
-  {
-    aSize += 1; // NULL-terminator
-    wchar_t* aBuff = new wchar_t[aSize];
-    GetEnvironmentVariableW (aNameWide.ToCString(), aBuff, aSize);
-    aBuff[aSize - 1] = L'\0';
-    aValue.FromUnicode (aBuff);
-    delete[] aBuff;
-    Reset();
-  }
+  aSize += 1; // NULL-terminator
+  wchar_t* aBuff = new wchar_t[aSize];
+  GetEnvironmentVariableW (aNameWide.ToCString(), aBuff, aSize);
+  aBuff[aSize - 1] = L'\0';
+  aValue.FromUnicode (aBuff);
+  delete[] aBuff;
+  Reset();
+
   myValue = aValue.ToCString();
 #endif
   return myValue;
