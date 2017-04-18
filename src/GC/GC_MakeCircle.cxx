@@ -104,6 +104,7 @@ GC_MakeCircle::GC_MakeCircle(const gp_Ax1& Axis   ,
 
 const Handle(Geom_Circle)& GC_MakeCircle::Value() const
 { 
-  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
+  StdFail_NotDone_Raise_if (TheError != gce_Done,
+                            "GC_MakeCircle::Value() - no result");
   return TheCircle;
 }

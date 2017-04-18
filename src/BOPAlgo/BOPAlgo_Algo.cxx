@@ -173,7 +173,7 @@ void BOPAlgo_Algo::UserBreak() const
     return;
   }
   if (myProgressIndicator->UserBreak()) {
-    throw Standard_NotImplemented("");
+    throw Standard_NotImplemented ("BOPAlgo_Algo::UserBreak(), method is not implemented");
   }
 } 
 //  myErrorStatus

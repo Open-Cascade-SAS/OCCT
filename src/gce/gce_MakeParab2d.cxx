@@ -73,7 +73,8 @@ gce_MakeParab2d::gce_MakeParab2d(const gp_Pnt2d&        S      ,
 
 const gp_Parab2d& gce_MakeParab2d::Value () const
 {
-  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
+  StdFail_NotDone_Raise_if (TheError != gce_Done,
+                            "gce_MakeParab2d::Value() - no result");
   return TheParab2d;
 }
 

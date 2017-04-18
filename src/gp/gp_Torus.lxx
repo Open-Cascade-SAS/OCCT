@@ -24,8 +24,8 @@ inline gp_Torus::gp_Torus (const gp_Ax3& A3,
 			   majorRadius (MajorRadius),
 			   minorRadius (MinorRadius)
 {
-  Standard_ConstructionError_Raise_if
-    (MinorRadius < 0.0 || MajorRadius < 0.0,"");
+  Standard_ConstructionError_Raise_if (MinorRadius < 0.0 || MajorRadius < 0.0,
+                                       "gp_Torus() - invalid construction parameters");
 }
 
 inline void gp_Torus::SetAxis (const gp_Ax1& A1)
@@ -36,15 +36,15 @@ inline void gp_Torus::SetLocation (const gp_Pnt& Loc)
 
 inline void gp_Torus::SetMajorRadius (const Standard_Real MajorRadius)
 {
-  Standard_ConstructionError_Raise_if
-    (MajorRadius - minorRadius <= gp::Resolution(),"");
+  Standard_ConstructionError_Raise_if (MajorRadius - minorRadius <= gp::Resolution(),
+                                       "gp_Torus::SetMajorRadius() - invalid input parameters");
   majorRadius = MajorRadius;
 }
 
 inline void gp_Torus::SetMinorRadius (const Standard_Real MinorRadius)
 {
-  Standard_ConstructionError_Raise_if
-    (MinorRadius < 0.0 || majorRadius - MinorRadius <= gp::Resolution(),"");
+  Standard_ConstructionError_Raise_if (MinorRadius < 0.0 || majorRadius - MinorRadius <= gp::Resolution(),
+                                       "gp_Torus::SetMinorRadius() - invalid input parameters");
   minorRadius = MinorRadius;
 }
 

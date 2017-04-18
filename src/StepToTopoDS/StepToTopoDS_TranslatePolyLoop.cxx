@@ -182,7 +182,7 @@ void StepToTopoDS_TranslatePolyLoop::Init(const Handle(StepShape_PolyLoop)& PL, 
 
 const TopoDS_Shape& StepToTopoDS_TranslatePolyLoop::Value() const 
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "StepToTopoDS_TranslatePolyLoop::Value() - no result");
   return myResult;
 }
 

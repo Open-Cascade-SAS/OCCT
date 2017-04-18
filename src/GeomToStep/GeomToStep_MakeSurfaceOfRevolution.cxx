@@ -56,6 +56,6 @@ GeomToStep_MakeSurfaceOfRevolution::GeomToStep_MakeSurfaceOfRevolution
 const Handle(StepGeom_SurfaceOfRevolution) &
       GeomToStep_MakeSurfaceOfRevolution::Value() const
 {
-  StdFail_NotDone_Raise_if(!done, "");
+  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakeSurfaceOfRevolution::Value() - no result");
   return theSurfaceOfRevolution;
 }

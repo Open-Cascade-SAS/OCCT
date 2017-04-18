@@ -65,6 +65,7 @@ GC_MakeSegment::GC_MakeSegment(const gp_Lin& Line  ,
 
 const Handle(Geom_TrimmedCurve)& GC_MakeSegment::Value() const
 { 
-  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
+  StdFail_NotDone_Raise_if (TheError != gce_Done,
+                            "GC_MakeSegment::Value() - no result");
   return TheSegment;
 }

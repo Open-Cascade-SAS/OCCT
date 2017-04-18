@@ -204,7 +204,7 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape& aShape,
 const Handle(StepShape_TopologicalRepresentationItem)& 
 TopoDSToStep_Builder::Value() const 
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "TopoDSToStep_Builder::Value() - no result");
   return myResult;
 }
 

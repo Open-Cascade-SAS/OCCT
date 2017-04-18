@@ -84,7 +84,7 @@ GeomToStep_MakeLine::GeomToStep_MakeLine ( const Handle(Geom2d_Line)& Gline)
 const Handle(StepGeom_Line) &
       GeomToStep_MakeLine::Value() const
 {
-  StdFail_NotDone_Raise_if(!done, "");
+  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakeLine::Value() - no result");
   return theLine;
 }
 

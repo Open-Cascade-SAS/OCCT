@@ -88,7 +88,7 @@ void TCollection_Sequence::Prepend(const SeqItem& T)
 void TCollection_Sequence::InsertAfter(const Standard_Integer Index, 
 				       const SeqItem& T)
 {
-   Standard_OutOfRange_Raise_if ( Index < 0 || Index > Size, "");
+   Standard_OutOfRange_Raise_if (Index < 0 || Index > Size, "TCollection_Sequence::InsertAfter() - index is out of range");
    TCollection_SequenceNode* newnode = new TCollection_SequenceNode(T,(TCollection_SeqNode*)0L,(TCollection_SeqNode*)0L);
    PInsertAfter (Index,(void*)newnode);
 }
@@ -99,7 +99,7 @@ void TCollection_Sequence::InsertAfter(const Standard_Integer Index,
 // ----------------------------------------------------
 const SeqItem& TCollection_Sequence::First() const 
 {
-   Standard_NoSuchObject_Raise_if(Size == 0,"");
+   Standard_NoSuchObject_Raise_if (Size == 0, "TCollection_Sequence::First() - sequence is empty");
    return ((TCollection_SequenceNode*) FirstItem)->Value();
 }
 
@@ -109,7 +109,7 @@ const SeqItem& TCollection_Sequence::First() const
 // ----------------------------------------------------
 const SeqItem& TCollection_Sequence::Last() const 
 {
-   Standard_NoSuchObject_Raise_if(Size == 0,"");
+   Standard_NoSuchObject_Raise_if (Size == 0, "TCollection_Sequence::Last() - sequence is empty");
    return ((TCollection_SequenceNode*) LastItem)->Value();
 }
 
@@ -118,7 +118,7 @@ const SeqItem& TCollection_Sequence::Last() const
 // -----------------------------------------
 const SeqItem& TCollection_Sequence::Value(const Standard_Integer Index) const
 {
-   Standard_OutOfRange_Raise_if(Index <= 0 || Index > Size,"");
+   Standard_OutOfRange_Raise_if (Index <= 0 || Index > Size, "TCollection_Sequence::Value() - index is out of range");
    TCollection_Sequence* const aLocalTHIS = (TCollection_Sequence* const) this;
    aLocalTHIS->CurrentItem  =  (TCollection_SequenceNode*) Find(Index);
    aLocalTHIS->CurrentIndex = Index;
@@ -130,7 +130,7 @@ const SeqItem& TCollection_Sequence::Value(const Standard_Integer Index) const
 // -------------------------------------------------------
 SeqItem & TCollection_Sequence::ChangeValue(const Standard_Integer Index)  
 {
-   Standard_OutOfRange_Raise_if(Index <= 0 || Index > Size,"");
+   Standard_OutOfRange_Raise_if (Index <= 0 || Index > Size, "TCollection_Sequence::ChangeValue() - index is out of range");
 
    CurrentItem =  (TCollection_SequenceNode*) Find(Index);
    CurrentIndex = Index;

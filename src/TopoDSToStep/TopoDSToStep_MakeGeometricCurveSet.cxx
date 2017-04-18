@@ -72,7 +72,7 @@ TopoDSToStep_MakeGeometricCurveSet::TopoDSToStep_MakeGeometricCurveSet(
 
 const Handle(StepShape_GeometricCurveSet)& TopoDSToStep_MakeGeometricCurveSet::Value() const 
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "TopoDSToStep_MakeGeometricCurveSet::Value() - no result");
   return theGeometricCurveSet;
 }
 

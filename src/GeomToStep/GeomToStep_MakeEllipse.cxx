@@ -85,6 +85,6 @@ GeomToStep_MakeEllipse::GeomToStep_MakeEllipse( const Handle(Geom2d_Ellipse)& Ce
 const Handle(StepGeom_Ellipse) &
       GeomToStep_MakeEllipse::Value() const
 {
-  StdFail_NotDone_Raise_if(!done, "");
+  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakeEllipse::Value() - no result");
   return theEllipse;
 }

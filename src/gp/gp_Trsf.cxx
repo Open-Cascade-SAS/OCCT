@@ -405,16 +405,14 @@ void gp_Trsf::Invert()
   else if (shape == gp_Scale) {
     Standard_Real As = scale;
     if (As < 0) As = - As;
-    Standard_ConstructionError_Raise_if
-      (As <= gp::Resolution(),"");
+    Standard_ConstructionError_Raise_if (As <= gp::Resolution(), "gp_Trsf::Invert() - transformation has zero scale");
     scale = 1.0 / scale;
     loc.Multiply (-scale);
   }
   else {
     Standard_Real As = scale;
     if (As < 0) As = - As;
-    Standard_ConstructionError_Raise_if
-      (As <= gp::Resolution(),"");
+    Standard_ConstructionError_Raise_if (As <= gp::Resolution(), "gp_Trsf::Invert() - transformation has zero scale");
     scale = 1.0 / scale;
     matrix.Transpose ();
     loc.Multiply (matrix);

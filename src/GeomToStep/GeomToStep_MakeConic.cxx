@@ -115,6 +115,6 @@ GeomToStep_MakeConic::GeomToStep_MakeConic ( const Handle(Geom2d_Conic)& C)
 const Handle(StepGeom_Conic) &
       GeomToStep_MakeConic::Value() const
 {
-  StdFail_NotDone_Raise_if(!done, "");
+  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakeConic::Value() - no result");
   return theConic;
 }

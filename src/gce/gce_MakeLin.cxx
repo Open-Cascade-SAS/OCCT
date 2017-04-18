@@ -73,7 +73,8 @@ gce_MakeLin::gce_MakeLin(const gp_Lin& Lin ,
 
 const gp_Lin& gce_MakeLin::Value() const
 { 
-  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
+  StdFail_NotDone_Raise_if (TheError != gce_Done,
+                            "gce_MakeLin::Value() - no result");
   return TheLin;
 }
 

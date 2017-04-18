@@ -114,6 +114,7 @@ GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Circ2d&       Circ   ,
 
 const Handle(Geom2d_TrimmedCurve)& GCE2d_MakeArcOfCircle::Value() const
 { 
-  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
+  StdFail_NotDone_Raise_if (TheError != gce_Done,
+                            "GCE2d_MakeArcOfCircle::Value() - no result");
   return TheArc;
 }

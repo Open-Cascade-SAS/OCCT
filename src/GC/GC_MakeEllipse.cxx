@@ -53,6 +53,7 @@ GC_MakeEllipse::GC_MakeEllipse(const gp_Pnt& S1     ,
 
 const Handle(Geom_Ellipse)& GC_MakeEllipse::Value() const
 { 
-  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
+  StdFail_NotDone_Raise_if (TheError != gce_Done,
+                            "GC_MakeEllipse::Value() - no result");
   return TheEllipse;
 }

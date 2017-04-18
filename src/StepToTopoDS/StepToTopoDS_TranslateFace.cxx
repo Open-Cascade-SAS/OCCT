@@ -378,7 +378,7 @@ void StepToTopoDS_TranslateFace::Init
 
 const TopoDS_Shape& StepToTopoDS_TranslateFace::Value() const 
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "StepToTopoDS_TranslateFace::Value() - no result");
   return myResult;
 }
 

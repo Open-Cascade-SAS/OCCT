@@ -21,7 +21,7 @@ inline gp_Circ2d::gp_Circ2d (const gp_Ax2d& XAxis,
 			     const Standard_Real Radius,
 			     const Standard_Boolean Sense) : radius(Radius)
 {
-  Standard_ConstructionError_Raise_if(Radius < 0.0,"");
+  Standard_ConstructionError_Raise_if (Radius < 0.0, "gp_Circ2d() - radius should be positive number");
   pos = gp_Ax22d(XAxis,Sense);
 }
 
@@ -29,7 +29,9 @@ inline gp_Circ2d::gp_Circ2d (const gp_Ax22d&     Axis,
 			     const Standard_Real Radius) :
 			     pos(Axis),
 			     radius(Radius)
-{ Standard_ConstructionError_Raise_if(Radius < 0.0,""); }
+{
+  Standard_ConstructionError_Raise_if (Radius < 0.0, "gp_Circ2d() - radius should be positive number");
+}
 
 inline void gp_Circ2d::SetLocation (const gp_Pnt2d& P)
 { pos.SetLocation (P); }
@@ -45,7 +47,7 @@ inline void gp_Circ2d::SetYAxis (const gp_Ax2d& A)
 
 inline void gp_Circ2d::SetRadius (const Standard_Real Radius)
 { 
-  Standard_ConstructionError_Raise_if(Radius < 0.0,"");
+  Standard_ConstructionError_Raise_if (Radius < 0.0, "gp_Circ2d::SetRadius() - radius should be positive number");
   radius = Radius;
 }
 

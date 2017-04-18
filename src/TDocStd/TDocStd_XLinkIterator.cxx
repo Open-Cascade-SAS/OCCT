@@ -61,7 +61,7 @@ void TDocStd_XLinkIterator::Initialize(const Handle(TDocStd_Document)& DOC)
 
 void TDocStd_XLinkIterator::Next() 
 {
-  if (myValue == NULL) throw Standard_NoMoreObject("");
+  if (myValue == NULL) throw Standard_NoMoreObject ("TDocStd_XLinkIterator::Next() - no more values available");
   else                 myValue = myValue->Next();
 }
 

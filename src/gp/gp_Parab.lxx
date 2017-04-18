@@ -23,7 +23,9 @@ inline gp_Parab::gp_Parab (const gp_Ax2& A2,
 			   const Standard_Real Focal) :
 			   pos(A2),
 			   focalLength (Focal)
-{ Standard_ConstructionError_Raise_if(Focal < 0.0,""); }
+{
+  Standard_ConstructionError_Raise_if (Focal < 0.0, "gp_Parab() - focal length should be >= 0");
+}
 
 inline gp_Parab::gp_Parab (const gp_Ax1& D,
 			   const gp_Pnt& F)
@@ -45,7 +47,7 @@ inline void gp_Parab::SetAxis (const gp_Ax1& A1)
 
 inline void gp_Parab::SetFocal (const Standard_Real Focal)
 { 
-  Standard_ConstructionError_Raise_if(Focal < 0.0,"");
+  Standard_ConstructionError_Raise_if (Focal < 0.0, "gp_Parab::SetFocal() - focal length should be >= 0");
   focalLength = Focal;
 }
 

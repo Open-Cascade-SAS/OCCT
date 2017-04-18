@@ -47,7 +47,7 @@ gp_Mat2d::gp_Mat2d (const gp_XY& Col1, const gp_XY& Col2)
 void gp_Mat2d::SetCol (const Standard_Integer Col,
 		       const gp_XY& Value)
 {
-  Standard_OutOfRange_Raise_if (Col < 1 || Col > 2,"");
+  Standard_OutOfRange_Raise_if (Col < 1 || Col > 2, "gp_Mat2d::SetCol() - invalid index");
   const Standard_Address M = (Standard_Address)&(matrix[0][0]);
   if  (Col == 1) {
     M00 = Value.X();
@@ -69,7 +69,7 @@ void gp_Mat2d::SetCols (const gp_XY& Col1,
 
 void gp_Mat2d::SetRow (const Standard_Integer Row, const gp_XY& Value)
 {
-  Standard_OutOfRange_Raise_if (Row < 1 || Row > 2,"");
+  Standard_OutOfRange_Raise_if (Row < 1 || Row > 2, "gp_Mat2d::SetRow() - invalid index");
   const Standard_Address M = (Standard_Address)&(matrix[0][0]);
   if (Row == 1) {
     M00 = Value.X();
@@ -90,7 +90,7 @@ void gp_Mat2d::SetRows (const gp_XY& Row1, const gp_XY& Row2)
 
 gp_XY gp_Mat2d::Column (const Standard_Integer Col) const
 {
-  Standard_OutOfRange_Raise_if (Col < 1 || Col > 2,"");
+  Standard_OutOfRange_Raise_if (Col < 1 || Col > 2, "gp_Mat2d::Column() - invalid index");
   const Standard_Address M = (Standard_Address)&(matrix[0][0]);
   if (Col == 1) return gp_XY (M00,M10);
   return gp_XY (M01,M11);
@@ -104,7 +104,7 @@ gp_XY gp_Mat2d::Diagonal () const
 
 gp_XY gp_Mat2d::Row (const Standard_Integer Row) const
 {
-  Standard_OutOfRange_Raise_if (Row < 1 || Row > 2,"");
+  Standard_OutOfRange_Raise_if (Row < 1 || Row > 2, "gp_Mat2d::Row() - invalid index");
   const Standard_Address M = (Standard_Address)&(matrix[0][0]);
   if (Row == 1) return gp_XY (M00,M01);
   return gp_XY (M10,M11);
@@ -123,7 +123,7 @@ void gp_Mat2d::Invert ()
   det = N00 * N11 - N01 * N10 ;
   Standard_Real val = det;
   if (val < 0) val = - val;
-  Standard_ConstructionError_Raise_if (val <= gp::Resolution(),"");
+  Standard_ConstructionError_Raise_if (val <= gp::Resolution(), "gp_Mat2d::Invert() - matrix has zero determinant");
   det = 1.0 / det ;
   M00 = N00 * det ;
   M10 = N10 * det ;

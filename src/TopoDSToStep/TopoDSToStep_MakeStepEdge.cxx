@@ -283,7 +283,7 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge& aEdge,
 
 const Handle(StepShape_TopologicalRepresentationItem)& TopoDSToStep_MakeStepEdge::Value() const 
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "TopoDSToStep_MakeStepEdge::Value() - no result");
   return myResult;
 }
 

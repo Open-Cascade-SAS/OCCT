@@ -140,7 +140,8 @@ public:
 
   Standard_Real MaxStep(Standard_Integer theIndex)
   {
-    Standard_OutOfRange_Raise_if((theIndex < 0) || (theIndex > 3), "");
+    Standard_OutOfRange_Raise_if ((theIndex < 0) || (theIndex > 3),
+                                  "IntWalk_PWalking::MaxStep() - index is out of range");
     return pasInit[theIndex];
   }
 

@@ -134,6 +134,6 @@ TopoDSToStep_MakeFacetedBrep::
 const Handle(StepShape_FacetedBrep) &
       TopoDSToStep_MakeFacetedBrep::Value() const
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "TopoDSToStep_MakeFacetedBrep::Value() - no result");
   return theFacetedBrep;
 }

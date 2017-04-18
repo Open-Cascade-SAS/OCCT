@@ -365,8 +365,9 @@ void NCollection_BaseSequence::RemoveSeq
 void NCollection_BaseSequence::RemoveSeq (const Standard_Integer theIndex,
                                           NCollection_DelSeqNode fDel)
 {
-  Standard_OutOfRange_Raise_if (theIndex <= 0 || theIndex > mySize, "");
-  
+  Standard_OutOfRange_Raise_if (theIndex <= 0 || theIndex > mySize,
+                                "NCollection_BaseSequence::RemoveSeq() - index is out of range");
+
   NCollection_SeqNode * p = Find (theIndex);
   if (p->Previous())
     p->Previous()->SetNext (p->Next());
@@ -399,7 +400,8 @@ void NCollection_BaseSequence::RemoveSeq (const Standard_Integer From,
                                           const Standard_Integer To, 
                                           NCollection_DelSeqNode fDel)
 {
-  Standard_OutOfRange_Raise_if (From <= 0 || To > mySize || From > To, "");
+  Standard_OutOfRange_Raise_if (From <= 0 || To > mySize || From > To,
+                                "NCollection_BaseSequence::RemoveSeq() - invalid input range");
 
   NCollection_SeqNode * pfrom = Find(From);
   NCollection_SeqNode * pto   = Find(To);

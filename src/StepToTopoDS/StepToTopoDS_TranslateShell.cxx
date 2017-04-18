@@ -123,7 +123,7 @@ void StepToTopoDS_TranslateShell::Init
 
 const TopoDS_Shape& StepToTopoDS_TranslateShell::Value() const 
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "StepToTopoDS_TranslateShell::Value() - no result");
   return myResult;
 }
 

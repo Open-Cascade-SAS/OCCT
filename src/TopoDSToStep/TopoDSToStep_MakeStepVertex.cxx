@@ -109,7 +109,7 @@ void TopoDSToStep_MakeStepVertex::Init(const TopoDS_Vertex& aVertex,
 
 const Handle(StepShape_TopologicalRepresentationItem)& TopoDSToStep_MakeStepVertex::Value() const 
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "TopoDSToStep_MakeStepVertex::Value() - no result");
   return myResult;
 }
 

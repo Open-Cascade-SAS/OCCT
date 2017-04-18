@@ -148,6 +148,6 @@ GeomToStep_MakeBSplineSurfaceWithKnots::
 const Handle(StepGeom_BSplineSurfaceWithKnots) &
       GeomToStep_MakeBSplineSurfaceWithKnots::Value() const
 {
-  StdFail_NotDone_Raise_if(!done, "");
+  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakeBSplineSurfaceWithKnots::Value() - no result");
   return theBSplineSurfaceWithKnots;
 }

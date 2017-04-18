@@ -90,6 +90,6 @@ GeomToStep_MakeBoundedSurface::GeomToStep_MakeBoundedSurface
 const Handle(StepGeom_BoundedSurface) &
       GeomToStep_MakeBoundedSurface::Value() const
 {
-  StdFail_NotDone_Raise_if(!done, "");
+  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakeBoundedSurface::Value() - no result");
   return theBoundedSurface;
 }

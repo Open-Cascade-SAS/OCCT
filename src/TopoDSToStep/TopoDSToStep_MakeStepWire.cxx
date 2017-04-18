@@ -331,7 +331,7 @@ void TopoDSToStep_MakeStepWire::Init(const TopoDS_Wire& aWire,
 
 const Handle(StepShape_TopologicalRepresentationItem)& TopoDSToStep_MakeStepWire::Value() const 
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "TopoDSToStep_MakeStepWire::Value() - no result");
   return myResult;
 }
 

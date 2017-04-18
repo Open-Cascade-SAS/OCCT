@@ -341,7 +341,8 @@ gce_MakeCirc::gce_MakeCirc(const gp_Circ& Circ ,
 //=======================================================================
 const gp_Circ& gce_MakeCirc::Value() const
 { 
-  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
+  StdFail_NotDone_Raise_if (TheError != gce_Done,
+                            "gce_MakeCirc::Value() - no result");
   return TheCirc;
 }
 //=======================================================================

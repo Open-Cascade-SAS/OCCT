@@ -21,7 +21,9 @@ inline gp_Cylinder::gp_Cylinder (const gp_Ax3& A3,
 				 const Standard_Real Radius) :
 				 pos(A3),
 				 radius (Radius)
-{ Standard_ConstructionError_Raise_if (Radius < 0.0,""); }
+{
+  Standard_ConstructionError_Raise_if (Radius < 0.0, "gp_Cylinder() - radius should be positive number");
+}
 
 inline void gp_Cylinder::SetAxis (const gp_Ax1& A1)
 { pos.SetAxis (A1); }
@@ -34,7 +36,7 @@ inline void gp_Cylinder::SetPosition (const gp_Ax3& A3)
 
 inline void gp_Cylinder::SetRadius (const Standard_Real R)
 {
-  Standard_ConstructionError_Raise_if (R < 0.0,"");
+  Standard_ConstructionError_Raise_if (R < 0.0, "gp_Cylinder::SetRadius() - radius should be positive number");
   radius = R;
 }
 

@@ -21,7 +21,7 @@ inline gp_Parab2d::gp_Parab2d(const gp_Ax22d& theMirrorAxis,
         pos (theMirrorAxis),
         focalLength (theFocalLength)
 {
-  Standard_ConstructionError_Raise_if(theFocalLength < 0.0,"");
+  Standard_ConstructionError_Raise_if (theFocalLength < 0.0, "gp_Parab2d() - focal length should be >= 0");
 }
 
 inline gp_Parab2d::gp_Parab2d(const gp_Ax2d& theMirrorAxis, 
@@ -30,12 +30,12 @@ inline gp_Parab2d::gp_Parab2d(const gp_Ax2d& theMirrorAxis,
         focalLength (theFocalLength) 
 {
   pos = gp_Ax22d(theMirrorAxis,theSense);
-  Standard_ConstructionError_Raise_if(theFocalLength < 0.0,"");
+  Standard_ConstructionError_Raise_if (theFocalLength < 0.0, "gp_Parab2d() - focal length should be >= 0");
 }
 
 inline void gp_Parab2d::SetFocal (const Standard_Real Focal)
 { 
-  Standard_ConstructionError_Raise_if(Focal < 0.0,"");
+  Standard_ConstructionError_Raise_if (Focal < 0.0, "gp_Parab2d::SetFocal() - focal length should be >= 0");
   focalLength = Focal;
 }
 

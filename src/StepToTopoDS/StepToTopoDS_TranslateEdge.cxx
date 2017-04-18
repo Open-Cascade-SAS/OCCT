@@ -509,7 +509,7 @@ Handle(Geom2d_Curve)  StepToTopoDS_TranslateEdge::MakePCurve
 
 const TopoDS_Shape& StepToTopoDS_TranslateEdge::Value() const 
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "StepToTopoDS_TranslateEdge::Value() - no result");
   return myResult;
 }
 

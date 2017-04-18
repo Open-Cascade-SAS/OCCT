@@ -27,7 +27,7 @@ math_Vector::math_Vector(const Standard_Integer theLower, const Standard_Integer
   UpperIndex(theUpper),
   Array(theLower,theUpper)
 {
-  Standard_RangeError_Raise_if(theLower > theUpper, "");
+  Standard_RangeError_Raise_if (theLower > theUpper, "math_Vector() - invalid dimensions");
 }
 
 math_Vector::math_Vector(const Standard_Integer theLower,
@@ -37,7 +37,7 @@ math_Vector::math_Vector(const Standard_Integer theLower,
   UpperIndex(theUpper),
   Array(theLower,theUpper)
 {
-  Standard_RangeError_Raise_if(theLower > theUpper, "");
+  Standard_RangeError_Raise_if (theLower > theUpper, "math_Vector() - invalid dimensions");
   Array.Init(theInitialValue);
 }
 
@@ -48,7 +48,7 @@ math_Vector::math_Vector(const Standard_Address theTab,
   UpperIndex(theUpper),
   Array(theTab, theLower,theUpper)
 {
-  Standard_RangeError_Raise_if((theLower > theUpper) , "");
+  Standard_RangeError_Raise_if ((theLower > theUpper), "math_Vector() - invalid dimensions");
 }
 
 math_Vector::math_Vector(const gp_XY& theOther):
@@ -147,8 +147,9 @@ void math_Vector::Set(const Standard_Integer theI1,
                       const Standard_Integer theI2,
                       const math_Vector &theV)
 {
-  Standard_RangeError_Raise_if((theI1 < LowerIndex) || (theI2 > UpperIndex) ||
-    (theI1 > theI2) || (theI2 - theI1 + 1 != theV.Length()), "");
+  Standard_RangeError_Raise_if ((theI1 < LowerIndex) || (theI2 > UpperIndex)
+                             || (theI1 > theI2) || (theI2 - theI1 + 1 != theV.Length()),
+                                "math_Vector::Set() - invalid indices");
 
   Standard_Integer I = theV.Lower();
   for(Standard_Integer Index = theI1; Index <= theI2; Index++)
@@ -161,7 +162,8 @@ void math_Vector::Set(const Standard_Integer theI1,
 void math_Vector::Normalize()
 {
   Standard_Real Result = Norm();
-  Standard_NullValue_Raise_if((Result <= RealEpsilon()), "");
+  Standard_NullValue_Raise_if ((Result <= RealEpsilon()),
+                                "math_Vector::Normalize() - vector has zero norm");
   for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
   {
     Array(Index) = Array(Index) / Result;
@@ -228,7 +230,8 @@ void math_Vector::Multiply(const Standard_Real theRight)
 
 void math_Vector::Divide(const Standard_Real theRight)
 {
-  Standard_DivideByZero_Raise_if(Abs(theRight) <= RealEpsilon(), "");
+  Standard_DivideByZero_Raise_if (Abs(theRight) <= RealEpsilon(),
+                                  "math_Vector::Divide() - devisor is zero");
 
   for(Standard_Integer Index =LowerIndex; Index <=UpperIndex; Index++)
   {
@@ -238,14 +241,16 @@ void math_Vector::Divide(const Standard_Real theRight)
 
 math_Vector math_Vector::Divided (const Standard_Real theRight) const
 {
-  Standard_DivideByZero_Raise_if(Abs(theRight) <= RealEpsilon(), "");
+  Standard_DivideByZero_Raise_if (Abs(theRight) <= RealEpsilon(),
+                                  "math_Vector::Divided() - devisor is zero");
   math_Vector temp = Multiplied(1./theRight);
   return temp;
 }
 
 void math_Vector::Add(const math_Vector& theRight)
 {
-  Standard_DimensionError_Raise_if(Length() != theRight.Length(), "");
+  Standard_DimensionError_Raise_if (Length() != theRight.Length(),
+                                    "math_Vector::Add() - input vector has wrong dimensions");
 
   Standard_Integer I = theRight.LowerIndex;
   for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
@@ -257,7 +262,8 @@ void math_Vector::Add(const math_Vector& theRight)
 
 math_Vector math_Vector::Added(const math_Vector& theRight) const
 {
-  Standard_DimensionError_Raise_if(Length() != theRight.Length(), "");
+  Standard_DimensionError_Raise_if (Length() != theRight.Length(),
+                                    "math_Vector::Added() - input vector has wrong dimensions");
 
   math_Vector Result(LowerIndex, UpperIndex);
 
@@ -272,7 +278,8 @@ math_Vector math_Vector::Added(const math_Vector& theRight) const
 
 void math_Vector::Subtract(const math_Vector& theRight)
 {
-  Standard_DimensionError_Raise_if(Length() != theRight.Length(), "");
+  Standard_DimensionError_Raise_if (Length() != theRight.Length(),
+                                    "math_Vector::Subtract() - input vector has wrong dimensions");
 
   Standard_Integer I = theRight.LowerIndex;
   for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
@@ -284,7 +291,8 @@ void math_Vector::Subtract(const math_Vector& theRight)
 
 math_Vector math_Vector::Subtracted (const math_Vector& theRight) const
 {
-  Standard_DimensionError_Raise_if(Length() != theRight.Length(), "");
+  Standard_DimensionError_Raise_if (Length() != theRight.Length(),
+                                    "math_Vector::Subtracted() - input vector has wrong dimensions");
 
   math_Vector Result(LowerIndex, UpperIndex);
 
@@ -299,7 +307,8 @@ math_Vector math_Vector::Subtracted (const math_Vector& theRight) const
 
 math_Vector math_Vector::Slice(const Standard_Integer theI1, const Standard_Integer theI2) const
 {
-  Standard_RangeError_Raise_if((theI1 < LowerIndex) || (theI1 > UpperIndex) || (theI2 < LowerIndex) || (theI2 > UpperIndex) , "");
+  Standard_RangeError_Raise_if ((theI1 < LowerIndex) || (theI1 > UpperIndex) || (theI2 < LowerIndex) || (theI2 > UpperIndex),
+                                "math_Vector::Slice() - invalid indices");
 
   if(theI2 >= theI1)
   {
@@ -323,7 +332,8 @@ math_Vector math_Vector::Slice(const Standard_Integer theI1, const Standard_Inte
 
 void math_Vector::Add (const math_Vector& theLeft, const math_Vector& theRight)
 {
-  Standard_DimensionError_Raise_if((Length() != theRight.Length()) || (theRight.Length() != theLeft.Length()), "");
+  Standard_DimensionError_Raise_if ((Length() != theRight.Length()) || (theRight.Length() != theLeft.Length()),
+                                    "math_Vector::Add() - input vectors have wrong dimensions");
 
   Standard_Integer I = theLeft.LowerIndex;
   Standard_Integer J = theRight.LowerIndex;
@@ -337,7 +347,8 @@ void math_Vector::Add (const math_Vector& theLeft, const math_Vector& theRight)
 
 void math_Vector::Subtract (const math_Vector& theLeft, const math_Vector& theRight)
 {
-  Standard_DimensionError_Raise_if((Length() != theRight.Length()) || (theRight.Length() != theLeft.Length()), "");
+  Standard_DimensionError_Raise_if ((Length() != theRight.Length()) || (theRight.Length() != theLeft.Length()),
+                                     "math_Vector::Subtract() - input vectors have wrong dimensions");
 
   Standard_Integer I = theLeft.LowerIndex;
   Standard_Integer J = theRight.LowerIndex;
@@ -351,8 +362,9 @@ void math_Vector::Subtract (const math_Vector& theLeft, const math_Vector& theRi
 
 void math_Vector::Multiply(const math_Matrix& theLeft, const math_Vector& theRight)
 {
-  Standard_DimensionError_Raise_if((Length() != theLeft.RowNumber()) ||
-    (theLeft.ColNumber() != theRight.Length()), "");
+  Standard_DimensionError_Raise_if ((Length() != theLeft.RowNumber())
+                                 || (theLeft.ColNumber() != theRight.Length()),
+                                    "math_Vector::Multiply() - input matrix and/or vector have wrong dimensions");
 
   Standard_Integer Index = LowerIndex;
   for(Standard_Integer I = theLeft.LowerRowIndex; I <= theLeft.UpperRowIndex; I++)
@@ -370,8 +382,9 @@ void math_Vector::Multiply(const math_Matrix& theLeft, const math_Vector& theRig
 
 void math_Vector::Multiply(const math_Vector& theLeft, const math_Matrix& theRight)
 {
-  Standard_DimensionError_Raise_if((Length() != theRight.ColNumber()) ||
-    (theLeft.Length() != theRight.RowNumber()), "");
+  Standard_DimensionError_Raise_if ((Length() != theRight.ColNumber())
+                                 || (theLeft.Length() != theRight.RowNumber()),
+                                    "math_Vector::Multiply() - input matrix and/or vector have wrong dimensions");
 
   Standard_Integer Index = LowerIndex;
   for(Standard_Integer J = theRight.LowerColIndex; J <= theRight.UpperColIndex; J++)
@@ -389,8 +402,9 @@ void math_Vector::Multiply(const math_Vector& theLeft, const math_Matrix& theRig
 
 void math_Vector::TMultiply(const math_Matrix& theTLeft, const math_Vector&  theRight)
 {
-  Standard_DimensionError_Raise_if((Length() != theTLeft.ColNumber()) ||
-    (theTLeft.RowNumber() != theRight.Length()), "");
+  Standard_DimensionError_Raise_if ((Length() != theTLeft.ColNumber())
+                                 || (theTLeft.RowNumber() != theRight.Length()),
+                                    "math_Vector::TMultiply() - input matrix and/or vector have wrong dimensions");
 
   Standard_Integer Index = LowerIndex;
   for(Standard_Integer I = theTLeft.LowerColIndex; I <= theTLeft.UpperColIndex; I++)
@@ -408,8 +422,9 @@ void math_Vector::TMultiply(const math_Matrix& theTLeft, const math_Vector&  the
 
 void math_Vector::TMultiply(const math_Vector&  theLeft, const math_Matrix& theTRight)
 {
-  Standard_DimensionError_Raise_if((Length() != theTRight.RowNumber()) ||
-    (theLeft.Length() != theTRight.ColNumber()), "");
+  Standard_DimensionError_Raise_if ((Length() != theTRight.RowNumber())
+                                 || (theLeft.Length() != theTRight.ColNumber()),
+                                    "math_Vector::TMultiply() - input matrix and/or vector have wrong dimensions");
 
   Standard_Integer Index = LowerIndex;
   for(Standard_Integer J = theTRight.LowerRowIndex; J <= theTRight.UpperRowIndex; J++)
@@ -430,7 +445,8 @@ Standard_Real math_Vector::Multiplied(const math_Vector& theRight) const
 {
   Standard_Real Result = 0;
 
-  Standard_DimensionError_Raise_if(Length() != theRight.Length(), "");
+  Standard_DimensionError_Raise_if (Length() != theRight.Length(),
+                                    "math_Vector::Multiplied() - input vector has wrong dimensions");
 
   Standard_Integer I = theRight.LowerIndex;
   for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
@@ -454,7 +470,8 @@ math_Vector math_Vector::Opposite()
 
 math_Vector math_Vector::Multiplied(const math_Matrix& theRight)const
 {
-  Standard_DimensionError_Raise_if(Length() != theRight.RowNumber(), "");
+  Standard_DimensionError_Raise_if (Length() != theRight.RowNumber(),
+                                    "math_Vector::Multiplied() - input matrix has wrong dimensions");
 
   math_Vector Result(theRight.LowerColIndex, theRight.UpperColIndex);
   for(Standard_Integer J2 = theRight.LowerColIndex; J2 <= theRight.UpperColIndex; J2++)
@@ -472,7 +489,8 @@ math_Vector math_Vector::Multiplied(const math_Matrix& theRight)const
 
 void math_Vector::Multiply(const Standard_Real theLeft, const math_Vector& theRight)
 {
-  Standard_DimensionError_Raise_if((Length() != theRight.Length()), "");
+  Standard_DimensionError_Raise_if ((Length() != theRight.Length()),
+                                    "math_Vector::Multiply() - input vector has wrong dimensions");
   for(Standard_Integer I = LowerIndex; I <= UpperIndex; I++)
   {
     Array(I) = theLeft * theRight.Array(I);
@@ -481,7 +499,8 @@ void math_Vector::Multiply(const Standard_Real theLeft, const math_Vector& theRi
 
 math_Vector& math_Vector::Initialized(const math_Vector& theOther)
 {
-  Standard_DimensionError_Raise_if(Length() != theOther.Length(), "");
+  Standard_DimensionError_Raise_if (Length() != theOther.Length(),
+                                    "math_Vector::Initialized() - input vector has wrong dimensions");
 
   (theOther.Array).Copy(Array);
   return *this;

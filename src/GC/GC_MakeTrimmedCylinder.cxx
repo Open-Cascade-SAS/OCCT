@@ -74,6 +74,7 @@ GC_MakeTrimmedCylinder::GC_MakeTrimmedCylinder(const gp_Ax1&       A1     ,
 const Handle(Geom_RectangularTrimmedSurface)& GC_MakeTrimmedCylinder::
        Value() const
 { 
-  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
+  StdFail_NotDone_Raise_if (TheError != gce_Done,
+                            "GC_MakeTrimmedCylinder::Value() - no result");
   return TheCyl;
 }

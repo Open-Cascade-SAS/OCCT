@@ -70,7 +70,7 @@ GeomToStep_MakePlane::GeomToStep_MakePlane( const Handle(Geom_Plane)& Gpln)
 const Handle(StepGeom_Plane) &
       GeomToStep_MakePlane::Value() const
 {
-  StdFail_NotDone_Raise_if(!done, "");
+  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakePlane::Value() - no result");
   return thePlane;
 }
 

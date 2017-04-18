@@ -29,8 +29,8 @@ inline gp_Elips2d::gp_Elips2d (const gp_Ax2d& MajorAxis,
 			       minorRadius(MinorRadius) 
 { 
   pos = gp_Ax22d(MajorAxis,Sense); 
-  Standard_ConstructionError_Raise_if
-    (MinorRadius < 0.0 || MajorRadius < MinorRadius,"");
+  Standard_ConstructionError_Raise_if (MinorRadius < 0.0 || MajorRadius < MinorRadius,
+                                       "gp_Elips2d() - invalid construction parameters");
 }
 
 inline gp_Elips2d::gp_Elips2d (const gp_Ax22d& A, 
@@ -40,8 +40,8 @@ inline gp_Elips2d::gp_Elips2d (const gp_Ax22d& A,
 			       majorRadius(MajorRadius), 
 			       minorRadius(MinorRadius) 
 { 
-  Standard_ConstructionError_Raise_if
-    (MinorRadius < 0.0 || MajorRadius < MinorRadius,"");
+  Standard_ConstructionError_Raise_if (MinorRadius < 0.0 || MajorRadius < MinorRadius,
+                                       "gp_Elips2d() - invalid construction parameters");
 }
 
 inline void gp_Elips2d::SetLocation (const gp_Pnt2d& P)
@@ -49,14 +49,15 @@ inline void gp_Elips2d::SetLocation (const gp_Pnt2d& P)
 
 inline void gp_Elips2d::SetMajorRadius (const Standard_Real MajorRadius)
 { 
-  Standard_ConstructionError_Raise_if(MajorRadius < minorRadius,"");
+  Standard_ConstructionError_Raise_if (MajorRadius < minorRadius,
+                                       "gp_Elips2d::SetMajorRadius() - major radius should be greater or equal to minor radius");
   majorRadius = MajorRadius;
 }
 
 inline void gp_Elips2d::SetMinorRadius (const Standard_Real MinorRadius)
 { 
-  Standard_ConstructionError_Raise_if
-    (MinorRadius < 0.0 || majorRadius < MinorRadius,"");
+  Standard_ConstructionError_Raise_if (MinorRadius < 0.0 || majorRadius < MinorRadius,
+                                       "gp_Elips2d::SetMinorRadius() - minor radius should be a positive number lesser or equal to major radius");
   minorRadius = MinorRadius;
 }
 
@@ -75,7 +76,7 @@ inline  Standard_Real gp_Elips2d::Area() const
 inline gp_Ax2d gp_Elips2d::Directrix1() const
 {
   Standard_Real E = Eccentricity();
-  Standard_ConstructionError_Raise_if (E <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (E <= gp::Resolution(), "gp_Elips2d::Directrix1() - zero eccentricity");
   gp_XY Orig = pos.XDirection().XY();
   Orig.Multiply (majorRadius/E);
   Orig.Add (pos.Location().XY());
@@ -85,7 +86,7 @@ inline gp_Ax2d gp_Elips2d::Directrix1() const
 inline gp_Ax2d gp_Elips2d::Directrix2() const
 {
   Standard_Real E = Eccentricity();
-  Standard_ConstructionError_Raise_if (E <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (E <= gp::Resolution(), "gp_Elips2d::Directrix2() - zero eccentricity");
   gp_XY Orig = pos.XDirection().XY();
   Orig.Multiply (-majorRadius/E);
   Orig.Add (pos.Location().XY());

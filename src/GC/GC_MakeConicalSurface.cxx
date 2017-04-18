@@ -84,6 +84,7 @@ GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Pnt&       P1 ,
 
 const Handle(Geom_ConicalSurface)& GC_MakeConicalSurface::Value() const
 { 
-  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
+  StdFail_NotDone_Raise_if (TheError != gce_Done,
+                            "GC_MakeConicalSurface::Value() - no result");
   return TheCone;
 }

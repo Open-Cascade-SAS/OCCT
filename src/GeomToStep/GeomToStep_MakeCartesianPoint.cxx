@@ -123,6 +123,6 @@ GeomToStep_MakeCartesianPoint::
 const Handle(StepGeom_CartesianPoint) &
       GeomToStep_MakeCartesianPoint::Value() const
 {
-  StdFail_NotDone_Raise_if(!done, "");
+  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakeCartesianPoint::Value() - no result");
   return theCartesianPoint;
 }

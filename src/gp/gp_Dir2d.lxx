@@ -30,7 +30,7 @@ inline gp_Dir2d::gp_Dir2d (const gp_Vec2d& V)
   Standard_Real X = XY.X();
   Standard_Real Y = XY.Y();
   Standard_Real D = sqrt(X * X + Y * Y);
-  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "gp_Dir2d() - input vector has zero norm");
   coord.SetX(X / D);
   coord.SetY(Y / D);
 }
@@ -40,7 +40,7 @@ inline gp_Dir2d::gp_Dir2d (const gp_XY& XY)
   Standard_Real X = XY.X();
   Standard_Real Y = XY.Y();
   Standard_Real D = sqrt(X * X + Y * Y);
-  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "gp_Dir2d() - input vector has zero norm");
   coord.SetX(X / D);
   coord.SetY(Y / D);
 }
@@ -49,7 +49,7 @@ inline gp_Dir2d::gp_Dir2d (const Standard_Real Xv,
 			   const Standard_Real Yv)
 {
   Standard_Real D = sqrt (Xv * Xv + Yv * Yv);
-  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "gp_Dir2d() - input vector has zero norm");
   coord.SetX(Xv / D);
   coord.SetY(Yv / D);
 }
@@ -59,11 +59,11 @@ inline void gp_Dir2d::SetCoord (const Standard_Integer Index,
 {
   Standard_Real X = coord.X();
   Standard_Real Y = coord.Y();
-  Standard_OutOfRange_Raise_if (Index < 1 || Index > 2, " ");
+  Standard_OutOfRange_Raise_if (Index < 1 || Index > 2, "gp_Dir2d::SetCoord() - index is out of range [1, 2]");
   if      (Index == 1) X = Xi;
   else                 Y = Xi;
   Standard_Real D = sqrt (X * X + Y * Y);
-  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "gp_Dir2d::SetCoord() - result vector has zero norm");
   coord.SetX(X / D);
   coord.SetY(Y / D);
 }
@@ -72,7 +72,7 @@ inline void gp_Dir2d::SetCoord (const Standard_Real Xv,
 				const Standard_Real Yv)
 {
   Standard_Real D = sqrt (Xv * Xv + Yv * Yv);
-  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "gp_Dir2d::SetCoord() - result vector has zero norm");
   coord.SetX(Xv / D);
   coord.SetY(Yv / D);
 }
@@ -81,7 +81,7 @@ inline void gp_Dir2d::SetX (const Standard_Real X)
 {
   Standard_Real Y = coord.Y();
   Standard_Real D = sqrt (X * X + Y * Y);
-  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "gp_Dir2d::SetX() - result vector has zero norm");
   coord.SetX(X / D);
   coord.SetY(Y / D);
 }
@@ -90,7 +90,7 @@ inline void gp_Dir2d::SetY (const Standard_Real Y)
 {
   Standard_Real X = coord.X();
   Standard_Real D = sqrt (X * X + Y * Y);
-  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "gp_Dir2d::SetY() - result vector has zero norm");
   coord.SetX(X / D);
   coord.SetY(Y / D);
 }
@@ -100,7 +100,7 @@ inline void gp_Dir2d::SetXY (const gp_XY& XY)
   Standard_Real X = XY.X();
   Standard_Real Y = XY.Y();
   Standard_Real D = sqrt(X * X + Y * Y);
-  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "gp_Dir2d::SetZ() - result vector has zero norm");
   coord.SetX(X / D);
   coord.SetY(Y / D);
 }

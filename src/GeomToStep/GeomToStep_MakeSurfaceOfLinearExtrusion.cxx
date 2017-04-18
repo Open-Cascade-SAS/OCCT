@@ -58,6 +58,6 @@ GeomToStep_MakeSurfaceOfLinearExtrusion::GeomToStep_MakeSurfaceOfLinearExtrusion
 const Handle(StepGeom_SurfaceOfLinearExtrusion) &
       GeomToStep_MakeSurfaceOfLinearExtrusion::Value() const
 {
-  StdFail_NotDone_Raise_if(!done, "");
+  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakeSurfaceOfLinearExtrusion::Value() - no result");
   return theSurfaceOfLinearExtrusion;
 }

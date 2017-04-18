@@ -111,6 +111,6 @@ TopoDSToStep_MakeManifoldSolidBrep::
 const Handle(StepShape_ManifoldSolidBrep) &
       TopoDSToStep_MakeManifoldSolidBrep::Value() const
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "TopoDSToStep_MakeManifoldSolidBrep::Value() - no result");
   return theManifoldSolidBrep;
 }

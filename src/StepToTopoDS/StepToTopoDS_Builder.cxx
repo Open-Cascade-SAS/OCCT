@@ -861,7 +861,7 @@ void StepToTopoDS_Builder::Init
 
 const TopoDS_Shape& StepToTopoDS_Builder::Value() const 
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "StepToTopoDS_Builder::Value() - no result");
   return myResult;
 }
 

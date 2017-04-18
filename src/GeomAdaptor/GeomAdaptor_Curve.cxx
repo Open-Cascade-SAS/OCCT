@@ -825,7 +825,8 @@ Standard_Real GeomAdaptor_Curve::Resolution(const Standard_Real R3D) const
 
 gp_Lin GeomAdaptor_Curve::Line() const 
 {
-  Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_Line, "");
+  Standard_NoSuchObject_Raise_if (myTypeCurve != GeomAbs_Line,
+                                  "GeomAdaptor_Curve::Line() - curve is not a Line");
   return Handle(Geom_Line)::DownCast (myCurve)->Lin();  
 }
 
@@ -836,7 +837,8 @@ gp_Lin GeomAdaptor_Curve::Line() const
 
 gp_Circ  GeomAdaptor_Curve::Circle() const 
 {
-  Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_Circle, "");
+  Standard_NoSuchObject_Raise_if (myTypeCurve != GeomAbs_Circle,
+                                  "GeomAdaptor_Curve::Circle() - curve is not a Circle");
   return Handle(Geom_Circle)::DownCast (myCurve)->Circ();
 }
 
@@ -847,7 +849,8 @@ gp_Circ  GeomAdaptor_Curve::Circle() const
 
 gp_Elips GeomAdaptor_Curve::Ellipse() const 
 {
-  Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_Ellipse, "");
+  Standard_NoSuchObject_Raise_if (myTypeCurve != GeomAbs_Ellipse,
+                                  "GeomAdaptor_Curve::Ellipse() - curve is not an Ellipse");
   return Handle(Geom_Ellipse)::DownCast (myCurve)->Elips();
 }
 
@@ -858,7 +861,8 @@ gp_Elips GeomAdaptor_Curve::Ellipse() const
 
 gp_Hypr GeomAdaptor_Curve::Hyperbola() const 
 {
-  Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_Hyperbola, "");
+  Standard_NoSuchObject_Raise_if (myTypeCurve != GeomAbs_Hyperbola,
+                                  "GeomAdaptor_Curve::Hyperbola() - curve is not a Hyperbola");
   return Handle(Geom_Hyperbola)::DownCast (myCurve)->Hypr();  
 }
 
@@ -869,7 +873,8 @@ gp_Hypr GeomAdaptor_Curve::Hyperbola() const
 
 gp_Parab GeomAdaptor_Curve::Parabola() const 
 {
-  Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_Parabola, "");
+  Standard_NoSuchObject_Raise_if (myTypeCurve != GeomAbs_Parabola,
+                                  "GeomAdaptor_Curve::Parabola() - curve is not a Parabola");
   return Handle(Geom_Parabola)::DownCast (myCurve)->Parab();
 }
 

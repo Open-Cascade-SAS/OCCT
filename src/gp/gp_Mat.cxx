@@ -165,7 +165,7 @@ void gp_Mat::SetRows (const gp_XYZ& Row1,
 
 gp_XYZ gp_Mat::Column (const Standard_Integer Col) const
 {
-  Standard_OutOfRange_Raise_if (Col < 1 || Col > 3, "");
+  Standard_OutOfRange_Raise_if (Col < 1 || Col > 3, "gp_Mat::Column() - wrong index");
   const Standard_Address M = (Standard_Address)&(matrix[0][0]);
   if (Col == 1) return gp_XYZ (M00,M10,M20);
   if (Col == 2) return gp_XYZ (M01,M11,M21);
@@ -180,7 +180,7 @@ gp_XYZ gp_Mat::Diagonal () const
 
 gp_XYZ gp_Mat::Row (const Standard_Integer Row) const
 {
-  Standard_OutOfRange_Raise_if (Row < 1 || Row > 3, "");
+  Standard_OutOfRange_Raise_if (Row < 1 || Row > 3, "gp_Mat::Row() - wrong index");
   const Standard_Address M = (Standard_Address)&(matrix[0][0]);
   if (Row == 1) return gp_XYZ (M00,M01,M02);
   if (Row == 2) return gp_XYZ (M10,M11,M12);
@@ -208,8 +208,7 @@ void gp_Mat::Invert ()
   Standard_Real det =  M00 * N00 + M01* N10 + M02 * N20 ;
   Standard_Real val = det;
   if (val < 0) val = - val;
-  Standard_ConstructionError_Raise_if
-    (val <= gp::Resolution(),"");
+  Standard_ConstructionError_Raise_if (val <= gp::Resolution(), "gp_Mat::Invert() - matrix has zero determinant");
   det = 1.0e0 / det ;
   M00 = N00;
   M10 = N10;
@@ -243,8 +242,7 @@ gp_Mat gp_Mat::Inverted () const
   Standard_Real det =  M00 * N00 + M01* N10 + M02 * N20 ;
   Standard_Real val = det;
   if (val < 0) val = - val;
-  Standard_ConstructionError_Raise_if
-    (val <= gp::Resolution(),"");
+  Standard_ConstructionError_Raise_if (val <= gp::Resolution(), "gp_Mat::Inverted() - matrix has zero determinant");
   det = 1.0e0 / det ;
   NewMat.Multiply(det) ;
   return NewMat;

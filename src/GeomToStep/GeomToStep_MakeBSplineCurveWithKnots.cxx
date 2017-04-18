@@ -66,6 +66,6 @@ GeomToStep_MakeBSplineCurveWithKnots::
 const Handle(StepGeom_BSplineCurveWithKnots) &
       GeomToStep_MakeBSplineCurveWithKnots::Value() const
 {
-  StdFail_NotDone_Raise_if(!done, "");
+  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakeBSplineCurveWithKnots::Value() - no result");
   return theBSplineCurveWithKnots;
 }

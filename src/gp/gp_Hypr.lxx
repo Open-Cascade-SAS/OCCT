@@ -28,8 +28,8 @@ inline gp_Hypr::gp_Hypr (const gp_Ax2& A2,
 			 majorRadius(MajorRadius),
 			 minorRadius(MinorRadius)
 { 
-  Standard_ConstructionError_Raise_if
-    (MinorRadius < 0.0 || MajorRadius < 0.0,"");
+  Standard_ConstructionError_Raise_if (MinorRadius < 0.0 || MajorRadius < 0.0,
+                                       "gp_Hypr() - invalid construction parameters");
 }
 
 inline void gp_Hypr::SetAxis (const gp_Ax1& A1)
@@ -40,13 +40,15 @@ inline void gp_Hypr::SetLocation (const gp_Pnt& P)
 
 inline void gp_Hypr::SetMajorRadius (const Standard_Real R)
 {
-  Standard_ConstructionError_Raise_if(R < 0.0,"");
+  Standard_ConstructionError_Raise_if (R < 0.0,
+                                       "gp_Hypr::SetMajorRadius() - major radius should be greater or equal zero");
   majorRadius = R;
 }
 
 inline void gp_Hypr::SetMinorRadius (const Standard_Real R)
 {
-  Standard_ConstructionError_Raise_if(R < 0.0,"");
+  Standard_ConstructionError_Raise_if (R < 0.0,
+                                       "gp_Hypr::SetMinorRadius() - minor radius should be greater or equal zero");
   minorRadius = R;
 }
 
@@ -55,8 +57,8 @@ inline void gp_Hypr::SetPosition (const gp_Ax2& A2)
 
 inline gp_Ax1 gp_Hypr::Asymptote1 () const
 {
-  Standard_ConstructionError_Raise_if
-    (majorRadius <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (majorRadius <= gp::Resolution(),
+                                       "gp_Hypr::Asymptote1() - major radius is zero");
   gp_Vec V1 = gp_Vec (pos.YDirection());
   V1.Multiply (minorRadius / majorRadius);
   gp_Vec V = gp_Vec (pos.XDirection());
@@ -66,7 +68,8 @@ inline gp_Ax1 gp_Hypr::Asymptote1 () const
 
 inline gp_Ax1 gp_Hypr::Asymptote2 () const
 {
-  Standard_ConstructionError_Raise_if (majorRadius <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (majorRadius <= gp::Resolution(),
+                                       "gp_Hypr::Asymptote1() - major radius is zero");
   gp_Vec V1 = gp_Vec (pos.YDirection());
   V1.Multiply (-minorRadius / majorRadius);
   gp_Vec V = gp_Vec (pos.XDirection());
@@ -113,7 +116,8 @@ inline gp_Ax1 gp_Hypr::Directrix2 () const
 
 inline Standard_Real gp_Hypr::Eccentricity () const
 {
-  Standard_DomainError_Raise_if (majorRadius <= gp::Resolution(), "");
+  Standard_DomainError_Raise_if (majorRadius <= gp::Resolution(),
+                                 "gp_Hypr::Eccentricity() - major radius is zero");
   return sqrt(majorRadius * majorRadius +
 	      minorRadius * minorRadius) / majorRadius;
 }
@@ -165,7 +169,8 @@ inline gp_Hypr gp_Hypr::OtherBranch () const
 
 inline Standard_Real gp_Hypr::Parameter() const
 {
-  Standard_DomainError_Raise_if (majorRadius <= gp::Resolution(), "");
+  Standard_DomainError_Raise_if (majorRadius <= gp::Resolution(),
+                                 "gp_Hypr::Parameter() - major radius is zero");
   return (minorRadius * minorRadius) / majorRadius;
 }
 

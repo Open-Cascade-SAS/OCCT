@@ -205,6 +205,6 @@ TopoDSToStep_MakeShellBasedSurfaceModel::
 const Handle(StepShape_ShellBasedSurfaceModel) &
       TopoDSToStep_MakeShellBasedSurfaceModel::Value() const
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "TopoDSToStep_MakeShellBasedSurfaceModel::Value() - no result");
   return theShellBasedSurfaceModel;
 }

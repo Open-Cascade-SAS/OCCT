@@ -124,6 +124,6 @@ TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::
 const Handle(StepShape_FacetedBrepAndBrepWithVoids) &
       TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::Value() const
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::Value() - no result");
   return theFacetedBrepAndBrepWithVoids;
 }

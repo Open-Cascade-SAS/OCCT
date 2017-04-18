@@ -984,7 +984,7 @@ ProjLib_ProjectOnPlane::Trim(const Standard_Real First,
     return myResult->Trim(First,Last,Tolerance) ;
   }
   else {
-    throw Standard_NotImplemented("");
+    throw Standard_NotImplemented ("ProjLib_ProjectOnPlane::Trim() - curve of unsupported type");
   }
 }
 

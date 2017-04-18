@@ -163,6 +163,7 @@ GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Circ& Circ   ,
 //=======================================================================
 const Handle(Geom_TrimmedCurve)& GC_MakeArcOfCircle::Value() const
 { 
-  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
+  StdFail_NotDone_Raise_if (TheError != gce_Done,
+                            "GC_MakeArcOfCircle::Value() - no result");
   return TheArc;
 }

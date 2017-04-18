@@ -105,6 +105,7 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Cylinder& Cyl ,
 const Handle(Geom_CylindricalSurface)& 
        GC_MakeCylindricalSurface::Value() const
 { 
-  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
+  StdFail_NotDone_Raise_if (TheError != gce_Done,
+                            "GC_MakeCylindricalSurface::Value() - no result");
   return TheCylinder;
 }

@@ -106,6 +106,6 @@ const
 const TopoDS_Shape& BRepFill_OffsetAncestors::Ancestor(const TopoDS_Edge& S1)
 const
 {
-  StdFail_NotDone_Raise_if( !myIsPerform, "");
+  StdFail_NotDone_Raise_if (!myIsPerform, "BRepFill_OffsetAncestors::Ancestor() - Perform() should be called before accessing results");
   return myMap(S1);
 }

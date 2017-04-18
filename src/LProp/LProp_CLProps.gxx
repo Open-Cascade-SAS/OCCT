@@ -47,7 +47,7 @@ LProp_CLProps::LProp_CLProps (const Standard_Integer N,
         : myU(RealLast()), myDerOrder(N), myCN(0), myLinTol(Resolution),
                             myTangentStatus (LProp_Undecided)
 {
-  Standard_OutOfRange_Raise_if (N < 0 || N > 3, "");  
+  Standard_OutOfRange_Raise_if (N < 0 || N > 3, "LProp_CLProps() - invalid input");
 }
 
 void LProp_CLProps::SetParameter(const Standard_Real U)

@@ -30,8 +30,8 @@ inline gp_Elips::gp_Elips (const gp_Ax2& A2,
 			   majorRadius (MajorRadius),
 			   minorRadius (MinorRadius)
 { 
-  Standard_ConstructionError_Raise_if
-    (MinorRadius < 0.0 || MajorRadius < MinorRadius,"");
+  Standard_ConstructionError_Raise_if (MinorRadius < 0.0 || MajorRadius < MinorRadius,
+                                       "gp_Elips() - invalid construction parameters");
 }
 
 inline Standard_Real gp_Elips::Area() const
@@ -58,7 +58,7 @@ inline const gp_Ax1& gp_Elips::Axis ()     const
 inline gp_Ax1 gp_Elips::Directrix1() const
 {
   Standard_Real E = Eccentricity();
-  Standard_ConstructionError_Raise_if (E <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (E <= gp::Resolution(), "gp_Elips::Directrix1() - zero eccentricity");
   gp_XYZ Orig = pos.XDirection().XYZ();
   Orig.Multiply (majorRadius/E);
   Orig.Add (pos.Location().XYZ());
@@ -68,7 +68,7 @@ inline gp_Ax1 gp_Elips::Directrix1() const
 inline gp_Ax1 gp_Elips::Directrix2() const
 {
   Standard_Real E = Eccentricity();
-  Standard_ConstructionError_Raise_if (E <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (E <= gp::Resolution(), "gp_Elips::Directrix2() - zero eccentricity");
   gp_XYZ Orig = pos.XDirection().XYZ();
   Orig.Multiply (-majorRadius/E);
   Orig.Add (pos.Location().XYZ());
@@ -132,13 +132,15 @@ inline void gp_Elips::SetLocation (const gp_Pnt& P)
 
 inline void gp_Elips::SetMajorRadius (const Standard_Real R)
 { 
-  Standard_ConstructionError_Raise_if(R < minorRadius,"");
+  Standard_ConstructionError_Raise_if (R < minorRadius,
+                                       "gp_Elips::SetMajorRadius() - major radius should be greater or equal to minor radius");
   majorRadius = R;
 }
 
 inline void gp_Elips::SetMinorRadius (const Standard_Real R)
 { 
-  Standard_ConstructionError_Raise_if(R < 0.0 || majorRadius < R,"");
+  Standard_ConstructionError_Raise_if (R < 0.0 || majorRadius < R,
+                                       "gp_Elips::SetMinorRadius() - minor radius should be a positive number lesser or equal to major radius");
   minorRadius = R;
 }
 

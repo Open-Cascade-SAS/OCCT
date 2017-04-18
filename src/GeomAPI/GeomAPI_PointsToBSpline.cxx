@@ -191,7 +191,7 @@ void GeomAPI_PointsToBSpline::Init
    const GeomAbs_Shape         Continuity,
    const Standard_Real         Tol3D)
 {
-  if (Params.Length() != Points.Length()) throw Standard_OutOfRange("");
+  if (Params.Length() != Points.Length()) throw Standard_OutOfRange ("GeomAPI_PointsToBSpline::Init() - invalid input");
 
   Standard_Real Tol2D = 0.; // dummy argument for BSplineCompute.
   Standard_Integer Nbp = Params.Length();

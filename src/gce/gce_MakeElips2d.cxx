@@ -73,7 +73,8 @@ gce_MakeElips2d::gce_MakeElips2d(const gp_Ax22d&     A           ,
 
 const gp_Elips2d& gce_MakeElips2d::Value() const
 { 
-  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
+  StdFail_NotDone_Raise_if (TheError != gce_Done,
+                            "gce_MakeElips2d::Value() - no result");
   return TheElips2d;
 }
 

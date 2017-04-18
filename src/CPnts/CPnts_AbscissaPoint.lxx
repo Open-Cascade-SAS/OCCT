@@ -31,7 +31,7 @@ inline Standard_Boolean CPnts_AbscissaPoint::IsDone() const
 
 inline Standard_Real CPnts_AbscissaPoint::Parameter() const
 {
-  StdFail_NotDone_Raise_if(!myDone, "");
+  StdFail_NotDone_Raise_if (!myDone, "CPnts_AbscissaPoint::Parameter() - no result");
   return myParam;
 }
 

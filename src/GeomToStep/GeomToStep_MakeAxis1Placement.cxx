@@ -77,6 +77,6 @@ GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement
 const Handle(StepGeom_Axis1Placement) &
       GeomToStep_MakeAxis1Placement::Value() const
 {
-  StdFail_NotDone_Raise_if(!done, "");
+  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakeAxis1Placement::Value() - no result");
   return theAxis1Placement;
 }

@@ -67,7 +67,8 @@ gce_MakeDir::gce_MakeDir(const Standard_Real Xv,
 
 const gp_Dir& gce_MakeDir::Value() const
 { 
-  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
+  StdFail_NotDone_Raise_if (TheError != gce_Done,
+                            "gce_MakeDir::Value() - no result");
   return TheDir;
 }
 

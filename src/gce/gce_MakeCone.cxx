@@ -203,7 +203,8 @@ gce_MakeCone::gce_MakeCone(const gp_Pnt&       P1   ,
 
 const gp_Cone& gce_MakeCone::Value() const
 { 
-  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
+  StdFail_NotDone_Raise_if (TheError != gce_Done,
+                            "gce_MakeCone::Value() - no result");
   return TheCone;
 }
 

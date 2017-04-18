@@ -147,14 +147,16 @@ inline gp_Vec2d gp_Vec2d::Multiplied (const Standard_Real Scalar) const
 inline void gp_Vec2d::Normalize()
 { 
   Standard_Real D = coord.Modulus();
-  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(),
+                                       "gp_Vec2d::Normalize() - vector has zero norm");
   coord.Divide (D);
 }
 
 inline gp_Vec2d gp_Vec2d::Normalized() const
 { 
   Standard_Real D = coord.Modulus();
-  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(),
+                                       "gp_Vec2d::Normalized() - vector has zero norm");
   gp_Vec2d V = *this;
   V.coord.Divide (D);
   return V; 

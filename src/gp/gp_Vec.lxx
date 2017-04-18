@@ -223,14 +223,16 @@ inline Standard_Real gp_Vec::DotCross (const gp_Vec& V1,
 inline void gp_Vec::Normalize()
 { 
   Standard_Real D = coord.Modulus();
-  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(),
+                                       "gp_Vec::Normalize() - vector has zero norm");
   coord.Divide (D);
 }
 
 inline gp_Vec gp_Vec::Normalized() const
 { 
   Standard_Real D = coord.Modulus();
-  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(),
+                                       "gp_Vec::Normalized() - vector has zero norm");
   gp_Vec V = *this;
   V.coord.Divide (D);
   return V; 

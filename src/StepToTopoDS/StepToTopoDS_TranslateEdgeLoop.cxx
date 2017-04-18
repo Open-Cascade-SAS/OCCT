@@ -696,7 +696,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
 
 const TopoDS_Shape& StepToTopoDS_TranslateEdgeLoop::Value() const 
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "StepToTopoDS_TranslateEdgeLoop::Value() - no result");
   return myResult;
 }
 

@@ -23,7 +23,7 @@ inline gp_Circ::gp_Circ () : radius(RealLast())
 inline gp_Circ::gp_Circ (const gp_Ax2& A2,
 			 const Standard_Real R) : pos(A2), radius(R)
 {
-  Standard_ConstructionError_Raise_if (R < 0.0, "");
+  Standard_ConstructionError_Raise_if (R < 0.0, "gp_Circ() - radius should be positive number");
 }
 
 inline void gp_Circ::SetAxis (const gp_Ax1& A1)
@@ -37,7 +37,7 @@ inline void gp_Circ::SetPosition (const gp_Ax2& A2)
 
 inline void gp_Circ::SetRadius (const Standard_Real R)
 { 
-  Standard_ConstructionError_Raise_if (R < 0.0, "");
+  Standard_ConstructionError_Raise_if (R < 0.0, "gp_Circ::SetRadius() - radius should be positive number");
   radius = R;
 }
 

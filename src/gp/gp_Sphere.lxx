@@ -19,7 +19,9 @@ inline gp_Sphere::gp_Sphere (const gp_Ax3& A3,
 			     const Standard_Real Radius) :
 			     pos (A3),
 			     radius (Radius)
-{ Standard_ConstructionError_Raise_if (Radius < 0.0,""); }
+{
+  Standard_ConstructionError_Raise_if (Radius < 0.0, "gp_Sphere() - radius should be >= 0");
+}
 
 inline void gp_Sphere::SetLocation (const gp_Pnt& Loc)
 { pos.SetLocation (Loc); }
@@ -29,7 +31,7 @@ inline void gp_Sphere::SetPosition (const gp_Ax3& A3)
 
 inline void gp_Sphere::SetRadius (const Standard_Real R)
 {
-  Standard_ConstructionError_Raise_if (R < 0.0,"");
+  Standard_ConstructionError_Raise_if (R < 0.0, "gp_Sphere::SetRadius() - radius should be >= 0");
   radius = R;
 }
 

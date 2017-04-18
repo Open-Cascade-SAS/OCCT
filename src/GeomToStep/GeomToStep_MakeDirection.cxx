@@ -115,6 +115,6 @@ GeomToStep_MakeDirection::GeomToStep_MakeDirection
 const Handle(StepGeom_Direction) &
       GeomToStep_MakeDirection::Value() const
 {
-  StdFail_NotDone_Raise_if(!done, "");
+  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakeDirection::Value() - no result");
   return theDirection;
 }

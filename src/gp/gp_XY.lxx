@@ -151,14 +151,16 @@ inline gp_XY gp_XY::Multiplied (const gp_Mat2d& Matrix) const
 inline void gp_XY::Normalize ()
 {
   Standard_Real D = Modulus();
-  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(),
+                                       "gp_XY::Normalize() - vector has zero norm");
   x = x / D;   y = y / D;
 }
 
 inline gp_XY gp_XY::Normalized () const
 {
   Standard_Real D = Modulus();
-  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(),
+                                       "gp_XY::Normalized() - vector has zero norm");
   return gp_XY (x / D, y / D);
 }
 

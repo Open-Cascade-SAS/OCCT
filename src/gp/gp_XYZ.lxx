@@ -210,14 +210,16 @@ inline gp_XYZ gp_XYZ::Multiplied (const gp_Mat& Matrix) const
 inline void gp_XYZ::Normalize ()
 {
   Standard_Real D = Modulus();
-  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(),
+                                       "gp_XYZ::Normalize() - vector has zero norm");
   x = x / D;  y = y / D;  z = z / D;
 }
 
 inline gp_XYZ gp_XYZ::Normalized () const
 {
   Standard_Real D = Modulus();
-  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(),
+                                       "gp_XYZ::Normalized() - vector has zero norm");
   return gp_XYZ (x / D, y / D, z / D);
 }
 

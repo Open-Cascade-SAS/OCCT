@@ -476,7 +476,7 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
 
 const Handle(StepShape_TopologicalRepresentationItem)& TopoDSToStep_MakeStepFace::Value() const 
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "TopoDSToStep_MakeStepFace::Value() - no result");
   return myResult;
 }
 

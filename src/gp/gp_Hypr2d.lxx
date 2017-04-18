@@ -30,8 +30,8 @@ inline gp_Hypr2d::gp_Hypr2d (const gp_Ax22d& A,
 			     majorRadius(MajorRadius), 
 			     minorRadius(MinorRadius)
 {
-  Standard_ConstructionError_Raise_if
-    (MinorRadius < 0.0 || MajorRadius < 0.0,"");
+  Standard_ConstructionError_Raise_if (MinorRadius < 0.0 || MajorRadius < 0.0,
+                                       "gp_Hypr2d() - invalid construction parameters");
 }
 
 inline gp_Hypr2d::gp_Hypr2d (const gp_Ax2d& MajorAxis, 
@@ -42,8 +42,8 @@ inline gp_Hypr2d::gp_Hypr2d (const gp_Ax2d& MajorAxis,
 		      minorRadius(MinorRadius) 
 { 
   pos = gp_Ax22d(MajorAxis,Sense); 
-  Standard_ConstructionError_Raise_if
-    (MinorRadius < 0.0 || MajorRadius < 0.0,"");
+  Standard_ConstructionError_Raise_if (MinorRadius < 0.0 || MajorRadius < 0.0,
+                                       "gp_Hypr2d() - invalid construction parameters");
 }
 
 inline void gp_Hypr2d::SetLocation (const gp_Pnt2d& P)
@@ -51,13 +51,15 @@ inline void gp_Hypr2d::SetLocation (const gp_Pnt2d& P)
 
 inline void gp_Hypr2d::SetMajorRadius (const Standard_Real MajorRadius) 
 {   
-  Standard_ConstructionError_Raise_if(MajorRadius < 0.0,"");
+  Standard_ConstructionError_Raise_if (MajorRadius < 0.0,
+                                       "gp_Hypr2d::SetMajorRadius() - major radius should be greater or equal zero");
   majorRadius = MajorRadius;
 }
 
 inline void gp_Hypr2d::SetMinorRadius (const Standard_Real MinorRadius) 
 { 
-  Standard_ConstructionError_Raise_if(MinorRadius < 0.0,"");
+  Standard_ConstructionError_Raise_if (MinorRadius < 0.0,
+                                       "gp_Hypr2d::SetMinorRadius() - minor radius should be greater or equal zero");
   minorRadius = MinorRadius;
 }
 
@@ -72,7 +74,8 @@ inline void gp_Hypr2d::SetYAxis (const gp_Ax2d& A)
 
 inline gp_Ax2d gp_Hypr2d::Asymptote1() const 
 {
-  Standard_ConstructionError_Raise_if (majorRadius <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (majorRadius <= gp::Resolution(),
+                                       "gp_Hypr2d::Asymptote1() - major radius is zero");
   gp_Dir2d Vdir = pos.XDirection();
   gp_XY Coord1 (pos.YDirection().XY());
   gp_XY Coord2 = Coord1.Multiplied (minorRadius / majorRadius);
@@ -82,7 +85,8 @@ inline gp_Ax2d gp_Hypr2d::Asymptote1() const
 }
 
 inline gp_Ax2d gp_Hypr2d::Asymptote2() const {
-  Standard_ConstructionError_Raise_if (majorRadius <= gp::Resolution(), "");
+  Standard_ConstructionError_Raise_if (majorRadius <= gp::Resolution(),
+                                       "gp_Hypr2d::Asymptote2() - major radius is zero");
   gp_Vec2d Vdir = pos.XDirection();
   gp_XY  Coord1 (pos.YDirection().XY());
   gp_XY  Coord2 = Coord1.Multiplied (-minorRadius / majorRadius);
@@ -125,7 +129,8 @@ inline gp_Ax2d gp_Hypr2d::Directrix2() const
 
 inline Standard_Real gp_Hypr2d::Eccentricity() const 
 {
-  Standard_DomainError_Raise_if (majorRadius <= gp::Resolution(), "");
+  Standard_DomainError_Raise_if (majorRadius <= gp::Resolution(),
+                                 "gp_Hypr2d::Eccentricity() - major radius is zero");
   return sqrt(majorRadius * majorRadius +
 	      minorRadius * minorRadius) / majorRadius;
 }
@@ -170,7 +175,8 @@ inline gp_Hypr2d gp_Hypr2d::OtherBranch() const
 
 inline Standard_Real gp_Hypr2d::Parameter() const 
 { 
-  Standard_DomainError_Raise_if (majorRadius <= gp::Resolution(), "");
+  Standard_DomainError_Raise_if (majorRadius <= gp::Resolution(),
+                                 "gp_Hypr2d::Parameter() - major radius is zero");
   return (minorRadius * minorRadius) / majorRadius;
 }
 

@@ -174,6 +174,6 @@ GeomToStep_MakeCurve::GeomToStep_MakeCurve ( const Handle(Geom2d_Curve)& C)
 const Handle(StepGeom_Curve) &
       GeomToStep_MakeCurve::Value() const
 {
-  StdFail_NotDone_Raise_if(!done, "");
+  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakeCurve::Value() - no result");
   return theCurve;
 }

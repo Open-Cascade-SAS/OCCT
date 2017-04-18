@@ -341,7 +341,7 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface
     Precision::IsPositiveInfinite(ULast)  || 
     Precision::IsNegativeInfinite(VFirst) || 
     Precision::IsPositiveInfinite(VLast) )   {
-      throw Standard_DomainError("");
+      throw Standard_DomainError ("GeomConvert::SurfaceToBSplineSurface() - infinite surface");
   }
 
   Handle(Geom_BSplineSurface) TheSurface;

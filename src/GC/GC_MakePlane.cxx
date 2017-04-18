@@ -120,6 +120,7 @@ GC_MakePlane::GC_MakePlane(const gp_Ax1& Axis ) {
 
 const Handle(Geom_Plane)& GC_MakePlane::Value() const
 { 
-  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
+  StdFail_NotDone_Raise_if (TheError != gce_Done,
+                            "GC_MakePlane::Value() - no result");
   return ThePlane;
 }

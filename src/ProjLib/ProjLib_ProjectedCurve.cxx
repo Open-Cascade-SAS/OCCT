@@ -786,7 +786,7 @@ Standard_Real ProjLib_ProjectedCurve::LastParameter() const
 
 GeomAbs_Shape ProjLib_ProjectedCurve::Continuity() const
 {
-  throw Standard_NotImplemented("");
+  throw Standard_NotImplemented ("ProjLib_ProjectedCurve::Continuity() - method is not implemented");
 }
 
 
@@ -797,7 +797,7 @@ GeomAbs_Shape ProjLib_ProjectedCurve::Continuity() const
 
 Standard_Integer ProjLib_ProjectedCurve::NbIntervals(const GeomAbs_Shape ) const 
 {
-  throw Standard_NotImplemented("");
+  throw Standard_NotImplemented ("ProjLib_ProjectedCurve::NbIntervals() - method is not implemented");
 }
 
 
@@ -810,7 +810,7 @@ Standard_Integer ProjLib_ProjectedCurve::NbIntervals(const GeomAbs_Shape ) const
 void ProjLib_ProjectedCurve::Intervals(TColStd_Array1OfReal&  ,
 				       const GeomAbs_Shape ) const 
 {
-  throw Standard_NotImplemented("");
+  throw Standard_NotImplemented ("ProjLib_ProjectedCurve::Intervals() - method is not implemented");
 }
 
 
@@ -821,7 +821,7 @@ void ProjLib_ProjectedCurve::Intervals(TColStd_Array1OfReal&  ,
 
 Standard_Boolean ProjLib_ProjectedCurve::IsClosed() const
 {
-  throw Standard_NotImplemented("");
+  throw Standard_NotImplemented ("ProjLib_ProjectedCurve::IsClosed() - method is not implemented");
 }
 
 
@@ -843,7 +843,7 @@ Standard_Boolean ProjLib_ProjectedCurve::IsPeriodic() const
 
 Standard_Real ProjLib_ProjectedCurve::Period() const
 {
-  throw Standard_NotImplemented("");
+  throw Standard_NotImplemented ("ProjLib_ProjectedCurve::Period() - method is not implemented");
 }
 
 
@@ -854,7 +854,7 @@ Standard_Real ProjLib_ProjectedCurve::Period() const
 
 gp_Pnt2d ProjLib_ProjectedCurve::Value(const Standard_Real ) const 
 {
-  throw Standard_NotImplemented("");
+  throw Standard_NotImplemented ("ProjLib_ProjectedCurve::Value() - method is not implemented");
 }
 
 
@@ -865,7 +865,7 @@ gp_Pnt2d ProjLib_ProjectedCurve::Value(const Standard_Real ) const
 
 void ProjLib_ProjectedCurve::D0(const Standard_Real , gp_Pnt2d& ) const
 {
-  throw Standard_NotImplemented("");
+  throw Standard_NotImplemented ("ProjLib_ProjectedCurve::D0() - method is not implemented");
 }
 
 
@@ -878,7 +878,7 @@ void ProjLib_ProjectedCurve::D1(const Standard_Real ,
 			              gp_Pnt2d&     , 
                                       gp_Vec2d&     ) const 
 {
-  throw Standard_NotImplemented("");
+  throw Standard_NotImplemented ("ProjLib_ProjectedCurve::D1() - method is not implemented");
 }
 
 
@@ -892,7 +892,7 @@ void ProjLib_ProjectedCurve::D2(const Standard_Real ,
                                       gp_Vec2d&     , 
                                       gp_Vec2d&     ) const 
 {
-  throw Standard_NotImplemented("");
+  throw Standard_NotImplemented ("ProjLib_ProjectedCurve::D2() - method is not implemented");
 }
 
 
@@ -907,7 +907,7 @@ void ProjLib_ProjectedCurve::D3(const Standard_Real,
 				      gp_Vec2d&, 
 			              gp_Vec2d&) const 
 {
-  throw Standard_NotImplemented("");
+  throw Standard_NotImplemented ("ProjLib_ProjectedCurve::D3() - method is not implemented");
 }
 
 
@@ -919,7 +919,7 @@ void ProjLib_ProjectedCurve::D3(const Standard_Real,
 gp_Vec2d ProjLib_ProjectedCurve::DN(const Standard_Real, 
 				    const Standard_Integer) const 
 {
-  throw Standard_NotImplemented("");
+  throw Standard_NotImplemented ("ProjLib_ProjectedCurve::DN() - method is not implemented");
 }
 
 
@@ -930,7 +930,7 @@ gp_Vec2d ProjLib_ProjectedCurve::DN(const Standard_Real,
 
 Standard_Real ProjLib_ProjectedCurve::Resolution(const Standard_Real) const 
 {
-  throw Standard_NotImplemented("");
+  throw Standard_NotImplemented ("ProjLib_ProjectedCurve::Resolution() - method is not implemented");
 }
     
 
@@ -1110,6 +1110,5 @@ Handle(Adaptor2d_HCurve2d) ProjLib_ProjectedCurve::Trim
  const Standard_Real ,
  const Standard_Real ) const 
 {
-  throw Standard_NotImplemented("");
+  throw Standard_NotImplemented ("ProjLib_ProjectedCurve::Trim() - method is not implemented");
 }
-

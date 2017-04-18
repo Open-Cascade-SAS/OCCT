@@ -162,6 +162,6 @@ TopoDSToStep_MakeBrepWithVoids::
 const Handle(StepShape_BrepWithVoids) &
       TopoDSToStep_MakeBrepWithVoids::Value() const
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "TopoDSToStep_MakeBrepWithVoids::Value() - no result");
   return theBrepWithVoids;
 }

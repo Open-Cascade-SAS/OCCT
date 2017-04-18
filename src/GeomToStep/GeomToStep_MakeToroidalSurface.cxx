@@ -54,6 +54,6 @@ GeomToStep_MakeToroidalSurface::GeomToStep_MakeToroidalSurface
 const Handle(StepGeom_ToroidalSurface) &
       GeomToStep_MakeToroidalSurface::Value() const
 {
-  StdFail_NotDone_Raise_if(!done, "");
+  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakeToroidalSurface::Value() - no result");
   return theToroidalSurface;
 }

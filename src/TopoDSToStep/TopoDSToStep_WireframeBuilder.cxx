@@ -110,7 +110,7 @@ TopoDSToStep_BuilderError TopoDSToStep_WireframeBuilder::Error() const
 
 const Handle(TColStd_HSequenceOfTransient)& TopoDSToStep_WireframeBuilder::Value() const 
 {
-  StdFail_NotDone_Raise_if(!done,"");
+  StdFail_NotDone_Raise_if (!done, "TopoDSToStep_WireframeBuilder::Value() - no result");
   return myResult;
 }
 

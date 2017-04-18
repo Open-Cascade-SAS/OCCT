@@ -363,7 +363,7 @@ static gp_Pnt2d Function_Value(const Standard_Real theU,
   }
   else
   {
-    throw Standard_NoSuchObject("");
+    throw Standard_NoSuchObject ("ProjLib_ComputeApproxOnPolarSurface::ProjectUsingInitialCurve2d() - unknown surface type");
   }
 
   // Try to run simple search with initial point (U0, V0).

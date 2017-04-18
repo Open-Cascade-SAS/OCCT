@@ -125,7 +125,7 @@ inline GeomInt_IntSS::GeomInt_IntSS ()
 //=======================================================================
   inline Standard_Integer GeomInt_IntSS::NbBoundaries () const
 {
-  StdFail_NotDone_Raise_if(!myIntersector.IsDone(),"");
+  StdFail_NotDone_Raise_if (!myIntersector.IsDone(), "GeomInt_IntSS::NbBoundaries() - no result");
   return myNbrestr;
 }
 

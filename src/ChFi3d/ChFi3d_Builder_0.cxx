@@ -2864,7 +2864,7 @@ Standard_Integer ChFi3d_IndexOfSurfData(const TopoDS_Vertex& V1,
     sens = -1;
     if(CD->SetOfSurfData().IsNull()) return 0;
     else if (Vref.IsSame(V1)) Index = CD->SetOfSurfData()->Length();
-    else throw Standard_ConstructionError("");
+    else throw Standard_ConstructionError ("ChFi3d_IndexOfSurfData() - wrong construction parameters");
   }
   return Index; 
 }  
@@ -2891,7 +2891,7 @@ TopoDS_Edge ChFi3d_EdgeFromV1(const TopoDS_Vertex& V1,
     else Vref = TopExp::LastVertex(E1); 
     sens = -1;
     if (Vref.IsSame(V1)) return E1;
-    else throw Standard_ConstructionError("");
+    else throw Standard_ConstructionError ("ChFi3d_IndexOfSurfData() - wrong construction parameters");
   }
 }
 //=======================================================================
@@ -3815,7 +3815,7 @@ void ChFi3d_Parameters(const Handle(Geom_Surface)& S,
     {
       GeomAPI_ProjectPointOnSurf tool(p3d,S);
       if ( tool.NbPoints() != 1 )
-        throw StdFail_NotDone("");
+        throw StdFail_NotDone ("ChFi3d_Parameters() - no projection results");
       else
         tool.Parameters(1,u,v);
     }
@@ -3870,12 +3870,12 @@ void ChFi3d_TrimCurve(const Handle(Geom_Curve)& gc,
     {
       GeomAPI_ProjectPointOnCurve tool(FirstP,gc);
       if ( tool.NbPoints() != 1 )
-        throw StdFail_NotDone("");
+        throw StdFail_NotDone ("ChFi3d_TrimCurve() - no projection results for the first point");
       else
         uf = tool.Parameter(1);
       tool.Init(LastP,gc);
       if ( tool.NbPoints() != 1 )
-        throw StdFail_NotDone("");
+        throw StdFail_NotDone ("ChFi3d_TrimCurve() - no projection results for the second point");
       else
         ul = tool.Parameter(1);
     }
