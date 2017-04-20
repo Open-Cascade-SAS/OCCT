@@ -51,7 +51,7 @@ public:
   
   //! Returns an empty Reshape
   Standard_EXPORT ShapeBuild_ReShape();
-  
+
   //! Applies the substitutions requests to a shape
   //!
   //! <until> gives the level of type until which requests are taken
@@ -66,7 +66,7 @@ public:
   //! 2: Replace and Remove are both ignored
   //! If Replace/Remove are ignored or absent, the result as same
   //! type as the starting shape
-  Standard_EXPORT virtual TopoDS_Shape Apply (const TopoDS_Shape& shape, const TopAbs_ShapeEnum until, const Standard_Integer buildmode) Standard_OVERRIDE;
+  Standard_EXPORT virtual TopoDS_Shape Apply (const TopoDS_Shape& shape, const TopAbs_ShapeEnum until, const Standard_Integer buildmode);
   
   //! Applies the substitutions requests to a shape.
   //!

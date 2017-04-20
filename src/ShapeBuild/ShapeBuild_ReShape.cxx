@@ -46,7 +46,101 @@ TopoDS_Shape ShapeBuild_ReShape::Apply (const TopoDS_Shape& shape,
 					const TopAbs_ShapeEnum until,
 					const Standard_Integer buildmode) 
 {
-  return BRepTools_ReShape::Apply (shape,until,buildmode);
+  if (shape.IsNull()) return shape;
+  TopoDS_Shape newsh;
+  if (Status (shape,newsh,Standard_False) != 0) return newsh;
+
+  TopAbs_ShapeEnum st = shape.ShapeType();
+  if (st == until) return newsh;    // critere d arret
+
+  Standard_Integer modif = 0;
+  if (st == TopAbs_COMPOUND || st == TopAbs_COMPSOLID) {
+    BRep_Builder B;
+    TopoDS_Compound C;
+    B.MakeCompound (C);
+    for (TopoDS_Iterator it (shape); it.More(); it.Next()) {
+      TopoDS_Shape sh = it.Value();
+      Standard_Integer stat = Status (sh,newsh,Standard_False);
+      if (stat != 0) modif = 1;
+      if (stat >= 0) B.Add (C,newsh);
+    }
+    if (modif == 0) return shape;
+    return C;
+  }
+
+  if (st == TopAbs_SOLID) {
+    BRep_Builder B;
+    TopoDS_Compound C;
+    B.MakeCompound (C);
+    TopoDS_Solid S;
+    B.MakeSolid (S);
+    for (TopoDS_Iterator it (shape); it.More(); it.Next()) {
+      TopoDS_Shape sh = it.Value();
+      newsh = Apply (sh,until,buildmode);
+      if (newsh.IsNull()) {
+	modif = -1;
+      } 
+      else if (newsh.ShapeType() != TopAbs_SHELL) {
+	Standard_Integer nbsub = 0;
+	for (TopExp_Explorer exh(newsh,TopAbs_SHELL); exh.More(); exh.Next()) {
+	  TopoDS_Shape onesh = exh.Current ();
+	  B.Add (S,onesh);
+	  nbsub ++;
+	}
+	if (nbsub == 0) modif = -1;
+	B.Add (C,newsh);  // c est tout
+      } 
+      else {
+	if (modif == 0 && !sh.IsEqual(newsh)) modif = 1;
+	B.Add (C,newsh);
+	B.Add (S,newsh);
+      }
+    }
+
+    if ( (modif < 0 && buildmode < 2) || (modif == 0 && buildmode < 1) )
+      return C;
+    else
+      return S;
+  }
+
+  if (st == TopAbs_SHELL) {
+    BRep_Builder B;
+    TopoDS_Compound C;
+    B.MakeCompound (C);
+    TopoDS_Shell S;
+    B.MakeShell (S);
+    for (TopoDS_Iterator it (shape); it.More(); it.Next()) {
+      TopoDS_Shape sh = it.Value();
+      newsh = Apply (sh,until,buildmode);
+      if (newsh.IsNull()) {
+	modif = -1;
+      } 
+      else if (newsh.ShapeType() != TopAbs_FACE) {
+	Standard_Integer nbsub = 0;
+	for (TopExp_Explorer exf(newsh,TopAbs_FACE); exf.More(); exf.Next()) {
+	  TopoDS_Shape onesh = exf.Current ();
+	  B.Add (S,onesh);
+	  nbsub ++;
+	}
+	if (nbsub == 0) modif = -1;
+	B.Add (C,newsh);  // c est tout
+      } 
+      else {
+	if (modif == 0 && !sh.IsEqual(newsh)) modif = 1;
+	B.Add (C,newsh);
+	B.Add (S,newsh);
+      }
+    }
+    if ( (modif < 0 && buildmode < 2) || (modif == 0 && buildmode < 1) )
+      return C;
+    else
+    {
+      S.Closed (BRep_Tool::IsClosed (S));
+      return S;
+    }
+  }
+  cout<<"BRepTools_ReShape::Apply NOT YET IMPLEMENTED"<<endl;
+  return shape;
 }
 
 //=======================================================================

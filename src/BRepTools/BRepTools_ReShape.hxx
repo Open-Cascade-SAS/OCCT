@@ -57,17 +57,14 @@ public:
   //! Clears all substitutions requests
   Standard_EXPORT virtual void Clear();
   
-  //! Sets a request to Remove a Shape
-  //! If <oriented> is True, only for a shape with the SAME
-  //! orientation. Else, whatever the orientation
-  Standard_EXPORT virtual void Remove (const TopoDS_Shape& shape, const Standard_Boolean oriented = Standard_False);
+  //! Sets a request to Remove a Shape whatever the orientation
+  Standard_EXPORT virtual void Remove (const TopoDS_Shape& shape);
   
-  //! Sets a request to Replace a Shape by a new one
-  //! If <oriented> is True, only if the orientation is the same
-  //! Else, whatever the orientation, and the new shape takes the
-  //! same orientation as <newshape> if the replaced one has the
-  //! same as <shape>, else it is reversed
-  Standard_EXPORT virtual void Replace (const TopoDS_Shape& shape, const TopoDS_Shape& newshape, const Standard_Boolean oriented = Standard_False);
+  //! Sets a request to Replace a Shape by a new one.
+  virtual void Replace (const TopoDS_Shape& shape, const TopoDS_Shape& newshape)
+  {
+    replace (shape, newshape);
+  }
   
   //! Tells if a shape is recorded for Replace/Remove
   Standard_EXPORT virtual Standard_Boolean IsRecorded (const TopoDS_Shape& shape) const;
@@ -86,23 +83,7 @@ public:
   //! the map directly for the shape, if True and status > 0 then
   //! recursively searches for the last status and new shape.
   Standard_EXPORT virtual Standard_Integer Status (const TopoDS_Shape& shape, TopoDS_Shape& newsh, const Standard_Boolean last = Standard_False);
-  
-  //! Applies the substitutions requests to a shape
-  //!
-  //! <until> gives the level of type until which requests are taken
-  //! into account. For subshapes of the type <until> no rebuild
-  //! and futher exploring are done.
-  //! ACTUALLY, NOT IMPLEMENTED BELOW  TopAbs_FACE
-  //!
-  //! <buildmode> says how to do on a SOLID,SHELL ... if one of its
-  //! sub-shapes has been changed:
-  //! 0: at least one Replace or Remove -> COMPOUND, else as such
-  //! 1: at least one Remove (Replace are ignored) -> COMPOUND
-  //! 2: Replace and Remove are both ignored
-  //! If Replace/Remove are ignored or absent, the result as same
-  //! type as the starting shape
-  Standard_EXPORT virtual TopoDS_Shape Apply (const TopoDS_Shape& shape, const TopAbs_ShapeEnum until, const Standard_Integer buildmode);
-  
+
   //! Applies the substitutions requests to a shape.
   //!
   //! <until> gives the level of type until which requests are taken
@@ -116,14 +97,13 @@ public:
   //! If incompatible shape type is encountered, it is ignored
   //! and flag FAIL1 is set in Status.
   Standard_EXPORT virtual TopoDS_Shape Apply (const TopoDS_Shape& shape, const TopAbs_ShapeEnum until = TopAbs_SHAPE);
-  
+
   //! Returns (modifiable) the flag which defines whether Location of shape take into account
   //! during replacing shapes.
-  Standard_EXPORT virtual Standard_Boolean& ModeConsiderLocation();
-  
-  //! Returns (modifiable) the flag which defines whether Orientation of shape take into account
-  //! during replacing shapes.
-  Standard_EXPORT virtual Standard_Boolean& ModeConsiderOrientation();
+  virtual Standard_Boolean& ModeConsiderLocation()
+  {
+    return myConsiderLocation;
+  }
 
   //! Returns modified copy of vertex if original one is not recorded or returns modified original vertex otherwise.
   //@param theV - original vertex.
@@ -143,14 +123,24 @@ public:
   //@param theShape is the given shape
   Standard_EXPORT Standard_Boolean IsNewShape(const TopoDS_Shape& theShape) const;
 
-
   DEFINE_STANDARD_RTTIEXT(BRepTools_ReShape,MMgt_TShared)
+
+private:
+  //! Replaces the first shape by the second one
+  //! after the following reorientation.
+  //!
+  //! If the first shape has the reversed orientation
+  //! then the both shapes are reversed.
+  //! If the first shape has the internal or external orientation then: <br>
+  //! - the second shape is oriented forward (reversed) if it's orientation
+  //!   is equal (not equal) to the orientation of the first shape; <br>
+  //! - the first shape is oriented forward.
+  Standard_EXPORT virtual void replace (const TopoDS_Shape& shape, const TopoDS_Shape& newshape);
 
 protected:
 
 
   TopTools_DataMapOfShapeShape myNMap;
-  TopTools_DataMapOfShapeShape myRMap;
   TopTools_MapOfShape myNewShapes;
   Standard_Integer myStatus;
 
@@ -159,7 +149,6 @@ private:
 
 
   Standard_Boolean myConsiderLocation;
-  Standard_Boolean myConsiderOrientation;
 
 
 };
