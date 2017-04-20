@@ -857,6 +857,24 @@ static Standard_Integer gensweep(Draw_Interpretor&,
 }
 
 //=======================================================================
+//function : errorsweep
+//purpose  : returns the summary error on resulting surfaces
+//           reached by Sweep
+//=======================================================================
+static Standard_Integer errorsweep(Draw_Interpretor& di,
+                                   Standard_Integer, const char**)
+{
+  if (!Sweep->IsDone())
+  {
+    di << "Sweep is not done\n";
+    return 1;
+  }
+  Standard_Real ErrorOnSurfaces = Sweep->ErrorOnSurface();
+  di << "Tolerance on surfaces = " << ErrorOnSurfaces << "\n";
+  return 0;
+}
+
+//=======================================================================
 //  simulsweep
 //=======================================================================
 static Standard_Integer simulsweep(Draw_Interpretor& di,
@@ -997,6 +1015,9 @@ void  BRepTest::SweepCommands(Draw_Interpretor& theCommands)
 
  theCommands.Add("gensweep", "gensweep res subshape_of_profile",
 		  __FILE__,gensweep,g);
+
+ theCommands.Add("errorsweep", "errorsweep: returns the summary error on resulting surfaces reached by Sweep",
+		  __FILE__,errorsweep,g);
 
   theCommands.Add("simulsweep", "simulsweep r [n] [option]"
 		  __FILE__,simulsweep,g);

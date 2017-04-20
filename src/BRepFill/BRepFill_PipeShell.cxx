@@ -937,6 +937,9 @@ void BRepFill_PipeShell::Generated(const TopoDS_Shape&   theShape,
 //=======================================================================
  void BRepFill_PipeShell::Prepare() 
 {
+  WSeq.Clear();
+  myEdgeNewEdges.Clear();
+  
   TopoDS_Wire theSect;
   if (!IsReady()) throw StdFail_NotDone("PipeShell");
   if (!myLocation.IsNull() && !mySection.IsNull()) return; // It is ready
