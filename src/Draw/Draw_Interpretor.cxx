@@ -311,6 +311,8 @@ void Draw_Interpretor::add (const Standard_CString          theCommandName,
   aPath.SetNode ("");
   TCollection_AsciiString aSrcPath;
   aPath.SystemName (aSrcPath);
+  if (aSrcPath.Value(1) == '/')
+    aSrcPath.Remove(1);
   Tcl_SetVar2 (myInterp, "Draw_Files", aName, aSrcPath.ToCString(), TCL_GLOBAL_ONLY);
 }
 
