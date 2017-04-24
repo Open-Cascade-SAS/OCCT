@@ -84,12 +84,10 @@ Standard_Integer OSD_Process::ProcessId(){
  return (getpid());
 }
 
-TCollection_AsciiString OSD_Process::UserName(){
- struct passwd *infos;
- infos = getpwuid(getuid()); 
- TCollection_AsciiString result=infos->pw_name;
-
- return(result);
+TCollection_AsciiString OSD_Process::UserName()
+{
+  struct passwd *anInfos = getpwuid (getuid());
+  return TCollection_AsciiString (anInfos ? anInfos->pw_name : "");
 }
 
 Standard_Boolean OSD_Process::IsSuperUser (){
