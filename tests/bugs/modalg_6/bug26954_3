@@ -17,6 +17,6 @@ baddtools b2
 bfillds
 bbop result 0
 
-checkprops result -s 40.7799
+checkprops result -s 42.1078
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -1,5 +1,3 @@
-puts "TODO OCC25735 ALL: Faulty shapes in variables faulty_1 to"
-
 puts "========="
 puts " OCC497 "
 puts "(case 3)"
@@ -14,9 +12,11 @@ checkshape a_1
 
 restore [locate_data_file OCC497f.brep] a_2
 checkshape a_2
+breducetolerance a_2
 
 bcut result a_1 a_2
 
-checkprops result -s 1773.6
+checkprops result -s 2392.19 -v 7520.02
+checknbshapes result -shell 1 -solid 1
 checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png

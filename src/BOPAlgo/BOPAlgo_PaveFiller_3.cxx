@@ -359,11 +359,18 @@ void BOPAlgo_PaveFiller::PerformEE()
       continue;
     }
     //
+    BOPDS_ListOfPaveBlock& aLPB1 = myDS->ChangePaveBlocks(nE1);
+    if (aLPB1.IsEmpty()) {
+      continue;
+    }
+    //
+    BOPDS_ListOfPaveBlock& aLPB2 = myDS->ChangePaveBlocks(nE2);
+    if (aLPB2.IsEmpty()) {
+      continue;
+    }
+    //
     const TopoDS_Edge& aE1=(*(TopoDS_Edge *)(&aSIE1.Shape()));
     const TopoDS_Edge& aE2=(*(TopoDS_Edge *)(&aSIE2.Shape()));
-    //
-    BOPDS_ListOfPaveBlock& aLPB1=myDS->ChangePaveBlocks(nE1);
-    BOPDS_ListOfPaveBlock& aLPB2=myDS->ChangePaveBlocks(nE2);
     //
     aIt1.Initialize(aLPB1);
     for (; aIt1.More(); aIt1.Next()) {

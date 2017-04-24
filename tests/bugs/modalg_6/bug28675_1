@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC28675"
+puts "========"
+puts ""
+####################################################################
+# Invalid result of Boolean Cut operation when running with fuzzy value
+####################################################################
+
+restore [locate_data_file bug28675_shapes.brep] b
+explode b
+bfuzzyvalue 1.e-5
+bclearobjects
+bcleartools
+baddobjects b_1
+baddtools b_2
+bfillds
+bbop result 2
+
+checkshape result
+if {[regexp "Faulties" [bopargcheck result]]} {
+  puts "Error: the result of Cut operation is invalid"
+}
+
+checkprops result -s 63598.7 -v 246258
+checknbshapes result -edge 12 -face 6 -shell 1 -solid 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
