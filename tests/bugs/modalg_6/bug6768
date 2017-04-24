@@ -11,7 +11,7 @@ explode co
 foreach s {co_1 co_2 co_3 co_4} {
 
 puts "\n*** make offset of wire r$s\n"
-mkoffset r${s} ${s} 1 1
+mkoffset r${s} ${s} 1 -1
 
 regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection r${s}_1] full nbv
 

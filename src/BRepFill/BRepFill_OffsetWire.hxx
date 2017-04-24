@@ -44,9 +44,18 @@ class Bisector_Bisec;
 class BRepFill_TrimEdgeTool;
 
 
-//! Constructs a Offset Wire to a spine (wire or face)
-//! on the left of spine.
-//! The Wire or the Face must be planar.
+//! Constructs a Offset Wire to a spine (wire or face).
+//! Offset direction will be to outer region in case of
+//! positive offset value and to inner region in case of
+//! negative offset value.
+//! Inner/Outer region for open wire is defined by the
+//! following rule: when we go along the wire (taking into
+//! account of edges orientation) then outer region will be
+//! on the right side, inner region will be on the left side.
+//! In case of closed wire, inner region will always be
+//! inside the wire (at that, edges orientation is not taken
+//! into account).
+//! The Wire or the Face must be planar and oriented correctly.
 class BRepFill_OffsetWire 
 {
 public:

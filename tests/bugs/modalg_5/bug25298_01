@@ -12,7 +12,7 @@ smallview
 display a
 fit
 
-if [catch { openoffset resoffset a 1 10 i } ] {
+if [catch { openoffset resoffset a 1 -10 i } ] {
   puts "Error : mkoffset is wrong"
 } else {
   renamevar resoffset_1 result

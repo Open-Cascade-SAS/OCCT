@@ -270,7 +270,8 @@ BRepLib_MakeFace::BRepLib_MakeFace(const TopoDS_Wire& W,
   //
   BRepLib::SameParameter(myShape, tol, Standard_True);
   //
-  CheckInside();
+  if (BRep_Tool::IsClosed(W))
+    CheckInside();
 }
 
 
@@ -286,7 +287,7 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Pln& P,
   Handle(Geom_Plane) Pl = new Geom_Plane(P);
   Init(Pl, Standard_False, Precision::Confusion());
   Add(W);
-  if (Inside) CheckInside();
+  if (Inside && BRep_Tool::IsClosed(W)) CheckInside();
 }
 
 
@@ -302,7 +303,7 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Cylinder& C,
   Handle(Geom_CylindricalSurface) GC = new Geom_CylindricalSurface(C);
   Init(GC, Standard_False, Precision::Confusion());
   Add(W);
-  if (Inside) CheckInside();
+  if (Inside && BRep_Tool::IsClosed(W)) CheckInside();
 }
 
 
@@ -318,7 +319,7 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Cone& C,
   Handle(Geom_ConicalSurface) GC = new Geom_ConicalSurface(C);
   Init(GC, Standard_False, Precision::Confusion());
   Add(W);
-  if (Inside) CheckInside();
+  if (Inside && BRep_Tool::IsClosed(W)) CheckInside();
 }
 
 
@@ -334,7 +335,7 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Sphere& S,
   Handle(Geom_SphericalSurface) GS = new Geom_SphericalSurface(S);
   Init(GS, Standard_False, Precision::Confusion());
   Add(W);
-  if (Inside) CheckInside();
+  if (Inside && BRep_Tool::IsClosed(W)) CheckInside();
 }
 
 
@@ -350,7 +351,7 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Torus& T,
   Handle(Geom_ToroidalSurface) GT = new Geom_ToroidalSurface(T);
   Init(GT, Standard_False, Precision::Confusion());
   Add(W);
-  if (Inside) CheckInside();
+  if (Inside && BRep_Tool::IsClosed(W)) CheckInside();
 }
 
 
@@ -365,7 +366,7 @@ BRepLib_MakeFace::BRepLib_MakeFace(const Handle(Geom_Surface)& S,
 {
   Init(S, Standard_False, Precision::Confusion());
   Add(W);
-  if (Inside) CheckInside();
+  if (Inside && BRep_Tool::IsClosed(W)) CheckInside();
 }
 
 

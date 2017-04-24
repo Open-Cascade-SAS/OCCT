@@ -1360,3 +1360,14 @@ if (anError != Storage_VSOk)
   // Error processing
 }
 ~~~~
+
+@subsection upgrade_720_Change_In_BRepLib_MakeFace_Algo Change in BRepLib_MakeFace algorithm
+
+  Previously, BRepLib_MakeFace algorithm changed orientation of the source wire in order to avoid creation of face as a hole (i.e. it is impossible to create single face as hole; hole can be created in context of another face only). New algorithm does not reverse the wire if it is open. Material of the face for open wire will be located on the left side from the source wire.
+
+@subsection upgrade_720_Change_In_BRepFill_OffsetWire Change in BRepFill_OffsetWire algorithm
+
+  Now, offset direction will always be to outer region in case of positive offset value and to inner region in case of negative offset value.
+  Inner/Outer region for open wire is defined by the following rule:
+    when we go along the wire (taking into account edges orientation) then outer region will be on the right side, inner region will be on the left side.
+  In case of closed wire, inner region will always be inside the wire (at that, edges orientation is not taken into account).
