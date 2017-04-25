@@ -1396,3 +1396,9 @@ if (anError != Storage_VSOk)
 Since 7.2.0 version, method *IsPeriodic()* returns the corresponding status of periodicity of the basis curve regardless of closure status of the adaptor curve (see method *IsClosed()*).
 Method *IsClosed()* for adaptor can return false even on periodic curve, in the case if its parametric range is not full period, e.g. for adaptor on circle in range [0, @f$ \pi @f$].
 In previous versions, *IsPeriodic()* always returned false if *IsClosed()* returned false.
+
+@subsection upgrade_720_persistence Change in algorithm ShapeUpgrade_UnifySameDomain
+
+The history of the changing of the initial shape was corrected:
+* all shapes created by the algorithm are considered as modified shapes instead of generated ones;
+* method Generated was removed and its calls should be replaced by calls of method History()->Modified.

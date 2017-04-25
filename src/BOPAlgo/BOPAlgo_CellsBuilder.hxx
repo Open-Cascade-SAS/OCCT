@@ -237,7 +237,7 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
   Standard_EXPORT void MakeContainers();
 
   //! Returns the list of shapes generated from the shape theS.
-  Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& theS) Standard_OVERRIDE;
+  Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& theS) Standard_OVERRIDE;
   
   //! Returns true if the shape theS has been deleted.
   Standard_EXPORT virtual Standard_Boolean IsDeleted (const TopoDS_Shape& theS) Standard_OVERRIDE;
@@ -287,7 +287,7 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
   BOPCol_IndexedDataMapOfShapeListOfShape myIndex;
   BOPCol_DataMapOfIntegerListOfShape myMaterials;
   BOPCol_DataMapOfShapeInteger myShapeMaterial;
-  BOPCol_DataMapOfShapeShape myMapGenerated;
+  BOPCol_DataMapOfShapeShape myMapModified;
 
  private:
 

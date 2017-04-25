@@ -48,7 +48,7 @@ BOPAlgo_CellsBuilder::BOPAlgo_CellsBuilder()
   myIndex(100, myAllocator),
   myMaterials(100, myAllocator),
   myShapeMaterial(100, myAllocator),
-  myMapGenerated(100, myAllocator)
+  myMapModified(100, myAllocator)
 {
 }
 
@@ -63,7 +63,7 @@ BOPAlgo_CellsBuilder::BOPAlgo_CellsBuilder
   myIndex(100, myAllocator),
   myMaterials(100, myAllocator),
   myShapeMaterial(100, myAllocator),
-  myMapGenerated(100, myAllocator)
+  myMapModified(100, myAllocator)
 {
 }
 
@@ -86,7 +86,7 @@ void BOPAlgo_CellsBuilder::Clear()
   myIndex.Clear();
   myMaterials.Clear();
   myShapeMaterial.Clear();
-  myMapGenerated.Clear();
+  myMapModified.Clear();
 }
 
 //=======================================================================
@@ -312,7 +312,7 @@ void BOPAlgo_CellsBuilder::AddAllToResult(const Standard_Integer theMaterial,
 {
   myShapeMaterial.Clear();
   myMaterials.Clear();
-  myMapGenerated.Clear();
+  myMapModified.Clear();
   //
   myShape = myAllParts;
   //
@@ -435,7 +435,7 @@ void BOPAlgo_CellsBuilder::RemoveAllFromResult()
   //
   myMaterials.Clear();
   myShapeMaterial.Clear();
-  myMapGenerated.Clear();
+  myMapModified.Clear();
   //
   PrepareHistory();
 }
@@ -760,7 +760,7 @@ Standard_Boolean BOPAlgo_CellsBuilder::RemoveInternals(const BOPCol_ListOfShape&
       return bRemoved;
     }
     //
-    // fill map of generated shapes
+    // fill map of modified shapes
     BOPCol_IndexedMapOfShape aMG;
     Standard_Integer i, aNb;
     //
@@ -771,20 +771,12 @@ Standard_Boolean BOPAlgo_CellsBuilder::RemoveInternals(const BOPCol_ListOfShape&
     aNb = aMG.Extent();
     for (i = 1; i <= aNb; ++i) {
       const TopoDS_Shape& aSS = aMG(i);
-      const TopTools_ListOfShape& aLSGen = anUnify.Generated(aSS);
-      TopTools_ListIteratorOfListOfShape aIt(aLSGen);
+      const TopTools_ListOfShape& aLSMod = anUnify.History()->Modified(aSS);
+      TopTools_ListIteratorOfListOfShape aIt(aLSMod);
       for (; aIt.More(); aIt.Next()) {
         const TopoDS_Shape& aSU = aIt.Value();
         if (!aSU.IsNull() && !aSS.IsSame(aSU)) {
-          myMapGenerated.Bind(aSS, aSU);
-          bRemoved = Standard_True;
-        }
-      }
-      const TopTools_ListOfShape& aLSMod = anUnify.Modified(aSS);
-      for (aIt.Init(aLSMod); aIt.More(); aIt.Next()) {
-        const TopoDS_Shape& aSU = aIt.Value();
-        if (!aSU.IsNull() && !aSS.IsSame(aSU)) {
-          myMapGenerated.Bind(aSS, aSU);
+          myMapModified.Bind(aSS, aSU);
           bRemoved = Standard_True;
         }
       }
@@ -907,17 +899,17 @@ Standard_Boolean BOPAlgo_CellsBuilder::IsDeleted(const TopoDS_Shape& theS)
     return bRet;
   }
   //
-  Standard_Boolean bHasImage, bHasGenerated;
+  Standard_Boolean bHasImage, bHasModified;
   //
   bHasImage = myImages.IsBound(theS);
-  bHasGenerated = myMapGenerated.IsBound(theS);
-  if (!bHasImage && !bHasGenerated) {
+  bHasModified = myMapModified.IsBound(theS);
+  if (!bHasImage && !bHasModified) {
     bRet = !myMapShape.Contains(theS);
     return bRet;
   }
   //
-  if (bHasGenerated) {
-    const TopoDS_Shape& aSG = myMapGenerated.Find(theS);
+  if (bHasModified) {
+    const TopoDS_Shape& aSG = myMapModified.Find(theS);
     if (myMapShape.Contains(aSG)) {
       bRet = Standard_False;
       return bRet;
@@ -932,8 +924,8 @@ Standard_Boolean BOPAlgo_CellsBuilder::IsDeleted(const TopoDS_Shape& theS)
       const TopoDS_Shape& aSpR = myShapesSD.IsBound(aSp) ? 
         myShapesSD.Find(aSp) : aSp;
       //
-      const TopoDS_Shape& aSpRG = myMapGenerated.IsBound(aSpR) ?
-        myMapGenerated.Find(aSpR) : aSpR;
+      const TopoDS_Shape& aSpRG = myMapModified.IsBound(aSpR) ?
+        myMapModified.Find(aSpR) : aSpR;
       if (myMapShape.Contains(aSpRG)) {
         bRet = Standard_False;
         break;
@@ -945,10 +937,10 @@ Standard_Boolean BOPAlgo_CellsBuilder::IsDeleted(const TopoDS_Shape& theS)
 }
 
 //=======================================================================
-//function : Generated
+//function : Modified
 //purpose  : 
 //=======================================================================
-const TopTools_ListOfShape& BOPAlgo_CellsBuilder::Generated(const TopoDS_Shape& theS)
+const TopTools_ListOfShape& BOPAlgo_CellsBuilder::Modified(const TopoDS_Shape& theS)
 {
   myHistShapes.Clear();
   if (theS.IsNull()) {
@@ -960,9 +952,9 @@ const TopTools_ListOfShape& BOPAlgo_CellsBuilder::Generated(const TopoDS_Shape& 
     return myHistShapes;
   }
   //
-  Standard_Boolean bHasGenerated = myMapGenerated.IsBound(theS);
-  if (bHasGenerated) {
-    const TopoDS_Shape& aSG = myMapGenerated.Find(theS);
+  Standard_Boolean bHasModified = myMapModified.IsBound(theS);
+  if (bHasModified) {
+    const TopoDS_Shape& aSG = myMapModified.Find(theS);
     if (myMapShape.Contains(aSG)) {
       myHistShapes.Append(aSG);
     }
@@ -982,13 +974,17 @@ const TopTools_ListOfShape& BOPAlgo_CellsBuilder::Generated(const TopoDS_Shape& 
     const TopoDS_Shape& aSpR = myShapesSD.IsBound(aSp) ? 
       myShapesSD.Find(aSp) : aSp;
     //
-    if (myMapGenerated.IsBound(aSpR)) {
-      const TopoDS_Shape& aSG = myMapGenerated.Find(aSpR);
+    if (myMapModified.IsBound(aSpR)) {
+      const TopoDS_Shape& aSG = myMapModified.Find(aSpR);
       if (myMapShape.Contains(aSG)) {
         if (aMFence.Add(aSG)) {
           myHistShapes.Append(aSG);
         }
       }
+    }
+    else if (aMFence.Add(aSpR))
+    {
+      myHistShapes.Append(aSpR);
     }
   }
   //

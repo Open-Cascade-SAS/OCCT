@@ -1364,43 +1364,6 @@ static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, c
   return 0;
 }
 
-Standard_Integer unifysamedomgen(Draw_Interpretor& di,
-                                 Standard_Integer n,
-                                 const char** a)
-{
-  if (n != 3) {
-    di << "use unifysamedomgen newshape oldshape\n";
-    return 0;
-  }
-  TopoDS_Shape aShape;
-  aShape = DBRep::Get(a[2]);
-  if (aShape.IsNull()) {
-    di << "Null shape is not allowed here\n";
-    return 1;
-  }
-
-  const TopTools_ListOfShape& aLS = Unifier().Generated(aShape);
-
-  if (aLS.Extent() > 1) {
-    BRep_Builder aBB;
-    TopoDS_Compound aRes;
-    aBB.MakeCompound(aRes);
-    TopTools_ListIteratorOfListOfShape aIt(aLS);
-    for (; aIt.More(); aIt.Next()) {
-      const TopoDS_Shape& aCurrentShape = aIt.Value();
-      aBB.Add(aRes, aCurrentShape);
-    }
-    DBRep::Set(a[1], aRes);
-  }
-  else if (aLS.Extent() == 1) {
-    DBRep::Set(a[1], aLS.First());
-  }
-  else {
-    di << "No shapes were generated from the shape\n";
-  }
-  return 0;
-}
-
 Standard_Integer unifysamedommod(Draw_Interpretor& di,
                                  Standard_Integer n,
                                  const char** a)
@@ -1416,7 +1379,7 @@ Standard_Integer unifysamedommod(Draw_Interpretor& di,
     return 1;
   }
 
-  const TopTools_ListOfShape& aLS = Unifier().Modified(aShape);
+  const TopTools_ListOfShape& aLS = Unifier().History()->Modified(aShape);
 
   if (aLS.Extent() > 1) {
     BRep_Builder aBB;
@@ -1451,7 +1414,7 @@ Standard_Integer unifysamedomisdel(Draw_Interpretor& di,
     di << "Null shape is not allowed here\n";
     return 1;
   }
-  Standard_Boolean IsDeleted = Unifier().IsDeleted(aShape);
+  Standard_Boolean IsDeleted = Unifier().History()->IsRemoved(aShape);
   di << "The shape has" << (IsDeleted ? " " : " not ") << "been deleted" << "\n";
   return 0;
 }
@@ -1665,11 +1628,6 @@ Standard_Integer reshape(Draw_Interpretor& di,
   theCommands.Add ("unifysamedom",
                    "unifysamedom result shape [s1 s2 ...] [-f] [-e] [-nosafe] [+b] [+i] [-t val] [-a val]",
                     __FILE__,unifysamedom,g);
-  
-  theCommands.Add("unifysamedomgen",
-                  "unifysamedomgen newshape oldshape : get new shape generated "
-                  "by unifysamedom command from the old one",
-                  __FILE__, unifysamedomgen, g);
 
   theCommands.Add("unifysamedommod",
                   "unifysamedommod newshape oldshape : get new shape modified "

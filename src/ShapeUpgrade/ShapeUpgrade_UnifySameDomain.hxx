@@ -17,6 +17,7 @@
 #ifndef _ShapeUpgrade_UnifySameDomain_HeaderFile
 #define _ShapeUpgrade_UnifySameDomain_HeaderFile
 
+#include <BRepTools_History.hxx>
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
@@ -43,13 +44,17 @@ DEFINE_STANDARD_HANDLE(ShapeUpgrade_UnifySameDomain, MMgt_TShared)
 //! on the BSpline or Bezier curves with C1 continuity on their common vertices will be merged into one common edge 
 //! The output result of tool is an unified shape
 //! All the modifications of initial shape are recorded during unifying.
-//! Method Generated() can be used to obtain the new (unified) shape from the old one 
+//! Methods History are intended to: <br>
+//! - set a place holder for the history of the changing of the sub-shapes of
+//!   the initial shape; <br>
+//! - get the collected history. <br>
+//! The algorithm provides a place holder for the history and collects the
+//! history by default.
+//! To avoid collecting of the history the place holder should be set to the null handle.
 class ShapeUpgrade_UnifySameDomain : public MMgt_TShared
 {
 
 public:
-
-  
   //! empty constructor
   Standard_EXPORT ShapeUpgrade_UnifySameDomain();
   
@@ -98,23 +103,10 @@ public:
   Standard_EXPORT void Build();
   
   //! Gives the resulting shape
-  Standard_EXPORT const TopoDS_Shape& Shape() const;
-  
-  //! Returns list of new common shapes from the old one shape.
-  //! After successful common operation based on <aShape> list 
-  //! will contain new generated shape.
-  //! In other cases it will return an empty list
-  Standard_EXPORT const TopTools_ListOfShape& Generated(const TopoDS_Shape& aShape);
-
-  //! Returns list of new modified shapes.
-  //! After successful modifying <aShape> without geometry changes list 
-  //! will contain new modified shape.
-  //! In other cases it will return an empty list
-  Standard_EXPORT const TopTools_ListOfShape& Modified(const TopoDS_Shape& aShape);
-
-  //! Returns true if the <aShape> has been deleted. The
-  //! result shape of the operation does not contain even trace of <aShape>.
-  Standard_EXPORT Standard_Boolean IsDeleted(const TopoDS_Shape& aShape);
+  const TopoDS_Shape& Shape() const
+  {
+    return myShape;
+  }
   
   //! this method makes if possible a common face from each
   //! group of faces lying on coincident surfaces
@@ -127,8 +119,17 @@ public:
   //! this method unifies same domain faces and edges
   Standard_EXPORT void UnifyFacesAndEdges();
 
+  //! Returns the history of the processed shapes.
+  const Handle(BRepTools_History)& History() const
+  {
+    return myHistory;
+  }
 
-
+  //! Returns the history of the processed shapes.
+  Handle(BRepTools_History)& History()
+  {
+    return myHistory;
+  }
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_UnifySameDomain,MMgt_TShared)
 
@@ -153,12 +154,10 @@ private:
   Standard_Boolean mySafeInputMode;
   TopoDS_Shape myShape;
   Handle(ShapeBuild_ReShape) myContext;
-  TopTools_DataMapOfShapeShape myOldToGeneratedShapes;
-  TopTools_ListOfShape myHistShapes;
-  TopTools_MapOfShape myRemovedShapes;
   TopTools_MapOfShape myKeepShapes;
 
-
+  Handle(BRepTools_History) myHistory; //!< The history.
+  TopTools_MapOfShape myRemoved;
 };
 
 

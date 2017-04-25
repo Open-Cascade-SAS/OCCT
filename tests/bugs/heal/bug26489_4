@@ -15,19 +15,19 @@ explode b1 f
 vinit
 vsetdispmode 1
 
-unifysamedomgen x1 b1_1
+unifysamedommod x1 b1_1
 vclear
 vdisplay x1
 vfit
 vdump ${imagedir}/${casename}_1.png
 
-unifysamedomgen x2 b1_2
+unifysamedommod x2 b1_2
 vclear
 vdisplay x2
 vfit
 vdump ${imagedir}/${casename}_2.png
 
-unifysamedomgen x3 b1_3
+unifysamedommod x3 b1_3
 vclear
 vdisplay x3
 vfit

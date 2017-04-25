@@ -270,11 +270,10 @@ static TopoDS_Wire GetUnifiedWire(const TopoDS_Wire& theWire,
   for (; wexp.More(); wexp.Next())
   {
     TopoDS_Shape anEdge = wexp.Current();
-    const TopTools_ListOfShape& aLSG = theUnifier.Generated(anEdge);
-    // take care of processing the result of Generated() before getting Modified()
-    Standard_Boolean isEmpty = aLSG.IsEmpty();
-    if (!isEmpty) {
-      TopTools_ListIteratorOfListOfShape anIt(aLSG);
+    const TopTools_ListOfShape& aLS = theUnifier.History()->Modified(anEdge);
+    if (!aLS.IsEmpty())
+    {
+      TopTools_ListIteratorOfListOfShape anIt(aLS);
       for (; anIt.More(); anIt.Next()) {
         const TopoDS_Shape& aShape = anIt.Value();
         //wire shouldn't contain duplicated generated edges
@@ -282,12 +281,11 @@ static TopoDS_Wire GetUnifiedWire(const TopoDS_Wire& theWire,
           aWMaker.Add(TopoDS::Edge(aShape));
       }
     }
-    const TopTools_ListOfShape& aLSM = theUnifier.Modified(anEdge);
-    if (!aLSM.IsEmpty())
-      aWMaker.Add(aLSM);
-    else if (isEmpty)
+    else
+    {
       // no change, put original edge
       aWMaker.Add(TopoDS::Edge(anEdge));
+    }
   }
   return aWMaker.Wire();
 }
