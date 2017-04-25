@@ -1147,6 +1147,7 @@ The following obsolete features have been removed:
 * The method Perform of the *ShapeConstruct_ProjectCurveOnSurface* class is modified:
   - input arguments *continuity*, *maxdeg*, *nbinterval* have been removed as unused;
   - input arguments *TolFirst*, *TolLast* have been added at the end of arguments' list.
+* The functionality to process shapes different only in orientation by different ways was removed from types *BRepTools_ReShape* and *ShapeBuild_ReShape*.
 
 @subsection upgrade_occt720_correction_of_Offset_API Corrections in BRepOffset API
 

@@ -23,6 +23,7 @@
 #include <BRep_Tool.hxx>
 #include <BRepTools_ReShape.hxx>
 #include <Geom_Surface.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Standard_Type.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
@@ -36,6 +37,32 @@
 #include <TopoDS_Solid.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepTools_ReShape,MMgt_TShared)
+
+namespace
+{
+
+//! Adds the shape to the map.
+//! If the shape is a wire, shell or solid then
+//! adds the sub-shapes of the shape instead.
+//! Returns 'true' if the sub-shapes were added.
+template<typename TMap>
+void Add(TMap& theMap, const TopoDS_Shape& theShape)
+{
+  const TopAbs_ShapeEnum aType = theShape.ShapeType();
+  if (aType != TopAbs_WIRE && aType != TopAbs_SHELL &&
+    aType != TopAbs_COMPSOLID)
+  {
+    theMap.Add(theShape);
+    return;
+  }
+
+  for (TopoDS_Iterator aIt(theShape); aIt.More(); aIt.Next())
+  {
+    theMap.Add(aIt.Value());
+  }
+}
+
+}
 
 //include <ShapeExtend.hxx>
 //#include <BRepTools_Edge.hxx>
@@ -101,7 +128,7 @@ BRepTools_ReShape::BRepTools_ReShape()
 
 void BRepTools_ReShape::Clear() 
 {
-  myNMap.Clear();
+  myShapeToReplacement.Clear();
   myNewShapes.Clear();
 }
 
@@ -114,7 +141,7 @@ void BRepTools_ReShape::Clear()
 void BRepTools_ReShape::Remove (const TopoDS_Shape& shape)
 {
   TopoDS_Shape nulshape;
-  Replace (shape,nulshape);
+  replace(shape, nulshape, TReplacementKind_Remove);
 }
 
 //=======================================================================
@@ -123,7 +150,8 @@ void BRepTools_ReShape::Remove (const TopoDS_Shape& shape)
 //=======================================================================
 
 void BRepTools_ReShape::replace (const TopoDS_Shape& ashape,
-                                 const TopoDS_Shape& anewshape)
+                                 const TopoDS_Shape& anewshape,
+                                 const TReplacementKind theKind)
 {
   TopoDS_Shape shape = ashape;
   TopoDS_Shape newshape = anewshape;
@@ -156,10 +184,9 @@ void BRepTools_ReShape::replace (const TopoDS_Shape& ashape,
     cout << "Warning: BRepTools_ReShape::Replace: shape already recorded" << endl;
 #endif
 
-  myNMap.Bind (shape, newshape);
+  myShapeToReplacement.Bind(shape, TReplacement(newshape, theKind));
   myNewShapes.Add (newshape);
 }
-
 
 //=======================================================================
 //function : IsRecorded
@@ -174,7 +201,7 @@ Standard_Boolean BRepTools_ReShape::IsRecorded (const TopoDS_Shape& ashape) cons
     shape.Location ( nullLoc );
   }
   if (shape.IsNull()) return Standard_False;
-  return myNMap.IsBound (shape);
+  return myShapeToReplacement.IsBound (shape);
 }
 
 
@@ -194,19 +221,18 @@ TopoDS_Shape BRepTools_ReShape::Value (const TopoDS_Shape& ashape) const
   }
   
   Standard_Boolean fromMap = Standard_False;
-  if ( shape.Orientation()==TopAbs_REVERSED ) {
-    if (!myNMap.IsBound (shape)) res = shape;
-    else { 
-      res = myNMap.Find (shape).Reversed();
-      fromMap = Standard_True;
-    }
+  if (!myShapeToReplacement.IsBound(shape))
+  {
+    res = shape;
   }
-  else {
-    if (!myNMap.IsBound (shape)) res = shape;
-    else {
-      res = myNMap.Find (shape);
-      fromMap = Standard_True;
+  else
+  {
+    res = myShapeToReplacement(shape).Result();
+    if (shape.Orientation() == TopAbs_REVERSED)
+    {
+      res.Reverse();
     }
+    fromMap = Standard_True;
   }
   // for INTERNAL/EXTERNAL, since they are not fully supported, keep orientation
   if ( shape.Orientation() == TopAbs_INTERNAL ||
@@ -243,8 +269,16 @@ Standard_Integer BRepTools_ReShape::Status(const TopoDS_Shape& ashape,
     shape.Location ( nullLoc );
   }
 
-  if (!myNMap.IsBound (shape))  {  newsh = shape;  res = 0; }
-  else {  newsh = myNMap.Find (shape);  res = 1;  }
+  if (!myShapeToReplacement.IsBound(shape))
+  {
+    newsh = shape;
+    res = 0;
+  }
+  else
+  {
+    newsh = myShapeToReplacement(shape).Result();
+    res = 1;
+  }
   if (res > 0) {
     if (newsh.IsNull()) res = -1;
     else if (newsh.IsEqual (shape)) res = 0;
@@ -413,7 +447,8 @@ TopoDS_Shape BRepTools_ReShape::Apply (const TopoDS_Shape& shape,
     result.Orientation(orien);
   }
 
-  Replace ( shape, result );
+  replace(shape, result,
+    result.IsNull() ? TReplacementKind_Remove : TReplacementKind_Modify);
   myStatus = locStatus;
 
   return result;
@@ -467,4 +502,64 @@ TopoDS_Vertex BRepTools_ReShape::CopyVertex(const TopoDS_Vertex& theV,
 Standard_Boolean BRepTools_ReShape::IsNewShape(const TopoDS_Shape& theShape) const
 {
   return myNewShapes.Contains(theShape);
+}
+
+//=======================================================================
+//function : History
+//purpose  :
+//=======================================================================
+
+Handle(BRepTools_History) BRepTools_ReShape::History() const
+{
+  Handle(BRepTools_History) aHistory = new BRepTools_History;
+
+  // Fill the history.
+  for (TShapeToReplacement::Iterator aRIt(myShapeToReplacement);
+    aRIt.More(); aRIt.Next())
+  {
+    const TopoDS_Shape& aShape = aRIt.Key();
+    if (!BRepTools_History::IsSupportedType(aShape) ||
+      myNewShapes.Contains(aShape))
+    {
+      continue;
+    }
+
+    NCollection_IndexedMap<TopoDS_Shape> aIntermediates;
+    NCollection_Map<TopoDS_Shape> aModified;
+    aIntermediates.Add(aShape);
+    for (Standard_Integer aI = 1; aI <= aIntermediates.Size(); ++aI)
+    {
+      const TopoDS_Shape& aIntermediate = aIntermediates(aI);
+      const TReplacement* aReplacement =
+        myShapeToReplacement.Seek(aIntermediate);
+      if (aReplacement == NULL)
+      {
+        Add(aModified, aIntermediate);
+      }
+      else if (aReplacement->RelationKind() !=
+        BRepTools_History::TRelationType_Removed)
+      {
+        const TopoDS_Shape aResult = aReplacement->RelationResult();
+        if (!aResult.IsNull())
+        {
+          Add(aIntermediates, aResult);
+        }
+      }
+    }
+
+    if (aModified.IsEmpty())
+    {
+      aHistory->Remove(aShape);
+    }
+    else
+    {
+      for (NCollection_Map<TopoDS_Shape>::Iterator aIt(aModified);
+        aIt.More(); aIt.Next())
+      {
+        aHistory->AddModified(aShape, aIt.Value());
+      }
+    }
+  }
+
+  return aHistory;
 }

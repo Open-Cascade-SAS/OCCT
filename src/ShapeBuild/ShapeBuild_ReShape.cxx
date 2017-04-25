@@ -224,7 +224,9 @@ TopoDS_Shape ShapeBuild_ReShape::Apply (const TopoDS_Shape& shape,
     result.Closed (BRep_Tool::IsClosed (result));
   result.Orientation(orient);
   myStatus = locStatus;
-  Replace ( shape, result );
+
+  replace(shape, result,
+    result.IsNull() ? TReplacementKind_Remove : TReplacementKind_Modify);
 
   return result;
 }
