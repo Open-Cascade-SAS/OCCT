@@ -981,7 +981,6 @@ void AIS_Shape::SetTransparency (const Standard_Real theValue)
     }
 
     const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
-    aPrs->SetDisplayPriority (10); // force highest priority for translucent objects
     for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
     {
       const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
@@ -1037,7 +1036,6 @@ void AIS_Shape::UnsetTransparency()
         aGroup->SetGroupPrimitivesAspect (anAreaAsp);
       }
     }
-    aPrs->ResetDisplayPriority();
   }
 
   myRecomputeEveryPrs = Standard_False; // no mode to recalculate :only viewer update

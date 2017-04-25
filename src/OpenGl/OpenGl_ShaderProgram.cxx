@@ -70,9 +70,11 @@ Standard_CString OpenGl_ShaderProgram::PredefinedKeywords[] =
   "occBackMaterial",       // OpenGl_OCCT_BACK_MATERIAL
   "occColor",              // OpenGl_OCCT_COLOR
 
+  "occOitOutput",          // OpenGl_OCCT_OIT_OUTPUT
+  "occOitDepthFactor",     // OpenGl_OCCT_OIT_DEPTH_FACTOR
+
   "occTexTrsf2d",          // OpenGl_OCCT_TEXTURE_TRSF2D
   "occPointSize"           // OpenGl_OCCT_POINT_SIZE
-
 };
 
 // =======================================================================
@@ -204,11 +206,43 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     }
 
     TCollection_AsciiString aSource = aDeclarations + anIter.Value()->Source();
+    TCollection_AsciiString anExtensions = "// This section enables extensions used in OCCT GLSL programs\n";
+    if (theCtx->hasDrawBuffers)
+    {
+      anExtensions += "#define OCC_ENABLE_draw_buffers\n";
+    }
+    if (theCtx->hasDrawBuffers == OpenGl_FeatureInExtensions)
+    {
+      if (theCtx->arbDrawBuffers)
+      {
+        anExtensions += "#extension GL_ARB_draw_buffers : enable\n";
+      }
+      else if (theCtx->extDrawBuffers)
+      {
+        anExtensions += "#extension GL_EXT_draw_buffers : enable\n";
+      }
+    }
+
+    if (theCtx->hasSampleVariables == OpenGl_FeatureInExtensions)
+    {
+#if defined(GL_ES_VERSION_2_0)
+      if (theCtx->oesSampleVariables)
+      {
+        anExtensions += "#extension GL_OES_sample_variables : enable\n";
+      }
+#else
+      if (theCtx->arbSampleShading)
+      {
+        anExtensions += "#extension GL_ARB_sample_shading : enable\n";
+      }
+#endif
+    }
+
     switch (anIter.Value()->Type())
     {
       case Graphic3d_TOS_VERTEX:
       {
-        aSource = aHeader + TCollection_AsciiString ("#define VERTEX_SHADER\n") + aSource;
+        aSource = aHeader + TCollection_AsciiString ("#define VERTEX_SHADER\n") + anExtensions + aSource;
         break;
       }
       case Graphic3d_TOS_FRAGMENT:
@@ -219,9 +253,9 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
                                          "precision highp int;\n"
                                        : "precision mediump float;\n"
                                          "precision mediump int;\n");
-        aSource = aHeader + aPrefix + aSource;
+        aSource = aHeader + aPrefix + anExtensions + aSource;
       #else
-        aSource = aHeader + aSource;
+        aSource = aHeader + anExtensions + aSource;
       #endif
         break;
       }
@@ -229,6 +263,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
 
     if (!aShader->LoadSource (theCtx, aSource))
     {
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aSource);
       const TCollection_ExtendedString aMsg = "Error! Failed to set shader source";
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
                            GL_DEBUG_TYPE_ERROR,
@@ -241,6 +276,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
 
     if (!aShader->Compile (theCtx))
     {
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aSource);
       TCollection_AsciiString aLog;
       aShader->FetchInfoLog (theCtx, aLog);
       if (aLog.IsEmpty())

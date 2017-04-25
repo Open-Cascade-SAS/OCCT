@@ -19,6 +19,8 @@
 #include <OpenGl_Layer.hxx>
 #include <OpenGl_LayerFilter.hxx>
 
+#include <NCollection_Array1.hxx>
+#include <NCollection_Handle.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_DataMap.hxx>
 
@@ -89,7 +91,9 @@ public:
   //! Render this element
   void Render (const Handle(OpenGl_Workspace)& theWorkspace,
                const Standard_Boolean          theToDrawImmediate,
-               const OpenGl_LayerFilter        theLayersToProcess) const;
+               const OpenGl_LayerFilter        theLayersToProcess,
+               OpenGl_FrameBuffer*             theReadDrawFbo,
+               OpenGl_FrameBuffer*             theOitAccumFbo) const;
 
   //! Returns the set of OpenGL Z-layers.
   const OpenGl_SequenceOfLayers& Layers() const { return myLayers; }
@@ -106,6 +110,132 @@ public:
 
 protected:
 
+  //! Filter of TKOpenGl elements for processing only shading geometry and
+  //! for collecting number of skipped elements to an external counter.
+  class OpenGl_OpaqueFilter : public OpenGl_RenderFilter
+  {
+  public:
+
+    //! Constructor.
+    //! @param thePrevFilter [in] the previously active filter that should have additive effect.
+    OpenGl_OpaqueFilter() : mySkippedCounter (0) {}
+
+    //! Sets the current active filter in workspace.
+    //! @param thePrevFilter [in] the previously active filter that should have additive effect.
+    void SetPreviousFilter (const Handle(OpenGl_RenderFilter)& thePrevFitler) { myFilter = thePrevFitler; }
+
+    //! Sets the value of the skipped elements counter.
+    void SetSkippedCounter (const Standard_Size theCounter) { mySkippedCounter = theCounter; }
+
+    //! Returns number of skipped elements.
+    Standard_Size NbSkipped() const { return mySkippedCounter; }
+
+    //! Checks whether the element should be rendered or skipped.
+    //! @param theWorkspace [in] the currently used workspace for rendering.
+    //! @param theGlElement [in] the TKOpenGl rendering queue element that should be checked before streaming to GPU.
+    Standard_EXPORT virtual Standard_Boolean ShouldRender (const Handle(OpenGl_Workspace)& theWorkspace,
+                                                           const OpenGl_Element*           theGlElement) Standard_OVERRIDE;
+
+    DEFINE_STANDARD_RTTI_INLINE (OpenGl_OpaqueFilter, OpenGl_RenderFilter)
+
+  private:
+
+    Standard_Size mySkippedCounter;   //!< Counter of skipped elements.
+    Handle(OpenGl_RenderFilter) myFilter; //!< Previous active filter that should be combined.
+  };
+
+  //! Filter of TKOpenGl elements for keeping only shading geometry with transparency.
+  class OpenGl_TransparentFilter : public OpenGl_RenderFilter
+  {
+  public:
+
+    //! Constructor.
+    OpenGl_TransparentFilter() {}
+
+    //! Sets the current active filter in workspace.
+    //! @param thePrevFilter [in] the previously active filter that should have additive effect.
+    void SetPreviousFilter (const Handle(OpenGl_RenderFilter)& thePrevFitler) { myFilter = thePrevFitler; }
+
+    //! Checks whether the element should be rendered or skipped.
+    //! @param theWorkspace [in] the currently used workspace for rendering.
+    //! @param theGlElement [in] the TKOpenGl rendering queue element that should be checked before streaming to GPU.
+    Standard_EXPORT virtual Standard_Boolean ShouldRender (const Handle(OpenGl_Workspace)& theWorkspace,
+                                                           const OpenGl_Element*           theGlElement) Standard_OVERRIDE;
+
+    DEFINE_STANDARD_RTTI_INLINE (OpenGl_TransparentFilter, OpenGl_RenderFilter)
+
+  private:
+
+    Handle(OpenGl_RenderFilter) myFilter; //!< Previous active filter that should be combined.
+  };
+
+  //! Stack of references to existing layers of predefined maximum size.
+  class OpenGl_LayerStack
+  {
+  public:
+    typedef NCollection_Array1<const OpenGl_Layer*>::iterator iterator;
+
+    //! Reallocate internal buffer of the stack.
+    void Allocate (Standard_Integer theSize)
+    {
+      if (theSize > 0)
+      {
+        myStackSpace = new NCollection_Array1<const OpenGl_Layer*> (1, theSize);
+        myStackSpace->Init (NULL);
+        myBackPtr    = myStackSpace->begin();
+      }
+      else
+      {
+        myStackSpace.Nullify();
+        myBackPtr = iterator();
+      }
+    }
+
+    //! Clear stack.
+    void Clear()
+    {
+      if (!myStackSpace.IsNull())
+      {
+        myStackSpace->Init (NULL);
+        myBackPtr = myStackSpace->begin();
+      }
+    }
+
+    //! Push a new layer reference to the stack.
+    void Push (const OpenGl_Layer* theLayer) { (*myBackPtr++) = theLayer; }
+
+    //! Returns iterator to the origin of the stack.
+    iterator Origin() const { return myStackSpace.IsNull() ? iterator() : myStackSpace->begin(); }
+
+    //! Returns iterator to the back of the stack (after last item added).
+    iterator Back() const { return myBackPtr; }
+
+    //! Returns true if nothing has been pushed into the stack.
+    Standard_Boolean IsEmpty() const { return Back() == Origin(); }
+
+  private:
+
+    NCollection_Handle<NCollection_Array1<const OpenGl_Layer*> > myStackSpace;
+    iterator                                                     myBackPtr;
+  };
+
+  //! Render transparent objects using blending operator.
+  //! Additional accumulation framebuffer is used for blended order-independent
+  //! transparency algorithm. It should support floating-point color components
+  //! and share depth with main reading/drawing framebuffer.
+  //! @param theWorkspace [in] the currently used workspace for rendering.
+  //! @param theLayerIter [in/out] the current iterator of transparent layers to process.
+  //! @param theGlobalSettings [in] the set of global settings used for rendering.
+  //! @param theReadDrawFbo [in] the framebuffer for reading depth and writing final color.
+  //! @param theOitAccumFbo [in] the framebuffer for accumulating color and coverage for OIT process.
+  void renderTransparent (const Handle(OpenGl_Workspace)&   theWorkspace,
+                          OpenGl_LayerStack::iterator&      theLayerIter,
+                          const OpenGl_GlobalLayerSettings& theGlobalSettings,
+                          OpenGl_FrameBuffer*               theReadDrawFbo,
+                          OpenGl_FrameBuffer*               theOitAccumFbo) const;
+
+protected:
+
   // number of structures temporary put to default layer
   OpenGl_SequenceOfLayers myLayers;
   OpenGl_LayerSeqIds      myLayerIds;
@@ -116,6 +246,12 @@ protected:
   Standard_Integer        myImmediateNbStructures; //!< number of structures within immediate layers
 
   mutable Standard_Size   myModifStateOfRaytraceable;
+
+  //! Collection of references to layers with transparency gathered during rendering pass.
+  mutable OpenGl_LayerStack myTransparentToProcess;
+
+  Handle(OpenGl_OpaqueFilter)      myRenderOpaqueFilter; //!< rendering filter for opaque drawing pass (blended OIT).
+  Handle(OpenGl_TransparentFilter) myRenderTranspFilter; //!< rendering filter for transparency drawing pass (blended OIT).
 
 public:
 

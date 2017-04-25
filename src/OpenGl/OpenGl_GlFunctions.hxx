@@ -186,6 +186,13 @@
   #define GL_DEBUG_SEVERITY_HIGH        0x9146
   #define GL_DEBUG_SEVERITY_MEDIUM      0x9147
   #define GL_DEBUG_SEVERITY_LOW         0x9148
+
+  // GL_ARB_draw_buffers (GL_EXT_draw_buffers) extension
+  #define GL_MAX_COLOR_ATTACHMENTS      0x8CDF
+  #define GL_MAX_DRAW_BUFFERS           0x8824
+
+  // OES_texture_half_float
+  #define GL_HALF_FLOAT                 0x8D61
 #endif
 
 #if !defined(HAVE_EGL) && (defined(__ANDROID__) || defined(__QNX__) || defined(HAVE_GLES2) || defined(OCCT_UWP))
@@ -751,6 +758,9 @@ public: //! @name OpenGL ES 3.0
 
   typedef void (*glTexImage3D_t)(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid* data);
   glTexImage3D_t glTexImage3D;
+
+  typedef void (*glDrawBuffers_t)(GLsizei n, const GLenum* bufs);
+  glDrawBuffers_t glDrawBuffers;
 
 public: //! @name OpenGL ES 3.1
 

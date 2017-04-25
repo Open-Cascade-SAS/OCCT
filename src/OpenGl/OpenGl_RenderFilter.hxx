@@ -23,6 +23,7 @@ class OpenGl_RenderFilter;
 DEFINE_STANDARD_HANDLE (OpenGl_RenderFilter, Standard_Transient)
 
 class OpenGl_Element;
+class OpenGl_Workspace;
 
 //! Base class for defining element rendering filters.
 //! This class can be used in pair with advance rendering passes, and for 
@@ -32,13 +33,14 @@ class OpenGl_RenderFilter : public Standard_Transient
 public:
 
   //! Checks whether the element can be rendered or not.
+  //! @param theWorkspace [in] the current workspace.
   //! @param theElement [in] the element to check.
   //! @return True if element can be rendered.
-  virtual Standard_Boolean CanRender (const OpenGl_Element* theElement) = 0;
+  virtual Standard_Boolean ShouldRender (const Handle(OpenGl_Workspace)& theWorkspace, const OpenGl_Element* theElement) = 0;
 
 public:
 
-  DEFINE_STANDARD_RTTIEXT(OpenGl_RenderFilter,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(OpenGl_RenderFilter, Standard_Transient)
 };
 
 #endif

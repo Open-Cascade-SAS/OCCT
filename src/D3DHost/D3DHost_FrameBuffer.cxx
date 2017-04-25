@@ -194,12 +194,12 @@ Standard_Boolean D3DHost_FrameBuffer::registerD3dBuffer (const Handle(OpenGl_Con
     return Standard_False;
   }
 
-  myColorTexture->Release (theCtx.operator->());
-  myColorTexture->Create  (theCtx);
+  myColorTextures (0)->Release (theCtx.operator->());
+  myColorTextures (0)->Create  (theCtx);
 
   myGlD3dSurf = aFuncs->wglDXRegisterObjectNV (myGlD3dDevice,
                                                myD3dSurf,
-                                               myColorTexture->TextureId(),
+                                               myColorTextures (0)->TextureId(),
                                                GL_TEXTURE_2D,
                                                WGL_ACCESS_WRITE_DISCARD_NV);
 
@@ -226,7 +226,7 @@ void D3DHost_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theCtx)
 
   OpenGl_FrameBuffer::BindBuffer (theCtx);
   theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                                          GL_TEXTURE_2D, myColorTexture->TextureId(), 0);
+                                          GL_TEXTURE_2D, myColorTextures (0)->TextureId(), 0);
   theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
                                           GL_TEXTURE_2D, myDepthStencilTexture->TextureId(), 0);
   if (theCtx->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)

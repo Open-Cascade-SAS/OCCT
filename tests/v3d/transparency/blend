@@ -1,0 +1,41 @@
+puts "========"
+puts "Transparency - check different blend operators"
+puts "========"
+
+# custom shapes
+set aShape1 [locate_data_file occ/Top.brep]
+set aShape2 [locate_data_file occ/Bottom.brep]
+
+vinit View1
+vsetdispmode 1
+vsetgradientbg 180 180 180 255 255 255 2
+restore $aShape1 s1
+restore $aShape2 s2
+vdisplay s1
+vdisplay s2
+vsettransparency s1 0.5
+vsettransparency s2 0.5
+
+# check blending artifacts
+vviewparams -scale 4.519 -at 93.051 -88.513 17.789 -eye -156.923 -151.929 6.147 -up -0.246 0.969 0.002
+
+vrenderparams -oit off
+vdump $imagedir/${casename}_blend_artifacts_unordered.png
+
+vrenderparams -oit 1.0
+vdump $imagedir/${casename}_blend_artifacts_oit.png
+
+# check depth occlusion
+vsetcolor s1 red
+vsetcolor s2 black
+
+vviewparams -scale 5.807 -at -59.913 -276.799 -4.312 -eye -69.465 -20.350 23.739 -up 0.999 0.038 -0.009
+
+vrenderparams -oit off
+vdump $imagedir/${casename}_occlusion_unordered.png
+
+vrenderparams -oit 0.0
+vdump $imagedir/${casename}_occlusion_oit_nodepth.png
+
+vrenderparams -oit 1.0
+vdump $imagedir/${casename}_occlusion_oit.png

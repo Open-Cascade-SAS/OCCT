@@ -25,6 +25,8 @@ enum Graphic3d_TypeOfLimit
   Graphic3d_TypeOfLimit_HasRayTracing,                  //!< indicates whether ray tracing is supported
   Graphic3d_TypeOfLimit_HasRayTracingTextures,          //!< indicates whether ray tracing textures are supported
   Graphic3d_TypeOfLimit_HasRayTracingAdaptiveSampling,  //!< indicates whether adaptive screen sampling is supported
+  Graphic3d_TypeOfLimit_HasBlendedOit,                  //!< indicates whether necessary GL extensions for Weighted, Blended OIT available (without MSAA).
+  Graphic3d_TypeOfLimit_HasBlendedOitMsaa,              //!< indicates whether necessary GL extensions for Weighted, Blended OIT available (with MSAA).
   Graphic3d_TypeOfLimit_NB                              //!< number of elements in this enumeration
 };
 

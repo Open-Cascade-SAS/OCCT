@@ -192,7 +192,11 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
       }
       else
       {
+      #if !defined(GL_ES_VERSION_2_0)
         theTextFormat  = GL_LUMINANCE8;
+      #else
+        theTextFormat  = GL_LUMINANCE;
+      #endif
         thePixelFormat = GL_LUMINANCE;
       }
       theDataType = GL_FLOAT;
@@ -207,7 +211,11 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
       }
       else
       {
+      #if !defined(GL_ES_VERSION_2_0)
         theTextFormat  = GL_ALPHA8;
+      #else
+        theTextFormat  = GL_ALPHA;
+      #endif
         thePixelFormat = GL_ALPHA;
       }
       theDataType = GL_FLOAT;
@@ -316,7 +324,11 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
       }
       else
       {
+      #if !defined(GL_ES_VERSION_2_0)
         theTextFormat  = GL_LUMINANCE8;
+      #else
+        theTextFormat  = GL_LUMINANCE;
+      #endif
         thePixelFormat = GL_LUMINANCE;
       }
       theDataType = GL_UNSIGNED_BYTE;
@@ -331,7 +343,11 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
       }
       else
       {
+      #if !defined(GL_ES_VERSION_2_0)
         theTextFormat  = GL_ALPHA8;
+      #else
+        theTextFormat  = GL_ALPHA;
+      #endif
         thePixelFormat = GL_ALPHA;
       }
       theDataType = GL_UNSIGNED_BYTE;
@@ -393,9 +409,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
 #if !defined(GL_ES_VERSION_2_0)
   const GLint anIntFormat  = theTextFormat;
 #else
-  // ES does not support sized formats and format conversions - them detected from data type
-  const GLint anIntFormat  = thePixelFormat;
-  (void) theTextFormat;
+  // ES 2.0 does not support sized formats and format conversions - them detected from data type
+  const GLint anIntFormat  = theCtx->IsGlGreaterEqual (3, 0) ? theTextFormat : thePixelFormat;
 #endif
 
   const GLsizei aMaxSize = theCtx->MaxTextureSize();

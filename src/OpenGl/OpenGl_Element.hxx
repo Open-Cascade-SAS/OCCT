@@ -63,12 +63,12 @@ public:
   //! @param theWorkspace [in] the rendering workspace.
   //! @param theFilter [in] the rendering filter to check whether the element
   //! should be rendered or not.
-  //! @return True if element passes the filering check and is rendered.
+  //! @return True if element passes the check and renders,
   inline Standard_Boolean
     RenderFiltered (const Handle(OpenGl_Workspace)& theWorkspace,
                     const Handle(OpenGl_RenderFilter)& theFilter) const
   {
-    if (!theFilter.IsNull() && !theFilter->CanRender (this))
+    if (!theFilter.IsNull() && !theFilter->ShouldRender (theWorkspace, this))
     {
       return Standard_False;
     }

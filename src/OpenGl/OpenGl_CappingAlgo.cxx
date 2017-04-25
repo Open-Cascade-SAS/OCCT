@@ -27,14 +27,6 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_CappingAlgoFilter,OpenGl_RenderFilter)
 
 namespace
 {
-#if !defined(GL_ES_VERSION_2_0)
-  static const GLint THE_FILLPRIM_FROM = GL_TRIANGLES;
-  static const GLint THE_FILLPRIM_TO   = GL_POLYGON;
-#else
-  static const GLint THE_FILLPRIM_FROM = GL_TRIANGLES;
-  static const GLint THE_FILLPRIM_TO   = GL_TRIANGLE_FAN;
-#endif
-
   //! Render infinite capping plane.
   //! @param theWorkspace [in] the GL workspace, context state.
   //! @param thePlane [in] the graphical plane, for which the capping surface is rendered.
@@ -88,8 +80,14 @@ namespace
       theWorkspace->ApplyAspectFace();
 
       // evaluate number of pair faces
-      glDisable (GL_DEPTH_TEST);
-      glDepthMask (GL_FALSE);
+      if (theWorkspace->UseZBuffer())
+      {
+        glDisable (GL_DEPTH_TEST);
+      }
+      if (theWorkspace->UseDepthWrite())
+      {
+        glDepthMask (GL_FALSE);
+      }
       glStencilFunc (GL_ALWAYS, 1, 0x01);
       glStencilOp (GL_KEEP, GL_INVERT, GL_INVERT);
 
@@ -119,10 +117,16 @@ namespace
 
       // render capping plane using the generated stencil mask
       glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-      glDepthMask (GL_TRUE);
+      if (theWorkspace->UseDepthWrite())
+      {
+        glDepthMask (GL_TRUE);
+      }
       glStencilFunc (GL_EQUAL, 1, 0x01);
       glStencilOp (GL_KEEP, GL_KEEP, GL_KEEP);
-      glEnable (GL_DEPTH_TEST);
+      if (theWorkspace->UseZBuffer())
+      {
+        glEnable (GL_DEPTH_TEST);
+      }
 
       renderPlane (theWorkspace, thePlane, aRenderPlane->ToUseObjectProperties()
                                          ? aGroupIter.Value()->AspectFace()
@@ -160,7 +164,9 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorks
 
   // replace primitive groups rendering filter
   Handle(OpenGl_RenderFilter) aRenderFilter = theWorkspace->GetRenderFilter();
-  theWorkspace->SetRenderFilter (theWorkspace->DefaultCappingAlgoFilter());
+  Handle(OpenGl_CappingAlgoFilter) aCappingFilter = theWorkspace->DefaultCappingAlgoFilter();
+  aCappingFilter->SetPreviousFilter (aRenderFilter);
+  theWorkspace->SetRenderFilter (aCappingFilter);
 
   // prepare for rendering the clip planes
   glEnable (GL_STENCIL_TEST);
@@ -214,10 +220,16 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorks
 // function : CanRender
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_CappingAlgoFilter::CanRender (const OpenGl_Element* theElement)
+Standard_Boolean OpenGl_CappingAlgoFilter::ShouldRender (const Handle(OpenGl_Workspace)& theWorkspace,
+                                                         const OpenGl_Element* theGlElement)
 {
-  const OpenGl_PrimitiveArray* aPArray = dynamic_cast<const OpenGl_PrimitiveArray*> (theElement);
+  if (!myFilter.IsNull() && !myFilter->ShouldRender (theWorkspace, theGlElement))
+  {
+    return Standard_False;
+  }
+
+  const OpenGl_PrimitiveArray* aPArray = dynamic_cast<const OpenGl_PrimitiveArray*> (theGlElement);
   return aPArray != NULL
-      && aPArray->DrawMode() >= THE_FILLPRIM_FROM
-      && aPArray->DrawMode() <= THE_FILLPRIM_TO;
+      && aPArray->DrawMode() >= OpenGl_PrimitiveArray::THE_FILLPRIM_FROM
+      && aPArray->DrawMode() <= OpenGl_PrimitiveArray::THE_FILLPRIM_TO;
 }

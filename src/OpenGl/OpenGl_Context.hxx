@@ -27,6 +27,7 @@
 #include <NCollection_Map.hxx>
 #include <NCollection_Handle.hxx>
 #include <NCollection_List.hxx>
+#include <NCollection_SparseArray.hxx>
 #include <Message.hxx>
 #include <OpenGl_Caps.hxx>
 #include <OpenGl_LineAttributes.hxx>
@@ -134,6 +135,13 @@ class OpenGl_Sampler;
 class OpenGl_FrameBuffer;
 class OpenGl_AspectFace;
 class Graphic3d_PresentationAttributes;
+
+enum OpenGl_FeatureFlag
+{
+  OpenGl_FeatureNotAvailable = 0, //!< Feature is not supported by OpenGl implementation.
+  OpenGl_FeatureInExtensions = 1, //!< Feature is supported as extension.
+  OpenGl_FeatureInCore       = 2  //!< Feature is supported as part of core profile.
+};
 
 DEFINE_STANDARD_HANDLE(OpenGl_Context, Standard_Transient)
 
@@ -456,6 +464,12 @@ public:
   //! @return value for GL_MAX_SAMPLES
   Standard_Integer MaxMsaaSamples() const { return myMaxMsaaSamples; }
 
+  //! @return value for GL_MAX_DRAW_BUFFERS
+  Standard_Integer MaxDrawBuffers() const { return myMaxDrawBuffers; }
+
+  //! @return value for GL_MAX_COLOR_ATTACHMENTS
+  Standard_Integer MaxColorAttachments() const { return myMaxColorAttachments; }
+
   //! Get maximum number of clip planes supported by OpenGl.
   //! This value is implementation dependent. At least 6
   //! planes should be supported by OpenGl (see specs).
@@ -586,11 +600,17 @@ public: //! @name methods to alter or retrieve current state
   //! Switch read buffer, wrapper for ::glReadBuffer().
   Standard_EXPORT void SetReadBuffer (const Standard_Integer theReadBuffer);
 
-  //! Return active draw buffer.
-  Standard_Integer DrawBuffer() { return myDrawBuffer; }
+  //! Return active draw buffer attached to a render target referred by index (layout location).
+  Standard_Integer DrawBuffer (const Standard_Integer theIndex = 0)
+  {
+    return myDrawBuffers.IsBound (theIndex) ? myDrawBuffers.Value (theIndex) : GL_NONE;
+  }
 
   //! Switch draw buffer, wrapper for ::glDrawBuffer().
   Standard_EXPORT void SetDrawBuffer (const Standard_Integer theDrawBuffer);
+
+  //! Switch draw buffer, wrapper for ::glDrawBuffers (GLsizei, const GLenum*).
+  Standard_EXPORT void SetDrawBuffers (const Standard_Integer theNb, const Standard_Integer* theDrawBuffers);
 
   //! Switch read/draw buffers.
   void SetReadDrawBuffer (const Standard_Integer theBuffer)
@@ -630,8 +650,13 @@ public: //! @name methods to alter or retrieve current state
 
   //! Setup current shading material.
   Standard_EXPORT void SetShadingMaterial (const OpenGl_AspectFace* theAspect,
-                                           const Handle(Graphic3d_PresentationAttributes)& theHighlight,
-                                           const Standard_Boolean theUseDepthWrite);
+                                           const Handle(Graphic3d_PresentationAttributes)& theHighlight);
+
+  //! Checks if transparency is required for the given aspect and highlight style.
+  Standard_EXPORT static Standard_Boolean CheckIsTransparent (const OpenGl_AspectFace* theAspect,
+                                                              const Handle(Graphic3d_PresentationAttributes)& theHighlight,
+                                                              Standard_ShortReal& theTranspFront,
+                                                              Standard_ShortReal& theTranspBack);
 
   //! Setup current color.
   Standard_EXPORT void SetColor4fv (const OpenGl_Vec4& theColor);
@@ -754,26 +779,34 @@ public: //! @name core profiles
 
 public: //! @name extensions
 
-  Standard_Boolean       hasHighp;       //!< highp in GLSL ES fragment shader is supported
-  Standard_Boolean       hasUintIndex;   //!< GLuint for index buffer is supported (always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_element_index_uint)
-  Standard_Boolean       hasTexRGBA8;    //!< always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_rgb8_rgba8
-  Standard_Boolean       arbNPTW;        //!< GL_ARB_texture_non_power_of_two
-  Standard_Boolean       arbTexRG;       //!< GL_ARB_texture_rg
-  Standard_Boolean       arbTexFloat;    //!< GL_ARB_texture_float (on desktop OpenGL - since 3.0 or as extension GL_ARB_texture_float; on OpenGL ES - since 3.0)
-  OpenGl_ArbTexBindless* arbTexBindless; //!< GL_ARB_bindless_texture
-  OpenGl_ArbTBO*         arbTBO;         //!< GL_ARB_texture_buffer_object
-  Standard_Boolean       arbTboRGB32;    //!< GL_ARB_texture_buffer_object_rgb32 (3-component TBO), in core since 4.0
-  OpenGl_ArbIns*         arbIns;         //!< GL_ARB_draw_instanced
-  OpenGl_ArbDbg*         arbDbg;         //!< GL_ARB_debug_output
-  OpenGl_ArbFBO*         arbFBO;         //!< GL_ARB_framebuffer_object
-  OpenGl_ArbFBOBlit*     arbFBOBlit;     //!< glBlitFramebuffer function, moved out from OpenGl_ArbFBO structure for compatibility with OpenGL ES 2.0
-  Standard_Boolean       extFragDepth;   //!< GL_EXT_frag_depth on OpenGL ES 2.0 (gl_FragDepthEXT built-in variable, before OpenGL ES 3.0)
-  OpenGl_ExtGS*          extGS;          //!< GL_EXT_geometry_shader4
-  Standard_Boolean       extBgra;        //!< GL_EXT_bgra or GL_EXT_texture_format_BGRA8888 on OpenGL ES
-  Standard_Boolean       extAnis;        //!< GL_EXT_texture_filter_anisotropic
-  Standard_Boolean       extPDS;         //!< GL_EXT_packed_depth_stencil
-  Standard_Boolean       atiMem;         //!< GL_ATI_meminfo
-  Standard_Boolean       nvxMem;         //!< GL_NVX_gpu_memory_info
+  Standard_Boolean       hasHighp;           //!< highp in GLSL ES fragment shader is supported
+  Standard_Boolean       hasUintIndex;       //!< GLuint for index buffer is supported (always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_element_index_uint)
+  Standard_Boolean       hasTexRGBA8;        //!< always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_rgb8_rgba8
+  OpenGl_FeatureFlag     hasDrawBuffers;     //!< Complex flag indicating support of multiple draw buffers (desktop OpenGL 2.0, OpenGL ES 3.0, GL_ARB_draw_buffers, GL_EXT_draw_buffers)
+  OpenGl_FeatureFlag     hasFloatBuffer;     //!< Complex flag indicating support of float color buffer format (desktop OpenGL 3.0, GL_ARB_color_buffer_float, GL_EXT_color_buffer_float)
+  OpenGl_FeatureFlag     hasHalfFloatBuffer; //!< Complex flag indicating support of half-float color buffer format (desktop OpenGL 3.0, GL_ARB_color_buffer_float, GL_EXT_color_buffer_half_float)
+  OpenGl_FeatureFlag     hasSampleVariables; //!< Complex flag indicating support of MSAA variables in GLSL shader (desktop OpenGL 4.0, GL_ARB_sample_shading)
+  Standard_Boolean       arbDrawBuffers;     //!< GL_ARB_draw_buffers
+  Standard_Boolean       arbNPTW;            //!< GL_ARB_texture_non_power_of_two
+  Standard_Boolean       arbTexRG;           //!< GL_ARB_texture_rg
+  Standard_Boolean       arbTexFloat;        //!< GL_ARB_texture_float (on desktop OpenGL - since 3.0 or as extension GL_ARB_texture_float; on OpenGL ES - since 3.0)
+  OpenGl_ArbTexBindless* arbTexBindless;     //!< GL_ARB_bindless_texture
+  OpenGl_ArbTBO*         arbTBO;             //!< GL_ARB_texture_buffer_object
+  Standard_Boolean       arbTboRGB32;        //!< GL_ARB_texture_buffer_object_rgb32 (3-component TBO), in core since 4.0
+  OpenGl_ArbIns*         arbIns;             //!< GL_ARB_draw_instanced
+  OpenGl_ArbDbg*         arbDbg;             //!< GL_ARB_debug_output
+  OpenGl_ArbFBO*         arbFBO;             //!< GL_ARB_framebuffer_object
+  OpenGl_ArbFBOBlit*     arbFBOBlit;         //!< glBlitFramebuffer function, moved out from OpenGl_ArbFBO structure for compatibility with OpenGL ES 2.0
+  Standard_Boolean       arbSampleShading;   //!< GL_ARB_sample_shading
+  Standard_Boolean       extFragDepth;       //!< GL_EXT_frag_depth on OpenGL ES 2.0 (gl_FragDepthEXT built-in variable, before OpenGL ES 3.0)
+  Standard_Boolean       extDrawBuffers;     //!< GL_EXT_draw_buffers
+  OpenGl_ExtGS*          extGS;              //!< GL_EXT_geometry_shader4
+  Standard_Boolean       extBgra;            //!< GL_EXT_bgra or GL_EXT_texture_format_BGRA8888 on OpenGL ES
+  Standard_Boolean       extAnis;            //!< GL_EXT_texture_filter_anisotropic
+  Standard_Boolean       extPDS;             //!< GL_EXT_packed_depth_stencil
+  Standard_Boolean       atiMem;             //!< GL_ATI_meminfo
+  Standard_Boolean       nvxMem;             //!< GL_NVX_gpu_memory_info
+  Standard_Boolean       oesSampleVariables; //!< GL_OES_sample_variables
 
 public: //! @name public properties tracking current state
 
@@ -808,6 +841,7 @@ private: // context info
   typedef NCollection_Shared< NCollection_DataMap<TCollection_AsciiString, Standard_Integer> > OpenGl_DelayReleaseMap;
   typedef NCollection_Shared< NCollection_DataMap<TCollection_AsciiString, Handle(OpenGl_Resource)> > OpenGl_ResourcesMap;
   typedef NCollection_Shared< NCollection_List<Handle(OpenGl_Resource)> > OpenGl_ResourcesStack;
+  typedef NCollection_SparseArray<Standard_Integer> OpenGl_DrawBuffers;
 
   Handle(OpenGl_ResourcesMap)    mySharedResources; //!< shared resources with unique identification key
   Handle(OpenGl_DelayReleaseMap) myDelayed;         //!< shared resources for delayed release
@@ -823,6 +857,8 @@ private: // context info
   Standard_Integer myMaxTexDim;            //!< value for GL_MAX_TEXTURE_SIZE
   Standard_Integer myMaxClipPlanes;        //!< value for GL_MAX_CLIP_PLANES
   Standard_Integer myMaxMsaaSamples;       //!< value for GL_MAX_SAMPLES
+  Standard_Integer myMaxDrawBuffers;       //!< value for GL_MAX_DRAW_BUFFERS
+  Standard_Integer myMaxColorAttachments;  //!< value for GL_MAX_COLOR_ATTACHMENTS
   Standard_Integer myGlVerMajor;           //!< cached GL version major number
   Standard_Integer myGlVerMinor;           //!< cached GL version minor number
   Standard_Boolean myIsInitialized;        //!< flag indicates initialization state
@@ -849,7 +885,7 @@ private: //! @name fields tracking current state
   Standard_Integer              myPolygonMode;     //!< currently used polygon rasterization mode (glPolygonMode)
   bool                          myToCullBackFaces; //!< back face culling mode enabled state (glIsEnabled (GL_CULL_FACE))
   Standard_Integer              myReadBuffer;      //!< current read buffer
-  Standard_Integer              myDrawBuffer;      //!< current draw buffer
+  OpenGl_DrawBuffers            myDrawBuffers;     //!< current draw buffers
   unsigned int                  myDefaultVao;      //!< default Vertex Array Object
   Standard_Boolean              myIsGlDebugCtx;    //!< debug context initialization state
   TCollection_AsciiString       myVendor;          //!< Graphics Driver's vendor

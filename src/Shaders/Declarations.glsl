@@ -47,8 +47,16 @@
   THE_ATTRIBUTE vec4 occVertColor;
 #elif (__VERSION__ >= 130)
   out vec4 occFragColor;
+  #ifdef OCC_ENABLE_draw_buffers
+    out vec4 occFragCoverage;
+  #endif
 #else
-  #define occFragColor gl_FragColor
+  #ifdef OCC_ENABLE_draw_buffers
+    #define occFragColor    gl_FragData[0]
+    #define occFragCoverage gl_FragData[1]
+  #else
+    #define occFragColor gl_FragColor
+  #endif
 #endif
 
 // Matrix state
@@ -109,6 +117,10 @@ uniform THE_PREC_ENUM int       occTextureEnable;      //!< Is texture enabled?
 uniform               sampler2D occActiveSampler;      //!< Current active sampler
 uniform               vec4      occTexTrsf2d[2];       //!< 2D texture transformation parameters
 uniform               float     occPointSize;          //!< point size
+
+//! Parameters of blended order-independent transparency rendering algorithm
+uniform               int       occOitOutput;      //!< Enable bit for writing output color buffers for OIT (occFragColor, occFragCoverage)
+uniform               float     occOitDepthFactor; //!< Influence of the depth component to the coverage of the accumulated fragment
 
 //! Parameters of clipping planes
 uniform               vec4 occClipPlaneEquations[THE_MAX_CLIP_PLANES];

@@ -351,7 +351,8 @@ protected: //! @name low-level redrawing sub-routines
 
   //! Redraws view for the given monographic camera projection, or left/right eye.
   Standard_EXPORT virtual void redraw (const Graphic3d_Camera::Projection theProjection,
-                                       OpenGl_FrameBuffer*                theReadDrawFbo);
+                                       OpenGl_FrameBuffer*                theReadDrawFbo,
+                                       OpenGl_FrameBuffer*                theOitAccumFbo);
 
   //! Redraws view for the given monographic camera projection, or left/right eye.
   //!
@@ -368,6 +369,7 @@ protected: //! @name low-level redrawing sub-routines
   Standard_EXPORT virtual bool redrawImmediate (const Graphic3d_Camera::Projection theProjection,
                                                 OpenGl_FrameBuffer* theReadFbo,
                                                 OpenGl_FrameBuffer* theDrawFbo,
+                                                OpenGl_FrameBuffer* theOitAccumFbo,
                                                 const Standard_Boolean theIsPartialUpdate = Standard_False);
 
   //! Blit image from/to specified buffers.
@@ -383,17 +385,21 @@ protected: //! @name Rendering of GL graphics (with prepared drawing buffer).
   //! Renders the graphical contents of the view into the preprepared window or framebuffer.
   //! @param theProjection [in] the projection that should be used for rendering.
   //! @param theReadDrawFbo [in] the framebuffer for rendering graphics.
+  //! @param theOitAccumFbo [in] the framebuffer for accumulating color and coverage for OIT process.
   //! @param theToDrawImmediate [in] the flag indicates whether the rendering performs in immediate mode.
   Standard_EXPORT virtual void render (Graphic3d_Camera::Projection theProjection,
                                        OpenGl_FrameBuffer*          theReadDrawFbo,
+                                       OpenGl_FrameBuffer*          theOitAccumFbo,
                                        const Standard_Boolean       theToDrawImmediate);
 
   //! Renders the graphical scene.
   //! @param theProjection [in] the projection that is used for rendering.
   //! @param theReadDrawFbo [in] the framebuffer for rendering graphics.
+  //! @param theOitAccumFbo [in] the framebuffer for accumulating color and coverage for OIT process.
   //! @param theToDrawImmediate [in] the flag indicates whether the rendering performs in immediate mode.
   Standard_EXPORT virtual void renderScene (Graphic3d_Camera::Projection theProjection,
                                             OpenGl_FrameBuffer*    theReadDrawFbo,
+                                            OpenGl_FrameBuffer*    theOitAccumFbo,
                                             const Standard_Boolean theToDrawImmediate);
 
   //! Draw background (gradient / image)
@@ -402,9 +408,11 @@ protected: //! @name Rendering of GL graphics (with prepared drawing buffer).
   //! Render set of structures presented in the view.
   //! @param theProjection [in] the projection that is used for rendering.
   //! @param theReadDrawFbo [in] the framebuffer for rendering graphics.
+  //! @param theOitAccumFbo [in] the framebuffer for accumulating color and coverage for OIT process.
   //! @param theToDrawImmediate [in] the flag indicates whether the rendering performs in immediate mode.
   Standard_EXPORT virtual void renderStructs (Graphic3d_Camera::Projection theProjection,
                                               OpenGl_FrameBuffer*    theReadDrawFbo,
+                                              OpenGl_FrameBuffer*    theOitAccumFbo,
                                               const Standard_Boolean theToDrawImmediate);
 
   //! Renders trihedron.
@@ -443,6 +451,15 @@ private:
 
   //! Blend together views pair into stereo image.
   void drawStereoPair (OpenGl_FrameBuffer* theDrawFbo);
+
+  //! Check and update OIT compatibility with current OpenGL context's state.
+  bool checkOitCompatibility (const Handle(OpenGl_Context)& theGlContext,
+                              const Standard_Boolean theMSAA);
+
+  //! Chooses compatible internal color format for OIT frame buffer.
+  bool chooseOitColorConfiguration (const Handle(OpenGl_Context)& theGlContext,
+                                    const Standard_Integer theConfigIndex,
+                                    OpenGl_ColorFormats& theFormats);
 
 protected:
 
@@ -497,13 +514,18 @@ protected: //! @name Rendering properties
   //! of the view (without presentation of immediate layers).
   GLint                      myFboColorFormat;        //!< sized format for color attachments
   GLint                      myFboDepthFormat;        //!< sized format for depth-stencil attachments
+  OpenGl_ColorFormats        myFboOitColorConfig;     //!< selected color format configuration for OIT color attachments
   Handle(OpenGl_FrameBuffer) myMainSceneFbos[2];
-  Handle(OpenGl_FrameBuffer) myImmediateSceneFbos[2]; //!< Additional buffers for immediate layer in stereo mode.
+  Handle(OpenGl_FrameBuffer) myMainSceneFbosOit[2];      //!< Additional buffers for transparent draw of main layer.
+  Handle(OpenGl_FrameBuffer) myImmediateSceneFbos[2];    //!< Additional buffers for immediate layer in stereo mode.
+  Handle(OpenGl_FrameBuffer) myImmediateSceneFbosOit[2]; //!< Additional buffers for transparency draw of immediate layer.
   OpenGl_VertexBuffer        myFullScreenQuad;        //!< Vertices for full-screen quad rendering.
   OpenGl_VertexBuffer        myFullScreenQuadFlip;
   Standard_Boolean           myToFlipOutput;          //!< Flag to draw result image upside-down
   unsigned int               myFrameCounter;          //!< redraw counter, for debugging
   Standard_Boolean           myHasFboBlit;            //!< disable FBOs on failure
+  Standard_Boolean           myToDisableOIT;          //!< disable OIT on failure
+  Standard_Boolean           myToDisableOITMSAA;      //!< disable OIT with MSAA on failure
   Standard_Boolean           myToDisableMSAA;         //!< disable MSAA after failure
   Standard_Boolean           myTransientDrawToFront; //!< optimization flag for immediate mode (to render directly to the front buffer)
   Standard_Boolean           myBackBufferRestored;
@@ -1045,6 +1067,7 @@ public:
 
   friend class OpenGl_GraphicDriver;
   friend class OpenGl_Workspace;
+  friend class OpenGl_LayerList;
 };
 
 #endif // _OpenGl_View_Header

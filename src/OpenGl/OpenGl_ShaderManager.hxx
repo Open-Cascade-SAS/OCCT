@@ -168,6 +168,19 @@ public:
          && myContext->BindProgram (myBlitProgram);
   }
 
+  //! Bind program for blended order-independent transparency buffers compositing.
+  Standard_Boolean BindOitCompositingProgram (const Standard_Boolean theIsMSAAEnabled)
+  {
+    const Standard_Integer aProgramIdx = theIsMSAAEnabled ? 1 : 0;
+    if (myOitCompositingProgram[aProgramIdx].IsNull())
+    {
+      prepareStdProgramOitCompositing (theIsMSAAEnabled);
+    }
+
+    const Handle(OpenGl_ShaderProgram)& aProgram = myOitCompositingProgram [aProgramIdx];
+    return !aProgram.IsNull() && myContext->BindProgram (aProgram);
+  }
+
   //! Bind program for rendering stereoscopic image.
   Standard_Boolean BindStereoProgram (const Graphic3d_StereoMode theStereoMode)
   {
@@ -269,6 +282,20 @@ public:
 
 public:
 
+  //! Set the state of OIT rendering pass.
+  //! @param theToEnableOitWrite [in] flag indicating whether the special output should be written for OIT algorithm.
+  //! @param theDepthFactor [in] the scalar factor of depth influence to the fragment's coverage.
+  void SetOitState (const bool theToEnableOitWrite, const float theDepthFactor)
+  {
+    myOitState.Set (theToEnableOitWrite, theDepthFactor);
+    myOitState.Update();
+  }
+
+  //! Pushes state of OIT uniforms to the specified program.
+  Standard_EXPORT void PushOitState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
+
+public:
+
   //! Pushes current state of OCCT graphics parameters to specified program.
   Standard_EXPORT void PushState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
 
@@ -339,6 +366,11 @@ protected:
     {
       aBits |= OpenGl_PO_VertColor;
     }
+
+    if (myOitState.ToEnableWrite())
+    {
+      aBits |= OpenGl_PO_WriteOit;
+    }
     return aBits;
   }
 
@@ -377,6 +409,9 @@ protected:
 
   //! Prepare standard GLSL program for FBO blit operation.
   Standard_EXPORT Standard_Boolean prepareStdProgramFboBlit();
+
+  //! Prepare standard GLSL programs for OIT compositing operation.
+  Standard_EXPORT Standard_Boolean prepareStdProgramOitCompositing (const Standard_Boolean theMsaa);
 
   //! Prepare standard GLSL program without lighting.
   Standard_EXPORT Standard_Boolean prepareStdProgramFlat (Handle(OpenGl_ShaderProgram)& theProgram,
@@ -458,6 +493,7 @@ protected:
   OpenGl_SetOfShaderPrograms         myFlatPrograms;       //!< programs matrix without  lighting
   Handle(OpenGl_ShaderProgram)       myFontProgram;        //!< standard program for textured text
   Handle(OpenGl_ShaderProgram)       myBlitProgram;        //!< standard program for FBO blit emulation
+  Handle(OpenGl_ShaderProgram)       myOitCompositingProgram[2]; //!< standard program for OIT compositing (default and MSAA).
   OpenGl_MapOfShaderPrograms         myMapOfLightPrograms; //!< map of lighting programs depending on shading model and lights configuration
 
   Handle(OpenGl_ShaderProgram)       myStereoPrograms[Graphic3d_StereoMode_NB]; //!< standard stereo programs
@@ -472,6 +508,7 @@ protected:
   OpenGl_ClippingState               myClippingState;      //!< State of OCCT clipping planes
   OpenGl_LightSourceState            myLightSourceState;   //!< State of OCCT light sources
   OpenGl_MaterialState               myMaterialState;      //!< State of Front and Back materials
+  OpenGl_OitState                    myOitState;           //!< State of OIT uniforms
 
   gp_XYZ                             myLocalOrigin;        //!< local camera transformation
   Standard_Boolean                   myHasLocalOrigin;     //!< flag indicating that local camera transformation has been set

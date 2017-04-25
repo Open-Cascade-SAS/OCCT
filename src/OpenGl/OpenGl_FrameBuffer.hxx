@@ -19,8 +19,13 @@
 #include <OpenGl_Resource.hxx>
 #include <OpenGl_Texture.hxx>
 
+#include <NCollection_Vector.hxx>
+
 class OpenGl_FrameBuffer;
 DEFINE_STANDARD_HANDLE(OpenGl_FrameBuffer, OpenGl_Resource)
+
+//! Short declaration of useful collection types.
+typedef NCollection_Vector<GLint> OpenGl_ColorFormats;
 
 //! Class implements FrameBuffer Object (FBO) resource
 //! intended for off-screen rendering.
@@ -50,10 +55,16 @@ public:
     return myNbSamples;
   }
 
+  //! Number of color buffers.
+  GLsizei NbColorBuffers() const
+  {
+    return myColorTextures.Length();
+  }
+
   //! Return true if FBO has been created with color attachment.
   bool HasColor() const
   {
-    return myColorFormat != 0;
+    return !myColorFormats.IsEmpty();
   }
 
   //! Return true if FBO has been created with depth attachment.
@@ -65,13 +76,13 @@ public:
   //! Textures width.
   GLsizei GetSizeX() const
   {
-    return myColorTexture->SizeX();
+    return myColorTextures (0)->SizeX();
   }
 
   //! Textures height.
   GLsizei GetSizeY() const
   {
-    return myColorTexture->SizeY();
+    return myColorTextures (0)->SizeY();
   }
 
   //! Viewport width.
@@ -92,6 +103,21 @@ public:
     return isValidFrameBuffer();
   }
 
+  //! Initialize FBO for rendering into single/multiple color buffer and depth textures.
+  //! @param theGlCtx               currently bound OpenGL context
+  //! @param theSizeX               texture width
+  //! @param theSizeY               texture height
+  //! @param theColorFormats        list of color texture sized format (0 means no color attachment), e.g. GL_RGBA8
+  //! @param theDepthStencilTexture depth-stencil texture
+  //! @param theNbSamples           MSAA number of samples (0 means normal texture)
+  //! @return true on success
+  Standard_EXPORT Standard_Boolean Init (const Handle(OpenGl_Context)& theGlCtx,
+                                         const GLsizei                 theSizeX,
+                                         const GLsizei                 theSizeY,
+                                         const OpenGl_ColorFormats&    theColorFormats,
+                                         const Handle(OpenGl_Texture)& theDepthStencilTexture,
+                                         const GLsizei                 theNbSamples = 0);
+
   //! Initialize FBO for rendering into textures.
   //! @param theGlCtx       currently bound OpenGL context
   //! @param theSizeX       texture width
@@ -107,6 +133,21 @@ public:
                                          const GLint                   theDepthFormat,
                                          const GLsizei                 theNbSamples = 0);
 
+  //! Initialize FBO for rendering into single/multiple color buffer and depth textures.
+  //! @param theGlCtx        currently bound OpenGL context
+  //! @param theSizeX        texture width
+  //! @param theSizeY        texture height
+  //! @param theColorFormats list of color texture sized format (0 means no color attachment), e.g. GL_RGBA8
+  //! @param theDepthFormat  depth-stencil texture sized format (0 means no depth attachment), e.g. GL_DEPTH24_STENCIL8
+  //! @param theNbSamples    MSAA number of samples (0 means normal texture)
+  //! @return true on success
+  Standard_EXPORT Standard_Boolean Init (const Handle(OpenGl_Context)& theGlCtx,
+                                         const GLsizei                 theSizeX,
+                                         const GLsizei                 theSizeY,
+                                         const OpenGl_ColorFormats&    theColorFormats,
+                                         const GLint                   theDepthFormat,
+                                         const GLsizei                 theNbSamples = 0);
+
   //! (Re-)initialize FBO with specified dimensions.
   Standard_EXPORT Standard_Boolean InitLazy (const Handle(OpenGl_Context)& theGlCtx,
                                              const GLsizei                 theViewportSizeX,
@@ -115,11 +156,19 @@ public:
                                              const GLint                   theDepthFormat,
                                              const GLsizei                 theNbSamples = 0);
 
+  //! (Re-)initialize FBO with specified dimensions.
+  Standard_EXPORT Standard_Boolean InitLazy (const Handle(OpenGl_Context)& theGlCtx,
+                                             const GLsizei                 theViewportSizeX,
+                                             const GLsizei                 theViewportSizeY,
+                                             const OpenGl_ColorFormats&    theColorFormats,
+                                             const GLint                   theDepthFormat,
+                                             const GLsizei                 theNbSamples = 0);
+
   //! (Re-)initialize FBO with properties taken from another FBO.
   Standard_Boolean InitLazy (const Handle(OpenGl_Context)& theGlCtx,
                              const OpenGl_FrameBuffer&     theFbo)
   {
-    return InitLazy (theGlCtx, theFbo.myVPSizeX, theFbo.myVPSizeY, theFbo.myColorFormat, theFbo.myDepthFormat, theFbo.myNbSamples);
+    return InitLazy (theGlCtx, theFbo.myVPSizeX, theFbo.myVPSizeY, theFbo.myColorFormats, theFbo.myDepthFormat, theFbo.myNbSamples);
   }
 
   //! (Re-)initialize FBO with specified dimensions.
@@ -160,10 +209,10 @@ public:
   //! Unbind frame buffer.
   Standard_EXPORT virtual void UnbindBuffer (const Handle(OpenGl_Context)& theGlCtx);
 
-  //! Returns the color texture.
-  inline const Handle(OpenGl_Texture)& ColorTexture() const
+  //! Returns the color texture for the given color buffer index.
+  inline const Handle(OpenGl_Texture)& ColorTexture (const GLint theColorBufferIndex = 0) const
   {
-    return myColorTexture;
+    return myColorTextures (theColorBufferIndex);
   }
 
   //! Returns the depth-stencil texture.
@@ -193,16 +242,21 @@ protected:
 
 protected:
 
+  typedef NCollection_Vector<Handle(OpenGl_Texture)> OpenGl_TextureArray;
+
+protected:
+
   GLsizei                myVPSizeX;             //!< viewport width  (should be <= texture width)
   GLsizei                myVPSizeY;             //!< viewport height (should be <= texture height)
   GLsizei                myNbSamples;           //!< number of MSAA samples
-  GLint                  myColorFormat;         //!< sized format for color         texture, GL_RGBA8 by default
+  OpenGl_ColorFormats    myColorFormats;        //!< sized format for color         texture, GL_RGBA8 by default
   GLint                  myDepthFormat;         //!< sized format for depth-stencil texture, GL_DEPTH24_STENCIL8 by default
   GLuint                 myGlFBufferId;         //!< FBO object ID
   GLuint                 myGlColorRBufferId;    //!< color         Render Buffer object (alternative to myColorTexture)
   GLuint                 myGlDepthRBufferId;    //!< depth-stencil Render Buffer object (alternative to myDepthStencilTexture)
   bool                   myIsOwnBuffer;         //!< flag indicating that FBO should be deallocated by this class
-  Handle(OpenGl_Texture) myColorTexture;        //!< color texture object
+  bool                   myIsOwnDepth;          //!< flag indicating that FBO should be deallocated by this class
+  OpenGl_TextureArray    myColorTextures;       //!< color texture objects
   Handle(OpenGl_Texture) myDepthStencilTexture; //!< depth-stencil texture object
 
 public:

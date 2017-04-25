@@ -125,6 +125,11 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   hasUintIndex(Standard_True),
   hasTexRGBA8(Standard_True),
 #endif
+  hasDrawBuffers     (OpenGl_FeatureNotAvailable),
+  hasFloatBuffer     (OpenGl_FeatureNotAvailable),
+  hasHalfFloatBuffer (OpenGl_FeatureNotAvailable),
+  hasSampleVariables (OpenGl_FeatureNotAvailable),
+  arbDrawBuffers (Standard_False),
   arbNPTW  (Standard_False),
   arbTexRG (Standard_False),
   arbTexFloat (Standard_False),
@@ -135,13 +140,16 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   arbDbg (NULL),
   arbFBO (NULL),
   arbFBOBlit (NULL),
+  arbSampleShading (Standard_False),
   extFragDepth (Standard_False),
+  extDrawBuffers (Standard_False),
   extGS  (NULL),
   extBgra(Standard_False),
   extAnis(Standard_False),
   extPDS (Standard_False),
   atiMem (Standard_False),
   nvxMem (Standard_False),
+  oesSampleVariables (Standard_False),
   mySharedResources (new OpenGl_ResourcesMap()),
   myDelayed         (new OpenGl_DelayReleaseMap()),
   myUnusedResources (new OpenGl_ResourcesStack()),
@@ -153,6 +161,8 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myMaxTexDim  (1024),
   myMaxClipPlanes (6),
   myMaxMsaaSamples(0),
+  myMaxDrawBuffers (1),
+  myMaxColorAttachments (1),
   myGlVerMajor (0),
   myGlVerMinor (0),
   myIsInitialized (Standard_False),
@@ -172,7 +182,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
 #endif
   myToCullBackFaces (false),
   myReadBuffer (0),
-  myDrawBuffer (0),
+  myDrawBuffers (1),
   myDefaultVao (0),
   myIsGlDebugCtx (Standard_False),
   myResolution (Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION),
@@ -394,16 +404,58 @@ void OpenGl_Context::SetReadBuffer (const Standard_Integer theReadBuffer)
 void OpenGl_Context::SetDrawBuffer (const Standard_Integer theDrawBuffer)
 {
 #if !defined(GL_ES_VERSION_2_0)
-  myDrawBuffer = !myIsStereoBuffers ? stereoToMonoBuffer (theDrawBuffer) : theDrawBuffer;
-  if (myDrawBuffer < GL_COLOR_ATTACHMENT0
+  const Standard_Integer aDrawBuffer = !myIsStereoBuffers ? stereoToMonoBuffer (theDrawBuffer) : theDrawBuffer;
+  if (aDrawBuffer < GL_COLOR_ATTACHMENT0
    && arbFBO != NULL)
   {
     arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
   }
-  ::glDrawBuffer (myDrawBuffer);
+  ::glDrawBuffer (aDrawBuffer);
+
+  myDrawBuffers.Clear();
+
+  if (aDrawBuffer != GL_NONE)
+  {
+    myDrawBuffers.SetValue (0, aDrawBuffer);
+  }
 #else
   (void )theDrawBuffer;
 #endif
+}
+
+// =======================================================================
+// function : SetDrawBuffers
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetDrawBuffers (const Standard_Integer theNb, const Standard_Integer* theDrawBuffers)
+{
+  Standard_ASSERT_RETURN (hasDrawBuffers, "Multiple draw buffers feature is not supported by the context", Standard_ASSERT_DO_NOTHING());
+
+  myDrawBuffers.Clear();
+
+  Standard_Boolean useDefaultFbo = Standard_False;
+  for (Standard_Integer anI = 0; anI < theNb; ++anI)
+  {
+#if !defined(GL_ES_VERSION_2_0)
+    const Standard_Integer aDrawBuffer = !myIsStereoBuffers ? stereoToMonoBuffer (theDrawBuffers[anI]) : theDrawBuffers[anI];
+#else
+    const Standard_Integer aDrawBuffer = theDrawBuffers[anI];
+#endif
+    if (aDrawBuffer < GL_COLOR_ATTACHMENT0 && aDrawBuffer != GL_NONE)
+    {
+      useDefaultFbo = Standard_True;
+    }
+    else if (aDrawBuffer != GL_NONE)
+    {
+      myDrawBuffers.SetValue (anI, aDrawBuffer);
+    }
+  }
+  if (arbFBO != NULL && useDefaultFbo)
+  {
+    arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
+  }
+
+  myFuncs->glDrawBuffers (theNb, (const GLenum*)theDrawBuffers);
 }
 
 // =======================================================================
@@ -442,9 +494,37 @@ void OpenGl_Context::FetchState()
     ::glGetIntegerv (GL_RENDER_MODE, &myRenderMode);
   }
 
-  // cache buffers state
+  // cache read buffers state
   ::glGetIntegerv (GL_READ_BUFFER, &myReadBuffer);
-  ::glGetIntegerv (GL_DRAW_BUFFER, &myDrawBuffer);
+
+  // cache draw buffers state
+  myDrawBuffers.Clear();
+
+  if (myMaxDrawBuffers == 1)
+  {
+    Standard_Integer aDrawBuffer;
+
+    ::glGetIntegerv (GL_DRAW_BUFFER, &aDrawBuffer);
+
+    if (aDrawBuffer != GL_NONE)
+    {
+      myDrawBuffers.SetValue (0, aDrawBuffer);
+    }
+  }
+  else
+  {
+    Standard_Integer aDrawBuffer;
+
+    for (Standard_Integer anI = 0; anI < myMaxDrawBuffers; ++anI)
+    {
+      ::glGetIntegerv (GL_DRAW_BUFFER0 + anI, &aDrawBuffer);
+
+      if (aDrawBuffer != GL_NONE)
+      {
+        myDrawBuffers.SetValue (anI, aDrawBuffer);
+      }
+    }
+  }
 #endif
 }
 
@@ -1119,6 +1199,8 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   myGlVerMajor = 0;
   myGlVerMinor = 0;
   myMaxMsaaSamples = 0;
+  myMaxDrawBuffers = 1;
+  myMaxColorAttachments = 1;
   ReadGlVersion (myGlVerMajor, myGlVerMinor);
   myVendor = (const char* )::glGetString (GL_VENDOR);
   if (!caps->ffpEnable
@@ -1292,19 +1374,56 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     }
   }
 
+  extDrawBuffers = CheckExtension ("GL_EXT_draw_buffers") && FindProc ("glDrawBuffersEXT", myFuncs->glDrawBuffers);
+  arbDrawBuffers = CheckExtension ("GL_ARB_draw_buffers") && FindProc ("glDrawBuffersARB", myFuncs->glDrawBuffers);
+
+  if (IsGlGreaterEqual (3, 0) && FindProc ("glDrawBuffers", myFuncs->glDrawBuffers))
+  {
+    hasDrawBuffers = OpenGl_FeatureInCore;
+  }
+  else if (extDrawBuffers || arbDrawBuffers)
+  {
+    hasDrawBuffers = OpenGl_FeatureInExtensions;
+  }
+
+  hasFloatBuffer     = IsGlGreaterEqual (3, 2) ? OpenGl_FeatureInCore :
+                       CheckExtension ("GL_EXT_color_buffer_float") ? OpenGl_FeatureInExtensions 
+                                                                    : OpenGl_FeatureNotAvailable;
+  hasHalfFloatBuffer = IsGlGreaterEqual (3, 2) ? OpenGl_FeatureInCore :
+                       CheckExtension ("GL_EXT_color_buffer_half_float") ? OpenGl_FeatureInExtensions 
+                                                                         : OpenGl_FeatureNotAvailable;
+
+  oesSampleVariables = CheckExtension ("GL_OES_sample_variables");
+  hasSampleVariables = IsGlGreaterEqual (3, 2) ? OpenGl_FeatureInCore :
+                       oesSampleVariables ? OpenGl_FeatureInExtensions
+                                          : OpenGl_FeatureNotAvailable;
 #else
 
   myTexClamp = IsGlGreaterEqual (1, 2) ? GL_CLAMP_TO_EDGE : GL_CLAMP;
 
   hasTexRGBA8 = Standard_True;
-  arbNPTW     = CheckExtension ("GL_ARB_texture_non_power_of_two");
-  arbTexFloat = IsGlGreaterEqual (3, 0)
-             || CheckExtension ("GL_ARB_texture_float");
-  extBgra     = CheckExtension ("GL_EXT_bgra");
-  extAnis     = CheckExtension ("GL_EXT_texture_filter_anisotropic");
-  extPDS      = CheckExtension ("GL_EXT_packed_depth_stencil");
-  atiMem      = CheckExtension ("GL_ATI_meminfo");
-  nvxMem      = CheckExtension ("GL_NVX_gpu_memory_info");
+  arbDrawBuffers   = CheckExtension ("GL_ARB_draw_buffers");
+  arbNPTW          = CheckExtension ("GL_ARB_texture_non_power_of_two");
+  arbTexFloat      = IsGlGreaterEqual (3, 0)
+                  || CheckExtension ("GL_ARB_texture_float");
+  arbSampleShading = CheckExtension ("GL_ARB_sample_shading");
+  extBgra          = CheckExtension ("GL_EXT_bgra");
+  extAnis          = CheckExtension ("GL_EXT_texture_filter_anisotropic");
+  extPDS           = CheckExtension ("GL_EXT_packed_depth_stencil");
+  atiMem           = CheckExtension ("GL_ATI_meminfo");
+  nvxMem           = CheckExtension ("GL_NVX_gpu_memory_info");
+
+  hasDrawBuffers = IsGlGreaterEqual (2, 0) ? OpenGl_FeatureInCore :
+                   arbDrawBuffers ? OpenGl_FeatureInExtensions 
+                                  : OpenGl_FeatureNotAvailable;
+
+  hasFloatBuffer = hasHalfFloatBuffer =  IsGlGreaterEqual (3, 0) ? OpenGl_FeatureInCore :
+                                         CheckExtension ("GL_ARB_color_buffer_float") ? OpenGl_FeatureInExtensions
+                                                                                      : OpenGl_FeatureNotAvailable;
+
+  hasSampleVariables = IsGlGreaterEqual (4, 0) ? OpenGl_FeatureInCore :
+                        arbSampleShading ? OpenGl_FeatureInExtensions
+                                         : OpenGl_FeatureNotAvailable;
 
   GLint aStereo = GL_FALSE;
   glGetIntegerv (GL_STEREO, &aStereo);
@@ -1313,6 +1432,12 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   // get number of maximum clipping planes
   glGetIntegerv (GL_MAX_CLIP_PLANES,  &myMaxClipPlanes);
 #endif
+
+  if (hasDrawBuffers)
+  {
+    glGetIntegerv (GL_MAX_DRAW_BUFFERS,      &myMaxDrawBuffers);
+    glGetIntegerv (GL_MAX_COLOR_ATTACHMENTS, &myMaxColorAttachments);
+  }
 
   glGetIntegerv (GL_MAX_TEXTURE_SIZE, &myMaxTexDim);
 
@@ -2892,8 +3017,7 @@ Handle(OpenGl_FrameBuffer) OpenGl_Context::SetDefaultFrameBuffer (const Handle(O
 // purpose  :
 // =======================================================================
 void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
-                                         const Handle(Graphic3d_PresentationAttributes)& theHighlight,
-                                         const Standard_Boolean theUseDepthWrite)
+                                         const Handle(Graphic3d_PresentationAttributes)& theHighlight)
 {
   const Handle(Graphic3d_AspectFillArea3d)& anAspect = (!theHighlight.IsNull() && !theHighlight->BasicFillAreaAspect().IsNull())
                                                       ?  theHighlight->BasicFillAreaAspect()
@@ -2920,39 +3044,19 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
     myMatBack = myMatFront;
   }
 
-  // handling transparency
-  float aTranspFront = aMatFrontSrc.Transparency();
-  float aTranspBack  = aMatBackSrc .Transparency();
   if (!theHighlight.IsNull()
     && theHighlight->BasicFillAreaAspect().IsNull())
   {
     myMatFront.SetColor (theHighlight->ColorRGBA());
     myMatBack .SetColor (theHighlight->ColorRGBA());
-    aTranspFront = theHighlight->Transparency();
-    aTranspBack  = theHighlight->Transparency();
   }
+
+  Standard_ShortReal aTranspFront = 0.f;
+  Standard_ShortReal aTranspBack  = 0.f;
+  if (CheckIsTransparent (theAspect, theHighlight, aTranspFront, aTranspBack))
   {
-    GLboolean aDepthMask = GL_TRUE;
-    if (aTranspFront != 0.0f
-     || aTranspBack  != 0.0f)
-    {
-      // render transparent
-      myMatFront.Diffuse.a() = 1.0f - aTranspFront;
-      myMatBack .Diffuse.a() = 1.0f - aTranspBack;
-      glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      glEnable (GL_BLEND);
-      aDepthMask = GL_FALSE;
-    }
-    else
-    {
-      // render opaque
-      glBlendFunc (GL_ONE, GL_ZERO);
-      glDisable (GL_BLEND);
-    }
-    if (theUseDepthWrite)
-    {
-      glDepthMask (aDepthMask);
-    }
+    myMatFront.Diffuse.a() = 1.0f - aTranspFront;
+    myMatBack .Diffuse.a() = 1.0f - aTranspBack;
   }
 
   // do not update material properties in case of zero reflection mode,
@@ -2971,6 +3075,39 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
   }
 
   myShaderManager->UpdateMaterialStateTo (myMatFront, myMatBack, toDistinguish, toMapTexture);
+}
+
+// =======================================================================
+// function : CheckIsTransparent
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_Context::CheckIsTransparent (const OpenGl_AspectFace* theAspect,
+                                                     const Handle(Graphic3d_PresentationAttributes)& theHighlight,
+                                                     Standard_ShortReal& theTranspFront,
+                                                     Standard_ShortReal& theTranspBack)
+{
+  const Handle(Graphic3d_AspectFillArea3d)& anAspect = (!theHighlight.IsNull() && !theHighlight->BasicFillAreaAspect().IsNull())
+                                                      ?  theHighlight->BasicFillAreaAspect()
+                                                      :  theAspect->Aspect();
+
+  const bool toDistinguish = anAspect->Distinguish();
+  const Graphic3d_MaterialAspect& aMatFrontSrc = anAspect->FrontMaterial();
+  const Graphic3d_MaterialAspect& aMatBackSrc  = toDistinguish
+                                               ? anAspect->BackMaterial()
+                                               : aMatFrontSrc;
+
+  // handling transparency
+  theTranspFront = aMatFrontSrc.Transparency();
+  theTranspBack  = aMatBackSrc .Transparency();
+  if (!theHighlight.IsNull()
+    && theHighlight->BasicFillAreaAspect().IsNull())
+  {
+    theTranspFront = theHighlight->Transparency();
+    theTranspBack  = theHighlight->Transparency();
+  }
+
+  return theTranspFront != 0.f
+      || theTranspBack  != 0.f;
 }
 
 // =======================================================================

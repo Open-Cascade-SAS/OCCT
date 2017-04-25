@@ -687,7 +687,7 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
   theWorkspace->SetPolygonOffset (myLayerSettings.PolygonOffset());
 
   // handle depth write
-  theWorkspace->UseDepthWrite() = myLayerSettings.ToEnableDepthWrite();
+  theWorkspace->UseDepthWrite() = myLayerSettings.ToEnableDepthWrite() && theDefaultSettings.DepthMask == GL_TRUE;
   glDepthMask (theWorkspace->UseDepthWrite() ? GL_TRUE : GL_FALSE);
 
   const Standard_Boolean hasLocalCS = !myLayerSettings.OriginTransformation().IsNull();

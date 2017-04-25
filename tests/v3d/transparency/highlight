@@ -1,0 +1,16 @@
+puts "========"
+puts "Transparency - shading highlight"
+puts "========"
+
+psphere s 1
+vinit View1
+vdisplay -dispMode 1 s
+vfit
+vsettransparency s 0.5
+vrenderparams -oit 0
+vselprops dynHighlight -dispMode -1
+vmoveto 250 250
+checkcolor 250 250 0 1 1
+if { $stat != 1 } {
+   puts "Error : Highlighting is broken."
+}

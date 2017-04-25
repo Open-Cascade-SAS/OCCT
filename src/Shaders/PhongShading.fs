@@ -166,10 +166,11 @@ vec4 computeLighting (in vec3 theNormal,
   vec4 aMaterialDiffuse  = gl_FrontFacing ? occFrontMaterial_Diffuse()  : occBackMaterial_Diffuse();
   vec4 aMaterialSpecular = gl_FrontFacing ? occFrontMaterial_Specular() : occBackMaterial_Specular();
   vec4 aMaterialEmission = gl_FrontFacing ? occFrontMaterial_Emission() : occBackMaterial_Emission();
-  return vec4 (Ambient,  1.0) * aMaterialAmbient
-       + vec4 (Diffuse,  1.0) * aMaterialDiffuse
-       + vec4 (Specular, 1.0) * aMaterialSpecular
-                              + aMaterialEmission;
+  vec3 aColor = Ambient  * aMaterialAmbient.rgb
+              + Diffuse  * aMaterialDiffuse.rgb
+              + Specular * aMaterialSpecular.rgb
+                         + aMaterialEmission.rgb;
+  return vec4 (aColor, aMaterialDiffuse.a);
 }
 
 //! Entry point to the Fragment Shader
@@ -185,7 +186,14 @@ void main()
     }
   }
 
-  gl_FragColor = computeLighting (normalize (Normal),
+  occFragColor = computeLighting (normalize (Normal),
                                   normalize (View),
                                   Position);
+
+  if (occOitOutput != 0)
+  {
+    float aWeight     = occFragColor.a * clamp (1e+2 * pow (1.0 - gl_FragCoord.z * occOitDepthFactor, 3.0), 1e-2, 1e+2);
+    occFragCoverage.r = occFragColor.a * aWeight;
+    occFragColor      = vec4 (occFragColor.rgb * occFragColor.a * aWeight, occFragColor.a);
+  }
 }

@@ -16,9 +16,10 @@
 #ifndef _Graphic3d_RenderingParams_HeaderFile
 #define _Graphic3d_RenderingParams_HeaderFile
 
+#include <Graphic3d_Mat4.hxx>
+#include <Graphic3d_RenderTransparentMethod.hxx>
 #include <Graphic3d_RenderingMode.hxx>
 #include <Graphic3d_StereoMode.hxx>
-#include <Graphic3d_Mat4.hxx>
 #include <Graphic3d_Vec4.hxx>
 
 //! Helper class to store rendering parameters.
@@ -47,6 +48,8 @@ public:
   //! Creates default rendering parameters.
   Graphic3d_RenderingParams()
   : Method                      (Graphic3d_RM_RASTERIZATION),
+    TransparencyMethod          (Graphic3d_RTM_BLEND_UNORDERED),
+    OitDepthFactor              (0.0f),
     NbMsaaSamples               (0),
     RenderResolutionScale       (1.0f),
     // ray tracing parameters
@@ -90,39 +93,40 @@ public:
 
 public:
 
-  Graphic3d_RenderingMode Method;                      //!< specifies rendering mode, Graphic3d_RM_RASTERIZATION by default
-  Standard_Integer        NbMsaaSamples;               //!< number of MSAA samples (should be within 0..GL_MAX_SAMPLES, power-of-two number), 0 by default
-  Standard_ShortReal      RenderResolutionScale;       //!< rendering resolution scale factor, 1 by default;
-                                                       //!  incompatible with MSAA (e.g. NbMsaaSamples should be set to 0)
+  Graphic3d_RenderingMode           Method;                      //!< specifies rendering mode, Graphic3d_RM_RASTERIZATION by default
+  Graphic3d_RenderTransparentMethod TransparencyMethod;          //!< specifies rendering method for transparent graphics
+  Standard_ShortReal                OitDepthFactor;              //!< scalar factor [0-1] controlling influence of depth of a fragment to its final coverage
+  Standard_Integer                  NbMsaaSamples;               //!< number of MSAA samples (should be within 0..GL_MAX_SAMPLES, power-of-two number), 0 by default
+  Standard_ShortReal                RenderResolutionScale;       //!< rendering resolution scale factor, 1 by default;
+                                                                 //!  incompatible with MSAA (e.g. NbMsaaSamples should be set to 0)
 
-  Standard_Boolean        IsGlobalIlluminationEnabled; //!< enables/disables global illumination effects (path tracing)
-  Standard_Integer        SamplesPerPixel;             //!< number of samples per pixel (SPP)
-  Standard_Integer        RaytracingDepth;             //!< maximum ray-tracing depth, 3 by default
-  Standard_Boolean        IsShadowEnabled;             //!< enables/disables shadows rendering, True by default
-  Standard_Boolean        IsReflectionEnabled;         //!< enables/disables specular reflections, False by default
-  Standard_Boolean        IsAntialiasingEnabled;       //!< enables/disables adaptive anti-aliasing, False by default
-  Standard_Boolean        IsTransparentShadowEnabled;  //!< enables/disables light propagation through transparent media, False by default
-  Standard_Boolean        UseEnvironmentMapBackground; //!< enables/disables environment map background
-  Standard_Boolean        CoherentPathTracingMode;     //!< enables/disables 'coherent' tracing mode (single RNG seed within 16x16 image blocks)
-  Standard_Boolean        AdaptiveScreenSampling;      //!< enables/disables adaptive screen sampling mode for path tracing, FALSE by default
-  Standard_Boolean        ShowSamplingTiles;           //!< enables/disables debug mode for adaptive screen sampling, FALSE by default
-  Standard_Boolean        TwoSidedBsdfModels;          //!< forces path tracing to use two-sided versions of original one-sided scattering models
-  Standard_ShortReal      RadianceClampingValue;       //!< maximum radiance value used for clamping radiance estimation.
-  Standard_Boolean        RebuildRayTracingShaders;    //!< forces rebuilding ray tracing shaders at the next frame
-  Standard_Integer        NbRayTracingTiles;           //!< total number of screen tiles used in adaptive sampling mode (PT only)
+  Standard_Boolean                  IsGlobalIlluminationEnabled; //!< enables/disables global illumination effects (path tracing)
+  Standard_Integer                  SamplesPerPixel;             //!< number of samples per pixel (SPP)
+  Standard_Integer                  RaytracingDepth;             //!< maximum ray-tracing depth, 3 by default
+  Standard_Boolean                  IsShadowEnabled;             //!< enables/disables shadows rendering, True by default
+  Standard_Boolean                  IsReflectionEnabled;         //!< enables/disables specular reflections, False by default
+  Standard_Boolean                  IsAntialiasingEnabled;       //!< enables/disables adaptive anti-aliasing, False by default
+  Standard_Boolean                  IsTransparentShadowEnabled;  //!< enables/disables light propagation through transparent media, False by default
+  Standard_Boolean                  UseEnvironmentMapBackground; //!< enables/disables environment map background
+  Standard_Boolean                  CoherentPathTracingMode;     //!< enables/disables 'coherent' tracing mode (single RNG seed within 16x16 image blocks)
+  Standard_Boolean                  AdaptiveScreenSampling;      //!< enables/disables adaptive screen sampling mode for path tracing, FALSE by default
+  Standard_Boolean                  ShowSamplingTiles;           //!< enables/disables debug mode for adaptive screen sampling, FALSE by default
+  Standard_Boolean                  TwoSidedBsdfModels;          //!< forces path tracing to use two-sided versions of original one-sided scattering models
+  Standard_ShortReal                RadianceClampingValue;       //!< maximum radiance value used for clamping radiance estimation.
+  Standard_Boolean                  RebuildRayTracingShaders;    //!< forces rebuilding ray tracing shaders at the next frame
+  Standard_Integer                  NbRayTracingTiles;           //!< total number of screen tiles used in adaptive sampling mode (PT only)
 
-  Graphic3d_StereoMode    StereoMode;                  //!< stereoscopic output mode, Graphic3d_StereoMode_QuadBuffer by default
-  Anaglyph                AnaglyphFilter;              //!< filter for anaglyph output, Anaglyph_RedCyan_Optimized by default
-  Graphic3d_Mat4          AnaglyphLeft;                //!< left  anaglyph filter (in normalized colorspace), Color = AnaglyphRight * theColorRight + AnaglyphLeft * theColorLeft;
-  Graphic3d_Mat4          AnaglyphRight;               //!< right anaglyph filter (in normalized colorspace), Color = AnaglyphRight * theColorRight + AnaglyphLeft * theColorLeft;
-  Standard_Boolean        ToReverseStereo;             //!< flag to reverse stereo pair, FALSE by default
+  Graphic3d_StereoMode              StereoMode;                  //!< stereoscopic output mode, Graphic3d_StereoMode_QuadBuffer by default
+  Anaglyph                          AnaglyphFilter;              //!< filter for anaglyph output, Anaglyph_RedCyan_Optimized by default
+  Graphic3d_Mat4                    AnaglyphLeft;                //!< left  anaglyph filter (in normalized colorspace), Color = AnaglyphRight * theColorRight + AnaglyphLeft * theColorLeft;
+  Graphic3d_Mat4                    AnaglyphRight;               //!< right anaglyph filter (in normalized colorspace), Color = AnaglyphRight * theColorRight + AnaglyphLeft * theColorLeft;
+  Standard_Boolean                  ToReverseStereo;             //!< flag to reverse stereo pair, FALSE by default
 
-  unsigned int            Resolution;                  //!< Pixels density (PPI), defines scaling factor for parameters like text size
-                                                       //!  (when defined in screen-space units rather than in 3D) to be properly displayed
-                                                       //!  on device (screen / printer). 72 is default value.
-                                                       //!  Note that using difference resolution in different Views in same Viewer
-                                                       //!  will lead to performance regression (for example, text will be recreated every time).
-
+  unsigned int                      Resolution;                  //!< Pixels density (PPI), defines scaling factor for parameters like text size
+                                                                 //!  (when defined in screen-space units rather than in 3D) to be properly displayed
+                                                                 //!  on device (screen / printer). 72 is default value.
+                                                                 //!  Note that using difference resolution in different Views in same Viewer
+                                                                 //!  will lead to performance regression (for example, text will be recreated every time).
 };
 
 #endif // _Graphic3d_RenderingParams_HeaderFile

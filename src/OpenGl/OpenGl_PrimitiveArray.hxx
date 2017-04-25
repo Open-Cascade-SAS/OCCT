@@ -40,6 +40,14 @@ public:
     DRAW_MODE_NONE = -1
   };
 
+#if !defined(GL_ES_VERSION_2_0)
+  static const GLint THE_FILLPRIM_FROM = GL_TRIANGLES;
+  static const GLint THE_FILLPRIM_TO   = GL_POLYGON;
+#else
+  static const GLint THE_FILLPRIM_FROM = GL_TRIANGLES;
+  static const GLint THE_FILLPRIM_TO   = GL_TRIANGLE_FAN;
+#endif
+
   //! Empty constructor
   Standard_EXPORT OpenGl_PrimitiveArray (const OpenGl_GraphicDriver* theDriver);
 

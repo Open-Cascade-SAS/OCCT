@@ -105,11 +105,6 @@ void AIS_Triangulation::updatePresentation()
 
       const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
 
-      if (IsTransparent())
-      {
-        aPrs->SetDisplayPriority (10); // force highest priority for translucent objects
-      }
-
       for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
       {
         const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
@@ -117,11 +112,6 @@ void AIS_Triangulation::updatePresentation()
         {
           aGroup->SetGroupPrimitivesAspect (anAreaAsp);
         }
-      }
-
-      if (!IsTransparent())
-      {
-        aPrs->ResetDisplayPriority();
       }
     }
 

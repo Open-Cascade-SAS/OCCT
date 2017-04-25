@@ -9123,6 +9123,14 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       case Graphic3d_RM_RAYTRACING:    theDI << "raytrace ";      break;
     }
     theDI << "\n";
+    theDI << "transparency:  ";
+    switch (aParams.TransparencyMethod)
+    {
+      case Graphic3d_RTM_BLEND_UNORDERED: theDI << "Basic blended transparency with non-commuting operator "; break;
+      case Graphic3d_RTM_BLEND_OIT:       theDI << "Weighted Blended Order-Independent Transparency, depth weight factor: "
+                                                << TCollection_AsciiString (aParams.OitDepthFactor); break;
+    }
+    theDI << "\n";
     theDI << "msaa:           " <<  aParams.NbMsaaSamples                               << "\n";
     theDI << "rendScale:      " <<  aParams.RenderResolutionScale                       << "\n";
     theDI << "rayDepth:       " <<  aParams.RaytracingDepth                             << "\n";
@@ -9230,6 +9238,50 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       else
       {
         aParams.NbMsaaSamples = aNbSamples;
+      }
+    }
+    else if (aFlag == "-oit")
+    {
+      if (toPrint)
+      {
+        if (aParams.TransparencyMethod == Graphic3d_RTM_BLEND_OIT)
+        {
+          theDI << "on, depth weight factor: " << TCollection_AsciiString (aParams.OitDepthFactor) << " ";
+        }
+        else
+        {
+          theDI << "off" << " ";
+        }
+        continue;
+      }
+      else if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aParam = theArgVec[anArgIter];
+      aParam.LowerCase();
+      if (aParam.IsRealValue())
+      {
+        const Standard_ShortReal aWeight = (Standard_ShortReal) Draw::Atof (theArgVec[anArgIter]);
+        if (aWeight < 0.f || aWeight > 1.f)
+        {
+          std::cerr << "Error: invalid value of Weighted Order-Independent Transparency depth weight factor " << aWeight << ". Should be within range [0.0; 1.0]\n";
+          return 1;
+        }
+
+        aParams.TransparencyMethod = Graphic3d_RTM_BLEND_OIT;
+        aParams.OitDepthFactor     = aWeight;
+      }
+      else if (aParam == "off")
+      {
+        aParams.TransparencyMethod = Graphic3d_RTM_BLEND_UNORDERED;
+      }
+      else
+      {
+        std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
       }
     }
     else if (aFlag == "-rendscale"
@@ -11070,27 +11122,28 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     __FILE__, VRenderParams, group);
   theCommands.Add("vrenderparams",
     "\n    Manages rendering parameters: "
-    "\n      '-raster'                Disables GPU ray-tracing"
-    "\n      '-msaa         0..4'     Specifies number of samples for MSAA"
-    "\n      '-rendScale    value     Rendering resolution scale factor"
-    "\n      '-rayTrace'              Enables  GPU ray-tracing"
-    "\n      '-rayDepth     0..10'    Defines maximum ray-tracing depth"
-    "\n      '-shadows      on|off'   Enables/disables shadows rendering"
-    "\n      '-reflections  on|off'   Enables/disables specular reflections"
-    "\n      '-fsaa         on|off'   Enables/disables adaptive anti-aliasing"
-    "\n      '-gleam        on|off'   Enables/disables transparency shadow effects"
-    "\n      '-gi           on|off'   Enables/disables global illumination effects"
-    "\n      '-brng         on|off'   Enables/disables blocked RNG (fast coherent PT)"
-    "\n      '-env          on|off'   Enables/disables environment map background"
-    "\n      '-twoside      on|off'   Enables/disables two-sided BSDF models (PT mode)"
-    "\n      '-iss          on|off'   Enables/disables adaptive screen sampling (PT mode)"
-    "\n      '-issd         on|off'   Shows screen sampling distribution in ISS mode"
-    "\n      '-maxrad       > 0.0'    Value used for clamping radiance estimation (PT mode)"
-    "\n      '-nbtiles      64..1024' Specifies number of screen tiles in ISS mode"
-    "\n      '-rebuildGlsl  on|off'   Rebuild Ray-Tracing GLSL programs (for debugging)"
-    "\n      '-shadingModel model'    Controls shading model from enumeration"
-    "\n                               color, flat, gouraud, phong"
-    "\n      '-resolution   value'    Sets a new pixels density (PPI), defines scaling factor for parameters like text size"
+    "\n      '-raster'                   Disables GPU ray-tracing"
+    "\n      '-msaa         0..4'        Specifies number of samples for MSAA"
+    "\n      '-oit          off|0.0-1.0' Enables/disables OIT and sets depth weight factor"
+    "\n      '-rendScale    value        Rendering resolution scale factor"
+    "\n      '-rayTrace'                 Enables  GPU ray-tracing"
+    "\n      '-rayDepth     0..10'       Defines maximum ray-tracing depth"
+    "\n      '-shadows      on|off'      Enables/disables shadows rendering"
+    "\n      '-reflections  on|off'      Enables/disables specular reflections"
+    "\n      '-fsaa         on|off'      Enables/disables adaptive anti-aliasing"
+    "\n      '-gleam        on|off'      Enables/disables transparency shadow effects"
+    "\n      '-gi           on|off'      Enables/disables global illumination effects"
+    "\n      '-brng         on|off'      Enables/disables blocked RNG (fast coherent PT)"
+    "\n      '-env          on|off'      Enables/disables environment map background"
+    "\n      '-twoside      on|off'      Enables/disables two-sided BSDF models (PT mode)"
+    "\n      '-iss          on|off'      Enables/disables adaptive screen sampling (PT mode)"
+    "\n      '-issd         on|off'      Shows screen sampling distribution in ISS mode"
+    "\n      '-maxrad       > 0.0'       Value used for clamping radiance estimation (PT mode)"
+    "\n      '-nbtiles      64..1024'    Specifies number of screen tiles in ISS mode"
+    "\n      '-rebuildGlsl  on|off'      Rebuild Ray-Tracing GLSL programs (for debugging)"
+    "\n      '-shadingModel model'       Controls shading model from enumeration"
+    "\n                                  color, flat, gouraud, phong"
+    "\n      '-resolution   value'       Sets a new pixels density (PPI), defines scaling factor for parameters like text size"
     "\n    Unlike vcaps, these parameters dramatically change visual properties."
     "\n    Command is intended to control presentation quality depending on"
     "\n    hardware capabilities and performance.",

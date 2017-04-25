@@ -64,6 +64,68 @@ namespace
     return false;
   }
 
+  //! Determine data type from texture sized format.
+  static bool getColorDataFormat (GLint   theTextFormat,
+                                  GLenum& thePixelFormat,
+                                  GLenum& theDataType)
+  {
+    switch (theTextFormat)
+    {
+      case GL_RGBA32F:
+      {
+        thePixelFormat = GL_RGBA;
+        theDataType    = GL_FLOAT;
+        return true;
+      }
+      case GL_R32F:
+      {
+        thePixelFormat = GL_RED;
+        theDataType    = GL_FLOAT;
+        return true;
+      }
+      case GL_RGBA16F:
+      {
+        thePixelFormat = GL_RGBA;
+        theDataType    = GL_HALF_FLOAT;
+        return true;
+      }
+      case GL_R16F:
+      {
+        thePixelFormat = GL_RED;
+        theDataType    = GL_HALF_FLOAT;
+        return true;
+      }
+      case GL_RGBA8:
+      {
+        thePixelFormat = GL_RGBA;
+        theDataType    = GL_UNSIGNED_INT;
+        return true;
+      }
+      case GL_RGBA:
+      {
+        thePixelFormat = GL_RGBA;
+        theDataType    = GL_UNSIGNED_BYTE;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  //! Checks whether two format arrays are equal or not.
+  static bool operator== (const OpenGl_ColorFormats& theFmt1,
+                          const OpenGl_ColorFormats& theFmt2)
+  {
+    if (theFmt1.Length() != theFmt2.Length())
+      return false;
+    OpenGl_ColorFormats::Iterator anIt1 (theFmt1);
+    OpenGl_ColorFormats::Iterator anIt2 (theFmt1);
+    for (; anIt1.More(); anIt1.Next(), anIt2.Next())
+    {
+      if (anIt1.Value() != anIt2.Value())
+        return false;
+    }
+    return true;
+  }
 }
 
 // =======================================================================
@@ -74,16 +136,15 @@ OpenGl_FrameBuffer::OpenGl_FrameBuffer()
 : myVPSizeX (0),
   myVPSizeY (0),
   myNbSamples (0),
-  myColorFormat (GL_RGBA8),
   myDepthFormat (GL_DEPTH24_STENCIL8),
   myGlFBufferId (NO_FRAMEBUFFER),
   myGlColorRBufferId (NO_RENDERBUFFER),
   myGlDepthRBufferId (NO_RENDERBUFFER),
   myIsOwnBuffer  (false),
-  myColorTexture (new OpenGl_Texture()),
   myDepthStencilTexture (new OpenGl_Texture())
 {
-  //
+  myColorFormats.Append (GL_RGBA8);
+  myColorTextures.Append (new OpenGl_Texture());
 }
 
 // =======================================================================
@@ -100,13 +161,169 @@ OpenGl_FrameBuffer::~OpenGl_FrameBuffer()
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlContext,
-                                           const GLsizei   theSizeX,
-                                           const GLsizei   theSizeY,
-                                           const GLint     theColorFormat,
-                                           const GLint     theDepthFormat,
-                                           const GLsizei   theNbSamples)
+                                           const GLsizei                 theSizeX,
+                                           const GLsizei                 theSizeY,
+                                           const GLint                   theColorFormat,
+                                           const GLint                   theDepthFormat,
+                                           const GLsizei                 theNbSamples)
 {
-  myColorFormat = theColorFormat;
+  OpenGl_ColorFormats aColorFormats;
+
+  aColorFormats.Append (theColorFormat);
+
+  return Init (theGlContext, theSizeX, theSizeY, aColorFormats, theDepthFormat, theNbSamples);
+}
+
+// =======================================================================
+// function : Init
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlContext,
+                                           const GLsizei                 theSizeX,
+                                           const GLsizei                 theSizeY,
+                                           const OpenGl_ColorFormats&    theColorFormats,
+                                           const Handle(OpenGl_Texture)& theDepthStencilTexture,
+                                           const GLsizei                 theNbSamples)
+{
+  myColorFormats = theColorFormats;
+
+  OpenGl_TextureArray aTextures (myColorTextures);
+  if (!myColorTextures.IsEmpty())
+  {
+    for (OpenGl_TextureArray::Iterator aTextureIt (myColorTextures); aTextureIt.More(); aTextureIt.Next())
+    {
+      aTextureIt.Value()->Release (theGlContext.operator->());
+    }
+    myColorTextures.Clear();
+  }
+  for (Standard_Integer aLength = 0; aLength < myColorFormats.Length(); ++aLength)
+  {
+    myColorTextures.Append (aLength < aTextures.Length() ? aTextures.Value (aLength) : new OpenGl_Texture());
+  }
+
+  myDepthFormat = theDepthStencilTexture->GetFormat();
+  myNbSamples   = theNbSamples;
+  if (theGlContext->arbFBO == NULL)
+  {
+    return Standard_False;
+  }
+
+  // clean up previous state
+  Release (theGlContext.operator->());
+  if (myColorFormats.IsEmpty()
+   && myDepthFormat == 0)
+  {
+    return Standard_False;
+  }
+
+  myDepthStencilTexture = theDepthStencilTexture;
+  myIsOwnDepth  = false;
+  myIsOwnBuffer = true;
+
+  // setup viewport sizes as is
+  myVPSizeX = theSizeX;
+  myVPSizeY = theSizeY;
+  const Standard_Integer aSizeX = theSizeX > 0 ? theSizeX : 2;
+  const Standard_Integer aSizeY = theSizeY > 0 ? theSizeY : 2;
+
+  // Create the textures (will be used as color buffer and depth-stencil buffer)
+  if (theNbSamples != 0)
+  {
+    for (Standard_Integer aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length(); ++aColorBufferIdx)
+    {
+      const Handle(OpenGl_Texture)& aColorTexture = myColorTextures (aColorBufferIdx);
+      const GLint                   aColorFormat  = myColorFormats  (aColorBufferIdx);
+      if (aColorFormat != 0
+      && !aColorTexture->Init2DMultisample (theGlContext, theNbSamples,
+                                            aColorFormat, aSizeX, aSizeY))
+      {
+        Release (theGlContext.operator->());
+        return Standard_False;
+      }
+    }
+  }
+  else
+  {
+    for (Standard_Integer aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length(); ++aColorBufferIdx)
+    {
+      GLenum aPixelFormat = 0;
+      GLenum aDataType    = 0;
+      const Handle(OpenGl_Texture)& aColorTexture = myColorTextures (aColorBufferIdx);
+      const GLint                   aColorFormat  = myColorFormats  (aColorBufferIdx);
+      if (aColorFormat != 0
+      &&  getColorDataFormat (aColorFormat, aPixelFormat, aDataType)
+      && !aColorTexture->Init (theGlContext, aColorFormat,
+                               aPixelFormat, aDataType,
+                               aSizeX, aSizeY, Graphic3d_TOT_2D))
+      {
+        Release (theGlContext.operator->());
+        return Standard_False;
+      }
+    }
+  }
+
+  // Build FBO and setup it as texture
+  theGlContext->arbFBO->glGenFramebuffers (1, &myGlFBufferId);
+  theGlContext->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, myGlFBufferId);
+
+  for (Standard_Integer aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length(); ++aColorBufferIdx)
+  {
+    const Handle(OpenGl_Texture)& aColorTexture = myColorTextures (aColorBufferIdx);
+    if (aColorTexture->IsValid())
+    {
+      theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + aColorBufferIdx,
+                                                    aColorTexture->GetTarget(), aColorTexture->TextureId(), 0);
+    }
+  }
+  if (myDepthStencilTexture->IsValid())
+  {
+  #ifdef GL_DEPTH_STENCIL_ATTACHMENT
+    theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
+                                                  myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
+  #else
+    theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                                  myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
+    theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+                                                  myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
+  #endif
+  }
+  if (theGlContext->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+  {
+    Release (theGlContext.operator->());
+    return Standard_False;
+  }
+
+  UnbindBuffer (theGlContext);
+  return Standard_True;
+}
+
+// =======================================================================
+// function : Init
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlContext,
+                                           const GLsizei                 theSizeX,
+                                           const GLsizei                 theSizeY,
+                                           const OpenGl_ColorFormats&    theColorFormats,
+                                           const GLint                   theDepthFormat,
+                                           const GLsizei                 theNbSamples)
+{
+  myColorFormats = theColorFormats;
+
+  OpenGl_TextureArray aTextures (myColorTextures);
+  if (!myColorTextures.IsEmpty())
+  {
+    for (OpenGl_TextureArray::Iterator aTextureIt (myColorTextures); aTextureIt.More(); aTextureIt.Next())
+    {
+      aTextureIt.Value()->Release (theGlContext.operator->());
+    }
+    myColorTextures.Clear();
+  }
+  for (Standard_Integer aLength = 0; aLength < myColorFormats.Length(); ++aLength)
+  {
+    myColorTextures.Append (aLength < aTextures.Length() ? aTextures.Value (aLength) : new OpenGl_Texture());
+  }
+
   myDepthFormat = theDepthFormat;
   myNbSamples   = theNbSamples;
   if (theGlContext->arbFBO == NULL)
@@ -116,13 +333,14 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
 
   // clean up previous state
   Release (theGlContext.operator->());
-  if (myColorFormat == 0
+  if (myColorFormats.IsEmpty()
    && myDepthFormat == 0)
   {
     return Standard_False;
   }
 
   myIsOwnBuffer = true;
+  myIsOwnDepth  = true;
 
   // setup viewport sizes as is
   myVPSizeX = theSizeX;
@@ -134,11 +352,16 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   // Create the textures (will be used as color buffer and depth-stencil buffer)
   if (theNbSamples != 0)
   {
-    if (myColorFormat != 0
-    && !myColorTexture       ->Init2DMultisample (theGlContext, theNbSamples, myColorFormat, aSizeX, aSizeY))
+    for (Standard_Integer aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length(); ++aColorBufferIdx)
     {
-      Release (theGlContext.operator->());
-      return Standard_False;
+      const Handle(OpenGl_Texture)& aColorTexture = myColorTextures (aColorBufferIdx);
+      const GLint                   aColorFormat  = myColorFormats  (aColorBufferIdx);
+      if (aColorFormat != 0
+      && !aColorTexture->Init2DMultisample (theGlContext, theNbSamples, aColorFormat, aSizeX, aSizeY))
+      {
+        Release (theGlContext.operator->());
+        return Standard_False;
+      }
     }
     if (myDepthFormat != 0
     && !myDepthStencilTexture->Init2DMultisample (theGlContext, theNbSamples, myDepthFormat, aSizeX, aSizeY))
@@ -149,19 +372,26 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   }
   else
   {
-    if (myColorFormat != 0
-    && !myColorTexture->Init (theGlContext, myColorFormat,
-                              GL_RGBA, GL_UNSIGNED_BYTE,
-                              aSizeX, aSizeY, Graphic3d_TOT_2D))
+    GLenum aPixelFormat = 0;
+    GLenum aDataType    = 0;
+
+    for (Standard_Integer aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length(); ++aColorBufferIdx)
     {
-      Release (theGlContext.operator->());
-      return Standard_False;
+      const Handle(OpenGl_Texture)& aColorTexture = myColorTextures (aColorBufferIdx);
+      const GLint                   aColorFormat  = myColorFormats  (aColorBufferIdx);
+      if (aColorFormat != 0
+      &&  getColorDataFormat (aColorFormat, aPixelFormat, aDataType)
+      && !aColorTexture->Init (theGlContext, aColorFormat,
+                               aPixelFormat, aDataType,
+                               aSizeX, aSizeY, Graphic3d_TOT_2D))
+      {
+        Release (theGlContext.operator->());
+        return Standard_False;
+      }
     }
 
     // extensions (GL_OES_packed_depth_stencil, GL_OES_depth_texture) + GL version might be used to determine supported formats
     // instead of just trying to create such texture
-    GLenum aPixelFormat = 0;
-    GLenum aDataType    = 0;
     if (myDepthFormat != 0
     &&  getDepthDataFormat (myDepthFormat, aPixelFormat, aDataType)
     && !myDepthStencilTexture->Init (theGlContext, myDepthFormat,
@@ -192,10 +422,14 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   // Build FBO and setup it as texture
   theGlContext->arbFBO->glGenFramebuffers (1, &myGlFBufferId);
   theGlContext->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, myGlFBufferId);
-  if (myColorTexture->IsValid())
+  for (Standard_Integer aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length(); ++aColorBufferIdx)
   {
-    theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                                                  myColorTexture->GetTarget(), myColorTexture->TextureId(), 0);
+    const Handle(OpenGl_Texture)& aColorTexture = myColorTextures (aColorBufferIdx);
+    if (aColorTexture->IsValid())
+    {
+      theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + aColorBufferIdx,
+                                                    aColorTexture->GetTarget(), aColorTexture->TextureId(), 0);
+    }
   }
   if (myDepthStencilTexture->IsValid())
   {
@@ -235,7 +469,7 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
 }
 
 // =======================================================================
-// function : Init
+// function : InitLazy
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_FrameBuffer::InitLazy (const Handle(OpenGl_Context)& theGlContext,
@@ -245,16 +479,34 @@ Standard_Boolean OpenGl_FrameBuffer::InitLazy (const Handle(OpenGl_Context)& the
                                                const GLint                   theDepthFormat,
                                                const GLsizei                 theNbSamples)
 {
-  if (myVPSizeX     == theViewportSizeX
-   && myVPSizeY     == theViewportSizeY
-   && myColorFormat == theColorFormat
-   && myDepthFormat == theDepthFormat
-   && myNbSamples   == theNbSamples)
+  OpenGl_ColorFormats aColorFormats;
+
+  aColorFormats.Append (theColorFormat);
+
+  return InitLazy (theGlContext, theViewportSizeX, theViewportSizeY, aColorFormats, theDepthFormat, theNbSamples);
+}
+
+// =======================================================================
+// function : InitLazy
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_FrameBuffer::InitLazy (const Handle(OpenGl_Context)& theGlContext,
+                                               const GLsizei                 theViewportSizeX,
+                                               const GLsizei                 theViewportSizeY,
+                                               const OpenGl_ColorFormats&    theColorFormats,
+                                               const GLint                   theDepthFormat,
+                                               const GLsizei                 theNbSamples)
+{
+  if (myVPSizeX      == theViewportSizeX
+   && myVPSizeY      == theViewportSizeY
+   && myColorFormats == theColorFormats
+   && myDepthFormat  == theDepthFormat
+   && myNbSamples    == theNbSamples)
   {
     return IsValid();
   }
 
-  return Init (theGlContext, theViewportSizeX, theViewportSizeY, theColorFormat, theDepthFormat, theNbSamples);
+  return Init (theGlContext, theViewportSizeX, theViewportSizeY, theColorFormats, theDepthFormat, theNbSamples);
 }
 
 // =======================================================================
@@ -268,7 +520,19 @@ Standard_Boolean OpenGl_FrameBuffer::InitWithRB (const Handle(OpenGl_Context)& t
                                                  const GLint                   theDepthFormat,
                                                  const GLuint                  theColorRBufferFromWindow)
 {
-  myColorFormat = theColorFormat;
+  myColorFormats.Clear();
+  myColorFormats.Append (theColorFormat);
+  if (!myColorTextures.IsEmpty())
+  {
+    Handle(OpenGl_Texture) aTexutre = myColorTextures.First();
+    for (OpenGl_TextureArray::Iterator aTextureIt (myColorTextures); aTextureIt.More(); aTextureIt.Next())
+    {
+      aTextureIt.Value()->Release (theGlCtx.operator->());
+    }
+    myColorTextures.Clear();
+    myColorTextures.Append (aTexutre);
+  }
+
   myDepthFormat = theDepthFormat;
   myNbSamples   = 0;
   if (theGlCtx->arbFBO == NULL)
@@ -280,6 +544,7 @@ Standard_Boolean OpenGl_FrameBuffer::InitWithRB (const Handle(OpenGl_Context)& t
   Release (theGlCtx.operator->());
 
   myIsOwnBuffer = true;
+  myIsOwnDepth  = true;
 
   // setup viewport sizes as is
   myVPSizeX = theSizeX;
@@ -292,11 +557,11 @@ Standard_Boolean OpenGl_FrameBuffer::InitWithRB (const Handle(OpenGl_Context)& t
   {
     myGlColorRBufferId = theColorRBufferFromWindow;
   }
-  else if (myColorFormat != 0)
+  else if (theColorFormat != 0)
   {
     theGlCtx->arbFBO->glGenRenderbuffers (1, &myGlColorRBufferId);
     theGlCtx->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, myGlColorRBufferId);
-    theGlCtx->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, myColorFormat, aSizeX, aSizeY);
+    theGlCtx->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, theColorFormat, aSizeX, aSizeY);
   }
 
   bool hasStencilRB = false;
@@ -375,6 +640,7 @@ Standard_Boolean OpenGl_FrameBuffer::InitWrapper (const Handle(OpenGl_Context)& 
 
   myGlFBufferId = GLuint(anFbo);
   myIsOwnBuffer = false;
+  myIsOwnDepth  = false;
   if (aColorType == GL_RENDERBUFFER)
   {
     theGlCtx->arbFBO->glGetFramebufferAttachmentParameteriv (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME, &aColorId);
@@ -448,8 +714,16 @@ void OpenGl_FrameBuffer::Release (OpenGl_Context* theGlCtx)
     myIsOwnBuffer      = false;
   }
 
-  myColorTexture->Release (theGlCtx);
-  myDepthStencilTexture->Release (theGlCtx);
+  for (Standard_Integer aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length(); ++aColorBufferIdx)
+  {
+    myColorTextures (aColorBufferIdx)->Release (theGlCtx);
+  }
+
+  if (myIsOwnDepth)
+  {
+    myDepthStencilTexture->Release (theGlCtx);
+    myIsOwnDepth = false;
+  }
 
   myVPSizeX = 0;
   myVPSizeY = 0;

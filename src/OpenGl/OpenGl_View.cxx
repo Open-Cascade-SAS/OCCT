@@ -61,11 +61,17 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myToShowGradTrihedron  (false),
   myStateCounter         (theCounter),
   myLastLightSourceState (0, 0),
+#if !defined(GL_ES_VERSION_2_0)
   myFboColorFormat       (GL_RGBA8),
+#else
+  myFboColorFormat       (GL_RGBA),
+#endif
   myFboDepthFormat       (GL_DEPTH24_STENCIL8),
   myToFlipOutput         (Standard_False),
   myFrameCounter         (0),
   myHasFboBlit           (Standard_True),
+  myToDisableOIT         (Standard_False),
+  myToDisableOITMSAA     (Standard_False),
   myToDisableMSAA        (Standard_False),
   myTransientDrawToFront (Standard_True),
   myBackBufferRestored   (Standard_False),
@@ -90,17 +96,21 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   aLight.Color.b()   = 1.;
   myNoShadingLight.Append (aLight);
 
-  myCurrLightSourceState  = myStateCounter->Increment();
-  myMainSceneFbos[0]      = new OpenGl_FrameBuffer();
-  myMainSceneFbos[1]      = new OpenGl_FrameBuffer();
-  myImmediateSceneFbos[0] = new OpenGl_FrameBuffer();
-  myImmediateSceneFbos[1] = new OpenGl_FrameBuffer();
-  myOpenGlFBO             = new OpenGl_FrameBuffer();
-  myOpenGlFBO2            = new OpenGl_FrameBuffer();
-  myRaytraceFBO1[0]       = new OpenGl_FrameBuffer();
-  myRaytraceFBO1[1]       = new OpenGl_FrameBuffer();
-  myRaytraceFBO2[0]       = new OpenGl_FrameBuffer();
-  myRaytraceFBO2[1]       = new OpenGl_FrameBuffer();
+  myCurrLightSourceState     = myStateCounter->Increment();
+  myMainSceneFbos[0]         = new OpenGl_FrameBuffer();
+  myMainSceneFbos[1]         = new OpenGl_FrameBuffer();
+  myMainSceneFbosOit[0]      = new OpenGl_FrameBuffer();
+  myMainSceneFbosOit[1]      = new OpenGl_FrameBuffer();
+  myImmediateSceneFbos[0]    = new OpenGl_FrameBuffer();
+  myImmediateSceneFbos[1]    = new OpenGl_FrameBuffer();
+  myImmediateSceneFbosOit[0] = new OpenGl_FrameBuffer();
+  myImmediateSceneFbosOit[1] = new OpenGl_FrameBuffer();
+  myOpenGlFBO                = new OpenGl_FrameBuffer();
+  myOpenGlFBO2               = new OpenGl_FrameBuffer();
+  myRaytraceFBO1[0]          = new OpenGl_FrameBuffer();
+  myRaytraceFBO1[1]          = new OpenGl_FrameBuffer();
+  myRaytraceFBO2[0]          = new OpenGl_FrameBuffer();
+  myRaytraceFBO2[1]          = new OpenGl_FrameBuffer();
 }
 
 // =======================================================================
@@ -142,14 +152,18 @@ void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
     myBgTextureArray->Release (theCtx.operator->());
   }
 
-  myMainSceneFbos[0]     ->Release (theCtx.operator->());
-  myMainSceneFbos[1]     ->Release (theCtx.operator->());
-  myImmediateSceneFbos[0]->Release (theCtx.operator->());
-  myImmediateSceneFbos[1]->Release (theCtx.operator->());
-  myOpenGlFBO            ->Release (theCtx.operator->());
-  myOpenGlFBO2           ->Release (theCtx.operator->());
-  myFullScreenQuad        .Release (theCtx.operator->());
-  myFullScreenQuadFlip    .Release (theCtx.operator->());
+  myMainSceneFbos[0]        ->Release (theCtx.operator->());
+  myMainSceneFbos[1]        ->Release (theCtx.operator->());
+  myMainSceneFbosOit[0]     ->Release (theCtx.operator->());
+  myMainSceneFbosOit[1]     ->Release (theCtx.operator->());
+  myImmediateSceneFbos[0]   ->Release (theCtx.operator->());
+  myImmediateSceneFbos[1]   ->Release (theCtx.operator->());
+  myImmediateSceneFbosOit[0]->Release (theCtx.operator->());
+  myImmediateSceneFbosOit[1]->Release (theCtx.operator->());
+  myOpenGlFBO               ->Release (theCtx.operator->());
+  myOpenGlFBO2              ->Release (theCtx.operator->());
+  myFullScreenQuad           .Release (theCtx.operator->());
+  myFullScreenQuadFlip       .Release (theCtx.operator->());
 
   releaseRaytraceResources (theCtx);
 }

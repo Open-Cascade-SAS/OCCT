@@ -65,6 +65,11 @@ enum OpenGl_StateVariable
   OpenGl_OCCT_BACK_MATERIAL,
   OpenGl_OCCT_COLOR,
 
+  // Weighted, Blended Order-Independent Transparency rendering state
+  OpenGl_OCCT_OIT_OUTPUT,
+  OpenGl_OCCT_OIT_DEPTH_FACTOR,
+
+  // Context-dependent state
   OpenGl_OCCT_TEXTURE_TRSF2D,
   OpenGl_OCCT_POINT_SIZE,
 
@@ -124,6 +129,7 @@ enum OpenGl_UniformStateType
   OpenGl_PROJECTION_STATE,
   OpenGl_MATERIAL_STATE,
   OpenGl_SURF_DETAIL_STATE,
+  OpenGL_OIT_STATE,
   OpenGl_UniformStateType_NB
 };
 

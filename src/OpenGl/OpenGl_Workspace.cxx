@@ -712,7 +712,7 @@ const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
   }
   else
   {
-    myGlContext->SetShadingMaterial (myAspectFaceSet, myHighlightStyle, myUseDepthWrite);
+    myGlContext->SetShadingMaterial (myAspectFaceSet, myHighlightStyle);
   }
 
   if (myAspectFaceSet->Aspect()->ToMapTexture())
@@ -1104,15 +1104,16 @@ Standard_Boolean OpenGl_Workspace::BufferDump (const Handle(OpenGl_FrameBuffer)&
 }
 
 // =======================================================================
-// function : CanRender
+// function : ShouldRender
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_RaytraceFilter::CanRender (const OpenGl_Element* theElement)
+Standard_Boolean OpenGl_RaytraceFilter::ShouldRender (const Handle(OpenGl_Workspace)& theWorkspace,
+                                                      const OpenGl_Element*           theElement)
 {
   Standard_Boolean aPrevFilterResult = Standard_True;
   if (!myPrevRenderFilter.IsNull())
   {
-    aPrevFilterResult = myPrevRenderFilter->CanRender (theElement);
+    aPrevFilterResult = myPrevRenderFilter->ShouldRender (theWorkspace, theElement);
   }
   return aPrevFilterResult &&
     !OpenGl_Raytrace::IsRaytracedElement (theElement);
