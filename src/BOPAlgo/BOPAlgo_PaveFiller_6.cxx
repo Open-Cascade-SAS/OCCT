@@ -799,25 +799,37 @@ Standard_Integer BOPAlgo_PaveFiller::PostTreatFF
   for (k = 1; k <= aNbME; ++k) {
     const TopoDS_Edge& aEM = TopoDS::Edge(theMicroEdges(k));
     //
-    TopoDS_Vertex aV1, aV2;
-    TopExp::Vertices(aEM, aV1, aV2);
+    TopoDS_Vertex aVerts[2];
+    TopExp::Vertices(aEM, aVerts[0], aVerts[1]);
+    for (Standard_Integer i = 0; i < 2; ++i) {
+      nV = myDS->Index(aVerts[i]);
+      const Standard_Integer* pSD = aDMNewSD.Seek(nV);
+      if (pSD) {
+        aVerts[i] = TopoDS::Vertex(myDS->Shape(*pSD));
+      }
+      //
+      if (anAddedSD.Add(aVerts[i])) {
+        aLS.Append(aVerts[i]);
+      }
+    }
     //
-    aLS.Append(aV1);
-    aLS.Append(aV2);
+    if (aVerts[0].IsSame(aVerts[1])) {
+      continue;
+    }
     //
     // make sure these vertices will be united
-    const gp_Pnt& aP1 = BRep_Tool::Pnt(aV1);
-    const gp_Pnt& aP2 = BRep_Tool::Pnt(aV2);
+    const gp_Pnt& aP1 = BRep_Tool::Pnt(aVerts[0]);
+    const gp_Pnt& aP2 = BRep_Tool::Pnt(aVerts[1]);
     //
     Standard_Real aDist = aP1.Distance(aP2);
-    Standard_Real aTolV1 = BRep_Tool::Tolerance(aV1);
-    Standard_Real aTolV2 = BRep_Tool::Tolerance(aV2);
+    Standard_Real aTolV1 = BRep_Tool::Tolerance(aVerts[0]);
+    Standard_Real aTolV2 = BRep_Tool::Tolerance(aVerts[1]);
     //
     aDist -= (aTolV1 + aTolV2);
     if (aDist > 0.) {
       aDist /= 2.;
-      aBB.UpdateVertex(aV1, aTolV1 + aDist);
-      aBB.UpdateVertex(aV2, aTolV2 + aDist);
+      aBB.UpdateVertex(aVerts[0], aTolV1 + aDist);
+      aBB.UpdateVertex(aVerts[1], aTolV2 + aDist);
     }
   }
   //
@@ -935,24 +947,10 @@ Standard_Integer BOPAlgo_PaveFiller::PostTreatFF
               aLPBC.Remove(aItLPB);
               break;
             }
-          } 
+          }
         }
         //
-        if (!aNbLPBx) {
-          aE=aSx;
-          //
-          iE = myDS->Index(aE);
-          if (iE < 0) {
-            aSI.SetShapeType(aType);
-            aSI.SetShape(aE);
-            iE=myDS->Append(aSI);
-          }
-          // append new PaveBlock to aLPBC
-          aPB1->SetEdge(iE);
-          aLPBC.Append(aPB1);
-        } // if (!aNbLPBx) {
-        //
-        else {
+        if (aNbLPBx) {
           aItLPB.Initialize(aLPBx);
           for (; aItLPB.More(); aItLPB.Next()) {
             const Handle(BOPDS_PaveBlock)& aPBx=aItLPB.Value();
@@ -2054,7 +2052,17 @@ void BOPAlgo_PaveFiller::PutPaveOnCurve
           aMVTol.Bind(nVUsed, aTolV);
         }
       }
-      pList->Append(nV);
+      // avoid repeated elements in the list
+      BOPCol_ListIteratorOfListOfInteger aItLI(*pList);
+      for (; aItLI.More(); aItLI.Next()) {
+        if (aItLI.Value() == nV) {
+          break;
+        }
+      }
+      if (!aItLI.More()) {
+        pList->Append(nV);
+      }
+      // save initial tolerance for the vertex
       if (!aMVTol.IsBound(nV)) {
         aTolV = BRep_Tool::Tolerance(aV);
         aMVTol.Bind(nV, aTolV);

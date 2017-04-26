@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC28683"
+puts "========"
+puts ""
+####################################################################################
+## Wrong result of CUT operation
+####################################################################################
+
+restore [locate_data_file bug28683_shapes.brep] b
+explode b
+bcut result b_1 b_2
+donly result
+checkshape result
+checkprops result -s 1.82492
+checknbshapes result -vertex 6 -edge 6 -wire 1 -face 1

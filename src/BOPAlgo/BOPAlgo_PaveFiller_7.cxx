@@ -678,51 +678,6 @@ void BOPAlgo_PaveFiller::MakePCurves()
   //======================================================
 }
 //=======================================================================
-// function: RefineFaceInfoOn
-// purpose: 
-//=======================================================================
-void BOPAlgo_PaveFiller::RefineFaceInfoOn() 
-{
-  Standard_Integer aNbPBP;
-  //
-  myErrorStatus=0;
-  //
-  BOPDS_VectorOfListOfPaveBlock& aPBP=myDS->ChangePaveBlocksPool();
-  aNbPBP=aPBP.Extent();
-  if(!aNbPBP) {
-    return;
-  }
-  //
-  Standard_Boolean bV1, bV2;
-  Standard_Integer i, nV1, nV2, aNbPB;
-  Handle(BOPDS_PaveBlock) aPB;
-  //
-  for (i=0; i<aNbPBP; ++i) {
-    BOPDS_ListOfPaveBlock& aLPB=aPBP(i);
-    //
-    aNbPB=aLPB.Extent();
-    if (aNbPB==1) {
-      aPB=aLPB.First();
-      aPB->Indices(nV1, nV2);
-      bV1=myDS->IsNewShape(nV1);
-      bV2=myDS->IsNewShape(nV2);
-      //
-      if (!(bV1 || bV2)) {
-        if (!myDS->IsCommonBlock(aPB)) {
-          // the PB seems to be untouced
-          aLPB.Clear();
-          Standard_Integer nE = aPB->OriginalEdge();
-          if (nE >= 0) {
-            myDS->ChangeShapeInfo(nE).SetReference(-1);
-          }
-          continue;
-        }
-      }//if (!(bV1 || bV2)) {
-    }//if (aNbPB==1) {
-  }//for (i=0; i<aNbPBP; ++i) {
-  myDS->RefineFaceInfoOn();
-}
-//=======================================================================
 //function : UpdateVertices
 //purpose  : update tolerances of vertices comparing extremities of
 //           3d and 2d curves

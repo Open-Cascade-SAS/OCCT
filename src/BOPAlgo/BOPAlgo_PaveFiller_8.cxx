@@ -222,7 +222,7 @@ void BOPAlgo_PaveFiller::ProcessDE()
       aPB->SetEdge(nSp);
     }
     else {
-      //aPB->SetEdge(nDE);
+      myDS->ChangeShapeInfo(nDE).SetReference(-1);
       aLPB.Clear();
       break;
     }

@@ -311,12 +311,6 @@ protected:
 
   //! Keeps data for post treatment
   Standard_EXPORT void PreparePostTreatFF (const Standard_Integer aInt, const Standard_Integer aCur, const Handle(BOPDS_PaveBlock)& aPB, BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& aMSCPB, BOPCol_DataMapOfShapeInteger& aMVI, BOPDS_ListOfPaveBlock& aLPB);
-  
-
-  //! Refines the state On for the all faces having
-  //! state information
-  Standard_EXPORT void RefineFaceInfoOn();
-  
 
   //! Updates the information about faces
   Standard_EXPORT void UpdateFaceInfo (BOPDS_DataMapOfPaveBlockListOfPaveBlock& theDME, const BOPCol_DataMapOfIntegerInteger& theDMV);

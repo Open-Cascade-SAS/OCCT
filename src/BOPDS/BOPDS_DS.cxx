@@ -2105,3 +2105,47 @@ void BOPDS_DS::InitPaveBlocksForVertex(const Standard_Integer theNV)
     }
   }
 }
+
+//=======================================================================
+//function : ReleasePaveBlocks
+//purpose  :
+//=======================================================================
+void BOPDS_DS::ReleasePaveBlocks()
+{
+  // It is necessary to remove the reference to PaveBlocks for the untouched
+  // edges to avoid creation of the same images for them.
+  // Pave blocks for this reference should be cleared.
+  // This will allow to differ the small edges, for which it is
+  // impossible to even build a pave block from the normal edges for which the
+  // pave block have been created, but stayed untouched.
+  // The small edge, for which no pave blocks have been created,
+  // should be avoided in the result, thus the reference to empty list
+  // of pave blocks will stay to mark the edge as Deleted.
+
+  BOPDS_VectorOfListOfPaveBlock& aPBP = ChangePaveBlocksPool();
+  Standard_Integer aNbPBP = aPBP.Extent();
+  if (!aNbPBP) {
+    return;
+  }
+  //
+  for (Standard_Integer i = 0; i < aNbPBP; ++i) {
+    BOPDS_ListOfPaveBlock& aLPB = aPBP(i);
+    if (aLPB.Extent() == 1) {
+      const Handle(BOPDS_PaveBlock)& aPB = aLPB.First();
+      if (!IsCommonBlock(aPB)) {
+        Standard_Integer nV1, nV2;
+        aPB->Indices(nV1, nV2);
+        if (!IsNewShape(nV1) && !IsNewShape(nV2)) {
+          // Both vertices are original, thus the PB is untouched.
+          // Remove reference for the original edge
+          Standard_Integer nE = aPB->OriginalEdge();
+          if (nE >= 0) {
+            ChangeShapeInfo(nE).SetReference(-1);
+          }
+          // Clear contents of the list
+          aLPB.Clear();
+        }
+      }
+    }
+  }
+}
