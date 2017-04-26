@@ -40,10 +40,10 @@ DEFINE_STANDARD_HANDLE(TDataStd_RealArray, TDF_Attribute)
 //! A framework for an attribute composed of a real number array.
 class TDataStd_RealArray : public TDF_Attribute
 {
-
+  friend class TDataStd_DeltaOnModificationOfRealArray;
+  DEFINE_STANDARD_RTTIEXT(TDataStd_RealArray, TDF_Attribute)
 public:
 
-  
   //! class methods
   //! =============
   //! Returns the GUID for arrays of reals.
@@ -88,15 +88,15 @@ Standard_Real operator () (const Standard_Integer Index) const
   //! If <isCheckItems> equal True each item of <newArray> will be checked with each
   //! item of <myValue> for coincidence (to avoid backup).
   Standard_EXPORT void ChangeArray (const Handle(TColStd_HArray1OfReal)& newArray, const Standard_Boolean isCheckItems = Standard_True);
-  
+
   //! Returns the handle of this array of reals.
-    const Handle(TColStd_HArray1OfReal) Array() const;
-  
-    Standard_Boolean GetDelta() const;
-  
+  const Handle(TColStd_HArray1OfReal)& Array() const { return myValue; }
+
+  Standard_Boolean GetDelta() const { return myIsDelta; }
+
   //! for  internal  use  only!
-    void SetDelta (const Standard_Boolean isDelta);
-  
+  void SetDelta (const Standard_Boolean isDelta) { myIsDelta = isDelta; }
+
   Standard_EXPORT TDataStd_RealArray();
   
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
@@ -114,33 +114,15 @@ Standard_Real operator () (const Standard_Integer Index) const
   //! <anOldAttribute>.
   Standard_EXPORT virtual Handle(TDF_DeltaOnModification) DeltaOnModification (const Handle(TDF_Attribute)& anOldAttribute) const Standard_OVERRIDE;
 
-
-friend class TDataStd_DeltaOnModificationOfRealArray;
-
-
-  DEFINE_STANDARD_RTTIEXT(TDataStd_RealArray,TDF_Attribute)
-
-protected:
-
-
-
-
 private:
 
-  
-    void RemoveArray();
+  void RemoveArray() { myValue.Nullify(); }
+
+private:
 
   Handle(TColStd_HArray1OfReal) myValue;
   Standard_Boolean myIsDelta;
 
-
 };
-
-
-#include <TDataStd_RealArray.lxx>
-
-
-
-
 
 #endif // _TDataStd_RealArray_HeaderFile

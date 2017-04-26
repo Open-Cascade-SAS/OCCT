@@ -23,49 +23,27 @@
 #include <MMgt_TShared.hxx>
 #include <Standard_Integer.hxx>
 
-
-class TDataStd_HDataMapOfStringHArray1OfInteger;
-DEFINE_STANDARD_HANDLE(TDataStd_HDataMapOfStringHArray1OfInteger, MMgt_TShared)
-
 //! Extension of TDataStd_DataMapOfStringHArray1OfInteger class
 //! to be manipulated by handle.
 class TDataStd_HDataMapOfStringHArray1OfInteger : public MMgt_TShared
 {
-
+  DEFINE_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringHArray1OfInteger, MMgt_TShared)
 public:
 
-  
   Standard_EXPORT TDataStd_HDataMapOfStringHArray1OfInteger(const Standard_Integer NbBuckets = 1);
-  
+
   Standard_EXPORT TDataStd_HDataMapOfStringHArray1OfInteger(const TDataStd_DataMapOfStringHArray1OfInteger& theOther);
-  
-    const TDataStd_DataMapOfStringHArray1OfInteger& Map() const;
-  
-    TDataStd_DataMapOfStringHArray1OfInteger& ChangeMap();
 
+  const TDataStd_DataMapOfStringHArray1OfInteger& Map() const { return myMap; }
 
-
-
-  DEFINE_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringHArray1OfInteger,MMgt_TShared)
-
-protected:
-
-
-
+  TDataStd_DataMapOfStringHArray1OfInteger& ChangeMap() { return myMap; }
 
 private:
 
-
   TDataStd_DataMapOfStringHArray1OfInteger myMap;
-
 
 };
 
-
-#include <TDataStd_HDataMapOfStringHArray1OfInteger.lxx>
-
-
-
-
+DEFINE_STANDARD_HANDLE(TDataStd_HDataMapOfStringHArray1OfInteger, MMgt_TShared)
 
 #endif // _TDataStd_HDataMapOfStringHArray1OfInteger_HeaderFile

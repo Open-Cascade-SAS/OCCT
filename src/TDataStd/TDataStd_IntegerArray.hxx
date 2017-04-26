@@ -39,10 +39,10 @@ DEFINE_STANDARD_HANDLE(TDataStd_IntegerArray, TDF_Attribute)
 //! Contains an array of integers.
 class TDataStd_IntegerArray : public TDF_Attribute
 {
-
+  friend class TDataStd_DeltaOnModificationOfIntArray;
+  DEFINE_STANDARD_RTTIEXT(TDataStd_IntegerArray, TDF_Attribute)
 public:
 
-  
   //! class methods
   //! =============
   //! Returns the GUID for arrays of integers.
@@ -87,15 +87,15 @@ Standard_Integer operator () (const Standard_Integer Index) const
   //! If <isCheckItems> equal True each item of <newArray> will be checked with each
   //! item of <myValue> for coincidence (to avoid backup).
   Standard_EXPORT void ChangeArray (const Handle(TColStd_HArray1OfInteger)& newArray, const Standard_Boolean isCheckItems = Standard_True);
-  
+
   //! Return the inner array of the IntegerArray attribute
-    const Handle(TColStd_HArray1OfInteger) Array() const;
-  
-    Standard_Boolean GetDelta() const;
-  
+  const Handle(TColStd_HArray1OfInteger)& Array() const { return myValue; }
+
+  Standard_Boolean GetDelta() const { return myIsDelta; }
+
   //! for  internal  use  only!
-    void SetDelta (const Standard_Boolean isDelta);
-  
+  void SetDelta (const Standard_Boolean isDelta) { myIsDelta = isDelta; }
+
   Standard_EXPORT TDataStd_IntegerArray();
   
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
@@ -113,33 +113,15 @@ Standard_Integer operator () (const Standard_Integer Index) const
   //! <anOldAttribute>.
   Standard_EXPORT virtual Handle(TDF_DeltaOnModification) DeltaOnModification (const Handle(TDF_Attribute)& anOldAttribute) const Standard_OVERRIDE;
 
-
-friend class TDataStd_DeltaOnModificationOfIntArray;
-
-
-  DEFINE_STANDARD_RTTIEXT(TDataStd_IntegerArray,TDF_Attribute)
-
-protected:
-
-
-
-
 private:
 
-  
-    void RemoveArray();
+  void RemoveArray() { myValue.Nullify(); }
+
+private:
 
   Handle(TColStd_HArray1OfInteger) myValue;
   Standard_Boolean myIsDelta;
 
-
 };
-
-
-#include <TDataStd_IntegerArray.lxx>
-
-
-
-
 
 #endif // _TDataStd_IntegerArray_HeaderFile

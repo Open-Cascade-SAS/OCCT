@@ -23,49 +23,27 @@
 #include <MMgt_TShared.hxx>
 #include <Standard_Integer.hxx>
 
-
-class TDataStd_HDataMapOfStringInteger;
-DEFINE_STANDARD_HANDLE(TDataStd_HDataMapOfStringInteger, MMgt_TShared)
-
 //! Extension of TColStd_DataMapOfStringInteger class
 //! to be manipulated by handle.
 class TDataStd_HDataMapOfStringInteger : public MMgt_TShared
 {
-
+  DEFINE_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringInteger, MMgt_TShared)
 public:
 
-  
   Standard_EXPORT TDataStd_HDataMapOfStringInteger(const Standard_Integer NbBuckets = 1);
-  
+
   Standard_EXPORT TDataStd_HDataMapOfStringInteger(const TColStd_DataMapOfStringInteger& theOther);
-  
-    const TColStd_DataMapOfStringInteger& Map() const;
-  
-    TColStd_DataMapOfStringInteger& ChangeMap();
 
+  const TColStd_DataMapOfStringInteger& Map() const { return myMap; }
 
-
-
-  DEFINE_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringInteger,MMgt_TShared)
-
-protected:
-
-
-
+  TColStd_DataMapOfStringInteger& ChangeMap() { return myMap; }
 
 private:
 
-
   TColStd_DataMapOfStringInteger myMap;
-
 
 };
 
-
-#include <TDataStd_HDataMapOfStringInteger.lxx>
-
-
-
-
+DEFINE_STANDARD_HANDLE(TDataStd_HDataMapOfStringInteger, MMgt_TShared)
 
 #endif // _TDataStd_HDataMapOfStringInteger_HeaderFile

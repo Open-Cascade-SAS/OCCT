@@ -24,7 +24,6 @@
 #include <Standard_Boolean.hxx>
 class TDataStd_TreeNode;
 
-
 //! Iterates on the  ChildStepren step of  a step, at the
 //! first level  only.   It  is possible  to ask  the
 //! iterator to explore all the sub step levels of the
@@ -35,7 +34,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates an empty iterator.
   Standard_EXPORT TDataStd_ChildNodeIterator();
   
@@ -52,8 +50,8 @@ public:
   
   //! Returns True if there is a current Item in the
   //! iteration.
-    Standard_Boolean More() const;
-  
+  Standard_Boolean More() const { return !myNode.IsNull(); }
+
   //! Move to the next Item
   Standard_EXPORT void Next();
   
@@ -65,32 +63,13 @@ public:
   
   //! Returns the current item; a null Step if there is
   //! no one.
-    const Handle(TDataStd_TreeNode)& Value() const;
-
-
-
-
-protected:
-
-
-
-
+  const Handle(TDataStd_TreeNode)& Value() const { return myNode; }
 
 private:
-
-
 
   Handle(TDataStd_TreeNode) myNode;
   Standard_Integer myFirstLevel;
 
-
 };
-
-
-#include <TDataStd_ChildNodeIterator.lxx>
-
-
-
-
 
 #endif // _TDataStd_ChildNodeIterator_HeaderFile

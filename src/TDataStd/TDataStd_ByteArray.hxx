@@ -39,10 +39,10 @@ DEFINE_STANDARD_HANDLE(TDataStd_ByteArray, TDF_Attribute)
 //! An array of Byte (unsigned char) values.
 class TDataStd_ByteArray : public TDF_Attribute
 {
-
+  friend class TDataStd_DeltaOnModificationOfByteArray;
+  DEFINE_STANDARD_RTTIEXT(TDataStd_ByteArray, TDF_Attribute)
 public:
 
-  
   //! Static methods
   //! ==============
   //! Returns an ID for array.
@@ -77,9 +77,9 @@ Standard_Byte operator () (const Standard_Integer Index) const
   
   //! Returns the number of elements in the array.
   Standard_EXPORT Standard_Integer Length() const;
-  
-    const Handle(TColStd_HArray1OfByte) InternalArray() const;
-  
+
+  const Handle(TColStd_HArray1OfByte)& InternalArray() const { return myValue; }
+
   //! Sets the inner array <myValue>  of the attribute to
   //! <newArray>. If value of <newArray> differs from <myValue>, Backup performed
   //! and myValue refers to new instance of HArray1OfInteger that holds <newArray>
@@ -87,12 +87,12 @@ Standard_Byte operator () (const Standard_Integer Index) const
   //! If <isCheckItems> equal True each item of <newArray> will be checked with each
   //! item of <myValue> for coincidence (to avoid backup).
   Standard_EXPORT void ChangeArray (const Handle(TColStd_HArray1OfByte)& newArray, const Standard_Boolean isCheckItems = Standard_True);
-  
-    Standard_Boolean GetDelta() const;
-  
+
+  Standard_Boolean GetDelta() const { return myIsDelta; }
+
   //! for internal  use  only!
-    void SetDelta (const Standard_Boolean isDelta);
-  
+  void SetDelta (const Standard_Boolean isDelta) { myIsDelta = isDelta; }
+
   Standard_EXPORT TDataStd_ByteArray();
   
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
@@ -109,33 +109,15 @@ Standard_Byte operator () (const Standard_Integer Index) const
   //! <anOldAttribute>.
   Standard_EXPORT virtual Handle(TDF_DeltaOnModification) DeltaOnModification (const Handle(TDF_Attribute)& anOldAttribute) const Standard_OVERRIDE;
 
-
-friend class TDataStd_DeltaOnModificationOfByteArray;
-
-
-  DEFINE_STANDARD_RTTIEXT(TDataStd_ByteArray,TDF_Attribute)
-
-protected:
-
-
-
-
 private:
 
+  void RemoveArray() { myValue.Nullify(); }
   
-    void RemoveArray();
+private:
 
   Handle(TColStd_HArray1OfByte) myValue;
   Standard_Boolean myIsDelta;
 
-
 };
-
-
-#include <TDataStd_ByteArray.lxx>
-
-
-
-
 
 #endif // _TDataStd_ByteArray_HeaderFile

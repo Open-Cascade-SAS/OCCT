@@ -36,15 +36,13 @@ class TDF_DeltaOnModification;
 class TDataStd_ExtStringArray;
 DEFINE_STANDARD_HANDLE(TDataStd_ExtStringArray, TDF_Attribute)
 
-//! ExtStringArray Attribute. Handles an
-//! array of UNICODE strings (represented by the
-//! TCollection_ExtendedString class).
+//! ExtStringArray Attribute. Handles an array of UNICODE strings (represented by the TCollection_ExtendedString class).
 class TDataStd_ExtStringArray : public TDF_Attribute
 {
-
+  friend class TDataStd_DeltaOnModificationOfExtStringArray;
+  DEFINE_STANDARD_RTTIEXT(TDataStd_ExtStringArray, TDF_Attribute)
 public:
 
-  
   //! class methods
   //! =============
   //! Returns the GUID for the attribute.
@@ -87,15 +85,15 @@ const TCollection_ExtendedString& operator () (const Standard_Integer Index) con
   //! If <isCheckItems> equal True each item of <newArray> will be checked with each
   //! item of <myValue> for coincidence (to avoid backup).
   Standard_EXPORT void ChangeArray (const Handle(TColStd_HArray1OfExtendedString)& newArray, const Standard_Boolean isCheckItems = Standard_True);
-  
+
   //! Return the inner array of the ExtStringArray attribute
-    const Handle(TColStd_HArray1OfExtendedString) Array() const;
-  
-    Standard_Boolean GetDelta() const;
-  
+  const Handle(TColStd_HArray1OfExtendedString)& Array() const { return myValue; }
+
+  Standard_Boolean GetDelta() const { return myIsDelta; }
+
   //! for  internal  use  only!
-    void SetDelta (const Standard_Boolean isDelta);
-  
+  void SetDelta (const Standard_Boolean isDelta) { myIsDelta = isDelta; }
+
   Standard_EXPORT TDataStd_ExtStringArray();
   
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
@@ -112,33 +110,15 @@ const TCollection_ExtendedString& operator () (const Standard_Integer Index) con
   //! <anOldAttribute>.
   Standard_EXPORT virtual Handle(TDF_DeltaOnModification) DeltaOnModification (const Handle(TDF_Attribute)& anOldAttribute) const Standard_OVERRIDE;
 
-
-friend class TDataStd_DeltaOnModificationOfExtStringArray;
-
-
-  DEFINE_STANDARD_RTTIEXT(TDataStd_ExtStringArray,TDF_Attribute)
-
-protected:
-
-
-
-
 private:
 
-  
-    void RemoveArray();
+  void RemoveArray() { myValue.Nullify(); }
+
+private:
 
   Handle(TColStd_HArray1OfExtendedString) myValue;
   Standard_Boolean myIsDelta;
 
-
 };
-
-
-#include <TDataStd_ExtStringArray.lxx>
-
-
-
-
 
 #endif // _TDataStd_ExtStringArray_HeaderFile

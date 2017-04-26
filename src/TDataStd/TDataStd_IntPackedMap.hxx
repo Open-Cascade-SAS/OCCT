@@ -21,10 +21,10 @@
 
 #include <Standard_Boolean.hxx>
 #include <TDF_Attribute.hxx>
-#include <TColStd_PackedMapOfInteger.hxx>
+#include <TColStd_HPackedMapOfInteger.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
-class TColStd_HPackedMapOfInteger;
+
 class TDataStd_DeltaOnModificationOfIntPackedMap;
 class Standard_GUID;
 class TDF_Label;
@@ -32,17 +32,16 @@ class TDF_Attribute;
 class TDF_RelocationTable;
 class TDF_DeltaOnModification;
 
-
 class TDataStd_IntPackedMap;
 DEFINE_STANDARD_HANDLE(TDataStd_IntPackedMap, TDF_Attribute)
 
 //! Attribute for storing TColStd_PackedMapOfInteger
 class TDataStd_IntPackedMap : public TDF_Attribute
 {
-
+  friend class TDataStd_DeltaOnModificationOfIntPackedMap;
+  DEFINE_STANDARD_RTTIEXT(TDataStd_IntPackedMap, TDF_Attribute)
 public:
 
-  
   //! class methods
   //! =============
   //! Returns the GUID of the attribute.
@@ -60,11 +59,11 @@ public:
   Standard_EXPORT TDataStd_IntPackedMap();
   
   Standard_EXPORT Standard_Boolean ChangeMap (const Handle(TColStd_HPackedMapOfInteger)& theMap);
-  
-    const TColStd_PackedMapOfInteger& GetMap() const;
-  
-    const Handle(TColStd_HPackedMapOfInteger)& GetHMap() const;
-  
+
+  const TColStd_PackedMapOfInteger& GetMap() const { return  myMap->Map(); }
+
+  const Handle(TColStd_HPackedMapOfInteger)& GetHMap() const { return myMap; }
+
   Standard_EXPORT Standard_Boolean Clear();
   
   Standard_EXPORT Standard_Boolean Add (const Standard_Integer theKey);
@@ -72,16 +71,16 @@ public:
   Standard_EXPORT Standard_Boolean Remove (const Standard_Integer theKey);
   
   Standard_EXPORT Standard_Boolean Contains (const Standard_Integer theKey) const;
-  
-    Standard_Integer Extent() const;
-  
-    Standard_Boolean IsEmpty() const;
-  
-    Standard_Boolean GetDelta() const;
-  
+
+  Standard_Integer Extent() const { return myMap->Map().Extent(); }
+
+  Standard_Boolean IsEmpty() const { return myMap->Map().IsEmpty(); }
+
+  Standard_Boolean GetDelta() const { return myIsDelta; }
+
   //! for  internal  use  only!
-    void SetDelta (const Standard_Boolean isDelta);
-  
+  void SetDelta (const Standard_Boolean isDelta) { myIsDelta = isDelta; }
+
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   
   Standard_EXPORT void Restore (const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
@@ -96,33 +95,15 @@ public:
   //! <anOldAttribute>.
   Standard_EXPORT virtual Handle(TDF_DeltaOnModification) DeltaOnModification (const Handle(TDF_Attribute)& anOldAttribute) const Standard_OVERRIDE;
 
-
-friend class TDataStd_DeltaOnModificationOfIntPackedMap;
-
-
-  DEFINE_STANDARD_RTTIEXT(TDataStd_IntPackedMap,TDF_Attribute)
-
-protected:
-
-
-
-
 private:
 
-  
-    void RemoveMap();
+  void RemoveMap() { myMap.Nullify(); }
+
+private:
 
   Handle(TColStd_HPackedMapOfInteger) myMap;
   Standard_Boolean myIsDelta;
 
-
 };
-
-
-#include <TDataStd_IntPackedMap.lxx>
-
-
-
-
 
 #endif // _TDataStd_IntPackedMap_HeaderFile
