@@ -121,7 +121,7 @@ public:
   Standard_EXPORT void DisplayedStructures (Graphic3d_MapOfStructure& theStructures) const;
 
   //! Returns number of displayed structures in the view.
-  Standard_Integer NumberOfDisplayedStructures() const { return myStructsDisplayed.Extent(); }
+  virtual Standard_Integer NumberOfDisplayedStructures() const { return myStructsDisplayed.Extent(); }
 
   //! Returns map of objects hidden within this specific view (not viewer-wise).
   const Handle(Graphic3d_NMapOfTransient)& HiddenObjects() const { return myHiddenObjects; }
@@ -139,7 +139,7 @@ public:
   //! of graphical elements forming parts of infinite and other auxiliary structures.
   //! @param theToIncludeAuxiliary consider also auxiliary presentations (with infinite flag or with trihedron transformation persistence)
   //! @return computed bounding box
-  Standard_EXPORT Bnd_Box MinMaxValues (const Standard_Boolean theToIncludeAuxiliary = Standard_False) const;
+  Standard_EXPORT virtual Bnd_Box MinMaxValues (const Standard_Boolean theToIncludeAuxiliary = Standard_False) const;
 
   //! Returns the coordinates of the boundary box of all structures in the set <theSet>.
   //! If <theToIgnoreInfiniteFlag> is TRUE, then the boundary box
