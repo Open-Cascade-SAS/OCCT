@@ -220,7 +220,6 @@ void BOPAlgo_PaveFiller::UpdateCommonBlocksWithSDVertices()
       }
       //
       if (aMCB.Add(aCB)) {
-        myDS->SortPaveBlocks(aCB);
         aPB->Indices(nV1, nV2);
         UpdateVertex(nV1, aTolV);
         UpdateVertex(nV2, aTolV);

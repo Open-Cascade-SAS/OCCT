@@ -42,15 +42,30 @@ IMPLEMENT_STANDARD_RTTIEXT(BOPDS_CommonBlock,MMgt_TShared)
 //=======================================================================
   void BOPDS_CommonBlock::AddPaveBlock(const Handle(BOPDS_PaveBlock)& aPB)
 {
-  myPaveBlocks.Append(aPB);
+  if (myPaveBlocks.IsEmpty()) {
+    myPaveBlocks.Append(aPB);
+    return;
+  }
+  //
+  // Put the pave block with the minimal index of the original edge in the first place
+  if (aPB->OriginalEdge() < myPaveBlocks.First()->OriginalEdge()) {
+    myPaveBlocks.Prepend(aPB);
+  }
+  else {
+    myPaveBlocks.Append(aPB);
+  }
 }
 //=======================================================================
-// function:  AddPaveBlocks
+// function:  SetPaveBlocks
 // purpose: 
 //=======================================================================
-  void BOPDS_CommonBlock::AddPaveBlocks(const BOPDS_ListOfPaveBlock& aLPB)
+  void BOPDS_CommonBlock::SetPaveBlocks(const BOPDS_ListOfPaveBlock& aLPB)
 {
-  myPaveBlocks=aLPB;
+  myPaveBlocks.Clear();
+  BOPDS_ListIteratorOfListOfPaveBlock aIt(aLPB);
+  for (; aIt.More(); aIt.Next()) {
+    AddPaveBlock(aIt.Value());
+  }
 }
 //=======================================================================
 // function:  PaveBlocks

@@ -31,11 +31,13 @@ class BOPDS_CommonBlock;
 DEFINE_STANDARD_HANDLE(BOPDS_CommonBlock, MMgt_TShared)
 
 
-//! The class BOPDS_CommonBlock is to store
-//! the information about pave blocks that have
-//! geometry coincidence (in  terms of a tolerance)  with
-//! a) other pave block(s)
-//! b) face(s)
+//! The class BOPDS_CommonBlock is to store the information
+//! about pave blocks that have geometrical coincidence
+//! (in terms of a tolerance) with:<br>
+//! a) other pave block(s);<br>
+//! b) face(s).<br>
+//! First pave block in the common block (real pave block)
+//! is always a pave block with the minimal index of the original edge.
 class BOPDS_CommonBlock : public MMgt_TShared
 {
 
@@ -62,7 +64,7 @@ public:
   //! Adds the list of pave blocks <aLPB>
   //! to the list of pave blocks
   //! of the common block
-  Standard_EXPORT void AddPaveBlocks (const BOPDS_ListOfPaveBlock& aLPB);
+  Standard_EXPORT void SetPaveBlocks (const BOPDS_ListOfPaveBlock& aLPB);
   
 
   //! Modifier

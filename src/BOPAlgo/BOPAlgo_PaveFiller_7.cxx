@@ -393,13 +393,20 @@ void BOPAlgo_PaveFiller::MakeSplitEdges()
       bCB=myDS->IsCommonBlock(aPB);
       //
       if (!(bV1 || bV2)) { // no new vertices here
-        if (!myNonDestructive || (myNonDestructive && !bCB)) {
-          nE = aPB->OriginalEdge();
-          aPB->SetEdge(nE);
-          if (!myNonDestructive && bCB) {
-            const Handle(BOPDS_CommonBlock)& aCB = myDS->CommonBlock(aPB);
-            Standard_Real aTol = BOPAlgo_Tools::ComputeToleranceOfCB(aCB, myDS, myContext);
-            myDS->UpdateEdgeTolerance(nE, aTol);
+        if (!myNonDestructive || !bCB) {
+          if (bCB) {
+            if (!aPB->HasEdge()) {
+              const Handle(BOPDS_CommonBlock)& aCB = myDS->CommonBlock(aPB);
+              nE = aCB->PaveBlock1()->OriginalEdge();
+              aCB->SetEdge(nE);
+              // Compute tolerance of the common block and update the edge
+              Standard_Real aTol = BOPAlgo_Tools::ComputeToleranceOfCB(aCB, myDS, myContext);
+              myDS->UpdateEdgeTolerance(nE, aTol);
+            }
+          }
+          else {
+            nE = aPB->OriginalEdge();
+            aPB->SetEdge(nE);
           }
           continue;
         }
@@ -418,7 +425,6 @@ void BOPAlgo_PaveFiller::MakeSplitEdges()
       const Handle(BOPDS_CommonBlock)& aCB=myDS->CommonBlock(aPB);
       bCB=!aCB.IsNull();
       if (bCB) {
-        myDS->SortPaveBlocks(aCB);
         aPB=aCB->PaveBlock1();
       }
       //

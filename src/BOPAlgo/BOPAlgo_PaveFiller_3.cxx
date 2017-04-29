@@ -632,7 +632,7 @@ void BOPAlgo_PaveFiller::PerformEE()
           // 2
           myDS->AddInterf(nE1, nE2);
           //
-          BOPAlgo_Tools::FillMap(aPB1, aPB2, aMPBLPB, aAllocator);
+          BOPAlgo_Tools::FillMap<Handle(BOPDS_PaveBlock), TColStd_MapTransientHasher>(aPB1, aPB2, aMPBLPB, aAllocator);
         }//case TopAbs_EDGE
           break;
         default:

@@ -731,7 +731,10 @@ static void MakeList (TopTools_ListOfShape&             OffsetFaces,
     const TopoDS_Shape& Root = itLOF.Value();
     if (!myFaces.Contains(Root)) {
       if (myInitOffsetFace.HasImage(Root)) {
-        OffsetFaces.Append(myInitOffsetFace.Image(Root).First());
+        TopTools_ListIteratorOfListOfShape aItLS(myInitOffsetFace.Image(Root));
+        for (; aItLS.More(); aItLS.Next()) {
+          OffsetFaces.Append(aItLS.Value());
+        }
       }
     }
   }

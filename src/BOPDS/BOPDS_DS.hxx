@@ -436,10 +436,6 @@ Standard_EXPORT virtual ~BOPDS_DS();
   
   Standard_EXPORT void Dump() const;
   
-  Standard_EXPORT void SortPaveBlocks (const Handle(BOPDS_CommonBlock)& theCB);
-  
-  Standard_EXPORT Standard_Boolean IsToSort (const Handle(BOPDS_CommonBlock)& theCB, Standard_Integer& theI);
-  
   Standard_EXPORT Standard_Boolean IsSubShape (const Standard_Integer theI1, const Standard_Integer theI2);
   
   //! Fills theLP with sorted paves

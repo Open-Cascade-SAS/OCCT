@@ -21,5 +21,5 @@ bbop result 0
 
 checkprops result -s 181.203 
 checkshape result
-checknbshapes result -vertex 2 -edge 3 -wire 3 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 10
+checknbshapes result -face 1
 checkview -display result -2d -path ${imagedir}/${test_image}.png

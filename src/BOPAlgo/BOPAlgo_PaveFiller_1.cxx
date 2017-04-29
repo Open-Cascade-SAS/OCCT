@@ -22,6 +22,7 @@
 #include <BOPAlgo_Tools.hxx>
 #include <BOPCol_DataMapOfIntegerInteger.hxx>
 #include <BOPCol_DataMapOfIntegerListOfInteger.hxx>
+#include <BOPCol_IndexedDataMapOfIntegerListOfInteger.hxx>
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPCol_MapOfInteger.hxx>
 #include <BOPDS_Curve.hxx>
@@ -48,7 +49,7 @@
 //=======================================================================
 void BOPAlgo_PaveFiller::PerformVV() 
 {
-  Standard_Integer n1, n2, iFlag, aSize, k, aNbBlocks;
+  Standard_Integer n1, n2, iFlag, aSize;
   Handle(NCollection_BaseAllocator) aAllocator;
   //
   myErrorStatus=0;
@@ -66,7 +67,7 @@ void BOPAlgo_PaveFiller::PerformVV()
   aAllocator=
     NCollection_BaseAllocator::CommonBaseAllocator();
   BOPCol_IndexedDataMapOfIntegerListOfInteger aMILI(100, aAllocator);
-  BOPCol_DataMapOfIntegerListOfInteger aMBlocks(100, aAllocator);
+  NCollection_List<BOPCol_ListOfInteger> aMBlocks(aAllocator);
   //
   // 1. Map V/LV
   for (; myIterator->More(); myIterator->Next()) {
@@ -77,18 +78,17 @@ void BOPAlgo_PaveFiller::PerformVV()
     //
     iFlag=BOPTools_AlgoTools::ComputeVV(aV1, aV2, myFuzzyValue);
     if (!iFlag) {
-      BOPAlgo_Tools::FillMap(n1, n2, aMILI, aAllocator);
+      BOPAlgo_Tools::FillMap<Standard_Integer, TColStd_MapIntegerHasher>(n1, n2, aMILI, aAllocator);
     }
   } 
   //
   // 2. Make blocks
-  BOPAlgo_Tools::MakeBlocksCnx(aMILI, aMBlocks, aAllocator);
+  BOPAlgo_Tools::MakeBlocks<Standard_Integer, TColStd_MapIntegerHasher>(aMILI, aMBlocks, aAllocator);
   //
   // 3. Make vertices
-  aNbBlocks=aMBlocks.Extent();
-  for (k=0; k<aNbBlocks; ++k) {
-    const BOPCol_ListOfInteger& aLI=aMBlocks.Find(k);
-    //
+  NCollection_List<BOPCol_ListOfInteger>::Iterator aItB(aMBlocks);
+  for (; aItB.More(); aItB.Next()) {
+    const BOPCol_ListOfInteger& aLI = aItB.Value();
     MakeSDVertices(aLI);
   }
   //

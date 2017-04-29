@@ -19,40 +19,86 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPCol_IndexedDataMapOfIntegerListOfInteger.hxx>
-#include <BOPCol_DataMapOfIntegerListOfInteger.hxx>
 #include <BOPCol_BaseAllocator.hxx>
+#include <BOPDS_IndexedDataMapOfPaveBlockListOfInteger.hxx>
 #include <BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock.hxx>
-#include <BOPDS_DataMapOfIntegerListOfPaveBlock.hxx>
 #include <BOPDS_PDS.hxx>
 #include <Standard_Integer.hxx>
-#include <BOPDS_IndexedDataMapOfPaveBlockListOfInteger.hxx>
 
 class BOPDS_PaveBlock;
 class BOPDS_CommonBlock;
 class IntTools_Context;
 class TopoDS_Shape;
 
-class BOPAlgo_Tools 
+class BOPAlgo_Tools
 {
 public:
 
-  DEFINE_STANDARD_ALLOC
+  //! Makes the chains of the connected elements from the given connexity map
+  template <class theType, class theTypeHasher>
+  static void MakeBlocks(const NCollection_IndexedDataMap<theType, NCollection_List<theType>, theTypeHasher>& theMILI,
+                         NCollection_List<NCollection_List<theType>>& theMBlocks,
+                         const BOPCol_BaseAllocator& theAllocator)
+  {
+    NCollection_Map<theType, theTypeHasher> aMFence;
+    Standard_Integer i, aNb = theMILI.Extent();
+    for (i = 1; i <= aNb; ++i) {
+      const theType& n = theMILI.FindKey(i);
+      if (!aMFence.Add(n))
+        continue;
+      //
+      // Start the chain
+      NCollection_List<theType>& aChain = theMBlocks.Append(NCollection_List<theType>(theAllocator));
+      aChain.Append(n);
+      // Look for connected elements
+      typename NCollection_List<theType>::Iterator aItLChain(aChain);
+      for (; aItLChain.More(); aItLChain.Next()) {
+        const theType& n1 = aItLChain.Value();
+        const NCollection_List<theType>& aLI = theMILI.FindFromKey(n1);
+        // Add connected elements into the chain
+        typename NCollection_List<theType>::Iterator aItLI(aLI);
+        for (; aItLI.More(); aItLI.Next()) {
+          const theType& n2 = aItLI.Value();
+          if (aMFence.Add(n2)) {
+            aChain.Append(n2);
+          }
+        }
+      }
+    }
+  }
 
+  //! Fills the map with the connected entities
+  template <class theType, class theTypeHasher>
+  static void FillMap(const theType& n1,
+                      const theType& n2,
+                      NCollection_IndexedDataMap<theType, NCollection_List<theType>, theTypeHasher>& theMILI,
+                      const BOPCol_BaseAllocator& theAllocator)
+  {
+    NCollection_List<theType> *pList1 = theMILI.ChangeSeek(n1);
+    if (!pList1) {
+      pList1 = &theMILI(theMILI.Add(n1, NCollection_List<theType>(theAllocator)));
+    }
+    pList1->Append(n2);
+    //
+    NCollection_List<theType> *pList2 = theMILI.ChangeSeek(n2);
+    if (!pList2) {
+      pList2 = &theMILI(theMILI.Add(n2, NCollection_List<theType>(theAllocator)));
+    }
+    pList2->Append(n1);
+  }
+
+  Standard_EXPORT static void FillMap(const Handle(BOPDS_PaveBlock)& thePB1,
+                                      const Standard_Integer theF,
+                                      BOPDS_IndexedDataMapOfPaveBlockListOfInteger& theMILI,
+                                      const BOPCol_BaseAllocator& theAllocator);
   
-  Standard_EXPORT static void MakeBlocksCnx (const BOPCol_IndexedDataMapOfIntegerListOfInteger& theMILI, BOPCol_DataMapOfIntegerListOfInteger& theMBlocks, const BOPCol_BaseAllocator& theAllocator);
-  
-  Standard_EXPORT static void MakeBlocks (const BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& theMILI, BOPDS_DataMapOfIntegerListOfPaveBlock& theMBlocks, const BOPCol_BaseAllocator& theAllocator);
-  
-  Standard_EXPORT static void PerformCommonBlocks (BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& theMBlocks, const BOPCol_BaseAllocator& theAllocator, BOPDS_PDS& pDS);
-  
-  Standard_EXPORT static void FillMap (const Standard_Integer tneN1, const Standard_Integer tneN2, BOPCol_IndexedDataMapOfIntegerListOfInteger& theMILI, const BOPCol_BaseAllocator& theAllocator);
-  
-  Standard_EXPORT static void FillMap (const Handle(BOPDS_PaveBlock)& tnePB1, const Handle(BOPDS_PaveBlock)& tnePB2, BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& theMILI, const BOPCol_BaseAllocator& theAllocator);
-  
-  Standard_EXPORT static void FillMap (const Handle(BOPDS_PaveBlock)& tnePB1, const Standard_Integer tneF, BOPDS_IndexedDataMapOfPaveBlockListOfInteger& theMILI, const BOPCol_BaseAllocator& theAllocator);
-  
-  Standard_EXPORT static void PerformCommonBlocks (const BOPDS_IndexedDataMapOfPaveBlockListOfInteger& theMBlocks, const BOPCol_BaseAllocator& theAllocator, BOPDS_PDS& pDS);
+  Standard_EXPORT static void PerformCommonBlocks(BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& theMBlocks,
+                                                  const BOPCol_BaseAllocator& theAllocator,
+                                                  BOPDS_PDS& theDS);
+
+  Standard_EXPORT static void PerformCommonBlocks(const BOPDS_IndexedDataMapOfPaveBlockListOfInteger& theMBlocks,
+                                                  const BOPCol_BaseAllocator& theAllocator,
+                                                  BOPDS_PDS& pDS);
 
   Standard_EXPORT static Standard_Real ComputeToleranceOfCB
                                         (const Handle(BOPDS_CommonBlock)& theCB,

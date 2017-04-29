@@ -1065,7 +1065,6 @@ void BOPDS_DS::UpdateCommonBlock(const Handle(BOPDS_CommonBlock)& theCB,
     //
     while (aLPBx.Extent()) {
       Standard_Boolean bCoinside;
-      Standard_Real aTol, aTolMax(0.);
       BOPDS_ListOfPaveBlock aLPBxN;
       //
       aItPB.Initialize(aLPBx);
@@ -1075,27 +1074,12 @@ void BOPDS_DS::UpdateCommonBlock(const Handle(BOPDS_CommonBlock)& theCB,
           const Handle(BOPDS_PaveBlock)& aPBCx = aLPBxN.First();
           bCoinside = CheckCoincidence(aPBx, aPBCx, theFuzz);
           if (bCoinside) {
-            nE = aPBx->OriginalEdge();
-            const TopoDS_Edge& aE = *(TopoDS_Edge*)&Shape(nE);
-            aTol = BRep_Tool::Tolerance(aE);
-            //
-            //pave block with the max tolerance of the original edge
-            //must be the first in the common block
-            if (aTolMax < aTol) {
-              aTolMax = aTol;
-              aLPBxN.Prepend(aPBx);
-            } else {
-              aLPBxN.Append(aPBx);
-            }
+            aLPBxN.Append(aPBx);
             aLPBx.Remove(aItPB);
             continue;
           }//if (bCoinside) {
         }//if (aLPBxN.Extent()) {
         else {
-          nE = aPBx->OriginalEdge();
-          const TopoDS_Edge& aE = *(TopoDS_Edge*)&Shape(nE);
-          aTolMax = BRep_Tool::Tolerance(aE);
-          //
           aLPBxN.Append(aPBx);
           aLPBx.Remove(aItPB);
           continue;
@@ -1104,7 +1088,7 @@ void BOPDS_DS::UpdateCommonBlock(const Handle(BOPDS_CommonBlock)& theCB,
       }//for(; aItPB.More(); ) {
       //
       aCBx=new BOPDS_CommonBlock;
-      aCBx->AddPaveBlocks(aLPBxN);
+      aCBx->SetPaveBlocks(aLPBxN);
       aCBx->SetFaces(aLF);
       //
       aItPB.Initialize(aLPBxN);
@@ -1695,8 +1679,8 @@ Standard_Boolean BOPDS_DS::CheckCoincidence
   if (aNbPoints) {
     aD=aPPC.LowerDistance();
     //
-    aTol=BRep_Tool::Tolerance(aE1);
-    aTol = aTol + BRep_Tool::Tolerance(aE2) + Max(theFuzz, Precision::Confusion());
+    aTol = BRep_Tool::MaxTolerance(aE1, TopAbs_VERTEX);
+    aTol = aTol + BRep_Tool::MaxTolerance(aE2, TopAbs_VERTEX) + Max(theFuzz, Precision::Confusion());
     if (aD<aTol) {
       aT2x=aPPC.LowerDistanceParameter();
       if (aT2x>aT21 && aT2x<aT22) {
@@ -1704,82 +1688,6 @@ Standard_Boolean BOPDS_DS::CheckCoincidence
       }
     }
   }
-  return bRet;
-}
-//=======================================================================
-// function: SortPaveBlocks
-// purpose:
-//=======================================================================
-void BOPDS_DS::SortPaveBlocks(const Handle(BOPDS_CommonBlock)& aCB)
-{
-  Standard_Integer theI;
-  Standard_Boolean bToSort;
-  bToSort = IsToSort(aCB, theI);
-  if (!bToSort) {
-    return;
-  }
-
-  Standard_Integer i(0);
-  const BOPDS_ListOfPaveBlock& aLPB = aCB->PaveBlocks();
-  BOPDS_ListOfPaveBlock aLPBN = aLPB;
-  
-  Handle(BOPDS_PaveBlock) aPB;
-  BOPDS_ListIteratorOfListOfPaveBlock aIt;
-  //
-  aIt.Initialize(aLPBN);
-  for (aIt.Next(); aIt.More(); ) {
-    i++;
-    if(i == theI) {
-      aPB = aIt.Value();
-      aLPBN.Remove(aIt);
-      aLPBN.Prepend(aPB);
-      break;
-    }
-    aIt.Next();
-  }
-  //
-  aCB->AddPaveBlocks(aLPBN);
-}
-//=======================================================================
-// function: IsToSort
-// purpose:
-//=======================================================================
-Standard_Boolean BOPDS_DS::IsToSort
-  (const Handle(BOPDS_CommonBlock)& aCB,
-   Standard_Integer& theI)
-{
-  Standard_Boolean bRet;
-  bRet = Standard_False;
-  const BOPDS_ListOfPaveBlock& aLPB = aCB->PaveBlocks();
-  if (aLPB.Extent()==1) {
-    return bRet;
-  }
-
-  Standard_Integer nE;
-  Standard_Real aTolMax, aTol;
-  Handle(BOPDS_PaveBlock) aPB;
-  TopoDS_Edge aE;
-  BOPDS_ListIteratorOfListOfPaveBlock aIt;
-  //
-  aPB = aLPB.First();
-  nE = aPB->OriginalEdge();
-  aE = (*(TopoDS_Edge *)(&Shape(nE)));
-  aTolMax = BRep_Tool::Tolerance(aE);
-  //
-  theI = 0;
-  aIt.Initialize(aLPB);
-  for (aIt.Next(); aIt.More(); aIt.Next()) {
-    theI++;
-    aPB = aIt.Value();
-    nE = aPB->OriginalEdge();
-    aE = (*(TopoDS_Edge *)(&Shape(nE)));
-    aTol = BRep_Tool::Tolerance(aE);
-    if (aTolMax < aTol) {
-      aTolMax = aTol;
-      bRet = Standard_True;
-    }
-  }
-
   return bRet;
 }
 //=======================================================================

@@ -13,10 +13,10 @@ box b2 5 5 0 10 10 10
 bfuse r b1 b2
 explode r f
 explode r_7 e
-getedgeregularity r_7_3 r_3 r_7 ;# returns C0: regularity is not set at all
+getedgeregularity r_7_4 r_3 r_7 ;# returns C0: regularity is not set at all
 encoderegularity r
 
-if { ! [regexp "CN" [getedgeregularity r_7_3 r_3 r_7]] } {
+if { ! [regexp "CN" [getedgeregularity r_7_4 r_3 r_7]] } {
   puts "Error: Invalid regularity of the edge, expected CN"
 }
 

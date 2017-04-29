@@ -18,6 +18,7 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <TColStd_MapTransientHasher.hxx>
 #include <BOPCol_ListOfInteger.hxx>
+#include <BOPDS_PaveBlock.hxx>
 
 typedef NCollection_IndexedDataMap<Handle(BOPDS_PaveBlock), BOPCol_ListOfInteger, TColStd_MapTransientHasher> BOPDS_IndexedDataMapOfPaveBlockListOfInteger; 
 

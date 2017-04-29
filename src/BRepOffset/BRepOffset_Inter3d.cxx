@@ -223,8 +223,11 @@ void BRepOffset_Inter3d::FaceInter(const TopoDS_Face& F1,
 
   if (F1.IsSame(F2)) return;
   if (IsDone(F1,F2)) return;
+
   const TopoDS_Shape& InitF1 = InitOffsetFace.ImageFrom(F1);
   const TopoDS_Shape& InitF2 = InitOffsetFace.ImageFrom(F2);
+  if (InitF1.IsSame(InitF2)) return;
+
   Standard_Boolean InterPipes = (InitF2.ShapeType() == TopAbs_EDGE &&
                                  InitF1.ShapeType() == TopAbs_EDGE );
   Standard_Boolean InterFaces = (InitF1.ShapeType() == TopAbs_FACE && 

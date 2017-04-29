@@ -5205,8 +5205,14 @@ void UpdateValidEdges(const TopTools_IndexedDataMapOfShapeListOfShape& theFImage
   //
   // intersect valid splits with bounds and update both
   BOPAlgo_Builder aGF;
-  aGF.AddArgument(aSplits);
+  // The order is important here, because we need to keep the
+  // unmodified edges from the Bounds in the resulting maps.
+  // In case of total coincidence of the edges with the same vertices
+  // the edges in the common block will not be split and no new
+  // edges will be created and the first pave block
+  // will be used as a real pave block.
   aGF.AddArgument(aBounds);
+  aGF.AddArgument(aSplits);
   aGF.Perform();
   //
   // update splits
@@ -5222,7 +5228,7 @@ void UpdateValidEdges(const TopTools_IndexedDataMapOfShapeListOfShape& theFImage
   UpdateOrigins(aLABounds, theEdgesOrigins, aGF);
   UpdateIntersectedEdges(aLABounds, theETrimEInf, aGF);
   //
-  // update the edges to avoid with the splits
+  // update the EdgesToAvoid with the splits
   TopTools_IndexedMapOfShape aNewEdges;
   const TopTools_ListOfShape* pSplitsIm = aGF.Images().Seek(aSplits);
   if (pSplitsIm) {
@@ -5240,7 +5246,7 @@ void UpdateValidEdges(const TopTools_IndexedDataMapOfShapeListOfShape& theFImage
     for (; aItLEIm.More(); aItLEIm.Next()) {
       const TopoDS_Shape& aEIm = aItLEIm.Value();
       if (!aNewEdges.Contains(aEIm)) {
-        theEdgesToAvoid.Add(aItLEIm.Value());
+        theEdgesToAvoid.Add(aEIm);
       }
     }
   }

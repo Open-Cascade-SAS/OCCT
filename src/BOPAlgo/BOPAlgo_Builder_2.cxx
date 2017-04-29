@@ -19,6 +19,7 @@
 #include <BOPAlgo_Builder.hxx>
 #include <BOPAlgo_BuilderFace.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Tools.hxx>
 #include <BOPCol_DataMapOfIntegerListOfShape.hxx>
 #include <BOPCol_DataMapOfShapeShape.hxx>
 #include <BOPCol_ListOfInteger.hxx>
@@ -60,15 +61,6 @@
 static
   Standard_Boolean HasPaveBlocksOnIn(const BOPDS_FaceInfo& aFI1,
                                      const BOPDS_FaceInfo& aFI2);
-static
-  void FillMap(const TopoDS_Shape& aS1,
-               const TopoDS_Shape& aS2,
-               BOPCol_IndexedDataMapOfShapeListOfShape& aDMSLS,
-               Handle(NCollection_BaseAllocator)& aAllocator);
-static
-  void MakeBlocksCnx(const BOPCol_IndexedDataMapOfShapeListOfShape& aMILI,
-                     BOPCol_DataMapOfIntegerListOfShape& aMBlocks,
-                     Handle(NCollection_BaseAllocator)& aAllocator);
 //
 typedef BOPCol_NCVector<TopoDS_Shape> BOPAlgo_VectorOfShape;
 //
@@ -475,7 +467,7 @@ void BOPAlgo_Builder::BuildSplitFaces()
 void BOPAlgo_Builder::FillSameDomainFaces()
 {
   Standard_Boolean bFlag;
-  Standard_Integer i, j, k, aNbFFs, nF1, nF2, aNbS;
+  Standard_Integer i, j, k, aNbFFs, nF1, nF2;
   Handle(NCollection_BaseAllocator) aAllocator;
   BOPCol_ListIteratorOfListOfShape aItF;
   BOPCol_MapOfShape aMFence;
@@ -605,7 +597,7 @@ void BOPAlgo_Builder::FillSameDomainFaces()
   aAllocator=
     NCollection_BaseAllocator::CommonBaseAllocator();
   BOPCol_IndexedDataMapOfShapeListOfShape aDMSLS(100, aAllocator);
-  BOPCol_DataMapOfIntegerListOfShape aMBlocks(100, aAllocator);
+  NCollection_List<BOPCol_ListOfShape> aMBlocks(aAllocator);
   //
   aNbVPSB=aVPSB.Extent();
   for (i=0; i<aNbVPSB; ++i) {
@@ -614,21 +606,18 @@ void BOPAlgo_Builder::FillSameDomainFaces()
     if (bFlagSD) {
       const TopoDS_Shape& aFj=aPSB.Shape1();
       const TopoDS_Shape& aFk=aPSB.Shape2();
-      FillMap(aFj, aFk, aDMSLS, aAllocator);
+      BOPAlgo_Tools::FillMap<TopoDS_Shape, TopTools_ShapeMapHasher>(aFj, aFk, aDMSLS, aAllocator);
     }
   }
   aVPSB.Clear();
   //
   // 2. Make blocks
-  MakeBlocksCnx(aDMSLS, aMBlocks, aAllocator);
+  BOPAlgo_Tools::MakeBlocks<TopoDS_Shape, TopTools_ShapeMapHasher>(aDMSLS, aMBlocks, aAllocator);
   //
   // 3. Fill same domain faces map -> aMSDF
-  aNbS = aMBlocks.Extent();
-  for (i=0; i<aNbS; ++i) {
-    const BOPCol_ListOfShape& aLSD=aMBlocks.Find(i);
-    if (aLSD.IsEmpty()) {
-      continue;
-    }
+  NCollection_List<BOPCol_ListOfShape>::Iterator aItB(aMBlocks);
+  for (; aItB.More(); aItB.Next()) {
+    const BOPCol_ListOfShape& aLSD = aItB.Value();
     //
     const TopoDS_Shape& aFSD1=aLSD.First();
     aItF.Initialize(aLSD);
@@ -753,116 +742,6 @@ void BOPAlgo_Builder::FillImagesFaces1()
   }
 }
 //=======================================================================
-//function : MakeBlocksCnx
-//purpose  : 
-//=======================================================================
-void MakeBlocksCnx(const BOPCol_IndexedDataMapOfShapeListOfShape& aMILI,
-                   BOPCol_DataMapOfIntegerListOfShape& aMBlocks,
-                   Handle(NCollection_BaseAllocator)& aAllocator)
-{
-  Standard_Integer aNbV, aNbVS, aNbVP, aNbEC, k, i, j;
-  BOPCol_ListIteratorOfListOfShape aItLI;
-  //
-  BOPCol_MapOfShape aMVS(100, aAllocator);
-  BOPCol_IndexedMapOfShape aMEC(100, aAllocator);
-  BOPCol_IndexedMapOfShape aMVP(100, aAllocator);
-  BOPCol_IndexedMapOfShape aMVAdd(100, aAllocator);
-  //
-  aNbV=aMILI.Extent();
-  //
-  for (k=0,i=1; i<=aNbV; ++i) {
-    aNbVS=aMVS.Extent();
-    if (aNbVS==aNbV) {
-      break;
-    }
-    //
-    const TopoDS_Shape& nV=aMILI.FindKey(i);
-    if (aMVS.Contains(nV)){
-      continue;
-    }
-    aMVS.Add(nV);
-    //
-    aMEC.Clear();
-    aMVP.Clear();
-    aMVAdd.Clear();
-    //
-    aMVP.Add(nV);
-    for(;;) {
-      aNbVP=aMVP.Extent();
-      for (j=1; j<=aNbVP; ++j) {
-        const TopoDS_Shape& nVP=aMVP(j);
-        const BOPCol_ListOfShape& aLV=aMILI.FindFromKey(nVP);
-        aItLI.Initialize(aLV);
-        for (; aItLI.More(); aItLI.Next()) {
-          const TopoDS_Shape& nVx=aItLI.Value();
-          if (aMEC.Contains(nVx)) {
-            continue;
-          }
-          //
-          aMVS.Add(nVx);
-          aMEC.Add(nVx);
-          aMVAdd.Add(nVx);
-        }
-      }
-      //
-      aNbVP=aMVAdd.Extent();
-      if (!aNbVP) {
-        break; // from while(1)
-      }
-      //
-      aMVP.Clear();
-      for (j=1; j<=aNbVP; ++j) {
-        aMVP.Add(aMVAdd(j));
-      }
-      aMVAdd.Clear();
-    }//while(1) {
-    //
-    BOPCol_ListOfShape aLIx(aAllocator);
-    //
-    aNbEC = aMEC.Extent();
-    for (j=1; j<=aNbEC; ++j) {
-      const TopoDS_Shape& nVx=aMEC(j);
-      aLIx.Append(nVx);
-    }
-    //
-    aMBlocks.Bind(k, aLIx);
-    ++k;
-  }//for (k=0,i=1; i<=aNbV; ++i)
-  aMVAdd.Clear();
-  aMVP.Clear();
-  aMEC.Clear();
-  aMVS.Clear();
-}
-//=======================================================================
-//function : FillMap
-//purpose  : 
-//=======================================================================
-void FillMap(const TopoDS_Shape& aS1,
-             const TopoDS_Shape& aS2,
-             BOPCol_IndexedDataMapOfShapeListOfShape& aDMSLS,
-             Handle(NCollection_BaseAllocator)& aAllocator)
-{
-  if (aDMSLS.Contains(aS1)) {
-    BOPCol_ListOfShape& aLS=aDMSLS.ChangeFromKey(aS1);
-    aLS.Append(aS2);
-  }
-  else {
-    BOPCol_ListOfShape aLS(aAllocator);
-    aLS.Append(aS2);
-    aDMSLS.Add(aS1, aLS);
-  }
-  //
-  if (aDMSLS.Contains(aS2)) {
-    BOPCol_ListOfShape& aLS=aDMSLS.ChangeFromKey(aS2);
-    aLS.Append(aS1);
-  }
-  else {
-    BOPCol_ListOfShape aLS(aAllocator);
-    aLS.Append(aS1);
-    aDMSLS.Add(aS2, aLS);
-  }
-}
-//=======================================================================
 //function :HasPaveBlocksOnIn
 //purpose  : 
 //=======================================================================
@@ -897,22 +776,3 @@ Standard_Boolean HasPaveBlocksOnIn(const BOPDS_FaceInfo& aFI1,
   }
   return bRet;
 }
-
-/*
-//DEBf
-    {
-      TopoDS_Compound aCx;
-      BRep_Builder aBBx;
-      BOPCol_ListIteratorOfListOfShape aItx;
-      //
-      aBBx.MakeCompound(aCx);
-      aBBx.Add(aCx, aFF);
-      aItx.Initialize(aLE);
-      for (; aItx.More(); aItx.Next()) {
-      const TopoDS_Shape& aEx=aItx.Value();
-      aBBx.Add(aCx, aEx);
-      }
-      int a=0;
-    }
-    //DEBt
-*/
