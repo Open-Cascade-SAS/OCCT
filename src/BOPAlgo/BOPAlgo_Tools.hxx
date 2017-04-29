@@ -21,6 +21,8 @@
 
 #include <BOPCol_BaseAllocator.hxx>
 #include <BOPDS_IndexedDataMapOfPaveBlockListOfInteger.hxx>
+#include <BOPCol_IndexedDataMapOfShapeReal.hxx>
+#include <BOPCol_ListOfListOfShape.hxx>
 #include <BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock.hxx>
 #include <BOPDS_PDS.hxx>
 #include <Standard_Integer.hxx>
@@ -146,6 +148,13 @@ public:
   Standard_EXPORT static Standard_Boolean WiresToFaces(const TopoDS_Shape& theWires,
                                                        TopoDS_Shape& theFaces,
                                                        const Standard_Real theAngTol = 1.e-8);
+
+  //! Finds chains of intersecting vertices
+  Standard_EXPORT static void IntersectVertices(const BOPCol_IndexedDataMapOfShapeReal& theVertices,
+                                                const Standard_Boolean theRunParallel,
+                                                const Standard_Real theFuzzyValue,
+                                                BOPCol_ListOfListOfShape& theChains);
+
 };
 
 #endif // _BOPAlgo_Tools_HeaderFile

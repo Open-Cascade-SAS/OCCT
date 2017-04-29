@@ -18,21 +18,18 @@
 
 #include <Bnd_Box.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
-#include <BOPAlgo_SectionAttribute.hxx>
 #include <BOPAlgo_Tools.hxx>
 #include <BOPCol_DataMapOfIntegerInteger.hxx>
 #include <BOPCol_DataMapOfIntegerListOfInteger.hxx>
 #include <BOPCol_IndexedDataMapOfIntegerListOfInteger.hxx>
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPCol_MapOfInteger.hxx>
-#include <BOPDS_Curve.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Iterator.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ShapeInfo.hxx>
 #include <BOPDS_VectorOfInterfVV.hxx>
 #include <BOPTools_AlgoTools.hxx>
-#include <BRepBndLib.hxx>
 #include <BRep_TVertex.hxx>
 #include <BRep_Tool.hxx>
 #include <gp_Pnt.hxx>
@@ -153,8 +150,8 @@ Standard_Integer BOPAlgo_PaveFiller::MakeSDVertices
   }
   BOPDS_ShapeInfo& aSIDS = myDS->ChangeShapeInfo(nV);
   Bnd_Box& aBox = aSIDS.ChangeBox();
-  BRepBndLib::Add(aVn, aBox);
-  aBox.SetGap(aBox.GetGap() + Precision::Confusion());
+  aBox.Add(BRep_Tool::Pnt(aVn));
+  aBox.SetGap(BRep_Tool::Tolerance(aVn) + Precision::Confusion());
   //
   // Fill ShapesSD
   BOPDS_VectorOfInterfVV& aVVs = myDS->InterfVV();

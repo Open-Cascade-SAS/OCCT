@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC28690"
+puts "========"
+puts ""
+##########################################
+##  Section algorithm produces micro edge
+##########################################
+
+restore [locate_data_file bug28690_m9_faces.brep] a
+plane f 0 0 0 0 1 0
+mkface f f
+bsection r a f
+checknbshapes r -edge 3 -vertex 4
+checkshape r
+checkprops r -l 7976.14
+
+# check that all edges have enough length
+foreach e [explode r] {
+  if {[validrange $e] == "edge has no valid range"} {
+    regexp {Mass : *([0-9\-+.eE]+)} [lprops $e] dummy len
+    regexp {Tolerance MAX=([0-9\-+.eE]+)} [tolerance $e] dummy tol
+    puts "Error: edge $e (lenth=$len, tolerance=$tol) is too small"
+  }
+}

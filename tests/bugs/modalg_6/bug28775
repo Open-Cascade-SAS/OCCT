@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC28775"
+puts "========"
+puts ""
+####################################################################
+# Code duplication removal across the BOPAlgo_PaveFiller algorithm
+####################################################################
+
+vertex v1 1 0 0
+polyline p1 0 0 0 2 0 0
+polyline p2 1 0 -1 1 0 1
+
+bnondestructive 1
+
+bclearobjects
+bcleartools
+baddobjects v1 p1 p2
+bfillds
+bbuild result
+
+checkshape result
+checknbshapes result -edge 4

@@ -979,10 +979,22 @@ Standard_Integer BOPAlgo_PaveFiller::PostTreatFF
                 iV = myDS->Append(aSI);
               }
               const BOPDS_Pave& aP1 = !j ? aPB1->Pave1() : aPB1->Pave2();
-              if (aP1.Parameter() == aPave[j].Parameter() && 
-                  aP1.Index() != iV) {
-                aDMNewSD.Bind(aP1.Index(), iV);
-                myDS->AddShapeSD(aP1.Index(), iV);
+              if (aP1.Index() != iV) {
+                if (aP1.Parameter() == aPave[j].Parameter()) {
+                  aDMNewSD.Bind(aP1.Index(), iV);
+                  myDS->AddShapeSD(aP1.Index(), iV);
+                }
+                else {
+                  // check aPDS to have the SD connection between these vertices
+                  const TopoDS_Shape& aVPave = myDS->Shape(aP1.Index());
+                  Standard_Integer nVnewSD, nVnew = aPDS->Index(aVPave);
+                  if (aPDS->HasShapeSD(nVnew, nVnewSD)) {
+                    if (nVnewSD == nV) {
+                      aDMNewSD.Bind(aP1.Index(), iV);
+                      myDS->AddShapeSD(aP1.Index(), iV);
+                    }
+                  }
+                }
               }
               //
               aPave[j].SetIndex(iV);
@@ -2910,6 +2922,7 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
         // fill in the map vertex index - pave blocks
         for (Standard_Integer j=0; j < 2; j++) {
           Standard_Integer nV = (j == 0 ? aPB->Pave1().Index() : aPB->Pave2().Index());
+          myDS->HasShapeSD(nV, nV);
           BOPDS_ListOfPaveBlock *pPBList = aMVIPBs.ChangeSeek(nV);
           if (!pPBList) {
             pPBList = &aMVIPBs.ChangeFromIndex(aMVIPBs.Add(nV, BOPDS_ListOfPaveBlock()));
@@ -2985,19 +2998,33 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
     // compute the maximal distance from the vertex to the adjacent edges
     gp_Pnt aP = BRep_Tool::Pnt(aV);
     //
+    // Avoid repeated checks
+    BOPDS_MapOfPaveBlock aMPBFence;
+    //
     const BOPDS_ListOfPaveBlock& aLPB = aMVIPBs.FindFromIndex(i);
     BOPDS_ListIteratorOfListOfPaveBlock aItLPB(aLPB);
     for (; aItLPB.More(); aItLPB.Next()) {
       const Handle(BOPDS_PaveBlock)& aPB = aItLPB.Value();
+      if (!aMPBFence.Add(aPB)) {
+        continue;
+      }
       Standard_Integer nE = aPB->Edge();
       const TopoDS_Edge& aE = TopoDS::Edge(myDS->Shape(nE));
-      const BOPDS_Pave& aPave = (aPB->Pave1().Index() == nV ? aPB->Pave1() : aPB->Pave2());
       BRepAdaptor_Curve aC(aE);
-      gp_Pnt aPonE = aC.Value(aPave.Parameter());
-      Standard_Real aDist = aP.Distance(aPonE);
-      aDist += BRep_Tool::Tolerance(aE);
-      if (aDist > aMaxTol) {
-        aMaxTol = aDist;
+      for (Standard_Integer iPave = 0; iPave < 2; ++iPave) {
+        const BOPDS_Pave& aPave = !iPave ? aPB->Pave1() : aPB->Pave2();
+        Standard_Integer nVSD = aPave.Index();
+        myDS->HasShapeSD(nVSD, nVSD);
+        if (nVSD != nV) {
+          continue;
+        }
+        //
+        gp_Pnt aPonE = aC.Value(aPave.Parameter());
+        Standard_Real aDist = aP.Distance(aPonE);
+        aDist += BRep_Tool::Tolerance(aE);
+        if (aDist > aMaxTol) {
+          aMaxTol = aDist;
+        }
       }
     }
     //

@@ -30,10 +30,13 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 
-#include <BOPCol_MapOfShape.hxx>
+#include <BOPCol_BoxBndTree.hxx>
 #include <BOPCol_IndexedMapOfShape.hxx>
 #include <BOPCol_IndexedMapOfInteger.hxx>
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
+#include <BOPCol_MapOfShape.hxx>
+#include <BOPCol_NCVector.hxx>
+#include <BOPCol_Parallel.hxx>
 
 #include <TopExp_Explorer.hxx>
 
@@ -60,6 +63,8 @@
 #include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
+
+#include <NCollection_UBTreeFiller.hxx>
 
 #include <IntTools_Context.hxx>
 
@@ -909,4 +914,177 @@ Standard_Boolean FindPlane(const TopoDS_Shape& theWire,
     theMEdgesNoUniquePlane.Add(aE);
   }
   return Standard_False;
+}
+
+/////////////////////////////////////////////////////////////////////////
+//=======================================================================
+//class    : BOPAlgo_TNV
+//purpose  : 
+//=======================================================================
+class BOPAlgo_TNV;
+typedef BOPCol_NCVector
+  <BOPAlgo_TNV> BOPAlgo_VectorOfTNV;
+//
+typedef BOPCol_Functor
+  <BOPAlgo_TNV,
+  BOPAlgo_VectorOfTNV> BOPAlgo_TNVFunctor;
+//
+typedef BOPCol_Cnt
+  <BOPAlgo_TNVFunctor,
+  BOPAlgo_VectorOfTNV> BOPAlgo_TNVCnt;
+//=======================================================================
+class BOPAlgo_TNV : public BOPCol_BoxBndTreeSelector{
+ public:
+  BOPAlgo_TNV() 
+    : BOPCol_BoxBndTreeSelector(),
+      myTol (0.), myFuzzyValue(0.), myTree(NULL), myVecTNV(NULL) {
+  };
+  //
+  ~BOPAlgo_TNV(){
+  };
+  //
+  void SetVertex(const TopoDS_Vertex& aV) {
+    myV=aV;
+    myPnt = BRep_Tool::Pnt(myV);
+  }
+  //
+  const TopoDS_Vertex& Vertex()const {
+    return myV;
+  }
+  //
+  void SetTree(BOPCol_BoxBndTree& aTree) {
+    myTree=&aTree;
+  }
+  //
+  void SetTolerance(const Standard_Real theTol) {
+    myTol = theTol;
+  }
+  //
+  Standard_Real Tolerance() const {
+    return myTol;
+  }
+  //
+  const gp_Pnt& Pnt() const {
+    return myPnt;
+  }
+  //
+  void SetFuzzyValue(const Standard_Real theFuzzyValue) {
+    myFuzzyValue = theFuzzyValue;
+  }
+  //
+  void SetVectorOfTNV(const BOPAlgo_VectorOfTNV& theVec) {
+    myVecTNV = &theVec;
+  }
+  //
+  virtual Standard_Boolean Accept(const Standard_Integer& theIndex)
+  {
+    const BOPAlgo_TNV& aTNV = myVecTNV->Value(theIndex - 1);
+    Standard_Real aTolSum2 = myTol + aTNV.Tolerance() + myFuzzyValue;
+    aTolSum2 *= aTolSum2;
+    Standard_Real aD2 = myPnt.SquareDistance(aTNV.Pnt());
+    if (aD2 < aTolSum2)
+      return BOPCol_BoxBndTreeSelector::Accept(theIndex);
+    return Standard_False;
+  }
+  //
+  void Perform() {
+    myTree->Select(*this);
+  }
+  //
+ protected:
+  Standard_Real myTol;
+  Standard_Real myFuzzyValue;
+  gp_Pnt        myPnt;
+  TopoDS_Vertex myV;
+  BOPCol_BoxBndTree *myTree;
+  const BOPAlgo_VectorOfTNV *myVecTNV;
+};
+//
+/////////////////////////////////////////////////////////////////////////
+
+//=======================================================================
+//function : IntersectVertices
+//purpose  : Builds the chains of intersecting vertices
+//=======================================================================
+void BOPAlgo_Tools::IntersectVertices(const BOPCol_IndexedDataMapOfShapeReal& theVertices,
+                                      const Standard_Boolean theRunParallel,
+                                      const Standard_Real theFuzzyValue,
+                                      BOPCol_ListOfListOfShape& theChains)
+{
+  Standard_Integer i, j, aNbV = theVertices.Extent();
+  if (aNbV <= 1) {
+    if (aNbV == 1) {
+      theChains.Append(BOPCol_ListOfShape()).Append(theVertices.FindKey(1));
+    }
+    return;
+  }
+  //
+  // Use unbalanced binary tree of bounding boxes for sorting of the vertices.
+  BOPCol_BoxBndTree aBBTree;
+  NCollection_UBTreeFiller <Standard_Integer, 
+                            Bnd_Box> aTreeFiller(aBBTree);
+  // Perform intersection of the vertices
+  BOPAlgo_VectorOfTNV aVTNV;
+  //
+  // Use additional tolerance for intersection
+  Standard_Real aTolAdd = theFuzzyValue / 2.;
+  // Prepare the tree
+  for (i = 1; i <= aNbV; ++i) {
+    const TopoDS_Vertex& aV = TopoDS::Vertex(theVertices.FindKey(i));
+    Standard_Real aTol = BRep_Tool::Tolerance(aV);
+    if (aTol < theVertices(i)) {
+      aTol = theVertices(i);
+    }
+    // Build bnd box for vertex
+    Bnd_Box aBox;
+    aBox.Add(BRep_Tool::Pnt(aV));
+    aBox.SetGap(aTol + aTolAdd);
+    //
+    aTreeFiller.Add(i, aBox);
+    //
+    BOPAlgo_TNV& aTNV=aVTNV.Append1();
+    aTNV.SetTree(aBBTree);
+    aTNV.SetBox(aBox);
+    aTNV.SetVertex(aV);
+    aTNV.SetTolerance(aTol);
+    aTNV.SetFuzzyValue(theFuzzyValue);
+    aTNV.SetVectorOfTNV(aVTNV);
+  }
+  // Shake the tree
+  aTreeFiller.Fill();
+  //
+  // Perform intersection
+  BOPAlgo_TNVCnt::Perform(theRunParallel, aVTNV);
+  //
+  // Fence map
+  BOPCol_MapOfInteger aMFence;
+  // Build chains of intersecting vertices
+  for (i = 1; i <= aNbV; ++i) {
+    if (!aMFence.Add(i)) {
+      continue;
+    }
+    // Start the chain
+    BOPCol_IndexedMapOfInteger aMChain;
+    aMChain.Add(i);
+    //
+    for (j = 1; j <= aMChain.Extent(); ++j) {
+      BOPAlgo_TNV& aTNV = aVTNV(aMChain(j) - 1);
+      const BOPCol_ListOfInteger& aLI = aTNV.Indices();
+      // Add these vertices into the chain
+      for (BOPCol_ListIteratorOfListOfInteger aItLI(aLI); aItLI.More(); aItLI.Next()) {
+        if (aMFence.Add(aItLI.Value())) {
+          aMChain.Add(aItLI.Value());
+        }
+      }
+    }
+    //
+    // Put vertices of the chain into the list
+    BOPCol_ListOfShape& aChain = theChains.Append(BOPCol_ListOfShape());
+    //
+    Standard_Integer aNbVChain = aMChain.Extent();
+    for (j = 1; j <= aNbVChain; ++j) {
+      const TopoDS_Vertex& aVP = aVTNV(aMChain(j) - 1).Vertex();
+      aChain.Append(aVP);
+    }
+  }
 }

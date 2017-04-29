@@ -451,6 +451,9 @@ Standard_EXPORT virtual ~BOPDS_DS();
   //! Update the pave blocks for all shapes in data structure
   Standard_EXPORT void UpdatePaveBlocksWithSDVertices();
 
+  //! Update the pave block for all shapes in data structure
+  Standard_EXPORT void UpdatePaveBlockWithSDVertices(const Handle(BOPDS_PaveBlock)& thePB);
+
   //! Update the pave block of the common block for all shapes in data structure
   Standard_EXPORT void UpdateCommonBlockWithSDVertices(const Handle(BOPDS_CommonBlock)& theCB);
 
@@ -459,15 +462,18 @@ Standard_EXPORT virtual ~BOPDS_DS();
   //! Clears information about PaveBlocks for the untouched edges
   Standard_EXPORT void ReleasePaveBlocks();
 
+  //! Checks if the existing shrunk data of the pave block is still valid.<br>
+  //! The shrunk data may become invalid if e.g. the vertices of the pave block
+  //! have been replaced with the new one with bigger tolerances, or the tolerances
+  //! of the existing vertices have been increased.
+  Standard_EXPORT Standard_Boolean IsValidShrunkData(const Handle(BOPDS_PaveBlock)& thePB);
+
 protected:
 
   
 
   //! Initializes the pave blocks for the shape with index theIndex
   Standard_EXPORT void InitPaveBlocks (const Standard_Integer theIndex);
-
-  //! Update the pave block for all shapes in data structure
-  Standard_EXPORT void UpdatePaveBlockWithSDVertices(const Handle(BOPDS_PaveBlock)& thePB);
 
   //! Initializes the state of face with index theIndex
   Standard_EXPORT void InitFaceInfo (const Standard_Integer theIndex);

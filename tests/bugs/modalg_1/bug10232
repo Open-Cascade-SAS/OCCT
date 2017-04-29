@@ -26,5 +26,4 @@ checkprops result -l 3356.31
 checkshape result
 checksection result
 checknbshapes result -vertex 1197 -edge 1182 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 2380
-checkview -display result -2d -path ${imagedir}/${test_image}.png
 

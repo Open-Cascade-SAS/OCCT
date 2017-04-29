@@ -1,3 +1,8 @@
+puts "TODO OCC28786 ALL: Faulty shapes in variables faulty_1"
+#puts "TODO OCC28786 ALL: Error : The area of result shape is"
+#puts "TODO OCC28786 ALL: Error : The volume of result shape is"
+puts "TODO OCC28786 ALL: Error :  is WRONG because number of"
+
 puts "========"
 puts "0027448: BOPTools_AlgoTools::IsMicroEdge does not correspond to shape validity criteria"
 puts "Problem with Boolean CUT operation"

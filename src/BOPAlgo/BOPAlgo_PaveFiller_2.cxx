@@ -17,31 +17,26 @@
 
 
 #include <BOPAlgo_PaveFiller.hxx>
-#include <BOPAlgo_SectionAttribute.hxx>
+#include <BOPAlgo_Tools.hxx>
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_Parallel.hxx>
-#include <BOPDS_Curve.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_Iterator.hxx>
-#include <BOPDS_MapOfPair.hxx>
 #include <BOPDS_Pair.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_VectorOfInterfVE.hxx>
 #include <BOPTools_AlgoTools.hxx>
-#include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepBndLib.hxx>
 #include <gp_Pnt.hxx>
 #include <IntTools_Context.hxx>
-#include <IntTools_Tools.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <Precision.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
-//class    : BOPAlgo_VertexEdgeEdge
+//class    : BOPAlgo_VertexEdge
 //purpose  : 
 //=======================================================================
 class BOPAlgo_VertexEdge : public BOPAlgo_Algo {
@@ -105,6 +100,14 @@ class BOPAlgo_VertexEdge : public BOPAlgo_Algo {
     return myContext;
   }
   //
+  void SetPaveBlock(const Handle(BOPDS_PaveBlock)& thePB) {
+    myPB = thePB;
+  }
+  //
+  const Handle(BOPDS_PaveBlock)& PaveBlock() const {
+    return myPB;
+  }
+  //
   virtual void Perform() {
     BOPAlgo_Algo::UserBreak();
     myFlag=myContext->ComputeVE (myV, myE, myT, myTolVNew, myFuzzyValue);
@@ -119,6 +122,7 @@ class BOPAlgo_VertexEdge : public BOPAlgo_Algo {
   TopoDS_Vertex myV;
   TopoDS_Edge myE;
   Handle(IntTools_Context) myContext;
+  Handle(BOPDS_PaveBlock) myPB;
 };
 //=======================================================================
 typedef BOPCol_NCVector
@@ -141,27 +145,20 @@ typedef BOPCol_ContextCnt
 //=======================================================================
 void BOPAlgo_PaveFiller::PerformVE()
 {
-  Standard_Integer iSize, nV, nE, nVSD, iFlag, nVx,  k, aNbVE;
-  Standard_Real aT, aT1, aT2, aTS1, aTS2;
-  BOPDS_Pave aPave;
-  BOPDS_Pair aPK;
-  BOPDS_MapOfPair aMPK;
-  BOPAlgo_VectorOfVertexEdge aVVE;
-  //
   myErrorStatus=0;
   //
   FillShrunkData(TopAbs_VERTEX, TopAbs_EDGE);
   //
   myIterator->Initialize(TopAbs_VERTEX, TopAbs_EDGE);
-  iSize=myIterator->ExpectedLength();
+  Standard_Integer iSize = myIterator->ExpectedLength();
   if (!iSize) {
     return; 
   }
   //
-  BOPDS_VectorOfInterfVE& aVEs=myDS->InterfVE();
-  aVEs.SetIncrement(iSize);
-  //
+  // Prepare pairs for intersection
+  BOPDS_IndexedDataMapOfPaveBlockListOfInteger aMVEPairs;
   for (; myIterator->More(); myIterator->Next()) {
+    Standard_Integer nV, nE;
     myIterator->Value(nV, nE);
     //
     const BOPDS_ShapeInfo& aSIE=myDS->ShapeInfo(nE);
@@ -174,17 +171,6 @@ void BOPAlgo_PaveFiller::PerformVE()
     }
     //
     if (myDS->HasInterfShapeSubShapes(nV, nE)) {
-      myDS->ChangePaveBlocks(nE);
-      continue;
-    }
-    //
-    nVx=nV;
-    if (myDS->HasShapeSD(nV, nVSD)) {
-      nVx=nVSD;
-    }
-    //
-    aPK.SetIndices(nVx, nE);
-    if (!aMPK.Add(aPK)) {
       continue;
     }
     //
@@ -199,75 +185,311 @@ void BOPAlgo_PaveFiller::PerformVE()
       continue;
     }
     //
-    const TopoDS_Edge& aE=(*(TopoDS_Edge *)(&aSIE.Shape())); 
-    const TopoDS_Vertex& aV=(*(TopoDS_Vertex *)(&myDS->Shape(nVx))); 
-    //
-    BOPAlgo_VertexEdge& aVESolver=aVVE.Append1();
-    //
-    aVESolver.SetIndices(nV, nE);
-    aVESolver.SetVertex(aV);
-    aVESolver.SetEdge(aE);
-    aVESolver.SetFuzzyValue(myFuzzyValue);
-    aVESolver.SetProgressIndicator(myProgressIndicator);
-    //
-  }// for (; myIterator->More(); myIterator->Next()) {
+    BOPCol_ListOfInteger* pLV = aMVEPairs.ChangeSeek(aPB);
+    if (!pLV)
+      pLV = &aMVEPairs(aMVEPairs.Add(aPB, BOPCol_ListOfInteger()));
+    pLV->Append(nV);
+  }
   //
-  aNbVE=aVVE.Extent();
+  IntersectVE(aMVEPairs);
+}
+
+//=======================================================================
+// function: IntersectVE
+// purpose: 
+//=======================================================================
+void BOPAlgo_PaveFiller::IntersectVE
+  (const BOPDS_IndexedDataMapOfPaveBlockListOfInteger& theVEPairs,
+   const Standard_Boolean theAddInterfs)
+{
+  Standard_Integer i, aNbVE = theVEPairs.Extent();
+  if (!aNbVE) {
+    return;
+  }
+  //
+  BOPDS_VectorOfInterfVE& aVEs = myDS->InterfVE();
+  if (theAddInterfs) {
+    aVEs.SetIncrement(aNbVE);
+  }
+  //
+  // Prepare for intersection.
+  BOPAlgo_VectorOfVertexEdge aVVE;
+  // Map to collect all SD connections to add interferences
+  // for all vertices having the same SD vertex.
+  // It will also be used as a Fence map to avoid repeated
+  // intersection of the same SD vertex with edge
+  NCollection_DataMap<BOPDS_Pair, BOPCol_ListOfInteger, BOPDS_PairMapHasher> aDMVSD;
+  //
+  for (i = 1; i <= aNbVE; ++i) {
+    const Handle(BOPDS_PaveBlock)& aPB = theVEPairs.FindKey(i);
+    Standard_Integer nE = aPB->OriginalEdge();
+    //
+    const BOPCol_ListOfInteger& aLV = theVEPairs(i);
+    BOPCol_ListIteratorOfListOfInteger aItLV(aLV);
+    for (; aItLV.More(); aItLV.Next()) {
+      Standard_Integer nV = aItLV.Value();
+      //
+      Standard_Integer nVSD = nV;
+      myDS->HasShapeSD(nV, nVSD);
+      //
+      BOPDS_Pair aPair(nVSD, nE);
+      BOPCol_ListOfInteger* pLI = aDMVSD.ChangeSeek(aPair);
+      if (pLI) {
+        // Already added
+        pLI->Append(nV);
+        continue;
+      }
+      // New pair
+      pLI = aDMVSD.Bound(aPair, BOPCol_ListOfInteger());
+      pLI->Append(nV);
+      //
+      const TopoDS_Vertex& aV = TopoDS::Vertex(myDS->Shape(nVSD));
+      const TopoDS_Edge& aE = TopoDS::Edge(myDS->Shape(nE));
+      //
+      BOPAlgo_VertexEdge& aVESolver = aVVE.Append1();
+      aVESolver.SetIndices(nVSD, nE);
+      aVESolver.SetVertex(aV);
+      aVESolver.SetEdge(aE);
+      aVESolver.SetPaveBlock(aPB);
+      aVESolver.SetFuzzyValue(myFuzzyValue);
+      aVESolver.SetProgressIndicator(myProgressIndicator);
+    }
+  }
+  //
+  // Perform intersection
   //=============================================================
   BOPAlgo_VertexEdgeCnt::Perform(myRunParallel, aVVE, myContext);
   //=============================================================
   //
-  for (k=0; k < aNbVE; ++k) {
-    const BOPAlgo_VertexEdge& aVESolver=aVVE(k);
-    iFlag=aVESolver.Flag();
-    if (!iFlag) {
-      aVESolver.Indices(nV, nE);
-      aT=aVESolver.Parameter();
-      // 
-      // check if vertex hits beyond shrunk range, in such case create V-V interf
-      const BOPDS_ListOfPaveBlock& aLPB = myDS->PaveBlocks(nE);
-      const Handle(BOPDS_PaveBlock)& aPB = aLPB.First();
-      Bnd_Box aBox;
-      Standard_Boolean bIsPBSplittable;
-      aPB->Range(aT1, aT2);
-      aPB->ShrunkData(aTS1, aTS2, aBox, bIsPBSplittable);
-      IntTools_Range aPaveR[2] = { IntTools_Range(aT1, aTS1), IntTools_Range(aTS2, aT2) };
-      Standard_Real aTol = Precision::Confusion();
-      Standard_Boolean isOnPave = Standard_False;
-      for (Standard_Integer i = 0; i < 2; i++) {
-        if (!bIsPBSplittable || IntTools_Tools::IsOnPave1(aT, aPaveR[i], aTol)) {
-          Standard_Integer nV1 = (i == 0 ? aPB->Pave1().Index() : aPB->Pave2().Index());
-          if (!myDS->HasInterf(nV, nV1)) {
-            BOPCol_ListOfInteger aLI;
-            aLI.Append(nV);
-            aLI.Append(nV1);
-            MakeSDVertices(aLI);
-          }
-          isOnPave = Standard_True;
-          break;
+  // Keep the modified edges for further update
+  BOPCol_MapOfInteger aMEdges;
+  //
+  // Analyze intersections
+  aNbVE = aVVE.Extent();
+  for (i = 0; i < aNbVE; ++i) {
+    const BOPAlgo_VertexEdge& aVESolver = aVVE(i);
+    if (aVESolver.Flag() != 0) {
+      continue;
+    }
+    //
+    Standard_Integer nV, nE;
+    aVESolver.Indices(nV, nE);
+    // Parameter of vertex on edge
+    Standard_Real aT = aVESolver.Parameter();
+    // 1. Update vertex V/E if necessary
+    Standard_Real aTolVNew = aVESolver.VertexNewTolerance();
+    Standard_Integer nVx = UpdateVertex(nV, aTolVNew);
+    // 2. Create new pave and add it as extra pave to pave block
+    //    for further splitting of the edge
+    const Handle(BOPDS_PaveBlock)& aPB = aVESolver.PaveBlock();
+    BOPDS_Pave aPave;
+    aPave.SetIndex(nVx);
+    aPave.SetParameter(aT);
+    aPB->AppendExtPave(aPave);
+    aMEdges.Add(nE);
+    //
+    if (theAddInterfs) {
+      // Add interferences into DS
+      BOPDS_Pair aPair(nV, nE);
+      const BOPCol_ListOfInteger& aLI = aDMVSD.Find(aPair);
+      BOPCol_ListIteratorOfListOfInteger aItLI(aLI);
+      for (; aItLI.More(); aItLI.Next()) {
+        const Standard_Integer nVOld = aItLI.Value();
+        // 3. Create interference V/E
+        BOPDS_InterfVE& aVE = aVEs.Append1();
+        aVE.SetIndices(nVOld, nE);
+        aVE.SetParameter(aT);
+        // 2. Add a pair in the whole table of interferences
+        myDS->AddInterf(nVOld, nE);
+        // 4. Set index of new vertex in the interference
+        if (myDS->IsNewShape(nVx)) {
+          aVE.SetIndexNew(nVx);
         }
       }
-      if (isOnPave)
-        continue;
-      //
-      // 1
-      BOPDS_InterfVE& aVE=aVEs.Append1();
-      aVE.SetIndices(nV, nE);
-      aVE.SetParameter(aT);
-      // 2
-      myDS->AddInterf(nV, nE);
-      //
-      // 3 update vertex V/E if necessary
-      Standard_Real aTolVNew = aVESolver.VertexNewTolerance();
-      nVx=UpdateVertex(nV, aTolVNew);
-      //4
-      if (myDS->IsNewShape(nVx)) {
-        aVE.SetIndexNew(nVx);
-      }
-      //5 append ext pave to pave block
-      aPave.SetIndex(nVx);
-      aPave.SetParameter(aT);
-      aPB->AppendExtPave(aPave);
     }
-  }//for (k=0; k < aNbVE; ++k) {
-} 
+  }
+  //
+  // Split pave blocks of the intersected edges with the extra paves.
+  // At the same time compute shrunk data for the new pave blocks
+  // and in case there is no valid range for the pave block,
+  // the vertices of this pave block should be unified.
+  SplitPaveBlocks(aMEdges, theAddInterfs);
+}
+
+//=======================================================================
+// function: MakeNewCommonBlock
+// purpose: Make new Common Block from the given list of Pave Blocks
+//=======================================================================
+static
+  void MakeNewCommonBlock(const BOPDS_ListOfPaveBlock& theLPB,
+                          const BOPCol_ListOfInteger& theLFaces,
+                          BOPDS_PDS& theDS)
+{
+  // Make Common Block from the pave blocks in the list
+  Handle(BOPDS_CommonBlock) aCBNew = new BOPDS_CommonBlock;
+  aCBNew->SetPaveBlocks(theLPB);
+  aCBNew->SetFaces(theLFaces);
+  //
+  BOPDS_ListIteratorOfListOfPaveBlock aItLPB(theLPB);
+  for (; aItLPB.More(); aItLPB.Next()) {
+    theDS->SetCommonBlock(aItLPB.ChangeValue(), aCBNew);
+  }
+}
+
+//=======================================================================
+// function: SplitPaveBlocks
+// purpose: 
+//=======================================================================
+void BOPAlgo_PaveFiller::SplitPaveBlocks(const BOPCol_MapOfInteger& theMEdges,
+                                         const Standard_Boolean theAddInterfs)
+{
+  // Fence map to avoid unification of the same vertices twice
+  BOPDS_MapOfPair aMPairs;
+  // Map to treat the Common Blocks
+  NCollection_IndexedDataMap<Handle(BOPDS_CommonBlock),
+                             BOPDS_ListOfPaveBlock,
+                             TColStd_MapTransientHasher> aMCBNewPB;
+  //
+  BOPCol_MapIteratorOfMapOfInteger aItM(theMEdges);
+  for (; aItM.More(); aItM.Next()) {
+    Standard_Integer nE = aItM.Value();
+    BOPDS_ListOfPaveBlock& aLPB = myDS->ChangePaveBlocks(nE);
+    //
+    BOPDS_ListIteratorOfListOfPaveBlock aItLPB(aLPB);
+    for (; aItLPB.More();) {
+      Handle(BOPDS_PaveBlock)& aPB = aItLPB.ChangeValue();
+      //
+      if (!aPB->IsToUpdate()) {
+        aItLPB.Next();
+        continue;
+      }
+      //
+      const Handle(BOPDS_CommonBlock)& aCB = myDS->CommonBlock(aPB);
+      //
+      // Compute new pave blocks
+      BOPDS_ListOfPaveBlock aLPBN;
+      aPB->Update(aLPBN);
+      //
+      // Make sure that each new pave block has a valid range,
+      // otherwise unify the vertices of the pave block
+      BOPDS_ListIteratorOfListOfPaveBlock aItLPBN(aLPBN);
+      for (; aItLPBN.More(); aItLPBN.Next()) {
+        Handle(BOPDS_PaveBlock)& aPBN = aItLPBN.ChangeValue();
+        myDS->UpdatePaveBlockWithSDVertices(aPBN);
+        FillShrunkData(aPBN);
+        //
+        if (!aPBN->HasShrunkData()) {
+          // No valid range, unify vertices
+          Standard_Integer nV1, nV2;
+          aPBN->Indices(nV1, nV2);
+          if (nV1 != nV2) {
+            BOPDS_Pair aPair;
+            aPair.SetIndices(nV1, nV2);
+            if (aMPairs.Add(aPair)) {
+              BOPCol_ListOfInteger aLV;
+              aLV.Append(nV1);
+              aLV.Append(nV2);
+              MakeSDVertices(aLV, theAddInterfs);
+            }
+          }
+          continue;
+        }
+        //
+        // Update the list with new pave block
+        aLPB.Append(aPBN);
+        // Treat the common block
+        if (!aCB.IsNull()) {
+          // Store the new pave block to make new common block
+          BOPDS_ListOfPaveBlock* pLPBCB = aMCBNewPB.ChangeSeek(aCB);
+          if (!pLPBCB) {
+            pLPBCB = &aMCBNewPB(aMCBNewPB.Add(aCB, BOPDS_ListOfPaveBlock()));
+          }
+          pLPBCB->Append(aPBN);
+        }
+      }
+      // Remove old pave block
+      aLPB.Remove(aItLPB);
+    }
+  }
+  //
+  // Make Common Blocks
+  Standard_Integer i, aNbCB = aMCBNewPB.Extent();
+  for (i = 1; i <= aNbCB; ++i) {
+    const Handle(BOPDS_CommonBlock)& aCB = aMCBNewPB.FindKey(i);
+    const BOPDS_ListOfPaveBlock& aLPBN = aMCBNewPB(i);
+    //
+    // For each group of pave blocks with the same vertices make new common block
+    NCollection_IndexedDataMap<BOPDS_Pair, BOPDS_ListOfPaveBlock, BOPDS_PairMapHasher> aMInds;
+    BOPDS_ListIteratorOfListOfPaveBlock aItLPB(aLPBN);
+    for (; aItLPB.More(); aItLPB.Next()) {
+      const Handle(BOPDS_PaveBlock)& aPB = aItLPB.Value();
+      //
+      BOPDS_Pair aPair;
+      aPair.SetIndices(aPB->Pave1().Index(), aPB->Pave2().Index());
+      //
+      BOPDS_ListOfPaveBlock* pLPBx = aMInds.ChangeSeek(aPair);
+      if (!pLPBx) {
+        pLPBx = &aMInds(aMInds.Add(aPair, BOPDS_ListOfPaveBlock()));
+      }
+      pLPBx->Append(aPB);
+    }
+    //
+    Standard_Integer nV1, nV2;
+    aCB->PaveBlock1()->Indices(nV1, nV2);
+    Standard_Boolean bIsClosed = (nV1 == nV2);
+    //
+    Standard_Integer j, aNbPairs = aMInds.Extent();
+    for (j = 1; j <= aNbPairs; ++j) {
+      BOPDS_ListOfPaveBlock& aLPB = aMInds(j);
+      //
+      if (!bIsClosed) {
+        // Make Common Block from the pave blocks in the list
+        MakeNewCommonBlock(aLPB, aCB->Faces(), myDS);
+        continue;
+      }
+      //
+      // Find coinciding pave blocks
+      while (aLPB.Extent()) {
+        // Pave blocks forming the common block
+        BOPDS_ListOfPaveBlock aLPBCB;
+        // Point in the middle of the first pave block in the common block
+        gp_Pnt aPMFirst(0., 0., 0.);
+        // Tolerance of the first edge in the common block
+        Standard_Real aTolEFirst = 0.;
+        //
+        aItLPB.Initialize(aLPB);
+        for (; aItLPB.More();) {
+          const Handle(BOPDS_PaveBlock)& aPB = aItLPB.Value();
+          if (aLPBCB.IsEmpty()) {
+            aLPBCB.Append(aPB);
+            const TopoDS_Edge& aEFirst = TopoDS::Edge(myDS->Shape(aPB->OriginalEdge()));
+            aTolEFirst = BRep_Tool::MaxTolerance(aEFirst, TopAbs_VERTEX);
+            //
+            Standard_Real aTmFirst = (aPB->Pave1().Parameter() + aPB->Pave2().Parameter()) / 2.;
+            BOPTools_AlgoTools::PointOnEdge(aEFirst, aTmFirst, aPMFirst);
+            //
+            aLPB.Remove(aItLPB);
+            continue;
+          }
+          //
+          // Check pave blocks for coincidence
+          const TopoDS_Edge& aE = TopoDS::Edge(myDS->Shape(aPB->OriginalEdge()));
+          Standard_Real aTolE = BRep_Tool::MaxTolerance(aE, TopAbs_VERTEX);
+          //
+          Standard_Real aTOut, aDist;
+          Standard_Integer iErr =
+            myContext->ComputePE(aPMFirst, aTolEFirst + aTolE + myFuzzyValue, aE, aTOut, aDist);
+          if (!iErr && ((aTOut > aPB->Pave1().Parameter()) && (aTOut < aPB->Pave2().Parameter()))) {
+            aLPBCB.Append(aPB);
+            aLPB.Remove(aItLPB);
+            continue;
+          }
+          aItLPB.Next();
+        }
+        //
+        // Make Common Block from the pave blocks in the list
+        MakeNewCommonBlock(aLPBCB, aCB->Faces(), myDS);
+      }
+    }
+  }
+}

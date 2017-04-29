@@ -29,6 +29,7 @@
 #include <BOPDS_ShapeInfo.hxx>
 #include <BOPDS_VectorOfPave.hxx>
 #include <BOPTools_AlgoTools.hxx>
+#include <BRepAdaptor_Curve.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_TFace.hxx>
@@ -42,6 +43,7 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <Precision.hxx>
 #include <Standard_Assert.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
@@ -932,10 +934,9 @@ void BOPDS_DS::InitPaveBlocks(const Standard_Integer theI)
 //=======================================================================
 void BOPDS_DS::UpdatePaveBlocks()
 {
-  Standard_Boolean bIsToUpdate;
   Standard_Integer i, aNbPBP;
   BOPDS_ListOfPaveBlock aLPBN(myAllocator);
-  BOPDS_ListIteratorOfListOfPaveBlock aItPB, aItPBN;
+  BOPDS_ListIteratorOfListOfPaveBlock aItPB;
   //
   BOPDS_VectorOfListOfPaveBlock& aPBP=myPaveBlocksPool;
   //
@@ -944,21 +945,20 @@ void BOPDS_DS::UpdatePaveBlocks()
     BOPDS_ListOfPaveBlock& aLPB=aPBP(i); 
     //
     aItPB.Initialize(aLPB);
-    for (; aItPB.More(); aItPB.Next()) {
+    for (; aItPB.More();) {
       Handle(BOPDS_PaveBlock)& aPB=aItPB.ChangeValue();
       //
-      bIsToUpdate=aPB->IsToUpdate();
-      if (bIsToUpdate){
-        aLPBN.Clear();
-        aPB->Update(aLPBN);
-        
-        aItPBN.Initialize(aLPBN);
-        for (; aItPBN.More(); aItPBN.Next()) {
-          Handle(BOPDS_PaveBlock)& aPBN=aItPBN.ChangeValue();
-          aLPB.Append(aPBN);
-        }
-        aLPB.Remove(aItPB);
+      if (!aPB->IsToUpdate()) {
+        aItPB.Next();
+        continue;
       }
+      //
+      aLPBN.Clear();
+      aPB->Update(aLPBN);
+      //
+      aLPB.Remove(aItPB);
+      //
+      aLPB.Append(aLPBN);
     }// for (; aItPB.More(); aItPB.Next()) {
   }// for (i=0; i<aNbPBP; ++i) {
 }
@@ -1365,6 +1365,9 @@ void BOPDS_DS::FaceInfoIn(const Standard_Integer theF,
     BOPDS_InterfEF& aEF=aEFs(i);
     if(aEF.Contains(theF)) {
       if(aEF.HasIndexNew(nV)) {
+        if (HasShapeSD(nV, nVSD)) {
+          nV=nVSD;
+        }
         theMI.Add(nV);
       }
       else {
@@ -1594,7 +1597,8 @@ BOPCol_DataMapOfIntegerInteger& BOPDS_DS::ShapesSD()
 void BOPDS_DS::AddShapeSD(const Standard_Integer theIndex,
                           const Standard_Integer theIndexSD)
 {
-  myShapesSD.Bind(theIndex, theIndexSD);
+  if (theIndex != theIndexSD)
+    myShapesSD.Bind(theIndex, theIndexSD);
 }
 //=======================================================================
 //function : HasShapeSD
@@ -1604,13 +1608,14 @@ Standard_Boolean BOPDS_DS::HasShapeSD
   (const Standard_Integer theIndex,
    Standard_Integer& theIndexSD)const
 {
-  Standard_Boolean bRet;
-  //
-  bRet=myShapesSD.IsBound(theIndex);
-  if (bRet) {
-   theIndexSD=myShapesSD.Find(theIndex);
+  Standard_Boolean bHasSD = Standard_False;
+  const Standard_Integer *pSD = myShapesSD.Seek(theIndex);
+  while (pSD) {
+    theIndexSD = *pSD;
+    bHasSD = Standard_True;
+    pSD = myShapesSD.Seek(theIndexSD);
   }
-  return bRet;
+  return bHasSD;
 }
 //=======================================================================
 //function : Dump
@@ -2056,4 +2061,49 @@ void BOPDS_DS::ReleasePaveBlocks()
       }
     }
   }
+}
+
+//=======================================================================
+//function : IsValidShrunkData
+//purpose  :
+//=======================================================================
+Standard_Boolean BOPDS_DS::IsValidShrunkData(const Handle(BOPDS_PaveBlock)& thePB)
+{
+  if (!thePB->HasShrunkData())
+    return Standard_False;
+
+  // Compare the distances from the bounds of the shrunk range to the vertices
+  // with the tolerance values of vertices
+
+  // Shrunk range
+  Standard_Real aTS[2];
+  Bnd_Box aBox;
+  Standard_Boolean bIsSplit;
+  //
+  thePB->ShrunkData(aTS[0], aTS[1], aBox, bIsSplit);
+  //
+  // Vertices
+  Standard_Integer nV[2];
+  thePB->Indices(nV[0], nV[1]);
+  //
+  const TopoDS_Edge& aE = TopoDS::Edge(Shape(thePB->OriginalEdge()));
+  BRepAdaptor_Curve aBAC(aE);
+  //
+  Standard_Real anEps = BRep_Tool::Tolerance(aE) * 0.01;
+  //
+  for (Standard_Integer i = 0; i < 2; ++i) {
+    const TopoDS_Vertex& aV = TopoDS::Vertex(Shape(nV[i]));
+    Standard_Real aTol = BRep_Tool::Tolerance(aV) + Precision::Confusion();
+    // Bounding point
+    gp_Pnt aP = BRep_Tool::Pnt(aV);
+    //
+    // Point on the end of shrunk range
+    gp_Pnt aPS = aBAC.Value(aTS[i]);
+    //
+    Standard_Real aDist = aP.Distance(aPS);
+    if (aTol - aDist > anEps) {
+      return Standard_False;
+    }
+  }
+  return Standard_True;
 }

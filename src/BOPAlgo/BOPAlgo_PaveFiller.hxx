@@ -45,7 +45,9 @@
 #include <IntSurf_ListOfPntOn2S.hxx>
 #include <BOPCol_DataMapOfIntegerListOfInteger.hxx>
 #include <BOPDS_MapOfPaveBlock.hxx>
+#include <BOPDS_MapOfPair.hxx>
 #include <BOPDS_VectorOfCurve.hxx>
+#include <BOPDS_IndexedDataMapOfPaveBlockListOfInteger.hxx>
 #include <BOPCol_IndexedDataMapOfShapeInteger.hxx>
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
 #include <BOPAlgo_GlueEnum.hxx>
@@ -147,6 +149,21 @@ protected:
   Standard_EXPORT virtual void PerformVV();
   
   Standard_EXPORT virtual void PerformVE();
+
+  //! Performs the intersection of the vertices with edges.
+  Standard_EXPORT void IntersectVE(const BOPDS_IndexedDataMapOfPaveBlockListOfInteger& theVEPairs,
+                                   const Standard_Boolean bAddInterfs = Standard_True);
+
+  //! Splits the Pave Blocks of the given edges with the extra paves.<br>
+  //! The method also builds the shrunk data for the new pave blocks and
+  //! in case there is no valid range on the pave block, the vertices of
+  //! this pave block will be united making SD vertex.<br>
+  //! Parameter <theAddInterfs> defines whether this interference will be added
+  //! into common table of interferences or not.<br>
+  //! If some of the Pave Blocks are forming the Common Blocks, the splits
+  //! of the Pave Blocks will also form a Common Block.
+  Standard_EXPORT void SplitPaveBlocks(const BOPCol_MapOfInteger& theMEdges,
+                                       const Standard_Boolean theAddInterfs);
   
   Standard_EXPORT virtual void PerformVF();
   
@@ -175,10 +192,11 @@ protected:
   Standard_EXPORT void FillShrunkData (Handle(BOPDS_PaveBlock)& thePB);
   
   Standard_EXPORT void FillShrunkData (const TopAbs_ShapeEnum theType1, const TopAbs_ShapeEnum theType2);
-  
-  Standard_EXPORT Standard_Integer PerformVerticesEE (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMVCPB, const BOPCol_BaseAllocator& theAllocator);
-  
-  Standard_EXPORT Standard_Integer PerformVerticesEF (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMVCPB, const BOPCol_BaseAllocator& theAllocator);
+
+  //! Performs intersection of new vertices, obtained in E/E and E/F intersections
+  Standard_EXPORT void PerformNewVertices(BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMVCPB,
+                                          const BOPCol_BaseAllocator& theAllocator,
+                                          const Standard_Boolean theIsEEIntersection = Standard_True);
   
   Standard_EXPORT Standard_Boolean CheckFacePaves (const TopoDS_Vertex& theVnew, const BOPCol_MapOfInteger& theMIF);
   
@@ -318,8 +336,9 @@ protected:
 
   //! Updates tolerance of vertex with index <nV>
   //! to make it interfere with edge
-  Standard_EXPORT void ForceInterfVE (const Standard_Integer nV, Handle(BOPDS_PaveBlock)& aPB, BOPDS_MapOfPaveBlock& aMPB);
-  
+  Standard_EXPORT void ForceInterfVE(const Standard_Integer nV,
+                                     Handle(BOPDS_PaveBlock)& aPB,
+                                     BOPCol_MapOfInteger& theMEdges);
 
   //! Updates tolerance of vertex with index <nV>
   //! to make it interfere with face with index <nF>

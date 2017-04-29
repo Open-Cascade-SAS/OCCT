@@ -120,7 +120,7 @@ void BOPAlgo_PaveFiller::FillShrunkData(const TopAbs_ShapeEnum aType1,
       aItLPB.Initialize(aLPB);
       for (; aItLPB.More(); aItLPB.Next()) {
         const Handle(BOPDS_PaveBlock)& aPB=aItLPB.ChangeValue();
-        if (aPB->HasShrunkData()) {
+        if (aPB->HasShrunkData() && myDS->IsValidShrunkData(aPB)) {
           continue;
         }
         //
