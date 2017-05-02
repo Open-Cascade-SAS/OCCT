@@ -204,9 +204,14 @@ proc wokdep:Preferred {theList theCmpl theArch} {
     return ""
   }
 
+  # keep only two first digits in "vc141"
+  if { ! [regexp {^vc[0-9][0-9]} $theCmpl aCmpl] } {
+    set aCmpl $theCmpl
+  }
+
   set aShortList {}
   foreach aPath $theList {
-    if { [string first "$theCmpl" "$aPath"] != "-1" } {
+    if { [string first "$aCmpl" "$aPath"] != "-1" } {
       lappend aShortList "$aPath"
     }
   }
@@ -589,6 +594,11 @@ proc wokdep:SearchTBB {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64
   upvar $theErrBin32 anErrBin32
   upvar $theErrBin64 anErrBin64
 
+  # keep only two first digits in "vc141"
+  if { ! [regexp {^vc[0-9][0-9]} ${::VCVER} aVcLib] } {
+    set aVcLib ${::VCVER}
+  }
+
   set isFound "true"
   set aTbbHPath [wokdep:SearchHeader "tbb/scalable_allocator.h"]
   if { "$aTbbHPath"  == "" } {
@@ -609,8 +619,8 @@ proc wokdep:SearchTBB {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64
 
     set aTbbLibPath [wokdep:SearchLib "tbb" "$anArchIter"]
     if { "$aTbbLibPath" == "" } {
-      set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{tbb}*] "$::VCVER" "$anArchIter" ]
-      set aTbbLibPath [wokdep:SearchLib "tbb" "$anArchIter" "$aPath/lib/$aSubDir/${::VCVER}"]
+      set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{tbb}*] $aVcLib "$anArchIter" ]
+      set aTbbLibPath [wokdep:SearchLib "tbb" "$anArchIter" "$aPath/lib/$aSubDir/$aVcLib"]
       if { "$aTbbLibPath" == "" } {
         # Set the path to the TBB library for Linux
         if { "$::tcl_platform(platform)" != "windows" } {
@@ -621,7 +631,7 @@ proc wokdep:SearchTBB {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64
           lappend ::CSF_OPT_LIB$anArchIter "$aPath/lib/$aSubDir"
         }
       } else {
-        lappend ::CSF_OPT_LIB$anArchIter "$aPath/lib/$aSubDir/${::VCVER}"
+        lappend ::CSF_OPT_LIB$anArchIter "$aPath/lib/$aSubDir/$aVcLib"
       }
       if { "$aTbbLibPath" == "" } {
         lappend anErrLib$anArchIter "Error: '${::SYS_LIB_PREFIX}tbb.${::SYS_LIB_SUFFIX}' not found (Intel TBB)"
@@ -631,10 +641,10 @@ proc wokdep:SearchTBB {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64
     if { "$::tcl_platform(platform)" == "windows" } {
       set aTbbDllPath [wokdep:SearchBin "tbb.dll" "$anArchIter"]
       if { "$aTbbDllPath" == "" } {
-        set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{tbb}*] "$::VCVER" "$anArchIter" ]
-        set aTbbDllPath [wokdep:SearchBin "tbb.dll" "$anArchIter" "$aPath/bin/$aSubDir/${::VCVER}"]
+        set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{tbb}*] $aVcLib "$anArchIter" ]
+        set aTbbDllPath [wokdep:SearchBin "tbb.dll" "$anArchIter" "$aPath/bin/$aSubDir/$aVcLib"]
         if { "$aTbbDllPath" != "" } {
-          lappend ::CSF_OPT_BIN$anArchIter "$aPath/bin/$aSubDir/${::VCVER}"
+          lappend ::CSF_OPT_BIN$anArchIter "$aPath/bin/$aSubDir/$aVcLib"
         } else {
           lappend anErrBin$anArchIter "Error: 'tbb.dll' not found (Intel TBB)"
           if { "$::ARCH" == "$anArchIter"} { set isFound "false" }

@@ -38,39 +38,50 @@ set SYS_VS_LIST {}
 set SYS_VC_LIST {}
 set SYS_VCVARS_LIST {}
 
-# detect installed Visual Studio instances from global environment
-if { [info exists ::env(VS150COMNTOOLS)] } {
-  lappend ::SYS_VS_LIST "Visual Studio 201x (vc15)"
-  lappend ::SYS_VC_LIST "vc15"
-  lappend ::SYS_VCVARS_LIST "%VS150COMNTOOLS%..\\..\\VC\\vcvarsall.bat"
+# detect installed Visual Studio 2017 instances by running vswhere.exe
+if { ! [catch {exec vswhere.exe -version "\[15.0,15.99\]" -latest -requires Microsoft.VisualStudio.Workload.NativeDesktop -property installationPath} res] } {
+  lappend ::SYS_VS_LIST "Visual Studio 2017 (15, toolset v141)"
+  lappend ::SYS_VC_LIST "vc141"
+  lappend ::SYS_VCVARS_LIST "$res\\VC\\vcvarsall.bat"
 }
+if { ! [catch {exec vswhere.exe -version "\[15.0,15.99\]" -latest -requires Microsoft.VisualStudio.Workload.Universal -property installationPath} res] } {
+  lappend ::SYS_VS_LIST "Visual Studio 2017 (15, toolset v141) UWP"
+  lappend ::SYS_VC_LIST "vc141-uwp"
+  lappend ::SYS_VCVARS_LIST "$res\\VC\\vcvarsall.bat"
+}
+
+# detect installed Visual Studio instances from global environment
 if { [info exists ::env(VS140COMNTOOLS)] } {
-  lappend ::SYS_VS_LIST "Visual Studio 2015 (vc14)"
+  lappend ::SYS_VS_LIST "Visual Studio 2015 (14, toolset v140)"
   lappend ::SYS_VC_LIST "vc14"
+  lappend ::SYS_VCVARS_LIST "%VS140COMNTOOLS%..\\..\\VC\\vcvarsall.bat"
+
+  lappend ::SYS_VS_LIST "Visual Studio 2015 (14, toolset v140) UWP"
+  lappend ::SYS_VC_LIST "vc14-uwp"
   lappend ::SYS_VCVARS_LIST "%VS140COMNTOOLS%..\\..\\VC\\vcvarsall.bat"
 }
 if { [info exists ::env(VS120COMNTOOLS)] } {
-  lappend ::SYS_VS_LIST "Visual Studio 2013 (vc12)"
+  lappend ::SYS_VS_LIST "Visual Studio 2013 (12, toolset v120)"
   lappend ::SYS_VC_LIST "vc12"
   lappend ::SYS_VCVARS_LIST "%VS120COMNTOOLS%..\\..\\VC\\vcvarsall.bat"
 }
 if { [info exists ::env(VS110COMNTOOLS)] } {
-  lappend ::SYS_VS_LIST "Visual Studio 2012 (vc11)"
+  lappend ::SYS_VS_LIST "Visual Studio 2012 (11, toolset v110)"
   lappend ::SYS_VC_LIST "vc11"
   lappend ::SYS_VCVARS_LIST "%VS110COMNTOOLS%..\\..\\VC\\vcvarsall.bat"
 }
 if { [info exists ::env(VS100COMNTOOLS)] } {
-  lappend ::SYS_VS_LIST "Visual Studio 2010 (vc10)"
+  lappend ::SYS_VS_LIST "Visual Studio 2010 (10, toolset v100)"
   lappend ::SYS_VC_LIST "vc10"
   lappend ::SYS_VCVARS_LIST "%VS100COMNTOOLS%..\\..\\VC\\vcvarsall.bat"
 }
 if { [info exists ::env(VS90COMNTOOLS)] } {
-  lappend ::SYS_VS_LIST "Visual Studio 2008 (vc9)"
+  lappend ::SYS_VS_LIST "Visual Studio 2008 (9, toolset v90)"
   lappend ::SYS_VC_LIST "vc9"
   lappend ::SYS_VCVARS_LIST "%VS90COMNTOOLS%..\\..\\VC\\vcvarsall.bat"
 }
 if { [info exists ::env(VS80COMNTOOLS)] } {
-  lappend ::SYS_VS_LIST "Visual Studio 2005 (vc8)"
+  lappend ::SYS_VS_LIST "Visual Studio 2005 (8, toolset v80)"
   lappend ::SYS_VC_LIST "vc8"
   lappend ::SYS_VCVARS_LIST "%VS80COMNTOOLS%..\\..\\VC\\vcvarsall.bat"
 }
@@ -129,10 +140,10 @@ proc wokdep:gui:UpdateList {} {
   wokdep:SearchX11       anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   if { "$::HAVE_GLES2" == "true" } {
     if { "$::HAVE_GL2PS" == "true" } {
-      lappend anIncErrs "Error: gl2ps can not be used within OpenGL ES"
+      lappend anIncErrs "Error: gl2ps can not be used with OpenGL ES"
     }
     if { "$::HAVE_D3D" == "true" } {
-      lappend anIncErrs "Error: Direct3D can not be used within OpenGL ES"
+      lappend anIncErrs "Error: Direct3D can not be used with OpenGL ES"
     }
     wokdep:SearchEGL     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
     wokdep:SearchGLES    anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
@@ -388,10 +399,10 @@ proc wokdep:gui:Show64Bitness { theRowIter } {
 }
 
 # Header
-ttk::label    .myFrame.myVsFrame.myVsLbl       -text "Visual Studio configuration:" -padding {5 5 80 5}
-ttk::combobox .myFrame.myVsFrame.myVsCombo     -values $SYS_VS_LIST -state readonly -textvariable VSVER -width 30
+ttk::label    .myFrame.myVsFrame.myVsLbl       -text "Visual Studio configuration:" -padding {5 5 20 5}
+ttk::combobox .myFrame.myVsFrame.myVsCombo     -values $SYS_VS_LIST -state readonly -textvariable VSVER -width 40
 ttk::combobox .myFrame.myVsFrame.myArchCombo   -values { {32} {64} } -textvariable ARCH -state readonly -width 6
-entry         .myFrame.myVcEntry     -textvariable VCVER  -width 6
+entry         .myFrame.myVcEntry     -textvariable VCVER  -width 10
 entry         .myFrame.myVcVarsEntry -textvariable VCVARS -width 70
 ttk::button   .myFrame.myVcBrowseBtn -text "Browse" -command wokdep:gui:BrowseVcVars
 ttk::label    .myFrame.myHxxChecks.myRelDebInfoLbl   -text "Release with Debug info"

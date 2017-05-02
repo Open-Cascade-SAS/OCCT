@@ -49,6 +49,9 @@ if /I ["%3"]     == ["d"]     set "CASDEB=d"
 if /I ["%3"]     == ["i"]     set "CASDEB=i"
 if /I ["%3"]     == ["relwithdeb"] set "CASDEB=i"
 
+rem Decode VCVER
+call "%~dp0adm\vcver.bat"
+
 set "CSF_OPT_LIB32D=%CSF_OPT_LIB32%"
 set "CSF_OPT_LIB64D=%CSF_OPT_LIB64%"
 set "CSF_OPT_BIN32D=%CSF_OPT_BIN32%"
@@ -111,8 +114,8 @@ if "%CSF_OCCTResourcePath%" == "" set "CSF_OCCTResourcePath=%CASROOT%\src"
 if "%CSF_OCCTSamplesPath%" == "" set "CSF_OCCTSamplesPath=%CASROOT%\samples"
 if "%CSF_OCCTDataPath%" == "" set "CSF_OCCTDataPath=%CASROOT%\data"
 if "%CSF_OCCTTestsPath%" == "" set "CSF_OCCTTestsPath=%CASROOT%\tests"
-if "%CSF_OCCTBinPath%" == "" set "CSF_OCCTBinPath=%CASROOT%\win%ARCH%\%VCVER%\bin%CASDEB%"
-if "%CSF_OCCTLibPath%" == "" set "CSF_OCCTLibPath=%CASROOT%\win%ARCH%\%VCVER%\lib%CASDEB%"
+if "%CSF_OCCTBinPath%" == "" set "CSF_OCCTBinPath=%CASROOT%\win%ARCH%\%VCLIB%\bin%CASDEB%"
+if "%CSF_OCCTLibPath%" == "" set "CSF_OCCTLibPath=%CASROOT%\win%ARCH%\%VCLIB%\lib%CASDEB%"
 
 rem ----- Set path to 3rd party and OCCT libraries -----
 set "PATH=%CSF_OCCTBinPath%;%PATH%"

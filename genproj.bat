@@ -2,9 +2,9 @@
 
 rem Helper script to run generation of VS projects on Windows.
 rem Running it requires that Tcl should be in the PATH
-rem Optional arguments: IDE OS
-rem IDE can be vc10, vc11, vc12, vc14, cbp, or xcd
-rem OS can be wnt, mac, or lin
+rem Optional arguments: Format OS
+rem Format can be vc10, vc11, vc12, vc14, vc141, cbp, or xcd
+rem OS can be wnt, uwp, mac, or lin
 
 SET "OLD_PATH=%PATH%"
 
@@ -41,6 +41,14 @@ if not defined TCL_FOUND (
   goto :eof
 ) 
 
+set aPlatform=%2
+if "%aPlatform%" == "" (
+  set aPlatform=wnt
+  if "%VCPROP%" == "Universal" (
+    set aPlatform=uwp
+  )
+)
+
 cd %~dp0
-%TCL_EXEC% %~dp0adm/start.tcl genproj %VCVER% %2 %3 %4 %5
+%TCL_EXEC% %~dp0adm/start.tcl genproj %VCFMT% %aPlatform% %3 %4 %5
 SET "PATH=%OLD_PATH%"

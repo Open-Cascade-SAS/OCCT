@@ -5669,7 +5669,7 @@ static int VBsdf (Draw_Interpretor& theDI,
     if (aCmd.HasOption (aFresnel, 4)) // Schlick: type R G B
     {
       std::string aFresnelType = aCmd.Arg (aFresnel, 0);
-      std::transform (aFresnelType.begin (), aFresnelType.end (), aFresnelType.begin (), ::tolower);
+      std::transform (aFresnelType.begin (), aFresnelType.end (), aFresnelType.begin (), ::LowerCase);
 
       if (aFresnelType == "schlick")
       {
@@ -5691,7 +5691,7 @@ static int VBsdf (Draw_Interpretor& theDI,
     else if (aCmd.HasOption (aFresnel, 3)) // Conductor: type N K
     {
       std::string aFresnelType = aCmd.Arg (aFresnel, 0);
-      std::transform (aFresnelType.begin (), aFresnelType.end (), aFresnelType.begin (), ::tolower);
+      std::transform (aFresnelType.begin (), aFresnelType.end (), aFresnelType.begin (), ::LowerCase);
 
       if (aFresnelType == "conductor")
       {
@@ -5708,7 +5708,7 @@ static int VBsdf (Draw_Interpretor& theDI,
     else if (aCmd.HasOption (aFresnel, 2)) // Dielectric or Constant: type N|C
     {
       std::string aFresnelType = aCmd.Arg (aFresnel, 0);
-      std::transform (aFresnelType.begin (), aFresnelType.end (), aFresnelType.begin (), ::tolower);
+      std::transform (aFresnelType.begin (), aFresnelType.end (), aFresnelType.begin (), ::LowerCase);
 
       if (aFresnelType == "constant")
       {

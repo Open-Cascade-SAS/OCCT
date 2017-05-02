@@ -6,11 +6,10 @@ rem Running it requires that Tcl should be in the PATH
 SET "OLD_PATH=%PATH%"
 
 rem create env.bat if it does not exist yet
-if exist "%~dp0env.bat" (
-  call "%~dp0env.bat"
-) else (
+if not exist "%~dp0env.bat" (
   type "%~dp0adm\templates\env.bat" | findstr /i /v "__CASROOT__" > "%~dp0env.bat"
 )
+call "%~dp0env.bat"
 
 rem  find Tcl
 set "TCL_EXEC=tclsh.exe"
@@ -53,7 +52,7 @@ if not defined TCL_FOUND (
   goto :eof
 ) 
 
-:: run GUI tool
+rem run GUI tool
 "%TCL_FOUND%" %~dp0adm/genconf.tcl
 
 SET "PATH=%OLD_PATH%"

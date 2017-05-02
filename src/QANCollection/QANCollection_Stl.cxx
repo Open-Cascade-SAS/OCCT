@@ -32,6 +32,7 @@
 #include <Standard_Assert.hxx>
 #include <OSD_Timer.hxx>
 #include <OSD_Parallel.hxx>
+
 #include <algorithm>
 #include <list>
 #include <set>
@@ -45,7 +46,7 @@ namespace {
   // Auxiliary class to use in std::random_shuffle()
   struct RandomGenerator {
     RandomGenerator () { srand(1); }
-    int operator () (int upper) const { return rand() % upper; }
+    ptrdiff_t operator () (ptrdiff_t upper) const { return rand() % upper; }
   };
 }
 

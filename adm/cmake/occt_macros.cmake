@@ -74,6 +74,11 @@ macro (OCCT_MAKE_COMPILER_SHORT_NAME)
       set (COMPILER vc12)
     elseif (MSVC14)
       set (COMPILER vc14)
+    elseif (MSVC15)
+      # Since Visual Studio 15 (2017), its version diverged from version of
+      # compiler which is 14.1; as that compiler uses the same run-time as 14.0,
+      # we keep its id as "vc14" to be compatibille
+      set (COMPILER vc14)
     endif()
   elseif (DEFINED CMAKE_COMPILER_IS_GNUCC)
     set (COMPILER gcc)

@@ -26,7 +26,18 @@ You can also build third-party libraries from their sources, see @ref occt_dev_g
 
 If you have Visual Studio projects already available (pre-installed or generated), you can edit file *custom.bat* manually to adjust the environment:
 
-* *VCVER* -- version of Visual Studio (vc10, vc11, vc12, or vc14), and relevant *VCVARS* path
+* *VCVER* -- specification of format of project files, defining also version of Visual Studio to be used, and default name of the sub-folder for binaries:
+
+| VCVER     | Visual Studio version | Windows Platform                 | Binaries folder name |
+|-----------|-----------------------|----------------------------------|----------------------|
+| vc10      | 2010 (10)             | Desktop (Windows API)            | vc10 |
+| vc11      | 2012 (11)             | Desktop (Windows API)            | vc11 |
+| vc12      | 2013 (12)             | Desktop (Windows API)            | vc12 |
+| vc14      | 2015 (14)             | Desktop (Windows API)            | vc14 |
+| vc14-uwp  | 2015 (14)             | UWP (Universal Windows Platform) | vc14-uwp |
+| vc141     | 2017 (15)             | Desktop (Windows API)            | vc14 |
+| vc141-uwp | 2017 (15)             | UWP (Universal Windows Platform) | vc14-uwp |
+
 * *ARCH* -- architecture (32 or 64), affects only *PATH* variable for execution
 * <i>HAVE_*</i> -- flags to enable or disable use of optional third-party products
 * <i>CSF_OPT_*</i> -- paths to search for includes and binaries of all used  third-party products
