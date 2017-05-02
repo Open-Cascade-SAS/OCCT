@@ -70,6 +70,8 @@ The following extensions should be used for source files, depending on their typ
 * <i>.hxx</i> -- C++ header files
 * <i>.lxx</i> -- additional headers containing definitions of inline methods and auxiliary code
 
+Note that .lxx files should be avoided in most cases - inline method should be placed in header file instead.
+
 ### Prefix for toolkit names [MANDATORY]
 
 Toolkit names are prefixed by *TK*, followed by a meaningful part of the name explaining the domain of functionality covered by the toolkit (e.g. *TKOpenGl*).
@@ -470,22 +472,29 @@ Spaces at the end of a line are useless and do not affect functionality.
 ### Headers order
 
 Split headers into groups: system headers, headers per each framework, project headers; sort the list of includes alphabetically.
+Within the class source file, the class header file should be included first.
 
 This rule improves readability, allows detecting useless multiple header inclusions and makes 3rd-party dependencies clearly visible.
+Inclusion of class header on top verifies consistency of the header (e.g. that header file does not use any undefined declarations due to missing includes of dependencies).
+
+An exception to the rule is ordering system headers generating a macros declaration conflicts (like "windows.h" or "X11/Xlib.h") - these headers should be placed in the way solving the conflict.
 
 ~~~~~{.cpp}
-// system headers
-#include <iostream>
-#include <windows.h>
-
-// Qt headers
-#include <QDataStream>
-#include <QString>
+// the header file of implemented class
+#include <PackageName_ClassName.hxx>
 
 // OCCT headers
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <NCollection_List.hxx>
+
+// Qt headers
+#include <QDataStream>
+#include <QString>
+
+// system headers
+#include <iostream>
+#include <windows.h>
 ~~~~~
 
 @section occt_coding_rules_4 Documentation rules
