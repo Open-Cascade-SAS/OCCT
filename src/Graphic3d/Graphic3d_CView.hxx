@@ -70,12 +70,11 @@ public:
   //! Returns the identification number of the view.
   Standard_Integer Identification() const { return myId; }
 
-  //! Activates the view. Map the associated window on the screen and post the view in this window.
-  //! Warning: Raises ViewDefinitionError if the associated window isn't defined.
+  //! Activates the view. Maps presentations defined within structure manager onto this view.
   Standard_EXPORT virtual void Activate();
 
-  //! Deactivates the view. Unmap the associated window on the screen and unpost the view in this window.
-  //! Warning: Raises ViewDefinitionError if the associated window isn't defined.
+  //! Deactivates the view. Unmaps presentations defined within structure manager.
+  //! The view in deactivated state will ignore actions on structures such as Display().
   Standard_EXPORT virtual void Deactivate();
 
   //! Returns the activity flag of the view.
