@@ -1,0 +1,94 @@
+puts "============"
+puts "OCC28691"
+puts "============"
+puts ""
+###################################################################################################################
+# Storage of Ocaf documents in XML file format in old document version
+###################################################################################################################
+
+NewDocument D XmlOcaf
+SetExtStringArray D 0:1 0 1 3 Hello hallo Bonjour
+set FileV7 ${imagedir}/bug28691_doc7.xml
+set FileV9 ${imagedir}/bug28691_doc9.xml
+SetNode D 0:1
+AISSet D 0:1 NS
+
+SaveAs D ${FileV9}
+
+SetStorageVersion 7
+SaveAs D ${FileV7}
+
+Close D
+
+puts "Testing for XML file format in new version document"
+SetStorageVersion 9
+Open ${FileV9} D9
+
+set info [Attributes D9 0:1]
+if { [regexp "TDataStd_ExtStringArray" ${info}] != 1 } {
+    puts "Error : there is not TDataStd_ExtStringArray attribute in new version document"
+} else {
+    puts "OK : there is TDataStd_ExtStringArray attribute in new version document"
+}
+if { [regexp "TDataStd_TreeNode" ${info}] != 1 } {
+    puts "Error : there is not TDataStd_TreeNode attribute in new version document"
+} else {
+    puts "OK : there is TDataStd_TreeNode attribute in new version document"
+}
+if { [regexp "TDataXtd_Presentation" ${info}] != 1 } {
+    puts "Error : there is not TDataXtd_Presentation attribute in new version document"
+} else {
+    puts "OK : there is TDataXtd_Presentation attribute in new version document"
+}
+set info [GetExtStringArray D9 0:1]
+if { [regexp "Hello" ${info}] != 1 } {
+    puts "Error : there is not \"Hello\" word in TDataStd_ExtStringArray attribute in new version document"
+} else {
+    puts "OK : there is \"Hello\" word in TDataStd_ExtStringArray attribute in new version document"
+}
+if { [regexp "hallo" ${info}] != 1 } {
+    puts "Error : there is not \"hallo\" word in TDataStd_ExtStringArray attribute in new version document"
+} else {
+    puts "OK : there is \"hallo\" word in TDataStd_ExtStringArray attribute in new version document"
+}
+if { [regexp "Bonjour" ${info}] != 1 } {
+    puts "Error : there is not \"Bonjour\" word in TDataStd_ExtStringArray attribute in new version document"
+} else {
+    puts "OK : there is \"Bonjour\" word in TDataStd_ExtStringArray attribute in new version document"
+}
+
+puts "\nTesting for XML file format in old version document"
+Open ${FileV7} D7
+
+set info [Attributes D7 0:1]
+if { [regexp "TDataStd_ExtStringArray" ${info}] != 1 } {
+    puts "Error : there is not TDataStd_ExtStringArray attribute in old version document"
+} else {
+    puts "OK : there is TDataStd_ExtStringArray attribute in old version document"
+}
+if { [regexp "TDataStd_TreeNode" ${info}] != 1 } {
+    puts "Error : there is not TDataStd_TreeNode attribute in old version document"
+} else {
+    puts "OK : there is TDataStd_TreeNode attribute in old version document"
+}
+if { [regexp "TDataXtd_Presentation" ${info}] != 1 } {
+    puts "Error : there is not TDataXtd_Presentation attribute in old version document"
+} else {
+    puts "OK : there is TDataXtd_Presentation attribute in old version document"
+}
+set info [GetExtStringArray D7 0:1]
+if { [regexp "Hello" ${info}] != 1 } {
+    puts "Error : there is not \"Hello\" word in TDataStd_ExtStringArray attribute in old version document"
+} else {
+    puts "OK : there is \"Hello\" word in TDataStd_ExtStringArray attribute in old version document"
+}
+if { [regexp "hallo" ${info}] != 1 } {
+    puts "Error : there is not \"hallo\" word in TDataStd_ExtStringArray attribute in old version document"
+} else {
+    puts "OK : there is \"hallo\" word in TDataStd_ExtStringArray attribute in old version document"
+}
+if { [regexp "Bonjour" ${info}] != 1 } {
+    puts "Error : there is not \"Bonjour\" word in TDataStd_ExtStringArray attribute in old version document"
+} else {
+    puts "OK : there is \"Bonjour\" word in TDataStd_ExtStringArray attribute in old version document"
+}

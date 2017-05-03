@@ -34,6 +34,7 @@
 #include <OSD_Path.hxx>
 #include <OSD_OpenFile.hxx>
 #include <TDocStd_PathParser.hxx>
+#include <XmlLDrivers.hxx>
 
 #include <AIS_InteractiveContext.hxx>
 #include <TPrsStd_AISViewer.hxx>
@@ -474,6 +475,35 @@ static Standard_Integer DDocStd_PrintComments (Draw_Interpretor& di,
 }
 
 //=======================================================================
+//function : SetStorageVerison
+//purpose  : 
+//=======================================================================
+static Standard_Integer DDocStd_SetStorageVersion (Draw_Interpretor& ,
+                                                   Standard_Integer nb,
+                                                   const char** a)
+{  
+  if (nb == 2)
+  {
+    const int version = atoi(a[1]);
+    XmlLDrivers::SetStorageVersion(version);
+    return 0;
+  }
+  return 1;
+}
+
+//=======================================================================
+//function : GetStorageVerison
+//purpose  : 
+//=======================================================================
+static Standard_Integer DDocStd_GetStorageVersion (Draw_Interpretor& di,
+                                                   Standard_Integer ,
+                                                   const char** )
+{  
+  di << XmlLDrivers::StorageVersion() << "\n" ;
+  return 0;
+}
+
+//=======================================================================
 //function : ApplicationCommands
 //purpose  : 
 //=======================================================================
@@ -531,4 +561,11 @@ void DDocStd::ApplicationCommands(Draw_Interpretor& theCommands)
   theCommands.Add("PrintComments",
 		  "PrintComments Doc",
 		  __FILE__, DDocStd_PrintComments, g);
+
+  theCommands.Add("GetStorageVersion",
+		  "GetStorageVersion",
+		  __FILE__, DDocStd_GetStorageVersion, g);
+  theCommands.Add("SetStorageVersion",
+		  "SetStorageVersion Version",
+		  __FILE__, DDocStd_SetStorageVersion, g);
 }

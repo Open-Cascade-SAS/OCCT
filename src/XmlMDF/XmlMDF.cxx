@@ -33,6 +33,7 @@
 #include <XmlObjMgt_Document.hxx>
 #include <XmlObjMgt_DOMString.hxx>
 #include <XmlObjMgt_Persistent.hxx>
+#include <XmlLDrivers.hxx>
 
 IMPLEMENT_DOMSTRING (TagString,         "tag")
 IMPLEMENT_DOMSTRING (LabelString,       "label")
@@ -99,7 +100,16 @@ Standard_Integer XmlMDF::WriteSubTree
 
       //    Create DOM data item
       XmlObjMgt_Persistent pAtt;
-      pAtt.CreateElement (aLabElem, aDriver->TypeName().ToCString(), anId);
+      // In the document version 8 the attribute TPrsStd_AISPresentation
+      // was replaced by TDataXtd_Presentation. Therefore, for old versions
+      // we write old name of the attribute (TPrsStd_AISPresentation).
+      Standard_CString typeName = aDriver->TypeName().ToCString();
+      if (XmlLDrivers::StorageVersion() < 8 &&
+          strcmp(typeName, "TDataXtd_Presentation") == 0)
+      {
+        typeName = "TPrsStd_AISPresentation";
+      }
+      pAtt.CreateElement (aLabElem, typeName, anId);
 
       //    Paste
       aDriver -> Paste (tAtt, pAtt, theRelocTable);

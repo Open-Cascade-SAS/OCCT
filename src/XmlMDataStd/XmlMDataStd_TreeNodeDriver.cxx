@@ -22,6 +22,7 @@
 #include <XmlMDataStd_TreeNodeDriver.hxx>
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
+#include <XmlLDrivers.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_TreeNodeDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (TreeIdString,   "treeid")
@@ -115,7 +116,9 @@ void XmlMDataStd_TreeNodeDriver::Paste
   Handle(TDataStd_TreeNode) aS = Handle(TDataStd_TreeNode)::DownCast(theSource);
 
   // tree id
-  if (aS->ID() != TDataStd_TreeNode::GetDefaultTreeID())
+  // A not default ID is skipped for storage version 8 and newer.
+  if (aS->ID() != TDataStd_TreeNode::GetDefaultTreeID() ||
+      XmlLDrivers::StorageVersion() < 8)
   {
     Standard_Character aGuidStr [40];
     Standard_PCharacter pGuidStr=aGuidStr;

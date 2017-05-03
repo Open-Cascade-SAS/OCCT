@@ -267,7 +267,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
     
     // oan: OCC22305 - check a document verison and if it's greater than
     // current version of storage driver set an error status and return
-    if( aCurDocVersion > XmlLDrivers::StorageVersion().IntegerValue() )
+    if( aCurDocVersion > XmlLDrivers::StorageVersion() )
     {
       TCollection_ExtendedString aMsg =
         TCollection_ExtendedString ("error: wrong file version: ") +

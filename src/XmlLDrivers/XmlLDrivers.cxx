@@ -32,7 +32,8 @@
 #include <time.h>
 static Standard_GUID XmlLStorageDriver  ("13a56820-8269-11d5-aab2-0050044b1af1");
 static Standard_GUID XmlLRetrievalDriver("13a56822-8269-11d5-aab2-0050044b1af1");
-#define CURRENT_DOCUMENT_VERSION 8
+
+static int CURRENT_DOCUMENT_VERSION(9);
 
 //=======================================================================
 //function : Factory
@@ -127,10 +128,13 @@ Handle(XmlMDF_ADriverTable) XmlLDrivers::AttributeDrivers
 //purpose  : Document storage version
 //=======================================================================
 
-TCollection_AsciiString XmlLDrivers::StorageVersion()
+int XmlLDrivers::StorageVersion()
 {
-  TCollection_AsciiString aVersionStr (CURRENT_DOCUMENT_VERSION);
-  return aVersionStr;
+  return CURRENT_DOCUMENT_VERSION;
+}
+void XmlLDrivers::SetStorageVersion(const int version)
+{
+  CURRENT_DOCUMENT_VERSION = version;
 }
 
 // Declare entry point PLUGINFACTORY
