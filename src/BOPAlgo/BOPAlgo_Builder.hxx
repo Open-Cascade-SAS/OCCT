@@ -86,7 +86,7 @@ Standard_EXPORT virtual ~BOPAlgo_Builder();
   Standard_EXPORT Standard_Boolean IsInterferred (const TopoDS_Shape& theS) const;
   
   //! Returns myOrigins.
-  Standard_EXPORT const BOPCol_DataMapOfShapeShape& Origins() const;
+  Standard_EXPORT const BOPCol_DataMapOfShapeListOfShape& Origins() const;
   
   //! Returns myShapesSD.
   Standard_EXPORT const BOPCol_DataMapOfShapeShape& ShapesSD() const;
@@ -171,7 +171,7 @@ protected:
   BOPCol_DataMapOfShapeListOfShape myImages;
   BOPCol_DataMapOfShapeShape myShapesSD;
   BOPCol_DataMapOfShapeListOfShape mySplits;
-  BOPCol_DataMapOfShapeShape myOrigins;
+  BOPCol_DataMapOfShapeListOfShape myOrigins;
   Standard_Boolean myNonDestructive;
   BOPAlgo_GlueEnum myGlue;
 

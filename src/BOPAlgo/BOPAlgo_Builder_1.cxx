@@ -38,7 +38,7 @@
 //function : FillImagesVertices
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_Builder::FillImagesVertices()
+void BOPAlgo_Builder::FillImagesVertices()
 {
   myErrorStatus=0;
   //
@@ -59,6 +59,12 @@
     myImages.Bind(aV, aLVSD);
     //
     myShapesSD.Bind(aV, aVSD);
+    //
+    BOPCol_ListOfShape* pLOr = myOrigins.ChangeSeek(aVSD);
+    if (!pLOr) {
+      pLOr = myOrigins.Bound(aVSD, BOPCol_ListOfShape());
+    }
+    pLOr->Append(aV);
   }
 }
 //=======================================================================
@@ -97,7 +103,12 @@
       Standard_Integer nSpR = aPBR->Edge();
       const TopoDS_Shape& aSpR = myDS->Shape(nSpR);
       pLS->Append(aSpR);
-      myOrigins.Bind(aSpR, aE);
+      //
+      BOPCol_ListOfShape* pLOr = myOrigins.ChangeSeek(aSpR);
+      if (!pLOr) {
+        pLOr = myOrigins.Bound(aSpR, BOPCol_ListOfShape());
+      }
+      pLOr->Append(aE);
       //
       if (myDS->IsCommonBlockOnEdge(aPB)) {
         Standard_Integer nSp = aPB->Edge();

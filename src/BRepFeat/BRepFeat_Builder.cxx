@@ -491,7 +491,12 @@
       aSx=aSTx.Shape();
       aSx.Orientation(anOriF);
       aLFIm.Append(aSx);
-      myOrigins.Bind(aSx, aF);
+      //
+      BOPCol_ListOfShape* pLOr = myOrigins.ChangeSeek(aSx);
+      if (!pLOr) {
+        pLOr = myOrigins.Bound(aSx, BOPCol_ListOfShape());
+      }
+      pLOr->Append(aF);
       //
       if (bFlagSD) {
         myShapesSD.Bind(aFR, aSx);

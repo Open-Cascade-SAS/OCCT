@@ -1200,20 +1200,34 @@ Standard_Integer boporigin(Draw_Interpretor& di,
     return 0;
   }
   //
-  char buf[32];
-  //
   BOPAlgo_Builder& aBuilder = BOPTest_Objects::Builder();
-  const BOPCol_DataMapOfShapeShape& aDMI = aBuilder.Origins();
+  const BOPCol_DataMapOfShapeListOfShape& aDMI = aBuilder.Origins();
   if (!aDMI.IsBound(aS)) {
     di << " no origins found\n"; 
     return 0;
   }
   //
-  const TopoDS_Shape& aSx = aDMI.Find(aS);
-  //
+  char buf[32];
   sprintf(buf, "%s_or", a[1]);
-  DBRep::Set(buf, aSx);
   //
+  const BOPCol_ListOfShape& aLSx = aDMI.Find(aS);
+  if (aLSx.Extent() == 1) {
+    DBRep::Set(buf, aLSx.First());
+    di << "1 origin found\n" << buf << "\n";
+    return 0;
+  }
+  //
+  TopoDS_Compound aCOr;
+  BRep_Builder().MakeCompound(aCOr);
+  //
+  BOPCol_ListIteratorOfListOfShape aItLSx(aLSx);
+  for (; aItLSx.More(); aItLSx.Next()) {
+    BRep_Builder().Add(aCOr, aItLSx.Value());
+  }
+  //
+  DBRep::Set(buf, aCOr);
+  //
+  di << aLSx.Extent() << " origins found\n";
   di << buf << "\n";
   //
   return 0;

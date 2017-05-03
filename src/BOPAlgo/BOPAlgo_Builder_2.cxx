@@ -707,7 +707,12 @@ void BOPAlgo_Builder::FillImagesFaces1()
     aItLS.Initialize(aLFIm);
     for (; aItLS.More(); aItLS.Next()) {
       const TopoDS_Face& aFSp=(*(TopoDS_Face*)(&aItLS.Value()));
-      myOrigins.Bind(aFSp, aF);
+      //
+      BOPCol_ListOfShape* pLOr = myOrigins.ChangeSeek(aFSp);
+      if (!pLOr) {
+        pLOr = myOrigins.Bound(aFSp, BOPCol_ListOfShape());
+      }
+      pLOr->Append(aF);
     }
     //
     // 3.

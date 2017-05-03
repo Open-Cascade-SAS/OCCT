@@ -894,10 +894,7 @@ void BOPAlgo_Builder::BuildSplitSolids
     const BOPCol_ListOfShape& aLSR=aBS.Areas();
     //
     if (!myImages.IsBound(aS)) {
-      BOPCol_ListOfShape aLSx;
-      //
-      myImages.Bind(aS, aLSx);
-      BOPCol_ListOfShape& aLSIm=myImages.ChangeFind(aS);
+      BOPCol_ListOfShape* pLSx = myImages.Bound(aS, BOPCol_ListOfShape());
       //
       aIt.Initialize(aLSR);
       for (; aIt.More(); aIt.Next()) {
@@ -910,7 +907,13 @@ void BOPAlgo_Builder::BuildSplitSolids
         //
         const BOPTools_Set& aSTx=aMST.Added(aST);
         const TopoDS_Shape& aSx=aSTx.Shape();
-        aLSIm.Append(aSx);
+        pLSx->Append(aSx);
+        //
+        BOPCol_ListOfShape* pLOr = myOrigins.ChangeSeek(aSx);
+        if (!pLOr) {
+          pLOr = myOrigins.Bound(aSx, BOPCol_ListOfShape());
+        }
+        pLOr->Append(aS);
         //
         if (bFlagSD) {
           myShapesSD.Bind(aSR, aSx);
@@ -1105,8 +1108,8 @@ void BOPAlgo_Builder::FillInternalShapes()
         continue;
       }
       //
-      if(aMSOr.Contains(aSd)) {
-        //
+      if (aMSOr.Contains(aSd)) {
+        // make new solid
         TopoDS_Solid aSdx;
         //
         aBB.MakeSolid(aSdx);
@@ -1118,15 +1121,12 @@ void BOPAlgo_Builder::FillInternalShapes()
         //
         aBB.Add(aSdx, aSI);
         //
-        if (myImages.IsBound(aSdx)) {
-          BOPCol_ListOfShape& aLS=myImages.ChangeFind(aSdx);
-          aLS.Append(aSdx);
-        } 
-        else {
-          BOPCol_ListOfShape aLS;
-          aLS.Append(aSdx);
-          myImages.Bind(aSd, aLS);
-        }
+        // no need to check for images of aSd as aMSOr contains only original solids
+        BOPCol_ListOfShape* pLS = myImages.Bound(aSd, BOPCol_ListOfShape());
+        pLS->Append(aSdx);
+        //
+        BOPCol_ListOfShape* pLOr = myOrigins.Bound(aSdx, BOPCol_ListOfShape());
+        pLOr->Append(aSd);
         //
         aMSOr.Remove(aSd);
         aSd=aSdx;

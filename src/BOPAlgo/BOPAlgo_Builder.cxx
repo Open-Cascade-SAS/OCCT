@@ -148,7 +148,7 @@ const BOPCol_DataMapOfShapeListOfShape& BOPAlgo_Builder::Images()const
 //function : Origins
 //purpose  : 
 //=======================================================================
-const BOPCol_DataMapOfShapeShape& BOPAlgo_Builder::Origins()const
+const BOPCol_DataMapOfShapeListOfShape& BOPAlgo_Builder::Origins()const
 {
   return myOrigins;
 }
