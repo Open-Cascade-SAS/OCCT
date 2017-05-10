@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC28725"
+puts "========"
+puts ""
+#################################################
+# Degradation in performance of BRepExtrema_DistShapeShape
+#################################################
+
+cpulimit 120
+
+restore [locate_data_file bug28725_holes1.brep] h1
+restore [locate_data_file bug28725_holes2.brep] h2
+
+dchrono cr restart
+distmini dd h1 h2
+dchrono cr stop counter distmini
+
+set dist [dval dd_val]
+
+set expected_dist 1.7021376848002463
+set tol_abs_dist 1.0e-07
+set tol_rel_dist 0.0
+checkreal "Dump of dd_val" ${dist} ${expected_dist} ${tol_abs_dist} ${tol_rel_dist}
