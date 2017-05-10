@@ -1005,9 +1005,14 @@ void GeomFill_NSections::GetMinimalWeight(TColStd_Array1OfReal& Weights) const
 
   C1.SetRadius(radius);
   Handle(Geom_Curve) C = new (Geom_Circle) (C1);
-  if (! AC1.IsPeriodic()) {
-    Handle(Geom_Curve) Cbis = new (Geom_TrimmedCurve) 
-      (C, AC1.FirstParameter(),  AC1.LastParameter());
+
+  const Standard_Real aParF = AC1.FirstParameter();
+  const Standard_Real aParL = AC1.LastParameter();
+  const Standard_Real aPeriod = AC1.IsPeriodic() ? AC1.Period() : 0.0;
+
+  if ((aPeriod == 0.0) || (Abs(aParL - aParF - aPeriod) > Precision::PConfusion()))
+  {
+    Handle(Geom_Curve) Cbis = new Geom_TrimmedCurve(C, aParF, aParL);
     C = Cbis;
   }
   return C;

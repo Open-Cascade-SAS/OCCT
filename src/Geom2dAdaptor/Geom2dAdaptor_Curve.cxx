@@ -530,10 +530,7 @@ Standard_Boolean Geom2dAdaptor_Curve::IsClosed() const
 
 Standard_Boolean Geom2dAdaptor_Curve::IsPeriodic() const 
 {
-  if (myCurve->IsPeriodic())
-    return IsClosed();
-  else
-    return Standard_False;
+  return myCurve->IsPeriodic();
 }
 
 //=======================================================================

@@ -172,7 +172,7 @@ public:
   //! gp.
   Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
   
-  //! Returns true if the basis curve of this trimmed curve is periodic.
+  //! Always returns FALSE (independently of the type of basis curve).
   Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
   
   //! Returns the period of the basis curve of this trimmed curve.

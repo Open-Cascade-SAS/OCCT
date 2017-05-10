@@ -205,7 +205,7 @@ public:
   //! Raised if N < 0.
   Standard_EXPORT Standard_Boolean IsCNv (const Standard_Integer N) const Standard_OVERRIDE;
   
-  //! Returns true if this patch is periodic in the given
+  //! Returns true if this patch is periodic and not trimmed in the given
   //! parametric direction.
   Standard_EXPORT Standard_Boolean IsUPeriodic() const Standard_OVERRIDE;
   
@@ -215,7 +215,7 @@ public:
   Standard_EXPORT virtual Standard_Real UPeriod() const Standard_OVERRIDE;
   
 
-  //! Returns true if this patch is periodic in the given
+  //! Returns true if this patch is periodic and not trimmed in the given
   //! parametric direction.
   Standard_EXPORT Standard_Boolean IsVPeriodic() const Standard_OVERRIDE;
   

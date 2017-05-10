@@ -1262,15 +1262,17 @@ The following Grid management methods within class V3d_Viewer do not implicitly 
   - *IntTools_Curve::Tolerance()* - returns the valid tolerance for the curve;
   - *IntTools_Curve::TangentialTolerance()* - returns the tangential tolerance, which reflects the size of the common between faces.
 * 2d tolerance (*IntTools_FaceFace::TolReached2d()*) has been completely removed from the algorithm as unused.
+
+
 @subsection upgrade_720_persistence Restore OCCT 6.9.1 persistence
   
-Capability of reading / writing files in old format using *Storage_ShapeSchema* functionality from OCCT 6.9.1 has been restored in OCCT 7.2.0. 
+The capability of reading / writing files in old format using *Storage_ShapeSchema* functionality from OCCT 6.9.1 has been restored in OCCT 7.2.0. 
 
 One can use this functionality in two ways:
-- invoke DRAW Test Harness commands fsdread / fsdwrite for shapes
-- call *StdStorage* class Read / Write functions in custom code
+- invoke DRAW Test Harness commands *fsdread / fsdwrite* for shapes;
+- call *StdStorage* class *Read / Write* functions in custom code.
 
-Code example below demonstrates how to read shapes from a storage driver using *StdStorage* class. 
+The code example below demonstrates how to read shapes from a storage driver using *StdStorage* class. 
 
 ~~~~
 // aDriver should be created and opened for reading
@@ -1363,11 +1365,17 @@ if (anError != Storage_VSOk)
 
 @subsection upgrade_720_Change_In_BRepLib_MakeFace_Algo Change in BRepLib_MakeFace algorithm
 
-  Previously, BRepLib_MakeFace algorithm changed orientation of the source wire in order to avoid creation of face as a hole (i.e. it is impossible to create single face as hole; hole can be created in context of another face only). New algorithm does not reverse the wire if it is open. Material of the face for open wire will be located on the left side from the source wire.
+  Previously, *BRepLib_MakeFace* algorithm changed orientation of the source wire in order to avoid creation of face as a hole (i.e. it is impossible to create the entire face as a hole; the hole can be created in context of another face only). New algorithm does not reverse the wire if it is open. Material of the face for the open wire will be located on the left side from the source wire.
 
 @subsection upgrade_720_Change_In_BRepFill_OffsetWire Change in BRepFill_OffsetWire algorithm
 
-  Now, offset direction will always be to outer region in case of positive offset value and to inner region in case of negative offset value.
-  Inner/Outer region for open wire is defined by the following rule:
-    when we go along the wire (taking into account edges orientation) then outer region will be on the right side, inner region will be on the left side.
-  In case of closed wire, inner region will always be inside the wire (at that, edges orientation is not taken into account).
+  From now on, the offset  will always be directed to the outer region in case of positive offset value and to the inner region in case of negative offset value.
+  Inner/Outer region for an open wire is defined by the following rule:
+    when we go along the wire (taking into account edges orientation) the outer region will be on the right side, the inner region will be on the left side.
+  In case of a closed wire, the inner region will always be inside the wire (at that, the edges orientation is not taken into account).
+  
+@subsection upgrade_720_Change_In_GeomAdaptor_Curve Change in Geom(2d)Adaptor_Curve::IsPeriodic
+  
+Since 7.2.0 version, method *IsPeriodic()* returns the corresponding status of periodicity of the basis curve regardless of closure status of the adaptor curve (see method *IsClosed()*).
+Method *IsClosed()* for adaptor can return false even on periodic curve, in the case if its parametric range is not full period, e.g. for adaptor on circle in range [0, @f$ \pi @f$].
+In previous versions, *IsPeriodic()* always returned false if *IsClosed()* returned false.
