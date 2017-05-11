@@ -19,7 +19,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <Quantity_ColorHasher.hxx>
+#include <Quantity_ColorRGBAHasher.hxx>
 
 //! Represents a set of styling settings applicable to a (sub)shape
 class XCAFPrs_Style 
@@ -35,11 +35,17 @@ public:
   Standard_Boolean IsSetColorSurf() const { return myHasColorSurf; }
 
   //! Return surface color.
-  const Quantity_Color& GetColorSurf() const { return myColorSurf; }
+  const Quantity_Color& GetColorSurf() const { return myColorSurf.GetRGB(); }
 
   //! Set surface color.
-  Standard_EXPORT void SetColorSurf (const Quantity_Color& col);
-  
+  void SetColorSurf (const Quantity_Color& theColor) { SetColorSurf  (Quantity_ColorRGBA (theColor)); }
+
+  //! Return surface color.
+  const Quantity_ColorRGBA& GetColorSurfRGBA() const { return myColorSurf; }
+
+  //! Set surface color.
+  Standard_EXPORT void SetColorSurf  (const Quantity_ColorRGBA& theColor);
+
   //! Manage surface color setting
   Standard_EXPORT void UnSetColorSurf();
   
@@ -98,7 +104,7 @@ public:
     int aHashCode = 0;
     if (theStyle.myHasColorSurf)
     {
-      aHashCode = aHashCode ^ Quantity_ColorHasher::HashCode (theStyle.myColorSurf, theUpper);
+      aHashCode = aHashCode ^ Quantity_ColorRGBAHasher::HashCode (theStyle.myColorSurf, theUpper);
     }
     if (theStyle.myHasColorCurv)
     {
@@ -115,11 +121,11 @@ public:
 
 protected:
 
-  Quantity_Color   myColorSurf;
-  Quantity_Color   myColorCurv;
-  Standard_Boolean myHasColorSurf;
-  Standard_Boolean myHasColorCurv;
-  Standard_Boolean myIsVisible;
+  Quantity_ColorRGBA myColorSurf;
+  Quantity_Color     myColorCurv;
+  Standard_Boolean   myHasColorSurf;
+  Standard_Boolean   myHasColorCurv;
+  Standard_Boolean   myIsVisible;
 
 };
 

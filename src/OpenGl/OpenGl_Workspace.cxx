@@ -76,6 +76,8 @@ void OpenGl_Material::Init (const Graphic3d_MaterialAspect& theMat,
                             const Quantity_Color&           theInteriorColor)
 {
   const bool isPhysic = theMat.MaterialType (Graphic3d_MATERIAL_PHYSIC);
+  ChangeShine()        = 128.0f * theMat.Shininess();
+  ChangeTransparency() = theMat.Alpha();
 
   // ambient component
   if (theMat.ReflectionMode (Graphic3d_TOR_AMBIENT))
@@ -120,9 +122,6 @@ void OpenGl_Material::Init (const Graphic3d_MaterialAspect& theMat,
   {
     Emission = THE_BLACK_COLOR;
   }
-
-  ChangeShine()        = 128.0f * theMat.Shininess();
-  ChangeTransparency() = 1.0f - theMat.Transparency();
 }
 
 // =======================================================================

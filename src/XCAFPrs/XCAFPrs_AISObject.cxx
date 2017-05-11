@@ -140,7 +140,7 @@ void XCAFPrs_AISObject::DispatchStyles (const Standard_Boolean theToSyncStyles)
   XCAFPrs_Style aDefStyle;
   DefaultStyle (aDefStyle);
   Quantity_Color aColorCurv = aDefStyle.GetColorCurv();
-  Quantity_Color aColorSurf = aDefStyle.GetColorSurf();
+  Quantity_ColorRGBA aColorSurf = aDefStyle.GetColorSurfRGBA();
 
   SetColors (myDrawer, aColorCurv, aColorSurf);
 
@@ -180,8 +180,8 @@ void XCAFPrs_AISObject::DispatchStyles (const Standard_Boolean theToSyncStyles)
     const XCAFPrs_Style& aStyle = aStyleGroupIter.Key();
     aDrawer->SetHidden (!aStyle.IsVisible());
 
-    aColorCurv = aStyle.IsSetColorCurv() ? aStyle.GetColorCurv() : aDefStyle.GetColorCurv();
-    aColorSurf = aStyle.IsSetColorSurf() ? aStyle.GetColorSurf() : aDefStyle.GetColorSurf();
+    aColorCurv = aStyle.IsSetColorCurv() ? aStyle.GetColorCurv()     : aDefStyle.GetColorCurv();
+    aColorSurf = aStyle.IsSetColorSurf() ? aStyle.GetColorSurfRGBA() : aDefStyle.GetColorSurfRGBA();
 
     SetColors (aDrawer, aColorCurv, aColorSurf);
   }
@@ -244,7 +244,7 @@ void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager3d)& the
 //=======================================================================
 void XCAFPrs_AISObject::SetColors (const Handle(Prs3d_Drawer)& theDrawer,
                                    const Quantity_Color&       theColorCurv,
-                                   const Quantity_Color&       theColorSurf)
+                                   const Quantity_ColorRGBA&   theColorSurf)
 {
   if (!theDrawer->HasOwnShadingAspect())
   {
@@ -310,11 +310,12 @@ void XCAFPrs_AISObject::SetColors (const Handle(Prs3d_Drawer)& theDrawer,
   theDrawer->WireAspect()->SetColor (theColorCurv);
 
   Graphic3d_MaterialAspect aMaterial = myDrawer->ShadingAspect()->Aspect()->FrontMaterial();
-  aMaterial.SetColor (theColorSurf);
+  aMaterial.SetColor (theColorSurf.GetRGB());
+  aMaterial.SetAlpha (theColorSurf.Alpha());
   theDrawer->ShadingAspect()->Aspect()->SetInteriorColor (theColorSurf);
   theDrawer->ShadingAspect()->Aspect()->SetFrontMaterial (aMaterial);
-  theDrawer->UIsoAspect()->SetColor (theColorSurf);
-  theDrawer->VIsoAspect()->SetColor (theColorSurf);
+  theDrawer->UIsoAspect()->SetColor (theColorSurf.GetRGB());
+  theDrawer->VIsoAspect()->SetColor (theColorSurf.GetRGB());
 }
 
 //=======================================================================
@@ -342,8 +343,8 @@ void XCAFPrs_AISObject::SetMaterial (const Graphic3d_MaterialAspect& theMaterial
     const Handle(AIS_ColoredDrawer)& aDrawer = anIter.Value();
 
     // take current color
-    const Quantity_Color aColorCurv = aDrawer->WireAspect()->Aspect()->Color();
-    const Quantity_Color aSurfColor = aDrawer->ShadingAspect()->Aspect()->InteriorColor();
+    const Quantity_Color     aColorCurv = aDrawer->WireAspect()->Aspect()->Color();
+    const Quantity_ColorRGBA aSurfColor = aDrawer->ShadingAspect()->Aspect()->InteriorColorRGBA();
 
     // SetColors() will take the material from myDrawer
     SetColors (aDrawer, aColorCurv, aSurfColor);

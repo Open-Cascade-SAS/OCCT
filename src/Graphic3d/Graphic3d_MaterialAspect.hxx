@@ -92,8 +92,11 @@ public:
   //! Modifies the ambient and diffuse color of the surface.
   Standard_EXPORT void SetColor (const Quantity_Color& theColor);
 
-  //! Returns the transparency coefficient of the surface.
+  //! Returns the transparency coefficient of the surface (1.0 - Alpha); 0.0 means opaque.
   Standard_ShortReal Transparency() const { return myTransparencyCoef; }
+
+  //! Returns the alpha coefficient of the surface (1.0 - Transparency); 1.0 means opaque.
+  Standard_ShortReal Alpha() const { return 1.0f - myTransparencyCoef; }
 
   //! Modifies the transparency coefficient of the surface, where 0 is opaque and 1 is fully transparent.
   //! Transparency is applicable to materials that have at least one of reflection modes (ambient, diffuse, specular or emissive) enabled.
@@ -101,6 +104,9 @@ public:
   //!
   //! Warning: Raises MaterialDefinitionError if given value is a negative value or greater than 1.0.
   Standard_EXPORT void SetTransparency (const Standard_ShortReal theValue);
+
+  //! Modifies the alpha coefficient of the surface, where 1.0 is opaque and 0.0 is fully transparent.
+  void SetAlpha (Standard_ShortReal theValue) { SetTransparency (1.0f - theValue); }
 
   //! Returns the ambient color of the surface.
   const Quantity_Color& AmbientColor() const { return myColors[Graphic3d_TOR_AMBIENT]; }

@@ -655,8 +655,16 @@ public: //! @name methods to alter or retrieve current state
   //! Checks if transparency is required for the given aspect and highlight style.
   Standard_EXPORT static Standard_Boolean CheckIsTransparent (const OpenGl_AspectFace* theAspect,
                                                               const Handle(Graphic3d_PresentationAttributes)& theHighlight,
-                                                              Standard_ShortReal& theTranspFront,
-                                                              Standard_ShortReal& theTranspBack);
+                                                              Standard_ShortReal& theAlphaFront,
+                                                              Standard_ShortReal& theAlphaBack);
+
+  //! Checks if transparency is required for the given aspect and highlight style.
+  static Standard_Boolean CheckIsTransparent (const OpenGl_AspectFace* theAspect,
+                                              const Handle(Graphic3d_PresentationAttributes)& theHighlight)
+  {
+    Standard_ShortReal anAlphaFront = 1.0f, anAlphaBack = 1.0f;
+    return CheckIsTransparent (theAspect, theHighlight, anAlphaFront, anAlphaBack);
+  }
 
   //! Setup current color.
   Standard_EXPORT void SetColor4fv (const OpenGl_Vec4& theColor);

@@ -60,7 +60,12 @@ protected:
   //! Set colors to drawer
   Standard_EXPORT void SetColors (const Handle(Prs3d_Drawer)& theDrawer,
                                   const Quantity_Color&       theColorCurv,
-                                  const Quantity_Color&       theColorSurf);
+                                  const Quantity_ColorRGBA&   theColorSurf);
+
+  //! Set colors to drawer
+  void SetColors (const Handle(Prs3d_Drawer)& theDrawer,
+                  const Quantity_Color& theColorCurv,
+                  const Quantity_Color& theColorSurf) { SetColors (theDrawer, theColorCurv, Quantity_ColorRGBA (theColorSurf)); }
 
   //! Fills out a default style object which is used when styles are
   //! not explicitly defined in the document.

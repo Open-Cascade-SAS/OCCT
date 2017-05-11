@@ -31,7 +31,7 @@ XCAFPrs_Style::XCAFPrs_Style()
 //function : SetColorSurf
 //purpose  :
 //=======================================================================
-void XCAFPrs_Style::SetColorSurf (const Quantity_Color& theColor)
+void XCAFPrs_Style::SetColorSurf (const Quantity_ColorRGBA& theColor)
 {
   myColorSurf    = theColor;
   myHasColorSurf = Standard_True;
@@ -44,7 +44,8 @@ void XCAFPrs_Style::SetColorSurf (const Quantity_Color& theColor)
 void XCAFPrs_Style::UnSetColorSurf()
 {
   myHasColorSurf = Standard_False;
-  myColorSurf.SetValues (Quantity_NOC_YELLOW);
+  myColorSurf.ChangeRGB().SetValues (Quantity_NOC_YELLOW);
+  myColorSurf.SetAlpha (1.0f);
 }
 
 //=======================================================================

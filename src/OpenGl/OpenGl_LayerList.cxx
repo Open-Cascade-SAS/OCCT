@@ -654,12 +654,8 @@ Standard_Boolean OpenGl_LayerList::OpenGl_OpaqueFilter::ShouldRender (const Hand
     return Standard_True;
   }
 
-  Standard_ShortReal aFront = 0.f;
-  Standard_ShortReal aBack  = 0.f;
-
   if (OpenGl_Context::CheckIsTransparent (theWorkspace->AspectFace(),
-                                          theWorkspace->HighlightStyle(),
-                                          aFront, aBack))
+                                          theWorkspace->HighlightStyle()))
   {
     ++mySkippedCounter;
     return Standard_False;
@@ -690,10 +686,6 @@ Standard_Boolean OpenGl_LayerList::OpenGl_TransparentFilter::ShouldRender (const
     return dynamic_cast<const OpenGl_AspectFace*> (theGlElement) != NULL;
   }
 
-  Standard_ShortReal aFront = 0.f;
-  Standard_ShortReal aBack  = 0.f;
-
   return OpenGl_Context::CheckIsTransparent (theWorkspace->AspectFace(),
-                                             theWorkspace->HighlightStyle(),
-                                             aFront, aBack);
+                                             theWorkspace->HighlightStyle());
 }

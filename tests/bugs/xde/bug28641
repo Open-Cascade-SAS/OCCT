@@ -20,6 +20,12 @@ XSetColor D_First b_11 1 1 1 0.2 c
 XSetColor D_First b_10 0 1 1 c
 XAddColor D_First 0.5 0.5 1 0.1
 
+XShow D_First
+vfit
+vsetdispmode 1
+vdump $::imagedir/${::casename}_first.png
+if { [vreadpixel 300 200 rgb name] != "GRAY14" } { puts "Error: wrong color in 3D Viewer" }
+
 # Write file
 SaveAs D_First ${imagedir}/bug28521.xbf
 Close D_First
@@ -72,5 +78,11 @@ if {[expr abs(0.1 - $alpha)] > $prec} {
 if {$isOK == 0} {
   puts "Error: wrong color."
 }
+
+XShow D_Second
+vfit
+vsetdispmode 1
+vdump $::imagedir/${::casename}.png
+if { [vreadpixel 300 200 rgb name] != "GRAY14" } { puts "Error: wrong color in 3D Viewer" }
 
 Close D_Second

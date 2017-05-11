@@ -85,6 +85,9 @@ public:
   //! Modifies the color of the interior of the face
   void SetInteriorColor (const Quantity_Color& theColor) { myInteriorColor.SetRGB (theColor); }
 
+  //! Modifies the color of the interior of the face
+  void SetInteriorColor (const Quantity_ColorRGBA& theColor) { myInteriorColor = theColor; }
+
   //! Return back interior color.
   const Quantity_Color& BackInteriorColor() const { return myBackInteriorColor.GetRGB(); }
 
@@ -93,6 +96,9 @@ public:
 
   //! Modifies the color of the interior of the back face
   void SetBackInteriorColor (const Quantity_Color& theColor) { myBackInteriorColor.SetRGB (theColor); }
+
+  //! Modifies the color of the interior of the back face
+  void SetBackInteriorColor (const Quantity_ColorRGBA& theColor) { myBackInteriorColor = theColor; }
 
   //! Returns the surface material of external faces
   const Graphic3d_MaterialAspect& FrontMaterial() const { return myFrontMaterial; }

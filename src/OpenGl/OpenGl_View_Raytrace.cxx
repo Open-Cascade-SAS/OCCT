@@ -341,8 +341,8 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial (const OpenGl_AspectFace*  
 
   const Graphic3d_MaterialAspect& aSrcMat = theAspect->Aspect()->FrontMaterial();
   const OpenGl_Vec3& aMatCol  = theAspect->Aspect()->InteriorColor();
+  const bool         isPhysic = aSrcMat.MaterialType (Graphic3d_MATERIAL_PHYSIC);
   const float        aShine   = 128.0f * float(aSrcMat.Shininess());
-  const bool         isPhysic = aSrcMat.MaterialType (Graphic3d_MATERIAL_PHYSIC) == Standard_True;
 
   // ambient component
   if (aSrcMat.ReflectionMode (Graphic3d_TOR_AMBIENT))
@@ -399,8 +399,7 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial (const OpenGl_AspectFace*  
   }
 
   const float anIndex = (float )aSrcMat.RefractionIndex();
-  theMaterial.Transparency = BVH_Vec4f (1.0f - (float )aSrcMat.Transparency(),
-                                        (float )aSrcMat.Transparency(),
+  theMaterial.Transparency = BVH_Vec4f (aSrcMat.Alpha(), aSrcMat.Transparency(),
                                         anIndex == 0 ? 1.0f : anIndex,
                                         anIndex == 0 ? 1.0f : 1.0f / anIndex);
 

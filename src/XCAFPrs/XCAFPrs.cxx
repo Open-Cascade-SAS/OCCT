@@ -149,10 +149,10 @@ void XCAFPrs::CollectStyleSettings (const TDF_Label& theLabel,
     }
     else
     {
-      Quantity_Color aColor;
+      Quantity_ColorRGBA aColor;
       if (aColorTool->GetColor (aLabel, XCAFDoc_ColorGen, aColor))
       {
-        aStyle.SetColorCurv (aColor);
+        aStyle.SetColorCurv (aColor.GetRGB());
         aStyle.SetColorSurf (aColor);
       }
       if (aColorTool->GetColor (aLabel, XCAFDoc_ColorSurf, aColor))
@@ -161,7 +161,7 @@ void XCAFPrs::CollectStyleSettings (const TDF_Label& theLabel,
       }
       if (aColorTool->GetColor (aLabel, XCAFDoc_ColorCurv, aColor))
       {
-        aStyle.SetColorCurv (aColor);
+        aStyle.SetColorCurv (aColor.GetRGB());
       }
     }
 
@@ -189,7 +189,7 @@ void XCAFPrs::CollectStyleSettings (const TDF_Label& theLabel,
           }
         }
 
-        Quantity_Color aColor;
+        Quantity_ColorRGBA aColor;
         XCAFPrs_Style aShuoStyle;
         if (!aColorTool->IsVisible (aShuolab))
         {
@@ -199,7 +199,7 @@ void XCAFPrs::CollectStyleSettings (const TDF_Label& theLabel,
         {
           if (aColorTool->GetColor (aShuolab, XCAFDoc_ColorGen, aColor))
           {
-            aShuoStyle.SetColorCurv (aColor);
+            aShuoStyle.SetColorCurv (aColor.GetRGB());
             aShuoStyle.SetColorSurf (aColor);
           }
           if (aColorTool->GetColor (aShuolab, XCAFDoc_ColorSurf, aColor))
@@ -208,7 +208,7 @@ void XCAFPrs::CollectStyleSettings (const TDF_Label& theLabel,
           }
           if (aColorTool->GetColor (aShuolab, XCAFDoc_ColorCurv, aColor))
           {
-            aShuoStyle.SetColorCurv (aColor);
+            aShuoStyle.SetColorCurv (aColor.GetRGB());
           }
         }
         if (!aShuoStyle.IsSetColorCurv()

@@ -3051,12 +3051,12 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
     myMatBack .SetColor (theHighlight->ColorRGBA());
   }
 
-  Standard_ShortReal aTranspFront = 0.f;
-  Standard_ShortReal aTranspBack  = 0.f;
-  if (CheckIsTransparent (theAspect, theHighlight, aTranspFront, aTranspBack))
+  Standard_ShortReal anAlphaFront = 1.0f;
+  Standard_ShortReal anAlphaBack  = 1.0f;
+  if (CheckIsTransparent (theAspect, theHighlight, anAlphaFront, anAlphaBack))
   {
-    myMatFront.Diffuse.a() = 1.0f - aTranspFront;
-    myMatBack .Diffuse.a() = 1.0f - aTranspBack;
+    myMatFront.Diffuse.a() = anAlphaFront;
+    myMatBack .Diffuse.a() = anAlphaBack;
   }
 
   // do not update material properties in case of zero reflection mode,
@@ -3083,8 +3083,8 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
 // =======================================================================
 Standard_Boolean OpenGl_Context::CheckIsTransparent (const OpenGl_AspectFace* theAspect,
                                                      const Handle(Graphic3d_PresentationAttributes)& theHighlight,
-                                                     Standard_ShortReal& theTranspFront,
-                                                     Standard_ShortReal& theTranspBack)
+                                                     Standard_ShortReal& theAlphaFront,
+                                                     Standard_ShortReal& theAlphaBack)
 {
   const Handle(Graphic3d_AspectFillArea3d)& anAspect = (!theHighlight.IsNull() && !theHighlight->BasicFillAreaAspect().IsNull())
                                                       ?  theHighlight->BasicFillAreaAspect()
@@ -3097,17 +3097,21 @@ Standard_Boolean OpenGl_Context::CheckIsTransparent (const OpenGl_AspectFace* th
                                                : aMatFrontSrc;
 
   // handling transparency
-  theTranspFront = aMatFrontSrc.Transparency();
-  theTranspBack  = aMatBackSrc .Transparency();
   if (!theHighlight.IsNull()
     && theHighlight->BasicFillAreaAspect().IsNull())
   {
-    theTranspFront = theHighlight->Transparency();
-    theTranspBack  = theHighlight->Transparency();
+    theAlphaFront = theHighlight->ColorRGBA().Alpha();
+    theAlphaBack  = theHighlight->ColorRGBA().Alpha();
+  }
+  else
+  {
+    theAlphaFront = aMatFrontSrc.Alpha();
+    theAlphaBack  = aMatBackSrc .Alpha();
   }
 
-  return theTranspFront != 0.f
-      || theTranspBack  != 0.f;
+  const bool isTransparent = theAlphaFront < 1.0f
+                          || theAlphaBack  < 1.0f;
+  return isTransparent;
 }
 
 // =======================================================================
