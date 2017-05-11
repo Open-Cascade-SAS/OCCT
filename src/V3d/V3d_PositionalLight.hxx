@@ -43,7 +43,7 @@ public:
                                        const V3d_Coordinate theX,
                                        const V3d_Coordinate theY,
                                        const V3d_Coordinate theZ,
-                                       const Quantity_NameOfColor theColor = Quantity_NOC_WHITE,
+                                       const Quantity_Color& theColor = Quantity_NOC_WHITE,
                                        const Quantity_Coefficient theConstAttenuation = 1.0,
                                        const Quantity_Coefficient theLinearAttenuation = 0.0);
 
@@ -65,7 +65,7 @@ public:
                                        const V3d_Coordinate theXp,
                                        const V3d_Coordinate theYp,
                                        const V3d_Coordinate theZp,
-                                       const Quantity_NameOfColor theColor = Quantity_NOC_WHITE,
+                                       const Quantity_Color& theColor = Quantity_NOC_WHITE,
                                        const Quantity_Coefficient theConstAttenuation = 1.0,
                                        const Quantity_Coefficient theLinearAttenuation = 0.0);
 

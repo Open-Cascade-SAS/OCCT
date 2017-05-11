@@ -208,12 +208,6 @@ void AIS_Relation::ComputeProjVertexPresentation(const Handle(Prs3d_Presentation
 //function : SetColor
 //purpose  : 
 //=======================================================================
-
-void AIS_Relation::SetColor(const Quantity_NameOfColor aCol)
-{
-  SetColor(Quantity_Color(aCol));
-}
-
 void AIS_Relation::SetColor(const Quantity_Color &aCol)
 {
   if(hasOwnColor && myDrawer->Color() == aCol) return;

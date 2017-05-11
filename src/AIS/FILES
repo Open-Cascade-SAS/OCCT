@@ -15,7 +15,6 @@ AIS_AttributeFilter.hxx
 AIS_AttributeFilter.lxx
 AIS_Axis.cxx
 AIS_Axis.hxx
-AIS_Axis.lxx
 AIS_BadEdgeFilter.cxx
 AIS_BadEdgeFilter.hxx
 AIS_C0RegularityFilter.cxx
@@ -28,7 +27,6 @@ AIS_Chamf3dDimension.hxx
 AIS_Chamf3dDimension.lxx
 AIS_Circle.cxx
 AIS_Circle.hxx
-AIS_Circle.lxx
 AIS_ClearMode.hxx
 AIS_ColoredDrawer.hxx
 AIS_ColoredShape.cxx
@@ -96,7 +94,6 @@ AIS_LengthDimension.cxx
 AIS_LengthDimension.hxx
 AIS_Line.cxx
 AIS_Line.hxx
-AIS_Line.lxx
 AIS_ListIteratorOfListOfInteractive.hxx
 AIS_ListOfInteractive.hxx
 AIS_LocalContext.cxx
@@ -134,20 +131,16 @@ AIS_PerpendicularRelation.cxx
 AIS_PerpendicularRelation.hxx
 AIS_Plane.cxx
 AIS_Plane.hxx
-AIS_Plane.lxx
 AIS_PlaneTrihedron.cxx
 AIS_PlaneTrihedron.hxx
-AIS_PlaneTrihedron.lxx
 AIS_Point.cxx
 AIS_Point.hxx
-AIS_Point.lxx
 AIS_PointCloud.cxx
 AIS_PointCloud.hxx
 AIS_RadiusDimension.cxx
 AIS_RadiusDimension.hxx
 AIS_Relation.cxx
 AIS_Relation.hxx
-AIS_Relation.lxx
 AIS_RubberBand.hxx
 AIS_RubberBand.cxx
 AIS_Selection.cxx
@@ -157,7 +150,6 @@ AIS_SequenceOfDimension.hxx
 AIS_SequenceOfInteractive.hxx
 AIS_Shape.cxx
 AIS_Shape.hxx
-AIS_Shape.lxx
 AIS_SignatureFilter.cxx
 AIS_SignatureFilter.hxx
 AIS_StandardDatum.hxx

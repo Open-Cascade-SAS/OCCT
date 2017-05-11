@@ -267,12 +267,12 @@ Graphic3d_Vertex V3d_View::Compute (const Graphic3d_Vertex & AVertex) const
 //function : ZBufferTriedronSetup
 //purpose  :
 //=============================================================================
-void V3d_View::ZBufferTriedronSetup(const Quantity_NameOfColor theXColor,
-                                    const Quantity_NameOfColor theYColor,
-                                    const Quantity_NameOfColor theZColor,
-                                    const Standard_Real        theSizeRatio,
-                                    const Standard_Real        theAxisDiametr,
-                                    const Standard_Integer     theNbFacettes)
+void V3d_View::ZBufferTriedronSetup(const Quantity_Color&  theXColor,
+                                    const Quantity_Color&  theYColor,
+                                    const Quantity_Color&  theZColor,
+                                    const Standard_Real    theSizeRatio,
+                                    const Standard_Real    theAxisDiametr,
+                                    const Standard_Integer theNbFacettes)
 {
   myTrihedron->SetArrowsColor   (theXColor, theYColor, theZColor);
   myTrihedron->SetSizeRatio     (theSizeRatio);
@@ -285,7 +285,7 @@ void V3d_View::ZBufferTriedronSetup(const Quantity_NameOfColor theXColor,
 //purpose  :
 //=============================================================================
 void V3d_View::TriedronDisplay (const Aspect_TypeOfTriedronPosition thePosition,
-                                const Quantity_NameOfColor theColor,
+                                const Quantity_Color& theColor,
                                 const Standard_Real theScale,
                                 const V3d_TypeOfVisualization theMode)
 {

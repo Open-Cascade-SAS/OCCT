@@ -35,12 +35,10 @@ public:
   Standard_EXPORT Prs3d_TextAspect();
   
   Standard_EXPORT Prs3d_TextAspect(const Handle(Graphic3d_AspectText3d)& theAspect);
-  
-  void SetColor (const Quantity_Color& theColor) { myTextAspect->SetColor (theColor); }
-  
+
   //! Sets the color of the type used in text display.
-  void SetColor (const Quantity_NameOfColor theColor) { myTextAspect->SetColor (Quantity_Color (theColor)); }
-  
+  void SetColor (const Quantity_Color& theColor) { myTextAspect->SetColor (theColor); }
+
   //! Sets the font used in text display.
   void SetFont (const Standard_CString theFont) { myTextAspect->SetFont (theFont); }
   

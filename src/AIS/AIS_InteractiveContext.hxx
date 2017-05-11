@@ -29,7 +29,6 @@
 #include <AIS_StatusOfPick.hxx>
 #include <AIS_TypeOfIso.hxx>
 #include <Aspect_TypeOfFacingModel.hxx>
-#include <Graphic3d_NameOfMaterial.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_TypeOfHighlight.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
@@ -439,11 +438,6 @@ public:
   //! default facing model is Aspect_TOFM_TWO_SIDE. This mean that attributes is
   //! applying both on the front and back face.
   Standard_EXPORT void SetCurrentFacingModel (const Handle(AIS_InteractiveObject)& aniobj, const Aspect_TypeOfFacingModel aModel = Aspect_TOFM_BOTH_SIDE);
-  
-  Standard_EXPORT void SetColor (const Handle(AIS_InteractiveObject)& theIObj,
-                                 const Quantity_NameOfColor           theColor,
-                                 const Standard_Boolean               theToUpdateViewer);
-  
 
   //! Sets the color of the selected entity.
   //! If a local context is open and if updateviewer equals
@@ -484,14 +478,12 @@ public:
 
   //! Provides the type of material setting for the view of
   //! the entity aniobj.
-  //! The range of settings includes: BRASS, BRONZE,
-  //! GOLD, PEWTER, SILVER, STONE.
   //! If a local context is open and if updateviewer equals
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
   Standard_EXPORT void SetMaterial (const Handle(AIS_InteractiveObject)& theIObj,
-                                    const Graphic3d_NameOfMaterial       theName,
+                                    const Graphic3d_MaterialAspect&      theMaterial,
                                     const Standard_Boolean               theToUpdateViewer);
   
 
@@ -648,9 +640,6 @@ public:
 
   //! Returns true if a view of the Interactive Object aniobj has color.
   Standard_EXPORT Standard_Boolean HasColor (const Handle(AIS_InteractiveObject)& aniobj) const;
-  
-  Standard_EXPORT Quantity_NameOfColor Color (const Handle(AIS_InteractiveObject)& aniobj) const;
-  
 
   //! Returns the color Color of the entity aniobj in the interactive context.
   Standard_EXPORT void Color (const Handle(AIS_InteractiveObject)& aniobj, Quantity_Color& acolor) const;

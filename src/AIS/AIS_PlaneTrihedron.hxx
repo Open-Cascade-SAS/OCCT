@@ -17,31 +17,12 @@
 #ifndef _AIS_PlaneTrihedron_HeaderFile
 #define _AIS_PlaneTrihedron_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <TCollection_AsciiString.hxx>
 #include <AIS_InteractiveObject.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <AIS_KindOfInteractive.hxx>
-#include <Quantity_NameOfColor.hxx>
-class Geom_Plane;
-class AIS_InteractiveObject;
+#include <TCollection_AsciiString.hxx>
+
 class AIS_Line;
 class AIS_Point;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
-class Quantity_Color;
-class TCollection_AsciiString;
-
-
-class AIS_PlaneTrihedron;
-DEFINE_STANDARD_HANDLE(AIS_PlaneTrihedron, AIS_InteractiveObject)
+class Geom_Plane;
 
 //! To construct a selectable 2d axis system in a 3d
 //! drawing. This can be placed anywhere in the 3d
@@ -62,10 +43,9 @@ DEFINE_STANDARD_HANDLE(AIS_PlaneTrihedron, AIS_InteractiveObject)
 //! trihedra. Change these values and recalculate the presentation.
 class AIS_PlaneTrihedron : public AIS_InteractiveObject
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_PlaneTrihedron, AIS_InteractiveObject)
 public:
 
-  
   //! Initializes the plane aPlane. The plane trihedron is
   //! constructed from this and an axis.
   Standard_EXPORT AIS_PlaneTrihedron(const Handle(Geom_Plane)& aPlane);
@@ -103,52 +83,37 @@ public:
   //! to the object to display before computation  !!!
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
   
-    virtual Standard_Integer Signature() const Standard_OVERRIDE;
-  
+  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 4; }
+
   //! Returns datum as the type of Interactive Object.
-    virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE;
-  
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KOI_Datum; }
+
   //! Allows you to provide settings for the color aColor.
-  Standard_EXPORT void SetColor (const Quantity_NameOfColor aColor) Standard_OVERRIDE;
-  
-  Standard_EXPORT void SetColor (const Quantity_Color& aColor) Standard_OVERRIDE;
-  
-    void SetXLabel (const TCollection_AsciiString& aLabel);
-  
-    void SetYLabel (const TCollection_AsciiString& aLabel);
+  Standard_EXPORT void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE;
 
+  void SetXLabel (const TCollection_AsciiString& theLabel) { myXLabel = theLabel; }
 
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_PlaneTrihedron,AIS_InteractiveObject)
+  void SetYLabel (const TCollection_AsciiString& theLabel) { myYLabel = theLabel; }
 
 protected:
 
-  
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
-
-
 
 private:
 
-  
   Standard_EXPORT void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
-  
+
   Standard_EXPORT void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection, const Standard_Integer aMode) Standard_OVERRIDE;
+
+private:
 
   Handle(Geom_Plane) myPlane;
   Handle(AIS_InteractiveObject) myShapes[3];
   TCollection_AsciiString myXLabel;
   TCollection_AsciiString myYLabel;
 
-
 };
 
-
-#include <AIS_PlaneTrihedron.lxx>
-
-
-
-
+DEFINE_STANDARD_HANDLE(AIS_PlaneTrihedron, AIS_InteractiveObject)
 
 #endif // _AIS_PlaneTrihedron_HeaderFile

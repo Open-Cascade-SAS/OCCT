@@ -105,12 +105,6 @@ public:
   virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KOI_Datum; }
 
   //! Sets the color theColor for this trihedron object, it changes color of axes.
-  void SetColor (const Quantity_NameOfColor theColor) Standard_OVERRIDE
-  {
-    return SetColor (Quantity_Color (theColor));
-  }
-
-  //! Sets the color theColor for this trihedron object, it changes color of axes.
   Standard_EXPORT void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE;
   
   //! Sets color of label of trihedron axes.

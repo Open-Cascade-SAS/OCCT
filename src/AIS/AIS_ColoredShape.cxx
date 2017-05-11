@@ -94,7 +94,9 @@ AIS_ColoredShape::AIS_ColoredShape (const Handle(AIS_Shape)& theShape)
   }
   if (theShape->HasColor())
   {
-    SetColor (theShape->Color());
+    Quantity_Color aColor;
+    theShape->Color (aColor);
+    SetColor (aColor);
   }
   if (theShape->HasWidth())
   {

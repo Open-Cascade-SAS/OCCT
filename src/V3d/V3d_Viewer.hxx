@@ -139,26 +139,11 @@ public:
   void SetDefaultRenderingParams (const Graphic3d_RenderingParams& theParams) { myDefaultRenderingParams = theParams; }
 
   //! Defines the default background colour of views
-  //! attached to the viewer by supplying the name of the
-  //! colour under the form Quantity_NOC_xxxx .
-  void SetDefaultBackgroundColor (const Quantity_NameOfColor theName) { myBackground.SetColor (Quantity_Color (theName)); }
-
-  //! Defines the default background colour of views
   //! attached to the viewer by supplying the color object
   void SetDefaultBackgroundColor (const Quantity_Color& theColor) { myBackground.SetColor (theColor); }
 
   //! Returns the gradient background of the view.
   const Aspect_GradientBackground& GetGradientBackground() const { return myGradientBackground; }
-
-  //! Defines the default gradient background colours of view
-  //! attached to the viewer by supplying the name of the
-  //! colours under the form Quantity_NOC_xxxx .
-  void SetDefaultBgGradientColors (const Quantity_NameOfColor theName1,
-                                   const Quantity_NameOfColor theName2,
-                                   const Aspect_GradientFillMethod theFillStyle = Aspect_GFM_HOR)
-  {
-    myGradientBackground.SetColors (Quantity_Color (theName1), Quantity_Color (theName2), theFillStyle);
-  }
   
   //! Defines the default gradient background colours of views
   //! attached to the viewer by supplying the colour objects
@@ -434,7 +419,7 @@ public: //! @name deprecated methods
                               const Standard_CString theDomain = "",
                               const Quantity_Length theViewSize = 1000.0,
                               const V3d_TypeOfOrientation theViewProj = V3d_XposYnegZpos,
-                              const Quantity_NameOfColor theViewBackground = Quantity_NOC_GRAY30,
+                              const Quantity_Color& theViewBackground = Quantity_NOC_GRAY30,
                               const V3d_TypeOfVisualization theVisualization = V3d_ZBUFFER,
                               const V3d_TypeOfShadingModel theShadingModel = V3d_GOURAUD,
                               const Standard_Boolean theComputedMode = Standard_True,

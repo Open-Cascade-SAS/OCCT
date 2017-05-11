@@ -17,34 +17,15 @@
 #ifndef _AIS_Shape_HeaderFile
 #define _AIS_Shape_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <TopoDS_Shape.hxx>
-#include <Bnd_Box.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <AIS_InteractiveObject.hxx>
-#include <Standard_Integer.hxx>
-#include <AIS_KindOfInteractive.hxx>
-#include <Prs3d_TypeOfHLR.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <Quantity_NameOfColor.hxx>
-#include <Graphic3d_NameOfMaterial.hxx>
+#include <Bnd_Box.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Shape.hxx>
 #include <Prs3d_Drawer.hxx>
+#include <Prs3d_TypeOfHLR.hxx>
+
 class TopoDS_Shape;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
-class Quantity_Color;
-class Graphic3d_MaterialAspect;
 class Bnd_Box;
-
-
-class AIS_Shape;
-DEFINE_STANDARD_HANDLE(AIS_Shape, AIS_InteractiveObject)
 
 //! A framework to manage presentation and selection of shapes.
 //! AIS_Shape is the interactive object which is used the
@@ -70,10 +51,9 @@ DEFINE_STANDARD_HANDLE(AIS_Shape, AIS_InteractiveObject)
 //! for the specific object.
 class AIS_Shape : public AIS_InteractiveObject
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_Shape, AIS_InteractiveObject)
 public:
 
-  
   //! Initializes construction of the shape shap from wires,
   //! edges and vertices.
   Standard_EXPORT AIS_Shape(const TopoDS_Shape& shap);
@@ -87,12 +67,16 @@ public:
   //! Returns true if the Interactive Object accepts shape decomposition.
   Standard_EXPORT virtual Standard_Boolean AcceptShapeDecomposition() const Standard_OVERRIDE;
   
-  //! Constructs an instance of the shape object ashape.
-    void Set (const TopoDS_Shape& ashap);
-  
+  //! Constructs an instance of the shape object theShape.
+  void Set (const TopoDS_Shape& theShape)
+  {
+    myshape  = theShape;
+    myCompBB = Standard_True;
+  }
+
   //! Returns this shape object.
-    const TopoDS_Shape& Shape() const;
-  
+  const TopoDS_Shape& Shape() const { return myshape; }
+
   //! Sets a local value for deviation coefficient for this specific shape.
   Standard_EXPORT Standard_Boolean SetOwnDeviationCoefficient();
   
@@ -153,11 +137,11 @@ public:
   Standard_EXPORT Standard_Boolean OwnHLRDeviationAngle (Standard_Real& anAngle, Standard_Real& aPreviousAngle) const;
   
   //! Sets the type of HLR algorithm used by the shape
-    void SetTypeOfHLR (const Prs3d_TypeOfHLR theTypeOfHLR);
-  
+  void SetTypeOfHLR (const Prs3d_TypeOfHLR theTypeOfHLR) {  myDrawer->SetTypeOfHLR (theTypeOfHLR); }
+
   //! Gets the type of HLR algorithm
-    Prs3d_TypeOfHLR TypeOfHLR() const;
-  
+  Prs3d_TypeOfHLR TypeOfHLR() const { return myDrawer->TypeOfHLR(); }
+
   //! Sets the color aColor in the reconstructed
   //! compound shape. Acts via the Drawer methods below on the appearance of:
   //! -   free boundaries:
@@ -171,10 +155,8 @@ public:
   //! Prs3d_Drawer_SeenLineAspect
   //! -   hidden line color in hidden line mode:
   //! Prs3d_Drawer_HiddenLineAspect.
-  Standard_EXPORT virtual void SetColor (const Quantity_NameOfColor aColor) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void SetColor (const Quantity_Color& aColor) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE;
+
   //! Removes settings for color in the reconstructed compound shape.
   Standard_EXPORT virtual void UnsetColor() Standard_OVERRIDE;
   
@@ -185,9 +167,7 @@ public:
   
   //! Removes the setting for line width in the reconstructed compound shape.
   Standard_EXPORT virtual void UnsetWidth() Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void SetMaterial (const Graphic3d_NameOfMaterial aName) Standard_OVERRIDE;
-  
+
   //! Allows you to provide settings for the material aName
   //! in the reconstructed compound shape.
   Standard_EXPORT virtual void SetMaterial (const Graphic3d_MaterialAspect& aName) Standard_OVERRIDE;
@@ -209,10 +189,6 @@ public:
   //! which is not the same as above; keep it visible.
   using AIS_InteractiveObject::BoundingBox;
 
-  //! Returns the NameOfColor attributes of the shape accordingly to
-  //! the current facing model;
-  Standard_EXPORT virtual Quantity_NameOfColor Color() const Standard_OVERRIDE;
-  
   //! Returns the Color attributes of the shape accordingly to
   //! the current facing model;
   Standard_EXPORT virtual void Color (Quantity_Color& aColor) const Standard_OVERRIDE;
@@ -242,14 +218,8 @@ public:
   //! -   mode 8 - Compound
   Standard_EXPORT static Standard_Integer SelectionMode (const TopAbs_ShapeEnum aShapeType);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_Shape,AIS_InteractiveObject)
-
 protected:
 
-  
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
   
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
@@ -268,26 +238,22 @@ protected:
   
   Standard_EXPORT void setMaterial (const Handle(Prs3d_Drawer)& theDrawer, const Graphic3d_MaterialAspect& theMaterial, const Standard_Boolean theToKeepColor, const Standard_Boolean theToKeepTransp) const;
 
+protected:
+
   TopoDS_Shape myshape;
   Bnd_Box myBB;
   Standard_Boolean myCompBB;
 
-
 private:
-
   
   Standard_EXPORT void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation, const TopoDS_Shape& ashape);
 
-  Standard_Real myInitAng;
+private:
 
+  Standard_Real myInitAng;
 
 };
 
-
-#include <AIS_Shape.lxx>
-
-
-
-
+DEFINE_STANDARD_HANDLE(AIS_Shape, AIS_InteractiveObject)
 
 #endif // _AIS_Shape_HeaderFile

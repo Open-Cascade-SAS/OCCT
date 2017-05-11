@@ -179,12 +179,12 @@ void DocumentCommon::onShading()
 void DocumentCommon::onColor()
 {
     QColor aColor ;
-    Quantity_Color aShapeColor;
     myContext->InitSelected();
     Handle(AIS_InteractiveObject) Current = myContext->SelectedInteractive() ;
     if ( Current->HasColor () )
     {
-        aShapeColor = myContext->Color( Current );
+        Quantity_Color aShapeColor;
+        myContext->Color( Current, aShapeColor );
         aColor.setRgb( aShapeColor.Red() * 255, aShapeColor.Green() * 255, aShapeColor.Blue() * 255 );
     }
     else
@@ -196,7 +196,7 @@ void DocumentCommon::onColor()
         Quantity_Color color( aRetColor.red() / 255., aRetColor.green() / 255.,
                         aRetColor.blue() / 255., Quantity_TOC_RGB );
         for (; myContext->MoreSelected(); myContext->NextSelected() )
-            myContext->SetColor( myContext->SelectedInteractive(), color.Name(), Standard_False);
+            myContext->SetColor( myContext->SelectedInteractive(), color, Standard_False);
         myContext->UpdateCurrentViewer();
     }
 }

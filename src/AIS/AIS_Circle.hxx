@@ -17,35 +17,17 @@
 #ifndef _AIS_Circle_HeaderFile
 #define _AIS_Circle_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <AIS_InteractiveObject.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Standard_Integer.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <AIS_KindOfInteractive.hxx>
-#include <Quantity_NameOfColor.hxx>
+
 class Geom_Circle;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
-class Quantity_Color;
-
-
-class AIS_Circle;
-DEFINE_STANDARD_HANDLE(AIS_Circle, AIS_InteractiveObject)
 
 //! Constructs circle datums to be used in construction of
 //! composite shapes.
 class AIS_Circle : public AIS_InteractiveObject
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_Circle, AIS_InteractiveObject)
 public:
 
-  
   //! Initializes this algorithm for constructing AIS circle
   //! datums initializes the circle aCircle
   Standard_EXPORT AIS_Circle(const Handle(Geom_Circle)& aCircle);
@@ -66,31 +48,39 @@ public:
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
   
   //! Returns index 6 by default.
-    virtual Standard_Integer Signature() const Standard_OVERRIDE;
-  
+  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 6; }
+
   //! Indicates that the type of Interactive Object is a datum.
-    virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE;
-  
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KOI_Datum; }
+
   //! Returns the circle component defined in SetCircle.
-    const Handle(Geom_Circle)& Circle() const;
-  
+  const Handle(Geom_Circle)& Circle() const { return myComponent; }
 
   //! Constructs instances of the starting point and the end
-  //! point parameters, u1 and u2.
-    void Parameters (Standard_Real& u1, Standard_Real& u2) const;
-  
+  //! point parameters, theU1 and theU2.
+  void Parameters (Standard_Real& theU1, Standard_Real& theU2) const
+  {
+    theU1 = myUStart;
+    theU2 = myUEnd;
+  }
+
   //! Allows you to provide settings for the circle datum aCircle.
-    void SetCircle (const Handle(Geom_Circle)& aCircle);
-  
-  //! Allows you to set the parameter u for the starting point of an arc.
-    void SetFirstParam (const Standard_Real u);
-  
-  //! Allows you to provide the parameter u for the end point of an arc.
-    void SetLastParam (const Standard_Real u);
-  
-  //! Assigns the color aColor to the solid line boundary of the circle datum.
-  Standard_EXPORT void SetColor (const Quantity_NameOfColor aColor) Standard_OVERRIDE;
-  
+  void SetCircle (const Handle(Geom_Circle)& theCircle) { myComponent = theCircle; }
+
+  //! Allows you to set the parameter theU for the starting point of an arc.
+  void SetFirstParam (const Standard_Real theU)
+  {
+    myUStart = theU;
+    myCircleIsArc = Standard_True;
+  }
+
+  //! Allows you to provide the parameter theU for the end point of an arc.
+  void SetLastParam (const Standard_Real theU)
+  {
+    myUEnd = theU;
+    myCircleIsArc = Standard_True;
+  }
+
   Standard_EXPORT void SetColor (const Quantity_Color& aColor) Standard_OVERRIDE;
   
   //! Assigns the width aValue to the solid line boundary of the circle datum.
@@ -103,25 +93,14 @@ public:
   Standard_EXPORT void UnsetWidth() Standard_OVERRIDE;
   
   //! Returns the type of sensitivity for the circle;
-    Standard_Boolean IsFilledCircleSens() const;
-  
+  Standard_Boolean IsFilledCircleSens() const { return myIsFilledCircleSens; }
+
   //! Sets the type of sensitivity for the circle. If theIsFilledCircleSens set to Standard_True
   //! then the whole circle will be detectable, otherwise only the boundary of the circle.
-    void SetFilledCircleSens (const Standard_Boolean theIsFilledCircleSens);
-
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_Circle,AIS_InteractiveObject)
-
-protected:
-
-
-
+  void SetFilledCircleSens (const Standard_Boolean theIsFilledCircleSens) { myIsFilledCircleSens = theIsFilledCircleSens; }
 
 private:
 
-  
   Standard_EXPORT void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
   
   Standard_EXPORT void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
@@ -136,20 +115,16 @@ private:
   
   Standard_EXPORT void ComputeArcSelection (const Handle(SelectMgr_Selection)& aSelection);
 
+private:
+
   Handle(Geom_Circle) myComponent;
   Standard_Real myUStart;
   Standard_Real myUEnd;
   Standard_Boolean myCircleIsArc;
   Standard_Boolean myIsFilledCircleSens;
 
-
 };
 
-
-#include <AIS_Circle.lxx>
-
-
-
-
+DEFINE_STANDARD_HANDLE(AIS_Circle, AIS_InteractiveObject)
 
 #endif // _AIS_Circle_HeaderFile

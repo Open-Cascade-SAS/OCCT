@@ -63,13 +63,13 @@ V3d_PositionalLight::V3d_PositionalLight (const Handle(V3d_Viewer)& theViewer,
                                           const Standard_Real theX,
                                           const Standard_Real theY,
                                           const Standard_Real theZ,
-                                          const Quantity_NameOfColor theColor,
+                                          const Quantity_Color& theColor,
                                           const Standard_Real theConstAttenuation,
                                           const Standard_Real theLinearAttenuation)
 : V3d_PositionLight (theViewer)
 {
   SetType (V3d_POSITIONAL);
-  SetColor (Quantity_Color (theColor));
+  SetColor (theColor);
   SetTarget (0., 0., 0.);
   SetPosition (theX, theY, theZ);
   SetAttenuation (theConstAttenuation, theLinearAttenuation);
@@ -86,13 +86,13 @@ V3d_PositionalLight::V3d_PositionalLight (const Handle(V3d_Viewer)& theViewer,
                                           const Standard_Real theXp,
                                           const Standard_Real theYp,
                                           const Standard_Real theZp,
-                                          const Quantity_NameOfColor theColor,
+                                          const Quantity_Color& theColor,
                                           const Standard_Real theConstAttenuation,
                                           const Standard_Real theLinearAttenuation)
 : V3d_PositionLight (theViewer)
 {
   SetType (V3d_POSITIONAL);
-  SetColor (Quantity_Color (theColor));
+  SetColor (theColor);
   SetTarget (theXt, theYt, theZt);
   SetPosition (theXp, theYp, theZp);
   SetAttenuation (theConstAttenuation, theLinearAttenuation);
@@ -231,7 +231,6 @@ void V3d_PositionalLight::Display (const Handle(V3d_View)& theView,
   Standard_Real X0,Y0,Z0,VX,VY,VZ;
   Standard_Real X1,Y1,Z1;
   Standard_Real DXRef,DYRef,DZRef,DXini,DYini,DZini;
-  Standard_Real R1,G1,B1;
   V3d_TypeOfRepresentation Pres;
 
 //  Creation of a structure slight of markable elements (position of the
@@ -278,8 +277,7 @@ void V3d_PositionalLight::Display (const Handle(V3d_View)& theView,
   
 // Display of the position of the light.
 
-  this->Color(Quantity_TOC_RGB,R1,G1,B1);
-  Quantity_Color Col1(R1,G1,B1,Quantity_TOC_RGB);
+  const Quantity_Color Col1 = this->Color();
   Handle(Graphic3d_AspectLine3d) Asp1 = new Graphic3d_AspectLine3d();
   Asp1->SetColor(Col1);
   glight->SetPrimitivesAspect(Asp1);

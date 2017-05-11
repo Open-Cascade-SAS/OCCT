@@ -517,7 +517,7 @@ void CViewer3dDoc::InputEvent(const Standard_Integer /*x*/,
       Handle(AIS_InteractiveObject) Current = myAISContext->SelectedInteractive();
       if (Current->HasColor())
       {
-        CSFColor = myAISContext->Color (Current);
+        myAISContext->Color (Current, CSFColor);
         MSColor = RGB (CSFColor.Red()*255.0, CSFColor.Green()*255.0, CSFColor.Blue()*255.0);
       }
       else 
@@ -535,7 +535,7 @@ void CViewer3dDoc::InputEvent(const Standard_Integer /*x*/,
                                    Quantity_TOC_RGB);
 
         Handle(AIS_InteractiveObject) aSelectedObject = myAISContext->SelectedInteractive();
-        Handle(User_Cylinder)::DownCast (aSelectedObject)->SetColor (CSFColor.Name());
+        Handle(User_Cylinder)::DownCast (aSelectedObject)->SetColor (CSFColor);
 
         myAISContext->Redisplay (aSelectedObject, Standard_True);
         myState = -1;
@@ -543,24 +543,14 @@ void CViewer3dDoc::InputEvent(const Standard_Integer /*x*/,
     }
 
     myCResultDialog.SetTitle("Change face color");
-    myCResultDialog.SetText("  TopoDS_Shape S = myAISContext->SelectedShape(); \n"
-                                      "  \n"
-                                      "  Handle(Geom_Surface) Surface = BRep_Tool::Surface(TopoDS::Face(S));"
-                                      "  if (Surface->IsKind(STANDARD_TYPE(Geom_Plane))) \n"
-                                      "    Handle(User_Cylinder)::DownCast(myAISContext->Current())->SetPlanarFaceColor(CSFColor.Name()); \n"
-                                      "  else \n"
-                                      "    Handle(User_Cylinder)::DownCast(myAISContext->Current())->SetCylindricalFaceColor(CSFColor.Name()); \n"
-                                      "  \n"
-                                      "  myAISContext->Redisplay(myAISContext->Current()); \n"
-                                      "  \n"
-                                      "  myAISContext->CloseLocalContext(); \n"
+    myCResultDialog.SetText(          "  Handle(AIS_InteractiveObject) aSelectedObject = myAISContext->SelectedInteractive(); \n"
+                                      "  Handle(User_Cylinder)::DownCast(aSelectedObject)->SetColor (CSFColor); \n"
+                                      "  myAISContext->Redisplay (myAISContext->Current(), Standard_True); \n"
                                       "  \n"
                                       "  \n"
                                       "  NOTE: a User_Cylinder is an object defined by the user. \n"
                                       "  The User_Cylinder class inherit from the AIS_InteractiveObject \n"
                                       "  Cascade class, it's use is the same as an AIS_InteractiveObject. \n"
-                                      "  Methods SetPlanarFaceColor and SetCylindricalFaceColor are also \n"
-                                      "  defined in the User_Cylinder class. \n"
                                       "  \n");
     SetTitle (L"Change face color");
   }

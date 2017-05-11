@@ -30,8 +30,6 @@ class Prs3d_PointAspect : public Prs3d_BasicAspect
 public:
 
   Standard_EXPORT Prs3d_PointAspect(const Aspect_TypeOfMarker theType, const Quantity_Color& theColor, const Standard_Real theScale);
-
-  Standard_EXPORT Prs3d_PointAspect(const Aspect_TypeOfMarker theType, const Quantity_NameOfColor theColor, const Standard_Real theScale);
   
   //! Defines the user defined marker point.
   Standard_EXPORT Prs3d_PointAspect (const Quantity_Color& theColor,
@@ -41,12 +39,10 @@ public:
   
   Prs3d_PointAspect (const Handle(Graphic3d_AspectMarker3d)& theAspect) : myAspect (theAspect) {}
 
-  void SetColor (const Quantity_Color& theColor) { myAspect->SetColor (theColor); }
-  
   //! defines the color to be used when drawing a point.
   //! Default value: Quantity_NOC_YELLOW
-  void SetColor (const Quantity_NameOfColor theColor) { myAspect->SetColor (Quantity_Color (theColor)); }
-  
+  void SetColor (const Quantity_Color& theColor) { myAspect->SetColor (theColor); }
+
   //! defines the type of representation to be used when drawing a point.
   //! Default value: Aspect_TOM_PLUS
   void SetTypeOfMarker (const Aspect_TypeOfMarker theType) { myAspect->SetType (theType); }

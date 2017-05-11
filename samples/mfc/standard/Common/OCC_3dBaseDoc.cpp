@@ -259,12 +259,12 @@ void OCC_3dBaseDoc::OnObjectColor()
 {
 	Handle(AIS_InteractiveObject) Current ;
 	COLORREF MSColor ;
-	Quantity_Color CSFColor ;
 
 	myAISContext->InitSelected();
     Current = myAISContext->SelectedInteractive();
 	if ( Current->HasColor () ) {
-      CSFColor = myAISContext->Color(Current);
+      Quantity_Color CSFColor;
+      myAISContext->Color (Current, CSFColor);
       MSColor = RGB (CSFColor.Red()*255.,CSFColor.Green()*255.,CSFColor.Blue()*255.);
 	}
 	else {
@@ -275,10 +275,9 @@ void OCC_3dBaseDoc::OnObjectColor()
 	if (dlgColor.DoModal() == IDOK)
 	{
 	  MSColor = dlgColor.GetColor();
-	  CSFColor = Quantity_Color (GetRValue(MSColor)/255.,GetGValue(MSColor)/255.,
-						         GetBValue(MSColor)/255.,Quantity_TOC_RGB); 
+	  Quantity_Color CSFColor (GetRValue(MSColor)/255., GetGValue(MSColor)/255., GetBValue(MSColor)/255., Quantity_TOC_RGB);
 	  for (;myAISContext->MoreSelected ();myAISContext->NextSelected ())
-      myAISContext->SetColor (myAISContext->SelectedInteractive(),CSFColor.Name(), Standard_False);
+      myAISContext->SetColor (myAISContext->SelectedInteractive(), CSFColor, Standard_False);
     myAISContext->UpdateCurrentViewer();
 	}
 }

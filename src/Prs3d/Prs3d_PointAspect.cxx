@@ -32,18 +32,6 @@ Prs3d_PointAspect::Prs3d_PointAspect (const Aspect_TypeOfMarker theType,
 // function : Prs3d_PointAspect
 // purpose  :
 // =======================================================================
-Prs3d_PointAspect::Prs3d_PointAspect (const Aspect_TypeOfMarker theType,
-                                      const Quantity_NameOfColor theColor,
-                                      const Standard_Real theScale)
-: myAspect (new Graphic3d_AspectMarker3d (theType, Quantity_Color(theColor), theScale))
-{
-  //
-}
-
-// =======================================================================
-// function : Prs3d_PointAspect
-// purpose  :
-// =======================================================================
 Prs3d_PointAspect::Prs3d_PointAspect (const Quantity_Color& theColor,
                                       const Standard_Integer theWidth,
                                       const Standard_Integer theHeight,

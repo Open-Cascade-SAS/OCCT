@@ -492,7 +492,7 @@ public:
     Quantity_Color aCol (theR / 255.0, theG / 255.0, theB / 255.0, Quantity_TOC_RGB);
     for (; myAISContext()->MoreSelected(); myAISContext()->NextSelected())
     {
-      myAISContext()->SetColor (myAISContext()->SelectedInteractive(), aCol.Name(), false);
+      myAISContext()->SetColor (myAISContext()->SelectedInteractive(), aCol, false);
     }
     myAISContext()->UpdateCurrentViewer();
   }
@@ -549,7 +549,8 @@ public:
     Handle(AIS_InteractiveObject) aCurrent = myAISContext()->SelectedInteractive();
     if (aCurrent->HasColor())
     {
-      Quantity_Color anObjCol = myAISContext()->Color (aCurrent);
+      Quantity_Color anObjCol;
+      myAISContext()->Color (aCurrent, anObjCol);
       theRed   = int(anObjCol.Red()   * 255.0);
       theGreen = int(anObjCol.Green() * 255.0);
       theBlue  = int(anObjCol.Blue()  * 255.0);

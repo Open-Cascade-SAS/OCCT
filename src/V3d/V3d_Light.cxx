@@ -58,69 +58,11 @@ void V3d_Light::SetType (const V3d_TypeOfLight theType)
 // function : SetColor
 // purpose  :
 // =======================================================================
-void V3d_Light::SetColor (const Quantity_TypeOfColor theType,
-                          const Standard_Real theValue1,
-                          const Standard_Real theValue2,
-                          const Standard_Real theValue3)
-{
-  Standard_Real aValue1 = Max (0., Min (1., theValue1));
-  Standard_Real aValue2 = Max (0., Min (1., theValue2));
-  Standard_Real aValue3 = Max (0., Min (1., theValue3));
-  Quantity_Color aColor (aValue1, aValue2, aValue3, theType);
-  SetColor (aColor);
-}
-
-// =======================================================================
-// function : SetColor
-// purpose  :
-// =======================================================================
-void V3d_Light::SetColor (const Quantity_NameOfColor theName)
-{
-  SetColor (Quantity_Color (theName));
-}
-
-// =======================================================================
-// function : SetColor
-// purpose  :
-// =======================================================================
 void V3d_Light::SetColor (const Quantity_Color& theColor)
 {
   myLight.Color.r() = static_cast<Standard_ShortReal> (theColor.Red());
   myLight.Color.g() = static_cast<Standard_ShortReal> (theColor.Green());
   myLight.Color.b() = static_cast<Standard_ShortReal> (theColor.Blue());
-}
-
-// =======================================================================
-// function : Color
-// purpose  :
-// =======================================================================
-void V3d_Light::Color (const Quantity_TypeOfColor theType,
-                       Standard_Real& theValue1,
-                       Standard_Real& theValue2,
-                       Standard_Real& theValue3) const
-{
-  Color().Values (theValue1, theValue2, theValue3, theType);
-}
-
-// =======================================================================
-// function : Color
-// purpose  :
-// =======================================================================
-void V3d_Light::Color (Quantity_NameOfColor& theName) const
-{
-  theName = Color().Name();
-}
-
-// =======================================================================
-// function : Color
-// purpose  :
-// =======================================================================
-Quantity_Color V3d_Light::Color() const
-{
-  return Quantity_Color (Standard_Real (myLight.Color.r()),
-                         Standard_Real (myLight.Color.g()),
-                         Standard_Real (myLight.Color.b()),
-                         Quantity_TOC_RGB);
 }
 
 // =======================================================================

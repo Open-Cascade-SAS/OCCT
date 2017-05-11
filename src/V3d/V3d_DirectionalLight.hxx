@@ -32,7 +32,7 @@ public:
   //! Creates a directional light source in the viewer.
   Standard_EXPORT V3d_DirectionalLight (const Handle(V3d_Viewer)& theViewer,
                                         const V3d_TypeOfOrientation theDirection = V3d_XposYposZpos,
-                                        const Quantity_NameOfColor theColor = Quantity_NOC_WHITE,
+                                        const Quantity_Color& theColor = Quantity_NOC_WHITE,
                                         const Standard_Boolean theIsHeadlight = Standard_False);
 
   //! Creates a directional light source in the viewer.
@@ -46,7 +46,7 @@ public:
                                         const V3d_Coordinate theXp,
                                         const V3d_Coordinate theYp,
                                         const V3d_Coordinate theZp,
-                                        const Quantity_NameOfColor theColor = Quantity_NOC_WHITE,
+                                        const Quantity_Color& theColor = Quantity_NOC_WHITE,
                                         const Standard_Boolean theIsHeadlight = Standard_False);
 
   //! Defines the direction of the light source by a predefined orientation.

@@ -25,7 +25,7 @@
 #include <Aspect_FillMethod.hxx>
 #include <Standard_Boolean.hxx>
 #include <MMgt_TShared.hxx>
-#include <Quantity_NameOfColor.hxx>
+#include <Quantity_Color.hxx>
 #include <Aspect_GradientFillMethod.hxx>
 #include <Aspect_TypeOfResize.hxx>
 #include <Quantity_Ratio.hxx>
@@ -34,9 +34,7 @@
 class Aspect_WindowDefinitionError;
 class Aspect_WindowError;
 class Aspect_Background;
-class Quantity_Color;
 class Aspect_GradientBackground;
-
 
 class Aspect_Window;
 DEFINE_STANDARD_HANDLE(Aspect_Window, MMgt_TShared)
@@ -49,10 +47,7 @@ public:
   
   //! Modifies the window background.
   Standard_EXPORT void SetBackground (const Aspect_Background& ABack);
-  
-  //! Modifies the window background from a Named Color.
-  Standard_EXPORT void SetBackground (const Quantity_NameOfColor theNameOfColor);
-  
+
   //! Modifies the window background.
   Standard_EXPORT void SetBackground (const Quantity_Color& color);
   
@@ -117,27 +112,16 @@ public:
 
 protected:
 
-  
   //! Initializes the datas of a Window.
   Standard_EXPORT Aspect_Window();
+
+protected:
 
   Aspect_Background MyBackground;
   Aspect_GradientBackground MyGradientBackground;
   Aspect_FillMethod MyBackgroundFillMethod;
   Standard_Boolean MyIsVirtual;
 
-
-private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Aspect_Window_HeaderFile

@@ -14,8 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <AIS_Axis.hxx>
+
 #include <Aspect_TypeOfLine.hxx>
 #include <DsgPrs_XYZAxisPresentation.hxx>
 #include <Geom_Axis1Placement.hxx>
@@ -85,7 +85,7 @@ myIsXYZAxis(Standard_True)
     aLength = 0.1;
   }
   DA->SetAxisLength(aLength,aLength,aLength);
-  Quantity_NameOfColor col = Quantity_NOC_TURQUOISE;
+  Quantity_Color col (Quantity_NOC_TURQUOISE);
   DA->LineAspect(Prs3d_DP_XAxis)->SetColor(col);
   DA->LineAspect(Prs3d_DP_YAxis)->SetColor(col);
   DA->LineAspect(Prs3d_DP_ZAxis)->SetColor(col);
@@ -209,15 +209,8 @@ void AIS_Axis::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 
 //=======================================================================
 //function : SetColor
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-
-void AIS_Axis::SetColor(const Quantity_NameOfColor aCol)
-{
-  SetColor(Quantity_Color(aCol));
-}
-
 void AIS_Axis::SetColor(const Quantity_Color &aCol)
 {
   hasOwnColor=Standard_True;

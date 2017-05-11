@@ -17,47 +17,29 @@
 #ifndef _AIS_Point_HeaderFile
 #define _AIS_Point_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Boolean.hxx>
 #include <Aspect_TypeOfMarker.hxx>
 #include <AIS_InteractiveObject.hxx>
-#include <Standard_Integer.hxx>
-#include <AIS_KindOfInteractive.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <Quantity_NameOfColor.hxx>
+
 class Geom_Point;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
-class Quantity_Color;
 class TopoDS_Vertex;
-
-
-class AIS_Point;
-DEFINE_STANDARD_HANDLE(AIS_Point, AIS_InteractiveObject)
 
 //! Constructs point datums to be used in construction of
 //! composite shapes. The datum is displayed as the plus marker +.
 class AIS_Point : public AIS_InteractiveObject
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_Point, AIS_InteractiveObject)
 public:
-
-  
 
   //! Initializes the point aComponent from which the point
   //! datum will be built.
   Standard_EXPORT AIS_Point(const Handle(Geom_Point)& aComponent);
   
   //! Returns index 1, the default index for a point.
-    virtual Standard_Integer Signature() const Standard_OVERRIDE;
-  
+  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 1; }
+
   //! Indicates that a point is a datum.
-    virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE;
-  
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KOI_Datum; }
+
   //! Returns the component specified in SetComponent.
   Standard_EXPORT Handle(Geom_Point) Component();
   
@@ -75,12 +57,10 @@ public:
   //! WARNING :<aTrsf> must be applied
   //! to the object to display before computation  !!!
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
-  
-  //! Allows you to provide settings for the cp;pr aColor.
-  Standard_EXPORT void SetColor (const Quantity_NameOfColor aColor) Standard_OVERRIDE;
-  
-  Standard_EXPORT void SetColor (const Quantity_Color& aColor) Standard_OVERRIDE;
-  
+
+  //! Allows you to provide settings for the Color.
+  Standard_EXPORT void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE;
+
   //! Allows you to remove color settings.
   Standard_EXPORT void UnsetColor() Standard_OVERRIDE;
   
@@ -94,44 +74,31 @@ public:
   Standard_EXPORT void UnsetMarker();
   
   //! Returns true if the point datum has a marker.
-    Standard_Boolean HasMarker() const;
-  
+  Standard_Boolean HasMarker() const { return myHasTOM; }
+
   //! Converts a point into a vertex.
   Standard_EXPORT TopoDS_Vertex Vertex() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_Point,AIS_InteractiveObject)
-
 protected:
 
-  
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
 
-
-
 private:
-
   
   Standard_EXPORT void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
-  
+
   Standard_EXPORT void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection, const Standard_Integer aMode) Standard_OVERRIDE;
-  
+
   Standard_EXPORT void UpdatePointValues();
+
+private:
 
   Handle(Geom_Point) myComponent;
   Standard_Boolean myHasTOM;
   Aspect_TypeOfMarker myTOM;
 
-
 };
 
-
-#include <AIS_Point.lxx>
-
-
-
-
+DEFINE_STANDARD_HANDLE(AIS_Point, AIS_InteractiveObject)
 
 #endif // _AIS_Point_HeaderFile

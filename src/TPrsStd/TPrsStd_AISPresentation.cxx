@@ -386,8 +386,17 @@ void TPrsStd_AISPresentation::SetColor(const Quantity_NameOfColor theColor)
 {
   Backup();
   if ( getData()->HasOwnColor() && getData()->Color() == theColor )
-    if ( !myAIS.IsNull() && myAIS->HasColor() && myAIS->Color() == theColor )
-      return;
+  {
+    if (!myAIS.IsNull() && myAIS->HasColor())
+    {
+      Quantity_Color aColor;
+      myAIS->Color (aColor);
+      if (aColor.Name() == theColor)
+      {
+        return;
+      }
+    }
+  }
 
   getData()->SetColor(theColor);
 
@@ -396,8 +405,15 @@ void TPrsStd_AISPresentation::SetColor(const Quantity_NameOfColor theColor)
 
   if ( !myAIS.IsNull() )
   {
-    if ( myAIS->HasColor() && myAIS->Color() == theColor )
-      return;   // AIS has already had that color
+    if (myAIS->HasColor())
+    {
+      Quantity_Color aColor;
+      myAIS->Color (aColor);
+      if (aColor.Name() == theColor)
+      {
+        return;   // AIS has already had that color
+      }
+    }
 
     Handle(AIS_InteractiveContext) aContext = getAISContext();
 
@@ -801,7 +817,9 @@ void TPrsStd_AISPresentation::AISUpdate()
     if ( HasOwnColor() )
     {
       Quantity_NameOfColor aColor = Color();
-      if ( !(myAIS->HasColor()) || (myAIS->HasColor() && myAIS->Color() != aColor) )
+      Quantity_Color aPrsColor;
+      myAIS->Color (aPrsColor);
+      if ( !(myAIS->HasColor()) || (myAIS->HasColor() && aPrsColor.Name() != aColor) )
       {
         if ( !aContext.IsNull() )
           aContext->SetColor(myAIS, aColor, Standard_False);

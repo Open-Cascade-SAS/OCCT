@@ -40,22 +40,10 @@ public:
   
   //! Change the polygons interior color and material ambient color.
   Standard_EXPORT void SetColor (const Quantity_Color& aColor, const Aspect_TypeOfFacingModel aModel = Aspect_TOFM_BOTH_SIDE);
-  
-  //! Change the polygons interior color and material ambient color.
-  void SetColor (const Quantity_NameOfColor theColor,
-                 const Aspect_TypeOfFacingModel theModel = Aspect_TOFM_BOTH_SIDE)
-  {
-    SetColor (Quantity_Color (theColor), theModel);
-  }
 
   //! Change the polygons material aspect.
   Standard_EXPORT void SetMaterial (const Graphic3d_MaterialAspect& aMaterial, const Aspect_TypeOfFacingModel aModel = Aspect_TOFM_BOTH_SIDE);
 
-  void SetMaterial (const Graphic3d_NameOfMaterial theMaterial, const Aspect_TypeOfFacingModel theModel = Aspect_TOFM_BOTH_SIDE)
-  {
-    SetMaterial (Graphic3d_MaterialAspect (theMaterial), theModel);
-  }
-  
   //! Change the polygons transparency value.
   //! Warning : aValue must be in the range 0,1. 0 is the default (NO transparent)
   Standard_EXPORT void SetTransparency (const Standard_Real aValue, const Aspect_TypeOfFacingModel aModel = Aspect_TOFM_BOTH_SIDE);

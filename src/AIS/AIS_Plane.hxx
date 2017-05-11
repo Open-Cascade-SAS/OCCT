@@ -17,41 +17,22 @@
 #ifndef _AIS_Plane_HeaderFile
 #define _AIS_Plane_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <gp_Pnt.hxx>
-#include <Standard_Boolean.hxx>
-#include <AIS_TypeOfPlane.hxx>
-#include <Select3D_TypeOfSensitivity.hxx>
 #include <AIS_InteractiveObject.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
-#include <AIS_KindOfInteractive.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <Quantity_NameOfColor.hxx>
+#include <AIS_TypeOfPlane.hxx>
+#include <gp_Pnt.hxx>
+#include <Select3D_TypeOfSensitivity.hxx>
+
 class Geom_Plane;
 class Geom_Axis2Placement;
 class gp_Pnt;
-class AIS_InteractiveContext;
-class Prs3d_Presentation;
-class Prs3d_Projector;
-class Geom_Transformation;
-class Quantity_Color;
-
-
-class AIS_Plane;
-DEFINE_STANDARD_HANDLE(AIS_Plane, AIS_InteractiveObject)
 
 //! Constructs plane datums to be used in construction of
 //! composite shapes.
 class AIS_Plane : public AIS_InteractiveObject
 {
-
+  DEFINE_STANDARD_RTTIEXT(AIS_Plane, AIS_InteractiveObject)
 public:
 
-  
   //! initializes the plane aComponent. If
   //! the mode aCurrentMode equals true, the drawing
   //! tool, "Drawer" is not initialized.
@@ -82,16 +63,16 @@ public:
   Standard_EXPORT void UnsetSize();
   
   Standard_EXPORT Standard_Boolean Size (Standard_Real& X, Standard_Real& Y) const;
-  
-    Standard_Boolean HasOwnSize() const;
-  
+
+  Standard_Boolean HasOwnSize() const { return myHasOwnSize; }
+
   Standard_EXPORT virtual Standard_Integer Signature() const Standard_OVERRIDE;
   
   Standard_EXPORT virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE;
   
   //! Returns the component specified in SetComponent.
-    const Handle(Geom_Plane)& Component();
-  
+  const Handle(Geom_Plane)& Component() { return myComponent; }
+
   //! Creates an instance of the plane aComponent.
   Standard_EXPORT void SetComponent (const Handle(Geom_Plane)& aComponent);
   
@@ -104,14 +85,13 @@ public:
   //! for the selected plane. These include: center point
   //! aCenter, maximum aPmax and minimum aPmin.
   Standard_EXPORT void SetPlaneAttributes (const Handle(Geom_Plane)& aComponent, const gp_Pnt& aCenter, const gp_Pnt& aPmin, const gp_Pnt& aPmax);
-  
-  //! Returns the coordinates of the center point.
-    const gp_Pnt& Center() const;
-  
 
-  //! Provides settings for the center aCenter other than (0, 0, 0).
-    void SetCenter (const gp_Pnt& aCenter);
-  
+  //! Returns the coordinates of the center point.
+  const gp_Pnt& Center() const { return myCenter; }
+
+  //! Provides settings for the center theCenter other than (0, 0, 0).
+  void SetCenter (const gp_Pnt& theCenter) { myCenter = theCenter; }
+
   //! Allows you to provide settings for the position and
   //! direction of one of the plane's axes, aComponent, in
   //! 3D space. The coordinate system used is
@@ -128,31 +108,30 @@ public:
   Standard_EXPORT Handle(Geom_Axis2Placement) Axis2Placement();
   
   //! Returns the type of plane - xy, yz, xz or unknown.
-    AIS_TypeOfPlane TypeOfPlane();
-  
+  AIS_TypeOfPlane TypeOfPlane() { return myTypeOfPlane; }
+
   //! Returns the type of plane - xy, yz, or xz.
-    Standard_Boolean IsXYZPlane();
-  
+  Standard_Boolean IsXYZPlane() { return myIsXYZPlane; }
+
   //! Returns the non-default current display mode set by SetCurrentMode.
-    Standard_Boolean CurrentMode();
-  
+  Standard_Boolean CurrentMode() { return myCurrentMode; }
 
   //! Allows you to provide settings for a non-default
   //! current display mode.
-    void SetCurrentMode (const Standard_Boolean aCurrentMode);
-  
+  void SetCurrentMode (const Standard_Boolean theCurrentMode) { myCurrentMode = theCurrentMode; }
+
   //! Returns true if the display mode selected, aMode, is valid for planes.
   Standard_EXPORT virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer aMode) const Standard_OVERRIDE;
   
   //! connection to <aCtx> default drawer implies a recomputation of Frame values.
   Standard_EXPORT virtual void SetContext (const Handle(AIS_InteractiveContext)& aCtx) Standard_OVERRIDE;
-  
+
   //! Returns the type of sensitivity for the plane;
-    Select3D_TypeOfSensitivity TypeOfSensitivity() const;
-  
+  Select3D_TypeOfSensitivity TypeOfSensitivity() const { return myTypeOfSensitivity; }
+
   //! Sets the type of sensitivity for the plane.
-    void SetTypeOfSensitivity (const Select3D_TypeOfSensitivity& theTypeOfSensitivity);
-  
+  void SetTypeOfSensitivity (Select3D_TypeOfSensitivity theTypeOfSensitivity) { myTypeOfSensitivity = theTypeOfSensitivity; }
+
   //! computes the presentation according to a point of view
   //! given by <aProjector>.
   //! To be Used when the associated degenerated Presentations
@@ -163,26 +142,13 @@ public:
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
   
   Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection, const Standard_Integer theMode) Standard_OVERRIDE;
-  
-  Standard_EXPORT void SetColor (const Quantity_NameOfColor aColor) Standard_OVERRIDE;
-  
+
   Standard_EXPORT void SetColor (const Quantity_Color& aColor) Standard_OVERRIDE;
-  
+
   Standard_EXPORT void UnsetColor() Standard_OVERRIDE;
-
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_Plane,AIS_InteractiveObject)
-
-protected:
-
-
-
 
 private:
 
-  
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
   
   Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
@@ -192,6 +158,8 @@ private:
   Standard_EXPORT void ComputeFields();
   
   Standard_EXPORT void InitDrawerAttributes();
+
+private:
 
   Handle(Geom_Plane) myComponent;
   Handle(Geom_Axis2Placement) myAx2;
@@ -205,14 +173,8 @@ private:
   Standard_Boolean myHasOwnSize;
   Select3D_TypeOfSensitivity myTypeOfSensitivity;
 
-
 };
 
-
-#include <AIS_Plane.lxx>
-
-
-
-
+DEFINE_STANDARD_HANDLE(AIS_Plane, AIS_InteractiveObject)
 
 #endif // _AIS_Plane_HeaderFile

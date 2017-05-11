@@ -735,8 +735,8 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
       if( !aMesh.IsNull() )
       {
         TCollection_AsciiString aMode = TCollection_AsciiString (argv[2]);
-        Quantity_Color aColor1( (Quantity_NameOfColor)( Quantity_NOC_BLUE1 ) );
-        Quantity_Color aColor2( (Quantity_NameOfColor)( Quantity_NOC_RED1 ) );
+        Quantity_Color aColor1(Quantity_NOC_BLUE1);
+        Quantity_Color aColor2(Quantity_NOC_RED1);
         if( aMode.IsEqual("elem1") || aMode.IsEqual("elem2") || aMode.IsEqual("nodal") || aMode.IsEqual("nodaltex") || aMode.IsEqual("none") )
         {
           Handle(MeshVS_PrsBuilder) aTempBuilder;

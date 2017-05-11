@@ -21,7 +21,6 @@
 #include <Prs3d_BasicAspect.hxx>
 #include <Quantity_PlaneAngle.hxx>
 #include <Quantity_Length.hxx>
-#include <Quantity_NameOfColor.hxx>
 
 //! A framework for displaying arrows in representations of dimensions and relations.
 class Prs3d_ArrowAspect : public Prs3d_BasicAspect
@@ -55,8 +54,6 @@ public:
   Quantity_Length Length() const { return myLength; }
 
   void SetColor (const Quantity_Color& theColor) { myArrowAspect->SetColor (theColor); }
-
-  void SetColor (const Quantity_NameOfColor theColor) { SetColor (Quantity_Color (theColor)); }
   
   const Handle(Graphic3d_AspectLine3d)& Aspect() const { return myArrowAspect; }
   

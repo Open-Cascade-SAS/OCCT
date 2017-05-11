@@ -35,17 +35,11 @@ public:
   //! Setup color of entire text.
   Standard_EXPORT virtual void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE;
 
-  //! Setup color of entire text.
-  virtual void SetColor (const Quantity_NameOfColor theColor) Standard_OVERRIDE { SetColor (Quantity_Color (theColor)); }
-
   //! Setup transparency within [0, 1] range.
   Standard_EXPORT virtual void SetTransparency (const Standard_Real theValue) Standard_OVERRIDE;
 
   //! Removes the transparency setting.
   virtual void UnsetTransparency() Standard_OVERRIDE { SetTransparency (0.0); }
-
-  //! Material has no effect for text label.
-  virtual void SetMaterial (const Graphic3d_NameOfMaterial ) Standard_OVERRIDE {}
 
   //! Material has no effect for text label.
   virtual void SetMaterial (const Graphic3d_MaterialAspect& ) Standard_OVERRIDE {}

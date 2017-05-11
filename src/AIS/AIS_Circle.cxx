@@ -14,8 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <AIS_Circle.hxx>
+
 #include <AIS_GraphicTool.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <GC_MakeArcOfCircle.hxx>
@@ -110,17 +110,6 @@ void AIS_Circle::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
   if (myCircleIsArc) ComputeArcSelection(aSelection);
   else ComputeCircleSelection(aSelection);
 
-}
-
-
-//=======================================================================
-//function : SetColor
-//purpose  : 
-//=======================================================================
-
-void AIS_Circle::SetColor(const Quantity_NameOfColor aCol)
-{
-  SetColor(Quantity_Color(aCol));
 }
 
 //=======================================================================

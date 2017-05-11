@@ -144,15 +144,6 @@ void AIS_PointCloud::SetPoints (const Handle(TColgp_HArray1OfPnt)&     theCoords
 //function : SetColor
 //purpose  :
 //=======================================================================
-void AIS_PointCloud::SetColor (const Quantity_NameOfColor theColor)
-{
-  SetColor (Quantity_Color (theColor));
-}
-
-//=======================================================================
-//function : SetColor
-//purpose  :
-//=======================================================================
 void AIS_PointCloud::SetColor (const Quantity_Color& theColor)
 {
   AIS_InteractiveObject::SetColor(theColor);
@@ -290,15 +281,6 @@ void AIS_PointCloud::UnsetColor()
       }
     }
   }
-}
-
-//=======================================================================
-//function : SetMaterial
-//purpose  :
-//=======================================================================
-void AIS_PointCloud::SetMaterial (const Graphic3d_NameOfMaterial theMatName)
-{
-  SetMaterial (Graphic3d_MaterialAspect (theMatName));
 }
 
 //=======================================================================

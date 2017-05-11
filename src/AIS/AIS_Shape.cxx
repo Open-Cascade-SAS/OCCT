@@ -14,10 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <AIS_Shape.hxx>
 
 #include <AIS_GraphicTool.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_Shape.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Bnd_Box.hxx>
 #include <BRep_Builder.hxx>
@@ -411,12 +411,6 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
   StdSelect::SetDrawerForBRepOwner(aSelection,myDrawer);
 }
 
-Quantity_NameOfColor AIS_Shape::Color() const {
-Quantity_Color aColor;
-  Color(aColor);
-  return aColor.Name();
-}
-
 void AIS_Shape::Color( Quantity_Color& aColor ) const {
   aColor = myDrawer->ShadingAspect()->Color(myCurrentFacingModel);
 }
@@ -427,16 +421,6 @@ Graphic3d_NameOfMaterial AIS_Shape::Material() const {
 
 Standard_Real AIS_Shape::Transparency() const {
   return myDrawer->ShadingAspect()->Transparency(myCurrentFacingModel);
-}
-
-//=======================================================================
-//function : SetColor
-//purpose  : 
-//=======================================================================
-
-void AIS_Shape::SetColor(const Quantity_NameOfColor aCol)
-{
-  SetColor(Quantity_Color(aCol));
 }
 
 //=======================================================================
@@ -828,16 +812,6 @@ void AIS_Shape::setMaterial (const Handle(Prs3d_Drawer)&     theDrawer,
   {
     theDrawer->ShadingAspect()->SetTransparency (aTransp, myCurrentFacingModel);
   }
-}
-
-//=======================================================================
-//function : SetMaterial
-//purpose  : 
-//=======================================================================
-
-void AIS_Shape::SetMaterial(const Graphic3d_NameOfMaterial aMat)
-{
-  SetMaterial(Graphic3d_MaterialAspect(aMat));
 }
 
 //=======================================================================

@@ -74,11 +74,6 @@ void Aspect_Window::SetBackground (const Aspect_Background& theBackground)
   SetBackground (theBackground.Color());
 }
 
-void Aspect_Window::SetBackground (const Quantity_NameOfColor theNameOfColor)
-{
-  MyBackground.SetColor (theNameOfColor);
-}
-
 void Aspect_Window::SetBackground (const Quantity_Color& theColor)
 {
   MyBackground.SetColor (theColor);

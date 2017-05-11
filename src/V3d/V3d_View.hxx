@@ -48,7 +48,6 @@
 #include <Quantity_Coefficient.hxx>
 #include <Quantity_Factor.hxx>
 #include <Quantity_Length.hxx>
-#include <Quantity_NameOfColor.hxx>
 #include <Quantity_Parameter.hxx>
 #include <Quantity_PlaneAngle.hxx>
 #include <Quantity_Ratio.hxx>
@@ -214,20 +213,10 @@ public:
   //! Defines the background color of the view.
   Standard_EXPORT void SetBackgroundColor (const Quantity_Color& theColor);
 
-  //! Defines the background color of the view by supplying the color name in the form Quantity_NOC_xxxx.
-  Standard_EXPORT void SetBackgroundColor (const Quantity_NameOfColor theName);
-
   //! Defines the gradient background colors of the view by supplying the colors
   //! and the fill method (horizontal by default).
   Standard_EXPORT void SetBgGradientColors (const Quantity_Color& theColor1,
                                             const Quantity_Color& theColor2,
-                                            const Aspect_GradientFillMethod theFillStyle = Aspect_GFM_HOR,
-                                            const Standard_Boolean theToUpdate = Standard_False);
-
-  //! Defines the gradient background colors of the view by supplying  the color names
-  //! and the fill method (horizontal by default).
-  Standard_EXPORT void SetBgGradientColors (const Quantity_NameOfColor theColor1,
-                                            const Quantity_NameOfColor theColor2,
                                             const Aspect_GradientFillMethod theFillStyle = Aspect_GFM_HOR,
                                             const Standard_Boolean theToUpdate = Standard_False);
 
@@ -284,9 +273,9 @@ public:
   //! position comes out of the view
   //! AxisDiametr - diameter relatively to axis length
   //! NbFacettes - number of facets of cylinders and cones
-  Standard_EXPORT void ZBufferTriedronSetup (const Quantity_NameOfColor theXColor = Quantity_NOC_RED,
-                                             const Quantity_NameOfColor theYColor = Quantity_NOC_GREEN,
-                                             const Quantity_NameOfColor theZColor = Quantity_NOC_BLUE1,
+  Standard_EXPORT void ZBufferTriedronSetup (const Quantity_Color& theXColor = Quantity_NOC_RED,
+                                             const Quantity_Color& theYColor = Quantity_NOC_GREEN,
+                                             const Quantity_Color& theZColor = Quantity_NOC_BLUE1,
                                              const Standard_Real theSizeRatio = 0.8,
                                              const Standard_Real theAxisDiametr = 0.05,
                                              const Standard_Integer theNbFacettes = 12);
@@ -295,7 +284,7 @@ public:
   //! Initialize position, color and length of Triedron axes.
   //! The scale is a percent of the window width.
   Standard_EXPORT void TriedronDisplay (const Aspect_TypeOfTriedronPosition thePosition = Aspect_TOTP_CENTER,
-                                        const Quantity_NameOfColor theColor = Quantity_NOC_WHITE,
+                                        const Quantity_Color& theColor = Quantity_NOC_WHITE,
                                         const Standard_Real theScale = 0.02,
                                         const V3d_TypeOfVisualization theMode = V3d_WIREFRAME);
 

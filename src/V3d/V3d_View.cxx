@@ -443,15 +443,6 @@ void V3d_View::SetBackgroundColor (const Quantity_Color& theColor)
 }
 
 //=============================================================================
-//function : SetBackgroundColor
-//purpose  :
-//=============================================================================
-void V3d_View::SetBackgroundColor (const Quantity_NameOfColor theName)
-{
-  SetBackgroundColor (Quantity_Color (theName));
-}
-
-//=============================================================================
 //function : SetBgGradientColors
 //purpose  :
 //=============================================================================
@@ -468,21 +459,6 @@ void V3d_View::SetBgGradientColors (const Quantity_Color& theColor1,
   {
     Redraw();
   }
-}
-
-//=============================================================================
-//function : SetBgGradientColors
-//purpose  :
-//=============================================================================
-void V3d_View::SetBgGradientColors (const Quantity_NameOfColor theColor1,
-                                    const Quantity_NameOfColor theColor2,
-                                    const Aspect_GradientFillMethod theFillStyle,
-                                    const Standard_Boolean theToUpdate)
-{
-  Quantity_Color aColor1 (theColor1);
-  Quantity_Color aColor2 (theColor2);
-
-  SetBgGradientColors (aColor1, aColor2, theFillStyle, theToUpdate);
 }
 
 //=============================================================================

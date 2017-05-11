@@ -14,9 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <AIS_Line.hxx>
 
 #include <AIS_GraphicTool.hxx>
-#include <AIS_Line.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <GC_MakeSegment.hxx>
 #include <Geom_Line.hxx>
@@ -152,17 +152,10 @@ void AIS_Line::ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
   }
 }
 
-
 //=======================================================================
 //function : SetColor
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void AIS_Line::SetColor(const Quantity_NameOfColor aCol)
-{
-  SetColor(Quantity_Color(aCol));
-}
-
 void AIS_Line::SetColor(const Quantity_Color &aCol)
 {
   hasOwnColor=Standard_True;

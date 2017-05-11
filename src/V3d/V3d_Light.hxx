@@ -20,9 +20,8 @@
 #include <Graphic3d_CLight.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <MMgt_TShared.hxx>
-#include <Quantity_NameOfColor.hxx>
+#include <Quantity_Color.hxx>
 #include <Quantity_Parameter.hxx>
-#include <Quantity_TypeOfColor.hxx>
 #include <Standard.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
@@ -32,7 +31,6 @@
 #include <V3d_View.hxx>
 
 class Graphic3d_Structure;
-class Quantity_Color;
 class V3d_Viewer;
 
 class V3d_Light;
@@ -44,31 +42,11 @@ class V3d_Light : public MMgt_TShared
 {
 public:
 
-  //! Defines the color of a light source according to the type of color
-  //! definition and the three corresponding values.
-  Standard_EXPORT void SetColor (const Quantity_TypeOfColor theType,
-                                 const Quantity_Parameter theValue1,
-                                 const Quantity_Parameter theValue2,
-                                 const Quantity_Parameter theValue3);
-
-  //! Defines the color of a light source by giving
-  //! the name of the color in the form Quantity_NOC_xxxx.
-  Standard_EXPORT void SetColor (const Quantity_NameOfColor theName);
-
   //! Defines the color of a light source by giving the basic color.
   Standard_EXPORT void SetColor (const Quantity_Color& theColor);
 
-  //! Returns the color of the light source depending of the color type.
-  Standard_EXPORT void Color (const Quantity_TypeOfColor theType,
-                              Quantity_Parameter& theValue1,
-                              Quantity_Parameter& theValue2,
-                              Quantity_Parameter& theValue3) const;
-
   //! Returns the color of the light source.
-  Standard_EXPORT void Color (Quantity_NameOfColor& theName) const;
-
-  //! Returns the color of the light source.
-  Standard_EXPORT Quantity_Color Color() const;
+  Quantity_Color Color() const { return Quantity_Color (myLight.Color.rgb()); }
 
   //! Returns the Type of the Light
   Standard_EXPORT V3d_TypeOfLight Type() const;

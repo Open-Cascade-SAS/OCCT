@@ -50,7 +50,12 @@ Standard_Boolean TPrsStd_ConstraintDriver::Update (const TDF_Label& aLabel,
   if (!anAISObject.IsNull() && anAISObject->HasInteractiveContext()) {
     if (!apConstraint->Verified()) {
       TPrsStd_ConstraintTools::UpdateOnlyValue(apConstraint,anAISObject);
-      if (anAISObject->Color() != Quantity_NOC_RED) anAISObject->SetColor(Quantity_NOC_RED);
+      Quantity_Color aColor;
+      anAISObject->Color (aColor);
+      if (aColor.Name() != Quantity_NOC_RED)
+      {
+        anAISObject->SetColor(Quantity_NOC_RED);
+      }
       return Standard_True;
     }
   }
@@ -180,16 +185,17 @@ Standard_Boolean TPrsStd_ConstraintDriver::Update (const TDF_Label& aLabel,
   }
 
   if (anAISObject->HasInteractiveContext()) {
-    Quantity_NameOfColor originColor = anAISObject->Color();
+    Quantity_Color originColor;
+    anAISObject->Color (originColor);
     if (!apConstraint->Verified()) {
-      if (originColor != Quantity_NOC_RED)
+      if (originColor.Name() != Quantity_NOC_RED)
 	anAISObject->SetColor(Quantity_NOC_RED);
     }
     else if (apConstraint->IsDimension() && apConstraint->GetValue()->IsCaptured()) {
-      if (originColor != Quantity_NOC_PURPLE)
+      if (originColor.Name() != Quantity_NOC_PURPLE)
 	anAISObject->SetColor(Quantity_NOC_PURPLE);
     }
-    else if (!apConstraint->IsPlanar() && (originColor != Quantity_NOC_YELLOW)) 
+    else if (!apConstraint->IsPlanar() && (originColor.Name() != Quantity_NOC_YELLOW))
       anAISObject->SetColor(Quantity_NOC_YELLOW);
   }
   else {

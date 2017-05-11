@@ -119,17 +119,12 @@ public:
   
   //! Returns the current facing model which is in effect.
   Standard_EXPORT Aspect_TypeOfFacingModel CurrentFacingModel() const;
-  
-  Standard_EXPORT virtual void SetColor (const Quantity_Color& aColor);
-  
-  //! only the interactive obj knowns which Drawer attribute
-  //! is  affected by the color  (ex:  for a  wire, it's the
-  //! wireaspect field of the drawer, but  for a vertex, only
-  //! the point aspect field is affected by the color)
-  //! WARNING : Do not forget to set the corresponding fields
-  //! here (hasOwnColor and myDrawer->SetColor())
-  Standard_EXPORT virtual void SetColor (const Quantity_NameOfColor aColor);
-  
+
+  //! Only the interactive object knowns which Drawer attribute is affected by the color, if any
+  //! (ex: for a wire,it's the wireaspect field of the drawer, but for a vertex, only the point aspect field is affected by the color).
+  //! WARNING : Do not forget to set the corresponding fields here (hasOwnColor and myDrawer->SetColor())
+  Standard_EXPORT virtual void SetColor (const Quantity_Color& theColor);
+
   //! Removes color settings. Only the Interactive Object
   //! knows which Drawer attribute is   affected by the color
   //! setting. For a wire, for example, wire aspect is the
@@ -285,8 +280,6 @@ public:
   Standard_Boolean HasColor() const { return hasOwnColor; }
 
   //! Returns the color setting of the Interactive Object.
-  virtual Quantity_NameOfColor Color() const { return myDrawer->Color().Name(); }
-
   virtual void Color (Quantity_Color& theColor) const { theColor = myDrawer->Color(); }
 
   //! Returns true if the Interactive Object has width.
@@ -306,14 +299,8 @@ public:
   //! -   Pewter
   //! -   Silver
   //! -   Stone.
-  virtual Graphic3d_NameOfMaterial Material() const { return myOwnMaterial; }
+  Standard_EXPORT virtual Graphic3d_NameOfMaterial Material() const;
 
-  //! Sets the name aName for material defining this
-  //! display attribute for the interactive object.
-  //! Material aspect determines shading aspect, color and
-  //! transparency of visible entities.
-  Standard_EXPORT virtual void SetMaterial (const Graphic3d_NameOfMaterial aName);
-  
   //! Sets the material aMat defining this display attribute
   //! for the interactive object.
   //! Material aspect determines shading aspect, color and
@@ -424,7 +411,6 @@ protected:
 
   TColStd_ListOfInteger myToRecomputeModes;
   Standard_Real myOwnWidth;
-  Graphic3d_NameOfMaterial myOwnMaterial;
   Aspect_TypeOfFacingModel myCurrentFacingModel;
   Standard_Boolean myInfiniteState;
   Standard_Boolean hasOwnColor;

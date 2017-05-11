@@ -14,9 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <AIS_Plane.hxx>
 
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_Plane.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <DsgPrs_ShadedPlanePresentation.hxx>
 #include <DsgPrs_XYZPlanePresentation.hxx>
@@ -435,18 +435,10 @@ Standard_Boolean AIS_Plane::Size(Standard_Real& X,Standard_Real& Y) const
   return Abs(X-Y)<=Precision::Confusion();
 }
 
-
 //=======================================================================
 //function : SetColor
 //purpose  : 
 //=======================================================================
-
-
-void AIS_Plane::SetColor(const Quantity_NameOfColor aCol)
-{
-  SetColor(Quantity_Color(aCol));
-}
-
 void AIS_Plane::SetColor(const Quantity_Color &aCol)
 {
   // if the plane already has its proper size, there is an already created planeaspect 
@@ -496,8 +488,7 @@ void AIS_Plane::UnsetColor()
   else{
     const Handle(Prs3d_PlaneAspect) PA = myDrawer->HasLink() ? myDrawer->Link()->PlaneAspect() :
                                                                new Prs3d_PlaneAspect();
-//    const Handle(Prs3d_DatumAspect)& DA = myDrawer->Link()->DatumAspect();
-    Quantity_NameOfColor Col = PA->EdgesAspect()->Aspect()->Color().Name();
+    Quantity_Color Col = PA->EdgesAspect()->Aspect()->Color();
     myDrawer->PlaneAspect()->EdgesAspect()->SetColor(Col);
     
     myDrawer->DatumAspect()->LineAspect(Prs3d_DP_XAxis)->SetColor(Col);

@@ -14,9 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <AIS_Point.hxx>
 
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_Point.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <Geom_Point.hxx>
@@ -130,14 +130,8 @@ void AIS_Point::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 
 //=======================================================================
 //function : SetColor
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void AIS_Point::SetColor(const Quantity_NameOfColor aCol)
-{
-  SetColor(Quantity_Color(aCol));
-}
-
 void AIS_Point::SetColor (const Quantity_Color& theCol)
 {
   hasOwnColor=Standard_True;

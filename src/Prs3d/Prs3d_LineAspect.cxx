@@ -27,15 +27,3 @@ Prs3d_LineAspect::Prs3d_LineAspect (const Quantity_Color& theColor,
 {
   //
 }
-
-// =======================================================================
-// function : Prs3d_LineAspect
-// purpose  :
-// =======================================================================
-Prs3d_LineAspect::Prs3d_LineAspect (const Quantity_NameOfColor theColor,
-                                    const Aspect_TypeOfLine theType,
-                                    const Standard_Real theWidth)
-: myAspect (new Graphic3d_AspectLine3d (Quantity_Color (theColor), theType, theWidth))
-{
-  //
-}

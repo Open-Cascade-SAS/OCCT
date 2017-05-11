@@ -169,7 +169,6 @@ void V3d_PositionLight::Display (const Handle(V3d_View)& theView, const V3d_Type
   Standard_Real X0,Y0,Z0,VX,VY,VZ;
   Standard_Real X1,Y1,Z1;
   Standard_Real DXRef,DYRef,DZRef,DXini,DYini,DZini;
-  Standard_Real R1,G1,B1;
   V3d_TypeOfRepresentation Pres;
 
 //  Creation of a structure of markable elements (position of the
@@ -217,8 +216,7 @@ void V3d_PositionLight::Display (const Handle(V3d_View)& theView, const V3d_Type
   
 // Display of the light position.
 
-  this->Color(Quantity_TOC_RGB,R1,G1,B1);
-  Quantity_Color Col1(R1,G1,B1,Quantity_TOC_RGB);
+  const Quantity_Color Col1 = this->Color();
   Handle(Graphic3d_AspectLine3d) Asp1 = new Graphic3d_AspectLine3d();
   Asp1->SetColor(Col1);
   glight->SetPrimitivesAspect(Asp1);

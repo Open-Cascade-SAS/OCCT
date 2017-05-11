@@ -1768,17 +1768,6 @@ void AIS_InteractiveContext::redisplayPrsModes (const Handle(AIS_InteractiveObje
 //purpose  :
 //=======================================================================
 void AIS_InteractiveContext::SetColor (const Handle(AIS_InteractiveObject)& theIObj,
-                                       const Quantity_NameOfColor           theColor,
-                                       const Standard_Boolean               theToUpdateViewer)
-{
-  SetColor (theIObj, Quantity_Color(theColor), theToUpdateViewer);
-}
-
-//=======================================================================
-//function : SetColor
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::SetColor (const Handle(AIS_InteractiveObject)& theIObj,
                                        const Quantity_Color&                theColor,
                                        const Standard_Boolean               theToUpdateViewer)
 {
@@ -2019,15 +2008,6 @@ Standard_Boolean AIS_InteractiveContext::HasColor (const Handle(AIS_InteractiveO
 //function : Color
 //purpose  :
 //=======================================================================
-Quantity_NameOfColor AIS_InteractiveContext::Color (const Handle(AIS_InteractiveObject)& theIObj) const
-{
-  return theIObj->Color();
-}
-
-//=======================================================================
-//function : Color
-//purpose  :
-//=======================================================================
 void AIS_InteractiveContext::Color (const Handle(AIS_InteractiveObject)& theIObj,
                                     Quantity_Color&                      theColor) const
 {
@@ -2098,7 +2078,7 @@ void AIS_InteractiveContext::UnsetWidth (const Handle(AIS_InteractiveObject)& th
 //purpose  :
 //=======================================================================
 void AIS_InteractiveContext::SetMaterial (const Handle(AIS_InteractiveObject)& theIObj,
-                                          const Graphic3d_NameOfMaterial       theName,
+                                          const Graphic3d_MaterialAspect&      theMaterial,
                                           const Standard_Boolean               theToUpdateViewer)
 {
   if (theIObj.IsNull())
@@ -2107,7 +2087,7 @@ void AIS_InteractiveContext::SetMaterial (const Handle(AIS_InteractiveObject)& t
   }
 
   setContextToObject (theIObj);
-  theIObj->SetMaterial (theName);
+  theIObj->SetMaterial (theMaterial);
   redisplayPrsRecModes (theIObj, theToUpdateViewer);
 }
 
@@ -2735,7 +2715,7 @@ void AIS_InteractiveContext::InitAttributes()
   Handle(Prs3d_DatumAspect) aTrihAspect = myDefaultDrawer->DatumAspect();
   const Standard_Real aLength = 100.0;
   aTrihAspect->SetAxisLength (aLength, aLength, aLength);
-  const Quantity_NameOfColor aColor = Quantity_NOC_LIGHTSTEELBLUE4;
+  const Quantity_Color aColor = Quantity_NOC_LIGHTSTEELBLUE4;
   aTrihAspect->LineAspect(Prs3d_DP_XAxis)->SetColor (aColor);
   aTrihAspect->LineAspect(Prs3d_DP_YAxis)->SetColor (aColor);
   aTrihAspect->LineAspect(Prs3d_DP_ZAxis)->SetColor (aColor);

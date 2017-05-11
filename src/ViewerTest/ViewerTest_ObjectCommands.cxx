@@ -614,7 +614,7 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
   Standard_Real                value;
   Standard_Boolean             hascol;
 
-  Quantity_NameOfColor         col = Quantity_NOC_BLACK ;
+  Quantity_Color col = Quantity_NOC_BLACK;
 
   // Verification des arguments
   if ( argc>3 ) {di<<argv[0]<<" Syntaxe error\n"; return 1;}
@@ -651,13 +651,17 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
         // un AIS_Trihedron
         if (aShape->Type()==AIS_KOI_Datum && aShape->Signature()==3) {
 
-          if (aShape->HasColor()) {
-            hascol=Standard_True;
+          if (aShape->HasColor())
+          {
+            hascol = Standard_True;
 
             // On recupere la couleur de aShape
-            col=aShape->Color();}
-
-          else hascol=Standard_False;
+            aShape->Color (col);
+          }
+          else
+          {
+            hascol = Standard_False;
+          }
 
           // On downcast aShape  de AIS_InteractiveObject a AIS_Trihedron
           // pour lui appliquer la methode SetSize()
@@ -711,14 +715,17 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
       if (!aShape.IsNull() &&
         aShape->Type()==AIS_KOI_Datum && aShape->Signature()==3)
       {
-
-        if (aShape->HasColor()) {
+        if (aShape->HasColor())
+        {
           hascol=Standard_True;
 
           // On recupere la couleur de aShape
-          col=aShape->Color();}
-
-        else hascol=Standard_False;
+          aShape->Color (col);
+        }
+        else
+        {
+          hascol = Standard_False;
+        }
 
         // On downcast aShape de AIS_InteractiveObject a AIS_Trihedron
         // pour lui appliquer la methode SetSize()

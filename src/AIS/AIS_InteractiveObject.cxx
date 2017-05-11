@@ -53,7 +53,6 @@ AIS_InteractiveObject::AIS_InteractiveObject (const PrsMgr_TypeOfPresentation3d 
 : SelectMgr_SelectableObject (aTypeOfPresentation3d),
   myCTXPtr (NULL),
   myOwnWidth (0.0),
-  myOwnMaterial (Graphic3d_NOM_DEFAULT),
   myCurrentFacingModel (Aspect_TOFM_BOTH_SIDE),
   myInfiniteState (Standard_False),
   hasOwnColor (Standard_False),
@@ -180,16 +179,6 @@ Aspect_TypeOfFacingModel AIS_InteractiveObject::CurrentFacingModel() const {
 //purpose  : 
 //=======================================================================
 
-void AIS_InteractiveObject::SetColor(const Quantity_NameOfColor aColor)
-{
-  SetColor(Quantity_Color(aColor));
-}
-
-//=======================================================================
-//function : SetColor
-//purpose  : 
-//=======================================================================
-
 void AIS_InteractiveObject::SetColor(const Quantity_Color& theColor)
 {
   myDrawer->SetColor (theColor);
@@ -223,29 +212,18 @@ void AIS_InteractiveObject::UnsetWidth()
   myOwnWidth = 0.;
 }
 
-
 //=======================================================================
-//function : SetMaterial
+//function : Material
 //purpose  :
 //=======================================================================
-void AIS_InteractiveObject::SetMaterial (const Graphic3d_NameOfMaterial theName)
+Graphic3d_NameOfMaterial AIS_InteractiveObject::Material() const
 {
-  if (!myDrawer->HasOwnShadingAspect())
-  {
-    myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-    if (myDrawer->HasLink())
-    {
-      *myDrawer->ShadingAspect()->Aspect() = *myDrawer->Link()->ShadingAspect()->Aspect();
-    }
-  }
-  myDrawer->ShadingAspect()->SetMaterial (theName);
-  myOwnMaterial  = theName;
-  hasOwnMaterial = Standard_True;
+  return myDrawer->ShadingAspect()->Material().Name();
 }
 
 //=======================================================================
 //function : SetMaterial
-//purpose  : 
+//purpose  :
 //=======================================================================
 void AIS_InteractiveObject::SetMaterial (const Graphic3d_MaterialAspect& theMaterial)
 {
@@ -257,6 +235,7 @@ void AIS_InteractiveObject::SetMaterial (const Graphic3d_MaterialAspect& theMate
       *myDrawer->ShadingAspect()->Aspect() = *myDrawer->Link()->ShadingAspect()->Aspect();
     }
   }
+
   myDrawer->ShadingAspect()->SetMaterial (theMaterial);
   hasOwnMaterial = Standard_True;
 }

@@ -68,7 +68,7 @@ AIS_PlaneTrihedron::AIS_PlaneTrihedron(const Handle(Geom_Plane)& aPlane)
 //POP  Standard_Real aLength = UnitsAPI::CurrentFromLS (100. ,"LENGTH");
   Standard_Real aLength = UnitsAPI::AnyToLS (100. ,"mm");
   DA->SetAxisLength(aLength,aLength,aLength);
-  Quantity_NameOfColor col = Quantity_NOC_ROYALBLUE1;
+  Quantity_Color col (Quantity_NOC_ROYALBLUE1);
   DA->LineAspect(Prs3d_DP_XAxis)->SetColor(col);
   DA->LineAspect(Prs3d_DP_YAxis)->SetColor(col);
   DA->SetDrawDatumAxes(Prs3d_DA_XYAxis);
@@ -240,11 +240,6 @@ void AIS_PlaneTrihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSe
       break;
     }
   }
-}
-
-void AIS_PlaneTrihedron::SetColor(const Quantity_NameOfColor aCol)
-{
-  SetColor(Quantity_Color(aCol));
 }
 
 void AIS_PlaneTrihedron::SetColor(const Quantity_Color &aCol)
