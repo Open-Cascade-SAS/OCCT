@@ -98,6 +98,8 @@ Standard_Boolean D3DHost_FrameBuffer::Init (const Handle(OpenGl_Context)& theCtx
 
   myVPSizeX = theSizeX;
   myVPSizeY = theSizeY;
+  myInitVPSizeX = theSizeX;
+  myInitVPSizeY = theSizeY;
   const Standard_Integer aSizeX = theSizeX > 0 ? theSizeX : 2;
   const Standard_Integer aSizeY = theSizeY > 0 ? theSizeY : 2;
 

@@ -97,6 +97,18 @@ public:
     return myVPSizeY;
   }
 
+  //! Viewport width.
+  GLsizei GetInitVPSizeX() const
+  {
+    return myInitVPSizeX;
+  }
+
+  //! Viewport height.
+  GLsizei GetInitVPSizeY() const
+  {
+    return myInitVPSizeY;
+  }
+
   //! Returns true if current object was initialized
   Standard_Boolean IsValid() const
   {
@@ -246,6 +258,8 @@ protected:
 
 protected:
 
+  GLsizei                myInitVPSizeX;         //!< viewport width  specified during initialization (kept even on failure)
+  GLsizei                myInitVPSizeY;         //!< viewport height specified during initialization (kept even on failure)
   GLsizei                myVPSizeX;             //!< viewport width  (should be <= texture width)
   GLsizei                myVPSizeY;             //!< viewport height (should be <= texture height)
   GLsizei                myNbSamples;           //!< number of MSAA samples

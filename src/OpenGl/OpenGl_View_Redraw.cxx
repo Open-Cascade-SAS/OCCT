@@ -38,6 +38,34 @@
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_ArbFBO.hxx>
 
+namespace
+{
+  //! Format Frame Buffer format for logging messages.
+  static TCollection_AsciiString printFboFormat (const Handle(OpenGl_FrameBuffer)& theFbo)
+  {
+    return TCollection_AsciiString() + theFbo->GetInitVPSizeX() + "x" + theFbo->GetInitVPSizeY() + "@" + theFbo->NbSamples();
+  }
+
+  //! Return TRUE if Frame Buffer initialized has failed with the same parameters.
+  static bool checkWasFailedFbo (const Handle(OpenGl_FrameBuffer)& theFboToCheck,
+                                 Standard_Integer theSizeX,
+                                 Standard_Integer theSizeY,
+                                 Standard_Integer theNbSamples)
+  {
+    return !theFboToCheck->IsValid()
+        &&  theFboToCheck->GetInitVPSizeX() == theSizeX
+        &&  theFboToCheck->GetInitVPSizeY() == theSizeY
+        &&  theFboToCheck->NbSamples()      == theNbSamples;
+  }
+
+  //! Return TRUE if Frame Buffer initialized has failed with the same parameters.
+  static bool checkWasFailedFbo (const Handle(OpenGl_FrameBuffer)& theFboToCheck,
+                                 const Handle(OpenGl_FrameBuffer)& theFboRef)
+  {
+    return checkWasFailedFbo (theFboToCheck, theFboRef->GetVPSizeX(), theFboRef->GetVPSizeY(), theFboRef->NbSamples());
+  }
+}
+
 //=======================================================================
 //function : drawBackground
 //purpose  :
@@ -198,12 +226,26 @@ void OpenGl_View::Redraw()
       // for further blitting and rendering immediate presentations on top
       if (aCtx->core20fwd != NULL)
       {
-        myMainSceneFbos[0]->Init (aCtx, aRendSizeX, aRendSizeY, myFboColorFormat, myFboDepthFormat, aNbSamples);
+        const bool wasFailedMain0 = checkWasFailedFbo (myMainSceneFbos[0], aRendSizeX, aRendSizeY, aNbSamples);
+        if (!myMainSceneFbos[0]->Init (aCtx, aRendSizeX, aRendSizeY, myFboColorFormat, myFboDepthFormat, aNbSamples)
+         && !wasFailedMain0)
+        {
+          TCollection_ExtendedString aMsg = TCollection_ExtendedString() + "Error! Main FBO "
+                                          + printFboFormat (myMainSceneFbos[0]) + " initialization has failed";
+          aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
+        }
       }
     }
     if (myMainSceneFbos[0]->IsValid() && (toInitImmediateFbo || myImmediateSceneFbos[0]->IsValid()))
     {
-      myImmediateSceneFbos[0]->InitLazy (aCtx, *myMainSceneFbos[0]);
+      const bool wasFailedImm0 = checkWasFailedFbo (myImmediateSceneFbos[0], myMainSceneFbos[0]);
+      if (!myImmediateSceneFbos[0]->InitLazy (aCtx, *myMainSceneFbos[0])
+       && !wasFailedImm0)
+      {
+        TCollection_ExtendedString aMsg = TCollection_ExtendedString() + "Error! Immediate FBO "
+                                        + printFboFormat (myImmediateSceneFbos[0]) + " initialization has failed";
+        aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
+      }
     }
   }
   else
@@ -221,7 +263,14 @@ void OpenGl_View::Redraw()
   if (aProjectType == Graphic3d_Camera::Projection_Stereo
    && myMainSceneFbos[0]->IsValid())
   {
-    myMainSceneFbos[1]->InitLazy (aCtx, *myMainSceneFbos[0]);
+    const bool wasFailedMain1 = checkWasFailedFbo (myMainSceneFbos[1], myMainSceneFbos[0]);
+    if (!myMainSceneFbos[1]->InitLazy (aCtx, *myMainSceneFbos[0])
+     && !wasFailedMain1)
+    {
+      TCollection_ExtendedString aMsg = TCollection_ExtendedString() + "Error! Main FBO (second) "
+                                      + printFboFormat (myMainSceneFbos[1]) + " initialization has failed";
+      aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
+    }
     if (!myMainSceneFbos[1]->IsValid())
     {
       // no enough memory?
@@ -233,8 +282,22 @@ void OpenGl_View::Redraw()
     }
     else if (!aCtx->HasStereoBuffers() || aStereoMode != Graphic3d_StereoMode_QuadBuffer)
     {
-      myImmediateSceneFbos[0]->InitLazy (aCtx, *myMainSceneFbos[0]);
-      myImmediateSceneFbos[1]->InitLazy (aCtx, *myMainSceneFbos[0]);
+      const bool wasFailedImm0 = checkWasFailedFbo (myImmediateSceneFbos[0], myMainSceneFbos[0]);
+      const bool wasFailedImm1 = checkWasFailedFbo (myImmediateSceneFbos[1], myMainSceneFbos[0]);
+      if (!myImmediateSceneFbos[0]->InitLazy (aCtx, *myMainSceneFbos[0])
+       && !wasFailedImm0)
+      {
+        TCollection_ExtendedString aMsg = TCollection_ExtendedString() + "Error! Immediate FBO (first) "
+                                        + printFboFormat (myImmediateSceneFbos[0]) + " initialization has failed";
+        aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
+      }
+      if (!myImmediateSceneFbos[1]->InitLazy (aCtx, *myMainSceneFbos[0])
+       && !wasFailedImm1)
+      {
+        TCollection_ExtendedString aMsg = TCollection_ExtendedString() + "Error! Immediate FBO (first) "
+                                        + printFboFormat (myImmediateSceneFbos[1]) + " initialization has failed";
+        aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
+      }
       if (!myImmediateSceneFbos[0]->IsValid()
        || !myImmediateSceneFbos[1]->IsValid())
       {
@@ -746,7 +809,11 @@ bool OpenGl_View::redrawImmediate (const Graphic3d_Camera::Projection theProject
         // prefer Swap Buffers within Redraw in compatibility mode (without FBO)
         return true;
       }
-      copyBackToFront();
+      if (!copyBackToFront())
+      {
+        toCopyBackToFront    = GL_FALSE;
+        myBackBufferRestored = Standard_False;
+      }
     }
     else
     {
@@ -1548,16 +1615,20 @@ void OpenGl_View::drawStereoPair (OpenGl_FrameBuffer* theDrawFbo)
 // function : copyBackToFront
 // purpose  :
 // =======================================================================
-void OpenGl_View::copyBackToFront()
+bool OpenGl_View::copyBackToFront()
 {
+  myIsImmediateDrawn = Standard_False;
 #if !defined(GL_ES_VERSION_2_0)
+  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+  if (aCtx->core11 == NULL)
+  {
+    return false;
+  }
 
   OpenGl_Mat4 aProjectMat;
   Graphic3d_TransformUtils::Ortho2D (aProjectMat,
                                      0.0f, static_cast<GLfloat> (myWindow->Width()),
                                      0.0f, static_cast<GLfloat> (myWindow->Height()));
-
-  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
 
   aCtx->WorldViewState.Push();
   aCtx->ProjectionState.Push();
@@ -1595,9 +1666,9 @@ void OpenGl_View::copyBackToFront()
     }
   }
 
-  glRasterPos2i (0, 0);
-  glCopyPixels  (0, 0, myWindow->Width() + 1, myWindow->Height() + 1, GL_COLOR);
-  //glCopyPixels  (0, 0, myWidth + 1, myHeight + 1, GL_DEPTH);
+  aCtx->core11->glRasterPos2i (0, 0);
+  aCtx->core11->glCopyPixels  (0, 0, myWindow->Width() + 1, myWindow->Height() + 1, GL_COLOR);
+  //aCtx->core11->glCopyPixels  (0, 0, myWidth + 1, myHeight + 1, GL_DEPTH);
 
   aCtx->EnableFeatures();
 
@@ -1607,8 +1678,10 @@ void OpenGl_View::copyBackToFront()
 
   // read/write from front buffer now
   aCtx->SetReadBuffer (aCtx->DrawBuffer());
+  return true;
+#else
+  return false;
 #endif
-  myIsImmediateDrawn = Standard_False;
 }
 
 // =======================================================================

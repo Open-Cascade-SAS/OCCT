@@ -3491,27 +3491,25 @@ void OpenGl_Context::EnableFeatures() const
 // =======================================================================
 void OpenGl_Context::DisableFeatures() const
 {
-#if !defined(GL_ES_VERSION_2_0)
-  glPixelTransferi (GL_MAP_COLOR, GL_FALSE);
-#endif
-
-  /*
-  * Disable stuff that's likely to slow down glDrawPixels.
-  * (Omit as much of this as possible, when you know in advance
-  * that the OpenGL state will already be set correctly.)
-  */
+  // Disable stuff that's likely to slow down glDrawPixels.
   glDisable(GL_DITHER);
   glDisable(GL_BLEND);
   glDisable(GL_DEPTH_TEST);
-  glDisable(GL_TEXTURE_2D);
   glDisable(GL_STENCIL_TEST);
 
 #if !defined(GL_ES_VERSION_2_0)
+  if (core11 == NULL)
+  {
+    return;
+  }
+
+  glDisable(GL_TEXTURE_1D);
+  glDisable(GL_TEXTURE_2D);
+
   glDisable(GL_LIGHTING);
   glDisable(GL_ALPHA_TEST);
   glDisable(GL_FOG);
   glDisable(GL_LOGIC_OP);
-  glDisable(GL_TEXTURE_1D);
 
   glPixelTransferi(GL_MAP_COLOR, GL_FALSE);
   glPixelTransferi(GL_RED_SCALE, 1);
@@ -3523,16 +3521,8 @@ void OpenGl_Context::DisableFeatures() const
   glPixelTransferi(GL_ALPHA_SCALE, 1);
   glPixelTransferi(GL_ALPHA_BIAS, 0);
 
-  /*
-  * Disable extensions that could slow down glDrawPixels.
-  * (Actually, you should check for the presence of the proper
-  * extension before making these calls.  I've omitted that
-  * code for simplicity.)
-  */
-
   if ((myGlVerMajor >= 1) && (myGlVerMinor >= 2))
   {
-#ifdef GL_EXT_convolution
     if (CheckExtension ("GL_CONVOLUTION_1D_EXT"))
       glDisable(GL_CONVOLUTION_1D_EXT);
 
@@ -3541,20 +3531,15 @@ void OpenGl_Context::DisableFeatures() const
 
     if (CheckExtension ("GL_SEPARABLE_2D_EXT"))
       glDisable(GL_SEPARABLE_2D_EXT);
-#endif
 
-#ifdef GL_EXT_histogram
     if (CheckExtension ("GL_SEPARABLE_2D_EXT"))
       glDisable(GL_HISTOGRAM_EXT);
 
     if (CheckExtension ("GL_MINMAX_EXT"))
       glDisable(GL_MINMAX_EXT);
-#endif
 
-#ifdef GL_EXT_texture3D
     if (CheckExtension ("GL_TEXTURE_3D_EXT"))
       glDisable(GL_TEXTURE_3D_EXT);
-#endif
   }
 #endif
 }

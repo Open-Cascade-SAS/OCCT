@@ -444,7 +444,7 @@ private:
 private:
 
   //! Copy content of Back buffer to the Front buffer.
-  void copyBackToFront();
+  bool copyBackToFront();
 
   //! Initialize blit quad.
   OpenGl_VertexBuffer* initBlitQuad (const Standard_Boolean theToFlip);

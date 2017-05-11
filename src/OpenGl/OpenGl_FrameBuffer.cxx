@@ -133,7 +133,9 @@ namespace
 // purpose  :
 // =======================================================================
 OpenGl_FrameBuffer::OpenGl_FrameBuffer()
-: myVPSizeX (0),
+: myInitVPSizeX (0),
+  myInitVPSizeY (0),
+  myVPSizeX (0),
   myVPSizeY (0),
   myNbSamples (0),
   myDepthFormat (GL_DEPTH24_STENCIL8),
@@ -326,6 +328,8 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
 
   myDepthFormat = theDepthFormat;
   myNbSamples   = theNbSamples;
+  myInitVPSizeX = theSizeX;
+  myInitVPSizeY = theSizeY;
   if (theGlContext->arbFBO == NULL)
   {
     return Standard_False;
@@ -535,6 +539,8 @@ Standard_Boolean OpenGl_FrameBuffer::InitWithRB (const Handle(OpenGl_Context)& t
 
   myDepthFormat = theDepthFormat;
   myNbSamples   = 0;
+  myInitVPSizeX = theSizeX;
+  myInitVPSizeY = theSizeY;
   if (theGlCtx->arbFBO == NULL)
   {
     return Standard_False;
