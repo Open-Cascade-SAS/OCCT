@@ -119,6 +119,16 @@ void TDataStd_Name::SetID( const Standard_GUID&  theGuid)
   myID = theGuid;
 }
 
+//=======================================================================
+//function : SetID
+//purpose  : sets default ID
+//=======================================================================
+void TDataStd_Name::SetID()
+{
+  Backup();
+  myID = GetID();
+}
+
 // TDF_Attribute methods
 //=======================================================================
 //function : ID

@@ -15,6 +15,7 @@
 
 
 #include <BinMDataStd_ExtStringListDriver.hxx>
+#include <BinMDataStd.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <CDM_MessageDriver.hxx>
 #include <Standard_Type.hxx>
@@ -56,22 +57,24 @@ Standard_Boolean BinMDataStd_ExtStringListDriver::Paste
   Standard_Integer aFirstInd, aLastInd;
   if (! (theSource >> aFirstInd >> aLastInd))
     return Standard_False;
-  if(aLastInd == 0) return Standard_True;
-  const Standard_Integer aLength = aLastInd - aFirstInd + 1;
-  if (aLength <= 0)
-    return Standard_False;
-  const Handle(TDataStd_ExtStringList) anAtt =
-    Handle(TDataStd_ExtStringList)::DownCast(theTarget);
-  for (Standard_Integer i = aFirstInd; i <= aLastInd; i ++)
-  {
-    TCollection_ExtendedString aStr;
-    if ( !(theSource >> aStr) )
-    {
+
+  const Handle(TDataStd_ExtStringList) anAtt = Handle(TDataStd_ExtStringList)::DownCast(theTarget);
+  if(aLastInd > 0) {
+    const Standard_Integer aLength = aLastInd - aFirstInd + 1;
+    if (aLength <= 0)
       return Standard_False;
+    for (Standard_Integer i = aFirstInd; i <= aLastInd; i ++)
+    {
+      TCollection_ExtendedString aStr;
+      if ( !(theSource >> aStr) )
+      {
+        return Standard_False;
+      }
+      anAtt->Append(aStr);
     }
-    anAtt->Append(aStr);
   }
 
+  BinMDataStd::SetAttributeID(theSource, anAtt);
   return Standard_True;
 }
 
@@ -94,4 +97,8 @@ void BinMDataStd_ExtStringListDriver::Paste
   {
     theTarget << itr.Value();
   }
+
+  // process user defined guid
+  if(anAtt->ID() != TDataStd_ExtStringList::GetID()) 
+    theTarget << anAtt->ID();
 }

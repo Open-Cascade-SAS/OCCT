@@ -1,0 +1,89 @@
+#INTERFACE CAF
+# Basic attributes
+# TDataStd_BooleanArray
+#
+# Testing attribute: User defined (additional GUID) TDataStd_BooleanArray
+#
+# Testing command:   SetBooleanArray
+# Testing command:   GetBooleanArray
+#
+
+puts "caf001-O6"
+set QA_DUP 0
+
+# Add an attribute to a data framework
+set aFrom1 1
+set aTo1 2
+set aSetAttr11 0
+set aSetAttr12 1
+set aLabel 0:2
+
+set aGuid1 "12e94516-6dbc-11d4-b9c8-0060b0ee281b"
+
+SetBooleanArray D ${aLabel} ${aFrom1} ${aTo1} ${aSetAttr11} ${aSetAttr12}
+SetBooleanArray D ${aLabel} -g ${aGuid1} ${aFrom1} ${aTo1} ${aSetAttr11} ${aSetAttr12}
+
+# Close/Open the transaction
+NewCommand D
+
+# Forget the attribute
+ForgetAll D ${aLabel}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+Redo D
+Undo D
+
+# Save Document
+set aFile ${imagedir}/caf001-O6.cbf
+SaveAs D  ${aFile}
+Close D
+
+#Open a document
+Open ${aFile} D
+
+
+# Get a value of the attribute
+set IsGood 1
+set aMessage1 "Add TDataStd_BooleanArray attribute: Error"
+set aGetAttr1 [GetBooleanArray D ${aLabel}]
+set aLen1 [llength ${aGetAttr1}]
+set aGetAttr2 [GetBooleanArray D ${aLabel} ${aGuid1}]
+set aLen2 [llength ${aGetAttr2}]
+
+if { ${aLen1} != [expr ${aTo1} - ${aFrom1} + 1] } {
+   set IsGood 0
+   puts "aLen1=${aLen1}"
+   puts ${aMessage1}
+}
+if { ${aLen2} != [expr ${aTo1} - ${aFrom1} + 1] } {
+   set IsGood 0
+   puts "aLen2=${aLen2}"
+   puts ${aMessage1}
+}
+
+set aGetAttr11 [lindex ${aGetAttr1} 0]
+set aGetAttr21 [lindex ${aGetAttr2} 0]
+if { ${aGetAttr11} != ${aGetAttr21} } {
+   set IsGood 0
+   puts "aGetAttr11=${aGetAttr11}"
+   puts "aGetAttr21=${aGetAttr21}"
+   puts ${aMessage1}
+}
+set aGetAttr12 [lindex ${aGetAttr1} 1]
+set aGetAttr22 [lindex ${aGetAttr2} 1]
+if { ${aGetAttr12} != ${aGetAttr22} } {
+   set IsGood 0
+   puts "aGetAttr12=${aGetAttr12}"
+   puts "aGetAttr22=${aGetAttr22}"
+   puts ${aMessage1}
+}
+
+if { ${IsGood} == 0} {
+  puts "Add TDataStd_BooleanArray attribute: Error"
+} else {
+  puts "Add TDataStd_BooleanArray attribute: OK"
+}

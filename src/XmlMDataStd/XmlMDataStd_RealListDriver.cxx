@@ -27,7 +27,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_RealListDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
 IMPLEMENT_DOMSTRING (LastIndexString,  "last")
-
+IMPLEMENT_DOMSTRING (AttributeIDString, "reallistattguid")
 //=======================================================================
 //function : XmlMDataStd_RealListDriver
 //purpose  : Constructor
@@ -52,8 +52,8 @@ Handle(TDF_Attribute) XmlMDataStd_RealListDriver::NewEmpty() const
 //purpose  : persistent -> transient (retrieve)
 //=======================================================================
 Standard_Boolean XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-						   const Handle(TDF_Attribute)& theTarget,
-						   XmlObjMgt_RRelocationTable&  ) const
+                                                   const Handle(TDF_Attribute)& theTarget,
+                                                   XmlObjMgt_RRelocationTable&  ) const
 {
   Standard_Real aValue;
   Standard_Integer aFirstInd, aLastInd, ind;
@@ -123,6 +123,16 @@ Standard_Boolean XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&  
     }
   }
 
+  // attribute id
+  Standard_GUID aGUID;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_RealList::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+
+  aRealList->SetID(aGUID);
+
   return Standard_True;
 }
 
@@ -131,8 +141,8 @@ Standard_Boolean XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&  
 //purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_RealListDriver::Paste(const Handle(TDF_Attribute)& theSource,
-				       XmlObjMgt_Persistent&        theTarget,
-				       XmlObjMgt_SRelocationTable&  ) const
+                                       XmlObjMgt_Persistent&        theTarget,
+                                       XmlObjMgt_SRelocationTable&  ) const
 {
   const Handle(TDataStd_RealList) aRealList = Handle(TDataStd_RealList)::DownCast(theSource);
 
@@ -153,4 +163,12 @@ void XmlMDataStd_RealListDriver::Paste(const Handle(TDF_Attribute)& theSource,
     }
   }
   XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
+
+  if(aRealList->ID() != TDataStd_RealList::GetID()) {
+    //convert GUID
+    Standard_Character aGuidStr [Standard_GUID_SIZE_ALLOC];
+    Standard_PCharacter pGuidStr = aGuidStr;
+    aRealList->ID().ToCString (pGuidStr);
+    theTarget.Element().setAttribute (::AttributeIDString(), aGuidStr);
+  }
 }

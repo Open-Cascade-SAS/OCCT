@@ -35,6 +35,23 @@ const Standard_GUID& TDataStd_RealList::GetID()
 }
 
 //=======================================================================
+//function : SetAttr
+//purpose  : Implements Set functionality
+//=======================================================================
+static Handle(TDataStd_RealList) SetAttr(const TDF_Label&       label,
+                                         const Standard_GUID&   theGuid) 
+{
+  Handle(TDataStd_RealList) A;
+  if (!label.FindAttribute (theGuid, A)) 
+  {
+    A = new TDataStd_RealList;
+    A->SetID(theGuid);
+    label.AddAttribute(A);
+  }
+  return A;
+}
+
+//=======================================================================
 //function : TDataStd_RealList
 //purpose  : Empty Constructor
 //=======================================================================
@@ -49,13 +66,17 @@ TDataStd_RealList::TDataStd_RealList()
 //=======================================================================
 Handle(TDataStd_RealList) TDataStd_RealList::Set(const TDF_Label& label) 
 {
-  Handle(TDataStd_RealList) A;
-  if (!label.FindAttribute (TDataStd_RealList::GetID(), A)) 
-  {
-    A = new TDataStd_RealList;
-    label.AddAttribute(A);
-  }
-  return A;
+  return SetAttr(label, GetID());
+}
+
+//=======================================================================
+//function : Set
+//purpose  : Set user defined attribute with specific ID
+//=======================================================================
+Handle(TDataStd_RealList) TDataStd_RealList::Set(const TDF_Label& label,
+                                                 const Standard_GUID&   theGuid) 
+{
+  return SetAttr(label, theGuid);
 }
 
 //=======================================================================
@@ -101,7 +122,7 @@ void TDataStd_RealList::Append(const Standard_Real value)
 //purpose  : 
 //=======================================================================
 Standard_Boolean TDataStd_RealList::InsertBefore(const Standard_Real value,
-						 const Standard_Real before_value)
+                                                 const Standard_Real before_value)
 {
   TColStd_ListIteratorOfListOfReal itr(myList);
   for (; itr.More(); itr.Next())
@@ -142,7 +163,7 @@ Standard_Boolean TDataStd_RealList::InsertBeforeByIndex (const Standard_Integer 
 //purpose  : 
 //=======================================================================
 Standard_Boolean TDataStd_RealList::InsertAfter(const Standard_Real value,
-						const Standard_Real after_value)
+                                                const Standard_Real after_value)
 {
   TColStd_ListIteratorOfListOfReal itr(myList);
   for (; itr.More(); itr.Next())
@@ -262,7 +283,28 @@ const TColStd_ListOfReal& TDataStd_RealList::List() const
 //=======================================================================
 const Standard_GUID& TDataStd_RealList::ID () const 
 { 
-  return GetID(); 
+  return myID; 
+}
+
+//=======================================================================
+//function : SetID
+//purpose  :
+//=======================================================================
+void TDataStd_RealList::SetID( const Standard_GUID&  theGuid)
+{  
+  if(myID == theGuid) return;
+  Backup();
+  myID = theGuid;
+}
+
+//=======================================================================
+//function : SetID
+//purpose  : sets default ID
+//=======================================================================
+void TDataStd_RealList::SetID()
+{  
+  Backup();
+  myID = GetID();
 }
 
 //=======================================================================
@@ -287,6 +329,7 @@ void TDataStd_RealList::Restore(const Handle(TDF_Attribute)& With)
   {
     myList.Append(itr.Value());
   }
+  myID = aList->ID();
 }
 
 //=======================================================================
@@ -294,7 +337,7 @@ void TDataStd_RealList::Restore(const Handle(TDF_Attribute)& With)
 //purpose  : 
 //=======================================================================
 void TDataStd_RealList::Paste (const Handle(TDF_Attribute)& Into,
-				  const Handle(TDF_RelocationTable)& ) const
+                               const Handle(TDF_RelocationTable)& ) const
 {
   Handle(TDataStd_RealList) aList = Handle(TDataStd_RealList)::DownCast(Into);
   aList->Clear();
@@ -303,6 +346,7 @@ void TDataStd_RealList::Paste (const Handle(TDF_Attribute)& Into,
   {
     aList->Append(itr.Value());
   }
+  aList->SetID(myID);
 }
 
 //=======================================================================
@@ -311,6 +355,10 @@ void TDataStd_RealList::Paste (const Handle(TDF_Attribute)& Into,
 //=======================================================================
 Standard_OStream& TDataStd_RealList::Dump (Standard_OStream& anOS) const
 {  
-  anOS << "RealList";
+  anOS << "\nRealList: ";
+  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  myID.ToCString(sguid);
+  anOS << sguid;
+  anOS << endl;
   return anOS;
 }

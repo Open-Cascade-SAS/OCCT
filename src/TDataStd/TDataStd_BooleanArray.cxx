@@ -60,6 +60,30 @@ const Standard_GUID& TDataStd_BooleanArray::GetID()
 }
 
 //=======================================================================
+//function : SetAttr
+//purpose  : Implements Set functionality
+//=======================================================================
+static Handle(TDataStd_BooleanArray) SetAttr(const TDF_Label&       label,
+                                             const Standard_Integer lower,
+                                             const Standard_Integer upper,
+                                             const Standard_GUID&   theGuid) 
+{
+  Handle(TDataStd_BooleanArray) A;
+  if (!label.FindAttribute (theGuid, A)) 
+  {
+    A = new TDataStd_BooleanArray;
+    A->SetID(theGuid);
+    A->Init (lower, upper); 
+    label.AddAttribute(A);
+  }
+  else if (lower != A->Lower() || upper != A->Upper())
+  {
+    A->Init(lower, upper);
+  }
+  return A;
+}
+
+//=======================================================================
 //function : TDataStd_BooleanArray
 //purpose  : Empty Constructor
 //=======================================================================
@@ -73,14 +97,13 @@ TDataStd_BooleanArray::TDataStd_BooleanArray()
 //purpose  : 
 //=======================================================================
 void TDataStd_BooleanArray::Init(const Standard_Integer lower,
-				 const Standard_Integer upper)
+                                 const Standard_Integer upper)
 {
+  Standard_RangeError_Raise_if(upper < lower,"TDataStd_BooleanArray::Init");
   Backup();
-
   myLower = lower;
   myUpper = upper;
-  if (myUpper >= myLower)
-    myValues = new TColStd_HArray1OfByte(0, Length() >> 3, 0/*initialize to FALSE*/);
+  myValues = new TColStd_HArray1OfByte(0, Length() >> 3, 0/*initialize to FALSE*/);
 }
 
 //=======================================================================
@@ -88,30 +111,31 @@ void TDataStd_BooleanArray::Init(const Standard_Integer lower,
 //purpose  : 
 //=======================================================================
 Handle(TDataStd_BooleanArray) TDataStd_BooleanArray::Set(const TDF_Label&       label,
-							 const Standard_Integer lower,
-							 const Standard_Integer upper) 
+                                                         const Standard_Integer lower,
+                                                         const Standard_Integer upper) 
 {
-  Handle(TDataStd_BooleanArray) A;
-  if (!label.FindAttribute (TDataStd_BooleanArray::GetID(), A)) 
-  {
-    A = new TDataStd_BooleanArray;
-    A->Init (lower, upper); 
-    label.AddAttribute(A);
-  }
-  else if (lower != A->Lower() || upper != A->Upper())
-  {
-    A->Init(lower, upper);
-  }
-  return A;
+  return SetAttr(label, lower, upper, GetID());
 }
 
+
+//=======================================================================
+//function : Set
+//purpose  : Set user defined attribute with specific ID
+//=======================================================================
+Handle(TDataStd_BooleanArray) TDataStd_BooleanArray::Set(const TDF_Label&       label,
+                                                         const Standard_GUID&   theGuid,
+                                                         const Standard_Integer lower,
+                                                         const Standard_Integer upper)
+{
+  return SetAttr(label, lower, upper, theGuid);
+}
 
 //=======================================================================
 //function : SetValue
 //purpose  : 
 //=======================================================================
 void TDataStd_BooleanArray::SetValue (const Standard_Integer index,
-				      const Standard_Boolean value) 
+                                      const Standard_Boolean value) 
 {
 
   if (myValues.IsNull()) 
@@ -204,9 +228,30 @@ void TDataStd_BooleanArray::SetInternalArray (const Handle(TColStd_HArray1OfByte
 //=======================================================================
 const Standard_GUID& TDataStd_BooleanArray::ID () const 
 { 
-  return GetID(); 
+  return myID; 
 }
 
+//=======================================================================
+//function : SetID
+//purpose  :
+//=======================================================================
+
+void TDataStd_BooleanArray::SetID( const Standard_GUID&  theGuid)
+{  
+  if(myID == theGuid) return;
+  Backup();
+  myID = theGuid;
+}
+
+//=======================================================================
+//function : SetID
+//purpose  : sets default ID
+//=======================================================================
+void TDataStd_BooleanArray::SetID()
+{
+  Backup();
+  myID = GetID();
+}
 //=======================================================================
 //function : NewEmpty
 //purpose  : 
@@ -234,6 +279,7 @@ void TDataStd_BooleanArray::Restore(const Handle(TDF_Attribute)& With)
     {
       myValues->SetValue(i, with_array.Value(i));
     }
+    myID = anArray->ID();
   }
   else
   {
@@ -256,9 +302,10 @@ void TDataStd_BooleanArray::Paste (const Handle(TDF_Attribute)& Into,
       anArray->Init(myLower, myUpper);
       for (Standard_Integer i = myLower; i <= myUpper; i++)
       {
-	anArray->SetValue(i, Value(i));
+        anArray->SetValue(i, Value(i));
       }
     }
+    anArray->SetID(myID);
   }
 }
 
@@ -268,6 +315,10 @@ void TDataStd_BooleanArray::Paste (const Handle(TDF_Attribute)& Into,
 //=======================================================================
 Standard_OStream& TDataStd_BooleanArray::Dump (Standard_OStream& anOS) const
 {  
-  anOS << "BooleanArray";
+  anOS << "\nBooleanArray: ";
+  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  myID.ToCString(sguid);
+  anOS << sguid;
+  anOS <<endl;
   return anOS;
 }

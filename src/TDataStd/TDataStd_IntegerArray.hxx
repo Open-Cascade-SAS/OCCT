@@ -25,6 +25,8 @@
 #include <TDF_Attribute.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
+#include <Standard_GUID.hxx>
+
 class TDataStd_DeltaOnModificationOfIntArray;
 class Standard_GUID;
 class TDF_Label;
@@ -54,8 +56,16 @@ public:
   //! If <isDelta> == True, DeltaOnModification of the current attribute is used.
   //! If attribute is already set, all input parameters are refused and the found
   //! attribute is returned.
-  Standard_EXPORT static Handle(TDataStd_IntegerArray) Set (const TDF_Label& label, const Standard_Integer lower, const Standard_Integer upper, const Standard_Boolean isDelta = Standard_False);
+  Standard_EXPORT static Handle(TDataStd_IntegerArray) Set (const TDF_Label& label, const Standard_Integer lower, 
+                                                            const Standard_Integer upper, 
+                                                            const Standard_Boolean isDelta = Standard_False);
   
+  //! Finds, or creates, an IntegerArray attribute with explicit user defined <guid>.
+  //! The IntegerArray attribute  is  returned.
+  Standard_EXPORT static Handle(TDataStd_IntegerArray) Set (const TDF_Label& label, const Standard_GUID&   theGuid,
+                                                            const Standard_Integer lower, const Standard_Integer upper, 
+                                                            const Standard_Boolean isDelta = Standard_False);
+
   //! Initialize the inner array with bounds from <lower> to <upper>
   Standard_EXPORT void Init (const Standard_Integer lower, const Standard_Integer upper);
   
@@ -63,12 +73,19 @@ public:
   //! OutOfRange exception is raised if <Index> doesn't respect Lower and Upper bounds of the internal  array.
   Standard_EXPORT void SetValue (const Standard_Integer Index, const Standard_Integer Value);
   
+  //! Sets the explicit GUID (user defined) for the attribute.
+  Standard_EXPORT void SetID( const Standard_GUID&  theGuid) Standard_OVERRIDE;
+
+  //! Sets default GUID for the attribute.
+  Standard_EXPORT void SetID() Standard_OVERRIDE;
+
   //! Return the value of  the  <Index>th element of the array
   Standard_EXPORT Standard_Integer Value (const Standard_Integer Index) const;
-Standard_Integer operator () (const Standard_Integer Index) const
-{
-  return Value(Index);
-}
+
+  Standard_Integer operator () (const Standard_Integer Index) const 
+  {
+    return Value(Index);
+  }
   
   //! Returns the lower boundary of this array of integers.
   Standard_EXPORT Standard_Integer Lower() const;
@@ -121,6 +138,8 @@ private:
 
   Handle(TColStd_HArray1OfInteger) myValue;
   Standard_Boolean myIsDelta;
+  Standard_GUID myID;
+
 
 };
 

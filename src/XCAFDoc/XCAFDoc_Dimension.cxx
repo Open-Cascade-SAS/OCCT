@@ -110,9 +110,10 @@ void XCAFDoc_Dimension::SetObject (const Handle(XCAFDimTolObjects_DimensionObjec
 
   if(!theObject->GetValues().IsNull())
   {
-    Handle(TDataStd_RealArray) aVal = new TDataStd_RealArray();
-    Label().FindChild(ChildLab_Value).AddAttribute(aVal);
-    aVal->ChangeArray(theObject->GetValues());
+    Handle(TDataStd_RealArray) aVal = TDataStd_RealArray::Set(Label().FindChild(ChildLab_Value), theObject->GetValues()->Lower(), 
+                                      theObject->GetValues()->Lower() + theObject->GetValues()->Length() - 1);
+    if(!aVal.IsNull())
+      aVal->ChangeArray(theObject->GetValues());
   }
 
   Handle(TDataStd_Integer) aQualifier = TDataStd_Integer::Set(Label().FindChild(ChildLab_Qualifier), theObject->GetQualifier());
@@ -124,35 +125,36 @@ void XCAFDoc_Dimension::SetObject (const Handle(XCAFDimTolObjects_DimensionObjec
   Handle(TColStd_HArray1OfInteger) anArrI;
   if(aF != XCAFDimTolObjects_DimensionFormVariance_None)
   {
-    Handle(TDataStd_IntegerArray) aClass = new TDataStd_IntegerArray();
-    Label().FindChild(ChildLab_Class).AddAttribute(aClass);
     anArrI = new TColStd_HArray1OfInteger(1,3);
     anArrI->SetValue(1,aH);
     anArrI->SetValue(2,aF);
     anArrI->SetValue(3,aG);
-    aClass->ChangeArray(anArrI);
+    Handle(TDataStd_IntegerArray) aClass = TDataStd_IntegerArray::Set(Label().FindChild(ChildLab_Class), 1, 3);
+    if(!aClass.IsNull())
+      aClass->ChangeArray(anArrI);
   }
 
   Standard_Integer aL, aR;
   theObject->GetNbOfDecimalPlaces(aL, aR);
   if (aL > 0 || aR > 0)
   {
-    Handle(TDataStd_IntegerArray) aDec = new TDataStd_IntegerArray();
-    Label().FindChild(ChildLab_Dec).AddAttribute(aDec);
     anArrI = new TColStd_HArray1OfInteger(1,2);
     anArrI->SetValue(1,aL);
     anArrI->SetValue(2,aR);
-    aDec->ChangeArray(anArrI);
+    Handle(TDataStd_IntegerArray) aDec = TDataStd_IntegerArray::Set(Label().FindChild(ChildLab_Dec), 1, 2);
+    if(!aDec.IsNull())
+      aDec->ChangeArray(anArrI);
   }
 
   if(theObject->GetModifiers().Length() > 0)
   {
-    Handle(TDataStd_IntegerArray) aModifiers = new TDataStd_IntegerArray();
-    Label().FindChild(ChildLab_Modifiers).AddAttribute(aModifiers);
     anArrI = new TColStd_HArray1OfInteger(1,theObject->GetModifiers().Length());
     for(Standard_Integer i = 1; i <= theObject->GetModifiers().Length(); i++)
       anArrI->SetValue(i,theObject->GetModifiers().Value(i));
-    aModifiers->ChangeArray(anArrI);
+    Handle(TDataStd_IntegerArray) aModifiers = TDataStd_IntegerArray::Set(Label().FindChild(ChildLab_Modifiers), 
+                                               1, theObject->GetModifiers().Length());
+    if(!aModifiers.IsNull())
+      aModifiers->ChangeArray(anArrI);
   }
 
   if(!theObject->GetPath().IsNull())
@@ -166,79 +168,75 @@ void XCAFDoc_Dimension::SetObject (const Handle(XCAFDimTolObjects_DimensionObjec
   {
     gp_Dir aD;
     theObject->GetDirection(aD);
-    Handle(TDataStd_RealArray) aDir = new TDataStd_RealArray();
-    Label().FindChild(ChildLab_Dir).AddAttribute(aDir);
     anArrR = new TColStd_HArray1OfReal(1,3);
     anArrR->SetValue(1,aD.X());
     anArrR->SetValue(2,aD.Y());
     anArrR->SetValue(3,aD.Z());
-    aDir->ChangeArray(anArrR);
+    Handle(TDataStd_RealArray) aDir = TDataStd_RealArray::Set(Label().FindChild(ChildLab_Dir), 1, 3);
+    if(!aDir.IsNull())
+      aDir->ChangeArray(anArrR);
   }
 
   if (theObject->HasPoint())
   {
-    Handle(TDataStd_RealArray) aPnt = new TDataStd_RealArray();
     gp_Pnt aPnt1 = theObject->GetPoint();
 
     Handle(TColStd_HArray1OfReal) aPntArr = new TColStd_HArray1OfReal(1, 3);
     for (Standard_Integer i = 1; i <= 3; i++)
       aPntArr->SetValue(i, aPnt1.Coord(i));
-    aPnt->ChangeArray(aPntArr);
-
-    Label().FindChild(ChildLab_Pnt1).AddAttribute(aPnt);
+    Handle(TDataStd_RealArray) aPnt = TDataStd_RealArray::Set(Label().FindChild(ChildLab_Pnt1), 1, 3);
+    if(!aPnt.IsNull())
+      aPnt->ChangeArray(aPntArr);
   }
 
   if (theObject->HasPoint2())
   {
-    Handle(TDataStd_RealArray) aPnt = new TDataStd_RealArray();
     gp_Pnt aPnt2 = theObject->GetPoint2();
 
     Handle(TColStd_HArray1OfReal) aPntArr = new TColStd_HArray1OfReal(1, 3);
     for (Standard_Integer i = 1; i <= 3; i++)
       aPntArr->SetValue(i, aPnt2.Coord(i));
-    aPnt->ChangeArray(aPntArr);
-
-    Label().FindChild(ChildLab_Pnt2).AddAttribute(aPnt);
+    Handle(TDataStd_RealArray) aPnt = TDataStd_RealArray::Set(Label().FindChild(ChildLab_Pnt2), 1, 3);
+    if(!aPnt.IsNull())
+      aPnt->ChangeArray(aPntArr);
   }
 
   if (theObject->HasPlane())
   {
-    Handle(TDataStd_RealArray) aLoc = new TDataStd_RealArray();
-    Handle(TDataStd_RealArray) aN = new TDataStd_RealArray();
-    Handle(TDataStd_RealArray) aRAtt = new TDataStd_RealArray();
     gp_Ax2 anAx = theObject->GetPlane();
 
     Handle(TColStd_HArray1OfReal) aLocArr = new TColStd_HArray1OfReal(1, 3);
     for (Standard_Integer i = 1; i <= 3; i++)
       aLocArr->SetValue(i, anAx.Location().Coord(i));
-    aLoc->ChangeArray(aLocArr);
+    Handle(TDataStd_RealArray) aLoc = TDataStd_RealArray::Set(Label().FindChild(ChildLab_PlaneLoc), 1, 3);
+    if(!aLoc.IsNull())
+      aLoc->ChangeArray(aLocArr);
 
     Handle(TColStd_HArray1OfReal) aNArr = new TColStd_HArray1OfReal(1, 3);
     for (Standard_Integer i = 1; i <= 3; i++)
       aNArr->SetValue(i, anAx.Direction().Coord(i));
-    aN->ChangeArray(aNArr);
+    Handle(TDataStd_RealArray) aN = TDataStd_RealArray::Set(Label().FindChild(ChildLab_PlaneN), 1, 3);
+    if(!aN.IsNull())
+      aN->ChangeArray(aNArr);
 
     Handle(TColStd_HArray1OfReal) aRArr = new TColStd_HArray1OfReal(1, 3);
     for (Standard_Integer i = 1; i <= 3; i++)
       aRArr->SetValue(i, anAx.XDirection().Coord(i));
-    aRAtt->ChangeArray(aRArr);
-
-    Label().FindChild(ChildLab_PlaneLoc).AddAttribute(aLoc);
-    Label().FindChild(ChildLab_PlaneN).AddAttribute(aN);
-    Label().FindChild(ChildLab_PlaneRef).AddAttribute(aRAtt);
+    Handle(TDataStd_RealArray) aRAtt = TDataStd_RealArray::Set(Label().FindChild(ChildLab_PlaneRef), 1, 3);
+    if(!aRAtt.IsNull())
+      aRAtt->ChangeArray(aRArr);
   }
 
   if (theObject->HasTextPoint())
   {
-    Handle(TDataStd_RealArray) aLoc = new TDataStd_RealArray();
     gp_Pnt aPntText = theObject->GetPointTextAttach();
 
     Handle(TColStd_HArray1OfReal) aLocArr = new TColStd_HArray1OfReal(1, 3);
     for (Standard_Integer i = 1; i <= 3; i++)
       aLocArr->SetValue(i, aPntText.Coord(i));
-    aLoc->ChangeArray(aLocArr);
-
-    Label().FindChild(ChildLab_PntText).AddAttribute(aLoc);
+    Handle(TDataStd_RealArray) aLoc = TDataStd_RealArray::Set(Label().FindChild(ChildLab_PntText), 1, 3);
+    if(!aLoc.IsNull())
+      aLoc->ChangeArray(aLocArr);
   }
 
   TopoDS_Shape aPresentation = theObject->GetPresentation();
@@ -257,8 +255,6 @@ void XCAFDoc_Dimension::SetObject (const Handle(XCAFDimTolObjects_DimensionObjec
 
   if (theObject->HasDescriptions())
   {
-    Handle(TDataStd_ExtStringArray) aDescriptions = new TDataStd_ExtStringArray();
-    Handle(TDataStd_ExtStringArray) aDescriptionNames = new TDataStd_ExtStringArray();
     Handle(TColStd_HArray1OfExtendedString) aDescrArr = new TColStd_HArray1OfExtendedString(1, theObject->NbDescriptions());
     Handle(TColStd_HArray1OfExtendedString) aDescrNameArr = new TColStd_HArray1OfExtendedString(1, theObject->NbDescriptions());
     for (Standard_Integer i = 0; i < theObject->NbDescriptions(); i++) {
@@ -267,10 +263,14 @@ void XCAFDoc_Dimension::SetObject (const Handle(XCAFDimTolObjects_DimensionObjec
       TCollection_ExtendedString aDescrName(theObject->GetDescriptionName(i)->String());
       aDescrNameArr->SetValue(i + 1, aDescrName);
     }
-    aDescriptions->ChangeArray(aDescrArr);
-    aDescriptionNames->ChangeArray(aDescrNameArr);
-    Label().FindChild(ChildLab_Descriptions).AddAttribute(aDescriptions);
-    Label().FindChild(ChildLab_DescriptionNames).AddAttribute(aDescriptionNames);
+    Handle(TDataStd_ExtStringArray) aDescriptions = TDataStd_ExtStringArray::Set(Label().FindChild(ChildLab_Descriptions),
+                                                    1, theObject->NbDescriptions());
+    Handle(TDataStd_ExtStringArray) aDescriptionNames = TDataStd_ExtStringArray::Set(Label().FindChild(ChildLab_DescriptionNames),
+                                                        1, theObject->NbDescriptions());
+    if(!aDescriptions.IsNull())
+      aDescriptions->ChangeArray(aDescrArr);
+    if(!aDescriptionNames.IsNull())
+      aDescriptionNames->ChangeArray(aDescrNameArr);
   }
 }
 

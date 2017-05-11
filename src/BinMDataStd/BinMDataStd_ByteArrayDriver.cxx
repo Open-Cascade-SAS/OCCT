@@ -50,8 +50,8 @@ Handle(TDF_Attribute) BinMDataStd_ByteArrayDriver::NewEmpty() const
 //purpose  : persistent -> transient (retrieve)
 //=======================================================================
 Standard_Boolean BinMDataStd_ByteArrayDriver::Paste(const BinObjMgt_Persistent&  theSource,
-						    const Handle(TDF_Attribute)& theTarget,
-						    BinObjMgt_RRelocationTable&  ) const
+                                                    const Handle(TDF_Attribute)& theTarget,
+                                                    BinObjMgt_RRelocationTable&  ) const
 {
   Standard_Integer aFirstInd, aLastInd;
   if (! (theSource >> aFirstInd >> aLastInd))
@@ -62,7 +62,7 @@ Standard_Boolean BinMDataStd_ByteArrayDriver::Paste(const BinObjMgt_Persistent& 
   TColStd_Array1OfByte aTargetArray(aFirstInd, aLastInd);
   theSource.GetByteArray (&aTargetArray(aFirstInd), aTargetArray.Length());
 
-  Handle(TDataStd_ByteArray) anAtt = Handle(TDataStd_ByteArray)::DownCast(theTarget);
+  const Handle(TDataStd_ByteArray) anAtt = Handle(TDataStd_ByteArray)::DownCast(theTarget);
   Handle(TColStd_HArray1OfByte) bytes = new TColStd_HArray1OfByte(aFirstInd, aLastInd);
   for (Standard_Integer i = aFirstInd; i <= aLastInd; i++)
   {
@@ -79,6 +79,8 @@ Standard_Boolean BinMDataStd_ByteArrayDriver::Paste(const BinObjMgt_Persistent& 
       aDelta = (aDeltaValue != 0);
   }
   anAtt->SetDelta(aDelta);
+
+  BinMDataStd::SetAttributeID(theSource, anAtt);
   return Standard_True;
 }
 
@@ -87,8 +89,8 @@ Standard_Boolean BinMDataStd_ByteArrayDriver::Paste(const BinObjMgt_Persistent& 
 //purpose  : transient -> persistent (store)
 //=======================================================================
 void BinMDataStd_ByteArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
-					BinObjMgt_Persistent&        theTarget,
-					BinObjMgt_SRelocationTable&  ) const
+                                        BinObjMgt_Persistent&        theTarget,
+                                        BinObjMgt_SRelocationTable&  ) const
 {
   Handle(TDataStd_ByteArray) anAtt = Handle(TDataStd_ByteArray)::DownCast(theSource);
   const Standard_Integer aFirstInd = anAtt->Lower();
@@ -107,4 +109,8 @@ void BinMDataStd_ByteArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
   Standard_Byte *aPtr = (Standard_Byte *) &aSourceArray(lower);
   theTarget.PutByteArray(aPtr, bytes->Length());
   theTarget << (Standard_Byte)(anAtt->GetDelta() ? 1 : 0);
+  
+  // process user defined guid
+  if(anAtt->ID() != TDataStd_ByteArray::GetID()) 
+    theTarget << anAtt->ID();
 }

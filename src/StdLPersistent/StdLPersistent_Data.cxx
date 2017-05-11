@@ -18,7 +18,6 @@
 #include <TDF_Data.hxx>
 #include <TDF_Attribute.hxx>
 
-
 //! Create a transient label tree from persistent data
 class StdLPersistent_Data::Parser
 {
@@ -44,10 +43,12 @@ public:
       // read persistent attribute
       Handle(StdObjMgt_Persistent)& aPAttrib = myAttribIter.ChangeValue();
       myAttribIter.Next();
-
       // create transient attribute and add it to the label
-      if (aPAttrib)
-        theLabel.AddAttribute (aPAttrib->CreateAttribute());
+      if (aPAttrib) {
+        Handle (TDF_Attribute) anAtt = aPAttrib->CreateAttribute();
+        anAtt->SetID();
+        theLabel.AddAttribute (anAtt);
+      }
     }
 
     // Read child labels count

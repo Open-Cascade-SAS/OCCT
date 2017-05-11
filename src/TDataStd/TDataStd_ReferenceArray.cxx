@@ -35,6 +35,30 @@ const Standard_GUID& TDataStd_ReferenceArray::GetID()
 }
 
 //=======================================================================
+//function : SetAttr
+//purpose  : Implements Set functionality
+//=======================================================================
+static Handle(TDataStd_ReferenceArray) SetAttr(const TDF_Label&     label,
+                                               const Standard_Integer lower,
+                                               const Standard_Integer upper,
+                                               const Standard_GUID&   theGuid) 
+{
+  Handle(TDataStd_ReferenceArray) A;
+  if (!label.FindAttribute (theGuid, A)) 
+  {
+    A = new TDataStd_ReferenceArray;
+    A->Init (lower, upper);
+    A->SetID(theGuid);
+    label.AddAttribute(A);
+  }
+  else if (lower != A->Lower() || upper != A->Upper())
+  {
+    A->Init(lower, upper);
+  }
+  return A;
+}
+
+//=======================================================================
 //function : TDataStd_ReferenceArray
 //purpose  : Empty Constructor
 //=======================================================================
@@ -48,7 +72,7 @@ TDataStd_ReferenceArray::TDataStd_ReferenceArray()
 //purpose  : 
 //=======================================================================
 void TDataStd_ReferenceArray::Init(const Standard_Integer lower,
-				   const Standard_Integer upper)
+                                   const Standard_Integer upper)
 {
   Standard_RangeError_Raise_if(upper < lower,"TDataStd_ReferenceArray::Init");
   Backup();
@@ -60,29 +84,30 @@ void TDataStd_ReferenceArray::Init(const Standard_Integer lower,
 //purpose  : 
 //=======================================================================
 Handle(TDataStd_ReferenceArray) TDataStd_ReferenceArray::Set(const TDF_Label&       label,
-							     const Standard_Integer lower,
-							     const Standard_Integer upper) 
+                                                             const Standard_Integer lower,
+                                                             const Standard_Integer upper)
 {
-  Handle(TDataStd_ReferenceArray) A;
-  if (!label.FindAttribute (TDataStd_ReferenceArray::GetID(), A)) 
-  {
-    A = new TDataStd_ReferenceArray;
-    A->Init (lower, upper); 
-    label.AddAttribute(A);
-  }
-  else if (lower != A->Lower() || upper != A->Upper())
-  {
-    A->Init(lower, upper);
-  }
-  return A;
+  return SetAttr(label, lower, upper, GetID());
 }
 
+
+//=======================================================================
+//function : Set
+//purpose  : Set user defined attribute with specific ID
+//=======================================================================
+Handle(TDataStd_ReferenceArray) TDataStd_ReferenceArray::Set(const TDF_Label&       label,
+                                                             const Standard_GUID&   theGuid,
+                                                             const Standard_Integer lower,
+                                                             const Standard_Integer upper) 
+{
+  return SetAttr(label, lower, upper, theGuid);
+}
 //=======================================================================
 //function : SetValue
 //purpose  : 
 //=======================================================================
 void TDataStd_ReferenceArray::SetValue (const Standard_Integer index,
-					const TDF_Label&       value) 
+                                        const TDF_Label&       value) 
 {
   if(myArray.IsNull()) return;
   if (value == myArray->Value(index))
@@ -162,13 +187,13 @@ void TDataStd_ReferenceArray::SetInternalArray (const Handle(TDataStd_HLabelArra
     Standard_Boolean isEqual = Standard_True;
     if(isCheckItems) {
       for(i = aLower; i <= anUpper; i++) {
-	if(myArray->Value(i) != values->Value(i)) {
-	  isEqual = Standard_False;
-	  break;
-	}
+        if(myArray->Value(i) != values->Value(i)) {
+          isEqual = Standard_False;
+          break;
+        }
       }
       if(isEqual)
-	return;
+        return;
     }
   }
 #endif
@@ -188,7 +213,30 @@ void TDataStd_ReferenceArray::SetInternalArray (const Handle(TDataStd_HLabelArra
 //=======================================================================
 const Standard_GUID& TDataStd_ReferenceArray::ID () const 
 { 
-  return GetID();
+  return myID;
+}
+
+//=======================================================================
+//function : SetID
+//purpose  :
+//=======================================================================
+
+void TDataStd_ReferenceArray::SetID( const Standard_GUID&  theGuid)
+{  
+  if(myID == theGuid) return;
+  Backup();
+  myID = theGuid;
+}
+
+//=======================================================================
+//function : SetID
+//purpose  : sets default ID
+//=======================================================================
+
+void TDataStd_ReferenceArray::SetID()
+{  
+  Backup();
+  myID = GetID();
 }
 
 //=======================================================================
@@ -216,6 +264,7 @@ void TDataStd_ReferenceArray::Restore(const Handle(TDF_Attribute)& With)
     {
       myArray->SetValue(i, arr.Value(i));
     }
+    myID = anArray->ID();
   }
   else
   {
@@ -228,7 +277,7 @@ void TDataStd_ReferenceArray::Restore(const Handle(TDF_Attribute)& With)
 //purpose  : 
 //=======================================================================
 void TDataStd_ReferenceArray::Paste (const Handle(TDF_Attribute)& Into,
-				     const Handle(TDF_RelocationTable)& RT) const
+                                     const Handle(TDF_RelocationTable)& RT) const
 {
   Handle(TDataStd_ReferenceArray) anArray = Handle(TDataStd_ReferenceArray)::DownCast(Into);
   if (myArray.IsNull())
@@ -246,10 +295,11 @@ void TDataStd_ReferenceArray::Paste (const Handle(TDF_Attribute)& Into,
     if (!L.IsNull())
     {
       if (!RT->HasRelocation(L, rL))
-	rL = L;
+        rL = L;
       anArray->myArray->SetValue(i, rL);
     }
   }
+  anArray->SetID(myID);
 }
 
 //=======================================================================
@@ -265,7 +315,7 @@ void TDataStd_ReferenceArray::References(const Handle(TDF_DataSet)& aDataSet) co
     for (; i <= upper; i++)
     {
       if (!arr.Value(i).IsNull())
-	aDataSet->AddLabel(arr.Value(i));
+        aDataSet->AddLabel(arr.Value(i));
     }
   }
 }
@@ -276,6 +326,9 @@ void TDataStd_ReferenceArray::References(const Handle(TDF_DataSet)& aDataSet) co
 //=======================================================================
 Standard_OStream& TDataStd_ReferenceArray::Dump (Standard_OStream& anOS) const
 {  
-  anOS << "ReferenceArray";
+  anOS << "\nReferenceArray: ";
+  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  myID.ToCString(sguid);
+  anOS << sguid << endl;
   return anOS;
 }

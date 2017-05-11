@@ -36,13 +36,28 @@ const Standard_GUID& TDataStd_ExtStringList::GetID()
 }
 
 //=======================================================================
+//function : SetAttr
+//purpose  : Implements Set functionality
+//=======================================================================
+static Handle(TDataStd_ExtStringList) SetAttr(const TDF_Label&       label,
+                                              const Standard_GUID&   theGuid) 
+{
+  Handle(TDataStd_ExtStringList) A;
+  if (!label.FindAttribute (theGuid, A)) 
+  {
+    A = new TDataStd_ExtStringList;
+    A->SetID(theGuid);
+    label.AddAttribute(A);
+  }
+  return A;
+}
+
+//=======================================================================
 //function : TDataStd_ExtStringList
 //purpose  : Empty Constructor
 //=======================================================================
-TDataStd_ExtStringList::TDataStd_ExtStringList() 
-{
-
-}
+TDataStd_ExtStringList::TDataStd_ExtStringList()
+{}
 
 //=======================================================================
 //function : Set
@@ -50,13 +65,17 @@ TDataStd_ExtStringList::TDataStd_ExtStringList()
 //=======================================================================
 Handle(TDataStd_ExtStringList) TDataStd_ExtStringList::Set(const TDF_Label& label) 
 {
-  Handle(TDataStd_ExtStringList) A;
-  if (!label.FindAttribute (TDataStd_ExtStringList::GetID(), A)) 
-  {
-    A = new TDataStd_ExtStringList;
-    label.AddAttribute(A);
-  }
-  return A;
+  return SetAttr(label, GetID());
+}
+
+//=======================================================================
+//function : Set
+//purpose  : Set user defined attribute with specific ID
+//=======================================================================
+Handle(TDataStd_ExtStringList) TDataStd_ExtStringList::Set(const TDF_Label& label,
+                                                           const Standard_GUID&   theGuid) 
+{
+  return SetAttr(label, theGuid);
 }
 
 //=======================================================================
@@ -102,7 +121,7 @@ void TDataStd_ExtStringList::Append(const TCollection_ExtendedString& value)
 //purpose  : 
 //=======================================================================
 Standard_Boolean TDataStd_ExtStringList::InsertBefore(const TCollection_ExtendedString& value,
-						      const TCollection_ExtendedString& before_value)
+                                                      const TCollection_ExtendedString& before_value)
 {
   TDataStd_ListIteratorOfListOfExtendedString itr(myList);
   for (; itr.More(); itr.Next())
@@ -145,7 +164,7 @@ Standard_Boolean TDataStd_ExtStringList::InsertBefore(const Standard_Integer ind
 //purpose  : 
 //=======================================================================
 Standard_Boolean TDataStd_ExtStringList::InsertAfter(const TCollection_ExtendedString& value,
-						     const TCollection_ExtendedString& after_value)
+                                                     const TCollection_ExtendedString& after_value)
 {
   TDataStd_ListIteratorOfListOfExtendedString itr(myList);
   for (; itr.More(); itr.Next())
@@ -267,9 +286,31 @@ const TDataStd_ListOfExtendedString& TDataStd_ExtStringList::List() const
 //=======================================================================
 const Standard_GUID& TDataStd_ExtStringList::ID () const 
 { 
-  return GetID(); 
+  return myID; 
 }
 
+//=======================================================================
+//function : SetID
+//purpose  :
+//=======================================================================
+
+void TDataStd_ExtStringList::SetID( const Standard_GUID&  theGuid)
+{  
+  if(myID == theGuid) return;
+  Backup();
+  myID = theGuid;
+}
+
+//=======================================================================
+//function : SetID
+//purpose  : sets default ID
+//=======================================================================
+
+void TDataStd_ExtStringList::SetID()
+{
+  Backup();
+  myID = GetID();
+}
 //=======================================================================
 //function : NewEmpty
 //purpose  : 
@@ -292,6 +333,7 @@ void TDataStd_ExtStringList::Restore(const Handle(TDF_Attribute)& With)
   {
     myList.Append(itr.Value());
   }
+  myID = aList->ID();
 }
 
 //=======================================================================
@@ -299,7 +341,7 @@ void TDataStd_ExtStringList::Restore(const Handle(TDF_Attribute)& With)
 //purpose  : 
 //=======================================================================
 void TDataStd_ExtStringList::Paste (const Handle(TDF_Attribute)& Into,
-				    const Handle(TDF_RelocationTable)& ) const
+                                    const Handle(TDF_RelocationTable)& ) const
 {
   Handle(TDataStd_ExtStringList) aList = Handle(TDataStd_ExtStringList)::DownCast(Into);
   aList->Clear();
@@ -308,6 +350,7 @@ void TDataStd_ExtStringList::Paste (const Handle(TDF_Attribute)& Into,
   {
     aList->Append(itr.Value());
   }
+  aList->SetID(myID);
 }
 
 //=======================================================================
@@ -316,6 +359,10 @@ void TDataStd_ExtStringList::Paste (const Handle(TDF_Attribute)& Into,
 //=======================================================================
 Standard_OStream& TDataStd_ExtStringList::Dump (Standard_OStream& anOS) const
 {  
-  anOS << "ExtStringList";
+  anOS << "\nExtStringList: ";
+  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  myID.ToCString(sguid);
+  anOS << sguid;
+  anOS << endl;
   return anOS;
 }

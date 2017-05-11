@@ -62,7 +62,7 @@ Standard_Boolean BinMDataStd_IntegerArrayDriver::Paste
   if (aLength <= 0)
     return Standard_False;
 
-  Handle(TDataStd_IntegerArray) anAtt =
+  const Handle(TDataStd_IntegerArray) anAtt =
     Handle(TDataStd_IntegerArray)::DownCast(theTarget);
   anAtt->Init(aFirstInd, aLastInd);
   TColStd_Array1OfInteger& aTargetArray = anAtt->Array()->ChangeArray1();
@@ -81,6 +81,8 @@ Standard_Boolean BinMDataStd_IntegerArrayDriver::Paste
     cout << "Current DocVersion field is not initialized. "  <<endl;
 #endif
   anAtt->SetDelta(aDelta);
+
+  BinMDataStd::SetAttributeID(theSource, anAtt);
   return Standard_True; 
 }
 
@@ -104,4 +106,8 @@ void BinMDataStd_IntegerArrayDriver::Paste
   Standard_Integer *aPtr = (Standard_Integer *) &aSourceArray(aFirstInd);
   theTarget.PutIntArray (aPtr, aLength);
   theTarget << (Standard_Byte)(anAtt->GetDelta() ? 1 : 0);
+
+  // process user defined guid
+  if(anAtt->ID() != TDataStd_IntegerArray::GetID()) 
+    theTarget << anAtt->ID();
 }

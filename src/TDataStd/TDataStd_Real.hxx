@@ -72,7 +72,10 @@ public:
   Standard_EXPORT void Set (const Standard_Real V);
   
   //! Sets the explicit GUID for the attribute.
-  Standard_EXPORT void SetID (const Standard_GUID& guid);
+  Standard_EXPORT void SetID (const Standard_GUID& guid) Standard_OVERRIDE;
+
+  //! Sets default GUID for the attribute.
+  Standard_EXPORT void SetID() Standard_OVERRIDE;
 
   //! Returns the real number value contained in the attribute.
   Standard_EXPORT Standard_Real Get() const;

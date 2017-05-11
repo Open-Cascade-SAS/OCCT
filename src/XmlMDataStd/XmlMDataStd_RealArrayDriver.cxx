@@ -33,7 +33,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_RealArrayDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
 IMPLEMENT_DOMSTRING (LastIndexString, "last")
 IMPLEMENT_DOMSTRING (IsDeltaOn,       "delta")
-
+IMPLEMENT_DOMSTRING (AttributeIDString, "realarrattguid")
 //=======================================================================
 //function : XmlMDataStd_RealArrayDriver
 //purpose  : Constructor
@@ -129,12 +129,12 @@ Standard_Boolean XmlMDataStd_RealArrayDriver::Paste
     Standard_Integer aDeltaValue;
     if (!anElement.getAttribute(::IsDeltaOn()).GetInteger(aDeltaValue)) 
       {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve the isDelta value"
-                                 " for RealArray attribute as \"")
-        + aDeltaValue + "\"";
-	WriteMessage (aMessageString);
-	return Standard_False;
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve the isDelta value"
+                                     " for RealArray attribute as \"")
+                                     + aDeltaValue + "\"";
+        WriteMessage (aMessageString);
+        return Standard_False;
       } 
     else
       aDelta = aDeltaValue != 0;
@@ -145,6 +145,15 @@ Standard_Boolean XmlMDataStd_RealArrayDriver::Paste
 #endif
   aRealArray->SetDelta(aDelta);
 
+  // attribute id
+  Standard_GUID aGUID;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_RealArray::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+
+  aRealArray->SetID(aGUID);
   return Standard_True;
 }
 
@@ -208,5 +217,12 @@ void XmlMDataStd_RealArrayDriver::Paste (const Handle(TDF_Attribute)& theSource,
   {
     str[iChar - 1] = '\0';
     XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
+  }
+  if(aRealArray->ID() != TDataStd_RealArray::GetID()) {
+    //convert GUID
+    Standard_Character aGuidStr [Standard_GUID_SIZE_ALLOC];
+    Standard_PCharacter pGuidStr = aGuidStr;
+    aRealArray->ID().ToCString (pGuidStr);
+    theTarget.Element().setAttribute (::AttributeIDString(), aGuidStr);
   }
 }

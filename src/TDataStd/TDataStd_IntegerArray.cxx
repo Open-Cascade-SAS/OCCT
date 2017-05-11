@@ -37,6 +37,31 @@ const Standard_GUID& TDataStd_IntegerArray::GetID()
   return TDataStd_IntegerArrayID; 
 }
 
+//=======================================================================
+//function : SetAttr
+//purpose  : Implements Set functionality
+//=======================================================================
+static Handle(TDataStd_IntegerArray) SetAttr(const TDF_Label&       label,
+                                             const Standard_Integer lower,
+                                             const Standard_Integer upper,
+                                             const Standard_Boolean isDelta,
+                                             const Standard_GUID&   theGuid) 
+{
+  Handle(TDataStd_IntegerArray) A;
+  if (!label.FindAttribute (theGuid, A)) 
+  {
+    A = new TDataStd_IntegerArray;
+    A->Init (lower, upper);
+    A->SetDelta(isDelta); 
+    A->SetID(theGuid);
+    label.AddAttribute(A);
+  }
+  else if (lower != A->Lower() || upper != A->Upper())
+  {
+    A->Init(lower, upper);
+  }
+  return A;
+}
 
 //=======================================================================
 //function : TDataStd_IntegerArray
@@ -44,7 +69,8 @@ const Standard_GUID& TDataStd_IntegerArray::GetID()
 //=======================================================================
 
 TDataStd_IntegerArray::TDataStd_IntegerArray()
-     :myIsDelta(Standard_False) {}
+  :myIsDelta(Standard_False)
+{}
 
 //=======================================================================
 //function : Init
@@ -54,6 +80,7 @@ TDataStd_IntegerArray::TDataStd_IntegerArray()
 void TDataStd_IntegerArray::Init(const Standard_Integer lower,
                                  const Standard_Integer upper)
 {
+  Standard_RangeError_Raise_if(upper < lower,"TDataStd_IntegerArray::Init");  
   Backup();
   myValue = new TColStd_HArray1OfInteger(lower, upper, 0);
 }
@@ -67,23 +94,27 @@ Handle(TDataStd_IntegerArray) TDataStd_IntegerArray::Set
                                                 (const TDF_Label&       label,
                                                  const Standard_Integer lower,
                                                  const Standard_Integer upper,
-						 const Standard_Boolean isDelta) 
+                                                 const Standard_Boolean isDelta) 
 
 {
-  Handle(TDataStd_IntegerArray) A;
-  if (!label.FindAttribute (TDataStd_IntegerArray::GetID(), A)) {
-    A = new TDataStd_IntegerArray;
-    A->Init (lower, upper);
-    A->SetDelta(isDelta);
-    label.AddAttribute(A);
-  }
-  else if (lower != A->Lower() || upper != A->Upper())
-  {
-    A->Init (lower, upper); 
-  }
-  return A;
+  return SetAttr(label, lower, upper, isDelta, GetID());
 }
 
+//=======================================================================
+//function : Set
+//purpose  : Set user defined attribute with specific ID
+//=======================================================================
+
+Handle(TDataStd_IntegerArray) TDataStd_IntegerArray::Set
+                                                (const TDF_Label&       label,
+                                                 const Standard_GUID&   theGuid,
+                                                 const Standard_Integer lower,
+                                                 const Standard_Integer upper,
+                                                 const Standard_Boolean isDelta) 
+
+{
+  return SetAttr(label, lower, upper, isDelta, theGuid);
+}
 //=======================================================================
 //function : SetValue
 //purpose  : 
@@ -153,7 +184,7 @@ Standard_Integer TDataStd_IntegerArray::Length (void) const
 //=======================================================================
 
 void TDataStd_IntegerArray::ChangeArray(const Handle(TColStd_HArray1OfInteger)& newArray,
-					const Standard_Boolean isCheckItems) 
+                                        const Standard_Boolean isCheckItems) 
 {
   Standard_Integer aLower    = newArray->Lower();
   Standard_Integer anUpper   = newArray->Upper();
@@ -165,16 +196,16 @@ void TDataStd_IntegerArray::ChangeArray(const Handle(TColStd_HArray1OfInteger)& 
     if(isCheckItems) {
       Standard_Boolean isEqual = Standard_True;
       for(i = aLower; i <= anUpper; i++) {
-	if(myValue->Value(i) != newArray->Value(i)) {
-	  isEqual = Standard_False;
-	  break;
-	}
+        if(myValue->Value(i) != newArray->Value(i)) {
+          isEqual = Standard_False;
+          break;
+        }
       }
       if(isEqual)
-	return;
+        return;
     }
   }
-  
+
   Backup();
 // Handles of myValue of current and backuped attributes will be different!
   if(myValue.IsNull() || !aDimEqual) 
@@ -190,8 +221,30 @@ void TDataStd_IntegerArray::ChangeArray(const Handle(TColStd_HArray1OfInteger)& 
 //purpose  : 
 //=======================================================================
 
-const Standard_GUID& TDataStd_IntegerArray::ID () const { return GetID(); }
+const Standard_GUID& TDataStd_IntegerArray::ID () const { return myID; }
 
+//=======================================================================
+//function : SetID
+//purpose  :
+//=======================================================================
+
+void TDataStd_IntegerArray::SetID( const Standard_GUID&  theGuid)
+{  
+  if(myID == theGuid) return;
+  Backup();
+  myID = theGuid;
+}
+
+//=======================================================================
+//function : SetID
+//purpose  : sets default ID
+//=======================================================================
+
+void TDataStd_IntegerArray::SetID()
+{  
+  Backup();
+  myID = GetID();
+}
 
 //=======================================================================
 //function : NewEmpty
@@ -219,6 +272,7 @@ void TDataStd_IntegerArray::Restore(const Handle(TDF_Attribute)& With)
     for(i = lower; i<=upper; i++)
       myValue->SetValue(i, anArray->Value(i));
     myIsDelta = anArray->myIsDelta;
+    myID = anArray->ID();
   }
   else
     myValue.Nullify();
@@ -238,6 +292,7 @@ void TDataStd_IntegerArray::Paste (const Handle(TDF_Attribute)& Into,
     if(!anAtt.IsNull()) {
       anAtt->ChangeArray( myValue, Standard_False );
       anAtt->SetDelta(myIsDelta);
+      anAtt->SetID(myID);
     }
   }
 }
@@ -258,6 +313,9 @@ Standard_OStream& TDataStd_IntegerArray::Dump (Standard_OStream& anOS) const
       anOS << " " <<myValue->Value(i);
   }
   anOS << " Delta is " << (myIsDelta ? "ON":"OFF");
+  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  myID.ToCString(sguid);
+  anOS << sguid;
   anOS << endl;
 
   // anOS <<"\nAttribute fields: ";
@@ -278,5 +336,3 @@ Handle(TDF_DeltaOnModification) TDataStd_IntegerArray::DeltaOnModification
     return new TDataStd_DeltaOnModificationOfIntArray(Handle(TDataStd_IntegerArray)::DownCast (OldAttribute));
   else return new TDF_DefaultDeltaOnModification(OldAttribute);
 }
-
-

@@ -24,6 +24,7 @@
 #include <TDF_Attribute.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
+#include <Standard_GUID.hxx>
 class Standard_GUID;
 class TDF_Label;
 class TDF_Attribute;
@@ -45,22 +46,33 @@ public:
   //! Returns an ID for array.
   Standard_EXPORT static const Standard_GUID& GetID();
   
-  //! Finds or creates an attribute with the array.
+  //! Finds or creates an attribute with internal boolean array.
   Standard_EXPORT static Handle(TDataStd_BooleanArray) Set (const TDF_Label& label, const Standard_Integer lower, const Standard_Integer upper);
-  
+
+  //! Finds or creates an attribute with the array using explicit user defined <guid>.
+  Standard_EXPORT static Handle(TDataStd_BooleanArray) Set (const TDF_Label& label, const Standard_GUID&   theGuid, 
+                                                            const Standard_Integer lower, const Standard_Integer upper);
+
   //! Initialize the inner array with bounds from <lower> to <upper>
   Standard_EXPORT void Init (const Standard_Integer lower, const Standard_Integer upper);
   
   //! Sets the <Index>th element of the array to <Value>
   //! OutOfRange exception is raised if <Index> doesn't respect Lower and Upper bounds of the internal  array.
   Standard_EXPORT void SetValue (const Standard_Integer index, const Standard_Boolean value);
-  
+
+  //! Sets the explicit GUID (user defined) for the attribute.
+  Standard_EXPORT void SetID( const Standard_GUID&  theGuid) Standard_OVERRIDE;
+
+  //! Sets default GUID for the attribute.
+  Standard_EXPORT void SetID() Standard_OVERRIDE;
+
   //! Return the value of the <Index>th element of the array.
   Standard_EXPORT Standard_Boolean Value (const Standard_Integer Index) const;
-Standard_Boolean operator () (const Standard_Integer Index) const
-{
-  return Value(Index);
-}
+
+  Standard_Boolean operator () (const Standard_Integer Index) const
+  {
+    return Value(Index);
+  }
   
   //! Returns the lower boundary of the array.
   Standard_EXPORT Standard_Integer Lower() const;
@@ -103,7 +115,7 @@ private:
   Handle(TColStd_HArray1OfByte) myValues;
   Standard_Integer myLower;
   Standard_Integer myUpper;
-
+  Standard_GUID myID;
 
 };
 

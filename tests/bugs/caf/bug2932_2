@@ -29,7 +29,7 @@ set modified_attribute TDataStd_Real
 
 ############################################
 # Set TDataStd_RealArray
-SetRealArray D ${Label} ${From} ${To} ${RealArray1} ${RealArray2} 0
+SetRealArray D ${Label} 0 ${From} ${To} ${RealArray1} ${RealArray2}
 ############################################
 
 SetReal D ${Label} ${Real1}
@@ -41,7 +41,7 @@ set list [DumpCommand D]
 
 ############################################
 # Set old value for TDataStd_RealArray
-SetRealArray D ${Label} ${From} ${To} ${RealArray1} ${RealArray2} 0
+SetRealArray D ${Label} 0 ${From} ${To} ${RealArray1} ${RealArray2}
 ############################################
 
 # Set new value for TDataStd_Real

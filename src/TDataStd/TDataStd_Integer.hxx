@@ -61,7 +61,10 @@ public:
   Standard_EXPORT void Set (const Standard_Integer V);
  
   //! Sets the explicit GUID (user defined) for the attribute.
-  Standard_EXPORT void SetID (const Standard_GUID& guid);
+  Standard_EXPORT void SetID (const Standard_GUID& guid) Standard_OVERRIDE;
+
+  //! Sets default GUID for the attribute.
+  Standard_EXPORT void SetID() Standard_OVERRIDE;
 
   //! Returns the integer value contained in the attribute.
   Standard_EXPORT Standard_Integer Get() const;

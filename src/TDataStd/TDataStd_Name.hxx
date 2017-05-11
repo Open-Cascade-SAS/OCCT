@@ -81,7 +81,10 @@ public:
   Standard_EXPORT void Set (const TCollection_ExtendedString& S);
   
   //! Sets the explicit user defined GUID  to the attribute.
-  Standard_EXPORT void SetID (const Standard_GUID& guid);
+  Standard_EXPORT void SetID (const Standard_GUID& guid) Standard_OVERRIDE;
+
+  //! Sets default GUID for the attribute.
+  Standard_EXPORT void SetID() Standard_OVERRIDE;
 
   //! Returns the name contained in this name attribute.
   Standard_EXPORT const TCollection_ExtendedString& Get() const;

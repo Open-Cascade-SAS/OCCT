@@ -25,6 +25,8 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Byte.hxx>
 #include <Standard_OStream.hxx>
+#include <Standard_GUID.hxx>
+
 class TDataStd_DeltaOnModificationOfByteArray;
 class Standard_GUID;
 class TDF_Label;
@@ -43,6 +45,7 @@ class TDataStd_ByteArray : public TDF_Attribute
   DEFINE_STANDARD_RTTIEXT(TDataStd_ByteArray, TDF_Attribute)
 public:
 
+  
   //! Static methods
   //! ==============
   //! Returns an ID for array.
@@ -55,6 +58,11 @@ public:
   //! attribute is returned.
   Standard_EXPORT static Handle(TDataStd_ByteArray) Set (const TDF_Label& label, const Standard_Integer lower, const Standard_Integer upper, const Standard_Boolean isDelta = Standard_False);
   
+  //! Finds or creates an attribute with byte array and explicit user defined <guid> on the specified label.
+  Standard_EXPORT static Handle(TDataStd_ByteArray) Set (const TDF_Label& label, const Standard_GUID&   theGuid,
+                                                         const Standard_Integer lower, const Standard_Integer upper, 
+                                                         const Standard_Boolean isDelta = Standard_False);
+  
   //! Initialize the inner array with bounds from <lower> to <upper>
   Standard_EXPORT void Init (const Standard_Integer lower, const Standard_Integer upper);
   
@@ -62,12 +70,19 @@ public:
   //! OutOfRange exception is raised if <Index> doesn't respect Lower and Upper bounds of the internal  array.
   Standard_EXPORT void SetValue (const Standard_Integer index, const Standard_Byte value);
   
+  //! Sets the explicit GUID (user defined) for the attribute.
+  Standard_EXPORT void SetID( const Standard_GUID&  theGuid) Standard_OVERRIDE;
+
+  //! Sets default GUID for the attribute.
+  Standard_EXPORT void SetID() Standard_OVERRIDE;
+
   //! Return the value of the <Index>th element of the array.
   Standard_EXPORT Standard_Byte Value (const Standard_Integer Index) const;
-Standard_Byte operator () (const Standard_Integer Index) const
-{
-  return Value(Index);
-}
+
+  Standard_Byte operator () (const Standard_Integer Index) const
+  {
+    return Value(Index);
+  }
   
   //! Returns the lower boundary of the array.
   Standard_EXPORT Standard_Integer Lower() const;
@@ -117,6 +132,7 @@ private:
 
   Handle(TColStd_HArray1OfByte) myValue;
   Standard_Boolean myIsDelta;
+  Standard_GUID myID;
 
 };
 

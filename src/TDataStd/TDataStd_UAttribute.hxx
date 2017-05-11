@@ -50,7 +50,7 @@ public:
   
   Standard_EXPORT TDataStd_UAttribute();
   
-  Standard_EXPORT void SetID (const Standard_GUID& LocalID);
+  Standard_EXPORT void SetID (const Standard_GUID& LocalID) Standard_OVERRIDE;
   
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   

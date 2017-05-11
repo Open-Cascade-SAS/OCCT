@@ -29,6 +29,8 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_IntegerArrayDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
 IMPLEMENT_DOMSTRING (LastIndexString,  "last")
 IMPLEMENT_DOMSTRING (IsDeltaOn,        "delta")
+IMPLEMENT_DOMSTRING (AttributeIDString, "intarrattguid")
+
 //=======================================================================
 //function : XmlMDataStd_IntegerArrayDriver
 //purpose  : Constructor
@@ -123,12 +125,12 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste
     Standard_Integer aDeltaValue;
     if (!anElement.getAttribute(::IsDeltaOn()).GetInteger(aDeltaValue)) 
       {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve the isDelta value"
-                                 " for IntegerArray attribute as \"")
-        + aDeltaValue + "\"";
-	WriteMessage (aMessageString);
-	return Standard_False;
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve the isDelta value"
+                                     " for IntegerArray attribute as \"")
+                                     + aDeltaValue + "\"";
+        WriteMessage (aMessageString);
+        return Standard_False;
       } 
     else
       aDelta = aDeltaValue != 0;
@@ -138,7 +140,17 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste
     cout << "Current DocVersion field is not initialized. "  <<endl;
 #endif
   anIntArray->SetDelta(aDelta);
-  
+
+  // attribute id
+  Standard_GUID aGUID;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_IntegerArray::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+
+  anIntArray->SetID(aGUID);
+
   return Standard_True;
 }
 
@@ -183,5 +195,12 @@ void XmlMDataStd_IntegerArrayDriver::Paste
     // No occurrence of '&', '<' and other irregular XML characters
     str[iChar - 1] = '\0';
     XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
+  }
+  if(anIntArray->ID() != TDataStd_IntegerArray::GetID()) {
+    //convert GUID
+    Standard_Character aGuidStr [Standard_GUID_SIZE_ALLOC];
+    Standard_PCharacter pGuidStr = aGuidStr;
+    anIntArray->ID().ToCString (pGuidStr);
+    theTarget.Element().setAttribute (::AttributeIDString(), aGuidStr);
   }
 }

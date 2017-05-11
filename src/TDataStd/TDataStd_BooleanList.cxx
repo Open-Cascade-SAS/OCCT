@@ -35,6 +35,23 @@ const Standard_GUID& TDataStd_BooleanList::GetID()
 }
 
 //=======================================================================
+//function : SetAttr
+//purpose  : Implements Set functionality
+//=======================================================================
+static Handle(TDataStd_BooleanList) SetAttr(const TDF_Label&       label,
+                                            const Standard_GUID&   theGuid) 
+{
+  Handle(TDataStd_BooleanList) A;
+  if (!label.FindAttribute (theGuid, A)) 
+  {
+    A = new TDataStd_BooleanList;
+    A->SetID(theGuid);
+    label.AddAttribute(A);
+  }
+  return A;
+}
+
+//=======================================================================
 //function : TDataStd_BooleanList
 //purpose  : Empty Constructor
 //=======================================================================
@@ -49,15 +66,18 @@ TDataStd_BooleanList::TDataStd_BooleanList()
 //=======================================================================
 Handle(TDataStd_BooleanList) TDataStd_BooleanList::Set(const TDF_Label& label) 
 {
-  Handle(TDataStd_BooleanList) A;
-  if (!label.FindAttribute (TDataStd_BooleanList::GetID(), A)) 
-  {
-    A = new TDataStd_BooleanList;
-    label.AddAttribute(A);
-  }
-  return A;
+  return SetAttr(label, GetID());
 }
 
+//=======================================================================
+//function : Set
+//purpose  : Set user defined attribute with specific ID
+//=======================================================================
+Handle(TDataStd_BooleanList) TDataStd_BooleanList::Set(const TDF_Label& label,
+                                                       const Standard_GUID&   theGuid) 
+{
+  return SetAttr(label, theGuid); 
+}
 //=======================================================================
 //function : IsEmpty
 //purpose  : 
@@ -207,7 +227,30 @@ Standard_Boolean TDataStd_BooleanList::Remove(const Standard_Integer index)
 //=======================================================================
 const Standard_GUID& TDataStd_BooleanList::ID () const 
 { 
-  return GetID(); 
+  return myID; 
+}
+
+//=======================================================================
+//function : SetID
+//purpose  :
+//=======================================================================
+
+void TDataStd_BooleanList::SetID( const Standard_GUID&  theGuid)
+{  
+  if(myID == theGuid) return;
+  Backup();
+  myID = theGuid;
+}
+
+//=======================================================================
+//function : SetID
+//purpose  : sets default ID
+//=======================================================================
+
+void TDataStd_BooleanList::SetID()
+{  
+  Backup();
+  myID = GetID();
 }
 
 //=======================================================================
@@ -232,6 +275,7 @@ void TDataStd_BooleanList::Restore(const Handle(TDF_Attribute)& With)
   {
     myList.Append (itr.Value() ? 1 : 0);
   }
+  myID = aList->ID();
 }
 
 //=======================================================================
@@ -248,6 +292,7 @@ void TDataStd_BooleanList::Paste (const Handle(TDF_Attribute)& Into,
   {
     aList->Append (itr.Value() != 0);
   }
+  aList->SetID(myID);
 }
 
 //=======================================================================
@@ -256,6 +301,10 @@ void TDataStd_BooleanList::Paste (const Handle(TDF_Attribute)& Into,
 //=======================================================================
 Standard_OStream& TDataStd_BooleanList::Dump (Standard_OStream& anOS) const
 {  
-  anOS << "BooleanList";
+  anOS << "\nBooleanList: ";
+  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  myID.ToCString(sguid);
+  anOS << sguid;
+  anOS << endl;
   return anOS;
 }

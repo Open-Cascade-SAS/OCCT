@@ -24,6 +24,8 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
+#include <Standard_GUID.hxx>
+
 class Standard_GUID;
 class TDF_Label;
 class TCollection_ExtendedString;
@@ -46,8 +48,11 @@ public:
   //! Returns the ID of the list of strings attribute.
   Standard_EXPORT static const Standard_GUID& GetID();
   
-  //! Finds or creates a list of string values attribute.
+  //! Finds or creates a list of string values attribute with explicit user defined <guid>.
   Standard_EXPORT static Handle(TDataStd_ExtStringList) Set (const TDF_Label& label);
+
+  //! Finds or creates a list of string values attribute.
+  Standard_EXPORT static Handle(TDataStd_ExtStringList) Set (const TDF_Label& label, const Standard_GUID& theGuid);
   
   Standard_EXPORT TDataStd_ExtStringList();
   
@@ -58,7 +63,13 @@ public:
   Standard_EXPORT void Prepend (const TCollection_ExtendedString& value);
   
   Standard_EXPORT void Append (const TCollection_ExtendedString& value);
-  
+ 
+  //! Sets the explicit GUID (user defined) for the attribute.
+  Standard_EXPORT void SetID( const Standard_GUID&  theGuid) Standard_OVERRIDE;
+
+  //! Sets default GUID for the attribute.
+  Standard_EXPORT void SetID() Standard_OVERRIDE;
+
   //! Inserts the <value> before the first meet of <before_value>.
   Standard_EXPORT Standard_Boolean InsertBefore (const TCollection_ExtendedString& value, const TCollection_ExtendedString& before_value);
   
@@ -111,7 +122,7 @@ private:
 
 
   TDataStd_ListOfExtendedString myList;
-
+  Standard_GUID myID;
 
 };
 

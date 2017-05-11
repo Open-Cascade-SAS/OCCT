@@ -24,6 +24,8 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
+#include <Standard_GUID.hxx>
+
 class Standard_GUID;
 class TDF_Label;
 class TDF_Attribute;
@@ -47,6 +49,9 @@ public:
   
   //! Finds or creates a list of boolean values attribute.
   Standard_EXPORT static Handle(TDataStd_BooleanList) Set (const TDF_Label& label);
+
+  //! Finds or creates a list of boolean values attribute with explicit user defined <guid>.
+  Standard_EXPORT static Handle(TDataStd_BooleanList) Set (const TDF_Label& label, const Standard_GUID& theGuid);
   
   Standard_EXPORT TDataStd_BooleanList();
   
@@ -78,7 +83,13 @@ public:
   
   //! Removes a value at <index> position.
   Standard_EXPORT Standard_Boolean Remove (const Standard_Integer index);
-  
+
+  //! Sets the explicit GUID (user defined) for the attribute.
+  Standard_EXPORT void SetID( const Standard_GUID&  theGuid) Standard_OVERRIDE;
+
+  //! Sets default GUID for the attribute.
+  Standard_EXPORT void SetID() Standard_OVERRIDE;
+
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   
   Standard_EXPORT void Restore (const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
@@ -103,7 +114,7 @@ private:
 
 
   TDataStd_ListOfByte myList;
-
+  Standard_GUID myID;
 
 };
 

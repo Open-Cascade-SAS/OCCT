@@ -108,115 +108,112 @@ void XCAFDoc_GeomTolerance::SetObject (const Handle(XCAFDimTolObjects_GeomTolera
 
   if(theObject->GetTypeOfValue() != XCAFDimTolObjects_GeomToleranceTypeValue_None)
     Handle(TDataStd_Integer) aTypeOfValue = TDataStd_Integer::Set(Label().FindChild(ChildLab_TypeOfValue), 
-	                                        theObject->GetTypeOfValue());
+                                            theObject->GetTypeOfValue());
 
   Handle(TDataStd_Real) aValue = TDataStd_Real::Set(Label().FindChild(ChildLab_Value), theObject->GetValue());
 
   Handle(TDataStd_Integer) aMatReqModif;
   if(theObject->GetMaterialRequirementModifier() != XCAFDimTolObjects_GeomToleranceMatReqModif_None)
-	aMatReqModif = TDataStd_Integer::Set(Label().FindChild(ChildLab_MatReqModif), 
-	               theObject->GetMaterialRequirementModifier());
+    aMatReqModif = TDataStd_Integer::Set(Label().FindChild(ChildLab_MatReqModif), 
+                   theObject->GetMaterialRequirementModifier());
 
   if(theObject->GetZoneModifier() != XCAFDimTolObjects_GeomToleranceZoneModif_None)
     Handle(TDataStd_Integer) aZoneModif = TDataStd_Integer::Set(Label().FindChild(ChildLab_ZoneModif), 
-	                                      theObject->GetZoneModifier());
+                                          theObject->GetZoneModifier());
   
   if(theObject->GetValueOfZoneModifier() > 0)
     Handle(TDataStd_Real) aValueOfZoneModif = TDataStd_Real::Set(Label().FindChild(ChildLab_ValueOfZoneModif),
-		                                      theObject->GetValueOfZoneModifier());
+                                              theObject->GetValueOfZoneModifier());
 
   if(theObject->GetModifiers().Length() > 0)
   {
-    Handle(TDataStd_IntegerArray) aModifiers = new TDataStd_IntegerArray();
     Handle(TColStd_HArray1OfInteger) anArr = new TColStd_HArray1OfInteger(1,theObject->GetModifiers().Length());
     for(Standard_Integer i = 1; i <= theObject->GetModifiers().Length(); i++)
       anArr->SetValue(i,theObject->GetModifiers().Value(i));
-    aModifiers->ChangeArray(anArr);
-    Label().FindChild(ChildLab_Modifiers).AddAttribute(aModifiers);
+    Handle(TDataStd_IntegerArray) aModifiers = TDataStd_IntegerArray::Set(Label().FindChild(ChildLab_Modifiers), 
+                                               1, theObject->GetModifiers().Length());
+    if(!aModifiers.IsNull())
+      aModifiers->ChangeArray(anArr);
   }
 
   if(theObject->GetMaxValueModifier() > 0)
     Handle(TDataStd_Real) aMaxValueModif = TDataStd_Real::Set(Label().FindChild(ChildLab_aMaxValueModif),
-		                                   theObject->GetMaxValueModifier());
+                                           theObject->GetMaxValueModifier());
 
   if(theObject->HasAxis())
   {
-    Handle(TDataStd_RealArray) aLoc = new TDataStd_RealArray();
-    Handle(TDataStd_RealArray) aN = new TDataStd_RealArray();
-    Handle(TDataStd_RealArray) aR = new TDataStd_RealArray();
     gp_Ax2 anAx = theObject->GetAxis();
 
     Handle(TColStd_HArray1OfReal) aLocArr = new TColStd_HArray1OfReal(1, 3);
     for (Standard_Integer i = 1; i <= 3; i++)
       aLocArr->SetValue(i, anAx.Location().Coord(i));
-    aLoc->ChangeArray(aLocArr);
+    Handle(TDataStd_RealArray) aLoc = TDataStd_RealArray::Set(Label().FindChild(ChildLab_AxisLoc), 1, 3);
+    if(!aLoc.IsNull())
+      aLoc->ChangeArray(aLocArr);
 
     Handle(TColStd_HArray1OfReal) aNArr = new TColStd_HArray1OfReal(1, 3);
     for (Standard_Integer i = 1; i <= 3; i++)
       aNArr->SetValue(i, anAx.Direction().Coord(i));
-    aN->ChangeArray(aNArr);
+    Handle(TDataStd_RealArray) aN = TDataStd_RealArray::Set(Label().FindChild(ChildLab_AxisN), 1, 3);
+    if(!aN.IsNull())
+      aN->ChangeArray(aNArr);
 
     Handle(TColStd_HArray1OfReal) aRArr = new TColStd_HArray1OfReal(1, 3);
     for (Standard_Integer i = 1; i <= 3; i++)
       aRArr->SetValue(i, anAx.XDirection().Coord(i));
-    aR->ChangeArray(aRArr);
-
-    Label().FindChild(ChildLab_AxisLoc).AddAttribute(aLoc);
-    Label().FindChild(ChildLab_AxisN).AddAttribute(aN);
-    Label().FindChild(ChildLab_AxisRef).AddAttribute(aR);
+    Handle(TDataStd_RealArray) aR = TDataStd_RealArray::Set(Label().FindChild(ChildLab_AxisRef), 1, 3);
+    if(!aR.IsNull())
+      aR->ChangeArray(aRArr);
   }
 
   if (theObject->HasPlane())
   {
-    Handle(TDataStd_RealArray) aLoc = new TDataStd_RealArray();
-    Handle(TDataStd_RealArray) aN = new TDataStd_RealArray();
-    Handle(TDataStd_RealArray) aR = new TDataStd_RealArray();
     gp_Ax2 anAx = theObject->GetPlane();
 
     Handle(TColStd_HArray1OfReal) aLocArr = new TColStd_HArray1OfReal(1, 3);
     for (Standard_Integer i = 1; i <= 3; i++)
       aLocArr->SetValue(i, anAx.Location().Coord(i));
-    aLoc->ChangeArray(aLocArr);
+    Handle(TDataStd_RealArray) aLoc = TDataStd_RealArray::Set(Label().FindChild(ChildLab_PlaneLoc), 1, 3);
+    if(!aLoc.IsNull())
+      aLoc->ChangeArray(aLocArr);
 
     Handle(TColStd_HArray1OfReal) aNArr = new TColStd_HArray1OfReal(1, 3);
     for (Standard_Integer i = 1; i <= 3; i++)
       aNArr->SetValue(i, anAx.Direction().Coord(i));
-    aN->ChangeArray(aNArr);
+    Handle(TDataStd_RealArray) aN = TDataStd_RealArray::Set(Label().FindChild(ChildLab_PlaneN), 1, 3);
+    if(!aN.IsNull())
+      aN->ChangeArray(aNArr);
 
     Handle(TColStd_HArray1OfReal) aRArr = new TColStd_HArray1OfReal(1, 3);
     for (Standard_Integer i = 1; i <= 3; i++)
       aRArr->SetValue(i, anAx.XDirection().Coord(i));
-    aR->ChangeArray(aRArr);
-
-    Label().FindChild(ChildLab_PlaneLoc).AddAttribute(aLoc);
-    Label().FindChild(ChildLab_PlaneN).AddAttribute(aN);
-    Label().FindChild(ChildLab_PlaneRef).AddAttribute(aR);
+    Handle(TDataStd_RealArray) aR = TDataStd_RealArray::Set(Label().FindChild(ChildLab_PlaneRef), 1, 3);
+    if(!aR.IsNull())
+      aR->ChangeArray(aRArr);
   }
 
   if (theObject->HasPoint())
   {
-    Handle(TDataStd_RealArray) aLoc = new TDataStd_RealArray();
     gp_Pnt aPnt = theObject->GetPoint();
 
     Handle(TColStd_HArray1OfReal) aLocArr = new TColStd_HArray1OfReal(1, 3);
     for (Standard_Integer i = 1; i <= 3; i++)
       aLocArr->SetValue(i, aPnt.Coord(i));
-    aLoc->ChangeArray(aLocArr);
-
-    Label().FindChild(ChildLab_Pnt).AddAttribute(aLoc);
+    Handle(TDataStd_RealArray) aLoc = TDataStd_RealArray::Set(Label().FindChild(ChildLab_Pnt), 1, 3);
+    if(!aLoc.IsNull())
+      aLoc->ChangeArray(aLocArr);
   }
 
   if (theObject->HasPointText())
   {
-    Handle(TDataStd_RealArray) aLoc = new TDataStd_RealArray();
     gp_Pnt aPntText = theObject->GetPointTextAttach();
 
     Handle(TColStd_HArray1OfReal) aLocArr = new TColStd_HArray1OfReal(1, 3);
     for (Standard_Integer i = 1; i <= 3; i++)
       aLocArr->SetValue(i, aPntText.Coord(i));
-    aLoc->ChangeArray(aLocArr);
-
-    Label().FindChild(ChildLab_PntText).AddAttribute(aLoc);
+    Handle(TDataStd_RealArray) aLoc = TDataStd_RealArray::Set(Label().FindChild(ChildLab_PntText), 1, 3);
+    if(!aLoc.IsNull())
+      aLoc->ChangeArray(aLocArr);
   }
 
   TopoDS_Shape aPresentation = theObject->GetPresentation();

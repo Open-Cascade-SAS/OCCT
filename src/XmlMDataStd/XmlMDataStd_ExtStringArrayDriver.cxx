@@ -24,7 +24,6 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Document.hxx>
 #include <XmlObjMgt_Persistent.hxx>
-#include <XmlLDrivers.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_ExtStringArrayDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
@@ -32,6 +31,7 @@ IMPLEMENT_DOMSTRING (LastIndexString, "last")
 IMPLEMENT_DOMSTRING (ExtString,       "string")
 IMPLEMENT_DOMSTRING (IsDeltaOn,       "delta")
 IMPLEMENT_DOMSTRING (Separator,       "separator")
+IMPLEMENT_DOMSTRING (AttributeIDString, "extstrarrattguid")
 
 // Searches for a symbol within an array of strings.
 // Returns TRUE if the symbol is found.
@@ -73,9 +73,9 @@ Handle(TDF_Attribute) XmlMDataStd_ExtStringArrayDriver::NewEmpty() const
 //purpose  : persistent -> transient (retrieve)
 //=======================================================================
 Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste
-                                        ( const XmlObjMgt_Persistent&  theSource,
-                                          const Handle(TDF_Attribute)& theTarget,
-                                          XmlObjMgt_RRelocationTable& ) const
+                                        (const XmlObjMgt_Persistent&  theSource,
+                                         const Handle(TDF_Attribute)& theTarget,
+                                         XmlObjMgt_RRelocationTable& ) const
 {
   Standard_Integer aFirstInd, aLastInd, ind;
   TCollection_ExtendedString aValue;
@@ -188,12 +188,12 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste
     Standard_Integer aDeltaValue;
     if (!anElement.getAttribute(::IsDeltaOn()).GetInteger(aDeltaValue)) 
       {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve the isDelta value"
-                                 " for IntegerArray attribute as \"")
-        + aDeltaValue + "\"";
-	WriteMessage (aMessageString);
-	return Standard_False;
+        TCollection_ExtendedString aMessageString =
+          TCollection_ExtendedString("Cannot retrieve the isDelta value"
+                                     " for IntegerArray attribute as \"")
+                                     + aDeltaValue + "\"";
+        WriteMessage (aMessageString);
+        return Standard_False;
       } 
     else
       aDelta = aDeltaValue != 0;
@@ -203,6 +203,16 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste
     cout << "Current DocVersion field is not initialized. "  <<endl;
 #endif
   aExtStringArray->SetDelta(aDelta);
+
+  // attribute id
+  Standard_GUID aGUID;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_ExtStringArray::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+
+  aExtStringArray->SetID(aGUID);
 
   return Standard_True;
 }
@@ -228,44 +238,39 @@ void XmlMDataStd_ExtStringArrayDriver::Paste (const Handle(TDF_Attribute)& theSo
 
   // Find a separator.
   Standard_Boolean found(Standard_True);
-  // Optimization of storage of string array elements.
-  // It is applied since the storage version 8 and newer.
+  // Preferrable symbols for the separator: - _ . : ^ ~
+  // Don't use a space as a separator: XML low-level parser sometimes "eats" it.
   Standard_Character c = '-';
-  if (XmlLDrivers::StorageVersion() > 7)
+  static Standard_Character aPreferable[] = "-_.:^~";
+  for (i = 0; found && aPreferable[i]; i++)
   {
-    // Preferrable symbols for the separator: - _ . : ^ ~
-    // Don't use a space as a separator: XML low-level parser sometimes "eats" it.
-    static Standard_Character aPreferable[] = "-_.:^~";
-    for (i = 0; found && aPreferable[i]; i++)
+    c = aPreferable[i];
+    found = Contains(aExtStringArray, TCollection_ExtendedString(c));
+  }
+  // If all prefferable symbols exist in the array, 
+  // try to use any other simple symbols.
+  if (found)
+  {
+    c = '!';
+    while (found && c < '~')
     {
-      c = aPreferable[i];
-      found = Contains(aExtStringArray, TCollection_ExtendedString(c));
-    }
-    // If all prefferable symbols exist in the array, 
-    // try to use any other simple symbols.
-    if (found)
-    {
-      c = '!';
-      while (found && c < '~')
-      {
-        found = Standard_False;
+      found = Standard_False;
 #ifdef _DEBUG
-        TCollection_AsciiString cseparator(c); // deb
+      TCollection_AsciiString cseparator(c); // deb
 #endif
-        TCollection_ExtendedString separator(c);
-        found = Contains(aExtStringArray, separator);
-        if (found)
+      TCollection_ExtendedString separator(c);
+      found = Contains(aExtStringArray, separator);
+      if (found)
+      {
+        c++;
+        // Skip forbidden symbols for XML.
+        while (c < '~' && (c == '&' || c == '<'))
         {
           c++;
-          // Skip forbidden symbols for XML.
-          while (c < '~' && (c == '&' || c == '<'))
-          {
-            c++;
-          }
         }
       }
     }
-  }// check doc version
+  }
   
   if (found)
   {
@@ -319,5 +324,12 @@ void XmlMDataStd_ExtStringArrayDriver::Paste (const Handle(TDF_Attribute)& theSo
 
       // Set UNICODE value.
       XmlObjMgt::SetExtendedString(theTarget, xstr);
+  }
+  if(aExtStringArray->ID() != TDataStd_ExtStringArray::GetID()) {
+    //convert GUID
+    Standard_Character aGuidStr [Standard_GUID_SIZE_ALLOC];
+    Standard_PCharacter pGuidStr = aGuidStr;
+    aExtStringArray->ID().ToCString (pGuidStr);
+    theTarget.Element().setAttribute (::AttributeIDString(), aGuidStr);
   }
 }

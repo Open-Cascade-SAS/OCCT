@@ -108,7 +108,7 @@ void TDF_CopyTool::Copy
     if (theLabMap.IsBound(sLab)) {
       TDF_Label tIns(theLabMap.Find(sLab));
       TDF_CopyTool::CopyLabels(sLab,tIns,
-			       theLabMap,theAttMap,srcLabs,srcAtts);
+        theLabMap,theAttMap,srcLabs,srcAtts);
     }
     // if not bound : do nothing!
   }
@@ -127,7 +127,7 @@ void TDF_CopyTool::Copy
       // 2 - The target attribute is present BUT its privilege over the
       // source one must be ignored. The source attribute can be copied.
       if ((sAtt != tAtt) && aPrivilegeFilter.IsIgnored(tAtt->ID()))
-	sAtt->Paste(tAtt,aRelocationTable);
+        sAtt->Paste(tAtt,aRelocationTable);
     }
   }
 }
@@ -148,7 +148,7 @@ void TDF_CopyTool::CopyLabels
  const TDF_AttributeMap& aSrcAttributeMap)
 {
   TDF_CopyTool::CopyAttributes(aSLabel,aTargetLabel,
-			       aAttMap,aSrcAttributeMap);
+    aAttMap,aSrcAttributeMap);
 
   // Does the same for the children.
   for (TDF_ChildIterator childItr(aSLabel); childItr.More(); childItr.Next()){
@@ -157,12 +157,11 @@ void TDF_CopyTool::CopyLabels
       TDF_Label childTIns = aTargetLabel.FindChild(childSLab.Tag());
       aLabMap.Bind(childSLab,childTIns);
       TDF_CopyTool::CopyLabels(childSLab,childTIns,
-			       aLabMap,aAttMap,
-			       aSrcLabelMap,aSrcAttributeMap);
+        aLabMap,aAttMap,
+        aSrcLabelMap,aSrcAttributeMap);
     }
   }
 }
-
 
 //=======================================================================
 //function : CopyAttributes
@@ -184,17 +183,19 @@ void TDF_CopyTool::CopyAttributes
     if (aSrcAttributeMap.Contains(sAtt)) {
       const Standard_GUID& id = sAtt->ID();
       if (!aTargetLabel.FindAttribute(id,tAtt)) {
-	tAtt = sAtt->NewEmpty();
-	aTargetLabel.AddAttribute(tAtt);
-	aAttMap.Bind(sAtt,tAtt);
+        tAtt = sAtt->NewEmpty();
+        if(tAtt->ID() != id) 
+          tAtt->SetID(id);//
+        aTargetLabel.AddAttribute(tAtt);
+        aAttMap.Bind(sAtt,tAtt);
       }
       else {
-	// Some attributes have the same ID, but are different and
-	// exclusive. This obliged to test the dynamic type identity.
-	if (tAtt->IsInstance(sAtt->DynamicType()))
-	  aAttMap.Bind(sAtt,tAtt);
-	else
-	  throw Standard_TypeMismatch("TDF_CopyTool: Cannot paste to a different type attribute.");
+        // Some attributes have the same ID, but are different and
+        // exclusive. This obliged to test the dynamic type identity.
+        if (tAtt->IsInstance(sAtt->DynamicType()))
+          aAttMap.Bind(sAtt,tAtt);
+        else
+          throw Standard_TypeMismatch("TDF_CopyTool: Cannot paste to a different type attribute.");
       }
     }
   }

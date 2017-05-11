@@ -15,6 +15,7 @@
 
 
 #include <BinMDataStd_ReferenceArrayDriver.hxx>
+#include <BinMDataStd.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <CDM_MessageDriver.hxx>
 #include <Standard_Type.hxx>
@@ -49,8 +50,8 @@ Handle(TDF_Attribute) BinMDataStd_ReferenceArrayDriver::NewEmpty() const
 //purpose  : persistent -> transient (retrieve)
 //=======================================================================
 Standard_Boolean BinMDataStd_ReferenceArrayDriver::Paste(const BinObjMgt_Persistent&  theSource,
-							 const Handle(TDF_Attribute)& theTarget,
-							 BinObjMgt_RRelocationTable&  ) const
+                                                         const Handle(TDF_Attribute)& theTarget,
+                                                         BinObjMgt_RRelocationTable&  ) const
 {
   Standard_Integer aFirstInd, aLastInd;
   if (! (theSource >> aFirstInd >> aLastInd))
@@ -59,7 +60,7 @@ Standard_Boolean BinMDataStd_ReferenceArrayDriver::Paste(const BinObjMgt_Persist
   if (aLength <= 0)
     return Standard_False;
 
-  Handle(TDataStd_ReferenceArray) anAtt = Handle(TDataStd_ReferenceArray)::DownCast(theTarget);
+  const Handle(TDataStd_ReferenceArray) anAtt = Handle(TDataStd_ReferenceArray)::DownCast(theTarget);
   anAtt->Init(aFirstInd, aLastInd);
   for (Standard_Integer i = aFirstInd; i <= aLastInd; i++)
   {
@@ -72,6 +73,7 @@ Standard_Boolean BinMDataStd_ReferenceArrayDriver::Paste(const BinObjMgt_Persist
       anAtt->SetValue(i, L);
   }
 
+  BinMDataStd::SetAttributeID(theSource, anAtt);
   return Standard_True;
 }
 
@@ -80,8 +82,8 @@ Standard_Boolean BinMDataStd_ReferenceArrayDriver::Paste(const BinObjMgt_Persist
 //purpose  : transient -> persistent (store)
 //=======================================================================
 void BinMDataStd_ReferenceArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
-					     BinObjMgt_Persistent&        theTarget,
-					     BinObjMgt_SRelocationTable&  ) const
+                                             BinObjMgt_Persistent&        theTarget,
+                                             BinObjMgt_SRelocationTable&  ) const
 {
   Handle(TDataStd_ReferenceArray) anAtt = Handle(TDataStd_ReferenceArray)::DownCast(theSource);
   Standard_Integer aFirstInd = anAtt->Lower(), aLastInd = anAtt->Upper(), i = aFirstInd;
@@ -98,4 +100,8 @@ void BinMDataStd_ReferenceArrayDriver::Paste(const Handle(TDF_Attribute)& theSou
       theTarget << entry;
     }
   }
+
+  // process user defined guid
+  if(anAtt->ID() != TDataStd_ReferenceArray::GetID()) 
+    theTarget << anAtt->ID();
 }

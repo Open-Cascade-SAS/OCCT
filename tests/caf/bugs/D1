@@ -42,7 +42,7 @@ SetRealArray DOC 0:1 0 1 5 1.12345678987654321 2.2 3.3 4.4 5.5
 SetIntPackedMap DOC 0:1 0 1 10 100 1000 10000
 
 # Set an array of boolean values.
-SetBooleanArray DOC 0:1 0 1 5 0 0 0 1 1
+SetBooleanArray DOC 0:1 1 5 0 0 0 1 1
 
 # Set a list of integer values.
 SetIntegerList DOC 0:1 1971 1972 1973 1974 1975

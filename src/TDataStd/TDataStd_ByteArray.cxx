@@ -40,20 +40,44 @@ const Standard_GUID& TDataStd_ByteArray::GetID()
 //function : TDataStd_ByteArray
 //purpose  : Empty Constructor
 //=======================================================================
-TDataStd_ByteArray::TDataStd_ByteArray() : myIsDelta(Standard_False){}
+TDataStd_ByteArray::TDataStd_ByteArray() : myIsDelta(Standard_False)
+{}
 
-
+//=======================================================================
+//function : SetAttr
+//purpose  : Implements Set functionality
+//=======================================================================
+static Handle(TDataStd_ByteArray) SetAttr(const TDF_Label&       label,
+                                          const Standard_Integer lower,
+                                          const Standard_Integer upper,
+                                          const Standard_Boolean isDelta,
+                                          const Standard_GUID&   theGuid) 
+{
+  Handle(TDataStd_ByteArray) A;
+  if (!label.FindAttribute (theGuid, A)) 
+  {
+    A = new TDataStd_ByteArray;
+    A->Init (lower, upper);
+    A->SetDelta(isDelta); 
+    A->SetID(theGuid);
+    label.AddAttribute(A);
+  }
+  else if (lower != A->Lower() || upper != A->Upper())
+  {
+    A->Init(lower, upper);
+  }
+  return A;
+}
 //=======================================================================
 //function : Init
 //purpose  : 
 //=======================================================================
 void TDataStd_ByteArray::Init(const Standard_Integer lower,
-			      const Standard_Integer upper)
+                              const Standard_Integer upper)
 {
+  Standard_RangeError_Raise_if(upper < lower,"TDataStd_ByteArray::Init");
   Backup();
-
-  if (upper >= lower)
-    myValue = new TColStd_HArray1OfByte(lower, upper, 0x00);
+  myValue = new TColStd_HArray1OfByte(lower, upper, 0x00);
 }
 
 //=======================================================================
@@ -61,19 +85,24 @@ void TDataStd_ByteArray::Init(const Standard_Integer lower,
 //purpose  : 
 //=======================================================================
 Handle(TDataStd_ByteArray) TDataStd_ByteArray::Set(const TDF_Label&       label,
-						   const Standard_Integer lower,
-						   const Standard_Integer upper,
-						 const Standard_Boolean isDelta) 
+                                                   const Standard_Integer lower,
+                                                   const Standard_Integer upper,
+                                                   const Standard_Boolean isDelta) 
 {
-  Handle(TDataStd_ByteArray) A;
-  if (!label.FindAttribute (TDataStd_ByteArray::GetID(), A)) 
-  {
-    A = new TDataStd_ByteArray;
-    A->Init (lower, upper);
-    A->SetDelta(isDelta); 
-    label.AddAttribute(A);
-  }
-  return A;
+  return SetAttr(label, lower, upper, isDelta, GetID());
+}
+
+//=======================================================================
+//function : Set
+//purpose  : Set user defined attribute with specific ID
+//=======================================================================
+Handle(TDataStd_ByteArray) TDataStd_ByteArray::Set(const TDF_Label&       label,
+                                                   const Standard_GUID&   theGuid,
+                                                   const Standard_Integer lower,
+                                                   const Standard_Integer upper,
+                                                   const Standard_Boolean isDelta) 
+{
+  return SetAttr(label, lower, upper, isDelta, theGuid);
 }
 
 //=======================================================================
@@ -81,7 +110,7 @@ Handle(TDataStd_ByteArray) TDataStd_ByteArray::Set(const TDF_Label&       label,
 //purpose  : 
 //=======================================================================
 void TDataStd_ByteArray::SetValue (const Standard_Integer index,
-				   const Standard_Byte value) 
+                                   const Standard_Byte value) 
 {
   if (myValue.IsNull()) 
     return;
@@ -140,7 +169,7 @@ Standard_Integer TDataStd_ByteArray::Length (void) const
 //         : that holds <newArray>
 //=======================================================================
 void TDataStd_ByteArray::ChangeArray (const Handle(TColStd_HArray1OfByte)& newArray,
-				      const Standard_Boolean isCheckItems)
+                                      const Standard_Boolean isCheckItems)
 {
 
   Standard_Integer aLower    = newArray->Lower();
@@ -153,13 +182,13 @@ void TDataStd_ByteArray::ChangeArray (const Handle(TColStd_HArray1OfByte)& newAr
     if(isCheckItems) {
       Standard_Boolean isEqual = Standard_True;
       for(i = aLower; i <= anUpper; i++) {
-	if(myValue->Value(i) != newArray->Value(i)) {
-	  isEqual = Standard_False;
-	  break;
-	}
+        if(myValue->Value(i) != newArray->Value(i)) {
+          isEqual = Standard_False;
+          break;
+        }
       }
       if(isEqual)
-	return;
+        return;
     }
   }
   
@@ -178,7 +207,30 @@ void TDataStd_ByteArray::ChangeArray (const Handle(TColStd_HArray1OfByte)& newAr
 //=======================================================================
 const Standard_GUID& TDataStd_ByteArray::ID () const 
 { 
-  return GetID(); 
+  return myID; 
+}
+
+//=======================================================================
+//function : SetID
+//purpose  :
+//=======================================================================
+
+void TDataStd_ByteArray::SetID( const Standard_GUID&  theGuid)
+{  
+  if(myID == theGuid) return;
+  Backup();
+  myID = theGuid;
+}
+
+//=======================================================================
+//function : SetID
+//purpose  : sets default ID
+//=======================================================================
+
+void TDataStd_ByteArray::SetID()
+{
+  Backup();
+  myID = GetID();
 }
 
 //=======================================================================
@@ -205,6 +257,7 @@ void TDataStd_ByteArray::Restore(const Handle(TDF_Attribute)& With)
     for (; i <= upper; i++)
       myValue->SetValue(i, with_array.Value(i));
     myIsDelta = anArray->myIsDelta;
+    myID = anArray->ID();
   }
   else
     myValue.Nullify();
@@ -215,7 +268,7 @@ void TDataStd_ByteArray::Restore(const Handle(TDF_Attribute)& With)
 //purpose  : 
 //=======================================================================
 void TDataStd_ByteArray::Paste (const Handle(TDF_Attribute)& Into,
-				const Handle(TDF_RelocationTable)& ) const
+                                const Handle(TDF_RelocationTable)& ) const
 {
   if (!myValue.IsNull()) 
   {
@@ -224,6 +277,7 @@ void TDataStd_ByteArray::Paste (const Handle(TDF_Attribute)& Into,
     {
       anAtt->ChangeArray( myValue, Standard_False);
       anAtt->SetDelta(myIsDelta);
+      anAtt->SetID(myID);
     }
   }
 }
@@ -234,7 +288,10 @@ void TDataStd_ByteArray::Paste (const Handle(TDF_Attribute)& Into,
 //=======================================================================
 Standard_OStream& TDataStd_ByteArray::Dump (Standard_OStream& anOS) const
 {  
-  anOS << "ByteArray";
+  anOS << "\nByteArray: ";
+  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  myID.ToCString(sguid);
+  anOS << sguid << endl;
   return anOS;
 }
 

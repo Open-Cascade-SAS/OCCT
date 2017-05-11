@@ -25,6 +25,8 @@
 #include <TDF_Label.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
+#include <Standard_GUID.hxx>
+
 class Standard_GUID;
 class TDF_Label;
 class TDF_Attribute;
@@ -49,6 +51,10 @@ public:
   
   //! Finds or creates an array of reference values (labels) attribute.
   Standard_EXPORT static Handle(TDataStd_ReferenceArray) Set (const TDF_Label& label, const Standard_Integer lower, const Standard_Integer upper);
+
+  //! Finds or creates an array of reference values (labels) attribute with explicit user defined <guid>.
+  Standard_EXPORT static Handle(TDataStd_ReferenceArray) Set (const TDF_Label& label,  const Standard_GUID&   theGuid,
+                                                              const Standard_Integer lower, const Standard_Integer upper);
   
   //! Initialize the inner array with bounds from <lower> to <upper>
   Standard_EXPORT void Init (const Standard_Integer lower, const Standard_Integer upper);
@@ -56,13 +62,20 @@ public:
   //! Sets the <Index>th element of the array to <Value>
   //! OutOfRange exception is raised if <Index> doesn't respect Lower and Upper bounds of the internal  array.
   Standard_EXPORT void SetValue (const Standard_Integer index, const TDF_Label& value);
-  
+
+  //! Sets the explicit GUID (user defined) for the attribute.
+  Standard_EXPORT void SetID( const Standard_GUID&  theGuid) Standard_OVERRIDE;
+
+  //! Sets default GUID for the attribute.
+  Standard_EXPORT void SetID() Standard_OVERRIDE;
+
   //! Returns the value of the <Index>th element of the array.
   Standard_EXPORT TDF_Label Value (const Standard_Integer Index) const;
-TDF_Label operator () (const Standard_Integer Index) const
-{
-  return Value(Index);
-}
+
+  TDF_Label operator () (const Standard_Integer Index) const
+  {
+    return Value(Index);
+  }
   
   //! Returns the lower boundary of the array.
   Standard_EXPORT Standard_Integer Lower() const;
@@ -105,7 +118,7 @@ private:
 
 
   Handle(TDataStd_HLabelArray1) myArray;
-
+  Standard_GUID myID;
 
 };
 

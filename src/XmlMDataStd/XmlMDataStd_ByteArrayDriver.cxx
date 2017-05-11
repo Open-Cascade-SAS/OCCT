@@ -24,6 +24,7 @@
 #include <XmlMDataStd_ByteArrayDriver.hxx>
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
+IMPLEMENT_DOMSTRING (AttributeIDString, "bytearrattguid")
 
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_ByteArrayDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
@@ -53,8 +54,8 @@ Handle(TDF_Attribute) XmlMDataStd_ByteArrayDriver::NewEmpty() const
 //purpose  : persistent -> transient (retrieve)
 //=======================================================================
 Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-						    const Handle(TDF_Attribute)& theTarget,
-						    XmlObjMgt_RRelocationTable&  ) const
+                                                    const Handle(TDF_Attribute)& theTarget,
+                                                    XmlObjMgt_RRelocationTable&  ) const
 {
   Standard_Integer aFirstInd, aLastInd, aValue;
   const XmlObjMgt_Element& anElement = theSource;
@@ -105,9 +106,9 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
     if (!XmlObjMgt::GetInteger(aValueStr, aValue)) 
     {
       TCollection_ExtendedString aMessageString =
-	TCollection_ExtendedString("Cannot retrieve integer member"
-				   " for ByteArray attribute as \"")
-	  + aValueStr + "\"";
+        TCollection_ExtendedString("Cannot retrieve integer member"
+                                   " for ByteArray attribute as \"")
+                                   + aValueStr + "\"";
       WriteMessage (aMessageString);
       return Standard_False;
     }
@@ -120,14 +121,14 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
   if(XmlMDataStd::DocumentVersion() > 2) {
     Standard_Integer aDeltaValue;
     if (!anElement.getAttribute(::IsDeltaOn()).GetInteger(aDeltaValue)) 
-      {
-	TCollection_ExtendedString aMessageString =
-	  TCollection_ExtendedString("Cannot retrieve the isDelta value"
-                                 " for ByteArray attribute as \"")
-        + aDeltaValue + "\"";
-	WriteMessage (aMessageString);
-	return Standard_False;
-      } 
+    {
+      TCollection_ExtendedString aMessageString =
+        TCollection_ExtendedString("Cannot retrieve the isDelta value"
+                                   " for ByteArray attribute as \"")
+                                   + aDeltaValue + "\"";
+      WriteMessage (aMessageString);
+      return Standard_False;
+    } 
     else
       aDelta = aDeltaValue != 0;
   }
@@ -137,6 +138,16 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
 #endif
   aByteArray->SetDelta(aDelta);
 
+  // attribute id
+  Standard_GUID aGUID;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_ByteArray::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+
+  aByteArray->SetID(aGUID);
+
   return Standard_True;
 }
 
@@ -145,8 +156,8 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
 //purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_ByteArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
-					XmlObjMgt_Persistent&        theTarget,
-					XmlObjMgt_SRelocationTable&  ) const
+                                        XmlObjMgt_Persistent&        theTarget,
+                                        XmlObjMgt_SRelocationTable&  ) const
 {
   Handle(TDataStd_ByteArray) aByteArray = Handle(TDataStd_ByteArray)::DownCast(theSource);
 
@@ -179,5 +190,12 @@ void XmlMDataStd_ByteArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
 
     // Transfer the string (array of chars) to XML.
     XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
+  }
+  if(aByteArray->ID() != TDataStd_ByteArray::GetID()) {
+    //convert GUID
+    Standard_Character aGuidStr [Standard_GUID_SIZE_ALLOC];
+    Standard_PCharacter pGuidStr = aGuidStr;
+    aByteArray->ID().ToCString (pGuidStr);
+    theTarget.Element().setAttribute (::AttributeIDString(), aGuidStr);
   }
 }

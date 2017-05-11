@@ -25,6 +25,8 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
+#include <Standard_GUID.hxx>
+
 class Standard_GUID;
 class TDF_Label;
 class TDF_Attribute;
@@ -48,7 +50,10 @@ public:
   
   //! Finds or creates a list of double values attribute.
   Standard_EXPORT static Handle(TDataStd_RealList) Set (const TDF_Label& label);
-  
+
+  //! Finds or creates a list of double values attribute with explicit user defined <guid>.
+  Standard_EXPORT static Handle(TDataStd_RealList) Set (const TDF_Label& label, const Standard_GUID& theGuid);
+
   Standard_EXPORT TDataStd_RealList();
   
   Standard_EXPORT Standard_Boolean IsEmpty() const;
@@ -58,7 +63,13 @@ public:
   Standard_EXPORT void Prepend (const Standard_Real value);
   
   Standard_EXPORT void Append (const Standard_Real value);
-  
+ 
+  //! Sets the explicit GUID (user defined) for the attribute.
+  Standard_EXPORT void SetID( const Standard_GUID&  theGuid) Standard_OVERRIDE;
+
+  //! Sets default GUID for the attribute.
+  Standard_EXPORT void SetID() Standard_OVERRIDE;
+
   //! Inserts the <value> before the first meet of <before_value>.
   Standard_EXPORT Standard_Boolean InsertBefore (const Standard_Real value, const Standard_Real before_value);
   
@@ -111,7 +122,7 @@ private:
 
 
   TColStd_ListOfReal myList;
-
+  Standard_GUID myID;
 
 };
 

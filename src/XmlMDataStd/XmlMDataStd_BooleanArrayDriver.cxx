@@ -27,7 +27,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_BooleanArrayDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
 IMPLEMENT_DOMSTRING (LastIndexString,  "last")
-
+IMPLEMENT_DOMSTRING (AttributeIDString, "boolarrattguid")
 //=======================================================================
 //function : XmlMDataStd_BooleanArrayDriver
 //purpose  : Constructor
@@ -52,8 +52,8 @@ Handle(TDF_Attribute) XmlMDataStd_BooleanArrayDriver::NewEmpty() const
 //purpose  : persistent -> transient (retrieve)
 //=======================================================================
 Standard_Boolean XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-						       const Handle(TDF_Attribute)& theTarget,
-						       XmlObjMgt_RRelocationTable&  ) const
+                                                       const Handle(TDF_Attribute)& theTarget,
+                                                       XmlObjMgt_RRelocationTable&  ) const
 {
   Standard_Integer aFirstInd, aLastInd, aValue;
   const XmlObjMgt_Element& anElement = theSource;
@@ -105,16 +105,24 @@ Standard_Boolean XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persisten
     if (!XmlObjMgt::GetInteger(aValueStr, aValue)) 
     {
       TCollection_ExtendedString aMessageString =
-	TCollection_ExtendedString("Cannot retrieve integer member"
-				   " for BooleanArray attribute as \"")
-	  + aValueStr + "\"";
+        TCollection_ExtendedString("Cannot retrieve integer member"
+        " for BooleanArray attribute as \"")
+        + aValueStr + "\"";
       WriteMessage (aMessageString);
       return Standard_False;
     }
     arr.SetValue(i, (Standard_Byte) aValue);
   }
   aBooleanArray->SetInternalArray(hArr);
-  
+
+  // attribute id
+  Standard_GUID aGUID;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_BooleanArray::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+  aBooleanArray->SetID(aGUID);
   return Standard_True;
 }
 
@@ -123,8 +131,8 @@ Standard_Boolean XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persisten
 //purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_BooleanArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
-					   XmlObjMgt_Persistent&        theTarget,
-					   XmlObjMgt_SRelocationTable&  ) const
+                                           XmlObjMgt_Persistent&        theTarget,
+                                           XmlObjMgt_SRelocationTable&  ) const
 {
   Handle(TDataStd_BooleanArray) aBooleanArray = Handle(TDataStd_BooleanArray)::DownCast(theSource);
 
@@ -153,4 +161,11 @@ void XmlMDataStd_BooleanArrayDriver::Paste(const Handle(TDF_Attribute)& theSourc
 
   if (arr.Length())
     XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
+    if(aBooleanArray->ID() != TDataStd_BooleanArray::GetID()) {
+    //convert GUID
+    Standard_Character aGuidStr [Standard_GUID_SIZE_ALLOC];
+    Standard_PCharacter pGuidStr = aGuidStr;
+    aBooleanArray->ID().ToCString (pGuidStr);
+    theTarget.Element().setAttribute (::AttributeIDString(), aGuidStr);
+  }
 }

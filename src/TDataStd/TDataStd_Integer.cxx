@@ -135,6 +135,17 @@ void TDataStd_Integer::SetID( const Standard_GUID&  theGuid)
   Backup();
   myID = theGuid;
 }
+
+//=======================================================================
+//function : SetID
+//purpose  : sets default ID
+//=======================================================================
+void TDataStd_Integer::SetID()
+{
+  Backup();
+  myID = GetID();
+}
+
 //=======================================================================
 //function : NewEmpty
 //purpose  : 

@@ -62,7 +62,7 @@ Standard_Boolean BinMDataStd_RealArrayDriver::Paste
   if (aLength <= 0)
     return Standard_False;
 
-  Handle(TDataStd_RealArray) anAtt =
+  const Handle(TDataStd_RealArray) anAtt =
     Handle(TDataStd_RealArray)::DownCast(theTarget);
   anAtt->Init(aFirstInd, aLastInd);
   TColStd_Array1OfReal& aTargetArray = anAtt->Array()->ChangeArray1();
@@ -78,6 +78,8 @@ Standard_Boolean BinMDataStd_RealArrayDriver::Paste
       aDelta = (aDeltaValue != 0);
   }
   anAtt->SetDelta(aDelta);
+
+  BinMDataStd::SetAttributeID(theSource, anAtt);
   return Standard_True; 
 }
 
@@ -101,4 +103,7 @@ void BinMDataStd_RealArrayDriver::Paste
   Standard_Real *aPtr = (Standard_Real *) &aSourceArray(aFirstInd);
   theTarget.PutRealArray (aPtr, aLength);
   theTarget << (Standard_Byte)(anAtt->GetDelta() ? 1 : 0);
+  // process user defined guid
+  if(anAtt->ID() != TDataStd_RealArray::GetID()) 
+    theTarget << anAtt->ID();
 }

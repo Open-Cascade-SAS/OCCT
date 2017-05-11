@@ -27,6 +27,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_BooleanListDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
 IMPLEMENT_DOMSTRING (LastIndexString,  "last")
+IMPLEMENT_DOMSTRING (AttributeIDString, "boollistattguid")
 
 //=======================================================================
 //function : XmlMDataStd_BooleanListDriver
@@ -52,8 +53,8 @@ Handle(TDF_Attribute) XmlMDataStd_BooleanListDriver::NewEmpty() const
 //purpose  : persistent -> transient (retrieve)
 //=======================================================================
 Standard_Boolean XmlMDataStd_BooleanListDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-						      const Handle(TDF_Attribute)& theTarget,
-						      XmlObjMgt_RRelocationTable&  ) const
+                                                      const Handle(TDF_Attribute)& theTarget,
+                                                      XmlObjMgt_RRelocationTable&  ) const
 {
   Standard_Integer aFirstInd, aLastInd, aValue, ind;
   const XmlObjMgt_Element& anElement = theSource;
@@ -115,7 +116,17 @@ Standard_Boolean XmlMDataStd_BooleanListDriver::Paste(const XmlObjMgt_Persistent
       aBooleanList->Append(aValue ? Standard_True : Standard_False);
     }
   }
-  
+
+  // attribute id
+  Standard_GUID aGUID;
+  XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
+  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    aGUID = TDataStd_BooleanList::GetID(); //default case
+  else
+    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+
+  aBooleanList->SetID(aGUID);
+
   return Standard_True;
 }
 
@@ -124,8 +135,8 @@ Standard_Boolean XmlMDataStd_BooleanListDriver::Paste(const XmlObjMgt_Persistent
 //purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_BooleanListDriver::Paste(const Handle(TDF_Attribute)& theSource,
-					  XmlObjMgt_Persistent&        theTarget,
-					  XmlObjMgt_SRelocationTable&  ) const
+                                          XmlObjMgt_Persistent&        theTarget,
+                                          XmlObjMgt_SRelocationTable&  ) const
 {
   const Handle(TDataStd_BooleanList) aBooleanList = Handle(TDataStd_BooleanList)::DownCast(theSource);
 
@@ -145,4 +156,12 @@ void XmlMDataStd_BooleanListDriver::Paste(const Handle(TDF_Attribute)& theSource
     }
   }
   XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
+
+  if(aBooleanList->ID() != TDataStd_BooleanList::GetID()) {
+    //convert GUID
+    Standard_Character aGuidStr [Standard_GUID_SIZE_ALLOC];
+    Standard_PCharacter pGuidStr = aGuidStr;
+    aBooleanList->ID().ToCString (pGuidStr);
+    theTarget.Element().setAttribute (::AttributeIDString(), aGuidStr);
+  }
 }

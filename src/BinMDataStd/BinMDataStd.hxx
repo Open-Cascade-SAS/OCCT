@@ -16,11 +16,13 @@
 #ifndef _BinMDataStd_HeaderFile
 #define _BinMDataStd_HeaderFile
 
-#include <Standard.hxx>
+#include <Standard_GUID.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
+#include <BinObjMgt_Persistent.hxx>
+
 class BinMDF_ADriverTable;
 class CDM_MessageDriver;
 class BinMDataStd_NameDriver;
@@ -50,7 +52,6 @@ class BinMDataStd_ReferenceArrayDriver;
 class BinMDataStd_ByteArrayDriver;
 class BinMDataStd_NamedDataDriver;
 
-
 //! Storage and Retrieval drivers for modelling attributes.
 class BinMDataStd 
 {
@@ -66,7 +67,24 @@ public:
   
   Standard_EXPORT static Standard_Integer DocumentVersion();
 
-
+template<class T>
+static void SetAttributeID(const BinObjMgt_Persistent& theSource, const Handle(T)& anAtt)
+{
+  Standard_Boolean ok = Standard_True;
+  if(BinMDataStd::DocumentVersion() > 9) { // process user defined guid
+    const Standard_Integer& aPos = theSource.Position();
+    Standard_GUID aGuid;
+    ok = theSource >> aGuid;
+    if (!ok) {
+      theSource.SetPosition(aPos);
+      anAtt->SetID(T::GetID());
+      ok = Standard_True;
+    } else {
+      anAtt->SetID(aGuid);
+    }
+  } else
+    anAtt->SetID(T::GetID());
+}
 
 
 protected:

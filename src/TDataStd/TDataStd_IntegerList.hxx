@@ -24,6 +24,8 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
+#include <Standard_GUID.hxx>
+
 class Standard_GUID;
 class TDF_Label;
 class TDF_Attribute;
@@ -47,7 +49,10 @@ public:
   
   //! Finds or creates a list of integer values attribute.
   Standard_EXPORT static Handle(TDataStd_IntegerList) Set (const TDF_Label& label);
-  
+
+ //! Finds or creates a list of integer values attribute with explicit user defined <guid>.
+  Standard_EXPORT static Handle(TDataStd_IntegerList) Set (const TDF_Label& label, const Standard_GUID&   theGuid);
+
   Standard_EXPORT TDataStd_IntegerList();
   
   Standard_EXPORT Standard_Boolean IsEmpty() const;
@@ -57,7 +62,13 @@ public:
   Standard_EXPORT void Prepend (const Standard_Integer value);
   
   Standard_EXPORT void Append (const Standard_Integer value);
-  
+
+  //! Sets the explicit GUID (user defined) for the attribute.
+  Standard_EXPORT void SetID( const Standard_GUID&  theGuid) Standard_OVERRIDE;
+
+  //! Sets default GUID for the attribute.
+  Standard_EXPORT void SetID() Standard_OVERRIDE;
+
   //! Inserts the <value> before the first meet of <before_value>.
   Standard_EXPORT Standard_Boolean InsertBefore (const Standard_Integer value, const Standard_Integer before_value);
   
@@ -110,7 +121,7 @@ private:
 
 
   TColStd_ListOfInteger myList;
-
+  Standard_GUID myID;
 
 };
 

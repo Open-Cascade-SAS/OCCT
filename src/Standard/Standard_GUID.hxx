@@ -17,7 +17,6 @@
 #ifndef _Standard_GUID_HeaderFile
 #define _Standard_GUID_HeaderFile
 
-#include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
