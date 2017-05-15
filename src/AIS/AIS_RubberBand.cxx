@@ -39,6 +39,7 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_RubberBand, AIS_InteractiveObject)
 //purpose  :
 //=======================================================================
 AIS_RubberBand::AIS_RubberBand()
+: myIsPolygonClosed(Standard_True)
 {
   myDrawer->SetLineAspect (new Prs3d_LineAspect (Quantity_NOC_WHITE, Aspect_TOL_SOLID, 1.0));
   myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
@@ -57,7 +58,9 @@ AIS_RubberBand::AIS_RubberBand()
 //=======================================================================
 AIS_RubberBand::AIS_RubberBand (const Quantity_Color& theLineColor,
                                 const Aspect_TypeOfLine theLineType,
-                                const Standard_Real theWidth)
+                                const Standard_Real theWidth,
+                                const Standard_Boolean theIsPolygonClosed)
+: myIsPolygonClosed(theIsPolygonClosed)
 {
   myDrawer->SetLineAspect (new Prs3d_LineAspect (theLineColor, theLineType, theWidth));
   myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
@@ -78,7 +81,9 @@ AIS_RubberBand::AIS_RubberBand (const Quantity_Color& theLineColor,
                                 const Aspect_TypeOfLine theLineType,
                                 const Quantity_Color theFillColor,
                                 const Standard_Real theTransparency,
-                                const Standard_Real theLineWidth)
+                                const Standard_Real theLineWidth,
+                                const Standard_Boolean theIsPolygonClosed)
+: myIsPolygonClosed (theIsPolygonClosed)
 {
   myDrawer->SetLineAspect (new Prs3d_LineAspect (theLineColor, theLineType, theLineWidth));
   myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
@@ -264,6 +269,24 @@ Standard_Boolean AIS_RubberBand::IsFilling() const
 }
 
 //=======================================================================
+//function : IsPolygonClosed
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_RubberBand::IsPolygonClosed() const
+{
+  return myIsPolygonClosed;
+}
+
+//=======================================================================
+//function : SetPolygonClosed
+//purpose  :
+//=======================================================================
+void AIS_RubberBand::SetPolygonClosed(Standard_Boolean theIsPolygonClosed)
+{
+  myIsPolygonClosed = theIsPolygonClosed;
+}
+
+//=======================================================================
 //function : fillTriangles
 //purpose  :
 //=======================================================================
@@ -376,17 +399,20 @@ void AIS_RubberBand::Compute (const Handle(PrsMgr_PresentationManager3d)& /*theP
   }
 
   // Draw frame
-  if (myBorders.IsNull() || myBorders->VertexNumber() != myPoints.Length() + 1)
+  if (myBorders.IsNull() || myBorders->VertexNumber() != myPoints.Length() + (myIsPolygonClosed ? 1 : 0))
   {
-     myBorders = new Graphic3d_ArrayOfPolylines (myPoints.Length() + 1);
+    myBorders = new Graphic3d_ArrayOfPolylines(myPoints.Length() + (myIsPolygonClosed ? 1 : 0));
      for (Standard_Integer anIt = 1; anIt <= myPoints.Length(); anIt++)
      {
        myBorders->AddVertex ((Standard_Real)myPoints.Value (anIt).x(),
                              (Standard_Real)myPoints.Value (anIt).y(), 0.0);
      }
 
-     myBorders->AddVertex ((Standard_Real)myPoints.Value(1).x(),
-                           (Standard_Real)myPoints.Value(1).y(), 0.0);
+     if (myIsPolygonClosed)
+     {
+       myBorders->AddVertex((Standard_Real)myPoints.Value(1).x(),
+                            (Standard_Real)myPoints.Value(1).y(), 0.0);
+     }
 
   }
   else
@@ -397,8 +423,11 @@ void AIS_RubberBand::Compute (const Handle(PrsMgr_PresentationManager3d)& /*theP
                                  (Standard_ShortReal)myPoints.Value (anIt).y(), 0.0f);
     }
 
-    myBorders->SetVertice (myPoints.Length() + 1, (Standard_ShortReal)myPoints.Value(1).x(),
+    if (myIsPolygonClosed)
+    {
+      myBorders->SetVertice(myPoints.Length() + 1, (Standard_ShortReal)myPoints.Value(1).x(),
                            (Standard_ShortReal)myPoints.Value(1).y(), 0.0f);
+    }
   }
 
   aGroup->SetGroupPrimitivesAspect (myDrawer->LineAspect()->Aspect());

@@ -47,7 +47,8 @@ public:
   //! @warning It binds this object with Graphic3d_ZLayerId_TopOSD layer.
   Standard_EXPORT AIS_RubberBand (const Quantity_Color& theLineColor,
                                   const Aspect_TypeOfLine theType,
-                                  const Standard_Real theLineWidth = 1.0);
+                                  const Standard_Real theLineWidth = 1.0,
+                                  const Standard_Boolean theIsPolygonClosed = Standard_True);
 
   //! Constructs the rubber band with defined filling and line parameters.
   //! @param theLineColor [in] color of rubber band lines
@@ -60,7 +61,8 @@ public:
                                   const Aspect_TypeOfLine theType,
                                   const Quantity_Color theFillColor,
                                   const Standard_Real theTransparency = 1.0,
-                                  const Standard_Real theLineWidth = 1.0);
+                                  const Standard_Real theLineWidth = 1.0,
+                                  const Standard_Boolean theIsPolygonClosed = Standard_True);
 
   Standard_EXPORT virtual ~AIS_RubberBand();
 
@@ -94,7 +96,7 @@ public:
   //! Sets color of rubber band filling.
   Standard_EXPORT void SetFillColor (const Quantity_Color& theColor);
 
-  //! Sets wodth of line for rubber band presentation.
+  //! Sets width of line for rubber band presentation.
   Standard_EXPORT void SetLineWidth (const Standard_Real theWidth) const;
 
   //! @return width of lines.
@@ -124,6 +126,13 @@ public:
   //! @return true if filling of rubber band is enabled.
   Standard_EXPORT Standard_Boolean IsFilling() const;
 
+  //! @return true if automatic closing of rubber band is enabled.
+  Standard_EXPORT Standard_Boolean IsPolygonClosed() const;
+
+  //! Automatically create an additional line connecting the first and 
+  //! the last screen points to close the boundary polyline
+  Standard_EXPORT void SetPolygonClosed(Standard_Boolean theIsPolygonClosed);
+
 protected:
 
   //! Computes presentation of rubber band.
@@ -146,5 +155,7 @@ protected:
 
   Handle(Graphic3d_ArrayOfTriangles) myTriangles; //!< Triangles for rubber band filling
   Handle(Graphic3d_ArrayOfPolylines) myBorders; //!< Polylines for rubber band borders
+
+  Standard_Boolean                   myIsPolygonClosed; //!< automatic closing of rubber-band flag
 };
 #endif
