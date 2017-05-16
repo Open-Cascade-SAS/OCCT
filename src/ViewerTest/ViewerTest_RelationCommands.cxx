@@ -859,31 +859,50 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
     }
     case AIS_KOD_RADIUS: // radius of the circle
     {
-      if (aShapes.Extent() == 1)
+      gp_Pnt anAnchor;
+      bool hasAnchor = false;
+      for (NCollection_List<Handle(AIS_InteractiveObject)>::Iterator aShapeIter (aShapes); aShapeIter.More(); aShapeIter.Next())
       {
-        if (aShapes.First()->DynamicType() == STANDARD_TYPE(AIS_Circle))
+        if (Handle(AIS_Point) aPoint = Handle(AIS_Point)::DownCast(aShapeIter.Value()))
         {
-          Handle(AIS_Circle) aShape = Handle(AIS_Circle)::DownCast (aShapes.First());
-          gp_Circ aCircle = aShape->Circle()->Circ();
-          aDim = new AIS_RadiusDimension (aCircle);
-        }
-        else
-        {
-          Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (aShapes.First());
-          if (aShape.IsNull())
-          {
-            std::cerr << "Error: shape for radius is of wrong type.\n";
-            return 1;
-          }
-          aDim = new AIS_RadiusDimension (aShape->Shape());
+          hasAnchor = true;
+          anAnchor = aPoint->Component()->Pnt();
+          aShapes.Remove (aShapeIter);
+          break;
         }
       }
-      else
+      if (aShapes.Extent() != 1)
       {
-        std::cerr << theArgs[0] << ": wrong number of shapes to build dimension.\n";
+        std::cout << "Syntax error: wrong number of shapes to build dimension.\n";
         return 1;
       }
 
+      if (Handle(AIS_Circle) aShapeCirc = Handle(AIS_Circle)::DownCast(aShapes.First()))
+      {
+        gp_Circ aCircle = aShapeCirc->Circle()->Circ();
+        if (hasAnchor)
+        {
+          aDim = new AIS_RadiusDimension (aCircle, anAnchor);
+        }
+        else
+        {
+          aDim = new AIS_RadiusDimension (aCircle);
+        }
+      }
+      else if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(aShapes.First()))
+      {
+        Handle(AIS_RadiusDimension) aRadDim = new AIS_RadiusDimension (aShape->Shape());
+        if (hasAnchor)
+        {
+          aRadDim->SetMeasuredGeometry (aShape->Shape(), anAnchor);
+        }
+        aDim = aRadDim;
+      }
+      else
+      {
+        std::cout << "Error: shape for radius has wrong type.\n";
+        return 1;
+      }
       break;
     }
     case AIS_KOD_DIAMETER:

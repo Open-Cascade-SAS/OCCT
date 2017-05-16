@@ -85,22 +85,34 @@ public:
   //! The dimension will become invalid if the radius of the circle
   //! is less than Precision::Confusion().
   //! @param theCircle [in] the circle to measure.
-  Standard_EXPORT void SetMeasuredGeometry (const gp_Circ& theCircle);
+  void SetMeasuredGeometry (const gp_Circ& theCircle) { SetMeasuredGeometry (theCircle, gp_Pnt(), Standard_False); }
 
   //! Measure radius of the circle and orient the dimension so
   //! the dimension lines attaches to anchor point on the circle.
   //! The dimension will become invalid if the radius of the circle
   //! is less than Precision::Confusion().
   //! @param theCircle [in] the circle to measure.
-  //! @param theAnchorPoint [in] the point to attach the dimension lines.
+  //! @param theAnchorPoint [in] the point to attach the dimension lines, should be on the circle
+  //! @param theHasAnchor   [in] should be set TRUE if theAnchorPoint should be used
   Standard_EXPORT void SetMeasuredGeometry (const gp_Circ& theCircle,
-                                            const gp_Pnt& theAnchorPoint);
+                                            const gp_Pnt& theAnchorPoint,
+                                            const Standard_Boolean theHasAnchor = Standard_True);
 
   //! Measure radius on the passed shape, if applicable.
   //! The dimension will become invalid if the passed shape is not
   //! measurable or if measured diameter value is less than Precision::Confusion().
   //! @param theShape [in] the shape to measure.
-  Standard_EXPORT void SetMeasuredGeometry (const TopoDS_Shape& theShape);
+  void SetMeasuredGeometry (const TopoDS_Shape& theShape) { SetMeasuredGeometry (theShape, gp_Pnt(), Standard_False); }
+
+  //! Measure radius on the passed shape, if applicable.
+  //! The dimension will become invalid if the passed shape is not
+  //! measurable or if measured diameter value is less than Precision::Confusion().
+  //! @param theShape [in] the shape to measure.
+  //! @param theAnchorPoint [in] the point to attach the dimension lines, should be on the circle
+  //! @param theHasAnchor   [in] should be set TRUE if theAnchorPoint should be used
+  Standard_EXPORT void SetMeasuredGeometry (const TopoDS_Shape& theShape,
+                                            const gp_Pnt& theAnchorPoint,
+                                            const Standard_Boolean theHasAnchor = Standard_True);
 
   //! @return the display units string.
   Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const Standard_OVERRIDE;

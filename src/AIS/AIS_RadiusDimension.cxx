@@ -73,34 +73,15 @@ AIS_RadiusDimension::AIS_RadiusDimension (const TopoDS_Shape& theShape)
 //function : SetMeasuredGeometry
 //purpose  : 
 //=======================================================================
-void AIS_RadiusDimension::SetMeasuredGeometry (const gp_Circ& theCircle)
-{
-  myCircle          = theCircle;
-  myGeometryType    = GeometryType_Edge;
-  myShape           = BRepLib_MakeEdge (theCircle);
-  myAnchorPoint     = ElCLib::Value (0, myCircle);
-  myIsGeometryValid = IsValidCircle (myCircle);
-
-  if (myIsGeometryValid)
-  {
-    ComputePlane();
-  }
-
-  SetToUpdate();
-}
-
-//=======================================================================
-//function : SetMeasuredGeometry
-//purpose  : 
-//=======================================================================
 void AIS_RadiusDimension::SetMeasuredGeometry (const gp_Circ& theCircle,
-                                               const gp_Pnt&  theAnchorPoint)
+                                               const gp_Pnt&  theAnchorPoint,
+                                               const Standard_Boolean theHasAnchor)
 {
   myCircle          = theCircle;
   myGeometryType    = GeometryType_Edge;
   myShape           = BRepLib_MakeEdge (theCircle);
-  myAnchorPoint     = theAnchorPoint;
-  myIsGeometryValid = IsValidCircle (myCircle) && IsValidAnchor (myCircle, theAnchorPoint);
+  myAnchorPoint     = theHasAnchor ? theAnchorPoint : ElCLib::Value (0, myCircle);
+  myIsGeometryValid = IsValidCircle (myCircle) && IsValidAnchor (myCircle, myAnchorPoint);
 
   if (myIsGeometryValid)
   {
@@ -114,13 +95,20 @@ void AIS_RadiusDimension::SetMeasuredGeometry (const gp_Circ& theCircle,
 //function : SetMeasuredGeometry
 //purpose  : 
 //=======================================================================
-void AIS_RadiusDimension::SetMeasuredGeometry (const TopoDS_Shape& theShape)
+void AIS_RadiusDimension::SetMeasuredGeometry (const TopoDS_Shape& theShape,
+                                               const gp_Pnt& theAnchorPoint,
+                                               const Standard_Boolean theHasAnchor)
 {
   Standard_Boolean isClosed = Standard_False;
   myShape                   = theShape;
   myGeometryType            = GeometryType_UndefShapes;
   myIsGeometryValid         = InitCircularDimension (theShape, myCircle, myAnchorPoint, isClosed) 
-                              && IsValidCircle (myCircle);
+                           && IsValidCircle (myCircle);
+  if (theHasAnchor)
+  {
+    myAnchorPoint = theAnchorPoint;
+    myIsGeometryValid = myIsGeometryValid && IsValidAnchor (myCircle, myAnchorPoint);
+  }
 
   if (myIsGeometryValid)
   {
@@ -252,7 +240,7 @@ Standard_Boolean AIS_RadiusDimension::IsValidAnchor (const gp_Circ& theCircle,
   Standard_Real anAnchorDist = theAnchor.Distance (theCircle.Location());
   Standard_Real aRadius      = myCircle.Radius();
 
-  return Abs (anAnchorDist - aRadius) > Precision::Confusion()
+  return Abs (anAnchorDist - aRadius) <= Precision::Confusion()
       && aCirclePlane.Contains (theAnchor, Precision::Confusion());
 }
 
