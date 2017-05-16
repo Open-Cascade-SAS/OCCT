@@ -1860,20 +1860,20 @@ Standard_ShortReal FSD_BinaryFile::InverseShortReal (const Standard_ShortReal th
 //=======================================================================
 
 template<int size>
-inline Standard_Size OCCT_InverseSizeSpecialized (const Standard_Size theValue, int);
+inline uint64_t OCCT_InverseSizeSpecialized (const uint64_t theValue, int);
 
 template<>
-inline Standard_Size OCCT_InverseSizeSpecialized <4> (const Standard_Size theValue, int)
+inline uint64_t OCCT_InverseSizeSpecialized <4> (const uint64_t theValue, int)
 {
   return FSD_BinaryFile::InverseInt(static_cast<Standard_Integer>(theValue));
 }
 
 template<>
-inline Standard_Size OCCT_InverseSizeSpecialized <8> (const Standard_Size theValue, int)
+inline uint64_t OCCT_InverseSizeSpecialized <8> (const uint64_t theValue, int)
 {
   union {
     Standard_Integer i[2];
-    Standard_Size    aValue;
+    uint64_t    aValue;
   } aWrapUnion;
 
   aWrapUnion.aValue = theValue;
@@ -1887,5 +1887,10 @@ inline Standard_Size OCCT_InverseSizeSpecialized <8> (const Standard_Size theVal
 
 Standard_Size FSD_BinaryFile::InverseSize (const Standard_Size theValue)
 {
-  return OCCT_InverseSizeSpecialized <sizeof(Standard_Size)> (theValue, 0);
+  return (Standard_Size) OCCT_InverseSizeSpecialized <sizeof(Standard_Size)> (theValue, 0);
+}
+
+uint64_t FSD_BinaryFile::InverseUint64 (const uint64_t theValue)
+{
+  return OCCT_InverseSizeSpecialized <sizeof(uint64_t)> (theValue, 0);
 }

@@ -335,6 +335,8 @@ Storage_BaseDriver& operator >> (Standard_ShortReal& aValue)
 
   ///Inverse bytes in size value
   Standard_EXPORT static Standard_Size InverseSize(const Standard_Size theValue);
+  ///Inverse bytes in 64bit unsigned int value
+  Standard_EXPORT static uint64_t InverseUint64(const uint64_t theValue);
 
   Standard_EXPORT static void ReadHeader (Standard_IStream& theIStream, FSD_FileHeader& theFileHeader);
 

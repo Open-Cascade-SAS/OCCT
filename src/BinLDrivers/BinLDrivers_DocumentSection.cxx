@@ -15,6 +15,7 @@
 
 #include <BinLDrivers_DocumentSection.hxx>
 #include <FSD_FileHeader.hxx>
+#include <BinMDataStd.hxx>
 
 //=======================================================================
 //function : BinLDrivers_DocumentSection
@@ -58,7 +59,7 @@ const TCollection_AsciiString&  BinLDrivers_DocumentSection::Name () const
 //purpose  : 
 //=======================================================================
 
-Standard_Size BinLDrivers_DocumentSection::Offset () const
+uint64_t BinLDrivers_DocumentSection::Offset () const
 {
   return myValue[0];
 }
@@ -68,7 +69,7 @@ Standard_Size BinLDrivers_DocumentSection::Offset () const
 //purpose  : 
 //=======================================================================
 
-void BinLDrivers_DocumentSection::SetOffset (const Standard_Size theOffset)
+void BinLDrivers_DocumentSection::SetOffset (const uint64_t theOffset)
 {
   myValue[0] = theOffset;
 }
@@ -88,7 +89,7 @@ Standard_Boolean BinLDrivers_DocumentSection::IsPostRead () const
 //purpose  : 
 //=======================================================================
 
-Standard_Size BinLDrivers_DocumentSection::Length () const
+uint64_t BinLDrivers_DocumentSection::Length () const
 {
   return myValue[1];
 }
@@ -98,7 +99,7 @@ Standard_Size BinLDrivers_DocumentSection::Length () const
 //purpose  : 
 //=======================================================================
 
-void BinLDrivers_DocumentSection::SetLength (const Standard_Size theLength)
+void BinLDrivers_DocumentSection::SetLength (const uint64_t theLength)
 {
   myValue[1] = theLength;
 }
@@ -131,14 +132,14 @@ void BinLDrivers_DocumentSection::WriteTOC (Standard_OStream& theStream)
 
     // Write the buffer: size + string
 #if DO_INVERSE
-    aBufSz[0] = InverseSize ((Standard_Integer)aBufSize);
+    aBufSz[0] = InverseInt ((Standard_Integer)aBufSize);
 #else
     aBufSz[0] = (Standard_Integer)aBufSize;
 #endif
     theStream.write (&aBuf[0], aBufSize + sizeof(Standard_Integer));
 
     // Store the address of Offset word in the file
-    myValue[0] = (Standard_Size) theStream.tellp();
+    myValue[0] = (uint64_t) theStream.tellp();
     myValue[1] = 0;
 
     // Write the placeholders of Offset and Length of the section that should
@@ -146,7 +147,7 @@ void BinLDrivers_DocumentSection::WriteTOC (Standard_OStream& theStream)
     aBufSz[0] = 0;
     aBufSz[1] = 0;
     aBufSz[2] = 0;
-    theStream.write (&aBuf[0], 3*sizeof(Standard_Integer));
+    theStream.write (&aBuf[0], 3*sizeof(uint64_t));
   }
 }
 
@@ -156,24 +157,24 @@ void BinLDrivers_DocumentSection::WriteTOC (Standard_OStream& theStream)
 //=======================================================================
 
 void BinLDrivers_DocumentSection::Write (Standard_OStream&   theStream,
-                                         const Standard_Size theOffset)
+                                         const uint64_t theOffset)
 {
-  const Standard_Size aSectionEnd = (Standard_Size) theStream.tellp();
+  const uint64_t aSectionEnd = (uint64_t) theStream.tellp();
   theStream.seekp(myValue[0]);
   myValue[0] = theOffset;
   myValue[1] = aSectionEnd - theOffset;
-  Standard_Integer aVal[3] = {
-    Standard_Integer(myValue[0]),
-    Standard_Integer(myValue[1]),
-    Standard_Integer(myIsPostRead ? 1 : 0)
+  uint64_t aVal[3] = {
+    myValue[0],
+    myValue[1],
+    uint64_t(myIsPostRead ? 1 : 0)
   };
 #if DO_INVERSE
-  aVal[0] = InverseSize(aVal[0]);
-  aVal[1] = InverseSize(aVal[1]);
-  aVal[2] = InverseSize(aVal[2]);
+  aVal[0] = InverseUint64(aVal[0]);
+  aVal[1] = InverseUint64(aVal[1]);
+  aVal[2] = InverseUint64(aVal[2]);
 #endif
 
-  theStream.write((char *)&aVal[0], 3*sizeof(Standard_Integer));
+  theStream.write((char *)&aVal[0], 3*sizeof(uint64_t));
   theStream.seekp(aSectionEnd);
 }
 
@@ -195,15 +196,35 @@ void BinLDrivers_DocumentSection::ReadTOC
   if (aNameBufferSize > 0) {
     theStream.read ((char *)&aBuf[0], (Standard_Size)aNameBufferSize);
     theSection.myName = (Standard_CString)&aBuf[0];
-    Standard_Integer aValue[3];
-    theStream.read ((char *)&aValue[0], 3*sizeof(Standard_Integer));
+
+    uint64_t aValue[3];
+    if (BinMDataStd::DocumentVersion() <= 9)
+    {
+      // Old documents stored file position as 4-bytes values.
+      Standard_Integer aValInt[3];
+      theStream.read ((char *)&aValInt[0], 3*sizeof(Standard_Integer));
 #if DO_INVERSE
-    aValue[0] = InverseSize (aValue[0]);
-    aValue[1] = InverseSize (aValue[1]);
-    aValue[2] = InverseSize (aValue[2]);
+      aValue[0] = InverseInt (aValInt[0]);
+      aValue[1] = InverseInt (aValInt[1]);
+      aValue[2] = InverseInt (aValInt[2]);
+#else
+      aValue[0] = aValInt[0];
+      aValue[1] = aValInt[1];
+      aValue[2] = aValInt[2];
 #endif
-    theSection.myValue[0] = (Standard_Size)aValue[0];
-    theSection.myValue[1] = (Standard_Size)aValue[1];
-    theSection.myIsPostRead = aValue[2] != 0;
+    }
+    else
+    {
+      theStream.read ((char *)&aValue[0], 3*sizeof(uint64_t));
+#if DO_INVERSE
+      aValue[0] = InverseUint64 (aValue[0]);
+      aValue[1] = InverseUint64 (aValue[1]);
+      aValue[2] = InverseUint64 (aValue[2]);
+#endif
+    }
+
+    theSection.myValue[0] = aValue[0];
+    theSection.myValue[1] = aValue[1];
+    theSection.myIsPostRead = (aValue[2] != 0);
   }
 }

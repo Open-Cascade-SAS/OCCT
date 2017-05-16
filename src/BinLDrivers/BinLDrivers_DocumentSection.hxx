@@ -52,23 +52,23 @@ public:
   Standard_EXPORT Standard_Boolean IsPostRead() const;
   
   //! Query the offset of the section in the persistent file
-  Standard_EXPORT Standard_Size Offset() const;
+  Standard_EXPORT uint64_t Offset() const;
   
   //! Set the offset of the section in the persistent file
-  Standard_EXPORT void SetOffset (const Standard_Size theOffset);
+  Standard_EXPORT void SetOffset (const uint64_t theOffset);
   
   //! Query the length of the section in the persistent file
-  Standard_EXPORT Standard_Size Length() const;
+  Standard_EXPORT uint64_t Length() const;
   
   //! Set the length of the section in the persistent file
-  Standard_EXPORT void SetLength (const Standard_Size theLength);
+  Standard_EXPORT void SetLength (const uint64_t theLength);
   
   //! Create a Section entry in the Document TOC (list of sections)
   Standard_EXPORT void WriteTOC (Standard_OStream& theOS);
   
   //! Save Offset and Length data into the Section entry
   //! in the Document TOC (list of sections)
-  Standard_EXPORT void Write (Standard_OStream& theOS, const Standard_Size theOffset);
+  Standard_EXPORT void Write (Standard_OStream& theOS, const uint64_t theOffset);
   
   //! Fill a DocumentSection instance from the data that are read
   //! from TOC.
@@ -88,7 +88,7 @@ private:
 
 
   TCollection_AsciiString myName;
-  Standard_Size myValue[2];
+  uint64_t myValue[2];
   Standard_Boolean myIsPostRead;
 
 
