@@ -3,7 +3,7 @@ box b2 2 0 0 1 1 1
 vclear
 vinit View1
 vviewparams -scale 404 -proj 0.8 -0.16 0.5 -up -0.4 0.4 0.8 -at 1.5 0.5 0.5
-vsetfilter -clear
+vselfilter -clear
 vselprops -pickStrategy first
 vdisplay -dispMode 1 -highMode 1 b1 b2
 vfit
@@ -12,7 +12,7 @@ vselmode b1 4 1
 vmoveto 220 220
 if { [vreadpixel 220 220 rgb name] != "TURQUOISE3" } { puts "Error: box b2 should be highlighted" }
 
-vsetfilter -type=FACE
+vselfilter -type FACE
 vmoveto 0 0
 vmoveto 220 220
 if { [vreadpixel 150 150 rgb name] != "CYAN1" } { puts "Error: face of box b1 should be highlighted" }

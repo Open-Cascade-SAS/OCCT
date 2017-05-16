@@ -1,21 +1,17 @@
 puts "==========="
-puts "OCC28365"
+puts "0028365: Visualization, AIS_InteractiveContext - apply selection filter in AddOrRemoveSelected at Neutral point"
 puts "==========="
 puts ""
-##########################################################################
-# Visualization, AIS_InteractiveContext - apply selection filter in
-# AddOrRemoveSelected at Neutral point
-##########################################################################
 
-pload ALL
-vinit
+pload MODELING VISUALIZATION
 box b 10 10 10
+
+vclear
+vinit View1
 vdisplay b
 vfit
-vsetfilter -type=VERTEX
+vselfilter -type VERTEX
 vchangeselected b
 
-set NbSelected1 [vnbselected]
-if { ${NbSelected1} != 0 } {
-  puts "Error : Vertex filter was not applyed"
-}
+set aNbSelected [vnbselected]
+if { $aNbSelected != 0 } { puts "Error: Vertex filter was not applied" }

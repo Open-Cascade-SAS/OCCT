@@ -89,14 +89,7 @@ Standard_OStream& TopOpeBRepDS::Print(const TopAbs_ShapeEnum t,const Standard_In
 //=======================================================================
 TCollection_AsciiString TopOpeBRepDS::SPrint(const TopAbs_Orientation o) 
 {
-  TCollection_AsciiString SS;
-  switch (o) {
-  case TopAbs_FORWARD  : SS = "FORWARD" ; break;
-  case TopAbs_REVERSED : SS = "REVERSED"; break;
-  case TopAbs_INTERNAL : SS = "INTERNAL"; break;
-  case TopAbs_EXTERNAL : SS = "EXTERNAL"; break;
-  }
-  return SS;
+  return TopAbs::ShapeOrientationToString (o);
 }
 
 //=======================================================================

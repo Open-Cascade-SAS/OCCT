@@ -14,9 +14,61 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modified by model, Thu Jun 25 10:40:27 1992
-
 #include <TopAbs.hxx>
+
+#include <TCollection_AsciiString.hxx>
+
+namespace
+{
+  static Standard_CString TopAbs_Table_PrintShapeEnum[9] =
+  {
+    "COMPOUND","COMPSOLID","SOLID","SHELL","FACE","WIRE","EDGE","VERTEX","SHAPE"
+  };
+
+  static Standard_CString TopAbs_Table_PrintOrientation[4] =
+  {
+    "FORWARD","REVERSED","INTERNAL","EXTERNAL"
+  };
+}
+
+//=======================================================================
+//function : ShapeTypeToString
+//purpose  :
+//=======================================================================
+Standard_CString TopAbs::ShapeTypeToString (TopAbs_ShapeEnum theType)
+{
+  return TopAbs_Table_PrintShapeEnum[theType];
+}
+
+//=======================================================================
+//function : ShapeTypeFromString
+//purpose  :
+//=======================================================================
+Standard_Boolean TopAbs::ShapeTypeFromString (Standard_CString theTypeString,
+                                              TopAbs_ShapeEnum& theType)
+{
+  TCollection_AsciiString aName (theTypeString);
+  aName.UpperCase();
+  for (Standard_Integer aTypeIter = 0; aTypeIter <= TopAbs_SHAPE; ++aTypeIter)
+  {
+    Standard_CString aTypeName = TopAbs_Table_PrintShapeEnum[aTypeIter];
+    if (aName == aTypeName)
+    {
+      theType = TopAbs_ShapeEnum(aTypeIter);
+      return Standard_True;
+    }
+  }
+  return Standard_False;
+}
+
+//=======================================================================
+//function : ShapeOrientationToString
+//purpose  :
+//=======================================================================
+Standard_CString TopAbs::ShapeOrientationToString (TopAbs_Orientation theOrientation)
+{
+  return TopAbs_Table_PrintOrientation[theOrientation];
+}
 
 //=======================================================================
 //function : TopAbs_Compose
@@ -62,36 +114,6 @@ TopAbs_Orientation TopAbs::Complement(const TopAbs_Orientation Ori)
     TopAbs_REVERSED, TopAbs_FORWARD, TopAbs_EXTERNAL, TopAbs_INTERNAL
   };
   return TopAbs_Table_Complement[(Standard_Integer)Ori];
-}
-
-//=======================================================================
-//function : TopAbs_Print
-//purpose  : print the name of a ShapeEnum on a stream.
-//=======================================================================
-
-Standard_OStream& TopAbs::Print(const TopAbs_ShapeEnum se,
-                                       Standard_OStream& s)
-{
-  static const Standard_CString TopAbs_Table_PrintShapeEnum[9] =
-  {
-    "COMPOUND","COMPSOLID","SOLID","SHELL","FACE","WIRE","EDGE","VERTEX","SHAPE"
-  };
-  return (s << TopAbs_Table_PrintShapeEnum[(Standard_Integer)se]);
-}
-
-//=======================================================================
-//function : TopAbs_Print
-//purpose  : print the name of an Orientation on a stream
-//=======================================================================
-
-Standard_OStream& TopAbs::Print(const TopAbs_Orientation ori,
-                                       Standard_OStream& s)
-{
-  static const Standard_CString TopAbs_Table_PrintOrientation[4] =
-  {
-    "FORWARD","REVERSED","INTERNAL","EXTERNAL"
-  };
-  return (s << TopAbs_Table_PrintOrientation[(Standard_Integer)ori]);
 }
 
 //=======================================================================

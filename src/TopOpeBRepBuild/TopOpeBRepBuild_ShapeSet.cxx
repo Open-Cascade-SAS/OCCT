@@ -42,17 +42,6 @@ static void ShapeEnumToString(const TopAbs_ShapeEnum T, TCollection_AsciiString&
   else if (T == TopAbs_EDGE)   N = "e"; 
   else if (T == TopAbs_VERTEX) N = "v"; 
 }
-
-static void OrientationToString(const TopAbs_Orientation o, TCollection_AsciiString& N)
-{
-  switch (o) {
-  case TopAbs_FORWARD  : N = "FORWARD" ; break;
-  case TopAbs_REVERSED : N = "REVERSED"; break;
-  case TopAbs_INTERNAL : N = "INTERNAL"; break;
-  case TopAbs_EXTERNAL : N = "EXTERNAL"; break;
-  }
-}
-
 #endif
 
 #ifdef OCCT_DEBUG
@@ -684,8 +673,7 @@ TCollection_AsciiString TopOpeBRepBuild_ShapeSet::SNameori(const TopoDS_Shape& S
 {
   TCollection_AsciiString str;
   str=sb+SName(S);
-  TopAbs_Orientation o = S.Orientation();
-  TCollection_AsciiString sto;OrientationToString(o,sto);
+  TCollection_AsciiString sto = TopAbs::ShapeOrientationToString (S.Orientation());
   str=str+sto.SubString(1,1);
   str=str+sa;
   return str;

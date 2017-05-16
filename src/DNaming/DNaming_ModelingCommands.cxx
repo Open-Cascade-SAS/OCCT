@@ -1860,27 +1860,7 @@ inline static TCollection_ExtendedString compareShapes(const TopoDS_Shape& theSh
   }
   return aResult;
 }
-//=======================================================================
-//function : IntegerToShapeEnum
-//purpose  :
-//=======================================================================
 
-static TCollection_AsciiString ShapeEnumToString (const TopAbs_ShapeEnum   type)
-{
-  switch(type)
-    {
-    case  TopAbs_COMPOUND  : return TCollection_AsciiString("COMPOUND");
-    case  TopAbs_COMPSOLID : return TCollection_AsciiString("COMPSOLID");
-    case  TopAbs_SOLID     : return TCollection_AsciiString("SOLID");
-    case  TopAbs_SHELL     : return TCollection_AsciiString("SHELL");
-    case  TopAbs_FACE      : return TCollection_AsciiString("FACE");
-    case  TopAbs_WIRE      : return TCollection_AsciiString("WIRE");
-    case  TopAbs_EDGE      : return TCollection_AsciiString("EDGE");
-    case  TopAbs_VERTEX    : return TCollection_AsciiString("VERTEX");
-    case  TopAbs_SHAPE     : return TCollection_AsciiString("SHAPE");
-    }
-  return TCollection_AsciiString("SHAPE");
-}
 //=======================================================================
 //function : DNaming_TestSingle
 //purpose  : "TestSingleSelection Doc ObjectLabel [Orientation [Xselection [Geometry]]]"
@@ -1972,7 +1952,7 @@ static Standard_Integer DNaming_TestSingle (Draw_Interpretor& theDI,
 		  aResult += " Selection at label = ";
 		  aResult +=  entry;
 		  aResult += " has UNKNOWN name type, shape type = ";
-		  aResult += ShapeEnumToString(aCurShape.ShapeType());
+		  aResult += TopAbs::ShapeTypeToString (aCurShape.ShapeType());
 		}
 		  
 	      }
@@ -1982,7 +1962,7 @@ static Standard_Integer DNaming_TestSingle (Draw_Interpretor& theDI,
 	  aResult += " Selection at label = ";
 	  aResult +=  entry;
 	  aResult += " failed, shape type = ";
-	  aResult += ShapeEnumToString(aCurShape.ShapeType());
+	  aResult += TopAbs::ShapeTypeToString (aCurShape.ShapeType());
 	  aFailedList.Append(aCurShape);
 	}
 	if(aResult.Length()) {
@@ -2106,7 +2086,7 @@ static Standard_Integer DNaming_Multiple (Draw_Interpretor& theDI,
 		  aResult += " Selection at label = ";
 		  aResult +=  entry;
 		  aResult += " has UNKNOWN name type, shape type = ";
-		  aResult += ShapeEnumToString(aCurShape.ShapeType());
+		  aResult += TopAbs::ShapeTypeToString (aCurShape.ShapeType());
 		}
 		  
 	      }
@@ -2116,7 +2096,7 @@ static Standard_Integer DNaming_Multiple (Draw_Interpretor& theDI,
 	  aResult += " Selection at label = ";
 	  aResult +=  entry;
 	  aResult += " failed, shape type = ";
-	  aResult += ShapeEnumToString(aCurShape.ShapeType());
+	  aResult += TopAbs::ShapeTypeToString (aCurShape.ShapeType());
 	  aFailedList.Append(aCurShape);
 	}
 	if(aResult.Length())

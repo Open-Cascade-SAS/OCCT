@@ -117,7 +117,7 @@ vmoveto ${x_solid_new} ${y_solid_new}
 checkcolor ${x_solid_new} ${y_solid_new} ${R_check} ${G_check} ${B_check}
 
 vselmode 6 0
-vselmode obj 1
+vselmode 0 1
 vselect ${x_refresh} ${y_refresh}
 
 ##Resume

@@ -89,52 +89,8 @@ Standard_EXPORT Standard_Integer BRepCheck_Trace(const Standard_Integer phase) {
 void PrintShape(const TopoDS_Shape& theShape, const Standard_Integer upper) {
   if (!theShape.IsNull()) {
     Standard_Integer code = theShape.HashCode(upper);
-    
-    switch (theShape.ShapeType()) {
-    case TopAbs_COMPOUND :
-      cout << "COMPOUND";
-      break;
-    case TopAbs_COMPSOLID :
-      cout << "COMPSOLID";
-      break;
-    case TopAbs_SOLID :
-      cout << "SOLID";
-      break;
-    case TopAbs_SHELL :
-      cout << "SHELL";
-      break;
-    case TopAbs_FACE :
-      cout << "FACE";
-      break;
-    case TopAbs_WIRE :
-      cout << "WIRE";
-      break;
-    case TopAbs_EDGE :
-      cout << "EDGE";
-      break;
-    case TopAbs_VERTEX :
-      cout << "VERTEX";
-      break;
-    case TopAbs_SHAPE :
-      cout << "SHAPE";
-      break;
-    }
-    cout << " : " << code << " ";
-    switch (theShape.Orientation()) {
-    case TopAbs_FORWARD :
-      cout << "FORWARD";
-      break;
-    case TopAbs_REVERSED :
-      cout << "REVERSED";
-      break;
-    case TopAbs_INTERNAL :
-      cout << "INTERNAL";
-      break;
-    case TopAbs_EXTERNAL :
-      cout << "EXTERNAL";
-      break;
-    }
-    cout << endl;
+    std::cout << TopAbs::ShapeTypeToString (theShape.ShapeType()) << " : " << code
+       << " " << TopAbs::ShapeOrientationToString(theShape.Orientation()) << std::endl;
   }
 }
     

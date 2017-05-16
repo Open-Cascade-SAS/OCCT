@@ -19,8 +19,6 @@
 #include <TopoDS_Shape.hxx>
 
 #include <stdio.h>
-static 
-  void DumpType(const TopAbs_ShapeEnum aTS);
 
 //=======================================================================
 //function : Dump
@@ -28,37 +26,12 @@ static
 //=======================================================================
   void BOPDS_ShapeInfo::Dump()const
 {
-  Standard_Integer n;
-  TopAbs_ShapeEnum aTS;
-  BOPCol_ListIteratorOfListOfInteger aIt;
-  //
-  aTS=ShapeType();
-  DumpType(aTS);
-  //
+  const TopAbs_ShapeEnum aTS = ShapeType();
+  printf(" %s", TopAbs::ShapeTypeToString (aTS));
   printf(" {");
-  aIt.Initialize(mySubShapes);
-  for (; aIt.More(); aIt.Next()) {
-    n=aIt.Value();
+  for (BOPCol_ListIteratorOfListOfInteger aIt(mySubShapes); aIt.More(); aIt.Next()) {
+    Standard_Integer n = aIt.Value();
     printf(" %d", n);
   }
   printf(" }");
-}
-//=======================================================================
-//function : DumpType
-//purpose  : 
-//=======================================================================
-void DumpType(const TopAbs_ShapeEnum aTS)
-{
-  const char *pT[]={
-    "COMPOUND",
-    "COMPSOLID",
-    "SOLID",
-    "SHELL",
-    "FACE",
-    "WIRE",
-    "EDGE",
-    "VERTEX",
-    "SHAPE"
-  };
-  printf(" %s", pT[(int)aTS]);
 }

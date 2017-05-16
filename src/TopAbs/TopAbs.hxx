@@ -98,39 +98,49 @@ public:
   //! becomes outside.
   Standard_EXPORT static TopAbs_Orientation Complement (const TopAbs_Orientation Or);
   
-  //! Prints the name  of Shape  <SEq>  as  a String  on the
-  //! Stream <S> and returns <S>.
-  Standard_EXPORT static Standard_OStream& Print (const TopAbs_ShapeEnum SE, Standard_OStream& S);
+  //! Prints the name of Shape type as a String on the Stream.
+  static Standard_OStream& Print (const TopAbs_ShapeEnum theShapeType, Standard_OStream& theStream)
+  {
+    return (theStream << ShapeTypeToString (theShapeType));
+  }
   
-  //! Prints the name of the Orientation <Or> as a String on
-  //! the Stream <S> and returns <S>.
-  Standard_EXPORT static Standard_OStream& Print (const TopAbs_Orientation Or, Standard_OStream& S);
+  //! Prints the name of the Orientation as a String on the Stream.
+  static Standard_OStream& Print (const TopAbs_Orientation theOrientation, Standard_OStream& theStream)
+  {
+    return (theStream << ShapeOrientationToString (theOrientation));
+  }
   
   //! Prints the name of the State <St> as a String on
   //! the Stream <S> and returns <S>.
   Standard_EXPORT static Standard_OStream& Print (const TopAbs_State St, Standard_OStream& S);
 
+  //! Returns the string name for a given shape type.
+  //! @param theType shape type
+  //! @return string identifier from the list COMPOUND, COMPSOLID, SOLID, SHELL, FACE, WIRE, EDGE, VERTEX, SHAPE
+  Standard_EXPORT static Standard_CString ShapeTypeToString (TopAbs_ShapeEnum theType);
 
+  //! Returns the shape type from the given string identifier (using case-insensitive comparison).
+  //! @param theTypeString string identifier
+  //! @return shape type or TopAbs_SHAPE if string identifier is invalid
+  static TopAbs_ShapeEnum ShapeTypeFromString (Standard_CString theTypeString)
+  {
+    TopAbs_ShapeEnum aType = TopAbs_SHAPE;
+    ShapeTypeFromString (theTypeString, aType);
+    return aType;
+  }
 
+  //! Determines the shape type from the given string identifier (using case-insensitive comparison).
+  //! @param theTypeString string identifier
+  //! @param theType detected shape type
+  //! @return TRUE if string identifier is known
+  Standard_EXPORT static Standard_Boolean ShapeTypeFromString (Standard_CString theTypeString,
+                                                               TopAbs_ShapeEnum& theType);
 
-protected:
-
-
-
-
-
-private:
-
-
-
-
+  //! Returns the string name for a given shape orientation.
+  //! @param theOrientation shape orientation
+  //! @return string identifier from the list FORWARD, REVERSED, INTERNAL, EXTERNAL
+  Standard_EXPORT static Standard_CString ShapeOrientationToString (TopAbs_Orientation theOrientation);
 
 };
-
-
-
-
-
-
 
 #endif // _TopAbs_HeaderFile

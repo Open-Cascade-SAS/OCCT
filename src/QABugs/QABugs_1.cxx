@@ -66,121 +66,6 @@ static TColStd_MapOfInteger theactivatedmodes(8);
 #include <BRepAdaptor_Curve.hxx>
 #include <GC_MakePlane.hxx>
 
-Standard_DISABLE_DEPRECATION_WARNINGS
-static Standard_Integer OCC328bug (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if(aContext.IsNull()) { 
-    di << argv[0] << "ERROR : use 'vinit' command before \n";
-    return 1;
-  }
-
-  if ( argc != 3) {
-    di << "ERROR : Usage : " << argv[0] << " shape mode\n";
-    return 1;
-  }
-  
-  Standard_Integer ChoosingMode = -1;
-  if ( strcmp (argv [2], "VERTEX") == 0 ) {
-    ChoosingMode = 1;
-  }
-  if ( strcmp (argv [2], "EDGE") == 0 ) {
-    ChoosingMode = 2;
-  }
-  if ( strcmp (argv [2], "WIRE") == 0 ) {
-    ChoosingMode = 3;
-  }
-  if ( strcmp (argv [2], "FACE") == 0 ) {
-    ChoosingMode = 4;
-  }
-  if ( strcmp (argv [2], "SHELL") == 0 ) {
-    ChoosingMode = 5;
-  }
-  if ( strcmp (argv [2], "SOLID") == 0 ) {
-    ChoosingMode = 6;
-  }
-  if ( strcmp (argv [2], "COMPOUND") == 0 ) {
-    ChoosingMode = 7;
-  }
-  if ( ChoosingMode == -1 ) {
-    di << "ERROR : " << argv[1] << " : vrong value of a mode\n";
-    return 1;
-  }
-
-  Standard_Boolean updateviewer = Standard_True;
-
-  ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
-  
-  TCollection_AsciiString aName(argv[1]);
-  Handle(AIS_InteractiveObject) AISObj;
-  
-  if(!aMap.IsBound2(aName)) {
-    di << "Use 'vdisplay' before\n";
-    return 1;
-  } else {
-    AISObj = Handle(AIS_InteractiveObject)::DownCast(aMap.Find2(aName));
-    if(AISObj.IsNull()){
-      di << argv[1] << " : No interactive object\n";
-      return 1;
-    } 
-
-    if (!aContext->HasOpenedContext()) {
-      aContext->OpenLocalContext();
-    }
-
-    if(!theactivatedmodes.Contains(ChoosingMode)) {
-      aContext->ActivateStandardMode(AIS_Shape::SelectionType(ChoosingMode));
-      theactivatedmodes.Add(ChoosingMode);
-    }
-    aContext->Erase(AISObj, updateviewer);
-    aContext->UpdateCurrentViewer();
-
-    aContext->Display(AISObj, updateviewer);
-    aContext->UpdateCurrentViewer();
-
-    const TColStd_ListOfInteger& aList = aContext->ActivatedStandardModes();
-    Standard_Integer SelectMode;
-    TCollection_AsciiString SelectModeString;
-    TColStd_ListIteratorOfListOfInteger itr(aList);
-    for (; itr.More(); itr.Next()) {
-      SelectMode = itr.Value();
-      //cout << "SelectMode = " << SelectMode << endl;
-
-      switch (SelectMode)
-	{
-	case 1:
-	  SelectModeString.Copy("VERTEX");
-	  break;
-	case 2:
-	  SelectModeString.Copy("EDGE");
-	  break;
-	case 3:
-	  SelectModeString.Copy("WIRE");
-	  break;
-	case 4:
-	  SelectModeString.Copy("FACE");
-	  break;
-	case 5:
-	  SelectModeString.Copy("SHELL");
-	  break;
-	case 6:
-	  SelectModeString.Copy("SOLID");
-	  break;
-	case 7:
-	  SelectModeString.Copy("COMPOUND");
-	  break;
-	default:
-	  SelectModeString.Copy("UNKNOWN");
-	}
-      di << "SelectMode = " << SelectModeString.ToCString() << "\n";
-
-    }
-  }
-
-  return 0;
-}
-Standard_ENABLE_DEPRECATION_WARNINGS
-
 static Standard_Integer OCC159bug (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if ( argc != 2) {
@@ -511,8 +396,6 @@ static Standard_Integer OCC361bug (Draw_Interpretor& di, Standard_Integer nb, co
 
 void QABugs::Commands_1(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
-
-  theCommands.Add ("OCC328", "OCC328 shape mode", __FILE__, OCC328bug, group);
 
   theCommands.Add ("OCC159", "OCC159 Doc", __FILE__, OCC159bug, group);
   theCommands.Add ("OCC145", "OCC145 Shape MaxNbr", __FILE__, OCC145bug, group);

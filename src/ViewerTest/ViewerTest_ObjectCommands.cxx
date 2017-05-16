@@ -4364,8 +4364,31 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
     }
   }
 
-  const Standard_Integer aSelectionMode = Draw::Atoi (anArgNb == 3 ? theArgv[1] : theArgv[2]);
-  const Standard_Boolean toTurnOn       = Draw::Atoi (anArgNb == 3 ? theArgv[2] : theArgv[3]) != 0;
+  Standard_Integer aSelectionMode = -1;
+  Standard_Boolean toTurnOn = Standard_True;
+  {
+    const TCollection_AsciiString aSelModeString (theArgv[anArgNb == 3 ? 1 : 2]);
+    TopAbs_ShapeEnum aShapeType = TopAbs_SHAPE;
+    if (aSelModeString.IsIntegerValue())
+    {
+      aSelectionMode = aSelModeString.IntegerValue();
+    }
+    else if (TopAbs::ShapeTypeFromString (aSelModeString.ToCString(), aShapeType))
+    {
+      aSelectionMode = AIS_Shape::SelectionMode (aShapeType);
+    }
+    else
+    {
+      std::cout << "Syntax error: unknown selection mode '" << aSelModeString  << "'\n";
+      return 1;
+    }
+  }
+  if (!ViewerTest::ParseOnOff (theArgv[anArgNb == 3 ? 2 : 3], toTurnOn))
+  {
+    std::cout << "Syntax error: on/off is expected by found '" << theArgv[anArgNb == 3 ? 2 : 3] << "'\n";
+    return 1;
+  }
+
   Standard_DISABLE_DEPRECATION_WARNINGS
   if (aSelectionMode == 0 && anAISContext->HasOpenedContext())
   {

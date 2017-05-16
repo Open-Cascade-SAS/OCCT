@@ -686,20 +686,10 @@ void ViewerTest::StandardModeActivation(const Standard_Integer mode )
       }
     }
 
-    const char *cmode="???";
-
-    switch (mode) {
-    case 0: cmode = "Shape"; break;
-    case 1: cmode = "Vertex"; break;
-    case 2: cmode = "Edge"; break;
-    case 3: cmode = "Wire"; break;
-    case 4: cmode = "Face"; break;
-    case 5: cmode = "Shell"; break;
-    case 6: cmode = "Solid"; break;
-    case 7: cmode = "Compsolid"; break;
-    case 8: cmode = "Compound"; break;
-    }
-
+    const TopAbs_ShapeEnum aShapeType = AIS_Shape::SelectionType (mode);
+    const char* cmode = mode >= 0 && mode <= 8
+                      ? TopAbs::ShapeTypeToString (aShapeType)
+                      : "???";
     if(theactivatedmodes.Contains(mode))
     { // Desactivate
       aContext->DeactivateStandardMode(AIS_Shape::SelectionType(mode));
@@ -4353,19 +4343,10 @@ static int VActivatedMode (Draw_Interpretor& di, Standard_Integer argc, const ch
     // IL n'y a aps de nom de shape passe en argument
     if (HaveToSet && !ThereIsName){
       Standard_Integer aMode=Draw::Atoi(argv [1]);
-
-      const char *cmode="???";
-      switch (aMode) {
-      case 0: cmode = "Shape"; break;
-      case 1: cmode = "Vertex"; break;
-      case 2: cmode = "Edge"; break;
-      case 3: cmode = "Wire"; break;
-      case 4: cmode = "Face"; break;
-      case 5: cmode = "Shell"; break;
-      case 6: cmode = "Solid"; break;
-      case 7: cmode = "Compound"; break;
-      }
-
+      const TopAbs_ShapeEnum aShapeType = AIS_Shape::SelectionType (aMode);
+      const char* cmode = aMode >= 0 && aMode <= 8
+                        ? TopAbs::ShapeTypeToString (aShapeType)
+                        : "???";
       if( !TheAISContext()->HasOpenedContext() ) {
         // il n'y a pas de Context local d'ouvert
         // on en ouvre un et on charge toutes les shapes displayees
@@ -4471,19 +4452,10 @@ static int VActivatedMode (Draw_Interpretor& di, Standard_Integer argc, const ch
         Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(argv[1]));
 
       if (!aIO.IsNull()) {
-        const char *cmode="???";
-
-        switch (aMode) {
-        case 0: cmode = "Shape"; break;
-        case 1: cmode = "Vertex"; break;
-        case 2: cmode = "Edge"; break;
-        case 3: cmode = "Wire"; break;
-        case 4: cmode = "Face"; break;
-        case 5: cmode = "Shell"; break;
-        case 6: cmode = "Solid"; break;
-        case 7: cmode = "Compound"; break;
-        }
-
+        const TopAbs_ShapeEnum aShapeType = AIS_Shape::SelectionType (aMode);
+        const char* cmode = aMode >= 0 && aMode <= 8
+                          ? TopAbs::ShapeTypeToString (aShapeType)
+                          : "???";
         if( !TheAISContext()->HasOpenedContext() ) {
           Standard_DISABLE_DEPRECATION_WARNINGS
           TheAISContext()->OpenLocalContext(Standard_False);
@@ -5163,18 +5135,12 @@ static int VPickShape( Draw_Interpretor& di, Standard_Integer argc, const char**
 }
 
 //=======================================================================
-//function : VSetFilter
+//function : VSelFilter
 //purpose  :
 //=======================================================================
-static int VSetFilter(Draw_Interpretor& theDi, Standard_Integer theArgc,
+static int VSelFilter(Draw_Interpretor& , Standard_Integer theArgc,
                       const char** theArgv)
 {
-  if (theArgc != 2)
-  {
-    theDi << theArgv[0] << " error : wrong number of parameters.\n";
-    return 1;
-  }
-
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
@@ -5182,37 +5148,40 @@ static int VSetFilter(Draw_Interpretor& theDi, Standard_Integer theArgc,
     return 1;
   }
 
-  TCollection_AsciiString anArg(theArgv[1]);
-  if (anArg.IsEqual("-clear")) {
-    aContext->RemoveFilters();
-  }
-  else {
-    TCollection_AsciiString aPName, aPValue;
-    if (!ViewerTest::SplitParameter (anArg, aPName, aPValue)) {
-      std::cout << "Error: wrong command attribute name" << std::endl;
-      return 1;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgc; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgv[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "-clear")
+    {
+      aContext->RemoveFilters();
     }
+    else if (anArg == "-type"
+          && anArgIter + 1 < theArgc)
+    {
+      TCollection_AsciiString aVal (theArgv[++anArgIter]);
+      TopAbs_ShapeEnum aShapeType = TopAbs_COMPOUND;
+      if (!TopAbs::ShapeTypeFromString (aVal.ToCString(), aShapeType))
+      {
+        std::cout << "Syntax error: wrong command attribute value '" << aVal << "'\n";
+        return 1;
+      }
 
-    TopAbs_ShapeEnum aType = TopAbs_COMPOUND;
-    if(aPValue.IsEqual("VERTEX")) aType = TopAbs_VERTEX;
-    else if (aPValue.IsEqual("EDGE")) aType = TopAbs_EDGE;
-    else if (aPValue.IsEqual("WIRE")) aType = TopAbs_WIRE;
-    else if (aPValue.IsEqual("FACE")) aType = TopAbs_FACE;
-    else if(aPValue.IsEqual("SHAPE")) aType = TopAbs_SHAPE;
-    else if (aPValue.IsEqual("SHELL")) aType = TopAbs_SHELL;
-    else if (aPValue.IsEqual("SOLID")) aType = TopAbs_SOLID;
-    else {
-      std::cout << "Error: wrong command attribute value" << std::endl;
+      Handle(SelectMgr_Filter) aFilter;
+      if (aShapeType == TopAbs_SHAPE)
+      {
+        aFilter = new AIS_TypeFilter (AIS_KOI_Shape);
+      }
+      else
+      {
+        aFilter = new StdSelect_ShapeTypeFilter (aShapeType);
+      }
+      aContext->AddFilter (aFilter);
+    }
+    else
+    {
+      std::cout << "Syntax error: unknown argument '" << theArgv[anArgIter] << "'\n";
       return 1;
-    }
-
-    if(aType==TopAbs_SHAPE){
-      Handle(AIS_TypeFilter) aFilter = new AIS_TypeFilter(AIS_KOI_Shape);
-      aContext->AddFilter(aFilter);
-    }
-    else{
-      Handle(StdSelect_ShapeTypeFilter) aFilter = new StdSelect_ShapeTypeFilter(aType);
-      aContext->AddFilter(aFilter);
     }
   }
   return 0;
@@ -6177,12 +6146,12 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t: Reads shape from BREP-format file and displays it in the viewer. ",
 		  __FILE__,vr, group);
 
-  theCommands.Add("vsetfilter",
- 		  "vsetfilter [-type={VERTEX|EDGE|WIRE|FACE|SHAPE|SHELL|SOLID}] [-clear]"
+  theCommands.Add("vselfilter",
+                  "vselfilter [-type {VERTEX|EDGE|WIRE|FACE|SHAPE|SHELL|SOLID}] [-clear]"
     "\nSets selection shape type filter in context or remove all filters."
     "\n    : Option -type set type of selection filter. Filters are applyed with Or combination."
     "\n    : Option -clear remove all filters in context",
-		  __FILE__,VSetFilter,group);
+		  __FILE__,VSelFilter,group);
 
   theCommands.Add("vpickselected", "vpickselected [name]: extract selected shape.",
     __FILE__, VPickSelected, group);

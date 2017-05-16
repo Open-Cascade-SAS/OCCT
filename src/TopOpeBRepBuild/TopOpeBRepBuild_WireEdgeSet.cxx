@@ -17,19 +17,7 @@
 #ifdef DRAW
 #include <DBRep.hxx>
 static TCollection_AsciiString PRODINS("dins ");
-
-static void OrientationToString(const TopAbs_Orientation o, TCollection_AsciiString& N)
-{
-  switch (o) {
-  case TopAbs_FORWARD  : N = "FORWARD" ; break;
-  case TopAbs_REVERSED : N = "REVERSED"; break;
-  case TopAbs_INTERNAL : N = "INTERNAL"; break;
-  case TopAbs_EXTERNAL : N = "EXTERNAL"; break;
-  }
-}
-
 #endif
-
 
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
@@ -586,10 +574,10 @@ TCollection_AsciiString TopOpeBRepBuild_WireEdgeSet::SNameVEE(const TopoDS_Shape
   TopAbs_Orientation oVE1,oVE2; Standard_Boolean conn = VertexConnectsEdges(V,E1,E2,oVE1,oVE2);
   str=SName(VV)+" ";
   str=str+SNameori(E1)+" V/E1 : ";
-  TCollection_AsciiString so1;OrientationToString(oVE1,so1);so1.UpperCase();
+  TCollection_AsciiString so1 = TopAbs::ShapeOrientationToString (oVE1);
   str=str+so1.SubString(1,1)+" ";
   str=str+SNameori(E2)+" V/E2 : ";
-  TCollection_AsciiString so2;OrientationToString(oVE2,so2);so2.UpperCase();
+  TCollection_AsciiString so2 = TopAbs::ShapeOrientationToString (oVE2);
   str=str+so2.SubString(1,1)+" ";
   return str;
 }

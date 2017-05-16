@@ -1019,64 +1019,21 @@ void  DBRep_DrawableShape::Dump(Standard_OStream& S)const
 
 void  DBRep_DrawableShape::Whatis(Draw_Interpretor& s)const 
 {
-  if (!myShape.IsNull()) {
-      s << "shape ";
-      switch (myShape.ShapeType()) {
-      case TopAbs_COMPOUND :
-	s << "COMPOUND";
-	break;
-      case TopAbs_COMPSOLID :
-	s << "COMPSOLID";
-	break;
-      case TopAbs_SOLID :
-	s << "SOLID";
-	break;
-      case TopAbs_SHELL :
-	s << "SHELL";
-	break;
-      case TopAbs_FACE :
-	s << "FACE";
-	break;
-      case TopAbs_WIRE :
-	s << "WIRE";
-	break;
-      case TopAbs_EDGE :
-	s << "EDGE";
-	break;
-      case TopAbs_VERTEX :
-	s << "VERTEX";
-	break;
-      case TopAbs_SHAPE :
-	s << "SHAPE";
-	break;
-      }
+  if (myShape.IsNull())
+  {
+    return;
+  }
 
-      s << " ";
+  s << "shape " << TopAbs::ShapeTypeToString       (myShape.ShapeType())
+    << " "      << TopAbs::ShapeOrientationToString(myShape.Orientation());
 
-      switch (myShape.Orientation()) {
-      case TopAbs_FORWARD :
-	s << "FORWARD";
-	break;
-      case TopAbs_REVERSED :
-	s << "REVERSED";
-	break;
-      case TopAbs_INTERNAL :
-	s << "INTERNAL";
-	break;
-      case TopAbs_EXTERNAL :
-	s << "EXTERNAL";
-	break;
-      }
-
-      if (myShape.Free())       s <<" Free";
-      if (myShape.Modified())   s <<" Modified";
-      if (myShape.Orientable()) s <<" Orientable";
-      if (myShape.Closed())     s <<" Closed";
-      if (myShape.Infinite())   s <<" Infinite";
-      if (myShape.Convex())     s <<" Convex";
-    }
+  if (myShape.Free())       s <<" Free";
+  if (myShape.Modified())   s <<" Modified";
+  if (myShape.Orientable()) s <<" Orientable";
+  if (myShape.Closed())     s <<" Closed";
+  if (myShape.Infinite())   s <<" Infinite";
+  if (myShape.Convex())     s <<" Convex";
 }
-
 
 //=======================================================================
 //function : LastPick
