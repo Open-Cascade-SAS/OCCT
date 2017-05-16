@@ -143,6 +143,8 @@ public:
   Standard_EXPORT virtual void GraduatedTrihedronMinMaxValues (const Graphic3d_Vec3 theMin, const Graphic3d_Vec3 theMax) Standard_OVERRIDE;
 
   //! Dump active rendering buffer into specified memory buffer.
+  //! In Ray-Tracing allow to get a raw HDR buffer using Graphic3d_BT_RGB_RayTraceHdrLeft buffer type,
+  //! only Left view will be dumped ignoring stereoscopic parameter.
   Standard_EXPORT virtual Standard_Boolean BufferDump (Image_PixMap& theImage,
                                                        const Graphic3d_BufferType& theBufferType) Standard_OVERRIDE;
 

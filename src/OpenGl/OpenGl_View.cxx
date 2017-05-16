@@ -353,7 +353,58 @@ void OpenGl_View::GraduatedTrihedronMinMaxValues (const Graphic3d_Vec3 theMin, c
 // =======================================================================
 Standard_Boolean OpenGl_View::BufferDump (Image_PixMap& theImage, const Graphic3d_BufferType& theBufferType)
 {
-  return myWorkspace->BufferDump (myFBO, theImage, theBufferType);
+  if (theBufferType != Graphic3d_BT_RGB_RayTraceHdrLeft)
+  {
+    return myWorkspace->BufferDump(myFBO, theImage, theBufferType);
+  }
+
+  if (!myRaytraceParameters.AdaptiveScreenSampling)
+  {
+    return myWorkspace->BufferDump(myAccumFrames % 2 ? myRaytraceFBO2[0] : myRaytraceFBO1[0], theImage, theBufferType);
+  }
+
+#if defined(GL_ES_VERSION_2_0)
+  return false;
+#else
+  if (theImage.Format() != Image_Format_RGBF)
+  {
+    return false;
+  }
+
+  const GLuint aW = myRaytraceOutputTexture[0]->SizeX();
+  const GLuint aH = myRaytraceOutputTexture[0]->SizeY();
+  if (aW / 3 != theImage.SizeX() || aH / 2 != theImage.SizeY())
+  {
+    return false;
+  }
+
+  std::vector<GLfloat> aValues;
+  try
+  {
+    aValues.resize (aW * aH);
+  }
+  catch (const std::bad_alloc&)
+  {
+    return false;
+  }
+
+  glBindTexture (GL_TEXTURE_RECTANGLE, myRaytraceOutputTexture[0]->TextureId());
+  glGetTexImage (GL_TEXTURE_RECTANGLE, 0, OpenGl_TextureFormat::Create<GLfloat, 1>().Format(), GL_FLOAT, &aValues[0]);
+  glBindTexture (GL_TEXTURE_RECTANGLE, 0);
+  for (unsigned int aRow = 0; aRow < aH; aRow += 2)
+  {
+    for (unsigned int aCol = 0; aCol < aW; aCol += 3)
+    {
+      float* anImageValue = theImage.ChangeValue<float[3]> ((aH - aRow) / 2 - 1, aCol / 3);
+      float aInvNbSamples = 1.f / aValues[aRow * aW + aCol + aW];
+      anImageValue[0] = aValues[aRow * aW + aCol] * aInvNbSamples;
+      anImageValue[1] = aValues[aRow * aW + aCol + 1] * aInvNbSamples;
+      anImageValue[2] = aValues[aRow * aW + aCol + 1 + aW] * aInvNbSamples;
+    }
+  }
+
+  return true;
+#endif
 }
 
 // =======================================================================

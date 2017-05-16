@@ -1076,9 +1076,10 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
   Image_Format aFormat = Image_Format_UNKNOWN;
   switch (aParams.BufferType)
   {
-    case Graphic3d_BT_RGB:   aFormat = Image_Format_RGB;   break;
-    case Graphic3d_BT_RGBA:  aFormat = Image_Format_RGBA;  break;
-    case Graphic3d_BT_Depth: aFormat = Image_Format_GrayF; break;
+    case Graphic3d_BT_RGB:                 aFormat = Image_Format_RGB;   break;
+    case Graphic3d_BT_RGBA:                aFormat = Image_Format_RGBA;  break;
+    case Graphic3d_BT_Depth:               aFormat = Image_Format_GrayF; break;
+    case Graphic3d_BT_RGB_RayTraceHdrLeft: aFormat = Image_Format_RGBF;  break;
   }
 
   switch (aStereoPair)

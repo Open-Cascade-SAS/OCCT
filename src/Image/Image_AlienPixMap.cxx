@@ -461,6 +461,7 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
       }
       break;
     }
+    case FIF_HDR:
     case FIF_EXR:
     {
       if (Format() == Image_Format_Gray
