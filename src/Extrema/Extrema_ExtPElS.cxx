@@ -313,9 +313,10 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
 			      const gp_Torus&     S,
 			      const Standard_Real Tol)
 {
+  const Standard_Real tol2 = Tol*Tol;
   myDone = Standard_False;
   myNbExt = 0;
-
+  
 // Projection of P in plane XOY ...
   gp_Ax3 Pos = S.Position();
   gp_Pnt O = Pos.Location();
@@ -325,7 +326,7 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
 // Calculation of extrema ...
   gp_Vec OPp (O,Pp);
   Standard_Real R2 = OPp.SquareMagnitude();
-  if (R2 < Tol * Tol) { return; }
+  if (R2 < tol2) { return; }
  
   gp_Vec myZ = Pos.XDirection()^Pos.YDirection();
   Standard_Real U1 = gp_Vec(Pos.XDirection()).AngleWithRef(OPp,myZ);
@@ -338,8 +339,8 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
   gp_Pnt O1 = O.Translated(OO1);
   gp_Pnt O2 = O.Translated(OO2);
 
-  if(O1.SquareDistance(P) < Tol) { return; }
-  if(O2.SquareDistance(P) < Tol) { return; }
+  if(O1.SquareDistance(P) < tol2) { return; }
+  if(O2.SquareDistance(P) < tol2) { return; }
 
   Standard_Real V1 = OPp.AngleWithRef(gp_Vec(O1,P),OPp.Crossed(OZ));
   if (V1 > -ExtPElS_MyEps && V1 < ExtPElS_MyEps) { V1 = 0.; }

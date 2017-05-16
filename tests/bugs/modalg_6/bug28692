@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC28692"
+puts "========"
+puts ""
+####################################################################################
+## Projection failed (projponf)
+####################################################################################
+
+restore [locate_data_file bug28692_shapes.brep] bi3
+point p -0.0153 0 0.017
+set dist -1
+regexp {proj dist = ([-0-9.+eE]+)} [projponf bi3 p] full dist
+if { $dist < 0 || $dist > 1.e-7 } { 
+  puts "Error : Projection failed " 
+} 
+
