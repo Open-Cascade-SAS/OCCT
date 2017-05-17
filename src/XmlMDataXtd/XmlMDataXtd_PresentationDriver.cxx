@@ -234,12 +234,10 @@ void XmlMDataXtd_PresentationDriver::Paste
     theTarget.Element().setAttribute(::WidthString(), aRNbStr.ToCString());
   }
 
-#ifdef OCC6010
   // mode
   if (aTPrs->HasOwnMode())
   {
     aNb = aTPrs->Mode();
     theTarget.Element().setAttribute(::ModeString(), aNb);
   }
-#endif
 }

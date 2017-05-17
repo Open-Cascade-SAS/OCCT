@@ -598,6 +598,79 @@ static Standard_Integer DPrsStd_AISHasOwnTransparency (Draw_Interpretor& di,
   return 1;
 }
 
+//=======================================================================
+//function : DPrsStd_AISMode
+//purpose  : AISMode (DOC,entry,[Mode])
+//=======================================================================
+static Standard_Integer DPrsStd_AISMode(Draw_Interpretor& di,
+                                        Standard_Integer nb,
+					                    const char** arg)
+{
+  TDF_Label L;
+  Handle(TDocStd_Document) D;
+  Handle(TPrsStd_AISPresentation) prs;
+  if (nb >= 3 && nb <= 4)
+  {
+    if (!DDocStd::GetDocument(arg[1],D)) 
+      return 1;
+    if (!DDF::FindLabel(D->GetData(),arg[2],L))
+      return 1;
+    if (!L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
+      return 1;
+    if (nb == 4)
+    {
+      Standard_Integer mode = Draw::Atoi(arg[3]);
+      prs->SetMode(mode);
+      TPrsStd_AISViewer::Update(L);
+    }
+    else if (nb == 3)
+    {
+      Standard_Integer mode = prs->Mode();
+      di<<mode;
+    }
+    return 0; 
+  }
+  di<<"DPrsStd_AISMode : Error\n";
+  return 1;
+}
+
+//=======================================================================
+//function : DPrsStd_AISSelMode
+//purpose  : AISSelMode (DOC,entry,[SelMode])
+//=======================================================================
+static Standard_Integer DPrsStd_AISSelMode(Draw_Interpretor& di,
+                                           Standard_Integer nb,
+					                       const char** arg)
+{
+  TDF_Label L;
+  Handle(TDocStd_Document) D;
+  Handle(TPrsStd_AISPresentation) prs;
+  if (nb >= 3 && nb <= 4)
+  {
+    if (!DDocStd::GetDocument(arg[1],D)) 
+      return 1;
+    if (!DDF::FindLabel(D->GetData(),arg[2],L))
+      return 1;
+    if (!L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
+      return 1;
+    if (nb == 4)
+    {
+      // Set selection mode.
+      Standard_Integer selMode = Draw::Atoi(arg[3]);
+      prs->SetSelectionMode(selMode);
+      TPrsStd_AISViewer::Update(L);
+    }
+    else if (nb == 3)
+    {
+      // Print selection mode.
+      Standard_Integer selMode = prs->SelectionMode();
+      di<<selMode;
+    }
+    return 0; 
+  }
+  di<<"DPrsStd_AISSelMode : Error\n";
+  return 1;
+}
 
 //=======================================================================
 //function : AISPresentationCommands
@@ -677,4 +750,12 @@ void DPrsStd::AISPresentationCommands (Draw_Interpretor& theCommands)
   theCommands.Add ("AISRemove", 
                    "AISRemove (DOC, entry)",
 		   __FILE__, DPrsStd_AISRemove, g);
+
+  theCommands.Add ("AISMode", 
+                   "AISMode (DOC, entry, [Mode])",
+		   __FILE__, DPrsStd_AISMode, g);
+
+  theCommands.Add ("AISSelMode", 
+                   "AISSelMode (DOC, entry, [SelMode])",
+		   __FILE__, DPrsStd_AISSelMode, g);
 }

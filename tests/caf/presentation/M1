@@ -1,0 +1,27 @@
+#INTERFACE CAF
+# Presentation attributes
+#
+# Testing attribute: TPrsStd_AISPresentation
+#
+# Testing command:   AISMode, storage of display mode in XML file
+#
+
+NewDocument D1 XmlOcaf
+AISInitViewer D1
+box b 100 100 100
+SetShape D1 0:1 b
+AISSet D1 0:1 NS
+AISDisplay D1 0:1
+AISMode D1 0:1 1
+
+SaveAs D1 testmode.xml
+Close D1
+Open testmode.xml D2
+AISInitViewer D2
+AISDisplay D2 0:1
+set mode [AISMode D2 0:1]
+if { ${mode} != 1 } {
+	puts ${mode}
+	puts "Storage of display mode of TPrsStd_AISPresentation attribute in XML document: Error"
+    return
+}
