@@ -140,7 +140,6 @@ Standard_Integer XCAFDoc_GraphNode::SetChild(const Handle(XCAFDoc_GraphNode)& Ch
 
 void XCAFDoc_GraphNode::UnSetFather(const Handle(XCAFDoc_GraphNode)& F) 
 {
-  Backup();
   Standard_Integer Findex = FatherIndex(F);
   if (Findex != 0)
   F->UnSetChildlink(this);
@@ -167,6 +166,7 @@ void XCAFDoc_GraphNode::UnSetFather(const Standard_Integer Findex)
 
 void XCAFDoc_GraphNode::UnSetFatherlink(const Handle(XCAFDoc_GraphNode)& F) 
 {
+  Backup();
   myFathers.Remove( FatherIndex(F) );
 }
 
@@ -177,7 +177,6 @@ void XCAFDoc_GraphNode::UnSetFatherlink(const Handle(XCAFDoc_GraphNode)& F)
 
 void XCAFDoc_GraphNode::UnSetChild(const Handle(XCAFDoc_GraphNode)& Ch) 
 {
-  Backup();
   Standard_Integer Chindex = ChildIndex(Ch);
   if (Chindex != 0) 
   Ch->UnSetFatherlink(this);
@@ -204,6 +203,7 @@ void XCAFDoc_GraphNode::UnSetChild(const Handle(XCAFDoc_GraphNode)& Ch)
 
 void XCAFDoc_GraphNode::UnSetChildlink(const Handle(XCAFDoc_GraphNode)& Ch) 
 {
+  Backup();
   myChildren.Remove( ChildIndex(Ch) );
 }
 

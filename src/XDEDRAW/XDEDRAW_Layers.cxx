@@ -24,7 +24,9 @@
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
 #include <TopoDS_Shape.hxx>
+#include <XCAFDoc.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_LayerTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XDEDRAW_Layers.hxx>
@@ -394,6 +396,67 @@ static Standard_Integer isVisible (Draw_Interpretor& di, Standard_Integer argc, 
   return 0;
 }
 
+static Standard_Integer getLayerRefs(Draw_Interpretor& theDI,
+                                     Standard_Integer theArgc,
+                                     const char** theArgv)
+{
+  if (theArgc != 3)
+  {
+    theDI << "Use: " << theArgv[0] << "DocName Label\n";
+    return 1;
+  }
+
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument(theArgv[1], aDoc);
+  if (aDoc.IsNull())
+  {
+    theDI << "Error: \"" << theArgv[1] << "\" is not a document.\n";
+    return 1;
+  }
+
+  TDF_Label aLabel;
+  TDF_Tool::Label(aDoc->GetData(), theArgv[2], aLabel);
+  if (aLabel.IsNull())
+  {
+    theDI << "Error: Document \"" << theArgv[1] << "\" does not have a label \"" << theArgv[2] << "\".\n";
+    return 1;
+  }
+
+  Handle(XCAFDoc_GraphNode) aGraphNode;
+  aLabel.FindAttribute(XCAFDoc::LayerRefGUID(), aGraphNode);
+  if (aGraphNode.IsNull())
+  {
+    theDI << "Error: Label \"" << theArgv[2] << "\" does not have a layer ref.\n";
+    return 1;
+  }
+
+  if (aGraphNode->NbChildren() > 0)
+  {
+    theDI << "Label \"" << theArgv[2] << "\" childs:\n";
+    for (int anIndex = 1; anIndex <= aGraphNode->NbChildren(); ++anIndex)
+    {
+      Handle(XCAFDoc_GraphNode) aChild = aGraphNode->GetChild(anIndex);
+      TCollection_AsciiString anEntry;
+      TDF_Tool::Entry(aChild->Label(), anEntry);
+      theDI << anEntry << "\n";
+    }
+  }
+
+  if (aGraphNode->NbFathers() > 0)
+  {
+    theDI << "Label \"" << theArgv[2] << "\" fathers:\n";
+    for (int anIndex = 1; anIndex <= aGraphNode->NbFathers(); ++anIndex)
+    {
+      Handle(XCAFDoc_GraphNode) aFather = aGraphNode->GetFather(anIndex);
+      TCollection_AsciiString anEntry;
+      TDF_Tool::Entry(aFather->Label(), anEntry);
+      theDI << anEntry << "\n";
+    }
+  }
+
+  return 0;
+}
+
 //=======================================================================
 //function : InitCommands
 //purpose  : 
@@ -455,4 +518,7 @@ void XDEDRAW_Layers::InitCommands(Draw_Interpretor& di)
 
   di.Add ("XIsVisible","DocName {layerLable|StringLayer} \t: Return 1 if layer is visible, 0 if not",
 		   __FILE__, isVisible, g);
+
+  di.Add("XGetLayerRefs", "DocName Label \t: Prints layers labels which are referenced in passed label or prints labels which reference passed layer label.",
+         __FILE__, getLayerRefs, g);
 }
