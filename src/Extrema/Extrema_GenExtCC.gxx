@@ -220,6 +220,12 @@ void Extrema_GenExtCC::Perform()
 
   // Change constant value according to the concrete curve types.
   Standard_Boolean isConstLockedFlag = Standard_False;
+  //To prevent LipConst to became too small
+  const Standard_Real aCR = 0.001;
+  if (aMaxDer1 / aMaxDer < aCR || aMaxDer2 / aMaxDer < aCR)
+  {
+    isConstLockedFlag = Standard_True;
+  }
   if (C1.GetType() == GeomAbs_Line)
   {
     aMaxDer = 1.0 / C2.Resolution(1.0);

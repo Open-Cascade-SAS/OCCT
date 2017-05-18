@@ -1,0 +1,12 @@
+puts "========"
+puts "OCC28637"
+puts "========"
+puts ""
+####################################################################################
+## [regression] Extrema curve - curve can not find correct solution between edge based on the line and BSpline edge
+####################################################################################
+
+restore [locate_data_file bug28637_shapes.brep] b
+explode b
+distmini d b_1 b_2
+checkprops d -l 4.46857e-005 -deps 1.e-2
