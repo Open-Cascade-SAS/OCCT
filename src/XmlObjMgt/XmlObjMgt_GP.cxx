@@ -61,7 +61,7 @@ XmlObjMgt_DOMString XmlObjMgt_GP::Translate (const gp_Mat& aMat)
 //=======================================================================
 XmlObjMgt_DOMString XmlObjMgt_GP::Translate (const gp_XYZ& anXYZ)
 {
-  char buf [64];
+  char buf [75]; // (24 + 1) * 3
   Sprintf (buf, "%.17g %.17g %.17g", anXYZ.X(), anXYZ.Y(), anXYZ.Z());
   return XmlObjMgt_DOMString (buf);
 }

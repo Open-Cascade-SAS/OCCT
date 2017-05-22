@@ -121,7 +121,7 @@ void XmlMXCAFDoc_CentroidDriver::Paste
   if (!aTPos.IsNull())
   {
     gp_Pnt aPos = aTPos->Get();
-    char buf [64];
+    char buf[75]; // (24 + 1) * 3
     Sprintf (buf, "%.17g %.17g %.17g", aPos.X(), aPos.Y(), aPos.Z());
     XmlObjMgt::SetStringValue(theTarget.Element(), buf);
   }

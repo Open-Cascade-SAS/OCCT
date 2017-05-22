@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC25537"
+puts "============"
+puts ""
+#######################################################################
+# XmlMPrsStd_PositionDriver::Paste runtime check crash.
+#######################################################################
+pload XDEDRAW
+
+NewDocument Doc XmlXCAF
+
+# number that takes 24 symbols in %.17g string
+set aBigNum -0.0000000000123456789123456789
+
+# Create TDataXtd_Position and XCAFDoc_Centroid attributes (same problem in writing XML)
+# 100 labels to have a stable exception (memory corruption)
+for {set i 1} {$i < 100} {incr i} {
+  set aLab1 0:1:$i
+  SetPosition Doc $aLab1 $aBigNum $aBigNum $aBigNum
+  set aLab2 0:2:$i
+  Label Doc $aLab2
+  XSetCentroid Doc $aLab2 $aBigNum $aBigNum $aBigNum
+}
+
+set aFile ${imagedir}/bug25537_test.xml
+SaveAs Doc ${aFile}
+
+## ==> No exception
+Close Doc
