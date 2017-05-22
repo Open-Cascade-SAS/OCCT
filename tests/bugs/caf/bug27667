@@ -1,0 +1,12 @@
+puts "REQUIRED OCC27667 All: BinLDrivers_DocumentRetrievalDriver: error: shape section is not found"
+puts "REQUIRED OCC27667 All: DDocStd_Open : Error"
+
+puts "================"
+puts "OCC27667"
+puts "================"
+puts ""
+#######################################################################################
+# OCAF binary persistence hangs on reading truncated CBF file
+#######################################################################################
+
+catch { Open [locate_data_file bug27667_broken_cbf.cbf] D }

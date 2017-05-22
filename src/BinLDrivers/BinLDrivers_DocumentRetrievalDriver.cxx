@@ -233,8 +233,15 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
     do {
       BinLDrivers_DocumentSection::ReadTOC (aSection, theIStream);
       mySections.Append(aSection);
-    } while
-      (!aSection.Name().IsEqual((Standard_CString)SHAPESECTION_POS));
+    } while(!aSection.Name().IsEqual((Standard_CString)SHAPESECTION_POS) && !theIStream.eof());
+
+    if (theIStream.eof()) {
+      // There is no shape section in the file.
+      WriteMessage (aMethStr + "error: shape section is not found");
+      myReaderStatus = PCDM_RS_ReaderException;
+      return;
+    }
+
     aDocumentPos = theIStream.tellg(); // position of root label
 
     BinLDrivers_VectorOfDocumentSection::Iterator anIterS (mySections);
@@ -336,7 +343,8 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree
   // Read attributes:
   theIS >> myPAtt;
   while (theIS && myPAtt.TypeId() > 0 &&             // not an end marker ?
-         myPAtt.Id() > 0) {                          // not a garbage ?
+         myPAtt.Id() > 0 &&                          // not a garbage ?
+         !theIS.eof()) {
     // get a driver according to TypeId
     Handle(BinMDF_ADriver) aDriver = myDrivers->GetDriver (myPAtt.TypeId());
     if (!aDriver.IsNull()) {
@@ -386,7 +394,7 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree
 #if DO_INVERSE
   aTag = InverseInt (aTag);
 #endif
-  while (theIS && aTag >= 0) { // not an end marker ?
+  while (theIS && aTag >= 0 && !theIS.eof()) { // not an end marker ?
     // create sub-label
     TDF_Label aLab = theLabel.FindChild (aTag, Standard_True);
 
