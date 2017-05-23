@@ -2,9 +2,7 @@ SelectBasics.cxx
 SelectBasics.hxx
 SelectBasics_EntityOwner.cxx
 SelectBasics_EntityOwner.hxx
-SelectBasics_EntityOwner.lxx
 SelectBasics_PickResult.hxx
 SelectBasics_SelectingVolumeManager.hxx
 SelectBasics_SensitiveEntity.cxx
 SelectBasics_SensitiveEntity.hxx
-SelectBasics_SensitiveEntity.lxx

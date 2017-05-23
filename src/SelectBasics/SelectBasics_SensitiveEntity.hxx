@@ -19,63 +19,51 @@
 
 #include <gp_GTrsf.hxx>
 #include <gp_Trsf.hxx>
-
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
-#include <Standard_Boolean.hxx>
+#include <Standard_Transient.hxx>
 #include <SelectBasics_SelectingVolumeManager.hxx>
 #include <SelectBasics_PickResult.hxx>
-#include <Standard_Integer.hxx>
 #include <Select3D_BndBox3d.hxx>
 
 class SelectBasics_EntityOwner;
 
-
-class SelectBasics_SensitiveEntity;
-DEFINE_STANDARD_HANDLE(SelectBasics_SensitiveEntity, MMgt_TShared)
-
 //! root class; the inheriting classes will be able to give
 //! sensitive Areas for the dynamic selection algorithms
-class SelectBasics_SensitiveEntity : public MMgt_TShared
+class SelectBasics_SensitiveEntity : public Standard_Transient
 {
-
+  DEFINE_STANDARD_RTTIEXT(SelectBasics_SensitiveEntity, Standard_Transient)
 public:
 
-  
   //! Sets owner of the entity
   Standard_EXPORT virtual void Set (const Handle(SelectBasics_EntityOwner)& theOwnerId);
-  
+
   //! Returns pointer to owner of the entity
-  Standard_EXPORT const Handle(SelectBasics_EntityOwner)& OwnerId() const;
-  
+  const Handle(SelectBasics_EntityOwner)& OwnerId() const { return myOwnerId; }
+
   //! Checks whether the sensitive entity is overlapped by
   //! current selecting volume
   virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr, SelectBasics_PickResult& thePickResult) = 0;
-  
+
   //! allows a better sensitivity for
   //! a specific entity in selection algorithms
   //! useful for small sized entities.
-  Standard_Integer SensitivityFactor() const;
+  Standard_Integer SensitivityFactor() const { return mySFactor; }
 
   //! Allows to manage sensitivity of a particular sensitive entity
   Standard_EXPORT void SetSensitivityFactor (const Standard_Integer theNewSens);
-  
+
   //! Returns the number of sub-entities or elements in
   //! sensitive entity. Is used to determine if entity is
   //! complex and needs to pre-build BVH at the creation of
   //! sensitive entity step or is light-weighted so the tree
   //! can be build on demand with unnoticeable delay
   virtual Standard_Integer NbSubElements() = 0;
-  
+
   //! Returns bounding box of sensitive entity
   virtual Select3D_BndBox3d BoundingBox() = 0;
-  
+
   //! Builds BVH tree for sensitive if it is needed
   virtual void BVH() = 0;
-  
+
   //! Clears up all the resources and memory allocated
   virtual void Clear() = 0;
 
@@ -86,25 +74,17 @@ public:
   //! to this entity has init location set. Otherwise, returns identity matrix.
   virtual gp_GTrsf InvInitLocation() const = 0;
 
-  DEFINE_STANDARD_RTTIEXT(SelectBasics_SensitiveEntity,MMgt_TShared)
-
 protected:
 
   Standard_EXPORT SelectBasics_SensitiveEntity (const Handle(SelectBasics_EntityOwner)& theOwnerId);
 
+protected:
+
   Handle(SelectBasics_EntityOwner) myOwnerId;
-
-
-private:
-
   Standard_Integer mySFactor;
+
 };
 
-
-#include <SelectBasics_SensitiveEntity.lxx>
-
-
-
-
+DEFINE_STANDARD_HANDLE(SelectBasics_SensitiveEntity, Standard_Transient)
 
 #endif // _SelectBasics_SensitiveEntity_HeaderFile

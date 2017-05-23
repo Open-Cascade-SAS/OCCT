@@ -16,11 +16,9 @@
 
 #include <Select3D_SensitiveTriangle.hxx>
 
-#include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <Bnd_Box.hxx>
 #include <TopLoc_Location.hxx>
-
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveTriangle,Select3D_SensitiveEntity)
 
@@ -68,26 +66,6 @@ Standard_Boolean Select3D_SensitiveTriangle::Matches (SelectBasics_SelectingVolu
   aDistToCOG = theMgr.DistToGeometryCenter (myCentroid);
   thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
   return Standard_True;
-}
-
-//==================================================
-// Function: Points3D
-// Purpose :
-//==================================================
-void Select3D_SensitiveTriangle::Points3D (gp_Pnt& thePnt0, gp_Pnt& thePnt1, gp_Pnt& thePnt2) const
-{
-  thePnt0 = myPoints[0];
-  thePnt1 = myPoints[1];
-  thePnt2 = myPoints[2];
-}
-
-//==================================================
-// Function: Center3D
-// Purpose :
-//==================================================
-gp_Pnt Select3D_SensitiveTriangle::Center3D() const
-{
-  return myCentroid;
 }
 
 //==================================================

@@ -16,9 +16,6 @@
 
 #include <Select3D_SensitivePoint.hxx>
 
-#include <TopLoc_Location.hxx>
-
-
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitivePoint,Select3D_SensitiveEntity)
 
 //==================================================
@@ -51,15 +48,6 @@ Standard_Boolean Select3D_SensitivePoint::Matches (SelectBasics_SelectingVolumeM
   aDistToCOG = aDepth;
   thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
   return Standard_True;
-}
-
-//=======================================================================
-//function : Point
-//purpose  :
-//=======================================================================
-gp_Pnt Select3D_SensitivePoint::Point() const
-{
-  return myPoint;
 }
 
 //=======================================================================

@@ -14,24 +14,14 @@
 #ifndef _Select3D_SensitivePoly_HeaderFile
 #define _Select3D_SensitivePoly_HeaderFile
 
-#include <NCollection_Handle.hxx>
-
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_Type.hxx>
-
+#include <Select3D_PointData.hxx>
+#include <Select3D_SensitiveSet.hxx>
+#include <Select3D_TypeOfSensitivity.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 
-#include <Select3D_PointData.hxx>
-#include <Select3D_Pnt.hxx>
-#include <Select3D_SensitiveSet.hxx>
-#include <Select3D_TypeOfSensitivity.hxx>
-
-
 class Standard_ConstructionError;
 class Standard_OutOfRange;
-class SelectBasics_EntityOwner;
 
 //! Sensitive Entity to make a face selectable.
 //! In some cases this class can raise Standard_ConstructionError and
@@ -39,6 +29,7 @@ class SelectBasics_EntityOwner;
 //! myPolyg.
 class Select3D_SensitivePoly : public Select3D_SensitiveSet
 {
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitivePoly, Select3D_SensitiveSet)
 public:
 
   //! Constructs a sensitive face object defined by the
@@ -68,7 +59,15 @@ public:
   Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE;
 
   //! Returns the 3D points of the array used at construction time.
-  void Points3D (Handle(TColgp_HArray1OfPnt)& theHArrayOfPnt);
+  void Points3D (Handle(TColgp_HArray1OfPnt)& theHArrayOfPnt)
+  {
+    Standard_Integer aSize = myPolyg.Size();
+    theHArrayOfPnt = new TColgp_HArray1OfPnt (1,aSize);
+    for(Standard_Integer anIndex = 1; anIndex <= aSize; anIndex++)
+    {
+      theHArrayOfPnt->SetValue (anIndex, myPolyg.Pnt (anIndex-1));
+    }
+  }
 
   //! Returns bounding box of a polygon. If location
   //! transformation is set, it will be applied
@@ -92,8 +91,6 @@ public:
   //! Swaps items with indexes theIdx1 and theIdx2 in the vector
   Standard_EXPORT virtual void Swap (const Standard_Integer theIdx1,
                                      const Standard_Integer theIdx2) Standard_OVERRIDE;
-
-  DEFINE_STANDARD_RTTIEXT(Select3D_SensitivePoly,Select3D_SensitiveSet)
 
 private:
 
@@ -120,7 +117,5 @@ protected:
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitivePoly, Select3D_SensitiveSet)
-
-#include <Select3D_SensitivePoly.lxx>
 
 #endif // _Select3D_SensitivePoly_HeaderFile

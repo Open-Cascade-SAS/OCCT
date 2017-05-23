@@ -14,10 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Precision.hxx>
 #include <Select3D_SensitiveGroup.hxx>
-#include <TopLoc_Location.hxx>
 
+#include <Precision.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveGroup,Select3D_SensitiveSet)
 

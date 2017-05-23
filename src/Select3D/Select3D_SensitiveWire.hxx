@@ -17,18 +17,7 @@
 #ifndef _Select3D_SensitiveWire_HeaderFile
 #define _Select3D_SensitiveWire_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_Type.hxx>
-
 #include <Select3D_SensitiveSet.hxx>
-#include <Standard_OStream.hxx>
-#include <NCollection_Sequence.hxx>
-
-class SelectBasics_EntityOwner;
-class TopLoc_Location;
-class Select3D_SensitiveEntitySequence;
-
 
 //! A framework to define selection of a wire owner by an
 //! elastic wire band.

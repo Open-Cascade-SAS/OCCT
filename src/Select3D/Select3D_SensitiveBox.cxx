@@ -15,11 +15,6 @@
 // commercial license or contractual agreement.
 
 #include <Select3D_SensitiveBox.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Pnt.hxx>
-#include <Bnd_Box.hxx>
-#include <ElCLib.hxx>
-
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveBox,Select3D_SensitiveEntity)
 
@@ -129,17 +124,4 @@ gp_Pnt Select3D_SensitiveBox::CenterOfGeometry() const
 Select3D_BndBox3d Select3D_SensitiveBox::BoundingBox()
 {
   return myBox;
-}
-
-//=======================================================================
-// function : Box
-// purpose  :
-//=======================================================================
-Bnd_Box Select3D_SensitiveBox::Box() const
-{
-  Bnd_Box aBox;
-  aBox.Update (myBox.CornerMin().x(), myBox.CornerMin().y(), myBox.CornerMin().z(),
-               myBox.CornerMax().x(), myBox.CornerMax().y(), myBox.CornerMax().z());
-
-  return aBox;
 }

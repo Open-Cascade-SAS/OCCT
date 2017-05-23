@@ -17,7 +17,8 @@
 #include <Select3D_Pnt.hxx>
 
 // A framework for safe management of Select3D_SensitivePoly polygons of 3D points
-class Select3D_PointData {
+class Select3D_PointData
+{
 
 public:
 
@@ -60,7 +61,7 @@ public:
 
   // Returns 3D point from internal array
   // if theIndex is valid
-  Select3D_Pnt Pnt (const Standard_Integer theIndex) const
+  const Select3D_Pnt& Pnt (const Standard_Integer theIndex) const
   {
     if (theIndex < 0 || theIndex >= mynbpoints)
       throw Standard_OutOfRange("Select3D_PointData::Pnt");

@@ -14,22 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _Select3D_SensitiveGroup_HeaderFile
 #define _Select3D_SensitiveGroup_HeaderFile
-
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_Type.hxx>
 
 #include <Select3D_EntitySequence.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <Select3D_SensitiveSet.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
-
-class SelectBasics_EntityOwner;
-class TopLoc_Location;
-
 
 //! A framework to define selection of a sensitive group
 //!          by a sensitive entity which is a set of 3D sensitive entities.
@@ -40,6 +31,7 @@ class TopLoc_Location;
 //!          By default the "Match All entities" mode is set.
 class Select3D_SensitiveGroup : public Select3D_SensitiveSet
 {
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveGroup, Select3D_SensitiveSet)
 public:
 
   //! Constructs an empty sensitive group object.
@@ -76,11 +68,11 @@ public:
   //! Sets the requirement that all sensitive entities in the
   //! list used at the time of construction, or added using
   //! the function Add must be matched.
-  void SetMatchType (const Standard_Boolean theIsMustMatchAll);
+  void SetMatchType (const Standard_Boolean theIsMustMatchAll) { myMustMatchAll = theIsMustMatchAll; }
 
   //! Returns true if all sensitive entities in the list used
   //! at the time of construction, or added using the function Add must be matched.
-  Standard_Boolean MustMatchAll() const;
+  Standard_Boolean MustMatchAll() const { return myMustMatchAll; }
 
   //! Checks whether the group overlaps current selecting volume
   Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
@@ -95,7 +87,7 @@ public:
   Standard_EXPORT void Set (const Handle(SelectBasics_EntityOwner)& theOwnerId) Standard_OVERRIDE;
 
   //! Gets group content
-  const Select3D_EntitySequence& GetEntities() const;
+  const Select3D_EntitySequence& GetEntities() const { return myEntities; }
 
   //! Returns bounding box of the group. If location transformation
   //! is set, it will be applied
@@ -119,8 +111,6 @@ public:
 
   //! Returns the length of vector of sensitive entities
   Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
-
-  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveGroup,Select3D_SensitiveSet)
 
 private:
 
@@ -146,7 +136,5 @@ private:
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitiveGroup, Select3D_SensitiveEntity)
-
-#include <Select3D_SensitiveGroup.lxx>
 
 #endif // _Select3D_SensitiveGroup_HeaderFile

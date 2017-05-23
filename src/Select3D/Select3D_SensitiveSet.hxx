@@ -17,8 +17,6 @@
 #define _Select3D_SensitiveSet_Header
 
 #include <BVH_PrimitiveSet.hxx>
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <Select3D_BndBox3d.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectBasics_EntityOwner.hxx>

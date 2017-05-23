@@ -17,25 +17,14 @@
 #ifndef _Select3D_SensitiveSegment_HeaderFile
 #define _Select3D_SensitiveSegment_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Integer.hxx>
-#include <Select3D_Pnt.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <gp_Pnt.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
-#include <Standard_OStream.hxx>
-
-class SelectBasics_EntityOwner;
-class gp_Pnt;
-class TopLoc_Location;
 
 //! A framework to define sensitive zones along a segment
 //!          One gives the 3D start and end point
 class Select3D_SensitiveSegment : public Select3D_SensitiveEntity
 {
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveSegment, Select3D_SensitiveEntity)
 public:
 
   //! Constructs the sensitive segment object defined by
@@ -45,16 +34,16 @@ public:
                                              const gp_Pnt& theLastPnt);
 
   //! changes the start Point of the Segment;
-  void StartPoint (const gp_Pnt& thePnt);
+  void SetStartPoint (const gp_Pnt& thePnt) { myStart = thePnt; }
 
   //! changes the end point of the segment
-  void EndPoint (const gp_Pnt& thePnt);
+  void SetEndPoint (const gp_Pnt& thePnt) { myEnd = thePnt; }
 
   //! gives the 3D start Point of the Segment
-  gp_Pnt StartPoint() const;
+  const gp_Pnt& StartPoint() const { return myStart; }
 
   //! gives the 3D End Point of the Segment
-  gp_Pnt EndPoint() const;
+  const gp_Pnt& EndPoint() const { return myEnd; }
 
   //! Returns the amount of points
   Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE;
@@ -73,7 +62,13 @@ public:
   //! transformation is set, it will be applied
   Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveSegment,Select3D_SensitiveEntity)
+public:
+
+  //! changes the start Point of the Segment;
+  void StartPoint (const gp_Pnt& thePnt) { myStart = thePnt; }
+
+  //! changes the end point of the segment
+  void EndPoint (const gp_Pnt& thePnt) { myEnd = thePnt; }
 
 private:
 
@@ -82,7 +77,5 @@ private:
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitiveSegment, Select3D_SensitiveEntity)
-
-#include <Select3D_SensitiveSegment.lxx>
 
 #endif // _Select3D_SensitiveSegment_HeaderFile

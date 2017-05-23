@@ -11,13 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gp_Pnt.hxx>
-#include <TopLoc_Location.hxx>
-
-#include <Select3D_Pnt.hxx>
-
 #include <Select3D_SensitivePoly.hxx>
-
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitivePoly,Select3D_SensitiveSet)
 
@@ -199,7 +193,7 @@ Standard_Real Select3D_SensitivePoly::Center (const Standard_Integer theIdx,
     return RealLast();
 
   const Select3D_BndBox3d aBndBox = Box (theIdx);
-  const SelectMgr_Vec3& aCenter = (aBndBox.CornerMin() + aBndBox.CornerMax()) * 0.5;
+  const SelectMgr_Vec3 aCenter = (aBndBox.CornerMin() + aBndBox.CornerMax()) * 0.5;
   return theAxis == 0 ? aCenter.x() : (theAxis == 1 ? aCenter.y() : aCenter.z());
 }
 
@@ -218,7 +212,6 @@ void Select3D_SensitivePoly::Swap (const Standard_Integer theIdx1,
   const Standard_Integer aSegmentIdx2 = mySegmentIndexes->Value (theIdx2);
   mySegmentIndexes->ChangeValue (theIdx1) = aSegmentIdx2;
   mySegmentIndexes->ChangeValue (theIdx2) = aSegmentIdx1;
-  return;
 }
 
 //==================================================

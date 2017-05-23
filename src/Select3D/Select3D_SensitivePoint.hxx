@@ -17,24 +17,13 @@
 #ifndef _Select3D_SensitivePoint_HeaderFile
 #define _Select3D_SensitivePoint_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_Type.hxx>
-
-#include <Select3D_Pnt.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <Standard_Boolean.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_OStream.hxx>
-
-class SelectBasics_EntityOwner;
-class gp_Pnt;
-class TopLoc_Location;
 
 //! A framework to define sensitive 3D points.
 class Select3D_SensitivePoint : public Select3D_SensitiveEntity
 {
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitivePoint, Select3D_SensitiveEntity)
 public:
 
   //! Constructs a sensitive point object defined by the
@@ -51,7 +40,7 @@ public:
                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
 
   //! Returns the point used at the time of construction.
-  Standard_EXPORT gp_Pnt Point() const;
+  const gp_Pnt& Point() const { return myPoint; }
 
   //! Returns center of point. If location transformation
   //! is set, it will be applied
@@ -60,8 +49,6 @@ public:
   //! Returns bounding box of the point. If location
   //! transformation is set, it will be applied
   Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
-
-  DEFINE_STANDARD_RTTIEXT(Select3D_SensitivePoint,Select3D_SensitiveEntity)
 
 private:
 

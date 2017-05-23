@@ -14,17 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modified    Tue Apr 14 1998 by rob : fix Bug : Case of Null Radius Circle...
-
 #ifndef _Select3D_SensitiveCircle_HeaderFile
 #define _Select3D_SensitiveCircle_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_Type.hxx>
-
 #include <Select3D_SensitivePoly.hxx>
-#include <Select3D_Pnt.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 #include <Select3D_TypeOfSensitivity.hxx>
@@ -32,16 +25,13 @@
 class Geom_Circle;
 class Standard_ConstructionError;
 class Standard_OutOfRange;
-class SelectBasics_EntityOwner;
-class gp_Pnt;
-class TopLoc_Location;
-
 
 //! A framework to define sensitive 3D arcs and circles.
 //! In some cases this class can raise Standard_ConstructionError and
 //! Standard_OutOfRange exceptions. For more details see Select3D_SensitivePoly.
 class Select3D_SensitiveCircle : public Select3D_SensitivePoly
 {
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveCircle, Select3D_SensitivePoly)
 public:
 
   //! Constructs the sensitive circle object defined by the
@@ -99,8 +89,6 @@ public:
   //! Builds BVH tree for a circle's edge segments if needed
   Standard_EXPORT virtual void BVH() Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveCircle,Select3D_SensitivePoly)
-
 protected:
 
   //! Calculates distance from the 3d projection of used-picked screen point
@@ -114,11 +102,11 @@ private:
 
 private:
 
-  Select3D_TypeOfSensitivity mySensType;     //!< True if type of selection is interior, false otherwise
-  gp_Pnt                     myCenter3D;       //!< Center of a circle
-  Handle(Geom_Circle)         myCircle;         //!< Points of the circle
-  Standard_Real              myStart;          //!< Sensitive arc parameter
-  Standard_Real              myEnd;            //!< Sensitive arc parameter
+  Select3D_TypeOfSensitivity mySensType; //!< True if type of selection is interior, false otherwise
+  gp_Pnt                     myCenter3D; //!< Center of a circle
+  Handle(Geom_Circle)        myCircle;   //!< Points of the circle
+  Standard_Real              myStart;    //!< Sensitive arc parameter
+  Standard_Real              myEnd;      //!< Sensitive arc parameter
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitiveCircle, Select3D_SensitivePoly)

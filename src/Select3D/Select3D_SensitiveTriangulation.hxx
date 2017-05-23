@@ -14,40 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//Modified      Thur Apr 09 98 by rob : No more computation of free edges.
-//                                      fix bug on Compute Depth (don't forget
-//                                      Location...)
-
 #ifndef _Select3D_SensitiveTriangulation_Header
 #define _Select3D_SensitiveTriangulation_Header
-
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopLoc_Location.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Pnt.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <Standard_Boolean.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
-#include <Standard_OStream.hxx>
 #include <Select3D_SensitiveSet.hxx>
-#include <NCollection_Handle.hxx>
 
 class Poly_Triangulation;
-class SelectBasics_EntityOwner;
-class TopLoc_Location;
-class gp_Pnt;
-class Select3D_SensitiveEntity;
 
 //! A framework to define selection of a sensitive entity made of a set of triangles.
 class Select3D_SensitiveTriangulation : public Select3D_SensitiveSet
 {
-
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveTriangulation, Select3D_SensitiveSet)
 public:
 
   //! Constructs a sensitive triangulation object defined by
@@ -76,7 +59,7 @@ public:
 
   Standard_EXPORT Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
 
-  const Handle(Poly_Triangulation)& Triangulation() const;
+  const Handle(Poly_Triangulation)& Triangulation() const { return myTriangul; }
 
   //! Returns the length of array of triangles or edges
   Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
@@ -108,17 +91,13 @@ public:
   //! to this entity has init location set. Otherwise, returns identity matrix.
   Standard_EXPORT virtual gp_GTrsf InvInitLocation() const Standard_OVERRIDE;
 
-  inline const TopLoc_Location& GetInitLocation() const;
-
-public:
-  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveTriangulation,Select3D_SensitiveSet)
+  const TopLoc_Location& GetInitLocation() const { return myInitLocation; }
 
 protected:
 
   //! Inner function for transformation application to bounding
   //! box of the triangulation
   Select3D_BndBox3d applyTransformation();
-
 
 private:
 
@@ -148,8 +127,5 @@ private:
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitiveTriangulation, Select3D_SensitiveSet)
-
-#include <Select3D_SensitiveTriangulation.lxx>
-
 
 #endif // _Select3D_SensitiveTriangulation_Header

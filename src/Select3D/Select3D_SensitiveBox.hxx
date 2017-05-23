@@ -17,24 +17,13 @@
 #ifndef _Select3D_SensitiveBox_HeaderFile
 #define _Select3D_SensitiveBox_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_Type.hxx>
-
 #include <Bnd_Box.hxx>
-#include <gp_Pnt.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <SelectMgr_SelectingVolumeManager.hxx>
-#include <Standard_OStream.hxx>
-
-class SelectBasics_EntityOwner;
-class Bnd_Box;
-class TopLoc_Location;
-
 
 //! A framework to define selection by a sensitive box.
 class Select3D_SensitiveBox : public Select3D_SensitiveEntity
 {
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveBox, Select3D_SensitiveEntity)
 public:
 
   //! Constructs a sensitive box object defined by the
@@ -64,7 +53,14 @@ public:
   Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
 
-  Standard_EXPORT Bnd_Box Box() const;
+  Bnd_Box Box() const
+  {
+    Bnd_Box aBox;
+    aBox.Update (myBox.CornerMin().x(), myBox.CornerMin().y(), myBox.CornerMin().z(),
+                 myBox.CornerMax().x(), myBox.CornerMax().y(), myBox.CornerMax().z());
+
+    return aBox;
+  }
 
   //! Returns center of the box. If location
   //! transformation is set, it will be applied
@@ -73,8 +69,6 @@ public:
   //! Returns coordinates of the box. If location
   //! transformation is set, it will be applied
   Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
-
-  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveBox,Select3D_SensitiveEntity)
 
 private:
 

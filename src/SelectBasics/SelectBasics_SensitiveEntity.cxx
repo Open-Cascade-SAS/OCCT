@@ -14,13 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <SelectBasics_SensitiveEntity.hxx>
 
 #include <SelectBasics_EntityOwner.hxx>
-#include <SelectBasics_SensitiveEntity.hxx>
-#include <Standard_Type.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(SelectBasics_SensitiveEntity,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(SelectBasics_SensitiveEntity, Standard_Transient)
 
 //=======================================================================
 // function : SelectBasics_SensitiveEntity
@@ -37,15 +36,6 @@ SelectBasics_SensitiveEntity::SelectBasics_SensitiveEntity (const Handle(SelectB
 void SelectBasics_SensitiveEntity::Set (const Handle(SelectBasics_EntityOwner)& theOwnerId)
 {
   myOwnerId = theOwnerId;
-}
-
-//=======================================================================
-// function : OwnerId
-// purpose  : Returns pointer to owner of the entity
-//=======================================================================
-const Handle(SelectBasics_EntityOwner)& SelectBasics_SensitiveEntity::OwnerId() const
-{
-  return myOwnerId;
 }
 
 //=======================================================================

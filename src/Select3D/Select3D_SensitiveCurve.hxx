@@ -17,31 +17,20 @@
 #ifndef _Select3D_SensitiveCurve_HeaderFile
 #define _Select3D_SensitiveCurve_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_Type.hxx>
-
 #include <Geom_Curve.hxx>
 #include <Select3D_SensitivePoly.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
-#include <Standard_Boolean.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_OStream.hxx>
 
-class Geom_Curve;
 class Standard_ConstructionError;
 class Standard_OutOfRange;
-class SelectBasics_EntityOwner;
-class Select3D_SensitiveEntity;
-class TopLoc_Location;
-
 
 //! A framework to define a sensitive 3D curve.
 //! In some cases this class can raise Standard_ConstructionError and
 //! Standard_OutOfRange exceptions. For more details see Select3D_SensitivePoly.
 class Select3D_SensitiveCurve : public Select3D_SensitivePoly
 {
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveCurve, Select3D_SensitivePoly)
 public:
 
   //! Constructs a sensitive curve object defined by the
@@ -63,10 +52,6 @@ public:
 
   //! Returns the copy of this
   Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
-
-public:
-
-  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveCurve,Select3D_SensitivePoly)
 
 private:
 

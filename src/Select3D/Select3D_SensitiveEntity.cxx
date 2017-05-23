@@ -15,11 +15,9 @@
 // commercial license or contractual agreement.
 
 #include <Select3D_SensitiveEntity.hxx>
+
 #include <Precision.hxx>
 #include <SelectBasics_EntityOwner.hxx>
-#include <Select3D_Macro.hxx>
-#include <TopLoc_Location.hxx>
-
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveEntity,SelectBasics_SensitiveEntity)
 

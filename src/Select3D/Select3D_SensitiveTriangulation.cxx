@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <algorithm>
+#include <Select3D_SensitiveTriangulation.hxx>
 
 #include <Poly.hxx>
 #include <Poly_Connect.hxx>
@@ -23,24 +23,30 @@
 #include <Precision.hxx>
 #include <Select3D_TypeOfSensitivity.hxx>
 
-#include <Select3D_SensitiveTriangulation.hxx>
-
+#include <algorithm>
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveTriangulation,Select3D_SensitiveSet)
 
-static Standard_Integer NbOfFreeEdges (const Handle(Poly_Triangulation)& theTriangulation)
+namespace
 {
-  Standard_Integer aNbFree = 0;
-  Poly_Connect aPoly (theTriangulation);
-  Standard_Integer aTriangleNodes[3];
-  for (Standard_Integer aTrgIdx = 1; aTrgIdx <= theTriangulation->NbTriangles(); aTrgIdx++)
+  static Standard_Integer NbOfFreeEdges (const Handle(Poly_Triangulation)& theTriangulation)
   {
-    aPoly.Triangles (aTrgIdx, aTriangleNodes[0], aTriangleNodes[1], aTriangleNodes[2]);
-    for (Standard_Integer aNodeIdx = 0; aNodeIdx < 3; aNodeIdx++)
-      if (aTriangleNodes[aNodeIdx] == 0)
-        aNbFree++;
+    Standard_Integer aNbFree = 0;
+    Poly_Connect aPoly (theTriangulation);
+    Standard_Integer aTriangleNodes[3];
+    for (Standard_Integer aTrgIdx = 1; aTrgIdx <= theTriangulation->NbTriangles(); aTrgIdx++)
+    {
+      aPoly.Triangles (aTrgIdx, aTriangleNodes[0], aTriangleNodes[1], aTriangleNodes[2]);
+      for (Standard_Integer aNodeIdx = 0; aNodeIdx < 3; ++aNodeIdx)
+      {
+        if (aTriangleNodes[aNodeIdx] == 0)
+        {
+          ++aNbFree;
+        }
+      }
+    }
+    return aNbFree;
   }
-  return aNbFree;
 }
 
 //=======================================================================
@@ -129,7 +135,6 @@ Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation (const Handle(S
     }
   }
 }
-
 
 //=======================================================================
 //function : Select3D_SensitiveTriangulation

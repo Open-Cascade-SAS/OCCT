@@ -14,17 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//Modif on jun-24-97 : introduction de CSLib_Class2d de LBR
-//                     pour teste si on est dedans ou dehors...
-//Modif on jul-21-97 : changement en harray1 pour eventuelles connexions ...
-
 #include <Select3D_SensitiveFace.hxx>
+
 #include <Select3D_SensitivePoly.hxx>
 #include <Select3D_InteriorSensitivePointSet.hxx>
-
-#include <gp_Pnt.hxx>
-#include <Precision.hxx>
-
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveFace,Select3D_SensitiveEntity)
 

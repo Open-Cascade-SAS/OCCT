@@ -14,34 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//Modif on jun-24-97 : introduction de CSLib_Class2d de LBR
-//                     pour teste si on est dedans ou dehors...
-//Modif on jul-21-97 : changement en harray1 pour eventuelles connexions ...
-
 #ifndef _Select3D_SensitiveFace_HeaderFile
 #define _Select3D_SensitiveFace_HeaderFile
-
-#include <Standard_Type.hxx>
 
 #include <Select3D_TypeOfSensitivity.hxx>
 #include <Select3D_SensitiveSet.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
-#include <Standard_Boolean.hxx>
 #include <SelectBasics_SelectingVolumeManager.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_OStream.hxx>
 
 class Standard_ConstructionError;
 class Standard_OutOfRange;
-class SelectBasics_EntityOwner;
-class TopLoc_Location;
-
 
 //! Sensitive Entity to make a face selectable.
 //! In some cases this class can raise Standard_ConstructionError and
 //! Standard_OutOfRange exceptions. For more details see Select3D_SensitivePoly.
 class Select3D_SensitiveFace : public Select3D_SensitiveEntity
 {
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveFace, Select3D_SensitiveEntity)
 public:
 
   //! Constructs a sensitive face object defined by the
@@ -83,8 +72,6 @@ public:
 
   //! Returns the amount of sub-entities (points or planar convex polygons)
   Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE;
-
-  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveFace,Select3D_SensitiveEntity)
 
 private:
 

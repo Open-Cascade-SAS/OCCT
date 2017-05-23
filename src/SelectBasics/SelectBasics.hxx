@@ -19,12 +19,7 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <Standard_Integer.hxx>
-class SelectBasics_EntityOwner;
-class SelectBasics_SensitiveEntity;
-
 
 //! interface class for dynamic selection
 class SelectBasics 
@@ -33,36 +28,12 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Structure to provide all-in-one result of selection of sensitive
   //! for "Matches" method of SelectBasics_SensitiveEntity.
   Standard_EXPORT static Standard_Integer MaxOwnerPriority();
   
   Standard_EXPORT static Standard_Integer MinOwnerPriority();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class SelectBasics_EntityOwner;
-friend class SelectBasics_SensitiveEntity;
-
 };
-
-
-
-
-
-
 
 #endif // _SelectBasics_HeaderFile

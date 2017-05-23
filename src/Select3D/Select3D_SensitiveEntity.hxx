@@ -17,19 +17,10 @@
 #ifndef _Select3D_SensitiveEntity_HeaderFile
 #define _Select3D_SensitiveEntity_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <SelectBasics_SensitiveEntity.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_OStream.hxx>
-
 #include <TopLoc_Location.hxx>
 
-class Select3D_SensitiveEntity;
 class SelectBasics_EntityOwner;
 
 //!  Abstract framework to define 3D sensitive entities.

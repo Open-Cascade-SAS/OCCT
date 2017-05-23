@@ -18,10 +18,8 @@
 #define _SelectBasics_EntityOwner_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopLoc_Location.hxx>
 
 //! defines an abstract owner of sensitive primitives.

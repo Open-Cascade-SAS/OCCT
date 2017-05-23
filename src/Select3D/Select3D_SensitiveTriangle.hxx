@@ -17,23 +17,12 @@
 #ifndef _Select3D_SensitiveTriangle_HeaderFile
 #define _Select3D_SensitiveTriangle_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_Type.hxx>
-
 #include <Select3D_TypeOfSensitivity.hxx>
-#include <Select3D_Pnt.hxx>
 #include <Select3D_SensitivePoly.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
-#include <Standard_OStream.hxx>
 
 class Standard_ConstructionError;
 class Standard_OutOfRange;
-class SelectBasics_EntityOwner;
-class gp_Pnt;
-class Select3D_SensitiveEntity;
-class TopLoc_Location;
-
 
 //! A framework to define selection of triangles in a view.
 //! This comes into play in the detection of meshing and triangulation in surfaces.
@@ -56,10 +45,15 @@ public:
                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
 
   //! Returns the 3D points P1, P2, P3 used at the time of construction.
-  Standard_EXPORT void Points3D (gp_Pnt& thePnt0, gp_Pnt& thePnt1, gp_Pnt& thePnt2) const;
+  void Points3D (gp_Pnt& thePnt0, gp_Pnt& thePnt1, gp_Pnt& thePnt2) const
+  {
+    thePnt0 = myPoints[0];
+    thePnt1 = myPoints[1];
+    thePnt2 = myPoints[2];
+  }
 
   //! Returns the center point of the sensitive triangle created at construction time.
-  Standard_EXPORT gp_Pnt Center3D() const;
+  Standard_EXPORT gp_Pnt Center3D() const { return myCentroid; }
 
   //! Returns the copy of this
   Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
