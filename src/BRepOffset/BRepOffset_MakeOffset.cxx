@@ -314,6 +314,10 @@ static BRepOffset_Error checkSinglePoint(const Standard_Real theUParam,
 //---------------------------------------------------------------------
 static void UpdateTolerance (      TopoDS_Shape&               myShape,
                              const TopTools_IndexedMapOfShape& myFaces);
+static Standard_Real ComputeMaxDist(const gp_Pln& thePlane, 
+                                    const Handle(Geom_Curve)& theCrv,
+                                    const Standard_Real theFirst,
+                                    const Standard_Real theLast);
 
 static void CorrectSolid(TopoDS_Solid& theSol, TopTools_ListOfShape& theSolList);
 //---------------------------------------------------------------------
@@ -3342,15 +3346,39 @@ void BRepOffset_MakeOffset::EncodeRegularity ()
 #endif
 }
 
-
-
+//=======================================================================
+//function : ComputeMaxDist
+//purpose  : 
+//=======================================================================
+Standard_Real ComputeMaxDist(const gp_Pln& thePlane,
+                             const Handle(Geom_Curve)& theCrv,
+                             const Standard_Real theFirst,
+                             const Standard_Real theLast)
+{
+  Standard_Real aMaxDist = 0.;
+  Standard_Integer i, NCONTROL = 23;
+  Standard_Real aPrm, aDist2;
+  gp_Pnt aP;
+  for (i = 0; i< NCONTROL; i++) {
+    aPrm = ((NCONTROL - 1 - i)*theFirst + i*theLast) / (NCONTROL - 1);
+    aP = theCrv->Value(aPrm);
+    if (Precision::IsInfinite(aP.X()) || Precision::IsInfinite(aP.Y())
+      || Precision::IsInfinite(aP.Z()))
+    {
+      return Precision::Infinite();
+    }
+    aDist2 = thePlane.SquareDistance(aP);
+    if (aDist2 > aMaxDist) aMaxDist = aDist2;  
+  }
+  return sqrt(aMaxDist)*1.05;
+}
 //=======================================================================
 //function : UpDateTolerance
 //purpose  : 
 //=======================================================================
 
 void UpdateTolerance (TopoDS_Shape& S,
-                                        const TopTools_IndexedMapOfShape& Faces)
+                      const TopTools_IndexedMapOfShape& Faces)
 {
   BRep_Builder B;
   TopTools_MapOfShape View;
@@ -3366,27 +3394,55 @@ void UpdateTolerance (TopoDS_Shape& S,
     }
   }
   
-  TopExp_Explorer Exp;
-  for (Exp.Init(S,TopAbs_EDGE); Exp.More(); Exp.Next()) {
-    TopoDS_Edge E = TopoDS::Edge(Exp.Current());
-    if (View.Add(E)) {
-      Handle(BRepCheck_Edge) EdgeCorrector = new BRepCheck_Edge(E);
-      Standard_Real    Tol = EdgeCorrector->Tolerance();
-      B.UpdateEdge (E,Tol);
-      
-      // Update the vertices.
-      TopExp::Vertices(E,V[0],V[1]);
-     
-      for (Standard_Integer i = 0 ; i <=1 ; i++) {
-        if (View.Add(V[i])) {
-          Handle(BRep_TVertex) TV = Handle(BRep_TVertex)::DownCast(V[i].TShape());
-          TV->Tolerance(0.);
-          Handle(BRepCheck_Vertex) VertexCorrector = new BRepCheck_Vertex(V[i]);
-          B.UpdateVertex (V[i],VertexCorrector->Tolerance());
-          // use the occasion to clean the vertices.
-          (TV->ChangePoints()).Clear();
+  Standard_Real Tol;
+  TopExp_Explorer ExpF;
+  for (ExpF.Init(S, TopAbs_FACE); ExpF.More(); ExpF.Next())
+  {
+    const TopoDS_Shape& F = ExpF.Current();
+    if (Faces.Contains(F))
+    {
+      continue;
+    }
+    BRepAdaptor_Surface aBAS(TopoDS::Face(F), Standard_False);
+    TopExp_Explorer Exp;
+    for (Exp.Init(F, TopAbs_EDGE); Exp.More(); Exp.Next()) {
+      TopoDS_Edge E = TopoDS::Edge(Exp.Current());
+      Standard_Boolean isUpdated = Standard_False;
+      if (aBAS.GetType() == GeomAbs_Plane)
+      {
+        //Edge does not seem to have pcurve on plane,
+        //so EdgeCorrector does not include it in tolerance calculation
+        Standard_Real aFirst, aLast;
+        Handle(Geom_Curve) aCrv = BRep_Tool::Curve(E, aFirst, aLast);
+        Standard_Real aMaxDist = ComputeMaxDist(aBAS.Plane(), aCrv, aFirst, aLast);
+        B.UpdateEdge(E, aMaxDist);
+        isUpdated = Standard_True;
+      }
+      if (View.Add(E))
+      {
+
+        BRepCheck_Edge EdgeCorrector(E);
+        Tol = EdgeCorrector.Tolerance();
+        B.UpdateEdge(E, Tol);
+        isUpdated = Standard_True;
+      }
+      if (isUpdated)
+      {
+        Tol = BRep_Tool::Tolerance(E);
+        // Update the vertices.
+        TopExp::Vertices(E, V[0], V[1]);
+
+        for (Standard_Integer i = 0; i <= 1; i++) {
+          if (View.Add(V[i])) {
+            Handle(BRep_TVertex) TV = Handle(BRep_TVertex)::DownCast(V[i].TShape());
+            TV->Tolerance(0.);
+            BRepCheck_Vertex VertexCorrector(V[i]);
+            B.UpdateVertex(V[i], VertexCorrector.Tolerance());
+            // use the occasion to clean the vertices.
+            (TV->ChangePoints()).Clear();
+          }
+          B.UpdateVertex(V[i], Tol);
         }
-        B.UpdateVertex(V[i],Tol);
       }
     }
   }
