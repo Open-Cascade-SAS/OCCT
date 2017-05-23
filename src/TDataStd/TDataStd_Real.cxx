@@ -36,6 +36,23 @@ const Standard_GUID& TDataStd_Real::GetID()
   return TDataStd_RealID;
 }
 
+//=======================================================================
+//function : SetAttr
+//purpose  : Implements Set functionality
+//=======================================================================
+static Handle(TDataStd_Real) SetAttr(const TDF_Label&     label,
+                                     const Standard_Real  V,
+                                     const Standard_GUID& theGuid)
+{
+  Handle(TDataStd_Real) A;
+  if (!label.FindAttribute(theGuid, A)) {
+    A = new TDataStd_Real ();
+    A->SetID(theGuid);
+    label.AddAttribute(A);
+  }
+  A->Set (V); 
+  return A;
+}
 
 //=======================================================================
 //function : Set
@@ -45,14 +62,7 @@ const Standard_GUID& TDataStd_Real::GetID()
 Handle(TDataStd_Real) TDataStd_Real::Set (const TDF_Label&    L,
                                           const Standard_Real V) 
 {
-  Handle(TDataStd_Real) A;
-  if (!L.FindAttribute(TDataStd_Real::GetID(), A)) {
-    A = new TDataStd_Real ();
-   A->SetID(GetID());
-    L.AddAttribute(A);
-  }
-  A->Set (V); 
-  return A;
+  return SetAttr(L, V, GetID());
 }
 
 //=======================================================================
@@ -60,17 +70,11 @@ Handle(TDataStd_Real) TDataStd_Real::Set (const TDF_Label&    L,
 //purpose  : User defined attribute
 //=======================================================================
 
-Handle(TDataStd_Real) TDataStd_Real::Set (const TDF_Label&    L, const Standard_GUID& theGuid,
+Handle(TDataStd_Real) TDataStd_Real::Set (const TDF_Label&    L,
+                                          const Standard_GUID& theGuid,
                                           const Standard_Real V) 
 {
-  Handle(TDataStd_Real) A;
-  if (!L.FindAttribute(theGuid, A)) {
-    A = new TDataStd_Real ();
-    A->SetID(theGuid);
-    L.AddAttribute(A);
-  }
-  A->Set (V); 
-  return A;
+  return SetAttr(L, V, theGuid);
 }
 
 //=======================================================================
@@ -80,8 +84,7 @@ Handle(TDataStd_Real) TDataStd_Real::Set (const TDF_Label&    L, const Standard_
 
 TDataStd_Real::TDataStd_Real ()
      : myValue     (RealFirst()),
-       myDimension (TDataStd_SCALAR), 
-       myID (GetID())
+       myDimension (TDataStd_SCALAR)
 {}
 
 
@@ -188,10 +191,8 @@ void TDataStd_Real::SetID()
 //=======================================================================
 
 Handle(TDF_Attribute) TDataStd_Real::NewEmpty () const
-{  
-  Handle(TDataStd_Real) Att = new TDataStd_Real();
-  Att->SetID(myID);
-  return Att; 
+{
+  return new TDataStd_Real();
 }
 
 //=======================================================================

@@ -35,6 +35,23 @@ const Standard_GUID& TDataStd_Integer::GetID()
   return TDataStd_IntegerID; 
 }
 
+//=======================================================================
+//function : SetAttr
+//purpose  : Implements Set functionality
+//=======================================================================
+static Handle(TDataStd_Integer) SetAttr(const TDF_Label&     label,
+                                        const Standard_Integer  V,
+                                        const Standard_GUID& theGuid)
+{
+  Handle(TDataStd_Integer) A;
+  if (!label.FindAttribute(theGuid, A)) {
+    A = new TDataStd_Integer ();
+    A->SetID(theGuid);
+    label.AddAttribute(A);
+  }
+  A->Set (V); 
+  return A;
+}
 
 //=======================================================================
 //function : Set
@@ -45,14 +62,7 @@ Handle(TDataStd_Integer) TDataStd_Integer::Set (const TDF_Label&        L,
                                                 const Standard_Integer  V) 
 
 {
-  Handle(TDataStd_Integer) A;
-  if (!L.FindAttribute (TDataStd_Integer::GetID(), A)) {
-    A = new TDataStd_Integer ();
-    A->SetID(GetID());
-    L.AddAttribute(A);
-  }
-  A->Set (V); 
-  return A;
+  return SetAttr(L, V, GetID());
 }
 
 //=======================================================================
@@ -60,17 +70,11 @@ Handle(TDataStd_Integer) TDataStd_Integer::Set (const TDF_Label&        L,
 //purpose  : Set user defined attribute
 //=======================================================================
 
-Handle(TDataStd_Integer) TDataStd_Integer::Set (const TDF_Label&    L, const Standard_GUID& theGuid,
-                                          const Standard_Integer V) 
+Handle(TDataStd_Integer) TDataStd_Integer::Set (const TDF_Label&    L,
+                                                const Standard_GUID& theGuid,
+                                                const Standard_Integer V) 
 {
-  Handle(TDataStd_Integer) A;
-  if (!L.FindAttribute(theGuid, A)) {
-    A = new TDataStd_Integer ();
-    A->SetID(theGuid);
-    L.AddAttribute(A);
-  }
-  A->Set (V); 
-  return A;
+  return SetAttr(L, V, theGuid);
 }
 //=======================================================================
 //function : TDataStd_Integer
@@ -78,7 +82,7 @@ Handle(TDataStd_Integer) TDataStd_Integer::Set (const TDF_Label&    L, const Sta
 //=======================================================================
 
 TDataStd_Integer::TDataStd_Integer ()
-     : myValue (-1), myID (GetID())
+     : myValue (-1)
  { }
 
 
@@ -152,10 +156,8 @@ void TDataStd_Integer::SetID()
 //=======================================================================
 
 Handle(TDF_Attribute) TDataStd_Integer::NewEmpty () const
-{  
-  Handle(TDataStd_Integer) Att = new TDataStd_Integer();
-  Att->SetID(myID);
-  return Att; 
+{
+  return new TDataStd_Integer();
 }
 
 //=======================================================================

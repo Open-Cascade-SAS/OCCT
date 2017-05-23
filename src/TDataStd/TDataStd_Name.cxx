@@ -41,6 +41,24 @@ const Standard_GUID& TDataStd_Name::GetID ()
 }
 
 //=======================================================================
+//function : SetAttr
+//purpose  : Implements Set functionality
+//=======================================================================
+static Handle(TDataStd_Name) SetAttr(const TDF_Label&       label,
+                                     const TCollection_ExtendedString& theString,
+                                     const Standard_GUID& theGuid) 
+{
+  Handle(TDataStd_Name) N;
+  if (!label.FindAttribute(theGuid, N)) {
+    N = new TDataStd_Name ();
+    N->SetID(theGuid);
+    label.AddAttribute(N);
+  }
+  N->Set (theString); 
+  return N;
+}
+
+//=======================================================================
 //function : Set
 //purpose  : 
 //=======================================================================
@@ -48,14 +66,7 @@ Handle(TDataStd_Name) TDataStd_Name::Set
                                 (const TDF_Label&                  label,
                                  const TCollection_ExtendedString& theString) 
 {
-  Handle(TDataStd_Name) N;
-  if (!label.FindAttribute(TDataStd_Name::GetID(), N)) { 
-    N = new TDataStd_Name ();
-    N->SetID(GetID());
-    label.AddAttribute(N);
-  }
-  N->Set(theString);    
-  return N;  
+  return SetAttr(label, theString, GetID());
 }
 
 //=======================================================================
@@ -63,25 +74,19 @@ Handle(TDataStd_Name) TDataStd_Name::Set
 //purpose  : Set user defined attribute
 //=======================================================================
 
-Handle(TDataStd_Name) TDataStd_Name::Set (const TDF_Label&    L, const Standard_GUID& theGuid,
+Handle(TDataStd_Name) TDataStd_Name::Set (const TDF_Label&    label, 
+                                          const Standard_GUID& theGuid,
                                           const TCollection_ExtendedString& theString) 
 {
-  Handle(TDataStd_Name) N;
-  if (!L.FindAttribute(theGuid, N)) {
-    N = new TDataStd_Name ();
-    N->SetID(theGuid);
-    L.AddAttribute(N);
-  }
-  N->Set (theString); 
-  return N;
+  return SetAttr(label, theString, theGuid);
 }
 //=======================================================================
 //function : TDataStd_Name
 //purpose  : Empty Constructor
 //=======================================================================
 
-TDataStd_Name::TDataStd_Name (): myID (GetID()) 
-{ }
+TDataStd_Name::TDataStd_Name ()
+{}
 
 //=======================================================================
 //function : Set
@@ -143,10 +148,8 @@ const Standard_GUID& TDataStd_Name::ID () const { return myID; }
 //=======================================================================
 
 Handle(TDF_Attribute) TDataStd_Name::NewEmpty () const
-{  
-  Handle(TDataStd_Name) Att = new TDataStd_Name();
-  Att->SetID(myID);
-  return Att; 
+{
+  return new TDataStd_Name();
 }
 
 //=======================================================================
@@ -170,9 +173,9 @@ void TDataStd_Name::Restore(const Handle(TDF_Attribute)& with)
 void TDataStd_Name::Paste (const Handle(TDF_Attribute)& into,
                            const Handle(TDF_RelocationTable)&/* RT*/) const
 {
-    Handle(TDataStd_Name) anAtt = Handle(TDataStd_Name)::DownCast (into);
-	anAtt->Set (myString);
-	anAtt->SetID(myID);
+  Handle(TDataStd_Name) anAtt = Handle(TDataStd_Name)::DownCast (into);
+  anAtt->Set (myString);
+  anAtt->SetID(myID);
 }
 
 //=======================================================================

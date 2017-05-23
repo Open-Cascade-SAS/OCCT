@@ -28,8 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TDataStd_AsciiString,TDF_Attribute)
 //function : TDataStd_AsciiString
 //purpose  : 
 //=======================================================================
-TDataStd_AsciiString::TDataStd_AsciiString():
-  myID (GetID())
+TDataStd_AsciiString::TDataStd_AsciiString()
 {
   myString.Clear();
 }
@@ -56,6 +55,25 @@ const Standard_GUID& TDataStd_AsciiString::ID() const
 }
 
 //=======================================================================
+//function : SetAttr
+//purpose  : Implements Set functionality
+//=======================================================================
+static Handle(TDataStd_AsciiString) SetAttr(
+                                     const TDF_Label&               label,
+                                     const TCollection_AsciiString& theString,
+                                     const Standard_GUID&           theGuid) 
+{
+  Handle(TDataStd_AsciiString) A;
+  if (!label.FindAttribute(theGuid, A)) {
+    A = new TDataStd_AsciiString ();
+    A->SetID(theGuid);
+    label.AddAttribute(A);
+  }
+  A->Set (theString); 
+  return A;
+}
+
+//=======================================================================
 //function : Set
 //purpose  : 
 //=======================================================================
@@ -64,15 +82,7 @@ Handle(TDataStd_AsciiString) TDataStd_AsciiString::Set (
                              const TDF_Label& theLabel,
                              const TCollection_AsciiString& theAsciiString)
 {
-  Handle(TDataStd_AsciiString) A;
-  if (!theLabel.FindAttribute(TDataStd_AsciiString::GetID(), A))
-  {
-    A = new TDataStd_AsciiString;
-    A->SetID(GetID());
-    theLabel.AddAttribute(A);
-  }
-  A->Set(theAsciiString);
-  return A;
+  return SetAttr(theLabel, theAsciiString, GetID());
 }
 
 //=======================================================================
@@ -80,17 +90,12 @@ Handle(TDataStd_AsciiString) TDataStd_AsciiString::Set (
 //purpose  : Set user defined attribute
 //=======================================================================
 
-Handle(TDataStd_AsciiString) TDataStd_AsciiString::Set (const TDF_Label&    L, const Standard_GUID& theGuid,
-                                          const TCollection_AsciiString& theAsciiString) 
+Handle(TDataStd_AsciiString) TDataStd_AsciiString::Set (
+                           const TDF_Label&    theLabel,
+                           const Standard_GUID& theGuid,
+                           const TCollection_AsciiString& theAsciiString)
 {
-  Handle(TDataStd_AsciiString) A;
-  if (!L.FindAttribute(theGuid, A)) {
-    A = new TDataStd_AsciiString ();
-    A->SetID(theGuid);
-    L.AddAttribute(A);
-  }
-  A->Set (theAsciiString); 
-  return A;
+  return SetAttr(theLabel, theAsciiString, theGuid);
 }
 //=======================================================================
 //function : Set
@@ -143,9 +148,7 @@ void TDataStd_AsciiString::SetID()
 
 Handle(TDF_Attribute) TDataStd_AsciiString::NewEmpty () const
 {
-  Handle(TDataStd_AsciiString) Att = new TDataStd_AsciiString();
-  Att->SetID(myID);
-  return Att; 
+  return new TDataStd_AsciiString();
 }
 
 //=======================================================================
