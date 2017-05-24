@@ -97,12 +97,12 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_CSF_NAME LIBRARY_NAME
     if (3RDPARTY_${PRODUCT_NAME}_DIR AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_DIR}")
       find_path (3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR NAMES ${HEADER_NAME}
                                                       PATHS ${3RDPARTY_${PRODUCT_NAME}_DIR}
-                                                      PATH_SUFFIXES include
+                                                      PATH_SUFFIXES include inc
                                                       CMAKE_FIND_ROOT_PATH_BOTH
                                                       NO_DEFAULT_PATH)
     else()
       find_path (3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR NAMES ${HEADER_NAME}
-                                                      PATH_SUFFIXES include
+                                                      PATH_SUFFIXES include inc
                                                       CMAKE_FIND_ROOT_PATH_BOTH)
     endif()
   endif()
@@ -123,6 +123,9 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_CSF_NAME LIBRARY_NAME
         set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .so .dylib .a)
 
         set (${PRODUCT_NAME}_PATH_SUFFIXES lib)
+        if (WIN32)
+          set (${PRODUCT_NAME}_PATH_SUFFIXES ${${PRODUCT_NAME}_PATH_SUFFIXES} win${COMPILER_BITNESS}/${COMPILER}/lib)
+        endif()
         if (ANDROID)
           set (${PRODUCT_NAME}_PATH_SUFFIXES ${${PRODUCT_NAME}_PATH_SUFFIXES} libs/${ANDROID_ABI})
         endif()
@@ -170,7 +173,7 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_CSF_NAME LIBRARY_NAME
           if (3RDPARTY_${PRODUCT_NAME}_DIR AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_DIR}")
             find_library (3RDPARTY_${PRODUCT_NAME}_DLL_${LIBRARY_NAME_SUFFIX}  NAMES ${LIBRARY_NAME}
                                                                                PATHS "${3RDPARTY_${PRODUCT_NAME}_DIR}"
-                                                                               PATH_SUFFIXES bin
+                                                                               PATH_SUFFIXES bin  win${COMPILER_BITNESS}/${COMPILER}/bin
                                                                                NO_DEFAULT_PATH)
           else()
             find_library (3RDPARTY_${PRODUCT_NAME}_DLL_${LIBRARY_NAME_SUFFIX} NAMES ${LIBRARY_NAME} PATH_SUFFIXES bin)
