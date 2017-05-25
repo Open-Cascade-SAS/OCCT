@@ -1,0 +1,40 @@
+puts "============"
+puts "OCC25536"
+puts "============"
+puts ""
+#######################################################################
+# XmlMDataXtd_GeometryDriver doesn't support TDataXtd_SPLINE, TDataXtd_PLANE and TDataXtd_CYLINDER.
+#######################################################################
+
+NewDocument Doc XmlOcaf
+
+# set attributes not supported by geometry driver before this issue fix
+Label Doc 0:2:1
+SetGeometry Doc 0:2:1 spl
+Label Doc 0:2:2
+SetGeometry Doc 0:2:2 pln
+Label Doc 0:2:3
+SetGeometry Doc 0:2:3 cyl
+
+set aFile ${imagedir}/bug25536_test.xml
+SaveAs Doc ${aFile}
+Close Doc
+
+# check attributes are correctly restored
+Open ${aFile} Doc2
+
+set aType [GetGeometryType Doc2 0:2:1]
+if {${aType} != "spl"} {
+  puts "Error: Restored Geometry Type '${aType}' is not stored 'spl'"
+}
+set aType [GetGeometryType Doc2 0:2:2]
+if {${aType} != "pln"} {
+  puts "Error: Restored Geometry Type '${aType}' is not stored 'pln'"
+}
+set aType [GetGeometryType Doc2 0:2:3]
+if {${aType} != "cyl"} {
+  puts "Error: Restored Geometry Type '${aType}' is not stored 'cyl'"
+}
+
+Close Doc2
+
