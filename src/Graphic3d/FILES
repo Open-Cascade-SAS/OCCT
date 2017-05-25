@@ -130,6 +130,7 @@ Graphic3d_TextureParams.cxx
 Graphic3d_TextureParams.hxx
 Graphic3d_TextureRoot.cxx
 Graphic3d_TextureRoot.hxx
+Graphic3d_ToneMappingMethod.hxx
 Graphic3d_TransformError.hxx
 Graphic3d_TransformPers.hxx
 Graphic3d_TransformPers.cxx

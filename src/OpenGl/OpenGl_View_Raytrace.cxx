@@ -1148,6 +1148,15 @@ TCollection_AsciiString OpenGl_View::generateShaderPrefix (const Handle(OpenGl_C
     {
       aPrefixString += TCollection_AsciiString ("\n#define TWO_SIDED_BXDF");
     }
+
+    switch (myRaytraceParameters.ToneMappingMethod)
+    {
+      case Graphic3d_ToneMappingMethod_Disabled:
+        break;
+      case Graphic3d_ToneMappingMethod_Filmic:
+        aPrefixString += TCollection_AsciiString ("\n#define TONE_MAPPING_FILMIC");
+        break;
+    }
   }
 
   return aPrefixString;
@@ -1410,6 +1419,12 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
       }
 
       aToRebuildShaders = Standard_True;
+    }
+
+    if (myRenderParams.ToneMappingMethod != myRaytraceParameters.ToneMappingMethod)
+    {
+      myRaytraceParameters.ToneMappingMethod = myRenderParams.ToneMappingMethod;
+      aToRebuildShaders = true;
     }
 
     if (aToRebuildShaders)
@@ -2929,6 +2944,19 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
     myOutImageProgram->SetUniform (theGlContext, "uAccumFrames",   myAccumFrames);
     myOutImageProgram->SetUniform (theGlContext, "uVarianceImage", OpenGl_RT_VisualErrorImage);
     myOutImageProgram->SetUniform (theGlContext, "uDebugAdaptive", myRenderParams.ShowSamplingTiles ?  1 : 0);
+  }
+
+  if (myRaytraceParameters.GlobalIllumination)
+  {
+    myOutImageProgram->SetUniform(theGlContext, "uExposure", myRenderParams.Exposure);
+    switch (myRaytraceParameters.ToneMappingMethod)
+    {
+      case Graphic3d_ToneMappingMethod_Disabled:
+        break;
+      case Graphic3d_ToneMappingMethod_Filmic:
+        myOutImageProgram->SetUniform (theGlContext, "uWhitePoint", myRenderParams.WhitePoint);
+        break;
+    }
   }
 
   if (theReadDrawFbo != NULL)

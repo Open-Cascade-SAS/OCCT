@@ -30,6 +30,7 @@
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
+#include <Graphic3d_ToneMappingMethod.hxx>
 #include <Graphic3d_TypeOfShadingModel.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
@@ -740,6 +741,9 @@ protected: //! @name data types related to ray-tracing
     
     //! Number of tiles in Y dimension (in adaptive sampling mode).
     Standard_Integer NbTilesY;
+    
+    //! Tone mapping method for path tracing.
+    Graphic3d_ToneMappingMethod ToneMappingMethod;
 
     //! Creates default compile-time ray-tracing parameters.
     RaytracingParams()
@@ -753,7 +757,8 @@ protected: //! @name data types related to ray-tracing
       UseEnvMapForBackground (Standard_False),
       RadianceClampingValue  (30.0),
       NbTilesX               (16),
-      NbTilesY               (16) { }
+      NbTilesY               (16),
+      ToneMappingMethod      (Graphic3d_ToneMappingMethod_Disabled) { }
   };
 
   //! Describes state of OpenGL structure.

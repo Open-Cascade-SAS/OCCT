@@ -9648,6 +9648,69 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
       aParams.RebuildRayTracingShaders = toEnable;
     }
+    else if (aFlag == "-exposure")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      TCollection_AsciiString anExposure (theArgVec[anArgIter]);
+      if (anExposure.IsRealValue())
+      {
+        aView->ChangeRenderingParams().Exposure = static_cast<float> (anExposure.RealValue());
+      }
+      else
+      {
+        std::cout << "Error: wrong syntax at argument'" << anArg << "'.\n";
+        return 1;
+      }
+    }
+    else if (aFlag == "-whitepoint")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aWhitePoint (theArgVec[anArgIter]);
+      if (aWhitePoint.IsRealValue())
+      {
+        aView->ChangeRenderingParams().WhitePoint = static_cast<float> (aWhitePoint.RealValue());
+      }
+      else
+      {
+        std::cout << "Error: wrong syntax at argument'" << anArg << "'.\n";
+        return 1;
+      }
+    }
+    else if (aFlag == "-tonemapping")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aMode (theArgVec[anArgIter]);
+      aMode.LowerCase();
+
+      if (aMode == "disabled")
+      {
+        aView->ChangeRenderingParams().ToneMappingMethod = Graphic3d_ToneMappingMethod_Disabled;
+      }
+      else if (aMode == "filmic")
+      {
+        aView->ChangeRenderingParams().ToneMappingMethod = Graphic3d_ToneMappingMethod_Filmic;
+      }
+      else
+      {
+        std::cout << "Error: wrong syntax at argument'" << anArg << "'.\n";
+        return 1;
+      }
+    }
     else
     {
       std::cout << "Error: wrong syntax, unknown flag '" << anArg << "'\n";
@@ -11143,6 +11206,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-shadingModel model'       Controls shading model from enumeration"
     "\n                                  color, flat, gouraud, phong"
     "\n      '-resolution   value'       Sets a new pixels density (PPI), defines scaling factor for parameters like text size"
+    "\n      '-exposure     value'       Exposure value for tone mapping (0.0 value disables the effect)"
+    "\n      '-whitepoint   value'       White point value for filmic tone mapping"
+    "\n      '-tonemapping  mode'        Tone mapping mode (disabled, filmic)"
     "\n    Unlike vcaps, these parameters dramatically change visual properties."
     "\n    Command is intended to control presentation quality depending on"
     "\n    hardware capabilities and performance.",

@@ -20,6 +20,7 @@
 #include <Graphic3d_RenderTransparentMethod.hxx>
 #include <Graphic3d_RenderingMode.hxx>
 #include <Graphic3d_StereoMode.hxx>
+#include <Graphic3d_ToneMappingMethod.hxx>
 #include <Graphic3d_Vec4.hxx>
 
 //! Helper class to store rendering parameters.
@@ -67,6 +68,9 @@ public:
     RadianceClampingValue       (30.0),
     RebuildRayTracingShaders    (Standard_False),
     NbRayTracingTiles           (16 * 16),
+    ToneMappingMethod           (Graphic3d_ToneMappingMethod_Disabled),
+    Exposure                    (0.f),
+    WhitePoint                  (1.f),
     // stereoscopic parameters
     StereoMode (Graphic3d_StereoMode_QuadBuffer),
     AnaglyphFilter (Anaglyph_RedCyan_Optimized),
@@ -115,6 +119,10 @@ public:
   Standard_ShortReal                RadianceClampingValue;       //!< maximum radiance value used for clamping radiance estimation.
   Standard_Boolean                  RebuildRayTracingShaders;    //!< forces rebuilding ray tracing shaders at the next frame
   Standard_Integer                  NbRayTracingTiles;           //!< total number of screen tiles used in adaptive sampling mode (PT only)
+
+  Graphic3d_ToneMappingMethod       ToneMappingMethod;           //!< specifies tone mapping method for path tracing, Graphic3d_ToneMappingMethod_Disabled by default
+  Standard_ShortReal                Exposure;                    //!< exposure value used for tone mapping (path tracing), 0.0 by default
+  Standard_ShortReal                WhitePoint;                  //!< white point value used in filmic tone mapping (path tracing), 1.0 by default
 
   Graphic3d_StereoMode              StereoMode;                  //!< stereoscopic output mode, Graphic3d_StereoMode_QuadBuffer by default
   Anaglyph                          AnaglyphFilter;              //!< filter for anaglyph output, Anaglyph_RedCyan_Optimized by default

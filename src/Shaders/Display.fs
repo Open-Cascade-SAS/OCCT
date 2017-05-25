@@ -26,6 +26,16 @@ uniform int uAccumFrames;
 //! Is debug mode enabled for importance screen sampling.
 uniform int uDebugAdaptive;
 
+//! Exposure value for tone mapping.
+uniform float uExposure;
+
+#ifdef TONE_MAPPING_FILMIC
+
+//! White point value for filmic tone mapping.
+uniform float uWhitePoint;
+
+#endif // TONE_MAPPING
+
 //! Output pixel color.
 out vec4 OutColor;
 
@@ -34,6 +44,18 @@ out vec4 OutColor;
 
 //! Scale factor used to quantize visual error.
 #define SCALE_FACTOR 1.0e6f
+
+// =======================================================================
+// function : ToneMappingFilmic
+// purpose  :
+// =======================================================================
+vec4 ToneMappingFilmic(vec4 theColor, float theWhitePoint)
+{
+  vec4 aPackColor = vec4 (theColor.rgb, theWhitePoint);
+  vec4 aFilmicCurve = 1.425f * aPackColor + vec4 (0.05f);
+  vec4 aResultColor = (aPackColor * aFilmicCurve + vec4 (0.004f)) / (aPackColor * (aFilmicCurve + vec4 (0.55f)) + vec4 (0.0491f)) - vec4 (0.0821f);
+  return vec4 (aResultColor.rgb / aResultColor.www, 1.0);
+}
 
 // =======================================================================
 // function : main
@@ -112,12 +134,18 @@ void main (void)
 
 #ifdef PATH_TRACING
 
-   // apply gamma correction (we use gamma = 2)
-   OutColor = vec4 (sqrt (aColor.rgb), 0.f);
+  aColor *= pow (2, uExposure);
+
+#ifdef TONE_MAPPING_FILMIC
+  aColor = ToneMappingFilmic (aColor, uWhitePoint);
+#endif // TONE_MAPPING
+
+  // apply gamma correction (we use gamma = 2)
+  OutColor = vec4 (sqrt (aColor.rgb), 0.f);
 
 #else // not PATH_TRACING
 
-   OutColor = aColor;
+  OutColor = aColor;
 
 #endif
 }
