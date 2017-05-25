@@ -56,9 +56,12 @@ template < class TheKeyType,
            class Hasher = NCollection_DefaultHasher<TheKeyType> >
 class NCollection_Map : public NCollection_BaseMap
 {
-  //!   Adaptation of the TListNode to the map notations
- public:
+public:
+  //! STL-compliant typedef for key type
+  typedef TheKeyType key_type;
 
+public:
+  //!   Adaptation of the TListNode to the map notations
   class MapNode : public NCollection_TListNode<TheKeyType>
   {
   public:

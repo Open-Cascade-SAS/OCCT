@@ -40,9 +40,13 @@ template < class TheKeyType,
            class Hasher = NCollection_DefaultHasher<TheKeyType> > 
 class NCollection_IndexedMap : public NCollection_BaseMap
 {
-  // **************** Adaptation of the TListNode to the INDEXEDmap
+public:
+  //! STL-compliant typedef for key type
+  typedef TheKeyType key_type;
+
  private:
-  class IndexedMapNode : public NCollection_TListNode<TheKeyType>
+   // **************** Adaptation of the TListNode to the INDEXEDmap
+   class IndexedMapNode : public NCollection_TListNode<TheKeyType>
   {
   public:
     //! Constructor with 'Next'
@@ -396,6 +400,27 @@ class NCollection_IndexedMap : public NCollection_BaseMap
     p->~IndexedMapNode();
     this->myAllocator->Free(p);
     Decrement();
+  }
+
+  //! Remove the key of the given index.
+  //! Caution! The index of the last key can be changed.
+  void RemoveFromIndex(const Standard_Integer theKey2)
+  {
+    Standard_OutOfRange_Raise_if(theKey2 < 1 || theKey2 > Extent(), "NCollection_IndexedMap::Remove");
+    Standard_Integer aLastInd = Extent();
+    if (theKey2 != aLastInd)
+      Swap(theKey2, aLastInd);
+    RemoveLast();
+  }
+
+  //! Remove the given key.
+  //! Caution! The index of the last key can be changed.
+  void RemoveKey(const TheKeyType& theKey1)
+  {
+    Standard_Integer anIndToRemove = FindIndex(theKey1);
+    if (anIndToRemove > 0) {
+      RemoveFromIndex(anIndToRemove);
+    }
   }
 
   //! FindKey

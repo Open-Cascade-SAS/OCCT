@@ -680,13 +680,7 @@ static void RemoveCorks (TopoDS_Shape&               S,
       B.Add(SS,Cork);
     }
     else {
-      //Faces.Remove (Cork);
-      //begin instead of Remove//
-      TopoDS_Shape LastShape = Faces(Faces.Extent());
-      Faces.RemoveLast();
-      if (Faces.FindIndex(Cork) != 0)
-        Faces.Substitute(Faces.FindIndex(Cork), LastShape);
-      //end instead of Remove  //
+      Faces.RemoveKey(Cork);
       Faces.Add(Cork); // to reset it with proper orientation.
     }
   }

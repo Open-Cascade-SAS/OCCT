@@ -186,14 +186,7 @@ static Standard_Boolean AddOrdinaryEdges(TopTools_SequenceOfShape& edges,
   for(TopExp_Explorer exp(aShape,TopAbs_EDGE); exp.More(); exp.Next()) {
     TopoDS_Shape edge = exp.Current();
     if(aNewEdges.Contains(edge))
-    {
-      //aNewEdges.Remove(edge);
-      TopoDS_Shape LastEdge = aNewEdges(aNewEdges.Extent());
-      aNewEdges.RemoveLast();
-      if (aNewEdges.FindIndex(edge) != 0)
-        aNewEdges.Substitute(aNewEdges.FindIndex(edge), LastEdge);
-      /////////////////////////
-    }
+      aNewEdges.RemoveKey(edge);
     else
       aNewEdges.Add(edge);
   }
@@ -205,12 +198,7 @@ static Standard_Boolean AddOrdinaryEdges(TopTools_SequenceOfShape& edges,
     TopoDS_Shape current = edges(i);
     if(aNewEdges.Contains(current)) {
 
-      //aNewEdges.Remove(current);
-      TopoDS_Shape LastEdge = aNewEdges(aNewEdges.Extent());
-      aNewEdges.RemoveLast();
-      if (aNewEdges.FindIndex(current) != 0)
-        aNewEdges.Substitute(aNewEdges.FindIndex(current), LastEdge);
-      /////////////////////////
+      aNewEdges.RemoveKey(current);
       edges.Remove(i);
       i--;
 

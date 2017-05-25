@@ -149,18 +149,8 @@ void Draft_Modification::Remove(const TopoDS_Face& F)
   }
 
   ltod.Initialize(conneF);
-  Standard_Integer IndToReplace = 0;
   while (ltod.More()) {
-    IndToReplace = myFMap.FindIndex(TopoDS::Face(ltod.Value()));
-    if (IndToReplace)
-    {
-      Standard_Integer LInd = myFMap.Extent();
-      TopoDS_Face LF = myFMap.FindKey(LInd);
-      Draft_FaceInfo LFInfo = myFMap.FindFromIndex(LInd);
-      myFMap.RemoveLast();
-      if (IndToReplace != LInd)
-        myFMap.Substitute(IndToReplace, LF, LFInfo);
-    }
+    myFMap.RemoveKey(TopoDS::Face(ltod.Value()));
     ltod.Next();
   }
 
@@ -173,16 +163,7 @@ void Draft_Modification::Remove(const TopoDS_Face& F)
   }
   ltod.Initialize(conneF);
   while (ltod.More()) {
-    IndToReplace = myFMap.FindIndex(TopoDS::Face(ltod.Value()));
-    if (IndToReplace)
-    {
-      Standard_Integer LInd = myEMap.Extent();
-      TopoDS_Edge LF = myEMap.FindKey(LInd);
-      Draft_EdgeInfo LFInfo = myEMap.FindFromIndex(LInd);
-      myEMap.RemoveLast();
-      if (IndToReplace != LInd)
-        myEMap.Substitute(IndToReplace, LF, LFInfo);
-    }
+    myEMap.RemoveKey(TopoDS::Edge(ltod.Value()));
     ltod.Next();
   }
 }

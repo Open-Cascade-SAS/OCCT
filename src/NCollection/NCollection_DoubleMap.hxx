@@ -40,8 +40,14 @@ template < class TheKey1Type,
            class Hasher2 = NCollection_DefaultHasher<TheKey2Type> >
 class NCollection_DoubleMap : public NCollection_BaseMap
 {
+public:
+  //! STL-compliant typedef for key1 type
+  typedef TheKey1Type key1_type;
+  //! STL-compliant typedef for key2 type
+  typedef TheKey2Type key2_type;
+
+public:
   // **************** Adaptation of the TListNode to the DOUBLEmap
- public:
   class DoubleMapNode : public NCollection_TListNode<TheKey2Type>
   {
   public:

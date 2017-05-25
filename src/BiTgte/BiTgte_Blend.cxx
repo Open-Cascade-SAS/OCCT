@@ -986,12 +986,7 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
   for ( ; expf.More(); expf.Next()) {
     const TopoDS_Shape& F = expf.Current();
     if ( myFaces.Contains(F) && Sew->IsModified(F)) {
-      //myFaces.Remove(F);
-      TopoDS_Shape LastFace = myFaces(myFaces.Extent());
-      myFaces.RemoveLast();
-      if (myFaces.FindIndex(F) != 0)
-        myFaces.Substitute(myFaces.FindIndex(F), LastFace);
-      ////////////////////
+      myFaces.RemoveKey(F);
       myFaces.Add(Sew->Modified(F));
     }
   }
@@ -1014,12 +1009,7 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
   for ( ; exp.More(); exp.Next()) {
     const TopoDS_Shape& F = exp.Current();
     if ( myFaces.Contains(F)) {
-      //myFaces.Remove(F);
-      TopoDS_Shape LastFace = myFaces(myFaces.Extent());
-      myFaces.RemoveLast();
-      if (myFaces.FindIndex(F) != 0)
-        myFaces.Substitute(myFaces.FindIndex(F), LastFace);
-      ////////////////////
+      myFaces.RemoveKey(F);
       myFaces.Add(F);
     }
     else if ( myStopFaces.Contains(F)) {

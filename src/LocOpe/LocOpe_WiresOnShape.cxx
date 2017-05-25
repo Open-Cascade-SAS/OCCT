@@ -270,12 +270,7 @@ void LocOpe_WiresOnShape::BindAll()
       continue;
     TopoDS_Shape aFace  = myMapEF.FindFromKey(anEdge);
     //Remove "anEdge" from "myMapEF"
-    TopoDS_Shape LastEdge = myMapEF.FindKey(myMapEF.Extent());
-    TopoDS_Shape LastFace = myMapEF(myMapEF.Extent());
-    myMapEF.RemoveLast();
-    if (myMapEF.FindIndex(anEdge) != 0)
-      myMapEF.Substitute(myMapEF.FindIndex(anEdge), LastEdge, LastFace);
-    ////////////////////////////////
+    myMapEF.RemoveKey(anEdge);
     TopTools_ListIteratorOfListOfShape itl(Splits(Ind));
     for (; itl.More(); itl.Next())
       myMapEF.Add(itl.Value(), aFace);

@@ -204,31 +204,6 @@ static TopoDS_Vertex  UpdateClosedEdge(const TopoDS_Edge&         E,
 }
 
 //=======================================================================
-//function : RemoveFromMVE
-//purpose  : 
-//=======================================================================
-
-static void RemoveFromMVE(TopTools_IndexedDataMapOfShapeListOfShape& MVE,
-                          const TopoDS_Shape& theVertex)
-{
-  // remove from the indexed data map by substituting last item instead of removed
-  Standard_Integer iV = MVE.FindIndex(theVertex);
-  if (iV > 0)
-  {
-    Standard_Integer iLast = MVE.Extent();
-    if (iV == iLast)
-      MVE.RemoveLast();
-    else
-    {
-      TopoDS_Shape aVertex = MVE.FindKey(iLast);
-      TopTools_ListOfShape anEdges = MVE(iLast);
-      MVE.RemoveLast();
-      MVE.Substitute(iV, aVertex, anEdges);
-    }
-  }
-}
-
-//=======================================================================
 //function : RemovePendingEdges
 //purpose  : 
 //=======================================================================
@@ -267,7 +242,7 @@ static void RemovePendingEdges(TopTools_IndexedDataMapOfShapeListOfShape& MVE)
     if (!VToRemove.IsEmpty()) {
       YaSupress = Standard_True;
       for (itl.Initialize(VToRemove); itl.More(); itl.Next()) {
-        RemoveFromMVE(MVE, itl.Value());
+        MVE.RemoveKey(itl.Value());
       }
       if (!EToRemove.IsEmpty()) {
 	for (Standard_Integer iV = 1; iV <= MVE.Extent(); iV++) {
@@ -667,7 +642,7 @@ void BRepAlgo_Loop::Perform()
         if (!End) {
           CE = NE;
           if (MVE.FindFromKey(CV).IsEmpty())
-            RemoveFromMVE(MVE, CV);
+            MVE.RemoveKey(CV);
         }
       }
     }

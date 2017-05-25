@@ -295,7 +295,8 @@ protected:
   
   //! Get wire from free edges.
   //! This method is called from EdgeProcessing only
-  Standard_EXPORT virtual void GetFreeWires (TopTools_MapOfShape& MapFreeEdges, TopTools_SequenceOfShape& seqWires);
+  Standard_EXPORT virtual void GetFreeWires (TopTools_IndexedMapOfShape& MapFreeEdges,
+                                             TopTools_SequenceOfShape& seqWires);
   
 
   //! This method is called from MergingOfSections only

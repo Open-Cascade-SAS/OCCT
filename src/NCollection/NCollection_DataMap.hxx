@@ -47,8 +47,14 @@ template < class TheKeyType,
            class Hasher = NCollection_DefaultHasher<TheKeyType> >
 class NCollection_DataMap : public NCollection_BaseMap
 {
+public:
+  //! STL-compliant typedef for key type
+  typedef TheKeyType key_type;
+  //! STL-compliant typedef for value type
+  typedef TheItemType value_type;
+
+public:
   // **************** Adaptation of the TListNode to the DATAmap
- public:
   class DataMapNode : public NCollection_TListNode<TheItemType>
   {
   public:
