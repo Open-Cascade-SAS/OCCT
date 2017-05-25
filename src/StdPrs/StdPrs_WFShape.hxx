@@ -33,9 +33,11 @@ public:
   //! @param thePresentation [in] the presentation.
   //! @param theShape [in] the shape.
   //! @param theDrawer [in] the draw settings.
-  Standard_EXPORT static void Add (const Handle (Prs3d_Presentation)& thePresentation,
-                                   const TopoDS_Shape&                theShape,
-                                   const Handle (Prs3d_Drawer)&       theDrawer);
+  //! @param theIsParallel [in] perform algorithm using multiple threads
+  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& thePresentation,
+                                   const TopoDS_Shape& theShape,
+                                   const Handle(Prs3d_Drawer)& theDrawer,
+                                   Standard_Boolean theIsParallel = Standard_False);
 
   //! Compute free and boundary edges on a triangulation of each face in the given shape.
   //! @param theShape              [in] the list of triangulated faces

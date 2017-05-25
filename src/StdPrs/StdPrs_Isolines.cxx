@@ -231,87 +231,67 @@ void StdPrs_Isolines::addOnTriangulation (const Handle(Poly_Triangulation)& theT
                                           Prs3d_NListOfSequenceOfPnt&       theUPolylines,
                                           Prs3d_NListOfSequenceOfPnt&       theVPolylines)
 {
-  const Standard_Integer aNbIsoU = theUIsoParams.Length();
-  const Standard_Integer aNbIsoV = theVIsoParams.Length();
-
-  SeqOfVecOfSegments aUPolylines, aVPolylines;
-
   const Poly_Array1OfTriangle& aTriangles = theTriangulation->Triangles();
   const TColgp_Array1OfPnt&    aNodes     = theTriangulation->Nodes();
   const TColgp_Array1OfPnt2d&  aUVNodes   = theTriangulation->UVNodes();
-
-  TColStd_Array1OfInteger aUIsoIndexes (1, aNbIsoU);
-  TColStd_Array1OfInteger aVIsoIndexes (1, aNbIsoV);
-  aUIsoIndexes.Init (-1);
-  aVIsoIndexes.Init (-1);
-
-  for (Standard_Integer anI = aTriangles.Lower(); anI <= aTriangles.Upper(); ++anI)
+  for (Standard_Integer anUVIter = 0; anUVIter < 2; ++anUVIter)
   {
-    Standard_Integer aNodeIdxs[3];
-    aTriangles.Value (anI).Get (aNodeIdxs[0], aNodeIdxs[1],aNodeIdxs[2]);
-    const gp_Pnt aNodesXYZ[3] = { aNodes.Value (aNodeIdxs[0]),
-                                  aNodes.Value (aNodeIdxs[1]),
-                                  aNodes.Value (aNodeIdxs[2]) };
-    const gp_Pnt2d aNodesUV[3] = { aUVNodes.Value (aNodeIdxs[0]),
-                                   aUVNodes.Value (aNodeIdxs[1]),
-                                   aUVNodes.Value (aNodeIdxs[2]) };
-
-    // Evaluate polyline points for u isolines.
-    for (Standard_Integer anIsoIdx = 1; anIsoIdx <= aNbIsoU; ++anIsoIdx)
+    const Standard_Boolean        isUIso      = anUVIter == 0;
+    const TColStd_SequenceOfReal& anIsoParams = isUIso ? theUIsoParams : theVIsoParams;
+    const Standard_Integer aNbIsolines = anIsoParams.Length();
+    if (aNbIsolines == 0)
     {
-      SegOnIso aSegment;
-      const gp_Lin2d anIsolineUV = isoU (theUIsoParams.Value (anIsoIdx));
-
-      // Find intersections with triangle in uv space and its projection on triangulation.
-      if (!findSegmentOnTriangulation (theSurface, true, anIsolineUV, aNodesXYZ, aNodesUV, aSegment))
-      {
-        continue;
-      }
-
-      if (aUIsoIndexes.Value (anIsoIdx) == -1)
-      {
-        aUPolylines.Append (new VecOfSegments());
-        aUIsoIndexes.SetValue (anIsoIdx, aUPolylines.Size());
-      }
-
-      Handle(VecOfSegments) anIsoPnts = aUPolylines.ChangeValue (aUIsoIndexes.Value (anIsoIdx));
-      if (!theLocation.IsIdentity())
-      {
-        aSegment[0].Pnt.Transform (theLocation);
-        aSegment[1].Pnt.Transform (theLocation);
-      }
-      anIsoPnts->Append (aSegment);
+      continue;
     }
 
-    // Evaluate polyline points for v isolines.
-    for (Standard_Integer anIsoIdx = 1; anIsoIdx <= aNbIsoV; ++anIsoIdx)
+    SeqOfVecOfSegments aPolylines;
+    TColStd_Array1OfInteger anIsoIndexes (1, aNbIsolines);
+    anIsoIndexes.Init (-1);
+    for (Standard_Integer anIsoIdx = 1; anIsoIdx <= aNbIsolines; ++anIsoIdx)
     {
-      SegOnIso aSegment;
-      const gp_Lin2d anIsolineUV = isoV (theVIsoParams.Value (anIsoIdx));
-
-      if (!findSegmentOnTriangulation (theSurface, false, anIsolineUV, aNodesXYZ, aNodesUV, aSegment))
+      const gp_Lin2d anIsolineUV = isUIso ? isoU (anIsoParams.Value (anIsoIdx)) : isoV (anIsoParams.Value (anIsoIdx));
+      Handle(VecOfSegments) anIsoPnts;
+      if (anIsoIndexes.Value (anIsoIdx) != -1)
       {
-        continue;
+        anIsoPnts = aPolylines.ChangeValue (anIsoIndexes.Value (anIsoIdx));
       }
 
-      if (aVIsoIndexes.Value (anIsoIdx) == -1)
+      for (Standard_Integer aTriIter = aTriangles.Lower(); aTriIter <= aTriangles.Upper(); ++aTriIter)
       {
-        aVPolylines.Append (new VecOfSegments());
-        aVIsoIndexes.SetValue (anIsoIdx, aVPolylines.Size());
-      }
+        Standard_Integer aNodeIdxs[3];
+        aTriangles.Value (aTriIter).Get (aNodeIdxs[0], aNodeIdxs[1],aNodeIdxs[2]);
+        const gp_Pnt aNodesXYZ[3] = { aNodes.Value (aNodeIdxs[0]),
+                                      aNodes.Value (aNodeIdxs[1]),
+                                      aNodes.Value (aNodeIdxs[2]) };
+        const gp_Pnt2d aNodesUV[3] = { aUVNodes.Value (aNodeIdxs[0]),
+                                       aUVNodes.Value (aNodeIdxs[1]),
+                                       aUVNodes.Value (aNodeIdxs[2]) };
 
-      Handle(VecOfSegments) anIsoPnts = aVPolylines.ChangeValue (aVIsoIndexes.Value (anIsoIdx));
-      if (!theLocation.IsIdentity())
-      {
-        aSegment[0].Pnt.Transform (theLocation);
-        aSegment[1].Pnt.Transform (theLocation);
+        // Find intersections with triangle in uv space and its projection on triangulation.
+        SegOnIso aSegment;
+        if (!findSegmentOnTriangulation (theSurface, isUIso, anIsolineUV, aNodesXYZ, aNodesUV, aSegment))
+        {
+          continue;
+        }
+
+        if (anIsoPnts.IsNull())
+        {
+          aPolylines.Append (new VecOfSegments());
+          anIsoIndexes.SetValue (anIsoIdx, aPolylines.Size());
+          anIsoPnts = aPolylines.ChangeValue (anIsoIndexes.Value (anIsoIdx));
+        }
+
+        if (!theLocation.IsIdentity())
+        {
+          aSegment[0].Pnt.Transform (theLocation);
+          aSegment[1].Pnt.Transform (theLocation);
+        }
+        anIsoPnts->Append (aSegment);
       }
-      anIsoPnts->Append (aSegment);
     }
+
+    sortSegments (aPolylines, isUIso ? theUPolylines : theVPolylines);
   }
-
-  sortSegments (aUPolylines, theUPolylines);
-  sortSegments (aVPolylines, theVPolylines);
 }
 
 //==================================================================

@@ -17,37 +17,29 @@
 #ifndef _Prs3d_ShapeTool_HeaderFile
 #define _Prs3d_ShapeTool_HeaderFile
 
-#include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
-class TopoDS_Shape;
-class TopoDS_Face;
+
 class Bnd_Box;
 class TopoDS_Edge;
 class TopoDS_Vertex;
 class Poly_Triangulation;
-class TopLoc_Location;
 class Poly_PolygonOnTriangulation;
 class Poly_Polygon3D;
-
 
 //! describes the behaviour requested for a wireframe
 //! shape presentation.
 class Prs3d_ShapeTool 
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs the tool and initializes it using theShape and theAllVertices
   //! (optional) arguments. By default, only isolated and internal vertices are considered,
   //! however if theAllVertices argument is equal to True, all shape's vertices are taken into account.
@@ -62,9 +54,13 @@ public:
   Standard_EXPORT const TopoDS_Face& GetFace() const;
   
   Standard_EXPORT Bnd_Box FaceBound() const;
-  
-  Standard_EXPORT Standard_Boolean IsPlanarFace() const;
-  
+
+  Standard_Boolean IsPlanarFace() const
+  {
+    const TopoDS_Face& aFace = TopoDS::Face (myFaceExplorer.Current());
+    return IsPlanarFace (aFace);
+  }
+
   Standard_EXPORT void InitCurve();
   
   Standard_EXPORT Standard_Boolean MoreCurve() const;
@@ -97,18 +93,11 @@ public:
   
   Standard_EXPORT Handle(Poly_Polygon3D) Polygon3D (TopLoc_Location& l) const;
 
+public:
 
-
-
-protected:
-
-
-
-
+  Standard_EXPORT static Standard_Boolean IsPlanarFace (const TopoDS_Face& theFace);
 
 private:
-
-
 
   TopoDS_Shape myShape;
   TopExp_Explorer myFaceExplorer;
@@ -117,13 +106,6 @@ private:
   Standard_Integer myEdge;
   Standard_Integer myVertex;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Prs3d_ShapeTool_HeaderFile

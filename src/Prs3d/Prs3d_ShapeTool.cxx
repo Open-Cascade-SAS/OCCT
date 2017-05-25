@@ -142,11 +142,10 @@ Bnd_Box Prs3d_ShapeTool::FaceBound() const
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Prs3d_ShapeTool::IsPlanarFace() const 
+Standard_Boolean Prs3d_ShapeTool::IsPlanarFace (const TopoDS_Face& theFace)
 {
   TopLoc_Location l;
-  const TopoDS_Face& F = TopoDS::Face(myFaceExplorer.Current());
-  const Handle(Geom_Surface)& S = BRep_Tool::Surface(F, l);
+  const Handle(Geom_Surface)& S = BRep_Tool::Surface(theFace, l);
   if (S.IsNull())
   {
     return Standard_False;

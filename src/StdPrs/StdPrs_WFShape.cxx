@@ -19,6 +19,7 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_HSurface.hxx>
+#include <OSD_Parallel.hxx>
 #include <StdPrs_DeflectionCurve.hxx>
 #include <StdPrs_ToolTriangulatedShape.hxx>
 #include <StdPrs_Isolines.hxx>
@@ -41,13 +42,56 @@
 #include <TopoDS.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
+//! Functor for executing StdPrs_Isolines in parallel threads.
+class StdPrs_WFShape_IsoFunctor
+{
+public:
+  StdPrs_WFShape_IsoFunctor (Prs3d_NListOfSequenceOfPnt& thePolylinesU,
+                             Prs3d_NListOfSequenceOfPnt& thePolylinesV,
+                             const std::vector<TopoDS_Face>& theFaces,
+                             const Handle(Prs3d_Drawer)& theDrawer,
+                             Standard_Real theShapeDeflection)
+  : myPolylinesU (thePolylinesU),
+    myPolylinesV (thePolylinesV),
+    myFaces (theFaces),
+    myDrawer (theDrawer),
+    myShapeDeflection (theShapeDeflection)
+  {
+    //
+  }
+
+  void operator()(const Standard_Integer& theIndex) const
+  {
+    Prs3d_NListOfSequenceOfPnt aPolylinesU, aPolylinesV;
+    const TopoDS_Face& aFace = myFaces[theIndex];
+    StdPrs_Isolines::Add (aFace, myDrawer, myShapeDeflection, aPolylinesU, aPolylinesV);
+    {
+      Standard_Mutex::Sentry aLock (myMutex);
+      myPolylinesU.Append (aPolylinesU);
+      myPolylinesV.Append (aPolylinesV);
+    }
+  }
+
+private:
+  StdPrs_WFShape_IsoFunctor operator= (StdPrs_WFShape_IsoFunctor& );
+private:
+  Prs3d_NListOfSequenceOfPnt&     myPolylinesU;
+  Prs3d_NListOfSequenceOfPnt&     myPolylinesV;
+  const std::vector<TopoDS_Face>& myFaces;
+  const Handle(Prs3d_Drawer)&     myDrawer;
+  mutable Standard_Mutex          myMutex;
+  const Standard_Real             myShapeDeflection;
+};
+
+
 // =========================================================================
 // function : Add
 // purpose  :
 // =========================================================================
-void StdPrs_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
-                          const TopoDS_Shape&                theShape,
-                          const Handle (Prs3d_Drawer)&       theDrawer)
+void StdPrs_WFShape::Add (const Handle(Prs3d_Presentation)& thePresentation,
+                          const TopoDS_Shape& theShape,
+                          const Handle(Prs3d_Drawer)& theDrawer,
+                          Standard_Boolean theIsParallel)
 {
   if (theShape.IsNull())
   {
@@ -106,14 +150,43 @@ void StdPrs_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
       aVPolylinesPtr = &aCommonPolylines;
     }
 
-    for (aTool.InitFace(); aTool.MoreFace(); aTool.NextFace())
+    bool isParallelIso = false;
+    if (theIsParallel)
     {
-      if (aTool.IsPlanarFace() && !theDrawer->IsoOnPlane())
+      Standard_Integer aNbFaces = 0;
+      for (TopExp_Explorer aFaceExplorer (theShape, TopAbs_FACE); aFaceExplorer.More(); aFaceExplorer.Next())
       {
-        continue;
+        ++aNbFaces;
       }
+      if (aNbFaces > 1)
+      {
+        isParallelIso = true;
+        std::vector<TopoDS_Face> aFaces (aNbFaces);
+        aNbFaces = 0;
+        for (TopExp_Explorer aFaceExplorer (theShape, TopAbs_FACE); aFaceExplorer.More(); aFaceExplorer.Next())
+        {
+          const TopoDS_Face& aFace = TopoDS::Face (aFaceExplorer.Current());
+          if (theDrawer->IsoOnPlane() || !Prs3d_ShapeTool::IsPlanarFace (aFace))
+          {
+            aFaces[aNbFaces++] = aFace;
+          }
+        }
 
-      StdPrs_Isolines::Add (aTool.GetFace(), theDrawer, aShapeDeflection, *aUPolylinesPtr, *aVPolylinesPtr);
+        StdPrs_WFShape_IsoFunctor anIsoFunctor (*aUPolylinesPtr, *aVPolylinesPtr, aFaces, theDrawer, aShapeDeflection);
+        OSD_Parallel::For (0, aNbFaces - 1, anIsoFunctor, aNbFaces < 2);
+      }
+    }
+
+    if (!isParallelIso)
+    {
+      for (TopExp_Explorer aFaceExplorer (theShape, TopAbs_FACE); aFaceExplorer.More(); aFaceExplorer.Next())
+      {
+        const TopoDS_Face& aFace = TopoDS::Face (aFaceExplorer.Current());
+        if (theDrawer->IsoOnPlane() || !Prs3d_ShapeTool::IsPlanarFace (aFace))
+        {
+          StdPrs_Isolines::Add (aFace, theDrawer, aShapeDeflection, *aUPolylinesPtr, *aVPolylinesPtr);
+        }
+      }
     }
 
     Prs3d::AddPrimitivesGroup (thePresentation, anIsoAspectU, aUPolylines);
