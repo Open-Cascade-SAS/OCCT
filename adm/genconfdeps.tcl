@@ -65,7 +65,7 @@ if { [info exists ::env(SHORTCUT_HEADERS)] } {
 }
 
 # fetch environment variables (e.g. set by custom.sh or custom.bat) and set them as tcl variables with the same name
-set THE_ENV_VARIABLES {HAVE_FREEIMAGE HAVE_FFMPEG HAVE_TBB HAVE_GLES2 HAVE_D3D HAVE_VTK HAVE_GL2PS HAVE_ZLIB HAVE_LIBLZMA HAVE_OPENCL CHECK_QT4 CHECK_JDK MACOSX_USE_GLX}
+set THE_ENV_VARIABLES {HAVE_FREEIMAGE HAVE_FFMPEG HAVE_TBB HAVE_GLES2 HAVE_D3D HAVE_VTK HAVE_GL2PS HAVE_ZLIB HAVE_LIBLZMA HAVE_OPENCL CHECK_QT4 CHECK_JDK MACOSX_USE_GLX HAVE_RelWithDebInfo}
 foreach anEnvIter $THE_ENV_VARIABLES {
   set ${anEnvIter} "false"
   if { [info exists ::env(${anEnvIter})] } {
@@ -77,9 +77,10 @@ if { "$::tcl_platform(os)" == "Darwin" } {
   set HAVE_GLES2 ""
 } else {
   set MACOSX_USE_GLX ""
-  if { "$tcl_platform(platform)" != "windows" } {
-    set HAVE_D3D ""
-  }
+}
+if { "$tcl_platform(platform)" != "windows" } {
+  set HAVE_D3D ""
+  set HAVE_RelWithDebInfo ""
 }
 foreach anEnvIter {ARCH VCVER VCVARS PRODUCTS_PATH} {
   if { [info exists ::env(${anEnvIter})] } {

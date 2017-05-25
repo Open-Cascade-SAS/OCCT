@@ -38,11 +38,12 @@ If you have Visual Studio projects already available (pre-installed or generated
 Alternatively, you can launch **genconf**, a GUI tool allowing to configure build options interactively.
 That tool will analyze your environment and propose you to choose available options:
 
-* Version of Visual Studio to be used (from the list of installed ones, detected by presence of environment variables like *VS100COMNTOOLS*)
+* Version of Visual Studio to be used (from the list of installed ones, detected by presence of environment variables like *VS100COMNTOOLS*).
 * Method to populate folder *inc* (short-cuts by default).
 * Location of third-party libraries (usually downloaded from OCCT web site, see above).
-* Path to common directory where third-party libraries are located (optional)
+* Path to common directory where third-party libraries are located (optional).
 * Paths to headers and binaries of the third-party libraries (found automatically basing on previous options; click button "Reset" to update).
+* Generation of PDB files within Release build ("Release with Debug info", false by default).
 
 @figure{/dev_guides/building/3rdparty/images/genconf_windows.png}
 

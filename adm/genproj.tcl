@@ -1193,17 +1193,28 @@ proc osutils:vcproj:readtemplate {theVcVer isexec} {
     }
   }
 
+  set format_template "\[\\r\\n\\s\]*"
   foreach bitness {32 64} {
-    set format_template ""
+    set format_templateloc ""
     if {"[set aCmpl${bitness}]" == ""} {
-      set format_template "\[\\r\\n\\s\]*"
+      set format_templateloc "$format_template"
     }
-    regsub -all -- "${format_template}__VCMPL${bitness}__" $aTmpl "[set aCmpl${bitness}]" aTmpl
+    regsub -all -- "${format_templateloc}__VCMPL${bitness}__" $aTmpl "[set aCmpl${bitness}]" aTmpl
+  }
+
+  set aDebugInfo "no"
+  set aReleaseLnk ""
+  if { "$::HAVE_RelWithDebInfo" == "true" } {
+    set aDebugInfo "true"
+    set aReleaseLnk "\n      <OptimizeReferences>true</OptimizeReferences>\n      <EnableCOMDATFolding>true</EnableCOMDATFolding>"
   }
 
   regsub -all -- {__VCVER__}     $aTmpl $theVcVer aTmpl
   regsub -all -- {__VCVEREXT__}  $aTmpl $aVerExt  aTmpl
   regsub -all -- {__VCCHARSET__} $aTmpl $aCharSet aTmpl
+  regsub -all -- {__VCReleasePDB__} $aTmpl $aDebugInfo aTmpl
+  regsub -all -- "${format_template}__VCLNKREL__" $aTmpl "${aReleaseLnk}" aTmpl
+
   return $aTmpl
 }
 

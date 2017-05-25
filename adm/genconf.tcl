@@ -394,6 +394,8 @@ ttk::combobox .myFrame.myVsFrame.myArchCombo   -values { {32} {64} } -textvariab
 entry         .myFrame.myVcEntry     -textvariable VCVER  -width 6
 entry         .myFrame.myVcVarsEntry -textvariable VCVARS -width 70
 ttk::button   .myFrame.myVcBrowseBtn -text "Browse" -command wokdep:gui:BrowseVcVars
+ttk::label    .myFrame.myHxxChecks.myRelDebInfoLbl   -text "Release with Debug info"
+checkbutton   .myFrame.myHxxChecks.myRelDebInfoCheck -offvalue "false" -onvalue "true" -variable HAVE_RelWithDebInfo
 
 #
 ttk::combobox .myFrame.myHxxChecks.myScutsCombo   -values { {ShortCut} {Copy} {HardLink} } -textvariable SHORTCUT_HEADERS -state readonly -width 12
@@ -508,6 +510,10 @@ if { "$tcl_platform(platform)" == "windows" } {
 grid .myFrame.myHxxChecks -row $aRowIter -column 0 -columnspan 10 -sticky w
 grid .myFrame.myHxxChecks.myScutsLbl     -row 0 -column 0
 grid .myFrame.myHxxChecks.myScutsCombo   -row 0 -column 1
+if { "$tcl_platform(platform)" == "windows" } {
+  grid .myFrame.myHxxChecks.myRelDebInfoCheck -row 0 -column 2
+  grid .myFrame.myHxxChecks.myRelDebInfoLbl   -row 0 -column 3
+}
 incr aRowIter
 #
 grid .myFrame.mySrchLbl       -row $aRowIter -column 0 -columnspan 10 -sticky w
