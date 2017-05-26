@@ -21,6 +21,7 @@
 // Names and validation props are supported for top-level shapes only
 
 #include <BRep_Builder.hxx>
+#include <GeomToStep_MakeAxis2Placement3d.hxx>
 #include <GeomToStep_MakeCartesianPoint.hxx>
 #include <HeaderSection_FileSchema.hxx>
 #include <Interface_EntityIterator.hxx>
@@ -2414,7 +2415,8 @@ void STEPCAFControl_Writer::WritePresentation(const Handle(XSControl_WorkSession
   aPrsStyles->SetValue(1, aPrsStyle);
   // Plane
   Handle(StepGeom_Plane) aPlane = new StepGeom_Plane();
-  Handle(StepGeom_Axis2Placement3d) anAxis = STEPCAFControl_GDTProperty::GetAxis2Placement3D(theAnnotationPlane);
+  GeomToStep_MakeAxis2Placement3d anAxisMaker(theAnnotationPlane);
+  Handle(StepGeom_Axis2Placement3d) anAxis = anAxisMaker.Value();
   // Set text position to plane origin
   Handle(StepGeom_CartesianPoint) aTextPos = new StepGeom_CartesianPoint();
   Handle(TColStd_HArray1OfReal) aCoords = new TColStd_HArray1OfReal(1, 3);
@@ -2587,8 +2589,8 @@ Handle(StepDimTol_Datum) STEPCAFControl_Writer::WriteDatumAP242(const Handle(XSC
         // Common for all datum targets
         StepBasic_Unit aUnit = GetUnit(aRC);
         gp_Ax2 aDTAxis = anObject->GetDatumTargetAxis();
-        Handle(StepGeom_Axis2Placement3d) anA2P3D =
-          STEPCAFControl_GDTProperty::GetAxis2Placement3D(aDTAxis);
+        GeomToStep_MakeAxis2Placement3d anAxisMaker(aDTAxis);
+        Handle(StepGeom_Axis2Placement3d) anA2P3D = anAxisMaker.Value();
         anA2P3D->SetName(new TCollection_HAsciiString("orientation"));
         Handle(StepRepr_HArray1OfRepresentationItem) anItems;
         // Process each datum target type
@@ -3084,8 +3086,8 @@ static Handle(StepDimTol_HArray1OfDatumSystemOrReference) WriteDatumSystem(const
 
   // Axis
   if (anObject->HasAxis()) {
-    Handle(StepGeom_Axis2Placement3d) anAxis =
-      STEPCAFControl_GDTProperty::GetAxis2Placement3D(anObject->GetAxis());
+    GeomToStep_MakeAxis2Placement3d anAxisMaker(anObject->GetAxis());
+    Handle(StepGeom_Axis2Placement3d) anAxis = anAxisMaker.Value();
     anAxis->SetName(new TCollection_HAsciiString("orientation"));
     Handle(StepAP242_GeometricItemSpecificUsage) aGISU = new StepAP242_GeometricItemSpecificUsage();
     StepAP242_ItemIdentifiedRepresentationUsageDefinition aDefinition;

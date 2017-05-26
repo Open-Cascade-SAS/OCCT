@@ -88,8 +88,6 @@ public:
 
   Standard_EXPORT static Handle(TCollection_HAsciiString) GetDatumTargetName(const XCAFDimTolObjects_DatumTargetType theDatumType);
 
-  Standard_EXPORT static Handle(StepGeom_Axis2Placement3d) GetAxis2Placement3D(const gp_Ax2& theAxis);
-
   Standard_EXPORT static Standard_Boolean IsDimensionalLocation(const XCAFDimTolObjects_DimensionType theType);
 
   Standard_EXPORT static Standard_Boolean IsDimensionalSize(const XCAFDimTolObjects_DimensionType theType);
