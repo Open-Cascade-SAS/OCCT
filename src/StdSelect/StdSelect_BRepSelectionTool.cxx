@@ -81,17 +81,19 @@ void StdSelect_BRepSelectionTool::PreBuildBVH (const Handle(SelectMgr_Selection)
       aSensitive->BVH();
     }
 
-    if (aSensitive->IsInstance ("Select3D_SensitiveGroup"))
+    if (!aSensitive->IsInstance (STANDARD_TYPE(Select3D_SensitiveGroup)))
     {
-      Handle(Select3D_SensitiveGroup) aGroup (Handle(Select3D_SensitiveGroup)::DownCast (aSensitive));
-      const Select3D_EntitySequence& aSubEntities = aGroup->GetEntities();
-      for (Select3D_EntitySequenceIter aSubEntitiesIter (aSubEntities); aSubEntitiesIter.More(); aSubEntitiesIter.Next())
+      continue;
+    }
+
+    Handle(Select3D_SensitiveGroup) aGroup = Handle(Select3D_SensitiveGroup)::DownCast (aSensitive);
+    const Select3D_EntitySequence& aSubEntities = aGroup->GetEntities();
+    for (Select3D_EntitySequenceIter aSubEntitiesIter (aSubEntities); aSubEntitiesIter.More(); aSubEntitiesIter.Next())
+    {
+      const Handle(Select3D_SensitiveEntity)& aSubEntity = aSubEntitiesIter.Value();
+      if (aSubEntity->NbSubElements() >= BVH_PRIMITIVE_LIMIT)
       {
-        const Handle(Select3D_SensitiveEntity)& aSubEntity = aSubEntitiesIter.Value();
-        if (aSubEntity->NbSubElements() >= BVH_PRIMITIVE_LIMIT)
-        {
-          aSubEntity->BVH();
-        }
+        aSubEntity->BVH();
       }
     }
   }

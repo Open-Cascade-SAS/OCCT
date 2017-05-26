@@ -43,7 +43,7 @@ struct BVH_Bin
 //! performance is provided even for 4 - 8 bins (it is only 10-20% lower
 //! in comparison with optimal settings). Note that multiple threads can
 //! be used only with thread safe BVH primitive sets.
-template<class T, int N, int Bins = 32>
+template<class T, int N, int Bins = BVH_Constants_NbBinsOptimal>
 class BVH_BinnedBuilder : public BVH_QueueBuilder<T, N>
 {
 public:
@@ -64,9 +64,9 @@ public:
 public:
 
   //! Creates binned SAH BVH builder.
-  BVH_BinnedBuilder (const Standard_Integer theLeafNodeSize = 5,
-                     const Standard_Integer theMaxTreeDepth = 32,
-                     const Standard_Boolean theDoMainSplits = 0,
+  BVH_BinnedBuilder (const Standard_Integer theLeafNodeSize = BVH_Constants_LeafNodeSizeDefault,
+                     const Standard_Integer theMaxTreeDepth = BVH_Constants_MaxTreeDepth,
+                     const Standard_Boolean theDoMainSplits = Standard_False,
                      const Standard_Integer theNumOfThreads = 1)
   : BVH_QueueBuilder<T, N> (theLeafNodeSize, theMaxTreeDepth, theNumOfThreads),
     myUseMainAxis (theDoMainSplits)

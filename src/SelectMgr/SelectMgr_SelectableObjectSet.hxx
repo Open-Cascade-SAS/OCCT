@@ -16,12 +16,13 @@
 #ifndef _SelectMgr_SelectableObjectSet_HeaderFile
 #define _SelectMgr_SelectableObjectSet_HeaderFile
 
-#include <BVH_PrimitiveSet.hxx>
+#include <BVH_Builder.hxx>
 #include <BVH_Tree.hxx>
 #include <Graphic3d_Mat4d.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>
 #include <NCollection_Handle.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <Select3D_BVHBuilder3d.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 
 //! The purpose of this class is to organize all selectable objects into data structure, allowing to build 
@@ -174,7 +175,7 @@ public:
   }
 
   //! Returns computed BVH for the theSubset given.
-  const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& BVH(const BVHSubset theSubset) const
+  const opencascade::handle<BVH_Tree<Standard_Real, 3> >& BVH(const BVHSubset theSubset) const
   {
     return myBVH[theSubset];
   }
@@ -214,8 +215,8 @@ private:
 private:
 
   NCollection_IndexedMap<Handle(SelectMgr_SelectableObject)> myObjects[BVHSubsetNb]; //!< Map of objects for each subset
-  NCollection_Handle<BVH_Tree<Standard_Real, 3> >            myBVH[BVHSubsetNb];     //!< BVH tree computed for each subset
-  NCollection_Handle<BVH_Builder<Standard_Real, 3> >         myBuilder[BVHSubsetNb]; //!< Builder allocated for each subset
+  opencascade::handle<BVH_Tree<Standard_Real, 3> >           myBVH[BVHSubsetNb];     //!< BVH tree computed for each subset
+  Handle(Select3D_BVHBuilder3d)                              myBuilder[BVHSubsetNb]; //!< Builder allocated for each subset
   Standard_Boolean                                           myIsDirty[BVHSubsetNb]; //!< Dirty flag for each subset
   Graphic3d_WorldViewProjState                               myLastViewState; //!< Last view-projection state used for construction of BVH
   Standard_Integer                                           myLastWidth; //!< Last viewport's (window's) width used for construction of BVH

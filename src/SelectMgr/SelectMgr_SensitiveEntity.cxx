@@ -24,9 +24,10 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SensitiveEntity,Standard_Transient)
 //            theEntity
 //=======================================================================
 SelectMgr_SensitiveEntity::SelectMgr_SensitiveEntity (const Handle(SelectBasics_SensitiveEntity)& theEntity)
+: mySensitive (theEntity),
+  myIsActiveForSelection (Standard_False)
 {
-  mySensitive = theEntity;
-  myIsActiveForSelection = Standard_False;
+  //
 }
 
 //=======================================================================
@@ -37,41 +38,4 @@ void SelectMgr_SensitiveEntity::Clear()
 {
   mySensitive->Clear();
   mySensitive.Nullify();
-}
-
-//=======================================================================
-// function : BaseSensitive
-// purpose  : Returns related instance of SelectBasics class
-//=======================================================================
-const Handle(SelectBasics_SensitiveEntity)& SelectMgr_SensitiveEntity::BaseSensitive() const
-{
-  return mySensitive;
-}
-
-//=======================================================================
-// function : IsActiveForSelection
-// purpose  : Returns true if this entity belongs to the active selection
-//            mode of parent object
-//=======================================================================
-Standard_Boolean SelectMgr_SensitiveEntity::IsActiveForSelection() const
-{
-  return myIsActiveForSelection;
-}
-
-//=======================================================================
-// function : ResetSelectionActiveStatus
-// purpose  : Marks entity as inactive for selection
-//=======================================================================
-void SelectMgr_SensitiveEntity::ResetSelectionActiveStatus() const
-{
-  myIsActiveForSelection = Standard_False;
-}
-
-//=======================================================================
-// function : SetActiveForSelection
-// purpose  : Marks entity as active for selection
-//=======================================================================
-void SelectMgr_SensitiveEntity::SetActiveForSelection() const
-{
-  myIsActiveForSelection = Standard_True;
 }

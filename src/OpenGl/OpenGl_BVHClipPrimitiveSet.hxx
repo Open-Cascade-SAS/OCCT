@@ -16,18 +16,19 @@
 #ifndef _OpenGl_BVHClipPrimitiveSet_HeaderFile
 #define _OpenGl_BVHClipPrimitiveSet_HeaderFile
 
-#include <BVH_PrimitiveSet.hxx>
+#include <BVH_PrimitiveSet3d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_IndexedMap.hxx>
 
 #include <OpenGl_Structure.hxx>
 
 //! Set of OpenGl_Structures for building BVH tree.
-class OpenGl_BVHClipPrimitiveSet : public BVH_PrimitiveSet<Standard_Real, 3>
+class OpenGl_BVHClipPrimitiveSet : public BVH_PrimitiveSet3d
 {
+  DEFINE_STANDARD_RTTIEXT(OpenGl_BVHClipPrimitiveSet, BVH_PrimitiveSet3d)
 protected:
 
-  using BVH_PrimitiveSet<Standard_Real, 3>::Box;
+  using BVH_PrimitiveSet3d::Box;
 
 public:
 

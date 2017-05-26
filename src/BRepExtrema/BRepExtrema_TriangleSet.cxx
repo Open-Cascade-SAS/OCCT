@@ -21,18 +21,16 @@
 #include <Poly_Triangulation.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 
-
-IMPLEMENT_STANDARD_RTTIEXT(BRepExtrema_TriangleSet,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(BRepExtrema_TriangleSet, BVH_PrimitiveSet3d)
 
 //=======================================================================
 //function : BRepExtrema_TriangleSet
 //purpose  : Creates empty triangle set
 //=======================================================================
 BRepExtrema_TriangleSet::BRepExtrema_TriangleSet()
-: BVH_PrimitiveSet<Standard_Real, 3>()
 {
   // Set default builder - linear BVH (LBVH)
-  myBuilder = new BVH_LinearBuilder<Standard_Real, 3> (5, 32);
+  myBuilder = new BVH_LinearBuilder<Standard_Real, 3> (BVH_Constants_LeafNodeSizeDefault, BVH_Constants_MaxTreeDepth);
 }
 
 //=======================================================================
@@ -40,10 +38,9 @@ BRepExtrema_TriangleSet::BRepExtrema_TriangleSet()
 //purpose  : Creates triangle set from the given face
 //=======================================================================
 BRepExtrema_TriangleSet::BRepExtrema_TriangleSet (const BRepExtrema_ShapeList& theFaces)
-: BVH_PrimitiveSet<Standard_Real, 3>()
 {
   // Set default builder - linear BVH (LBVH)
-  myBuilder = new BVH_LinearBuilder<Standard_Real, 3> (5, 32);
+  myBuilder = new BVH_LinearBuilder<Standard_Real, 3> (BVH_Constants_LeafNodeSizeDefault, BVH_Constants_MaxTreeDepth);
 
   Init (theFaces);
 }

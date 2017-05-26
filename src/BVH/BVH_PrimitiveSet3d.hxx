@@ -1,6 +1,4 @@
-// Created on: 2013-12-20
-// Created by: Denis BOGOLEPOV
-// Copyright (c) 2013-2014 OPEN CASCADE SAS
+// Copyright (c) 2017 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,15 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BVH_Properties.hxx>
+#ifndef _BVH_PrimitiveSet3d_Header
+#define _BVH_PrimitiveSet3d_Header
 
-IMPLEMENT_STANDARD_RTTIEXT(BVH_Properties, Standard_Transient)
+#include <BVH_PrimitiveSet.hxx>
 
-// =======================================================================
-// function : ~BVH_Properties
-// purpose  :
-// =======================================================================
-BVH_Properties::~BVH_Properties()
-{
-  //
-}
+typedef BVH_PrimitiveSet<Standard_Real, 3> BVH_PrimitiveSet3d;
+
+#endif // _BVH_PrimitiveSet3d_Header

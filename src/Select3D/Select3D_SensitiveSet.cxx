@@ -19,6 +19,30 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveSet,Select3D_SensitiveEntity)
 
+namespace
+{
+  //! Default BVH tree builder for sensitive set (optimal for large set of small primitives - for not too long construction time).
+  static Handle(Select3D_BVHBuilder3d) THE_SENS_SET_BUILDER = new BVH_LinearBuilder<Standard_Real, 3> (BVH_Constants_LeafNodeSizeSmall, BVH_Constants_MaxTreeDepth);
+}
+
+//=======================================================================
+// function : DefaultBVHBuilder
+// purpose  :
+//=======================================================================
+const Handle(Select3D_BVHBuilder3d)& Select3D_SensitiveSet::DefaultBVHBuilder()
+{
+  return THE_SENS_SET_BUILDER;
+}
+
+//=======================================================================
+// function : SetDefaultBVHBuilder
+// purpose  :
+//=======================================================================
+void Select3D_SensitiveSet::SetDefaultBVHBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder)
+{
+  THE_SENS_SET_BUILDER = theBuilder;
+}
+
 //=======================================================================
 // function : Select3D_SensitiveSet
 // purpose  : Creates new empty sensitive set and its content
@@ -27,9 +51,8 @@ Select3D_SensitiveSet::Select3D_SensitiveSet (const Handle(SelectBasics_EntityOw
 : Select3D_SensitiveEntity (theOwnerId),
   myDetectedIdx (-1)
 {
-  NCollection_Handle< BVH_Builder<Standard_Real, 3> > aBuilder = new BVH_LinearBuilder<Standard_Real, 3> (myLeafNodeSize, 32);
   myContent.SetSensitiveSet (this);
-  myContent.SetBuilder (aBuilder);
+  myContent.SetBuilder (THE_SENS_SET_BUILDER);
   myContent.MarkDirty();
 }
 
@@ -61,7 +84,7 @@ Standard_Boolean Select3D_SensitiveSet::Matches (SelectBasics_SelectingVolumeMan
     return Standard_False;
   }
 
-  Standard_Integer aStack[32];
+  Standard_Integer aStack[BVH_Constants_MaxTreeDepth];
   Standard_Integer aNode =  0;
   Standard_Integer aHead = -1;
 

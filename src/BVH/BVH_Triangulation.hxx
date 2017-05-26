@@ -33,6 +33,13 @@ public:
   //! Creates empty triangulation.
   BVH_Triangulation() {}
 
+  //! Creates empty triangulation.
+  BVH_Triangulation (const opencascade::handle<BVH_Builder<T, N> >& theBuilder)
+  : BVH_PrimitiveSet<T, N> (theBuilder)
+  {
+    //
+  }
+
   //! Releases resources of triangulation.
   virtual ~BVH_Triangulation() {}
 

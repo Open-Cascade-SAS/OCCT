@@ -19,29 +19,42 @@
 #include <BVH_Set.hxx>
 #include <BVH_BinaryTree.hxx>
 
-namespace BVH
+//! A non-template class for using as base for BVH_Builder
+//! (just to have a named base class).
+class BVH_BuilderTransient : public Standard_Transient
 {
-  //! Minimum node size to split.
-  const Standard_Real THE_NODE_MIN_SIZE = 1e-5;
-}
+  DEFINE_STANDARD_RTTIEXT(BVH_BuilderTransient, Standard_Transient)
+public:
+
+  //! Returns the maximum depth of constructed BVH.
+  Standard_Integer MaxTreeDepth() const { return myMaxTreeDepth; }
+
+  //! Returns the maximum number of sub-elements in the leaf.
+  Standard_Integer LeafNodeSize() const { return myLeafNodeSize; }
+
+protected:
+
+  //! Creates new abstract BVH builder.
+  BVH_BuilderTransient (const Standard_Integer theLeafNodeSize,
+                        const Standard_Integer theMaxTreeDepth)
+  : myMaxTreeDepth (theMaxTreeDepth),
+    myLeafNodeSize (theLeafNodeSize) {}
+
+protected:
+
+  Standard_Integer myMaxTreeDepth; //!< Maximum depth of constructed BVH
+  Standard_Integer myLeafNodeSize; //!< Maximum number of objects per leaf
+
+};
 
 //! Performs construction of BVH tree using bounding
 //! boxes (AABBs) of abstract objects.
 //! \tparam T Numeric data type
 //! \tparam N Vector dimension
 template<class T, int N>
-class BVH_Builder
+class BVH_Builder : public BVH_BuilderTransient
 {
 public:
-
-  //! Creates new abstract BVH builder.
-  BVH_Builder (const Standard_Integer theLeafNodeSize,
-               const Standard_Integer theMaxTreeDepth)
-  : myMaxTreeDepth (theMaxTreeDepth),
-    myLeafNodeSize (theLeafNodeSize) {}
-
-  //! Releases resources of BVH builder.
-  virtual ~BVH_Builder() {}
 
   //! Builds BVH using specific algorithm.
   virtual void Build (BVH_Set<T, N>*       theSet,
@@ -49,6 +62,11 @@ public:
                       const BVH_Box<T, N>& theBox) const = 0;
 
 protected:
+
+  //! Creates new abstract BVH builder.
+  BVH_Builder (const Standard_Integer theLeafNodeSize,
+               const Standard_Integer theMaxTreeDepth)
+  : BVH_BuilderTransient (theLeafNodeSize, theMaxTreeDepth) {}
 
   //! Updates depth of constructed BVH tree.
   void updateDepth (BVH_Tree<T, N>*        theBVH,
@@ -59,11 +77,6 @@ protected:
       theBVH->myDepth = theLevel;
     }
   }
-
-protected:
-
-  Standard_Integer myMaxTreeDepth; //!< Maximum depth of constructed BVH
-  Standard_Integer myLeafNodeSize; //!< Maximum number of objects per leaf
 
 };
 

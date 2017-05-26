@@ -15,18 +15,19 @@
 
 #include <SelectMgr_SensitiveEntitySet.hxx>
 
-#include <BVH_BinnedBuilder.hxx>
-
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_SensitiveEntity.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SensitiveEntitySet, BVH_PrimitiveSet3d)
 
 //=======================================================================
 // function : SelectMgr_SensitiveEntitySet
 // purpose  :
 //=======================================================================
-SelectMgr_SensitiveEntitySet::SelectMgr_SensitiveEntitySet()
+SelectMgr_SensitiveEntitySet::SelectMgr_SensitiveEntitySet (const Handle(Select3D_BVHBuilder3d)& theBuilder)
+: BVH_PrimitiveSet3d (theBuilder)
 {
-  myBuilder = new BVH_BinnedBuilder<Standard_Real, 3, 4> (1, 32, Standard_True);
+  //
 }
 
 //=======================================================================
@@ -35,7 +36,7 @@ SelectMgr_SensitiveEntitySet::SelectMgr_SensitiveEntitySet()
 //=======================================================================
 void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_SensitiveEntity)& theEntity)
 {
-  if (!theEntity->BaseSensitive()->IsKind ("Select3D_SensitiveEntity"))
+  if (!theEntity->BaseSensitive()->IsKind (STANDARD_TYPE(Select3D_SensitiveEntity)))
   {
     theEntity->ResetSelectionActiveStatus();
     return;
@@ -53,7 +54,7 @@ void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_Selection)& th
 {
   for (theSelection->Init(); theSelection->More(); theSelection->Next())
   {
-    if (!theSelection->Sensitive()->BaseSensitive()->IsKind ("Select3D_SensitiveEntity"))
+    if (!theSelection->Sensitive()->BaseSensitive()->IsKind (STANDARD_TYPE(Select3D_SensitiveEntity)))
     {
       theSelection->Sensitive()->ResetSelectionActiveStatus();
       continue;

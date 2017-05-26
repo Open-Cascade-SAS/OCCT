@@ -21,8 +21,9 @@
 #include <Standard_Macro.hxx>
 
 //! Abstract properties of geometric object.
-class BVH_Properties
+class BVH_Properties : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(BVH_Properties, Standard_Transient)
 public:
 
   //! Releases resources of object properties.

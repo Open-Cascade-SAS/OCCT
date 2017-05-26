@@ -525,9 +525,7 @@ Standard_Boolean OpenGl_View::addRaytraceGroups (const OpenGl_Structure*        
           if (aSetIter != myArrayToTrianglesMap.end())
           {
             OpenGl_TriangleSet* aSet = aSetIter->second;
-
-            BVH_Transform<Standard_ShortReal, 4>* aTransform = new BVH_Transform<Standard_ShortReal, 4>();
-
+            opencascade::handle<BVH_Transform<Standard_ShortReal, 4> > aTransform = new BVH_Transform<Standard_ShortReal, 4>();
             if (!theTrsf.IsNull())
             {
               theTrsf->Trsf().GetMat4 (aMat4);
@@ -535,7 +533,6 @@ Standard_Boolean OpenGl_View::addRaytraceGroups (const OpenGl_Structure*        
             }
 
             aSet->SetProperties (aTransform);
-
             if (aSet->MaterialIndex() != OpenGl_TriangleSet::INVALID_MATERIAL && aSet->MaterialIndex() != aMatID)
             {
               aSet->SetMaterialIndex (aMatID);
@@ -543,13 +540,9 @@ Standard_Boolean OpenGl_View::addRaytraceGroups (const OpenGl_Structure*        
           }
           else
           {
-            NCollection_Handle<BVH_Object<Standard_ShortReal, 3> > aSet =
-              addRaytracePrimitiveArray (aPrimArray, aMatID, 0);
-
-            if (!aSet.IsNull())
+            if (Handle(OpenGl_TriangleSet) aSet = addRaytracePrimitiveArray (aPrimArray, aMatID, 0))
             {
-              BVH_Transform<Standard_ShortReal, 4>* aTransform = new BVH_Transform<Standard_ShortReal, 4>;
-
+              opencascade::handle<BVH_Transform<Standard_ShortReal, 4> > aTransform = new BVH_Transform<Standard_ShortReal, 4>();
               if (!theTrsf.IsNull())
               {
                 theTrsf->Trsf().GetMat4 (aMat4);
@@ -557,7 +550,6 @@ Standard_Boolean OpenGl_View::addRaytraceGroups (const OpenGl_Structure*        
               }
 
               aSet->SetProperties (aTransform);
-
               myRaytraceGeometry.Objects().Append (aSet);
             }
           }
@@ -573,9 +565,9 @@ Standard_Boolean OpenGl_View::addRaytraceGroups (const OpenGl_Structure*        
 // function : addRaytracePrimitiveArray
 // purpose  : Adds OpenGL primitive array to ray-traced scene geometry
 // =======================================================================
-OpenGl_TriangleSet* OpenGl_View::addRaytracePrimitiveArray (const OpenGl_PrimitiveArray* theArray,
-                                                            const Standard_Integer       theMaterial,
-                                                            const OpenGl_Mat4*           theTransform)
+Handle(OpenGl_TriangleSet) OpenGl_View::addRaytracePrimitiveArray (const OpenGl_PrimitiveArray* theArray,
+                                                                   const Standard_Integer       theMaterial,
+                                                                   const OpenGl_Mat4*           theTransform)
 {
   const Handle(Graphic3d_BoundBuffer)& aBounds   = theArray->Bounds();
   const Handle(Graphic3d_IndexBuffer)& anIndices = theArray->Indices();
@@ -589,11 +581,10 @@ OpenGl_TriangleSet* OpenGl_View::addRaytracePrimitiveArray (const OpenGl_Primiti
   #endif
    || anAttribs.IsNull())
   {
-    return NULL;
+    return Handle(OpenGl_TriangleSet)();
   }
 
   OpenGl_Mat4 aNormalMatrix;
-
   if (theTransform != NULL)
   {
     Standard_ASSERT_RETURN (theTransform->Inverted (aNormalMatrix),
@@ -602,14 +593,13 @@ OpenGl_TriangleSet* OpenGl_View::addRaytracePrimitiveArray (const OpenGl_Primiti
     aNormalMatrix.Transpose();
   }
 
-  OpenGl_TriangleSet* aSet = new OpenGl_TriangleSet (theArray->GetUID());
+  Handle(OpenGl_TriangleSet) aSet = new OpenGl_TriangleSet (theArray->GetUID(), myRaytraceBVHBuilder);
   {
     aSet->Vertices.reserve (anAttribs->NbElements);
     aSet->Normals.reserve  (anAttribs->NbElements);
     aSet->TexCrds.reserve  (anAttribs->NbElements);
 
     const size_t aVertFrom = aSet->Vertices.size();
-
     for (Standard_Integer anAttribIter = 0; anAttribIter < anAttribs->NbAttributes; ++anAttribIter)
     {
       const Graphic3d_Attribute& anAttrib = anAttribs->Attribute       (anAttribIter);
@@ -707,8 +697,8 @@ OpenGl_TriangleSet* OpenGl_View::addRaytracePrimitiveArray (const OpenGl_Primiti
 
         if (!addRaytraceVertexIndices (*aSet, theMaterial, aVertNum, aBoundStart, *theArray))
         {
-          delete aSet;
-          return NULL;
+          aSet.Nullify();
+          return Handle(OpenGl_TriangleSet)();
         }
 
         aBoundStart += aVertNum;
@@ -720,8 +710,8 @@ OpenGl_TriangleSet* OpenGl_View::addRaytracePrimitiveArray (const OpenGl_Primiti
 
       if (!addRaytraceVertexIndices (*aSet, theMaterial, aVertNum, 0, *theArray))
       {
-        delete aSet;
-        return NULL;
+        aSet.Nullify();
+        return Handle(OpenGl_TriangleSet)();
       }
     }
   }
@@ -2135,9 +2125,7 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
     OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*> (
       myRaytraceGeometry.Objects().ChangeValue (anElemIndex).operator->());
 
-    const BVH_Transform<Standard_ShortReal, 4>* aTransform = 
-      dynamic_cast<const BVH_Transform<Standard_ShortReal, 4>* > (aTriangleSet->Properties().operator->());
-
+    const BVH_Transform<Standard_ShortReal, 4>* aTransform = dynamic_cast<const BVH_Transform<Standard_ShortReal, 4>* > (aTriangleSet->Properties().get());
     Standard_ASSERT_RETURN (aTransform != NULL,
       "OpenGl_TriangleSet does not contain transform", Standard_False);
 

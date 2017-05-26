@@ -16,8 +16,9 @@
 #ifndef _Select3D_SensitiveSet_Header
 #define _Select3D_SensitiveSet_Header
 
-#include <BVH_PrimitiveSet.hxx>
+#include <BVH_PrimitiveSet3d.hxx>
 #include <Select3D_BndBox3d.hxx>
+#include <Select3D_BVHBuilder3d.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectBasics_EntityOwner.hxx>
 
@@ -31,14 +32,19 @@
 //! For example of usage see Select3D_SensitiveTriangulation.
 class Select3D_SensitiveSet : public Select3D_SensitiveEntity
 {
-  static const Standard_Integer myLeafNodeSize = 8; //!< Number of sub-elements in the leaf
   DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveSet, Select3D_SensitiveEntity)
+public:
+
+  //! Return global instance to default BVH builder.
+  Standard_EXPORT static const Handle(Select3D_BVHBuilder3d)& DefaultBVHBuilder();
+
+  //! Assign new BVH builder to be used by default for new sensitive sets (assigning is NOT thread-safe!).
+  Standard_EXPORT static void SetDefaultBVHBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder);
+
 public:
 
   //! Creates new empty sensitive set and its content
   Standard_EXPORT Select3D_SensitiveSet (const Handle(SelectBasics_EntityOwner)& theOwnerId);
-
-  ~Select3D_SensitiveSet() {}
 
 public:
 
@@ -67,6 +73,9 @@ public:
   //! but element by element
   Standard_EXPORT virtual void BVH() Standard_OVERRIDE;
 
+  //! Sets the method (builder) used to construct BVH.
+  void SetBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder) { myContent.SetBuilder (theBuilder); }
+
   //! Marks BVH tree of the set as outdated. It will be rebuild
   //! at the next call of BVH()
   void MarkDirty() { myContent.MarkDirty(); }
@@ -83,7 +92,7 @@ public:
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
   //! Returns a number of nodes in 1 BVH leaf
-  Standard_Integer GetLeafNodeSize() const { return myLeafNodeSize; }
+  Standard_Integer GetLeafNodeSize() const { return myContent.Builder()->LeafNodeSize(); }
 
 protected:
 
@@ -104,12 +113,12 @@ protected:
 
   //! The purpose of this class is to provide a link between BVH_PrimitiveSet
   //! and Select3D_SensitiveSet instance to build BVH tree for set of sensitives.
-  class BvhPrimitiveSet : public BVH_PrimitiveSet<Standard_Real, 3>
+  class BvhPrimitiveSet : public BVH_PrimitiveSet3d
   {
   public:
 
     //! Empty constructor.
-    BvhPrimitiveSet() {}
+    BvhPrimitiveSet() : BVH_PrimitiveSet3d (Handle(Select3D_BVHBuilder3d)()) {}
 
     //! Destructor.
     ~BvhPrimitiveSet() {}
@@ -128,7 +137,7 @@ protected:
     virtual Select3D_BndBox3d Box (const Standard_Integer theIdx) const Standard_OVERRIDE { return mySensitiveSet->Box (theIdx); }
 
     //! Make inherited method Box() visible to avoid CLang warning
-    using BVH_PrimitiveSet<Standard_Real, 3>::Box;
+    using BVH_PrimitiveSet3d::Box;
 
     //! Returns center of sensitive with index theIdx in the set along the given axis theAxis
     virtual Standard_Real Center (const Standard_Integer theIdx,
@@ -139,7 +148,7 @@ protected:
                        const Standard_Integer theIdx2) Standard_OVERRIDE { mySensitiveSet->Swap (theIdx1, theIdx2); }
 
     //! Returns the tree built for set of sensitives
-    const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& GetBVH() { return BVH(); }
+    const opencascade::handle<BVH_Tree<Standard_Real, 3> >& GetBVH() { return BVH(); }
 
   protected:
     Select3D_SensitiveSet* mySensitiveSet; //!< Set of sensitive entities

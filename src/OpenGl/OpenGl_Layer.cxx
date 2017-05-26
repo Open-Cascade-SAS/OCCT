@@ -22,13 +22,17 @@
 #include <OpenGl_Workspace.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Layer, Standard_Transient)
+
 // =======================================================================
 // function : OpenGl_Layer
 // purpose  :
 // =======================================================================
-OpenGl_Layer::OpenGl_Layer (const Standard_Integer theNbPriorities)
+OpenGl_Layer::OpenGl_Layer (const Standard_Integer theNbPriorities,
+                            const Handle(Select3D_BVHBuilder3d)& theBuilder)
 : myArray                     (0, theNbPriorities - 1),
   myNbStructures              (0),
+  myBVHPrimitivesTrsfPers     (theBuilder),
   myBVHIsLeftChildQueuedFirst (Standard_True),
   myIsBVHPrimitivesNeedsReset (Standard_False)
 {
@@ -521,8 +525,7 @@ void OpenGl_Layer::traverse (OpenGl_BVHTreeSelector& theSelector) const
 
   theSelector.CacheClipPtsProjections();
 
-  NCollection_Handle<BVH_Tree<Standard_Real, 3> > aBVHTree;
-
+  opencascade::handle<BVH_Tree<Standard_Real, 3> > aBVHTree;
   for (Standard_Integer aBVHTreeIdx = 0; aBVHTreeIdx < 2; ++aBVHTreeIdx)
   {
     const Standard_Boolean isTrsfPers = aBVHTreeIdx == 1;
@@ -555,7 +558,7 @@ void OpenGl_Layer::traverse (OpenGl_BVHTreeSelector& theSelector) const
       continue;
     }
 
-    Standard_Integer aStack[32];
+    Standard_Integer aStack[BVH_Constants_MaxTreeDepth];
     Standard_Integer aHead = -1;
     for (;;)
     {

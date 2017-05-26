@@ -212,9 +212,9 @@ SelectMgr_SelectableObjectSet::SelectMgr_SelectableObjectSet()
   myBVH[BVHSubset_3dPersistent] = new BVH_Tree<Standard_Real, 3>();
   myBVH[BVHSubset_3d]           = new BVH_Tree<Standard_Real, 3>();
 
-  myBuilder[BVHSubset_2dPersistent] = new BVH_LinearBuilder<Standard_Real, 3> (1, 32);
-  myBuilder[BVHSubset_3dPersistent] = new BVH_LinearBuilder<Standard_Real, 3> (1, 32);
-  myBuilder[BVHSubset_3d]           = new BVH_BinnedBuilder<Standard_Real, 3, 4> (1, 32, Standard_True);
+  myBuilder[BVHSubset_2dPersistent] = new BVH_LinearBuilder<Standard_Real, 3>    (BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth);
+  myBuilder[BVHSubset_3dPersistent] = new BVH_LinearBuilder<Standard_Real, 3>    (BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth);
+  myBuilder[BVHSubset_3d]           = new BVH_BinnedBuilder<Standard_Real, 3, 4> (BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth, Standard_True);
 
   myIsDirty[BVHSubset_2dPersistent] = Standard_False;
   myIsDirty[BVHSubset_3dPersistent] = Standard_False;
@@ -327,7 +327,7 @@ void SelectMgr_SelectableObjectSet::UpdateBVH (const Handle(Graphic3d_Camera)& t
     BVHBuilderAdaptorRegular anAdaptor (myObjects[BVHSubset_3d]);
 
     // update corresponding BVH tree data structure
-    myBuilder[BVHSubset_3d]->Build (&anAdaptor, myBVH[BVHSubset_3d].operator->(), anAdaptor.Box());
+    myBuilder[BVHSubset_3d]->Build (&anAdaptor, myBVH[BVHSubset_3d].get(), anAdaptor.Box());
 
     // release dirty state
     myIsDirty[BVHSubset_3d] = Standard_False;
@@ -349,7 +349,7 @@ void SelectMgr_SelectableObjectSet::UpdateBVH (const Handle(Graphic3d_Camera)& t
         theCamera, theProjectionMat, theWorldViewMat, theViewportWidth, theViewportHeight);
 
       // update corresponding BVH tree data structure
-      myBuilder[BVHSubset_3dPersistent]->Build (&anAdaptor, myBVH[BVHSubset_3dPersistent].operator->(), anAdaptor.Box());
+      myBuilder[BVHSubset_3dPersistent]->Build (&anAdaptor, myBVH[BVHSubset_3dPersistent].get(), anAdaptor.Box());
     }
 
     // -----------------------------------------------------
@@ -363,7 +363,7 @@ void SelectMgr_SelectableObjectSet::UpdateBVH (const Handle(Graphic3d_Camera)& t
         theCamera, theProjectionMat, THE_IDENTITY_MAT, theViewportWidth, theViewportHeight);
 
       // update corresponding BVH tree data structure
-      myBuilder[BVHSubset_2dPersistent]->Build (&anAdaptor, myBVH[BVHSubset_2dPersistent].operator->(), anAdaptor.Box());
+      myBuilder[BVHSubset_2dPersistent]->Build (&anAdaptor, myBVH[BVHSubset_2dPersistent].get(), anAdaptor.Box());
     }
 
     // release dirty state for every subset

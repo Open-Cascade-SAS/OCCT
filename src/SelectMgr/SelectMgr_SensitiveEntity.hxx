@@ -35,17 +35,17 @@ public:
   Standard_EXPORT void Clear();
 
   //! Returns related instance of SelectBasics class
-  Standard_EXPORT const Handle(SelectBasics_SensitiveEntity)& BaseSensitive() const;
+  const Handle(SelectBasics_SensitiveEntity)& BaseSensitive() const { return mySensitive; }
 
   //! Returns true if this entity belongs to the active selection
   //! mode of parent object
-  Standard_EXPORT Standard_Boolean IsActiveForSelection() const;
+  Standard_Boolean IsActiveForSelection() const { return myIsActiveForSelection; }
 
   //! Marks entity as inactive for selection
-  Standard_EXPORT void ResetSelectionActiveStatus() const;
+  void ResetSelectionActiveStatus() const { myIsActiveForSelection = Standard_False; }
 
   //! Marks entity as active for selection
-  Standard_EXPORT void SetActiveForSelection() const;
+  void SetActiveForSelection() const { myIsActiveForSelection = Standard_True; }
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_SensitiveEntity,Standard_Transient) // Type definition
 

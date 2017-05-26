@@ -32,10 +32,20 @@ public:
   //! Creates uninitialized BVH geometry.
   BVH_Geometry()
   : myIsDirty (Standard_False),
-    myBVH (new BVH_Tree<T, N>())
+    myBVH (new BVH_Tree<T, N>()),
+    // set default builder - binned SAH split
+    myBuilder (new BVH_BinnedBuilder<T, N, BVH_Constants_NbBinsOptimal> (BVH_Constants_LeafNodeSizeSingle))
   {
-    // Set default builder - binned SAH split
-    myBuilder = new BVH_BinnedBuilder<T, N, 32> (1 /* primitive per leaf */);
+    //
+  }
+
+  //! Creates uninitialized BVH geometry.
+  BVH_Geometry (const opencascade::handle<BVH_Builder<T, N> >& theBuilder)
+  : myIsDirty (Standard_False),
+    myBVH (new BVH_Tree<T, N>()),
+    myBuilder (theBuilder)
+  {
+    //
   }
 
   //! Releases resources of BVH geometry.
@@ -64,7 +74,7 @@ public:
   }
 
   //! Returns BVH tree (and builds it if necessary).
-  virtual const NCollection_Handle<BVH_Tree<T, N> >& BVH()
+  virtual const opencascade::handle<BVH_Tree<T, N> >& BVH()
   {
     if (myIsDirty)
     {
@@ -74,10 +84,10 @@ public:
   }
 
   //! Returns the method (builder) used to construct BVH.
-  virtual const NCollection_Handle<BVH_Builder<T, N> >& Builder() const { return myBuilder; }
+  virtual const opencascade::handle<BVH_Builder<T, N> >& Builder() const { return myBuilder; }
 
   //! Sets the method (builder) used to construct BVH.
-  virtual void SetBuilder (const NCollection_Handle<BVH_Builder<T, N> >& theBuilder) { myBuilder = theBuilder; }
+  virtual void SetBuilder (const opencascade::handle<BVH_Builder<T, N> >& theBuilder) { myBuilder = theBuilder; }
 
 protected:
 
@@ -93,9 +103,9 @@ protected:
 
 protected:
 
-  Standard_Boolean                       myIsDirty; //!< Is geometry state outdated?
-  NCollection_Handle<BVH_Tree<T, N> >    myBVH;     //!< Constructed hight-level BVH
-  NCollection_Handle<BVH_Builder<T, N> > myBuilder; //!< Builder for hight-level BVH
+  Standard_Boolean                        myIsDirty; //!< Is geometry state outdated?
+  opencascade::handle<BVH_Tree<T, N> >    myBVH;     //!< Constructed hight-level BVH
+  opencascade::handle<BVH_Builder<T, N> > myBuilder; //!< Builder for hight-level BVH
 
   mutable BVH_Box<T, N> myBox; //!< Cached bounding box of geometric objects
 

@@ -16,6 +16,7 @@
 #ifndef _BVH_Box_Header
 #define _BVH_Box_Header
 
+#include <BVH_Constants.hxx>
 #include <BVH_Types.hxx>
 #include <Standard_ShortReal.hxx>
 

@@ -15,6 +15,7 @@
 
 #include <OpenGl_GlCore15.hxx>
 
+#include <BVH_LinearBuilder.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_LayerList.hxx>
 #include <OpenGl_ShaderManager.hxx>
@@ -31,7 +32,8 @@
 //=======================================================================
 
 OpenGl_LayerList::OpenGl_LayerList (const Standard_Integer theNbPriorities)
-: myDefaultLayerIndex (0),
+: myBVHBuilder (new BVH_LinearBuilder<Standard_Real, 3> (BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth)),
+  myDefaultLayerIndex (0),
   myNbPriorities (theNbPriorities),
   myNbStructures (0),
   myImmediateNbStructures (0),
@@ -40,19 +42,19 @@ OpenGl_LayerList::OpenGl_LayerList (const Standard_Integer theNbPriorities)
   myRenderTranspFilter (new OpenGl_TransparentFilter())
 {
   // insert default priority layers
-  myLayers.Append (OpenGl_Layer (myNbPriorities));
+  myLayers.Append (new OpenGl_Layer (myNbPriorities, myBVHBuilder));
   myLayerIds.Bind (Graphic3d_ZLayerId_BotOSD,  myLayers.Upper());
 
-  myLayers.Append (OpenGl_Layer (myNbPriorities));
+  myLayers.Append (new OpenGl_Layer (myNbPriorities, myBVHBuilder));
   myLayerIds.Bind (Graphic3d_ZLayerId_Default, myLayers.Upper());
 
-  myLayers.Append (OpenGl_Layer (myNbPriorities));
+  myLayers.Append (new OpenGl_Layer (myNbPriorities, myBVHBuilder));
   myLayerIds.Bind (Graphic3d_ZLayerId_Top,     myLayers.Upper());
 
-  myLayers.Append (OpenGl_Layer (myNbPriorities));
+  myLayers.Append (new OpenGl_Layer (myNbPriorities, myBVHBuilder));
   myLayerIds.Bind (Graphic3d_ZLayerId_Topmost, myLayers.Upper());
 
-  myLayers.Append (OpenGl_Layer (myNbPriorities));
+  myLayers.Append (new OpenGl_Layer (myNbPriorities, myBVHBuilder));
   myLayerIds.Bind (Graphic3d_ZLayerId_TopOSD,  myLayers.Upper());
 
   myDefaultLayerIndex = myLayerIds.Find (Graphic3d_ZLayerId_Default);
@@ -70,6 +72,19 @@ OpenGl_LayerList::~OpenGl_LayerList()
 }
 
 //=======================================================================
+//function : SetFrustumCullingBVHBuilder
+//purpose  :
+//=======================================================================
+void OpenGl_LayerList::SetFrustumCullingBVHBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder)
+{
+  myBVHBuilder = theBuilder;
+  for (OpenGl_SequenceOfLayers::Iterator anIts (myLayers); anIts.More(); anIts.Next())
+  {
+    anIts.ChangeValue()->SetFrustumCullingBVHBuilder (theBuilder);
+  }
+}
+
+//=======================================================================
 //function : AddLayer
 //purpose  : 
 //=======================================================================
@@ -82,7 +97,7 @@ void OpenGl_LayerList::AddLayer (const Graphic3d_ZLayerId theLayerId)
   }
 
   // add the new layer
-  myLayers.Append (OpenGl_Layer (myNbPriorities));
+  myLayers.Append (new OpenGl_Layer (myNbPriorities, myBVHBuilder));
   myLayerIds.Bind (theLayerId, myLayers.Length());
 
   myTransparentToProcess.Allocate (myLayers.Length());
@@ -94,7 +109,7 @@ void OpenGl_LayerList::AddLayer (const Graphic3d_ZLayerId theLayerId)
 //=======================================================================
 OpenGl_Layer& OpenGl_LayerList::Layer (const Graphic3d_ZLayerId theLayerId)
 {
-  return myLayers.ChangeValue (myLayerIds.Find (theLayerId));
+  return *myLayers.ChangeValue (myLayerIds.Find (theLayerId));
 }
 
 //=======================================================================
@@ -103,7 +118,7 @@ OpenGl_Layer& OpenGl_LayerList::Layer (const Graphic3d_ZLayerId theLayerId)
 //=======================================================================
 const OpenGl_Layer& OpenGl_LayerList::Layer (const Graphic3d_ZLayerId theLayerId) const
 {
-  return myLayers.Value (myLayerIds.Find (theLayerId));
+  return *myLayers.Value (myLayerIds.Find (theLayerId));
 }
 
 //=======================================================================
@@ -122,8 +137,10 @@ void OpenGl_LayerList::RemoveLayer (const Graphic3d_ZLayerId theLayerId)
   const Standard_Integer aRemovePos = myLayerIds.Find (theLayerId);
   
   // move all displayed structures to first layer
-  const OpenGl_Layer& aLayerToMove = myLayers.Value (aRemovePos);
-  myLayers.ChangeFirst().Append (aLayerToMove);
+  {
+    const OpenGl_Layer& aLayerToMove = *myLayers.Value (aRemovePos);
+    myLayers.ChangeFirst()->Append (aLayerToMove);
+  }
 
   // remove layer
   myLayers.Remove (aRemovePos);
@@ -157,7 +174,7 @@ void OpenGl_LayerList::AddStructure (const OpenGl_Structure*  theStruct,
   Standard_Integer aSeqPos = myLayers.Lower();
   myLayerIds.Find (theLayerId, aSeqPos);
 
-  OpenGl_Layer& aLayer = myLayers.ChangeValue (aSeqPos);
+  OpenGl_Layer& aLayer = *myLayers.ChangeValue (aSeqPos);
   aLayer.Add (theStruct, thePriority, isForChangePriority);
   ++myNbStructures;
   if (aLayer.IsImmediate())
@@ -182,7 +199,7 @@ void OpenGl_LayerList::RemoveStructure (const OpenGl_Structure* theStructure)
   Standard_Integer aSeqPos = myLayers.Lower();
   myLayerIds.Find (aLayerId, aSeqPos);
 
-  OpenGl_Layer&    aLayer    = myLayers.ChangeValue (aSeqPos);
+  OpenGl_Layer&    aLayer    = *myLayers.ChangeValue (aSeqPos);
   Standard_Integer aPriority = -1;
 
   // remove structure from associated list
@@ -209,7 +226,7 @@ void OpenGl_LayerList::RemoveStructure (const OpenGl_Structure* theStructure)
   Standard_Integer aSeqId = 1;
   for (OpenGl_SequenceOfLayers::Iterator anIts (myLayers); anIts.More(); anIts.Next(), ++aSeqId)
   {
-    OpenGl_Layer& aLayerEx = anIts.ChangeValue();
+    OpenGl_Layer& aLayerEx = *anIts.ChangeValue();
     if (aSeqPos == aSeqId)
     {
       continue;
@@ -241,7 +258,7 @@ void OpenGl_LayerList::InvalidateBVHData (const Graphic3d_ZLayerId theLayerId)
 {
   Standard_Integer aSeqPos = myLayers.Lower();
   myLayerIds.Find (theLayerId, aSeqPos);
-  OpenGl_Layer& aLayer = myLayers.ChangeValue (aSeqPos);
+  OpenGl_Layer& aLayer = *myLayers.ChangeValue (aSeqPos);
   aLayer.InvalidateBVHData();
 }
 
@@ -256,7 +273,7 @@ void OpenGl_LayerList::ChangeLayer (const OpenGl_Structure*  theStructure,
 {
   Standard_Integer aSeqPos = myLayers.Lower();
   myLayerIds.Find (theOldLayerId, aSeqPos);
-  OpenGl_Layer&    aLayer    = myLayers.ChangeValue (aSeqPos);
+  OpenGl_Layer&    aLayer    = *myLayers.ChangeValue (aSeqPos);
   Standard_Integer aPriority = -1;
 
   // take priority and remove structure from list found by <theOldLayerId>
@@ -291,7 +308,7 @@ void OpenGl_LayerList::ChangeLayer (const OpenGl_Structure*  theStructure,
     }
   
     // try to remove structure and get priority value from this layer
-    OpenGl_Layer& aLayerEx = anIts.ChangeValue();
+    OpenGl_Layer& aLayerEx = *anIts.ChangeValue();
     if (aLayerEx.Remove (theStructure, aPriority, Standard_True))
     {
       if (aSeqId == myDefaultLayerIndex
@@ -324,7 +341,7 @@ void OpenGl_LayerList::ChangePriority (const OpenGl_Structure*  theStructure,
 {
   Standard_Integer aSeqPos = myLayers.Lower();
   myLayerIds.Find (theLayerId, aSeqPos);
-  OpenGl_Layer&    aLayer        = myLayers.ChangeValue (aSeqPos);
+  OpenGl_Layer&    aLayer        = *myLayers.ChangeValue (aSeqPos);
   Standard_Integer anOldPriority = -1;
 
   if (aLayer.Remove (theStructure, anOldPriority, Standard_True))
@@ -347,7 +364,7 @@ void OpenGl_LayerList::ChangePriority (const OpenGl_Structure*  theStructure,
       continue;
     }
 
-    OpenGl_Layer& aLayerEx = anIts.ChangeValue();
+    OpenGl_Layer& aLayerEx = *anIts.ChangeValue();
     if (aLayerEx.Remove (theStructure, anOldPriority, Standard_True))
     {
       --myNbStructures;
@@ -436,7 +453,7 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
       if (aSeqId != myDefaultLayerIndex) continue;
     }
 
-    const OpenGl_Layer& aLayer = aLayerIter.Value();
+    const OpenGl_Layer& aLayer = *aLayerIter.Value();
     if (aLayer.IsImmediate() != theToDrawImmediate)
     {
       continue;

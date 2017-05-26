@@ -25,6 +25,7 @@
 #include <NCollection_Vec2.hxx>
 #include <NCollection_Vec3.hxx>
 #include <NCollection_Vector.hxx>
+#include <Standard_Type.hxx>
 
 // GCC supports shrink function only in C++11 mode
 #if defined(_BVH_USE_STD_VECTOR_) && defined(_MSC_VER) && !defined(__INTEL_COMPILER)

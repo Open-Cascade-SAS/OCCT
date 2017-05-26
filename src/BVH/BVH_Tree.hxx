@@ -20,6 +20,15 @@
 
 template<class T, int N> class BVH_Builder;
 
+//! A non-template class for using as base for BVH_TreeBase
+//! (just to have a named base class).
+class BVH_TreeBaseTransient : public Standard_Transient
+{
+  DEFINE_STANDARD_RTTIEXT(BVH_TreeBaseTransient, Standard_Transient)
+protected:
+  BVH_TreeBaseTransient() {}
+};
+
 //! Stores parameters of bounding volume hierarchy (BVH).
 //! Bounding volume hierarchy (BVH) organizes geometric objects in
 //! the tree based on spatial relationships. Each node in the tree
@@ -29,7 +38,7 @@ template<class T, int N> class BVH_Builder;
 //! such as collision detection, ray-tracing, searching of nearest
 //! objects, and view frustum culling.
 template<class T, int N>
-class BVH_TreeBase
+class BVH_TreeBase : public BVH_TreeBaseTransient
 {
   friend class BVH_Builder<T, N>;
 

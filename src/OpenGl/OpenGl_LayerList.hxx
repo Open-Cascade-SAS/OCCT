@@ -26,7 +26,7 @@
 
 class OpenGl_Structure;
 
-typedef NCollection_Sequence<OpenGl_Layer> OpenGl_SequenceOfLayers;
+typedef NCollection_Sequence<Handle(OpenGl_Layer)> OpenGl_SequenceOfLayers;
 typedef NCollection_DataMap<int, int> OpenGl_LayerSeqIds;
 
 //! Class defining the list of layers.
@@ -35,7 +35,7 @@ class OpenGl_LayerList
 public:
 
   //! Constructor
-  OpenGl_LayerList (const Standard_Integer theNbPriorities = 11);
+  OpenGl_LayerList (const Standard_Integer theNbPriorities);
 
   //! Destructor
   virtual ~OpenGl_LayerList();
@@ -107,6 +107,12 @@ public:
 
   //! Returns structure modification state (for ray-tracing).
   Standard_Size ModificationStateOfRaytracable() const { return myModifStateOfRaytraceable; }
+
+  //! Returns BVH tree builder for frustom culling.
+  const Handle(Select3D_BVHBuilder3d)& FrustumCullingBVHBuilder() const { return myBVHBuilder; }
+
+  //! Assigns BVH tree builder for frustom culling.
+  void SetFrustumCullingBVHBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder);
 
 protected:
 
@@ -239,6 +245,7 @@ protected:
   // number of structures temporary put to default layer
   OpenGl_SequenceOfLayers myLayers;
   OpenGl_LayerSeqIds      myLayerIds;
+  Handle(Select3D_BVHBuilder3d) myBVHBuilder;      //!< BVH tree builder for frustom culling
   Standard_Integer        myDefaultLayerIndex;     //!< index of Graphic3d_ZLayerId_Default layer in myLayers sequence
 
   Standard_Integer        myNbPriorities;

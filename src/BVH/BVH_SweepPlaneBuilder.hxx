@@ -27,8 +27,8 @@ class BVH_SweepPlaneBuilder : public BVH_QueueBuilder<T, N>
 public:
 
   //! Creates sweep plane SAH BVH builder.
-  BVH_SweepPlaneBuilder (const Standard_Integer theLeafNodeSize = 5,
-                         const Standard_Integer theMaxTreeDepth = 32,
+  BVH_SweepPlaneBuilder (const Standard_Integer theLeafNodeSize = BVH_Constants_LeafNodeSizeDefault,
+                         const Standard_Integer theMaxTreeDepth = BVH_Constants_MaxTreeDepth,
                          const Standard_Integer theNumOfThreads = 1)
   : BVH_QueueBuilder<T, N> (theLeafNodeSize,
                             theMaxTreeDepth,

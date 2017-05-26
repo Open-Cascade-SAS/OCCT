@@ -18,13 +18,15 @@
 #include <BVH_BinnedBuilder.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_BVHClipPrimitiveSet, BVH_PrimitiveSet3d)
+
 // =======================================================================
 // function : OpenGl_BVHClipPrimitiveSet
 // purpose  :
 // =======================================================================
 OpenGl_BVHClipPrimitiveSet::OpenGl_BVHClipPrimitiveSet()
 {
-  myBuilder = new BVH_BinnedBuilder<Standard_Real, 3> (1, 32);
+  myBuilder = new BVH_BinnedBuilder<Standard_Real, 3> (BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth);
 }
 
 // =======================================================================

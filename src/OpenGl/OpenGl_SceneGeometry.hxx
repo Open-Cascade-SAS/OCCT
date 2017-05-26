@@ -161,11 +161,13 @@ public:
 };
 
 //! Shared pointer to quad BVH (QBVH) tree.
-typedef NCollection_Handle<BVH_Tree<Standard_ShortReal, 3, BVH_QuadTree> > QuadBvhHandle;
+typedef opencascade::handle<BVH_Tree<Standard_ShortReal, 3, BVH_QuadTree> > QuadBvhHandle;
+typedef BVH_Triangulation<Standard_ShortReal, 3> OpenGl_BVHTriangulation3f;
 
 //! Triangulation of single OpenGL primitive array.
-class OpenGl_TriangleSet : public BVH_Triangulation<Standard_ShortReal, 3>
+class OpenGl_TriangleSet : public OpenGl_BVHTriangulation3f
 {
+  DEFINE_STANDARD_RTTIEXT(OpenGl_TriangleSet, OpenGl_BVHTriangulation3f)
 public:
 
   //! Value of invalid material index to return in case of errors.
@@ -174,7 +176,8 @@ public:
 public:
 
   //! Creates new OpenGL element triangulation.
-  OpenGl_TriangleSet (const Standard_Size theArrayID);
+  OpenGl_TriangleSet (const Standard_Size theArrayID,
+                      const opencascade::handle<BVH_Builder<Standard_ShortReal, 3> >& theBuilder);
 
   //! Returns ID of associated primitive array.
   Standard_Size AssociatedPArrayID() const
@@ -203,13 +206,13 @@ public:
   }
 
   //! Returns AABB of primitive set.
-  BVH_BoxNt Box() const;
+  virtual BVH_BoxNt Box() const Standard_OVERRIDE;
 
   //! Returns AABB of the given object.
   using BVH_Triangulation<Standard_ShortReal, 3>::Box;
 
   //! Returns centroid position along the given axis.
-  Standard_ShortReal Center (const Standard_Integer theIndex, const Standard_Integer theAxis) const;
+  virtual Standard_ShortReal Center (const Standard_Integer theIndex, const Standard_Integer theAxis) const Standard_OVERRIDE;
 
   //! Returns quad BVH (QBVH) tree produced from binary BVH.
   const QuadBvhHandle& QuadBVH();

@@ -1,4 +1,5 @@
 Select3D_BndBox3d.hxx
+Select3D_BVHBuilder3d.hxx
 Select3D_BVHIndexBuffer.hxx
 Select3D_EntitySequence.hxx
 Select3D_InteriorSensitivePointSet.cxx

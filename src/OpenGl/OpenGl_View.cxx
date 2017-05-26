@@ -31,7 +31,10 @@
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_Window.hxx>
 #include <OpenGl_Workspace.hxx>
+#include <OSD_Parallel.hxx>
 #include <Standard_CLocaleSentry.hxx>
+
+#include "../Graphic3d/Graphic3d_Structure.pxx"
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_View,Graphic3d_CView)
 
@@ -59,6 +62,7 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myBgColor        (Quantity_NOC_BLACK),
   myCamera         (new Graphic3d_Camera()),
   myToShowGradTrihedron  (false),
+  myZLayers        (Structure_MAX_PRIORITY - Structure_MIN_PRIORITY + 1),
   myStateCounter         (theCounter),
   myLastLightSourceState (0, 0),
 #if !defined(GL_ES_VERSION_2_0)
@@ -83,6 +87,12 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myRaytraceInitStatus     (OpenGl_RT_NONE),
   myIsRaytraceDataValid    (Standard_False),
   myIsRaytraceWarnTextures (Standard_False),
+  myRaytraceBVHBuilder (new BVH_BinnedBuilder<Standard_ShortReal, 3, BVH_Constants_NbBinsBest> (BVH_Constants_LeafNodeSizeAverage,
+                                                                                                BVH_Constants_MaxTreeDepth,
+                                                                                                Standard_False,
+                                                                                                OSD_Parallel::NbLogicalProcessors() + 1)),
+  myRaytraceSceneRadius  (0.0f),
+  myRaytraceSceneEpsilon (1.0e-6f),
   myToUpdateEnvironmentMap (Standard_False),
   myRaytraceLayerListState (0)
 {

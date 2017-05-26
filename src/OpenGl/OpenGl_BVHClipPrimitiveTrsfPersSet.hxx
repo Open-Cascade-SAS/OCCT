@@ -16,7 +16,6 @@
 #ifndef _OpenGl_BVHClipPrimitiveTrsfPersSet_HeaderFile
 #define _OpenGl_BVHClipPrimitiveTrsfPersSet_HeaderFile
 
-#include <BVH_Builder.hxx>
 #include <BVH_Set.hxx>
 #include <BVH_Tree.hxx>
 #include <Graphic3d_BndBox4f.hxx>
@@ -25,6 +24,7 @@
 #include <NCollection_IndexedMap.hxx>
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_Vec.hxx>
+#include <Select3D_BVHBuilder3d.hxx>
 
 //! Set of transformation persistent OpenGl_Structure for building BVH tree.
 //! Provides built-in mechanism to invalidate tree when world view projection state changes.
@@ -39,7 +39,7 @@ private:
 public:
 
   //! Creates an empty primitive set for BVH clipping.
-  OpenGl_BVHClipPrimitiveTrsfPersSet();
+  OpenGl_BVHClipPrimitiveTrsfPersSet (const Handle(Select3D_BVHBuilder3d)& theBuilder);
 
   //! Returns total number of structures.
   virtual Standard_Integer Size() const Standard_OVERRIDE;
@@ -76,12 +76,18 @@ public:
   }
 
   //! Returns BVH tree for the given world view projection (builds it if necessary).
-  const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& BVH (const Handle(Graphic3d_Camera)& theCamera,
-                                                              const OpenGl_Mat4d& theProjectionMatrix,
-                                                              const OpenGl_Mat4d& theWorldViewMatrix,
-                                                              const Standard_Integer theViewportWidth,
-                                                              const Standard_Integer theViewportHeight,
-                                                              const Graphic3d_WorldViewProjState& theWVPState);
+  const opencascade::handle<BVH_Tree<Standard_Real, 3> >& BVH (const Handle(Graphic3d_Camera)& theCamera,
+                                                               const OpenGl_Mat4d& theProjectionMatrix,
+                                                               const OpenGl_Mat4d& theWorldViewMatrix,
+                                                               const Standard_Integer theViewportWidth,
+                                                               const Standard_Integer theViewportHeight,
+                                                               const Graphic3d_WorldViewProjState& theWVPState);
+
+  //! Returns builder for bottom-level BVH.
+  const Handle(Select3D_BVHBuilder3d)& Builder() const { return myBuilder; }
+
+  //! Assigns builder for bottom-level BVH.
+  void SetBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder) { myBuilder = theBuilder; }
 
 private:
 
@@ -89,10 +95,10 @@ private:
   Standard_Boolean myIsDirty;
 
   //! Constructed bottom-level BVH.
-  NCollection_Handle<BVH_Tree<Standard_Real, 3> > myBVH;
+  opencascade::handle<BVH_Tree<Standard_Real, 3> > myBVH;
 
   //! Builder for bottom-level BVH.
-  NCollection_Handle<BVH_Builder<Standard_Real, 3> > myBuilder;
+  Handle(Select3D_BVHBuilder3d) myBuilder;
 
   //! Indexed map of structures.
   NCollection_IndexedMap<const OpenGl_Structure*> myStructs;

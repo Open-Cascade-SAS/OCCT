@@ -14,17 +14,17 @@
 // commercial license or contractual agreement.
 
 #include <OpenGl_BVHClipPrimitiveTrsfPersSet.hxx>
-#include <BVH_LinearBuilder.hxx>
 
 // =======================================================================
 // function : OpenGl_BVHClipPrimitiveTrsfPersSet
 // purpose  :
 // =======================================================================
-OpenGl_BVHClipPrimitiveTrsfPersSet::OpenGl_BVHClipPrimitiveTrsfPersSet()
+OpenGl_BVHClipPrimitiveTrsfPersSet::OpenGl_BVHClipPrimitiveTrsfPersSet (const Handle(Select3D_BVHBuilder3d)& theBuilder)
 : myIsDirty (Standard_False),
-  myBVH (new BVH_Tree<Standard_Real, 3>())
+  myBVH (new BVH_Tree<Standard_Real, 3>()),
+  myBuilder (theBuilder)
 {
-  myBuilder = new BVH_LinearBuilder<Standard_Real, 3> (1, 32);
+  //
 }
 
 // =======================================================================
@@ -131,7 +131,7 @@ const OpenGl_Structure* OpenGl_BVHClipPrimitiveTrsfPersSet::GetStructureById (St
 // function : BVH
 // purpose  :
 //=======================================================================
-const NCollection_Handle<BVH_Tree<Standard_Real, 3> >&
+const opencascade::handle<BVH_Tree<Standard_Real, 3> >&
   OpenGl_BVHClipPrimitiveTrsfPersSet::BVH (const Handle(Graphic3d_Camera)& theCamera,
                                            const OpenGl_Mat4d& theProjectionMatrix,
                                            const OpenGl_Mat4d& theWorldViewMatrix,

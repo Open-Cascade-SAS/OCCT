@@ -703,8 +703,8 @@ void BRepExtrema_OverlapTool::Perform (const Standard_Real theTolerance)
 
   BRepExtrema_StackItem aStack[96];
 
-  const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& aBVH1 = mySet1->BVH();
-  const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& aBVH2 = mySet2->BVH();
+  const opencascade::handle<BVH_Tree<Standard_Real, 3> >& aBVH1 = mySet1->BVH();
+  const opencascade::handle<BVH_Tree<Standard_Real, 3> >& aBVH2 = mySet2->BVH();
 
   if (aBVH1.IsNull() || aBVH2.IsNull())
   {

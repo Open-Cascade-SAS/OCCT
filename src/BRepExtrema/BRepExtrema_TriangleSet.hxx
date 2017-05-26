@@ -17,13 +17,13 @@
 #define _BRepExtrema_TriangleSet_HeaderFile
 
 #include <TopoDS_Face.hxx>
-#include <BVH_PrimitiveSet.hxx>
+#include <BVH_PrimitiveSet3d.hxx>
 
 //! List of shapes and their IDs for collision detection.
 typedef NCollection_Vector<TopoDS_Face> BRepExtrema_ShapeList;
 
 //! Triangle set corresponding to specific face.
-class BRepExtrema_TriangleSet : public BVH_PrimitiveSet<Standard_Real, 3>, public Standard_Transient
+class BRepExtrema_TriangleSet : public BVH_PrimitiveSet3d
 {
 public:
 
@@ -45,7 +45,7 @@ public: //! @name methods implementing BVH set interface
   BVH_Box<Standard_Real, 3> Box (const Standard_Integer theIndex) const Standard_OVERRIDE;
 
   //! Make inherited method Box() visible to avoid CLang warning
-  using BVH_PrimitiveSet<Standard_Real, 3>::Box;
+  using BVH_PrimitiveSet3d::Box;
 
   //! Returns centroid position along specified axis.
   Standard_Real Center (const Standard_Integer theIndex, const Standard_Integer theAxis) const Standard_OVERRIDE;
@@ -83,10 +83,10 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTIEXT(BRepExtrema_TriangleSet,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BRepExtrema_TriangleSet, BVH_PrimitiveSet3d)
 
 };
 
-DEFINE_STANDARD_HANDLE (BRepExtrema_TriangleSet, Standard_Transient)
+DEFINE_STANDARD_HANDLE(BRepExtrema_TriangleSet, BVH_PrimitiveSet3d)
 
 #endif // _BRepExtrema_TriangleSet_HeaderFile

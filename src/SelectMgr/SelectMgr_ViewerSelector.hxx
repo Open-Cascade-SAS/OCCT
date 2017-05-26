@@ -17,12 +17,12 @@
 #ifndef _SelectMgr_ViewerSelector_HeaderFile
 #define _SelectMgr_ViewerSelector_HeaderFile
 
-#include <MMgt_TShared.hxx>
-#include <NCollection_Handle.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_DataMap.hxx>
 #include <OSD_Chronometer.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
+#include <Select3D_BVHBuilder3d.hxx>
 #include <SelectMgr_IndexedDataMapOfOwnerCriterion.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 #include <SelectMgr_Selection.hxx>
@@ -37,8 +37,8 @@ class SelectMgr_SensitiveEntitySet;
 class SelectMgr_EntityOwner;
 class SelectBasics_SensitiveEntity;
 
-typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), NCollection_Handle<SelectMgr_SensitiveEntitySet> > SelectMgr_MapOfObjectSensitives;
-typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), NCollection_Handle<SelectMgr_SensitiveEntitySet> >::Iterator SelectMgr_MapOfObjectSensitivesIterator;
+typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), Handle(SelectMgr_SensitiveEntitySet) > SelectMgr_MapOfObjectSensitives;
+typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), Handle(SelectMgr_SensitiveEntitySet) >::Iterator SelectMgr_MapOfObjectSensitivesIterator;
 
 typedef NCollection_DataMap<Standard_Integer, SelectMgr_SelectingVolumeManager> SelectMgr_FrustumCache;
 
@@ -126,6 +126,13 @@ public:
   gp_Pnt PickedPoint (const Standard_Integer theRank) const { return PickedData (theRank).Point; }
 
   Standard_EXPORT Standard_Boolean Contains (const Handle(SelectMgr_SelectableObject)& theObject) const;
+
+  //! Returns the default builder used to construct BVH of entity set.
+  const Handle(Select3D_BVHBuilder3d) EntitySetBuilder() { return myEntitySetBuilder; }
+
+  //! Sets the default builder used to construct BVH of entity set.
+  //! The new builder will be also assigned for already defined objects, but computed BVH trees will not be invalidated.
+  Standard_EXPORT void SetEntitySetBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder);
 
   //! Returns the list of selection modes ModeList found in
   //! this selector for the selectable object aSelectableObject.
@@ -319,6 +326,7 @@ protected:
   mutable SelectMgr_SelectableObjectSet         mySelectableObjects;
   SelectMgr_ToleranceMap                        myTolerances;
   NCollection_DataMap<Graphic3d_ZLayerId, Standard_Integer> myZLayerOrderMap;
+  Handle(Select3D_BVHBuilder3d)                 myEntitySetBuilder;
 
 private:
 
@@ -330,6 +338,6 @@ private:
 
 };
 
-DEFINE_STANDARD_HANDLE(SelectMgr_ViewerSelector, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(SelectMgr_ViewerSelector, Standard_Transient)
 
 #endif

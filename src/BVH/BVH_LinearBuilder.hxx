@@ -39,8 +39,8 @@ public:
 public:
 
   //! Creates binned LBVH builder.
-  BVH_LinearBuilder (const Standard_Integer theLeafNodeSize = 5,
-                     const Standard_Integer theMaxTreeDepth = 32);
+  BVH_LinearBuilder (const Standard_Integer theLeafNodeSize = BVH_Constants_LeafNodeSizeDefault,
+                     const Standard_Integer theMaxTreeDepth = BVH_Constants_MaxTreeDepth);
 
   //! Releases resources of LBVH builder.
   virtual ~BVH_LinearBuilder();

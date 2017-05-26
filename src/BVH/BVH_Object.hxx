@@ -19,18 +19,44 @@
 #include <BVH_Box.hxx>
 #include <BVH_Properties.hxx>
 
-#include <NCollection_Handle.hxx>
+//! A non-template class for using as base for BVH_Object
+//! (just to have a named base class).
+class BVH_ObjectTransient : public Standard_Transient
+{
+  DEFINE_STANDARD_RTTIEXT(BVH_ObjectTransient, Standard_Transient)
+public:
+
+  //! Returns properties of the geometric object.
+  virtual const Handle(BVH_Properties)& Properties() const { return myProperties; }
+
+  //! Sets properties of the geometric object.
+  virtual void SetProperties (const Handle(BVH_Properties)& theProperties) { myProperties = theProperties; }
+
+  //! Marks object state as outdated (needs BVH rebuilding).
+  virtual void MarkDirty() { myIsDirty = Standard_True; }
+
+protected:
+
+  //! Creates new abstract geometric object.
+  BVH_ObjectTransient() : myIsDirty (Standard_False) {}
+
+protected:
+
+  Standard_Boolean       myIsDirty;    //!< Marks internal object state as outdated
+  Handle(BVH_Properties) myProperties; //!< Generic properties assigned to the object
+
+};
 
 //! Abstract geometric object bounded by BVH box.
 //! \tparam T Numeric data type
 //! \tparam N Vector dimension
 template<class T, int N>
-class BVH_Object
+class BVH_Object : public BVH_ObjectTransient
 {
 public:
 
   //! Creates new abstract geometric object.
-  BVH_Object() : myIsDirty (Standard_False) {}
+  BVH_Object() {}
 
   //! Releases resources of geometric object.
   virtual ~BVH_Object() = 0;
@@ -39,20 +65,6 @@ public:
 
   //! Returns AABB of the geometric object.
   virtual BVH_Box<T, N> Box() const = 0;
-
-  //! Returns properties of the geometric object.
-  virtual const NCollection_Handle<BVH_Properties>& Properties() const { return myProperties; }
-
-  //! Sets properties of the geometric object.
-  virtual void SetProperties (const NCollection_Handle<BVH_Properties>& theProperties) { myProperties = theProperties; }
-
-  //! Marks object state as outdated (needs BVH rebuilding).
-  virtual void MarkDirty() { myIsDirty = Standard_True; }
-
-protected:
-
-  Standard_Boolean                   myIsDirty;    //!< Marks internal object state as outdated
-  NCollection_Handle<BVH_Properties> myProperties; //!< Generic properties assigned to the object
 
 };
 

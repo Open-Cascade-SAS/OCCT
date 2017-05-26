@@ -16,13 +16,10 @@
 #ifndef _SelectMgr_SensitiveEntitySet_HeaderFile
 #define _SelectMgr_SensitiveEntitySet_HeaderFile
 
-#include <BVH_PrimitiveSet.hxx>
-
+#include <BVH_PrimitiveSet3d.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <NCollection_Handle.hxx>
-
 #include <Select3D_BndBox3d.hxx>
-
+#include <Select3D_BVHBuilder3d.hxx>
 #include <SelectMgr_SensitiveEntity.hxx>
 #include <SelectMgr_Selection.hxx>
 
@@ -31,11 +28,13 @@ typedef NCollection_IndexedMap<Handle(SelectMgr_SensitiveEntity)> SelectMgr_Inde
 //! This class is used to store all calculated sensitive entites of one selectable
 //! object. It provides an interface for building BVH tree which is used to speed-up
 //! the performance of searching for overlap among sensitives of one selectable object
-class SelectMgr_SensitiveEntitySet : public BVH_PrimitiveSet<Standard_Real, 3>
+class SelectMgr_SensitiveEntitySet : public BVH_PrimitiveSet3d
 {
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_SensitiveEntitySet, BVH_PrimitiveSet3d)
 public:
 
-  Standard_EXPORT SelectMgr_SensitiveEntitySet();
+  //! Empty constructor.
+  Standard_EXPORT SelectMgr_SensitiveEntitySet (const Handle(Select3D_BVHBuilder3d)& theBuilder);
 
   virtual ~SelectMgr_SensitiveEntitySet() {};
 
@@ -54,7 +53,7 @@ public:
   Standard_EXPORT virtual Select3D_BndBox3d Box (const Standard_Integer theIndex) const Standard_OVERRIDE;
 
   //! Make inherited method Box() visible to avoid CLang warning
-  using BVH_PrimitiveSet<Standard_Real, 3>::Box;
+  using BVH_PrimitiveSet3d::Box;
 
   //! Returns geometry center of sensitive entity index theIdx
   //! along the given axis theAxis

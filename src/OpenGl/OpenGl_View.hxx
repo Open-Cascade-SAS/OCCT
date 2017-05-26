@@ -814,9 +814,9 @@ protected: //! @name methods related to ray-tracing
                                            const Handle(OpenGl_Context)& theGlContext);
 
   //! Adds OpenGL primitive array to ray-traced scene geometry.
-  OpenGl_TriangleSet* addRaytracePrimitiveArray (const OpenGl_PrimitiveArray* theArray,
-                                                 const Standard_Integer       theMatID,
-                                                 const OpenGl_Mat4*           theTrans);
+  Handle(OpenGl_TriangleSet) addRaytracePrimitiveArray (const OpenGl_PrimitiveArray* theArray,
+                                                        const Standard_Integer       theMatID,
+                                                        const OpenGl_Mat4*           theTrans);
 
   //! Adds vertex indices from OpenGL primitive array to ray-traced scene geometry.
   Standard_Boolean addRaytraceVertexIndices (OpenGl_TriangleSet&                  theSet,
@@ -960,6 +960,9 @@ protected: //! @name fields related to ray-tracing
 
   //! 3D scene geometry data for ray-tracing.
   OpenGl_RaytraceGeometry myRaytraceGeometry;
+
+  //! Builder for triangle set.
+  opencascade::handle<BVH_Builder<Standard_ShortReal, 3> > myRaytraceBVHBuilder;
 
   //! Compile-time ray-tracing parameters.
   RaytracingParams myRaytraceParameters;

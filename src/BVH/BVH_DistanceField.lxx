@@ -190,14 +190,13 @@ namespace BVH
     Standard_ASSERT_RETURN (aTriangulation != NULL,
       "Error: Unsupported BVH object (non triangulation)", aMinDistance);
 
-    const NCollection_Handle<BVH_Tree<T, N> >& aBVH = aTriangulation->BVH();
-
+    const opencascade::handle<BVH_Tree<T, N> >& aBVH = aTriangulation->BVH();
     if (aBVH.IsNull())
     {
       return Standard_False;
     }
 
-    std::pair<Standard_Integer, T> aStack[32];
+    std::pair<Standard_Integer, T> aStack[BVH_Constants_MaxTreeDepth];
 
     Standard_Integer aHead = -1;
     Standard_Integer aNode =  0; // root node
@@ -318,7 +317,7 @@ namespace BVH
       return Standard_False;
     }
 
-    std::pair<Standard_Integer, T> aStack[32];
+    std::pair<Standard_Integer, T> aStack[BVH_Constants_MaxTreeDepth];
 
     Standard_Integer aHead = -1;
     Standard_Integer aNode =  0; // root node

@@ -49,7 +49,11 @@ public:
   Standard_Integer SensitivityFactor() const { return mySFactor; }
 
   //! Allows to manage sensitivity of a particular sensitive entity
-  Standard_EXPORT void SetSensitivityFactor (const Standard_Integer theNewSens);
+  void SetSensitivityFactor (const Standard_Integer theNewSens)
+  {
+    Standard_ASSERT_RAISE (theNewSens > 0, "Error! Selection sensitivity have positive value.");
+    mySFactor = theNewSens;
+  }
 
   //! Returns the number of sub-entities or elements in
   //! sensitive entity. Is used to determine if entity is

@@ -18,8 +18,8 @@
 
 #include <BVH_Sorter.hxx>
 #include <BVH_Builder.hxx>
-#include <NCollection_Handle.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Shared.hxx>
 
 #include <algorithm>
 
@@ -67,7 +67,7 @@ protected:
   BVH_Box<T, N> myBox;
 
   //! Morton codes assigned to BVH primitives.
-  NCollection_Handle<NCollection_Array1<BVH_EncodedLink> > myEncodedLinks;
+  Handle(NCollection_Shared<NCollection_Array1<BVH_EncodedLink> >) myEncodedLinks;
 
 };
 
@@ -186,7 +186,7 @@ void BVH_RadixSorter<T, N>::Perform (BVH_Set<T, N>* theSet, const Standard_Integ
   const T aReverseSizeY = static_cast<T> (aDimensionY) / Max (static_cast<T> (BVH::THE_NODE_MIN_SIZE), aSceneMax.y() - aSceneMin.y());
   const T aReverseSizeZ = static_cast<T> (aDimensionZ) / Max (static_cast<T> (BVH::THE_NODE_MIN_SIZE), aSceneMax.z() - aSceneMin.z());
 
-  myEncodedLinks = new NCollection_Array1<BVH_EncodedLink> (theStart, theFinal);
+  myEncodedLinks = new NCollection_Shared<NCollection_Array1<BVH_EncodedLink> >(theStart, theFinal);
 
   // Step 1 -- Assign Morton code to each primitive
   for (Standard_Integer aPrimIdx = theStart; aPrimIdx <= theFinal; ++aPrimIdx)

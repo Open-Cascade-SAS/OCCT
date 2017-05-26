@@ -44,9 +44,9 @@ SelectMgr_Selection::~SelectMgr_Selection()
 //==================================================
 void SelectMgr_Selection::Destroy()
 {
-  for (Standard_Integer anEntityIdx = 0; anEntityIdx < myEntities.Size(); ++anEntityIdx)
+  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator anEntityIter (myEntities); anEntityIter.More(); anEntityIter.Next())
   {
-    Handle(SelectMgr_SensitiveEntity)& anEntity = myEntities.ChangeValue (anEntityIdx);
+    Handle(SelectMgr_SensitiveEntity)& anEntity = anEntityIter.ChangeValue();
     anEntity->BaseSensitive()->Set (NULL);
   }
   mySensFactor = 2;
@@ -92,9 +92,9 @@ void SelectMgr_Selection::Add (const Handle(SelectBasics_SensitiveEntity)& theSe
 //==================================================
 void SelectMgr_Selection::Clear()
 {
-  for (Standard_Integer anIdx = 0; anIdx < myEntities.Size(); ++anIdx)
+  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator anEntityIter (myEntities); anEntityIter.More(); anEntityIter.Next())
   {
-    Handle(SelectMgr_SensitiveEntity)& anEntity = myEntities.ChangeValue (anIdx);
+    Handle(SelectMgr_SensitiveEntity)& anEntity = anEntityIter.ChangeValue();
     anEntity->Clear();
   }
 
@@ -157,9 +157,9 @@ void SelectMgr_Selection::SetSensitivity (const Standard_Integer theNewSens)
 {
   mySensFactor = theNewSens;
   myIsCustomSens = Standard_True;
-  for (Standard_Integer anIdx = 0; anIdx < myEntities.Size(); ++anIdx)
+  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator anEntityIter (myEntities); anEntityIter.More(); anEntityIter.Next())
   {
-    Handle(SelectMgr_SensitiveEntity)& anEntity = myEntities.ChangeValue (anIdx);
+    Handle(SelectMgr_SensitiveEntity)& anEntity = anEntityIter.ChangeValue();
     anEntity->BaseSensitive()->SetSensitivityFactor (theNewSens);
   }
 }

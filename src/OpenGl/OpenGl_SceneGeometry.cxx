@@ -31,6 +31,8 @@ namespace
   static const BVH_Vec4f ZERO_VEC_4F;
 }
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_TriangleSet, OpenGl_BVHTriangulation3f)
+
 // =======================================================================
 // function : OpenGl_RaytraceMaterial
 // purpose  : Creates new default material
@@ -166,48 +168,43 @@ Standard_ShortReal OpenGl_TriangleSet::Center (
 // =======================================================================
 OpenGl_TriangleSet::BVH_BoxNt OpenGl_TriangleSet::Box() const
 {
-  const BVH_Transform<Standard_ShortReal, 4>* aTransform =
-    dynamic_cast<const BVH_Transform<Standard_ShortReal, 4>* > (Properties().operator->());
-
   BVH_BoxNt aBox = BVH_PrimitiveSet<Standard_ShortReal, 3>::Box();
-
-  if (aTransform != NULL)
+  const BVH_Transform<Standard_ShortReal, 4>* aTransform = dynamic_cast<const BVH_Transform<Standard_ShortReal, 4>* > (Properties().get());
+  if (aTransform == NULL)
   {
-    BVH_BoxNt aTransformedBox;
-
-    for (Standard_Integer aX = 0; aX <= 1; ++aX)
-    {
-      for (Standard_Integer aY = 0; aY <= 1; ++aY)
-      {
-        for (Standard_Integer aZ = 0; aZ <= 1; ++aZ)
-        {
-          BVH_Vec4f aCorner = aTransform->Transform() * BVH_Vec4f (
-            aX == 0 ? aBox.CornerMin().x() : aBox.CornerMax().x(),
-            aY == 0 ? aBox.CornerMin().y() : aBox.CornerMax().y(),
-            aZ == 0 ? aBox.CornerMin().z() : aBox.CornerMax().z(),
-            1.f);
-
-          aTransformedBox.Add (aCorner.xyz());
-        }
-      }
-    }
-
-    return aTransformedBox;
+    return aBox;
   }
 
-  return aBox;
+  BVH_BoxNt aTransformedBox;
+  for (Standard_Integer aX = 0; aX <= 1; ++aX)
+  {
+    for (Standard_Integer aY = 0; aY <= 1; ++aY)
+    {
+      for (Standard_Integer aZ = 0; aZ <= 1; ++aZ)
+      {
+        BVH_Vec4f aCorner = aTransform->Transform() * BVH_Vec4f (
+          aX == 0 ? aBox.CornerMin().x() : aBox.CornerMax().x(),
+          aY == 0 ? aBox.CornerMin().y() : aBox.CornerMax().y(),
+          aZ == 0 ? aBox.CornerMin().z() : aBox.CornerMax().z(),
+          1.f);
+
+        aTransformedBox.Add (aCorner.xyz());
+      }
+    }
+  }
+  return aTransformedBox;
 }
 
 // =======================================================================
 // function : OpenGl_TriangleSet
 // purpose  : Creates new OpenGL element triangulation
 // =======================================================================
-OpenGl_TriangleSet::OpenGl_TriangleSet (const Standard_Size theArrayID)
-: BVH_Triangulation<Standard_ShortReal, 3>(),
+OpenGl_TriangleSet::OpenGl_TriangleSet (const Standard_Size theArrayID,
+                                        const opencascade::handle<BVH_Builder<Standard_ShortReal, 3> >& theBuilder)
+: BVH_Triangulation<Standard_ShortReal, 3> (theBuilder),
   myArrayID (theArrayID)
 {
-  myBuilder = new BVH_BinnedBuilder<Standard_ShortReal, 3 /* dim */, 48 /* bins */>
-    (4 /* leaf size */, 32 /* max height */, Standard_False, OSD_Parallel::NbLogicalProcessors() + 1 /* threads */);
+  //
 }
 
 // =======================================================================

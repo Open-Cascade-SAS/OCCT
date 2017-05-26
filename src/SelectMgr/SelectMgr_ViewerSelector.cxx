@@ -34,7 +34,7 @@
 
 #include <algorithm>
 
-IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_ViewerSelector,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_ViewerSelector, Standard_Transient)
 
 namespace {
   // Comparison operator for sorting selection results
@@ -95,6 +95,7 @@ myCurRank (0),
 myIsLeftChildQueuedFirst (Standard_False),
 myEntityIdx (0)
 {
+  myEntitySetBuilder = new BVH_BinnedBuilder<Standard_Real, 3, 4> (BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth, Standard_True);
 }
 
 //==================================================
@@ -315,16 +316,14 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
                                                const Standard_Integer theViewportWidth,
                                                const Standard_Integer theViewportHeight)
 {
-  NCollection_Handle<SelectMgr_SensitiveEntitySet>& anEntitySet =
-    myMapOfObjectSensitives.ChangeFind (theObject);
-
+  Handle(SelectMgr_SensitiveEntitySet)& anEntitySet = myMapOfObjectSensitives.ChangeFind (theObject);
   if (anEntitySet->Size() == 0)
+  {
     return;
+  }
 
-  const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& aSensitivesTree = anEntitySet->BVH();
-
+  const opencascade::handle<BVH_Tree<Standard_Real, 3> >& aSensitivesTree = anEntitySet->BVH();
   gp_GTrsf aInversedTrsf;
-
   if (theObject->HasTransformation() || !theObject->TransformPersistence().IsNull())
   {
     if (theObject->TransformPersistence().IsNull())
@@ -363,7 +362,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
   {
     return;
   }
-  Standard_Integer aStack[32];
+  Standard_Integer aStack[BVH_Constants_MaxTreeDepth];
   Standard_Integer aHead = -1;
   for (;;)
   {
@@ -492,7 +491,7 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
                                             ? mySelectingVolumeMgr.WorldViewMatrix()
                                             : THE_IDENTITY_MAT;
 
-    const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& aBVHTree = mySelectableObjects.BVH (aBVHSubset);
+    const opencascade::handle<BVH_Tree<Standard_Real, 3> >& aBVHTree = mySelectableObjects.BVH (aBVHSubset);
 
     Standard_Integer aNode = 0;
     if (!aMgr.Overlaps (aBVHTree->MinPoint (0), aBVHTree->MaxPoint (0)))
@@ -500,7 +499,7 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
       continue;
     }
 
-    Standard_Integer aStack[32];
+    Standard_Integer aStack[BVH_Constants_MaxTreeDepth];
     Standard_Integer aHead = -1;
     for (;;)
     {
@@ -607,6 +606,19 @@ const SelectMgr_SortCriterion& SelectMgr_ViewerSelector::PickedData(const Standa
 //       INTERNAL METHODS ....
 //
 //==================================================
+
+//==================================================
+// Function: SetEntitySetBuilder
+// Purpose :
+//==================================================
+void SelectMgr_ViewerSelector::SetEntitySetBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder)
+{
+  myEntitySetBuilder = theBuilder;
+  for (SelectMgr_MapOfObjectSensitives::Iterator aSetIter (myMapOfObjectSensitives); aSetIter.More(); aSetIter.Next())
+  {
+    aSetIter.ChangeValue()->SetBuilder (myEntitySetBuilder);
+  }
+}
 
 //==================================================
 // Function: Contains
@@ -747,16 +759,12 @@ void SelectMgr_ViewerSelector::SortResult()
   if(myIndexes.IsNull() || anExtent != myIndexes->Length())
     myIndexes = new TColStd_HArray1OfInteger (1, anExtent);
 
-  // to work faster...
-  TColStd_Array1OfInteger& thearr = myIndexes->ChangeArray1();
-
-  // indices from 1 to N are loaded
-  Standard_Integer I ;
-  for (I=1; I <= anExtent; I++)
-    thearr(I)=I;
-
-  std::sort (thearr.begin(), thearr.end(), CompareResults (mystored));
-
+  TColStd_Array1OfInteger& anIndexArray = myIndexes->ChangeArray1();
+  for (Standard_Integer anIndexIter = 1; anIndexIter <= anExtent; ++anIndexIter)
+  {
+    anIndexArray.SetValue (anIndexIter, anIndexIter);
+  }
+  std::sort (anIndexArray.begin(), anIndexArray.end(), CompareResults (mystored));
 }
 
 //=======================================================================
@@ -777,7 +785,7 @@ void SelectMgr_ViewerSelector::AddSelectableObject (const Handle(SelectMgr_Selec
   if (!myMapOfObjectSensitives.IsBound (theObject))
   {
     mySelectableObjects.Append (theObject);
-    NCollection_Handle<SelectMgr_SensitiveEntitySet> anEntitySet = new SelectMgr_SensitiveEntitySet();
+    Handle(SelectMgr_SensitiveEntitySet) anEntitySet = new SelectMgr_SensitiveEntitySet (myEntitySetBuilder);
     myMapOfObjectSensitives.Bind (theObject, anEntitySet);
   }
 }
@@ -789,12 +797,10 @@ void SelectMgr_ViewerSelector::AddSelectableObject (const Handle(SelectMgr_Selec
 void SelectMgr_ViewerSelector::AddSelectionToObject (const Handle(SelectMgr_SelectableObject)& theObject,
                                                      const Handle(SelectMgr_Selection)& theSelection)
 {
-  if (myMapOfObjectSensitives.IsBound (theObject))
+  if (Handle(SelectMgr_SensitiveEntitySet)* anEntitySet = myMapOfObjectSensitives.ChangeSeek (theObject))
   {
-    NCollection_Handle<SelectMgr_SensitiveEntitySet>& anEntitySet =
-      myMapOfObjectSensitives.ChangeFind (theObject);
-    anEntitySet->Append (theSelection);
-    anEntitySet->BVH();
+    (*anEntitySet)->Append (theSelection);
+    (*anEntitySet)->BVH();
   }
   else
   {
@@ -818,10 +824,10 @@ void SelectMgr_ViewerSelector::MoveSelectableObject (const Handle(SelectMgr_Sele
 //=======================================================================
 void SelectMgr_ViewerSelector::RemoveSelectableObject (const Handle(SelectMgr_SelectableObject)& theObject)
 {
-  if (myMapOfObjectSensitives.IsBound (theObject))
+  Handle(SelectMgr_SelectableObject) anObj = theObject;
+  if (myMapOfObjectSensitives.UnBind (theObject))
   {
     mySelectableObjects.Remove (theObject);
-    myMapOfObjectSensitives.UnBind (theObject);
   }
 }
 
@@ -833,11 +839,9 @@ void SelectMgr_ViewerSelector::RemoveSelectableObject (const Handle(SelectMgr_Se
 void SelectMgr_ViewerSelector::RemoveSelectionOfObject (const Handle(SelectMgr_SelectableObject)& theObject,
                                                         const Handle(SelectMgr_Selection)& theSelection)
 {
-  if (myMapOfObjectSensitives.IsBound (theObject))
+  if (Handle(SelectMgr_SensitiveEntitySet)* anEntitySet = myMapOfObjectSensitives.ChangeSeek (theObject))
   {
-    NCollection_Handle<SelectMgr_SensitiveEntitySet>& anEntitySet =
-      myMapOfObjectSensitives.ChangeFind (theObject);
-    anEntitySet->Remove (theSelection);
+    (*anEntitySet)->Remove (theSelection);
   }
 }
 
@@ -876,7 +880,7 @@ void SelectMgr_ViewerSelector::RebuildSensitivesTree (const Handle(SelectMgr_Sel
   if (!Contains (theObject))
     return;
 
-  NCollection_Handle<SelectMgr_SensitiveEntitySet>& anEntitySet = myMapOfObjectSensitives.ChangeFind (theObject);
+  Handle(SelectMgr_SensitiveEntitySet)& anEntitySet = myMapOfObjectSensitives.ChangeFind (theObject);
   anEntitySet->MarkDirty();
 
   if (theIsForce)
@@ -892,12 +896,10 @@ void SelectMgr_ViewerSelector::RebuildSensitivesTree (const Handle(SelectMgr_Sel
 //=======================================================================
 void SelectMgr_ViewerSelector::ResetSelectionActivationStatus()
 {
-  SelectMgr_MapOfObjectSensitivesIterator aSensitivesIter (myMapOfObjectSensitives);
-  for ( ; aSensitivesIter.More(); aSensitivesIter.Next())
+  for (SelectMgr_MapOfObjectSensitivesIterator aSensitivesIter (myMapOfObjectSensitives); aSensitivesIter.More(); aSensitivesIter.Next())
   {
-    NCollection_Handle<SelectMgr_SensitiveEntitySet>& anEntitySet =
-      aSensitivesIter.ChangeValue();
-    Standard_Integer anEntitiesNb = anEntitySet->Size();
+    Handle(SelectMgr_SensitiveEntitySet)& anEntitySet = aSensitivesIter.ChangeValue();
+    const Standard_Integer anEntitiesNb = anEntitySet->Size();
     for (Standard_Integer anIdx = 0; anIdx < anEntitiesNb; ++anIdx)
     {
       anEntitySet->GetSensitiveById (anIdx)->ResetSelectionActiveStatus();
@@ -924,13 +926,14 @@ void SelectMgr_ViewerSelector::ActiveOwners (NCollection_List<Handle(SelectBasic
 {
   for (SelectMgr_MapOfObjectSensitivesIterator anIter (myMapOfObjectSensitives); anIter.More(); anIter.Next())
   {
-    const NCollection_Handle<SelectMgr_SensitiveEntitySet>& anEntitySet = anIter.Value();
-    Standard_Integer anEntitiesNb = anEntitySet->Size();
+    const Handle(SelectMgr_SensitiveEntitySet)& anEntitySet = anIter.Value();
+    const Standard_Integer anEntitiesNb = anEntitySet->Size();
     for (Standard_Integer anIdx = 0; anIdx < anEntitiesNb; ++anIdx)
     {
-      if (anEntitySet->GetSensitiveById (anIdx)->IsActiveForSelection())
+      const Handle(SelectMgr_SensitiveEntity)& aSensitive = anEntitySet->GetSensitiveById (anIdx);
+      if (aSensitive->IsActiveForSelection())
       {
-        theOwners.Append (anEntitySet->GetSensitiveById (anIdx)->BaseSensitive()->OwnerId());
+        theOwners.Append (aSensitive->BaseSensitive()->OwnerId());
       }
     }
   }

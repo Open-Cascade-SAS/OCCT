@@ -41,15 +41,23 @@ typedef NCollection_IndexedMap<const OpenGl_Structure*> OpenGl_IndexedMapOfStruc
 typedef NCollection_Array1<OpenGl_IndexedMapOfStructure> OpenGl_ArrayOfIndexedMapOfStructure;
 
 //! Presentations list sorted within priorities.
-class OpenGl_Layer
+class OpenGl_Layer : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(OpenGl_Layer, Standard_Transient)
 public:
 
   //! Initializes associated priority list and layer properties
-  OpenGl_Layer (const Standard_Integer theNbPriorities = 11);
+  OpenGl_Layer (const Standard_Integer theNbPriorities,
+                const Handle(Select3D_BVHBuilder3d)& theBuilder);
 
   //! Destructor.
   virtual ~OpenGl_Layer();
+
+  //! Returns BVH tree builder for frustom culling.
+  const Handle(Select3D_BVHBuilder3d)& FrustumCullingBVHBuilder() const { return myBVHPrimitivesTrsfPers.Builder(); }
+
+  //! Assigns BVH tree builder for frustom culling.
+  void SetFrustumCullingBVHBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder) { myBVHPrimitivesTrsfPers.SetBuilder (theBuilder); }
 
   //! Return true if layer was marked with immediate flag.
   Standard_Boolean IsImmediate() const  { return myLayerSettings.IsImmediate(); }
