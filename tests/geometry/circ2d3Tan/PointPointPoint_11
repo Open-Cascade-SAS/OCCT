@@ -1,0 +1,6 @@
+point p1 0 50
+point p2 30 20
+point p3 150 150
+circ2d3Tan tan1 p1 p2 p3
+
+checklength tan1_1 -l 566.81157580298293

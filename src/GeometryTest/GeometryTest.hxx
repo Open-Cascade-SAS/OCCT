@@ -39,6 +39,9 @@ public:
   //! defines curve commands.
   Standard_EXPORT static void CurveCommands (Draw_Interpretor& I);
   
+  //! defines tangent curve commands.
+  Standard_EXPORT static void CurveTanCommands (Draw_Interpretor& I);
+
   //! defines fair curve commands.
   Standard_EXPORT static void FairCurveCommands (Draw_Interpretor& I);
   

@@ -1,0 +1,9 @@
+qline l1 0 0 10 20
+qline l2 0 0 10 -40
+qline l3 160 0 -40 10
+circ2d3Tan tan1 l1 l2 l3
+
+checklength tan1_1 -l 213.09795279419643
+checklength tan1_2 -l 284.90187851033369
+checklength tan1_3 -l 131.38343888467227
+checklength tan1_4 -l 63.235238531994284

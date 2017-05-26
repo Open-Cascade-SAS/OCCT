@@ -22,6 +22,45 @@
 #include <GccEnt_QualifiedLin.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Lin2d.hxx>
+#include <TCollection_AsciiString.hxx>
+
+namespace
+{
+  static Standard_CString GccEnt_Table_PrintPosition[5] =
+  {
+    "UNQUALIFIED", "ENCLOSING", "ENCLOSED", "OUTSIDE", "NOQUALIFIER"
+  };
+}
+
+//=======================================================================
+//function : PositionToString
+//purpose  :
+//=======================================================================
+Standard_CString GccEnt::PositionToString (GccEnt_Position thePosition)
+{
+  return GccEnt_Table_PrintPosition[thePosition];
+}
+
+//=======================================================================
+//function : PositionFromString
+//purpose  :
+//=======================================================================
+Standard_Boolean GccEnt::PositionFromString (Standard_CString thePositionString,
+                                             GccEnt_Position& thePosition)
+{
+  TCollection_AsciiString aName (thePositionString);
+  aName.UpperCase();
+  for (Standard_Integer aTypeIter = 0; aTypeIter <= GccEnt_noqualifier; ++aTypeIter)
+  {
+    Standard_CString aTypeName = GccEnt_Table_PrintPosition[aTypeIter];
+    if (aName == aTypeName)
+    {
+      thePosition = GccEnt_Position(aTypeIter);
+      return Standard_True;
+    }
+  }
+  return Standard_False;
+}
 
 GccEnt_QualifiedLin
   GccEnt::Unqualified(const gp_Lin2d& Line) {

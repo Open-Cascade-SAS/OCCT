@@ -17,6 +17,7 @@
 #ifndef _GccEnt_HeaderFile
 #define _GccEnt_HeaderFile
 
+#include <GccEnt_Position.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
@@ -53,6 +54,34 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
+
+  //! Prints the name of Position type as a String on the Stream.
+  static Standard_OStream& Print (const GccEnt_Position thePosition, Standard_OStream& theStream)
+  {
+    return (theStream << PositionToString (thePosition));
+  }
+
+  //! Returns the string name for a given position.
+  //! @param thePosition position type
+  //! @return string identifier from the list UNQUALIFIED ENCLOSING ENCLOSED OUTSIDE NOQUALIFIER
+  Standard_EXPORT static Standard_CString PositionToString (GccEnt_Position thePosition);
+
+  //! Returns the position from the given string identifier (using case-insensitive comparison).
+  //! @param thePositionString string identifier
+  //! @return position or GccEnt_unqualified if string identifier is invalid
+  static GccEnt_Position PositionFromString (Standard_CString thePositionString)
+  {
+    GccEnt_Position aPosition = GccEnt_unqualified;
+    PositionFromString (thePositionString, aPosition);
+    return aPosition;
+  }
+
+  //! Determines the position from the given string identifier (using case-insensitive comparison).
+  //! @param thePositionString string identifier
+  //! @param thePosition detected shape type
+  //! @return TRUE if string identifier is known
+  Standard_EXPORT static Standard_Boolean PositionFromString (Standard_CString thePositionString,
+                                                              GccEnt_Position& thePosition);
   
   //! Constructs a qualified line,
   //! so that the relative position to the circle or line of the

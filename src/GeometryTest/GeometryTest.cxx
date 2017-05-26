@@ -30,6 +30,7 @@ void GeometryTest::AllCommands(Draw_Interpretor& theCommands)
 
   GeomliteTest::AllCommands(theCommands);
   GeometryTest::CurveCommands(theCommands);
+  GeometryTest::CurveTanCommands(theCommands);
   GeometryTest::FairCurveCommands(theCommands);
   GeometryTest::SurfaceCommands(theCommands);
   GeometryTest::ConstraintCommands(theCommands);

@@ -294,6 +294,8 @@ GccAna_Circ2d3Tan::
 		   else {
 		     TheSame1(NbrSol) = 0;
 		     gp_Dir2d dc(center1.XY()-Center.XY());
+		     if (qualifier1(NbrSol) == GccEnt_enclosed)
+		       dc.Reverse(); // if tangent circle is inside the source circle, moving to edge of source circle
 		     pnttg1sol(NbrSol)=gp_Pnt2d(Center.XY()+Radius(k1)*dc.XY());
 		     par1sol(NbrSol)=ElCLib::Parameter(cirsol(NbrSol),
 						      pnttg1sol(NbrSol));

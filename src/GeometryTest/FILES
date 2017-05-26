@@ -5,6 +5,9 @@ GeometryTest_APICommands.cxx
 GeometryTest_ConstraintCommands.cxx
 GeometryTest_ContinuityCommands.cxx
 GeometryTest_CurveCommands.cxx
+GeometryTest_CurveTanCommands.cxx
+GeometryTest_DrawableQualifiedCurve2d.cxx
+GeometryTest_DrawableQualifiedCurve2d.hxx
 GeometryTest_FairCurveCommands.cxx
 GeometryTest_PolyCommands.cxx
 GeometryTest_SurfaceCommands.cxx
