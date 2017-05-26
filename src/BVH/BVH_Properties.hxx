@@ -42,22 +42,22 @@ public:
 public:
 
   //! Creates new identity transformation.
-  BVH_Transform();
+  BVH_Transform() {}
 
   //! Creates new transformation with specified matrix.
-  BVH_Transform (const BVH_MatNt& theTransform);
+  BVH_Transform (const BVH_MatNt& theTransform) : myTransform (theTransform) {}
 
   //! Releases resources of transformation properties.
-  virtual ~BVH_Transform();
+  virtual ~BVH_Transform() {}
 
   //! Returns transformation matrix.
-  const BVH_MatNt& Transform() const;
+  const BVH_MatNt& Transform() const { return myTransform; }
 
   //! Sets new transformation matrix.
   void SetTransform (const BVH_MatNt& theTransform);
 
   //! Returns inversed transformation matrix.
-  const BVH_MatNt& Inversed() const;
+  const BVH_MatNt& Inversed() const { return myTransformInversed; }
 
   //! Applies transformation matrix to bounding box.
   BVH_Box<T, N> Apply (const BVH_Box<T, N>& theBox) const;
@@ -69,6 +69,105 @@ protected:
 
 };
 
-#include <BVH_Properties.lxx>
+namespace BVH
+{
+  template<class T, int N> struct MatrixOp
+  {
+    // Not implemented
+  };
+
+  template<class T> struct MatrixOp<T, 4>
+  {
+    typedef typename BVH::MatrixType<T, 4>::Type BVH_Mat4t;
+
+    static void Inverse (const BVH_Mat4t& theIn,
+                         BVH_Mat4t&       theOut)
+    {
+      theIn.Inverted (theOut);
+    }
+
+    typedef typename BVH::VectorType<T, 4>::Type BVH_Vec4t;
+
+    static BVH_Vec4t Multiply (const BVH_Mat4t& theMat,
+                               const BVH_Vec4t& theVec)
+    {
+      BVH_Vec4t aOut = theMat * theVec;
+      return aOut * static_cast<T> (1.0 / aOut.w());
+    }
+  };
+
+  template<class T, int N>
+  struct UnitVector
+  {
+    // Not implemented
+  };
+
+  template<class T>
+  struct UnitVector<T, 2>
+  {
+    typedef typename BVH::VectorType<T, 2>::Type BVH_Vec2t;
+    static BVH_Vec2t DX() { return BVH_Vec2t (static_cast<T> (1.0), static_cast<T> (0.0)); }
+    static BVH_Vec2t DY() { return BVH_Vec2t (static_cast<T> (0.0), static_cast<T> (1.0)); }
+    static BVH_Vec2t DZ() { return BVH_Vec2t (static_cast<T> (0.0), static_cast<T> (0.0)); }
+  };
+
+  template<class T>
+  struct UnitVector<T, 3>
+  {
+    typedef typename BVH::VectorType<T, 3>::Type BVH_Vec3t;
+    static BVH_Vec3t DX() { return BVH_Vec3t (static_cast<T> (1.0), static_cast<T> (0.0), static_cast<T> (0.0)); }
+    static BVH_Vec3t DY() { return BVH_Vec3t (static_cast<T> (0.0), static_cast<T> (1.0), static_cast<T> (0.0)); }
+    static BVH_Vec3t DZ() { return BVH_Vec3t (static_cast<T> (0.0), static_cast<T> (0.0), static_cast<T> (1.0)); }
+  };
+
+  template<class T>
+  struct UnitVector<T, 4>
+  {
+    typedef typename BVH::VectorType<T, 4>::Type BVH_Vec4t;
+    static BVH_Vec4t DX() { return BVH_Vec4t (static_cast<T> (1.0), static_cast<T> (0.0), static_cast<T> (0.0), static_cast<T> (0.0)); }
+    static BVH_Vec4t DY() { return BVH_Vec4t (static_cast<T> (0.0), static_cast<T> (1.0), static_cast<T> (0.0), static_cast<T> (0.0)); }
+    static BVH_Vec4t DZ() { return BVH_Vec4t (static_cast<T> (0.0), static_cast<T> (0.0), static_cast<T> (1.0), static_cast<T> (0.0)); }
+  };
+}
+
+// =======================================================================
+// function : SetTransform
+// purpose  :
+// =======================================================================
+template<class T, int N>
+void BVH_Transform<T, N>::SetTransform (const BVH_MatNt& theTransform)
+{
+  myTransform = theTransform;
+  BVH::MatrixOp<T, N>::Inverse (myTransform, myTransformInversed);
+}
+
+// =======================================================================
+// function : Apply
+// purpose  :
+// =======================================================================
+template<class T, int N>
+BVH_Box<T, N> BVH_Transform<T, N>::Apply (const BVH_Box<T, N>& theBox) const
+{
+  typename BVH_Box<T, N>::BVH_VecNt aSize = theBox.Size();
+
+  BVH_Box<T, N> aBox;
+  for (Standard_Integer aX = 0; aX <= 1; ++aX)
+  {
+    for (Standard_Integer aY = 0; aY <= 1; ++aY)
+    {
+      for (Standard_Integer aZ = 0; aZ <= 1; ++aZ)
+      {
+        typename BVH_Box<T, N>::BVH_VecNt aCorner = theBox.CornerMin() +
+          BVH::UnitVector<T, N>::DX() * aSize * static_cast<T> (aX) +
+          BVH::UnitVector<T, N>::DY() * aSize * static_cast<T> (aY) +
+          BVH::UnitVector<T, N>::DZ() * aSize * static_cast<T> (aZ);
+
+        aBox.Add (BVH::MatrixOp<T, N>::Multiply (myTransform, aCorner));
+      }
+    }
+  }
+
+  return aBox;
+}
 
 #endif // _BVH_Properties_Header

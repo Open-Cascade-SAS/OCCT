@@ -29,10 +29,51 @@ public:
   BVH_QuickSorter (const Standard_Integer theAxis = 0) : myAxis (theAxis) { }
 
   //! Sorts the set.
-  virtual void Perform (BVH_Set<T, N>* theSet);
+  virtual void Perform (BVH_Set<T, N>* theSet) Standard_OVERRIDE
+  {
+    Perform (theSet, 0, theSet->Size() - 1);
+  }
 
   //! Sorts the given (inclusive) range in the set.
-  virtual void Perform (BVH_Set<T, N>* theSet, const Standard_Integer theStart, const Standard_Integer theFinal);
+  virtual void Perform (BVH_Set<T, N>* theSet, const Standard_Integer theStart, const Standard_Integer theFinal) Standard_OVERRIDE
+  {
+    Standard_Integer aLft = theStart;
+    Standard_Integer aRgh = theFinal;
+
+    T aPivot = theSet->Center ((aRgh + aLft) / 2, myAxis);
+    while (aLft < aRgh)
+    {
+      while (theSet->Center (aLft, myAxis) < aPivot && aLft < theFinal)
+      {
+        ++aLft;
+      }
+
+      while (theSet->Center (aRgh, myAxis) > aPivot && aRgh > theStart)
+      {
+        --aRgh;
+      }
+
+      if (aLft <= aRgh)
+      {
+        if (aLft != aRgh)
+        {
+          theSet->Swap (aLft, aRgh);
+        }
+        ++aLft;
+        --aRgh;
+      }
+    }
+
+    if (aRgh > theStart)
+    {
+      Perform (theSet, theStart, aRgh);
+    }
+
+    if (aLft < theFinal)
+    {
+      Perform (theSet, aLft, theFinal);
+    }
+  }
 
 protected:
 
@@ -40,7 +81,5 @@ protected:
   Standard_Integer myAxis;
 
 };
-
-#include <BVH_QuickSorter.lxx>
 
 #endif // _BVH_QuickSorter_Header

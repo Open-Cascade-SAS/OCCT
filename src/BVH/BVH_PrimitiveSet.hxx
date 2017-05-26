@@ -18,6 +18,7 @@
 
 #include <BVH_Object.hxx>
 #include <BVH_Builder.hxx>
+#include <BVH_BinnedBuilder.hxx>
 
 //! Set of abstract geometric primitives organized with bounding
 //! volume hierarchy (BVH). Unlike an object set, this collection
@@ -38,29 +39,59 @@ public:
   static const Standard_Integer MaxTreeDepth = 32;
 
   //! Creates set of abstract primitives.
-  BVH_PrimitiveSet();
+  BVH_PrimitiveSet()
+  : myBVH (new BVH_Tree<T, N>())
+  {
+    // Set default builder - binned SAH split
+    myBuilder = new BVH_BinnedBuilder<T, N, 48> (5, MaxTreeDepth);
+  }
 
   //! Releases resources of set of abstract primitives.
-  virtual ~BVH_PrimitiveSet();
+  virtual ~BVH_PrimitiveSet()
+  {
+    myBVH.Nullify();
+    myBuilder.Nullify();
+  }
 
 public:
 
   //! Returns AABB of primitive set.
-  virtual BVH_Box<T, N> Box() const;
+  virtual BVH_Box<T, N> Box() const Standard_OVERRIDE
+  {
+    if (BVH_Object<T, N>::myIsDirty)
+    {
+      myBox = BVH_Set<T, N>::Box();
+    }
+    return myBox;
+  }
 
   //! Returns BVH tree (and builds it if necessary).
-  virtual const NCollection_Handle<BVH_Tree<T, N> >& BVH();
+  virtual const NCollection_Handle<BVH_Tree<T, N> >& BVH()
+  {
+    if (BVH_Object<T, N>::myIsDirty)
+    {
+      Update();
+    }
+    return myBVH;
+  }
 
   //! Returns the method (builder) used to construct BVH.
-  virtual const NCollection_Handle<BVH_Builder<T, N> >& Builder() const;
+  virtual const NCollection_Handle<BVH_Builder<T, N> >& Builder() const { return myBuilder; }
 
   //! Sets the method (builder) used to construct BVH.
-  virtual void SetBuilder (NCollection_Handle<BVH_Builder<T, N> >& theBuilder);
+  virtual void SetBuilder (const NCollection_Handle<BVH_Builder<T, N> >& theBuilder) { myBuilder = theBuilder; }
 
 protected:
 
   //! Updates BVH of primitive set.
-  virtual void Update();
+  virtual void Update()
+  {
+    if (BVH_Object<T, N>::myIsDirty)
+    {
+      myBuilder->Build (this, myBVH.operator->(), Box());
+      BVH_Object<T, N>::myIsDirty = Standard_False;
+    }
+  }
 
 protected:
 
@@ -70,7 +101,5 @@ protected:
   mutable BVH_Box<T, N> myBox; //!< Cached bounding box of geometric primitives
 
 };
-
-#include <BVH_PrimitiveSet.lxx>
 
 #endif // _BVH_PrimitiveSet_Header

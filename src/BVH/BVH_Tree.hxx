@@ -43,7 +43,7 @@ public: //! @name general methods
   BVH_TreeBase() : myDepth (0) { }
 
   //! Releases resources of BVH tree.
-  virtual ~BVH_TreeBase();
+  virtual ~BVH_TreeBase() {}
 
   //! Returns depth (height) of BVH tree.
   int Depth() const
@@ -197,7 +197,5 @@ class BVH_Tree
 {
   // Invalid type
 };
-
-#include <BVH_Tree.lxx>
 
 #endif // _BVH_TreeBase_Header

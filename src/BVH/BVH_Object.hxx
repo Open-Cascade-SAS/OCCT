@@ -30,7 +30,7 @@ class BVH_Object
 public:
 
   //! Creates new abstract geometric object.
-  BVH_Object();
+  BVH_Object() : myIsDirty (Standard_False) {}
 
   //! Releases resources of geometric object.
   virtual ~BVH_Object() = 0;
@@ -41,13 +41,13 @@ public:
   virtual BVH_Box<T, N> Box() const = 0;
 
   //! Returns properties of the geometric object.
-  virtual const NCollection_Handle<BVH_Properties>& Properties() const;
+  virtual const NCollection_Handle<BVH_Properties>& Properties() const { return myProperties; }
 
   //! Sets properties of the geometric object.
-  virtual void SetProperties (const NCollection_Handle<BVH_Properties>& theProperties);
+  virtual void SetProperties (const NCollection_Handle<BVH_Properties>& theProperties) { myProperties = theProperties; }
 
   //! Marks object state as outdated (needs BVH rebuilding).
-  virtual void MarkDirty();
+  virtual void MarkDirty() { myIsDirty = Standard_True; }
 
 protected:
 
@@ -56,6 +56,14 @@ protected:
 
 };
 
-#include <BVH_Object.lxx>
+// =======================================================================
+// function : ~BVH_Object
+// purpose  :
+// =======================================================================
+template<class T, int N>
+BVH_Object<T, N>::~BVH_Object()
+{
+  //
+}
 
 #endif // _BVH_Object_Header

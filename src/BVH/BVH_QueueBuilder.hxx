@@ -38,7 +38,10 @@ public:
   //! Creates new BVH queue based builder.
   BVH_QueueBuilder (const Standard_Integer theLeafNodeSize,
                     const Standard_Integer theMaxTreeDepth,
-                    const Standard_Integer theNumOfThreads = 1);
+                    const Standard_Integer theNumOfThreads = 1)
+  : BVH_Builder<T, N> (theLeafNodeSize,
+                       theMaxTreeDepth),
+    myNumOfThreads (theNumOfThreads) {}
 
   //! Releases resources of BVH queue based builder.
   virtual ~BVH_QueueBuilder() = 0;
@@ -48,7 +51,7 @@ public:
   //! Builds BVH using specific algorithm.
   virtual void Build (BVH_Set<T, N>*       theSet,
                       BVH_Tree<T, N>*      theBVH,
-                      const BVH_Box<T, N>& theBox);
+                      const BVH_Box<T, N>& theBox) const Standard_OVERRIDE;
 
 protected:
 
@@ -126,58 +129,173 @@ protected:
   public:
 
     //! Creates new BVH build thread.
-    BVH_TypedBuildTool (BVH_Set<T, N>*     theSet,
-                        BVH_Tree<T, N>*    theBVH,
-                        BVH_Builder<T, N>* theAlgo)
+    BVH_TypedBuildTool (BVH_Set<T, N>*  theSet,
+                        BVH_Tree<T, N>* theBVH,
+                        BVH_BuildQueue& theBuildQueue,
+                        const BVH_QueueBuilder<T, N>* theAlgo)
     : mySet  (theSet),
-      myBVH  (theBVH)
+      myBVH  (theBVH),
+      myBuildQueue (&theBuildQueue),
+      myAlgo (theAlgo)
     {
-      myAlgo = dynamic_cast<BVH_QueueBuilder<T, N>* > (theAlgo);
-
-      Standard_ASSERT_RAISE (myAlgo != NULL,
-        "Error! BVH builder should be queue based");
+      Standard_ASSERT_RAISE (myAlgo != NULL, "Error! BVH builder should be queue based");
     }
 
     //! Performs splitting of the given BVH node.
-    virtual void Perform (const Standard_Integer theNode)
+    virtual void Perform (const Standard_Integer theNode) Standard_OVERRIDE
     {
-      const typename BVH_QueueBuilder<T, N>::BVH_ChildNodes aChildren = myAlgo->BuildNode (mySet, myBVH, theNode);
-
-      myAlgo->AddChildren (myBVH, theNode, aChildren);
+      const typename BVH_QueueBuilder<T, N>::BVH_ChildNodes aChildren = myAlgo->buildNode (mySet, myBVH, theNode);
+      myAlgo->addChildren (myBVH, *myBuildQueue, theNode, aChildren);
     }
 
   protected:
 
-    //! Primitive set to build BVH.
-    BVH_Set<T, N>* mySet;
+    BVH_Set<T, N>*                mySet;        //!< Primitive set to build BVH
+    BVH_Tree<T, N>*               myBVH;        //!< Output BVH tree for the set
+    BVH_BuildQueue*               myBuildQueue;
+    const BVH_QueueBuilder<T, N>* myAlgo;       //!< Queue based BVH builder to use
 
-    //! Output BVH tree for the set.
-    BVH_Tree<T, N>* myBVH;
-
-    //! Queue based BVH builder to use.
-    BVH_QueueBuilder<T, N>* myAlgo;
   };
 
 protected:
 
   //! Performs splitting of the given BVH node.
-  virtual typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BuildNode (BVH_Set<T, N>*         theSet,
+  virtual typename BVH_QueueBuilder<T, N>::BVH_ChildNodes buildNode (BVH_Set<T, N>*         theSet,
                                                                      BVH_Tree<T, N>*        theBVH,
-                                                                     const Standard_Integer theNode) = 0;
+                                                                     const Standard_Integer theNode) const = 0;
 
   //! Processes child nodes of the splitted BVH node.
-  virtual void AddChildren (BVH_Tree<T, N>*        theBVH,
-                            const Standard_Integer theNode,
-                            const BVH_ChildNodes&  theSubNodes);
+  virtual void addChildren (BVH_Tree<T, N>*        theBVH,
+                            BVH_BuildQueue&        theBuildQueue,
+							const Standard_Integer theNode,
+                            const BVH_ChildNodes&  theSubNodes) const;
 
 protected:
-
-  BVH_BuildQueue myBuildQueue; //!< Queue to manage BVH node building tasks
 
   Standard_Integer myNumOfThreads; //!< Number of threads used to build BVH
 
 };
 
-#include <BVH_QueueBuilder.lxx>
+// =======================================================================
+// function : addChildren
+// purpose  :
+// =======================================================================
+template<class T, int N>
+void BVH_QueueBuilder<T, N>::addChildren (BVH_Tree<T, N>* theBVH,
+                                          BVH_BuildQueue& theBuildQueue,
+							              const Standard_Integer theNode,
+                                          const typename BVH_QueueBuilder<T, N>::BVH_ChildNodes& theSubNodes) const
+{
+  Standard_Integer aChildren[] = { -1, -1 };
+  if (!theSubNodes.IsValid())
+  {
+    return;
+  }
+
+  // Add child nodes
+  {
+    Standard_Mutex::Sentry aSentry (theBuildQueue.myMutex);
+
+    for (Standard_Integer anIdx = 0; anIdx < 2; ++anIdx)
+    {
+      aChildren[anIdx] = theBVH->AddLeafNode (theSubNodes.Boxes[anIdx],
+                                              theSubNodes.Ranges[anIdx].Start,
+                                              theSubNodes.Ranges[anIdx].Final);
+    }
+
+    BVH_Builder<T, N>::updateDepth (theBVH, theBVH->Level (theNode) + 1);
+  }
+
+  // Set parameters of child nodes and generate new tasks
+  for (Standard_Integer anIdx = 0; anIdx < 2; ++anIdx)
+  {
+    const Standard_Integer aChildIndex = aChildren[anIdx];
+
+    theBVH->Level (aChildIndex) = theBVH->Level (theNode) + 1;
+
+    (anIdx == 0 ? theBVH->template Child<0> (theNode)
+                : theBVH->template Child<1> (theNode)) = aChildIndex;
+
+    // Check to see if the child node must be split
+    const Standard_Boolean isLeaf = theSubNodes.NbPrims (anIdx) <= BVH_Builder<T, N>::myLeafNodeSize
+                                 || theBVH->Level (aChildIndex) >= BVH_Builder<T, N>::myMaxTreeDepth;
+
+    if (!isLeaf)
+    {
+      theBuildQueue.Enqueue (aChildIndex);
+    }
+  }
+}
+
+// =======================================================================
+// function : Build
+// purpose  : Builds BVH using specific algorithm
+// =======================================================================
+template<class T, int N>
+void BVH_QueueBuilder<T, N>::Build (BVH_Set<T, N>*       theSet,
+                                    BVH_Tree<T, N>*      theBVH,
+                                    const BVH_Box<T, N>& theBox) const
+{
+  Standard_ASSERT_RETURN (theBVH != NULL,
+    "Error! BVH tree to construct is NULL", );
+
+  theBVH->Clear();
+  const Standard_Integer aSetSize = theSet->Size();
+  if (aSetSize == 0)
+  {
+    return;
+  }
+
+  const Standard_Integer aRoot = theBVH->AddLeafNode (theBox, 0, aSetSize - 1);
+  if (theSet->Size() == 1)
+  {
+    return;
+  }
+
+  BVH_BuildQueue aBuildQueue;
+  aBuildQueue.Enqueue (aRoot);
+
+  BVH_TypedBuildTool aBuildTool (theSet, theBVH, aBuildQueue, this);
+  if (myNumOfThreads > 1)
+  {
+    // Reserve the maximum possible number of nodes in the BVH
+    theBVH->Reserve (2 * aSetSize - 1);
+
+    NCollection_Vector<Handle(BVH_BuildThread)> aThreads;
+
+    // Run BVH build threads
+    for (Standard_Integer aThreadIndex = 0; aThreadIndex < myNumOfThreads; ++aThreadIndex)
+    {
+      aThreads.Append (new BVH_BuildThread (aBuildTool, aBuildQueue));
+      aThreads.Last()->Run();
+    }
+
+    // Wait until all threads finish their work
+    for (Standard_Integer aThreadIndex = 0; aThreadIndex < myNumOfThreads; ++aThreadIndex)
+    {
+      aThreads.ChangeValue (aThreadIndex)->Wait();
+    }
+
+    // Free unused memory
+    theBVH->Reserve (theBVH->Length());
+  }
+  else
+  {
+    BVH_BuildThread aThread (aBuildTool, aBuildQueue);
+
+    // Execute thread function inside current thread
+    aThread.execute();
+  }
+}
+
+// =======================================================================
+// function : ~BVH_QueueBuilder
+// purpose  :
+// =======================================================================
+template<class T, int N>
+BVH_QueueBuilder<T, N>::~BVH_QueueBuilder()
+{
+  //
+}
 
 #endif // _BVH_QueueBuilder_Header

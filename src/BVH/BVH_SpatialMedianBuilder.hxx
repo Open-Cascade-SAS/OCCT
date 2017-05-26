@@ -17,6 +17,7 @@
 #define _BVH_SpatialMedianBuilder_Header
 
 #include <BVH_BinnedBuilder.hxx>
+#include <BVH_Box.hxx>
 
 //! Performs building of BVH tree using spatial median split algorithm.
 template<class T, int N>
@@ -27,13 +28,14 @@ public:
   //! Creates spatial median split builder.
   BVH_SpatialMedianBuilder (const Standard_Integer theLeafNodeSize = 5,
                             const Standard_Integer theMaxTreeDepth = 32,
-                            const Standard_Boolean theToUseMainAxis = Standard_False);
+                            const Standard_Boolean theToUseMainAxis = Standard_False)
+  : BVH_BinnedBuilder<T, N, 2> (theLeafNodeSize,
+                                theMaxTreeDepth,
+                                theToUseMainAxis) {}
 
   //! Releases resources of spatial median split builder.
-  virtual ~BVH_SpatialMedianBuilder();
+  virtual ~BVH_SpatialMedianBuilder() {}
 
 };
-
-#include <BVH_SpatialMedianBuilder.lxx>
 
 #endif // _BVH_SpatialMedianBuilder_Header

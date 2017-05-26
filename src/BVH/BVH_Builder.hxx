@@ -36,21 +36,23 @@ public:
 
   //! Creates new abstract BVH builder.
   BVH_Builder (const Standard_Integer theLeafNodeSize,
-               const Standard_Integer theMaxTreeDepth);
+               const Standard_Integer theMaxTreeDepth)
+  : myMaxTreeDepth (theMaxTreeDepth),
+    myLeafNodeSize (theLeafNodeSize) {}
 
   //! Releases resources of BVH builder.
-  virtual ~BVH_Builder();
+  virtual ~BVH_Builder() {}
 
   //! Builds BVH using specific algorithm.
   virtual void Build (BVH_Set<T, N>*       theSet,
                       BVH_Tree<T, N>*      theBVH,
-                      const BVH_Box<T, N>& theBox) = 0;
+                      const BVH_Box<T, N>& theBox) const = 0;
 
 protected:
 
   //! Updates depth of constructed BVH tree.
-  void UpdateDepth (BVH_Tree<T, N>*        theBVH,
-                    const Standard_Integer theLevel)
+  void updateDepth (BVH_Tree<T, N>*        theBVH,
+                    const Standard_Integer theLevel) const
   {
     if (theLevel > theBVH->myDepth)
     {
@@ -64,7 +66,5 @@ protected:
   Standard_Integer myLeafNodeSize; //!< Maximum number of objects per leaf
 
 };
-
-#include <BVH_Builder.lxx>
 
 #endif // _BVH_Builder_Header

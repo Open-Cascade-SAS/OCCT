@@ -30,10 +30,11 @@ public: //! @name general methods
   //! Returns index of the K-th child of the given inner node.
   //! \tparam K the index of node child (from 0 to 3)
   template<int K>
-  int Child (const int theNodeIndex) const;
+  int Child (const int theNodeIndex) const
+  {
+    return BVH::Array<int, 4>::Value (this->myNodeInfoBuffer, theNodeIndex).y() + K;
+  }
 
 };
-
-#include <BVH_QuadTree.lxx>
 
 #endif // _BVH_QuadTree_Header

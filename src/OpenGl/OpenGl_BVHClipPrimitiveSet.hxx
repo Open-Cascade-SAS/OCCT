@@ -35,18 +35,18 @@ public:
   OpenGl_BVHClipPrimitiveSet();
 
   //! Returns total number of structures.
-  virtual Standard_Integer Size() const;
+  virtual Standard_Integer Size() const Standard_OVERRIDE;
 
   //! Returns AABB of the structure.
-  virtual Graphic3d_BndBox3d Box (const Standard_Integer theIdx) const;
+  virtual Graphic3d_BndBox3d Box (const Standard_Integer theIdx) const Standard_OVERRIDE;
 
   //! Calculates center of the AABB along given axis.
   virtual Standard_Real Center (const Standard_Integer theIdx,
-                                const Standard_Integer theAxis) const;
+                                const Standard_Integer theAxis) const Standard_OVERRIDE;
 
   //! Swaps structures with the given indices.
   virtual void Swap (const Standard_Integer theIdx1,
-                     const Standard_Integer theIdx2);
+                     const Standard_Integer theIdx2) Standard_OVERRIDE;
 
   //! Adds structure to the set.
   //! @return true if structure added, otherwise returns false (structure already in the set).

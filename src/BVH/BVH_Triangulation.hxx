@@ -31,10 +31,10 @@ public:
 public:
 
   //! Creates empty triangulation.
-  BVH_Triangulation();
+  BVH_Triangulation() {}
 
   //! Releases resources of triangulation.
-  virtual ~BVH_Triangulation();
+  virtual ~BVH_Triangulation() {}
 
 public:
 
@@ -47,24 +47,55 @@ public:
 public:
 
   //! Returns total number of triangles.
-  virtual Standard_Integer Size() const;
+  virtual Standard_Integer Size() const Standard_OVERRIDE
+  {
+    return BVH::Array<Standard_Integer, 4>::Size (Elements);
+  }
 
   //! Returns AABB of entire set of objects.
   using BVH_PrimitiveSet<T, N>::Box;
 
   //! Returns AABB of the given triangle.
-  virtual BVH_Box<T, N> Box (const Standard_Integer theIndex) const;
+  virtual BVH_Box<T, N> Box (const Standard_Integer theIndex) const Standard_OVERRIDE
+  {
+    const BVH_Vec4i& anIndex = BVH::Array<Standard_Integer, 4>::Value (Elements, theIndex);
+
+    const BVH_VecNt& aPoint0 = BVH::Array<T, N>::Value (Vertices, anIndex.x());
+    const BVH_VecNt& aPoint1 = BVH::Array<T, N>::Value (Vertices, anIndex.y());
+    const BVH_VecNt& aPoint2 = BVH::Array<T, N>::Value (Vertices, anIndex.z());
+
+    BVH_VecNt aMinPoint (aPoint0), aMaxPoint (aPoint0);
+
+    BVH::BoxMinMax<T, N>::CwiseMin (aMinPoint, aPoint1);
+    BVH::BoxMinMax<T, N>::CwiseMin (aMinPoint, aPoint2);
+    BVH::BoxMinMax<T, N>::CwiseMax (aMaxPoint, aPoint1);
+    BVH::BoxMinMax<T, N>::CwiseMax (aMaxPoint, aPoint2);
+    return BVH_Box<T, N> (aMinPoint, aMaxPoint);
+  }
 
   //! Returns centroid position along the given axis.
   virtual T Center (const Standard_Integer theIndex,
-                    const Standard_Integer theAxis) const;
+                    const Standard_Integer theAxis) const Standard_OVERRIDE
+  {
+    const BVH_Vec4i& anIndex = BVH::Array<Standard_Integer, 4>::Value (Elements, theIndex);
+
+    const BVH_VecNt& aPoint0 = BVH::Array<T, N>::Value (Vertices, anIndex.x());
+    const BVH_VecNt& aPoint1 = BVH::Array<T, N>::Value (Vertices, anIndex.y());
+    const BVH_VecNt& aPoint2 = BVH::Array<T, N>::Value (Vertices, anIndex.z());
+    return (BVH::VecComp<T, N>::Get (aPoint0, theAxis) +
+            BVH::VecComp<T, N>::Get (aPoint1, theAxis) +
+            BVH::VecComp<T, N>::Get (aPoint2, theAxis)) * static_cast<T> (1.0 / 3.0);
+  }
 
   //! Performs transposing the two given triangles in the set.
   virtual void Swap (const Standard_Integer theIndex1,
-                     const Standard_Integer theIndex2);
+                     const Standard_Integer theIndex2) Standard_OVERRIDE
+  {
+    BVH_Vec4i& anIndices1 = BVH::Array<Standard_Integer, 4>::ChangeValue (Elements, theIndex1);
+    BVH_Vec4i& anIndices2 = BVH::Array<Standard_Integer, 4>::ChangeValue (Elements, theIndex2);
+    std::swap (anIndices1, anIndices2);
+  }
 
 };
-
-#include <BVH_Triangulation.lxx>
 
 #endif // _BVH_Triangulation_Header

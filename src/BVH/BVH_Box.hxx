@@ -17,6 +17,7 @@
 #define _BVH_Box_Header
 
 #include <BVH_Types.hxx>
+#include <Standard_ShortReal.hxx>
 
 #include <limits>
 
@@ -57,38 +58,51 @@ public:
 public:
 
   //! Clears bounding box.
-  void Clear();
+  void Clear() { myIsInited = Standard_False; }
 
   //! Is bounding box valid?
-  Standard_Boolean IsValid() const;
+  Standard_Boolean IsValid() const { return myIsInited; }
 
   //! Appends new point to the bounding box.
-  void Add (const BVH_VecNt& thePoint);
+  void Add (const BVH_VecNt& thePoint)
+  {
+    if (!myIsInited)
+    {
+      myMinPoint = thePoint;
+      myMaxPoint = thePoint;
+      myIsInited = Standard_True;
+    }
+    else
+    {
+      myMinPoint = myMinPoint.cwiseMin (thePoint);
+      myMaxPoint = myMaxPoint.cwiseMax (thePoint);
+    }
+  }
 
   //! Combines bounding box with another one.
-  void Combine (const BVH_Box& theVolume);
+  void Combine (const BVH_Box& theBox);
 
   //! Returns minimum point of bounding box.
-  const BVH_VecNt& CornerMin() const;
+  const BVH_VecNt& CornerMin() const { return myMinPoint; }
 
   //! Returns maximum point of bounding box.
-  const BVH_VecNt& CornerMax() const;
+  const BVH_VecNt& CornerMax() const { return myMaxPoint; }
 
   //! Returns minimum point of bounding box.
-  BVH_VecNt& CornerMin();
+  BVH_VecNt& CornerMin() { return myMinPoint; }
 
   //! Returns maximum point of bounding box.
-  BVH_VecNt& CornerMax();
+  BVH_VecNt& CornerMax() { return myMaxPoint; }
 
   //! Returns surface area of bounding box.
   //! If the box is degenerated into line, returns the perimeter instead.
   T Area() const;
 
   //! Returns diagonal of bounding box.
-  BVH_VecNt Size() const;
+  BVH_VecNt Size() const { return myMaxPoint - myMinPoint; }
 
   //! Returns center of bounding box.
-  BVH_VecNt Center() const;
+  BVH_VecNt Center() const { return (myMinPoint + myMaxPoint) * static_cast<T> (0.5); }
 
   //! Returns center of bounding box along the given axis.
   T Center (const Standard_Integer theAxis) const;
@@ -279,6 +293,47 @@ namespace BVH
   };
 }
 
-#include <BVH_Box.lxx>
+// =======================================================================
+// function : Combine
+// purpose  :
+// =======================================================================
+template<class T, int N>
+void BVH_Box<T, N>::Combine (const BVH_Box& theBox)
+{
+  if (theBox.myIsInited)
+  {
+    if (!myIsInited)
+    {
+      myMinPoint = theBox.myMinPoint;
+      myMaxPoint = theBox.myMaxPoint;
+      myIsInited = Standard_True;
+    }
+    else
+    {
+      BVH::BoxMinMax<T, N>::CwiseMin (myMinPoint, theBox.myMinPoint);
+      BVH::BoxMinMax<T, N>::CwiseMax (myMaxPoint, theBox.myMaxPoint);
+    }
+  }
+}
+
+// =======================================================================
+// function : Area
+// purpose  :
+// =======================================================================
+template<class T, int N>
+T BVH_Box<T, N>::Area() const
+{
+  return !myIsInited ? static_cast<T> (0.0) : BVH::SurfaceCalculator<T, N>::Area (myMaxPoint - myMinPoint);
+}
+
+// =======================================================================
+// function : Center
+// purpose  :
+// =======================================================================
+template<class T, int N>
+T BVH_Box<T, N>::Center (const Standard_Integer theAxis) const
+{
+  return BVH::CenterAxis<T, N>::Center (*this, theAxis);
+}
 
 #endif // _BVH_Box_Header

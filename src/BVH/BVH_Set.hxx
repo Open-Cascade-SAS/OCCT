@@ -32,13 +32,22 @@ public:
 public:
 
   //! Creates new abstract set of objects.
-  BVH_Set();
+  BVH_Set() {}
 
   //! Releases resources of set of objects.
   virtual ~BVH_Set() = 0;
 
   //! Returns AABB of the entire set of objects.
-  virtual BVH_Box<T, N> Box() const;
+  virtual BVH_Box<T, N> Box() const
+  {
+    BVH_Box<T, N> aBox;
+    const Standard_Integer aSize = Size();
+    for (Standard_Integer anIndex = 0; anIndex < aSize; ++anIndex)
+    {
+      aBox.Combine (Box (anIndex));
+    }
+    return aBox;
+  }
 
 public:
 
@@ -58,6 +67,14 @@ public:
 
 };
 
-#include <BVH_Set.lxx>
+// =======================================================================
+// function : ~BVH_Set
+// purpose  :
+// =======================================================================
+template<class T, int N>
+BVH_Set<T, N>::~BVH_Set()
+{
+  //
+}
 
 #endif // _BVH_Set_Header

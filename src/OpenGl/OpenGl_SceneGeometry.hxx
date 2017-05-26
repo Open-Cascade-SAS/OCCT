@@ -283,7 +283,7 @@ public:
   }
 
   //! Clears ray-tracing geometry.
-  void Clear();
+  virtual void Clear() Standard_OVERRIDE;
 
 public: //! @name methods related to acceleration structure
 
