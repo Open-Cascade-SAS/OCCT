@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC28797"
+puts "========"
+puts ""
+#########################################################################
+# Data Exchange - Exception is raised during reading attached STEP file
+#########################################################################
+
+set aFile [locate_data_file bug28797_36x60.step]
+
+if {[catch {stepread $aFile a *}]} {
+  puts "ERROR: OCC28797 is reproduced. Exception was raised during reading initial file."
+} else {
+  tpcompound result
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
