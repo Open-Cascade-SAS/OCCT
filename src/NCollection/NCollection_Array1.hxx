@@ -192,7 +192,7 @@ public:
   }
 
   //! Move constructor
-  NCollection_Array1 (const NCollection_Array1&& theOther)
+  NCollection_Array1 (NCollection_Array1&& theOther)
   : myLowerBound (theOther.myLowerBound),
     myUpperBound (theOther.myUpperBound),
     myDeletable  (theOther.myDeletable),
