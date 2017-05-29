@@ -346,7 +346,7 @@ Standard_Integer BOPAlgo_Tools::EdgesToWires(const TopoDS_Shape& theEdges,
     BOPAlgo_Builder aGF;
     aGF.SetArguments(aLE);
     aGF.Perform();
-    if (aGF.ErrorStatus()) {
+    if (aGF.HasErrors()) {
       // unable to share the edges
       iErr = 2;
       return iErr;
@@ -666,7 +666,7 @@ Standard_Boolean BOPAlgo_Tools::WiresToFaces(const TopoDS_Shape& theWires,
       aBF.SetShapes(aLE);
       aBF.SetFace(aFF);
       aBF.Perform();
-      if (aBF.ErrorStatus()) {
+      if (aBF.HasErrors()) {
         continue;
       }
       //

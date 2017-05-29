@@ -1,0 +1,30 @@
+puts "========"
+puts "OCC28786"
+puts "========"
+puts ""
+########################################
+# Refactoring of the Warning/Error reporting system of Boolean Operations Algorithm
+########################################
+
+vertex v 0 0 0
+vertex v1 10 0 0
+edge e1 v v1
+edge e2 v v1
+compound e1 e2 a
+
+vertex v3 -5 0 0
+vertex v4 15 0 0
+edge b v3 v4
+
+bclearobjects
+bcleartools
+baddobjects a
+baddtools b
+
+if {![regexp "Warning" [bfillds]]} {
+  puts "Error: WarningStatus has not been set"
+}
+
+bbuild result
+checkshape result
+checknbshapes result -edge 3

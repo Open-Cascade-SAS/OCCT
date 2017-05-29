@@ -352,7 +352,7 @@ Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const
   theDSFiller.SetArguments(aLS);
   //
   theDSFiller.Perform();
-  if (theDSFiller.ErrorStatus()) {
+  if (theDSFiller.HasErrors()) {
     printf("Check types of the arguments, please\n");
     return 1;
   }
@@ -367,7 +367,7 @@ Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const
   Standard_Boolean anIsDone = pBuilder->IsDone();
   if (!anIsDone)
   {
-    printf("boolean operation not done ErrorStatus()=%d\n", pBuilder->ErrorStatus());
+    printf("boolean operation not done HasErrors()=%d\n", pBuilder->HasErrors());
     return 1;
   }
 

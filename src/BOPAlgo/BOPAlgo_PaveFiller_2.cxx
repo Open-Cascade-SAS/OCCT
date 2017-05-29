@@ -145,8 +145,6 @@ typedef BOPCol_ContextCnt
 //=======================================================================
 void BOPAlgo_PaveFiller::PerformVE()
 {
-  myErrorStatus=0;
-  //
   FillShrunkData(TopAbs_VERTEX, TopAbs_EDGE);
   //
   myIterator->Initialize(TopAbs_VERTEX, TopAbs_EDGE);

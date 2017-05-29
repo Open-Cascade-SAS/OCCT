@@ -1172,7 +1172,7 @@ void IntersectTrimmedEdges(const TopTools_ListOfShape& theLF,
   BOPAlgo_Builder aGFE;
   aGFE.SetArguments(aLS);
   aGFE.Perform();
-  if (aGFE.ErrorStatus()) {
+  if (aGFE.HasErrors()) {
     return;
   }
   //
@@ -1363,7 +1363,7 @@ void BuildSplitsOfTrimmedFace(const TopoDS_Face& theFace,
   aGF.AddArgument(theFace);
   aGF.AddArgument(theEdges);
   aGF.Perform();
-  if (aGF.ErrorStatus()) {
+  if (aGF.HasErrors()) {
     return;
   }
   //
@@ -4833,7 +4833,7 @@ void IntersectAndTrimEdges(const TopTools_IndexedDataMapOfShapeListOfShape& theF
   BOPAlgo_Builder aGF;
   aGF.SetArguments(aLArgs);
   aGF.Perform();
-  if (aGF.ErrorStatus()) {
+  if (aGF.HasErrors()) {
     return;
   }
   //
@@ -4902,7 +4902,7 @@ void IntersectAndTrimEdges(const TopTools_IndexedDataMapOfShapeListOfShape& theF
   aGFCE.AddArgument(aCEIm);
   aGFCE.Perform();
   //
-  if (aGFCE.ErrorStatus()) {
+  if (aGFCE.HasErrors()) {
     return;
   }
   //
@@ -5324,7 +5324,7 @@ void TrimNewIntersectionEdges(const TopTools_ListOfShape& theLE,
       aMV.Add(aV2);
       //
       aGFE.Perform();
-      if (!aGFE.ErrorStatus()) {
+      if (!aGFE.HasErrors()) {
         // get images of bounding vertices to remove splits containing them
         // in case some of the bounding edges has been interfered
         // during operation it is necessary to update their images as well
@@ -5415,7 +5415,7 @@ void IntersectEdges(const BOPCol_ListOfShape& theLA,
   BOPAlgo_Builder aGFA;
   aGFA.SetArguments(theLA);
   aGFA.Perform();
-  if (aGFA.ErrorStatus()) {
+  if (aGFA.HasErrors()) {
     // just copy input to the result
     TopoDS_Compound aSp;
     BRep_Builder aBB;

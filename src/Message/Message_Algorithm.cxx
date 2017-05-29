@@ -34,7 +34,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(Message_Algorithm,MMgt_TShared)
 
 //=======================================================================
-//function : SetMessenger
+//function : Message_Algorithm
 //purpose  :
 //=======================================================================
 Message_Algorithm::Message_Algorithm ()

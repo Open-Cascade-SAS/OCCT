@@ -40,10 +40,9 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_EXPORT BOPAlgo_Section();
-Standard_EXPORT virtual ~BOPAlgo_Section();
+  Standard_EXPORT virtual ~BOPAlgo_Section();
   
   //! Empty constructor
   //!
@@ -57,32 +56,16 @@ Standard_EXPORT virtual ~BOPAlgo_Section();
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated (const TopoDS_Shape& theS) Standard_OVERRIDE;
 
 
-
-
 protected:
 
-  
   Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
   
   //! Performs calculations using prepared Filler
   //! object <thePF>
   Standard_EXPORT virtual void PerformInternal1 (const BOPAlgo_PaveFiller& thePF) Standard_OVERRIDE;
 
-
-
-
 private:
 
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BOPAlgo_Section_HeaderFile

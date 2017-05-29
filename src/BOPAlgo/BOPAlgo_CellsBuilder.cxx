@@ -25,6 +25,7 @@
 #include <BOPTools_AlgoTools.hxx>
 
 #include <BOPAlgo_BuilderSolid.hxx>
+#include <BOPAlgo_Alerts.hxx>
 
 #include <BOPCol_MapOfInteger.hxx>
 
@@ -117,7 +118,7 @@ void BOPAlgo_CellsBuilder::PerformInternal1(const BOPAlgo_PaveFiller& theFiller)
 {
   BOPAlgo_Builder::PerformInternal1(theFiller);
   //
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
@@ -446,8 +447,6 @@ void BOPAlgo_CellsBuilder::RemoveAllFromResult()
 //=======================================================================
 void BOPAlgo_CellsBuilder::RemoveInternalBoundaries()
 {
-  myWarningStatus = 0;
-  //
   if (myMaterials.IsEmpty()) {
     return;
   }
@@ -489,7 +488,15 @@ void BOPAlgo_CellsBuilder::RemoveInternalBoundaries()
     //
     BOPCol_ListOfShape aLSNew;
     if (aItLS.More()) {
-      myWarningStatus |= RemovalOfIBForMDimShapes;
+      // add the warning
+      {
+        TopoDS_Compound aMultiDimS;
+        aBB.MakeCompound(aMultiDimS);
+        aBB.Add(aMultiDimS, aLS.First());
+        aBB.Add(aMultiDimS, aItLS.Value());
+        //
+        AddWarning (new BOPAlgo_AlertRemovalOfIBForMDimShapes (aMultiDimS));
+      }
       aLSNew.Assign(aLS);
     }
     else {
@@ -755,7 +762,12 @@ Standard_Boolean BOPAlgo_CellsBuilder::RemoveInternals(const BOPCol_ListOfShape&
     }
     //
     if (theLSNew.IsEmpty()) {
-      myWarningStatus |= (bFaces ? RemovalOfIBForFacesFailed : RemovalOfIBForEdgesFailed);
+      // add the warning
+      if (bFaces)
+        AddWarning (new BOPAlgo_AlertRemovalOfIBForFacesFailed (aShape));
+      else
+        AddWarning (new BOPAlgo_AlertRemovalOfIBForEdgesFailed (aShape));
+      //
       theLSNew.Assign(theLS);
       return bRemoved;
     }
@@ -855,8 +867,18 @@ Standard_Boolean BOPAlgo_CellsBuilder::RemoveInternals(const BOPCol_ListOfShape&
       aBS.SetShapes(aLFUnique);
       aBS.Perform();
       //
-      if (aBS.ErrorStatus() || aBS.Areas().Extent() != 1) {
-        myWarningStatus |= RemovalOfIBForSolidsFailed;
+      if (aBS.HasErrors() || aBS.Areas().Extent() != 1) {
+        // add the warning
+        {
+          TopoDS_Compound aUniqeFaces;
+          aBB.MakeCompound(aUniqeFaces);
+          BOPCol_ListIteratorOfListOfShape aItLFUniqe(aLFUnique);
+          for (; aItLFUniqe.More(); aItLFUniqe.Next()) {
+            aBB.Add(aUniqeFaces, aItLFUniqe.Value());
+          }
+          //
+          AddWarning (new BOPAlgo_AlertRemovalOfIBForSolidsFailed (aUniqeFaces));
+        }
         //
         aItS.Initialize(aCB);
         for (; aItS.More(); aItS.Next()) {
@@ -1077,31 +1099,4 @@ TopAbs_ShapeEnum TypeToExplore(const Standard_Integer theDim)
     break;
   }
   return aRet;
-}
-
-//=======================================================================
-//function : DumpWarnings
-//purpose  : 
-//=======================================================================
-void BOPAlgo_CellsBuilder::DumpWarnings(Standard_OStream& theOS) const
-{
-  Standard_Integer aWarningStatus[4] = {
-    RemovalOfIBForMDimShapes,
-    RemovalOfIBForSolidsFailed,
-    RemovalOfIBForFacesFailed,
-    RemovalOfIBForEdgesFailed,
-  };
-  //
-  Standard_CString aWarningMessage[4] = {
-    "Removal of internal boundaries among the multi-dimensional shapes is not supported yet.",
-    "Removal of internal boundaries among Solids has failed.",
-    "Removal of internal boundaries among Faces has failed.",
-    "Removal of internal boundaries among Edges has failed."
-  };
-  //
-  for (Standard_Integer i = 0; i < 4; ++i) {
-    if (myWarningStatus & aWarningStatus[i]) {
-      theOS << "Warning: " << aWarningMessage[i] << "\n";
-    }
-  }
 }

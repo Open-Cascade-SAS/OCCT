@@ -44,9 +44,9 @@
 //!
 //! The algorithm returns the following Error statuses:<br>
 //! - 0 - in case of success;<br>
-//! - 1 - in case there is no enough arguments for the operation;<br>
-//! - 2 - in case the Intersection of the arguments has failed;<br>
-//! - 3 - in case the Building of the result has failed.
+//! - *BOPAlgo_AlertTooFewArguments*    - in case there is no enough arguments for the operation;<br>
+//! - *BOPAlgo_AlertIntersectionFailed* - in case the Intersection of the arguments has failed;<br>
+//! - *BOPAlgo_AlertBuilderFailed*      - in case the Building of the result has failed.
 class BRepAlgoAPI_Splitter : public BRepAlgoAPI_BuilderAlgo
 {
 public:

@@ -16,6 +16,7 @@
 
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Splitter.hxx>
+#include <BOPAlgo_Alerts.hxx>
 
 //=======================================================================
 // function: Empty constructor
@@ -64,15 +65,14 @@ const TopTools_ListOfShape& BRepAlgoAPI_Splitter::Tools() const
 void BRepAlgoAPI_Splitter::Build()
 {
   NotDone();
-  myErrorStatus = 0;
+  //
+  Clear();
   //
   if (myArguments.IsEmpty() ||
     (myArguments.Extent() + myTools.Extent()) < 2) {
-    myErrorStatus = 1;
+    AddError (new BOPAlgo_AlertTooFewArguments);
     return;
   }
-  //
-  Clear();
   //
   if (myEntryType) {
     if (myDSFiller) {
@@ -100,9 +100,11 @@ void BRepAlgoAPI_Splitter::Build()
     myDSFiller->SetGlue(myGlue);
     //
     myDSFiller->Perform();
-    Standard_Integer iErr = myDSFiller->ErrorStatus();
-    if (iErr) {
-      myErrorStatus = 2;
+    //
+    GetReport()->Merge (myDSFiller->GetReport());
+    if (HasErrors()) 
+    {
+      return;
     }
   }
   //
@@ -121,10 +123,8 @@ void BRepAlgoAPI_Splitter::Build()
   myBuilder->SetProgressIndicator(myProgressIndicator);
   //
   myBuilder->PerformWithFiller(*myDSFiller);
-  Standard_Integer iErr = myBuilder->ErrorStatus();
-  if (iErr) {
-    myErrorStatus = 3;
-  }
+  //
+  GetReport()->Merge (myBuilder->GetReport());
   //
   Done();
   myShape = myBuilder->Shape();

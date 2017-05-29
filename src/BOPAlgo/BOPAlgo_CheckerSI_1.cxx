@@ -247,8 +247,6 @@ void BOPAlgo_CheckerSI::PerformVZ()
   TopAbs_State aState;
   BOPDS_MapOfPair aMPK;
   //
-  myErrorStatus=0;
-  //
   myIterator->Initialize(TopAbs_VERTEX, TopAbs_SOLID);
   iSize=myIterator->ExpectedLength();
   if (!iSize) {
@@ -327,8 +325,6 @@ void BOPAlgo_CheckerSI::PerformZZ()
   Standard_Boolean bHasInterf;
   Standard_Integer iSize, nZ1, nZ, k, aNbSolidSolid;
   //
-  myErrorStatus=0;
-  //
   myIterator->Initialize(TopAbs_SOLID, TopAbs_SOLID);
   iSize=myIterator->ExpectedLength();
   if (!iSize) {
@@ -375,8 +371,6 @@ void BOPAlgo_CheckerSI::PerformSZ(const TopAbs_ShapeEnum aTS)
 {
   Standard_Boolean bHasInterf;
   Standard_Integer iSize, nS, nZ, k, aNbShapeSolid;
-  //
-  myErrorStatus=0;
   //
   myIterator->Initialize(aTS, TopAbs_SOLID);
   iSize=myIterator->ExpectedLength();

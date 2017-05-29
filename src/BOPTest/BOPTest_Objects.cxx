@@ -54,6 +54,7 @@ class BOPTest_Session {
     myNonDestructive = Standard_False;
     myFuzzyValue = 0.;
     myGlue = BOPAlgo_GlueOff;
+    myDrawWarnShapes = Standard_False;
   };
   //
   // Clear
@@ -133,6 +134,14 @@ class BOPTest_Session {
     return myGlue;
   };
   //
+  void SetDrawWarnShapes(const Standard_Boolean bDraw) {
+    myDrawWarnShapes = bDraw;
+  };
+  //
+  Standard_Boolean DrawWarnShapes() const {
+    return myDrawWarnShapes;
+  };
+  //
 protected:
   //
   BOPTest_Session(const BOPTest_Session&);
@@ -150,6 +159,7 @@ protected:
   Standard_Boolean myNonDestructive;
   Standard_Real myFuzzyValue;
   BOPAlgo_GlueEnum myGlue;
+  Standard_Boolean myDrawWarnShapes;
 };
 //
 //=======================================================================
@@ -342,6 +352,22 @@ void BOPTest_Objects::SetGlue(const BOPAlgo_GlueEnum theGlue)
 BOPAlgo_GlueEnum BOPTest_Objects::Glue()
 {
   return GetSession().Glue();
+}
+//=======================================================================
+//function : SetDrawWarnShapes
+//purpose  : 
+//=======================================================================
+void BOPTest_Objects::SetDrawWarnShapes(const Standard_Boolean bDraw)
+{
+  GetSession().SetDrawWarnShapes(bDraw);
+}
+//=======================================================================
+//function : DrawWarnShapes
+//purpose  : 
+//=======================================================================
+Standard_Boolean BOPTest_Objects::DrawWarnShapes()
+{
+  return GetSession().DrawWarnShapes();
 }
 //=======================================================================
 //function : Allocator1

@@ -70,7 +70,7 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   //
   char buf[32];
   Standard_Boolean bRunParallel, bNonDestructive, bShowTime;
-  Standard_Integer i, aNbS, iErr;
+  Standard_Integer i, aNbS;
   Standard_Real aTol;
   BOPCol_ListIteratorOfListOfShape aIt;
   BOPCol_ListOfShape aLC;
@@ -120,10 +120,8 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   aTimer.Start();
   //
   aPF.Perform();
-  iErr=aPF.ErrorStatus();
-  if (iErr) {
-    Sprintf(buf, " error: %d\n",  iErr);
-    di << buf;
+  BOPTest::ReportAlerts(aPF);
+  if (aPF.HasErrors()) {
     return 0;
   }
   //
@@ -158,7 +156,7 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   //
   char buf[128];
   Standard_Boolean bRunParallel, bShowTime;
-  Standard_Integer i, iErr;
+  Standard_Integer i;
 
   BOPCol_ListIteratorOfListOfShape aIt;
   //
@@ -196,10 +194,8 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   aTimer.Start();
   //
   aBuilder.PerformWithFiller(aPF); 
-  iErr=aBuilder.ErrorStatus();
-  if (iErr) {
-    Sprintf(buf, " error: %d\n",  iErr);
-    di << buf;
+  BOPTest::ReportAlerts(aBuilder);
+  if (aBuilder.HasErrors()) {
     return 0;
   }
   //
@@ -241,7 +237,7 @@ Standard_Integer bbop(Draw_Interpretor& di,
   //
   char buf[32];
   Standard_Boolean bRunParallel, bShowTime;
-  Standard_Integer iErr, iOp, i;
+  Standard_Integer iOp, i;
   BOPAlgo_Operation aOp;
   BOPCol_ListIteratorOfListOfShape aIt; 
   //
@@ -307,10 +303,8 @@ Standard_Integer bbop(Draw_Interpretor& di,
   aTimer.Start();
   //
   pBuilder->PerformWithFiller(aPF);
-  iErr=pBuilder->ErrorStatus();
-  if (iErr) {
-    Sprintf(buf, " error: %d\n",  iErr);
-    di << buf;
+  BOPTest::ReportAlerts(*pBuilder);
+  if (pBuilder->HasErrors()) {
     return 0;
   }
   //
@@ -378,10 +372,8 @@ Standard_Integer bsplit(Draw_Interpretor& di,
   pSplitter->PerformWithFiller(aPF);
   //
   aTimer.Stop();
-  //
-  Standard_Integer iErr = pSplitter->ErrorStatus();
-  if (iErr) {
-    di << " error: " << iErr << "\n";
+  BOPTest::ReportAlerts(*pSplitter);
+  if (pSplitter->HasErrors()) {
     return 0;
   }
   //

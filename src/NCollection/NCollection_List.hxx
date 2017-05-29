@@ -193,7 +193,8 @@ public:
   void RemoveFirst (void) 
   { PRemoveFirst (ListNode::delNode); }
 
-  //! Remove item
+  //! Remove item pointed by iterator theIter; 
+  //! theIter is then set to the next item
   void Remove (Iterator& theIter) 
   { 
     PRemove (theIter, ListNode::delNode); 

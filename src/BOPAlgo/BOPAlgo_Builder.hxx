@@ -40,8 +40,27 @@ class IntTools_Context;
 class TopoDS_Shape;
 class BOPAlgo_PaveFiller;
 
-
-
+//!
+//! The class is a General Fuse algorithm - base algorithm for the
+//! algorithms in the Boolean Component. Its main purpose is to build
+//! the split parts of the argument shapes from which the result of
+//! the operations is combined.<br>
+//! The result of the General Fuse algorithm itself is a compound
+//! containing all split parts of the arguments. <br>
+//!
+//! Additionally to the options of the base classes, the algorithm has
+//! the following options:<br>
+//! - *Safe processing mode* - allows to avoid modification of the input
+//!                            shapes during the operation (by default it is off);<br>
+//! - *Gluing options* - allows to speed up the calculation of the intersections
+//!                      on the special cases, in which some sub-shapes are coinciding.<br>
+//!
+//! The algorithm returns the following Error statuses:
+//! - *BOPAlgo_AlertTooFewArguments* - in case there are no enough arguments to perform the operation;
+//! - *BOPAlgo_AlertNoFiller* - in case the intersection tool has not been created;
+//! - *BOPAlgo_AlertIntersectionFailed* - in case the intersection of the arguments has failed;
+//! - *BOPAlgo_AlertBuilderFailed* - in case building splits of arguments has failed with some unexpected error.
+//!
 class BOPAlgo_Builder  : public BOPAlgo_BuilderShape
 {
 public:
@@ -54,7 +73,7 @@ Standard_EXPORT virtual ~BOPAlgo_Builder();
   
   Standard_EXPORT BOPAlgo_Builder(const BOPCol_BaseAllocator& theAllocator);
   
-  Standard_EXPORT virtual void Clear();
+  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
   
   Standard_EXPORT BOPAlgo_PPaveFiller PPaveFiller();
   
@@ -124,6 +143,9 @@ protected:
   Standard_EXPORT virtual void PerformInternal1 (const BOPAlgo_PaveFiller& thePF);
   
   Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
+
+  //! Checks if the intersection algorithm has Errors/Warnings
+  Standard_EXPORT void CheckFiller();
   
   Standard_EXPORT virtual void Prepare();
   

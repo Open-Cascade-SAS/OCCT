@@ -29,7 +29,12 @@
 class TopoDS_Face;
 
 
-//! The algorithm to build faces from set of edges
+//! The algorithm to build new faces from the given faces and
+//! set of edges lying on this face.
+//!
+//! The algorithm returns the following Error statuses:
+//! - *BOPAlgo_AlertNullInputShapes* - in case the given face is a null shape.
+//!
 class BOPAlgo_BuilderFace  : public BOPAlgo_BuilderArea
 {
 public:
@@ -53,11 +58,7 @@ Standard_EXPORT virtual ~BOPAlgo_BuilderFace();
   
   Standard_EXPORT TopAbs_Orientation Orientation() const;
 
-
-
-
 protected:
-
   
   //! Collect the edges that
   //! a) are internal

@@ -30,6 +30,8 @@ BOPAlgo_MakerVolume.cxx
 BOPAlgo_MakerVolume.hxx
 BOPAlgo_MakerVolume.lxx
 BOPAlgo_Operation.hxx
+BOPAlgo_Options.cxx
+BOPAlgo_Options.hxx
 BOPAlgo_PArgumentAnalyzer.hxx
 BOPAlgo_PaveFiller.cxx
 BOPAlgo_PaveFiller.hxx
@@ -43,6 +45,7 @@ BOPAlgo_PaveFiller_7.cxx
 BOPAlgo_PaveFiller_8.cxx
 BOPAlgo_PaveFiller_9.cxx
 BOPAlgo_PaveFiller_10.cxx
+BOPAlgo_PaveFiller_11.cxx
 BOPAlgo_PBOP.hxx
 BOPAlgo_PBuilder.hxx
 BOPAlgo_PPaveFiller.hxx
@@ -68,3 +71,6 @@ BOPAlgo_CellsBuilder.hxx
 BOPAlgo_GlueEnum.hxx
 BOPAlgo_Splitter.hxx
 BOPAlgo_Splitter.cxx
+BOPAlgo_Alerts.hxx
+BOPAlgo.msg
+BOPAlgo_BOPAlgo_msg.pxx

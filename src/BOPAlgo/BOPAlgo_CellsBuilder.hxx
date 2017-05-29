@@ -93,19 +93,21 @@
 //! There could be Generated shapes only after removing of the internal boundaries
 //! between faces and edges, i.e. after using ShapeUpgrade_UnifySameDomain tool.<br>
 //!
-//! The algorithm can return the following Error Statuses:<br>
-//! - 0 - in case of success;<br>
-//! - Error status acquired in the General Fuse algorithm.<br>
-//! The Error status can be checked with ErrorStatus() method.
-//! If the Error status is not equal to zero, the result cannot be trustworthy.<br>
+//! The algorithm can return the following Error Statuses:
+//! - Error status acquired in the General Fuse algorithm.
+//! The Error status can be checked with HasErrors() method.
+//! If the Error status is not equal to zero, the result cannot be trustworthy.
 //!
-//! The algorithm can return the following Warning Statuses:<br>
-//! - 0 - no warnings occurred;<br>
-//! - Warning status acquired in the General Fuse algorithm;<br>
-//! - One of the warnings from BOPAlgo_CellsBuilder_WarningStatusEnum.<br>
-//! The Warning status can be checked with WarningStatus() method or
-//! printed with the DumpWarnings() method. If the Warning status is not equal
-//! to zero, the result may be not as expected.<br>
+//! The algorithm can set the following Warning Statuses:
+//! - Warning status acquired in the General Fuse algorithm;
+//! - BOPAlgo_AlertRemovalOfIBForMDimShapes
+//! - BOPAlgo_AlertRemovalOfIBForFacesFailed
+//! - BOPAlgo_AlertRemovalOfIBForEdgesFailed
+//! - BOPAlgo_AlertRemovalOfIBForSolidsFailed
+//!
+//! The Warning status can be checked with HasWarnings() method or
+//! printed with the DumpWarnings() method. If warnings are recorded,
+//! the result may be not as expected.<br>
 //!
 //! Examples:<br>
 //! 1. API<br>
@@ -121,7 +123,7 @@
 //! aCBuilder.SetFuzzyValue(aTol);<br>
 //! //<br>
 //! aCBuilder.Perform();<br>
-//! if (aCBuilder.ErrorStatus()) { // check error status<br>
+//! if (aCBuilder.HasErrors()) { // check error status<br>
 //!   return;<br>
 //! }<br>
 //! /* empty compound, as nothing has been added yet */<br>
@@ -226,8 +228,8 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
   //! Removes internal boundaries between cells with the same material.<br>
   //! If the result contains the cells with same material but of different dimension
   //! the removal of internal boundaries between these cells will not be performed.<br>
-  //! In case of some errors during the removal the method will set the appropriate warning status -
-  //! see the WarningStatusEnum enumeration.
+  //! In case of some errors during the removal the method will set the appropriate warning 
+  //! status - use GetReport() to access them.
   Standard_EXPORT void RemoveInternalBoundaries();
 
   //! Get all split parts.
@@ -241,23 +243,6 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
   
   //! Returns true if the shape theS has been deleted.
   Standard_EXPORT virtual Standard_Boolean IsDeleted (const TopoDS_Shape& theS) Standard_OVERRIDE;
-
-  //! Define possible warning statuses of the CellsBuilder algorithm:<br>
-  //! - RemovalOfIBForMDimShapes - The result contains multi-dimensional shapes with the same
-  //!                              material. Removal of internal boundaries has not been performed.<br>
-  //! - RemovalOfIBForSolidsFailed - Removal of internal boundaries among Solids has failed.<br>
-  //! - RemovalOfIBForFacesFailed  - Removal of internal boundaries among Faces has failed.<br>
-  //! - RemovalOfIBForEdgesFailed  - Removal of internal boundaries among Edges has failed.<br>
-  enum WarningStatusEnum
-  {
-    RemovalOfIBForMDimShapes = 2,
-    RemovalOfIBForSolidsFailed = 4,
-    RemovalOfIBForFacesFailed = 8,
-    RemovalOfIBForEdgesFailed = 16
-  };
-
-  //! Dumps the warning status
-  Standard_EXPORT virtual void DumpWarnings(Standard_OStream& theOS) const;
 
  protected:
 

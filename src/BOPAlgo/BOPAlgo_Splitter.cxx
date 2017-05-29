@@ -15,6 +15,7 @@
 
 #include <BOPAlgo_Splitter.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Alerts.hxx>
 
 //=======================================================================
 //function : 
@@ -85,24 +86,14 @@ void BOPAlgo_Splitter::SetTools(const BOPCol_ListOfShape& theShapes)
 //=======================================================================
 void BOPAlgo_Splitter::CheckData()
 {
-  myErrorStatus = 0;
   if (myArguments.IsEmpty() ||
       (myArguments.Extent() + myTools.Extent()) < 2) {
     // too few arguments to process
-    myErrorStatus = 100;
+    AddError (new BOPAlgo_AlertTooFewArguments);
     return;
   }
   //
-  // Check the PaveFiller
-  if (!myPaveFiller) {
-    myErrorStatus = 101;
-    return;
-  }
-  //
-  if (myPaveFiller->ErrorStatus()) {
-    // PaveFiller has failed
-    myErrorStatus = 102;
-  }
+  CheckFiller();
 }
 
 //=======================================================================
@@ -111,7 +102,7 @@ void BOPAlgo_Splitter::CheckData()
 //=======================================================================
 void BOPAlgo_Splitter::Perform()
 {
-  myErrorStatus = 0;
+  GetReport()->Clear();
   //
   if (myEntryPoint == 1) {
     if (myPaveFiller) {

@@ -51,6 +51,7 @@
 #include <BOPCol_IndexedDataMapOfShapeInteger.hxx>
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
 #include <BOPAlgo_GlueEnum.hxx>
+#include <IntTools_ShrunkRange.hxx>
 class IntTools_Context;
 class BOPDS_DS;
 class BOPAlgo_SectionAttribute;
@@ -62,7 +63,44 @@ class TopoDS_Vertex;
 class TopoDS_Edge;
 class TopoDS_Face;
 
-
+//!
+//! The class represents the Intersection phase of the
+//! Boolean Operations algorithm.<br>
+//! It performs the pairwise intersection of the sub-shapes of
+//! the arguments in the following order:<br>
+//! 1. Vertex/Vertex;<br>
+//! 2. Vertex/Edge;<br>
+//! 3. Edge/Edge;<br>
+//! 4. Vertex/Face;<br>
+//! 5. Edge/Face;<br>
+//! 6. Face/Face.<br>
+//!
+//! The results of intersection are stored into the Data Structure
+//! of the algorithm.<br>
+//!
+//! Additionally to the options provided by the parent class,
+//! the algorithm has the following options:<br>
+//! - *Section attributes* - allows to customize the intersection of the faces
+//!                          (avoid approximation or building 2d curves);<br>
+//! - *Safe processing mode* - allows to avoid modification of the input
+//!                            shapes during the operation (by default it is off);<br>
+//! - *Gluing options* - allows to speed up the calculation on the special
+//!                      cases, in which some sub-shapes are coincide.<br>
+//!
+//! The algorithm returns the following Warning statuses:<br>
+//! - *BOPAlgo_AlertSelfInterferingShape* - in case some of the argument shapes are self-interfering shapes;<br>
+//! - *BOPAlgo_AlertTooSmallEdge* - in case some edges of the input shapes have no valid range;<br>
+//! - *BOPAlgo_AlertNotSplittableEdge* - in case some edges of the input shapes has such a small
+//!                         valid range so it cannot be split;<br>
+//! - *BOPAlgo_AlertBadPositioning* - in case the positioning of the input shapes leads to creation
+//!                      of small edges.<br>
+//!
+//! The algorithm returns the following Error alerts:
+//! - *BOPAlgo_AlertTooFewArguments* - in case there are no enough arguments to
+//!                      perform the operation;<br>
+//! - *BOPAlgo_AlertIntersectionFailed* - in case some unexpected error occurred;<br>
+//! - *BOPAlgo_AlertNullInputShapes* - in case some of the arguments are null shapes.<br>
+//!
 class BOPAlgo_PaveFiller  : public BOPAlgo_Algo
 {
 public:
@@ -140,7 +178,7 @@ protected:
 
   Standard_EXPORT virtual void PerformInternal();
   
-  Standard_EXPORT virtual void Clear();
+  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
   
   Standard_EXPORT virtual void Init();
   
@@ -193,6 +231,12 @@ protected:
   
   Standard_EXPORT void FillShrunkData (const TopAbs_ShapeEnum theType1, const TopAbs_ShapeEnum theType2);
 
+  //! Analyzes the results of computation of the valid range for the
+  //! pave block and in case of error adds the warning status, otherwise
+  //! saves the valid range in the pave block.
+  Standard_EXPORT void AnalyzeShrunkData(const Handle(BOPDS_PaveBlock)& thePB,
+                                         const IntTools_ShrunkRange& theSR);
+
   //! Performs intersection of new vertices, obtained in E/E and E/F intersections
   Standard_EXPORT void PerformNewVertices(BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMVCPB,
                                           const BOPCol_BaseAllocator& theAllocator,
@@ -242,11 +286,11 @@ protected:
   
 
   //! Treatment of section edges.
-  Standard_EXPORT Standard_Integer PostTreatFF (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMSCPB,
-                                                BOPDS_DataMapOfPaveBlockListOfPaveBlock& theDMExEdges,
-                                                BOPCol_DataMapOfIntegerInteger& theDMNewSD,
-                                                const BOPCol_IndexedMapOfShape& theMicroEdges,
-                                                const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT void PostTreatFF (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMSCPB,
+                                    BOPDS_DataMapOfPaveBlockListOfPaveBlock& theDMExEdges,
+                                    BOPCol_DataMapOfIntegerInteger& theDMNewSD,
+                                    const BOPCol_IndexedMapOfShape& theMicroEdges,
+                                    const BOPCol_BaseAllocator& theAllocator);
   
   Standard_EXPORT void FindPaveBlocks (const Standard_Integer theV, const Standard_Integer theF, BOPDS_ListOfPaveBlock& theLPB);
   
@@ -419,6 +463,17 @@ protected:
   //! it will be added into FaceInfo structure of the face as IN edge
   //! and will be used for splitting.
   Standard_EXPORT void PutSEInOtherFaces();
+
+  //! Analyzes the results of interferences of sub-shapes of the shapes
+  //! looking for self-interfering entities by the following rules:<br>
+  //! 1. The Faces of the same shape considered interfering in case they:<br>
+  //!    - Interfere with the other shapes in the same place (in the same vertex) or;<br>
+  //!    - Included in the same common block.
+  //! 2. The Faces of the same shape considered interfering in case they
+  //!    share the IN or SECTION edges.<br>
+  //! In case self-interference is found the warning is added.
+  Standard_EXPORT void CheckSelfInterference();
+
 
   BOPCol_ListOfShape myArguments;
   BOPDS_PDS myDS;

@@ -35,3 +35,8 @@ Message_SequenceOfPrinters.hxx
 Message_SequenceOfProgressScale.hxx
 Message_Status.hxx
 Message_StatusType.hxx
+Message_Alert.cxx
+Message_Alert.hxx
+Message_ListOfAlert.hxx
+Message_Report.cxx
+Message_Report.hxx

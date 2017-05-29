@@ -32,7 +32,10 @@
 class TopoDS_Shape;
 
 
-//! Root class for algorithms that has shape as result
+//! Root class for algorithms that has shape as result.<br>
+//! The class provides the History mechanism, which allows
+//! tracking the modification of the input shapes during
+//! the operation.
 class BOPAlgo_BuilderShape  : public BOPAlgo_Algo
 {
 public:

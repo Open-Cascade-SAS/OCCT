@@ -16,6 +16,7 @@
 #include <BOPAlgo_BuilderSolid.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Section.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPCol_DataMapOfShapeShape.hxx>
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
 #include <BOPCol_IndexedMapOfShape.hxx>
@@ -79,23 +80,13 @@ void BOPAlgo_Section::CheckData()
 {
   Standard_Integer aNbArgs;
   //
-  myErrorStatus=0;
-  //
   aNbArgs=myArguments.Extent();
   if (!aNbArgs) {
-    myErrorStatus=100; // invalid number of Arguments
+    AddError (new BOPAlgo_AlertTooFewArguments);
     return;
   }
   //
-  if (!myPaveFiller) {
-    myErrorStatus=101; 
-    return;
-  }
-  //
-  myErrorStatus=myPaveFiller->ErrorStatus();
-  if (myErrorStatus) {
-    return;
-  }
+  CheckFiller();
 }
 //=======================================================================
 //function : PerformInternal1
@@ -104,59 +95,53 @@ void BOPAlgo_Section::CheckData()
 void BOPAlgo_Section::PerformInternal1
   (const BOPAlgo_PaveFiller& theFiller)
 {
-  myErrorStatus=0;
-  myWarningStatus=0;
-  //
   myPaveFiller=(BOPAlgo_PaveFiller*)&theFiller;
   myDS=myPaveFiller->PDS();
   myContext=myPaveFiller->Context();
   //
   // 1. CheckData
   CheckData();
-  if (myErrorStatus && !myWarningStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   // 2. Prepare
   Prepare();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
-  if(myWarningStatus == 2) {
-    return;
-  }
   // 3. Fill Images
   // 3.1 Vertices
   FillImagesVertices();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   BuildResult(TopAbs_VERTEX);
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   // 3.2 Edges
   FillImagesEdges();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   BuildResult(TopAbs_EDGE);
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   // 4. Section
   BuildSection();
   //
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   // 5.History
   PrepareHistory();
   //
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   } 
   // 6. Post-treatment
@@ -181,7 +166,7 @@ void BOPAlgo_Section::BuildSection()
   BOPCol_MapIteratorOfMapOfInteger aItMI; 
   BOPDS_ListIteratorOfListOfPaveBlock aItPB;
   //
-  myErrorStatus=0;
+  GetReport()->Clear();
   //
   BOPTools_AlgoTools::MakeContainer(TopAbs_COMPOUND, aRC1);
   //
@@ -413,4 +398,3 @@ const TopTools_ListOfShape& BOPAlgo_Section::Generated
   //
   return myHistShapes;
 }
-

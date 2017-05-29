@@ -40,8 +40,6 @@
 //=======================================================================
 void BOPAlgo_Builder::FillImagesVertices()
 {
-  myErrorStatus=0;
-  //
   Standard_Integer nV, nVSD;
   BOPCol_DataMapIteratorOfDataMapOfIntegerInteger aIt;
   //
@@ -73,8 +71,6 @@ void BOPAlgo_Builder::FillImagesVertices()
 //=======================================================================
   void BOPAlgo_Builder::FillImagesEdges()
 {
-  myErrorStatus=0;
-  //
   Standard_Integer i, aNbS = myDS->NbSourceShapes();
   for (i = 0; i < aNbS; ++i) {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
@@ -144,8 +140,6 @@ void BOPAlgo_Builder::FillImagesVertices()
 //=======================================================================
   void BOPAlgo_Builder::BuildResult(const TopAbs_ShapeEnum theType)
 {
-  myErrorStatus=0;
-  //
   TopAbs_ShapeEnum aType;
   BRep_Builder aBB;
   BOPCol_MapOfShape aM;
@@ -180,8 +174,6 @@ void BOPAlgo_Builder::FillImagesVertices()
 //=======================================================================
   void BOPAlgo_Builder::FillImagesContainers(const TopAbs_ShapeEnum theType)
 {
-  myErrorStatus=0;
-  //
   Standard_Integer i, aNbS;
   BOPCol_MapOfShape aMFP(100, myAllocator);
   //
@@ -200,8 +192,6 @@ void BOPAlgo_Builder::FillImagesVertices()
 //=======================================================================
   void BOPAlgo_Builder::FillImagesCompounds()
 {
-  myErrorStatus=0;
-  //
   Standard_Integer i, aNbS;
   BOPCol_MapOfShape aMFP(100, myAllocator);
   //

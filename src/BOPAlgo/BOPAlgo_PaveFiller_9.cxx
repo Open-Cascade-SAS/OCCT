@@ -84,19 +84,14 @@ typedef BOPCol_ContextCnt
 void BOPAlgo_PaveFiller::FillShrunkData(const TopAbs_ShapeEnum aType1,
                                         const TopAbs_ShapeEnum aType2)
 {
-  Standard_Integer iSize;
-  
-  //
-  myErrorStatus=0;
-  //
   myIterator->Initialize(aType1, aType2);
-  iSize=myIterator->ExpectedLength();
+  Standard_Integer iSize = myIterator->ExpectedLength();
   if (!iSize) {
     return; 
   }
   //
   Standard_Integer i, nS[2], nE, nV1, nV2, aNbVSD, k;
-  Standard_Real aT1, aT2, aTS1, aTS2;
+  Standard_Real aT1, aT2;
   BOPDS_ListIteratorOfListOfPaveBlock aItLPB;
   BOPCol_MapOfInteger aMI; 
   BOPAlgo_VectorOfShrunkRange aVSD;
@@ -149,19 +144,8 @@ void BOPAlgo_PaveFiller::FillShrunkData(const TopAbs_ShapeEnum aType1,
   BOPAlgo_ShrunkRangeCnt::Perform(myRunParallel, aVSD, myContext);
   //=============================================================
   //
-  Standard_Real aFuzz = myFuzzyValue / 2.;
   for (k=0; k < aNbVSD; ++k) {
-    BOPAlgo_ShrunkRange& aSD=aVSD(k);
-    if (!aSD.IsDone()) {
-      continue;
-    }
-    //
-    Handle(BOPDS_PaveBlock)& aPB=aSD.PaveBlock();
-    aSD.ShrunkRange(aTS1, aTS2);
-    Bnd_Box aBox=aSD.BndBox();
-    aBox.SetGap(aBox.GetGap() + aFuzz);
-    Standard_Boolean bIsSplittable = aSD.IsSplittable();
-    //
-    aPB->SetShrunkData(aTS1, aTS2, aBox, bIsSplittable);
+    BOPAlgo_ShrunkRange& aSD = aVSD(k);
+    AnalyzeShrunkData(aSD.PaveBlock(), aSD);
   }
 }

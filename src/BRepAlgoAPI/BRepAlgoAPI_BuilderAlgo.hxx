@@ -32,7 +32,16 @@ class TopoDS_Shape;
 
 
 
-//! The clsss contains API level of General Fuse algorithm
+//! The class contains API level of the General Fuse algorithm.<br>
+//!
+//! It returns the following Error statuses:<br>
+//! - 0 - in case of success;<br>
+//! - *BOPAlgo_AlertTooFewArguments* - in case there are no enough arguments to perform the operation;<br>
+//! - *BOPAlgo_AlertIntersectionFailed* - in case the intersection of the arguments has failed;<br>
+//! - *BOPAlgo_AlertBuilderFailed* - in case building of the result shape has failed.<br>
+//!
+//! Warnings statuses from underlying DS Filler and Builder algorithms
+//! are collected in the report.
 class BRepAlgoAPI_BuilderAlgo  : public BRepAlgoAPI_Algo
 {
 public:
@@ -47,12 +56,6 @@ Standard_EXPORT virtual ~BRepAlgoAPI_BuilderAlgo();
   //! Empty constructor
   Standard_EXPORT BRepAlgoAPI_BuilderAlgo(const BOPAlgo_PaveFiller& thePF);
   
-  //! Sets the additional tolerance
-  Standard_EXPORT void SetFuzzyValue (const Standard_Real theFuzz);
-  
-  //! Returns the additional tolerance
-  Standard_EXPORT Standard_Real FuzzyValue() const;
-
   //! Sets the flag that defines the mode of treatment.
   //! In non-destructive mode the argument shapes are not modified. Instead
   //! a copy of a sub-shape is created in the result if it is needed to be updated.
@@ -105,19 +108,25 @@ Standard_EXPORT virtual ~BRepAlgoAPI_BuilderAlgo();
   //! protected methods
   Standard_EXPORT virtual Standard_Boolean HasDeleted() const;
 
+  //! Returns the Intersection tool
+  const BOPAlgo_PPaveFiller& DSFiller() const
+  {
+    return myDSFiller;
+  }
 
-
+  //! Returns the Building tool
+  const BOPAlgo_PBuilder& Builder() const
+  {
+    return myBuilder;
+  }
 
 protected:
 
-  
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
-
 
   Standard_Integer myEntryType;
   BOPAlgo_PPaveFiller myDSFiller;
   BOPAlgo_PBuilder myBuilder;
-  Standard_Real myFuzzyValue;
   Standard_Boolean myNonDestructive;
   TopTools_ListOfShape myArguments;
   BOPAlgo_GlueEnum myGlue;

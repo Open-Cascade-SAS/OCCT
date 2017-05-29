@@ -16,6 +16,7 @@
 
 #include <BOPAlgo_WireEdgeSet.hxx>
 #include <BOPAlgo_WireSplitter.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
 #include <BOPCol_IndexedMapOfShape.hxx>
 #include <BOPCol_ListOfShape.hxx>
@@ -100,9 +101,8 @@ const Handle(IntTools_Context)& BOPAlgo_WireSplitter::Context()
 //=======================================================================
 void BOPAlgo_WireSplitter::CheckData()
 {
-  myErrorStatus=0;
   if (!myWES) {
-    myErrorStatus=10;
+    AddError (new BOPAlgo_AlertNullInputShapes);
     return;
   }
 }
@@ -112,10 +112,10 @@ void BOPAlgo_WireSplitter::CheckData()
 //=======================================================================
 void BOPAlgo_WireSplitter::Perform()
 {
-  myErrorStatus=0;
+  GetReport()->Clear();
   //
   CheckData();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //

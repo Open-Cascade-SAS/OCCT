@@ -63,8 +63,6 @@ void BOPAlgo_PaveFiller::ProcessDE()
   Handle(BOPDS_PaveBlock) aPBD;
   BOPCol_ListIteratorOfListOfInteger aItLI;
   //
-  myErrorStatus=0;
-  //
   // 1. Find degnerated edges
   //-----------------------------------------------------scope f
   //

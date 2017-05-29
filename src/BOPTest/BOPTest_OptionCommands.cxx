@@ -26,6 +26,7 @@ static Standard_Integer brunparallel (Draw_Interpretor&, Standard_Integer, const
 static Standard_Integer bnondestructive(Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bfuzzyvalue(Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bGlue(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bdrawwarnshapes(Draw_Interpretor&, Standard_Integer, const char**);
 
 //=======================================================================
 //function : OptionCommands
@@ -44,6 +45,9 @@ void BOPTest::OptionCommands(Draw_Interpretor& theCommands)
   theCommands.Add("bnondestructive", "use bnondestructive [0/1]", __FILE__, bnondestructive, g);
   theCommands.Add("bfuzzyvalue", "use bfuzzyvalue value", __FILE__, bfuzzyvalue, g);
   theCommands.Add("bglue", "use bglue [0 (off) / 1 (shift) / 2 (full)]", __FILE__, bGlue, g);
+  theCommands.Add("bdrawwarnshapes", "Defines whether to draw warning shapes or not\n"
+                  "Usage: bdrawwarnshapes [0 (do not draw) / 1 (draw warning shapes)",
+                  __FILE__, bdrawwarnshapes, g);
 }
 //=======================================================================
 //function : boptions
@@ -67,6 +71,7 @@ Standard_Integer boptions(Draw_Interpretor& di,
   bNonDestructive = BOPTest_Objects::NonDestructive();
   aFuzzyValue = BOPTest_Objects::FuzzyValue();
   aGlue = BOPTest_Objects::Glue();
+  Standard_Boolean bDrawWarnShapes = BOPTest_Objects::DrawWarnShapes();
   //
   Sprintf(buf, " RunParallel: %d\n",  bRunParallel);
   di << buf;
@@ -76,6 +81,8 @@ Standard_Integer boptions(Draw_Interpretor& di,
   di << buf;
   Sprintf(buf, " GlueOption: %s\n", ((aGlue == BOPAlgo_GlueOff) ? "Off" :
     ((aGlue == BOPAlgo_GlueFull) ? "Full" : "Shift")));
+  di << buf;
+  Sprintf(buf, " Draw Warning Shapes: %s\n", bDrawWarnShapes ? "Yes" : "No");
   di << buf;
   //
   return 0;
@@ -182,5 +189,23 @@ Standard_Integer bGlue(Draw_Interpretor& di,
   BOPAlgo_GlueEnum aGlue = BOPAlgo_GlueEnum(iGlue);
   BOPTest_Objects::SetGlue(aGlue);
   //
+  return 0;
+}
+
+//=======================================================================
+//function : bdrawwarnshapes
+//purpose  : 
+//=======================================================================
+Standard_Integer bdrawwarnshapes(Draw_Interpretor& di,
+                              Standard_Integer n, 
+                              const char** a) 
+{ 
+  if (n != 2) {
+    di << " use bdrawwarnshapes [0 (do not draw) / 1 (draw warning shapes)\n";
+    return 1;
+  }
+  //
+  Standard_Integer iDraw = Draw::Atoi(a[1]);
+  BOPTest_Objects::SetDrawWarnShapes(iDraw != 0);
   return 0;
 }

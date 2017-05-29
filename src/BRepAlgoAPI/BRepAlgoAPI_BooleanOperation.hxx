@@ -33,10 +33,16 @@ class TopoDS_Shape;
 
 //! The abstract class BooleanOperation is the root
 //! class of Boolean Operations (see Overview).
-//! Boolean Operations algorithm is divided onto two parts.
-//! - The first one is computing interference between arguments.
-//! - The second one is building the result of operation.
-//! The class BooleanOperation provides API level of both parts
+//! Boolean Operations algorithm is divided onto two parts:<br>
+//! - The first one is computing interference between arguments;<br>
+//! - The second one is building the result of operation;<br>
+//! The class BooleanOperation provides API level of both parts.<br>
+//!
+//! Additionally to the errors of the parent class the algorithm
+//! returns the following Error statuses:<br>
+//! - 0 - in case of success;<br>
+//! - *BOPAlgo_AlertBOPNotSet* - in case the type of Boolean Operation is not set.<br>
+//!
 class BRepAlgoAPI_BooleanOperation  : public BRepAlgoAPI_BuilderAlgo
 {
 public:
@@ -108,11 +114,7 @@ Standard_EXPORT virtual ~BRepAlgoAPI_BooleanOperation();
   //! For use in BRepNaming.
   Standard_EXPORT virtual Standard_Boolean HasDeleted() const Standard_OVERRIDE;
 
-
-
-
 protected:
-
   
   //! Empty constructor
   Standard_EXPORT BRepAlgoAPI_BooleanOperation();

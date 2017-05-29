@@ -2814,7 +2814,7 @@ static Standard_Integer OCC25446 (Draw_Interpretor& theDI,
   aPF.SetArguments(aLS);
   //
   aPF.Perform();
-  iErr = aPF.ErrorStatus();
+  iErr = aPF.HasErrors();
   if (iErr) {
     theDI << "Intersection failed with error status: " << iErr << "\n";
     return 1;
@@ -2842,7 +2842,7 @@ static Standard_Integer OCC25446 (Draw_Interpretor& theDI,
     break;
   }
   //
-  iErr = pBuilder->ErrorStatus();
+  iErr = pBuilder->HasErrors();
   if (!pBuilder->IsDone()) {
     theDI << "BOP failed with error status: " << iErr << "\n";
     return 1;

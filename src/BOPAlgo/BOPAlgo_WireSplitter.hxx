@@ -31,6 +31,11 @@ class TopoDS_Wire;
 class TopoDS_Face;
 
 
+//! The class is to build loops from the given set of edges.
+//!
+//! It returns the following Error statuses
+//! - *BOPAlgo_AlertNullInputShapes* - in case there no input edges to build the loops.
+//!
 class BOPAlgo_WireSplitter  : public BOPAlgo_Algo
 {
 public:
@@ -72,8 +77,6 @@ protected:
   BOPAlgo_PWireEdgeSet myWES;
   BOPTools_ListOfConnexityBlock myLCB;
   Handle(IntTools_Context) myContext;
-
-private:
 
 };
 

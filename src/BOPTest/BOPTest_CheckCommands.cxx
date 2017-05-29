@@ -235,7 +235,7 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
   //
   aTimer.Stop();
   //
-  iErr=aChecker.ErrorStatus();
+  iErr=aChecker.HasErrors();
   //
   const BOPDS_DS& aDS=*(aChecker.PDS());
   //

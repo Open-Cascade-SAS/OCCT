@@ -19,6 +19,7 @@
 #include <Bnd_Box.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Tools.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_Parallel.hxx>
 #include <BOPDS_CommonBlock.hxx>
@@ -33,6 +34,7 @@
 #include <BOPTools_AlgoTools.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BRep_Tool.hxx>
+#include <BRep_Builder.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <IntTools_CommonPrt.hxx>
@@ -118,14 +120,10 @@ typedef BOPCol_Cnt
 //=======================================================================
 void BOPAlgo_PaveFiller::PerformEE()
 {
-  Standard_Integer iSize;
-  //
-  myErrorStatus=0;
-  //
   FillShrunkData(TopAbs_EDGE, TopAbs_EDGE);
   //
   myIterator->Initialize(TopAbs_EDGE, TopAbs_EDGE);
-  iSize=myIterator->ExpectedLength();
+  Standard_Integer iSize = myIterator->ExpectedLength();
   if (!iSize) {
     return; 
   }
@@ -582,40 +580,72 @@ void BOPAlgo_PaveFiller::TreatNewVertices
 //=======================================================================
 void BOPAlgo_PaveFiller::FillShrunkData(Handle(BOPDS_PaveBlock)& thePB)
 {
-  Standard_Integer nE, nV1, nV2;
-  Standard_Real aT1, aT2, aTS1, aTS2;
-  IntTools_ShrunkRange aSR;
-  //
-  myErrorStatus=0;
-  myWarningStatus = 0;
-  //
-  const BOPDS_Pave& aPave1=thePB->Pave1();
-  nV1=aPave1.Index();
-  aT1=aPave1.Parameter();
+  // Vertices
+  Standard_Integer nV1, nV2;
+  thePB->Indices(nV1, nV2);
   const TopoDS_Vertex& aV1=(*(TopoDS_Vertex *)(&myDS->Shape(nV1))); 
-  //
-  const BOPDS_Pave& aPave2=thePB->Pave2();
-  nV2=aPave2.Index();
-  aT2=aPave2.Parameter();
   const TopoDS_Vertex& aV2=(*(TopoDS_Vertex *)(&myDS->Shape(nV2))); 
-  //
-  nE=thePB->OriginalEdge();
+  // Original edge
+  Standard_Integer nE = thePB->OriginalEdge();
   const TopoDS_Edge& aE=(*(TopoDS_Edge *)(&myDS->Shape(nE))); 
+  // Range
+  Standard_Real aT1, aT2;
+  thePB->Range(aT1, aT2);
   //
+  IntTools_ShrunkRange aSR;
   aSR.SetContext(myContext);
   aSR.SetData(aE, aT1, aT2, aV1, aV2);
-  //
   aSR.Perform();
-  if (!aSR.IsDone()) {
-    myWarningStatus = 1;
-    return;
+  // Analyze the results of computations
+  AnalyzeShrunkData(thePB, aSR);
+}
+//=======================================================================
+// function: AnalyzeShrunkData
+// purpose: 
+//=======================================================================
+void BOPAlgo_PaveFiller::AnalyzeShrunkData(const Handle(BOPDS_PaveBlock)& thePB,
+                                           const IntTools_ShrunkRange& theSR)
+{
+  // in case of error treat the warning status
+  Standard_Boolean bWholeEdge = Standard_False;
+  TopoDS_Shape aWarnShape;
+  //
+  if (!theSR.IsDone() || !theSR.IsSplittable()) {
+    Standard_Real aEFirst, aELast, aPBFirst, aPBLast;
+    BRep_Tool::Range(theSR.Edge(), aEFirst, aELast);
+    thePB->Range(aPBFirst, aPBLast);
+    bWholeEdge = !(aPBFirst > aEFirst || aPBLast < aELast);
+    if (bWholeEdge) {
+      aWarnShape = theSR.Edge();
+    }
+    else {
+      const TopoDS_Shape& aV1 = myDS->Shape(thePB->Pave1().Index());
+      const TopoDS_Shape& aV2 = myDS->Shape(thePB->Pave2().Index());
+      BRep_Builder().MakeCompound(TopoDS::Compound(aWarnShape));
+      BRep_Builder().Add(aWarnShape, theSR.Edge());
+      BRep_Builder().Add(aWarnShape, aV1);
+      BRep_Builder().Add(aWarnShape, aV2);
+    }
+    //
+    if (!theSR.IsDone()) {
+      if (bWholeEdge)
+        AddWarning (new BOPAlgo_AlertTooSmallEdge (aWarnShape));
+      else
+        AddWarning (new BOPAlgo_AlertBadPositioning (aWarnShape));
+      return;
+    }
+    //
+    if (bWholeEdge)
+      AddWarning (new BOPAlgo_AlertNotSplittableEdge (aWarnShape));
+    else
+      AddWarning (new BOPAlgo_AlertBadPositioning (aWarnShape));
   }
   //
-  aSR.ShrunkRange(aTS1, aTS2);
-  const Bnd_Box& aBox=aSR.BndBox();
-  Standard_Boolean bIsSplittable = aSR.IsSplittable();
-  //
-  thePB->SetShrunkData(aTS1, aTS2, aBox, bIsSplittable);
+  Standard_Real aTS1, aTS2;
+  theSR.ShrunkRange(aTS1, aTS2);
+  Bnd_Box aBox = theSR.BndBox();
+  aBox.SetGap(aBox.GetGap() + myFuzzyValue / 2.);
+  thePB->SetShrunkData(aTS1, aTS2, aBox, theSR.IsSplittable());
 }
 //=======================================================================
 //function : ForceInterfVE
@@ -637,7 +667,7 @@ void BOPAlgo_PaveFiller::ForceInterfVE(const Standard_Integer nV,
   //
   if (myDS->HasInterf(nV, nE)) {
     return;
-  }   
+  }
   //
   if (myDS->HasInterfShapeSubShapes(nV, nE)) {
     return;
@@ -682,6 +712,17 @@ void BOPAlgo_PaveFiller::ForceInterfVE(const Standard_Integer nV,
     aPB->AppendExtPave(aPave);
     //
     theMEdges.Add(nE);
+    //
+    // check for self-interference
+    Standard_Integer iRV = myDS->Rank(nV);
+    if (iRV >= 0 && iRV == myDS->Rank(nE)) {
+      // add warning status
+      TopoDS_Compound aWC;
+      BRep_Builder().MakeCompound(aWC);
+      BRep_Builder().Add(aWC, aV);
+      BRep_Builder().Add(aWC, aE);
+      AddWarning (new BOPAlgo_AlertSelfInterferingShape (aWC));
+    }
   }
 }
 

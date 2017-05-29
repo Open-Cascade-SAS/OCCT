@@ -356,12 +356,8 @@ typedef BOPCol_Cnt
 //=======================================================================
 void BOPAlgo_PaveFiller::MakeSplitEdges()
 {
-  Standard_Integer aNbPBP;
-  //
-  myErrorStatus=0;
-  //
   BOPDS_VectorOfListOfPaveBlock& aPBP=myDS->ChangePaveBlocksPool();
-  aNbPBP=aPBP.Extent();
+  Standard_Integer aNbPBP = aPBP.Extent();
   if(!aNbPBP) {
     return;
   }
@@ -540,8 +536,6 @@ void BOPAlgo_PaveFiller::MakePCurves()
   BOPDS_ListIteratorOfListOfPaveBlock aItLPB;
   TopoDS_Face aF1F, aF2F;
   BOPAlgo_VectorOfMPC aVMPC;
-  //
-  myErrorStatus=0;
   //
   // 1. Process Common Blocks 
   const BOPDS_VectorOfFaceInfo& aFIP=myDS->FaceInfoPool();
@@ -745,8 +739,6 @@ void BOPAlgo_PaveFiller::Prepare()
   Standard_Integer i, aNb, n1, nF, aNbF;
   TopExp_Explorer aExp;
   BOPCol_IndexedMapOfShape aMF;
-  //
-  myErrorStatus=0;
   //
   aNb=3;
   for(i=0; i<aNb; ++i) {

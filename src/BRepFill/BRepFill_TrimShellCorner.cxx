@@ -300,7 +300,7 @@ void BRepFill_TrimShellCorner::Perform()
   aPF.SetArguments(aLS);
   //
   aPF.Perform();
-  if (aPF.ErrorStatus()) {
+  if (aPF.HasErrors()) {
     return;
   }
   //

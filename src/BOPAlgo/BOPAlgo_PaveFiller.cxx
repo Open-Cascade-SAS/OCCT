@@ -18,6 +18,7 @@
 
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_SectionAttribute.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPDS_Curve.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Iterator.hxx>
@@ -124,6 +125,7 @@ Standard_Boolean BOPAlgo_PaveFiller::IsPrimary()const
 //=======================================================================
 void BOPAlgo_PaveFiller::Clear()
 {
+  BOPAlgo_Algo::Clear();
   if (myIterator) {
     delete myIterator;
     myIterator=NULL;
@@ -188,11 +190,17 @@ const BOPCol_ListOfShape& BOPAlgo_PaveFiller::Arguments()const
 //=======================================================================
 void BOPAlgo_PaveFiller::Init()
 {
-  myErrorStatus=0;
-  //
   if (!myArguments.Extent()) {
-    myErrorStatus=10;
+    AddError (new BOPAlgo_AlertTooFewArguments);
     return;
+  }
+  //
+  BOPCol_ListIteratorOfListOfShape aIt(myArguments);
+  for (; aIt.More(); aIt.Next()) {
+    if (aIt.Value().IsNull()) {
+      AddError (new BOPAlgo_AlertNullInputShapes);
+      return;
+    }
   }
   //
   // 0 Clear
@@ -214,8 +222,6 @@ void BOPAlgo_PaveFiller::Init()
   //
   // 4 NonDestructive flag
   SetNonDestructive();
-  //
-  myErrorStatus=0;
 }
 //=======================================================================
 // function: Perform
@@ -223,15 +229,14 @@ void BOPAlgo_PaveFiller::Init()
 //=======================================================================
 void BOPAlgo_PaveFiller::Perform()
 {
-  myErrorStatus=0;
-  try { 
+  try {
     OCC_CATCH_SIGNALS
     //
     PerformInternal();
   }
   //
   catch (Standard_Failure) {
-    myErrorStatus=11;
+    AddError (new BOPAlgo_AlertIntersectionFailed);
   } 
 }
 //=======================================================================
@@ -240,44 +245,42 @@ void BOPAlgo_PaveFiller::Perform()
 //=======================================================================
 void BOPAlgo_PaveFiller::PerformInternal()
 {
-  myErrorStatus=0;
-  //
   Init();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return; 
   }
   //
   Prepare();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return; 
   }
   // 00
   PerformVV();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return; 
   }
   // 01
   PerformVE();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return; 
   }
   //
   UpdatePaveBlocksWithSDVertices();
   // 11
   PerformEE();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return; 
   }
   UpdatePaveBlocksWithSDVertices();
   // 02
   PerformVF();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return; 
   }
   UpdatePaveBlocksWithSDVertices();
   // 12
   PerformEF();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return; 
   }
   UpdatePaveBlocksWithSDVertices();
@@ -285,35 +288,37 @@ void BOPAlgo_PaveFiller::PerformInternal()
   //
   // 22
   PerformFF();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return; 
   }
   //
   UpdateBlocksWithSharedVertices();
   //
   MakeSplitEdges();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return; 
   }
   //
   UpdatePaveBlocksWithSDVertices();
   //
   MakeBlocks();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return; 
   }
+  //
+  CheckSelfInterference();
   //
   UpdateInterfsWithSDVertices();
   myDS->ReleasePaveBlocks();
   myDS->RefineFaceInfoOn();
   //
   MakePCurves();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return; 
   }
   //
   ProcessDE();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return; 
   }
 }

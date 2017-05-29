@@ -20,6 +20,7 @@
 #include <BOPAlgo_BuilderFace.hxx>
 #include <BOPAlgo_WireEdgeSet.hxx>
 #include <BOPAlgo_WireSplitter.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPCol_Box2DBndTree.hxx>
 #include <BOPCol_DataMapOfShapeListOfShape.hxx>
 #include <BOPCol_DataMapOfShapeShape.hxx>
@@ -187,10 +188,8 @@ const TopoDS_Face& BOPAlgo_BuilderFace::Face()const
 //=======================================================================
 void BOPAlgo_BuilderFace::CheckData()
 {
-  myErrorStatus=0;
-  //
   if (myFace.IsNull()) {
-    myErrorStatus=12;// Null face generix
+    AddError (new BOPAlgo_AlertNullInputShapes);
     return;
   }
   if (myContext.IsNull()) {
@@ -203,38 +202,38 @@ void BOPAlgo_BuilderFace::CheckData()
 //=======================================================================
 void BOPAlgo_BuilderFace::Perform()
 {
-  myErrorStatus=0;
+  GetReport()->Clear();
   //
   CheckData();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   UserBreak();
   //
   PerformShapesToAvoid();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   UserBreak();
   //
   PerformLoops();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   UserBreak();
   //
   PerformAreas();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   UserBreak();
   //
   PerformInternalShapes();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
 }
@@ -317,10 +316,8 @@ void BOPAlgo_BuilderFace::PerformShapesToAvoid()
 //=======================================================================
 void BOPAlgo_BuilderFace::PerformLoops()
 {
-  myErrorStatus=0;
-  //
   Standard_Boolean bFlag;
-  Standard_Integer i, iErr, aNbEA;
+  Standard_Integer i, aNbEA;
   BOPCol_ListIteratorOfListOfShape aIt;
   BOPCol_IndexedDataMapOfShapeListOfShape aVEMap;
   BOPCol_MapOfOrientedShape aMAdded;
@@ -345,8 +342,7 @@ void BOPAlgo_BuilderFace::PerformLoops()
   aWSp.SetRunParallel(myRunParallel);
   aWSp.SetContext(myContext);
   aWSp.Perform();
-  iErr=aWSp.ErrorStatus();
-  if (iErr) {
+  if (aWSp.HasErrors()) {
     return;
   }
   //
@@ -458,7 +454,6 @@ void BOPAlgo_BuilderFace::PerformAreas()
   BOPCol_Box2DBndTree aBBTree;
   NCollection_UBTreeFiller <Standard_Integer, Bnd_Box2d> aTreeFiller(aBBTree);
   //
-  myErrorStatus=0;
   aNbHoles=0;
   //
   aTol=BRep_Tool::Tolerance(myFace);
@@ -682,7 +677,6 @@ void GetWire(const TopoDS_Shape& aF, TopoDS_Shape& aW)
 //=======================================================================
 void BOPAlgo_BuilderFace::PerformInternalShapes()
 {
-  myErrorStatus=0;
   if (myAvoidInternalShapes) {
     return;
   }
@@ -872,9 +866,3 @@ Standard_Boolean IsGrowthWire(const TopoDS_Shape& theWire,
   }
   return bRet;
 }
-
-//BRepTools::Write(aFF, "ff");
-//
-//  ErrorStatus :
-// 11 - Null Context
-// 12 - Null face generix

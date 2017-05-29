@@ -17,35 +17,6 @@
 
 
 #include <BOPAlgo_Algo.hxx>
-#include <Message_ProgressIndicator.hxx>
-#include <NCollection_BaseAllocator.hxx>
-#include <Precision.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <Standard_ProgramError.hxx>
-
-namespace
-{
-  Standard_Boolean myGlobalRunParallel = Standard_False;
-}
-
-//=======================================================================
-// function: 
-// purpose: 
-//=======================================================================
-void BOPAlgo_Algo::SetParallelMode(Standard_Boolean theNewMode)
-{
-  myGlobalRunParallel = theNewMode;
-}
-
-//=======================================================================
-// function: 
-// purpose: 
-//=======================================================================
-Standard_Boolean BOPAlgo_Algo::GetParallelMode()
-{
-  return myGlobalRunParallel;
-}
-
 
 //=======================================================================
 // function: 
@@ -53,11 +24,7 @@ Standard_Boolean BOPAlgo_Algo::GetParallelMode()
 //=======================================================================
 BOPAlgo_Algo::BOPAlgo_Algo()
 :
-  myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
-  myErrorStatus(1),
-  myWarningStatus(0),
-  myRunParallel(myGlobalRunParallel),
-  myFuzzyValue(Precision::Confusion())
+  BOPAlgo_Options(NCollection_BaseAllocator::CommonBaseAllocator())
 {}
 //=======================================================================
 // function: 
@@ -66,11 +33,7 @@ BOPAlgo_Algo::BOPAlgo_Algo()
 BOPAlgo_Algo::BOPAlgo_Algo
   (const Handle(NCollection_BaseAllocator)& theAllocator)
 :
-  myAllocator(theAllocator),
-  myErrorStatus(1),
-  myWarningStatus(0),
-  myRunParallel(myGlobalRunParallel),
-  myFuzzyValue(Precision::Confusion())
+  BOPAlgo_Options(theAllocator)
 {}
 
 //=======================================================================
@@ -80,21 +43,14 @@ BOPAlgo_Algo::BOPAlgo_Algo
 BOPAlgo_Algo::~BOPAlgo_Algo()
 {
 }
-//=======================================================================
-//function : Allocator
-//purpose  : 
-//=======================================================================
-const Handle(NCollection_BaseAllocator)& BOPAlgo_Algo::Allocator()const
-{
-  return myAllocator;
-}
+
 //=======================================================================
 // function: CheckData
 // purpose: 
 //=======================================================================
 void BOPAlgo_Algo::CheckData()
 {
-  myErrorStatus=0;
+  GetReport()->Clear(Message_Fail);
 }
 //=======================================================================
 // function: CheckResult
@@ -102,80 +58,5 @@ void BOPAlgo_Algo::CheckData()
 //=======================================================================
 void BOPAlgo_Algo::CheckResult()
 {
-  myErrorStatus=0;
+  GetReport()->Clear(Message_Fail);
 }
-//=======================================================================
-// function: ErrorStatus
-// purpose: 
-//=======================================================================
-Standard_Integer BOPAlgo_Algo::ErrorStatus()const
-{
-  return myErrorStatus;
-}
-//=======================================================================
-// function: WarningStatus
-// purpose: 
-//=======================================================================
-Standard_Integer BOPAlgo_Algo::WarningStatus()const
-{
-  return myWarningStatus;
-}
-//=======================================================================
-//function : SetRunParallel
-//purpose  : 
-//=======================================================================
-void BOPAlgo_Algo::SetRunParallel(const Standard_Boolean theFlag)
-{
-  myRunParallel=theFlag;
-}
-//=======================================================================
-//function : RunParallel
-//purpose  : 
-//=======================================================================
-Standard_Boolean BOPAlgo_Algo::RunParallel()const
-{
-  return myRunParallel;
-}
-//=======================================================================
-//function : SetFuzzyValue
-//purpose  : 
-//=======================================================================
-void BOPAlgo_Algo::SetFuzzyValue(const Standard_Real theFuzz)
-{
-  myFuzzyValue = Max(theFuzz, Precision::Confusion());
-}
-//=======================================================================
-//function : FuzzyValue
-//purpose  : 
-//=======================================================================
-Standard_Real BOPAlgo_Algo::FuzzyValue() const
-{
-  return myFuzzyValue;
-}
-//=======================================================================
-//function : SetProgressIndicator
-//purpose  : 
-//=======================================================================
-void BOPAlgo_Algo::SetProgressIndicator
-  (const Handle(Message_ProgressIndicator)& theObj)
-{
-  if (!theObj.IsNull()) {
-    myProgressIndicator=theObj;
-  }
-}
-//=======================================================================
-//function : UserBreak
-//purpose  : 
-//=======================================================================
-void BOPAlgo_Algo::UserBreak() const
-{
-  if (myProgressIndicator.IsNull()) {
-    return;
-  }
-  if (myProgressIndicator->UserBreak()) {
-    throw Standard_NotImplemented ("BOPAlgo_Algo::UserBreak(), method is not implemented");
-  }
-} 
-//  myErrorStatus
-//
-// 1 - object is just initialized

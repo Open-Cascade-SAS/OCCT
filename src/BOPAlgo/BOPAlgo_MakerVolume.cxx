@@ -16,6 +16,7 @@
 #include <BOPAlgo_BuilderSolid.hxx>
 #include <BOPAlgo_MakerVolume.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPCol_DataMapOfShapeListOfShape.hxx>
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPDS_DS.hxx>
@@ -40,20 +41,11 @@ static
 void BOPAlgo_MakerVolume::CheckData()
 {
   if (myArguments.IsEmpty()) {
-    myErrorStatus = 100; // no arguments to process
-    return;
-  }
-  // myPaveFiller
-  if (!myPaveFiller) {
-    myErrorStatus = 101; 
+    AddError (new BOPAlgo_AlertTooFewArguments); // no arguments to process
     return;
   }
   //
-  myErrorStatus = myPaveFiller->ErrorStatus();
-  if (myErrorStatus) {
-    myErrorStatus = 102; // PaveFiller is failed
-    return;
-  }
+  CheckFiller();
 }
 
 //=======================================================================
@@ -62,7 +54,7 @@ void BOPAlgo_MakerVolume::CheckData()
 //=======================================================================
 void BOPAlgo_MakerVolume::Perform()
 {
-  myErrorStatus = 0;
+  GetReport()->Clear();
   //
   if (myEntryPoint == 1) {
     if (myPaveFiller) {
@@ -115,21 +107,19 @@ void BOPAlgo_MakerVolume::Perform()
 void BOPAlgo_MakerVolume::PerformInternal1
   (const BOPAlgo_PaveFiller& theFiller)
 {
-  myErrorStatus=0;
-  //
   myPaveFiller = (BOPAlgo_PaveFiller*)&theFiller;
   myDS = myPaveFiller->PDS();
   myContext = myPaveFiller->Context();
   //
   // 1. CheckData
   CheckData();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   // 2. Prepare
   Prepare();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
@@ -137,29 +127,29 @@ void BOPAlgo_MakerVolume::PerformInternal1
   // 3.1. Vertice
   if (myIntersect) {
     FillImagesVertices();
-    if (myErrorStatus) {
+    if (HasErrors()) {
       return;
     }
     // 3.2. Edges
     FillImagesEdges();
-    if (myErrorStatus) {
+    if (HasErrors()) {
       return;
     }
     // 3.3. Wires
     FillImagesContainers(TopAbs_WIRE);
-    if (myErrorStatus) {
+    if (HasErrors()) {
       return;
     }
     // 3.4. Faces
     FillImagesFaces();
-    if (myErrorStatus) {
+    if (HasErrors()) {
       return;
     }
   }
   //
   // 4. Collect faces
   CollectFaces();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
@@ -171,7 +161,7 @@ void BOPAlgo_MakerVolume::PerformInternal1
   //
   // 6. Make volumes
   BuildSolids(aLSR);
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
@@ -272,8 +262,9 @@ void BOPAlgo_MakerVolume::BuildSolids(BOPCol_ListOfShape& theLSR)
   aBS.SetRunParallel(myRunParallel);
   aBS.SetAvoidInternalShapes(myAvoidInternalShapes);
   aBS.Perform();
-  if (aBS.ErrorStatus()) {
-    myErrorStatus = 103;
+  if (aBS.HasErrors())
+  {
+    AddError (new BOPAlgo_AlertSolidBuilderFailed); // SolidBuilder failed
     return;
   }
   //
@@ -472,4 +463,3 @@ void TreatCompound(const TopoDS_Shape& theS,
     TreatCompound(aS, aMFence, theLS);
   }
 }
-

@@ -168,7 +168,7 @@
 //=======================================================================
   void BRepFeat_Builder::Prepare()
 {
-  myErrorStatus=0;
+  GetReport()->Clear();
   //
   BRep_Builder aBB;
   TopoDS_Compound aC;
@@ -226,29 +226,29 @@
     RebuildFaces();
     //
     FillImagesContainers(TopAbs_SHELL);
-    if (myErrorStatus) {
+    if (HasErrors()) {
       return;
     }
     //
     FillImagesSolids();
-    if (myErrorStatus) {
+    if (HasErrors()) {
       return;
     }
     //
     CheckSolidImages();
     //
     BuildResult(TopAbs_SOLID);
-    if (myErrorStatus) {
+    if (HasErrors()) {
       return;
     }
     // 
     FillImagesCompounds();
-    if (myErrorStatus) {
+    if (HasErrors()) {
       return;
     }
     //
     BuildResult(TopAbs_COMPOUND);
-    if (myErrorStatus) {
+    if (HasErrors()) {
       return;
     }
   }
@@ -740,7 +740,7 @@
                                        BOPCol_DataMapOfShapeShape& theDraftSolids,
                                        const Handle(NCollection_BaseAllocator)& theAllocator)
 {
-  myErrorStatus=0;
+  GetReport()->Clear();
   //
   Standard_Boolean bIsIN, bHasImage;
   Standard_Integer aNbS, i, j, aNbFP, aNbFPx, aNbFIN, aNbLIF, aNbEFP;

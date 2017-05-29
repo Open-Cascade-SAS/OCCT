@@ -503,8 +503,6 @@ void BOPAlgo_Builder::FillImagesSolids()
   Standard_Boolean bHasSolids;
   Standard_Integer i, aNbS;
   //
-  myErrorStatus=0;
-  //
   bHasSolids=Standard_False;
   aNbS=myDS->NbSourceShapes();
   for (i=0; i<aNbS; ++i) {
@@ -558,7 +556,6 @@ void BOPAlgo_Builder::FillIn3DParts
   BOPCol_MapOfShape aMFence(100, aAlr0);
   BOPAlgo_VectorOfShapeBox aVSB(256, aAlr0);
   //
-  myErrorStatus=0;
   theDraftSolids.Clear();
   //
   // 1. aVSB vector Index/FaceBox 
@@ -704,8 +701,6 @@ void BOPAlgo_Builder::BuildDraftSolid(const TopoDS_Shape& theSolid,
                                       TopoDS_Shape& theDraftSolid,
                                       BOPCol_ListOfShape& theLIF)
 {
-  myErrorStatus=0;
-  //
   Standard_Boolean bToReverse;
   Standard_Integer iFlag;
   TopAbs_Orientation aOrF, aOrSh, aOrSd;
@@ -798,8 +793,6 @@ void BOPAlgo_Builder::BuildSplitSolids
    BOPCol_DataMapOfShapeShape& theDraftSolids,
    const BOPCol_BaseAllocator&  )
 {
-  myErrorStatus=0;
-  //
   Standard_Boolean bFlagSD;
   Standard_Integer i, aNbS;
   TopExp_Explorer aExp;
@@ -928,8 +921,6 @@ void BOPAlgo_Builder::BuildSplitSolids
 //=======================================================================
 void BOPAlgo_Builder::FillInternalShapes()
 {
-  myErrorStatus=0;
-  //
   Standard_Integer i, j,  aNbS, aNbSI, aNbSx;
   TopAbs_ShapeEnum aType;
   TopAbs_State aState; 
@@ -1191,7 +1182,3 @@ void TreatCompound(const TopoDS_Shape& theS,
     TreatCompound(aS, aMFence, theLS);
   }
 }
-//
-// ErrorStatus
-// 30 - SolidBuilder failed
-

@@ -202,7 +202,7 @@ static Standard_Integer Loc(Draw_Interpretor& theCommands,
   }
 #endif
   BLoc.PerformResult();
-  if (!BLoc.ErrorStatus()) {
+  if (!BLoc.HasErrors()) {
 //    dout.Clear();
     DBRep::Set(a[1],BLoc.Shape());
     dout.Flush();
@@ -237,7 +237,7 @@ static Standard_Integer HOLE1(Draw_Interpretor& theCommands,
   }
 
   theHole.Build();
-  if (!theHole.ErrorStatus()) {
+  if (!theHole.HasErrors()) {
 //    dout.Clear();
     DBRep::Set(a[1],theHole.Shape());
     dout.Flush();
@@ -263,7 +263,7 @@ static Standard_Integer HOLE2(Draw_Interpretor& theCommands,
   theHole.PerformThruNext(Radius,WithControl);
 
   theHole.Build();
-  if (!theHole.ErrorStatus()) {
+  if (!theHole.HasErrors()) {
 //    dout.Clear();
     DBRep::Set(a[1],theHole.Shape());
     dout.Flush();
@@ -288,7 +288,7 @@ static Standard_Integer HOLE3(Draw_Interpretor& theCommands,
   theHole.Init(S,gp_Ax1(Or,Di));
   theHole.PerformUntilEnd(Radius,WithControl);
   theHole.Build();
-  if (!theHole.ErrorStatus()) {
+  if (!theHole.HasErrors()) {
 //    dout.Clear();
     DBRep::Set(a[1],theHole.Shape());
     dout.Flush();
@@ -315,7 +315,7 @@ static Standard_Integer HOLE4(Draw_Interpretor& theCommands,
   theHole.Init(S,gp_Ax1(Or,Di));
   theHole.PerformBlind(Radius,Length,WithControl);
   theHole.Build();
-  if (!theHole.ErrorStatus()) {
+  if (!theHole.HasErrors()) {
 //    dout.Clear();
     DBRep::Set(a[1],theHole.Shape());
     dout.Flush();

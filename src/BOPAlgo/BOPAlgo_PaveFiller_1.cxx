@@ -19,6 +19,7 @@
 #include <Bnd_Box.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Tools.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPCol_DataMapOfIntegerInteger.hxx>
 #include <BOPCol_DataMapOfIntegerListOfInteger.hxx>
 #include <BOPCol_IndexedDataMapOfIntegerListOfInteger.hxx>
@@ -30,6 +31,7 @@
 #include <BOPDS_ShapeInfo.hxx>
 #include <BOPDS_VectorOfInterfVV.hxx>
 #include <BOPTools_AlgoTools.hxx>
+#include <BRep_Builder.hxx>
 #include <BRep_TVertex.hxx>
 #include <BRep_Tool.hxx>
 #include <gp_Pnt.hxx>
@@ -39,6 +41,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <TopoDS_Compound.hxx>
 
 //=======================================================================
 // function: PerformVV
@@ -48,8 +51,6 @@ void BOPAlgo_PaveFiller::PerformVV()
 {
   Standard_Integer n1, n2, iFlag, aSize;
   Handle(NCollection_BaseAllocator) aAllocator;
-  //
-  myErrorStatus=0;
   //
   myIterator->Initialize(TopAbs_VERTEX, TopAbs_VERTEX);
   aSize=myIterator->ExpectedLength();
@@ -163,12 +164,27 @@ Standard_Integer BOPAlgo_PaveFiller::MakeSDVertices
     Standard_Integer n1 = aItLI.Value();
     myDS->AddShapeSD(n1, nV);
     //
-    if (theAddInterfs) {
-      BOPCol_ListIteratorOfListOfInteger aItLI2 = aItLI;
-      aItLI2.Next();
-      for (; aItLI2.More(); aItLI2.Next()) {
-        Standard_Integer n2 = aItLI2.Value();
+    Standard_Integer iR1 = myDS->Rank(n1);
+    const TopoDS_Shape& aV1 = myDS->Shape(n1);
+    //
+    BOPCol_ListIteratorOfListOfInteger aItLI2 = aItLI;
+    aItLI2.Next();
+    for (; aItLI2.More(); aItLI2.Next()) {
+      Standard_Integer n2 = aItLI2.Value();
+      //
+      if (iR1 >= 0 && iR1 == myDS->Rank(n2)) {
+        // add warning status
+        const TopoDS_Shape& aV2 = myDS->Shape(n2);
         //
+        TopoDS_Compound aWC;
+        BRep_Builder().MakeCompound(aWC);
+        BRep_Builder().Add(aWC, aV1);
+        BRep_Builder().Add(aWC, aV2);
+        //
+        AddWarning (new BOPAlgo_AlertSelfInterferingShape (aWC));
+      }
+      //
+      if (theAddInterfs) {
         myDS->AddInterf(n1, n2);
         BOPDS_InterfVV& aVV = aVVs.Append1();
         //

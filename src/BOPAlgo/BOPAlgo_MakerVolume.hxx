@@ -89,11 +89,9 @@ class BOPAlgo_PaveFiller;
 //!
 //! <myRunParallel> - Defines whether the parallel processing is
 //! switched on or not.
-//! <myErrorStatus> - Error status of the operation:
-//! 0   - operation successful;
-//! 100 - no shapes to process;
-//! 102 - BOPAlgo_PaveFiller algorithm has failed;
-//! 103 - BOPAlgo_BuilderSolid algorithm has failed.
+//! <myReport> - Error status of the operation. Additionally to the
+//! errors of the parent algorithm it can have the following values:
+//! - *BOPAlgo_AlertSolidBuilderFailed* - BOPAlgo_BuilderSolid algorithm has failed.
 //!
 //! Example:
 //!
@@ -180,6 +178,7 @@ protected:
 
   //! Builds the result.
   Standard_EXPORT void BuildShape (const BOPCol_ListOfShape& theLSR);
+
 
   Standard_Boolean myIntersect;
   Bnd_Box myBBox;

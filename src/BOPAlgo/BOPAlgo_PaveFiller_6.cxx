@@ -19,6 +19,7 @@
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_SectionAttribute.hxx>
 #include <BOPAlgo_Tools.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPCol_DataMapOfShapeInteger.hxx>
 #include <BOPCol_ListOfInteger.hxx>
 #include <BOPCol_ListOfShape.hxx>
@@ -172,8 +173,6 @@ typedef BOPCol_Cnt
 //=======================================================================
 void BOPAlgo_PaveFiller::PerformFF()
 {
-  myErrorStatus = 0;
-  //
   myIterator->Initialize(TopAbs_FACE, TopAbs_FACE);
   Standard_Integer iSize = myIterator->ExpectedLength();
   if (!iSize) {
@@ -339,12 +338,8 @@ void BOPAlgo_PaveFiller::MakeBlocks()
     return;
   }
   //
-  Standard_Integer aNbFF;
-  //
-  myErrorStatus=0;
-  //
   BOPDS_VectorOfInterfFF& aFFs=myDS->InterfFF();
-  aNbFF=aFFs.Extent();
+  Standard_Integer aNbFF = aFFs.Extent();
   if (!aNbFF) {
     return;
   }
@@ -644,8 +639,8 @@ void BOPAlgo_PaveFiller::MakeBlocks()
   // 
   // post treatment
   MakeSDVerticesFF(aDMVLV, aDMNewSD);
-  myErrorStatus=PostTreatFF(aMSCPB, aDMExEdges, aDMNewSD, aMicroEdges, aAllocator);
-  if (myErrorStatus) {
+  PostTreatFF(aMSCPB, aDMExEdges, aDMNewSD, aMicroEdges, aAllocator);
+  if (HasErrors()) {
     return;
   }
   // reduce tolerances of section edges where it is appropriate
@@ -697,23 +692,20 @@ void BOPAlgo_PaveFiller::MakeSDVerticesFF
 //function : PostTreatFF
 //purpose  : 
 //=======================================================================
-Standard_Integer BOPAlgo_PaveFiller::PostTreatFF
+void BOPAlgo_PaveFiller::PostTreatFF
     (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMSCPB,
      BOPDS_DataMapOfPaveBlockListOfPaveBlock& aDMExEdges,
      BOPCol_DataMapOfIntegerInteger& aDMNewSD,
      const BOPCol_IndexedMapOfShape& theMicroEdges,
      const Handle(NCollection_BaseAllocator)& theAllocator)
 {
-  Standard_Integer iRet, aNbS;
-  //
-  iRet=0;
-  aNbS=theMSCPB.Extent();
+  Standard_Integer aNbS = theMSCPB.Extent();
   if (!aNbS) {
-    return iRet;
+    return;
   }
   //
   Standard_Boolean bHasPaveBlocks, bOld;
-  Standard_Integer iErr, nSx, nVSD, iX, iP, iC, j, nV, iV = 0, iE, k;
+  Standard_Integer nSx, nVSD, iX, iP, iC, j, nV, iV = 0, iE, k;
   Standard_Integer aNbLPBx;
   TopAbs_ShapeEnum aType;
   TopoDS_Shape aV, aE;
@@ -765,7 +757,7 @@ Standard_Integer BOPAlgo_PaveFiller::PostTreatFF
         aPB1->SetEdge(iE);
       }
     }
-    return iRet;
+    return;
   }
   //
   // 1 prepare arguments
@@ -838,9 +830,9 @@ Standard_Integer BOPAlgo_PaveFiller::PostTreatFF
   aPF.SetRunParallel(myRunParallel);
   aPF.SetArguments(aLS);
   aPF.Perform();
-  iErr=aPF.ErrorStatus();
-  if (iErr) {
-    return iRet;
+  if (aPF.HasErrors()) {
+    AddError (new BOPAlgo_AlertPostTreatFF);
+    return;
   }
   aPDS=aPF.PDS();
   //
@@ -1061,7 +1053,7 @@ Standard_Integer BOPAlgo_PaveFiller::PostTreatFF
       myDS->AddShapeSD(itDM.Key(), *pSD);
     }
   }
-  return iRet;
+  return;
 }
 
 //=======================================================================
@@ -2752,8 +2744,6 @@ void BOPAlgo_PaveFiller::UpdateBlocksWithSharedVertices()
   if (!myNonDestructive) {
     return;
   }
-  //
-  myErrorStatus=0;
   //
   Standard_Integer aNbFF;
   //

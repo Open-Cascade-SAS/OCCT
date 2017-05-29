@@ -80,7 +80,6 @@ Standard_Integer bcbuild(Draw_Interpretor& di,
     return 1;
   }
   //
-  Standard_Integer iErr;
   BOPCol_ListIteratorOfListOfShape aIt;
   //
   BOPAlgo_PaveFiller& aPF = BOPTest_Objects::PaveFiller();
@@ -114,10 +113,9 @@ Standard_Integer bcbuild(Draw_Interpretor& di,
   aCBuilder.SetGlue(aGlue);
   //
   aCBuilder.PerformWithFiller(aPF); 
-  iErr = aCBuilder.ErrorStatus();
-  if (iErr) {
-    di << "error: " << iErr << "\n";
-    return 1;
+  BOPTest::ReportAlerts(aCBuilder);
+  if (aCBuilder.HasErrors()) {
+    return 0;
   }
   //
   BOPTest_Objects::SetBuilder(&aCBuilder);
@@ -160,11 +158,9 @@ Standard_Integer bcaddall(Draw_Interpretor& di,
   //
   BOPAlgo_CellsBuilder& aCBuilder = BOPTest_Objects::CellsBuilder();
   //
+  aCBuilder.ClearWarnings();
   aCBuilder.AddAllToResult(iMaterial, bUpdate);
-  //
-  Standard_SStream aSStream;
-  aCBuilder.DumpWarnings(aSStream);
-  di << aSStream;
+  BOPTest::ReportAlerts(aCBuilder);
   //
   const TopoDS_Shape& aR = aCBuilder.Shape();
   //
@@ -245,11 +241,10 @@ Standard_Integer bcadd(Draw_Interpretor& di,
   }
   //
   BOPAlgo_CellsBuilder& aCBuilder = BOPTest_Objects::CellsBuilder();
-  aCBuilder.AddToResult(aLSToTake, aLSToAvoid, iMaterial, bUpdate);
   //
-  Standard_SStream aSStream;
-  aCBuilder.DumpWarnings(aSStream);
-  di << aSStream;
+  aCBuilder.ClearWarnings();
+  aCBuilder.AddToResult(aLSToTake, aLSToAvoid, iMaterial, bUpdate);
+  BOPTest::ReportAlerts(aCBuilder);
   //
   const TopoDS_Shape& aR = aCBuilder.Shape();
   //
@@ -317,11 +312,10 @@ Standard_Integer bcremoveint(Draw_Interpretor& di,
   }
   //
   BOPAlgo_CellsBuilder& aCBuilder = BOPTest_Objects::CellsBuilder();
-  aCBuilder.RemoveInternalBoundaries();
   //
-  Standard_SStream aSStream;
-  aCBuilder.DumpWarnings(aSStream);
-  di << aSStream;
+  aCBuilder.ClearWarnings();
+  aCBuilder.RemoveInternalBoundaries();
+  BOPTest::ReportAlerts(aCBuilder);
   //
   const TopoDS_Shape& aR = aCBuilder.Shape();
   //

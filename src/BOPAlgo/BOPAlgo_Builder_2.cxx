@@ -228,8 +228,6 @@ typedef BOPCol_ContextCnt
 //=======================================================================
 void BOPAlgo_Builder::FillImagesFaces()
 {
-  myErrorStatus=0;
-  //
   BuildSplitFaces();
   FillSameDomainFaces();
   FillImagesFaces1();
@@ -253,8 +251,6 @@ void BOPAlgo_Builder::BuildSplitFaces()
   Handle(NCollection_BaseAllocator) aAllocator;
   BOPCol_ListOfShape aLFIm(myAllocator);
   BOPAlgo_VectorOfBuilderFace aVBF;
-  //
-  myErrorStatus=0;
   //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~scope f
   aAllocator=
@@ -473,8 +469,6 @@ void BOPAlgo_Builder::FillSameDomainFaces()
   BOPCol_MapOfShape aMFence;
   BOPAlgo_IndexedDataMapOfSetInteger aIDMSS;
   BOPAlgo_VectorOfVectorOfShape aVVS;
-  //
-  myErrorStatus=0;
   //
   const BOPDS_VectorOfInterfFF& aFFs=myDS->InterfFF();
   //

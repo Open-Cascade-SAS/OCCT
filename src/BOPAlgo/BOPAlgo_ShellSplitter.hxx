@@ -59,13 +59,10 @@ Standard_EXPORT virtual ~BOPAlgo_ShellSplitter();
   Standard_EXPORT static void SplitBlock (BOPTools_ConnexityBlock& theCB);
 
 
-
-
 protected:
 
-  
   Standard_EXPORT void MakeConnexityBlocks();
-  
+
   Standard_EXPORT void MakeShells();
 
 
@@ -73,19 +70,8 @@ protected:
   BOPCol_ListOfShape myShells;
   BOPTools_ListOfConnexityBlock myLCB;
 
-
 private:
 
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BOPAlgo_ShellSplitter_HeaderFile

@@ -83,6 +83,9 @@ public:
 
   Standard_EXPORT static BOPAlgo_GlueEnum Glue();
 
+  Standard_EXPORT static void SetDrawWarnShapes(const Standard_Boolean bDraw);
+
+  Standard_EXPORT static Standard_Boolean DrawWarnShapes();
 
 protected:
 

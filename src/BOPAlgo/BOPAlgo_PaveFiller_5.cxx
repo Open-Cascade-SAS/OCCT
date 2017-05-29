@@ -18,6 +18,7 @@
 
 #include <Bnd_Box.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPAlgo_Tools.hxx>
 #include <BOPCol_MapOfInteger.hxx>
 #include <BOPCol_NCVector.hxx>
@@ -132,8 +133,6 @@ typedef BOPCol_ContextCnt
 //=======================================================================
 void BOPAlgo_PaveFiller::PerformEF()
 {
-  myErrorStatus=0;
-  //
   FillShrunkData(TopAbs_EDGE, TopAbs_FACE);
   //
   myIterator->Initialize(TopAbs_EDGE, TopAbs_FACE);
@@ -564,6 +563,18 @@ Standard_Boolean BOPAlgo_PaveFiller::ForceInterfVF
     BOPDS_FaceInfo& aFI=myDS->ChangeFaceInfo(nF);
     BOPCol_MapOfInteger& aMVIn=aFI.ChangeVerticesIn();
     aMVIn.Add(nVx);
+    //
+    // check for self-interference
+    Standard_Integer iRV = myDS->Rank(nV);
+    if (iRV >= 0 && iRV == myDS->Rank(nF)) {
+      // add warning status
+      TopoDS_Compound aWC;
+      BRep_Builder().MakeCompound(aWC);
+      BRep_Builder().Add(aWC, aV);
+      BRep_Builder().Add(aWC, aF);
+      AddWarning (new BOPAlgo_AlertSelfInterferingShape (aWC));
+    }
+
   }
   return bRet;
 }

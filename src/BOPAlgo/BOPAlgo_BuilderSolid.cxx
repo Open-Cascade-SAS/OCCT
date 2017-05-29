@@ -17,6 +17,7 @@
 //
 #include <BOPAlgo_BuilderSolid.hxx>
 #include <BOPAlgo_ShellSplitter.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPCol_BoxBndTree.hxx>
 #include <BOPCol_DataMapOfShapeListOfShape.hxx>
 #include <BOPCol_DataMapOfShapeShape.hxx>
@@ -297,7 +298,7 @@ const TopoDS_Solid& BOPAlgo_BuilderSolid::Solid()const
 //=======================================================================
 void BOPAlgo_BuilderSolid::Perform()
 {
-  myErrorStatus=0;
+  GetReport()->Clear();
   //
   if (myContext.IsNull()) {
     myContext=new IntTools_Context;
@@ -317,28 +318,28 @@ void BOPAlgo_BuilderSolid::Perform()
   UserBreak();
   //
   PerformShapesToAvoid();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   UserBreak();
   //
   PerformLoops();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   UserBreak();
   //
   PerformAreas();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   UserBreak();
   //
   PerformInternalShapes();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
 }
@@ -428,12 +429,11 @@ void BOPAlgo_BuilderSolid::PerformShapesToAvoid()
 //=======================================================================
 void BOPAlgo_BuilderSolid::PerformLoops()
 {
-  Standard_Integer iErr, i, aNbSh;
+  Standard_Integer i, aNbSh;
   BOPCol_ListIteratorOfListOfShape aIt;
   TopoDS_Iterator aItS;
   Handle(NCollection_BaseAllocator) aAlr;
   // 
-  myErrorStatus=0;
   myLoops.Clear();
   //
   aAlr=
@@ -461,8 +461,17 @@ void BOPAlgo_BuilderSolid::PerformLoops()
   //
   aSSp.SetRunParallel(myRunParallel);
   aSSp.Perform();
-  iErr=aSSp.ErrorStatus();
-  if (iErr) {
+  if (aSSp.HasErrors()) {
+    // add warning status
+    {
+      TopoDS_Compound aFacesSp;
+      BRep_Builder().MakeCompound(aFacesSp);
+      BOPCol_ListIteratorOfListOfShape aItLF(aSSp.StartElements());
+      for (; aItLF.More(); aItLF.Next()) {
+        BRep_Builder().Add(aFacesSp, aItLF.Value());
+      }
+      AddWarning (new BOPAlgo_AlertShellSplitterFailed (aFacesSp));
+    }
     return;
   }
   //
@@ -578,8 +587,6 @@ void BOPAlgo_BuilderSolid::PerformAreas()
   BOPAlgo_DataMapOfIntegerBSSB aDMISB(100);
   BOPCol_IndexedDataMapOfShapeListOfShape aMSH;
   BOPAlgo_DataMapIteratorOfDataMapOfIntegerBSSB aItDMISB;
-  //
-  myErrorStatus=0;
   //
   myAreas.Clear();
   //
@@ -750,7 +757,6 @@ void BOPAlgo_BuilderSolid::PerformAreas()
 //=======================================================================
 void BOPAlgo_BuilderSolid::PerformInternalShapes()
 {
-  myErrorStatus=0;
   if (myAvoidInternalShapes) {
     return;
   }
@@ -877,7 +883,7 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes()
   if (!aNbVFS) {
     return;
   }
-  // 4. Refine candidares
+  // 4. Refine candidates
   //=============================================================
   BOPAlgo_FaceSolidCnt::Perform(myRunParallel, aVFS, myContext);
   //=============================================================

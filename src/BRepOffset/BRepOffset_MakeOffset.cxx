@@ -4087,7 +4087,7 @@ Standard_Boolean BuildShellsCompleteInter(const BOPCol_ListOfShape& theLF,
   aMV1.SetAvoidInternalShapes(Standard_True);
   aMV1.Perform();
   //
-  Standard_Boolean bDone = (aMV1.ErrorStatus() == 0);
+  Standard_Boolean bDone = ! aMV1.HasErrors();
   if (!bDone) {
     return bDone;
   }
@@ -4130,7 +4130,7 @@ Standard_Boolean BuildShellsCompleteInter(const BOPCol_ListOfShape& theLF,
   aMV2.SetIntersect(Standard_False);
   aMV2.SetAvoidInternalShapes(Standard_True);
   aMV2.Perform();
-  bDone = (aMV2.ErrorStatus() == 0);
+  bDone = ! aMV2.HasErrors();
   if (!bDone) {
     return bDone;
   }
@@ -4175,7 +4175,7 @@ Standard_Boolean BuildShellsCompleteInter(const BOPCol_ListOfShape& theLF,
   aMV3.SetIntersect(Standard_False);
   aMV3.SetAvoidInternalShapes(Standard_True);
   aMV3.Perform();
-  bDone = (aMV3.ErrorStatus() == 0);
+  bDone = ! aMV3.HasErrors();
   if (!bDone) {
     return bDone;
   }

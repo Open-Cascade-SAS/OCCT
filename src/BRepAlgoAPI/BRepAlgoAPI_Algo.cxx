@@ -14,9 +14,7 @@
 
 
 #include <BRepAlgoAPI_Algo.hxx>
-#include <Message_ProgressIndicator.hxx>
 #include <NCollection_BaseAllocator.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <TopoDS_Shape.hxx>
 
 //=======================================================================
@@ -25,10 +23,7 @@
 //=======================================================================
 BRepAlgoAPI_Algo::BRepAlgoAPI_Algo()
 :
-  myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
-  myErrorStatus(1),
-  myWarningStatus(0),
-  myRunParallel(Standard_False)
+  BOPAlgo_Options(NCollection_BaseAllocator::CommonBaseAllocator())
 {}
 //=======================================================================
 // function: 
@@ -37,10 +32,7 @@ BRepAlgoAPI_Algo::BRepAlgoAPI_Algo()
 BRepAlgoAPI_Algo::BRepAlgoAPI_Algo
   (const Handle(NCollection_BaseAllocator)& theAllocator)
 :
-  myAllocator(theAllocator),
-  myErrorStatus(1),
-  myWarningStatus(0),
-  myRunParallel(Standard_False)
+  BOPAlgo_Options(theAllocator)
 {}
 
 //=======================================================================
@@ -51,70 +43,6 @@ BRepAlgoAPI_Algo::~BRepAlgoAPI_Algo()
 {
 }
 //=======================================================================
-//function : Allocator
-//purpose  : 
-//=======================================================================
-const Handle(NCollection_BaseAllocator)& BRepAlgoAPI_Algo::Allocator()const
-{
-  return myAllocator;
-}
-//=======================================================================
-// function: ErrorStatus
-// purpose: 
-//=======================================================================
-Standard_Integer BRepAlgoAPI_Algo::ErrorStatus()const
-{
-  return myErrorStatus;
-}
-//=======================================================================
-// function: WarningStatus
-// purpose: 
-//=======================================================================
-Standard_Integer BRepAlgoAPI_Algo::WarningStatus()const
-{
-  return myWarningStatus;
-}
-//=======================================================================
-//function : SetRunParallel
-//purpose  : 
-//=======================================================================
-void BRepAlgoAPI_Algo::SetRunParallel(const Standard_Boolean theFlag)
-{
-  myRunParallel=theFlag;
-}
-//=======================================================================
-//function : RunParallel
-//purpose  : 
-//=======================================================================
-Standard_Boolean BRepAlgoAPI_Algo::RunParallel()const
-{
-  return myRunParallel;
-}
-//=======================================================================
-//function : SetProgressIndicator
-//purpose  : 
-//=======================================================================
-void BRepAlgoAPI_Algo::SetProgressIndicator
-  (const Handle(Message_ProgressIndicator)& theObj)
-{
-  if (!theObj.IsNull()) {
-    myProgressIndicator=theObj;
-  }
-}
-//=======================================================================
-//function : UserBreak
-//purpose  : 
-//=======================================================================
-void BRepAlgoAPI_Algo::UserBreak() const
-{
-  if (myProgressIndicator.IsNull()) {
-    return;
-  }
-  if (myProgressIndicator->UserBreak()) {
-    throw Standard_NotImplemented ("BRepAlgoAPI_Algo::UserBreak(), method is not implemented");
-  }
-} 
-//=======================================================================
 //function : Shape
 //purpose  : 
 //=======================================================================
@@ -122,13 +50,3 @@ const TopoDS_Shape& BRepAlgoAPI_Algo::Shape()
 {
   return myShape;
 }
-//=======================================================================
-//function : Clear
-//purpose  : 
-//=======================================================================
-void BRepAlgoAPI_Algo::Clear()
-{
-}
-//  myErrorStatus
-//
-// 1 - object is just initialized

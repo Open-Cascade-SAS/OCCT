@@ -150,10 +150,10 @@ const BOPCol_ListOfShape& BOPAlgo_ShellSplitter::Shells()const
 //=======================================================================
 void BOPAlgo_ShellSplitter::Perform()
 {
-  myErrorStatus=0;
+  GetReport()->Clear();
   //
   MakeConnexityBlocks();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
@@ -177,8 +177,6 @@ void BOPAlgo_ShellSplitter::MakeConnexityBlocks()
   BOPCol_IndexedMapOfShape aMEAdd(100, myAllocator);
   BOPCol_MapOfShape aMES(100, myAllocator);
   BOPCol_ListIteratorOfListOfShape aIt;
-  //
-  myErrorStatus=0;
   //
   myLCB.Clear();
   //
@@ -696,7 +694,6 @@ void BOPAlgo_ShellSplitter::MakeShells()
   BOPCol_ListIteratorOfListOfShape aIt;
   BOPAlgo_VectorOfCBK aVCBK;
   //
-  myErrorStatus=0;
   myShells.Clear();
   //
   aItCB.Initialize(myLCB);

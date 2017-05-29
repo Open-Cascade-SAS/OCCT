@@ -1347,11 +1347,9 @@ Standard_Integer bopbface (Draw_Interpretor& di,
   aBF.SetFace(aF);
   aBF.SetShapes(aLE);
   aBF.Perform();
-  //
-  Standard_Integer iErr = aBF.ErrorStatus();
-  if (iErr != 0) {
-    di << " Error: " << iErr << "\n";
-    return 1;
+  BOPTest::ReportAlerts(aBF);
+  if (aBF.HasErrors()) {
+    return 0;
   }
   //
   char buf[128];
@@ -1409,11 +1407,9 @@ Standard_Integer bopbsolid (Draw_Interpretor& di,
   BOPAlgo_BuilderSolid aBS;
   aBS.SetShapes(aLF);
   aBS.Perform();
-  //
-  Standard_Integer iErr = aBS.ErrorStatus();
-  if (iErr != 0) {
-    di << " Error: " << iErr << "\n";
-    return 1;
+  BOPTest::ReportAlerts(aBS);
+  if (aBS.HasErrors()) {
+    return 0;
   }
   //
   Standard_Integer i;

@@ -22,8 +22,16 @@
 #include <GeometryTest.hxx>
 #include <GeomliteTest.hxx>
 #include <HLRTest.hxx>
+#include <NCollection_Map.hxx>
 #include <MeshTest.hxx>
+#include <Message.hxx>
+#include <Message_Msg.hxx>
+#include <Message_Messenger.hxx>
 #include <SWDRAW.hxx>
+#include <TopoDS_AlertWithShape.hxx>
+
+#include <BOPAlgo_Algo.hxx>
+#include <BOPTest_Objects.hxx>
 
 //=======================================================================
 //function : AllCommands
@@ -70,3 +78,57 @@ void  BOPTest::AllCommands(Draw_Interpretor& theCommands)
 }
 // Declare entry point PLUGINFACTORY
 DPLUGIN(BOPTest)
+
+//=======================================================================
+//function : ReportAlerts
+//purpose  : 
+//=======================================================================
+
+void BOPTest::ReportAlerts (const BOPAlgo_Algo& theAlgorithm)
+{
+  // first report warnings, then errors
+  Message_Gravity anAlertTypes[2] = { Message_Warning, Message_Fail };
+  for (int iGravity = 0; iGravity < 2; iGravity++)
+  {
+    // report shapes for the same type of alert together
+    NCollection_Map<Handle(Standard_Transient)> aPassedTypes;
+    const Message_ListOfAlert& aList = theAlgorithm.GetReport()->GetAlerts (anAlertTypes[iGravity]);
+    for (Message_ListOfAlert::Iterator aIt (aList); aIt.More(); aIt.Next())
+    {
+      // check that this type of warnings has not yet been processed
+      if (! aPassedTypes.Add (aIt.Value()->DynamicType()))
+        continue;
+
+      // get alert message
+      Message_Msg aMsg (aIt.Value()->GetMessageKey());
+      TCollection_ExtendedString aText = aMsg.Get();
+
+      // collect all shapes if any attached to this alert
+      if (BOPTest_Objects::DrawWarnShapes())
+      {
+        TCollection_AsciiString aShapeList;
+        Standard_Integer aNbShapes = 0;
+        for (Message_ListOfAlert::Iterator aIt2 (aIt); aIt2.More(); aIt2.Next())
+        {
+          Handle(TopoDS_AlertWithShape) aShapeAlert = Handle(TopoDS_AlertWithShape)::DownCast (aIt2.Value());
+
+          if (! aShapeAlert.IsNull() && ! aShapeAlert->GetShape().IsNull()) 
+          {
+            //
+            char aName[80];
+            Sprintf(aName, "%ss_%d_%d", (iGravity ? "e" : "w"), aPassedTypes.Extent(), ++aNbShapes);
+            DBRep::Set(aName, aShapeAlert->GetShape());
+            //
+            aShapeList += " ";
+            aShapeList += aName;
+          }
+        }
+        aText += (aNbShapes ? ": " : "(no shapes attached)");
+        aText += aShapeList;
+      }
+
+      // output message with list of shapes
+      Message::DefaultMessenger()->Send (aText, anAlertTypes[iGravity]);
+    }
+  }
+}

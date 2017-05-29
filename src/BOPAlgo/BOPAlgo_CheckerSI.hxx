@@ -27,12 +27,13 @@
 #include <BOPAlgo_PaveFiller.hxx>
 
 
-//! Checks the shape on self-interference.<br>
-//! In case of error the algorithm may return the following ErrorStatus:<br>
-//! 10 - The number of the input arguments is not one;<br>
-//! 11 - The check has been aborted during intersection of sub-shapes.<br>
+//! Checks the shape on self-interference.
+//!
+//! The algorithm can set the following errors:
+//! - *BOPAlgo_AlertMultipleArguments* - The number of the input arguments is not one;
+//! - *BOPALgo_ErrorIntersectionFailed* - The check has been aborted during intersection of sub-shapes.
 //! In case the error has occurred during intersection of sub-shapes, i.e.
-//! in BOPAlgo_PaveFiller::PerformInternal() method, the ErrorStatus from this method
+//! in BOPAlgo_PaveFiller::PerformInternal() method, the errors from this method
 //! directly will be returned.
 
 class BOPAlgo_CheckerSI  : public BOPAlgo_PaveFiller

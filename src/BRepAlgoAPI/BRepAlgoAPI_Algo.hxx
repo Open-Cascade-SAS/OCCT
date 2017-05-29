@@ -23,82 +23,52 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
+#include <BOPAlgo_Options.hxx>
 class Message_ProgressIndicator;
 class TopoDS_Shape;
 
 
-//! provides the root interface for algorithms
-class BRepAlgoAPI_Algo  : public BRepBuilderAPI_MakeShape
+//! Provides the root interface for the API algorithms
+
+class BRepAlgoAPI_Algo : public BRepBuilderAPI_MakeShape,
+                         protected BOPAlgo_Options
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  //! Returns error status of the algorithm
-  //! ==0 - no errors occured
-  //! !=0 - is in the event of various error conditions
-  Standard_EXPORT Standard_Integer ErrorStatus() const;
-  
-  //! Returns warning  status of the algorithm
-  //! ==0 - no warning occured
-  //! !=0 - is in the event of various warning conditions
-  Standard_EXPORT Standard_Integer WarningStatus() const;
-  
-  Standard_EXPORT const BOPCol_BaseAllocator& Allocator() const;
-  
-  //! Set the flag of parallel processing
-  //! if <theFlag> is true  the parallel processing is switched on
-  //! if <theFlag> is false the parallel processing is switched off
-  Standard_EXPORT void SetRunParallel (const Standard_Boolean theFlag);
-  
-  //! Returns the flag of parallel processing
-  Standard_EXPORT Standard_Boolean RunParallel() const;
-  
-  //! Set the Progress Indicator object.
-  Standard_EXPORT void SetProgressIndicator (const Handle(Message_ProgressIndicator)& theObj);
-  
   Standard_EXPORT virtual const TopoDS_Shape& Shape() Standard_OVERRIDE;
 
-
-
+  // Provide access to methods of protected base class BOPAlgo_Options
+  // (inherited as protected to avoid problems with SWIG wrapper)
+  using BOPAlgo_Options::Clear;
+  using BOPAlgo_Options::SetRunParallel;
+  using BOPAlgo_Options::RunParallel;
+  using BOPAlgo_Options::SetFuzzyValue;
+  using BOPAlgo_Options::FuzzyValue;
+  using BOPAlgo_Options::HasErrors;
+  using BOPAlgo_Options::HasWarnings;
+  using BOPAlgo_Options::HasError;
+  using BOPAlgo_Options::HasWarning;
+  using BOPAlgo_Options::DumpErrors;
+  using BOPAlgo_Options::DumpWarnings;
+  using BOPAlgo_Options::ClearWarnings;
+  using BOPAlgo_Options::GetReport;
+  using BOPAlgo_Options::SetProgressIndicator;
 
 protected:
 
-  
   //! Empty constructor
   Standard_EXPORT BRepAlgoAPI_Algo();
-Standard_EXPORT virtual ~BRepAlgoAPI_Algo();
-  
+
+  //! Destructor
+  Standard_EXPORT virtual ~BRepAlgoAPI_Algo();
+
   //! Empty constructor
   Standard_EXPORT BRepAlgoAPI_Algo(const BOPCol_BaseAllocator& theAllocator);
-  
-  //! Breaks the execution if the break signal
-  //! is indicated by myProgressIndicator.
-  Standard_EXPORT void UserBreak() const;
-  
-  Standard_EXPORT virtual void Clear();
-
-
-  BOPCol_BaseAllocator myAllocator;
-  Standard_Integer myErrorStatus;
-  Standard_Integer myWarningStatus;
-  Standard_Boolean myRunParallel;
-  Handle(Message_ProgressIndicator) myProgressIndicator;
-
 
 private:
 
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepAlgoAPI_Algo_HeaderFile

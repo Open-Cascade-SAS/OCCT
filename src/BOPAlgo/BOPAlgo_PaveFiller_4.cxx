@@ -142,8 +142,6 @@ typedef BOPCol_ContextCnt
 //=======================================================================
 void BOPAlgo_PaveFiller::PerformVF()
 {
-  myErrorStatus=0;
-  //
   myIterator->Initialize(TopAbs_VERTEX, TopAbs_FACE);
   Standard_Integer iSize = myIterator->ExpectedLength();
   //
@@ -260,9 +258,6 @@ void BOPAlgo_PaveFiller::TreatVerticesEE()
   BOPCol_MapOfInteger aMI(100, aAllocator);
   BOPDS_MapOfPaveBlock aMPBF(100, aAllocator);
   //
-  myErrorStatus=0;
-  //
-  
   aNbS=myDS->NbSourceShapes();
   //
   BOPDS_VectorOfInterfEE& aEEs=myDS->InterfEE();

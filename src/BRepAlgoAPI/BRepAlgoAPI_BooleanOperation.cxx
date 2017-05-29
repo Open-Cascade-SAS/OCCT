@@ -18,6 +18,7 @@
 #include <BOPAlgo_BOP.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Section.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPDS_Curve.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Interf.hxx>
@@ -179,7 +180,7 @@ BRepAlgoAPI_BooleanOperation::~BRepAlgoAPI_BooleanOperation()
 void BRepAlgoAPI_BooleanOperation::Clear()
 {
   BRepAlgoAPI_BuilderAlgo::Clear();
- 
+  //
   myModifFaces.Clear();
   myEdgeMap.Clear();
 }
@@ -262,21 +263,22 @@ void BRepAlgoAPI_BooleanOperation::SetAttributes()
 //=======================================================================
 void BRepAlgoAPI_BooleanOperation::Build()
 {
-  Standard_Integer iErr, aNbArgs, aNbTools;  
+  GetReport()->Clear();
+
+  Standard_Integer aNbArgs, aNbTools;
   BRepAlgoAPI_DumpOper aDumpOper;
   //
   myBuilderCanWork=Standard_False;
-  myErrorStatus=0;
   NotDone();
   //
   aNbArgs=myArguments.Extent();
   aNbTools=myTools.Extent();
   if (aNbArgs<1 && aNbTools<1) {
-    myErrorStatus=2;
+    AddError (new BOPAlgo_AlertTooFewArguments);
     return;
   }
   if (myOperation==BOPAlgo_UNKNOWN) {
-    myErrorStatus=6;
+    AddError (new BOPAlgo_AlertBOPNotSet);
     return;
   }
   //
@@ -313,9 +315,10 @@ void BRepAlgoAPI_BooleanOperation::Build()
     SetAttributes();
     //
     myDSFiller->Perform(); 
-    iErr=myDSFiller->ErrorStatus();
-    if (iErr) {
-      myErrorStatus=100+iErr;
+    //
+    GetReport()->Merge (myDSFiller->GetReport());
+    if (HasErrors())
+    {
       return;
     }
   }// if (myEntryType) {
@@ -331,6 +334,7 @@ void BRepAlgoAPI_BooleanOperation::Build()
   // 
   if (myBuilder) {
     delete myBuilder;
+    myBuilder = NULL;
   }
   //
   BOPAlgo_BOP *pBOP;
@@ -351,9 +355,10 @@ void BRepAlgoAPI_BooleanOperation::Build()
   myBuilder->SetProgressIndicator(myProgressIndicator);
   //
   myBuilder->PerformWithFiller(*myDSFiller);
-  iErr = myBuilder->ErrorStatus();
-  if (iErr) {
-    myErrorStatus=200+iErr;
+  //
+  GetReport()->Merge (myBuilder->GetReport());
+  if (HasErrors())
+  {
     return;
   }
   //
@@ -698,4 +703,3 @@ void BRepAlgoAPI_DumpOper::Dump (const TopoDS_Shape& theShape1,
   fprintf(afile, "%s\n",aBopString.ToCString());
   fclose(afile);
 }
-//XXXX

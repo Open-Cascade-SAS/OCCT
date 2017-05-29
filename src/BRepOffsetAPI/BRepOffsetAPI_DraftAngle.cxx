@@ -169,7 +169,7 @@ const TopoDS_Shape& BRepOffsetAPI_DraftAngle::ProblematicShape () const
 
 
 //=======================================================================
-//function : ErrorStatus
+//function : Status
 //purpose  : 
 //=======================================================================
 

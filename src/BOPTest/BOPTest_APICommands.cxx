@@ -68,9 +68,8 @@ Standard_Integer bapibop(Draw_Interpretor& di,
     return 0;
   }
   //
-  char buf[128];
   Standard_Boolean bRunParallel, bNonDestructive;
-  Standard_Integer iErr, iOp;
+  Standard_Integer iOp;
   Standard_Real aFuzzyValue;
   BRepAlgoAPI_Common aCommon;
   BRepAlgoAPI_Fuse aFuse;
@@ -82,7 +81,7 @@ Standard_Integer bapibop(Draw_Interpretor& di,
   pBuilder=NULL;
   iOp=atoi(a[2]);
   if (iOp<0 || iOp>4) {
-    printf(" invalid operation type\n");
+    di << "invalid operation type\n";
     return 0;
   }
   aOp=(BOPAlgo_Operation)iOp;
@@ -136,10 +135,17 @@ Standard_Integer bapibop(Draw_Interpretor& di,
   pBuilder->SetGlue(aGlue);
   //
   pBuilder->Build(); 
-  iErr=pBuilder->ErrorStatus();
-  if (iErr) {
-    Sprintf(buf, " error: %d\n",  iErr);
-    di << buf;
+  //
+  if (pBuilder->HasWarnings()) {
+    Standard_SStream aSStream;
+    pBuilder->DumpWarnings(aSStream);
+    di << aSStream;
+  }
+  //
+  if (pBuilder->HasErrors()) {
+    Standard_SStream aSStream;
+    pBuilder->DumpErrors(aSStream);
+    di << aSStream;
     return 0;
   }
   //
@@ -165,7 +171,6 @@ Standard_Integer bapibuild(Draw_Interpretor& di,
     return 0;
   }
   //
-  char buf[128];
   Standard_Boolean bRunParallel, bNonDestructive;
   Standard_Integer iErr;
   Standard_Real aFuzzyValue;
@@ -190,10 +195,18 @@ Standard_Integer bapibuild(Draw_Interpretor& di,
   aBuilder.SetGlue(aGlue);
   //
   aBuilder.Build(); 
-  iErr=aBuilder.ErrorStatus();
+  //
+  if (aBuilder.HasWarnings()) {
+    Standard_SStream aSStream;
+    aBuilder.DumpWarnings(aSStream);
+    di << aSStream;
+  }
+  //
+  iErr=aBuilder.HasErrors();
   if (iErr) {
-    Sprintf(buf, " error: %d\n",  iErr);
-    di << buf;
+    Standard_SStream aSStream;
+    aBuilder.DumpErrors(aSStream);
+    di << aSStream;
     return 0;
   }
   //
@@ -221,7 +234,6 @@ void ConvertList(const BOPCol_ListOfShape& aLSB,
     aLS.Append(aS);
   }
 }
-  
 
 //=======================================================================
 //function : bapisplit
@@ -248,10 +260,18 @@ Standard_Integer bapisplit(Draw_Interpretor& di,
   //
   // performing operation
   aSplitter.Build();
+  // check warning status
+  if (aSplitter.HasWarnings()) {
+    Standard_SStream aSStream;
+    aSplitter.DumpWarnings(aSStream);
+    di << aSStream;
+  }
   // checking error status
-  Standard_Integer iErr = aSplitter.ErrorStatus();
+  Standard_Integer iErr = aSplitter.HasErrors();
   if (iErr) {
-    di << "Error: " << iErr << "\n";
+    Standard_SStream aSStream;
+    aSplitter.DumpErrors(aSStream);
+    di << aSStream;
     return 0;
   }
   //

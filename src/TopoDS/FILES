@@ -60,3 +60,5 @@ TopoDS_Vertex.hxx
 TopoDS_Vertex.lxx
 TopoDS_Wire.hxx
 TopoDS_Wire.lxx
+TopoDS_AlertWithShape.cxx
+TopoDS_AlertWithShape.hxx

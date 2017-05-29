@@ -1,6 +1,4 @@
-puts "TODO OCC12345 ALL: Tcl Exception: result is not a topological shape!!!"
-puts "TODO OCC12345 ALL: Error: The command cannot be built"
-puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+puts "REQUIRED All: Boolean operation of the given type is not allowed on the given inputs"
 
 puts "========"
 puts "OCC726"
@@ -17,7 +15,3 @@ checkshape a_1
 checkshape a_2
 
 bcut result a_2 a_1
-
-checkprops result -s 10 
-checkshape result
-checkview -display result -2d -path ${imagedir}/${test_image}.png

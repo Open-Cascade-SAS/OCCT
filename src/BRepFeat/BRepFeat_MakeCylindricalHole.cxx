@@ -587,7 +587,7 @@ void BRepFeat_MakeCylindricalHole::Build ()
 {
   if (myStatus == BRepFeat_NoError) {
     PerformResult();
-    if (!ErrorStatus()) {
+    if (!HasErrors()) {
       myStatus = (myValidate) ? Validate() : BRepFeat_NoError;
       if (myStatus == BRepFeat_NoError) {
         myShape = Shape();

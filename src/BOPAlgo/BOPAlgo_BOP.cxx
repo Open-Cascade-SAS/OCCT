@@ -16,6 +16,7 @@
 #include <BOPAlgo_BOP.hxx>
 #include <BOPAlgo_BuilderSolid.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPCol_DataMapOfShapeShape.hxx>
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
 #include <BOPCol_IndexedMapOfShape.hxx>
@@ -159,41 +160,34 @@ void BOPAlgo_BOP::SetTools(const BOPCol_ListOfShape& theShapes)
 void BOPAlgo_BOP::CheckData()
 {
   Standard_Integer i, j, iDim, aNbArgs, aNbTools;
-  Standard_Boolean bFlag, bFuse;
+  Standard_Boolean bFuse;
   BOPCol_ListIteratorOfListOfShape aItLS;
-  //
-  myErrorStatus=0;
   //
   if (!(myOperation==BOPAlgo_COMMON ||
         myOperation==BOPAlgo_FUSE || 
         myOperation==BOPAlgo_CUT|| 
         myOperation==BOPAlgo_CUT21)) {
     // non-licit operation
-    myErrorStatus=14;
+    AddError (new BOPAlgo_AlertBOPNotSet);
     return;
   }
   //
   aNbArgs=myArguments.Extent();
   if (!aNbArgs) {
     // invalid number of Arguments
-    myErrorStatus=100; 
+    AddError (new BOPAlgo_AlertTooFewArguments);
     return;
   }
   //
   aNbTools=myTools.Extent();
   if (!aNbTools) { 
     // invalid number of Tools
-    myErrorStatus=100;
+    AddError (new BOPAlgo_AlertTooFewArguments);
     return;
   }
   //
-  if (!myPaveFiller) {
-    myErrorStatus=101; 
-    return;
-  }
-  //
-  myErrorStatus=myPaveFiller->ErrorStatus();
-  if (myErrorStatus) {
+  CheckFiller();
+  if (HasErrors()) {
     return;
   }
   //
@@ -208,23 +202,27 @@ void BOPAlgo_BOP::CheckData()
   // 4. COMMON: The arguments and tools could have any dimensions.
   //
   Standard_Integer iDimMin[2], iDimMax[2];
+  Standard_Boolean bHasValid[2] = {Standard_False, Standard_False};
   //
   for (i=0; i<2; ++i) {
     const BOPCol_ListOfShape& aLS=(!i)? myArguments : myTools;
     aItLS.Initialize(aLS);
     for (j=0; aItLS.More(); aItLS.Next(), ++j) {
       const TopoDS_Shape& aS=aItLS.Value();
-      bFlag=BOPTools_AlgoTools3D::IsEmptyShape(aS);
-      if(bFlag) {
-        myWarningStatus=2;
+      Standard_Boolean bIsEmpty = BOPTools_AlgoTools3D::IsEmptyShape(aS);
+      if (bIsEmpty) {
+        AddWarning(new BOPAlgo_AlertEmptyShape (aS));
+        continue;
       }
       //
-      iDim=BOPTools_AlgoTools::Dimension(aS);
-      if (iDim<0) {
-        // non-homogenious argument
-        myErrorStatus=13; 
+      iDim = BOPTools_AlgoTools::Dimension(aS);
+      if (iDim < 0) {
+        // non-homogeneous argument
+        AddError (new BOPAlgo_AlertBOPNotAllowed);
         return;
       }
+      //
+      bHasValid[i] = Standard_True;
       //
       if (!j) {
         iDimMin[i] = iDim;
@@ -240,77 +238,101 @@ void BOPAlgo_BOP::CheckData()
       }
       //
       if (bFuse && (iDimMin[i] != iDimMax[i])) {
-        // non-homogenious argument
-        myErrorStatus=13;
+        // non-homogeneous argument
+        AddError (new BOPAlgo_AlertBOPNotAllowed);
         return;
       }
     }
   }
   //
-  if (((myOperation == BOPAlgo_FUSE)  && (iDimMax[0] != iDimMax[1])) ||
-      ((myOperation == BOPAlgo_CUT)   && (iDimMax[0] >  iDimMin[1])) ||
-      ((myOperation == BOPAlgo_CUT21) && (iDimMin[0] <  iDimMax[1])) ) {
-    // non-licit operation for the arguments
-    myErrorStatus=14;
-    return;
+  if (bHasValid[0] && bHasValid[1]) {
+    if (((myOperation == BOPAlgo_FUSE)  && (iDimMax[0] != iDimMax[1])) ||
+        ((myOperation == BOPAlgo_CUT)   && (iDimMax[0] >  iDimMin[1])) ||
+        ((myOperation == BOPAlgo_CUT21) && (iDimMin[0] <  iDimMax[1])) )
+    {
+      // non-licit operation for the arguments
+      AddError (new BOPAlgo_AlertBOPNotAllowed);
+      return;
+    }
+    myDims[0] = iDimMin[0];
+    myDims[1] = iDimMin[1];
   }
-  //
-  myDims[0] = iDimMin[0];
-  myDims[1] = iDimMin[1];
 }
 //=======================================================================
-//function : Prepare
+//function : TreatEmtpyShape
 //purpose  : 
 //=======================================================================
-void BOPAlgo_BOP::Prepare()
+Standard_Boolean BOPAlgo_BOP::TreatEmptyShape()
 {
-  //
-  BOPAlgo_Builder::Prepare();
-  //
-  if(myWarningStatus == 2) {
-    Standard_Integer i;
-    BRep_Builder aBB;
-    BOPCol_ListIteratorOfListOfShape aItLS;
-    //
-    switch(myOperation) {
-      case BOPAlgo_FUSE: {
-        for (i=0; i<2; ++i) {
-          const BOPCol_ListOfShape& aLS=(!i)? myArguments : myTools;
-          aItLS.Initialize(aLS);
-          for (; aItLS.More(); aItLS.Next()) {
-            const TopoDS_Shape& aS=aItLS.Value();
-            aBB.Add(myShape, aS);
-          }
-        }
-      }
-        break;
-      //  
-      case BOPAlgo_CUT: {
-        aItLS.Initialize(myArguments);
-        for (; aItLS.More(); aItLS.Next()) {
-          const TopoDS_Shape& aS=aItLS.Value();
-          if(!BOPTools_AlgoTools3D::IsEmptyShape(aS)) {
-            aBB.Add(myShape, aS);
-          } 
-        }
-      }
-        break;
-      
-      case BOPAlgo_CUT21: {
-        aItLS.Initialize(myTools);
-        for (; aItLS.More(); aItLS.Next()) {
-          const TopoDS_Shape& aS=aItLS.Value();
-          if(!BOPTools_AlgoTools3D::IsEmptyShape(aS)) {
-            aBB.Add(myShape, aS);
-          } 
-        }
-      }
-        break;
-        //
-      default:
-        break;
-      }
+  if (! GetReport()->HasAlert (STANDARD_TYPE(BOPAlgo_AlertEmptyShape)))
+  {
+    return Standard_False;
   }
+  //
+  // Find non-empty objects
+  BOPCol_ListOfShape aLValidObjs;
+  BOPCol_ListIteratorOfListOfShape aItLS(myArguments);
+  for (; aItLS.More(); aItLS.Next()) {
+    if (!BOPTools_AlgoTools3D::IsEmptyShape(aItLS.Value())) {
+      aLValidObjs.Append(aItLS.Value());
+    }
+  }
+  //
+  // Find non-empty tools
+  BOPCol_ListOfShape aLValidTools;
+  aItLS.Initialize(myTools);
+  for (; aItLS.More() ; aItLS.Next()) {
+    if (!BOPTools_AlgoTools3D::IsEmptyShape(aItLS.Value())) {
+      aLValidTools.Append(aItLS.Value());
+    }
+  }
+  //
+  Standard_Boolean bHasValidObj  = (aLValidObjs .Extent() > 0);
+  Standard_Boolean bHasValidTool = (aLValidTools.Extent() > 0);
+  //
+  if (bHasValidObj && bHasValidTool) {
+    // We need to continue the operation to obtain the result
+    return Standard_False;
+  }
+  //
+  if (!bHasValidObj && !bHasValidTool) {
+    // All shapes are empty shapes, the result will always be empty shape
+    return Standard_True;
+  }
+  //
+  // One of the groups of arguments consists of empty shapes only,
+  // so we can build the result of operation right away just by
+  // choosing the list of shapes to add to result, depending on
+  // the type of the operation
+  BOPCol_ListOfShape *pLResult = NULL;
+  //
+  switch (myOperation) {
+    case BOPAlgo_FUSE:
+      // Add not empty shapes into result
+      pLResult = bHasValidObj ? &aLValidObjs : &aLValidTools;
+      break;
+    case BOPAlgo_CUT:
+      // Add objects into result
+      pLResult = &aLValidObjs;
+      break;
+    case BOPAlgo_CUT21:
+      // Add tools into result
+      pLResult = &aLValidTools;
+      break;
+    case BOPAlgo_COMMON:
+      // Common will be empty
+      break;
+    default:
+      break;
+  }
+  //
+  if (pLResult) {
+    aItLS.Initialize(*pLResult);
+    for (; aItLS.More(); aItLS.Next()) {
+      BRep_Builder().Add(myShape, aItLS.Value());
+    }
+  }
+  return Standard_True;
 }
 //=======================================================================
 //function : BuildResult
@@ -322,8 +344,6 @@ void BOPAlgo_BOP::BuildResult(const TopAbs_ShapeEnum theType)
   BRep_Builder aBB;
   BOPCol_MapOfShape aM;
   BOPCol_ListIteratorOfListOfShape aIt, aItIm;
-  //
-  myErrorStatus=0;
   //
   const BOPCol_ListOfShape& aLA=myDS->Arguments();
   aIt.Initialize(aLA);
@@ -359,7 +379,7 @@ void BOPAlgo_BOP::Perform()
   BOPAlgo_PaveFiller* pPF;
   BOPCol_ListIteratorOfListOfShape aItLS;
   //
-  myErrorStatus=0;
+  GetReport()->Clear();
   //
   if (myEntryPoint==1) {
     if (myPaveFiller) {
@@ -403,9 +423,6 @@ void BOPAlgo_BOP::Perform()
 //=======================================================================
 void BOPAlgo_BOP::PerformInternal1(const BOPAlgo_PaveFiller& theFiller)
 {
-  myErrorStatus=0;
-  myWarningStatus=0;
-  //
   myPaveFiller=(BOPAlgo_PaveFiller*)&theFiller;
   myDS=myPaveFiller->PDS();
   myContext=myPaveFiller->Context();
@@ -414,110 +431,115 @@ void BOPAlgo_BOP::PerformInternal1(const BOPAlgo_PaveFiller& theFiller)
   //
   // 1. CheckData
   CheckData();
-  if (myErrorStatus && !myWarningStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   // 2. Prepare
   Prepare();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
-  if(myWarningStatus == 2) {
-    return;
+  if (GetReport()->HasAlert (STANDARD_TYPE(BOPAlgo_AlertEmptyShape)))
+  {
+    Standard_Boolean bDone = TreatEmptyShape();
+    if (bDone) {
+      return;
+    }
   }
+  //
   // 3. Fill Images
   // 3.1 Vertices
   FillImagesVertices();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   BuildResult(TopAbs_VERTEX);
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   // 3.2 Edges
   FillImagesEdges();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   BuildResult(TopAbs_EDGE);
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   // 3.3 Wires
   FillImagesContainers(TopAbs_WIRE);
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   BuildResult(TopAbs_WIRE);
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   // 3.4 Faces
   FillImagesFaces();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   
   BuildResult(TopAbs_FACE);
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   // 3.5 Shells
   FillImagesContainers(TopAbs_SHELL);
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   BuildResult(TopAbs_SHELL);
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   // 3.6 Solids
   FillImagesSolids();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   BuildResult(TopAbs_SOLID);
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   // 3.7 CompSolids
   FillImagesContainers(TopAbs_COMPSOLID);
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   BuildResult(TopAbs_COMPSOLID);
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   // 3.8 Compounds
   FillImagesCompounds();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   BuildResult(TopAbs_COMPOUND);
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   //
   // 4.BuildShape;
   BuildShape();
-  if (myErrorStatus) {
+  if (HasErrors()) {
     return;
   }
   // 
@@ -536,8 +558,6 @@ void BOPAlgo_BOP::BuildRC()
   TopAbs_ShapeEnum aType;
   TopoDS_Compound aC;
   BRep_Builder aBB;
-  //
-  myErrorStatus = 0;
   //
   aBB.MakeCompound(aC);
   //
@@ -571,6 +591,9 @@ void BOPAlgo_BOP::BuildRC()
     for (; aItLS.More(); aItLS.Next()) {
       const TopoDS_Shape& aS = aItLS.Value();
       iDim = BOPTools_AlgoTools::Dimension(aS);
+      if (iDim < 0) {
+        continue;
+      }
       aType = TypeToExplore(iDim);
       BOPTools::MapShapes(aS, aType, aMS);
     }
@@ -900,8 +923,6 @@ void BOPAlgo_BOP::BuildSolid()
   TopExp_Explorer aExp;
   BRep_Builder aBB;
   //
-  myErrorStatus=0;
-  //
   // Get solids from input arguments
   BOPCol_MapOfShape aMSA;
   // Map the arguments to find shared faces
@@ -1033,8 +1054,8 @@ void BOPAlgo_BOP::BuildSolid()
     aSB.SetContext(myContext);
     aSB.SetShapes(aSFS);
     aSB.Perform();
-    if (aSB.ErrorStatus()) {
-      myErrorStatus = 30; // SolidBuilder failed
+    if (aSB.HasErrors()) {
+      AddError (new BOPAlgo_AlertSolidBuilderFailed); // SolidBuilder failed
       return;
     }
     // new solids

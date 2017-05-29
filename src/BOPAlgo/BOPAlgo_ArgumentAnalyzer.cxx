@@ -351,7 +351,7 @@ void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
       continue;
     }
     //
-    Standard_Integer iErr, n1, n2;
+    Standard_Integer n1, n2;
     BOPDS_MapIteratorOfMapOfPair aItMPK;
     BOPCol_ListOfShape anArgs;
     BOPAlgo_CheckerSI aChecker;
@@ -364,7 +364,7 @@ void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
     aChecker.SetProgressIndicator(myProgressIndicator);
     //
     aChecker.Perform();
-    iErr=aChecker.ErrorStatus();
+    Standard_Boolean hasError = aChecker.HasErrors();
     //
     const BOPDS_DS& aDS=*(aChecker.PDS());
     const BOPDS_MapOfPair& aMPK=aDS.Interferences();
@@ -397,7 +397,7 @@ void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
       myResult.Append(aResult);
     }
     //
-    if (iErr) {
+    if (hasError) {
       BOPAlgo_CheckResult aResult;
       if(ii == 0) {
         aResult.SetShape1(myShape1);

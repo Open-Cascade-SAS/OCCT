@@ -50,11 +50,7 @@ Standard_EXPORT virtual ~BOPAlgo_BuilderSolid();
   //! Performs the algorithm
   Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
 
-
-
-
 protected:
-
   
   //! Collect the faces that
   //! a) are internal

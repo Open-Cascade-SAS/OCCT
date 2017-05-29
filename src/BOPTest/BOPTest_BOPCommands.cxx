@@ -119,9 +119,7 @@ Standard_Integer bop(Draw_Interpretor& di,
                      Standard_Integer n, 
                      const char** a)
 {
-  char buf[32];
   Standard_Boolean bRunParallel, bNonDestructive;
-  Standard_Integer iErr;
   Standard_Real aTol;
   TopoDS_Shape aS1, aS2;
   BOPCol_ListOfShape aLC;
@@ -162,12 +160,7 @@ Standard_Integer bop(Draw_Interpretor& di,
   pPF->SetGlue(aGlue);
   //
   pPF->Perform();
-  iErr=pPF->ErrorStatus();
-  if (iErr) {
-    Sprintf(buf, " ErrorStatus : %d\n",  iErr);
-    di << buf;
-    return 0;
-  }
+  BOPTest::ReportAlerts(*pPF);
   //
   return 0;
 }
@@ -230,14 +223,14 @@ Standard_Integer bopsmt(Draw_Interpretor& di,
     return 0;
   }
   //
-  if (pPF->ErrorStatus()) {
+  if (pPF->HasErrors()) {
     di << " PaveFiller has not been done\n";
     return 0;
   }
   //
   char buf[64];
   Standard_Boolean bRunParallel;
-  Standard_Integer aNb, iErr;
+  Standard_Integer aNb;
   BOPAlgo_BOP aBOP;
   //
   const BOPCol_ListOfShape& aLC=pPF->Arguments();
@@ -259,10 +252,8 @@ Standard_Integer bopsmt(Draw_Interpretor& di,
   aBOP.SetRunParallel (bRunParallel);
   //
   aBOP.PerformWithFiller(*pPF);
-  iErr=aBOP.ErrorStatus();
-  if (iErr) {
-    Sprintf(buf, " ErrorStatus : %d\n",  iErr);
-    di << buf;
+  BOPTest::ReportAlerts(aBOP);
+  if (aBOP.HasErrors()) {
     return 0;
   }
   //
@@ -293,14 +284,14 @@ Standard_Integer bopsection(Draw_Interpretor& di,
     return 0;
   }
   //
-  if (pPF->ErrorStatus()) {
+  if (pPF->HasErrors()) {
     di << " PaveFiller has not been done\n";
     return 0;
   }
   //
   char buf[64];
   Standard_Boolean bRunParallel;
-  Standard_Integer aNb, iErr;
+  Standard_Integer aNb;
   BOPAlgo_Section aBOP;
   //
   const BOPCol_ListOfShape& aLC=pPF->Arguments();
@@ -321,10 +312,8 @@ Standard_Integer bopsection(Draw_Interpretor& di,
   aBOP.SetRunParallel (bRunParallel);
   //
   aBOP.PerformWithFiller(*pPF);
-  iErr=aBOP.ErrorStatus();
-  if (iErr) {
-    Sprintf(buf, " ErrorStatus : %d\n",  iErr);
-    di << buf;
+  BOPTest::ReportAlerts(aBOP);
+  if (aBOP.HasErrors()) {
     return 0;
   }
   //
@@ -399,9 +388,7 @@ Standard_Integer  bsection(Draw_Interpretor& di,
     return 0;
   }
   // 
-  char buf[80];
   Standard_Boolean bRunParallel, bNonDestructive, bApp, bPC1, bPC2;
-  Standard_Integer i, iErr;
   Standard_Real aTol;
   //
   bApp = Standard_True;
@@ -412,7 +399,7 @@ Standard_Integer  bsection(Draw_Interpretor& di,
   bNonDestructive = BOPTest_Objects::NonDestructive();
   BOPAlgo_GlueEnum aGlue = BOPTest_Objects::Glue();
   //
-  for (i = 4; i < n; ++i) {
+  for (Standard_Integer i = 4; i < n; ++i) {
     if (!strcmp(a[i], "-n2d")) {
       bPC1 = Standard_False;
       bPC2 = Standard_False;
@@ -440,10 +427,17 @@ Standard_Integer  bsection(Draw_Interpretor& di,
   aSec.SetGlue(aGlue);
   //
   aSec.Build();
-  iErr=aSec.ErrorStatus();
+  //
+  if (aSec.HasWarnings()) {
+    Standard_SStream aSStream;
+    aSec.DumpWarnings(aSStream);
+    di << aSStream;
+  }
+  //
   if (!aSec.IsDone()) {
-    Sprintf(buf, " ErrorStatus : %d\n",  iErr);
-    di << buf;
+    Standard_SStream aSStream;
+    aSec.DumpErrors(aSStream);
+    di << aSStream;
     return 0;
   }
   //
@@ -464,9 +458,7 @@ Standard_Integer bsmt (Draw_Interpretor& di,
                        const char** a,
                        const BOPAlgo_Operation aOp)
 {
-  char buf[32];
   Standard_Boolean bRunParallel, bNonDestructive;
-  Standard_Integer iErr;
   TopoDS_Shape aS1, aS2;
   BOPCol_ListOfShape aLC;
   Standard_Real aTol;
@@ -504,10 +496,8 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   aPF.SetGlue(aGlue);
   //
   aPF.Perform();
-  iErr=aPF.ErrorStatus();
-  if (iErr) {
-    Sprintf(buf, " ErrorStatus : %d\n",  iErr);
-    di << buf;
+  BOPTest::ReportAlerts(aPF);
+  if (aPF.HasErrors()) {
     return 0;
   }
   //
@@ -520,11 +510,8 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   aBOP.SetRunParallel(bRunParallel);
   // 
   aBOP.PerformWithFiller(aPF);
-  //
-  iErr=aBOP.ErrorStatus();
-  if (iErr) {
-    Sprintf(buf, " ErrorStatus : %d\n",  iErr);
-    di << buf;
+  BOPTest::ReportAlerts(aBOP);
+  if (aBOP.HasErrors()) {
     return 0;
   }
   const TopoDS_Shape& aR=aBOP.Shape();
@@ -830,9 +817,9 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
   aMV.SetGlue(aGlue);
   //
   aMV.Perform();
-  if (aMV.ErrorStatus()) {
-    di << "Error status: " << aMV.ErrorStatus();
-    return 1;
+  BOPTest::ReportAlerts(aMV);
+  if (aMV.HasErrors()) {
+    return 0;
   }
   //
   const TopoDS_Shape& aR = aMV.Shape();
