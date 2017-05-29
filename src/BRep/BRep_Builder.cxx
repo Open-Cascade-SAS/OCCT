@@ -108,9 +108,7 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
   BRep_ListIteratorOfListOfCurveRepresentation itcr(lcr);
   Handle(BRep_CurveRepresentation) cr;
   Handle(BRep_GCurve) GC;
-  Standard_Real f = 0.,l = 0.;
-  Standard_Boolean rangeFound = Standard_False;
-
+  Standard_Real f = -Precision::Infinite(), l = Precision::Infinite();
   // search the range of the 3d curve
   // and remove any existing representation
 
@@ -124,13 +122,6 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
         //             see lbo & flo, to determine whether range is defined
         //             compare first and last parameters with default values.
         GC->Range(f, l);
-        //lvt 15/6/99: On enleve la comparaison de reels infinis.
-        Standard_Boolean undefined = (Precision::IsPositiveInfinite(l) ||
-                                      Precision::IsNegativeInfinite(f));
-        
-        if (!undefined) {
-          rangeFound = Standard_True;
-        }
       }
       if (GC->IsCurveOnSurface(S,L)) {
         // remove existing curve on surface
@@ -148,12 +139,21 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
     }
   }
 
-  if (! C.IsNull()) {
-    Handle(BRep_CurveOnSurface) COS = new BRep_CurveOnSurface(C,S,L);
-    // test if there is already a range
-    if (rangeFound) {
-      COS->SetRange(f,l);
+  if (!C.IsNull()) {
+    Handle(BRep_CurveOnSurface) COS = new BRep_CurveOnSurface(C, S, L);
+    Standard_Real aFCur = 0.0, aLCur = 0.0;
+    COS->Range(aFCur, aLCur);
+    if (!Precision::IsInfinite(f))
+    {
+      aFCur = f;
     }
+
+    if (!Precision::IsInfinite(l))
+    {
+      aLCur = l;
+    }
+
+    COS->SetRange(aFCur, aLCur);
     lcr.Append(COS);
   }
 }
@@ -174,8 +174,7 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
   BRep_ListIteratorOfListOfCurveRepresentation itcr(lcr);
   Handle(BRep_CurveRepresentation) cr;
   Handle(BRep_GCurve) GC;
-  Standard_Real f = 0.,l = 0.;
-  Standard_Boolean rangeFound = Standard_False;
+  Standard_Real f = -Precision::Infinite(), l = Precision::Infinite();
 
   // search the range of the 3d curve
   // and remove any existing representation
@@ -190,13 +189,6 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
         //             see lbo & flo, to determine whether range is defined
         //             compare first and last parameters with default values.
         GC->Range(f, l);
-        //lvt 15/6/99: On enleve la comparaison de reels infinis.
-        Standard_Boolean undefined = (Precision::IsPositiveInfinite(l) ||
-                                      Precision::IsNegativeInfinite(f));
-        
-        if (!undefined) {
-          rangeFound = Standard_True;
-        }
       }
       if (GC->IsCurveOnSurface(S,L)) {
         // remove existing curve on surface
@@ -216,11 +208,20 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
 
   if (! C.IsNull()) {
     Handle(BRep_CurveOnSurface) COS = new BRep_CurveOnSurface(C,S,L);
-    // test if there is already a range
-    if (rangeFound) {
-      COS->SetRange(f,l);
+    Standard_Real aFCur = 0.0, aLCur = 0.0;
+    COS->Range(aFCur, aLCur);
+    if (!Precision::IsInfinite(f))
+    {
+      aFCur = f;
     }
-    COS->SetUVPoints(Pf,Pl);
+
+    if (!Precision::IsInfinite(l))
+    {
+      aLCur = l;
+    }
+
+    COS->SetRange(aFCur, aLCur);
+    COS->SetUVPoints(Pf, Pl);
     lcr.Append(COS);
   }
 }
@@ -241,20 +242,13 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
   BRep_ListIteratorOfListOfCurveRepresentation itcr(lcr);
   Handle(BRep_CurveRepresentation) cr;
   Handle(BRep_GCurve) GC;
-  Standard_Real f = 0.,l = 0.;
-  Standard_Boolean rangeFound = Standard_False;
+  Standard_Real f = -Precision::Infinite(), l = Precision::Infinite();
 
   while (itcr.More()) {
     GC = Handle(BRep_GCurve)::DownCast(itcr.Value());
     if ( !GC.IsNull() ) {
       if (GC->IsCurve3D()) {
         GC->Range(f,l);
-        Standard_Boolean undefined = (Precision::IsPositiveInfinite(l) ||
-                                      Precision::IsNegativeInfinite(f));
-          
-        if (!undefined) {
-          rangeFound = Standard_True;
-        }
       }
       Standard_Boolean iscos = GC->IsCurveOnSurface(S,L);
       if (iscos) break;
@@ -270,12 +264,21 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
   }
 
   if ( !C1.IsNull() && !C2.IsNull() ) {
-    Handle(BRep_CurveOnClosedSurface) COS =
-      new BRep_CurveOnClosedSurface(C1,C2,S,L,GeomAbs_C0);
-    // test if there is already a range
-    if (rangeFound) {
-      COS->SetRange(f,l);
+    Handle(BRep_CurveOnClosedSurface) COS = new 
+                    BRep_CurveOnClosedSurface(C1,C2,S,L,GeomAbs_C0);
+    Standard_Real aFCur = 0.0, aLCur = 0.0;
+    COS->Range(aFCur, aLCur);
+    if (!Precision::IsInfinite(f))
+    {
+      aFCur = f;
     }
+
+    if (!Precision::IsInfinite(l))
+    {
+      aLCur = l;
+    }
+
+    COS->SetRange(aFCur, aLCur);
     lcr.Append(COS);
   }
 }
@@ -297,20 +300,13 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
   BRep_ListIteratorOfListOfCurveRepresentation itcr(lcr);
   Handle(BRep_CurveRepresentation) cr;
   Handle(BRep_GCurve) GC;
-  Standard_Real f = 0.,l = 0.;
-  Standard_Boolean rangeFound = Standard_False;
+  Standard_Real f = -Precision::Infinite(), l = Precision::Infinite();
 
   while (itcr.More()) {
     GC = Handle(BRep_GCurve)::DownCast(itcr.Value());
     if ( !GC.IsNull() ) {
       if (GC->IsCurve3D()) {
         GC->Range(f,l);
-        Standard_Boolean undefined = (Precision::IsPositiveInfinite(l) ||
-                                      Precision::IsNegativeInfinite(f));
-          
-        if (!undefined) {
-          rangeFound = Standard_True;
-        }
       }
       Standard_Boolean iscos = GC->IsCurveOnSurface(S,L);
       if (iscos) break;
@@ -326,13 +322,22 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
   }
 
   if ( !C1.IsNull() && !C2.IsNull() ) {
-    Handle(BRep_CurveOnClosedSurface) COS =
-      new BRep_CurveOnClosedSurface(C1,C2,S,L,GeomAbs_C0);
-    // test if there is already a range
-    if (rangeFound) {
-      COS->SetRange(f,l);
+    Handle(BRep_CurveOnClosedSurface) COS = new 
+                    BRep_CurveOnClosedSurface(C1,C2,S,L,GeomAbs_C0);
+    Standard_Real aFCur = 0.0, aLCur = 0.0;
+    COS->Range(aFCur, aLCur);
+    if (!Precision::IsInfinite(f))
+    {
+      aFCur = f;
     }
-    COS->SetUVPoints2(Pf,Pl);
+
+    if (!Precision::IsInfinite(l))
+    {
+      aLCur = l;
+    }
+
+    COS->SetRange(aFCur, aLCur);
+    COS->SetUVPoints2(Pf, Pl);
     lcr.Append(COS);
   }
 }

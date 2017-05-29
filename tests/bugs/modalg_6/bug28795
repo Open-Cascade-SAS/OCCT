@@ -1,0 +1,32 @@
+puts "======="
+puts "OCC28795"
+puts "======="
+puts ""
+##################################################
+# Boolean operations corrupt the p-curve of the source planar face if "non-destructive" option is switched off
+##################################################
+
+set expected [list {UMin 0.0} {UMax 1.0} {VMin -2e+100} {VMax 0.0}]
+
+box mb -0.5 -0.5 -0.5 1 1 1
+explode mb F
+prism pryz mb_1 1 0 0 SemiInf
+box ab 0 -1 -1 2 2 2
+
+explode ab f
+explode pryz f
+
+set bounds [xbounds pryz_1]
+# check for expected result
+for {set i 0} {$i < 4} {incr i} {
+  checkreal "[lindex $expected $i 0]" [lindex $bounds $i] [lindex $expected $i 1] 0.0 1.0e-7
+}
+
+# Make a simple Boolean operation, e.g. "bsection"
+bsection rs ab_2 pryz_1
+
+set bounds [xbounds pryz_1]
+# check for expected result
+for {set i 0} {$i < 4} {incr i} {
+  checkreal "[lindex $expected $i 0]" [lindex $bounds $i] [lindex $expected $i 1] 0.0 1.0e-7
+}
