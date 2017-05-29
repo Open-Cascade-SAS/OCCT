@@ -1,0 +1,58 @@
+puts "========"
+puts "OCC23177"
+puts "========"
+puts ""
+####################################################################
+# Intersection of plane and torus misses a result and never produces analytical result
+####################################################################
+
+set GoodNbCurv 2
+
+torus s1 100 10
+plane s2 0 0 0 0 1 0
+intersect res s1 s2
+
+set che [whatis res]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "res" exists
+  renamevar res res_1
+}
+
+set ic 1
+set AllowRepeate 1
+while { $AllowRepeate != 0 } {
+  set che [whatis res_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeate 0
+    break;
+  } else {
+    if { ![regexp "Circle" [dump res_$ic]] } {
+      puts "Error: Intersection result must be circle"
+    }
+    
+    bounds res_$ic U1 U2
+    
+    checkreal CurveBoundaries [dval U2-U1] [dval 2*pi] 1.0e-10 0.0
+    
+    xdistcs res_$ic s1 U1 U2 10 1.0e-7
+    xdistcs res_$ic s2 U1 U2 10 1.0e-7
+    incr ic    
+  }  
+}
+
+if {[expr {$ic - 1}] == $GoodNbCurv} {
+  puts "OK: Number of curves is good!"
+} else {
+  puts "Error: $GoodNbCurv is expected but [expr {$ic - 1}] is found!"
+}
+  
+  
+smallview
+don res_*
+fit
+don s1 s2
+disp res_*
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
