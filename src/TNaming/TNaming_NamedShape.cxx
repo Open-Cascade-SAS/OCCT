@@ -702,7 +702,7 @@ void TNaming_Builder::Delete(const TopoDS_Shape& oldShape)
       throw Standard_ConstructionError("TNaming_Builder : not same evolution");
   }
 
-  TNaming_RefShape* pns = 0L;
+  TNaming_RefShape* pns;
   TNaming_RefShape* pos;
 
   if (myShapes->myMap.IsBound(oldShape)) 
@@ -714,6 +714,11 @@ void TNaming_Builder::Delete(const TopoDS_Shape& oldShape)
     pos = new TNaming_RefShape(oldShape);  
     myShapes->myMap.Bind(oldShape, pos);
   }
+
+  TopoDS_Shape nullShape;
+  pns = new TNaming_RefShape(nullShape);  
+  myShapes->myMap.Bind(nullShape, pns);
+
   TNaming_Node*     pdn = new TNaming_Node(pos,pns);   
   myAtt->Add(pdn);
   UpdateFirstUseOrNextSameShape (pos,pdn);
