@@ -190,7 +190,7 @@ void V3d_View::Translate(const V3d_TypeOfAxe Axe, const Standard_Real Length,con
 //=======================================================================
 void V3d_View::Place (const Standard_Integer theXp,
                       const Standard_Integer theYp,
-                      const Quantity_Factor theZoomFactor)
+                      const Standard_Real theZoomFactor)
 {
   Standard_Integer aWinWidth  = 0;
   Standard_Integer aWinHeight = 0;

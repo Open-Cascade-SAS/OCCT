@@ -57,9 +57,9 @@ protected:
 private :
 	Handle(V3d_Viewer)  myViewer;
 
-    Quantity_Length     SavedXOrigin,SavedYOrigin,SavedRadiusStep;
+    Standard_Real     SavedXOrigin,SavedYOrigin,SavedRadiusStep;
 	Standard_Integer    SavedDivisionNumber;
-    Quantity_PlaneAngle SavedRotationAngle ;		
+    Standard_Real SavedRotationAngle;
 
 };
 

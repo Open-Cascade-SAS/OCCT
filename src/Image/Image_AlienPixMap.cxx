@@ -350,7 +350,7 @@ bool Image_AlienPixMap::savePPM (const TCollection_AsciiString& theFileName) con
 
   // Write pixel data
   Quantity_Color aColor;
-  Quantity_Parameter aDummy;
+  Standard_Real aDummy;
   Standard_Byte aByte;
   for (Standard_Size aRow = 0; aRow < SizeY(); ++aRow)
   {

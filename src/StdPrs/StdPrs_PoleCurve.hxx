@@ -24,8 +24,8 @@
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Standard_Boolean.hxx>
-#include <Quantity_Length.hxx>
 #include <Standard_Integer.hxx>
+
 class Prs3d_Presentation;
 class Adaptor3d_Curve;
 
@@ -51,34 +51,13 @@ public:
   
   //! returns true if the distance between the point (X,Y,Z) and the
   //! broken line made of the poles is less then aDistance.
-  Standard_EXPORT static Standard_Boolean Match (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z, const Quantity_Length aDistance, const Adaptor3d_Curve& aCurve, const Handle(Prs3d_Drawer)& aDrawer);
+  Standard_EXPORT static Standard_Boolean Match (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Adaptor3d_Curve& aCurve, const Handle(Prs3d_Drawer)& aDrawer);
   
   //! returns the pole  the most near of the point (X,Y,Z) and
   //! returns its range. The distance between the pole and
   //! (X,Y,Z) must be less then aDistance. If no pole corresponds, 0 is returned.
-  Standard_EXPORT static Standard_Integer Pick (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z, const Quantity_Length aDistance, const Adaptor3d_Curve& aCurve, const Handle(Prs3d_Drawer)& aDrawer);
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
+  Standard_EXPORT static Standard_Integer Pick (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Adaptor3d_Curve& aCurve, const Handle(Prs3d_Drawer)& aDrawer);
 
 };
-
-
-
-
-
-
 
 #endif // _StdPrs_PoleCurve_HeaderFile

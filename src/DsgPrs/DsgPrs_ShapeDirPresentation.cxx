@@ -34,7 +34,6 @@
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Quantity_Length.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -244,7 +243,7 @@ void DsgPrs_ShapeDirPresentation::Add(const Handle(Prs3d_Presentation)& prs,
   box.Get(c[0],c[1],c[2],c[3],c[4],c[5]);
   
   gp_Pnt ptmin(c[0], c[1], c[2]), ptmax(c[3], c[4], c[5]);
-  Quantity_Length leng = ptmin.Distance(ptmax)/3.;
+  Standard_Real leng = ptmin.Distance(ptmax)/3.;
   // mei 19/09/96 extrusion infinie -> taille fixe
   if (leng >= 20000.) leng = 50;
 

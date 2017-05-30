@@ -31,13 +31,13 @@
 //purpose  :
 //=======================================================================
 Standard_Boolean Prs3d::MatchSegment 
-                 (const Quantity_Length X,
-                  const Quantity_Length Y,
-                  const Quantity_Length Z,
-                  const Quantity_Length aDistance,
+                 (const Standard_Real X,
+                  const Standard_Real Y,
+                  const Standard_Real Z,
+                  const Standard_Real aDistance,
                   const gp_Pnt& P1,
                   const gp_Pnt& P2,
-                  Quantity_Length& dist)
+                  Standard_Real& dist)
 {
   Standard_Real X1,Y1,Z1,X2,Y2,Z2;
   P1.Coord(X1,Y1,Z1); P2.Coord(X2,Y2,Z2);

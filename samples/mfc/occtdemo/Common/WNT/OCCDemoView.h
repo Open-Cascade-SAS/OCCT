@@ -33,12 +33,12 @@ public:
   void InitButtons();
   void Reset();
   void FitAll() {   myView->FitAll();  myView->ZFitAll();  };
-  void GetViewCenter(V3d_Coordinate& Xc, V3d_Coordinate& Yc);
-  void SetViewCenter(const V3d_Coordinate Xc, const V3d_Coordinate Yc);
-  void GetViewEye(V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z);
-  void SetViewEye(const V3d_Coordinate X,const V3d_Coordinate Y,const V3d_Coordinate Z);
-  Quantity_Factor GetViewScale();
-  void SetViewScale(const Quantity_Factor Coef);
+  void GetViewCenter(Standard_Real& Xc, Standard_Real& Yc);
+  void SetViewCenter(const Standard_Real Xc, const Standard_Real Yc);
+  void GetViewEye(Standard_Real& X, Standard_Real& Y, Standard_Real& Z);
+  void SetViewEye(const Standard_Real X,const Standard_Real Y,const Standard_Real Z);
+  Standard_Real GetViewScale();
+  void SetViewScale(const Standard_Real Coef);
 
 
 // Overrides
@@ -111,7 +111,7 @@ private:
   Standard_Integer     myYmin;  
   Standard_Integer     myXmax;
   Standard_Integer     myYmax;
-  Quantity_Factor      myCurZoom;
+  Standard_Real        myCurZoom;
 
 private:
   enum LineStyle { Solid, Dot, ShortDash, LongDash, Default };

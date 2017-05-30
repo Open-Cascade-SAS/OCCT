@@ -1462,7 +1462,7 @@ void V3d_View::SetRatio()
 //function : FitAll
 //purpose  :
 //=============================================================================
-void V3d_View::FitAll (const Quantity_Coefficient theMargin, const Standard_Boolean theToUpdate)
+void V3d_View::FitAll (const Standard_Real theMargin, const Standard_Boolean theToUpdate)
 {
   FitAll (myView->MinMaxValues(), theMargin, theToUpdate);
 }
@@ -1471,7 +1471,7 @@ void V3d_View::FitAll (const Quantity_Coefficient theMargin, const Standard_Bool
 //function : FitAll
 //purpose  :
 //=============================================================================
-void V3d_View::FitAll (const Bnd_Box& theBox, const Quantity_Coefficient theMargin, const Standard_Boolean theToUpdate)
+void V3d_View::FitAll (const Bnd_Box& theBox, const Standard_Real theMargin, const Standard_Boolean theToUpdate)
 {
   Standard_ASSERT_RAISE(theMargin >= 0.0 && theMargin < 1.0, "Invalid margin coefficient");
 
@@ -1497,8 +1497,8 @@ void V3d_View::FitAll (const Bnd_Box& theBox, const Quantity_Coefficient theMarg
 //function : DepthFitAll
 //purpose  :
 //=============================================================================
-void V3d_View::DepthFitAll(const Quantity_Coefficient Aspect,
-                           const Quantity_Coefficient Margin)
+void V3d_View::DepthFitAll(const Standard_Real Aspect,
+                           const Standard_Real Margin)
 {
   Standard_Real Xmin,Ymin,Zmin,Xmax,Ymax,Zmax,U,V,W,U1,V1,W1 ;
   Standard_Real Umin,Vmin,Wmin,Umax,Vmax,Wmax ;
@@ -2472,7 +2472,7 @@ Graphic3d_Vertex V3d_View::TrsPoint( const Graphic3d_Vertex &P, const TColStd_Ar
 //=======================================================================
 void V3d_View::Pan (const Standard_Integer theDXp,
                     const Standard_Integer theDYp,
-                    const Quantity_Factor  theZoomFactor,
+                    const Standard_Real    theZoomFactor,
                     const Standard_Boolean theToStart)
 {
   Panning (Convert (theDXp), Convert (theDYp), theZoomFactor, theToStart);
@@ -2484,7 +2484,7 @@ void V3d_View::Pan (const Standard_Integer theDXp,
 //=======================================================================
 void V3d_View::Panning (const Standard_Real theDXv,
                         const Standard_Real theDYv,
-                        const Quantity_Factor theZoomFactor,
+                        const Standard_Real theZoomFactor,
                         const Standard_Boolean theToStart)
 {
   Standard_ASSERT_RAISE (theZoomFactor > 0.0, "Bad zoom factor");
@@ -2587,8 +2587,8 @@ void V3d_View::ZoomAtPoint (const Standard_Integer theMouseStartX,
   Standard_Real aZoomAtPointYv = 0.0;
   Convert (MyZoomAtPointX, MyZoomAtPointY, aZoomAtPointXv, aZoomAtPointYv);
 
-  V3d_Coordinate aDxv = aZoomAtPointXv / aCoef;
-  V3d_Coordinate aDyv = aZoomAtPointYv / aCoef;
+  Standard_Real aDxv = aZoomAtPointXv / aCoef;
+  Standard_Real aDyv = aZoomAtPointYv / aCoef;
 
   aCamera->SetScale (aCamera->Scale() / aCoef);
   Translate (aCamera, aZoomAtPointXv - aDxv, aZoomAtPointYv - aDyv);
@@ -2658,7 +2658,7 @@ void V3d_View::FitAll(const Standard_Real theXmin,
 //=============================================================================
 void V3d_View::StartRotation(const Standard_Integer X,
                              const Standard_Integer Y,
-                             const Quantity_Ratio zRotationThreshold)
+                             const Standard_Real zRotationThreshold)
 {
   sx = X; sy = Y;
   Standard_Real x,y;

@@ -44,12 +44,12 @@ public:
   void Redraw() {   myView->Redraw(); };
   void InitButtons();
   void Reset();
-  void GetViewAt (V3d_Coordinate& theX, V3d_Coordinate& theY, V3d_Coordinate& theZ) const;
-  void SetViewAt (const V3d_Coordinate theX, const V3d_Coordinate theY, const V3d_Coordinate theZ);
-  void GetViewEye (V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z);
-  void SetViewEye (const V3d_Coordinate X,const V3d_Coordinate Y,const V3d_Coordinate Z);
-  Quantity_Factor GetViewScale();
-  void SetViewScale (const Quantity_Factor Coef);
+  void GetViewAt (Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const;
+  void SetViewAt (const Standard_Real theX, const Standard_Real theY, const Standard_Real theZ);
+  void GetViewEye (Standard_Real& X, Standard_Real& Y, Standard_Real& Z);
+  void SetViewEye (const Standard_Real X,const Standard_Real Y,const Standard_Real Z);
+  Standard_Real GetViewScale();
+  void SetViewScale (const Standard_Real Coef);
   void FitAll() {   myView->FitAll();  myView->ZFitAll();  };
 
 
@@ -138,7 +138,7 @@ private:
 
   Standard_Integer               NbActiveLights;
   Standard_Boolean               myHlrModeIsOn;
-  Quantity_Factor                myCurZoom;
+  Standard_Real                  myCurZoom;
   Handle(V3d_AmbientLight)       myCurrent_AmbientLight;
   Handle(V3d_SpotLight)          myCurrent_SpotLight;
   Handle(V3d_PositionalLight)    myCurrent_PositionalLight;

@@ -73,7 +73,7 @@ gp_Ax3 V3d_Viewer::PrivilegedPlane() const
 }
 
 /*----------------------------------------------------------------------*/
-void V3d_Viewer::DisplayPrivilegedPlane(const Standard_Boolean OnOff, const Quantity_Length aSize)
+void V3d_Viewer::DisplayPrivilegedPlane(const Standard_Boolean OnOff, const Standard_Real aSize)
 {
   myDisplayPlane = OnOff;
   myDisplayPlaneLength = aSize;

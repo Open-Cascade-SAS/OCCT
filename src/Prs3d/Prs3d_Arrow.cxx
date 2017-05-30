@@ -33,8 +33,8 @@
 void Prs3d_Arrow::Draw(const Handle(Graphic3d_Group)& theGroup,
                        const gp_Pnt& theLocation,
                        const gp_Dir& theDirection,
-                       const Quantity_PlaneAngle theAngle,
-                       const Quantity_Length theLength)
+                       const Standard_Real theAngle,
+                       const Standard_Real theLength)
 {
   Handle(Graphic3d_ArrayOfSegments) aPrimitives = Prs3d_Arrow::DrawSegments(theLocation,
                                                   theDirection, theAngle, theLength, 15);
@@ -47,8 +47,8 @@ void Prs3d_Arrow::Draw(const Handle(Graphic3d_Group)& theGroup,
 //=======================================================================
 Handle(Graphic3d_ArrayOfSegments) Prs3d_Arrow::DrawSegments (const gp_Pnt& theLocation,
                                                              const gp_Dir& theDir,
-                                                             const Quantity_PlaneAngle theAngle,
-                                                             const Quantity_Length theLength,
+                                                             const Standard_Real theAngle,
+                                                             const Standard_Real theLength,
                                                              const Standard_Integer theNbSegments)
 {
   Handle(Graphic3d_ArrayOfSegments) aSegments = new Graphic3d_ArrayOfSegments (theNbSegments + 1, 2 * (2 * theNbSegments));

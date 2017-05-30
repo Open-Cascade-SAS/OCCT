@@ -135,7 +135,7 @@ private:
   Standard_Integer     myYmin;
   Standard_Integer     myXmax;
   Standard_Integer     myYmax;
-  Quantity_Factor      myCurZoom;
+  Standard_Real        myCurZoom;
   Standard_Boolean     myHlrModeIsOn;
 
   View3D_CurrentAction myCurrentMode;

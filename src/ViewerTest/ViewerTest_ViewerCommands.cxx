@@ -5039,11 +5039,10 @@ static int VGrid (Draw_Interpretor& /*theDI*/,
     return 1;
   }
 
-  Quantity_Length anOriginX, anOriginY;
-  Quantity_PlaneAngle aRotAngle;
+  Standard_Real anOriginX, anOriginY, aRotAngle;
   if (aType == Aspect_GT_Rectangular)
   {
-    Quantity_Length aRStepX, aRStepY;
+    Standard_Real aRStepX, aRStepY;
     aViewer->RectangularGridValues (anOriginX, anOriginY, aRStepX, aRStepY, aRotAngle);
 
     anOriginX = Draw::Atof (theArgVec[anIter++]);
@@ -5059,7 +5058,7 @@ static int VGrid (Draw_Interpretor& /*theDI*/,
   }
   else if (aType == Aspect_GT_Circular)
   {
-    Quantity_Length aRadiusStep;
+    Standard_Real aRadiusStep;
     Standard_Integer aDivisionNumber;
     aViewer->CircularGridValues (anOriginX, anOriginY, aRadiusStep, aDivisionNumber, aRotAngle);
 
@@ -5219,8 +5218,8 @@ static int VConvert (Draw_Interpretor& theDI,
   {
     switch (aMode)
     {
-      case View   : theDI << "View Vv: "   << aView->Convert ((Standard_Integer) aCoord (1)); return 0;
-      case Window : theDI << "Window Vp: " << aView->Convert ((Quantity_Length) aCoord (1));  return 0;
+      case View   : theDI << "View Vv: "   << aView->Convert ((Standard_Integer)aCoord (1)); return 0;
+      case Window : theDI << "Window Vp: " << aView->Convert (aCoord (1)); return 0;
       default:
         std::cerr << "Error: wrong arguments! See usage:\n";
         theDI.PrintHelp (theArgVec[0]);
@@ -5244,7 +5243,7 @@ static int VConvert (Draw_Interpretor& theDI,
         return 0;
 
       case Window :
-        aView->Convert ((V3d_Coordinate) aCoord (1), (V3d_Coordinate) aCoord (2), aXYp[0], aXYp[1]);
+        aView->Convert (aCoord (1), aCoord (2), aXYp[0], aXYp[1]);
         theDI << "Window Xp,Yp: " << aXYp[0] << " " << aXYp[1] << "\n";
         return 0;
 
@@ -5849,7 +5848,7 @@ static int VReadPixel (Draw_Interpretor& theDI,
     return 1;
   }
 
-  Quantity_Parameter anAlpha;
+  Standard_Real anAlpha;
   Quantity_Color aColor = anImage.PixelColor (anX, anY, anAlpha);
   if (toShowName)
   {
@@ -6192,8 +6191,8 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
   Standard_Boolean toSetScale    = Standard_False;
   Standard_Boolean toSetSize     = Standard_False;
   Standard_Boolean toSetCenter2d = Standard_False;
-  Quantity_Factor  aViewScale = aView->Scale();
-  Quantity_Length  aViewSize  = 1.0;
+  Standard_Real    aViewScale = aView->Scale();
+  Standard_Real    aViewSize  = 1.0;
   Graphic3d_Vec2i  aCenter2d;
   gp_XYZ aViewProj, aViewUp, aViewAt, aViewEye;
   aView->Proj (aViewProj.ChangeCoord (1), aViewProj.ChangeCoord (2), aViewProj.ChangeCoord (3));
@@ -8579,8 +8578,8 @@ static int VLight (Draw_Interpretor& theDi,
     return 1;
   }
 
-  Standard_Real        anXYZ[3];
-  Quantity_Coefficient anAtten[2];
+  Standard_Real anXYZ[3]   = {};
+  Standard_Real anAtten[2] = {};
   if (theArgsNb < 2)
   {
     // print lights info

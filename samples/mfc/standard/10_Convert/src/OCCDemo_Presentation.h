@@ -50,14 +50,14 @@ public:
   void NextSample() {myIndex++;}
   void PrevSample() {myIndex--;}
   virtual void DoSample() = 0;
-  static void GetViewAt (V3d_Coordinate& theX, V3d_Coordinate& theY, V3d_Coordinate& theZ);
-  static void SetViewAt (const V3d_Coordinate theX, const V3d_Coordinate theY, const V3d_Coordinate theZ);
-  static void GetViewEye (V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z);
-  static void SetViewEye (V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z);
-  static Quantity_Factor GetViewScale();
-  static void SetViewScale(Quantity_Factor Coef);
+  static void GetViewAt (Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ);
+  static void SetViewAt (const Standard_Real theX, const Standard_Real theY, const Standard_Real theZ);
+  static void GetViewEye (Standard_Real& X, Standard_Real& Y, Standard_Real& Z);
+  static void SetViewEye (Standard_Real X, Standard_Real Y, Standard_Real Z);
+  static Standard_Real GetViewScale();
+  static void SetViewScale(Standard_Real Coef);
   static void ResetView();
-  static void TranslateView (const V3d_Coordinate theX, const V3d_Coordinate theY);
+  static void TranslateView (const Standard_Real theX, const Standard_Real theY);
 
   // place one-time initialization code in this function
   virtual void Init() {}

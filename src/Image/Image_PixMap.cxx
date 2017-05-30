@@ -193,7 +193,7 @@ void Image_PixMap::Clear()
 // =======================================================================
 Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                                          const Standard_Integer theY,
-                                         Quantity_Parameter&    theAlpha) const
+                                         Standard_Real& theAlpha) const
 {
   if (IsEmpty()
    || theX < 0 || (Standard_Size )theX >= SizeX()
@@ -209,10 +209,7 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
     {
       const Standard_ShortReal& aPixel = Value<Standard_ShortReal> (theY, theX);
       theAlpha = 1.0; // opaque
-      return Quantity_Color (Quantity_Parameter (Standard_Real (aPixel)),
-                             Quantity_Parameter (Standard_Real (aPixel)),
-                             Quantity_Parameter (Standard_Real (aPixel)),
-                             Quantity_TOC_RGB);
+      return Quantity_Color (aPixel, aPixel, aPixel, Quantity_TOC_RGB);
     }
     case Image_Format_AlphaF:
     {
@@ -224,100 +221,67 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
     {
       const Image_ColorRGBAF& aPixel = Value<Image_ColorRGBAF> (theY, theX);
       theAlpha = aPixel.a();
-      return Quantity_Color (Quantity_Parameter (aPixel.r()),
-                             Quantity_Parameter (aPixel.g()),
-                             Quantity_Parameter (aPixel.b()),
-                             Quantity_TOC_RGB);
+      return Quantity_Color (aPixel.r(), aPixel.g(), aPixel.b(), Quantity_TOC_RGB);
     }
     case Image_Format_BGRAF:
     {    
       const Image_ColorBGRAF& aPixel = Value<Image_ColorBGRAF> (theY, theX);
       theAlpha = aPixel.a();
-      return Quantity_Color (Quantity_Parameter (aPixel.r()),
-                             Quantity_Parameter (aPixel.g()),
-                             Quantity_Parameter (aPixel.b()),
-                             Quantity_TOC_RGB);
+      return Quantity_Color (aPixel.r(), aPixel.g(), aPixel.b(), Quantity_TOC_RGB);
     }
     case Image_Format_RGBF:
     {
       const Image_ColorRGBF& aPixel = Value<Image_ColorRGBF> (theY, theX);
       theAlpha =  1.0; // opaque
-      return Quantity_Color (Quantity_Parameter (aPixel.r()),
-                             Quantity_Parameter (aPixel.g()),
-                             Quantity_Parameter (aPixel.b()),
-                             Quantity_TOC_RGB);
+      return Quantity_Color (aPixel.r(), aPixel.g(), aPixel.b(), Quantity_TOC_RGB);
     }
     case Image_Format_BGRF:
     {
       const Image_ColorBGRF& aPixel = Value<Image_ColorBGRF> (theY, theX);
       theAlpha =  1.0; // opaque
-      return Quantity_Color (Quantity_Parameter (aPixel.r()),
-                             Quantity_Parameter (aPixel.g()),
-                             Quantity_Parameter (aPixel.b()),
-                             Quantity_TOC_RGB);
+      return Quantity_Color (aPixel.r(), aPixel.g(), aPixel.b(), Quantity_TOC_RGB);
     }
     case Image_Format_RGBA:
     {
       const Image_ColorRGBA& aPixel = Value<Image_ColorRGBA> (theY, theX);
       theAlpha = Standard_Real (aPixel.a()) / 255.0;
-      return Quantity_Color (Quantity_Parameter (Standard_Real (aPixel.r()) / 255.0),
-                             Quantity_Parameter (Standard_Real (aPixel.g()) / 255.0),
-                             Quantity_Parameter (Standard_Real (aPixel.b()) / 255.0),
-                             Quantity_TOC_RGB);
+      return Quantity_Color (Standard_Real (aPixel.r()) / 255.0, Standard_Real (aPixel.g()) / 255.0, Standard_Real (aPixel.b()) / 255.0, Quantity_TOC_RGB);
     }
     case Image_Format_BGRA:
     {
       const Image_ColorBGRA& aPixel = Value<Image_ColorBGRA> (theY, theX);
       theAlpha = Standard_Real (aPixel.a()) / 255.0;
-      return Quantity_Color (Quantity_Parameter (Standard_Real (aPixel.r()) / 255.0),
-                             Quantity_Parameter (Standard_Real (aPixel.g()) / 255.0),
-                             Quantity_Parameter (Standard_Real (aPixel.b()) / 255.0),
-                             Quantity_TOC_RGB);
+      return Quantity_Color (Standard_Real (aPixel.r()) / 255.0, Standard_Real (aPixel.g()) / 255.0, Standard_Real (aPixel.b() / 255.0), Quantity_TOC_RGB);
     }
     case Image_Format_RGB32:
     {
       const Image_ColorRGB32& aPixel = Value<Image_ColorRGB32> (theY, theX);
       theAlpha = 1.0; // opaque
-      return Quantity_Color (Quantity_Parameter (Standard_Real (aPixel.r()) / 255.0),
-                             Quantity_Parameter (Standard_Real (aPixel.g()) / 255.0),
-                             Quantity_Parameter (Standard_Real (aPixel.b()) / 255.0),
-                             Quantity_TOC_RGB);
+      return Quantity_Color (Standard_Real (aPixel.r()) / 255.0, Standard_Real (aPixel.g()) / 255.0, Standard_Real (aPixel.b()) / 255.0, Quantity_TOC_RGB);
     }
     case Image_Format_BGR32:
     {
       const Image_ColorBGR32& aPixel = Value<Image_ColorBGR32> (theY, theX);
       theAlpha = 1.0; // opaque
-      return Quantity_Color (Quantity_Parameter (Standard_Real (aPixel.r()) / 255.0),
-                             Quantity_Parameter (Standard_Real (aPixel.g()) / 255.0),
-                             Quantity_Parameter (Standard_Real (aPixel.b()) / 255.0),
-                             Quantity_TOC_RGB);
+      return Quantity_Color (Standard_Real (aPixel.r()) / 255.0, Standard_Real (aPixel.g()) / 255.0, Standard_Real (aPixel.b()) / 255.0, Quantity_TOC_RGB);
     }
     case Image_Format_RGB:
     {
       const Image_ColorRGB& aPixel = Value<Image_ColorRGB> (theY, theX);
       theAlpha = 1.0; // opaque
-      return Quantity_Color (Quantity_Parameter (Standard_Real (aPixel.r()) / 255.0),
-                             Quantity_Parameter (Standard_Real (aPixel.g()) / 255.0),
-                             Quantity_Parameter (Standard_Real (aPixel.b()) / 255.0),
-                             Quantity_TOC_RGB);
+      return Quantity_Color (Standard_Real (aPixel.r()) / 255.0, Standard_Real (aPixel.g()) / 255.0, Standard_Real (aPixel.b()) / 255.0, Quantity_TOC_RGB);
     }
     case Image_Format_BGR:
     {
       const Image_ColorBGR& aPixel = Value<Image_ColorBGR> (theY, theX);
       theAlpha = 1.0; // opaque
-      return Quantity_Color (Quantity_Parameter (Standard_Real (aPixel.r()) / 255.0),
-                             Quantity_Parameter (Standard_Real (aPixel.g()) / 255.0),
-                             Quantity_Parameter (Standard_Real (aPixel.b()) / 255.0),
-                             Quantity_TOC_RGB);
+      return Quantity_Color (Standard_Real (aPixel.r()) / 255.0, Standard_Real (aPixel.g()) / 255.0, Standard_Real (aPixel.b()) / 255.0, Quantity_TOC_RGB);
     }
     case Image_Format_Gray:
     {
       const Standard_Byte& aPixel = Value<Standard_Byte> (theY, theX);
       theAlpha = 1.0; // opaque
-      return Quantity_Color (Quantity_Parameter (Standard_Real (aPixel) / 255.0),
-                             Quantity_Parameter (Standard_Real (aPixel) / 255.0),
-                             Quantity_Parameter (Standard_Real (aPixel) / 255.0),
-                             Quantity_TOC_RGB);
+      return Quantity_Color (Standard_Real (aPixel) / 255.0, Standard_Real (aPixel) / 255.0, Standard_Real (aPixel) / 255.0, Quantity_TOC_RGB);
     }
     case Image_Format_Alpha:
     {

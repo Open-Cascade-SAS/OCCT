@@ -39,7 +39,6 @@
 #include <NCollection_DataMap.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_MapOfZLayerSettings.hxx>
-#include <Quantity_PlaneAngle.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Standard_CString.hxx>
 #include <TColStd_Array1OfInteger.hxx>

@@ -607,7 +607,7 @@ void OCC_2dView::MoveEvent2D(const Standard_Integer  x,
 {
   if(myV2dView->Viewer()->Grid()->IsActive())
   {
-    Quantity_Length aGridX=0,aGridY=0,aGridZ=0;
+    Standard_Real aGridX=0,aGridY=0,aGridZ=0;
     myV2dView->ConvertToGrid(x,y,aGridX,aGridY,aGridZ);
     //View is not updated automatically in ConvertToGrid
     myV2dView->Update();

@@ -28,7 +28,6 @@
 #include <Quantity_Color.hxx>
 #include <Aspect_GradientFillMethod.hxx>
 #include <Aspect_TypeOfResize.hxx>
-#include <Quantity_Ratio.hxx>
 #include <Standard_Integer.hxx>
 #include <Aspect_Drawable.hxx>
 class Aspect_WindowDefinitionError;
@@ -91,7 +90,7 @@ public:
   
   //! Returns The Window RATIO equal to the physical
   //! WIDTH/HEIGHT dimensions
-  Standard_EXPORT virtual Quantity_Ratio Ratio() const = 0;
+  Standard_EXPORT virtual Standard_Real Ratio() const = 0;
   
   //! Returns The Window POSITION in PIXEL
   Standard_EXPORT virtual void Position (Standard_Integer& X1, Standard_Integer& Y1, Standard_Integer& X2, Standard_Integer& Y2) const = 0;

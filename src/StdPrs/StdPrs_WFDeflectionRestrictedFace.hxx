@@ -24,9 +24,9 @@
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Standard_Boolean.hxx>
-#include <Quantity_Length.hxx>
 #include <Standard_Integer.hxx>
 #include <Prs3d_NListOfSequenceOfPnt.hxx>
+
 class Prs3d_Presentation;
 class BRepAdaptor_HSurface;
 class Bnd_Box;
@@ -110,37 +110,16 @@ public:
   //! as a geometric surface.
   //! Curves give a sequence of face curves, it is used if the PrimitiveArray
   //! visualization approach is activated (it is activated by default).
-  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Handle(BRepAdaptor_HSurface)& aFace, const Standard_Boolean DrawUIso, const Standard_Boolean DrawVIso, const Quantity_Length Deflection, const Standard_Integer NBUiso, const Standard_Integer NBViso, const Handle(Prs3d_Drawer)& aDrawer, Prs3d_NListOfSequenceOfPnt& Curves);
+  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Handle(BRepAdaptor_HSurface)& aFace, const Standard_Boolean DrawUIso, const Standard_Boolean DrawVIso, const Standard_Real Deflection, const Standard_Integer NBUiso, const Standard_Integer NBViso, const Handle(Prs3d_Drawer)& aDrawer, Prs3d_NListOfSequenceOfPnt& Curves);
   
-  Standard_EXPORT static Standard_Boolean Match (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z, const Quantity_Length aDistance, const Handle(BRepAdaptor_HSurface)& aFace, const Handle(Prs3d_Drawer)& aDrawer);
+  Standard_EXPORT static Standard_Boolean Match (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Handle(BRepAdaptor_HSurface)& aFace, const Handle(Prs3d_Drawer)& aDrawer);
   
-  Standard_EXPORT static Standard_Boolean MatchUIso (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z, const Quantity_Length aDistance, const Handle(BRepAdaptor_HSurface)& aFace, const Handle(Prs3d_Drawer)& aDrawer);
+  Standard_EXPORT static Standard_Boolean MatchUIso (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Handle(BRepAdaptor_HSurface)& aFace, const Handle(Prs3d_Drawer)& aDrawer);
   
-  Standard_EXPORT static Standard_Boolean MatchVIso (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z, const Quantity_Length aDistance, const Handle(BRepAdaptor_HSurface)& aFace, const Handle(Prs3d_Drawer)& aDrawer);
+  Standard_EXPORT static Standard_Boolean MatchVIso (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Handle(BRepAdaptor_HSurface)& aFace, const Handle(Prs3d_Drawer)& aDrawer);
   
-  Standard_EXPORT static Standard_Boolean Match (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z, const Quantity_Length aDistance, const Handle(BRepAdaptor_HSurface)& aFace, const Handle(Prs3d_Drawer)& aDrawer, const Standard_Boolean DrawUIso, const Standard_Boolean DrawVIso, const Quantity_Length aDeflection, const Standard_Integer NBUiso, const Standard_Integer NBViso);
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
+  Standard_EXPORT static Standard_Boolean Match (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Handle(BRepAdaptor_HSurface)& aFace, const Handle(Prs3d_Drawer)& aDrawer, const Standard_Boolean DrawUIso, const Standard_Boolean DrawVIso, const Standard_Real aDeflection, const Standard_Integer NBUiso, const Standard_Integer NBViso);
 
 };
-
-
-
-
-
-
 
 #endif // _StdPrs_WFDeflectionRestrictedFace_HeaderFile

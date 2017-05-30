@@ -47,39 +47,39 @@ public:
                   const Handle (Prs3d_Drawer)&        theDrawer);
 
   Standard_EXPORT static Standard_Boolean Match
-                  (const Quantity_Length               theX,
-                   const Quantity_Length               theY,
-                   const Quantity_Length               theZ,
-                   const Quantity_Length               theDistance,
+                  (const Standard_Real               theX,
+                   const Standard_Real               theY,
+                   const Standard_Real               theZ,
+                   const Standard_Real               theDistance,
                    const Handle(BRepAdaptor_HSurface)& theFace,
                    const Standard_Boolean              theDrawUIso,
                    const Standard_Boolean              theDrawVIso,
-                   const Quantity_Length               theDeflection,
+                   const Standard_Real               theDeflection,
                    const Standard_Integer              theNbUIso,
                    const Standard_Integer              theNbVIso,
                    const Handle(Prs3d_Drawer)&         theDrawer);
 
   Standard_EXPORT static Standard_Boolean Match
-                   (const Quantity_Length               theX,
-                    const Quantity_Length               theY,
-                    const Quantity_Length               theZ,
-                    const Quantity_Length               theDistance,
+                   (const Standard_Real               theX,
+                    const Standard_Real               theY,
+                    const Standard_Real               theZ,
+                    const Standard_Real               theDistance,
                     const Handle(BRepAdaptor_HSurface)& theFace,
                     const Handle (Prs3d_Drawer)&        theDrawer);
 
   Standard_EXPORT static Standard_Boolean MatchUIso
-                   (const Quantity_Length               theX,
-                    const Quantity_Length               theY,
-                    const Quantity_Length               theZ,
-                    const Quantity_Length               theDistance,
+                   (const Standard_Real               theX,
+                    const Standard_Real               theY,
+                    const Standard_Real               theZ,
+                    const Standard_Real               theDistance,
                     const Handle(BRepAdaptor_HSurface)& theFace,
                     const Handle (Prs3d_Drawer)&        theDrawer);
 
   Standard_EXPORT static Standard_Boolean MatchVIso
-                   (const Quantity_Length               theX,
-                    const Quantity_Length               theY,
-                    const Quantity_Length               theZ,
-                    const Quantity_Length               theDistance,
+                   (const Standard_Real               theX,
+                    const Standard_Real               theY,
+                    const Standard_Real               theZ,
+                    const Standard_Real               theDistance,
                     const Handle(BRepAdaptor_HSurface)& theFace,
                     const Handle (Prs3d_Drawer)&        theDrawer);
   

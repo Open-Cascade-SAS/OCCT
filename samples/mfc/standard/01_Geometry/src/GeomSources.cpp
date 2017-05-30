@@ -56,7 +56,7 @@ void GeomSources::PreProcess(CGeometryDoc* aDoc,DisplayType aDisplayType)
 }
 
 void GeomSources::PostProcess (CGeometryDoc* aDoc, UINT anID, DisplayType aDisplayType,
-                               const TCollection_AsciiString& theString, Standard_Boolean UpdateViewer, Quantity_Coefficient Coef)
+                               const TCollection_AsciiString& theString, Standard_Boolean UpdateViewer, Standard_Real Coef)
 {
   Standard_CString aString = theString.ToCString();
   if (UpdateViewer)
@@ -3808,7 +3808,7 @@ void GeomSources::gpTest47(CGeometryDoc* aDoc)
     GeomAPI_PointsToBSplineSurface(array3).Surface();
 
   GeomAPI_ExtremaSurfaceSurface ESS(aSurf1,aSurf2);
-  //Quantity_Length dist = ESS.LowerDistance();
+  //Standard_Real dist = ESS.LowerDistance();
   gp_Pnt P1,P2;
   ESS.NearestPoints(P1,P2);
 
@@ -3833,7 +3833,7 @@ Handle(Geom_BSplineSurface) aSurf2 =                           \n\
 	GeomAPI_PointsToBSplineSurface(array3).Surface();          \n\
                                                                \n\
 GeomAPI_ExtremaSurfaceSurface ESS(aSurf1,aSurf2);              \n\
-Quantity_Length dist = ESS.LowerDistance();                    \n\
+Standard_Real dist = ESS.LowerDistance();                      \n\
 gp_Pnt P1,P2;                                                  \n\
 ESS.NearestPoints(P1,P2);                                      \n\
                                                                \n"); 

@@ -69,7 +69,7 @@ public:
 
   //! Returns The Window RATIO equal to the physical
   //! WIDTH/HEIGHT dimensions.
-  virtual Quantity_Ratio Ratio() const;
+  virtual Standard_Real Ratio() const;
 
   virtual void Size( Standard_Integer& theWidth, Standard_Integer& theHeight ) const;
   

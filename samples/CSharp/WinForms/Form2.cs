@@ -286,7 +286,7 @@ namespace IE_WinForms
 
     protected CurrentAction3d myCurrentMode;
     protected CurrentPressedKey myCurrentPressedKey;
-    protected float myCurZoom;// ~ Quantity_Factor
+    protected float myCurZoom;
     protected bool myDegenerateModeIsOn;
     protected int myXmin;
     protected int myYmin;

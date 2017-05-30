@@ -270,16 +270,16 @@ Aspect_TypeOfResize WNT_Window::DoResize() const
 // function : Ratio
 // purpose  :
 // =======================================================================
-Quantity_Ratio WNT_Window::Ratio() const
+Standard_Real WNT_Window::Ratio() const
 {
   if (IsVirtual())
   {
-    return Quantity_Ratio(aXRight - aXLeft)/ Quantity_Ratio(aYBottom - aYTop);
+    return Standard_Real(aXRight - aXLeft)/ Standard_Real(aYBottom - aYTop);
   }
 
   RECT aRect;
   GetClientRect ((HWND )myHWindow, &aRect);
-  return Quantity_Ratio(aRect.right - aRect.left) / Quantity_Ratio(aRect.bottom - aRect.top);
+  return Standard_Real(aRect.right - aRect.left) / Standard_Real(aRect.bottom - aRect.top);
 }
 
 // =======================================================================

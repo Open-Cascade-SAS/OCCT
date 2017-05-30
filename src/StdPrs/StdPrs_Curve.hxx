@@ -25,7 +25,6 @@
 #include <Prs3d_Drawer.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-#include <Quantity_Length.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <Standard_Integer.hxx>
 class Prs3d_Presentation;
@@ -80,45 +79,24 @@ public:
   
   //! returns true if the distance between the point (X,Y,Z) and the
   //! drawing of the curve is less than aDistance.
-  Standard_EXPORT static Standard_Boolean Match (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z, const Quantity_Length aDistance, const Adaptor3d_Curve& aCurve, const Handle(Prs3d_Drawer)& aDrawer);
+  Standard_EXPORT static Standard_Boolean Match (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Adaptor3d_Curve& aCurve, const Handle(Prs3d_Drawer)& aDrawer);
   
   //! returns true if the distance between the point (X,Y,Z) and the
   //! drawing of the curve is less than aDistance.
-  Standard_EXPORT static Standard_Boolean Match (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z, const Quantity_Length aDistance, const Adaptor3d_Curve& aCurve, const Quantity_Length aDeflection, const Standard_Real aLimit, const Standard_Integer aNbPoints);
+  Standard_EXPORT static Standard_Boolean Match (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Adaptor3d_Curve& aCurve, const Standard_Real aDeflection, const Standard_Real aLimit, const Standard_Integer aNbPoints);
   
   //! returns true if the distance between the point (X,Y,Z) and the
   //! drawing of the curve aCurve is less than aDistance.
   //! The drawing is considered between the points
   //! of parameter U1 and U2;
-  Standard_EXPORT static Standard_Boolean Match (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z, const Quantity_Length aDistance, const Adaptor3d_Curve& aCurve, const Standard_Real U1, const Standard_Real U2, const Handle(Prs3d_Drawer)& aDrawer);
+  Standard_EXPORT static Standard_Boolean Match (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Adaptor3d_Curve& aCurve, const Standard_Real U1, const Standard_Real U2, const Handle(Prs3d_Drawer)& aDrawer);
   
   //! returns true if the distance between the point (X,Y,Z) and the
   //! drawing of the curve aCurve is less than aDistance.
   //! The drawing is considered between the points
   //! of parameter U1 and U2;
-  Standard_EXPORT static Standard_Boolean Match (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z, const Quantity_Length aDistance, const Adaptor3d_Curve& aCurve, const Standard_Real U1, const Standard_Real U2, const Quantity_Length aDeflection, const Standard_Integer aNbPoints);
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
+  Standard_EXPORT static Standard_Boolean Match (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Adaptor3d_Curve& aCurve, const Standard_Real U1, const Standard_Real U2, const Standard_Real aDeflection, const Standard_Integer aNbPoints);
 
 };
-
-
-
-
-
-
 
 #endif // _StdPrs_Curve_HeaderFile

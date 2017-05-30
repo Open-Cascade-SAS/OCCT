@@ -17,7 +17,6 @@
 #ifndef _V3d_PositionalLight_HeaderFile
 #define _V3d_PositionalLight_HeaderFile
 
-#include <Quantity_Coefficient.hxx>
 #include <V3d_PositionLight.hxx>
 
 class V3d_PositionalLight;
@@ -40,12 +39,12 @@ public:
   //! from the surface.  //! Warning!  raises BadValue from V3d
   //! if one of the attenuation coefficients is not in range [0, 1].
   Standard_EXPORT V3d_PositionalLight (const Handle(V3d_Viewer)& theViewer,
-                                       const V3d_Coordinate theX,
-                                       const V3d_Coordinate theY,
-                                       const V3d_Coordinate theZ,
+                                       const Standard_Real theX,
+                                       const Standard_Real theY,
+                                       const Standard_Real theZ,
                                        const Quantity_Color& theColor = Quantity_NOC_WHITE,
-                                       const Quantity_Coefficient theConstAttenuation = 1.0,
-                                       const Quantity_Coefficient theLinearAttenuation = 0.0);
+                                       const Standard_Real theConstAttenuation = 1.0,
+                                       const Standard_Real theLinearAttenuation = 0.0);
 
   //! Creates a light source of the Positional type in the viewer.
   //! theXt, theYt, theZt : Coordinate of Target light source.
@@ -59,26 +58,26 @@ public:
   //! from the surface.  //! Warning! raises BadValue from V3d
   //! if one of the attenuation coefficients is not between 0 et 1.
   Standard_EXPORT V3d_PositionalLight (const Handle(V3d_Viewer)& theViewer,
-                                       const V3d_Coordinate theXt,
-                                       const V3d_Coordinate theYt,
-                                       const V3d_Coordinate theZt,
-                                       const V3d_Coordinate theXp,
-                                       const V3d_Coordinate theYp,
-                                       const V3d_Coordinate theZp,
+                                       const Standard_Real theXt,
+                                       const Standard_Real theYt,
+                                       const Standard_Real theZt,
+                                       const Standard_Real theXp,
+                                       const Standard_Real theYp,
+                                       const Standard_Real theZp,
                                        const Quantity_Color& theColor = Quantity_NOC_WHITE,
-                                       const Quantity_Coefficient theConstAttenuation = 1.0,
-                                       const Quantity_Coefficient theLinearAttenuation = 0.0);
+                                       const Standard_Real theConstAttenuation = 1.0,
+                                       const Standard_Real theLinearAttenuation = 0.0);
 
   //! Defines the position of the light source.
-  Standard_EXPORT virtual void SetPosition (const V3d_Coordinate theX,
-                                            const V3d_Coordinate theY,
-                                            const V3d_Coordinate theZ) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetPosition (const Standard_Real theX,
+                                            const Standard_Real theY,
+                                            const Standard_Real theZ) Standard_OVERRIDE;
 
   //! Defines the attenuation factors.
   //! Warning: raises BadValue from V3d
   //! if one of the attenuation coefficients is not between 0 et 1.
-  Standard_EXPORT void SetAttenuation (const Quantity_Coefficient theConstAttenuation,
-                                       const Quantity_Coefficient theLinearAttenuation);
+  Standard_EXPORT void SetAttenuation (const Standard_Real theConstAttenuation,
+                                       const Standard_Real theLinearAttenuation);
 
   //! Modifies the smoothing radius
   Standard_EXPORT void SetSmoothRadius (const Standard_Real theValue);
@@ -97,13 +96,13 @@ public:
                                 const V3d_TypeOfRepresentation theRepresentation) Standard_OVERRIDE;
 
   //! Returns the position of the light source.
-  Standard_EXPORT void Position (V3d_Coordinate& theX,
-                                 V3d_Coordinate& theY,
-                                 V3d_Coordinate& theZ) const Standard_OVERRIDE;
+  Standard_EXPORT void Position (Standard_Real& theX,
+                                 Standard_Real& theY,
+                                 Standard_Real& theZ) const Standard_OVERRIDE;
 
   //! Returns the attenuation factors.
-  Standard_EXPORT void Attenuation (Quantity_Coefficient& theConstAttenuation,
-                                    Quantity_Coefficient& theLinearAttenuation) const;
+  Standard_EXPORT void Attenuation (Standard_Real& theConstAttenuation,
+                                    Standard_Real& theLinearAttenuation) const;
 
   DEFINE_STANDARD_RTTIEXT(V3d_PositionalLight,V3d_PositionLight)
 

@@ -48,12 +48,12 @@ public:
   void NextSample() {myIndex++;}
   void PrevSample() {myIndex--;}
   virtual void DoSample() = 0;
-  static void GetViewCenter(V3d_Coordinate& Xc, V3d_Coordinate& Yc);
-  static void SetViewCenter(const V3d_Coordinate Xc, const V3d_Coordinate Yc);
-  static void GetViewEye(V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z);
-  static void SetViewEye(V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z);
-  static Quantity_Factor GetViewScale();
-  static void SetViewScale(Quantity_Factor Coef);
+  static void GetViewCenter(Standard_Real& Xc, Standard_Real& Yc);
+  static void SetViewCenter(const Standard_Real Xc, const Standard_Real Yc);
+  static void GetViewEye(Standard_Real& X, Standard_Real& Y, Standard_Real& Z);
+  static void SetViewEye(Standard_Real X, Standard_Real Y, Standard_Real Z);
+  static Standard_Real GetViewScale();
+  static void SetViewScale(Standard_Real Coef);
   static void ResetView();
 
 

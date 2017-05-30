@@ -22,7 +22,6 @@
 
 #include <Standard_ShortReal.hxx>
 #include <Quantity_NameOfColor.hxx>
-#include <Quantity_Parameter.hxx>
 #include <Quantity_TypeOfColor.hxx>
 #include <Quantity_Rate.hxx>
 #include <Standard_Real.hxx>
@@ -71,9 +70,9 @@ public:
   //!    Value -1.0 is a special value reserved for grayscale color (S should be 0.0).
   //!  - theR2 is the Lightness  (L) within range [0.0; 1.0]
   //!  - theR3 is the Saturation (S) within range [0.0; 1.0]
-  Standard_EXPORT Quantity_Color (const Quantity_Parameter   theR1,
-                                  const Quantity_Parameter   theR2,
-                                  const Quantity_Parameter   theR3,
+  Standard_EXPORT Quantity_Color (const Standard_Real theR1,
+                                  const Standard_Real theR2,
+                                  const Standard_Real theR3,
                                   const Quantity_TypeOfColor theType);
 
   //! Define color from RGB values.
@@ -110,9 +109,9 @@ public:
   //!    -1.0 is a special value reserved for grayscale color (S should be 0.0).
   //!  - theR2 is the Lightness  (L) within range [0.0; 1.0]
   //!  - theR3 is the Saturation (S) within range [0.0; 1.0]
-  Standard_EXPORT void SetValues (const Quantity_Parameter   theR1,
-                                  const Quantity_Parameter   theR2,
-                                  const Quantity_Parameter   theR3,
+  Standard_EXPORT void SetValues (const Standard_Real theR1,
+                                  const Standard_Real theR2,
+                                  const Standard_Real theR3,
                                   const Quantity_TypeOfColor theType);
   
   //! Returns the percentage change of contrast and intensity
@@ -121,7 +120,7 @@ public:
   //! The calculation is with respect to the current value of <me>
   //! If <DC> is positive then <me> is more contrasty.
   //! If <DI> is positive then <me> is more intense.
-  Standard_EXPORT void Delta (const Quantity_Color& AColor, Quantity_Parameter& DC, Quantity_Parameter& DI) const;
+  Standard_EXPORT void Delta (const Quantity_Color& AColor, Standard_Real& DC, Standard_Real& DI) const;
   
   //! Returns the distance between two colours. It's a
   //! value between 0 and the square root of 3
@@ -132,15 +131,15 @@ public:
   Standard_EXPORT Standard_Real SquareDistance (const Quantity_Color& AColor) const;
   
   //! Returns the Blue component (quantity of blue) of the color within range [0.0; 1.0].
-  Standard_EXPORT Quantity_Parameter Blue() const;
+  Standard_EXPORT Standard_Real Blue() const;
   
   //! Returns the Green component (quantity of green) of the color within range [0.0; 1.0].
-  Standard_EXPORT Quantity_Parameter Green() const;
+  Standard_EXPORT Standard_Real Green() const;
   
   //! Returns the Hue component (hue angle) of the color
   //! in degrees within range [0.0; 360.0], 0.0 being Red.
   //! -1.0 is a special value reserved for grayscale color (S should be 0.0)
-  Standard_EXPORT Quantity_Parameter Hue() const;
+  Standard_EXPORT Standard_Real Hue() const;
   
   //! Returns Standard_True if the distance between <me> and
   //! <Other> is greater than Epsilon ().
@@ -163,7 +162,7 @@ Standard_Boolean operator == (const Quantity_Color& Other) const
 }
   
   //! Returns the Light component (value of the lightness) of the color within range [0.0; 1.0].
-  Standard_EXPORT Quantity_Parameter Light() const;
+  Standard_EXPORT Standard_Real Light() const;
   
   //! Returns the name of the color defined by its
   //! quantities of red R, green G and blue B; more
@@ -174,10 +173,10 @@ Standard_Boolean operator == (const Quantity_Color& Other) const
   Standard_EXPORT Quantity_NameOfColor Name() const;
   
   //! Returns the Red component (quantity of red) of the color within range [0.0; 1.0].
-  Standard_EXPORT Quantity_Parameter Red() const;
+  Standard_EXPORT Standard_Real Red() const;
   
   //! Returns the Saturation component (value of the saturation) of the color within range [0.0; 1.0].
-  Standard_EXPORT Quantity_Parameter Saturation() const;
+  Standard_EXPORT Standard_Real Saturation() const;
 
   //! Return the color as vector of 3 float elements.
   operator const NCollection_Vec3<float>&() const { return *(const NCollection_Vec3<float>* )this; }
@@ -192,23 +191,23 @@ Standard_Boolean operator == (const Quantity_Color& Other) const
   //!    -1.0 is a special value reserved for grayscale color (S should be 0.0).
   //!  - theR2 is the Lightness  (L) within range [0.0; 1.0]
   //!  - theR3 is the Saturation (S) within range [0.0; 1.0]
-  Standard_EXPORT void Values (Quantity_Parameter& theR1,
-                               Quantity_Parameter& theR2,
-                               Quantity_Parameter& theR3,
+  Standard_EXPORT void Values (Standard_Real& theR1,
+                               Standard_Real& theR2,
+                               Standard_Real& theR3,
                                const Quantity_TypeOfColor theType) const;
   
   //! Sets the specified value used to compare <me> and
   //! an other color in IsDifferent and in IsEqual methods.
   //! Warning: The default value is 0.0001
-  Standard_EXPORT static void SetEpsilon (const Quantity_Parameter AnEpsilon);
+  Standard_EXPORT static void SetEpsilon (const Standard_Real AnEpsilon);
   
   //! Returns the specified value used to compare <me> and
   //! an other color in IsDifferent and in IsEqual methods.
-  Standard_EXPORT static Quantity_Parameter Epsilon();
+  Standard_EXPORT static Standard_Real Epsilon();
   
   //! Returns the name of the colour for which the RGB components
   //! are nearest to <R>, <G> and <B>.
-  Standard_EXPORT static Quantity_NameOfColor Name (const Quantity_Parameter R, const Quantity_Parameter G, const Quantity_Parameter B);
+  Standard_EXPORT static Quantity_NameOfColor Name (const Standard_Real R, const Standard_Real G, const Standard_Real B);
   
   //! Returns the name of the color identified by
   //! AName in the Quantity_NameOfColor enumeration.
@@ -226,10 +225,10 @@ Standard_Boolean operator == (const Quantity_Color& Other) const
   Standard_EXPORT static Standard_Boolean ColorFromName (const Standard_CString theName, Quantity_NameOfColor& theColor);
   
   //! Converts HLS components into RGB ones.
-  Standard_EXPORT static void HlsRgb (const Quantity_Parameter H, const Quantity_Parameter L, const Quantity_Parameter S, Quantity_Parameter& R, Quantity_Parameter& G, Quantity_Parameter& B);
+  Standard_EXPORT static void HlsRgb (const Standard_Real H, const Standard_Real L, const Standard_Real S, Standard_Real& R, Standard_Real& G, Standard_Real& B);
   
   //! Converts RGB components into HLS ones.
-  Standard_EXPORT static void RgbHls (const Quantity_Parameter R, const Quantity_Parameter G, const Quantity_Parameter B, Quantity_Parameter& H, Quantity_Parameter& L, Quantity_Parameter& S);
+  Standard_EXPORT static void RgbHls (const Standard_Real R, const Standard_Real G, const Standard_Real B, Standard_Real& H, Standard_Real& L, Standard_Real& S);
   
   //! Convert the Color value to ARGB integer value.
   //! theARGB has Alpha equal to zero, so the output is
@@ -242,18 +241,8 @@ Standard_Boolean operator == (const Quantity_Color& Other) const
   //! Internal test
   Standard_EXPORT static void Test();
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
-  
   //! Converts HLS components into RGB ones.
   Standard_EXPORT static void hlsrgb (const Standard_ShortReal H, const Standard_ShortReal L, const Standard_ShortReal S, Standard_ShortReal& R, Standard_ShortReal& G, Standard_ShortReal& B);
   
@@ -276,13 +265,6 @@ private:
   Standard_ShortReal MyGreen;
   Standard_ShortReal MyBlue;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Quantity_Color_HeaderFile

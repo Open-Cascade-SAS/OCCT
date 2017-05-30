@@ -40,12 +40,12 @@ public:
   //! theXp, theYp, theZp : Coordinate of light source Position.
   //! The others parameters describe before.
   Standard_EXPORT V3d_DirectionalLight (const Handle(V3d_Viewer)& theViewer,
-                                        const V3d_Coordinate theXt,
-                                        const V3d_Coordinate theYt,
-                                        const V3d_Coordinate theZt,
-                                        const V3d_Coordinate theXp,
-                                        const V3d_Coordinate theYp,
-                                        const V3d_Coordinate theZp,
+                                        const Standard_Real theXt,
+                                        const Standard_Real theYt,
+                                        const Standard_Real theZt,
+                                        const Standard_Real theXp,
+                                        const Standard_Real theYp,
+                                        const Standard_Real theZp,
                                         const Quantity_Color& theColor = Quantity_NOC_WHITE,
                                         const Standard_Boolean theIsHeadlight = Standard_False);
 
@@ -54,19 +54,19 @@ public:
 
   //! Defines the direction of the light source by the predefined vector theXm, theYm, theZm.
   //! Warning: raises  BadValue from V3d if the vector is null.
-  Standard_EXPORT void SetDirection (const Quantity_Parameter theXm,
-                                     const Quantity_Parameter theYm,
-                                     const Quantity_Parameter theZm);
+  Standard_EXPORT void SetDirection (const Standard_Real theXm,
+                                     const Standard_Real theYm,
+                                     const Standard_Real theZm);
 
   //! Defines the point of light source representation.
-  Standard_EXPORT void SetDisplayPosition (const V3d_Coordinate theX,
-                                           const V3d_Coordinate theY,
-                                           const V3d_Coordinate theZ);
+  Standard_EXPORT void SetDisplayPosition (const Standard_Real theX,
+                                           const Standard_Real theY,
+                                           const Standard_Real theZ);
 
   //! Calls SetDisplayPosition method.
-  Standard_EXPORT virtual void SetPosition (const V3d_Coordinate theXp,
-                                            const V3d_Coordinate theYp,
-                                            const V3d_Coordinate theZp) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetPosition (const Standard_Real theXp,
+                                            const Standard_Real theYp,
+                                            const Standard_Real theZp) Standard_OVERRIDE;
 
   //! Modifies the smoothing angle (in radians)
   Standard_EXPORT void SetSmoothAngle (const Standard_Real theValue);
@@ -84,19 +84,19 @@ public:
                                 const V3d_TypeOfRepresentation theRepresentation) Standard_OVERRIDE;
 
   //! Calls DisplayPosition method.
-  Standard_EXPORT virtual void Position (V3d_Coordinate& theX,
-                                         V3d_Coordinate& theY,
-                                         V3d_Coordinate& theZ) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Position (Standard_Real& theX,
+                                         Standard_Real& theY,
+                                         Standard_Real& theZ) const Standard_OVERRIDE;
 
   //! Returns the chosen position to represent the light source.
-  Standard_EXPORT void DisplayPosition (V3d_Coordinate& theX,
-                                        V3d_Coordinate& theY,
-                                        V3d_Coordinate& theZ) const;
+  Standard_EXPORT void DisplayPosition (Standard_Real& theX,
+                                        Standard_Real& theY,
+                                        Standard_Real& theZ) const;
 
   //! Returns the theVx, theVy, theVz direction of the light source.
-  Standard_EXPORT void Direction (Quantity_Parameter& theVx,
-                                  Quantity_Parameter& theVy,
-                                  Quantity_Parameter& theVz) const;
+  Standard_EXPORT void Direction (Standard_Real& theVx,
+                                  Standard_Real& theVy,
+                                  Standard_Real& theVz) const;
 
   DEFINE_STANDARD_RTTIEXT(V3d_DirectionalLight,V3d_PositionLight)
 

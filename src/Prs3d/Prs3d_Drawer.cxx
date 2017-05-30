@@ -118,7 +118,7 @@ void Prs3d_Drawer::SetTypeOfDeflection (const Aspect_TypeOfDeflection theTypeOfD
 // purpose  :
 // =======================================================================
 
-void Prs3d_Drawer::SetMaximalChordialDeviation (const Quantity_Length theChordialDeviation)
+void Prs3d_Drawer::SetMaximalChordialDeviation (const Standard_Real theChordialDeviation)
 {
   myHasOwnChordialDeviation = Standard_True;
   myChordialDeviation       = theChordialDeviation;

@@ -20,7 +20,6 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <Quantity_Length.hxx>
 #include <Aspect_TypeOfDeflection.hxx>
 #include <Graphic3d_GroupAspect.hxx>
 #include <Graphic3d_PresentationAttributes.hxx>
@@ -76,11 +75,11 @@ public:
   //!   Prs3d_DeflectionCurve
   //!   Prs3d_WFDeflectionSurface
   //!   Prs3d_WFDeflectionRestrictedFace
-  Standard_EXPORT void SetMaximalChordialDeviation (const Quantity_Length theChordialDeviation);
+  Standard_EXPORT void SetMaximalChordialDeviation (const Standard_Real theChordialDeviation);
 
   //! Returns the maximal chordal deviation. The default value is 0.1.
   //! Drawings of curves or patches are made with respect to an absolute maximal chordal deviation.
-  Quantity_Length MaximalChordialDeviation() const
+  Standard_Real MaximalChordialDeviation() const
   {
     return HasOwnMaximalChordialDeviation() || myLink.IsNull()
          ? myChordialDeviation
@@ -855,7 +854,7 @@ protected:
   Standard_Boolean              myHasOwnNbPoints;
   Standard_Real                 myMaximalParameterValue;
   Standard_Boolean              myHasOwnMaximalParameterValue;
-  Quantity_Length               myChordialDeviation;
+  Standard_Real                 myChordialDeviation;
   Standard_Boolean              myHasOwnChordialDeviation;
   Aspect_TypeOfDeflection       myTypeOfDeflection;
   Standard_Boolean              myHasOwnTypeOfDeflection;

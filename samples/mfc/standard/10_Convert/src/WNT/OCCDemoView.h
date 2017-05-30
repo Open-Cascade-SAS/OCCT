@@ -32,13 +32,13 @@ public:
     myView->FitAll();
     myView->ZFitAll();
   };
-  void GetViewAt (V3d_Coordinate& theX, V3d_Coordinate& theY, V3d_Coordinate& theZ) const;
-  void SetViewAt (const V3d_Coordinate theX, const V3d_Coordinate theY, const V3d_Coordinate theZ);
-  void GetViewEye (V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z);
-  void SetViewEye (const V3d_Coordinate X,const V3d_Coordinate Y,const V3d_Coordinate Z);
-  Quantity_Factor GetViewScale();
-  void SetViewScale(const Quantity_Factor Coef);
-  void Translate (const V3d_Coordinate theX, const V3d_Coordinate theY);
+  void GetViewAt (Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const;
+  void SetViewAt (const Standard_Real theX, const Standard_Real theY, const Standard_Real theZ);
+  void GetViewEye (Standard_Real& X, Standard_Real& Y, Standard_Real& Z);
+  void SetViewEye (const Standard_Real X,const Standard_Real Y,const Standard_Real Z);
+  Standard_Real GetViewScale();
+  void SetViewScale(const Standard_Real Coef);
+  void Translate (const Standard_Real theX, const Standard_Real theY);
 
 
 // Operations
@@ -116,7 +116,7 @@ private:
   Standard_Integer     myYmin;  
   Standard_Integer     myXmax;
   Standard_Integer     myYmax;
-  Quantity_Factor      myCurZoom;
+  Standard_Real        myCurZoom;
 
 private:
   enum LineStyle { Solid, Dot, ShortDash, LongDash, Default };

@@ -34,8 +34,8 @@ Prs3d_ArrowAspect::Prs3d_ArrowAspect()
 // function : Prs3d_ArrowAspect
 // purpose  :
 // =======================================================================
-Prs3d_ArrowAspect::Prs3d_ArrowAspect (const Quantity_PlaneAngle theAngle,
-                                      const Quantity_Length theLength)
+Prs3d_ArrowAspect::Prs3d_ArrowAspect (const Standard_Real theAngle,
+                                      const Standard_Real theLength)
 : myArrowAspect (new Graphic3d_AspectLine3d (Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_SOLID, 1.0)),
   myAngle (theAngle),
   myLength(theLength)
@@ -59,7 +59,7 @@ Prs3d_ArrowAspect::Prs3d_ArrowAspect (const Handle(Graphic3d_AspectLine3d)& theA
 // function : SetAngle
 // purpose  :
 // =======================================================================
-void Prs3d_ArrowAspect::SetAngle (const Quantity_PlaneAngle theAngle)
+void Prs3d_ArrowAspect::SetAngle (const Standard_Real theAngle)
 {
   Prs3d_InvalidAngle_Raise_if (theAngle <= 0.0
                             || theAngle >= M_PI / 2.0, "Prs3d_ArrowAspect::SetAngle() - angle out of range");

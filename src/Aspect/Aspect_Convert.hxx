@@ -15,7 +15,7 @@
 #define _Aspect_Convert_HeaderFile
 
 #include <Standard.hxx>
-#include <Quantity_Parameter.hxx>
+#include <Standard_Real.hxx>
 
 //! Auxiliary functions for DCU <-> Pixels conversions.
 namespace Aspect_Convert
@@ -27,16 +27,16 @@ namespace Aspect_Convert
   }
 
   inline void ConvertCoordinates (const Standard_Integer theParentPxSizeX, const Standard_Integer theParentPxSizeY,
-                                  const Quantity_Parameter theQCenterX, const Quantity_Parameter theQCenterY,
-                                  const Quantity_Parameter theQSizeX,   const Quantity_Parameter theQSizeY,
+                                  const Standard_Real theQCenterX, const Standard_Real theQCenterY,
+                                  const Standard_Real theQSizeX,   const Standard_Real theQSizeY,
                                   Standard_Integer& thePxLeft,  Standard_Integer& thePxTop,
                                   Standard_Integer& thePxSizeX, Standard_Integer& thePxSizeY)
   {
-    Quantity_Parameter theParentSizeMin = Min (theParentPxSizeX, theParentPxSizeY);
+    Standard_Real theParentSizeMin = Min (theParentPxSizeX, theParentPxSizeY);
     thePxSizeX = Round (theQSizeX * theParentSizeMin);
     thePxSizeY = Round (theQSizeY * theParentSizeMin);
-    Standard_Integer thePxCenterX = Round(theQCenterX * Quantity_Parameter (theParentPxSizeX));
-    Standard_Integer thePxCenterY = Round((1.0 - theQCenterY) * Quantity_Parameter (theParentPxSizeY));
+    Standard_Integer thePxCenterX = Round(theQCenterX * Standard_Real (theParentPxSizeX));
+    Standard_Integer thePxCenterY = Round((1.0 - theQCenterY) * Standard_Real (theParentPxSizeY));
     thePxLeft = thePxCenterX - thePxSizeX / 2;
     thePxTop  = thePxCenterY - thePxSizeY / 2;
   }
@@ -44,16 +44,16 @@ namespace Aspect_Convert
   inline void ConvertCoordinates (const Standard_Integer theParentPxSizeX, const Standard_Integer theParentPxSizeY,
                                   const Standard_Integer thePxLeft,  const Standard_Integer thePxTop,
                                   const Standard_Integer thePxSizeX, const Standard_Integer thePxSizeY,
-                                  Quantity_Parameter& theQCenterX, Quantity_Parameter& theQCenterY,
-                                  Quantity_Parameter& theQSizeX,   Quantity_Parameter& theQSizeY)
+                                  Standard_Real& theQCenterX, Standard_Real& theQCenterY,
+                                  Standard_Real& theQSizeX,   Standard_Real& theQSizeY)
   {
-    Quantity_Parameter theParentSizeMin = Min (theParentPxSizeX, theParentPxSizeY);
-    theQSizeX = Quantity_Parameter(thePxSizeX) / theParentSizeMin;
-    theQSizeY = Quantity_Parameter(thePxSizeY) / theParentSizeMin;
+    Standard_Real theParentSizeMin = Min (theParentPxSizeX, theParentPxSizeY);
+    theQSizeX = Standard_Real(thePxSizeX) / theParentSizeMin;
+    theQSizeY = Standard_Real(thePxSizeY) / theParentSizeMin;
     Standard_Integer thePxCenterX = thePxLeft + thePxSizeX / 2;
     Standard_Integer thePxCenterY = thePxTop  + thePxSizeY / 2;
-    theQCenterX =       Quantity_Parameter (thePxCenterX) / Quantity_Parameter (theParentPxSizeX);
-    theQCenterY = 1.0 - Quantity_Parameter (thePxCenterY) / Quantity_Parameter (theParentPxSizeY);
+    theQCenterX =       Standard_Real (thePxCenterX) / Standard_Real (theParentPxSizeX);
+    theQCenterY = 1.0 - Standard_Real (thePxCenterY) / Standard_Real (theParentPxSizeY);
   }
 
   inline void FitIn (const Standard_Integer theParentPxSizeX, const Standard_Integer theParentPxSizeY,

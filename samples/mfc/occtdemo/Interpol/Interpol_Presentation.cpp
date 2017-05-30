@@ -18,8 +18,6 @@
 #include <GeomLProp_CLProps.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 
-#include <V3d_Coordinate.hxx>
-
 #ifdef WNT
  #define EOL "\r\n"
 #else

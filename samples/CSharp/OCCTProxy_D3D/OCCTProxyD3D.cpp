@@ -180,7 +180,7 @@ public:
   /// <param name="theZoomFactor">Current zoom</param>
   void Place (int theX, int theY, float theZoomFactor)
   {	
-    Quantity_Factor aZoomFactor = theZoomFactor;
+    Standard_Real aZoomFactor = theZoomFactor;
     if (!myView().IsNull())
     {
       myView()->Place (theX, theY, aZoomFactor);

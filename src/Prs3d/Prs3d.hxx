@@ -22,7 +22,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 #include <Standard_Boolean.hxx>
-#include <Quantity_Length.hxx>
 #include <Standard_Real.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_NListOfSequenceOfPnt.hxx>
@@ -51,7 +50,7 @@ public:
   
   //! draws an arrow at a given location, with respect
   //! to a given direction.
-  Standard_EXPORT static Standard_Boolean MatchSegment (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z, const Quantity_Length aDistance, const gp_Pnt& p1, const gp_Pnt& p2, Quantity_Length& dist);
+  Standard_EXPORT static Standard_Boolean MatchSegment (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const gp_Pnt& p1, const gp_Pnt& p2, Standard_Real& dist);
   
   //! Computes the absolute deflection value depending on
   //! the type of deflection in theDrawer:

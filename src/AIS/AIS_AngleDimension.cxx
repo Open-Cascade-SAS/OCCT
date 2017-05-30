@@ -641,7 +641,7 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
 
   Prs3d_Root::CurrentGroup(thePresentation)->SetPrimitivesAspect (aDimensionAspect->LineAspect()->Aspect());
 
-  Quantity_Length anArrowLength = aDimensionAspect->ArrowAspect()->Length();
+  Standard_Real anArrowLength = aDimensionAspect->ArrowAspect()->Length();
 
   // prepare label string and compute its geometrical width
   Standard_Real aLabelWidth;
@@ -1414,7 +1414,7 @@ void AIS_AngleDimension::FitTextAlignment (const Prs3d_DimensionTextHorizontalPo
 {
   Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
 
-  Quantity_Length anArrowLength = aDimensionAspect->ArrowAspect()->Length();
+  Standard_Real anArrowLength = aDimensionAspect->ArrowAspect()->Length();
 
   // Prepare label string and compute its geometrical width
   Standard_Real aLabelWidth;

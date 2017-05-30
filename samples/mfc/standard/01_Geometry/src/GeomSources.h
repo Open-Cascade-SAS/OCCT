@@ -82,7 +82,7 @@ private:
     DisplayType aDisplayType,
     const TCollection_AsciiString& aString,
     Standard_Boolean UpdateViewer = Standard_True,
-    Quantity_Coefficient Coef = -1);
+    Standard_Real Coef = -1);
   static void DisplayPoint(CGeometryDoc* aDoc,
     const gp_Pnt2d& aPoint,
     const char* aText,

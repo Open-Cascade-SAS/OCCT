@@ -20,39 +20,33 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Quantity_PlaneAngle.hxx>
-#include <Quantity_Length.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard_Boolean.hxx>
 #include <Aspect_GridDrawMode.hxx>
 #include <MMgt_TShared.hxx>
-class Quantity_Color;
-
 
 class Aspect_Grid;
 DEFINE_STANDARD_HANDLE(Aspect_Grid, MMgt_TShared)
-
 
 class Aspect_Grid : public MMgt_TShared
 {
 
 public:
 
-  
   //! defines the x Origin of the grid.
-  Standard_EXPORT void SetXOrigin (const Quantity_Length anOrigin);
+  Standard_EXPORT void SetXOrigin (const Standard_Real anOrigin);
   
   //! defines the y Origin of the grid.
-  Standard_EXPORT void SetYOrigin (const Quantity_Length anOrigin);
+  Standard_EXPORT void SetYOrigin (const Standard_Real anOrigin);
   
   //! defines the orientation of the the grid.
-  Standard_EXPORT void SetRotationAngle (const Quantity_PlaneAngle anAngle);
+  Standard_EXPORT void SetRotationAngle (const Standard_Real anAngle);
   
   //! Rotate the grid from a relative angle.
-  Standard_EXPORT void Rotate (const Quantity_PlaneAngle anAngle);
+  Standard_EXPORT void Rotate (const Standard_Real anAngle);
   
   //! Translate the grid from a relative distance.
-  Standard_EXPORT void Translate (const Quantity_Length aDx, const Quantity_Length aDy);
+  Standard_EXPORT void Translate (const Standard_Real aDx, const Standard_Real aDy);
   
   //! Change the colors of the grid
   Standard_EXPORT virtual void SetColors (const Quantity_Color& aColor, const Quantity_Color& aTenthColor);
@@ -60,10 +54,10 @@ public:
   //! returns the point of the grid the closest to the point X,Y
   //! if the grid is active. If the grid is not active returns
   //! X,Y.
-  Standard_EXPORT void Hit (const Quantity_Length X, const Quantity_Length Y, Quantity_Length& gridX, Quantity_Length& gridY) const;
+  Standard_EXPORT void Hit (const Standard_Real X, const Standard_Real Y, Standard_Real& gridX, Standard_Real& gridY) const;
   
   //! returns the point of the grid the closest to the point X,Y
-  Standard_EXPORT virtual void Compute (const Quantity_Length X, const Quantity_Length Y, Quantity_Length& gridX, Quantity_Length& gridY) const = 0;
+  Standard_EXPORT virtual void Compute (const Standard_Real X, const Standard_Real Y, Standard_Real& gridX, Standard_Real& gridY) const = 0;
   
   //! activates the grid. The Hit method will return
   //! gridx and gridx computed according to the steps
@@ -75,13 +69,13 @@ public:
   Standard_EXPORT void Deactivate();
   
   //! returns the x Origin of the grid.
-  Standard_EXPORT Quantity_Length XOrigin() const;
+  Standard_EXPORT Standard_Real XOrigin() const;
   
   //! returns the x Origin of the grid.
-  Standard_EXPORT Quantity_Length YOrigin() const;
+  Standard_EXPORT Standard_Real YOrigin() const;
   
   //! returns the x Angle of the grid.
-  Standard_EXPORT Quantity_PlaneAngle RotationAngle() const;
+  Standard_EXPORT Standard_Real RotationAngle() const;
   
   //! Returns TRUE when the grid is active.
   Standard_EXPORT Standard_Boolean IsActive() const;
@@ -106,41 +100,28 @@ public:
   
   Standard_EXPORT virtual void Init() = 0;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(Aspect_Grid,MMgt_TShared)
 
 protected:
 
-  
   //! creates a new grid. By default this grid is not
   //! active.
-  Standard_EXPORT Aspect_Grid(const Quantity_Length anXOrigin = 0.0, const Quantity_Length anYOrigin = 0.0, const Quantity_PlaneAngle aRotationAngle = 0, const Quantity_Color& aColor = Quantity_NOC_GRAY50, const Quantity_Color& aTenthColor = Quantity_NOC_GRAY70);
+  Standard_EXPORT Aspect_Grid(const Standard_Real anXOrigin = 0.0, const Standard_Real anYOrigin = 0.0, const Standard_Real aRotationAngle = 0, const Quantity_Color& aColor = Quantity_NOC_GRAY50, const Quantity_Color& aTenthColor = Quantity_NOC_GRAY70);
   
   //! Updates the grid parameters.
   Standard_EXPORT virtual void UpdateDisplay();
 
-  Quantity_PlaneAngle myRotationAngle;
-  Quantity_Length myXOrigin;
-  Quantity_Length myYOrigin;
+  Standard_Real myRotationAngle;
+  Standard_Real myXOrigin;
+  Standard_Real myYOrigin;
   Quantity_Color myColor;
   Quantity_Color myTenthColor;
 
-
 private:
-
 
   Standard_Boolean myIsActive;
   Aspect_GridDrawMode myDrawMode;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Aspect_Grid_HeaderFile

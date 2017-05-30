@@ -65,10 +65,10 @@ public:
   virtual Standard_Boolean DoMapping() const Standard_OVERRIDE { return Standard_True; }
 
   //! Returns window ratio equal to the physical width/height dimensions.
-  virtual Quantity_Ratio Ratio() const Standard_OVERRIDE
+  virtual Standard_Real Ratio() const Standard_OVERRIDE
   {
     return (myWidth != 0 && myHeight != 0)
-         ? Quantity_Ratio(myWidth) / Quantity_Ratio(myHeight)
+         ? Standard_Real(myWidth) / Standard_Real(myHeight)
          : 1.0;
   }
 

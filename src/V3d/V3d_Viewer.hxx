@@ -51,10 +51,6 @@
 #include <V3d_TypeOfVisualization.hxx>
 
 #include <Quantity_Color.hxx>
-#include <Quantity_Length.hxx>
-#include <Quantity_Parameter.hxx>
-#include <Quantity_PlaneAngle.hxx>
-#include <Quantity_TypeOfColor.hxx>
 
 class Aspect_Grid;
 class Graphic3d_AspectMarker3d;
@@ -329,7 +325,7 @@ public: //! @name privileged plane management
 
   Standard_EXPORT void SetPrivilegedPlane (const gp_Ax3& thePlane);
 
-  Standard_EXPORT void DisplayPrivilegedPlane (const Standard_Boolean theOnOff, const Quantity_Length theSize = 1);
+  Standard_EXPORT void DisplayPrivilegedPlane (const Standard_Boolean theOnOff, const Standard_Real theSize = 1);
 
 public: //! @name grid management
 
@@ -368,42 +364,42 @@ public: //! @name grid management
   Standard_EXPORT Aspect_GridDrawMode GridDrawMode() const;
   
   //! Returns the definition of the rectangular grid.
-  Standard_EXPORT void RectangularGridValues (Quantity_Length& XOrigin, Quantity_Length& YOrigin, Quantity_Length& XStep, Quantity_Length& YStep, Quantity_PlaneAngle& RotationAngle) const;
+  Standard_EXPORT void RectangularGridValues (Standard_Real& XOrigin, Standard_Real& YOrigin, Standard_Real& XStep, Standard_Real& YStep, Standard_Real& RotationAngle) const;
   
   //! Sets the definition of the rectangular grid.
   //! <XOrigin>, <YOrigin> defines the origin of the grid.
   //! <XStep> defines the interval between 2 vertical lines.
   //! <YStep> defines the interval between 2 horizontal lines.
   //! <RotationAngle> defines the rotation angle of the grid.
-  Standard_EXPORT void SetRectangularGridValues (const Quantity_Length XOrigin, const Quantity_Length YOrigin, const Quantity_Length XStep, const Quantity_Length YStep, const Quantity_PlaneAngle RotationAngle);
+  Standard_EXPORT void SetRectangularGridValues (const Standard_Real XOrigin, const Standard_Real YOrigin, const Standard_Real XStep, const Standard_Real YStep, const Standard_Real RotationAngle);
   
   //! Returns the definition of the circular grid.
-  Standard_EXPORT void CircularGridValues (Quantity_Length& XOrigin, Quantity_Length& YOrigin, Quantity_Length& RadiusStep, Standard_Integer& DivisionNumber, Quantity_PlaneAngle& RotationAngle) const;
+  Standard_EXPORT void CircularGridValues (Standard_Real& XOrigin, Standard_Real& YOrigin, Standard_Real& RadiusStep, Standard_Integer& DivisionNumber, Standard_Real& RotationAngle) const;
   
   //! Sets the definition of the circular grid.
   //! <XOrigin>, <YOrigin> defines the origin of the grid.
   //! <RadiusStep> defines the interval between 2 circles.
   //! <DivisionNumber> defines the section number of one half circle.
   //! <RotationAngle> defines the rotation angle of the grid.
-  Standard_EXPORT void SetCircularGridValues (const Quantity_Length XOrigin, const Quantity_Length YOrigin, const Quantity_Length RadiusStep, const Standard_Integer DivisionNumber, const Quantity_PlaneAngle RotationAngle);
+  Standard_EXPORT void SetCircularGridValues (const Standard_Real XOrigin, const Standard_Real YOrigin, const Standard_Real RadiusStep, const Standard_Integer DivisionNumber, const Standard_Real RotationAngle);
   
   //! Returns the location and the size of the grid.
-  Standard_EXPORT void CircularGridGraphicValues (Quantity_Length& Radius, Quantity_Length& OffSet) const;
+  Standard_EXPORT void CircularGridGraphicValues (Standard_Real& Radius, Standard_Real& OffSet) const;
   
   //! Sets the location and the size of the grid.
   //! <XSize> defines the width of the grid.
   //! <YSize> defines the height of the grid.
   //! <OffSet> defines the displacement along the plane normal.
-  Standard_EXPORT void SetCircularGridGraphicValues (const Quantity_Length Radius, const Quantity_Length OffSet);
+  Standard_EXPORT void SetCircularGridGraphicValues (const Standard_Real Radius, const Standard_Real OffSet);
   
   //! Returns the location and the size of the grid.
-  Standard_EXPORT void RectangularGridGraphicValues (Quantity_Length& XSize, Quantity_Length& YSize, Quantity_Length& OffSet) const;
+  Standard_EXPORT void RectangularGridGraphicValues (Standard_Real& XSize, Standard_Real& YSize, Standard_Real& OffSet) const;
   
   //! Sets the location and the size of the grid.
   //! <XSize> defines the width of the grid.
   //! <YSize> defines the height of the grid.
   //! <OffSet> defines the displacement along the plane normal.
-  Standard_EXPORT void SetRectangularGridGraphicValues (const Quantity_Length XSize, const Quantity_Length YSize, const Quantity_Length OffSet);
+  Standard_EXPORT void SetRectangularGridGraphicValues (const Standard_Real XSize, const Standard_Real YSize, const Standard_Real OffSet);
   
   //! Display grid echo at requested point in the view.
   Standard_EXPORT void ShowGridEcho (const Handle(V3d_View)& theView, const Graphic3d_Vertex& thePoint);
@@ -417,7 +413,7 @@ public: //! @name deprecated methods
   Standard_EXPORT V3d_Viewer (const Handle(Graphic3d_GraphicDriver)& theDriver,
                               const Standard_ExtString theName,
                               const Standard_CString theDomain = "",
-                              const Quantity_Length theViewSize = 1000.0,
+                              const Standard_Real theViewSize = 1000.0,
                               const V3d_TypeOfOrientation theViewProj = V3d_XposYnegZpos,
                               const Quantity_Color& theViewBackground = Quantity_NOC_GRAY30,
                               const V3d_TypeOfVisualization theVisualization = V3d_ZBUFFER,
@@ -430,9 +426,9 @@ public: //! @name deprecated methods
   //! definition and the three component values.
   Standard_DEPRECATED("This method is deprecated - SetDefaultBackgroundColor() taking Quantity_Color should be used instead")
   void SetDefaultBackgroundColor (const Quantity_TypeOfColor theType,
-                                  const Quantity_Parameter theV1,
-                                  const Quantity_Parameter theV2,
-                                  const Quantity_Parameter theV3)
+                                  const Standard_Real theV1,
+                                  const Standard_Real theV2,
+                                  const Standard_Real theV3)
   {
     Standard_Real aV1 = theV1;
     Standard_Real aV2 = theV2;
@@ -444,7 +440,7 @@ public: //! @name deprecated methods
   }
 
   Standard_DEPRECATED("This method is deprecated - DefaultBackgroundColor() without arguments should be used instead")
-  void DefaultBackgroundColor (const Quantity_TypeOfColor theType, Quantity_Parameter& theV1, Quantity_Parameter& theV2, Quantity_Parameter& theV3) const
+  void DefaultBackgroundColor (const Quantity_TypeOfColor theType, Standard_Real& theV1, Standard_Real& theV2, Standard_Real& theV3) const
   {
     Quantity_Color aColor = DefaultBackgroundColor();
     aColor.Values (theV1, theV2, theV3, theType) ;
@@ -496,7 +492,7 @@ private:
   gp_Ax3 myPrivilegedPlane;
   Handle(Graphic3d_Structure) myPlaneStructure;
   Standard_Boolean myDisplayPlane;
-  Quantity_Length myDisplayPlaneLength;
+  Standard_Real myDisplayPlaneLength;
 
   Handle(V3d_RectangularGrid) myRGrid;
   Handle(V3d_CircularGrid) myCGrid;

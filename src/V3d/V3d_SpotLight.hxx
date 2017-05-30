@@ -43,15 +43,15 @@ public:
   //! If one of the coefficients is not between 0 and 1.
   //! If the lighting angle is <= 0 or > PI.
   Standard_EXPORT V3d_SpotLight (const Handle(V3d_Viewer)& theViewer,
-                                 const V3d_Coordinate theX,
-                                 const V3d_Coordinate theY,
-                                 const V3d_Coordinate theZ,
+                                 const Standard_Real theX,
+                                 const Standard_Real theY,
+                                 const Standard_Real theZ,
                                  const V3d_TypeOfOrientation theDirection = V3d_XnegYnegZpos,
                                  const Quantity_Color& theColor = Quantity_NOC_WHITE,
-                                 const Quantity_Coefficient theConstAttenuation = 1.0,
-                                 const Quantity_Coefficient theLinearAttenuation = 0.0,
-                                 const Quantity_Coefficient theConcentration = 1.0,
-                                 const Quantity_PlaneAngle theAngle = 0.523599);
+                                 const Standard_Real theConstAttenuation = 1.0,
+                                 const Standard_Real theLinearAttenuation = 0.0,
+                                 const Standard_Real theConcentration = 1.0,
+                                 const Standard_Real theAngle = 0.523599);
   
   //! Creates a light source of the Spot type in the viewer.
   //! theXt, theYt, theZt : Coordinate of light source Target.
@@ -61,28 +61,28 @@ public:
   //! If one of the coefficients is not between 0 and 1.
   //! If the lighting angle is <= 0 or > PI.
   Standard_EXPORT V3d_SpotLight (const Handle(V3d_Viewer)& theViewer,
-                                 const V3d_Coordinate theXt,
-                                 const V3d_Coordinate theYt,
-                                 const V3d_Coordinate theZt,
-                                 const V3d_Coordinate theXp,
-                                 const V3d_Coordinate theYp,
-                                 const V3d_Coordinate theZp,
+                                 const Standard_Real theXt,
+                                 const Standard_Real theYt,
+                                 const Standard_Real theZt,
+                                 const Standard_Real theXp,
+                                 const Standard_Real theYp,
+                                 const Standard_Real theZp,
                                  const Quantity_Color& theColor = Quantity_NOC_WHITE,
-                                 const Quantity_Coefficient theConstAttenuation = 1.0,
-                                 const Quantity_Coefficient theLinearAttenuation = 0.0,
-                                 const Quantity_Coefficient theConcentration = 1.0,
-                                 const Quantity_PlaneAngle theAngle = 0.523599);
+                                 const Standard_Real theConstAttenuation = 1.0,
+                                 const Standard_Real theLinearAttenuation = 0.0,
+                                 const Standard_Real theConcentration = 1.0,
+                                 const Standard_Real theAngle = 0.523599);
 
   //! Defines the position of the light source.
-  Standard_EXPORT virtual void SetPosition (const V3d_Coordinate theX,
-                                            const V3d_Coordinate theY,
-                                            const V3d_Coordinate theZ) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetPosition (const Standard_Real theX,
+                                            const Standard_Real theY,
+                                            const Standard_Real theZ) Standard_OVERRIDE;
 
   //! Defines the direction of the light source.
   //! If the normal vector is NULL.
-  Standard_EXPORT void SetDirection (const Quantity_Parameter theVx,
-                                     const Quantity_Parameter theVy,
-                                     const Quantity_Parameter theVz);
+  Standard_EXPORT void SetDirection (const Standard_Real theVx,
+                                     const Standard_Real theVy,
+                                     const Standard_Real theVz);
 
   //! Defines the direction of the light source
   //! according to a predefined directional vector.
@@ -91,17 +91,17 @@ public:
   //! Defines the coefficients of attenuation.
   //! Warning! raises BadValue from V3d
   //! if one of the coefficient is < 0 or > 1.
-  Standard_EXPORT void SetAttenuation (const Quantity_Coefficient theConstAttenuation,
-                                       const Quantity_Coefficient theLinearAttenuation);
+  Standard_EXPORT void SetAttenuation (const Standard_Real theConstAttenuation,
+                                       const Standard_Real theLinearAttenuation);
 
   //! Defines the coefficient of concentration.
   //! if the coefficient is < 0 or > 1.
-  Standard_EXPORT void SetConcentration (const Quantity_Coefficient theConcentration);
+  Standard_EXPORT void SetConcentration (const Standard_Real theConcentration);
 
   //! Defines the spot angle in RADIANS.
   //! Warning: raises BadValue from from V3d
   //! If the angle is <= 0 or > PI.
-  Standard_EXPORT void SetAngle (const Quantity_PlaneAngle theAngle);
+  Standard_EXPORT void SetAngle (const Standard_Real theAngle);
 
   //! Display the graphic structure of light source
   //! in the chosen view. We have three type of representation
@@ -117,23 +117,23 @@ public:
                                 const V3d_TypeOfRepresentation theRepresentation) Standard_OVERRIDE;
 
   //! Returns the direction of the light source defined by theVx, theVy, theVz.
-  Standard_EXPORT void Direction (Quantity_Parameter& theVx,
-                                  Quantity_Parameter& theVy,
-                                  Quantity_Parameter& theVz) const;
+  Standard_EXPORT void Direction (Standard_Real& theVx,
+                                  Standard_Real& theVy,
+                                  Standard_Real& theVz) const;
 
   //! Returns the position of the light source.
-  Standard_EXPORT void Position (V3d_Coordinate& theX,
-                                 V3d_Coordinate& theY,
-                                 V3d_Coordinate& theZ) const Standard_OVERRIDE;
+  Standard_EXPORT void Position (Standard_Real& theX,
+                                 Standard_Real& theY,
+                                 Standard_Real& theZ) const Standard_OVERRIDE;
 
   //! Returns the attenuation factors A1,A2 of the light source.
-  Standard_EXPORT void Attenuation (Quantity_Coefficient& theConstAttentuation,
-                                    Quantity_Coefficient& theLinearAttentuation) const;
+  Standard_EXPORT void Attenuation (Standard_Real& theConstAttentuation,
+                                    Standard_Real& theLinearAttentuation) const;
 
-  Standard_EXPORT Quantity_Coefficient Concentration() const;
+  Standard_EXPORT Standard_Real Concentration() const;
 
   //! Returns the spot angle.
-  Standard_EXPORT Quantity_PlaneAngle Angle() const;
+  Standard_EXPORT Standard_Real Angle() const;
 
   DEFINE_STANDARD_RTTIEXT(V3d_SpotLight,V3d_PositionLight)
 

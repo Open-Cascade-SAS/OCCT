@@ -4,8 +4,6 @@
 #include <Standard_Macro.hxx>
 #include <Standard_DefineHandle.hxx>
 
-
-#include <Quantity_Length.hxx>
 #include <Aspect_TypeOfline.hxx>
 #include <Aspect_WidthOfline.hxx>
 #include <Standard_Integer.hxx>

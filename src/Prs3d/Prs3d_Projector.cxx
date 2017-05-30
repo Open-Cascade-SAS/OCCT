@@ -29,16 +29,16 @@ Prs3d_Projector::Prs3d_Projector (const HLRAlgo_Projector& HLPr): MyProjector(HL
 
 
 Prs3d_Projector::Prs3d_Projector (const Standard_Boolean Pers,
-				const Quantity_Length Focus,
-			        const Quantity_Length DX,
-			        const Quantity_Length DY,
-			        const Quantity_Length DZ,
-			        const Quantity_Length XAt,
-			        const Quantity_Length YAt,
-			        const Quantity_Length ZAt,
-			        const Quantity_Length XUp,
-			        const Quantity_Length YUp,
-			        const Quantity_Length ZUp) 
+				const Standard_Real Focus,
+			        const Standard_Real DX,
+			        const Standard_Real DY,
+			        const Standard_Real DZ,
+			        const Standard_Real XAt,
+			        const Standard_Real YAt,
+			        const Standard_Real ZAt,
+			        const Standard_Real XUp,
+			        const Standard_Real YUp,
+			        const Standard_Real ZUp) 
 {
   gp_Pnt At (XAt,YAt,ZAt);
   gp_Dir Zpers (DX,DY,DZ);

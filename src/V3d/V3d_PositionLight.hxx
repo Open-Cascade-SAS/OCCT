@@ -18,8 +18,6 @@
 #define _V3d_PositionLight_HeaderFile
 
 #include <Graphic3d_Vertex.hxx>
-#include <Quantity_Parameter.hxx>
-#include <V3d_Coordinate.hxx>
 #include <V3d_Light.hxx>
 #include <V3d_TypeOfPickLight.hxx>
 #include <V3d_TypeOfRepresentation.hxx>
@@ -35,17 +33,17 @@ class V3d_PositionLight : public V3d_Light
 public:
 
   //! Defines the position of the light source. Should be redefined!
-  Standard_EXPORT virtual void SetPosition (const V3d_Coordinate theX,
-                                            const V3d_Coordinate theY,
-                                            const V3d_Coordinate theZ) = 0;
+  Standard_EXPORT virtual void SetPosition (const Standard_Real theX,
+                                            const Standard_Real theY,
+                                            const Standard_Real theZ) = 0;
 
   //! Defines the target of the light (the center of the sphere).
-  Standard_EXPORT void SetTarget (const V3d_Coordinate theX,
-                                  const V3d_Coordinate theY,
-                                  const V3d_Coordinate theZ);
+  Standard_EXPORT void SetTarget (const Standard_Real theX,
+                                  const Standard_Real theY,
+                                  const Standard_Real theZ);
 
   //! Define the radius.
-  Standard_EXPORT void SetRadius (const Quantity_Parameter theRadius);
+  Standard_EXPORT void SetRadius (const Standard_Real theRadius);
 
   //! Calculate the position of the light, on the hide face of the picking sphere.
   Standard_EXPORT void OnHideFace (const Handle(V3d_View)& theView);
@@ -80,7 +78,7 @@ public:
   Standard_EXPORT void Erase();
 
   //! Returns the radius of the picking sphere.
-  Standard_EXPORT Quantity_Parameter Radius() const;
+  Standard_EXPORT Standard_Real Radius() const;
 
   //! Returns the visibility status
   //! If True the source is visible.
@@ -88,14 +86,14 @@ public:
   Standard_EXPORT Standard_Boolean SeeOrHide (const Handle(V3d_View)& theView) const;
 
   //! Returns the position of the light source.
-  Standard_EXPORT virtual void Position (V3d_Coordinate& theX,
-                                         V3d_Coordinate& theY,
-                                         V3d_Coordinate& theZ) const = 0;
+  Standard_EXPORT virtual void Position (Standard_Real& theX,
+                                         Standard_Real& theY,
+                                         Standard_Real& theZ) const = 0;
 
   //! Returns the position of the target of the light source.
-  Standard_EXPORT void Target (V3d_Coordinate& theX,
-                               V3d_Coordinate& theY,
-                               V3d_Coordinate& theZ) const;
+  Standard_EXPORT void Target (Standard_Real& theX,
+                               Standard_Real& theY,
+                               Standard_Real& theZ) const;
 
   DEFINE_STANDARD_RTTIEXT(V3d_PositionLight,V3d_Light)
 

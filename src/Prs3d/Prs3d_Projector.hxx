@@ -23,9 +23,6 @@
 #include <HLRAlgo_Projector.hxx>
 #include <MMgt_TShared.hxx>
 #include <Standard_Boolean.hxx>
-#include <Quantity_Length.hxx>
-class HLRAlgo_Projector;
-
 
 class Prs3d_Projector;
 DEFINE_STANDARD_HANDLE(Prs3d_Projector, MMgt_TShared)
@@ -51,33 +48,17 @@ public:
   //! -   XAt, YAt and ZAt are the coordinates of the view point;
   //! -   XUp, YUp and ZUp are the coordinates of the
   //! vertical direction vector.
-  Standard_EXPORT Prs3d_Projector(const Standard_Boolean Pers, const Quantity_Length Focus, const Quantity_Length DX, const Quantity_Length DY, const Quantity_Length DZ, const Quantity_Length XAt, const Quantity_Length YAt, const Quantity_Length ZAt, const Quantity_Length XUp, const Quantity_Length YUp, const Quantity_Length ZUp);
+  Standard_EXPORT Prs3d_Projector(const Standard_Boolean Pers, const Standard_Real Focus, const Standard_Real DX, const Standard_Real DY, const Standard_Real DZ, const Standard_Real XAt, const Standard_Real YAt, const Standard_Real ZAt, const Standard_Real XUp, const Standard_Real YUp, const Standard_Real ZUp);
   
   //! Returns a projector object for use in a hidden line removal algorithm.
   Standard_EXPORT HLRAlgo_Projector Projector() const;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(Prs3d_Projector,MMgt_TShared)
-
-protected:
-
-
-
 
 private:
 
-
   HLRAlgo_Projector MyProjector;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Prs3d_Projector_HeaderFile

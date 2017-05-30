@@ -376,8 +376,8 @@ void AIS_Dimension::DrawArrow (const Handle(Prs3d_Presentation)& thePresentation
 {
   Handle(Graphic3d_Group) aGroup = Prs3d_Root::NewGroup (thePresentation);
 
-  Quantity_Length aLength = myDrawer->DimensionAspect()->ArrowAspect()->Length();
-  Standard_Real   anAngle = myDrawer->DimensionAspect()->ArrowAspect()->Angle();
+  Standard_Real aLength = myDrawer->DimensionAspect()->ArrowAspect()->Length();
+  Standard_Real anAngle = myDrawer->DimensionAspect()->ArrowAspect()->Angle();
 
   if (myDrawer->DimensionAspect()->IsArrows3d())
   {
@@ -662,8 +662,8 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
   Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
 
   // For extensions we need to know arrow size, text size and extension size: get it from aspect
-  Quantity_Length anArrowLength   = aDimensionAspect->ArrowAspect()->Length();
-  Standard_Real   anExtensionSize = aDimensionAspect->ExtensionSize();
+  Standard_Real anArrowLength   = aDimensionAspect->ArrowAspect()->Length();
+  Standard_Real anExtensionSize = aDimensionAspect->ExtensionSize();
   // prepare label string and compute its geometrical width
   Standard_Real aLabelWidth;
   TCollection_ExtendedString aLabelString = GetValueString (aLabelWidth);
@@ -1308,8 +1308,8 @@ void AIS_Dimension::ComputeSelection (const Handle(SelectMgr_Selection)& theSele
       aGroupOfSensitives->Add (new Select3D_SensitiveCurve (aSensitiveOwner, aSensitivePnts));
     }
 
-    Quantity_Length anArrowLength = myDrawer->DimensionAspect()->ArrowAspect()->Length();
-    Standard_Real   anArrowAngle  = myDrawer->DimensionAspect()->ArrowAspect()->Angle();
+    Standard_Real anArrowLength = myDrawer->DimensionAspect()->ArrowAspect()->Length();
+    Standard_Real anArrowAngle  = myDrawer->DimensionAspect()->ArrowAspect()->Angle();
 
     // sensitives for arrows
     SelectionGeometry::SeqOfArrows::Iterator anArrowIt (mySelectionGeom.Arrows);
@@ -1610,7 +1610,7 @@ void AIS_Dimension::FitTextAlignmentForLinear (const gp_Pnt& theFirstPoint,
   Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
 
   // For extensions we need to know arrow size, text size and extension size: get it from aspect
-  Quantity_Length anArrowLength = aDimensionAspect->ArrowAspect()->Length();
+  Standard_Real anArrowLength = aDimensionAspect->ArrowAspect()->Length();
 
   // prepare label string and compute its geometrical width
   Standard_Real aLabelWidth;

@@ -90,7 +90,7 @@ Handle(TColStd_HArray1OfByte) Graphic3d_MarkerImage::GetBitMapArray (const Stand
   {
     for (Standard_Integer aColumn = 0; aColumn < aWidth; aColumn++)
     {
-      Quantity_Parameter anAlphaValue;
+      Standard_Real anAlphaValue;
       Quantity_Color aColor = myImage->PixelColor (aColumn, aRow, anAlphaValue);
       Standard_Boolean aBitOn = Standard_False;
 
@@ -179,7 +179,7 @@ const Handle(Image_PixMap)& Graphic3d_MarkerImage::GetImageAlpha()
       myImageAlpha = new Image_PixMap();
       myImageAlpha->InitZero (Image_Format_Alpha, myImage->Width(), myImage->Height());
       myImageAlpha->SetTopDown (Standard_False);
-      Quantity_Parameter anAlpha;
+      Standard_Real anAlpha;
       for (Standard_Size aRowIter = 0; aRowIter < myImage->Height(); aRowIter++)
       {
         Standard_Byte* anImageRow = myImageAlpha->ChangeRow (aRowIter);

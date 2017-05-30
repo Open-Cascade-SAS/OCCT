@@ -103,7 +103,7 @@ void StdPrs_WFDeflectionRestrictedFace::Add
    const Handle(BRepAdaptor_HSurface)& aFace,
    const Standard_Boolean DrawUIso,
    const Standard_Boolean DrawVIso,
-   const Quantity_Length Deflection,
+   const Standard_Real Deflection,
    const Standard_Integer NBUiso,
    const Standard_Integer NBViso,
    const Handle(Prs3d_Drawer)& aDrawer,
@@ -361,15 +361,15 @@ void StdPrs_WFDeflectionRestrictedFace::Add
 // purpose
 //=========================================================================
 Standard_Boolean StdPrs_WFDeflectionRestrictedFace::Match
-  (const Quantity_Length X,
-   const Quantity_Length Y,
-   const Quantity_Length Z,
-   const Quantity_Length aDistance,
+  (const Standard_Real X,
+   const Standard_Real Y,
+   const Standard_Real Z,
+   const Standard_Real aDistance,
    const Handle(BRepAdaptor_HSurface)& aFace,
    const Handle(Prs3d_Drawer)& aDrawer,
    const Standard_Boolean DrawUIso,
    const Standard_Boolean DrawVIso,
-   const Quantity_Length Deflection,
+   const Standard_Real Deflection,
    const Standard_Integer NBUiso,
    const Standard_Integer NBViso)
 {
@@ -567,10 +567,10 @@ void StdPrs_WFDeflectionRestrictedFace::AddVIso
 // purpose
 //=========================================================================
 Standard_Boolean StdPrs_WFDeflectionRestrictedFace::Match
-  (const Quantity_Length X,
-   const Quantity_Length Y,
-   const Quantity_Length Z,
-   const Quantity_Length aDistance,
+  (const Standard_Real X,
+   const Standard_Real Y,
+   const Standard_Real Z,
+   const Standard_Real aDistance,
    const Handle(BRepAdaptor_HSurface)& aFace,
    const Handle (Prs3d_Drawer)& aDrawer)
 {
@@ -591,10 +591,10 @@ Standard_Boolean StdPrs_WFDeflectionRestrictedFace::Match
 // purpose
 //=========================================================================
 Standard_Boolean StdPrs_WFDeflectionRestrictedFace::MatchUIso
-  (const Quantity_Length X,
-   const Quantity_Length Y,
-   const Quantity_Length Z,
-   const Quantity_Length aDistance,
+  (const Standard_Real X,
+   const Standard_Real Y,
+   const Standard_Real Z,
+   const Standard_Real aDistance,
    const Handle(BRepAdaptor_HSurface)& aFace,
    const Handle (Prs3d_Drawer)& aDrawer)
 {
@@ -615,10 +615,10 @@ Standard_Boolean StdPrs_WFDeflectionRestrictedFace::MatchUIso
 // purpose
 //=========================================================================
 Standard_Boolean StdPrs_WFDeflectionRestrictedFace::MatchVIso
-  (const Quantity_Length X,
-   const Quantity_Length Y,
-   const Quantity_Length Z,
-   const Quantity_Length aDistance,
+  (const Standard_Real X,
+   const Standard_Real Y,
+   const Standard_Real Z,
+   const Standard_Real aDistance,
    const Handle(BRepAdaptor_HSurface)& aFace,
    const Handle (Prs3d_Drawer)& aDrawer)
 {

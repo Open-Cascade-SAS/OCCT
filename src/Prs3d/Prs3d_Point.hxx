@@ -14,14 +14,12 @@
 #ifndef _Prs3d_Point_H__
 #define _Prs3d_Point_H__
 
-
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_Root.hxx>
-#include <Quantity_Length.hxx>
 
 template <class AnyPoint, class PointTool>
 class Prs3d_Point : Prs3d_Root
@@ -34,7 +32,7 @@ private:
                  (const AnyPoint& thePoint,
                   const Handle(Graphic3d_Group) theGroup)
   {
-    Quantity_Length aX,aY,aZ;
+    Standard_Real aX,aY,aZ;
     PointTool::Coord(thePoint,aX,aY,aZ);
     Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
     anArrayOfPoints->AddVertex (aX, aY, aZ);
@@ -54,15 +52,16 @@ public:
 
   Standard_EXPORT static Standard_Boolean Match
                   (const AnyPoint& thePoint,
-                  const Quantity_Length theX,
-                  const Quantity_Length theY,
-                  const Quantity_Length theZ,
-                  const Quantity_Length theDistance)
+                  const Standard_Real theX,
+                  const Standard_Real theY,
+                  const Standard_Real theZ,
+                  const Standard_Real theDistance)
   {
-    Quantity_Length aX,aY,aZ;
+    Standard_Real aX,aY,aZ;
     PointTool::Coord(thePoint, aX, aY, aZ);
     return Sqrt((theX - aX)*(theX - aX) + (theY - aY)*(theY - aY)
                  + (theZ - aZ)*(theZ - aZ)) <= theDistance;
   }
 };
+
 #endif

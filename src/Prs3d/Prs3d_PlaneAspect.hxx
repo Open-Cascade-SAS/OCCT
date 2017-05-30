@@ -17,8 +17,6 @@
 #ifndef _Prs3d_PlaneAspect_HeaderFile
 #define _Prs3d_PlaneAspect_HeaderFile
 
-#include <Quantity_Length.hxx>
-#include <Quantity_PlaneAngle.hxx>
 #include <Prs3d_LineAspect.hxx>
 
 //! A framework to define the display of planes.
@@ -39,24 +37,24 @@ public:
   //! Returns the settings for displaying an arrow.
   const Handle(Prs3d_LineAspect)& ArrowAspect() const { return myArrowAspect; }
   
-  void SetArrowsLength (const Quantity_Length theLength) { myArrowsLength = theLength; }
+  void SetArrowsLength (const Standard_Real theLength) { myArrowsLength = theLength; }
   
   //! Returns the length of the arrow shaft used in the display of arrows.
-  Quantity_Length ArrowsLength() const { return myArrowsLength; }
+  Standard_Real ArrowsLength() const { return myArrowsLength; }
   
   //! Sets the angle of the arrowhead used in the display of planes.
-  void SetArrowsSize (const Quantity_Length theSize) { myArrowsSize = theSize; }
+  void SetArrowsSize (const Standard_Real theSize) { myArrowsSize = theSize; }
   
   //! Returns the size of arrows used in the display of planes.
-  Quantity_Length ArrowsSize() const { return myArrowsSize; }
+  Standard_Real ArrowsSize() const { return myArrowsSize; }
 
   //! Sets the angle of the arrowhead used in the display
   //! of arrows involved in the presentation of planes.
-  void SetArrowsAngle (const Quantity_PlaneAngle theAngle) { myArrowsAngle = theAngle; }
+  void SetArrowsAngle (const Standard_Real theAngle) { myArrowsAngle = theAngle; }
   
   //! Returns the angle of the arrowhead used in the
   //! display of arrows involved in the presentation of planes.
-  Quantity_PlaneAngle ArrowsAngle() const { return myArrowsAngle; }
+  Standard_Real ArrowsAngle() const { return myArrowsAngle; }
   
   //! Sets the display attributes defined in DisplayCenterArrow to active.
   void SetDisplayCenterArrow (const Standard_Boolean theToDraw) { myDrawCenterArrow = theToDraw; }
@@ -80,35 +78,35 @@ public:
   //! Returns true if the display of isoparameters is allowed.
   Standard_Boolean DisplayIso() const { return myDrawIso; }
   
-  void SetPlaneLength (const Quantity_Length theLX, const Quantity_Length theLY)
+  void SetPlaneLength (const Standard_Real theLX, const Standard_Real theLY)
   {
     myPlaneXLength = theLX;
     myPlaneYLength = theLY;
   }
   
   //! Returns the length of the x axis used in the display of planes.
-  Quantity_Length PlaneXLength() const { return myPlaneXLength; }
+  Standard_Real PlaneXLength() const { return myPlaneXLength; }
   
   //! Returns the length of the y axis used in the display of planes.
-  Quantity_Length PlaneYLength() const { return myPlaneYLength; }
+  Standard_Real PlaneYLength() const { return myPlaneYLength; }
   
   //! Sets the distance L between isoparameters used in the display of planes.
-  void SetIsoDistance (const Quantity_Length theL) { myIsoDistance = theL; }
+  void SetIsoDistance (const Standard_Real theL) { myIsoDistance = theL; }
   
   //! Returns the distance between isoparameters used in the display of planes.
-  Quantity_Length IsoDistance() const { return myIsoDistance; }
+  Standard_Real IsoDistance() const { return myIsoDistance; }
 
 protected:
 
   Handle(Prs3d_LineAspect) myEdgesAspect;
   Handle(Prs3d_LineAspect) myIsoAspect;
   Handle(Prs3d_LineAspect) myArrowAspect;
-  Quantity_Length myArrowsLength;
-  Quantity_Length myArrowsSize;
-  Quantity_PlaneAngle myArrowsAngle;
-  Quantity_Length myPlaneXLength;
-  Quantity_Length myPlaneYLength;
-  Quantity_Length myIsoDistance;
+  Standard_Real    myArrowsLength;
+  Standard_Real    myArrowsSize;
+  Standard_Real    myArrowsAngle;
+  Standard_Real    myPlaneXLength;
+  Standard_Real    myPlaneYLength;
+  Standard_Real    myIsoDistance;
   Standard_Boolean myDrawCenterArrow;
   Standard_Boolean myDrawEdgesArrows;
   Standard_Boolean myDrawEdges;

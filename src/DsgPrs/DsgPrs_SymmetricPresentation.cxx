@@ -119,7 +119,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   gp_Pnt PointMin = ElCLib::Value(parmin,L3);
   gp_Pnt PointMax = ElCLib::Value(parmax,L3);
 
-  Quantity_Length X,Y,Z;
+  Standard_Real X,Y,Z;
   Standard_Real D1(aAxis.Distance(AttachmentPoint1)),coeff(.5);
   gp_Pnt pint,Pj_P1,P1Previous = P1;
   

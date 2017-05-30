@@ -9,7 +9,6 @@
 #include "OCCDemoView.h"
 
 #include <Standard_ErrorHandler.hxx>
-#include <V3d_Coordinate.hxx>
 
 #ifdef _DEBUG
 #undef THIS_FILE

@@ -22,8 +22,6 @@
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
 #include <Prs3d_BasicAspect.hxx>
-#include <Quantity_Length.hxx>
-#include <Quantity_PlaneAngle.hxx>
 
 //! Defines the attributes when displaying a text.
 class Prs3d_TextAspect : public Prs3d_BasicAspect
@@ -46,19 +44,19 @@ public:
   void SetHeightWidthRatio (const Standard_Real theRatio) { myTextAspect->SetExpansionFactor (theRatio); }
 
   //! Sets the length of the box which text will occupy.
-  void SetSpace (const Quantity_Length theSpace) { myTextAspect->SetSpace (theSpace); }
+  void SetSpace (const Standard_Real theSpace) { myTextAspect->SetSpace (theSpace); }
   
   //! Sets the height of the text.
   void SetHeight (const Standard_Real theHeight) { myHeight = theHeight; }
   
   //! Sets the angle
-  void SetAngle (const Quantity_PlaneAngle theAngle) { myAngle = theAngle; }
+  void SetAngle (const Standard_Real theAngle) { myAngle = theAngle; }
   
   //! Returns the height of the text box.
   Standard_Real Height() const { return myHeight; }
   
   //! Returns the angle
-  Quantity_PlaneAngle Angle() const { return myAngle; }
+  Standard_Real Angle() const { return myAngle; }
   
   //! Sets horizontal alignment of text.
   void SetHorizontalJustification (const Graphic3d_HorizontalTextAlignment theJustification) { myHorizontalJustification = theJustification; }
@@ -108,7 +106,7 @@ public:
 protected:
 
   Handle(Graphic3d_AspectText3d) myTextAspect;
-  Quantity_PlaneAngle myAngle;
+  Standard_Real myAngle;
   Standard_Real myHeight;
   Graphic3d_HorizontalTextAlignment myHorizontalJustification;
   Graphic3d_VerticalTextAlignment myVerticalJustification;

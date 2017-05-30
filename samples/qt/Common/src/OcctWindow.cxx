@@ -139,10 +139,10 @@ Aspect_TypeOfResize OcctWindow::DoResize() const
 // function : Ratio
 // purpose  :
 // =======================================================================
-Quantity_Ratio OcctWindow::Ratio() const
+Standard_Real OcctWindow::Ratio() const
 {
   QRect aRect = myWidget->rect();
-  return Quantity_Ratio( aRect.right() - aRect.left() ) / Quantity_Ratio( aRect.bottom() - aRect.top() );
+  return Standard_Real( aRect.right() - aRect.left() ) / Standard_Real( aRect.bottom() - aRect.top() );
 }
 
 // =======================================================================

@@ -79,10 +79,10 @@ void StdPrs_PoleCurve::Add (const Handle (Prs3d_Presentation)& aPresentation,
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean StdPrs_PoleCurve::Match(const Quantity_Length        X,
-					 const Quantity_Length        Y,
-					 const Quantity_Length        Z,
-					 const Quantity_Length        aDistance,
+Standard_Boolean StdPrs_PoleCurve::Match(const Standard_Real        X,
+					 const Standard_Real        Y,
+					 const Standard_Real        Z,
+					 const Standard_Real        aDistance,
 					 const Adaptor3d_Curve&         aCurve,
 					 const Handle (Prs3d_Drawer)& /*aDrawer*/) 
 {
@@ -116,10 +116,10 @@ Standard_Boolean StdPrs_PoleCurve::Match(const Quantity_Length        X,
 //=======================================================================
 
 Standard_Integer StdPrs_PoleCurve::Pick
-             (const Quantity_Length       X,
-	      const Quantity_Length       Y,
-	      const Quantity_Length       Z,
-	      const Quantity_Length       aDistance,
+             (const Standard_Real       X,
+	      const Standard_Real       Y,
+	      const Standard_Real       Z,
+	      const Standard_Real       aDistance,
 	      const Adaptor3d_Curve&        aCurve,
 	      const Handle(Prs3d_Drawer)& /*aDrawer*/) 
 {

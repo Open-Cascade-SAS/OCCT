@@ -21,10 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Quantity_Length.hxx>
 class TopoDS_Vertex;
-
-
 
 class StdPrs_ToolVertex 
 {
@@ -32,30 +29,8 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT static void Coord (const TopoDS_Vertex& aPoint, Quantity_Length& X, Quantity_Length& Y, Quantity_Length& Z);
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
+  Standard_EXPORT static void Coord (const TopoDS_Vertex& aPoint, Standard_Real& X, Standard_Real& Y, Standard_Real& Z);
 
 };
-
-
-
-
-
-
 
 #endif // _StdPrs_ToolVertex_HeaderFile

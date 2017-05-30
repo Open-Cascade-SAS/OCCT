@@ -546,32 +546,32 @@ void COCCDemoView::OnUpdateBUTTONHlrOn(CCmdUI* pCmdUI)
 	pCmdUI->Enable   (myVisMode != VIS_HLR);	
 }
 
-void COCCDemoView::GetViewAt (V3d_Coordinate& theX, V3d_Coordinate& theY, V3d_Coordinate& theZ) const
+void COCCDemoView::GetViewAt (Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const
 {
   myView->At (theX, theY, theZ);
 }
 
-void COCCDemoView::SetViewAt (const V3d_Coordinate theX, const V3d_Coordinate theY, const V3d_Coordinate theZ)
+void COCCDemoView::SetViewAt (const Standard_Real theX, const Standard_Real theY, const Standard_Real theZ)
 {
   myView->SetAt (theX, theY, theZ);
 }
 
-void COCCDemoView::GetViewEye(V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z)
+void COCCDemoView::GetViewEye(Standard_Real& X, Standard_Real& Y, Standard_Real& Z)
 {
 	myView->Eye(X,Y,Z);
 }
 
-void COCCDemoView::SetViewEye(V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z)
+void COCCDemoView::SetViewEye(Standard_Real X, Standard_Real Y, Standard_Real Z)
 {
 	myView->SetEye(X,Y,Z);
 }
 
-Quantity_Factor COCCDemoView::GetViewScale()
+Standard_Real COCCDemoView::GetViewScale()
 {
 	return myView->Scale();
 }
 
-void COCCDemoView::SetViewScale(Quantity_Factor Coef)
+void COCCDemoView::SetViewScale(Standard_Real Coef)
 {
 	myView->SetScale(Coef);
 }

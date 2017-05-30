@@ -23,11 +23,11 @@
 IMPLEMENT_STANDARD_RTTIEXT(Aspect_CircularGrid,Aspect_Grid)
 
 Aspect_CircularGrid::Aspect_CircularGrid
-     (const Quantity_Length aRadiusStep,
+     (const Standard_Real aRadiusStep,
       const Standard_Integer aDivisionNumber,
-      const Quantity_Length anXOrigin,
-      const Quantity_Length anYOrigin,
-      const Quantity_PlaneAngle aRotationAngle)
+      const Standard_Real anXOrigin,
+      const Standard_Real anYOrigin,
+      const Standard_Real aRotationAngle)
 :Aspect_Grid(anXOrigin,anYOrigin,aRotationAngle),myRadiusStep(aRadiusStep),
 myDivisionNumber(aDivisionNumber) {
    }
@@ -47,11 +47,11 @@ void Aspect_CircularGrid::SetDivisionNumber(const Standard_Integer aNumber) {
   UpdateDisplay();
 }
 void Aspect_CircularGrid::SetGridValues
-     (const Quantity_Length theXOrigin,
-      const Quantity_Length theYOrigin,
-      const Quantity_Length theRadiusStep,
+     (const Standard_Real theXOrigin,
+      const Standard_Real theYOrigin,
+      const Standard_Real theRadiusStep,
       const Standard_Integer theDivisionNumber,
-      const Quantity_PlaneAngle theRotationAngle) {
+      const Standard_Real theRotationAngle) {
   myXOrigin = theXOrigin;
   myYOrigin = theYOrigin;
   Standard_NegativeValue_Raise_if(theRadiusStep < 0., "invalid radius step");
@@ -64,10 +64,10 @@ void Aspect_CircularGrid::SetGridValues
   Init();
   UpdateDisplay();
 }
-void Aspect_CircularGrid::Compute(const Quantity_Length X,
-			 const Quantity_Length Y,
-			 Quantity_Length& gridX,
-			 Quantity_Length& gridY) const {
+void Aspect_CircularGrid::Compute(const Standard_Real X,
+                                  const Standard_Real Y,
+                                  Standard_Real& gridX,
+                                  Standard_Real& gridY) const {
 
   Standard_Real xo = XOrigin();
   Standard_Real yo = YOrigin();
@@ -131,7 +131,7 @@ void Aspect_CircularGrid::Compute(const Quantity_Length X,
   gridY = yo + sn * radius;
 }
 
-Quantity_Length Aspect_CircularGrid::RadiusStep() const {
+Standard_Real Aspect_CircularGrid::RadiusStep() const {
   return myRadiusStep;
 }
 

@@ -105,7 +105,7 @@ public: // high-level API
   inline Quantity_Color PixelColor (const Standard_Integer theX,
                                     const Standard_Integer theY) const
   {
-    Quantity_Parameter aDummy;
+    Standard_Real aDummy;
     return PixelColor (theX, theY, aDummy);
   }
 
@@ -114,7 +114,7 @@ public: // high-level API
   //! Beware that this method takes coordinates in opposite order in contrast to ::Value() and ::ChangeValue().
   Standard_EXPORT Quantity_Color PixelColor (const Standard_Integer theX,
                                              const Standard_Integer theY,
-                                             Quantity_Parameter&    theAlpha) const;
+                                             Standard_Real& theAlpha) const;
 
   //! Sets the pixel color. This function is relatively slow.
   //! Beware that this method takes coordinates in opposite order in contrast to ::Value() and ::ChangeValue().

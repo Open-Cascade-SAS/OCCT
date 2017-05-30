@@ -17,7 +17,6 @@
 #define _Graphic3d_MarkerImage_H__
 
 #include <TColStd_HArray1OfByte.hxx>
-#include <Quantity_Parameter.hxx>
 #include <TCollection_AsciiString.hxx>
 
 class Image_PixMap;

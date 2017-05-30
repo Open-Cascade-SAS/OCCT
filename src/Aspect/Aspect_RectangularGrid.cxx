@@ -22,13 +22,13 @@
 IMPLEMENT_STANDARD_RTTIEXT(Aspect_RectangularGrid,Aspect_Grid)
 
 Aspect_RectangularGrid::Aspect_RectangularGrid(
-                               const Quantity_Length aXStep,
-                               const Quantity_Length aYStep,
-                               const Quantity_Length anXOrigin,
-                               const Quantity_Length anYOrigin,
-                               const Quantity_PlaneAngle aFirstAngle,
-                               const Quantity_PlaneAngle aSecondAngle,
-                               const Quantity_PlaneAngle aRotationAngle)
+                               const Standard_Real aXStep,
+                               const Standard_Real aYStep,
+                               const Standard_Real anXOrigin,
+                               const Standard_Real anYOrigin,
+                               const Standard_Real aFirstAngle,
+                               const Standard_Real aSecondAngle,
+                               const Standard_Real aRotationAngle)
 :Aspect_Grid(anXOrigin,anYOrigin,aRotationAngle),myXStep(aXStep),myYStep(aYStep),myFirstAngle(aFirstAngle),mySecondAngle(aSecondAngle)
 
 {
@@ -43,7 +43,7 @@ Aspect_RectangularGrid::Aspect_RectangularGrid(
 
 
 
-void Aspect_RectangularGrid::SetXStep(const Quantity_Length aStep) {
+void Aspect_RectangularGrid::SetXStep(const Standard_Real aStep) {
   Standard_NegativeValue_Raise_if(aStep < 0. , "invalid x step");
   Standard_NullValue_Raise_if(aStep == 0. , "invalid y step");
   myXStep = aStep;
@@ -51,7 +51,7 @@ void Aspect_RectangularGrid::SetXStep(const Quantity_Length aStep) {
   UpdateDisplay();
 }
 
-void Aspect_RectangularGrid::SetYStep(const Quantity_Length aStep) {
+void Aspect_RectangularGrid::SetYStep(const Standard_Real aStep) {
   Standard_NegativeValue_Raise_if(aStep < 0. , "invalid x step");
   Standard_NullValue_Raise_if(aStep == 0. , "invalid y step");
   myYStep = aStep;
@@ -59,9 +59,9 @@ void Aspect_RectangularGrid::SetYStep(const Quantity_Length aStep) {
   UpdateDisplay();
 }
 
-void Aspect_RectangularGrid::SetAngle(const Quantity_PlaneAngle anAngle1,
-                                            const Quantity_PlaneAngle anAngle2){
-
+void Aspect_RectangularGrid::SetAngle (const Standard_Real anAngle1,
+                                       const Standard_Real anAngle2)
+{
   Standard_NumericError_Raise_if(!CheckAngle (anAngle1,anAngle2 ),
                                  "axis are parallel");
   myFirstAngle = anAngle1;
@@ -71,11 +71,11 @@ void Aspect_RectangularGrid::SetAngle(const Quantity_PlaneAngle anAngle1,
 }
 
 void Aspect_RectangularGrid::SetGridValues(
-	const Quantity_Length theXOrigin,
-	const Quantity_Length theYOrigin,
-	const Quantity_Length theXStep,
-	const Quantity_Length theYStep,
-	const Quantity_PlaneAngle theRotationAngle) {
+	const Standard_Real theXOrigin,
+	const Standard_Real theYOrigin,
+	const Standard_Real theXStep,
+	const Standard_Real theYStep,
+	const Standard_Real theRotationAngle) {
 
   myXOrigin = theXOrigin;
   myYOrigin = theYOrigin;
@@ -90,10 +90,10 @@ void Aspect_RectangularGrid::SetGridValues(
   UpdateDisplay();
 }
 
-void Aspect_RectangularGrid::Compute(const Quantity_Length X,
-                         const Quantity_Length Y,
-                         Quantity_Length& gridX,
-                         Quantity_Length& gridY) const {
+void Aspect_RectangularGrid::Compute(const Standard_Real X,
+                         const Standard_Real Y,
+                         Standard_Real& gridX,
+                         Standard_Real& gridY) const {
     Standard_Real D1 = b1 * X - a1 * Y - c1;
     Standard_Real D2 = b2 * X - a2 * Y - c2;
     Standard_Integer n1 = Standard_Integer ( Abs(D1)/myXStep + 0.5);
@@ -105,19 +105,19 @@ void Aspect_RectangularGrid::Compute(const Quantity_Length X,
     gridY = ( offset2*b1 - offset1*b2) /Delta;
 }
 
-Quantity_Length Aspect_RectangularGrid::XStep() const {
+Standard_Real Aspect_RectangularGrid::XStep() const {
   return myXStep;
 }
 
-Quantity_Length Aspect_RectangularGrid::YStep() const {
+Standard_Real Aspect_RectangularGrid::YStep() const {
   return myYStep;
 }
 
-Quantity_Length Aspect_RectangularGrid::FirstAngle() const {
+Standard_Real Aspect_RectangularGrid::FirstAngle() const {
   return myFirstAngle;
 }
 
-Quantity_Length Aspect_RectangularGrid::SecondAngle() const {
+Standard_Real Aspect_RectangularGrid::SecondAngle() const {
   return mySecondAngle;
 }
 

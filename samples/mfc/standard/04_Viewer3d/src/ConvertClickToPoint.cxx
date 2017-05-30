@@ -3,7 +3,7 @@
 gp_Pnt ConvertClickToPoint(Standard_Real x, Standard_Real y, Handle(V3d_View) aView)
 {
 	
-	V3d_Coordinate XEye,YEye,ZEye,XAt,YAt,ZAt;
+	Standard_Real XEye,YEye,ZEye,XAt,YAt,ZAt;
 	aView->Eye(XEye,YEye,ZEye);
 	aView->At(XAt,YAt,ZAt);
 	gp_Pnt EyePoint(XEye,YEye,ZEye);

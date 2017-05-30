@@ -193,7 +193,7 @@ CViewer3dDoc* CViewer3dView::GetDocument() // non-debug version is inline
 
 gp_Pnt ConvertClickToPoint(Standard_Real x, Standard_Real y, Handle(V3d_View) aView)
 {
-	V3d_Coordinate XEye,YEye,ZEye,XAt,YAt,ZAt;
+	Standard_Real XEye,YEye,ZEye,XAt,YAt,ZAt;
 	aView->Eye(XEye,YEye,ZEye);
 	aView->At(XAt,YAt,ZAt);
 	gp_Pnt EyePoint(XEye,YEye,ZEye);
@@ -1140,32 +1140,32 @@ void CViewer3dView::Reset()
   }
 }
 
-void CViewer3dView::GetViewAt (V3d_Coordinate& theX, V3d_Coordinate& theY, V3d_Coordinate& theZ) const
+void CViewer3dView::GetViewAt (Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const
 {
   myView->At (theX, theY, theZ);
 }
 
-void CViewer3dView::SetViewAt (const V3d_Coordinate theX, const V3d_Coordinate theY, const V3d_Coordinate theZ)
+void CViewer3dView::SetViewAt (const Standard_Real theX, const Standard_Real theY, const Standard_Real theZ)
 {
   myView->SetAt (theX, theY, theZ);
 }
 
-void CViewer3dView::GetViewEye(V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z)
+void CViewer3dView::GetViewEye(Standard_Real& X, Standard_Real& Y, Standard_Real& Z)
 {
 	myView->Eye(X,Y,Z);
 }
 
-void CViewer3dView::SetViewEye(V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z)
+void CViewer3dView::SetViewEye(Standard_Real X, Standard_Real Y, Standard_Real Z)
 {
 	myView->SetEye(X,Y,Z);
 }
 
-Quantity_Factor CViewer3dView::GetViewScale()
+Standard_Real CViewer3dView::GetViewScale()
 {
 	return myView->Scale();
 }
 
-void CViewer3dView::SetViewScale(Quantity_Factor Coef)
+void CViewer3dView::SetViewScale(Standard_Real Coef)
 {
 	myView->SetScale(Coef);
 }

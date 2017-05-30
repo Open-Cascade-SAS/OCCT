@@ -5,8 +5,8 @@
 IMPLEMENT_STANDARD_RTTIEXT(Sample2D_Markers,AIS_InteractiveObject)
 
 // generic marker
-Sample2D_Markers::Sample2D_Markers (const Quantity_Length theXPosition , 
-                   const Quantity_Length theYPosition ,
+Sample2D_Markers::Sample2D_Markers (const Standard_Real theXPosition,
+                   const Standard_Real theYPosition,
                    const Aspect_TypeOfMarker theMarkerType,
                    const Quantity_Color theColor,
                    const Standard_Real theScaleOrId)
@@ -19,8 +19,8 @@ Sample2D_Markers::Sample2D_Markers (const Quantity_Length theXPosition ,
   myIndex = theScaleOrId;
 }
 
-Sample2D_Markers::Sample2D_Markers (const Quantity_Length theXPosition , 
-                   const Quantity_Length theYPosition ,
+Sample2D_Markers::Sample2D_Markers (const Standard_Real theXPosition,
+                   const Standard_Real theYPosition,
                    const Handle(Graphic3d_ArrayOfPoints)& theArrayOfPoints,
                    const Aspect_TypeOfMarker theMarkerType,
                    const Quantity_Color theColor,

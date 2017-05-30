@@ -24,7 +24,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <Aspect_TypeOfHighlightMethod.hxx>
-#include <Quantity_Length.hxx>
 
 class PrsMgr_PresentationManager;
 class PrsMgr_Prs;

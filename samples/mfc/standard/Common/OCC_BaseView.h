@@ -36,7 +36,7 @@ protected:
 
 protected:
 
-  Quantity_Factor  myCurZoom;
+  Standard_Real    myCurZoom;
   Standard_Integer myXmin;
   Standard_Integer myYmin;
   Standard_Integer myXmax;

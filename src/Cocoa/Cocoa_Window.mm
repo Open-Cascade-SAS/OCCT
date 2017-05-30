@@ -311,7 +311,7 @@ Standard_Boolean Cocoa_Window::DoMapping() const
 // function : Ratio
 // purpose  :
 // =======================================================================
-Quantity_Ratio Cocoa_Window::Ratio() const
+Standard_Real Cocoa_Window::Ratio() const
 {
   if (myHView == NULL)
   {
@@ -323,7 +323,7 @@ Quantity_Ratio Cocoa_Window::Ratio() const
 #else
   NSRect aBounds = [myHView bounds];
 #endif
-  return Quantity_Ratio (aBounds.size.width / aBounds.size.height);
+  return Standard_Real (aBounds.size.width / aBounds.size.height);
 }
 
 // =======================================================================

@@ -162,7 +162,7 @@ void AIS_PlaneTrihedron::Compute(const Handle(PrsMgr_PresentationManager3d)&,
   gp_Dir xDir = myPlane->Position().Ax2().XDirection();
 
   gp_Pnt orig = myPlane->Position().Ax2().Location();
-  Quantity_Length xo,yo,zo,x,y,z;
+  Standard_Real xo,yo,zo,x,y,z;
   orig.Coord( xo, yo, zo );
   xDir.Coord( x, y, z );
   first.SetCoord( xo, yo, zo );

@@ -19,8 +19,6 @@
 
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Prs3d_BasicAspect.hxx>
-#include <Quantity_PlaneAngle.hxx>
-#include <Quantity_Length.hxx>
 
 //! A framework for displaying arrows in representations of dimensions and relations.
 class Prs3d_ArrowAspect : public Prs3d_BasicAspect
@@ -37,21 +35,21 @@ public:
   //! Constructs a framework to display an arrow with a
   //! shaft of the length aLength and having a head with
   //! sides at the angle anAngle from each other.
-  Standard_EXPORT Prs3d_ArrowAspect(const Quantity_PlaneAngle anAngle, const Quantity_Length aLength);
+  Standard_EXPORT Prs3d_ArrowAspect(const Standard_Real anAngle, const Standard_Real aLength);
   
   Standard_EXPORT Prs3d_ArrowAspect(const Handle(Graphic3d_AspectLine3d)& theAspect);
   
   //! defines the angle of the arrows.
-  Standard_EXPORT void SetAngle (const Quantity_PlaneAngle anAngle);
+  Standard_EXPORT void SetAngle (const Standard_Real anAngle);
   
   //! returns the current value of the angle used when drawing an arrow.
-  Quantity_PlaneAngle Angle() const { return myAngle; }
+  Standard_Real Angle() const { return myAngle; }
 
   //! Defines the length of the arrows.
-  void SetLength (const Quantity_Length theLength) { myLength = theLength; }
+  void SetLength (const Standard_Real theLength) { myLength = theLength; }
 
   //! Returns the current value of the length used when drawing an arrow.
-  Quantity_Length Length() const { return myLength; }
+  Standard_Real Length() const { return myLength; }
 
   void SetColor (const Quantity_Color& theColor) { myArrowAspect->SetColor (theColor); }
   
@@ -62,8 +60,8 @@ public:
 protected:
 
   Handle(Graphic3d_AspectLine3d) myArrowAspect;
-  Quantity_PlaneAngle myAngle;
-  Quantity_Length myLength;
+  Standard_Real myAngle;
+  Standard_Real myLength;
 
 };
 

@@ -38,7 +38,6 @@
 #include <Precision.hxx>
 #include <Prs3d.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Quantity_Length.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <TColgp_SequenceOfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -456,12 +455,12 @@ static void FindLimits (const Adaptor3d_Curve& theCurve,
 //! @param [in] theU2 maximal curve parameter value
 //! @param [out] thePoints the container for generated polyline
 //================================================================
-static void DrawCurve (Adaptor3d_Curve&      theCurve,
-                       const Quantity_Length theDeflection,
-                       const Standard_Real   theAngle,
-                       const Standard_Real   theU1,
-                       const Standard_Real   theU2,
-                       IVtk_Polyline&        thePoints)
+static void DrawCurve (Adaptor3d_Curve&    theCurve,
+                       const Standard_Real theDeflection,
+                       const Standard_Real theAngle,
+                       const Standard_Real theU1,
+                       const Standard_Real theU2,
+                       IVtk_Polyline&      thePoints)
 {
   switch (theCurve.GetType())
   {

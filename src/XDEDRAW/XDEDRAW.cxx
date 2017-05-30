@@ -991,11 +991,11 @@ static Standard_Integer XShowFaceBoundary (Draw_Interpretor& di,
   const Handle(Prs3d_Drawer)& aDrawer = anInteractive->Attributes ();
 
   // default attributes
-  Quantity_Parameter aRed      = 0.0;
-  Quantity_Parameter aGreen    = 0.0;
-  Quantity_Parameter aBlue     = 0.0;
-  Standard_Real      aWidth    = 1.0;
-  Aspect_TypeOfLine  aLineType = Aspect_TOL_SOLID;
+  Standard_Real aRed   = 0.0;
+  Standard_Real aGreen = 0.0;
+  Standard_Real aBlue  = 0.0;
+  Standard_Real aWidth = 1.0;
+  Aspect_TypeOfLine aLineType = Aspect_TOL_SOLID;
   
   // turn boundaries on/off
   Standard_Boolean isBoundaryDraw = (Draw::Atoi (argv[3]) == 1);

@@ -22,14 +22,13 @@
 
 #include <Graphic3d_Structure.hxx>
 #include <Standard_Boolean.hxx>
-#include <Quantity_Length.hxx>
+
 class Prs3d_Root;
 class Graphic3d_StructureManager;
 class Graphic3d_Structure;
 class Graphic3d_DataStructureManager;
 class Geom_Transformation;
 class Graphic3d_Group;
-
 
 class Prs3d_Presentation;
 DEFINE_STANDARD_HANDLE(Prs3d_Presentation, Graphic3d_Structure)

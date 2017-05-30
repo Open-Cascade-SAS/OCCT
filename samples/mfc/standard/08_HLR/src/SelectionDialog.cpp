@@ -261,13 +261,13 @@ void CSelectionDialog::Apply()
 
 void CSelectionDialog::UpdateProjector()
 {
-  V3d_Coordinate DX,DY,DZ,XAt,YAt,ZAt, Vx,Vy,Vz ;
+  Standard_Real DX,DY,DZ,XAt,YAt,ZAt, Vx,Vy,Vz ;
   myActiveView->Proj(DX,DY,DZ);
   myActiveView->At(XAt,YAt,ZAt);
   myActiveView->Up( Vx,Vy,Vz );
   OnDisplay(false);
   Standard_Boolean IsPerspective = (myActiveView->Type() == V3d_PERSPECTIVE);
-  Quantity_Length aFocus = 1;
+  Standard_Real aFocus = 1;
   Prs3d_Projector aPrs3dProjector(IsPerspective,aFocus,DX,DY,DZ,XAt,YAt,ZAt,Vx,Vy,Vz);
   HLRAlgo_Projector aProjector = aPrs3dProjector.Projector();
 

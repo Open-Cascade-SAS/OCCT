@@ -164,7 +164,7 @@ public:
   /// <param name="theZoomFactor">Current zoom</param>
   void Place(int theX, int theY, float theZoomFactor)
   {	
-    Quantity_Factor aZoomFactor = theZoomFactor;
+    Standard_Real aZoomFactor = theZoomFactor;
     if (!myView().IsNull())
     {
       myView()->Place(theX, theY, aZoomFactor);
@@ -537,7 +537,7 @@ public:
     {
       Quantity_Color anObjCol;
       myAISContext()->Color (aCurrent, anObjCol);
-      Quantity_Parameter r1, r2, r3;
+      Standard_Real r1, r2, r3;
       anObjCol.Values(r1, r2, r3, Quantity_TOC_RGB);
       theRed=(int)r1*255;
       theGreen=(int)r2*255;

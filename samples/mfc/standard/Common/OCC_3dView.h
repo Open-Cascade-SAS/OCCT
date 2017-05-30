@@ -34,7 +34,7 @@ public:
 	void FitAll() {   if ( !myView.IsNull() ) myView->FitAll();  myView->ZFitAll(); };
 	void Redraw() {   if ( !myView.IsNull() ) myView->Redraw(); };
 
-	void SetZoom ( const Quantity_Factor& Coef  ) {   myView->SetZoom ( Coef  );  };
+	void SetZoom ( const Standard_Real& Coef  ) {   myView->SetZoom ( Coef  );  };
 
   Handle(V3d_View)& GetView() { return myView; }
 // Overrides

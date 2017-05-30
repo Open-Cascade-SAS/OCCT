@@ -1132,7 +1132,7 @@ Standard_Boolean AIS::InitAngleBetweenCurvilinearFaces (const TopoDS_Face&      
     {
       return Standard_False;
     }
-    Quantity_Parameter anU, aV;
+    Standard_Real anU, aV;
     aProjector.LowerDistanceParameters (anU, aV);
     theSecondAttach = aSecondSurf->Value (anU, aV);
   }
@@ -1158,7 +1158,7 @@ void AIS::InitLengthBetweenCurvilinearFaces (const TopoDS_Face&    theFirstFace,
                                              gp_Dir&               theDirOnPlane)
 {
   GeomAPI_ProjectPointOnSurf aProjector;
-  Quantity_Parameter aPU, aPV;
+  Standard_Real aPU, aPV;
 
   TopExp_Explorer anExplorer (theFirstFace, TopAbs_VERTEX);
 
@@ -1189,7 +1189,7 @@ void AIS::InitLengthBetweenCurvilinearFaces (const TopoDS_Face&    theFirstFace,
   aProjector.Init (theFirstAttach, theSecondSurf);
 
   Standard_Integer aBestPointIndex = 0;
-  Quantity_Length aMinDist = RealLast();
+  Standard_Real aMinDist = RealLast();
   gp_Dir aLocalDir;
 
   for (Standard_Integer aPointIt = 1; aPointIt <= aProjector.NbPoints(); aPointIt++)

@@ -547,7 +547,7 @@ Standard_Boolean AIS_LengthDimension::InitTwoShapesPoints (const TopoDS_Shape& t
 
           mySecondPoint = AIS::ProjectPointOnPlane (myFirstPoint, aSecondPlane);
 
-          Quantity_Parameter anU, aV;
+          Standard_Real anU, aV;
           ElSLib::Parameters (aSecondPlane, mySecondPoint, anU, aV);
 
           BRepTopAdaptor_FClass2d aClassifier (aSecondFace, Precision::Confusion());

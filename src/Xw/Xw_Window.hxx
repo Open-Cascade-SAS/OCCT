@@ -28,8 +28,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 #include <Quantity_NameOfColor.hxx>
-#include <Quantity_Parameter.hxx>
-#include <Quantity_Ratio.hxx>
 
 class Aspect_WindowDefinitionError;
 class Aspect_WindowError;
@@ -77,7 +75,7 @@ public:
   Standard_EXPORT virtual Standard_Boolean IsMapped() const Standard_OVERRIDE;
 
   //! Returns The Window RATIO equal to the physical WIDTH/HEIGHT dimensions
-  Standard_EXPORT virtual Quantity_Ratio Ratio() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real Ratio() const Standard_OVERRIDE;
 
   //! Returns The Window POSITION in PIXEL
   Standard_EXPORT virtual void Position (Standard_Integer& X1,

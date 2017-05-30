@@ -52,8 +52,8 @@ void CRectangularGrid::UpdateDialogData()
 {
   UpdateData(TRUE);
   ASSERT(!myViewer.IsNull());
-  Quantity_Length  XOrigin,YOrigin , XStep, YStep;
-  Quantity_PlaneAngle RotationAngle ;		 
+  Standard_Real  XOrigin,YOrigin , XStep, YStep;
+  Standard_Real RotationAngle;
   XOrigin = m_XOrigin ;
   YOrigin = m_YOrigin ;
   XStep   = m_XStep   ;
@@ -97,8 +97,8 @@ void CRectangularGrid::OnCancel()
 
 void CRectangularGrid::UpdateValues()
 {
-  Quantity_Length  XOrigin,YOrigin , XStep, YStep;
-  Quantity_PlaneAngle RotationAngle ;				  
+  Standard_Real XOrigin, YOrigin, XStep, YStep;
+  Standard_Real RotationAngle;
   myViewer->RectangularGridValues(XOrigin, YOrigin, XStep, YStep, RotationAngle );
   m_XOrigin = SavedXOrigin = XOrigin;
   m_YOrigin = SavedYOrigin = YOrigin;

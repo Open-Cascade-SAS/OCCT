@@ -70,7 +70,7 @@ namespace IE_WPF_WinForms
         public bool IsMaterialEnabled { get; private set; }
         public bool IsDeleteEnabled { get; private set; }
 
-        private float myCurZoom;// ~ Quantity_Factor
+        private float myCurZoom;
         private int myXmin;
         private int myYmin;
         private int myXmax;

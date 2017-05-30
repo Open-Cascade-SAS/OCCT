@@ -360,7 +360,7 @@ Standard_Boolean Xw_Window::DoMapping() const
 // function : Ratio
 // purpose  :
 // =======================================================================
-Quantity_Ratio Xw_Window::Ratio() const
+Standard_Real Xw_Window::Ratio() const
 {
   if (myXWindow == 0)
   {
@@ -370,7 +370,7 @@ Quantity_Ratio Xw_Window::Ratio() const
   XFlush (myDisplay->GetDisplay());
   XWindowAttributes aWinAttr;
   XGetWindowAttributes (myDisplay->GetDisplay(), myXWindow, &aWinAttr);
-  return Quantity_Ratio(aWinAttr.width) / Quantity_Ratio(aWinAttr.height);
+  return Standard_Real(aWinAttr.width) / Standard_Real(aWinAttr.height);
 }
 
 // =======================================================================

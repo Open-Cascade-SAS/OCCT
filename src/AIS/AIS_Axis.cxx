@@ -266,7 +266,7 @@ void AIS_Axis::ComputeFields()
     const gp_Dir& oX   = anAxis.XDirection();
     const gp_Dir& oY   = anAxis.YDirection();
     const gp_Dir& oZ   = anAxis.Direction();
-    Quantity_Length xo,yo,zo,x = 0.,y = 0.,z = 0.;
+    Standard_Real xo,yo,zo,x = 0.,y = 0.,z = 0.;
     Orig.Coord(xo,yo,zo);
     myPfirst.SetCoord(xo,yo,zo);
     

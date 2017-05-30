@@ -256,7 +256,7 @@ void CGeometryDoc::MoveEvent2D(const Standard_Integer x,
 {
   if(aView->Viewer()->Grid()->IsActive())
   {
-    Quantity_Length aGridX=0,aGridY=0,aGridZ=0;
+    Standard_Real aGridX=0,aGridY=0,aGridZ=0;
     aView->ConvertToGrid(x,y,aGridX,aGridY,aGridZ);
     //View is not updated automatically in ConvertToGrid
     aView->Update();
@@ -470,7 +470,7 @@ void CGeometryDoc::Minimize3D()
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CGeometryDoc::Fit3DViews(Quantity_Coefficient Coef)
+void CGeometryDoc::Fit3DViews(Standard_Real Coef)
 {
   POSITION position = GetFirstViewPosition();
   while (position != (POSITION)NULL)
@@ -488,7 +488,7 @@ void CGeometryDoc::Fit3DViews(Quantity_Coefficient Coef)
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CGeometryDoc::Set3DViewsZoom(const Quantity_Factor& Coef)
+void CGeometryDoc::Set3DViewsZoom(const Standard_Real& Coef)
 {
   POSITION position = GetFirstViewPosition();
   while (position != (POSITION)NULL)

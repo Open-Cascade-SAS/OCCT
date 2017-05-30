@@ -45,12 +45,6 @@
 
 #include <MMgt_TShared.hxx>
 
-#include <Quantity_Coefficient.hxx>
-#include <Quantity_Factor.hxx>
-#include <Quantity_Length.hxx>
-#include <Quantity_Parameter.hxx>
-#include <Quantity_PlaneAngle.hxx>
-#include <Quantity_Ratio.hxx>
 #include <Quantity_TypeOfColor.hxx>
 
 #include <Standard.hxx>
@@ -64,7 +58,6 @@
 #include <TColStd_Array2OfReal.hxx>
 #include <TColStd_ListIteratorOfListOfTransient.hxx>
 
-#include <V3d_Coordinate.hxx>
 #include <V3d_ImageDumpOptions.hxx>
 #include <V3d_Trihedron.hxx>
 #include <V3d_TypeOfAxe.hxx>
@@ -206,9 +199,9 @@ public:
 
   //! Defines the background color of the view by the color definition type and the three corresponding values.
   Standard_EXPORT void SetBackgroundColor (const Quantity_TypeOfColor theType,
-                                           const Quantity_Parameter theV1,
-                                           const Quantity_Parameter theV2,
-                                           const Quantity_Parameter theV3);
+                                           const Standard_Real theV1,
+                                           const Standard_Real theV2,
+                                           const Standard_Real theV3);
 
   //! Defines the background color of the view.
   Standard_EXPORT void SetBackgroundColor (const Quantity_Color& theColor);
@@ -238,7 +231,8 @@ public:
   //! its orientation .
   //! This will be the current axis for rotations and movements.
   //! Warning! raises BadValue from V3d if the vector normal is NULL. .
-  Standard_EXPORT void SetAxis (const V3d_Coordinate X, const V3d_Coordinate Y, const V3d_Coordinate Z, const Quantity_Parameter Vx, const Quantity_Parameter Vy, const Quantity_Parameter Vz);
+  Standard_EXPORT void SetAxis (const Standard_Real X, const Standard_Real Y, const Standard_Real Z,
+                                const Standard_Real Vx, const Standard_Real Vy, const Standard_Real Vz);
 
   //! Defines the shading model for the visualization. Various models are available.
   Standard_EXPORT void SetShadingModel (const V3d_TypeOfShadingModel theShadingModel);
@@ -312,7 +306,7 @@ public:
   //! Warning! raises BadValue from V3d
   //! If the eye, the view point, or the high point are
   //! aligned or confused.
-  Standard_EXPORT void Rotate (const Quantity_PlaneAngle Ax, const Quantity_PlaneAngle Ay, const Quantity_PlaneAngle Az, const Standard_Boolean Start = Standard_True);
+  Standard_EXPORT void Rotate (const Standard_Real Ax, const Standard_Real Ay, const Standard_Real Az, const Standard_Boolean Start = Standard_True);
 
   //! Rotates the eye about the coordinate system of
   //! reference of the screen
@@ -321,108 +315,113 @@ public:
   //! the initial position expressed by Start = Standard_True
   //! If the eye, the view point, or the high point are
   //! aligned or confused.
-  Standard_EXPORT void Rotate (const Quantity_PlaneAngle Ax, const Quantity_PlaneAngle Ay, const Quantity_PlaneAngle Az, const V3d_Coordinate X, const V3d_Coordinate Y, const V3d_Coordinate Z, const Standard_Boolean Start = Standard_True);
+  Standard_EXPORT void Rotate (const Standard_Real Ax, const Standard_Real Ay, const Standard_Real Az,
+                               const Standard_Real X,  const Standard_Real Y,  const Standard_Real Z,
+                               const Standard_Boolean Start = Standard_True);
 
   //! Rotates the eye about one of the coordinate axes of
   //! of the view for which the origin is the Gravity point{X,Y,Z}
   //! with an relative angular value in RADIANS with
   //! respect to the initial position expressed by
   //! Start = Standard_True
-  Standard_EXPORT void Rotate (const V3d_TypeOfAxe Axe, const Quantity_PlaneAngle Angle, const V3d_Coordinate X, const V3d_Coordinate Y, const V3d_Coordinate Z, const Standard_Boolean Start = Standard_True);
+  Standard_EXPORT void Rotate (const V3d_TypeOfAxe Axe,
+                               const Standard_Real Angle,
+                               const Standard_Real X, const Standard_Real Y, const Standard_Real Z,
+                               const Standard_Boolean Start = Standard_True);
 
   //! Rotates the eye about one of the coordinate axes of
   //! of the view for which the origin is the view point of the
   //! projection with an relative angular value in RADIANS with
   //! respect to the initial position expressed by
   //! Start = Standard_True
-  Standard_EXPORT void Rotate (const V3d_TypeOfAxe Axe, const Quantity_PlaneAngle Angle, const Standard_Boolean Start = Standard_True);
+  Standard_EXPORT void Rotate (const V3d_TypeOfAxe Axe, const Standard_Real Angle, const Standard_Boolean Start = Standard_True);
 
   //! Rotates the eye around the current axis a relative
   //! angular value in RADIANS with respect to the initial
   //! position expressed by Start = Standard_True
-  Standard_EXPORT void Rotate (const Quantity_PlaneAngle Angle, const Standard_Boolean Start = Standard_True);
+  Standard_EXPORT void Rotate (const Standard_Real Angle, const Standard_Boolean Start = Standard_True);
 
   //! Movement of the eye parallel to the coordinate system
   //! of reference of the screen a distance relative to the
   //! initial position expressed by Start = Standard_True.
-  Standard_EXPORT void Move (const Quantity_Length Dx, const Quantity_Length Dy, const Quantity_Length Dz, const Standard_Boolean Start = Standard_True);
+  Standard_EXPORT void Move (const Standard_Real Dx, const Standard_Real Dy, const Standard_Real Dz, const Standard_Boolean Start = Standard_True);
 
   //! Movement of the eye parallel to one of the axes of the
   //! coordinate system of reference of the view a distance
   //! relative to the initial position expressed by
   //! Start = Standard_True.
-  Standard_EXPORT void Move (const V3d_TypeOfAxe Axe, const Quantity_Length Length, const Standard_Boolean Start = Standard_True);
+  Standard_EXPORT void Move (const V3d_TypeOfAxe Axe, const Standard_Real Length, const Standard_Boolean Start = Standard_True);
 
   //! Movement of the eye parllel to the current axis
   //! a distance relative to the initial position
   //! expressed by Start = Standard_True
-  Standard_EXPORT void Move (const Quantity_Length Length, const Standard_Boolean Start = Standard_True);
+  Standard_EXPORT void Move (const Standard_Real Length, const Standard_Boolean Start = Standard_True);
 
   //! Movement of the ye and the view point parallel to the
   //! frame of reference of the screen a distance relative
   //! to the initial position expressed by
   //! Start = Standard_True
-  Standard_EXPORT void Translate (const Quantity_Length Dx, const Quantity_Length Dy, const Quantity_Length Dz, const Standard_Boolean Start = Standard_True);
+  Standard_EXPORT void Translate (const Standard_Real Dx, const Standard_Real Dy, const Standard_Real Dz, const Standard_Boolean Start = Standard_True);
 
   //! Movement of the eye and the view point parallel to one
   //! of the axes of the fame of reference of the view a
   //! distance relative to the initial position
   //! expressed by Start = Standard_True
-  Standard_EXPORT void Translate (const V3d_TypeOfAxe Axe, const Quantity_Length Length, const Standard_Boolean Start = Standard_True);
+  Standard_EXPORT void Translate (const V3d_TypeOfAxe Axe, const Standard_Real Length, const Standard_Boolean Start = Standard_True);
 
   //! Movement of the eye and view point parallel to
   //! the current axis a distance relative to the initial
   //! position expressed by Start = Standard_True
-  Standard_EXPORT void Translate (const Quantity_Length Length, const Standard_Boolean Start = Standard_True);
+  Standard_EXPORT void Translate (const Standard_Real Length, const Standard_Boolean Start = Standard_True);
 
   //! places the point of the view corresponding
   //! at the pixel position x,y at the center of the window
   //! and updates the view.
-  Standard_EXPORT void Place (const Standard_Integer theXp, const Standard_Integer theYp, const Quantity_Factor theZoomFactor = 1);
+  Standard_EXPORT void Place (const Standard_Integer theXp, const Standard_Integer theYp, const Standard_Real theZoomFactor = 1);
 
   //! Rotation of the view point around the frame of reference
   //! of the screen for which the origin is the eye of the
   //! projection with a relative angular value in RADIANS
   //! with respect to the initial position expressed by
   //! Start = Standard_True
-  Standard_EXPORT void Turn (const Quantity_PlaneAngle Ax, const Quantity_PlaneAngle Ay, const Quantity_PlaneAngle Az, const Standard_Boolean Start = Standard_True);
+  Standard_EXPORT void Turn (const Standard_Real Ax, const Standard_Real Ay, const Standard_Real Az, const Standard_Boolean Start = Standard_True);
 
   //! Rotation of the view point around one of the axes of the
   //! frame of reference of the view for which the origin is
   //! the eye of the projection with an angular value in
   //! RADIANS relative to the initial position expressed by
   //! Start = Standard_True
-  Standard_EXPORT void Turn (const V3d_TypeOfAxe Axe, const Quantity_PlaneAngle Angle, const Standard_Boolean Start = Standard_True);
+  Standard_EXPORT void Turn (const V3d_TypeOfAxe Axe, const Standard_Real Angle, const Standard_Boolean Start = Standard_True);
 
   //! Rotation of the view point around the current axis an
   //! angular value in RADIANS relative to the initial
   //! position expressed by Start = Standard_True
-  Standard_EXPORT void Turn (const Quantity_PlaneAngle Angle, const Standard_Boolean Start = Standard_True);
+  Standard_EXPORT void Turn (const Standard_Real Angle, const Standard_Boolean Start = Standard_True);
 
   //! Defines the angular position of the high point of
   //! the reference frame of the view with respect to the
   //! Y screen axis with an absolute angular value in
   //! RADIANS.
-  Standard_EXPORT void SetTwist (const Quantity_PlaneAngle Angle);
+  Standard_EXPORT void SetTwist (const Standard_Real Angle);
 
   //! Defines the position of the eye..
-  Standard_EXPORT void SetEye (const V3d_Coordinate X, const V3d_Coordinate Y, const V3d_Coordinate Z);
+  Standard_EXPORT void SetEye (const Standard_Real X, const Standard_Real Y, const Standard_Real Z);
 
   //! Defines the Depth of the eye from the view point
   //! without update the projection .
-  Standard_EXPORT void SetDepth (const Quantity_Length Depth);
+  Standard_EXPORT void SetDepth (const Standard_Real Depth);
 
   //! Defines the orientation of the projection.
-  Standard_EXPORT void SetProj (const Quantity_Parameter Vx, const Quantity_Parameter Vy, const Quantity_Parameter Vz);
+  Standard_EXPORT void SetProj (const Standard_Real Vx, const Standard_Real Vy, const Standard_Real Vz);
 
   //! Defines the orientation of the projection .
   Standard_EXPORT void SetProj (const V3d_TypeOfOrientation Orientation);
 
   //! Defines the position of the view point.
-  Standard_EXPORT void SetAt (const V3d_Coordinate X, const V3d_Coordinate Y, const V3d_Coordinate Z);
+  Standard_EXPORT void SetAt (const Standard_Real X, const Standard_Real Y, const Standard_Real Z);
 
   //! Defines the orientation of the high point.
-  Standard_EXPORT void SetUp (const Quantity_Parameter Vx, const Quantity_Parameter Vy, const Quantity_Parameter Vz);
+  Standard_EXPORT void SetUp (const Standard_Real Vx, const Standard_Real Vy, const Standard_Real Vz);
 
   //! Defines the orientation(SO) of the high point.
   Standard_EXPORT void SetUp (const V3d_TypeOfOrientation Orientation);
@@ -446,7 +445,7 @@ public:
   //! state prior to panning for relative arguments. If panning is started,
   //! passing {0, 0} for {theDXv, theDYv} will return view to initial state.
   //! Performs update of view.
-  Standard_EXPORT void Panning (const Standard_Real theDXv, const Standard_Real theDYv, const Quantity_Factor theZoomFactor = 1, const Standard_Boolean theToStart = Standard_True);
+  Standard_EXPORT void Panning (const Standard_Real theDXv, const Standard_Real theDYv, const Standard_Real theZoomFactor = 1, const Standard_Boolean theToStart = Standard_True);
 
   //! Relocates center of screen to the point, determined by
   //! {Xp, Yp} pixel coordinates relative to the bottom-left corner of
@@ -458,7 +457,7 @@ public:
 
   //! Defines the view projection size in its maximum dimension,
   //! keeping the inital height/width ratio unchanged.
-  Standard_EXPORT void SetSize (const Quantity_Length theSize);
+  Standard_EXPORT void SetSize (const Standard_Real theSize);
 
   //! Defines the Depth size of the view
   //! Front Plane will be set to Size/2.
@@ -466,17 +465,17 @@ public:
   //! Any Object located Above the Front Plane or
   //! behind the Back Plane will be Clipped .
   //! NOTE than the XY Size of the View is NOT modified .
-  Standard_EXPORT void SetZSize (const Quantity_Length SetZSize);
+  Standard_EXPORT void SetZSize (const Standard_Real SetZSize);
 
   //! Zooms the view by a factor relative to the initial
   //! value expressed by Start = Standard_True
   //! Updates the view.
-  Standard_EXPORT void SetZoom (const Quantity_Factor Coef, const Standard_Boolean Start = Standard_True);
+  Standard_EXPORT void SetZoom (const Standard_Real Coef, const Standard_Boolean Start = Standard_True);
 
   //! Zooms the view by a factor relative to the value
   //! initialised by SetViewMappingDefault().
   //! Updates the view.
-  Standard_EXPORT void SetScale (const Quantity_Factor Coef);
+  Standard_EXPORT void SetScale (const Standard_Real Coef);
 
   //! Sets  anisotropic (axial)  scale  factors  <Sx>, <Sy>, <Sz>  for  view <me>.
   //! Anisotropic  scaling  operation  is  performed  through  multiplying
@@ -494,7 +493,7 @@ public:
   //! Updates the view.
   //! @param theMargin [in] the margin coefficient for view borders.
   //! @param theToUpdate [in] flag to perform view update.
-  Standard_EXPORT void FitAll (const Quantity_Coefficient theMargin = 0.01, const Standard_Boolean theToUpdate = Standard_True);
+  Standard_EXPORT void FitAll (const Standard_Real theMargin = 0.01, const Standard_Boolean theToUpdate = Standard_True);
 
   //! Adjust view parameters to fit the displayed scene, respecting height / width ratio
   //! according to the custom bounding box given.
@@ -503,13 +502,13 @@ public:
   //! @param theBox [in] the custom bounding box to fit.
   //! @param theMargin [in] the margin coefficient for view borders.
   //! @param theToUpdate [in] flag to perform view update.
-  Standard_EXPORT void FitAll (const Bnd_Box& theBox, const Quantity_Coefficient theMargin = 0.01, const Standard_Boolean theToUpdate = Standard_True);
+  Standard_EXPORT void FitAll (const Bnd_Box& theBox, const Standard_Real theMargin = 0.01, const Standard_Boolean theToUpdate = Standard_True);
 
   //! Adjusts the viewing volume so as not to clip the displayed objects by front and back
   //! and back clipping planes. Also sets depth value automatically depending on the
   //! calculated Z size and Aspect parameter.
   //! NOTE than the original XY size of the view is NOT modified .
-  Standard_EXPORT void DepthFitAll (const Quantity_Coefficient Aspect = 0.01, const Quantity_Coefficient Margin = 0.01);
+  Standard_EXPORT void DepthFitAll (const Standard_Real Aspect = 0.01, const Standard_Real Margin = 0.01);
 
   //! Centers the defined projection window so that it occupies
   //! the maximum space while respecting the initial
@@ -539,32 +538,37 @@ public:
 
   //! Converts the PIXEL value
   //! to a value in the projection plane.
-  Standard_EXPORT Quantity_Length Convert (const Standard_Integer Vp) const;
+  Standard_EXPORT Standard_Real Convert (const Standard_Integer Vp) const;
 
   //! Converts the point PIXEL into a point projected
   //! in the reference frame of the projection plane.
-  Standard_EXPORT void Convert (const Standard_Integer Xp, const Standard_Integer Yp, V3d_Coordinate& Xv, V3d_Coordinate& Yv) const;
+  Standard_EXPORT void Convert (const Standard_Integer Xp, const Standard_Integer Yp,
+                                Standard_Real& Xv, Standard_Real& Yv) const;
 
   //! Converts tha value of the projection plane into
   //! a PIXEL value.
-  Standard_EXPORT Standard_Integer Convert (const Quantity_Length Vv) const;
+  Standard_EXPORT Standard_Integer Convert (const Standard_Real Vv) const;
 
   //! Converts the point defined in the reference frame
   //! of the projection plane into a point PIXEL.
-  Standard_EXPORT void Convert (const V3d_Coordinate Xv, const V3d_Coordinate Yv, Standard_Integer& Xp, Standard_Integer& Yp) const;
+  Standard_EXPORT void Convert (const Standard_Real Xv, const Standard_Real Yv,
+                                Standard_Integer& Xp, Standard_Integer& Yp) const;
 
   //! Converts the projected point into a point
   //! in the reference frame of the view corresponding
   //! to the intersection with the projection plane
   //! of the eye/view point vector.
-  Standard_EXPORT void Convert (const Standard_Integer Xp, const Standard_Integer Yp, V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z) const;
+  Standard_EXPORT void Convert (const Standard_Integer Xp, const Standard_Integer Yp,
+                                Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const;
 
   //! Converts the projected point into a point
   //! in the reference frame of the view corresponding
   //! to the intersection with the projection plane
   //! of the eye/view point vector and returns the
   //! projection ray for further computations.
-  Standard_EXPORT void ConvertWithProj (const Standard_Integer Xp, const Standard_Integer Yp, V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z, Quantity_Parameter& Vx, Quantity_Parameter& Vy, Quantity_Parameter& Vz) const;
+  Standard_EXPORT void ConvertWithProj (const Standard_Integer Xp, const Standard_Integer Yp,
+                                        Standard_Real& X,  Standard_Real& Y,  Standard_Real& Z,
+                                        Standard_Real& Vx, Standard_Real& Vy, Standard_Real& Vz) const;
 
   //! Converts the projected point into the nearest grid point
   //! in the reference frame of the view corresponding
@@ -585,15 +589,18 @@ public:
   //! myView->RedrawImmediate();
   //! 2.4) Else this is the standard case
   //! } else myView->Convert(x,y,X,Y,Z);
-  Standard_EXPORT void ConvertToGrid (const Standard_Integer Xp, const Standard_Integer Yp, V3d_Coordinate& Xg, V3d_Coordinate& Yg, V3d_Coordinate& Zg) const;
+  Standard_EXPORT void ConvertToGrid (const Standard_Integer Xp, const Standard_Integer Yp,
+                                      Standard_Real& Xg, Standard_Real& Yg, Standard_Real& Zg) const;
 
   //! Converts the point into the nearest grid point
   //! and display the grid marker.
-  Standard_EXPORT void ConvertToGrid (const V3d_Coordinate X, const V3d_Coordinate Y, const V3d_Coordinate Z, V3d_Coordinate& Xg, V3d_Coordinate& Yg, V3d_Coordinate& Zg) const;
+  Standard_EXPORT void ConvertToGrid (const Standard_Real X, const Standard_Real Y, const Standard_Real Z,
+                                      Standard_Real& Xg, Standard_Real& Yg, Standard_Real& Zg) const;
 
   //! Projects the point defined in the reference frame of
   //! the view into the projected point in the associated window.
-  Standard_EXPORT void Convert (const V3d_Coordinate X, const V3d_Coordinate Y, const V3d_Coordinate Z, Standard_Integer& Xp, Standard_Integer& Yp) const;
+  Standard_EXPORT void Convert (const Standard_Real X, const Standard_Real Y, const Standard_Real Z,
+                                Standard_Integer& Xp, Standard_Integer& Yp) const;
 
   //! Converts the point defined in the user space of
   //! the view to the projection plane at the depth
@@ -616,7 +623,7 @@ public:
 
   //! Returns the Background color values of the view
   //! depending of the color Type.
-  Standard_EXPORT void BackgroundColor (const Quantity_TypeOfColor Type, Quantity_Parameter& V1, Quantity_Parameter& V2, Quantity_Parameter& V3) const;
+  Standard_EXPORT void BackgroundColor (const Quantity_TypeOfColor Type, Standard_Real& V1, Standard_Real& V2, Standard_Real& V3) const;
 
   //! Returns the Background color object of the view.
   Standard_EXPORT Quantity_Color BackgroundColor() const;
@@ -629,44 +636,46 @@ public:
 
   //! Returns the current value of the zoom expressed with
   //! respect to SetViewMappingDefault().
-  Standard_EXPORT Quantity_Factor Scale() const;
+  Standard_EXPORT Standard_Real Scale() const;
 
   //! Returns the current values of the anisotropic (axial) scale factors.
   Standard_EXPORT void AxialScale (Standard_Real& Sx, Standard_Real& Sy, Standard_Real& Sz) const;
 
   //! Returns the height and width of the view.
-  Standard_EXPORT void Size (Quantity_Length& Width, Quantity_Length& Height) const;
+  Standard_EXPORT void Size (Standard_Real& Width, Standard_Real& Height) const;
 
   //! Returns the Depth of the view .
   Standard_EXPORT Standard_Real ZSize() const;
 
   //! Returns the position of the eye.
-  Standard_EXPORT void Eye (V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z) const;
+  Standard_EXPORT void Eye (Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const;
 
   //! Returns the position of point which emanating the
   //! projections.
-  Standard_EXPORT void FocalReferencePoint (V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z) const;
+  Standard_EXPORT void FocalReferencePoint (Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const;
 
   //! Returns the coordinate of the point (Xpix,Ypix)
   //! in the view (XP,YP,ZP), and the projection vector of the
   //! view passing by the point (for PerspectiveView).
-  Standard_EXPORT void ProjReferenceAxe (const Standard_Integer Xpix, const Standard_Integer Ypix, V3d_Coordinate& XP, V3d_Coordinate& YP, V3d_Coordinate& ZP, V3d_Coordinate& VX, V3d_Coordinate& VY, V3d_Coordinate& VZ) const;
+  Standard_EXPORT void ProjReferenceAxe (const Standard_Integer Xpix, const Standard_Integer Ypix,
+                                         Standard_Real& XP, Standard_Real& YP, Standard_Real& ZP,
+                                         Standard_Real& VX, Standard_Real& VY, Standard_Real& VZ) const;
 
   //! Returns the Distance between the Eye and View Point.
-  Standard_EXPORT Quantity_Length Depth() const;
+  Standard_EXPORT Standard_Real Depth() const;
 
   //! Returns the projection vector.
-  Standard_EXPORT void Proj (Quantity_Parameter& Vx, Quantity_Parameter& Vy, Quantity_Parameter& Vz) const;
+  Standard_EXPORT void Proj (Standard_Real& Vx, Standard_Real& Vy, Standard_Real& Vz) const;
 
   //! Returns the position of the view point.
-  Standard_EXPORT void At (V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z) const;
+  Standard_EXPORT void At (Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const;
 
   //! Returns the vector giving the position of the high point.
-  Standard_EXPORT void Up (Quantity_Parameter& Vx, Quantity_Parameter& Vy, Quantity_Parameter& Vz) const;
+  Standard_EXPORT void Up (Standard_Real& Vx, Standard_Real& Vy, Standard_Real& Vz) const;
 
   //! Returns in RADIANS the orientation of the view around
   //! the visual axis measured from the Y axis of the screen.
-  Standard_EXPORT Quantity_PlaneAngle Twist() const;
+  Standard_EXPORT Standard_Real Twist() const;
 
   //! Returns the current shading model.
   Standard_EXPORT V3d_TypeOfShadingModel ShadingModel() const;
@@ -720,7 +729,7 @@ public:
   //! state prior to panning for relative arguments. Passing 0 for relative
   //! panning parameter should return view panning to initial state.
   //! Performs update of view.
-  Standard_EXPORT void Pan (const Standard_Integer theDXp, const Standard_Integer theDYp, const Quantity_Factor theZoomFactor = 1, const Standard_Boolean theToStart = Standard_True);
+  Standard_EXPORT void Pan (const Standard_Integer theDXp, const Standard_Integer theDYp, const Standard_Real theZoomFactor = 1, const Standard_Boolean theToStart = Standard_True);
 
   //! Zoom the view according to a zoom factor computed
   //! from the distance between the 2 mouse position.
@@ -752,7 +761,7 @@ public:
   //! Generally a value of 0.4 is usable to rotate around XY screen axis
   //! inside the circular threshold area and to rotate around Z screen axis
   //! outside this area.
-  Standard_EXPORT void StartRotation (const Standard_Integer X, const Standard_Integer Y, const Quantity_Ratio zRotationThreshold = 0.0);
+  Standard_EXPORT void StartRotation (const Standard_Integer X, const Standard_Integer Y, const Standard_Real zRotationThreshold = 0.0);
 
   //! Continues the rotation of the view
   //! with an angle computed from the last and new mouse position <X,Y>.
@@ -761,10 +770,10 @@ public:
   //! Change View Plane Distance for Perspective Views
   //! Warning! raises TypeMismatch from Standard if the view
   //! is not a perspective view.
-  Standard_EXPORT void SetFocale (const Quantity_Length Focale);
+  Standard_EXPORT void SetFocale (const Standard_Real Focale);
 
   //! Returns the View Plane Distance for Perspective Views
-  Standard_EXPORT Quantity_Length Focale() const;
+  Standard_EXPORT Standard_Real Focale() const;
 
   //! Returns the associated Graphic3d view.
   Standard_EXPORT Handle(Graphic3d_CView) View() const;
@@ -980,15 +989,15 @@ private:
   
   //! Returns the objects number and the projection window
   //! of the objects contained in the view.
-  Standard_EXPORT Standard_Integer MinMax (V3d_Coordinate& Umin, V3d_Coordinate& Vmin, V3d_Coordinate& Umax, V3d_Coordinate& Vmax) const;
+  Standard_EXPORT Standard_Integer MinMax (Standard_Real& Umin, Standard_Real& Vmin, Standard_Real& Umax, Standard_Real& Vmax) const;
   
   //! Returns the objects number and the box encompassing
   //! the objects contained in the view
-  Standard_EXPORT Standard_Integer MinMax (V3d_Coordinate& Xmin, V3d_Coordinate& Ymin, V3d_Coordinate& Zmin, V3d_Coordinate& Xmax, V3d_Coordinate& Ymax, V3d_Coordinate& Zmax) const;
+  Standard_EXPORT Standard_Integer MinMax (Standard_Real& Xmin, Standard_Real& Ymin, Standard_Real& Zmin, Standard_Real& Xmax, Standard_Real& Ymax, Standard_Real& Zmax) const;
   
   //! Returns the Objects number and the gravity center
   //! of ALL viewable points in the view
-  Standard_EXPORT void Gravity (V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z) const;
+  Standard_EXPORT void Gravity (Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const;
   
   Standard_EXPORT void Init();
   

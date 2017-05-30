@@ -34,7 +34,7 @@ public:
   // Implementation
 public:
   virtual ~CGeometryView();
-  void FitAll(Quantity_Coefficient Coef)
+  void FitAll(Standard_Real Coef)
   {
     if (Coef != -1)
       myView->FitAll(Coef);

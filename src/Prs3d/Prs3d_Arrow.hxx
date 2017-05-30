@@ -21,8 +21,6 @@
 
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
-#include <Quantity_PlaneAngle.hxx>
-#include <Quantity_Length.hxx>
 
 class gp_Ax1;
 class gp_Pnt;
@@ -55,8 +53,8 @@ public:
   //! @param theNbSegments count of points on polyline where location is connected
   Standard_EXPORT static Handle(Graphic3d_ArrayOfSegments) DrawSegments (const gp_Pnt& theLocation,
                                                                          const gp_Dir& theDir,
-                                                                         const Quantity_PlaneAngle theAngle,
-                                                                         const Quantity_Length theLength,
+                                                                         const Standard_Real theAngle,
+                                                                         const Standard_Real theLength,
                                                                          const Standard_Integer theNbSegments);
 
   //! Defines the representation of the arrow.
@@ -69,16 +67,16 @@ public:
   Standard_EXPORT static void Draw (const Handle(Graphic3d_Group)& theGroup,
                                     const gp_Pnt& theLocation,
                                     const gp_Dir& theDirection,
-                                    const Quantity_PlaneAngle theAngle,
-                                    const Quantity_Length theLength);
+                                    const Standard_Real theAngle,
+                                    const Standard_Real theLength);
 
   //! Alias to another method Draw() for backward compatibility.
   Standard_DEPRECATED("Prs3d_Arrow::Draw() taking Graphic3d_Group should be used instead")
   static void Draw (const Handle(Prs3d_Presentation)& thePrs,
                     const gp_Pnt& theLocation,
                     const gp_Dir& theDirection,
-                    const Quantity_PlaneAngle theAngle,
-                    const Quantity_Length theLength)
+                    const Standard_Real theAngle,
+                    const Standard_Real theLength)
   {
     Draw (Prs3d_Root::CurrentGroup (thePrs), theLocation, theDirection, theAngle, theLength);
   }

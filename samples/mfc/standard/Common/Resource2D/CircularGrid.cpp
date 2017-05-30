@@ -60,9 +60,9 @@ void CCircularGrid::UpdateDialogData()
 {
   UpdateData(TRUE);
   ASSERT(!myViewer.IsNull());
-  Quantity_Length     XOrigin,YOrigin,RadiusStep;
+  Standard_Real     XOrigin,YOrigin,RadiusStep;
   Standard_Integer    DivisionNumber;
-  Quantity_PlaneAngle RotationAngle ;		
+  Standard_Real RotationAngle;
 
   XOrigin          = m_XOrigin ;
   YOrigin          = m_YOrigin ;
@@ -101,9 +101,9 @@ void CCircularGrid::OnUpdateCirctGridRadiusStep()
 
 void CCircularGrid::UpdateValues()
 {
-  Quantity_Length     XOrigin,YOrigin,RadiusStep;
+  Standard_Real     XOrigin,YOrigin,RadiusStep;
   Standard_Integer    DivisionNumber;
-  Quantity_PlaneAngle RotationAngle ;		
+  Standard_Real RotationAngle;
   myViewer->CircularGridValues(XOrigin, YOrigin, RadiusStep, DivisionNumber, RotationAngle );
   m_XOrigin = SavedXOrigin = XOrigin;
   m_YOrigin = SavedYOrigin = YOrigin;

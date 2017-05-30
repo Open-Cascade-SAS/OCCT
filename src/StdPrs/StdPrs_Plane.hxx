@@ -24,7 +24,7 @@
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Standard_Boolean.hxx>
-#include <Quantity_Length.hxx>
+
 class Prs3d_Presentation;
 class Adaptor3d_Surface;
 
@@ -45,29 +45,8 @@ public:
   
   //! returns true if the distance between the point (X,Y,Z) and the
   //! plane is less than aDistance.
-  Standard_EXPORT static Standard_Boolean Match (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z, const Quantity_Length aDistance, const Adaptor3d_Surface& aPlane, const Handle(Prs3d_Drawer)& aDrawer);
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
+  Standard_EXPORT static Standard_Boolean Match (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Adaptor3d_Surface& aPlane, const Handle(Prs3d_Drawer)& aDrawer);
 
 };
-
-
-
-
-
-
 
 #endif // _StdPrs_Plane_HeaderFile

@@ -18,15 +18,15 @@ Sample2D_CTOM_Ellips
 public:
 
  // Generic marker
- Standard_EXPORT Sample2D_Markers (const Quantity_Length theXPosition , 
-                   const Quantity_Length theYPosition ,
+ Standard_EXPORT Sample2D_Markers (const Standard_Real theXPosition,
+                   const Standard_Real theYPosition,
                    const Aspect_TypeOfMarker theMarkerType,
                    const Quantity_Color theColor,
                    const Standard_Real theScaleOrId=5.0);
 
  // Polyline marker
-  Standard_EXPORT Sample2D_Markers (const Quantity_Length theXPosition , 
-                   const Quantity_Length theYPosition ,
+  Standard_EXPORT Sample2D_Markers (const Standard_Real theXPosition,
+                   const Standard_Real theYPosition,
                    const Handle(Graphic3d_ArrayOfPoints)& theArrayOfPoints,
                    const Aspect_TypeOfMarker theMarkerType,
                    const Quantity_Color theColor,
@@ -50,13 +50,13 @@ Standard_EXPORT virtual void SetContext(const Handle(AIS_InteractiveContext)& /*
 
 
 Sample2D_CurrentTypeOfMarker myCurrentTypeOfMarker;
-Quantity_Length          myXPosition   ; 
-Quantity_Length          myYPosition   ; 
-Aspect_TypeOfMarker      myMarkerType;
-Quantity_Color           myColor;
-Quantity_Length          myWidth       ;
-Quantity_Length          myHeight      ;
-Standard_Real         myIndex       ;//myScaleOrId
+Standard_Real  myXPosition;
+Standard_Real  myYPosition;
+Aspect_TypeOfMarker myMarkerType;
+Quantity_Color myColor;
+Standard_Real  myWidth;
+Standard_Real  myHeight;
+Standard_Real  myIndex;//myScaleOrId
 // specific polyline marker
 Handle(Graphic3d_ArrayOfPoints) myArrayOfPoints;
 };

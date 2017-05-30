@@ -103,7 +103,7 @@ static Standard_Integer OCC281bug (Draw_Interpretor& di, Standard_Integer argc, 
 
   if (aViewer->IsActive()) {
     if (aViewer->GridEcho()) {
-      V3d_Coordinate X,Y,Z;
+      Standard_Real X,Y,Z;
       aView->ConvertToGrid(x,y,X,Y,Z);
     } else {
       di << "NOT aViewer->GridEcho()\n";

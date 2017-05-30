@@ -19,9 +19,9 @@
 IMPLEMENT_STANDARD_RTTIEXT(Aspect_Grid,MMgt_TShared)
 
 Aspect_Grid::Aspect_Grid(
-			       const Quantity_Length anXOrigin,
-			       const Quantity_Length anYOrigin,
-			       const Quantity_PlaneAngle anAngle,
+			       const Standard_Real anXOrigin,
+			       const Standard_Real anYOrigin,
+			       const Standard_Real anAngle,
 			       const Quantity_Color& aColor,
 			       const Quantity_Color& aTenthColor)
 : myRotationAngle(anAngle),
@@ -35,32 +35,32 @@ Aspect_Grid::Aspect_Grid(
 }
 
 
-void Aspect_Grid::SetXOrigin(const Quantity_Length anOrigin) {
+void Aspect_Grid::SetXOrigin(const Standard_Real anOrigin) {
   myXOrigin = anOrigin;
   Init();
   UpdateDisplay();
 }
 
-void Aspect_Grid::SetYOrigin(const Quantity_Length anOrigin) {
+void Aspect_Grid::SetYOrigin(const Standard_Real anOrigin) {
   myYOrigin = anOrigin;
   Init();
   UpdateDisplay();
 }
 
-void Aspect_Grid::SetRotationAngle(const Quantity_Length anAngle){
+void Aspect_Grid::SetRotationAngle(const Standard_Real anAngle){
 
 
   myRotationAngle = anAngle;
   Init();
   UpdateDisplay();
 }
-void Aspect_Grid::Rotate(const Quantity_PlaneAngle anAngle) {
+void Aspect_Grid::Rotate(const Standard_Real anAngle) {
   myRotationAngle += anAngle;
   Init();
   UpdateDisplay();
 }
-void Aspect_Grid::Translate(const Quantity_Length aDx,
-				  const Quantity_Length aDy) {
+void Aspect_Grid::Translate(const Standard_Real aDx,
+				  const Standard_Real aDy) {
   myXOrigin += aDx;
   myYOrigin += aDy;
   Init();
@@ -80,10 +80,10 @@ void Aspect_Grid::Colors(Quantity_Color& aColor,
   aTenthColor = myTenthColor;
 }
 
-void Aspect_Grid::Hit(const Quantity_Length X,
-			 const Quantity_Length Y,
-			 Quantity_Length& gridX,
-			 Quantity_Length& gridY) const {
+void Aspect_Grid::Hit(const Standard_Real X,
+			 const Standard_Real Y,
+			 Standard_Real& gridX,
+			 Standard_Real& gridY) const {
    if (myIsActive) {
      Compute(X,Y,gridX,gridY);}
    else{
@@ -99,15 +99,15 @@ void Aspect_Grid::Deactivate () {
   myIsActive = Standard_False;
 }
 
-Quantity_Length Aspect_Grid::XOrigin() const {
+Standard_Real Aspect_Grid::XOrigin() const {
   return myXOrigin;
 }
 
-Quantity_Length Aspect_Grid::YOrigin() const {
+Standard_Real Aspect_Grid::YOrigin() const {
   return myYOrigin;
 }
 
-Quantity_Length Aspect_Grid::RotationAngle() const {
+Standard_Real Aspect_Grid::RotationAngle() const {
   return myRotationAngle;
 }
 

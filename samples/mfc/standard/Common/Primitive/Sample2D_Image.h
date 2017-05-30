@@ -4,8 +4,6 @@
 #include <Standard_DefineHandle.hxx>
 
 #include <OSD_File.hxx>
-#include <Quantity_Length.hxx>
-#include <Quantity_Factor.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
@@ -19,13 +17,13 @@ class Sample2D_Image : public AIS_TexturedShape {
 public:
 
 Standard_EXPORT Sample2D_Image(TCollection_AsciiString& aFileName,
-                               const Quantity_Length X = 0.0,
-                               const Quantity_Length Y = 0.0,
-                               const Quantity_Factor aScale = 1.0);
-Standard_EXPORT inline virtual  void GetCoord(Quantity_Length& X,Quantity_Length& Y) const;
-Standard_EXPORT inline virtual  void SetCoord(const Quantity_Length X,const Quantity_Length Y) ;
-Standard_EXPORT inline   Quantity_Factor GetScale() const;
-Standard_EXPORT inline   void SetScale(const Quantity_Factor aNewScale) ;
+                               const Standard_Real X = 0.0,
+                               const Standard_Real Y = 0.0,
+                               const Standard_Real aScale = 1.0);
+Standard_EXPORT inline virtual  void GetCoord(Standard_Real& X,Standard_Real& Y) const;
+Standard_EXPORT inline virtual  void SetCoord(const Standard_Real X,const Standard_Real Y) ;
+Standard_EXPORT inline   Standard_Real GetScale() const;
+Standard_EXPORT inline   void SetScale(const Standard_Real aNewScale) ;
 Standard_EXPORT virtual void SetContext(const Handle(AIS_InteractiveContext)& theContext) ;
 
 DEFINE_STANDARD_RTTIEXT(Sample2D_Image,AIS_TexturedShape)
@@ -34,33 +32,33 @@ private:
 protected:
 TopoDS_Face myFace;
 TCollection_AsciiString myFilename;
-Quantity_Length       myX;
-Quantity_Length       myY;
-Quantity_Factor       myScale;
+Standard_Real myX;
+Standard_Real myY;
+Standard_Real myScale;
 
 };
 
 // other inline functions and methods (like "C++: function call" methods)
 //
 
-inline  void Sample2D_Image::GetCoord(Quantity_Length& X, Quantity_Length& Y) const
+inline  void Sample2D_Image::GetCoord(Standard_Real& X, Standard_Real& Y) const
 {
   X = myX;
   Y = myY;
 }
 
-inline  void Sample2D_Image::SetCoord(const Quantity_Length X, const Quantity_Length Y) 
+inline  void Sample2D_Image::SetCoord(const Standard_Real X, const Standard_Real Y) 
 {
   myX = X;
   myY = Y;
 }
 
-inline  Quantity_Factor Sample2D_Image::GetScale() const
+inline Standard_Real Sample2D_Image::GetScale() const
 {
   return myScale;
 }
 
-inline  void Sample2D_Image::SetScale(const Quantity_Factor aNewScale) 
+inline void Sample2D_Image::SetScale(const Standard_Real aNewScale) 
 {
   myScale = aNewScale;
 }

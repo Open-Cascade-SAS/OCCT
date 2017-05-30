@@ -58,8 +58,8 @@ protected:
 private :
   Handle(V3d_Viewer) myViewer;
 
-  Quantity_Length  SavedXOrigin,SavedYOrigin , SavedXStep, SavedYStep;
-  Quantity_PlaneAngle SavedRotationAngle ;		
+  Standard_Real SavedXOrigin, SavedYOrigin, SavedXStep, SavedYStep;
+  Standard_Real SavedRotationAngle;
 };
 
 //{{AFX_INSERT_LOCATION}}

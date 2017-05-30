@@ -234,14 +234,14 @@ void DsgPrs::ComputeCurvilinearFacesLengthPresentation( const Standard_Real Firs
 {
   GeomAPI_ProjectPointOnSurf ProjectorOnSurface;
   GeomAPI_ProjectPointOnCurve ProjectorOnCurve;
-  Quantity_Parameter U1, V1, U2, V2;
+  Standard_Real U1, V1, U2, V2;
   Standard_Real LastU, LastV;
   Standard_Real SquareTolerance = Precision::SquareConfusion();
 
   ProjectorOnSurface.Init( AttachmentPoint1, SecondSurf );
   Standard_Integer Index(1);
-  Quantity_Length MinDist = RealLast();
-  Quantity_Parameter LocalU, LocalV;
+  Standard_Real MinDist = RealLast();
+  Standard_Real LocalU, LocalV;
   gp_Vec D1U, D1V;
   gp_Dir LocalDir;
   for (Standard_Integer i = 1; i <= ProjectorOnSurface.NbPoints(); i++)

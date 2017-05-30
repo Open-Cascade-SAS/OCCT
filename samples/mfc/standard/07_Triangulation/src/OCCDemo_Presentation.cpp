@@ -258,7 +258,7 @@ Handle(AIS_Shape) OCCDemo_Presentation::drawShape
   return aGraphicShape;
 }
 /*
-void OCCDemo_Presentation::GetViewCenter(V3d_Coordinate& Xc, V3d_Coordinate& Yc)
+void OCCDemo_Presentation::GetViewCenter(Standard_Real& Xc, Standard_Real& Yc)
 {
 	CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
 	CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();
@@ -266,7 +266,7 @@ void OCCDemo_Presentation::GetViewCenter(V3d_Coordinate& Xc, V3d_Coordinate& Yc)
 	pView->GetViewCenter(Xc,Yc);
 }
 
-void OCCDemo_Presentation::SetViewCenter(V3d_Coordinate Xc, V3d_Coordinate Yc)
+void OCCDemo_Presentation::SetViewCenter(Standard_Real Xc, Standard_Real Yc)
 {
 	CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
 	CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();
@@ -274,7 +274,7 @@ void OCCDemo_Presentation::SetViewCenter(V3d_Coordinate Xc, V3d_Coordinate Yc)
 	pView->SetViewCenter(Xc,Yc);
 }
 
-void OCCDemo_Presentation::GetViewEye(V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z)
+void OCCDemo_Presentation::GetViewEye(Standard_Real& X, Standard_Real& Y, Standard_Real& Z)
 {
 	CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
 	CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();
@@ -282,7 +282,7 @@ void OCCDemo_Presentation::GetViewEye(V3d_Coordinate& X, V3d_Coordinate& Y, V3d_
 	pView->GetViewEye(X,Y,Z);
 }
 
-void OCCDemo_Presentation::SetViewEye(V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z)
+void OCCDemo_Presentation::SetViewEye(Standard_Real X, Standard_Real Y, Standard_Real Z)
 {
 	CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
 	CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();
@@ -290,7 +290,7 @@ void OCCDemo_Presentation::SetViewEye(V3d_Coordinate X, V3d_Coordinate Y, V3d_Co
 	pView->SetViewEye(X,Y,Z);
 }
 
-Quantity_Factor OCCDemo_Presentation::GetViewScale()
+Standard_Real OCCDemo_Presentation::GetViewScale()
 {
 	CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
 	CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();
@@ -298,7 +298,7 @@ Quantity_Factor OCCDemo_Presentation::GetViewScale()
 	return pView->GetViewScale();
 }
 
-void OCCDemo_Presentation::SetViewScale(Quantity_Factor Coef)
+void OCCDemo_Presentation::SetViewScale(Standard_Real Coef)
 {
 	CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
 	CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();

@@ -5,9 +5,9 @@
 IMPLEMENT_STANDARD_RTTIEXT(Sample2D_Image,AIS_TexturedShape)
 
 Sample2D_Image::Sample2D_Image(TCollection_AsciiString& aFileName,
-                               const Quantity_Length X,
-                               const Quantity_Length Y,
-                               const Quantity_Factor aScale)
+                               const Standard_Real X,
+                               const Standard_Real Y,
+                               const Standard_Real aScale)
     :AIS_TexturedShape(TopoDS_Shape())
 {
   myFilename = aFileName;

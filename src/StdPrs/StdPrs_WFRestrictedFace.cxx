@@ -217,14 +217,14 @@ void StdPrs_WFRestrictedFace::Add
 //=========================================================================
 
 Standard_Boolean StdPrs_WFRestrictedFace::Match
-                  (const Quantity_Length               theX,
-                   const Quantity_Length               theY,
-                   const Quantity_Length               theZ,
-                   const Quantity_Length               theDistance,
+                  (const Standard_Real               theX,
+                   const Standard_Real               theY,
+                   const Standard_Real               theZ,
+                   const Standard_Real               theDistance,
                    const Handle(BRepAdaptor_HSurface)& theFace,
                    const Standard_Boolean              theDrawUIso,
                    const Standard_Boolean              theDrawVIso,
-                   const Quantity_Length               theDeflection,
+                   const Standard_Real               theDeflection,
                    const Standard_Integer              theNbUIso,
                    const Standard_Integer              theNBVIso,
                    const Handle(Prs3d_Drawer)&         theDrawer)
@@ -454,10 +454,10 @@ void StdPrs_WFRestrictedFace::AddVIso
 //=========================================================================
 
 Standard_Boolean StdPrs_WFRestrictedFace::Match
-                (const Quantity_Length               theX,
-                 const Quantity_Length               theY,
-                 const Quantity_Length               theZ,
-                 const Quantity_Length               theDistance,
+                (const Standard_Real               theX,
+                 const Standard_Real               theY,
+                 const Standard_Real               theZ,
+                 const Standard_Real               theDistance,
                  const Handle(BRepAdaptor_HSurface)& theFace,
                  const Handle (Prs3d_Drawer)&        theDrawer)
 {
@@ -479,10 +479,10 @@ Standard_Boolean StdPrs_WFRestrictedFace::Match
 //=========================================================================
 
 Standard_Boolean StdPrs_WFRestrictedFace::MatchUIso
-                (const Quantity_Length               theX,
-                 const Quantity_Length               theY,
-                 const Quantity_Length               theZ,
-                 const Quantity_Length               theDistance,
+                (const Standard_Real               theX,
+                 const Standard_Real               theY,
+                 const Standard_Real               theZ,
+                 const Standard_Real               theDistance,
                  const Handle(BRepAdaptor_HSurface)& theFace,
                  const Handle (Prs3d_Drawer)&        theDrawer)
 {
@@ -504,10 +504,10 @@ Standard_Boolean StdPrs_WFRestrictedFace::MatchUIso
 //=========================================================================
 
 Standard_Boolean StdPrs_WFRestrictedFace::MatchVIso
-                (const Quantity_Length               theX,
-                 const Quantity_Length               theY,
-                 const Quantity_Length               theZ,
-                 const Quantity_Length               theDistance,
+                (const Standard_Real               theX,
+                 const Standard_Real               theY,
+                 const Standard_Real               theZ,
+                 const Standard_Real               theDistance,
                  const Handle(BRepAdaptor_HSurface)& theFace,
                  const Handle (Prs3d_Drawer)&        theDrawer)
 {

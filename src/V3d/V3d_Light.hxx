@@ -21,12 +21,10 @@
 #include <Graphic3d_Vertex.hxx>
 #include <MMgt_TShared.hxx>
 #include <Quantity_Color.hxx>
-#include <Quantity_Parameter.hxx>
 #include <Standard.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Type.hxx>
-#include <V3d_Coordinate.hxx>
 #include <V3d_TypeOfLight.hxx>
 #include <V3d_View.hxx>
 
@@ -85,7 +83,12 @@ protected:
   //! Returns the symetric point coordinates of "aPoint"
   //! on the sphere of center "Center" and radius "Radius".
   //! VX,VY,VZ is the project vector of view.
-  Standard_EXPORT static void SymetricPointOnSphere (const Handle(V3d_View)& aView, const Graphic3d_Vertex& Center, const Graphic3d_Vertex& aPoint, const Quantity_Parameter Radius, V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z, Quantity_Parameter& VX, Quantity_Parameter& VY, Quantity_Parameter& VZ);
+  Standard_EXPORT static void SymetricPointOnSphere (const Handle(V3d_View)& aView,
+                                                     const Graphic3d_Vertex& Center,
+                                                     const Graphic3d_Vertex& aPoint,
+                                                     const Standard_Real Radius,
+                                                     Standard_Real& X, Standard_Real& Y, Standard_Real& Z,
+                                                     Standard_Real& VX, Standard_Real& VY, Standard_Real& VZ);
 
 protected:
 

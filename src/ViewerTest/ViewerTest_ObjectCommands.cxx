@@ -5006,11 +5006,11 @@ static Standard_Integer VShowFaceBoundary (Draw_Interpretor& /*di*/,
 
   TCollection_AsciiString aName (argv[1]);
 
-  Quantity_Parameter aRed      = 0.0;
-  Quantity_Parameter aGreen    = 0.0;
-  Quantity_Parameter aBlue     = 0.0;
-  Standard_Real      aWidth    = 1.0;
-  Aspect_TypeOfLine  aLineType = Aspect_TOL_SOLID;
+  Standard_Real aRed   = 0.0;
+  Standard_Real aGreen = 0.0;
+  Standard_Real aBlue  = 0.0;
+  Standard_Real aWidth = 1.0;
+  Aspect_TypeOfLine aLineType = Aspect_TOL_SOLID;
   
   // find object
   Handle(AIS_InteractiveObject) anInterObj;
@@ -5724,9 +5724,9 @@ static int VSetEdgeType (Draw_Interpretor& theDI,
           return 1;
         }
 
-        Quantity_Parameter aR = Draw::Atof(theArgs[++anIt]);
-        Quantity_Parameter aG = Draw::Atof(theArgs[++anIt]);
-        Quantity_Parameter aB = Draw::Atof(theArgs[++anIt]);
+        Standard_Real aR = Draw::Atof(theArgs[++anIt]);
+        Standard_Real aG = Draw::Atof(theArgs[++anIt]);
+        Standard_Real aB = Draw::Atof(theArgs[++anIt]);
         Quantity_Color aColor = Quantity_Color (aR > 1 ? aR / 255.0 : aR,
                                                 aG > 1 ? aG / 255.0 : aG,
                                                 aB > 1 ? aB / 255.0 : aB,

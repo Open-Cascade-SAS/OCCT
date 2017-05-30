@@ -82,9 +82,9 @@ void StdPrs_Plane::Add (const Handle (Prs3d_Presentation)& aPresentation,
 
   gp_Dir norm = thegeom->Pln().Axis().Direction();
   gp_Pnt loc;
-  Quantity_Length siz = theaspect->ArrowsSize();
-  Quantity_Length len = theaspect->ArrowsLength();
-  Quantity_PlaneAngle ang = theaspect->ArrowsAngle();
+  Standard_Real siz = theaspect->ArrowsSize();
+  Standard_Real len = theaspect->ArrowsLength();
+  Standard_Real ang = theaspect->ArrowsAngle();
   gp_Vec trans(norm);
   trans.Scale(Standard_Real(siz));
 
@@ -130,10 +130,10 @@ void StdPrs_Plane::Add (const Handle (Prs3d_Presentation)& aPresentation,
 }
 
 Standard_Boolean StdPrs_Plane::Match
-  (const Quantity_Length X,
-   const Quantity_Length Y,
-   const Quantity_Length Z,
-   const Quantity_Length aDistance,
+  (const Standard_Real X,
+   const Standard_Real Y,
+   const Standard_Real Z,
+   const Standard_Real aDistance,
    const Adaptor3d_Surface& aPlane,
    const Handle (Prs3d_Drawer)&)
 {

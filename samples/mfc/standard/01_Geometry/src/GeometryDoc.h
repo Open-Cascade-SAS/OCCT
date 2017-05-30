@@ -20,8 +20,8 @@ public:
   void Put2DOnTop(bool isMax = true);
   void Put3DOnTop(bool isMax = true);
   void Fit2DViews();
-  void Set3DViewsZoom(const Quantity_Factor& Coef );
-  void Fit3DViews(Quantity_Coefficient Coef);
+  void Set3DViewsZoom(const Standard_Real& Coef );
+  void Fit3DViews(Standard_Real Coef);
   void simplify(const TopoDS_Shape& aShape);
 
 

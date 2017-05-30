@@ -30,7 +30,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_CString.hxx>
 #include <Graphic3d_Vertex.hxx>
-#include <Quantity_PlaneAngle.hxx>
 #include <Graphic3d_TextPath.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
@@ -177,7 +176,7 @@ public:
   //! Coordinates (NPC) Space).
   //! AAngle  : Orientation of the text
   //! (with respect to the horizontal).
-  Standard_EXPORT virtual void Text (const Standard_CString AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Quantity_PlaneAngle AAngle, const Graphic3d_TextPath ATp, const Graphic3d_HorizontalTextAlignment AHta, const Graphic3d_VerticalTextAlignment AVta, const Standard_Boolean EvalMinMax = Standard_True);
+  Standard_EXPORT virtual void Text (const Standard_CString AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Standard_Real AAngle, const Graphic3d_TextPath ATp, const Graphic3d_HorizontalTextAlignment AHta, const Graphic3d_VerticalTextAlignment AVta, const Standard_Boolean EvalMinMax = Standard_True);
 
   //! Creates the string <AText> at position <APoint>.
   //! The 3D point of attachment is projected. The text is
@@ -204,7 +203,7 @@ public:
   //! Coordinates (NPC) Space).
   //! AAngle  : Orientation of the text
   //! (with respect to the horizontal).
-  Standard_EXPORT void Text (const TCollection_ExtendedString& AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Quantity_PlaneAngle AAngle, const Graphic3d_TextPath ATp, const Graphic3d_HorizontalTextAlignment AHta, const Graphic3d_VerticalTextAlignment AVta, const Standard_Boolean EvalMinMax = Standard_True);
+  Standard_EXPORT void Text (const TCollection_ExtendedString& AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Standard_Real AAngle, const Graphic3d_TextPath ATp, const Graphic3d_HorizontalTextAlignment AHta, const Graphic3d_VerticalTextAlignment AVta, const Standard_Boolean EvalMinMax = Standard_True);
 
   //! Creates the string <AText> at position <APoint>.
   //! The 3D point of attachment is projected. The text is
@@ -225,7 +224,7 @@ public:
   Standard_EXPORT virtual void Text (const Standard_CString                  theTextUtf,
                                      const gp_Ax2&                           theOrientation,
                                      const Standard_Real                     theHeight,
-                                     const Quantity_PlaneAngle               theAngle,
+                                     const Standard_Real                     theAngle,
                                      const Graphic3d_TextPath                theTp,
                                      const Graphic3d_HorizontalTextAlignment theHTA,
                                      const Graphic3d_VerticalTextAlignment   theVTA,
@@ -236,7 +235,7 @@ public:
   Standard_EXPORT virtual void Text (const TCollection_ExtendedString&       theText,
                                      const gp_Ax2&                           theOrientation,
                                      const Standard_Real                     theHeight,
-                                     const Quantity_PlaneAngle               theAngle,
+                                     const Standard_Real                     theAngle,
                                      const Graphic3d_TextPath                theTp,
                                      const Graphic3d_HorizontalTextAlignment theHTA,
                                      const Graphic3d_VerticalTextAlignment   theVTA,
