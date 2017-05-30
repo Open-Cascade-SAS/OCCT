@@ -76,12 +76,16 @@ public:
   //! returns    string   stored  in   the  associated  Name
   //! attribute.
   Standard_EXPORT const TCollection_ExtendedString& Name() const;
-  
+
   //! retrieve or create  the associated real attribute  and
-  //! set the  value  <value>.   if creation, dimension   is
-  //! written.
-  Standard_EXPORT void Set (const Standard_Real value, const TDataStd_RealEnum dimension = TDataStd_SCALAR) const;
+  //! set the  value  <value>.
+  Standard_EXPORT void Set (const Standard_Real value) const;
   
+  //! Obsolete method that will be removed in next versions.
+  //! The dimension argument is not supported in the persistence mechanism.
+  Standard_DEPRECATED("TDataStd_Variable::Set(value, dimension) is deprecated. Please use TDataStd_Variable::Set(value) instead.")
+  Standard_EXPORT void Set (const Standard_Real value, const TDataStd_RealEnum dimension) const;
+
   //! returns True if a Real attribute is associated.
   Standard_EXPORT Standard_Boolean IsValued() const;
   

@@ -204,7 +204,9 @@ void TDataStd_Real::Restore(const Handle(TDF_Attribute)& With)
 {
   Handle(TDataStd_Real) R = Handle(TDataStd_Real)::DownCast (With);
   myValue = R->Get();
+  Standard_DISABLE_DEPRECATION_WARNINGS
   myDimension = R->GetDimension();
+  Standard_ENABLE_DEPRECATION_WARNINGS
   myID = R->ID();
 }
 
@@ -220,7 +222,9 @@ void TDataStd_Real::Paste (const Handle(TDF_Attribute)& Into,
 { 
   Handle(TDataStd_Real) R = Handle(TDataStd_Real)::DownCast (Into);
   R->Set(myValue);
+  Standard_DISABLE_DEPRECATION_WARNINGS
   R->SetDimension(myDimension);
+  Standard_ENABLE_DEPRECATION_WARNINGS
   R->SetID(myID);
 }
 
@@ -232,7 +236,9 @@ void TDataStd_Real::Paste (const Handle(TDF_Attribute)& Into,
 Standard_OStream& TDataStd_Real::Dump (Standard_OStream& anOS) const
 {  
   anOS << "Real "; 
-  TDataStd::Print(GetDimension(),anOS);
+  Standard_DISABLE_DEPRECATION_WARNINGS
+  TDataStd::Print(GetDimension(), anOS);
+  Standard_ENABLE_DEPRECATION_WARNINGS
   anOS << myValue; 
   Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);

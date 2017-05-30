@@ -114,6 +114,18 @@ Handle(TDataStd_Real) TDataStd_Variable::Real() const
   return R;
 }
 
+
+//=======================================================================
+//function : Set
+//purpose  : 
+//=======================================================================
+
+void TDataStd_Variable::Set (const Standard_Real value) const
+{
+  Handle(TDataStd_Real) R = TDataStd_Real::Set(Label(), value);
+}
+
+
 //=======================================================================
 //function : Set
 //purpose  : 
@@ -123,7 +135,9 @@ void TDataStd_Variable::Set (const Standard_Real value, const TDataStd_RealEnum 
 {  
   if (!IsValued()) {
     Handle(TDataStd_Real) R = TDataStd_Real::Set(Label(),value);
+    Standard_DISABLE_DEPRECATION_WARNINGS
     R->SetDimension (dimension);
+    Standard_ENABLE_DEPRECATION_WARNINGS
   }
   else {
     Handle(TDataStd_Real) R = TDataStd_Real::Set(Label(),value);

@@ -63,8 +63,14 @@ public:
 
   Standard_EXPORT TDataStd_Real();
   
+  //! Obsolete method that will be removed in next versions.
+  //! This field is not supported in the persistence mechanism.
+  Standard_DEPRECATED("TDataStd_Real::SetDimension() is deprecated. Please avoid usage of this method.")
   Standard_EXPORT void SetDimension (const TDataStd_RealEnum DIM);
   
+  //! Obsolete method that will be removed in next versions.
+  //! This field is not supported in the persistence mechanism.
+  Standard_DEPRECATED("TDataStd_Real::GetDimension() is deprecated. Please avoid usage of this method.")
   Standard_EXPORT TDataStd_RealEnum GetDimension() const;
   
 
@@ -107,6 +113,7 @@ private:
 
 
   Standard_Real myValue;
+  //! An obsolete field that will be removed in next versions.
   TDataStd_RealEnum myDimension;
   Standard_GUID myID;
 

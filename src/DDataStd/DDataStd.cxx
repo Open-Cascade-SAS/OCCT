@@ -68,10 +68,12 @@ void DDataStd::DumpConstraint (const Handle(TDataXtd_Constraint)& CTR, Standard_
     anOS << " V (";
     TDF_Tool::Entry(CTR->GetValue()->Label(),S); 
     anOS << S << ") ";     
-    TDataStd_RealEnum t = CTR->GetValue()->GetDimension();  
+    Standard_DISABLE_DEPRECATION_WARNINGS
+    TDataStd_RealEnum t = CTR->GetValue()->GetDimension();
     TDataStd::Print(t,anOS); 
     Standard_Real val = CTR->GetValue()->Get();
     if (t == TDataStd_ANGULAR) val = (180.*val)/M_PI;
+    Standard_ENABLE_DEPRECATION_WARNINGS
     anOS << " ";
     anOS << val;
   }
