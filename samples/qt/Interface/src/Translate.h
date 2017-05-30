@@ -30,9 +30,9 @@ protected:
                                                     const Handle(TopTools_HSequenceOfShape)& );
     virtual bool                              displayShSequence(const Handle(AIS_InteractiveContext)&,
                                                     const Handle(TopTools_HSequenceOfShape)& );
+    QString                                   selectFileName( const int, const bool );
 
 private:
-    QString                                   selectFileName( const int, const bool );
     TranslateDlg*                             getDialog( const int, const bool );
     Handle(TopTools_HSequenceOfShape)         getShapes( const Handle(AIS_InteractiveContext)& );
 
