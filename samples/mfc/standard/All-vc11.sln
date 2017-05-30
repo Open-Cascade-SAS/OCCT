@@ -1,26 +1,26 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Geometry", "01_Geometry\adm\win\vc11\Geometry.vcxproj", "{31E8199C-C981-4B7F-9CC2-B8502565B581}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Geometry", "01_Geometry\adm\win\vc10\Geometry.vcxproj", "{31E8199C-C981-4B7F-9CC2-B8502565B581}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Modeling", "02_Modeling\adm\win\vc11\Modeling.vcxproj", "{B10FC678-B9AF-4B05-B3DC-8F790C610CC3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Modeling", "02_Modeling\adm\win\vc10\Modeling.vcxproj", "{B10FC678-B9AF-4B05-B3DC-8F790C610CC3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Viewer2d", "03_Viewer2d\adm\win\vc11\Viewer2d.vcxproj", "{6B905DC2-4E72-4EDA-99C2-7473634690FE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Viewer2d", "03_Viewer2d\adm\win\vc10\Viewer2d.vcxproj", "{6B905DC2-4E72-4EDA-99C2-7473634690FE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Viewer3d", "04_Viewer3d\adm\win\vc11\Viewer3d.vcxproj", "{949DFBDF-9007-4C88-8925-43209C36A5D6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Viewer3d", "04_Viewer3d\adm\win\vc10\Viewer3d.vcxproj", "{949DFBDF-9007-4C88-8925-43209C36A5D6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImportExport", "05_ImportExport\adm\win\vc11\ImportExport.vcxproj", "{1C9A05AE-AF5A-4ACE-9A72-83436D77504C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImportExport", "05_ImportExport\adm\win\vc10\ImportExport.vcxproj", "{1C9A05AE-AF5A-4ACE-9A72-83436D77504C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ocaf", "06_Ocaf\adm\win\vc11\Ocaf.vcxproj", "{B3C10EF6-42C7-4DB8-A49C-7E38255D5B1B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ocaf", "06_Ocaf\adm\win\vc10\Ocaf.vcxproj", "{B3C10EF6-42C7-4DB8-A49C-7E38255D5B1B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Triangulation", "07_Triangulation\adm\win\vc11\Triangulation.vcxproj", "{B50C10C8-5260-498B-A80F-48FFB4534360}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Triangulation", "07_Triangulation\adm\win\vc10\Triangulation.vcxproj", "{B50C10C8-5260-498B-A80F-48FFB4534360}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HLR", "08_HLR\adm\win\vc11\HLR.vcxproj", "{76045260-8DA6-4A3E-B220-F5B1B4ADE192}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HLR", "08_HLR\adm\win\vc10\HLR.vcxproj", "{76045260-8DA6-4A3E-B220-F5B1B4ADE192}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Animation", "09_Animation\adm\win\vc11\Animation.vcxproj", "{92492ACB-1F57-40BB-818F-33AD1C20273A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Animation", "09_Animation\adm\win\vc10\Animation.vcxproj", "{92492ACB-1F57-40BB-818F-33AD1C20273A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mfcsample", "mfcsample\adm\win\vc11\mfcsample.vcxproj", "{2D6CBBE8-6965-4016-B503-0D715AE26691}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mfcsample", "mfcsample\adm\win\vc10\mfcsample.vcxproj", "{2D6CBBE8-6965-4016-B503-0D715AE26691}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Convert", "10_Convert\adm\win\vc11\Convert.vcxproj", "{C527B648-F98D-42E5-9F59-251FD95D15A0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Convert", "10_Convert\adm\win\vc10\Convert.vcxproj", "{C527B648-F98D-42E5-9F59-251FD95D15A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

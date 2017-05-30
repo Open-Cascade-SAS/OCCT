@@ -28,21 +28,25 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>$(VCPlatformToolSet)</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>$(VCPlatformToolSet)</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>$(VCPlatformToolSet)</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>$(VCPlatformToolSet)</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -66,16 +70,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../win32\vc10\bind\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../win32\$(VCFMT)\bind\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\win32\objd\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../win64\vc10\bind\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../win64\$(VCFMT)\bind\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\win64\objd\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../../win32\vc10\bin\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../../win32\$(VCFMT)\bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\win32\obj\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../../../win64\vc10\bin\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../../../win64\$(VCFMT)\bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\win64\obj\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
   </PropertyGroup>
@@ -92,7 +96,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(CSF_OCCTIncludePath);..\..\..\..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_AFXEXT;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_AFXEXT;WINVER=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -112,13 +116,13 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>TKVCAF.lib;TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKMesh.lib;TKV3d.lib;TKOpenGl.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../win32\vc10\bind/mfcsample.dll</OutputFile>
+      <OutputFile>../../../../win32\$(VCFMT)\bind/mfcsample.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(CSF_OCCTLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>../../../../win32\vc10\bind/mfcsample.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>../../../../win32\$(VCFMT)\bind/mfcsample.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>../../../../win32\vc10\libd/mfcsample.lib</ImportLibrary>
+      <ImportLibrary>../../../../win32\$(VCFMT)\libd/mfcsample.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -135,7 +139,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(CSF_OCCTIncludePath);..\..\..\..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_AFXEXT;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_AFXEXT;WINVER=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -155,13 +159,13 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>TKVCAF.lib;TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKMesh.lib;TKV3d.lib;TKOpenGl.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../win64\vc10\bind/mfcsample.dll</OutputFile>
+      <OutputFile>../../../../win64\$(VCFMT)\bind/mfcsample.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(CSF_OCCTLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>../../../../win64\vc10\bind/mfcsample.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>../../../../win64\$(VCFMT)\bind/mfcsample.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>../../../../win64\vc10\libd/mfcsample.lib</ImportLibrary>
+      <ImportLibrary>../../../../win64\$(VCFMT)\libd/mfcsample.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -179,7 +183,7 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>$(CSF_OCCTIncludePath);..\..\..\..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_AFXEXT;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_AFXEXT;WINVER=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -199,12 +203,12 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>TKVCAF.lib;TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKMesh.lib;TKV3d.lib;TKOpenGl.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../win32\vc10\bin/mfcsample.dll</OutputFile>
+      <OutputFile>../../../../win32\$(VCFMT)\bin/mfcsample.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(CSF_OCCTLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>../../../../win32\vc10\bin/mfcsample.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>../../../../win32\$(VCFMT)\bin/mfcsample.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>../../../../win32\vc10\lib/mfcsample.lib</ImportLibrary>
+      <ImportLibrary>../../../../win32\$(VCFMT)\lib/mfcsample.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -222,7 +226,7 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>$(CSF_OCCTIncludePath);..\..\..\..\Common;..\..\..\..\..\..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_AFXEXT;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_AFXEXT;WINVER=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -243,12 +247,12 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>TKVCAF.lib;TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKMesh.lib;TKV3d.lib;TKOpenGl.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../win64\vc10\bin/mfcsample.dll</OutputFile>
+      <OutputFile>../../../../win64\$(VCFMT)\bin/mfcsample.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(CSF_OCCTLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>../../../../win64\vc10\bin/mfcsample.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>../../../../win64\$(VCFMT)\bin/mfcsample.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>../../../../win64\vc10\lib/mfcsample.lib</ImportLibrary>
+      <ImportLibrary>../../../../win64\$(VCFMT)\lib/mfcsample.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
