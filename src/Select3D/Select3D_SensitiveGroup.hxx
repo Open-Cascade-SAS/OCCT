@@ -47,6 +47,25 @@ public:
                                            Select3D_EntitySequence& theEntities,
                                            const Standard_Boolean theIsMustMatchAll = Standard_True);
 
+  //! Gets group content
+  const Select3D_EntitySequence& GetEntities() const { return myEntities; }
+
+  //! Access entity by index [1, NbSubElements()].
+  const Handle(Select3D_SensitiveEntity)& SubEntity (const Standard_Integer theIndex) const
+  {
+    return myEntities.Value (theIndex);
+  }
+
+  //! Return last detected entity.
+  Handle(Select3D_SensitiveEntity) LastDetectedEntity() const
+  {
+    const Standard_Integer anIndex = LastDetectedEntityIndex();
+    return anIndex != -1 ? myEntities.Value (anIndex) : Handle(Select3D_SensitiveEntity)();
+  }
+
+  //! Return index of last detected entity.
+  Standard_Integer LastDetectedEntityIndex() const { return myDetectedIdx != -1 ? myBVHPrimIndexes.Value (myDetectedIdx) : -1; }
+
   //! Adds the list of sensitive entities LL to the empty
   //! sensitive group object created at construction time.
   Standard_EXPORT void Add (Select3D_EntitySequence& theEntities);
@@ -74,6 +93,20 @@ public:
   //! at the time of construction, or added using the function Add must be matched.
   Standard_Boolean MustMatchAll() const { return myMustMatchAll; }
 
+  //! Returns TRUE if all sensitive entities should be checked within rectangular/polygonal selection, FALSE by default.
+  //! Can be useful for sensitive entities holding detection results as class property.
+  Standard_Boolean ToCheckOverlapAll() const
+  {
+    return myToCheckOverlapAll;
+  }
+
+  //! Returns TRUE if all sensitive entities should be checked within rectangular/polygonal selection, FALSE by default.
+  //! Can be useful for sensitive entities holding detection results as class property.
+  void SetCheckOverlapAll (Standard_Boolean theToCheckAll)
+  {
+    myToCheckOverlapAll = theToCheckAll;
+  }
+
   //! Checks whether the group overlaps current selecting volume
   Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
@@ -85,9 +118,6 @@ public:
 
   //! Sets the owner for all entities in group
   Standard_EXPORT void Set (const Handle(SelectBasics_EntityOwner)& theOwnerId) Standard_OVERRIDE;
-
-  //! Gets group content
-  const Select3D_EntitySequence& GetEntities() const { return myEntities; }
 
   //! Returns bounding box of the group. If location transformation
   //! is set, it will be applied
@@ -130,6 +160,7 @@ private:
 
   Select3D_EntitySequence              myEntities;           //!< Grouped sensitive entities
   Standard_Boolean                     myMustMatchAll;       //!< Determines whether all entities in the group should be overlapped or not
+  Standard_Boolean                     myToCheckOverlapAll;  //!< flag to check overlapping with all entities within rectangular/polygonal selection
   gp_Pnt                               myCenter;             //!< Center of geometry of the group
   mutable Select3D_BndBox3d            myBndBox;             //!< Bounding box of the group
   NCollection_Vector<Standard_Integer> myBVHPrimIndexes;     //!< Vector of sub-entities indexes for BVH tree build

@@ -32,6 +32,9 @@ public:
   //! Sets properties of the geometric object.
   virtual void SetProperties (const Handle(BVH_Properties)& theProperties) { myProperties = theProperties; }
 
+  //! Returns TRUE if object state should be updated.
+  virtual Standard_Boolean IsDirty() const { return myIsDirty; }
+
   //! Marks object state as outdated (needs BVH rebuilding).
   virtual void MarkDirty() { myIsDirty = Standard_True; }
 

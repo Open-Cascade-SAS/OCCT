@@ -28,6 +28,7 @@ Select3D_SensitiveGroup::Select3D_SensitiveGroup (const Handle(SelectBasics_Enti
                                                   const Standard_Boolean theIsMustMatchAll)
 : Select3D_SensitiveSet (theOwnerId),
   myMustMatchAll (theIsMustMatchAll),
+  myToCheckOverlapAll (Standard_False),
   myCenter (0.0, 0.0, 0.0) {}
 
 //=======================================================================
@@ -38,10 +39,10 @@ Select3D_SensitiveGroup::Select3D_SensitiveGroup (const Handle(SelectBasics_Enti
                                                   Select3D_EntitySequence& theEntities,
                                                   const Standard_Boolean theIsMustMatchAll)
 : Select3D_SensitiveSet (theOwnerId),
-  myMustMatchAll (theIsMustMatchAll)
+  myMustMatchAll (theIsMustMatchAll),
+  myToCheckOverlapAll (Standard_False),
+  myCenter (0.0, 0.0, 0.0)
 {
-  myCenter = gp_Pnt (0.0, 0.0, 0.0);
-
   for (Select3D_EntitySequenceIter anIter (theEntities); anIter.More(); anIter.Next())
   {
     const Handle(Select3D_SensitiveEntity)& anEntity = anIter.Value();
@@ -187,29 +188,46 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveGroup::GetConnected()
 Standard_Boolean Select3D_SensitiveGroup::Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                    SelectBasics_PickResult& thePickResult)
 {
-  if (!myMustMatchAll
-    || theMgr.GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Point)
+  const Standard_Boolean toMatchAll = theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Point
+                                   && myMustMatchAll;
+  const Standard_Boolean toCheckAll = theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Point
+                                   && myToCheckOverlapAll;
+  if (!toMatchAll && !toCheckAll)
+  {
     return Select3D_SensitiveSet::Matches (theMgr, thePickResult);
+  }
 
   Standard_Real aDepth     = RealLast();
   Standard_Real aDistToCOG = RealLast();
-
+  Standard_Boolean isFailed = Standard_False;
   for (Select3D_EntitySequenceIter anIt (myEntities); anIt.More(); anIt.Next())
   {
     SelectBasics_PickResult aMatchResult;
     Handle(Select3D_SensitiveEntity)& aChild = anIt.ChangeValue();
     if (!aChild->Matches (theMgr, aMatchResult))
     {
-      aMatchResult = SelectBasics_PickResult (RealLast(), RealLast());
-      return Standard_False;
+      if (toMatchAll)
+      {
+        isFailed = Standard_True;
+        if (!toCheckAll)
+        {
+          break;
+        }
+      }
     }
-
-    aDepth = Min (aMatchResult.Depth(), aDepth);
+    else
+    {
+      aDepth = Min (aMatchResult.Depth(), aDepth);
+    }
+  }
+  if (isFailed)
+  {
+    thePickResult = SelectBasics_PickResult (RealLast(), RealLast());
+    return Standard_False;
   }
 
   aDistToCOG = theMgr.DistToGeometryCenter (CenterOfGeometry());
   thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
-
   return Standard_True;
 }
 

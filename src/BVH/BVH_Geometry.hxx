@@ -57,6 +57,9 @@ public:
 
 public:
 
+  //! Returns TRUE if geometry state should be updated.
+  virtual Standard_Boolean IsDirty() const { return myIsDirty; }
+
   //! Marks geometry as outdated.
   virtual void MarkDirty() { myIsDirty = Standard_True; }
 

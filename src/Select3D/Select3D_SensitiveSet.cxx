@@ -74,10 +74,9 @@ void Select3D_SensitiveSet::BVH()
 Standard_Boolean Select3D_SensitiveSet::Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                  SelectBasics_PickResult& thePickResult)
 {
+  myDetectedIdx = -1;
   const BVH_Tree<Standard_Real, 3, BVH_BinaryTree>* aBVH = myContent.GetBVH().get();
-
   thePickResult = SelectBasics_PickResult (RealLast(), RealLast());
-
   if (myContent.Size() < 1 || !theMgr.Overlaps (aBVH->MinPoint (0),
                                                 aBVH->MaxPoint (0)))
   {
@@ -90,7 +89,6 @@ Standard_Boolean Select3D_SensitiveSet::Matches (SelectBasics_SelectingVolumeMan
 
   Standard_Integer aMatchesNb = -1;
   Standard_Real    aMinDepth  = RealLast();
-
   for (;;)
   {
     const BVH_Vec4i& aData = aBVH->NodeInfoBuffer()[aNode];

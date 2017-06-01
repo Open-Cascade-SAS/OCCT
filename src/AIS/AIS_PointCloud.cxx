@@ -437,9 +437,11 @@ void AIS_PointCloud::ComputeSelection (const Handle(SelectMgr_Selection)& theSel
       if (!aPoints.IsNull()
        && !aPoints->Attributes().IsNull())
       {
+        // split large point clouds into several groups
+        const Standard_Integer aNbGroups = aPoints->Attributes()->NbElements > 500000 ? 8 : 1;
         Handle(Select3D_SensitivePrimitiveArray) aSensitive = new Select3D_SensitivePrimitiveArray (anOwner);
         aSensitive->SetSensitivityFactor (8);
-        aSensitive->InitPoints (aPoints->Attributes(), aPoints->Indices(), TopLoc_Location());
+        aSensitive->InitPoints (aPoints->Attributes(), aPoints->Indices(), TopLoc_Location(), true, aNbGroups);
         aSensitive->BVH();
         theSelection->Add (aSensitive);
         return;
