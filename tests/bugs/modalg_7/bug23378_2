@@ -1,0 +1,33 @@
+puts "========"
+puts "OCC23378"
+puts "========"
+puts ""
+########################################
+# BRepAlgoAPI_Cut returns wrong result
+########################################
+
+# Restore the initial shape
+restore [locate_data_file bug23378_blower1.brep] b
+
+# Test case body
+explode b
+bop b_1 b_2
+bopcut r
+
+# Result of operation should be two shapes (checking)
+set oper_result [explode r]
+if {[llength $oper_result] != 2} {
+  puts "ERRROR: Result of BrepAlgoAPI_Cut is unexpected"
+}
+
+# Algorithmic check of r_2 shape
+renamevar r_2 result
+checkshape result
+checkprops result -s 2.77917
+
+# Visualization check of r_2 shape
+vinit
+vsetdispmode 1
+vdisplay result
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
