@@ -1,0 +1,20 @@
+puts "========"
+puts "OCC28784"
+puts "========"
+puts ""
+#######################################################
+# [HLR] Crash while getting hidden lines for a compound
+#######################################################
+
+pload QAcommands
+
+restore [locate_data_file bug28784_MHX_SKG_MS_Pos1_simplified.brep] a
+OCC28784 result a
+
+checknbshapes result -edge 236
+
+smallview
+top
+donly result
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

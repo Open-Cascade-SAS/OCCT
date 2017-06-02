@@ -56,6 +56,8 @@
 #include <XCAFDoc_ShapeTool.hxx>
 
 #include <HLRAppli_ReflectLines.hxx>
+#include <HLRBRep_PolyHLRToShape.hxx>
+#include <HLRBRep_PolyAlgo.hxx>
 
 //=======================================================================
 //function : SurfaceGenOCC26675_1 
@@ -2305,6 +2307,32 @@ static Standard_Integer OCC28594(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
+static Standard_Integer OCC28784(Draw_Interpretor&, Standard_Integer argc, const char** argv)
+{
+  if (argc < 3)
+    return 1;
+
+  TopoDS_Shape aShape =  DBRep::Get(argv[2]);
+  if (aShape.IsNull())
+    return 1;
+
+  gp_Ax2 aPlane (gp::Origin(), gp::DX(), -gp::DZ());
+  HLRAlgo_Projector aProjector(aPlane);
+
+  Handle(HLRBRep_PolyAlgo) aHLR = new HLRBRep_PolyAlgo(aShape);
+  aHLR->Projector(aProjector);
+  aHLR->Update();
+
+  HLRBRep_PolyHLRToShape aHLRtoShape;
+  aHLRtoShape.Update(aHLR);
+
+  TopoDS_Shape aHidden = aHLRtoShape.HCompound();
+  
+  DBRep::Set(argv[1], aHidden);
+
+  return 0;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -2326,6 +2354,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC27875", "OCC27875 curve", __FILE__, OCC27875, group);
   theCommands.Add("OCC28389", "OCC28389", __FILE__, OCC28389, group);
   theCommands.Add("OCC28594", "OCC28594", __FILE__, OCC28594, group);
+  theCommands.Add("OCC28784", "OCC28784 result shape", __FILE__, OCC28784, group);
 
   return;
 }

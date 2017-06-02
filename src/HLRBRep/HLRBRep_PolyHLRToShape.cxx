@@ -132,8 +132,13 @@ HLRBRep_PolyHLRToShape::InternalCompound (const Standard_Integer typ,
       if (todraw)
 	if (!S.IsNull()) todraw = Map.Contains(BP.Shape());
       if (todraw) {
-	B.Add(Result,BRepLib_MakeEdge2d(BP.P1(),BP.P2()));
-	added = Standard_True;
+        const gp_Pnt2d& FirstP2d = BP.P1();
+        const gp_Pnt2d& LastP2d  = BP.P2();
+        if (FirstP2d.SquareDistance(LastP2d) > 1.e-20)
+        {
+          B.Add(Result,BRepLib_MakeEdge2d(BP.P1(),BP.P2()));
+          added = Standard_True;
+        }
       }
     }
   }
@@ -156,7 +161,7 @@ HLRBRep_PolyHLRToShape::InternalCompound (const Standard_Integer typ,
   const gp_XY aSta2D(aSta.X(), aSta.Y());
   const gp_XY aEnd2D(aEnd.X(), aEnd.Y());
   const gp_XY aD = aEnd2D - aSta2D;
-	if (aD.Modulus() > 1.e-10) {
+	if (aD.SquareModulus() > 1.e-20) {
 	  B.Add(Result,BRepLib_MakeEdge2d(aSta2D, aEnd2D));
 	  added = Standard_True;
 	}
