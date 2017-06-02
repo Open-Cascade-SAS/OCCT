@@ -20,13 +20,11 @@
 #include <OpenGl_GlCore20.hxx>
 #include <OpenGl_Resource.hxx>
 
-class OpenGl_ShaderObject;
-DEFINE_STANDARD_HANDLE(OpenGl_ShaderObject, OpenGl_Resource)
-
 //! Wrapper for OpenGL shader object.
 class OpenGl_ShaderObject : public OpenGl_Resource
 {
-
+  DEFINE_STANDARD_RTTIEXT(OpenGl_ShaderObject, OpenGl_Resource)
+  friend class OpenGl_ShaderProgram;
 public:
 
   //! Non-valid shader name.
@@ -47,10 +45,6 @@ public:
   //! Compiles the shader object.
   Standard_EXPORT Standard_Boolean Compile (const Handle(OpenGl_Context)& theCtx);
 
-  //! Initializes (loads and compiles) shader object with the specified description.
-  Standard_EXPORT Standard_Boolean Initialize (const Handle(OpenGl_Context)&         theCtx,
-                                               const Handle(Graphic3d_ShaderObject)& theShader);
-
   //! Fetches information log of the last compile operation.
   Standard_EXPORT Standard_Boolean FetchInfoLog (const Handle(OpenGl_Context)& theCtx,
                                                  TCollection_AsciiString&      theLog);
@@ -69,11 +63,8 @@ protected:
   GLenum myType;     //!< Type of OpenGL shader object
   GLuint myShaderID; //!< Handle of OpenGL shader object
 
-public:
-
-  DEFINE_STANDARD_RTTIEXT(OpenGl_ShaderObject,OpenGl_Resource)
-  friend class OpenGl_ShaderProgram;
-
 };
+
+DEFINE_STANDARD_HANDLE(OpenGl_ShaderObject, OpenGl_Resource)
 
 #endif // _OpenGl_ShaderObject_Header
