@@ -242,7 +242,7 @@ The names *begin, end, data, parse.rules, grids.list* and *cases.list* are reser
 
 General layout of test scripts is shown in Figure 1.
 
-@figure{/dev_guides/tests/images/tests_image001.png, "Layout of tests folder"}
+@figure{/dev_guides/tests/images/tests_image001.png,"Layout of tests folder",400}
 
 
 @subsection testmanual_2_2 Test Groups
@@ -1406,3 +1406,4 @@ Use options <i>-tol_\* </i> for that.
 ~~~~~
 checktrinfo result -defl 1 -tol_abs_defl 0.001
 ~~~~~
+

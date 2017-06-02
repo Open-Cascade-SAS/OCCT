@@ -13,7 +13,7 @@ Data types such as colors, layers, assembly descriptions and validation properti
 
 Finally, the XDE provides reader and writer tools for reading and writing the data supported by XCAF to and from IGES and STEP files. 
 
-@figure{/user_guides/xde/images/646_xde_11_400.png,"Shape imported using XDE"}
+@figure{/user_guides/xde/images/646_xde_11_400.png,"Shape imported using XDE",240}
 
 The XDE component requires @ref occt_user_guides__shape_healing "Shape Healing" toolkit for operation. 
 
@@ -39,10 +39,10 @@ The Document used by XDE usually starts as a *TDocStd_Document*.
 XDE supports assemblies by separating shape definitions and their locations. Shapes are simple OCAF objects without a location definition. An assembly consists of several components. Each of these components references one and the same specified shape with different locations. All this provides an increased flexibility in working on multi-level assemblies. 
 
 For example, a mechanical assembly can be defined as follows: 
-@figure{/user_guides/xde/images/xde_image003.png, "Assembly Description"}
+@figure{/user_guides/xde/images/xde_image003.png,"Assembly Description",240}
 
 
-@figure{/user_guides/xde/images/xde_image004.png, "Assembly View"}
+@figure{/user_guides/xde/images/xde_image004.png,"Assembly View",240}
 
 
 XDE defines the specific organization of the assembly content. Shapes are stored on sub-labels of label 0:1:1. There can be one or more roots (called free shapes) whether they are true trees or simple shapes. A shape can be considered to be an Assembly (such as AS1 under 0:1:1:1 in Figure1) if it is defined with Components (sub-shapes, located or not). 
@@ -54,7 +54,7 @@ Validation properties are geometric characteristics of Shapes (volume, centroid,
 
 Advanced Data Exchange supports both reading and writing of validation properties, and provides a tool to check them. 
 
-@figure{/user_guides/xde/images/xde_image005.png, "Validation Property Descriptions"}
+@figure{/user_guides/xde/images/xde_image005.png,"Validation Property Descriptions",240}
 
 Check logs contain deviations of computed values from the values stored in a STEP file. A typical example appears as follows: 
 
@@ -81,7 +81,7 @@ In our example, it can be seen that no errors were detected for either area, vol
 
 XDE supports reading and writing the names of shapes to and from IGES and STEP file formats. This functionality can be switched off if you do not need this type of data, thereby reducing the size of the document. 
 
-@figure{/user_guides/xde/images/614_xde_04_400.png, "Instance Names"}
+@figure{/user_guides/xde/images/614_xde_04_400.png,"Instance Names",360}
 
 @subsection occt_xde_1_6 Colors and Layers
 XDE can read and write colors and layers assigned to shapes or their subparts (down to the level of faces and edges) to and from both IGES and STEP formats. Three types of colors are defined in the enumeration *XCAFDoc_ColorType*: 
@@ -89,7 +89,7 @@ XDE can read and write colors and layers assigned to shapes or their subparts (d
   * surface color <i>(XCAFDoc_ColorSurf)</i>
   * curve color <i>(XCAFDoc_ColorCurv)</i>
   
- @figure{/user_guides/xde/images/xde_image006.png, "Colors and Layers"}
+ @figure{/user_guides/xde/images/xde_image006.png,"Colors and Layers",240}
 
 
 @section occt_xde_2 Working with XDE
@@ -482,7 +482,7 @@ XCAFDoc_Volume::Set ( aLabel, volume );
 
 XDE can read and write colors and layers assigned to shapes or their subparts (down to level of faces and edges) to and from both IGES and STEP formats. 
 
-@figure{/user_guides/xde/images/239_xde_12_400.png,"Motor Head"}
+@figure{/user_guides/xde/images/239_xde_12_400.png,"Motor Head",240}
 
 In an XDE document, colors are managed by the class *XCAFDoc_ColorTool*. This is done with the same principles as for ShapeTool with Shapes, and with the same capability of having a tool on the Main Label, or on any sub-label. The Property itself is defined as an *XCAFDoc_Color*, sub-class of *TDF_Attribute*.
  
@@ -684,3 +684,4 @@ As XDE provides an extension of the data structure, for relevant data in standar
 As a result, if an application works on Assemblies, on Colors or Layers, on Validation Properties (as defined in STEP), it can rely on all or a part of the XDE definitions, and include them in its own data structure. 
 
 In addition, if an application has a data structure far from these notions, it can get data (such as Colors and Names on Shapes) according to its needs, but without having to consider the whole. 
+

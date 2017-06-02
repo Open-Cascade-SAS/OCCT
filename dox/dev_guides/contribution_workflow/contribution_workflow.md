@@ -35,7 +35,7 @@ According to his access level, the user can participate in the issue handling pr
 @subsection occt_contribution_workflow_general General scheme
 
 <center>
-@figure{OCCT_ContributionWorkflow_V3_image001.svg, "Standard life cycle of an issue"}
+@figure{OCCT_ContributionWorkflow_V3_image001.svg,"Standard life cycle of an issue",360}
 </center>
   
 @subsection occt_contribution_workflow_issue Issue registration
@@ -280,7 +280,7 @@ Each change is integrated as a single commit without preserving the history of c
 This is done to have the master branch history plain and clean.
 The following picture illustrates the process:
   
-@figure{OCCT_ContributionWorkflow_V3_image002.png, "Integration of several branches"}
+@figure{OCCT_ContributionWorkflow_V3_image002.png,"Integration of several branches",420}
   
 The new integration branch is tested against possible regressions that might appear due to interference between separate changes.
 When the tests are OK, the integration branch is pushed as the new master to the official repository.
@@ -461,3 +461,4 @@ The category corresponds to the component of OCCT where the issue is found:
   | Suspended             | The issue is postponed (for Acknowledged status).                            |
   | Documentation updated | The documentation has been updated to resolve a misunderstanding causing the issue. |
   | Won’t fix             | It is decided to keep the existing behavior.                                     |
+

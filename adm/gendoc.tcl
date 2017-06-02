@@ -29,7 +29,7 @@ source [file join [file dirname [info script]] occaux.tcl]
 
 # Prints help message
 proc OCCDoc_PrintHelpMessage {} {
-    puts "\nUsage: gendoc \[-h\] {-refman|-overview} \[-html|-pdf|-chm\] \[-m=<list of modules>|-ug=<list of docs>\] \[-v\] \[-s=<search_mode>\] \[-mathjax=<path>\] \[-update_images_size\]"
+    puts "\nUsage: gendoc \[-h\] {-refman|-overview} \[-html|-pdf|-chm\] \[-m=<list of modules>|-ug=<list of docs>\] \[-v\] \[-s=<search_mode>\] \[-mathjax=<path>\]"
     puts ""
     puts "Options are:"
     puts ""
@@ -57,7 +57,6 @@ proc OCCDoc_PrintHelpMessage {} {
     puts "                       Can be: none | local | server | external"
     puts "  -h                 : Prints this help message"
     puts "  -v                 : Enables more verbose output"
-    puts "  -update_images_size: Updates width of images in *.md files during pdf generation for @figure alias. It takes actual size of image."
 }
 
 # A command for User Documentation compilation
@@ -70,7 +69,6 @@ proc gendoc {args} {
   set MODULES                   {}
   set DOCLABEL                  ""
   set VERB_MODE                 "NO"
-  set UPDATE_IMAGES_SIZE        "NO"
   set SEARCH_MODE               "none"
   set MATHJAX_LOCATION          "https://cdn.mathjax.org/mathjax/latest"
   set mathjax_js_name           "MathJax.js"
@@ -199,8 +197,6 @@ proc gendoc {args} {
       
     } elseif {$arg_n == "v"} {
       set VERB_MODE "YES"
-    } elseif {$arg_n == "update_images_size"} {
-      set UPDATE_IMAGES_SIZE "YES"
     } elseif {$arg_n == "ug"} {
       if { ([ lsearch $args_names "refman" ]   != -1) } {
         continue
@@ -317,19 +313,19 @@ proc gendoc {args} {
   # Start main activities
   if { $GEN_MODE != "PDF_ONLY" } {
     if { [OCCDoc_GetProdRootDir] == ""} {
-      OCCDoc_Main $DOC_TYPE $DOCFILES $MODULES $GEN_MODE $VERB_MODE $UPDATE_IMAGES_SIZE $SEARCH_MODE $MATHJAX_LOCATION $GENERATE_PRODUCTS_REFMAN $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
+      OCCDoc_Main $DOC_TYPE $DOCFILES $MODULES $GEN_MODE $VERB_MODE $SEARCH_MODE $MATHJAX_LOCATION $GENERATE_PRODUCTS_REFMAN $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
     } else {
       if { $DOC_TYPE == "REFMAN" } {
         if { $MODULES != "" } {
           foreach module $MODULES {
-            OCCDoc_Main $DOC_TYPE $DOCFILES $module $GEN_MODE $VERB_MODE $UPDATE_IMAGES_SIZE $SEARCH_MODE $MATHJAX_LOCATION $GENERATE_PRODUCTS_REFMAN $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
+            OCCDoc_Main $DOC_TYPE $DOCFILES $module $GEN_MODE $VERB_MODE $SEARCH_MODE $MATHJAX_LOCATION $GENERATE_PRODUCTS_REFMAN $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
           }
         } else {
-          OCCDoc_Main $DOC_TYPE $DOCFILES $MODULES $GEN_MODE $VERB_MODE $UPDATE_IMAGES_SIZE $SEARCH_MODE $MATHJAX_LOCATION $GENERATE_PRODUCTS_REFMAN $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
+          OCCDoc_Main $DOC_TYPE $DOCFILES $MODULES $GEN_MODE $VERB_MODE $SEARCH_MODE $MATHJAX_LOCATION $GENERATE_PRODUCTS_REFMAN $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
         }
       } else {
         foreach md $DOCFILES {
-          OCCDoc_Main $DOC_TYPE $md $MODULES $GEN_MODE $VERB_MODE $UPDATE_IMAGES_SIZE $SEARCH_MODE $MATHJAX_LOCATION $GENERATE_PRODUCTS_REFMAN $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
+          OCCDoc_Main $DOC_TYPE $md $MODULES $GEN_MODE $VERB_MODE $SEARCH_MODE $MATHJAX_LOCATION $GENERATE_PRODUCTS_REFMAN $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
         }
       }
     }
@@ -340,14 +336,14 @@ proc gendoc {args} {
       puts "Info: Processing file $pdf\n"
 
       # Some values are hardcoded because they are related only to PDF generation
-      OCCDoc_Main "OVERVIEW" [list $pdf] {} "PDF_ONLY" $VERB_MODE $UPDATE_IMAGES_SIZE "none" $MATHJAX_LOCATION "NO" $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
+      OCCDoc_Main "OVERVIEW" [list $pdf] {} "PDF_ONLY" $VERB_MODE "none" $MATHJAX_LOCATION "NO" $DOXYGEN_PATH $GRAPHVIZ_PATH $INKSCAPE_PATH $HHC_PATH
     }
     puts "[clock format [clock seconds] -format {%Y-%m-%d %H:%M}] Generation completed."
   }
 }
 
 # Main procedure for documents compilation
-proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode updateImagesSize searchMode mathjaxLocation generateProductsRefman DOXYGEN_PATH GRAPHVIZ_PATH INKSCAPE_PATH HHC_PATH} {
+proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode searchMode mathjaxLocation generateProductsRefman DOXYGEN_PATH GRAPHVIZ_PATH INKSCAPE_PATH HHC_PATH} {
 
   global available_docfiles
   global available_pdf
@@ -463,14 +459,6 @@ proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode u
 
   if { [OCCDoc_MakeDoxyfile $docType $DOCDIR $TAGFILEDIR $DOXYFILE $generatorMode $docfiles $modules $verboseMode $searchMode $HHC_PATH $mathjax_relative_location $GRAPHVIZ_PATH [OCCDoc_GetProdRootDir]] == -1 } {
     return -1
-  }
-
-  # update image sizes in *.md files if necessary
-  if { ("$::tcl_platform(platform)" == "windows") &&
-       ($updateImagesSize == "YES") } {
-    if { [OCCDoc_UpdateImagesSize $docfiles [OCCDoc_GetDoxDir [OCCDoc_GetProdRootDir]] $verboseMode] == -1 } {
-      return -1
-    }
   }
 
   # Run doxygen tool

@@ -30,7 +30,7 @@ You can use *custom.bat* file to add necessary paths to the *PATH* variable.
 Note that in the process of PDF generation MiKTeX may need some packages not installed by default.
 We recommend setting option "Install missing packages on-the-fly" to "Ask me first" (default) during MiKTeX installation:
 
-@figure{/dev_guides/documentation/images/documentation_miktex.png}
+@figure{/dev_guides/documentation/images/documentation_miktex.png,"",320}
 
 On the first run of **pdflatex** it will open a dialog window prompting for installation of missing packages.
 Follow the instructions to proceed (define proxy settings if needed, select a mirror site to download from, etc.).
@@ -102,7 +102,7 @@ The MarkDown files have a <i>*.md</i> extension and are based on rules described
 
 @subsection  OCCT_DM_SECTION_3_2 Directory Structure
 
-@figure{/dev_guides/documentation/images/documentation_folders.png}
+@figure{/dev_guides/documentation/images/documentation_folders.png,"",160}
 
 Each document has its own folder if there are any images used in it. These images are stored in *images* subfolder.
 
@@ -112,7 +112,7 @@ If you want to use the same image for several documents, you can place it in *do
 
 
 @verbatim
-@figure{/dev_guides/documentation/images/documentation_test_image.svg}
+@figure{/dev_guides/documentation/images/documentation_test_image.svg,"",420}
 @endverbatim
 
 
@@ -140,13 +140,13 @@ dev_guides/svn/svn.md
 
 @section  OCCT_DOC_SECTION_5 Additional Resources
 
-More information about OCCT can be found at http://www.opencascade.com and http://dev.opencascade.org sites. 
+More information about OCCT can be found at http://www.opencascade.com and <br> http://dev.opencascade.org sites. 
 
 
-The information on formula syntax can be found at: 
+The information on formula syntax can be found at: <br>
 http://en.wikipedia.org/wiki/Help:Displaying_a_formula
 
-More information on MarkDown and Doxygen syntax can be found at:
+More information on MarkDown and Doxygen syntax can be found at: <br>
 http://www.stack.nl/~dimitri/doxygen/manual
 
 @section  OCCT_DM_SECTION_A Appendix 1: Document Syntax
@@ -389,7 +389,7 @@ Example:
 
 is rendered as:
 
-@figure{/dev_guides/documentation/images/documentation_test_image.svg,"Test SVG image"}
+@figure{/dev_guides/documentation/images/documentation_test_image.svg,"Test SVG image",320}
 
 We recommend using **Inkscape** for creation and edition of vector graphics.
 The graphics created in MS Word Draw and some other vector editors can be copy-pasted to Inkscape and saved as SVG images.
@@ -399,11 +399,10 @@ Note that the image that will be included in documentation is the whole page of 
 Note that the *figure* command is an alias to the standard Doxygen command *image* repeated twice: once for HTML and then for Latex output (used for PDF generation). Thus if HTML and PDF outputs should include different images or captions, command "image" can be used:
 
 @verbatim
-  @figure{/relative/path/to/image/occ_logo.png, "OCC logo"}
+  @image html /relative/path/to/image/occ_logo_for_html.png
+  @image latex /relative/path/to/image/occ_logo_for_pdf.png
 @endverbatim
 
-@figure{/resources/occ_logo.png, "OCC logo"}
- 
 @subsection  OCCT_DM_SECTION_A_8 Table Of Contents
 
 Use \@tableofcontents tag to get the table of contents at the beginning of the document. 

@@ -28,7 +28,7 @@ The packages used to display 3D objects are also applicable for visualization of
 
 The figure below presents a schematic overview of the relations between the key concepts and packages in visualization. Naturally, "Geometry & Topology" is just an example of application data that can be handled by *AIS*, and application-specific interactive objects can deal with any  kind of data. 
 
-@figure{visualization_image003.png, "Key concepts and packages in visualization"}
+@figure{visualization_image003.png,"Key concepts and packages in visualization",400}
 
 To answer different needs of CASCADE users, this User's Guide offers the following three paths in reading it.
   
@@ -98,7 +98,7 @@ aContext -> Display(anAis);
 
 The shape is created using the *BRepPrimAPI_MakeWedge*  command. An *AIS_Shape* is then created from the shape. When calling the *Display* command, the interactive context calls the Compute method of the  presentable object to calculate the presentation data and transfer it to the  viewer. See figure below.  
 
-@figure{visualization_image004.svg, "Processes involved in displaying a presentable shape"}
+@figure{visualization_image004.svg,"Processes involved in displaying a presentable shape",400}
 
 @subsection occt_visu_2_2 Selection 
 
@@ -121,7 +121,7 @@ Sensitive entities in the same way as entity owners are links between objects an
 
 The purpose of entities is to define what parts of the object will be selectable in particular. Thus, any object that is meant to be selectable must be split into sensitive entities (one or several). For instance, to apply face selection to an object it is necessary to explode it into faces and use them for creation of a sensitive entity set.
 
-@figure{visualization_image005.png, "Example of a shape divided into sensitive entities"}
+@figure{visualization_image005.png,"Example of a shape divided into sensitive entities",400}
 
 Depending on the user's needs, sensitive entities may be atomic (point or edge) or complex. Complex entities contain many sub-elements that can be handled by detection mechanism in a similar way (for example, a polyline stored as a set of line segments or a triangulation).
 
@@ -152,9 +152,9 @@ For all standard OCCT shapes, zero mode is supposed to select the whole object (
   - 5 -- selection of the shells;
   - 6 -- selection of the constituent solids.
 
-@figure{visualization_image006.png, "Hierarchy of references from sensitive entity to selectable object"}
+@figure{visualization_image006.png,"Hierarchy of references from sensitive entity to selectable object",400}
 
-@figure{visualization_image007.png, "The principle of entities organization within the selectable object"}
+@figure{visualization_image007.png,"The principle of entities organization within the selectable object",400}
 
 <h4>Viewer selector</h4>
 
@@ -166,7 +166,7 @@ The viewer selector maintains activation and deactivation of selection modes, la
 
 Selection manager is a high-level API to manipulate selection of all displayed objects. It handles all viewer selectors, activates and deactivates selection modes for the objects in all or particular selectors, manages computation and update of selections for each object. Moreover, it keeps selection structures updated taking into account applied changes.
 
-@figure{visualization_image008.png, "The relations chain between viewer selector and selection manager"}
+@figure{visualization_image008.png,"The relations chain between viewer selector and selection manager",400}
 
 @subsubsection occt_visu_2_2_2 Algorithm
 
@@ -180,9 +180,13 @@ For the point or the rectangular selection the base of the frustum is a rectangl
 
 The frustum length is limited by near and far view volume planes and each plane is built parallel to the corresponding view volume plane.
 
-@figure{visualization_image009.png, "Rectangular frustum: a) after mouse move or click, b) after applying the rectangular selection"}
+@figure{visualization_image009.png,"",400}
 
-@figure{visualization_image010.png, "Triangular frustum set: a) user-defined polyline, b) triangulation of the polygon based on the given polyline, c) triangular frustum based on one of the triangles"}
+The image above shows the rectangular frustum: a) after mouse move or click, b) after applying the rectangular selection.
+
+@figure{visualization_image010.png,"",400}
+
+In the image above triangular frustum is set: a) by a user-defined polyline, b) by triangulation of the polygon based on the given polyline, c) by a triangular frustum based on one of the triangles.
 
 <h4>BVH trees</h4>
 
@@ -194,7 +198,7 @@ The second level BVH tree consists of all sensitive entities of one selectable o
 
 The third level BVH tree is used for complex sensitive entities that contain many elements: for example, triangulations, wires with many segments, point sets, etc. It is built on demand for sensitive entities with under 800K sub-elements.
 
-@figure{visualization_image022.png, "Selection BVH tree hierarchy: from the biggest object-level (first) to the smallest complex entity level (third)"}
+@figure{visualization_image022.png,"Selection BVH tree hierarchy: from the biggest object-level (first) to the smallest complex entity level (third)",400}
 
 <h4>Stages of the algorithm</h4>
 
@@ -456,13 +460,13 @@ in which you were before opening it (neutral point or previous local context).
 
 **Interactive Objects** are the entities, which are visualized and selected. You can use classes of standard interactive objects for which all necessary functions have already been programmed, or you can implement your own classes of interactive objects, by respecting a certain number of rules and  conventions described below.  
 
-@figure{visualization_image016.png}
+@figure{visualization_image016.png,"",240}
 
 An Interactive Object is a "virtual" entity, which can be  presented and selected. An Interactive Object can have a certain number of specific graphic attributes, such as visualization mode, color and  material. 
 
 When an Interactive Object is visualized, the required graphic attributes are taken from its own **Drawer** if it has the required custom attributes or otherwise from the context drawer. 
 
-@figure{visualization_image017.png}
+@figure{visualization_image017.png,"",360}
 
 It can be necessary to filter the entities to be selected. Consequently there are **Filter** entities, which allow refining the dynamic detection context.  Some of these filters can be used at the Neutral Point, others only in an open local context. It is possible to program custom filters and load them into the interactive context.  
 
@@ -480,7 +484,7 @@ A presentation is identified by an index and by the reference to  the Presentati
 
 By convention, the default mode of  representation for the Interactive Object has index 0. 
 
-@figure{visualization_image018.png}
+@figure{visualization_image018.png,"",360}
 
 Calculation of different presentations of an interactive  object is done by the *Compute* functions inheriting from *PrsMgr_  PresentableObject::Compute* functions. They are automatically called by *PresentationManager*  at a visualization or an update request.  
 
@@ -634,9 +638,9 @@ Keep in mind the following points concerning graphic attributes:
   * By default, the interactive object takes the graphic attributes  of the context in which it is visualized (visualization mode, deflection values  for the calculation of presentations, number of isoparameters, color, type of  line, material, etc.) 
   * In the *AIS_InteractiveObject* abstract class, standard attributes including color, line thickness, material, and transparency have been privileged. Consequently, there is a certain number of virtual  functions, which allow acting on these attributes. Each  new class of interactive object can redefine these functions and change the behavior of the class. 
 
-@figure{visualization_image019.png, "Figure 13. Redefinition of virtual functions for changes in AIS_Point"}
+@figure{visualization_image019.png,"Redefinition of virtual functions for changes in AIS_Point",360}
 
-@figure{visualization_image020.png, "Figure 14. Redefinition of virtual functions for changes in AIS_Shape."}
+@figure{visualization_image020.png,"Redefinition of virtual functions for changes in AIS_Shape.",360}
 
 The  following virtual functions provide settings for color, width, material and transparency:  
   * *AIS_InteractiveObject::UnsetColor* 
@@ -783,7 +787,7 @@ vfit
 
 See how proxy *OpenGl_Structure* is used to represent instance:
 
-@figure{/user_guides/visualization/images/visualization_image029.png}
+@figure{/user_guides/visualization/images/visualization_image029.png,"",240}
 
 The original object does not have to be displayed in order to make instance. Also selection handles transformations of instances correctly:
 
@@ -798,7 +802,7 @@ vconnect x 3 0 0 s p   # make assembly
 vfit
 ~~~~~
 
-@figure{/user_guides/visualization/images/visualization_image030.png}
+@figure{/user_guides/visualization/images/visualization_image030.png,"",420}
 
 Here is the example of a more complex hierarchy involving sub-assemblies:
 
@@ -1401,7 +1405,7 @@ The presentation class *AIS_PointCloud* can be used for efficient drawing of lar
 - The type of point marker used to draw points can be specified as a presentation aspect.
 - The presentation provides selection by a bounding box of the visualized set of points. It supports two display / highlighting modes: points or bounding box.
 
-@figure{point_cloud.png, "A random colored cloud of points"}
+@figure{point_cloud.png,"A random colored cloud of points",240}
 
 Example:
 ~~~~~
@@ -2029,7 +2033,7 @@ aView->Camera()->Transform (aTrsf);
 
 @subsubsection occt_visu_4_4_4 Orthographic Projection
 
-@figure{view_frustum.png, "Perspective and orthographic projection"}
+@figure{view_frustum.png,"Perspective and orthographic projection",420}
 
 The following code configures the camera for orthographic rendering:
 
@@ -2045,7 +2049,7 @@ aView->Update();
 
 **Field of view (FOVy)** -- defines the field of camera view by y axis in degrees (45° is default).
 
-@figure{camera_perspective.png, "Perspective frustum"}
+@figure{camera_perspective.png,"Perspective frustum",420}
 
 The following code configures the camera for perspective rendering:
 
@@ -2069,7 +2073,7 @@ There are two types of IOD:
 
 **ZFocus** -- defines the distance to the point of stereographic focus.
 
-@figure{stereo.png, "Stereographic projection"}
+@figure{stereo.png,"Stereographic projection",420}
 
 To enable stereo projection, your workstation should meet the following requirements:
 
@@ -2847,3 +2851,4 @@ From a developer's point of view, it is easy to integrate the *MeshVS* component
 Visual attributes of the <i>MeshVS_Mesh</i> object (such as shading color, shrink coefficient and so on)  are controlled through <i>MeshVS_Drawer</i> object. It maintains a map "Attribute ID --> attribute value" and can be easily extended with any number of custom attributes.
 
 In all other respects, <i>MeshVS_Mesh</i> is very similar to any other class derived from <i>AIS_InteractiveObject</i> and it should be used accordingly (refer to the description of <i>AIS package</i> in the documentation).
+

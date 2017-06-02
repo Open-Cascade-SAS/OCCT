@@ -2785,7 +2785,7 @@ ivtkinit
 
 Creates a window for VTK viewer.
 
-@figure{/user_guides/draw_test_harness/images/draw_image001.png}
+@figure{/user_guides/draw_test_harness/images/draw_image001.png,"",225}
 
 @subsubsection occt_draw_4_6_2	ivtkdisplay
 
@@ -2804,7 +2804,8 @@ pcone c 5 0 10
 ivtkdisplay c
 ~~~~~
 
-@figure{/user_guides/draw_test_harness/images/draw_image002.png}
+@figure{/user_guides/draw_test_harness/images/draw_image002.png,"",261}
+
 
 @subsubsection occt_draw_4_6_3	ivtkerase
 
@@ -2862,8 +2863,8 @@ ivtkdisplay c
 ivtksetdispmode c 1
 ~~~~~
 
-@figure{/user_guides/draw_test_harness/images/draw_image003.png}
- 
+@figure{/user_guides/draw_test_harness/images/draw_image003.png,"",262}
+
 @subsubsection occt_draw_4_6_6	ivtksetselmode
 
 Syntax:
@@ -2884,7 +2885,7 @@ ivtkdisplay a
 ivtksetselmode a 4 1
 ~~~~~
 
-@figure{/user_guides/draw_test_harness/images/draw_image004.png}
+@figure{/user_guides/draw_test_harness/images/draw_image004.png,"",291}
  
 @subsubsection occt_draw_4_6_7	ivtkmoveto
 
@@ -2957,17 +2958,15 @@ ivtkinit
 ivtkbgcolor 200 220 250
 ~~~~~
  
-@figure{/user_guides/draw_test_harness/images/draw_image005.png}
+@figure{/user_guides/draw_test_harness/images/draw_image005.png,"",196}
 
 ~~~~~
 ivtkbgcolor 10 30 80 255 255 255
 ~~~~~
 
-@figure{/user_guides/draw_test_harness/images/draw_image006.png}
-
+@figure{/user_guides/draw_test_harness/images/draw_image006.png,"",190}
 
 @section occt_draw_5 OCAF commands
-
 
 This chapter contains a set of commands for Open CASCADE Technology Application Framework (OCAF). 
 

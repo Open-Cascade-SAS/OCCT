@@ -48,7 +48,7 @@ It should be emphasized that *TObj* package defines only the interfaces and the 
 
 Logically the *TObj* data model is represented as a tree of model objects, with upper-level objects typically being collections of other objects (called *partitions*, represented by the class *TObj_Partition*). The root object of the model is called the *Main partition* and is maintained by the model itself. This partition contains a list of sub-objects called its *children* each sub-object may contain its own children (according to its type), etc. 
 
-@figure{/user_guides/tobj/images/tobj_image003.png, "TObj Data Model"}
+@figure{/user_guides/tobj/images/tobj_image003.png,"TObj Data Model",240}
 
 As the *TObj* Data Model is based on OCAF (Open CASCADE Application Framework) technology, 
 it stores its data in the underlying OCAF document. The OCAF document consists of a tree of 
@@ -61,7 +61,7 @@ of the label, which uniquely identifies its position in the document.
 Generally the structure of the OCAF tree of the *TObj* data 
 model corresponds to the logical structure of the model and can be presented as in the following picture: 
 
-@figure{/user_guides/tobj/images/tobj_image004.png, "TObj Data Model mapped on OCAF document"}
+@figure{/user_guides/tobj/images/tobj_image004.png,"TObj Data Model mapped on OCAF document",360}
 
 All data of the model are stored in the root label (0:1) of the OCAF document. 
 An attribute *TObj_TModel* is located in this root label. It 
@@ -428,7 +428,7 @@ of important features of *TObj* model objects. This implementation defines
 basic approaches that are recommended for all descendants, 
 and provides tools to facilitate their usage. 
 
-@figure{/user_guides/tobj/images/tobj_image005.png, "TObj objects hierarchy"}
+@figure{/user_guides/tobj/images/tobj_image005.png,"TObj objects hierarchy",170}
 
 @subsection occt_tobj_3_1 Separation of data and interface
 
@@ -449,7 +449,7 @@ The special type of attribute *TObj_TObject* is used for storing instances of ob
 in the OCAF tree. *TObj_TObject* is a simple container for the object of type *TObj_Object*. 
 All objects (interfaces) of the data model  inherit this class. 
 
-@figure{/user_guides/tobj/images/tobj_image006.png, "TObj object stored on OCAF label"}
+@figure{/user_guides/tobj/images/tobj_image006.png,"TObj object stored on OCAF label",360}
 
 
 @subsection occt_tobj_3_2 Basic features
@@ -639,7 +639,7 @@ This attribute is located in the sub-label of the referring object (called *mast
 and keeps reference to the main label of the referred object. 
 At the same time the referred object can maintain the back reference to the master object. 
 
-@figure{/user_guides/tobj/images/tobj_image007.png, "Objects relationship"}
+@figure{/user_guides/tobj/images/tobj_image007.png,"Objects relationship",360}
 
 
 
@@ -893,7 +893,7 @@ Apart from the model and the object, package *TObj* provides a set of auxiliary 
 
 The structure of *TObj* iterators hierarchy is presented below: 
 
-@figure{/user_guides/tobj/images/tobj_image008.png, "Hierarchy of iterators"}
+@figure{/user_guides/tobj/images/tobj_image008.png,"Hierarchy of iterators",420}
 
 
 @section occt_tobj_5 Packaging
@@ -905,5 +905,6 @@ The *TObj* sources are distributed in the following packages:
   * *BinLPlugin, XmlLPlugin* -- plug-in for binary and XML persistence
   * *BinMObj, XmlMObj* -- binary and XML drivers to store and retrieve specific *TObj* data to or from OCAF document
   * *TKBinL, TKXmlL* -- toolkits of binary and XML persistence
+
 
 

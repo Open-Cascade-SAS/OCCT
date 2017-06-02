@@ -49,7 +49,7 @@ The class *Interpolate* from *Geom2dAPI* package allows building a constrained 2
 
 The class *Interpolate* from *GeomAPI* package allows building a constrained 3D BSpline curve, defined by a table of points through which the curve passes. If required, the parameter values and vectors of the tangents can be given for each point in the table. 
 
-@figure{/user_guides/modeling_data/images/modeling_data_image003.png, "Approximation of a BSpline from scattered points"}
+@figure{/user_guides/modeling_data/images/modeling_data_image003.png,"Approximation of a BSpline from scattered points",420}
 
 This class may be instantiated as follows:
 ~~~~~ 
@@ -109,7 +109,7 @@ The following low level services are provided:
 
   The class *MultiLine* allows defining a given number of multi-point constraints in order to build the multi-line, multiple lines passing through ordered multiple point constraints. 
 
-  @figure{/user_guides/modeling_data/images/modeling_data_image004.png, "Definition of a MultiLine using Multiple Point Constraints"}
+  @figure{/user_guides/modeling_data/images/modeling_data_image004.png,"Definition of a MultiLine using Multiple Point Constraints",240}
 
   In this image:
   * *Pi*, *Qi*, *Ri* ... *Si* can be 2D or 3D points. 
@@ -616,7 +616,7 @@ In respect of curves, the following types of continuity are supported (see the f
 
 *Note:* Geometric continuity (G1, G2) means that the curve can be reparametrized to have parametric (C1, C2) continuity.
 
-@figure{/user_guides/modeling_data/images/modeling_data_continuity_curves.svg, "Continuity of Curves"}
+@figure{/user_guides/modeling_data/images/modeling_data_continuity_curves.svg,"Continuity of Curves",420}
 
 The following types of surface continuity are supported:
   * C0 (*GeomAbs_C0*) - parametric continuity (the surface has no points or curves of discontinuity).
@@ -627,7 +627,7 @@ The following types of surface continuity are supported:
   * C3 (*GeomAbs_C3*) - continuity of all derivatives till the third order.
   * CN (*GeomAbs_CN*) - continuity of all derivatives till the N-th order (infinite order of continuity).
 
-@figure{/user_guides/modeling_data/images/modeling_data_continuity_surfaces.svg, "Continuity of Surfaces"}
+@figure{/user_guides/modeling_data/images/modeling_data_continuity_surfaces.svg,"Continuity of Surfaces",420}
 
 Against single surface, the connection of two surfaces (see the figure above) defines its continuity in each intersection point only. Smoothness of connection is a minimal value of continuities on the intersection curve.
 
@@ -774,7 +774,7 @@ A local coordinate system can be viewed as either of the following:
 - *TopLoc_Datum3D* class provides the elementary reference coordinate, represented by a right-handed orthonormal system of axes or by a right-handed unitary transformation. 
 - *TopLoc_Location* class provides the composite reference coordinate made from elementary ones. It is a marker composed of a chain of references to elementary markers. The resulting cumulative transformation is stored in order to avoid recalculating the sum of the transformations for the whole list. 
 
-@figure{/user_guides/modeling_data/images/modeling_data_image005.png, "Structure of TopLoc_Location"}
+@figure{/user_guides/modeling_data/images/modeling_data_image005.png,"Structure of TopLoc_Location",420}
 
 Two reference coordinates are equal if they are made up of the same elementary coordinates in the same order. There is no numerical comparison. Two coordinates can thus correspond to the same transformation without being equal if they were not built from the same elementary coordinates. 
 
@@ -818,7 +818,7 @@ TopAbs contains the *TopAbs_ShapeEnum* enumeration,which lists the different top
 A topological model can be considered as a graph of objects with adjacency relationships. When modeling a part in 2D or 3D space it must belong to one of the categories listed in the ShapeEnum enumeration. The TopAbspackage lists all the objects, which can be found in any model. It cannot be extended but a subset can be used. For example, the notion of solid is useless in 2D. 
 
 The terms of the enumeration appear in order from the most complex to the most simple, because objects can contain simpler objects in their description. For example, a face references its wires, edges, and vertices. 
-@figure{/user_guides/modeling_data/images/modeling_data_image006.png, "ShapeEnum"}
+@figure{/user_guides/modeling_data/images/modeling_data_image006.png,"ShapeEnum",420}
 
 @subsubsection occt_modat_5_2_2 Orientation
 
@@ -844,7 +844,7 @@ Based on this default region the orientation allows definition of the region to 
 | INTERNAL	| The interior includes both regions. The boundary lies inside the material. For example a surface inside a solid. |
 | EXTERNAL	| The interior includes neither region. The boundary lies outside the material. For  example an edge in a wire-frame model. |
 
-@figure{/user_guides/modeling_data/images/modeling_data_image007.png, "Four Orientations"}
+@figure{/user_guides/modeling_data/images/modeling_data_image007.png,"Four Orientations",420}
 
 The notion of orientation is a very general one, and it can be used in any context where regions or boundaries appear. Thus, for example, when describing the intersection of an edge and a contour it is possible to describe not only the vertex of intersection but also how the edge crosses the contour considering it as a boundary. The edge would therefore be divided into two regions: exterior and interior and the intersection vertex would be the boundary. Thus an orientation can be associated with an intersection vertex as in the following figure: 
 
@@ -855,7 +855,7 @@ The notion of orientation is a very general one, and it can be used in any conte
 | INTERNAL 	| Touching from inside |
 | EXTERNAL 	| Touching from outside |
 
-@figure{/user_guides/modeling_data/images/modeling_data_image008.png, "Four orientations of intersection vertices"}
+@figure{/user_guides/modeling_data/images/modeling_data_image008.png,"Four orientations of intersection vertices",420}
 
 
 Along with the Orientation enumeration the *TopAbs* package defines four methods: 
@@ -873,11 +873,11 @@ The **TopAbs_State** enumeration described the position of a vertex or a set of 
 
 The UNKNOWN term has been introduced because this enumeration is often used to express the result of a calculation, which can fail. This term can be used when it is impossible to know if a point is inside or outside, which is the case with an open wire or face. 
 
-@figure{/user_guides/modeling_data/images/modeling_data_image009.png, "The four states"}
+@figure{/user_guides/modeling_data/images/modeling_data_image009.png,"The four states",420}
 
 The State enumeration can also be used to specify various parts of an object. The following figure shows the parts of an edge intersecting a face. 
 
-@figure{/user_guides/modeling_data/images/modeling_data_image010.png, "State specifies the parts of an edge intersecting a face"}
+@figure{/user_guides/modeling_data/images/modeling_data_image010.png,"State specifies the parts of an edge intersecting a face",420}
 
 @subsection occt_modat_5_3 Manipulating shapes and sub-shapes
 
@@ -903,9 +903,9 @@ The class representing the underlying abstract shape is never referenced directl
 
 The information specific to each shape (the geometric support) is always added by inheritance to classes deriving from **TopoDS_TShape**. The following figures show the example of a shell formed from two faces connected by an edge. 
 
-@figure{/user_guides/modeling_data/images/modeling_data_image011.png, "Structure of a shell formed from two faces"}
+@figure{/user_guides/modeling_data/images/modeling_data_image011.png,"Structure of a shell formed from two faces",420}
 
-@figure{/user_guides/modeling_data/images/modeling_data_image012.png, "Data structure of the above shell"}
+@figure{/user_guides/modeling_data/images/modeling_data_image012.png,"Data structure of the above shell",420}
 
 In the previous diagram, the shell is described by the underlying shape TS, and the faces by TF1 and TF2. There are seven edges from TE1 to TE7 and six vertices from TV1 to TV6. 
 
@@ -922,7 +922,7 @@ The compact data structure avoids the loss of information associated with copy o
 The following figure shows a data structure containing two versions of a solid. The second version presents a series of identical holes bored at different positions. The data structure is compact and yet keeps all information on the sub-elements. 
 
 The three references from *TSh2* to the underlying face *TFcyl* have associated local coordinate systems, which correspond to the successive positions of the hole. 
-@figure{/user_guides/modeling_data/images/modeling_data_image013.png, "Data structure containing two versions of a solid"}
+@figure{/user_guides/modeling_data/images/modeling_data_image013.png,"Data structure containing two versions of a solid",420}
 
 Classes inheriting TopoDS_Shape
 ------------------------------
@@ -1263,7 +1263,7 @@ Below is the auxiliary function, which copies the element of rank *i* from the m
 
 For example, in the wire in the image we want to recuperate the edges in the order {e1, e2, e3,e4, e5} :
 
-@figure{/user_guides/modeling_data/images/modeling_data_image014.png, "A wire composed of 6 edges."}
+@figure{/user_guides/modeling_data/images/modeling_data_image014.png,"A wire composed of 6 edges.",320}
 
 *TopExp_Explorer*, however, recuperates the lines in any order.
  
@@ -1293,3 +1293,4 @@ The following sample code reads a shape from ASCII file and writes it to a binar
     BinTools::Write (aShape, "result_file.bin");
   }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
