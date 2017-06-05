@@ -356,7 +356,7 @@ In some cases review remarks or results of testing require only minor correction
 
 As an exception to general @ref occt_contribution_workflow_fix_git "single-commit rule", it is allowed to put such minor corrections on top of the existing branch as a separate commit, and re-submit it for further processing in the same branch, without squashing.
 
-Minor commits should have a single-line message starting with //.
+Minor commits should have a single-line message starting with #.
 These messages will be ignored when the branch is squashed at integration.
 
 Typical cases of minor corrections are:
