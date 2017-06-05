@@ -18,6 +18,7 @@
 *.yacc      eol=lf
 *.lex       eol=lf
 *.mm        eol=lf
+*.i         eol=lf
 *.el        eol=lf
 *.sh        eol=lf
 *.csh       eol=lf
