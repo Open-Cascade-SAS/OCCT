@@ -173,7 +173,7 @@ void StdPrs_WFShape::Add (const Handle(Prs3d_Presentation)& thePresentation,
         }
 
         StdPrs_WFShape_IsoFunctor anIsoFunctor (*aUPolylinesPtr, *aVPolylinesPtr, aFaces, theDrawer, aShapeDeflection);
-        OSD_Parallel::For (0, aNbFaces - 1, anIsoFunctor, aNbFaces < 2);
+        OSD_Parallel::For (0, aNbFaces, anIsoFunctor, aNbFaces < 2);
       }
     }
 

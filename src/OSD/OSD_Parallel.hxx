@@ -171,7 +171,14 @@ public: //! @name public methods
   //! Returns number of logical proccesrs.
   Standard_EXPORT static Standard_Integer NbLogicalProcessors();
 
-  //! Simple primitive for parallelization of "foreach" loops.
+  //! Simple primitive for parallelization of "foreach" loops, e.g.:
+  //! @code
+  //!   for (std::iterator anIter = theBegin; anIter != theEnd; ++anIter) {}
+  //! @endcode
+  //! @param theBegin   the first index (incusive)
+  //! @param theEnd     the last  index (exclusive)
+  //! @param theFunctor functor providing an interface "void operator(InputIterator theIter){}" performing task for specified iterator position
+  //! @param isForceSingleThreadExecution if true, then no threads will be created
   template <typename InputIterator, typename Functor>
   static void ForEach( InputIterator  theBegin,
                        InputIterator  theEnd,
@@ -179,7 +186,14 @@ public: //! @name public methods
                        const Standard_Boolean isForceSingleThreadExecution
                          = Standard_False );
 
-  //! Simple primitive for parallelization of "for" loops.
+  //! Simple primitive for parallelization of "for" loops, e.g.:
+  //! @code
+  //!   for (int anIter = theBegin; anIter < theEnd; ++anIter) {}
+  //! @endcode
+  //! @param theBegin   the first index (incusive)
+  //! @param theEnd     the last  index (exclusive)
+  //! @param theFunctor functor providing an interface "void operator(int theIndex){}" performing task for specified index
+  //! @param isForceSingleThreadExecution if true, then no threads will be created
   template <typename Functor>
   static void For( const Standard_Integer theBegin,
                    const Standard_Integer theEnd,
@@ -209,7 +223,7 @@ void OSD_Parallel::ForEach( InputIterator          theBegin,
 {
   if ( isForceSingleThreadExecution )
   {
-    for ( InputIterator it(theBegin); it != theEnd; it++ )
+    for ( InputIterator it(theBegin); it != theEnd; ++it )
       theFunctor(*it);
 
     return;
