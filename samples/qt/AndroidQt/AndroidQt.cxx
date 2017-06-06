@@ -268,7 +268,7 @@ bool AndroidQt::initViewer()
 
   // create AIS context
   myContext = new AIS_InteractiveContext (myViewer);
-  myContext->SetDisplayMode (AIS_Shaded);
+  myContext->SetDisplayMode (AIS_Shaded, false);
 
   Handle(AndroidQt_Window) aWindow = new AndroidQt_Window (aWidth, aHeight);
   myView = myViewer->CreateView();

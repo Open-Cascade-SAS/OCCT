@@ -195,8 +195,8 @@ bool OcctJni_Viewer::init()
 
   // create AIS context
   myContext = new AIS_InteractiveContext (myViewer);
-  //myContext->SetDisplayMode (AIS_WireFrame);
-  myContext->SetDisplayMode (AIS_Shaded);
+  //myContext->SetDisplayMode (AIS_WireFrame, false);
+  myContext->SetDisplayMode (AIS_Shaded, false);
 
   Handle(OcctJni_Window) aWindow = new OcctJni_Window (aWidth, aHeight);
   myView = myViewer->CreateView();
