@@ -24,7 +24,16 @@ GCPnts_DistFunction::GCPnts_DistFunction(const Adaptor3d_Curve& theCurve,
   myU1(U1), myU2(U2)
 {
   gp_Pnt P1 = theCurve.Value(U1), P2 = theCurve.Value(U2);
-  myLin = gp_Lin(P1, P2.XYZ() - P1.XYZ());
+  if (P1.SquareDistance(P2) > gp::Resolution())
+  {
+    myLin = gp_Lin(P1, P2.XYZ() - P1.XYZ());
+  }
+  else
+  {
+    //For #28812
+    theCurve.D0(U1 + .01*(U2-U1), P2);
+    myLin = gp_Lin(P1, P2.XYZ() - P1.XYZ());
+  }
 }
 //
 //=======================================================================
