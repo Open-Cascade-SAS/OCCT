@@ -22,7 +22,7 @@
 //! Defined as the number of atoms of a radioactive
 //! substance which disintegrate per unit time. It is
 //! measured in becquerels (one disintegration per second).
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Activity;
 
 #endif // _Quantity_Activity_HeaderFile

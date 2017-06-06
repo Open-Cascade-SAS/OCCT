@@ -31,7 +31,6 @@
 #include <Vrml_MatrixTransform.hxx>
 #include <MMgt_TShared.hxx>
 #include <TopTools_Array1OfShape.hxx>
-#include <Quantity_Length.hxx>
 #include <Standard_OStream.hxx>
 class HLRAlgo_Projector;
 
@@ -51,7 +50,7 @@ class VrmlConverter_Projector : public MMgt_TShared
 public:
 
   
-  Standard_EXPORT VrmlConverter_Projector(const TopTools_Array1OfShape& Shapes, const Quantity_Length Focus, const Quantity_Length DX, const Quantity_Length DY, const Quantity_Length DZ, const Quantity_Length XUp, const Quantity_Length YUp, const Quantity_Length ZUp, const VrmlConverter_TypeOfCamera Camera = VrmlConverter_NoCamera, const VrmlConverter_TypeOfLight Light = VrmlConverter_NoLight);
+  Standard_EXPORT VrmlConverter_Projector(const TopTools_Array1OfShape& Shapes, const Standard_Real Focus, const Standard_Real DX, const Standard_Real DY, const Standard_Real DZ, const Standard_Real XUp, const Standard_Real YUp, const Standard_Real ZUp, const VrmlConverter_TypeOfCamera Camera = VrmlConverter_NoCamera, const VrmlConverter_TypeOfLight Light = VrmlConverter_NoLight);
   
   Standard_EXPORT void SetCamera (const VrmlConverter_TypeOfCamera aCamera);
   
@@ -73,15 +72,7 @@ public:
   
   Standard_EXPORT HLRAlgo_Projector Projector() const;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(VrmlConverter_Projector,MMgt_TShared)
-
-protected:
-
-
-
 
 private:
 
@@ -98,11 +89,5 @@ private:
 
 
 };
-
-
-
-
-
-
 
 #endif // _VrmlConverter_Projector_HeaderFile

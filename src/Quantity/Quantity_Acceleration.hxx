@@ -22,6 +22,7 @@
 //! Defined as the change of velocity per unit time.
 //! It is a vector quantity.
 //! It is measured in metres per second per second.
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Acceleration;
 
 #endif // _Quantity_Acceleration_HeaderFile

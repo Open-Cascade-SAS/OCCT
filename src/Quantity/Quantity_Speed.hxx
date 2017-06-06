@@ -21,6 +21,7 @@
 
 //! Defined as distance covered per unit time.
 //! It is measured in metres per second.
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Speed;
 
 #endif // _Quantity_Speed_HeaderFile

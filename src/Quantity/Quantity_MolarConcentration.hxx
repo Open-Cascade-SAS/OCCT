@@ -21,7 +21,7 @@
 
 //! Defined as the concentration in moles per litre of
 //! solution. It is also called molarity.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_MolarConcentration;
 
 #endif // _Quantity_MolarConcentration_HeaderFile

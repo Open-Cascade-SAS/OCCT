@@ -21,7 +21,7 @@
 
 //! Defined as the incident luminous flux per unit area.
 //! It is measured in lux (lumen per square metre).
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Illuminance;
 
 #endif // _Quantity_Illuminance_HeaderFile

@@ -24,6 +24,7 @@
 //! Amount of substance is measured in moles.
 //! For all substances the number of molecules in a mole
 //! is given by Avogadro's Constant.
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_AmountOfSubstance;
 
 #endif // _Quantity_AmountOfSubstance_HeaderFile

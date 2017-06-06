@@ -22,7 +22,7 @@
 //! Defined as the product of a given area and the
 //! average magnetic flux density normal to it.
 //! It is measured in webers (tesla-square-metre).
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_MagneticFlux;
 
 #endif // _Quantity_MagneticFlux_HeaderFile

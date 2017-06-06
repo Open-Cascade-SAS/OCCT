@@ -23,7 +23,7 @@
 //! quality factor related to the effect of a particular
 //! type of radiation on biological tissue.
 //! It is measured in sieverts.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_DoseEquivalent;
 
 #endif // _Quantity_DoseEquivalent_HeaderFile

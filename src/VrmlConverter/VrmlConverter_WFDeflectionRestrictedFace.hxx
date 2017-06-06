@@ -23,7 +23,6 @@
 
 #include <Standard_OStream.hxx>
 #include <Standard_Boolean.hxx>
-#include <Quantity_Length.hxx>
 #include <Standard_Integer.hxx>
 class BRepAdaptor_HSurface;
 class VrmlConverter_Drawer;
@@ -52,29 +51,8 @@ public:
   
   Standard_EXPORT static void AddVIso (Standard_OStream& anOStream, const Handle(BRepAdaptor_HSurface)& aFace, const Handle(VrmlConverter_Drawer)& aDrawer);
   
-  Standard_EXPORT static void Add (Standard_OStream& anOStream, const Handle(BRepAdaptor_HSurface)& aFace, const Standard_Boolean DrawUIso, const Standard_Boolean DrawVIso, const Quantity_Length Deflection, const Standard_Integer NBUiso, const Standard_Integer NBViso, const Handle(VrmlConverter_Drawer)& aDrawer);
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
+  Standard_EXPORT static void Add (Standard_OStream& anOStream, const Handle(BRepAdaptor_HSurface)& aFace, const Standard_Boolean DrawUIso, const Standard_Boolean DrawVIso, const Standard_Real Deflection, const Standard_Integer NBUiso, const Standard_Integer NBViso, const Handle(VrmlConverter_Drawer)& aDrawer);
 
 };
-
-
-
-
-
-
 
 #endif // _VrmlConverter_WFDeflectionRestrictedFace_HeaderFile

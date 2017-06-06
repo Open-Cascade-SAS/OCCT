@@ -22,7 +22,7 @@
 //! Defined as the force required to hold unit length
 //! of a plane liquid surface.
 //! It is measured in newtons per metre.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_SurfaceTension;
 
 #endif // _Quantity_SurfaceTension_HeaderFile

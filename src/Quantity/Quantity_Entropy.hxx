@@ -28,7 +28,7 @@
 //! unavailability of its internal energy to do work in a
 //! cyclical process.
 //! A change in entropy is measured in joules per degree kelvin.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Entropy;
 
 #endif // _Quantity_Entropy_HeaderFile

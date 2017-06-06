@@ -25,7 +25,7 @@
 //! Volts are in practice used to measure differences
 //! in potential e.g. the electromotive force generated when
 //! a conductor cuts a magnetic field.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_ElectricPotential;
 
 #endif // _Quantity_ElectricPotential_HeaderFile

@@ -21,6 +21,7 @@
 
 //! Defined as an extension in three dimensions.
 //! It is measured in cubic metres.
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Volume;
 
 #endif // _Quantity_Volume_HeaderFile

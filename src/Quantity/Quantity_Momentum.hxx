@@ -22,7 +22,7 @@
 //! Defined as the product of mass and velocity.
 //! It is a vector quantity.
 //! It is measured in kilogram-metres per second.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Momentum;
 
 #endif // _Quantity_Momentum_HeaderFile

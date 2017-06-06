@@ -22,7 +22,7 @@
 //! Defined as the energy absorbed per unit mass in an
 //! irradiated medium.
 //! It is measured in grays.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_AbsorbedDose;
 
 #endif // _Quantity_AbsorbedDose_HeaderFile

@@ -19,7 +19,7 @@
 
 #include <Standard_Real.hxx>
 
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Coefficient;
-
 
 #endif // _Quantity_Coefficient_HeaderFile

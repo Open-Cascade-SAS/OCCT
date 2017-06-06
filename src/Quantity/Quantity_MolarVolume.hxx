@@ -23,7 +23,7 @@
 //! One mole of any substance contains Avogadro's
 //! Constant of molecules.
 //! It is measured in cubic metres per mole.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_MolarVolume;
 
 #endif // _Quantity_MolarVolume_HeaderFile

@@ -21,6 +21,7 @@
 
 //! Defined as superficial extension.
 //! It is measured in square metres.
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Area;
 
 #endif // _Quantity_Area_HeaderFile

@@ -24,7 +24,6 @@
 #include <Standard_Real.hxx>
 #include <gp_Ax1.hxx>
 #include <BRepSweep_Trsf.hxx>
-#include <Quantity_PlaneAngle.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
 class Standard_ConstructionError;
@@ -45,7 +44,7 @@ public:
   
   //! Creates a topology  by rotating <S>  around A with the
   //! angle D.
-  Standard_EXPORT BRepSweep_Rotation(const TopoDS_Shape& S, const Sweep_NumShape& N, const TopLoc_Location& L, const gp_Ax1& A, const Quantity_PlaneAngle D, const Standard_Boolean C);
+  Standard_EXPORT BRepSweep_Rotation(const TopoDS_Shape& S, const Sweep_NumShape& N, const TopLoc_Location& L, const gp_Ax1& A, const Standard_Real D, const Standard_Boolean C);
   
   //! Builds the vertex addressed by [aGenV,aDirV], with its
   //! geometric part, but without subcomponents.
@@ -139,31 +138,13 @@ public:
   Standard_EXPORT gp_Ax1 Axe() const;
   
   //! returns the angle.
-  Standard_EXPORT Quantity_PlaneAngle Angle() const;
-
-
-
-
-protected:
-
-
-
-
+  Standard_EXPORT Standard_Real Angle() const;
 
 private:
-
-
 
   Standard_Real myAng;
   gp_Ax1 myAxe;
 
-
 };
-
-
-
-
-
-
 
 #endif // _BRepSweep_Rotation_HeaderFile

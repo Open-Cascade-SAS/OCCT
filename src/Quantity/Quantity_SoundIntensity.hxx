@@ -24,7 +24,7 @@
 //! square of the root-mean-square sound pressure, divided by
 //! the density of the medium and by the speed of sound.
 //! It is measured in watts per square metre.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_SoundIntensity;
 
 #endif // _Quantity_SoundIntensity_HeaderFile

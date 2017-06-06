@@ -24,7 +24,7 @@
 //! perfect fluid to include terms due to a real fluid.
 //! It is quantified as area per unit time.
 //! It is measured in square metres per second.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_KinematicViscosity;
 
 #endif // _Quantity_KinematicViscosity_HeaderFile

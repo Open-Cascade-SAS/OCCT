@@ -21,7 +21,7 @@
 
 //! Defined as the amount of charge flowing per unit time.
 //! It is measured in amperes (coulombs per second).
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_ElectricCurrent;
 
 #endif // _Quantity_ElectricCurrent_HeaderFile

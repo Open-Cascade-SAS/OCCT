@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <BRepSweep_Rotation.hxx>
-#include <Quantity_PlaneAngle.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 class Standard_ConstructionError;
@@ -43,7 +42,7 @@ public:
   
   //! Builds the Revol of meridian S axis A  and angle D. If
   //! C is true S is copied.
-  Standard_EXPORT BRepSweep_Revol(const TopoDS_Shape& S, const gp_Ax1& A, const Quantity_PlaneAngle D, const Standard_Boolean C = Standard_False);
+  Standard_EXPORT BRepSweep_Revol(const TopoDS_Shape& S, const gp_Ax1& A, const Standard_Real D, const Standard_Boolean C = Standard_False);
   
   //! Builds the Revol of meridian S  axis A and angle 2*Pi.
   //! If C is true S is copied.
@@ -76,20 +75,10 @@ public:
   Standard_EXPORT gp_Ax1 Axe() const;
   
   //! returns the angle.
-  Standard_EXPORT Quantity_PlaneAngle Angle() const;
-
-
-
-
-protected:
-
-
-
-
+  Standard_EXPORT Standard_Real Angle() const;
 
 private:
 
-  
   //! builds the NumShape.
   Standard_EXPORT Sweep_NumShape NumShape (const Standard_Real D) const;
   
@@ -107,11 +96,5 @@ private:
 
 
 };
-
-
-
-
-
-
 
 #endif // _BRepSweep_Revol_HeaderFile

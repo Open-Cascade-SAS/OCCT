@@ -21,6 +21,7 @@
 
 //! Defined as an angle formed by three or more planes.
 //! It is measured in steradians.
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_SolidAngle;
 
 #endif // _Quantity_SolidAngle_HeaderFile

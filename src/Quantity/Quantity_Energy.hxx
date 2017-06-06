@@ -37,7 +37,7 @@
 //! the observed mass and the rest mass of a body multiplied
 //! by the square of the speed of light.
 //! It is measured in joules (newton-metres).
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Energy;
 
 #endif // _Quantity_Energy_HeaderFile

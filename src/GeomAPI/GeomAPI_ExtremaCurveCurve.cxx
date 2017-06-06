@@ -303,8 +303,8 @@ Standard_Boolean GeomAPI_ExtremaCurveCurve::TotalNearestPoints(gp_Pnt& P1,gp_Pnt
     
 }
 
-Standard_Boolean GeomAPI_ExtremaCurveCurve::TotalLowerDistanceParameters(Quantity_Parameter& U1, 
-									 Quantity_Parameter& U2) 
+Standard_Boolean GeomAPI_ExtremaCurveCurve::TotalLowerDistanceParameters(Standard_Real& U1, 
+									 Standard_Real& U2) 
 {
   if(!myTotalExt) {
 
@@ -322,7 +322,7 @@ Standard_Boolean GeomAPI_ExtremaCurveCurve::TotalLowerDistanceParameters(Quantit
 
 }
 
-Quantity_Length GeomAPI_ExtremaCurveCurve::TotalLowerDistance() 
+Standard_Real GeomAPI_ExtremaCurveCurve::TotalLowerDistance() 
 {
   if(!myTotalExt) {
 

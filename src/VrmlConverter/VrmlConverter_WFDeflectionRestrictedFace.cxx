@@ -79,7 +79,7 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add
    const Handle(BRepAdaptor_HSurface)& aFace,
    const Standard_Boolean              DrawUIso,
    const Standard_Boolean              DrawVIso,
-   const Quantity_Length               Deflection,
+   const Standard_Real               Deflection,
    const Standard_Integer              NBUiso,
    const Standard_Integer              NBViso,
    const Handle(VrmlConverter_Drawer)& aDrawer)
@@ -317,7 +317,7 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add
    const Handle(BRepAdaptor_HSurface)&        aFace,
    const Handle (VrmlConverter_Drawer)&       aDrawer){
 
-  Quantity_Length Deflection = GetDeflection(aFace, aDrawer);
+  Standard_Real Deflection = GetDeflection(aFace, aDrawer);
 
   Standard_Integer finu = aDrawer->UIsoAspect()->Number();
   Standard_Integer finv = aDrawer->VIsoAspect()->Number();
@@ -344,7 +344,7 @@ void VrmlConverter_WFDeflectionRestrictedFace::AddUIso
    const Handle(BRepAdaptor_HSurface)& aFace,
    const Handle (VrmlConverter_Drawer)& aDrawer) {
 
-  Quantity_Length Deflection = GetDeflection(aFace, aDrawer);
+  Standard_Real Deflection = GetDeflection(aFace, aDrawer);
 
   Standard_Integer finu = aDrawer->UIsoAspect()->Number();
   Standard_Integer finv = aDrawer->VIsoAspect()->Number();
@@ -369,7 +369,7 @@ void VrmlConverter_WFDeflectionRestrictedFace::AddVIso
    const Handle(BRepAdaptor_HSurface)& aFace,
    const Handle (VrmlConverter_Drawer)& aDrawer) {
 
-  Quantity_Length Deflection = GetDeflection(aFace, aDrawer);
+  Standard_Real Deflection = GetDeflection(aFace, aDrawer);
 
   Standard_Integer finu = aDrawer->UIsoAspect()->Number();
   Standard_Integer finv = aDrawer->VIsoAspect()->Number();

@@ -23,7 +23,7 @@
 //! travelled, or distance travelled per unit of fuel.
 //! It is measured in litres per 100 kilometres or in
 //! miles per gallon (UK or US).
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Consumption;
 
 #endif // _Quantity_Consumption_HeaderFile

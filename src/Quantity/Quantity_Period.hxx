@@ -25,7 +25,6 @@
 #include <Standard_Boolean.hxx>
 class Quantity_PeriodDefinitionError;
 
-
 //! Manages date intervals. For example, a Period object
 //! gives the interval between two dates.
 //! A period is expressed in seconds and microseconds.
@@ -35,7 +34,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a Period
   //! With:      0 <= dd
   //! 0 <= hh
@@ -139,29 +137,11 @@ Standard_Boolean operator > (const Quantity_Period& anOther) const
   //! 0 <= mics
   Standard_EXPORT static Standard_Boolean IsValid (const Standard_Integer ss, const Standard_Integer mics = 0);
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Standard_Integer mySec;
   Standard_Integer myUSec;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Quantity_Period_HeaderFile

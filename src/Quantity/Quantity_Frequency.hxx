@@ -21,6 +21,7 @@
 
 //! Defined as the number of oscillations per unit time.
 //! It is measured in cycles per second.
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Frequency;
 
 #endif // _Quantity_Frequency_HeaderFile

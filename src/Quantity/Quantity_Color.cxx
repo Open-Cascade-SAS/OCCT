@@ -121,7 +121,7 @@ Quantity_Color::Quantity_Color (const NCollection_Vec3<float>& theRgb)
   }
 }
 
-void Quantity_Color::ChangeContrast (const Quantity_Rate ADelta) {
+void Quantity_Color::ChangeContrast (const Standard_Real ADelta) {
 
 Standard_ShortReal MyHue, MyLight, MySaturation;
 
@@ -136,7 +136,7 @@ Standard_ShortReal MyHue, MyLight, MySaturation;
 	}
 }
 
-void Quantity_Color::ChangeIntensity (const Quantity_Rate ADelta) {
+void Quantity_Color::ChangeIntensity (const Standard_Real ADelta) {
 
 Standard_ShortReal MyHue, MyLight, MySaturation;
 

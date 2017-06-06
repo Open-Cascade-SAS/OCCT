@@ -22,7 +22,7 @@
 //! It is defined the luminous flux per unit area per unit
 //! solid angle.
 //! It is measured in candelas per square metre.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Luminance;
 
 #endif // _Quantity_Luminance_HeaderFile

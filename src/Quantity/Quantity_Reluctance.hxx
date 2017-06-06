@@ -23,7 +23,7 @@
 //! to a magnetic circuit to the magnetic flux in the circuit.
 //! It is measured in reciprocal henrys.
 //! Its reciprocal is permanence.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Reluctance;
 
 #endif // _Quantity_Reluctance_HeaderFile

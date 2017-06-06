@@ -21,7 +21,7 @@
 
 //! Defined as the concentration in moles per kilogram of
 //! solvent.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Molarity;
 
 #endif // _Quantity_Molarity_HeaderFile

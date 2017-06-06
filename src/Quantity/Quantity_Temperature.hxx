@@ -22,6 +22,7 @@
 //! Defined as a measure of the average kinetic energy
 //! of the molecules in a body.
 //! It is measured in degrees kelvin.
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Temperature;
 
 #endif // _Quantity_Temperature_HeaderFile

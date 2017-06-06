@@ -6,7 +6,6 @@ Quantity_Admittance.hxx
 Quantity_AmountOfSubstance.hxx
 Quantity_AngularVelocity.hxx
 Quantity_Area.hxx
-Quantity_Array1OfCoefficient.hxx
 Quantity_Array1OfColor.hxx
 Quantity_Array2OfColor.hxx
 Quantity_Capacitance.hxx
@@ -25,10 +24,8 @@ Quantity_Consumption.hxx
 Quantity_Content.hxx
 Quantity_Convert.cxx
 Quantity_Convert.hxx
-Quantity_Convert.lxx
 Quantity_Date.cxx
 Quantity_Date.hxx
-Quantity_Date.lxx
 Quantity_DateDefinitionError.hxx
 Quantity_Density.hxx
 Quantity_DoseEquivalent.hxx
@@ -73,7 +70,6 @@ Quantity_Normality.hxx
 Quantity_Parameter.hxx
 Quantity_Period.cxx
 Quantity_Period.hxx
-Quantity_Period.lxx
 Quantity_PeriodDefinitionError.hxx
 Quantity_PhysicalQuantity.hxx
 Quantity_PlaneAngle.hxx

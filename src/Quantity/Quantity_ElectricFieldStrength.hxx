@@ -22,7 +22,7 @@
 //! Defined as the force exerted on a unit charge at a
 //! given point in space.
 //! It is measured in volts per metre.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_ElectricFieldStrength;
 
 #endif // _Quantity_ElectricFieldStrength_HeaderFile

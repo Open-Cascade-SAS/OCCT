@@ -23,7 +23,7 @@
 //! area inside a body. Quantified as work per unit time
 //! per unit length per unit of temperature.
 //! It is measured in watts per metre per degee kelvin.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_ThermalConductivity;
 
 #endif // _Quantity_ThermalConductivity_HeaderFile

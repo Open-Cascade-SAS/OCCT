@@ -29,7 +29,7 @@
 //! degree of temperature.
 //! It is measured in joules per kilogram per degree
 //! kelvin.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_SpecificHeatCapacity;
 
 #endif // _Quantity_SpecificHeatCapacity_HeaderFile

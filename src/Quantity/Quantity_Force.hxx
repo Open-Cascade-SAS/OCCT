@@ -23,7 +23,7 @@
 //! and the acceleration that the force produces.
 //! It is a vector quantity.
 //! It is measured in newtons.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Force;
 
 #endif // _Quantity_Force_HeaderFile

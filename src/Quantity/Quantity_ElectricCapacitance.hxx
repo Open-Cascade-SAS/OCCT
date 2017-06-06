@@ -22,7 +22,7 @@
 //! Defined for a capacitor as the ratio of the charge on
 //! either conductor to the potential between them.
 //! It is measured in farads (coulomb per volt).
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_ElectricCapacitance;
 
 #endif // _Quantity_ElectricCapacitance_HeaderFile

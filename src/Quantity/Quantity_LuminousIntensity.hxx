@@ -22,7 +22,7 @@
 //! Defined as the luminous flux emitted per unit solid
 //! angle in a given direction by a point source.
 //! It is measured in candelas.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_LuminousIntensity;
 
 #endif // _Quantity_LuminousIntensity_HeaderFile

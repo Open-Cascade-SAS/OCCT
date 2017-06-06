@@ -27,8 +27,6 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <Standard_Real.hxx>
 #include <gp_Pnt.hxx>
-#include <Quantity_Parameter.hxx>
-#include <Quantity_Length.hxx>
 class Standard_OutOfRange;
 class StdFail_NotDone;
 class Geom_Curve;
@@ -80,7 +78,7 @@ public:
   //! Warning
   //! Use the function NbExtrema to obtain the number
   //! of solutions. If this algorithm fails, NbExtrema returns 0.
-  Standard_EXPORT GeomAPI_ExtremaCurveCurve(const Handle(Geom_Curve)& C1, const Handle(Geom_Curve)& C2, const Quantity_Parameter U1min, const Quantity_Parameter U1max, const Quantity_Parameter U2min, const Quantity_Parameter U2max);
+  Standard_EXPORT GeomAPI_ExtremaCurveCurve(const Handle(Geom_Curve)& C1, const Handle(Geom_Curve)& C2, const Standard_Real U1min, const Standard_Real U1max, const Standard_Real U2min, const Standard_Real U2max);
   
   //! Initializes this algorithm with the given arguments
   //! and computes the extrema between the curves C1 and C2
@@ -95,7 +93,7 @@ public:
   //! Warning
   //! Use the function NbExtrema to obtain the number
   //! of solutions. If this algorithm fails, NbExtrema returns 0.
-  Standard_EXPORT void Init (const Handle(Geom_Curve)& C1, const Handle(Geom_Curve)& C2, const Quantity_Parameter U1min, const Quantity_Parameter U1max, const Quantity_Parameter U2min, const Quantity_Parameter U2max);
+  Standard_EXPORT void Init (const Handle(Geom_Curve)& C1, const Handle(Geom_Curve)& C2, const Standard_Real U1min, const Standard_Real U1max, const Standard_Real U2min, const Standard_Real U2max);
   
   //! Returns the number of extrema computed by this algorithm.
   //! Note: if this algorithm fails, NbExtrema returns 0.
@@ -118,7 +116,7 @@ Standard_EXPORT operator Standard_Integer() const;
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT void Parameters (const Standard_Integer Index, Quantity_Parameter& U1, Quantity_Parameter& U2) const;
+  Standard_EXPORT void Parameters (const Standard_Integer Index, Standard_Real& U1, Standard_Real& U2) const;
   
   //! Computes the distance between the end points of the
   //! extremum of index Index computed by this algorithm.
@@ -126,7 +124,7 @@ Standard_EXPORT operator Standard_Integer() const;
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT Quantity_Length Distance (const Standard_Integer Index) const;
+  Standard_EXPORT Standard_Real Distance (const Standard_Integer Index) const;
   
   //! Returns the points P1 on the first curve and P2 on
   //! the second curve, which are the ends of the shortest
@@ -138,12 +136,12 @@ Standard_EXPORT operator Standard_Integer() const;
   //! curve and U2 of the point on the second curve, which
   //! are the ends of the shortest extremum computed by this algorithm.
   //! Exceptions StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT void LowerDistanceParameters (Quantity_Parameter& U1, Quantity_Parameter& U2) const;
+  Standard_EXPORT void LowerDistanceParameters (Standard_Real& U1, Standard_Real& U2) const;
   
   //! Computes the distance between the end points of the
   //! shortest extremum computed by this algorithm.
   //! Exceptions StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT Quantity_Length LowerDistance() const;
+  Standard_EXPORT Standard_Real LowerDistance() const;
 Standard_EXPORT operator Standard_Real() const;
   
   //! return the algorithmic object from Extrema
@@ -157,24 +155,14 @@ Standard_EXPORT operator Standard_Real() const;
   //! set  in <U1> and <U2> the parameters of the couple
   //! solution   points  which  represents  the  total  nearest
   //! solution.
-  Standard_EXPORT Standard_Boolean TotalLowerDistanceParameters (Quantity_Parameter& U1, Quantity_Parameter& U2);
+  Standard_EXPORT Standard_Boolean TotalLowerDistanceParameters (Standard_Real& U1, Standard_Real& U2);
   
   //! return the distance of the total  nearest couple solution
   //! point.
   //! if <myExtCC> is not done
-  Standard_EXPORT Quantity_Length TotalLowerDistance();
-
-
-
-
-protected:
-
-
-
-
+  Standard_EXPORT Standard_Real TotalLowerDistance();
 
 private:
-
   
   Standard_EXPORT void TotalPerform();
 

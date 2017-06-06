@@ -26,7 +26,7 @@
 //! and the current. For AC the root-mean-square values
 //! are multiplied by the cosine of the phase angle.
 //! It is measured in watts (joules per second).
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Power;
 
 #endif // _Quantity_Power_HeaderFile

@@ -22,7 +22,6 @@
 
 #include <VrmlAPI_RepresentationOfShape.hxx>
 #include <Standard_Real.hxx>
-#include <Quantity_Length.hxx>
 #include <Quantity_HArray1OfColor.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
@@ -106,12 +105,8 @@ public:
   //! VRML format of the passed version and writes it to the file identified by aFile.
   Standard_EXPORT void Write (const TopoDS_Shape& aShape, const Standard_CString aFile, const Standard_Integer aVersion = 2) const;
 
-
-
-
 protected:
 
-  
   //! Converts the shape aShape to VRML format of version 1.0 and writes it
   //! to the file identified by aFileName using default parameters.
   Standard_EXPORT void write_v1 (const TopoDS_Shape& aShape, const Standard_CString aFileName) const;
@@ -120,12 +115,7 @@ protected:
   //! to the file identified by aFileName using default parameters.
   Standard_EXPORT void write_v2 (const TopoDS_Shape& aShape, const Standard_CString aFileName) const;
 
-
-
-
 private:
-
-
 
   VrmlAPI_RepresentationOfShape myRepresentation;
   Handle(VrmlConverter_Drawer) myDrawer;
@@ -142,21 +132,14 @@ private:
   Handle(Vrml_Material) myWireMaterial;
   Handle(Vrml_Material) myFreeBoundsMaterial;
   Handle(Vrml_Material) myUnfreeBoundsMaterial;
-  Quantity_Length DX;
-  Quantity_Length DY;
-  Quantity_Length DZ;
-  Quantity_Length XUp;
-  Quantity_Length YUp;
-  Quantity_Length ZUp;
-  Quantity_Length Focus;
-
+  Standard_Real DX;
+  Standard_Real DY;
+  Standard_Real DZ;
+  Standard_Real XUp;
+  Standard_Real YUp;
+  Standard_Real ZUp;
+  Standard_Real Focus;
 
 };
-
-
-
-
-
-
 
 #endif // _VrmlAPI_Writer_HeaderFile

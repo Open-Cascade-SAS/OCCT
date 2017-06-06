@@ -24,7 +24,7 @@
 //! Its integral along a closed line is equal to the
 //! magnetomotive force.
 //! It is measured in amperes per metre.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_MagneticFieldStrength;
 
 #endif // _Quantity_MagneticFieldStrength_HeaderFile

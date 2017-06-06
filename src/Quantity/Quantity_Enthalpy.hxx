@@ -24,7 +24,7 @@
 //! process at constant pressure the change in enthalpy is
 //! equal to the quantity of heat absorbed (or lost).
 //! It is measured in joules.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Enthalpy;
 
 #endif // _Quantity_Enthalpy_HeaderFile

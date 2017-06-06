@@ -22,7 +22,6 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <Quantity_Length.hxx>
 #include <Aspect_TypeOfDeflection.hxx>
 #include <Standard_Real.hxx>
 #include <MMgt_TShared.hxx>
@@ -60,11 +59,11 @@ public:
   //! VrmlConverter_DeflectionCurve
   //! VrmlConverter_WFDeflectionRestrictedFace
   //! VrmlConverter_WFDeflectionShape
-  Standard_EXPORT void SetMaximalChordialDeviation (const Quantity_Length aChordialDeviation);
+  Standard_EXPORT void SetMaximalChordialDeviation (const Standard_Real aChordialDeviation);
   
   //! returns the maximal chordial deviation.
   //! Default value: 0.1
-  Standard_EXPORT Quantity_Length MaximalChordialDeviation() const;
+  Standard_EXPORT Standard_Real MaximalChordialDeviation() const;
   
   //! default 0.001
   Standard_EXPORT void SetDeviationCoefficient (const Standard_Real aCoefficient);
@@ -213,18 +212,9 @@ public:
   //! sets LineAspect  for  the seen lines.
   Standard_EXPORT void SetSeenLineAspect (const Handle(VrmlConverter_LineAspect)& anAspect);
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(VrmlConverter_Drawer,MMgt_TShared)
 
-protected:
-
-
-
-
 private:
-
 
   Handle(VrmlConverter_IsoAspect) myUIsoAspect;
   Handle(VrmlConverter_IsoAspect) myVIsoAspect;
@@ -238,7 +228,7 @@ private:
   Standard_Boolean myWireDraw;
   Handle(VrmlConverter_LineAspect) myLineAspect;
   Handle(VrmlConverter_ShadingAspect) myShadingAspect;
-  Quantity_Length myChordialDeviation;
+  Standard_Real myChordialDeviation;
   Aspect_TypeOfDeflection myTypeOfDeflection;
   Standard_Real myMaximalParameterValue;
   Standard_Real myDeviationCoefficient;
@@ -247,13 +237,6 @@ private:
   Handle(VrmlConverter_LineAspect) myHiddenLineAspect;
   Handle(VrmlConverter_LineAspect) mySeenLineAspect;
 
-
 };
-
-
-
-
-
-
 
 #endif // _VrmlConverter_Drawer_HeaderFile

@@ -23,7 +23,7 @@
 //! and the square of the distance of its centre of gravity
 //! from an axis.
 //! It is measured in kilogram-square-metres.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_MomentOfInertia;
 
 #endif // _Quantity_MomentOfInertia_HeaderFile

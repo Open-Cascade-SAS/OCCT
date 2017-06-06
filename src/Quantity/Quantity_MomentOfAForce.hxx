@@ -22,7 +22,7 @@
 //! Defined as the product of a force and the
 //! perpendicular distance to an axis.
 //! It is measured in newtons x metres.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_MomentOfAForce;
 
 #endif // _Quantity_MomentOfAForce_HeaderFile

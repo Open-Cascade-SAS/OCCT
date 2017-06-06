@@ -21,6 +21,7 @@
 
 //! Defined as spatial extension.
 //! It is measured in metres.
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Length;
 
 #endif // _Quantity_Length_HeaderFile

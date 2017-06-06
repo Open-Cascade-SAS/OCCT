@@ -21,7 +21,7 @@
 
 //! Defined as volume per unit time.
 //! It is measured in cubic metres per second.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_VolumeFlow;
 
 #endif // _Quantity_VolumeFlow_HeaderFile

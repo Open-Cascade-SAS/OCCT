@@ -22,6 +22,7 @@
 //! Defined as a quantity of matter. Gives rise to the
 //! inertial and gravitational properties of a body.
 //! It is measured in kilograms.
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Mass;
 
 #endif // _Quantity_Mass_HeaderFile

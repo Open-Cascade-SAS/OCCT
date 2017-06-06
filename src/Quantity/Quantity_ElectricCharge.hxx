@@ -23,7 +23,7 @@
 //! more commonly viewed as the product of electric current
 //! and time.
 //! It is measured in coulombs (ampere-second).
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_ElectricCharge;
 
 #endif // _Quantity_ElectricCharge_HeaderFile

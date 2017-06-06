@@ -23,7 +23,7 @@
 //! It is measured in Siemens (reciprocal Ohms).
 //! The square of the admittance is equal to the sum of the
 //! squares of the conductance and the susceptance.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Admittance;
 
 #endif // _Quantity_Admittance_HeaderFile

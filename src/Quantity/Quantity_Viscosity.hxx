@@ -24,7 +24,7 @@
 //! and time. For a liquid it generally decreases with
 //! temperature; for a gas it increases.
 //! It is measured in pascal-seconds.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Viscosity;
 
 #endif // _Quantity_Viscosity_HeaderFile

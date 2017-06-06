@@ -23,7 +23,7 @@
 //! perpendicular distance to an axis or as the
 //! the product of a force couple.
 //! It is measured in newtons x metres.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Torque;
 
 #endif // _Quantity_Torque_HeaderFile

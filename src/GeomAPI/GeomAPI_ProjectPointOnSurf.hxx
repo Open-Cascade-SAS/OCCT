@@ -28,8 +28,6 @@
 #include <Extrema_ExtAlgo.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <Standard_Real.hxx>
-#include <Quantity_Parameter.hxx>
-#include <Quantity_Length.hxx>
 class Standard_OutOfRange;
 class StdFail_NotDone;
 class gp_Pnt;
@@ -62,11 +60,11 @@ public:
   //! [Umin,Usup] [Vmin,Vsup] of the surface.
   Standard_EXPORT GeomAPI_ProjectPointOnSurf(const gp_Pnt& P, const Handle(Geom_Surface)& Surface, const Standard_Real Tolerance, const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
   
-  Standard_EXPORT GeomAPI_ProjectPointOnSurf(const gp_Pnt& P, const Handle(Geom_Surface)& Surface, const Quantity_Parameter Umin, const Quantity_Parameter Usup, const Quantity_Parameter Vmin, const Quantity_Parameter Vsup, const Standard_Real Tolerance, const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
+  Standard_EXPORT GeomAPI_ProjectPointOnSurf(const gp_Pnt& P, const Handle(Geom_Surface)& Surface, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Standard_Real Tolerance, const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
   
   //! Init the projection  of a point <P> on a surface
   //! <Surface>
-  Standard_EXPORT GeomAPI_ProjectPointOnSurf(const gp_Pnt& P, const Handle(Geom_Surface)& Surface, const Quantity_Parameter Umin, const Quantity_Parameter Usup, const Quantity_Parameter Vmin, const Quantity_Parameter Vsup, const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
+  Standard_EXPORT GeomAPI_ProjectPointOnSurf(const gp_Pnt& P, const Handle(Geom_Surface)& Surface, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
   
   Standard_EXPORT void Init (const gp_Pnt& P, const Handle(Geom_Surface)& Surface, const Standard_Real Tolerance, const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
   
@@ -75,16 +73,16 @@ public:
   //! [Umin,Usup] [Vmin,Vsup] of the surface.
   Standard_EXPORT void Init (const gp_Pnt& P, const Handle(Geom_Surface)& Surface, const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
   
-  Standard_EXPORT void Init (const gp_Pnt& P, const Handle(Geom_Surface)& Surface, const Quantity_Parameter Umin, const Quantity_Parameter Usup, const Quantity_Parameter Vmin, const Quantity_Parameter Vsup, const Standard_Real Tolerance, const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
+  Standard_EXPORT void Init (const gp_Pnt& P, const Handle(Geom_Surface)& Surface, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Standard_Real Tolerance, const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
   
   //! Init the projection for many points on a surface
   //! <Surface>. The solutions will be computed in the domain
   //! [Umin,Usup] [Vmin,Vsup] of the surface.
-  Standard_EXPORT void Init (const gp_Pnt& P, const Handle(Geom_Surface)& Surface, const Quantity_Parameter Umin, const Quantity_Parameter Usup, const Quantity_Parameter Vmin, const Quantity_Parameter Vsup, const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
+  Standard_EXPORT void Init (const gp_Pnt& P, const Handle(Geom_Surface)& Surface, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
   
-  Standard_EXPORT void Init (const Handle(Geom_Surface)& Surface, const Quantity_Parameter Umin, const Quantity_Parameter Usup, const Quantity_Parameter Vmin, const Quantity_Parameter Vsup, const Standard_Real Tolerance, const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
+  Standard_EXPORT void Init (const Handle(Geom_Surface)& Surface, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Standard_Real Tolerance, const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
   
-  Standard_EXPORT void Init (const Handle(Geom_Surface)& Surface, const Quantity_Parameter Umin, const Quantity_Parameter Usup, const Quantity_Parameter Vmin, const Quantity_Parameter Vsup, const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
+  Standard_EXPORT void Init (const Handle(Geom_Surface)& Surface, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
 
   //! Sets the Extrema search algorithm - Grad or Tree. <br>
   //! By default the Extrema is initialized with Grad algorithm.
@@ -123,7 +121,7 @@ Standard_EXPORT operator Standard_Integer() const;
   //! Exceptions
   //! Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where
   //! NbPoints is the number of solution points.
-  Standard_EXPORT void Parameters (const Standard_Integer Index, Quantity_Parameter& U, Quantity_Parameter& V) const;
+  Standard_EXPORT void Parameters (const Standard_Integer Index, Standard_Real& U, Standard_Real& V) const;
   
   //! Computes the distance between the
   //! point and its orthogonal projection on the surface. Index is a number
@@ -131,7 +129,7 @@ Standard_EXPORT operator Standard_Integer() const;
   //! Exceptions
   //! Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where
   //! NbPoints is the number of solution points.
-  Standard_EXPORT Quantity_Length Distance (const Standard_Integer Index) const;
+  Standard_EXPORT Standard_Real Distance (const Standard_Integer Index) const;
   
   //! Returns the nearest orthogonal projection of the point
   //! on the surface.
@@ -144,26 +142,17 @@ Standard_EXPORT operator gp_Pnt() const;
   //! surface of the nearest computed orthogonal projection of the point.
   //! Exceptions
   //! StdFail_NotDone if projection fails.
-  Standard_EXPORT void LowerDistanceParameters (Quantity_Parameter& U, Quantity_Parameter& V) const;
+  Standard_EXPORT void LowerDistanceParameters (Standard_Real& U, Standard_Real& V) const;
   
   //! Computes the distance between the
   //! point and its nearest orthogonal projection on the surface.
   //! Exceptions
   //! StdFail_NotDone if projection fails.
-  Standard_EXPORT Quantity_Length LowerDistance() const;
+  Standard_EXPORT Standard_Real LowerDistance() const;
 Standard_EXPORT operator Standard_Real() const;
   
   //! return the algorithmic object from Extrema
     const Extrema_ExtPS& Extrema() const;
-
-
-
-
-protected:
-
-
-
-
 
 private:
 

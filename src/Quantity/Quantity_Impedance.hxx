@@ -23,7 +23,7 @@
 //! in a circuit. Includes the contributions of resistance,
 //! inductance, and capacitance.
 //! It is measured in Ohms.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Impedance;
 
 #endif // _Quantity_Impedance_HeaderFile

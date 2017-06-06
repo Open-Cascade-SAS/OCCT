@@ -23,7 +23,7 @@
 //! induced when the current in a circuit changes at
 //! unit rate.
 //! It is measured in henrys (webers per ampere).
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Inductance;
 
 #endif // _Quantity_Inductance_HeaderFile

@@ -21,7 +21,7 @@
 
 //! Defined as the quantity of illuminance with time.
 //! It is measured in lux-seconds.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_LuminousExposition;
 
 #endif // _Quantity_LuminousExposition_HeaderFile

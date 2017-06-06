@@ -22,7 +22,7 @@
 //! Defined as the ratio of the potential difference
 //! across a conductor to the current flowing through it.
 //! It is measured in ohms.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Resistance;
 
 #endif // _Quantity_Resistance_HeaderFile

@@ -24,7 +24,6 @@
 #include <IntCurveSurface_HInter.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <Quantity_Parameter.hxx>
 class Geom_Curve;
 class StdFail_NotDone;
 class Standard_OutOfRange;
@@ -79,7 +78,7 @@ public:
   //! StdFail_NotDone if intersection algorithm fails or is not initialized.
   //! Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where
   //! NbPoints is the number of computed intersection points.
-  Standard_EXPORT void Parameters (const Standard_Integer Index, Quantity_Parameter& U, Quantity_Parameter& V, Quantity_Parameter& W) const;
+  Standard_EXPORT void Parameters (const Standard_Integer Index, Standard_Real& U, Standard_Real& V, Standard_Real& W) const;
   
   //! Returns the number of computed
   //! intersection segments in case of tangential intersection.
@@ -103,7 +102,7 @@ public:
   //! StdFail_NotDone if intersection algorithm fails or is not initialized.
   //! Standard_OutOfRange if Index is not in the range [ 1,NbSegments ],
   //! where NbSegments is the number of computed intersection segments.
-  Standard_EXPORT void Parameters (const Standard_Integer Index, Quantity_Parameter& U1, Quantity_Parameter& V1, Quantity_Parameter& U2, Quantity_Parameter& V2) const;
+  Standard_EXPORT void Parameters (const Standard_Integer Index, Standard_Real& U1, Standard_Real& V1, Standard_Real& U2, Standard_Real& V2) const;
 
 
 

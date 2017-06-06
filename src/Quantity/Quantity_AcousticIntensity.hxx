@@ -23,7 +23,7 @@
 //! levels. The conventional unit, the bel, is the base ten
 //! logarithm of the ratio of the two pressures. In practice
 //! the decibel (one tenth of a bel) is used.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_AcousticIntensity;
 
 #endif // _Quantity_AcousticIntensity_HeaderFile

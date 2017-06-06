@@ -26,7 +26,7 @@
 //! For a gas there are coefficients for constant pressure
 //! and constant volume changes.
 //! It is measured in units of reciprocal degree kelvin.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_CoefficientOfExpansion;
 
 #endif // _Quantity_CoefficientOfExpansion_HeaderFile

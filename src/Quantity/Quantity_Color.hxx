@@ -23,7 +23,6 @@
 #include <Standard_ShortReal.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Quantity_TypeOfColor.hxx>
-#include <Quantity_Rate.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
@@ -84,7 +83,7 @@ public:
   //! The variation is expressed as a percentage of the
   //! current value.
   //! It is a variation of the saturation.
-  Standard_EXPORT void ChangeContrast (const Quantity_Rate ADelta);
+  Standard_EXPORT void ChangeContrast (const Standard_Real ADelta);
   
   //! Increases or decreases the intensity by <ADelta>.
   //! <ADelta> is a percentage. Any value greater than zero
@@ -92,7 +91,7 @@ public:
   //! The variation is expressed as a percentage of the
   //! current value.
   //! It is a variation of the lightness.
-  Standard_EXPORT void ChangeIntensity (const Quantity_Rate ADelta);
+  Standard_EXPORT void ChangeIntensity (const Standard_Real ADelta);
   
   //! Updates the colour <me> from the definition of the
   //! colour <AName>.

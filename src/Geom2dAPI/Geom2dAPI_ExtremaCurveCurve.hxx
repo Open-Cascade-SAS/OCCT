@@ -25,8 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <Extrema_ExtCC2d.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Quantity_Parameter.hxx>
-#include <Quantity_Length.hxx>
 class Standard_OutOfRange;
 class StdFail_NotDone;
 class Geom2d_Curve;
@@ -72,7 +70,7 @@ public:
   //! Warning
   //! Use the function NbExtrema to obtain the number
   //! of solutions. If this algorithm fails, NbExtrema returns 0.
-  Standard_EXPORT Geom2dAPI_ExtremaCurveCurve(const Handle(Geom2d_Curve)& C1, const Handle(Geom2d_Curve)& C2, const Quantity_Parameter U1min, const Quantity_Parameter U1max, const Quantity_Parameter U2min, const Quantity_Parameter U2max);
+  Standard_EXPORT Geom2dAPI_ExtremaCurveCurve(const Handle(Geom2d_Curve)& C1, const Handle(Geom2d_Curve)& C2, const Standard_Real U1min, const Standard_Real U1max, const Standard_Real U2min, const Standard_Real U2max);
   
   //! Returns the number of extrema computed by this algorithm.
   //! Note: if this algorithm fails, NbExtrema returns 0.
@@ -96,7 +94,7 @@ Standard_EXPORT operator Standard_Integer() const;
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT void Parameters (const Standard_Integer Index, Quantity_Parameter& U1, Quantity_Parameter& U2) const;
+  Standard_EXPORT void Parameters (const Standard_Integer Index, Standard_Real& U1, Standard_Real& U2) const;
   
   //! Computes the distance between the end points of the
   //! extremum of index Index computed by this algorithm.
@@ -104,7 +102,7 @@ Standard_EXPORT operator Standard_Integer() const;
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT Quantity_Length Distance (const Standard_Integer Index) const;
+  Standard_EXPORT Standard_Real Distance (const Standard_Integer Index) const;
   
   //! Returns the points P1 on the first curve and P2 on
   //! the second curve, which are the ends of the shortest
@@ -117,12 +115,12 @@ Standard_EXPORT operator Standard_Integer() const;
   //! are the ends of the shortest extremum computed by this algorithm.
   //! Exceptions
   //! StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT void LowerDistanceParameters (Quantity_Parameter& U1, Quantity_Parameter& U2) const;
+  Standard_EXPORT void LowerDistanceParameters (Standard_Real& U1, Standard_Real& U2) const;
   
   //! Computes the distance between the end points of the
   //! shortest extremum computed by this algorithm.
   //! Exceptions - StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT Quantity_Length LowerDistance() const;
+  Standard_EXPORT Standard_Real LowerDistance() const;
 Standard_EXPORT operator Standard_Real() const;
   
     const Extrema_ExtCC2d& Extrema() const;

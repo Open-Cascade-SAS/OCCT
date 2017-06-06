@@ -22,7 +22,7 @@
 //! Defined as the ratio of luminous flux emitted by a
 //! source to the power it consumes.
 //! It is measured in lumens per watt.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_LuminousEfficacity;
 
 #endif // _Quantity_LuminousEfficacity_HeaderFile

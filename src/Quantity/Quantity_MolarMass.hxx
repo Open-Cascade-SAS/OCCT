@@ -23,7 +23,7 @@
 //! mole. One mole of any substance contains Avogadro's
 //! Constant of molecules.
 //! It is measured in kilograms per mole.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_MolarMass;
 
 #endif // _Quantity_MolarMass_HeaderFile

@@ -26,7 +26,7 @@
 //! them.
 //! It is measured in farads (coulomb per volt).
 //! In practice micro-, nano-, and pico-farads are used.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Capacitance;
 
 #endif // _Quantity_Capacitance_HeaderFile

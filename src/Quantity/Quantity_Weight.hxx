@@ -24,7 +24,7 @@
 //! It is quantified as the product of the mass of the body
 //! and the local value of the acceleration of free fall.
 //! It is measured in newtons.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Weight;
 
 #endif // _Quantity_Weight_HeaderFile

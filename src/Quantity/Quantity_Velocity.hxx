@@ -22,6 +22,7 @@
 //! Defined as distance covered per unit time in a
 //! given direction. It is a vector quantity.
 //! It is measured in metres per second.
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Velocity;
 
 #endif // _Quantity_Velocity_HeaderFile

@@ -164,7 +164,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
     Handle(Geom_Curve) c = BRep_Tool::Curve(e, f, l);
     Handle(Geom2d_Curve) c2d = GeomAPI::To2d(c, Plane->Pln());
     Geom2dAPI_ExtremaCurveCurve extr(ln2d, c2d, LineFirst, LineLast,f,l);
-    Quantity_Length L = RealLast();
+    Standard_Real L = RealLast();
     if(extr.NbExtrema() >= 1) {
       L = extr.LowerDistance();
     }

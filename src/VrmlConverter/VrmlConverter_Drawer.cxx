@@ -46,12 +46,12 @@ Aspect_TypeOfDeflection VrmlConverter_Drawer::TypeOfDeflection() const
  return myTypeOfDeflection;
 }
 
-void VrmlConverter_Drawer::SetMaximalChordialDeviation(const Quantity_Length aChordialDeviation)
+void VrmlConverter_Drawer::SetMaximalChordialDeviation(const Standard_Real aChordialDeviation)
 {
  myChordialDeviation = aChordialDeviation;
 }
 
-Quantity_Length VrmlConverter_Drawer::MaximalChordialDeviation() const 
+Standard_Real VrmlConverter_Drawer::MaximalChordialDeviation() const 
 {
  return myChordialDeviation;
 }

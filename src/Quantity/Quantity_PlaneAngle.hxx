@@ -21,6 +21,7 @@
 
 //! Defined as a difference in direction.
 //! It is measured in radians.
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_PlaneAngle;
 
 #endif // _Quantity_PlaneAngle_HeaderFile

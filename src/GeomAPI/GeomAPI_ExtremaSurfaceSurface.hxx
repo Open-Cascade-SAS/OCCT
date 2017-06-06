@@ -24,8 +24,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Extrema_ExtSS.hxx>
-#include <Quantity_Parameter.hxx>
-#include <Quantity_Length.hxx>
 class Standard_OutOfRange;
 class StdFail_NotDone;
 class Geom_Surface;
@@ -80,7 +78,7 @@ public:
   //! the u parametric direction, and by the two
   //! values of parameter (V2min,V2max) in the v
   //! parametric direction.
-  Standard_EXPORT GeomAPI_ExtremaSurfaceSurface(const Handle(Geom_Surface)& S1, const Handle(Geom_Surface)& S2, const Quantity_Parameter U1min, const Quantity_Parameter U1max, const Quantity_Parameter V1min, const Quantity_Parameter V1max, const Quantity_Parameter U2min, const Quantity_Parameter U2max, const Quantity_Parameter V2min, const Quantity_Parameter V2max);
+  Standard_EXPORT GeomAPI_ExtremaSurfaceSurface(const Handle(Geom_Surface)& S1, const Handle(Geom_Surface)& S2, const Standard_Real U1min, const Standard_Real U1max, const Standard_Real V1min, const Standard_Real V1max, const Standard_Real U2min, const Standard_Real U2max, const Standard_Real V2min, const Standard_Real V2max);
   
   //! Initializes this algorithm with the given arguments
   //! and computes  the  extrema  distances  between  the
@@ -97,7 +95,7 @@ public:
   //! values of parameter (U2min,U2max) in the u
   //! parametric direction, and by the two values of
   //! parameter (V2min,V2max) in the v parametric direction.
-  Standard_EXPORT void Init (const Handle(Geom_Surface)& S1, const Handle(Geom_Surface)& S2, const Quantity_Parameter U1min, const Quantity_Parameter U1max, const Quantity_Parameter V1min, const Quantity_Parameter V1max, const Quantity_Parameter U2min, const Quantity_Parameter U2max, const Quantity_Parameter V2min, const Quantity_Parameter V2max);
+  Standard_EXPORT void Init (const Handle(Geom_Surface)& S1, const Handle(Geom_Surface)& S2, const Standard_Real U1min, const Standard_Real U1max, const Standard_Real V1min, const Standard_Real V1max, const Standard_Real U2min, const Standard_Real U2max, const Standard_Real V2min, const Standard_Real V2max);
   
   //! Returns the number of extrema computed by this algorithm.
   //! Note: if this algorithm fails, NbExtrema returns 0.
@@ -121,7 +119,7 @@ Standard_EXPORT operator Standard_Integer() const;
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT void Parameters (const Standard_Integer Index, Quantity_Parameter& U1, Quantity_Parameter& V1, Quantity_Parameter& U2, Quantity_Parameter& V2) const;
+  Standard_EXPORT void Parameters (const Standard_Integer Index, Standard_Real& U1, Standard_Real& V1, Standard_Real& U2, Standard_Real& V2) const;
   
   //! Computes the distance between the end points of the
   //! extremum of index Index computed by this algorithm.
@@ -129,7 +127,7 @@ Standard_EXPORT operator Standard_Integer() const;
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT Quantity_Length Distance (const Standard_Integer Index) const;
+  Standard_EXPORT Standard_Real Distance (const Standard_Integer Index) const;
   
   //! Returns the points P1 on the first surface and P2 on
   //! the second surface, which are the ends of the
@@ -142,34 +140,22 @@ Standard_EXPORT operator Standard_Integer() const;
   //! surface, which are the ends of the shortest extremum
   //! computed by this algorithm.
   //! Exceptions - StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT void LowerDistanceParameters (Quantity_Parameter& U1, Quantity_Parameter& V1, Quantity_Parameter& U2, Quantity_Parameter& V2) const;
+  Standard_EXPORT void LowerDistanceParameters (Standard_Real& U1, Standard_Real& V1, Standard_Real& U2, Standard_Real& V2) const;
   
   //! Computes the distance between the end points of the
   //! shortest extremum computed by this algorithm.
   //! Exceptions StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT Quantity_Length LowerDistance() const;
+  Standard_EXPORT Standard_Real LowerDistance() const;
 Standard_EXPORT operator Standard_Real() const;
   
   //! return the algorithmic object from Extrema
     const Extrema_ExtSS& Extrema() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Standard_Boolean myIsDone;
   Standard_Integer myIndex;
   Extrema_ExtSS myExtSS;
-
 
 };
 

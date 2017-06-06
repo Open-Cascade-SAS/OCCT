@@ -22,6 +22,7 @@
 //! Defined as the rate at which a body moves around an axis.
 //! It is quantified as change in direction per unit time.
 //! It is measured in radians per second.
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_AngularVelocity;
 
 #endif // _Quantity_AngularVelocity_HeaderFile

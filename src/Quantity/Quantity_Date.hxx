@@ -27,7 +27,6 @@ class Quantity_DateDefinitionError;
 class Standard_OutOfRange;
 class Quantity_Period;
 
-
 //! This class provides services to manage date information.
 //! A date represents the following time intervals:
 //! year, month, day, hour, minute, second,
@@ -43,7 +42,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs a default date
   //! (00:00 GMT, January 1, 1979 (zero hour)); use the function
   //! SetValues to define the required date; or
@@ -176,32 +174,17 @@ Standard_Boolean operator > (const Quantity_Date& anOther) const
   //! Returns true if a year is a leap year.
   //! The leap years are divisable by 4 and not by 100 except
   //! the years divisable by 400.
-    static Standard_Boolean IsLeap (const Standard_Integer yy);
-
-
-
-
-protected:
-
-
-
-
+  static Standard_Boolean IsLeap (const Standard_Integer yy)
+  {
+    return ((yy % 4 == 0) && (yy % 100 != 0))
+         || (yy % 400) == 0;
+  }
 
 private:
-
-
 
   Standard_Integer mySec;
   Standard_Integer myUSec;
 
-
 };
-
-
-#include <Quantity_Date.lxx>
-
-
-
-
 
 #endif // _Quantity_Date_HeaderFile

@@ -25,7 +25,7 @@
 //! is related to the radiant flux of the source by the
 //! spectral luminous efficiency.
 //! It is measured in lumens.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_LuminousFlux;
 
 #endif // _Quantity_LuminousFlux_HeaderFile

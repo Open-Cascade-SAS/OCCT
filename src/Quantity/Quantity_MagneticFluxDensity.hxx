@@ -25,7 +25,7 @@
 //! and the magnetic field strength and with a direction at any
 //! given point the same as that of the magnetic field.
 //! It is measured in teslas (webers per square metre).
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_MagneticFluxDensity;
 
 #endif // _Quantity_MagneticFluxDensity_HeaderFile

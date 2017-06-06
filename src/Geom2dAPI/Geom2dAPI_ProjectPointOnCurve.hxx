@@ -25,8 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <Extrema_ExtPC2d.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Quantity_Parameter.hxx>
-#include <Quantity_Length.hxx>
 class Standard_OutOfRange;
 class StdFail_NotDone;
 class gp_Pnt2d;
@@ -57,7 +55,7 @@ public:
   //! Warning
   //! Use the function NbPoints to obtain the number of solutions. If
   //! projection fails, NbPoints returns 0.
-  Standard_EXPORT Geom2dAPI_ProjectPointOnCurve(const gp_Pnt2d& P, const Handle(Geom2d_Curve)& Curve, const Quantity_Parameter Umin, const Quantity_Parameter Usup);
+  Standard_EXPORT Geom2dAPI_ProjectPointOnCurve(const gp_Pnt2d& P, const Handle(Geom2d_Curve)& Curve, const Standard_Real Umin, const Standard_Real Usup);
   
   //! Initializes this algorithm with the given arguments, and
   //! computes the orthogonal  projections  of a  point  <P> on a curve <Curve>
@@ -66,7 +64,7 @@ public:
   //! Initializes this algorithm with the given arguments, and
   //! computes the orthogonal projections of the point P onto the portion
   //! of the curve Curve limited by the two points of parameter Umin and Usup.
-  Standard_EXPORT void Init (const gp_Pnt2d& P, const Handle(Geom2d_Curve)& Curve, const Quantity_Parameter Umin, const Quantity_Parameter Usup);
+  Standard_EXPORT void Init (const gp_Pnt2d& P, const Handle(Geom2d_Curve)& Curve, const Standard_Real Umin, const Standard_Real Usup);
   
   //! return the number of of computed
   //! orthogonal projectionn points.
@@ -86,7 +84,7 @@ Standard_EXPORT operator Standard_Integer() const;
   //! Exceptions
   //! Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where
   //! NbPoints is the number of solution points.
-  Standard_EXPORT Quantity_Parameter Parameter (const Standard_Integer Index) const;
+  Standard_EXPORT Standard_Real Parameter (const Standard_Integer Index) const;
   
   //! Returns the parameter on the curve
   //! of a point which is the orthogonal projection. Index is a number of a
@@ -94,7 +92,7 @@ Standard_EXPORT operator Standard_Integer() const;
   //! Exceptions
   //! Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where
   //! NbPoints is the number of solution points
-  Standard_EXPORT void Parameter (const Standard_Integer Index, Quantity_Parameter& U) const;
+  Standard_EXPORT void Parameter (const Standard_Integer Index, Standard_Real& U) const;
   
   //! Computes the distance between the
   //! point and its computed orthogonal projection on the curve. Index is a
@@ -102,7 +100,7 @@ Standard_EXPORT operator Standard_Integer() const;
   //! Exceptions
   //! Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where
   //! NbPoints is the number of solution points.
-  Standard_EXPORT Quantity_Length Distance (const Standard_Integer Index) const;
+  Standard_EXPORT Standard_Real Distance (const Standard_Integer Index) const;
   
   //! Returns the nearest orthogonal projection of the point on the curve.
   //! Exceptions
@@ -114,30 +112,19 @@ Standard_EXPORT operator gp_Pnt2d() const;
   //! of the nearest orthogonal projection of the point.
   //! Exceptions
   //! StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT Quantity_Parameter LowerDistanceParameter() const;
+  Standard_EXPORT Standard_Real LowerDistanceParameter() const;
   
   //! Computes the distance between the
   //! point and its nearest orthogonal projection on the curve.
   //! Exceptions
   //! StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT Quantity_Length LowerDistance() const;
+  Standard_EXPORT Standard_Real LowerDistance() const;
 Standard_EXPORT operator Standard_Real() const;
   
   //! return the algorithmic object from Extrema
     const Extrema_ExtPC2d& Extrema() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Standard_Boolean myIsDone;
   Standard_Integer myIndex;

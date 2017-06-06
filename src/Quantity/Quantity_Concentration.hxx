@@ -24,7 +24,7 @@
 //! solution. For certain purposes percentage by weight or
 //! volume can be used, and parts per million (ppm) is used
 //! for trace elements.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Concentration;
 
 #endif // _Quantity_Concentration_HeaderFile

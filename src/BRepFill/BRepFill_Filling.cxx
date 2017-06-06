@@ -576,7 +576,7 @@ void BRepFill_Filling::Build()
   for (j = 1; j <= myFreeConstraints.Length(); j++)
     {
       GeomAPI_ProjectPointOnSurf Projector;
-      Quantity_Parameter U1, V1, U2, V2;
+      Standard_Real U1, V1, U2, V2;
 
       CurFace = myFreeConstraints(j).myFace;
       Handle( BRepAdaptor_HSurface ) HSurf = new BRepAdaptor_HSurface();

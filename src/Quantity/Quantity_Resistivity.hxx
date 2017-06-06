@@ -23,7 +23,7 @@
 //! cross-section per unit length.
 //! It is measured in Ohm-metres.
 //! It is the reciprocal of the conductivity.
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Resistivity;
 
 #endif // _Quantity_Resistivity_HeaderFile

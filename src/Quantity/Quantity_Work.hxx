@@ -26,7 +26,7 @@
 //! In electrical terms, the product of a charge and the
 //! potential difference it traverses.
 //! It is measured in joules (newton-metres).
-
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Work;
 
 #endif // _Quantity_Work_HeaderFile

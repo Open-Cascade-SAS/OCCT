@@ -21,6 +21,7 @@
 
 //! Defined as mass per unit volume.
 //! It is measured in kilograms per cubic metre.
+Standard_DEPRECATED("This type is deprecated - Standard_Real should be used instead")
 typedef Standard_Real Quantity_Density;
 
 #endif // _Quantity_Density_HeaderFile

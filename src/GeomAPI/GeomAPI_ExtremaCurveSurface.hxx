@@ -24,8 +24,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Extrema_ExtCS.hxx>
-#include <Quantity_Parameter.hxx>
-#include <Quantity_Length.hxx>
 class Standard_OutOfRange;
 class StdFail_NotDone;
 class Geom_Curve;
@@ -83,7 +81,7 @@ public:
   //! Warning
   //! Use the function NbExtrema to obtain the number
   //! of solutions. If this algorithm fails, NbExtrema returns 0.
-  Standard_EXPORT GeomAPI_ExtremaCurveSurface(const Handle(Geom_Curve)& Curve, const Handle(Geom_Surface)& Surface, const Quantity_Parameter Wmin, const Quantity_Parameter Wmax, const Quantity_Parameter Umin, const Quantity_Parameter Umax, const Quantity_Parameter Vmin, const Quantity_Parameter Vmax);
+  Standard_EXPORT GeomAPI_ExtremaCurveSurface(const Handle(Geom_Curve)& Curve, const Handle(Geom_Surface)& Surface, const Standard_Real Wmin, const Standard_Real Wmax, const Standard_Real Umin, const Standard_Real Umax, const Standard_Real Vmin, const Standard_Real Vmax);
   
   //! Computes  the  extrema  distances  between  the
   //! curve <C> and the surface  <S>.
@@ -97,7 +95,7 @@ public:
   //! Warning
   //! Use the function NbExtrema to obtain the number
   //! of solutions. If this algorithm fails, NbExtrema returns 0.
-  Standard_EXPORT void Init (const Handle(Geom_Curve)& Curve, const Handle(Geom_Surface)& Surface, const Quantity_Parameter Wmin, const Quantity_Parameter Wmax, const Quantity_Parameter Umin, const Quantity_Parameter Umax, const Quantity_Parameter Vmin, const Quantity_Parameter Vmax);
+  Standard_EXPORT void Init (const Handle(Geom_Curve)& Curve, const Handle(Geom_Surface)& Surface, const Standard_Real Wmin, const Standard_Real Wmax, const Standard_Real Umin, const Standard_Real Umax, const Standard_Real Vmin, const Standard_Real Vmax);
   
   //! Returns the number of extrema computed by this algorithm.
   //! Note: if this algorithm fails, NbExtrema returns 0.
@@ -120,7 +118,7 @@ Standard_EXPORT operator Standard_Integer() const;
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT void Parameters (const Standard_Integer Index, Quantity_Parameter& W, Quantity_Parameter& U, Quantity_Parameter& V) const;
+  Standard_EXPORT void Parameters (const Standard_Integer Index, Standard_Real& W, Standard_Real& U, Standard_Real& V) const;
   
   //! Computes the distance between the end points of the
   //! extremum of index Index computed by this algorithm.
@@ -128,7 +126,7 @@ Standard_EXPORT operator Standard_Integer() const;
   //! Standard_OutOfRange if index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT Quantity_Length Distance (const Standard_Integer Index) const;
+  Standard_EXPORT Standard_Real Distance (const Standard_Integer Index) const;
   
   //! Returns the points PC on the curve and PS on the
   //! surface, which are the ends of the shortest extremum computed by this algorithm.
@@ -139,34 +137,22 @@ Standard_EXPORT operator Standard_Integer() const;
   //! and (U,V) of the point on the surface, which are the
   //! ends of the shortest extremum computed by this algorithm.
   //! Exceptions - StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT void LowerDistanceParameters (Quantity_Parameter& W, Quantity_Parameter& U, Quantity_Parameter& V) const;
+  Standard_EXPORT void LowerDistanceParameters (Standard_Real& W, Standard_Real& U, Standard_Real& V) const;
   
   //! Computes the distance between the end points of the
   //! shortest extremum computed by this algorithm.
   //! Exceptions - StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT Quantity_Length LowerDistance() const;
+  Standard_EXPORT Standard_Real LowerDistance() const;
 Standard_EXPORT operator Standard_Real() const;
   
   //! Returns the algorithmic object from Extrema
     const Extrema_ExtCS& Extrema() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Standard_Boolean myIsDone;
   Standard_Integer myIndex;
   Extrema_ExtCS myExtCS;
-
 
 };
 
