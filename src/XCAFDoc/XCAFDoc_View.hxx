@@ -26,6 +26,10 @@ class TDF_Attribute;
 class TDF_RelocationTable;
 class XCAFView_Object;
 
+// resolve name collisions with WinAPI headers
+#ifdef GetObject
+  #undef GetObject
+#endif
 
 class XCAFDoc_View;
 DEFINE_STANDARD_HANDLE(XCAFDoc_View, TDF_Attribute)

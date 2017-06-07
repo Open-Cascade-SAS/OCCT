@@ -26,6 +26,10 @@ class TDF_Attribute;
 class TDF_RelocationTable;
 class XCAFDimTolObjects_DimensionObject;
 
+// resolve name collisions with WinAPI headers
+#ifdef GetObject
+  #undef GetObject
+#endif
 
 class XCAFDoc_Dimension;
 DEFINE_STANDARD_HANDLE(XCAFDoc_Dimension, TDF_Attribute)

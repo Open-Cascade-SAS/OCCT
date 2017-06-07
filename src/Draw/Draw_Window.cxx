@@ -1579,7 +1579,7 @@ void DrawWindow::InitBuffer()
     GetClientRect(win, &rc);
     if (myMemHbm) {
       BITMAP aBmp;
-      GetObject(myMemHbm, sizeof(BITMAP), &aBmp);
+      GetObjectW (myMemHbm, sizeof(BITMAP), &aBmp);
       if (rc.right-rc.left == aBmp.bmWidth && rc.bottom-rc.top == aBmp.bmHeight) return;
       DeleteObject(myMemHbm);
     }
@@ -1789,7 +1789,7 @@ static Standard_Boolean SaveBitmap (HBITMAP     theHBitmap,
 {
   // Get informations about the bitmap
   BITMAP aBitmap;
-  if (GetObject (theHBitmap, sizeof(BITMAP), (LPSTR )&aBitmap) == 0)
+  if (GetObjectW (theHBitmap, sizeof(BITMAP), &aBitmap) == 0)
   {
     return Standard_False;
   }

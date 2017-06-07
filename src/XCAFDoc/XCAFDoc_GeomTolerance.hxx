@@ -26,6 +26,10 @@ class TDF_Attribute;
 class TDF_RelocationTable;
 class XCAFDimTolObjects_GeomToleranceObject;
 
+// resolve name collisions with WinAPI headers
+#ifdef GetObject
+  #undef GetObject
+#endif
 
 class XCAFDoc_GeomTolerance;
 DEFINE_STANDARD_HANDLE(XCAFDoc_GeomTolerance, TDF_Attribute)
