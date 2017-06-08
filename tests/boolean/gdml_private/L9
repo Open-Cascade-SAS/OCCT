@@ -1,0 +1,4 @@
+puts "TODO ?OCC26017 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO ?OCC26017 ALL: TEST INCOMPLETE"
+source [locate_data_file 20000_g1-2_ss1.asm.2.gdml.tcl]
+

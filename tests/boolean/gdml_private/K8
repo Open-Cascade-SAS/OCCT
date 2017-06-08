@@ -1,0 +1,9 @@
+# ? - because sometimes test is killed by elapsed time
+
+puts "TODO ?OCC26017 Linux: \\*\\* Exception"
+puts "TODO ?OCC26017 Linux: An exception was caught"
+puts "TODO ?OCC26017 ALL: TEST INCOMPLETE"
+puts "TODO ?OCC26017 ALL: Process killed by CPU limit"
+puts "TODO ?OCC26017 ALL: Faulty shapes in variables faulty_1 to faulty_"
+source [locate_data_file 20000_et6_401-ta6074.prt.2.gdml.tcl]
+

@@ -1,0 +1,7 @@
+puts "TODO ?OCC26017 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO ?OCC26017 Linux: XIO:  fatal IO error"
+puts "TODO ?OCC26017 Linux: TEST INCOMPLETE"
+puts "TODO ?OCC26017 Linux: Tcl Exception"
+puts "TODO ?OCC26017 Linux: Error: shC26D310_copy is not a valid shape"
+source [locate_data_file 20000_g1-2_et4.asm.3.gdml.tcl]
+

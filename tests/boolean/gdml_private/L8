@@ -1,0 +1,2 @@
+source [locate_data_file 20000_g1-2_rdc.asm.2.gdml.tcl]
+
