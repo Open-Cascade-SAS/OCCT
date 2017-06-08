@@ -50,9 +50,12 @@
   THE_ATTRIBUTE vec4 occTexCoord;
   THE_ATTRIBUTE vec4 occVertColor;
 #elif (__VERSION__ >= 130)
-  out vec4 occFragColor;
   #ifdef OCC_ENABLE_draw_buffers
-    out vec4 occFragCoverage;
+    out vec4 occFragColorArray[2];
+    #define occFragColor    occFragColorArray[0]
+    #define occFragCoverage occFragColorArray[1]
+  #else
+    out vec4 occFragColor;
   #endif
 #else
   #ifdef OCC_ENABLE_draw_buffers

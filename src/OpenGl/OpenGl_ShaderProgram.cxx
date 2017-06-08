@@ -206,7 +206,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     }
 
     TCollection_AsciiString aSource = aDeclarations + anIter.Value()->Source();
-    TCollection_AsciiString anExtensions = "// This section enables extensions used in OCCT GLSL programs\n";
+    TCollection_AsciiString anExtensions = "// Enable extensions used in OCCT GLSL programs\n";
     if (theCtx->hasDrawBuffers)
     {
       anExtensions += "#define OCC_ENABLE_draw_buffers\n";
@@ -253,7 +253,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
                                          "precision highp int;\n"
                                        : "precision mediump float;\n"
                                          "precision mediump int;\n");
-        aSource = aHeader + aPrefix + anExtensions + aSource;
+        aSource = aHeader + anExtensions + aPrefix + aSource;
       #else
         aSource = aHeader + anExtensions + aSource;
       #endif

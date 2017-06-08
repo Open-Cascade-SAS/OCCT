@@ -266,29 +266,51 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
     }
     case Image_Format_BGRA:
     {
+    #if !defined(GL_ES_VERSION_2_0)
       if (!theCtx->IsGlGreaterEqual (1, 2) && !theCtx->extBgra)
       {
         return false;
       }
       theTextFormat  = GL_RGBA8;
+    #else
+      if (!theCtx->extBgra)
+      {
+        return false;
+      }
+      theTextFormat  = GL_BGRA_EXT;
+    #endif
       thePixelFormat = GL_BGRA_EXT; // equals to GL_BGRA
       theDataType    = GL_UNSIGNED_BYTE;
       return true;
     }
     case Image_Format_RGB32:
     {
-      theTextFormat = GL_RGB8;
+    #if !defined(GL_ES_VERSION_2_0)
+      // ask driver to convert data to RGB8 to save memory
+      theTextFormat  = GL_RGB8;
+    #else
+      // conversion is not supported
+      theTextFormat  = GL_RGBA8;
+    #endif
       thePixelFormat = GL_RGBA;
       theDataType    = GL_UNSIGNED_BYTE;
       return true;
     }
     case Image_Format_BGR32:
     {
-      if (!theCtx->IsGlGreaterEqual (1, 2) && !theCtx->extBgra)
+    #if !defined(GL_ES_VERSION_2_0)
+      if (!theCtx->IsGlGreaterEqual(1, 2) && !theCtx->extBgra)
       {
         return false;
       }
       theTextFormat  = GL_RGB8;
+    #else
+      if (!theCtx->extBgra)
+      {
+        return false;
+      }
+      theTextFormat  = GL_BGRA_EXT;
+    #endif
       thePixelFormat = GL_BGRA_EXT; // equals to GL_BGRA
       theDataType    = GL_UNSIGNED_BYTE;
       return true;
@@ -590,8 +612,13 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       glTexImage2D (GL_TEXTURE_2D, 0, anIntFormat,
                     theSizeX, theSizeY, 0,
                     thePixelFormat, theDataType, aDataPtr);
-      if (glGetError() != GL_NO_ERROR)
+      const GLenum anErr = glGetError();
+      if (anErr != GL_NO_ERROR)
       {
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                             TCollection_AsciiString ("Error: 2D texture ") + theSizeX + "x" + theSizeY
+                                                   + " IF: " + int(anIntFormat) + " PF: " + int(thePixelFormat) + " DT: " + int(theDataType)
+                                                   + " can not be created with error " + int(anErr) + ".");
         Unbind (theCtx);
         Release (theCtx.operator->());
         return false;
@@ -663,8 +690,13 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       glTexImage2D (GL_TEXTURE_2D, 0, anIntFormat,
                     theSizeX, theSizeY, 0,
                     thePixelFormat, theDataType, theImage->Data());
-      if (glGetError() != GL_NO_ERROR)
+      const GLenum aTexImgErr = glGetError();
+      if (aTexImgErr != GL_NO_ERROR)
       {
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                             TCollection_AsciiString ("Error: 2D texture ") + theSizeX + "x" + theSizeY
+                                                    + " IF: " + int(anIntFormat) + " PF: " + int(thePixelFormat) + " DT: " + int(theDataType)
+                                                    + " can not be created with error " + int(aTexImgErr) + ".");
         Unbind (theCtx);
         Release (theCtx.operator->());
         return false;

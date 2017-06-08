@@ -191,8 +191,9 @@
   #define GL_MAX_COLOR_ATTACHMENTS      0x8CDF
   #define GL_MAX_DRAW_BUFFERS           0x8824
 
-  // OES_texture_half_float
-  #define GL_HALF_FLOAT                 0x8D61
+  // OpenGL ES 3.0+ or OES_texture_half_float
+  #define GL_HALF_FLOAT                 0x140B
+  #define GL_HALF_FLOAT_OES             0x8D61
 #endif
 
 #if !defined(HAVE_EGL) && (defined(__ANDROID__) || defined(__QNX__) || defined(HAVE_GLES2) || defined(OCCT_UWP))

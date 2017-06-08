@@ -65,7 +65,8 @@ namespace
   }
 
   //! Determine data type from texture sized format.
-  static bool getColorDataFormat (GLint   theTextFormat,
+  static bool getColorDataFormat (const Handle(OpenGl_Context)& theGlContext,
+                                  GLint   theTextFormat,
                                   GLenum& thePixelFormat,
                                   GLenum& theDataType)
   {
@@ -87,12 +88,28 @@ namespace
       {
         thePixelFormat = GL_RGBA;
         theDataType    = GL_HALF_FLOAT;
+        if (theGlContext->hasHalfFloatBuffer == OpenGl_FeatureInExtensions)
+        {
+        #if defined(GL_ES_VERSION_2_0)
+          theDataType = GL_HALF_FLOAT_OES;
+        #else
+          theDataType = GL_FLOAT;
+        #endif
+        }
         return true;
       }
       case GL_R16F:
       {
         thePixelFormat = GL_RED;
         theDataType    = GL_HALF_FLOAT;
+        if (theGlContext->hasHalfFloatBuffer == OpenGl_FeatureInExtensions)
+        {
+        #if defined(GL_ES_VERSION_2_0)
+          theDataType = GL_HALF_FLOAT_OES;
+        #else
+          theDataType = GL_FLOAT;
+        #endif
+        }
         return true;
       }
       case GL_RGBA8:
@@ -255,7 +272,7 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
       const Handle(OpenGl_Texture)& aColorTexture = myColorTextures (aColorBufferIdx);
       const GLint                   aColorFormat  = myColorFormats  (aColorBufferIdx);
       if (aColorFormat != 0
-      &&  getColorDataFormat (aColorFormat, aPixelFormat, aDataType)
+      &&  getColorDataFormat (theGlContext, aColorFormat, aPixelFormat, aDataType)
       && !aColorTexture->Init (theGlContext, aColorFormat,
                                aPixelFormat, aDataType,
                                aSizeX, aSizeY, Graphic3d_TOT_2D))
@@ -386,7 +403,7 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
       const Handle(OpenGl_Texture)& aColorTexture = myColorTextures (aColorBufferIdx);
       const GLint                   aColorFormat  = myColorFormats  (aColorBufferIdx);
       if (aColorFormat != 0
-      &&  getColorDataFormat (aColorFormat, aPixelFormat, aDataType)
+      &&  getColorDataFormat (theGlContext, aColorFormat, aPixelFormat, aDataType)
       && !aColorTexture->Init (theGlContext, aColorFormat,
                                aPixelFormat, aDataType,
                                aSizeX, aSizeY, Graphic3d_TOT_2D))

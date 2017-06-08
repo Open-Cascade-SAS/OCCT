@@ -1699,16 +1699,16 @@ Standard_Boolean OpenGl_View::checkOitCompatibility (const Handle(OpenGl_Context
   }
 
   TCollection_ExtendedString aCompatibilityMsg;
-  if (!theGlContext->hasFloatBuffer
-   && !theGlContext->hasHalfFloatBuffer)
+  if (theGlContext->hasFloatBuffer     == OpenGl_FeatureNotAvailable
+   && theGlContext->hasHalfFloatBuffer == OpenGl_FeatureNotAvailable)
   {
     aCompatibilityMsg += "OpenGL context does not support floating-point RGBA color buffer format.\n";
   }
-  if (theMSAA && !theGlContext->hasSampleVariables)
+  if (theMSAA && theGlContext->hasSampleVariables == OpenGl_FeatureNotAvailable)
   {
     aCompatibilityMsg += "Current version of GLSL does not support built-in sample variables.\n";
   }
-  if (!theGlContext->hasDrawBuffers)
+  if (theGlContext->hasDrawBuffers == OpenGl_FeatureNotAvailable)
   {
     aCompatibilityMsg += "OpenGL context does not support multiple draw buffers.\n";
   }
@@ -1741,14 +1741,14 @@ bool OpenGl_View::chooseOitColorConfiguration (const Handle(OpenGl_Context)& the
   {
     case 0: // choose best applicable color format combination
     {
-      theFormats.Append (theGlContext->hasHalfFloatBuffer ? GL_RGBA16F : GL_RGBA32F);
-      theFormats.Append (theGlContext->hasHalfFloatBuffer ? GL_R16F    : GL_R32F);
+      theFormats.Append (theGlContext->hasHalfFloatBuffer != OpenGl_FeatureNotAvailable ? GL_RGBA16F : GL_RGBA32F);
+      theFormats.Append (theGlContext->hasHalfFloatBuffer != OpenGl_FeatureNotAvailable ? GL_R16F    : GL_R32F);
       return true;
     }
     case 1: // choose non-optimal applicable color format combination
     {
-      theFormats.Append (theGlContext->hasHalfFloatBuffer ? GL_RGBA16F : GL_RGBA32F);
-      theFormats.Append (theGlContext->hasHalfFloatBuffer ? GL_RGBA16F : GL_RGBA32F);
+      theFormats.Append (theGlContext->hasHalfFloatBuffer != OpenGl_FeatureNotAvailable ? GL_RGBA16F : GL_RGBA32F);
+      theFormats.Append (theGlContext->hasHalfFloatBuffer != OpenGl_FeatureNotAvailable ? GL_RGBA16F : GL_RGBA32F);
       return true;
     }
   }

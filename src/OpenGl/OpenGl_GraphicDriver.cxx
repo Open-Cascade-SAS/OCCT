@@ -416,9 +416,13 @@ Standard_Integer OpenGl_GraphicDriver::InquireLimit (const Graphic3d_TypeOfLimit
     case Graphic3d_TypeOfLimit_HasRayTracingAdaptiveSampling:
       return (!aCtx.IsNull() && aCtx->HasRayTracingAdaptiveSampling()) ? 1 : 0;
     case Graphic3d_TypeOfLimit_HasBlendedOit:
-      return (!aCtx.IsNull() && aCtx->hasDrawBuffers && (aCtx->hasFloatBuffer || aCtx->hasHalfFloatBuffer)) ? 1 : 0;
+      return (!aCtx.IsNull()
+            && aCtx->hasDrawBuffers != OpenGl_FeatureNotAvailable
+            && (aCtx->hasFloatBuffer != OpenGl_FeatureNotAvailable || aCtx->hasHalfFloatBuffer != OpenGl_FeatureNotAvailable)) ? 1 : 0;
     case Graphic3d_TypeOfLimit_HasBlendedOitMsaa:
-      return (!aCtx.IsNull() && aCtx->hasSampleVariables && (InquireLimit (Graphic3d_TypeOfLimit_HasBlendedOit) == 1)) ? 1 : 0;
+      return (!aCtx.IsNull()
+            && aCtx->hasSampleVariables != OpenGl_FeatureNotAvailable
+            && (InquireLimit (Graphic3d_TypeOfLimit_HasBlendedOit) == 1)) ? 1 : 0;
     case Graphic3d_TypeOfLimit_NB:
       return 0;
   }
