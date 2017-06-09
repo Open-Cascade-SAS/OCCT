@@ -18,7 +18,7 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
-#include <BRepExtrema_ExtPF.hxx>
+#include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepLProp_SLProps.hxx>
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
 #include <gp.hxx>
@@ -33,105 +33,179 @@
 #include <TopoDS_Vertex.hxx>
 
 //=======================================================================
-//function : FindExtrema
-//purpose  : This finction is called to find the nearest normal projection
-//           of a point <aPnt> on a face <aFace>.
-//           1) return true if extrema are found.
-//           2) Set in:
-//             - Dist : The lower distance found.
-//             - anOppositePnt : The corresponding point lying on the face
-//             - U,V : The parameters of <anOppositePnt> on the face <aFace>
+//function : getNormalOnFace
+//purpose  : 
 //=======================================================================
-static Standard_Real FindExtrema(const gp_Pnt&        aPnt,
-				 const TopoDS_Face&   aFace,
-				       Standard_Real& Dist,
-				       gp_Pnt&        anOppositePnt,
-				       Standard_Real& U,
-				       Standard_Real& V)
+
+static gp_Dir getNormalOnFace(const TopoDS_Face& theFace,
+                              const Standard_Real theU,
+                              const Standard_Real theV)
 {
-  Standard_Integer intvalue=0;
-  Dist = RealLast();
-  TopoDS_Vertex RefVertex = BRepBuilderAPI_MakeVertex(aPnt);
-  
-  BRepExtrema_ExtPF ext(RefVertex,aFace);
-  
-  if (ext.IsDone() && ext.NbExt() > 0) {
-    // the point projection exist
-    Standard_Integer nbext = ext.NbExt();
-    for (Standard_Integer iext = 1; iext <= nbext; iext++) {
-      if (ext.SquareDistance(iext) < Dist) {
-	Dist     = ext.SquareDistance(iext);
-	intvalue = iext;
-      }
-    }
-    Dist = sqrt(Dist);
-  } else {
-    // compute the min distance with the face vertices
-    TopExp_Explorer explo(aFace, TopAbs_VERTEX);
-    for(; explo.More(); explo.Next()) {
-      const TopoDS_Vertex& vertex = TopoDS::Vertex(explo.Current());
-      gp_Pnt2d             param  = BRep_Tool::Parameters(vertex, aFace);
-      gp_Pnt               Pnt    = BRep_Tool::Pnt(vertex);
-      
-      Standard_Real        d2      = Pnt.SquareDistance(aPnt);
-      if(d2 < Dist) {
-	Dist          = d2;
-	anOppositePnt = Pnt;
-	param.Coord(U, V);
-      }
-    }
-    Dist = sqrt(Dist);
-    return Standard_True;
-  }
-
-  // Final result.
-  anOppositePnt = ext.Point(intvalue);
-  ext.Parameter(intvalue,U,V);
-
-  return Standard_True;
+  Standard_Real aPrec = gp::Resolution();
+  BRepLProp_SLProps aProps(BRepAdaptor_Surface(theFace), theU, theV, 2, aPrec);
+  gp_Dir aNormal = aProps.Normal();
+  if (theFace.Orientation() == TopAbs_REVERSED)
+    aNormal.Reverse();
+  return aNormal;
 }
 
+//=======================================================================
+//function : getNormalFromEdge
+//purpose  : Get average normal at the point with the given parameter on the edge
+//=======================================================================
 
+static Standard_Boolean  getNormalFromEdge(const TopoDS_Shape& theShape,
+                                           const TopoDS_Edge& theEdge,
+                                           const Standard_Real thePar,
+                                           gp_Dir& theNormal)
+{
+  gp_XYZ aSum;
+  TopExp_Explorer ex(theShape, TopAbs_FACE);
+  for (; ex.More(); ex.Next()) {
+    const TopoDS_Face& aF = TopoDS::Face(ex.Current());
+    TopExp_Explorer ex1(aF, TopAbs_EDGE);
+    for (; ex1.More(); ex1.Next()) {
+      if (ex1.Current().IsSame(theEdge)) {
+        Standard_Real f, l;
+        Handle(Geom2d_Curve) aC2d = BRep_Tool::CurveOnSurface(theEdge, aF, f, l);
+        gp_Pnt2d aP2d = aC2d->Value(thePar);
+        gp_Dir aNorm = getNormalOnFace(aF, aP2d.X(), aP2d.Y());
+        aSum += aNorm.XYZ();
+      }
+    }
+  }
+  if (aSum.SquareModulus() > gp::Resolution()) {
+    theNormal = aSum;
+    return Standard_True;
+  }
+  return Standard_False;
+}
+
+//=======================================================================
+//function : getNormalFromVertex
+//purpose  : Get average normal at the point of the vertex
+//=======================================================================
+
+static Standard_Boolean  getNormalFromVertex(const TopoDS_Shape& theShape,
+                                             const TopoDS_Vertex& theVer,
+                                             gp_Dir& theNormal)
+{
+  gp_XYZ aSum;
+  TopExp_Explorer ex(theShape, TopAbs_FACE);
+  for (; ex.More(); ex.Next()) {
+    const TopoDS_Face& aF = TopoDS::Face(ex.Current());
+    TopExp_Explorer ex1(aF, TopAbs_VERTEX);
+    for (; ex1.More(); ex1.Next()) {
+      if (ex1.Current().IsSame(theVer)) {
+        gp_Pnt2d aP2d = BRep_Tool::Parameters(theVer, aF);
+        gp_Dir aNorm = getNormalOnFace(aF, aP2d.X(), aP2d.Y());
+        aSum += aNorm.XYZ();
+      }
+    }
+  }
+  if (aSum.SquareModulus() > gp::Resolution()) {
+    theNormal = aSum;
+    return Standard_True;
+  }
+  return Standard_False;
+}
+
+//=======================================================================
+//function : FindExtrema
+//purpose  : This finction is called to find the nearest normal projection
+//           of a point <aPnt> on a shape <aShape>.
+//           1) return true if extrema is found.
+//           2) Set in:
+//             - theMinPnt : The solution point
+//             - theNormal : The normal direction to the shape at projection point
+//=======================================================================
+static Standard_Boolean FindExtrema(const gp_Pnt&        thePnt,
+                                    const TopoDS_Shape&  theShape,
+                                    gp_Pnt&              theMinPnt,
+                                    gp_Dir&              theNormal)
+{
+  TopoDS_Vertex aRefVertex = BRepBuilderAPI_MakeVertex(thePnt);
+  
+  BRepExtrema_DistShapeShape ext(aRefVertex, theShape);
+  
+  if (!ext.IsDone() || ext.NbSolution() == 0)
+    return Standard_False;
+
+  // the point projection exist
+  Standard_Integer nbext = ext.NbSolution();
+  // try to find a projection on face
+  for (Standard_Integer iext = 1; iext <= nbext; iext++) {
+    if (ext.SupportTypeShape2(iext) == BRepExtrema_IsInFace) {
+      TopoDS_Face aF = TopoDS::Face(ext.SupportOnShape2(iext));
+      theMinPnt = ext.PointOnShape2(iext);
+      Standard_Real aU, aV;
+      ext.ParOnFaceS2(iext, aU, aV);
+      theNormal = getNormalOnFace(aF, aU, aV);
+      return Standard_True;
+    }
+  }
+
+  // if not found then take any edge or vertex solution
+  for (Standard_Integer iext = 1; iext <= nbext; iext++) {
+    if (ext.SupportTypeShape2(iext) == BRepExtrema_IsOnEdge) {
+      theMinPnt = ext.PointOnShape2(iext);
+      Standard_Real aPar;
+      ext.ParOnEdgeS2(iext, aPar);
+      TopoDS_Edge aE = TopoDS::Edge(ext.SupportOnShape2(iext));
+      if (getNormalFromEdge(theShape, aE, aPar, theNormal))
+        return Standard_True;
+    }
+    else if (ext.SupportTypeShape2(iext) == BRepExtrema_IsVertex) {
+      theMinPnt = ext.PointOnShape2(iext);
+      TopoDS_Vertex aV = TopoDS::Vertex(ext.SupportOnShape2(iext));
+      if (getNormalFromVertex(theShape, aV, theNormal))
+        return Standard_True;
+    }
+  }
+  return Standard_False;
+}
+
+//=======================================================================
+//function : isOutside
+//purpose  : 
+//=======================================================================
+
+static Standard_Boolean isOutside(const gp_Pnt&      thePnt,
+                                  const gp_Pnt&      thePonF,
+                                  const gp_Dir&      theNormal)
+{
+  gp_Dir anOppRef(thePnt.XYZ() - thePonF.XYZ());
+  Standard_Real aSca = theNormal * anOppRef;
+  // outside if same directions
+  return aSca > 0.;
+}
 
 //=======================================================================
 //function : BRepPrimAPI_MakeHalfSpace
 //purpose  : 
 //=======================================================================
 
-BRepPrimAPI_MakeHalfSpace::BRepPrimAPI_MakeHalfSpace(const TopoDS_Face& Face,
-					     const gp_Pnt&      RefPnt)
+BRepPrimAPI_MakeHalfSpace::BRepPrimAPI_MakeHalfSpace(const TopoDS_Face& theFace,
+                                                     const gp_Pnt&      theRefPnt)
 {
   // Set the flag is <IsDone> to False.
   NotDone();
 
-  TopoDS_Shell Shell;
+  TopoDS_Shell aShell;
 
-//  gp_Pnt CurPnt, MinPnt;
-  gp_Pnt MinPnt;
-  Standard_Real U, V;
+  gp_Pnt aMinPnt;
+  gp_Dir aNormal;
+  if (FindExtrema(theRefPnt, theFace, aMinPnt, aNormal)) {
+    Standard_Boolean toReverse = isOutside(theRefPnt, aMinPnt, aNormal);
 
-  Standard_Real MinDist;
-  if (FindExtrema(RefPnt,Face,MinDist,MinPnt,U,V)) {
-    BRep_Builder myBuilder;
-    myBuilder.MakeShell(Shell);
-    myBuilder.Add(Shell,Face);
-    
-    // Normal, scalair product and direction.
-    Standard_Real Prec = gp::Resolution();
-//    BRepLProp_SLProps Props(BRepAdaptor_Surface(Face),U,V,2,Prec);
-    BRepLProp_SLProps Props = BRepLProp_SLProps(BRepAdaptor_Surface(Face),U,V,2,Prec);
-    gp_Dir Normale    = Props.Normal();
-    gp_Dir OppRef(RefPnt.XYZ()-MinPnt.XYZ());
-    Standard_Real Sca = Normale*OppRef;
-    
     // Construction of the open solid.
-    myBuilder.MakeSolid(mySolid);
-    if (Sca > 0.) {
-      // Same directions: inverted case.
-      Shell.Reverse();
+    BRep_Builder().MakeShell(aShell);
+    BRep_Builder().Add(aShell, theFace);
+    BRep_Builder().MakeSolid(mySolid);
+    if (toReverse) {
+      aShell.Reverse();
     }
-    
-    myBuilder.Add(mySolid,Shell);
+    BRep_Builder().Add(mySolid, aShell);
     Done();
   }
 }
@@ -142,54 +216,25 @@ BRepPrimAPI_MakeHalfSpace::BRepPrimAPI_MakeHalfSpace(const TopoDS_Face& Face,
 //purpose  : 
 //=======================================================================
 
-BRepPrimAPI_MakeHalfSpace::BRepPrimAPI_MakeHalfSpace(const TopoDS_Shell& Shell,
-					     const gp_Pnt&       RefPnt)
+BRepPrimAPI_MakeHalfSpace::BRepPrimAPI_MakeHalfSpace(const TopoDS_Shell& theShell,
+                                                     const gp_Pnt&       theRefPnt)
 {
   // Set the flag is <IsDone> to False.
   NotDone();
 
-  gp_Pnt CurPnt, MinPnt;
-  TopoDS_Face CurFace, MinFace;
-  Standard_Real MinDist = RealLast();
-  Standard_Real CurDist, U, V, MinU=0, MinV=0;
-
   // Find the point of the skin closest to the reference point.
-  Standard_Boolean YaExt = Standard_False;
+  gp_Pnt aMinPnt;
+  gp_Dir aNormal;
+  if (FindExtrema(theRefPnt, theShell, aMinPnt, aNormal)) {
+    Standard_Boolean toReverse = isOutside(theRefPnt, aMinPnt, aNormal);
 
-  TopoDS_Shell aShell = Shell;
-  TopExp_Explorer Exp(aShell,TopAbs_FACE);
-  while (Exp.More()) {
-    CurFace = TopoDS::Face(Exp.Current());
-    if ( FindExtrema(RefPnt,CurFace,CurDist,CurPnt,U,V)) {
-      YaExt = Standard_True;
-      if (CurDist < MinDist) {
-	MinDist = CurDist;
-	MinPnt  = CurPnt;
-	MinU    = U;
-	MinV    = V;
-	MinFace = CurFace;
-      }
-    }
-    Exp.Next();
-  }
-
-  if ( YaExt) {
-    // Normal, scalar product and direction.
-    BRep_Builder myBuilder;
-    Standard_Real Prec = gp::Resolution();
-//    BRepLProp_SLProps Props(BRepAdaptor_Surface(MinFace),MinU,MinV,2,Prec);
-    BRepLProp_SLProps Props = BRepLProp_SLProps(BRepAdaptor_Surface(MinFace),MinU,MinV,2,Prec);
-    gp_Dir Normale    = Props.Normal();
-    gp_Dir OppRef(RefPnt.XYZ()-MinPnt.XYZ());
-    Standard_Real Sca = Normale*OppRef;
-    
     // Construction of the open solid.
-    myBuilder.MakeSolid(mySolid);
-    if (Sca > 0.) {
-      // Same directions: inverted case.
+    TopoDS_Shell aShell = theShell;
+    BRep_Builder().MakeSolid(mySolid);
+    if (toReverse) {
       aShell.Reverse();
     }
-    myBuilder.Add(mySolid,aShell);
+    BRep_Builder().Add(mySolid, aShell);
     Done();
   }
 }
@@ -217,5 +262,3 @@ BRepPrimAPI_MakeHalfSpace::operator TopoDS_Solid() const
 {
   return Solid();
 }
-
-

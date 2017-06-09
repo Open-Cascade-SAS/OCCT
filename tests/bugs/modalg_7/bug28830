@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC28830"
+puts "========"
+puts ""
+########################################
+# HalfSpace command chooses the wrong side of the given shell
+########################################
+
+# Restore the initial shape
+restore [locate_data_file bug28830_halfspace.brep] sh
+
+point p 9.30222203002736 0.87421058209264 1.54257060749683
+halfspace h sh 9.30222203002736 0.87421058209264 1.54257060749683
+
+if {![regexp "IN" [bclassify h p]]} {
+  puts "Error: halfspace is wrong"
+} else {
+  puts "OK: halfspace is good"
+}
