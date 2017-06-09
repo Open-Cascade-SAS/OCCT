@@ -1,3 +1,7 @@
+puts "TODO OCC28802 Linux: Faulty shapes in variables faulty_1 to"
+puts "TODO OCC28802 Linux: Error : The area of result shape is"
+puts "TODO OCC28802 Linux: Error : The result of General Fuse operation is self-interfered shape"
+
 puts "=========="
 puts "OCC26938  "
 puts "=========="

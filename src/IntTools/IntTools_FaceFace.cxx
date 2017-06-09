@@ -1313,18 +1313,12 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
         }
         else {
           if (typs1 == GeomAbs_Plane || typs2 == GeomAbs_Plane) {
-            if (aTolC <  theapp3d.TolReached2d()) {
-              aTolC = theapp3d.TolReached2d();
-            }
             //
             if (typs1 == GeomAbs_Torus || typs2 == GeomAbs_Torus) {
               if (aTolC < 1.e-6) {
                 aTolC = 1.e-6;
               }
             }
-          }
-          else if (aTolC < theapp3d.TolReached3d()) {
-            aTolC = theapp3d.TolReached3d();
           }
           //
           Standard_Integer aNbMultiCurves, nbpoles;

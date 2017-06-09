@@ -10,7 +10,7 @@ puts ""
 # The main reason of the bug #27310 was a HUGE TOLERANCE VALUE (TolReached > 10).
 # See test "bugs moddata_2 bug496" in case of doubt.
 
-set ExpTol 1.3609186093470008e-005
+set ExpTol 9.9999999999999995e-08
 
 restore [locate_data_file OCC496a.brep] a 
 restore [locate_data_file OCC496b.brep] b

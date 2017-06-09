@@ -1,4 +1,6 @@
-puts "TODO OCC24694 ALL: Error : The result of cut operation is self-interfered shape"
+puts "TODO OCC28802 Linux: Error : The area of result shape is"
+puts "TODO OCC24694 Windows: Error : The result of cut operation is self-interfered shape"
+
 puts "=========="
 puts "OCC26938  "
 puts "=========="
