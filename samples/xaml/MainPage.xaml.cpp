@@ -331,10 +331,8 @@ Standard_Boolean MainPage::SaveSTEP(const wchar_t* theFilePath, const TopoDS_Sha
     return Standard_False;
   }
 
-  char theFilePathA[MAX_PATH];
-  WideCharToMultiByte(CP_UTF8, 0, theFilePath, -1, theFilePathA, sizeof(theFilePathA), NULL, NULL);
-
-  switch (aWriter.Write(theFilePathA))
+  const TCollection_AsciiString aFilePath (theFilePath);
+  switch (aWriter.Write (aFilePath.ToCString()))
   {
   case IFSelect_RetError:
     Output_TextBlock->Text += L"Error: Incorrect Data\n";
@@ -358,11 +356,8 @@ Standard_Boolean MainPage::SaveSTEP(const wchar_t* theFilePath, const TopoDS_Sha
 Standard_Boolean MainPage::SaveSTL(const wchar_t* theFilePath, const TopoDS_Shape& theShape)
 {
   StlAPI_Writer myStlWriter;
-
-  char theFilePathA[MAX_PATH];
-  WideCharToMultiByte(CP_UTF8, 0, theFilePath, -1, theFilePathA, sizeof(theFilePathA), NULL, NULL);
-
-  return myStlWriter.Write(theShape, theFilePathA) == StlAPI_StatusOK;
+  const TCollection_AsciiString aFilePath (theFilePath);
+  return myStlWriter.Write (theShape, aFilePath.ToCString());
 }
 
 //=======================================================================
@@ -372,12 +367,8 @@ Standard_Boolean MainPage::SaveSTL(const wchar_t* theFilePath, const TopoDS_Shap
 Standard_Boolean MainPage::SaveVRML(const wchar_t* theFilePath, const TopoDS_Shape& theShape)
 {
   VrmlAPI_Writer aWriter;
-
-  char theFilePathA[MAX_PATH];
-  WideCharToMultiByte(CP_UTF8, 0, theFilePath, -1, theFilePathA, sizeof(theFilePathA), NULL, NULL);
-
-  aWriter.Write(theShape, theFilePathA);
-
+  const TCollection_AsciiString aFilePath (theFilePath);
+  aWriter.Write (theShape, aFilePath.ToCString());
   return Standard_True;
 }
 
@@ -390,11 +381,8 @@ Standard_Boolean MainPage::ReadBREP(const wchar_t* theFilePath, TopoDS_Shape& th
   theShape.Nullify();
 
   BRep_Builder aBuilder;
-
-  char theFilePathA[MAX_PATH];
-  WideCharToMultiByte(CP_UTF8, 0, theFilePath, -1, theFilePathA, sizeof(theFilePathA), NULL, NULL);
-
-  if (!BRepTools::Read(theShape, theFilePathA, aBuilder))
+  const TCollection_AsciiString aFilePath (theFilePath);
+  if (!BRepTools::Read(theShape, aFilePath.ToCString(), aBuilder))
     return Standard_False;
 
   return !theShape.IsNull() && BRepAlgo::IsValid(theShape);
@@ -410,10 +398,8 @@ Standard_Boolean MainPage::ReadIGES(const wchar_t* theFilePath, TopoDS_Shape& th
 
   IGESControl_Reader Reader;
 
-  char theFilePathA[MAX_PATH];
-  WideCharToMultiByte(CP_UTF8, 0, theFilePath, -1, theFilePathA, sizeof(theFilePathA), NULL, NULL);
-
-  if (Reader.ReadFile(theFilePathA) != IFSelect_RetDone)
+  const TCollection_AsciiString aFilePath (theFilePath);
+  if (Reader.ReadFile (aFilePath.ToCString()) != IFSelect_RetDone)
     return Standard_False;
 
   Reader.TransferRoots();
@@ -431,11 +417,8 @@ Standard_Boolean MainPage::ReadSTEP(const wchar_t* theFilePath, TopoDS_Shape& th
   theShape.Nullify();
 
   STEPControl_Reader aReader;
-
-  char theFilePathA[MAX_PATH];
-  WideCharToMultiByte(CP_UTF8, 0, theFilePath, -1, theFilePathA, sizeof(theFilePathA), NULL, NULL);
-
-  switch (aReader.ReadFile(theFilePathA))
+  const TCollection_AsciiString aFilePath (theFilePath);
+  switch (aReader.ReadFile (aFilePath.ToCString()))
   {
   case IFSelect_RetError:
     Output_TextBlock->Text += L"Error: Not a valid Step file\n";

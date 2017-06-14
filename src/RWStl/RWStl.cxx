@@ -1,7 +1,6 @@
-// Created on: 1994-10-13
-// Created by: Marc LEGAY
-// Copyright (c) 1994-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Created on: 2017-06-13
+// Created by: Alexander MALYSHEV
+// Copyright (c) 2017 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,272 +13,289 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <BRepBuilderAPI_CellFilter.hxx>
-#include <BRepBuilderAPI_VertexInspector.hxx>
-#include <gp.hxx>
-#include <gp_Vec.hxx>
-#include <gp_XYZ.hxx>
-#include <Message.hxx>
-#include <Message_Messenger.hxx>
-#include <Message_ProgressIndicator.hxx>
-#include <Message_ProgressSentry.hxx>
-#include <OSD.hxx>
-#include <OSD_File.hxx>
-#include <OSD_Host.hxx>
-#include <OSD_OpenFile.hxx>
-#include <OSD_Path.hxx>
-#include <OSD_Protection.hxx>
-#include <Precision.hxx>
 #include <RWStl.hxx>
-#include <Standard_NoMoreObject.hxx>
-#include <Standard_TypeMismatch.hxx>
-#include <StlMesh_Mesh.hxx>
-#include <StlMesh_MeshExplorer.hxx>
-#include <TCollection_AsciiString.hxx>
 
-#include <stdio.h>
-// A static method adding nodes to a mesh and keeping coincident (sharing) nodes.
-static Standard_Integer AddVertex(Handle(StlMesh_Mesh)& mesh,
-                                  BRepBuilderAPI_CellFilter& filter, 
-                                  BRepBuilderAPI_VertexInspector& inspector,
-                                  const gp_XYZ& p)
+#include <Message_ProgressSentry.hxx>
+#include <NCollection_Vector.hxx>
+#include <OSD_File.hxx>
+#include <OSD_OpenFile.hxx>
+#include <RWStl_Reader.hxx>
+
+namespace
 {
-  Standard_Integer index;
-  inspector.SetCurrent(p);
-  gp_XYZ minp = inspector.Shift(p, -Precision::Confusion());
-  gp_XYZ maxp = inspector.Shift(p, +Precision::Confusion());
-  filter.Inspect(minp, maxp, inspector);
-  const TColStd_ListOfInteger& indices = inspector.ResInd();
-  if (indices.IsEmpty() == Standard_False)
+
+  static const Standard_Integer THE_STL_SIZEOF_FACET = 50;
+  static const Standard_Integer IND_THRESHOLD = 1000; // increment the indicator every 1k triangles
+
+  //! Writing a Little Endian 32 bits integer
+  inline static void convertInteger (const Standard_Integer theValue,
+                                     Standard_Character* theResult)
   {
-    index = indices.First(); // it should be only one
-    inspector.ClearResList();
+    union
+    {
+      Standard_Integer i;
+      Standard_Character c[4];
+    } anUnion;
+    anUnion.i = theValue;
+
+    theResult[0] = anUnion.c[0];
+    theResult[1] = anUnion.c[1];
+    theResult[2] = anUnion.c[2];
+    theResult[3] = anUnion.c[3];
   }
-  else
+
+  //! Writing a Little Endian 32 bits float
+  inline static void convertDouble (const Standard_Real theValue,
+                                    Standard_Character* theResult)
   {
-    index = mesh->AddVertex(p.X(), p.Y(), p.Z());
-    filter.Add(index, p);
-    inspector.Add(p);
+    union
+    {
+      Standard_ShortReal i;
+      Standard_Character c[4];
+    } anUnion;
+    anUnion.i = (Standard_ShortReal)theValue;
+
+    theResult[0] = anUnion.c[0];
+    theResult[1] = anUnion.c[1];
+    theResult[2] = anUnion.c[2];
+    theResult[3] = anUnion.c[3];
   }
-  return index;
+
+  class Reader : public RWStl_Reader
+  {
+  public:
+    //! Add new node
+    virtual Standard_Integer AddNode (const gp_XYZ& thePnt) Standard_OVERRIDE
+    {
+      myNodes.Append (thePnt);
+      return myNodes.Size();
+    }
+
+    //! Add new triangle
+    virtual void AddTriangle (Standard_Integer theNode1, Standard_Integer theNode2, Standard_Integer theNode3) Standard_OVERRIDE
+    {
+      myTriangles.Append (Poly_Triangle (theNode1, theNode2, theNode3));
+    }
+
+    //! Creates Poly_Triangulation from collected data
+    Handle(Poly_Triangulation) GetTriangulation()
+    {
+      Handle(Poly_Triangulation) aPoly = new Poly_Triangulation (myNodes.Length(), myTriangles.Length(), Standard_False);
+      for (Standard_Integer aNodeIter = 0; aNodeIter < myNodes.Size(); ++aNodeIter)
+      {
+        aPoly->ChangeNode (aNodeIter + 1) = myNodes (aNodeIter);
+      }
+
+      for (Standard_Integer aTriIter = 0; aTriIter < myTriangles.Size(); ++aTriIter)
+      {
+        aPoly->ChangeTriangle (aTriIter + 1) = myTriangles (aTriIter);
+      }
+
+      return aPoly;
+    }
+
+  private:
+    NCollection_Vector<gp_XYZ> myNodes;
+    NCollection_Vector<Poly_Triangle> myTriangles;
+  };
+
 }
 
-// constants
-static const size_t HEADER_SIZE           =  84;
-static const size_t SIZEOF_STL_FACET      =  50;
-static const size_t ASCII_LINES_PER_FACET =   7;
-
-static const int IND_THRESHOLD = 1000; // increment the indicator every 1k triangles
-
-//=======================================================================
-//function : WriteInteger
-//purpose  : writing a Little Endian 32 bits integer
-//=======================================================================
-
-inline static void WriteInteger(OSD_File& ofile,const Standard_Integer value)
+//=============================================================================
+//function : Read
+//purpose  :
+//=============================================================================
+Handle(Poly_Triangulation) RWStl::ReadFile (const Standard_CString theFile,
+                                            const Handle(Message_ProgressIndicator)& theProgress)
 {
-  union {
-    Standard_Integer i;// don't be afraid, this is just an unsigned int
-    char c[4];
-  } bidargum;
-
-  bidargum.i = value;
-
-  Standard_Integer entier;
-
-  entier  =  bidargum.c[0] & 0xFF;
-  entier |= (bidargum.c[1] & 0xFF) << 0x08;
-  entier |= (bidargum.c[2] & 0xFF) << 0x10;
-  entier |= (bidargum.c[3] & 0xFF) << 0x18;
-
-  ofile.Write((char *)&entier,sizeof(bidargum.c));
+  Reader aReader;
+  if (!aReader.Read (theFile, theProgress))
+  {
+    return Handle(Poly_Triangulation)();
+  }
+  return aReader.GetTriangulation();
 }
 
-//=======================================================================
-//function : WriteDouble2Float
-//purpose  : writing a Little Endian 32 bits float
-//=======================================================================
-
-inline static void WriteDouble2Float(OSD_File& ofile,Standard_Real value)
+//=============================================================================
+//function : ReadFile
+//purpose  :
+//=============================================================================
+Handle(Poly_Triangulation) RWStl::ReadFile (const OSD_Path& theFile,
+                                            const Handle(Message_ProgressIndicator)& theProgress)
 {
-  union {
-    Standard_ShortReal f;
-    char c[4];
-  } bidargum;
+  OSD_File aFile(theFile);
+  if (!aFile.Exists())
+  {
+    return Handle(Poly_Triangulation)();
+  }
 
-  bidargum.f = (Standard_ShortReal)value;
-
-  Standard_Integer entier;
-
-  entier  =  bidargum.c[0] & 0xFF;
-  entier |= (bidargum.c[1] & 0xFF) << 0x08;
-  entier |= (bidargum.c[2] & 0xFF) << 0x10;
-  entier |= (bidargum.c[3] & 0xFF) << 0x18;
-
-  ofile.Write((char *)&entier,sizeof(bidargum.c));
+  TCollection_AsciiString aPath;
+  theFile.SystemName (aPath);
+  return ReadFile (aPath.ToCString(), theProgress);
 }
 
-
-//=======================================================================
-//function : readFloat2Double
-//purpose  : reading a Little Endian 32 bits float
-//=======================================================================
-
-inline static Standard_Real ReadFloat2Double(OSD_File &aFile)
+//=============================================================================
+//function : ReadBinary
+//purpose  :
+//=============================================================================
+Handle(Poly_Triangulation) RWStl::ReadBinary (const OSD_Path& theFile,
+                                              const Handle(Message_ProgressIndicator)& theProgress)
 {
-  union {
-    uint32_t i;
-    float    f;
-  }bidargum;
+  OSD_File aFile(theFile);
+  if (!aFile.Exists())
+  {
+    return Handle(Poly_Triangulation)();
+  }
 
-  char c[4];
-  Standard_Address adr;
-  adr = (Standard_Address)c;
-  Standard_Integer lread;
-  aFile.Read(adr,4,lread);
-  bidargum.i  =  c[0] & 0xFF;
-  bidargum.i |=  (c[1] & 0xFF) << 0x08;
-  bidargum.i |=  (c[2] & 0xFF) << 0x10;
-  bidargum.i |=  (c[3] & 0xFF) << 0x18;
+  TCollection_AsciiString aPath;
+  theFile.SystemName (aPath);
 
-  return (Standard_Real)(bidargum.f);
+  std::filebuf aBuf;
+  OSD_OpenStream (aBuf, aPath, std::ios::in | std::ios::binary);
+  if (!aBuf.is_open())
+  {
+    return Handle(Poly_Triangulation)();
+  }
+  Standard_IStream aStream (&aBuf);
+
+  Reader aReader;
+  if (!aReader.ReadBinary (aStream, theProgress))
+  {
+    return Handle(Poly_Triangulation)();
+  }
+
+  return aReader.GetTriangulation();
 }
 
+//=============================================================================
+//function : ReadAscii
+//purpose  :
+//=============================================================================
+Handle(Poly_Triangulation) RWStl::ReadAscii (const OSD_Path& theFile,
+                                             const Handle(Message_ProgressIndicator)& theProgress)
+{
+  OSD_File aFile (theFile);
+  if (!aFile.Exists())
+  {
+    return Handle(Poly_Triangulation)();
+  }
 
+  TCollection_AsciiString aPath;
+  theFile.SystemName (aPath);
 
-//=======================================================================
-//function : WriteBinary
-//purpose  : write a binary STL file in Little Endian format
-//=======================================================================
+  std::filebuf aBuf;
+  OSD_OpenStream (aBuf, aPath, std::ios::in | std::ios::binary);
+  if (!aBuf.is_open())
+  {
+    return Handle(Poly_Triangulation)();
+  }
+  Standard_IStream aStream (&aBuf);
 
-Standard_Boolean RWStl::WriteBinary (const Handle(StlMesh_Mesh)& theMesh,
+  // get length of file to feed progress indicator
+  aStream.seekg (0, aStream.end);
+  std::streampos theEnd = aStream.tellg();
+  aStream.seekg (0, aStream.beg);
+
+  Reader aReader;
+  if (!aReader.ReadAscii (aStream, theEnd, theProgress))
+  {
+    return Handle(Poly_Triangulation)();
+  }
+
+  return aReader.GetTriangulation();
+}
+
+//=============================================================================
+//function : Write
+//purpose  :
+//=============================================================================
+Standard_Boolean RWStl::WriteBinary (const Handle(Poly_Triangulation)& aMesh,
                                      const OSD_Path& thePath,
                                      const Handle(Message_ProgressIndicator)& theProgInd)
 {
-  OSD_File aFile (thePath);
-  aFile.Build (OSD_WriteOnly, OSD_Protection());
+  TCollection_AsciiString aPath;
+  thePath.SystemName (aPath);
 
-  Standard_Real x1, y1, z1;
-  Standard_Real x2, y2, z2;
-  Standard_Real x3, y3, z3;
-
-  // writing 80 bytes of the trash?
-  char sval[80];
-  aFile.Write ((Standard_Address)sval,80);
-  WriteInteger (aFile, theMesh->NbTriangles());
-
-  int dum=0;
-  StlMesh_MeshExplorer aMexp (theMesh);
-
-  // create progress sentry for domains
-  Standard_Integer aNbDomains = theMesh->NbDomains();
-  Message_ProgressSentry aDPS (theProgInd, "Mesh domains", 0, aNbDomains, 1);
-  for (Standard_Integer nbd = 1; nbd <= aNbDomains && aDPS.More(); nbd++, aDPS.Next())
+  FILE* aFile = OSD_OpenFile (aPath, "wb");
+  if (aFile == NULL)
   {
-    // create progress sentry for triangles in domain
-    Message_ProgressSentry aTPS (theProgInd, "Triangles", 0,
-        theMesh->NbTriangles (nbd), IND_THRESHOLD);
-    Standard_Integer aTriangleInd = 0;
-    for (aMexp.InitTriangle (nbd); aMexp.MoreTriangle(); aMexp.NextTriangle())
-    {
-      aMexp.TriangleVertices (x1,y1,z1,x2,y2,z2,x3,y3,z3);
-      //pgo	  aMexp.TriangleOrientation (x,y,z);
-      gp_XYZ Vect12 ((x2-x1), (y2-y1), (z2-z1));
-      gp_XYZ Vect13 ((x3-x1), (y3-y1), (z3-z1));
-      gp_XYZ Vnorm = Vect12 ^ Vect13;
-      Standard_Real Vmodul = Vnorm.Modulus ();
-      if (Vmodul > gp::Resolution())
-      {
-        Vnorm.Divide(Vmodul);
-      }
-      else
-      {
-        // si Vnorm est quasi-nul, on le charge a 0 explicitement
-        Vnorm.SetCoord (0., 0., 0.);
-      }
-
-      WriteDouble2Float (aFile, Vnorm.X());
-      WriteDouble2Float (aFile, Vnorm.Y());
-      WriteDouble2Float (aFile, Vnorm.Z());
-
-      WriteDouble2Float (aFile, x1);
-      WriteDouble2Float (aFile, y1);
-      WriteDouble2Float (aFile, z1);
-
-      WriteDouble2Float (aFile, x2);
-      WriteDouble2Float (aFile, y2);
-      WriteDouble2Float (aFile, z2);
-
-      WriteDouble2Float (aFile, x3);
-      WriteDouble2Float (aFile, y3);
-      WriteDouble2Float (aFile, z3);
-
-      aFile.Write (&dum, 2);
-
-      // update progress only per 1k triangles
-      if (++aTriangleInd % IND_THRESHOLD == 0)
-      {
-        if (!aTPS.More())
-          break;
-        aTPS.Next();
-      }
-    }
+    return Standard_False;
   }
-  aFile.Close();
-  Standard_Boolean isInterrupted = !aDPS.More();
-  return !isInterrupted;
-}
-//=======================================================================
-//function : WriteAscii
-//purpose  : write an ASCII STL file
-//=======================================================================
 
-Standard_Boolean RWStl::WriteAscii (const Handle(StlMesh_Mesh)& theMesh,
+  Standard_Boolean isOK = writeBinary (aMesh, aFile, theProgInd);
+
+  fclose (aFile);
+  return isOK;
+}
+
+//=============================================================================
+//function : Write
+//purpose  :
+//=============================================================================
+Standard_Boolean RWStl::WriteAscii (const Handle(Poly_Triangulation)& theMesh,
                                     const OSD_Path& thePath,
                                     const Handle(Message_ProgressIndicator)& theProgInd)
 {
-  OSD_File theFile (thePath);
-  theFile.Build(OSD_WriteOnly,OSD_Protection());
-  TCollection_AsciiString buf ("solid\n");
-  theFile.Write (buf,buf.Length());buf.Clear();
+  TCollection_AsciiString aPath;
+  thePath.SystemName (aPath);
 
-  Standard_Real x1, y1, z1;
-  Standard_Real x2, y2, z2;
-  Standard_Real x3, y3, z3;
-  char sval[512];
-
-  // create progress sentry for domains
-  Standard_Integer aNbDomains = theMesh->NbDomains();
-  Message_ProgressSentry aDPS (theProgInd, "Mesh domains", 0, aNbDomains, 1);
-  StlMesh_MeshExplorer aMexp (theMesh);
-  for (Standard_Integer nbd = 1; nbd <= aNbDomains && aDPS.More(); nbd++, aDPS.Next())
+  FILE* aFile = OSD_OpenFile (aPath, "w");
+  if (aFile == NULL)
   {
-    // create progress sentry for triangles in domain
-    Message_ProgressSentry aTPS (theProgInd, "Triangles", 0,
-        theMesh->NbTriangles (nbd), IND_THRESHOLD);
-    Standard_Integer aTriangleInd = 0;
-    for (aMexp.InitTriangle (nbd); aMexp.MoreTriangle(); aMexp.NextTriangle())
+    return Standard_False;
+  }
+
+  Standard_Boolean isOK = writeASCII (theMesh, aFile, theProgInd);
+  fclose (aFile);
+  return isOK;
+}
+
+//=============================================================================
+//function : writeASCII
+//purpose  :
+//=============================================================================
+Standard_Boolean RWStl::writeASCII (const Handle(Poly_Triangulation)& theMesh,
+                                    FILE* theFile,
+                                    const Handle(Message_ProgressIndicator)& theProgInd)
+{
+  // note that space after 'solid' is necessary for many systems
+  if (fwrite ("solid \n", 1, 7, theFile) != 7)
+  {
+    return Standard_False;
+  }
+
+  char aBuffer[512];
+  memset (aBuffer, 0, sizeof(aBuffer));
+
+  Message_ProgressSentry aPS (theProgInd, "Triangles", 0,
+                              theMesh->NbTriangles(), IND_THRESHOLD);
+
+  const TColgp_Array1OfPnt& aNodes = theMesh->Nodes();
+  const Poly_Array1OfTriangle& aTriangles = theMesh->Triangles();
+  const Standard_Integer NBTriangles = theMesh->NbTriangles();
+  Standard_Integer anElem[3] = {0, 0, 0};
+  for (Standard_Integer aTriIter = 1; aTriIter <= NBTriangles; ++aTriIter)
+  {
+    const Poly_Triangle& aTriangle = aTriangles (aTriIter);
+    aTriangle.Get (anElem[0], anElem[1], anElem[2]);
+
+    const gp_Pnt aP1 = aNodes (anElem[0]);
+    const gp_Pnt aP2 = aNodes (anElem[1]);
+    const gp_Pnt aP3 = aNodes (anElem[2]);
+
+    const gp_Vec aVec1 (aP1, aP2);
+    const gp_Vec aVec2 (aP1, aP3);
+    gp_Vec aVNorm = aVec1.Crossed (aVec2);
+    if (aVNorm.SquareMagnitude() > gp::Resolution())
     {
-      aMexp.TriangleVertices (x1,y1,z1,x2,y2,z2,x3,y3,z3);
+      aVNorm.Normalize();
+    }
+    else
+    {
+      aVNorm.SetCoord (0.0, 0.0, 0.0);
+    }
 
-//      Standard_Real x, y, z;
-//      aMexp.TriangleOrientation (x,y,z);
-
-      gp_XYZ Vect12 ((x2-x1), (y2-y1), (z2-z1));
-      gp_XYZ Vect23 ((x3-x2), (y3-y2), (z3-z2));
-      gp_XYZ Vnorm = Vect12 ^ Vect23;
-      Standard_Real Vmodul = Vnorm.Modulus ();
-      if (Vmodul > gp::Resolution())
-      {
-        Vnorm.Divide (Vmodul);
-      }
-      else
-      {
-        // si Vnorm est quasi-nul, on le charge a 0 explicitement
-        Vnorm.SetCoord (0., 0., 0.);
-      }
-      Sprintf (sval,
+    Sprintf (aBuffer,
           " facet normal % 12e % 12e % 12e\n"
           "   outer loop\n"
           "     vertex % 12e % 12e % 12e\n"
@@ -287,270 +303,132 @@ Standard_Boolean RWStl::WriteAscii (const Handle(StlMesh_Mesh)& theMesh,
           "     vertex % 12e % 12e % 12e\n"
           "   endloop\n"
           " endfacet\n",
-          Vnorm.X(), Vnorm.Y(), Vnorm.Z(),
-          x1, y1, z1,
-          x2, y2, z2,
-          x3, y3, z3);
-      buf += sval;
-      theFile.Write (buf, buf.Length()); buf.Clear();
+          aVNorm.X(), aVNorm.Y(), aVNorm.Z(),
+          aP1.X(), aP1.Y(), aP1.Z(),
+          aP2.X(), aP2.Y(), aP2.Z(),
+          aP3.X(), aP3.Y(), aP3.Z());
 
-      // update progress only per 1k triangles
-      if (++aTriangleInd % IND_THRESHOLD == 0)
-      {
-        if (!aTPS.More())
-            break;
-        aTPS.Next();
-      }
+    if (fprintf (theFile, "%s", aBuffer) < 0)
+    {
+      return Standard_False;
     }
-  }
-
-  buf += "endsolid\n";
-  theFile.Write (buf, buf.Length()); buf.Clear();
-  theFile.Close();
-  Standard_Boolean isInterrupted = !aDPS.More();
-  return !isInterrupted;
-}
-//=======================================================================
-//function : ReadFile
-//Design   :
-//Warning  :
-//=======================================================================
-
-Handle(StlMesh_Mesh) RWStl::ReadFile (const OSD_Path& thePath,
-                                     const Handle(Message_ProgressIndicator)& theProgInd)
-{
-  OSD_File file (thePath);
-  file.Open(OSD_ReadOnly,OSD_Protection(OSD_RWD,OSD_RWD,OSD_RWD,OSD_RWD));
-  Standard_Boolean IsAscii;
-  unsigned char str[128];
-  Standard_Integer lread,i;
-  Standard_Address ach;
-  ach = (Standard_Address)str;
-
-  // we skip the header which is in Ascii for both modes
-  file.Read(ach,HEADER_SIZE,lread);
-
-  // we read 128 characters to detect if we have a non-ascii char
-  file.Read(ach,sizeof(str),lread);
-
-  IsAscii = Standard_True;
-  for (i = 0; i< lread && IsAscii; ++i) {
-    if (str[i] > '~') {
-      IsAscii = Standard_False;
-    }
-  }
-#ifdef OCCT_DEBUG
-  cout << (IsAscii ? "ascii\n" : "binary\n");
-#endif
-  file.Close();
-
-  return IsAscii ? RWStl::ReadAscii  (thePath, theProgInd)
-                 : RWStl::ReadBinary (thePath, theProgInd);
-}
-
-//=======================================================================
-//function : ReadBinary
-//Design   :
-//Warning  :
-//=======================================================================
-
-Handle(StlMesh_Mesh) RWStl::ReadBinary (const OSD_Path& thePath,
-                                       const Handle(Message_ProgressIndicator)& /*theProgInd*/)
-{
-  Standard_Integer ifacet;
-  Standard_Real fx,fy,fz,fx1,fy1,fz1,fx2,fy2,fz2,fx3,fy3,fz3;
-  Standard_Integer i1,i2,i3,lread;
-  char buftest[5];
-  Standard_Address adr;
-  adr = (Standard_Address)buftest;
-
-  // Open the file
-  OSD_File theFile (thePath);
-  theFile.Open(OSD_ReadOnly,OSD_Protection(OSD_RWD,OSD_RWD,OSD_RWD,OSD_RWD));
-
-  // the size of the file (minus the header size)
-  // must be a multiple of SIZEOF_STL_FACET
-
-  // compute file size
-  Standard_Size filesize = theFile.Size();
-
-  // don't trust the number of triangles which is coded in the file sometimes it is wrong
-  Standard_Integer NBFACET = (Standard_Integer)((filesize - HEADER_SIZE) / SIZEOF_STL_FACET);
-  if (NBFACET < 1)
-  {
-    throw Standard_NoMoreObject("RWStl::ReadBinary (wrong file size)");
-  }
-
-  theFile.Seek (80, OSD_FromBeginning);
-  theFile.Read (adr, 4, lread);
-  Standard_Integer aNbTrisInHeader = (((char*           )buftest)[3] << 24) | (((Standard_Byte* )buftest)[2] << 16)
-                                    | (((Standard_Byte* )buftest)[1] << 8 ) | (((Standard_Byte* )buftest)[0] << 0 );
-  if (NBFACET < aNbTrisInHeader)
-  {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("RWStl - Binary STL file defines more triangles (") + aNbTrisInHeader
-                                     + ") that can be read (" + NBFACET + ") - probably corrupted file",
-                                       Message_Warning);
-  }
-  else if (NBFACET > aNbTrisInHeader)
-  {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("RWStl - Binary STL file defines less triangles (") + aNbTrisInHeader
-                                     + ") that can be read (" + NBFACET + ") - probably corrupted file",
-                                       Message_Warning);
-  }
-  else if ((filesize - HEADER_SIZE) % SIZEOF_STL_FACET != 0)
-  {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("RWStl - Binary STL file has unidentified tail"),
-                                       Message_Warning);
-  }
-
-  // skip the header
-  theFile.Seek(HEADER_SIZE,OSD_FromBeginning);
-
-  // create the StlMesh_Mesh object
-  Handle(StlMesh_Mesh) ReadMesh = new StlMesh_Mesh ();
-  ReadMesh->AddDomain ();
-
-  // Filter unique vertices to share the nodes of the mesh.
-  BRepBuilderAPI_CellFilter uniqueVertices(Precision::Confusion());
-  BRepBuilderAPI_VertexInspector inspector(Precision::Confusion());
-  
-  for (ifacet=1; ifacet<=NBFACET; ++ifacet) {
-    // read normal coordinates
-    fx = ReadFloat2Double(theFile);
-    fy = ReadFloat2Double(theFile);
-    fz = ReadFloat2Double(theFile);
-
-    // read vertex 1
-    fx1 = ReadFloat2Double(theFile);
-    fy1 = ReadFloat2Double(theFile);
-    fz1 = ReadFloat2Double(theFile);
-
-    // read vertex 2
-    fx2 = ReadFloat2Double(theFile);
-    fy2 = ReadFloat2Double(theFile);
-    fz2 = ReadFloat2Double(theFile);
-
-    // read vertex 3
-    fx3 = ReadFloat2Double(theFile);
-    fy3 = ReadFloat2Double(theFile);
-    fz3 = ReadFloat2Double(theFile);
-
-    // Add vertices.
-    i1 = AddVertex(ReadMesh, uniqueVertices, inspector, gp_XYZ(fx1, fy1, fz1));
-    i2 = AddVertex(ReadMesh, uniqueVertices, inspector, gp_XYZ(fx2, fy2, fz2));
-    i3 = AddVertex(ReadMesh, uniqueVertices, inspector, gp_XYZ(fx3, fy3, fz3));
-
-    // Add triangle.
-    ReadMesh->AddTriangle (i1,i2,i3,fx,fy,fz);
-
-    // skip extra bytes
-    theFile.Read(adr,2,lread);
-  }
-
-  theFile.Close ();
-  return ReadMesh;
-}
-
-//=======================================================================
-//function : ReadAscii
-//Design   :
-//Warning  :
-//=======================================================================
-
-Handle(StlMesh_Mesh) RWStl::ReadAscii (const OSD_Path& thePath,
-                                      const Handle(Message_ProgressIndicator)& theProgInd)
-{
-  TCollection_AsciiString filename;
-  long ipos;
-  Standard_Integer nbLines = 0;
-  Standard_Integer nbTris = 0;
-  Standard_Integer iTri;
-  Standard_Integer i1,i2,i3;
-  Handle(StlMesh_Mesh) ReadMesh;
-
-  thePath.SystemName (filename);
-
-  // Open the file
-  FILE* file = OSD_OpenFile(filename.ToCString(),"r");
-
-  fseek(file,0L,SEEK_END);
-
-  long filesize = ftell(file);
-
-  rewind(file);
-
-  // count the number of lines
-  for (ipos = 0; ipos < filesize; ++ipos) {
-	  if (getc(file) == '\n')
-        nbLines++;
-  }
-
-  // compute number of triangles
-  nbTris = (nbLines / ASCII_LINES_PER_FACET);
-
-  // go back to the beginning of the file
-  rewind(file);
-
-  // skip header
-  while (getc(file) != '\n');
-#ifdef OCCT_DEBUG
-  cout << "start mesh\n";
-#endif
-  ReadMesh = new StlMesh_Mesh();
-  ReadMesh->AddDomain();
-
-  // Filter unique vertices to share the nodes of the mesh.
-  BRepBuilderAPI_CellFilter uniqueVertices(Precision::Confusion());
-  BRepBuilderAPI_VertexInspector inspector(Precision::Confusion());
-  
-  // main reading
-  Message_ProgressSentry aPS (theProgInd, "Triangles", 0, (nbTris - 1) * 1.0 / IND_THRESHOLD, 1);
-  for (iTri = 0; iTri < nbTris && aPS.More();)
-  {
-    char x[256]="", y[256]="", z[256]="";
-
-    // reading the facet normal
-    if (3 != fscanf(file,"%*s %*s %80s %80s %80s\n", x, y, z))
-      break; // error should be properly reported
-    gp_XYZ aN (Atof(x), Atof(y), Atof(z));
-
-    // skip the keywords "outer loop"
-    if (fscanf(file,"%*s %*s") < 0)
-      break;
-
-    // reading vertex
-    if (3 != fscanf(file,"%*s %80s %80s %80s\n", x, y, z))
-      break; // error should be properly reported
-    gp_XYZ aV1 (Atof(x), Atof(y), Atof(z));
-    if (3 != fscanf(file,"%*s %80s %80s %80s\n", x, y, z))
-      break; // error should be properly reported
-    gp_XYZ aV2 (Atof(x), Atof(y), Atof(z));
-    if (3 != fscanf(file,"%*s %80s %80s %80s\n", x, y, z))
-      break; // error should be properly reported
-    gp_XYZ aV3 (Atof(x), Atof(y), Atof(z));
-
-    // here the facet must be built and put in the mesh datastructure
-
-    i1 = AddVertex(ReadMesh, uniqueVertices, inspector, aV1);
-    i2 = AddVertex(ReadMesh, uniqueVertices, inspector, aV2);
-    i3 = AddVertex(ReadMesh, uniqueVertices, inspector, aV3);
-    ReadMesh->AddTriangle (i1, i2, i3, aN.X(), aN.Y(), aN.Z());
-
-    // skip the keywords "endloop"
-    if (fscanf(file,"%*s") < 0)
-      break;
-
-    // skip the keywords "endfacet"
-    if (fscanf(file,"%*s") < 0)
-      break;
 
     // update progress only per 1k triangles
-    if (++iTri % IND_THRESHOLD == 0)
+    if ((aTriIter % IND_THRESHOLD) == 0)
+    {
       aPS.Next();
+    }
   }
-#ifdef OCCT_DEBUG
-  cout << "end mesh\n";
-#endif
-  fclose(file);
-  return ReadMesh;
+
+  if (fwrite ("endsolid\n", 1, 9, theFile) != 9)
+  {
+    return Standard_False;
+  }
+
+  return Standard_True;
+}
+
+//=============================================================================
+//function : writeBinary
+//purpose  :
+//=============================================================================
+Standard_Boolean RWStl::writeBinary (const Handle(Poly_Triangulation)& theMesh,
+                                     FILE* theFile,
+                                     const Handle(Message_ProgressIndicator)& theProgInd)
+{
+  char aHeader[80] = "STL Exported by OpenCASCADE [www.opencascade.com]";
+  if (fwrite (aHeader, 1, 80, theFile) != 80)
+  {
+    return Standard_False;
+  }
+
+  Message_ProgressSentry aPS (theProgInd, "Triangles", 0,
+                              theMesh->NbTriangles(), IND_THRESHOLD);
+
+  const Standard_Size aNbChunkTriangles = 4096;
+  const Standard_Size aChunkSize = aNbChunkTriangles * THE_STL_SIZEOF_FACET;
+  NCollection_Array1<Standard_Character> aData (1, aChunkSize);
+  Standard_Character* aDataChunk = &aData.ChangeFirst();
+
+  const TColgp_Array1OfPnt& aNodes = theMesh->Nodes();
+  const Poly_Array1OfTriangle& aTriangles = theMesh->Triangles();
+  const Standard_Integer aNBTriangles = theMesh->NbTriangles();
+
+  Standard_Character aConv[4];
+  convertInteger (aNBTriangles, aConv);
+  if (fwrite (aConv, 1, 4, theFile) != 4)
+  {
+    return Standard_False;
+  }
+
+  Standard_Size aByteCount = 0;
+  for (Standard_Integer aTriIter = 1; aTriIter <= aNBTriangles; ++aTriIter)
+  {
+    Standard_Integer id[3];
+    const Poly_Triangle& aTriangle = aTriangles (aTriIter);
+    aTriangle.Get (id[0], id[1], id[2]);
+
+    const gp_Pnt aP1 = aNodes (id[0]);
+    const gp_Pnt aP2 = aNodes (id[1]);
+    const gp_Pnt aP3 = aNodes (id[2]);
+
+    gp_Vec aVec1 (aP1, aP2);
+    gp_Vec aVec2 (aP1, aP3);
+    gp_Vec aVNorm = aVec1.Crossed(aVec2);
+    if (aVNorm.SquareMagnitude() > gp::Resolution())
+    {
+      aVNorm.Normalize();
+    }
+    else
+    {
+      aVNorm.SetCoord (0.0, 0.0, 0.0);
+    }
+
+    convertDouble (aVNorm.X(), &aDataChunk[aByteCount]); aByteCount += 4;
+    convertDouble (aVNorm.Y(), &aDataChunk[aByteCount]); aByteCount += 4;
+    convertDouble (aVNorm.Z(), &aDataChunk[aByteCount]); aByteCount += 4;
+
+    convertDouble (aP1.X(), &aDataChunk[aByteCount]); aByteCount += 4;
+    convertDouble (aP1.Y(), &aDataChunk[aByteCount]); aByteCount += 4;
+    convertDouble (aP1.Z(), &aDataChunk[aByteCount]); aByteCount += 4;
+
+    convertDouble (aP2.X(), &aDataChunk[aByteCount]); aByteCount += 4;
+    convertDouble (aP2.Y(), &aDataChunk[aByteCount]); aByteCount += 4;
+    convertDouble (aP2.Z(), &aDataChunk[aByteCount]); aByteCount += 4;
+
+    convertDouble (aP3.X(), &aDataChunk[aByteCount]); aByteCount += 4;
+    convertDouble (aP3.Y(), &aDataChunk[aByteCount]); aByteCount += 4;
+    convertDouble (aP3.Z(), &aDataChunk[aByteCount]); aByteCount += 4;
+
+    aDataChunk[aByteCount] = 0; aByteCount += 1;
+    aDataChunk[aByteCount] = 0; aByteCount += 1;
+
+    // Chunk is filled. Dump it to the file.
+    if (aByteCount == aChunkSize)
+    {
+      if (fwrite (aDataChunk, 1, aChunkSize, theFile) != aChunkSize)
+      {
+        return Standard_False;
+      }
+
+      aByteCount = 0;
+    }
+
+    // update progress only per 1k triangles
+    if ((aTriIter % IND_THRESHOLD) == 0)
+    {
+      aPS.Next();
+    }
+  }
+
+  // Write last part if necessary.
+  if (aByteCount != aChunkSize)
+  {
+    if (fwrite (aDataChunk, 1, aByteCount, theFile) != aByteCount)
+    {
+      return Standard_False;
+    }
+  }
+
+  return Standard_True;
 }

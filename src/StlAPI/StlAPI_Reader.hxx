@@ -19,44 +19,20 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
 #include <Standard_CString.hxx>
+
 class TopoDS_Shape;
 
-
 //! Reading from stereolithography format.
-class StlAPI_Reader 
+class StlAPI_Reader
 {
 public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
-  Standard_EXPORT StlAPI_Reader();
-  
-  Standard_EXPORT void Read (TopoDS_Shape& aShape, const Standard_CString aFileName);
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
+  //! Reads STL file to the TopoDS_Shape (each triangle is converted to the face).
+  //! @return True if reading is successful
+  Standard_EXPORT Standard_Boolean Read (TopoDS_Shape&          theShape,
+                                         const Standard_CString theFileName);
 
 };
-
-
-
-
-
-
 
 #endif // _StlAPI_Reader_HeaderFile

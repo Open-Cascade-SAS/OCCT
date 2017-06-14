@@ -1406,3 +1406,7 @@ In previous versions, *IsPeriodic()* always returned false if *IsClosed()* retur
 The history of the changing of the initial shape was corrected:
 * all shapes created by the algorithm are considered as modified shapes instead of generated ones;
 * method Generated was removed and its calls should be replaced by calls of method History()->Modified.
+
+@subsection upgrade_720_Change_In_RWStl Changes in STL Reader / Writer
+
+Class RWStl now uses class Poly_Triangulation for storing triangular mesh instead of StlMesh data classes; the latter have been removed.

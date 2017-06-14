@@ -1,7 +1,6 @@
-// Created on: 1994-10-13
-// Created by: Marc LEGAY
-// Copyright (c) 1994-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Created on: 2017-06-13
+// Created by: Alexander MALYSHEV
+// Copyright (c) 2017 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -17,85 +16,61 @@
 #ifndef _RWStl_HeaderFile
 #define _RWStl_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 #include <Message_ProgressIndicator.hxx>
+#include <OSD_Path.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Standard_Macro.hxx>
 
-class StlMesh_Mesh;
-class OSD_Path;
-
-//! This package contains the methods to be used in
-//! the Stereo Lithograpy Application. The main
-//! features of this application are ,starting from a
-//! Shape :
-//! - mesh this shape with a maximun tolerance,
-//! - display the meshing,
-//! - write the meshing in a file (binary or ascii),
-//! - read of file (binary or ascii) and display it,
-//! - translate a binary file to an ascii file,
-//! - translate an ascii file to an binary file.
-class RWStl 
+//! This class provides methods to read and write triangulation from / to the STL files.
+class RWStl
 {
 public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
-  //! write the meshing in a file following the
+  //! Write triangulation to binary STL file.
   //! binary format of an STL file.
   //! Returns false if the cannot be opened;
-  Standard_EXPORT static Standard_Boolean WriteBinary (const Handle(StlMesh_Mesh)& aMesh, const OSD_Path& aPath, const Handle(Message_ProgressIndicator)& aProgInd = NULL);
+  Standard_EXPORT static Standard_Boolean WriteBinary (const Handle(Poly_Triangulation)& theMesh,
+                                                       const OSD_Path& thePath,
+                                                       const Handle(Message_ProgressIndicator)& theProgInd = Handle(Message_ProgressIndicator)());
   
   //! write the meshing in a file following the
   //! Ascii  format of an STL file.
   //! Returns false if the cannot be opened;
-  Standard_EXPORT static Standard_Boolean WriteAscii (const Handle(StlMesh_Mesh)& aMesh, const OSD_Path& aPath, const Handle(Message_ProgressIndicator)& aProgInd = NULL);
+  Standard_EXPORT static Standard_Boolean WriteAscii (const Handle(Poly_Triangulation)& theMesh,
+                                                      const OSD_Path& thePath,
+                                                      const Handle(Message_ProgressIndicator)& theProgInd = Handle(Message_ProgressIndicator)());
   
-  //! This method will chwck if the file is a binary
-  //! file or an AsciiFile testing  the 5 first
-  //! characters of the file wich are :"solid" in an
-  //! ascii file. If we do not find that word we assume
-  //! that it is a binary file.
-  Standard_EXPORT static Handle(StlMesh_Mesh) ReadFile (const OSD_Path& aPath, const Handle(Message_ProgressIndicator)& aProgInd = NULL);
+  //! Read specified STL file and returns its content as triangulation.
+  //! In case of error, returns Null handle.
+  Standard_EXPORT static Handle(Poly_Triangulation) ReadFile (const OSD_Path& theFile,
+                                                              const Handle(Message_ProgressIndicator)& aProgInd = Handle(Message_ProgressIndicator)());
+
+  //! Read specified STL file and returns its content as triangulation.
+  //! In case of error, returns Null handle.
+  Standard_EXPORT static Handle(Poly_Triangulation) ReadFile (const Standard_CString theFile,
+                                                              const Handle(Message_ProgressIndicator)& aProgInd = Handle(Message_ProgressIndicator)());
+
+  //! Read triangulation from a binary STL file
+  //! In case of error, returns Null handle.
+  Standard_EXPORT static Handle(Poly_Triangulation) ReadBinary (const OSD_Path& thePath,
+                                                                const Handle(Message_ProgressIndicator)& theProgInd = Handle(Message_ProgressIndicator)());
   
-  //! Read a meshing from a binary file
-  //! Raises NoMoreObject from Standard if a statement
-  //! does not contain the right number of tokens
-  //! Raises TypeMisMatch if a token has not the good
-  //! type (often real)
-  Standard_EXPORT static Handle(StlMesh_Mesh) ReadBinary (const OSD_Path& aPath, const Handle(Message_ProgressIndicator)& aProgInd = NULL);
-  
-  //! Read a meshing from a binary file
-  //! Raises NoMoreObject from Standard if a statement
-  //! does not contain the right number of tokens
-  //! Raises TypeMisMatch if a token has not the good
-  //! type (often real)
-  //! Raises MoMoreObject if a file is finished before
-  //! having found the word endsolid;
-  Standard_EXPORT static Handle(StlMesh_Mesh) ReadAscii (const OSD_Path& aPath, const Handle(Message_ProgressIndicator)& aProgInd = NULL);
-
-
-
-
-protected:
-
-
-
-
+  //! Read triangulation from an Ascii STL file
+  //! In case of error, returns Null handle.
+  Standard_EXPORT static Handle(Poly_Triangulation) ReadAscii (const OSD_Path& thePath,
+                                                               const Handle(Message_ProgressIndicator)& theProgInd = Handle(Message_ProgressIndicator)());
 
 private:
 
+  //! Write ASCII version.
+  static Standard_Boolean writeASCII (const Handle(Poly_Triangulation)& theMesh,
+                                      FILE *theFile,
+                                      const Handle(Message_ProgressIndicator)& theProgInd);
 
-
-
-
+  //! Write binary version.
+  static Standard_Boolean writeBinary (const Handle(Poly_Triangulation)& theMesh,
+                                       FILE *theFile,
+                                       const Handle(Message_ProgressIndicator)& theProgInd);
 };
 
-
-
-
-
-
-
-#endif // _RWStl_HeaderFile
+#endif

@@ -17,6 +17,7 @@
 #include <AIS_InteractiveContext.hxx>
 #include <Aspect_TypeOfMarker.hxx>
 #include <Bnd_Box.hxx>
+#include <BRep_Builder.hxx>
 #include <DBRep.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
@@ -45,13 +46,12 @@
 #include <StdSelect_ViewerSelector3d.hxx>
 #include <StlAPI.hxx>
 #include <StlAPI_Writer.hxx>
-#include <StlMesh_Mesh.hxx>
-#include <StlMesh_SequenceOfMeshTriangle.hxx>
 #include <TColgp_SequenceOfXYZ.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <V3d_View.hxx>
 #include <ViewerTest.hxx>
@@ -90,27 +90,50 @@ static Standard_Integer writestl
     }
     StlAPI_Writer aWriter;
     aWriter.ASCIIMode() = isASCIIMode;
-    StlAPI_ErrorStatus aStatus = aWriter.Write (aShape, argv[2]);
-
-    switch (aStatus)
-    {
-    case StlAPI_MeshIsEmpty: di << "** Error **: Mesh is empty. Please, compute triangulation before."; break;
-    case StlAPI_CannotOpenFile: di << "** Error **: Cannot create/open a file with the passed name."; break;
-    case StlAPI_StatusOK: default: break;
-    }
+    Standard_Boolean isOK = aWriter.Write (aShape, argv[2]);
+    if (!isOK)
+       di << "** Error **: Mesh writing has been failed.\n";
   }
   return 0;
 }
 
-static Standard_Integer readstl
-(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+//=============================================================================
+//function : readstl
+//purpose  : Reads stl file
+//=============================================================================
+static Standard_Integer readstl(Draw_Interpretor& theDI,
+                                Standard_Integer theArgc,
+                                const char** theArgv)
 {
-  if (argc<3) di << "wrong number of parameters"    << "\n";
-  else {
-    TopoDS_Shape aShape ;
-    StlAPI::Read(aShape,argv[2]);
-    DBRep::Set(argv[1],aShape);
+  if (theArgc < 3)
+  {
+    theDI << "wrong number of parameters" << "\n";
+    return 1;
   }
+  else
+  {
+    if (theArgc == 4 &&
+        strcmp("triangulation", theArgv[3]) == 0)
+    {
+      // Read STL file to the triangulation.
+      Handle(Poly_Triangulation) aTriangulation = RWStl::ReadFile (theArgv[2]);
+
+      TopoDS_Face aFace;
+      BRep_Builder aB;
+      aB.MakeFace(aFace);
+      aB.UpdateFace(aFace, aTriangulation);
+      DBRep::Set(theArgv[1], aFace);
+    }
+    else
+    {
+      TopoDS_Shape aShape;
+      Standard_DISABLE_DEPRECATION_WARNINGS
+      StlAPI::Read(aShape, theArgv[2]);
+      Standard_ENABLE_DEPRECATION_WARNINGS
+      DBRep::Set(theArgv[1], aShape);
+    }
+  }
+
   return 0;
 }
 
@@ -260,7 +283,7 @@ static Standard_Integer createmesh
   // Progress indicator
   OSD_Path aFile( argv[2] );
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di, 1);
-  Handle(StlMesh_Mesh) aSTLMesh = RWStl::ReadFile (aFile, aProgress);
+  Handle(Poly_Triangulation) aSTLMesh = RWStl::ReadFile (aFile, aProgress);
 
   di << "Reading OK...\n";
   Handle( XSDRAWSTLVRML_DataSource ) aDS = new XSDRAWSTLVRML_DataSource( aSTLMesh );
@@ -275,7 +298,7 @@ static Standard_Integer createmesh
 
   // Hide all nodes by default
   Handle(TColStd_HPackedMapOfInteger) aNodes = new TColStd_HPackedMapOfInteger();
-  Standard_Integer aLen = aSTLMesh->Vertices().Length();
+  Standard_Integer aLen = aSTLMesh->Nodes().Length();
   for ( Standard_Integer anIndex = 1; anIndex <= aLen; anIndex++ )
     aNodes->ChangeMap().Add( anIndex );
   aMesh->SetHiddenNodes( aNodes );
@@ -1223,7 +1246,7 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
 
   theCommands.Add ("writevrml", "shape file [version VRML#1.0/VRML#2.0 (1/2): 2 by default] [representation shaded/wireframe/both (0/1/2): 1 by default]",__FILE__,writevrml,g);
   theCommands.Add ("writestl",  "shape file [ascii/binary (0/1) : 1 by default] [InParallel (0/1) : 0 by default]",__FILE__,writestl,g);
-  theCommands.Add ("readstl",   "shape file",__FILE__,readstl,g);
+  theCommands.Add ("readstl",   "shape file [triangulation: no by default]",__FILE__,readstl,g);
   theCommands.Add ("loadvrml" , "shape file",__FILE__,loadvrml,g);
 
   theCommands.Add ("meshfromstl",     "creates MeshVS_Mesh from STL file",            __FILE__, createmesh,      g );

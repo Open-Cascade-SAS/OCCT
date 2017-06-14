@@ -30,7 +30,7 @@
 #include <Standard_Address.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <Standard_Real.hxx>
-class StlMesh_Mesh;
+#include <Poly_Triangulation.hxx>
 
 
 class XSDRAWSTLVRML_DataSource;
@@ -44,7 +44,7 @@ public:
 
   
   //! Constructor
-  Standard_EXPORT XSDRAWSTLVRML_DataSource(const Handle(StlMesh_Mesh)& aMesh);
+  Standard_EXPORT XSDRAWSTLVRML_DataSource(const Handle(Poly_Triangulation)& aMesh);
   
   //! Returns geometry information about node ( if IsElement is False ) or element ( IsElement is True )
   //! by co-ordinates. For element this method must return all its nodes co-ordinates in the strict order: X, Y, Z and
@@ -85,7 +85,7 @@ protected:
 private:
 
 
-  Handle(StlMesh_Mesh) myMesh;
+  Handle(Poly_Triangulation) myMesh;
   TColStd_PackedMapOfInteger myNodes;
   TColStd_PackedMapOfInteger myElements;
   Handle(TColStd_HArray2OfInteger) myElemNodes;

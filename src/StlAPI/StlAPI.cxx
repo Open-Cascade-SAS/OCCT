@@ -11,24 +11,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StlAPI.hxx>
+
 #include <StlAPI_Reader.hxx>
 #include <StlAPI_Writer.hxx>
 #include <TopoDS_Shape.hxx>
 
-StlAPI_ErrorStatus StlAPI::Write(const TopoDS_Shape& aShape,
-		   const Standard_CString aFile,
-		   const Standard_Boolean aAsciiMode) 
+//=============================================================================
+//function : Write
+//purpose  :
+//=============================================================================
+Standard_Boolean StlAPI::Write (const TopoDS_Shape&    theShape,
+                                const Standard_CString theFile,
+                                const Standard_Boolean theAsciiMode)
 {
-  StlAPI_Writer writer;
-  writer.ASCIIMode() = aAsciiMode;
-  return writer.Write (aShape, aFile);
+  StlAPI_Writer aWriter;
+  aWriter.ASCIIMode() = theAsciiMode;
+  return aWriter.Write (theShape, theFile);
 }
 
-
-void StlAPI::Read(TopoDS_Shape& aShape,const Standard_CString aFile)
+//=============================================================================
+//function : Read
+//purpose  :
+//=============================================================================
+Standard_Boolean StlAPI::Read (TopoDS_Shape&          theShape,
+                               const Standard_CString theFile)
 {
-  StlAPI_Reader reader;
-  reader.Read (aShape, aFile);
+  StlAPI_Reader aReader;
+  return aReader.Read(theShape, theFile);
 }

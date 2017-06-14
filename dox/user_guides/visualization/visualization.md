@@ -1508,8 +1508,8 @@ Such an object, for example, can be used for displaying the object and stored in
 
 ~~~~~
 // read the data and create a data source
-Handle  (StlMesh_Mesh) aSTLMesh = RWStl::ReadFile (aFileName); 
-Handle  (XSDRAWSTLVRML_DataSource) aDataSource = new XSDRAWSTLVRML_DataSource (aSTLMesh); 
+Handle(Poly_Triangulation) aSTLMesh = RWStl::ReadFile (aFileName);
+Handle(XSDRAWSTLVRML_DataSource) aDataSource = new XSDRAWSTLVRML_DataSource (aSTLMesh);
 
 // create mesh 
 Handle  (MeshVS_Mesh) aMesh = new MeshVS(); 

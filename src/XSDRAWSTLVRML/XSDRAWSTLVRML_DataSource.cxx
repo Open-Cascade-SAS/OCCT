@@ -13,15 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XSDRAWSTLVRML_DataSource.hxx>
 
+#include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <StlMesh_Mesh.hxx>
-#include <StlMesh_MeshTriangle.hxx>
-#include <StlMesh_SequenceOfMeshTriangle.hxx>
 #include <TColgp_SequenceOfXYZ.hxx>
 #include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <TColStd_DataMapOfIntegerReal.hxx>
-#include <XSDRAWSTLVRML_DataSource.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XSDRAWSTLVRML_DataSource,MeshVS_DataSource)
 
@@ -29,13 +27,13 @@ IMPLEMENT_STANDARD_RTTIEXT(XSDRAWSTLVRML_DataSource,MeshVS_DataSource)
 // Function : Constructor
 // Purpose  :
 //================================================================
-XSDRAWSTLVRML_DataSource::XSDRAWSTLVRML_DataSource( const Handle( StlMesh_Mesh )& aMesh )
+XSDRAWSTLVRML_DataSource::XSDRAWSTLVRML_DataSource (const Handle(Poly_Triangulation)& aMesh)
 {
   myMesh = aMesh;
 
   if( !myMesh.IsNull() )
   {
-    const TColgp_SequenceOfXYZ& aCoords = myMesh->Vertices();
+    const TColgp_Array1OfPnt& aCoords = myMesh->Nodes();
     Standard_Integer len = aCoords.Length(), i, j;
     myNodeCoords = new TColStd_HArray2OfReal(1, len, 1, 3);
     cout << "Nodes : " << len << endl;
@@ -45,14 +43,14 @@ XSDRAWSTLVRML_DataSource::XSDRAWSTLVRML_DataSource( const Handle( StlMesh_Mesh )
     for( i = 1; i <= len; i++ )
     {
       myNodes.Add( i );
-      xyz = aCoords(i);
+      xyz = aCoords(i).XYZ();
 
       myNodeCoords->SetValue(i, 1, xyz.X());
       myNodeCoords->SetValue(i, 2, xyz.Y());
       myNodeCoords->SetValue(i, 3, xyz.Z());
     }
 
-    const StlMesh_SequenceOfMeshTriangle& aSeq = myMesh->Triangles();
+    const Poly_Array1OfTriangle& aSeq = myMesh->Triangles();
     len = aSeq.Length();
     myElemNormals = new TColStd_HArray2OfReal(1, len, 1, 3);
     myElemNodes = new TColStd_HArray2OfInteger(1, len, 1, 3);
@@ -62,19 +60,33 @@ XSDRAWSTLVRML_DataSource::XSDRAWSTLVRML_DataSource( const Handle( StlMesh_Mesh )
     for( i = 1; i <= len; i++ )
     {
       myElements.Add( i );
-      Handle( StlMesh_MeshTriangle ) aTriangle = aSeq.Value( i );
-      Standard_Integer V[3]; Standard_Real nx, ny, nz;
 
-      aTriangle->GetVertexAndOrientation( V[0], V[1], V[2], nx, ny, nz );
+      const Poly_Triangle& aTri = aSeq(i);
+
+      Standard_Integer V[3];
+      aTri.Get (V[0], V[1], V[2]);
+
+      const gp_Pnt aP1 = aCoords (V[0]);
+      const gp_Pnt aP2 = aCoords (V[1]);
+      const gp_Pnt aP3 = aCoords (V[2]);
+
+      gp_Vec aV1(aP1, aP2);
+      gp_Vec aV2(aP2, aP3);
+
+      gp_Vec aN = aV1.Crossed(aV2);
+      if (aN.SquareMagnitude() > Precision::SquareConfusion())
+        aN.Normalize();
+      else
+        aN.SetCoord(0.0, 0.0, 0.0);
 
       for( j = 0; j < 3; j++ )
       {
         myElemNodes->SetValue(i, j+1, V[j]);
       }
 
-      myElemNormals->SetValue(i, 1, nx);
-      myElemNormals->SetValue(i, 2, ny);
-      myElemNormals->SetValue(i, 3, nz);
+      myElemNormals->SetValue (i, 1, aN.X());
+      myElemNormals->SetValue (i, 2, aN.Y());
+      myElemNormals->SetValue (i, 3, aN.Z());
     }
   }
   cout << "Construction is finished" << endl;

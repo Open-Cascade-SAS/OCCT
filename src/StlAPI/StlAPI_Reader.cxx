@@ -11,6 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <StlAPI_Reader.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
@@ -20,9 +21,6 @@
 #include <gp_Pnt.hxx>
 #include <OSD_Path.hxx>
 #include <RWStl.hxx>
-#include <StlAPI_Reader.hxx>
-#include <StlMesh_Mesh.hxx>
-#include <StlMesh_MeshExplorer.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -31,64 +29,68 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
-StlAPI_Reader::StlAPI_Reader() {}
-
-void StlAPI_Reader::Read(TopoDS_Shape& aShape, const Standard_CString aFileName) 
+//=============================================================================
+//function : Read
+//purpose  :
+//=============================================================================
+Standard_Boolean StlAPI_Reader::Read (TopoDS_Shape&          theShape,
+                                      const Standard_CString theFileName)
 {
-  OSD_Path aFile(aFileName);
-  
-  Handle(StlMesh_Mesh) aSTLMesh = RWStl::ReadFile(aFile);
-  Standard_Integer NumberDomains = aSTLMesh->NbDomains();
-  Standard_Integer iND;
-  gp_XYZ p1, p2, p3;
-  TopoDS_Vertex Vertex1, Vertex2, Vertex3;
-  TopoDS_Face AktFace;
-  TopoDS_Wire AktWire;
+  Handle(Poly_Triangulation) aMesh = RWStl::ReadFile (theFileName);
+  if (aMesh.IsNull())
+  {
+    return Standard_False;
+  }
+
+  TopoDS_Vertex aTriVertexes[3];
+  TopoDS_Face aFace;
+  TopoDS_Wire aWire;
   BRepBuilderAPI_Sewing aSewingTool;
-  Standard_Real x1, y1, z1;
-  Standard_Real x2, y2, z2;
-  Standard_Real x3, y3, z3;
-  
-  aSewingTool.Init(1.0e-06,Standard_True);
-  
+  aSewingTool.Init (1.0e-06, Standard_True);
+
   TopoDS_Compound aComp;
   BRep_Builder BuildTool;
-  BuildTool.MakeCompound( aComp );
+  BuildTool.MakeCompound (aComp);
 
-  StlMesh_MeshExplorer aMExp (aSTLMesh);
-  
-  for (iND=1;iND<=NumberDomains;iND++) 
+  const TColgp_Array1OfPnt& aNodes = aMesh->Nodes();
+  const Poly_Array1OfTriangle& aTriangles = aMesh->Triangles();
+  for (Standard_Integer aTriIdx  = aTriangles.Lower();
+                        aTriIdx <= aTriangles.Upper();
+                      ++aTriIdx)
   {
-    for (aMExp.InitTriangle (iND); aMExp.MoreTriangle (); aMExp.NextTriangle ()) 
+    const Poly_Triangle& aTriangle = aTriangles(aTriIdx);
+
+    Standard_Integer anId[3];
+    aTriangle.Get(anId[0], anId[1], anId[2]);
+
+    const gp_Pnt& aPnt1 = aNodes (anId[0]);
+    const gp_Pnt& aPnt2 = aNodes (anId[1]);
+    const gp_Pnt& aPnt3 = aNodes (anId[2]);
+    if ((!(aPnt1.IsEqual (aPnt2, 0.0)))
+     && (!(aPnt1.IsEqual (aPnt3, 0.0))))
     {
-      aMExp.TriangleVertices (x1,y1,z1,x2,y2,z2,x3,y3,z3);
-      p1.SetCoord(x1,y1,z1);
-      p2.SetCoord(x2,y2,z2);
-      p3.SetCoord(x3,y3,z3);
-      
-      if ((!(p1.IsEqual(p2,0.0))) && (!(p1.IsEqual(p3,0.0))))
+      aTriVertexes[0] = BRepBuilderAPI_MakeVertex (aPnt1);
+      aTriVertexes[1] = BRepBuilderAPI_MakeVertex (aPnt2);
+      aTriVertexes[2] = BRepBuilderAPI_MakeVertex (aPnt3);
+
+      aWire = BRepBuilderAPI_MakePolygon (aTriVertexes[0], aTriVertexes[1], aTriVertexes[2], Standard_True);
+      if (!aWire.IsNull())
       {
-        Vertex1 = BRepBuilderAPI_MakeVertex(p1);
-        Vertex2 = BRepBuilderAPI_MakeVertex(p2);
-        Vertex3 = BRepBuilderAPI_MakeVertex(p3);
-        
-        AktWire = BRepBuilderAPI_MakePolygon( Vertex1, Vertex2, Vertex3, Standard_True);
-        
-        if( !AktWire.IsNull())
+        aFace = BRepBuilderAPI_MakeFace (aWire);
+        if (!aFace.IsNull())
         {
-          AktFace = BRepBuilderAPI_MakeFace( AktWire);
-          if(!AktFace.IsNull())
-            BuildTool.Add( aComp, AktFace );
+          BuildTool.Add (aComp, aFace);
         }
       }
     }
   }
-  aSTLMesh->Clear();
 
-  aSewingTool.Load( aComp );
+  aSewingTool.Load (aComp);
   aSewingTool.Perform();
-  aShape = aSewingTool.SewedShape();
-  if ( aShape.IsNull() )
-    aShape = aComp;
+  theShape = aSewingTool.SewedShape();
+  if (theShape.IsNull())
+  {
+    theShape = aComp;
+  }
+  return Standard_True;
 }
-

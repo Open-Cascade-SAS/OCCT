@@ -347,8 +347,6 @@ n StepToGeom
 n StepToTopoDS
 n StepVisual
 n StlAPI
-n StlMesh
-n StlTransfer
 n TopoDSToStep
 n Transfer
 n TransferBRep

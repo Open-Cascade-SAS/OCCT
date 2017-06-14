@@ -128,33 +128,9 @@ static Standard_Integer OCC527(Draw_Interpretor& di, Standard_Integer argc, cons
   return 0;
 }
 
-#include <StlMesh_Mesh.hxx>
-#include <StlTransfer.hxx>
-//=======================================================================
-//function : OCC1048
-//purpose  : 
-//=======================================================================
-static Standard_Integer OCC1048 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  // Verify amount of arguments of the command
-  if (argc < 2) { di << "Usage : " << argv[0] <<" shape"; return 1;}
-
-  TopoDS_Shape aShape = DBRep::Get(argv[1]);
-
-  Standard_Real theDeflection = 0.006;
-  Handle(StlMesh_Mesh) theStlMesh = new StlMesh_Mesh;
-  BRepMesh_IncrementalMesh aMesh(aShape, theDeflection);
-  StlTransfer::RetrieveMesh(aShape, theStlMesh);
-  Standard_Integer NBTRIANGLES = theStlMesh->NbTriangles();
-  di<<"Info: Number of triangles = "<<NBTRIANGLES<<"\n";
-
-  return 0;
-}
-
 void QABugs::Commands_2(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
   theCommands.Add("OCC527", "OCC527 shape", __FILE__, OCC527, group);
-  theCommands.Add("OCC1048", "OCC1048 shape", __FILE__, OCC1048, group);
   return;
 }

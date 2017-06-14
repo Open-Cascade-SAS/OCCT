@@ -15,8 +15,6 @@
 
 
 #include <Standard_Type.hxx>
-#include <StlMesh_MeshTriangle.hxx>
-#include <StlMesh_SequenceOfMeshTriangle.hxx>
 #include <TColgp_SequenceOfXYZ.hxx>
 #include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <TColStd_DataMapOfIntegerReal.hxx>
