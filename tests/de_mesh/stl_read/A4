@@ -1,0 +1,7 @@
+readstl m [locate_data_file model_stl_004.stl] triangulation
+
+# Number of triangles check
+checktrinfo m -tri 15479 -nod 7793
+
+# Visual check
+checkview -display m -2d -path ${imagedir}/${test_image}.png

@@ -1,0 +1,15 @@
+# Read brep file
+restore [locate_data_file bug28840_8.brep] m
+
+# Mesh it
+incmesh m 1.0
+
+# Save, read and delete file
+writestl m $imagedir/${casename}
+readstl res $imagedir/${casename} triangulation
+file delete $imagedir/${casename}
+
+checktrinfo res -tri 58 -nod 31
+
+# Visual check
+checkview -display res -2d -path ${imagedir}/${test_image}.png
