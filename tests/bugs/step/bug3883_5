@@ -1,0 +1,22 @@
+puts "======="
+puts "OCC3883"
+puts "======="
+puts ""
+#######################################################
+# Problems of reading colors and layers in XDEDRAWEXE
+#######################################################
+
+set theColors ""
+set theLayers ""
+
+ReadStep D [locate_data_file bug3883_xr2-ct-214_rod.stp]
+
+set theColors [XGetAllColors D]
+set theLayers [XGetAllLayers D]
+
+if {$theColors == ""} {
+  puts "ERROR: OCC3883 is reproduced. Colors have not been read."
+}
+if {$theLayers == ""} {
+  puts "ERROR: OCC3883 is reproduced. Layers have not been read."
+}
