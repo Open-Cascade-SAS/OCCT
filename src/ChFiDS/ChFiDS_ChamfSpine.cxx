@@ -25,12 +25,16 @@ IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_ChamfSpine,ChFiDS_Spine)
 //function : ChFiDS_ChamfSpine
 //purpose  : 
 //=======================================================================
-ChFiDS_ChamfSpine::ChFiDS_ChamfSpine(){}
+ChFiDS_ChamfSpine::ChFiDS_ChamfSpine()
+{
+  myMode = ChFiDS_ClassicChamfer;
+}
 
 ChFiDS_ChamfSpine::ChFiDS_ChamfSpine(const Standard_Real Tol):
 ChFiDS_Spine(Tol)
-{}
-
+{
+  myMode = ChFiDS_ClassicChamfer;
+}
 
 //=======================================================================
 //function : GetDist
@@ -92,13 +96,14 @@ void ChFiDS_ChamfSpine::SetDists(const Standard_Real Dis1,
 //=======================================================================
 
 void ChFiDS_ChamfSpine::GetDistAngle(Standard_Real& Dis,
-				     Standard_Real& Angle,
-				     Standard_Boolean& DisOnF1)const
+				     Standard_Real& Angle) const
+//Standard_Boolean& DisOnF1)const
 {
-  if (mChamf != ChFiDS_DistAngle)  throw Standard_Failure("Chamfer is not a Two Dists Chamfer");
+  if (mChamf != ChFiDS_DistAngle)
+    throw Standard_Failure("Chamfer is not a Two Dists Chamfer");
   Dis     = d1;
   Angle   = angle;
-  DisOnF1 = dison1;
+  //DisOnF1 = dison1;
 }
 
 //=======================================================================
@@ -107,16 +112,25 @@ void ChFiDS_ChamfSpine::GetDistAngle(Standard_Real& Dis,
 //=======================================================================
 
 void ChFiDS_ChamfSpine::SetDistAngle(const Standard_Real Dis,
-				     const Standard_Real Angle,
-				     const Standard_Boolean DisOnF1)
+				     const Standard_Real Angle)
+//const Standard_Boolean DisOnF1)
 {
   //isconstant->Init(Standard_True);
   mChamf = ChFiDS_DistAngle;
   d1     = Dis;
   angle  = Angle;
-  dison1 = DisOnF1;
+  //dison1 = DisOnF1;
 }
 
+//=======================================================================
+//function : SetMode
+//purpose  : 
+//=======================================================================
+
+void ChFiDS_ChamfSpine::SetMode(const ChFiDS_ChamfMode theMode)
+{
+  myMode = theMode;
+}
 
 //=======================================================================
 //function : IsChamfer
@@ -128,6 +142,3 @@ ChFiDS_ChamfMethod  ChFiDS_ChamfSpine::IsChamfer() const
 
   return mChamf;
 }
-
-
-

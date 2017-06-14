@@ -63,15 +63,16 @@
 //           False else
 //=======================================================================
 Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
-				       const Handle(ChFiDS_SurfData)& Data, 
+				       const Handle(ChFiDS_SurfData)& Data,
+                                       const ChFiDS_ChamfMode theMode,
 				       const gp_Pln& Pln, 
 				       const gp_Cylinder& Cyl, 
 				       const Standard_Real fu,
 				       const Standard_Real lu,
 				       const TopAbs_Orientation Or1,
 				       const TopAbs_Orientation Or2,
-				       const Standard_Real Dis1, 
-				       const Standard_Real Dis2,
+				       const Standard_Real theDis1, 
+				       const Standard_Real theDis2,
 				       const gp_Circ& Spine, 
 				       const Standard_Real First, 
 				       const TopAbs_Orientation Ofpl,
@@ -79,6 +80,17 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
 {
 
   // compute the chamfer surface(cone)
+
+  Standard_Real Dis1 = theDis1, Dis2 = theDis2;
+  if (theMode == ChFiDS_ConstThroatChamfer)
+    Dis1 = Dis2 = theDis1 * sqrt(2.);
+  else if (theMode == ChFiDS_ConstThroatWithPenetrationChamfer)
+  {
+    Standard_Real aDis2 = Min(theDis1, theDis2);
+    Standard_Real aDis1 = Max(theDis1, theDis2);
+    Dis2 = sqrt(aDis1*aDis1 - aDis2*aDis2);
+    Dis1 = aDis1*aDis1/aDis2 - aDis2;
+  }
 
     // compute the normals to the plane surface & to the plane face
   gp_Ax3 PosPl = Pln.Position();
@@ -310,7 +322,8 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
 //=======================================================================
 
 Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
-				      const Handle(ChFiDS_SurfData)& Data, 
+                                       const Handle(ChFiDS_SurfData)& Data, 
+                                       const ChFiDS_ChamfMode theMode,
 				       const gp_Pln& Pln, 
 				       const gp_Cylinder& Cyl, 
 				       const Standard_Real /*fu*/,
@@ -330,6 +343,9 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
   //        _|_          Ofpl is orientation of the plane face allowing
   //         |4          to determine the side of the material
 
+  if (theMode != ChFiDS_ClassicChamfer)
+    return Standard_False;
+  
   gp_Pnt OrSpine = ElCLib::Value(First,Spine);
   gp_Pnt POnCyl, POnPln, OrCyl;
 

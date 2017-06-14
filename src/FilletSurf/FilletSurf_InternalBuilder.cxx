@@ -331,6 +331,8 @@ Standard_Boolean
   if(!fsp->IsConstant()) throw Standard_ConstructionError("PerformSurf : no variable radiuses");
   // Standard_Boolean maybesingular; //pour scinder les Surfdata singulieres 
   
+  Handle(ChFiDS_HElSpine) EmptyGuide;
+
   BRepBlend_ConstRad Func(S1,S2,Guide);
   BRepBlend_ConstRadInv FInv(S1,S2,Guide);
   Func.Set(fsp->Radius(),Choix);
@@ -346,7 +348,7 @@ Standard_Boolean
     Func.Set(BlendFunc_Polynomial);
   }
   Standard_Real PFirst = First;
-  done = SimulData(Data,Guide,lin,S1,I1,
+  done = SimulData(Data,Guide,EmptyGuide,lin,S1,I1,
 		   S2,I2,Func,FInv,PFirst,MaxStep,Fleche,
 		   TolGuide,First,Last,Inside,Appro,Forward,Soldep,
 		   20,RecOnS1,RecOnS2);

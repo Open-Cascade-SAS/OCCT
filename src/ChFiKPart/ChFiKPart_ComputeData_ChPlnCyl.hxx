@@ -18,7 +18,8 @@
 #define _ChFiKPart_ComputeData_ChPlnCyl_HeaderFile
 
 Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
-				      const Handle(ChFiDS_SurfData)& Data, 
+                                       const Handle(ChFiDS_SurfData)& Data, 
+                                       const ChFiDS_ChamfMode theMode,
 				       const gp_Pln& Pln, 
 				       const gp_Cylinder& Cyl, 
 				       const Standard_Real fu,
@@ -39,6 +40,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
 
 Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
 				       const Handle(ChFiDS_SurfData)& Data, 
+                                       const ChFiDS_ChamfMode theMode,
 				       const gp_Pln& Pln, 
 				       const gp_Cylinder& Cyl, 
 				       const Standard_Real fu,

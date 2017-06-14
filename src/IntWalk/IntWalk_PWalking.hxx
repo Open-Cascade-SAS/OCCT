@@ -66,7 +66,12 @@ public:
   //! border of one of the domains. If an open line
   //! stops at the middle of a domain, one stops at the tangent point.
   //! Epsilon is SquareTolerance of points confusion.
-  Standard_EXPORT IntWalk_PWalking(const Handle(Adaptor3d_HSurface)& Caro1, const Handle(Adaptor3d_HSurface)& Caro2, const Standard_Real TolTangency, const Standard_Real Epsilon, const Standard_Real Deflection, const Standard_Real Increment);
+  Standard_EXPORT IntWalk_PWalking(const Handle(Adaptor3d_HSurface)& Caro1,
+                                   const Handle(Adaptor3d_HSurface)& Caro2,
+                                   const Standard_Real TolTangency,
+                                   const Standard_Real Epsilon,
+                                   const Standard_Real Deflection,
+                                   const Standard_Real Increment);
   
   //! Returns the intersection line containing the exact
   //! point Poin. This line is a polygonal line.
@@ -81,7 +86,16 @@ public:
   //! border of one of the domains. If an open line
   //! stops at the middle of a domain, one stops at the tangent point.
   //! Epsilon is SquareTolerance of points confusion.
-  Standard_EXPORT IntWalk_PWalking(const Handle(Adaptor3d_HSurface)& Caro1, const Handle(Adaptor3d_HSurface)& Caro2, const Standard_Real TolTangency, const Standard_Real Epsilon, const Standard_Real Deflection, const Standard_Real Increment, const Standard_Real U1, const Standard_Real V1, const Standard_Real U2, const Standard_Real V2);
+  Standard_EXPORT IntWalk_PWalking(const Handle(Adaptor3d_HSurface)& Caro1,
+                                   const Handle(Adaptor3d_HSurface)& Caro2,
+                                   const Standard_Real TolTangency,
+                                   const Standard_Real Epsilon,
+                                   const Standard_Real Deflection,
+                                   const Standard_Real Increment,
+                                   const Standard_Real U1,
+                                   const Standard_Real V1,
+                                   const Standard_Real U2,
+                                   const Standard_Real V2);
   
   //! calculate the line of intersection
   Standard_EXPORT void Perform (const TColStd_Array1OfReal& ParDep);
@@ -91,10 +105,19 @@ public:
   //! v.  (if this data is not presented as in the
   //! previous method, the initial steps are calculated
   //! starting from min and max uv of faces).
-  Standard_EXPORT void Perform (const TColStd_Array1OfReal& ParDep, const Standard_Real u1min, const Standard_Real v1min, const Standard_Real u2min, const Standard_Real v2min, const Standard_Real u1max, const Standard_Real v1max, const Standard_Real u2max, const Standard_Real v2max);
+  Standard_EXPORT void Perform (const TColStd_Array1OfReal& ParDep,
+                                const Standard_Real u1min,
+                                const Standard_Real v1min,
+                                const Standard_Real u2min,
+                                const Standard_Real v2min,
+                                const Standard_Real u1max,
+                                const Standard_Real v1max,
+                                const Standard_Real u2max,
+                                const Standard_Real v2max);
   
   //! calculate the first point of a line of intersection
-  Standard_EXPORT Standard_Boolean PerformFirstPoint (const TColStd_Array1OfReal& ParDep, IntSurf_PntOn2S& FirstPoint);
+  Standard_EXPORT Standard_Boolean PerformFirstPoint (const TColStd_Array1OfReal& ParDep,
+                                                      IntSurf_PntOn2S& FirstPoint);
   
   //! Returns true if the calculus was successful.
     Standard_Boolean IsDone() const;
@@ -126,11 +149,16 @@ public:
   
     const gp_Dir& TangentAtLine (Standard_Integer& Index) const;
   
-  Standard_EXPORT   IntWalk_StatusDeflection TestDeflection (const IntImp_ConstIsoparametric ChoixIso) ;
+  Standard_EXPORT   IntWalk_StatusDeflection TestDeflection (const IntImp_ConstIsoparametric ChoixIso,
+                                                             const IntWalk_StatusDeflection  theStatus);
   
-  Standard_EXPORT Standard_Boolean TestArret (const Standard_Boolean DejaReparti, TColStd_Array1OfReal& Param, IntImp_ConstIsoparametric& ChoixIso);
+  Standard_EXPORT Standard_Boolean TestArret (const Standard_Boolean DejaReparti,
+                                              TColStd_Array1OfReal& Param,
+                                              IntImp_ConstIsoparametric& ChoixIso);
   
-  Standard_EXPORT void RepartirOuDiviser (Standard_Boolean& DejaReparti, IntImp_ConstIsoparametric& ChoixIso, Standard_Boolean& Arrive);
+  Standard_EXPORT void RepartirOuDiviser (Standard_Boolean& DejaReparti,
+                                          IntImp_ConstIsoparametric& ChoixIso,
+                                          Standard_Boolean& Arrive);
   
   //! Inserts thePOn2S in the end of line
   void AddAPoint (const IntSurf_PntOn2S& thePOn2S);
@@ -157,9 +185,12 @@ public:
     line->RemovePoint(anIdx);
   }
   
-  Standard_EXPORT Standard_Boolean PutToBoundary (const Handle(Adaptor3d_HSurface)& theASurf1, const Handle(Adaptor3d_HSurface)& theASurf2);
+  Standard_EXPORT Standard_Boolean PutToBoundary (const Handle(Adaptor3d_HSurface)& theASurf1,
+                                                  const Handle(Adaptor3d_HSurface)& theASurf2);
   
-  Standard_EXPORT Standard_Boolean SeekAdditionalPoints (const Handle(Adaptor3d_HSurface)& theASurf1, const Handle(Adaptor3d_HSurface)& theASurf2, const Standard_Integer theMinNbPoints);
+  Standard_EXPORT Standard_Boolean SeekAdditionalPoints (const Handle(Adaptor3d_HSurface)& theASurf1,
+                                                         const Handle(Adaptor3d_HSurface)& theASurf2,
+                                                         const Standard_Integer theMinNbPoints);
 
   Standard_Real MaxStep(Standard_Integer theIndex)
   {

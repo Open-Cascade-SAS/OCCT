@@ -27,10 +27,12 @@
 //function : BlendFunc_ChamfInv
 //purpose  : 
 //=======================================================================
+
 BlendFunc_ChamfInv::BlendFunc_ChamfInv(const Handle(Adaptor3d_HSurface)& S1,
                                        const Handle(Adaptor3d_HSurface)& S2,
-                                       const Handle(Adaptor3d_HCurve)&   C) :
-	surf1(S1),surf2(S2),curv(C),corde1(surf1,curv),corde2(surf2,curv)
+                                       const Handle(Adaptor3d_HCurve)&   C)
+  : BlendFunc_GenChamfInv(S1,S2,C),
+    corde1(surf1,curv),corde2(surf2,curv)
 {
 }
 
@@ -84,97 +86,6 @@ void BlendFunc_ChamfInv::Set(const Standard_Real Dist1, const Standard_Real Dist
 }
 
 //=======================================================================
-//function : NbEquations
-//purpose  : 
-//=======================================================================
-
-Standard_Integer BlendFunc_ChamfInv::NbEquations () const
-{
-  return 4;
-}
-
-//=======================================================================
-//function : GetTolerance
-//purpose  : 
-//=======================================================================
-
-void BlendFunc_ChamfInv::Set(const Standard_Boolean OnFirst, const Handle(Adaptor2d_HCurve2d)& C)
-{
-  first = OnFirst;
-  csurf = C;
-}
-
-//=======================================================================
-//function : GetTolerance
-//purpose  : 
-//=======================================================================
-
-void BlendFunc_ChamfInv::GetTolerance(math_Vector& Tolerance, const Standard_Real Tol) const
-{
-  Tolerance(1) = csurf->Resolution(Tol);
-  Tolerance(2) = curv->Resolution(Tol);
-  if (first) {
-    Tolerance(3) = surf2->UResolution(Tol);
-    Tolerance(4) = surf2->VResolution(Tol);
-  }
-  else {
-    Tolerance(3) = surf1->UResolution(Tol);
-    Tolerance(4) = surf1->VResolution(Tol);
-  }
-}
-
-
-//=======================================================================
-//function : GetBounds
-//purpose  : 
-//=======================================================================
-
-void BlendFunc_ChamfInv::GetBounds(math_Vector& InfBound, math_Vector& SupBound) const
-{
-  InfBound(1) = csurf->FirstParameter();
-  InfBound(2) = curv->FirstParameter();
-  SupBound(1) = csurf->LastParameter();
-  SupBound(2) = curv->LastParameter();
-
-  if (first) {
-    InfBound(3) = surf2->FirstUParameter();
-    InfBound(4) = surf2->FirstVParameter();
-    SupBound(3) = surf2->LastUParameter();
-    SupBound(4) = surf2->LastVParameter();
-    if(!Precision::IsInfinite(InfBound(3)) &&
-       !Precision::IsInfinite(SupBound(3))) {
-      const Standard_Real range = (SupBound(3) - InfBound(3));
-      InfBound(3) -= range;
-      SupBound(3) += range;
-    }
-    if(!Precision::IsInfinite(InfBound(4)) &&
-       !Precision::IsInfinite(SupBound(4))) {
-      const Standard_Real range = (SupBound(4) - InfBound(4));
-      InfBound(4) -= range;
-      SupBound(4) += range;
-    }
-  }
-  else {
-    InfBound(3) = surf1->FirstUParameter();
-    InfBound(4) = surf1->FirstVParameter();
-    SupBound(3) = surf1->LastUParameter();
-    SupBound(4) = surf1->LastVParameter();
-    if(!Precision::IsInfinite(InfBound(3)) &&
-       !Precision::IsInfinite(SupBound(3))) {
-      const Standard_Real range = (SupBound(3) - InfBound(3));
-      InfBound(3) -= range;
-      SupBound(3) += range;
-    }
-    if(!Precision::IsInfinite(InfBound(4)) &&
-       !Precision::IsInfinite(SupBound(4))) {
-      const Standard_Real range = (SupBound(4) - InfBound(4));
-      InfBound(4) -= range;
-      SupBound(4) += range;
-    }
-  }    
-}
-
-//=======================================================================
 //function : IsSolution
 //purpose  : 
 //=======================================================================
@@ -206,7 +117,6 @@ Standard_Boolean BlendFunc_ChamfInv::IsSolution(const math_Vector& Sol, const St
   return issol;
 
 }
-
 
 //=======================================================================
 //function : Value
@@ -324,15 +234,3 @@ Standard_Boolean BlendFunc_ChamfInv::Derivatives(const math_Vector& X, math_Matr
 
   return Standard_True;
 } 
-
-//=======================================================================
-//function : Values
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean BlendFunc_ChamfInv::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
-{
-  Value(X,F);
-  Derivatives(X,D);
-  return Standard_True;
-}

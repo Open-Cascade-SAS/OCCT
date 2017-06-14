@@ -33,6 +33,7 @@
 #include <ChFiDS_ErrorStatus.hxx>
 #include <Standard_Transient.hxx>
 #include <GeomAbs_CurveType.hxx>
+#include <ChFiDS_ChamfMode.hxx>
 class TopoDS_Edge;
 class ChFiDS_HElSpine;
 class gp_Lin;
@@ -83,12 +84,20 @@ public:
   //! store edges composing the guideline
     void SetEdges (const TopoDS_Edge& E);
   
+  //! store offset edges composing the offset guideline
+    void SetOffsetEdges (const TopoDS_Edge& E);
+  
   //! store the edge at the first position before all others
     void PutInFirst (const TopoDS_Edge& E);
+  
+  //! store the offset edge at the first position before all others
+    void PutInFirstOffset (const TopoDS_Edge& E);
   
     Standard_Integer NbEdges() const;
   
     const TopoDS_Edge& Edges (const Standard_Integer I) const;
+  
+    const TopoDS_Edge& OffsetEdges (const Standard_Integer I) const;
   
   //! stores if the start of a set of edges starts on a
   //! section of free border or forms  a closed contour
@@ -100,6 +109,8 @@ public:
   
   Standard_EXPORT virtual void AppendElSpine (const Handle(ChFiDS_HElSpine)& Els);
   
+  Standard_EXPORT virtual void AppendOffsetElSpine (const Handle(ChFiDS_HElSpine)& Els);
+  
   Standard_EXPORT Handle(ChFiDS_HElSpine) ElSpine (const Standard_Integer IE) const;
   
   Standard_EXPORT Handle(ChFiDS_HElSpine) ElSpine (const TopoDS_Edge& E) const;
@@ -107,6 +118,8 @@ public:
   Standard_EXPORT Handle(ChFiDS_HElSpine) ElSpine (const Standard_Real W) const;
   
   Standard_EXPORT ChFiDS_ListOfHElSpine& ChangeElSpines();
+  
+  Standard_EXPORT ChFiDS_ListOfHElSpine& ChangeOffsetElSpines();
   
   Standard_EXPORT virtual void Reset (const Standard_Boolean AllData = Standard_False);
   
@@ -227,6 +240,8 @@ public:
   
   Standard_EXPORT ChFiDS_ErrorStatus ErrorStatus() const;
 
+  //! Return the mode of chamfers used
+  Standard_EXPORT ChFiDS_ChamfMode Mode() const;
 
 
 
@@ -237,6 +252,8 @@ protected:
 
   Standard_Boolean splitdone;
   ChFiDS_ListOfHElSpine elspines;
+  ChFiDS_ListOfHElSpine offset_elspines;
+  ChFiDS_ChamfMode   myMode;
 
 
 private:
@@ -245,11 +262,14 @@ private:
   Standard_EXPORT void Prepare (Standard_Real& L, Standard_Integer& Index) const;
 
   BRepAdaptor_Curve myCurve;
+  BRepAdaptor_Curve myOffsetCurve;
   Standard_Integer indexofcurve;
   ChFiDS_State firstState;
   ChFiDS_State lastState;
   TopTools_SequenceOfShape spine;
+  TopTools_SequenceOfShape offsetspine;
   Handle(TColStd_HArray1OfReal) abscissa;
+  Handle(TColStd_HArray1OfReal) offset_abscissa;
   Standard_Real tolesp;
   Standard_Real firstparam;
   Standard_Real lastparam;

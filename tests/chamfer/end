@@ -15,7 +15,7 @@ if { [string compare $group "dist_dist"] == 0 } {
    set chamf_parameters $chamf_dist_dist
 }
 if { [string compare $group "equal_dist"] == 0 } {
-   set chamf_type S
+   set chamf_type ""
    set chamf_parameters $chamf_equal_dist
 }
 

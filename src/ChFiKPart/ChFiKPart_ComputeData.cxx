@@ -168,46 +168,57 @@
     }
   }
   else if(!CSpine.IsNull()){
+    
+    ChFiDS_ChamfMode aMode = CSpine->Mode();
+    
     if (CSpine->IsChamfer() == ChFiDS_Sym) {
       Standard_Real dis;
       CSpine->GetDist(dis);
+      
       if ( typ1 == GeomAbs_Plane && typ2 == GeomAbs_Plane ){
-	surfok = ChFiKPart_MakeChamfer(DStr,Data,S1->Plane(),S2->Plane(), 
-				      Or1,Or2,dis, dis,CSpine->Line(),
-				      Wref,OrFace1);
+	surfok = ChFiKPart_MakeChamfer(DStr,Data,aMode,
+                                       S1->Plane(),S2->Plane(), 
+                                       Or1,Or2,dis, dis,CSpine->Line(),
+                                       Wref,OrFace1);
       }
       else if ( typ1 == GeomAbs_Plane && typ2 == GeomAbs_Cylinder ){
 	if (ctyp == GeomAbs_Circle)
-	  surfok = ChFiKPart_MakeChamfer(DStr,Data,S1->Plane(),S2->Cylinder(),
+	  surfok = ChFiKPart_MakeChamfer(DStr,Data,aMode,
+                                         S1->Plane(),S2->Cylinder(),
 					 S2->FirstUParameter(),S2->LastUParameter(),
 					 Or1,Or2,dis,dis ,CSpine->Circle(),
 					 Wref,OrFace1,Standard_True);
 	else
-	  surfok = ChFiKPart_MakeChamfer(DStr,Data,S1->Plane(),S2->Cylinder(),
+	  surfok = ChFiKPart_MakeChamfer(DStr,Data,aMode,
+                                         S1->Plane(),S2->Cylinder(),
 					 S2->FirstUParameter(),S2->LastUParameter(),
 					 Or1,Or2,dis,dis,CSpine->Line(),
 					 Wref,OrFace1,Standard_True);
       }
       else if ( typ1 == GeomAbs_Cylinder && typ2 == GeomAbs_Plane ){
 	if (ctyp == GeomAbs_Circle)
-	  surfok = ChFiKPart_MakeChamfer(DStr,Data,S2->Plane(),S1->Cylinder(), 
+	  surfok = ChFiKPart_MakeChamfer(DStr,Data,aMode,
+                                         S2->Plane(),S1->Cylinder(), 
 					 S1->FirstUParameter(),S1->LastUParameter(),
 					 Or2,Or1,dis,dis,CSpine->Circle(),
 					 Wref,OrFace2,Standard_False);
 	else
-	  surfok = ChFiKPart_MakeChamfer(DStr,Data,S2->Plane(),S1->Cylinder(), 
+	  surfok = ChFiKPart_MakeChamfer(DStr,Data,aMode,
+                                         S2->Plane(),S1->Cylinder(), 
 					 S1->FirstUParameter(),S1->LastUParameter(),
 					 Or2,Or1,dis,dis,CSpine->Line(),
 					 Wref,OrFace2,Standard_False);
       }
       else if ( typ1 == GeomAbs_Plane && typ2 == GeomAbs_Cone ){
-	surfok = ChFiKPart_MakeChamfer(DStr,Data,S1->Plane(),S2->Cone(), 
+	surfok = ChFiKPart_MakeChamfer(DStr,Data,aMode,
+                                       S1->Plane(),S2->Cone(), 
 				       S2->FirstUParameter(),S2->LastUParameter(),
 				       Or1,Or2,dis,dis,CSpine->Circle(),
 				       Wref,OrFace1,Standard_True);
       }
       else if ( typ1 == GeomAbs_Cone && typ2 == GeomAbs_Plane ){
-	surfok = ChFiKPart_MakeChamfer(DStr,Data,S2->Plane(),S1->Cone(), 
+	surfok = ChFiKPart_MakeChamfer(DStr,Data,aMode,
+                                       S2->Plane(),S1->Cone(), 
 				       S1->FirstUParameter(),S1->LastUParameter(),
 				       Or2,Or1,dis,dis,CSpine->Circle(),
 				       Wref,OrFace2,Standard_False); 
@@ -220,44 +231,51 @@
       Standard_Real dis1,dis2;
       CSpine->Dists(dis1,dis2);
       if ( typ1 == GeomAbs_Plane && typ2 == GeomAbs_Plane ){
-	surfok = ChFiKPart_MakeChamfer(DStr,Data,S1->Plane(),S2->Plane(), 
-				      Or1,Or2,dis1,dis2,CSpine->Line(),
-				      Wref,OrFace1);
+	surfok = ChFiKPart_MakeChamfer(DStr,Data,aMode,
+                                       S1->Plane(),S2->Plane(), 
+                                       Or1,Or2,dis1,dis2,CSpine->Line(),
+                                       Wref,OrFace1);
       }
       else if ( typ1 == GeomAbs_Plane && typ2 == GeomAbs_Cylinder ){
 	if (ctyp == GeomAbs_Circle)
-	  surfok = ChFiKPart_MakeChamfer(DStr,Data,S1->Plane(),S2->Cylinder(),
+	  surfok = ChFiKPart_MakeChamfer(DStr,Data,aMode,
+                                         S1->Plane(),S2->Cylinder(),
 					 S2->FirstUParameter(),S2->LastUParameter(),
 					 Or1,Or2,dis1,dis2,CSpine->Circle(),
 					 Wref,OrFace1,Standard_True);
 	else
-	  surfok = ChFiKPart_MakeChamfer(DStr,Data,S1->Plane(),S2->Cylinder(),
+	  surfok = ChFiKPart_MakeChamfer(DStr,Data,aMode,
+                                         S1->Plane(),S2->Cylinder(),
 					 S2->FirstUParameter(),S2->LastUParameter(),
 					 Or1,Or2,dis1,dis2,CSpine->Line(),
 					 Wref,OrFace1,Standard_True);
       }
       else if ( typ1 == GeomAbs_Cylinder && typ2 == GeomAbs_Plane ){
 	if (ctyp == GeomAbs_Circle)
-	  surfok = ChFiKPart_MakeChamfer(DStr,Data,S2->Plane(),S1->Cylinder(), 
+	  surfok = ChFiKPart_MakeChamfer(DStr,Data,aMode,
+                                         S2->Plane(),S1->Cylinder(), 
 					 S1->FirstUParameter(),S1->LastUParameter(),
 					 Or2,Or1,dis2,dis1,CSpine->Circle(),
 					 Wref,OrFace2,Standard_False);
 	else
-	  surfok = ChFiKPart_MakeChamfer(DStr,Data,S2->Plane(),S1->Cylinder(), 
+	  surfok = ChFiKPart_MakeChamfer(DStr,Data,aMode,
+                                         S2->Plane(),S1->Cylinder(), 
 					 S1->FirstUParameter(),S1->LastUParameter(),
 					 Or2,Or1,dis2,dis1,CSpine->Line(),
 					 Wref,OrFace2,Standard_False);
       }
       else if ( typ1 == GeomAbs_Plane && typ2 == GeomAbs_Cone ){
-	surfok = ChFiKPart_MakeChamfer(DStr,Data,S1->Plane(),S2->Cone(), 
+	surfok = ChFiKPart_MakeChamfer(DStr,Data,aMode,
+                                       S1->Plane(),S2->Cone(), 
 				       S2->FirstUParameter(),S2->LastUParameter(),
 				       Or1,Or2,dis1,dis2,CSpine->Circle(),
 				       Wref,OrFace1,Standard_True);
       }
       else if ( typ1 == GeomAbs_Cone && typ2 == GeomAbs_Plane ){
-	surfok = ChFiKPart_MakeChamfer(DStr,Data,S2->Plane(),S1->Cone(), 
+	surfok = ChFiKPart_MakeChamfer(DStr,Data,aMode,
+                                       S2->Plane(),S1->Cone(), 
 				       S1->FirstUParameter(),S1->LastUParameter(),
-				       Or2,Or1,dis2,dis1,CSpine->Circle(),
+				       Or2,Or1,dis1,dis2,CSpine->Circle(),
 				       Wref,OrFace2,Standard_False); 
       }
       else{
@@ -266,8 +284,8 @@
     }
     else {
       Standard_Real dis, Angle;
-      Standard_Boolean DisOnP;
-      CSpine->GetDistAngle(dis, Angle, DisOnP);
+      Standard_Boolean DisOnP = Standard_True;
+      CSpine->GetDistAngle(dis, Angle);
       if ( typ1 == GeomAbs_Plane && typ2 == GeomAbs_Plane ){
 	surfok = ChFiKPart_MakeChAsym(DStr,Data,S1->Plane(),S2->Plane(), 
 				      Or1,Or2, dis, Angle, CSpine->Line(),

@@ -11,7 +11,7 @@ set BugNumber OCC20222
 restore [locate_data_file OCC20222.brep] s 
 explode s f
 explode s_10 e
-chamf result s s_10_3 s_10 S 50
+chamf result s s_10_3 50
 
 checkprops result -s 712126 
 checkshape result

@@ -199,6 +199,8 @@ ChFi3d_FilletShape ChFi3d_FilBuilder::GetFilletShape() const
 
 void  ChFi3d_FilBuilder::Add(const TopoDS_Edge& E)
 {
+  TopoDS_Face dummy;
+  
   if(!Contains(E) && myEFMap.Contains(E)){
     Handle(ChFiDS_Stripe) Stripe = new ChFiDS_Stripe();
     Handle(ChFiDS_Spine)& Sp = Stripe->ChangeSpine();
@@ -208,7 +210,7 @@ void  ChFi3d_FilBuilder::Add(const TopoDS_Edge& E)
     TopoDS_Edge E_wnt = E;
     E_wnt.Orientation(TopAbs_FORWARD);
     Spine->SetEdges(E_wnt);
-    if(PerformElement(Spine)){
+    if(PerformElement(Spine, -1, dummy)){
       PerformExtremity(Spine);
       Spine->Load();
       myListStripe.Append(Stripe);
@@ -631,6 +633,8 @@ ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
   Handle(ChFiDS_SecHArray1) sec;
   gp_Pnt2d pf1,pl1,pf2,pl2;
 
+  Handle(ChFiDS_HElSpine) EmptyHGuide;
+
   Standard_Real PFirst = First;
   if(intf) First = fsp->FirstParameter(1);
   if(intl) Last = fsp->LastParameter(fsp->NbEdges());
@@ -640,7 +644,7 @@ ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
     Func.Set(fsp->Radius(),Choix);
     FInv.Set(fsp->Radius(),Choix);
     Func.Set(myShape);
-    done = SimulData(Data,HGuide,lin,S1,I1 ,
+    done = SimulData(Data,HGuide,EmptyHGuide,lin,S1,I1 ,
 		     S2,I2,Func,FInv,PFirst,MaxStep,locfleche,
 		     TolGuide,First,Last,Inside,Appro,Forward,
 		     Soldep,4,RecOnS1,RecOnS2);
@@ -667,7 +671,7 @@ ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
     Func.Set(Choix);
     FInv.Set(Choix);
     Func.Set(myShape);
-    done = SimulData(Data,HGuide,lin,S1,I1 ,
+    done = SimulData(Data,HGuide,EmptyHGuide,lin,S1,I1 ,
 		     S2,I2,Func,FInv,PFirst,MaxStep,locfleche,
 		     TolGuide,First,Last,Inside,Appro,Forward,
 		     Soldep,4,RecOnS1,RecOnS2);

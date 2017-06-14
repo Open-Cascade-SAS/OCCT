@@ -505,7 +505,8 @@ void ChFi3d_TrimCurve(const Handle(Geom_Curve)& gc,
 Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_HElSpine)& HES,
 					   Handle(ChFiDS_Spine)&    Spine,
 					   const GeomAbs_Shape      continuity,
-					   const Standard_Real      tol);
+					   const Standard_Real      tol,
+                                           const Standard_Boolean   IsOffset = Standard_False);
 
 TopoDS_Face ChFi3d_EnlargeFace(const Handle(ChFiDS_Spine)& Spine,
 			       const Handle(BRepAdaptor_HSurface)&  HS,

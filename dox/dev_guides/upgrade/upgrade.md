@@ -1672,3 +1672,9 @@ Standard_Boolean meshing_new()
   return !aStatus;
 }
 ~~~~
+
+@subsection upgrade_740_chamfer Changes in API of Chamfer algorithms
+
+Some public methods of the class BRepFilletAPI_MakeChamfer are released from excess arguments:
+- method Add for symmetric chamfer now takes only 2 arguments: distance and edge;
+- method GetDistAngle now takes only 3 arguments: index of contour, distance and angle.

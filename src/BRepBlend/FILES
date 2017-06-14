@@ -16,6 +16,10 @@ BRepBlend_BlendTool.hxx
 BRepBlend_BlendTool.lxx
 BRepBlend_Chamfer.hxx
 BRepBlend_ChamfInv.hxx
+BRepBlend_ConstThroat.hxx
+BRepBlend_ConstThroatInv.hxx
+BRepBlend_ConstThroatWithPenetration.hxx
+BRepBlend_ConstThroatWithPenetrationInv.hxx
 BRepBlend_ChAsym.hxx
 BRepBlend_ChAsymInv.hxx
 BRepBlend_ConstRad.hxx

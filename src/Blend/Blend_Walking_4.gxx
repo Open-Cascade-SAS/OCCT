@@ -16,6 +16,11 @@
 #include <Extrema_ExtPS.hxx>
 #include <Extrema_ExtPC.hxx>
 
+#ifdef DRAW
+#include <DrawTrSurf.hxx>
+#endif
+
+
 static const Standard_Real CosRef3D = 0.88;
 
 static void RecadreIfPeriodic(Standard_Real& NewU,
@@ -483,6 +488,16 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
 	else {
 	  line->Prepend(previousP);
 	}
+#ifdef DRAW
+        Standard_Integer nbpts = line->NbPoints();
+        char name [100];
+        sprintf(name, "pg%d", nbpts);
+        DrawTrSurf::Set(name, PtOnGuide);
+        sprintf(name, "p1_%d", nbpts);
+        DrawTrSurf::Set(name, previousP.PointOnS1());
+        sprintf(name, "p2_%d", nbpts);
+        DrawTrSurf::Set(name, previousP.PointOnS2());
+#endif
 
 	parprec = param;
 
@@ -551,6 +566,16 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
 	else {
 	  line->Prepend(previousP);
 	}
+#ifdef DRAW
+        Standard_Integer nbpts = line->NbPoints();
+        char name [100];
+        sprintf(name, "pg%d", nbpts);
+        DrawTrSurf::Set(name, PtOnGuide);
+        sprintf(name, "p1_%d", nbpts);
+        DrawTrSurf::Set(name, previousP.PointOnS1());
+        sprintf(name, "p2_%d", nbpts);
+        DrawTrSurf::Set(name, previousP.PointOnS2());
+#endif
 
 	parprec = param;
 
@@ -588,6 +613,17 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
 	else {
 	  line->Prepend(previousP);
 	}
+#ifdef DRAW
+        Standard_Integer nbpts = line->NbPoints();
+        char name [100];
+        sprintf(name, "pg%d", nbpts);
+        DrawTrSurf::Set(name, PtOnGuide);
+        sprintf(name, "p1_%d", nbpts);
+        DrawTrSurf::Set(name, previousP.PointOnS1());
+        sprintf(name, "p2_%d", nbpts);
+        DrawTrSurf::Set(name, previousP.PointOnS2());
+#endif
+
 	MakeExtremity(Ext1,Standard_True,Index1,
 		      solrst1(1),Isvtx1,Vtx1);
         // On blinde le cas singulier ou un des recadrage a planter
@@ -613,6 +649,17 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
 	else {
 	  line->Prepend(previousP);
 	}
+#ifdef DRAW
+        Standard_Integer nbpts = line->NbPoints();
+        char name [100];
+        sprintf(name, "pg%d", nbpts);
+        DrawTrSurf::Set(name, PtOnGuide);
+        sprintf(name, "p1_%d", nbpts);
+        DrawTrSurf::Set(name, previousP.PointOnS1());
+        sprintf(name, "p2_%d", nbpts);
+        DrawTrSurf::Set(name, previousP.PointOnS2());
+#endif
+
         // On blinde le cas singulier ou un des recadrage a plante
         if (previousP.PointOnS1().IsEqual(previousP.PointOnS2(), 2*tolesp)) {
 	  Ext1.SetValue(previousP.PointOnS2(),
@@ -639,6 +686,16 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
 	else {
 	  line->Prepend(previousP);
 	}
+#ifdef DRAW
+        Standard_Integer nbpts = line->NbPoints();
+        char name [100];
+        sprintf(name, "pg%d", nbpts);
+        DrawTrSurf::Set(name, PtOnGuide);
+        sprintf(name, "p1_%d", nbpts);
+        DrawTrSurf::Set(name, previousP.PointOnS1());
+        sprintf(name, "p2_%d", nbpts);
+        DrawTrSurf::Set(name, previousP.PointOnS2());
+#endif
 
 	if ( (Isvtx1 != Isvtx2) &&
 	    (previousP.PointOnS1().IsEqual(previousP.PointOnS2(), 2*tolesp)) ) {

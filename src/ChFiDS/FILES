@@ -1,4 +1,5 @@
 ChFiDS_ChamfMethod.hxx
+ChFiDS_ChamfMode.hxx
 ChFiDS_ChamfSpine.cxx
 ChFiDS_ChamfSpine.hxx
 ChFiDS_CircSection.cxx

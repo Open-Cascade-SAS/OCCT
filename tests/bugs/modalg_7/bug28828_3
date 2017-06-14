@@ -1,0 +1,28 @@
+puts "===================================================================="
+puts "OCC28828: New functionalities of BRepFilletAPI_MakeChamfer algorithm"
+puts "===================================================================="
+puts ""
+
+restore [locate_data_file bug28828_b3.brep] b
+explode b
+bfuse a b_1 b_2
+savehistory hh
+
+explode b_2 e
+donly a b_2_1
+
+chamf_throat result a b_2_1 0.1
+
+checkshape result
+
+checknbshapes result -solid 1 -shell 1 -face 8 -wire 9 -edge 17 -vertex 11 -shape 48
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 0.0001} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -v 1041.98 -deps 1.e-7
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

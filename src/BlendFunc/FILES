@@ -1,5 +1,9 @@
 BlendFunc.cxx
 BlendFunc.hxx
+BlendFunc_GenChamfer.cxx
+BlendFunc_GenChamfer.hxx
+BlendFunc_GenChamfInv.cxx
+BlendFunc_GenChamfInv.hxx
 BlendFunc_Chamfer.cxx
 BlendFunc_Chamfer.hxx
 BlendFunc_ChamfInv.cxx
@@ -30,3 +34,11 @@ BlendFunc_SectionShape.hxx
 BlendFunc_Tensor.cxx
 BlendFunc_Tensor.hxx
 BlendFunc_Tensor.lxx
+BlendFunc_ConstThroat.cxx
+BlendFunc_ConstThroat.hxx
+BlendFunc_ConstThroatInv.cxx
+BlendFunc_ConstThroatInv.hxx
+BlendFunc_ConstThroatWithPenetration.cxx
+BlendFunc_ConstThroatWithPenetration.hxx
+BlendFunc_ConstThroatWithPenetrationInv.cxx
+BlendFunc_ConstThroatWithPenetrationInv.hxx

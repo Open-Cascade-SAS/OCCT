@@ -30,6 +30,7 @@
 #include <ChFiDS_Regularities.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfInteger.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <ChFiDS_ErrorStatus.hxx>
@@ -37,6 +38,9 @@
 #include <TopAbs_Orientation.hxx>
 #include <ChFiDS_SequenceOfSurfData.hxx>
 #include <TopAbs_State.hxx>
+
+#include <BRepAdaptor_Surface.hxx>
+
 class TopOpeBRepDS_HDataStructure;
 class TopOpeBRepBuild_HBuilder;
 class Standard_OutOfRange;
@@ -82,9 +86,15 @@ public:
 
   Standard_EXPORT virtual ~ChFi3d_Builder();
   
-  Standard_EXPORT void SetParams (const Standard_Real Tang, const Standard_Real Tesp, const Standard_Real T2d, const Standard_Real TApp3d, const Standard_Real TolApp2d, const Standard_Real Fleche);
+  Standard_EXPORT void SetParams (const Standard_Real Tang,
+                                  const Standard_Real Tesp,
+                                  const Standard_Real T2d,
+                                  const Standard_Real TApp3d,
+                                  const Standard_Real TolApp2d,
+                                  const Standard_Real Fleche);
   
-  Standard_EXPORT void SetContinuity (const GeomAbs_Shape InternalContinuity, const Standard_Real AngularTolerance);
+  Standard_EXPORT void SetContinuity (const GeomAbs_Shape InternalContinuity,
+                                      const Standard_Real AngularTolerance);
   
   //! extracts from  the list the contour containing edge E.
   Standard_EXPORT void Remove (const TopoDS_Edge& E);
@@ -96,7 +106,8 @@ public:
   //! gives  the number of  the contour containing E or 0
   //! if E does  not  belong  to  any  contour.
   //! Sets in IndexInSpine the index of E in the contour if it's found
-  Standard_EXPORT Standard_Integer Contains (const TopoDS_Edge& E, Standard_Integer& IndexInSpine) const;
+  Standard_EXPORT Standard_Integer Contains (const TopoDS_Edge& E,
+                                             Standard_Integer& IndexInSpine) const;
   
   //! gives the number of  disjoint contours on  which
   //! the  fillets  are  calculated
@@ -119,11 +130,13 @@ public:
   
   //! returns the abscissa of the vertex V on
   //! the contour of index IC.
-  Standard_EXPORT Standard_Real Abscissa (const Standard_Integer IC, const TopoDS_Vertex& V) const;
+  Standard_EXPORT Standard_Real Abscissa (const Standard_Integer IC,
+                                          const TopoDS_Vertex& V) const;
   
   //! returns the relative abscissa([0.,1.]) of the
   //! vertex V on the contour of index IC.
-  Standard_EXPORT Standard_Real RelativeAbscissa (const Standard_Integer IC, const TopoDS_Vertex& V) const;
+  Standard_EXPORT Standard_Real RelativeAbscissa (const Standard_Integer IC,
+                                                  const TopoDS_Vertex& V) const;
   
   //! returns true if the contour of index IC is closed
   //! an tangent.
@@ -158,7 +171,8 @@ public:
   Standard_EXPORT Standard_Integer NbComputedSurfaces (const Standard_Integer IC) const;
   
   //! Returns the IS'th surface calculated on  the contour IC.
-  Standard_EXPORT Handle(Geom_Surface) ComputedSurface (const Standard_Integer IC, const Standard_Integer IS) const;
+  Standard_EXPORT Handle(Geom_Surface) ComputedSurface (const Standard_Integer IC,
+                                                        const Standard_Integer IS) const;
   
   //! Returns the number of vertices on  which the calculation
   //! has failed.
@@ -189,7 +203,16 @@ public:
   //! Method, implemented in the inheritants, calculates
   //! the elements of construction of the surface (fillet or
   //! chamfer).
-  Standard_EXPORT Standard_Boolean SplitKPart (const Handle(ChFiDS_SurfData)& Data, ChFiDS_SequenceOfSurfData& SetData, const Handle(ChFiDS_Spine)& Spine, const Standard_Integer Iedge, const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, Standard_Boolean& Intf, Standard_Boolean& Intl);
+  Standard_EXPORT Standard_Boolean SplitKPart (const Handle(ChFiDS_SurfData)& Data,
+                                               ChFiDS_SequenceOfSurfData& SetData,
+                                               const Handle(ChFiDS_Spine)& Spine,
+                                               const Standard_Integer Iedge,
+                                               const Handle(Adaptor3d_HSurface)& S1,
+                                               const Handle(Adaptor3d_TopolTool)& I1,
+                                               const Handle(Adaptor3d_HSurface)& S2,
+                                               const Handle(Adaptor3d_TopolTool)& I2,
+                                               Standard_Boolean& Intf,
+                                               Standard_Boolean& Intl);
   
   Standard_EXPORT Standard_Boolean PerformTwoCornerbyInter (const Standard_Integer Index);
 
@@ -203,92 +226,544 @@ protected:
   
   Standard_EXPORT virtual void SimulKPart (const Handle(ChFiDS_SurfData)& SD) const = 0;
   
-  Standard_EXPORT virtual Standard_Boolean SimulSurf (Handle(ChFiDS_SurfData)& Data, const Handle(ChFiDS_HElSpine)& Guide, const Handle(ChFiDS_Spine)& Spine, const Standard_Integer Choix, const Handle(BRepAdaptor_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecOnS1, const Standard_Boolean RecOnS2, const math_Vector& Soldep, Standard_Integer& Intf, Standard_Integer& Intl) = 0;
+  Standard_EXPORT virtual Standard_Boolean SimulSurf (Handle(ChFiDS_SurfData)& Data,
+                                                      const Handle(ChFiDS_HElSpine)& Guide,
+                                                      const Handle(ChFiDS_Spine)& Spine,
+                                                      const Standard_Integer Choix,
+                                                      const Handle(BRepAdaptor_HSurface)& S1,
+                                                      const Handle(Adaptor3d_TopolTool)& I1,
+                                                      const Handle(BRepAdaptor_HSurface)& S2,
+                                                      const Handle(Adaptor3d_TopolTool)& I2,
+                                                      const Standard_Real TolGuide,
+                                                      Standard_Real& First,
+                                                      Standard_Real& Last,
+                                                      const Standard_Boolean Inside,
+                                                      const Standard_Boolean Appro,
+                                                      const Standard_Boolean Forward,
+                                                      const Standard_Boolean RecOnS1,
+                                                      const Standard_Boolean RecOnS2,
+                                                      const math_Vector& Soldep,
+                                                      Standard_Integer& Intf,
+                                                      Standard_Integer& Intl) = 0;
   
-  Standard_EXPORT virtual void SimulSurf (Handle(ChFiDS_SurfData)& Data, const Handle(ChFiDS_HElSpine)& Guide, const Handle(ChFiDS_Spine)& Spine, const Standard_Integer Choix, const Handle(BRepAdaptor_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(BRepAdaptor_HCurve2d)& PC1, const Handle(BRepAdaptor_HSurface)& Sref1, const Handle(BRepAdaptor_HCurve2d)& PCref1, Standard_Boolean& Decroch1, const Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, const TopAbs_Orientation Or2, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecP, const Standard_Boolean RecS, const Standard_Boolean RecRst, const math_Vector& Soldep);
+  Standard_EXPORT virtual void SimulSurf (Handle(ChFiDS_SurfData)& Data,
+                                          const Handle(ChFiDS_HElSpine)& Guide,
+                                          const Handle(ChFiDS_Spine)& Spine,
+                                          const Standard_Integer Choix,
+                                          const Handle(BRepAdaptor_HSurface)& S1,
+                                          const Handle(Adaptor3d_TopolTool)& I1,
+                                          const Handle(BRepAdaptor_HCurve2d)& PC1,
+                                          const Handle(BRepAdaptor_HSurface)& Sref1,
+                                          const Handle(BRepAdaptor_HCurve2d)& PCref1,
+                                          Standard_Boolean& Decroch1,
+                                          const Handle(BRepAdaptor_HSurface)& S2,
+                                          const Handle(Adaptor3d_TopolTool)& I2,
+                                          const TopAbs_Orientation Or2,
+                                          const Standard_Real Fleche,
+                                          const Standard_Real TolGuide,
+                                          Standard_Real& First,
+                                          Standard_Real& Last,
+                                          const Standard_Boolean Inside,
+                                          const Standard_Boolean Appro,
+                                          const Standard_Boolean Forward,
+                                          const Standard_Boolean RecP,
+                                          const Standard_Boolean RecS,
+                                          const Standard_Boolean RecRst,
+                                          const math_Vector& Soldep);
   
-  Standard_EXPORT virtual void SimulSurf (Handle(ChFiDS_SurfData)& Data, const Handle(ChFiDS_HElSpine)& Guide, const Handle(ChFiDS_Spine)& Spine, const Standard_Integer Choix, const Handle(BRepAdaptor_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const TopAbs_Orientation Or1, const Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, const Handle(BRepAdaptor_HCurve2d)& PC2, const Handle(BRepAdaptor_HSurface)& Sref2, const Handle(BRepAdaptor_HCurve2d)& PCref2, Standard_Boolean& Decroch2, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecP, const Standard_Boolean RecS, const Standard_Boolean RecRst, const math_Vector& Soldep);
+  Standard_EXPORT virtual void SimulSurf (Handle(ChFiDS_SurfData)& Data,
+                                          const Handle(ChFiDS_HElSpine)& Guide,
+                                          const Handle(ChFiDS_Spine)& Spine,
+                                          const Standard_Integer Choix,
+                                          const Handle(BRepAdaptor_HSurface)& S1,
+                                          const Handle(Adaptor3d_TopolTool)& I1,
+                                          const TopAbs_Orientation Or1,
+                                          const Handle(BRepAdaptor_HSurface)& S2,
+                                          const Handle(Adaptor3d_TopolTool)& I2,
+                                          const Handle(BRepAdaptor_HCurve2d)& PC2,
+                                          const Handle(BRepAdaptor_HSurface)& Sref2,
+                                          const Handle(BRepAdaptor_HCurve2d)& PCref2,
+                                          Standard_Boolean& Decroch2,
+                                          const Standard_Real Fleche,
+                                          const Standard_Real TolGuide,
+                                          Standard_Real& First,
+                                          Standard_Real& Last,
+                                          const Standard_Boolean Inside,
+                                          const Standard_Boolean Appro,
+                                          const Standard_Boolean Forward,
+                                          const Standard_Boolean RecP,
+                                          const Standard_Boolean RecS,
+                                          const Standard_Boolean RecRst,
+                                          const math_Vector& Soldep);
   
-  Standard_EXPORT virtual void SimulSurf (Handle(ChFiDS_SurfData)& Data, const Handle(ChFiDS_HElSpine)& Guide, const Handle(ChFiDS_Spine)& Spine, const Standard_Integer Choix, const Handle(BRepAdaptor_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(BRepAdaptor_HCurve2d)& PC1, const Handle(BRepAdaptor_HSurface)& Sref1, const Handle(BRepAdaptor_HCurve2d)& PCref1, Standard_Boolean& Decroch1, const TopAbs_Orientation Or1, const Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, const Handle(BRepAdaptor_HCurve2d)& PC2, const Handle(BRepAdaptor_HSurface)& Sref2, const Handle(BRepAdaptor_HCurve2d)& PCref2, Standard_Boolean& Decroch2, const TopAbs_Orientation Or2, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecP1, const Standard_Boolean RecRst1, const Standard_Boolean RecP2, const Standard_Boolean RecRst2, const math_Vector& Soldep);
+  Standard_EXPORT virtual void SimulSurf (Handle(ChFiDS_SurfData)& Data,
+                                          const Handle(ChFiDS_HElSpine)& Guide,
+                                          const Handle(ChFiDS_Spine)& Spine,
+                                          const Standard_Integer Choix,
+                                          const Handle(BRepAdaptor_HSurface)& S1,
+                                          const Handle(Adaptor3d_TopolTool)& I1,
+                                          const Handle(BRepAdaptor_HCurve2d)& PC1,
+                                          const Handle(BRepAdaptor_HSurface)& Sref1,
+                                          const Handle(BRepAdaptor_HCurve2d)& PCref1,
+                                          Standard_Boolean& Decroch1,
+                                          const TopAbs_Orientation Or1,
+                                          const Handle(BRepAdaptor_HSurface)& S2,
+                                          const Handle(Adaptor3d_TopolTool)& I2,
+                                          const Handle(BRepAdaptor_HCurve2d)& PC2,
+                                          const Handle(BRepAdaptor_HSurface)& Sref2,
+                                          const Handle(BRepAdaptor_HCurve2d)& PCref2,
+                                          Standard_Boolean& Decroch2,
+                                          const TopAbs_Orientation Or2,
+                                          const Standard_Real Fleche,
+                                          const Standard_Real TolGuide,
+                                          Standard_Real& First,
+                                          Standard_Real& Last,
+                                          const Standard_Boolean Inside,
+                                          const Standard_Boolean Appro,
+                                          const Standard_Boolean Forward,
+                                          const Standard_Boolean RecP1,
+                                          const Standard_Boolean RecRst1,
+                                          const Standard_Boolean RecP2,
+                                          const Standard_Boolean RecRst2,
+                                          const math_Vector& Soldep);
   
-  Standard_EXPORT Standard_Boolean SimulData (Handle(ChFiDS_SurfData)& Data, const Handle(ChFiDS_HElSpine)& Guide, Handle(BRepBlend_Line)& Lin, const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, Blend_Function& Func, Blend_FuncInv& FInv, const Standard_Real PFirst, const Standard_Real MaxStep, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const math_Vector& Soldep, const Standard_Integer NbSecMin, const Standard_Boolean RecOnS1 = Standard_False, const Standard_Boolean RecOnS2 = Standard_False);
+  Standard_EXPORT Standard_Boolean SimulData (Handle(ChFiDS_SurfData)& Data,
+                                              const Handle(ChFiDS_HElSpine)& Guide,
+                                              const Handle(ChFiDS_HElSpine)& AdditionalGuide,
+                                              Handle(BRepBlend_Line)& Lin,
+                                              const Handle(Adaptor3d_HSurface)& S1,
+                                              const Handle(Adaptor3d_TopolTool)& I1,
+                                              const Handle(Adaptor3d_HSurface)& S2,
+                                              const Handle(Adaptor3d_TopolTool)& I2,
+                                              Blend_Function& Func,
+                                              Blend_FuncInv& FInv,
+                                              const Standard_Real PFirst,
+                                              const Standard_Real MaxStep,
+                                              const Standard_Real Fleche,
+                                              const Standard_Real TolGuide,
+                                              Standard_Real& First,
+                                              Standard_Real& Last,
+                                              const Standard_Boolean Inside,
+                                              const Standard_Boolean Appro,
+                                              const Standard_Boolean Forward,
+                                              const math_Vector& Soldep,
+                                              const Standard_Integer NbSecMin,
+                                              const Standard_Boolean RecOnS1 = Standard_False,
+                                              const Standard_Boolean RecOnS2 = Standard_False);
   
-  Standard_EXPORT Standard_Boolean SimulData (Handle(ChFiDS_SurfData)& Data, const Handle(ChFiDS_HElSpine)& HGuide, Handle(BRepBlend_Line)& Lin, const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor2d_HCurve2d)& PC2, const Handle(Adaptor3d_TopolTool)& I2, Standard_Boolean& Decroch, Blend_SurfRstFunction& Func, Blend_FuncInv& FInv, Blend_SurfPointFuncInv& FInvP, Blend_SurfCurvFuncInv& FInvC, const Standard_Real PFirst, const Standard_Real MaxStep, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const math_Vector& Soldep, const Standard_Integer NbSecMin, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecP, const Standard_Boolean RecS, const Standard_Boolean RecRst);
+  Standard_EXPORT Standard_Boolean SimulData (Handle(ChFiDS_SurfData)& Data,
+                                              const Handle(ChFiDS_HElSpine)& HGuide,
+                                              Handle(BRepBlend_Line)& Lin,
+                                              const Handle(Adaptor3d_HSurface)& S1,
+                                              const Handle(Adaptor3d_TopolTool)& I1,
+                                              const Handle(Adaptor3d_HSurface)& S2,
+                                              const Handle(Adaptor2d_HCurve2d)& PC2,
+                                              const Handle(Adaptor3d_TopolTool)& I2,
+                                              Standard_Boolean& Decroch,
+                                              Blend_SurfRstFunction& Func,
+                                              Blend_FuncInv& FInv,
+                                              Blend_SurfPointFuncInv& FInvP,
+                                              Blend_SurfCurvFuncInv& FInvC,
+                                              const Standard_Real PFirst,
+                                              const Standard_Real MaxStep,
+                                              const Standard_Real Fleche,
+                                              const Standard_Real TolGuide,
+                                              Standard_Real& First,
+                                              Standard_Real& Last,
+                                              const math_Vector& Soldep,
+                                              const Standard_Integer NbSecMin,
+                                              const Standard_Boolean Inside,
+                                              const Standard_Boolean Appro,
+                                              const Standard_Boolean Forward,
+                                              const Standard_Boolean RecP,
+                                              const Standard_Boolean RecS,
+                                              const Standard_Boolean RecRst);
   
-  Standard_EXPORT Standard_Boolean SimulData (Handle(ChFiDS_SurfData)& Data, const Handle(ChFiDS_HElSpine)& HGuide, Handle(BRepBlend_Line)& Lin, const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor2d_HCurve2d)& PC1, const Handle(Adaptor3d_TopolTool)& I1, Standard_Boolean& Decroch1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor2d_HCurve2d)& PC2, const Handle(Adaptor3d_TopolTool)& I2, Standard_Boolean& Decroch2, Blend_RstRstFunction& Func, Blend_SurfCurvFuncInv& FInv1, Blend_CurvPointFuncInv& FInvP1, Blend_SurfCurvFuncInv& FInv2, Blend_CurvPointFuncInv& FInvP2, const Standard_Real PFirst, const Standard_Real MaxStep, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const math_Vector& Soldep, const Standard_Integer NbSecMin, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecP1, const Standard_Boolean RecRst1, const Standard_Boolean RecP2, const Standard_Boolean RecRst2);
+  Standard_EXPORT Standard_Boolean SimulData (Handle(ChFiDS_SurfData)& Data,
+                                              const Handle(ChFiDS_HElSpine)& HGuide,
+                                              Handle(BRepBlend_Line)& Lin,
+                                              const Handle(Adaptor3d_HSurface)& S1,
+                                              const Handle(Adaptor2d_HCurve2d)& PC1,
+                                              const Handle(Adaptor3d_TopolTool)& I1,
+                                              Standard_Boolean& Decroch1,
+                                              const Handle(Adaptor3d_HSurface)& S2,
+                                              const Handle(Adaptor2d_HCurve2d)& PC2,
+                                              const Handle(Adaptor3d_TopolTool)& I2,
+                                              Standard_Boolean& Decroch2,
+                                              Blend_RstRstFunction& Func,
+                                              Blend_SurfCurvFuncInv& FInv1,
+                                              Blend_CurvPointFuncInv& FInvP1,
+                                              Blend_SurfCurvFuncInv& FInv2,
+                                              Blend_CurvPointFuncInv& FInvP2,
+                                              const Standard_Real PFirst,
+                                              const Standard_Real MaxStep,
+                                              const Standard_Real Fleche,
+                                              const Standard_Real TolGuide,
+                                              Standard_Real& First,
+                                              Standard_Real& Last,
+                                              const math_Vector& Soldep,
+                                              const Standard_Integer NbSecMin,
+                                              const Standard_Boolean Inside,
+                                              const Standard_Boolean Appro,
+                                              const Standard_Boolean Forward,
+                                              const Standard_Boolean RecP1,
+                                              const Standard_Boolean RecRst1,
+                                              const Standard_Boolean RecP2,
+                                              const Standard_Boolean RecRst2);
   
   Standard_EXPORT virtual void SetRegul() = 0;
   
-  Standard_EXPORT Standard_Boolean PerformElement (const Handle(ChFiDS_Spine)& CElement);
+  Standard_EXPORT Standard_Boolean PerformElement (const Handle(ChFiDS_Spine)& CElement,
+                                                   const Standard_Real         Offset,
+                                                   const TopoDS_Face&          theFirstFace);
   
   Standard_EXPORT void PerformExtremity (const Handle(ChFiDS_Spine)& CElement);
   
-  Standard_EXPORT void PerformSetOfSurf (Handle(ChFiDS_Stripe)& S, const Standard_Boolean Simul = Standard_False);
+  Standard_EXPORT void PerformSetOfSurf (Handle(ChFiDS_Stripe)& S,
+                                         const Standard_Boolean Simul = Standard_False);
   
-  Standard_EXPORT void PerformSetOfKPart (Handle(ChFiDS_Stripe)& S, const Standard_Boolean Simul = Standard_False);
+  Standard_EXPORT void PerformSetOfKPart (Handle(ChFiDS_Stripe)& S,
+                                          const Standard_Boolean Simul = Standard_False);
   
-  Standard_EXPORT void PerformSetOfKGen (Handle(ChFiDS_Stripe)& S, const Standard_Boolean Simul = Standard_False);
+  Standard_EXPORT void PerformSetOfKGen (Handle(ChFiDS_Stripe)& S,
+                                         const Standard_Boolean Simul = Standard_False);
   
-  Standard_EXPORT void Trunc (const Handle(ChFiDS_SurfData)& SD, const Handle(ChFiDS_Spine)& Spine, const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2, const Standard_Integer iedge, const Standard_Boolean isfirst, const Standard_Integer cntlFiOnS);
+  Standard_EXPORT void Trunc (const Handle(ChFiDS_SurfData)& SD,
+                              const Handle(ChFiDS_Spine)& Spine,
+                              const Handle(Adaptor3d_HSurface)& S1,
+                              const Handle(Adaptor3d_HSurface)& S2,
+                              const Standard_Integer iedge,
+                              const Standard_Boolean isfirst,
+                              const Standard_Integer cntlFiOnS);
   
-  Standard_EXPORT void CallPerformSurf (Handle(ChFiDS_Stripe)& Stripe, const Standard_Boolean Simul, ChFiDS_SequenceOfSurfData& SeqSD, Handle(ChFiDS_SurfData)& SD, const Handle(ChFiDS_HElSpine)& Guide, const Handle(ChFiDS_Spine)& Spine, const Handle(BRepAdaptor_HSurface)& HS1, const Handle(BRepAdaptor_HSurface)& HS3, const gp_Pnt2d& P1, const gp_Pnt2d& P3, const Handle(Adaptor3d_TopolTool)& I1, const Handle(BRepAdaptor_HSurface)& HS2, const Handle(BRepAdaptor_HSurface)& HS4, const gp_Pnt2d& P2, const gp_Pnt2d& P4, const Handle(Adaptor3d_TopolTool)& I2, const Standard_Real MaxStep, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecOnS1, const Standard_Boolean RecOnS2, math_Vector& Soldep, Standard_Integer& Intf, Standard_Integer& Intl, Handle(BRepAdaptor_HSurface)& Surf1, Handle(BRepAdaptor_HSurface)& Surf2);
+  Standard_EXPORT void CallPerformSurf (Handle(ChFiDS_Stripe)& Stripe,
+                                        const Standard_Boolean Simul,
+                                        ChFiDS_SequenceOfSurfData& SeqSD,
+                                        Handle(ChFiDS_SurfData)& SD,
+                                        const Handle(ChFiDS_HElSpine)& Guide,
+                                        const Handle(ChFiDS_Spine)& Spine,
+                                        const Handle(BRepAdaptor_HSurface)& HS1,
+                                        const Handle(BRepAdaptor_HSurface)& HS3,
+                                        const gp_Pnt2d& P1,
+                                        const gp_Pnt2d& P3,
+                                        const Handle(Adaptor3d_TopolTool)& I1,
+                                        const Handle(BRepAdaptor_HSurface)& HS2,
+                                        const Handle(BRepAdaptor_HSurface)& HS4,
+                                        const gp_Pnt2d& P2, const gp_Pnt2d& P4,
+                                        const Handle(Adaptor3d_TopolTool)& I2,
+                                        const Standard_Real MaxStep,
+                                        const Standard_Real Fleche,
+                                        const Standard_Real TolGuide,
+                                        Standard_Real& First,
+                                        Standard_Real& Last,
+                                        const Standard_Boolean Inside,
+                                        const Standard_Boolean Appro,
+                                        const Standard_Boolean Forward,
+                                        const Standard_Boolean RecOnS1,
+                                        const Standard_Boolean RecOnS2,
+                                        math_Vector& Soldep,
+                                        Standard_Integer& Intf,
+                                        Standard_Integer& Intl,
+                                        Handle(BRepAdaptor_HSurface)& Surf1,
+                                        Handle(BRepAdaptor_HSurface)& Surf2);
   
   //! Method, implemented in the inheritants, calculating
   //! elements of construction of the surface (fillet or
   //! chamfer).
-  Standard_EXPORT virtual Standard_Boolean PerformSurf (ChFiDS_SequenceOfSurfData& Data, const Handle(ChFiDS_HElSpine)& Guide, const Handle(ChFiDS_Spine)& Spine, const Standard_Integer Choix, const Handle(BRepAdaptor_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, const Standard_Real MaxStep, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecOnS1, const Standard_Boolean RecOnS2, const math_Vector& Soldep, Standard_Integer& Intf, Standard_Integer& Intl) = 0;
+  Standard_EXPORT virtual Standard_Boolean PerformSurf (ChFiDS_SequenceOfSurfData& Data,
+                                                        const Handle(ChFiDS_HElSpine)& Guide,
+                                                        const Handle(ChFiDS_Spine)& Spine,
+                                                        const Standard_Integer Choix,
+                                                        const Handle(BRepAdaptor_HSurface)& S1,
+                                                        const Handle(Adaptor3d_TopolTool)& I1,
+                                                        const Handle(BRepAdaptor_HSurface)& S2,
+                                                        const Handle(Adaptor3d_TopolTool)& I2,
+                                                        const Standard_Real MaxStep,
+                                                        const Standard_Real Fleche,
+                                                        const Standard_Real TolGuide,
+                                                        Standard_Real& First,
+                                                        Standard_Real& Last,
+                                                        const Standard_Boolean Inside,
+                                                        const Standard_Boolean Appro,
+                                                        const Standard_Boolean Forward,
+                                                        const Standard_Boolean RecOnS1,
+                                                        const Standard_Boolean RecOnS2,
+                                                        const math_Vector& Soldep,
+                                                        Standard_Integer& Intf,
+                                                        Standard_Integer& Intl) = 0;
   
   //! Method, implemented  in inheritants, calculates
   //! the elements of construction of  the surface (fillet
   //! or chamfer) contact edge/face.
-  Standard_EXPORT virtual void PerformSurf (ChFiDS_SequenceOfSurfData& Data, const Handle(ChFiDS_HElSpine)& Guide, const Handle(ChFiDS_Spine)& Spine, const Standard_Integer Choix, const Handle(BRepAdaptor_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(BRepAdaptor_HCurve2d)& PC1, const Handle(BRepAdaptor_HSurface)& Sref1, const Handle(BRepAdaptor_HCurve2d)& PCref1, Standard_Boolean& Decroch1, const Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, const TopAbs_Orientation Or2, const Standard_Real MaxStep, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecP, const Standard_Boolean RecS, const Standard_Boolean RecRst, const math_Vector& Soldep);
+  Standard_EXPORT virtual void PerformSurf (ChFiDS_SequenceOfSurfData& Data,
+                                            const Handle(ChFiDS_HElSpine)& Guide,
+                                            const Handle(ChFiDS_Spine)& Spine,
+                                            const Standard_Integer Choix,
+                                            const Handle(BRepAdaptor_HSurface)& S1,
+                                            const Handle(Adaptor3d_TopolTool)& I1,
+                                            const Handle(BRepAdaptor_HCurve2d)& PC1,
+                                            const Handle(BRepAdaptor_HSurface)& Sref1,
+                                            const Handle(BRepAdaptor_HCurve2d)& PCref1,
+                                            Standard_Boolean& Decroch1,
+                                            const Handle(BRepAdaptor_HSurface)& S2,
+                                            const Handle(Adaptor3d_TopolTool)& I2,
+                                            const TopAbs_Orientation Or2,
+                                            const Standard_Real MaxStep,
+                                            const Standard_Real Fleche,
+                                            const Standard_Real TolGuide,
+                                            Standard_Real& First,
+                                            Standard_Real& Last,
+                                            const Standard_Boolean Inside,
+                                            const Standard_Boolean Appro,
+                                            const Standard_Boolean Forward,
+                                            const Standard_Boolean RecP,
+                                            const Standard_Boolean RecS,
+                                            const Standard_Boolean RecRst,
+                                            const math_Vector& Soldep);
   
   //! Method, implemented in  inheritants, calculates
   //! the elements of construction of  the surface (fillet
   //! or chamfer) contact edge/face.
-  Standard_EXPORT virtual void PerformSurf (ChFiDS_SequenceOfSurfData& Data, const Handle(ChFiDS_HElSpine)& Guide, const Handle(ChFiDS_Spine)& Spine, const Standard_Integer Choix, const Handle(BRepAdaptor_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const TopAbs_Orientation Or1, const Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, const Handle(BRepAdaptor_HCurve2d)& PC2, const Handle(BRepAdaptor_HSurface)& Sref2, const Handle(BRepAdaptor_HCurve2d)& PCref2, Standard_Boolean& Decroch2, const Standard_Real MaxStep, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecP, const Standard_Boolean RecS, const Standard_Boolean RecRst, const math_Vector& Soldep);
+  Standard_EXPORT virtual void PerformSurf (ChFiDS_SequenceOfSurfData& Data,
+                                            const Handle(ChFiDS_HElSpine)& Guide,
+                                            const Handle(ChFiDS_Spine)& Spine,
+                                            const Standard_Integer Choix,
+                                            const Handle(BRepAdaptor_HSurface)& S1,
+                                            const Handle(Adaptor3d_TopolTool)& I1,
+                                            const TopAbs_Orientation Or1,
+                                            const Handle(BRepAdaptor_HSurface)& S2,
+                                            const Handle(Adaptor3d_TopolTool)& I2,
+                                            const Handle(BRepAdaptor_HCurve2d)& PC2,
+                                            const Handle(BRepAdaptor_HSurface)& Sref2,
+                                            const Handle(BRepAdaptor_HCurve2d)& PCref2,
+                                            Standard_Boolean& Decroch2,
+                                            const Standard_Real MaxStep,
+                                            const Standard_Real Fleche,
+                                            const Standard_Real TolGuide,
+                                            Standard_Real& First,
+                                            Standard_Real& Last,
+                                            const Standard_Boolean Inside,
+                                            const Standard_Boolean Appro,
+                                            const Standard_Boolean Forward,
+                                            const Standard_Boolean RecP,
+                                            const Standard_Boolean RecS,
+                                            const Standard_Boolean RecRst,
+                                            const math_Vector& Soldep);
   
   //! Method, implemented in inheritants, calculates
   //! the elements of construction of  the surface (fillet
   //! or chamfer) contact edge/edge.
-  Standard_EXPORT virtual void PerformSurf (ChFiDS_SequenceOfSurfData& Data, const Handle(ChFiDS_HElSpine)& Guide, const Handle(ChFiDS_Spine)& Spine, const Standard_Integer Choix, const Handle(BRepAdaptor_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(BRepAdaptor_HCurve2d)& PC1, const Handle(BRepAdaptor_HSurface)& Sref1, const Handle(BRepAdaptor_HCurve2d)& PCref1, Standard_Boolean& Decroch1, const TopAbs_Orientation Or1, const Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, const Handle(BRepAdaptor_HCurve2d)& PC2, const Handle(BRepAdaptor_HSurface)& Sref2, const Handle(BRepAdaptor_HCurve2d)& PCref2, Standard_Boolean& Decroch2, const TopAbs_Orientation Or2, const Standard_Real MaxStep, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecP1, const Standard_Boolean RecRst1, const Standard_Boolean RecP2, const Standard_Boolean RecRst2, const math_Vector& Soldep);
+  Standard_EXPORT virtual void PerformSurf (ChFiDS_SequenceOfSurfData& Data,
+                                            const Handle(ChFiDS_HElSpine)& Guide,
+                                            const Handle(ChFiDS_Spine)& Spine,
+                                            const Standard_Integer Choix,
+                                            const Handle(BRepAdaptor_HSurface)& S1,
+                                            const Handle(Adaptor3d_TopolTool)& I1,
+                                            const Handle(BRepAdaptor_HCurve2d)& PC1,
+                                            const Handle(BRepAdaptor_HSurface)& Sref1,
+                                            const Handle(BRepAdaptor_HCurve2d)& PCref1,
+                                            Standard_Boolean& Decroch1,
+                                            const TopAbs_Orientation Or1,
+                                            const Handle(BRepAdaptor_HSurface)& S2,
+                                            const Handle(Adaptor3d_TopolTool)& I2,
+                                            const Handle(BRepAdaptor_HCurve2d)& PC2,
+                                            const Handle(BRepAdaptor_HSurface)& Sref2,
+                                            const Handle(BRepAdaptor_HCurve2d)& PCref2,
+                                            Standard_Boolean& Decroch2,
+                                            const TopAbs_Orientation Or2,
+                                            const Standard_Real MaxStep,
+                                            const Standard_Real Fleche,
+                                            const Standard_Real TolGuide,
+                                            Standard_Real& First,
+                                            Standard_Real& Last,
+                                            const Standard_Boolean Inside,
+                                            const Standard_Boolean Appro,
+                                            const Standard_Boolean Forward,
+                                            const Standard_Boolean RecP1,
+                                            const Standard_Boolean RecRst1,
+                                            const Standard_Boolean RecP2,
+                                            const Standard_Boolean RecRst2,
+                                            const math_Vector& Soldep);
   
   Standard_EXPORT virtual void PerformTwoCorner (const Standard_Integer Index) = 0;
   
   Standard_EXPORT virtual void PerformThreeCorner (const Standard_Integer Index) = 0;
   
-  Standard_EXPORT void PerformMoreThreeCorner (const Standard_Integer Index, const Standard_Integer nbcourb);
+  Standard_EXPORT void PerformMoreThreeCorner (const Standard_Integer Index,
+                                               const Standard_Integer nbcourb);
   
-  Standard_EXPORT virtual void ExtentOneCorner (const TopoDS_Vertex& V, const Handle(ChFiDS_Stripe)& S) = 0;
+  Standard_EXPORT virtual void ExtentOneCorner (const TopoDS_Vertex& V,
+                                                const Handle(ChFiDS_Stripe)& S) = 0;
   
-  Standard_EXPORT virtual void ExtentTwoCorner (const TopoDS_Vertex& V, const ChFiDS_ListOfStripe& LS) = 0;
+  Standard_EXPORT virtual void ExtentTwoCorner (const TopoDS_Vertex& V,
+                                                const ChFiDS_ListOfStripe& LS) = 0;
   
-  Standard_EXPORT virtual void ExtentThreeCorner (const TopoDS_Vertex& V, const ChFiDS_ListOfStripe& LS) = 0;
+  Standard_EXPORT virtual void ExtentThreeCorner (const TopoDS_Vertex& V,
+                                                  const ChFiDS_ListOfStripe& LS) = 0;
   
-  Standard_EXPORT virtual Standard_Boolean PerformFirstSection (const Handle(ChFiDS_Spine)& S, const Handle(ChFiDS_HElSpine)& HGuide, const Standard_Integer Choix, Handle(BRepAdaptor_HSurface)& S1, Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I1, const Handle(Adaptor3d_TopolTool)& I2, const Standard_Real Par, math_Vector& SolDep, TopAbs_State& Pos1, TopAbs_State& Pos2) const = 0;
+  Standard_EXPORT virtual Standard_Boolean PerformFirstSection (const Handle(ChFiDS_Spine)& S,
+                                                                const Handle(ChFiDS_HElSpine)& HGuide,
+                                                                const Standard_Integer Choix,
+                                                                Handle(BRepAdaptor_HSurface)& S1,
+                                                                Handle(BRepAdaptor_HSurface)& S2,
+                                                                const Handle(Adaptor3d_TopolTool)& I1,
+                                                                const Handle(Adaptor3d_TopolTool)& I2,
+                                                                const Standard_Real Par,
+                                                                math_Vector& SolDep,
+                                                                TopAbs_State& Pos1,
+                                                                TopAbs_State& Pos2) const = 0;
   
-  Standard_EXPORT Standard_Boolean SearchFace (const Handle(ChFiDS_Spine)& Sp, const ChFiDS_CommonPoint& Pc, const TopoDS_Face& FRef, TopoDS_Face& FVoi) const;
+  Standard_EXPORT Standard_Boolean SearchFace (const Handle(ChFiDS_Spine)& Sp,
+                                               const ChFiDS_CommonPoint& Pc,
+                                               const TopoDS_Face& FRef,
+                                               TopoDS_Face& FVoi) const;
   
-  Standard_EXPORT Standard_Boolean StripeOrientations (const Handle(ChFiDS_Spine)& Sp, TopAbs_Orientation& Or1, TopAbs_Orientation& Or2, Standard_Integer& ChoixConge) const;
+  Standard_EXPORT Standard_Boolean StripeOrientations (const Handle(ChFiDS_Spine)& Sp,
+                                                       TopAbs_Orientation& Or1,
+                                                       TopAbs_Orientation& Or2,
+                                                       Standard_Integer& ChoixConge) const;
   
   //! Calculates  a Line of contact face/face.
-  Standard_EXPORT Standard_Boolean ComputeData (Handle(ChFiDS_SurfData)& Data, const Handle(ChFiDS_HElSpine)& Guide, const Handle(ChFiDS_Spine)& Spine, Handle(BRepBlend_Line)& Lin, const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, Blend_Function& Func, Blend_FuncInv& FInv, const Standard_Real PFirst, const Standard_Real MaxStep, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const math_Vector& Soldep, Standard_Integer& Intf, Standard_Integer& Intl, Standard_Boolean& Gd1, Standard_Boolean& Gd2, Standard_Boolean& Gf1, Standard_Boolean& Gf2, const Standard_Boolean RecOnS1 = Standard_False, const Standard_Boolean RecOnS2 = Standard_False);
+  Standard_EXPORT Standard_Boolean ComputeData (Handle(ChFiDS_SurfData)& Data,
+                                                const Handle(ChFiDS_HElSpine)& Guide,
+                                                const Handle(ChFiDS_Spine)& Spine,
+                                                Handle(BRepBlend_Line)& Lin,
+                                                const Handle(Adaptor3d_HSurface)& S1,
+                                                const Handle(Adaptor3d_TopolTool)& I1,
+                                                const Handle(Adaptor3d_HSurface)& S2,
+                                                const Handle(Adaptor3d_TopolTool)& I2,
+                                                Blend_Function& Func,
+                                                Blend_FuncInv& FInv,
+                                                const Standard_Real PFirst,
+                                                const Standard_Real MaxStep,
+                                                const Standard_Real Fleche,
+                                                const Standard_Real TolGuide,
+                                                Standard_Real& First,
+                                                Standard_Real& Last,
+                                                const Standard_Boolean Inside,
+                                                const Standard_Boolean Appro,
+                                                const Standard_Boolean Forward,
+                                                const math_Vector& Soldep,
+                                                Standard_Integer& Intf,
+                                                Standard_Integer& Intl,
+                                                Standard_Boolean& Gd1,
+                                                Standard_Boolean& Gd2,
+                                                Standard_Boolean& Gf1,
+                                                Standard_Boolean& Gf2,
+                                                const Standard_Boolean RecOnS1 = Standard_False,
+                                                const Standard_Boolean RecOnS2 = Standard_False);
   
   //! Calculates a Line of contact edge/face.
-  Standard_EXPORT Standard_Boolean ComputeData (Handle(ChFiDS_SurfData)& Data, const Handle(ChFiDS_HElSpine)& HGuide, Handle(BRepBlend_Line)& Lin, const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor2d_HCurve2d)& PC2, const Handle(Adaptor3d_TopolTool)& I2, Standard_Boolean& Decroch, Blend_SurfRstFunction& Func, Blend_FuncInv& FInv, Blend_SurfPointFuncInv& FInvP, Blend_SurfCurvFuncInv& FInvC, const Standard_Real PFirst, const Standard_Real MaxStep, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const math_Vector& Soldep, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecP, const Standard_Boolean RecS, const Standard_Boolean RecRst);
+  Standard_EXPORT Standard_Boolean ComputeData (Handle(ChFiDS_SurfData)& Data,
+                                                const Handle(ChFiDS_HElSpine)& HGuide,
+                                                Handle(BRepBlend_Line)& Lin,
+                                                const Handle(Adaptor3d_HSurface)& S1,
+                                                const Handle(Adaptor3d_TopolTool)& I1,
+                                                const Handle(Adaptor3d_HSurface)& S2,
+                                                const Handle(Adaptor2d_HCurve2d)& PC2,
+                                                const Handle(Adaptor3d_TopolTool)& I2,
+                                                Standard_Boolean& Decroch,
+                                                Blend_SurfRstFunction& Func,
+                                                Blend_FuncInv& FInv,
+                                                Blend_SurfPointFuncInv& FInvP,
+                                                Blend_SurfCurvFuncInv& FInvC,
+                                                const Standard_Real PFirst,
+                                                const Standard_Real MaxStep,
+                                                const Standard_Real Fleche,
+                                                const Standard_Real TolGuide,
+                                                Standard_Real& First,
+                                                Standard_Real& Last,
+                                                const math_Vector& Soldep,
+                                                const Standard_Boolean Inside,
+                                                const Standard_Boolean Appro,
+                                                const Standard_Boolean Forward,
+                                                const Standard_Boolean RecP,
+                                                const Standard_Boolean RecS,
+                                                const Standard_Boolean RecRst);
   
   //! Calculates a Line of contact edge/edge.
-  Standard_EXPORT Standard_Boolean ComputeData (Handle(ChFiDS_SurfData)& Data, const Handle(ChFiDS_HElSpine)& HGuide, Handle(BRepBlend_Line)& Lin, const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor2d_HCurve2d)& PC1, const Handle(Adaptor3d_TopolTool)& I1, Standard_Boolean& Decroch1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor2d_HCurve2d)& PC2, const Handle(Adaptor3d_TopolTool)& I2, Standard_Boolean& Decroch2, Blend_RstRstFunction& Func, Blend_SurfCurvFuncInv& FInv1, Blend_CurvPointFuncInv& FInvP1, Blend_SurfCurvFuncInv& FInv2, Blend_CurvPointFuncInv& FInvP2, const Standard_Real PFirst, const Standard_Real MaxStep, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const math_Vector& Soldep, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecP1, const Standard_Boolean RecRst1, const Standard_Boolean RecP2, const Standard_Boolean RecRst2);
+  Standard_EXPORT Standard_Boolean ComputeData (Handle(ChFiDS_SurfData)& Data,
+                                                const Handle(ChFiDS_HElSpine)& HGuide,
+                                                Handle(BRepBlend_Line)& Lin,
+                                                const Handle(Adaptor3d_HSurface)& S1,
+                                                const Handle(Adaptor2d_HCurve2d)& PC1,
+                                                const Handle(Adaptor3d_TopolTool)& I1,
+                                                Standard_Boolean& Decroch1,
+                                                const Handle(Adaptor3d_HSurface)& S2,
+                                                const Handle(Adaptor2d_HCurve2d)& PC2,
+                                                const Handle(Adaptor3d_TopolTool)& I2,
+                                                Standard_Boolean& Decroch2,
+                                                Blend_RstRstFunction& Func,
+                                                Blend_SurfCurvFuncInv& FInv1,
+                                                Blend_CurvPointFuncInv& FInvP1,
+                                                Blend_SurfCurvFuncInv& FInv2,
+                                                Blend_CurvPointFuncInv& FInvP2,
+                                                const Standard_Real PFirst,
+                                                const Standard_Real MaxStep,
+                                                const Standard_Real Fleche,
+                                                const Standard_Real TolGuide,
+                                                Standard_Real& First,
+                                                Standard_Real& Last,
+                                                const math_Vector& Soldep,
+                                                const Standard_Boolean Inside,
+                                                const Standard_Boolean Appro,
+                                                const Standard_Boolean Forward,
+                                                const Standard_Boolean RecP1,
+                                                const Standard_Boolean RecRst1,
+                                                const Standard_Boolean RecP2,
+                                                const Standard_Boolean RecRst2);
   
-  Standard_EXPORT Standard_Boolean CompleteData (Handle(ChFiDS_SurfData)& Data, Blend_Function& Func, Handle(BRepBlend_Line)& Lin, const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2, const TopAbs_Orientation Or1, const Standard_Boolean Gd1, const Standard_Boolean Gd2, const Standard_Boolean Gf1, const Standard_Boolean Gf2, const Standard_Boolean Reversed = Standard_False);
+  Standard_EXPORT Standard_Boolean CompleteData (Handle(ChFiDS_SurfData)& Data,
+                                                 Blend_Function& Func,
+                                                 Handle(BRepBlend_Line)& Lin,
+                                                 const Handle(Adaptor3d_HSurface)& S1,
+                                                 const Handle(Adaptor3d_HSurface)& S2,
+                                                 const TopAbs_Orientation Or1,
+                                                 const Standard_Boolean Gd1,
+                                                 const Standard_Boolean Gd2,
+                                                 const Standard_Boolean Gf1,
+                                                 const Standard_Boolean Gf2,
+                                                 const Standard_Boolean Reversed = Standard_False);
   
-  Standard_EXPORT Standard_Boolean CompleteData (Handle(ChFiDS_SurfData)& Data, Blend_SurfRstFunction& Func, Handle(BRepBlend_Line)& Lin, const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2, const TopAbs_Orientation Or, const Standard_Boolean Reversed);
+  Standard_EXPORT Standard_Boolean CompleteData (Handle(ChFiDS_SurfData)& Data,
+                                                 Blend_SurfRstFunction& Func,
+                                                 Handle(BRepBlend_Line)& Lin,
+                                                 const Handle(Adaptor3d_HSurface)& S1,
+                                                 const Handle(Adaptor3d_HSurface)& S2,
+                                                 const TopAbs_Orientation Or,
+                                                 const Standard_Boolean Reversed);
   
-  Standard_EXPORT Standard_Boolean CompleteData (Handle(ChFiDS_SurfData)& Data, Blend_RstRstFunction& Func, Handle(BRepBlend_Line)& Lin, const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2, const TopAbs_Orientation Or);
+  Standard_EXPORT Standard_Boolean CompleteData (Handle(ChFiDS_SurfData)& Data,
+                                                 Blend_RstRstFunction& Func,
+                                                 Handle(BRepBlend_Line)& Lin,
+                                                 const Handle(Adaptor3d_HSurface)& S1,
+                                                 const Handle(Adaptor3d_HSurface)& S2,
+                                                 const TopAbs_Orientation Or);
   
-  Standard_EXPORT Standard_Boolean StoreData (Handle(ChFiDS_SurfData)& Data, const AppBlend_Approx& Approx, const Handle(BRepBlend_Line)& Lin, const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2, const TopAbs_Orientation Or1, const Standard_Boolean Gd1, const Standard_Boolean Gd2, const Standard_Boolean Gf1, const Standard_Boolean Gf2, const Standard_Boolean Reversed = Standard_False);
+  Standard_EXPORT Standard_Boolean StoreData (Handle(ChFiDS_SurfData)& Data,
+                                              const AppBlend_Approx& Approx,
+                                              const Handle(BRepBlend_Line)& Lin,
+                                              const Handle(Adaptor3d_HSurface)& S1,
+                                              const Handle(Adaptor3d_HSurface)& S2,
+                                              const TopAbs_Orientation Or1,
+                                              const Standard_Boolean Gd1,
+                                              const Standard_Boolean Gd2,
+                                              const Standard_Boolean Gf1,
+                                              const Standard_Boolean Gf2,
+                                              const Standard_Boolean Reversed = Standard_False);
   
-  Standard_EXPORT Standard_Boolean CompleteData (Handle(ChFiDS_SurfData)& Data, const Handle(Geom_Surface)& Surfcoin, const Handle(Adaptor3d_HSurface)& S1, const Handle(Geom2d_Curve)& PC1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Geom2d_Curve)& PC2, const TopAbs_Orientation Or, const Standard_Boolean On1, const Standard_Boolean Gd1, const Standard_Boolean Gd2, const Standard_Boolean Gf1, const Standard_Boolean Gf2);
+  Standard_EXPORT Standard_Boolean CompleteData (Handle(ChFiDS_SurfData)& Data,
+                                                 const Handle(Geom_Surface)& Surfcoin,
+                                                 const Handle(Adaptor3d_HSurface)& S1,
+                                                 const Handle(Geom2d_Curve)& PC1,
+                                                 const Handle(Adaptor3d_HSurface)& S2,
+                                                 const Handle(Geom2d_Curve)& PC2,
+                                                 const TopAbs_Orientation Or,
+                                                 const Standard_Boolean On1,
+                                                 const Standard_Boolean Gd1,
+                                                 const Standard_Boolean Gd2,
+                                                 const Standard_Boolean Gf1,
+                                                 const Standard_Boolean Gf2);
 
 
   Standard_Real tolappangle;
@@ -311,6 +786,7 @@ protected:
   ChFiDS_ListOfStripe badstripes;
   TopTools_ListOfShape badvertices;
   TopTools_DataMapOfShapeListOfInteger myEVIMap;
+  TopTools_DataMapOfShapeShape myEdgeFirstFace;
   Standard_Boolean done;
   Standard_Boolean hasresult;
 
@@ -318,15 +794,22 @@ protected:
 private:
 
   
-  Standard_EXPORT Standard_Boolean FaceTangency (const TopoDS_Edge& E0, const TopoDS_Edge& E1, const TopoDS_Vertex& V) const;
+  Standard_EXPORT Standard_Boolean FaceTangency (const TopoDS_Edge& E0,
+                                                 const TopoDS_Edge& E1,
+                                                 const TopoDS_Vertex& V) const;
   
-  Standard_EXPORT void PerformSetOfSurfOnElSpine (const Handle(ChFiDS_HElSpine)& ES, Handle(ChFiDS_Stripe)& St, Handle(BRepTopAdaptor_TopolTool)& It1, Handle(BRepTopAdaptor_TopolTool)& It2, const Standard_Boolean Simul = Standard_False);
+  Standard_EXPORT void PerformSetOfSurfOnElSpine (const Handle(ChFiDS_HElSpine)& ES,
+                                                  Handle(ChFiDS_Stripe)& St,
+                                                  Handle(BRepTopAdaptor_TopolTool)& It1,
+                                                  Handle(BRepTopAdaptor_TopolTool)& It2,
+                                                  const Standard_Boolean Simul = Standard_False);
   
   Standard_EXPORT void PerformFilletOnVertex (const Standard_Integer Index);
   
   Standard_EXPORT void PerformSingularCorner (const Standard_Integer Index);
   
-  Standard_EXPORT void PerformOneCorner (const Standard_Integer Index, const Standard_Boolean PrepareOnSame = Standard_False);
+  Standard_EXPORT void PerformOneCorner (const Standard_Integer Index,
+                                         const Standard_Boolean PrepareOnSame = Standard_False);
   
   Standard_EXPORT void IntersectMoreCorner (const Standard_Integer Index);
   
@@ -336,17 +819,52 @@ private:
   
   Standard_EXPORT void ExtentAnalyse();
   
-  Standard_EXPORT Standard_Boolean FindFace (const TopoDS_Vertex& V, const ChFiDS_CommonPoint& P1, const ChFiDS_CommonPoint& P2, TopoDS_Face& Fv) const;
+  Standard_EXPORT Standard_Boolean FindFace (const TopoDS_Vertex& V,
+                                             const ChFiDS_CommonPoint& P1,
+                                             const ChFiDS_CommonPoint& P2,
+                                             TopoDS_Face& Fv) const;
   
-  Standard_EXPORT Standard_Boolean FindFace (const TopoDS_Vertex& V, const ChFiDS_CommonPoint& P1, const ChFiDS_CommonPoint& P2, TopoDS_Face& Fv, const TopoDS_Face& Favoid) const;
+  Standard_EXPORT Standard_Boolean FindFace (const TopoDS_Vertex& V,
+                                             const ChFiDS_CommonPoint& P1,
+                                             const ChFiDS_CommonPoint& P2,
+                                             TopoDS_Face& Fv,
+                                             const TopoDS_Face& Favoid) const;
   
   Standard_EXPORT Standard_Boolean MoreSurfdata (const Standard_Integer Index) const;
   
-  Standard_EXPORT Standard_Boolean StartSol (const Handle(ChFiDS_Spine)& Spine, Handle(BRepAdaptor_HSurface)& HS, gp_Pnt2d& P, Handle(BRepAdaptor_HCurve2d)& HC, Standard_Real& W, const Handle(ChFiDS_SurfData)& SD, const Standard_Boolean isFirst, const Standard_Integer OnS, Handle(BRepAdaptor_HSurface)& HSref, Handle(BRepAdaptor_HCurve2d)& HCref, Standard_Boolean& RecP, Standard_Boolean& RecS, Standard_Boolean& RecRst, Standard_Boolean& C1Obst, Handle(BRepAdaptor_HSurface)& HSbis, gp_Pnt2d& Pbis, const Standard_Boolean Decroch, const TopoDS_Vertex& Vref) const;
+  Standard_EXPORT Standard_Boolean StartSol (const Handle(ChFiDS_Spine)& Spine,
+                                             Handle(BRepAdaptor_HSurface)& HS,
+                                             gp_Pnt2d& P,
+                                             Handle(BRepAdaptor_HCurve2d)& HC,
+                                             Standard_Real& W,
+                                             const Handle(ChFiDS_SurfData)& SD,
+                                             const Standard_Boolean isFirst,
+                                             const Standard_Integer OnS,
+                                             Handle(BRepAdaptor_HSurface)& HSref,
+                                             Handle(BRepAdaptor_HCurve2d)& HCref,
+                                             Standard_Boolean& RecP,
+                                             Standard_Boolean& RecS,
+                                             Standard_Boolean& RecRst,
+                                             Standard_Boolean& C1Obst,
+                                             Handle(BRepAdaptor_HSurface)& HSbis,
+                                             gp_Pnt2d& Pbis,
+                                             const Standard_Boolean Decroch,
+                                             const TopoDS_Vertex& Vref) const;
   
-  Standard_EXPORT void StartSol (const Handle(ChFiDS_Stripe)& S, const Handle(ChFiDS_HElSpine)& HGuide, Handle(BRepAdaptor_HSurface)& HS1, Handle(BRepAdaptor_HSurface)& HS2, Handle(BRepTopAdaptor_TopolTool)& I1, Handle(BRepTopAdaptor_TopolTool)& I2, gp_Pnt2d& P1, gp_Pnt2d& P2, Standard_Real& First) const;
+  Standard_EXPORT void StartSol (const Handle(ChFiDS_Stripe)& S,
+                                 const Handle(ChFiDS_HElSpine)& HGuide,
+                                 Handle(BRepAdaptor_HSurface)& HS1,
+                                 Handle(BRepAdaptor_HSurface)& HS2,
+                                 Handle(BRepTopAdaptor_TopolTool)& I1,
+                                 Handle(BRepTopAdaptor_TopolTool)& I2,
+                                 gp_Pnt2d& P1,
+                                 gp_Pnt2d& P2,
+                                 Standard_Real& First) const;
   
-  Standard_EXPORT void ConexFaces (const Handle(ChFiDS_Spine)& Sp, const Standard_Integer IEdge, const Standard_Integer RefChoix, Handle(BRepAdaptor_HSurface)& HS1, Handle(BRepAdaptor_HSurface)& HS2) const;
+  Standard_EXPORT void ConexFaces (const Handle(ChFiDS_Spine)& Sp,
+                                   const Standard_Integer IEdge,
+                                   Handle(BRepAdaptor_HSurface)& HS1,
+                                   Handle(BRepAdaptor_HSurface)& HS2) const;
 
 
   TopoDS_Shape myShape;

@@ -62,9 +62,8 @@ public:
   
   //! Adds edge E to the table of edges used by this
   //! algorithm to build chamfers, where
-  //! the parameters of the chamfer are given by the two
-  //! distances Dis1 and Dis2; the face F identifies the side
-  //! where Dis1 is measured.
+  //! the parameters of the chamfer are given by
+  //! the distance Dis (symmetric chamfer).
   //! The Add function results in a contour being built by
   //! propagation from the edge E (i.e. the contour contains at
   //! least this edge). This contour is composed of edges of
@@ -73,7 +72,7 @@ public:
   //! series of faces being located on either side of the contour.
   //! Warning
   //! Nothing is done if edge E or the face F does not belong to the initial shape.
-  Standard_EXPORT void Add (const Standard_Real Dis, const TopoDS_Edge& E, const TopoDS_Face& F);
+  Standard_EXPORT void Add (const Standard_Real Dis, const TopoDS_Edge& E);
   
   //! Sets the distances Dis1 and Dis2 which give the
   //! parameters of the chamfer along the contour of index
@@ -87,9 +86,19 @@ public:
   
   Standard_EXPORT void GetDist (const Standard_Integer IC, Standard_Real& Dis) const;
   
-  //! Adds a  fillet contour in  the  builder  (builds a
-  //! contour  of tangent edges to <E> and sets the two
-  //! distances <Dis1> and <Dis2> ( parameters of the chamfer ) ).
+  //! Adds edge E to the table of edges used by this
+  //! algorithm to build chamfers, where
+  //! the parameters of the chamfer are given by the two
+  //! distances Dis1 and Dis2; the face F identifies the side
+  //! where Dis1 is measured.
+  //! The Add function results in a contour being built by
+  //! propagation from the edge E (i.e. the contour contains at
+  //! least this edge). This contour is composed of edges of
+  //! the shape which are tangential to one another and
+  //! which delimit two series of tangential faces, with one
+  //! series of faces being located on either side of the contour.
+  //! Warning
+  //! Nothing is done if edge E or the face F does not belong to the initial shape.
   Standard_EXPORT void Add (const Standard_Real Dis1, const Standard_Real Dis2, const TopoDS_Edge& E, const TopoDS_Face& F);
   
   //! Sets the distances Dis1 and Dis2 which give the
@@ -122,7 +131,10 @@ public:
   
   //! gives the distances <Dis> and <Angle> of the fillet
   //! contour of index <IC> in the DS
-  Standard_EXPORT void GetDistAngle (const Standard_Integer IC, Standard_Real& Dis, Standard_Real& Angle, Standard_Boolean& DisOnFace1) const;
+  Standard_EXPORT void GetDistAngle (const Standard_Integer IC, Standard_Real& Dis, Standard_Real& Angle) const;
+  
+  //! Sets the mode of chamfer
+  Standard_EXPORT void SetMode (const ChFiDS_ChamfMode theMode);
   
   //! return True if chamfer symetric false else.
   Standard_EXPORT Standard_Boolean IsSymetric (const Standard_Integer IC) const;

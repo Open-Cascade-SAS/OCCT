@@ -55,10 +55,9 @@ void BRepFilletAPI_MakeChamfer::Add(const TopoDS_Edge &E )
 //=======================================================================
 
 void BRepFilletAPI_MakeChamfer::Add(const Standard_Real Dis, 
-			      const TopoDS_Edge &E,
-			      const TopoDS_Face &F)
+                                    const TopoDS_Edge &E)
 {
-  myBuilder.Add(Dis, E, F);
+  myBuilder.Add(Dis, E);
 }
 
 
@@ -162,12 +161,20 @@ void BRepFilletAPI_MakeChamfer::SetDistAngle(const Standard_Real Dis,
 //================================================================
 
 void BRepFilletAPI_MakeChamfer::GetDistAngle(const Standard_Integer IC,
-				       Standard_Real&         Dis, 
-				       Standard_Real&         Angle,
-				       Standard_Boolean&      DisOnFace1) const
+                                             Standard_Real&         Dis, 
+                                             Standard_Real&         Angle) const
 {
-  myBuilder.GetDistAngle(IC, Dis, Angle, DisOnFace1);
+  myBuilder.GetDistAngle(IC, Dis, Angle);
+}
 
+//=======================================================================
+//function : SetMode
+//purpose  : 
+//=======================================================================
+
+void BRepFilletAPI_MakeChamfer::SetMode(const ChFiDS_ChamfMode theMode)
+{
+  myBuilder.SetMode(theMode);
 }
 
 //=======================================================================

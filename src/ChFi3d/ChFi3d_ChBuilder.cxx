@@ -24,6 +24,10 @@
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBlend_Chamfer.hxx>
 #include <BRepBlend_ChamfInv.hxx>
+#include <BRepBlend_ConstThroat.hxx>
+#include <BRepBlend_ConstThroatInv.hxx>
+#include <BRepBlend_ConstThroatWithPenetration.hxx>
+#include <BRepBlend_ConstThroatWithPenetrationInv.hxx>
 #include <BRepBlend_ChAsym.hxx>
 #include <BRepBlend_ChAsymInv.hxx>
 #include <BRepBlend_Line.hxx>
@@ -58,10 +62,12 @@
 #include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <memory>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean ChFi3d_GettraceCHRON();
 #endif
+
 
 //=======================================================================
 //function : SearchCommonFaces
@@ -180,6 +186,7 @@ ChFi3d_ChBuilder::ChFi3d_ChBuilder(const TopoDS_Shape& S,
 				   const Standard_Real Ta) : 
 				          ChFi3d_Builder(S, Ta)
 {
+  myMode = ChFiDS_ClassicChamfer;
 }
 
 
@@ -191,7 +198,8 @@ ChFi3d_ChBuilder::ChFi3d_ChBuilder(const TopoDS_Shape& S,
 
 void  ChFi3d_ChBuilder::Add(const TopoDS_Edge& E)
 {
-
+  TopoDS_Face dummy;
+  
   if(!Contains(E) && myEFMap.Contains(E)){
     Handle(ChFiDS_Stripe) Stripe = new ChFiDS_Stripe();
     Handle(ChFiDS_Spine)& Sp = Stripe->ChangeSpine();
@@ -201,7 +209,7 @@ void  ChFi3d_ChBuilder::Add(const TopoDS_Edge& E)
     TopoDS_Edge E_wnt = E;
     E_wnt.Orientation(TopAbs_FORWARD);
     Spine->SetEdges(E_wnt);
-    if(PerformElement(Spine)){
+    if(PerformElement(Spine, -1, dummy)) {
       PerformExtremity(Spine);
       Spine->Load();
       myListStripe.Append(Stripe);
@@ -219,43 +227,31 @@ void  ChFi3d_ChBuilder::Add(const TopoDS_Edge& E)
 //=======================================================================
 
 void  ChFi3d_ChBuilder::Add(const Standard_Real Dis,
-			    const TopoDS_Edge& E,
-			    const TopoDS_Face& F)
+			    const TopoDS_Edge& E)
 {
   if (!Contains(E)  && myEFMap.Contains(E)) {
      
-    // Take the 2 common faces of the egde <E>
-    TopoDS_Face F1,F2;
-    SearchCommonFaces(myEFMap,E,F1,F2);
+    TopoDS_Face dummy;
 
-    if (! F1.IsSame(F) && F2.IsSame(F) ) {
-      F2 = F1;
-      F1 = F;
-    }
-
-    if ( F1.IsSame(F)) {
-      TopoDS_Edge E_wnt = E;
-      E_wnt.Orientation(TopAbs_FORWARD);
-      BRepAdaptor_Surface Sb1,Sb2;
-      Sb1.Initialize(F1);
-      Sb2.Initialize(F2);
-      TopAbs_Orientation Or1,Or2;
-      ChFi3d::ConcaveSide(Sb1,Sb2,E_wnt,Or1,Or2); 
-      Handle(ChFiDS_Stripe) Stripe = new ChFiDS_Stripe();
-      Handle(ChFiDS_Spine)& Sp = Stripe->ChangeSpine();
-      Sp = new ChFiDS_ChamfSpine(tolesp);
-      Handle(ChFiDS_ChamfSpine) 
-        Spine = Handle(ChFiDS_ChamfSpine)::DownCast(Sp);
-
-      Spine->SetEdges(E_wnt);
-      if(PerformElement(Spine)){
-	Spine->Load();
-	myListStripe.Append(Stripe);
-	
-	Spine->SetDist(Dis);
-
-	PerformExtremity(Spine);
-      }
+    TopoDS_Edge E_wnt = E;
+    E_wnt.Orientation(TopAbs_FORWARD);
+    
+    Handle(ChFiDS_Stripe) Stripe = new ChFiDS_Stripe();
+    Handle(ChFiDS_Spine)& Sp = Stripe->ChangeSpine();
+    Sp = new ChFiDS_ChamfSpine(tolesp);
+    Handle(ChFiDS_ChamfSpine) 
+      Spine = Handle(ChFiDS_ChamfSpine)::DownCast(Sp);
+    
+    Spine->SetMode(myMode);
+    
+    Spine->SetEdges(E_wnt);
+    if(PerformElement(Spine, -1, dummy)) {
+      Spine->Load();
+      myListStripe.Append(Stripe);
+      
+      Spine->SetDist(Dis);
+      
+      PerformExtremity(Spine);
     }
   }
 }
@@ -335,54 +331,29 @@ void  ChFi3d_ChBuilder::Add(const Standard_Real Dis1,
 			    const TopoDS_Face& F)
 {
   if (!Contains(E)  && myEFMap.Contains(E)) {
-     
-    // Take the 2 common faces of the egde <E>
-    TopoDS_Face F1,F2;
-    SearchCommonFaces(myEFMap,E,F1,F2);
 
-    if (! F1.IsSame(F) && F2.IsSame(F) ) {
-      F2 = F1;
-      F1 = F;
-    }
-
-    if ( F1.IsSame(F)) {
-      TopoDS_Edge E_wnt = E;
-      E_wnt.Orientation(TopAbs_FORWARD);
-      BRepAdaptor_Surface Sb1,Sb2;
-      Sb1.Initialize(F1);
-      Sb2.Initialize(F2);
-      TopAbs_Orientation Or1,Or2;
-      Standard_Integer Choix = ChFi3d::ConcaveSide(Sb1,Sb2,E_wnt,Or1,Or2); 
-
-      Handle(ChFiDS_Stripe) Stripe = new ChFiDS_Stripe();
-      Handle(ChFiDS_Spine)& Sp = Stripe->ChangeSpine();
-      Sp = new ChFiDS_ChamfSpine(tolesp);
-      Handle(ChFiDS_ChamfSpine) 
-        Spine = Handle(ChFiDS_ChamfSpine)::DownCast(Sp);
-
-      Spine->SetEdges(E_wnt);
-      if(PerformElement(Spine)){
-	Spine->Load();
-	myListStripe.Append(Stripe);
-	
-	Standard_Integer ChoixConge;
-	SearchCommonFaces(myEFMap,Spine->Edges(1),F1,F2);
-	Sb1.Initialize(F1);
-	Sb2.Initialize(F2);
-	ChoixConge = ChFi3d::ConcaveSide(Sb1,Sb2,
-					 Spine->Edges(1),
-					 Or1,Or2);
-
-
-	// compare the 2 computed choices to know how to set the 
-	// distances of the Spine according to the choice done 
-	// on the added edge <e>
-	if ( ChoixConge%2 != Choix%2 )
-	  Spine->SetDists(Dis2, Dis1);
-	else Spine->SetDists(Dis1, Dis2);
-
-	PerformExtremity(Spine);
-      }
+    TopoDS_Edge E_wnt = E;
+    E_wnt.Orientation(TopAbs_FORWARD);
+    
+    Handle(ChFiDS_Stripe) Stripe = new ChFiDS_Stripe();
+    Handle(ChFiDS_Spine)& Sp = Stripe->ChangeSpine();
+    Sp = new ChFiDS_ChamfSpine(tolesp);
+    Handle(ChFiDS_ChamfSpine) 
+      Spine = Handle(ChFiDS_ChamfSpine)::DownCast(Sp);
+    
+    Spine->SetMode(myMode);
+    Standard_Real Offset = -1;
+    if (myMode == ChFiDS_ConstThroatWithPenetrationChamfer)
+      Offset = Min(Dis1,Dis2);;
+    
+    Spine->SetEdges(E_wnt);
+    if(PerformElement(Spine, Offset, F)){
+      Spine->Load();
+      myListStripe.Append(Stripe);
+      
+      Spine->SetDists(Dis1, Dis2);
+      
+      PerformExtremity(Spine);
     }
   }
 }
@@ -477,56 +448,24 @@ void  ChFi3d_ChBuilder::AddDA(const Standard_Real Dis1,
 			      const TopoDS_Face& F)
 {
   if (!Contains(E)  && myEFMap.Contains(E)) {
-     
-    // Take the 2 common faces of the egde <E>
-    TopoDS_Face F1,F2;
-    SearchCommonFaces(myEFMap,E,F1,F2);
- 
-    if (! F1.IsSame(F) && F2.IsSame(F) ) {
-      F2 = F1;
-      F1 = F;
-    }
 
-    if ( F1.IsSame(F)) {
-      TopoDS_Edge E_wnt = E;
-      E_wnt.Orientation(TopAbs_FORWARD);
-      BRepAdaptor_Surface Sb1,Sb2;
-      Sb1.Initialize(F1);
-      Sb2.Initialize(F2);
-      TopAbs_Orientation Or1,Or2;
-      Standard_Integer Choix = ChFi3d::ConcaveSide(Sb1,Sb2,E_wnt,Or1,Or2); 
-
-      Handle(ChFiDS_Stripe) Stripe = new ChFiDS_Stripe();
-      Handle(ChFiDS_Spine)& Sp = Stripe->ChangeSpine();
-      Sp = new ChFiDS_ChamfSpine(tolesp);
-      Handle(ChFiDS_ChamfSpine) 
-        Spine = Handle(ChFiDS_ChamfSpine)::DownCast(Sp);
-
-      Spine->SetEdges(E_wnt);
-      if(PerformElement(Spine)){
-	Spine->Load();
-	myListStripe.Append(Stripe);
-	
-	Standard_Integer ChoixConge;
-	SearchCommonFaces(myEFMap,Spine->Edges(1),F1,F2);
-	Sb1.Initialize(F1);
-	Sb2.Initialize(F2);
-	ChoixConge = ChFi3d::ConcaveSide(Sb1,Sb2,
-					 Spine->Edges(1),
-					 Or1,Or2);
-
-	// compare the 2 computed choices to know how to set the 
-	// distances of the Spine according to the choice done 
-	// on the added edge <e>
-	if ( ChoixConge%2 != Choix%2 ) {
-          Spine->SetDistAngle(Dis1, Angle, Standard_False);
-        }
-	else { 
-          Spine->SetDistAngle(Dis1, Angle, Standard_True);
-        }
-	
-	PerformExtremity(Spine);
-      }
+    TopoDS_Edge E_wnt = E;
+    E_wnt.Orientation(TopAbs_FORWARD);
+    
+    Handle(ChFiDS_Stripe) Stripe = new ChFiDS_Stripe();
+    Handle(ChFiDS_Spine)& Sp = Stripe->ChangeSpine();
+    Sp = new ChFiDS_ChamfSpine(tolesp);
+    Handle(ChFiDS_ChamfSpine) 
+      Spine = Handle(ChFiDS_ChamfSpine)::DownCast(Sp);
+    
+    Spine->SetEdges(E_wnt);
+    if(PerformElement(Spine, -1, F)) {
+      Spine->Load();
+      myListStripe.Append(Stripe);
+      
+      Spine->SetDistAngle(Dis1, Angle);
+      
+      PerformExtremity(Spine);
     }
   }
 }
@@ -549,12 +488,9 @@ void  ChFi3d_ChBuilder::SetDistAngle(const Standard_Real    Dis,
 
     // Search the first edge which has a common face equal to F
     TopoDS_Face F1,F2,FirstF1,FirstF2;
-    TopAbs_Orientation Or1,Or2;
-    Standard_Integer Choix, ChoixConge;
     BRepAdaptor_Surface Sb1,Sb2;
     Standard_Integer i = 1;
     Standard_Boolean Found = Standard_False;
-//    Standard_Boolean DisOnF1 = Standard_True;
 
     while ( (i <= csp->NbEdges()) && (!Found) ) {
       SearchCommonFaces(myEFMap,csp->Edges(i),F1,F2);
@@ -565,7 +501,7 @@ void  ChFi3d_ChBuilder::SetDistAngle(const Standard_Real    Dis,
       Found = ( F1.IsSame(F) || F2.IsSame(F) );
       i++;
     }
-
+    
     if (Found) {
       if ( F2.IsSame(F) ) {
 	F2 = F1;
@@ -573,20 +509,9 @@ void  ChFi3d_ChBuilder::SetDistAngle(const Standard_Real    Dis,
       }
       Sb1.Initialize(F1);
       Sb2.Initialize(F2);
-      Choix = ChFi3d::ConcaveSide(Sb1,Sb2,
-				  csp->Edges(i-1),
-				  Or1,Or2);
       Sb1.Initialize(FirstF1);
       Sb2.Initialize(FirstF2);
-      ChoixConge = ChFi3d::ConcaveSide(Sb1,Sb2,
-				       csp->Edges(1),
-				       Or1,Or2);
-      if ( ChoixConge%2 != Choix%2 ) {
-	csp->SetDistAngle(Dis, Angle, Standard_False);
-      }
-      else {
-        csp->SetDistAngle(Dis, Angle, Standard_True);
-      }
+      csp->SetDistAngle(Dis, Angle);
     }
     else
       throw Standard_DomainError("the face is not common to any edges of the contour");
@@ -602,12 +527,21 @@ void  ChFi3d_ChBuilder::SetDistAngle(const Standard_Real    Dis,
 
 void ChFi3d_ChBuilder::GetDistAngle(const Standard_Integer  IC,
 				    Standard_Real&          Dis,
-				    Standard_Real&          Angle,
-				    Standard_Boolean&       DisOnFace1) const
+				    Standard_Real&          Angle) const
 {
     Handle(ChFiDS_ChamfSpine) chsp = Handle(ChFiDS_ChamfSpine)::DownCast(Value(IC));
 
-    chsp->GetDistAngle(Dis, Angle, DisOnFace1);
+    chsp->GetDistAngle(Dis, Angle);
+}
+
+//=======================================================================
+//function : SetMode
+//purpose  : set the mode of chamfer
+//=======================================================================
+
+void  ChFi3d_ChBuilder::SetMode(const ChFiDS_ChamfMode theMode)
+{
+  myMode = theMode;
 }
 
 //=======================================================================
@@ -622,6 +556,15 @@ ChFiDS_ChamfMethod ChFi3d_ChBuilder::IsChamfer(const Standard_Integer  IC) const
 
   return ret;
 
+}
+
+//=======================================================================
+//function : Mode
+//purpose  : 
+//=======================================================================
+ChFiDS_ChamfMode ChFi3d_ChBuilder::Mode() const
+{
+  return myMode;
 }
 
 //=======================================================================
@@ -836,6 +779,7 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
   if(intl) Last = chsp->LastParameter(chsp->NbEdges());
 
 
+  Handle(ChFiDS_HElSpine) OffsetHGuide;
 
   if (chsp->IsChamfer() == ChFiDS_Sym) {
     Standard_Real dis;
@@ -843,13 +787,28 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
     radius = Max(dis, radiusspine);
     locfleche = radius*1.e-2; //graphic criterion
 
-    BRepBlend_Chamfer Func(S1,S2,HGuide);
-    BRepBlend_ChamfInv FInv(S1,S2,HGuide); 
-    Func.Set(dis, dis, Choix);
-    FInv.Set(dis, dis, Choix);
+#if (defined(_MSC_VER) && (_MSC_VER < 1600))
+    std::auto_ptr<BlendFunc_GenChamfer>  pFunc;
+    std::auto_ptr<BlendFunc_GenChamfInv> pFInv;
+#else
+    std::unique_ptr<BlendFunc_GenChamfer>  pFunc;
+    std::unique_ptr<BlendFunc_GenChamfInv> pFInv;
+#endif  
+    if (chsp->Mode() == ChFiDS_ClassicChamfer)
+    {
+      pFunc.reset(new BRepBlend_Chamfer(S1,S2,HGuide));
+      pFInv.reset(new BRepBlend_ChamfInv(S1,S2,HGuide));
+    }
+    else
+    {
+      pFunc.reset(new BRepBlend_ConstThroat(S1,S2,HGuide));
+      pFInv.reset(new BRepBlend_ConstThroatInv(S1,S2,HGuide));
+    }
+    pFunc->Set(dis, dis, Choix);
+    pFInv->Set(dis, dis, Choix);
     
-    done = SimulData(Data,HGuide,lin,S1,I1,S2,I2,
-		     Func,FInv,PFirst,MaxStep,locfleche,
+    done = SimulData(Data,HGuide,OffsetHGuide,lin,S1,I1,S2,I2,
+		     *pFunc,*pFInv,PFirst,MaxStep,locfleche,
 		     TolGuide,First,Last,Inside,Appro,Forward,
 		     Soldep,4,RecOnS1,RecOnS2);
 
@@ -867,7 +826,7 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
       p.ParametersOnS1(u1,v1);
       p.ParametersOnS2(u2,v2);
       ww = p.Parameter();
-      Func.Section(ww,u1,v1,u2,v2,p1,p2,line); 
+      pFunc->Section(ww,u1,v1,u2,v2,p1,p2,line); 
       isec.Set(line,p1,p2);
       if(i == 1) {pf1.SetCoord(u1,v1); pf2.SetCoord(u2,v2);} 
       if(i == nbp) {pl1.SetCoord(u1,v1); pl2.SetCoord(u2,v2);} 
@@ -925,13 +884,46 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
     radius = Max(radius, radiusspine);
     locfleche = radius*1.e-2; //graphic criterion
 
-    BRepBlend_Chamfer Func(S1,S2,HGuide);
-    BRepBlend_ChamfInv FInv(S1,S2,HGuide); 
-    Func.Set(dis1,dis2,Choix);
-    FInv.Set(dis1,dis2,Choix);
+#if (defined(_MSC_VER) && (_MSC_VER < 1600))
+    std::auto_ptr<BlendFunc_GenChamfer>  pFunc;
+    std::auto_ptr<BlendFunc_GenChamfInv> pFInv;
+#else
+    std::unique_ptr<BlendFunc_GenChamfer>  pFunc;
+    std::unique_ptr<BlendFunc_GenChamfInv> pFInv;
+#endif  
+    if (chsp->Mode() == ChFiDS_ClassicChamfer)
+    {
+      pFunc.reset(new BRepBlend_Chamfer(S1,S2,HGuide));
+      pFInv.reset(new BRepBlend_ChamfInv(S1,S2,HGuide));
+      pFunc->Set(dis1,dis2,Choix);
+      pFInv->Set(dis1,dis2,Choix);
+    }
+    else
+    {
+      ChFiDS_ListOfHElSpine& ll = Spine->ChangeElSpines();
+      ChFiDS_ListOfHElSpine& ll_offset = Spine->ChangeOffsetElSpines();
+      ChFiDS_ListIteratorOfListOfHElSpine ILES(ll), ILES_offset(ll_offset);
+      for ( ; ILES.More(); ILES.Next(),ILES_offset.Next())
+      {
+        const Handle(ChFiDS_HElSpine)& aHElSpine = ILES.Value();
+        if (aHElSpine == HGuide)
+          OffsetHGuide = ILES_offset.Value();
+      }
+      
+      if (OffsetHGuide.IsNull())
+      {
+        cout<<endl<<"Construction of offset guide failed!"<<endl;
+        //exception
+      }
+      pFunc.reset(new BRepBlend_ConstThroatWithPenetration(S1,S2,OffsetHGuide));
+      pFInv.reset(new BRepBlend_ConstThroatWithPenetrationInv(S1,S2,OffsetHGuide));
+      Standard_Real Throat = Max(dis1,dis2);
+      pFunc->Set(Throat,Throat,Choix);
+      pFInv->Set(Throat,Throat,Choix);
+    }
     
-    done = SimulData(Data,HGuide,lin,S1,I1,S2,I2,
-		     Func,FInv,PFirst,MaxStep,locfleche,
+    done = SimulData(Data,HGuide,OffsetHGuide,lin,S1,I1,S2,I2,
+		     *pFunc,*pFInv,PFirst,MaxStep,locfleche,
 		     TolGuide,First,Last,Inside,Appro,Forward,
 		     Soldep,4,RecOnS1,RecOnS2);
 
@@ -949,7 +941,7 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
       p.ParametersOnS1(u1,v1);
       p.ParametersOnS2(u2,v2);
       ww = p.Parameter();
-      Func.Section(ww,u1,v1,u2,v2,p1,p2,line); 
+      pFunc->Section(ww,u1,v1,u2,v2,p1,p2,line); 
       isec.Set(line,p1,p2);
       if(i == 1) {pf1.SetCoord(u1,v1); pf2.SetCoord(u2,v2);} 
       if(i == nbp) {pl1.SetCoord(u1,v1); pl2.SetCoord(u2,v2);} 
@@ -1000,181 +992,92 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
       }
     }
   }
-  else  {
+  else  { //distance and angle
     Standard_Real dis, angle;
-    Standard_Boolean disonF1;  
-    chsp->GetDistAngle(dis, angle, disonF1);
+    chsp->GetDistAngle(dis, angle);
     radius = Max(dis, dis * tan(angle));
     radius = Max(radius, radiusspine);
     locfleche = radius*1.e-2; //graphic criterion
 
-    Standard_Integer Ch = FindChoiceDistAngle(Choix, disonF1);
+    Standard_Integer Ch = Choix;
 
-    if (disonF1)  {
-      BRepBlend_ChAsym    Func(S1,S2,HGuide);
-      BRepBlend_ChAsymInv FInv(S1,S2,HGuide); 
-
-      Func.Set(dis, angle, Ch);
-      FInv.Set(dis, angle, Ch);
-
-      done = SimulData(Data,HGuide,lin,S1,I1,S2,I2,
-		       Func,FInv,PFirst,MaxStep,locfleche,
-		       TolGuide,First,Last,Inside,Appro,Forward,
-		       Soldep,4,RecOnS1,RecOnS2);
+    BRepBlend_ChAsym    Func(S1,S2,HGuide);
+    BRepBlend_ChAsymInv FInv(S1,S2,HGuide); 
     
-      if ( !done ) return Standard_False;
-      Handle(ChFiDS_SecHArray1) sec;
-      gp_Pnt2d pf1,pl1,pf2,pl2;  
-      
-      Standard_Integer nbp = lin->NbPoints();
-      sec = new ChFiDS_SecHArray1(1,nbp);
-      for( i = 1; i <= nbp; i++ ){
-	ChFiDS_CircSection& isec = sec->ChangeValue(i);
-	Standard_Real u1,v1,u2,v2,ww,p1,p2;
-	gp_Lin line;
-	const Blend_Point& p = lin->Point(i);
-	p.ParametersOnS1(u1,v1);
-	p.ParametersOnS2(u2,v2);
-	ww = p.Parameter();
-	Func.Section(ww,u1,v1,u2,v2,p1,p2,line); 
-	isec.Set(line,p1,p2);
-	if(i == 1) {pf1.SetCoord(u1,v1); pf2.SetCoord(u2,v2);} 
-	if(i == nbp) {pl1.SetCoord(u1,v1); pl2.SetCoord(u2,v2);} 
-      }
+    Func.Set(dis, angle, Ch);
+    FInv.Set(dis, angle, Ch);
     
-      Data->SetSimul(sec);
-      Data->Set2dPoints(pf1,pl1,pf2,pl2);
-      ChFi3d_FilCommonPoint(lin->StartPointOnFirst(),lin->TransitionOnS1(),
-			    Standard_True, Data->ChangeVertexFirstOnS1(),tolesp);
-      ChFi3d_FilCommonPoint(lin->EndPointOnFirst(),lin->TransitionOnS1(),
-			    Standard_False,Data->ChangeVertexLastOnS1(),tolesp);
-      ChFi3d_FilCommonPoint(lin->StartPointOnSecond(),lin->TransitionOnS2(),
-			    Standard_True, Data->ChangeVertexFirstOnS2(),tolesp);
-      ChFi3d_FilCommonPoint(lin->EndPointOnSecond(),lin->TransitionOnS2(),
-			    Standard_False, Data->ChangeVertexLastOnS2(),tolesp);
-
-      Standard_Boolean reverse = (!Forward || Inside);
-      if(intf && reverse){
-	Standard_Boolean ok = Standard_False;
-	const ChFiDS_CommonPoint& cp1 = Data->VertexFirstOnS1();
-	if(cp1.IsOnArc()){
-	  TopoDS_Face F1 = S1->ChangeSurface().Face();
-	  TopoDS_Face bid;
-	  intf = !SearchFace(Spine,cp1,F1,bid);
-	  ok = intf != 0;
-	}
-	const ChFiDS_CommonPoint& cp2 = Data->VertexFirstOnS2();
-	if(cp2.IsOnArc() && !ok){
-	  TopoDS_Face F2 = S2->ChangeSurface().Face();
-	  TopoDS_Face bid;
-	  intf = !SearchFace(Spine,cp2,F2,bid);
-	}
+    done = SimulData(Data,HGuide,OffsetHGuide,lin,S1,I1,S2,I2,
+                     Func,FInv,PFirst,MaxStep,locfleche,
+                     TolGuide,First,Last,Inside,Appro,Forward,
+                     Soldep,4,RecOnS1,RecOnS2);
+    
+    if ( !done ) return Standard_False;
+    Handle(ChFiDS_SecHArray1) sec;
+    gp_Pnt2d pf1,pl1,pf2,pl2;  
+    
+    Standard_Integer nbp = lin->NbPoints();
+    sec = new ChFiDS_SecHArray1(1,nbp);
+    for( i = 1; i <= nbp; i++ ){
+      ChFiDS_CircSection& isec = sec->ChangeValue(i);
+      Standard_Real u1,v1,u2,v2,ww,p1,p2;
+      gp_Lin line;
+      const Blend_Point& p = lin->Point(i);
+      p.ParametersOnS1(u1,v1);
+      p.ParametersOnS2(u2,v2);
+      ww = p.Parameter();
+      Func.Section(ww,u1,v1,u2,v2,p1,p2,line); 
+      isec.Set(line,p1,p2);
+      if(i == 1) {pf1.SetCoord(u1,v1); pf2.SetCoord(u2,v2);} 
+      if(i == nbp) {pl1.SetCoord(u1,v1); pl2.SetCoord(u2,v2);} 
+    }
+    
+    Data->SetSimul(sec);
+    Data->Set2dPoints(pf1,pl1,pf2,pl2);
+    ChFi3d_FilCommonPoint(lin->StartPointOnFirst(),lin->TransitionOnS1(),
+                          Standard_True, Data->ChangeVertexFirstOnS1(),tolesp);
+    ChFi3d_FilCommonPoint(lin->EndPointOnFirst(),lin->TransitionOnS1(),
+                          Standard_False,Data->ChangeVertexLastOnS1(),tolesp);
+    ChFi3d_FilCommonPoint(lin->StartPointOnSecond(),lin->TransitionOnS2(),
+                          Standard_True, Data->ChangeVertexFirstOnS2(),tolesp);
+    ChFi3d_FilCommonPoint(lin->EndPointOnSecond(),lin->TransitionOnS2(),
+                          Standard_False, Data->ChangeVertexLastOnS2(),tolesp);
+    
+    Standard_Boolean reverse = (!Forward || Inside);
+    if(intf && reverse){
+      Standard_Boolean ok = Standard_False;
+      const ChFiDS_CommonPoint& cp1 = Data->VertexFirstOnS1();
+      if(cp1.IsOnArc()){
+        TopoDS_Face F1 = S1->ChangeSurface().Face();
+        TopoDS_Face bid;
+        intf = !SearchFace(Spine,cp1,F1,bid);
+        ok = intf != 0;
       }
-      
-      if(intl){
-	Standard_Boolean ok = Standard_False;
-	const ChFiDS_CommonPoint& cp1 = Data->VertexLastOnS1();
-	if(cp1.IsOnArc()){
-	  TopoDS_Face F1 = S1->ChangeSurface().Face();
-	  TopoDS_Face bid;
-	  intl = !SearchFace(Spine,cp1,F1,bid);
-	  ok = intl != 0;
-	}
-	const ChFiDS_CommonPoint& cp2 = Data->VertexLastOnS2();
-	if(cp2.IsOnArc() && !ok){
-	  TopoDS_Face F2 = S2->ChangeSurface().Face();
-	  TopoDS_Face bid;
-	  intl = !SearchFace(Spine,cp2,F2,bid);
-	}
+      const ChFiDS_CommonPoint& cp2 = Data->VertexFirstOnS2();
+      if(cp2.IsOnArc() && !ok){
+        TopoDS_Face F2 = S2->ChangeSurface().Face();
+        TopoDS_Face bid;
+        intf = !SearchFace(Spine,cp2,F2,bid);
       }
     }
-    else {
-      BRepBlend_ChAsym    Func(S2,S1,HGuide);
-      BRepBlend_ChAsymInv FInv(S2,S1,HGuide); 
-
-      Func.Set(dis, angle, Ch);
-      FInv.Set(dis, angle, Ch);
-
-      Standard_Real Rtemp;
-      Rtemp     = Soldep(1);
-      Soldep(1) = Soldep(3);
-      Soldep(3) = Rtemp;
-      Rtemp     = Soldep(2);
-      Soldep(2) = Soldep(4);
-      Soldep(4) = Rtemp;
-
-      done = SimulData(Data,HGuide,lin,S2,I2,S1,I1,
-		       Func,FInv,PFirst,MaxStep,locfleche,
-		       TolGuide,First,Last,Inside,Appro,Forward,
-		       Soldep,4,RecOnS2,RecOnS1);
     
-      if ( !done ) return Standard_False;
-      Handle(ChFiDS_SecHArray1) sec;
-      gp_Pnt2d pf1,pl1,pf2,pl2;  
-      
-      Standard_Integer nbp = lin->NbPoints();
-      sec = new ChFiDS_SecHArray1(1,nbp);
-      for( i = 1; i <= nbp; i++ ){
-	ChFiDS_CircSection& isec = sec->ChangeValue(i);
-	Standard_Real u1,v1,u2,v2,ww,p1,p2;
-	gp_Lin line;
-	const Blend_Point& p = lin->Point(i);
-	p.ParametersOnS1(u1,v1);
-	p.ParametersOnS2(u2,v2);
-	ww = p.Parameter();
-	Func.Section(ww,u1,v1,u2,v2,p1,p2,line); 
-	isec.Set(line,p1,p2);
-	if(i == 1) {pf1.SetCoord(u1,v1); pf2.SetCoord(u2,v2);} 
-	if(i == nbp) {pl1.SetCoord(u1,v1); pl2.SetCoord(u2,v2);} 
+    if(intl){
+      Standard_Boolean ok = Standard_False;
+      const ChFiDS_CommonPoint& cp1 = Data->VertexLastOnS1();
+      if(cp1.IsOnArc()){
+        TopoDS_Face F1 = S1->ChangeSurface().Face();
+        TopoDS_Face bid;
+        intl = !SearchFace(Spine,cp1,F1,bid);
+        ok = intl != 0;
       }
-    
-      Data->SetSimul(sec);
-      Data->Set2dPoints(pf1,pl1,pf2,pl2);
-      ChFi3d_FilCommonPoint(lin->StartPointOnFirst(),lin->TransitionOnS1(),
-			    Standard_True, Data->ChangeVertexFirstOnS1(),tolesp);
-      ChFi3d_FilCommonPoint(lin->EndPointOnFirst(),lin->TransitionOnS1(),
-			    Standard_False,Data->ChangeVertexLastOnS1(),tolesp);
-      ChFi3d_FilCommonPoint(lin->StartPointOnSecond(),lin->TransitionOnS2(),
-			    Standard_True, Data->ChangeVertexFirstOnS2(),tolesp);
-      ChFi3d_FilCommonPoint(lin->EndPointOnSecond(),lin->TransitionOnS2(),
-			    Standard_False, Data->ChangeVertexLastOnS2(),tolesp);
-
-      Standard_Boolean reverse = (!Forward || Inside);
-      if(intf && reverse){
-	Standard_Boolean ok = Standard_False;
-	const ChFiDS_CommonPoint& cp1 = Data->VertexFirstOnS1();
-	if(cp1.IsOnArc()){
-	  TopoDS_Face F1 = S1->ChangeSurface().Face();
-	  TopoDS_Face bid;
-	  intf = !SearchFace(Spine,cp1,F1,bid);
-	  ok = intf != 0;
-	}
-	const ChFiDS_CommonPoint& cp2 = Data->VertexFirstOnS2();
-	if(cp2.IsOnArc() && !ok){
-	  TopoDS_Face F2 = S2->ChangeSurface().Face();
-	  TopoDS_Face bid;
-	  intf = !SearchFace(Spine,cp2,F2,bid);
-	}
-      }
-      
-      if(intl){
-	Standard_Boolean ok = Standard_False;
-	const ChFiDS_CommonPoint& cp1 = Data->VertexLastOnS1();
-	if(cp1.IsOnArc()){
-	  TopoDS_Face F1 = S1->ChangeSurface().Face();
-	  TopoDS_Face bid;
-	  intl = !SearchFace(Spine,cp1,F1,bid);
-	  ok = intl != 0;
-	}
-	const ChFiDS_CommonPoint& cp2 = Data->VertexLastOnS2();
-	if(cp2.IsOnArc() && !ok){
-	  TopoDS_Face F2 = S2->ChangeSurface().Face();
-	  TopoDS_Face bid;
-	  intl = !SearchFace(Spine,cp2,F2,bid);
-	}
+      const ChFiDS_CommonPoint& cp2 = Data->VertexLastOnS2();
+      if(cp2.IsOnArc() && !ok){
+        TopoDS_Face F2 = S2->ChangeSurface().Face();
+        TopoDS_Face bid;
+        intl = !SearchFace(Spine,cp2,F2,bid);
       }
     }
-  }
+  } //distance and angle
   return Standard_True;
 }
 
@@ -1297,8 +1200,20 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     Standard_Real dis;
     chsp->GetDist(dis);
     
-    BRepBlend_Chamfer Func(S1,S2,HGuide);
-    Func.Set(dis,dis,Choix);
+#if (defined(_MSC_VER) && (_MSC_VER < 1600))
+    std::auto_ptr<BlendFunc_GenChamfer>  pFunc;
+#else
+    std::unique_ptr<BlendFunc_GenChamfer>  pFunc;
+#endif  
+    if (chsp->Mode() == ChFiDS_ClassicChamfer)
+    {
+      pFunc.reset(new BRepBlend_Chamfer(S1,S2,HGuide));
+    }
+    else
+    {
+      pFunc.reset(new BRepBlend_ConstThroat(S1,S2,HGuide));
+    }
+    pFunc->Set(dis,dis,Choix);
     BRepBlend_Walking TheWalk(S1,S2,I1,I2,HGuide);
     
     //calculate an approximate starting solution
@@ -1309,8 +1224,8 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     ( HGuide->Curve() ).D1(Par,ptgui,d1gui);
     //  ptgui = (S1->Surface()).Value(SolDep(1),SolDep(2));
     
-    Func.Set(Par);
-    Func.Tangent(SolDep(1),SolDep(2),SolDep(3),SolDep(4),TgF,TgL,tmp1,tmp2);
+    pFunc->Set(Par);
+    pFunc->Tangent(SolDep(1),SolDep(2),SolDep(3),SolDep(4),TgF,TgL,tmp1,tmp2);
     
     Standard_Boolean rev1 = Standard_False;
     Standard_Boolean rev2 = Standard_False;
@@ -1350,15 +1265,45 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
       (proj2.Point()).Parameter(SolDep(3),SolDep(4)); 
     }
     
-    return TheWalk.PerformFirstSection(Func,Par,SolDep,
+    return TheWalk.PerformFirstSection(*pFunc,Par,SolDep,
 				       tolesp,TolGuide,Pos1,Pos2);
   }
   else if (chsp->IsChamfer() == ChFiDS_TwoDist)  {
     Standard_Real dis1, dis2;
     chsp->Dists(dis1, dis2);
     
-    BRepBlend_Chamfer Func(S1,S2,HGuide);
-    Func.Set(dis1,dis2,Choix);
+#if (defined(_MSC_VER) && (_MSC_VER < 1600))
+    std::auto_ptr<BlendFunc_GenChamfer>  pFunc;
+#else
+    std::unique_ptr<BlendFunc_GenChamfer>  pFunc;
+#endif  
+    if (chsp->Mode() == ChFiDS_ClassicChamfer)
+    {
+      pFunc.reset(new BRepBlend_Chamfer(S1,S2,HGuide));
+      pFunc->Set(dis1,dis2,Choix);
+    }
+    else
+    {
+      Handle(ChFiDS_HElSpine) OffsetHGuide;
+      ChFiDS_ListOfHElSpine& ll = Spine->ChangeElSpines();
+      ChFiDS_ListOfHElSpine& ll_offset = Spine->ChangeOffsetElSpines();
+      ChFiDS_ListIteratorOfListOfHElSpine ILES(ll), ILES_offset(ll_offset);
+      for ( ; ILES.More(); ILES.Next(),ILES_offset.Next())
+      {
+        const Handle(ChFiDS_HElSpine)& aHElSpine = ILES.Value();
+        if (aHElSpine == HGuide)
+          OffsetHGuide = ILES_offset.Value();
+      }
+      
+      if (OffsetHGuide.IsNull())
+      {
+        cout<<endl<<"Construction of offset guide failed!"<<endl;
+        //exception
+      }
+      pFunc.reset(new BRepBlend_ConstThroatWithPenetration(S1,S2,OffsetHGuide));
+      Standard_Real Throat = Max(dis1,dis2);
+      pFunc->Set(Throat,Throat,Choix); //dis2?
+    }
     BRepBlend_Walking TheWalk(S1,S2,I1,I2,HGuide);
     
     //calculate an approximate starting solution
@@ -1369,8 +1314,8 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     ( HGuide->Curve() ).D1(Par,ptgui,d1gui);
     //  ptgui = (S1->Surface()).Value(SolDep(1),SolDep(2));
     
-    Func.Set(Par);
-    Func.Tangent(SolDep(1),SolDep(2),SolDep(3),SolDep(4),TgF,TgL,tmp1,tmp2);
+    pFunc->Set(Par);
+    pFunc->Tangent(SolDep(1),SolDep(2),SolDep(3),SolDep(4),TgF,TgL,tmp1,tmp2);
     
     Standard_Boolean rev1 = Standard_False;
     Standard_Boolean rev2 = Standard_False;
@@ -1390,10 +1335,26 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
       TgF.Reverse();
     if( rev2 )
       TgL.Reverse();
+
+    Standard_Real aDist1 = dis1, aDist2 = dis2;
+    if (chsp->Mode() == ChFiDS_ConstThroatWithPenetrationChamfer)
+    {
+      /*
+      Standard_Real Alpha = TgF.Angle(TgL);
+      Standard_Real SinAlpha = Sin(Alpha);
+      Standard_Real CosAlpha = Cos(Alpha);
+      Standard_Real TanAlpha = Tan(Alpha);
+      Standard_Real dis1dis1 = dis1*dis1, dis2dis2 = dis2*dis2;
+      aDist2 = sqrt(dis1dis1 - dis2dis2) - dis2/TanAlpha;
+      Standard_Real CosBeta = sqrt(1-dis2dis2/dis1dis1)*CosAlpha + dis2/dis1*SinAlpha;
+      Standard_Real FullDist1 = dis1/CosBeta;
+      aDist1 = FullDist1 - dis2/SinAlpha;
+      */
+    }
     
-    temp = (TgF.XYZ()).Multiplied(dis1);
+    temp = (TgF.XYZ()).Multiplied(aDist1);
     pt1.SetXYZ( (ptgui.XYZ()).Added(temp) );
-    temp = (TgL.XYZ()).Multiplied(dis2);
+    temp = (TgL.XYZ()).Multiplied(aDist2);
     pt2.SetXYZ( (ptgui.XYZ()).Added(temp) );
     
     Standard_Real tol = tolesp*1.e2;
@@ -1411,158 +1372,77 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
       (proj2.Point()).Parameter(SolDep(3),SolDep(4)); 
     }
     
-    return TheWalk.PerformFirstSection(Func,Par,SolDep,
+    return TheWalk.PerformFirstSection(*pFunc,Par,SolDep,
 				       tolesp,TolGuide,Pos1,Pos2);
   }
-  else {
+  else { //distance and angle
     Standard_Real dis1, angle;
-    Standard_Boolean disonF1; 
-    chsp->GetDistAngle(dis1, angle, disonF1);
+    chsp->GetDistAngle(dis1, angle);
     
-    Standard_Integer Ch = FindChoiceDistAngle(Choix, disonF1);
+    Standard_Integer Ch = Choix;
     
-    if (disonF1)  {
-      BRepBlend_ChAsym Func(S1,S2,HGuide);
-      Func.Set(dis1, angle, Ch);
-      BRepBlend_Walking TheWalk(S1,S2,I1,I2,HGuide);
+    BRepBlend_ChAsym Func(S1,S2,HGuide);
+    Func.Set(dis1, angle, Ch);
+    BRepBlend_Walking TheWalk(S1,S2,I1,I2,HGuide);
     
     //calculate an approximate starting solution
-      gp_Vec TgF, TgL, tmp1, tmp2, d1gui;
-      gp_Pnt pt1, pt2, ptgui;
-      gp_XYZ temp;
-      
-      ( HGuide->Curve() ).D1(Par,ptgui,d1gui);
-      //  ptgui = (S1->Surface()).Value(SolDep(1),SolDep(2));
-      
-      Func.Set(Par);
-      Func.Tangent(SolDep(1),SolDep(2),SolDep(3),SolDep(4),TgF,TgL,tmp1,tmp2);
-      
-      Standard_Boolean rev1 = Standard_False;
-      Standard_Boolean rev2 = Standard_False;
-      Standard_Real    sign = (TgF.Crossed(d1gui)).Dot(TgL);
-      
-      if( Ch%2 == 1 )
-	rev1 = Standard_True;
-      else
-	rev2 = Standard_True;
-      
-      if( sign < 0. ){
-	rev1 = !rev1;
-	rev2 = !rev2;
-      }
-      
-      if( rev1 )
-	TgF.Reverse();
-      if( rev2 )
-	TgL.Reverse();
-  
-      temp = (TgF.XYZ()).Multiplied(dis1);
-      pt1.SetXYZ( (ptgui.XYZ()).Added(temp) );
-      
-      Standard_Real dis2, tmpcos, tmpsin;
-      tmpcos = TgF.Dot(TgL);
-      tmpsin = sqrt(1. - tmpcos * tmpcos);  
-      
-      dis2   = dis1 / (tmpcos + tmpsin / tan(angle)); 
-      
-      temp = (TgL.XYZ()).Multiplied(dis2);
-      pt2.SetXYZ( (ptgui.XYZ()).Added(temp) );
-      
-      Standard_Real tol = tolesp*1.e2;
-//      Standard_Real u,v;
-      Extrema_GenLocateExtPS proj1(S1->Surface(), tol, tol);
-      proj1.Perform(pt1, SolDep(1), SolDep(2));
-      Extrema_GenLocateExtPS proj2(S2->Surface(), tol, tol);
-      proj2.Perform(pt2, SolDep(3), SolDep(4));
-      if( proj1.IsDone() ){
-	(proj1.Point()).Parameter(SolDep(1),SolDep(2)); 
-      }
-      if( proj2.IsDone() ){
-	(proj2.Point()).Parameter(SolDep(3),SolDep(4)); 
-      }
-      
-      return TheWalk.PerformFirstSection(Func,Par,SolDep,
-					 tolesp,TolGuide,Pos1,Pos2);
-    }
-    else {
-      Standard_Real Rtemp;
-      BRepBlend_ChAsym Func(S2,S1,HGuide);
-      Func.Set(dis1, angle, Ch);
-      BRepBlend_Walking TheWalk(S2,S1,I2,I1,HGuide);
+    gp_Vec TgF, TgL, tmp1, tmp2, d1gui;
+    gp_Pnt pt1, pt2, ptgui;
+    gp_XYZ temp;
     
-    //calculate an approximate starting solution
-      gp_Vec TgF, TgL, tmp1, tmp2, d1gui;
-      gp_Pnt pt1, pt2, ptgui;
-      gp_XYZ temp;
-      
-      ( HGuide->Curve() ).D1(Par,ptgui,d1gui);
-      //  ptgui = (S1->Surface()).Value(SolDep(1),SolDep(2));
-      Rtemp     = SolDep(1);
-      SolDep(1) = SolDep(3);
-      SolDep(3) = Rtemp;
-      Rtemp     = SolDep(2);
-      SolDep(2) = SolDep(4);
-      SolDep(4) = Rtemp;      
-      Func.Set(Par);
-
-      Func.Tangent(SolDep(1),SolDep(2),SolDep(3),SolDep(4),TgF,TgL,tmp1,tmp2);
-      
-      Standard_Boolean rev1 = Standard_False;
-      Standard_Boolean rev2 = Standard_False;
-      Standard_Real    sign = (TgF.Crossed(d1gui)).Dot(TgL);
-      
-      if( Ch%2 == 1 )
-	rev1 = Standard_True;
-      else
-	rev2 = Standard_True;
-      
-      if( sign < 0. ){
-	rev1 = !rev1;
-	rev2 = !rev2;
-      }
-      
-      if( rev1 )
-	TgF.Reverse();
-      if( rev2 )
-	TgL.Reverse();
-  
-      temp = (TgF.XYZ()).Multiplied(dis1);
-      pt1.SetXYZ( (ptgui.XYZ()).Added(temp) );
-      
-      Standard_Real dis2, tmpcos, tmpsin;
-      tmpcos = TgF.Dot(TgL);
-      tmpsin = sqrt(1. - tmpcos * tmpcos);  
-      
-      dis2   = dis1 / (tmpcos + tmpsin / tan(angle)); 
-      
-      temp = (TgL.XYZ()).Multiplied(dis2);
-      pt2.SetXYZ( (ptgui.XYZ()).Added(temp) );
-      
-      Standard_Real tol = tolesp*1.e2;
-//      Standard_Real u,v;
-      Extrema_GenLocateExtPS proj1(S2->Surface(), tol, tol);
-      proj1.Perform(pt1, SolDep(1), SolDep(2));
-      Extrema_GenLocateExtPS proj2(S1->Surface(), tol, tol);
-      proj2.Perform(pt2, SolDep(3), SolDep(4));
-      if( proj1.IsDone() ) {
-	(proj1.Point()).Parameter(SolDep(1),SolDep(2)); 
-      }
-      if( proj2.IsDone() ){
-	(proj2.Point()).Parameter(SolDep(3),SolDep(4)); 
-      }
-      
-      Standard_Boolean RetWalk =  TheWalk.PerformFirstSection(Func,Par,SolDep,
-							      tolesp,TolGuide,Pos2,Pos1);
-      Rtemp     = SolDep(1);
-      SolDep(1) = SolDep(3);
-      SolDep(3) = Rtemp;
-      Rtemp     = SolDep(2);
-      SolDep(2) = SolDep(4);
-      SolDep(4) = Rtemp;
-
-      return RetWalk;
+    ( HGuide->Curve() ).D1(Par,ptgui,d1gui);
+    //  ptgui = (S1->Surface()).Value(SolDep(1),SolDep(2));
+    
+    Func.Set(Par);
+    Func.Tangent(SolDep(1),SolDep(2),SolDep(3),SolDep(4),TgF,TgL,tmp1,tmp2);
+    
+    Standard_Boolean rev1 = Standard_False;
+    Standard_Boolean rev2 = Standard_False;
+    Standard_Real    sign = (TgF.Crossed(d1gui)).Dot(TgL);
+    
+    if( Ch%2 == 1 )
+      rev1 = Standard_True;
+    else
+      rev2 = Standard_True;
+    
+    if( sign < 0. ){
+      rev1 = !rev1;
+      rev2 = !rev2;
     }
-  }
+    
+    if( rev1 )
+      TgF.Reverse();
+    if( rev2 )
+      TgL.Reverse();
+    
+    temp = (TgF.XYZ()).Multiplied(dis1);
+    pt1.SetXYZ( (ptgui.XYZ()).Added(temp) );
+    
+    Standard_Real dis2, tmpcos, tmpsin;
+    tmpcos = TgF.Dot(TgL);
+    tmpsin = sqrt(1. - tmpcos * tmpcos);  
+    
+    dis2   = dis1 / (tmpcos + tmpsin / tan(angle)); 
+    
+    temp = (TgL.XYZ()).Multiplied(dis2);
+    pt2.SetXYZ( (ptgui.XYZ()).Added(temp) );
+    
+    Standard_Real tol = tolesp*1.e2;
+    //      Standard_Real u,v;
+    Extrema_GenLocateExtPS proj1(S1->Surface(), tol, tol);
+    proj1.Perform(pt1, SolDep(1), SolDep(2));
+    Extrema_GenLocateExtPS proj2(S2->Surface(), tol, tol);
+    proj2.Perform(pt2, SolDep(3), SolDep(4));
+    if( proj1.IsDone() ){
+      (proj1.Point()).Parameter(SolDep(1),SolDep(2)); 
+    }
+    if( proj2.IsDone() ){
+      (proj2.Point()).Parameter(SolDep(3),SolDep(4)); 
+    }
+    
+    return TheWalk.PerformFirstSection(Func,Par,SolDep,
+                                       tolesp,TolGuide,Pos1,Pos2);
+  } //distance and angle
 }
 
 
@@ -1610,94 +1490,112 @@ ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
   if(intl) Last = chsp->LastParameter(chsp->NbEdges());
 
   if (chsp->IsChamfer() == ChFiDS_Sym) {
-    BRepBlend_Chamfer  Func(S1,S2,HGuide);
-    BRepBlend_ChamfInv FInv(S1,S2,HGuide);
+    
+#if (defined(_MSC_VER) && (_MSC_VER < 1600))
+    std::auto_ptr<BlendFunc_GenChamfer>  pFunc;
+    std::auto_ptr<BlendFunc_GenChamfInv> pFInv;
+#else
+    std::unique_ptr<BlendFunc_GenChamfer>  pFunc;
+    std::unique_ptr<BlendFunc_GenChamfInv> pFInv;
+#endif  
+    if (chsp->Mode() == ChFiDS_ClassicChamfer)
+    {
+      pFunc.reset(new BRepBlend_Chamfer(S1,S2,HGuide));
+      pFInv.reset(new BRepBlend_ChamfInv(S1,S2,HGuide));
+    }
+    else
+    {
+      pFunc.reset(new BRepBlend_ConstThroat(S1,S2,HGuide));
+      pFInv.reset(new BRepBlend_ConstThroatInv(S1,S2,HGuide));
+    }
     Standard_Real dis;
     chsp->GetDist(dis);
-    Func.Set(dis, dis, Choix);
-    FInv.Set(dis, dis, Choix);
+    pFunc->Set(dis, dis, Choix);
+    pFInv->Set(dis, dis, Choix);
       
-    done = ComputeData(Data,HGuide,Spine,lin,S1,I1,S2,I2,Func,FInv,
+    done = ComputeData(Data,HGuide,Spine,lin,S1,I1,S2,I2,*pFunc,*pFInv,
 		       PFirst,MaxStep,Fleche,TolGuide,First,Last,
 		       Inside,Appro,Forward,Soldep,intf,intl,
 		       gd1,gd2,gf1,gf2,RecOnS1,RecOnS2);
     if(!done) return Standard_False; // ratrappage possible PMN 14/05/1998
-    done = CompleteData(Data,Func,lin,S1,S2,Or,gd1,gd2,gf1,gf2);
+    done = CompleteData(Data,*pFunc,lin,S1,S2,Or,gd1,gd2,gf1,gf2);
     if(!done) throw Standard_Failure("PerformSurf : Fail of approximation!");
   }
   else if (chsp->IsChamfer() == ChFiDS_TwoDist) {
-    BRepBlend_Chamfer  Func(S1,S2,HGuide);
-    BRepBlend_ChamfInv FInv(S1,S2,HGuide);
     Standard_Real d1, d2;
     chsp->Dists(d1,d2);
-    Func.Set(d1,d2,Choix);
-    FInv.Set(d1,d2,Choix);
     
-    done = ComputeData(Data,HGuide,Spine,lin,S1,I1,S2,I2,Func,FInv,
+#if (defined(_MSC_VER) && (_MSC_VER < 1600))
+    std::auto_ptr<BlendFunc_GenChamfer>  pFunc;
+    std::auto_ptr<BlendFunc_GenChamfInv> pFInv;
+#else
+    std::unique_ptr<BlendFunc_GenChamfer>  pFunc;
+    std::unique_ptr<BlendFunc_GenChamfInv> pFInv;
+#endif  
+    if (chsp->Mode() == ChFiDS_ClassicChamfer)
+    {
+      pFunc.reset(new BRepBlend_Chamfer(S1,S2,HGuide));
+      pFInv.reset(new BRepBlend_ChamfInv(S1,S2,HGuide));
+      pFunc->Set(d1,d2,Choix);
+      pFInv->Set(d1,d2,Choix);
+    }
+    else
+    {
+      Handle(ChFiDS_HElSpine) OffsetHGuide;
+      ChFiDS_ListOfHElSpine& ll = Spine->ChangeElSpines();
+      ChFiDS_ListOfHElSpine& ll_offset = Spine->ChangeOffsetElSpines();
+      ChFiDS_ListIteratorOfListOfHElSpine ILES(ll), ILES_offset(ll_offset);
+      for ( ; ILES.More(); ILES.Next(),ILES_offset.Next())
+      {
+        const Handle(ChFiDS_HElSpine)& aHElSpine = ILES.Value();
+        if (aHElSpine == HGuide)
+          OffsetHGuide = ILES_offset.Value();
+      }
+      
+      if (OffsetHGuide.IsNull())
+      {
+        cout<<endl<<"Construction of offset guide failed!"<<endl;
+        //exception
+      }
+      pFunc.reset(new BRepBlend_ConstThroatWithPenetration(S1,S2,OffsetHGuide));
+      pFInv.reset(new BRepBlend_ConstThroatWithPenetrationInv(S1,S2,OffsetHGuide));
+      Standard_Real Throat = Max(d1,d2);
+      pFunc->Set(Throat,Throat,Choix);
+      pFInv->Set(Throat,Throat,Choix);
+    }
+    
+    done = ComputeData(Data,HGuide,Spine,lin,S1,I1,S2,I2,*pFunc,*pFInv,
 		       PFirst,MaxStep,Fleche,TolGuide,First,Last,
 		       Inside,Appro,Forward,Soldep,intf,intl,
 		       gd1,gd2,gf1,gf2,RecOnS1,RecOnS2);
     if(!done) return Standard_False; // ratrappage possible PMN 14/05/1998
+    done = CompleteData(Data,*pFunc,lin,S1,S2,Or,gd1,gd2,gf1,gf2);
+    if(!done) throw Standard_Failure("PerformSurf : Fail of approximation!");
+  }
+  else { //distance and angle
+    Standard_Real d1, angle;
+    chsp->GetDistAngle(d1, angle);
+    
+    Standard_Integer Ch = Choix;
+
+    BRepBlend_ChAsym  Func(S1,S2,HGuide);
+    BRepBlend_ChAsymInv FInv(S1,S2,HGuide);
+    Func.Set(d1, angle, Ch);
+    FInv.Set(d1, angle, Ch);
+    
+    done = ComputeData(Data,HGuide,Spine,lin,S1,I1,S2,I2,Func,FInv,
+                       PFirst,MaxStep,Fleche,TolGuide,First,Last,
+                       Inside,Appro,Forward,Soldep,intf,intl,
+                       gd1,gd2,gf1,gf2,RecOnS1,RecOnS2);
+    
+    if(!done) return Standard_False; // ratrappage possible PMN 14/05/1998
     done = CompleteData(Data,Func,lin,S1,S2,Or,gd1,gd2,gf1,gf2);
     if(!done) throw Standard_Failure("PerformSurf : Fail of approximation!");
   }
-  else {
-    Standard_Real d1, angle;
-    Standard_Boolean disonF1;
-    chsp->GetDistAngle(d1, angle, disonF1);
-    
-    Standard_Integer Ch = FindChoiceDistAngle(Choix, disonF1);
-
-    if (disonF1) {
-      BRepBlend_ChAsym  Func(S1,S2,HGuide);
-      BRepBlend_ChAsymInv FInv(S1,S2,HGuide);
-      Func.Set(d1, angle, Ch);
-      FInv.Set(d1, angle, Ch);
-    
-      done = ComputeData(Data,HGuide,Spine,lin,S1,I1,S2,I2,Func,FInv,
-			 PFirst,MaxStep,Fleche,TolGuide,First,Last,
-			 Inside,Appro,Forward,Soldep,intf,intl,
-			 gd1,gd2,gf1,gf2,RecOnS1,RecOnS2);
-
-      if(!done) return Standard_False; // ratrappage possible PMN 14/05/1998
-      done = CompleteData(Data,Func,lin,S1,S2,Or,gd1,gd2,gf1,gf2);
-      if(!done) throw Standard_Failure("PerformSurf : Fail of approximation!");
-    }
-    else {
-      Standard_Real Rtemp;
-      BRepBlend_ChAsym  Func(S2, S1, HGuide);
-      BRepBlend_ChAsymInv FInv(S2, S1,HGuide);
-      Func.Set(d1, angle, Ch);
-      FInv.Set(d1, angle, Ch);
-
-      Rtemp     = Soldep(1);
-      Soldep(1) = Soldep(3);
-      Soldep(3) = Rtemp;
-      Rtemp     = Soldep(2);
-      Soldep(2) = Soldep(4);
-      Soldep(4) = Rtemp;
-
-      TopAbs_Orientation Or2 = S2->ChangeSurface().Face().Orientation();
-
-      done = ComputeData(Data,HGuide,Spine,lin,S2,I2,S1,I1,Func,FInv,
-			 PFirst,MaxStep,Fleche,TolGuide,First,Last,
-			 Inside,Appro,Forward,Soldep,intf,intl,
-			 gd2,gd1,gf2,gf1,RecOnS2,RecOnS1);
-
-      ChFiDS_CommonPoint tmp = Data->VertexFirstOnS1();
-      Data->ChangeVertexFirstOnS1() = Data->VertexFirstOnS2();
-      Data->ChangeVertexFirstOnS2() = tmp;
-      tmp = Data->VertexLastOnS1();
-      Data->ChangeVertexLastOnS1() = Data->VertexLastOnS2();
-      Data->ChangeVertexLastOnS2() = tmp;
-      if(!done) return Standard_False; // ratrappage possible PMN 14/05/1998
-      done = CompleteData(Data,Func,lin,S1,S2,Or2,gd1,gd2,gf1,gf2, Standard_True);
-      if(!done) throw Standard_Failure("PerformSurf : Fail of approximation!");
-    }      
-
-  }
+  
   return Standard_True;
 }
+
 void  ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
 				  const Handle(ChFiDS_HElSpine)&      , 
 				  const Handle(ChFiDS_Spine)&         , 
@@ -1946,8 +1844,6 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex&        V,
   Standard_Integer j;
   TopoDS_Face F[4];
   Standard_Real tmpang, tmd;
-  Standard_Boolean disonF1;
-
 
   for (i=0, j=0; i<2; i++, j += 2) {
     chsp[i] = Handle(ChFiDS_ChamfSpine)::DownCast(Spine[i]);
@@ -1961,17 +1857,10 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex&        V,
       chsp[i]->Dists(d[j],d[j+1]); 
     }
     else {
-      chsp[i]->GetDistAngle(tmd, tmpang, disonF1);
+      chsp[i]->GetDistAngle(tmd, tmpang);
       // an approximate calculation of distance 2 is done
-      if (disonF1) {
-	d[j]   = tmd;
-	d[j+1] = tmd * tan(tmpang); 
-      }
-      else
-      {
-	d[j]   = tmd * tan(tmpang);
-	d[j+1] = tmd;
-      }
+      d[j]   = tmd;
+      d[j+1] = tmd * tan(tmpang); 
     }
 
   }
@@ -2066,7 +1955,6 @@ void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex& V,
   }
   
   Standard_Real d[3][2], tmd, tmpangle;
-  Standard_Boolean disonF1;
   Standard_Integer j;
   TopoDS_Face F[3][2];
 
@@ -2084,17 +1972,11 @@ void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex& V,
        chsp[i]->Dists(d[i][0],d[i][1]); 
     }
     else {
-      chsp[i]->GetDistAngle(tmd, tmpangle, disonF1);
+      chsp[i]->GetDistAngle(tmd, tmpangle);
       // an approximate calculation of distance 2 is done
 
-      if (disonF1) {
-	d[i][0] = tmd;
-	d[i][1] = tmd * tan(tmpangle); 
-      }
-      else {
-	d[i][0] = tmd * tan(tmpangle);
-	d[i][1] = tmd;
-      }     
+      d[i][0] = tmd;
+      d[i][1] = tmd * tan(tmpangle); 
     }
   }
 
@@ -2231,42 +2113,4 @@ void ChFi3d_ChBuilder::ConexFaces (const Handle(ChFiDS_Spine)&  Spine,
     F1 = f1;
     F2 = f2;
   }
-}
-
-
-//=======================================================================
-//function : FindChoiceDistAngle
-//purpose  : F1, F2 connected to the edge so that F1 corresponds to distance
-//=======================================================================
-
-Standard_Integer ChFi3d_ChBuilder::FindChoiceDistAngle(const Standard_Integer Choice,
-						       const Standard_Boolean DisOnF1) const
-{
-  Standard_Integer ch = 0;  
-  if (!DisOnF1) {
-
-    switch (Choice) {
-      case 1 : ch = 2;
-               break;
-      case 2 : ch = 1;
-               break;
-      case 3 : ch = 8;
-               break;
-      case 4 : ch = 7;
-               break;
-      case 5 : ch = 6;
-               break;
-      case 6 : ch = 5;
-               break;
-      case 7 : ch = 4;
-               break;
-      case 8 : ch = 3;
-               break;
-    }
-
-  }
-  else
-    ch = Choice;
- 
-  return ch;
 }

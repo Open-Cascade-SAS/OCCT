@@ -28,6 +28,127 @@
 
 #include <Precision.hxx>
 
+//===============================================================================
+// function : chamf_throat_with_penetration
+// purpose  : command to construct chamfers with constant throat with penetration
+//            on several edges
+//            Here the chamfer is propagated on tangential edges to the 
+//            required edge
+//===============================================================================
+ 
+static Standard_Integer chamf_throat_with_penetration(Draw_Interpretor& di,
+                                                      Standard_Integer narg, 
+                                                      const char** a)
+{
+  if (narg < 7)
+    return 1;
+
+  TopoDS_Shape S = DBRep::Get(a[2]);
+  if (S.IsNull()) return 1;
+  
+  TopoDS_Edge E;
+  TopoDS_Face F;
+  Standard_Real offset, throat;
+  Standard_Integer i      = 3;
+  Standard_Integer NbArg  = 4;
+  
+  BRepFilletAPI_MakeChamfer aMCh(S);
+  aMCh.SetMode(ChFiDS_ConstThroatWithPenetrationChamfer);
+  
+  while (i + NbArg <= narg) {
+    TopoDS_Shape aLocalEdge(DBRep::Get(a[i], TopAbs_EDGE));
+    E = TopoDS::Edge(aLocalEdge);
+    TopoDS_Shape aLocalFace(DBRep::Get(a[i + 1], TopAbs_FACE));
+    F = TopoDS::Face(aLocalFace);
+    //      E = TopoDS::Edge(DBRep::Get(a[i], TopAbs_EDGE));
+    //      F = TopoDS::Face(DBRep::Get(a[i + 1], TopAbs_FACE));
+    if (!E.IsNull() && !F.IsNull() && (aMCh.Contour(E) == 0) )  {
+      offset = Draw::Atof(a[i + 2]);
+      throat = Draw::Atof(a[i + 3]);
+      
+      if (offset > Precision::Confusion() &&
+          throat > offset)
+        aMCh.Add(offset,throat,E ,F);
+    }
+    i += NbArg;
+  }
+  
+  // compute the chamfer and display the result
+  if (aMCh.NbContours() == 0 )
+  {
+    //cout<<"No suitable edges to chamfer"<<endl;
+    di<<"No suitable edges to chamfer\n";
+    return 1;
+  }
+  else aMCh.Build();
+  
+  if (aMCh.IsDone()){
+    DBRep::Set(a[1],aMCh);
+    return 0;
+  }
+  else {
+    //cout<<"compute of chamfer failed"<<endl;
+    di<<"compute of chamfer failed\n";
+    return 1;
+  }
+}
+
+//===============================================================================
+// function : chamf_throat
+// purpose  : command to construct chamfers with constant throat on several edges
+//            Here the chamfer is propagated on tangential edges to the 
+//            required edge
+//===============================================================================
+ 
+static Standard_Integer chamf_throat(Draw_Interpretor& di,
+                                     Standard_Integer narg, 
+                                     const char** a)
+{
+  if (narg < 5)
+    return 1;
+
+  TopoDS_Shape S = DBRep::Get(a[2]);
+  if (S.IsNull()) return 1;
+  
+  TopoDS_Edge E;
+  Standard_Real throat;
+  Standard_Integer i      = 3;
+  
+  BRepFilletAPI_MakeChamfer aMCh(S);
+  aMCh.SetMode(ChFiDS_ConstThroatChamfer);
+  
+  while (i + 1 < narg) {
+    TopoDS_Shape aLocalEdge(DBRep::Get(a[i], TopAbs_EDGE));
+    E = TopoDS::Edge(aLocalEdge);
+    if (!E.IsNull() && (aMCh.Contour(E) == 0) )  {
+      throat = Draw::Atof(a[i + 1]);
+      
+      if (throat > Precision::Confusion()) 
+        aMCh.Add(throat, E);
+    }
+    i += 2;
+  }
+  
+  // compute the chamfer and display the result
+  if (aMCh.NbContours() == 0 )
+  {
+    //cout<<"No suitable edges to chamfer"<<endl;
+    di<<"No suitable edges to chamfer\n";
+    return 1;
+  }
+  else aMCh.Build();
+  
+  if (aMCh.IsDone()){
+    DBRep::Set(a[1],aMCh);
+    return 0;
+  }
+  else {
+    //cout<<"compute of chamfer failed"<<endl;
+    di<<"compute of chamfer failed\n";
+    return 1;
+  }
+}
+
 //=========================================================================
 // function : chamfer
 // purpose  : command to construct chamfers on several edges
@@ -36,98 +157,78 @@
 //=========================================================================
  
 static Standard_Integer chamfer(Draw_Interpretor& di,
-				Standard_Integer narg, 
-				const char** a)
-     
+                                Standard_Integer narg, 
+                                const char** a)
 {
   // check the argument number of the command
   if (narg == 1) {
-    //cout <<" help for chamf : "<< endl;
-    //cout <<"   Construction by equal distances from edge          :  chamf newname shape edge face S dist"<< endl;
-    //cout <<"   Construction by two distances from edge            :  chamf newname shape edge face dist1 dist2"<< endl;
-    //cout <<"   Construction by distance from edge and given angle :  chamf newname shape edge face A dist angle"<< endl;
     di <<" help for chamf : \n";
-    di <<"   Construction by equal distances from edge          :  chamf newname shape edge face S dist\n";
+    di <<"   Construction by equal distances from edge          :  chamf newname shape edge dist\n";
     di <<"   Construction by two distances from edge            :  chamf newname shape edge face dist1 dist2\n";
     di <<"   Construction by distance from edge and given angle :  chamf newname shape edge face A dist angle\n";
   }
   else {
-    if (narg < 7) return 1;
+    if (narg < 5)
+      return 1;
   
     TopoDS_Shape S = DBRep::Get(a[2]);
-    if (S.IsNull()) return 1;
+    if (S.IsNull())
+      return 1;
 
     TopoDS_Edge E;
     TopoDS_Face F;
     Standard_Real d1,d2, angle;
     Standard_Integer i      = 3;
-    Standard_Integer Method = 1;
-    Standard_Integer NbArg  = 3;
 
     BRepFilletAPI_MakeChamfer aMCh(S);
 
-    if (!strcasecmp(a[i + 2], "S") ) Method = 0;
-
-    if (Method != 0) {
-      if (!strcasecmp(a[i + 2], "A")) {
-        Method = 2;
-        NbArg++;
-      }
-    }
-
-    while (i + NbArg < narg) {
+    while (i + 1 < narg) {
       TopoDS_Shape aLocalEdge(DBRep::Get(a[i], TopAbs_EDGE));
+      if (aLocalEdge.IsNull())
+        return 1;
       E = TopoDS::Edge(aLocalEdge);
       TopoDS_Shape aLocalFace(DBRep::Get(a[i + 1], TopAbs_FACE));
-      F = TopoDS::Face(aLocalFace);
-//      E = TopoDS::Edge(DBRep::Get(a[i], TopAbs_EDGE));
-//      F = TopoDS::Face(DBRep::Get(a[i + 1], TopAbs_FACE));
-      if (Method == 0) {
-        if (!E.IsNull() && !F.IsNull() && (aMCh.Contour(E) == 0) )  {
-          d1 = Draw::Atof(a[i + 3]);
-
-          if ( d1 > Precision::Confusion()) 
-	    aMCh.Add(d1,E ,F);
-        }
-        i += 4;
+      if (aLocalFace.IsNull())
+      {
+        //symmetric chamfer (one distance)
+        d1 = atof(a[i + 1]);
+        if (aMCh.Contour(E) == 0 &&
+            d1 > Precision::Confusion())
+          aMCh.Add(d1, E);
+        i += 2;
       }
-      else if (Method == 1) {
-        if (!E.IsNull() && !F.IsNull() && (aMCh.Contour(E) == 0) )  {
-          d1 = Draw::Atof(a[i + 2]);
-          d2 = Draw::Atof(a[i + 3]);
-      
-          if (   (d1 > Precision::Confusion())
-	      && (d2 > Precision::Confusion()) )
-	    aMCh.Add(d1,d2,E,F);
-        }
-        i += 4;
-      }
-      else {
-        if (!E.IsNull() && !F.IsNull() && (aMCh.Contour(E) == 0) )  {
-          d1     = Draw::Atof(a[i + 3]);
-          angle  = Draw::Atof(a[i + 4]);
-          angle *= M_PI / 180.;
-      
-          if (   (d1 > Precision::Confusion())
-	      && (angle > Precision::Confusion())
-              && (M_PI /  2.-  angle > Precision::Confusion()) )
-	    aMCh.AddDA(d1, angle, E, F);
-        }
-        i += 5;
-      }
+      else
+      {
+        F = TopoDS::Face(aLocalFace);
 
-      if ( i < narg) {
-        Method = 1;
-        NbArg  = 3;
-        if (!strcasecmp(a[i + 2], "S") ) Method = 0;
-
-        if (Method != 0) {
-          if (!strcasecmp(a[i + 2], "A")) {
-            Method = 2;
-            NbArg++;
+        if (i + 3 < narg)
+        {
+          if (!strcasecmp(a[i + 2], "A") &&
+              i + 4 < narg)
+          {
+            //chamfer with distance and angle
+            d1    = Draw::Atof(a[i + 3]);
+            angle = Draw::Atof(a[i + 4]);
+            angle *= M_PI / 180.;
+            if (aMCh.Contour(E) == 0 &&
+                d1    > Precision::Confusion() &&
+                angle > Precision::Confusion() &&
+                M_PI/2 - angle > Precision::Confusion())
+              aMCh.AddDA(d1, angle, E, F);
+            i += 5;
+          }
+          else
+          {
+            //chamfer with two distances
+            d1 = Draw::Atof(a[i + 2]);
+            d2 = Draw::Atof(a[i + 3]);
+            if (aMCh.Contour(E) == 0 &&
+                d1 > Precision::Confusion() &&
+                d2 > Precision::Confusion())
+              aMCh.Add(d1, d2, E, F);
+            i += 4;
           }
         }
-
       }
     }
 
@@ -150,8 +251,8 @@ static Standard_Integer chamfer(Draw_Interpretor& di,
       return 1;
     }
   }
-      return 0;
-
+  
+  return 0;
 }
 
 
@@ -177,4 +278,11 @@ void  BRepTest::ChamferCommands(Draw_Interpretor& theCommands)
   theCommands.Add("chamf",
 		  "for help call chamf without arguments",__FILE__,chamfer,g);
 
+  theCommands.Add("chamf_throat",
+		  "chamf_throat result shape edge throat"
+                  ,__FILE__,chamf_throat,g);
+  
+  theCommands.Add("chamf_throat_with_penetration",
+		  "chamf_throat_with_penetration result shape edge face offset throat",
+                  __FILE__,chamf_throat_with_penetration,g);
 }

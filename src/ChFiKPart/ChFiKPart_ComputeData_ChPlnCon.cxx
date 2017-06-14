@@ -58,14 +58,15 @@
 //=======================================================================
 Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
 				       const Handle(ChFiDS_SurfData)& Data, 
+                                       const ChFiDS_ChamfMode theMode,
 				       const gp_Pln& Pln, 
 				       const gp_Cone& Con, 
 				       const Standard_Real fu,
 				       const Standard_Real lu,
 				       const TopAbs_Orientation Or1,
 				       const TopAbs_Orientation Or2,
-				       const Standard_Real Dis1, 
-				       const Standard_Real Dis2,
+				       const Standard_Real theDis1, 
+				       const Standard_Real theDis2,
 				       const gp_Circ& Spine, 
 				       const Standard_Real First, 
 				       const TopAbs_Orientation Ofpl,
@@ -73,6 +74,26 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
 {
 
   Standard_Real angcon = Con.SemiAngle();
+
+  Standard_Real Dis1 = theDis1, Dis2 = theDis2;
+  Standard_Real Alpha = M_PI/2 - angcon;
+  Standard_Real CosHalfAlpha = Cos(Alpha/2);
+  if (theMode == ChFiDS_ConstThroatChamfer)
+    Dis1 = Dis2 = theDis1 / CosHalfAlpha;
+  else if (theMode == ChFiDS_ConstThroatWithPenetrationChamfer)
+  {
+    Standard_Real aDis1 = Min(theDis1, theDis2);
+    Standard_Real aDis2 = Max(theDis1, theDis2);
+    Standard_Real dis1dis1 = aDis1*aDis1, dis2dis2 = aDis2*aDis2;
+    Standard_Real SinAlpha = Sin(Alpha);
+    Standard_Real CosAlpha = Cos(Alpha);
+    Standard_Real CotanAlpha = CosAlpha/SinAlpha;
+    Dis1 = sqrt(dis2dis2 - dis1dis1) - aDis1*CotanAlpha;
+    Standard_Real CosBeta = sqrt(1-dis1dis1/dis2dis2)*CosAlpha + aDis1/aDis2*SinAlpha;
+    Standard_Real FullDist1 = aDis2/CosBeta;
+    Dis2 = FullDist1 - aDis1/SinAlpha;
+  }
+  
   Standard_Real sincon =Abs(Sin(angcon));
   Standard_Real angle;
   Standard_Boolean IsResol;

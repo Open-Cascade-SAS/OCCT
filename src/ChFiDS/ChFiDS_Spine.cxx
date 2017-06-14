@@ -40,29 +40,35 @@ IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_Spine,Standard_Transient)
 //function : ChFiDS_Spine
 //purpose  : 
 //=======================================================================
-ChFiDS_Spine::ChFiDS_Spine():
-       splitdone(Standard_False),
-       tolesp(Precision::Confusion()),
-       firstprolon(Standard_False), 
-       lastprolon(Standard_False),
-       firstistgt(Standard_False), 
-       lastistgt(Standard_False),
-       hasfirsttgt(Standard_False), 
-       haslasttgt(Standard_False),
-       hasref(Standard_False)
+ChFiDS_Spine::ChFiDS_Spine()
+: splitdone(Standard_False),
+  myMode(ChFiDS_ClassicChamfer),
+  tolesp(Precision::Confusion()),
+  firstprolon(Standard_False), 
+  lastprolon(Standard_False),
+  firstistgt(Standard_False), 
+  lastistgt(Standard_False),
+  hasfirsttgt(Standard_False), 
+  haslasttgt(Standard_False),
+  hasref(Standard_False)
 {
 }
 
-ChFiDS_Spine::ChFiDS_Spine(const Standard_Real Tol):
-       splitdone(Standard_False),
-       tolesp(Tol),
-       firstprolon(Standard_False), 
-       lastprolon(Standard_False),
-       firstistgt(Standard_False), 
-       lastistgt(Standard_False),
-       hasfirsttgt(Standard_False), 
-       haslasttgt(Standard_False),
-       hasref(Standard_False)
+//=======================================================================
+//function : ChFiDS_Spine
+//purpose  : 
+//=======================================================================
+ChFiDS_Spine::ChFiDS_Spine(const Standard_Real Tol)
+  : splitdone(Standard_False),
+    myMode(ChFiDS_ClassicChamfer),
+    tolesp(Tol),
+    firstprolon(Standard_False), 
+    lastprolon(Standard_False),
+    firstistgt(Standard_False), 
+    lastistgt(Standard_False),
+    hasfirsttgt(Standard_False), 
+    haslasttgt(Standard_False),
+    hasref(Standard_False)
 {
 }
 
@@ -74,6 +80,16 @@ ChFiDS_Spine::ChFiDS_Spine(const Standard_Real Tol):
 void ChFiDS_Spine::AppendElSpine(const Handle(ChFiDS_HElSpine)& Els)
 {
   elspines.Append(Els);
+}
+
+//=======================================================================
+//function : AppendOffsetElSpine
+//purpose  : 
+//=======================================================================
+
+void ChFiDS_Spine::AppendOffsetElSpine(const Handle(ChFiDS_HElSpine)& Els)
+{
+  offset_elspines.Append(Els);
 }
 
 //=======================================================================
@@ -118,6 +134,16 @@ Handle(ChFiDS_HElSpine) ChFiDS_Spine::ElSpine(const Standard_Real W) const
 ChFiDS_ListOfHElSpine& ChFiDS_Spine::ChangeElSpines() 
 {
   return elspines;
+}
+
+//=======================================================================
+//function : ChangeOffsetElSpines
+//purpose  : 
+//=======================================================================
+
+ChFiDS_ListOfHElSpine& ChFiDS_Spine::ChangeOffsetElSpines() 
+{
+  return offset_elspines;
 }
 
 //=======================================================================

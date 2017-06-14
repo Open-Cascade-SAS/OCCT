@@ -1488,6 +1488,22 @@ Standard_Boolean ChFi3d_Builder::ComputeData
  const Standard_Boolean RecOnS1,
  const Standard_Boolean RecOnS2)
 {
+  //Get offset guide if exists
+  Handle(ChFiDS_HElSpine) OffsetHGuide;
+  if (!Spine.IsNull() &&
+      Spine->Mode() == ChFiDS_ConstThroatWithPenetrationChamfer)
+  {
+    ChFiDS_ListOfHElSpine& ll = Spine->ChangeElSpines();
+    ChFiDS_ListOfHElSpine& ll_offset = Spine->ChangeOffsetElSpines();
+    ChFiDS_ListIteratorOfListOfHElSpine ILES(ll), ILES_offset(ll_offset);
+    for ( ; ILES.More(); ILES.Next(),ILES_offset.Next())
+    {
+      const Handle(ChFiDS_HElSpine)& aHElSpine = ILES.Value();
+      if (aHElSpine == HGuide)
+        OffsetHGuide = ILES_offset.Value();
+    }
+  }
+  
   //The extrensions are created in case of output of two domains
   //directly and not by path ( too hasardous ).
   Data->FirstExtensionValue(0);
@@ -1617,6 +1633,12 @@ Standard_Boolean ChFi3d_Builder::ComputeData
       HGuide->ChangeCurve().FirstParameter(SpFirst);
       HGuide->ChangeCurve().LastParameter (SpLast );
       HGuide->ChangeCurve().SetOrigin(SpFirst);
+      if (!OffsetHGuide.IsNull())
+      {
+        OffsetHGuide->ChangeCurve().FirstParameter(SpFirst);
+        OffsetHGuide->ChangeCurve().LastParameter (SpLast );
+        OffsetHGuide->ChangeCurve().SetOrigin(SpFirst);
+      }
     }
     Standard_Boolean complmnt = Standard_True;
     if (Inside)  complmnt = TheWalk.Complete(Func,FInv,SpLast);
@@ -2076,6 +2098,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 Standard_Boolean ChFi3d_Builder::SimulData
 (Handle(ChFiDS_SurfData)& /*Data*/,
  const Handle(ChFiDS_HElSpine)& HGuide,
+ const Handle(ChFiDS_HElSpine)& AdditionalHGuide,
  Handle(BRepBlend_Line)& Lin,
  const Handle(Adaptor3d_HSurface)& S1,
  const Handle(Adaptor3d_TopolTool)& I1,
@@ -2158,6 +2181,11 @@ Standard_Boolean ChFi3d_Builder::SimulData
 	SpLast  = SpFirst + HGuide->Period();
 	HGuide->ChangeCurve().FirstParameter(SpFirst);
 	HGuide->ChangeCurve().LastParameter (SpLast );
+        if (!AdditionalHGuide.IsNull())
+        {
+          AdditionalHGuide->ChangeCurve().FirstParameter(SpFirst);
+          AdditionalHGuide->ChangeCurve().LastParameter (SpLast );
+        }
       }
       Standard_Boolean complmnt = Standard_True;
       if (Inside)  complmnt = TheWalk.Complete(Func,FInv,SpLast);

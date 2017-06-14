@@ -963,7 +963,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
             LevelOfEmptyInmyIntersectionOn2S=0;
             if(LevelOfIterWithoutAppend < 10)
             {
-              aStatus = TestDeflection(ChoixIso);
+              aStatus = TestDeflection(ChoixIso, aStatus);
             }			
             else
             {
@@ -1755,7 +1755,7 @@ Standard_Boolean IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsop
         return bOutOfTangentZone;
       }
 
-      aStatus = TestDeflection(ChoixIso);
+      aStatus = TestDeflection(ChoixIso, aStatus);
 
       if(aStatus == IntWalk_OK) {
 
@@ -2996,7 +2996,8 @@ namespace {
   static const Standard_Real d = 7.0;
 }
 
-IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection(const IntImp_ConstIsoparametric choixIso)
+IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection(const IntImp_ConstIsoparametric choixIso,
+                                                           const IntWalk_StatusDeflection  theStatus)
 
 // test if vector is observed by calculating an increase of vector 
 //     or the previous point and its tangent, the new calculated point and its  
@@ -3391,7 +3392,8 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection(const IntImp_ConstIso
       const Standard_Real anInvSqAbsArcDeflMin = 4.0*anInvSqAbsArcDeflMax;
       const Standard_Real aSinB2Min = 1.0 - 2.0/(1.0 + anInvSqAbsArcDeflMin);
 
-      if((aSinB2Min < 0.0) || (aCosBetweenTangent >= 2.0 * aSinB2Min * aSinB2Min - 1.0))
+      if (theStatus != IntWalk_PasTropGrand &&
+          ((aSinB2Min < 0.0) || (aCosBetweenTangent >= 2.0 * aSinB2Min * aSinB2Min - 1.0)))
       {//Real deflection is less than tolconf/2.0
         aStatus = IntWalk_StepTooSmall;
       }

@@ -19,6 +19,7 @@
 
 Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
 				       const Handle(ChFiDS_SurfData)& Data, 
+                                       const ChFiDS_ChamfMode theMode,
 				       const gp_Pln& Pln, 
 				       const gp_Cone& Con, 
 				       const Standard_Real fu,

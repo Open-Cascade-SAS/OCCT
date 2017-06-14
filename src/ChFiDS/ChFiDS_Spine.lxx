@@ -125,6 +125,16 @@ inline const TopoDS_Edge&  ChFiDS_Spine::Edges(const Standard_Integer I) const
 }
 
 //=======================================================================
+//function : OffsetEdges
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Edge&  ChFiDS_Spine::OffsetEdges(const Standard_Integer I) const 
+{
+  return TopoDS::Edge(offsetspine.Value(I));
+}
+
+//=======================================================================
 //function : SetEdges
 //purpose  : 
 //=======================================================================
@@ -132,6 +142,16 @@ inline const TopoDS_Edge&  ChFiDS_Spine::Edges(const Standard_Integer I) const
 inline void  ChFiDS_Spine::SetEdges(const TopoDS_Edge& E)
 {
   spine.Append(E);
+}
+
+//=======================================================================
+//function : SetOffsetEdges
+//purpose  : 
+//=======================================================================
+
+inline void  ChFiDS_Spine::SetOffsetEdges(const TopoDS_Edge& E)
+{
+  offsetspine.Append(E);
 }
 
 //=======================================================================
@@ -145,10 +165,31 @@ inline void  ChFiDS_Spine::PutInFirst(const TopoDS_Edge& E)
 }
 
 //=======================================================================
+//function : PutInFirstOffset
+//purpose  : 
+//=======================================================================
+
+inline void  ChFiDS_Spine::PutInFirstOffset(const TopoDS_Edge& E)
+{
+  offsetspine.InsertBefore(1,E);
+}
+
+//=======================================================================
 //function : CurrentIndexOfElementarySpine
 //purpose  : 
 //=======================================================================
 inline Standard_Integer ChFiDS_Spine::CurrentIndexOfElementarySpine() const 
 {
   return indexofcurve;
+}
+
+//=======================================================================
+//function : Mode
+//purpose  : 
+//=======================================================================
+
+inline ChFiDS_ChamfMode  ChFiDS_Spine::Mode() const
+{
+
+  return myMode;
 }
