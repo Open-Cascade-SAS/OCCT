@@ -1,0 +1,43 @@
+puts "========"
+puts "OCC28813"
+puts "========"
+puts ""
+#######################################################################
+# Visualization, AIS_ColorScale - color scale title invalid placement
+#######################################################################
+
+vinit
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+set anImage3 $imagedir/${casename}_3.png
+set anImage4 $imagedir/${casename}_4.png
+set anImage5 $imagedir/${casename}_5.png
+set anImage6 $imagedir/${casename}_6.png
+set anImage7 $imagedir/${casename}_7.png
+set anImage8 $imagedir/${casename}_8.png
+
+
+vcolorscale cs -demo -title Test
+vdump $anImage1
+
+vcolorscale cs -xy 10 20
+vdump $anImage2
+
+vcolorscale cs -height 150
+vdump $anImage3
+
+vcolorscale cs -height 250
+vdump $anImage4
+
+vcolorscale cs -xy 10 100
+vdump $anImage5
+
+vcolorscale cs -xy 10 150
+vdump $anImage6
+
+vcolorscale cs -height 150
+vdump $anImage7
+
+vcolorscale cs -height 250
+vdump $anImage8
