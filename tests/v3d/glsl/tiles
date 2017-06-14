@@ -65,30 +65,30 @@ vsetwidth -noupdate lbr 2
 vdrawtext t2 "Label" -pos 1 0 1 -font $aLabelFont
 vdisplay b2 -trsfPers zoom -trsfPersPos 1 0 1
 
-vdump $::imagedir/${::casename}_409x409@tile0.png
-vdump $::imagedir/${::casename}_409x409@tile128.png  -tileSize 128
-vdump $::imagedir/${::casename}_409x409@tile1024.png -tileSize 1024
-vdump $::imagedir/${::casename}_1920x1080@tile0.png    -width 1920 -height 1920
-vdump $::imagedir/${::casename}_1920x1080@tile128.png  -width 1920 -height 1920 -tileSize 128
-vdump $::imagedir/${::casename}_1920x1080@tile1024.png -width 1920 -height 1920 -tileSize 1024
-diffimage $::imagedir/${::casename}_409x409@tile0.png $::imagedir/${::casename}_409x409@tile128.png 0 0 0 $::imagedir/${::casename}_409x409@tile128diff.png
+vdump $::imagedir/${::casename}_409x409_tile0.png
+vdump $::imagedir/${::casename}_409x409_tile128.png  -tileSize 128
+vdump $::imagedir/${::casename}_409x409_tile1024.png -tileSize 1024
+vdump $::imagedir/${::casename}_1920x1080_tile0.png    -width 1920 -height 1920
+vdump $::imagedir/${::casename}_1920x1080_tile128.png  -width 1920 -height 1920 -tileSize 128
+vdump $::imagedir/${::casename}_1920x1080_tile1024.png -width 1920 -height 1920 -tileSize 1024
+diffimage $::imagedir/${::casename}_409x409_tile0.png $::imagedir/${::casename}_409x409_tile128.png 0 0 0 $::imagedir/${::casename}_409x409_tile128diff.png
 
 # check dump with stereo
 vstereo anaglyph
-vdump $::imagedir/${::casename}_409x409@stereotile0.png      -stereo blend
-vdump $::imagedir/${::casename}_409x409@stereotile128.png    -stereo blend -tileSize 128
-vdump $::imagedir/${::casename}_409x409@stereotile1024.png   -stereo blend -tileSize 1024
-vdump $::imagedir/${::casename}_1920x1080@stereotile0.png    -width 1920 -height 1920 -stereo blend
-vdump $::imagedir/${::casename}_1920x1080@stereotile128.png  -width 1920 -height 1920 -stereo blend -tileSize 128
-vdump $::imagedir/${::casename}_1920x1080@stereotile1024.png -width 1920 -height 1920 -stereo blend -tileSize 1024
-diffimage $::imagedir/${::casename}_409x409@stereotile0.png $::imagedir/${::casename}_409x409@stereotile128.png 0 0 0 $::imagedir/${::casename}_409x409@stereotile128diff.png
+vdump $::imagedir/${::casename}_409x409_stereotile0.png      -stereo blend
+vdump $::imagedir/${::casename}_409x409_stereotile128.png    -stereo blend -tileSize 128
+vdump $::imagedir/${::casename}_409x409_stereotile1024.png   -stereo blend -tileSize 1024
+vdump $::imagedir/${::casename}_1920x1080_stereotile0.png    -width 1920 -height 1920 -stereo blend
+vdump $::imagedir/${::casename}_1920x1080_stereotile128.png  -width 1920 -height 1920 -stereo blend -tileSize 128
+vdump $::imagedir/${::casename}_1920x1080_stereotile1024.png -width 1920 -height 1920 -stereo blend -tileSize 1024
+diffimage $::imagedir/${::casename}_409x409_stereotile0.png $::imagedir/${::casename}_409x409_stereotile128.png 0 0 0 $::imagedir/${::casename}_409x409_stereotile128diff.png
 
 # check dump with Ray Tracing
 vraytrace 1
-vdump $::imagedir/${::casename}_409x409@rttile0.png      -stereo blend
-vdump $::imagedir/${::casename}_409x409@rttile128.png    -stereo blend -tileSize 128
-vdump $::imagedir/${::casename}_409x409@rttile1024.png   -stereo blend -tileSize 1024
-vdump $::imagedir/${::casename}_1920x1080@rttile0.png    -width 1920 -height 1920 -stereo blend
-vdump $::imagedir/${::casename}_1920x1080@rttile128.png  -width 1920 -height 1920 -stereo blend -tileSize 128
-vdump $::imagedir/${::casename}_1920x1080@rttile1024.png -width 1920 -height 1920 -stereo blend -tileSize 1024
+vdump $::imagedir/${::casename}_409x409_rttile0.png      -stereo blend
+vdump $::imagedir/${::casename}_409x409_rttile128.png    -stereo blend -tileSize 128
+vdump $::imagedir/${::casename}_409x409_rttile1024.png   -stereo blend -tileSize 1024
+vdump $::imagedir/${::casename}_1920x1080_rttile0.png    -width 1920 -height 1920 -stereo blend
+vdump $::imagedir/${::casename}_1920x1080_rttile128.png  -width 1920 -height 1920 -stereo blend -tileSize 128
+vdump $::imagedir/${::casename}_1920x1080_rttile1024.png -width 1920 -height 1920 -stereo blend -tileSize 1024
 vraytrace 0
