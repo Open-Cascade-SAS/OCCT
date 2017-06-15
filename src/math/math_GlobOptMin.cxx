@@ -343,6 +343,10 @@ Standard_Boolean math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt
 //=======================================================================
 void math_GlobOptMin::computeInitialValues()
 {
+  const Standard_Real aMinLC = 0.01;
+  const Standard_Real aMaxLC = 1000.;
+  const Standard_Real aMinEps = 0.1;
+  const Standard_Real aMaxEps = 100.;
   Standard_Integer i;
   math_Vector aCurrPnt(1, myN);
   math_Vector aBestPnt(1, myN);
@@ -374,10 +378,10 @@ void math_GlobOptMin::computeInitialValues()
 
   myC = myInitC;
   aLipConst *= Sqrt(myN) / aStep;
-  if (aLipConst < myC * 0.1)
-    myC = Max(aLipConst * 0.1, 0.01);
-  else if (aLipConst > myC * 5)
-    myC = Min(myC * 5, 50.0);
+  if (aLipConst < myC * aMinEps)
+    myC = Max(aLipConst * aMinEps, aMinLC);
+  else if (aLipConst > myC * aMaxEps)
+    myC = Min(myC * aMaxEps, aMaxLC);
 
   // Clear all solutions except one.
   if (myY.Size() != myN)

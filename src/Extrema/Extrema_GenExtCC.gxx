@@ -211,6 +211,7 @@ void Extrema_GenExtCC::Perform()
   C2.Intervals(anIntervals2, aContinuity);
 
   // Lipchitz constant computation.
+  const Standard_Real aMaxLC = 10000.;
   Standard_Real aLC = 9.0; // Default value.
   const Standard_Real aMaxDer1 = 1.0 / C1.Resolution(1.0);
   const Standard_Real aMaxDer2 = 1.0 / C2.Resolution(1.0);
@@ -224,6 +225,11 @@ void Extrema_GenExtCC::Perform()
   const Standard_Real aCR = 0.001;
   if (aMaxDer1 / aMaxDer < aCR || aMaxDer2 / aMaxDer < aCR)
   {
+    isConstLockedFlag = Standard_True;
+  }
+  if (aMaxDer > aMaxLC)
+  {
+    aLC = aMaxLC;
     isConstLockedFlag = Standard_True;
   }
   if (C1.GetType() == GeomAbs_Line)
