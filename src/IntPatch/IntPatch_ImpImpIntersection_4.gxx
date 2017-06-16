@@ -3212,7 +3212,7 @@ static IntPatch_ImpImpIntersection::IntStatus
               Standard_Boolean isChanged = Standard_False;
               for (Standard_Integer i = 0; i < aNbWLines; i++)
               {
-                if (aWLFindStatus[i] == WLFStatus_Absent)
+                if ((aWLFindStatus[i] == WLFStatus_Absent) || (aWLine[i]->NbPnts() == 0))
                   continue;
 
                 Standard_Real aU1c = 0.0, aV1c = 0.0;
