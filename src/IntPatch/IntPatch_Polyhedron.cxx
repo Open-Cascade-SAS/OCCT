@@ -207,7 +207,12 @@ Standard_Real IntPatch_Polyhedron::DeflectionOnTriangle
   gp_XYZ XYZ2=P3.XYZ()-P2.XYZ();
   gp_XYZ XYZ3=P1.XYZ()-P3.XYZ();
   gp_Vec NormalVector((XYZ1^XYZ2)+(XYZ2^XYZ3)+(XYZ3^XYZ1));
-  NormalVector.Normalize();
+  Standard_Real aNormLen = NormalVector.Magnitude();
+  if (aNormLen < gp::Resolution()) {
+    return 0.;
+  }
+  //
+  NormalVector.Divide(aNormLen);
   //-- Calcul du point u,v  au centre du triangle
   Standard_Real u = (u1+u2+u3)/3.0;
   Standard_Real v = (v1+v2+v3)/3.0;
@@ -548,8 +553,14 @@ void IntPatch_Polyhedron::PlaneEquation (const Standard_Integer Triang,
   if(v3.SquareModulus()<=LONGUEUR_MINI_EDGE_TRIANGLE) { NormalVector.SetCoord(1.0,0.0,0.0); return; } 
 
   NormalVector= (v1^v2)+(v2^v3)+(v3^v1);
-  NormalVector.Normalize();
-  PolarDistance = NormalVector * Point(i1).XYZ();
+  Standard_Real aNormLen = NormalVector.Modulus();
+  if (aNormLen < gp::Resolution()) {
+    PolarDistance = 0.;
+  }
+  else {
+    NormalVector.Divide(aNormLen);
+    PolarDistance = NormalVector * Point(i1).XYZ();
+  }
 }
 //=======================================================================
 //function : Contain

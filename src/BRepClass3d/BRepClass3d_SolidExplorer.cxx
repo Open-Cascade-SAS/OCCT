@@ -603,17 +603,20 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
           {
             gp_Vec Norm = aVecD1U.Crossed (aVecD1V);
             Standard_Real tt = Norm.Magnitude();
-            tt = Abs (Norm.Dot (V)) / (tt * Par);
-            if (tt > maxscal)
+            if (tt > gp::Resolution())
             {
-              maxscal = tt;
-              L = gp_Lin (P, V);
-              _Par = Par;
-              ptfound = Standard_True;
-              if (maxscal>0.2)
+              tt = Abs (Norm.Dot (V)) / (tt * Par);
+              if (tt > maxscal)
               {
-                myParamOnEdge=svmyparam;
-                return 0;
+                maxscal = tt;
+                L = gp_Lin (P, V);
+                _Par = Par;
+                ptfound = Standard_True;
+                if (maxscal>0.2)
+                {
+                  myParamOnEdge=svmyparam;
+                  return 0;
+                }
               }
             }
           }

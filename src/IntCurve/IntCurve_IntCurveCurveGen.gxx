@@ -49,6 +49,11 @@ void IntCurve_IntCurveCurveGen::Perform(const TheCurve& C,
     {
       Standard_Real paraminf = TheCurveTool::FirstParameter(C);
       Standard_Real paramsup = TheCurveTool::LastParameter(C);
+      if (Precision::IsInfinite(paraminf) && Precision::IsInfinite(paramsup)) {
+        done = Standard_False;
+        return;
+      }
+      //
       if(paraminf>-Precision::Infinite()) { 
 	if(paramsup<Precision::Infinite()) { 
 	  //--         paraminf-----------paramsup
