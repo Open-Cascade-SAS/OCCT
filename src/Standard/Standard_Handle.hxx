@@ -35,16 +35,26 @@ namespace opencascade {
 
   //! Intrusive smart pointer for use with Standard_Transient class and its descendants.
   //!
-  //! This class is similar to boost::intrusive_ptr<>, with additional
-  //! feature historically supported by Handles in OCCT:
-  //! it has type conversion to const reference to handle to the base types,
-  //! which allows it to be passed by reference
-  //! in functions accepting reference to handle to base class.
+  //! This class is similar to boost::intrusive_ptr<>. The reference counter
+  //! is part of the base class (Standard_Transient), thus creation of a handle
+  //! does not require allocation of additional memory for the counter.
+  //! All handles to the same object share the common counter; object is deleted
+  //! when the last handle pointing on it is destroyed. It is safe to create a new
+  //! handle from plain C pointer to the object already pointed by another handle.
+  //! The same object can be referenced by handles of different types (as soon as 
+  //! they are compatible with the object type).
   //!
+  //! Handle has type cast operator to const reference to handle to the base
+  //! types, which allows it to be passed by reference in functions accepting 
+  //! reference to handle to base class, without copying.
+  //!
+  //! By default, the type cast operator is provided also for non-const reference.
   //! These casts (potentially unsafe) can be disabled by defining macro
   //! OCCT_HANDLE_NOCAST; if it is defined, generalized copy constructor
   //! and assignment operators are defined allowing to initialize handle
   //! of base type from handle to derived type.
+  //!
+  //! Weak pointers are not supported.
   template <class T>
   class handle
   {
