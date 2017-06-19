@@ -1873,7 +1873,11 @@ proc _diff_img_name {dir1 dir2 casepath imgfile} {
 
 # auxiliary procedure to produce string comparing two values
 proc _diff_show_ratio {value1 value2} {
-    return "$value1 / $value2 \[[format "%+5.2f%%" [expr 100 * ($value1 - $value2) / double($value2)]]\]"
+    if {[expr double ($value2)] == 0.} {
+        return "$value1 / $value2"
+    } else {
+        return "$value1 / $value2 \[[format "%+5.2f%%" [expr 100 * ($value1 - $value2) / double($value2)]]\]"
+    }
 }
 
 # procedure to check cpu user time
