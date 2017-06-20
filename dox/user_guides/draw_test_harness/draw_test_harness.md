@@ -9854,14 +9854,17 @@ projpcurve <edge> <face>  <Tol> <X> <Y> <Z> [<start_param>]
 **projpcurve** returns the projection of a given point on a given curve on surface. The curve on surface is defined by giving the edge and face names. Edge must have curve 2D repesentation on the face. Optional parameter <i>\<start_param\></i> is any parameter of pcurve, which is used by algoritm as start point for searching projection of given point with help of local Extrema algorithm. If this parameter is not set, algorithm uses whole parametric interval of pcurve for searching projection.   
 
 **Example:** 
+
 ~~~~~ 
-##Using global searching   
+# Using global searching   
 projpcurve f_1 f 1.e-7 0.877 0 0.479
 ==Point: 0.87762772831890712 0 0.47934285275342808
 ==Param: 0.49990578239977856
 ==Dist: 0.0007152557954264938
 ~~~~~
-##Using starting parameter on edge
+
+~~~~~
+# Using starting parameter on edge
 projpcurve f_1 f 1.e-7 0.877 0 0.479 .6
 ==Point: 0.87762772831890712 0 0.47934285275342808
 ==Param: 0.49990578239977856
