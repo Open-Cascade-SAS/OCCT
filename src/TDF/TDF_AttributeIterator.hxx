@@ -26,16 +26,20 @@
 #include <TDF_Label.hxx>
 #include <TDF_LabelNodePtr.hxx>
 
-// DO NOT USE THIS CLASS WITHOUT AUTHORIZATION!
-//
 // This class provides a way to iterates on the
 // up-to-date (current) valid attributes of a label.
 //
-// Even a Forgotten attribute may be found if this
+// This class should not be used for standard attributes workflow.
+// Application allways knows what to search at particular label.
+// So, use IsAttribute and FindAttibute methods of
+// TDF_Label to check and get attributes in usual way.
+// This class may be used for processing of content of labels
+// in generic way, like copy-tool, specific save/restore algorithms,
+// etc.
+//
+// Even a forgotten attribute may be found if this
 // option is set. To use this possibility, look at
 // the constructor.
-// 
-// Sorry: nobody needs this iterator but its friends!
 
 class TDF_AttributeIterator  {
 
