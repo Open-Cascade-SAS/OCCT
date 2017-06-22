@@ -2333,6 +2333,13 @@ static Standard_Integer OCC28784(Draw_Interpretor&, Standard_Integer argc, const
   return 0;
 }
 
+static Standard_Integer OCC28829 (Draw_Interpretor&, Standard_Integer, const char**)
+{
+  // do something that causes FPE exception
+  std::cout << "sqrt(-1) = " << sqrt (-1.) << std::endl;
+  return 0;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -2355,6 +2362,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC28389", "OCC28389", __FILE__, OCC28389, group);
   theCommands.Add("OCC28594", "OCC28594", __FILE__, OCC28594, group);
   theCommands.Add("OCC28784", "OCC28784 result shape", __FILE__, OCC28784, group);
+  theCommands.Add("OCC28829", "OCC28829: perform invalid FPE operation", __FILE__, OCC28829, group);
 
   return;
 }

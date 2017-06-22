@@ -872,7 +872,6 @@ static void SegvHandler(const int theSignal,
 
 void OSD::SetSignal(const Standard_Boolean aFloatingSignal) 
 {
-  static int first_time = 3 ;
   struct sigaction act, oact;
   int              stat = 0;
 
@@ -894,27 +893,25 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
     }
 #elif defined (__linux__)
     feenableexcept (FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
-    //feenableexcept (FE_INVALID | FE_DIVBYZERO);
     fFltExceptions = Standard_True;
 #endif
   }
-  else if ( first_time & 1 ) {
-//    cout << "SetSignal( Standard_False ) is not implemented..." << endl ;
-    first_time = first_time & (~ 1) ;
+  else
+  {
+#if defined (__linux__)
+    fedisableexcept (FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
+    fFltExceptions = Standard_False;
+#endif
   }
 
 #if defined (sgi) || defined (IRIX )
- if ( first_time & 2 ) {
-   char *TRAP_FPE = getenv("TRAP_FPE") ;
-   if ( TRAP_FPE == NULL ) {
+ char *TRAP_FPE = getenv("TRAP_FPE") ;
+ if ( TRAP_FPE == NULL ) {
 #ifdef OCCT_DEBUG
-     cout << "On SGI you must set TRAP_FPE environment variable : " << endl ;
-     cout << "set env(TRAP_FPE) \"UNDERFL=FLUSH_ZERO;OVERFL=DEFAULT;DIVZERO=DEFAULT;INT_OVERFL=DEFAULT\" or" << endl ;
-     cout << "setenv TRAP_FPE \"UNDERFL=FLUSH_ZERO;OVERFL=DEFAULT;DIVZERO=DEFAULT;INT_OVERFL=DEFAULT\"" << endl ;
+   cout << "On SGI you must set TRAP_FPE environment variable : " << endl ;
+   cout << "set env(TRAP_FPE) \"UNDERFL=FLUSH_ZERO;OVERFL=DEFAULT;DIVZERO=DEFAULT;INT_OVERFL=DEFAULT\" or" << endl ;
+   cout << "setenv TRAP_FPE \"UNDERFL=FLUSH_ZERO;OVERFL=DEFAULT;DIVZERO=DEFAULT;INT_OVERFL=DEFAULT\"" << endl ;
 #endif
-//     exit(1) ;
-     first_time = first_time & (~ 2) ;
-   }
  }
 #endif
 

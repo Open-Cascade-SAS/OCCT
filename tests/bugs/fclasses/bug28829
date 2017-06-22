@@ -1,0 +1,15 @@
+# check that FPE signals can be both disabled and enabled
+
+pload QAcommands
+
+# start with enabled signals
+dsetsignal 1
+
+# first, disable
+dsetsignal 0
+OCC28829
+
+# then, enable
+puts "REQUIRED OCC28829 All: Standard_NumericError"
+dsetsignal 1
+catch {OCC28829}
