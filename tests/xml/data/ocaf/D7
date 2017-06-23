@@ -1,0 +1,12 @@
+#Test of bug 28842 (failure on open a standard OCAF document on Fedora).
+
+Open [locate_data_file save_V7_8_0_GEOM_MDTV-Standard.sgd] D
+
+# Check a shape.
+set res [CheckLabel D 0:1:20:1:1:2]
+set index [lsearch ${res} TNaming_NamedShape]
+if { ${index} == -1} {
+    puts "Error: reading of the document failed."
+} else {
+    puts "OK"
+}

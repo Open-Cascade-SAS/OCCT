@@ -644,7 +644,8 @@ Handle(TopoDS_TShape) ShapePersistent_BRep::pTVertex::createTShape() const
   aTVertex->Tolerance (myTolerance);
   aTVertex->Pnt       (myPnt);
 
-  myPoints->Import (aTVertex->ChangePoints());
+  if (myPoints)
+    myPoints->Import (aTVertex->ChangePoints());
 
   return aTVertex;
 }
@@ -662,7 +663,8 @@ Handle(TopoDS_TShape) ShapePersistent_BRep::pTEdge::createTShape() const
   aTEdge->SameRange     ((myFlags & RangeMask)       != 0);
   aTEdge->Degenerated   ((myFlags & DegeneratedMask) != 0);
 
-  myCurves->Import (aTEdge->ChangeCurves());
+  if (myCurves)
+    myCurves->Import (aTEdge->ChangeCurves());
 
   return aTEdge;
 }
