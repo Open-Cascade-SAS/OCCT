@@ -59,7 +59,7 @@ public:
      const Standard_Boolean withoutForgotten = Standard_True) ;
   inline   Standard_Boolean More() const;
   Standard_EXPORT   void Next() ;
-  inline   TDF_Attribute * Value() const;
+  inline   Handle(TDF_Attribute) Value() const;
 
 
 protected:
@@ -92,7 +92,7 @@ private:
 inline Standard_Boolean TDF_AttributeIterator::More() const
 { return (myValue != 0L); }
 
-inline TDF_Attribute * TDF_AttributeIterator::Value() const
+inline Handle(TDF_Attribute) TDF_AttributeIterator::Value() const
 { return myValue; }
 
 #endif

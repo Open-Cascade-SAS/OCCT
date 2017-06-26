@@ -216,7 +216,7 @@ Standard_Integer TDF_Data::CommitTransaction
 
     TDF_AttributeIterator itr1(aLabel, Standard_False);
     while (itr1.More()) {
-      TDF_Attribute * aPtrCurrentAtt = itr1.Value();
+      Handle(TDF_Attribute) aPtrCurrentAtt = itr1.Value();
       itr1.Next();
       //      currentAtt = itr1.Value();
 
@@ -297,7 +297,7 @@ Standard_Integer TDF_Data::CommitTransaction
         }
         // --------------------------------------------------------- Modified.
         else {
-          const TDF_Attribute* anAttrPtr = aPtrCurrentAtt; // to avoid ambiguity
+          const TDF_Attribute* anAttrPtr = aPtrCurrentAtt.operator->(); // to avoid ambiguity
           TDF_Data_DeltaCreation
             ("Modification",
              anAttrPtr->DeltaOnModification(backupAtt));
