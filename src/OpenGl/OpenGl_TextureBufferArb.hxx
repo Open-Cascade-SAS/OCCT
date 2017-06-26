@@ -98,6 +98,12 @@ public:
   Standard_EXPORT void UnbindTexture (const Handle(OpenGl_Context)& theGlCtx,
                                       const Graphic3d_TextureUnit   theTextureUnit) const;
 
+  //! Returns name of TBO.
+  GLuint TextureId() const
+  {
+    return myTextureId;
+  }
+
 protected:
 
   GLuint myTextureId; //!< texture id
