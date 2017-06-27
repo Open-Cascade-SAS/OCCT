@@ -1,0 +1,57 @@
+puts "TODO OCC16740 ALL: ERROR: OCC16740 is reproduced:"
+
+puts "========"
+puts "OCC16740"
+puts "========"
+puts ""
+########################################
+# XCAFDoc_ShapeMapTool is not restored
+########################################
+
+pload DCAF
+
+# Check the output file and delete it if necessary
+set anOutputFile ${imagedir}/${casename}.xbf
+if {[file exists $anOutputFile] == 1} {
+  file delete $anOutputFile
+}
+
+# Read STEP file
+ReadStep D [locate_data_file screw.step]
+
+# Get attributes from entity 0:1:1:1
+set AttributesList_1 [Attributes D 0:1:1:1]
+
+# Save document in file and close document
+XSave D $anOutputFile
+Close D
+
+# Open document from file
+XOpen $anOutputFile D
+
+# Get attributes from entity 0:1:1:1
+set AttributesList_2 [Attributes D 0:1:1:1]
+
+# Rough comparison of attributes list #1 and #2
+if {$AttributesList_1 != $AttributesList_2} {
+  puts "ERROR: OCC16740 is reproduced:"
+}
+
+# Subtle comparison of attributes list #1 and #2
+set CounterList_1 0
+while {$CounterList_1 != [llength $AttributesList_1]} {
+  set anAttribute_1 [lindex $AttributesList_1 $CounterList_1]
+  set isEqualAttribute 0
+  set CounterList_2 0
+  while {$CounterList_2 != [llength $AttributesList_2]} {
+    set anAttribute_2 [lindex $AttributesList_2 $CounterList_2]
+    if {$anAttribute_1 == $anAttribute_2} {
+      set isEqualAttribute 1
+    }
+    set CounterList_2 [expr {$CounterList_2 + 1}]
+  }
+  if {$isEqualAttribute == 0} {
+    puts "       -----> Attribute $anAttribute_1 has not been restored."
+  }
+  set CounterList_1 [expr {$CounterList_1 + 1}]
+}
