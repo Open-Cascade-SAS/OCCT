@@ -645,8 +645,10 @@ protected: //! @name data types related to ray-tracing
   {
     OpenGl_RT_OutputImageLft = 0,
     OpenGl_RT_OutputImageRgh = 1,
-    OpenGl_RT_VisualErrorImage = 2,
-    OpenGl_RT_TileOffsetsImage = 3
+    OpenGl_RT_VisualErrorImageLft = 2,
+    OpenGl_RT_VisualErrorImageRgh = 3,
+    OpenGl_RT_TileOffsetsImageLft = 4,
+    OpenGl_RT_TileOffsetsImageRgh = 5
   };
 
   //! Tool class for management of shader sources.
@@ -742,6 +744,9 @@ protected: //! @name data types related to ray-tracing
     //! Number of tiles in Y dimension (in adaptive sampling mode).
     Standard_Integer NbTilesY;
     
+    //! Enables/disables depth-of-field effect (path tracing, perspective camera).
+    Standard_Boolean DepthOfField;
+
     //! Tone mapping method for path tracing.
     Graphic3d_ToneMappingMethod ToneMappingMethod;
 
@@ -758,6 +763,7 @@ protected: //! @name data types related to ray-tracing
       RadianceClampingValue  (30.0),
       NbTilesX               (16),
       NbTilesY               (16),
+      DepthOfField           (Standard_False),
       ToneMappingMethod      (Graphic3d_ToneMappingMethod_Disabled) { }
   };
 
@@ -900,12 +906,22 @@ protected: //! @name methods related to ray-tracing
                                           const Handle(OpenGl_Context)& theGlContext);
 
   //! Generates viewing rays for corners of screen quad.
+  //! (ray tracing; path tracing for orthographic camera)
   void updateCamera (const OpenGl_Mat4& theOrientation,
                      const OpenGl_Mat4& theViewMapping,
                      OpenGl_Vec3*       theOrigins,
                      OpenGl_Vec3*       theDirects,
                      OpenGl_Mat4&       theView,
                      OpenGl_Mat4&       theUnView);
+
+  //! Generate viewing rays (path tracing, perspective camera).
+  void updatePerspCameraPT(const OpenGl_Mat4&           theOrientation,
+                           const OpenGl_Mat4&           theViewMapping,
+                           Graphic3d_Camera::Projection theProjection,
+                           OpenGl_Mat4&                 theViewPr,
+                           OpenGl_Mat4&                 theUnview,
+                           const int                    theWinSizeX,
+                           const int                    theWinSizeY);
 
   //! Binds ray-trace textures to corresponding texture units.
   void bindRaytraceTextures (const Handle(OpenGl_Context)& theGlContext);
@@ -917,6 +933,7 @@ protected: //! @name methods related to ray-tracing
   Standard_Boolean setUniformState (const Standard_Integer        theProgramId,
                                     const Standard_Integer        theSizeX,
                                     const Standard_Integer        theSizeY,
+                                    Graphic3d_Camera::Projection  theProjection,
                                     const Handle(OpenGl_Context)& theGlContext);
 
   //! Runs ray-tracing shader programs.
@@ -1027,12 +1044,12 @@ protected: //! @name fields related to ray-tracing
   //! Used if adaptive screen sampling is activated.
   Handle(OpenGl_Texture) myRaytraceOutputTexture[2];
 
-  //! Texture containing per-tile visual error estimation.
+  //! Texture containing per-tile visual error estimation (2 textures are used in stereo mode).
   //! Used if adaptive screen sampling is activated.
-  Handle(OpenGl_Texture) myRaytraceVisualErrorTexture;
-  //! Texture containing offsets of sampled screen tiles.
+  Handle(OpenGl_Texture) myRaytraceVisualErrorTexture[2];
+  //! Texture containing offsets of sampled screen tiles (2 textures are used in stereo mode).
   //! Used if adaptive screen sampling is activated.
-  Handle(OpenGl_Texture) myRaytraceTileOffsetsTexture;
+  Handle(OpenGl_Texture) myRaytraceTileOffsetsTexture[2];
 
   //! Vertex buffer (VBO) for drawing dummy quad.
   OpenGl_VertexBuffer myRaytraceScreenQuad;
@@ -1069,6 +1086,27 @@ protected: //! @name fields related to ray-tracing
 
   //! Tool object for sampling screen tiles in PT mode.
   OpenGl_TileSampler myTileSampler;
+
+  //! Camera position used for projective mode
+  OpenGl_Vec3 myEyeOrig;
+
+  //! Camera view direction used for projective mode
+  OpenGl_Vec3 myEyeView;
+
+  //! Camera's screen vertical direction used for projective mode
+  OpenGl_Vec3 myEyeVert;
+
+  //! Camera's screen horizontal direction used for projective mode
+  OpenGl_Vec3 myEyeSide;
+
+  //! Camera's screen size used for projective mode
+  OpenGl_Vec2 myEyeSize;
+
+  //! Aperture radius of camera on previous frame used for depth-of-field (path tracing)
+  float myPrevCameraApertureRadius;
+
+  //! Focal distance of camera on previous frame used for depth-of-field (path tracing)
+  float myPrevCameraFocalPlaneDist;
 
 public:
 

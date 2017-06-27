@@ -108,6 +108,27 @@ uniform vec4 uBackColorTop = vec4 (0.0);
 //! Bottom color of gradient background.
 uniform vec4 uBackColorBot = vec4 (0.0);
 
+//! Aperture radius of camera used for depth-of-field
+uniform float uApertureRadius = 0.f;
+
+//! Focal distance of camera used for depth-of field
+uniform float uFocalPlaneDist = 10.f;
+
+//! Camera position used for projective mode
+uniform vec3 uEyeOrig;
+
+//! Camera view direction used for projective mode
+uniform vec3 uEyeView;
+
+//! Camera's screen vertical direction used for projective mode
+uniform vec3 uEyeVert;
+
+//! Camera's screen horizontal direction used for projective mode
+uniform vec3 uEyeSide;
+
+//! Camera's screen size used for projective mode
+uniform vec2 uEyeSize;
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // Specific data types
 
@@ -271,12 +292,43 @@ vec4 BackgroundColor()
 /////////////////////////////////////////////////////////////////////////////////////////
 // Functions for compute ray-object intersection
 
+//=======================================================================
+// function : sampleUniformDisk
+// purpose  :
+//=======================================================================
+vec2 sampleUniformDisk ()
+{
+  vec2 aPoint;
+
+  float aKsi1 = 2.f * RandFloat () - 1.f;
+  float aKsi2 = 2.f * RandFloat () - 1.f;
+
+  if (aKsi1 > -aKsi2)
+  {
+    if (aKsi1 > aKsi2)
+      aPoint = vec2 (aKsi1, (M_PI / 4.f) * (0.f + aKsi2 / aKsi1));
+    else
+      aPoint = vec2 (aKsi2, (M_PI / 4.f) * (2.f - aKsi1 / aKsi2));
+  }
+  else
+  {
+    if (aKsi1 < aKsi2)
+      aPoint = vec2 (-aKsi1, (M_PI / 4.f) * (4.f + aKsi2 / aKsi1));
+    else
+      aPoint = vec2 (-aKsi2, (M_PI / 4.f) * (6.f - aKsi1 / aKsi2));
+  }
+
+  return vec2 (sin (aPoint.y), cos (aPoint.y)) * aPoint.x;
+}
+
 // =======================================================================
 // function : GenerateRay
 // purpose  :
 // =======================================================================
 SRay GenerateRay (in vec2 thePixel)
 {
+#ifndef DEPTH_OF_FIELD
+
   vec3 aP0 = mix (uOriginLB, uOriginRB, thePixel.x);
   vec3 aP1 = mix (uOriginLT, uOriginRT, thePixel.x);
 
@@ -286,6 +338,27 @@ SRay GenerateRay (in vec2 thePixel)
   vec3 aDirection = normalize (mix (aD0, aD1, thePixel.y));
 
   return SRay (mix (aP0, aP1, thePixel.y), aDirection);
+
+#else
+
+  vec2 aPixel = uEyeSize * (thePixel - vec2 (0.5f)) * 2.f;
+
+  vec2 aAperturePnt = sampleUniformDisk () * uApertureRadius;
+
+  vec3 aLocalDir = normalize (vec3 (
+    aPixel * uFocalPlaneDist - aAperturePnt, uFocalPlaneDist));
+
+  vec3 aOrigin = uEyeOrig +
+                 uEyeSide * aAperturePnt.x +
+                 uEyeVert * aAperturePnt.y;
+
+  vec3 aDirect = uEyeView * aLocalDir.z +
+                 uEyeSide * aLocalDir.x +
+                 uEyeVert * aLocalDir.y;
+
+  return SRay (aOrigin, aDirect);
+
+#endif
 }
 
 // =======================================================================

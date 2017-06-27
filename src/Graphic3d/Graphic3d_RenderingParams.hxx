@@ -68,6 +68,8 @@ public:
     RadianceClampingValue       (30.0),
     RebuildRayTracingShaders    (Standard_False),
     NbRayTracingTiles           (16 * 16),
+    CameraApertureRadius        (0.0f),
+    CameraFocalPlaneDist        (1.0f),
     ToneMappingMethod           (Graphic3d_ToneMappingMethod_Disabled),
     Exposure                    (0.f),
     WhitePoint                  (1.f),
@@ -119,6 +121,8 @@ public:
   Standard_ShortReal                RadianceClampingValue;       //!< maximum radiance value used for clamping radiance estimation.
   Standard_Boolean                  RebuildRayTracingShaders;    //!< forces rebuilding ray tracing shaders at the next frame
   Standard_Integer                  NbRayTracingTiles;           //!< total number of screen tiles used in adaptive sampling mode (PT only)
+  Standard_ShortReal                CameraApertureRadius;        //!< aperture radius of perspective camera used for depth-of-field, 0.0 by default (no DOF) (path tracing only)
+  Standard_ShortReal                CameraFocalPlaneDist;        //!< focal  distance of perspective camera used for depth-of field, 1.0 by default (path tracing only)
 
   Graphic3d_ToneMappingMethod       ToneMappingMethod;           //!< specifies tone mapping method for path tracing, Graphic3d_ToneMappingMethod_Disabled by default
   Standard_ShortReal                Exposure;                    //!< exposure value used for tone mapping (path tracing), 0.0 by default

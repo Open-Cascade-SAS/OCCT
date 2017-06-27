@@ -9647,6 +9647,56 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
       aParams.RebuildRayTracingShaders = toEnable;
     }
+    else if (aFlag == "-focal")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aParam (theArgVec[anArgIter]);
+      if (aParam.IsRealValue())
+      {
+        float aFocalDist = static_cast<float> (aParam.RealValue());
+        if (aFocalDist < 0)
+        {
+          std::cout << "Error: parameter can't be negative at argument '" << anArg << "'.\n";
+          return 1;
+        }
+        aView->ChangeRenderingParams().CameraFocalPlaneDist = aFocalDist;
+      }
+      else
+      {
+        std::cout << "Error: wrong syntax at argument'" << anArg << "'.\n";
+        return 1;
+      }
+    }
+    else if (aFlag == "-aperture")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aParam(theArgVec[anArgIter]);
+      if (aParam.IsRealValue())
+      {
+        float aApertureSize = static_cast<float> (aParam.RealValue());
+        if (aApertureSize < 0)
+        {
+          std::cout << "Error: parameter can't be negative at argument '" << anArg << "'.\n";
+          return 1;
+        }
+        aView->ChangeRenderingParams().CameraApertureRadius = aApertureSize;
+      }
+      else
+      {
+        std::cout << "Error: wrong syntax at argument'" << anArg << "'.\n";
+        return 1;
+      }
+    }
     else if (aFlag == "-exposure")
     {
       if (++anArgIter >= theArgNb)
@@ -11205,6 +11255,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-shadingModel model'       Controls shading model from enumeration"
     "\n                                  color, flat, gouraud, phong"
     "\n      '-resolution   value'       Sets a new pixels density (PPI), defines scaling factor for parameters like text size"
+    "\n      '-aperture     >= 0.0'      Aperture size  of perspective camera for depth-of-field effect (0 disables DOF)"
+    "\n      '-focal        >= 0.0'      Focal distance of perspective camera for depth-of-field effect"
     "\n      '-exposure     value'       Exposure value for tone mapping (0.0 value disables the effect)"
     "\n      '-whitepoint   value'       White point value for filmic tone mapping"
     "\n      '-tonemapping  mode'        Tone mapping mode (disabled, filmic)"

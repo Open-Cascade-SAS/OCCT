@@ -1149,6 +1149,11 @@ TCollection_AsciiString OpenGl_View::generateShaderPrefix (const Handle(OpenGl_C
     }
   }
 
+  if (myRaytraceParameters.DepthOfField)
+  {
+    aPrefixString += TCollection_AsciiString("\n#define DEPTH_OF_FIELD");
+  }
+
   return aPrefixString;
 }
 
@@ -1408,6 +1413,13 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
         }
       }
 
+      aToRebuildShaders = Standard_True;
+    }
+
+    const bool toEnableDof = !myCamera->IsOrthographic() && myRaytraceParameters.GlobalIllumination;
+    if (myRaytraceParameters.DepthOfField != toEnableDof)
+    {
+      myRaytraceParameters.DepthOfField = toEnableDof;
       aToRebuildShaders = Standard_True;
     }
 
@@ -1830,8 +1842,10 @@ void OpenGl_View::releaseRaytraceResources (const Handle(OpenGl_Context)& theGlC
     nullifyResource (theGlContext, myRaytraceOutputTexture[0]);
     nullifyResource (theGlContext, myRaytraceOutputTexture[1]);
 
-    nullifyResource (theGlContext, myRaytraceTileOffsetsTexture);
-    nullifyResource (theGlContext, myRaytraceVisualErrorTexture);
+    nullifyResource (theGlContext, myRaytraceTileOffsetsTexture[0]);
+    nullifyResource (theGlContext, myRaytraceTileOffsetsTexture[1]);
+    nullifyResource (theGlContext, myRaytraceVisualErrorTexture[0]);
+    nullifyResource (theGlContext, myRaytraceVisualErrorTexture[1]);
 
     nullifyResource (theGlContext, mySceneNodeInfoTexture);
     nullifyResource (theGlContext, mySceneMinPointTexture);
@@ -1914,13 +1928,16 @@ Standard_Boolean OpenGl_View::updateRaytraceBuffers (const Standard_Integer     
 
   myTileSampler.SetSize (theSizeX, theSizeY);
 
-  if (myRaytraceTileOffsetsTexture.IsNull())
+  if (myRaytraceTileOffsetsTexture[0].IsNull()
+   || myRaytraceTileOffsetsTexture[1].IsNull())
   {
     myRaytraceOutputTexture[0] = new OpenGl_Texture();
     myRaytraceOutputTexture[1] = new OpenGl_Texture();
 
-    myRaytraceTileOffsetsTexture = new OpenGl_Texture();
-    myRaytraceVisualErrorTexture = new OpenGl_Texture();
+    myRaytraceTileOffsetsTexture[0] = new OpenGl_Texture();
+    myRaytraceTileOffsetsTexture[1] = new OpenGl_Texture();
+    myRaytraceVisualErrorTexture[0] = new OpenGl_Texture();
+    myRaytraceVisualErrorTexture[1] = new OpenGl_Texture();
   }
 
   if (myRaytraceOutputTexture[0]->SizeX() / 3 != theSizeX
@@ -1941,13 +1958,13 @@ Standard_Boolean OpenGl_View::updateRaytraceBuffers (const Standard_Integer     
       theSizeX * 3, theSizeY * 2, OpenGl_TextureFormat::Create<GLfloat, 1>());
 
     // workaround for some NVIDIA drivers
-    myRaytraceVisualErrorTexture->Release (theGlContext.operator->());
-    myRaytraceTileOffsetsTexture->Release (theGlContext.operator->());
+    myRaytraceVisualErrorTexture[0]->Release (theGlContext.operator->());
+    myRaytraceTileOffsetsTexture[0]->Release (theGlContext.operator->());
 
-    myRaytraceVisualErrorTexture->Init (theGlContext,
+    myRaytraceVisualErrorTexture[0]->Init (theGlContext,
       GL_R32I, GL_RED_INTEGER, GL_INT, myTileSampler.NbTilesX(), myTileSampler.NbTilesY(), Graphic3d_TOT_2D);
 
-    myRaytraceTileOffsetsTexture->Init (theGlContext,
+    myRaytraceTileOffsetsTexture[0]->Init (theGlContext,
       GL_RG32I, GL_RG_INTEGER, GL_INT, myTileSampler.NbTilesX(), myTileSampler.NbTilesY(), Graphic3d_TOT_2D);
   }
 
@@ -1958,6 +1975,15 @@ Standard_Boolean OpenGl_View::updateRaytraceBuffers (const Standard_Integer     
     {
       myRaytraceOutputTexture[1]->InitRectangle (theGlContext,
         theSizeX * 3, theSizeY * 2, OpenGl_TextureFormat::Create<GLfloat, 1>());
+
+      myRaytraceVisualErrorTexture[1]->Release (theGlContext.operator->());
+      myRaytraceTileOffsetsTexture[1]->Release (theGlContext.operator->());
+
+      myRaytraceVisualErrorTexture[1]->Init (theGlContext,
+        GL_R32I, GL_RED_INTEGER, GL_INT, myTileSampler.NbTilesX(), myTileSampler.NbTilesY(), Graphic3d_TOT_2D);
+
+      myRaytraceTileOffsetsTexture[1]->Init (theGlContext,
+        GL_RG32I, GL_RG_INTEGER, GL_INT, myTileSampler.NbTilesX(), myTileSampler.NbTilesY(), Graphic3d_TOT_2D);
     }
   }
   else
@@ -1994,7 +2020,7 @@ void OpenGl_View::updateCamera (const OpenGl_Mat4& theOrientation,
     {
       OpenGl_Vec4 aOrigin (GLfloat(aX),
                            GLfloat(aY),
-                          -1.0f,
+                           -1.0f,
                            1.0f);
 
       aOrigin = theUnview * aOrigin;
@@ -2024,6 +2050,79 @@ void OpenGl_View::updateCamera (const OpenGl_Mat4& theOrientation,
                                                 static_cast<GLfloat> (aDirect.y()),
                                                 static_cast<GLfloat> (aDirect.z()));
     }
+  }
+}
+
+// =======================================================================
+// function : updatePerspCameraPT
+// purpose  : Generates viewing rays (path tracing, perspective camera)
+// =======================================================================
+void OpenGl_View::updatePerspCameraPT (const OpenGl_Mat4&           theOrientation,
+                                       const OpenGl_Mat4&           theViewMapping,
+                                       Graphic3d_Camera::Projection theProjection,
+                                       OpenGl_Mat4&                 theViewPr,
+                                       OpenGl_Mat4&                 theUnview,
+                                       const int                    theWinSizeX,
+                                       const int                    theWinSizeY)
+{
+  // compute view-projection matrix
+  theViewPr = theViewMapping * theOrientation;
+
+  // compute inverse view-projection matrix
+  theViewPr.Inverted(theUnview);
+  
+  // get camera stereo params
+  float anIOD = myCamera->GetIODType() == Graphic3d_Camera::IODType_Relative
+    ? static_cast<float> (myCamera->IOD() * myCamera->Distance())
+    : static_cast<float> (myCamera->IOD());
+
+  float aZFocus = myCamera->ZFocusType() == Graphic3d_Camera::FocusType_Relative
+    ? static_cast<float> (myCamera->ZFocus() * myCamera->Distance())
+    : static_cast<float> (myCamera->ZFocus());
+
+  // get camera view vectors
+  const gp_Pnt anOrig = myCamera->Eye();
+
+  myEyeOrig = OpenGl_Vec3 (static_cast<float> (anOrig.X()),
+                           static_cast<float> (anOrig.Y()),
+                           static_cast<float> (anOrig.Z()));
+
+  const gp_Dir aView = myCamera->Direction();
+
+  OpenGl_Vec3 anEyeViewMono = OpenGl_Vec3 (static_cast<float> (aView.X()),
+                                           static_cast<float> (aView.Y()),
+                                           static_cast<float> (aView.Z()));
+
+  const gp_Dir anUp = myCamera->Up();
+
+  myEyeVert = OpenGl_Vec3 (static_cast<float> (anUp.X()),
+                           static_cast<float> (anUp.Y()),
+                           static_cast<float> (anUp.Z()));
+
+  myEyeSide = OpenGl_Vec3::Cross (anEyeViewMono, myEyeVert);
+
+  const double aScaleY = tan (myCamera->FOVy() / 360 * M_PI);
+  const double aScaleX = theWinSizeX * aScaleY / theWinSizeY;
+ 
+  myEyeSize = OpenGl_Vec2 (static_cast<float> (aScaleX),
+                           static_cast<float> (aScaleY));
+
+  if (theProjection == Graphic3d_Camera::Projection_Perspective)
+  {
+    myEyeView = anEyeViewMono;
+  }
+  else // stereo camera
+  {
+    // compute z-focus point
+    OpenGl_Vec3 aZFocusPoint = myEyeOrig + anEyeViewMono * aZFocus;
+
+    // compute stereo camera shift
+    float aDx = theProjection == Graphic3d_Camera::Projection_MonoRightEye ? 0.5f * anIOD : -0.5f * anIOD;
+    myEyeOrig += myEyeSide.Normalized() * aDx;
+
+    // estimate new camera direction vector and correct its length
+    myEyeView = (aZFocusPoint - myEyeOrig).Normalized();
+    myEyeView *= 1.f / anEyeViewMono.Dot (myEyeView);
   }
 }
 
@@ -2463,6 +2562,7 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& the
 Standard_Boolean OpenGl_View::setUniformState (const Standard_Integer        theProgramId,
                                                const Standard_Integer        theWinSizeX,
                                                const Standard_Integer        theWinSizeY,
+                                               Graphic3d_Camera::Projection  theProjection,
                                                const Handle(OpenGl_Context)& theGlContext)
 {
   // Get projection state
@@ -2473,12 +2573,26 @@ Standard_Boolean OpenGl_View::setUniformState (const Standard_Integer        the
   OpenGl_Vec3 aOrigins[4];
   OpenGl_Vec3 aDirects[4];
 
-  updateCamera (myCamera->OrientationMatrixF(),
-                aCntxProjectionState.Current(),
-                aOrigins,
-                aDirects,
-                aViewPrjMat,
-                anUnviewMat);
+  if (myCamera->IsOrthographic()
+   || !myRenderParams.IsGlobalIlluminationEnabled)
+  {
+    updateCamera (myCamera->OrientationMatrixF(),
+                  aCntxProjectionState.Current(),
+                  aOrigins,
+                  aDirects,
+                  aViewPrjMat,
+                  anUnviewMat);
+  }
+  else
+  {
+    updatePerspCameraPT (myCamera->OrientationMatrixF(),
+                         aCntxProjectionState.Current(),
+                         theProjection,
+                         aViewPrjMat,
+                         anUnviewMat,
+                         theWinSizeX,
+                         theWinSizeY);
+  }
 
   Handle(OpenGl_ShaderProgram)& theProgram = theProgramId == 0
                                            ? myRaytraceProgram
@@ -2488,7 +2602,16 @@ Standard_Boolean OpenGl_View::setUniformState (const Standard_Integer        the
   {
     return Standard_False;
   }
+  
+  theProgram->SetUniform(theGlContext, "uEyeOrig", myEyeOrig);
+  theProgram->SetUniform(theGlContext, "uEyeView", myEyeView);
+  theProgram->SetUniform(theGlContext, "uEyeVert", myEyeVert);
+  theProgram->SetUniform(theGlContext, "uEyeSide", myEyeSide);
+  theProgram->SetUniform(theGlContext, "uEyeSize", myEyeSize);
 
+  theProgram->SetUniform(theGlContext, "uApertureRadius", myRenderParams.CameraApertureRadius);
+  theProgram->SetUniform(theGlContext, "uFocalPlaneDist", myRenderParams.CameraFocalPlaneDist);
+  
   // Set camera state
   theProgram->SetUniform (theGlContext,
     myUniformLocations[theProgramId][OpenGl_RT_uOriginLB], aOrigins[0]);
@@ -2614,11 +2737,15 @@ void OpenGl_View::bindRaytraceTextures (const Handle(OpenGl_Context)& theGlConte
     theGlContext->core42->glBindImageTexture (OpenGl_RT_OutputImageRgh,
       myRaytraceOutputTexture[1]->TextureId(), 0, GL_TRUE, 0, GL_READ_WRITE, GL_R32F);
 
-    theGlContext->core42->glBindImageTexture (OpenGl_RT_VisualErrorImage,
-      myRaytraceVisualErrorTexture->TextureId(), 0, GL_TRUE, 0, GL_READ_WRITE, GL_R32I);
-    theGlContext->core42->glBindImageTexture (OpenGl_RT_TileOffsetsImage,
-      myRaytraceTileOffsetsTexture->TextureId(), 0, GL_TRUE, 0, GL_READ_ONLY, GL_RG32I);
-  #endif
+    theGlContext->core42->glBindImageTexture (OpenGl_RT_VisualErrorImageLft,
+      myRaytraceVisualErrorTexture[0]->TextureId(), 0, GL_TRUE, 0, GL_READ_WRITE, GL_R32I);
+    theGlContext->core42->glBindImageTexture (OpenGl_RT_VisualErrorImageRgh,
+      myRaytraceVisualErrorTexture[1]->TextureId(), 0, GL_TRUE, 0, GL_READ_WRITE, GL_R32I);
+    theGlContext->core42->glBindImageTexture (OpenGl_RT_TileOffsetsImageLft,
+      myRaytraceTileOffsetsTexture[0]->TextureId(), 0, GL_TRUE, 0, GL_READ_ONLY, GL_RG32I);
+    theGlContext->core42->glBindImageTexture (OpenGl_RT_TileOffsetsImageRgh,
+      myRaytraceTileOffsetsTexture[1]->TextureId(), 0, GL_TRUE, 0, GL_READ_ONLY, GL_RG32I);
+#endif
   }
 
   if (!myTextureEnv.IsNull() && myTextureEnv->IsValid())
@@ -2673,6 +2800,7 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
   aResult &= setUniformState (0,
                               theSizeX,
                               theSizeY,
+                              theProjection,
                               theGlContext);
 
   if (myRaytraceParameters.GlobalIllumination) // path tracing
@@ -2728,6 +2856,7 @@ Standard_Boolean OpenGl_View::runRaytrace (const Standard_Integer        theSize
     aResult &= setUniformState (1 /* FSAA ID */,
                                 theSizeX,
                                 theSizeY,
+                                theProjection,
                                 theGlContext);
 
     // Perform multi-pass adaptive FSAA using ping-pong technique.
@@ -2830,20 +2959,33 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
   {
     myAccumFrames = myToUpdateEnvironmentMap = 0;
   }
+  
+  if (myRenderParams.CameraApertureRadius != myPrevCameraApertureRadius
+   || myRenderParams.CameraFocalPlaneDist != myPrevCameraFocalPlaneDist)
+  {
+
+    myPrevCameraApertureRadius = myRenderParams.CameraApertureRadius;
+    myPrevCameraFocalPlaneDist = myRenderParams.CameraFocalPlaneDist;
+
+    myAccumFrames = 0;
+  }
+
+  // Choose proper set of frame buffers for stereo rendering
+  const Standard_Integer aFBOIdx (theProjection == Graphic3d_Camera::Projection_MonoRightEye);
 
   if (myRaytraceParameters.AdaptiveScreenSampling)
   {
     if (myAccumFrames == 0)
     {
       myTileSampler.Reset(); // reset tile sampler to its initial state
-    }
 
-    // Adaptive sampling is starting at the second frame
-    myTileSampler.Upload (theGlContext,
-                          myRaytraceTileOffsetsTexture,
-                          myRaytraceParameters.NbTilesX,
-                          myRaytraceParameters.NbTilesY,
-                          myAccumFrames > 0);
+      // Adaptive sampling is starting at the second frame
+      myTileSampler.Upload (theGlContext,
+                            myRaytraceTileOffsetsTexture[aFBOIdx],
+                            myRaytraceParameters.NbTilesX,
+                            myRaytraceParameters.NbTilesY,
+                            false);
+    }
   }
 
   bindRaytraceTextures (theGlContext);
@@ -2852,12 +2994,17 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
   Handle(OpenGl_FrameBuffer) aDepthSourceFramebuffer;
   Handle(OpenGl_FrameBuffer) anAccumImageFramebuffer;
 
-  // Choose proper set of frame buffers for stereo rendering
-  const Standard_Integer aFBOIdx (theProjection == Graphic3d_Camera::Projection_MonoRightEye);
-
   const Standard_Integer anImageId = (aFBOIdx != 0)
                                    ? OpenGl_RT_OutputImageRgh
                                    : OpenGl_RT_OutputImageLft;
+
+  const Standard_Integer anErrorId = (aFBOIdx != 0)
+                                   ? OpenGl_RT_VisualErrorImageRgh
+                                   : OpenGl_RT_VisualErrorImageLft;
+
+  const Standard_Integer anOffsetId = (aFBOIdx != 0)
+                                    ? OpenGl_RT_TileOffsetsImageRgh
+                                    : OpenGl_RT_TileOffsetsImageLft;
 
   aRenderImageFramebuffer = myAccumFrames % 2 ? myRaytraceFBO1[aFBOIdx] : myRaytraceFBO2[aFBOIdx];
   anAccumImageFramebuffer = myAccumFrames % 2 ? myRaytraceFBO2[aFBOIdx] : myRaytraceFBO1[aFBOIdx];
@@ -2878,12 +3025,12 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
   if (myRaytraceParameters.AdaptiveScreenSampling)
   {
   #if !defined(GL_ES_VERSION_2_0)
-    if (myAccumFrames == 0)
+    if (myAccumFrames == 0 || (myAccumFrames == 1 && myCamera->IsStereo()))
     {
       theGlContext->core44->glClearTexImage (myRaytraceOutputTexture[aFBOIdx]->TextureId(), 0, GL_RED, GL_FLOAT, NULL);
     }
 
-    theGlContext->core44->glClearTexImage (myRaytraceVisualErrorTexture->TextureId(), 0, GL_RED_INTEGER, GL_INT, NULL);
+    theGlContext->core44->glClearTexImage (myRaytraceVisualErrorTexture[aFBOIdx]->TextureId(), 0, GL_RED_INTEGER, GL_INT, NULL);
   #endif
   }
 
@@ -2899,11 +3046,12 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
   myRaytraceProgram->SetUniform (theGlContext,
     myUniformLocations[0][OpenGl_RT_uRenderImage], anImageId);
   myRaytraceProgram->SetUniform (theGlContext,
-    myUniformLocations[0][OpenGl_RT_uOffsetImage], OpenGl_RT_TileOffsetsImage);
+    myUniformLocations[0][OpenGl_RT_uOffsetImage], anOffsetId);
 
   glDisable (GL_DEPTH_TEST);
 
-  if (myRaytraceParameters.AdaptiveScreenSampling && myAccumFrames > 0)
+  if (myRaytraceParameters.AdaptiveScreenSampling
+   && ((myAccumFrames > 0 && !myCamera->IsStereo()) || myAccumFrames > 1))
   {
     glViewport (0,
                 0,
@@ -2914,7 +3062,8 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
   // Generate for the given RNG seed
   theGlContext->core20fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
 
-  if (myRaytraceParameters.AdaptiveScreenSampling && myAccumFrames > 0)
+  if (myRaytraceParameters.AdaptiveScreenSampling
+   && ((myAccumFrames > 0 && !myCamera->IsStereo()) || myAccumFrames > 1))
   {
     glViewport (0,
                 0,
@@ -2930,7 +3079,7 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
     // Set uniforms for display program
     myOutImageProgram->SetUniform (theGlContext, "uRenderImage",   anImageId);
     myOutImageProgram->SetUniform (theGlContext, "uAccumFrames",   myAccumFrames);
-    myOutImageProgram->SetUniform (theGlContext, "uVarianceImage", OpenGl_RT_VisualErrorImage);
+    myOutImageProgram->SetUniform (theGlContext, "uVarianceImage", anErrorId);
     myOutImageProgram->SetUniform (theGlContext, "uDebugAdaptive", myRenderParams.ShowSamplingTiles ?  1 : 0);
   }
 
@@ -2969,11 +3118,17 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
 
   if (myRaytraceParameters.AdaptiveScreenSampling)
   {
-    myRaytraceVisualErrorTexture->Bind (theGlContext);
+    myRaytraceVisualErrorTexture[aFBOIdx]->Bind (theGlContext);
 
     // Download visual error map from the GPU and build
     // adjusted tile offsets for optimal image sampling
     myTileSampler.GrabVarianceMap (theGlContext);
+
+    myTileSampler.Upload (theGlContext,
+                          myRaytraceTileOffsetsTexture[aFBOIdx],
+                          myRaytraceParameters.NbTilesX,
+                          myRaytraceParameters.NbTilesY,
+                          myAccumFrames > 0);
   }
 
   unbindRaytraceTextures (theGlContext);
