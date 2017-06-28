@@ -737,6 +737,7 @@ Standard_Integer ShapeAnalysis_Curve::SelectForwardSeam(const Handle(Geom2d_Curv
     gp_Pnt2d StartBC1 = BC1->StartPoint();
     gp_Pnt2d EndBC1   = BC1->EndPoint();
     gp_Vec2d VecBC1(StartBC1, EndBC1);
+    if (VecBC1.SquareMagnitude() < gp::Resolution()) return theCurveIndice;
     L1 = new Geom2d_Line(StartBC1, VecBC1);
   }
 
@@ -748,6 +749,7 @@ Standard_Integer ShapeAnalysis_Curve::SelectForwardSeam(const Handle(Geom2d_Curv
     gp_Pnt2d StartBC2 = BC2->StartPoint();
     gp_Pnt2d EndBC2   = BC2->EndPoint();
     gp_Vec2d VecBC2(StartBC2, EndBC2);
+    if (VecBC2.SquareMagnitude() < gp::Resolution()) return theCurveIndice;
     L2 = new Geom2d_Line(StartBC2, VecBC2);
   }
 

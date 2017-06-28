@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC28871"
+puts "========"
+puts ""
+##########################################################################
+# Various problems in SAT export
+##########################################################################
+
+stepread [locate_data_file bug28871_cuffie.stp] a *
+tpcompound result
+
+checkprops result -s 170790 
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 1387
+ EDGE      : 2222
+ WIRE      : 953
+ FACE      : 928
+ SHELL     : 53
+ SOLID     : 39
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 5583
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "importing file"
+checkview -display result -3d -path ${imagedir}/${test_image}.png
