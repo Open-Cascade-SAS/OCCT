@@ -1,0 +1,13 @@
+puts "========"
+puts "OCC21413"
+puts "========"
+puts ""
+#########################################################
+# Pipe fails - very sensitive to spine parameterization
+########################$$$$$$$$$$$$$$$$$$$$$$###########
+
+restore [locate_data_file bug21413_dc1_err.draw] a
+
+tuyau result a 1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
