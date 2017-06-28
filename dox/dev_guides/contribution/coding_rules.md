@@ -622,7 +622,6 @@ public:
 
 };
 
-~~~~~{.cpp}
 class MyPackage_MyClass : public MyPackage_BaseClass
 {
 
