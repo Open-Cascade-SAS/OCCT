@@ -17,34 +17,7 @@
 
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepBuild_ShapeListOfShape.hxx>
-
-#define MTTdmiomoslos TopTools_DataMapIteratorOfDataMapOfShapeListOfShape
-#define MTTdmoslos TopTools_DataMapOfShapeListOfShape
-#define MTTmiomos TopTools_MapIteratorOfMapOfShape
-#define MTTmos TopTools_MapOfShape
-#define MTTliolos TopTools_ListIteratorOfListOfShape
-#define MTTlos TopTools_ListOfShape
-#define MTs TopoDS_Shape
-#define MTf TopoDS_Face
-#define MTe TopoDS_Edge
-#define MTv TopoDS_Vertex
-#define MDSlioloi TopOpeBRepDS_ListIteratorOfListOfInterference
-#define MDSloi TopOpeBRepDS_ListOfInterference
-#define MDShi Handle(TopOpeBRepDS_Interference)
-#define MDSi TopOpeBRepDS_Interference
-#define MDShssi Handle(TopOpeBRepDS_ShapeShapeInterference)
-#define MDSssi TopOpeBRepDS_ShapeShapeInterference
-#define MDSii TopOpeBRepDS_InterferenceIterator
-#define MDShds Handle(TopOpeBRepDS_HDataStructure)
-#define MDSds TopOpeBRepDS_DataStructure
-#define MDSk TopOpeBRepDS_Kind
-#define MDSsd TopOpeBRepDS_ShapeData
-#define MDSmosd TopOpeBRepDS_MapOfShapeData
-#define Msr Standard_Real
-#define Msi Standard_Integer
-#define Msb Standard_Boolean
-#define Mso Standard_Ostream
-#define Mtcas TCollection_AsciiString
+#include <TopOpeBRepTool_define.hxx>
 
 //=======================================================================
 //function : TopOpeBRepBuild_ShapeListOfShape

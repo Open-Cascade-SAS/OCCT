@@ -286,3 +286,34 @@ endif()
 if (BUILD_SHARED_LIBS)
   target_link_libraries (${PROJECT_NAME} ${USED_TOOLKITS_BY_CURRENT_PROJECT} ${USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT})
 endif()
+
+# use Cotire to accelerate build via usage of precompiled headers
+if (BUILD_USE_PCH)
+  if (WIN32)
+    # prevent definition of min and max macros through inclusion of Windows.h
+    # (for cotire builds)
+    add_definitions("-DNOMINMAX")
+    # avoid warnings on deprecated names from standard C library (see strsafe.h)
+    add_definitions("-DSTRSAFE_NO_DEPRECATE")
+    # avoid "std::Equal1" warning in QANCollection_Stl.cxx in debug mode
+    # suggesting using msvc "Checked Iterators"
+    add_definitions("-D_SCL_SECURE_NO_WARNINGS")
+  endif()
+
+  # Exclude system-provided glext.h.
+  # These macros are already defined within OpenGl_GlFunctions.hxx,
+  # however we have to duplicate them here for building TKOpenGl with PCH.
+  add_definitions("-DGL_GLEXT_LEGACY")
+  add_definitions("-DGLX_GLXEXT_LEGACY")
+
+  # workaround for old gcc
+  if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+    add_definitions("-D__STDC_FORMAT_MACROS")
+  endif()
+
+  # unity builds are not used since they do not add speed but cause conflicts
+  # in TKV3d
+  set_target_properties(${PROJECT_NAME} PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
+
+  cotire(${PROJECT_NAME})
+endif()

@@ -24,6 +24,11 @@
 class vtkIdTypeArray;
 class vtkPolyData;
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4251) // avoid warning C4251: "class needs to have dll-interface..."
+#endif
+
 //! @class IVtkTools_ShapeDataSource.
 //! @brief VTK data source for OCC shapes polygonal data.
 class IVtkTools_EXPORT IVtkTools_ShapeDataSource : public vtkPolyDataAlgorithm
@@ -112,5 +117,9 @@ protected:
   Standard_Boolean myIsTransformOnly;
 
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 #endif // __IVTKTOOLS_SHAPEDATA_H__

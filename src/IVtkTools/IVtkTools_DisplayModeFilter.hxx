@@ -20,6 +20,11 @@
 #include <IVtkTools_SubPolyDataFilter.hxx>
 #include <NCollection_DataMap.hxx>
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4251) // avoid warning C4251: "class needs to have dll-interface..."
+#endif
+
 //! @class IVtkTools_DisplayModeFilter 
 //! @brief Cells filter according to the selected display mode by mesh parts types.
 //! This filter is used to get parts of a shape according to different 
@@ -54,6 +59,10 @@ protected:
   NCollection_DataMap<IVtk_DisplayMode, IVtk_IdTypeMap> myModesDefinition;
   bool                                                  myDoDisplaySharedVertices;
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 #endif // IVtkTOOLS_DISPLAYMODEFILTER_H
 

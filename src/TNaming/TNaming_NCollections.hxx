@@ -21,12 +21,5 @@ typedef NCollection_Map<TopoDS_Shape> TNaming_MapOfShape;
 typedef TNaming_MapOfShape::Iterator TNaming_MapIteratorOfMapOfShape;
 typedef NCollection_DataMap<TopoDS_Shape, TNaming_MapOfShape> TNaming_DataMapOfShapeMapOfShape; 
 typedef TNaming_DataMapOfShapeMapOfShape::Iterator TNaming_DataMapIteratorOfDataMapOfShapeMapOfShape; 
-//=======================================================================
-//function : NCollection => IsEqual
-//=======================================================================
-Standard_Boolean IsEqual (const TopoDS_Shape& S1, const TopoDS_Shape& S2) 
-{
-  return S1.IsEqual(S2);
-}
 
 #endif

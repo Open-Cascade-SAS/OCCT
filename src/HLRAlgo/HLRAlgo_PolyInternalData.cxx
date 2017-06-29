@@ -23,8 +23,8 @@
 IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyInternalData,MMgt_TShared)
 
 #ifdef OCCT_DEBUG
-static Standard_Integer TRACE = Standard_False;
-static Standard_Integer ERROR = Standard_False;
+static Standard_Integer HLRAlgo_PolyInternalData_TRACE = Standard_False;
+static Standard_Integer HLRAlgo_PolyInternalData_ERROR = Standard_False;
 #endif
 //=======================================================================
 //function : PolyInternalData
@@ -325,7 +325,7 @@ HLRAlgo_PolyInternalData::AddNode (
   else {
     Nod3RValues.Normal = gp_XYZ(1., 0., 0.);
 #ifdef OCCT_DEBUG
-    if (ERROR)
+    if (HLRAlgo_PolyInternalData_ERROR)
       cout << "HLRAlgo_PolyInternalData::AddNode" << endl;
 #endif
   }
@@ -414,7 +414,7 @@ HLRAlgo_PolyInternalData::UpdateLinks (const Standard_Integer ip1,
   if (find == 0) {
     myNbPISeg--;
 #ifdef OCCT_DEBUG
-    if (ERROR) {
+    if (HLRAlgo_PolyInternalData_ERROR) {
       cout << "HLRAlgo_PolyInternalData::UpdateLinks : segment error";
       cout << endl;
     }
@@ -519,7 +519,7 @@ HLRAlgo_PolyInternalData::UpdateLinks (const Standard_Integer ip1,
 	  aNodIndices4.NdSg   = myNbPISeg;
 	}
 #ifdef OCCT_DEBUG
-	else if (ERROR) {
+	else if (HLRAlgo_PolyInternalData_ERROR) {
 	  cout << "HLRAlgo_PolyInternalData::UpdateLinks : triangle error ";
 	  cout << endl;
 	}
@@ -680,7 +680,7 @@ void HLRAlgo_PolyInternalData::IncTData(
 {
   if (myNbTData >= myMxTData) {
 #ifdef OCCT_DEBUG
-    if (TRACE) 
+    if (HLRAlgo_PolyInternalData_TRACE)
       cout << "HLRAlgo_PolyInternalData::IncTData : " << myMxTData << endl;
 #endif
     Standard_Integer i,j,k;
@@ -719,7 +719,7 @@ void HLRAlgo_PolyInternalData::IncPISeg(
 { 
   if (myNbPISeg >= myMxPISeg) {
 #ifdef OCCT_DEBUG
-    if (TRACE) 
+    if (HLRAlgo_PolyInternalData_TRACE)
       cout << "HLRAlgo_PolyInternalData::IncPISeg : " << myMxPISeg << endl;
 #endif
     Standard_Integer i,j,k;
@@ -757,7 +757,7 @@ void HLRAlgo_PolyInternalData::IncPINod(
 {
   if (myNbPINod >= myMxPINod) {
 #ifdef OCCT_DEBUG
-    if (TRACE) 
+    if (HLRAlgo_PolyInternalData_TRACE)
       cout << "HLRAlgo_PolyInternalData::IncPINod : " << myMxPINod << endl;
 #endif
     Standard_Integer i,j,k;

@@ -45,6 +45,8 @@
 extern Standard_Boolean TopOpeBRepTool_GettraceCORRISO();
 Standard_EXPORT TopTools_IndexedMapOfShape STATIC_PURGE_mapv;
 Standard_EXPORT TopTools_IndexedMapOfOrientedShape STATIC_PURGE_mapeds;
+extern void FUN_tool_trace(const Standard_Integer Index);
+extern void FUN_tool_trace(const gp_Pnt2d p2d);
 #endif
 
 static void FUN_RaiseError()

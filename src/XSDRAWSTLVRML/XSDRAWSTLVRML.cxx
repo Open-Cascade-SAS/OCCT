@@ -68,11 +68,6 @@
 #include <XSDRAWSTLVRML_DataSource3D.hxx>
 #include <XSDRAWSTLVRML_DrawableMesh.hxx>
 
-// avoid warnings on 'extern "C"' functions returning C++ classes
-#ifdef _MSC_VER
-#pragma warning(4:4190)
-#endif
-
 #ifndef _STDIO_H
 #include <stdio.h>
 #endif

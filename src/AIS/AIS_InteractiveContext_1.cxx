@@ -56,7 +56,7 @@ typedef NCollection_DataMap<Handle(AIS_InteractiveObject), NCollection_Handle<Se
 
 namespace
 {
-  TopoDS_Shape AIS_myDummyShape;
+  TopoDS_Shape AIS_InteractiveContext_myDummyShape;
 }
 
 //=======================================================================
@@ -1679,7 +1679,7 @@ const TopoDS_Shape& AIS_InteractiveContext::DetectedCurrentShape() const
 
   if (aCurrentShape.IsNull())
   {
-    return AIS_myDummyShape;
+    return AIS_InteractiveContext_myDummyShape;
   }
 
   return aCurrentShape->Shape();

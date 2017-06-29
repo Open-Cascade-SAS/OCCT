@@ -56,8 +56,6 @@
 static TCollection_AsciiString PRODINS("dins ");
 #endif
 
-//Standard_IMPORT extern TopOpeBRepBuild_Builder* GLOBAL_PBUILDER;
-Standard_IMPORT TopOpeBRepBuild_Builder* GLOBAL_PBUILDER;
 #define MYBB ((TopOpeBRepBuild_BlockBuilder*)myBlockBuilder)
 
 

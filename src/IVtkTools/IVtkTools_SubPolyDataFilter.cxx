@@ -64,7 +64,7 @@ int IVtkTools_SubPolyDataFilter::RequestData (vtkInformation *vtkNotUsed(theRequ
   if (myDoFiltering)
   {
     vtkSmartPointer<vtkCellData> aCellData = anInput->GetCellData();
-    int aSize = 0;
+    vtkIdType aSize = 0;
     vtkSmartPointer<vtkIdTypeArray> aDataArray =
       vtkIdTypeArray::SafeDownCast (aCellData->GetArray (myIdsArrayName));
 

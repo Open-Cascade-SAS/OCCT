@@ -20,6 +20,11 @@
 
 #include "vtkPolyDataAlgorithm.h"
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4251) // avoid warning C4251: "class needs to have dll-interface..."
+#endif
+
 //! @class IVtkTools_SubPolyDataFilter 
 //! @brief Cells filter according to the given set of cells ids.
 class IVtkTools_EXPORT IVtkTools_SubPolyDataFilter : public vtkPolyDataAlgorithm
@@ -64,5 +69,9 @@ protected:
   const char*    myIdsArrayName;
   bool           myDoFiltering;
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 #endif // IVtkTOOLS_SUBPOLYDATAFILTER_H

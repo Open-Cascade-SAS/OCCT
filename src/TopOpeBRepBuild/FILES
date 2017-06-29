@@ -41,7 +41,6 @@ TopOpeBRepBuild_FaceBuilder.hxx
 TopOpeBRepBuild_fctwes.cxx
 TopOpeBRepBuild_ffsfs.cxx
 TopOpeBRepBuild_ffwesk.cxx
-TopOpeBRepBuild_Fill.pxx
 TopOpeBRepBuild_FREGU.cxx
 TopOpeBRepBuild_FuseFace.cxx
 TopOpeBRepBuild_FuseFace.hxx
@@ -108,10 +107,6 @@ TopOpeBRepBuild_SolidAreaBuilder.cxx
 TopOpeBRepBuild_SolidAreaBuilder.hxx
 TopOpeBRepBuild_SolidBuilder.cxx
 TopOpeBRepBuild_SolidBuilder.hxx
-TopOpeBRepBuild_SplitEdge.hxx
-TopOpeBRepBuild_SplitFace.hxx
-TopOpeBRepBuild_SplitShapes.hxx
-TopOpeBRepBuild_SplitSolid.pxx
 TopOpeBRepBuild_SREGU.cxx
 TopOpeBRepBuild_Tools.cxx
 TopOpeBRepBuild_Tools.hxx

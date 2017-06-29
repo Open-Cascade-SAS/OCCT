@@ -44,7 +44,6 @@ static inline Standard_Real GetWallClockTime ()
 #else
 //-------------------  Windows NT  ------------------
 
-#define STRICT
 #include <windows.h>
 
 //=======================================================================

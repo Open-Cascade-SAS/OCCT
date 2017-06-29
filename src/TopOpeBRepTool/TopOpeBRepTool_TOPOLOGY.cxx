@@ -1180,24 +1180,3 @@ Standard_EXPORT Standard_Boolean FUN_tool_MakeWire(const TopTools_ListOfShape& l
   return Standard_True;
 }
 
-// ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_getEclo(const TopoDS_Face& F, const Standard_Boolean UISO, TopoDS_Edge& Eclo)
-// purpose : get first edge Eclo / Eclo is uiso 
-//                                 F has closing edge Eclo
-{
-  TopExp_Explorer ex(F, TopAbs_EDGE);
-  for (; ex.More(); ex.Next()){
-    const TopoDS_Edge& E = TopoDS::Edge(ex.Current());
-    Standard_Boolean clo = BRep_Tool::IsClosed(E,F);
-    if (clo) {
-      Standard_Boolean isou,isov; gp_Pnt2d o2d; gp_Dir2d d2d; 
-      Standard_Real f,l,tol; Handle(Geom2d_Curve) PC = FC2D_CurveOnSurface(E,F,f,l,tol);
-      TopOpeBRepTool_TOOL::UVISO(PC,isou,isov,d2d,o2d); 
-      if (UISO && isou) {
-	Eclo=E; 
-	return Standard_True;
-      }
-    }
-  }
-  return Standard_False;
-}

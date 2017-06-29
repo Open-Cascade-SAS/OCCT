@@ -41,8 +41,8 @@ extern Standard_Integer nbCal1Intersection; // pairs of unrejected edges
 extern Standard_Integer nbCal2Intersection; // true intersections (not vertex)
 extern Standard_Integer nbCal3Intersection; // curve-surface intersections
 
-static Standard_Integer TRACE = Standard_True;
-static Standard_Integer TRACE10 = Standard_True; 
+static Standard_Integer HLRBRep_InternalAlgo_TRACE = Standard_True;
+static Standard_Integer HLRBRep_InternalAlgo_TRACE10 = Standard_True; 
 
 //=======================================================================
 //function : HLRBRep_InternalAlgo
@@ -744,7 +744,7 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
         HLRBRep_FaceData& fd = aFDataArray.ChangeValue(f);
         if (fd.Selected()) {
 	  if (fd.Side()) {
-	    if(TRACE10) { 
+	    if(HLRBRep_InternalAlgo_TRACE10) { 
 	      if(++QWE>QWEQWE) { 
 		QWE=0; 
                 if (myDebug)
@@ -752,7 +752,7 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
 	      } 
 	    }
 	    else {  
-	      if (myDebug && TRACE) {
+	      if (myDebug && HLRBRep_InternalAlgo_TRACE) {
 		j++;
 		cout << " OwnHiding " << j << " of face : " << f << endl;
 	      }
@@ -864,14 +864,14 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
       HLRBRep_FaceData& fd = aFDataArray.ChangeValue(fi);
       if (fd.Selected()) {
 	if (fd.Hiding()) {
-	  if(TRACE10 && TRACE==Standard_False) { 
+	  if(HLRBRep_InternalAlgo_TRACE10 && HLRBRep_InternalAlgo_TRACE==Standard_False) { 
 	    if(++QWE>QWEQWE) { 
 	      if (myDebug)
                 cout<<".";
 	      QWE=0;
 	    }
 	  }
-	  else if (myDebug && TRACE) {
+	  else if (myDebug && HLRBRep_InternalAlgo_TRACE) {
 	    static int rty=0;
 	    j++;
 	    printf("%6d",fi); fflush(stdout);

@@ -1,7 +1,6 @@
 WNT_ClassDefinitionError.hxx
 WNT_Dword.hxx
 WNT_OrientationType.hxx
-WNT_Uint.hxx
 WNT_WClass.cxx
 WNT_WClass.hxx
 WNT_Window.cxx

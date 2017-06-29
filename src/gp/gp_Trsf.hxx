@@ -35,6 +35,11 @@ class gp_Quaternion;
 class gp_Ax3;
 class gp_Vec;
 
+// Avoid possible conflict with SetForm macro defined by windows.h
+#ifdef SetForm
+#undef SetForm
+#endif
+
 //! Defines a non-persistent transformation in 3D space.
 //! The following transformations are implemented :
 //! . Translation, Rotation, Scale

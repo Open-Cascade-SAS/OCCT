@@ -197,7 +197,7 @@ namespace
     NCollection_IndexedMap<Handle(Select3D_HBndBox3d)> myBoundings;
   };
 
-  static const Graphic3d_Mat4d THE_IDENTITY_MAT;
+  static const Graphic3d_Mat4d SelectMgr_SelectableObjectSet_THE_IDENTITY_MAT;
 }
 
 //=============================================================================
@@ -360,7 +360,7 @@ void SelectMgr_SelectableObjectSet::UpdateBVH (const Handle(Graphic3d_Camera)& t
     {
       // construct adaptor over private fields to provide direct access for the BVH builder
       BVHBuilderAdaptorPersistent anAdaptor (myObjects[BVHSubset_2dPersistent],
-        theCamera, theProjectionMat, THE_IDENTITY_MAT, theViewportWidth, theViewportHeight);
+        theCamera, theProjectionMat, SelectMgr_SelectableObjectSet_THE_IDENTITY_MAT, theViewportWidth, theViewportHeight);
 
       // update corresponding BVH tree data structure
       myBuilder[BVHSubset_2dPersistent]->Build (&anAdaptor, myBVH[BVHSubset_2dPersistent].get(), anAdaptor.Box());

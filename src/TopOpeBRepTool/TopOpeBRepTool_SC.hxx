@@ -21,9 +21,6 @@
 #include <TopOpeBRepTool_ShapeClassifier.hxx>
 #include <TopOpeBRepTool_PShapeClassifier.hxx>
 
-#define MTLsc  TopOpeBRepTool_ShapeClassifier
-#define MTLpsc TopOpeBRepTool_PShapeClassifier
-
 Standard_EXPORT TopOpeBRepTool_ShapeClassifier& FSC_GetPSC(void);
 Standard_EXPORT TopOpeBRepTool_ShapeClassifier& FSC_GetPSC(const TopoDS_Shape& S);
 // ----------------------------------------------------------------------

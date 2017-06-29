@@ -28,7 +28,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <WNT_Uint.hxx>
 
 //! This class defines a Windows NT window class.
 //! A window in Windows NT is always created based on a
@@ -58,7 +57,7 @@ public:
   //! Creates a Windows NT window class and registers it.
   Standard_EXPORT WNT_WClass (const TCollection_AsciiString& theClassName,
                               const Standard_Address theWndProc,
-                              const WNT_Uint& theStyle,
+                              const unsigned int theStyle,
                               const Standard_Integer theClassExtra  = 0,
                               const Standard_Integer theWindowExtra = 0,
                               const Aspect_Handle theCursor = NULL,

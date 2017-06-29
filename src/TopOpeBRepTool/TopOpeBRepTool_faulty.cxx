@@ -37,27 +37,10 @@
 extern TopTools_IndexedMapOfShape STATIC_PURGE_mapv;
 extern TopTools_IndexedMapOfOrientedShape STATIC_PURGE_mapeds;
 extern Standard_Boolean TopOpeBRepTool_GettracePURGE();
-Standard_EXPORT void FUN_REINIT()
+void FUN_REINIT()
 {
   STATIC_PURGE_mapv.Clear(); STATIC_PURGE_mapeds.Clear();
 }
-Standard_EXPORT Standard_Integer FUN_addepc(const TopoDS_Shape& ed,const TopoDS_Shape&)
-{
-  Standard_Integer ie = STATIC_PURGE_mapeds.Add(ed);
-#ifdef DRAW
-//  TCollection_AsciiString aa = TCollection_AsciiString("pc_"); FUN_tool_draw(aa,TopoDS::Edge(ed),TopoDS::Face(f),ie);
-//  TCollection_AsciiString bb = TCollection_AsciiString("ed_"); FUN_tool_draw(bb,ed,ie);
-#endif  
-  return ie;
-}
-
-Standard_EXPORT Standard_Integer FUN_addcheckepc(const TopoDS_Shape& ed,const TopoDS_Shape& f) {
-  Standard_Integer ie = 0;
-  ie = STATIC_PURGE_mapeds.FindIndex(ed);
-  if (ie == 0) ie = FUN_addepc(ed,f);
-  return ie;
-}
-Standard_IMPORT Standard_Integer FUN_adds(const TopoDS_Shape& s);
 
 Standard_EXPORT void FUN_tool_tori(const TopAbs_Orientation Or)
 {

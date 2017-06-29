@@ -34,7 +34,10 @@ class gp_XYZ;
 class gp_Ax1;
 class gp_Ax2;
 
-
+// Avoid possible conflict with SetForm macro defined by windows.h
+#ifdef SetForm
+#undef SetForm
+#endif
 
 //! Defines a non-persistent transformation in 3D space.
 //! This transformation is a general transformation.

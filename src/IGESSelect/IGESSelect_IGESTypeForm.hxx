@@ -26,6 +26,10 @@
 class Standard_Transient;
 class Interface_InterfaceModel;
 
+// Avoid possible conflict with SetForm macro defined by windows.h
+#ifdef SetForm
+#undef SetForm
+#endif
 
 class IGESSelect_IGESTypeForm;
 DEFINE_STANDARD_HANDLE(IGESSelect_IGESTypeForm, IFSelect_Signature)

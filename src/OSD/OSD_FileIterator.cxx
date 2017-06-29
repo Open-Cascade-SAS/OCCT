@@ -263,7 +263,6 @@ Standard_Integer OSD_FileIterator::Error()const{
 //-------------------  Windows NT sources for OSD_FileIterator -----------
 //------------------------------------------------------------------------
 
-#define STRICT
 #include <windows.h>
 
 

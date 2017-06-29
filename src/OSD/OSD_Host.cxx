@@ -181,7 +181,6 @@ Standard_Integer OSD_Host::Error()const{
 //-------------------  WNT Sources of OSD_Host ---------------------------
 //------------------------------------------------------------------------
 
-#define STRICT
 #include <windows.h>
 
 #include <OSD_Host.hxx>

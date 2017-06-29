@@ -155,9 +155,6 @@ Standard_Integer OSD_Disk::Error()const{
 //---------------------------- Windows NT System --------------------------------
 //-------------------------------------------------------------------------------
 
-#define STRICT
-
-
 #include <OSD_Disk.hxx>
 #include <OSD_OSDError.hxx>
 #include <OSD_Path.hxx>

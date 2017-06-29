@@ -15,7 +15,9 @@
 
 #if defined(__APPLE__) && !defined(MACOSX_USE_GLX)
 
+#ifndef GL_GLEXT_LEGACY
 #define GL_GLEXT_LEGACY // To prevent inclusion of system glext.h on Mac OS X 10.6.8
+#endif
 
 #import <TargetConditionals.h>
 

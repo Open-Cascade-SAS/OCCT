@@ -25,6 +25,11 @@
 class vtkRenderer;
 class vtkActorCollection;
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4251) // avoid warning C4251: "class needs to have dll-interface..."
+#endif
+
 //! @class IVtkTools_ShapePicker
 //! @brief VTK picker for OCC shapes with OCC selection algorithm.
 class IVtkTools_EXPORT IVtkTools_ShapePicker :  public vtkAbstractPropPicker
@@ -157,5 +162,9 @@ private:
   bool                                myIsPolySelection;//!< Polyline selection mode flag
   float                               myTolerance;      //!< Selectoin tolerance
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 #endif // __IVTKTOOLS_SHAPEPICKER_H__

@@ -204,12 +204,6 @@ static Handle(PipelinePtr) PipelineByActorName (const TCollection_AsciiString& t
   return PipelineByActor (anActor);
 }
 
-static Standard_Boolean IsEqual (const TopoDS_Shape& theLeft,
-                                 const TopoDS_Shape& theRight)
-{
-  return theLeft.IsEqual (theRight);
-}
-
 #ifdef _WIN32
 
 static Handle(WNT_Window)& GetWindow()
@@ -373,7 +367,7 @@ void IVtkDraw::ViewerInit (Standard_Integer thePxLeft,
 
     // Init picker
     GetPicker() = vtkSmartPointer<IVtkTools_ShapePicker>::New();
-    GetPicker()->SetTolerance (0.025);
+    GetPicker()->SetTolerance (0.025f);
     GetPicker()->SetRenderer (GetRenderer());
 
     GetInteractor()->SetShapePicker (GetPicker());

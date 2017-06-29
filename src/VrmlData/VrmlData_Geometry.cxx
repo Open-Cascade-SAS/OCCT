@@ -40,25 +40,6 @@ IMPLEMENT_STANDARD_RTTIEXT(VrmlData_Geometry,VrmlData_Node)
 #pragma warning (disable:4996)
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //=======================================================================
 //function : Value
 //purpose  : 

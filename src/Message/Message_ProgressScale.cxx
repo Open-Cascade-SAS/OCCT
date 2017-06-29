@@ -15,8 +15,8 @@
 #include <Message_ProgressScale.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-static const Standard_Real ZERO = 1e-10;
-static const Standard_Real INFINITE = 1e100;
+static const Standard_Real Message_ProgressScale_ZERO = 1e-10;
+static const Standard_Real Message_ProgressScale_INFINITE = 1e100;
   
 //=======================================================================
 //function : Message_ProgressScale
@@ -37,7 +37,7 @@ Message_ProgressScale::Message_ProgressScale () :
 Standard_Real Message_ProgressScale::LocalToBase (const Standard_Real val) const
 {
   if ( val <= myMin ) return myFirst;
-  if ( myMax - myMin <= ZERO ) return myLast;
+  if ( myMax - myMin <= Message_ProgressScale_ZERO ) return myLast;
   
   if ( ! myInfinite ) {
     if ( val >= myMax ) return myLast;
@@ -55,8 +55,8 @@ Standard_Real Message_ProgressScale::LocalToBase (const Standard_Real val) const
 
 Standard_Real Message_ProgressScale::BaseToLocal (const Standard_Real val) const
 {
-  if ( myLast - val <= ZERO ) 
-    return myInfinite ? INFINITE : myMax;
+  if ( myLast - val <= Message_ProgressScale_ZERO ) 
+    return myInfinite ? Message_ProgressScale_INFINITE : myMax;
   if ( ! myInfinite )
     return myMin + ( myMax - myMin ) * ( val - myFirst ) / ( myLast - myFirst );
 //  Standard_Real x = log ( ( val - myFirst ) / ( myLast - val ) ); // exponent

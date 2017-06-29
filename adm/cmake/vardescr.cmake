@@ -33,6 +33,10 @@ set (BUILD_ENABLE_FPE_SIGNAL_HANDLER_DESCR
 Corresponding environment variable (CSF_FPE) can be changed manually
 in custom.bat/sh scripts without regeneration by CMake.")
 
+set (BUILD_USE_PCH_DESCR
+"Use precompiled headers to accelerate the build.
+Precompiled headers are generated automatically by Cotire tool.")
+
 # install variables
 set (INSTALL_DIR_DESCR 
 "The place where built OCCT libraries, headers, test cases (INSTALL_TEST_CASES variable),

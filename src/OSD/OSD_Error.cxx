@@ -443,7 +443,6 @@ void OSD_Error::Perror() {
 //-------------------  Windows NT sources for OSD_Error ------------------
 //------------------------------------------------------------------------
 
-#define STRICT
 #include <OSD_Error.hxx>
 #include <OSD_ErrorList.hxx>
 #include <TCollection_ExtendedString.hxx>

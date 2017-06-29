@@ -27,6 +27,11 @@ class vtkDataSet;
 class vtkInformationObjectBaseKey;
 class IVtkTools_ShapeDataSource;
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4251) // avoid warning C4251: "class needs to have dll-interface..."
+#endif
+
 //! @class IVtkTools_ShapeObject
 //! @brief VTK holder class for OCC shapes to pass them through pipelines.
 //!
@@ -81,5 +86,9 @@ private: // OCC
 
   static KeyPtr myKey;
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 #endif // __IVTKTOOLS_SHAPEOBJECT_H__

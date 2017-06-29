@@ -960,7 +960,3 @@ Standard_Integer AdaptiveDiscret (const Standard_Integer iDiscret,
   }
   return iDiscretNew;
 }
-
-#ifdef _MSC_VER
-#pragma warning ( default : 4101 )
-#endif

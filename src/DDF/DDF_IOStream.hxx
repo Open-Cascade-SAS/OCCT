@@ -223,11 +223,6 @@ ostream* myOStream;
 
 };
 
-#ifdef _MSC_VER
-#pragma warning (default : 4275)
-#endif
-
-
 // other inline functions and methods (like "C++: function call" methods)
 //
 #endif

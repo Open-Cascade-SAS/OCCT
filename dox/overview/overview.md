@@ -21,7 +21,7 @@ Open CASCADE Technology and all materials, including this documentation, is
 Copyright (c) 1999-2016 by OPEN CASCADE S.A.S. All rights reserved.
 
 @htmlonly<center>@endhtmlonly
-http://www.opencascade.com
+https://www.opencascade.com
 @figure{/resources/occ_logo.png}
 @htmlonly</center>@endhtmlonly
 
@@ -71,7 +71,7 @@ and, in case you need any further information, directly contact their authors.
 **Qt** is a cross-platform application framework that is widely used for developing application software 
 with graphical user interface (GUI). Qt is free and open source software distributed under 
 the terms of the GNU Lesser General Public License. In OCCT Qt is used for programming samples. 
-If you need further information on Qt, please, refer to Qt Homepage (http://www.qt.io/)
+If you need further information on Qt, please, refer to Qt Homepage (https://www.qt.io/)
 
 **Tcl** is a high-level programming language. Tk is a graphical user interface (GUI) toolkit, 
 with buttons, menus, listboxes, scrollbars, and so on. Taken together Tcl and Tk provide a solution 
@@ -79,11 +79,11 @@ to develop cross-platform graphical user interfaces with a native look and feel.
 Scriptics Corp., Sun Microsystems, and other companies. However, Tcl/Tk is an open source, and 
 the copyright allows you to use, modify, and redistribute Tcl/Tk for any purpose, without an 
 explicit license agreement and without paying any license fees or royalties. 
-To use Tcl/Tk, please refer to the Licensing Terms (http://www.tcl.tk/software/tcltk/license.html).
+To use Tcl/Tk, please refer to the Licensing Terms (https://www.tcl.tk/software/tcltk/license.html).
 
 **GL2PS** is developed by Christophe Geuzaine and others. It is optionally used by OCCT to
 export content of OpenGL scene to vector graphics formats (PS, PDF, EMF, SVG). 
-The library is licensed under GL2PS LICENSE http://www.geuz.org/gl2ps/COPYING.GL2PS Version 2, November 2003.
+The library is licensed under GL2PS LICENSE https://www.geuz.org/gl2ps/COPYING.GL2PS Version 2, November 2003.
 
 **FreeType 2** is developed by Antoine Leca, David Turner, Werner Lemberg and others. 
 It is a software font engine that is designed to be small, efficient, highly customizable and 
@@ -101,34 +101,42 @@ TBB is available under GPLv2 license with the runtime exception.
 
 **OpenGL** is an industry standard API for 3D graphics used by OCCT for 
 implementation of 3D viewer. OpenGL specification is developed by the
-Khronos group, http://www.khronos.org/opengl/. OCCT code includes header 
+Khronos group, https://www.khronos.org/opengl/. OCCT code includes header 
 file *glext.h* obtained from Khronos web site.
 
-**VTK** -- The **Visualization Toolkit (VTK)** is an open-source, freely available software system for 3D computer graphics, image processing and visualization. OCCT VIS component provides adaptation functionality for visualization of OCCT topological shapes by means of VTK library. If you need further information on VTK, please, refer to VTK Homepage http://www.vtk.org/.
+**VTK** -- The **Visualization Toolkit (VTK)** is an open-source, freely available software system for 3D computer graphics, image processing and visualization. OCCT VIS component provides adaptation functionality for visualization of OCCT topological shapes by means of VTK library. If you need further information on VTK, please, refer to VTK Homepage https://www.vtk.org/.
 
 **Doxygen** developed by Dimitri van Heesch is open source documentation system for 
 C++, C, Java, Objective-C, Python, IDL, PHP and C#. This product is used in Open CASCADE Technology 
 for automatic creation of Technical Documentation from C++ header files. 
-If you need further information on Doxygen, please refer to http://www.stack.nl/~dimitri/doxygen/index.html.
+If you need further information on Doxygen, please refer to https://www.stack.nl/~dimitri/doxygen/index.html.
 
 **Graphviz** is open source graph visualization software developed by John Ellson, Emden Gansner, Yifan Hu and Arif Bilgin. 
 Graph visualization is representiation of structured information as diagrams of abstract graphs and networks. 
 This product is used together with Doxygen in Open CASCADE Technology for automatic creation of Technical Documentation 
 (generation of dependency graphs). Current versions of Graphviz are licensed on an open source 
-basis under The Eclipse Public License (EPL) (http://www.graphviz.org/License.php).
+basis under The Eclipse Public License (EPL) (https://www.graphviz.org/License.php).
 
 **Inno Setup** is a free script-driven installation system created in CodeGear Delphi by Jordan Russell. 
 In OCCT Inno Setup is used to create Installation Wizard on Windows. 
-It is licensed under Inno Setup License (http://www.jrsoftware.org/files/is/license.txt).
+It is licensed under Inno Setup License (https://www.jrsoftware.org/files/is/license.txt).
 
 **FreeImage** is an Open Source library supporting popular graphics image formats, such as PNG, BMP, JPEG, TIFF, 
 and others used by multimedia applications. This library is developed by Hervé Drolon and Floris van den Berg. 
 FreeImage is easy to use, fast, multithreading safe, compatible with all 32-bit or 64-bit versions of Windows, 
 and cross-platform (works both with Linux and Mac OS X). FreeImage is optionally used by OCCT to work
-with images, on conditions of the FreeImage Public License (FIPL) (http://freeimage.sourceforge.net/freeimage-license.txt).
+with images, on conditions of the FreeImage Public License (FIPL) (https://freeimage.sourceforge.net/freeimage-license.txt).
+
+**CMake** is an open-source, cross-platform family of tools designed to build, test and package software. CMake is used to control the software compilation process using simple platform and compiler independent configuration files, and generate native makefiles and workspaces that can be used in the compiler environment of your choice. 
+OCCT uses CMake as a build system. CMake is available under BSD 3-Clause license. See more at https://cmake.org/
+
+**Cotire** (compile time reducer) is a CMake module that speeds up the build process of CMake based build systems 
+by fully automating techniques as precompiled header usage and single compilation unit builds for C and C++.
+Cotire is included in OCCT repository and used optionally by OCCT CMake scripts to accelerate builds by use of precompiled headers.
+Cotire is licensed under the MIT license (https://github.com/sakra/cotire/blob/master/license).
 
 **MikTEX** is up-to-date implementation of TeX/LaTeX and related programs for Windows. It is used 
-for generation of User and Developer Guides in PDF format. See http://miktex.org for information
+for generation of User and Developer Guides in PDF format. See https://miktex.org for information
 on this tool.
 
 Adobe Systems, Inc. provides **Adobe Reader**, which can be used to view files in Portable Document Format (PDF). 

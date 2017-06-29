@@ -20,7 +20,6 @@
 #ifdef _WIN32
 //---------------------------- Windows NT System --------------------------------
 
-#define STRICT
 #ifdef NOUSER
 #undef NOUSER
 #endif
@@ -615,7 +614,8 @@ LONG _osd_debug ( void ) {
 #include <pthread.h>
 
 #ifdef __linux__
-#include <fenv.h>
+#include  <cfenv>
+//#include  <fenv.h>
 static Standard_Boolean fFltExceptions = Standard_False;
 #endif
 

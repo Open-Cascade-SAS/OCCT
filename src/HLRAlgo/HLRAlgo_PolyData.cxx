@@ -24,7 +24,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyData,MMgt_TShared)
 
 #ifdef OCCT_DEBUG
-static Standard_Integer ERROR = Standard_False;
+static Standard_Integer HLRAlgo_PolyData_ERROR = Standard_False;
 #endif
 //=======================================================================
 //function : PolyData
@@ -381,7 +381,7 @@ void HLRAlgo_PolyData::hideByOneTriangle (const HLRAlgo_BiPoint::PointsT& thePoi
 	m[npi] = Multiple;
       }
 #ifdef OCCT_DEBUG
-      else if (ERROR) {
+      else if (HLRAlgo_PolyData_ERROR) {
 	cout << " error : HLRAlgo_PolyData::HideByOneTriangle " << endl;
 	cout << " ( more than 2 points )." << endl;
       }
@@ -523,7 +523,7 @@ void HLRAlgo_PolyData::hideByOneTriangle (const HLRAlgo_BiPoint::PointsT& thePoi
 	m[npi] = Multiple;
       }
 #ifdef OCCT_DEBUG
-      else if (ERROR) {
+      else if (HLRAlgo_PolyData_ERROR) {
 	cout << " error : HLRAlgo_PolyData::HideByOneTriangle " << endl;
 	cout << " ( more than 2 points )." << endl;
       }
@@ -665,7 +665,7 @@ void HLRAlgo_PolyData::hideByOneTriangle (const HLRAlgo_BiPoint::PointsT& thePoi
 	m[npi] = Multiple;
       }
 #ifdef OCCT_DEBUG
-      else if (ERROR) {
+      else if (HLRAlgo_PolyData_ERROR) {
 	cout << " error : HLRAlgo_PolyData::HideByOneTriangle " << endl;
 	cout << " ( more than 2 points )." << endl;
       }

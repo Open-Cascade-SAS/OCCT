@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 2.8.12 FATAL_ERROR)
 
+set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/adm/cmake")
+
 set (CMAKE_SUPPRESS_REGENERATION TRUE)
 
 set (CMAKE_CONFIGURATION_TYPES Release Debug RelWithDebInfo CACHE INTERNAL "" FORCE)
@@ -83,6 +85,31 @@ endif()
 
 if (BUILD_WITH_DEBUG)
   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:DEBUG>:OCCT_DEBUG>)
+endif()
+
+# option to enable or disable use of precompiled headers
+if (NOT DEFINED BUILD_USE_PCH)
+  set (BUILD_USE_PCH OFF CACHE BOOL "${BUILD_USE_PCH_DESCR}")
+endif()
+
+if (BUILD_USE_PCH)
+
+  # Load Cotire tool for accelerating build procedure
+  include(cotire)
+
+  # Set Cotire to ignore lxx, pxx, gxx 
+  set (COTIRE_ADDITIONAL_PREFIX_HEADER_IGNORE_EXTENSIONS "lxx;pxx;gxx" CACHE STRING "Set Cotire to ignore OCCT specific files that can be #included" FORCE)
+
+  # Set priority for inclusion of system headers in PCH to reduce problems
+  # due to incomplete inclusion or wrong order.
+  if (WIN32)
+    # on Windows, assume that SDK (windows.h) is in default location
+    set(ProgramFilesX86 "ProgramFiles(x86)")
+    file(TO_CMAKE_PATH "$ENV{${ProgramFilesX86}}" ProgramFilesX86)
+    set_property (DIRECTORY PROPERTY COTIRE_PREFIX_HEADER_INCLUDE_PRIORITY_PATH "${ProgramFilesX86}")
+    unset(ProgramFilesX86)
+  endif()
+
 endif()
 
 # copy samples to install directory
@@ -864,6 +891,8 @@ if (MSVC AND 3RDPARTY_DLL_DIRS)
   endif()
 endif()
 
+message (STATUS "Info: \(${CURRENT_TIME}\) OCCT toolkits processed")
+
 # samples do not support patch usage
 if (BUILD_MODULE_MfcSamples)
   set (OCCT_ROOT ${CMAKE_SOURCE_DIR})
@@ -882,6 +911,8 @@ if (BUILD_MODULE_MfcSamples)
   add_subdirectory(samples/mfc/standard/08_HLR)
   add_subdirectory(samples/mfc/standard/09_Animation)
   add_subdirectory(samples/mfc/standard/10_Convert)
+
+  message (STATUS "Info: \(${CURRENT_TIME}\) MFC Sample projects added")
 endif()
 
 if (BUILD_MODULE_UwpSample)
@@ -996,3 +1027,5 @@ endforeach()
 # Update generated OpenCASCADETargets-*.cmake files 
 # to have correct paths to libraries depending on the configuration
 OCCT_UPDATE_TARGET_FILE ()
+
+message (STATUS "Info: \(${CURRENT_TIME}\) OCCT configuration files prepared")

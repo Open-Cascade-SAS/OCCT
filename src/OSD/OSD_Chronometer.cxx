@@ -111,7 +111,6 @@ void OSD_Chronometer::GetThreadCPU (Standard_Real& theUserSeconds,
 
 //---------------------------- Systeme WNT --------------------------------
 
-#define STRICT
 #include <windows.h>
 
 //=======================================================================

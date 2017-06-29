@@ -47,17 +47,6 @@
 #include <VrmlData_Appearance.hxx>
 
 //=======================================================================
-//function : IsEqual
-//purpose  : for NCollection_DataMap interface
-//=======================================================================
-
-inline Standard_Boolean IsEqual (const TopoDS_Shape& one,
-                                 const TopoDS_Shape& two) 
-{
-  return one == two;
-}
-
-//=======================================================================
 //function : AddShape
 //purpose  : 
 //=======================================================================

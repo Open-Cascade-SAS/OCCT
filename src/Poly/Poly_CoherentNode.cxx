@@ -16,10 +16,6 @@
 #include <Poly_CoherentNode.hxx>
 #include <Poly_CoherentTriangle.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable:4996)
-#endif
-
 //=======================================================================
 //function : Clear
 //purpose  : 

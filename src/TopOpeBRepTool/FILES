@@ -13,7 +13,6 @@ TopOpeBRepTool_C2DF.cxx
 TopOpeBRepTool_C2DF.hxx
 TopOpeBRepTool_CLASSI.cxx
 TopOpeBRepTool_CLASSI.hxx
-TopOpeBRepTool_closing.cxx
 TopOpeBRepTool_connexity.cxx
 TopOpeBRepTool_connexity.hxx
 TopOpeBRepTool_CORRISO.cxx

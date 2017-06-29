@@ -896,15 +896,12 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
 
     if (addFORREV) { 
       newE.Orientation(TopAbs_FORWARD);  
-//      Standard_Boolean ok = FUN_tool_correctCLO(TopoDS::Edge(newE),FOR); // xpu201198 cto016*
       myPWES->AddStartElement(newE);
 
       newE.Orientation(TopAbs_REVERSED); 
-//      ok = FUN_tool_correctCLO(TopoDS::Edge(newE),FOR); // xpu201198 cto016*
       myPWES->AddStartElement(newE); 
     }
     else {
-//      Standard_Boolean ok = FUN_tool_correctCLO(TopoDS::Edge(newE),FOR); // xpu201198 cto016*
       myPWES->AddStartElement(newE);
     }
     return;

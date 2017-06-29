@@ -70,10 +70,5 @@ void StdDrivers::BindTypes (StdObjMgt_MapOfInstantiators& theMap)
   ShapePersistent::BindTypes (theMap);
 }
 
-
-#ifdef _MSC_VER
-#pragma warning(disable:4190) /* disable warning on C++ type returned by C function; should be OK for C++ usage */
-#endif
-
 // Declare entry point PLUGINFACTORY
 PLUGIN (StdDrivers)

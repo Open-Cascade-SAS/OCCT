@@ -30,9 +30,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
 
-//#include <Interface_Macros.hxx>
-#define DeclareAndCast(atype,result,start) \
-Handle(atype) result = Handle(atype)::DownCast (start)
+#include <MoniTool_Macros.hxx>
 
 #include <StepBasic_Address.hxx>
 #include <StepShape_AdvancedBrepShapeRepresentation.hxx>

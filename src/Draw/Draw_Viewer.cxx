@@ -926,14 +926,13 @@ Draw_Display Draw_Viewer::MakeDisplay (const Standard_Integer id) const
   if (Draw_Batch) {Draw_Display dis;return dis;}
   curviewId = id;
   curview = myViews[id];
-  int GXcopy = 0x3;
   nbseg = 0;
   Draw_Color initcol(Draw_blanc);
   // to force setting the color
   currentcolor = Draw_Color(Draw_rouge);
   Draw_Display dis;
   dis.SetColor(initcol);
-  dis.SetMode(GXcopy);
+  dis.SetMode(0x3 /*GXcopy*/);
   return dis;
 }
 

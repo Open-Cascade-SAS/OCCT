@@ -54,7 +54,7 @@
 
 namespace
 {
-  TopoDS_Shape AIS_myDummyShape;
+  TopoDS_Shape AIS_LocalContext_myDummyShape;
 }
 
 //==================================================
@@ -1209,10 +1209,10 @@ AIS_LocalContext::DetectedShape() const
   if(mylastindex != 0)
   {
     Handle(StdSelect_BRepOwner) BROwnr = Handle(StdSelect_BRepOwner)::DownCast(myMapOfOwner->FindKey (mylastindex));
-    if(BROwnr.IsNull()) return AIS_myDummyShape;
+    if(BROwnr.IsNull()) return AIS_LocalContext_myDummyShape;
     return BROwnr->Shape();
   }
-  return AIS_myDummyShape;
+  return AIS_LocalContext_myDummyShape;
 }					    
 
 //=======================================================================
@@ -1476,7 +1476,7 @@ const TopoDS_Shape& AIS_LocalContext::DetectedCurrentShape() const
 
   if (aCurrentShape.IsNull())
   {
-    return AIS_myDummyShape;
+    return AIS_LocalContext_myDummyShape;
   }
 
   return aCurrentShape->Shape();

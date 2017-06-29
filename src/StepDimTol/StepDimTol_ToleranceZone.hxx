@@ -29,6 +29,11 @@ class StepDimTol_HArray1OfToleranceZoneTarget;
 class TCollection_HAsciiString;
 class StepBasic_MeasureWithUnit;
 
+// Avoid possible conflict with SetForm macro defined by windows.h
+#ifdef SetForm
+#undef SetForm
+#endif
+
 class StepDimTol_ToleranceZone;
 DEFINE_STANDARD_HANDLE(StepDimTol_ToleranceZone, StepRepr_ShapeAspect)
 //! Representation of STEP entity ToleranceZone

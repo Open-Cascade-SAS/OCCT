@@ -305,17 +305,6 @@ TCollection_AsciiString AddrToString(const TopoDS_Shape& theShape)
 #endif
 
 //=======================================================================
-//function : IsEqual
-//purpose  : global function to check equality of topological shapes
-//=======================================================================
-
-inline Standard_Boolean IsEqual(const TopoDS_Shape& theShape1,
-                                const TopoDS_Shape& theShape2) 
-{
-  return theShape1.IsEqual(theShape2);
-}
-
-//=======================================================================
 //function : AllocateSubLabel
 //purpose  :
 //=======================================================================

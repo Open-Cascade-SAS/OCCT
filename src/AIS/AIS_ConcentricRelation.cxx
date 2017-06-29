@@ -186,9 +186,9 @@ void AIS_ConcentricRelation::ComputeTwoEdgesConcentric(const Handle(Prs3d_Presen
   
   // choose the radius equal to 1/5 of the smallest radius of 
   // 2 circles. Limit is imposed ( 0.02 by chance)
-  Standard_Real rad1 = gcirc1->Radius();
-  Standard_Real rad2 = gcirc2->Radius();
-  myRad = (rad1 > rad2 ) ? rad2 : rad1;
+  Standard_Real aRad1 = gcirc1->Radius();
+  Standard_Real aRad2 = gcirc2->Radius();
+  myRad = (aRad1 > aRad2 ) ? aRad2 : aRad1;
   myRad /= 5;
   if (myRad > 15.) myRad =15.;
   

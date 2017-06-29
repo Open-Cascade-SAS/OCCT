@@ -41,39 +41,4 @@
 #include <TopoDS_Vertex.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#define MTAse TopAbs_ShapeEnum
-#define MTAo TopAbs_Orientation
-#define MTAs TopAbs_State
-#define MTTmiomos TopTools_MapIteratorOfMapOfShape
-#define MTTmos TopTools_MapOfShape
-#define MTTliolos TopTools_ListIteratorOfListOfShape
-#define MTTlos TopTools_ListOfShape
-#define MTTimos TopTools_IndexedMapOfShape
-#define MTTimoos TopTools_IndexedMapOfOrientedShape
-#define MTTdmoss TopTools_DataMapOfShapeShape
-#define MTTdmosi TopTools_DataMapOfShapeInteger
-#define MTTdmoosi TopTools_DataMapOfOrientedShapeInteger
-#define MTTdmiodmoss TopTools_DataMapIteratorOfDataMapOfShapeShape
-#define MTTdmiodmosi TopTools_DataMapIteratorOfDataMapOfShapeInteger
-#define MTTdmoslos TopTools_DataMapOfShapeListOfShape
-#define MTTdmiodmoslos TopTools_DataMapIteratorOfDataMapOfShapeListOfShape
-#define MTTidmoslos TopTools_IndexedDataMapOfShapeListOfShape
-#define MTTdmiodmoosi TopTools_DataMapIteratorOfDataMapOfOrientedShapeInteger
-#define MTs TopoDS_Shape
-#define MTf TopoDS_Face
-#define MTe TopoDS_Edge
-#define MTv TopoDS_Vertex
-#define Msr Standard_Real
-#define Msi Standard_Integer
-#define Msb Standard_Boolean
-#define Msf Standard_False
-#define Mst Standard_True
-#define Mso Standard_OStream
-#define Mtcas TCollection_AsciiString
-
-#define MTLsc  TopOpeBRepTool_ShapeClassifier
-#define MTLpsc TopOpeBRepTool_PShapeClassifier
-#define MTLoct TopOpeBRepTool_OutCurveType
-#define MTLc    TopOpeBRepTool_connexity
-
 #endif

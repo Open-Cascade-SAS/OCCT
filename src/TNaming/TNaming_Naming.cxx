@@ -150,8 +150,6 @@ static Handle(TNaming_NamedShape) BuildName (const  TDF_Label&   F,
 //=======================================================================
 static Standard_Integer RepeatabilityInContext(const TopoDS_Shape& Selection, 
 					       const TopoDS_Shape& Context);
-//=======================================================================
-extern Standard_Boolean IsEqual (const TopoDS_Shape& S1, const TopoDS_Shape& S2);
 
 //=======================================================================
 //function : Solve

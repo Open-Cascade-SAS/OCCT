@@ -185,7 +185,6 @@ Standard_Integer OSD_DirectoryIterator::Error()const{
 //------------------------------------------------------------------------
 
 
-#define STRICT
 #include <windows.h>
 
 

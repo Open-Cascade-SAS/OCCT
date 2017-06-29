@@ -81,7 +81,7 @@ namespace {
     }
   }
 
-  static const Graphic3d_Mat4d THE_IDENTITY_MAT;
+  static const Graphic3d_Mat4d SelectMgr_ViewerSelector_THE_IDENTITY_MAT;
 }
 
 //==================================================
@@ -476,7 +476,7 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
       // define corresponding frustum builder parameters
       Handle(SelectMgr_FrustumBuilder) aBuilder = new SelectMgr_FrustumBuilder();
       aBuilder->SetProjectionMatrix (mySelectingVolumeMgr.ProjectionMatrix());
-      aBuilder->SetWorldViewMatrix (THE_IDENTITY_MAT);
+      aBuilder->SetWorldViewMatrix (SelectMgr_ViewerSelector_THE_IDENTITY_MAT);
       aBuilder->SetWindowSize (aWidth, aHeight);
       aMgr = mySelectingVolumeMgr.ScaleAndTransform (1, aTFrustum, aBuilder);
     }
@@ -489,7 +489,7 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
     const Graphic3d_Mat4d& aProjectionMat   = mySelectingVolumeMgr.ProjectionMatrix();
     const Graphic3d_Mat4d& aWorldViewMat    = aBVHSubset != SelectMgr_SelectableObjectSet::BVHSubset_2dPersistent
                                             ? mySelectingVolumeMgr.WorldViewMatrix()
-                                            : THE_IDENTITY_MAT;
+                                            : SelectMgr_ViewerSelector_THE_IDENTITY_MAT;
 
     const opencascade::handle<BVH_Tree<Standard_Real, 3> >& aBVHTree = mySelectableObjects.BVH (aBVHSubset);
 

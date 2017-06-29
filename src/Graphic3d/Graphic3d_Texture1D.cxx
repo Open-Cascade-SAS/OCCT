@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Texture1D,Graphic3d_TextureMap)
 
-static const char *NameOfTexture_to_FileName[] =
+static const char *NameOfTexture1d_to_FileName[] =
 {
   "1d_elevation.rgb"
 };
@@ -44,12 +44,12 @@ Graphic3d_Texture1D::Graphic3d_Texture1D (const TCollection_AsciiString& theFile
 // =======================================================================
 Graphic3d_Texture1D::Graphic3d_Texture1D (const Graphic3d_NameOfTexture1D theNOT,
                                           const Graphic3d_TypeOfTexture   theType)
-: Graphic3d_TextureMap (NameOfTexture_to_FileName[theNOT], theType),
+: Graphic3d_TextureMap (NameOfTexture1d_to_FileName[theNOT], theType),
   myName (theNOT)
 {
   myPath.SetTrek (Graphic3d_TextureRoot::TexturesFolder());
   myTexId = TCollection_AsciiString ("Graphic3d_Texture1D_")
-          + NameOfTexture_to_FileName[theNOT];
+          + NameOfTexture1d_to_FileName[theNOT];
 }
 
 // =======================================================================
@@ -78,7 +78,7 @@ Graphic3d_NameOfTexture1D Graphic3d_Texture1D::Name() const
 // =======================================================================
 Standard_Integer Graphic3d_Texture1D::NumberOfTextures()
 {
-  return sizeof(NameOfTexture_to_FileName)/sizeof(char*);
+  return sizeof(NameOfTexture1d_to_FileName)/sizeof(char*);
 }
 
 // =======================================================================
@@ -92,7 +92,7 @@ TCollection_AsciiString Graphic3d_Texture1D::TextureName (const Standard_Integer
     throw Standard_OutOfRange("BAD index of texture");
   }
 
-  TCollection_AsciiString aFileName (NameOfTexture_to_FileName[theRank - 1]);
+  TCollection_AsciiString aFileName (NameOfTexture1d_to_FileName[theRank - 1]);
   Standard_Integer i = aFileName.SearchFromEnd (".");
   return aFileName.SubString (4, i - 1);
 }

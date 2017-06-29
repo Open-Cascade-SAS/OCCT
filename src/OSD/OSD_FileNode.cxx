@@ -362,7 +362,6 @@ Standard_Integer OSD_FileNode::Error()const{
 //-------------------  WNT Sources of OSD_FileNode ---------------------------
 //----------------------------------------------------------------------------
 
-#define STRICT
 #ifdef NONLS
 #undef NONLS
 #endif

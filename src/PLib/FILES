@@ -11,4 +11,4 @@ PLib_HermitJacobi.lxx
 PLib_JacobiPolynomial.cxx
 PLib_JacobiPolynomial.hxx
 PLib_JacobiPolynomial.lxx
-PLib_JacobiPolynomial_0.hxx
+PLib_JacobiPolynomial_Data.pxx

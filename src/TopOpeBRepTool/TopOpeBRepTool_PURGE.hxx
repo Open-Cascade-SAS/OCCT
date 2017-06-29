@@ -22,20 +22,8 @@
 
 #ifdef OCCT_DEBUG
 extern void FUN_REINIT();
-extern Standard_Integer FUN_addepc(const TopoDS_Shape& ed,const TopoDS_Shape& f);
-extern Standard_Integer FUN_addcheckepc(const TopoDS_Shape& ed,const TopoDS_Shape& f);
-extern Standard_Integer FUN_adds(const TopoDS_Shape& s);
-extern void FUN_tool_trace(const Standard_Integer Index);
-extern void FUN_tool_trace(const gp_Pnt2d p2d);
+//extern Standard_Integer FUN_addepc(const TopoDS_Shape& ed,const TopoDS_Shape& f);
 #endif
-// ----------------------------------------------------------------------
-// TopOpeBRepTool_closing.cxx
-// ----------------------------------------------------------------------
-//Standard_IMPORT Standard_Boolean FUN_tool_UVonclosing(const TopoDS_Edge& E, const TopoDS_Face& F, const Standard_Boolean onU,
-//					 const Standard_Real xfirst, const Standard_Real xperiod,
-//					 const Standard_Real toluv);
-Standard_IMPORT Standard_Boolean FUN_tool_correctCLO(TopoDS_Edge& E, const TopoDS_Face& F);
-//Standard_IMPORT Standard_Boolean FUN_tool_getEclo(const TopoDS_Face& F, TopoDS_Edge& Eclo);
 
 // ----------------------------------------------------------------------
 // TopOpeBRepTool_faulty.cxx

@@ -17,12 +17,13 @@
 #include <math_Vector.hxx>
 #include <PLib.hxx>
 #include <PLib_JacobiPolynomial.hxx>
-#include <PLib_JacobiPolynomial_0.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(PLib_JacobiPolynomial,PLib_Base)
+
+#include "PLib_JacobiPolynomial_Data.pxx"
 
 // The possible values for NbGaussPoints
 const Standard_Integer NDEG8=8,   NDEG10=10, NDEG15=15, NDEG20=20, NDEG25=25, 

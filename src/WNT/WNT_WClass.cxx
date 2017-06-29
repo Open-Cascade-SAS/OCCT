@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(WNT_WClass, Standard_Transient)
 //=======================================================================
 WNT_WClass::WNT_WClass (const TCollection_AsciiString& theClassName,
                         const Standard_Address theWndProc,
-                        const WNT_Uint& theStyle,
+                        const unsigned int theStyle,
                         const Standard_Integer theClassExtra,
                         const Standard_Integer theWindowExtra,
                         const Aspect_Handle theCursor,
@@ -43,7 +43,7 @@ WNT_WClass::WNT_WClass (const TCollection_AsciiString& theClassName,
   const TCollection_ExtendedString aClassNameW (theClassName);
   const TCollection_ExtendedString aMenuNameW  (theMenuName);
   WNDCLASSW aWinClass;
-  aWinClass.style         = theStyle;
+  aWinClass.style         = (UINT)theStyle;
   aWinClass.lpfnWndProc   = theWndProc != NULL ? (WNDPROC )theWndProc : DefWindowProcW;
   aWinClass.cbClsExtra    = theClassExtra;
   aWinClass.cbWndExtra    = theWindowExtra;

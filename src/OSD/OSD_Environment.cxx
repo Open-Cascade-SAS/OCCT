@@ -232,7 +232,6 @@ Standard_Integer OSD_Environment::Error() const
 //-------------------  WNT Sources of OSD_Environment --------------------
 //------------------------------------------------------------------------
 
-#define STRICT
 #include <windows.h>
 
 #include <OSD_Environment.hxx>

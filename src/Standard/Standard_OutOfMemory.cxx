@@ -15,6 +15,10 @@
 
 #include <Standard_OutOfMemory.hxx>
 
+#ifdef min
+#undef min
+#endif
+
 #include <algorithm>
 #include <stdlib.h>
 
