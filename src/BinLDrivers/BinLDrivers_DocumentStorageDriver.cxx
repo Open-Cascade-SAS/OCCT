@@ -106,6 +106,8 @@ void BinLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)& theDo
       myDrivers = AttributeDrivers (myMsgDriver);
     Handle(TDF_Data) aData = aDoc->GetData();
     FirstPass (aData->Root());
+    if(aDoc->EmptyLabelsSavingMode()) 
+      myEmptyLabels.Clear(); // 
 
 //  1. Write info section (including types table)
     WriteInfoSection (aDoc, theOStream);

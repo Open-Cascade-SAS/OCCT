@@ -218,24 +218,30 @@ public:
   //! to change format (advanced programming)
   //! ================
   Standard_EXPORT virtual void Update (const Handle(CDM_Document)& aToDocument, const Standard_Integer aReferenceIdentifier, const Standard_Address aModifContext) Standard_OVERRIDE;
-  
+
   Standard_EXPORT virtual TCollection_ExtendedString StorageFormat() const Standard_OVERRIDE;
-  
+
+  //! Sets saving mode for empty labels. If Standard_True, empty labels will be saved.
+  Standard_EXPORT  void SetEmptyLabelsSavingMode (const Standard_Boolean isAllowed);
+
+  //! Returns saving mode for empty labels.
+  Standard_EXPORT  Standard_Boolean EmptyLabelsSavingMode() const;
+
   //! methods for the nested transaction mode
   Standard_EXPORT virtual void ChangeStorageFormat (const TCollection_ExtendedString& newStorageFormat);
-  
+
   //! Sets nested transaction mode if isAllowed == Standard_True
   void SetNestedTransactionMode (const Standard_Boolean isAllowed = Standard_True);
-  
+
   //! Returns Standard_True if mode is set
-    Standard_Boolean IsNestedTransactionMode() const;
-  
+  Standard_Boolean IsNestedTransactionMode() const;
+
   //! if theTransactionOnly is True changes is denied outside transactions
-    void SetModificationMode (const Standard_Boolean theTransactionOnly);
-  
+  void SetModificationMode (const Standard_Boolean theTransactionOnly);
+
   //! returns True if changes allowed only inside transactions
-    Standard_Boolean ModificationMode() const;
-  
+  Standard_Boolean ModificationMode() const;
+
   //! Prepares document for closing
   Standard_EXPORT virtual void BeforeClose();
 
@@ -277,7 +283,7 @@ private:
   Standard_Boolean myIsNestedTransactionMode;
   TDF_DeltaList myUndoFILO;
   Standard_Boolean myOnlyTransactionModification;
-
+  Standard_Boolean mySaveEmptyLabels;
 
 };
 

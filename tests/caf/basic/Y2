@@ -1,0 +1,78 @@
+#INTERFACE CAF
+# Persistence functionality
+#
+# Testing feature: Saving empty labels (XmlOcaf format)
+#
+# Testing command:   SaveAs, Open
+#
+
+puts "caf001-Y2"
+set QA_DUP 0
+
+set Lab1 [Label D 0:1:1]
+set Lab2 [Label D 0:1:2]
+set Lab3 [Label D 0:1:3]
+## set List1 {0:1:1 0:1:2 0:1:3}
+## set List2 {0:1:2}
+
+set aFile1 ${imagedir}/caf001-y1-1.xml
+set aFile2 ${imagedir}/caf001-y1-2.xml
+
+#1. Change Document format to XmlOcaf format
+Format D XmlOcaf
+
+#2. Put integer attribute at the label Lab2
+SetInteger D $Lab2 321
+SetReal D $Lab2 871.33
+
+#3. Save the Document with flag saveEmptyLabels = 1 
+catch {SaveAs D ${aFile1} 1}
+if { ![file exists ${aFile1}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error writing xml file with empty labels"
+	puts "Save ERROR"
+        return
+}
+
+#4. Save the Document with flag saveEmptyLabels = 0 
+catch {SaveAs D ${aFile2} 0}
+if { ![file exists ${aFile2}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error writing xml file"
+	puts "Save ERROR"
+        return
+}
+
+#5. Open the just saved xml files
+Close D
+catch {Open ${aFile1} D1}
+catch {Open ${aFile2} D2}
+
+
+#5. Get list of child labels of main label (0:1)
+set List1 [Children D1 0:1]
+set List2 [Children D2 0:1]
+
+#6. Check length of the list of labels in aFile1 (to be len == 3)
+set len1 [llength ${List1}]
+if {$len1 != 3} {
+  puts "ERROR: Incorrect number of saved labels in cbf file, n = $len1"
+  return
+}
+
+#7. Check length of the list of labels in aFile2 (to be len == 1)
+set len2 [llength ${List2}]
+if {$len2 != 1} {
+  puts "ERROR: Incorrect number of saved labels in cbf file, n = $len2"
+  return
+}
+
+file delete ${aFile1}
+file delete ${aFile2}
+Close D1
+Close D2
+
+puts "Saving empty labels: OK"
+
+
+
+
+

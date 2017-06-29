@@ -71,19 +71,20 @@ Handle(TDocStd_Document) TDocStd_Document::Get (const TDF_Label& acces)
 //=======================================================================
 
 
-TDocStd_Document::TDocStd_Document(const TCollection_ExtendedString& aStorageFormat) : 
+TDocStd_Document::TDocStd_Document(const TCollection_ExtendedString& aStorageFormat) :
 myStorageFormat(aStorageFormat),
 myData (new TDF_Data()),
 myUndoLimit(0),
 mySaveTime(0),
-myIsNestedTransactionMode(0)
+myIsNestedTransactionMode(0),
+mySaveEmptyLabels(Standard_False)
 {
   TDF_Transaction* pTr =  new TDF_Transaction (myData,"UNDO");
   myUndoTransaction    = *pTr; delete pTr;
   TDocStd_Owner::SetDocument(myData,this);
 
 #ifdef SRN_DELTA_COMPACT
-  myFromUndo.Nullify();  
+  myFromUndo.Nullify();
   myFromRedo.Nullify();
 #endif
 }

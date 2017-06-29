@@ -106,3 +106,22 @@ inline Standard_Integer TDocStd_Document::GetSavedTime () const
 {
   return mySaveTime;
 }
+
+//=======================================================================
+//function : SetEmptyLabelsSavingMode
+//purpose  : Sets saving mode for empty labels. If Standard_True, 
+//           empty labels will be saved.
+//=======================================================================
+inline void TDocStd_Document::SetEmptyLabelsSavingMode (const Standard_Boolean isAllowed)
+{
+  mySaveEmptyLabels = isAllowed;
+}
+
+//=======================================================================
+//function : EmptyLabelsSavingMode
+//purpose  : Returns saving mode for empty labels
+//=======================================================================
+inline  Standard_Boolean TDocStd_Document::EmptyLabelsSavingMode() const
+{
+  return mySaveEmptyLabels;
+}

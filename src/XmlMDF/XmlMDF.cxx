@@ -34,6 +34,8 @@
 #include <XmlObjMgt_DOMString.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 #include <XmlLDrivers.hxx>
+#include <TDocStd_Owner.hxx>
+#include <TDocStd_Document.hxx>
 
 IMPLEMENT_DOMSTRING (TagString,         "tag")
 IMPLEMENT_DOMSTRING (LabelString,       "label")
@@ -131,7 +133,7 @@ Standard_Integer XmlMDF::WriteSubTree
     count += WriteSubTree(aChildLab, aLabElem, theRelocTable, theDrivers);
   }
 
-  if (count > 0)
+  if (count > 0 || TDocStd_Owner::GetDocument(theLabel.Data())->EmptyLabelsSavingMode())
   {
     theElement.appendChild(aLabElem);
 

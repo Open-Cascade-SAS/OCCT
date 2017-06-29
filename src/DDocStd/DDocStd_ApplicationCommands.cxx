@@ -232,17 +232,17 @@ static Standard_Integer DDocStd_Save (Draw_Interpretor& di,
 //=======================================================================
 
 static Standard_Integer DDocStd_SaveAs (Draw_Interpretor& di,
-					Standard_Integer nb,
-					const char** a)
-{  
+                                        Standard_Integer nb,
+                                        const char** a)
+{
   if (nb >= 3) {
     Handle(TDocStd_Document) D;    
     if (!DDocStd::GetDocument(a[1],D)) return 1;  
     TCollection_ExtendedString path (a[2]); 
     Handle(TDocStd_Application) A = DDocStd::GetApplication();
     PCDM_StoreStatus theStatus;
-    
-    Standard_Boolean anUseStream = Standard_False;
+
+    Standard_Boolean anUseStream(Standard_False), isSaveEmptyLabels(Standard_False);
     for ( Standard_Integer i = 3; i < nb; i++ )
     {
       if (!strcmp (a[i], "-stream"))
@@ -250,9 +250,11 @@ static Standard_Integer DDocStd_SaveAs (Draw_Interpretor& di,
         di << "standard SEEKABLE stream is used\n";
         anUseStream = Standard_True;
         break;
+      } else {
+        isSaveEmptyLabels =  ((atoi (a[3])) != 0);
+        D->SetEmptyLabelsSavingMode(isSaveEmptyLabels);
       }
     }
-
     if (anUseStream)
     {
       std::ofstream aFileStream;
@@ -263,35 +265,35 @@ static Standard_Integer DDocStd_SaveAs (Draw_Interpretor& di,
     {
       theStatus = A->SaveAs(D,path);
     }
-    
+
     if (theStatus != PCDM_SS_OK ) {
       switch ( theStatus ) {
-        case PCDM_SS_DriverFailure: {
-          di << "Error saving document: Could not store , no driver found to make it\n";
-          break ;
-        }
-        case PCDM_SS_WriteFailure: {
-          di << "Error saving document: Write access failure\n";
-          break;
-        }
-        case PCDM_SS_Failure: {
-          di << "Error saving document: Write failure\n" ;
-          break;
-        }
-        case PCDM_SS_Doc_IsNull: {
-          di << "Error saving document: No document to save\n";
-          break ;
-        }
-        case PCDM_SS_No_Obj: {
-          di << "Error saving document: No objects written\n";
-          break;
-        }
-        case PCDM_SS_Info_Section_Error: {
-          di << "Error saving document: Write info section failure\n" ;
-          break;
-        }
-        default:
-          break;
+      case PCDM_SS_DriverFailure: {
+        di << "Error saving document: Could not store , no driver found to make it\n";
+        break ;
+                                  }
+      case PCDM_SS_WriteFailure: {
+        di << "Error saving document: Write access failure\n";
+        break;
+                                 }
+      case PCDM_SS_Failure: {
+        di << "Error saving document: Write failure\n" ;
+        break;
+                            }
+      case PCDM_SS_Doc_IsNull: {
+        di << "Error saving document: No document to save\n";
+        break ;
+                               }
+      case PCDM_SS_No_Obj: {
+        di << "Error saving document: No objects written\n";
+        break;
+                           }
+      case PCDM_SS_Info_Section_Error: {
+        di << "Error saving document: Write info section failure\n" ;
+        break;
+                                       }
+      default:
+        break;
       }
       return 1;
     } else {
@@ -531,7 +533,7 @@ void DDocStd::ApplicationCommands(Draw_Interpretor& theCommands)
 		  __FILE__, DDocStd_Open, g);   
 
   theCommands.Add("SaveAs",
-		  "SaveAs DOC path [-stream]",
+		  "SaveAs DOC path [saveEmptyLabels: 0|1] [-stream]",
 		  __FILE__, DDocStd_SaveAs, g);  
 
   theCommands.Add("Save",
