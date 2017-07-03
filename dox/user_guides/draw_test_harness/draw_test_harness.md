@@ -2506,7 +2506,7 @@ vdimparam dim1 -textvalue "w_1"
 vdimparam dim1 -autovalue
 ~~~~~
 
-@subsubsection occt_draw_4_4_22 vdimangleparam
+@subsubsection occt_draw_4_4_22 vangleparam
 
 Syntax:
 ~~~~~
@@ -2527,7 +2527,29 @@ vfit
 vangleparam dim1 -type exterior -showarrow first
 ~~~~~
 
-@subsubsection occt_draw_4_4_23 vmovedim
+@subsubsection occt_draw_4_4_23 vlengthparam
+
+Syntax:
+~~~~~
+vlengthparam name [-type interior|exterior]
+                  [-showarrow first|second|both|none]
+~~~~~
+
+Sets parameters for length dimension **name**.
+
+**Example:** 
+~~~~~
+vinit
+vpoint p1 20 20 0
+vpoint p2 80 80 0
+vdimension dim1 -length -plane xoy -shapes p1 p2
+vtop
+vfit
+vzoom 0.5
+vlengthparam dim1 -direction ox
+~~~~~
+
+@subsubsection occt_draw_4_4_24 vmovedim
 
 Syntax:
 ~~~~~

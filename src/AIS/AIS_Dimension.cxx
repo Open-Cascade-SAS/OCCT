@@ -691,21 +691,9 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
   FitTextAlignmentForLinear (theFirstPoint, theSecondPoint, theIsOneSide, aHorisontalTextPos,
                              aLabelPosition, isArrowsExternal);
 
-    // compute dimension line points
-  gp_Ax1 aPlaneNormal = GetPlane().Axis();
-  gp_Dir aTargetPointsVector = gce_MakeDir (theFirstPoint, theSecondPoint);
-
-  // compute flyout direction vector
-  gp_Dir aFlyoutVector = aPlaneNormal.Direction() ^ aTargetPointsVector;
-
-  // create lines for layouts
-  gp_Lin aLine1 (theFirstPoint, aFlyoutVector);
-  gp_Lin aLine2 (theSecondPoint, aFlyoutVector);
-
-  // Get flyout end points
-  gp_Pnt aLineBegPoint = ElCLib::Value (ElCLib::Parameter (aLine1, theFirstPoint)  + GetFlyout(), aLine1);
-  gp_Pnt aLineEndPoint = ElCLib::Value (ElCLib::Parameter (aLine2, theSecondPoint) + GetFlyout(), aLine2);
-
+  // compute dimension line points
+  gp_Pnt aLineBegPoint, aLineEndPoint;
+  ComputeFlyoutLinePoints (theFirstPoint, theSecondPoint, aLineBegPoint, aLineEndPoint);
   gp_Lin aDimensionLine = gce_MakeLin (aLineBegPoint, aLineEndPoint);
 
   // compute arrows positions and directions
@@ -994,6 +982,27 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
   }
 
   mySelectionGeom.IsComputed = Standard_True;
+}
+
+//=======================================================================
+//function : ComputeFlyoutLinePoints
+//purpose  :
+//=======================================================================
+void AIS_Dimension::ComputeFlyoutLinePoints (const gp_Pnt& theFirstPoint, const gp_Pnt& theSecondPoint,
+                                             gp_Pnt& theLineBegPoint, gp_Pnt& theLineEndPoint)
+{
+  // compute dimension line points
+  gp_Ax1 aPlaneNormal = GetPlane().Axis();
+  // compute flyout direction vector
+  gp_Dir aTargetPointsVector = gce_MakeDir (theFirstPoint, theSecondPoint);
+  gp_Dir aFlyoutVector = aPlaneNormal.Direction() ^ aTargetPointsVector;
+  // create lines for layouts
+  gp_Lin aLine1 (theFirstPoint, aFlyoutVector);
+  gp_Lin aLine2 (theSecondPoint, aFlyoutVector);
+
+  // Get flyout end points
+  theLineBegPoint = ElCLib::Value (ElCLib::Parameter (aLine1, theFirstPoint)  + GetFlyout(), aLine1);
+  theLineEndPoint = ElCLib::Value (ElCLib::Parameter (aLine2, theSecondPoint) + GetFlyout(), aLine2);
 }
 
 //=======================================================================

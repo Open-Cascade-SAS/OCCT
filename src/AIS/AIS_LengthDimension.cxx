@@ -44,7 +44,8 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_LengthDimension,AIS_Dimension)
 //=======================================================================
 AIS_LengthDimension::AIS_LengthDimension (const TopoDS_Face& theFirstFace,
                                           const TopoDS_Face& theSecondFace)
-: AIS_Dimension (AIS_KOD_LENGTH)
+: AIS_Dimension (AIS_KOD_LENGTH),
+  myHasCustomDirection (Standard_False)
 {
   SetMeasuredGeometry (theFirstFace, theSecondFace);
   SetFlyout (15.0);
@@ -56,7 +57,8 @@ AIS_LengthDimension::AIS_LengthDimension (const TopoDS_Face& theFirstFace,
 //=======================================================================
 AIS_LengthDimension::AIS_LengthDimension (const TopoDS_Face& theFace,
                                           const TopoDS_Edge& theEdge)
-: AIS_Dimension (AIS_KOD_LENGTH)
+: AIS_Dimension (AIS_KOD_LENGTH),
+  myHasCustomDirection (Standard_False)
 {
   SetMeasuredGeometry (theFace, theEdge);
   SetFlyout (15.0);
@@ -69,7 +71,8 @@ AIS_LengthDimension::AIS_LengthDimension (const TopoDS_Face& theFace,
 AIS_LengthDimension::AIS_LengthDimension (const gp_Pnt& theFirstPoint,
                                           const gp_Pnt& theSecondPoint,
                                           const gp_Pln& thePlane)
-: AIS_Dimension (AIS_KOD_LENGTH)
+: AIS_Dimension (AIS_KOD_LENGTH),
+  myHasCustomDirection (Standard_False)
 {
   SetMeasuredGeometry (theFirstPoint, theSecondPoint, thePlane);
   SetFlyout (15.0);
@@ -82,7 +85,8 @@ AIS_LengthDimension::AIS_LengthDimension (const gp_Pnt& theFirstPoint,
 AIS_LengthDimension::AIS_LengthDimension (const TopoDS_Shape& theFirstShape,
                                           const TopoDS_Shape& theSecondShape,
                                           const gp_Pln& thePlane)
-: AIS_Dimension (AIS_KOD_LENGTH)
+: AIS_Dimension (AIS_KOD_LENGTH),
+  myHasCustomDirection (Standard_False)
 {
   SetCustomPlane (thePlane);
   SetMeasuredShapes (theFirstShape, theSecondShape);
@@ -95,7 +99,8 @@ AIS_LengthDimension::AIS_LengthDimension (const TopoDS_Shape& theFirstShape,
 //=======================================================================
 AIS_LengthDimension::AIS_LengthDimension (const TopoDS_Edge& theEdge,
                                           const gp_Pln& thePlane)
-: AIS_Dimension (AIS_KOD_LENGTH)
+: AIS_Dimension (AIS_KOD_LENGTH),
+  myHasCustomDirection (Standard_False)
 {
   SetMeasuredGeometry (theEdge, thePlane);
   SetFlyout (15.0);
@@ -261,7 +266,13 @@ void AIS_LengthDimension::SetDisplayUnits (const TCollection_AsciiString& theUni
 //=======================================================================
 Standard_Real AIS_LengthDimension::ComputeValue() const
 {
-  return IsValid() ? myFirstPoint.Distance (mySecondPoint) : 0.0;
+  if (!IsValid())
+    return 0.0;
+
+  if (!myHasCustomDirection)
+    return myFirstPoint.Distance (mySecondPoint);
+
+  return fabs (gp_Vec(myFirstPoint, mySecondPoint).Dot (myDirection));
 }
 
 //=======================================================================
@@ -280,6 +291,35 @@ void AIS_LengthDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /
   }
 
   DrawLinearDimension (thePresentation, theMode, myFirstPoint, mySecondPoint);
+}
+
+ //=======================================================================
+//function : ComputeFlyoutLinePoints
+//purpose  : 
+//=======================================================================
+void AIS_LengthDimension::ComputeFlyoutLinePoints (const gp_Pnt& theFirstPoint, const gp_Pnt& theSecondPoint,
+                                                   gp_Pnt& theLineBegPoint, gp_Pnt& theLineEndPoint)
+{
+  if (!myHasCustomDirection)
+  {
+    AIS_Dimension::ComputeFlyoutLinePoints (theFirstPoint, theSecondPoint, theLineBegPoint, theLineEndPoint);
+    return;
+  }
+
+  // find scalar of projection target vector (from start to second point) to flyout vector
+  gp_Ax1 aPlaneNormal = GetPlane().Axis();
+  gp_Vec aFlyoutNormalizedDir(aPlaneNormal.Direction() ^ myDirection);
+  aFlyoutNormalizedDir.Normalize();
+  Standard_Real aTargetProjectedToFlyout = gp_Vec(theFirstPoint, theSecondPoint).Dot (aFlyoutNormalizedDir);
+
+  gp_Dir aFlyoutVector = aFlyoutNormalizedDir;
+  // create lines for layouts
+  gp_Lin aLine1 (theFirstPoint, aFlyoutVector);
+  gp_Lin aLine2 (theSecondPoint, aFlyoutVector);
+
+  // Get flyout end points
+  theLineBegPoint = ElCLib::Value (ElCLib::Parameter (aLine1, theFirstPoint)  + GetFlyout() + aTargetProjectedToFlyout, aLine1);
+  theLineEndPoint = ElCLib::Value (ElCLib::Parameter (aLine2, theSecondPoint) + GetFlyout(), aLine2);
 }
 
 //=======================================================================
@@ -772,4 +812,15 @@ void AIS_LengthDimension::SetTextPosition (const gp_Pnt& theTextPos)
   myFixedTextPosition = theTextPos;
 
   SetToUpdate();
+}
+
+//=======================================================================
+//function : SetDirection
+//purpose  : 
+//=======================================================================
+void AIS_LengthDimension::SetDirection (const gp_Dir& theDirection, const Standard_Boolean theUseDirection)
+{
+  myHasCustomDirection = theUseDirection;
+  if (myHasCustomDirection)
+    myDirection = theDirection;
 }

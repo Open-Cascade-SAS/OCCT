@@ -1,0 +1,31 @@
+pload ALL
+vinit
+vtrihedron t1
+
+vpoint p11 2 22 0
+vpoint p12 7 29 0
+vdimension dim1 -length -plane xoy -shapes p12 p11
+vdimparam dim1 -flyout -1 -arrowlength 0.75 -arrow internal -label hcenter
+
+vpoint p21 22 22 0
+vpoint p22 27 29 0
+vdimension dim2 -length -plane xoy -shapes p22 p21
+vdimparam dim2 -flyout -1 -arrowlength 0.75 -arrow internal -label hcenter
+vlengthparam dim2 -direction 1 1 1
+
+vpoint p31 2 2 0
+vpoint p32 7 9 0
+vdimension dim3 -length -plane xoy -shapes p32 p31
+vdimparam dim3 -flyout -1 -arrowlength 0.75 -arrow internal -label hcenter
+vlengthparam dim3 -direction OX
+
+vpoint p41 22 2 0
+vpoint p42 27 9 0
+vdimension dim4 -length -plane xoy -shapes p42 p41
+vdimparam dim4 -flyout -1 -arrowlength 0.75 -arrow internal -label hcenter
+vlengthparam dim4 -direction OY
+
+vtop
+vfit
+vzoom 0.75
+

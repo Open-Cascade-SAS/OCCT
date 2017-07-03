@@ -194,6 +194,13 @@ public:
 
   Standard_EXPORT virtual const gp_Pnt GetTextPosition() const Standard_OVERRIDE;
 
+  //! Set custom direction for dimension. If it is not set, the direction is obtained
+  //! from the measured geometry (e.g. line between points of dimension)
+  //! The direction does not change flyout direction of dimension.
+  //! @param theDirection [in] the dimension direction.
+  //! @param theUseDirection [in] boolean value if custom direction should be used.
+  Standard_EXPORT void SetDirection (const gp_Dir& theDirection, const Standard_Boolean theUseDirection = Standard_True);
+
 public:
 
   DEFINE_STANDARD_RTTIEXT(AIS_LengthDimension,AIS_Dimension)
@@ -205,11 +212,24 @@ protected:
 
   Standard_EXPORT virtual gp_Pln ComputePlane(const gp_Dir& theAttachDir) const;
 
+  //! Computes distance between dimension points. If custom direction is defined, the distance
+  //! is a projection value of the distance between points to this direction
+  //! @return dimension value
   Standard_EXPORT Standard_Real ComputeValue() const Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
                                         const Handle(Prs3d_Presentation)& thePresentation,
                                         const Standard_Integer theMode = 0) Standard_OVERRIDE;
+
+  //! Computes points bounded the flyout line for linear dimension.
+  //! Direction of flyout line equal to the custom direction of dimension if defined or
+  //! parallel to the main direction line
+  //! @param theFirstPoint [in] the first attach point of linear dimension.
+  //! @param theSecondPoint [in] the second attach point of linear dimension.
+  //! @param theLineBegPoint [out] the first attach point of linear dimension.
+  //! @param theLineEndPoint [out] the second attach point of linear dimension.
+  Standard_EXPORT virtual void ComputeFlyoutLinePoints (const gp_Pnt& theFirstPoint, const gp_Pnt& theSecondPoint,
+                                                        gp_Pnt& theLineBegPoint, gp_Pnt& theLineEndPoint) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void ComputeFlyoutSelection (const Handle(SelectMgr_Selection)& theSelection,
                                                        const Handle(SelectMgr_EntityOwner)& theEntityOwner) Standard_OVERRIDE;
@@ -263,6 +283,8 @@ private:
   gp_Pnt mySecondPoint;
   TopoDS_Shape myFirstShape;
   TopoDS_Shape mySecondShape;
+  gp_Dir myDirection;
+  Standard_Boolean myHasCustomDirection;
 };
 
 #endif // _AIS_LengthDimension_HeaderFile

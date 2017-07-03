@@ -74,6 +74,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TColStd_MapOfInteger.hxx>
+#include <TColStd_SequenceOfReal.hxx>
 #include <TopAbs.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
@@ -348,7 +349,7 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
     {
       if (anIt + 1 >= theArgNum)
       {
-        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        std::cout << "Error: wrong number of values for parameter '" << aParam << "'.\n";
         return 1;
       }
 
@@ -1623,6 +1624,109 @@ static int VDimParam (Draw_Interpretor& theDi, Standard_Integer theArgNum, const
 }
 
 //=======================================================================
+//function : VLengthParam
+//purpose  : Sets parameters to length dimension.
+//=======================================================================
+static int VLengthParam (Draw_Interpretor&, Standard_Integer theArgNum, const char** theArgVec)
+{
+  if (theArgNum < 3)
+  {
+    std::cout << theArgVec[0] << " error: the wrong number of input parameters.\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aName (theArgVec[1]);
+  if (!GetMapOfAIS().IsBound2 (aName))
+  {
+    std::cout << theArgVec[0] << "error: no object with this name.\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveObject) anObject = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2 (aName));
+  if (anObject->Type() != AIS_KOI_Dimension)
+  {
+    std::cout << theArgVec[0] << "error: no dimension with this name.\n";
+    return 1;
+  }
+  
+  Handle(AIS_LengthDimension) aLengthDim = Handle(AIS_LengthDimension)::DownCast (anObject);
+  if (aLengthDim.IsNull())
+  {
+    std::cout << theArgVec[0] << "error: no length dimension with this name.\n";
+    return 1;
+  }
+
+  // parse direction value
+  gp_Dir aDirection;
+  int anArgumentIt = 2;
+  TCollection_AsciiString aParam (theArgVec[anArgumentIt]);
+  aParam.LowerCase();
+
+  bool isCustomDirection = false;
+  if (aParam.IsEqual ("-direction"))
+  {
+    if (anArgumentIt + 1 >= theArgNum)
+    {
+      std::cout << "Error: "<< aParam <<" direction should have value.\n";
+      return 1;
+    }
+    anArgumentIt++;
+    isCustomDirection = Standard_True;
+    TCollection_AsciiString aValue = theArgVec[anArgumentIt];
+    aValue.LowerCase();
+    if (aValue == "ox")
+      aDirection = gp::DX();
+    else if (aValue == "oy")
+      aDirection = gp::DY();
+    else if (aValue == "oz")
+      aDirection = gp::DZ();
+    else if (aValue == "autodirection")
+      isCustomDirection = false;
+    else
+    {
+      if (anArgumentIt + 2 >= theArgNum)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam << "'.\n";
+        return 1;
+      }
+      // access coordinate arguments
+      TColStd_SequenceOfReal aCoords;
+      for (; anArgumentIt < theArgNum; ++anArgumentIt)
+      {
+        TCollection_AsciiString anArg (theArgVec[anArgumentIt]);
+        if (!anArg.IsRealValue())
+        {
+          break;
+        }
+        aCoords.Append (anArg.RealValue());
+      }
+      // non-numeric argument too early
+      if (aCoords.IsEmpty() || aCoords.Size() != 3)
+      {
+        std::cout << "Error: wrong number of direction arguments.\n";
+        return 1;
+      }
+      aDirection = gp_Dir (aCoords.Value (1), aCoords.Value (2), aCoords.Value (3));
+    }
+  }
+
+  aLengthDim->SetDirection (aDirection, isCustomDirection);
+  if (!aLengthDim->IsValid())
+  {
+    std::cout << "Error: Dimension geometry or plane is not valid.\n";
+    return 1;
+  }
+
+  // Redisplay a dimension after parameter changing.
+  if (ViewerTest::GetAISContext()->IsDisplayed (aLengthDim))
+  {
+    ViewerTest::GetAISContext()->Redisplay (aLengthDim, true);
+  }
+
+  return 0;
+}
+
+//=======================================================================
 //function : VAngleParam
 //purpose  : Sets aspect parameters to angle dimension.
 //=======================================================================
@@ -1902,10 +2006,19 @@ void ViewerTest::RelationCommands(Draw_Interpretor& theCommands)
     " -See also: vmovedim, vdimension.\n",
     __FILE__,VDimParam,group);
 
+  theCommands.Add("vlengthparam",
+    "vlengthparam name"
+    "[-direction {ox|oy|oz|x y z|autodirection}]\n"
+    " -Sets parameters for length dimension.\n"
+    " -See also: vdimparam, vdimension.\n",
+    __FILE__,VLengthParam,group);
+
   theCommands.Add("vangleparam",
     "vangleparam name"
     "[-type interior|exterior]\n"
-    "[-showarrow first|second|both|none]\n",
+    "[-showarrow first|second|both|none]\n"
+    " -Sets parameters for angle dimension.\n"
+    " -See also: vdimparam, vdimension.\n",
     __FILE__,VAngleParam,group);
 
   theCommands.Add("vmovedim",

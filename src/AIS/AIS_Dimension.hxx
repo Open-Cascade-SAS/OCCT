@@ -463,6 +463,14 @@ protected:
                                             const gp_Pnt& theSecondPoint,
                                             const Standard_Boolean theIsOneSide = Standard_False);
 
+  //! Computes points bounded the flyout line for linear dimension.
+  //! @param theFirstPoint [in] the first attach point of linear dimension.
+  //! @param theSecondPoint [in] the second attach point of linear dimension.
+  //! @param theLineBegPoint [out] the first attach point of linear dimension.
+  //! @param theLineEndPoint [out] the second attach point of linear dimension.
+  Standard_EXPORT virtual void ComputeFlyoutLinePoints (const gp_Pnt& theFirstPoint, const gp_Pnt& theSecondPoint,
+                                                        gp_Pnt& theLineBegPoint, gp_Pnt& theLineEndPoint);
+
   //! Compute selection sensitives for linear dimension flyout lines (length, diameter, radius).
   //! Please note that this method uses base dimension properties: working plane and flyout length.
   //! @param theSelection [in] the selection structure to fill with selection primitives.
