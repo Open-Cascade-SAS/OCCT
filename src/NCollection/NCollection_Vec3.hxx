@@ -73,6 +73,16 @@ public:
     v[2] = Element_t(0);
   }
 
+  //! Assign new values to the vector.
+  void SetValues (const Element_t theX,
+                  const Element_t theY,
+                  const Element_t theZ)
+  {
+    v[0] = theX;
+    v[1] = theY;
+    v[2] = theZ;
+  }
+
   //! Alias to 1st component as X coordinate in XYZ.
   Element_t x() const { return v[0]; }
 

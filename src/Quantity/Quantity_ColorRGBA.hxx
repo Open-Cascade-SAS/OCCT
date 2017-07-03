@@ -26,10 +26,32 @@ public:
   Quantity_ColorRGBA() : myAlpha (1.0f) {}
 
   //! Creates the color with specified RGB value.
-  explicit Quantity_ColorRGBA (const Quantity_Color& theRgb) : myRgb (theRgb), myAlpha (1.0f) {}
+  explicit Quantity_ColorRGBA (const Quantity_Color& theRgb)
+  : myRgb (theRgb), myAlpha (1.0f)
+  {}
+
+  //! Creates the color with specified RGBA values.
+  Quantity_ColorRGBA (const Quantity_Color& theRgb, float theAlpha)
+  : myRgb (theRgb), myAlpha (theAlpha)
+  {}
 
   //! Creates the color from RGBA vector.
-  explicit Quantity_ColorRGBA (const NCollection_Vec4<float>& theRgba) : myRgb (theRgba.rgb()), myAlpha (theRgba.a()) {}
+  explicit Quantity_ColorRGBA (const NCollection_Vec4<float>& theRgba) 
+  : myRgb (theRgba.rgb()), myAlpha (theRgba.a())
+  {}
+
+  //! Creates the color from RGBA values.
+  Quantity_ColorRGBA (float theRed, float theGreen, float theBlue, float theAlpha)
+  : myRgb (theRed, theGreen, theBlue, Quantity_TOC_RGB),
+    myAlpha (theAlpha)
+  {}
+
+  //! Assign new values to the color.
+  void SetValues (float theRed, float theGreen, float theBlue, float theAlpha)
+  {
+    myRgb.SetValues (theRed, theGreen, theBlue, Quantity_TOC_RGB);
+    myAlpha = theAlpha;
+  }
 
   //! Return RGB color value.
   const Quantity_Color& GetRGB() const { return myRgb; }
@@ -71,8 +93,8 @@ public:
 
 private:
 
-  static void __testSize3() { Standard_STATIC_ASSERT (sizeof(float) * 3 == sizeof(Quantity_Color)); }
-  static void __testSize4() { Standard_STATIC_ASSERT (sizeof(float) * 4 == sizeof(Quantity_ColorRGBA)); }
+  static void myTestSize3() { Standard_STATIC_ASSERT (sizeof(float) * 3 == sizeof(Quantity_Color)); }
+  static void myTestSize4() { Standard_STATIC_ASSERT (sizeof(float) * 4 == sizeof(Quantity_ColorRGBA)); }
 
 private:
 

@@ -349,18 +349,16 @@ bool Image_AlienPixMap::savePPM (const TCollection_AsciiString& theFileName) con
   fprintf (aFile, "# Image stored by OpenCASCADE framework in linear RGB colorspace\n");
 
   // Write pixel data
-  Quantity_Color aColor;
-  Standard_Real aDummy;
   Standard_Byte aByte;
   for (Standard_Size aRow = 0; aRow < SizeY(); ++aRow)
   {
     for (Standard_Size aCol = 0; aCol < SizeX(); ++aCol)
     {
       // extremely SLOW but universal (implemented for all supported pixel formats)
-      aColor = PixelColor ((Standard_Integer )aCol, (Standard_Integer )aRow, aDummy);
-      aByte = Standard_Byte(aColor.Red() * 255.0);   fwrite (&aByte, 1, 1, aFile);
-      aByte = Standard_Byte(aColor.Green() * 255.0); fwrite (&aByte, 1, 1, aFile);
-      aByte = Standard_Byte(aColor.Blue() * 255.0);  fwrite (&aByte, 1, 1, aFile);
+      const Quantity_ColorRGBA aColor = PixelColor ((Standard_Integer )aCol, (Standard_Integer )aRow);
+      aByte = Standard_Byte(aColor.GetRGB().Red()   * 255.0); fwrite (&aByte, 1, 1, aFile);
+      aByte = Standard_Byte(aColor.GetRGB().Green() * 255.0); fwrite (&aByte, 1, 1, aFile);
+      aByte = Standard_Byte(aColor.GetRGB().Blue()  * 255.0); fwrite (&aByte, 1, 1, aFile);
     }
   }
 

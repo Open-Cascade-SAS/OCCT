@@ -840,7 +840,7 @@ namespace
            || aDepth >=  ShortRealLast())
           {
             myImage->SetPixelColor (Standard_Integer(aColIter), Standard_Integer(aRowIter),
-                                    NCollection_Vec4<float> (0.0f, 0.0f, 0.0f, 1.0f));
+                                    Quantity_ColorRGBA (0.0f, 0.0f, 0.0f, 1.0f));
             continue;
           }
 
@@ -850,7 +850,7 @@ namespace
             aNormDepth = 1.0f - aNormDepth;
           }
           myImage->SetPixelColor (Standard_Integer(aColIter), Standard_Integer(aRowIter),
-                                  NCollection_Vec4<float> (aNormDepth, aNormDepth, aNormDepth, 1.0f));
+                                  Quantity_ColorRGBA (aNormDepth, aNormDepth, aNormDepth, 1.0f));
         }
       }
     }
@@ -878,13 +878,13 @@ namespace
       if (thePicked < 1
        || thePicked > myMainSel->NbPicked())
       {
-        myImage->SetPixelColor (theCol, theRow, NCollection_Vec4<float> (0.0f, 0.0f, 0.0f, 1.0f));
+        myImage->SetPixelColor (theCol, theRow, Quantity_ColorRGBA (0.0f, 0.0f, 0.0f, 1.0f));
         return;
       }
 
       const SelectMgr_SortCriterion& aSortCriterion = myMainSel->PickedData (thePicked);
       const float aDepth = float(aSortCriterion.Depth);
-      myImage->SetPixelColor (theCol, theRow, NCollection_Vec4<float> (aDepth, aDepth, aDepth, 1.0f));
+      myImage->SetPixelColor (theCol, theRow, Quantity_ColorRGBA (aDepth, aDepth, aDepth, 1.0f));
     }
   };
 

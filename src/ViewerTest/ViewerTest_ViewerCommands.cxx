@@ -5848,17 +5848,16 @@ static int VReadPixel (Draw_Interpretor& theDI,
     return 1;
   }
 
-  Standard_Real anAlpha;
-  Quantity_Color aColor = anImage.PixelColor (anX, anY, anAlpha);
+  Quantity_ColorRGBA aColor = anImage.PixelColor (anX, anY);
   if (toShowName)
   {
     if (aBufferType == Graphic3d_BT_RGBA)
     {
-      theDI << Quantity_Color::StringName (aColor.Name()) << " " << anAlpha;
+      theDI << Quantity_Color::StringName (aColor.GetRGB().Name()) << " " << aColor.Alpha();
     }
     else
     {
-      theDI << Quantity_Color::StringName (aColor.Name());
+      theDI << Quantity_Color::StringName (aColor.GetRGB().Name());
     }
   }
   else
@@ -5870,22 +5869,22 @@ static int VReadPixel (Draw_Interpretor& theDI,
       {
         if (toShowHls)
         {
-          theDI << aColor.Hue() << " " << aColor.Light() << " " << aColor.Saturation();
+          theDI << aColor.GetRGB().Hue() << " " << aColor.GetRGB().Light() << " " << aColor.GetRGB().Saturation();
         }
         else
         {
-          theDI << aColor.Red() << " " << aColor.Green() << " " << aColor.Blue();
+          theDI << aColor.GetRGB().Red() << " " << aColor.GetRGB().Green() << " " << aColor.GetRGB().Blue();
         }
         break;
       }
       case Graphic3d_BT_RGBA:
       {
-        theDI << aColor.Red() << " " << aColor.Green() << " " << aColor.Blue() << " " << anAlpha;
+        theDI << aColor.GetRGB().Red() << " " << aColor.GetRGB().Green() << " " << aColor.GetRGB().Blue() << " " << aColor.Alpha();
         break;
       }
       case Graphic3d_BT_Depth:
       {
-        theDI << aColor.Red();
+        theDI << aColor.GetRGB().Red();
         break;
       }
     }

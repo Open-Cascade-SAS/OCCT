@@ -45,6 +45,9 @@ public:
   //!  - Image_Format_RGBAF / Image_Format_BGRAF
   Standard_EXPORT static bool SwapRgbaBgra (Image_PixMap& theImage);
 
+  //! Convert image to Black/White.
+  Standard_EXPORT static void ToBlackWhite (Image_PixMap& theImage);
+
 public: // high-level API
 
   Image_Format Format() const { return myImgFormat; }
@@ -102,45 +105,23 @@ public: // high-level API
   //! @param theX column index from left
   //! @param theY row    index from top
   //! @return the pixel color
-  inline Quantity_Color PixelColor (const Standard_Integer theX,
-                                    const Standard_Integer theY) const
-  {
-    Standard_Real aDummy;
-    return PixelColor (theX, theY, aDummy);
-  }
-
-  //! Returns the pixel color. This function is relatively slow.
-  //! theAlpha argument is set to color intensity (0 - transparent, 1 - opaque)
-  //! Beware that this method takes coordinates in opposite order in contrast to ::Value() and ::ChangeValue().
-  Standard_EXPORT Quantity_Color PixelColor (const Standard_Integer theX,
-                                             const Standard_Integer theY,
-                                             Standard_Real& theAlpha) const;
+  Standard_EXPORT Quantity_ColorRGBA PixelColor (const Standard_Integer theX,
+                                                 const Standard_Integer theY) const;
 
   //! Sets the pixel color. This function is relatively slow.
   //! Beware that this method takes coordinates in opposite order in contrast to ::Value() and ::ChangeValue().
-  void SetPixelColor (const Standard_Integer    theX,
-                      const Standard_Integer    theY,
-                      const Quantity_ColorRGBA& theColor)
+  void SetPixelColor (const Standard_Integer theX,
+                      const Standard_Integer theY,
+                      const Quantity_Color&  theColor)
   {
-    const NCollection_Vec4<float> aColor = theColor;
-    SetPixelColor (theX, theY, aColor);
-  }
-
-  //! Sets the pixel color. This function is relatively slow.
-  //! Beware that this method takes coordinates in opposite order in contrast to ::Value() and ::ChangeValue().
-  void SetPixelColor(const Standard_Integer theX,
-                     const Standard_Integer theY,
-                     const Quantity_Color&  theColor)
-  {
-    const NCollection_Vec3<float> aColor = theColor;
-    SetPixelColor (theX, theY, NCollection_Vec4<float> (aColor, 1.0f));
+    SetPixelColor (theX, theY, Quantity_ColorRGBA (theColor, 1.0f));
   }
 
   //! Sets the pixel color. This function is relatively slow.
   //! Beware that this method takes coordinates in opposite order in contrast to ::Value() and ::ChangeValue().
   Standard_EXPORT void SetPixelColor (const Standard_Integer theX,
                                       const Standard_Integer theY,
-                                      const NCollection_Vec4<float>& theColor);
+                                      const Quantity_ColorRGBA& theColor);
 
   //! Initialize image plane as wrapper over alien data.
   //! Data will not be copied! Notice that caller should ensure

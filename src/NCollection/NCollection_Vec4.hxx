@@ -80,6 +80,18 @@ public:
     v[3] = theAlpha;
   }
 
+  //! Assign new values to the vector.
+  void SetValues (const Element_t theX,
+                  const Element_t theY,
+                  const Element_t theZ,
+                  const Element_t theW)
+  {
+    v[0] = theX;
+    v[1] = theY;
+    v[2] = theZ;
+    v[3] = theW;
+  }
+
   //! Alias to 1st component as X coordinate in XYZW.
   Element_t x() const { return v[0]; }
 

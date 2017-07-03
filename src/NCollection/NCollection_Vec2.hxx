@@ -57,6 +57,14 @@ public:
     v[1] = theY;
   }
 
+  //! Assign new values to the vector.
+  void SetValues (const Element_t theX,
+                  const Element_t theY)
+  {
+    v[0] = theX;
+    v[1] = theY;
+  }
+
   //! Alias to 1st component as X coordinate in XY.
   Element_t x() const { return v[0]; }
 

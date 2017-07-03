@@ -191,16 +191,14 @@ void Image_PixMap::Clear()
 // function : PixelColor
 // purpose  :
 // =======================================================================
-Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
-                                         const Standard_Integer theY,
-                                         Standard_Real& theAlpha) const
+Quantity_ColorRGBA Image_PixMap::PixelColor (const Standard_Integer theX,
+                                             const Standard_Integer theY) const
 {
   if (IsEmpty()
    || theX < 0 || (Standard_Size )theX >= SizeX()
    || theY < 0 || (Standard_Size )theY >= SizeY())
   {
-    theAlpha = 0.0; // transparent
-    return Quantity_Color (0.0, 0.0, 0.0, Quantity_TOC_RGB);
+    return Quantity_ColorRGBA (0.0f, 0.0f, 0.0f, 0.0f); // transparent
   }
 
   switch (myImgFormat)
@@ -208,86 +206,72 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
     case Image_Format_GrayF:
     {
       const Standard_ShortReal& aPixel = Value<Standard_ShortReal> (theY, theX);
-      theAlpha = 1.0; // opaque
-      return Quantity_Color (aPixel, aPixel, aPixel, Quantity_TOC_RGB);
+      return Quantity_ColorRGBA (NCollection_Vec4<float> (aPixel, aPixel, aPixel, 1.0f)); // opaque
     }
     case Image_Format_AlphaF:
     {
       const Standard_ShortReal& aPixel = Value<Standard_ShortReal> (theY, theX);
-      theAlpha = aPixel;
-      return Quantity_Color (1.0, 1.0, 1.0, Quantity_TOC_RGB);
+      return Quantity_ColorRGBA (NCollection_Vec4<float> (1.0f, 1.0f, 1.0f, aPixel));
     }
     case Image_Format_RGBAF:
     {
       const Image_ColorRGBAF& aPixel = Value<Image_ColorRGBAF> (theY, theX);
-      theAlpha = aPixel.a();
-      return Quantity_Color (aPixel.r(), aPixel.g(), aPixel.b(), Quantity_TOC_RGB);
+      return Quantity_ColorRGBA (NCollection_Vec4<float> (aPixel.r(), aPixel.g(), aPixel.b(), aPixel.a()));
     }
     case Image_Format_BGRAF:
     {    
       const Image_ColorBGRAF& aPixel = Value<Image_ColorBGRAF> (theY, theX);
-      theAlpha = aPixel.a();
-      return Quantity_Color (aPixel.r(), aPixel.g(), aPixel.b(), Quantity_TOC_RGB);
+      return Quantity_ColorRGBA (NCollection_Vec4<float> (aPixel.r(), aPixel.g(), aPixel.b(), aPixel.a()));
     }
     case Image_Format_RGBF:
     {
       const Image_ColorRGBF& aPixel = Value<Image_ColorRGBF> (theY, theX);
-      theAlpha =  1.0; // opaque
-      return Quantity_Color (aPixel.r(), aPixel.g(), aPixel.b(), Quantity_TOC_RGB);
+      return Quantity_ColorRGBA (NCollection_Vec4<float> (aPixel.r(), aPixel.g(), aPixel.b(), 1.0f)); // opaque
     }
     case Image_Format_BGRF:
     {
       const Image_ColorBGRF& aPixel = Value<Image_ColorBGRF> (theY, theX);
-      theAlpha =  1.0; // opaque
-      return Quantity_Color (aPixel.r(), aPixel.g(), aPixel.b(), Quantity_TOC_RGB);
+      return Quantity_ColorRGBA (NCollection_Vec4<float> (aPixel.r(), aPixel.g(), aPixel.b(), 1.0f)); // opaque
     }
     case Image_Format_RGBA:
     {
       const Image_ColorRGBA& aPixel = Value<Image_ColorRGBA> (theY, theX);
-      theAlpha = Standard_Real (aPixel.a()) / 255.0;
-      return Quantity_Color (Standard_Real (aPixel.r()) / 255.0, Standard_Real (aPixel.g()) / 255.0, Standard_Real (aPixel.b()) / 255.0, Quantity_TOC_RGB);
+      return Quantity_ColorRGBA (float(aPixel.r()) / 255.0f, float(aPixel.g()) / 255.0f, float(aPixel.b()) / 255.0f, float(aPixel.a()) / 255.0f);
     }
     case Image_Format_BGRA:
     {
       const Image_ColorBGRA& aPixel = Value<Image_ColorBGRA> (theY, theX);
-      theAlpha = Standard_Real (aPixel.a()) / 255.0;
-      return Quantity_Color (Standard_Real (aPixel.r()) / 255.0, Standard_Real (aPixel.g()) / 255.0, Standard_Real (aPixel.b() / 255.0), Quantity_TOC_RGB);
+      return Quantity_ColorRGBA (float(aPixel.r()) / 255.0f, float(aPixel.g()) / 255.0f, float(aPixel.b()) / 255.0f, float(aPixel.a()) / 255.0f);
     }
     case Image_Format_RGB32:
     {
       const Image_ColorRGB32& aPixel = Value<Image_ColorRGB32> (theY, theX);
-      theAlpha = 1.0; // opaque
-      return Quantity_Color (Standard_Real (aPixel.r()) / 255.0, Standard_Real (aPixel.g()) / 255.0, Standard_Real (aPixel.b()) / 255.0, Quantity_TOC_RGB);
+      return Quantity_ColorRGBA (float(aPixel.r()) / 255.0f, float(aPixel.g()) / 255.0f, float(aPixel.b()) / 255.0f, 1.0f); // opaque
     }
     case Image_Format_BGR32:
     {
       const Image_ColorBGR32& aPixel = Value<Image_ColorBGR32> (theY, theX);
-      theAlpha = 1.0; // opaque
-      return Quantity_Color (Standard_Real (aPixel.r()) / 255.0, Standard_Real (aPixel.g()) / 255.0, Standard_Real (aPixel.b()) / 255.0, Quantity_TOC_RGB);
+      return Quantity_ColorRGBA (float(aPixel.r()) / 255.0f, float(aPixel.g()) / 255.0f, float(aPixel.b()) / 255.0f, 1.0f); // opaque
     }
     case Image_Format_RGB:
     {
       const Image_ColorRGB& aPixel = Value<Image_ColorRGB> (theY, theX);
-      theAlpha = 1.0; // opaque
-      return Quantity_Color (Standard_Real (aPixel.r()) / 255.0, Standard_Real (aPixel.g()) / 255.0, Standard_Real (aPixel.b()) / 255.0, Quantity_TOC_RGB);
+      return Quantity_ColorRGBA (float(aPixel.r()) / 255.0f, float(aPixel.g()) / 255.0f, float(aPixel.b()) / 255.0f, 1.0f); // opaque
     }
     case Image_Format_BGR:
     {
       const Image_ColorBGR& aPixel = Value<Image_ColorBGR> (theY, theX);
-      theAlpha = 1.0; // opaque
-      return Quantity_Color (Standard_Real (aPixel.r()) / 255.0, Standard_Real (aPixel.g()) / 255.0, Standard_Real (aPixel.b()) / 255.0, Quantity_TOC_RGB);
+      return Quantity_ColorRGBA (float(aPixel.r()) / 255.0f, float(aPixel.g()) / 255.0f, float(aPixel.b()) / 255.0f, 1.0f); // opaque
     }
     case Image_Format_Gray:
     {
       const Standard_Byte& aPixel = Value<Standard_Byte> (theY, theX);
-      theAlpha = 1.0; // opaque
-      return Quantity_Color (Standard_Real (aPixel) / 255.0, Standard_Real (aPixel) / 255.0, Standard_Real (aPixel) / 255.0, Quantity_TOC_RGB);
+      return Quantity_ColorRGBA (float(aPixel) / 255.0f, float(aPixel) / 255.0f, float(aPixel) / 255.0f, 1.0f); // opaque
     }
     case Image_Format_Alpha:
     {
       const Standard_Byte& aPixel = Value<Standard_Byte> (theY, theX);
-      theAlpha = Standard_Real (aPixel) / 255.0;
-      return Quantity_Color (1.0, 1.0, 1.0, Quantity_TOC_RGB);
+      return Quantity_ColorRGBA (1.0f, 1.0f, 1.0f, float(aPixel) / 255.0f);
     }
     case Image_Format_UNKNOWN:
     {
@@ -296,8 +280,7 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
   }
 
   // unsupported image type
-  theAlpha = 0.0; // transparent
-  return Quantity_Color (0.0, 0.0, 0.0, Quantity_TOC_RGB);
+  return Quantity_ColorRGBA (0.0f, 0.0f, 0.0f, 0.0f); // transparent
 }
 
 // =======================================================================
@@ -306,7 +289,7 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
 // =======================================================================
 void Image_PixMap::SetPixelColor (const Standard_Integer theX,
                                   const Standard_Integer theY,
-                                  const NCollection_Vec4<float>& theColor)
+                                  const Quantity_ColorRGBA& theColor)
 {
   if (IsEmpty()
    || theX < 0 || Standard_Size(theX) >= SizeX()
@@ -315,112 +298,113 @@ void Image_PixMap::SetPixelColor (const Standard_Integer theX,
     return;
   }
 
+  const NCollection_Vec4<float>& aColor = theColor;
   switch (myImgFormat)
   {
     case Image_Format_GrayF:
     {
-      ChangeValue<Standard_ShortReal> (theY, theX) = theColor.r();
+      ChangeValue<Standard_ShortReal> (theY, theX) = aColor.r();
       return;
     }
     case Image_Format_AlphaF:
     {
-      ChangeValue<Standard_ShortReal> (theY, theX) = theColor.a();
+      ChangeValue<Standard_ShortReal> (theY, theX) = aColor.a();
       return;
     }
     case Image_Format_RGBAF:
     {
       Image_ColorRGBAF& aPixel = ChangeValue<Image_ColorRGBAF> (theY, theX);
-      aPixel.r() = theColor.r();
-      aPixel.g() = theColor.g();
-      aPixel.b() = theColor.b();
-      aPixel.a() = theColor.a();
+      aPixel.r() = aColor.r();
+      aPixel.g() = aColor.g();
+      aPixel.b() = aColor.b();
+      aPixel.a() = aColor.a();
       return;
     }
     case Image_Format_BGRAF:
     {
       Image_ColorBGRAF& aPixel = ChangeValue<Image_ColorBGRAF> (theY, theX);
-      aPixel.r() = theColor.r();
-      aPixel.g() = theColor.g();
-      aPixel.b() = theColor.b();
-      aPixel.a() = theColor.a();
+      aPixel.r() = aColor.r();
+      aPixel.g() = aColor.g();
+      aPixel.b() = aColor.b();
+      aPixel.a() = aColor.a();
       return;
     }
     case Image_Format_RGBF:
     {
       Image_ColorRGBF& aPixel = ChangeValue<Image_ColorRGBF> (theY, theX);
-      aPixel.r() = theColor.r();
-      aPixel.g() = theColor.g();
-      aPixel.b() = theColor.b();
+      aPixel.r() = aColor.r();
+      aPixel.g() = aColor.g();
+      aPixel.b() = aColor.b();
       return;
     }
     case Image_Format_BGRF:
     {
       Image_ColorBGRF& aPixel = ChangeValue<Image_ColorBGRF> (theY, theX);
-      aPixel.r() = theColor.r();
-      aPixel.g() = theColor.g();
-      aPixel.b() = theColor.b();
+      aPixel.r() = aColor.r();
+      aPixel.g() = aColor.g();
+      aPixel.b() = aColor.b();
       return;
     }
     case Image_Format_RGBA:
     {
       Image_ColorRGBA& aPixel = ChangeValue<Image_ColorRGBA> (theY, theX);
-      aPixel.r() = Standard_Byte(theColor.r() * 255.0f);
-      aPixel.g() = Standard_Byte(theColor.g() * 255.0f);
-      aPixel.b() = Standard_Byte(theColor.b() * 255.0f);
-      aPixel.a() = Standard_Byte(theColor.a() * 255.0f);
+      aPixel.r() = Standard_Byte(aColor.r() * 255.0f);
+      aPixel.g() = Standard_Byte(aColor.g() * 255.0f);
+      aPixel.b() = Standard_Byte(aColor.b() * 255.0f);
+      aPixel.a() = Standard_Byte(aColor.a() * 255.0f);
       return;
     }
     case Image_Format_BGRA:
     {
       Image_ColorBGRA& aPixel = ChangeValue<Image_ColorBGRA> (theY, theX);
-      aPixel.r() = Standard_Byte(theColor.r() * 255.0f);
-      aPixel.g() = Standard_Byte(theColor.g() * 255.0f);
-      aPixel.b() = Standard_Byte(theColor.b() * 255.0f);
-      aPixel.a() = Standard_Byte(theColor.a() * 255.0f);
+      aPixel.r() = Standard_Byte(aColor.r() * 255.0f);
+      aPixel.g() = Standard_Byte(aColor.g() * 255.0f);
+      aPixel.b() = Standard_Byte(aColor.b() * 255.0f);
+      aPixel.a() = Standard_Byte(aColor.a() * 255.0f);
       return;
     }
     case Image_Format_RGB32:
     {
       Image_ColorRGB32& aPixel = ChangeValue<Image_ColorRGB32> (theY, theX);
-      aPixel.r()  = Standard_Byte(theColor.r() * 255.0f);
-      aPixel.g()  = Standard_Byte(theColor.g() * 255.0f);
-      aPixel.b()  = Standard_Byte(theColor.b() * 255.0f);
+      aPixel.r()  = Standard_Byte(aColor.r() * 255.0f);
+      aPixel.g()  = Standard_Byte(aColor.g() * 255.0f);
+      aPixel.b()  = Standard_Byte(aColor.b() * 255.0f);
       aPixel.a_() = 255;
       return;
     }
     case Image_Format_BGR32:
     {
       Image_ColorBGR32& aPixel = ChangeValue<Image_ColorBGR32> (theY, theX);
-      aPixel.r()  = Standard_Byte(theColor.r() * 255.0f);
-      aPixel.g()  = Standard_Byte(theColor.g() * 255.0f);
-      aPixel.b()  = Standard_Byte(theColor.b() * 255.0f);
+      aPixel.r()  = Standard_Byte(aColor.r() * 255.0f);
+      aPixel.g()  = Standard_Byte(aColor.g() * 255.0f);
+      aPixel.b()  = Standard_Byte(aColor.b() * 255.0f);
       aPixel.a_() = 255;
       return;
     }
     case Image_Format_RGB:
     {
       Image_ColorRGB& aPixel = ChangeValue<Image_ColorRGB> (theY, theX);
-      aPixel.r() = Standard_Byte(theColor.r() * 255.0f);
-      aPixel.g() = Standard_Byte(theColor.g() * 255.0f);
-      aPixel.b() = Standard_Byte(theColor.b() * 255.0f);
+      aPixel.r() = Standard_Byte(aColor.r() * 255.0f);
+      aPixel.g() = Standard_Byte(aColor.g() * 255.0f);
+      aPixel.b() = Standard_Byte(aColor.b() * 255.0f);
       return;
     }
     case Image_Format_BGR:
     {
       Image_ColorBGR& aPixel = ChangeValue<Image_ColorBGR> (theY, theX);
-      aPixel.r() = Standard_Byte(theColor.r() * 255.0f);
-      aPixel.g() = Standard_Byte(theColor.g() * 255.0f);
-      aPixel.b() = Standard_Byte(theColor.b() * 255.0f);
+      aPixel.r() = Standard_Byte(aColor.r() * 255.0f);
+      aPixel.g() = Standard_Byte(aColor.g() * 255.0f);
+      aPixel.b() = Standard_Byte(aColor.b() * 255.0f);
       return;
     }
     case Image_Format_Gray:
     {
-      ChangeValue<Standard_Byte> (theY, theX) = Standard_Byte(theColor.r() * 255.0f);
+      ChangeValue<Standard_Byte> (theY, theX) = Standard_Byte(aColor.r() * 255.0f);
       return;
     }
     case Image_Format_Alpha:
     {
-      ChangeValue<Standard_Byte> (theY, theX) = Standard_Byte(theColor.a() * 255.0f);
+      ChangeValue<Standard_Byte> (theY, theX) = Standard_Byte(aColor.a() * 255.0f);
       return;
     }
     case Image_Format_UNKNOWN:
@@ -497,5 +481,74 @@ bool Image_PixMap::SwapRgbaBgra (Image_PixMap& theImage)
       return true;
     }
     default: return false;
+  }
+}
+
+// =======================================================================
+// function : ToBlackWhite
+// purpose  :
+// =======================================================================
+void Image_PixMap::ToBlackWhite (Image_PixMap& theImage)
+{
+  switch (theImage.Format())
+  {
+    case Image_Format_Gray:
+    case Image_Format_Alpha:
+    {
+      for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
+      {
+        for (Standard_Size aCol = 0; aCol < theImage.SizeX(); ++aCol)
+        {
+          unsigned char& aPixel = theImage.ChangeValue<unsigned char> (aRow, aCol);
+          if (aPixel != 0)
+          {
+            aPixel = 255;
+          }
+        }
+      }
+      break;
+    }
+    case Image_Format_RGB:
+    case Image_Format_BGR:
+    case Image_Format_RGB32:
+    case Image_Format_BGR32:
+    case Image_Format_RGBA:
+    case Image_Format_BGRA:
+    {
+      const NCollection_Vec3<unsigned char> aWhite24 (255, 255, 255);
+      for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
+      {
+        for (Standard_Size aCol = 0; aCol < theImage.SizeX(); ++aCol)
+        {
+          NCollection_Vec3<unsigned char>& aPixel = theImage.ChangeValue< NCollection_Vec3<unsigned char> > (aRow, aCol);
+          if (aPixel[0] != 0
+           || aPixel[1] != 0
+           || aPixel[2] != 0)
+          {
+            aPixel = aWhite24;
+          }
+        }
+      }
+      break;
+    }
+    default:
+    {
+      const Quantity_ColorRGBA aWhiteRgba (1.0f, 1.0f, 1.0f, 1.0f);
+      for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
+      {
+        for (Standard_Size aCol = 0; aCol < theImage.SizeX(); ++aCol)
+        {
+          const Quantity_ColorRGBA       aPixelRgba = theImage.PixelColor (Standard_Integer(aCol), Standard_Integer(aRow));
+          const NCollection_Vec4<float>& aPixel     = aPixelRgba;
+          if (aPixel[0] != 0.0f
+           || aPixel[1] != 0.0f
+           || aPixel[2] != 0.0f)
+          {
+            theImage.SetPixelColor (int(aCol), int(aRow), aWhiteRgba);
+          }
+        }
+      }
+      break;
+    }
   }
 }
