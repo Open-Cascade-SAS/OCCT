@@ -1,0 +1,20 @@
+puts "======="
+puts "OCC28883"
+puts "======="
+puts ""
+##################################################
+# Invalid result of Section operation
+##################################################
+
+restore [locate_data_file bug28883_Prism.brep] b1
+restore [locate_data_file bug28883_LES_2d_shell.brep] b2
+
+bsection result b1 b2
+
+checkshape result
+checksection result
+
+checknbshapes result -edge 133 -vertex 134
+checkprops result -l 2.20769
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
