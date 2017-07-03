@@ -1,0 +1,16 @@
+puts "=========="
+puts "OCC28887 Test case for Standard_ArrayStreamBuffer class - streaming interface for reading from allocated memory block"
+puts "=========="
+puts ""
+
+pload QAcommands VISUALIZATION DCAF
+catch { Close doc }
+OCC28887 [locate_data_file bug23384-doc_subshapes.xbf] doc
+
+vclear
+vclose ALL
+XShow doc
+vaxo
+vfit
+vsetdispmode 1
+vdump $::imagedir/${::casename}.png

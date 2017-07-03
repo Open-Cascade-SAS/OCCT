@@ -1,0 +1,15 @@
+puts "=========="
+puts "OCC28887 Test case for Standard_ArrayStreamBuffer class - streaming interface for reading from allocated memory block"
+puts "=========="
+puts ""
+
+pload QAcommands VISUALIZATION
+OCC28887 [locate_data_file face.brep] f
+
+vclear
+vclose ALL
+vinit View1
+vaxo
+vdisplay -dispMode 1 f
+vfit
+vdump $::imagedir/${::casename}.png
