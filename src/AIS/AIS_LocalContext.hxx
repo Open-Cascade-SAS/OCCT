@@ -164,7 +164,10 @@ public:
   Standard_EXPORT Standard_Integer HilightPreviousDetected (const Handle(V3d_View)& theView, const Standard_Boolean theToRedrawImmediate);
   
   //! returns True if something was done...
-  Standard_EXPORT Standard_Boolean UnhilightLastDetected (const Handle(V3d_View)& aView);
+  Standard_EXPORT Standard_Boolean UnhilightLastDetected (const Handle(V3d_Viewer)& theViewer);
+
+  //! returns True if something was done...
+  Standard_EXPORT Standard_Boolean UnhilightLastDetected (const Handle(V3d_View)& theView);
   
   //! returns the number of selected
   Standard_EXPORT AIS_StatusOfPick AddSelect (const Handle(SelectMgr_EntityOwner)& theObject);

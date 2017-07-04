@@ -1363,6 +1363,15 @@ Standard_Integer AIS_LocalContext::HilightPreviousDetected (const Handle(V3d_Vie
 //=======================================================================
 Standard_Boolean AIS_LocalContext::UnhilightLastDetected (const Handle(V3d_View)& theView)
 {
+  return UnhilightLastDetected (theView->Viewer());
+}
+
+//=======================================================================
+//function : UnhilightLastDetected
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_LocalContext::UnhilightLastDetected (const Handle(V3d_Viewer)& theViewer)
+{
   if (!IsValidIndex (mylastindex))
   {
     return Standard_False;
@@ -1371,7 +1380,7 @@ Standard_Boolean AIS_LocalContext::UnhilightLastDetected (const Handle(V3d_View)
   myMainPM->BeginImmediateDraw();
   const Handle(SelectMgr_EntityOwner)& anOwner = myMapOfOwner->FindKey (mylastindex);
   anOwner->Unhilight (myMainPM);
-  myMainPM->EndImmediateDraw (theView->Viewer());
+  myMainPM->EndImmediateDraw (theViewer);
   mylastindex = 0;
   return Standard_True;
 }

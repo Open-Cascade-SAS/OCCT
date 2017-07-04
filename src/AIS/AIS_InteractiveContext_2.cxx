@@ -60,12 +60,12 @@ OpenLocalContext(const Standard_Boolean UseDisplayedObjects,
       const Handle(AIS_InteractiveObject) aLastPickedAIS = Handle(AIS_InteractiveObject)::DownCast (myLastPicked->Selectable());
       unhighlightGlobal (aLastPickedAIS);
     }}
-  
-  if(!mylastmoveview.IsNull()){
-    if(myCurLocalIndex>0)
-      myLocalContexts(myCurLocalIndex)->UnhilightLastDetected(mylastmoveview);
+
+  if (myCurLocalIndex > 0)
+  {
+    myLocalContexts (myCurLocalIndex)->UnhilightLastDetected (myMainVwr);
   }
-  
+
   // entities connected to dynamic selection at neutral point are set to 0.
   
   myLastinMain.Nullify();

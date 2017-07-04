@@ -1863,7 +1863,6 @@ protected:
   Handle(Prs3d_Drawer) myStyles[Prs3d_TypeOfHighlight_NB];
   AIS_DataMapOfILC myLocalContexts;
   Standard_Integer myCurLocalIndex;
-  Handle(V3d_View) mylastmoveview;
   TColStd_SequenceOfInteger myDetectedSeq;
   Standard_Integer myCurDetected;
   Standard_Integer myCurHighlighted;

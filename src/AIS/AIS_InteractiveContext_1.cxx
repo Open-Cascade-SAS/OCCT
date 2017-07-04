@@ -422,7 +422,6 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     theView->Viewer()->Update();
   }
 
-  mylastmoveview = theView;
   return aStatus;
 }
 
