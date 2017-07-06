@@ -25,7 +25,7 @@ StepVisual_StyledItem::StepVisual_StyledItem ()  {}
 void StepVisual_StyledItem::Init(
   const Handle(TCollection_HAsciiString)& aName,
   const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles,
-  const Handle(MMgt_TShared)& aItem)
+  const Handle(Standard_Transient)& aItem)
 {
   // --- classe own fields ---
   myStyles = aStyles;
@@ -62,7 +62,7 @@ void StepVisual_StyledItem::SetItem(const Handle(StepRepr_RepresentationItem)& a
 
 void StepVisual_StyledItem::SetItem(const StepVisual_StyledItemTarget& theItem)
 {
-    myItem = Handle(MMgt_TShared)::DownCast(theItem.Value());
+  myItem = theItem.Value();
 }
 
 Handle(StepRepr_RepresentationItem) StepVisual_StyledItem::Item() const

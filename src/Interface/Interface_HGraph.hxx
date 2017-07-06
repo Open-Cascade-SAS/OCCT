@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <Interface_Graph.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class Standard_DomainError;
 class Interface_Graph;
@@ -32,12 +32,12 @@ class Interface_GTool;
 
 
 class Interface_HGraph;
-DEFINE_STANDARD_HANDLE(Interface_HGraph, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Interface_HGraph, Standard_Transient)
 
 //! This class allows to store a redefinable Graph, via a Handle
 //! (usefull for an Object which can work on several successive
 //! Models, with the same general conditions)
-class Interface_HGraph : public MMgt_TShared
+class Interface_HGraph : public Standard_Transient
 {
 
 public:
@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Interface_HGraph,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_HGraph,Standard_Transient)
 
 protected:
 

@@ -20,15 +20,15 @@
 #include <Standard_DefineHandle.hxx>
 #include <Standard_Handle.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepDimTol_DatumReferenceModifierType.hxx>
 
 class StepDimTol_DatumReferenceModifierWithValue;
-DEFINE_STANDARD_HANDLE(StepDimTol_DatumReferenceModifierWithValue, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepDimTol_DatumReferenceModifierWithValue, Standard_Transient)
 //! Representation of STEP entity DatumReferenceModifierWithValue
-class StepDimTol_DatumReferenceModifierWithValue : public MMgt_TShared
+class StepDimTol_DatumReferenceModifierWithValue : public Standard_Transient
 {
 
 public:
@@ -64,7 +64,7 @@ public:
     myModifierValue = theModifierValue;
   }
   
-  DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumReferenceModifierWithValue,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumReferenceModifierWithValue,Standard_Transient)
 
 private: 
   StepDimTol_DatumReferenceModifierType myModifierType;

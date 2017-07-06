@@ -78,7 +78,7 @@
 #include <IntCurve_IntConicConic.hxx>
 
 #include <algorithm>
-IMPLEMENT_STANDARD_RTTIEXT(ShapeConstruct_ProjectCurveOnSurface,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeConstruct_ProjectCurveOnSurface,Standard_Transient)
 
 #define NCONTROL 23
 

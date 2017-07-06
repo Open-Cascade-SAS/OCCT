@@ -16,7 +16,7 @@
 #include <StepGeom_CompositeCurveSegment.hxx>
 #include <StepGeom_Curve.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CompositeCurveSegment,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CompositeCurveSegment,Standard_Transient)
 
 StepGeom_CompositeCurveSegment::StepGeom_CompositeCurveSegment ()  {}
 

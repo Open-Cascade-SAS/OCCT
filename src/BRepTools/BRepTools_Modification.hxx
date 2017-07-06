@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -39,11 +39,11 @@ class Poly_PolygonOnTriangulation;
 
 
 class BRepTools_Modification;
-DEFINE_STANDARD_HANDLE(BRepTools_Modification, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(BRepTools_Modification, Standard_Transient)
 
 //! Defines geometric modifications to a shape, i.e.
 //! changes to faces, edges and vertices.
-class BRepTools_Modification : public MMgt_TShared
+class BRepTools_Modification : public Standard_Transient
 {
 
 public:
@@ -126,7 +126,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(BRepTools_Modification,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepTools_Modification,Standard_Transient)
 
 protected:
 

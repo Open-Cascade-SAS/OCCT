@@ -19,7 +19,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
@@ -35,10 +35,10 @@ class Transfer_FinderProcess;
 
 
 class XSAlgo_AlgoContainer;
-DEFINE_STANDARD_HANDLE(XSAlgo_AlgoContainer, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(XSAlgo_AlgoContainer, Standard_Transient)
 
 
-class XSAlgo_AlgoContainer : public MMgt_TShared
+class XSAlgo_AlgoContainer : public Standard_Transient
 {
 
 public:
@@ -81,7 +81,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(XSAlgo_AlgoContainer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(XSAlgo_AlgoContainer,Standard_Transient)
 
 protected:
 

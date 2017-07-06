@@ -22,16 +22,16 @@
 
 #include <TopLoc_SListOfItemLocation.hxx>
 #include <TopLoc_ItemLocation.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TopLoc_ItemLocation;
 class TopLoc_SListOfItemLocation;
 
 
 class TopLoc_SListNodeOfItemLocation;
-DEFINE_STANDARD_HANDLE(TopLoc_SListNodeOfItemLocation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TopLoc_SListNodeOfItemLocation, Standard_Transient)
 
 
-class TopLoc_SListNodeOfItemLocation : public MMgt_TShared
+class TopLoc_SListNodeOfItemLocation : public Standard_Transient
 {
 
 public:
@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TopLoc_SListNodeOfItemLocation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopLoc_SListNodeOfItemLocation,Standard_Transient)
 
 protected:
 

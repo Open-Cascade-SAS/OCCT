@@ -21,17 +21,17 @@
 #include <Standard_Type.hxx>
 
 #include <StepVisual_HArray1OfFillStyleSelect.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepVisual_FillStyleSelect;
 
 
 class StepVisual_FillAreaStyle;
-DEFINE_STANDARD_HANDLE(StepVisual_FillAreaStyle, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_FillAreaStyle, Standard_Transient)
 
 
-class StepVisual_FillAreaStyle : public MMgt_TShared
+class StepVisual_FillAreaStyle : public Standard_Transient
 {
 
 public:
@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_FillAreaStyle,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_FillAreaStyle,Standard_Transient)
 
 protected:
 

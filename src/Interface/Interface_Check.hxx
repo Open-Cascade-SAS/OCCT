@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <TColStd_HSequenceOfHAsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
@@ -38,7 +38,7 @@ class Message_Messenger;
 #endif
 
 class Interface_Check;
-DEFINE_STANDARD_HANDLE(Interface_Check, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Interface_Check, Standard_Transient)
 
 //! Defines a Check, as a list of Fail or Warning Messages under
 //! a literal form, which can be empty. A Check can also bring an
@@ -51,7 +51,7 @@ DEFINE_STANDARD_HANDLE(Interface_Check, MMgt_TShared)
 //! inserted (integers, reals, strings)
 //! The original form can be more suitable for some operations
 //! such as counting messages
-class Interface_Check : public MMgt_TShared
+class Interface_Check : public Standard_Transient
 {
 
 public:
@@ -248,7 +248,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Interface_Check,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_Check,Standard_Transient)
 
 protected:
 

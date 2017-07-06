@@ -20,16 +20,16 @@
 #include <Standard_Type.hxx>
 
 #include <StepRepr_RepresentedDefinition.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepRepr_Representation;
 class StepRepr_RepresentedDefinition;
 
 
 class StepRepr_PropertyDefinitionRepresentation;
-DEFINE_STANDARD_HANDLE(StepRepr_PropertyDefinitionRepresentation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepRepr_PropertyDefinitionRepresentation, Standard_Transient)
 
 //! Representation of STEP entity PropertyDefinitionRepresentation
-class StepRepr_PropertyDefinitionRepresentation : public MMgt_TShared
+class StepRepr_PropertyDefinitionRepresentation : public Standard_Transient
 {
 
 public:
@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_PropertyDefinitionRepresentation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_PropertyDefinitionRepresentation,Standard_Transient)
 
 protected:
 

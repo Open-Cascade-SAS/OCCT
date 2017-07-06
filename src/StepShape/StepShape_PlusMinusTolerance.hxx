@@ -21,16 +21,16 @@
 
 #include <StepShape_ToleranceMethodDefinition.hxx>
 #include <StepShape_DimensionalCharacteristic.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepShape_ToleranceMethodDefinition;
 class StepShape_DimensionalCharacteristic;
 
 
 class StepShape_PlusMinusTolerance;
-DEFINE_STANDARD_HANDLE(StepShape_PlusMinusTolerance, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepShape_PlusMinusTolerance, Standard_Transient)
 
 //! Added for Dimensional Tolerances
-class StepShape_PlusMinusTolerance : public MMgt_TShared
+class StepShape_PlusMinusTolerance : public Standard_Transient
 {
 
 public:
@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepShape_PlusMinusTolerance,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepShape_PlusMinusTolerance,Standard_Transient)
 
 protected:
 

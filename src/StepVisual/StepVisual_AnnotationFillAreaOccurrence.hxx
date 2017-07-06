@@ -34,7 +34,7 @@ public:
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName,
                              const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& theStyles,
-                             const Handle(MMgt_TShared)& theItem,
+                             const Handle(Standard_Transient)& theItem,
                              const Handle(StepGeom_GeometricRepresentationItem)& theFillStyleTarget);
   
   //! Returns field fill_style_target

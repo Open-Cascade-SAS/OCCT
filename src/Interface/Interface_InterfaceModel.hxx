@@ -22,7 +22,7 @@
 #include <TColStd_IndexedMapOfTransient.hxx>
 #include <TColStd_DataMapOfIntegerTransient.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_CString.hxx>
@@ -44,7 +44,7 @@ class Message_Messenger;
 
 
 class Interface_InterfaceModel;
-DEFINE_STANDARD_HANDLE(Interface_InterfaceModel, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Interface_InterfaceModel, Standard_Transient)
 
 //! Defines an (Indexed) Set of data corresponding to a complete
 //! Transfer by a File Interface, i.e. File Header and Transient
@@ -72,7 +72,7 @@ DEFINE_STANDARD_HANDLE(Interface_InterfaceModel, MMgt_TShared)
 //! under another name).
 //!
 //! See also Graph, ShareTool, CheckTool for more
-class Interface_InterfaceModel : public MMgt_TShared
+class Interface_InterfaceModel : public Standard_Transient
 {
 
 public:
@@ -400,7 +400,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Interface_InterfaceModel,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_InterfaceModel,Standard_Transient)
 
 protected:
 

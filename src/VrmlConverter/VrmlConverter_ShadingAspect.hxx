@@ -22,17 +22,17 @@
 
 #include <Vrml_ShapeHints.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class Vrml_Material;
 class Vrml_ShapeHints;
 
 
 class VrmlConverter_ShadingAspect;
-DEFINE_STANDARD_HANDLE(VrmlConverter_ShadingAspect, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(VrmlConverter_ShadingAspect, Standard_Transient)
 
 //! qualifies the aspect properties for
 //! the VRML conversation of ShadedShape .
-class VrmlConverter_ShadingAspect : public MMgt_TShared
+class VrmlConverter_ShadingAspect : public Standard_Transient
 {
 
 public:
@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(VrmlConverter_ShadingAspect,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(VrmlConverter_ShadingAspect,Standard_Transient)
 
 protected:
 

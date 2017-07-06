@@ -21,17 +21,17 @@
 #include <Standard_Type.hxx>
 
 #include <StepBasic_PersonOrganizationSelect.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepBasic_Approval;
 class StepBasic_ApprovalRole;
 class StepBasic_PersonOrganizationSelect;
 
 
 class StepBasic_ApprovalPersonOrganization;
-DEFINE_STANDARD_HANDLE(StepBasic_ApprovalPersonOrganization, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_ApprovalPersonOrganization, Standard_Transient)
 
 
-class StepBasic_ApprovalPersonOrganization : public MMgt_TShared
+class StepBasic_ApprovalPersonOrganization : public Standard_Transient
 {
 
 public:
@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalPersonOrganization,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalPersonOrganization,Standard_Transient)
 
 protected:
 

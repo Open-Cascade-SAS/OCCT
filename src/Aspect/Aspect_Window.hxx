@@ -24,7 +24,7 @@
 #include <Aspect_FBConfig.hxx>
 #include <Aspect_FillMethod.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Quantity_Color.hxx>
 #include <Aspect_GradientFillMethod.hxx>
 #include <Aspect_TypeOfResize.hxx>
@@ -36,10 +36,10 @@ class Aspect_Background;
 class Aspect_GradientBackground;
 
 class Aspect_Window;
-DEFINE_STANDARD_HANDLE(Aspect_Window, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Aspect_Window, Standard_Transient)
 
 //! Defines a window.
-class Aspect_Window : public MMgt_TShared
+class Aspect_Window : public Standard_Transient
 {
 
 public:
@@ -107,7 +107,7 @@ public:
   //! Returns native Window FB config (GLXFBConfig on Xlib)
   Standard_EXPORT virtual Aspect_FBConfig NativeFBConfig() const = 0;
 
-  DEFINE_STANDARD_RTTIEXT(Aspect_Window,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Aspect_Window,Standard_Transient)
 
 protected:
 

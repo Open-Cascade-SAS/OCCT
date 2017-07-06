@@ -20,15 +20,15 @@
 #include <Standard_Type.hxx>
 
 #include <StepElement_MeasureOrUnspecifiedValue.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepElement_MeasureOrUnspecifiedValue;
 
 
 class StepElement_SurfaceSection;
-DEFINE_STANDARD_HANDLE(StepElement_SurfaceSection, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepElement_SurfaceSection, Standard_Transient)
 
 //! Representation of STEP entity SurfaceSection
-class StepElement_SurfaceSection : public MMgt_TShared
+class StepElement_SurfaceSection : public Standard_Transient
 {
 
 public:
@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepElement_SurfaceSection,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepElement_SurfaceSection,Standard_Transient)
 
 protected:
 

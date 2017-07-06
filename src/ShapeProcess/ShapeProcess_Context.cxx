@@ -26,7 +26,7 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <sys/stat.h>
-IMPLEMENT_STANDARD_RTTIEXT(ShapeProcess_Context,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeProcess_Context,Standard_Transient)
 
 //=======================================================================
 //function : ShapeProcess_Context

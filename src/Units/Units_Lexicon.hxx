@@ -22,7 +22,7 @@
 
 #include <Standard_Time.hxx>
 #include <Units_TokensSequence.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
@@ -31,13 +31,13 @@ class TCollection_AsciiString;
 
 
 class Units_Lexicon;
-DEFINE_STANDARD_HANDLE(Units_Lexicon, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Units_Lexicon, Standard_Transient)
 
 //! This class defines a lexicon useful to analyse and
 //! recognize the  different key words  included  in a
 //! sentence.  The lexicon is stored  in a sequence of
 //! tokens.
-class Units_Lexicon : public MMgt_TShared
+class Units_Lexicon : public Standard_Transient
 {
 
 public:
@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Units_Lexicon,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Units_Lexicon,Standard_Transient)
 
 protected:
 

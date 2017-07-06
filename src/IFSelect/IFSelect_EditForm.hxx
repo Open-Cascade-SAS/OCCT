@@ -25,7 +25,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfTransient.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
@@ -38,7 +38,7 @@ class Message_Messenger;
 
 
 class IFSelect_EditForm;
-DEFINE_STANDARD_HANDLE(IFSelect_EditForm, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IFSelect_EditForm, Standard_Transient)
 
 //! An EditForm is the way to apply an Editor on an Entity or on
 //! the Model
@@ -52,7 +52,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_EditForm, MMgt_TShared)
 //! may differ if it is not Complete
 //! Two methods give the correspondance between this Number and
 //! the Rank in the EditForm : RankFromNumber and NumberFromRank
-class IFSelect_EditForm : public MMgt_TShared
+class IFSelect_EditForm : public Standard_Transient
 {
 
 public:
@@ -284,7 +284,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_EditForm,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_EditForm,Standard_Transient)
 
 protected:
 

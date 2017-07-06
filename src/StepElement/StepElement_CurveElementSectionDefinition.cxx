@@ -19,7 +19,7 @@
 #include <StepElement_CurveElementSectionDefinition.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepElement_CurveElementSectionDefinition,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_CurveElementSectionDefinition,Standard_Transient)
 
 //=======================================================================
 //function : StepElement_CurveElementSectionDefinition

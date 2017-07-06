@@ -20,20 +20,20 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TColStd_IndexedDataMapOfTransientTransient.hxx>
 class Standard_TypeMismatch;
 class TopoDS_Shape;
 
 
 class TNaming_TranslateTool;
-DEFINE_STANDARD_HANDLE(TNaming_TranslateTool, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TNaming_TranslateTool, Standard_Transient)
 
 //! tool to copy underlying TShape of a Shape.
 //! The TranslateTool class is provided to support the
 //! translation of topological data structures  Transient
 //! to  Transient.
-class TNaming_TranslateTool : public MMgt_TShared
+class TNaming_TranslateTool : public Standard_Transient
 {
 
 public:
@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TNaming_TranslateTool,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TNaming_TranslateTool,Standard_Transient)
 
 protected:
 

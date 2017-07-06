@@ -30,7 +30,7 @@
 #include <Vrml_TransformSeparator.hxx>
 #include <VrmlConverter_Projector.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_Projector,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_Projector,Standard_Transient)
 
 VrmlConverter_Projector::VrmlConverter_Projector (const TopTools_Array1OfShape& Shapes,
 						  const Standard_Real Focus,

@@ -21,7 +21,7 @@
 
 #include <Message_ExecStatus.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Message_Status.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
@@ -43,7 +43,7 @@ class TColStd_HPackedMapOfInteger;
 
 
 class Message_Algorithm;
-DEFINE_STANDARD_HANDLE(Message_Algorithm, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Message_Algorithm, Standard_Transient)
 
 //! Class Message_Algorithm is intended to be the base class for
 //! classes implementing algorithms or any operations that need
@@ -86,7 +86,7 @@ DEFINE_STANDARD_HANDLE(Message_Algorithm, MMgt_TShared)
 //! The messages are output to the messenger, stored in the field;
 //! though messenger can be changed, it is guaranteed to be non-null.
 //! By default, Message::DefaultMessenger() is used.
-class Message_Algorithm : public MMgt_TShared
+class Message_Algorithm : public Standard_Transient
 {
 
 public:
@@ -200,7 +200,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Message_Algorithm,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Message_Algorithm,Standard_Transient)
 
 protected:
 

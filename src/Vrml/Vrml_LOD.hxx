@@ -23,13 +23,13 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 class gp_Vec;
 
 
 class Vrml_LOD;
-DEFINE_STANDARD_HANDLE(Vrml_LOD, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Vrml_LOD, Standard_Transient)
 
 //! defines a LOD (level of detailization) node of VRML specifying properties
 //! of geometry  and its appearance.
@@ -52,7 +52,7 @@ DEFINE_STANDARD_HANDLE(Vrml_LOD, MMgt_TShared)
 //! are  specified,  the  extra  children  w ll  be  ignored.
 //! Each  value  in  the  ranges  array  should  be  greater  than  the previous
 //! value,  otherwise  results  are  undefined.
-class Vrml_LOD : public MMgt_TShared
+class Vrml_LOD : public Standard_Transient
 {
 
 public:
@@ -75,7 +75,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Vrml_LOD,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Vrml_LOD,Standard_Transient)
 
 protected:
 

@@ -20,7 +20,7 @@
 #include <Aspect_Window.hxx>
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_Caps.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 #if defined(__APPLE__)
   #import <TargetConditionals.h>
@@ -38,11 +38,11 @@ class OpenGl_Context;
 class OpenGl_GraphicDriver;
 
 class OpenGl_Window;
-DEFINE_STANDARD_HANDLE(OpenGl_Window,MMgt_TShared)
+DEFINE_STANDARD_HANDLE(OpenGl_Window,Standard_Transient)
 
 //! This class represents low-level wrapper over window with GL context.
 //! The window itself should be provided to constructor.
-class OpenGl_Window : public MMgt_TShared
+class OpenGl_Window : public Standard_Transient
 {
 public:
 
@@ -94,7 +94,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTIEXT(OpenGl_Window,MMgt_TShared) // Type definition
+  DEFINE_STANDARD_RTTIEXT(OpenGl_Window,Standard_Transient) // Type definition
   DEFINE_STANDARD_ALLOC
 
 };

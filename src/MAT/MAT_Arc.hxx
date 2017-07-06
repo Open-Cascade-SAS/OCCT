@@ -22,7 +22,7 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Address.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <MAT_Side.hxx>
 class MAT_BasicElt;
@@ -31,10 +31,10 @@ class Standard_DomainError;
 
 
 class MAT_Arc;
-DEFINE_STANDARD_HANDLE(MAT_Arc, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MAT_Arc, Standard_Transient)
 
 //! An Arc is associated to each Bisecting of the mat.
-class MAT_Arc : public MMgt_TShared
+class MAT_Arc : public Standard_Transient
 {
 
 public:
@@ -98,7 +98,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(MAT_Arc,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MAT_Arc,Standard_Transient)
 
 protected:
 

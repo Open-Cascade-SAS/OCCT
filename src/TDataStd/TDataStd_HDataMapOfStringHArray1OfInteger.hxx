@@ -20,14 +20,14 @@
 #include <Standard_Type.hxx>
 
 #include <TDataStd_DataMapOfStringHArray1OfInteger.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 
 //! Extension of TDataStd_DataMapOfStringHArray1OfInteger class
 //! to be manipulated by handle.
-class TDataStd_HDataMapOfStringHArray1OfInteger : public MMgt_TShared
+class TDataStd_HDataMapOfStringHArray1OfInteger : public Standard_Transient
 {
-  DEFINE_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringHArray1OfInteger, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringHArray1OfInteger, Standard_Transient)
 public:
 
   Standard_EXPORT TDataStd_HDataMapOfStringHArray1OfInteger(const Standard_Integer NbBuckets = 1);
@@ -44,6 +44,6 @@ private:
 
 };
 
-DEFINE_STANDARD_HANDLE(TDataStd_HDataMapOfStringHArray1OfInteger, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TDataStd_HDataMapOfStringHArray1OfInteger, Standard_Transient)
 
 #endif // _TDataStd_HDataMapOfStringHArray1OfInteger_HeaderFile

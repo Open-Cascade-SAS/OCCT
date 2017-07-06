@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class IGESData_GlobalNodeOfSpecificLib;
 class IGESData_IGESEntity;
 class IGESData_SpecificModule;
@@ -29,10 +29,10 @@ class IGESData_SpecificLib;
 
 
 class IGESData_NodeOfSpecificLib;
-DEFINE_STANDARD_HANDLE(IGESData_NodeOfSpecificLib, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IGESData_NodeOfSpecificLib, Standard_Transient)
 
 
-class IGESData_NodeOfSpecificLib : public MMgt_TShared
+class IGESData_NodeOfSpecificLib : public Standard_Transient
 {
 
 public:
@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI_INLINE(IGESData_NodeOfSpecificLib,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(IGESData_NodeOfSpecificLib,Standard_Transient)
 
 protected:
 

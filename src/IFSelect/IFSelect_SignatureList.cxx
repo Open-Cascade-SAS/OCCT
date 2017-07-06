@@ -23,7 +23,7 @@
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SignatureList,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SignatureList,Standard_Transient)
 
 IFSelect_SignatureList::IFSelect_SignatureList
   (const Standard_Boolean withlist)

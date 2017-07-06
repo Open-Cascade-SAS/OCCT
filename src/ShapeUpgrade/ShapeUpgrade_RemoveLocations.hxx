@@ -22,16 +22,16 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class TopoDS_Shape;
 
 
 class ShapeUpgrade_RemoveLocations;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_RemoveLocations, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeUpgrade_RemoveLocations, Standard_Transient)
 
 //! Removes all locations sub-shapes of specified shape
-class ShapeUpgrade_RemoveLocations : public MMgt_TShared
+class ShapeUpgrade_RemoveLocations : public Standard_Transient
 {
 
 public:
@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_RemoveLocations,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_RemoveLocations,Standard_Transient)
 
 protected:
 

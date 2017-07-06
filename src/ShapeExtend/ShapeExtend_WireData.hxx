@@ -24,7 +24,7 @@
 #include <TColStd_HSequenceOfInteger.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TopoDS_Wire;
 class TopoDS_Edge;
 class TopoDS_Shape;
@@ -32,7 +32,7 @@ class TopoDS_Face;
 
 
 class ShapeExtend_WireData;
-DEFINE_STANDARD_HANDLE(ShapeExtend_WireData, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeExtend_WireData, Standard_Transient)
 
 //! This class provides a data structure necessary for work with the wire as with
 //! ordered list of edges, what is required for many algorithms. The advantage of
@@ -58,7 +58,7 @@ DEFINE_STANDARD_HANDLE(ShapeExtend_WireData, MMgt_TShared)
 //! Moreover, this class is stored as a field in other classes which are
 //! they returned as results of functions, storing only a handle to
 //! ShapeExtend_WireData saves time and memory.
-class ShapeExtend_WireData : public MMgt_TShared
+class ShapeExtend_WireData : public Standard_Transient
 {
 
 public:
@@ -220,7 +220,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ShapeExtend_WireData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeExtend_WireData,Standard_Transient)
 
 protected:
 

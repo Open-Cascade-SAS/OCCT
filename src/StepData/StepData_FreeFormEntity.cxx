@@ -19,7 +19,7 @@
 #include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepData_FreeFormEntity,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepData_FreeFormEntity,Standard_Transient)
 
 void StepData_FreeFormEntity::SetStepType (const Standard_CString typenam)
       {  thetype.Clear();  thetype.AssignCat (typenam);  }

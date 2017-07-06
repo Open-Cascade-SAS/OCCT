@@ -28,7 +28,7 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRepAlgo_EdgeConnector,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(BRepAlgo_EdgeConnector,Standard_Transient)
 
 //=======================================================================
 //function : Create

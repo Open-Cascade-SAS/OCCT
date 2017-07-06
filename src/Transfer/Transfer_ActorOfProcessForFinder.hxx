@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Transfer_HSequenceOfFinder.hxx>
 #include <Transfer_TransferMapOfProcessForFinder.hxx>
 
@@ -36,10 +36,10 @@ class Standard_Transient;
 
 
 class Transfer_ActorOfProcessForFinder;
-DEFINE_STANDARD_HANDLE(Transfer_ActorOfProcessForFinder, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Transfer_ActorOfProcessForFinder, Standard_Transient)
 
 
-class Transfer_ActorOfProcessForFinder : public MMgt_TShared
+class Transfer_ActorOfProcessForFinder : public Standard_Transient
 {
 
 public:
@@ -97,7 +97,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI_INLINE(Transfer_ActorOfProcessForFinder,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(Transfer_ActorOfProcessForFinder,Standard_Transient)
 
 protected:
 

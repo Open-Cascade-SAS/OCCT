@@ -17,7 +17,7 @@
 #include <StepBasic_ApplicationContextElement.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApplicationContextElement,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApplicationContextElement,Standard_Transient)
 
 StepBasic_ApplicationContextElement::StepBasic_ApplicationContextElement ()  {}
 

@@ -17,7 +17,7 @@
 #include <StepVisual_SurfaceStyleElementSelect.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceSideStyle,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceSideStyle,Standard_Transient)
 
 StepVisual_SurfaceSideStyle::StepVisual_SurfaceSideStyle ()  {}
 

@@ -31,7 +31,7 @@ class TObj_CheckModel;
 class TObj_Application;
 
 class TObj_Model;
-DEFINE_STANDARD_HANDLE(TObj_Model,MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TObj_Model,Standard_Transient)
 
 /**
 * Base class for OCAF based models.
@@ -41,7 +41,7 @@ DEFINE_STANDARD_HANDLE(TObj_Model,MMgt_TShared)
 * Provides default implementation for many methods.
 */
 
-class TObj_Model : public MMgt_TShared
+class TObj_Model : public Standard_Transient
 {
  protected:
 
@@ -356,7 +356,7 @@ class TObj_Model : public MMgt_TShared
 
  public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTIEXT(TObj_Model,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TObj_Model,Standard_Transient)
 };
 
 //! The Model Handle is defined in a separate header file

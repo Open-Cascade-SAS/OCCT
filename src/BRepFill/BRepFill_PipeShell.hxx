@@ -31,7 +31,7 @@
 #include <GeomFill_Trihedron.hxx>
 #include <BRepFill_TransitionStyle.hxx>
 #include <GeomFill_PipeError.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <BRepFill_TypeOfContact.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
@@ -52,12 +52,12 @@ class BRepFill_Sweep;
 
 
 class BRepFill_PipeShell;
-DEFINE_STANDARD_HANDLE(BRepFill_PipeShell, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(BRepFill_PipeShell, Standard_Transient)
 
 //! Computes a topological shell using some wires
 //! (spines and profiles) and diplacement option
 //! Perform general sweeping construction
-class BRepFill_PipeShell : public MMgt_TShared
+class BRepFill_PipeShell : public Standard_Transient
 {
 
 public:
@@ -192,7 +192,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(BRepFill_PipeShell,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepFill_PipeShell,Standard_Transient)
 
 protected:
 

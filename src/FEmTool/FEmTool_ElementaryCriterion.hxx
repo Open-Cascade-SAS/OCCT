@@ -22,7 +22,7 @@
 
 #include <TColStd_HArray2OfReal.hxx>
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TColStd_HArray2OfInteger.hxx>
 #include <Standard_Integer.hxx>
 #include <math_Vector.hxx>
@@ -32,10 +32,10 @@ class math_Matrix;
 
 
 class FEmTool_ElementaryCriterion;
-DEFINE_STANDARD_HANDLE(FEmTool_ElementaryCriterion, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(FEmTool_ElementaryCriterion, Standard_Transient)
 
 //! defined J Criteria to used in minimisation
-class FEmTool_ElementaryCriterion : public MMgt_TShared
+class FEmTool_ElementaryCriterion : public Standard_Transient
 {
 
 public:
@@ -66,7 +66,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(FEmTool_ElementaryCriterion,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(FEmTool_ElementaryCriterion,Standard_Transient)
 
 protected:
 

@@ -19,15 +19,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepBasic_Group;
 
 
 class StepBasic_GroupAssignment;
-DEFINE_STANDARD_HANDLE(StepBasic_GroupAssignment, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_GroupAssignment, Standard_Transient)
 
 //! Representation of STEP entity GroupAssignment
-class StepBasic_GroupAssignment : public MMgt_TShared
+class StepBasic_GroupAssignment : public Standard_Transient
 {
 
 public:
@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_GroupAssignment,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_GroupAssignment,Standard_Transient)
 
 protected:
 

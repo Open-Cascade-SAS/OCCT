@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
@@ -34,7 +34,7 @@ class IFGraph_SubPartsIterator;
 
 
 class IFSelect_Dispatch;
-DEFINE_STANDARD_HANDLE(IFSelect_Dispatch, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IFSelect_Dispatch, Standard_Transient)
 
 //! This class allows to describe how a set of Entities has to be
 //! dispatched into resulting Packets : a Packet is a sub-set of
@@ -51,7 +51,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_Dispatch, MMgt_TShared)
 //! The input set is read from a specified Selection, attached to
 //! the Dispatch : the Final Selection of the Dispatch. The input
 //! is the Unique Root Entities list of the Final Selection
-class IFSelect_Dispatch : public MMgt_TShared
+class IFSelect_Dispatch : public Standard_Transient
 {
 
 public:
@@ -128,7 +128,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_Dispatch,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_Dispatch,Standard_Transient)
 
 protected:
 

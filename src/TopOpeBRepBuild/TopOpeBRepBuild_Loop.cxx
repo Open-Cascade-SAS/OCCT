@@ -20,7 +20,7 @@
 #include <TopOpeBRepBuild_BlockIterator.hxx>
 #include <TopOpeBRepBuild_Loop.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepBuild_Loop,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepBuild_Loop,Standard_Transient)
 
 //=======================================================================
 //function : TopOpeBRepBuild_Loop

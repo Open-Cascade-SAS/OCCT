@@ -24,7 +24,7 @@
 #include <Standard_Type.hxx>
 
 #include <SelectMgr_TypeOfUpdate.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <SelectMgr_SensitiveEntity.hxx>
 #include <SelectMgr_StateOfSelection.hxx>
 #include <SelectMgr_TypeOfBVHUpdate.hxx>
@@ -67,7 +67,7 @@ class SelectBasics_SensitiveEntity;
 //! -   mode 4 : selection of the faces
 //! -   mode 5 : selection of the shells
 //! -   mode 6 :   selection of the constituent solids.
-class SelectMgr_Selection : public MMgt_TShared
+class SelectMgr_Selection : public Standard_Transient
 {
 
 public:
@@ -137,7 +137,7 @@ public:
   //! proper updates use SelectMgr_SelectionManager::SetSelectionSensitivity method.
   Standard_EXPORT void SetSensitivity (const Standard_Integer theNewSens);
 
-  DEFINE_STANDARD_RTTIEXT(SelectMgr_Selection,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_Selection,Standard_Transient)
 
 protected:
 
@@ -156,7 +156,7 @@ private:
   Standard_Boolean                                                myIsCustomSens;
 };
 
-DEFINE_STANDARD_HANDLE(SelectMgr_Selection, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(SelectMgr_Selection, Standard_Transient)
 
 #include <SelectMgr_Selection.lxx>
 

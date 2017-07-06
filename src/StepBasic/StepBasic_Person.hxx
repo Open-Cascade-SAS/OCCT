@@ -22,16 +22,16 @@
 
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 
 
 class StepBasic_Person;
-DEFINE_STANDARD_HANDLE(StepBasic_Person, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_Person, Standard_Transient)
 
 
-class StepBasic_Person : public MMgt_TShared
+class StepBasic_Person : public Standard_Transient
 {
 
 public:
@@ -101,7 +101,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_Person,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_Person,Standard_Transient)
 
 protected:
 

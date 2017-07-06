@@ -22,7 +22,7 @@
 
 #include <TColStd_MapOfTransient.hxx>
 #include <SelectMgr_DataMapOfObjectSelectors.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <SelectMgr_ViewerSelector.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
@@ -31,14 +31,14 @@ class SelectMgr_SelectableObject;
 
 
 class SelectMgr_SelectionManager;
-DEFINE_STANDARD_HANDLE(SelectMgr_SelectionManager, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(SelectMgr_SelectionManager, Standard_Transient)
 
 //! A framework to manage selection from the point of
 //! view of viewer selectors. These can be added and
 //! removed, and selection modes can be activated and
 //! deactivated. In addition, objects may be known to all
 //! selectors or only to some.
-class SelectMgr_SelectionManager : public MMgt_TShared
+class SelectMgr_SelectionManager : public Standard_Transient
 {
 
 public:
@@ -128,7 +128,7 @@ public:
   //! Re-adds selectable object in BVHs in all viewer selectors.
   Standard_EXPORT void UpdateSelection (const Handle(SelectMgr_SelectableObject)& theObj);
 
-  DEFINE_STANDARD_RTTIEXT(SelectMgr_SelectionManager,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_SelectionManager,Standard_Transient)
 
 protected:
 

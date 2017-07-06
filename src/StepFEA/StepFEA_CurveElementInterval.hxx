@@ -19,16 +19,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepFEA_CurveElementLocation;
 class StepBasic_EulerAngles;
 
 
 class StepFEA_CurveElementInterval;
-DEFINE_STANDARD_HANDLE(StepFEA_CurveElementInterval, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepFEA_CurveElementInterval, Standard_Transient)
 
 //! Representation of STEP entity CurveElementInterval
-class StepFEA_CurveElementInterval : public MMgt_TShared
+class StepFEA_CurveElementInterval : public Standard_Transient
 {
 
 public:
@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepFEA_CurveElementInterval,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_CurveElementInterval,Standard_Transient)
 
 protected:
 

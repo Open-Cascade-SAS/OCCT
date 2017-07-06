@@ -21,17 +21,17 @@
 
 #include <StepFEA_ElementOrElementGroup.hxx>
 #include <StepElement_ElementAspect.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepElement_AnalysisItemWithinRepresentation;
 class StepFEA_ElementOrElementGroup;
 class StepElement_ElementAspect;
 
 
 class StepFEA_ElementGeometricRelationship;
-DEFINE_STANDARD_HANDLE(StepFEA_ElementGeometricRelationship, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepFEA_ElementGeometricRelationship, Standard_Transient)
 
 //! Representation of STEP entity ElementGeometricRelationship
-class StepFEA_ElementGeometricRelationship : public MMgt_TShared
+class StepFEA_ElementGeometricRelationship : public Standard_Transient
 {
 
 public:
@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepFEA_ElementGeometricRelationship,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_ElementGeometricRelationship,Standard_Transient)
 
 protected:
 

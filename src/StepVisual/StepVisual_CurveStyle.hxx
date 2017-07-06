@@ -22,7 +22,7 @@
 
 #include <StepVisual_CurveStyleFontSelect.hxx>
 #include <StepBasic_SizeSelect.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepVisual_Colour;
 class StepVisual_CurveStyleFontSelect;
@@ -30,10 +30,10 @@ class StepBasic_SizeSelect;
 
 
 class StepVisual_CurveStyle;
-DEFINE_STANDARD_HANDLE(StepVisual_CurveStyle, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_CurveStyle, Standard_Transient)
 
 
-class StepVisual_CurveStyle : public MMgt_TShared
+class StepVisual_CurveStyle : public Standard_Transient
 {
 
 public:
@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_CurveStyle,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_CurveStyle,Standard_Transient)
 
 protected:
 

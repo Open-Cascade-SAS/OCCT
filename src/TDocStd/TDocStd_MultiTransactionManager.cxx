@@ -20,7 +20,7 @@
 #include <TDocStd_Document.hxx>
 #include <TDocStd_MultiTransactionManager.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDocStd_MultiTransactionManager,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TDocStd_MultiTransactionManager,Standard_Transient)
 
 //=======================================================================
 //function : TDocStd_MultiTransactionManager

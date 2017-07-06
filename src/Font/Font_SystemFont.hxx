@@ -22,15 +22,15 @@
 #include <Font_FontAspect.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
 
 class Font_SystemFont;
-DEFINE_STANDARD_HANDLE(Font_SystemFont, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Font_SystemFont, Standard_Transient)
 
 //! Structure for store of Font System Information
-class Font_SystemFont : public MMgt_TShared
+class Font_SystemFont : public Standard_Transient
 {
 
 public:
@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Font_SystemFont,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Font_SystemFont,Standard_Transient)
 
 protected:
 

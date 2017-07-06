@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class IFSelect_SessionFile;
 class Standard_Transient;
@@ -28,7 +28,7 @@ class TCollection_AsciiString;
 
 
 class IFSelect_SessionDumper;
-DEFINE_STANDARD_HANDLE(IFSelect_SessionDumper, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IFSelect_SessionDumper, Standard_Transient)
 
 //! A SessionDumper is called by SessionFile. It takes into
 //! account a set of classes (such as Selections, Dispatches ...).
@@ -55,7 +55,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_SessionDumper, MMgt_TShared)
 //!
 //! SessionDumpers are organized in a Library which is used by
 //! SessionFile. They are put at Creation Time in this Library.
-class IFSelect_SessionDumper : public MMgt_TShared
+class IFSelect_SessionDumper : public Standard_Transient
 {
 
 public:
@@ -92,7 +92,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_SessionDumper,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SessionDumper,Standard_Transient)
 
 protected:
 

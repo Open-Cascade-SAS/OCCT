@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <IntSurf_SequenceOfPntOn2S.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <IntSurf_Allocator.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
@@ -31,10 +31,10 @@ class IntSurf_PntOn2S;
 
 
 class IntSurf_LineOn2S;
-DEFINE_STANDARD_HANDLE(IntSurf_LineOn2S, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IntSurf_LineOn2S, Standard_Transient)
 
 
-class IntSurf_LineOn2S : public MMgt_TShared
+class IntSurf_LineOn2S : public Standard_Transient
 {
 
 public:
@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IntSurf_LineOn2S,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IntSurf_LineOn2S,Standard_Transient)
 
 protected:
 

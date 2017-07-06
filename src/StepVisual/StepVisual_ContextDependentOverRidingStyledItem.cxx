@@ -26,7 +26,7 @@ StepVisual_ContextDependentOverRidingStyledItem::StepVisual_ContextDependentOver
 void StepVisual_ContextDependentOverRidingStyledItem::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles,
-	const Handle(MMgt_TShared)& aItem,
+	const Handle(Standard_Transient)& aItem,
 	const Handle(StepVisual_StyledItem)& aOverRiddenStyle,
 	const Handle(StepVisual_HArray1OfStyleContextSelect)& aStyleContext)
 {

@@ -17,7 +17,7 @@
 #include <ShapeCustom_RestrictionParameters.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ShapeCustom_RestrictionParameters,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeCustom_RestrictionParameters,Standard_Transient)
 
 //=======================================================================
 //function : ShapeCustom_RestrictionParameters

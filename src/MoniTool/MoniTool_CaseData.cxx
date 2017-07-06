@@ -32,7 +32,7 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_DataMap.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(MoniTool_CaseData,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(MoniTool_CaseData,Standard_Transient)
 
 static NCollection_DataMap<TCollection_AsciiString, Standard_Integer> defch;
 static NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> defms;

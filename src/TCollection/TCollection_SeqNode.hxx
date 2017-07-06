@@ -21,14 +21,14 @@
 #include <Standard_Type.hxx>
 
 #include <TCollection_SeqNodePtr.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class TCollection_SeqNode;
-DEFINE_STANDARD_HANDLE(TCollection_SeqNode, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TCollection_SeqNode, Standard_Transient)
 
 
-class TCollection_SeqNode : public MMgt_TShared
+class TCollection_SeqNode : public Standard_Transient
 {
 
 public:
@@ -43,7 +43,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TCollection_SeqNode,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TCollection_SeqNode,Standard_Transient)
 
 protected:
 

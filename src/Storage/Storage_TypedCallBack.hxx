@@ -22,16 +22,16 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class Storage_CallBack;
 class TCollection_AsciiString;
 
 
 class Storage_TypedCallBack;
-DEFINE_STANDARD_HANDLE(Storage_TypedCallBack, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Storage_TypedCallBack, Standard_Transient)
 
 
-class Storage_TypedCallBack : public MMgt_TShared
+class Storage_TypedCallBack : public Standard_Transient
 {
 
 public:
@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Storage_TypedCallBack,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Storage_TypedCallBack,Standard_Transient)
 
 protected:
 

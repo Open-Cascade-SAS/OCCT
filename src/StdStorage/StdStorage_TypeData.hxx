@@ -20,7 +20,7 @@
 #include <StdStorage_MapOfTypes.hxx>
 #include <Storage_Error.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <StdObjMgt_MapOfInstantiators.hxx>
@@ -30,18 +30,18 @@ class Storage_BaseDriver;
 class TCollection_AsciiString;
 
 class StdStorage_TypeData;
-DEFINE_STANDARD_HANDLE(StdStorage_TypeData, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StdStorage_TypeData, Standard_Transient)
 
 //! Storage type data section keeps association between
 //! persistent textual types and their numbers
 class StdStorage_TypeData
-  : public MMgt_TShared
+  : public Standard_Transient
 {
   friend class StdStorage_Data;
 
 public:
 
-  DEFINE_STANDARD_RTTIEXT(StdStorage_TypeData, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StdStorage_TypeData, Standard_Transient)
 
   //! Reads the type data section from the container defined by theDriver. 
   //! Returns Standard_True in case of success. Otherwise, one need to get 

@@ -23,7 +23,7 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
@@ -36,7 +36,7 @@ class Interface_InterfaceModel;
 
 
 class IFSelect_SignatureList;
-DEFINE_STANDARD_HANDLE(IFSelect_SignatureList, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IFSelect_SignatureList, Standard_Transient)
 
 //! A SignatureList is given as result from a Counter (any kind)
 //! It gives access to a list of signatures, with counts, and
@@ -46,7 +46,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_SignatureList, MMgt_TShared)
 //! Mode. This can be useful for a specific counter (used in a
 //! Selection), while it remains better to use a Signature
 //! whenever possible
-class IFSelect_SignatureList : public MMgt_TShared
+class IFSelect_SignatureList : public Standard_Transient
 {
 
 public:
@@ -140,7 +140,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_SignatureList,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SignatureList,Standard_Transient)
 
 protected:
 

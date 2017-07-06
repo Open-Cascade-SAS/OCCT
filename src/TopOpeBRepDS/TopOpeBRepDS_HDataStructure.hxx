@@ -23,7 +23,7 @@
 #include <TopOpeBRepDS_DataStructure.hxx>
 #include <Standard_Boolean.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Integer.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
@@ -44,10 +44,10 @@ class TopOpeBRepDS_Interference;
 
 
 class TopOpeBRepDS_HDataStructure;
-DEFINE_STANDARD_HANDLE(TopOpeBRepDS_HDataStructure, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TopOpeBRepDS_HDataStructure, Standard_Transient)
 
 
-class TopOpeBRepDS_HDataStructure : public MMgt_TShared
+class TopOpeBRepDS_HDataStructure : public Standard_Transient
 {
 
 public:
@@ -209,7 +209,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_HDataStructure,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_HDataStructure,Standard_Transient)
 
 protected:
 

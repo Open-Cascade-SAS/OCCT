@@ -22,7 +22,7 @@
 #include <TCollection_ExtendedString.hxx>
 #include <TDF_Attribute.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMDF_ADriver,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(BinMDF_ADriver,Standard_Transient)
 
 //=======================================================================
 //function : BinMDF_ADriver

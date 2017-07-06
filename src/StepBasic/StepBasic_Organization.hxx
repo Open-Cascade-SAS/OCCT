@@ -21,15 +21,15 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
 
 class StepBasic_Organization;
-DEFINE_STANDARD_HANDLE(StepBasic_Organization, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_Organization, Standard_Transient)
 
 
-class StepBasic_Organization : public MMgt_TShared
+class StepBasic_Organization : public Standard_Transient
 {
 
 public:
@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_Organization,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_Organization,Standard_Transient)
 
 protected:
 

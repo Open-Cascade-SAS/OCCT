@@ -25,7 +25,7 @@
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_Vector.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <Standard_Transient.hxx>
@@ -45,7 +45,7 @@ class Interface_CheckIterator;
 
 
 class XSControl_Controller;
-DEFINE_STANDARD_HANDLE(XSControl_Controller, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(XSControl_Controller, Standard_Transient)
 
 //! This class allows a general X-STEP engine to run generic
 //! functions on any interface norm, in the same way. It includes
@@ -62,7 +62,7 @@ DEFINE_STANDARD_HANDLE(XSControl_Controller, MMgt_TShared)
 //!
 //! It does not manage the produced data, but the Actors make the
 //! link between the norm and the application
-class XSControl_Controller : public MMgt_TShared
+class XSControl_Controller : public Standard_Transient
 {
  public:
   
@@ -191,7 +191,7 @@ class XSControl_Controller : public MMgt_TShared
   const NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> & AdaptorSession() const
   { return myAdaptorSession; }
 
-  DEFINE_STANDARD_RTTIEXT(XSControl_Controller,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(XSControl_Controller,Standard_Transient)
 
  protected:
   

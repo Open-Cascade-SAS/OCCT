@@ -19,7 +19,7 @@
 #include <ShapeFix_Shape.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ShapeAlgo_ToolContainer,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeAlgo_ToolContainer,Standard_Transient)
 
 //=======================================================================
 //function : ShapeAlgo_ToolContainer

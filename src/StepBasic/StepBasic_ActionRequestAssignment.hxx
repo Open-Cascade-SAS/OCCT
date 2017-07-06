@@ -20,15 +20,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepBasic_VersionedActionRequest;
 
 
 class StepBasic_ActionRequestAssignment;
-DEFINE_STANDARD_HANDLE(StepBasic_ActionRequestAssignment, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_ActionRequestAssignment, Standard_Transient)
 
 //! Representation of STEP entity ActionRequestAssignment
-class StepBasic_ActionRequestAssignment : public MMgt_TShared
+class StepBasic_ActionRequestAssignment : public Standard_Transient
 {
 
 public:
@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ActionRequestAssignment,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ActionRequestAssignment,Standard_Transient)
 
 protected:
 

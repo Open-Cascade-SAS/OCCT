@@ -21,16 +21,16 @@
 #include <Standard_Type.hxx>
 
 #include <Interface_HArray1OfHAsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 
 
 class HeaderSection_FileName;
-DEFINE_STANDARD_HANDLE(HeaderSection_FileName, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(HeaderSection_FileName, Standard_Transient)
 
 
-class HeaderSection_FileName : public MMgt_TShared
+class HeaderSection_FileName : public Standard_Transient
 {
 
 public:
@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(HeaderSection_FileName,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HeaderSection_FileName,Standard_Transient)
 
 protected:
 

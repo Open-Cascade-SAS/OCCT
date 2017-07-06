@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_IStream.hxx>
@@ -31,10 +31,10 @@ class Geom_Surface;
 
 
 class GeomTools_UndefinedTypeHandler;
-DEFINE_STANDARD_HANDLE(GeomTools_UndefinedTypeHandler, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(GeomTools_UndefinedTypeHandler, Standard_Transient)
 
 
-class GeomTools_UndefinedTypeHandler : public MMgt_TShared
+class GeomTools_UndefinedTypeHandler : public Standard_Transient
 {
 
 public:
@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(GeomTools_UndefinedTypeHandler,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GeomTools_UndefinedTypeHandler,Standard_Transient)
 
 protected:
 

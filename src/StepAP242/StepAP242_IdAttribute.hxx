@@ -20,13 +20,13 @@
 #include <Standard_Type.hxx>
 
 #include <StepAP242_IdAttributeSelect.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepAP242_IdAttributeSelect;
 
 class StepAP242_IdAttribute;
-DEFINE_STANDARD_HANDLE(StepAP242_IdAttribute, MMgt_TShared)
-class StepAP242_IdAttribute : public MMgt_TShared
+DEFINE_STANDARD_HANDLE(StepAP242_IdAttribute, Standard_Transient)
+class StepAP242_IdAttribute : public Standard_Transient
 {
 
 public:
@@ -62,7 +62,7 @@ public:
     return identifiedItem;
   }
 
-  DEFINE_STANDARD_RTTIEXT(StepAP242_IdAttribute,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepAP242_IdAttribute,Standard_Transient)
 
 private: 
   Handle(TCollection_HAsciiString) attributeValue;

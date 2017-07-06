@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class Standard_Transient;
@@ -31,7 +31,7 @@ class Interface_EntityIterator;
 
 
 class Interface_EntityCluster;
-DEFINE_STANDARD_HANDLE(Interface_EntityCluster, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Interface_EntityCluster, Standard_Transient)
 
 //! Auxiliary class for EntityList. An EntityList designates an
 //! EntityCluster, which brings itself an fixed maximum count of
@@ -43,7 +43,7 @@ DEFINE_STANDARD_HANDLE(Interface_EntityCluster, MMgt_TShared)
 //! little count. It is designed for a light management.
 //! Remark that a new Item may not be Null, because this is the
 //! criterium used for "End of List"
-class Interface_EntityCluster : public MMgt_TShared
+class Interface_EntityCluster : public Standard_Transient
 {
 
 public:
@@ -96,7 +96,7 @@ public:
 friend class Interface_EntityList;
 
 
-  DEFINE_STANDARD_RTTIEXT(Interface_EntityCluster,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_EntityCluster,Standard_Transient)
 
 protected:
 

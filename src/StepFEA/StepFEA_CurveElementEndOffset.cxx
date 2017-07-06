@@ -19,7 +19,7 @@
 #include <StepFEA_CurveElementEndCoordinateSystem.hxx>
 #include <StepFEA_CurveElementEndOffset.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementEndOffset,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementEndOffset,Standard_Transient)
 
 //=======================================================================
 //function : StepFEA_CurveElementEndOffset

@@ -21,16 +21,16 @@
 #include <Standard_Type.hxx>
 
 #include <StepVisual_HArray1OfPresentationStyleSelect.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class StepVisual_PresentationStyleSelect;
 
 
 class StepVisual_PresentationStyleAssignment;
-DEFINE_STANDARD_HANDLE(StepVisual_PresentationStyleAssignment, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_PresentationStyleAssignment, Standard_Transient)
 
 
-class StepVisual_PresentationStyleAssignment : public MMgt_TShared
+class StepVisual_PresentationStyleAssignment : public Standard_Transient
 {
 
 public:
@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationStyleAssignment,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationStyleAssignment,Standard_Transient)
 
 protected:
 

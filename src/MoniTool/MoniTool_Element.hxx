@@ -22,7 +22,7 @@
 
 #include <Standard_Integer.hxx>
 #include <MoniTool_AttrList.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_CString.hxx>
@@ -30,14 +30,14 @@ class MoniTool_AttrList;
 
 
 class MoniTool_Element;
-DEFINE_STANDARD_HANDLE(MoniTool_Element, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MoniTool_Element, Standard_Transient)
 
 //! a Element allows to map any kind of object as a Key for a Map.
 //! This works by defining, for a Hash Code, that of the real Key,
 //! not of the Element which acts only as an intermediate.
 //! When a Map asks for the HashCode of a Element, this one returns
 //! the code it has determined at creation time
-class MoniTool_Element : public MMgt_TShared
+class MoniTool_Element : public Standard_Transient
 {
 
 public:
@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(MoniTool_Element,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MoniTool_Element,Standard_Transient)
 
 protected:
 

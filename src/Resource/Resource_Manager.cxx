@@ -34,7 +34,7 @@
 #include <algorithm>
 #include <errno.h>
 
-IMPLEMENT_STANDARD_RTTIEXT(Resource_Manager,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Resource_Manager,Standard_Transient)
 
 //! Auxiliary enumeration for function WhatKindOfLine().
 enum Resource_KindOfLine

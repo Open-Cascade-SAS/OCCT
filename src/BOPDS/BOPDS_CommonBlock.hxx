@@ -20,7 +20,7 @@
 
 #include <BOPDS_ListOfPaveBlock.hxx>
 #include <BOPCol_ListOfInteger.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <BOPCol_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
@@ -28,7 +28,7 @@ class BOPDS_PaveBlock;
 
 
 class BOPDS_CommonBlock;
-DEFINE_STANDARD_HANDLE(BOPDS_CommonBlock, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(BOPDS_CommonBlock, Standard_Transient)
 
 
 //! The class BOPDS_CommonBlock is to store the information
@@ -38,7 +38,7 @@ DEFINE_STANDARD_HANDLE(BOPDS_CommonBlock, MMgt_TShared)
 //! b) face(s).<br>
 //! First pave block in the common block (real pave block)
 //! is always a pave block with the minimal index of the original edge.
-class BOPDS_CommonBlock : public MMgt_TShared
+class BOPDS_CommonBlock : public Standard_Transient
 {
 
 public:
@@ -152,7 +152,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(BOPDS_CommonBlock,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BOPDS_CommonBlock,Standard_Transient)
 
 protected:
 

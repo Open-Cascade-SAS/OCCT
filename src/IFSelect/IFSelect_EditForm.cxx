@@ -25,7 +25,7 @@
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_EditForm,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_EditForm,Standard_Transient)
 
 IFSelect_EditForm::IFSelect_EditForm
   (const Handle(IFSelect_Editor)& editor,

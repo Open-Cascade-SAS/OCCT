@@ -27,7 +27,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Interface_FileReaderData,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Interface_FileReaderData,Standard_Transient)
 
 //  Stoque les Donnees issues d un Fichier (Conservees sous forme Litterale)
 //  Chaque norme peut s en servir comme base (listes de parametres litteraux,

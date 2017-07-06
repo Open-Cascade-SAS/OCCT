@@ -22,7 +22,7 @@
 
 #include <TColStd_HSequenceOfReal.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <ShapeExtend_Status.hxx>
@@ -33,10 +33,10 @@
 #endif
 
 class ShapeUpgrade_SplitCurve;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_SplitCurve, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeUpgrade_SplitCurve, Standard_Transient)
 
 //! Splits a  curve with a  criterion.
-class ShapeUpgrade_SplitCurve : public MMgt_TShared
+class ShapeUpgrade_SplitCurve : public Standard_Transient
 {
 
 public:
@@ -79,7 +79,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve,Standard_Transient)
 
 protected:
 

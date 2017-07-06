@@ -20,15 +20,15 @@
 #include <Standard_Type.hxx>
 
 #include <StepElement_ElementOrder.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
 
 class StepElement_ElementDescriptor;
-DEFINE_STANDARD_HANDLE(StepElement_ElementDescriptor, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepElement_ElementDescriptor, Standard_Transient)
 
 //! Representation of STEP entity ElementDescriptor
-class StepElement_ElementDescriptor : public MMgt_TShared
+class StepElement_ElementDescriptor : public Standard_Transient
 {
 
 public:
@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepElement_ElementDescriptor,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepElement_ElementDescriptor,Standard_Transient)
 
 protected:
 

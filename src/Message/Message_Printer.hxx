@@ -20,7 +20,7 @@
 #include <Standard_Type.hxx>
 
 #include <Message_Gravity.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 class TCollection_ExtendedString;
@@ -28,13 +28,13 @@ class TCollection_AsciiString;
 
 
 class Message_Printer;
-DEFINE_STANDARD_HANDLE(Message_Printer, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Message_Printer, Standard_Transient)
 
 //! Abstract interface class defining printer as output context for text messages
 //!
 //! The message, besides being text string, has associated gravity
 //! level, which can be used by printer to decide either to process a message or ignore it.
-class Message_Printer : public MMgt_TShared
+class Message_Printer : public Standard_Transient
 {
 
 public:
@@ -66,7 +66,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Message_Printer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Message_Printer,Standard_Transient)
 
 protected:
 

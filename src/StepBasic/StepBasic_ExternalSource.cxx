@@ -19,7 +19,7 @@
 #include <StepBasic_ExternalSource.hxx>
 #include <StepBasic_SourceItem.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ExternalSource,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ExternalSource,Standard_Transient)
 
 //=======================================================================
 //function : StepBasic_ExternalSource

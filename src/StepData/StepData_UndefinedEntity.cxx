@@ -25,7 +25,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepData_UndefinedEntity,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepData_UndefinedEntity,Standard_Transient)
 
 StepData_UndefinedEntity::StepData_UndefinedEntity ()
       {  thecont = new Interface_UndefinedContent;  thesub = Standard_False;  }

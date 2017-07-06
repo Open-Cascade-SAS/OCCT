@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
@@ -34,14 +34,14 @@ class Interface_EntityIterator;
 
 
 class StepData_UndefinedEntity;
-DEFINE_STANDARD_HANDLE(StepData_UndefinedEntity, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepData_UndefinedEntity, Standard_Transient)
 
 //! Undefined entity specific to Step Interface, in which StepType
 //! is defined at each instance, or is a SubList of another one
 //! Uses an UndefinedContent, that from Interface is suitable.
 //! Also an Entity defined by STEP can be "Complex Type" (see
 //! ANDOR clause in Express).
-class StepData_UndefinedEntity : public MMgt_TShared
+class StepData_UndefinedEntity : public Standard_Transient
 {
 
 public:
@@ -93,7 +93,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepData_UndefinedEntity,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepData_UndefinedEntity,Standard_Transient)
 
 protected:
 

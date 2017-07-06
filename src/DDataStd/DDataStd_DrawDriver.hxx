@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Draw_ColorKind.hxx>
 #include <Standard_Boolean.hxx>
 class Draw_Drawable3D;
@@ -30,7 +30,7 @@ class TopoDS_Shape;
 
 
 class DDataStd_DrawDriver;
-DEFINE_STANDARD_HANDLE(DDataStd_DrawDriver, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(DDataStd_DrawDriver, Standard_Transient)
 
 //! Root class of drivers to build draw variables from TDF_Label.
 //! Priority rule to display standard attributes is :
@@ -39,7 +39,7 @@ DEFINE_STANDARD_HANDLE(DDataStd_DrawDriver, MMgt_TShared)
 //! * 3 Datum      (Point,Axis,Plane)
 //! * 4 Geometry
 //! * 5 NamedShape
-class DDataStd_DrawDriver : public MMgt_TShared
+class DDataStd_DrawDriver : public Standard_Transient
 {
 
 public:
@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(DDataStd_DrawDriver,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(DDataStd_DrawDriver,Standard_Transient)
 
 protected:
 

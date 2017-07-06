@@ -20,7 +20,7 @@
 #include <Standard_Type.hxx>
 
 #include <Interface_VectorOfFileParameter.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class Standard_RangeError;
 class Standard_OutOfRange;
@@ -29,10 +29,10 @@ class Interface_FileParameter;
 
 
 class Interface_ParamList;
-DEFINE_STANDARD_HANDLE(Interface_ParamList, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Interface_ParamList, Standard_Transient)
 
 
-class Interface_ParamList : public MMgt_TShared
+class Interface_ParamList : public Standard_Transient
 {
 
 public:
@@ -76,7 +76,7 @@ Interface_FileParameter& operator () (const Standard_Integer Index)
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Interface_ParamList,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_ParamList,Standard_Transient)
 
 protected:
 

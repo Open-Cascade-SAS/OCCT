@@ -16,7 +16,7 @@
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepShape_ToleranceValue.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_ToleranceValue,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_ToleranceValue,Standard_Transient)
 
 StepShape_ToleranceValue::StepShape_ToleranceValue  ()    {  }
 

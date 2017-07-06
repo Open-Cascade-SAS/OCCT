@@ -16,7 +16,7 @@
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_NamedUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_NamedUnit,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_NamedUnit,Standard_Transient)
 
 StepBasic_NamedUnit::StepBasic_NamedUnit ()  {}
 

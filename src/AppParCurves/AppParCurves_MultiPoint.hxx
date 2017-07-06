@@ -26,7 +26,7 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
-class MMgt_TShared;
+class Standard_Transient;
 class Standard_OutOfRange;
 class Standard_DimensionError;
 class gp_Pnt;
@@ -127,8 +127,8 @@ protected:
 
 
 
-  Handle(MMgt_TShared) ttabPoint;
-  Handle(MMgt_TShared) ttabPoint2d;
+  Handle(Standard_Transient) ttabPoint;
+  Handle(Standard_Transient) ttabPoint2d;
   Standard_Integer nbP;
   Standard_Integer nbP2d;
 

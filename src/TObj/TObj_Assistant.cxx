@@ -144,7 +144,7 @@ Standard_Integer TObj_Assistant::FindTypeIndex
 //purpose  : 
 //=======================================================================
 
-class TObj_Assistant_UnknownType : public MMgt_TShared
+class TObj_Assistant_UnknownType : public Standard_Transient
 {
  public:
   
@@ -152,11 +152,11 @@ class TObj_Assistant_UnknownType : public MMgt_TShared
     // Empty constructor
   
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTI_INLINE(TObj_Assistant_UnknownType,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(TObj_Assistant_UnknownType,Standard_Transient)
 };
 
 // Define handle class for TObj_Assistant_UnknownType
-DEFINE_STANDARD_HANDLE(TObj_Assistant_UnknownType,MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TObj_Assistant_UnknownType,Standard_Transient)
 
 
 //=======================================================================

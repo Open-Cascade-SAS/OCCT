@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepRepr_ShapeRepresentationRelationship;
 class StepRepr_ProductDefinitionShape;
 
 
 class StepShape_ContextDependentShapeRepresentation;
-DEFINE_STANDARD_HANDLE(StepShape_ContextDependentShapeRepresentation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepShape_ContextDependentShapeRepresentation, Standard_Transient)
 
 
-class StepShape_ContextDependentShapeRepresentation : public MMgt_TShared
+class StepShape_ContextDependentShapeRepresentation : public Standard_Transient
 {
 
 public:
@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepShape_ContextDependentShapeRepresentation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ContextDependentShapeRepresentation,Standard_Transient)
 
 protected:
 

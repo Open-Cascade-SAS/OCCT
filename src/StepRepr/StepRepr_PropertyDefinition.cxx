@@ -20,7 +20,7 @@
 #include <StepRepr_PropertyDefinition.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_PropertyDefinition,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_PropertyDefinition,Standard_Transient)
 
 //=======================================================================
 //function : StepRepr_PropertyDefinition

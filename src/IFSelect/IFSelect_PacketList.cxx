@@ -23,7 +23,7 @@
 #include <Standard_Type.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_PacketList,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_PacketList,Standard_Transient)
 
 IFSelect_PacketList::IFSelect_PacketList
   (const Handle(Interface_InterfaceModel)& model)

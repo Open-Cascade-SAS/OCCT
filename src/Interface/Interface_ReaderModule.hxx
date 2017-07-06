@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 class Standard_DomainError;
@@ -30,7 +30,7 @@ class Standard_Transient;
 
 
 class Interface_ReaderModule;
-DEFINE_STANDARD_HANDLE(Interface_ReaderModule, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Interface_ReaderModule, Standard_Transient)
 
 //! Defines unitary operations required to read an Entity from a
 //! File (see FileReaderData, FileReaderTool), under control of
@@ -41,7 +41,7 @@ DEFINE_STANDARD_HANDLE(Interface_ReaderModule, MMgt_TShared)
 //! To work, a GeneralModule has formerly recognized the Type read
 //! from FileReaderData as a positive Case Number, then the
 //! ReaderModule reads it according to this Case Number
-class Interface_ReaderModule : public MMgt_TShared
+class Interface_ReaderModule : public Standard_Transient
 {
 
 public:
@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Interface_ReaderModule,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_ReaderModule,Standard_Transient)
 
 protected:
 

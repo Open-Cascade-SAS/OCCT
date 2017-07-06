@@ -21,17 +21,17 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class MAT_TListNodeOfListOfEdge;
 class MAT_Edge;
 
 
 class MAT_ListOfEdge;
-DEFINE_STANDARD_HANDLE(MAT_ListOfEdge, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MAT_ListOfEdge, Standard_Transient)
 
 
-class MAT_ListOfEdge : public MMgt_TShared
+class MAT_ListOfEdge : public Standard_Transient
 {
 
 public:
@@ -94,7 +94,7 @@ Handle(MAT_Edge) operator() (const Standard_Integer anindex)
 
 
 
-  DEFINE_STANDARD_RTTI_INLINE(MAT_ListOfEdge,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(MAT_ListOfEdge,Standard_Transient)
 
 protected:
 

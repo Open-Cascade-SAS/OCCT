@@ -21,14 +21,14 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class gp_Pnt;
 class gp_Vec;
 
 
 class GeomFill_Boundary;
-DEFINE_STANDARD_HANDLE(GeomFill_Boundary, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(GeomFill_Boundary, Standard_Transient)
 
 //! Root class to define a boundary  which will form part of a
 //! contour around a gap requiring filling.
@@ -38,7 +38,7 @@ DEFINE_STANDARD_HANDLE(GeomFill_Boundary, MMgt_TShared)
 //! -   GeomFill_BoundWithSurf to define a boundary attached to a surface.
 //! These objects are used to define the boundaries for a
 //! GeomFill_ConstrainedFilling framework.
-class GeomFill_Boundary : public MMgt_TShared
+class GeomFill_Boundary : public Standard_Transient
 {
 
 public:
@@ -73,7 +73,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(GeomFill_Boundary,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_Boundary,Standard_Transient)
 
 protected:
 

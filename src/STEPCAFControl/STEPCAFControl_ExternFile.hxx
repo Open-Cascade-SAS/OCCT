@@ -22,18 +22,18 @@
 #include <IFSelect_ReturnStatus.hxx>
 #include <Standard_Boolean.hxx>
 #include <TDF_Label.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class XSControl_WorkSession;
 class TCollection_HAsciiString;
 class TDF_Label;
 
 
 class STEPCAFControl_ExternFile;
-DEFINE_STANDARD_HANDLE(STEPCAFControl_ExternFile, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(STEPCAFControl_ExternFile, Standard_Transient)
 
 //! Auxiliary class serving as container for data resulting
 //! from translation of external file
-class STEPCAFControl_ExternFile : public MMgt_TShared
+class STEPCAFControl_ExternFile : public Standard_Transient
 {
 
 public:
@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(STEPCAFControl_ExternFile,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(STEPCAFControl_ExternFile,Standard_Transient)
 
 protected:
 

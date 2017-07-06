@@ -21,15 +21,15 @@
 #include <Standard_Type.hxx>
 
 #include <StepVisual_SurfaceSide.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepVisual_SurfaceSideStyle;
 
 
 class StepVisual_SurfaceStyleUsage;
-DEFINE_STANDARD_HANDLE(StepVisual_SurfaceStyleUsage, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_SurfaceStyleUsage, Standard_Transient)
 
 
-class StepVisual_SurfaceStyleUsage : public MMgt_TShared
+class StepVisual_SurfaceStyleUsage : public Standard_Transient
 {
 
 public:
@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleUsage,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleUsage,Standard_Transient)
 
 protected:
 

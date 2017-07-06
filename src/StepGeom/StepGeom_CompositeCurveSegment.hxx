@@ -22,15 +22,15 @@
 
 #include <StepGeom_TransitionCode.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepGeom_Curve;
 
 
 class StepGeom_CompositeCurveSegment;
-DEFINE_STANDARD_HANDLE(StepGeom_CompositeCurveSegment, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepGeom_CompositeCurveSegment, Standard_Transient)
 
 
-class StepGeom_CompositeCurveSegment : public MMgt_TShared
+class StepGeom_CompositeCurveSegment : public Standard_Transient
 {
 
 public:
@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepGeom_CompositeCurveSegment,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_CompositeCurveSegment,Standard_Transient)
 
 protected:
 

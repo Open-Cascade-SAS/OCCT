@@ -30,7 +30,7 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <AIS_SequenceOfInteractive.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <AIS_ClearMode.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <SelectMgr_ListOfFilter.hxx>
@@ -57,7 +57,7 @@ class SelectMgr_SelectableObject;
 
 
 class AIS_LocalContext;
-DEFINE_STANDARD_HANDLE(AIS_LocalContext, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(AIS_LocalContext, Standard_Transient)
 
 //! Defines a specific context  for selection.
 //! It becomes possible to:
@@ -72,7 +72,7 @@ DEFINE_STANDARD_HANDLE(AIS_LocalContext, MMgt_TShared)
 //! -     automatically    highlight   shapes   and
 //! InteractiveObjects  (highlight of  detected shape +
 //! highlight of detected selectable...
-class AIS_LocalContext : public MMgt_TShared
+class AIS_LocalContext : public Standard_Transient
 {
 
 public:
@@ -368,7 +368,7 @@ public:
   //! stored in local status
   Standard_EXPORT void RestoreActivatedModes() const;
 
-  DEFINE_STANDARD_RTTIEXT(AIS_LocalContext,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(AIS_LocalContext,Standard_Transient)
 
 private:
 

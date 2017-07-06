@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
@@ -36,7 +36,7 @@ class TopoDS_Shape;
 
 
 class XSControl_Vars;
-DEFINE_STANDARD_HANDLE(XSControl_Vars, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(XSControl_Vars, Standard_Transient)
 
 //! Defines a receptacle for externally defined variables, each
 //! one has a name
@@ -48,7 +48,7 @@ DEFINE_STANDARD_HANDLE(XSControl_Vars, MMgt_TShared)
 //! This class provides a common form for this. It also provides
 //! a default implementation (locally recorded variables in a
 //! dictionary), but which is aimed to be redefined
-class XSControl_Vars : public MMgt_TShared
+class XSControl_Vars : public Standard_Transient
 {
 
 public:
@@ -83,7 +83,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(XSControl_Vars,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(XSControl_Vars,Standard_Transient)
 
 protected:
 

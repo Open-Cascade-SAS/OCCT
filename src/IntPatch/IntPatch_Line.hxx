@@ -24,13 +24,13 @@
 #include <Standard_Boolean.hxx>
 #include <IntSurf_TypeTrans.hxx>
 #include <IntSurf_Situation.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class Standard_DomainError;
 class Standard_OutOfRange;
 
 
 class IntPatch_Line;
-DEFINE_STANDARD_HANDLE(IntPatch_Line, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IntPatch_Line, Standard_Transient)
 
 //! Definition of an intersection line between two
 //! surfaces.
@@ -39,7 +39,7 @@ DEFINE_STANDARD_HANDLE(IntPatch_Line, MMgt_TShared)
 //! or analytic, as defined in the class ALine, or defined
 //! by a set of points (coming from a walking algorithm) as
 //! defined in the class WLine.
-class IntPatch_Line : public MMgt_TShared
+class IntPatch_Line : public Standard_Transient
 {
 
 public:
@@ -114,7 +114,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IntPatch_Line,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IntPatch_Line,Standard_Transient)
 
 protected:
 

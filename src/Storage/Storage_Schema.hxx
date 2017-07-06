@@ -24,7 +24,7 @@
 #include <Standard_Boolean.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Storage_HArrayOfSchema.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 #include <Storage_SolveMode.hxx>
@@ -41,7 +41,7 @@ class Standard_Persistent;
 
 
 class Storage_Schema;
-DEFINE_STANDARD_HANDLE(Storage_Schema, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Storage_Schema, Standard_Transient)
 
 
 //! Root class for basic storage/retrieval algorithms.
@@ -67,7 +67,7 @@ DEFINE_STANDARD_HANDLE(Storage_Schema, MMgt_TShared)
 //! Storage_Schema algorithms are called basic
 //! because they do not support external references
 //! between containers.
-class Storage_Schema : public MMgt_TShared
+class Storage_Schema : public Standard_Transient
 {
 
 public:
@@ -171,7 +171,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Storage_Schema,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Storage_Schema,Standard_Transient)
 
 protected:
   

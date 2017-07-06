@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class Interface_Graph;
 class Interface_Protocol;
@@ -31,7 +31,7 @@ class TCollection_AsciiString;
 
 
 class IFSelect_Transformer;
-DEFINE_STANDARD_HANDLE(IFSelect_Transformer, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IFSelect_Transformer, Standard_Transient)
 
 //! A Transformer defines the way an InterfaceModel is transformed
 //! (without sending it to a file).
@@ -45,7 +45,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_Transformer, MMgt_TShared)
 //! (typically on the same type, but some or all entities beeing
 //! rebuilt or converted; or converted from a protocol to
 //! another one)
-class IFSelect_Transformer : public MMgt_TShared
+class IFSelect_Transformer : public Standard_Transient
 {
 
 public:
@@ -100,7 +100,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_Transformer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_Transformer,Standard_Transient)
 
 protected:
 

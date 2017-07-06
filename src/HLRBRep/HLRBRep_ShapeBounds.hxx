@@ -25,7 +25,7 @@
 
 #include <Standard_Integer.hxx>
 class HLRTopoBRep_OutLiner;
-class MMgt_TShared;
+class Standard_Transient;
 
 
 //! Contains  a Shape and the  bounds of its vertices,
@@ -39,7 +39,7 @@ public:
   
     HLRBRep_ShapeBounds();
   
-  Standard_EXPORT HLRBRep_ShapeBounds(const Handle(HLRTopoBRep_OutLiner)& S, const Handle(MMgt_TShared)& SData, const Standard_Integer nbIso, const Standard_Integer V1, const Standard_Integer V2, const Standard_Integer E1, const Standard_Integer E2, const Standard_Integer F1, const Standard_Integer F2);
+  Standard_EXPORT HLRBRep_ShapeBounds(const Handle(HLRTopoBRep_OutLiner)& S, const Handle(Standard_Transient)& SData, const Standard_Integer nbIso, const Standard_Integer V1, const Standard_Integer V2, const Standard_Integer E1, const Standard_Integer E2, const Standard_Integer F1, const Standard_Integer F2);
   
   Standard_EXPORT HLRBRep_ShapeBounds(const Handle(HLRTopoBRep_OutLiner)& S, const Standard_Integer nbIso, const Standard_Integer V1, const Standard_Integer V2, const Standard_Integer E1, const Standard_Integer E2, const Standard_Integer F1, const Standard_Integer F2);
   
@@ -49,9 +49,9 @@ public:
   
     const Handle(HLRTopoBRep_OutLiner)& Shape() const;
   
-    void ShapeData (const Handle(MMgt_TShared)& SD);
+    void ShapeData (const Handle(Standard_Transient)& SD);
   
-    const Handle(MMgt_TShared)& ShapeData() const;
+    const Handle(Standard_Transient)& ShapeData() const;
   
     void NbOfIso (const Standard_Integer nbIso);
   
@@ -85,7 +85,7 @@ private:
 
 
   Handle(HLRTopoBRep_OutLiner) myShape;
-  Handle(MMgt_TShared) myShapeData;
+  Handle(Standard_Transient) myShapeData;
   Standard_Integer myNbIso;
   Standard_Integer myVertStart;
   Standard_Integer myVertEnd;

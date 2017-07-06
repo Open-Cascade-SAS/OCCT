@@ -24,7 +24,7 @@
 #include <TColStd_Array1OfTransient.hxx>
 #include <TColStd_Array1OfAsciiString.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <IFSelect_EditValue.hxx>
 #include <Standard_Boolean.hxx>
@@ -42,7 +42,7 @@ class Interface_InterfaceModel;
 
 
 class IFSelect_Editor;
-DEFINE_STANDARD_HANDLE(IFSelect_Editor, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IFSelect_Editor, Standard_Transient)
 
 //! An Editor defines a set of values and a way to edit them, on
 //! an entity or on the model (e.g. on its header)
@@ -50,7 +50,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_Editor, MMgt_TShared)
 //! Each Value is controlled by a TypedValue, with a number (it is
 //! an Integer) and a name under two forms (complete and short)
 //! and an edit mode
-class IFSelect_Editor : public MMgt_TShared
+class IFSelect_Editor : public Standard_Transient
 {
 
 public:
@@ -158,7 +158,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_Editor,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_Editor,Standard_Transient)
 
 protected:
 

@@ -24,7 +24,7 @@
 #include <Graphic3d_IndexedMapOfAddress.hxx>
 #include <Standard_Address.hxx>
 #include <Graphic3d_TypeOfStructure.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Graphic3d_ZLayerId.hxx>
@@ -51,7 +51,7 @@ class Graphic3d_Vector;
 
 
 class Graphic3d_Structure;
-DEFINE_STANDARD_HANDLE(Graphic3d_Structure, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Graphic3d_Structure, Standard_Transient)
 
 //! This class allows the definition a graphic object.
 //! This graphic structure can be displayed,
@@ -61,7 +61,7 @@ DEFINE_STANDARD_HANDLE(Graphic3d_Structure, MMgt_TShared)
 //! Keywords: Structure, StructureManager, Display, Erase, Highlight,
 //! UnHighlight, Visible, Priority, Selectable, Visible,
 //! Visual, Connection, Ancestors, Descendants, Transformation
-class Graphic3d_Structure : public MMgt_TShared
+class Graphic3d_Structure : public Standard_Transient
 {
 
 public:
@@ -388,7 +388,7 @@ public:
 friend class Graphic3d_Group;
 
 
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_Structure,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_Structure,Standard_Transient)
 
 protected:
 

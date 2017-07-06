@@ -25,7 +25,7 @@
 #include <HLRAlgo_PolyShellData.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyShellData,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyShellData,Standard_Transient)
 
 //=======================================================================
 //function : HLRAlgo_PolyShellData

@@ -24,20 +24,20 @@
 #include <BRepAlgo_DataMapOfShapeBoolean.hxx>
 #include <TopOpeBRepBuild_BlockBuilder.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TopoDS_Edge;
 class TopoDS_Shape;
 
 
 class BRepAlgo_EdgeConnector;
-DEFINE_STANDARD_HANDLE(BRepAlgo_EdgeConnector, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(BRepAlgo_EdgeConnector, Standard_Transient)
 
 //! Used by DSAccess to reconstruct an EdgeSet of connected edges. The result produced by
 //! MakeBlock is a list of non-standard TopoDS_wire,
 //! which  can present connexions of edge  of  order > 2
 //! in certain  vertex. The method  IsWire
 //! indicates standard/non-standard character of  all wire produced.
-class BRepAlgo_EdgeConnector : public MMgt_TShared
+class BRepAlgo_EdgeConnector : public Standard_Transient
 {
 
 public:
@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(BRepAlgo_EdgeConnector,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepAlgo_EdgeConnector,Standard_Transient)
 
 protected:
 

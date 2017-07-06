@@ -21,17 +21,17 @@
 
 #include <StepBasic_ProductOrFormationOrDefinition.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepBasic_Document;
 class StepBasic_ProductOrFormationOrDefinition;
 
 
 class StepBasic_DocumentProductAssociation;
-DEFINE_STANDARD_HANDLE(StepBasic_DocumentProductAssociation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_DocumentProductAssociation, Standard_Transient)
 
 //! Representation of STEP entity DocumentProductAssociation
-class StepBasic_DocumentProductAssociation : public MMgt_TShared
+class StepBasic_DocumentProductAssociation : public Standard_Transient
 {
 
 public:
@@ -73,7 +73,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentProductAssociation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentProductAssociation,Standard_Transient)
 
 protected:
 

@@ -20,7 +20,7 @@
 #include <Standard_Type.hxx>
 
 #include <StepShape_HArray1OfValueQualifier.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepBasic_MeasureWithUnit;
@@ -28,10 +28,10 @@ class StepShape_ValueQualifier;
 
 
 class StepShape_MeasureQualification;
-DEFINE_STANDARD_HANDLE(StepShape_MeasureQualification, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepShape_MeasureQualification, Standard_Transient)
 
 //! Added for Dimensional Tolerances
-class StepShape_MeasureQualification : public MMgt_TShared
+class StepShape_MeasureQualification : public Standard_Transient
 {
 
 public:
@@ -66,7 +66,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepShape_MeasureQualification,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepShape_MeasureQualification,Standard_Transient)
 
 protected:
 

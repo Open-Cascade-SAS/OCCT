@@ -16,7 +16,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(HeaderSection_FileSchema,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(HeaderSection_FileSchema,Standard_Transient)
 
 HeaderSection_FileSchema::HeaderSection_FileSchema ()  {}
 

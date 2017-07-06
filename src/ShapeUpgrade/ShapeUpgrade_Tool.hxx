@@ -21,18 +21,18 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class ShapeBuild_ReShape;
 
 
 class ShapeUpgrade_Tool;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_Tool, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeUpgrade_Tool, Standard_Transient)
 
 //! Tool is a root class for splitting classes
 //! Provides context for recording changes, basic
 //! precision value and limit (minimal and maximal)
 //! values for tolerances
-class ShapeUpgrade_Tool : public MMgt_TShared
+class ShapeUpgrade_Tool : public Standard_Transient
 {
 
 public:
@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_Tool,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_Tool,Standard_Transient)
 
 protected:
 

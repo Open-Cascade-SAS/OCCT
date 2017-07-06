@@ -21,7 +21,7 @@
 #include <Transfer_TransferFailure.hxx>
 #include <Transfer_VoidBinder.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Transfer_Binder,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Transfer_Binder,Standard_Transient)
 
 //=======================================================================
 //function : Transfer_Binder

@@ -20,15 +20,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
 
 class StepBasic_DateRole;
-DEFINE_STANDARD_HANDLE(StepBasic_DateRole, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_DateRole, Standard_Transient)
 
 
-class StepBasic_DateRole : public MMgt_TShared
+class StepBasic_DateRole : public Standard_Transient
 {
 
 public:
@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_DateRole,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DateRole,Standard_Transient)
 
 protected:
 

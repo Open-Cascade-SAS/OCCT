@@ -20,15 +20,15 @@
 #include <Standard_Type.hxx>
 
 #include <StepRepr_HArray1OfMaterialPropertyRepresentation.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
 
 class StepElement_ElementMaterial;
-DEFINE_STANDARD_HANDLE(StepElement_ElementMaterial, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepElement_ElementMaterial, Standard_Transient)
 
 //! Representation of STEP entity ElementMaterial
-class StepElement_ElementMaterial : public MMgt_TShared
+class StepElement_ElementMaterial : public Standard_Transient
 {
 
 public:
@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepElement_ElementMaterial,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepElement_ElementMaterial,Standard_Transient)
 
 protected:
 

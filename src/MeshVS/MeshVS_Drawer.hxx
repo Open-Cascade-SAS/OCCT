@@ -25,7 +25,7 @@
 #include <MeshVS_DataMapOfIntegerColor.hxx>
 #include <MeshVS_DataMapOfIntegerMaterial.hxx>
 #include <MeshVS_DataMapOfIntegerAsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
@@ -35,13 +35,13 @@ class TCollection_AsciiString;
 
 
 class MeshVS_Drawer;
-DEFINE_STANDARD_HANDLE(MeshVS_Drawer, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MeshVS_Drawer, Standard_Transient)
 
 //! This class provided the common interface to share between classes
 //! big set of constants affecting to object appearance. By default, this class
 //! can store integers, doubles, OCC colors, OCC materials. Each of OCC enum members
 //! can be stored as integers.
-class MeshVS_Drawer : public MMgt_TShared
+class MeshVS_Drawer : public Standard_Transient
 {
 
 public:
@@ -89,7 +89,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(MeshVS_Drawer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MeshVS_Drawer,Standard_Transient)
 
 protected:
 

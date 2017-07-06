@@ -20,15 +20,15 @@
 #include <Standard_Type.hxx>
 
 #include <TColStd_PackedMapOfInteger.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 
 
 class TColStd_HPackedMapOfInteger;
-DEFINE_STANDARD_HANDLE(TColStd_HPackedMapOfInteger, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TColStd_HPackedMapOfInteger, Standard_Transient)
 
 //! Extension of TColStd_PackedMapOfInteger class to be manipulated by handle.
-class TColStd_HPackedMapOfInteger : public MMgt_TShared
+class TColStd_HPackedMapOfInteger : public Standard_Transient
 {
 
 public:
@@ -45,7 +45,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TColStd_HPackedMapOfInteger,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TColStd_HPackedMapOfInteger,Standard_Transient)
 
 protected:
 

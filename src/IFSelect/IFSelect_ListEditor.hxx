@@ -23,7 +23,7 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class Interface_TypedValue;
 class Interface_InterfaceModel;
@@ -31,7 +31,7 @@ class TCollection_HAsciiString;
 
 
 class IFSelect_ListEditor;
-DEFINE_STANDARD_HANDLE(IFSelect_ListEditor, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IFSelect_ListEditor, Standard_Transient)
 
 //! A ListEditor is an auxiliary operator for Editor/EditForm
 //! I.E. it works on parameter values expressed as strings
@@ -53,7 +53,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_ListEditor, MMgt_TShared)
 //! An EditList is produced by the Editor, with a basic definition
 //! This definition (brought by this class) can be redefined
 //! Hence the Editor may produce a specific ListEditor as needed
-class IFSelect_ListEditor : public MMgt_TShared
+class IFSelect_ListEditor : public Standard_Transient
 {
 
 public:
@@ -143,7 +143,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_ListEditor,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_ListEditor,Standard_Transient)
 
 protected:
 

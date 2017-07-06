@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepVisual_PresentationLayerAssignment;
 class StepVisual_PresentationRepresentation;
 
 
 class StepVisual_PresentationLayerUsage;
-DEFINE_STANDARD_HANDLE(StepVisual_PresentationLayerUsage, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_PresentationLayerUsage, Standard_Transient)
 
 //! Added from StepVisual Rev2 to Rev4
-class StepVisual_PresentationLayerUsage : public MMgt_TShared
+class StepVisual_PresentationLayerUsage : public Standard_Transient
 {
 
 public:
@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationLayerUsage,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationLayerUsage,Standard_Transient)
 
 protected:
 

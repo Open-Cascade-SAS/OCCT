@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class Interface_GlobalNodeOfReaderLib;
 class Standard_Transient;
 class Interface_ReaderModule;
@@ -29,10 +29,10 @@ class Interface_ReaderLib;
 
 
 class Interface_NodeOfReaderLib;
-DEFINE_STANDARD_HANDLE(Interface_NodeOfReaderLib, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Interface_NodeOfReaderLib, Standard_Transient)
 
 
-class Interface_NodeOfReaderLib : public MMgt_TShared
+class Interface_NodeOfReaderLib : public Standard_Transient
 {
 
 public:
@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI_INLINE(Interface_NodeOfReaderLib,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(Interface_NodeOfReaderLib,Standard_Transient)
 
 protected:
 

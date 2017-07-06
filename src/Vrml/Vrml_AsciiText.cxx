@@ -15,7 +15,7 @@
 #include <Standard_Type.hxx>
 #include <Vrml_AsciiText.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Vrml_AsciiText,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Vrml_AsciiText,Standard_Transient)
 
 Vrml_AsciiText::Vrml_AsciiText()
 {

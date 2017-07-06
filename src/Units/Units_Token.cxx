@@ -30,7 +30,7 @@
 #include <Units_Operators.hxx>
 #include <Units_Token.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Units_Token,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Units_Token,Standard_Transient)
 
 //=======================================================================
 //function : Units_Token

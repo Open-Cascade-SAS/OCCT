@@ -21,7 +21,7 @@
 
 #include <BinMDF_TypeADriverMap.hxx>
 #include <BinMDF_TypeIdMap.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_IndexedMapOfTransient.hxx>
@@ -30,14 +30,14 @@ class BinMDF_ADriver;
 
 
 class BinMDF_ADriverTable;
-DEFINE_STANDARD_HANDLE(BinMDF_ADriverTable, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(BinMDF_ADriverTable, Standard_Transient)
 
 //! A driver table is an object building links between
 //! object types and object drivers. In the
 //! translation process, a driver table is asked to
 //! give a translation driver for each current object
 //! to be translated.
-class BinMDF_ADriverTable : public MMgt_TShared
+class BinMDF_ADriverTable : public Standard_Transient
 {
 
 public:
@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(BinMDF_ADriverTable,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BinMDF_ADriverTable,Standard_Transient)
 
 protected:
 

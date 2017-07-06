@@ -24,17 +24,17 @@
 #include <ChFiDS_HData.hxx>
 #include <Standard_Integer.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class ChFiDS_Spine;
 class Geom2d_Curve;
 
 
 class ChFiDS_Stripe;
-DEFINE_STANDARD_HANDLE(ChFiDS_Stripe, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ChFiDS_Stripe, Standard_Transient)
 
 //! Data characterising a band of fillet.
-class ChFiDS_Stripe : public MMgt_TShared
+class ChFiDS_Stripe : public Standard_Transient
 {
 
 public:
@@ -150,7 +150,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ChFiDS_Stripe,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ChFiDS_Stripe,Standard_Transient)
 
 protected:
 

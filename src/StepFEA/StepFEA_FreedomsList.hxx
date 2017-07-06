@@ -20,14 +20,14 @@
 #include <Standard_Type.hxx>
 
 #include <StepFEA_HArray1OfDegreeOfFreedom.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class StepFEA_FreedomsList;
-DEFINE_STANDARD_HANDLE(StepFEA_FreedomsList, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepFEA_FreedomsList, Standard_Transient)
 
 //! Representation of STEP entity FreedomsList
-class StepFEA_FreedomsList : public MMgt_TShared
+class StepFEA_FreedomsList : public Standard_Transient
 {
 
 public:
@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepFEA_FreedomsList,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FreedomsList,Standard_Transient)
 
 protected:
 

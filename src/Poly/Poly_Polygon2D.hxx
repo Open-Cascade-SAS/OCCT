@@ -22,13 +22,13 @@
 
 #include <Standard_Real.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class Standard_NullObject;
 
 
 class Poly_Polygon2D;
-DEFINE_STANDARD_HANDLE(Poly_Polygon2D, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Poly_Polygon2D, Standard_Transient)
 
 //! Provides a polygon in 2D space (for example, in the
 //! parametric space of a surface). It is generally an
@@ -36,7 +36,7 @@ DEFINE_STANDARD_HANDLE(Poly_Polygon2D, MMgt_TShared)
 //! A Polygon2D is defined by a table of nodes. Each node is
 //! a 2D point. If the polygon is closed, the point of closure is
 //! repeated at the end of the table of nodes.
-class Poly_Polygon2D : public MMgt_TShared
+class Poly_Polygon2D : public Standard_Transient
 {
 
 public:
@@ -81,7 +81,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Poly_Polygon2D,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Poly_Polygon2D,Standard_Transient)
 
 protected:
 

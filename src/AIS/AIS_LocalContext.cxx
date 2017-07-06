@@ -48,7 +48,7 @@
 #include <V3d_Viewer.hxx>
 
 #include <stdio.h>
-IMPLEMENT_STANDARD_RTTIEXT(AIS_LocalContext,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(AIS_LocalContext,Standard_Transient)
 
 //=======================================================================
 //function : AIS_LocalContext

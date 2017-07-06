@@ -17,7 +17,7 @@
 #include <StepBasic_DateAndTimeAssignment.hxx>
 #include <StepBasic_DateTimeRole.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DateAndTimeAssignment,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DateAndTimeAssignment,Standard_Transient)
 
 void StepBasic_DateAndTimeAssignment::Init(
 	const Handle(StepBasic_DateAndTime)& aAssignedDateAndTime,

@@ -25,7 +25,7 @@
 #include <Graphic3d_ViewAffinity.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <Standard.hxx>
 #include <Standard_Boolean.hxx>
@@ -41,7 +41,7 @@ class Graphic3d_DataStructureManager;
 class Standard_Transient;
 
 class Graphic3d_StructureManager;
-DEFINE_STANDARD_HANDLE(Graphic3d_StructureManager, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Graphic3d_StructureManager, Standard_Transient)
 
 //! This class allows the definition of a manager to
 //! which the graphic objects are associated.
@@ -49,7 +49,7 @@ DEFINE_STANDARD_HANDLE(Graphic3d_StructureManager, MMgt_TShared)
 //! It defines the global attributes.
 //! Keywords: Structure, Structure Manager, Update Mode,
 //! Destroy, Highlight, Visible
-class Graphic3d_StructureManager : public MMgt_TShared
+class Graphic3d_StructureManager : public Standard_Transient
 {
 public:
 
@@ -157,7 +157,7 @@ public:
 
   friend class Graphic3d_Structure;
 
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_StructureManager,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_StructureManager,Standard_Transient)
 
 protected:
 

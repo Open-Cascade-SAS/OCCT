@@ -23,7 +23,7 @@
 #include <Storage_DataMapIteratorOfMapOfPers.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Storage_RootData,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Storage_RootData,Standard_Transient)
 
 Storage_RootData::Storage_RootData() : myErrorStatus(Storage_VSOk)
 {

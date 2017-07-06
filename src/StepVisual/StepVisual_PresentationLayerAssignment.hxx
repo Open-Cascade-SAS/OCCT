@@ -21,17 +21,17 @@
 #include <Standard_Type.hxx>
 
 #include <StepVisual_HArray1OfLayeredItem.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepVisual_LayeredItem;
 
 
 class StepVisual_PresentationLayerAssignment;
-DEFINE_STANDARD_HANDLE(StepVisual_PresentationLayerAssignment, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_PresentationLayerAssignment, Standard_Transient)
 
 
-class StepVisual_PresentationLayerAssignment : public MMgt_TShared
+class StepVisual_PresentationLayerAssignment : public Standard_Transient
 {
 
 public:
@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationLayerAssignment,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationLayerAssignment,Standard_Transient)
 
 protected:
 

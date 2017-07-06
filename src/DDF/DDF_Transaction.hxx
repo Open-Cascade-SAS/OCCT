@@ -20,7 +20,7 @@
 #include <Standard_Type.hxx>
 
 #include <TDF_Transaction.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 class Standard_DomainError;
@@ -30,10 +30,10 @@ class TDF_Delta;
 
 
 class DDF_Transaction;
-DEFINE_STANDARD_HANDLE(DDF_Transaction, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(DDF_Transaction, Standard_Transient)
 
 //! This class encapsulates TDF_Transaction.
-class DDF_Transaction : public MMgt_TShared
+class DDF_Transaction : public Standard_Transient
 {
 
 public:
@@ -79,7 +79,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(DDF_Transaction,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(DDF_Transaction,Standard_Transient)
 
 protected:
 

@@ -19,23 +19,23 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StdObjMgt_Persistent;
 class Storage_Schema;
 class TCollection_AsciiString;
 
 class Storage_Root;
-DEFINE_STANDARD_HANDLE(StdStorage_Root, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StdStorage_Root, Standard_Transient)
 
 //! Describes a named persistent root 
 class StdStorage_Root
-  : public MMgt_TShared
+  : public Standard_Transient
 {
   friend class StdStorage_RootData;
 
 public:
 
-  DEFINE_STANDARD_RTTIEXT(StdStorage_Root, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StdStorage_Root, Standard_Transient)
 
   //! Creates an empty root
   Standard_EXPORT StdStorage_Root();

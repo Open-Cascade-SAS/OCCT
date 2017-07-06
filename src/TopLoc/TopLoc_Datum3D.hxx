@@ -21,21 +21,21 @@
 #include <Standard_Type.hxx>
 
 #include <gp_Trsf.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 class Standard_ConstructionError;
 class gp_Trsf;
 
 
 class TopLoc_Datum3D;
-DEFINE_STANDARD_HANDLE(TopLoc_Datum3D, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TopLoc_Datum3D, Standard_Transient)
 
 //! Describes a coordinate transformation, i.e. a change
 //! to an elementary 3D coordinate system, or position in 3D space.
 //! A Datum3D is always described relative to the default datum.
 //! The default datum is described relative to itself: its
 //! origin is (0,0,0), and its axes are (1,0,0) (0,1,0) (0,0,1).
-class TopLoc_Datum3D : public MMgt_TShared
+class TopLoc_Datum3D : public Standard_Transient
 {
 
 public:
@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TopLoc_Datum3D,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopLoc_Datum3D,Standard_Transient)
 
 protected:
 

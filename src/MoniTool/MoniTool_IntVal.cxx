@@ -15,7 +15,7 @@
 #include <MoniTool_IntVal.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(MoniTool_IntVal,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(MoniTool_IntVal,Standard_Transient)
 
 MoniTool_IntVal::MoniTool_IntVal  (const Standard_Integer val)    {  theval = val;  }
 

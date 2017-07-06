@@ -18,15 +18,15 @@
 
 #include <StepDimTol_RunoutZoneOrientation.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 #include <StepBasic_PlaneAngleMeasureWithUnit.hxx>
 
 class StepDimTol_RunoutZoneOrientation;
-DEFINE_STANDARD_HANDLE(StepDimTol_RunoutZoneOrientation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepDimTol_RunoutZoneOrientation, Standard_Transient)
 //! Added for Dimensional Tolerances
-class StepDimTol_RunoutZoneOrientation : public MMgt_TShared
+class StepDimTol_RunoutZoneOrientation : public Standard_Transient
 {
 
 public:
@@ -48,7 +48,7 @@ public:
     myAngle = theAngle;
   }
   
-  DEFINE_STANDARD_RTTIEXT(StepDimTol_RunoutZoneOrientation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_RunoutZoneOrientation,Standard_Transient)
   
 private:
   Handle(StepBasic_PlaneAngleMeasureWithUnit) myAngle;

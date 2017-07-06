@@ -28,7 +28,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ArrayOfPrimitives,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ArrayOfPrimitives,Standard_Transient)
 
 Graphic3d_ArrayOfPrimitives::Graphic3d_ArrayOfPrimitives (const Graphic3d_TypeOfPrimitiveArray theType,
                                                           const Standard_Integer               theMaxVertexs,

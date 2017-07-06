@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
@@ -30,7 +30,7 @@
 
 
 class StepData_SelectMember;
-DEFINE_STANDARD_HANDLE(StepData_SelectMember, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepData_SelectMember, Standard_Transient)
 
 //! The general form for a Select Member. A Select Member can,
 //! either define a value of a basic type (such as an integer)
@@ -48,7 +48,7 @@ DEFINE_STANDARD_HANDLE(StepData_SelectMember, MMgt_TShared)
 //!
 //! Remark : this class itself could be deferred, because at least
 //! one of its virtual methods must be redefined to be usable
-class StepData_SelectMember : public MMgt_TShared
+class StepData_SelectMember : public Standard_Transient
 {
 
 public:
@@ -119,7 +119,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepData_SelectMember,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepData_SelectMember,Standard_Transient)
 
 protected:
 

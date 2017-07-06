@@ -17,7 +17,7 @@
 #include <TDF_Label.hxx>
 #include <TPrsStd_Driver.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_Driver,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_Driver,Standard_Transient)
 
 TPrsStd_Driver::TPrsStd_Driver()
 {}

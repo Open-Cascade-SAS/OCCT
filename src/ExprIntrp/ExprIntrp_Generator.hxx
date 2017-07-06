@@ -22,18 +22,18 @@
 
 #include <ExprIntrp_SequenceOfNamedFunction.hxx>
 #include <ExprIntrp_SequenceOfNamedExpression.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class Expr_NamedFunction;
 class Expr_NamedExpression;
 class TCollection_AsciiString;
 
 
 class ExprIntrp_Generator;
-DEFINE_STANDARD_HANDLE(ExprIntrp_Generator, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ExprIntrp_Generator, Standard_Transient)
 
 //! Implements general services for interpretation of
 //! expressions.
-class ExprIntrp_Generator : public MMgt_TShared
+class ExprIntrp_Generator : public Standard_Transient
 {
 
 public:
@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ExprIntrp_Generator,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ExprIntrp_Generator,Standard_Transient)
 
 protected:
 

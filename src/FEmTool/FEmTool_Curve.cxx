@@ -26,7 +26,7 @@
 #include <Standard_DimensionError.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(FEmTool_Curve,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(FEmTool_Curve,Standard_Transient)
 
 //=======================================================================
 //function : FEmTool_Curve

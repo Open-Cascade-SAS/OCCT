@@ -22,14 +22,14 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class Standard_Persistent;
 class Storage_Schema;
 class TCollection_AsciiString;
 
 
 class Storage_Root;
-DEFINE_STANDARD_HANDLE(Storage_Root, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Storage_Root, Standard_Transient)
 
 
 //! A root object extracted from a Storage_Data object.
@@ -45,7 +45,7 @@ DEFINE_STANDARD_HANDLE(Storage_Root, MMgt_TShared)
 //! You do not create explicit roots: when inserting
 //! data in a Storage_Data object, you just provide
 //! the persistent object and optionally its name to the function AddRoot.
-class Storage_Root : public MMgt_TShared
+class Storage_Root : public Standard_Transient
 {
 
 public:
@@ -98,7 +98,7 @@ public:
 friend class Storage_Schema;
 
 
-  DEFINE_STANDARD_RTTIEXT(Storage_Root,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Storage_Root,Standard_Transient)
 
 protected:
 

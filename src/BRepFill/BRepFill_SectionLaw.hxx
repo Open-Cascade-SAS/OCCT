@@ -24,7 +24,7 @@
 #include <TopTools_DataMapOfShapeInteger.hxx>
 #include <Standard_Boolean.hxx>
 #include <BRepTools_WireExplorer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Real.hxx>
@@ -35,10 +35,10 @@ class TopoDS_Wire;
 class TopoDS_Edge;
 
 class BRepFill_SectionLaw;
-DEFINE_STANDARD_HANDLE(BRepFill_SectionLaw, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(BRepFill_SectionLaw, Standard_Transient)
 
 //! Build Section Law, with an Vertex, or an Wire
-class BRepFill_SectionLaw : public MMgt_TShared
+class BRepFill_SectionLaw : public Standard_Transient
 {
 
 public:
@@ -78,7 +78,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(BRepFill_SectionLaw,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepFill_SectionLaw,Standard_Transient)
 
 protected:
 

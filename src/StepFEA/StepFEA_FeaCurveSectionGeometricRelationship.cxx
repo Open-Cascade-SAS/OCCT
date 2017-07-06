@@ -20,7 +20,7 @@
 #include <StepElement_CurveElementSectionDefinition.hxx>
 #include <StepFEA_FeaCurveSectionGeometricRelationship.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaCurveSectionGeometricRelationship,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaCurveSectionGeometricRelationship,Standard_Transient)
 
 //=======================================================================
 //function : StepFEA_FeaCurveSectionGeometricRelationship

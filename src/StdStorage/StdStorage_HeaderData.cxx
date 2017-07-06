@@ -19,7 +19,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StdStorage_HeaderData, MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StdStorage_HeaderData, Standard_Transient)
 
 StdStorage_HeaderData::StdStorage_HeaderData()
   : myNBObj(0), myErrorStatus(Storage_VSOk)

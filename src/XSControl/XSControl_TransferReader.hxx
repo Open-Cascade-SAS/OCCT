@@ -23,7 +23,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_DataMapOfIntegerTransient.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <Interface_CheckStatus.hxx>
 class XSControl_Controller;
@@ -39,7 +39,7 @@ class Interface_Graph;
 
 
 class XSControl_TransferReader;
-DEFINE_STANDARD_HANDLE(XSControl_TransferReader, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(XSControl_TransferReader, Standard_Transient)
 
 //! A TransferReader performs, manages, handles results of,
 //! transfers done when reading a file (i.e. from entities of an
@@ -59,7 +59,7 @@ DEFINE_STANDARD_HANDLE(XSControl_TransferReader, MMgt_TShared)
 //!
 //! Some more direct access are given for results which are
 //! Transient or Shapes
-class XSControl_TransferReader : public MMgt_TShared
+class XSControl_TransferReader : public Standard_Transient
 {
  public:
 
@@ -341,7 +341,7 @@ class XSControl_TransferReader : public MMgt_TShared
   //! entities which are in <list> (filter)
   Standard_EXPORT static void PrintStatsOnList (const Handle(Transfer_TransientProcess)& theTP, const Handle(TColStd_HSequenceOfTransient)& theList, const Standard_Integer theWhat, const Standard_Integer theMode = 0);
 
-  DEFINE_STANDARD_RTTIEXT(XSControl_TransferReader,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(XSControl_TransferReader,Standard_Transient)
 
  private:
 

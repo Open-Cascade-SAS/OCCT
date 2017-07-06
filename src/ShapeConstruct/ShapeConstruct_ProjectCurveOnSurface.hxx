@@ -25,7 +25,7 @@
 #include <Standard_Integer.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <ShapeExtend_Status.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -45,7 +45,7 @@ class Geom2d_Curve;
 #endif
 
 class ShapeConstruct_ProjectCurveOnSurface;
-DEFINE_STANDARD_HANDLE(ShapeConstruct_ProjectCurveOnSurface, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeConstruct_ProjectCurveOnSurface, Standard_Transient)
 
 //! This tool provides a method for computing pcurve by projecting
 //! 3d curve onto a surface.
@@ -57,7 +57,7 @@ DEFINE_STANDARD_HANDLE(ShapeConstruct_ProjectCurveOnSurface, MMgt_TShared)
 //! until the condition is fulfilled).
 //! Isoparametric cases (if curve corresponds to U=const or V=const on
 //! the surface) are recognized with the given precision.
-class ShapeConstruct_ProjectCurveOnSurface : public MMgt_TShared
+class ShapeConstruct_ProjectCurveOnSurface : public Standard_Transient
 {
 
 public:
@@ -138,7 +138,7 @@ public:
   
 
 
-  DEFINE_STANDARD_RTTIEXT(ShapeConstruct_ProjectCurveOnSurface,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeConstruct_ProjectCurveOnSurface,Standard_Transient)
 
 protected:
 

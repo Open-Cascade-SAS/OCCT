@@ -20,16 +20,16 @@
 #include <Standard_Type.hxx>
 
 #include <StepBasic_RoleSelect.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepBasic_ObjectRole;
 class StepBasic_RoleSelect;
 
 
 class StepBasic_RoleAssociation;
-DEFINE_STANDARD_HANDLE(StepBasic_RoleAssociation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_RoleAssociation, Standard_Transient)
 
 //! Representation of STEP entity RoleAssociation
-class StepBasic_RoleAssociation : public MMgt_TShared
+class StepBasic_RoleAssociation : public Standard_Transient
 {
 
 public:
@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_RoleAssociation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_RoleAssociation,Standard_Transient)
 
 protected:
 

@@ -20,7 +20,7 @@
 #include <TDocStd_ApplicationDelta.hxx>
 #include <TDocStd_Document.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDocStd_ApplicationDelta,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TDocStd_ApplicationDelta,Standard_Transient)
 
 //=======================================================================
 //function : TDocStd_ApplicationDelta

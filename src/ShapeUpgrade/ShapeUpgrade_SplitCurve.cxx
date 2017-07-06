@@ -26,7 +26,7 @@
 #include <TColStd_HSequenceOfReal.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve,Standard_Transient)
 
 //=======================================================================
 //function : ShapeUpgrade_SplitCurve

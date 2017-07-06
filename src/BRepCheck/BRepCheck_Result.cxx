@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Result,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Result,Standard_Transient)
 
 //=======================================================================
 //function : BRepCheck_Result

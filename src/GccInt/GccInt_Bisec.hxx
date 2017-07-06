@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <GccInt_IType.hxx>
 class Standard_DomainError;
 class gp_Pnt2d;
@@ -32,7 +32,7 @@ class gp_Elips2d;
 
 
 class GccInt_Bisec;
-DEFINE_STANDARD_HANDLE(GccInt_Bisec, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(GccInt_Bisec, Standard_Transient)
 
 //! The deferred class GccInt_Bisec is the root class for
 //! elementary bisecting loci between two simple geometric
@@ -53,7 +53,7 @@ DEFINE_STANDARD_HANDLE(GccInt_Bisec, MMgt_TShared)
 //! The GccAna package provides numerous algorithms for
 //! computing the bisecting loci between circles, lines or
 //! points, whose solutions are these types of elementary bisecting locus.
-class GccInt_Bisec : public MMgt_TShared
+class GccInt_Bisec : public Standard_Transient
 {
 
 public:
@@ -90,7 +90,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(GccInt_Bisec,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GccInt_Bisec,Standard_Transient)
 
 protected:
 

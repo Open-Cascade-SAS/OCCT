@@ -24,7 +24,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopTools_DataMapOfShapeInteger.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
 #include <Standard_Boolean.hxx>
 class TopOpeBRep_LineInter;
@@ -33,10 +33,10 @@ class TopoDS_Shape;
 
 
 class TopOpeBRep_FFDumper;
-DEFINE_STANDARD_HANDLE(TopOpeBRep_FFDumper, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TopOpeBRep_FFDumper, Standard_Transient)
 
 
-class TopOpeBRep_FFDumper : public MMgt_TShared
+class TopOpeBRep_FFDumper : public Standard_Transient
 {
 
 public:
@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TopOpeBRep_FFDumper,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRep_FFDumper,Standard_Transient)
 
 protected:
 

@@ -18,7 +18,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_ListEditor,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_ListEditor,Standard_Transient)
 
 IFSelect_ListEditor::IFSelect_ListEditor  ()
 : themax (0) , thetouc (0)  {  }

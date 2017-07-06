@@ -20,7 +20,7 @@
 #include <HLRBRep_Algo.hxx>
 #include <HLRBRep_ShapeBounds.hxx>
 #include <HLRTopoBRep_OutLiner.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 
@@ -48,7 +48,7 @@ HLRBRep_InternalAlgo(A)
 //=======================================================================
 
 void  HLRBRep_Algo::Add (const TopoDS_Shape& S,
-			 const Handle(MMgt_TShared)& SData,
+			 const Handle(Standard_Transient)& SData,
 			 const Standard_Integer nbIso)
 {
   Load(new HLRTopoBRep_OutLiner(S),SData,nbIso);

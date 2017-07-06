@@ -19,15 +19,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class IGESToBRep_ToolContainer;
 
 
 class IGESToBRep_AlgoContainer;
-DEFINE_STANDARD_HANDLE(IGESToBRep_AlgoContainer, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IGESToBRep_AlgoContainer, Standard_Transient)
 
 
-class IGESToBRep_AlgoContainer : public MMgt_TShared
+class IGESToBRep_AlgoContainer : public Standard_Transient
 {
 
 public:
@@ -45,7 +45,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IGESToBRep_AlgoContainer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IGESToBRep_AlgoContainer,Standard_Transient)
 
 protected:
 

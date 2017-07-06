@@ -22,7 +22,7 @@
 
 #include <TopLoc_Location.hxx>
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class Standard_DomainError;
 class TopLoc_Location;
@@ -32,11 +32,11 @@ class Geom_Surface;
 
 
 class BRep_PointRepresentation;
-DEFINE_STANDARD_HANDLE(BRep_PointRepresentation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(BRep_PointRepresentation, Standard_Transient)
 
 //! Root  class     for   the points  representations.
 //! Contains a location and a parameter.
-class BRep_PointRepresentation : public MMgt_TShared
+class BRep_PointRepresentation : public Standard_Transient
 {
 
 public:
@@ -87,7 +87,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(BRep_PointRepresentation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRep_PointRepresentation,Standard_Transient)
 
 protected:
 

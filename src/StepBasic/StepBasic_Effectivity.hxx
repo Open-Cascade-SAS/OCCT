@@ -20,15 +20,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
 
 class StepBasic_Effectivity;
-DEFINE_STANDARD_HANDLE(StepBasic_Effectivity, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_Effectivity, Standard_Transient)
 
 
-class StepBasic_Effectivity : public MMgt_TShared
+class StepBasic_Effectivity : public Standard_Transient
 {
 
 public:
@@ -45,7 +45,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_Effectivity,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_Effectivity,Standard_Transient)
 
 protected:
 

@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class Geom_BSplineCurve;
@@ -30,10 +30,10 @@ class IntSurf_PntOn2S;
 
 
 class BRepApprox_ApproxLine;
-DEFINE_STANDARD_HANDLE(BRepApprox_ApproxLine, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(BRepApprox_ApproxLine, Standard_Transient)
 
 
-class BRepApprox_ApproxLine : public MMgt_TShared
+class BRepApprox_ApproxLine : public Standard_Transient
 {
 
 public:
@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(BRepApprox_ApproxLine,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepApprox_ApproxLine,Standard_Transient)
 
 protected:
 

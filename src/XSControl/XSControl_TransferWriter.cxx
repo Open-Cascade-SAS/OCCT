@@ -30,7 +30,7 @@
 #include <XSControl_TransferWriter.hxx>
 #include <XSControl_Utils.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XSControl_TransferWriter,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(XSControl_TransferWriter,Standard_Transient)
 
 
 //=======================================================================

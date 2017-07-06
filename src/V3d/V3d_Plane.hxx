@@ -21,7 +21,7 @@
 #include <V3d_View.hxx>
 
 class V3d_Plane;
-DEFINE_STANDARD_HANDLE (V3d_Plane, MMgt_TShared)
+DEFINE_STANDARD_HANDLE (V3d_Plane, Standard_Transient)
 
 //! Obsolete clip plane presentation class.
 //! Ported on new core of Graphic3d_ClipPlane approach.
@@ -41,7 +41,7 @@ DEFINE_STANDARD_HANDLE (V3d_Plane, MMgt_TShared)
 //! @endcode
 //! Use interface of this class to modify plane equation synchronously
 //! with clipping equation.
-class V3d_Plane : public MMgt_TShared
+class V3d_Plane : public Standard_Transient
 {
 public:
 
@@ -96,7 +96,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTIEXT(V3d_Plane,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(V3d_Plane,Standard_Transient)
 };
 
 #endif

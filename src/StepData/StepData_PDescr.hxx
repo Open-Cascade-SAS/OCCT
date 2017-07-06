@@ -25,7 +25,7 @@
 #include <StepData_EnumTool.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 class StepData_EDescr;
 class StepData_Field;
@@ -33,14 +33,14 @@ class Interface_Check;
 
 
 class StepData_PDescr;
-DEFINE_STANDARD_HANDLE(StepData_PDescr, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepData_PDescr, Standard_Transient)
 
 //! This class is intended to describe the authorized form for a
 //! parameter, as a type or a value for a field
 //!
 //! A PDescr firstly describes a type, which can be SELECT, i.e.
 //! have several members
-class StepData_PDescr : public MMgt_TShared
+class StepData_PDescr : public Standard_Transient
 {
 
 public:
@@ -213,7 +213,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepData_PDescr,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepData_PDescr,Standard_Transient)
 
 protected:
 

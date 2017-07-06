@@ -22,7 +22,7 @@
 #include <XmlMDF_ADriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlMDF_ADriver,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDF_ADriver,Standard_Transient)
 
 //=======================================================================
 //function : XmlMDF_ADriver

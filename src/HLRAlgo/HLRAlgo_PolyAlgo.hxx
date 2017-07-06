@@ -27,17 +27,17 @@
 #include <HLRAlgo_ListIteratorOfListOfBPoint.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TColStd_Array1OfTransient.hxx>
 
 class HLRAlgo_EdgeStatus;
 
 
 class HLRAlgo_PolyAlgo;
-DEFINE_STANDARD_HANDLE(HLRAlgo_PolyAlgo, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(HLRAlgo_PolyAlgo, Standard_Transient)
 
 //! to remove Hidden lines on Triangulations.
-class HLRAlgo_PolyAlgo : public MMgt_TShared
+class HLRAlgo_PolyAlgo : public Standard_Transient
 {
 
 public:
@@ -75,7 +75,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyAlgo,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyAlgo,Standard_Transient)
 
 protected:
 

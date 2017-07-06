@@ -19,7 +19,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Message_Gravity.hxx>
 class Standard_Transient;
 class Message_Msg;
@@ -27,7 +27,7 @@ class TopoDS_Shape;
 
 
 class ShapeExtend_BasicMsgRegistrator;
-DEFINE_STANDARD_HANDLE(ShapeExtend_BasicMsgRegistrator, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeExtend_BasicMsgRegistrator, Standard_Transient)
 
 //! Abstract class that can be used for attaching messages
 //! to the objects (e.g. shapes).
@@ -38,7 +38,7 @@ DEFINE_STANDARD_HANDLE(ShapeExtend_BasicMsgRegistrator, MMgt_TShared)
 //! The methods of this class are empty and redefined, for instance,
 //! in the classes for Data Exchange processors for attaching
 //! messages to interface file entities or CAS.CADE shapes.
-class ShapeExtend_BasicMsgRegistrator : public MMgt_TShared
+class ShapeExtend_BasicMsgRegistrator : public Standard_Transient
 {
 
 public:
@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ShapeExtend_BasicMsgRegistrator,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeExtend_BasicMsgRegistrator,Standard_Transient)
 
 protected:
 

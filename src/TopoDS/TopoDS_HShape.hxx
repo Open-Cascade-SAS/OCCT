@@ -21,15 +21,15 @@
 #include <Standard_Type.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TopoDS_Shape;
 
 
 class TopoDS_HShape;
-DEFINE_STANDARD_HANDLE(TopoDS_HShape, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TopoDS_HShape, Standard_Transient)
 
 //! Class to manipulate a Shape with  handle.
-class TopoDS_HShape : public MMgt_TShared
+class TopoDS_HShape : public Standard_Transient
 {
 
 public:
@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TopoDS_HShape,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopoDS_HShape,Standard_Transient)
 
 protected:
 

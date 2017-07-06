@@ -22,7 +22,7 @@
 #include <Graphic3d_ShaderProgram.hxx>
 #include <Font_FontAspect.hxx>
 #include <Font_NameOfFont.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>

@@ -19,16 +19,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepDimTol_GeometricTolerance;
 
 
 class StepDimTol_GeometricToleranceRelationship;
-DEFINE_STANDARD_HANDLE(StepDimTol_GeometricToleranceRelationship, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepDimTol_GeometricToleranceRelationship, Standard_Transient)
 
 //! Representation of STEP entity GeometricToleranceRelationship
-class StepDimTol_GeometricToleranceRelationship : public MMgt_TShared
+class StepDimTol_GeometricToleranceRelationship : public Standard_Transient
 {
 
 public:
@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceRelationship,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceRelationship,Standard_Transient)
 
 protected:
 

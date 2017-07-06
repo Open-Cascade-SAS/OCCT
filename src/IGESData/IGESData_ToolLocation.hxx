@@ -23,7 +23,7 @@
 #include <Standard_Real.hxx>
 #include <Interface_GeneralLib.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class IGESData_IGESModel;
 class Standard_DomainError;
@@ -34,7 +34,7 @@ class gp_Trsf;
 
 
 class IGESData_ToolLocation;
-DEFINE_STANDARD_HANDLE(IGESData_ToolLocation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IGESData_ToolLocation, Standard_Transient)
 
 //! This Tool determines and gives access to effective Locations
 //! of IGES Entities as defined by the IGES Norm. These Locations
@@ -56,7 +56,7 @@ DEFINE_STANDARD_HANDLE(IGESData_ToolLocation, MMgt_TShared)
 //!
 //! This is a TShared object, then it is easier to use in an
 //! interactive session
-class IGESData_ToolLocation : public MMgt_TShared
+class IGESData_ToolLocation : public Standard_Transient
 {
 
 public:
@@ -154,7 +154,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IGESData_ToolLocation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IGESData_ToolLocation,Standard_Transient)
 
 protected:
 

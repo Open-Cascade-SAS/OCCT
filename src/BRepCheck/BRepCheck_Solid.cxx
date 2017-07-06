@@ -20,7 +20,7 @@
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <Geom_Curve.hxx>
 #include <gp_Pnt.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Vector.hxx>
 #include <Precision.hxx>
@@ -39,12 +39,12 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Solid,BRepCheck_Result)
 
 //
 class BRepCheck_HSC;
-DEFINE_STANDARD_HANDLE(BRepCheck_HSC, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(BRepCheck_HSC, Standard_Transient)
 //=======================================================================
 //class    : BRepCheck_HSC
 //purpose  :
 //=======================================================================
-class BRepCheck_HSC : public MMgt_TShared {
+class BRepCheck_HSC : public Standard_Transient {
  public: 
   //
   Standard_EXPORT
@@ -60,7 +60,7 @@ class BRepCheck_HSC : public MMgt_TShared {
       return mySC;
     };
   //
-  DEFINE_STANDARD_RTTI_INLINE(BRepCheck_HSC,MMgt_TShared);
+  DEFINE_STANDARD_RTTI_INLINE(BRepCheck_HSC,Standard_Transient);
 
  protected:
   BRepClass3d_SolidClassifier mySC;

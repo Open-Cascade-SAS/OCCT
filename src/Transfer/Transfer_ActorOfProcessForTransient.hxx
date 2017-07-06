@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TColStd_MapTransientHasher.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <Transfer_TransferMapOfProcessForTransient.hxx>
@@ -35,10 +35,10 @@ class Transfer_SimpleBinderOfTransient;
 
 
 class Transfer_ActorOfProcessForTransient;
-DEFINE_STANDARD_HANDLE(Transfer_ActorOfProcessForTransient, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Transfer_ActorOfProcessForTransient, Standard_Transient)
 
 
-class Transfer_ActorOfProcessForTransient : public MMgt_TShared
+class Transfer_ActorOfProcessForTransient : public Standard_Transient
 {
 
 public:
@@ -96,7 +96,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI_INLINE(Transfer_ActorOfProcessForTransient,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(Transfer_ActorOfProcessForTransient,Standard_Transient)
 
 protected:
 

@@ -24,7 +24,7 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <Interface_EntityList.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Interface_ParamType.hxx>
 class Standard_OutOfRange;
@@ -38,7 +38,7 @@ class Interface_CopyTool;
 
 
 class Interface_UndefinedContent;
-DEFINE_STANDARD_HANDLE(Interface_UndefinedContent, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Interface_UndefinedContent, Standard_Transient)
 
 //! Defines resources for an "Undefined Entity" : such an Entity
 //! is used to describe an Entity which complies with the Norm,
@@ -62,7 +62,7 @@ DEFINE_STANDARD_HANDLE(Interface_UndefinedContent, MMgt_TShared)
 //!
 //! Finally, the Protocols of each norm have to Create and
 //! Recognize Unknown Entities of this norm
-class Interface_UndefinedContent : public MMgt_TShared
+class Interface_UndefinedContent : public Standard_Transient
 {
 
 public:
@@ -133,7 +133,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Interface_UndefinedContent,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_UndefinedContent,Standard_Transient)
 
 protected:
 

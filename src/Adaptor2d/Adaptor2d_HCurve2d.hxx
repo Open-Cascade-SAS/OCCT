@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
@@ -43,7 +43,7 @@ class gp_Vec2d;
 
 
 class Adaptor2d_HCurve2d;
-DEFINE_STANDARD_HANDLE(Adaptor2d_HCurve2d, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Adaptor2d_HCurve2d, Standard_Transient)
 
 //! Root class for 2D curves manipulated by handles, on
 //! which geometric algorithms work.
@@ -52,7 +52,7 @@ DEFINE_STANDARD_HANDLE(Adaptor2d_HCurve2d, MMgt_TShared)
 //! the curve by algorithms, which use it.
 //! A derived specific class is provided:
 //! Geom2dAdaptor_HCurve for a curve from the Geom2d package.
-class Adaptor2d_HCurve2d : public MMgt_TShared
+class Adaptor2d_HCurve2d : public Standard_Transient
 {
 
 public:
@@ -119,7 +119,7 @@ public:
     virtual Handle(Geom2d_BSplineCurve) BSpline() const;
 
 
-  DEFINE_STANDARD_RTTIEXT(Adaptor2d_HCurve2d,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Adaptor2d_HCurve2d,Standard_Transient)
 };
 
 #include <Adaptor2d_HCurve2d.lxx>

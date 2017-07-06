@@ -29,7 +29,7 @@
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyAlgo,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyAlgo,Standard_Transient)
 
 //static Standard_Integer ERROR = Standard_False;
 

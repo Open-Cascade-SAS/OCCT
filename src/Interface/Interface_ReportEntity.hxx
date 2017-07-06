@@ -20,14 +20,14 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class Interface_Check;
 class Standard_Transient;
 
 
 class Interface_ReportEntity;
-DEFINE_STANDARD_HANDLE(Interface_ReportEntity, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Interface_ReportEntity, Standard_Transient)
 
 //! A ReportEntity is produced to aknowledge and memorize the
 //! binding between a Check and an Entity. The Check can bring
@@ -52,7 +52,7 @@ DEFINE_STANDARD_HANDLE(Interface_ReportEntity, MMgt_TShared)
 //! use the class UndefinedContent to brings parameters : it is
 //! enough for most of information and avoids to redefine them,
 //! only the specific part remains to be defined for each norm.
-class Interface_ReportEntity : public MMgt_TShared
+class Interface_ReportEntity : public Standard_Transient
 {
 
 public:
@@ -107,7 +107,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Interface_ReportEntity,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_ReportEntity,Standard_Transient)
 
 protected:
 

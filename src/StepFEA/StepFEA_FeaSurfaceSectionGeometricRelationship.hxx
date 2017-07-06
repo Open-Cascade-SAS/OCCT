@@ -19,16 +19,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepElement_SurfaceSection;
 class StepElement_AnalysisItemWithinRepresentation;
 
 
 class StepFEA_FeaSurfaceSectionGeometricRelationship;
-DEFINE_STANDARD_HANDLE(StepFEA_FeaSurfaceSectionGeometricRelationship, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepFEA_FeaSurfaceSectionGeometricRelationship, Standard_Transient)
 
 //! Representation of STEP entity FeaSurfaceSectionGeometricRelationship
-class StepFEA_FeaSurfaceSectionGeometricRelationship : public MMgt_TShared
+class StepFEA_FeaSurfaceSectionGeometricRelationship : public Standard_Transient
 {
 
 public:
@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaSurfaceSectionGeometricRelationship,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaSurfaceSectionGeometricRelationship,Standard_Transient)
 
 protected:
 

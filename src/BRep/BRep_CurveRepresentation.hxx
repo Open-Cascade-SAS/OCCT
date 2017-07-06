@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <TopLoc_Location.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <GeomAbs_Shape.hxx>
 class Standard_DomainError;
@@ -36,11 +36,11 @@ class Poly_PolygonOnTriangulation;
 
 
 class BRep_CurveRepresentation;
-DEFINE_STANDARD_HANDLE(BRep_CurveRepresentation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(BRep_CurveRepresentation, Standard_Transient)
 
 //! Root class for the curve representations. Contains
 //! a location.
-class BRep_CurveRepresentation : public MMgt_TShared
+class BRep_CurveRepresentation : public Standard_Transient
 {
 
 public:
@@ -147,7 +147,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(BRep_CurveRepresentation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRep_CurveRepresentation,Standard_Transient)
 
 protected:
 

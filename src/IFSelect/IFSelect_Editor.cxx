@@ -26,7 +26,7 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <string.h>
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Editor,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Editor,Standard_Transient)
 
 IFSelect_Editor::IFSelect_Editor (const Standard_Integer nbval)
     : thenbval (nbval) , themaxsh (0) , themaxco (0) , themaxla (0) ,

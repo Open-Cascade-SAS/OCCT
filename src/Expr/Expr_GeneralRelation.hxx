@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class Standard_OutOfRange;
@@ -31,11 +31,11 @@ class TCollection_AsciiString;
 
 
 class Expr_GeneralRelation;
-DEFINE_STANDARD_HANDLE(Expr_GeneralRelation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Expr_GeneralRelation, Standard_Transient)
 
 //! Defines the general purposes of any relation between
 //! expressions.
-class Expr_GeneralRelation : public MMgt_TShared
+class Expr_GeneralRelation : public Standard_Transient
 {
 
 public:
@@ -83,7 +83,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Expr_GeneralRelation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Expr_GeneralRelation,Standard_Transient)
 
 protected:
 

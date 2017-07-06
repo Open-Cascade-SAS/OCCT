@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepRepr_AssemblyComponentUsage;
 
 
 class StepRepr_AssemblyComponentUsageSubstitute;
-DEFINE_STANDARD_HANDLE(StepRepr_AssemblyComponentUsageSubstitute, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepRepr_AssemblyComponentUsageSubstitute, Standard_Transient)
 
 
-class StepRepr_AssemblyComponentUsageSubstitute : public MMgt_TShared
+class StepRepr_AssemblyComponentUsageSubstitute : public Standard_Transient
 {
 
 public:
@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_AssemblyComponentUsageSubstitute,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_AssemblyComponentUsageSubstitute,Standard_Transient)
 
 protected:
 

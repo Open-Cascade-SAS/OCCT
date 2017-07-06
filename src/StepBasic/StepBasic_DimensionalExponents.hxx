@@ -21,14 +21,14 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class StepBasic_DimensionalExponents;
-DEFINE_STANDARD_HANDLE(StepBasic_DimensionalExponents, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_DimensionalExponents, Standard_Transient)
 
 
-class StepBasic_DimensionalExponents : public MMgt_TShared
+class StepBasic_DimensionalExponents : public Standard_Transient
 {
 
 public:
@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_DimensionalExponents,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DimensionalExponents,Standard_Transient)
 
 protected:
 

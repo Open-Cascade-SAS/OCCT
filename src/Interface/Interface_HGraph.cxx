@@ -21,7 +21,7 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Interface_HGraph,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Interface_HGraph,Standard_Transient)
 
 Interface_HGraph::Interface_HGraph (const Interface_Graph& agraph)
     :  thegraph(agraph)    {  }

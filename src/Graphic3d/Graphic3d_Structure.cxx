@@ -34,7 +34,7 @@
 
 #include <stdio.h>
 
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Structure,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Structure,Standard_Transient)
 
 //=============================================================================
 //function : Graphic3d_Structure

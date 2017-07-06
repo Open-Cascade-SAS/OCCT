@@ -23,14 +23,14 @@
 #include <Standard_Integer.hxx>
 #include <StepBasic_AheadOrBehind.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class StepBasic_CoordinatedUniversalTimeOffset;
-DEFINE_STANDARD_HANDLE(StepBasic_CoordinatedUniversalTimeOffset, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_CoordinatedUniversalTimeOffset, Standard_Transient)
 
 
-class StepBasic_CoordinatedUniversalTimeOffset : public MMgt_TShared
+class StepBasic_CoordinatedUniversalTimeOffset : public Standard_Transient
 {
 
 public:
@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_CoordinatedUniversalTimeOffset,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_CoordinatedUniversalTimeOffset,Standard_Transient)
 
 protected:
 

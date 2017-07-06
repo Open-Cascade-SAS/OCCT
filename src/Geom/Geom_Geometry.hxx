@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
 class Standard_ConstructionError;
 class gp_Pnt;
@@ -31,7 +31,7 @@ class gp_Trsf;
 
 
 class Geom_Geometry;
-DEFINE_STANDARD_HANDLE(Geom_Geometry, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Geom_Geometry, Standard_Transient)
 
 //! The abstract class Geometry for 3D space is the root
 //! class of all geometric objects from the Geom
@@ -50,7 +50,7 @@ DEFINE_STANDARD_HANDLE(Geom_Geometry, MMgt_TShared)
 //! abstract method Transform which is defined for each
 //! concrete type of derived object. All other
 //! transformations are implemented using the Transform method.
-class Geom_Geometry : public MMgt_TShared
+class Geom_Geometry : public Standard_Transient
 {
 
 public:
@@ -121,7 +121,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Geom_Geometry,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Geom_Geometry,Standard_Transient)
 
 protected:
 

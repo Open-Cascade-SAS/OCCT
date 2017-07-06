@@ -20,17 +20,17 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Real.hxx>
 
 
 class PLib_Base;
-DEFINE_STANDARD_HANDLE(PLib_Base, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(PLib_Base, Standard_Transient)
 
 //! To work with different polynomial's Bases
-class PLib_Base : public MMgt_TShared
+class PLib_Base : public Standard_Transient
 {
 
 public:
@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(PLib_Base,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(PLib_Base,Standard_Transient)
 
 protected:
 

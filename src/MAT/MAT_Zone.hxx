@@ -22,7 +22,7 @@
 
 #include <MAT_SequenceOfArc.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <MAT_Side.hxx>
 class MAT_BasicElt;
@@ -31,14 +31,14 @@ class MAT_Node;
 
 
 class MAT_Zone;
-DEFINE_STANDARD_HANDLE(MAT_Zone, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MAT_Zone, Standard_Transient)
 
 
 //! Definition of Zone of Proximity of a BasicElt :
 //! ----------------------------------------------
 //! A Zone of proximity is the set of the points which are
 //! more near from the BasicElt than any other.
-class MAT_Zone : public MMgt_TShared
+class MAT_Zone : public Standard_Transient
 {
 
 public:
@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(MAT_Zone,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MAT_Zone,Standard_Transient)
 
 protected:
 

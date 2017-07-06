@@ -22,15 +22,15 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class MAT_Bisector;
 
 
 class MAT_Edge;
-DEFINE_STANDARD_HANDLE(MAT_Edge, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MAT_Edge, Standard_Transient)
 
 
-class MAT_Edge : public MMgt_TShared
+class MAT_Edge : public Standard_Transient
 {
 
 public:
@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(MAT_Edge,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MAT_Edge,Standard_Transient)
 
 protected:
 

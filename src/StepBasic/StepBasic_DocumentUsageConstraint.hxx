@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepBasic_Document;
 class TCollection_HAsciiString;
 
 
 class StepBasic_DocumentUsageConstraint;
-DEFINE_STANDARD_HANDLE(StepBasic_DocumentUsageConstraint, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_DocumentUsageConstraint, Standard_Transient)
 
 
-class StepBasic_DocumentUsageConstraint : public MMgt_TShared
+class StepBasic_DocumentUsageConstraint : public Standard_Transient
 {
 
 public:
@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentUsageConstraint,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentUsageConstraint,Standard_Transient)
 
 protected:
 

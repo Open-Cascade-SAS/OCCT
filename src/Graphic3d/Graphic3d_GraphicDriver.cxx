@@ -16,7 +16,7 @@
 
 #include <Graphic3d_GraphicDriver.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_GraphicDriver,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_GraphicDriver,Standard_Transient)
 
 // =======================================================================
 // function : Graphic3d_GraphicDriver

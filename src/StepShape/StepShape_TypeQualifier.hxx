@@ -19,15 +19,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
 
 class StepShape_TypeQualifier;
-DEFINE_STANDARD_HANDLE(StepShape_TypeQualifier, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepShape_TypeQualifier, Standard_Transient)
 
 //! Added for Dimensional Tolerances
-class StepShape_TypeQualifier : public MMgt_TShared
+class StepShape_TypeQualifier : public Standard_Transient
 {
 
 public:
@@ -44,7 +44,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepShape_TypeQualifier,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepShape_TypeQualifier,Standard_Transient)
 
 protected:
 

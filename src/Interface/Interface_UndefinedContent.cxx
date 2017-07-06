@@ -23,7 +23,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Interface_UndefinedContent,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Interface_UndefinedContent,Standard_Transient)
 
 #define Content_TypeField 31
 #define Content_LocalField 7

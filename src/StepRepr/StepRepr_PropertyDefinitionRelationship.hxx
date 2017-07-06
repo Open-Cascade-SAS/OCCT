@@ -19,16 +19,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepRepr_PropertyDefinition;
 
 
 class StepRepr_PropertyDefinitionRelationship;
-DEFINE_STANDARD_HANDLE(StepRepr_PropertyDefinitionRelationship, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepRepr_PropertyDefinitionRelationship, Standard_Transient)
 
 //! Representation of STEP entity PropertyDefinitionRelationship
-class StepRepr_PropertyDefinitionRelationship : public MMgt_TShared
+class StepRepr_PropertyDefinitionRelationship : public Standard_Transient
 {
 
 public:
@@ -67,7 +67,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_PropertyDefinitionRelationship,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_PropertyDefinitionRelationship,Standard_Transient)
 
 protected:
 

@@ -41,7 +41,7 @@
 
 #include <stdio.h>
 
-IMPLEMENT_STANDARD_RTTIEXT(Units_UnitsDictionary,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Units_UnitsDictionary,Standard_Transient)
 
 //=======================================================================
 //function : Units_UnitsDictionary

@@ -22,16 +22,16 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <gp_XYZ.hxx>
 #include <gp_XY.hxx>
 
 
 class HLRAlgo_PolyInternalNode;
-DEFINE_STANDARD_HANDLE(HLRAlgo_PolyInternalNode, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(HLRAlgo_PolyInternalNode, Standard_Transient)
 
 //! to Update OutLines.
-class HLRAlgo_PolyInternalNode : public MMgt_TShared
+class HLRAlgo_PolyInternalNode : public Standard_Transient
 {
 public:
   struct NodeIndices
@@ -64,7 +64,7 @@ public:
     return myData;
   }
 
-  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyInternalNode,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyInternalNode,Standard_Transient)
 
 private:
   NodeIndices myIndices;

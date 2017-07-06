@@ -21,16 +21,16 @@
 
 #include <TDocStd_SequenceOfDocument.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 class TCollection_ExtendedString;
 
 
 class TDocStd_ApplicationDelta;
-DEFINE_STANDARD_HANDLE(TDocStd_ApplicationDelta, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TDocStd_ApplicationDelta, Standard_Transient)
 
 
-class TDocStd_ApplicationDelta : public MMgt_TShared
+class TDocStd_ApplicationDelta : public Standard_Transient
 {
 
 public:
@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TDocStd_ApplicationDelta,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDocStd_ApplicationDelta,Standard_Transient)
 
 protected:
 

@@ -33,7 +33,7 @@ class gp_Pnt;
 
 
 class Adaptor3d_TopolTool;
-DEFINE_STANDARD_HANDLE(Adaptor3d_TopolTool, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Adaptor3d_TopolTool, Standard_Transient)
 
 //! This class provides a default topological tool,
 //! based on the Umin,Vmin,Umax,Vmax of an HSurface
@@ -42,7 +42,7 @@ DEFINE_STANDARD_HANDLE(Adaptor3d_TopolTool, MMgt_TShared)
 //! inheriting from this class.
 //! This class is used to instantiate algorithmes
 //! as Intersection, outlines,...
-class Adaptor3d_TopolTool : public MMgt_TShared
+class Adaptor3d_TopolTool : public Standard_Transient
 {
 
 public:
@@ -154,7 +154,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Adaptor3d_TopolTool,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Adaptor3d_TopolTool,Standard_Transient)
 
 protected:
 

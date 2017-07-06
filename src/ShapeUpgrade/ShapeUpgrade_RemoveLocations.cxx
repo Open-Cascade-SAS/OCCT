@@ -42,7 +42,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_RemoveLocations,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_RemoveLocations,Standard_Transient)
 
 //#include <ShapeUpgrade_DataMapOfShapeListOfTransient.hxx>
 //=======================================================================

@@ -25,7 +25,7 @@
 #include <HLRAlgo_HArray1OfTData.hxx>
 #include <HLRAlgo_HArray1OfPISeg.hxx>
 #include <HLRAlgo_HArray1OfPINod.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
 #include <HLRAlgo_Array1OfTData.hxx>
 #include <HLRAlgo_Array1OfPISeg.hxx>
@@ -33,10 +33,10 @@
 
 
 class HLRAlgo_PolyInternalData;
-DEFINE_STANDARD_HANDLE(HLRAlgo_PolyInternalData, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(HLRAlgo_PolyInternalData, Standard_Transient)
 
 //! to Update OutLines.
-class HLRAlgo_PolyInternalData : public MMgt_TShared
+class HLRAlgo_PolyInternalData : public Standard_Transient
 {
 
 public:
@@ -87,7 +87,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyInternalData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyInternalData,Standard_Transient)
 
 protected:
 

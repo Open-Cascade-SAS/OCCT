@@ -23,7 +23,7 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
-IMPLEMENT_STANDARD_RTTIEXT(MoniTool_TypedValue,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(MoniTool_TypedValue,Standard_Transient)
 
 // Not Used :
 //static  char defmess[30];

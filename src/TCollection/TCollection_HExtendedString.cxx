@@ -26,7 +26,7 @@
 #include <TCollection_HAsciiString.hxx>
 #include <TCollection_HExtendedString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TCollection_HExtendedString,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TCollection_HExtendedString,Standard_Transient)
 
 // ----------------------------------------------------------------------------
 // Create

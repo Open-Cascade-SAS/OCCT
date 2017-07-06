@@ -23,7 +23,7 @@
 #include <HLRBRep_InternalAlgo.hxx>
 #include <Standard_Integer.hxx>
 class TopoDS_Shape;
-class MMgt_TShared;
+class Standard_Transient;
 
 
 class HLRBRep_Algo;
@@ -79,7 +79,7 @@ public:
   Standard_EXPORT HLRBRep_Algo(const Handle(HLRBRep_Algo)& A);
   
   //! add the Shape <S>.
-  Standard_EXPORT void Add (const TopoDS_Shape& S, const Handle(MMgt_TShared)& SData, const Standard_Integer nbIso = 0);
+  Standard_EXPORT void Add (const TopoDS_Shape& S, const Handle(Standard_Transient)& SData, const Standard_Integer nbIso = 0);
   
   //! Adds the shape S to this framework, and
   //! specifies the number of isoparameters nbiso desired in visualizing S.

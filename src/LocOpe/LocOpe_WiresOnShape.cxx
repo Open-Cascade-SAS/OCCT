@@ -73,7 +73,7 @@
 #include <ShapeConstruct_ProjectCurveOnSurface.hxx>
 #include <ShapeAnalysis.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(LocOpe_WiresOnShape,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(LocOpe_WiresOnShape,Standard_Transient)
 
 static Standard_Boolean Project(const TopoDS_Vertex&,
                                 const gp_Pnt2d&,

@@ -37,7 +37,7 @@
 #include <TopOpeBRep_VPointInterIterator.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRep_FFDumper,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRep_FFDumper,Standard_Transient)
 
 #ifdef OCCT_DEBUG
 static TCollection_AsciiString PRODINP("dinp ");

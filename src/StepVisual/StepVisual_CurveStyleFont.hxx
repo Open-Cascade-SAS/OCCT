@@ -21,17 +21,17 @@
 #include <Standard_Type.hxx>
 
 #include <StepVisual_HArray1OfCurveStyleFontPattern.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepVisual_CurveStyleFontPattern;
 
 
 class StepVisual_CurveStyleFont;
-DEFINE_STANDARD_HANDLE(StepVisual_CurveStyleFont, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_CurveStyleFont, Standard_Transient)
 
 
-class StepVisual_CurveStyleFont : public MMgt_TShared
+class StepVisual_CurveStyleFont : public Standard_Transient
 {
 
 public:
@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_CurveStyleFont,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_CurveStyleFont,Standard_Transient)
 
 protected:
 

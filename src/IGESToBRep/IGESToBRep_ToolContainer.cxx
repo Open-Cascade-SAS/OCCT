@@ -18,7 +18,7 @@
 #include <IGESToBRep_ToolContainer.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESToBRep_ToolContainer,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IGESToBRep_ToolContainer,Standard_Transient)
 
 //=======================================================================
 //function : IGESToBRep_ToolContainer

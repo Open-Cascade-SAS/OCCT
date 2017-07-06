@@ -16,7 +16,7 @@
 #ifndef LDOM_MemManager_HeaderFile
 #define LDOM_MemManager_HeaderFile
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
 class LDOM_Document;
@@ -25,12 +25,12 @@ class LDOM_MemManager;
 class LDOMBasicString;
 
 // Define handle class for LDOM_MemManager
-DEFINE_STANDARD_HANDLE (LDOM_MemManager, MMgt_TShared)
+DEFINE_STANDARD_HANDLE (LDOM_MemManager, Standard_Transient)
 
 //  Class LDOM_MemManager (underlying structure of LDOM_Document)
 //
 
-class LDOM_MemManager : public MMgt_TShared
+class LDOM_MemManager : public Standard_Transient
 {
  public:
   // ---------- PUBLIC METHODS ----------
@@ -128,7 +128,7 @@ class LDOM_MemManager : public MMgt_TShared
 
  public:
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTIEXT(LDOM_MemManager,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(LDOM_MemManager,Standard_Transient)
 };
 
 

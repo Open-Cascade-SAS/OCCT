@@ -20,14 +20,14 @@
 #include <Standard_Type.hxx>
 
 #include <TDataStd_DataMapOfStringByte.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 
 //! Extension of TDataStd_DataMapOfStringByte class
 //! to be manipulated by handle.
-class TDataStd_HDataMapOfStringByte : public MMgt_TShared
+class TDataStd_HDataMapOfStringByte : public Standard_Transient
 {
-  DEFINE_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringByte, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringByte, Standard_Transient)
 public:
 
   Standard_EXPORT TDataStd_HDataMapOfStringByte(const Standard_Integer NbBuckets = 1);
@@ -44,6 +44,6 @@ private:
 
 };
 
-DEFINE_STANDARD_HANDLE(TDataStd_HDataMapOfStringByte, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TDataStd_HDataMapOfStringByte, Standard_Transient)
 
 #endif // _TDataStd_HDataMapOfStringByte_HeaderFile

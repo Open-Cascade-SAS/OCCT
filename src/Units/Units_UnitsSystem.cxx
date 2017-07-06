@@ -36,7 +36,7 @@
 #include <Units_UnitsSequence.hxx>
 #include <Units_UnitsSystem.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Units_UnitsSystem,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Units_UnitsSystem,Standard_Transient)
 
 //=======================================================================
 //function : Units_UnitsSystem

@@ -23,7 +23,7 @@
 #include <Storage_PType.hxx>
 #include <Storage_Error.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
@@ -34,10 +34,10 @@ class TCollection_AsciiString;
 
 
 class Storage_TypeData;
-DEFINE_STANDARD_HANDLE(Storage_TypeData, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Storage_TypeData, Standard_Transient)
 
 
-class Storage_TypeData : public MMgt_TShared
+class Storage_TypeData : public Standard_Transient
 {
 
 public:
@@ -74,7 +74,7 @@ public:
 friend class Storage_Schema;
 
 
-  DEFINE_STANDARD_RTTIEXT(Storage_TypeData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Storage_TypeData,Standard_Transient)
 
 protected:
 

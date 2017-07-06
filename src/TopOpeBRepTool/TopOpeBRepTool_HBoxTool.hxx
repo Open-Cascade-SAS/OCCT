@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <TopOpeBRepTool_IndexedDataMapOfShapeBox.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
@@ -30,10 +30,10 @@ class Bnd_Box;
 
 
 class TopOpeBRepTool_HBoxTool;
-DEFINE_STANDARD_HANDLE(TopOpeBRepTool_HBoxTool, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TopOpeBRepTool_HBoxTool, Standard_Transient)
 
 
-class TopOpeBRepTool_HBoxTool : public MMgt_TShared
+class TopOpeBRepTool_HBoxTool : public Standard_Transient
 {
 
 public:
@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TopOpeBRepTool_HBoxTool,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepTool_HBoxTool,Standard_Transient)
 
 protected:
 

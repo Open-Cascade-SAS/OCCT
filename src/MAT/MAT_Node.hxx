@@ -23,7 +23,7 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Address.hxx>
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <MAT_SequenceOfArc.hxx>
 #include <MAT_SequenceOfBasicElt.hxx>
 #include <Standard_Boolean.hxx>
@@ -31,10 +31,10 @@ class MAT_Arc;
 
 
 class MAT_Node;
-DEFINE_STANDARD_HANDLE(MAT_Node, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MAT_Node, Standard_Transient)
 
 //! Node of Graph.
-class MAT_Node : public MMgt_TShared
+class MAT_Node : public Standard_Transient
 {
 
 public:
@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(MAT_Node,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MAT_Node,Standard_Transient)
 
 protected:
 

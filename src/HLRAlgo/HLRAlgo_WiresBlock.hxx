@@ -24,11 +24,11 @@
 
 #include <TColStd_Array1OfTransient.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class HLRAlgo_WiresBlock;
-DEFINE_STANDARD_HANDLE(HLRAlgo_WiresBlock, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(HLRAlgo_WiresBlock, Standard_Transient)
 
 //! A WiresBlock is a set of Blocks. It is used by the
 //! DataStructure to structure the Edges.
@@ -36,7 +36,7 @@ DEFINE_STANDARD_HANDLE(HLRAlgo_WiresBlock, MMgt_TShared)
 //! A WiresBlock contains :
 //!
 //! * An Array  of Blocks.
-class HLRAlgo_WiresBlock : public MMgt_TShared
+class HLRAlgo_WiresBlock : public Standard_Transient
 {
 public:
   //! Create a Block of Blocks.
@@ -68,7 +68,7 @@ public:
     return myMinMax;
   }
 
-  DEFINE_STANDARD_RTTIEXT(HLRAlgo_WiresBlock,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_WiresBlock,Standard_Transient)
 
 private:
   TColStd_Array1OfTransient myWires;

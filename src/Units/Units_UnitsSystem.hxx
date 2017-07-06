@@ -22,7 +22,7 @@
 
 #include <Units_QuantitiesSequence.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
@@ -32,11 +32,11 @@ class TCollection_AsciiString;
 
 
 class Units_UnitsSystem;
-DEFINE_STANDARD_HANDLE(Units_UnitsSystem, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Units_UnitsSystem, Standard_Transient)
 
 //! This class  allows  the  user  to  define his  own
 //! system of units.
-class Units_UnitsSystem : public MMgt_TShared
+class Units_UnitsSystem : public Standard_Transient
 {
 
 public:
@@ -104,7 +104,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Units_UnitsSystem,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Units_UnitsSystem,Standard_Transient)
 
 protected:
 

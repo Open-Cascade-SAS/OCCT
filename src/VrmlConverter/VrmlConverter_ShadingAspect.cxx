@@ -17,7 +17,7 @@
 #include <Vrml_ShapeHints.hxx>
 #include <VrmlConverter_ShadingAspect.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_ShadingAspect,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_ShadingAspect,Standard_Transient)
 
 VrmlConverter_ShadingAspect::VrmlConverter_ShadingAspect()
 {

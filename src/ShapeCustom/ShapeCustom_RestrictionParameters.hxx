@@ -21,15 +21,15 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class ShapeCustom_RestrictionParameters;
-DEFINE_STANDARD_HANDLE(ShapeCustom_RestrictionParameters, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeCustom_RestrictionParameters, Standard_Transient)
 
 //! This class is axuluary tool which contains parameters for
 //! BSplineRestriction class.
-class ShapeCustom_RestrictionParameters : public MMgt_TShared
+class ShapeCustom_RestrictionParameters : public Standard_Transient
 {
 
 public:
@@ -102,7 +102,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ShapeCustom_RestrictionParameters,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeCustom_RestrictionParameters,Standard_Transient)
 
 protected:
 

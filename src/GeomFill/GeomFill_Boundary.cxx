@@ -20,7 +20,7 @@
 #include <gp_Vec.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(GeomFill_Boundary,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_Boundary,Standard_Transient)
 
 //=======================================================================
 //function : GeomFill_Boundary

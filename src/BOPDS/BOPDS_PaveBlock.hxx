@@ -25,7 +25,7 @@
 #include <Standard_Real.hxx>
 #include <Bnd_Box.hxx>
 #include <BOPCol_MapOfInteger.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
 class BOPDS_Pave;
@@ -33,13 +33,13 @@ class Bnd_Box;
 
 
 class BOPDS_PaveBlock;
-DEFINE_STANDARD_HANDLE(BOPDS_PaveBlock, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(BOPDS_PaveBlock, Standard_Transient)
 
 
 //! The class BOPDS_PaveBlock is to store
 //! the information about pave block on an edge.
 //! Two adjacent paves on edge make up pave block.
-class BOPDS_PaveBlock : public MMgt_TShared
+class BOPDS_PaveBlock : public Standard_Transient
 {
 
 public:
@@ -219,7 +219,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(BOPDS_PaveBlock,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BOPDS_PaveBlock,Standard_Transient)
 
 protected:
 

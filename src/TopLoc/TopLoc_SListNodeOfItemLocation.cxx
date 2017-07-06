@@ -18,4 +18,4 @@
 #include <TopLoc_SListNodeOfItemLocation.hxx>
 #include <TopLoc_SListOfItemLocation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TopLoc_SListNodeOfItemLocation,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TopLoc_SListNodeOfItemLocation,Standard_Transient)

@@ -19,10 +19,10 @@
 #include <ChFiDS_FaceInterference.hxx>
 #include <ChFiDS_SurfData.hxx>
 #include <gp_Pnt2d.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_SurfData,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_SurfData,Standard_Transient)
 
 ChFiDS_SurfData::ChFiDS_SurfData () : 
 indexOfS1(0),indexOfS2(0),indexOfConge(0),
@@ -216,7 +216,7 @@ void ChFiDS_SurfData::LastExtensionValue(const Standard_Real Extend)
 //purpose  : 
 //=======================================================================
 
-Handle(MMgt_TShared) ChFiDS_SurfData::Simul() const 
+Handle(Standard_Transient) ChFiDS_SurfData::Simul() const 
 {
   return simul;
 }
@@ -227,7 +227,7 @@ Handle(MMgt_TShared) ChFiDS_SurfData::Simul() const
 //purpose  : 
 //=======================================================================
 
-void ChFiDS_SurfData::SetSimul(const Handle(MMgt_TShared)& S)
+void ChFiDS_SurfData::SetSimul(const Handle(Standard_Transient)& S)
 {
   simul = S;
 }

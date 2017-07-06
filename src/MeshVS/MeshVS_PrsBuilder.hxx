@@ -23,7 +23,7 @@
 #include <MeshVS_MeshPtr.hxx>
 #include <Standard_Integer.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <MeshVS_DisplayModeFlags.hxx>
 #include <MeshVS_BuilderPriority.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
@@ -36,11 +36,11 @@ class SelectBasics_EntityOwner;
 
 
 class MeshVS_PrsBuilder;
-DEFINE_STANDARD_HANDLE(MeshVS_PrsBuilder, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MeshVS_PrsBuilder, Standard_Transient)
 
 //! This class is parent for all builders using in MeshVS_Mesh.
 //! It provides base fields and methods all buildes need.
-class MeshVS_PrsBuilder : public MMgt_TShared
+class MeshVS_PrsBuilder : public Standard_Transient
 {
 
 public:
@@ -107,7 +107,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(MeshVS_PrsBuilder,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MeshVS_PrsBuilder,Standard_Transient)
 
 protected:
 

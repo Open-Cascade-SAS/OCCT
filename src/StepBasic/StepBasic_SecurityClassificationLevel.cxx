@@ -16,7 +16,7 @@
 #include <StepBasic_SecurityClassificationLevel.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SecurityClassificationLevel,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SecurityClassificationLevel,Standard_Transient)
 
 StepBasic_SecurityClassificationLevel::StepBasic_SecurityClassificationLevel ()  {}
 

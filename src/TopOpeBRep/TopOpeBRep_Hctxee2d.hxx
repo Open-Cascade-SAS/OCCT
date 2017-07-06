@@ -23,7 +23,7 @@
 #include <TopoDS_Edge.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <IntRes2d_Domain.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class TopoDS_Edge;
 class BRepAdaptor_Surface;
@@ -33,10 +33,10 @@ class IntRes2d_Domain;
 
 
 class TopOpeBRep_Hctxee2d;
-DEFINE_STANDARD_HANDLE(TopOpeBRep_Hctxee2d, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TopOpeBRep_Hctxee2d, Standard_Transient)
 
 
-class TopOpeBRep_Hctxee2d : public MMgt_TShared
+class TopOpeBRep_Hctxee2d : public Standard_Transient
 {
 
 public:
@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TopOpeBRep_Hctxee2d,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRep_Hctxee2d,Standard_Transient)
 
 protected:
 

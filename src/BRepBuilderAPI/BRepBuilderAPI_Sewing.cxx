@@ -123,7 +123,7 @@
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRepBuilderAPI_Sewing,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(BRepBuilderAPI_Sewing,Standard_Transient)
 
 //#include <LocalAnalysis_SurfaceContinuity.hxx>
 //=======================================================================

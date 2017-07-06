@@ -20,14 +20,14 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class Interface_InterfaceError;
 class Standard_Transient;
 
 
 class Interface_CopyControl;
-DEFINE_STANDARD_HANDLE(Interface_CopyControl, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Interface_CopyControl, Standard_Transient)
 
 //! This deferred class describes the services required by
 //! CopyTool to work. They are very simple and correspond
@@ -35,7 +35,7 @@ DEFINE_STANDARD_HANDLE(Interface_CopyControl, MMgt_TShared)
 //! But they can be provided by various classes which can
 //! control a Transfer. Each Starting Entity have at most
 //! one Result (Mapping one-one)
-class Interface_CopyControl : public MMgt_TShared
+class Interface_CopyControl : public Standard_Transient
 {
 
 public:
@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Interface_CopyControl,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_CopyControl,Standard_Transient)
 
 protected:
 

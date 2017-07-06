@@ -26,7 +26,7 @@
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_CString.hxx>
 #include <Graphic3d_Vertex.hxx>
@@ -75,10 +75,10 @@ class Graphic3d_ArrayOfPrimitives;
 //! with aspects and primitives and choose the group usage model beforehand out of application needs.
 //! Note that some Graphic3d_Group class virtual methods contain only base implementation
 //! that is extended by the descendant class in OpenGl package.
-class Graphic3d_Group : public MMgt_TShared
+class Graphic3d_Group : public Standard_Transient
 {
   friend class Graphic3d_Structure;
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_Group,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_Group,Standard_Transient)
 
 public:
 
@@ -312,6 +312,6 @@ protected:
 
 };
 
-DEFINE_STANDARD_HANDLE(Graphic3d_Group, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Graphic3d_Group, Standard_Transient)
 
 #endif // _Graphic3d_Group_HeaderFile

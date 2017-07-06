@@ -26,7 +26,7 @@
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDF_AttributeDelta,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TDF_AttributeDelta,Standard_Transient)
 
 //=======================================================================
 //function : TDF_AttributeDelta

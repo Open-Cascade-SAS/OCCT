@@ -18,7 +18,7 @@
 #include <GeomFill_Line.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(GeomFill_Line,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_Line,Standard_Transient)
 
 //=======================================================================
 //function : GeomFill_Line

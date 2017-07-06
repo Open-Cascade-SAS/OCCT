@@ -21,14 +21,14 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class MoniTool_IntVal;
-DEFINE_STANDARD_HANDLE(MoniTool_IntVal, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MoniTool_IntVal, Standard_Transient)
 
 //! An Integer through a Handle (i.e. managed as TShared)
-class MoniTool_IntVal : public MMgt_TShared
+class MoniTool_IntVal : public Standard_Transient
 {
 
 public:
@@ -43,7 +43,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(MoniTool_IntVal,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MoniTool_IntVal,Standard_Transient)
 
 protected:
 

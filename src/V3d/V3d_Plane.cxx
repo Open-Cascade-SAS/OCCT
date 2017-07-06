@@ -19,7 +19,7 @@
 #include <Graphic3d_ArrayOfQuadrangles.hxx>
 #include <gp_Pln.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(V3d_Plane,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(V3d_Plane,Standard_Transient)
 
 // =======================================================================
 // function : V3d_Plane

@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class MAT_Edge;
 class MAT_ListOfEdge;
 
 
 class MAT_TListNodeOfListOfEdge;
-DEFINE_STANDARD_HANDLE(MAT_TListNodeOfListOfEdge, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MAT_TListNodeOfListOfEdge, Standard_Transient)
 
 
-class MAT_TListNodeOfListOfEdge : public MMgt_TShared
+class MAT_TListNodeOfListOfEdge : public Standard_Transient
 {
 
 public:
@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI_INLINE(MAT_TListNodeOfListOfEdge,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(MAT_TListNodeOfListOfEdge,Standard_Transient)
 
 protected:
 

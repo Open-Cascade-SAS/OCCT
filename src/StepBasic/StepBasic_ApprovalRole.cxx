@@ -16,7 +16,7 @@
 #include <StepBasic_ApprovalRole.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApprovalRole,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApprovalRole,Standard_Transient)
 
 StepBasic_ApprovalRole::StepBasic_ApprovalRole ()  {}
 

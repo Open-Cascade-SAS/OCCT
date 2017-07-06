@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <Standard_Real.hxx>
 #include <FEmTool_HAssemblyTable.hxx>
@@ -35,10 +35,10 @@ class math_Matrix;
 
 
 class AppDef_SmoothCriterion;
-DEFINE_STANDARD_HANDLE(AppDef_SmoothCriterion, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(AppDef_SmoothCriterion, Standard_Transient)
 
 //! defined criterion to smooth  points in  curve
-class AppDef_SmoothCriterion : public MMgt_TShared
+class AppDef_SmoothCriterion : public Standard_Transient
 {
 
 public:
@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(AppDef_SmoothCriterion,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(AppDef_SmoothCriterion,Standard_Transient)
 
 protected:
 

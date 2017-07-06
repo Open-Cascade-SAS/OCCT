@@ -42,7 +42,7 @@ public:
   //! Returns a StyledItem
   Standard_EXPORT StepVisual_StyledItem();
   
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles, const Handle(MMgt_TShared)& aItem);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles, const Handle(Standard_Transient)& aItem);
   
   Standard_EXPORT void SetStyles (const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles);
   
@@ -74,7 +74,7 @@ private:
 
   Handle(StepVisual_HArray1OfPresentationStyleAssignment) myStyles;
   // May be StepRepr_RepresentationItem for AP214(203) and StepVisual_StyledItemTarget for AP242
-  Handle(MMgt_TShared) myItem;
+  Handle(Standard_Transient) myItem;
 
 };
 

@@ -23,7 +23,7 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Boolean.hxx>
@@ -37,11 +37,11 @@ class Adaptor3d_Curve;
 
 
 class Approx_CurvlinFunc;
-DEFINE_STANDARD_HANDLE(Approx_CurvlinFunc, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Approx_CurvlinFunc, Standard_Transient)
 
 //! defines an abstract curve with
 //! curvilinear parametrization
-class Approx_CurvlinFunc : public MMgt_TShared
+class Approx_CurvlinFunc : public Standard_Transient
 {
 
 public:
@@ -102,7 +102,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Approx_CurvlinFunc,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Approx_CurvlinFunc,Standard_Transient)
 
 protected:
 

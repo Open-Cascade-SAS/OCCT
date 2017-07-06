@@ -22,16 +22,16 @@
 
 #include <Standard_Address.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class MAT_Arc;
 
 
 class MAT_BasicElt;
-DEFINE_STANDARD_HANDLE(MAT_BasicElt, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MAT_BasicElt, Standard_Transient)
 
 //! A    BasicELt  is  associated   to  each  elemtary
 //! constituant of  the figure.
-class MAT_BasicElt : public MMgt_TShared
+class MAT_BasicElt : public Standard_Transient
 {
 
 public:
@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(MAT_BasicElt,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MAT_BasicElt,Standard_Transient)
 
 protected:
 

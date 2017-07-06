@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepVisual_TextStyleForDefinedFont;
 
 
 class StepVisual_TextStyle;
-DEFINE_STANDARD_HANDLE(StepVisual_TextStyle, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_TextStyle, Standard_Transient)
 
 
-class StepVisual_TextStyle : public MMgt_TShared
+class StepVisual_TextStyle : public Standard_Transient
 {
 
 public:
@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_TextStyle,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_TextStyle,Standard_Transient)
 
 protected:
 

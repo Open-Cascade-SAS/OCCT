@@ -18,7 +18,7 @@
 #include <StepData_Field.hxx>
 #include <StepData_PDescr.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepData_PDescr,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepData_PDescr,Standard_Transient)
 
 #define KindInteger 1
 #define KindBoolean 2

@@ -21,14 +21,14 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class IFSelect_Selection;
 class IFSelect_Dispatch;
 class TCollection_AsciiString;
 
 
 class IFSelect_GeneralModifier;
-DEFINE_STANDARD_HANDLE(IFSelect_GeneralModifier, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IFSelect_GeneralModifier, Standard_Transient)
 
 //! This class gives a frame for Actions which modify the effect
 //! of a Dispatch, i.e. :
@@ -61,7 +61,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_GeneralModifier, MMgt_TShared)
 //! their kind of action, which can be applied at a precise step
 //! of the production of a File : see Modifier, and in the
 //! package IFAdapt, EntityModifier and EntityCopier
-class IFSelect_GeneralModifier : public MMgt_TShared
+class IFSelect_GeneralModifier : public Standard_Transient
 {
 
 public:
@@ -102,7 +102,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_GeneralModifier,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_GeneralModifier,Standard_Transient)
 
 protected:
 

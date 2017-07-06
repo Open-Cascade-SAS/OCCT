@@ -18,7 +18,7 @@
 #include <Standard_Type.hxx>
 #include <TransferBRep_TransferResultInfo.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TransferBRep_TransferResultInfo,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TransferBRep_TransferResultInfo,Standard_Transient)
 
 //=======================================================================
 //function : TransferBRep_TransferResultInfo

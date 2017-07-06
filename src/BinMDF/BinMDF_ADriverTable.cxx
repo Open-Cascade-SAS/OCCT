@@ -22,7 +22,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMDF_ADriverTable,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(BinMDF_ADriverTable,Standard_Transient)
 
 //=======================================================================
 //function : BinMDF_ADriverTable

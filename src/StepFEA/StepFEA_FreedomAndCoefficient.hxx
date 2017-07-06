@@ -21,16 +21,16 @@
 
 #include <StepFEA_DegreeOfFreedom.hxx>
 #include <StepElement_MeasureOrUnspecifiedValue.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepFEA_DegreeOfFreedom;
 class StepElement_MeasureOrUnspecifiedValue;
 
 
 class StepFEA_FreedomAndCoefficient;
-DEFINE_STANDARD_HANDLE(StepFEA_FreedomAndCoefficient, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepFEA_FreedomAndCoefficient, Standard_Transient)
 
 //! Representation of STEP entity FreedomAndCoefficient
-class StepFEA_FreedomAndCoefficient : public MMgt_TShared
+class StepFEA_FreedomAndCoefficient : public Standard_Transient
 {
 
 public:
@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepFEA_FreedomAndCoefficient,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FreedomAndCoefficient,Standard_Transient)
 
 protected:
 

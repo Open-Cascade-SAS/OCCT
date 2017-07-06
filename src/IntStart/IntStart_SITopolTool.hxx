@@ -20,19 +20,19 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TopAbs_State.hxx>
 #include <Standard_Real.hxx>
 class gp_Pnt2d;
 
 
 class IntStart_SITopolTool;
-DEFINE_STANDARD_HANDLE(IntStart_SITopolTool, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IntStart_SITopolTool, Standard_Transient)
 
 //! template class for a topological tool.
 //! This tool is linked with the surface on which
 //! the classification has to be made.
-class IntStart_SITopolTool : public MMgt_TShared
+class IntStart_SITopolTool : public Standard_Transient
 {
 
 public:
@@ -43,7 +43,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IntStart_SITopolTool,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IntStart_SITopolTool,Standard_Transient)
 
 protected:
 

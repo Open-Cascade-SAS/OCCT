@@ -22,7 +22,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(GeomFill_TrihedronLaw,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_TrihedronLaw,Standard_Transient)
 
 void GeomFill_TrihedronLaw::SetCurve(const Handle(Adaptor3d_HCurve)& C) 
 {

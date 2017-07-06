@@ -21,15 +21,15 @@
 
 #include <StepFEA_CurveElementEndCoordinateSystem.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepFEA_CurveElementEndCoordinateSystem;
 
 
 class StepFEA_CurveElementEndOffset;
-DEFINE_STANDARD_HANDLE(StepFEA_CurveElementEndOffset, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepFEA_CurveElementEndOffset, Standard_Transient)
 
 //! Representation of STEP entity CurveElementEndOffset
-class StepFEA_CurveElementEndOffset : public MMgt_TShared
+class StepFEA_CurveElementEndOffset : public Standard_Transient
 {
 
 public:
@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepFEA_CurveElementEndOffset,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_CurveElementEndOffset,Standard_Transient)
 
 protected:
 

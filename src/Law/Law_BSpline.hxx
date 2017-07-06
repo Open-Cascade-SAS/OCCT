@@ -26,7 +26,7 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <Standard_Real.hxx>
@@ -39,7 +39,7 @@ class Standard_NoSuchObject;
 
 
 class Law_BSpline;
-DEFINE_STANDARD_HANDLE(Law_BSpline, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Law_BSpline, Standard_Transient)
 
 //! Definition of the 1D B_spline curve.
 //!
@@ -93,7 +93,7 @@ DEFINE_STANDARD_HANDLE(Law_BSpline, MMgt_TShared)
 //! . Modelisation des surfaces en CAO, Henri GIAUME Peugeot SA
 //! . Curves and Surfaces for Computer Aided Geometric Design,
 //! a practical guide Gerald Farin
-class Law_BSpline : public MMgt_TShared
+class Law_BSpline : public Standard_Transient
 {
 
 public:
@@ -533,7 +533,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Law_BSpline,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Law_BSpline,Standard_Transient)
 
 protected:
 

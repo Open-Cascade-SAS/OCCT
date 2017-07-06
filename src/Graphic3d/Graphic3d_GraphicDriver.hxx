@@ -22,7 +22,7 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_CStructure.hxx>
 #include <Aspect_GradientFillMethod.hxx>
@@ -59,11 +59,11 @@ class Graphic3d_ViewManager;
 class Quantity_Color;
 class TCollection_AsciiString;
 
-DEFINE_STANDARD_HANDLE(Graphic3d_GraphicDriver, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Graphic3d_GraphicDriver, Standard_Transient)
 
 //! This class allows the definition of a graphic driver
 //! for 3d interface (currently only OpenGl driver is used).
-class Graphic3d_GraphicDriver : public MMgt_TShared
+class Graphic3d_GraphicDriver : public Standard_Transient
 {
 
 public:
@@ -149,7 +149,7 @@ public:
   //! Frees the identifier of a structure.
   Standard_EXPORT void RemoveIdentification(const Standard_Integer theId);
 
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_GraphicDriver,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_GraphicDriver,Standard_Transient)
 
 protected:
 

@@ -18,7 +18,7 @@
 
 #include <StepDimTol_ToleranceZoneForm.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -26,9 +26,9 @@
 class TCollection_HAsciiString;
 
 class StepDimTol_ToleranceZoneForm;
-DEFINE_STANDARD_HANDLE(StepDimTol_ToleranceZoneForm, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepDimTol_ToleranceZoneForm, Standard_Transient)
 //! Added for Dimensional Tolerances
-class StepDimTol_ToleranceZoneForm : public MMgt_TShared
+class StepDimTol_ToleranceZoneForm : public Standard_Transient
 {
 
 public:
@@ -50,7 +50,7 @@ public:
     myName = theName;
   }
 
-  DEFINE_STANDARD_RTTIEXT(StepDimTol_ToleranceZoneForm,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_ToleranceZoneForm,Standard_Transient)
   
 private:
   Handle(TCollection_HAsciiString) myName;

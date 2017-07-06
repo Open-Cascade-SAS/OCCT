@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepBasic_ContractType;
 
 
 class StepBasic_Contract;
-DEFINE_STANDARD_HANDLE(StepBasic_Contract, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_Contract, Standard_Transient)
 
 //! Representation of STEP entity Contract
-class StepBasic_Contract : public MMgt_TShared
+class StepBasic_Contract : public Standard_Transient
 {
 
 public:
@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_Contract,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_Contract,Standard_Transient)
 
 protected:
 

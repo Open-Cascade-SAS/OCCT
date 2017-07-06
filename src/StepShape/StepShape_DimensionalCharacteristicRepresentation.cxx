@@ -20,7 +20,7 @@
 #include <StepShape_DimensionalCharacteristicRepresentation.hxx>
 #include <StepShape_ShapeDimensionRepresentation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_DimensionalCharacteristicRepresentation,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_DimensionalCharacteristicRepresentation,Standard_Transient)
 
 //=======================================================================
 //function : StepShape_DimensionalCharacteristicRepresentation

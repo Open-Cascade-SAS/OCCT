@@ -23,25 +23,25 @@
 #include <TColStd_SequenceOfAsciiString.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 #include <Storage_Error.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class Storage_BaseDriver;
 class TCollection_AsciiString;
 class TCollection_ExtendedString;
 
 class StdStorage_HeaderData;
-DEFINE_STANDARD_HANDLE(StdStorage_HeaderData, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StdStorage_HeaderData, Standard_Transient)
 
 //! Storage header data section that contains some
 //! auxiliary information (application name, schema version,
 //! creation date, comments and so on...)
 class StdStorage_HeaderData 
-  : public MMgt_TShared
+  : public Standard_Transient
 {
   friend class StdStorage_Data;
 
 public:
 
-  DEFINE_STANDARD_RTTIEXT(StdStorage_HeaderData, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StdStorage_HeaderData, Standard_Transient)
 
   //! Reads the header data section from the container defined by theDriver. 
   //! Returns Standard_True in case of success. Otherwise, one need to get 

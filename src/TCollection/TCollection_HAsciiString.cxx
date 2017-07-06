@@ -22,7 +22,7 @@
 #include <TCollection_HAsciiString.hxx>
 #include <TCollection_HExtendedString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TCollection_HAsciiString,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TCollection_HAsciiString,Standard_Transient)
 
 // ----------------------------------------------------------------------------
 // Create

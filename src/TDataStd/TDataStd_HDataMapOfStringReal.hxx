@@ -20,14 +20,14 @@
 #include <Standard_Type.hxx>
 
 #include <TDataStd_DataMapOfStringReal.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 
 //! Extension of TDataStd_DataMapOfStringReal class
 //! to be manipulated by handle.
-class TDataStd_HDataMapOfStringReal : public MMgt_TShared
+class TDataStd_HDataMapOfStringReal : public Standard_Transient
 {
-  DEFINE_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringReal, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringReal, Standard_Transient)
 public:
 
   Standard_EXPORT TDataStd_HDataMapOfStringReal(const Standard_Integer NbBuckets = 1);
@@ -44,6 +44,6 @@ private:
 
 };
 
-DEFINE_STANDARD_HANDLE(TDataStd_HDataMapOfStringReal, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TDataStd_HDataMapOfStringReal, Standard_Transient)
 
 #endif // _TDataStd_HDataMapOfStringReal_HeaderFile

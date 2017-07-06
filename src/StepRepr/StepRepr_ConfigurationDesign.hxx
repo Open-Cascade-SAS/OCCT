@@ -21,16 +21,16 @@
 #include <Standard_Type.hxx>
 
 #include <StepRepr_ConfigurationDesignItem.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepRepr_ConfigurationItem;
 class StepRepr_ConfigurationDesignItem;
 
 
 class StepRepr_ConfigurationDesign;
-DEFINE_STANDARD_HANDLE(StepRepr_ConfigurationDesign, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepRepr_ConfigurationDesign, Standard_Transient)
 
 //! Representation of STEP entity ConfigurationDesign
-class StepRepr_ConfigurationDesign : public MMgt_TShared
+class StepRepr_ConfigurationDesign : public Standard_Transient
 {
 
 public:
@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_ConfigurationDesign,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ConfigurationDesign,Standard_Transient)
 
 protected:
 

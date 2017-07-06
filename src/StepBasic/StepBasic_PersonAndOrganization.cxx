@@ -17,7 +17,7 @@
 #include <StepBasic_Person.hxx>
 #include <StepBasic_PersonAndOrganization.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_PersonAndOrganization,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_PersonAndOrganization,Standard_Transient)
 
 StepBasic_PersonAndOrganization::StepBasic_PersonAndOrganization ()  {}
 

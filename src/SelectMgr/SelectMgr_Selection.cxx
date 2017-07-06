@@ -19,7 +19,7 @@
 #include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_Selection,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_Selection,Standard_Transient)
 
 //==================================================
 // Function: SelectMgr_Selection

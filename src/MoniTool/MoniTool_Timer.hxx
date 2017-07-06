@@ -22,7 +22,7 @@
 #include <OSD_Timer.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_CString.hxx>
 #include <MoniTool_DataMapOfTimer.hxx>
@@ -30,7 +30,7 @@ class OSD_Timer;
 
 
 class MoniTool_Timer;
-DEFINE_STANDARD_HANDLE(MoniTool_Timer, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MoniTool_Timer, Standard_Transient)
 
 //! Provides convenient service on global timers
 //! accessed by string name, mostly aimed for debugging purposes
@@ -39,7 +39,7 @@ DEFINE_STANDARD_HANDLE(MoniTool_Timer, MMgt_TShared)
 //!
 //! As a tool, supports static dictionary of timers
 //! and provides static methods to easily access them
-class MoniTool_Timer : public MMgt_TShared
+class MoniTool_Timer : public Standard_Transient
 {
 
 public:
@@ -107,7 +107,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(MoniTool_Timer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MoniTool_Timer,Standard_Transient)
 
 protected:
 

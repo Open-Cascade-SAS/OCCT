@@ -21,12 +21,12 @@
 #include <Standard_Type.hxx>
 
 #include <TColgp_HArray1OfVec.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 
 
 class Vrml_Normal;
-DEFINE_STANDARD_HANDLE(Vrml_Normal, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Vrml_Normal, Standard_Transient)
 
 //! defines a Normal node of VRML specifying properties of geometry
 //! and its appearance.
@@ -35,7 +35,7 @@ DEFINE_STANDARD_HANDLE(Vrml_Normal, MMgt_TShared)
 //! node does not produce a visible result during rendering; it simply replaces the current
 //! normals in the rendering state for subsequent nodes to use. This node contains one
 //! multiple-valued field that contains the normal vectors.
-class Vrml_Normal : public MMgt_TShared
+class Vrml_Normal : public Standard_Transient
 {
 
 public:
@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Vrml_Normal,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Vrml_Normal,Standard_Transient)
 
 protected:
 

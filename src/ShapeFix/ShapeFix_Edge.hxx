@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <ShapeExtend_Status.hxx>
@@ -39,7 +39,7 @@ class ShapeBuild_ReShape;
 #endif
 
 class ShapeFix_Edge;
-DEFINE_STANDARD_HANDLE(ShapeFix_Edge, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeFix_Edge, Standard_Transient)
 
 //! Fixing invalid edge.
 //! Geometrical and/or topological inconsistency:
@@ -48,7 +48,7 @@ DEFINE_STANDARD_HANDLE(ShapeFix_Edge, MMgt_TShared)
 //! - incorrect SameParameter flag (curve deviation is greater than
 //! edge tolerance),
 //! - not adjacent curves (3d or pcurve) to the vertices.
-class ShapeFix_Edge : public MMgt_TShared
+class ShapeFix_Edge : public Standard_Transient
 {
 
 public:
@@ -225,7 +225,7 @@ public:
   //! Returns context
   Standard_EXPORT Handle(ShapeBuild_ReShape) Context() const;
 
-  DEFINE_STANDARD_RTTIEXT(ShapeFix_Edge,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_Edge,Standard_Transient)
 
 protected:
 

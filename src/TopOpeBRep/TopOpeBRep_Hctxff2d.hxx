@@ -24,17 +24,17 @@
 #include <GeomAbs_SurfaceType.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class BRepAdaptor_HSurface;
 class TopoDS_Face;
 
 
 class TopOpeBRep_Hctxff2d;
-DEFINE_STANDARD_HANDLE(TopOpeBRep_Hctxff2d, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TopOpeBRep_Hctxff2d, Standard_Transient)
 
 
-class TopOpeBRep_Hctxff2d : public MMgt_TShared
+class TopOpeBRep_Hctxff2d : public Standard_Transient
 {
 
 public:
@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TopOpeBRep_Hctxff2d,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRep_Hctxff2d,Standard_Transient)
 
 protected:
 

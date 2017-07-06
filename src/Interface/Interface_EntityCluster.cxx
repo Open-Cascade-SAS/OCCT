@@ -20,7 +20,7 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Interface_EntityCluster,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Interface_EntityCluster,Standard_Transient)
 
 // Un Cluster, ce sont 4 entites qui se suivent (dans le principe, nombre fixe,
 // meme si pas 4). Elles sont remplies depuis 0. Il y a donc autant d Entites

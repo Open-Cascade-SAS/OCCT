@@ -17,7 +17,7 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepRepr_RepresentationMap.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationMap,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationMap,Standard_Transient)
 
 StepRepr_RepresentationMap::StepRepr_RepresentationMap ()  {}
 

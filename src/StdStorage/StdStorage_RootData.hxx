@@ -19,7 +19,7 @@
 
 #include <Storage_Error.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <StdStorage_MapOfRoots.hxx>
@@ -32,17 +32,17 @@ class TCollection_AsciiString;
 class StdObjMgt_Persistent;
 
 class StdStorage_RootData;
-DEFINE_STANDARD_HANDLE(StdStorage_RootData, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StdStorage_RootData, Standard_Transient)
 
 //! Storage root data section contains root persistent objects
 class StdStorage_RootData
-  : public MMgt_TShared
+  : public Standard_Transient
 {
   friend class StdStorage_Data;
 
 public:
 
-  DEFINE_STANDARD_RTTIEXT(StdStorage_RootData, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StdStorage_RootData, Standard_Transient)
 
   //! Reads the root data section from the container defined by theDriver. 
   //! Returns Standard_True in case of success. Otherwise, one need to get 

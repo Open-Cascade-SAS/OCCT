@@ -24,7 +24,7 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Precision.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TopAbs_State.hxx>
 #include <Standard_Boolean.hxx>
 #include <BRepAdaptor_Surface.hxx>

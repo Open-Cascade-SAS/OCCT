@@ -23,7 +23,7 @@
 #include <Interface_GeneralLib.hxx>
 #include <Interface_DataMapOfTransientInteger.hxx>
 #include <TColStd_IndexedDataMapOfTransientTransient.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
@@ -36,7 +36,7 @@ class Interface_GeneralModule;
 
 
 class Interface_GTool;
-DEFINE_STANDARD_HANDLE(Interface_GTool, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Interface_GTool, Standard_Transient)
 
 //! GTool - General Tool for a Model
 //! Provides the functions performed by Protocol/GeneralModule for
@@ -44,7 +44,7 @@ DEFINE_STANDARD_HANDLE(Interface_GTool, MMgt_TShared)
 //! Optimized : once an entity has been queried, the GeneralLib is
 //! not longer queried
 //! Shareable between several users : as a Handle
-class Interface_GTool : public MMgt_TShared
+class Interface_GTool : public Standard_Transient
 {
 
 public:
@@ -101,7 +101,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Interface_GTool,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_GTool,Standard_Transient)
 
 protected:
 

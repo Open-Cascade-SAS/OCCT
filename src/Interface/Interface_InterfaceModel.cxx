@@ -37,7 +37,7 @@
 #include <TColStd_Array1OfTransient.hxx>
 #include <TColStd_DataMapIteratorOfDataMapOfIntegerTransient.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Interface_InterfaceModel, MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Interface_InterfaceModel, Standard_Transient)
 
 // Un Modele d`Interface est un ensemble ferme d`Entites d`interface : chacune
 // est dans un seul modele a la fois; elle y a un numero (Number) qui permet de

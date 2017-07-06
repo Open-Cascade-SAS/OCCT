@@ -20,12 +20,12 @@
 
 #include <Standard_Type.hxx>
 #include <NCollection_DefineArray2.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 //      Declaration of Array2 class managed by Handle
 
 #define DEFINE_HARRAY2(HClassName, _Array2Type_)                               \
-class HClassName : public _Array2Type_, public MMgt_TShared {                  \
+class HClassName : public _Array2Type_, public Standard_Transient {                  \
  public:                                                                       \
    DEFINE_STANDARD_ALLOC                                                       \
    DEFINE_NCOLLECTION_ALLOC                                                    \
@@ -44,9 +44,9 @@ class HClassName : public _Array2Type_, public MMgt_TShared {                  \
    HClassName  (const _Array2Type_& theOther) : _Array2Type_(theOther) {}      \
    const _Array2Type_& Array2 () const { return *this; }                       \
    _Array2Type_& ChangeArray2 ()       { return *this; }                       \
-   DEFINE_STANDARD_RTTI_INLINE(HClassName,MMgt_TShared)                              \
+   DEFINE_STANDARD_RTTI_INLINE(HClassName,Standard_Transient)                              \
 };                                                                             \
-DEFINE_STANDARD_HANDLE (HClassName, MMgt_TShared)
+DEFINE_STANDARD_HANDLE (HClassName, Standard_Transient)
 
 #define IMPLEMENT_HARRAY2(HClassName)                                          
 

@@ -21,7 +21,7 @@
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(MAT_Bisector,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(MAT_Bisector,Standard_Transient)
 
 MAT_Bisector::MAT_Bisector()
 {

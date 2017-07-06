@@ -19,7 +19,7 @@
 #include <StepElement_MeasureOrUnspecifiedValue.hxx>
 #include <StepElement_SurfaceSection.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepElement_SurfaceSection,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_SurfaceSection,Standard_Transient)
 
 //=======================================================================
 //function : StepElement_SurfaceSection

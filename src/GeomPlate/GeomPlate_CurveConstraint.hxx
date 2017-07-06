@@ -24,7 +24,7 @@
 #include <Standard_Boolean.hxx>
 #include <GeomLProp_SLProps.hxx>
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class Adaptor3d_HCurveOnSurface;
 class Adaptor3d_HCurve;
 class Geom2d_Curve;
@@ -37,11 +37,11 @@ class gp_Vec;
 
 
 class GeomPlate_CurveConstraint;
-DEFINE_STANDARD_HANDLE(GeomPlate_CurveConstraint, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(GeomPlate_CurveConstraint, Standard_Transient)
 
 
 //! Defines curves as constraints to be used to deform a surface.
-class GeomPlate_CurveConstraint : public MMgt_TShared
+class GeomPlate_CurveConstraint : public Standard_Transient
 {
 
 public:
@@ -151,7 +151,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(GeomPlate_CurveConstraint,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GeomPlate_CurveConstraint,Standard_Transient)
 
 protected:
 

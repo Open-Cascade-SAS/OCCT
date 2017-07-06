@@ -21,15 +21,15 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
 
 class StepBasic_ActionMethod;
-DEFINE_STANDARD_HANDLE(StepBasic_ActionMethod, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_ActionMethod, Standard_Transient)
 
 //! Representation of STEP entity ActionMethod
-class StepBasic_ActionMethod : public MMgt_TShared
+class StepBasic_ActionMethod : public Standard_Transient
 {
 
 public:
@@ -71,7 +71,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ActionMethod,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ActionMethod,Standard_Transient)
 
 protected:
 

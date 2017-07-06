@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <TDF_Label.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TDF_LabelList.hxx>
@@ -30,7 +30,7 @@ class TFunction_Logbook;
 
 
 class TFunction_Driver;
-DEFINE_STANDARD_HANDLE(TFunction_Driver, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TFunction_Driver, Standard_Transient)
 
 //! This  driver  class provide  services  around function
 //! execution.   One instance of  this class is  built for
@@ -43,7 +43,7 @@ DEFINE_STANDARD_HANDLE(TFunction_Driver, MMgt_TShared)
 //! attributes of sub-labels of a model.
 //! A single instance of this class and each of its
 //! subclasses is built for the whole session.
-class TFunction_Driver : public MMgt_TShared
+class TFunction_Driver : public Standard_Transient
 {
 
 public:
@@ -86,7 +86,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TFunction_Driver,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TFunction_Driver,Standard_Transient)
 
 protected:
 

@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <TColStd_HSequenceOfTransient.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Interface_CheckStatus.hxx>
 #include <Standard_Integer.hxx>
@@ -33,7 +33,7 @@ class Transfer_TransientProcess;
 
 
 class Transfer_ResultFromTransient;
-DEFINE_STANDARD_HANDLE(Transfer_ResultFromTransient, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Transfer_ResultFromTransient, Standard_Transient)
 
 //! This class, in conjunction with ResultFromModel, allows to
 //! record the result of a transfer initially stored in a
@@ -43,7 +43,7 @@ DEFINE_STANDARD_HANDLE(Transfer_ResultFromTransient, MMgt_TShared)
 //! the result and checks) plus a list of "sub-results", which
 //! have been recorded in the TrabsientProcess, under scope
 //! attached to the starting transient.
-class Transfer_ResultFromTransient : public MMgt_TShared
+class Transfer_ResultFromTransient : public Standard_Transient
 {
 
 public:
@@ -113,7 +113,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Transfer_ResultFromTransient,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Transfer_ResultFromTransient,Standard_Transient)
 
 protected:
 

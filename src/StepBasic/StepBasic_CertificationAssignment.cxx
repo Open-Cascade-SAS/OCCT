@@ -20,7 +20,7 @@
 #include <StepBasic_Certification.hxx>
 #include <StepBasic_CertificationAssignment.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_CertificationAssignment,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_CertificationAssignment,Standard_Transient)
 
 //=======================================================================
 //function : StepBasic_CertificationAssignment

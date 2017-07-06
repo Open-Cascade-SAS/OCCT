@@ -20,21 +20,21 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 class TCollection_AsciiString;
 class Standard_Transient;
 
 
 class MoniTool_SignText;
-DEFINE_STANDARD_HANDLE(MoniTool_SignText, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MoniTool_SignText, Standard_Transient)
 
 //! Provides the basic service to get a text which identifies
 //! an object in a context
 //! It can be used for other classes (general signatures ...)
 //! It can also be used to build a message in which an object
 //! is to be identified
-class MoniTool_SignText : public MMgt_TShared
+class MoniTool_SignText : public Standard_Transient
 {
 
 public:
@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(MoniTool_SignText,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MoniTool_SignText,Standard_Transient)
 
 protected:
 

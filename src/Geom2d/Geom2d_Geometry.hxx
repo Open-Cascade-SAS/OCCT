@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
 class Standard_ConstructionError;
 class gp_Pnt2d;
@@ -30,7 +30,7 @@ class gp_Trsf2d;
 
 
 class Geom2d_Geometry;
-DEFINE_STANDARD_HANDLE(Geom2d_Geometry, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Geom2d_Geometry, Standard_Transient)
 
 
 //! The general abstract class Geometry in 2D space describes
@@ -56,7 +56,7 @@ DEFINE_STANDARD_HANDLE(Geom2d_Geometry, MMgt_TShared)
 //! abstract method Transform which is defined for each
 //! concrete type of derived object. All other
 //! transformations are implemented using the Transform method.
-class Geom2d_Geometry : public MMgt_TShared
+class Geom2d_Geometry : public Standard_Transient
 {
 
 public:
@@ -113,7 +113,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Geom2d_Geometry,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Geom2d_Geometry,Standard_Transient)
 
 protected:
 

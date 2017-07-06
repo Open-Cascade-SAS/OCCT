@@ -504,7 +504,7 @@ Handle(ChFiDS_SecHArray1) ChFi3d_FilBuilder::Sect (const Standard_Integer IC,
   Handle(ChFiDS_SecHArray1) res;
   for (itel.Initialize(myListStripe);itel.More(); itel.Next(), i++) {
     if(i == IC){
-      Handle(MMgt_TShared) bid = itel.Value()->SetOfSurfData()->Value(IS)->Simul();
+      Handle(Standard_Transient) bid = itel.Value()->SetOfSurfData()->Value(IS)->Simul();
       res = Handle(ChFiDS_SecHArray1)::DownCast(bid);
       return res;
     }

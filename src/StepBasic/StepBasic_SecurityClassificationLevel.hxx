@@ -20,15 +20,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
 
 class StepBasic_SecurityClassificationLevel;
-DEFINE_STANDARD_HANDLE(StepBasic_SecurityClassificationLevel, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_SecurityClassificationLevel, Standard_Transient)
 
 
-class StepBasic_SecurityClassificationLevel : public MMgt_TShared
+class StepBasic_SecurityClassificationLevel : public Standard_Transient
 {
 
 public:
@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_SecurityClassificationLevel,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_SecurityClassificationLevel,Standard_Transient)
 
 protected:
 

@@ -23,7 +23,7 @@
 #include <Standard_Real.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
 #include <Standard_Boolean.hxx>
 class TopoDS_Edge;
@@ -31,7 +31,7 @@ class TopoDS_Face;
 
 
 class ShapeAnalysis_TransferParameters;
-DEFINE_STANDARD_HANDLE(ShapeAnalysis_TransferParameters, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeAnalysis_TransferParameters, Standard_Transient)
 
 //! This tool is used for transferring parameters
 //! from 3d curve of the edge to pcurve and vice versa.
@@ -48,7 +48,7 @@ DEFINE_STANDARD_HANDLE(ShapeAnalysis_TransferParameters, MMgt_TShared)
 //!
 //! This behaviour can be redefined in derived classes, for example,
 //! using projection.
-class ShapeAnalysis_TransferParameters : public MMgt_TShared
+class ShapeAnalysis_TransferParameters : public Standard_Transient
 {
 
 public:
@@ -86,7 +86,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_TransferParameters,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_TransferParameters,Standard_Transient)
 
 protected:
 

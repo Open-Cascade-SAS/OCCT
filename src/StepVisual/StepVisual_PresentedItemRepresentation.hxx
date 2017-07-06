@@ -21,16 +21,16 @@
 #include <Standard_Type.hxx>
 
 #include <StepVisual_PresentationRepresentationSelect.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepVisual_PresentedItem;
 class StepVisual_PresentationRepresentationSelect;
 
 
 class StepVisual_PresentedItemRepresentation;
-DEFINE_STANDARD_HANDLE(StepVisual_PresentedItemRepresentation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_PresentedItemRepresentation, Standard_Transient)
 
 //! Added from StepVisual Rev2 to Rev4
-class StepVisual_PresentedItemRepresentation : public MMgt_TShared
+class StepVisual_PresentedItemRepresentation : public Standard_Transient
 {
 
 public:
@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentedItemRepresentation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentedItemRepresentation,Standard_Transient)
 
 protected:
 

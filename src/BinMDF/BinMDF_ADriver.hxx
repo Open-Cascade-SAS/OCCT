@@ -20,7 +20,7 @@
 #include <Standard_Type.hxx>
 
 #include <TCollection_AsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_Boolean.hxx>
@@ -34,10 +34,10 @@ class TCollection_ExtendedString;
 
 
 class BinMDF_ADriver;
-DEFINE_STANDARD_HANDLE(BinMDF_ADriver, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(BinMDF_ADriver, Standard_Transient)
 
 //! Attribute Storage/Retrieval Driver.
-class BinMDF_ADriver : public MMgt_TShared
+class BinMDF_ADriver : public Standard_Transient
 {
 
 public:
@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(BinMDF_ADriver,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BinMDF_ADriver,Standard_Transient)
 
 protected:
 

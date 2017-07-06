@@ -22,7 +22,7 @@
 
 #include <Standard_Real.hxx>
 #include <TopoDS_Shape.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Message_Gravity.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
@@ -36,14 +36,14 @@ class Message_Msg;
 
 
 class ShapeFix_Root;
-DEFINE_STANDARD_HANDLE(ShapeFix_Root, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeFix_Root, Standard_Transient)
 
 //! Root class for fixing operations
 //! Provides context for recording changes (optional),
 //! basic precision value and limit (minimal and
 //! maximal) values for tolerances,
 //! and message registrator
-class ShapeFix_Root : public MMgt_TShared
+class ShapeFix_Root : public Standard_Transient
 {
 
 public:
@@ -113,7 +113,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ShapeFix_Root,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_Root,Standard_Transient)
 
 protected:
 

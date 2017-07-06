@@ -24,21 +24,20 @@
 #include <HLRBRep_SeqOfShapeBounds.hxx>
 #include <BRepTopAdaptor_MapOfShapeTool.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class HLRBRep_Data;
 class Standard_OutOfRange;
 class HLRAlgo_Projector;
 class HLRTopoBRep_OutLiner;
-class MMgt_TShared;
 class HLRBRep_ShapeBounds;
 
 
 class HLRBRep_InternalAlgo;
-DEFINE_STANDARD_HANDLE(HLRBRep_InternalAlgo, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(HLRBRep_InternalAlgo, Standard_Transient)
 
 
-class HLRBRep_InternalAlgo : public MMgt_TShared
+class HLRBRep_InternalAlgo : public Standard_Transient
 {
 
 public:
@@ -58,7 +57,7 @@ public:
   Standard_EXPORT void Update();
   
   //! add the shape <S>.
-  Standard_EXPORT void Load (const Handle(HLRTopoBRep_OutLiner)& S, const Handle(MMgt_TShared)& SData, const Standard_Integer nbIso = 0);
+  Standard_EXPORT void Load (const Handle(HLRTopoBRep_OutLiner)& S, const Handle(Standard_Transient)& SData, const Standard_Integer nbIso = 0);
   
   //! add the shape <S>.
   Standard_EXPORT void Load (const Handle(HLRTopoBRep_OutLiner)& S, const Standard_Integer nbIso = 0);
@@ -71,7 +70,7 @@ public:
   Standard_EXPORT void Remove (const Standard_Integer I);
   
   //! Change the Shape Data of the Shape of index <I>.
-  Standard_EXPORT void ShapeData (const Standard_Integer I, const Handle(MMgt_TShared)& SData);
+  Standard_EXPORT void ShapeData (const Standard_Integer I, const Handle(Standard_Transient)& SData);
   
   Standard_EXPORT HLRBRep_SeqOfShapeBounds& SeqOfShapeBounds();
   
@@ -129,7 +128,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(HLRBRep_InternalAlgo,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRBRep_InternalAlgo,Standard_Transient)
 
 protected:
 

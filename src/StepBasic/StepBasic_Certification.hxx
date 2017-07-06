@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepBasic_CertificationType;
 
 
 class StepBasic_Certification;
-DEFINE_STANDARD_HANDLE(StepBasic_Certification, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_Certification, Standard_Transient)
 
 //! Representation of STEP entity Certification
-class StepBasic_Certification : public MMgt_TShared
+class StepBasic_Certification : public Standard_Transient
 {
 
 public:
@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_Certification,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_Certification,Standard_Transient)
 
 protected:
 

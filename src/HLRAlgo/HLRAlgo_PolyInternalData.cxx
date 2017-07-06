@@ -20,7 +20,7 @@
 #include <Standard_Stream.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyInternalData,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyInternalData,Standard_Transient)
 
 #ifdef OCCT_DEBUG
 static Standard_Integer HLRAlgo_PolyInternalData_TRACE = Standard_False;

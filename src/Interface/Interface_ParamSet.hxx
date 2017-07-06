@@ -22,7 +22,7 @@
 
 #include <Standard_PCharacter.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Interface_ParamType.hxx>
 class Interface_ParamList;
@@ -31,11 +31,11 @@ class Interface_FileParameter;
 
 
 class Interface_ParamSet;
-DEFINE_STANDARD_HANDLE(Interface_ParamSet, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Interface_ParamSet, Standard_Transient)
 
 //! Defines an ordered set of FileParameters, in a way to be
 //! efficient as in memory requirement or in speed
-class Interface_ParamSet : public MMgt_TShared
+class Interface_ParamSet : public Standard_Transient
 {
 
 public:
@@ -88,7 +88,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Interface_ParamSet,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_ParamSet,Standard_Transient)
 
 protected:
 

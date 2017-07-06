@@ -19,14 +19,14 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class XSAlgo_ToolContainer;
-DEFINE_STANDARD_HANDLE(XSAlgo_ToolContainer, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(XSAlgo_ToolContainer, Standard_Transient)
 
 //! Returns tools used by AlgoContainer
-class XSAlgo_ToolContainer : public MMgt_TShared
+class XSAlgo_ToolContainer : public Standard_Transient
 {
 
 public:
@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(XSAlgo_ToolContainer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(XSAlgo_ToolContainer,Standard_Transient)
 
 protected:
 

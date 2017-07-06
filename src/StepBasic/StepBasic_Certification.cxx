@@ -21,7 +21,7 @@
 #include <StepBasic_CertificationType.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Certification,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Certification,Standard_Transient)
 
 //=======================================================================
 //function : StepBasic_Certification

@@ -20,7 +20,7 @@
 #include <Standard_Type.hxx>
 
 #include <TDF_Label.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 class TDF_Attribute;
 class TDF_Label;
@@ -28,7 +28,7 @@ class Standard_GUID;
 
 
 class TDF_AttributeDelta;
-DEFINE_STANDARD_HANDLE(TDF_AttributeDelta, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TDF_AttributeDelta, Standard_Transient)
 
 //! This class discribes the services we need to
 //! implement Delta and Undo/Redo services.
@@ -42,7 +42,7 @@ DEFINE_STANDARD_HANDLE(TDF_AttributeDelta, MMgt_TShared)
 //! dead lock if found on the list, the
 //! AttributeDeltas are forced to be applied in an
 //! unpredictable order.
-class TDF_AttributeDelta : public MMgt_TShared
+class TDF_AttributeDelta : public Standard_Transient
 {
 
 public:
@@ -70,7 +70,7 @@ Standard_OStream& operator<< (Standard_OStream& OS) const
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TDF_AttributeDelta,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDF_AttributeDelta,Standard_Transient)
 
 protected:
 

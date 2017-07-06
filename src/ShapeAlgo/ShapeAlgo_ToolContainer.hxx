@@ -19,16 +19,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class ShapeFix_Shape;
 class ShapeFix_EdgeProjAux;
 
 
 class ShapeAlgo_ToolContainer;
-DEFINE_STANDARD_HANDLE(ShapeAlgo_ToolContainer, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeAlgo_ToolContainer, Standard_Transient)
 
 //! Returns tools used by AlgoContainer
-class ShapeAlgo_ToolContainer : public MMgt_TShared
+class ShapeAlgo_ToolContainer : public Standard_Transient
 {
 
 public:
@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ShapeAlgo_ToolContainer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeAlgo_ToolContainer,Standard_Transient)
 
 protected:
 

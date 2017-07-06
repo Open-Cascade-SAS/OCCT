@@ -15,7 +15,7 @@
 #include <Standard_Type.hxx>
 #include <Transfer_MapContainer.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Transfer_MapContainer,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Transfer_MapContainer,Standard_Transient)
 
 Transfer_MapContainer::Transfer_MapContainer()
 {

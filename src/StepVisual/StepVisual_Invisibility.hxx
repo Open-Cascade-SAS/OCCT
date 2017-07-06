@@ -21,16 +21,16 @@
 #include <Standard_Type.hxx>
 
 #include <StepVisual_HArray1OfInvisibleItem.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class StepVisual_InvisibleItem;
 
 
 class StepVisual_Invisibility;
-DEFINE_STANDARD_HANDLE(StepVisual_Invisibility, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_Invisibility, Standard_Transient)
 
 
-class StepVisual_Invisibility : public MMgt_TShared
+class StepVisual_Invisibility : public Standard_Transient
 {
 
 public:
@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_Invisibility,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_Invisibility,Standard_Transient)
 
 protected:
 

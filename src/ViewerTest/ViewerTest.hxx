@@ -31,7 +31,7 @@
 class AIS_InteractiveContext;
 class AIS_InteractiveObject;
 class TCollection_AsciiString;
-class MMgt_TShared;
+class Standard_Transient;
 class Image_PixMap;
 class V3d_View;
 class V3d_Viewer;

@@ -28,7 +28,7 @@
 #include <TColStd_ListOfInteger.hxx>
 #include <TColStd_MapIteratorOfMapOfTransient.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SelectionManager,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SelectionManager,Standard_Transient)
 
 static Standard_Integer FindIndex (const SelectMgr_SequenceOfSelector& theSelectorsSeq,
                                    const Handle(SelectMgr_ViewerSelector)& theSelector)

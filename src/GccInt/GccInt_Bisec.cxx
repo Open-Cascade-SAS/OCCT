@@ -26,7 +26,7 @@
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(GccInt_Bisec,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(GccInt_Bisec,Standard_Transient)
 
 gp_Circ2d GccInt_Bisec::
   Circle() const { 

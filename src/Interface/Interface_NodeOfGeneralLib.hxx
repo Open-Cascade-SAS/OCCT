@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class Interface_GlobalNodeOfGeneralLib;
 class Standard_Transient;
 class Interface_GeneralModule;
@@ -29,10 +29,10 @@ class Interface_GeneralLib;
 
 
 class Interface_NodeOfGeneralLib;
-DEFINE_STANDARD_HANDLE(Interface_NodeOfGeneralLib, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Interface_NodeOfGeneralLib, Standard_Transient)
 
 
-class Interface_NodeOfGeneralLib : public MMgt_TShared
+class Interface_NodeOfGeneralLib : public Standard_Transient
 {
 
 public:
@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI_INLINE(Interface_NodeOfGeneralLib,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(Interface_NodeOfGeneralLib,Standard_Transient)
 
 protected:
 

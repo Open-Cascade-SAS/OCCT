@@ -19,7 +19,7 @@
 #include <StepBasic_ObjectRole.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ObjectRole,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ObjectRole,Standard_Transient)
 
 //=======================================================================
 //function : StepBasic_ObjectRole

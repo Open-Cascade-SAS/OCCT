@@ -42,7 +42,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRepFill_LocationLaw,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(BRepFill_LocationLaw,Standard_Transient)
 
 //=======================================================================
 //function : Norm

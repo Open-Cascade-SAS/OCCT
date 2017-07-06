@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -29,10 +29,10 @@ class Standard_OutOfRange;
 
 
 class Law_Function;
-DEFINE_STANDARD_HANDLE(Law_Function, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Law_Function, Standard_Transient)
 
 //! Root class for evolution laws.
-class Law_Function : public MMgt_TShared
+class Law_Function : public Standard_Transient
 {
 
 public:
@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Law_Function,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Law_Function,Standard_Transient)
 
 protected:
 

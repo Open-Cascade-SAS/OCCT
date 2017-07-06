@@ -38,7 +38,7 @@
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(HLRTopoBRep_OutLiner,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(HLRTopoBRep_OutLiner,Standard_Transient)
 
 //=======================================================================
 //function : OutLiner

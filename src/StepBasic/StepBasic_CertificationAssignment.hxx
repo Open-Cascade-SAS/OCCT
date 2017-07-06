@@ -20,15 +20,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepBasic_Certification;
 
 
 class StepBasic_CertificationAssignment;
-DEFINE_STANDARD_HANDLE(StepBasic_CertificationAssignment, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_CertificationAssignment, Standard_Transient)
 
 //! Representation of STEP entity CertificationAssignment
-class StepBasic_CertificationAssignment : public MMgt_TShared
+class StepBasic_CertificationAssignment : public Standard_Transient
 {
 
 public:
@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_CertificationAssignment,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_CertificationAssignment,Standard_Transient)
 
 protected:
 

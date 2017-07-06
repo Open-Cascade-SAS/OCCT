@@ -24,7 +24,7 @@
 #include <Draw_Color.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_IsoType.hxx>
 #include <Standard_Real.hxx>
@@ -33,10 +33,10 @@ class Draw_Color;
 
 
 class DBRep_Face;
-DEFINE_STANDARD_HANDLE(DBRep_Face, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(DBRep_Face, Standard_Transient)
 
 //! Display of a face. Face + Array of iso + color.
-class DBRep_Face : public MMgt_TShared
+class DBRep_Face : public Standard_Transient
 {
 
 public:
@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(DBRep_Face,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(DBRep_Face,Standard_Transient)
 
 protected:
 

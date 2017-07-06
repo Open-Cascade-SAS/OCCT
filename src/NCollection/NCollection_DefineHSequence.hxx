@@ -20,12 +20,12 @@
 
 #include <Standard_Type.hxx>
 #include <NCollection_DefineSequence.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 //      Declaration of Sequence class managed by Handle
 
 #define DEFINE_HSEQUENCE(HClassName, _SequenceType_)                           \
-class HClassName : public _SequenceType_, public MMgt_TShared {                \
+class HClassName : public _SequenceType_, public Standard_Transient {                \
  public:                                                                       \
    DEFINE_STANDARD_ALLOC                                                       \
    DEFINE_NCOLLECTION_ALLOC                                                    \
@@ -44,9 +44,9 @@ class HClassName : public _SequenceType_, public MMgt_TShared {                \
                 typename std::enable_if<std::is_base_of<HClassName, T>::value>::type * = 0) { \
      _SequenceType_::Append (theOther->ChangeSequence());                      \
    }                                                                           \
-   DEFINE_STANDARD_RTTI_INLINE(HClassName,MMgt_TShared)                             \
+   DEFINE_STANDARD_RTTI_INLINE(HClassName,Standard_Transient)                             \
 }; \
-DEFINE_STANDARD_HANDLE (HClassName, MMgt_TShared) 
+DEFINE_STANDARD_HANDLE (HClassName, Standard_Transient) 
 
 #define IMPLEMENT_HSEQUENCE(HClassName)                                        
 

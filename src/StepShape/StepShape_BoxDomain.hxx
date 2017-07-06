@@ -21,15 +21,15 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepGeom_CartesianPoint;
 
 
 class StepShape_BoxDomain;
-DEFINE_STANDARD_HANDLE(StepShape_BoxDomain, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepShape_BoxDomain, Standard_Transient)
 
 
-class StepShape_BoxDomain : public MMgt_TShared
+class StepShape_BoxDomain : public Standard_Transient
 {
 
 public:
@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepShape_BoxDomain,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepShape_BoxDomain,Standard_Transient)
 
 protected:
 

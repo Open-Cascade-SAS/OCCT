@@ -21,7 +21,7 @@
 #include <StepBasic_ProductDefinitionRelationship.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionRelationship,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionRelationship,Standard_Transient)
 
 //=======================================================================
 //function : StepBasic_ProductDefinitionRelationship

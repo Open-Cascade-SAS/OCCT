@@ -19,7 +19,7 @@
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_Root,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_Root,Standard_Transient)
 
 //=======================================================================
 //function : ShapeFix_Root

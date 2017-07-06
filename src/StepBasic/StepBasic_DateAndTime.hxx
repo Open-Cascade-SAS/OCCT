@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepBasic_Date;
 class StepBasic_LocalTime;
 
 
 class StepBasic_DateAndTime;
-DEFINE_STANDARD_HANDLE(StepBasic_DateAndTime, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_DateAndTime, Standard_Transient)
 
 
-class StepBasic_DateAndTime : public MMgt_TShared
+class StepBasic_DateAndTime : public Standard_Transient
 {
 
 public:
@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_DateAndTime,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DateAndTime,Standard_Transient)
 
 protected:
 

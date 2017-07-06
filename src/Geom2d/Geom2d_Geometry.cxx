@@ -23,7 +23,7 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Geometry,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Geometry,Standard_Transient)
 
 typedef Geom2d_Geometry Geometry;
 typedef gp_Ax2d   Ax2d;

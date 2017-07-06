@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepBasic_ActionMethod;
 class StepBasic_VersionedActionRequest;
 
 
 class StepBasic_ActionRequestSolution;
-DEFINE_STANDARD_HANDLE(StepBasic_ActionRequestSolution, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_ActionRequestSolution, Standard_Transient)
 
 //! Representation of STEP entity ActionRequestSolution
-class StepBasic_ActionRequestSolution : public MMgt_TShared
+class StepBasic_ActionRequestSolution : public Standard_Transient
 {
 
 public:
@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ActionRequestSolution,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ActionRequestSolution,Standard_Transient)
 
 protected:
 

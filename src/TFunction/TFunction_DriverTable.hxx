@@ -22,7 +22,7 @@
 
 #include <TFunction_DataMapOfGUIDDriver.hxx>
 #include <TFunction_HArray1OfDataMapOfGUIDDriver.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
@@ -31,12 +31,12 @@ class TFunction_Driver;
 
 
 class TFunction_DriverTable;
-DEFINE_STANDARD_HANDLE(TFunction_DriverTable, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TFunction_DriverTable, Standard_Transient)
 
 //! A container for instances of drivers.
 //! You create a new instance of TFunction_Driver
 //! and use the method AddDriver to load it into the driver table.
-class TFunction_DriverTable : public MMgt_TShared
+class TFunction_DriverTable : public Standard_Transient
 {
 
 public:
@@ -73,7 +73,7 @@ Standard_OStream& operator << (Standard_OStream& anOS) const
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TFunction_DriverTable,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TFunction_DriverTable,Standard_Transient)
 
 protected:
 

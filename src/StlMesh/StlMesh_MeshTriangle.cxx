@@ -22,7 +22,7 @@
 #include <Standard_Type.hxx>
 #include <StlMesh_MeshTriangle.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StlMesh_MeshTriangle,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StlMesh_MeshTriangle,Standard_Transient)
 
 //=======================================================================
 //function : StlMesh_MeshTriangle

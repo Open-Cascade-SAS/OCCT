@@ -25,7 +25,7 @@
 #include <gp_Trsf2d.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
 class IGESData_IGESEntity;
@@ -36,14 +36,14 @@ class gp_Trsf2d;
 
 
 class IGESToBRep_IGESBoundary;
-DEFINE_STANDARD_HANDLE(IGESToBRep_IGESBoundary, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IGESToBRep_IGESBoundary, Standard_Transient)
 
 //! This class is intended to translate IGES boundary entity
 //! (142-CurveOnSurface, 141-Boundary or 508-Loop) into the wire.
 //! Methods Transfer are virtual and are redefined in Advanced
 //! Data Exchange to optimize the translation and take into
 //! account advanced parameters.
-class IGESToBRep_IGESBoundary : public MMgt_TShared
+class IGESToBRep_IGESBoundary : public Standard_Transient
 {
 
 public:
@@ -120,7 +120,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IGESToBRep_IGESBoundary,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IGESToBRep_IGESBoundary,Standard_Transient)
 
 protected:
 

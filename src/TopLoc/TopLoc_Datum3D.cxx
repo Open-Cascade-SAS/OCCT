@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 #include <TopLoc_Datum3D.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TopLoc_Datum3D,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TopLoc_Datum3D,Standard_Transient)
 
 //=======================================================================
 //function : TopLoc_Datum3D

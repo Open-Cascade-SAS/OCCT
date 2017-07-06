@@ -25,7 +25,7 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_ShareOut,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_ShareOut,Standard_Transient)
 
 IFSelect_ShareOut::IFSelect_ShareOut ()
 {

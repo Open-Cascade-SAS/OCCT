@@ -31,7 +31,7 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(GeomPlate_PointConstraint,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(GeomPlate_PointConstraint,Standard_Transient)
 
 //---------------------------------------------------------
 //         Constructeurs avec un point 

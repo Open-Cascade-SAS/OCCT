@@ -24,7 +24,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Expr_GeneralExpression,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Expr_GeneralExpression,Standard_Transient)
 
 Standard_Boolean Expr_GeneralExpression::IsShareable() const
  {

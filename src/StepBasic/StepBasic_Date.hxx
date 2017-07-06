@@ -21,14 +21,14 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class StepBasic_Date;
-DEFINE_STANDARD_HANDLE(StepBasic_Date, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_Date, Standard_Transient)
 
 
-class StepBasic_Date : public MMgt_TShared
+class StepBasic_Date : public Standard_Transient
 {
 
 public:
@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_Date,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_Date,Standard_Transient)
 
 protected:
 

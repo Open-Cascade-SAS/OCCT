@@ -29,14 +29,14 @@
 #include <VrmlConverter_TypeOfCamera.hxx>
 #include <VrmlConverter_TypeOfLight.hxx>
 #include <Vrml_MatrixTransform.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TopTools_Array1OfShape.hxx>
 #include <Standard_OStream.hxx>
 class HLRAlgo_Projector;
 
 
 class VrmlConverter_Projector;
-DEFINE_STANDARD_HANDLE(VrmlConverter_Projector, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(VrmlConverter_Projector, Standard_Transient)
 
 
 //! defines projector  and calculates properties of cameras and lights from Vrml
@@ -44,7 +44,7 @@ DEFINE_STANDARD_HANDLE(VrmlConverter_Projector, MMgt_TShared)
 //! and  MatrixTransform  )  to display all scene  shapes  with  arbitrary locations
 //! for requested the Projection Vector,  High Point Direction and the Focus
 //! and adds them ( method Add ) to anOSream.
-class VrmlConverter_Projector : public MMgt_TShared
+class VrmlConverter_Projector : public Standard_Transient
 {
 
 public:
@@ -72,7 +72,7 @@ public:
   
   Standard_EXPORT HLRAlgo_Projector Projector() const;
 
-  DEFINE_STANDARD_RTTIEXT(VrmlConverter_Projector,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(VrmlConverter_Projector,Standard_Transient)
 
 private:
 

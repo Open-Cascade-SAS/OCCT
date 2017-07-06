@@ -31,7 +31,7 @@
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Aspect_Window,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Aspect_Window,Standard_Transient)
 
 //-Aliases
 //-Global data definitions

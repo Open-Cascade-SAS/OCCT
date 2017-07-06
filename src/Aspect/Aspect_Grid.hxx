@@ -23,12 +23,12 @@
 #include <Quantity_Color.hxx>
 #include <Standard_Boolean.hxx>
 #include <Aspect_GridDrawMode.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 class Aspect_Grid;
-DEFINE_STANDARD_HANDLE(Aspect_Grid, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Aspect_Grid, Standard_Transient)
 
-class Aspect_Grid : public MMgt_TShared
+class Aspect_Grid : public Standard_Transient
 {
 
 public:
@@ -100,7 +100,7 @@ public:
   
   Standard_EXPORT virtual void Init() = 0;
 
-  DEFINE_STANDARD_RTTIEXT(Aspect_Grid,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Aspect_Grid,Standard_Transient)
 
 protected:
 

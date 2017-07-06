@@ -23,7 +23,7 @@
 #include <Storage_MapOfPers.hxx>
 #include <Storage_Error.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <Storage_HSeqOfRoot.hxx>
 #include <Standard_Boolean.hxx>
@@ -36,10 +36,10 @@ class Standard_Persistent;
 
 
 class Storage_RootData;
-DEFINE_STANDARD_HANDLE(Storage_RootData, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Storage_RootData, Standard_Transient)
 
 
-class Storage_RootData : public MMgt_TShared
+class Storage_RootData : public Standard_Transient
 {
 
 public:
@@ -78,7 +78,7 @@ public:
 friend class Storage_Schema;
 
 
-  DEFINE_STANDARD_RTTIEXT(Storage_RootData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Storage_RootData,Standard_Transient)
 
 protected:
 

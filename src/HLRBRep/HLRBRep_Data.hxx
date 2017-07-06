@@ -38,7 +38,7 @@
 #include <TopAbs_Orientation.hxx>
 #include <HLRBRep_Intersector.hxx>
 #include <HLRAlgo_Interference.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <BRepTopAdaptor_MapOfShapeTool.hxx>
 #include <TopAbs_State.hxx>
 #include <HLRAlgo_InterferenceList.hxx>
@@ -54,10 +54,10 @@ class TableauRejection;
 
 
 class HLRBRep_Data;
-DEFINE_STANDARD_HANDLE(HLRBRep_Data, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(HLRBRep_Data, Standard_Transient)
 
 
-class HLRBRep_Data : public MMgt_TShared
+class HLRBRep_Data : public Standard_Transient
 {
 
 public:
@@ -186,7 +186,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(HLRBRep_Data,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRBRep_Data,Standard_Transient)
 
 protected:
 

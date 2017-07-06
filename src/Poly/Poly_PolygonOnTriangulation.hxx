@@ -23,7 +23,7 @@
 #include <Standard_Real.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
@@ -31,7 +31,7 @@ class Standard_NullObject;
 
 
 class Poly_PolygonOnTriangulation;
-DEFINE_STANDARD_HANDLE(Poly_PolygonOnTriangulation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Poly_PolygonOnTriangulation, Standard_Transient)
 
 //! This class provides a polygon in 3D space, based on the triangulation
 //! of a surface. It may be the approximate representation of a
@@ -45,7 +45,7 @@ DEFINE_STANDARD_HANDLE(Poly_PolygonOnTriangulation, MMgt_TShared)
 //! on a surface, you can associate with each of its nodes the
 //! value of the parameter of the corresponding point on the
 //! curve.represents a 3d Polygon
-class Poly_PolygonOnTriangulation : public MMgt_TShared
+class Poly_PolygonOnTriangulation : public Standard_Transient
 {
 
 public:
@@ -104,7 +104,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Poly_PolygonOnTriangulation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Poly_PolygonOnTriangulation,Standard_Transient)
 
 protected:
 

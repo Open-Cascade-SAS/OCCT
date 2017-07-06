@@ -23,7 +23,7 @@
 #include <TDF_LabelDataMap.hxx>
 #include <TDF_AttributeDataMap.hxx>
 #include <TColStd_IndexedDataMapOfTransientTransient.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TDF_LabelMap.hxx>
 #include <TDF_AttributeMap.hxx>
 #include <Standard_OStream.hxx>
@@ -33,7 +33,7 @@ class Standard_Transient;
 
 
 class TDF_RelocationTable;
-DEFINE_STANDARD_HANDLE(TDF_RelocationTable, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TDF_RelocationTable, Standard_Transient)
 
 //! This is a relocation dictionnary between source
 //! and target labels, attributes or any
@@ -47,7 +47,7 @@ DEFINE_STANDARD_HANDLE(TDF_RelocationTable, MMgt_TShared)
 //!
 //! Look at SelfRelocate method for more explanation
 //! about self relocation behavior of this class.
-class TDF_RelocationTable : public MMgt_TShared
+class TDF_RelocationTable : public Standard_Transient
 {
 
 public:
@@ -153,7 +153,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TDF_RelocationTable,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDF_RelocationTable,Standard_Transient)
 
 protected:
 

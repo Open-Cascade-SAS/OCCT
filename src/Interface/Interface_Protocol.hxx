@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Type.hxx>
@@ -32,7 +32,7 @@ class Interface_InterfaceModel;
 
 
 class Interface_Protocol;
-DEFINE_STANDARD_HANDLE(Interface_Protocol, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Interface_Protocol, Standard_Transient)
 
 //! General description of Interface Protocols. A Protocol defines
 //! a set of Entity types. This class provides also the notion of
@@ -42,7 +42,7 @@ DEFINE_STANDARD_HANDLE(Interface_Protocol, MMgt_TShared)
 //! It also gives control of type definitions. By default, types
 //! are provided by CDL, but specific implementations, or topics
 //! like multi-typing, may involve another way
-class Interface_Protocol : public MMgt_TShared
+class Interface_Protocol : public Standard_Transient
 {
 
 public:
@@ -117,7 +117,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Interface_Protocol,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_Protocol,Standard_Transient)
 
 protected:
 

@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <TColgp_Array1OfPnt.hxx>
@@ -38,10 +38,10 @@ class Geom_Curve;
 
 
 class GeomFill_SectionLaw;
-DEFINE_STANDARD_HANDLE(GeomFill_SectionLaw, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(GeomFill_SectionLaw, Standard_Transient)
 
 //! To define section law in  sweeping
-class GeomFill_SectionLaw : public MMgt_TShared
+class GeomFill_SectionLaw : public Standard_Transient
 {
 
 public:
@@ -160,7 +160,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(GeomFill_SectionLaw,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_SectionLaw,Standard_Transient)
 
 protected:
 

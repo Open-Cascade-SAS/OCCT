@@ -22,7 +22,7 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
@@ -30,11 +30,11 @@ class Units_Dimensions;
 
 
 class Units_Token;
-DEFINE_STANDARD_HANDLE(Units_Token, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Units_Token, Standard_Transient)
 
 //! This class defines an elementary word contained in
 //! a Sentence object.
-class Units_Token : public MMgt_TShared
+class Units_Token : public Standard_Transient
 {
 
 public:
@@ -188,7 +188,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Units_Token,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Units_Token,Standard_Transient)
 
 protected:
 

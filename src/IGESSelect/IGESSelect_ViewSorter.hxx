@@ -22,7 +22,7 @@
 
 #include <TColStd_IndexedMapOfTransient.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <Standard_Integer.hxx>
@@ -35,7 +35,7 @@ class IFSelect_PacketList;
 
 
 class IGESSelect_ViewSorter;
-DEFINE_STANDARD_HANDLE(IGESSelect_ViewSorter, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IGESSelect_ViewSorter, Standard_Transient)
 
 //! Sorts IGES Entities on the views and drawings.
 //! In a first step, it splits a set of entities according the
@@ -45,7 +45,7 @@ DEFINE_STANDARD_HANDLE(IGESSelect_ViewSorter, MMgt_TShared)
 //!
 //! It is a TShared, hence it can be a workomg field of a non-
 //! mutable object (a Dispatch for instance)
-class IGESSelect_ViewSorter : public MMgt_TShared
+class IGESSelect_ViewSorter : public Standard_Transient
 {
 
 public:
@@ -121,7 +121,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IGESSelect_ViewSorter,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_ViewSorter,Standard_Transient)
 
 protected:
 

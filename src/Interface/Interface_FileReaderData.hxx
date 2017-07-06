@@ -23,7 +23,7 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfTransient.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Interface_ParamType.hxx>
 #include <Standard_Boolean.hxx>
@@ -37,7 +37,7 @@ class Standard_Transient;
 
 
 class Interface_FileReaderData;
-DEFINE_STANDARD_HANDLE(Interface_FileReaderData, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Interface_FileReaderData, Standard_Transient)
 
 //! This class defines services which permit to access Data issued
 //! from a File, in a form which does not depend of physical
@@ -54,7 +54,7 @@ DEFINE_STANDARD_HANDLE(Interface_FileReaderData, MMgt_TShared)
 //! FileReaderData inherits TShared to be accessed by Handle :
 //! this allows FileReaderTool to define more easily the specific
 //! methods, and improves memory management.
-class Interface_FileReaderData : public MMgt_TShared
+class Interface_FileReaderData : public Standard_Transient
 {
 
 public:
@@ -180,7 +180,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Interface_FileReaderData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_FileReaderData,Standard_Transient)
 
 protected:
 

@@ -24,15 +24,15 @@
 #include <TColStd_Array1OfTransient.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
 #include <HLRAlgo_ListOfBPoint.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 
 
 class HLRAlgo_PolyShellData;
-DEFINE_STANDARD_HANDLE(HLRAlgo_PolyShellData, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(HLRAlgo_PolyShellData, Standard_Transient)
 
 //! All the PolyData of a Shell
-class HLRAlgo_PolyShellData : public MMgt_TShared
+class HLRAlgo_PolyShellData : public Standard_Transient
 {
 
 public:
@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyShellData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyShellData,Standard_Transient)
 
 protected:
 

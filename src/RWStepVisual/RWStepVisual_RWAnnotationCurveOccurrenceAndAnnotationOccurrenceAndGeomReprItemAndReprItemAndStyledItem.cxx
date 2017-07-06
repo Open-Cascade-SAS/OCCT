@@ -62,8 +62,8 @@ const Handle(StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomR
   }
 
   // Inherited field : item
-  Handle(MMgt_TShared) aItem;
-  data->ReadEntity(num, 2, "item", ach, STANDARD_TYPE(MMgt_TShared), aItem);
+  Handle(Standard_Transient) aItem;
+  data->ReadEntity(num, 2, "item", ach, STANDARD_TYPE(Standard_Transient), aItem);
 
   // Initialization of the read entity
   ent->Init(aName, aStyles, aItem);

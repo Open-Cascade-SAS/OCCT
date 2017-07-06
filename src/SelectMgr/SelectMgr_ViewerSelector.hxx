@@ -76,9 +76,9 @@ typedef NCollection_DataMap<Standard_Integer, SelectMgr_SelectingVolumeManager> 
 //!    BVH traverse;
 //! 2. if tolerance of sensitive entity is less than mytolerance, the frustum for
 //!    intersection detection will be resized according to its sensitivity.
-class SelectMgr_ViewerSelector : public MMgt_TShared
+class SelectMgr_ViewerSelector : public Standard_Transient
 {
-  DEFINE_STANDARD_RTTIEXT(SelectMgr_ViewerSelector, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_ViewerSelector, Standard_Transient)
   friend class SelectMgr_SelectionManager;
 public:
 

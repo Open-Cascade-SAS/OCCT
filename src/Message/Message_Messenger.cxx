@@ -21,7 +21,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Message_Messenger,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Message_Messenger,Standard_Transient)
 
 //=======================================================================
 //function : Message_Messenger

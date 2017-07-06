@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepRepr_Representation;
 
 
 class StepRepr_RepresentationRelationship;
-DEFINE_STANDARD_HANDLE(StepRepr_RepresentationRelationship, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepRepr_RepresentationRelationship, Standard_Transient)
 
 
-class StepRepr_RepresentationRelationship : public MMgt_TShared
+class StepRepr_RepresentationRelationship : public Standard_Transient
 {
 
 public:
@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationRelationship,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationRelationship,Standard_Transient)
 
 protected:
 

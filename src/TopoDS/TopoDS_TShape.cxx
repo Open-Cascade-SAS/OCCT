@@ -21,4 +21,4 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_TShape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TopoDS_TShape,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TopoDS_TShape,Standard_Transient)

@@ -19,7 +19,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Message_Printer,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Message_Printer,Standard_Transient)
 
 //=======================================================================
 //function : Constructor

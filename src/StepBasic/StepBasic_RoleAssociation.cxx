@@ -20,7 +20,7 @@
 #include <StepBasic_RoleAssociation.hxx>
 #include <StepBasic_RoleSelect.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_RoleAssociation,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_RoleAssociation,Standard_Transient)
 
 //=======================================================================
 //function : StepBasic_RoleAssociation

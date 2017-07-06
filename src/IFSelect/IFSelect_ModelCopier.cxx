@@ -38,7 +38,7 @@
 #include <TColStd_HSequenceOfInteger.hxx>
 
 #include <stdio.h>
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_ModelCopier,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_ModelCopier,Standard_Transient)
 
 //#define MISOPOINT
 IFSelect_ModelCopier::IFSelect_ModelCopier ()    {  }

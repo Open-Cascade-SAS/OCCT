@@ -16,7 +16,7 @@
 #include <StepBasic_DateTimeRole.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DateTimeRole,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DateTimeRole,Standard_Transient)
 
 StepBasic_DateTimeRole::StepBasic_DateTimeRole ()  {}
 

@@ -20,14 +20,14 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class TDF_Label;
 class AIS_InteractiveObject;
 
 
 class TPrsStd_Driver;
-DEFINE_STANDARD_HANDLE(TPrsStd_Driver, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TPrsStd_Driver, Standard_Transient)
 
 //! Driver for AIS
 //! ==============
@@ -44,7 +44,7 @@ DEFINE_STANDARD_HANDLE(TPrsStd_Driver, MMgt_TShared)
 //! values (if Null) or Update (if !Null) an AIS_InteractiveObject
 //! .   Resources are found  in  attributes associated to  a given
 //! label.
-class TPrsStd_Driver : public MMgt_TShared
+class TPrsStd_Driver : public Standard_Transient
 {
 
 public:
@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TPrsStd_Driver,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TPrsStd_Driver,Standard_Transient)
 
 protected:
 

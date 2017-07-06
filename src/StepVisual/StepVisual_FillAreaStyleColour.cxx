@@ -17,7 +17,7 @@
 #include <StepVisual_FillAreaStyleColour.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_FillAreaStyleColour,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_FillAreaStyleColour,Standard_Transient)
 
 StepVisual_FillAreaStyleColour::StepVisual_FillAreaStyleColour ()  {}
 

@@ -21,7 +21,7 @@
 
 #include <Standard_Real.hxx>
 #include <Message_SequenceOfProgressScale.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
@@ -30,7 +30,7 @@ class Message_ProgressScale;
 
 
 class Message_ProgressIndicator;
-DEFINE_STANDARD_HANDLE(Message_ProgressIndicator, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Message_ProgressIndicator, Standard_Transient)
 
 //! Defines abstract interface from program to the "user".
 //! That includes progress indication and user break mechanisms
@@ -77,7 +77,7 @@ DEFINE_STANDARD_HANDLE(Message_ProgressIndicator, MMgt_TShared)
 //! progress indicator (e.g. show total position at the graphical bar,
 //! and/or print all scopes in text mode), and for implementation
 //! of user break mechanism (if defined).
-class Message_ProgressIndicator : public MMgt_TShared
+class Message_ProgressIndicator : public Standard_Transient
 {
 
 public:
@@ -171,7 +171,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Message_ProgressIndicator,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Message_ProgressIndicator,Standard_Transient)
 
 protected:
 

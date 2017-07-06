@@ -20,7 +20,7 @@
 #include <Standard_Type.hxx>
 
 #include <TCollection_AsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Type.hxx>
@@ -35,10 +35,10 @@ class TCollection_ExtendedString;
 
 
 class XmlMDF_ADriver;
-DEFINE_STANDARD_HANDLE(XmlMDF_ADriver, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(XmlMDF_ADriver, Standard_Transient)
 
 //! Attribute Storage/Retrieval Driver.
-class XmlMDF_ADriver : public MMgt_TShared
+class XmlMDF_ADriver : public Standard_Transient
 {
 
 public:
@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(XmlMDF_ADriver,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(XmlMDF_ADriver,Standard_Transient)
 
 protected:
 

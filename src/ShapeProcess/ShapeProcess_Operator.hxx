@@ -19,17 +19,17 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class ShapeProcess_Context;
 
 
 class ShapeProcess_Operator;
-DEFINE_STANDARD_HANDLE(ShapeProcess_Operator, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeProcess_Operator, Standard_Transient)
 
 //! Abstract Operator class providing a tool to
 //! perform an operation on Context
-class ShapeProcess_Operator : public MMgt_TShared
+class ShapeProcess_Operator : public Standard_Transient
 {
 
 public:
@@ -42,7 +42,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ShapeProcess_Operator,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeProcess_Operator,Standard_Transient)
 
 protected:
 

@@ -18,7 +18,7 @@
 #include <StepBasic_ProductDefinitionFormation.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinition,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinition,Standard_Transient)
 
 StepBasic_ProductDefinition::StepBasic_ProductDefinition ()  {}
 

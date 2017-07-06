@@ -27,7 +27,7 @@
 #include <TopoDS_Shape.hxx>
 #include <XSControl_Vars.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XSControl_Vars,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(XSControl_Vars,Standard_Transient)
 
 XSControl_Vars::XSControl_Vars() { }
 

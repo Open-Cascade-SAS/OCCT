@@ -35,11 +35,11 @@ class TCollection_HExtendedString;
 #include <TColStd_HArray1OfExtendedString.hxx>
 
 class TObj_Object;
-DEFINE_STANDARD_HANDLE(TObj_Object,MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TObj_Object,Standard_Transient)
 
 //! Basis class for transient objects in OCAF-based models
 
-class TObj_Object : public MMgt_TShared
+class TObj_Object : public Standard_Transient
 {
  public:
   enum TypeFlags     //!< Flags that define type-specific behaviour of objects
@@ -627,7 +627,7 @@ class TObj_Object : public MMgt_TShared
 
  public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTIEXT(TObj_Object,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TObj_Object,Standard_Transient)
 };
 
 //! Define handle in separate file

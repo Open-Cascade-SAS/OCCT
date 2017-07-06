@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <TCollection_ExtendedString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_ExtString.hxx>
 #include <Standard_ExtCharacter.hxx>
@@ -37,7 +37,7 @@ class TCollection_HAsciiString;
 
 
 class TCollection_HExtendedString;
-DEFINE_STANDARD_HANDLE(TCollection_HExtendedString, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TCollection_HExtendedString, Standard_Transient)
 
 //! A variable-length sequence of "extended"
 //! (UNICODE) characters (16-bit character
@@ -50,7 +50,7 @@ DEFINE_STANDARD_HANDLE(TCollection_HExtendedString, MMgt_TShared)
 //! - You may use an ExtendedString object to get the actual string.
 //! Note: HExtendedString objects use an
 //! ExtendedString string as a field.
-class TCollection_HExtendedString : public MMgt_TShared
+class TCollection_HExtendedString : public Standard_Transient
 {
 
 public:
@@ -208,7 +208,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TCollection_HExtendedString,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TCollection_HExtendedString,Standard_Transient)
 
 protected:
 

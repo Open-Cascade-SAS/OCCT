@@ -20,14 +20,14 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class StepShape_PrecisionQualifier;
-DEFINE_STANDARD_HANDLE(StepShape_PrecisionQualifier, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepShape_PrecisionQualifier, Standard_Transient)
 
 //! Added for Dimensional Tolerances
-class StepShape_PrecisionQualifier : public MMgt_TShared
+class StepShape_PrecisionQualifier : public Standard_Transient
 {
 
 public:
@@ -44,7 +44,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepShape_PrecisionQualifier,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepShape_PrecisionQualifier,Standard_Transient)
 
 protected:
 

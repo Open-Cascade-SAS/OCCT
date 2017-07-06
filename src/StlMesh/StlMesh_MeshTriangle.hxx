@@ -22,16 +22,16 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class Standard_NegativeValue;
 
 
 class StlMesh_MeshTriangle;
-DEFINE_STANDARD_HANDLE(StlMesh_MeshTriangle, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StlMesh_MeshTriangle, Standard_Transient)
 
 //! A  mesh triangle is defined with
 //! three geometric vertices and an orientation
-class StlMesh_MeshTriangle : public MMgt_TShared
+class StlMesh_MeshTriangle : public Standard_Transient
 {
 
 public:
@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StlMesh_MeshTriangle,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StlMesh_MeshTriangle,Standard_Transient)
 
 protected:
 

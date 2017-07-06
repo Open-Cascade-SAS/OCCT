@@ -25,17 +25,17 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TColStd_Array2OfReal.hxx>
 class PLib_Base;
 class Standard_DimensionError;
 
 
 class FEmTool_Curve;
-DEFINE_STANDARD_HANDLE(FEmTool_Curve, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(FEmTool_Curve, Standard_Transient)
 
 //! Curve defined by Polynomial Elements.
-class FEmTool_Curve : public MMgt_TShared
+class FEmTool_Curve : public Standard_Transient
 {
 
 public:
@@ -75,7 +75,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(FEmTool_Curve,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(FEmTool_Curve,Standard_Transient)
 
 protected:
 

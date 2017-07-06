@@ -20,7 +20,7 @@
 #include <StepElement_SurfaceSectionField.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepElement_SurfaceElementProperty,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_SurfaceElementProperty,Standard_Transient)
 
 //=======================================================================
 //function : StepElement_SurfaceElementProperty

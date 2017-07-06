@@ -15,7 +15,7 @@
 #include <Interface_IntVal.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Interface_IntVal,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Interface_IntVal,Standard_Transient)
 
 Interface_IntVal::Interface_IntVal  ()    {  theval = 0;  }
 

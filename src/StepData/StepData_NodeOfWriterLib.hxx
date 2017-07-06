@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepData_GlobalNodeOfWriterLib;
 class Standard_Transient;
 class StepData_ReadWriteModule;
@@ -29,10 +29,10 @@ class StepData_WriterLib;
 
 
 class StepData_NodeOfWriterLib;
-DEFINE_STANDARD_HANDLE(StepData_NodeOfWriterLib, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepData_NodeOfWriterLib, Standard_Transient)
 
 
-class StepData_NodeOfWriterLib : public MMgt_TShared
+class StepData_NodeOfWriterLib : public Standard_Transient
 {
 
 public:
@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI_INLINE(StepData_NodeOfWriterLib,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(StepData_NodeOfWriterLib,Standard_Transient)
 
 protected:
 

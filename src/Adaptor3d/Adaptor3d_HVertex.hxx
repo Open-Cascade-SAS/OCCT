@@ -23,17 +23,17 @@
 #include <gp_Pnt2d.hxx>
 #include <Standard_Real.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class gp_Pnt2d;
 class Adaptor2d_HCurve2d;
 
 
 class Adaptor3d_HVertex;
-DEFINE_STANDARD_HANDLE(Adaptor3d_HVertex, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Adaptor3d_HVertex, Standard_Transient)
 
 
-class Adaptor3d_HVertex : public MMgt_TShared
+class Adaptor3d_HVertex : public Standard_Transient
 {
 
 public:
@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Adaptor3d_HVertex,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Adaptor3d_HVertex,Standard_Transient)
 
 protected:
 

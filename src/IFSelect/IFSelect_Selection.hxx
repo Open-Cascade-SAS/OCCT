@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class Interface_InterfaceError;
 class Interface_EntityIterator;
@@ -30,7 +30,7 @@ class TCollection_AsciiString;
 
 
 class IFSelect_Selection;
-DEFINE_STANDARD_HANDLE(IFSelect_Selection, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IFSelect_Selection, Standard_Transient)
 
 //! A Selection allows to define a set of Interface Entities.
 //! Entities to be put on an output file should be identified in
@@ -41,7 +41,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_Selection, MMgt_TShared)
 //! Its input can be, either an Interface Model (the very source),
 //! or another-other Selection(s) or any other ouput. All list
 //! computations start from an input Graph (from IFGraph)
-class IFSelect_Selection : public MMgt_TShared
+class IFSelect_Selection : public Standard_Transient
 {
 
 public:
@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_Selection,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_Selection,Standard_Transient)
 
 protected:
 

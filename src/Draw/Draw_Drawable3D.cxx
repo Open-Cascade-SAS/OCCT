@@ -19,7 +19,7 @@
 #include <Draw_Drawable3D.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Draw_Drawable3D,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Draw_Drawable3D,Standard_Transient)
 
 //=======================================================================
 //function : Draw_Drawable3D

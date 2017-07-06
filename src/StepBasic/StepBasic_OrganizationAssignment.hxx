@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepBasic_Organization;
 class StepBasic_OrganizationRole;
 
 
 class StepBasic_OrganizationAssignment;
-DEFINE_STANDARD_HANDLE(StepBasic_OrganizationAssignment, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_OrganizationAssignment, Standard_Transient)
 
 
-class StepBasic_OrganizationAssignment : public MMgt_TShared
+class StepBasic_OrganizationAssignment : public Standard_Transient
 {
 
 public:
@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_OrganizationAssignment,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_OrganizationAssignment,Standard_Transient)
 
 protected:
 

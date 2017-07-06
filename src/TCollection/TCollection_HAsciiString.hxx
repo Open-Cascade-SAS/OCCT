@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <TCollection_AsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Character.hxx>
 #include <Standard_Integer.hxx>
@@ -37,7 +37,7 @@ class TCollection_HExtendedString;
 
 
 class TCollection_HAsciiString;
-DEFINE_STANDARD_HANDLE(TCollection_HAsciiString, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TCollection_HAsciiString, Standard_Transient)
 
 //! A variable-length sequence of ASCII characters
 //! (normal 8-bit character type). It provides editing
@@ -47,7 +47,7 @@ DEFINE_STANDARD_HANDLE(TCollection_HAsciiString, MMgt_TShared)
 //! -   HAsciiString strings may be shared by several objects.
 //! -   You may use an AsciiString object to get the actual string.
 //! Note: HAsciiString objects use an AsciiString string as a field.
-class TCollection_HAsciiString : public MMgt_TShared
+class TCollection_HAsciiString : public Standard_Transient
 {
 
 public:
@@ -471,7 +471,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TCollection_HAsciiString,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TCollection_HAsciiString,Standard_Transient)
 
 protected:
 

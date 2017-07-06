@@ -23,16 +23,16 @@
 #include <StepVisual_CentralOrParallel.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepGeom_CartesianPoint;
 class StepVisual_PlanarBox;
 
 
 class StepVisual_ViewVolume;
-DEFINE_STANDARD_HANDLE(StepVisual_ViewVolume, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_ViewVolume, Standard_Transient)
 
 
-class StepVisual_ViewVolume : public MMgt_TShared
+class StepVisual_ViewVolume : public Standard_Transient
 {
 
 public:
@@ -82,7 +82,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_ViewVolume,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_ViewVolume,Standard_Transient)
 
 protected:
 

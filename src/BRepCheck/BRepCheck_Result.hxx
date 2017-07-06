@@ -24,17 +24,17 @@
 #include <Standard_Boolean.hxx>
 #include <BRepCheck_DataMapOfShapeListOfStatus.hxx>
 #include <BRepCheck_DataMapIteratorOfDataMapOfShapeListOfStatus.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <BRepCheck_ListOfStatus.hxx>
 class Standard_NoSuchObject;
 class TopoDS_Shape;
 
 
 class BRepCheck_Result;
-DEFINE_STANDARD_HANDLE(BRepCheck_Result, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(BRepCheck_Result, Standard_Transient)
 
 
-class BRepCheck_Result : public MMgt_TShared
+class BRepCheck_Result : public Standard_Transient
 {
 
 public:
@@ -73,7 +73,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(BRepCheck_Result,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepCheck_Result,Standard_Transient)
 
 protected:
 

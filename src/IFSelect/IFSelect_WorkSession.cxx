@@ -84,7 +84,7 @@
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_MapOfInteger.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_WorkSession,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_WorkSession,Standard_Transient)
 
 #define Flag_Incorrect 2
 //  (Bit Map n0 2)

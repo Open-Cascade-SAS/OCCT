@@ -21,12 +21,12 @@
 #include <Standard_Type.hxx>
 
 #include <TColgp_HArray1OfVec.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 
 
 class Vrml_Coordinate3;
-DEFINE_STANDARD_HANDLE(Vrml_Coordinate3, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Vrml_Coordinate3, Standard_Transient)
 
 //! defines a Coordinate3 node of VRML specifying
 //! properties of geometry and its appearance.
@@ -34,7 +34,7 @@ DEFINE_STANDARD_HANDLE(Vrml_Coordinate3, MMgt_TShared)
 //! IndexedLineSet, or PointSet node. This node does not produce a visible result
 //! during rendering; it simply replaces the current coordinates in the rendering
 //! state for subsequent nodes to use.
-class Vrml_Coordinate3 : public MMgt_TShared
+class Vrml_Coordinate3 : public Standard_Transient
 {
 
 public:
@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Vrml_Coordinate3,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Vrml_Coordinate3,Standard_Transient)
 
 protected:
 

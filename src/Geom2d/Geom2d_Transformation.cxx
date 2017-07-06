@@ -24,7 +24,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Transformation,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Transformation,Standard_Transient)
 
 typedef Geom2d_Transformation         Transformation;
 typedef gp_Ax2d     Ax2d;

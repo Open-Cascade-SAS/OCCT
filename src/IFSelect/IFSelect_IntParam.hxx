@@ -22,12 +22,12 @@
 
 #include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 
 
 class IFSelect_IntParam;
-DEFINE_STANDARD_HANDLE(IFSelect_IntParam, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IFSelect_IntParam, Standard_Transient)
 
 //! This class simply allows to access an Integer value through a
 //! Handle, as a String can be (by using HString).
@@ -43,7 +43,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_IntParam, MMgt_TShared)
 //! For an Integer, an IntParam can designate (by its name) a
 //! Static : each time its value is required or set, the Static
 //! is aknowledged
-class IFSelect_IntParam : public MMgt_TShared
+class IFSelect_IntParam : public Standard_Transient
 {
 
 public:
@@ -78,7 +78,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_IntParam,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_IntParam,Standard_Transient)
 
 protected:
 

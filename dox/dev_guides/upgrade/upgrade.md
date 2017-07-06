@@ -1247,6 +1247,7 @@ In most cases this change should be transparent, however applications implementi
 
 @subsection upgrade_720_changes_methods Other changes
 
+* *MMgt_TShared* class definition has been removed - Standard_Transient should be used instead (MMgt_TShared is marked as deprecated typedef of Standard_Transient for smooth migration).
 * Class GeomPlate_BuildPlateSurface accepts base class Adaptor3d_HCurve (instead of inherited Adaptor3d_HCurveOnSurface accepted earlier).
 * Types GeomPlate_Array1OfHCurveOnSurface and GeomPlate_HArray1OfHCurveOnSurface have been replaced with GeomPlate_Array1OfHCurve and GeomPlate_HArray1OfHCurve correspondingly (accept base class Adaptor3d_HCurve instead of Adaptor3d_HCurveOnSurface).
 * Enumeration *Image_PixMap::ImgFormat*, previously declared as nested enumeration within class *Image_PixMap*, has been moved to global namespace as *Image_Format* following OCCT coding rules.

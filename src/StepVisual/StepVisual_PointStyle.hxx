@@ -22,7 +22,7 @@
 
 #include <StepVisual_MarkerSelect.hxx>
 #include <StepBasic_SizeSelect.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepVisual_Colour;
 class StepVisual_MarkerSelect;
@@ -30,10 +30,10 @@ class StepBasic_SizeSelect;
 
 
 class StepVisual_PointStyle;
-DEFINE_STANDARD_HANDLE(StepVisual_PointStyle, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_PointStyle, Standard_Transient)
 
 
-class StepVisual_PointStyle : public MMgt_TShared
+class StepVisual_PointStyle : public Standard_Transient
 {
 
 public:
@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_PointStyle,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PointStyle,Standard_Transient)
 
 protected:
 

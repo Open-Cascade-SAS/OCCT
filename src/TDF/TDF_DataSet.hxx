@@ -22,7 +22,7 @@
 #include <TDF_LabelList.hxx>
 #include <TDF_LabelMap.hxx>
 #include <TDF_AttributeMap.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 class TDF_Label;
@@ -30,11 +30,11 @@ class TDF_Attribute;
 
 
 class TDF_DataSet;
-DEFINE_STANDARD_HANDLE(TDF_DataSet, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TDF_DataSet, Standard_Transient)
 
 //! This class is a set of TDF informations like
 //! labels and attributes.
-class TDF_DataSet : public MMgt_TShared
+class TDF_DataSet : public Standard_Transient
 {
 
 public:
@@ -87,7 +87,7 @@ Standard_OStream& operator<< (Standard_OStream& anOS) const
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TDF_DataSet,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDF_DataSet,Standard_Transient)
 
 protected:
 

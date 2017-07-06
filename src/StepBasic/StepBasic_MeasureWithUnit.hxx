@@ -21,17 +21,17 @@
 #include <Standard_Type.hxx>
 
 #include <StepBasic_Unit.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
 class StepBasic_MeasureValueMember;
 class StepBasic_Unit;
 
 
 class StepBasic_MeasureWithUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_MeasureWithUnit, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_MeasureWithUnit, Standard_Transient)
 
 
-class StepBasic_MeasureWithUnit : public MMgt_TShared
+class StepBasic_MeasureWithUnit : public Standard_Transient
 {
 
 public:
@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_MeasureWithUnit,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_MeasureWithUnit,Standard_Transient)
 
 protected:
 

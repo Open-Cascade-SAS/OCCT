@@ -20,7 +20,7 @@
 #include <ShapeUpgrade_Tool.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_Tool,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_Tool,Standard_Transient)
 
 //=======================================================================
 //function : ShapeUpgrade_Tool

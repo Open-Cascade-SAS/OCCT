@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
@@ -29,10 +29,10 @@ class StdFail_NotDone;
 
 
 class FEmTool_SparseMatrix;
-DEFINE_STANDARD_HANDLE(FEmTool_SparseMatrix, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(FEmTool_SparseMatrix, Standard_Transient)
 
 //! Sparse Matrix definition
-class FEmTool_SparseMatrix : public MMgt_TShared
+class FEmTool_SparseMatrix : public Standard_Transient
 {
 
 public:
@@ -67,7 +67,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(FEmTool_SparseMatrix,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(FEmTool_SparseMatrix,Standard_Transient)
 
 protected:
 

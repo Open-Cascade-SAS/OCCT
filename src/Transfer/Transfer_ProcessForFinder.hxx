@@ -37,10 +37,10 @@ class Interface_CheckIterator;
 
 
 class Transfer_ProcessForFinder;
-DEFINE_STANDARD_HANDLE(Transfer_ProcessForFinder, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Transfer_ProcessForFinder, Standard_Transient)
 
 
-class Transfer_ProcessForFinder : public MMgt_TShared
+class Transfer_ProcessForFinder : public Standard_Transient
 {
 
 public:
@@ -417,7 +417,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI_INLINE(Transfer_ProcessForFinder,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(Transfer_ProcessForFinder,Standard_Transient)
 
 protected:
 

@@ -25,7 +25,7 @@
 #include <StlMesh_Mesh.hxx>
 #include <StlMesh_MeshDomain.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StlMesh_Mesh,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StlMesh_Mesh,Standard_Transient)
 
 //=======================================================================
 //function : StlMesh_Mesh

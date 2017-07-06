@@ -23,14 +23,14 @@
 #include <IFSelect_SequenceOfGeneralModifier.hxx>
 #include <Interface_IntList.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
 class IFSelect_GeneralModifier;
 
 
 class IFSelect_AppliedModifiers;
-DEFINE_STANDARD_HANDLE(IFSelect_AppliedModifiers, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IFSelect_AppliedModifiers, Standard_Transient)
 
 //! This class allows to memorize and access to the modifiers
 //! which are to be applied to a file. To each modifier, is bound
@@ -50,7 +50,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_AppliedModifiers, MMgt_TShared)
 //!
 //! for (i = 1; i <= entcount; i ++)
 //! nument = ItemNum (i);  -> return an entity number
-class IFSelect_AppliedModifiers : public MMgt_TShared
+class IFSelect_AppliedModifiers : public Standard_Transient
 {
 
 public:
@@ -106,7 +106,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_AppliedModifiers,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_AppliedModifiers,Standard_Transient)
 
 protected:
 

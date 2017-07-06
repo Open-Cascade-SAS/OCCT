@@ -34,7 +34,7 @@
 #include <TopOpeBRepTool_PROJECT.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRep_Hctxee2d,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRep_Hctxee2d,Standard_Transient)
 
 #ifdef OCCT_DEBUG
 #include <GeomTools_SurfaceSet.hxx>

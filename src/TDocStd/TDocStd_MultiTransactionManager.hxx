@@ -23,14 +23,14 @@
 #include <TDocStd_SequenceOfApplicationDelta.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 class TCollection_ExtendedString;
 class TDocStd_Document;
 
 
 class TDocStd_MultiTransactionManager;
-DEFINE_STANDARD_HANDLE(TDocStd_MultiTransactionManager, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TDocStd_MultiTransactionManager, Standard_Transient)
 
 //! Class for synchronization of transactions within multiple documents.
 //! Each transaction of this class involvess one transaction in each modified document.
@@ -47,7 +47,7 @@ DEFINE_STANDARD_HANDLE(TDocStd_MultiTransactionManager, MMgt_TShared)
 //!
 //! NOTE: When you invoke CommitTransaction of multi transaction
 //! manager, all nested transaction of its documents will be closed (commited).
-class TDocStd_MultiTransactionManager : public MMgt_TShared
+class TDocStd_MultiTransactionManager : public Standard_Transient
 {
 
 public:
@@ -145,7 +145,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TDocStd_MultiTransactionManager,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDocStd_MultiTransactionManager,Standard_Transient)
 
 protected:
 

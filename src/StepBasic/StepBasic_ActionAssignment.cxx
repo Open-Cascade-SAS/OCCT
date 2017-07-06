@@ -20,7 +20,7 @@
 #include <StepBasic_Action.hxx>
 #include <StepBasic_ActionAssignment.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ActionAssignment,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ActionAssignment,Standard_Transient)
 
 //=======================================================================
 //function : StepBasic_ActionAssignment

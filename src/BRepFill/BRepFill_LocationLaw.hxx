@@ -27,7 +27,7 @@
 #include <TopTools_HArray1OfShape.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <GeomFill_PipeError.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <Standard_Boolean.hxx>
@@ -40,10 +40,10 @@ class TopoDS_Shape;
 
 
 class BRepFill_LocationLaw;
-DEFINE_STANDARD_HANDLE(BRepFill_LocationLaw, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(BRepFill_LocationLaw, Standard_Transient)
 
 //! Location Law on a  Wire.
-class BRepFill_LocationLaw : public MMgt_TShared
+class BRepFill_LocationLaw : public Standard_Transient
 {
 
 public:
@@ -122,7 +122,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(BRepFill_LocationLaw,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepFill_LocationLaw,Standard_Transient)
 
 protected:
 

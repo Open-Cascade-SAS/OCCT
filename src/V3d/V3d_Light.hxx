@@ -19,7 +19,7 @@
 
 #include <Graphic3d_CLight.hxx>
 #include <Graphic3d_Vertex.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard.hxx>
 #include <Standard_Boolean.hxx>
@@ -32,11 +32,11 @@ class Graphic3d_Structure;
 class V3d_Viewer;
 
 class V3d_Light;
-DEFINE_STANDARD_HANDLE(V3d_Light, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(V3d_Light, Standard_Transient)
 
 //! Defines services on Light type objects..
 //! (base class for AmbientLight and PositionLight)
-class V3d_Light : public MMgt_TShared
+class V3d_Light : public Standard_Transient
 {
 public:
 
@@ -71,7 +71,7 @@ friend
   //! Updates the lights of the view. The view is redrawn.
   Standard_EXPORT void V3d_View::UpdateLights() const;
 
-  DEFINE_STANDARD_RTTIEXT(V3d_Light,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(V3d_Light,Standard_Transient)
 
 protected:
 

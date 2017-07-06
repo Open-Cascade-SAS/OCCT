@@ -20,15 +20,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepBasic_SecurityClassification;
 
 
 class StepBasic_SecurityClassificationAssignment;
-DEFINE_STANDARD_HANDLE(StepBasic_SecurityClassificationAssignment, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_SecurityClassificationAssignment, Standard_Transient)
 
 
-class StepBasic_SecurityClassificationAssignment : public MMgt_TShared
+class StepBasic_SecurityClassificationAssignment : public Standard_Transient
 {
 
 public:
@@ -43,7 +43,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_SecurityClassificationAssignment,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_SecurityClassificationAssignment,Standard_Transient)
 
 protected:
 

@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 class Law_BSpline;
@@ -28,11 +28,11 @@ class gp_Vec;
 
 
 class GeomFill_TgtField;
-DEFINE_STANDARD_HANDLE(GeomFill_TgtField, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(GeomFill_TgtField, Standard_Transient)
 
 //! Root class defining the methods we need to make an
 //! algorithmic tangents field.
-class GeomFill_TgtField : public MMgt_TShared
+class GeomFill_TgtField : public Standard_Transient
 {
 
 public:
@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(GeomFill_TgtField,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_TgtField,Standard_Transient)
 
 protected:
 

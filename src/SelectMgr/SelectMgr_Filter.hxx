@@ -20,14 +20,14 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class SelectMgr_EntityOwner;
 
 
 class SelectMgr_Filter;
-DEFINE_STANDARD_HANDLE(SelectMgr_Filter, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(SelectMgr_Filter, Standard_Transient)
 
 //! The root class to define filter objects for selection.
 //! Advance handling of objects requires the services of
@@ -38,7 +38,7 @@ DEFINE_STANDARD_HANDLE(SelectMgr_Filter, MMgt_TShared)
 //! You can create your own filters by defining new filter
 //! classes inheriting this framework. You use these
 //! filters by loading them into an AIS interactive context.
-class SelectMgr_Filter : public MMgt_TShared
+class SelectMgr_Filter : public Standard_Transient
 {
 
 public:
@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(SelectMgr_Filter,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_Filter,Standard_Transient)
 
 protected:
 

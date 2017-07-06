@@ -21,16 +21,16 @@
 #include <Standard_Type.hxx>
 
 #include <StepRepr_CharacterizedDefinition.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepRepr_CharacterizedDefinition;
 
 
 class StepRepr_MaterialDesignation;
-DEFINE_STANDARD_HANDLE(StepRepr_MaterialDesignation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepRepr_MaterialDesignation, Standard_Transient)
 
 
-class StepRepr_MaterialDesignation : public MMgt_TShared
+class StepRepr_MaterialDesignation : public Standard_Transient
 {
 
 public:
@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_MaterialDesignation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_MaterialDesignation,Standard_Transient)
 
 protected:
 

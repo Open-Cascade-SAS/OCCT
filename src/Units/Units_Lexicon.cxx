@@ -21,7 +21,7 @@
 #include <TCollection_HAsciiString.hxx>
 #include <Units_Token.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Units_Lexicon,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Units_Lexicon,Standard_Transient)
 
 namespace
 {

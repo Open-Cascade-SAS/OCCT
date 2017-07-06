@@ -23,17 +23,17 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 #include <Draw_Interpretor.hxx>
 class Draw_Display;
 
 
 class Draw_Drawable3D;
-DEFINE_STANDARD_HANDLE(Draw_Drawable3D, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Draw_Drawable3D, Standard_Transient)
 
 
-class Draw_Drawable3D : public MMgt_TShared
+class Draw_Drawable3D : public Standard_Transient
 {
 
 public:
@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Draw_Drawable3D,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Draw_Drawable3D,Standard_Transient)
 
 protected:
 

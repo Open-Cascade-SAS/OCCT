@@ -22,12 +22,12 @@
 
 #include <Quantity_HArray1OfColor.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 
 
 class Vrml_Material;
-DEFINE_STANDARD_HANDLE(Vrml_Material, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Vrml_Material, Standard_Transient)
 
 //! defines a Material node of VRML specifying properties of geometry
 //! and its appearance.
@@ -35,7 +35,7 @@ DEFINE_STANDARD_HANDLE(Vrml_Material, MMgt_TShared)
 //! Material sets several components of the current material during traversal. Different shapes
 //! interpret materials with multiple values differently. To bind materials to shapes, use a
 //! MaterialBinding node.
-class Vrml_Material : public MMgt_TShared
+class Vrml_Material : public Standard_Transient
 {
 
 public:
@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Vrml_Material,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Vrml_Material,Standard_Transient)
 
 protected:
 

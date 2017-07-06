@@ -21,20 +21,20 @@
 #include <Standard_Type.hxx>
 
 #include <TPrsStd_DataMapOfGUIDDriver.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class Standard_GUID;
 class TPrsStd_Driver;
 
 
 class TPrsStd_DriverTable;
-DEFINE_STANDARD_HANDLE(TPrsStd_DriverTable, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TPrsStd_DriverTable, Standard_Transient)
 
 //! This class is   a  container to record  (AddDriver)
 //! binding between  GUID and  TPrsStd_Driver.
 //! You create a new instance of TPrsStd_Driver
 //! and use the method AddDriver to load it into the driver table. the method
-class TPrsStd_DriverTable : public MMgt_TShared
+class TPrsStd_DriverTable : public Standard_Transient
 {
 
 public:
@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TPrsStd_DriverTable,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TPrsStd_DriverTable,Standard_Transient)
 
 protected:
 

@@ -20,15 +20,15 @@
 #include <Standard_Type.hxx>
 
 #include <StepBasic_SourceItem.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepBasic_SourceItem;
 
 
 class StepBasic_ExternalSource;
-DEFINE_STANDARD_HANDLE(StepBasic_ExternalSource, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_ExternalSource, Standard_Transient)
 
 //! Representation of STEP entity ExternalSource
-class StepBasic_ExternalSource : public MMgt_TShared
+class StepBasic_ExternalSource : public Standard_Transient
 {
 
 public:
@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ExternalSource,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ExternalSource,Standard_Transient)
 
 protected:
 

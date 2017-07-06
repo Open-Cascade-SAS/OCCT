@@ -21,17 +21,17 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class MAT_TListNodeOfListOfBisector;
 class MAT_Bisector;
 
 
 class MAT_ListOfBisector;
-DEFINE_STANDARD_HANDLE(MAT_ListOfBisector, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MAT_ListOfBisector, Standard_Transient)
 
 
-class MAT_ListOfBisector : public MMgt_TShared
+class MAT_ListOfBisector : public Standard_Transient
 {
 
 public:
@@ -94,7 +94,7 @@ Handle(MAT_Bisector) operator() (const Standard_Integer anindex)
 
 
 
-  DEFINE_STANDARD_RTTI_INLINE(MAT_ListOfBisector,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(MAT_ListOfBisector,Standard_Transient)
 
 protected:
 

@@ -46,7 +46,7 @@
 #include <Adaptor3d_HCurve.hxx>
 #include <BSplCLib.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_EdgeProjAux,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_EdgeProjAux,Standard_Transient)
 
 //=======================================================================
 //function : ShapeFix_EdgeProjAux

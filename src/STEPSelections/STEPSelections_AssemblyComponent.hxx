@@ -21,15 +21,15 @@
 #include <Standard_Type.hxx>
 
 #include <STEPSelections_HSequenceOfAssemblyLink.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepShape_ShapeDefinitionRepresentation;
 
 
 class STEPSelections_AssemblyComponent;
-DEFINE_STANDARD_HANDLE(STEPSelections_AssemblyComponent, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(STEPSelections_AssemblyComponent, Standard_Transient)
 
 
-class STEPSelections_AssemblyComponent : public MMgt_TShared
+class STEPSelections_AssemblyComponent : public Standard_Transient
 {
 
 public:
@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(STEPSelections_AssemblyComponent,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(STEPSelections_AssemblyComponent,Standard_Transient)
 
 protected:
 

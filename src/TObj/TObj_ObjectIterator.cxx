@@ -19,7 +19,7 @@
 #include <TObj_Object.hxx>
 
 
-IMPLEMENT_STANDARD_RTTIEXT(TObj_ObjectIterator,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TObj_ObjectIterator,Standard_Transient)
 
 //=======================================================================
 //function : More

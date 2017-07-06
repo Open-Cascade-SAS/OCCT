@@ -18,7 +18,7 @@
 #include <StepAP242_ItemIdentifiedRepresentationUsageDefinition.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP242_ItemIdentifiedRepresentationUsage,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP242_ItemIdentifiedRepresentationUsage,Standard_Transient)
 
 //=======================================================================
 //function : StepAP242_ItemIdentifiedRepresentationUsage

@@ -24,7 +24,7 @@
 #include <TFunction_Driver.hxx>
 #include <TFunction_DriverTable.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TFunction_DriverTable,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TFunction_DriverTable,Standard_Transient)
 
 static Handle(TFunction_DriverTable) DT;
 

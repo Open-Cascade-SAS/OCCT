@@ -21,16 +21,16 @@
 #include <Standard_Type.hxx>
 
 #include <StepBasic_HArray1OfDerivedUnitElement.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class StepBasic_DerivedUnitElement;
 
 
 class StepBasic_DerivedUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_DerivedUnit, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_DerivedUnit, Standard_Transient)
 
 //! Added from StepBasic Rev2 to Rev4
-class StepBasic_DerivedUnit : public MMgt_TShared
+class StepBasic_DerivedUnit : public Standard_Transient
 {
 
 public:
@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_DerivedUnit,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DerivedUnit,Standard_Transient)
 
 protected:
 

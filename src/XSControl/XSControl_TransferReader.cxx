@@ -54,7 +54,7 @@
 #include <XSControl_Utils.hxx>
 
 #include <stdio.h>
-IMPLEMENT_STANDARD_RTTIEXT(XSControl_TransferReader,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(XSControl_TransferReader,Standard_Transient)
 
 //=======================================================================
 //function : SetController

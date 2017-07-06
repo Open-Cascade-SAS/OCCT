@@ -20,15 +20,15 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
 
 class StepBasic_ObjectRole;
-DEFINE_STANDARD_HANDLE(StepBasic_ObjectRole, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_ObjectRole, Standard_Transient)
 
 //! Representation of STEP entity ObjectRole
-class StepBasic_ObjectRole : public MMgt_TShared
+class StepBasic_ObjectRole : public Standard_Transient
 {
 
 public:
@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ObjectRole,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ObjectRole,Standard_Transient)
 
 protected:
 

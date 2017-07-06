@@ -19,7 +19,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -38,7 +38,7 @@ class Bnd_Box2d;
 
 
 class MeshVS_DataSource;
-DEFINE_STANDARD_HANDLE(MeshVS_DataSource, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MeshVS_DataSource, Standard_Transient)
 
 //! The deferred class using for the following tasks:
 //! 1) Receiving geometry data about single element of node by its number;
@@ -51,7 +51,7 @@ DEFINE_STANDARD_HANDLE(MeshVS_DataSource, MMgt_TShared)
 //! - one sensitive entity for the whole mesh and for each selection mode
 //! Receiving of IDs of detected entities (nodes and elements) in a viewer is achieved by
 //! implementation of a group of methods GetDetectedEntities.
-class MeshVS_DataSource : public MMgt_TShared
+class MeshVS_DataSource : public Standard_Transient
 {
 
 public:
@@ -185,7 +185,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(MeshVS_DataSource,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MeshVS_DataSource,Standard_Transient)
 
 protected:
 

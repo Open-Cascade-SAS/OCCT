@@ -20,15 +20,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepBasic_Approval;
 
 
 class StepBasic_ApprovalAssignment;
-DEFINE_STANDARD_HANDLE(StepBasic_ApprovalAssignment, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_ApprovalAssignment, Standard_Transient)
 
 
-class StepBasic_ApprovalAssignment : public MMgt_TShared
+class StepBasic_ApprovalAssignment : public Standard_Transient
 {
 
 public:
@@ -43,7 +43,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalAssignment,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalAssignment,Standard_Transient)
 
 protected:
 

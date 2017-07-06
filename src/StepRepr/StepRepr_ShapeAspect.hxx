@@ -21,16 +21,16 @@
 #include <Standard_Type.hxx>
 
 #include <StepData_Logical.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepRepr_ProductDefinitionShape;
 
 
 class StepRepr_ShapeAspect;
-DEFINE_STANDARD_HANDLE(StepRepr_ShapeAspect, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepRepr_ShapeAspect, Standard_Transient)
 
 
-class StepRepr_ShapeAspect : public MMgt_TShared
+class StepRepr_ShapeAspect : public Standard_Transient
 {
 
 public:
@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_ShapeAspect,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ShapeAspect,Standard_Transient)
 
 protected:
 

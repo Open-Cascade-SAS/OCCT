@@ -17,7 +17,7 @@
 #include <StepShape_PlusMinusTolerance.hxx>
 #include <StepShape_ToleranceMethodDefinition.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_PlusMinusTolerance,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_PlusMinusTolerance,Standard_Transient)
 
 StepShape_PlusMinusTolerance::StepShape_PlusMinusTolerance  ()    {  }
 

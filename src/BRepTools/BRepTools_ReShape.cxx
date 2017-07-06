@@ -36,7 +36,7 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRepTools_ReShape,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(BRepTools_ReShape,Standard_Transient)
 
 namespace
 {

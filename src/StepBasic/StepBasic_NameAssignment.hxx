@@ -19,15 +19,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
 
 class StepBasic_NameAssignment;
-DEFINE_STANDARD_HANDLE(StepBasic_NameAssignment, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_NameAssignment, Standard_Transient)
 
 //! Representation of STEP entity NameAssignment
-class StepBasic_NameAssignment : public MMgt_TShared
+class StepBasic_NameAssignment : public Standard_Transient
 {
 
 public:
@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_NameAssignment,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_NameAssignment,Standard_Transient)
 
 protected:
 

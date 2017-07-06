@@ -43,7 +43,7 @@
 
 #include <Image_PixMap.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 #include <Quantity_TypeOfColor.hxx>
 
@@ -85,7 +85,7 @@ class V3d_Light;
 class V3d_UnMapped;
 
 class V3d_View;
-DEFINE_STANDARD_HANDLE(V3d_View, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(V3d_View, Standard_Transient)
 
 //! Defines the application object VIEW for the
 //! VIEWER application.
@@ -102,7 +102,7 @@ DEFINE_STANDARD_HANDLE(V3d_View, MMgt_TShared)
 //!
 //! View->Move(10.,20.,0.,True)     (Starting motion)
 //! View->Move(15.,-5.,0.,False)    (Next motion)
-class V3d_View : public MMgt_TShared
+class V3d_View : public Standard_Transient
 {
 
 public:
@@ -942,7 +942,7 @@ friend
   Standard_EXPORT void DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theDict,
                                               Graphic3d_DiagnosticInfo theFlags) const;
 
-  DEFINE_STANDARD_RTTIEXT(V3d_View,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(V3d_View,Standard_Transient)
 
 protected:
 

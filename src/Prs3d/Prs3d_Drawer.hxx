@@ -28,7 +28,7 @@
 #include <Prs3d_VertexDrawMode.hxx>
 #include <Prs3d_DimensionUnits.hxx>
 #include <Prs3d_TypeOfHLR.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 class Prs3d_IsoAspect;
 class Prs3d_LineAspect;

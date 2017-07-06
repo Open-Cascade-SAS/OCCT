@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepRepr_RepresentationContext;
@@ -29,10 +29,10 @@ class StepRepr_RepresentationItem;
 
 
 class StepRepr_Representation;
-DEFINE_STANDARD_HANDLE(StepRepr_Representation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepRepr_Representation, Standard_Transient)
 
 
-class StepRepr_Representation : public MMgt_TShared
+class StepRepr_Representation : public Standard_Transient
 {
 
 public:
@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_Representation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_Representation,Standard_Transient)
 
 protected:
 

@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class MAT_Bisector;
 class MAT_ListOfBisector;
 
 
 class MAT_TListNodeOfListOfBisector;
-DEFINE_STANDARD_HANDLE(MAT_TListNodeOfListOfBisector, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MAT_TListNodeOfListOfBisector, Standard_Transient)
 
 
-class MAT_TListNodeOfListOfBisector : public MMgt_TShared
+class MAT_TListNodeOfListOfBisector : public Standard_Transient
 {
 
 public:
@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI_INLINE(MAT_TListNodeOfListOfBisector,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(MAT_TListNodeOfListOfBisector,Standard_Transient)
 
 protected:
 

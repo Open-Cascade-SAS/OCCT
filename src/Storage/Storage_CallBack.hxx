@@ -20,17 +20,17 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class Standard_Persistent;
 class Storage_Schema;
 class Storage_BaseDriver;
 
 
 class Storage_CallBack;
-DEFINE_STANDARD_HANDLE(Storage_CallBack, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Storage_CallBack, Standard_Transient)
 
 
-class Storage_CallBack : public MMgt_TShared
+class Storage_CallBack : public Standard_Transient
 {
 
 public:
@@ -47,7 +47,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Storage_CallBack,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Storage_CallBack,Standard_Transient)
 
 protected:
 

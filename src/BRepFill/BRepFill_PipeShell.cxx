@@ -81,7 +81,7 @@
 #include <TopTools_SequenceOfShape.hxx>
 
 #include <stdio.h>
-IMPLEMENT_STANDARD_RTTIEXT(BRepFill_PipeShell,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(BRepFill_PipeShell,Standard_Transient)
 
 //Specification Guide
 #ifdef DRAW

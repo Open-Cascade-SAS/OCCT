@@ -22,7 +22,7 @@
 #include <StepRepr_ShapeAspect.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricTolerance,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricTolerance,Standard_Transient)
 
 //=======================================================================
 //function : StepDimTol_GeometricTolerance

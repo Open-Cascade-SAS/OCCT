@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <gp_Pnt.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 class GeomFill_Boundary;
@@ -31,12 +31,12 @@ class gp_Vec;
 
 
 class GeomFill_CoonsAlgPatch;
-DEFINE_STANDARD_HANDLE(GeomFill_CoonsAlgPatch, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(GeomFill_CoonsAlgPatch, Standard_Transient)
 
 //! Provides  evaluation   methods on an   algorithmic
 //! patch (based on 4 Curves) defined by  its   boundaries and  blending
 //! functions.
-class GeomFill_CoonsAlgPatch : public MMgt_TShared
+class GeomFill_CoonsAlgPatch : public Standard_Transient
 {
 
 public:
@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(GeomFill_CoonsAlgPatch,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_CoonsAlgPatch,Standard_Transient)
 
 protected:
 

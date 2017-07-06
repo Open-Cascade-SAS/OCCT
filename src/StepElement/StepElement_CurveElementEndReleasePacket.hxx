@@ -21,15 +21,15 @@
 
 #include <StepElement_CurveElementFreedom.hxx>
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepElement_CurveElementFreedom;
 
 
 class StepElement_CurveElementEndReleasePacket;
-DEFINE_STANDARD_HANDLE(StepElement_CurveElementEndReleasePacket, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepElement_CurveElementEndReleasePacket, Standard_Transient)
 
 //! Representation of STEP entity CurveElementEndReleasePacket
-class StepElement_CurveElementEndReleasePacket : public MMgt_TShared
+class StepElement_CurveElementEndReleasePacket : public Standard_Transient
 {
 
 public:
@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepElement_CurveElementEndReleasePacket,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepElement_CurveElementEndReleasePacket,Standard_Transient)
 
 protected:
 

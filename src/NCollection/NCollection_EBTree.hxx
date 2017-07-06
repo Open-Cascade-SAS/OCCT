@@ -18,7 +18,7 @@
 
 #include <NCollection_UBTree.hxx>
 #include <Standard_Type.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_List.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <NCollection_DataMap.hxx>

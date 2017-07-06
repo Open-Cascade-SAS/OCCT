@@ -17,4 +17,4 @@
 #include <IntStart_SITopolTool.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IntStart_SITopolTool,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IntStart_SITopolTool,Standard_Transient)

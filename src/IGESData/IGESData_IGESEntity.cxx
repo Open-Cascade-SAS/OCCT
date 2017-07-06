@@ -37,7 +37,7 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
-IMPLEMENT_STANDARD_RTTIEXT(IGESData_IGESEntity,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_IGESEntity,Standard_Transient)
 
 #define ThisEntity  Handle(IGESData_IGESEntity)::DownCast(This())
 

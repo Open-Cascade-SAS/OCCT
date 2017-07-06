@@ -21,7 +21,7 @@
 #include <StepRepr_ConfigurationDesignItem.hxx>
 #include <StepRepr_ConfigurationItem.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ConfigurationDesign,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ConfigurationDesign,Standard_Transient)
 
 //=======================================================================
 //function : StepRepr_ConfigurationDesign

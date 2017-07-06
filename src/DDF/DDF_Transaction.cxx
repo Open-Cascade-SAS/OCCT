@@ -25,7 +25,7 @@
 #include <TDF_Data.hxx>
 #include <TDF_Delta.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(DDF_Transaction,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(DDF_Transaction,Standard_Transient)
 
 //=======================================================================
 //function : DDF_Transaction

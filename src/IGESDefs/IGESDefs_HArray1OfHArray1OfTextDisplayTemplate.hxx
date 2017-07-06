@@ -21,16 +21,16 @@
 #include <Standard_Type.hxx>
 
 #include <TColStd_Array1OfTransient.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <IGESGraph_HArray1OfTextDisplayTemplate.hxx>
 #include <Standard_Integer.hxx>
 
 
 class IGESDefs_HArray1OfHArray1OfTextDisplayTemplate;
-DEFINE_STANDARD_HANDLE(IGESDefs_HArray1OfHArray1OfTextDisplayTemplate, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IGESDefs_HArray1OfHArray1OfTextDisplayTemplate, Standard_Transient)
 
 
-class IGESDefs_HArray1OfHArray1OfTextDisplayTemplate : public MMgt_TShared
+class IGESDefs_HArray1OfHArray1OfTextDisplayTemplate : public Standard_Transient
 {
 
 public:
@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI_INLINE(IGESDefs_HArray1OfHArray1OfTextDisplayTemplate,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(IGESDefs_HArray1OfHArray1OfTextDisplayTemplate,Standard_Transient)
 
 protected:
 

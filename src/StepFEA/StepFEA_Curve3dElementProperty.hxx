@@ -22,15 +22,15 @@
 #include <StepFEA_HArray1OfCurveElementInterval.hxx>
 #include <StepFEA_HArray1OfCurveElementEndOffset.hxx>
 #include <StepFEA_HArray1OfCurveElementEndRelease.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
 
 class StepFEA_Curve3dElementProperty;
-DEFINE_STANDARD_HANDLE(StepFEA_Curve3dElementProperty, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepFEA_Curve3dElementProperty, Standard_Transient)
 
 //! Representation of STEP entity Curve3dElementProperty
-class StepFEA_Curve3dElementProperty : public MMgt_TShared
+class StepFEA_Curve3dElementProperty : public Standard_Transient
 {
 
 public:
@@ -75,7 +75,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepFEA_Curve3dElementProperty,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_Curve3dElementProperty,Standard_Transient)
 
 protected:
 

@@ -20,14 +20,14 @@
 #include <Standard_Type.hxx>
 
 #include <TColStd_DataMapOfTransientTransient.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class Transfer_MapContainer;
-DEFINE_STANDARD_HANDLE(Transfer_MapContainer, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Transfer_MapContainer, Standard_Transient)
 
 
-class Transfer_MapContainer : public MMgt_TShared
+class Transfer_MapContainer : public Standard_Transient
 {
 
 public:
@@ -44,7 +44,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Transfer_MapContainer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Transfer_MapContainer,Standard_Transient)
 
 protected:
 

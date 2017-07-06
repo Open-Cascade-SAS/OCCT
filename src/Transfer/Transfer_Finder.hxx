@@ -23,7 +23,7 @@
 
 #include <NCollection_DataMap.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_CString.hxx>
@@ -34,14 +34,14 @@
 
 
 class Transfer_Finder;
-DEFINE_STANDARD_HANDLE(Transfer_Finder, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Transfer_Finder, Standard_Transient)
 
 //! a Finder allows to map any kind of object as a Key for a Map.
 //! This works by defining, for a Hash Code, that of the real Key,
 //! not of the Finder which acts only as an intermediate.
 //! When a Map asks for the HashCode of a Finder, this one returns
 //! the code it has determined at creation time
-class Transfer_Finder : public MMgt_TShared
+class Transfer_Finder : public Standard_Transient
 {
 
 public:
@@ -149,7 +149,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Transfer_Finder,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Transfer_Finder,Standard_Transient)
 
 protected:
 

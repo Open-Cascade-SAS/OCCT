@@ -37,7 +37,7 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepBuild_HBuilder,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepBuild_HBuilder,Standard_Transient)
 
 //=======================================================================
 //function : TopOpeBRepBuild_HBuilder

@@ -24,18 +24,18 @@
 #include <TopoDS_Edge.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TopoDS_Face;
 class TopoDS_Edge;
 class Geom2d_Curve;
 
 
 class ShapeFix_EdgeProjAux;
-DEFINE_STANDARD_HANDLE(ShapeFix_EdgeProjAux, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeFix_EdgeProjAux, Standard_Transient)
 
 //! Project 3D point (vertex) on pcurves to find Vertex Parameter
 //! on parametric representation of an edge
-class ShapeFix_EdgeProjAux : public MMgt_TShared
+class ShapeFix_EdgeProjAux : public Standard_Transient
 {
 
 public:
@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ShapeFix_EdgeProjAux,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_EdgeProjAux,Standard_Transient)
 
 protected:
 

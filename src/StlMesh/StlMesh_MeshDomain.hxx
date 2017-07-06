@@ -24,20 +24,20 @@
 #include <Standard_Integer.hxx>
 #include <TColgp_SequenceOfXYZ.hxx>
 #include <StlMesh_SequenceOfMeshTriangle.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class Standard_NegativeValue;
 class Standard_NullValue;
 
 
 class StlMesh_MeshDomain;
-DEFINE_STANDARD_HANDLE(StlMesh_MeshDomain, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StlMesh_MeshDomain, Standard_Transient)
 
 //! A  mesh domain is  a set of triangles defined with
 //! three geometric vertices and a given orientation.
 //! The  mesh domain has its own deflection.
 //! Internal class used to classify the triangles of each domain.
-class StlMesh_MeshDomain : public MMgt_TShared
+class StlMesh_MeshDomain : public Standard_Transient
 {
 
 public:
@@ -88,7 +88,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StlMesh_MeshDomain,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StlMesh_MeshDomain,Standard_Transient)
 
 protected:
 

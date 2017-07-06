@@ -23,7 +23,7 @@
 #include <Standard_Integer.hxx>
 #include <StlMesh_SequenceOfMeshDomain.hxx>
 #include <gp_XYZ.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <StlMesh_SequenceOfMeshTriangle.hxx>
@@ -35,13 +35,13 @@ class gp_XYZ;
 
 
 class StlMesh_Mesh;
-DEFINE_STANDARD_HANDLE(StlMesh_Mesh, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StlMesh_Mesh, Standard_Transient)
 
 //! Mesh definition.  The mesh contains one or several
 //! domains. Each  mesh   domain  contains a  set   of
 //! triangles. Each domain can have its own deflection
 //! value.
-class StlMesh_Mesh : public MMgt_TShared
+class StlMesh_Mesh : public Standard_Transient
 {
 
 public:
@@ -131,7 +131,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StlMesh_Mesh,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StlMesh_Mesh,Standard_Transient)
 
 protected:
 

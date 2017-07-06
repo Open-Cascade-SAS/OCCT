@@ -30,7 +30,7 @@
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(MAT_Graph,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(MAT_Graph,Standard_Transient)
 
 //------------------
 // functions static.

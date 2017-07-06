@@ -15,4 +15,4 @@
 #include <Standard_Type.hxx>
 #include <StepVisual_PresentedItem.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentedItem,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentedItem,Standard_Transient)

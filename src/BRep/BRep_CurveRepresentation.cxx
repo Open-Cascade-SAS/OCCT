@@ -28,7 +28,7 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TopLoc_Location.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRep_CurveRepresentation,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(BRep_CurveRepresentation,Standard_Transient)
 
 //=======================================================================
 //function : BRep_CurveRepresentation

@@ -22,7 +22,7 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapOfOrientedShape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRepAlgo_AsDes,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(BRepAlgo_AsDes,Standard_Transient)
 
 //=======================================================================
 //function : BRepAlgo_AsDes

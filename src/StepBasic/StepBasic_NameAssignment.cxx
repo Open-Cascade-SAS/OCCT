@@ -19,7 +19,7 @@
 #include <StepBasic_NameAssignment.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_NameAssignment,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_NameAssignment,Standard_Transient)
 
 //=======================================================================
 //function : StepBasic_NameAssignment

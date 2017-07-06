@@ -27,7 +27,7 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class Geom_Surface;
 class Standard_ConstructionError;
 class gp_Pnt;
@@ -37,11 +37,11 @@ class GeomLProp_SLProps;
 
 
 class GeomPlate_PointConstraint;
-DEFINE_STANDARD_HANDLE(GeomPlate_PointConstraint, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(GeomPlate_PointConstraint, Standard_Transient)
 
 
 //! Defines points as constraints to be used to deform a surface.
-class GeomPlate_PointConstraint : public MMgt_TShared
+class GeomPlate_PointConstraint : public Standard_Transient
 {
 
 public:
@@ -146,7 +146,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(GeomPlate_PointConstraint,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GeomPlate_PointConstraint,Standard_Transient)
 
 protected:
 

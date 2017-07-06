@@ -17,7 +17,7 @@
 #include <StepBasic_ApprovalStatus.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Approval,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Approval,Standard_Transient)
 
 StepBasic_Approval::StepBasic_Approval ()  {}
 

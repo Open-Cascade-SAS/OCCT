@@ -22,7 +22,7 @@
 
 #include <TopOpeBRepDS_DataMapOfIntegerListOfInterference.hxx>
 #include <TopOpeBRepDS_DataMapOfInterferenceShape.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
@@ -34,10 +34,10 @@ class TopoDS_Shape;
 
 
 class TopOpeBRepDS_GapTool;
-DEFINE_STANDARD_HANDLE(TopOpeBRepDS_GapTool, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TopOpeBRepDS_GapTool, Standard_Transient)
 
 
-class TopOpeBRepDS_GapTool : public MMgt_TShared
+class TopOpeBRepDS_GapTool : public Standard_Transient
 {
 
 public:
@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_GapTool,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_GapTool,Standard_Transient)
 
 protected:
 

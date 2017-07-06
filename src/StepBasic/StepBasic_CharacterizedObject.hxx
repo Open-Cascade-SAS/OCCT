@@ -20,15 +20,15 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
 
 class StepBasic_CharacterizedObject;
-DEFINE_STANDARD_HANDLE(StepBasic_CharacterizedObject, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_CharacterizedObject, Standard_Transient)
 
 //! Representation of STEP entity CharacterizedObject
-class StepBasic_CharacterizedObject : public MMgt_TShared
+class StepBasic_CharacterizedObject : public Standard_Transient
 {
 
 public:
@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_CharacterizedObject,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_CharacterizedObject,Standard_Transient)
 
 protected:
 

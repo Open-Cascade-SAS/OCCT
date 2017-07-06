@@ -22,7 +22,7 @@
 #include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT (Poly_Triangulation, MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT (Poly_Triangulation, Standard_Transient)
 
 //=======================================================================
 //function : Poly_Triangulation

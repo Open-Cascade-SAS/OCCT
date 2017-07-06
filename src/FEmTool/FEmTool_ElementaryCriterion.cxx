@@ -21,7 +21,7 @@
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(FEmTool_ElementaryCriterion,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(FEmTool_ElementaryCriterion,Standard_Transient)
 
 void FEmTool_ElementaryCriterion::Set(const Handle(TColStd_HArray2OfReal)& Coeff) 
 {

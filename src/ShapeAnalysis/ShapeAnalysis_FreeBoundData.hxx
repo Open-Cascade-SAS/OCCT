@@ -24,13 +24,13 @@
 #include <Standard_Real.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 #include <TopTools_DataMapOfShapeReal.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class TopoDS_Wire;
 
 
 class ShapeAnalysis_FreeBoundData;
-DEFINE_STANDARD_HANDLE(ShapeAnalysis_FreeBoundData, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeAnalysis_FreeBoundData, Standard_Transient)
 
 //! This class is intended to represent free bound and to store
 //! its properties.
@@ -48,7 +48,7 @@ DEFINE_STANDARD_HANDLE(ShapeAnalysis_FreeBoundData, MMgt_TShared)
 //!
 //! This class provides methods for setting and getting fields
 //! only.
-class ShapeAnalysis_FreeBoundData : public MMgt_TShared
+class ShapeAnalysis_FreeBoundData : public Standard_Transient
 {
 
 public:
@@ -117,7 +117,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_FreeBoundData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_FreeBoundData,Standard_Transient)
 
 protected:
 

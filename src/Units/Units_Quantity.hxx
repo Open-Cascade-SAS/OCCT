@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <Units_UnitsSequence.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Boolean.hxx>
@@ -31,13 +31,13 @@ class Units_Dimensions;
 
 
 class Units_Quantity;
-DEFINE_STANDARD_HANDLE(Units_Quantity, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Units_Quantity, Standard_Transient)
 
 //! This  class stores  in its  field all the possible
 //! units of all the unit systems for a given physical
 //! quantity. Each unit's  value  is  expressed in the
 //! S.I. unit system.
-class Units_Quantity : public MMgt_TShared
+class Units_Quantity : public Standard_Transient
 {
 
 public:
@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Units_Quantity,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Units_Quantity,Standard_Transient)
 
 protected:
 

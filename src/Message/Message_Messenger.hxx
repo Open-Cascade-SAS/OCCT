@@ -20,7 +20,7 @@
 #include <Standard_Type.hxx>
 
 #include <Message_SequenceOfPrinters.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Type.hxx>
@@ -36,7 +36,7 @@ class TCollection_ExtendedString;
 #endif
 
 class Message_Messenger;
-DEFINE_STANDARD_HANDLE(Message_Messenger, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Message_Messenger, Standard_Transient)
 
 //! Messenger is API class providing general-purpose interface for
 //! libraries that may issue text messages without knowledge
@@ -50,7 +50,7 @@ DEFINE_STANDARD_HANDLE(Message_Messenger, MMgt_TShared)
 //! argument being Handle(Message_Messenger); thus it can be used
 //! with syntax similar to C++ streams.
 //! Note that all these operators use trace level Warning.
-class Message_Messenger : public MMgt_TShared
+class Message_Messenger : public Standard_Transient
 {
 
 public:
@@ -104,7 +104,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Message_Messenger,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Message_Messenger,Standard_Transient)
 
 protected:
 

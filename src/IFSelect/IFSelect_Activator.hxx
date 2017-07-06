@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <TCollection_AsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
@@ -33,7 +33,7 @@ class IFSelect_SessionPilot;
 
 
 class IFSelect_Activator;
-DEFINE_STANDARD_HANDLE(IFSelect_Activator, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IFSelect_Activator, Standard_Transient)
 
 //! Defines the general frame for working with a SessionPilot.
 //! Each Activator treats a set of Commands. Commands are given as
@@ -57,7 +57,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_Activator, MMgt_TShared)
 //!
 //! The result of an Execution must indicate if it is worth to be
 //! recorded or not : see method Do
-class IFSelect_Activator : public MMgt_TShared
+class IFSelect_Activator : public Standard_Transient
 {
 
 public:
@@ -119,7 +119,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_Activator,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_Activator,Standard_Transient)
 
 protected:
 

@@ -20,7 +20,7 @@
 #include <StepShape_DimensionalSize.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_DimensionalSize,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_DimensionalSize,Standard_Transient)
 
 //=======================================================================
 //function : StepShape_DimensionalSize

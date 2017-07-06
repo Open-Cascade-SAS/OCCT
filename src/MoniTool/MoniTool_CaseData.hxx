@@ -25,7 +25,7 @@
 #include <TColStd_SequenceOfTransient.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
@@ -39,7 +39,7 @@ class Message_Msg;
 
 
 class MoniTool_CaseData;
-DEFINE_STANDARD_HANDLE(MoniTool_CaseData, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MoniTool_CaseData, Standard_Transient)
 
 //! This class is intended to record data attached to a case to be
 //! exploited.
@@ -73,7 +73,7 @@ DEFINE_STANDARD_HANDLE(MoniTool_CaseData, MMgt_TShared)
 //! * else, an interpreted identifier, which gives the type and
 //! the rank in the type (for instance, first integer; etc)
 //! (See NameRank)
-class MoniTool_CaseData : public MMgt_TShared
+class MoniTool_CaseData : public Standard_Transient
 {
 
 public:
@@ -286,7 +286,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(MoniTool_CaseData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MoniTool_CaseData,Standard_Transient)
 
 protected:
 

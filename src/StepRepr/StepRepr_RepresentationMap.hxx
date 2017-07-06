@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepRepr_RepresentationItem;
 class StepRepr_Representation;
 
 
 class StepRepr_RepresentationMap;
-DEFINE_STANDARD_HANDLE(StepRepr_RepresentationMap, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepRepr_RepresentationMap, Standard_Transient)
 
 
-class StepRepr_RepresentationMap : public MMgt_TShared
+class StepRepr_RepresentationMap : public Standard_Transient
 {
 
 public:
@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationMap,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationMap,Standard_Transient)
 
 protected:
 

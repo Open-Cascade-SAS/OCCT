@@ -24,7 +24,7 @@
 #include <MAT_DataMapOfIntegerBasicElt.hxx>
 #include <MAT_DataMapOfIntegerNode.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class MAT_ListOfBisector;
 class MAT_Arc;
@@ -33,11 +33,11 @@ class MAT_Node;
 
 
 class MAT_Graph;
-DEFINE_STANDARD_HANDLE(MAT_Graph, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MAT_Graph, Standard_Transient)
 
 //! The Class Graph permits the exploration of the
 //! Bisector Locus.
-class MAT_Graph : public MMgt_TShared
+class MAT_Graph : public Standard_Transient
 {
 
 public:
@@ -105,7 +105,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(MAT_Graph,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MAT_Graph,Standard_Transient)
 
 protected:
 

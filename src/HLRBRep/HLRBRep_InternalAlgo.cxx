@@ -23,7 +23,7 @@
 #include <HLRBRep_ShapeBounds.hxx>
 #include <HLRBRep_ShapeToHLR.hxx>
 #include <HLRTopoBRep_OutLiner.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Stream.hxx>
@@ -31,7 +31,7 @@
 #include <TColStd_Array1OfReal.hxx>
 
 #include <stdio.h>
-IMPLEMENT_STANDARD_RTTIEXT(HLRBRep_InternalAlgo,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(HLRBRep_InternalAlgo,Standard_Transient)
 
 extern Standard_Integer nbPtIntersection;   // total P.I.
 extern Standard_Integer nbSegIntersection;  // total S.I
@@ -192,7 +192,7 @@ void HLRBRep_InternalAlgo::Update ()
 //=======================================================================
 
 void HLRBRep_InternalAlgo::Load (const Handle(HLRTopoBRep_OutLiner)& S,
-				 const Handle(MMgt_TShared)& SData, 
+				 const Handle(Standard_Transient)& SData, 
 				 const Standard_Integer nbIso)
 { 
   myShapes.Append(HLRBRep_ShapeBounds(S,SData,nbIso,0,0,0,0,0,0));
@@ -249,7 +249,7 @@ void HLRBRep_InternalAlgo::Remove (const Standard_Integer I)
 //=======================================================================
 
 void HLRBRep_InternalAlgo::ShapeData (const Standard_Integer I,
-				      const Handle(MMgt_TShared)& SData)
+				      const Handle(Standard_Transient)& SData)
 {
   Standard_OutOfRange_Raise_if
     (I == 0 || I > myShapes.Length(),

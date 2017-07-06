@@ -25,7 +25,7 @@
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <Poly_Array1OfTriangle.hxx>
 #include <TShort_HArray1OfShortReal.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TShort_Array1OfShortReal.hxx>
@@ -34,7 +34,7 @@ class Standard_NullObject;
 
 
 class Poly_Triangulation;
-DEFINE_STANDARD_HANDLE(Poly_Triangulation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Poly_Triangulation, Standard_Transient)
 
 //! Provides a triangulation for a surface, a set of surfaces, or
 //! more generally a shape.
@@ -61,12 +61,12 @@ DEFINE_STANDARD_HANDLE(Poly_Triangulation, MMgt_TShared)
 //! representation induces simpler and more robust adjusting,
 //! faster performances, and the results are as good.
 //! This is a Transient class.
-class Poly_Triangulation : public MMgt_TShared
+class Poly_Triangulation : public Standard_Transient
 {
 
 public:
 
-  DEFINE_STANDARD_RTTIEXT(Poly_Triangulation, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Poly_Triangulation, Standard_Transient)
 
   //! Constructs a triangulation from a set of triangles. The
   //! triangulation is initialized without a triangle or a node, but capable of

@@ -23,19 +23,19 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <gp_Pnt2d.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class gp_Pnt2d;
 
 
 class MAT2d_Connexion;
-DEFINE_STANDARD_HANDLE(MAT2d_Connexion, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MAT2d_Connexion, Standard_Transient)
 
 //! A Connexion links two lines of items  in a set
 //! of  lines. It s contains two  points and their paramatric
 //! definitions on the lines.
 //! The items can be points or curves.
-class MAT2d_Connexion : public MMgt_TShared
+class MAT2d_Connexion : public Standard_Transient
 {
 
 public:
@@ -108,7 +108,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(MAT2d_Connexion,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MAT2d_Connexion,Standard_Transient)
 
 protected:
 

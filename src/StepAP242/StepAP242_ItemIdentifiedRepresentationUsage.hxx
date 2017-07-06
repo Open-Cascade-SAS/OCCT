@@ -19,7 +19,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <StepAP242_ItemIdentifiedRepresentationUsageDefinition.hxx>
 #include <Standard_Integer.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
@@ -30,8 +30,8 @@ class StepAP242_ItemIdentifiedRepresentationUsageDefinition;
 class StepRepr_RepresentationItem;
 
 class StepAP242_ItemIdentifiedRepresentationUsage;
-DEFINE_STANDARD_HANDLE(StepAP242_ItemIdentifiedRepresentationUsage, MMgt_TShared)
-class StepAP242_ItemIdentifiedRepresentationUsage : public MMgt_TShared
+DEFINE_STANDARD_HANDLE(StepAP242_ItemIdentifiedRepresentationUsage, Standard_Transient)
+class StepAP242_ItemIdentifiedRepresentationUsage : public Standard_Transient
 {
 
 public:
@@ -125,7 +125,7 @@ public:
     identifiedItem->SetValue (num, theItem);
   }
 
-  DEFINE_STANDARD_RTTIEXT(StepAP242_ItemIdentifiedRepresentationUsage,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepAP242_ItemIdentifiedRepresentationUsage,Standard_Transient)
 
 private: 
   Handle(TCollection_HAsciiString) name;

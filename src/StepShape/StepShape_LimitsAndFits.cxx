@@ -16,7 +16,7 @@
 #include <StepShape_LimitsAndFits.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_LimitsAndFits,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_LimitsAndFits,Standard_Transient)
 
 StepShape_LimitsAndFits::StepShape_LimitsAndFits ()    {  }
 

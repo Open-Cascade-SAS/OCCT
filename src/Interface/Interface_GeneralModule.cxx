@@ -22,7 +22,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Interface_GeneralModule,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Interface_GeneralModule,Standard_Transient)
 
 void  Interface_GeneralModule::FillShared
   (const Handle(Interface_InterfaceModel)& /*model*/,

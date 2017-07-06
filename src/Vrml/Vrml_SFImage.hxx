@@ -24,14 +24,14 @@
 #include <Vrml_SFImageNumber.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class Vrml_SFImage;
-DEFINE_STANDARD_HANDLE(Vrml_SFImage, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Vrml_SFImage, Standard_Transient)
 
 //! defines SFImage type of VRML field types.
-class Vrml_SFImage : public MMgt_TShared
+class Vrml_SFImage : public Standard_Transient
 {
 
 public:
@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Vrml_SFImage,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Vrml_SFImage,Standard_Transient)
 
 protected:
 

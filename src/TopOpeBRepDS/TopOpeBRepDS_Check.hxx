@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <TopOpeBRepDS_DataMapOfCheckStatus.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <Standard_Integer.hxx>
@@ -35,10 +35,10 @@ class TopOpeBRepDS_HDataStructure;
 
 
 class TopOpeBRepDS_Check;
-DEFINE_STANDARD_HANDLE(TopOpeBRepDS_Check, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TopOpeBRepDS_Check, Standard_Transient)
 
 //! a tool verifing integrity and structure of DS
-class TopOpeBRepDS_Check : public MMgt_TShared
+class TopOpeBRepDS_Check : public Standard_Transient
 {
 
 public:
@@ -92,7 +92,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Check,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Check,Standard_Transient)
 
 protected:
 

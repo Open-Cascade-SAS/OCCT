@@ -20,16 +20,16 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
 class StepBasic_ExternalSource;
 
 class StepBasic_ProductDefinitionReference;
-DEFINE_STANDARD_HANDLE(StepBasic_ProductDefinitionReference, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_ProductDefinitionReference, Standard_Transient)
 
 //! Representation of STEP entity Product_Definition_Reference
-class StepBasic_ProductDefinitionReference : public MMgt_TShared
+class StepBasic_ProductDefinitionReference : public Standard_Transient
 {
 public:
 
@@ -116,7 +116,7 @@ public:
     return hasIdOwningOrganizationName;
   }
   
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionReference, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionReference, Standard_Transient)
 
 private:
   Handle(StepBasic_ExternalSource) mySource;

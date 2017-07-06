@@ -33,7 +33,7 @@
 #include <TPrsStd_PlaneDriver.hxx>
 #include <TPrsStd_PointDriver.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_DriverTable,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_DriverTable,Standard_Transient)
 
 static Handle(TPrsStd_DriverTable) drivertable;
 

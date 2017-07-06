@@ -23,7 +23,7 @@
 #include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRep_PointRepresentation,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(BRep_PointRepresentation,Standard_Transient)
 
 //=======================================================================
 //function : BRep_PointRepresentation

@@ -24,7 +24,7 @@
 #include <IntSurf_TypeTrans.hxx>
 #include <BRepBlend_Extremity.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class Standard_OutOfRange;
 class Blend_Point;
@@ -32,10 +32,10 @@ class BRepBlend_Extremity;
 
 
 class BRepBlend_Line;
-DEFINE_STANDARD_HANDLE(BRepBlend_Line, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(BRepBlend_Line, Standard_Transient)
 
 
-class BRepBlend_Line : public MMgt_TShared
+class BRepBlend_Line : public Standard_Transient
 {
 
 public:
@@ -117,7 +117,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(BRepBlend_Line,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepBlend_Line,Standard_Transient)
 
 protected:
 

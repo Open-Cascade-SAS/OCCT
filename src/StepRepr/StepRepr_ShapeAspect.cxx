@@ -17,7 +17,7 @@
 #include <StepRepr_ShapeAspect.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ShapeAspect,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ShapeAspect,Standard_Transient)
 
 StepRepr_ShapeAspect::StepRepr_ShapeAspect ()  {}
 

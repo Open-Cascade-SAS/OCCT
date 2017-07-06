@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <Transfer_FinderProcess.hxx>
 class XSControl_Controller;
@@ -31,7 +31,7 @@ class Interface_CheckIterator;
 
 
 class XSControl_TransferWriter;
-DEFINE_STANDARD_HANDLE(XSControl_TransferWriter, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(XSControl_TransferWriter, Standard_Transient)
 
 //! TransferWriter gives help to control transfer to write a file
 //! after having converted data from Cascade/Imagine
@@ -39,7 +39,7 @@ DEFINE_STANDARD_HANDLE(XSControl_TransferWriter, MMgt_TShared)
 //! It works with a Controller (which itself can work with an
 //! Actor to Write) and a FinderProcess. It records results and
 //! checks
-class XSControl_TransferWriter : public MMgt_TShared
+class XSControl_TransferWriter : public Standard_Transient
 {
  public:
   
@@ -122,7 +122,7 @@ class XSControl_TransferWriter : public MMgt_TShared
   //! instead of keeping the original Mapper, whenever known
   Standard_EXPORT Interface_CheckIterator ResultCheckList (const Handle(Interface_InterfaceModel)& theModel) const;
 
-  DEFINE_STANDARD_RTTIEXT(XSControl_TransferWriter,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(XSControl_TransferWriter,Standard_Transient)
 
  private:
 

@@ -24,4 +24,4 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Expr_GeneralFunction,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Expr_GeneralFunction,Standard_Transient)

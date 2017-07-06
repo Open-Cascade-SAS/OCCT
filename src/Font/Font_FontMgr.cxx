@@ -26,7 +26,7 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
-IMPLEMENT_STANDARD_RTTIEXT(Font_FontMgr,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Font_FontMgr,Standard_Transient)
 
 struct Font_FontMgr_FontAliasMapNode
 {

@@ -25,7 +25,7 @@
 #include <TCollection_ExtendedString.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Window,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Window,Standard_Transient)
 
 #if defined(HAVE_EGL)
   #include <EGL/egl.h>

@@ -51,7 +51,7 @@
 #include <V3d_UnMapped.hxx>
 #include <V3d_Viewer.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(V3d_View,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(V3d_View,Standard_Transient)
 
 #define DEUXPI (2. * M_PI)
 

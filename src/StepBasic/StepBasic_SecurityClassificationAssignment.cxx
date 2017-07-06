@@ -16,7 +16,7 @@
 #include <StepBasic_SecurityClassification.hxx>
 #include <StepBasic_SecurityClassificationAssignment.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SecurityClassificationAssignment,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SecurityClassificationAssignment,Standard_Transient)
 
 void StepBasic_SecurityClassificationAssignment::Init(
 	const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification)

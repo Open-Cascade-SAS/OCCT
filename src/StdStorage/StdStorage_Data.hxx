@@ -14,8 +14,10 @@
 #ifndef _StdStorage_Data_HeaderFile
 #define _StdStorage_Data_HeaderFile
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Macro.hxx>
+#include <Standard_Handle.hxx>
+
 class StdStorage_HeaderData;
 class StdStorage_TypeData;
 class StdStorage_RootData;
@@ -49,7 +51,7 @@ class StdStorage_RootData;
 //! mechanism: external references are not
 //! supported by Storage_Schema algorithm
 class StdStorage_Data
-  : public MMgt_TShared
+  : public Standard_Transient
 {
 
 public:

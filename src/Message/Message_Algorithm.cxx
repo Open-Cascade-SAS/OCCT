@@ -31,7 +31,7 @@
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Message_Algorithm,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Message_Algorithm,Standard_Transient)
 
 //=======================================================================
 //function : Message_Algorithm

@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
@@ -46,7 +46,7 @@ class Geom_OffsetCurve;
 
 
 class Adaptor3d_HCurve;
-DEFINE_STANDARD_HANDLE(Adaptor3d_HCurve, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Adaptor3d_HCurve, Standard_Transient)
 
 //! Root class for 3D curves manipulated by handles, on
 //! which geometric algorithms work.
@@ -57,7 +57,7 @@ DEFINE_STANDARD_HANDLE(Adaptor3d_HCurve, MMgt_TShared)
 //! - GeomAdaptor_HCurve for a curve from the Geom package
 //! - Adaptor3d_HCurveOnSurface for a curve lying
 //! on a surface from the Geom package.
-class Adaptor3d_HCurve : public MMgt_TShared
+class Adaptor3d_HCurve : public Standard_Transient
 {
 
 public:
@@ -138,7 +138,7 @@ public:
     Handle(Geom_OffsetCurve) OffsetCurve() const;
 
 
-  DEFINE_STANDARD_RTTIEXT(Adaptor3d_HCurve,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Adaptor3d_HCurve,Standard_Transient)
 
 protected:
 

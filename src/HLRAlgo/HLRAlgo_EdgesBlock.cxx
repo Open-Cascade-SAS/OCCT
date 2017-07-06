@@ -22,7 +22,7 @@
 #include <HLRAlgo_EdgesBlock.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_EdgesBlock,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_EdgesBlock,Standard_Transient)
 
 //=======================================================================
 //function : HLRAlgo_EdgesBlock

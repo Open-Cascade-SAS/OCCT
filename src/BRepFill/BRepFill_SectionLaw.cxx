@@ -38,7 +38,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRepFill_SectionLaw,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(BRepFill_SectionLaw,Standard_Transient)
 
 //=======================================================================
 //function : NbLaw

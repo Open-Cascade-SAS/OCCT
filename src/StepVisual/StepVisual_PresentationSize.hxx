@@ -21,16 +21,16 @@
 #include <Standard_Type.hxx>
 
 #include <StepVisual_PresentationSizeAssignmentSelect.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepVisual_PlanarBox;
 class StepVisual_PresentationSizeAssignmentSelect;
 
 
 class StepVisual_PresentationSize;
-DEFINE_STANDARD_HANDLE(StepVisual_PresentationSize, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_PresentationSize, Standard_Transient)
 
 
-class StepVisual_PresentationSize : public MMgt_TShared
+class StepVisual_PresentationSize : public Standard_Transient
 {
 
 public:
@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationSize,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationSize,Standard_Transient)
 
 protected:
 

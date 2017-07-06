@@ -21,14 +21,14 @@
 #include <Standard_Type.hxx>
 
 #include <TCollection_MapNodePtr.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class TCollection_MapNode;
-DEFINE_STANDARD_HANDLE(TCollection_MapNode, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TCollection_MapNode, Standard_Transient)
 
 //! Basic class root of all the Maps.
-class TCollection_MapNode : public MMgt_TShared
+class TCollection_MapNode : public Standard_Transient
 {
 
 public:
@@ -41,7 +41,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TCollection_MapNode,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TCollection_MapNode,Standard_Transient)
 
 protected:
 

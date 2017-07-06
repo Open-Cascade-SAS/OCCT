@@ -17,7 +17,7 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ItemDefinedTransformation,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ItemDefinedTransformation,Standard_Transient)
 
 StepRepr_ItemDefinedTransformation::StepRepr_ItemDefinedTransformation ()    {  }
 

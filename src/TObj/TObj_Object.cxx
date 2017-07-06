@@ -54,7 +54,7 @@
 #include <TDF_TagSource.hxx>
 
 
-IMPLEMENT_STANDARD_RTTIEXT(TObj_Object,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TObj_Object,Standard_Transient)
 
 //=======================================================================
 //function : Constructor

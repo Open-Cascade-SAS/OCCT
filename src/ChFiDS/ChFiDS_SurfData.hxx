@@ -27,19 +27,19 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <MMgt_TShared.hxx>
-class MMgt_TShared;
+#include <Standard_Transient.hxx>
+
 class ChFiDS_FaceInterference;
 class ChFiDS_CommonPoint;
 class gp_Pnt2d;
 
 
 class ChFiDS_SurfData;
-DEFINE_STANDARD_HANDLE(ChFiDS_SurfData, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ChFiDS_SurfData, Standard_Transient)
 
 //! data structure for all information related to  the
 //! fillet and to 2 faces vis a vis
-class ChFiDS_SurfData : public MMgt_TShared
+class ChFiDS_SurfData : public Standard_Transient
 {
 
 public:
@@ -135,9 +135,9 @@ public:
   
   Standard_EXPORT void LastExtensionValue (const Standard_Real Extend);
   
-  Standard_EXPORT Handle(MMgt_TShared) Simul() const;
+  Standard_EXPORT Handle(Standard_Transient) Simul() const;
   
-  Standard_EXPORT void SetSimul (const Handle(MMgt_TShared)& S);
+  Standard_EXPORT void SetSimul (const Handle(Standard_Transient)& S);
   
   Standard_EXPORT void ResetSimul();
   
@@ -158,7 +158,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ChFiDS_SurfData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ChFiDS_SurfData,Standard_Transient)
 
 protected:
 
@@ -182,7 +182,7 @@ private:
   Standard_Real ulspine;
   Standard_Real myfirstextend;
   Standard_Real mylastextend;
-  Handle(MMgt_TShared) simul;
+  Handle(Standard_Transient) simul;
   Standard_Integer indexOfS1;
   Standard_Integer indexOfC1;
   Standard_Integer indexOfS2;

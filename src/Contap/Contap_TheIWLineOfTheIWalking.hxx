@@ -25,7 +25,7 @@
 #include <Standard_Integer.hxx>
 #include <IntSurf_PathPoint.hxx>
 #include <gp_Vec.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <IntSurf_Allocator.hxx>
 class IntSurf_LineOn2S;
 class Standard_OutOfRange;
@@ -36,10 +36,10 @@ class gp_Vec;
 
 
 class Contap_TheIWLineOfTheIWalking;
-DEFINE_STANDARD_HANDLE(Contap_TheIWLineOfTheIWalking, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Contap_TheIWLineOfTheIWalking, Standard_Transient)
 
 
-class Contap_TheIWLineOfTheIWalking : public MMgt_TShared
+class Contap_TheIWLineOfTheIWalking : public Standard_Transient
 {
 
 public:
@@ -143,7 +143,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI_INLINE(Contap_TheIWLineOfTheIWalking,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(Contap_TheIWLineOfTheIWalking,Standard_Transient)
 
 protected:
 

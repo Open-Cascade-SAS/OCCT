@@ -19,16 +19,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepElement_SurfaceSectionField;
 
 
 class StepElement_SurfaceElementProperty;
-DEFINE_STANDARD_HANDLE(StepElement_SurfaceElementProperty, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepElement_SurfaceElementProperty, Standard_Transient)
 
 //! Representation of STEP entity SurfaceElementProperty
-class StepElement_SurfaceElementProperty : public MMgt_TShared
+class StepElement_SurfaceElementProperty : public Standard_Transient
 {
 
 public:
@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepElement_SurfaceElementProperty,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepElement_SurfaceElementProperty,Standard_Transient)
 
 protected:
 

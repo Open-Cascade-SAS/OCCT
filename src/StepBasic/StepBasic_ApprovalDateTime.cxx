@@ -17,7 +17,7 @@
 #include <StepBasic_ApprovalDateTime.hxx>
 #include <StepBasic_DateTimeSelect.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApprovalDateTime,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApprovalDateTime,Standard_Transient)
 
 StepBasic_ApprovalDateTime::StepBasic_ApprovalDateTime ()  {  }
 

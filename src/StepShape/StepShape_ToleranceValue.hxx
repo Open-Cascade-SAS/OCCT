@@ -19,15 +19,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepBasic_MeasureWithUnit;
 
 
 class StepShape_ToleranceValue;
-DEFINE_STANDARD_HANDLE(StepShape_ToleranceValue, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepShape_ToleranceValue, Standard_Transient)
 
 //! Added for Dimensional Tolerances
-class StepShape_ToleranceValue : public MMgt_TShared
+class StepShape_ToleranceValue : public Standard_Transient
 {
 
 public:
@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepShape_ToleranceValue,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ToleranceValue,Standard_Transient)
 
 protected:
 

@@ -24,7 +24,7 @@
 #include <Graphic3d_TypeOfPrimitiveArray.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Byte.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_ShortReal.hxx>
@@ -38,7 +38,7 @@ class gp_Pnt2d;
 
 
 class Graphic3d_ArrayOfPrimitives;
-DEFINE_STANDARD_HANDLE(Graphic3d_ArrayOfPrimitives, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Graphic3d_ArrayOfPrimitives, Standard_Transient)
 
 //! This class furnish services to defined and fill an
 //! array of primitives compatible with the use of
@@ -57,7 +57,7 @@ DEFINE_STANDARD_HANDLE(Graphic3d_ArrayOfPrimitives, MMgt_TShared)
 //! 3) Enable to change dynamically the components of the primitive
 //! (vertice,normal,color,texture coordinates).
 //! 4) Add true triangle and quadrangle strips or fans capabilities.
-class Graphic3d_ArrayOfPrimitives : public MMgt_TShared
+class Graphic3d_ArrayOfPrimitives : public Standard_Transient
 {
 
 public:
@@ -343,7 +343,7 @@ Standard_Integer AddVertex (const Graphic3d_Vec3& theVertex);
 friend class Graphic3d_Group;
 
 
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfPrimitives,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfPrimitives,Standard_Transient)
 
 protected:
 

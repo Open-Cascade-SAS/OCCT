@@ -23,17 +23,17 @@
 #include <HLRAlgo_Intersection.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_State.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class HLRAlgo_Intersection;
 
 
 class HLRBRep_AreaLimit;
-DEFINE_STANDARD_HANDLE(HLRBRep_AreaLimit, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(HLRBRep_AreaLimit, Standard_Transient)
 
 //! The  private  nested class AreaLimit represents   a --
 //! vertex on  the Edge with the  state on the left and --
 //! the right.
-class HLRBRep_AreaLimit : public MMgt_TShared
+class HLRBRep_AreaLimit : public Standard_Transient
 {
 
 public:
@@ -77,7 +77,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(HLRBRep_AreaLimit,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRBRep_AreaLimit,Standard_Transient)
 
 protected:
 

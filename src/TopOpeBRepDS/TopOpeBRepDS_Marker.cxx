@@ -19,7 +19,7 @@
 #include <TopOpeBRepDS_define.hxx>
 #include <TopOpeBRepDS_Marker.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_Marker,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_Marker,Standard_Transient)
 
 //#include <TopExp.hxx>
 //#include <TopTools_IndexedMapOfShape.hxx>

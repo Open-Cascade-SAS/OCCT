@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepBasic_Product;
 
 
 class StepBasic_ProductDefinitionFormation;
-DEFINE_STANDARD_HANDLE(StepBasic_ProductDefinitionFormation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_ProductDefinitionFormation, Standard_Transient)
 
 
-class StepBasic_ProductDefinitionFormation : public MMgt_TShared
+class StepBasic_ProductDefinitionFormation : public Standard_Transient
 {
 
 public:
@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionFormation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionFormation,Standard_Transient)
 
 protected:
 

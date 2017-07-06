@@ -21,19 +21,19 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 
 
 class Units_Dimensions;
-DEFINE_STANDARD_HANDLE(Units_Dimensions, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Units_Dimensions, Standard_Transient)
 
 //! This class includes all  the methods to create and
 //! manipulate    the   dimensions  of the    physical
 //! quantities.
-class Units_Dimensions : public MMgt_TShared
+class Units_Dimensions : public Standard_Transient
 {
 
 public:
@@ -133,7 +133,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Units_Dimensions,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Units_Dimensions,Standard_Transient)
 
 protected:
 

@@ -935,7 +935,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadColors (const Handle(XSControl_WorkS
       continue;
     
     // find shape
-    NCollection_Vector<Handle(MMgt_TShared)> anItems;
+    NCollection_Vector<Handle(Standard_Transient)> anItems;
     if (!style->Item().IsNull()) {
       anItems.Append(style->Item());
     }

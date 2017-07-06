@@ -16,7 +16,7 @@
 #include <IFSelect_GeneralModifier.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_AppliedModifiers,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_AppliedModifiers,Standard_Transient)
 
 IFSelect_AppliedModifiers::IFSelect_AppliedModifiers
   (const Standard_Integer nbmax, const Standard_Integer nbent)

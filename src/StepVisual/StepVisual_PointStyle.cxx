@@ -19,7 +19,7 @@
 #include <StepVisual_PointStyle.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PointStyle,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PointStyle,Standard_Transient)
 
 StepVisual_PointStyle::StepVisual_PointStyle ()  {}
 

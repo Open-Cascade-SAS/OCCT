@@ -25,7 +25,7 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 class Interface_InterfaceModel;
@@ -35,7 +35,7 @@ class Interface_EntityIterator;
 
 
 class IFSelect_PacketList;
-DEFINE_STANDARD_HANDLE(IFSelect_PacketList, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IFSelect_PacketList, Standard_Transient)
 
 //! This class gives a simple way to return then consult a
 //! list of packets, determined from the content of a Model,
@@ -45,7 +45,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_PacketList, MMgt_TShared)
 //! given model, possibly more than one list knowing every entity,
 //! and to determine the remaining list (entities in no lists) and
 //! the duplications (with their count).
-class IFSelect_PacketList : public MMgt_TShared
+class IFSelect_PacketList : public Standard_Transient
 {
 
 public:
@@ -106,7 +106,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_PacketList,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_PacketList,Standard_Transient)
 
 protected:
 

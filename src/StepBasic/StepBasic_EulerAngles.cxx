@@ -18,7 +18,7 @@
 #include <Standard_Type.hxx>
 #include <StepBasic_EulerAngles.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_EulerAngles,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_EulerAngles,Standard_Transient)
 
 //=======================================================================
 //function : StepBasic_EulerAngles

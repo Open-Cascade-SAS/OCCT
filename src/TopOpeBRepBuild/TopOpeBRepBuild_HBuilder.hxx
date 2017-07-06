@@ -26,7 +26,7 @@
 #include <Standard_Boolean.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TColStd_ListOfInteger.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TopAbs_State.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <Standard_Integer.hxx>
@@ -38,7 +38,7 @@ class TopOpeBRepBuild_Builder;
 
 
 class TopOpeBRepBuild_HBuilder;
-DEFINE_STANDARD_HANDLE(TopOpeBRepBuild_HBuilder, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TopOpeBRepBuild_HBuilder, Standard_Transient)
 
 //! The HBuilder  algorithm    constructs   topological
 //! objects  from   an    existing  topology  and  new
@@ -47,7 +47,7 @@ DEFINE_STANDARD_HANDLE(TopOpeBRepBuild_HBuilder, MMgt_TShared)
 //! the existing  topologies are the parts involved in
 //! the  topological  operation and the new geometries
 //! are the intersection lines and points.
-class TopOpeBRepBuild_HBuilder : public MMgt_TShared
+class TopOpeBRepBuild_HBuilder : public Standard_Transient
 {
 
 public:
@@ -170,7 +170,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TopOpeBRepBuild_HBuilder,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepBuild_HBuilder,Standard_Transient)
 
 protected:
 

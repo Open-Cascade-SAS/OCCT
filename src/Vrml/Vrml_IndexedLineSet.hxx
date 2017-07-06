@@ -21,12 +21,12 @@
 #include <Standard_Type.hxx>
 
 #include <TColStd_HArray1OfInteger.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 
 
 class Vrml_IndexedLineSet;
-DEFINE_STANDARD_HANDLE(Vrml_IndexedLineSet, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Vrml_IndexedLineSet, Standard_Transient)
 
 //! defines a IndexedLineSet node of VRML specifying geometry shapes.
 //! This node represents a 3D shape formed by constructing polylines from vertices
@@ -41,7 +41,7 @@ DEFINE_STANDARD_HANDLE(Vrml_IndexedLineSet, MMgt_TShared)
 //! to OVERALL. The DEFAULT normal binding is equal to  PER_VERTEX_INDEXED;
 //! if insufficient normals exist in the state, the lines will be drawn unlit. The same
 //! rules for texture coordinate generation as IndexedFaceSet are used.
-class Vrml_IndexedLineSet : public MMgt_TShared
+class Vrml_IndexedLineSet : public Standard_Transient
 {
 
 public:
@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Vrml_IndexedLineSet,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Vrml_IndexedLineSet,Standard_Transient)
 
 protected:
 

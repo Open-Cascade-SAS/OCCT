@@ -22,7 +22,7 @@
 
 #include <gp_XY.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 class gp_XY;
@@ -33,10 +33,10 @@ class Plate_D3;
 
 
 class NLPlate_HGPPConstraint;
-DEFINE_STANDARD_HANDLE(NLPlate_HGPPConstraint, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(NLPlate_HGPPConstraint, Standard_Transient)
 
 //! define a PinPoint geometric Constraint used to load a Non Linear Plate
-class NLPlate_HGPPConstraint : public MMgt_TShared
+class NLPlate_HGPPConstraint : public Standard_Transient
 {
 
 public:
@@ -91,7 +91,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(NLPlate_HGPPConstraint,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(NLPlate_HGPPConstraint,Standard_Transient)
 
 protected:
 

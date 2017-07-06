@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepVisual_PresentationArea;
 class StepVisual_PresentationSet;
 
 
 class StepVisual_AreaInSet;
-DEFINE_STANDARD_HANDLE(StepVisual_AreaInSet, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_AreaInSet, Standard_Transient)
 
 
-class StepVisual_AreaInSet : public MMgt_TShared
+class StepVisual_AreaInSet : public Standard_Transient
 {
 
 public:
@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_AreaInSet,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_AreaInSet,Standard_Transient)
 
 protected:
 

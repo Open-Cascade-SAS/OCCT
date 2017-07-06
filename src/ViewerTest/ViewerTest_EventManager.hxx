@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 class AIS_InteractiveContext;
@@ -29,11 +29,11 @@ class V3d_View;
 
 
 class ViewerTest_EventManager;
-DEFINE_STANDARD_HANDLE(ViewerTest_EventManager, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ViewerTest_EventManager, Standard_Transient)
 
 //! used to manage mouse event (move,select,shiftselect)
 //! By default the events are transmitted to interactive context.
-class ViewerTest_EventManager : public MMgt_TShared
+class ViewerTest_EventManager : public Standard_Transient
 {
 
 public:
@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ViewerTest_EventManager,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ViewerTest_EventManager,Standard_Transient)
 
 protected:
 

@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 class Interface_InterfaceModel;
@@ -33,7 +33,7 @@ class TCollection_HAsciiString;
 
 
 class Interface_GeneralModule;
-DEFINE_STANDARD_HANDLE(Interface_GeneralModule, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Interface_GeneralModule, Standard_Transient)
 
 //! This class defines general services, which must be provided
 //! for each type of Entity (i.e. of Transient Object processed
@@ -43,7 +43,7 @@ DEFINE_STANDARD_HANDLE(Interface_GeneralModule, MMgt_TShared)
 //! then calls  Module), each recognized Entity Type corresponds
 //! to a Case Number, determined by the Protocol each class of
 //! GeneralModule belongs to.
-class Interface_GeneralModule : public MMgt_TShared
+class Interface_GeneralModule : public Standard_Transient
 {
 
 public:
@@ -184,7 +184,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Interface_GeneralModule,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_GeneralModule,Standard_Transient)
 
 protected:
 

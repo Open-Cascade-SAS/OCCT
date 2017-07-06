@@ -16,7 +16,7 @@
 #include <StepVisual_FillAreaStyle.hxx>
 #include <StepVisual_SurfaceStyleFillArea.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleFillArea,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleFillArea,Standard_Transient)
 
 StepVisual_SurfaceStyleFillArea::StepVisual_SurfaceStyleFillArea ()  {}
 

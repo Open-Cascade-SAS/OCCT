@@ -20,15 +20,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
 
 class StepVisual_PreDefinedItem;
-DEFINE_STANDARD_HANDLE(StepVisual_PreDefinedItem, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_PreDefinedItem, Standard_Transient)
 
 
-class StepVisual_PreDefinedItem : public MMgt_TShared
+class StepVisual_PreDefinedItem : public Standard_Transient
 {
 
 public:
@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_PreDefinedItem,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PreDefinedItem,Standard_Transient)
 
 protected:
 

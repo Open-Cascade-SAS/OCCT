@@ -19,22 +19,22 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class Graphic3d_DataStructureManager;
-DEFINE_STANDARD_HANDLE(Graphic3d_DataStructureManager, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Graphic3d_DataStructureManager, Standard_Transient)
 
 //! This class allows the definition of a manager to
 //! which the graphic objects are associated.
 //! It allows them to be globally manipulated.
 //! It defines the global attributes.
-class Graphic3d_DataStructureManager : public MMgt_TShared
+class Graphic3d_DataStructureManager : public Standard_Transient
 {
 
 public:
 
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_DataStructureManager,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_DataStructureManager,Standard_Transient)
 
 protected:
 

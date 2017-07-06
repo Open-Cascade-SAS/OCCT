@@ -46,7 +46,7 @@ HLRBRep_ShapeBounds::Shape () const
 //=======================================================================
 
 inline void HLRBRep_ShapeBounds::
-ShapeData (const Handle(MMgt_TShared)& SD)
+ShapeData (const Handle(Standard_Transient)& SD)
 { myShapeData = SD; }
 
 //=======================================================================
@@ -54,7 +54,7 @@ ShapeData (const Handle(MMgt_TShared)& SD)
 //purpose  : 
 //=======================================================================
 
-inline const Handle(MMgt_TShared) & HLRBRep_ShapeBounds::ShapeData () const
+inline const Handle(Standard_Transient) & HLRBRep_ShapeBounds::ShapeData () const
 { return myShapeData; }
 
 //=======================================================================

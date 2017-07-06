@@ -20,15 +20,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepVisual_CurveStyle;
 
 
 class StepVisual_SurfaceStyleSilhouette;
-DEFINE_STANDARD_HANDLE(StepVisual_SurfaceStyleSilhouette, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_SurfaceStyleSilhouette, Standard_Transient)
 
 
-class StepVisual_SurfaceStyleSilhouette : public MMgt_TShared
+class StepVisual_SurfaceStyleSilhouette : public Standard_Transient
 {
 
 public:
@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleSilhouette,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleSilhouette,Standard_Transient)
 
 protected:
 

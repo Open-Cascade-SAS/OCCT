@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 class StepData_EDescr;
@@ -32,11 +32,11 @@ class Interface_EntityIterator;
 
 
 class StepData_Described;
-DEFINE_STANDARD_HANDLE(StepData_Described, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepData_Described, Standard_Transient)
 
 //! General frame to describe entities with Description (Simple or
 //! Complex)
-class StepData_Described : public MMgt_TShared
+class StepData_Described : public Standard_Transient
 {
 
 public:
@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepData_Described,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepData_Described,Standard_Transient)
 
 protected:
 

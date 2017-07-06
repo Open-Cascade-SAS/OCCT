@@ -21,7 +21,7 @@
 #include <StepFEA_ElementGeometricRelationship.hxx>
 #include <StepFEA_ElementOrElementGroup.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ElementGeometricRelationship,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ElementGeometricRelationship,Standard_Transient)
 
 //=======================================================================
 //function : StepFEA_ElementGeometricRelationship

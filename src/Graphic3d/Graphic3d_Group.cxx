@@ -39,7 +39,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Group,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Group,Standard_Transient)
 
 // =======================================================================
 // function : Graphic3d_Group

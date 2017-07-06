@@ -15,7 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepData_SelectMember.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepData_SelectMember,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepData_SelectMember,Standard_Transient)
 
 //  Definitions reprises de Field :
 #define KindInteger 1

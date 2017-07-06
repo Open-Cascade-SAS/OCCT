@@ -18,7 +18,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_GeneralModifier,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_GeneralModifier,Standard_Transient)
 
 IFSelect_GeneralModifier::IFSelect_GeneralModifier
   (const Standard_Boolean maychangegraph)    {  thechgr = maychangegraph;  }

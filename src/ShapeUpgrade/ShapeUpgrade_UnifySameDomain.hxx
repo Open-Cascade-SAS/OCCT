@@ -23,7 +23,7 @@
 
 #include <TopoDS_Shape.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
@@ -32,7 +32,7 @@ class TopoDS_Shape;
 
 
 class ShapeUpgrade_UnifySameDomain;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_UnifySameDomain, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeUpgrade_UnifySameDomain, Standard_Transient)
 
 //! This tool tries to unify faces and edges of the shape which lies on the same geometry.
 //! Faces/edges considering as 'same-domain' if a group of neighbouring faces/edges lying on coincident surfaces/curves.
@@ -51,7 +51,7 @@ DEFINE_STANDARD_HANDLE(ShapeUpgrade_UnifySameDomain, MMgt_TShared)
 //! The algorithm provides a place holder for the history and collects the
 //! history by default.
 //! To avoid collecting of the history the place holder should be set to the null handle.
-class ShapeUpgrade_UnifySameDomain : public MMgt_TShared
+class ShapeUpgrade_UnifySameDomain : public Standard_Transient
 {
 
 public:
@@ -131,7 +131,7 @@ public:
     return myHistory;
   }
 
-  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_UnifySameDomain,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_UnifySameDomain,Standard_Transient)
 
 protected:
 

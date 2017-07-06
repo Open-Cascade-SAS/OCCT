@@ -17,7 +17,7 @@
 #include <StepVisual_DirectionCountSelect.hxx>
 #include <StepVisual_SurfaceStyleParameterLine.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleParameterLine,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleParameterLine,Standard_Transient)
 
 StepVisual_SurfaceStyleParameterLine::StepVisual_SurfaceStyleParameterLine ()  {}
 

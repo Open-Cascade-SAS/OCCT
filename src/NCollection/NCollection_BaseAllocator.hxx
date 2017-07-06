@@ -27,7 +27,7 @@
 #ifndef NCollection_BaseAllocator_HeaderFile
 #define NCollection_BaseAllocator_HeaderFile
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <NCollection_TypeDef.hxx>
 
@@ -44,7 +44,7 @@
 *              CommonBaseAllocator.
 *              Note that this object is managed by Handle.
 */              
-class NCollection_BaseAllocator : public MMgt_TShared
+class NCollection_BaseAllocator : public Standard_Transient
 {
  public:
   // ---------- PUBLIC METHODS ------------
@@ -78,9 +78,9 @@ class NCollection_BaseAllocator : public MMgt_TShared
 
  public:
   // ---------- CasCade RunTime Type Information
-  DEFINE_STANDARD_RTTIEXT(NCollection_BaseAllocator,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(NCollection_BaseAllocator,Standard_Transient)
 };
 
-DEFINE_STANDARD_HANDLE(NCollection_BaseAllocator,MMgt_TShared)
+DEFINE_STANDARD_HANDLE(NCollection_BaseAllocator,Standard_Transient)
 
 #endif

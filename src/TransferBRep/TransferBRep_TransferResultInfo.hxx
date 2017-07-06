@@ -21,11 +21,11 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class TransferBRep_TransferResultInfo;
-DEFINE_STANDARD_HANDLE(TransferBRep_TransferResultInfo, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TransferBRep_TransferResultInfo, Standard_Transient)
 
 //! Data structure for storing information on transfer result.
 //! At the moment it dispatches information for the following types:
@@ -37,7 +37,7 @@ DEFINE_STANDARD_HANDLE(TransferBRep_TransferResultInfo, MMgt_TShared)
 //! - no result + warning(s),
 //! - no result + fail(s),
 //! - no result + warning(s) + fail(s),
-class TransferBRep_TransferResultInfo : public MMgt_TShared
+class TransferBRep_TransferResultInfo : public Standard_Transient
 {
 
 public:
@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TransferBRep_TransferResultInfo,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TransferBRep_TransferResultInfo,Standard_Transient)
 
 protected:
 

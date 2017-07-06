@@ -21,17 +21,17 @@
 #include <Standard_Type.hxx>
 
 #include <HLRAlgo_Projector.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 
 class Prs3d_Projector;
-DEFINE_STANDARD_HANDLE(Prs3d_Projector, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Prs3d_Projector, Standard_Transient)
 
 //! A projector object.
 //! This object defines the parameters of a view for a
 //! visualization algorithm. It is, for example, used by the
 //! hidden line removal algorithms.
-class Prs3d_Projector : public MMgt_TShared
+class Prs3d_Projector : public Standard_Transient
 {
 
 public:
@@ -53,7 +53,7 @@ public:
   //! Returns a projector object for use in a hidden line removal algorithm.
   Standard_EXPORT HLRAlgo_Projector Projector() const;
 
-  DEFINE_STANDARD_RTTIEXT(Prs3d_Projector,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Prs3d_Projector,Standard_Transient)
 
 private:
 

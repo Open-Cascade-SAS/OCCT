@@ -21,17 +21,17 @@
 #include <Standard_Type.hxx>
 
 #include <TopOpeBRepDS_DataMapOfInterferenceListOfInterference.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <Standard_Boolean.hxx>
 class TopOpeBRepDS_Interference;
 
 
 class TopOpeBRepDS_Association;
-DEFINE_STANDARD_HANDLE(TopOpeBRepDS_Association, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TopOpeBRepDS_Association, Standard_Transient)
 
 
-class TopOpeBRepDS_Association : public MMgt_TShared
+class TopOpeBRepDS_Association : public Standard_Transient
 {
 
 public:
@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Association,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Association,Standard_Transient)
 
 protected:
 

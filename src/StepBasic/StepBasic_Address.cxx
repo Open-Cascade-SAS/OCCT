@@ -16,7 +16,7 @@
 #include <StepBasic_Address.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Address,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Address,Standard_Transient)
 
 StepBasic_Address::StepBasic_Address ()  {}
 

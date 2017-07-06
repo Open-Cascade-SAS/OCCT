@@ -22,16 +22,16 @@
 
 #include <TopoDS_Edge.hxx>
 #include <Draw_Color.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TopoDS_Edge;
 class Draw_Color;
 
 
 class DBRep_Edge;
-DEFINE_STANDARD_HANDLE(DBRep_Edge, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(DBRep_Edge, Standard_Transient)
 
 //! Display of an edge. Edge + color.
-class DBRep_Edge : public MMgt_TShared
+class DBRep_Edge : public Standard_Transient
 {
 
 public:
@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(DBRep_Edge,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(DBRep_Edge,Standard_Transient)
 
 protected:
 

@@ -17,7 +17,7 @@
 #include <StepVisual_PresentationLayerUsage.hxx>
 #include <StepVisual_PresentationRepresentation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationLayerUsage,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationLayerUsage,Standard_Transient)
 
 StepVisual_PresentationLayerUsage::StepVisual_PresentationLayerUsage  ()    {  }
 

@@ -24,7 +24,7 @@
 #include <Law_Linear.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(GeomFill_CoonsAlgPatch,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_CoonsAlgPatch,Standard_Transient)
 
 //=======================================================================
 //function : GeomFill_CoonsAlgPatch

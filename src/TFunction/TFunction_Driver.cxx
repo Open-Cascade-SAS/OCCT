@@ -21,7 +21,7 @@
 #include <TFunction_Driver.hxx>
 #include <TFunction_Logbook.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TFunction_Driver,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TFunction_Driver,Standard_Transient)
 
 //=======================================================================
 //function : TFunction_Driver

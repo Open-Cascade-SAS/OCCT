@@ -25,7 +25,7 @@
 #include <IFSelect_SequenceOfAppliedModifiers.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
@@ -43,7 +43,7 @@ class Interface_EntityIterator;
 
 
 class IFSelect_ModelCopier;
-DEFINE_STANDARD_HANDLE(IFSelect_ModelCopier, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IFSelect_ModelCopier, Standard_Transient)
 
 //! This class performs the Copy operations involved by the
 //! description of a ShareOut (evaluated by a ShareOutResult)
@@ -81,7 +81,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_ModelCopier, MMgt_TShared)
 //! also in package IFAdapt : a sub-class of ModelCopier allows
 //! to work with EntityModifier, in addition to Modifier itself
 //! which still applies to a whole copied Model.
-class IFSelect_ModelCopier : public MMgt_TShared
+class IFSelect_ModelCopier : public Standard_Transient
 {
 
 public:
@@ -207,7 +207,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_ModelCopier,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_ModelCopier,Standard_Transient)
 
 protected:
 

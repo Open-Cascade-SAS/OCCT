@@ -23,13 +23,13 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfBoolean.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Boolean.hxx>
 
 
 class HLRAlgo_EdgesBlock;
-DEFINE_STANDARD_HANDLE(HLRAlgo_EdgesBlock, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(HLRAlgo_EdgesBlock, Standard_Transient)
 
 //! An EdgesBlock is a set of Edges. It is used by the
 //! DataStructure to structure the Edges.
@@ -43,7 +43,7 @@ DEFINE_STANDARD_HANDLE(HLRAlgo_EdgesBlock, MMgt_TShared)
 //! Internal
 //! Double
 //! IsoLine)
-class HLRAlgo_EdgesBlock : public MMgt_TShared
+class HLRAlgo_EdgesBlock : public Standard_Transient
 {
 
 public:
@@ -146,7 +146,7 @@ public:
     return myMinMax;
   }
 
-  DEFINE_STANDARD_RTTIEXT(HLRAlgo_EdgesBlock,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_EdgesBlock,Standard_Transient)
 
 protected:
 

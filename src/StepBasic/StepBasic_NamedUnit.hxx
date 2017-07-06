@@ -20,15 +20,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepBasic_DimensionalExponents;
 
 
 class StepBasic_NamedUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_NamedUnit, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_NamedUnit, Standard_Transient)
 
 
-class StepBasic_NamedUnit : public MMgt_TShared
+class StepBasic_NamedUnit : public Standard_Transient
 {
 
 public:
@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_NamedUnit,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_NamedUnit,Standard_Transient)
 
 protected:
 

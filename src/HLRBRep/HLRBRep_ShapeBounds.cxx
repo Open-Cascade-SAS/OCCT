@@ -17,7 +17,7 @@
 
 #include <HLRBRep_ShapeBounds.hxx>
 #include <HLRTopoBRep_OutLiner.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 //=======================================================================
 //function : HLRBRep_ShapeBounds
@@ -25,7 +25,7 @@
 //=======================================================================
 HLRBRep_ShapeBounds::
 HLRBRep_ShapeBounds (const Handle(HLRTopoBRep_OutLiner)& S,
-		     const Handle(MMgt_TShared)& SData,
+		     const Handle(Standard_Transient)& SData,
 		     const Standard_Integer nbIso,
 		     const Standard_Integer V1,
 		     const Standard_Integer V2,

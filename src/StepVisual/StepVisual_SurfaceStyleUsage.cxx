@@ -16,7 +16,7 @@
 #include <StepVisual_SurfaceSideStyle.hxx>
 #include <StepVisual_SurfaceStyleUsage.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleUsage,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleUsage,Standard_Transient)
 
 StepVisual_SurfaceStyleUsage::StepVisual_SurfaceStyleUsage ()  {}
 

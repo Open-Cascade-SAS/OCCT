@@ -17,7 +17,7 @@
 #include <StepBasic_ExternalSource.hxx>
 #include <StepBasic_ProductDefinitionReference.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionReference, MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionReference, Standard_Transient)
 
 //=======================================================================
 //function : StepBasic_ProductDefinitionReference

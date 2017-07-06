@@ -20,14 +20,14 @@
 #include <Standard_Type.hxx>
 
 #include <TColStd_HArray1OfReal.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class StepBasic_EulerAngles;
-DEFINE_STANDARD_HANDLE(StepBasic_EulerAngles, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_EulerAngles, Standard_Transient)
 
 //! Representation of STEP entity EulerAngles
-class StepBasic_EulerAngles : public MMgt_TShared
+class StepBasic_EulerAngles : public Standard_Transient
 {
 
 public:
@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_EulerAngles,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_EulerAngles,Standard_Transient)
 
 protected:
 

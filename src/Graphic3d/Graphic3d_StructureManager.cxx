@@ -19,7 +19,7 @@
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_Structure.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_StructureManager,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_StructureManager,Standard_Transient)
 
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
 #include <Graphic3d_CView.hxx>

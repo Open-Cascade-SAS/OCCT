@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
@@ -38,12 +38,12 @@ class gp_Pnt;
 
 
 class GeomFill_LocationLaw;
-DEFINE_STANDARD_HANDLE(GeomFill_LocationLaw, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(GeomFill_LocationLaw, Standard_Transient)
 
 //! To define location  law in Sweeping location is --
 //! defined   by an  Matrix  M and  an Vector  V,  and
 //! transform an point P in MP+V.
-class GeomFill_LocationLaw : public MMgt_TShared
+class GeomFill_LocationLaw : public Standard_Transient
 {
 
 public:
@@ -157,7 +157,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(GeomFill_LocationLaw,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_LocationLaw,Standard_Transient)
 
 protected:
 

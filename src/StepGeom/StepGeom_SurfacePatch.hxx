@@ -22,15 +22,15 @@
 
 #include <StepGeom_TransitionCode.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepGeom_BoundedSurface;
 
 
 class StepGeom_SurfacePatch;
-DEFINE_STANDARD_HANDLE(StepGeom_SurfacePatch, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepGeom_SurfacePatch, Standard_Transient)
 
 
-class StepGeom_SurfacePatch : public MMgt_TShared
+class StepGeom_SurfacePatch : public Standard_Transient
 {
 
 public:
@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepGeom_SurfacePatch,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_SurfacePatch,Standard_Transient)
 
 protected:
 

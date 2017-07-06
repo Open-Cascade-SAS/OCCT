@@ -19,7 +19,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <StepRepr_HArray1OfShapeAspect.hxx>
 #include <StepRepr_ShapeAspect.hxx>
@@ -28,9 +28,9 @@
 class StepRepr_HArray1OfShapeAspect;
 
 class StepDimTol_ToleranceZoneDefinition;
-DEFINE_STANDARD_HANDLE(StepDimTol_ToleranceZoneDefinition, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepDimTol_ToleranceZoneDefinition, Standard_Transient)
 //! Representation of STEP entity ToleranceZoneDefinition
-class StepDimTol_ToleranceZoneDefinition : public MMgt_TShared
+class StepDimTol_ToleranceZoneDefinition : public Standard_Transient
 {
 
 public:
@@ -84,7 +84,7 @@ public:
     myZone = theZone;
   }
   
-  DEFINE_STANDARD_RTTIEXT(StepDimTol_ToleranceZoneDefinition,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_ToleranceZoneDefinition,Standard_Transient)
 
 private: 
   Handle(StepRepr_HArray1OfShapeAspect) myBoundaries;

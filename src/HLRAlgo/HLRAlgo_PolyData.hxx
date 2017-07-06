@@ -25,7 +25,7 @@
 #include <TColgp_HArray1OfXYZ.hxx>
 #include <HLRAlgo_HArray1OfTData.hxx>
 #include <HLRAlgo_HArray1OfPHDat.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TColgp_Array1OfXYZ.hxx>
 #include <HLRAlgo_Array1OfTData.hxx>
 #include <HLRAlgo_Array1OfPHDat.hxx>
@@ -34,10 +34,10 @@
 class HLRAlgo_EdgeStatus;
 
 class HLRAlgo_PolyData;
-DEFINE_STANDARD_HANDLE(HLRAlgo_PolyData, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(HLRAlgo_PolyData, Standard_Transient)
 
 //! Data structure of a set of Triangles.
-class HLRAlgo_PolyData : public MMgt_TShared
+class HLRAlgo_PolyData : public Standard_Transient
 {
 
 public:
@@ -109,7 +109,7 @@ public:
     return myFaceIndices;
   }
 
-  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyData,Standard_Transient)
 
 private:
 

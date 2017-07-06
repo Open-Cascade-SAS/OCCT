@@ -36,7 +36,7 @@ class Interface_CheckIterator;
 
 
 class Transfer_ProcessForTransient;
-DEFINE_STANDARD_HANDLE(Transfer_ProcessForTransient, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Transfer_ProcessForTransient, Standard_Transient)
 
 //! Manages Transfer of Transient Objects. Produces also
 //! ActorOfTransientProcess       (deferred class),
@@ -44,7 +44,7 @@ DEFINE_STANDARD_HANDLE(Transfer_ProcessForTransient, MMgt_TShared)
 //! TransferMapOfTransientProcess (internally used)
 //! Normally uses as TransientProcess, which adds some specifics
 
-class Transfer_ProcessForTransient : public MMgt_TShared
+class Transfer_ProcessForTransient : public Standard_Transient
 {
 
 public:
@@ -405,7 +405,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI_INLINE(Transfer_ProcessForTransient,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(Transfer_ProcessForTransient,Standard_Transient)
 
 protected:
 

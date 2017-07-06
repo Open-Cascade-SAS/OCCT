@@ -22,7 +22,7 @@
 
 #include <TopoDS_Shape.hxx>
 #include <HLRTopoBRep_Data.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <BRepTopAdaptor_MapOfShapeTool.hxx>
 #include <Standard_Integer.hxx>
 class TopoDS_Shape;
@@ -32,10 +32,10 @@ class TopoDS_Face;
 
 
 class HLRTopoBRep_OutLiner;
-DEFINE_STANDARD_HANDLE(HLRTopoBRep_OutLiner, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(HLRTopoBRep_OutLiner, Standard_Transient)
 
 
-class HLRTopoBRep_OutLiner : public MMgt_TShared
+class HLRTopoBRep_OutLiner : public Standard_Transient
 {
 
 public:
@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(HLRTopoBRep_OutLiner,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRTopoBRep_OutLiner,Standard_Transient)
 
 protected:
 

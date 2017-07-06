@@ -20,15 +20,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepVisual_Colour;
 
 
 class StepVisual_TextStyleForDefinedFont;
-DEFINE_STANDARD_HANDLE(StepVisual_TextStyleForDefinedFont, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_TextStyleForDefinedFont, Standard_Transient)
 
 
-class StepVisual_TextStyleForDefinedFont : public MMgt_TShared
+class StepVisual_TextStyleForDefinedFont : public Standard_Transient
 {
 
 public:
@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_TextStyleForDefinedFont,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_TextStyleForDefinedFont,Standard_Transient)
 
 protected:
 

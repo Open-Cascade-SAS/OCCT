@@ -17,7 +17,7 @@
 #include <Standard_Type.hxx>
 #include <TDataStd_HDataMapOfStringHArray1OfInteger.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringHArray1OfInteger,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringHArray1OfInteger,Standard_Transient)
 
 //=======================================================================
 //function : TDataStd_HDataMapOfStringHArray1OfInteger

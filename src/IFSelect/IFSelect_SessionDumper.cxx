@@ -19,7 +19,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SessionDumper,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SessionDumper,Standard_Transient)
 
 static Handle(IFSelect_SessionDumper)  thefirst;
 static int cefait = 0;

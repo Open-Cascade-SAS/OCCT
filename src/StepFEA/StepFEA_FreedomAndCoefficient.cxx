@@ -20,7 +20,7 @@
 #include <StepFEA_DegreeOfFreedom.hxx>
 #include <StepFEA_FreedomAndCoefficient.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FreedomAndCoefficient,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FreedomAndCoefficient,Standard_Transient)
 
 //=======================================================================
 //function : StepFEA_FreedomAndCoefficient

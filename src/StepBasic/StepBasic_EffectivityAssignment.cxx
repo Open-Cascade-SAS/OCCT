@@ -19,7 +19,7 @@
 #include <StepBasic_Effectivity.hxx>
 #include <StepBasic_EffectivityAssignment.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_EffectivityAssignment,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_EffectivityAssignment,Standard_Transient)
 
 //=======================================================================
 //function : StepBasic_EffectivityAssignment

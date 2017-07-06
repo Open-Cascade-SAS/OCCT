@@ -21,16 +21,16 @@
 #include <Standard_Type.hxx>
 
 #include <StepBasic_DateTimeSelect.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepBasic_Approval;
 class StepBasic_DateTimeSelect;
 
 
 class StepBasic_ApprovalDateTime;
-DEFINE_STANDARD_HANDLE(StepBasic_ApprovalDateTime, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_ApprovalDateTime, Standard_Transient)
 
 //! Added from StepBasic Rev2 to Rev4
-class StepBasic_ApprovalDateTime : public MMgt_TShared
+class StepBasic_ApprovalDateTime : public Standard_Transient
 {
 
 public:
@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalDateTime,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalDateTime,Standard_Transient)
 
 protected:
 

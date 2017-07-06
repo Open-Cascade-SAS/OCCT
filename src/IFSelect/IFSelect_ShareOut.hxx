@@ -23,7 +23,7 @@
 #include <IFSelect_TSeqOfDispatch.hxx>
 #include <IFSelect_SequenceOfGeneralModifier.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class TCollection_HAsciiString;
 class Interface_InterfaceError;
@@ -36,7 +36,7 @@ class TCollection_AsciiString;
 
 
 class IFSelect_ShareOut;
-DEFINE_STANDARD_HANDLE(IFSelect_ShareOut, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IFSelect_ShareOut, Standard_Transient)
 
 //! This class gathers the informations required to produce one or
 //! several file(s) from the content of an InterfaceModel (passing
@@ -61,7 +61,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_ShareOut, MMgt_TShared)
 //! entities per file; "forgotten" entities; duplicated entities),
 //! exploitation (generation of derivated Models, each of them
 //! generating an output file)
-class IFSelect_ShareOut : public MMgt_TShared
+class IFSelect_ShareOut : public Standard_Transient
 {
 
 public:
@@ -229,7 +229,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_ShareOut,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_ShareOut,Standard_Transient)
 
 protected:
 

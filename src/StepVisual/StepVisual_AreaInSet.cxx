@@ -17,7 +17,7 @@
 #include <StepVisual_PresentationArea.hxx>
 #include <StepVisual_PresentationSet.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AreaInSet,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AreaInSet,Standard_Transient)
 
 StepVisual_AreaInSet::StepVisual_AreaInSet ()  {}
 

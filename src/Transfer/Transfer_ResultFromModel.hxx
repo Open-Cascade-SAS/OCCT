@@ -23,7 +23,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Integer.hxx>
 #include <Interface_CheckStatus.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
@@ -35,7 +35,7 @@ class Interface_CheckIterator;
 
 
 class Transfer_ResultFromModel;
-DEFINE_STANDARD_HANDLE(Transfer_ResultFromModel, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Transfer_ResultFromModel, Standard_Transient)
 
 //! ResultFromModel is used to store a final result stored in a
 //! TransientProcess, respectfully to its structuration in scopes
@@ -52,7 +52,7 @@ DEFINE_STANDARD_HANDLE(Transfer_ResultFromModel, MMgt_TShared)
 //! by designating a starting entity
 //! - Fill back the TransientProcess from a ResultFromModel, as it
 //! were filled by the operation which filled it the first time
-class Transfer_ResultFromModel : public MMgt_TShared
+class Transfer_ResultFromModel : public Standard_Transient
 {
 
 public:
@@ -158,7 +158,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Transfer_ResultFromModel,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Transfer_ResultFromModel,Standard_Transient)
 
 protected:
 

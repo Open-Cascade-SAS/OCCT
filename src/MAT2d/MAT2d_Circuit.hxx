@@ -27,7 +27,7 @@
 #include <TColStd_SequenceOfInteger.hxx>
 #include <GeomAbs_JoinType.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <MAT2d_SequenceOfSequenceOfGeometry.hxx>
 #include <TColStd_SequenceOfBoolean.hxx>
 #include <Standard_Integer.hxx>
@@ -39,12 +39,12 @@ class MAT2d_MiniPath;
 
 
 class MAT2d_Circuit;
-DEFINE_STANDARD_HANDLE(MAT2d_Circuit, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MAT2d_Circuit, Standard_Transient)
 
 //! Constructs a circuit on a set of lines.
 //! EquiCircuit gives a Circuit passing by all the lines
 //! in a set and all the connexions of the minipath associated.
-class MAT2d_Circuit : public MMgt_TShared
+class MAT2d_Circuit : public Standard_Transient
 {
 
 public:
@@ -78,7 +78,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(MAT2d_Circuit,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MAT2d_Circuit,Standard_Transient)
 
 protected:
 

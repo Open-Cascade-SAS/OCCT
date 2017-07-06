@@ -18,7 +18,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IntSurf_LineOn2S,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IntSurf_LineOn2S,Standard_Transient)
 
 IntSurf_LineOn2S::IntSurf_LineOn2S (const IntSurf_Allocator& theAllocator) :
     mySeq (theAllocator)

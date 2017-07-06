@@ -21,15 +21,15 @@
 #include <Standard_Type.hxx>
 
 #include <Draw_Color.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class Draw_Color;
 
 
 class HLRTest_ShapeData;
-DEFINE_STANDARD_HANDLE(HLRTest_ShapeData, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(HLRTest_ShapeData, Standard_Transient)
 
 //! Contains the colors of a shape.
-class HLRTest_ShapeData : public MMgt_TShared
+class HLRTest_ShapeData : public Standard_Transient
 {
 
 public:
@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(HLRTest_ShapeData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRTest_ShapeData,Standard_Transient)
 
 protected:
 

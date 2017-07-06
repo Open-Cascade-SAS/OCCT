@@ -21,4 +21,4 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(LocOpe_GeneratedShape,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(LocOpe_GeneratedShape,Standard_Transient)

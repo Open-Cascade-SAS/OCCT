@@ -24,7 +24,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <Interface_CheckIterator.hxx>
 #include <TColStd_IndexedDataMapOfTransientTransient.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_Vector.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_CString.hxx>
@@ -68,7 +68,7 @@ class IFSelect_SignatureList;
 
 
 class IFSelect_WorkSession;
-DEFINE_STANDARD_HANDLE(IFSelect_WorkSession, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IFSelect_WorkSession, Standard_Transient)
 
 //! This class can be used to simply manage a process such as
 //! splitting a file, extracting a set of Entities ...
@@ -76,7 +76,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_WorkSession, MMgt_TShared)
 //! Text Parameters, Selections, Dispatches, in addition to a
 //! ShareOut. To each of these variables, a unique Integer
 //! Identifier is attached. A Name can be attached too as desired.
-class IFSelect_WorkSession : public MMgt_TShared
+class IFSelect_WorkSession : public Standard_Transient
 {
 
 public:
@@ -1088,7 +1088,7 @@ public:
   //! 2 gives a form suitable for givelist : (n1,n2,n3...)
   Standard_EXPORT void ListEntities (const Interface_EntityIterator& iter, const Standard_Integer mode) const;
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_WorkSession,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_WorkSession,Standard_Transient)
 
  protected:
 

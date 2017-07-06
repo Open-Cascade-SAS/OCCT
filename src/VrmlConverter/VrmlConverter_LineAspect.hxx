@@ -21,16 +21,16 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class Vrml_Material;
 
 
 class VrmlConverter_LineAspect;
-DEFINE_STANDARD_HANDLE(VrmlConverter_LineAspect, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(VrmlConverter_LineAspect, Standard_Transient)
 
 //! qualifies the aspect properties for
 //! the VRML conversation of a Curve and  a  DeflectionCurve .
-class VrmlConverter_LineAspect : public MMgt_TShared
+class VrmlConverter_LineAspect : public Standard_Transient
 {
 
 public:
@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(VrmlConverter_LineAspect,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(VrmlConverter_LineAspect,Standard_Transient)
 
 protected:
 

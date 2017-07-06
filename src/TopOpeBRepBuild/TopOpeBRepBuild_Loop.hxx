@@ -23,19 +23,19 @@
 #include <Standard_Boolean.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepBuild_BlockIterator.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TopoDS_Shape;
 class TopOpeBRepBuild_BlockIterator;
 
 
 class TopOpeBRepBuild_Loop;
-DEFINE_STANDARD_HANDLE(TopOpeBRepBuild_Loop, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TopOpeBRepBuild_Loop, Standard_Transient)
 
 
 //! a Loop is an existing shape (Shell,Wire) or a set
 //! of shapes (Faces,Edges) which are connex.
 //! a set of connex shape is represented by a BlockIterator
-class TopOpeBRepBuild_Loop : public MMgt_TShared
+class TopOpeBRepBuild_Loop : public Standard_Transient
 {
 
 public:
@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TopOpeBRepBuild_Loop,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepBuild_Loop,Standard_Transient)
 
 protected:
 

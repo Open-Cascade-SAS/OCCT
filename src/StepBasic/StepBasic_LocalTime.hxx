@@ -23,15 +23,15 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepBasic_CoordinatedUniversalTimeOffset;
 
 
 class StepBasic_LocalTime;
-DEFINE_STANDARD_HANDLE(StepBasic_LocalTime, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_LocalTime, Standard_Transient)
 
 
-class StepBasic_LocalTime : public MMgt_TShared
+class StepBasic_LocalTime : public Standard_Transient
 {
 
 public:
@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_LocalTime,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_LocalTime,Standard_Transient)
 
 protected:
 

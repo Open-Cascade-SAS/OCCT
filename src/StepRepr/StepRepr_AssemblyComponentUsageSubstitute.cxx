@@ -17,7 +17,7 @@
 #include <StepRepr_AssemblyComponentUsageSubstitute.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_AssemblyComponentUsageSubstitute,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_AssemblyComponentUsageSubstitute,Standard_Transient)
 
 StepRepr_AssemblyComponentUsageSubstitute::StepRepr_AssemblyComponentUsageSubstitute ()    {  }
 

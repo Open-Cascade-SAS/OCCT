@@ -24,7 +24,7 @@
 #include <Resource_DataMapOfAsciiStringAsciiString.hxx>
 #include <Resource_DataMapOfAsciiStringExtendedString.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
@@ -36,10 +36,10 @@ class TCollection_AsciiString;
 
 
 class Resource_Manager;
-DEFINE_STANDARD_HANDLE(Resource_Manager, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Resource_Manager, Standard_Transient)
 
 //! Defines a resource structure and its management methods.
-class Resource_Manager : public MMgt_TShared
+class Resource_Manager : public Standard_Transient
 {
 
 public:
@@ -108,7 +108,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Resource_Manager,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Resource_Manager,Standard_Transient)
 
 protected:
 

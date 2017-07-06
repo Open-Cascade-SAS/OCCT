@@ -22,16 +22,16 @@
 
 #include <TColStd_HArray1OfBoolean.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Address.hxx>
 
 
 class TopOpeBRepDS_Marker;
-DEFINE_STANDARD_HANDLE(TopOpeBRepDS_Marker, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TopOpeBRepDS_Marker, Standard_Transient)
 
 
-class TopOpeBRepDS_Marker : public MMgt_TShared
+class TopOpeBRepDS_Marker : public Standard_Transient
 {
 
 public:
@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Marker,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Marker,Standard_Transient)
 
 protected:
 

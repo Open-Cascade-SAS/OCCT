@@ -18,7 +18,7 @@
 #include <AppDef_MultiPointConstraint.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_DimensionError.hxx>
 #include <Standard_OutOfRange.hxx>

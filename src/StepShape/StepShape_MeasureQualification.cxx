@@ -18,7 +18,7 @@
 #include <StepShape_ValueQualifier.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_MeasureQualification,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_MeasureQualification,Standard_Transient)
 
 StepShape_MeasureQualification::StepShape_MeasureQualification  ()    {  }
 

@@ -17,7 +17,7 @@
 #include <Standard_Type.hxx>
 #include <XSAlgo_ToolContainer.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XSAlgo_ToolContainer,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(XSAlgo_ToolContainer,Standard_Transient)
 
 //=======================================================================
 //function : XSAlgo_ToolContainer

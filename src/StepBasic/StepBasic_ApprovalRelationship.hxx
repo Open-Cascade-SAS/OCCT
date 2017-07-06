@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepBasic_Approval;
 
 
 class StepBasic_ApprovalRelationship;
-DEFINE_STANDARD_HANDLE(StepBasic_ApprovalRelationship, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_ApprovalRelationship, Standard_Transient)
 
 
-class StepBasic_ApprovalRelationship : public MMgt_TShared
+class StepBasic_ApprovalRelationship : public Standard_Transient
 {
 
 public:
@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalRelationship,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalRelationship,Standard_Transient)
 
 protected:
 

@@ -17,7 +17,7 @@
 #include <StepBasic_OrganizationAssignment.hxx>
 #include <StepBasic_OrganizationRole.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_OrganizationAssignment,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_OrganizationAssignment,Standard_Transient)
 
 void StepBasic_OrganizationAssignment::Init(
 	const Handle(StepBasic_Organization)& aAssignedOrganization,

@@ -19,7 +19,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>
@@ -42,10 +42,10 @@ class Geom_Curve;
 
 
 class ShapeAlgo_AlgoContainer;
-DEFINE_STANDARD_HANDLE(ShapeAlgo_AlgoContainer, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeAlgo_AlgoContainer, Standard_Transient)
 
 
-class ShapeAlgo_AlgoContainer : public MMgt_TShared
+class ShapeAlgo_AlgoContainer : public Standard_Transient
 {
 
 public:
@@ -110,7 +110,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ShapeAlgo_AlgoContainer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeAlgo_AlgoContainer,Standard_Transient)
 
 protected:
 

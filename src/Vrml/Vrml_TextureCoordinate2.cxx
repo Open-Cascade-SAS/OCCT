@@ -15,7 +15,7 @@
 #include <Standard_Type.hxx>
 #include <Vrml_TextureCoordinate2.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Vrml_TextureCoordinate2,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Vrml_TextureCoordinate2,Standard_Transient)
 
 Vrml_TextureCoordinate2::Vrml_TextureCoordinate2()
 {

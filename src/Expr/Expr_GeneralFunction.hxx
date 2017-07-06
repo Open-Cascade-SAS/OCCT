@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Expr_Array1OfNamedUnknown.hxx>
@@ -35,10 +35,10 @@ class TCollection_AsciiString;
 
 
 class Expr_GeneralFunction;
-DEFINE_STANDARD_HANDLE(Expr_GeneralFunction, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Expr_GeneralFunction, Standard_Transient)
 
 //! Defines the general purposes of any function.
-class Expr_GeneralFunction : public MMgt_TShared
+class Expr_GeneralFunction : public Standard_Transient
 {
 
 public:
@@ -78,7 +78,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Expr_GeneralFunction,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Expr_GeneralFunction,Standard_Transient)
 
 protected:
 

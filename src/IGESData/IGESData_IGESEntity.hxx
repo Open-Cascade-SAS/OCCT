@@ -25,7 +25,7 @@
 #include <Standard_Real.hxx>
 #include <Standard_Character.hxx>
 #include <Interface_EntityList.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <IGESData_DefType.hxx>
 #include <IGESData_DefList.hxx>
@@ -50,11 +50,11 @@ class Interface_EntityList;
 
 
 class IGESData_IGESEntity;
-DEFINE_STANDARD_HANDLE(IGESData_IGESEntity, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(IGESData_IGESEntity, Standard_Transient)
 
 //! defines root of IGES Entity definition, including Directory
 //! Part, lists of (optionnal) Properties and Associativities
-class IGESData_IGESEntity : public MMgt_TShared
+class IGESData_IGESEntity : public Standard_Transient
 {
 
 public:
@@ -330,7 +330,7 @@ friend class IGESData_IGESReaderTool;
 friend class IGESData_DirChecker;
 
 
-  DEFINE_STANDARD_RTTIEXT(IGESData_IGESEntity,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IGESData_IGESEntity,Standard_Transient)
 
 protected:
 

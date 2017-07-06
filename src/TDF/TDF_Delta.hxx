@@ -22,7 +22,7 @@
 #include <Standard_Integer.hxx>
 #include <TDF_AttributeDeltaList.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <TDF_LabelList.hxx>
 #include <Standard_OStream.hxx>
@@ -33,14 +33,14 @@ class TCollection_ExtendedString;
 
 
 class TDF_Delta;
-DEFINE_STANDARD_HANDLE(TDF_Delta, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TDF_Delta, Standard_Transient)
 
 //! A set of AttributeDelta for a given transaction
 //! number and reference time number.
 //! A delta set is available at <aSourceTime>. If
 //! applied, it restores the TDF_Data in the state it
 //! was at <aTargetTime>.
-class TDF_Delta : public MMgt_TShared
+class TDF_Delta : public Standard_Transient
 {
 
 public:
@@ -81,7 +81,7 @@ public:
 friend class TDF_Data;
 
 
-  DEFINE_STANDARD_RTTIEXT(TDF_Delta,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDF_Delta,Standard_Transient)
 
 protected:
 

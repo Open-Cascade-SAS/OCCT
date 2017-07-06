@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepBasic_ApplicationContext;
 
@@ -31,10 +31,10 @@ class StepBasic_ApplicationContext;
 #endif
 
 class StepBasic_ApplicationProtocolDefinition;
-DEFINE_STANDARD_HANDLE(StepBasic_ApplicationProtocolDefinition, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepBasic_ApplicationProtocolDefinition, Standard_Transient)
 
 
-class StepBasic_ApplicationProtocolDefinition : public MMgt_TShared
+class StepBasic_ApplicationProtocolDefinition : public Standard_Transient
 {
 
 public:
@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ApplicationProtocolDefinition,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ApplicationProtocolDefinition,Standard_Transient)
 
 protected:
 

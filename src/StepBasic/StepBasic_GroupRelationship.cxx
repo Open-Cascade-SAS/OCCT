@@ -20,7 +20,7 @@
 #include <StepBasic_GroupRelationship.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_GroupRelationship,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_GroupRelationship,Standard_Transient)
 
 //=======================================================================
 //function : StepBasic_GroupRelationship

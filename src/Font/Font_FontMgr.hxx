@@ -20,7 +20,7 @@
 #include <Standard_Type.hxx>
 
 #include <Font_NListOfSystemFont.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TColStd_SequenceOfHAsciiString.hxx>
 #include <Font_FontAspect.hxx>
 #include <Standard_Integer.hxx>
@@ -31,10 +31,10 @@ class TCollection_HAsciiString;
 
 
 class Font_FontMgr;
-DEFINE_STANDARD_HANDLE(Font_FontMgr, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Font_FontMgr, Standard_Transient)
 
 //! Collects and provides information about available fonts in system.
-class Font_FontMgr : public MMgt_TShared
+class Font_FontMgr : public Standard_Transient
 {
 
 public:
@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Font_FontMgr,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Font_FontMgr,Standard_Transient)
 
 protected:
 

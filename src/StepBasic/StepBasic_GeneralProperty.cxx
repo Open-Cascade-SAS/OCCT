@@ -19,7 +19,7 @@
 #include <StepBasic_GeneralProperty.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_GeneralProperty,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_GeneralProperty,Standard_Transient)
 
 //=======================================================================
 //function : StepBasic_GeneralProperty

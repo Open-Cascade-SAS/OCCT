@@ -16,7 +16,7 @@
 #include <Standard_Type.hxx>
 #include <Vrml_LOD.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Vrml_LOD,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Vrml_LOD,Standard_Transient)
 
 Vrml_LOD::Vrml_LOD()
 {

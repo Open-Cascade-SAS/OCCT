@@ -37,7 +37,7 @@
 #include <TDF_Tool.hxx>
 #include <TDF_Transaction.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDF_Data,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TDF_Data,Standard_Transient)
 
 #undef DEB_DELTA_CREATION
 #undef TDF_DATA_COMMIT_OPTIMIZED

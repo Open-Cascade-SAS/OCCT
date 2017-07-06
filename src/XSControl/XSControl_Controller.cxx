@@ -62,7 +62,7 @@
 #include <XSControl_TransferReader.hxx>
 #include <XSControl_WorkSession.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XSControl_Controller,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(XSControl_Controller,Standard_Transient)
 
 //  ParamEditor
 //  Transferts

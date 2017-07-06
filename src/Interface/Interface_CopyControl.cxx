@@ -17,4 +17,4 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Interface_CopyControl,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Interface_CopyControl,Standard_Transient)

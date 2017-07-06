@@ -16,7 +16,7 @@
 #include <StdStorage_Root.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StdStorage_Root, MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StdStorage_Root, Standard_Transient)
 
 StdStorage_Root::StdStorage_Root()
   : myRef(0) 

@@ -17,7 +17,7 @@
 #include <StepVisual_TextStyleForDefinedFont.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextStyle,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextStyle,Standard_Transient)
 
 StepVisual_TextStyle::StepVisual_TextStyle ()  {}
 

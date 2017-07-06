@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Transformer,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Transformer,Standard_Transient)
 
 Standard_Boolean  IFSelect_Transformer::ChangeProtocol (Handle(Interface_Protocol)& ) const
 { 

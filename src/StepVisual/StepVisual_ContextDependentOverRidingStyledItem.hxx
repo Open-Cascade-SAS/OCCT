@@ -43,7 +43,7 @@ public:
   //! Returns a ContextDependentOverRidingStyledItem
   Standard_EXPORT StepVisual_ContextDependentOverRidingStyledItem();
   
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles, const Handle(MMgt_TShared)& aItem, const Handle(StepVisual_StyledItem)& aOverRiddenStyle, const Handle(StepVisual_HArray1OfStyleContextSelect)& aStyleContext);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles, const Handle(Standard_Transient)& aItem, const Handle(StepVisual_StyledItem)& aOverRiddenStyle, const Handle(StepVisual_HArray1OfStyleContextSelect)& aStyleContext);
   
   Standard_EXPORT void SetStyleContext (const Handle(StepVisual_HArray1OfStyleContextSelect)& aStyleContext);
   

@@ -24,7 +24,7 @@
 #include <Standard_Boolean.hxx>
 #include <Aspect_TypeOfDeflection.hxx>
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class VrmlConverter_IsoAspect;
 class VrmlConverter_LineAspect;
 class VrmlConverter_ShadingAspect;
@@ -32,12 +32,12 @@ class VrmlConverter_PointAspect;
 
 
 class VrmlConverter_Drawer;
-DEFINE_STANDARD_HANDLE(VrmlConverter_Drawer, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(VrmlConverter_Drawer, Standard_Transient)
 
 //! qualifies the aspect properties for
 //! the VRML conversation of a specific kind of object.
 //! This includes for example color, maximal chordial deviation, etc...
-class VrmlConverter_Drawer : public MMgt_TShared
+class VrmlConverter_Drawer : public Standard_Transient
 {
 
 public:
@@ -212,7 +212,7 @@ public:
   //! sets LineAspect  for  the seen lines.
   Standard_EXPORT void SetSeenLineAspect (const Handle(VrmlConverter_LineAspect)& anAspect);
 
-  DEFINE_STANDARD_RTTIEXT(VrmlConverter_Drawer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(VrmlConverter_Drawer,Standard_Transient)
 
 private:
 

@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Selection,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Selection,Standard_Transient)
 
 Standard_Boolean  IFSelect_Selection::HasUniqueResult () const 
       {  return Standard_False;  }    // eminemment redefinissable

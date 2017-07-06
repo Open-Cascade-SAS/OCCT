@@ -32,7 +32,7 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESData_ToolLocation,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_ToolLocation,Standard_Transient)
 
 #define TYPEFORASSOC 402
 

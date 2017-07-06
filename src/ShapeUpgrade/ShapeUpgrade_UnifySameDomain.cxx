@@ -89,7 +89,7 @@
 #include <BRepAdaptor_Curve2d.hxx>
 #include <gp_Vec2d.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_UnifySameDomain,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_UnifySameDomain,Standard_Transient)
 
 struct SubSequenceOfEdges
 {

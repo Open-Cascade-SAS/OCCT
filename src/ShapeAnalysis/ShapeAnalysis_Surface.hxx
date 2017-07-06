@@ -28,7 +28,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Bnd_Box.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TColgp_SequenceOfPnt2d.hxx>
 class Geom_Surface;
@@ -40,7 +40,7 @@ class Bnd_Box;
 
 
 class ShapeAnalysis_Surface;
-DEFINE_STANDARD_HANDLE(ShapeAnalysis_Surface, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeAnalysis_Surface, Standard_Transient)
 
 //! Complements standard tool Geom_Surface by providing additional
 //! functionality for detection surface singularities, checking
@@ -67,7 +67,7 @@ DEFINE_STANDARD_HANDLE(ShapeAnalysis_Surface, MMgt_TShared)
 //! one is also provided.
 //!
 //! This tool is optimised: computes most information only once
-class ShapeAnalysis_Surface : public MMgt_TShared
+class ShapeAnalysis_Surface : public Standard_Transient
 {
 
 public:
@@ -317,7 +317,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_Surface,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_Surface,Standard_Transient)
 
 protected:
 

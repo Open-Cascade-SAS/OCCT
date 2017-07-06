@@ -23,7 +23,7 @@
 #include <TopOpeBRepDS_Transition.hxx>
 #include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 class TopOpeBRepDS_Transition;
@@ -31,7 +31,7 @@ class TCollection_AsciiString;
 
 
 class TopOpeBRepDS_Interference;
-DEFINE_STANDARD_HANDLE(TopOpeBRepDS_Interference, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TopOpeBRepDS_Interference, Standard_Transient)
 
 //! An interference    is   the   description  of  the
 //! attachment of  a new  geometry on a  geometry. For
@@ -54,7 +54,7 @@ DEFINE_STANDARD_HANDLE(TopOpeBRepDS_Interference, MMgt_TShared)
 //!
 //! - Geometry : Index  in the data structure  of the
 //! geometry.
-class TopOpeBRepDS_Interference : public MMgt_TShared
+class TopOpeBRepDS_Interference : public Standard_Transient
 {
 
 public:
@@ -101,7 +101,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Interference,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Interference,Standard_Transient)
 
 protected:
 

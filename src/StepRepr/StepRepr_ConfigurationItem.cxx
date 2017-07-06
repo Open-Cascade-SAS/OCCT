@@ -21,7 +21,7 @@
 #include <StepRepr_ProductConcept.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ConfigurationItem,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ConfigurationItem,Standard_Transient)
 
 //=======================================================================
 //function : StepRepr_ConfigurationItem

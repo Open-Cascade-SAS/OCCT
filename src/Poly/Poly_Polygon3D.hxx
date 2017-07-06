@@ -23,7 +23,7 @@
 #include <Standard_Real.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
@@ -31,7 +31,7 @@ class Standard_NullObject;
 
 
 class Poly_Polygon3D;
-DEFINE_STANDARD_HANDLE(Poly_Polygon3D, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Poly_Polygon3D, Standard_Transient)
 
 //! This class Provides a polygon in 3D space. It is generally an approximate representation of a curve.
 //! A Polygon3D is defined by a table of nodes. Each node is
@@ -40,7 +40,7 @@ DEFINE_STANDARD_HANDLE(Poly_Polygon3D, MMgt_TShared)
 //! If the polygon is an approximate representation of a curve,
 //! you can associate with each of its nodes the value of the
 //! parameter of the corresponding point on the curve.
-class Poly_Polygon3D : public MMgt_TShared
+class Poly_Polygon3D : public Standard_Transient
 {
 
 public:
@@ -94,7 +94,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Poly_Polygon3D,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Poly_Polygon3D,Standard_Transient)
 
 protected:
 

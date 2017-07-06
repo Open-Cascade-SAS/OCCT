@@ -21,7 +21,7 @@
 
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
@@ -32,7 +32,7 @@ class TCollection_AsciiString;
 
 
 class ShapeProcess_Context;
-DEFINE_STANDARD_HANDLE(ShapeProcess_Context, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(ShapeProcess_Context, Standard_Transient)
 
 //! Provides convenient interface to resource file
 //! Allows to load resource file and get values of
@@ -40,7 +40,7 @@ DEFINE_STANDARD_HANDLE(ShapeProcess_Context, MMgt_TShared)
 //! if scope is defined as "ToV4" and requested parameter
 //! is "exec.op", value of "ToV4.exec.op" parameter from
 //! the resource file will be returned
-class ShapeProcess_Context : public MMgt_TShared
+class ShapeProcess_Context : public Standard_Transient
 {
 
 public:
@@ -123,7 +123,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(ShapeProcess_Context,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeProcess_Context,Standard_Transient)
 
 protected:
 

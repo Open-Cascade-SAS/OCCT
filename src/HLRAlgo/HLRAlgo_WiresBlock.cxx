@@ -21,4 +21,4 @@
 #include <HLRAlgo_WiresBlock.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_WiresBlock,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_WiresBlock,Standard_Transient)

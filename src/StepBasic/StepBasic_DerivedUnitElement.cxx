@@ -16,7 +16,7 @@
 #include <StepBasic_DerivedUnitElement.hxx>
 #include <StepBasic_NamedUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DerivedUnitElement,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DerivedUnitElement,Standard_Transient)
 
 StepBasic_DerivedUnitElement::StepBasic_DerivedUnitElement ()    {  }
 

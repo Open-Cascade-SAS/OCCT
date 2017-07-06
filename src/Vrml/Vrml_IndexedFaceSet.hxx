@@ -21,19 +21,19 @@
 #include <Standard_Type.hxx>
 
 #include <TColStd_HArray1OfInteger.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 
 
 class Vrml_IndexedFaceSet;
-DEFINE_STANDARD_HANDLE(Vrml_IndexedFaceSet, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Vrml_IndexedFaceSet, Standard_Transient)
 
 //! defines a IndexedFaceSet node of VRML specifying geometry shapes.
 //! This node represents a 3D shape formed by constructing faces (polygons) from
 //! vertices located at the current coordinates. IndexedFaceSet uses the indices
 //! in its coordIndex to define polygonal faces. An index of -1 separates faces
 //! (so a -1 at the end of the list is optional).
-class Vrml_IndexedFaceSet : public MMgt_TShared
+class Vrml_IndexedFaceSet : public Standard_Transient
 {
 
 public:
@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Vrml_IndexedFaceSet,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Vrml_IndexedFaceSet,Standard_Transient)
 
 protected:
 

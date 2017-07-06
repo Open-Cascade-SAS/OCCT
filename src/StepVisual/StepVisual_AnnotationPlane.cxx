@@ -30,7 +30,7 @@ StepVisual_AnnotationPlane::StepVisual_AnnotationPlane ()  {}
 //=======================================================================
 void StepVisual_AnnotationPlane::Init (const Handle(TCollection_HAsciiString)& theName,
                                        const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& theStyles,
-                                       const Handle(MMgt_TShared)& theItem,
+                                       const Handle(Standard_Transient)& theItem,
                                        const Handle(StepVisual_HArray1OfAnnotationPlaneElement)& theElements)
 {
   StepVisual_AnnotationOccurrence::Init(theName, theStyles, theItem);

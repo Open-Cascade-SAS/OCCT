@@ -19,7 +19,7 @@
 #include <StepFEA_CurveElementEndCoordinateSystem.hxx>
 #include <StepFEA_CurveElementEndRelease.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementEndRelease,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementEndRelease,Standard_Transient)
 
 //=======================================================================
 //function : StepFEA_CurveElementEndRelease

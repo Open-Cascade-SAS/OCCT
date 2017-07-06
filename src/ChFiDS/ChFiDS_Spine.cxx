@@ -34,7 +34,7 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_Spine,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_Spine,Standard_Transient)
 
 //=======================================================================
 //function : ChFiDS_Spine

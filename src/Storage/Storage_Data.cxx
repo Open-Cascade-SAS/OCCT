@@ -25,7 +25,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Storage_Data,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Storage_Data,Standard_Transient)
 
 Storage_Data::Storage_Data()
 {

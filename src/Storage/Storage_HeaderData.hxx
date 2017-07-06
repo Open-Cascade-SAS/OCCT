@@ -26,7 +26,7 @@
 #include <TColStd_SequenceOfAsciiString.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 #include <Storage_Error.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class Storage_Schema;
 class Storage_BaseDriver;
 class TCollection_AsciiString;
@@ -34,10 +34,10 @@ class TCollection_ExtendedString;
 
 
 class Storage_HeaderData;
-DEFINE_STANDARD_HANDLE(Storage_HeaderData, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Storage_HeaderData, Standard_Transient)
 
 
-class Storage_HeaderData : public MMgt_TShared
+class Storage_HeaderData : public Standard_Transient
 {
 
 public:
@@ -104,7 +104,7 @@ public:
 friend class Storage_Schema;
 
 
-  DEFINE_STANDARD_RTTIEXT(Storage_HeaderData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Storage_HeaderData,Standard_Transient)
 
 public:
   

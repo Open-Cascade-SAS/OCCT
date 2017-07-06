@@ -19,16 +19,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepRepr_ShapeAspect;
 class TCollection_HAsciiString;
 
 
 class StepShape_DimensionalSize;
-DEFINE_STANDARD_HANDLE(StepShape_DimensionalSize, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepShape_DimensionalSize, Standard_Transient)
 
 //! Representation of STEP entity DimensionalSize
-class StepShape_DimensionalSize : public MMgt_TShared
+class StepShape_DimensionalSize : public Standard_Transient
 {
 
 public:
@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepShape_DimensionalSize,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepShape_DimensionalSize,Standard_Transient)
 
 protected:
 

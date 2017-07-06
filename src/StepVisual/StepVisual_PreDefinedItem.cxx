@@ -16,7 +16,7 @@
 #include <StepVisual_PreDefinedItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PreDefinedItem,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PreDefinedItem,Standard_Transient)
 
 StepVisual_PreDefinedItem::StepVisual_PreDefinedItem ()  {}
 

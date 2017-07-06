@@ -22,7 +22,7 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <StepData_HArray1OfField.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
@@ -31,14 +31,14 @@ class StepData_Field;
 
 
 class StepData_FreeFormEntity;
-DEFINE_STANDARD_HANDLE(StepData_FreeFormEntity, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepData_FreeFormEntity, Standard_Transient)
 
 //! A Free Form Entity allows to record any kind of STEP
 //! parameters, in any way of typing
 //! It is implemented with an array of fields
 //! A Complex entity can be defined, as a chain of FreeFormEntity
 //! (see Next and As)
-class StepData_FreeFormEntity : public MMgt_TShared
+class StepData_FreeFormEntity : public Standard_Transient
 {
 
 public:
@@ -98,7 +98,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepData_FreeFormEntity,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepData_FreeFormEntity,Standard_Transient)
 
 protected:
 

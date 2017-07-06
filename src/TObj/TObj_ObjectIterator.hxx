@@ -27,7 +27,7 @@ class TObj_Object;
 * (implements TObj_ObjectIterator interface)
 */
 
-class TObj_ObjectIterator : public MMgt_TShared
+class TObj_ObjectIterator : public Standard_Transient
 {
  public: 
   /*
@@ -49,11 +49,11 @@ class TObj_ObjectIterator : public MMgt_TShared
 
  public:
    //! CASCADE RTTI
-  DEFINE_STANDARD_RTTIEXT(TObj_ObjectIterator,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TObj_ObjectIterator,Standard_Transient)
 };
 
 //! Define handle class for TObj_ObjectIterator
-DEFINE_STANDARD_HANDLE(TObj_ObjectIterator,MMgt_TShared)
+DEFINE_STANDARD_HANDLE(TObj_ObjectIterator,Standard_Transient)
 
 #endif
 

@@ -17,7 +17,7 @@
 #include <Standard_Type.hxx>
 #include <TDataStd_HDataMapOfStringReal.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringReal,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringReal,Standard_Transient)
 
 //=======================================================================
 //function : TDataStd_HDataMapOfStringReal

@@ -26,7 +26,7 @@
 #include <Standard_Boolean.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <Standard_Integer.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 
@@ -39,10 +39,10 @@ class TopoDS_Vertex;
 
 
 class LocOpe_WiresOnShape;
-DEFINE_STANDARD_HANDLE(LocOpe_WiresOnShape, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(LocOpe_WiresOnShape, Standard_Transient)
 
 
-class LocOpe_WiresOnShape : public MMgt_TShared
+class LocOpe_WiresOnShape : public Standard_Transient
 {
 
 public:
@@ -112,7 +112,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(LocOpe_WiresOnShape,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(LocOpe_WiresOnShape,Standard_Transient)
 
 protected:
 

@@ -21,17 +21,17 @@
 #include <Standard_Type.hxx>
 
 #include <StepVisual_HArray1OfSurfaceStyleElementSelect.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepVisual_SurfaceStyleElementSelect;
 
 
 class StepVisual_SurfaceSideStyle;
-DEFINE_STANDARD_HANDLE(StepVisual_SurfaceSideStyle, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepVisual_SurfaceSideStyle, Standard_Transient)
 
 
-class StepVisual_SurfaceSideStyle : public MMgt_TShared
+class StepVisual_SurfaceSideStyle : public Standard_Transient
 {
 
 public:
@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceSideStyle,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceSideStyle,Standard_Transient)
 
 protected:
 

@@ -20,16 +20,16 @@
 #include <Standard_Type.hxx>
 
 #include <StepShape_DimensionalCharacteristic.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepShape_ShapeDimensionRepresentation;
 class StepShape_DimensionalCharacteristic;
 
 
 class StepShape_DimensionalCharacteristicRepresentation;
-DEFINE_STANDARD_HANDLE(StepShape_DimensionalCharacteristicRepresentation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepShape_DimensionalCharacteristicRepresentation, Standard_Transient)
 
 //! Representation of STEP entity DimensionalCharacteristicRepresentation
-class StepShape_DimensionalCharacteristicRepresentation : public MMgt_TShared
+class StepShape_DimensionalCharacteristicRepresentation : public Standard_Transient
 {
 
 public:
@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepShape_DimensionalCharacteristicRepresentation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepShape_DimensionalCharacteristicRepresentation,Standard_Transient)
 
 protected:
 

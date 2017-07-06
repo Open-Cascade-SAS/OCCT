@@ -16,4 +16,4 @@
 #include <Standard_Type.hxx>
 #include <TCollection_MapNode.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TCollection_MapNode,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TCollection_MapNode,Standard_Transient)

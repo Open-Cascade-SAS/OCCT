@@ -18,7 +18,7 @@
 #include <XmlMDF_ADriver.hxx>
 #include <XmlMDF_ADriverTable.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlMDF_ADriverTable,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDF_ADriverTable,Standard_Transient)
 
 //=======================================================================
 //function : MDF_ADriverTable

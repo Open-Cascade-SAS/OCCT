@@ -20,18 +20,18 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 class StepData_Described;
 
 
 class StepData_EDescr;
-DEFINE_STANDARD_HANDLE(StepData_EDescr, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepData_EDescr, Standard_Transient)
 
 //! This class is intended to describe the authorized form for an
 //! entity, either Simple or Plex
-class StepData_EDescr : public MMgt_TShared
+class StepData_EDescr : public Standard_Transient
 {
 
 public:
@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepData_EDescr,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepData_EDescr,Standard_Transient)
 
 protected:
 

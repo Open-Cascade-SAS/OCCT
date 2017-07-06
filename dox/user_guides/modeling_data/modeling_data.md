@@ -793,7 +793,7 @@ The *TopLoc* package is chiefly targeted at the topological data structure, but 
 Change of coordinates
 ---------------------
 
-*TopLoc_Datum3D* class represents a change of elementary coordinates. Such changes must be shared so this class inherits from *MMgt_TShared*. The coordinate is represented by a transformation *gp_Trsfpackage*. This transformation has no scaling factor. 
+*TopLoc_Datum3D* class represents a change of elementary coordinates. Such changes must be shared so this class inherits from *Standard_Transient*. The coordinate is represented by a transformation *gp_Trsfpackage*. This transformation has no scaling factor. 
 
 @subsection occt_modat_5_2 Naming shapes, sub-shapes, their orientation and state
 

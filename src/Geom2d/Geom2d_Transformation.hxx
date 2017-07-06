@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <gp_Trsf2d.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <gp_TrsfForm.hxx>
@@ -35,7 +35,7 @@ class gp_Vec2d;
 
 
 class Geom2d_Transformation;
-DEFINE_STANDARD_HANDLE(Geom2d_Transformation, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Geom2d_Transformation, Standard_Transient)
 
 
 //! The class Transformation allows to create Translation,
@@ -70,7 +70,7 @@ DEFINE_STANDARD_HANDLE(Geom2d_Transformation, MMgt_TShared)
 //! - Geom2d_Transformation transformations are
 //! used in a context where they can be shared by
 //! several objects contained inside a common data structure.
-class Geom2d_Transformation : public MMgt_TShared
+class Geom2d_Transformation : public Standard_Transient
 {
 
 public:
@@ -219,7 +219,7 @@ void operator *= (const Handle(Geom2d_Transformation)& Other)
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Geom2d_Transformation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Geom2d_Transformation,Standard_Transient)
 
 protected:
 

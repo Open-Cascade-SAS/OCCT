@@ -20,16 +20,16 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepRepr_ShapeAspect;
 
 
 class StepRepr_ShapeAspectRelationship;
-DEFINE_STANDARD_HANDLE(StepRepr_ShapeAspectRelationship, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepRepr_ShapeAspectRelationship, Standard_Transient)
 
 //! Representation of STEP entity ShapeAspectRelationship
-class StepRepr_ShapeAspectRelationship : public MMgt_TShared
+class StepRepr_ShapeAspectRelationship : public Standard_Transient
 {
 
 public:
@@ -71,7 +71,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_ShapeAspectRelationship,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ShapeAspectRelationship,Standard_Transient)
 
 protected:
 

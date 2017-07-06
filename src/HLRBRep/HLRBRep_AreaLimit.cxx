@@ -19,7 +19,7 @@
 #include <HLRBRep_AreaLimit.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(HLRBRep_AreaLimit,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(HLRBRep_AreaLimit,Standard_Transient)
 
 //=======================================================================
 //function : HLRBRep_AreaLimit

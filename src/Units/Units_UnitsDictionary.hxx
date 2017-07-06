@@ -22,7 +22,7 @@
 
 #include <Standard_Time.hxx>
 #include <Units_QuantitiesSequence.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
@@ -32,11 +32,11 @@ class Units_Dimensions;
 
 
 class Units_UnitsDictionary;
-DEFINE_STANDARD_HANDLE(Units_UnitsDictionary, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Units_UnitsDictionary, Standard_Transient)
 
 //! This class creates  a dictionary of all  the units
 //! you want to know.
-class Units_UnitsDictionary : public MMgt_TShared
+class Units_UnitsDictionary : public Standard_Transient
 {
 
 public:
@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(Units_UnitsDictionary,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Units_UnitsDictionary,Standard_Transient)
 
 protected:
 

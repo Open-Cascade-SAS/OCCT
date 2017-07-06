@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <Standard_Boolean.hxx>
 class Standard_ConstructionError;
@@ -29,10 +29,10 @@ class TopoDS_Shape;
 
 
 class BRepAlgo_AsDes;
-DEFINE_STANDARD_HANDLE(BRepAlgo_AsDes, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(BRepAlgo_AsDes, Standard_Transient)
 
 //! SD to store descendants and ascendants of Shapes.
-class BRepAlgo_AsDes : public MMgt_TShared
+class BRepAlgo_AsDes : public Standard_Transient
 {
 
 public:
@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(BRepAlgo_AsDes,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepAlgo_AsDes,Standard_Transient)
 
 protected:
 

@@ -21,7 +21,7 @@
 
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyData,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyData,Standard_Transient)
 
 #ifdef OCCT_DEBUG
 static Standard_Integer HLRAlgo_PolyData_ERROR = Standard_False;

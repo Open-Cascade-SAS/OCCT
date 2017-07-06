@@ -33,7 +33,7 @@
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfTransient.hxx>
 #include <TColStd_Array1OfInteger.hxx>
@@ -54,7 +54,7 @@ struct HLRAlgo_TriangleData;
 
 
 class HLRBRep_PolyAlgo;
-DEFINE_STANDARD_HANDLE(HLRBRep_PolyAlgo, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(HLRBRep_PolyAlgo, Standard_Transient)
 
 //! to remove Hidden lines on Shapes with Triangulations.
 //! A framework to compute the shape as seen in
@@ -102,7 +102,7 @@ DEFINE_STANDARD_HANDLE(HLRBRep_PolyAlgo, MMgt_TShared)
 //! the visible and hidden parts of each face in a
 //! shape to be visualized by comparing each
 //! face in the shape with every other face in the same shape.
-class HLRBRep_PolyAlgo : public MMgt_TShared
+class HLRBRep_PolyAlgo : public Standard_Transient
 {
 
 public:
@@ -196,7 +196,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(HLRBRep_PolyAlgo,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRBRep_PolyAlgo,Standard_Transient)
 
 protected:
 

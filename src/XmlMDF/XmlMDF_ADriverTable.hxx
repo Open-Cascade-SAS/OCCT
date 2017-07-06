@@ -20,21 +20,21 @@
 #include <Standard_Type.hxx>
 
 #include <XmlMDF_TypeADriverMap.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Type.hxx>
 class XmlMDF_ADriver;
 
 
 class XmlMDF_ADriverTable;
-DEFINE_STANDARD_HANDLE(XmlMDF_ADriverTable, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(XmlMDF_ADriverTable, Standard_Transient)
 
 //! A driver table is an object building links between
 //! object types and object drivers. In the
 //! translation process, a driver table is asked to
 //! give a translation driver for each current object
 //! to be translated.
-class XmlMDF_ADriverTable : public MMgt_TShared
+class XmlMDF_ADriverTable : public Standard_Transient
 {
 
 public:
@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(XmlMDF_ADriverTable,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(XmlMDF_ADriverTable,Standard_Transient)
 
 protected:
 

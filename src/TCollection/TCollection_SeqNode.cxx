@@ -16,4 +16,4 @@
 #include <Standard_Type.hxx>
 #include <TCollection_SeqNode.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TCollection_SeqNode,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(TCollection_SeqNode,Standard_Transient)

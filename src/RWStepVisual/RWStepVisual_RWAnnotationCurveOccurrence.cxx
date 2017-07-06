@@ -62,8 +62,8 @@ void RWStepVisual_RWAnnotationCurveOccurrence::ReadStep
   }
 
   // Inherited field : item
-  Handle(MMgt_TShared) aItem;
-  data->ReadEntity(num, 3,"item", ach, STANDARD_TYPE(MMgt_TShared), aItem);
+  Handle(Standard_Transient) aItem;
+  data->ReadEntity(num, 3,"item", ach, STANDARD_TYPE(Standard_Transient), aItem);
 
   // Initialisation of the read entity
   ent->Init(aName, aStyles, aItem);

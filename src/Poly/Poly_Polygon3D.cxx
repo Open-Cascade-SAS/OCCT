@@ -20,7 +20,7 @@
 #include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Poly_Polygon3D,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(Poly_Polygon3D,Standard_Transient)
 
 //=======================================================================
 //function : Poly_Polygon3D

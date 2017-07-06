@@ -16,7 +16,7 @@
 #include <StepBasic_Person.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Person,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Person,Standard_Transient)
 
 StepBasic_Person::StepBasic_Person ()  {}
 

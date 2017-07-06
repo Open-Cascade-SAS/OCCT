@@ -21,14 +21,14 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Real.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class MoniTool_RealVal;
-DEFINE_STANDARD_HANDLE(MoniTool_RealVal, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(MoniTool_RealVal, Standard_Transient)
 
 //! A Real through a Handle (i.e. managed as TShared)
-class MoniTool_RealVal : public MMgt_TShared
+class MoniTool_RealVal : public Standard_Transient
 {
 
 public:
@@ -43,7 +43,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(MoniTool_RealVal,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MoniTool_RealVal,Standard_Transient)
 
 protected:
 

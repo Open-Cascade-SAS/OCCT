@@ -16,7 +16,7 @@
 #include <StepGeom_BoundedSurface.hxx>
 #include <StepGeom_SurfacePatch.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SurfacePatch,MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SurfacePatch,Standard_Transient)
 
 StepGeom_SurfacePatch::StepGeom_SurfacePatch ()  {}
 

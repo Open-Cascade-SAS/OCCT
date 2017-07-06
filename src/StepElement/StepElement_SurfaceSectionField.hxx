@@ -19,14 +19,14 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 
 
 class StepElement_SurfaceSectionField;
-DEFINE_STANDARD_HANDLE(StepElement_SurfaceSectionField, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepElement_SurfaceSectionField, Standard_Transient)
 
 //! Representation of STEP entity SurfaceSectionField
-class StepElement_SurfaceSectionField : public MMgt_TShared
+class StepElement_SurfaceSectionField : public Standard_Transient
 {
 
 public:
@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepElement_SurfaceSectionField,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepElement_SurfaceSectionField,Standard_Transient)
 
 protected:
 

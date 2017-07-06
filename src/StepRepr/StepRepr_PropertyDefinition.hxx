@@ -21,16 +21,16 @@
 
 #include <StepRepr_CharacterizedDefinition.hxx>
 #include <Standard_Boolean.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepRepr_CharacterizedDefinition;
 
 
 class StepRepr_PropertyDefinition;
-DEFINE_STANDARD_HANDLE(StepRepr_PropertyDefinition, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepRepr_PropertyDefinition, Standard_Transient)
 
 //! Representation of STEP entity PropertyDefinition
-class StepRepr_PropertyDefinition : public MMgt_TShared
+class StepRepr_PropertyDefinition : public Standard_Transient
 {
 
 public:
@@ -66,7 +66,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_PropertyDefinition,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_PropertyDefinition,Standard_Transient)
 
 protected:
 

@@ -21,15 +21,15 @@
 
 #include <StepFEA_CurveElementEndCoordinateSystem.hxx>
 #include <StepElement_HArray1OfCurveElementEndReleasePacket.hxx>
-#include <MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
 class StepFEA_CurveElementEndCoordinateSystem;
 
 
 class StepFEA_CurveElementEndRelease;
-DEFINE_STANDARD_HANDLE(StepFEA_CurveElementEndRelease, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(StepFEA_CurveElementEndRelease, Standard_Transient)
 
 //! Representation of STEP entity CurveElementEndRelease
-class StepFEA_CurveElementEndRelease : public MMgt_TShared
+class StepFEA_CurveElementEndRelease : public Standard_Transient
 {
 
 public:
@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(StepFEA_CurveElementEndRelease,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_CurveElementEndRelease,Standard_Transient)
 
 protected:
 
