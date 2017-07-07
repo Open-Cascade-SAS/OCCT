@@ -29,6 +29,7 @@
 
 #include <Aspect_GraphicDeviceDefinitionError.hxx>
 #include <Aspect_IdentDefinitionError.hxx>
+#include <Graphic3d_StructureManager.hxx>
 #include <Message_Messenger.hxx>
 #include <OSD_Environment.hxx>
 #include <Standard_NotImplemented.hxx>
@@ -218,12 +219,17 @@ void OpenGl_GraphicDriver::ReleaseContext()
     OpenGl_Structure* aStruct = aStructIt.ChangeValue();
     aStruct->ReleaseGlResources (aCtxShared);
   }
-  myDeviceLostFlag = myDeviceLostFlag || !myMapOfStructure.IsEmpty();
 
+  const bool isDeviceLost = !myMapOfStructure.IsEmpty();
   for (NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIter (myMapOfView);
        aViewIter.More(); aViewIter.Next())
   {
     const Handle(OpenGl_View)& aView = aViewIter.Value();
+    if (isDeviceLost)
+    {
+      aView->StructureManager()->SetDeviceLost();
+    }
+
     const Handle(OpenGl_Window)& aWindow = aView->GlWindow();
     if (aWindow.IsNull())
     {
@@ -730,7 +736,7 @@ void OpenGl_GraphicDriver::RemoveStructure (Handle(Graphic3d_CStructure)& theCSt
 // =======================================================================
 Handle(Graphic3d_CView) OpenGl_GraphicDriver::CreateView (const Handle(Graphic3d_StructureManager)& theMgr)
 {
-  Handle(OpenGl_View) aView = new OpenGl_View (theMgr, this, myCaps, myDeviceLostFlag, &myStateCounter);
+  Handle(OpenGl_View) aView = new OpenGl_View (theMgr, this, myCaps, &myStateCounter);
 
   myMapOfView.Add (aView);
 
@@ -792,7 +798,11 @@ void OpenGl_GraphicDriver::RemoveView (const Handle(Graphic3d_CView)& theView)
       OpenGl_Structure* aStruct = aStructIt.ChangeValue();
       aStruct->ReleaseGlResources (aCtx);
     }
-    myDeviceLostFlag = !myMapOfStructure.IsEmpty();
+
+    if (!myMapOfStructure.IsEmpty())
+    {
+      aView->StructureManager()->SetDeviceLost();
+    }
   }
 }
 
@@ -871,4 +881,25 @@ Standard_Boolean OpenGl_GraphicDriver::ViewExists (const Handle(Aspect_Window)& 
   }
 
   return isExist;
+}
+
+//=======================================================================
+//function : setDeviceLost
+//purpose  :
+//=======================================================================
+void OpenGl_GraphicDriver::setDeviceLost()
+{
+  if (myMapOfStructure.IsEmpty())
+  {
+    return;
+  }
+
+  for (NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIter (myMapOfView); aViewIter.More(); aViewIter.Next())
+  {
+    const Handle(OpenGl_View)& aView = aViewIter.Value();
+    if (aView->myWasRedrawnGL)
+    {
+      aView->StructureManager()->SetDeviceLost();
+    }
+  }
 }

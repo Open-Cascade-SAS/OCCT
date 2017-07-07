@@ -1120,6 +1120,7 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
 
   // Remove view resources
   ViewerTest_myViews.UnBind1(theViewName);
+  aView->Window()->Unmap();
   aView->Remove();
 
 #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))

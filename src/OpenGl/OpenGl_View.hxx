@@ -74,7 +74,6 @@ public:
   Standard_EXPORT OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
                                const Handle(OpenGl_GraphicDriver)& theDriver,
                                const Handle(OpenGl_Caps)& theCaps,
-                               Standard_Boolean& theDeviceLostFlag,
                                OpenGl_StateCounter* theCounter);
 
   //! Default destructor.
@@ -470,7 +469,6 @@ protected:
   Handle(OpenGl_Window)    myWindow;
   Handle(OpenGl_Workspace) myWorkspace;
   Handle(OpenGl_Caps)      myCaps;
-  Standard_Boolean&        myDeviceLostFlag;
   Standard_Boolean         myWasRedrawnGL;
 
   Standard_Boolean                myCulling;

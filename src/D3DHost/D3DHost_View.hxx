@@ -35,7 +35,6 @@ public:
   Standard_EXPORT D3DHost_View (const Handle(Graphic3d_StructureManager)& theMgr,
                                 const Handle(D3DHost_GraphicDriver)& theDriver,
                                 const Handle(OpenGl_Caps)& theCaps,
-                                Standard_Boolean& theDeviceLostFlag,
                                 OpenGl_StateCounter* theCounter);
 
   //! Default destructor.

@@ -49,12 +49,10 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_View,Graphic3d_CView)
 OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
                           const Handle(OpenGl_GraphicDriver)& theDriver,
                           const Handle(OpenGl_Caps)& theCaps,
-                          Standard_Boolean& theDeviceLostFlag,
                           OpenGl_StateCounter* theCounter)
 : Graphic3d_CView  (theMgr),
   myDriver         (theDriver.operator->()),
   myCaps           (theCaps),
-  myDeviceLostFlag (theDeviceLostFlag),
   myWasRedrawnGL   (Standard_False),
   myCulling        (Standard_True),
   myShadingModel   (Graphic3d_TOSM_FACET),

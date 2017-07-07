@@ -1,0 +1,42 @@
+puts "============"
+puts "0028890: Visualization - After closing all views and then display the view again, just the first view has object(s) displayed"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vclear
+vclose ALL
+box b1_1 0 0 0 1 2 3
+box b1_2 0 3 0 3 1 2
+box b2_1 0 0 0 3 1 2
+box b2_2 0 3 0 1 2 3
+
+# fill first Viewer
+vinit Driver1/Viewer1/View1
+vzbufftrihedron
+vdisplay -dispMode 1 b1_1 b1_2
+vfit
+vsetcolor b1_1 RED
+vsetcolor b1_2 GREEN
+
+# fill second Viewer
+vinit Driver1/Viewer2/View1
+vzbufftrihedron
+vdisplay -dispMode 1 b2_1 b2_2
+vfit
+vsetcolor b2_1 RED
+vsetcolor b2_2 GREEN
+
+# enable RayTracing which sets DeviceLost flag
+vactivate Driver1/Viewer1/View1
+vraytrace 1
+set aColor1 [vreadpixel 150 250 rgb]
+vdump $::imagedir/${::casename}_1.png
+
+vactivate Driver1/Viewer2/View1
+vraytrace 1
+set aColor2 [vreadpixel 150 250 rgb]
+vdump $::imagedir/${::casename}_2.png
+
+# check that DeviceLost flag is processed by both Viewers
+if { "$aColor1" != "$aColor2" } { puts "Error: colors should be equal" }

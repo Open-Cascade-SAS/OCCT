@@ -19,6 +19,7 @@
 #include <OpenGl_GlCore11.hxx>
 
 #include <Graphic3d_GraphicDriver.hxx>
+#include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_TextureParams.hxx>
 #include <Graphic3d_Texture2Dmanual.hxx>
 #include <Graphic3d_TransformUtils.hxx>
@@ -145,11 +146,9 @@ void OpenGl_View::Redraw()
   && !myCaps->vboDisable
   && !myCaps->keepArrayData)
   {
-    if (myWasRedrawnGL)
-    {
-      myDeviceLostFlag = Standard_True;
-    }
-
+    // caps are shared across all views, thus we need to invalidate all of them
+    // if (myWasRedrawnGL) { myStructureManager->SetDeviceLost(); }
+    myDriver->setDeviceLost();
     myCaps->keepArrayData = Standard_True;
   }
 

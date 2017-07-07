@@ -30,7 +30,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_StructureManager,Standard_Transient)
 // ========================================================================
 Graphic3d_StructureManager::Graphic3d_StructureManager (const Handle(Graphic3d_GraphicDriver)& theDriver)
 : myViewGenId (0, 31),
-  myGraphicDriver (theDriver)
+  myGraphicDriver (theDriver),
+  myDeviceLostFlag (Standard_False)
 {
   //
 }
@@ -149,9 +150,10 @@ const Handle(Graphic3d_GraphicDriver)& Graphic3d_StructureManager::GraphicDriver
 
 void Graphic3d_StructureManager::RecomputeStructures()
 {
+  myDeviceLostFlag = Standard_False;
+
   // Go through all unique structures including child (connected) ones and ensure that they are computed.
   Graphic3d_MapOfStructure aStructNetwork;
-
   for (Graphic3d_MapIteratorOfMapOfStructure anIter(myDisplayedStructure); anIter.More(); anIter.Next())
   {
     Handle(Graphic3d_Structure) aStructure = anIter.Key();

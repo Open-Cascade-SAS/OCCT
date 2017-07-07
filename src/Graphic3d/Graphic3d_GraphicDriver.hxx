@@ -138,10 +138,6 @@ public:
 
   //! returns Handle to display connection
   Standard_EXPORT const Handle(Aspect_DisplayConnection)& GetDisplayConnection() const;
-  
-  Standard_EXPORT Standard_Boolean IsDeviceLost() const;
-  
-  Standard_EXPORT void ResetDeviceLostFlag();
 
   //! Returns a new identification number for a new structure.
   Standard_EXPORT Standard_Integer NewIdentification();
@@ -152,28 +148,15 @@ public:
   DEFINE_STANDARD_RTTIEXT(Graphic3d_GraphicDriver,Standard_Transient)
 
 protected:
-
   
   //! Initializes the Driver
   Standard_EXPORT Graphic3d_GraphicDriver(const Handle(Aspect_DisplayConnection)& theDisp);
 
-  Handle(Aspect_DisplayConnection) myDisplayConnection;
-  Standard_Boolean myDeviceLostFlag;
+protected:
 
+  Handle(Aspect_DisplayConnection) myDisplayConnection;
   Aspect_GenId myStructGenId;
 
-
-private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Graphic3d_GraphicDriver_HeaderFile

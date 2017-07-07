@@ -47,9 +47,8 @@ TCollection_AsciiString D3DHost_View::d3dFormatError (const long theErrCode)
 D3DHost_View::D3DHost_View (const Handle(Graphic3d_StructureManager)& theMgr,
                             const Handle(D3DHost_GraphicDriver)& theDriver,
                             const Handle(OpenGl_Caps)& theCaps,
-                            Standard_Boolean& theDeviceLostFlag,
                             OpenGl_StateCounter* theCounter)
-: OpenGl_View (theMgr, theDriver, theCaps, theDeviceLostFlag, theCounter),
+: OpenGl_View (theMgr, theDriver, theCaps, theCounter),
   myD3dLib      (NULL),
   myD3dDevice   (NULL),
   myD3dParams   (new D3DPRESENT_PARAMETERS()),

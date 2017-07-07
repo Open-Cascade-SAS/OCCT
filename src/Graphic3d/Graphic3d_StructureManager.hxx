@@ -38,10 +38,6 @@ typedef NCollection_IndexedMap<Graphic3d_CView*> Graphic3d_IndexedMapOfView;
 class Graphic3d_GraphicDriver;
 class Graphic3d_Structure;
 class Graphic3d_DataStructureManager;
-class Standard_Transient;
-
-class Graphic3d_StructureManager;
-DEFINE_STANDARD_HANDLE(Graphic3d_StructureManager, Standard_Transient)
 
 //! This class allows the definition of a manager to
 //! which the graphic objects are associated.
@@ -51,6 +47,8 @@ DEFINE_STANDARD_HANDLE(Graphic3d_StructureManager, Standard_Transient)
 //! Destroy, Highlight, Visible
 class Graphic3d_StructureManager : public Standard_Transient
 {
+  friend class Graphic3d_Structure;
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_StructureManager, Standard_Transient)
 public:
 
   //! Initializes the ViewManager.
@@ -144,6 +142,8 @@ public:
   //! Suppresses the highlighting on all the structures in <me>.
   Standard_EXPORT virtual void UnHighlight();
 
+  //! Recomputes all structures in the manager.
+  //! Resets Device Lost flag.
   Standard_EXPORT void RecomputeStructures();
 
   //! Recomputes all structures from theStructures.
@@ -155,9 +155,11 @@ public:
 
   Standard_EXPORT Handle(Graphic3d_ViewAffinity) ObjectAffinity (const Handle(Standard_Transient)& theObject) const;
 
-  friend class Graphic3d_Structure;
+  //! Returns TRUE if Device Lost flag has been set and presentation data should be reuploaded onto graphics driver.
+  Standard_Boolean IsDeviceLost() const { return myDeviceLostFlag; }
 
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_StructureManager,Standard_Transient)
+  //! Sets Device Lost flag.
+  void SetDeviceLost() { myDeviceLostFlag = Standard_True; }
 
 protected:
 
@@ -174,6 +176,9 @@ protected:
   Graphic3d_MapOfObject myRegisteredObjects;
   Handle(Graphic3d_GraphicDriver) myGraphicDriver;
   Graphic3d_IndexedMapOfView myDefinedViews;
+  Standard_Boolean myDeviceLostFlag;
 };
+
+DEFINE_STANDARD_HANDLE(Graphic3d_StructureManager, Standard_Transient)
 
 #endif // _Graphic3d_StructureManager_HeaderFile

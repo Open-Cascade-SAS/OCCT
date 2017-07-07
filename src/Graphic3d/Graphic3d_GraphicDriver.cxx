@@ -23,8 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_GraphicDriver,Standard_Transient)
 // purpose  :
 // =======================================================================
 Graphic3d_GraphicDriver::Graphic3d_GraphicDriver (const Handle(Aspect_DisplayConnection)& theDisp)
-: myDisplayConnection (theDisp),
-  myDeviceLostFlag    (Standard_False)
+: myDisplayConnection (theDisp)
 {
   //
 }
@@ -36,24 +35,6 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver (const Handle(Aspect_DisplayCon
 const Handle(Aspect_DisplayConnection)& Graphic3d_GraphicDriver::GetDisplayConnection() const
 {
   return myDisplayConnection;
-}
-
-// =======================================================================
-// function : IsDeviceLost
-// purpose  :
-// =======================================================================
-Standard_Boolean Graphic3d_GraphicDriver::IsDeviceLost() const
-{
-  return myDeviceLostFlag;
-}
-
-// =======================================================================
-// function : ResetDeviceLostFlag
-// purpose  :
-// =======================================================================
-void Graphic3d_GraphicDriver::ResetDeviceLostFlag()
-{
-  myDeviceLostFlag = Standard_False;
 }
 
 // =======================================================================

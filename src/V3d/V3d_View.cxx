@@ -244,21 +244,19 @@ void V3d_View::Redraw() const
     return;
   }
 
-  Handle(Graphic3d_GraphicDriver)    aGraphicDriver = MyViewer->Driver();
   Handle(Graphic3d_StructureManager) aStructureMgr  = MyViewer->StructureManager();
   for (Standard_Integer aRetryIter = 0; aRetryIter < 2; ++aRetryIter)
   {
-    if (aGraphicDriver->IsDeviceLost())
+    if (aStructureMgr->IsDeviceLost())
     {
       aStructureMgr->RecomputeStructures();
-      aGraphicDriver->ResetDeviceLostFlag();
     }
 
     AutoZFit();
 
     myView->Redraw();
 
-    if (!aGraphicDriver->IsDeviceLost())
+    if (!aStructureMgr->IsDeviceLost())
     {
       return;
     }

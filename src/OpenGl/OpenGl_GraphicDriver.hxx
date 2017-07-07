@@ -74,13 +74,10 @@ private:
   Standard_Size myCounter;
 };
 
-class OpenGl_GraphicDriver;
-
-DEFINE_STANDARD_HANDLE(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
-
 //! This class defines an OpenGl graphic driver
 class OpenGl_GraphicDriver : public Graphic3d_GraphicDriver
 {
+  DEFINE_STANDARD_RTTIEXT(OpenGl_GraphicDriver, Graphic3d_GraphicDriver)
 public:
 
   //! Constructor.
@@ -200,9 +197,8 @@ public:
   //! Insert index layer at proper position.
   Standard_EXPORT void addZLayerIndex (const Graphic3d_ZLayerId theLayerId);
 
-public:
-
-  DEFINE_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
+  //! Set device lost flag for redrawn views.
+  Standard_EXPORT void setDeviceLost();
 
 public:
 
@@ -233,5 +229,7 @@ protected:
   mutable OpenGl_StateCounter myUIDGenerator; //!< Unique ID counter for primitive arrays.
 
 };
+
+DEFINE_STANDARD_HANDLE(OpenGl_GraphicDriver, Graphic3d_GraphicDriver)
 
 #endif //_OpenGl_GraphicDriver_HeaderFile

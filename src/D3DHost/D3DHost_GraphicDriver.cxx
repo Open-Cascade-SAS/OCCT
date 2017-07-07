@@ -49,7 +49,7 @@ D3DHost_GraphicDriver::~D3DHost_GraphicDriver()
 // =======================================================================
 Handle(Graphic3d_CView) D3DHost_GraphicDriver::CreateView (const Handle(Graphic3d_StructureManager)& theMgr)
 {
-  Handle(D3DHost_View) aView = new D3DHost_View (theMgr, this, myCaps, myDeviceLostFlag, &myStateCounter);
+  Handle(D3DHost_View) aView = new D3DHost_View (theMgr, this, myCaps, &myStateCounter);
 
   myMapOfView.Add (aView);
 

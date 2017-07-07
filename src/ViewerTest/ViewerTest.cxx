@@ -638,17 +638,37 @@ Handle(AIS_Shape) GetAISShapeFromName(const char* name)
 //==============================================================================
 void ViewerTest::Clear()
 {
-  if ( !a3DView().IsNull() ) {
-    ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName it(GetMapOfAIS());
-    while ( it.More() ) {
-      cout << "Remove " << it.Key2() << endl;
-      const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (it.Key1());
-      TheAISContext()->Remove(anObj,Standard_False);
-      it.Next();
+  if (a3DView().IsNull())
+  {
+    return;
+  }
+
+  NCollection_Sequence<Handle(AIS_InteractiveObject)> aListRemoved;
+  for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anObjIter (GetMapOfAIS()); anObjIter.More(); anObjIter.Next())
+  {
+    const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (anObjIter.Key1());
+    if (anObj->GetContext() != TheAISContext())
+    {
+      continue;
     }
-    TheAISContext()->RebuildSelectionStructs();
-    TheAISContext()->UpdateCurrentViewer();
+
+    std::cout << "Remove " << anObjIter.Key2() << std::endl;
+    TheAISContext()->Remove (anObj, Standard_False);
+    aListRemoved.Append (anObj);
+  }
+
+  TheAISContext()->RebuildSelectionStructs();
+  TheAISContext()->UpdateCurrentViewer();
+  if (aListRemoved.Size() == GetMapOfAIS().Extent())
+  {
     GetMapOfAIS().Clear();
+  }
+  else
+  {
+    for (NCollection_Sequence<Handle(AIS_InteractiveObject)>::Iterator anObjIter (aListRemoved); anObjIter.More(); anObjIter.Next())
+    {
+      GetMapOfAIS().UnBind1 (anObjIter.Value());
+    }
   }
 }
 
