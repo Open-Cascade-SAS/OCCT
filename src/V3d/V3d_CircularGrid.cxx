@@ -34,7 +34,6 @@ IMPLEMENT_STANDARD_RTTIEXT(V3d_CircularGrid,Aspect_CircularGrid)
  * Constant
  */
 #define DIVISION 8
-#define MYMINMAX 25.
 #define MYFACTOR 50.
 
 /*----------------------------------------------------------------------*/
@@ -55,6 +54,15 @@ V3d_CircularGrid::V3d_CircularGrid (const V3d_ViewerPointer& aViewer, const Quan
   const Standard_Real size = 0.5*myViewer->DefaultViewSize();
   SetGraphicValues (size, step/MYFACTOR);
   SetRadiusStep (step);
+}
+
+V3d_CircularGrid::~V3d_CircularGrid()
+{
+  myGroup.Nullify();
+  if (!myStructure.IsNull())
+  {
+    myStructure->Erase();
+  }
 }
 
 void V3d_CircularGrid::SetColors (const Quantity_Color& aColor, const Quantity_Color& aTenthColor)
@@ -144,10 +152,9 @@ void V3d_CircularGrid::UpdateDisplay ()
     myCurViewPlane = ThePlane;
   }
 
-  switch (DrawMode())
+  switch (myDrawMode)
   {
-    default:
-    //case Aspect_GDM_Points:
+    case Aspect_GDM_Points:
       DefinePoints ();
       myCurDrawMode = Aspect_GDM_Points;
       break;
@@ -155,11 +162,9 @@ void V3d_CircularGrid::UpdateDisplay ()
       DefineLines ();
       myCurDrawMode = Aspect_GDM_Lines;
       break;
-#ifdef IMP210100
     case Aspect_GDM_None:
       myCurDrawMode = Aspect_GDM_None;
       break;
-#endif
   }
   myCurAreDefined = Standard_True;
 }

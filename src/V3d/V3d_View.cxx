@@ -200,6 +200,15 @@ void V3d_View::SetWindow (const Handle(Aspect_Window)&  theWindow,
 //=============================================================================
 void V3d_View::Remove() const
 {
+  if (!MyGrid.IsNull())
+  {
+    MyGrid->Erase();
+  }
+  if (!myTrihedron.IsNull())
+  {
+    myTrihedron->Erase();
+  }
+
   MyViewer->DelView (this);
   myView->Remove();
   Handle(Aspect_Window)& aWin = const_cast<Handle(Aspect_Window)&> (MyWindow);
@@ -2437,33 +2446,24 @@ Standard_Boolean V3d_View::ScreenAxis( const gp_Dir &Vpn, const gp_Dir &Vup, Gra
 //function : TrsPoint
 //purpose  :
 //=============================================================================
-Graphic3d_Vertex V3d_View::TrsPoint( const Graphic3d_Vertex &P, const TColStd_Array2OfReal &Matrix )
+gp_XYZ V3d_View::TrsPoint (const Graphic3d_Vertex& thePnt, const TColStd_Array2OfReal& theMat)
 {
-  Graphic3d_Vertex PP ;
-  Standard_Real X,Y,Z,XX,YY,ZZ ;
-
   // CAL. S3892
-  Standard_Integer lr, ur, lc, uc;
-  lr    = Matrix.LowerRow ();
-  ur    = Matrix.UpperRow ();
-  lc    = Matrix.LowerCol ();
-  uc    = Matrix.UpperCol ();
-  if ((ur - lr + 1 != 4) || (uc - lc + 1 != 4) ) {
-    P.Coord(X,Y,Z) ;
-    PP.SetCoord(X,Y,Z) ;
-    return PP ;
+  const Standard_Integer lr = theMat.LowerRow();
+  const Standard_Integer ur = theMat.UpperRow();
+  const Standard_Integer lc = theMat.LowerCol();
+  const Standard_Integer uc = theMat.UpperCol();
+  if ((ur - lr + 1 != 4) || (uc - lc + 1 != 4))
+  {
+    return gp_XYZ (thePnt.X(), thePnt.Y(), thePnt.Z());
   }
-  P.Coord(X,Y,Z) ;
-  XX = (Matrix(lr,lc+3) + X*Matrix(lr,lc) + Y*Matrix(lr,lc+1)+
-    Z*Matrix(lr,lc+2))/Matrix(lr+3,lc+3) ;
 
-  YY = (Matrix(lr+1,lc+3) + X*Matrix(lr+1,lc) + Y*Matrix(lr+1,lc+1) +
-    Z*Matrix(lr+1,lc+2))/Matrix(lr+3,lc+3) ;
-
-  ZZ = (Matrix(lr+2,lc+3) + X*Matrix(lr+2,lc) + Y*Matrix(lr+2,lc+1) +
-    Z*Matrix(lr+2,lc+2))/Matrix(lr+3,lc+3) ;
-  PP.SetCoord(XX,YY,ZZ) ;
-  return PP ;
+  Standard_Real X, Y, Z;
+  thePnt.Coord (X,Y,Z);
+  const Standard_Real XX = (theMat(lr,lc+3)   + X*theMat(lr,lc)   + Y*theMat(lr,lc+1)   + Z*theMat(lr,lc+2)) / theMat(lr+3,lc+3);
+  const Standard_Real YY = (theMat(lr+1,lc+3) + X*theMat(lr+1,lc) + Y*theMat(lr+1,lc+1) + Z*theMat(lr+1,lc+2))/theMat(lr+3,lc+3);
+  const Standard_Real ZZ = (theMat(lr+2,lc+3) + X*theMat(lr+2,lc) + Y*theMat(lr+2,lc+1) + Z*theMat(lr+2,lc+2))/theMat(lr+3,lc+3);
+  return gp_XYZ (XX, YY, ZZ);
 }
 
 //=======================================================================

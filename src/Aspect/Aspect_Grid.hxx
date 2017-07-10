@@ -25,12 +25,9 @@
 #include <Aspect_GridDrawMode.hxx>
 #include <Standard_Transient.hxx>
 
-class Aspect_Grid;
-DEFINE_STANDARD_HANDLE(Aspect_Grid, Standard_Transient)
-
 class Aspect_Grid : public Standard_Transient
 {
-
+  DEFINE_STANDARD_RTTIEXT(Aspect_Grid, Standard_Transient)
 public:
 
   //! defines the x Origin of the grid.
@@ -39,7 +36,7 @@ public:
   //! defines the y Origin of the grid.
   Standard_EXPORT void SetYOrigin (const Standard_Real anOrigin);
   
-  //! defines the orientation of the the grid.
+  //! defines the orientation of the grid.
   Standard_EXPORT void SetRotationAngle (const Standard_Real anAngle);
   
   //! Rotate the grid from a relative angle.
@@ -62,23 +59,23 @@ public:
   //! activates the grid. The Hit method will return
   //! gridx and gridx computed according to the steps
   //! of the grid.
-  Standard_EXPORT void Activate();
+  void Activate() { myIsActive = Standard_True; }
   
   //! deactivates the grid. The hit method will return
   //! gridx and gridx as the enter value X & Y.
-  Standard_EXPORT void Deactivate();
+  void Deactivate() { myIsActive = Standard_False; }
   
   //! returns the x Origin of the grid.
-  Standard_EXPORT Standard_Real XOrigin() const;
+  Standard_Real XOrigin() const { return myXOrigin; }
   
   //! returns the x Origin of the grid.
-  Standard_EXPORT Standard_Real YOrigin() const;
+  Standard_Real YOrigin() const { return myYOrigin; }
   
   //! returns the x Angle of the grid.
-  Standard_EXPORT Standard_Real RotationAngle() const;
+  Standard_Real RotationAngle() const { return myRotationAngle; }
   
   //! Returns TRUE when the grid is active.
-  Standard_EXPORT Standard_Boolean IsActive() const;
+  Standard_Boolean IsActive() const { return myIsActive; }
   
   //! Returns the colors of the grid.
   Standard_EXPORT void Colors (Quantity_Color& aColor, Quantity_Color& aTenthColor) const;
@@ -87,41 +84,43 @@ public:
   Standard_EXPORT void SetDrawMode (const Aspect_GridDrawMode aDrawMode);
   
   //! Returns the grid aspect.
-  Standard_EXPORT Aspect_GridDrawMode DrawMode() const;
-  
+  Aspect_GridDrawMode DrawMode() const { return myDrawMode; }
+
   //! Display the grid at screen.
-  Standard_EXPORT virtual void Display();
+  Standard_EXPORT virtual void Display() = 0;
   
   //! Erase the grid from screen.
-  Standard_EXPORT virtual void Erase() const;
+  Standard_EXPORT virtual void Erase() const = 0;
   
   //! Returns TRUE when the grid is displayed at screen.
-  Standard_EXPORT virtual Standard_Boolean IsDisplayed() const;
+  Standard_EXPORT virtual Standard_Boolean IsDisplayed() const = 0;
   
   Standard_EXPORT virtual void Init() = 0;
 
-  DEFINE_STANDARD_RTTIEXT(Aspect_Grid,Standard_Transient)
-
 protected:
 
-  //! creates a new grid. By default this grid is not
-  //! active.
-  Standard_EXPORT Aspect_Grid(const Standard_Real anXOrigin = 0.0, const Standard_Real anYOrigin = 0.0, const Standard_Real aRotationAngle = 0, const Quantity_Color& aColor = Quantity_NOC_GRAY50, const Quantity_Color& aTenthColor = Quantity_NOC_GRAY70);
+  //! Creates a new grid. By default this grid is not active.
+  Standard_EXPORT Aspect_Grid (const Standard_Real theXOrigin = 0.0,
+                               const Standard_Real theYOrigin = 0.0,
+                               const Standard_Real theRotationAngle = 0,
+                               const Quantity_Color& theColor = Quantity_NOC_GRAY50,
+                               const Quantity_Color& theTenthColor = Quantity_NOC_GRAY70);
   
   //! Updates the grid parameters.
-  Standard_EXPORT virtual void UpdateDisplay();
+  Standard_EXPORT virtual void UpdateDisplay() = 0;
+
+protected:
 
   Standard_Real myRotationAngle;
   Standard_Real myXOrigin;
   Standard_Real myYOrigin;
   Quantity_Color myColor;
   Quantity_Color myTenthColor;
-
-private:
-
   Standard_Boolean myIsActive;
   Aspect_GridDrawMode myDrawMode;
 
 };
+
+DEFINE_STANDARD_HANDLE(Aspect_Grid, Standard_Transient)
 
 #endif // _Aspect_Grid_HeaderFile

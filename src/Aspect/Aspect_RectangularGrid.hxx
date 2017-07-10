@@ -27,15 +27,11 @@ class Standard_NegativeValue;
 class Standard_NullValue;
 class Standard_NumericError;
 
-class Aspect_RectangularGrid;
-DEFINE_STANDARD_HANDLE(Aspect_RectangularGrid, Aspect_Grid)
-
 class Aspect_RectangularGrid : public Aspect_Grid
 {
-
+  DEFINE_STANDARD_RTTIEXT(Aspect_RectangularGrid, Aspect_Grid)
 public:
 
-  
   //! creates a new grid. By default this grid is not
   //! active.
   //! The first angle is given relatively to the horizontal.
@@ -56,7 +52,7 @@ public:
   Standard_EXPORT void SetGridValues (const Standard_Real XOrigin, const Standard_Real YOrigin, const Standard_Real XStep, const Standard_Real YStep, const Standard_Real RotationAngle);
   
   //! returns the point of the grid the closest to the point X,Y
-  Standard_EXPORT void Compute (const Standard_Real X, const Standard_Real Y, Standard_Real& gridX, Standard_Real& gridY) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute (const Standard_Real X, const Standard_Real Y, Standard_Real& gridX, Standard_Real& gridY) const Standard_OVERRIDE;
   
   //! returns the x step of the grid.
   Standard_EXPORT Standard_Real XStep() const;
@@ -70,13 +66,13 @@ public:
   //! returns the y Angle of the grid, relatively to the vertical.
   Standard_EXPORT Standard_Real SecondAngle() const;
   
-  Standard_EXPORT void Init() Standard_OVERRIDE;
-
-  DEFINE_STANDARD_RTTIEXT(Aspect_RectangularGrid,Aspect_Grid)
+  Standard_EXPORT virtual void Init() Standard_OVERRIDE;
 
 private:
 
   Standard_EXPORT Standard_Boolean CheckAngle (const Standard_Real alpha, const Standard_Real beta) const;
+
+private:
 
   Standard_Real myXStep;
   Standard_Real myYStep;
@@ -90,5 +86,7 @@ private:
   Standard_Real c2;
 
 };
+
+DEFINE_STANDARD_HANDLE(Aspect_RectangularGrid, Aspect_Grid)
 
 #endif // _Aspect_RectangularGrid_HeaderFile

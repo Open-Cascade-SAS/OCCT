@@ -11,13 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modified	23/02/98 : FMN ; Remplacement PI par Standard_PI
-
 #include <Aspect_RectangularGrid.hxx>
+
 #include <Standard_NegativeValue.hxx>
 #include <Standard_NullValue.hxx>
 #include <Standard_NumericError.hxx>
-#include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Aspect_RectangularGrid,Aspect_Grid)
 
@@ -157,5 +155,3 @@ Standard_Boolean Aspect_RectangularGrid::CheckAngle(const Standard_Real alpha,
                                             const Standard_Real beta) const {
   return (Abs( Sin(alpha) * Cos(beta + M_PI / 2.) - Cos(alpha) * Sin(beta + M_PI / 2.)) != 0) ;
 }
-
-

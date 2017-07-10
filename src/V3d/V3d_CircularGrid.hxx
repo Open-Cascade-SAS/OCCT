@@ -29,21 +29,16 @@
 #include <Aspect_CircularGrid.hxx>
 class Graphic3d_Structure;
 class Graphic3d_Group;
-class Quantity_Color;
-
-
-class V3d_CircularGrid;
-DEFINE_STANDARD_HANDLE(V3d_CircularGrid, Aspect_CircularGrid)
-
 
 class V3d_CircularGrid : public Aspect_CircularGrid
 {
-
+  DEFINE_STANDARD_RTTIEXT(V3d_CircularGrid, Aspect_CircularGrid)
 public:
 
-  
   Standard_EXPORT V3d_CircularGrid(const V3d_ViewerPointer& aViewer, const Quantity_Color& aColor, const Quantity_Color& aTenthColor);
-  
+
+  Standard_EXPORT virtual ~V3d_CircularGrid();
+
   Standard_EXPORT void SetColors (const Quantity_Color& aColor, const Quantity_Color& aTenthColor) Standard_OVERRIDE;
   
   Standard_EXPORT void Display() Standard_OVERRIDE;
@@ -56,24 +51,17 @@ public:
   
   Standard_EXPORT void SetGraphicValues (const Standard_Real Radius, const Standard_Real OffSet);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(V3d_CircularGrid,Aspect_CircularGrid)
-
 protected:
 
-  
   Standard_EXPORT void UpdateDisplay() Standard_OVERRIDE;
-
-
 
 private:
 
-  
   Standard_EXPORT void DefineLines();
   
   Standard_EXPORT void DefinePoints();
+
+private:
 
   Handle(Graphic3d_Structure) myStructure;
   Handle(Graphic3d_Group) myGroup;
@@ -89,13 +77,8 @@ private:
   Standard_Real myRadius;
   Standard_Real myOffSet;
 
-
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(V3d_CircularGrid, Aspect_CircularGrid)
 
 #endif // _V3d_CircularGrid_HeaderFile

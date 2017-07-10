@@ -35,6 +35,9 @@ public:
   //! Creates a default trihedron.
   Standard_EXPORT V3d_Trihedron();
 
+  //! Destructor.
+  Standard_EXPORT virtual ~V3d_Trihedron();
+
   //! Switch wireframe / shaded trihedron.
   void SetWireframe (const Standard_Boolean theAsWireframe) { myIsWireframe = theAsWireframe; }
 

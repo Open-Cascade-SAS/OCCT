@@ -28,12 +28,9 @@ class Standard_NegativeValue;
 class Standard_NullValue;
 class Standard_NumericError;
 
-class Aspect_CircularGrid;
-DEFINE_STANDARD_HANDLE(Aspect_CircularGrid, Aspect_Grid)
-
 class Aspect_CircularGrid : public Aspect_Grid
 {
-
+  DEFINE_STANDARD_RTTIEXT(Aspect_CircularGrid, Aspect_Grid)
 public:
 
   //! creates a new grid. By default this grid is not
@@ -49,7 +46,7 @@ public:
   Standard_EXPORT void SetGridValues (const Standard_Real XOrigin, const Standard_Real YOrigin, const Standard_Real RadiusStep, const Standard_Integer DivisionNumber, const Standard_Real RotationAngle);
   
   //! returns the point of the grid the closest to the point X,Y
-  Standard_EXPORT void Compute (const Standard_Real X, const Standard_Real Y, Standard_Real& gridX, Standard_Real& gridY) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute (const Standard_Real X, const Standard_Real Y, Standard_Real& gridX, Standard_Real& gridY) const Standard_OVERRIDE;
   
   //! returns the x step of the grid.
   Standard_EXPORT Standard_Real RadiusStep() const;
@@ -57,9 +54,7 @@ public:
   //! returns the x step of the grid.
   Standard_EXPORT Standard_Integer DivisionNumber() const;
   
-  Standard_EXPORT void Init() Standard_OVERRIDE;
-
-  DEFINE_STANDARD_RTTIEXT(Aspect_CircularGrid,Aspect_Grid)
+  Standard_EXPORT virtual void Init() Standard_OVERRIDE;
 
 private:
 
@@ -70,5 +65,7 @@ private:
   Standard_Real myB1;
 
 };
+
+DEFINE_STANDARD_HANDLE(Aspect_CircularGrid, Aspect_Grid)
 
 #endif // _Aspect_CircularGrid_HeaderFile

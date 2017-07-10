@@ -11,123 +11,96 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Aspect_Grid.hxx>
-#include <Quantity_Color.hxx>
-#include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Aspect_Grid,Standard_Transient)
 
-Aspect_Grid::Aspect_Grid(
-			       const Standard_Real anXOrigin,
-			       const Standard_Real anYOrigin,
-			       const Standard_Real anAngle,
-			       const Quantity_Color& aColor,
-			       const Quantity_Color& aTenthColor)
-: myRotationAngle(anAngle),
-  myXOrigin(anXOrigin),
-  myYOrigin(anYOrigin),
-  myColor(aColor),
-  myTenthColor(aTenthColor),
-  myIsActive(Standard_False),
-  myDrawMode(Aspect_GDM_Lines)
+Aspect_Grid::Aspect_Grid (const Standard_Real theXOrigin,
+			                    const Standard_Real theYOrigin,
+			                    const Standard_Real theAngle,
+			                    const Quantity_Color& theColor,
+			                    const Quantity_Color& theTenthColor)
+: myRotationAngle (theAngle),
+  myXOrigin (theXOrigin),
+  myYOrigin (theYOrigin),
+  myColor (theColor),
+  myTenthColor (theTenthColor),
+  myIsActive (Standard_False),
+  myDrawMode (Aspect_GDM_Lines)
 {
+  //
 }
 
-
-void Aspect_Grid::SetXOrigin(const Standard_Real anOrigin) {
-  myXOrigin = anOrigin;
+void Aspect_Grid::SetXOrigin (const Standard_Real theOrigin)
+{
+  myXOrigin = theOrigin;
   Init();
   UpdateDisplay();
 }
 
-void Aspect_Grid::SetYOrigin(const Standard_Real anOrigin) {
-  myYOrigin = anOrigin;
+void Aspect_Grid::SetYOrigin (const Standard_Real theOrigin)
+{
+  myYOrigin = theOrigin;
   Init();
   UpdateDisplay();
 }
 
-void Aspect_Grid::SetRotationAngle(const Standard_Real anAngle){
-
-
-  myRotationAngle = anAngle;
-  Init();
-  UpdateDisplay();
-}
-void Aspect_Grid::Rotate(const Standard_Real anAngle) {
-  myRotationAngle += anAngle;
-  Init();
-  UpdateDisplay();
-}
-void Aspect_Grid::Translate(const Standard_Real aDx,
-				  const Standard_Real aDy) {
-  myXOrigin += aDx;
-  myYOrigin += aDy;
+void Aspect_Grid::SetRotationAngle (const Standard_Real theAngle)
+{
+  myRotationAngle = theAngle;
   Init();
   UpdateDisplay();
 }
 
-void Aspect_Grid::SetColors(const Quantity_Color& aColor,
-			    const Quantity_Color& aTenthColor) {
-  myColor = aColor;
-  myTenthColor = aTenthColor;
+void Aspect_Grid::Rotate (const Standard_Real theAngle)
+{
+  myRotationAngle += theAngle;
+  Init();
   UpdateDisplay();
 }
 
-void Aspect_Grid::Colors(Quantity_Color& aColor,
-			 Quantity_Color& aTenthColor) const {
-  aColor = myColor;
-  aTenthColor = myTenthColor;
+void Aspect_Grid::Translate (const Standard_Real theDx,
+				                     const Standard_Real theDy)
+{
+  myXOrigin += theDx;
+  myYOrigin += theDy;
+  Init();
+  UpdateDisplay();
 }
 
-void Aspect_Grid::Hit(const Standard_Real X,
-			 const Standard_Real Y,
-			 Standard_Real& gridX,
-			 Standard_Real& gridY) const {
-   if (myIsActive) {
-     Compute(X,Y,gridX,gridY);}
-   else{
-    gridX = X;
-    gridY = Y;
+void Aspect_Grid::SetColors (const Quantity_Color& theColor,
+			                       const Quantity_Color& theTenthColor)
+{
+  myColor = theColor;
+  myTenthColor = theTenthColor;
+  UpdateDisplay();
+}
+
+void Aspect_Grid::Colors (Quantity_Color& theColor,
+			                    Quantity_Color& theTenthColor) const
+{
+  theColor = myColor;
+  theTenthColor = myTenthColor;
+}
+
+void Aspect_Grid::Hit (const Standard_Real theX,
+			                 const Standard_Real theY,
+			                 Standard_Real& theGridX,
+			                 Standard_Real& theGridY) const
+{
+  if (myIsActive)
+  {
+    Compute (theX, theY, theGridX, theGridY);
   }
- }
-void Aspect_Grid::Activate () {
-  myIsActive = Standard_True;
+  else
+  {
+    theGridX = theX;
+    theGridY = theY;
+  }
 }
 
-void Aspect_Grid::Deactivate () {
-  myIsActive = Standard_False;
-}
-
-Standard_Real Aspect_Grid::XOrigin() const {
-  return myXOrigin;
-}
-
-Standard_Real Aspect_Grid::YOrigin() const {
-  return myYOrigin;
-}
-
-Standard_Real Aspect_Grid::RotationAngle() const {
-  return myRotationAngle;
-}
-
-Standard_Boolean Aspect_Grid::IsActive() const {
-  return myIsActive;
-}
-void Aspect_Grid::Display() {}
-
-void Aspect_Grid::Erase () const {}
-
-void Aspect_Grid::UpdateDisplay () {}
-
-
-Standard_Boolean Aspect_Grid::IsDisplayed() const {
-  return Standard_False;}
-
-void Aspect_Grid::SetDrawMode(const Aspect_GridDrawMode aDrawMode) {
-  myDrawMode = aDrawMode; 
+void Aspect_Grid::SetDrawMode (const Aspect_GridDrawMode theDrawMode)
+{
+  myDrawMode = theDrawMode;
   UpdateDisplay();
-}
-Aspect_GridDrawMode Aspect_Grid::DrawMode() const {
-  return myDrawMode;
 }

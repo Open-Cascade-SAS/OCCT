@@ -985,7 +985,7 @@ private:
   Standard_EXPORT static Standard_Boolean ScreenAxis (const gp_Dir& Vpn, const gp_Dir& Vup, Graphic3d_Vector& Xaxe, Graphic3d_Vector& Yaxe, Graphic3d_Vector& Zaxe);
   
   //! Transforms the Vertex V according to the matrice Matrix .
-  Standard_EXPORT static Graphic3d_Vertex TrsPoint (const Graphic3d_Vertex& V, const TColStd_Array2OfReal& Matrix);
+  Standard_EXPORT static gp_XYZ TrsPoint (const Graphic3d_Vertex& V, const TColStd_Array2OfReal& Matrix);
   
   //! Returns the objects number and the projection window
   //! of the objects contained in the view.

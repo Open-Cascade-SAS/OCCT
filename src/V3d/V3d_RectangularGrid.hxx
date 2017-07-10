@@ -28,51 +28,39 @@
 #include <Aspect_RectangularGrid.hxx>
 class Graphic3d_Structure;
 class Graphic3d_Group;
-class Quantity_Color;
-
-
-class V3d_RectangularGrid;
-DEFINE_STANDARD_HANDLE(V3d_RectangularGrid, Aspect_RectangularGrid)
-
 
 class V3d_RectangularGrid : public Aspect_RectangularGrid
 {
-
+  DEFINE_STANDARD_RTTIEXT(V3d_RectangularGrid, Aspect_RectangularGrid)
 public:
 
-  
   Standard_EXPORT V3d_RectangularGrid(const V3d_ViewerPointer& aViewer, const Quantity_Color& aColor, const Quantity_Color& aTenthColor);
+
+  Standard_EXPORT virtual ~V3d_RectangularGrid();
   
-  Standard_EXPORT void SetColors (const Quantity_Color& aColor, const Quantity_Color& aTenthColor) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetColors (const Quantity_Color& aColor, const Quantity_Color& aTenthColor) Standard_OVERRIDE;
   
-  Standard_EXPORT void Display() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Display() Standard_OVERRIDE;
   
-  Standard_EXPORT void Erase() const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Erase() const Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Boolean IsDisplayed() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsDisplayed() const Standard_OVERRIDE;
   
   Standard_EXPORT void GraphicValues (Standard_Real& XSize, Standard_Real& YSize, Standard_Real& OffSet) const;
   
   Standard_EXPORT void SetGraphicValues (const Standard_Real XSize, const Standard_Real YSize, const Standard_Real OffSet);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(V3d_RectangularGrid,Aspect_RectangularGrid)
-
 protected:
-
   
-  Standard_EXPORT void UpdateDisplay() Standard_OVERRIDE;
-
-
+  Standard_EXPORT virtual void UpdateDisplay() Standard_OVERRIDE;
 
 private:
 
-  
   Standard_EXPORT void DefineLines();
   
   Standard_EXPORT void DefinePoints();
+
+private:
 
   Handle(Graphic3d_Structure) myStructure;
   Handle(Graphic3d_Group) myGroup;
@@ -89,13 +77,8 @@ private:
   Standard_Real myYSize;
   Standard_Real myOffSet;
 
-
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(V3d_RectangularGrid, Aspect_RectangularGrid)
 
 #endif // _V3d_RectangularGrid_HeaderFile

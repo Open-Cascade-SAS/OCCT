@@ -11,21 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-/***********************************************************************
-     FONCTION :
-     ----------
-        Classe V3d_CircularGrid :
-     HISTORIQUE DES MODIFICATIONS   :
-     --------------------------------
-      16-08-98 : CAL ; S3892. Ajout grilles 3d.
-      13-10-98 : CAL ; S3892. Ajout de la gestion de la taille des grilles 3d.
-      23-10-98 : CAL ; PRO 15885. Patch K4403 et K4404
-      03-11-98 : CAL ; PRO 16161. Patch K4418 et K4419
-************************************************************************/
-/*----------------------------------------------------------------------*/
-/*
- * Includes
- */
+#include <V3d_RectangularGrid.hxx>
 
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
@@ -38,7 +24,6 @@
 #include <Standard_Type.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
-#include <V3d_RectangularGrid.hxx>
 #include <V3d_Viewer.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(V3d_RectangularGrid,Aspect_RectangularGrid)
@@ -47,7 +32,6 @@ IMPLEMENT_STANDARD_RTTIEXT(V3d_RectangularGrid,Aspect_RectangularGrid)
 /*
  * Constant
  */
-#define MYMINMAX 25.
 #define MYFACTOR 50.
 
 /*----------------------------------------------------------------------*/
@@ -70,6 +54,15 @@ V3d_RectangularGrid::V3d_RectangularGrid (const V3d_ViewerPointer& aViewer, cons
   SetGraphicValues (size, size, gstep);
   SetXStep (step);
   SetYStep (step);
+}
+
+V3d_RectangularGrid::~V3d_RectangularGrid()
+{
+  myGroup.Nullify();
+  if (!myStructure.IsNull())
+  {
+    myStructure->Erase();
+  }
 }
 
 void V3d_RectangularGrid::SetColors (const Quantity_Color& aColor, const Quantity_Color& aTenthColor)
@@ -158,10 +151,9 @@ void V3d_RectangularGrid::UpdateDisplay ()
     myCurViewPlane = ThePlane;
   }
 
-  switch (DrawMode ())
+  switch (myDrawMode)
   {
-    default:
-    //case Aspect_GDM_Points:
+    case Aspect_GDM_Points:
       DefinePoints ();
       myCurDrawMode = Aspect_GDM_Points;
       break;
@@ -169,11 +161,9 @@ void V3d_RectangularGrid::UpdateDisplay ()
       DefineLines ();
       myCurDrawMode = Aspect_GDM_Lines;
       break;
-#ifdef IMP210100
     case Aspect_GDM_None:
       myCurDrawMode = Aspect_GDM_None;
       break;
-#endif
 	}
 	myCurAreDefined = Standard_True;
 }
