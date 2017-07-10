@@ -1,0 +1,12 @@
+puts "=========="
+puts "OCC28529"
+puts "=========="
+puts ""
+######################################################################################################################
+# UnifySameDomain crashes on a shape with location
+######################################################################################################################
+
+restore [locate_data_file bug28529_face_to_unify.brep] a
+
+unifysamedom result a +b
+checknbshapes result -m UnifySameDomain -edge 143 -vertex 143

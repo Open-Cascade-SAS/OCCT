@@ -520,24 +520,21 @@ static TopoDS_Edge GlueEdgesWithPCurves(const TopTools_SequenceOfShape& aChain,
   Standard_Integer i, j;
 
   TopoDS_Edge FirstEdge = TopoDS::Edge(aChain(1));
-  //TColGeom2d_SequenceOfCurve PCurveSeq;
   TColGeom_SequenceOfSurface SurfSeq;
-  //TopTools_SequenceOfShape LocSeq;
+  NCollection_Sequence<TopLoc_Location> LocSeq;
   
-  BRep_ListIteratorOfListOfCurveRepresentation itr( (Handle(BRep_TEdge)::DownCast(FirstEdge.TShape()))->Curves() );
-  for (; itr.More(); itr.Next())
+  for (int aCurveIndex = 0;; aCurveIndex++)
   {
-    Handle(BRep_CurveRepresentation) CurveRep = itr.Value();
-    if (CurveRep->IsCurveOnSurface())
-    {
-      //PCurveSeq.Append(CurveRep->PCurve());
-      SurfSeq.Append(CurveRep->Surface());
-      /*
-      TopoDS_Shape aLocShape;
-      aLocShape.Location(CurveRep->Location());
-      LocSeq.Append(aLocShape);
-      */
-    }
+    Handle(Geom2d_Curve) aCurve;
+    Handle(Geom_Surface) aSurface;
+    TopLoc_Location aLocation;
+    Standard_Real aFirst, aLast;
+    BRep_Tool::CurveOnSurface (FirstEdge, aCurve, aSurface, aLocation, aFirst, aLast, aCurveIndex);
+    if (aCurve.IsNull())
+      break;
+
+    SurfSeq.Append(aSurface);
+    LocSeq.Append(aLocation);
   }
 
   Standard_Real fpar, lpar;
@@ -605,14 +602,12 @@ static TopoDS_Edge GlueEdgesWithPCurves(const TopTools_SequenceOfShape& aChain,
   Handle(Geom_BSplineCurve) ResCurve = concatcurve->Value(concatcurve->Lower());
   
   TColGeom2d_SequenceOfBoundedCurve ResPCurves;
-  TopLoc_Location aLoc;
   for (j = 1; j <= SurfSeq.Length(); j++)
   {
     TColGeom2d_Array1OfBSplineCurve tab_c2d(0,nb_curve-1); //array of the pcurves
     
     PrevVertex = FirstVertex;
     PrevEdge = FirstEdge;
-    //TopLoc_Location theLoc = LocSeq(j).Location();
     for (i = 1; i <= nb_curve; i++)
     {
       TopoDS_Edge anEdge = TopoDS::Edge(aChain(i));
@@ -620,12 +615,10 @@ static TopoDS_Edge GlueEdgesWithPCurves(const TopTools_SequenceOfShape& aChain,
       TopExp::Vertices(anEdge, VF, VL);
       Standard_Boolean ToReverse = (!VF.IsSame(PrevVertex));
 
-      /*
       Handle(Geom2d_Curve) aPCurve =
-        BRep_Tool::CurveOnSurface(anEdge, SurfSeq(j), anEdge.Location()*theLoc, fpar, lpar);
-      */
-      Handle(Geom2d_Curve) aPCurve =
-        BRep_Tool::CurveOnSurface(anEdge, SurfSeq(j), aLoc, fpar, lpar);
+        BRep_Tool::CurveOnSurface(anEdge, SurfSeq(j), LocSeq(j), fpar, lpar);
+      if (aPCurve.IsNull())
+        continue;
       Handle(Geom2d_TrimmedCurve) aTrPCurve = new Geom2d_TrimmedCurve(aPCurve, fpar, lpar);
       tab_c2d(i-1) = Geom2dConvert::CurveToBSplineCurve(aTrPCurve);
       Geom2dConvert::C0BSplineToC1BSplineCurve(tab_c2d(i-1), Precision::Confusion());
@@ -663,8 +656,8 @@ static TopoDS_Edge GlueEdgesWithPCurves(const TopTools_SequenceOfShape& aChain,
   BB.SameParameter(ResEdge, Standard_False);
   for (j = 1; j <= ResPCurves.Length(); j++)
   {
-    BB.UpdateEdge(ResEdge, ResPCurves(j), SurfSeq(j), aLoc, MaxTol);
-    BB.Range(ResEdge, SurfSeq(j), aLoc, ResPCurves(j)->FirstParameter(), ResPCurves(j)->LastParameter());
+    BB.UpdateEdge(ResEdge, ResPCurves(j), SurfSeq(j), LocSeq(j), MaxTol);
+    BB.Range(ResEdge, SurfSeq(j), LocSeq(j), ResPCurves(j)->FirstParameter(), ResPCurves(j)->LastParameter());
   }
 
   BRepLib::SameParameter(ResEdge, MaxTol, Standard_True);
