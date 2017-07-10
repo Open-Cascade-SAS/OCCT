@@ -306,6 +306,7 @@ void CViewer3dView::OnBUTTONHlrOff()
 {
   myHlrModeIsOn = Standard_False;
   myView->SetComputedMode (myHlrModeIsOn);
+  myView->Redraw();
 
   TCollection_AsciiString aMsg ("myView->SetComputedMode (Standard_False);\n"
                                 "  ");
@@ -319,6 +320,7 @@ void CViewer3dView::OnBUTTONHlrOn()
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
   myHlrModeIsOn = Standard_True;
   myView->SetComputedMode (myHlrModeIsOn);
+  myView->Redraw();
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 
   TCollection_AsciiString aMsg ("myView->SetComputedMode (Standard_True);\n"
@@ -616,7 +618,11 @@ void CViewer3dView::OnRButtonDown(UINT nFlags, CPoint point)
 void CViewer3dView::OnRButtonUp(UINT /*nFlags*/, CPoint /*point*/) 
 {
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-  myView->SetComputedMode (myHlrModeIsOn);
+  if (myHlrModeIsOn)
+  {
+    myView->SetComputedMode (myHlrModeIsOn);
+    myView->Redraw();
+  }
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }
 
@@ -1177,14 +1183,17 @@ void CViewer3dView::RedrawVisMode()
   case VIS_WIREFRAME:
     GetDocument()->GetAISContext()->SetDisplayMode (AIS_WireFrame, Standard_True);
     myView->SetComputedMode (Standard_False);
+    myView->Redraw();
     break;
   case VIS_SHADE:
     GetDocument()->GetAISContext()->SetDisplayMode (AIS_Shaded, Standard_True);
     myView->SetComputedMode (Standard_False);
+    myView->Redraw();
     break;
   case VIS_HLR:
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
     myView->SetComputedMode (Standard_True);
+    myView->Redraw();
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
     GetDocument()->GetAISContext()->SetDisplayMode (AIS_WireFrame, Standard_True);
     break;

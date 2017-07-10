@@ -435,11 +435,13 @@ void CSelectionDialog::OnHlrMode()
   if (!m_HlrModeIsOn)
   {
     myActiveView->SetComputedMode (m_HlrModeIsOn != 0);
+    myActiveView->Redraw();
   }
   else
   {
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
     myActiveView->SetComputedMode (m_HlrModeIsOn != 0);
+    myActiveView->Redraw();
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
   }
   OnDisplay(false);
@@ -500,7 +502,11 @@ void CSelectionDialog::OnRButtonUp(UINT nFlags, CPoint point)
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
   // reset the good HLR mode according to the stored one
   //   --> dynamic rotation may have change it
-  myActiveView->SetComputedMode (m_HlrModeIsOn != 0);
+  if (m_HlrModeIsOn != 0)
+  {
+    myActiveView->SetComputedMode (true);
+    myActiveView->Redraw();
+  }
   OnDisplay(false);
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }

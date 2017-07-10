@@ -204,6 +204,7 @@ void View::hlrOff()
   QApplication::setOverrideCursor( Qt::WaitCursor );
   myHlrModeIsOn = Standard_False;
   myView->SetComputedMode (myHlrModeIsOn);
+  myView->Redraw();
   QApplication::restoreOverrideCursor();
 }
 
@@ -212,6 +213,7 @@ void View::hlrOn()
   QApplication::setOverrideCursor( Qt::WaitCursor );
   myHlrModeIsOn = Standard_True;
   myView->SetComputedMode (myHlrModeIsOn);
+  myView->Redraw();
   QApplication::restoreOverrideCursor();
 }
 
@@ -742,7 +744,11 @@ void View::onRButtonUp( Qt::MouseButtons /*nFlags*/, const QPoint point )
         QApplication::setOverrideCursor( Qt::WaitCursor );
         // reset tyhe good Degenerated mode according to the strored one
         //   --> dynamic rotation may have change it
-        myView->SetComputedMode (myHlrModeIsOn);
+        if (myHlrModeIsOn)
+        {
+          myView->SetComputedMode (myHlrModeIsOn);
+          myView->Redraw();
+        }
         QApplication::restoreOverrideCursor();
         myCurrentMode = CurAction3d_Nothing;
     }

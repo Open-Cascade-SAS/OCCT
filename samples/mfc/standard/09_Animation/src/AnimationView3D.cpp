@@ -258,6 +258,7 @@ void CAnimationView3D::OnBUTTONHlrOff()
 {
   myHlrModeIsOn = Standard_False;
   myView->SetComputedMode (myHlrModeIsOn);
+  myView->Redraw();
 }
 
 void CAnimationView3D::OnBUTTONHlrOn() 
@@ -265,6 +266,7 @@ void CAnimationView3D::OnBUTTONHlrOn()
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
   myHlrModeIsOn = Standard_True;
   myView->SetComputedMode (myHlrModeIsOn);
+  myView->Redraw();
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }
 
@@ -470,7 +472,11 @@ void CAnimationView3D::OnRButtonDown(UINT nFlags, CPoint point)
 void CAnimationView3D::OnRButtonUp(UINT /*nFlags*/, CPoint /*point*/) 
 {
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    myView->SetComputedMode (myHlrModeIsOn);
+    if (myHlrModeIsOn)
+    {
+      myView->SetComputedMode (myHlrModeIsOn);
+      myView->Redraw();
+    }
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }
 

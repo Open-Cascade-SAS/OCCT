@@ -163,8 +163,6 @@ Aspect_Handle GetWindowHandle(const Handle(Aspect_Window)& theWindow)
 }
 #endif
 
-static Standard_Boolean MyHLRIsOn = Standard_False;
-
 NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)> ViewerTest_myViews;
 static NCollection_DoubleMap <TCollection_AsciiString, Handle(AIS_InteractiveContext)>  ViewerTest_myContexts;
 static NCollection_DoubleMap <TCollection_AsciiString, Handle(Graphic3d_GraphicDriver)> ViewerTest_myDrivers;
@@ -185,6 +183,7 @@ static struct
 //==============================================================================
 
 static int Start_Rot = 0;
+Standard_Boolean HasHlrOnBeforeRotation = Standard_False;
 int X_Motion = 0; // Current cursor position
 int Y_Motion = 0;
 int X_ButtonPress = 0; // Last ButtonPress position
@@ -717,7 +716,6 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   // Set parameters for V3d_View and V3d_Viewer
   const Handle (V3d_View) aV3dView = ViewerTest::CurrentView();
   aV3dView->SetComputedMode(Standard_False);
-  MyHLRIsOn = aV3dView->ComputedMode();
 
   a3DViewer->SetDefaultBackgroundColor(Quantity_NOC_BLACK);
   if (toCreateViewer)
@@ -850,76 +848,142 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
   return 0;
 }
 
+//! Parse HLR algo type.
+static Standard_Boolean parseHlrAlgoType (const char* theName,
+                                          Prs3d_TypeOfHLR& theType)
+{
+  TCollection_AsciiString aName (theName);
+  aName.LowerCase();
+  if (aName == "polyalgo")
+  {
+    theType = Prs3d_TOH_PolyAlgo;
+  }
+  else if (aName == "algo")
+  {
+    theType = Prs3d_TOH_Algo;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+
 //==============================================================================
 //function : VHLR
 //purpose  : hidden lines removal algorithm
-//draw args: vhlr is_enabled={on|off} [show_hidden={1|0}]
 //==============================================================================
 
 static int VHLR (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (ViewerTest::CurrentView().IsNull())
+  const Handle(V3d_View) aView = ViewerTest::CurrentView();
+  const Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  if (aView.IsNull())
   {
-    di << argv[0] << ": Call vinit before this command, please.\n";
+    std::cerr << "Error: No opened viewer!\n";
     return 1;
   }
 
-  if (argc < 2)
+  Standard_Boolean hasHlrOnArg = Standard_False;
+  Standard_Boolean hasShowHiddenArg = Standard_False;
+  Standard_Boolean isHLROn = Standard_False;
+  Standard_Boolean toShowHidden = aCtx->DefaultDrawer()->DrawHiddenLine();
+  Prs3d_TypeOfHLR  aTypeOfHLR = Prs3d_TOH_NotSet;
+  ViewerTest_AutoUpdater anUpdateTool (Handle(AIS_InteractiveContext)(), aView);
+  for (Standard_Integer anArgIter = 1; anArgIter < argc; ++anArgIter)
   {
-    di << argv[0] << ": Wrong number of command arguments.\n"
-      << "Type help " << argv[0] << " for more information.\n";
-    return 1;
-  }
-
-  // Enable or disable HLR mode.
-  Standard_Boolean isHLROn =
-    (!strcasecmp (argv[1], "on")) ? Standard_True : Standard_False;
-
-  if (isHLROn != MyHLRIsOn)
-  {
-    MyHLRIsOn = isHLROn;
-    ViewerTest::CurrentView()->SetComputedMode (MyHLRIsOn);
-  }
-
-  // Show or hide hidden lines in HLR mode.
-  Standard_Boolean isCurrentShowHidden
-    = ViewerTest::GetAISContext()->DefaultDrawer()->DrawHiddenLine();
-
-  Standard_Boolean isShowHidden =
-    (argc == 3) ? (atoi(argv[2]) == 1 ? Standard_True : Standard_False)
-                : isCurrentShowHidden;
-
-
-  if (isShowHidden != isCurrentShowHidden)
-  {
-    if (isShowHidden)
+    TCollection_AsciiString anArg (argv[anArgIter]);
+    anArg.LowerCase();
+    if (anUpdateTool.parseRedrawMode (anArg))
     {
-      ViewerTest::GetAISContext()->DefaultDrawer()->EnableDrawHiddenLine();
+      continue;
+    }
+    else if (anArg == "-showhidden"
+          && anArgIter + 1 < argc
+          && ViewerTest::ParseOnOff (argv[anArgIter + 1], toShowHidden))
+    {
+      ++anArgIter;
+      hasShowHiddenArg = Standard_True;
+      continue;
+    }
+    else if ((anArg == "-type"
+           || anArg == "-algo"
+           || anArg == "-algotype")
+          && anArgIter + 1 < argc
+          && parseHlrAlgoType (argv[anArgIter + 1], aTypeOfHLR))
+    {
+      ++anArgIter;
+      continue;
+    }
+    else if (!hasHlrOnArg
+          && ViewerTest::ParseOnOff (argv[anArgIter], isHLROn))
+    {
+      hasHlrOnArg = Standard_True;
+      continue;
+    }
+    // old syntax
+    else if (!hasShowHiddenArg
+          && ViewerTest::ParseOnOff(argv[anArgIter], toShowHidden))
+    {
+      hasShowHiddenArg = Standard_True;
+      continue;
     }
     else
     {
-      ViewerTest::GetAISContext()->DefaultDrawer()->DisableDrawHiddenLine();
+      std::cout << "Syntax error at '" << argv[anArgIter] << "'\n";
+      return 1;
     }
-
-    // Redisplay shapes.
-    if (MyHLRIsOn)
+  }
+  if (!hasHlrOnArg)
+  {
+    di << "HLR:        " << aView->ComputedMode() << "\n";
+    di << "HiddenLine: " << aCtx->DefaultDrawer()->DrawHiddenLine() << "\n";
+    di << "HlrAlgo:    ";
+    switch (aCtx->DefaultDrawer()->TypeOfHLR())
     {
-      AIS_ListOfInteractive aListOfShapes;
-      ViewerTest::GetAISContext()->DisplayedObjects (aListOfShapes);
+      case Prs3d_TOH_NotSet:   di << "NotSet\n";   break;
+      case Prs3d_TOH_PolyAlgo: di << "PolyAlgo\n"; break;
+      case Prs3d_TOH_Algo:     di << "Algo\n";     break;
+    }
+    anUpdateTool.Invalidate();
+    return 0;
+  }
 
-      for (AIS_ListIteratorOfListOfInteractive anIter(aListOfShapes); anIter.More(); anIter.Next())
+  Standard_Boolean toRecompute = Standard_False;
+  if (aTypeOfHLR != Prs3d_TOH_NotSet
+   && aTypeOfHLR != aCtx->DefaultDrawer()->TypeOfHLR())
+  {
+    toRecompute = Standard_True;
+    aCtx->DefaultDrawer()->SetTypeOfHLR (aTypeOfHLR);
+  }
+  if (toShowHidden != aCtx->DefaultDrawer()->DrawHiddenLine())
+  {
+    toRecompute = Standard_True;
+    if (toShowHidden)
+    {
+      aCtx->DefaultDrawer()->EnableDrawHiddenLine();
+    }
+    else
+    {
+      aCtx->DefaultDrawer()->DisableDrawHiddenLine();
+    }
+  }
+
+  // redisplay shapes
+  if (aView->ComputedMode() && isHLROn && toRecompute)
+  {
+    AIS_ListOfInteractive aListOfShapes;
+    aCtx->DisplayedObjects (aListOfShapes);
+    for (AIS_ListIteratorOfListOfInteractive anIter (aListOfShapes); anIter.More(); anIter.Next())
+    {
+      if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(anIter.Value()))
       {
-        Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (anIter.Value());
-        if (aShape.IsNull())
-        {
-          continue;
-        }
-        ViewerTest::GetAISContext()->Redisplay (aShape, Standard_False);
+        aCtx->Redisplay (aShape, Standard_False);
       }
     }
   }
 
-  ViewerTest::CurrentView()->Update();
+  aView->SetComputedMode (isHLROn);
   return 0;
 }
 
@@ -928,66 +992,95 @@ static int VHLR (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 //purpose  : change type of using HLR algorithm
 //==============================================================================
 
-static int VHLRType (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int VHLRType (Draw_Interpretor& , Standard_Integer argc, const char** argv)
 {
-  if (ViewerTest::CurrentView().IsNull())
+  const Handle(V3d_View) aView = ViewerTest::CurrentView();
+  const Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  if (aView.IsNull())
   {
-    di << argv[0] << ": Call vinit before this command, please.\n";
+    std::cerr << "Error: No opened viewer!\n";
     return 1;
   }
 
-  if (argc < 2)
+  Prs3d_TypeOfHLR aTypeOfHLR = Prs3d_TOH_NotSet;
+  ViewerTest_AutoUpdater anUpdateTool (Handle(AIS_InteractiveContext)(), aView);
+  AIS_ListOfInteractive aListOfShapes;
+  for (Standard_Integer anArgIter = 1; anArgIter < argc; ++anArgIter)
   {
-    di << argv[0] << ": Wrong number of command arguments.\n"
-      << "Type help " << argv[0] << " for more information.\n";
-    return 1;
-  }
-
-  Prs3d_TypeOfHLR aTypeOfHLR =
-    (!strcasecmp (argv[1], "algo")) ? Prs3d_TOH_Algo : Prs3d_TOH_PolyAlgo;
-
-  if (argc == 2)
-  {
-    AIS_ListOfInteractive aListOfShapes;
-    ViewerTest::GetAISContext()->DisplayedObjects (aListOfShapes);
-    ViewerTest::GetAISContext()->DefaultDrawer()->SetTypeOfHLR(aTypeOfHLR);
-    for (AIS_ListIteratorOfListOfInteractive anIter(aListOfShapes);
-      anIter.More(); anIter.Next())
+    TCollection_AsciiString anArg (argv[anArgIter]);
+    anArg.LowerCase();
+    if (anUpdateTool.parseRedrawMode (anArg))
     {
-      Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(anIter.Value());
-      if (aShape.IsNull())
-        continue;
-      if (aShape->TypeOfHLR() != aTypeOfHLR)
-        aShape->SetTypeOfHLR (aTypeOfHLR);
-      if (MyHLRIsOn)
-        ViewerTest::GetAISContext()->Redisplay (aShape, Standard_False);
+      continue;
     }
-    ViewerTest::CurrentView()->Update();
-    return 0;
-  }
-  else
-  {
-    for (Standard_Integer i = 2; i < argc; ++i)
+    else if ((anArg == "-type"
+           || anArg == "-algo"
+           || anArg == "-algotype")
+          && anArgIter + 1 < argc
+          && parseHlrAlgoType (argv[anArgIter + 1], aTypeOfHLR))
+    {
+      ++anArgIter;
+      continue;
+    }
+    // old syntax
+    else if (aTypeOfHLR == Prs3d_TOH_NotSet
+          && parseHlrAlgoType (argv[anArgIter], aTypeOfHLR))
+    {
+      continue;
+    }
+    else
     {
       ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
-      TCollection_AsciiString aName (argv[i]);
-
+      TCollection_AsciiString aName (argv[anArgIter]);
       if (!aMap.IsBound2 (aName))
       {
-        di << argv[0] << ": Wrong shape name:" << aName.ToCString() << ".\n";
-        continue;
+        std::cout << "Syntax error: Wrong shape name '" << aName << "'.\n";
+        return 1;
       }
-      Handle(AIS_Shape) anAISObject =
-        Handle(AIS_Shape)::DownCast (aMap.Find2(aName));
-      if (anAISObject.IsNull())
-        continue;
-      anAISObject->SetTypeOfHLR (aTypeOfHLR);
-      if (MyHLRIsOn)
-        ViewerTest::GetAISContext()->Redisplay (anAISObject, Standard_False);
+
+      Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (aMap.Find2 (aName));
+      if (aShape.IsNull())
+      {
+        std::cout << "Syntax error: '" << aName << "' is not a shape presentation.\n";
+        return 1;
+      }
+      aListOfShapes.Append (aShape);
+      continue;
     }
-    ViewerTest::CurrentView()->Update();
+  }
+  if (aTypeOfHLR == Prs3d_TOH_NotSet)
+  {
+    std::cout << "Syntax error: wrong number of arguments!\n";
+    return 1;
   }
 
+  const Standard_Boolean isGlobal = aListOfShapes.IsEmpty();
+  if (isGlobal)
+  {
+    aCtx->DisplayedObjects (aListOfShapes);
+    aCtx->DefaultDrawer()->SetTypeOfHLR (aTypeOfHLR);
+  }
+
+  for (AIS_ListIteratorOfListOfInteractive anIter(aListOfShapes); anIter.More(); anIter.Next())
+  {
+    Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(anIter.Value());
+    if (aShape.IsNull())
+    {
+      continue;
+    }
+
+    const bool toUpdateShape = aShape->TypeOfHLR() != aTypeOfHLR
+                            && aView->ComputedMode();
+    if (!isGlobal
+     || aShape->TypeOfHLR() != aTypeOfHLR)
+    {
+      aShape->SetTypeOfHLR (aTypeOfHLR);
+    }
+    if (toUpdateShape)
+    {
+      aCtx->Redisplay (aShape, Standard_False);
+    }
+  }
   return 0;
 }
 
@@ -1030,13 +1123,10 @@ void ActivateView (const TCollection_AsciiString& theViewName)
       }
 
       ViewerTest::CurrentView (aView);
-      // Update degenerate mode
-      MyHLRIsOn = ViewerTest::CurrentView()->ComputedMode();
       ViewerTest::SetAISContext (anAISContext);
-      TCollection_AsciiString aTitle = TCollection_AsciiString("3D View - ");
-      aTitle = aTitle + theViewName + "(*)";
+      TCollection_AsciiString aTitle = TCollection_AsciiString("3D View - ") + theViewName + "(*)";
       SetWindowTitle (ViewerTest::CurrentView()->Window(), aTitle.ToCString());
-#if defined(_WIN32) || defined(__WIN32__)
+#if defined(_WIN32)
       VT_GetWindow() = Handle(WNT_Window)::DownCast(ViewerTest::CurrentView()->Window());
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
       VT_GetWindow() = Handle(Cocoa_Window)::DownCast(ViewerTest::CurrentView()->Window());
@@ -1390,9 +1480,9 @@ void VT_ProcessKeyPress (const char* buf_ret)
   else if (!strcasecmp (buf_ret, "H"))
   {
     // HLR
-    cout << "HLR" << endl;
+    std::cout << "HLR" << std::endl;
     aView->SetComputedMode (!aView->ComputedMode());
-    MyHLRIsOn = aView->ComputedMode();
+    aView->Redraw();
   }
   else if (!strcasecmp (buf_ret, "P"))
   {
@@ -1638,7 +1728,8 @@ void VT_ProcessButton1Release (Standard_Boolean theIsShift)
 void VT_ProcessButton3Press()
 {
   Start_Rot = 1;
-  if (MyHLRIsOn)
+  HasHlrOnBeforeRotation = ViewerTest::CurrentView()->ComputedMode();
+  if (HasHlrOnBeforeRotation)
   {
     ViewerTest::CurrentView()->SetComputedMode (Standard_False);
   }
@@ -1654,9 +1745,11 @@ void VT_ProcessButton3Release()
   if (Start_Rot)
   {
     Start_Rot = 0;
-    if (MyHLRIsOn)
+    if (HasHlrOnBeforeRotation)
     {
+      HasHlrOnBeforeRotation = Standard_False;
       ViewerTest::CurrentView()->SetComputedMode (Standard_True);
+      ViewerTest::CurrentView()->Redraw();
     }
   }
 }
@@ -11152,19 +11245,18 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "                              ts, tt      - translation for s and t texture coordinates\n"
     "                              rot         - texture rotation angle in degrees",
     __FILE__, VTextureEnv, group);
-  theCommands.Add("vhlr" ,
-    "is_enabled={on|off} [show_hidden={1|0}]"
-    " - Hidden line removal algorithm:"
-    " - is_enabled: if is on HLR algorithm is applied\n"
-    " - show_hidden: if equals to 1, hidden lines are drawn as dotted ones.\n",
+  theCommands.Add("vhlr",
+            "vhlr {on|off} [-showHidden={1|0}] [-algoType={algo|polyAlgo}] [-noupdate]"
+      "\n\t\t: Hidden Line Removal algorithm."
+      "\n\t\t:   -showHidden if set ON, hidden lines are drawn as dotted ones"
+      "\n\t\t:   -algoType   type of HLR algorithm.\n",
     __FILE__,VHLR,group);
-  theCommands.Add("vhlrtype" ,
-    "algo_type={algo|polyalgo} [shape_1 ... shape_n]"
-    " - Changes the type of HLR algorithm using for shapes."
-    " - algo_type: if equals to algo, exact HLR algorithm is applied;\n"
-    "   if equals to polyalgo, polygonal HLR algorithm is applied."
-    "If shapes are not given HLR algoithm of given type is applied"
-    " to all shapes in the view\n",
+  theCommands.Add("vhlrtype",
+              "vhlrtype {algo|polyAlgo} [shape_1 ... shape_n] [-noupdate]"
+      "\n\t\t: Changes the type of HLR algorithm using for shapes:"
+      "\n\t\t:   'algo' - exact HLR algorithm is applied"
+      "\n\t\t:   'polyAlgo' - polygonal HLR algorithm is applied"
+      "\n\t\t: If shapes are not given - option is applied to all shapes in the view",
     __FILE__,VHLRType,group);
   theCommands.Add("vclipplane",
               "vclipplane planeName [{0|1}]"

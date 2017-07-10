@@ -258,6 +258,7 @@ void Graphic3d_CView::SetComputedMode (const Standard_Boolean theMode)
         myStructsComputed .Append (aCompStruct);
       }
 
+      aCompStruct->CalculateBoundBox();
       eraseStructure   (aStruct->CStructure());
       displayStructure (aCompStruct->CStructure(), aStruct->DisplayPriority());
     }
@@ -306,6 +307,7 @@ void Graphic3d_CView::ReCompute (const Handle(Graphic3d_Structure)& theStruct)
   theStruct->IsTransformed() ? theStruct->Compute (this, theStruct->Transformation(), aCompStruct)
                              : theStruct->Compute (this,                              aCompStruct);
   aCompStruct->SetHLRValidation (Standard_True);
+  aCompStruct->CalculateBoundBox();
 
   // of which type will be the computed?
   const Standard_Boolean toComputeWireframe = myVisualization == Graphic3d_TOV_WIREFRAME

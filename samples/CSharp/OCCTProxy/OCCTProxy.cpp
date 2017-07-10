@@ -133,6 +133,7 @@ public:
     if (!myView().IsNull())
     {
       myView()->SetComputedMode (Standard_False);
+      myView()->Redraw();
     }
   }
 
@@ -144,6 +145,7 @@ public:
     if (!myView().IsNull())
     {
       myView()->SetComputedMode (Standard_True);
+      myView()->Redraw();
     }
   }
 

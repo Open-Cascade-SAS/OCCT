@@ -13,7 +13,7 @@ vdisplay b
 vrotate 35 0 0
 vfit
 vhlr on 1
-vhlrtype algo a
+vhlrtype algo b
 
 vmoveto 76 304
 

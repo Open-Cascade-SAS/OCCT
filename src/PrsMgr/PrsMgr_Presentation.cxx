@@ -287,31 +287,7 @@ Handle(Graphic3d_Structure) PrsMgr_Presentation::Compute (const Handle(Graphic3d
                                                           const Handle(Geom_Transformation)&            theTrsf)
 {
   Handle(Prs3d_Presentation) aPrs3d = new Prs3d_Presentation (myPresentationManager->StructureManager());
-  if (theTrsf->Form() == gp_Translation)
-  {
-    myPresentableObject->Compute (Projector (theProjector), aPrs3d);
-    aPrs3d->SetTransformation (theTrsf);
-    return aPrs3d;
-  }
-
-  // waiting that something is done in gp_Trsf...rob
-  for (Standard_Integer i = 1; i <= 3; ++i)
-  {
-    for (Standard_Integer j = 1; j <= 3; ++j)
-    {
-      if (i != j)
-      {
-        if (Abs (theTrsf->Value (i, j)) > Precision::Confusion())
-        {
-          myPresentableObject->Compute (Projector (theProjector), theTrsf, aPrs3d);
-          return aPrs3d;
-        }
-      }
-    }
-  }
-
-  myPresentableObject->Compute (Projector (theProjector), aPrs3d);
-  aPrs3d->SetTransformation (theTrsf);
+  myPresentableObject->Compute (Projector (theProjector), theTrsf, aPrs3d);
   return aPrs3d;
 }
 

@@ -14,9 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <StdPrs_HLRPolyShape.hxx>
 
 #include <BRepMesh_IncrementalMesh.hxx>
-#include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_Group.hxx>
 #include <HLRAlgo_EdgeIterator.hxx>
 #include <HLRAlgo_EdgeStatus.hxx>
@@ -27,7 +28,6 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Projector.hxx>
-#include <StdPrs_HLRPolyShape.hxx>
 #include <StdPrs_WFShape.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TopAbs.hxx>
@@ -63,9 +63,6 @@ void StdPrs_HLRPolyShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
       StdPrs_WFShape::Add(aPresentation, ex.Current(), aDrawer);
     }
   }
-
-  TColgp_SequenceOfPnt HiddenPnts;
-  TColgp_SequenceOfPnt SeenPnts;
 
   if (aDrawer->IsAutoTriangulation())
   {
@@ -121,48 +118,64 @@ void StdPrs_HLRPolyShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
             S,reg1,regn,outl,intl));	
     }
   }
-  
-  // storage in the group:
-  HLRBRep_ListIteratorOfListOfBPoint ItB;
 
-  if (aDrawer->DrawHiddenLine()) {
-    for (ItB.Initialize(BiPntHid); ItB.More(); ItB.Next()) {
-      const HLRBRep_BiPoint& BP = ItB.Value();
-      if (!BP.RgNLine() || BP.OutLine()) {
-        HiddenPnts.Append(BP.P1());
-        HiddenPnts.Append(BP.P2());
+  // storage in the group
+  if (aDrawer->DrawHiddenLine())
+  {
+    Standard_Integer aNbHiddenSegments = 0;
+    for (HLRBRep_ListIteratorOfListOfBPoint aBPntHidIter (BiPntHid); aBPntHidIter.More(); aBPntHidIter.Next())
+    {
+      const HLRBRep_BiPoint& aBPnt = aBPntHidIter.Value();
+      if (!aBPnt.RgNLine()
+        || aBPnt.OutLine())
+      {
+        ++aNbHiddenSegments;
       }
     }
-  }
+    if (aNbHiddenSegments > 0)
+    {
+      Handle(Graphic3d_ArrayOfSegments) aHiddenArray = new Graphic3d_ArrayOfSegments (aNbHiddenSegments * 2);
+      for (HLRBRep_ListIteratorOfListOfBPoint aBPntHidIter (BiPntHid); aBPntHidIter.More(); aBPntHidIter.Next())
+      {
+        const HLRBRep_BiPoint& aBPnt = aBPntHidIter.Value();
+        if (!aBPnt.RgNLine()
+          || aBPnt.OutLine())
+        {
+          aHiddenArray->AddVertex (aBPnt.P1());
+          aHiddenArray->AddVertex (aBPnt.P2());
+        }
+      }
 
-  for (ItB.Initialize(BiPntVis); ItB.More(); ItB.Next()) {
-    const HLRBRep_BiPoint& BP = ItB.Value();
-    if (!BP.RgNLine() || BP.OutLine()) {
-      SeenPnts.Append(BP.P1());
-      SeenPnts.Append(BP.P2());
+      aGroup->SetPrimitivesAspect (aDrawer->HiddenLineAspect()->Aspect());
+      aGroup->AddPrimitiveArray (aHiddenArray);
     }
   }
-
-  Standard_Integer nbVertices = HiddenPnts.Length();
-  if(nbVertices > 0) {
-    Handle(Graphic3d_ArrayOfPolylines) HiddenArray = new Graphic3d_ArrayOfPolylines(nbVertices, (Standard_Integer)nbVertices/2);
-    for(int i=1; i<=nbVertices; i+=2) {
-      HiddenArray->AddBound(2);
-      HiddenArray->AddVertex(HiddenPnts.Value(i));
-      HiddenArray->AddVertex(HiddenPnts.Value(i+1));
+  {
+    Standard_Integer aNbSeenSegments = 0;
+    for (HLRBRep_ListIteratorOfListOfBPoint aBPntVisIter (BiPntVis); aBPntVisIter.More(); aBPntVisIter.Next())
+    {
+      const HLRBRep_BiPoint& aBPnt = aBPntVisIter.Value();
+      if (!aBPnt.RgNLine()
+        || aBPnt.OutLine())
+      {
+        ++aNbSeenSegments;
+      }
     }
-    aGroup->SetPrimitivesAspect(aDrawer->HiddenLineAspect()->Aspect());
-    aGroup->AddPrimitiveArray(HiddenArray);
-  }
-  nbVertices = SeenPnts.Length();
-  if(nbVertices > 0) {
-    Handle(Graphic3d_ArrayOfPolylines) SeenArray = new Graphic3d_ArrayOfPolylines(nbVertices, (Standard_Integer)nbVertices/2);
-    for(int i=1; i<=nbVertices; i+=2) {
-      SeenArray->AddBound(2);
-      SeenArray->AddVertex(SeenPnts.Value(i));
-      SeenArray->AddVertex(SeenPnts.Value(i+1));
+    if (aNbSeenSegments > 0)
+    {
+      Handle(Graphic3d_ArrayOfSegments) aSeenArray = new Graphic3d_ArrayOfSegments (aNbSeenSegments * 2);
+      for (HLRBRep_ListIteratorOfListOfBPoint aBPntVisIter (BiPntVis); aBPntVisIter.More(); aBPntVisIter.Next())
+      {
+        const HLRBRep_BiPoint& aBPnt = aBPntVisIter.Value();
+        if (!aBPnt.RgNLine()
+          || aBPnt.OutLine())
+        {
+          aSeenArray->AddVertex (aBPnt.P1());
+          aSeenArray->AddVertex (aBPnt.P2());
+        }
+      }
+      aGroup->SetPrimitivesAspect (aDrawer->SeenLineAspect()->Aspect());
+      aGroup->AddPrimitiveArray (aSeenArray);
     }
-    aGroup->SetPrimitivesAspect(aDrawer->SeenLineAspect()->Aspect());
-    aGroup->AddPrimitiveArray(SeenArray);
   }
 }   

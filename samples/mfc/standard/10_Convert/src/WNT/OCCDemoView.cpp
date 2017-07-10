@@ -277,6 +277,7 @@ void COCCDemoView::OnLButtonUp(UINT nFlags, CPoint point)
       {
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
         myView->SetComputedMode(Standard_True);
+        myView->Redraw();
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
       }
       myCurrentMode = CurAction3d_Nothing;
@@ -300,6 +301,7 @@ void COCCDemoView::OnRButtonUp(UINT /*nFlags*/, CPoint /*point*/)
   {
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
     myView->SetComputedMode(Standard_True);
+    myView->Redraw();
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
   }
 }
@@ -496,14 +498,17 @@ void COCCDemoView::RedrawVisMode()
   case VIS_WIREFRAME:
     GetDocument()->GetAISContext()->SetDisplayMode (AIS_WireFrame, Standard_True);
     myView->SetComputedMode (Standard_False);
+    myView->Redraw();
     break;
   case VIS_SHADE:
     GetDocument()->GetAISContext()->SetDisplayMode (AIS_Shaded, Standard_True);
     myView->SetComputedMode (Standard_False);
+    myView->Redraw();
     break;
   case VIS_HLR:
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
     myView->SetComputedMode (Standard_True);
+    myView->Redraw();
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
     GetDocument()->GetAISContext()->SetDisplayMode (AIS_WireFrame, Standard_True);
     break;

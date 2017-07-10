@@ -2710,13 +2710,11 @@ void V3d_View::SetComputedMode (const Standard_Boolean theMode)
     if (myComputedMode)
     {
       myView->SetComputedMode (Standard_True);
-      Update();
     }
   }
   else
   {
     myView->SetComputedMode (Standard_False);
-    Update();
   }
 }
 

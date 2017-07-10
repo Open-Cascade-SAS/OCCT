@@ -216,6 +216,7 @@ void OCC_3dView::OnBUTTONHlrOff()
 {
   myHlrModeIsOn = Standard_False;
   myView->SetComputedMode (myHlrModeIsOn);
+  myView->Redraw();
 }
 
 void OCC_3dView::OnBUTTONHlrOn() 
@@ -223,6 +224,7 @@ void OCC_3dView::OnBUTTONHlrOn()
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
   myHlrModeIsOn = Standard_True;
   myView->SetComputedMode (myHlrModeIsOn);
+  myView->Redraw();
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }
 
@@ -365,6 +367,7 @@ void OCC_3dView::OnLButtonUp(UINT nFlags, CPoint point)
       {
         CWaitCursor aWaitCursor;
         myView->SetComputedMode (myHlrModeIsOn);
+        myView->Redraw();
       }
       else
       {
@@ -415,7 +418,11 @@ void OCC_3dView::OnRButtonDown(UINT nFlags, CPoint point)
 void OCC_3dView::OnRButtonUp(UINT /*nFlags*/, CPoint /*point*/) 
 {
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    myView->SetComputedMode (myHlrModeIsOn);
+    if (myHlrModeIsOn)
+    {
+      myView->SetComputedMode (myHlrModeIsOn);
+      myView->Redraw();
+    }
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }
 
